@@ -1,0 +1,7 @@
+dist
+junit
+node_modules
+certificates_localhost
+src/assets
+package-lock.json
+.angular/cache
