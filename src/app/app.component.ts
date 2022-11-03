@@ -5,6 +5,4 @@ import {Component} from '@angular/core';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
-  title = 'gb3-poc';
-}
+export class AppComponent {}
