@@ -24,9 +24,13 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^14.2.3",
+    "@angular-eslint/schematics": "^14.1.2",
     "@angular/cli": "~14.2.3",
     "@angular/compiler-cli": "^14.2.0",
     "@types/jasmine": "~4.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.42.0",
+    "@typescript-eslint/parser": "^5.42.0",
+    "eslint": "^8.26.0",
     "husky": "^8.0.1",
     "jasmine-core": "~4.3.0",
     "karma": "~6.4.0",
