@@ -1,5 +1,6 @@
 import {Injectable, NgZone} from '@angular/core';
-import {EsriMap, EsriMapView} from '../../shared/external/esri.module';
+import {EsriGroupLayer, EsriMap, EsriMapView, EsriWMSLayer} from '../../shared/external/esri.module';
+import {LayersConfig} from '../../../assets/layers.config';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,23 @@ export class MapService {
 
   public init(): void {
     this.zone.runOutsideAngular(() => {
-      const map = new EsriMap({basemap: 'hybrid'});
+      const groupLayers: __esri.GroupLayer[] = [];
+      LayersConfig.forEach((layerConfig) => {
+        const uniqueLayers: __esri.Layer[] = [];
+        layerConfig.layer.split(',').map((sublayer) => {
+          const layer = new EsriWMSLayer({
+            id: layerConfig.id,
+            url: layerConfig.url,
+            sublayers: [{name: sublayer, title: sublayer}],
+            description: layerConfig.queryLayerName
+          });
+          uniqueLayers.push(layer);
+        });
+        groupLayers.push(new EsriGroupLayer({layers: uniqueLayers, id: layerConfig.name, title: layerConfig.queryLayerName}));
+      });
+
+      const map = new EsriMap({basemap: 'hybrid', layers: groupLayers});
+
       this._mapView = new EsriMapView({
         map: map,
         scale: 50000,
