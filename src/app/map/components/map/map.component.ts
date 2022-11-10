@@ -11,13 +11,11 @@ export class MapComponent implements OnInit, AfterViewInit {
 
   constructor(private readonly mapService: MapService) {}
 
-  ngOnInit(): void {
+  public ngOnInit() {
     this.mapService.init();
   }
 
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-      this.mapService.assignMapElement(this.mainMapRef.nativeElement);
-    });
+  public ngAfterViewInit() {
+    this.mapService.assignMapElement(this.mainMapRef.nativeElement);
   }
 }

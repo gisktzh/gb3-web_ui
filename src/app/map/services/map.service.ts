@@ -10,7 +10,7 @@ export class MapService {
 
   private _mapView!: __esri.MapView;
 
-  get mapView(): __esri.MapView {
+  public get mapView(): __esri.MapView {
     return this._mapView;
   }
 
@@ -48,7 +48,7 @@ export class MapService {
     });
   }
 
-  assignMapElement(container: any) {
+  public assignMapElement(container: any) {
     this.zone.runOutsideAngular(() => {
       this._mapView.container = container;
     });

@@ -12,7 +12,7 @@ export class LayerWidgetComponent implements OnInit {
 
   constructor(private readonly mapService: MapService) {}
 
-  ngOnInit(): void {
+  public ngOnInit() {
     const mapView = this.mapService.mapView;
     const layerListProperties: __esri.LayerListProperties = {
       view: mapView,
@@ -23,8 +23,8 @@ export class LayerWidgetComponent implements OnInit {
     mapView.ui.add(layerList);
   }
 
-  private listItemCreatedFunction(event: any): void {
-    const item = event.item;
+  private listItemCreatedFunction(event: unknown): void {
+    const item = (<{item: __esri.ListItem}>event).item;
     if (!item.parent) {
       const slider = new EsriSlider({
         min: 0,
