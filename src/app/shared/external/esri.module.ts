@@ -6,14 +6,16 @@ import Basemap from '@arcgis/core/Basemap';
 import WMSLayer from '@arcgis/core/layers/WMSLayer';
 import Slider from '@arcgis/core/widgets/Slider';
 import GroupLayer from '@arcgis/core/layers/GroupLayer';
+import Point from '@arcgis/core/geometry/Point';
 
-export let EsriMap = Map;
-export let EsriMapView = MapView;
-export let EsriLayerList = LayerList;
-export let EsriBasemap = Basemap;
-export let EsriWMSLayer = WMSLayer;
-export let EsriSlider = Slider;
-export let EsriGroupLayer = GroupLayer;
+export const EsriMap = Map;
+export const EsriMapView = MapView;
+export const EsriLayerList = LayerList;
+export const EsriBasemap = Basemap;
+export const EsriWMSLayer = WMSLayer;
+export const EsriSlider = Slider;
+export const EsriGroupLayer = GroupLayer;
+export const EsriPoint = Point;
 
 @NgModule({
   declarations: [],
