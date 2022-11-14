@@ -33,6 +33,7 @@
   "devDependencies": {
     "@angular-devkit/build-angular": "^14.2.3",
     "@angular-eslint/schematics": "^14.1.2",
+    "@angular-eslint/template-parser": "^14.1.2",
     "@angular/cli": "~14.2.3",
     "@angular/compiler-cli": "^14.2.0",
     "@ngrx/eslint-plugin": "^14.3.2",
