@@ -2,7 +2,7 @@ import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from
 import {MapService} from '../../services/map.service';
 import {Store} from '@ngrx/store';
 import {selectMapConfigurationState} from '../../../core/state/map/reducers/map-configuration.reducer';
-import {Subscription} from 'rxjs';
+import {Subscription, tap} from 'rxjs';
 
 @Component({
   selector: 'map',
@@ -11,8 +11,8 @@ import {Subscription} from 'rxjs';
 })
 export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('mainMap', {static: true}) mainMapRef!: ElementRef;
-  private mapConfiguration$ = this.store.select(selectMapConfigurationState);
-  private mapConfigurationSubscription = new Subscription();
+  private readonly mapConfiguration$ = this.store.select(selectMapConfigurationState);
+  private readonly mapConfigurationSubscription = new Subscription();
   public centerCoordinates: number[] = [];
   public scale: number = 0;
 
@@ -21,10 +21,14 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   public ngOnInit() {
     this.mapService.init();
     this.mapConfigurationSubscription.add(
-      this.mapConfiguration$.subscribe(({center, scale}) => {
-        this.centerCoordinates = [center.x, center.y];
-        this.scale = scale;
-      })
+      this.mapConfiguration$
+        .pipe(
+          tap(({center, scale}) => {
+            this.centerCoordinates = [center.x, center.y];
+            this.scale = scale;
+          })
+        )
+        .subscribe()
     );
   }
 

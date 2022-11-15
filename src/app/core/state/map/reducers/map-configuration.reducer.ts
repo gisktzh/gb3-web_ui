@@ -1,6 +1,6 @@
 import {createFeature, createReducer, on} from '@ngrx/store';
 import {MapConfigurationActions} from '../actions/map-configuration.actions';
-import {defaultCenter, defaultScale, defaultSrs} from '../../../../shared/configs/map-configs';
+import {defaultMapConfig} from '../../../../shared/configs/map-config';
 
 export const mapConfigurationFeatureKey = 'mapConfiguration';
 
@@ -11,9 +11,9 @@ export interface MapConfigurationState {
 }
 
 export const initialState: MapConfigurationState = {
-  center: defaultCenter,
-  scale: defaultScale,
-  srs: defaultSrs
+  center: defaultMapConfig.defaultCenter,
+  scale: defaultMapConfig.defaultScale,
+  srs: defaultMapConfig.defaultSrs
 };
 
 export const mapConfigurationFeature = createFeature({

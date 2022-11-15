@@ -6,7 +6,7 @@ import {MapConfigurationActions} from '../../core/state/map/actions/map-configur
 import {TransformationService} from './transformation.service';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 import {MapConfigurationState, selectMapConfigurationState} from '../../core/state/map/reducers/map-configuration.reducer';
-import {first} from 'rxjs';
+import {first, tap} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -21,12 +21,6 @@ export class MapService {
   }
 
   public init(): void {
-    let initialConfig: MapConfigurationState = {} as MapConfigurationState;
-    this.store
-      .select(selectMapConfigurationState)
-      .pipe(first())
-      .subscribe((val) => (initialConfig = val));
-
     const groupLayers: __esri.GroupLayer[] = [];
     LayersConfig.forEach((layerConfig) => {
       const uniqueLayers: __esri.Layer[] = [];
@@ -50,27 +44,35 @@ export class MapService {
 
     const map = new EsriMap({basemap: 'hybrid', layers: groupLayers});
 
-    this._mapView = new EsriMapView({
-      map: map,
-      scale: initialConfig.scale,
-      center: initialConfig.center
-    });
-    this.attachMapListeners();
+    this.store
+      .select(selectMapConfigurationState)
+      .pipe(
+        first(),
+        tap((config: MapConfigurationState) => {
+          this._mapView = new EsriMapView({
+            map: map,
+            scale: config.scale,
+            center: config.center
+          });
+          this.attachMapListeners();
+        })
+      )
+      .subscribe();
   }
 
   public assignMapElement(container: any) {
-    this._mapView.container = container;
+    this.mapView.container = container;
   }
 
   private attachMapListeners() {
     reactiveUtils.when(
-      () => this._mapView.stationary,
+      () => this.mapView.stationary,
       () => this.updateMapConfiguration()
     );
   }
 
   private updateMapConfiguration() {
-    const {center, scale} = this._mapView;
+    const {center, scale} = this.mapView;
     const projectedCenter = this.transformationService.transform(center);
     this.store.dispatch(MapConfigurationActions.setMapExtent({center: projectedCenter, scale}));
   }
