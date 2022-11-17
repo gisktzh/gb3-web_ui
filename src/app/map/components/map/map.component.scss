@@ -2,3 +2,12 @@
   height: 100%;
   width: 100%;
 }
+
+.configuration-overlay {
+  position: absolute;
+  z-index: 2;
+  background-color: aliceblue;
+  right: 0;
+  margin: 20px;
+  padding: 5px;
+}
