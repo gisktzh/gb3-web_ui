@@ -1,50 +1,43 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component} from '@angular/core';
 import {MapService} from '../../services/map.service';
-import {EsriLayerList, EsriSlider} from '../../../shared/external/esri.module';
+import {CdkDragDrop} from '@angular/cdk/drag-drop';
+import {MatSliderChange} from '@angular/material/slider';
+import Collection from '@arcgis/core/core/Collection';
 
 @Component({
   selector: 'layer-widget',
   templateUrl: './layer-widget.component.html',
   styleUrls: ['./layer-widget.component.scss']
 })
-export class LayerWidgetComponent implements OnInit {
-  @ViewChild('layerWidget', {static: true}) layerWidgetRef!: ElementRef;
-
-  constructor(private readonly mapService: MapService) {}
-
-  public ngOnInit() {
-    const mapView = this.mapService.mapView;
-    const layerListProperties: __esri.LayerListProperties = {
-      view: mapView,
-      container: this.layerWidgetRef.nativeElement,
-      listItemCreatedFunction: (e) => this.listItemCreatedFunction(e)
-    };
-    const layerList = new EsriLayerList(layerListProperties);
-    mapView.ui.add(layerList);
+export class LayerWidgetComponent {
+  public get mapViewUpdating(): boolean {
+    return this.mapService.mapView.updating;
   }
 
-  private listItemCreatedFunction(event: unknown): void {
-    const item = (<{item: __esri.ListItem}>event).item;
-    if (!item.parent) {
-      const slider = new EsriSlider({
-        min: 0,
-        max: 1,
-        precision: 2,
-        values: [1],
-        visibleElements: {
-          labels: true,
-          rangeLabels: true
-        }
-      });
-      item.panel = {
-        content: slider,
-        className: 'esri-icon-sliders-horizontal',
-        title: 'Change layer opacity'
-      };
+  public get layers(): __esri.Collection<__esri.Layer> {
+    return this.mapService.mapView.map.layers;
+  }
 
-      slider.on('thumb-drag', (sliderEvent: __esri.SliderThumbDragEvent) => {
-        item.layer.opacity = sliderEvent.value;
-      });
-    }
+  public getSubLayers(layer: __esri.Layer): __esri.Collection<__esri.Layer> {
+    const groupLayer = layer as __esri.GroupLayer;
+    return groupLayer ? groupLayer.layers : new Collection<__esri.Layer>();
+  }
+
+  constructor(public readonly mapService: MapService) {}
+
+  public drop(event: CdkDragDrop<{title: string; poster: string}[]>) {
+    this.layers.reorder(this.layers.getItemAt(event.previousIndex), event.currentIndex);
+  }
+
+  public onOpacitySliderChange($event: MatSliderChange, layer: __esri.Layer) {
+    layer.opacity = $event.value ?? 0;
+  }
+
+  public removeLayer(layer: __esri.Layer) {
+    this.layers.remove(layer);
+  }
+
+  public toggleLayerVisibility(layer: __esri.Layer) {
+    layer.visible = !layer.visible;
   }
 }
