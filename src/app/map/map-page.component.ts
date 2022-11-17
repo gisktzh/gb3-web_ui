@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {UrlService} from '../shared/services/url.service';
 
 @Component({
   selector: 'map-page',
@@ -6,7 +7,9 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./map-page.component.scss']
 })
 export class MapPageComponent implements OnInit {
-  constructor() {}
+  constructor(private readonly urlService: UrlService) {}
 
-  public ngOnInit() {}
+  public ngOnInit() {
+    this.urlService.getInitialMapConfiguration();
+  }
 }
