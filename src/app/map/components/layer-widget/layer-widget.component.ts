@@ -10,12 +10,8 @@ import Collection from '@arcgis/core/core/Collection';
   styleUrls: ['./layer-widget.component.scss']
 })
 export class LayerWidgetComponent {
-  public get mapViewUpdating(): boolean {
-    return this.mapService.mapView.updating;
-  }
-
-  public get layers(): __esri.Collection<__esri.Layer> {
-    return this.mapService.mapView.map.layers;
+  public get layerViews(): __esri.Collection<__esri.LayerView> {
+    return this.mapService.mapView.layerViews;
   }
 
   public getSubLayers(layer: __esri.Layer): __esri.Collection<__esri.Layer> {
@@ -25,19 +21,26 @@ export class LayerWidgetComponent {
 
   constructor(public readonly mapService: MapService) {}
 
-  public drop(event: CdkDragDrop<{title: string; poster: string}[]>) {
-    this.layers.reorder(this.layers.getItemAt(event.previousIndex), event.currentIndex);
+  public drop(event: CdkDragDrop<any>) {
+    this.layerViews.reorder(this.layerViews.getItemAt(event.previousIndex), event.currentIndex);
   }
 
-  public onOpacitySliderChange($event: MatSliderChange, layer: __esri.Layer) {
-    layer.opacity = $event.value ?? 0;
+  public onOpacitySliderChange($event: MatSliderChange, layerView: __esri.LayerView) {
+    layerView.layer.opacity = $event.value ?? 0;
   }
 
   public removeLayer(layer: __esri.Layer) {
-    this.layers.remove(layer);
+    this.mapService.mapView.map.layers.remove(layer);
   }
 
-  public toggleLayerVisibility(layer: __esri.Layer) {
-    layer.visible = !layer.visible;
+  public toggleLayerVisibility(layerView: __esri.LayerView) {
+    layerView.visible = !layerView.visible;
+  }
+
+  public toggleSubLayerVisibility(subLayer: __esri.Layer, parentLayer: __esri.Layer) {
+    if (parentLayer.visible) {
+      // only allow toggle if parent is visible
+      subLayer.visible = !subLayer.visible;
+    }
   }
 }

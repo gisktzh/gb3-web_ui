@@ -8,6 +8,12 @@
     padding: 0 8px;
   }
 
+  .layer-updating-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+  }
+
   .expansion-panel-header:hover {
     .layer-drag-handle {
       visibility: visible;
@@ -18,8 +24,17 @@
     .layer-visibility-image {
       display: inline-block;
     }
-    .layer-controls-right .layer-menu .layer-menu-handle {
+    .layer-menu .layer-menu-handle {
       visibility: visible;
+    }
+  }
+
+  .sublayer-item:hover {
+    .layer-image {
+      visibility: hidden;
+    }
+    .layer-visibility-image {
+      display: inline-block;
     }
   }
 
