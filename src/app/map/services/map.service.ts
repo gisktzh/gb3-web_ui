@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {EsriGroupLayer, EsriMap, EsriMapView, EsriWMSLayer} from '../../shared/external/esri.module';
+import {EsriGroupLayer, EsriMap, EsriMapView, EsriPoint, EsriWMSLayer} from '../../shared/external/esri.module';
 import {LayersConfig} from '../../../assets/layers.config';
 import {Store} from '@ngrx/store';
 import {MapConfigurationActions} from '../../core/state/map/actions/map-configuration.actions';
@@ -49,10 +49,12 @@ export class MapService {
       .pipe(
         first(),
         tap((config: MapConfigurationState) => {
+          const {x, y} = config.center;
+          const {scale, srs} = config;
           this._mapView = new EsriMapView({
             map: map,
-            scale: config.scale,
-            center: config.center
+            scale: scale,
+            center: new EsriPoint({x, y, spatialReference: srs})
           });
           this.attachMapListeners();
         })
@@ -73,7 +75,7 @@ export class MapService {
 
   private updateMapConfiguration() {
     const {center, scale} = this.mapView;
-    const projectedCenter = this.transformationService.transform(center);
-    this.store.dispatch(MapConfigurationActions.setMapExtent({center: projectedCenter, scale}));
+    const {x, y} = this.transformationService.transform(center);
+    this.store.dispatch(MapConfigurationActions.setMapExtent({x, y, scale}));
   }
 }
