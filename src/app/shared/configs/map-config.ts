@@ -1,20 +1,19 @@
 import SpatialReference from '@arcgis/core/geometry/SpatialReference';
-import {EsriPoint} from '../external/esri.module';
-
-const defaultSrs = new SpatialReference({wkid: 2056});
 
 export interface MapConfig {
   defaultSrs: __esri.SpatialReference;
-  defaultCenter: __esri.Point;
+  defaultCenter: {
+    x: number;
+    y: number;
+  };
   defaultScale: number;
 }
 
 export const defaultMapConfig: MapConfig = {
-  defaultSrs: defaultSrs,
-  defaultCenter: new EsriPoint({
+  defaultSrs: new SpatialReference({wkid: 2056}),
+  defaultCenter: {
     x: 2682260.0,
-    y: 1248390.0,
-    spatialReference: defaultSrs
-  }),
+    y: 1248390.0
+  },
   defaultScale: 50000
 };

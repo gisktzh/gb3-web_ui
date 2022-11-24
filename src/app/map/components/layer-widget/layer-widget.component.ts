@@ -36,6 +36,7 @@ export class LayerWidgetComponent implements OnInit {
           rangeLabels: true
         }
       });
+      // @ts-ignore WIP and therefore ignored
       item.panel = {
         content: slider,
         className: 'esri-icon-sliders-horizontal',

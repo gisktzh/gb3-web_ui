@@ -5,7 +5,7 @@ import {defaultMapConfig} from '../../../../shared/configs/map-config';
 export const mapConfigurationFeatureKey = 'mapConfiguration';
 
 export interface MapConfigurationState {
-  center: __esri.Point;
+  center: {x: number; y: number};
   scale: number;
   srs: __esri.SpatialReference;
 }
@@ -20,8 +20,18 @@ export const mapConfigurationFeature = createFeature({
   name: mapConfigurationFeatureKey,
   reducer: createReducer(
     initialState,
-    on(MapConfigurationActions.setMapExtent, (state, {center, scale}): MapConfigurationState => {
-      return {...state, center, scale};
+    on(MapConfigurationActions.setInitialExtent, (state, {x, y, scale}): MapConfigurationState => {
+      const initialExtent = {
+        center: {
+          x: x ?? initialState.center.x,
+          y: y ?? initialState.center.y
+        },
+        scale: scale ?? initialState.scale
+      };
+      return {...state, ...initialExtent};
+    }),
+    on(MapConfigurationActions.setMapExtent, (state, {x, y, scale}): MapConfigurationState => {
+      return {...state, center: {x, y}, scale};
     })
   )
 });
