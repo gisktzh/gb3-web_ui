@@ -10,6 +10,8 @@ import Collection from '@arcgis/core/core/Collection';
   styleUrls: ['./layer-widget.component.scss']
 })
 export class LayerWidgetComponent {
+  constructor(public readonly mapService: MapService) {}
+
   public get layerViews(): __esri.Collection<__esri.LayerView> {
     return this.mapService.mapView.layerViews;
   }
@@ -19,10 +21,8 @@ export class LayerWidgetComponent {
     return groupLayer ? groupLayer.layers : new Collection<__esri.Layer>();
   }
 
-  constructor(public readonly mapService: MapService) {}
-
-  public drop(event: CdkDragDrop<any>) {
-    this.layerViews.reorder(this.layerViews.getItemAt(event.previousIndex), event.currentIndex);
+  public drop($event: CdkDragDrop<any>) {
+    this.layerViews.reorder(this.layerViews.getItemAt($event.previousIndex), $event.currentIndex);
   }
 
   public onOpacitySliderChange($event: MatSliderChange, layerView: __esri.LayerView) {
