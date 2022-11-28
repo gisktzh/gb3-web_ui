@@ -1,19 +1,10 @@
-import SpatialReference from '@arcgis/core/geometry/SpatialReference';
+import {MapConfigurationState} from '../../core/state/map/reducers/map-configuration.reducer';
 
-export interface MapConfig {
-  defaultSrs: __esri.SpatialReference;
-  defaultCenter: {
-    x: number;
-    y: number;
-  };
-  defaultScale: number;
-}
-
-export const defaultMapConfig: MapConfig = {
-  defaultSrs: new SpatialReference({wkid: 2056}),
-  defaultCenter: {
+export const defaultMapConfig: MapConfigurationState = {
+  srsId: 2056,
+  center: {
     x: 2682260.0,
     y: 1248390.0
   },
-  defaultScale: 50000
+  scale: 50000
 };

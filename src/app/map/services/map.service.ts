@@ -7,6 +7,7 @@ import {TransformationService} from './transformation.service';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 import {MapConfigurationState, selectMapConfigurationState} from '../../core/state/map/reducers/map-configuration.reducer';
 import {first, tap} from 'rxjs';
+import SpatialReference from '@arcgis/core/geometry/SpatialReference';
 
 @Injectable({
   providedIn: 'root'
@@ -50,11 +51,11 @@ export class MapService {
         first(),
         tap((config: MapConfigurationState) => {
           const {x, y} = config.center;
-          const {scale, srs} = config;
+          const {scale, srsId} = config;
           this._mapView = new EsriMapView({
             map: map,
             scale: scale,
-            center: new EsriPoint({x, y, spatialReference: srs})
+            center: new EsriPoint({x, y, spatialReference: new SpatialReference({wkid: srsId})})
           });
           this.attachMapListeners();
         })

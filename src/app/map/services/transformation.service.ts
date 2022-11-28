@@ -1,21 +1,24 @@
 import {Injectable} from '@angular/core';
 import * as projection from '@arcgis/core/geometry/projection';
 import {Store} from '@ngrx/store';
-import {selectSrs} from '../../core/state/map/reducers/map-configuration.reducer';
+import {selectSrsId} from '../../core/state/map/reducers/map-configuration.reducer';
 import {defaultMapConfig} from '../../shared/configs/map-config';
+import SpatialReference from '@arcgis/core/geometry/SpatialReference';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TransformationService {
-  private readonly srs$ = this.store.select(selectSrs);
+  private readonly defaultSrs: __esri.SpatialReference;
+  private readonly srs$ = this.store.select(selectSrsId);
   private srs: __esri.SpatialReference | undefined;
 
   constructor(private readonly store: Store) {
-    this.srs$.subscribe((val) => (this.srs = val));
+    this.defaultSrs = new SpatialReference({wkid: defaultMapConfig.srsId});
+    this.srs$.subscribe((srsId) => (this.srs = new SpatialReference({wkid: srsId})));
   }
 
   public transform<T extends __esri.Geometry>(transformable: T): T {
-    return projection.project(transformable, this.srs ?? defaultMapConfig.defaultSrs) as T;
+    return projection.project(transformable, this.srs ?? this.defaultSrs) as T;
   }
 }
