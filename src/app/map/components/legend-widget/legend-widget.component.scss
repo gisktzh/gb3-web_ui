@@ -1,0 +1,16 @@
+.legend-widget {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 300px;
+  box-sizing: border-box;
+  border-radius: 0;
+  padding-top: 0;
+  padding-right: 0;
+  z-index: 9999; // todo: hackedihack
+
+  .legend-widget__header {
+    justify-content: end;
+  }
+}

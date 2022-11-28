@@ -5,9 +5,10 @@ import {SharedModule} from '../shared/shared.module';
 import {LayerWidgetComponent} from './components/layer-widget/layer-widget.component';
 import {MapPageComponent} from './map-page.component';
 import {MapRoutingModule} from './map-routing.module';
+import {LegendWidgetComponent} from './components/legend-widget/legend-widget.component';
 
 @NgModule({
-  declarations: [MapPageComponent, MapComponent, LayerWidgetComponent],
+  declarations: [MapPageComponent, MapComponent, LayerWidgetComponent, LegendWidgetComponent],
   imports: [CommonModule, SharedModule, MapRoutingModule]
 })
 export class MapModule {}
