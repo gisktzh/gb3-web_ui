@@ -6,7 +6,10 @@ import {apiKey} from './environment.local';
 
 export const environment = {
   production: false,
-  apiKey: apiKey
+  apiKey: apiKey,
+  baseUrls: {
+    gb3Api: 'https://maps.zh.ch'
+  }
 };
 
 /*

@@ -22,7 +22,9 @@ export const legendFeature = createFeature({
       return {...state, visible: !state.visible};
     }),
     on(LegendActions.addLegendContent, (state, {legend}): LegendState => {
-      return {...state, legendItems: [...state.legendItems, legend]};
+      // todo: once the layers are loaded from the API, this method should append it to the layerlist
+      const otherLegendItems = state.legendItems.filter((item) => item.topic !== legend.topic);
+      return {...state, legendItems: [...otherLegendItems, legend]};
     }),
     on(LegendActions.clearLegendContent, (state): LegendState => {
       return {...state, legendItems: []};
