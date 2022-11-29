@@ -7,13 +7,13 @@ export const mapConfigurationFeatureKey = 'mapConfiguration';
 export interface MapConfigurationState {
   center: {x: number; y: number};
   scale: number;
-  srs: __esri.SpatialReference;
+  srsId: number;
 }
 
 export const initialState: MapConfigurationState = {
-  center: defaultMapConfig.defaultCenter,
-  scale: defaultMapConfig.defaultScale,
-  srs: defaultMapConfig.defaultSrs
+  center: defaultMapConfig.center,
+  scale: defaultMapConfig.scale,
+  srsId: defaultMapConfig.srsId
 };
 
 export const mapConfigurationFeature = createFeature({
@@ -36,4 +36,4 @@ export const mapConfigurationFeature = createFeature({
   )
 });
 
-export const {name, reducer, selectMapConfigurationState, selectCenter, selectScale, selectSrs} = mapConfigurationFeature;
+export const {name, reducer, selectMapConfigurationState, selectCenter, selectScale, selectSrsId} = mapConfigurationFeature;
