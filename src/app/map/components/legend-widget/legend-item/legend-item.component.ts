@@ -1,5 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {Legend} from '../../../../shared/services/apis/gb3/gb3-api.interfaces';
+import {environment} from '../../../../../environments/environment';
 
 @Component({
   selector: 'legend-item',
@@ -8,11 +9,12 @@ import {Legend} from '../../../../shared/services/apis/gb3/gb3-api.interfaces';
 })
 export class LegendItemComponent {
   @Input() public legendItem!: Legend;
-  private readonly geoLionBaseUrl = 'https://www.geolion.zh.ch/geodatensatz/show?gdsid=';
+  private readonly geoLionBaseUrl = environment.baseUrls.geoLion;
+  private readonly geoLionEndPoint = 'geodatensatz/show?gdsid=';
 
   constructor() {}
 
   public getGeoLionLink(id: number): string {
-    return `${this.geoLionBaseUrl}${id}`;
+    return `${this.geoLionBaseUrl}/${this.geoLionEndPoint}${id}`;
   }
 }

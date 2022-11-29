@@ -11,7 +11,7 @@
         {{ layer.attribution }}
       </div>
       <div class="legend-item__geolion" *ngIf="layer.geolion">
-        <a href="{{ getGeoLionLink(layer.geolion) }}" target="_blank">Zu den Metadaten</a>
+        <a href="{{ this.getGeoLionLink(layer.geolion) }}" target="_blank">Zu den Metadaten</a>
       </div>
     </div>
     <div class="legend-item__class-list" *ngIf="layer.layer_classes; else noLayerClasses">
