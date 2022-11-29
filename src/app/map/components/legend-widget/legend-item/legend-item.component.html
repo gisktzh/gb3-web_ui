@@ -1,12 +1,17 @@
-<div class="legend-item">
-  <h2 class="legend-item__title">
-    {{ legendItem.topic }}
-  </h2>
-  <div *ngFor="let layer of legendItem.layers">
+<mat-expansion-panel class="legend-item">
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      {{ legendItem.topic }}
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+  <div class="legend-item__layers" *ngFor="let layer of legendItem.layers">
     <div class="legend-item__layer-title">
       <b>{{ layer.title }}</b>
       <div class="legend-item__attribution" *ngIf="layer.attribution">
         {{ layer.attribution }}
+      </div>
+      <div class="legend-item__geolion" *ngIf="layer.geolion">
+        <a href="{{ getGeoLionLink(layer.geolion) }}" target="_blank">Zu den Metadaten</a>
       </div>
     </div>
     <div class="legend-item__class-list" *ngIf="layer.layer_classes; else noLayerClasses">
@@ -20,8 +25,7 @@
       </div>
     </div>
   </div>
-  <hr />
-</div>
+</mat-expansion-panel>
 
 <ng-template #noLayerClasses>
   <div>
