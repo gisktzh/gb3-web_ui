@@ -5,6 +5,7 @@ import {selectLegendItems, selectVisible} from '../../../core/state/map/reducers
 import {LegendActions} from '../../../core/state/map/actions/legend.actions';
 import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
 import {Legend} from '../../../shared/services/apis/gb3/gb3-api.interfaces';
+import {LayersConfig} from '../../../../assets/layers.config';
 
 @Component({
   selector: 'legend-widget',
@@ -51,12 +52,17 @@ export class LegendWidgetComponent implements OnInit, OnDestroy {
 
   public close() {
     this.store.dispatch(LegendActions.toggleDisplay());
-    this.store.dispatch(LegendActions.clearLegendContent());
+    this.store.dispatch(LegendActions.clearLegendContent()); // todo: remove once dependent on layer state
   }
 
   private async loadLegends() {
-    const res = await this.gb3TopicsService.getLegend('BASISKARTEZH');
-    const legends = await firstValueFrom(res);
-    this.store.dispatch(LegendActions.addLegendContent(legends));
+    // todo: once implemented, load legend when a layer is added to the store
+    await Promise.all(
+      LayersConfig.map(async (config) => {
+        const res = await this.gb3TopicsService.getLegend(config.queryLayerName);
+        const legend = await firstValueFrom(res);
+        this.store.dispatch(LegendActions.addLegendContent(legend));
+      })
+    );
   }
 }

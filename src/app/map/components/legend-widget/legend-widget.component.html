@@ -6,18 +6,6 @@
   </mat-card-header>
   <mat-card-content>
     <h1>Legende</h1>
-    <div *ngFor="let legendItem of legendItems">
-      <h2>{{ legendItem.topic }}</h2>
-      <ul>
-        <li *ngFor="let layer of legendItem.layers">
-          {{ layer.title }}
-          <ul>
-            <li *ngFor="let layerClass of layer.layer_classes">
-              <img src="https://maps.zh.ch/{{ layerClass.image }}" />{{ layerClass.label }}
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </div>
+    <legend-item *ngFor="let legendItem of legendItems" [legendItem]="legendItem"></legend-item>
   </mat-card-content>
 </mat-card>
