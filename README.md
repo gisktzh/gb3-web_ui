@@ -25,3 +25,7 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+
+## Local setup
+
+1. Copy `./src/environments/environment.local.ts.example` to `./src/environments/environment.local.ts` and configure the GB3 API key. This is currently needed in order to access the GB3 API services.

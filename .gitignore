@@ -101,3 +101,6 @@ baseline.json
 
 # Husky
 .husky/_
+
+# local environment file
+environment.local.ts

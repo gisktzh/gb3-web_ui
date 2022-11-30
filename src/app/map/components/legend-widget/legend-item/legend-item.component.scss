@@ -1,0 +1,27 @@
+.legend-item {
+  margin-bottom: 12px;
+
+  .legend-item__layers {
+    .legend-item__layer-title {
+      padding-bottom: 8px;
+
+      .legend-item__attribution,
+      .legend-item__geolion {
+        font-size: smaller;
+        font-style: italic;
+      }
+    }
+
+    .legend-item__class-list {
+      .legend-item__class-list-entry {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        grid-gap: 12px;
+      }
+    }
+  }
+
+  .legend-item__layers:not(:first-child) {
+    padding-top: 8px;
+  }
+}

@@ -3,6 +3,7 @@ import {MapService} from '../../services/map.service';
 import {Store} from '@ngrx/store';
 import {selectMapConfigurationState} from '../../../core/state/map/reducers/map-configuration.reducer';
 import {Subscription, tap} from 'rxjs';
+import {LegendActions} from '../../../core/state/map/actions/legend.actions';
 
 @Component({
   selector: 'map',
@@ -38,5 +39,9 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public ngOnDestroy(): void {
     this.mapConfigurationSubscription.unsubscribe();
+  }
+
+  public toggleLegend() {
+    this.store.dispatch(LegendActions.toggleDisplay());
   }
 }

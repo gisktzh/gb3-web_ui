@@ -2,8 +2,15 @@
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+import {apiKey} from './environment.local';
+
 export const environment = {
-  production: false
+  production: false,
+  apiKey: apiKey,
+  baseUrls: {
+    gb3Api: 'https://maps.zh.ch',
+    geoLion: 'https://www.geolion.zh.ch'
+  }
 };
 
 /*

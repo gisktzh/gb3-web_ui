@@ -1,9 +1,9 @@
 export interface LayerConfig {
-  id: string
-  name: string
-  url: string
-  layer: string
-  queryLayerName: string
+  id: string;
+  name: string;
+  url: string;
+  layer: string;
+  queryLayerName: string;
 }
 
 export const LayersConfig: LayerConfig[] = [
@@ -29,10 +29,17 @@ export const LayersConfig: LayerConfig[] = [
     queryLayerName: 'AwelHitzebelastungZH'
   },
   {
+    id: 'Basiskartezh',
+    name: 'Basiskarte ZH',
+    url: 'http://wms.zh.ch/BASISKARTEZH',
+    layer: 'BASISKARTEZH',
+    queryLayerName: 'BASISKARTEZH'
+  },
+  {
     id: 'AVSO',
     name: 'AVSO',
     url: 'https://geo.so.ch/api/wms',
     layer: 'ch.bl.agi.lidar_2018.dsm_relief,ch.bl.agi.lidar_2018.dsm',
     queryLayerName: 'Solothurn Daten 2 Layer'
-  },
-]
+  }
+];

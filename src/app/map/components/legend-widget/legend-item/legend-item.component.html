@@ -1,0 +1,34 @@
+<mat-expansion-panel class="legend-item">
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      {{ legendItem.topic }}
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+  <div class="legend-item__layers" *ngFor="let layer of legendItem.layers">
+    <div class="legend-item__layer-title">
+      <b>{{ layer.title }}</b>
+      <div class="legend-item__attribution" *ngIf="layer.attribution">
+        {{ layer.attribution }}
+      </div>
+      <div class="legend-item__geolion" *ngIf="layer.geolion">
+        <a href="{{ this.getGeoLionLink(layer.geolion) }}" target="_blank">Zu den Metadaten</a>
+      </div>
+    </div>
+    <div class="legend-item__class-list" *ngIf="layer.layer_classes; else noLayerClasses">
+      <div class="legend-item__class-list-entry" *ngFor="let layerClass of layer.layer_classes">
+        <div class="legend-item__class-list-entry-col">
+          <img src="https://maps.zh.ch/{{ layerClass.image }}" alt="{{ layerClass.label }}" />
+        </div>
+        <div class="legend-item__class-list-entry-col">
+          {{ layerClass.label }}
+        </div>
+      </div>
+    </div>
+  </div>
+</mat-expansion-panel>
+
+<ng-template #noLayerClasses>
+  <div>
+    <i>Keine Klassen</i>
+  </div>
+</ng-template>
