@@ -1,4 +1,4 @@
-<mat-accordion class="layer-widget" multi="true" displayMode="flat" cdkDropList (cdkDropListDropped)="drop($event)">
+<mat-accordion class="active-layer-widget" multi="true" displayMode="flat" cdkDropList (cdkDropListDropped)="drop($event)">
   <div *ngFor="let layerView of layerViews" class="panel">
     <mat-expansion-panel cdkDrag [hideToggle]="true" #layerExpansionPanel>
       <mat-expansion-panel-header (click)="layerExpansionPanel.toggle()" class="expansion-panel-header">
