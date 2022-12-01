@@ -4,22 +4,24 @@ import {BrowserModule} from '@angular/platform-browser';
 import {AppComponent} from './app.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {StoreModule} from '@ngrx/store';
-import {reducers, metaReducers} from './core/state';
+import {metaReducers, reducers} from './core/state';
 import {AppRoutingModule} from './app-routing.module';
-import {SharedModule} from './shared/shared.module';
 import {HttpClientModule} from '@angular/common/http';
+import {SharedModule} from './shared/shared.module';
+import {PageModule} from './page/page.module';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
-    BrowserModule,
+    AppRoutingModule,
     BrowserAnimationsModule,
+    BrowserModule,
+    HttpClientModule,
+    PageModule,
     SharedModule,
     StoreModule.forRoot(reducers, {
       metaReducers
-    }),
-    AppRoutingModule,
-    HttpClientModule
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]

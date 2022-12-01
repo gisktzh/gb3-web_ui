@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {firstValueFrom, Subscription, tap} from 'rxjs';
+import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {selectLegendItems, selectVisible} from '../../../core/state/map/reducers/legend.reducer';
 import {LegendActions} from '../../../core/state/map/actions/legend.actions';
@@ -59,8 +59,7 @@ export class LegendWidgetComponent implements OnInit, OnDestroy {
     // todo: once implemented, load legend when a layer is added to the store
     await Promise.all(
       LayersConfig.map(async (config) => {
-        const res = await this.gb3TopicsService.getLegend(config.queryLayerName);
-        const legend = await firstValueFrom(res);
+        const legend = await this.gb3TopicsService.loadLegend(config.queryLayerName);
         this.store.dispatch(LegendActions.addLegendContent(legend));
       })
     );
