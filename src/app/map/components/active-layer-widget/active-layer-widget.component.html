@@ -47,7 +47,7 @@
         ></mat-progress-bar>
       </mat-expansion-panel-header>
       <!-- Expansion panel content -->
-      <div *ngFor="let subLayer of getSubLayers(layerView.layer)">
+      <ng-container *ngFor="let subLayer of getSubLayers(layerView.layer)">
         <mat-card class="sublayer-item no-shadow">
           <button mat-button (click)="toggleSubLayerVisibility(subLayer, layerView.layer)">
             <div class="layer-image-box">
@@ -60,7 +60,7 @@
           </button>
           <p>{{ subLayer.id }}</p>
         </mat-card>
-      </div>
+      </ng-container>
     </mat-expansion-panel>
   </div>
 </mat-accordion>
