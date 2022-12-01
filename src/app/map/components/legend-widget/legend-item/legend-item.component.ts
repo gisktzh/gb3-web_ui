@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {Legend} from '../../../../shared/services/apis/gb3/gb3-api.interfaces';
+import {Legend} from '../../../../shared/models/gb3-api.interfaces';
 import {environment} from '../../../../../environments/environment';
 
 @Component({

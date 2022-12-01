@@ -4,7 +4,7 @@ import {Store} from '@ngrx/store';
 import {selectLegendItems, selectVisible} from '../../../core/state/map/reducers/legend.reducer';
 import {LegendActions} from '../../../core/state/map/actions/legend.actions';
 import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
-import {Legend} from '../../../shared/services/apis/gb3/gb3-api.interfaces';
+import {Legend} from '../../../shared/models/gb3-api.interfaces';
 import {LayersConfig} from '../../../../assets/layers.config';
 
 @Component({

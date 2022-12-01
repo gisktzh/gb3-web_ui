@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Gb3ApiService} from './gb3-api.service';
-import {TopicsLegendDetailData, TopicsListData} from '../../../models/gb3-generated-api.interfaces';
+import {TopicsLegendDetailData, TopicsListData} from '../../../models/gb3-api-generated.interfaces';
+import {LegendResponse} from '../../../models/gb3-api.interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class Gb3TopicsService extends Gb3ApiService {
     return await this.get<TopicsListData>(requestUrl);
   }
 
-  public async loadLegend(topicName: string): Promise<TopicsLegendDetailData> {
+  public async loadLegend(topicName: string): Promise<LegendResponse> {
     const requestUrl = this.createLegendUrl(topicName);
     return await this.get<TopicsLegendDetailData>(requestUrl);
   }
