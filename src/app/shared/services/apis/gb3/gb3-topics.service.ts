@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Gb3ApiService} from './gb3-api.service';
-import {TopicsLegendDetailData, TopicsListData} from './gb3-generated-api';
+import {TopicsLegendDetailData, TopicsListData} from '../../../models/gb3-generated-api.interfaces';
 
 @Injectable({
   providedIn: 'root'
