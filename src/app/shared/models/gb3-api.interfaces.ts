@@ -1,8 +1,5 @@
 /**
- * Quick Hack: These interfaces are exported by using http://json2ts.com/ and then validating the properties using
- * https://www.npmjs.com/package/openapi-typescript
- *
- * Todo: Find a better way for exporting them :)
+ * These internal models should be used when accessing API responses.
  */
 interface LayerClass {
   label: string;

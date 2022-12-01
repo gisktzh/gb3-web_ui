@@ -1,6 +1,6 @@
 import {createFeature, createReducer, on} from '@ngrx/store';
 import {LegendActions} from '../actions/legend.actions';
-import {Legend} from '../../../../shared/services/apis/gb3/gb3-api.interfaces';
+import {Legend} from '../../../../shared/models/gb3-api.interfaces';
 
 export const legendFeatureKey = 'legend';
 

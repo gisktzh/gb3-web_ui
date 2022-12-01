@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Gb3ApiService} from './gb3-api.service';
-import {LegendResponse} from './gb3-api.interfaces';
-import {Observable} from 'rxjs';
+import {TopicsLegendDetailData, TopicsListData} from '../../../models/gb3-api-generated.interfaces';
+import {LegendResponse} from '../../../models/gb3-api.interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -9,12 +9,21 @@ import {Observable} from 'rxjs';
 export class Gb3TopicsService extends Gb3ApiService {
   private readonly endpoint = 'v3/topics';
 
-  public async getLegend(topicName: string): Promise<Observable<LegendResponse>> {
-    const requestUrl = this.getLegendUrl(topicName);
-    return await this.get<LegendResponse>(requestUrl);
+  public async loadTopics(): Promise<TopicsListData> {
+    const requestUrl = this.createTopicsUrl();
+    return await this.get<TopicsListData>(requestUrl);
   }
 
-  private getLegendUrl(topicName: string) {
+  public async loadLegend(topicName: string): Promise<LegendResponse> {
+    const requestUrl = this.createLegendUrl(topicName);
+    return await this.get<TopicsLegendDetailData>(requestUrl);
+  }
+
+  private createLegendUrl(topicName: string): string {
     return `${this.apiBaseUrl}/${this.endpoint}/${topicName}/legend`;
+  }
+
+  private createTopicsUrl(): string {
+    return `${this.apiBaseUrl}/${this.endpoint}`;
   }
 }
