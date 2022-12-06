@@ -1,0 +1,3 @@
+<map-overlay (closeEvent)="this.close()" [isVisible]="this.isVisible" title="Resultate">
+  <mat-progress-bar mode="indeterminate" *ngIf="this.loadingState === 'loading'"></mat-progress-bar>
+</map-overlay>

@@ -79,15 +79,15 @@ export class MapService {
       () => this.mapView,
       'click',
       (event: ViewClickEvent) => {
-        const location = this.transformationService.transform(event.mapPoint);
-        this.dispatchInfoQuery(location);
+        const {x, y} = this.transformationService.transform(event.mapPoint);
+        this.dispatchInfoQuery(x, y);
       }
     );
   }
 
-  private dispatchInfoQuery(location: __esri.Point) {
+  private dispatchInfoQuery(x: number, y: number) {
     // todo: do not dispatch esri specific data
-    this.store.dispatch(InfoQueryActions.sendRequest({location}));
+    this.store.dispatch(InfoQueryActions.sendRequest({x, y}));
   }
 
   private updateMapConfiguration() {

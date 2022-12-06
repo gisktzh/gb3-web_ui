@@ -15,10 +15,13 @@ export const infoQueryFeature = createFeature({
   name: infoQueryFeatureKey,
   reducer: createReducer(
     initialState,
-    on(InfoQueryActions.sendRequest, (state, {location}): InfoQueryState => {
+    on(InfoQueryActions.sendRequest, (state, {x, y}): InfoQueryState => {
       return {...state, loadingState: 'loading'};
+    }),
+    on(InfoQueryActions.clearInfoQueryContent, (state): InfoQueryState => {
+      return {...state, loadingState: undefined};
     })
   )
 });
 
-export const {name, reducer, selectInfoQueryState} = infoQueryFeature;
+export const {name, reducer, selectInfoQueryState, selectLoadingState} = infoQueryFeature;
