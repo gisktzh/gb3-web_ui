@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Gb3ApiService} from './gb3-api.service';
 import {TopicsFeatureInfoDetailData, TopicsLegendDetailData, TopicsListData} from '../../../models/gb3-api-generated.interfaces';
-import {LegendResponse} from '../../../models/gb3-api.interfaces';
+import {FeatureInfoResponse, LegendResponse} from '../../../models/gb3-api.interfaces';
 import {LayerConfig} from '../../../../../assets/layers.config';
 
 @Injectable({
@@ -20,7 +20,7 @@ export class Gb3TopicsService extends Gb3ApiService {
     return await this.get<TopicsLegendDetailData>(requestUrl);
   }
 
-  public async loadFeatureInfo(x: number, y: number, topics: LayerConfig[]): Promise<TopicsFeatureInfoDetailData[]> {
+  public async loadFeatureInfo(x: number, y: number, topics: LayerConfig[]): Promise<FeatureInfoResponse[]> {
     const featureInfoRequests: Promise<TopicsFeatureInfoDetailData>[] = [];
     topics.forEach(({queryLayerName, queryLayers}) => {
       const requestUrl = this.createFeatureInfoUrl(queryLayerName, x, y, queryLayers);

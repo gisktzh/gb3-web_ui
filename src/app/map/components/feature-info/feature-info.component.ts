@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
-import {selectLoadingState} from '../../../core/state/map/reducers/feature-info.reducer';
+import {selectData, selectLoadingState} from '../../../core/state/map/reducers/feature-info.reducer';
 import {FeatureInfoActions} from '../../../core/state/map/actions/feature-info.actions';
+import {FeatureInfoResult} from '../../../shared/models/gb3-api.interfaces';
 
 @Component({
   selector: 'feature-info',
@@ -12,12 +13,22 @@ import {FeatureInfoActions} from '../../../core/state/map/actions/feature-info.a
 export class FeatureInfoComponent implements OnInit {
   public loadingState: string | undefined;
   public isVisible: boolean = false;
+  public featureInfoData: FeatureInfoResult[] = [];
   private readonly loadingState$ = this.store.select(selectLoadingState);
+  private readonly featureInfoData$ = this.store.select(selectData);
   private readonly subscriptions = new Subscription();
 
   constructor(private readonly store: Store) {}
 
   ngOnInit(): void {
+    this.initSubscriptions();
+  }
+
+  public close() {
+    this.store.dispatch(FeatureInfoActions.clearFeatureInfoContent());
+  }
+
+  private initSubscriptions() {
     this.subscriptions.add(
       this.loadingState$
         .pipe(
@@ -28,11 +39,18 @@ export class FeatureInfoComponent implements OnInit {
         )
         .subscribe()
     );
+    this.subscriptions.add(
+      this.featureInfoData$
+        .pipe(
+          tap(async (value) => {
+            this.featureInfoData = value;
+          })
+        )
+        .subscribe()
+    );
   }
+
   private updateVisibility(loadingState: string | undefined) {
     this.isVisible = loadingState === 'loading' || loadingState === 'loaded';
-  }
-  public close() {
-    this.store.dispatch(FeatureInfoActions.clearFeatureInfoContent());
   }
 }
