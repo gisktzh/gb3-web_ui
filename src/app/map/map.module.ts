@@ -7,7 +7,7 @@ import {MapPageComponent} from './map-page.component';
 import {MapRoutingModule} from './map-routing.module';
 import {LegendWidgetComponent} from './components/legend-widget/legend-widget.component';
 import {LegendItemComponent} from './components/legend-widget/legend-item/legend-item.component';
-import {InfoQueryComponent} from './components/info-query/info-query.component';
+import {FeatureInfoComponent} from './components/feature-info/feature-info.component';
 import {MapOverlayComponent} from './components/map/map-overlay/map-overlay.component';
 
 @NgModule({
@@ -17,7 +17,7 @@ import {MapOverlayComponent} from './components/map/map-overlay/map-overlay.comp
     LayerWidgetComponent,
     LegendWidgetComponent,
     LegendItemComponent,
-    InfoQueryComponent,
+    FeatureInfoComponent,
     MapOverlayComponent
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule]

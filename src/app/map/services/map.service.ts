@@ -9,7 +9,7 @@ import {MapConfigurationState, selectMapConfigurationState} from '../../core/sta
 import {first, tap} from 'rxjs';
 import SpatialReference from '@arcgis/core/geometry/SpatialReference';
 import ViewClickEvent = __esri.ViewClickEvent;
-import {InfoQueryActions} from '../../core/state/map/actions/info-query.actions';
+import {FeatureInfoActions} from '../../core/state/map/actions/feature-info.actions';
 
 @Injectable({
   providedIn: 'root'
@@ -80,14 +80,14 @@ export class MapService {
       'click',
       (event: ViewClickEvent) => {
         const {x, y} = this.transformationService.transform(event.mapPoint);
-        this.dispatchInfoQuery(x, y);
+        this.dispatchFeatureInfoRequest(x, y);
       }
     );
   }
 
-  private dispatchInfoQuery(x: number, y: number) {
+  private dispatchFeatureInfoRequest(x: number, y: number) {
     // todo: do not dispatch esri specific data
-    this.store.dispatch(InfoQueryActions.sendRequest({x, y}));
+    this.store.dispatch(FeatureInfoActions.sendRequest({x, y}));
   }
 
   private updateMapConfiguration() {

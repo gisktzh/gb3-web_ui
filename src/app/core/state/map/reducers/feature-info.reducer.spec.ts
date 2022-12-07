@@ -1,6 +1,6 @@
-import {reducer, initialState} from './info-query.reducer';
+import {reducer, initialState} from './feature-info.reducer';
 
-describe('InfoQuery Reducer', () => {
+describe('FeatureInfo Reducer', () => {
   describe('an unknown action', () => {
     it('should return the previous state', () => {
       const action = {} as any;

@@ -1,9 +1,9 @@
 import {createActionGroup, emptyProps, props} from '@ngrx/store';
 
-export const InfoQueryActions = createActionGroup({
-  source: 'InfoQuery',
+export const FeatureInfoActions = createActionGroup({
+  source: 'FeatureInfo',
   events: {
     'Send Request': props<{x: number; y: number}>(),
-    'Clear Info Query Content': emptyProps()
+    'Clear Feature Info Content': emptyProps()
   }
 });

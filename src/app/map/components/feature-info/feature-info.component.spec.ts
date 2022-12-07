@@ -1,17 +1,17 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {InfoQueryComponent} from './info-query.component';
+import {FeatureInfoComponent} from './feature-info.component';
 
-describe('InfoQueryComponent', () => {
-  let component: InfoQueryComponent;
-  let fixture: ComponentFixture<InfoQueryComponent>;
+describe('FeatureInfoComponent', () => {
+  let component: FeatureInfoComponent;
+  let fixture: ComponentFixture<FeatureInfoComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [InfoQueryComponent]
+      declarations: [FeatureInfoComponent]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(InfoQueryComponent);
+    fixture = TestBed.createComponent(FeatureInfoComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

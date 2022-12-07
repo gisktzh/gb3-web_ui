@@ -9,6 +9,7 @@ import {AppRoutingModule} from './app-routing.module';
 import {HttpClientModule} from '@angular/common/http';
 import {SharedModule} from './shared/shared.module';
 import {PageModule} from './page/page.module';
+import {EffectsModule} from '@ngrx/effects';
 
 @NgModule({
   declarations: [AppComponent],
@@ -21,7 +22,8 @@ import {PageModule} from './page/page.module';
     SharedModule,
     StoreModule.forRoot(reducers, {
       metaReducers
-    })
+    }),
+    EffectsModule.forRoot([])
   ],
   providers: [],
   bootstrap: [AppComponent]
