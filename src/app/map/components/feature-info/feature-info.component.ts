@@ -23,18 +23,16 @@ export class FeatureInfoComponent implements OnInit {
         .pipe(
           tap(async (value) => {
             this.loadingState = value;
-            if (value) {
-              this.isVisible = true;
-              console.log('load info');
-            }
+            this.updateVisibility(value);
           })
         )
         .subscribe()
     );
   }
-
+  private updateVisibility(loadingState: string | undefined) {
+    this.isVisible = loadingState === 'loading' || loadingState === 'loaded';
+  }
   public close() {
-    this.isVisible = false;
     this.store.dispatch(FeatureInfoActions.clearFeatureInfoContent());
   }
 }

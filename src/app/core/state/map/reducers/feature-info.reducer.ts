@@ -20,6 +20,9 @@ export const featureInfoFeature = createFeature({
     }),
     on(FeatureInfoActions.clearFeatureInfoContent, (state): FeatureInfoState => {
       return {...state, loadingState: undefined};
+    }),
+    on(FeatureInfoActions.updateFeatureInfo, (state): FeatureInfoState => {
+      return {...state, loadingState: 'loaded'};
     })
   )
 });

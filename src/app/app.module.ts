@@ -10,6 +10,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {SharedModule} from './shared/shared.module';
 import {PageModule} from './page/page.module';
 import {EffectsModule} from '@ngrx/effects';
+import {FeatureInfoEffects} from './core/state/map/effects/feature-info.effects';
 
 @NgModule({
   declarations: [AppComponent],
@@ -23,7 +24,7 @@ import {EffectsModule} from '@ngrx/effects';
     StoreModule.forRoot(reducers, {
       metaReducers
     }),
-    EffectsModule.forRoot([])
+    EffectsModule.forRoot([FeatureInfoEffects])
   ],
   providers: [],
   bootstrap: [AppComponent]
