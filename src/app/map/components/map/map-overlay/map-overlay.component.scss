@@ -10,6 +10,11 @@
   overflow: hidden scroll;
   z-index: 9999; // todo: hackedihack
 
+  &.map-overlay--right {
+    left: unset;
+    right: 0;
+  }
+
   .map-overlay__header {
     justify-content: end;
   }

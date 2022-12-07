@@ -8,9 +8,8 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
 export class MapOverlayComponent {
   @Input() public isVisible: boolean = false;
   @Input() public title: string = '';
+  @Input() public location: 'left' | 'right' = 'left';
   @Output() public closeEvent = new EventEmitter<void>();
-
-  constructor() {}
 
   public onClose() {
     this.closeEvent.emit();
