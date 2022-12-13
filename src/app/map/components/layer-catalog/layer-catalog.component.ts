@@ -1,31 +1,36 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
 import {LayerCatalogItem} from '../../../shared/models/gb3-api.interfaces';
-import {TakeUntilDestroy} from '../../../shared/directives/take-until-destroy.directive';
 import {selectLayerCatalogItems} from '../../../core/state/map/reducers/layer-catalog.reducer';
 import {LayerCatalogActions} from '../../../core/state/map/actions/layer-catalog.actions';
-import {takeUntil} from 'rxjs';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'layer-catalog',
   templateUrl: './layer-catalog.component.html',
   styleUrls: ['./layer-catalog.component.scss']
 })
-export class LayerCatalogComponent extends TakeUntilDestroy implements OnInit {
+export class LayerCatalogComponent implements OnInit, OnDestroy {
   public layerCatalogItems: LayerCatalogItem[] = [];
-  private readonly layerCatalogItems$ = this.store.select(selectLayerCatalogItems);
 
-  constructor(private readonly store: Store, private readonly gb3TopicsService: Gb3TopicsService) {
-    super();
-  }
+  private readonly layerCatalogItems$ = this.store.select(selectLayerCatalogItems);
+  private readonly subscription = new Subscription();
+
+  constructor(private readonly store: Store, private readonly gb3TopicsService: Gb3TopicsService) {}
 
   public async ngOnInit() {
-    this.layerCatalogItems$.pipe(takeUntil(this.unsubscribed$)).subscribe((value) => {
-      this.layerCatalogItems = value;
-    });
+    this.subscription.add(
+      this.layerCatalogItems$.subscribe((value) => {
+        this.layerCatalogItems = value;
+      })
+    );
 
     await this.loadLayerCatalogItems();
+  }
+
+  public ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   private async loadLayerCatalogItems() {

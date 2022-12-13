@@ -18,7 +18,7 @@
       ],
       "plugins": ["rxjs", "rxjs-angular"],
       "rules": {
-        "rxjs-angular/prefer-composition": "warn",
+        "rxjs-angular/prefer-composition": "error",
         "@typescript-eslint/ban-ts-comment": [
           "warn",
           {
