@@ -1,11 +1,12 @@
 import {createFeature, createReducer, on} from '@ngrx/store';
 import {FeatureInfoActions} from '../actions/feature-info.actions';
 import {FeatureInfoResult} from '../../../../shared/models/gb3-api.interfaces';
+import {LoadingState} from '../../../../shared/enums/loading-state';
 
 export const featureInfoFeatureKey = 'featureInfo';
 
 export interface FeatureInfoState {
-  loadingState: 'loading' | 'loaded' | undefined;
+  loadingState: LoadingState | undefined;
   data: FeatureInfoResult[];
 }
 
@@ -19,14 +20,14 @@ export const featureInfoFeature = createFeature({
   reducer: createReducer(
     initialState,
     on(FeatureInfoActions.sendRequest, (): FeatureInfoState => {
-      return {...initialState, loadingState: 'loading'};
+      return {...initialState, loadingState: LoadingState.LOADING};
     }),
     on(FeatureInfoActions.clearFeatureInfoContent, (): FeatureInfoState => {
       return {...initialState};
     }),
     on(FeatureInfoActions.updateFeatureInfo, (state, {featureInfos}): FeatureInfoState => {
       const data = featureInfos.map((featureInfo) => featureInfo.feature_info.results);
-      return {...state, loadingState: 'loaded', data};
+      return {...state, loadingState: LoadingState.LOADED, data};
     })
   )
 });
