@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 /**
  * These internal models should be used when accessing API responses.
  */
@@ -34,7 +33,7 @@ interface Topic {
   /** Topic title */
   title: string;
   /** Topic title for printing */
-  print_title: string;
+  printTitle: string;
   /** Path to topic image */
   icon: string;
   /** Organisation title */
@@ -44,27 +43,27 @@ interface Topic {
   /** Keywords */
   keywords: string[];
   /** True if this is a main topic */
-  main_level: boolean;
+  mainLevel: boolean;
   /** True if this is a background topic */
-  background_level: boolean;
+  backgroundLevel: boolean;
   /** True if this is a overlay topic */
-  overlay_level: boolean;
+  overlayLevel: boolean;
   /**
    * WMS URL
    * @format uri
    */
-  wms_url: string;
+  wmsUrl: string;
   layers: TopicLayer[];
   /** Min allowed scale denominator */
-  min_scale: number | null;
+  minScale: number | null;
   /** Topic name to load as background topic if set */
-  background_topic: string | null;
+  backgroundTopic: string | null;
   /** List of topic names to load as overlay topics */
-  overlay_topics: string[];
+  overlayTopics: string[];
   /** Available viewer tools */
   tools: string[];
   /** True if current user must sign in to view this topic */
-  permission_missing: boolean;
+  permissionMissing: boolean;
 }
 
 interface TopicLayer {
@@ -73,19 +72,19 @@ interface TopicLayer {
   /** Layer name */
   layer: string;
   /** Layer group title if set */
-  group_title: string | null;
+  groupTitle: string | null;
   /** Layer title */
   title: string;
   /** Min scale denominator where layer is visible */
-  min_scale: number;
+  minScale: number;
   /** Max scale denominator where layer is visible */
-  max_scale: number;
+  maxScale: number;
   /** Sort order for WMS requests */
-  wms_sort: number;
+  wmsSort: number;
   /** Sort order in TOC */
-  toc_sort: number;
+  tocSort: number;
   /** True if layer is initially enabled in TOC */
-  initially_visible: boolean;
+  initiallyVisible: boolean;
   /** True if layer is editable by current user */
   editable: boolean;
 }
