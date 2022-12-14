@@ -16,7 +16,9 @@
           </div>
         </button>
         <p class="layer-controls-left-last-element">{{ layerView.layer.id }}</p>
-        <button mat-button (click)="removeLayer(layerView.layer)"><mat-icon>delete</mat-icon></button>
+        <button mat-button (click)="removeLayer(layerView.layer)">
+          <mat-icon>delete</mat-icon>
+        </button>
         <div class="layer-menu">
           <button class="layer-menu-handle" mat-button (click)="layerMenuTrigger.openMenu()">
             <mat-icon>more_horiz</mat-icon>
@@ -27,17 +29,6 @@
             <button mat-menu-item>Option 1</button>
             <!-- TODO: replace this placeholder -->
             <button mat-menu-item>Option 2</button>
-            <mat-card class="no-shadow">
-              <p>Opacity: {{ layerView.layer.opacity }}</p>
-              <mat-slider
-                min="0"
-                max="1"
-                step="0.01"
-                [thumbLabel]="true"
-                [value]="layerView.layer.opacity"
-                (input)="onOpacitySliderChange($event, layerView)"
-              ></mat-slider>
-            </mat-card>
           </mat-menu>
         </div>
         <mat-progress-bar
@@ -47,6 +38,26 @@
         ></mat-progress-bar>
       </mat-expansion-panel-header>
       <!-- Expansion panel content -->
+
+      <!-- Opacity and special filter settings -->
+      <div class="layer-settings">
+        <mat-card class="no-shadow">
+          <p class="layer-settings__title">Transparenz</p>
+          <mat-slider
+            class="layer-settings__slider"
+            min="0"
+            max="1"
+            step="0.01"
+            [thumbLabel]="true"
+            [value]="layerView.layer.opacity"
+            (input)="onOpacitySliderChange($event, layerView)"
+          ></mat-slider>
+        </mat-card>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <!-- Layer tree -->
       <ng-container *ngFor="let subLayer of getSubLayers(layerView.layer)">
         <mat-card class="sublayer-item no-shadow">
           <button mat-button (click)="toggleSubLayerVisibility(subLayer, layerView.layer)">

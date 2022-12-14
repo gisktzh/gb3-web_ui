@@ -1,0 +1,11 @@
+<mat-card class="map-overlay" *ngIf="isVisible" [ngClass]="{'map-overlay--right': location === 'right'}">
+  <mat-card-header class="map-overlay__header">
+    <button mat-icon-button>
+      <mat-icon (click)="onClose()">close</mat-icon>
+    </button>
+  </mat-card-header>
+  <mat-card-content>
+    <h1>{{ this.title }}</h1>
+    <ng-content></ng-content>
+  </mat-card-content>
+</mat-card>

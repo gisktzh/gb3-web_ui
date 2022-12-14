@@ -14,12 +14,15 @@
     .layer-drag-handle {
       visibility: visible;
     }
+
     .layer-image {
       opacity: 0.3;
     }
+
     .layer-visibility-image {
       display: inline-block;
     }
+
     .layer-menu .layer-menu-handle {
       visibility: visible;
     }
@@ -29,6 +32,7 @@
     .layer-image {
       visibility: hidden;
     }
+
     .layer-visibility-image {
       display: inline-block;
     }
@@ -75,6 +79,16 @@
     display: flex;
     margin-left: 56px;
     padding: 0 8px;
+  }
+
+  .layer-settings {
+    .layer-settings__title {
+      margin: 0;
+    }
+
+    .layer-settings__slider {
+      width: 100%;
+    }
   }
 }
 

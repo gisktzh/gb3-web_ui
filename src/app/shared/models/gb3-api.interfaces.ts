@@ -92,3 +92,37 @@ interface TopicLayer {
 export interface TopicsResponse {
   layerCatalogItems: LayerCatalogItem[];
 }
+
+export interface FeatureInfoResultFeatureField {
+  label: string;
+  value: string | number | null;
+}
+
+export interface FeatureInfoResultFeature {
+  fid: number;
+  fields: FeatureInfoResultFeatureField[];
+  bbox: number[];
+}
+
+export interface FeatureInfoResultLayer {
+  layer: string;
+  title: string;
+  features: FeatureInfoResultFeature[];
+}
+
+export interface FeatureInfoResult {
+  topic: string;
+  layers: FeatureInfoResultLayer[];
+}
+
+export interface FeatureInfoWrapper {
+  x: number;
+  y: number;
+  height_dtm: number;
+  height_dom: number;
+  results: FeatureInfoResult;
+}
+
+export interface FeatureInfoResponse {
+  feature_info: FeatureInfoWrapper;
+}

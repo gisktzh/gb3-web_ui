@@ -4,6 +4,7 @@ export interface LayerConfig {
   url: string;
   layer: string;
   queryLayerName: string;
+  queryLayers: string;
 }
 
 export const LayersConfig: LayerConfig[] = [
@@ -12,34 +13,32 @@ export const LayersConfig: LayerConfig[] = [
     name: 'Ökomorph',
     url: 'http://wms.zh.ch/OGDAwelOekoMorphwwwZH',
     layer: 'OGDAwelOekoMorphwwwZH',
-    queryLayerName: 'AwelOekoMorphwwwZH'
+    queryLayerName: 'AwelOekoMorphwwwZH',
+    queryLayers: 'seen,lk500,grenzen,gemeindegrenzen,abschnittsklassifizierung,gesamt'
   },
   {
     id: 'TbaBaustellenZHWMS',
     name: 'Baustellen KTZH',
     url: 'http://wms.zh.ch/TbaBaustellenZHWMS',
     layer: 'TbaBaustellenZHWMS',
-    queryLayerName: 'TbaBaustellen2ZH'
+    queryLayerName: 'TbaBaustellen2ZH',
+    queryLayers:
+      'seen,strassenregionen,lk500,gemeindegrenzen,unterhaltsbezirk,kilometer-marken,strassentypisierung-nach-richtplan,baustellen-uebersicht'
   },
   {
     id: 'AwelHitzebelastungZHWMS',
     name: 'Hitzebelastung',
     url: 'http://wms.zh.ch/AwelHitzebelastungZHWMS',
     layer: 'AwelHitzebelastungZHWMS',
-    queryLayerName: 'AwelHitzebelastungZH'
+    queryLayerName: 'AwelHitzebelastungZH',
+    queryLayers: 'pet-tagessituation,aufenthaltsqualitaet,seen,lk200,grenzen,gemeindegrenzen'
   },
   {
     id: 'Basiskartezh',
     name: 'Basiskarte ZH',
     url: 'http://wms.zh.ch/BASISKARTEZH',
     layer: 'BASISKARTEZH',
-    queryLayerName: 'BASISKARTEZH'
-  },
-  {
-    id: 'AVSO',
-    name: 'AVSO',
-    url: 'https://geo.so.ch/api/wms',
-    layer: 'ch.bl.agi.lidar_2018.dsm_relief,ch.bl.agi.lidar_2018.dsm',
-    queryLayerName: 'Solothurn Daten 2 Layer'
+    queryLayerName: 'BASISKARTEZH',
+    queryLayers: 'wald,seen,lk500,grenzen,gemeindegrenzen'
   }
 ];
