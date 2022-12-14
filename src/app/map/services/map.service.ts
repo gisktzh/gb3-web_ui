@@ -8,6 +8,8 @@ import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 import {MapConfigurationState, selectMapConfigurationState} from '../../core/state/map/reducers/map-configuration.reducer';
 import {first, tap} from 'rxjs';
 import SpatialReference from '@arcgis/core/geometry/SpatialReference';
+import ViewClickEvent = __esri.ViewClickEvent;
+import {FeatureInfoActions} from '../../core/state/map/actions/feature-info.actions';
 
 @Injectable({
   providedIn: 'root'
@@ -72,6 +74,19 @@ export class MapService {
       () => this.mapView.stationary,
       () => this.updateMapConfiguration()
     );
+
+    reactiveUtils.on(
+      () => this.mapView,
+      'click',
+      (event: ViewClickEvent) => {
+        const {x, y} = this.transformationService.transform(event.mapPoint);
+        this.dispatchFeatureInfoRequest(x, y);
+      }
+    );
+  }
+
+  private dispatchFeatureInfoRequest(x: number, y: number) {
+    this.store.dispatch(FeatureInfoActions.sendRequest({x, y}));
   }
 
   private updateMapConfiguration() {

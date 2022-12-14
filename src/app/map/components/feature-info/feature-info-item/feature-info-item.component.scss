@@ -1,0 +1,21 @@
+.feature-info {
+  overflow-y: auto;
+
+  .feature-info__title {
+    font-weight: bolder;
+    font-size: larger;
+    padding-bottom: 12px;
+  }
+
+  .feature-info__content {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-gap: 12px;
+    border-bottom: 1px solid black;
+    padding-bottom: 8px;
+
+    .feature-info__content__label {
+      font-weight: bold;
+    }
+  }
+}

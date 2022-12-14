@@ -7,9 +7,23 @@ import {MapPageComponent} from './map-page.component';
 import {MapRoutingModule} from './map-routing.module';
 import {LegendWidgetComponent} from './components/legend-widget/legend-widget.component';
 import {LegendItemComponent} from './components/legend-widget/legend-item/legend-item.component';
+import {FeatureInfoComponent} from './components/feature-info/feature-info.component';
+import {MapOverlayComponent} from './components/map/map-overlay/map-overlay.component';
+import {MapOverlayListItemComponent} from './components/map/map-overlay/map-overlay-list-item/map-overlay-list-item.component';
+import {FeatureInfoItemComponent} from './components/feature-info/feature-info-item/feature-info-item.component';
 
 @NgModule({
-  declarations: [MapPageComponent, MapComponent, LayerWidgetComponent, LegendWidgetComponent, LegendItemComponent],
+  declarations: [
+    MapPageComponent,
+    MapComponent,
+    LayerWidgetComponent,
+    LegendWidgetComponent,
+    LegendItemComponent,
+    FeatureInfoComponent,
+    MapOverlayComponent,
+    MapOverlayListItemComponent,
+    FeatureInfoItemComponent
+  ],
   imports: [CommonModule, SharedModule, MapRoutingModule]
 })
 export class MapModule {}
