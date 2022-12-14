@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {EMPTY, from} from 'rxjs';
-import {catchError, map, mergeMap} from 'rxjs/operators';
+import {EMPTY, from, switchMap} from 'rxjs';
+import {catchError, map} from 'rxjs/operators';
 import {FeatureInfoActions} from '../actions/feature-info.actions';
 import {Gb3TopicsService} from '../../../../shared/services/apis/gb3/gb3-topics.service';
 import {Store} from '@ngrx/store';
@@ -12,7 +12,7 @@ export class FeatureInfoEffects {
   public dispatchFeatureInfoRequest$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(FeatureInfoActions.sendRequest),
-      mergeMap((action) =>
+      switchMap((action) =>
         // todo: load layers from state once layers are added to state
         from(this.topicsService.loadFeatureInfo(action.x, action.y, LayersConfig)).pipe(
           map((featureInfos) => {

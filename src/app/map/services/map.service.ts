@@ -86,7 +86,6 @@ export class MapService {
   }
 
   private dispatchFeatureInfoRequest(x: number, y: number) {
-    // todo: do not dispatch esri specific data
     this.store.dispatch(FeatureInfoActions.sendRequest({x, y}));
   }
 
