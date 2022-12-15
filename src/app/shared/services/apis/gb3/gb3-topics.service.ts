@@ -22,7 +22,7 @@ export class Gb3TopicsService extends Gb3ApiService {
     return this.mapTopicsLegendDetailDataToLegendResponse(topicsLegendDetailData);
   }
 
-  public async loadFeatureInfo(x: number, y: number, topics: LayerConfig[]): Promise<FeatureInfoResponse[]> {
+  public async loadFeatureInfos(x: number, y: number, topics: LayerConfig[]): Promise<FeatureInfoResponse[]> {
     const topicsFeatureInfoDetailDataRequests: Promise<TopicsFeatureInfoDetailData>[] = [];
     topics.forEach(({queryLayerName, queryLayers}) => {
       const requestUrl = this.createFeatureInfoUrl(queryLayerName, x, y, queryLayers);
