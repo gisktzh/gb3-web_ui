@@ -23,7 +23,7 @@
                 <mat-icon class="layer-visibility-image" [fontIcon]="layerView.visible ? 'visibility' : 'visibility_off'"></mat-icon>
               </div>
             </button>
-            <p class="last-left-aligned-element">{{ layerView.layer.id }}</p>
+            <p class="last-left-aligned-element">{{ layerView.layer.title }}</p>
             <button mat-button (click)="removeLayer(layerView.layer)">
               <mat-icon>delete</mat-icon>
             </button>
