@@ -1,6 +1,8 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {LayerCatalogComponent} from './layer-catalog.component';
+import {provideMockStore} from '@ngrx/store/testing';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
 
 describe('LayerCatalogComponent', () => {
   let component: LayerCatalogComponent;
@@ -8,7 +10,9 @@ describe('LayerCatalogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [LayerCatalogComponent]
+      declarations: [LayerCatalogComponent],
+      imports: [HttpClientTestingModule],
+      providers: [provideMockStore({})]
     }).compileComponents();
 
     fixture = TestBed.createComponent(LayerCatalogComponent);

@@ -1,6 +1,7 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {ActiveLayerWidgetComponent} from './active-layer-widget.component';
+import {provideMockStore} from '@ngrx/store/testing';
 
 describe('ActiveLayerWidgetComponent', () => {
   let component: ActiveLayerWidgetComponent;
@@ -8,7 +9,8 @@ describe('ActiveLayerWidgetComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ActiveLayerWidgetComponent]
+      declarations: [ActiveLayerWidgetComponent],
+      providers: [provideMockStore({})]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ActiveLayerWidgetComponent);

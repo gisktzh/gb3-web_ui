@@ -1,6 +1,7 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {FeatureInfoComponent} from './feature-info.component';
+import {provideMockStore} from '@ngrx/store/testing';
 
 describe('FeatureInfoComponent', () => {
   let component: FeatureInfoComponent;
@@ -8,7 +9,8 @@ describe('FeatureInfoComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [FeatureInfoComponent]
+      declarations: [FeatureInfoComponent],
+      providers: [provideMockStore({})]
     }).compileComponents();
 
     fixture = TestBed.createComponent(FeatureInfoComponent);

@@ -7,4 +7,6 @@ describe('AppComponent', () => {
       declarations: [AppComponent]
     }).compileComponents();
   });
+
+  it('should compile', () => {});
 });
