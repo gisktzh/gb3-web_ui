@@ -8,7 +8,7 @@ interface LayerClass {
 
 interface Layer {
   title: string;
-  layer_classes?: LayerClass[];
+  layerClasses?: LayerClass[];
   geolion?: number;
   attribution?: string;
 }
@@ -118,11 +118,11 @@ export interface FeatureInfoResult {
 export interface FeatureInfoWrapper {
   x: number;
   y: number;
-  height_dtm: number;
-  height_dom: number;
+  heightDtm: number;
+  heightDom: number;
   results: FeatureInfoResult;
 }
 
 export interface FeatureInfoResponse {
-  feature_info: FeatureInfoWrapper;
+  featureInfo: FeatureInfoWrapper;
 }
