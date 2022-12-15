@@ -6,6 +6,10 @@
     padding: 0 8px;
   }
 
+  .clear-topics-button {
+    height: 48px;
+  }
+
   .layer-updating-progress {
     position: absolute;
     bottom: 0;
@@ -58,7 +62,7 @@
     }
   }
 
-  .layer-controls-left-last-element {
+  .last-left-aligned-element {
     margin-right: auto;
   }
 

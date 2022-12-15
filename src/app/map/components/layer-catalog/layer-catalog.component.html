@@ -6,10 +6,16 @@
       </mat-expansion-panel-header>
       <!-- Expansion panel content -->
       <ng-container *ngFor="let topic of layerCatalogItem.topics">
-        <mat-expansion-panel>
-          <mat-expansion-panel-header>
-            <p>{{ topic.title }}</p>
+        <mat-expansion-panel hideToggle="true" #topicExpansionPanel>
+          <mat-expansion-panel-header (click)="topicExpansionPanel.toggle()">
+            <p class="last-left-aligned-element">{{ topic.title }}</p>
             <button mat-button (click)="addActiveTopic(topic)"><mat-icon>playlist_add</mat-icon></button>
+            <button mat-button *ngIf="!topicExpansionPanel.expanded" (click)="topicExpansionPanel.open()">
+              <mat-icon>chevron_right</mat-icon>
+            </button>
+            <button mat-button *ngIf="topicExpansionPanel.expanded" (click)="topicExpansionPanel.close()">
+              <mat-icon>expand_more</mat-icon>
+            </button>
           </mat-expansion-panel-header>
           <!-- Expansion panel content -->
           <ng-container *ngFor="let topicLayer of topic.layers">
