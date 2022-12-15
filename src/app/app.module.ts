@@ -10,6 +10,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {SharedModule} from './shared/shared.module';
 import {PageModule} from './page/page.module';
 import {EffectsModule} from '@ngrx/effects';
+import {ActiveTopicEffects} from './core/state/map/effects/active-topic.effects';
 import {FeatureInfoEffects} from './core/state/map/effects/feature-info.effects';
 
 @NgModule({
@@ -24,7 +25,7 @@ import {FeatureInfoEffects} from './core/state/map/effects/feature-info.effects'
     StoreModule.forRoot(reducers, {
       metaReducers
     }),
-    EffectsModule.forRoot([FeatureInfoEffects])
+    EffectsModule.forRoot([ActiveTopicEffects, FeatureInfoEffects])
   ],
   providers: [],
   bootstrap: [AppComponent]

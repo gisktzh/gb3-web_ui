@@ -9,6 +9,7 @@
         <mat-expansion-panel>
           <mat-expansion-panel-header>
             <p>{{ topic.title }}</p>
+            <button mat-button (click)="addActiveTopic(topic)"><mat-icon>playlist_add</mat-icon></button>
           </mat-expansion-panel-header>
           <!-- Expansion panel content -->
           <ng-container *ngFor="let topicLayer of topic.layers">

@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
-import {EsriGroupLayer, EsriMap, EsriMapView, EsriPoint, EsriWMSLayer} from '../../shared/external/esri.module';
-import {LayersConfig} from '../../../assets/layers.config';
+import {EsriMap, EsriMapView, EsriPoint, EsriWMSLayer} from '../../shared/external/esri.module';
 import {Store} from '@ngrx/store';
 import {MapConfigurationActions} from '../../core/state/map/actions/map-configuration.actions';
 import {TransformationService} from './transformation.service';
@@ -8,8 +7,9 @@ import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 import {MapConfigurationState, selectMapConfigurationState} from '../../core/state/map/reducers/map-configuration.reducer';
 import {first, tap} from 'rxjs';
 import SpatialReference from '@arcgis/core/geometry/SpatialReference';
-import ViewClickEvent = __esri.ViewClickEvent;
 import {FeatureInfoActions} from '../../core/state/map/actions/feature-info.actions';
+import {Topic} from '../../shared/models/gb3-api.interfaces';
+import ViewClickEvent = __esri.ViewClickEvent;
 
 @Injectable({
   providedIn: 'root'
@@ -23,29 +23,43 @@ export class MapService {
     return this._mapView;
   }
 
-  public init(): void {
-    const groupLayers: __esri.GroupLayer[] = [];
-    LayersConfig.forEach((layerConfig) => {
-      const uniqueLayers: __esri.Layer[] = [];
-      layerConfig.layer.split(',').map((sublayer) => {
-        const layer = new EsriWMSLayer({
-          id: layerConfig.id,
-          url: layerConfig.url,
-          sublayers: [{name: sublayer, title: sublayer}],
-          description: layerConfig.queryLayerName
-        });
-        uniqueLayers.push(layer);
-      });
-      groupLayers.push(
-        new EsriGroupLayer({
-          layers: uniqueLayers,
-          id: layerConfig.name,
-          title: layerConfig.queryLayerName
-        })
-      );
-    });
+  public getLayer(topic: Topic): __esri.Layer {
+    return this.mapView.map.layers.find((layer) => layer.id === topic.topic);
+  }
 
-    const map = new EsriMap({basemap: 'hybrid', layers: groupLayers});
+  public addTopic(topic: Topic) {
+    if (this.getLayer(topic)) {
+      return;
+    }
+
+    const esriLayer: __esri.Layer = new EsriWMSLayer({
+      id: topic.topic,
+      title: topic.title,
+      url: topic.wmsUrl,
+      sublayers: topic.layers.map((layer) => {
+        return {
+          id: layer.id,
+          name: layer.layer,
+          title: layer.title
+        } as __esri.WMSSublayerProperties;
+      })
+    });
+    this.mapView.map.layers.add(esriLayer);
+  }
+
+  public removeTopic(topic: Topic) {
+    const esriLayer = this.getLayer(topic);
+    if (esriLayer) {
+      this.mapView.map.layers.remove(esriLayer);
+    }
+  }
+
+  public removeAllTopics() {
+    this.mapView.map.layers.removeAll();
+  }
+
+  public init(): void {
+    const map = new EsriMap({basemap: 'hybrid'});
 
     this.store
       .select(selectMapConfigurationState)
