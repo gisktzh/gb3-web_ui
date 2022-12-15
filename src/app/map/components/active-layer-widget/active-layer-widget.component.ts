@@ -5,11 +5,11 @@ import {MatSliderChange} from '@angular/material/slider';
 import Collection from '@arcgis/core/core/Collection';
 
 @Component({
-  selector: 'layer-widget',
-  templateUrl: './layer-widget.component.html',
-  styleUrls: ['./layer-widget.component.scss']
+  selector: 'active-layer-widget',
+  templateUrl: './active-layer-widget.component.html',
+  styleUrls: ['./active-layer-widget.component.scss']
 })
-export class LayerWidgetComponent {
+export class ActiveLayerWidgetComponent {
   constructor(public readonly mapService: MapService) {}
 
   public get layerViews(): __esri.Collection<__esri.LayerView> {

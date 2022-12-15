@@ -1,0 +1,24 @@
+<mat-accordion class="layer-catalog" multi="true" displayMode="flat">
+  <ng-container *ngFor="let layerCatalogItem of layerCatalogItems">
+    <mat-expansion-panel expanded="true">
+      <mat-expansion-panel-header>
+        <p>{{ layerCatalogItem.title }}</p>
+      </mat-expansion-panel-header>
+      <!-- Expansion panel content -->
+      <ng-container *ngFor="let topic of layerCatalogItem.topics">
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <p>{{ topic.title }}</p>
+          </mat-expansion-panel-header>
+          <!-- Expansion panel content -->
+          <ng-container *ngFor="let topicLayer of topic.layers">
+            <div class="horizontal-stacked">
+              <mat-icon>layers</mat-icon>
+              <p class="layer-text">{{ topicLayer.title }}</p>
+            </div>
+          </ng-container>
+        </mat-expansion-panel>
+      </ng-container>
+    </mat-expansion-panel>
+  </ng-container>
+</mat-accordion>

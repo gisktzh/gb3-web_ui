@@ -1,0 +1,13 @@
+.layer-catalog {
+  .horizontal-stacked {
+    display: flex;
+
+    .mat-icon {
+      vertical-align: middle;
+    }
+
+    .layer-text {
+      margin: 0 8px;
+    }
+  }
+}

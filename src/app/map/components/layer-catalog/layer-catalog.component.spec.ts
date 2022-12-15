@@ -1,21 +1,21 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {LegendWidgetComponent} from './legend-widget.component';
+import {LayerCatalogComponent} from './layer-catalog.component';
 import {provideMockStore} from '@ngrx/store/testing';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 
-describe('LegendWidgetComponent', () => {
-  let component: LegendWidgetComponent;
-  let fixture: ComponentFixture<LegendWidgetComponent>;
+describe('LayerCatalogComponent', () => {
+  let component: LayerCatalogComponent;
+  let fixture: ComponentFixture<LayerCatalogComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [LegendWidgetComponent],
+      declarations: [LayerCatalogComponent],
       imports: [HttpClientTestingModule],
       providers: [provideMockStore({})]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(LegendWidgetComponent);
+    fixture = TestBed.createComponent(LayerCatalogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

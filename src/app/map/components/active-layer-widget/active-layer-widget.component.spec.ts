@@ -1,19 +1,19 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {FeatureInfoComponent} from './feature-info.component';
+import {ActiveLayerWidgetComponent} from './active-layer-widget.component';
 import {provideMockStore} from '@ngrx/store/testing';
 
-describe('FeatureInfoComponent', () => {
-  let component: FeatureInfoComponent;
-  let fixture: ComponentFixture<FeatureInfoComponent>;
+describe('ActiveLayerWidgetComponent', () => {
+  let component: ActiveLayerWidgetComponent;
+  let fixture: ComponentFixture<ActiveLayerWidgetComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [FeatureInfoComponent],
+      declarations: [ActiveLayerWidgetComponent],
       providers: [provideMockStore({})]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(FeatureInfoComponent);
+    fixture = TestBed.createComponent(ActiveLayerWidgetComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

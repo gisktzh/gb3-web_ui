@@ -14,7 +14,7 @@ export class FeatureInfoEffects {
       ofType(FeatureInfoActions.sendRequest),
       switchMap((action) =>
         // todo: load layers from state once layers are added to state
-        from(this.topicsService.loadFeatureInfo(action.x, action.y, LayersConfig)).pipe(
+        from(this.topicsService.loadFeatureInfos(action.x, action.y, LayersConfig)).pipe(
           map((featureInfos) => {
             return FeatureInfoActions.updateFeatureInfo({featureInfos});
           }),

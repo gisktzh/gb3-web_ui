@@ -26,7 +26,7 @@ export const featureInfoFeature = createFeature({
       return {...initialState};
     }),
     on(FeatureInfoActions.updateFeatureInfo, (state, {featureInfos}): FeatureInfoState => {
-      const data = featureInfos.map((featureInfo) => featureInfo.feature_info.results);
+      const data = featureInfos.map((featureInfo) => featureInfo.featureInfo.results);
       return {...state, loadingState: LoadingState.LOADED, data};
     })
   )

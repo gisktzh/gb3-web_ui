@@ -1,4 +1,4 @@
-<mat-accordion class="layer-widget" multi="true" displayMode="flat" cdkDropList (cdkDropListDropped)="drop($event)">
+<mat-accordion class="active-layer-widget" multi="true" displayMode="flat" cdkDropList (cdkDropListDropped)="drop($event)">
   <div *ngFor="let layerView of layerViews" class="panel">
     <mat-expansion-panel cdkDrag [hideToggle]="true" #layerExpansionPanel>
       <mat-expansion-panel-header (click)="layerExpansionPanel.toggle()" class="expansion-panel-header">
@@ -58,7 +58,7 @@
       <mat-divider></mat-divider>
 
       <!-- Layer tree -->
-      <div *ngFor="let subLayer of getSubLayers(layerView.layer)">
+      <ng-container *ngFor="let subLayer of getSubLayers(layerView.layer)">
         <mat-card class="sublayer-item no-shadow">
           <button mat-button (click)="toggleSubLayerVisibility(subLayer, layerView.layer)">
             <div class="layer-image-box">
@@ -71,7 +71,7 @@
           </button>
           <p>{{ subLayer.id }}</p>
         </mat-card>
-      </div>
+      </ng-container>
     </mat-expansion-panel>
   </div>
 </mat-accordion>

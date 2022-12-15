@@ -9,8 +9,8 @@
         <a href="{{ this.getGeoLionLink(layer.geolion) }}" target="_blank">Zu den Metadaten</a>
       </div>
     </div>
-    <div class="legend-item__class-list" *ngIf="layer.layer_classes; else noLayerClasses">
-      <div class="legend-item__class-list-entry" *ngFor="let layerClass of layer.layer_classes">
+    <div class="legend-item__class-list" *ngIf="layer.layerClasses; else noLayerClasses">
+      <div class="legend-item__class-list-entry" *ngFor="let layerClass of layer.layerClasses">
         <div class="legend-item__class-list-entry-col">
           <img src="https://maps.zh.ch/{{ layerClass.image }}" alt="{{ layerClass.label }}" />
         </div>
