@@ -1,6 +1,8 @@
 /**
  * These internal models should be used when accessing API responses.
  */
+import {Geometry} from 'geojson';
+
 interface LayerClass {
   label: string;
   image: string;
@@ -102,6 +104,7 @@ export interface FeatureInfoResultFeature {
   fid: number;
   fields: FeatureInfoResultFeatureField[];
   bbox: number[];
+  geometry: Geometry;
 }
 
 export interface FeatureInfoResultLayer {
