@@ -36,6 +36,7 @@ export class GeoJSONMapperServiceService {
         return this.geoJSONMultiLineStringToEsriPolyline(geometry);
       case 'GeometryCollection':
       default:
+        // Todo: add proper error classes
         throw new Error('Unsupported Geometry from API.');
     }
   }

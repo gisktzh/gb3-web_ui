@@ -5,9 +5,11 @@ import {
   Point as GeoJSONPoint,
   MultiPoint as GeoJSONMultiPoint,
   Polygon as GeoJSONPolygon,
-  MultiPolygon as GeoJSONMultiPolygon
+  MultiPolygon as GeoJSONMultiPolygon,
+  LineString as GeoJSONLineString,
+  MultiLineString as GeoJSONMultiLineString
 } from 'geojson';
-import {Point as EsriPoint, Multipoint as EsriMultiPoint, Polygon as EsriPolygon} from '@arcgis/core/geometry';
+import {Point as EsriPoint, Multipoint as EsriMultiPoint, Polygon as EsriPolygon, Polyline as EsriPolyline} from '@arcgis/core/geometry';
 
 describe('GeoJsonMapperServiceService', () => {
   let service: GeoJSONMapperServiceService;
@@ -77,7 +79,7 @@ describe('GeoJsonMapperServiceService', () => {
     });
 
     it('transforms a GeoJSON multipolygon to an Esri polygon', () => {
-      // Represents a minimal polygon with an interior ring
+      // Represents a minimal polygon with an interior ring and a polygon without a ring, as MultiPolygon
       const minimalMultiPolygon: GeoJSONMultiPolygon = {
         type: 'MultiPolygon',
         coordinates: [
@@ -113,6 +115,44 @@ describe('GeoJsonMapperServiceService', () => {
 
       expect(esriPolygon).toBeInstanceOf(EsriPolygon);
       expect((esriPolygon as EsriPolygon).rings).toEqual(minimalMultiPolygon.coordinates.flat());
+    });
+  });
+
+  describe('Polyline', () => {
+    it('transforms a GeoJSON linestring to an Esri polyline', () => {
+      const minimalLineString: GeoJSONLineString = {
+        type: 'LineString',
+        coordinates: [
+          [100.0, 0.0],
+          [101.0, 1.0]
+        ]
+      };
+
+      const esriPolyline = service.fromGeoJSONToEsri(minimalLineString);
+
+      expect(esriPolyline).toBeInstanceOf(EsriPolyline);
+      expect((esriPolyline as EsriPolyline).paths).toEqual([minimalLineString.coordinates]);
+    });
+
+    it('transforms a GeoJSON multilinestring to an Esri polyline', () => {
+      const minimalMultiLineString: GeoJSONMultiLineString = {
+        type: 'MultiLineString',
+        coordinates: [
+          [
+            [100.0, 0.0],
+            [101.0, 1.0]
+          ],
+          [
+            [102.0, 2.0],
+            [103.0, 3.0]
+          ]
+        ]
+      };
+
+      const esriPolyline = service.fromGeoJSONToEsri(minimalMultiLineString);
+
+      expect(esriPolyline).toBeInstanceOf(EsriPolyline);
+      expect((esriPolyline as EsriPolyline).paths).toEqual([minimalMultiLineString.coordinates.flat()]);
     });
   });
 });

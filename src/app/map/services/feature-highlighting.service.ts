@@ -64,8 +64,8 @@ export class FeatureHighlightingService {
     this.removeHighlightedFeature(); // make sure we have a clean slate
 
     const geometry = this.geoJSONMapperService.fromGeoJSONToEsri(feature);
-    const symbol = this.defaultHighlightStyles.get(geometry.type);
-    const highlightedFeature = new Graphic({geometry: geometry, symbol});
+    const symbolization = this.defaultHighlightStyles.get(geometry.type);
+    const highlightedFeature = new Graphic({geometry: geometry, symbol: symbolization});
 
     this.mapService.addGraphic(highlightedFeature);
   }
