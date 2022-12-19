@@ -8,13 +8,32 @@ import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 import {MapConfigurationState, selectMapConfigurationState} from '../../core/state/map/reducers/map-configuration.reducer';
 import {first, tap} from 'rxjs';
 import SpatialReference from '@arcgis/core/geometry/SpatialReference';
-import ViewClickEvent = __esri.ViewClickEvent;
 import {FeatureInfoActions} from '../../core/state/map/actions/feature-info.actions';
+import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
+import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
+import {defaultHighlightStyles} from '../../shared/configs/feature-info-config';
+import Color from '@arcgis/core/Color';
+import Graphic from '@arcgis/core/Graphic';
+import {Symbol as EsriSymbol} from '@arcgis/core/symbols';
+import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
+import Geometry from '@arcgis/core/geometry/Geometry';
+import ViewClickEvent = __esri.ViewClickEvent;
 
 @Injectable({
   providedIn: 'root'
 })
 export class MapService {
+  private readonly defaultHighlightColors = {
+    feature: new Color(defaultHighlightStyles.feature.color),
+    outline: new Color(defaultHighlightStyles.outline.color)
+  };
+  private readonly defaultHighlightStyles = new Map<Geometry['type'], EsriSymbol>([
+    ['polyline', new SimpleLineSymbol({color: this.defaultHighlightColors.feature, width: defaultHighlightStyles.feature.width})],
+    ['point', new SimpleMarkerSymbol({color: this.defaultHighlightColors.feature})],
+    ['multipoint', new SimpleMarkerSymbol({color: this.defaultHighlightColors.feature})],
+    ['polygon', new SimpleFillSymbol({color: this.defaultHighlightColors.feature})]
+  ]);
+
   constructor(private readonly store: Store, private readonly transformationService: TransformationService) {}
 
   private _mapView!: __esri.MapView;
@@ -67,6 +86,13 @@ export class MapService {
 
   public assignMapElement(container: any) {
     this.mapView.container = container;
+  }
+
+  public highlightFeature(feature: Geometry) {
+    const style = this.defaultHighlightStyles.get(feature.type);
+
+    const graphic = new Graphic({geometry: feature, symbol: style});
+    this.mapView.graphics.add(graphic);
   }
 
   private attachMapListeners() {
