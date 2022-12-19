@@ -4,7 +4,7 @@
     <div class="feature-info__title">{{ layerInfo.title }} ({{ layerInfo.features.length }} Treffer)</div>
     <ng-container *ngFor="let feature of layerInfo.features; index as i">
       <b>Treffer {{ i + 1 }}/{{ layerInfo.features.length }}</b>
-      <button (click)="this.highlightFeature(feature)">Highlight</button>
+      <button (click)="this.highlightFeature(feature.geometry)">Highlight</button>
       <div class="feature-info__content">
         <ng-container *ngFor="let data of feature.fields">
           <div class="feature-info__content__label">{{ data.label }}</div>

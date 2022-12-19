@@ -1,9 +1,8 @@
 import {Component, Input} from '@angular/core';
-import {FeatureInfoResult, FeatureInfoResultFeature, FeatureInfoResultFeatureField} from '../../../../shared/models/gb3-api.interfaces';
-import {MapService} from '../../../services/map.service';
-import Graphic from '@arcgis/core/Graphic';
-import Polyline from '@arcgis/core/geometry/Polyline';
-import {GeoJSONMapperServiceService} from '../../../../shared/services/geo-json-mapper-service.service';
+import {FeatureInfoResult} from '../../../../shared/models/gb3-api.interfaces';
+import {Geometry} from 'geojson';
+import {Store} from '@ngrx/store';
+import {FeatureInfoActions} from '../../../../core/state/map/actions/feature-info.actions';
 
 @Component({
   selector: 'feature-info-item',
@@ -13,12 +12,9 @@ import {GeoJSONMapperServiceService} from '../../../../shared/services/geo-json-
 export class FeatureInfoItemComponent {
   @Input() public featureInfo!: FeatureInfoResult;
 
-  constructor(private readonly mapService: MapService, private readonly geoJSONMapperService: GeoJSONMapperServiceService) {}
-  public highlightFeature(feature: FeatureInfoResultFeature): void {
-    const geometry = this.geoJSONMapperService.fromGeoJSONToEsri(feature.geometry);
-    const graphic = new Graphic({
-      geometry: geometry
-    });
-    this.mapService.highlightFeature(geometry);
+  constructor(private readonly store: Store) {}
+
+  public highlightFeature(feature: Geometry): void {
+    this.store.dispatch(FeatureInfoActions.highlightFeature({feature}));
   }
 }
