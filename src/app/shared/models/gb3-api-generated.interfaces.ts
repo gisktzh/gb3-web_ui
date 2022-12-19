@@ -43,6 +43,13 @@ export interface TopicsFeatureInfoDetailData {
            * @minItems 4
            */
           bbox: number[];
+          /** GeoJSON geometry */
+          geometry: {
+            /** GeoJSON geometry type */
+            type: string;
+            /** GeoJSON geometry coordinates */
+            coordinates: any[];
+          };
         }[];
       }[];
     };

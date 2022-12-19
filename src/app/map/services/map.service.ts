@@ -8,8 +8,9 @@ import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 import {MapConfigurationState, selectMapConfigurationState} from '../../core/state/map/reducers/map-configuration.reducer';
 import {first, tap} from 'rxjs';
 import SpatialReference from '@arcgis/core/geometry/SpatialReference';
-import ViewClickEvent = __esri.ViewClickEvent;
 import {FeatureInfoActions} from '../../core/state/map/actions/feature-info.actions';
+import Graphic from '@arcgis/core/Graphic';
+import ViewClickEvent = __esri.ViewClickEvent;
 
 @Injectable({
   providedIn: 'root'
@@ -69,6 +70,14 @@ export class MapService {
     this.mapView.container = container;
   }
 
+  public addGraphic(graphic: Graphic) {
+    this.mapView.graphics.add(graphic);
+  }
+
+  public removeAllGraphics() {
+    this.mapView.graphics.removeAll();
+  }
+
   private attachMapListeners() {
     reactiveUtils.when(
       () => this.mapView.stationary,
@@ -83,6 +92,8 @@ export class MapService {
         this.dispatchFeatureInfoRequest(x, y);
       }
     );
+
+    reactiveUtils.whenOnce(() => this.mapView.ready).then(() => this.store.dispatch(MapConfigurationActions.setReady()));
   }
 
   private dispatchFeatureInfoRequest(x: number, y: number) {
