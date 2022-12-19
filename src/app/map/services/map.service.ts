@@ -6,19 +6,9 @@ import {MapConfigurationActions} from '../../core/state/map/actions/map-configur
 import {TransformationService} from './transformation.service';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 import {MapConfigurationState, selectMapConfigurationState} from '../../core/state/map/reducers/map-configuration.reducer';
-import {first, Subscription, tap} from 'rxjs';
+import {first, tap} from 'rxjs';
 import SpatialReference from '@arcgis/core/geometry/SpatialReference';
 import {FeatureInfoActions} from '../../core/state/map/actions/feature-info.actions';
-import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
-import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
-import {defaultHighlightStyles} from '../../shared/configs/feature-info-config';
-import Color from '@arcgis/core/Color';
-import {Symbol as EsriSymbol} from '@arcgis/core/symbols';
-import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
-import {Geometry as EsriGeometry} from '@arcgis/core/geometry';
-import {Geometry as GeoJSONGeometry} from 'geojson';
-import {selectHighlightedFeature} from '../../core/state/map/reducers/feature-info.reducer';
-import {GeoJSONMapperServiceService} from '../../shared/services/geo-json-mapper-service.service';
 import Graphic from '@arcgis/core/Graphic';
 import ViewClickEvent = __esri.ViewClickEvent;
 
@@ -26,30 +16,7 @@ import ViewClickEvent = __esri.ViewClickEvent;
   providedIn: 'root'
 })
 export class MapService {
-  private readonly defaultHighlightColors = {
-    feature: new Color(defaultHighlightStyles.feature.color),
-    outline: new Color(defaultHighlightStyles.outline.color)
-  };
-  private readonly defaultHighlightStyles = new Map<EsriGeometry['type'], EsriSymbol>([
-    [
-      'polyline',
-      new SimpleLineSymbol({
-        color: this.defaultHighlightColors.feature,
-        width: defaultHighlightStyles.feature.width
-      })
-    ],
-    ['point', new SimpleMarkerSymbol({color: this.defaultHighlightColors.feature})],
-    ['multipoint', new SimpleMarkerSymbol({color: this.defaultHighlightColors.feature})],
-    ['polygon', new SimpleFillSymbol({color: this.defaultHighlightColors.feature})]
-  ]);
-  private readonly highlightedFeature$ = this.store.select(selectHighlightedFeature);
-  private readonly subscriptions = new Subscription();
-
-  constructor(
-    private readonly store: Store,
-    private readonly transformationService: TransformationService,
-    private readonly geoJSONMapperService: GeoJSONMapperServiceService
-  ) {}
+  constructor(private readonly store: Store, private readonly transformationService: TransformationService) {}
 
   private _mapView!: __esri.MapView;
 
@@ -94,7 +61,6 @@ export class MapService {
             center: new EsriPoint({x, y, spatialReference: new SpatialReference({wkid: srsId})})
           });
           this.attachMapListeners();
-          this.initSubscriptions();
         })
       )
       .subscribe();
@@ -104,26 +70,12 @@ export class MapService {
     this.mapView.container = container;
   }
 
-  private highlightFeature(feature: GeoJSONGeometry) {
-    this.removeHighlightedFeature(); // make sure we have a clean slate
-
-    const geometry = this.geoJSONMapperService.fromGeoJSONToEsri(feature);
-    const symbol = this.defaultHighlightStyles.get(geometry.type);
-    const highlightedFeature = new Graphic({geometry: geometry, symbol});
-
-    this.mapView.graphics.add(highlightedFeature);
+  public addGraphic(graphic: Graphic) {
+    this.mapView.graphics.add(graphic);
   }
 
-  private removeHighlightedFeature() {
+  public removeAllGraphics() {
     this.mapView.graphics.removeAll();
-  }
-
-  private initSubscriptions() {
-    this.subscriptions.add(
-      this.highlightedFeature$
-        .pipe(tap((feature) => (feature ? this.highlightFeature(feature) : this.removeHighlightedFeature())))
-        .subscribe()
-    );
   }
 
   private attachMapListeners() {
@@ -140,6 +92,8 @@ export class MapService {
         this.dispatchFeatureInfoRequest(x, y);
       }
     );
+
+    reactiveUtils.whenOnce(() => this.mapView.ready).then(() => this.store.dispatch(MapConfigurationActions.setReady()));
   }
 
   private dispatchFeatureInfoRequest(x: number, y: number) {
