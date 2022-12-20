@@ -3,11 +3,11 @@ import {FeatureInfoActions} from '../actions/feature-info.actions';
 import {FeatureInfoResult} from '../../../../shared/models/gb3-api.interfaces';
 import {LoadingState} from '../../../../shared/enums/loading-state';
 import {Geometry} from 'geojson';
+import {HasLoadingState} from '../../../../shared/interfaces/has-loading-state.interface';
 
 export const featureInfoFeatureKey = 'featureInfo';
 
-export interface FeatureInfoState {
-  loadingState: LoadingState | undefined;
+export interface FeatureInfoState extends HasLoadingState {
   data: FeatureInfoResult[];
   highlightedFeature: Geometry | undefined;
 }

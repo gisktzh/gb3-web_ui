@@ -17,10 +17,18 @@ export class Gb3TopicsService extends Gb3ApiService {
     return this.mapTopicsListDataToTopicsResponse(topicsListData);
   }
 
-  public async loadLegend(topicName: string): Promise<LegendResponse> {
-    const requestUrl = this.createLegendUrl(topicName);
-    const topicsLegendDetailData = await this.get<TopicsLegendDetailData>(requestUrl);
-    return this.mapTopicsLegendDetailDataToLegendResponse(topicsLegendDetailData);
+  public async loadLegends(topics: string[]): Promise<LegendResponse[]> {
+    const topicsLegendDetailDataRequests: Promise<TopicsLegendDetailData>[] = [];
+    for (const topic of topics) {
+      const requestUrl = this.createLegendUrl(topic);
+      const topicsLegendDetailData = this.get<TopicsLegendDetailData>(requestUrl);
+      topicsLegendDetailDataRequests.push(topicsLegendDetailData);
+    }
+
+    const topicsLegendDetailDataCollection = await Promise.all(topicsLegendDetailDataRequests);
+    return topicsLegendDetailDataCollection.map((topicsLegendDetailData) =>
+      this.mapTopicsLegendDetailDataToLegendResponse(topicsLegendDetailData)
+    );
   }
 
   public async loadFeatureInfos(x: number, y: number, queryLayers: QueryLayer[]): Promise<FeatureInfoResponse[]> {
