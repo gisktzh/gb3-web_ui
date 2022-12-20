@@ -8,12 +8,14 @@ export interface MapConfigurationState {
   center: {x: number; y: number};
   scale: number;
   srsId: number;
+  ready: boolean;
 }
 
 export const initialState: MapConfigurationState = {
   center: defaultMapConfig.center,
   scale: defaultMapConfig.scale,
-  srsId: defaultMapConfig.srsId
+  srsId: defaultMapConfig.srsId,
+  ready: defaultMapConfig.ready
 };
 
 export const mapConfigurationFeature = createFeature({
@@ -32,8 +34,11 @@ export const mapConfigurationFeature = createFeature({
     }),
     on(MapConfigurationActions.setMapExtent, (state, {x, y, scale}): MapConfigurationState => {
       return {...state, center: {x, y}, scale};
+    }),
+    on(MapConfigurationActions.setReady, (state): MapConfigurationState => {
+      return {...state, ready: true};
     })
   )
 });
 
-export const {name, reducer, selectMapConfigurationState, selectCenter, selectScale, selectSrsId} = mapConfigurationFeature;
+export const {name, reducer, selectMapConfigurationState, selectCenter, selectScale, selectSrsId, selectReady} = mapConfigurationFeature;

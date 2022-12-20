@@ -3,6 +3,7 @@ import {Gb3ApiService} from './gb3-api.service';
 import {TopicsFeatureInfoDetailData, TopicsLegendDetailData, TopicsListData} from '../../../models/gb3-api-generated.interfaces';
 import {FeatureInfoResponse, LegendResponse, TopicsResponse} from '../../../models/gb3-api.interfaces';
 import {LayerConfig} from '../../../../../assets/layers.config';
+import {Geometry} from 'geojson';
 
 @Injectable({
   providedIn: 'root'
@@ -146,7 +147,9 @@ export class Gb3TopicsService extends Gb3ApiService {
                       label: field.label,
                       value: field.value
                     };
-                  })
+                  }),
+                  // The cast is required because the API typing delivers "type: string" which is not narrow enough
+                  geometry: feature.geometry as Geometry
                 };
               })
             };

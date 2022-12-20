@@ -10,6 +10,7 @@ import SpatialReference from '@arcgis/core/geometry/SpatialReference';
 import {FeatureInfoActions} from '../../core/state/map/actions/feature-info.actions';
 import {Topic} from '../../shared/models/gb3-api.interfaces';
 import ViewClickEvent = __esri.ViewClickEvent;
+import Graphic from '@arcgis/core/Graphic';
 
 @Injectable({
   providedIn: 'root'
@@ -83,6 +84,14 @@ export class MapService {
     this.mapView.container = container;
   }
 
+  public addGraphic(graphic: Graphic) {
+    this.mapView.graphics.add(graphic);
+  }
+
+  public removeAllGraphics() {
+    this.mapView.graphics.removeAll();
+  }
+
   private attachMapListeners() {
     reactiveUtils.when(
       () => this.mapView.stationary,
@@ -97,6 +106,8 @@ export class MapService {
         this.dispatchFeatureInfoRequest(x, y);
       }
     );
+
+    reactiveUtils.whenOnce(() => this.mapView.ready).then(() => this.store.dispatch(MapConfigurationActions.setReady()));
   }
 
   private dispatchFeatureInfoRequest(x: number, y: number) {

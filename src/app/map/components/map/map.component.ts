@@ -4,6 +4,7 @@ import {Store} from '@ngrx/store';
 import {selectMapConfigurationState} from '../../../core/state/map/reducers/map-configuration.reducer';
 import {Subscription, tap} from 'rxjs';
 import {LegendActions} from '../../../core/state/map/actions/legend.actions';
+import {FeatureHighlightingService} from '../../services/feature-highlighting.service';
 
 @Component({
   selector: 'map',
@@ -17,7 +18,11 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   public centerCoordinates: number[] = [];
   public scale: number = 0;
 
-  constructor(private readonly mapService: MapService, private store: Store) {}
+  constructor(
+    private readonly mapService: MapService,
+    private readonly featureHighlightingService: FeatureHighlightingService,
+    private store: Store
+  ) {}
 
   public ngOnInit() {
     this.mapService.init();
