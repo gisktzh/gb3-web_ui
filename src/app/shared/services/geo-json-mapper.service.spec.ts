@@ -1,6 +1,6 @@
 import {TestBed} from '@angular/core/testing';
 
-import {GeoJSONMapperServiceService} from './geo-json-mapper-service.service';
+import {GeoJSONMapperService} from './geo-json-mapper.service';
 import {
   Point as GeoJSONPoint,
   MultiPoint as GeoJSONMultiPoint,
@@ -11,12 +11,12 @@ import {
 } from 'geojson';
 import {Point as EsriPoint, Multipoint as EsriMultiPoint, Polygon as EsriPolygon, Polyline as EsriPolyline} from '@arcgis/core/geometry';
 
-describe('GeoJsonMapperServiceService', () => {
-  let service: GeoJSONMapperServiceService;
+describe('GeoJsonMapperService', () => {
+  let service: GeoJSONMapperService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(GeoJSONMapperServiceService);
+    service = TestBed.inject(GeoJSONMapperService);
   });
 
   describe('Point', () => {
