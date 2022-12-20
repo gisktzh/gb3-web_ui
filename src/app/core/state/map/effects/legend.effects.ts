@@ -2,21 +2,21 @@ import {Injectable} from '@angular/core';
 import {Actions, concatLatestFrom, createEffect, ofType} from '@ngrx/effects';
 import {EMPTY, from, switchMap} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
-import {FeatureInfoActions} from '../actions/feature-info.actions';
 import {Gb3TopicsService} from '../../../../shared/services/apis/gb3/gb3-topics.service';
 import {Store} from '@ngrx/store';
-import {selectQueryLayers} from '../selectors/query-layers-selector';
+import {LegendActions} from '../actions/legend.actions';
+import {selectQueryLegends} from '../selectors/query-legends.selector';
 
 @Injectable()
-export class FeatureInfoEffects {
-  public dispatchFeatureInfoRequest$ = createEffect(() => {
+export class LegendEffects {
+  public dispatchLegendRequest$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(FeatureInfoActions.sendRequest),
-      concatLatestFrom(() => this.store.select(selectQueryLayers)),
-      switchMap(([action, queryLayers]) =>
-        from(this.topicsService.loadFeatureInfos(action.x, action.y, queryLayers)).pipe(
-          map((featureInfos) => {
-            return FeatureInfoActions.updateFeatureInfo({featureInfos});
+      ofType(LegendActions.showLegend),
+      concatLatestFrom(() => this.store.select(selectQueryLegends)),
+      switchMap(([_, topics]) =>
+        from(this.topicsService.loadLegends(topics)).pipe(
+          map((legends) => {
+            return LegendActions.addLegendContent({legends});
           }),
           catchError(() => EMPTY)
         )

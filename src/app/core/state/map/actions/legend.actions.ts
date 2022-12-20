@@ -1,11 +1,11 @@
 import {createActionGroup, emptyProps, props} from '@ngrx/store';
-import {Legend} from '../../../../shared/models/gb3-api.interfaces';
+import {LegendResponse} from '../../../../shared/models/gb3-api.interfaces';
 
 export const LegendActions = createActionGroup({
   source: 'Legend',
   events: {
-    'Toggle Display': emptyProps(),
-    'Add Legend Content': props<{legend: Legend}>(),
-    'Clear Legend Content': emptyProps()
+    'Show Legend': emptyProps(),
+    'Add Legend Content': props<{legends: LegendResponse[]}>(),
+    'Hide Legend': emptyProps()
   }
 });

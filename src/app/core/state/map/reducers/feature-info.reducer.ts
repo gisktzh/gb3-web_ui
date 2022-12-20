@@ -2,17 +2,20 @@ import {createFeature, createReducer, on} from '@ngrx/store';
 import {FeatureInfoActions} from '../actions/feature-info.actions';
 import {FeatureInfoResult} from '../../../../shared/models/gb3-api.interfaces';
 import {LoadingState} from '../../../../shared/enums/loading-state';
+import {Geometry} from 'geojson';
+import {HasLoadingState} from '../../../../shared/interfaces/has-loading-state.interface';
 
 export const featureInfoFeatureKey = 'featureInfo';
 
-export interface FeatureInfoState {
-  loadingState: LoadingState | undefined;
+export interface FeatureInfoState extends HasLoadingState {
   data: FeatureInfoResult[];
+  highlightedFeature: Geometry | undefined;
 }
 
 export const initialState: FeatureInfoState = {
   loadingState: undefined,
-  data: []
+  data: [],
+  highlightedFeature: undefined
 };
 
 export const featureInfoFeature = createFeature({
@@ -28,8 +31,11 @@ export const featureInfoFeature = createFeature({
     on(FeatureInfoActions.updateFeatureInfo, (state, {featureInfos}): FeatureInfoState => {
       const data = featureInfos.map((featureInfo) => featureInfo.featureInfo.results);
       return {...state, loadingState: LoadingState.LOADED, data};
+    }),
+    on(FeatureInfoActions.highlightFeature, (state, {feature}): FeatureInfoState => {
+      return {...state, highlightedFeature: feature};
     })
   )
 });
 
-export const {name, reducer, selectFeatureInfoState, selectLoadingState, selectData} = featureInfoFeature;
+export const {name, reducer, selectFeatureInfoState, selectLoadingState, selectData, selectHighlightedFeature} = featureInfoFeature;

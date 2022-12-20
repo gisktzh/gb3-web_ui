@@ -12,6 +12,7 @@ import {PageModule} from './page/page.module';
 import {EffectsModule} from '@ngrx/effects';
 import {ActiveTopicEffects} from './core/state/map/effects/active-topic.effects';
 import {FeatureInfoEffects} from './core/state/map/effects/feature-info.effects';
+import {LegendEffects} from './core/state/map/effects/legend.effects';
 
 @NgModule({
   declarations: [AppComponent],
@@ -25,7 +26,7 @@ import {FeatureInfoEffects} from './core/state/map/effects/feature-info.effects'
     StoreModule.forRoot(reducers, {
       metaReducers
     }),
-    EffectsModule.forRoot([ActiveTopicEffects, FeatureInfoEffects])
+    EffectsModule.forRoot([ActiveTopicEffects, FeatureInfoEffects, LegendEffects])
   ],
   providers: [],
   bootstrap: [AppComponent]
