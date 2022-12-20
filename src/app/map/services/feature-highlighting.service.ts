@@ -3,7 +3,7 @@ import {MapService} from './map.service';
 import {selectHighlightedFeature} from '../../core/state/map/reducers/feature-info.reducer';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
-import {GeoJSONMapperServiceService} from '../../shared/services/geo-json-mapper-service.service';
+import {GeoJSONMapperService} from '../../shared/services/geo-json-mapper.service';
 import {Geometry as GeoJSONGeometry} from 'geojson';
 import Graphic from '@arcgis/core/Graphic';
 import Color from '@arcgis/core/Color';
@@ -42,7 +42,7 @@ export class FeatureHighlightingService {
   constructor(
     private readonly store: Store,
     private readonly mapService: MapService,
-    private readonly geoJSONMapperService: GeoJSONMapperServiceService
+    private readonly geoJSONMapperService: GeoJSONMapperService
   ) {
     this.initMapReadySubscription();
   }

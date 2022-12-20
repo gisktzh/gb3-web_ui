@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {
-  Geometry,
+  Geometry as GeoJSONGeometry,
   LineString as GeoJSONLineString,
   MultiLineString as GeoJSONMultiLineString,
   MultiPoint as GeoJSONMultiPoint,
@@ -19,8 +19,8 @@ import {
 @Injectable({
   providedIn: 'root'
 })
-export class GeoJSONMapperServiceService {
-  public fromGeoJSONToEsri<T extends Geometry>(geometry: T): EsriGeometry {
+export class GeoJSONMapperService {
+  public fromGeoJSONToEsri<T extends GeoJSONGeometry>(geometry: T): EsriGeometry {
     switch (geometry.type) {
       case 'Point':
         return this.geoJSONPointToEsriPoint(geometry);
