@@ -49,7 +49,17 @@ export class FeatureHighlightingService {
 
   private initMapReadySubscription() {
     // Only subscribe to highlighted feature once the map is ready, and we have a MapView instance
-    this.subscriptions.add(this.mapReadyState$.pipe(tap(() => this.initHighlightSubscription())).subscribe());
+    this.subscriptions.add(
+      this.mapReadyState$
+        .pipe(
+          tap((isReady) => {
+            if (isReady) {
+              this.initHighlightSubscription();
+            }
+          })
+        )
+        .subscribe()
+    );
   }
 
   private initHighlightSubscription() {
