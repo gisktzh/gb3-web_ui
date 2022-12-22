@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRoute, Params, Router} from '@angular/router';
-import {Subscription, tap} from 'rxjs';
+import {first, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {MapConfigurationActions} from '../../core/state/map/actions/map-configuration.actions';
 import {MapConfigurationState, selectMapConfigurationState} from '../../core/state/map/reducers/map-configuration.reducer';
@@ -17,6 +17,7 @@ export class UrlService {
   public getInitialMapConfiguration() {
     this.route.queryParams
       .pipe(
+        first(),
         tap((params) => {
           this.extractMapParameters(params);
           this.subscribeToUrlChanges();
@@ -36,10 +37,10 @@ export class UrlService {
     this.mapConfigurationSubject.add(
       this.mapConfiguration$
         .pipe(
-          tap((config) => {
+          tap(async (config) => {
             const {center, scale} = this.getRoundedMapParameters(config);
             const queryParms: Params = {x: center.x, y: center.y, scale: scale};
-            this.router.navigate([], {
+            await this.router.navigate([], {
               relativeTo: this.route,
               queryParams: queryParms,
               queryParamsHandling: 'merge'
