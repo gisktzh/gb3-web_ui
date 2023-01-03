@@ -1,29 +1,35 @@
-import {Injectable} from '@angular/core';
+import {Injectable, OnDestroy} from '@angular/core';
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {first, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {MapConfigurationActions} from '../../core/state/map/actions/map-configuration.actions';
 import {MapConfigurationState, selectMapConfigurationState} from '../../core/state/map/reducers/map-configuration.reducer';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class UrlService {
+@Injectable()
+export class MapConfigurationUrlService implements OnDestroy {
   private readonly mapConfiguration$ = this.store.select(selectMapConfigurationState);
-  private readonly mapConfigurationSubject = new Subscription();
+  private readonly subscriptions$ = new Subscription();
 
-  constructor(private readonly router: Router, private readonly route: ActivatedRoute, private readonly store: Store) {}
+  constructor(private readonly router: Router, private readonly route: ActivatedRoute, private readonly store: Store) {
+    this.getInitialMapConfiguration();
+  }
 
-  public getInitialMapConfiguration() {
-    this.route.queryParams
-      .pipe(
-        first(),
-        tap((params) => {
-          this.extractMapParameters(params);
-          this.subscribeToUrlChanges();
-        })
-      )
-      .subscribe();
+  public ngOnDestroy() {
+    this.subscriptions$.unsubscribe();
+  }
+
+  private getInitialMapConfiguration() {
+    this.subscriptions$.add(
+      this.route.queryParams
+        .pipe(
+          first(),
+          tap((params) => {
+            this.extractMapParameters(params);
+            this.subscribeToUrlChanges();
+          })
+        )
+        .subscribe()
+    );
   }
 
   private extractMapParameters(params: Params) {
@@ -34,7 +40,7 @@ export class UrlService {
   }
 
   private subscribeToUrlChanges() {
-    this.mapConfigurationSubject.add(
+    this.subscriptions$.add(
       this.mapConfiguration$
         .pipe(
           tap(async (config) => {
@@ -50,6 +56,7 @@ export class UrlService {
         .subscribe()
     );
   }
+
   private getRoundedMapParameters(config: MapConfigurationState): Pick<MapConfigurationState, 'center' | 'scale'> {
     return {
       center: {
