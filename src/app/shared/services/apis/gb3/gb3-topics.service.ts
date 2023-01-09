@@ -2,8 +2,8 @@ import {Injectable} from '@angular/core';
 import {Gb3ApiService} from './gb3-api.service';
 import {TopicsFeatureInfoDetailData, TopicsLegendDetailData, TopicsListData} from '../../../models/gb3-api-generated.interfaces';
 import {FeatureInfoResponse, LegendResponse, TopicsResponse} from '../../../models/gb3-api.interfaces';
-import {LayerConfig} from '../../../../../assets/layers.config';
 import {Geometry} from 'geojson';
+import {QueryLayer} from '../../../interfaces/query-layer.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -17,16 +17,24 @@ export class Gb3TopicsService extends Gb3ApiService {
     return this.mapTopicsListDataToTopicsResponse(topicsListData);
   }
 
-  public async loadLegend(topicName: string): Promise<LegendResponse> {
-    const requestUrl = this.createLegendUrl(topicName);
-    const topicsLegendDetailData = await this.get<TopicsLegendDetailData>(requestUrl);
-    return this.mapTopicsLegendDetailDataToLegendResponse(topicsLegendDetailData);
+  public async loadLegends(topics: string[]): Promise<LegendResponse[]> {
+    const topicsLegendDetailDataRequests: Promise<TopicsLegendDetailData>[] = [];
+    for (const topic of topics) {
+      const requestUrl = this.createLegendUrl(topic);
+      const topicsLegendDetailData = this.get<TopicsLegendDetailData>(requestUrl);
+      topicsLegendDetailDataRequests.push(topicsLegendDetailData);
+    }
+
+    const topicsLegendDetailDataCollection = await Promise.all(topicsLegendDetailDataRequests);
+    return topicsLegendDetailDataCollection.map((topicsLegendDetailData) =>
+      this.mapTopicsLegendDetailDataToLegendResponse(topicsLegendDetailData)
+    );
   }
 
-  public async loadFeatureInfos(x: number, y: number, topics: LayerConfig[]): Promise<FeatureInfoResponse[]> {
+  public async loadFeatureInfos(x: number, y: number, queryLayers: QueryLayer[]): Promise<FeatureInfoResponse[]> {
     const topicsFeatureInfoDetailDataRequests: Promise<TopicsFeatureInfoDetailData>[] = [];
-    topics.forEach(({queryLayerName, queryLayers}) => {
-      const requestUrl = this.createFeatureInfoUrl(queryLayerName, x, y, queryLayers);
+    queryLayers.forEach(({topic, layersToQuery}) => {
+      const requestUrl = this.createFeatureInfoUrl(topic, x, y, layersToQuery);
       const topicsFeatureInfoDetailData = this.get<TopicsFeatureInfoDetailData>(requestUrl);
       topicsFeatureInfoDetailDataRequests.push(topicsFeatureInfoDetailData);
     });

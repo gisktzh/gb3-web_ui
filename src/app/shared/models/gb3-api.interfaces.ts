@@ -29,7 +29,7 @@ export interface LayerCatalogItem {
   topics: Topic[];
 }
 
-interface Topic {
+export interface Topic {
   /** Topic name */
   topic: string;
   /** Topic title */

@@ -47,6 +47,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public toggleLegend() {
-    this.store.dispatch(LegendActions.toggleDisplay());
+    this.store.dispatch(LegendActions.showLegend());
   }
 }

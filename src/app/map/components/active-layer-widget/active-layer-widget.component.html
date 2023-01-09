@@ -1,77 +1,87 @@
-<mat-accordion class="active-layer-widget" multi="true" displayMode="flat" cdkDropList (cdkDropListDropped)="drop($event)">
-  <div *ngFor="let layerView of layerViews" class="panel">
-    <mat-expansion-panel cdkDrag [hideToggle]="true" #layerExpansionPanel>
-      <mat-expansion-panel-header (click)="layerExpansionPanel.toggle()" class="expansion-panel-header">
-        <mat-icon class="layer-drag-handle" cdkDragHandle>drag_indicator</mat-icon>
-        <button mat-button *ngIf="!layerExpansionPanel.expanded" (click)="layerExpansionPanel.open()">
-          <mat-icon>chevron_right</mat-icon>
-        </button>
-        <button mat-button *ngIf="layerExpansionPanel.expanded" (click)="layerExpansionPanel.close()">
-          <mat-icon>expand_more</mat-icon>
-        </button>
-        <button mat-button (click)="toggleLayerVisibility(layerView)">
-          <div class="layer-image-box">
-            <mat-icon class="layer-image">image</mat-icon>
-            <mat-icon class="layer-visibility-image" [fontIcon]="layerView.visible ? 'visibility' : 'visibility_off'"></mat-icon>
-          </div>
-        </button>
-        <p class="layer-controls-left-last-element">{{ layerView.layer.id }}</p>
-        <button mat-button (click)="removeLayer(layerView.layer)">
-          <mat-icon>delete</mat-icon>
-        </button>
-        <div class="layer-menu">
-          <button class="layer-menu-handle" mat-button (click)="layerMenuTrigger.openMenu()">
-            <mat-icon>more_horiz</mat-icon>
-            <div #layerMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="layerMenu"></div>
-          </button>
-          <mat-menu #layerMenu="matMenu">
-            <!-- TODO: replace this placeholder -->
-            <button mat-menu-item>Option 1</button>
-            <!-- TODO: replace this placeholder -->
-            <button mat-menu-item>Option 2</button>
-          </mat-menu>
-        </div>
-        <mat-progress-bar
-          *ngIf="layerView.updating || !layerView.layer.loaded"
-          class="layer-updating-progress"
-          mode="indeterminate"
-        ></mat-progress-bar>
-      </mat-expansion-panel-header>
-      <!-- Expansion panel content -->
-
-      <!-- Opacity and special filter settings -->
-      <div class="layer-settings">
-        <mat-card class="no-shadow">
-          <p class="layer-settings__title">Transparenz</p>
-          <mat-slider
-            class="layer-settings__slider"
-            min="0"
-            max="1"
-            step="0.01"
-            [thumbLabel]="true"
-            [value]="layerView.layer.opacity"
-            (input)="onOpacitySliderChange($event, layerView)"
-          ></mat-slider>
-        </mat-card>
-      </div>
-
-      <mat-divider></mat-divider>
-
-      <!-- Layer tree -->
-      <ng-container *ngFor="let subLayer of getSubLayers(layerView.layer)">
-        <mat-card class="sublayer-item no-shadow">
-          <button mat-button (click)="toggleSubLayerVisibility(subLayer, layerView.layer)">
-            <div class="layer-image-box">
-              <mat-icon class="layer-image">layers</mat-icon>
-              <mat-icon
-                class="layer-visibility-image"
-                [fontIcon]="layerView.visible && subLayer.visible ? 'visibility' : 'visibility_off'"
-              ></mat-icon>
+<mat-card class="active-layer-widget">
+  <mat-card-header>
+    <p class="last-left-aligned-element">Aktive Topics</p>
+    <button class="clear-topics-button" mat-raised-button color="warn" (click)="removeAllLayers()" [disabled]="layerViews.length === 0">
+      <p>Clear</p>
+    </button>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-accordion multi="true" displayMode="flat" cdkDropList (cdkDropListDropped)="drop($event)">
+      <div *ngFor="let layerView of layerViews" class="panel">
+        <mat-expansion-panel cdkDrag hideToggle="true" #layerExpansionPanel>
+          <mat-expansion-panel-header (click)="layerExpansionPanel.toggle()" class="expansion-panel-header">
+            <mat-icon class="layer-drag-handle" cdkDragHandle>drag_indicator</mat-icon>
+            <button mat-button *ngIf="!layerExpansionPanel.expanded" (click)="layerExpansionPanel.open()">
+              <mat-icon>chevron_right</mat-icon>
+            </button>
+            <button mat-button *ngIf="layerExpansionPanel.expanded" (click)="layerExpansionPanel.close()">
+              <mat-icon>expand_more</mat-icon>
+            </button>
+            <button mat-button (click)="toggleLayerVisibility(layerView)">
+              <div class="layer-image-box">
+                <mat-icon class="layer-image">image</mat-icon>
+                <mat-icon class="layer-visibility-image" [fontIcon]="layerView.visible ? 'visibility' : 'visibility_off'"></mat-icon>
+              </div>
+            </button>
+            <p class="last-left-aligned-element">{{ layerView.layer.title }}</p>
+            <button mat-button (click)="removeLayer(layerView.layer)">
+              <mat-icon>delete</mat-icon>
+            </button>
+            <div class="layer-menu">
+              <button class="layer-menu-handle" mat-button (click)="layerMenuTrigger.openMenu()">
+                <mat-icon>more_horiz</mat-icon>
+                <div #layerMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="layerMenu"></div>
+              </button>
+              <mat-menu #layerMenu="matMenu">
+                <!-- TODO: replace this placeholder -->
+                <button mat-menu-item>Option 1</button>
+                <!-- TODO: replace this placeholder -->
+                <button mat-menu-item>Option 2</button>
+              </mat-menu>
             </div>
-          </button>
-          <p>{{ subLayer.id }}</p>
-        </mat-card>
-      </ng-container>
-    </mat-expansion-panel>
-  </div>
-</mat-accordion>
+            <mat-progress-bar
+              *ngIf="layerView.updating || !layerView.layer.loaded"
+              class="layer-updating-progress"
+              mode="indeterminate"
+            ></mat-progress-bar>
+          </mat-expansion-panel-header>
+          <!-- Expansion panel content -->
+
+          <!-- Opacity and special filter settings -->
+          <div class="layer-settings">
+            <mat-card class="no-shadow">
+              <p class="layer-settings__title">Transparenz</p>
+              <mat-slider
+                class="layer-settings__slider"
+                min="0"
+                max="1"
+                step="0.01"
+                [thumbLabel]="true"
+                [value]="layerView.layer.opacity"
+                (input)="onOpacitySliderChange($event, layerView)"
+              ></mat-slider>
+            </mat-card>
+          </div>
+
+          <mat-divider></mat-divider>
+
+          <!-- Layer tree -->
+          <ng-container *ngFor="let subLayer of getSubLayers(layerView.layer)">
+            <mat-card class="sublayer-item no-shadow">
+              <button mat-button (click)="toggleSubLayerVisibility(subLayer, layerView.layer)">
+                <div class="layer-image-box">
+                  <mat-icon class="layer-image">layers</mat-icon>
+                  <mat-icon
+                    class="layer-visibility-image"
+                    [fontIcon]="layerView.visible && subLayer.visible ? 'visibility' : 'visibility_off'"
+                  ></mat-icon>
+                </div>
+              </button>
+              <p>{{ subLayer.title }}</p>
+            </mat-card>
+          </ng-container>
+        </mat-expansion-panel>
+      </div>
+    </mat-accordion>
+  </mat-card-content>
+</mat-card>
