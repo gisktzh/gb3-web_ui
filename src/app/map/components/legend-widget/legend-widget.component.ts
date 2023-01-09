@@ -14,7 +14,7 @@ import {LoadingState} from '../../../shared/enums/loading-state';
 export class LegendWidgetComponent implements OnInit, OnDestroy {
   public isVisible = false;
   public legendItems: Legend[] = [];
-  private loadingState: LoadingState | undefined;
+  private loadingState = LoadingState.UNDEFINED;
   private readonly loadingState$ = this.store.select(selectLoadingState);
   private readonly legendItems$ = this.store.select(selectLegendItems);
   private readonly subscriptions = new Subscription();
@@ -64,7 +64,7 @@ export class LegendWidgetComponent implements OnInit, OnDestroy {
     );
   }
 
-  private updateVisibility(loadingState: LoadingState | undefined) {
-    this.isVisible = loadingState !== undefined;
+  private updateVisibility(loadingState: LoadingState) {
+    this.isVisible = loadingState !== LoadingState.UNDEFINED;
   }
 }

@@ -14,7 +14,7 @@ import {LoadingState} from '../../../shared/enums/loading-state';
 export class FeatureInfoComponent implements OnInit, OnDestroy {
   public isVisible: boolean = false;
   public featureInfoData: FeatureInfoResult[] = [];
-  private loadingState: LoadingState | undefined;
+  private loadingState = LoadingState.UNDEFINED;
   private readonly loadingState$ = this.store.select(selectLoadingState);
   private readonly featureInfoData$ = this.store.select(selectData);
   private readonly subscriptions = new Subscription();
@@ -63,7 +63,7 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
     );
   }
 
-  private updateVisibility(loadingState: LoadingState | undefined) {
-    this.isVisible = loadingState !== undefined;
+  private updateVisibility(loadingState: LoadingState) {
+    this.isVisible = loadingState !== LoadingState.UNDEFINED;
   }
 }

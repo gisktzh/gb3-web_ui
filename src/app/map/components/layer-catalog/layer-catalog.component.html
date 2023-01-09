@@ -1,31 +1,39 @@
-<mat-accordion class="layer-catalog" multi="true" displayMode="flat">
-  <ng-container *ngFor="let layerCatalogItem of layerCatalogItems">
-    <mat-expansion-panel>
-      <mat-expansion-panel-header>
-        <p>{{ layerCatalogItem.title }}</p>
-      </mat-expansion-panel-header>
-      <!-- Expansion panel content -->
-      <ng-container *ngFor="let topic of layerCatalogItem.topics">
-        <mat-expansion-panel hideToggle="true" #topicExpansionPanel>
-          <mat-expansion-panel-header (click)="topicExpansionPanel.toggle()">
-            <p class="last-left-aligned-element">{{ topic.title }}</p>
-            <button mat-button (click)="addActiveTopic(topic)"><mat-icon>playlist_add</mat-icon></button>
-            <button mat-button *ngIf="!topicExpansionPanel.expanded" (click)="topicExpansionPanel.open()">
-              <mat-icon>chevron_right</mat-icon>
-            </button>
-            <button mat-button *ngIf="topicExpansionPanel.expanded" (click)="topicExpansionPanel.close()">
-              <mat-icon>expand_more</mat-icon>
-            </button>
+<mat-card>
+  <mat-card-header>
+    <p>Verfügbare Topics</p>
+  </mat-card-header>
+  <mat-progress-spinner mode="indeterminate" *ngIf="this.isLoading"></mat-progress-spinner>
+  <mat-card-content>
+    <mat-accordion class="layer-catalog" multi="true" displayMode="flat">
+      <ng-container *ngFor="let layerCatalogItem of layerCatalogItems">
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <p>{{ layerCatalogItem.title }}</p>
           </mat-expansion-panel-header>
           <!-- Expansion panel content -->
-          <ng-container *ngFor="let topicLayer of topic.layers">
-            <div class="horizontal-stacked">
-              <mat-icon>layers</mat-icon>
-              <p class="layer-text">{{ topicLayer.title }}</p>
-            </div>
+          <ng-container *ngFor="let topic of layerCatalogItem.topics">
+            <mat-expansion-panel hideToggle="true" #topicExpansionPanel>
+              <mat-expansion-panel-header (click)="topicExpansionPanel.toggle()">
+                <p class="last-left-aligned-element">{{ topic.title }}</p>
+                <button mat-button (click)="addActiveTopic(topic)"><mat-icon>playlist_add</mat-icon></button>
+                <button mat-button *ngIf="!topicExpansionPanel.expanded" (click)="topicExpansionPanel.open()">
+                  <mat-icon>chevron_right</mat-icon>
+                </button>
+                <button mat-button *ngIf="topicExpansionPanel.expanded" (click)="topicExpansionPanel.close()">
+                  <mat-icon>expand_more</mat-icon>
+                </button>
+              </mat-expansion-panel-header>
+              <!-- Expansion panel content -->
+              <ng-container *ngFor="let topicLayer of topic.layers">
+                <div class="horizontal-stacked">
+                  <mat-icon>layers</mat-icon>
+                  <p class="layer-text">{{ topicLayer.title }}</p>
+                </div>
+              </ng-container>
+            </mat-expansion-panel>
           </ng-container>
         </mat-expansion-panel>
       </ng-container>
-    </mat-expansion-panel>
-  </ng-container>
-</mat-accordion>
+    </mat-accordion>
+  </mat-card-content>
+</mat-card>

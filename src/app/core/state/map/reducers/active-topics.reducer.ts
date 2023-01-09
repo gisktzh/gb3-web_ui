@@ -1,15 +1,18 @@
 import {createFeature, createReducer, on} from '@ngrx/store';
 import {ActiveTopicActions} from '../actions/active-topic.actions';
 import {ActiveTopic} from '../../../../map/models/active-topic.model';
+import {HasLoadingState} from '../../../../shared/interfaces/has-loading-state.interface';
+import {LoadingState} from '../../../../shared/enums/loading-state';
 
 export const activeTopicsFeatureKey = 'activeTopics';
 
-export interface ActiveTopicsState {
+export interface ActiveTopicsState extends HasLoadingState {
   activeTopics: ActiveTopic[];
 }
 
 export const initialState: ActiveTopicsState = {
-  activeTopics: []
+  activeTopics: [],
+  loadingState: LoadingState.UNDEFINED
 };
 
 export const activeTopics = createFeature({
