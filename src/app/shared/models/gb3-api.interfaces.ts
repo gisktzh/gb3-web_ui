@@ -89,6 +89,8 @@ interface TopicLayer {
   initiallyVisible: boolean;
   /** True if layer is editable by current user */
   editable: boolean;
+  /** True if layer is queryable by current user */
+  queryable: boolean;
 }
 
 export interface TopicsResponse {

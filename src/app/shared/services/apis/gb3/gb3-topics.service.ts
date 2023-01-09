@@ -114,7 +114,8 @@ export class Gb3TopicsService extends Gb3ApiService {
                   wmsSort: layer.wms_sort,
                   tocSort: layer.toc_sort,
                   initiallyVisible: layer.initially_visible,
-                  editable: layer.editable
+                  editable: layer.editable,
+                  queryable: layer.queryable
                 };
               })
             };

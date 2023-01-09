@@ -6,7 +6,7 @@ export const selectQueryLayers = createSelector(selectActiveTopics, (activeTopic
   const queryLayers: QueryLayer[] = [];
 
   activeTopics.map(({topic}) => {
-    const layersToQuery = topic.layers.map((layer) => layer.layer);
+    const layersToQuery = topic.layers.filter((layer) => layer.queryable).map((layer) => layer.layer);
     const queryLayer: QueryLayer = {
       topic: topic.topic,
       layersToQuery: layersToQuery.join(',')
