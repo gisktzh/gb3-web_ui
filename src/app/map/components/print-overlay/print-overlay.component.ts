@@ -1,4 +1,4 @@
-import {AfterContentChecked, AfterViewChecked, Component, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MapConfigurationUrlService} from '../../services/map-configuration-url.service';
 import {ActivatedRoute} from '@angular/router';
 import {Subscription, tap} from 'rxjs';
@@ -45,12 +45,13 @@ export class PrintOverlayComponent implements OnInit, OnDestroy {
         .pipe(
           tap((p) => {
             const printType = p.get('print');
-            if (printType === 'featureInfo') {
+            if (printType === 'featureInfo' && this.featureInfoData.length > 0) {
               this.printType = 'featureInfo';
-            } else if (printType === 'legend') {
+            } else if (printType === 'legend' && this.legendItems.length > 0) {
               this.printType = 'legend';
             } else {
               this.printType = undefined;
+              this.closePrint();
             }
           })
         )
