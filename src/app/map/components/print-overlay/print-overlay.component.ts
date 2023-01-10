@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterContentChecked, AfterViewChecked, Component, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import {MapConfigurationUrlService} from '../../services/map-configuration-url.service';
 import {ActivatedRoute} from '@angular/router';
 import {Subscription, tap} from 'rxjs';
