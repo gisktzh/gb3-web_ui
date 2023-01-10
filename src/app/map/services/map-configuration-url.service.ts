@@ -32,6 +32,22 @@ export class MapConfigurationUrlService implements OnDestroy {
     );
   }
 
+  public acticatePrintMode() {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {print: 'featureInfo'},
+      queryParamsHandling: 'merge'
+    });
+  }
+
+  public deactivatePrintMode() {
+    const {print, ...otherParams} = this.route.snapshot.queryParams;
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: otherParams
+    });
+  }
+
   private extractMapParameters(params: Params) {
     const {x, y, scale} = params;
     if (x || y || scale) {

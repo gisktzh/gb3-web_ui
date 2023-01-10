@@ -1,15 +1,14 @@
 import {Component, OnDestroy} from '@angular/core';
-import {MapConfigurationUrlService} from './services/map-configuration-url.service';
+import {MapConfigurationUrlService} from '../../services/map-configuration-url.service';
 import {ActivatedRoute} from '@angular/router';
 import {Subscription, tap} from 'rxjs';
 
 @Component({
-  selector: 'map-page',
-  templateUrl: './map-page.component.html',
-  styleUrls: ['./map-page.component.scss'],
-  providers: [MapConfigurationUrlService]
+  selector: 'print-overlay',
+  templateUrl: './print-overlay.component.html',
+  styleUrls: ['./print-overlay.component.scss']
 })
-export class MapPageComponent implements OnDestroy {
+export class PrintOverlayComponent implements OnDestroy {
   public printFeatureInfoActive: boolean = false;
   private readonly subscriptions$: Subscription = new Subscription();
 
@@ -21,8 +20,8 @@ export class MapPageComponent implements OnDestroy {
     this.subscriptions$.unsubscribe();
   }
 
-  public showPrint() {
-    this.mapConfigurationUrlService.acticatePrintMode();
+  public closePrint() {
+    this.mapConfigurationUrlService.deactivatePrintMode();
   }
 
   private initSubscriptions() {
