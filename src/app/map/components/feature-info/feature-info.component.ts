@@ -5,7 +5,6 @@ import {selectData, selectLoadingState} from '../../../core/state/map/reducers/f
 import {FeatureInfoActions} from '../../../core/state/map/actions/feature-info.actions';
 import {FeatureInfoResult} from '../../../shared/models/gb3-api.interfaces';
 import {LoadingState} from '../../../shared/enums/loading-state';
-import {PrintService} from '../../services/print.service';
 
 @Component({
   selector: 'feature-info',
@@ -21,7 +20,7 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
   private readonly featureInfoData$ = this.store.select(selectData);
   private readonly subscriptions = new Subscription();
 
-  constructor(private readonly store: Store, private readonly printService: PrintService) {}
+  constructor(private readonly store: Store) {}
 
   public get isLoading() {
     return this.loadingState === LoadingState.LOADING;
@@ -41,10 +40,6 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
 
   public close() {
     this.store.dispatch(FeatureInfoActions.clearFeatureInfoContent());
-  }
-
-  public printInfo() {
-    this.printService.printFeatureInfo();
   }
 
   public print() {
