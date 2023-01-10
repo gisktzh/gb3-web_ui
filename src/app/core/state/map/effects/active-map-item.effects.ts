@@ -1,16 +1,17 @@
 import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {ActiveTopicActions} from '../actions/active-topic.actions';
+import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {MapService} from '../../../../map/services/map.service';
 import {tap} from 'rxjs';
 
 @Injectable()
-export class ActiveTopicEffects {
-  public dispatchActiveTopicAddEffect$ = createEffect(
+export class ActiveMapItemEffects {
+  public dispatchActiveMapItemAddEffect$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(ActiveTopicActions.addActiveTopic),
+        ofType(ActiveMapItemActions.addActiveMapItem),
         tap((action) => {
+          // TODO support 'layer only' items as well
           this.mapService.addTopic(action.topic);
         })
       );
@@ -18,11 +19,12 @@ export class ActiveTopicEffects {
     {dispatch: false}
   );
 
-  public dispatchActiveTopicRemoveEffect$ = createEffect(
+  public dispatchActiveMapItemRemoveEffect$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(ActiveTopicActions.removeActiveTopic),
+        ofType(ActiveMapItemActions.removeActiveMapItem),
         tap((action) => {
+          // TODO support layer only items
           this.mapService.removeTopic(action.topic);
         })
       );
@@ -30,10 +32,10 @@ export class ActiveTopicEffects {
     {dispatch: false}
   );
 
-  public dispatchActiveTopicClearEffect$ = createEffect(
+  public dispatchActiveMapItemClearEffect$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(ActiveTopicActions.removeAllActiveTopics),
+        ofType(ActiveMapItemActions.removeAllActiveMapItems),
         tap((action) => {
           this.mapService.removeAllTopics();
         })

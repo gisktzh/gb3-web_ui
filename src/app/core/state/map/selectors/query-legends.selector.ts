@@ -1,11 +1,11 @@
 import {createSelector} from '@ngrx/store';
-import {selectActiveTopics} from '../reducers/active-topics.reducer';
+import {selectActiveMapItems} from '../reducers/active-map-item.reducer';
 
-export const selectQueryLegends = createSelector(selectActiveTopics, (activeTopics) => {
+export const selectQueryLegends = createSelector(selectActiveMapItems, (activeMapItems) => {
   const queryLegends: string[] = [];
 
-  activeTopics.map(({topic: {topic}}) => {
-    queryLegends.push(topic);
+  activeMapItems.map(({topic}) => {
+    queryLegends.push(topic.topic);
   });
 
   return queryLegends;

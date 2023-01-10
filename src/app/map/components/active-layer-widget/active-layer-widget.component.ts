@@ -4,10 +4,10 @@ import {CdkDragDrop} from '@angular/cdk/drag-drop';
 import {MatSliderChange} from '@angular/material/slider';
 import Collection from '@arcgis/core/core/Collection';
 import {Store} from '@ngrx/store';
-import {ActiveTopicActions} from '../../../core/state/map/actions/active-topic.actions';
-import {selectActiveTopics} from '../../../core/state/map/reducers/active-topics.reducer';
+import {ActiveMapItemActions} from '../../../core/state/map/actions/active-map-item.actions';
+import {selectActiveMapItems} from '../../../core/state/map/reducers/active-map-item.reducer';
 import {Subscription} from 'rxjs';
-import {ActiveTopic} from '../../models/active-topic.model';
+import {ActiveMapItem} from '../../models/active-map-item.model';
 
 @Component({
   selector: 'active-layer-widget',
@@ -15,17 +15,17 @@ import {ActiveTopic} from '../../models/active-topic.model';
   styleUrls: ['./active-layer-widget.component.scss']
 })
 export class ActiveLayerWidgetComponent implements OnInit, OnDestroy {
-  private readonly activeTopics$ = this.store.select(selectActiveTopics);
+  private readonly activeMapItems$ = this.store.select(selectActiveMapItems);
   private readonly subscription: Subscription = new Subscription();
 
-  private activeTopics: ActiveTopic[] = [];
+  private activeMapItems: ActiveMapItem[] = [];
 
   constructor(private readonly mapService: MapService, private readonly store: Store) {}
 
   public ngOnInit() {
     this.subscription.add(
-      this.activeTopics$.subscribe((currentActiveTopics) => {
-        this.activeTopics = currentActiveTopics;
+      this.activeMapItems$.subscribe((currentActiveMapItems) => {
+        this.activeMapItems = currentActiveMapItems;
       })
     );
   }
@@ -53,15 +53,16 @@ export class ActiveLayerWidgetComponent implements OnInit, OnDestroy {
   }
 
   public removeLayer(layer: __esri.Layer) {
-    // TODO this is not a clean implementation yet; it should be only about active topics here and not the Esri layers
-    const topicToBeRemoved = this.activeTopics.find((at) => at.topic.title === layer.title);
+    // TODO this is not a clean implementation yet; it should be only about active map items (topics/single layers) here and not the Esri layers
+    // TODO 'id' is not unique in case of multiple single layers
+    const topicToBeRemoved = this.activeMapItems.find((at) => (at.layer ? at.layer.layer : at.topic.topic) === layer.id);
     if (topicToBeRemoved) {
-      this.store.dispatch(ActiveTopicActions.removeActiveTopic(topicToBeRemoved));
+      this.store.dispatch(ActiveMapItemActions.removeActiveMapItem(topicToBeRemoved));
     }
   }
 
   public removeAllLayers() {
-    this.store.dispatch(ActiveTopicActions.removeAllActiveTopics());
+    this.store.dispatch(ActiveMapItemActions.removeAllActiveMapItems());
   }
 
   public toggleLayerVisibility(layerView: __esri.LayerView) {

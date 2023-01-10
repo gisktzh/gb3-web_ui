@@ -1,14 +1,14 @@
 import {createSelector} from '@ngrx/store';
-import {selectActiveTopics} from '../reducers/active-topics.reducer';
+import {selectActiveMapItems} from '../reducers/active-map-item.reducer';
 import {QueryLayer} from '../../../../shared/interfaces/query-layer.interface';
 
-export const selectQueryLayers = createSelector(selectActiveTopics, (activeTopics) => {
+export const selectQueryLayers = createSelector(selectActiveMapItems, (activeMapItems) => {
   const queryLayers: QueryLayer[] = [];
 
-  activeTopics.map(({topic}) => {
-    const layersToQuery = topic.layers.map((layer) => layer.layer);
+  activeMapItems.map((mapItem) => {
+    const layersToQuery = mapItem.layer ? [mapItem.layer.layer] : mapItem.topic.layers.map((layer) => layer.layer);
     const queryLayer: QueryLayer = {
-      topic: topic.topic,
+      topic: mapItem.topic.topic,
       layersToQuery: layersToQuery.join(',')
     };
 

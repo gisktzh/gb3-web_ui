@@ -4,9 +4,9 @@ import {LayerCatalogItem, Topic} from '../../../shared/models/gb3-api.interfaces
 import {selectLayerCatalogItems, selectLoadingState} from '../../../core/state/map/reducers/layer-catalog.reducer';
 import {LayerCatalogActions} from '../../../core/state/map/actions/layer-catalog.actions';
 import {Subscription, tap} from 'rxjs';
-import {ActiveTopic} from '../../models/active-topic.model';
-import {ActiveTopicActions} from '../../../core/state/map/actions/active-topic.actions';
+import {ActiveMapItemActions} from '../../../core/state/map/actions/active-map-item.actions';
 import {LoadingState} from '../../../shared/enums/loading-state';
+import {ActiveMapItem} from '../../models/active-map-item.model';
 
 @Component({
   selector: 'layer-catalog',
@@ -24,7 +24,11 @@ export class LayerCatalogComponent implements OnInit, OnDestroy {
   constructor(private readonly store: Store) {}
 
   public get isLoading() {
-    return this.loadingState !== LoadingState.LOADED;
+    return this.loadingState === LoadingState.LOADING;
+  }
+
+  public get isLoaded() {
+    return this.loadingState === LoadingState.LOADED;
   }
 
   public async ngOnInit() {
@@ -37,7 +41,8 @@ export class LayerCatalogComponent implements OnInit, OnDestroy {
   }
 
   public addActiveTopic(topic: Topic) {
-    this.store.dispatch(ActiveTopicActions.addActiveTopic(new ActiveTopic(topic)));
+    const activeMapItem = new ActiveMapItem(topic);
+    this.store.dispatch(ActiveMapItemActions.addActiveMapItem(activeMapItem));
   }
 
   private initSubscriptions() {

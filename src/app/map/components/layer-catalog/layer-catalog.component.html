@@ -2,9 +2,9 @@
   <mat-card-header>
     <p>Verfügbare Topics</p>
   </mat-card-header>
-  <mat-progress-spinner mode="indeterminate" *ngIf="this.isLoading"></mat-progress-spinner>
   <mat-card-content>
-    <mat-accordion class="layer-catalog" multi="true" displayMode="flat">
+    <mat-progress-spinner mode="indeterminate" *ngIf="this.isLoading"></mat-progress-spinner>
+    <mat-accordion *ngIf="this.isLoaded" class="layer-catalog" multi="true" displayMode="flat">
       <ng-container *ngFor="let layerCatalogItem of layerCatalogItems">
         <mat-expansion-panel>
           <mat-expansion-panel-header>
