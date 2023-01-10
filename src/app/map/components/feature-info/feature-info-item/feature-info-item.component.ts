@@ -11,6 +11,7 @@ import {FeatureInfoActions} from '../../../../core/state/map/actions/feature-inf
 })
 export class FeatureInfoItemComponent {
   @Input() public featureInfo!: FeatureInfoResult;
+  @Input() public isPrintable = false;
 
   constructor(private readonly store: Store) {}
 

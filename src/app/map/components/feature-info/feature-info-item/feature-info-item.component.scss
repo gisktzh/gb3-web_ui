@@ -7,6 +7,12 @@
     padding-bottom: 12px;
   }
 
+  @media print {
+    .feature-info__highlight-button {
+      display: none;
+    }
+  }
+
   .feature-info__content {
     display: grid;
     grid-template-columns: auto 1fr;

@@ -4,8 +4,9 @@ import {ActivatedRoute} from '@angular/router';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {selectLegendItems} from '../../../core/state/map/reducers/legend.reducer';
-import {Legend} from '../../../shared/models/gb3-api.interfaces';
+import {FeatureInfoResult, Legend} from '../../../shared/models/gb3-api.interfaces';
 import {PrintType} from '../../../shared/types/print-type';
+import {selectData} from '../../../core/state/map/reducers/feature-info.reducer';
 
 @Component({
   selector: 'print-overlay',
@@ -15,7 +16,9 @@ import {PrintType} from '../../../shared/types/print-type';
 export class PrintOverlayComponent implements OnInit, OnDestroy {
   public printType: PrintType | undefined = undefined;
   public legendItems: Legend[] = [];
+  public featureInfoData: FeatureInfoResult[] = [];
   private readonly legendItems$ = this.store.select(selectLegendItems);
+  private readonly featureInfoData$ = this.store.select(selectData);
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(
@@ -58,6 +61,15 @@ export class PrintOverlayComponent implements OnInit, OnDestroy {
         .pipe(
           tap(async (value) => {
             this.legendItems = value;
+          })
+        )
+        .subscribe()
+    );
+    this.subscriptions.add(
+      this.featureInfoData$
+        .pipe(
+          tap(async (value) => {
+            this.featureInfoData = value;
           })
         )
         .subscribe()

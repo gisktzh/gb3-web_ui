@@ -2,7 +2,7 @@
   <map></map>
   <legend-widget (printLegendEvent)="this.showPrint('legend')"></legend-widget>
   <layer-catalog class="layer-catalog"></layer-catalog>
-  <feature-info></feature-info>
+  <feature-info (printFeatureInfoEvent)="this.showPrint('featureInfo')"></feature-info>
   <active-layer-widget class="active-layers"></active-layer-widget>
 </div>
 <print-overlay></print-overlay>

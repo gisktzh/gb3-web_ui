@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {selectData, selectLoadingState} from '../../../core/state/map/reducers/feature-info.reducer';
@@ -13,6 +13,7 @@ import {PrintService} from '../../services/print.service';
   styleUrls: ['./feature-info.component.scss']
 })
 export class FeatureInfoComponent implements OnInit, OnDestroy {
+  @Output() public printFeatureInfoEvent = new EventEmitter<void>();
   public isVisible: boolean = false;
   public featureInfoData: FeatureInfoResult[] = [];
   private loadingState: LoadingState | undefined;
@@ -44,6 +45,10 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
 
   public printInfo() {
     this.printService.printFeatureInfo();
+  }
+
+  public print() {
+    this.printFeatureInfoEvent.emit();
   }
 
   private initSubscriptions() {
