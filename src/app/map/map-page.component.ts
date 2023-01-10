@@ -1,15 +1,12 @@
 import {Component, OnInit} from '@angular/core';
-import {UrlService} from '../shared/services/url.service';
+import {MapConfigurationUrlService} from './services/map-configuration-url.service';
 
 @Component({
   selector: 'map-page',
   templateUrl: './map-page.component.html',
-  styleUrls: ['./map-page.component.scss']
+  styleUrls: ['./map-page.component.scss'],
+  providers: [MapConfigurationUrlService]
 })
-export class MapPageComponent implements OnInit {
-  constructor(private readonly urlService: UrlService) {}
-
-  public ngOnInit() {
-    this.urlService.getInitialMapConfiguration();
-  }
+export class MapPageComponent {
+  constructor(private readonly mapConfigurationUrlService: MapConfigurationUrlService) {}
 }
