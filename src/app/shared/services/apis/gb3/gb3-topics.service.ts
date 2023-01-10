@@ -59,6 +59,7 @@ export class Gb3TopicsService extends Gb3ApiService {
         layers: topicsLegendDetailData.legend.layers.map((layer) => {
           return {
             title: layer.title,
+            layer: layer.layer,
             attribution: layer.attribution,
             geolion: layer.geolion,
             layerClasses: layer.layer_classes?.map((layerClass) => {

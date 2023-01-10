@@ -9,6 +9,7 @@ interface LayerClass {
 }
 
 interface Layer {
+  layer: string;
   title: string;
   layerClasses?: LayerClass[];
   geolion?: number;
