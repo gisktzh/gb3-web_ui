@@ -1,4 +1,4 @@
-<mat-expansion-panel class="list-item">
+<mat-expansion-panel [expanded]="this.isPrintable" [hideToggle]="this.isPrintable" class="list-item">
   <mat-expansion-panel-header>
     <mat-panel-title>
       {{ title }}

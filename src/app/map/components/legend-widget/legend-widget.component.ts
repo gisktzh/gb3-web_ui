@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {selectLegendItems, selectLoadingState} from '../../../core/state/map/reducers/legend.reducer';
@@ -12,6 +12,7 @@ import {LoadingState} from '../../../shared/enums/loading-state';
   styleUrls: ['./legend-widget.component.scss']
 })
 export class LegendWidgetComponent implements OnInit, OnDestroy {
+  @Output() public printLegendEvent = new EventEmitter<void>();
   public isVisible = false;
   public legendItems: Legend[] = [];
   private loadingState: LoadingState | undefined;
@@ -39,6 +40,10 @@ export class LegendWidgetComponent implements OnInit, OnDestroy {
 
   public close() {
     this.store.dispatch(LegendActions.hideLegend());
+  }
+
+  public print() {
+    this.printLegendEvent.emit();
   }
 
   private initSubscriptions() {

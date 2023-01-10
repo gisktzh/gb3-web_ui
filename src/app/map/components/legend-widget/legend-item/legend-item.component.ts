@@ -9,6 +9,7 @@ import {environment} from '../../../../../environments/environment';
 })
 export class LegendItemComponent {
   @Input() public legendItem!: Legend;
+  @Input() public isPrintable = false;
   private readonly geoLionBaseUrl = environment.baseUrls.geoLion;
   private readonly geoLionEndPoint = 'geodatensatz/show?gdsid=';
 

@@ -1,4 +1,4 @@
-<map-overlay-list-item [title]="legendItem.topic">
+<map-overlay-list-item [title]="legendItem.topic" [isPrintable]="this.isPrintable">
   <div class="legend-item" *ngFor="let layer of legendItem.layers">
     <div class="legend-item__layer-title">
       <b>{{ layer.title }}</b>
