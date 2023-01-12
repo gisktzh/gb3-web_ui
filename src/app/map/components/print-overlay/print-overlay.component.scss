@@ -14,7 +14,8 @@
   }
 
   @media print {
-    .print-overlay__button {
+    .print-overlay__button,
+    .print-overlay__info-title {
       display: none;
     }
   }

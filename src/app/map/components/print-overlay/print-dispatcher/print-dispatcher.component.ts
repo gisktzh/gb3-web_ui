@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {MapConfigurationUrlService} from '../../../services/map-configuration-url.service';
 
 const PRINT_DELAY_IN_MS = 300;
 
@@ -12,7 +13,23 @@ const PRINT_DELAY_IN_MS = 300;
   styleUrls: ['./print-dispatcher.component.scss']
 })
 export class PrintDispatcherComponent implements OnInit {
+  constructor(private readonly mapConfigurationUrlService: MapConfigurationUrlService) {}
   ngOnInit(): void {
     setTimeout(() => window.print(), PRINT_DELAY_IN_MS);
+    this.addPrintEventListener();
+  }
+
+  public closePrint() {
+    this.mapConfigurationUrlService.deactivatePrintMode();
+  }
+
+  /**
+   * Adds an eventlistener for the afterprint event to close the window after the print preview ends.
+   * @private
+   */
+  private addPrintEventListener() {
+    window.addEventListener('afterprint', () => {
+      this.closePrint();
+    });
   }
 }
