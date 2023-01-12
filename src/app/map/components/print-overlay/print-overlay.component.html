@@ -1,0 +1,18 @@
+<div *ngIf="this.printType" class="print-overlay">
+  <ng-container *ngIf="this.printType === 'legend'">
+    <h1>Legende</h1>
+    <button (click)="this.closePrint()" class="mat-raised-button print-overlay__button">Schliessen</button>
+    <legend-item *ngFor="let legendItem of legendItems" [isPrintable]="true" [legendItem]="legendItem"></legend-item>
+    <print-dispatcher></print-dispatcher>
+  </ng-container>
+  <ng-container *ngIf="this.printType === 'featureInfo'">
+    <h1>Resultate</h1>
+    <button (click)="this.closePrint()" class="mat-raised-button print-overlay__button">Schliessen</button>
+    <feature-info-item
+      *ngFor="let featureInfo of this.featureInfoData"
+      [isPrintable]="true"
+      [featureInfo]="featureInfo"
+    ></feature-info-item>
+    <print-dispatcher></print-dispatcher>
+  </ng-container>
+</div>

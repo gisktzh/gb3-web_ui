@@ -1,6 +1,7 @@
 <map-overlay (closeEvent)="this.close()" [isVisible]="this.isVisible" location="right" title="Resultate">
   <mat-progress-bar mode="query" *ngIf="this.isLoading"></mat-progress-bar>
   <ng-container *ngIf="this.isLoaded">
+    <button class="mat-raised-button print-button" (click)="this.print()">Drucken</button>
     <feature-info-item *ngFor="let featureInfo of this.featureInfoData" [featureInfo]="featureInfo"></feature-info-item>
   </ng-container>
 </map-overlay>

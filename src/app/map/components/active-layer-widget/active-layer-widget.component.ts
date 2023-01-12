@@ -8,6 +8,7 @@ import {ActiveMapItemActions} from '../../../core/state/map/actions/active-map-i
 import {selectActiveMapItems} from '../../../core/state/map/reducers/active-map-item.reducer';
 import {Subscription} from 'rxjs';
 import {ActiveMapItem} from '../../models/active-map-item.model';
+import {LegendActions} from '../../../core/state/map/actions/legend.actions';
 
 @Component({
   selector: 'active-layer-widget',
@@ -75,5 +76,9 @@ export class ActiveLayerWidgetComponent implements OnInit, OnDestroy {
       // only allow toggle if parent is visible
       subLayer.visible = !subLayer.visible;
     }
+  }
+
+  public toggleLegend() {
+    this.store.dispatch(LegendActions.showLegend());
   }
 }

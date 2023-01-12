@@ -10,10 +10,10 @@ import {LegendItemComponent} from './components/legend-widget/legend-item/legend
 import {FeatureInfoComponent} from './components/feature-info/feature-info.component';
 import {LayerCatalogComponent} from './components/layer-catalog/layer-catalog.component';
 import {MapOverlayComponent} from './components/map/map-overlay/map-overlay.component';
-import {
-  MapOverlayListItemComponent
-} from './components/map/map-overlay/map-overlay-list-item/map-overlay-list-item.component';
+import {MapOverlayListItemComponent} from './components/map/map-overlay/map-overlay-list-item/map-overlay-list-item.component';
 import {FeatureInfoItemComponent} from './components/feature-info/feature-info-item/feature-info-item.component';
+import {PrintOverlayComponent} from './components/print-overlay/print-overlay.component';
+import {PrintDispatcherComponent} from './components/print-overlay/print-dispatcher/print-dispatcher.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +26,9 @@ import {FeatureInfoItemComponent} from './components/feature-info/feature-info-i
     MapOverlayComponent,
     LayerCatalogComponent,
     MapOverlayListItemComponent,
-    FeatureInfoItemComponent
+    FeatureInfoItemComponent,
+    PrintOverlayComponent,
+    PrintDispatcherComponent
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule]
 })

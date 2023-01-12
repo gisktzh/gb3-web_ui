@@ -3,10 +3,10 @@
 
   .layer-catalog {
     position: absolute;
-    top: 100px;
+    top: 150px;
     left: 15px;
     width: 400px;
-    height: 80%;
+    height: 70%;
     overflow-y: scroll;
   }
 
@@ -14,5 +14,11 @@
     position: absolute;
     top: 100px;
     left: 430px;
+  }
+}
+
+@media print {
+  .map-container {
+    display: none;
   }
 }

@@ -1,17 +1,17 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {HomeComponent} from './home.component';
+import {PlaceholderPageComponent} from './placeholder-page.component';
 
-describe('HomeComponent', () => {
-  let component: HomeComponent;
-  let fixture: ComponentFixture<HomeComponent>;
+describe('PlaceholderPage', () => {
+  let component: PlaceholderPageComponent;
+  let fixture: ComponentFixture<PlaceholderPageComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [HomeComponent]
+      declarations: [PlaceholderPageComponent]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(HomeComponent);
+    fixture = TestBed.createComponent(PlaceholderPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

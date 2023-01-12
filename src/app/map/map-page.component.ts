@@ -1,15 +1,17 @@
-import {Component, OnInit} from '@angular/core';
-import {UrlService} from '../shared/services/url.service';
+import {Component} from '@angular/core';
+import {MapConfigurationUrlService} from './services/map-configuration-url.service';
+import {PrintType} from '../shared/types/print-type';
 
 @Component({
   selector: 'map-page',
   templateUrl: './map-page.component.html',
-  styleUrls: ['./map-page.component.scss']
+  styleUrls: ['./map-page.component.scss'],
+  providers: [MapConfigurationUrlService]
 })
-export class MapPageComponent implements OnInit {
-  constructor(private readonly urlService: UrlService) {}
+export class MapPageComponent {
+  constructor(private readonly mapConfigurationUrlService: MapConfigurationUrlService) {}
 
-  public ngOnInit() {
-    this.urlService.getInitialMapConfiguration();
+  public showPrint(printType: PrintType) {
+    this.mapConfigurationUrlService.activatePrintMode(printType);
   }
 }

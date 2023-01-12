@@ -61,6 +61,8 @@ export interface TopicsLegendDetailData {
     /** Topic name */
     topic: string;
     layers: {
+      /** Layer name */
+      layer: string;
       /** Layer title */
       title: string;
       layer_classes?: {
@@ -128,6 +130,8 @@ export interface TopicsListData {
         initially_visible: boolean;
         /** True if layer is editable by current user */
         editable: boolean;
+        /** True if layer is queryable for this topic */
+        queryable: boolean;
       }[];
       /** Min allowed scale denominator */
       min_scale: number | null;

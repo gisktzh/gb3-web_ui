@@ -1,6 +1,7 @@
 <map-overlay (closeEvent)="this.close()" [isVisible]="this.isVisible" title="Legende">
   <mat-progress-bar mode="query" *ngIf="this.isLoading"></mat-progress-bar>
   <ng-container *ngIf="this.isLoaded">
+    <button class="mat-raised-button print-button" (click)="this.print()">Drucken</button>
     <legend-item *ngFor="let legendItem of legendItems" [legendItem]="legendItem"></legend-item>
   </ng-container>
 </map-overlay>
