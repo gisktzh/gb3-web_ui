@@ -8,6 +8,7 @@ import {ActiveTopicActions} from '../../../core/state/map/actions/active-topic.a
 import {selectActiveTopics} from '../../../core/state/map/reducers/active-topics.reducer';
 import {Subscription} from 'rxjs';
 import {ActiveTopic} from '../../models/active-topic.model';
+import {LegendActions} from '../../../core/state/map/actions/legend.actions';
 
 @Component({
   selector: 'active-layer-widget',
@@ -74,5 +75,9 @@ export class ActiveLayerWidgetComponent implements OnInit, OnDestroy {
       // only allow toggle if parent is visible
       subLayer.visible = !subLayer.visible;
     }
+  }
+
+  public toggleLegend() {
+    this.store.dispatch(LegendActions.showLegend());
   }
 }

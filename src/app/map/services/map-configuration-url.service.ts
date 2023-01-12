@@ -4,6 +4,7 @@ import {first, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {MapConfigurationActions} from '../../core/state/map/actions/map-configuration.actions';
 import {MapConfigurationState, selectMapConfigurationState} from '../../core/state/map/reducers/map-configuration.reducer';
+import {PrintType} from '../../shared/types/print-type';
 
 @Injectable()
 export class MapConfigurationUrlService implements OnDestroy {
@@ -30,6 +31,22 @@ export class MapConfigurationUrlService implements OnDestroy {
         )
         .subscribe()
     );
+  }
+
+  public activatePrintMode(printType: PrintType) {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {print: printType},
+      queryParamsHandling: 'merge'
+    });
+  }
+
+  public deactivatePrintMode() {
+    const {print, ...otherParams} = this.route.snapshot.queryParams;
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: otherParams
+    });
   }
 
   private extractMapParameters(params: Params) {

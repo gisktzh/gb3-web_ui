@@ -1,5 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {MapConfigurationUrlService} from './services/map-configuration-url.service';
+import {PrintType} from '../shared/types/print-type';
 
 @Component({
   selector: 'map-page',
@@ -9,4 +10,8 @@ import {MapConfigurationUrlService} from './services/map-configuration-url.servi
 })
 export class MapPageComponent {
   constructor(private readonly mapConfigurationUrlService: MapConfigurationUrlService) {}
+
+  public showPrint(printType: PrintType) {
+    this.mapConfigurationUrlService.activatePrintMode(printType);
+  }
 }

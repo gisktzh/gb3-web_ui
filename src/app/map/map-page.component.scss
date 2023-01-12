@@ -16,3 +16,9 @@
     left: 430px;
   }
 }
+
+@media print {
+  .map-container {
+    display: none;
+  }
+}

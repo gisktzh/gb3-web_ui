@@ -2,7 +2,10 @@
   <mat-card-header>
     <p class="last-left-aligned-element">Aktive Topics</p>
     <button class="clear-topics-button" mat-raised-button color="warn" (click)="removeAllLayers()" [disabled]="layerViews.length === 0">
-      <p>Clear</p>
+      Clear
+    </button>
+    <button class="clear-topics-button" mat-raised-button (click)="this.toggleLegend()" [disabled]="layerViews.length === 0">
+      Legende
     </button>
   </mat-card-header>
   <mat-card-content>
