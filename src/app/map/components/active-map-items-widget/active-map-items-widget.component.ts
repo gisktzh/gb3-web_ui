@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {MapService} from '../../services/map.service';
+import {EsriMapService} from '../../services/esri-map.service';
 import {CdkDragDrop} from '@angular/cdk/drag-drop';
 import {MatSliderChange} from '@angular/material/slider';
 import Collection from '@arcgis/core/core/Collection';
@@ -11,17 +11,17 @@ import {ActiveMapItem} from '../../models/active-map-item.model';
 import {LegendActions} from '../../../core/state/map/actions/legend.actions';
 
 @Component({
-  selector: 'active-layer-widget',
-  templateUrl: './active-layer-widget.component.html',
-  styleUrls: ['./active-layer-widget.component.scss']
+  selector: 'active-map-items-widget',
+  templateUrl: './active-map-items-widget.component.html',
+  styleUrls: ['./active-map-items-widget.component.scss']
 })
-export class ActiveLayerWidgetComponent implements OnInit, OnDestroy {
+export class ActiveMapItemsWidgetComponent implements OnInit, OnDestroy {
   private readonly activeMapItems$ = this.store.select(selectActiveMapItems);
   private readonly subscription: Subscription = new Subscription();
 
   private activeMapItems: ActiveMapItem[] = [];
 
-  constructor(private readonly mapService: MapService, private readonly store: Store) {}
+  constructor(private readonly mapService: EsriMapService, private readonly store: Store) {}
 
   public ngOnInit() {
     this.subscription.add(

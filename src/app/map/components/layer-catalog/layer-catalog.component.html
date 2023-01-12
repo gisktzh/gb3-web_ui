@@ -27,7 +27,8 @@
               <ng-container *ngFor="let topicLayer of topic.layers">
                 <div class="horizontal-stacked">
                   <mat-icon>layers</mat-icon>
-                  <p class="layer-text">{{ topicLayer.title }}</p>
+                  <p class="layer-text last-left-aligned-element">{{ topicLayer.title }}</p>
+                  <button mat-button (click)="addActiveLayer(topic, topicLayer)"><mat-icon>playlist_add</mat-icon></button>
                 </div>
               </ng-container>
             </mat-expansion-panel>

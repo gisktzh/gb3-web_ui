@@ -2,7 +2,7 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {MapComponent} from './components/map/map.component';
 import {SharedModule} from '../shared/shared.module';
-import {ActiveLayerWidgetComponent} from './components/active-layer-widget/active-layer-widget.component';
+import {ActiveMapItemsWidgetComponent} from './components/active-map-items-widget/active-map-items-widget.component';
 import {MapPageComponent} from './map-page.component';
 import {MapRoutingModule} from './map-routing.module';
 import {LegendWidgetComponent} from './components/legend-widget/legend-widget.component';
@@ -19,7 +19,7 @@ import {PrintDispatcherComponent} from './components/print-overlay/print-dispatc
   declarations: [
     MapPageComponent,
     MapComponent,
-    ActiveLayerWidgetComponent,
+    ActiveMapItemsWidgetComponent,
     LegendWidgetComponent,
     LegendItemComponent,
     FeatureInfoComponent,

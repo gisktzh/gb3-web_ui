@@ -1,122 +1,25 @@
-import {Injectable} from '@angular/core';
-import {EsriMap, EsriMapView, EsriPoint, EsriWMSLayer} from '../../shared/external/esri.module';
-import {Store} from '@ngrx/store';
-import {MapConfigurationActions} from '../../core/state/map/actions/map-configuration.actions';
-import {TransformationService} from './transformation.service';
-import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
-import {MapConfigurationState, selectMapConfigurationState} from '../../core/state/map/reducers/map-configuration.reducer';
-import {first, tap} from 'rxjs';
-import SpatialReference from '@arcgis/core/geometry/SpatialReference';
-import {FeatureInfoActions} from '../../core/state/map/actions/feature-info.actions';
-import {Topic} from '../../shared/models/gb3-api.interfaces';
-import ViewClickEvent = __esri.ViewClickEvent;
-import Graphic from '@arcgis/core/Graphic';
+import {Topic, TopicLayer} from '../../shared/models/gb3-api.interfaces';
+import {Geometry} from 'geojson';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class MapService {
-  constructor(private readonly store: Store, private readonly transformationService: TransformationService) {}
+export interface MapService {
+  init(): void;
+  assignMapElement(container: HTMLDivElement): void;
 
-  private _mapView!: __esri.MapView;
+  addTopic(topic: Topic): void;
+  addTopicLayer(topic: Topic, layer: TopicLayer): void;
 
-  public get mapView(): __esri.MapView {
-    return this._mapView;
-  }
+  removeTopic(topic: Topic): void;
+  removeTopicLayer(topic: Topic, layer: TopicLayer): void;
 
-  public getLayer(topic: Topic): __esri.Layer {
-    return this.mapView.map.layers.find((layer) => layer.id === topic.topic);
-  }
+  removeAllTopics(): void;
 
-  public addTopic(topic: Topic) {
-    if (this.getLayer(topic)) {
-      return;
-    }
+  // moveTopic(topic: Topic, position: number): void;
 
-    const esriLayer: __esri.Layer = new EsriWMSLayer({
-      id: topic.topic,
-      title: topic.title,
-      url: topic.wmsUrl,
-      sublayers: topic.layers.map((layer) => {
-        return {
-          id: layer.id,
-          name: layer.layer,
-          title: layer.title
-        } as __esri.WMSSublayerProperties;
-      })
-    });
-    this.mapView.map.layers.add(esriLayer);
-  }
+  // setTopicVisibility(visibility: boolean, topic: Topic, layer?: TopicLayer): void;
+  // setSingleLayerVisibility(visibility: boolean, topic: Topic, layer: TopicLayer): void;
 
-  public removeTopic(topic: Topic) {
-    const esriLayer = this.getLayer(topic);
-    if (esriLayer) {
-      this.mapView.map.layers.remove(esriLayer);
-    }
-  }
+  // setOpacity(opacity: number, topic: Topic, layer?: TopicLayer): void;
 
-  public removeAllTopics() {
-    this.mapView.map.layers.removeAll();
-  }
-
-  public init(): void {
-    const map = new EsriMap({basemap: 'hybrid'});
-
-    this.store
-      .select(selectMapConfigurationState)
-      .pipe(
-        first(),
-        tap((config: MapConfigurationState) => {
-          const {x, y} = config.center;
-          const {scale, srsId} = config;
-          this._mapView = new EsriMapView({
-            map: map,
-            scale: scale,
-            center: new EsriPoint({x, y, spatialReference: new SpatialReference({wkid: srsId})})
-          });
-          this.attachMapListeners();
-        })
-      )
-      .subscribe();
-  }
-
-  public assignMapElement(container: any) {
-    this.mapView.container = container;
-  }
-
-  public addGraphic(graphic: Graphic) {
-    this.mapView.graphics.add(graphic);
-  }
-
-  public removeAllGraphics() {
-    this.mapView.graphics.removeAll();
-  }
-
-  private attachMapListeners() {
-    reactiveUtils.when(
-      () => this.mapView.stationary,
-      () => this.updateMapConfiguration()
-    );
-
-    reactiveUtils.on(
-      () => this.mapView,
-      'click',
-      (event: ViewClickEvent) => {
-        const {x, y} = this.transformationService.transform(event.mapPoint);
-        this.dispatchFeatureInfoRequest(x, y);
-      }
-    );
-
-    reactiveUtils.whenOnce(() => this.mapView.ready).then(() => this.store.dispatch(MapConfigurationActions.setReady()));
-  }
-
-  private dispatchFeatureInfoRequest(x: number, y: number) {
-    this.store.dispatch(FeatureInfoActions.sendRequest({x, y}));
-  }
-
-  private updateMapConfiguration() {
-    const {center, scale} = this.mapView;
-    const {x, y} = this.transformationService.transform(center);
-    this.store.dispatch(MapConfigurationActions.setMapExtent({x, y, scale}));
-  }
+  addHighlightGeometry(geometry: Geometry): void;
+  removeAllHighlightGeometries(): void;
 }

@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
-import {MapService} from '../../../../map/services/map.service';
+import {EsriMapService} from '../../../../map/services/esri-map.service';
 import {tap} from 'rxjs';
 
 @Injectable()
@@ -11,8 +11,13 @@ export class ActiveMapItemEffects {
       return this.actions$.pipe(
         ofType(ActiveMapItemActions.addActiveMapItem),
         tap((action) => {
-          // TODO support 'layer only' items as well
-          this.mapService.addTopic(action.topic);
+          if (action.layer) {
+            // add single layer
+            this.mapService.addTopicLayer(action.topic, action.layer);
+          } else {
+            // add whole topic
+            this.mapService.addTopic(action.topic);
+          }
         })
       );
     },
@@ -24,8 +29,13 @@ export class ActiveMapItemEffects {
       return this.actions$.pipe(
         ofType(ActiveMapItemActions.removeActiveMapItem),
         tap((action) => {
-          // TODO support layer only items
-          this.mapService.removeTopic(action.topic);
+          if (action.layer) {
+            // remove single layer
+            this.mapService.removeTopicLayer(action.topic, action.layer);
+          } else {
+            // remove whole topic
+            this.mapService.removeTopic(action.topic);
+          }
         })
       );
     },
@@ -44,5 +54,5 @@ export class ActiveMapItemEffects {
     {dispatch: false}
   );
 
-  constructor(private readonly actions$: Actions, private readonly mapService: MapService) {}
+  constructor(private readonly actions$: Actions, private readonly mapService: EsriMapService) {}
 }

@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {LayerCatalogItem, Topic} from '../../../shared/models/gb3-api.interfaces';
+import {LayerCatalogItem, Topic, TopicLayer} from '../../../shared/models/gb3-api.interfaces';
 import {selectLayerCatalogItems, selectLoadingState} from '../../../core/state/map/reducers/layer-catalog.reducer';
 import {LayerCatalogActions} from '../../../core/state/map/actions/layer-catalog.actions';
 import {Subscription, tap} from 'rxjs';
@@ -42,6 +42,11 @@ export class LayerCatalogComponent implements OnInit, OnDestroy {
 
   public addActiveTopic(topic: Topic) {
     const activeMapItem = new ActiveMapItem(topic);
+    this.store.dispatch(ActiveMapItemActions.addActiveMapItem(activeMapItem));
+  }
+
+  public addActiveLayer(topic: Topic, layer: TopicLayer) {
+    const activeMapItem = new ActiveMapItem(topic, layer);
     this.store.dispatch(ActiveMapItemActions.addActiveMapItem(activeMapItem));
   }
 

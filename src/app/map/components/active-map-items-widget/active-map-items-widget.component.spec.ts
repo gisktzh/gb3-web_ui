@@ -1,19 +1,19 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {ActiveLayerWidgetComponent} from './active-layer-widget.component';
+import {ActiveMapItemsWidgetComponent} from './active-map-items-widget.component';
 import {provideMockStore} from '@ngrx/store/testing';
 
-describe('ActiveLayerWidgetComponent', () => {
-  let component: ActiveLayerWidgetComponent;
-  let fixture: ComponentFixture<ActiveLayerWidgetComponent>;
+describe('ActiveMapItemsWidgetComponent', () => {
+  let component: ActiveMapItemsWidgetComponent;
+  let fixture: ComponentFixture<ActiveMapItemsWidgetComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ActiveLayerWidgetComponent],
+      declarations: [ActiveMapItemsWidgetComponent],
       providers: [provideMockStore({})]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ActiveLayerWidgetComponent);
+    fixture = TestBed.createComponent(ActiveMapItemsWidgetComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

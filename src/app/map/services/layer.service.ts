@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
-import {MapService} from './map.service';
+import {EsriMapService} from './esri-map.service';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +8,7 @@ import {MapService} from './map.service';
 export class LayerService {
   private readonly activeLayers$: BehaviorSubject<Array<__esri.Layer>> = new BehaviorSubject<Array<__esri.Layer>>([]);
 
-  constructor(private readonly mapService: MapService) {
+  constructor(private readonly mapService: EsriMapService) {
     this.initLayers();
     this.activeLayers.subscribe((layers) => {
       this.mapService.mapView.map.layers.removeAll();
