@@ -14,6 +14,8 @@ import {ActiveMapItem} from '../../models/active-map-item.model';
   styleUrls: ['./layer-catalog.component.scss']
 })
 export class LayerCatalogComponent implements OnInit, OnDestroy {
+  public readonly LOADING_STATE = LoadingState;
+
   public layerCatalogItems: LayerCatalogItem[] = [];
   public loadingState = LoadingState.UNDEFINED;
 
@@ -22,14 +24,6 @@ export class LayerCatalogComponent implements OnInit, OnDestroy {
   private readonly subscriptions = new Subscription();
 
   constructor(private readonly store: Store) {}
-
-  public get isLoading() {
-    return this.loadingState === LoadingState.LOADING;
-  }
-
-  public get isLoaded() {
-    return this.loadingState === LoadingState.LOADED;
-  }
 
   public async ngOnInit() {
     this.initSubscriptions();

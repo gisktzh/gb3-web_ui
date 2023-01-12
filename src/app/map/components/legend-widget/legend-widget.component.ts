@@ -13,22 +13,18 @@ import {LoadingState} from '../../../shared/enums/loading-state';
 })
 export class LegendWidgetComponent implements OnInit, OnDestroy {
   @Output() public printLegendEvent = new EventEmitter<void>();
+
+  public readonly LOADING_STATE = LoadingState;
+
   public isVisible = false;
   public legendItems: Legend[] = [];
-  private loadingState = LoadingState.UNDEFINED;
+  public loadingState = LoadingState.UNDEFINED;
+
   private readonly loadingState$ = this.store.select(selectLoadingState);
   private readonly legendItems$ = this.store.select(selectLegendItems);
   private readonly subscriptions = new Subscription();
 
   constructor(private readonly store: Store) {}
-
-  public get isLoading() {
-    return this.loadingState === LoadingState.LOADING;
-  }
-
-  public get isLoaded() {
-    return this.loadingState === LoadingState.LOADED;
-  }
 
   public ngOnInit() {
     this.initSubscriptions();
