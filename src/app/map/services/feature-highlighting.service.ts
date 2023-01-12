@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, OnDestroy} from '@angular/core';
 import {EsriMapService} from './esri-map.service';
 import {selectHighlightedFeature} from '../../core/state/map/reducers/feature-info.reducer';
 import {Subscription, tap} from 'rxjs';
@@ -6,16 +6,20 @@ import {Store} from '@ngrx/store';
 import {Geometry as GeoJSONGeometry} from 'geojson';
 import {selectReady} from '../../core/state/map/reducers/map-configuration.reducer';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class FeatureHighlightingService {
+@Injectable()
+export class FeatureHighlightingService implements OnDestroy {
   private readonly highlightedFeature$ = this.store.select(selectHighlightedFeature);
   private readonly mapReadyState$ = this.store.select(selectReady);
   private readonly subscriptions = new Subscription();
 
-  constructor(private readonly store: Store, private readonly mapService: EsriMapService) {
+  constructor(private readonly store: Store, private readonly mapService: EsriMapService) {}
+
+  public init() {
     this.initMapReadySubscription();
+  }
+
+  public ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 
   private initMapReadySubscription() {
