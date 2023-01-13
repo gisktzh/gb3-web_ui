@@ -42,7 +42,7 @@ export interface Topic {
   permissionMissing: boolean;
 }
 
-export interface TopicLayer {
+export interface TopicLayer extends TopicLayerVisibility {
   /** Layer ID */
   id: number;
   /** Layer name */
@@ -65,6 +65,11 @@ export interface TopicLayer {
   editable: boolean;
   /** True if layer is queryable by current user */
   queryable: boolean;
+}
+
+interface TopicLayerVisibility {
+  /** True if the layer is currently visible */
+  visible: boolean;
 }
 
 export interface TopicsResponse {

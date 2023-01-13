@@ -17,7 +17,7 @@ export class Gb3TopicsService extends Gb3ApiService {
   public async loadTopics(): Promise<TopicsResponse> {
     const requestUrl = this.createTopicsUrl();
     const topicsListData = await this.get<TopicsListData>(requestUrl);
-    return this.mapTopicsListDataToTopicsResponse(topicsListData);
+    return this.transformTopicsListDataToTopicsResponse(topicsListData);
   }
 
   public async loadLegends(queryLegends: QueryLegend[]): Promise<LegendResponse[]> {
@@ -88,9 +88,9 @@ export class Gb3TopicsService extends Gb3ApiService {
   }
 
   /**
-   * Maps the generic TopicsListData type from the API endpoint to the internal interface TopicsResponse
+   * Transforms the generic TopicsListData type from the API endpoint to the internal interface TopicsResponse
    */
-  private mapTopicsListDataToTopicsResponse(topicsListData: TopicsListData): TopicsResponse {
+  private transformTopicsListDataToTopicsResponse(topicsListData: TopicsListData): TopicsResponse {
     return {
       layerCatalogItems: topicsListData.categories.map((category) => {
         return {
@@ -125,7 +125,8 @@ export class Gb3TopicsService extends Gb3ApiService {
                   tocSort: layer.toc_sort,
                   initiallyVisible: layer.initially_visible,
                   editable: layer.editable,
-                  queryable: layer.queryable
+                  queryable: layer.queryable,
+                  visible: layer.initially_visible
                 };
               })
             };
