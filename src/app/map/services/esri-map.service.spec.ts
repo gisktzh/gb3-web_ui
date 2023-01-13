@@ -1,16 +1,16 @@
 import {TestBed} from '@angular/core/testing';
 
-import {MapService} from './map.service';
+import {EsriMapService} from './esri-map.service';
 import {provideMockStore} from '@ngrx/store/testing';
 
-describe('MapService', () => {
-  let service: MapService;
+describe('EsriMapService', () => {
+  let service: EsriMapService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [provideMockStore({})]
     });
-    service = TestBed.inject(MapService);
+    service = TestBed.inject(EsriMapService);
   });
 
   it('should be created', () => {

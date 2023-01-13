@@ -69,7 +69,7 @@ export interface Topic {
   permissionMissing: boolean;
 }
 
-interface TopicLayer {
+export interface TopicLayer {
   /** Layer ID */
   id: number;
   /** Layer name */

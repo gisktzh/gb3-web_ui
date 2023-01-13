@@ -10,9 +10,10 @@ import {HttpClientModule} from '@angular/common/http';
 import {SharedModule} from './shared/shared.module';
 import {PageModule} from './page/page.module';
 import {EffectsModule} from '@ngrx/effects';
-import {ActiveTopicEffects} from './core/state/map/effects/active-topic.effects';
+import {ActiveMapItemEffects} from './core/state/map/effects/active-map-item.effects';
 import {FeatureInfoEffects} from './core/state/map/effects/feature-info.effects';
 import {LegendEffects} from './core/state/map/effects/legend.effects';
+import {LayerCatalogEffects} from './core/state/map/effects/layer-catalog.effects';
 
 @NgModule({
   declarations: [AppComponent],
@@ -26,7 +27,7 @@ import {LegendEffects} from './core/state/map/effects/legend.effects';
     StoreModule.forRoot(reducers, {
       metaReducers
     }),
-    EffectsModule.forRoot([ActiveTopicEffects, FeatureInfoEffects, LegendEffects])
+    EffectsModule.forRoot([ActiveMapItemEffects, FeatureInfoEffects, LayerCatalogEffects, LegendEffects])
   ],
   providers: [],
   bootstrap: [AppComponent]

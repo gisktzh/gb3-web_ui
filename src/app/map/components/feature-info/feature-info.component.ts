@@ -13,22 +13,18 @@ import {LoadingState} from '../../../shared/enums/loading-state';
 })
 export class FeatureInfoComponent implements OnInit, OnDestroy {
   @Output() public printFeatureInfoEvent = new EventEmitter<void>();
+
+  public readonly LOADING_STATE = LoadingState;
+
   public isVisible: boolean = false;
   public featureInfoData: FeatureInfoResult[] = [];
-  private loadingState: LoadingState | undefined;
+  public loadingState = LoadingState.UNDEFINED;
+
   private readonly loadingState$ = this.store.select(selectLoadingState);
   private readonly featureInfoData$ = this.store.select(selectData);
   private readonly subscriptions = new Subscription();
 
   constructor(private readonly store: Store) {}
-
-  public get isLoading() {
-    return this.loadingState === LoadingState.LOADING;
-  }
-
-  public get isLoaded() {
-    return this.loadingState === LoadingState.LOADED;
-  }
 
   public ngOnInit(): void {
     this.initSubscriptions();
@@ -68,7 +64,7 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
     );
   }
 
-  private updateVisibility(loadingState: LoadingState | undefined) {
-    this.isVisible = loadingState !== undefined;
+  private updateVisibility(loadingState: LoadingState) {
+    this.isVisible = loadingState !== LoadingState.UNDEFINED;
   }
 }

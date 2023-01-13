@@ -12,7 +12,7 @@ export interface LegendState extends HasLoadingState {
 
 export const initialState: LegendState = {
   legendItems: [],
-  loadingState: undefined
+  loadingState: LoadingState.UNDEFINED
 };
 
 export const legendFeature = createFeature({

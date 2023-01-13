@@ -13,7 +13,7 @@ export interface FeatureInfoState extends HasLoadingState {
 }
 
 export const initialState: FeatureInfoState = {
-  loadingState: undefined,
+  loadingState: LoadingState.UNDEFINED,
   data: [],
   highlightedFeature: undefined
 };

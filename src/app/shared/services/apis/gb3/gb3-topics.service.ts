@@ -4,6 +4,7 @@ import {TopicsFeatureInfoDetailData, TopicsLegendDetailData, TopicsListData} fro
 import {FeatureInfoResponse, LegendResponse, TopicsResponse} from '../../../models/gb3-api.interfaces';
 import {Geometry} from 'geojson';
 import {QueryLayer} from '../../../interfaces/query-layer.interface';
+import {QueryLegend} from '../../../interfaces/query-legend.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -17,10 +18,10 @@ export class Gb3TopicsService extends Gb3ApiService {
     return this.mapTopicsListDataToTopicsResponse(topicsListData);
   }
 
-  public async loadLegends(topics: string[]): Promise<LegendResponse[]> {
+  public async loadLegends(queryLegends: QueryLegend[]): Promise<LegendResponse[]> {
     const topicsLegendDetailDataRequests: Promise<TopicsLegendDetailData>[] = [];
-    for (const topic of topics) {
-      const requestUrl = this.createLegendUrl(topic);
+    for (const queryLegend of queryLegends) {
+      const requestUrl = this.createLegendUrl(queryLegend);
       const topicsLegendDetailData = this.get<TopicsLegendDetailData>(requestUrl);
       topicsLegendDetailDataRequests.push(topicsLegendDetailData);
     }
@@ -45,8 +46,14 @@ export class Gb3TopicsService extends Gb3ApiService {
     );
   }
 
-  private createLegendUrl(topicName: string): string {
-    return `${this.getFullEndpointUrl()}/${topicName}/legend`;
+  private createLegendUrl(queryLegend: QueryLegend): string {
+    const url = new URL(`${this.getFullEndpointUrl()}/${queryLegend.topic}/legend`);
+
+    if (queryLegend.layer) {
+      url.searchParams.set('layer', queryLegend.layer);
+    }
+
+    return url.toString();
   }
 
   /**
