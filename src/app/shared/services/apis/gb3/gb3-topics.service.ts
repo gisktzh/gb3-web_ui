@@ -1,10 +1,12 @@
 import {Injectable} from '@angular/core';
 import {Gb3ApiService} from './gb3-api.service';
 import {TopicsFeatureInfoDetailData, TopicsLegendDetailData, TopicsListData} from '../../../models/gb3-api-generated.interfaces';
-import {FeatureInfoResponse, LegendResponse, TopicsResponse} from '../../../models/gb3-api.interfaces';
 import {Geometry} from 'geojson';
 import {QueryLayer} from '../../../interfaces/query-layer.interface';
 import {QueryLegend} from '../../../interfaces/query-legend.interface';
+import {LegendResponse} from '../../../interfaces/legend.interface';
+import {TopicsResponse} from '../../../interfaces/topic.interface';
+import {FeatureInfoResponse} from '../../../interfaces/feature-info.interface';
 
 @Injectable({
   providedIn: 'root'

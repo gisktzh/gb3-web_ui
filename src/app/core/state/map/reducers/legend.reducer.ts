@@ -1,8 +1,8 @@
 import {createFeature, createReducer, on} from '@ngrx/store';
 import {LegendActions} from '../actions/legend.actions';
-import {Legend} from '../../../../shared/models/gb3-api.interfaces';
 import {HasLoadingState} from '../../../../shared/interfaces/has-loading-state.interface';
 import {LoadingState} from '../../../../shared/enums/loading-state';
+import {Legend} from '../../../../shared/interfaces/legend.interface';
 
 export const legendFeatureKey = 'legend';
 

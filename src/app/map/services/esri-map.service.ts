@@ -8,7 +8,6 @@ import {MapConfigurationState, selectMapConfigurationState} from '../../core/sta
 import {first, tap} from 'rxjs';
 import SpatialReference from '@arcgis/core/geometry/SpatialReference';
 import {FeatureInfoActions} from '../../core/state/map/actions/feature-info.actions';
-import {Topic, TopicLayer} from '../../shared/models/gb3-api.interfaces';
 import Graphic from '@arcgis/core/Graphic';
 import {Geometry as GeoJsonGeometry} from 'geojson';
 import Color from '@arcgis/core/Color';
@@ -18,6 +17,7 @@ import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import {GeoJSONMapperService} from '../../shared/services/geo-json-mapper.service';
 import {defaultHighlightStyles} from 'src/app/shared/configs/feature-info-config';
 import {MapService} from '../interfaces/map.service';
+import {Topic, TopicLayer} from '../../shared/interfaces/topic.interface';
 import ViewClickEvent = __esri.ViewClickEvent;
 
 @Injectable({

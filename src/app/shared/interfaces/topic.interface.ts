@@ -1,30 +1,3 @@
-/**
- * These internal models should be used when accessing API responses.
- */
-import {Geometry} from 'geojson';
-
-interface LayerClass {
-  label: string;
-  image: string;
-}
-
-interface Layer {
-  layer: string;
-  title: string;
-  layerClasses?: LayerClass[];
-  geolion?: number;
-  attribution?: string;
-}
-
-export interface Legend {
-  topic: string;
-  layers: Layer[];
-}
-
-export interface LegendResponse {
-  legend: Legend;
-}
-
 export interface LayerCatalogItem {
   title: string;
   topics: Topic[];
@@ -96,39 +69,4 @@ export interface TopicLayer {
 
 export interface TopicsResponse {
   layerCatalogItems: LayerCatalogItem[];
-}
-
-export interface FeatureInfoResultFeatureField {
-  label: string;
-  value: string | number | null;
-}
-
-export interface FeatureInfoResultFeature {
-  fid: number;
-  fields: FeatureInfoResultFeatureField[];
-  bbox: number[];
-  geometry: Geometry;
-}
-
-export interface FeatureInfoResultLayer {
-  layer: string;
-  title: string;
-  features: FeatureInfoResultFeature[];
-}
-
-export interface FeatureInfoResult {
-  topic: string;
-  layers: FeatureInfoResultLayer[];
-}
-
-export interface FeatureInfoWrapper {
-  x: number;
-  y: number;
-  heightDtm: number;
-  heightDom: number;
-  results: FeatureInfoResult;
-}
-
-export interface FeatureInfoResponse {
-  featureInfo: FeatureInfoWrapper;
 }

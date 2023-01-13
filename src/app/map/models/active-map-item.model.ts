@@ -1,5 +1,5 @@
 import {LoadingState} from '../../shared/enums/loading-state';
-import {Topic, TopicLayer} from '../../shared/models/gb3-api.interfaces';
+import {Topic, TopicLayer} from '../../shared/interfaces/topic.interface';
 
 export class ActiveMapItem {
   public readonly topic: Topic;

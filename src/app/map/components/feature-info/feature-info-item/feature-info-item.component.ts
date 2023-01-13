@@ -1,8 +1,8 @@
 import {Component, Input} from '@angular/core';
-import {FeatureInfoResult} from '../../../../shared/models/gb3-api.interfaces';
 import {Geometry} from 'geojson';
 import {Store} from '@ngrx/store';
 import {FeatureInfoActions} from '../../../../core/state/map/actions/feature-info.actions';
+import {FeatureInfoResult} from '../../../../shared/interfaces/feature-info.interface';
 
 @Component({
   selector: 'feature-info-item',

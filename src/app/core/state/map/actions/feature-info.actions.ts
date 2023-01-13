@@ -1,6 +1,6 @@
 import {createActionGroup, emptyProps, props} from '@ngrx/store';
-import {FeatureInfoResponse} from '../../../../shared/models/gb3-api.interfaces';
 import {Geometry} from 'geojson';
+import {FeatureInfoResponse} from '../../../../shared/interfaces/feature-info.interface';
 
 export const FeatureInfoActions = createActionGroup({
   source: 'FeatureInfo',

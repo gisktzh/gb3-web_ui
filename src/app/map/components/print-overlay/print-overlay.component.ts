@@ -4,9 +4,10 @@ import {ActivatedRoute} from '@angular/router';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {selectLegendItems} from '../../../core/state/map/reducers/legend.reducer';
-import {FeatureInfoResult, Legend} from '../../../shared/models/gb3-api.interfaces';
 import {PrintType} from '../../../shared/types/print-type';
 import {selectData} from '../../../core/state/map/reducers/feature-info.reducer';
+import {Legend} from '../../../shared/interfaces/legend.interface';
+import {FeatureInfoResult} from '../../../shared/interfaces/feature-info.interface';
 
 @Component({
   selector: 'print-overlay',

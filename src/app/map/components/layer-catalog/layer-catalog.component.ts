@@ -1,12 +1,12 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {LayerCatalogItem, Topic, TopicLayer} from '../../../shared/models/gb3-api.interfaces';
 import {selectLayerCatalogItems, selectLoadingState} from '../../../core/state/map/reducers/layer-catalog.reducer';
 import {LayerCatalogActions} from '../../../core/state/map/actions/layer-catalog.actions';
 import {Subscription, tap} from 'rxjs';
 import {ActiveMapItemActions} from '../../../core/state/map/actions/active-map-item.actions';
 import {LoadingState} from '../../../shared/enums/loading-state';
 import {ActiveMapItem} from '../../models/active-map-item.model';
+import {LayerCatalogItem, Topic, TopicLayer} from '../../../shared/interfaces/topic.interface';
 
 @Component({
   selector: 'layer-catalog',
