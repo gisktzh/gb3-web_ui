@@ -13,8 +13,8 @@ export class LegendEffects {
     return this.actions$.pipe(
       ofType(LegendActions.showLegend),
       concatLatestFrom(() => this.store.select(selectQueryLegends)),
-      switchMap(([_, topics]) =>
-        from(this.topicsService.loadLegends(topics)).pipe(
+      switchMap(([_, queryLegends]) =>
+        from(this.topicsService.loadLegends(queryLegends)).pipe(
           map((legends) => {
             return LegendActions.addLegendContent({legends});
           }),
