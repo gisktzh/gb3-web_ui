@@ -17,7 +17,7 @@ import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import {GeoJSONMapperService} from '../../shared/services/geo-json-mapper.service';
 import {defaultHighlightStyles} from 'src/app/shared/configs/feature-info-config';
-import {MapService} from './map.service';
+import {MapService} from '../interfaces/map.service';
 import ViewClickEvent = __esri.ViewClickEvent;
 
 @Injectable({

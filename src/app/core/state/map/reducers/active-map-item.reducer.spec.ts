@@ -1,6 +1,6 @@
 import {initialState, reducer} from './active-map-item.reducer';
 
-describe('ActiveMapItems Reducer', () => {
+describe('ActiveMapItem Reducer', () => {
   describe('an unknown action', () => {
     it('should return the previous state', () => {
       const action = {} as any;
