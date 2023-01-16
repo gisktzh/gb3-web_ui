@@ -14,6 +14,7 @@ import {MapOverlayListItemComponent} from './components/map/map-overlay/map-over
 import {FeatureInfoItemComponent} from './components/feature-info/feature-info-item/feature-info-item.component';
 import {PrintOverlayComponent} from './components/print-overlay/print-overlay.component';
 import {PrintDispatcherComponent} from './components/print-overlay/print-dispatcher/print-dispatcher.component';
+import {ScaleInputComponent} from './components/map/scale-input/scale-input.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import {PrintDispatcherComponent} from './components/print-overlay/print-dispatc
     MapOverlayListItemComponent,
     FeatureInfoItemComponent,
     PrintOverlayComponent,
-    PrintDispatcherComponent
+    PrintDispatcherComponent,
+    ScaleInputComponent
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule]
 })

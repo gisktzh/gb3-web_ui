@@ -53,6 +53,10 @@ export class EsriMapService implements MapService {
     return this._mapView;
   }
 
+  public setScale(scale: number) {
+    this.mapView.scale = scale;
+  }
+
   public addTopic(topic: Topic) {
     if (this.getLayer(topic.topic)) {
       return;
@@ -124,7 +128,10 @@ export class EsriMapService implements MapService {
           this._mapView = new EsriMapView({
             map: map,
             scale: scale,
-            center: new EsriPoint({x, y, spatialReference: new SpatialReference({wkid: srsId})})
+            center: new EsriPoint({x, y, spatialReference: new SpatialReference({wkid: srsId})}),
+            constraints: {
+              snapToZoom: false
+            }
           });
           this.attachMapListeners();
         })

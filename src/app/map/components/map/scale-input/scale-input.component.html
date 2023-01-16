@@ -1,0 +1,7 @@
+<div class="scale-input">
+  Massstab
+  <div class="scale-input__wrapper">
+    <span class="scale-input__prefix">1:</span>
+    <input (change)="this.setScale($event)" [valueAsNumber]="this.scale" class="scale-input__input" max="999999" type="number" />
+  </div>
+</div>
