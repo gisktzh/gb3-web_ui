@@ -1,5 +1,5 @@
-import {Topic, TopicLayer} from '../../shared/models/gb3-api.interfaces';
 import {Geometry} from 'geojson';
+import {Topic, TopicLayer} from '../../shared/interfaces/topic.interface';
 
 export interface MapService {
   init(): void;

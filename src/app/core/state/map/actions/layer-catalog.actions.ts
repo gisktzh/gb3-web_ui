@@ -1,5 +1,5 @@
 import {createActionGroup, emptyProps, props} from '@ngrx/store';
-import {LayerCatalogItem} from '../../../../shared/models/gb3-api.interfaces';
+import {LayerCatalogItem} from '../../../../shared/interfaces/topic.interface';
 
 export const LayerCatalogActions = createActionGroup({
   source: 'LayerCatalog',

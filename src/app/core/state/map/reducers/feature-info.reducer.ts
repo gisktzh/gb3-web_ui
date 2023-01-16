@@ -1,9 +1,9 @@
 import {createFeature, createReducer, on} from '@ngrx/store';
 import {FeatureInfoActions} from '../actions/feature-info.actions';
-import {FeatureInfoResult} from '../../../../shared/models/gb3-api.interfaces';
 import {LoadingState} from '../../../../shared/enums/loading-state';
 import {Geometry} from 'geojson';
 import {HasLoadingState} from '../../../../shared/interfaces/has-loading-state.interface';
+import {FeatureInfoResult} from '../../../../shared/interfaces/feature-info.interface';
 
 export const featureInfoFeatureKey = 'featureInfo';
 

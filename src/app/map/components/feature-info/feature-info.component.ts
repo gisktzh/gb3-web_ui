@@ -3,8 +3,8 @@ import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {selectData, selectLoadingState} from '../../../core/state/map/reducers/feature-info.reducer';
 import {FeatureInfoActions} from '../../../core/state/map/actions/feature-info.actions';
-import {FeatureInfoResult} from '../../../shared/models/gb3-api.interfaces';
 import {LoadingState} from '../../../shared/enums/loading-state';
+import {FeatureInfoResult} from '../../../shared/interfaces/feature-info.interface';
 
 @Component({
   selector: 'feature-info',

@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
-import {Legend} from '../../../../shared/models/gb3-api.interfaces';
 import {environment} from '../../../../../environments/environment';
+import {Legend} from '../../../../shared/interfaces/legend.interface';
 
 @Component({
   selector: 'legend-item',

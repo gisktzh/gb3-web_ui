@@ -1,8 +1,8 @@
 import {createFeature, createReducer, on} from '@ngrx/store';
-import {LayerCatalogItem} from '../../../../shared/models/gb3-api.interfaces';
 import {LayerCatalogActions} from '../actions/layer-catalog.actions';
 import {HasLoadingState} from '../../../../shared/interfaces/has-loading-state.interface';
 import {LoadingState} from '../../../../shared/enums/loading-state';
+import {LayerCatalogItem} from '../../../../shared/interfaces/topic.interface';
 
 export const layerCatalogFeatureKey = 'layerCatalog';
 

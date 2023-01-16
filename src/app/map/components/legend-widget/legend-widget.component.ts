@@ -3,8 +3,8 @@ import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {selectLegendItems, selectLoadingState} from '../../../core/state/map/reducers/legend.reducer';
 import {LegendActions} from '../../../core/state/map/actions/legend.actions';
-import {Legend} from '../../../shared/models/gb3-api.interfaces';
 import {LoadingState} from '../../../shared/enums/loading-state';
+import {Legend} from '../../../shared/interfaces/legend.interface';
 
 @Component({
   selector: 'legend-widget',
