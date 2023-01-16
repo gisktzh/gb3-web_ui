@@ -17,7 +17,7 @@ import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import {GeoJSONMapperService} from '../../shared/services/geo-json-mapper.service';
 import {defaultHighlightStyles} from 'src/app/shared/configs/feature-info-config';
 import {MapService} from '../interfaces/map.service';
-import {Topic, TopicLayer} from '../../shared/interfaces/topic.interface';
+import {ActiveMapItem} from '../models/active-map-item.model';
 import ViewClickEvent = __esri.ViewClickEvent;
 
 @Injectable({
@@ -53,16 +53,16 @@ export class EsriMapService implements MapService {
     return this._mapView;
   }
 
-  public addTopic(topic: Topic) {
-    if (this.getLayer(topic.topic)) {
+  public addMapItem(mapItem: ActiveMapItem) {
+    if (this.getLayer(mapItem.topic)) {
       return;
     }
 
     const esriLayer: __esri.Layer = new EsriWMSLayer({
-      id: topic.topic,
-      title: topic.title,
-      url: topic.wmsUrl,
-      sublayers: topic.layers.map((layer) => {
+      id: mapItem.id,
+      title: mapItem.title,
+      url: mapItem.url,
+      sublayers: mapItem.layers.map((layer) => {
         return {
           id: layer.id,
           name: layer.layer,
@@ -73,35 +73,8 @@ export class EsriMapService implements MapService {
     this.mapView.map.layers.add(esriLayer);
   }
 
-  public addTopicLayer(topic: Topic, layer: TopicLayer) {
-    if (this.getLayer(layer.layer)) {
-      return;
-    }
-
-    const esriLayer: __esri.Layer = new EsriWMSLayer({
-      id: layer.layer,
-      title: layer.title,
-      url: topic.wmsUrl,
-      sublayers: [
-        {
-          id: layer.id,
-          name: layer.layer,
-          title: layer.title
-        } as __esri.WMSSublayerProperties
-      ]
-    });
-    this.mapView.map.layers.add(esriLayer);
-  }
-
-  public removeTopic(topic: Topic) {
-    const esriLayer = this.getLayer(topic.topic);
-    if (esriLayer) {
-      this.mapView.map.layers.remove(esriLayer);
-    }
-  }
-
-  public removeTopicLayer(topic: Topic, layer: TopicLayer) {
-    const esriLayer = this.getLayer(layer.layer);
+  public removeMapItem(id: string) {
+    const esriLayer = this.getLayer(id);
     if (esriLayer) {
       this.mapView.map.layers.remove(esriLayer);
     }

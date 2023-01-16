@@ -1,20 +1,27 @@
 import {LoadingState} from '../../shared/enums/loading-state';
 import {Topic, TopicLayer} from '../../shared/interfaces/topic.interface';
+import {HasLoadingState} from '../../shared/interfaces/has-loading-state.interface';
+import {HasVisibility} from '../../shared/interfaces/has-visibility.interface';
 
-export class ActiveMapItem {
-  public readonly topic: Topic;
-  public readonly layer?: TopicLayer;
+export class ActiveMapItem implements HasLoadingState, HasVisibility {
+  public readonly id: string;
+  public readonly title: string;
+  public readonly url: string;
+
+  public readonly topic: string;
+  public readonly layers: TopicLayer[];
+  public readonly isSingleLayer: boolean;
 
   public loadingState = LoadingState.UNDEFINED;
-  public opacity = 1;
   public visible = true;
+  public opacity = 1;
 
   constructor(topic: Topic, layer?: TopicLayer) {
-    this.topic = topic;
-    this.layer = layer;
-  }
-
-  public static isSameMapItem(activeMapItem: ActiveMapItem, otherActiveMapItem: ActiveMapItem): boolean {
-    return activeMapItem.topic.topic === otherActiveMapItem.topic.topic && activeMapItem.layer?.layer === otherActiveMapItem.layer?.layer;
+    this.isSingleLayer = !!layer;
+    this.id = layer ? `${topic.topic}_${layer.layer}` : topic.topic;
+    this.title = layer ? layer.title : topic.title;
+    this.url = topic.wmsUrl;
+    this.topic = topic.topic;
+    this.layers = layer ? [layer] : topic.layers;
   }
 }

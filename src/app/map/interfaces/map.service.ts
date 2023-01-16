@@ -1,16 +1,12 @@
 import {Geometry} from 'geojson';
-import {Topic, TopicLayer} from '../../shared/interfaces/topic.interface';
+import {ActiveMapItem} from '../models/active-map-item.model';
 
 export interface MapService {
   init(): void;
   assignMapElement(container: HTMLDivElement): void;
 
-  addTopic(topic: Topic): void;
-  addTopicLayer(topic: Topic, layer: TopicLayer): void;
-
-  removeTopic(topic: Topic): void;
-  removeTopicLayer(topic: Topic, layer: TopicLayer): void;
-
+  addMapItem(mapItem: ActiveMapItem): void;
+  removeMapItem(id: string): void;
   removeAllTopics(): void;
 
   // moveTopic(topic: Topic, position: number): void;

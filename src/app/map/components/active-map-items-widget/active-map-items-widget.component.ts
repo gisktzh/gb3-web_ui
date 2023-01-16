@@ -56,7 +56,7 @@ export class ActiveMapItemsWidgetComponent implements OnInit, OnDestroy {
   public removeLayer(layer: __esri.Layer) {
     // TODO this is not a clean implementation yet; it should be only about active map items (topics/single layers) here and not the Esri layers
     // TODO 'id' is not unique in case of multiple single layers
-    const topicToBeRemoved = this.activeMapItems.find((at) => (at.layer ? at.layer.layer : at.topic.topic) === layer.id);
+    const topicToBeRemoved = this.activeMapItems.find((amt) => amt.id === layer.id);
     if (topicToBeRemoved) {
       this.store.dispatch(ActiveMapItemActions.removeActiveMapItem(topicToBeRemoved));
     }

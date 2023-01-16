@@ -11,13 +11,7 @@ export class ActiveMapItemEffects {
       return this.actions$.pipe(
         ofType(ActiveMapItemActions.addActiveMapItem),
         tap((action) => {
-          if (action.layer) {
-            // add single layer
-            this.mapService.addTopicLayer(action.topic, action.layer);
-          } else {
-            // add whole topic
-            this.mapService.addTopic(action.topic);
-          }
+          this.mapService.addMapItem(action);
         })
       );
     },
@@ -29,13 +23,7 @@ export class ActiveMapItemEffects {
       return this.actions$.pipe(
         ofType(ActiveMapItemActions.removeActiveMapItem),
         tap((action) => {
-          if (action.layer) {
-            // remove single layer
-            this.mapService.removeTopicLayer(action.topic, action.layer);
-          } else {
-            // remove whole topic
-            this.mapService.removeTopic(action.topic);
-          }
+          this.mapService.removeMapItem(action.id);
         })
       );
     },

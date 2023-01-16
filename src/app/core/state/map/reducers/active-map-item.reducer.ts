@@ -17,11 +17,11 @@ export const activeMapItemFeature = createFeature({
   reducer: createReducer(
     initialState,
     on(ActiveMapItemActions.addActiveMapItem, (state, activeMapItem): ActiveMapItemState => {
-      const otherActiveMapItems = state.activeMapItems.filter((mapItem) => !ActiveMapItem.isSameMapItem(mapItem, activeMapItem));
+      const otherActiveMapItems = state.activeMapItems.filter((mapItem) => mapItem.id !== activeMapItem.id);
       return {...state, activeMapItems: [...otherActiveMapItems, activeMapItem]};
     }),
     on(ActiveMapItemActions.removeActiveMapItem, (state, activeMapItem): ActiveMapItemState => {
-      const remainingActiveMapItems = state.activeMapItems.filter((mapItem) => !ActiveMapItem.isSameMapItem(mapItem, activeMapItem));
+      const remainingActiveMapItems = state.activeMapItems.filter((mapItem) => mapItem.id !== activeMapItem.id);
       return {...state, activeMapItems: [...remainingActiveMapItems]};
     }),
     on(ActiveMapItemActions.removeAllActiveMapItems, (state): ActiveMapItemState => {
