@@ -3,6 +3,7 @@ import {Observable, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {selectScale} from '../../../../core/state/map/reducers/map-configuration.reducer';
 import {MapConfigurationActions} from '../../../../core/state/map/actions/map-configuration.actions';
+import {MAXIMUM_MAP_SCALE, MINIMUM_MAP_SCALE} from '../../../../shared/configs/map-config';
 
 @Component({
   selector: 'scale-input',
@@ -11,6 +12,8 @@ import {MapConfigurationActions} from '../../../../core/state/map/actions/map-co
 })
 export class ScaleInputComponent implements OnInit, OnDestroy {
   public scale: number = 0;
+  public readonly maxScale = MAXIMUM_MAP_SCALE;
+  public readonly minScale = MINIMUM_MAP_SCALE;
   private readonly subscriptions: Subscription = new Subscription();
   private readonly scaleState$: Observable<number> = this.store.select(selectScale);
 
