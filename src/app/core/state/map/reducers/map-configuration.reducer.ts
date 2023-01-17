@@ -42,6 +42,9 @@ export const mapConfigurationFeature = createFeature({
     }),
     on(MapConfigurationActions.setScale, (state, {scale}): MapConfigurationState => {
       return {...state, scale};
+    }),
+    on(MapConfigurationActions.resetExtent, (state): MapConfigurationState => {
+      return {...state};
     })
   )
 });

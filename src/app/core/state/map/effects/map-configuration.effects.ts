@@ -16,5 +16,17 @@ export class MapConfigurationEffects {
     {dispatch: false}
   );
 
+  public dispatchResetScale$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(MapConfigurationActions.resetExtent),
+        tap(() => {
+          this.mapService.resetExtent();
+        })
+      );
+    },
+    {dispatch: false}
+  );
+
   constructor(private readonly actions$: Actions, private readonly mapService: EsriMapService) {}
 }

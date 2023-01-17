@@ -20,6 +20,7 @@ import {MapService} from '../interfaces/map.service';
 import {Topic, TopicLayer} from '../../shared/interfaces/topic.interface';
 import ViewClickEvent = __esri.ViewClickEvent;
 import ScaleBar from '@arcgis/core/widgets/ScaleBar';
+import {defaultMapConfig} from '../../shared/configs/map-config';
 
 @Injectable({
   providedIn: 'root'
@@ -158,6 +159,16 @@ export class EsriMapService implements MapService {
 
   public removeAllHighlightGeometries(): void {
     this.mapView.graphics.removeAll();
+  }
+
+  public resetExtent() {
+    const {
+      center: {x, y},
+      srsId,
+      scale
+    } = defaultMapConfig;
+    this.mapView.center = new EsriPoint({x: x, y: y, spatialReference: new SpatialReference({wkid: srsId})});
+    this.mapView.scale = scale;
   }
 
   private addScaleBar() {
