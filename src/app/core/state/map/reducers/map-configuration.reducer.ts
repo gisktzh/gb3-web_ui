@@ -40,7 +40,7 @@ export const mapConfigurationFeature = createFeature({
     on(MapConfigurationActions.setReady, (state): MapConfigurationState => {
       return {...state, ready: true};
     }),
-    on(MapConfigurationActions.setScaleManually, (state, {scale}): MapConfigurationState => {
+    on(MapConfigurationActions.setScale, (state, {scale}): MapConfigurationState => {
       return {...state, scale};
     })
   )

@@ -18,7 +18,7 @@ export class ScaleInputComponent implements OnInit, OnDestroy {
 
   public setScale(event: Event) {
     const newScale = (event.target as HTMLInputElement).valueAsNumber;
-    this.store.dispatch(MapConfigurationActions.setScaleManually({scale: newScale}));
+    this.store.dispatch(MapConfigurationActions.setScale({scale: newScale}));
   }
 
   public ngOnInit(): void {

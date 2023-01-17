@@ -9,7 +9,7 @@ export class MapConfigurationEffects {
   public dispatchManualScaleSetting$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(MapConfigurationActions.setScaleManually),
+        ofType(MapConfigurationActions.setScale),
         tap(({scale}) => this.mapService.setScale(scale))
       );
     },
