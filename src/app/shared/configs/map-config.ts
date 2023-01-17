@@ -1,5 +1,8 @@
 import {MapConfigurationState} from '../../core/state/map/reducers/map-configuration.reducer';
 
+export const MINIMUM_MAP_SCALE = 1_500_000;
+export const MAXIMUM_MAP_SCALE = 100;
+
 export const defaultMapConfig: MapConfigurationState = {
   srsId: 2056,
   center: {
@@ -7,5 +10,9 @@ export const defaultMapConfig: MapConfigurationState = {
     y: 1248390.0
   },
   scale: 50000,
-  ready: false
+  ready: false,
+  scaleSettings: {
+    minScale: MINIMUM_MAP_SCALE,
+    maxScale: MAXIMUM_MAP_SCALE
+  }
 };

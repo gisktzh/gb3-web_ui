@@ -19,6 +19,7 @@ import {defaultHighlightStyles} from 'src/app/shared/configs/feature-info-config
 import {MapService} from '../interfaces/map.service';
 import {Topic, TopicLayer} from '../../shared/interfaces/topic.interface';
 import ViewClickEvent = __esri.ViewClickEvent;
+import ScaleBar from '@arcgis/core/widgets/ScaleBar';
 
 @Injectable({
   providedIn: 'root'
@@ -51,6 +52,10 @@ export class EsriMapService implements MapService {
 
   public get mapView(): __esri.MapView {
     return this._mapView;
+  }
+
+  public setScale(scale: number) {
+    this.mapView.scale = scale;
   }
 
   public addTopic(topic: Topic) {
@@ -120,13 +125,20 @@ export class EsriMapService implements MapService {
         first(),
         tap((config: MapConfigurationState) => {
           const {x, y} = config.center;
+          const {minScale, maxScale} = config.scaleSettings;
           const {scale, srsId} = config;
           this._mapView = new EsriMapView({
             map: map,
             scale: scale,
-            center: new EsriPoint({x, y, spatialReference: new SpatialReference({wkid: srsId})})
+            center: new EsriPoint({x, y, spatialReference: new SpatialReference({wkid: srsId})}),
+            constraints: {
+              snapToZoom: false,
+              minScale: minScale,
+              maxScale: maxScale
+            }
           });
           this.attachMapListeners();
+          this.addScaleBar();
         })
       )
       .subscribe();
@@ -146,6 +158,11 @@ export class EsriMapService implements MapService {
 
   public removeAllHighlightGeometries(): void {
     this.mapView.graphics.removeAll();
+  }
+
+  private addScaleBar() {
+    const scaleBar = new ScaleBar({view: this.mapView, container: 'scale-bar-container', unit: 'metric'});
+    this.mapView.ui.add(scaleBar);
   }
 
   private getLayer(id: string): __esri.Layer {

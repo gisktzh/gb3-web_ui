@@ -5,6 +5,8 @@ export interface MapService {
   init(): void;
   assignMapElement(container: HTMLDivElement): void;
 
+  setScale(scale: number): void;
+
   addTopic(topic: Topic): void;
   addTopicLayer(topic: Topic, layer: TopicLayer): void;
 

@@ -14,6 +14,7 @@ import {ActiveMapItemEffects} from './core/state/map/effects/active-map-item.eff
 import {FeatureInfoEffects} from './core/state/map/effects/feature-info.effects';
 import {LegendEffects} from './core/state/map/effects/legend.effects';
 import {LayerCatalogEffects} from './core/state/map/effects/layer-catalog.effects';
+import {MapConfigurationEffects} from './core/state/map/effects/map-configuration.effects';
 
 @NgModule({
   declarations: [AppComponent],
@@ -27,7 +28,7 @@ import {LayerCatalogEffects} from './core/state/map/effects/layer-catalog.effect
     StoreModule.forRoot(reducers, {
       metaReducers
     }),
-    EffectsModule.forRoot([ActiveMapItemEffects, FeatureInfoEffects, LayerCatalogEffects, LegendEffects])
+    EffectsModule.forRoot([ActiveMapItemEffects, FeatureInfoEffects, LayerCatalogEffects, LegendEffects, MapConfigurationEffects])
   ],
   providers: [],
   bootstrap: [AppComponent]
