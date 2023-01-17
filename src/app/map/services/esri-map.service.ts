@@ -19,6 +19,7 @@ import {defaultHighlightStyles} from 'src/app/shared/configs/feature-info-config
 import {MapService} from '../interfaces/map.service';
 import {Topic, TopicLayer} from '../../shared/interfaces/topic.interface';
 import ViewClickEvent = __esri.ViewClickEvent;
+import ScaleBar from '@arcgis/core/widgets/ScaleBar';
 
 @Injectable({
   providedIn: 'root'
@@ -137,6 +138,7 @@ export class EsriMapService implements MapService {
             }
           });
           this.attachMapListeners();
+          this.addScaleBar();
         })
       )
       .subscribe();
@@ -156,6 +158,11 @@ export class EsriMapService implements MapService {
 
   public removeAllHighlightGeometries(): void {
     this.mapView.graphics.removeAll();
+  }
+
+  private addScaleBar() {
+    const scaleBar = new ScaleBar({view: this.mapView, container: 'scale-bar-container', unit: 'metric'});
+    this.mapView.ui.add(scaleBar);
   }
 
   private getLayer(id: string): __esri.Layer {
