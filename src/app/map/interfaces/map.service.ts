@@ -7,6 +7,9 @@ export interface MapService {
   /** Assigns the map to an element on the HTML */
   assignMapElement(container: HTMLDivElement): void;
 
+  /** Sets the scale of the whole map */
+  setScale(scale: number): void;
+
   /** Adds a new item to the map */
   addMapItem(mapItem: ActiveMapItem): void;
   /** Removes an existing item from the map given its unique ID */

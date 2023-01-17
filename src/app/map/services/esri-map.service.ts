@@ -21,6 +21,7 @@ import {ActiveMapItem} from '../models/active-map-item.model';
 import {ActiveMapItemActions} from '../../core/state/map/actions/active-map-item.actions';
 import {LoadingState} from '../../shared/enums/loading-state';
 import WMSLayer from '@arcgis/core/layers/WMSLayer';
+import ScaleBar from '@arcgis/core/widgets/ScaleBar';
 import ViewClickEvent = __esri.ViewClickEvent;
 
 @Injectable({
@@ -58,6 +59,10 @@ export class EsriMapService implements MapService {
     return this._mapView;
   }
 
+  public setScale(scale: number) {
+    this.mapView.scale = scale;
+  }
+
   public init(): void {
     const map = new EsriMap({basemap: 'hybrid'});
 
@@ -67,13 +72,20 @@ export class EsriMapService implements MapService {
         first(),
         tap((config: MapConfigurationState) => {
           const {x, y} = config.center;
+          const {minScale, maxScale} = config.scaleSettings;
           const {scale, srsId} = config;
           this._mapView = new EsriMapView({
             map: map,
             scale: scale,
-            center: new EsriPoint({x, y, spatialReference: new SpatialReference({wkid: srsId})})
+            center: new EsriPoint({x, y, spatialReference: new SpatialReference({wkid: srsId})}),
+            constraints: {
+              snapToZoom: false,
+              minScale: minScale,
+              maxScale: maxScale
+            }
           });
           this.attachMapViewListeners();
+          this.addScaleBar();
         })
       )
       .subscribe();
@@ -109,6 +121,11 @@ export class EsriMapService implements MapService {
 
   public removeAllMapItems() {
     this.mapView.map.layers.removeAll();
+  }
+
+  private addScaleBar() {
+    const scaleBar = new ScaleBar({view: this.mapView, container: 'scale-bar-container', unit: 'metric'});
+    this.mapView.ui.add(scaleBar);
   }
 
   public assignMapElement(container: HTMLDivElement) {
