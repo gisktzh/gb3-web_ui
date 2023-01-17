@@ -28,5 +28,17 @@ export class MapConfigurationEffects {
     {dispatch: false}
   );
 
+  public dispatchZoomChange$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(MapConfigurationActions.changeZoom),
+        tap(({zoomType}) => {
+          this.mapService.handleZoom(zoomType);
+        })
+      );
+    },
+    {dispatch: false}
+  );
+
   constructor(private readonly actions$: Actions, private readonly mapService: EsriMapService) {}
 }

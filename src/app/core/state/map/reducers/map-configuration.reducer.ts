@@ -45,6 +45,9 @@ export const mapConfigurationFeature = createFeature({
     }),
     on(MapConfigurationActions.resetExtent, (state): MapConfigurationState => {
       return {...state};
+    }),
+    on(MapConfigurationActions.changeZoom, (state, {zoomType}): MapConfigurationState => {
+      return {...state};
     })
   )
 });

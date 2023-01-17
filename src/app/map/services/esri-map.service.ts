@@ -18,14 +18,18 @@ import {GeoJSONMapperService} from '../../shared/services/geo-json-mapper.servic
 import {defaultHighlightStyles} from 'src/app/shared/configs/feature-info-config';
 import {MapService} from '../interfaces/map.service';
 import {Topic, TopicLayer} from '../../shared/interfaces/topic.interface';
-import ViewClickEvent = __esri.ViewClickEvent;
 import ScaleBar from '@arcgis/core/widgets/ScaleBar';
 import {defaultMapConfig} from '../../shared/configs/map-config';
+import {ZoomType} from '../../shared/types/zoom-type';
+import ViewClickEvent = __esri.ViewClickEvent;
 
 @Injectable({
   providedIn: 'root'
 })
 export class EsriMapService implements MapService {
+  private effectiveMaxZoom = 23;
+  private effectiveMinZoom = 0;
+
   private readonly highlightColors = {
     feature: new Color(defaultHighlightStyles.feature.color),
     outline: new Color(defaultHighlightStyles.outline.color)
@@ -57,6 +61,21 @@ export class EsriMapService implements MapService {
 
   public setScale(scale: number) {
     this.mapView.scale = scale;
+  }
+
+  public handleZoom(zoomType: ZoomType) {
+    const currentZoom = this.mapView.zoom;
+    if (zoomType === 'zoomIn') {
+      const zoomTo = Math.floor(currentZoom + 1);
+      if (zoomTo <= this.effectiveMaxZoom) {
+        this.mapView.zoom = zoomTo;
+      }
+    } else {
+      const zoomTo = Math.floor(currentZoom - 1);
+      if (zoomTo >= this.effectiveMinZoom) {
+        this.mapView.zoom = zoomTo;
+      }
+    }
   }
 
   public addTopic(topic: Topic) {
@@ -195,8 +214,28 @@ export class EsriMapService implements MapService {
       }
     );
 
-    reactiveUtils.whenOnce(() => this.mapView.ready).then(() => this.store.dispatch(MapConfigurationActions.setReady()));
+    reactiveUtils
+      .whenOnce(() => this.mapView.ready)
+      .then(() => {
+        this.store.dispatch(MapConfigurationActions.setReady());
+      });
+
+    reactiveUtils
+      .whenOnce(() => this.mapView.constraints.effectiveMaxZoom !== -1)
+      .then(() => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.effectiveMaxZoom = this.mapView.constraints.effectiveMaxZoom!;
+      });
+
+    reactiveUtils
+      .whenOnce(() => this.mapView.constraints.effectiveMinZoom !== -1)
+      .then(() => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.effectiveMinZoom = this.mapView.constraints.effectiveMinZoom!;
+      });
   }
+
+  private setEffectiveZoomLevels() {}
 
   private dispatchFeatureInfoRequest(x: number, y: number) {
     this.store.dispatch(FeatureInfoActions.sendRequest({x, y}));

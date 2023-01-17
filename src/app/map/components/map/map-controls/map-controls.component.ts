@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {MapConfigurationActions} from '../../../../core/state/map/actions/map-configuration.actions';
-import {MapConfigurationEffects} from '../../../../core/state/map/effects/map-configuration.effects';
+import {ZoomType} from '../../../../shared/types/zoom-type';
 
 @Component({
   selector: 'map-controls',
@@ -13,5 +13,9 @@ export class MapControlsComponent {
 
   public goToInitialExtent() {
     this.store.dispatch(MapConfigurationActions.resetExtent());
+  }
+
+  public handleZoom(zoomType: ZoomType) {
+    this.store.dispatch(MapConfigurationActions.changeZoom({zoomType}));
   }
 }

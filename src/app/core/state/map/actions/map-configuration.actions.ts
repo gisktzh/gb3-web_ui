@@ -1,4 +1,5 @@
 import {createActionGroup, emptyProps, props} from '@ngrx/store';
+import {ZoomType} from '../../../../shared/types/zoom-type';
 
 export const MapConfigurationActions = createActionGroup({
   source: 'Map Configuration',
@@ -7,6 +8,7 @@ export const MapConfigurationActions = createActionGroup({
     'Set Map Extent': props<{x: number; y: number; scale: number}>(),
     'Set Ready': emptyProps(),
     'Set Scale': props<{scale: number}>(),
-    'Reset Extent': emptyProps()
+    'Reset Extent': emptyProps(),
+    'Change Zoom': props<{zoomType: ZoomType}>()
   }
 });

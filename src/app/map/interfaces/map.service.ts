@@ -1,5 +1,6 @@
 import {Geometry} from 'geojson';
 import {Topic, TopicLayer} from '../../shared/interfaces/topic.interface';
+import {ZoomType} from '../../shared/types/zoom-type';
 
 export interface MapService {
   init(): void;
@@ -7,6 +8,7 @@ export interface MapService {
 
   setScale(scale: number): void;
   resetExtent(): void;
+  handleZoom(zoomType: ZoomType): void;
 
   addTopic(topic: Topic): void;
   addTopicLayer(topic: Topic, layer: TopicLayer): void;
