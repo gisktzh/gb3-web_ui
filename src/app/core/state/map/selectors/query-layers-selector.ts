@@ -6,16 +6,9 @@ export const selectQueryLayers = createSelector(selectActiveMapItems, (activeMap
   const queryLayers: QueryLayer[] = [];
 
   activeMapItems.map((mapItem) => {
-    const layersToQuery: string[] = [];
-    if (mapItem.layer) {
-      if (mapItem.layer.queryable) {
-        layersToQuery.push(mapItem.layer.layer);
-      }
-    } else {
-      mapItem.topic.layers.filter((layer) => layer.queryable).forEach((layer) => layersToQuery.push(layer.layer));
-    }
+    const layersToQuery: string[] = mapItem.layers.filter((layer) => layer.queryable).map((layer) => layer.layer);
     const queryLayer: QueryLayer = {
-      topic: mapItem.topic.topic,
+      topic: mapItem.topic,
       layersToQuery: layersToQuery.join(',')
     };
 
