@@ -1,14 +1,15 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {EsriMapService} from '../../services/esri-map.service';
-import {CdkDragDrop} from '@angular/cdk/drag-drop';
+import {CdkDrag, CdkDragDrop} from '@angular/cdk/drag-drop';
 import {MatSliderChange} from '@angular/material/slider';
-import Collection from '@arcgis/core/core/Collection';
 import {Store} from '@ngrx/store';
 import {ActiveMapItemActions} from '../../../core/state/map/actions/active-map-item.actions';
 import {selectActiveMapItems} from '../../../core/state/map/reducers/active-map-item.reducer';
 import {Subscription} from 'rxjs';
 import {ActiveMapItem} from '../../models/active-map-item.model';
 import {LegendActions} from '../../../core/state/map/actions/legend.actions';
+import {LoadingState} from '../../../shared/enums/loading-state';
+import {TopicLayer} from '../../../shared/interfaces/topic.interface';
 
 @Component({
   selector: 'active-map-items-widget',
@@ -19,14 +20,20 @@ export class ActiveMapItemsWidgetComponent implements OnInit, OnDestroy {
   private readonly activeMapItems$ = this.store.select(selectActiveMapItems);
   private readonly subscription: Subscription = new Subscription();
 
-  private activeMapItems: ActiveMapItem[] = [];
+  private _activeMapItems: ActiveMapItem[] = [];
+
+  public readonly LOADING_STATE = LoadingState;
 
   constructor(private readonly mapService: EsriMapService, private readonly store: Store) {}
+
+  public get activeMapItems(): ActiveMapItem[] {
+    return this._activeMapItems;
+  }
 
   public ngOnInit() {
     this.subscription.add(
       this.activeMapItems$.subscribe((currentActiveMapItems) => {
-        this.activeMapItems = currentActiveMapItems;
+        this._activeMapItems = currentActiveMapItems;
       })
     );
   }
@@ -35,46 +42,41 @@ export class ActiveMapItemsWidgetComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  public get layerViews(): __esri.Collection<__esri.LayerView> {
-    return this.mapService.mapView.layerViews;
+  public trackByMapItemId(index: number, item: ActiveMapItem) {
+    return item.id;
   }
 
-  // TODO: this creates a lot of calculations as Angular will evaluate functions inside HTML a lot
-  public getSubLayers(layer: __esri.Layer): __esri.Collection<__esri.WMSSublayer> {
-    const wmsLayer = layer as __esri.WMSLayer;
-    return wmsLayer ? wmsLayer.sublayers : new Collection<__esri.WMSSublayer>();
+  public trackByLayerId(index: number, item: TopicLayer) {
+    return item.id;
   }
 
-  public drop($event: CdkDragDrop<any>) {
-    this.layerViews.reorder(this.layerViews.getItemAt($event.previousIndex), $event.currentIndex);
+  public dropMapItem($event: CdkDragDrop<CdkDrag>) {
+    this.store.dispatch(
+      ActiveMapItemActions.reorderActiveMapItem({previousIndex: $event.previousIndex, currentIndex: $event.currentIndex})
+    );
   }
 
-  public onOpacitySliderChange($event: MatSliderChange, layerView: __esri.LayerView) {
-    layerView.layer.opacity = $event.value ?? 0;
+  public onOpacitySliderChange($event: MatSliderChange, activeMapItem: ActiveMapItem) {
+    const opacity = $event.value ?? 1;
+    this.store.dispatch(ActiveMapItemActions.setOpacity({opacity, activeMapItem}));
   }
 
-  public removeLayer(layer: __esri.Layer) {
-    // TODO this is not a clean implementation yet; it should be only about active map items (topics/single layers) here and not the Esri layers
-    // TODO 'id' is not unique in case of multiple single layers
-    const topicToBeRemoved = this.activeMapItems.find((amt) => amt.id === layer.id);
-    if (topicToBeRemoved) {
-      this.store.dispatch(ActiveMapItemActions.removeActiveMapItem(topicToBeRemoved));
-    }
+  public removeActiveMapItem(activeMapItem: ActiveMapItem) {
+    this.store.dispatch(ActiveMapItemActions.removeActiveMapItem(activeMapItem));
   }
 
-  public removeAllLayers() {
+  public removeAllActiveMapItems() {
     this.store.dispatch(ActiveMapItemActions.removeAllActiveMapItems());
   }
 
-  public toggleLayerVisibility(layerView: __esri.LayerView) {
-    layerView.visible = !layerView.visible;
+  public toggleMapItemVisibility(activeMapItem: ActiveMapItem) {
+    this.store.dispatch(ActiveMapItemActions.setVisibility({visible: !activeMapItem.visible, activeMapItem}));
   }
 
-  // TODO this should be a generic Layer and not a WMSSubLayer to ensure that we are compatible with other types of maps later
-  public toggleSubLayerVisibility(subLayer: __esri.WMSSublayer, parentLayer: __esri.Layer) {
-    if (parentLayer.visible) {
-      // only allow toggle if parent is visible
-      subLayer.visible = !subLayer.visible;
+  public toggleSublayerVisibility(activeMapItem: ActiveMapItem, layerId: number) {
+    const sublayer = activeMapItem.layers.find((l) => l.id === layerId);
+    if (sublayer) {
+      this.store.dispatch(ActiveMapItemActions.setSublayerVisibility({visible: !sublayer.visible, activeMapItem, layerId}));
     }
   }
 
