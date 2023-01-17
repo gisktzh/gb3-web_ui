@@ -124,13 +124,16 @@ export class EsriMapService implements MapService {
         first(),
         tap((config: MapConfigurationState) => {
           const {x, y} = config.center;
+          const {minScale, maxScale} = config.scaleSettings;
           const {scale, srsId} = config;
           this._mapView = new EsriMapView({
             map: map,
             scale: scale,
             center: new EsriPoint({x, y, spatialReference: new SpatialReference({wkid: srsId})}),
             constraints: {
-              snapToZoom: false
+              snapToZoom: false,
+              minScale: minScale,
+              maxScale: maxScale
             }
           });
           this.attachMapListeners();

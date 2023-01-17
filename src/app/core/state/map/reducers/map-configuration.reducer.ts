@@ -9,13 +9,15 @@ export interface MapConfigurationState {
   scale: number;
   srsId: number;
   ready: boolean;
+  scaleSettings: {minScale: number; maxScale: number};
 }
 
 export const initialState: MapConfigurationState = {
   center: defaultMapConfig.center,
   scale: defaultMapConfig.scale,
   srsId: defaultMapConfig.srsId,
-  ready: defaultMapConfig.ready
+  ready: defaultMapConfig.ready,
+  scaleSettings: defaultMapConfig.scaleSettings
 };
 
 export const mapConfigurationFeature = createFeature({

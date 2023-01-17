@@ -7,5 +7,9 @@ export const defaultMapConfig: MapConfigurationState = {
     y: 1248390.0
   },
   scale: 50000,
-  ready: false
+  ready: false,
+  scaleSettings: {
+    minScale: 1_500_000,
+    maxScale: 100
+  }
 };
