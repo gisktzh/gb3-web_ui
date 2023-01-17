@@ -17,7 +17,7 @@
   }
 
   .expansion-panel-header:hover {
-    .layer-drag-handle {
+    .layer__drag-handle {
       visibility: visible;
     }
 
@@ -34,7 +34,7 @@
     }
   }
 
-  .sublayer-item:hover {
+  .sublayer:hover {
     .layer-image {
       visibility: hidden;
     }
@@ -42,9 +42,13 @@
     .layer-visibility-image {
       display: inline-block;
     }
+
+    .sublayer__drag-handle {
+      visibility: visible;
+    }
   }
 
-  .layer-drag-handle {
+  .layer__drag-handle {
     visibility: hidden;
     margin-top: 8px;
   }
@@ -81,10 +85,15 @@
     }
   }
 
-  .sublayer-item {
+  .sublayer {
     display: flex;
     margin-left: 56px;
     padding: 0 8px;
+  }
+
+  .sublayer__drag-handle {
+    visibility: hidden;
+    margin-top: 8px;
   }
 
   .layer-settings {

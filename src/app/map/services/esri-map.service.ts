@@ -17,6 +17,10 @@ import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import {GeoJSONMapperService} from '../../shared/services/geo-json-mapper.service';
 import {defaultHighlightStyles} from 'src/app/shared/configs/feature-info-config';
 import {MapService} from '../interfaces/map.service';
+import {ActiveMapItem} from '../models/active-map-item.model';
+import {ActiveMapItemActions} from '../../core/state/map/actions/active-map-item.actions';
+import {LoadingState} from '../../shared/enums/loading-state';
+import WMSLayer from '@arcgis/core/layers/WMSLayer';
 import {Topic, TopicLayer} from '../../shared/interfaces/topic.interface';
 import ScaleBar from '@arcgis/core/widgets/ScaleBar';
 import {defaultMapConfig} from '../../shared/configs/map-config';
@@ -29,11 +33,13 @@ import ViewClickEvent = __esri.ViewClickEvent;
 export class EsriMapService implements MapService {
   private effectiveMaxZoom = 23;
   private effectiveMinZoom = 0;
+  // TODO this should be moved to a config file
 
   private readonly highlightColors = {
     feature: new Color(defaultHighlightStyles.feature.color),
     outline: new Color(defaultHighlightStyles.outline.color)
   };
+  // TODO this should be moved to a config file
   private readonly highlightStyles = new Map<__esri.Geometry['type'], __esri.Symbol>([
     [
       'polyline',
@@ -55,7 +61,7 @@ export class EsriMapService implements MapService {
 
   private _mapView!: __esri.MapView;
 
-  public get mapView(): __esri.MapView {
+  private get mapView(): __esri.MapView {
     return this._mapView;
   }
 
@@ -76,64 +82,6 @@ export class EsriMapService implements MapService {
         this.mapView.zoom = zoomTo;
       }
     }
-  }
-
-  public addTopic(topic: Topic) {
-    if (this.getLayer(topic.topic)) {
-      return;
-    }
-
-    const esriLayer: __esri.Layer = new EsriWMSLayer({
-      id: topic.topic,
-      title: topic.title,
-      url: topic.wmsUrl,
-      sublayers: topic.layers.map((layer) => {
-        return {
-          id: layer.id,
-          name: layer.layer,
-          title: layer.title
-        } as __esri.WMSSublayerProperties;
-      })
-    });
-    this.mapView.map.layers.add(esriLayer);
-  }
-
-  public addTopicLayer(topic: Topic, layer: TopicLayer) {
-    if (this.getLayer(layer.layer)) {
-      return;
-    }
-
-    const esriLayer: __esri.Layer = new EsriWMSLayer({
-      id: layer.layer,
-      title: layer.title,
-      url: topic.wmsUrl,
-      sublayers: [
-        {
-          id: layer.id,
-          name: layer.layer,
-          title: layer.title
-        } as __esri.WMSSublayerProperties
-      ]
-    });
-    this.mapView.map.layers.add(esriLayer);
-  }
-
-  public removeTopic(topic: Topic) {
-    const esriLayer = this.getLayer(topic.topic);
-    if (esriLayer) {
-      this.mapView.map.layers.remove(esriLayer);
-    }
-  }
-
-  public removeTopicLayer(topic: Topic, layer: TopicLayer) {
-    const esriLayer = this.getLayer(layer.layer);
-    if (esriLayer) {
-      this.mapView.map.layers.remove(esriLayer);
-    }
-  }
-
-  public removeAllTopics() {
-    this.mapView.map.layers.removeAll();
   }
 
   public init(): void {
@@ -157,11 +105,43 @@ export class EsriMapService implements MapService {
               maxScale: maxScale
             }
           });
-          this.attachMapListeners();
+          this.attachMapViewListeners();
           this.addScaleBar();
         })
       )
       .subscribe();
+  }
+
+  public addMapItem(mapItem: ActiveMapItem) {
+    if (this.findEsriLayer(mapItem.id)) {
+      return;
+    }
+
+    const esriLayer: __esri.Layer = new EsriWMSLayer({
+      id: mapItem.id,
+      title: mapItem.title,
+      url: mapItem.url,
+      sublayers: mapItem.layers.map((layer) => {
+        return {
+          id: layer.id,
+          name: layer.layer,
+          title: layer.title
+        } as __esri.WMSSublayerProperties;
+      })
+    });
+    this.attachLayerListeners(esriLayer);
+    this.mapView.map.layers.add(esriLayer, 0);
+  }
+
+  public removeMapItem(id: string) {
+    const esriLayer = this.findEsriLayer(id);
+    if (esriLayer) {
+      this.mapView.map.layers.remove(esriLayer);
+    }
+  }
+
+  public removeAllMapItems() {
+    this.mapView.map.layers.removeAll();
   }
 
   public assignMapElement(container: HTMLDivElement) {
@@ -180,6 +160,20 @@ export class EsriMapService implements MapService {
     this.mapView.graphics.removeAll();
   }
 
+  public setOpacity(opacity: number, mapItem: ActiveMapItem): void {
+    const esriLayer = this.findEsriLayer(mapItem.id);
+    if (esriLayer) {
+      esriLayer.opacity = opacity;
+    }
+  }
+
+  public setVisibility(visible: boolean, mapItem: ActiveMapItem): void {
+    const esriLayer = this.findEsriLayer(mapItem.id);
+    if (esriLayer) {
+      esriLayer.visible = visible;
+    }
+  }
+
   public resetExtent() {
     const {
       center: {x, y},
@@ -190,16 +184,40 @@ export class EsriMapService implements MapService {
     this.mapView.scale = scale;
   }
 
+  public setSublayerVisibility(visible: boolean, mapItem: ActiveMapItem, layerId: number) {
+    const esriLayer = this.findEsriLayer(mapItem.id);
+    if (esriLayer && esriLayer instanceof WMSLayer) {
+      const esriSubLayer = esriLayer.sublayers.find((sl) => sl.id === layerId);
+      if (esriSubLayer) {
+        esriSubLayer.visible = visible;
+      }
+    }
+  }
+
+  public reorderMapItem(previousIndex: number, currentIndex: number) {
+    // use the reverse indices so that the item with the lowest index has the highest visibility (it's on top) and vice versa
+    const reversePreviousIndex = this.mapView.layerViews.length - 1 - previousIndex;
+    const reverseCurrentIndex = this.mapView.layerViews.length - 1 - currentIndex;
+    this.mapView.layerViews.reorder(this.mapView.layerViews.getItemAt(reversePreviousIndex), reverseCurrentIndex);
+  }
+
+  public reorderSublayer(mapItem: ActiveMapItem, previousIndex: number, currentIndex: number) {
+    const esriLayer = this.findEsriLayer(mapItem.id);
+    if (esriLayer && esriLayer instanceof WMSLayer) {
+      esriLayer.sublayers.reorder(esriLayer.sublayers.getItemAt(previousIndex), currentIndex);
+    }
+  }
+
   private addScaleBar() {
     const scaleBar = new ScaleBar({view: this.mapView, container: 'scale-bar-container', unit: 'metric'});
     this.mapView.ui.add(scaleBar);
   }
 
-  private getLayer(id: string): __esri.Layer {
+  private findEsriLayer(id: string): __esri.Layer {
     return this.mapView.map.layers.find((layer) => layer.id === id);
   }
 
-  private attachMapListeners() {
+  private attachMapViewListeners() {
     reactiveUtils.when(
       () => this.mapView.stationary,
       () => this.updateMapConfiguration()
@@ -236,6 +254,32 @@ export class EsriMapService implements MapService {
   }
 
   private setEffectiveZoomLevels() {}
+
+  private attachLayerListeners(esriLayer: __esri.Layer) {
+    reactiveUtils.when(
+      () => esriLayer.loadStatus,
+      (loadStatus) => {
+        const loadingState = this.transformLoadStatusToLoadingState(loadStatus);
+        this.store.dispatch(ActiveMapItemActions.setLoadingState({loadingState, id: esriLayer.id}));
+      }
+    );
+  }
+
+  private transformLoadStatusToLoadingState(loadStatus: 'not-loaded' | 'loading' | 'failed' | 'loaded' | undefined): LoadingState {
+    if (!loadStatus) {
+      return LoadingState.UNDEFINED;
+    }
+    switch (loadStatus) {
+      case 'not-loaded':
+        return LoadingState.UNDEFINED;
+      case 'loading':
+        return LoadingState.LOADING;
+      case 'failed':
+        return LoadingState.UNDEFINED;
+      case 'loaded':
+        return LoadingState.LOADED;
+    }
+  }
 
   private dispatchFeatureInfoRequest(x: number, y: number) {
     this.store.dispatch(FeatureInfoActions.sendRequest({x, y}));

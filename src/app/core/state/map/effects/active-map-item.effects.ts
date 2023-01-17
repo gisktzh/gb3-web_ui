@@ -11,13 +11,7 @@ export class ActiveMapItemEffects {
       return this.actions$.pipe(
         ofType(ActiveMapItemActions.addActiveMapItem),
         tap((action) => {
-          if (action.layer) {
-            // add single layer
-            this.mapService.addTopicLayer(action.topic, action.layer);
-          } else {
-            // add whole topic
-            this.mapService.addTopic(action.topic);
-          }
+          this.mapService.addMapItem(action);
         })
       );
     },
@@ -29,13 +23,7 @@ export class ActiveMapItemEffects {
       return this.actions$.pipe(
         ofType(ActiveMapItemActions.removeActiveMapItem),
         tap((action) => {
-          if (action.layer) {
-            // remove single layer
-            this.mapService.removeTopicLayer(action.topic, action.layer);
-          } else {
-            // remove whole topic
-            this.mapService.removeTopic(action.topic);
-          }
+          this.mapService.removeMapItem(action.id);
         })
       );
     },
@@ -47,7 +35,67 @@ export class ActiveMapItemEffects {
       return this.actions$.pipe(
         ofType(ActiveMapItemActions.removeAllActiveMapItems),
         tap((action) => {
-          this.mapService.removeAllTopics();
+          this.mapService.removeAllMapItems();
+        })
+      );
+    },
+    {dispatch: false}
+  );
+
+  public dispatchActiveMapItemSetOpacityEffect$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(ActiveMapItemActions.setOpacity),
+        tap((action) => {
+          this.mapService.setOpacity(action.opacity, action.activeMapItem);
+        })
+      );
+    },
+    {dispatch: false}
+  );
+
+  public dispatchActiveMapItemSetVisibilityEffect$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(ActiveMapItemActions.setVisibility),
+        tap((action) => {
+          this.mapService.setVisibility(action.visible, action.activeMapItem);
+        })
+      );
+    },
+    {dispatch: false}
+  );
+
+  public dispatchActiveMapItemSetSublayerVisibilityEffect$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(ActiveMapItemActions.setSublayerVisibility),
+        tap((action) => {
+          this.mapService.setSublayerVisibility(action.visible, action.activeMapItem, action.layerId);
+        })
+      );
+    },
+    {dispatch: false}
+  );
+
+  public dispatchActiveMapItemReorderActiveMapItemEffect$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(ActiveMapItemActions.reorderActiveMapItem),
+        tap((action) => {
+          this.mapService.reorderMapItem(action.previousIndex, action.currentIndex);
+        })
+      );
+    },
+    {dispatch: false}
+  );
+
+  public dispatchActiveMapItemReorderSublayerEffect$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(ActiveMapItemActions.reorderSublayer),
+        tap((action) => {
+          this.mapService.reorderSublayer(action.activeMapItem, action.previousIndex, action.currentIndex);
         })
       );
     },
