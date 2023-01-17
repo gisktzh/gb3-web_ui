@@ -161,10 +161,7 @@ export class EsriMapService implements MapService {
   public reorderSublayer(mapItem: ActiveMapItem, previousIndex: number, currentIndex: number) {
     const esriLayer = this.findEsriLayer(mapItem.id);
     if (esriLayer && esriLayer instanceof WMSLayer) {
-      // use the reverse indices so that the item with the lowest index has the highest visibility (it's on top) and vice versa
-      const reversePreviousIndex = esriLayer.sublayers.length - 1 - previousIndex;
-      const reverseCurrentIndex = esriLayer.sublayers.length - 1 - currentIndex;
-      esriLayer.sublayers.reorder(esriLayer.sublayers.getItemAt(reversePreviousIndex), reverseCurrentIndex);
+      esriLayer.sublayers.reorder(esriLayer.sublayers.getItemAt(previousIndex), currentIndex);
     }
   }
 
@@ -191,11 +188,9 @@ export class EsriMapService implements MapService {
   }
 
   private attachLayerListeners(esriLayer: __esri.Layer) {
-    console.warn(`before: ${esriLayer.loadStatus}`);
     reactiveUtils.when(
       () => esriLayer.loadStatus,
       (loadStatus) => {
-        console.warn(`event: ${esriLayer.loadStatus}`);
         const loadingState = this.transformLoadStatusToLoadingState(loadStatus);
         this.store.dispatch(ActiveMapItemActions.setLoadingState({loadingState, id: esriLayer.id}));
       }

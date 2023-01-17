@@ -56,6 +56,12 @@ export class ActiveMapItemsWidgetComponent implements OnInit, OnDestroy {
     );
   }
 
+  public dropSublayer($event: CdkDragDrop<CdkDrag>, activeMapItem: ActiveMapItem) {
+    this.store.dispatch(
+      ActiveMapItemActions.reorderSublayer({activeMapItem, previousIndex: $event.previousIndex, currentIndex: $event.currentIndex})
+    );
+  }
+
   public onOpacitySliderChange($event: MatSliderChange, activeMapItem: ActiveMapItem) {
     const opacity = $event.value ?? 1;
     this.store.dispatch(ActiveMapItemActions.setOpacity({opacity, activeMapItem}));

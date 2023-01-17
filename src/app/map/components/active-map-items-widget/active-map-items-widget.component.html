@@ -19,7 +19,7 @@
       <div *ngFor="let activeMapItem of activeMapItems; trackBy: trackByMapItemId" class="panel">
         <mat-expansion-panel cdkDrag hideToggle="true" #layerExpansionPanel>
           <mat-expansion-panel-header (click)="layerExpansionPanel.toggle()" class="expansion-panel-header">
-            <mat-icon class="layer-drag-handle" cdkDragHandle>drag_indicator</mat-icon>
+            <mat-icon class="layer__drag-handle" cdkDragHandle>drag_indicator</mat-icon>
             <button mat-button *ngIf="!layerExpansionPanel.expanded" (click)="layerExpansionPanel.open()">
               <mat-icon>chevron_right</mat-icon>
             </button>
@@ -76,17 +76,20 @@
               <mat-divider></mat-divider>
 
               <!-- Layer tree -->
-              <ng-container *ngFor="let sublayer of activeMapItem.layers; trackBy: trackByLayerId">
-                <mat-card class="sublayer-item no-shadow">
-                  <button mat-button (click)="toggleSublayerVisibility(activeMapItem, sublayer.id)" [disabled]="!activeMapItem.visible">
-                    <div class="layer-image-box">
-                      <mat-icon class="layer-image">layers</mat-icon>
-                      <mat-icon class="layer-visibility-image" [fontIcon]="sublayer.visible ? 'visibility' : 'visibility_off'"></mat-icon>
-                    </div>
-                  </button>
-                  <p>{{ sublayer.title }}</p>
-                </mat-card>
-              </ng-container>
+              <div cdkDropList (cdkDropListDropped)="dropSublayer($event, activeMapItem)">
+                <ng-container *ngFor="let sublayer of activeMapItem.layers; trackBy: trackByLayerId">
+                  <mat-card class="sublayer no-shadow" cdkDrag>
+                    <mat-icon class="sublayer__drag-handle" cdkDragHandle>drag_indicator</mat-icon>
+                    <button mat-button (click)="toggleSublayerVisibility(activeMapItem, sublayer.id)" [disabled]="!activeMapItem.visible">
+                      <div class="layer-image-box">
+                        <mat-icon class="layer-image">layers</mat-icon>
+                        <mat-icon class="layer-visibility-image" [fontIcon]="sublayer.visible ? 'visibility' : 'visibility_off'"></mat-icon>
+                      </div>
+                    </button>
+                    <p>{{ sublayer.title }}</p>
+                  </mat-card>
+                </ng-container>
+              </div>
             </ng-container>
           </ng-template>
         </mat-expansion-panel>
