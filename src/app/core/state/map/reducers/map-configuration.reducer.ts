@@ -9,7 +9,9 @@ export interface MapConfigurationState {
   scale: number;
   srsId: number;
   ready: boolean;
-  scaleSettings: {minScale: number; maxScale: number};
+  scaleSettings: {minScale: number; maxScale: number; calculatedMinScale: number; calculatedMaxScale: number};
+  isMaxZoomedIn: boolean;
+  isMaxZoomedOut: boolean;
 }
 
 export const initialState: MapConfigurationState = {
@@ -17,7 +19,9 @@ export const initialState: MapConfigurationState = {
   scale: defaultMapConfig.scale,
   srsId: defaultMapConfig.srsId,
   ready: defaultMapConfig.ready,
-  scaleSettings: defaultMapConfig.scaleSettings
+  scaleSettings: defaultMapConfig.scaleSettings,
+  isMaxZoomedIn: defaultMapConfig.isMaxZoomedIn,
+  isMaxZoomedOut: defaultMapConfig.isMaxZoomedOut
 };
 
 export const mapConfigurationFeature = createFeature({
@@ -35,10 +39,16 @@ export const mapConfigurationFeature = createFeature({
       return {...state, ...initialExtent};
     }),
     on(MapConfigurationActions.setMapExtent, (state, {x, y, scale}): MapConfigurationState => {
-      return {...state, center: {x, y}, scale};
+      const isMaxZoomedIn = Math.floor(scale) <= state.scaleSettings.calculatedMaxScale;
+      const isMaxZoomedOut = Math.ceil(scale) >= state.scaleSettings.calculatedMinScale;
+      return {...state, center: {x, y}, scale, isMaxZoomedIn, isMaxZoomedOut};
     }),
-    on(MapConfigurationActions.setReady, (state): MapConfigurationState => {
-      return {...state, ready: true};
+    on(MapConfigurationActions.setReady, (state, {calculatedMinScale, calculatedMaxScale}): MapConfigurationState => {
+      const scaleSettings = structuredClone(state.scaleSettings);
+      scaleSettings.calculatedMinScale = Math.round(calculatedMinScale);
+      scaleSettings.calculatedMaxScale = Math.ceil(calculatedMaxScale);
+
+      return {...state, scaleSettings, ready: true};
     }),
     on(MapConfigurationActions.setScale, (state, {scale}): MapConfigurationState => {
       return {...state, scale};
@@ -52,4 +62,14 @@ export const mapConfigurationFeature = createFeature({
   )
 });
 
-export const {name, reducer, selectMapConfigurationState, selectCenter, selectScale, selectSrsId, selectReady} = mapConfigurationFeature;
+export const {
+  name,
+  reducer,
+  selectMapConfigurationState,
+  selectCenter,
+  selectScale,
+  selectSrsId,
+  selectReady,
+  selectIsMaxZoomedIn,
+  selectIsMaxZoomedOut
+} = mapConfigurationFeature;

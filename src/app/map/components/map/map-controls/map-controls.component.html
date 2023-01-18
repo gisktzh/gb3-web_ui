@@ -1,8 +1,8 @@
 <div class="map-controls">
-  <button (click)="this.handleZoom('zoomIn')" color="primary" mat-icon-button>
+  <button (click)="this.handleZoom('zoomIn')" color="primary" mat-icon-button [disabled]="this.isMaxZoomedIn">
     <mat-icon>add</mat-icon>
   </button>
-  <button (click)="this.handleZoom('zoomOut')" color="primary" mat-icon-button>
+  <button (click)="this.handleZoom('zoomOut')" color="primary" mat-icon-button [disabled]="this.isMaxZoomedOut">
     <mat-icon>remove</mat-icon>
   </button>
   <button (click)="this.goToInitialExtent()" color="primary" mat-icon-button>

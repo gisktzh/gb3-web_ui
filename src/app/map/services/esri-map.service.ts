@@ -21,7 +21,6 @@ import {ActiveMapItem} from '../models/active-map-item.model';
 import {ActiveMapItemActions} from '../../core/state/map/actions/active-map-item.actions';
 import {LoadingState} from '../../shared/enums/loading-state';
 import WMSLayer from '@arcgis/core/layers/WMSLayer';
-import {Topic, TopicLayer} from '../../shared/interfaces/topic.interface';
 import ScaleBar from '@arcgis/core/widgets/ScaleBar';
 import {defaultMapConfig} from '../../shared/configs/map-config';
 import {ZoomType} from '../../shared/types/zoom-type';
@@ -33,8 +32,9 @@ import ViewClickEvent = __esri.ViewClickEvent;
 export class EsriMapService implements MapService {
   private effectiveMaxZoom = 23;
   private effectiveMinZoom = 0;
-  // TODO this should be moved to a config file
+  private effectiveMinScale = 0;
 
+  // TODO this should be moved to a config file
   private readonly highlightColors = {
     feature: new Color(defaultHighlightStyles.feature.color),
     outline: new Color(defaultHighlightStyles.outline.color)
@@ -70,15 +70,17 @@ export class EsriMapService implements MapService {
   }
 
   public handleZoom(zoomType: ZoomType) {
-    const currentZoom = this.mapView.zoom;
+    const currentZoom = Math.floor(this.mapView.zoom);
     if (zoomType === 'zoomIn') {
-      const zoomTo = Math.floor(currentZoom + 1);
+      const zoomTo = currentZoom + 1;
       if (zoomTo <= this.effectiveMaxZoom) {
         this.mapView.zoom = zoomTo;
       }
     } else {
-      const zoomTo = Math.floor(currentZoom - 1);
-      if (zoomTo >= this.effectiveMinZoom) {
+      const zoomTo = currentZoom - 1;
+      const currentScale = this.mapView.scale;
+      // also check for currentscale, because we might be at the lowest zoomlevel, but not yet at the lowest scale
+      if (zoomTo >= this.effectiveMinZoom || currentScale <= this.effectiveMinScale) {
         this.mapView.zoom = zoomTo;
       }
     }
@@ -235,21 +237,19 @@ export class EsriMapService implements MapService {
     reactiveUtils
       .whenOnce(() => this.mapView.ready)
       .then(() => {
-        this.store.dispatch(MapConfigurationActions.setReady());
-      });
+        /* eslint-disable @typescript-eslint/no-non-null-assertion */ // at this point, we know the values are ready
+        const {effectiveMaxScale, effectiveMinScale, effectiveMaxZoom, effectiveMinZoom} = this.mapView.constraints;
 
-    reactiveUtils
-      .whenOnce(() => this.mapView.constraints.effectiveMaxZoom !== -1)
-      .then(() => {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.effectiveMaxZoom = this.mapView.constraints.effectiveMaxZoom!;
-      });
+        this.effectiveMaxZoom = effectiveMaxZoom!;
+        this.effectiveMinZoom = effectiveMinZoom!;
+        this.effectiveMinScale = effectiveMinScale!;
 
-    reactiveUtils
-      .whenOnce(() => this.mapView.constraints.effectiveMinZoom !== -1)
-      .then(() => {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.effectiveMinZoom = this.mapView.constraints.effectiveMinZoom!;
+        this.store.dispatch(
+          MapConfigurationActions.setReady({
+            calculatedMinScale: effectiveMinScale!,
+            calculatedMaxScale: effectiveMaxScale!
+          })
+        );
       });
   }
 
