@@ -220,11 +220,10 @@ export class EsriMapService implements MapService {
     }
     switch (loadStatus) {
       case 'not-loaded':
+      case 'failed':
         return LoadingState.UNDEFINED;
       case 'loading':
         return LoadingState.LOADING;
-      case 'failed':
-        return LoadingState.UNDEFINED;
       case 'loaded':
         return LoadingState.LOADED;
     }
