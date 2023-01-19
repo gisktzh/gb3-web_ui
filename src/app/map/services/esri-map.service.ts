@@ -19,7 +19,7 @@ import {defaultHighlightStyles} from 'src/app/shared/configs/feature-info-config
 import {MapService} from '../interfaces/map.service';
 import {ActiveMapItem} from '../models/active-map-item.model';
 import {ActiveMapItemActions} from '../../core/state/map/actions/active-map-item.actions';
-import {LoadingState} from '../../shared/enums/loading-state';
+import {LoadingState} from '../../shared/types/loading-state';
 import WMSLayer from '@arcgis/core/layers/WMSLayer';
 import ScaleBar from '@arcgis/core/widgets/ScaleBar';
 import ViewClickEvent = __esri.ViewClickEvent;
@@ -216,16 +216,16 @@ export class EsriMapService implements MapService {
 
   private transformLoadStatusToLoadingState(loadStatus: 'not-loaded' | 'loading' | 'failed' | 'loaded' | undefined): LoadingState {
     if (!loadStatus) {
-      return LoadingState.UNDEFINED;
+      return 'undefined';
     }
     switch (loadStatus) {
       case 'not-loaded':
       case 'failed':
-        return LoadingState.UNDEFINED;
+        return 'undefined';
       case 'loading':
-        return LoadingState.LOADING;
+        return 'loading';
       case 'loaded':
-        return LoadingState.LOADED;
+        return 'loaded';
     }
   }
 

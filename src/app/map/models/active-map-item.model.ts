@@ -1,4 +1,4 @@
-import {LoadingState} from '../../shared/enums/loading-state';
+import {LoadingState} from '../../shared/types/loading-state';
 import {Topic, TopicLayer} from '../../shared/interfaces/topic.interface';
 import {HasLoadingState} from '../../shared/interfaces/has-loading-state.interface';
 import {HasVisibility} from '../../shared/interfaces/has-visibility.interface';
@@ -12,7 +12,7 @@ export class ActiveMapItem implements HasLoadingState, HasVisibility {
   public readonly layers: TopicLayer[];
   public readonly isSingleLayer: boolean;
 
-  public loadingState = LoadingState.UNDEFINED;
+  public loadingState: LoadingState = 'undefined';
   public visible = true;
   public opacity = 1;
 

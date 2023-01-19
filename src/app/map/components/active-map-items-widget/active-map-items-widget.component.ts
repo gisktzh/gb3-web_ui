@@ -8,7 +8,6 @@ import {selectActiveMapItems} from '../../../core/state/map/reducers/active-map-
 import {Subscription} from 'rxjs';
 import {ActiveMapItem} from '../../models/active-map-item.model';
 import {LegendActions} from '../../../core/state/map/actions/legend.actions';
-import {LoadingState} from '../../../shared/enums/loading-state';
 import {TopicLayer} from '../../../shared/interfaces/topic.interface';
 
 @Component({
@@ -21,8 +20,6 @@ export class ActiveMapItemsWidgetComponent implements OnInit, OnDestroy {
   private readonly subscription: Subscription = new Subscription();
 
   private _activeMapItems: ActiveMapItem[] = [];
-
-  public readonly LOADING_STATE = LoadingState;
 
   constructor(private readonly mapService: EsriMapService, private readonly store: Store) {}
 
