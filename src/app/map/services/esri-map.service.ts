@@ -22,7 +22,9 @@ import {ActiveMapItemActions} from '../../core/state/map/actions/active-map-item
 import {LoadingState} from '../../shared/types/loading-state';
 import WMSLayer from '@arcgis/core/layers/WMSLayer';
 import ScaleBar from '@arcgis/core/widgets/ScaleBar';
+import {ViewProcessState} from '../../shared/types/view-process-state';
 import ViewClickEvent = __esri.ViewClickEvent;
+import ViewLayerviewCreateEvent = __esri.ViewLayerviewCreateEvent;
 
 @Injectable({
   providedIn: 'root'
@@ -201,15 +203,35 @@ export class EsriMapService implements MapService {
       }
     );
 
+    reactiveUtils.on(
+      () => this.mapView,
+      'layerview-create',
+      (event: ViewLayerviewCreateEvent) => {
+        this.attachLayerViewListeners(event.layerView);
+      }
+    );
+
     reactiveUtils.whenOnce(() => this.mapView.ready).then(() => this.store.dispatch(MapConfigurationActions.setReady()));
   }
 
   private attachLayerListeners(esriLayer: __esri.Layer) {
-    reactiveUtils.when(
+    reactiveUtils.watch(
       () => esriLayer.loadStatus,
       (loadStatus) => {
         const loadingState = this.transformLoadStatusToLoadingState(loadStatus);
         this.store.dispatch(ActiveMapItemActions.setLoadingState({loadingState, id: esriLayer.id}));
+      }
+    );
+  }
+
+  private attachLayerViewListeners(esriLayerView: __esri.LayerView) {
+    reactiveUtils.watch(
+      () => esriLayerView.updating,
+      (updating) => {
+        if (esriLayerView.layer) {
+          const viewProcessState: ViewProcessState = updating ? 'updating' : 'completed';
+          this.store.dispatch(ActiveMapItemActions.setViewProcessState({viewProcessState: viewProcessState, id: esriLayerView.layer.id}));
+        }
       }
     );
   }

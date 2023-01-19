@@ -2,8 +2,10 @@ import {LoadingState} from '../../shared/types/loading-state';
 import {Topic, TopicLayer} from '../../shared/interfaces/topic.interface';
 import {HasLoadingState} from '../../shared/interfaces/has-loading-state.interface';
 import {HasVisibility} from '../../shared/interfaces/has-visibility.interface';
+import {HasViewProcessState} from '../../shared/interfaces/has-view-process-state.interface';
+import {ViewProcessState} from '../../shared/types/view-process-state';
 
-export class ActiveMapItem implements HasLoadingState, HasVisibility {
+export class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewProcessState {
   public readonly id: string;
   public readonly title: string;
   public readonly url: string;
@@ -13,6 +15,7 @@ export class ActiveMapItem implements HasLoadingState, HasVisibility {
   public readonly isSingleLayer: boolean;
 
   public loadingState: LoadingState = 'undefined';
+  public viewProcessState: ViewProcessState = 'undefined';
   public visible = true;
   public opacity = 1;
 

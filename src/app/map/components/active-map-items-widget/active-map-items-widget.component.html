@@ -60,6 +60,11 @@
               mode="determinate"
               value="100"
             ></mat-progress-bar>
+            <mat-progress-bar
+              *ngIf="activeMapItem.loadingState === 'loaded' && activeMapItem.viewProcessState === 'updating'"
+              class="layer-updating-progress"
+              mode="buffer"
+            ></mat-progress-bar>
           </mat-expansion-panel-header>
           <!-- Expansion panel content -->
           <ng-template matExpansionPanelContent>
