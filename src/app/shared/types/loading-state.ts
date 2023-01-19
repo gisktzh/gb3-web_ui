@@ -1,1 +1,1 @@
-export type LoadingState = 'undefined' | 'loading' | 'loaded';
+export type LoadingState = 'undefined' | 'error' | 'loading' | 'loaded';

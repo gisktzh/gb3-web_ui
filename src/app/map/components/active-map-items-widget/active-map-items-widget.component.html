@@ -51,7 +51,14 @@
             <mat-progress-bar
               *ngIf="activeMapItem.loadingState === 'loading'"
               class="layer-updating-progress"
-              mode="indeterminate"
+              mode="query"
+            ></mat-progress-bar>
+            <mat-progress-bar
+              *ngIf="activeMapItem.loadingState === 'error'"
+              class="layer-updating-progress"
+              color="warn"
+              mode="determinate"
+              value="100"
             ></mat-progress-bar>
           </mat-expansion-panel-header>
           <!-- Expansion panel content -->
