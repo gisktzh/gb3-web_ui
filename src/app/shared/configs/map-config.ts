@@ -13,6 +13,10 @@ export const defaultMapConfig: MapConfigurationState = {
   ready: false,
   scaleSettings: {
     minScale: MINIMUM_MAP_SCALE,
-    maxScale: MAXIMUM_MAP_SCALE
-  }
+    maxScale: MAXIMUM_MAP_SCALE,
+    calculatedMinScale: MINIMUM_MAP_SCALE,
+    calculatedMaxScale: MAXIMUM_MAP_SCALE
+  },
+  isMaxZoomedIn: false,
+  isMaxZoomedOut: false
 };

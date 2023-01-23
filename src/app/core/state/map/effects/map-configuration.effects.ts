@@ -17,5 +17,29 @@ export class MapConfigurationEffects {
     {dispatch: false}
   );
 
+  public dispatchResetScale$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(MapConfigurationActions.resetExtent),
+        tap(() => {
+          this.mapService.resetExtent();
+        })
+      );
+    },
+    {dispatch: false}
+  );
+
+  public dispatchZoomChange$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(MapConfigurationActions.changeZoom),
+        tap(({zoomType}) => {
+          this.mapService.handleZoom(zoomType);
+        })
+      );
+    },
+    {dispatch: false}
+  );
+
   constructor(private readonly actions$: Actions, @Inject(MAP_SERVICE) private readonly mapService: MapService) {}
 }

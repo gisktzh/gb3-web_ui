@@ -23,6 +23,8 @@ import {LoadingState} from '../../shared/types/loading-state';
 import WMSLayer from '@arcgis/core/layers/WMSLayer';
 import ScaleBar from '@arcgis/core/widgets/ScaleBar';
 import {ViewProcessState} from '../../shared/types/view-process-state';
+import {defaultMapConfig} from '../../shared/configs/map-config';
+import {ZoomType} from '../../shared/types/zoom-type';
 import ViewClickEvent = __esri.ViewClickEvent;
 import ViewLayerviewCreateEvent = __esri.ViewLayerviewCreateEvent;
 
@@ -30,6 +32,10 @@ import ViewLayerviewCreateEvent = __esri.ViewLayerviewCreateEvent;
   providedIn: 'root'
 })
 export class EsriMapService implements MapService {
+  private effectiveMaxZoom = 23;
+  private effectiveMinZoom = 0;
+  private effectiveMinScale = 0;
+
   // TODO this should be moved to a config file
   private readonly highlightColors = {
     feature: new Color(defaultHighlightStyles.feature.color),
@@ -48,7 +54,6 @@ export class EsriMapService implements MapService {
     ['multipoint', new SimpleMarkerSymbol({color: this.highlightColors.feature})],
     ['polygon', new SimpleFillSymbol({color: this.highlightColors.feature})]
   ]);
-
   private _mapView!: __esri.MapView;
 
   constructor(
@@ -63,6 +68,27 @@ export class EsriMapService implements MapService {
 
   public setScale(scale: number) {
     this.mapView.scale = scale;
+  }
+
+  public handleZoom(zoomType: ZoomType) {
+    const currentZoom = Math.floor(this.mapView.zoom);
+    switch (zoomType) {
+      case 'zoomIn': {
+        const zoomTo = currentZoom + 1;
+        if (zoomTo <= this.effectiveMaxZoom) {
+          this.mapView.zoom = zoomTo;
+        }
+        break;
+      }
+      case 'zoomOut': {
+        const zoomTo = currentZoom - 1;
+        const currentScale = this.mapView.scale;
+        // also check for currentscale, because we might be at the lowest zoomlevel, but not yet at the lowest scale
+        if (zoomTo >= this.effectiveMinZoom || currentScale <= this.effectiveMinScale) {
+          this.mapView.zoom = zoomTo;
+        }
+      }
+    }
   }
 
   public init(): void {
@@ -125,11 +151,6 @@ export class EsriMapService implements MapService {
     this.mapView.map.layers.removeAll();
   }
 
-  private addScaleBar() {
-    const scaleBar = new ScaleBar({view: this.mapView, container: 'scale-bar-container', unit: 'metric'});
-    this.mapView.ui.add(scaleBar);
-  }
-
   public assignMapElement(container: HTMLDivElement) {
     this.mapView.container = container;
   }
@@ -160,6 +181,16 @@ export class EsriMapService implements MapService {
     }
   }
 
+  public resetExtent() {
+    const {
+      center: {x, y},
+      srsId,
+      scale
+    } = defaultMapConfig;
+    this.mapView.center = new EsriPoint({x: x, y: y, spatialReference: new SpatialReference({wkid: srsId})});
+    this.mapView.scale = scale;
+  }
+
   public setSublayerVisibility(visible: boolean, mapItem: ActiveMapItem, layerId: number) {
     const esriLayer = this.findEsriLayer(mapItem.id);
     if (esriLayer && esriLayer instanceof WMSLayer) {
@@ -184,6 +215,11 @@ export class EsriMapService implements MapService {
     }
   }
 
+  private addScaleBar() {
+    const scaleBar = new ScaleBar({view: this.mapView, container: 'scale-bar-container', unit: 'metric'});
+    this.mapView.ui.add(scaleBar);
+  }
+
   private findEsriLayer(id: string): __esri.Layer {
     return this.mapView.map.layers.find((layer) => layer.id === id);
   }
@@ -203,6 +239,24 @@ export class EsriMapService implements MapService {
       }
     );
 
+    reactiveUtils
+      .whenOnce(() => this.mapView.ready)
+      .then(() => {
+        /* eslint-disable @typescript-eslint/no-non-null-assertion */ // at this point, we know the values are ready
+        const {effectiveMaxScale, effectiveMinScale, effectiveMaxZoom, effectiveMinZoom} = this.mapView.constraints;
+
+        this.effectiveMaxZoom = effectiveMaxZoom!;
+        this.effectiveMinZoom = effectiveMinZoom!;
+        this.effectiveMinScale = effectiveMinScale!;
+
+        this.store.dispatch(
+          MapConfigurationActions.setReady({
+            calculatedMinScale: effectiveMinScale!,
+            calculatedMaxScale: effectiveMaxScale!
+          })
+        );
+      });
+
     reactiveUtils.on(
       () => this.mapView,
       'layerview-create',
@@ -210,8 +264,6 @@ export class EsriMapService implements MapService {
         this.attachLayerViewListeners(event.layerView);
       }
     );
-
-    reactiveUtils.whenOnce(() => this.mapView.ready).then(() => this.store.dispatch(MapConfigurationActions.setReady()));
   }
 
   private attachLayerListeners(esriLayer: __esri.Layer) {
