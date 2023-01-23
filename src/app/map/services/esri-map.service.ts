@@ -27,6 +27,7 @@ import {ZoomType} from '../../shared/types/zoom-type';
 import Basemap from '@arcgis/core/Basemap';
 import {BackgroundMap} from '../../shared/interfaces/background-map.interface';
 import ViewClickEvent = __esri.ViewClickEvent;
+import TileInfo from '@arcgis/core/layers/support/TileInfo';
 
 @Injectable({
   providedIn: 'root'
@@ -228,14 +229,18 @@ export class EsriMapService implements MapService {
   }
 
   private setMapView(backgroundMap: __esri.Map, scale: number, x: number, y: number, srsId: number, minScale: number, maxScale: number) {
+    const spatialReference = new SpatialReference({wkid: srsId});
     this._mapView = new EsriMapView({
       map: backgroundMap,
       scale: scale,
-      center: new EsriPoint({x, y, spatialReference: new SpatialReference({wkid: srsId})}),
+      center: new EsriPoint({x, y, spatialReference}),
       constraints: {
         snapToZoom: false,
         minScale: minScale,
-        maxScale: maxScale
+        maxScale: maxScale,
+        lods: TileInfo.create({
+          spatialReference
+        }).lods
       }
     });
   }
