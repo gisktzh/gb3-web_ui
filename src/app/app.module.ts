@@ -1,4 +1,4 @@
-import {NgModule} from '@angular/core';
+import {InjectionToken, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 
 import {AppComponent} from './app.component';
@@ -15,6 +15,10 @@ import {FeatureInfoEffects} from './core/state/map/effects/feature-info.effects'
 import {LegendEffects} from './core/state/map/effects/legend.effects';
 import {LayerCatalogEffects} from './core/state/map/effects/layer-catalog.effects';
 import {MapConfigurationEffects} from './core/state/map/effects/map-configuration.effects';
+import {EsriMapService} from './map/services/esri-map.service';
+import {MapService} from './map/interfaces/map.service';
+
+export const MAP_SERVICE = new InjectionToken<MapService>('MapService');
 
 @NgModule({
   declarations: [AppComponent],
@@ -30,7 +34,7 @@ import {MapConfigurationEffects} from './core/state/map/effects/map-configuratio
     }),
     EffectsModule.forRoot([ActiveMapItemEffects, FeatureInfoEffects, LayerCatalogEffects, LegendEffects, MapConfigurationEffects])
   ],
-  providers: [],
+  providers: [{provide: MAP_SERVICE, useClass: EsriMapService}],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

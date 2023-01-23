@@ -1,5 +1,4 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {EsriMapService} from '../../services/esri-map.service';
 import {CdkDrag, CdkDragDrop} from '@angular/cdk/drag-drop';
 import {MatSliderChange} from '@angular/material/slider';
 import {Store} from '@ngrx/store';
@@ -21,7 +20,7 @@ export class ActiveMapItemsWidgetComponent implements OnInit, OnDestroy {
 
   private _activeMapItems: ActiveMapItem[] = [];
 
-  constructor(private readonly mapService: EsriMapService, private readonly store: Store) {}
+  constructor(private readonly store: Store) {}
 
   public get activeMapItems(): ActiveMapItem[] {
     return this._activeMapItems;

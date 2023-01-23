@@ -1,8 +1,9 @@
-import {Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
-import {EsriMapService} from '../../../../map/services/esri-map.service';
 import {tap} from 'rxjs';
+import {MAP_SERVICE} from '../../../../app.module';
+import {MapService} from '../../../../map/interfaces/map.service';
 
 @Injectable()
 export class ActiveMapItemEffects {
@@ -102,5 +103,5 @@ export class ActiveMapItemEffects {
     {dispatch: false}
   );
 
-  constructor(private readonly actions$: Actions, private readonly mapService: EsriMapService) {}
+  constructor(private readonly actions$: Actions, @Inject(MAP_SERVICE) private readonly mapService: MapService) {}
 }
