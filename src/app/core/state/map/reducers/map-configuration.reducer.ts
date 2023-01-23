@@ -1,6 +1,7 @@
 import {createFeature, createReducer, on} from '@ngrx/store';
 import {MapConfigurationActions} from '../actions/map-configuration.actions';
 import {defaultMapConfig} from '../../../../shared/configs/map-config';
+import {BackgroundMap} from '../../../../shared/interfaces/background-map.interface';
 
 export const mapConfigurationFeatureKey = 'mapConfiguration';
 
@@ -10,6 +11,7 @@ export interface MapConfigurationState {
   srsId: number;
   ready: boolean;
   scaleSettings: {minScale: number; maxScale: number};
+  backgroundMap: BackgroundMap;
 }
 
 export const initialState: MapConfigurationState = {
@@ -17,7 +19,8 @@ export const initialState: MapConfigurationState = {
   scale: defaultMapConfig.scale,
   srsId: defaultMapConfig.srsId,
   ready: defaultMapConfig.ready,
-  scaleSettings: defaultMapConfig.scaleSettings
+  scaleSettings: defaultMapConfig.scaleSettings,
+  backgroundMap: defaultMapConfig.backgroundMap
 };
 
 export const mapConfigurationFeature = createFeature({

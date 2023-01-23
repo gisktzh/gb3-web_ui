@@ -1,4 +1,5 @@
 import {MapConfigurationState} from '../../core/state/map/reducers/map-configuration.reducer';
+import {defaultBackgroundMaps} from './base-map-config';
 
 export const MINIMUM_MAP_SCALE = 1_500_000;
 export const MAXIMUM_MAP_SCALE = 100;
@@ -14,5 +15,6 @@ export const defaultMapConfig: MapConfigurationState = {
   scaleSettings: {
     minScale: MINIMUM_MAP_SCALE,
     maxScale: MAXIMUM_MAP_SCALE
-  }
+  },
+  backgroundMap: defaultBackgroundMaps[0]
 };

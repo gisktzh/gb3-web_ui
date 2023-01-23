@@ -22,6 +22,8 @@ import {ActiveMapItemActions} from '../../core/state/map/actions/active-map-item
 import {LoadingState} from '../../shared/enums/loading-state';
 import WMSLayer from '@arcgis/core/layers/WMSLayer';
 import ScaleBar from '@arcgis/core/widgets/ScaleBar';
+import Basemap from '@arcgis/core/Basemap';
+import {BackgroundMap} from '../../shared/interfaces/background-map.interface';
 import ViewClickEvent = __esri.ViewClickEvent;
 
 @Injectable({
@@ -46,7 +48,6 @@ export class EsriMapService implements MapService {
     ['multipoint', new SimpleMarkerSymbol({color: this.highlightColors.feature})],
     ['polygon', new SimpleFillSymbol({color: this.highlightColors.feature})]
   ]);
-
   private _mapView!: __esri.MapView;
 
   constructor(
@@ -64,8 +65,6 @@ export class EsriMapService implements MapService {
   }
 
   public init(): void {
-    const map = new EsriMap({basemap: 'hybrid'});
-
     this.store
       .select(selectMapConfigurationState)
       .pipe(
@@ -73,17 +72,9 @@ export class EsriMapService implements MapService {
         tap((config: MapConfigurationState) => {
           const {x, y} = config.center;
           const {minScale, maxScale} = config.scaleSettings;
-          const {scale, srsId} = config;
-          this._mapView = new EsriMapView({
-            map: map,
-            scale: scale,
-            center: new EsriPoint({x, y, spatialReference: new SpatialReference({wkid: srsId})}),
-            constraints: {
-              snapToZoom: false,
-              minScale: minScale,
-              maxScale: maxScale
-            }
-          });
+          const {scale, srsId, backgroundMap} = config;
+          const map = this.createMap(backgroundMap);
+          this.setMapView(map, scale, x, y, srsId, minScale, maxScale);
           this.attachMapViewListeners();
           this.addScaleBar();
         })
@@ -121,11 +112,6 @@ export class EsriMapService implements MapService {
 
   public removeAllMapItems() {
     this.mapView.map.layers.removeAll();
-  }
-
-  private addScaleBar() {
-    const scaleBar = new ScaleBar({view: this.mapView, container: 'scale-bar-container', unit: 'metric'});
-    this.mapView.ui.add(scaleBar);
   }
 
   public assignMapElement(container: HTMLDivElement) {
@@ -180,6 +166,41 @@ export class EsriMapService implements MapService {
     if (esriLayer && esriLayer instanceof WMSLayer) {
       esriLayer.sublayers.reorder(esriLayer.sublayers.getItemAt(previousIndex), currentIndex);
     }
+  }
+
+  private createMap(backgroundMap: BackgroundMap): __esri.Map {
+    return new EsriMap({
+      basemap: new Basemap({
+        baseLayers: [
+          new WMSLayer({
+            url: backgroundMap.url,
+            title: backgroundMap.title,
+            spatialReference: new SpatialReference({wkid: backgroundMap.srsId}),
+            sublayers: backgroundMap.layers.map((l) => ({name: l.name}))
+          })
+        ],
+        title: backgroundMap.title,
+        id: backgroundMap.title // todo: replace with identifier
+      })
+    });
+  }
+
+  private setMapView(backgroundMap: __esri.Map, scale: number, x: number, y: number, srsId: number, minScale: number, maxScale: number) {
+    this._mapView = new EsriMapView({
+      map: backgroundMap,
+      scale: scale,
+      center: new EsriPoint({x, y, spatialReference: new SpatialReference({wkid: srsId})}),
+      constraints: {
+        snapToZoom: false,
+        minScale: minScale,
+        maxScale: maxScale
+      }
+    });
+  }
+
+  private addScaleBar() {
+    const scaleBar = new ScaleBar({view: this.mapView, container: 'scale-bar-container', unit: 'metric'});
+    this.mapView.ui.add(scaleBar);
   }
 
   private findEsriLayer(id: string): __esri.Layer {
