@@ -52,14 +52,13 @@ export class EsriMapService implements MapService {
     ['multipoint', new SimpleMarkerSymbol({color: this.highlightColors.feature})],
     ['polygon', new SimpleFillSymbol({color: this.highlightColors.feature})]
   ]);
+  private _mapView!: __esri.MapView;
 
   constructor(
     private readonly store: Store,
     private readonly transformationService: TransformationService,
     private readonly geoJSONMapperService: GeoJSONMapperService
   ) {}
-
-  private _mapView!: __esri.MapView;
 
   private get mapView(): __esri.MapView {
     return this._mapView;
@@ -71,17 +70,21 @@ export class EsriMapService implements MapService {
 
   public handleZoom(zoomType: ZoomType) {
     const currentZoom = Math.floor(this.mapView.zoom);
-    if (zoomType === 'zoomIn') {
-      const zoomTo = currentZoom + 1;
-      if (zoomTo <= this.effectiveMaxZoom) {
-        this.mapView.zoom = zoomTo;
+    switch (zoomType) {
+      case 'zoomIn': {
+        const zoomTo = currentZoom + 1;
+        if (zoomTo <= this.effectiveMaxZoom) {
+          this.mapView.zoom = zoomTo;
+        }
+        break;
       }
-    } else {
-      const zoomTo = currentZoom - 1;
-      const currentScale = this.mapView.scale;
-      // also check for currentscale, because we might be at the lowest zoomlevel, but not yet at the lowest scale
-      if (zoomTo >= this.effectiveMinZoom || currentScale <= this.effectiveMinScale) {
-        this.mapView.zoom = zoomTo;
+      case 'zoomOut': {
+        const zoomTo = currentZoom - 1;
+        const currentScale = this.mapView.scale;
+        // also check for currentscale, because we might be at the lowest zoomlevel, but not yet at the lowest scale
+        if (zoomTo >= this.effectiveMinZoom || currentScale <= this.effectiveMinScale) {
+          this.mapView.zoom = zoomTo;
+        }
       }
     }
   }
@@ -252,8 +255,6 @@ export class EsriMapService implements MapService {
         );
       });
   }
-
-  private setEffectiveZoomLevels() {}
 
   private attachLayerListeners(esriLayer: __esri.Layer) {
     reactiveUtils.when(
