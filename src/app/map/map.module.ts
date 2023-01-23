@@ -15,6 +15,7 @@ import {FeatureInfoItemComponent} from './components/feature-info/feature-info-i
 import {PrintOverlayComponent} from './components/print-overlay/print-overlay.component';
 import {PrintDispatcherComponent} from './components/print-overlay/print-dispatcher/print-dispatcher.component';
 import {ScaleInputComponent} from './components/map/scale-input/scale-input.component';
+import {MapControlsComponent} from './components/map/map-controls/map-controls.component';
 import {BackgroundMapSelectorComponent} from './components/background-map-selector/background-map-selector.component';
 
 @NgModule({
@@ -32,6 +33,7 @@ import {BackgroundMapSelectorComponent} from './components/background-map-select
     PrintOverlayComponent,
     PrintDispatcherComponent,
     ScaleInputComponent,
+    MapControlsComponent,
     BackgroundMapSelectorComponent
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule]
