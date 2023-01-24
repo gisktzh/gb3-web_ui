@@ -2,27 +2,27 @@ import {Injectable, OnDestroy} from '@angular/core';
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {first, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
-import {MapConfigurationActions} from '../../core/state/map/actions/map-configuration.actions';
-import {MapConfigurationState, selectMapConfigurationState} from '../../core/state/map/reducers/map-configuration.reducer';
+import {MapConfigActions} from '../../core/state/map/actions/map-config.actions';
+import {MapConfigState, selectMapConfigState} from '../../core/state/map/reducers/map-config.reducer';
 import {PrintType} from '../../shared/types/print-type';
 import {BasemapConfigService} from './basemap-config.service';
 
 @Injectable()
-export class MapConfigurationUrlService implements OnDestroy {
-  private readonly mapConfiguration$ = this.store.select(selectMapConfigurationState);
-  private readonly subscriptions$ = new Subscription();
+export class MapConfigUrlService implements OnDestroy {
+  private readonly mapConfig$ = this.store.select(selectMapConfigState);
+  private readonly subscriptions = new Subscription();
 
   constructor(
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly store: Store,
-    private readonly basemapConfigurationService: BasemapConfigService
+    private readonly basemapConfiService: BasemapConfigService
   ) {
-    this.getInitialMapConfiguration();
+    this.getInitialMapConfig();
   }
 
   public ngOnDestroy() {
-    this.subscriptions$.unsubscribe();
+    this.subscriptions.unsubscribe();
   }
 
   public activatePrintMode(printType: PrintType) {
@@ -41,8 +41,8 @@ export class MapConfigurationUrlService implements OnDestroy {
     });
   }
 
-  private getInitialMapConfiguration() {
-    this.subscriptions$.add(
+  private getInitialMapConfig() {
+    this.subscriptions.add(
       this.route.queryParams
         .pipe(
           first(),
@@ -58,14 +58,14 @@ export class MapConfigurationUrlService implements OnDestroy {
   private extractMapParameters(params: Params) {
     const {x, y, scale, basemap} = params;
     if (x || y || scale || basemap) {
-      const basemapId = this.basemapConfigurationService.checkBasemapIdOrGetDefault(basemap);
-      this.store.dispatch(MapConfigurationActions.setInitialMapConfiguration({x, y, scale, basemapId}));
+      const basemapId = this.basemapConfiService.checkBasemapIdOrGetDefault(basemap);
+      this.store.dispatch(MapConfigActions.setInitialMapConfig({x, y, scale, basemapId}));
     }
   }
 
   private subscribeToUrlChanges() {
-    this.subscriptions$.add(
-      this.mapConfiguration$
+    this.subscriptions.add(
+      this.mapConfig$
         .pipe(
           tap(async (config) => {
             const {center, scale} = this.getRoundedMapParameters(config);
@@ -82,7 +82,7 @@ export class MapConfigurationUrlService implements OnDestroy {
     );
   }
 
-  private getRoundedMapParameters(config: MapConfigurationState): Pick<MapConfigurationState, 'center' | 'scale'> {
+  private getRoundedMapParameters(config: MapConfigState): Pick<MapConfigState, 'center' | 'scale'> {
     return {
       center: {
         x: Math.round(config.center.x),

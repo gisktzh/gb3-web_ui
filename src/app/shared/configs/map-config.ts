@@ -1,10 +1,10 @@
-import {MapConfigurationState} from '../../core/state/map/reducers/map-configuration.reducer';
+import {MapConfigState} from '../../core/state/map/reducers/map-config.reducer';
 import {defaultBasemap} from './base-map-config';
 
 export const MINIMUM_MAP_SCALE = 1_500_000;
 export const MAXIMUM_MAP_SCALE = 100;
 
-export const defaultMapConfig: MapConfigurationState = {
+export const defaultMapConfig: MapConfigState = {
   srsId: 2056,
   center: {
     x: 2682260.0,

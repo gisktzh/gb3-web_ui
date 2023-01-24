@@ -1,14 +1,10 @@
 import {Injectable} from '@angular/core';
 import {EsriMap, EsriMapView, EsriPoint, EsriWMSLayer} from '../../shared/external/esri.module';
 import {Store} from '@ngrx/store';
-import {MapConfigurationActions} from '../../core/state/map/actions/map-configuration.actions';
+import {MapConfigActions} from '../../core/state/map/actions/map-config.actions';
 import {TransformationService} from './transformation.service';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
-import {
-  MapConfigurationState,
-  selectActiveBasemapId,
-  selectMapConfigurationState
-} from '../../core/state/map/reducers/map-configuration.reducer';
+import {MapConfigState, selectActiveBasemapId, selectMapConfigState} from '../../core/state/map/reducers/map-config.reducer';
 import {first, skip, Subscription, tap} from 'rxjs';
 import SpatialReference from '@arcgis/core/geometry/SpatialReference';
 import {FeatureInfoActions} from '../../core/state/map/actions/feature-info.actions';
@@ -43,7 +39,7 @@ export class EsriMapService implements MapService {
   private effectiveMinZoom = 0;
   private effectiveMinScale = 0;
   private readonly defaultHighlightStyles: DefaultHighlightStyles = this.configService.featureInfoConfig.defaultHighlightStyles;
-  private readonly defaultMapConfig: MapConfigurationState = this.configService.mapConfig.defaultMapConfig;
+  private readonly defaultMapConfig: MapConfigState = this.configService.mapConfig.defaultMapConfig;
 
   // TODO this should be moved to a config file
   private readonly highlightColors = {
@@ -106,10 +102,10 @@ export class EsriMapService implements MapService {
 
   public init(): void {
     this.store
-      .select(selectMapConfigurationState)
+      .select(selectMapConfigState)
       .pipe(
         first(),
-        tap((config: MapConfigurationState) => {
+        tap((config: MapConfigState) => {
           const {x, y} = config.center;
           const {minScale, maxScale} = config.scaleSettings;
           const {scale, srsId, activeBasemapId} = config;
@@ -278,7 +274,7 @@ export class EsriMapService implements MapService {
   private attachMapViewListeners() {
     reactiveUtils.when(
       () => this.mapView.stationary,
-      () => this.updateMapConfiguration()
+      () => this.updateMapConfig()
     );
 
     reactiveUtils.on(
@@ -301,7 +297,7 @@ export class EsriMapService implements MapService {
         this.effectiveMinScale = effectiveMinScale!;
 
         this.store.dispatch(
-          MapConfigurationActions.setReady({
+          MapConfigActions.setReady({
             calculatedMinScale: effectiveMinScale!,
             calculatedMaxScale: effectiveMaxScale!
           })
@@ -359,10 +355,10 @@ export class EsriMapService implements MapService {
     this.store.dispatch(FeatureInfoActions.sendRequest({x, y}));
   }
 
-  private updateMapConfiguration() {
+  private updateMapConfig() {
     const {center, scale} = this.mapView;
     const {x, y} = this.transformationService.transform(center);
-    this.store.dispatch(MapConfigurationActions.setMapExtent({x, y, scale}));
+    this.store.dispatch(MapConfigActions.setMapExtent({x, y, scale}));
   }
 
   private switchBasemap(basemapId: string) {

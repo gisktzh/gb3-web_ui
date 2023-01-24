@@ -1,9 +1,9 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
-import {selectActiveBasemapId} from '../../../../core/state/map/reducers/map-configuration.reducer';
+import {selectActiveBasemapId} from '../../../../core/state/map/reducers/map-config.reducer';
 import {Basemap} from '../../../../shared/interfaces/background-map.interface';
-import {MapConfigurationActions} from '../../../../core/state/map/actions/map-configuration.actions';
+import {MapConfigActions} from '../../../../core/state/map/actions/map-config.actions';
 import {BasemapConfigService} from '../../../services/basemap-config.service';
 
 @Component({
@@ -18,7 +18,7 @@ export class BasemapSelectorComponent implements OnInit, OnDestroy {
   private readonly subscriptions: Subscription = new Subscription();
   private readonly activeBasemapId$ = this.store.select(selectActiveBasemapId);
 
-  constructor(private readonly store: Store, private readonly basemapConfigurationService: BasemapConfigService) {}
+  constructor(private readonly store: Store, private readonly basemapConfigService: BasemapConfigService) {}
 
   public ngOnInit(): void {
     this.initSubscriptions();
@@ -33,7 +33,7 @@ export class BasemapSelectorComponent implements OnInit, OnDestroy {
   }
 
   public switchBasemap(toId: string) {
-    this.store.dispatch(MapConfigurationActions.setBasemap({activeBasemapId: toId}));
+    this.store.dispatch(MapConfigActions.setBasemap({activeBasemapId: toId}));
     this.toggleSelection();
   }
 
@@ -43,7 +43,7 @@ export class BasemapSelectorComponent implements OnInit, OnDestroy {
         .pipe(
           tap((activeBasemapId) => {
             this.activeBasemapId = activeBasemapId;
-            this.availableBasemaps = this.basemapConfigurationService.availableBasemaps.filter(
+            this.availableBasemaps = this.basemapConfigService.availableBasemaps.filter(
               (defaultBasemap) => defaultBasemap.id !== activeBasemapId
             );
           })

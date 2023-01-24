@@ -14,7 +14,7 @@ import {ActiveMapItemEffects} from './core/state/map/effects/active-map-item.eff
 import {FeatureInfoEffects} from './core/state/map/effects/feature-info.effects';
 import {LegendEffects} from './core/state/map/effects/legend.effects';
 import {LayerCatalogEffects} from './core/state/map/effects/layer-catalog.effects';
-import {MapConfigurationEffects} from './core/state/map/effects/map-configuration.effects';
+import {MapConfigEffects} from './core/state/map/effects/map-config-effects.service';
 import {EsriMapService} from './map/services/esri-map.service';
 import {MapService} from './map/interfaces/map.service';
 
@@ -32,7 +32,7 @@ export const MAP_SERVICE = new InjectionToken<MapService>('MapService');
     StoreModule.forRoot(reducers, {
       metaReducers
     }),
-    EffectsModule.forRoot([ActiveMapItemEffects, FeatureInfoEffects, LayerCatalogEffects, LegendEffects, MapConfigurationEffects])
+    EffectsModule.forRoot([ActiveMapItemEffects, FeatureInfoEffects, LayerCatalogEffects, LegendEffects, MapConfigEffects])
   ],
   providers: [{provide: MAP_SERVICE, useClass: EsriMapService}],
   bootstrap: [AppComponent]

@@ -1,8 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Observable, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
-import {selectScale} from '../../../../core/state/map/reducers/map-configuration.reducer';
-import {MapConfigurationActions} from '../../../../core/state/map/actions/map-configuration.actions';
+import {selectScale} from '../../../../core/state/map/reducers/map-config.reducer';
+import {MapConfigActions} from '../../../../core/state/map/actions/map-config.actions';
 import {ConfigService} from '../../../../shared/services/config.service';
 
 @Component({
@@ -21,7 +21,7 @@ export class ScaleInputComponent implements OnInit, OnDestroy {
 
   public setScale(event: Event) {
     const newScale = (event.target as HTMLInputElement).valueAsNumber;
-    this.store.dispatch(MapConfigurationActions.setScale({scale: newScale}));
+    this.store.dispatch(MapConfigActions.setScale({scale: newScale}));
   }
 
   public ngOnInit(): void {

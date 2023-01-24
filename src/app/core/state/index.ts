@@ -1,13 +1,13 @@
 import {ActionReducerMap, MetaReducer} from '@ngrx/store';
 import {environment} from '../../../environments/environment';
-import {MapConfigurationState, reducer as mapConfigurationReducer} from './map/reducers/map-configuration.reducer';
+import {MapConfigState, reducer as mapConfigReducer} from './map/reducers/map-config.reducer';
 import {LegendState, reducer as legendReducer} from './map/reducers/legend.reducer';
 import {FeatureInfoState, reducer as featureInfoReducer} from './map/reducers/feature-info.reducer';
 import {LayerCatalogState, reducer as layerCatalogReducer} from './map/reducers/layer-catalog.reducer';
 import {ActiveMapItemState, reducer as activeMapItemReducer} from './map/reducers/active-map-item.reducer';
 
 export interface State {
-  mapConfiguration: MapConfigurationState;
+  mapConfig: MapConfigState;
   legend: LegendState;
   featureInfo: FeatureInfoState;
   layerCatalog: LayerCatalogState;
@@ -15,7 +15,7 @@ export interface State {
 }
 
 export const reducers: ActionReducerMap<State> = {
-  mapConfiguration: mapConfigurationReducer,
+  mapConfig: mapConfigReducer,
   legend: legendReducer,
   featureInfo: featureInfoReducer,
   layerCatalog: layerCatalogReducer,

@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {MapConfigurationUrlService} from '../../services/map-configuration-url.service';
+import {MapConfigUrlService} from '../../services/map-config-url.service';
 import {ActivatedRoute} from '@angular/router';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
@@ -22,11 +22,7 @@ export class PrintOverlayComponent implements OnInit, OnDestroy {
   private readonly featureInfoData$ = this.store.select(selectData);
   private readonly subscriptions: Subscription = new Subscription();
 
-  constructor(
-    private readonly mapConfigurationUrlService: MapConfigurationUrlService,
-    private readonly store: Store,
-    private readonly route: ActivatedRoute
-  ) {}
+  constructor(private readonly mapCon: MapConfigUrlService, private readonly store: Store, private readonly route: ActivatedRoute) {}
 
   public ngOnInit() {
     this.initSubscriptions();
@@ -37,7 +33,7 @@ export class PrintOverlayComponent implements OnInit, OnDestroy {
   }
 
   public closePrint() {
-    this.mapConfigurationUrlService.deactivatePrintMode();
+    this.mapCon.deactivatePrintMode();
   }
 
   private initSubscriptions() {

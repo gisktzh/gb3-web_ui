@@ -15,7 +15,7 @@ const mockBasemapConfig = {
   defaultBasemap: mockBasemaps[0]
 };
 
-describe('BasemapConfigurationService', () => {
+describe('BasemapConfigService', () => {
   let service: BasemapConfigService;
   let configServiceSpy: jasmine.SpyObj<ConfigService>;
   beforeEach(() => {
