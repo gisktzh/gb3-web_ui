@@ -17,6 +17,7 @@ import {LayerCatalogEffects} from './core/state/map/effects/layer-catalog.effect
 import {MapConfigurationEffects} from './core/state/map/effects/map-configuration.effects';
 import {EsriMapService} from './map/services/esri-map.service';
 import {MapService} from './map/interfaces/map.service';
+import {httpInterceptorProviders} from './shared/interceptors';
 
 export const MAP_SERVICE = new InjectionToken<MapService>('MapService');
 
@@ -34,7 +35,7 @@ export const MAP_SERVICE = new InjectionToken<MapService>('MapService');
     }),
     EffectsModule.forRoot([ActiveMapItemEffects, FeatureInfoEffects, LayerCatalogEffects, LegendEffects, MapConfigurationEffects])
   ],
-  providers: [{provide: MAP_SERVICE, useClass: EsriMapService}],
+  providers: [{provide: MAP_SERVICE, useClass: EsriMapService}, httpInterceptorProviders],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
