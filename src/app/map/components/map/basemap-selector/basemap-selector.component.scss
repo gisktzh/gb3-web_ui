@@ -1,6 +1,8 @@
 @use '../../../../../../node_modules/@angular/material/index' as mat;
+@import 'helpers.mixin';
 
 .basemap-selector {
+  @include non-selectable-text;
   display: flex;
 
   .basemap-selector__active {
@@ -29,9 +31,6 @@
       padding: 5px;
       margin: 0 5px;
       word-break: break-word;
-      -webkit-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
 
       &:hover {
         cursor: pointer;

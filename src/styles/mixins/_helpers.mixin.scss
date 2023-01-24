@@ -1,0 +1,6 @@
+/// Prevents text in an element (e.g. a div) from becoming selectable
+@mixin non-selectable-text {
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
