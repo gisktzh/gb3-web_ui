@@ -4,7 +4,7 @@ import {Store} from '@ngrx/store';
 import {selectActiveBasemapId} from '../../../../core/state/map/reducers/map-configuration.reducer';
 import {Basemap} from '../../../../shared/interfaces/background-map.interface';
 import {MapConfigurationActions} from '../../../../core/state/map/actions/map-configuration.actions';
-import {BasemapConfigurationService} from '../../../services/basemap-configuration.service';
+import {BasemapConfigService} from '../../../services/basemap-config.service';
 
 @Component({
   selector: 'basemap-selector',
@@ -18,7 +18,7 @@ export class BasemapSelectorComponent implements OnInit, OnDestroy {
   private readonly subscriptions: Subscription = new Subscription();
   private readonly activeBasemapId$ = this.store.select(selectActiveBasemapId);
 
-  constructor(private readonly store: Store, private readonly basemapConfigurationService: BasemapConfigurationService) {}
+  constructor(private readonly store: Store, private readonly basemapConfigurationService: BasemapConfigService) {}
 
   public ngOnInit(): void {
     this.initSubscriptions();

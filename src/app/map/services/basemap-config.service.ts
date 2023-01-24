@@ -1,13 +1,15 @@
 import {Injectable} from '@angular/core';
 import {Basemap} from '../../shared/interfaces/background-map.interface';
-import {defaultBasemap, defaultBasemaps} from '../../shared/configs/base-map-config';
+import {ConfigService} from '../../shared/services/config.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class BasemapConfigurationService {
-  private readonly _availableBasemaps: Basemap[] = defaultBasemaps;
-  private readonly defaultBasemap: Basemap = defaultBasemap;
+export class BasemapConfigService {
+  private readonly _availableBasemaps: Basemap[] = this.configService.basemapConfig.availableBasemaps;
+  private readonly defaultBasemap: Basemap = this.configService.basemapConfig.defaultBasemap;
+
+  constructor(private readonly configService: ConfigService) {}
 
   public get availableBasemaps(): Basemap[] {
     return this._availableBasemaps;

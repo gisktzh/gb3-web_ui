@@ -5,7 +5,7 @@ import {Store} from '@ngrx/store';
 import {MapConfigurationActions} from '../../core/state/map/actions/map-configuration.actions';
 import {MapConfigurationState, selectMapConfigurationState} from '../../core/state/map/reducers/map-configuration.reducer';
 import {PrintType} from '../../shared/types/print-type';
-import {BasemapConfigurationService} from './basemap-configuration.service';
+import {BasemapConfigService} from './basemap-config.service';
 
 @Injectable()
 export class MapConfigurationUrlService implements OnDestroy {
@@ -16,7 +16,7 @@ export class MapConfigurationUrlService implements OnDestroy {
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly store: Store,
-    private readonly basemapConfigurationService: BasemapConfigurationService
+    private readonly basemapConfigurationService: BasemapConfigService
   ) {
     this.getInitialMapConfiguration();
   }

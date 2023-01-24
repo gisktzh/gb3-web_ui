@@ -19,7 +19,7 @@ import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import {GeoJSONMapperService} from '../../shared/services/geo-json-mapper.service';
-import {defaultHighlightStyles} from 'src/app/shared/configs/feature-info-config';
+import {DefaultHighlightStyles} from 'src/app/shared/configs/feature-info-config';
 import {MapService} from '../interfaces/map.service';
 import {ActiveMapItem} from '../models/active-map-item.model';
 import {ActiveMapItemActions} from '../../core/state/map/actions/active-map-item.actions';
@@ -27,11 +27,11 @@ import {LoadingState} from '../../shared/types/loading-state';
 import WMSLayer from '@arcgis/core/layers/WMSLayer';
 import ScaleBar from '@arcgis/core/widgets/ScaleBar';
 import {ViewProcessState} from '../../shared/types/view-process-state';
-import {defaultMapConfig} from '../../shared/configs/map-config';
 import {ZoomType} from '../../shared/types/zoom-type';
 import Basemap from '@arcgis/core/Basemap';
 import TileInfo from '@arcgis/core/layers/support/TileInfo';
-import {BasemapConfigurationService} from './basemap-configuration.service';
+import {BasemapConfigService} from './basemap-config.service';
+import {ConfigService} from '../../shared/services/config.service';
 import ViewClickEvent = __esri.ViewClickEvent;
 import ViewLayerviewCreateEvent = __esri.ViewLayerviewCreateEvent;
 
@@ -42,11 +42,13 @@ export class EsriMapService implements MapService {
   private effectiveMaxZoom = 23;
   private effectiveMinZoom = 0;
   private effectiveMinScale = 0;
+  private readonly defaultHighlightStyles: DefaultHighlightStyles = this.configService.featureInfoConfig.defaultHighlightStyles;
+  private readonly defaultMapConfig: MapConfigurationState = this.configService.mapConfig.defaultMapConfig;
 
   // TODO this should be moved to a config file
   private readonly highlightColors = {
-    feature: new Color(defaultHighlightStyles.feature.color),
-    outline: new Color(defaultHighlightStyles.outline.color)
+    feature: new Color(this.defaultHighlightStyles.feature.color),
+    outline: new Color(this.defaultHighlightStyles.outline.color)
   };
   // TODO this should be moved to a config file
   private readonly highlightStyles = new Map<__esri.Geometry['type'], __esri.Symbol>([
@@ -54,7 +56,7 @@ export class EsriMapService implements MapService {
       'polyline',
       new SimpleLineSymbol({
         color: this.highlightColors.feature,
-        width: defaultHighlightStyles.feature.width
+        width: this.defaultHighlightStyles.feature.width
       })
     ],
     ['point', new SimpleMarkerSymbol({color: this.highlightColors.feature})],
@@ -69,7 +71,8 @@ export class EsriMapService implements MapService {
     private readonly store: Store,
     private readonly transformationService: TransformationService,
     private readonly geoJSONMapperService: GeoJSONMapperService,
-    private readonly basemapConfigurationService: BasemapConfigurationService
+    private readonly basemapConfigService: BasemapConfigService,
+    private readonly configService: ConfigService
   ) {}
 
   private get mapView(): __esri.MapView {
@@ -187,7 +190,7 @@ export class EsriMapService implements MapService {
       center: {x, y},
       srsId,
       scale
-    } = defaultMapConfig;
+    } = this.defaultMapConfig;
     this.mapView.center = new EsriPoint({x: x, y: y, spatialReference: new SpatialReference({wkid: srsId})});
     this.mapView.scale = scale;
   }
@@ -237,7 +240,7 @@ export class EsriMapService implements MapService {
   private createMap(initialBasemapId: string): __esri.Map {
     return new EsriMap({
       basemap: new Basemap({
-        baseLayers: this.basemapConfigurationService.availableBasemaps.map((baseMap) => {
+        baseLayers: this.basemapConfigService.availableBasemaps.map((baseMap) => {
           return new WMSLayer({
             id: baseMap.id,
             url: baseMap.url,
