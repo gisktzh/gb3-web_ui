@@ -15,13 +15,17 @@ export class BasemapConfigService {
     return this._availableBasemaps;
   }
 
-  public checkBasemapIdOrGetDefault(id: string | undefined): string {
-    if (id === undefined || id === null || id === '') {
+  public checkBasemapIdOrGetDefault(id: string | undefined | null): string {
+    if (id === undefined || id === null) {
+      return this.defaultBasemap.id;
+    }
+
+    id = id.trim();
+    if (id === '') {
       return this.defaultBasemap.id;
     }
 
     id = id.toLowerCase();
-
     if (this.availableBasemaps.some((availableBasemap) => availableBasemap.id === id)) {
       return id;
     }
