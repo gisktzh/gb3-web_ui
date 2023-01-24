@@ -1,5 +1,4 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {EsriMapService} from '../../services/esri-map.service';
 import {CdkDrag, CdkDragDrop} from '@angular/cdk/drag-drop';
 import {MatSliderChange} from '@angular/material/slider';
 import {Store} from '@ngrx/store';
@@ -8,7 +7,6 @@ import {selectActiveMapItems} from '../../../core/state/map/reducers/active-map-
 import {Subscription} from 'rxjs';
 import {ActiveMapItem} from '../../models/active-map-item.model';
 import {LegendActions} from '../../../core/state/map/actions/legend.actions';
-import {LoadingState} from '../../../shared/enums/loading-state';
 import {TopicLayer} from '../../../shared/interfaces/topic.interface';
 
 @Component({
@@ -22,9 +20,7 @@ export class ActiveMapItemsWidgetComponent implements OnInit, OnDestroy {
 
   private _activeMapItems: ActiveMapItem[] = [];
 
-  public readonly LOADING_STATE = LoadingState;
-
-  constructor(private readonly mapService: EsriMapService, private readonly store: Store) {}
+  constructor(private readonly store: Store) {}
 
   public get activeMapItems(): ActiveMapItem[] {
     return this._activeMapItems;

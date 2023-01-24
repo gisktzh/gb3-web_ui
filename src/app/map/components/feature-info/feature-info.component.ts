@@ -3,7 +3,7 @@ import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {selectData, selectLoadingState} from '../../../core/state/map/reducers/feature-info.reducer';
 import {FeatureInfoActions} from '../../../core/state/map/actions/feature-info.actions';
-import {LoadingState} from '../../../shared/enums/loading-state';
+import {LoadingState} from '../../../shared/types/loading-state';
 import {FeatureInfoResult} from '../../../shared/interfaces/feature-info.interface';
 
 @Component({
@@ -14,11 +14,9 @@ import {FeatureInfoResult} from '../../../shared/interfaces/feature-info.interfa
 export class FeatureInfoComponent implements OnInit, OnDestroy {
   @Output() public printFeatureInfoEvent = new EventEmitter<void>();
 
-  public readonly LOADING_STATE = LoadingState;
-
   public isVisible: boolean = false;
   public featureInfoData: FeatureInfoResult[] = [];
-  public loadingState = LoadingState.UNDEFINED;
+  public loadingState: LoadingState = 'undefined';
 
   private readonly loadingState$ = this.store.select(selectLoadingState);
   private readonly featureInfoData$ = this.store.select(selectData);
@@ -65,6 +63,6 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
   }
 
   private updateVisibility(loadingState: LoadingState) {
-    this.isVisible = loadingState !== LoadingState.UNDEFINED;
+    this.isVisible = loadingState !== 'undefined';
   }
 }

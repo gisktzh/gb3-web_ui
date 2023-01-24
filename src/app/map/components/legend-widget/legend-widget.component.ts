@@ -3,7 +3,7 @@ import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {selectLegendItems, selectLoadingState} from '../../../core/state/map/reducers/legend.reducer';
 import {LegendActions} from '../../../core/state/map/actions/legend.actions';
-import {LoadingState} from '../../../shared/enums/loading-state';
+import {LoadingState} from '../../../shared/types/loading-state';
 import {Legend} from '../../../shared/interfaces/legend.interface';
 
 @Component({
@@ -14,11 +14,9 @@ import {Legend} from '../../../shared/interfaces/legend.interface';
 export class LegendWidgetComponent implements OnInit, OnDestroy {
   @Output() public printLegendEvent = new EventEmitter<void>();
 
-  public readonly LOADING_STATE = LoadingState;
-
   public isVisible = false;
   public legendItems: Legend[] = [];
-  public loadingState = LoadingState.UNDEFINED;
+  public loadingState: LoadingState = 'undefined';
 
   private readonly loadingState$ = this.store.select(selectLoadingState);
   private readonly legendItems$ = this.store.select(selectLegendItems);
@@ -66,6 +64,6 @@ export class LegendWidgetComponent implements OnInit, OnDestroy {
   }
 
   private updateVisibility(loadingState: LoadingState) {
-    this.isVisible = loadingState !== LoadingState.UNDEFINED;
+    this.isVisible = loadingState !== 'undefined';
   }
 }

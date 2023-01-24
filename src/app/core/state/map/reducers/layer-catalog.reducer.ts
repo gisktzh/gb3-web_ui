@@ -1,7 +1,6 @@
 import {createFeature, createReducer, on} from '@ngrx/store';
 import {LayerCatalogActions} from '../actions/layer-catalog.actions';
 import {HasLoadingState} from '../../../../shared/interfaces/has-loading-state.interface';
-import {LoadingState} from '../../../../shared/enums/loading-state';
 import {LayerCatalogItem} from '../../../../shared/interfaces/topic.interface';
 
 export const layerCatalogFeatureKey = 'layerCatalog';
@@ -12,7 +11,7 @@ export interface LayerCatalogState extends HasLoadingState {
 
 export const initialState: LayerCatalogState = {
   layerCatalogItems: [],
-  loadingState: LoadingState.UNDEFINED
+  loadingState: 'undefined'
 };
 
 export const layerCatalogFeature = createFeature({
@@ -20,10 +19,10 @@ export const layerCatalogFeature = createFeature({
   reducer: createReducer(
     initialState,
     on(LayerCatalogActions.loadLayerCatalog, (): LayerCatalogState => {
-      return {...initialState, loadingState: LoadingState.LOADING};
+      return {...initialState, loadingState: 'loading'};
     }),
     on(LayerCatalogActions.setLayerCatalog, (state, {layerCatalogItems}): LayerCatalogState => {
-      return {...state, layerCatalogItems: layerCatalogItems, loadingState: LoadingState.LOADED};
+      return {...state, layerCatalogItems: layerCatalogItems, loadingState: 'loaded'};
     }),
     on(LayerCatalogActions.addLayerCatalogItem, (state, {layerCatalogItem}): LayerCatalogState => {
       return {...state, layerCatalogItems: [...state.layerCatalogItems, layerCatalogItem]};
