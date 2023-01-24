@@ -99,7 +99,8 @@
         "no-use-before-define": "off",
         "eqeqeq": [2, "smart"],
         "semi": "error",
-        "prefer-template": "warn"
+        "prefer-template": "warn",
+        "@typescript-eslint/switch-exhaustiveness-check": "error"
       }
     },
     {

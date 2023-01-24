@@ -3,8 +3,8 @@
     <p>Verfügbare Topics</p>
   </mat-card-header>
   <mat-card-content>
-    <mat-progress-spinner mode="indeterminate" *ngIf="this.loadingState === LOADING_STATE.LOADING"></mat-progress-spinner>
-    <mat-accordion *ngIf="this.loadingState === LOADING_STATE.LOADED" class="layer-catalog" multi="true" displayMode="flat">
+    <mat-progress-spinner mode="indeterminate" *ngIf="this.loadingState === 'loading'"></mat-progress-spinner>
+    <mat-accordion *ngIf="this.loadingState === 'loaded'" class="layer-catalog" multi="true" displayMode="flat">
       <ng-container *ngFor="let layerCatalogItem of layerCatalogItems">
         <mat-expansion-panel>
           <mat-expansion-panel-header>

@@ -1,6 +1,7 @@
-import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {EsriMapService} from '../../services/esri-map.service';
+import {AfterViewInit, Component, ElementRef, Inject, OnInit, ViewChild} from '@angular/core';
 import {FeatureHighlightingService} from '../../services/feature-highlighting.service';
+import {MapService} from '../../interfaces/map.service';
+import {MAP_SERVICE} from '../../../app.module';
 
 @Component({
   selector: 'map',
@@ -11,7 +12,10 @@ import {FeatureHighlightingService} from '../../services/feature-highlighting.se
 export class MapComponent implements OnInit, AfterViewInit {
   @ViewChild('mainMap', {static: true}) mainMapRef!: ElementRef;
 
-  constructor(private readonly mapService: EsriMapService, private readonly featureHighlightingService: FeatureHighlightingService) {}
+  constructor(
+    @Inject(MAP_SERVICE) private readonly mapService: MapService,
+    private readonly featureHighlightingService: FeatureHighlightingService
+  ) {}
 
   public ngOnInit() {
     this.mapService.init();

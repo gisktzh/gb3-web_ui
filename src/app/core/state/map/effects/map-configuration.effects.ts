@@ -1,8 +1,9 @@
-import {Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {tap} from 'rxjs';
-import {EsriMapService} from '../../../../map/services/esri-map.service';
 import {MapConfigurationActions} from '../actions/map-configuration.actions';
+import {MapService} from '../../../../map/interfaces/map.service';
+import {MAP_SERVICE} from '../../../../app.module';
 
 @Injectable()
 export class MapConfigurationEffects {
@@ -40,5 +41,5 @@ export class MapConfigurationEffects {
     {dispatch: false}
   );
 
-  constructor(private readonly actions$: Actions, private readonly mapService: EsriMapService) {}
+  constructor(private readonly actions$: Actions, @Inject(MAP_SERVICE) private readonly mapService: MapService) {}
 }

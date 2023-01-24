@@ -23,14 +23,16 @@ import {defaultHighlightStyles} from 'src/app/shared/configs/feature-info-config
 import {MapService} from '../interfaces/map.service';
 import {ActiveMapItem} from '../models/active-map-item.model';
 import {ActiveMapItemActions} from '../../core/state/map/actions/active-map-item.actions';
-import {LoadingState} from '../../shared/enums/loading-state';
+import {LoadingState} from '../../shared/types/loading-state';
 import WMSLayer from '@arcgis/core/layers/WMSLayer';
 import ScaleBar from '@arcgis/core/widgets/ScaleBar';
+import {ViewProcessState} from '../../shared/types/view-process-state';
 import {defaultMapConfig} from '../../shared/configs/map-config';
 import {ZoomType} from '../../shared/types/zoom-type';
 import Basemap from '@arcgis/core/Basemap';
 import TileInfo from '@arcgis/core/layers/support/TileInfo';
 import ViewClickEvent = __esri.ViewClickEvent;
+import ViewLayerviewCreateEvent = __esri.ViewLayerviewCreateEvent;
 import {BasemapConfigurationService} from '../../shared/services/basemap-configuration.service';
 
 @Injectable({
@@ -302,10 +304,18 @@ export class EsriMapService implements MapService {
           })
         );
       });
+
+    reactiveUtils.on(
+      () => this.mapView,
+      'layerview-create',
+      (event: ViewLayerviewCreateEvent) => {
+        this.attachLayerViewListeners(event.layerView);
+      }
+    );
   }
 
   private attachLayerListeners(esriLayer: __esri.Layer) {
-    reactiveUtils.when(
+    reactiveUtils.watch(
       () => esriLayer.loadStatus,
       (loadStatus) => {
         const loadingState = this.transformLoadStatusToLoadingState(loadStatus);
@@ -314,19 +324,31 @@ export class EsriMapService implements MapService {
     );
   }
 
+  private attachLayerViewListeners(esriLayerView: __esri.LayerView) {
+    reactiveUtils.watch(
+      () => esriLayerView.updating,
+      (updating) => {
+        if (esriLayerView.layer) {
+          const viewProcessState: ViewProcessState = updating ? 'updating' : 'completed';
+          this.store.dispatch(ActiveMapItemActions.setViewProcessState({viewProcessState: viewProcessState, id: esriLayerView.layer.id}));
+        }
+      }
+    );
+  }
+
   private transformLoadStatusToLoadingState(loadStatus: 'not-loaded' | 'loading' | 'failed' | 'loaded' | undefined): LoadingState {
     if (!loadStatus) {
-      return LoadingState.UNDEFINED;
+      return 'undefined';
     }
     switch (loadStatus) {
       case 'not-loaded':
-        return LoadingState.UNDEFINED;
-      case 'loading':
-        return LoadingState.LOADING;
+        return 'undefined';
       case 'failed':
-        return LoadingState.UNDEFINED;
+        return 'error';
+      case 'loading':
+        return 'loading';
       case 'loaded':
-        return LoadingState.LOADED;
+        return 'loaded';
     }
   }
 

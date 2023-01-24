@@ -78,6 +78,18 @@ export const activeMapItemFeature = createFeature({
       });
       return {...state, activeMapItems: [...activeMapItems]};
     }),
+    on(ActiveMapItemActions.setViewProcessState, (state, {viewProcessState, id}): ActiveMapItemState => {
+      const activeMapItems = state.activeMapItems.map((mapItem) => {
+        if (mapItem.id === id) {
+          const newActiveMapItem = structuredClone(mapItem);
+          newActiveMapItem.viewProcessState = viewProcessState;
+          return newActiveMapItem;
+        } else {
+          return mapItem;
+        }
+      });
+      return {...state, activeMapItems: [...activeMapItems]};
+    }),
     on(ActiveMapItemActions.reorderActiveMapItem, (state, {previousIndex, currentIndex}): ActiveMapItemState => {
       const mapItemToReorder = state.activeMapItems[previousIndex];
       const reorderedActiveMapItems = state.activeMapItems.filter((mapItem) => mapItem !== mapItemToReorder);

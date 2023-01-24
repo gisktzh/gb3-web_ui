@@ -57,8 +57,8 @@ export class MapConfigurationUrlService implements OnDestroy {
 
   private extractMapParameters(params: Params) {
     const {x, y, scale, basemap} = params;
-    const basemapId = this.basemapConfigurationService.checkBasemapIdOrGetDefault(basemap);
     if (x || y || scale || basemap) {
+      const basemapId = this.basemapConfigurationService.checkBasemapIdOrGetDefault(basemap);
       this.store.dispatch(MapConfigurationActions.setInitialMapConfiguration({x, y, scale, basemapId}));
     }
   }
