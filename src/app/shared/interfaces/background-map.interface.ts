@@ -1,10 +1,14 @@
-export interface BackgroundMapLayer {
+interface BasemapLayer {
   name: string;
 }
 
-export interface BackgroundMap {
+/**
+ * Each Basemap also should have a corresponding image in the assets/images/basemaps/ folder, named {mapId}.png.
+ */
+export interface Basemap {
+  id: string;
   url: string;
   title: string;
   srsId: number;
-  layers: BackgroundMapLayer[];
+  layers: BasemapLayer[];
 }

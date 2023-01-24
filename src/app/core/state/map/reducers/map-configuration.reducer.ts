@@ -1,7 +1,7 @@
 import {createFeature, createReducer, on} from '@ngrx/store';
 import {MapConfigurationActions} from '../actions/map-configuration.actions';
 import {defaultMapConfig} from '../../../../shared/configs/map-config';
-import {BackgroundMap} from '../../../../shared/interfaces/background-map.interface';
+import {Basemap} from '../../../../shared/interfaces/background-map.interface';
 
 export const mapConfigurationFeatureKey = 'mapConfiguration';
 
@@ -13,7 +13,7 @@ export interface MapConfigurationState {
   scaleSettings: {minScale: number; maxScale: number; calculatedMinScale: number; calculatedMaxScale: number};
   isMaxZoomedIn: boolean;
   isMaxZoomedOut: boolean;
-  backgroundMap: BackgroundMap;
+  activeBasemapId: string;
 }
 
 export const initialState: MapConfigurationState = {
@@ -22,7 +22,7 @@ export const initialState: MapConfigurationState = {
   srsId: defaultMapConfig.srsId,
   ready: defaultMapConfig.ready,
   scaleSettings: defaultMapConfig.scaleSettings,
-  backgroundMap: defaultMapConfig.backgroundMap,
+  activeBasemapId: defaultMapConfig.activeBasemapId,
   isMaxZoomedIn: defaultMapConfig.isMaxZoomedIn,
   isMaxZoomedOut: defaultMapConfig.isMaxZoomedOut
 };
@@ -75,6 +75,9 @@ export const mapConfigurationFeature = createFeature({
     }),
     on(MapConfigurationActions.changeZoom, (state, {zoomType}): MapConfigurationState => {
       return {...state};
+    }),
+    on(MapConfigurationActions.setBasemap, (state, {activeBasemapId}): MapConfigurationState => {
+      return {...state, activeBasemapId};
     })
   )
 });
@@ -88,5 +91,6 @@ export const {
   selectSrsId,
   selectReady,
   selectIsMaxZoomedIn,
-  selectIsMaxZoomedOut
+  selectIsMaxZoomedOut,
+  selectActiveBasemapId
 } = mapConfigurationFeature;

@@ -1,0 +1,47 @@
+@use '../../../../../../node_modules/@angular/material/index' as mat;
+
+.basemap-selector {
+  display: flex;
+
+  .basemap-selector__active {
+    width: 80px;
+    height: 80px;
+    padding: 5px;
+    align-self: flex-end;
+
+    .basemap-selector__active-map-image {
+      width: 100%;
+      height: 100%;
+    }
+
+    &:hover {
+      cursor: pointer;
+      @include mat.elevation(4);
+    }
+  }
+
+  .basemap-selector__map-choice {
+    align-self: flex-end;
+    display: flex;
+
+    .basemap-selector__map-choice__item {
+      width: 80px;
+      padding: 5px;
+      margin: 0 5px;
+      word-break: break-word;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+
+      &:hover {
+        cursor: pointer;
+        @include mat.elevation(4);
+      }
+
+      .basemap-selector__map-choice__item__image {
+        width: 80px;
+        height: 80px;
+      }
+    }
+  }
+}

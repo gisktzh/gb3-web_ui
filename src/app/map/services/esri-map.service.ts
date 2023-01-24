@@ -4,8 +4,12 @@ import {Store} from '@ngrx/store';
 import {MapConfigurationActions} from '../../core/state/map/actions/map-configuration.actions';
 import {TransformationService} from './transformation.service';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
-import {MapConfigurationState, selectMapConfigurationState} from '../../core/state/map/reducers/map-configuration.reducer';
-import {first, tap} from 'rxjs';
+import {
+  MapConfigurationState,
+  selectActiveBasemapId,
+  selectMapConfigurationState
+} from '../../core/state/map/reducers/map-configuration.reducer';
+import {first, skip, Subscription, tap} from 'rxjs';
 import SpatialReference from '@arcgis/core/geometry/SpatialReference';
 import {FeatureInfoActions} from '../../core/state/map/actions/feature-info.actions';
 import Graphic from '@arcgis/core/Graphic';
@@ -25,9 +29,9 @@ import ScaleBar from '@arcgis/core/widgets/ScaleBar';
 import {defaultMapConfig} from '../../shared/configs/map-config';
 import {ZoomType} from '../../shared/types/zoom-type';
 import Basemap from '@arcgis/core/Basemap';
-import {BackgroundMap} from '../../shared/interfaces/background-map.interface';
-import ViewClickEvent = __esri.ViewClickEvent;
 import TileInfo from '@arcgis/core/layers/support/TileInfo';
+import {defaultBasemaps} from '../../shared/configs/base-map-config';
+import ViewClickEvent = __esri.ViewClickEvent;
 
 @Injectable({
   providedIn: 'root'
@@ -56,6 +60,8 @@ export class EsriMapService implements MapService {
     ['polygon', new SimpleFillSymbol({color: this.highlightColors.feature})]
   ]);
   private _mapView!: __esri.MapView;
+  private readonly subscriptions: Subscription = new Subscription();
+  private readonly activeBasemapId$ = this.store.select(selectActiveBasemapId);
 
   constructor(
     private readonly store: Store,
@@ -100,10 +106,11 @@ export class EsriMapService implements MapService {
         tap((config: MapConfigurationState) => {
           const {x, y} = config.center;
           const {minScale, maxScale} = config.scaleSettings;
-          const {scale, srsId, backgroundMap} = config;
-          const map = this.createMap(backgroundMap);
+          const {scale, srsId, activeBasemapId} = config;
+          const map = this.createMap(activeBasemapId);
           this.setMapView(map, scale, x, y, srsId, minScale, maxScale);
           this.attachMapViewListeners();
+          this.addBasemapSubscription();
           this.addScaleBar();
         })
       )
@@ -206,32 +213,45 @@ export class EsriMapService implements MapService {
     }
   }
 
+  private addBasemapSubscription() {
+    this.subscriptions.add(
+      this.activeBasemapId$
+        .pipe(
+          skip(1), // Skip first, because the first is set by init()
+          tap((activeBasemapId) => {
+            this.switchBasemap(activeBasemapId);
+          })
+        )
+        .subscribe()
+    );
+  }
+
   private addScaleBar() {
     const scaleBar = new ScaleBar({view: this.mapView, container: 'scale-bar-container', unit: 'metric'});
     this.mapView.ui.add(scaleBar);
   }
 
-  private createMap(backgroundMap: BackgroundMap): __esri.Map {
+  private createMap(initialBasemapId: string): __esri.Map {
     return new EsriMap({
       basemap: new Basemap({
-        baseLayers: [
-          new WMSLayer({
-            url: backgroundMap.url,
-            title: backgroundMap.title,
-            spatialReference: new SpatialReference({wkid: backgroundMap.srsId}),
-            sublayers: backgroundMap.layers.map((l) => ({name: l.name}))
-          })
-        ],
-        title: backgroundMap.title,
-        id: backgroundMap.title // todo: replace with identifier
+        baseLayers: defaultBasemaps.map((baseMap) => {
+          return new WMSLayer({
+            id: baseMap.id,
+            url: baseMap.url,
+            title: baseMap.title,
+            spatialReference: new SpatialReference({wkid: baseMap.srsId}),
+            sublayers: baseMap.layers.map((basemapLayer) => ({name: basemapLayer.name})),
+            visible: initialBasemapId === baseMap.id
+          });
+        })
       })
     });
   }
 
-  private setMapView(backgroundMap: __esri.Map, scale: number, x: number, y: number, srsId: number, minScale: number, maxScale: number) {
+  private setMapView(map: __esri.Map, scale: number, x: number, y: number, srsId: number, minScale: number, maxScale: number) {
     const spatialReference = new SpatialReference({wkid: srsId});
     this._mapView = new EsriMapView({
-      map: backgroundMap,
+      map: map,
       scale: scale,
       center: new EsriPoint({x, y, spatialReference}),
       constraints: {
@@ -317,5 +337,11 @@ export class EsriMapService implements MapService {
     const {center, scale} = this.mapView;
     const {x, y} = this.transformationService.transform(center);
     this.store.dispatch(MapConfigurationActions.setMapExtent({x, y, scale}));
+  }
+
+  private switchBasemap(basemapId: string) {
+    this.mapView.map.basemap.baseLayers.map((baseLayer) => {
+      baseLayer.visible = basemapId === baseLayer.id;
+    });
   }
 }

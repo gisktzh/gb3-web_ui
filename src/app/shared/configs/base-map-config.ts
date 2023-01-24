@@ -1,16 +1,8 @@
-interface BackgroundMapLayer {
-  name: string;
-}
+import {Basemap} from '../interfaces/background-map.interface';
 
-interface BackgroundMap {
-  url: string;
-  title: string;
-  srsId: number;
-  layers: BackgroundMapLayer[];
-}
-
-export const defaultBackgroundMaps: BackgroundMap[] = [
+export const defaultBasemaps: Basemap[] = [
   {
+    id: 'ARElkBackgroundZH',
     url: 'https://maps.zh.ch/wms/ARElkBackgroundZH',
     title: 'Landeskarte',
     srsId: 2056,
@@ -45,6 +37,7 @@ export const defaultBackgroundMaps: BackgroundMap[] = [
     ]
   },
   {
+    id: 'AREDTMBackgroundZH',
     url: 'https://maps.zh.ch/wms/AREDTMBackgroundZH',
     title: 'Digitales Terrainmodell',
     srsId: 2056,
@@ -55,6 +48,7 @@ export const defaultBackgroundMaps: BackgroundMap[] = [
     ]
   },
   {
+    id: 'AREWildBackgroundZH',
     url: 'https://maps.zh.ch/wms/AREWildBackgroundZH',
     title: 'Historische Karte J. Wild',
     srsId: 2056,
@@ -65,6 +59,7 @@ export const defaultBackgroundMaps: BackgroundMap[] = [
     ]
   },
   {
+    id: 'AREUPBackgroundZH',
     url: 'https://maps.zh.ch/wms/AREUPBackgroundZH',
     title: 'Übersichtsplan',
     srsId: 2056,

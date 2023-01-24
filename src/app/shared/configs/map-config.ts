@@ -1,5 +1,5 @@
 import {MapConfigurationState} from '../../core/state/map/reducers/map-configuration.reducer';
-import {defaultBackgroundMaps} from './base-map-config';
+import {defaultBasemaps} from './base-map-config';
 
 export const MINIMUM_MAP_SCALE = 1_500_000;
 export const MAXIMUM_MAP_SCALE = 100;
@@ -20,5 +20,5 @@ export const defaultMapConfig: MapConfigurationState = {
   },
   isMaxZoomedIn: false,
   isMaxZoomedOut: false,
-  backgroundMap: defaultBackgroundMaps[0]
+  activeBasemapId: defaultBasemaps[0].id
 };

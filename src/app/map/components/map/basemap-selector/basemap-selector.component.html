@@ -1,0 +1,24 @@
+<div class="basemap-selector">
+  <mat-card (click)="this.toggleSelection()" class="basemap-selector__active">
+    <img alt="Aktuelle Hintergrundkarte" [src]="this.activeBasemapId | basemapImageLink" class="basemap-selector__active-map-image" />
+  </mat-card>
+
+  <mat-card *ngIf="this.isSelectionOpen" class="basemap-selector__map-choice">
+    <mat-card
+      (click)="this.switchBasemap(availableBasemap.id)"
+      *ngFor="let availableBasemap of this.availableBasemaps"
+      class="basemap-selector__map-choice__item"
+    >
+      <img
+        [alt]="availableBasemap.title"
+        [src]="availableBasemap.id | basemapImageLink"
+        class="basemap-selector__map-choice__item__image"
+      />
+      <mat-card-content>
+        <p>
+          {{ availableBasemap.title }}
+        </p>
+      </mat-card-content>
+    </mat-card>
+  </mat-card>
+</div>

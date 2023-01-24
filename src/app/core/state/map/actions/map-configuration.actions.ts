@@ -1,5 +1,6 @@
 import {createActionGroup, emptyProps, props} from '@ngrx/store';
 import {ZoomType} from '../../../../shared/types/zoom-type';
+import {Basemap} from '../../../../shared/interfaces/background-map.interface';
 
 export const MapConfigurationActions = createActionGroup({
   source: 'Map Configuration',
@@ -9,6 +10,7 @@ export const MapConfigurationActions = createActionGroup({
     'Set Ready': props<{calculatedMinScale: number; calculatedMaxScale: number}>(),
     'Set Scale': props<{scale: number}>(),
     'Reset Extent': emptyProps(),
-    'Change Zoom': props<{zoomType: ZoomType}>()
+    'Change Zoom': props<{zoomType: ZoomType}>(),
+    'Set Basemap': props<{activeBasemapId: string}>()
   }
 });
