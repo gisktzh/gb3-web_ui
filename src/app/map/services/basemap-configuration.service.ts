@@ -18,6 +18,8 @@ export class BasemapConfigurationService {
       return this.defaultBasemap.id;
     }
 
+    id = id.toLowerCase();
+
     if (this.availableBasemaps.some((availableBasemap) => availableBasemap.id === id)) {
       return id;
     }
