@@ -18,8 +18,8 @@ export interface MapService {
   /** Triggers a zoomevent, which is either zooming in or out */
   handleZoom(zoomType: ZoomType): void;
 
-  /** Adds a new item to the map */
-  addMapItem(mapItem: ActiveMapItem): void;
+  /** Adds a new item to the map in the given position (0 is the topmost item - the most visible one)  */
+  addMapItem(mapItem: ActiveMapItem, position: number): void;
 
   /** Removes an existing item from the map given its unique ID */
   removeMapItem(id: string): void;
@@ -36,11 +36,11 @@ export interface MapService {
   /** Sets the visibility for a sublayer of an existing item on the map */
   setSublayerVisibility(visibility: boolean, mapItem: ActiveMapItem, layerId: number): void;
 
-  /** Reorders a map item using its old index (previous) and the new index (current) */
-  reorderMapItem(previousIndex: number, currentIndex: number): void;
+  /** Reorders a map item using its old index (previous) and the new index (current); 0 is the topmost item - the most visible one */
+  reorderMapItem(previousPosition: number, currentPosition: number): void;
 
-  /** Reorders a sublayer within a map item using its old index (previous) and the new index (current) */
-  reorderSublayer(mapItem: ActiveMapItem, previousIndex: number, currentIndex: number): void;
+  /** Reorders a sublayer within a map item using its old index (previous) and the new index (current); 0 is the topmost layer - the most visible one */
+  reorderSublayer(mapItem: ActiveMapItem, previousPosition: number, currentPosition: number): void;
 
   /** Adds a new highlight geometry to the map */
   addHighlightGeometry(geometry: Geometry): void;
