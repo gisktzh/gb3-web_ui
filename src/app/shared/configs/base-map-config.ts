@@ -163,3 +163,5 @@ export const defaultBasemaps: Basemap[] = [
     ]
   }
 ];
+
+export const defaultBasemap = defaultBasemaps[0];

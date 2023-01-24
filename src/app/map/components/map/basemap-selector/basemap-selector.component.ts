@@ -3,8 +3,8 @@ import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {selectActiveBasemapId} from '../../../../core/state/map/reducers/map-configuration.reducer';
 import {Basemap} from '../../../../shared/interfaces/background-map.interface';
-import {defaultBasemaps} from '../../../../shared/configs/base-map-config';
 import {MapConfigurationActions} from '../../../../core/state/map/actions/map-configuration.actions';
+import {BasemapConfigurationService} from '../../../../shared/services/basemap-configuration.service';
 
 @Component({
   selector: 'basemap-selector',
@@ -18,7 +18,7 @@ export class BasemapSelectorComponent implements OnInit, OnDestroy {
   private readonly subscriptions: Subscription = new Subscription();
   private readonly activeBasemapId$ = this.store.select(selectActiveBasemapId);
 
-  constructor(private readonly store: Store) {}
+  constructor(private readonly store: Store, private readonly basemapConfigurationService: BasemapConfigurationService) {}
 
   public ngOnInit(): void {
     this.initSubscriptions();
@@ -43,7 +43,9 @@ export class BasemapSelectorComponent implements OnInit, OnDestroy {
         .pipe(
           tap((activeBasemapId) => {
             this.activeBasemapId = activeBasemapId;
-            this.availableBasemaps = defaultBasemaps.filter((defaultBasemap) => defaultBasemap.id !== activeBasemapId);
+            this.availableBasemaps = this.basemapConfigurationService.availableBasemaps.filter(
+              (defaultBasemap) => defaultBasemap.id !== activeBasemapId
+            );
           })
         )
         .subscribe()

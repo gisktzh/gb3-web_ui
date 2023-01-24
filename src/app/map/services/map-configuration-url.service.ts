@@ -5,13 +5,19 @@ import {Store} from '@ngrx/store';
 import {MapConfigurationActions} from '../../core/state/map/actions/map-configuration.actions';
 import {MapConfigurationState, selectMapConfigurationState} from '../../core/state/map/reducers/map-configuration.reducer';
 import {PrintType} from '../../shared/types/print-type';
+import {BasemapConfigurationService} from '../../shared/services/basemap-configuration.service';
 
 @Injectable()
 export class MapConfigurationUrlService implements OnDestroy {
   private readonly mapConfiguration$ = this.store.select(selectMapConfigurationState);
   private readonly subscriptions$ = new Subscription();
 
-  constructor(private readonly router: Router, private readonly route: ActivatedRoute, private readonly store: Store) {
+  constructor(
+    private readonly router: Router,
+    private readonly route: ActivatedRoute,
+    private readonly store: Store,
+    private readonly basemapConfigurationService: BasemapConfigurationService
+  ) {
     this.getInitialMapConfiguration();
   }
 
@@ -50,9 +56,10 @@ export class MapConfigurationUrlService implements OnDestroy {
   }
 
   private extractMapParameters(params: Params) {
-    const {x, y, scale} = params;
-    if (x || y || scale) {
-      this.store.dispatch(MapConfigurationActions.setInitialExtent({x, y, scale}));
+    const {x, y, scale, basemap} = params;
+    const basemapId = this.basemapConfigurationService.checkBasemapIdOrGetDefault(basemap);
+    if (x || y || scale || basemap) {
+      this.store.dispatch(MapConfigurationActions.setInitialMapConfiguration({x, y, scale, basemapId}));
     }
   }
 
@@ -62,7 +69,8 @@ export class MapConfigurationUrlService implements OnDestroy {
         .pipe(
           tap(async (config) => {
             const {center, scale} = this.getRoundedMapParameters(config);
-            const queryParms: Params = {x: center.x, y: center.y, scale: scale};
+            const {activeBasemapId} = config;
+            const queryParms: Params = {x: center.x, y: center.y, scale: scale, basemap: activeBasemapId};
             await this.router.navigate([], {
               relativeTo: this.route,
               queryParams: queryParms,

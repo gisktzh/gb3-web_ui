@@ -30,8 +30,8 @@ import {defaultMapConfig} from '../../shared/configs/map-config';
 import {ZoomType} from '../../shared/types/zoom-type';
 import Basemap from '@arcgis/core/Basemap';
 import TileInfo from '@arcgis/core/layers/support/TileInfo';
-import {defaultBasemaps} from '../../shared/configs/base-map-config';
 import ViewClickEvent = __esri.ViewClickEvent;
+import {BasemapConfigurationService} from '../../shared/services/basemap-configuration.service';
 
 @Injectable({
   providedIn: 'root'
@@ -66,7 +66,8 @@ export class EsriMapService implements MapService {
   constructor(
     private readonly store: Store,
     private readonly transformationService: TransformationService,
-    private readonly geoJSONMapperService: GeoJSONMapperService
+    private readonly geoJSONMapperService: GeoJSONMapperService,
+    private readonly basemapConfigurationService: BasemapConfigurationService
   ) {}
 
   private get mapView(): __esri.MapView {
@@ -234,7 +235,7 @@ export class EsriMapService implements MapService {
   private createMap(initialBasemapId: string): __esri.Map {
     return new EsriMap({
       basemap: new Basemap({
-        baseLayers: defaultBasemaps.map((baseMap) => {
+        baseLayers: this.basemapConfigurationService.availableBasemaps.map((baseMap) => {
           return new WMSLayer({
             id: baseMap.id,
             url: baseMap.url,

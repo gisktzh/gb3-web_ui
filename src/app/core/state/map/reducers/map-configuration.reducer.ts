@@ -31,7 +31,7 @@ export const mapConfigurationFeature = createFeature({
   name: mapConfigurationFeatureKey,
   reducer: createReducer(
     initialState,
-    on(MapConfigurationActions.setInitialExtent, (state, {x, y, scale}): MapConfigurationState => {
+    on(MapConfigurationActions.setInitialMapConfiguration, (state, {x, y, scale, basemapId}): MapConfigurationState => {
       const initialExtent = {
         center: {
           x: x ?? initialState.center.x,
@@ -39,7 +39,9 @@ export const mapConfigurationFeature = createFeature({
         },
         scale: scale ?? initialState.scale
       };
-      return {...state, ...initialExtent};
+      const activeBasemapId = basemapId ?? initialState.activeBasemapId;
+
+      return {...state, activeBasemapId, ...initialExtent};
     }),
     on(MapConfigurationActions.setMapExtent, (state, {x, y, scale}): MapConfigurationState => {
       /**
