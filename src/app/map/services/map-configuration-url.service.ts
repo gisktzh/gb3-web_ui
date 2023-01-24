@@ -5,7 +5,7 @@ import {Store} from '@ngrx/store';
 import {MapConfigurationActions} from '../../core/state/map/actions/map-configuration.actions';
 import {MapConfigurationState, selectMapConfigurationState} from '../../core/state/map/reducers/map-configuration.reducer';
 import {PrintType} from '../../shared/types/print-type';
-import {BasemapConfigurationService} from '../../shared/services/basemap-configuration.service';
+import {BasemapConfigurationService} from './basemap-configuration.service';
 
 @Injectable()
 export class MapConfigurationUrlService implements OnDestroy {
@@ -25,20 +25,6 @@ export class MapConfigurationUrlService implements OnDestroy {
     this.subscriptions$.unsubscribe();
   }
 
-  private getInitialMapConfiguration() {
-    this.subscriptions$.add(
-      this.route.queryParams
-        .pipe(
-          first(),
-          tap((params) => {
-            this.extractMapParameters(params);
-            this.subscribeToUrlChanges();
-          })
-        )
-        .subscribe()
-    );
-  }
-
   public activatePrintMode(printType: PrintType) {
     this.router.navigate([], {
       relativeTo: this.route,
@@ -53,6 +39,20 @@ export class MapConfigurationUrlService implements OnDestroy {
       relativeTo: this.route,
       queryParams: otherParams
     });
+  }
+
+  private getInitialMapConfiguration() {
+    this.subscriptions$.add(
+      this.route.queryParams
+        .pipe(
+          first(),
+          tap((params) => {
+            this.extractMapParameters(params);
+            this.subscribeToUrlChanges();
+          })
+        )
+        .subscribe()
+    );
   }
 
   private extractMapParameters(params: Params) {

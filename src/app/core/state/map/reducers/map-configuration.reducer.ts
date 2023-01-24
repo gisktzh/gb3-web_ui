@@ -1,7 +1,6 @@
 import {createFeature, createReducer, on} from '@ngrx/store';
 import {MapConfigurationActions} from '../actions/map-configuration.actions';
 import {defaultMapConfig} from '../../../../shared/configs/map-config';
-import {Basemap} from '../../../../shared/interfaces/background-map.interface';
 
 export const mapConfigurationFeatureKey = 'mapConfiguration';
 

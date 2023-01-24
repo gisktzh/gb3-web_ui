@@ -4,7 +4,7 @@ import {Store} from '@ngrx/store';
 import {selectActiveBasemapId} from '../../../../core/state/map/reducers/map-configuration.reducer';
 import {Basemap} from '../../../../shared/interfaces/background-map.interface';
 import {MapConfigurationActions} from '../../../../core/state/map/actions/map-configuration.actions';
-import {BasemapConfigurationService} from '../../../../shared/services/basemap-configuration.service';
+import {BasemapConfigurationService} from '../../../services/basemap-configuration.service';
 
 @Component({
   selector: 'basemap-selector',

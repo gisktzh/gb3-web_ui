@@ -31,9 +31,9 @@ import {defaultMapConfig} from '../../shared/configs/map-config';
 import {ZoomType} from '../../shared/types/zoom-type';
 import Basemap from '@arcgis/core/Basemap';
 import TileInfo from '@arcgis/core/layers/support/TileInfo';
+import {BasemapConfigurationService} from './basemap-configuration.service';
 import ViewClickEvent = __esri.ViewClickEvent;
 import ViewLayerviewCreateEvent = __esri.ViewLayerviewCreateEvent;
-import {BasemapConfigurationService} from '../../shared/services/basemap-configuration.service';
 
 @Injectable({
   providedIn: 'root'

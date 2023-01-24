@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
-import {Basemap} from '../interfaces/background-map.interface';
-import {defaultBasemap, defaultBasemaps} from '../configs/base-map-config';
+import {Basemap} from '../../shared/interfaces/background-map.interface';
+import {defaultBasemap, defaultBasemaps} from '../../shared/configs/base-map-config';
 
 @Injectable({
   providedIn: 'root'
