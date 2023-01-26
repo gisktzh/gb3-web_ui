@@ -122,7 +122,7 @@ export class EsriMapService implements MapService {
       .subscribe();
   }
 
-  public addMapItem(mapItem: ActiveMapItem) {
+  public addMapItem(mapItem: ActiveMapItem, position: number) {
     if (this.findEsriLayer(mapItem.id)) {
       return;
     }
@@ -140,18 +140,20 @@ export class EsriMapService implements MapService {
       })
     });
     this.attachLayerListeners(esriLayer);
-    this.mapView.map.layers.add(esriLayer, 0);
+    // index is the inverse position - the lowest index has the lowest visibility (it's on the bottom) while the lowest position has the highest visibility
+    const index = this.mapView.map.layers.length - position;
+    this.mapView.map.add(esriLayer, index);
   }
 
   public removeMapItem(id: string) {
     const esriLayer = this.findEsriLayer(id);
     if (esriLayer) {
-      this.mapView.map.layers.remove(esriLayer);
+      this.mapView.map.remove(esriLayer);
     }
   }
 
   public removeAllMapItems() {
-    this.mapView.map.layers.removeAll();
+    this.mapView.map.removeAll();
   }
 
   public assignMapElement(container: HTMLDivElement) {
@@ -204,17 +206,18 @@ export class EsriMapService implements MapService {
     }
   }
 
-  public reorderMapItem(previousIndex: number, currentIndex: number) {
-    // use the reverse indices so that the item with the lowest index has the highest visibility (it's on top) and vice versa
-    const reversePreviousIndex = this.mapView.layerViews.length - 1 - previousIndex;
-    const reverseCurrentIndex = this.mapView.layerViews.length - 1 - currentIndex;
-    this.mapView.layerViews.reorder(this.mapView.layerViews.getItemAt(reversePreviousIndex), reverseCurrentIndex);
+  public reorderMapItem(previousPosition: number, currentPosition: number) {
+    // index is the inverse position - the lowest index has the lowest visibility (it's on the bottom) while the lowest position has the highest visibility
+    const previousIndex = this.mapView.layerViews.length - 1 - previousPosition;
+    const currentIndex = this.mapView.layerViews.length - 1 - currentPosition;
+    this.mapView.layerViews.reorder(this.mapView.layerViews.getItemAt(previousIndex), currentIndex);
   }
 
-  public reorderSublayer(mapItem: ActiveMapItem, previousIndex: number, currentIndex: number) {
+  public reorderSublayer(mapItem: ActiveMapItem, previousPosition: number, currentPosition: number) {
     const esriLayer = this.findEsriLayer(mapItem.id);
     if (esriLayer && esriLayer instanceof WMSLayer) {
-      esriLayer.sublayers.reorder(esriLayer.sublayers.getItemAt(previousIndex), currentIndex);
+      // the index of sublayers is identical to their position (in contrast to the map items) where the lowest index/position has the highest visibility
+      esriLayer.sublayers.reorder(esriLayer.sublayers.getItemAt(previousPosition), currentPosition);
     }
   }
 

@@ -33,13 +33,16 @@ export class LayerCatalogComponent implements OnInit, OnDestroy {
   }
 
   public addActiveTopic(topic: Topic) {
-    const activeMapItem = new ActiveMapItem(topic);
-    this.store.dispatch(ActiveMapItemActions.addActiveMapItem(activeMapItem));
+    this.addActiveItem(new ActiveMapItem(topic));
   }
 
   public addActiveLayer(topic: Topic, layer: TopicLayer) {
-    const activeMapItem = new ActiveMapItem(topic, layer);
-    this.store.dispatch(ActiveMapItemActions.addActiveMapItem(activeMapItem));
+    this.addActiveItem(new ActiveMapItem(topic, layer));
+  }
+
+  private addActiveItem(activeMapItem: ActiveMapItem) {
+    // add new map items on top (position 0)
+    this.store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem, position: 0}));
   }
 
   private initSubscriptions() {

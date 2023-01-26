@@ -48,13 +48,13 @@ export class ActiveMapItemsWidgetComponent implements OnInit, OnDestroy {
 
   public dropMapItem($event: CdkDragDrop<CdkDrag>) {
     this.store.dispatch(
-      ActiveMapItemActions.reorderActiveMapItem({previousIndex: $event.previousIndex, currentIndex: $event.currentIndex})
+      ActiveMapItemActions.reorderActiveMapItem({previousPosition: $event.previousIndex, currentPosition: $event.currentIndex})
     );
   }
 
   public dropSublayer($event: CdkDragDrop<CdkDrag>, activeMapItem: ActiveMapItem) {
     this.store.dispatch(
-      ActiveMapItemActions.reorderSublayer({activeMapItem, previousIndex: $event.previousIndex, currentIndex: $event.currentIndex})
+      ActiveMapItemActions.reorderSublayer({activeMapItem, previousPosition: $event.previousIndex, currentPosition: $event.currentIndex})
     );
   }
 

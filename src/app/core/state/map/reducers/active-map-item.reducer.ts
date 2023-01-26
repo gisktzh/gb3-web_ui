@@ -16,9 +16,14 @@ export const activeMapItemFeature = createFeature({
   name: activeMapItemFeatureKey,
   reducer: createReducer(
     initialState,
-    on(ActiveMapItemActions.addActiveMapItem, (state, activeMapItem): ActiveMapItemState => {
-      const otherActiveMapItems = state.activeMapItems.filter((mapItem) => mapItem.id !== activeMapItem.id);
-      return {...state, activeMapItems: [...otherActiveMapItems, activeMapItem]};
+    on(ActiveMapItemActions.addActiveMapItem, (state, {activeMapItem, position}): ActiveMapItemState => {
+      if (state.activeMapItems.some((mapItem) => mapItem.id === activeMapItem.id)) {
+        // the map item is already active - no state changes necessary
+        return {...state};
+      }
+      const newActiveMapItems: ActiveMapItem[] = [...state.activeMapItems];
+      newActiveMapItems.splice(position, 0, activeMapItem);
+      return {...state, activeMapItems: newActiveMapItems};
     }),
     on(ActiveMapItemActions.removeActiveMapItem, (state, activeMapItem): ActiveMapItemState => {
       const remainingActiveMapItems = state.activeMapItems.filter((mapItem) => mapItem.id !== activeMapItem.id);
@@ -90,18 +95,18 @@ export const activeMapItemFeature = createFeature({
       });
       return {...state, activeMapItems: [...activeMapItems]};
     }),
-    on(ActiveMapItemActions.reorderActiveMapItem, (state, {previousIndex, currentIndex}): ActiveMapItemState => {
-      const mapItemToReorder = state.activeMapItems[previousIndex];
+    on(ActiveMapItemActions.reorderActiveMapItem, (state, {previousPosition, currentPosition}): ActiveMapItemState => {
+      const mapItemToReorder = state.activeMapItems[previousPosition];
       const reorderedActiveMapItems = state.activeMapItems.filter((mapItem) => mapItem !== mapItemToReorder);
-      reorderedActiveMapItems.splice(currentIndex, 0, mapItemToReorder);
+      reorderedActiveMapItems.splice(currentPosition, 0, mapItemToReorder);
       return {...state, activeMapItems: [...reorderedActiveMapItems]};
     }),
-    on(ActiveMapItemActions.reorderSublayer, (state, {activeMapItem, previousIndex, currentIndex}): ActiveMapItemState => {
+    on(ActiveMapItemActions.reorderSublayer, (state, {activeMapItem, previousPosition, currentPosition}): ActiveMapItemState => {
       const activeMapItems = state.activeMapItems.map((mapItem) => {
         if (mapItem.id === activeMapItem.id) {
           const newActiveMapItem = structuredClone(mapItem);
-          const sublayerToReorder = newActiveMapItem.layers.splice(previousIndex, 1);
-          newActiveMapItem.layers.splice(currentIndex, 0, ...sublayerToReorder);
+          const sublayerToReorder = newActiveMapItem.layers.splice(previousPosition, 1);
+          newActiveMapItem.layers.splice(currentPosition, 0, ...sublayerToReorder);
           return newActiveMapItem;
         } else {
           return mapItem;
