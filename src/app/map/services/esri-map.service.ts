@@ -103,6 +103,9 @@ export class EsriMapService implements MapService {
           const {minScale, maxScale} = config.scaleSettings;
           const {scale, srsId} = config;
           this._mapView = new EsriMapView({
+            ui: {
+              components: ['attribution'] // todo: may be removed, check licensing
+            },
             map: map,
             scale: scale,
             center: new EsriPoint({x, y, spatialReference: new SpatialReference({wkid: srsId})}),
