@@ -10,6 +10,10 @@ export interface Basemap {
    * Lowercase identifier for the given basemap.
    */
   id: string;
+  /**
+   * Path to the image that is shown in the widget, relative to the app root.
+   */
+  relativeImagePath: string;
   url: string;
   title: string;
   srsId: number;

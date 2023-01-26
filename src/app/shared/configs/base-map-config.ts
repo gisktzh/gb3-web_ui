@@ -3,6 +3,7 @@ import {Basemap} from '../interfaces/background-map.interface';
 export const defaultBasemaps: Basemap[] = [
   {
     id: 'arelkbackgroundzh',
+    relativeImagePath: 'assets/images/basemaps/arelkbackgroundzh.png',
     url: 'https://maps.zh.ch/wms/ARElkBackgroundZH',
     title: 'Landeskarte',
     srsId: 2056,
@@ -38,6 +39,7 @@ export const defaultBasemaps: Basemap[] = [
   },
   {
     id: 'aredtmbackgroundzh',
+    relativeImagePath: 'assets/images/basemaps/aredtmbackgroundzh.png',
     url: 'https://maps.zh.ch/wms/AREDTMBackgroundZH',
     title: 'Digitales Terrainmodell',
     srsId: 2056,
@@ -49,6 +51,7 @@ export const defaultBasemaps: Basemap[] = [
   },
   {
     id: 'arewildbackgroundzh',
+    relativeImagePath: 'assets/images/basemaps/arewildbackgroundzh.png',
     url: 'https://maps.zh.ch/wms/AREWildBackgroundZH',
     title: 'Historische Karte J. Wild',
     srsId: 2056,
@@ -60,6 +63,7 @@ export const defaultBasemaps: Basemap[] = [
   },
   {
     id: 'areupbackgroundzh',
+    relativeImagePath: 'assets/images/basemaps/areupbackgroundzh.png',
     url: 'https://maps.zh.ch/wms/AREUPBackgroundZH',
     title: 'Übersichtsplan',
     srsId: 2056,
