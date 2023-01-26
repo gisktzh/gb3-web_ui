@@ -17,7 +17,11 @@ export const activeMapItemFeature = createFeature({
   reducer: createReducer(
     initialState,
     on(ActiveMapItemActions.addActiveMapItem, (state, {activeMapItem, position}): ActiveMapItemState => {
-      const newActiveMapItems: ActiveMapItem[] = state.activeMapItems.filter((mapItem) => mapItem.id !== activeMapItem.id);
+      if (state.activeMapItems.some((mapItem) => mapItem.id === activeMapItem.id)) {
+        // the map item is already active - no state changes necessary
+        return {...state};
+      }
+      const newActiveMapItems: ActiveMapItem[] = [...state.activeMapItems];
       newActiveMapItems.splice(position, 0, activeMapItem);
       return {...state, activeMapItems: newActiveMapItems};
     }),
