@@ -31,6 +31,8 @@ import {ConfigService} from '../../shared/services/config.service';
 import ViewClickEvent = __esri.ViewClickEvent;
 import ViewLayerviewCreateEvent = __esri.ViewLayerviewCreateEvent;
 
+type EsriLoadStatus = 'not-loaded' | 'loading' | 'failed' | 'loaded';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -320,29 +322,43 @@ export class EsriMapService implements MapService {
   }
 
   private attachLayerListeners(esriLayer: __esri.Layer) {
+    // watch and initialize the loading state by observing the 'loadStatus' property
     reactiveUtils.watch(
       () => esriLayer.loadStatus,
       (loadStatus) => {
-        const loadingState = this.transformLoadStatusToLoadingState(loadStatus);
-        this.store.dispatch(ActiveMapItemActions.setLoadingState({loadingState, id: esriLayer.id}));
+        this.updateLoadingState(loadStatus, esriLayer.id);
       }
     );
+    this.updateLoadingState(esriLayer.loadStatus, esriLayer.id);
   }
 
   private attachLayerViewListeners(esriLayerView: __esri.LayerView) {
+    // watch and initialize the view process state by observing the 'updating' property
     reactiveUtils.watch(
       () => esriLayerView.updating,
       (updating) => {
-        if (esriLayerView.layer) {
-          const viewProcessState: ViewProcessState = updating ? 'updating' : 'completed';
-          this.store.dispatch(ActiveMapItemActions.setViewProcessState({viewProcessState: viewProcessState, id: esriLayerView.layer.id}));
-        }
+        this.updateViewProcessState(updating, esriLayerView.layer?.id);
       }
     );
+    this.updateViewProcessState(esriLayerView.updating, esriLayerView.layer?.id);
   }
 
-  private transformLoadStatusToLoadingState(loadStatus: 'not-loaded' | 'loading' | 'failed' | 'loaded' | undefined): LoadingState {
-    if (!loadStatus) {
+  private updateLoadingState(loadStatus: EsriLoadStatus | undefined, id: string) {
+    const loadingState = this.transformLoadStatusToLoadingState(loadStatus);
+    this.store.dispatch(ActiveMapItemActions.setLoadingState({loadingState: loadingState, id: id}));
+  }
+
+  private updateViewProcessState(updating: boolean | undefined, id: string | undefined) {
+    if (!id) {
+      // no ID given => don't update the state
+      return;
+    }
+    const viewProcessState: ViewProcessState = this.transformUpdatingToViewProcessState(updating);
+    this.store.dispatch(ActiveMapItemActions.setViewProcessState({viewProcessState: viewProcessState, id: id}));
+  }
+
+  private transformLoadStatusToLoadingState(loadStatus: EsriLoadStatus | undefined): LoadingState {
+    if (loadStatus === undefined) {
       return 'undefined';
     }
     switch (loadStatus) {
@@ -355,6 +371,13 @@ export class EsriMapService implements MapService {
       case 'loaded':
         return 'loaded';
     }
+  }
+
+  private transformUpdatingToViewProcessState(updating: boolean | undefined): ViewProcessState {
+    if (updating === undefined) {
+      return 'undefined';
+    }
+    return updating ? 'updating' : 'completed';
   }
 
   private dispatchFeatureInfoRequest(x: number, y: number) {
