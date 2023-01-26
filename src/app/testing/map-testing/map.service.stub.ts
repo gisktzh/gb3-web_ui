@@ -20,9 +20,9 @@ export class MapServiceStub implements MapService {
 
   public removeMapItem(id: string): void {}
 
-  public reorderMapItem(previousIndex: number, currentIndex: number): void {}
+  public reorderMapItem(previousPosition: number, currentPosition: number): void {}
 
-  public reorderSublayer(mapItem: ActiveMapItem, previousIndex: number, currentIndex: number): void {}
+  public reorderSublayer(mapItem: ActiveMapItem, previousPosition: number, currentPosition: number): void {}
 
   public resetExtent(): void {}
 

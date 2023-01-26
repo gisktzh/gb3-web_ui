@@ -12,7 +12,7 @@ export class ActiveMapItemEffects {
       return this.actions$.pipe(
         ofType(ActiveMapItemActions.addActiveMapItem),
         tap((action) => {
-          this.mapService.addMapItem(action);
+          this.mapService.addMapItem(action.activeMapItem, action.position);
         })
       );
     },
@@ -84,7 +84,7 @@ export class ActiveMapItemEffects {
       return this.actions$.pipe(
         ofType(ActiveMapItemActions.reorderActiveMapItem),
         tap((action) => {
-          this.mapService.reorderMapItem(action.previousIndex, action.currentIndex);
+          this.mapService.reorderMapItem(action.previousPosition, action.currentPosition);
         })
       );
     },
@@ -96,7 +96,7 @@ export class ActiveMapItemEffects {
       return this.actions$.pipe(
         ofType(ActiveMapItemActions.reorderSublayer),
         tap((action) => {
-          this.mapService.reorderSublayer(action.activeMapItem, action.previousIndex, action.currentIndex);
+          this.mapService.reorderSublayer(action.activeMapItem, action.previousPosition, action.currentPosition);
         })
       );
     },
