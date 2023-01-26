@@ -29,3 +29,11 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 ## Local setup
 
 1. Copy `./src/environments/environment.local.ts.example` to `./src/environments/environment.local.ts` and configure the GB3 API key. This is currently needed in order to access the GB3 API services.
+
+## Building the image
+
+In order to build the docker image, the `GB2_API_USER_TOKEN` is required and has to be passed as build argument, like so
+
+```
+docker build -t gb3-frontend:latest --build-arg GB2_API_USER_TOKEN=this_is_the_token .
+```
