@@ -9,7 +9,7 @@ const routes: Routes = [
     component: PageComponent,
     children: [
       {path: 'maps', loadChildren: () => import('../map/map.module').then((m) => m.MapModule)},
-      {path: 'data', component: PlaceholderPageComponent},
+      {path: 'data', loadChildren: () => import('../data-catalogue/data-catalogue.module').then((m) => m.DataCatalogueModule)},
       {path: 'shop', component: PlaceholderPageComponent},
       {path: 'help', component: PlaceholderPageComponent},
       {path: '', component: PlaceholderPageComponent}
