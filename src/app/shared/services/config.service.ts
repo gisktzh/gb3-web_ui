@@ -1,7 +1,8 @@
 import {Injectable} from '@angular/core';
 import {defaultBasemap, defaultBasemaps} from '../configs/base-map-config';
 import {defaultHighlightStyles} from '../configs/feature-info-config';
-import {defaultMapConfig, MAXIMUM_MAP_SCALE, MINIMUM_MAP_SCALE} from '../configs/map-config';
+import {defaultMapConfig} from '../configs/map-config';
+import {MapConstants} from '../constants/map.constants';
 
 @Injectable({
   providedIn: 'root'
@@ -19,8 +20,8 @@ export class ConfigService {
   public readonly mapConfig = {
     defaultMapConfig: defaultMapConfig,
     mapScaleConfig: {
-      maxScale: MAXIMUM_MAP_SCALE,
-      minScale: MINIMUM_MAP_SCALE
+      maxScale: MapConstants.MAXIMUM_MAP_SCALE,
+      minScale: MapConstants.MINIMUM_MAP_SCALE
     }
   };
 }
