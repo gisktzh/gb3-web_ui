@@ -5,9 +5,9 @@ import {Basemap} from '../../shared/interfaces/background-map.interface';
 import {ConfigService} from '../../shared/services/config.service';
 
 const mockBasemaps: Basemap[] = [
-  {id: 'test-1', url: 'https://www.my-test.com/test1', title: 'Test 1', srsId: 2056, layers: []},
-  {id: 'test-2', url: 'https://www.my-test.com/test2', title: 'Test 2', srsId: 2056, layers: []},
-  {id: 'test-3', url: 'https://www.my-test.com/test3', title: 'Test 3', srsId: 2056, layers: []}
+  {id: 'test-1', relativeImagePath: 'test-1.png', url: 'https://www.my-test.com/test1', title: 'Test 1', srsId: 2056, layers: []},
+  {id: 'test-2', relativeImagePath: 'test-2.png', url: 'https://www.my-test.com/test2', title: 'Test 2', srsId: 2056, layers: []},
+  {id: 'test-3', relativeImagePath: 'test-3.png', url: 'https://www.my-test.com/test3', title: 'Test 3', srsId: 2056, layers: []}
 ];
 
 const mockBasemapConfig = {
