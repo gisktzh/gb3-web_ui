@@ -1,11 +1,11 @@
 import {Injectable} from '@angular/core';
 import {EsriMap, EsriMapView, EsriPoint, EsriWMSLayer} from '../../shared/external/esri.module';
 import {Store} from '@ngrx/store';
-import {MapConfigurationActions} from '../../core/state/map/actions/map-configuration.actions';
+import {MapConfigActions} from '../../core/state/map/actions/map-config.actions';
 import {TransformationService} from './transformation.service';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
-import {MapConfigurationState, selectMapConfigurationState} from '../../core/state/map/reducers/map-configuration.reducer';
-import {first, tap} from 'rxjs';
+import {MapConfigState, selectActiveBasemapId, selectMapConfigState} from '../../core/state/map/reducers/map-config.reducer';
+import {first, skip, Subscription, tap} from 'rxjs';
 import SpatialReference from '@arcgis/core/geometry/SpatialReference';
 import {FeatureInfoActions} from '../../core/state/map/actions/feature-info.actions';
 import Graphic from '@arcgis/core/Graphic';
@@ -15,7 +15,7 @@ import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import {GeoJSONMapperService} from '../../shared/services/geo-json-mapper.service';
-import {defaultHighlightStyles} from 'src/app/shared/configs/feature-info-config';
+import {DefaultHighlightStyles} from 'src/app/shared/configs/feature-info-config';
 import {MapService} from '../interfaces/map.service';
 import {ActiveMapItem} from '../models/active-map-item.model';
 import {ActiveMapItemActions} from '../../core/state/map/actions/active-map-item.actions';
@@ -23,8 +23,11 @@ import {LoadingState} from '../../shared/types/loading-state';
 import WMSLayer from '@arcgis/core/layers/WMSLayer';
 import ScaleBar from '@arcgis/core/widgets/ScaleBar';
 import {ViewProcessState} from '../../shared/types/view-process-state';
-import {defaultMapConfig} from '../../shared/configs/map-config';
 import {ZoomType} from '../../shared/types/zoom-type';
+import Basemap from '@arcgis/core/Basemap';
+import TileInfo from '@arcgis/core/layers/support/TileInfo';
+import {BasemapConfigService} from './basemap-config.service';
+import {ConfigService} from '../../shared/services/config.service';
 import ViewClickEvent = __esri.ViewClickEvent;
 import ViewLayerviewCreateEvent = __esri.ViewLayerviewCreateEvent;
 
@@ -35,11 +38,13 @@ export class EsriMapService implements MapService {
   private effectiveMaxZoom = 23;
   private effectiveMinZoom = 0;
   private effectiveMinScale = 0;
+  private readonly defaultHighlightStyles: DefaultHighlightStyles = this.configService.featureInfoConfig.defaultHighlightStyles;
+  private readonly defaultMapConfig: MapConfigState = this.configService.mapConfig.defaultMapConfig;
 
   // TODO this should be moved to a config file
   private readonly highlightColors = {
-    feature: new Color(defaultHighlightStyles.feature.color),
-    outline: new Color(defaultHighlightStyles.outline.color)
+    feature: new Color(this.defaultHighlightStyles.feature.color),
+    outline: new Color(this.defaultHighlightStyles.outline.color)
   };
   // TODO this should be moved to a config file
   private readonly highlightStyles = new Map<__esri.Geometry['type'], __esri.Symbol>([
@@ -47,7 +52,7 @@ export class EsriMapService implements MapService {
       'polyline',
       new SimpleLineSymbol({
         color: this.highlightColors.feature,
-        width: defaultHighlightStyles.feature.width
+        width: this.defaultHighlightStyles.feature.width
       })
     ],
     ['point', new SimpleMarkerSymbol({color: this.highlightColors.feature})],
@@ -55,11 +60,15 @@ export class EsriMapService implements MapService {
     ['polygon', new SimpleFillSymbol({color: this.highlightColors.feature})]
   ]);
   private _mapView!: __esri.MapView;
+  private readonly subscriptions: Subscription = new Subscription();
+  private readonly activeBasemapId$ = this.store.select(selectActiveBasemapId);
 
   constructor(
     private readonly store: Store,
     private readonly transformationService: TransformationService,
-    private readonly geoJSONMapperService: GeoJSONMapperService
+    private readonly geoJSONMapperService: GeoJSONMapperService,
+    private readonly basemapConfigService: BasemapConfigService,
+    private readonly configService: ConfigService
   ) {}
 
   private get mapView(): __esri.MapView {
@@ -92,30 +101,18 @@ export class EsriMapService implements MapService {
   }
 
   public init(): void {
-    const map = new EsriMap({basemap: 'hybrid'});
-
     this.store
-      .select(selectMapConfigurationState)
+      .select(selectMapConfigState)
       .pipe(
         first(),
-        tap((config: MapConfigurationState) => {
+        tap((config: MapConfigState) => {
           const {x, y} = config.center;
           const {minScale, maxScale} = config.scaleSettings;
-          const {scale, srsId} = config;
-          this._mapView = new EsriMapView({
-            ui: {
-              components: ['attribution'] // todo: may be removed, check licensing
-            },
-            map: map,
-            scale: scale,
-            center: new EsriPoint({x, y, spatialReference: new SpatialReference({wkid: srsId})}),
-            constraints: {
-              snapToZoom: false,
-              minScale: minScale,
-              maxScale: maxScale
-            }
-          });
+          const {scale, srsId, activeBasemapId} = config;
+          const map = this.createMap(activeBasemapId);
+          this.setMapView(map, scale, x, y, srsId, minScale, maxScale);
           this.attachMapViewListeners();
+          this.addBasemapSubscription();
           this.addScaleBar();
         })
       )
@@ -191,7 +188,7 @@ export class EsriMapService implements MapService {
       center: {x, y},
       srsId,
       scale
-    } = defaultMapConfig;
+    } = this.defaultMapConfig;
     this.mapView.center = new EsriPoint({x: x, y: y, spatialReference: new SpatialReference({wkid: srsId})});
     this.mapView.scale = scale;
   }
@@ -221,9 +218,59 @@ export class EsriMapService implements MapService {
     }
   }
 
+  private addBasemapSubscription() {
+    this.subscriptions.add(
+      this.activeBasemapId$
+        .pipe(
+          skip(1), // Skip first, because the first is set by init()
+          tap((activeBasemapId) => {
+            this.switchBasemap(activeBasemapId);
+          })
+        )
+        .subscribe()
+    );
+  }
+
   private addScaleBar() {
     const scaleBar = new ScaleBar({view: this.mapView, container: 'scale-bar-container', unit: 'metric'});
     this.mapView.ui.add(scaleBar);
+  }
+
+  private createMap(initialBasemapId: string): __esri.Map {
+    return new EsriMap({
+      basemap: new Basemap({
+        baseLayers: this.basemapConfigService.availableBasemaps.map((baseMap) => {
+          return new WMSLayer({
+            id: baseMap.id,
+            url: baseMap.url,
+            title: baseMap.title,
+            spatialReference: new SpatialReference({wkid: baseMap.srsId}),
+            sublayers: baseMap.layers.map((basemapLayer) => ({name: basemapLayer.name})),
+            visible: initialBasemapId === baseMap.id
+          });
+        })
+      })
+    });
+  }
+
+  private setMapView(map: __esri.Map, scale: number, x: number, y: number, srsId: number, minScale: number, maxScale: number) {
+    const spatialReference = new SpatialReference({wkid: srsId});
+    this._mapView = new EsriMapView({
+      map: map,
+      ui: {
+        components: ['attribution'] // todo: may be removed, check licensing
+      },
+      scale: scale,
+      center: new EsriPoint({x, y, spatialReference}),
+      constraints: {
+        snapToZoom: false,
+        minScale: minScale,
+        maxScale: maxScale,
+        lods: TileInfo.create({
+          spatialReference
+        }).lods
+      }
+    });
   }
 
   private findEsriLayer(id: string): __esri.Layer {
@@ -233,7 +280,7 @@ export class EsriMapService implements MapService {
   private attachMapViewListeners() {
     reactiveUtils.when(
       () => this.mapView.stationary,
-      () => this.updateMapConfiguration()
+      () => this.updateMapConfig()
     );
 
     reactiveUtils.on(
@@ -256,7 +303,7 @@ export class EsriMapService implements MapService {
         this.effectiveMinScale = effectiveMinScale!;
 
         this.store.dispatch(
-          MapConfigurationActions.setReady({
+          MapConfigActions.setReady({
             calculatedMinScale: effectiveMinScale!,
             calculatedMaxScale: effectiveMaxScale!
           })
@@ -314,9 +361,15 @@ export class EsriMapService implements MapService {
     this.store.dispatch(FeatureInfoActions.sendRequest({x, y}));
   }
 
-  private updateMapConfiguration() {
+  private updateMapConfig() {
     const {center, scale} = this.mapView;
     const {x, y} = this.transformationService.transform(center);
-    this.store.dispatch(MapConfigurationActions.setMapExtent({x, y, scale}));
+    this.store.dispatch(MapConfigActions.setMapExtent({x, y, scale}));
+  }
+
+  private switchBasemap(basemapId: string) {
+    this.mapView.map.basemap.baseLayers.map((baseLayer) => {
+      baseLayer.visible = basemapId === baseLayer.id;
+    });
   }
 }

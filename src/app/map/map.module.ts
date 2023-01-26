@@ -16,6 +16,7 @@ import {PrintOverlayComponent} from './components/print-overlay/print-overlay.co
 import {PrintDispatcherComponent} from './components/print-overlay/print-dispatcher/print-dispatcher.component';
 import {ScaleInputComponent} from './components/map/scale-input/scale-input.component';
 import {MapControlsComponent} from './components/map/map-controls/map-controls.component';
+import {BasemapSelectorComponent} from './components/map/basemap-selector/basemap-selector.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import {MapControlsComponent} from './components/map/map-controls/map-controls.c
     PrintOverlayComponent,
     PrintDispatcherComponent,
     ScaleInputComponent,
-    MapControlsComponent
+    MapControlsComponent,
+    BasemapSelectorComponent
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule]
 })

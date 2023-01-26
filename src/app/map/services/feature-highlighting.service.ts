@@ -3,7 +3,7 @@ import {selectHighlightedFeature} from '../../core/state/map/reducers/feature-in
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {Geometry as GeoJSONGeometry} from 'geojson';
-import {selectReady} from '../../core/state/map/reducers/map-configuration.reducer';
+import {selectReady} from '../../core/state/map/reducers/map-config.reducer';
 import {MapService} from '../interfaces/map.service';
 import {MAP_SERVICE} from '../../app.module';
 

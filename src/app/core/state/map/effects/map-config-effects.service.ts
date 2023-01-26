@@ -1,16 +1,16 @@
 import {Inject, Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {tap} from 'rxjs';
-import {MapConfigurationActions} from '../actions/map-configuration.actions';
+import {MapConfigActions} from '../actions/map-config.actions';
 import {MapService} from '../../../../map/interfaces/map.service';
 import {MAP_SERVICE} from '../../../../app.module';
 
 @Injectable()
-export class MapConfigurationEffects {
+export class MapConfigEffects {
   public dispatchManualScaleSetting$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(MapConfigurationActions.setScale),
+        ofType(MapConfigActions.setScale),
         tap(({scale}) => this.mapService.setScale(scale))
       );
     },
@@ -20,7 +20,7 @@ export class MapConfigurationEffects {
   public dispatchResetScale$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(MapConfigurationActions.resetExtent),
+        ofType(MapConfigActions.resetExtent),
         tap(() => {
           this.mapService.resetExtent();
         })
@@ -32,7 +32,7 @@ export class MapConfigurationEffects {
   public dispatchZoomChange$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(MapConfigurationActions.changeZoom),
+        ofType(MapConfigActions.changeZoom),
         tap(({zoomType}) => {
           this.mapService.handleZoom(zoomType);
         })

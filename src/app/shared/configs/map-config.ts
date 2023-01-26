@@ -1,9 +1,8 @@
-import {MapConfigurationState} from '../../core/state/map/reducers/map-configuration.reducer';
+import {MapConfigState} from '../../core/state/map/reducers/map-config.reducer';
+import {defaultBasemap} from './base-map-config';
+import {MapConstants} from '../constants/map.constants';
 
-export const MINIMUM_MAP_SCALE = 1_500_000;
-export const MAXIMUM_MAP_SCALE = 100;
-
-export const defaultMapConfig: MapConfigurationState = {
+export const defaultMapConfig: MapConfigState = {
   srsId: 2056,
   center: {
     x: 2682260.0,
@@ -12,11 +11,12 @@ export const defaultMapConfig: MapConfigurationState = {
   scale: 50000,
   ready: false,
   scaleSettings: {
-    minScale: MINIMUM_MAP_SCALE,
-    maxScale: MAXIMUM_MAP_SCALE,
-    calculatedMinScale: MINIMUM_MAP_SCALE,
-    calculatedMaxScale: MAXIMUM_MAP_SCALE
+    minScale: MapConstants.MINIMUM_MAP_SCALE,
+    maxScale: MapConstants.MAXIMUM_MAP_SCALE,
+    calculatedMinScale: MapConstants.MINIMUM_MAP_SCALE,
+    calculatedMaxScale: MapConstants.MAXIMUM_MAP_SCALE
   },
   isMaxZoomedIn: false,
-  isMaxZoomedOut: false
+  isMaxZoomedOut: false,
+  activeBasemapId: defaultBasemap.id
 };

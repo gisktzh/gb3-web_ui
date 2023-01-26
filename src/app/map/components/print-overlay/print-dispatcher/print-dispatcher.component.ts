@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {MapConfigurationUrlService} from '../../../services/map-configuration-url.service';
+import {MapConfigUrlService} from '../../../services/map-config-url.service';
 
 const PRINT_DELAY_IN_MS = 300;
 
@@ -13,14 +13,14 @@ const PRINT_DELAY_IN_MS = 300;
   styleUrls: ['./print-dispatcher.component.scss']
 })
 export class PrintDispatcherComponent implements OnInit {
-  constructor(private readonly mapConfigurationUrlService: MapConfigurationUrlService) {}
+  constructor(private readonly mapConfigUrlService: MapConfigUrlService) {}
   ngOnInit(): void {
     setTimeout(() => window.print(), PRINT_DELAY_IN_MS);
     this.addPrintEventListener();
   }
 
   public closePrint() {
-    this.mapConfigurationUrlService.deactivatePrintMode();
+    this.mapConfigUrlService.deactivatePrintMode();
   }
 
   /**
