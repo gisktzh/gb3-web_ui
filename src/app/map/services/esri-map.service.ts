@@ -347,12 +347,10 @@ export class EsriMapService implements MapService {
   }
 
   private updateViewProcessState(updating: boolean | undefined, id: string | undefined) {
-    if (!id) {
-      // no ID given => don't update the state
-      return;
+    if (id !== undefined) {
+      const viewProcessState: ViewProcessState = this.transformUpdatingToViewProcessState(updating);
+      this.store.dispatch(ActiveMapItemActions.setViewProcessState({viewProcessState: viewProcessState, id: id}));
     }
-    const viewProcessState: ViewProcessState = this.transformUpdatingToViewProcessState(updating);
-    this.store.dispatch(ActiveMapItemActions.setViewProcessState({viewProcessState: viewProcessState, id: id}));
   }
 
   private transformLoadStatusToLoadingState(loadStatus: EsriLoadStatus | undefined): LoadingState {
