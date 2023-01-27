@@ -28,8 +28,6 @@ import Basemap from '@arcgis/core/Basemap';
 import TileInfo from '@arcgis/core/layers/support/TileInfo';
 import {BasemapConfigService} from './basemap-config.service';
 import {ConfigService} from '../../shared/services/config.service';
-import ViewClickEvent = __esri.ViewClickEvent;
-import ViewLayerviewCreateEvent = __esri.ViewLayerviewCreateEvent;
 
 type EsriLoadStatus = 'not-loaded' | 'loading' | 'failed' | 'loaded';
 
@@ -207,9 +205,9 @@ export class EsriMapService implements MapService {
 
   public reorderMapItem(previousPosition: number, currentPosition: number) {
     // index is the inverse position - the lowest index has the lowest visibility (it's on the bottom) while the lowest position has the highest visibility
-    const previousIndex = this.mapView.layerViews.length - 1 - previousPosition;
-    const currentIndex = this.mapView.layerViews.length - 1 - currentPosition;
-    this.mapView.layerViews.reorder(this.mapView.layerViews.getItemAt(previousIndex), currentIndex);
+    const previousIndex = this.mapView.map.layers.length - 1 - previousPosition;
+    const currentIndex = this.mapView.map.layers.length - 1 - currentPosition;
+    this.mapView.map.layers.reorder(this.mapView.map.layers.getItemAt(previousIndex), currentIndex);
   }
 
   public reorderSublayer(mapItem: ActiveMapItem, previousPosition: number, currentPosition: number) {
@@ -288,7 +286,7 @@ export class EsriMapService implements MapService {
     reactiveUtils.on(
       () => this.mapView,
       'click',
-      (event: ViewClickEvent) => {
+      (event: __esri.ViewClickEvent) => {
         const {x, y} = this.transformationService.transform(event.mapPoint);
         this.dispatchFeatureInfoRequest(x, y);
       }
@@ -315,7 +313,7 @@ export class EsriMapService implements MapService {
     reactiveUtils.on(
       () => this.mapView,
       'layerview-create',
-      (event: ViewLayerviewCreateEvent) => {
+      (event: __esri.ViewLayerviewCreateEvent) => {
         this.attachLayerViewListeners(event.layerView);
       }
     );
