@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {EsriMap, EsriMapView, EsriPoint, EsriWMSLayer} from '../../shared/external/esri.module';
+import {EsriLoadStatus, EsriMap, EsriMapView, EsriPoint, EsriWMSLayer} from '../../shared/external/esri.module';
 import {Store} from '@ngrx/store';
 import {MapConfigActions} from '../../core/state/map/actions/map-config.actions';
 import {TransformationService} from './transformation.service';
@@ -28,8 +28,6 @@ import Basemap from '@arcgis/core/Basemap';
 import TileInfo from '@arcgis/core/layers/support/TileInfo';
 import {BasemapConfigService} from './basemap-config.service';
 import {ConfigService} from '../../shared/services/config.service';
-
-type EsriLoadStatus = 'not-loaded' | 'loading' | 'failed' | 'loaded';
 
 @Injectable({
   providedIn: 'root'

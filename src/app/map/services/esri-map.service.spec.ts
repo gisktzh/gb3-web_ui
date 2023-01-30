@@ -27,8 +27,8 @@ describe('EsriMapService', () => {
     service = TestBed.inject(EsriMapService);
     // mock the map view from Esri - otherwise any change to the layer list will create an error because the service call fails
     mapMock = new EsriMapMock();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (<any>service)._mapView = {map: mapMock} as __esri.MapView;
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    service['_mapView'] = {map: mapMock} as __esri.MapView;
   });
 
   it('should be created', () => {

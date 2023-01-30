@@ -19,6 +19,8 @@ export const EsriGroupLayer = GroupLayer;
 export const EsriPoint = Point;
 export const EsriCollection = Collection;
 
+export type EsriLoadStatus = 'not-loaded' | 'loading' | 'failed' | 'loaded';
+
 @NgModule({
   declarations: [],
   imports: []
