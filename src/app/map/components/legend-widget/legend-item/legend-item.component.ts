@@ -1,5 +1,4 @@
 import {Component, Input} from '@angular/core';
-import {environment} from '../../../../../environments/environment';
 import {Legend} from '../../../../shared/interfaces/legend.interface';
 
 @Component({
@@ -10,12 +9,11 @@ import {Legend} from '../../../../shared/interfaces/legend.interface';
 export class LegendItemComponent {
   @Input() public legendItem!: Legend;
   @Input() public isPrintable: boolean = false;
-  private readonly geoLionBaseUrl = environment.baseUrls.geoLion;
-  private readonly geoLionEndPoint = 'geodatensatz/show?gdsid=';
+  private readonly dataTabUrl = '/data/map';
 
   constructor() {}
 
-  public getGeoLionLink(id: number): string {
-    return `${this.geoLionBaseUrl}/${this.geoLionEndPoint}${id}`;
+  public getDataTabLink(id: number): string {
+    return `${this.dataTabUrl}/${id}`;
   }
 }

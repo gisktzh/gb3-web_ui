@@ -3,7 +3,11 @@ import {RouterModule, Routes} from '@angular/router';
 import {SharedModule} from '../shared/shared.module';
 import {DataCataloguePageComponent} from './data-catalogue-page.component';
 import {DataCatalogueOverviewComponent} from './components/data-catalogue-overview/data-catalogue-overview.component';
-import {DataCatalogueDetailComponent} from './components/data-catalogue-detail/data-catalogue-detail.component';
+import {GeoServiceDetailComponent} from './components/geo-service-detail/geo-service-detail.component';
+import {MapDetailComponent} from './components/map-detail/map-detail.component';
+import {GeoDataDetailComponent} from './components/geo-data-detail/geo-data-detail.component';
+
+export type DetailRouteType = 'geodata' | 'geoservice' | 'map';
 
 const routes: Routes = [
   {
@@ -15,8 +19,16 @@ const routes: Routes = [
         component: DataCatalogueOverviewComponent
       },
       {
-        path: ':id',
-        component: DataCatalogueDetailComponent
+        path: 'geodata/:id',
+        component: GeoDataDetailComponent
+      },
+      {
+        path: 'geoservice/:id',
+        component: GeoServiceDetailComponent
+      },
+      {
+        path: 'map/:id',
+        component: MapDetailComponent
       }
     ]
   }
