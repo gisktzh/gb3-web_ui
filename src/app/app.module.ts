@@ -8,7 +8,6 @@ import {metaReducers, reducers} from './state';
 import {AppRoutingModule} from './app-routing.module';
 import {HttpClientModule} from '@angular/common/http';
 import {SharedModule} from './shared/shared.module';
-import {PageModule} from './page/page.module';
 import {EffectsModule} from '@ngrx/effects';
 import {ActiveMapItemEffects} from './state/map/effects/active-map-item.effects';
 import {FeatureInfoEffects} from './state/map/effects/feature-info.effects';
@@ -28,7 +27,6 @@ export const MAP_SERVICE = new InjectionToken<MapService>('MapService');
     BrowserAnimationsModule,
     BrowserModule,
     HttpClientModule,
-    PageModule,
     SharedModule,
     StoreModule.forRoot(reducers, {
       metaReducers
