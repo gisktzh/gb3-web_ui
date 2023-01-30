@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {EsriMap, EsriMapView, EsriPoint, EsriWMSLayer} from '../../shared/external/esri.module';
+import {EsriLoadStatus, EsriMap, EsriMapView, EsriPoint, EsriWMSLayer} from '../../shared/external/esri.module';
 import {Store} from '@ngrx/store';
 import {MapConfigActions} from '../../core/state/map/actions/map-config.actions';
 import {TransformationService} from './transformation.service';
@@ -28,8 +28,6 @@ import Basemap from '@arcgis/core/Basemap';
 import TileInfo from '@arcgis/core/layers/support/TileInfo';
 import {BasemapConfigService} from './basemap-config.service';
 import {ConfigService} from '../../shared/services/config.service';
-import ViewClickEvent = __esri.ViewClickEvent;
-import ViewLayerviewCreateEvent = __esri.ViewLayerviewCreateEvent;
 
 @Injectable({
   providedIn: 'root'
@@ -205,9 +203,9 @@ export class EsriMapService implements MapService {
 
   public reorderMapItem(previousPosition: number, currentPosition: number) {
     // index is the inverse position - the lowest index has the lowest visibility (it's on the bottom) while the lowest position has the highest visibility
-    const previousIndex = this.mapView.layerViews.length - 1 - previousPosition;
-    const currentIndex = this.mapView.layerViews.length - 1 - currentPosition;
-    this.mapView.layerViews.reorder(this.mapView.layerViews.getItemAt(previousIndex), currentIndex);
+    const previousIndex = this.mapView.map.layers.length - 1 - previousPosition;
+    const currentIndex = this.mapView.map.layers.length - 1 - currentPosition;
+    this.mapView.map.layers.reorder(this.mapView.map.layers.getItemAt(previousIndex), currentIndex);
   }
 
   public reorderSublayer(mapItem: ActiveMapItem, previousPosition: number, currentPosition: number) {
@@ -286,7 +284,7 @@ export class EsriMapService implements MapService {
     reactiveUtils.on(
       () => this.mapView,
       'click',
-      (event: ViewClickEvent) => {
+      (event: __esri.ViewClickEvent) => {
         const {x, y} = this.transformationService.transform(event.mapPoint);
         this.dispatchFeatureInfoRequest(x, y);
       }
@@ -313,36 +311,48 @@ export class EsriMapService implements MapService {
     reactiveUtils.on(
       () => this.mapView,
       'layerview-create',
-      (event: ViewLayerviewCreateEvent) => {
+      (event: __esri.ViewLayerviewCreateEvent) => {
         this.attachLayerViewListeners(event.layerView);
       }
     );
   }
 
   private attachLayerListeners(esriLayer: __esri.Layer) {
+    // watch and initialize the loading state by observing the 'loadStatus' property
     reactiveUtils.watch(
       () => esriLayer.loadStatus,
       (loadStatus) => {
-        const loadingState = this.transformLoadStatusToLoadingState(loadStatus);
-        this.store.dispatch(ActiveMapItemActions.setLoadingState({loadingState, id: esriLayer.id}));
+        this.updateLoadingState(loadStatus, esriLayer.id);
       }
     );
+    this.updateLoadingState(esriLayer.loadStatus, esriLayer.id);
   }
 
   private attachLayerViewListeners(esriLayerView: __esri.LayerView) {
+    // watch and initialize the view process state by observing the 'updating' property
     reactiveUtils.watch(
       () => esriLayerView.updating,
       (updating) => {
-        if (esriLayerView.layer) {
-          const viewProcessState: ViewProcessState = updating ? 'updating' : 'completed';
-          this.store.dispatch(ActiveMapItemActions.setViewProcessState({viewProcessState: viewProcessState, id: esriLayerView.layer.id}));
-        }
+        this.updateViewProcessState(updating, esriLayerView.layer?.id);
       }
     );
+    this.updateViewProcessState(esriLayerView.updating, esriLayerView.layer?.id);
   }
 
-  private transformLoadStatusToLoadingState(loadStatus: 'not-loaded' | 'loading' | 'failed' | 'loaded' | undefined): LoadingState {
-    if (!loadStatus) {
+  private updateLoadingState(loadStatus: EsriLoadStatus | undefined, id: string) {
+    const loadingState = this.transformLoadStatusToLoadingState(loadStatus);
+    this.store.dispatch(ActiveMapItemActions.setLoadingState({loadingState: loadingState, id: id}));
+  }
+
+  private updateViewProcessState(updating: boolean | undefined, id: string | undefined) {
+    if (id !== undefined) {
+      const viewProcessState: ViewProcessState = this.transformUpdatingToViewProcessState(updating);
+      this.store.dispatch(ActiveMapItemActions.setViewProcessState({viewProcessState: viewProcessState, id: id}));
+    }
+  }
+
+  private transformLoadStatusToLoadingState(loadStatus: EsriLoadStatus | undefined): LoadingState {
+    if (loadStatus === undefined) {
       return 'undefined';
     }
     switch (loadStatus) {
@@ -355,6 +365,13 @@ export class EsriMapService implements MapService {
       case 'loaded':
         return 'loaded';
     }
+  }
+
+  private transformUpdatingToViewProcessState(updating: boolean | undefined): ViewProcessState {
+    if (updating === undefined) {
+      return 'undefined';
+    }
+    return updating ? 'updating' : 'completed';
   }
 
   private dispatchFeatureInfoRequest(x: number, y: number) {
