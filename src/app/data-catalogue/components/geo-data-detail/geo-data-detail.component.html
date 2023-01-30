@@ -1,0 +1,6 @@
+<mat-progress-bar *ngIf="this.loadingState === 'loading'" mode="query"></mat-progress-bar>
+<div *ngIf="this.mapDetailData">
+  <h2>{{ this.mapDetailData.produkt_name }}</h2>
+  <img [alt]="this.mapDetailData.produkt_name" [src]="this.mapDetailData.produktbildurl" />
+  <p>{{ this.mapDetailData.beschreibung }}</p>
+</div>
