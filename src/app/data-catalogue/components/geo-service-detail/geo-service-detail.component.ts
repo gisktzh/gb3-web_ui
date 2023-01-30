@@ -1,12 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 
 @Component({
-  selector: 'app-geo-service-detail',
+  selector: 'geo-service-detail',
   templateUrl: './geo-service-detail.component.html',
   styleUrls: ['./geo-service-detail.component.scss']
 })
-export class GeoServiceDetailComponent implements OnInit {
-  constructor() {}
-
-  ngOnInit(): void {}
-}
+export class GeoServiceDetailComponent {}

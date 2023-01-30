@@ -1,12 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 
 @Component({
-  selector: 'app-data-catalogue-overview',
+  selector: 'data-catalogue-overview',
   templateUrl: './data-catalogue-overview.component.html',
   styleUrls: ['./data-catalogue-overview.component.scss']
 })
-export class DataCatalogueOverviewComponent implements OnInit {
-  constructor() {}
-
-  ngOnInit(): void {}
-}
+export class DataCatalogueOverviewComponent {}

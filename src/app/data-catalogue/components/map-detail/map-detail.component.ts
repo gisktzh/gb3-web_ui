@@ -1,12 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 
 @Component({
-  selector: 'app-map-detail',
+  selector: 'map-detail',
   templateUrl: './map-detail.component.html',
   styleUrls: ['./map-detail.component.scss']
 })
-export class MapDetailComponent implements OnInit {
-  constructor() {}
-
-  ngOnInit(): void {}
-}
+export class MapDetailComponent {}

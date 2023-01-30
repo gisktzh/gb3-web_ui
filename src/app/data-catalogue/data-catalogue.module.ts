@@ -6,6 +6,7 @@ import {DataCatalogueOverviewComponent} from './components/data-catalogue-overvi
 import {GeoServiceDetailComponent} from './components/geo-service-detail/geo-service-detail.component';
 import {GeoDataDetailComponent} from './components/geo-data-detail/geo-data-detail.component';
 import {MapDetailComponent} from './components/map-detail/map-detail.component';
+import {MaterialModule} from '../shared/external/material.module';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,6 @@ import {MapDetailComponent} from './components/map-detail/map-detail.component';
     GeoDataDetailComponent,
     MapDetailComponent
   ],
-  imports: [CommonModule, DataCatalogueRoutingModule]
+  imports: [CommonModule, DataCatalogueRoutingModule, MaterialModule]
 })
 export class DataCatalogueModule {}

@@ -9,7 +9,7 @@ import {Legend} from '../../../../shared/interfaces/legend.interface';
 export class LegendItemComponent {
   @Input() public legendItem!: Legend;
   @Input() public isPrintable: boolean = false;
-  private readonly dataTabUrl = '/data/map';
+  private readonly dataTabUrl = '/data/geodata';
 
   constructor() {}
 

@@ -1,24 +1,30 @@
 import {Injectable} from '@angular/core';
 import {BaseApiService} from '../abstract-api.service';
 import {environment} from '../../../../../environments/environment';
-import {RootObject} from '../../../models/geolion-ogd4web-generated.interfaces';
-import {GeoLionOgd4WebResponse} from '../../../interfaces/geolion-ogd4web.interface';
+import {GeoLionGeodatenMetaInterface} from '../../../interfaces/geolion-geodaten-meta.interface';
+import {RootObject as GeodatenMetaRootObject} from '../../../models/geolion-geodaten-meta-generated.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GeoLionService extends BaseApiService {
   protected apiBaseUrl: string = environment.baseUrls.geoLion;
-  private readonly ogd4zhwebEndpoint: string = 'api/v1/getOgd4zhweb.json';
+  private readonly geodatenMetaEndpoint: string = 'api/v2/getGeodatenmeta.json';
 
-  public async getOgd4zhwebData(): Promise<GeoLionOgd4WebResponse[]> {
-    const requestUrl = this.getFullEndpointUrl(this.ogd4zhwebEndpoint);
-    const results = await this.get<RootObject>(requestUrl);
+  public async getGeodatenMetaData(id: string): Promise<GeoLionGeodatenMetaInterface> {
+    const requestUrl = this.getFullEndpointUrl(this.geodatenMetaEndpoint, [{key: 'giszhnr', value: id}]);
 
-    return results.dataset;
+    return await this.get<GeodatenMetaRootObject>(requestUrl);
   }
 
-  private getFullEndpointUrl(endpoint: string): string {
-    return `${this.apiBaseUrl}/${endpoint}`;
+  private getFullEndpointUrl(endpoint: string, parameters: {key: string; value: string}[] = []): string {
+    const url = new URL(`${this.apiBaseUrl}/${endpoint}`);
+
+    if (parameters) {
+      parameters.forEach(({key, value}) => {
+        url.searchParams.append(key, value);
+      });
+    }
+    return url.toString();
   }
 }
