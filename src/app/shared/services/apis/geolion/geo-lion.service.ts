@@ -3,6 +3,7 @@ import {BaseApiService} from '../abstract-api.service';
 import {environment} from '../../../../../environments/environment';
 import {GeoLionGeodatenMetaInterface} from '../../../interfaces/geolion-geodaten-meta.interface';
 import {RootObject as GeodatenMetaRootObject} from '../../../models/geolion-geodaten-meta-generated.interface';
+import {lastValueFrom, Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -11,10 +12,10 @@ export class GeoLionService extends BaseApiService {
   protected apiBaseUrl: string = environment.baseUrls.geoLion;
   private readonly geodatenMetaEndpoint: string = 'api/v2/getGeodatenmeta.json';
 
-  public async getGeodatenMetaData(id: string): Promise<GeoLionGeodatenMetaInterface> {
+  public getGeodatenMetaData(id: string): Observable<GeoLionGeodatenMetaInterface> {
     const requestUrl = this.getFullEndpointUrl(this.geodatenMetaEndpoint, [{key: 'giszhnr', value: id}]);
 
-    return await this.get<GeodatenMetaRootObject>(requestUrl);
+    return this.get<GeodatenMetaRootObject>(requestUrl);
   }
 
   private getFullEndpointUrl(endpoint: string, parameters: {key: string; value: string}[] = []): string {

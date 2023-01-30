@@ -7,6 +7,8 @@ import {QueryLegend} from '../../../interfaces/query-legend.interface';
 import {LegendResponse} from '../../../interfaces/legend.interface';
 import {TopicsResponse} from '../../../interfaces/topic.interface';
 import {FeatureInfoResponse} from '../../../interfaces/feature-info.interface';
+import {forkJoin, Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -14,37 +16,23 @@ import {FeatureInfoResponse} from '../../../interfaces/feature-info.interface';
 export class Gb3TopicsService extends Gb3ApiService {
   private readonly endpoint = 'v3/topics';
 
-  public async loadTopics(): Promise<TopicsResponse> {
+  public loadTopics(): Observable<TopicsResponse> {
     const requestUrl = this.createTopicsUrl();
-    const topicsListData = await this.get<TopicsListData>(requestUrl);
-    return this.transformTopicsListDataToTopicsResponse(topicsListData);
+    const topicsListData = this.get<TopicsListData>(requestUrl);
+    return topicsListData.pipe(map((data) => this.transformTopicsListDataToTopicsResponse(data)));
   }
 
-  public async loadLegends(queryLegends: QueryLegend[]): Promise<LegendResponse[]> {
-    const topicsLegendDetailDataRequests: Promise<TopicsLegendDetailData>[] = [];
-    for (const queryLegend of queryLegends) {
-      const requestUrl = this.createLegendUrl(queryLegend);
-      const topicsLegendDetailData = this.get<TopicsLegendDetailData>(requestUrl);
-      topicsLegendDetailDataRequests.push(topicsLegendDetailData);
-    }
-
-    const topicsLegendDetailDataCollection = await Promise.all(topicsLegendDetailDataRequests);
-    return topicsLegendDetailDataCollection.map((topicsLegendDetailData) =>
-      this.mapTopicsLegendDetailDataToLegendResponse(topicsLegendDetailData)
+  public loadLegends(queryLegends: QueryLegend[]): Observable<LegendResponse[]> {
+    const requestUrls = queryLegends.map((queryLegend) => this.createLegendUrl(queryLegend));
+    return forkJoin(requestUrls.map((requestUrl) => this.get<TopicsLegendDetailData>(requestUrl))).pipe(
+      map((data) => this.mapTopicsLegendDetailDataToLegendResponse(data))
     );
   }
 
-  public async loadFeatureInfos(x: number, y: number, queryLayers: QueryLayer[]): Promise<FeatureInfoResponse[]> {
-    const topicsFeatureInfoDetailDataRequests: Promise<TopicsFeatureInfoDetailData>[] = [];
-    queryLayers.forEach(({topic, layersToQuery}) => {
-      const requestUrl = this.createFeatureInfoUrl(topic, x, y, layersToQuery);
-      const topicsFeatureInfoDetailData = this.get<TopicsFeatureInfoDetailData>(requestUrl);
-      topicsFeatureInfoDetailDataRequests.push(topicsFeatureInfoDetailData);
-    });
-
-    const topicsFeatureInfoDetailDataCollection = await Promise.all(topicsFeatureInfoDetailDataRequests);
-    return topicsFeatureInfoDetailDataCollection.map((topicsFeatureInfoDetailData) =>
-      this.mapTopicsFeatureInfoDetailDataToFeatureInfoResponse(topicsFeatureInfoDetailData)
+  public loadFeatureInfos(x: number, y: number, queryLayers: QueryLayer[]): Observable<FeatureInfoResponse[]> {
+    const requestUrls = queryLayers.map(({topic, layersToQuery}) => this.createFeatureInfoUrl(topic, x, y, layersToQuery));
+    return forkJoin(requestUrls.map((requestUrl) => this.get<TopicsFeatureInfoDetailData>(requestUrl))).pipe(
+      map((data) => this.mapTopicsFeatureInfoDetailDataToFeatureInfoResponse(data))
     );
   }
 
@@ -61,23 +49,25 @@ export class Gb3TopicsService extends Gb3ApiService {
   /**
    * Maps the generic TopicsLegendDetailData type from the API endpoint to the internal interface LegendResponse
    */
-  private mapTopicsLegendDetailDataToLegendResponse(topicsLegendDetailData: TopicsLegendDetailData): LegendResponse {
-    const {legend} = topicsLegendDetailData;
-    return {
-      legend: {
-        ...legend,
-        layers: legend.layers.map((layer) => {
-          return {
-            ...layer,
-            layerClasses: layer.layer_classes?.map((layerClass) => {
-              return {
-                ...layerClass
-              };
-            })
-          };
-        })
-      }
-    };
+  private mapTopicsLegendDetailDataToLegendResponse(topicsLegendDetailData: TopicsLegendDetailData[]): LegendResponse[] {
+    return topicsLegendDetailData.map((data) => {
+      const {legend} = data;
+      return {
+        legend: {
+          ...legend,
+          layers: legend.layers.map((layer) => {
+            return {
+              ...layer,
+              layerClasses: layer.layer_classes?.map((layerClass) => {
+                return {
+                  ...layerClass
+                };
+              })
+            };
+          })
+        }
+      };
+    });
   }
 
   private createTopicsUrl(): string {
@@ -131,37 +121,39 @@ export class Gb3TopicsService extends Gb3ApiService {
    * Maps the generic TopicsFeatureInfoDetailData type from the API endpoint to the internal interface FeatureInfoResponse
    */
   private mapTopicsFeatureInfoDetailDataToFeatureInfoResponse(
-    topicsFeatureInfoDetailData: TopicsFeatureInfoDetailData
-  ): FeatureInfoResponse {
-    const {feature_info: featureInfo} = topicsFeatureInfoDetailData;
+    topicsFeatureInfoDetailData: TopicsFeatureInfoDetailData[]
+  ): FeatureInfoResponse[] {
+    return topicsFeatureInfoDetailData.map((data) => {
+      const {feature_info: featureInfo} = data;
 
-    return {
-      featureInfo: {
-        ...featureInfo,
-        heightDtm: featureInfo.height_dtm,
-        heightDom: featureInfo.height_dom,
-        results: {
-          topic: featureInfo.results.topic,
-          layers: featureInfo.results.layers.map((layer) => {
-            return {
-              ...layer,
-              features: layer.features.map((feature) => {
-                return {
-                  ...feature,
-                  fields: feature.fields.map((field) => {
-                    return {
-                      ...field
-                    };
-                  }),
-                  // The cast is required because the API typing delivers "type: string" which is not narrow enough
-                  geometry: feature.geometry as Geometry
-                };
-              })
-            };
-          })
+      return {
+        featureInfo: {
+          ...featureInfo,
+          heightDtm: featureInfo.height_dtm,
+          heightDom: featureInfo.height_dom,
+          results: {
+            topic: featureInfo.results.topic,
+            layers: featureInfo.results.layers.map((layer) => {
+              return {
+                ...layer,
+                features: layer.features.map((feature) => {
+                  return {
+                    ...feature,
+                    fields: feature.fields.map((field) => {
+                      return {
+                        ...field
+                      };
+                    }),
+                    // The cast is required because the API typing delivers "type: string" which is not narrow enough
+                    geometry: feature.geometry as Geometry
+                  };
+                })
+              };
+            })
+          }
         }
-      }
-    };
+      };
+    });
   }
 
   private getFullEndpointUrl(): string {

@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Actions, concatLatestFrom, createEffect, ofType} from '@ngrx/effects';
-import {EMPTY, from, switchMap} from 'rxjs';
+import {EMPTY, switchMap} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
 import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
 import {Store} from '@ngrx/store';
@@ -14,7 +14,7 @@ export class LegendEffects {
       ofType(LegendActions.showLegend),
       concatLatestFrom(() => this.store.select(selectQueryLegends)),
       switchMap(([_, queryLegends]) =>
-        from(this.topicsService.loadLegends(queryLegends)).pipe(
+        this.topicsService.loadLegends(queryLegends).pipe(
           map((legends) => {
             return LegendActions.addLegendContent({legends});
           }),
