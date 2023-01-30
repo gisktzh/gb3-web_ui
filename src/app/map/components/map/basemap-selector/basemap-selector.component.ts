@@ -1,9 +1,9 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
-import {selectActiveBasemapId} from '../../../../core/state/map/reducers/map-config.reducer';
+import {selectActiveBasemapId} from '../../../../state/map/reducers/map-config.reducer';
 import {Basemap} from '../../../../shared/interfaces/background-map.interface';
-import {MapConfigActions} from '../../../../core/state/map/actions/map-config.actions';
+import {MapConfigActions} from '../../../../state/map/actions/map-config.actions';
 import {BasemapConfigService} from '../../../services/basemap-config.service';
 
 @Component({

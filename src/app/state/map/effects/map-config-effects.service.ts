@@ -2,8 +2,8 @@ import {Inject, Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {tap} from 'rxjs';
 import {MapConfigActions} from '../actions/map-config.actions';
-import {MapService} from '../../../../map/interfaces/map.service';
-import {MAP_SERVICE} from '../../../../app.module';
+import {MapService} from '../../../map/interfaces/map.service';
+import {MAP_SERVICE} from '../../../app.module';
 
 @Injectable()
 export class MapConfigEffects {

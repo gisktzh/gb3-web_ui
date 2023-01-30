@@ -1,7 +1,7 @@
 import {createActionGroup, emptyProps, props} from '@ngrx/store';
-import {ActiveMapItem} from '../../../../map/models/active-map-item.model';
-import {LoadingState} from '../../../../shared/types/loading-state';
-import {ViewProcessState} from '../../../../shared/types/view-process-state';
+import {ActiveMapItem} from '../../../map/models/active-map-item.model';
+import {LoadingState} from '../../../shared/types/loading-state';
+import {ViewProcessState} from '../../../shared/types/view-process-state';
 
 export const ActiveMapItemActions = createActionGroup({
   source: 'ActiveMapItem',

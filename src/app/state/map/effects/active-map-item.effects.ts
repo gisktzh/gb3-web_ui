@@ -2,8 +2,8 @@ import {Inject, Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {tap} from 'rxjs';
-import {MAP_SERVICE} from '../../../../app.module';
-import {MapService} from '../../../../map/interfaces/map.service';
+import {MAP_SERVICE} from '../../../app.module';
+import {MapService} from '../../../map/interfaces/map.service';
 
 @Injectable()
 export class ActiveMapItemEffects {

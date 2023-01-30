@@ -1,9 +1,9 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {selectLayerCatalogItems, selectLoadingState} from '../../../core/state/map/reducers/layer-catalog.reducer';
-import {LayerCatalogActions} from '../../../core/state/map/actions/layer-catalog.actions';
+import {selectLayerCatalogItems, selectLoadingState} from '../../../state/map/reducers/layer-catalog.reducer';
+import {LayerCatalogActions} from '../../../state/map/actions/layer-catalog.actions';
 import {Subscription, tap} from 'rxjs';
-import {ActiveMapItemActions} from '../../../core/state/map/actions/active-map-item.actions';
+import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
 import {LoadingState} from '../../../shared/types/loading-state';
 import {ActiveMapItem} from '../../models/active-map-item.model';
 import {LayerCatalogItem, Topic, TopicLayer} from '../../../shared/interfaces/topic.interface';

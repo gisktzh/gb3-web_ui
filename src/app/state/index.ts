@@ -1,5 +1,5 @@
 import {ActionReducerMap, MetaReducer} from '@ngrx/store';
-import {environment} from '../../../environments/environment';
+import {environment} from '../../environments/environment';
 import {MapConfigState, reducer as mapConfigReducer} from './map/reducers/map-config.reducer';
 import {LegendState, reducer as legendReducer} from './map/reducers/legend.reducer';
 import {FeatureInfoState, reducer as featureInfoReducer} from './map/reducers/feature-info.reducer';

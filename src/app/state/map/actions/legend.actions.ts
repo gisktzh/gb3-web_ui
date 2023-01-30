@@ -1,5 +1,5 @@
 import {createActionGroup, emptyProps, props} from '@ngrx/store';
-import {LegendResponse} from '../../../../shared/interfaces/legend.interface';
+import {LegendResponse} from '../../../shared/interfaces/legend.interface';
 
 export const LegendActions = createActionGroup({
   source: 'Legend',

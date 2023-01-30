@@ -1,9 +1,9 @@
 import {Inject, Injectable, OnDestroy} from '@angular/core';
-import {selectHighlightedFeature} from '../../core/state/map/reducers/feature-info.reducer';
+import {selectHighlightedFeature} from '../../state/map/reducers/feature-info.reducer';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {Geometry as GeoJSONGeometry} from 'geojson';
-import {selectReady} from '../../core/state/map/reducers/map-config.reducer';
+import {selectReady} from '../../state/map/reducers/map-config.reducer';
 import {MapService} from '../interfaces/map.service';
 import {MAP_SERVICE} from '../../app.module';
 

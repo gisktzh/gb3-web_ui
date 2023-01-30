@@ -1,5 +1,5 @@
 import {createActionGroup, emptyProps, props} from '@ngrx/store';
-import {ZoomType} from '../../../../shared/types/zoom-type';
+import {ZoomType} from '../../../shared/types/zoom-type';
 
 export const MapConfigActions = createActionGroup({
   source: 'Map Config',

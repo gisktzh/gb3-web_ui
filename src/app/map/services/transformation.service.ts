@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import * as projection from '@arcgis/core/geometry/projection';
 import {Store} from '@ngrx/store';
-import {selectSrsId} from '../../core/state/map/reducers/map-config.reducer';
+import {selectSrsId} from '../../state/map/reducers/map-config.reducer';
 import SpatialReference from '@arcgis/core/geometry/SpatialReference';
 import {ConfigService} from '../../shared/services/config.service';
 
