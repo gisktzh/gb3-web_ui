@@ -62,19 +62,16 @@ export class Gb3TopicsService extends Gb3ApiService {
    * Maps the generic TopicsLegendDetailData type from the API endpoint to the internal interface LegendResponse
    */
   private mapTopicsLegendDetailDataToLegendResponse(topicsLegendDetailData: TopicsLegendDetailData): LegendResponse {
+    const {legend} = topicsLegendDetailData;
     return {
       legend: {
-        topic: topicsLegendDetailData.legend.topic,
-        layers: topicsLegendDetailData.legend.layers.map((layer) => {
+        ...legend,
+        layers: legend.layers.map((layer) => {
           return {
-            title: layer.title,
-            layer: layer.layer,
-            attribution: layer.attribution,
-            geolion: layer.geolion,
+            ...layer,
             layerClasses: layer.layer_classes?.map((layerClass) => {
               return {
-                label: layerClass.label,
-                image: layerClass.image
+                ...layerClass
               };
             })
           };
@@ -94,16 +91,11 @@ export class Gb3TopicsService extends Gb3ApiService {
     return {
       layerCatalogItems: topicsListData.categories.map((category) => {
         return {
-          title: category.title,
+          ...category,
           topics: category.topics.map((topic) => {
             return {
-              topic: topic.topic,
-              title: topic.title,
+              ...topic,
               printTitle: topic.print_title,
-              icon: topic.icon,
-              organisation: topic.organisation,
-              geolion: topic.geolion,
-              keywords: topic.keywords,
               mainLevel: topic.main_level,
               backgroundLevel: topic.background_level,
               overlayLevel: topic.overlay_level,
@@ -111,21 +103,16 @@ export class Gb3TopicsService extends Gb3ApiService {
               minScale: topic.min_scale,
               backgroundTopic: topic.background_topic,
               overlayTopics: topic.overlay_topics,
-              tools: topic.tools,
               permissionMissing: topic.permission_missing,
               layers: topic.layers.map((layer) => {
                 return {
-                  id: layer.id,
-                  layer: layer.layer,
+                  ...layer,
                   groupTitle: layer.group_title,
-                  title: layer.title,
                   minScale: layer.min_scale,
                   maxScale: layer.max_scale,
                   wmsSort: layer.wms_sort,
                   tocSort: layer.toc_sort,
                   initiallyVisible: layer.initially_visible,
-                  editable: layer.editable,
-                  queryable: layer.queryable,
                   visible: layer.initially_visible
                 };
               })
@@ -146,26 +133,24 @@ export class Gb3TopicsService extends Gb3ApiService {
   private mapTopicsFeatureInfoDetailDataToFeatureInfoResponse(
     topicsFeatureInfoDetailData: TopicsFeatureInfoDetailData
   ): FeatureInfoResponse {
+    const {feature_info: featureInfo} = topicsFeatureInfoDetailData;
+
     return {
       featureInfo: {
-        x: topicsFeatureInfoDetailData.feature_info.x,
-        y: topicsFeatureInfoDetailData.feature_info.y,
-        heightDtm: topicsFeatureInfoDetailData.feature_info.height_dtm,
-        heightDom: topicsFeatureInfoDetailData.feature_info.height_dom,
+        ...featureInfo,
+        heightDtm: featureInfo.height_dtm,
+        heightDom: featureInfo.height_dom,
         results: {
-          topic: topicsFeatureInfoDetailData.feature_info.results.topic,
-          layers: topicsFeatureInfoDetailData.feature_info.results.layers.map((layer) => {
+          topic: featureInfo.results.topic,
+          layers: featureInfo.results.layers.map((layer) => {
             return {
-              layer: layer.layer,
-              title: layer.title,
+              ...layer,
               features: layer.features.map((feature) => {
                 return {
-                  fid: feature.fid,
-                  bbox: feature.bbox,
+                  ...feature,
                   fields: feature.fields.map((field) => {
                     return {
-                      label: field.label,
-                      value: field.value
+                      ...field
                     };
                   }),
                   // The cast is required because the API typing delivers "type: string" which is not narrow enough
