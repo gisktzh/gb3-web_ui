@@ -6,40 +6,40 @@
     padding: 0 8px;
   }
 
-  .clear-topics-button {
+  .clear-active-map-items-button {
     height: 48px;
   }
 
-  .layer-updating-progress {
+  .active-map-item-updating-progress {
     position: absolute;
     bottom: 0;
     left: 0;
   }
 
   .expansion-panel-header:hover {
-    .layer__drag-handle {
+    .active-map-item__drag-handle {
       visibility: visible;
     }
 
-    .layer-image {
+    .active-map-item-image {
       opacity: 0.3;
     }
 
-    .layer-visibility-image {
+    .active-map-item-visibility-image {
       display: inline-block;
     }
 
-    .layer-menu .layer-menu-handle {
+    .active-map-item-menu .active-map-item-menu-handle {
       visibility: visible;
     }
   }
 
   .sublayer:hover {
-    .layer-image {
+    .active-map-item-image {
       visibility: hidden;
     }
 
-    .layer-visibility-image {
+    .active-map-item-visibility-image {
       display: inline-block;
     }
 
@@ -48,17 +48,17 @@
     }
   }
 
-  .layer__drag-handle {
+  .active-map-item__drag-handle {
     visibility: hidden;
     margin-top: 8px;
   }
 
-  .layer-image-box {
+  .active-map-item-image-box {
     position: relative;
     float: left;
     margin-top: 8px;
 
-    .layer-visibility-image {
+    .active-map-item-visibility-image {
       position: absolute;
       left: 0;
       top: 0;
@@ -70,8 +70,8 @@
     margin-right: auto;
   }
 
-  .layer-menu {
-    .layer-menu-handle {
+  .active-map-item-menu {
+    .active-map-item-menu-handle {
       margin-top: 8px;
       visibility: hidden;
     }
@@ -96,12 +96,12 @@
     margin-top: 8px;
   }
 
-  .layer-settings {
-    .layer-settings__title {
+  .active-map-item-settings {
+    .active-map-item-settings__title {
       margin: 0;
     }
 
-    .layer-settings__slider {
+    .active-map-item-settings__slider {
       width: 100%;
     }
   }

@@ -1,7 +1,7 @@
 .map-container {
   height: 100%;
 
-  .layer-catalog {
+  .map-catalogue {
     position: absolute;
     top: 80px;
     left: 15px;
@@ -10,7 +10,7 @@
     overflow-y: scroll;
   }
 
-  .active-layers {
+  .active-map-items {
     position: absolute;
     top: 80px;
     left: 430px;

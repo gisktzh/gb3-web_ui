@@ -79,12 +79,13 @@ export class Gb3TopicsService extends Gb3ApiService {
    */
   private transformTopicsListDataToTopicsResponse(topicsListData: TopicsListData): TopicsResponse {
     return {
-      layerCatalogItems: topicsListData.categories.map((category) => {
+      topics: topicsListData.categories.map((category) => {
         return {
           ...category,
-          topics: category.topics.map((topic) => {
+          maps: category.topics.map((topic) => {
             return {
               ...topic,
+              id: topic.topic,
               printTitle: topic.print_title,
               mainLevel: topic.main_level,
               backgroundLevel: topic.background_level,

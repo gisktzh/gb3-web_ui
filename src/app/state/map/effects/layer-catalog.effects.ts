@@ -13,7 +13,7 @@ export class LayerCatalogEffects {
       switchMap(() =>
         this.topicsService.loadTopics().pipe(
           map((layerCatalogTopicResponse) => {
-            return LayerCatalogActions.setLayerCatalog({layerCatalogItems: layerCatalogTopicResponse.layerCatalogItems});
+            return LayerCatalogActions.setLayerCatalog({layerCatalogItems: layerCatalogTopicResponse.topics});
           }),
           catchError(() => EMPTY)
         )

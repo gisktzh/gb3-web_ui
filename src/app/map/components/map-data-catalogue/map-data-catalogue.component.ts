@@ -6,19 +6,19 @@ import {Subscription, tap} from 'rxjs';
 import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
 import {LoadingState} from '../../../shared/types/loading-state';
 import {ActiveMapItem} from '../../models/active-map-item.model';
-import {LayerCatalogItem, Topic, TopicLayer} from '../../../shared/interfaces/topic.interface';
+import {Topic, Map, MapLayer} from '../../../shared/interfaces/topic.interface';
 
 @Component({
-  selector: 'layer-catalog',
-  templateUrl: './layer-catalog.component.html',
-  styleUrls: ['./layer-catalog.component.scss']
+  selector: 'map-data-catalogue',
+  templateUrl: './map-data-catalogue.component.html',
+  styleUrls: ['./map-data-catalogue.component.scss']
 })
-export class LayerCatalogComponent implements OnInit, OnDestroy {
-  public layerCatalogItems: LayerCatalogItem[] = [];
+export class MapDataCatalogueComponent implements OnInit, OnDestroy {
+  public topics: Topic[] = [];
   public loadingState: LoadingState = 'undefined';
 
   private readonly loadingState$ = this.store.select(selectLoadingState);
-  private readonly layerCatalogItems$ = this.store.select(selectLayerCatalogItems);
+  private readonly topics$ = this.store.select(selectLayerCatalogItems);
   private readonly subscriptions = new Subscription();
 
   constructor(private readonly store: Store) {}
@@ -32,11 +32,11 @@ export class LayerCatalogComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  public addActiveTopic(topic: Topic) {
+  public addActiveTopic(topic: Map) {
     this.addActiveItem(new ActiveMapItem(topic));
   }
 
-  public addActiveLayer(topic: Topic, layer: TopicLayer) {
+  public addActiveLayer(topic: Map, layer: MapLayer) {
     this.addActiveItem(new ActiveMapItem(topic, layer));
   }
 
@@ -47,8 +47,8 @@ export class LayerCatalogComponent implements OnInit, OnDestroy {
 
   private initSubscriptions() {
     this.subscriptions.add(
-      this.layerCatalogItems$.subscribe((value) => {
-        this.layerCatalogItems = value;
+      this.topics$.subscribe((value) => {
+        this.topics = value;
       })
     );
 

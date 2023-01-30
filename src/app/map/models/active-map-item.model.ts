@@ -1,5 +1,5 @@
 import {LoadingState} from '../../shared/types/loading-state';
-import {Topic, TopicLayer} from '../../shared/interfaces/topic.interface';
+import {Map, MapLayer} from '../../shared/interfaces/topic.interface';
 import {HasLoadingState} from '../../shared/interfaces/has-loading-state.interface';
 import {HasVisibility} from '../../shared/interfaces/has-visibility.interface';
 import {HasViewProcessState} from '../../shared/interfaces/has-view-process-state.interface';
@@ -11,7 +11,7 @@ export class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewPro
   public readonly url: string;
 
   public readonly topic: string;
-  public readonly layers: TopicLayer[];
+  public readonly layers: MapLayer[];
   public readonly isSingleLayer: boolean;
 
   public loadingState: LoadingState = 'undefined';
@@ -19,12 +19,12 @@ export class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewPro
   public visible = true;
   public opacity = 1;
 
-  constructor(topic: Topic, layer?: TopicLayer) {
+  constructor(topic: Map, layer?: MapLayer) {
     this.isSingleLayer = !!layer;
-    this.id = layer ? `${topic.topic}_${layer.layer}` : topic.topic;
+    this.id = layer ? `${topic.id}_${layer.layer}` : topic.id;
     this.title = layer ? layer.title : topic.title;
     this.url = topic.wmsUrl;
-    this.topic = topic.topic;
+    this.topic = topic.id;
     this.layers = layer ? [layer] : topic.layers;
   }
 }
