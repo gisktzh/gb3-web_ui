@@ -12,13 +12,13 @@ export class GeoLionService extends BaseApiService {
   protected apiBaseUrl: string = environment.baseUrls.geoLion;
   private readonly geodatenMetaEndpoint: string = 'api/v2/getGeodatenmeta.json';
 
-  public getGeodatenMetaData(id: string): Observable<GeoLionGeodatenMetaInterface> {
-    const requestUrl = this.getFullEndpointUrl(this.geodatenMetaEndpoint, [{key: 'giszhnr', value: id}]);
+  public loadGeodatenMetaData(id: string): Observable<GeoLionGeodatenMetaInterface> {
+    const requestUrl = this.createFullEndpointUrl(this.geodatenMetaEndpoint, [{key: 'giszhnr', value: id}]);
 
     return this.get<GeodatenMetaRootObject>(requestUrl);
   }
 
-  private getFullEndpointUrl(endpoint: string, parameters: {key: string; value: string}[] = []): string {
+  private createFullEndpointUrl(endpoint: string, parameters: {key: string; value: string}[] = []): string {
     const url = new URL(`${this.apiBaseUrl}/${endpoint}`);
 
     if (parameters) {

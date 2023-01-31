@@ -32,12 +32,12 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  public addActiveTopic(topic: Map) {
-    this.addActiveItem(new ActiveMapItem(topic));
+  public addActiveMap(map: Map) {
+    this.addActiveItem(new ActiveMapItem(map));
   }
 
-  public addActiveLayer(topic: Map, layer: MapLayer) {
-    this.addActiveItem(new ActiveMapItem(topic, layer));
+  public addActiveLayer(map: Map, layer: MapLayer) {
+    this.addActiveItem(new ActiveMapItem(map, layer));
   }
 
   private addActiveItem(activeMapItem: ActiveMapItem) {

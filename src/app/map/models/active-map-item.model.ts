@@ -10,7 +10,7 @@ export class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewPro
   public readonly title: string;
   public readonly url: string;
 
-  public readonly topic: string;
+  public readonly mapId: string;
   public readonly layers: MapLayer[];
   public readonly isSingleLayer: boolean;
 
@@ -19,12 +19,12 @@ export class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewPro
   public visible = true;
   public opacity = 1;
 
-  constructor(topic: Map, layer?: MapLayer) {
+  constructor(map: Map, layer?: MapLayer) {
     this.isSingleLayer = !!layer;
-    this.id = layer ? `${topic.id}_${layer.layer}` : topic.id;
-    this.title = layer ? layer.title : topic.title;
-    this.url = topic.wmsUrl;
-    this.topic = topic.id;
-    this.layers = layer ? [layer] : topic.layers;
+    this.id = layer ? `${map.id}_${layer.layer}` : map.id;
+    this.title = layer ? layer.title : map.title;
+    this.url = map.wmsUrl;
+    this.mapId = map.id;
+    this.layers = layer ? [layer] : map.layers;
   }
 }

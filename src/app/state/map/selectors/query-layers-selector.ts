@@ -8,7 +8,7 @@ export const selectQueryLayers = createSelector(selectActiveMapItems, (activeMap
   activeMapItems.map((mapItem) => {
     const layersToQuery: string[] = mapItem.layers.filter((layer) => layer.queryable).map((layer) => layer.layer);
     const queryLayer: QueryLayer = {
-      topic: mapItem.topic,
+      topic: mapItem.mapId,
       layersToQuery: layersToQuery.join(',')
     };
 

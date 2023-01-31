@@ -34,7 +34,7 @@ export class GeoDataDetailComponent implements OnInit, OnDestroy {
             if (!id) {
               return throwError(() => new Error('No id specified'));
             }
-            return this.geoLionService.getGeodatenMetaData(id);
+            return this.geoLionService.loadGeodatenMetaData(id);
           }),
           tap((results) => {
             this.mapDetailData = results;
