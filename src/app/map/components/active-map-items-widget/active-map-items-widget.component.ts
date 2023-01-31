@@ -2,12 +2,12 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CdkDrag, CdkDragDrop} from '@angular/cdk/drag-drop';
 import {MatSliderChange} from '@angular/material/slider';
 import {Store} from '@ngrx/store';
-import {ActiveMapItemActions} from '../../../core/state/map/actions/active-map-item.actions';
-import {selectActiveMapItems} from '../../../core/state/map/reducers/active-map-item.reducer';
+import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
+import {selectActiveMapItems} from '../../../state/map/reducers/active-map-item.reducer';
 import {Subscription} from 'rxjs';
 import {ActiveMapItem} from '../../models/active-map-item.model';
-import {LegendActions} from '../../../core/state/map/actions/legend.actions';
-import {TopicLayer} from '../../../shared/interfaces/topic.interface';
+import {LegendActions} from '../../../state/map/actions/legend.actions';
+import {MapLayer} from '../../../shared/interfaces/topic.interface';
 
 @Component({
   selector: 'active-map-items-widget',
@@ -42,7 +42,7 @@ export class ActiveMapItemsWidgetComponent implements OnInit, OnDestroy {
     return item.id;
   }
 
-  public trackByLayerId(index: number, item: TopicLayer) {
+  public trackByLayerId(index: number, item: MapLayer) {
     return item.id;
   }
 

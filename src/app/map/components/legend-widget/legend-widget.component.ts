@@ -1,8 +1,8 @@
 import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
-import {selectLegendItems, selectLoadingState} from '../../../core/state/map/reducers/legend.reducer';
-import {LegendActions} from '../../../core/state/map/actions/legend.actions';
+import {selectLegendItems, selectLoadingState} from '../../../state/map/reducers/legend.reducer';
+import {LegendActions} from '../../../state/map/actions/legend.actions';
 import {LoadingState} from '../../../shared/types/loading-state';
 import {Legend} from '../../../shared/interfaces/legend.interface';
 

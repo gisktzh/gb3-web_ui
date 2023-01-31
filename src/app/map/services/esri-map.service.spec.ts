@@ -3,17 +3,17 @@ import {TestBed} from '@angular/core/testing';
 import {EsriMapService} from './esri-map.service';
 import {provideMockStore} from '@ngrx/store/testing';
 import {ActiveMapItem} from '../models/active-map-item.model';
-import {Topic, TopicLayer} from '../../shared/interfaces/topic.interface';
+import {Map, MapLayer} from '../../shared/interfaces/topic.interface';
 import {EsriMapMock} from '../../testing/map-testing/esri-map.mock';
 
 function createActiveMapItemMock(topic: string, numberOfLayers = 0): {id: string; activeMapItem: ActiveMapItem} {
-  const topicMock = {topic: topic, title: topic, layers: []} as Partial<Topic>;
+  const topicMock = {id: topic, title: topic, layers: []} as Partial<Map>;
   for (let layerNumber = 0; layerNumber < numberOfLayers; layerNumber++) {
     const uniqueLayerName = `layer${layerNumber}_${topic}`;
-    const layerMock = {layer: uniqueLayerName, title: uniqueLayerName, id: layerNumber} as Partial<TopicLayer>;
-    topicMock.layers?.push(<TopicLayer>layerMock);
+    const layerMock = {layer: uniqueLayerName, title: uniqueLayerName, id: layerNumber} as Partial<MapLayer>;
+    topicMock.layers?.push(<MapLayer>layerMock);
   }
-  return {id: topic, activeMapItem: new ActiveMapItem(<Topic>topicMock)};
+  return {id: topic, activeMapItem: new ActiveMapItem(<Map>topicMock)};
 }
 
 describe('EsriMapService', () => {

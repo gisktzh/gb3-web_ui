@@ -1,13 +1,13 @@
 import {Injectable} from '@angular/core';
 import {EsriLoadStatus, EsriMap, EsriMapView, EsriPoint, EsriWMSLayer} from '../../shared/external/esri.module';
 import {Store} from '@ngrx/store';
-import {MapConfigActions} from '../../core/state/map/actions/map-config.actions';
+import {MapConfigActions} from '../../state/map/actions/map-config.actions';
 import {TransformationService} from './transformation.service';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
-import {MapConfigState, selectActiveBasemapId, selectMapConfigState} from '../../core/state/map/reducers/map-config.reducer';
+import {MapConfigState, selectActiveBasemapId, selectMapConfigState} from '../../state/map/reducers/map-config.reducer';
 import {first, skip, Subscription, tap} from 'rxjs';
 import SpatialReference from '@arcgis/core/geometry/SpatialReference';
-import {FeatureInfoActions} from '../../core/state/map/actions/feature-info.actions';
+import {FeatureInfoActions} from '../../state/map/actions/feature-info.actions';
 import Graphic from '@arcgis/core/Graphic';
 import {Geometry as GeoJsonGeometry} from 'geojson';
 import Color from '@arcgis/core/Color';
@@ -18,7 +18,7 @@ import {GeoJSONMapperService} from '../../shared/services/geo-json-mapper.servic
 import {DefaultHighlightStyles} from 'src/app/shared/configs/feature-info-config';
 import {MapService} from '../interfaces/map.service';
 import {ActiveMapItem} from '../models/active-map-item.model';
-import {ActiveMapItemActions} from '../../core/state/map/actions/active-map-item.actions';
+import {ActiveMapItemActions} from '../../state/map/actions/active-map-item.actions';
 import {LoadingState} from '../../shared/types/loading-state';
 import WMSLayer from '@arcgis/core/layers/WMSLayer';
 import ScaleBar from '@arcgis/core/widgets/ScaleBar';

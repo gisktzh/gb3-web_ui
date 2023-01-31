@@ -1,0 +1,44 @@
+<mat-card>
+  <mat-card-header>
+    <p>Verfügbare Karten nach Topic</p>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-progress-spinner mode="indeterminate" *ngIf="this.loadingState === 'loading'"></mat-progress-spinner>
+    <mat-accordion *ngIf="this.loadingState === 'loaded'" class="map-catalogue" multi="true" displayMode="flat">
+      <ng-container *ngFor="let topic of topics">
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <p>{{ topic.title }}</p>
+          </mat-expansion-panel-header>
+          <!-- Expansion panel content -->
+          <ng-template matExpansionPanelContent>
+            <ng-container *ngFor="let map of topic.maps">
+              <mat-expansion-panel hideToggle="true" #mapExpansionPanel>
+                <mat-expansion-panel-header (click)="mapExpansionPanel.toggle()">
+                  <p class="last-left-aligned-element">{{ map.title }}</p>
+                  <button mat-button (click)="addActiveMap(map)"><mat-icon>playlist_add</mat-icon></button>
+                  <button mat-button *ngIf="!mapExpansionPanel.expanded" (click)="mapExpansionPanel.open()">
+                    <mat-icon>chevron_right</mat-icon>
+                  </button>
+                  <button mat-button *ngIf="mapExpansionPanel.expanded" (click)="mapExpansionPanel.close()">
+                    <mat-icon>expand_more</mat-icon>
+                  </button>
+                </mat-expansion-panel-header>
+                <!-- Expansion panel content -->
+                <ng-template matExpansionPanelContent>
+                  <ng-container *ngFor="let layer of map.layers">
+                    <div class="horizontal-stacked">
+                      <mat-icon>layers</mat-icon>
+                      <p class="layer-text last-left-aligned-element">{{ layer.title }}</p>
+                      <button mat-button (click)="addActiveLayer(map, layer)"><mat-icon>playlist_add</mat-icon></button>
+                    </div>
+                  </ng-container>
+                </ng-template>
+              </mat-expansion-panel>
+            </ng-container>
+          </ng-template>
+        </mat-expansion-panel>
+      </ng-container>
+    </mat-accordion>
+  </mat-card-content>
+</mat-card>

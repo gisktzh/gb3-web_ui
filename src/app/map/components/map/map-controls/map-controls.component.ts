@@ -1,9 +1,9 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {MapConfigActions} from '../../../../core/state/map/actions/map-config.actions';
+import {MapConfigActions} from '../../../../state/map/actions/map-config.actions';
 import {ZoomType} from '../../../../shared/types/zoom-type';
 import {Subscription, tap} from 'rxjs';
-import {selectIsMaxZoomedIn, selectIsMaxZoomedOut} from '../../../../core/state/map/reducers/map-config.reducer';
+import {selectIsMaxZoomedIn, selectIsMaxZoomedOut} from '../../../../state/map/reducers/map-config.reducer';
 
 @Component({
   selector: 'map-controls',

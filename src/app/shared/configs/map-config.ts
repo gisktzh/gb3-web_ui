@@ -1,4 +1,4 @@
-import {MapConfigState} from '../../core/state/map/reducers/map-config.reducer';
+import {MapConfigState} from '../../state/map/reducers/map-config.reducer';
 import {defaultBasemap} from './base-map-config';
 import {MapConstants} from '../constants/map.constants';
 

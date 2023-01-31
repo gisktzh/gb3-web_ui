@@ -1,6 +1,6 @@
 import {createFeature, createReducer, on} from '@ngrx/store';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
-import {ActiveMapItem} from '../../../../map/models/active-map-item.model';
+import {ActiveMapItem} from '../../../map/models/active-map-item.model';
 
 export const activeMapItemFeatureKey = 'activeMapItem';
 

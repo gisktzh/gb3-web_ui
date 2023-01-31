@@ -1,12 +1,12 @@
 import {createFeature, createReducer, on} from '@ngrx/store';
 import {LayerCatalogActions} from '../actions/layer-catalog.actions';
-import {HasLoadingState} from '../../../../shared/interfaces/has-loading-state.interface';
-import {LayerCatalogItem} from '../../../../shared/interfaces/topic.interface';
+import {HasLoadingState} from '../../../shared/interfaces/has-loading-state.interface';
+import {Topic} from '../../../shared/interfaces/topic.interface';
 
 export const layerCatalogFeatureKey = 'layerCatalog';
 
 export interface LayerCatalogState extends HasLoadingState {
-  layerCatalogItems: LayerCatalogItem[];
+  layerCatalogItems: Topic[];
 }
 
 export const initialState: LayerCatalogState = {

@@ -3,9 +3,9 @@ import {MapConfigUrlService} from '../../services/map-config-url.service';
 import {ActivatedRoute} from '@angular/router';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
-import {selectLegendItems} from '../../../core/state/map/reducers/legend.reducer';
+import {selectLegendItems} from '../../../state/map/reducers/legend.reducer';
 import {PrintType} from '../../../shared/types/print-type';
-import {selectData} from '../../../core/state/map/reducers/feature-info.reducer';
+import {selectData} from '../../../state/map/reducers/feature-info.reducer';
 import {Legend} from '../../../shared/interfaces/legend.interface';
 import {FeatureInfoResult} from '../../../shared/interfaces/feature-info.interface';
 

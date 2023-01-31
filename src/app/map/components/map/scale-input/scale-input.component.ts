@@ -1,8 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Observable, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
-import {selectScale} from '../../../../core/state/map/reducers/map-config.reducer';
-import {MapConfigActions} from '../../../../core/state/map/actions/map-config.actions';
+import {selectScale} from '../../../../state/map/reducers/map-config.reducer';
+import {MapConfigActions} from '../../../../state/map/actions/map-config.actions';
 import {ConfigService} from '../../../../shared/services/config.service';
 
 @Component({

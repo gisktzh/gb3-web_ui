@@ -2,8 +2,8 @@ import {Injectable, OnDestroy} from '@angular/core';
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {first, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
-import {MapConfigActions} from '../../core/state/map/actions/map-config.actions';
-import {MapConfigState, selectMapConfigState} from '../../core/state/map/reducers/map-config.reducer';
+import {MapConfigActions} from '../../state/map/actions/map-config.actions';
+import {MapConfigState, selectMapConfigState} from '../../state/map/reducers/map-config.reducer';
 import {PrintType} from '../../shared/types/print-type';
 import {BasemapConfigService} from './basemap-config.service';
 

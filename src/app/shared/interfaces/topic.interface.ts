@@ -1,42 +1,42 @@
 import {HasVisibility} from './has-visibility.interface';
 
-export interface LayerCatalogItem {
+export interface Topic {
   title: string;
-  topics: Topic[];
+  maps: Map[];
 }
 
-export interface Topic {
-  /** Topic name */
-  topic: string;
-  /** Topic title */
+export interface Map {
+  /** Map identifier */
+  id: string;
+  /** Map title */
   title: string;
-  /** Topic title for printing */
+  /** Map title for printing */
   printTitle: string;
   /** Path to topic image */
   icon: string;
   /** Organisation title */
   organisation: string | null;
-  /** Geolion ID of topic */
+  /** Geolion ID of map */
   geolion: number | null;
   /** Keywords */
   keywords: string[];
-  /** True if this is a main topic */
+  /** True if this is a main map */
   mainLevel: boolean;
-  /** True if this is a background topic */
+  /** True if this is a background map */
   backgroundLevel: boolean;
-  /** True if this is a overlay topic */
+  /** True if this is a overlay map */
   overlayLevel: boolean;
   /**
    * WMS URL
    * @format uri
    */
   wmsUrl: string;
-  layers: TopicLayer[];
+  layers: MapLayer[];
   /** Min allowed scale denominator */
   minScale: number | null;
-  /** Topic name to load as background topic if set */
+  /** Topic name to load as background map if set */
   backgroundTopic: string | null;
-  /** List of topic names to load as overlay topics */
+  /** List of topic names to load as overlay maps */
   overlayTopics: string[];
   /** Available viewer tools */
   tools: string[];
@@ -44,7 +44,7 @@ export interface Topic {
   permissionMissing: boolean;
 }
 
-export interface TopicLayer extends HasVisibility {
+export interface MapLayer extends HasVisibility {
   /** Layer ID */
   id: number;
   /** Layer name */
@@ -70,5 +70,5 @@ export interface TopicLayer extends HasVisibility {
 }
 
 export interface TopicsResponse {
-  layerCatalogItems: LayerCatalogItem[];
+  topics: Topic[];
 }

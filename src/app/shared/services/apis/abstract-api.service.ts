@@ -1,6 +1,6 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {lastValueFrom} from 'rxjs';
+import {Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +10,7 @@ export abstract class BaseApiService {
 
   protected constructor(private readonly http: HttpClient) {}
 
-  protected async get<T>(url: string): Promise<T> {
-    return lastValueFrom(this.http.get<T>(url));
+  protected get<T>(url: string): Observable<T> {
+    return this.http.get<T>(url);
   }
 }
