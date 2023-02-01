@@ -5,7 +5,7 @@ import {MapConfigActions} from '../../state/map/actions/map-config.actions';
 import {TransformationService} from './transformation.service';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 import {MapConfigState, selectActiveBasemapId, selectMapConfigState} from '../../state/map/reducers/map-config.reducer';
-import {first, skip, Subscription, tap} from 'rxjs';
+import {concatMap, first, skip, Subscription, tap} from 'rxjs';
 import SpatialReference from '@arcgis/core/geometry/SpatialReference';
 import {FeatureInfoActions} from '../../state/map/actions/feature-info.actions';
 import Graphic from '@arcgis/core/Graphic';
@@ -28,6 +28,7 @@ import Basemap from '@arcgis/core/Basemap';
 import TileInfo from '@arcgis/core/layers/support/TileInfo';
 import {BasemapConfigService} from './basemap-config.service';
 import {ConfigService} from '../../shared/services/config.service';
+import {selectActiveMapItems} from '../../state/map/reducers/active-map-item.reducer';
 
 @Injectable({
   providedIn: 'root'
@@ -112,6 +113,14 @@ export class EsriMapService implements MapService {
           this.attachMapViewListeners();
           this.addBasemapSubscription();
           this.addScaleBar();
+        }),
+        concatMap(() => this.store.select(selectActiveMapItems)),
+        first(),
+        tap((activeMapItems) => {
+          this.removeAllMapItems();
+          activeMapItems.forEach((mapItem, position) => {
+            this.addMapItem(mapItem, position);
+          });
         })
       )
       .subscribe();
