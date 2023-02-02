@@ -16,6 +16,24 @@ function createActiveMapItemMock(id: string, numberOfLayers = 0): {id: string; a
   return {id: id, activeMapItem: new ActiveMapItem(<Map>mapMock)};
 }
 
+function compareMapItemToEsriLayer(expectedMapItem: ActiveMapItem, actualEsriLayer: __esri.Layer) {
+  expect(actualEsriLayer.id).toBe(expectedMapItem.id);
+  expect(actualEsriLayer.opacity).toBe(expectedMapItem.opacity);
+  expect(actualEsriLayer.title).toBe(expectedMapItem.title);
+  expect(actualEsriLayer.visible).toBe(expectedMapItem.visible);
+
+  const actualEsriWmsLayer = actualEsriLayer as __esri.WMSLayer;
+  expect(actualEsriWmsLayer.url).toBe(expectedMapItem.url);
+  expect(actualEsriWmsLayer.sublayers.length).toBe(expectedMapItem.layers.length);
+  expectedMapItem.layers.forEach((expectedLayer) => {
+    const actualEsriSublayer = actualEsriWmsLayer.sublayers.find((sl) => sl.id === expectedLayer.id);
+    expect(actualEsriSublayer).toBeDefined();
+    expect(actualEsriSublayer.name).toBe(expectedLayer.layer);
+    expect(actualEsriSublayer.title).toBe(expectedLayer.title);
+    expect(actualEsriSublayer.visible).toBe(expectedLayer.visible);
+  });
+}
+
 describe('EsriMapService', () => {
   let service: EsriMapService;
   let mapMock: EsriMapMock = new EsriMapMock();
@@ -51,17 +69,9 @@ describe('EsriMapService', () => {
 
     expect(mapMock.layers.length).toBe(3);
     // index <> position; position 0 should be the highest index for Esri.
-    expect(mapMock.layers.getItemAt(0).id).toBe(topic3Id);
-    expect(mapMock.layers.getItemAt(0).opacity).toBe(mapItem3.opacity);
-    expect(mapMock.layers.getItemAt(0).visible).toBe(mapItem3.visible);
-    expect(mapMock.layers.getItemAt(1).id).toBe(topic2Id);
-    expect(mapMock.layers.getItemAt(1).opacity).toBe(mapItem2.opacity);
-    expect(mapMock.layers.getItemAt(1).visible).toBe(mapItem2.visible);
-    expect((mapMock.layers.getItemAt(1) as __esri.WMSLayer).sublayers.getItemAt(0).visible).toBeFalse();
-    expect((mapMock.layers.getItemAt(1) as __esri.WMSLayer).sublayers.getItemAt(1).visible).toBeTrue();
-    expect(mapMock.layers.getItemAt(2).id).toBe(topic1Id);
-    expect(mapMock.layers.getItemAt(2).opacity).toBe(mapItem1.opacity);
-    expect(mapMock.layers.getItemAt(2).visible).toBe(mapItem1.visible);
+    compareMapItemToEsriLayer(mapItem1, mapMock.layers.getItemAt(2));
+    compareMapItemToEsriLayer(mapItem2, mapMock.layers.getItemAt(1));
+    compareMapItemToEsriLayer(mapItem3, mapMock.layers.getItemAt(0));
 
     service.removeAllMapItems();
     service.addMapItem(mapItem1, 0);
