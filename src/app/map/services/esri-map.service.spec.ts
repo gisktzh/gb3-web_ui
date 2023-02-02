@@ -6,14 +6,32 @@ import {ActiveMapItem} from '../models/active-map-item.model';
 import {Map, MapLayer} from '../../shared/interfaces/topic.interface';
 import {EsriMapMock} from '../../testing/map-testing/esri-map.mock';
 
-function createActiveMapItemMock(topic: string, numberOfLayers = 0): {id: string; activeMapItem: ActiveMapItem} {
-  const topicMock = {id: topic, title: topic, layers: []} as Partial<Map>;
+function createActiveMapItemMock(id: string, numberOfLayers = 0): {id: string; activeMapItem: ActiveMapItem} {
+  const mapMock = {id: id, title: id, layers: []} as Partial<Map>;
   for (let layerNumber = 0; layerNumber < numberOfLayers; layerNumber++) {
-    const uniqueLayerName = `layer${layerNumber}_${topic}`;
-    const layerMock = {layer: uniqueLayerName, title: uniqueLayerName, id: layerNumber} as Partial<MapLayer>;
-    topicMock.layers?.push(<MapLayer>layerMock);
+    const uniqueLayerName = `layer${layerNumber}_${id}`;
+    const layerMock = {layer: uniqueLayerName, title: uniqueLayerName, id: layerNumber, visible: true} as Partial<MapLayer>;
+    mapMock.layers?.push(<MapLayer>layerMock);
   }
-  return {id: topic, activeMapItem: new ActiveMapItem(<Map>topicMock)};
+  return {id: id, activeMapItem: new ActiveMapItem(<Map>mapMock)};
+}
+
+function compareMapItemToEsriLayer(expectedMapItem: ActiveMapItem, actualEsriLayer: __esri.Layer) {
+  expect(actualEsriLayer.id).toBe(expectedMapItem.id);
+  expect(actualEsriLayer.opacity).toBe(expectedMapItem.opacity);
+  expect(actualEsriLayer.title).toBe(expectedMapItem.title);
+  expect(actualEsriLayer.visible).toBe(expectedMapItem.visible);
+
+  const actualEsriWmsLayer = actualEsriLayer as __esri.WMSLayer;
+  expect(actualEsriWmsLayer.url).toBe(expectedMapItem.url);
+  expect(actualEsriWmsLayer.sublayers.length).toBe(expectedMapItem.layers.length);
+  expectedMapItem.layers.forEach((expectedLayer) => {
+    const actualEsriSublayer = actualEsriWmsLayer.sublayers.find((sl) => sl.id === expectedLayer.id);
+    expect(actualEsriSublayer).toBeDefined();
+    expect(actualEsriSublayer.name).toBe(expectedLayer.layer);
+    expect(actualEsriSublayer.title).toBe(expectedLayer.title);
+    expect(actualEsriSublayer.visible).toBe(expectedLayer.visible);
+  });
 }
 
 describe('EsriMapService', () => {
@@ -36,9 +54,12 @@ describe('EsriMapService', () => {
   });
 
   it('should add new items to the desired position', () => {
-    const {id: topic1Id, activeMapItem: mapItem1} = createActiveMapItemMock('topicOne');
-    const {id: topic2Id, activeMapItem: mapItem2} = createActiveMapItemMock('topicTwo');
-    const {id: topic3Id, activeMapItem: mapItem3} = createActiveMapItemMock('topicThree');
+    const {id: topic1Id, activeMapItem: mapItem1} = createActiveMapItemMock('mapOne');
+    mapItem1.opacity = 0.5;
+    mapItem1.visible = false;
+    const {id: topic2Id, activeMapItem: mapItem2} = createActiveMapItemMock('mapTwo', 2);
+    mapItem2.layers[0].visible = false;
+    const {id: topic3Id, activeMapItem: mapItem3} = createActiveMapItemMock('mapThree');
 
     expect(mapMock.layers.length).toBe(0);
 
@@ -48,9 +69,9 @@ describe('EsriMapService', () => {
 
     expect(mapMock.layers.length).toBe(3);
     // index <> position; position 0 should be the highest index for Esri.
-    expect(mapMock.layers.getItemAt(0).id).toBe(topic3Id);
-    expect(mapMock.layers.getItemAt(1).id).toBe(topic2Id);
-    expect(mapMock.layers.getItemAt(2).id).toBe(topic1Id);
+    compareMapItemToEsriLayer(mapItem1, mapMock.layers.getItemAt(2));
+    compareMapItemToEsriLayer(mapItem2, mapMock.layers.getItemAt(1));
+    compareMapItemToEsriLayer(mapItem3, mapMock.layers.getItemAt(0));
 
     service.removeAllMapItems();
     service.addMapItem(mapItem1, 0);
@@ -65,9 +86,9 @@ describe('EsriMapService', () => {
   });
 
   it('should remove existing items', () => {
-    const {id: topic1Id, activeMapItem: mapItem1} = createActiveMapItemMock('topicOne');
-    const {id: topic2Id, activeMapItem: mapItem2} = createActiveMapItemMock('topicTwo');
-    const {id: topic3Id, activeMapItem: mapItem3} = createActiveMapItemMock('topicThree');
+    const {id: topic1Id, activeMapItem: mapItem1} = createActiveMapItemMock('mapOne');
+    const {id: topic2Id, activeMapItem: mapItem2} = createActiveMapItemMock('mapTwo');
+    const {id: topic3Id, activeMapItem: mapItem3} = createActiveMapItemMock('mapThree');
 
     service.addMapItem(mapItem1, 0);
     service.addMapItem(mapItem2, 1);
@@ -84,9 +105,9 @@ describe('EsriMapService', () => {
   });
 
   it('should remove all existing items', () => {
-    const {activeMapItem: mapItem1} = createActiveMapItemMock('topicOne');
-    const {activeMapItem: mapItem2} = createActiveMapItemMock('topicTwo');
-    const {activeMapItem: mapItem3} = createActiveMapItemMock('topicThree');
+    const {activeMapItem: mapItem1} = createActiveMapItemMock('mapOne');
+    const {activeMapItem: mapItem2} = createActiveMapItemMock('mapTwo');
+    const {activeMapItem: mapItem3} = createActiveMapItemMock('mapThree');
 
     service.addMapItem(mapItem1, 0);
     service.addMapItem(mapItem2, 1);
@@ -100,9 +121,9 @@ describe('EsriMapService', () => {
   });
 
   it('should reorder existing items to the desired position', () => {
-    const {id: topic1Id, activeMapItem: mapItem1} = createActiveMapItemMock('topicOne');
-    const {id: topic2Id, activeMapItem: mapItem2} = createActiveMapItemMock('topicTwo');
-    const {id: topic3Id, activeMapItem: mapItem3} = createActiveMapItemMock('topicThree');
+    const {id: topic1Id, activeMapItem: mapItem1} = createActiveMapItemMock('mapOne');
+    const {id: topic2Id, activeMapItem: mapItem2} = createActiveMapItemMock('mapTwo');
+    const {id: topic3Id, activeMapItem: mapItem3} = createActiveMapItemMock('mapThree');
 
     service.addMapItem(mapItem1, 0);
     service.addMapItem(mapItem2, 1);
