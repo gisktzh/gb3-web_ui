@@ -5,7 +5,7 @@ import {MapConfigActions} from '../../state/map/actions/map-config.actions';
 import {TransformationService} from './transformation.service';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 import {MapConfigState, selectActiveBasemapId, selectMapConfigState} from '../../state/map/reducers/map-config.reducer';
-import {concatMap, first, skip, Subscription, tap} from 'rxjs';
+import {first, skip, Subscription, tap, withLatestFrom} from 'rxjs';
 import SpatialReference from '@arcgis/core/geometry/SpatialReference';
 import {FeatureInfoActions} from '../../state/map/actions/feature-info.actions';
 import Graphic from '@arcgis/core/Graphic';
@@ -104,7 +104,8 @@ export class EsriMapService implements MapService {
       .select(selectMapConfigState)
       .pipe(
         first(),
-        tap((config: MapConfigState) => {
+        withLatestFrom(this.store.select(selectActiveMapItems)),
+        tap(([config, activeMapItems]) => {
           const {x, y} = config.center;
           const {minScale, maxScale} = config.scaleSettings;
           const {scale, srsId, activeBasemapId} = config;
@@ -113,11 +114,6 @@ export class EsriMapService implements MapService {
           this.attachMapViewListeners();
           this.addBasemapSubscription();
           this.addScaleBar();
-        }),
-        concatMap(() => this.store.select(selectActiveMapItems)),
-        first(),
-        tap((activeMapItems) => {
-          this.removeAllMapItems();
           activeMapItems.forEach((mapItem, position) => {
             this.addMapItem(mapItem, position);
           });
