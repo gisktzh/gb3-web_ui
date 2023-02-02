@@ -131,11 +131,14 @@ export class EsriMapService implements MapService {
       id: mapItem.id,
       title: mapItem.title,
       url: mapItem.url,
+      visible: mapItem.visible,
+      opacity: mapItem.opacity,
       sublayers: mapItem.layers.map((layer) => {
         return {
           id: layer.id,
           name: layer.layer,
-          title: layer.title
+          title: layer.title,
+          visible: layer.visible
         } as __esri.WMSSublayerProperties;
       })
     });

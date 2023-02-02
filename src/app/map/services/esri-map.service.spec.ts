@@ -37,7 +37,10 @@ describe('EsriMapService', () => {
 
   it('should add new items to the desired position', () => {
     const {id: topic1Id, activeMapItem: mapItem1} = createActiveMapItemMock('mapOne');
-    const {id: topic2Id, activeMapItem: mapItem2} = createActiveMapItemMock('mapTwo');
+    mapItem1.opacity = 0.5;
+    mapItem1.visible = false;
+    const {id: topic2Id, activeMapItem: mapItem2} = createActiveMapItemMock('mapTwo', 2);
+    mapItem2.layers[0].visible = false;
     const {id: topic3Id, activeMapItem: mapItem3} = createActiveMapItemMock('mapThree');
 
     expect(mapMock.layers.length).toBe(0);
@@ -49,8 +52,16 @@ describe('EsriMapService', () => {
     expect(mapMock.layers.length).toBe(3);
     // index <> position; position 0 should be the highest index for Esri.
     expect(mapMock.layers.getItemAt(0).id).toBe(topic3Id);
+    expect(mapMock.layers.getItemAt(0).opacity).toBe(mapItem3.opacity);
+    expect(mapMock.layers.getItemAt(0).visible).toBe(mapItem3.visible);
     expect(mapMock.layers.getItemAt(1).id).toBe(topic2Id);
+    expect(mapMock.layers.getItemAt(1).opacity).toBe(mapItem2.opacity);
+    expect(mapMock.layers.getItemAt(1).visible).toBe(mapItem2.visible);
+    expect((mapMock.layers.getItemAt(1) as __esri.WMSLayer).sublayers.getItemAt(0).visible).toBeFalse();
+    expect((mapMock.layers.getItemAt(1) as __esri.WMSLayer).sublayers.getItemAt(1).visible).toBeTrue();
     expect(mapMock.layers.getItemAt(2).id).toBe(topic1Id);
+    expect(mapMock.layers.getItemAt(2).opacity).toBe(mapItem1.opacity);
+    expect(mapMock.layers.getItemAt(2).visible).toBe(mapItem1.visible);
 
     service.removeAllMapItems();
     service.addMapItem(mapItem1, 0);
