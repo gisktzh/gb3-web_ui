@@ -1,0 +1,11 @@
+@font-face {
+  font-family: 'HelveticaNow';
+  src: local('HelveticaNow'), url(../../assets/fonts/HelveticaNowText.otf) format('OpenType');
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'HelveticaNow Black';
+  src: local('HelveticaNow Black'), url(../../assets/fonts/HelveticaNowTextBlack.otf) format('OpenType');
+  font-style: normal;
+}
