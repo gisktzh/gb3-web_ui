@@ -8,6 +8,7 @@
       (click)="this.switchBasemap(availableBasemap.id)"
       *ngFor="let availableBasemap of this.availableBasemaps"
       class="basemap-selector__map-choice__item"
+      [class.basemap-selector__map-choice__item--active]="availableBasemap.id === this.activeBasemapId"
     >
       <img
         [alt]="availableBasemap.title"

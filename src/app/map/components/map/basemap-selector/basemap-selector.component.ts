@@ -43,9 +43,7 @@ export class BasemapSelectorComponent implements OnInit, OnDestroy {
         .pipe(
           tap((activeBasemapId) => {
             this.activeBasemapId = activeBasemapId;
-            this.availableBasemaps = this.basemapConfigService.availableBasemaps.filter(
-              (defaultBasemap) => defaultBasemap.id !== activeBasemapId
-            );
+            this.availableBasemaps = this.basemapConfigService.availableBasemaps;
           })
         )
         .subscribe()
