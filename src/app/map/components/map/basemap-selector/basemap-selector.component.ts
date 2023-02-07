@@ -18,7 +18,9 @@ export class BasemapSelectorComponent implements OnInit, OnDestroy {
   private readonly subscriptions: Subscription = new Subscription();
   private readonly activeBasemapId$ = this.store.select(selectActiveBasemapId);
 
-  constructor(private readonly store: Store, private readonly basemapConfigService: BasemapConfigService) {}
+  constructor(private readonly store: Store, private readonly basemapConfigService: BasemapConfigService) {
+    this.availableBasemaps = this.basemapConfigService.availableBasemaps;
+  }
 
   public ngOnInit(): void {
     this.initSubscriptions();
@@ -43,9 +45,6 @@ export class BasemapSelectorComponent implements OnInit, OnDestroy {
         .pipe(
           tap((activeBasemapId) => {
             this.activeBasemapId = activeBasemapId;
-            this.availableBasemaps = this.basemapConfigService.availableBasemaps.filter(
-              (defaultBasemap) => defaultBasemap.id !== activeBasemapId
-            );
           })
         )
         .subscribe()

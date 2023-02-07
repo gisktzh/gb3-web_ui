@@ -42,5 +42,9 @@
         height: 80px;
       }
     }
+
+    .basemap-selector__map-choice__item--active {
+      border: 1px solid black;
+    }
   }
 }

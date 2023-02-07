@@ -8,7 +8,7 @@ export const defaultMapConfig: MapConfigState = {
     x: 2682260.0,
     y: 1248390.0
   },
-  scale: 50000,
+  scale: 320_000,
   ready: false,
   scaleSettings: {
     minScale: MapConstants.MINIMUM_MAP_SCALE,
