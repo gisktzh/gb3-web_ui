@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {selectActiveBasemapId} from '../../../../state/map/reducers/map-config.reducer';
@@ -12,7 +12,9 @@ import {DocumentService} from '../../../../shared/services/document.service';
   templateUrl: './basemap-selector.component.html',
   styleUrls: ['./basemap-selector.component.scss']
 })
-export class BasemapSelectorComponent implements OnInit, OnDestroy {
+export class BasemapSelectorComponent implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChild('basemapSelector', {read: ElementRef, static: false}) private basemapSelectorRef!: ElementRef;
+
   public activeBasemapId: string = '';
   public isSelectionOpen: boolean = false;
   public availableBasemaps: Basemap[] = [];
@@ -22,8 +24,7 @@ export class BasemapSelectorComponent implements OnInit, OnDestroy {
   constructor(
     private readonly store: Store,
     private readonly basemapConfigService: BasemapConfigService,
-    private readonly documentService: DocumentService,
-    private readonly elementRef: ElementRef
+    private readonly documentService: DocumentService
   ) {
     this.availableBasemaps = this.basemapConfigService.availableBasemaps;
   }
@@ -34,6 +35,20 @@ export class BasemapSelectorComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
+  }
+
+  public ngAfterViewInit() {
+    this.subscriptions.add(
+      this.documentService.documentClicked$
+        .pipe(
+          tap((event: PointerEvent) => {
+            if (!this.basemapSelectorRef.nativeElement.contains(event.target)) {
+              this.isSelectionOpen = false;
+            }
+          })
+        )
+        .subscribe()
+    );
   }
 
   public toggleSelection() {
@@ -51,18 +66,6 @@ export class BasemapSelectorComponent implements OnInit, OnDestroy {
         .pipe(
           tap((activeBasemapId) => {
             this.activeBasemapId = activeBasemapId;
-          })
-        )
-        .subscribe()
-    );
-
-    this.subscriptions.add(
-      this.documentService.documentClicked$
-        .pipe(
-          tap((event: PointerEvent) => {
-            if (!this.elementRef.nativeElement.contains(event.target)) {
-              this.isSelectionOpen = false;
-            }
           })
         )
         .subscribe()

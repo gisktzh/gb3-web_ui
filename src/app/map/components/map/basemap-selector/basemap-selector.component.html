@@ -1,4 +1,4 @@
-<div class="basemap-selector">
+<div class="basemap-selector" #basemapSelector>
   <mat-card (click)="this.toggleSelection()" class="basemap-selector__active">
     <img alt="Aktuelle Hintergrundkarte" [src]="this.activeBasemapId | basemapImageLink" class="basemap-selector__active-map-image" />
   </mat-card>
