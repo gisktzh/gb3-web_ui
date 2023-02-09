@@ -8,11 +8,13 @@ import {Subscription} from 'rxjs';
 import {ActiveMapItem} from '../../models/active-map-item.model';
 import {LegendActions} from '../../../state/map/actions/legend.actions';
 import {MapLayer} from '../../../shared/interfaces/topic.interface';
+import {slideInOutAnimation} from '../../../shared/animations/slideInOut.animation';
 
 @Component({
   selector: 'active-map-items-widget',
   templateUrl: './active-map-items-widget.component.html',
-  styleUrls: ['./active-map-items-widget.component.scss']
+  styleUrls: ['./active-map-items-widget.component.scss'],
+  animations: [slideInOutAnimation]
 })
 export class ActiveMapItemsWidgetComponent implements OnInit, OnDestroy {
   private readonly activeMapItems$ = this.store.select(selectActiveMapItems);

@@ -1,5 +1,5 @@
 <mat-card class="active-layer-widget">
-  <mat-card-header>
+  <mat-card-header class="active-layer__header">
     <p class="last-left-aligned-element">Aktive Karten/Layer</p>
     <button
       class="clear-active-map-items-button"
@@ -16,7 +16,7 @@
   </mat-card-header>
   <mat-card-content>
     <mat-accordion multi="true" displayMode="flat" cdkDropList (cdkDropListDropped)="dropMapItem($event)">
-      <div *ngFor="let activeMapItem of activeMapItems; trackBy: trackByMapItemId" class="panel">
+      <div *ngFor="let activeMapItem of activeMapItems; trackBy: trackByMapItemId" [@slideInOut]>
         <mat-expansion-panel cdkDrag hideToggle="true" #activeMapItemExpansionPanel>
           <mat-expansion-panel-header (click)="activeMapItemExpansionPanel.toggle()" class="expansion-panel-header">
             <mat-icon class="active-map-item__drag-handle" cdkDragHandle>drag_indicator</mat-icon>

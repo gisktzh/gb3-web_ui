@@ -1,21 +1,33 @@
-.map-catalogue {
-  .horizontal-stacked {
-    display: flex;
+@use 'node_modules/@angular/material/index' as mat;
+@import 'gb3-theme';
 
-    .mat-icon {
-      vertical-align: middle;
-    }
+.map-catalogue-widget {
+  padding: 0;
 
-    .layer-text {
-      margin: 0 8px;
+  .map-catalogue__header {
+    background-color: mat.get-color-from-palette($zh-primary, default);
+    color: mat.get-color-from-palette($zh-primary, default-contrast);
+  }
+
+  .map-catalogue__content {
+    .horizontal-stacked {
+      display: flex;
+
+      .mat-icon {
+        vertical-align: middle;
+      }
+
+      .layer-text {
+        margin: 0 8px;
+      }
+
+      .last-left-aligned-element {
+        flex-grow: 1;
+      }
     }
 
     .last-left-aligned-element {
-      flex-grow: 1;
+      margin-right: auto;
     }
-  }
-
-  .last-left-aligned-element {
-    margin-right: auto;
   }
 }
