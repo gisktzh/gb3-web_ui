@@ -4,15 +4,17 @@
   }
 
   .navbar__item {
-    padding-left: 4px;
-    padding-right: 4px;
+    padding-left: 10px;
+    padding-right: 10px;
   }
 
   .navbar__logo {
     height: 80%;
+    padding-left: 4px;
+    padding-right: 4px;
   }
 }
 
 .current {
-  border: 2px solid black;
+  font-weight: bolder;
 }
