@@ -1,0 +1,164 @@
+@use 'node_modules/@angular/material/index' as mat;
+
+/**
+  Kt. ZH Design System
+  https://www.figma.com/file/d6Pv21UVUbnBs3AdcZijHmbN/KTZH-Design-System
+ */
+
+/* Base colors
+========================== */
+
+$zh-blue: #0070b4;
+$zh-darkblue: #00407c;
+$zh-cyan: #00797b;
+$zh-green: #1a7f1f;
+$zh-bordeaux: #b01657;
+$zh-magenta: #d40053;
+$zh-violet: #7f3da7;
+$zh-grey50: #666666;
+$zh-black100: #000000;
+
+/* Palettes
+========================== */
+
+// generated using http://mcg.mbitson.com
+
+$zh-blue-palette: (
+  50: #e0eef6,
+  100: #b3d4e9,
+  200: #80b8da,
+  300: #4d9bcb,
+  400: #2685bf,
+  500: $zh-blue,
+  600: #0068ad,
+  700: #005da4,
+  800: #00539c,
+  900: #00418c,
+  A100: #b8d4ff,
+  A200: #85b4ff,
+  A400: #5295ff,
+  A700: #3985ff,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #ffffff,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #000000,
+    A400: #000000,
+    A700: #ffffff
+  )
+);
+
+$zh-darkblue-palette: (
+  50: #e0e8ef,
+  100: #b3c6d8,
+  200: #80a0be,
+  300: #4d79a3,
+  400: #265d90,
+  500: $zh-darkblue,
+  600: #003a74,
+  700: #003269,
+  800: #002a5f,
+  900: #001c4c,
+  A100: #80a1ff,
+  A200: #4d7cff,
+  A400: #1a57ff,
+  A700: #0044ff,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #ffffff,
+    400: #ffffff,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #ffffff,
+    A400: #ffffff,
+    A700: #ffffff
+  )
+);
+
+$zh-black100-palette: (
+  50: #e0e0e0,
+  100: #b3b3b3,
+  200: #808080,
+  300: #4d4d4d,
+  400: #262626,
+  500: $zh-black100,
+  600: #000000,
+  700: #000000,
+  800: #000000,
+  900: #000000,
+  A100: #a6a6a6,
+  A200: #8c8c8c,
+  A400: #737373,
+  A700: #666666,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #ffffff,
+    400: #ffffff,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #000000,
+    A400: #ffffff,
+    A700: #ffffff
+  )
+);
+
+$zh-bordeaux-palette: (
+  50: #f6e3eb,
+  100: #e7b9cd,
+  200: #d88bab,
+  300: #c85c89,
+  400: #bc3970,
+  500: $zh-bordeaux,
+  600: #a9134f,
+  700: #a01046,
+  800: #970c3c,
+  900: #87062c,
+  A100: #ffb4c6,
+  A200: #ff819f,
+  A400: #ff4e77,
+  A700: #ff3564,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #ffffff,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #000000,
+    A400: #000000,
+    A700: #ffffff
+  )
+);
+
+/* Typography
+========================== */
+$zh-font-family: 'HelveticaNow', Arial, Helvetica, sans-serif;
+// For usage, refer to: https://material.angular.io/guide/typography
+$zh-typography-config: mat.define-typography-config(
+  $font-family: $zh-font-family
+);
