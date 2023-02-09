@@ -1,10 +1,11 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit} from '@angular/core';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {selectActiveBasemapId} from '../../../../state/map/reducers/map-config.reducer';
 import {Basemap} from '../../../../shared/interfaces/background-map.interface';
 import {MapConfigActions} from '../../../../state/map/actions/map-config.actions';
 import {BasemapConfigService} from '../../../services/basemap-config.service';
+import {DocumentService} from '../../../../shared/services/document.service';
 
 @Component({
   selector: 'basemap-selector',
@@ -18,7 +19,12 @@ export class BasemapSelectorComponent implements OnInit, OnDestroy {
   private readonly subscriptions: Subscription = new Subscription();
   private readonly activeBasemapId$ = this.store.select(selectActiveBasemapId);
 
-  constructor(private readonly store: Store, private readonly basemapConfigService: BasemapConfigService) {
+  constructor(
+    private readonly store: Store,
+    private readonly basemapConfigService: BasemapConfigService,
+    private readonly documentService: DocumentService,
+    private readonly elementRef: ElementRef
+  ) {
     this.availableBasemaps = this.basemapConfigService.availableBasemaps;
   }
 
@@ -45,6 +51,18 @@ export class BasemapSelectorComponent implements OnInit, OnDestroy {
         .pipe(
           tap((activeBasemapId) => {
             this.activeBasemapId = activeBasemapId;
+          })
+        )
+        .subscribe()
+    );
+
+    this.subscriptions.add(
+      this.documentService.documentClicked$
+        .pipe(
+          tap((event: PointerEvent) => {
+            if (!this.elementRef.nativeElement.contains(event.target)) {
+              this.isSelectionOpen = false;
+            }
           })
         )
         .subscribe()
