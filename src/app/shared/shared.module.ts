@@ -1,5 +1,4 @@
 import {NgModule} from '@angular/core';
-import {EsriModule} from './external/esri.module';
 import {MaterialModule} from './external/material.module';
 import {BasemapImageLinkPipe} from './pipes/background-map-image-link.pipe';
 import {NavbarComponent} from './components/navbar/navbar.component';
@@ -9,7 +8,7 @@ import {CommonModule} from '@angular/common';
 
 @NgModule({
   declarations: [BasemapImageLinkPipe, NavbarComponent, PlaceholderPageComponent],
-  imports: [EsriModule, MaterialModule, RouterModule, CommonModule],
-  exports: [EsriModule, MaterialModule, BasemapImageLinkPipe, NavbarComponent]
+  imports: [MaterialModule, RouterModule, CommonModule],
+  exports: [MaterialModule, BasemapImageLinkPipe, NavbarComponent]
 })
 export class SharedModule {}

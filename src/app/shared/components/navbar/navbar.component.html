@@ -1,12 +1,12 @@
-<mat-toolbar class="navbar">
+<mat-toolbar color="primary" class="navbar">
   <img alt="KTZH Logo" class="navbar__item navbar__logo" src="assets/images/zh_logo.png" />
   <span class="navbar__item">GIS-Browser Zürich</span>
   <span class="navbar__spacer"></span>
-  <a class="navbar__item" routerLink="/" routerLinkActive="current" [routerLinkActiveOptions]="{exact: true}" [queryParams]="{}"
+  <a mat-button class="navbar__item" routerLink="/" routerLinkActive="current" [routerLinkActiveOptions]="{exact: true}" [queryParams]="{}"
     >Übersicht</a
   >
-  <a class="navbar__item" routerLink="/maps" routerLinkActive="current">GIS-Browser</a>
-  <a class="navbar__item" routerLink="/data" routerLinkActive="current">Datenkatalog</a>
-  <a class="navbar__item" routerLink="/help" routerLinkActive="current">Hilfe & Support</a>
-  <a class="navbar__item" routerLink="/shop" routerLinkActive="current">Geodatenshop</a>
+  <a mat-button class="navbar__item" routerLink="/maps" routerLinkActive="current">GIS-Browser</a>
+  <a mat-button class="navbar__item" routerLink="/data" routerLinkActive="current">Datenkatalog</a>
+  <a mat-button class="navbar__item" routerLink="/help" routerLinkActive="current">Hilfe & Support</a>
+  <a mat-button class="navbar__item" routerLink="/shop" routerLinkActive="current">Geodatenshop</a>
 </mat-toolbar>
