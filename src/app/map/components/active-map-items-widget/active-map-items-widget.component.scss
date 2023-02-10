@@ -1,13 +1,12 @@
-@use 'node_modules/@angular/material/index' as mat;
 @import 'gb3-theme';
+@import 'mixins/helpers.mixin';
 
 .active-layer-widget {
   min-width: 350px;
   padding: 0;
 
   .active-layer__header {
-    background-color: mat.get-color-from-palette($zh-primary, default);
-    color: mat.get-color-from-palette($zh-primary, default-contrast);
+    @include colors-and-font-from-theme($theme);
   }
 
   .mat-button {
