@@ -1,10 +1,10 @@
-<mat-card>
-  <mat-card-header>
+<mat-card class="map-catalogue-widget">
+  <mat-card-header class="map-catalogue__header">
     <p>Verfügbare Karten nach Topic</p>
   </mat-card-header>
   <mat-card-content>
-    <mat-progress-spinner mode="indeterminate" *ngIf="this.loadingState === 'loading'"></mat-progress-spinner>
-    <mat-accordion *ngIf="this.loadingState === 'loaded'" class="map-catalogue" multi="true" displayMode="flat">
+    <mat-progress-bar mode="query" *ngIf="this.loadingState === 'loading'"></mat-progress-bar>
+    <mat-accordion *ngIf="this.loadingState === 'loaded'" class="map-catalogue__content" multi="true" displayMode="flat">
       <ng-container *ngFor="let topic of topics">
         <mat-expansion-panel>
           <mat-expansion-panel-header>
