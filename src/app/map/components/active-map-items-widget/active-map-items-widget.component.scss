@@ -1,12 +1,14 @@
+@use 'functions/helper.functions' as functions;
 @import 'gb3-theme';
-@import 'mixins/helpers.mixin';
 
 .active-layer-widget {
   min-width: 350px;
   padding: 0;
 
   .active-layer__header {
-    @include colors-and-font-from-theme($theme);
+    background-color: functions.get-color-from-theme($theme);
+    color: functions.get-contrast-color-from-theme($theme);
+    font-family: functions.get-font-family-from-theme($theme);
   }
 
   .mat-button {

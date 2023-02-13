@@ -1,4 +1,10 @@
+@use 'functions/helper.functions';
+@import 'gb3-theme';
+
 .scale-input {
+  $_font-family: helper.get-color-from-theme($theme);
+
+  font-family: $_font-family;
   background-color: white;
   padding: 10px;
 
@@ -18,6 +24,8 @@
       border: none;
       outline: none;
       padding: 0.5rem 0;
+      font-family: $_font-family;
+      font-size: 14px;
     }
   }
 }

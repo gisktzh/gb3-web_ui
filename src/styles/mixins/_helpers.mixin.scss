@@ -1,21 +1,6 @@
-@use 'sass:map';
-@use '@angular/material' as mat;
-
 /// Prevents text in an element (e.g. a div) from becoming selectable
 @mixin non-selectable-text {
   -webkit-user-select: none;
   -ms-user-select: none;
   user-select: none;
-}
-
-/// overrides font-family, background- and foreground-color with the current given theme colors
-@mixin colors-and-font-from-theme($theme, $palette-name: 'primary') {
-  $color-config: mat.get-color-config($theme);
-  $palette: map.get($color-config, $palette-name);
-  $typography-config: mat.get-typography-config($theme);
-  $font-family: mat.font-family($typography-config);
-
-  background-color: mat.get-color-from-palette($palette, default);
-  color: mat.get-color-from-palette($palette, default-contrast);
-  font-family: $font-family;
 }

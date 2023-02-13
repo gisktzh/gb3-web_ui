@@ -1,11 +1,13 @@
+@use 'functions/helper.functions' as functions;
 @import 'gb3-theme';
-@import 'mixins/helpers.mixin';
 
 .map-catalogue-widget {
   padding: 0;
 
   .map-catalogue__header {
-    @include colors-and-font-from-theme($theme);
+    background-color: functions.get-color-from-theme($theme);
+    color: functions.get-contrast-color-from-theme($theme);
+    font-family: functions.get-font-family-from-theme($theme);
   }
 
   .map-catalogue__content {
