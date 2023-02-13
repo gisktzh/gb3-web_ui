@@ -1,6 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CdkDrag, CdkDragDrop} from '@angular/cdk/drag-drop';
-import {MatSliderChange} from '@angular/material/slider';
 import {Store} from '@ngrx/store';
 import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
 import {selectActiveMapItems} from '../../../state/map/reducers/active-map-item.reducer';
@@ -60,8 +59,7 @@ export class ActiveMapItemsWidgetComponent implements OnInit, OnDestroy {
     );
   }
 
-  public onOpacitySliderChange($event: MatSliderChange, activeMapItem: ActiveMapItem) {
-    const opacity = $event.value ?? 1;
+  public onOpacitySliderChange(opacity: number, activeMapItem: ActiveMapItem) {
     this.store.dispatch(ActiveMapItemActions.setOpacity({opacity, activeMapItem}));
   }
 
