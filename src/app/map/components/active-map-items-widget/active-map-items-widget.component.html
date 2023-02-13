@@ -1,4 +1,4 @@
-<mat-card class="active-layer-widget">
+<mat-card appearance="outlined" class="active-layer-widget">
   <mat-card-header class="active-layer__header">
     <p class="last-left-aligned-element">Aktive Karten/Layer</p>
     <button
@@ -73,17 +73,15 @@
           <ng-template matExpansionPanelContent>
             <!-- Opacity and special filter settings -->
             <div class="active-map-item-settings">
-              <mat-card class="no-shadow">
+              <mat-card appearance="outlined" class="no-shadow">
                 <p class="active-map-item-settings__title">Transparenz</p>
-                <mat-slider
-                  class="active-map-item-settings__slider"
-                  min="0"
-                  max="1"
-                  step="0.01"
-                  [thumbLabel]="true"
-                  [value]="activeMapItem.opacity"
-                  (input)="onOpacitySliderChange($event, activeMapItem)"
-                ></mat-slider>
+                <mat-slider discrete class="active-map-item-settings__slider" min="0" max="1" step="0.01" #ngSlider
+                  ><input
+                    matSliderThumb
+                    [value]="activeMapItem.opacity"
+                    (input)="onOpacitySliderChange({source: ngSliderThumb, parent: ngSlider, value: ngSliderThumb.value}, activeMapItem)"
+                    #ngSliderThumb="matSliderThumb"
+                /></mat-slider>
               </mat-card>
             </div>
 
@@ -93,7 +91,7 @@
               <!-- Layer tree -->
               <div cdkDropList (cdkDropListDropped)="dropSublayer($event, activeMapItem)">
                 <ng-container *ngFor="let layer of activeMapItem.layers; trackBy: trackByLayerId">
-                  <mat-card class="sublayer no-shadow" cdkDrag>
+                  <mat-card appearance="outlined" class="sublayer no-shadow" cdkDrag>
                     <mat-icon class="sublayer__drag-handle" cdkDragHandle>drag_indicator</mat-icon>
                     <button mat-button (click)="toggleSublayerVisibility(activeMapItem, layer.id)" [disabled]="!activeMapItem.visible">
                       <div class="active-map-item-image-box">

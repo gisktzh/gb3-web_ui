@@ -11,7 +11,7 @@
     font-family: helper.get-font-family-from-theme($theme);
   }
 
-  .mat-button {
+  .mat-mdc-button {
     min-width: 24px;
     padding: 0 8px;
   }
@@ -86,8 +86,8 @@
       visibility: hidden;
     }
 
-    .mat-button {
-      .mat-menu-trigger {
+    .mat-mdc-button {
+      .mat-mdc-menu-trigger {
         position: absolute;
         top: 0;
         right: 0;
