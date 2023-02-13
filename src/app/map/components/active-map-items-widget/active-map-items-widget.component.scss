@@ -1,4 +1,4 @@
-@use 'functions/helper.functions' as functions;
+@use 'functions/helper.functions' as helper;
 @import 'gb3-theme';
 
 .active-layer-widget {
@@ -6,9 +6,9 @@
   padding: 0;
 
   .active-layer__header {
-    background-color: functions.get-color-from-theme($theme);
-    color: functions.get-contrast-color-from-theme($theme);
-    font-family: functions.get-font-family-from-theme($theme);
+    background-color: helper.get-color-from-theme($theme);
+    color: helper.get-contrast-color-from-theme($theme);
+    font-family: helper.get-font-family-from-theme($theme);
   }
 
   .mat-button {
