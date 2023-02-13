@@ -8,9 +8,6 @@
 ========================== */
 
 // For usage, refer to: https://material.angular.io/guide/theming
-$zh-light-primary: mat.define-palette($zh-darkblue-palette);
-$zh-light-accent: mat.define-palette($zh-black100-palette);
-$zh-light-warn: mat.define-palette($zh-bordeaux-palette);
 $zh-light-theme: mat.define-light-theme(
   (
     color: (

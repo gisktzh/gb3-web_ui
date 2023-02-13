@@ -155,6 +155,12 @@ $zh-bordeaux-palette: (
   )
 );
 
+/* Theme palettes
+========================== */
+$zh-light-primary: mat.define-palette($zh-darkblue-palette);
+$zh-light-accent: mat.define-palette($zh-black100-palette);
+$zh-light-warn: mat.define-palette($zh-bordeaux-palette);
+
 /* Typography
 ========================== */
 $zh-font-family: 'HelveticaNow', Arial, Helvetica, sans-serif;

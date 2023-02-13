@@ -1,0 +1,12 @@
+@use 'sass:map';
+@use '@angular/material' as mat;
+
+/// returns the background color of the given palette and hue value
+@function get-color-from-palette($palette: 'primary', $hue: default) {
+  @return mat.get-color-from-palette($palette, $hue);
+}
+
+/// returns the contrast color of the given palette and hue value
+@function get-contrast-color-from-palette($palette: 'primary', $hue: default) {
+  @return get-color-from-palette($palette, $hue + '-contrast');
+}
