@@ -1,8 +1,7 @@
-@use 'functions/helper.functions' as helper;
-@import 'gb3-theme';
+@import 'variables/ktzh-design-variables';
 
 .scale-input {
-  $_font-family: helper.get-color-from-theme($theme);
+  $_font-family: $zh-font-family;
 
   font-family: $_font-family;
   background-color: white;
