@@ -13,9 +13,15 @@
   .map-catalogue__content {
     .horizontal-stacked {
       display: flex;
+      flex-direction: row;
+      align-items: center;
 
       .mat-icon {
         vertical-align: middle;
+      }
+
+      .layer-icon {
+        min-width: 24px;
       }
 
       .layer-text {
@@ -30,5 +36,12 @@
     .last-left-aligned-element {
       margin-right: auto;
     }
+  }
+
+  .single-line-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
   }
 }

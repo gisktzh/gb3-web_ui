@@ -4,6 +4,7 @@
 .basemap-selector {
   @include non-selectable-text;
   display: flex;
+  flex-direction: row;
 
   .basemap-selector__active {
     width: 80px;
@@ -25,9 +26,11 @@
   .basemap-selector__map-choice {
     align-self: flex-end;
     display: flex;
+    flex-direction: row;
+    padding: 4px;
 
     .basemap-selector__map-choice__item {
-      width: 80px;
+      width: 100px;
       padding: 5px;
       margin: 0 5px;
       word-break: break-word;

@@ -11,7 +11,7 @@
     font-family: $zh-font-family;
   }
 
-  .mat-button {
+  .mat-mdc-button {
     min-width: 24px;
     padding: 0 8px;
   }
@@ -61,12 +61,12 @@
   .active-map-item__drag-handle {
     visibility: hidden;
     margin-top: 8px;
+    min-width: 24px;
   }
 
   .active-map-item-image-box {
     position: relative;
     float: left;
-    margin-top: 8px;
 
     .active-map-item-visibility-image {
       position: absolute;
@@ -86,8 +86,8 @@
       visibility: hidden;
     }
 
-    .mat-button {
-      .mat-menu-trigger {
+    .mat-mdc-button {
+      .mat-mdc-menu-trigger {
         position: absolute;
         top: 0;
         right: 0;
@@ -97,6 +97,8 @@
 
   .sublayer {
     display: flex;
+    flex-direction: row;
+    align-items: center;
     margin-left: 56px;
     padding: 0 8px;
   }
@@ -104,19 +106,23 @@
   .sublayer__drag-handle {
     visibility: hidden;
     margin-top: 8px;
+    min-width: 24px;
   }
 
   .active-map-item-settings {
     .active-map-item-settings__title {
       margin: 0;
     }
-
-    .active-map-item-settings__slider {
-      width: 100%;
-    }
   }
-}
 
-.no-shadow {
-  box-shadow: none;
+  .no-shadow {
+    box-shadow: none;
+  }
+
+  .single-line-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+  }
 }
