@@ -19,6 +19,7 @@ import {MapService} from './map/interfaces/map.service';
 import {httpInterceptorProviders} from './shared/interceptors';
 import {KTZHNewsMockService} from './shared/services/apis/ktzh/ktzhnews-mock.service';
 import {NewsService} from './shared/interfaces/news-service.interface';
+import {AuthModule} from './auth/auth.module';
 
 export const MAP_SERVICE = new InjectionToken<MapService>('MapService');
 export const NEWS_SERVICE = new InjectionToken<NewsService>('NewsService');
@@ -34,7 +35,8 @@ export const NEWS_SERVICE = new InjectionToken<NewsService>('NewsService');
     StoreModule.forRoot(reducers, {
       metaReducers
     }),
-    EffectsModule.forRoot([ActiveMapItemEffects, FeatureInfoEffects, LayerCatalogEffects, LegendEffects, MapConfigEffects])
+    EffectsModule.forRoot([ActiveMapItemEffects, FeatureInfoEffects, LayerCatalogEffects, LegendEffects, MapConfigEffects]),
+    AuthModule
   ],
   providers: [
     {provide: MAP_SERVICE, useClass: EsriMapService},

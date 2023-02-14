@@ -12,4 +12,6 @@
     <mat-icon>launch</mat-icon>
     <p>Geodatenshop</p>
   </a>
+  <a mat-button class="navbar__item" (click)="this.startLogin()" *ngIf="!this.isAuthenticated">Login</a>
+  <a mat-button class="navbar__item" (click)="this.logout()" *ngIf="this.isAuthenticated">Logout</a>
 </mat-toolbar>

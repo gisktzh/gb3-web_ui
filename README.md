@@ -37,3 +37,12 @@ In order to build the docker image, the `GB2_API_USER_TOKEN` is required and has
 ```
 docker build -t gb3-frontend:latest --build-arg GB2_API_USER_TOKEN=this_is_the_token .
 ```
+
+## Using local GB2 setup
+
+If you're using a local GB2 setup (e.g. via docker), you can use this backend by running `ng serve --configuration=development-local-gb2` (or `npm run start-local-gb2` shorthand). This assumes that
+
+- GB2 runs on localhost, port 3000, exposing **all** services from GB2 (wms, tokens, etc.)
+- GB2 is accessible from your host
+
+If using this, angular will proxy all requests to the GB2 via localhost, so you have to set all links to be relative (e.g. `/wms/asd` will become `http://localhost:4200/wms/asd`, and then proxied to `http://localhost:3000/wms/asd`).

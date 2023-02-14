@@ -11,6 +11,11 @@ export const environment = {
     gb3Api: 'https://maps.zh.ch',
     geoLion: 'https://www.geolion.zh.ch',
     ktzhWebsite: 'https://www.zh.ch'
+  },
+  auth: {
+    issuer: 'https://maps.zh.ch/',
+    clientId: 'gb3',
+    authenticatedPingInterval: 5000
   }
 };
 

@@ -1,0 +1,30 @@
+{
+  "/v3": {
+    "target": "http://localhost:3000",
+    "secure": false
+  },
+  "/wms": {
+    "target": "http://localhost:3000",
+    "secure": false
+  },
+  "/packs": {
+    "target": "http://localhost:3000",
+    "secure": false
+  },
+  "/mini-profiler-resources": {
+    "target": "http://localhost:3000",
+    "secure": false
+  },
+  "/assets": {
+    "target": "http://localhost:3000",
+    "secure": false
+  },
+  "/.well-known": {
+    "target": "http://localhost:3000",
+    "secure": false
+  },
+  "/img": {
+    "target": "http://localhost:3000",
+    "secure": false
+  }
+}
