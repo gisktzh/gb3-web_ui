@@ -17,12 +17,14 @@ import {PrintDispatcherComponent} from './components/print-overlay/print-dispatc
 import {ScaleInputComponent} from './components/map/scale-input/scale-input.component';
 import {MapControlsComponent} from './components/map/map-controls/map-controls.component';
 import {BasemapSelectorComponent} from './components/map/basemap-selector/basemap-selector.component';
+import {ActiveMapItemComponent} from './components/active-map-items-widget/active-map-item/active-map-item.component';
 
 @NgModule({
   declarations: [
     MapPageComponent,
     MapComponent,
     ActiveMapItemsWidgetComponent,
+    ActiveMapItemComponent,
     LegendWidgetComponent,
     LegendItemComponent,
     FeatureInfoComponent,

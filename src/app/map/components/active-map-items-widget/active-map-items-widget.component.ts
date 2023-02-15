@@ -6,7 +6,6 @@ import {selectActiveMapItems} from '../../../state/map/reducers/active-map-item.
 import {Subscription} from 'rxjs';
 import {ActiveMapItem} from '../../models/active-map-item.model';
 import {LegendActions} from '../../../state/map/actions/legend.actions';
-import {MapLayer} from '../../../shared/interfaces/topic.interface';
 import {slideInOutAnimation} from '../../../shared/animations/slideInOut.animation';
 
 @Component({
@@ -43,24 +42,10 @@ export class ActiveMapItemsWidgetComponent implements OnInit, OnDestroy {
     return item.id;
   }
 
-  public trackByLayerId(index: number, item: MapLayer) {
-    return item.id;
-  }
-
   public dropMapItem($event: CdkDragDrop<CdkDrag>) {
     this.store.dispatch(
       ActiveMapItemActions.reorderActiveMapItem({previousPosition: $event.previousIndex, currentPosition: $event.currentIndex})
     );
-  }
-
-  public dropSublayer($event: CdkDragDrop<CdkDrag>, activeMapItem: ActiveMapItem) {
-    this.store.dispatch(
-      ActiveMapItemActions.reorderSublayer({activeMapItem, previousPosition: $event.previousIndex, currentPosition: $event.currentIndex})
-    );
-  }
-
-  public onOpacitySliderChange(opacity: number, activeMapItem: ActiveMapItem) {
-    this.store.dispatch(ActiveMapItemActions.setOpacity({opacity, activeMapItem}));
   }
 
   public removeActiveMapItem(activeMapItem: ActiveMapItem) {
@@ -73,13 +58,6 @@ export class ActiveMapItemsWidgetComponent implements OnInit, OnDestroy {
 
   public toggleMapItemVisibility(activeMapItem: ActiveMapItem) {
     this.store.dispatch(ActiveMapItemActions.setVisibility({visible: !activeMapItem.visible, activeMapItem}));
-  }
-
-  public toggleSublayerVisibility(activeMapItem: ActiveMapItem, layerId: number) {
-    const sublayer = activeMapItem.layers.find((l) => l.id === layerId);
-    if (sublayer) {
-      this.store.dispatch(ActiveMapItemActions.setSublayerVisibility({visible: !sublayer.visible, activeMapItem, layerId}));
-    }
   }
 
   public toggleLegend() {
