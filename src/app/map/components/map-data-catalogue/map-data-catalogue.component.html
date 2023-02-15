@@ -1,6 +1,8 @@
 <mat-card appearance="outlined" class="map-catalogue-widget">
   <mat-card-header class="map-catalogue__header">
-    <p>Verfügbare Karten nach Topic</p>
+    <div class="map-catalogue__header__title">
+      <mat-card-title>Verfügbare Karten nach Topic</mat-card-title>
+    </div>
   </mat-card-header>
   <mat-progress-bar mode="query" *ngIf="this.loadingState === 'loading'"></mat-progress-bar>
   <mat-accordion *ngIf="this.loadingState === 'loaded'" class="map-catalogue__content" multi="true" displayMode="flat">
@@ -14,7 +16,7 @@
           <ng-container *ngFor="let map of topic.maps">
             <mat-expansion-panel hideToggle="true" #mapExpansionPanel>
               <mat-expansion-panel-header (click)="mapExpansionPanel.toggle()" class="map__header">
-                <p class="single-line-text last-left-aligned-element" matTooltip="{{ map.title }}">{{ map.title }}</p>
+                <p class="map__header__title" matTooltip="{{ map.title }}">{{ map.title }}</p>
                 <button mat-icon-button (click)="addActiveMap(map)"><mat-icon>playlist_add</mat-icon></button>
                 <button mat-icon-button *ngIf="!mapExpansionPanel.expanded" (click)="mapExpansionPanel.open()">
                   <mat-icon>chevron_right</mat-icon>
@@ -26,9 +28,9 @@
               <!-- Expansion panel content -->
               <ng-template matExpansionPanelContent>
                 <ng-container *ngFor="let layer of map.layers">
-                  <div class="horizontal-stacked">
-                    <mat-icon class="layer-icon">layers</mat-icon>
-                    <p class="layer-text single-line-text last-left-aligned-element" matTooltip="{{ layer.title }}">{{ layer.title }}</p>
+                  <div class="layer">
+                    <mat-icon class="layer__icon">layers</mat-icon>
+                    <p class="layer__title" matTooltip="{{ layer.title }}">{{ layer.title }}</p>
                     <button mat-icon-button (click)="addActiveLayer(map, layer)"><mat-icon>playlist_add</mat-icon></button>
                   </div>
                 </ng-container>

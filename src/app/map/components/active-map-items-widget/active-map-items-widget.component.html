@@ -22,8 +22,8 @@
     </button>
   </mat-card-header>
   <mat-accordion class="active-map-items__content" multi="true" displayMode="flat" cdkDropList (cdkDropListDropped)="dropMapItem($event)">
-    <div *ngFor="let activeMapItem of activeMapItems; trackBy: trackByMapItemId" [@slideInOut]>
-      <mat-expansion-panel cdkDrag hideToggle="true" #activeMapItemExpansionPanel>
+    <ng-container *ngFor="let activeMapItem of activeMapItems; trackBy: trackByMapItemId">
+      <mat-expansion-panel cdkDrag hideToggle="true" #activeMapItemExpansionPanel [@slideInOut]>
         <mat-expansion-panel-header (click)="activeMapItemExpansionPanel.toggle()" class="active-map-item">
           <div class="active-map-item__container">
             <mat-icon class="active-map-item__drag-handle" cdkDragHandle>drag_indicator</mat-icon>
@@ -82,6 +82,6 @@
           <active-map-item [activeMapItem]="activeMapItem"></active-map-item>
         </ng-template>
       </mat-expansion-panel>
-    </div>
+    </ng-container>
   </mat-accordion>
 </mat-card>
