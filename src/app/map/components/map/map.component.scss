@@ -4,7 +4,7 @@
 
   .main-map__scale-input {
     position: absolute;
-    bottom: 25px;
+    bottom: 30px;
     right: 95px;
   }
 
@@ -16,15 +16,14 @@
 
   .main-map__basemap-selector {
     position: absolute;
-    bottom: 50px;
-    left: 450px;
+    bottom: 98px;
+    right: 95px;
   }
 
   #scale-bar-container {
     position: absolute;
-    bottom: 25px;
-    left: 25px;
-    background-color: white;
+    bottom: 30px;
+    right: 300px;
     padding: 5px;
   }
 }

@@ -1,7 +1,7 @@
 .map-container {
   height: 100%;
 
-  .map-items-container {
+  .map-container__all-map-items-container {
     position: absolute;
     display: flex;
     flex-direction: column;
@@ -10,18 +10,17 @@
     left: 15px;
     width: 450px;
     overflow-y: hidden;
-  }
 
-  .active-map-items {
-    display: flex;
-    max-height: 50%;
-    padding-bottom: 4px;
-  }
+    .all-map-items-container__active-map-items-widget {
+      display: flex;
+      max-height: 50%;
+      padding-bottom: 15px;
+    }
 
-  .map-catalogue {
-    display: flex;
-    min-height: 50%;
-    padding-top: 4px;
+    .all-map-items-container__map-data-catalogue {
+      display: flex;
+      min-height: 50%;
+    }
   }
 }
 

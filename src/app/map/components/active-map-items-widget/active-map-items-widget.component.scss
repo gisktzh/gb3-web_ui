@@ -5,6 +5,7 @@
 .active-map-items-widget {
   width: 100%;
   padding: 0;
+  border: none;
 
   .active-map-items__header {
     background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);

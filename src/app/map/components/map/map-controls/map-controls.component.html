@@ -1,11 +1,11 @@
 <div class="map-controls">
-  <button (click)="this.handleZoom('zoomIn')" color="primary" mat-icon-button [disabled]="this.isMaxZoomedIn">
+  <button mat-icon-button (click)="this.goToInitialExtent()" color="accent" class="map-controls__button">
+    <mat-icon>home</mat-icon>
+  </button>
+  <button mat-icon-button (click)="this.handleZoom('zoomIn')" color="accent" [disabled]="this.isMaxZoomedIn" class="map-controls__button">
     <mat-icon>add</mat-icon>
   </button>
-  <button (click)="this.handleZoom('zoomOut')" color="primary" mat-icon-button [disabled]="this.isMaxZoomedOut">
+  <button mat-icon-button (click)="this.handleZoom('zoomOut')" color="accent" [disabled]="this.isMaxZoomedOut" class="map-controls__button">
     <mat-icon>remove</mat-icon>
-  </button>
-  <button (click)="this.goToInitialExtent()" color="primary" mat-icon-button>
-    <mat-icon>home</mat-icon>
   </button>
 </div>

@@ -1,5 +1,16 @@
 .map-controls {
   display: grid;
-  background-color: white;
   padding: 5px;
+
+  ::ng-deep {
+    .mat-mdc-icon-button .mat-mdc-button-persistent-ripple {
+      border-radius: 0;
+    }
+  }
+
+  .map-controls__button {
+    background-color: white;
+    margin-top: 2px;
+    border-radius: 0;
+  }
 }

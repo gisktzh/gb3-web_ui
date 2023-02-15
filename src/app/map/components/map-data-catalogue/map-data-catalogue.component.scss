@@ -5,6 +5,7 @@
 .map-catalogue-widget {
   width: 100%;
   padding: 0;
+  border: none;
 
   .map-catalogue__header {
     background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
