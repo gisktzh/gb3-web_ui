@@ -58,24 +58,12 @@
                 <button mat-menu-item>Option 2</button>
               </mat-menu>
             </div>
-            <mat-progress-bar
-              *ngIf="activeMapItem.loadingState === 'loading'"
-              class="active-map-item-updating-progress"
-              mode="query"
-            ></mat-progress-bar>
-            <mat-progress-bar
-              *ngIf="activeMapItem.loadingState === 'error'"
-              class="active-map-item-updating-progress"
-              color="warn"
-              mode="determinate"
-              value="100"
-            ></mat-progress-bar>
-            <mat-progress-bar
-              *ngIf="activeMapItem.loadingState === 'loaded' && activeMapItem.viewProcessState === 'updating'"
-              class="active-map-item-updating-progress"
-              mode="buffer"
-            ></mat-progress-bar>
           </div>
+          <loading-and-process-bar
+            [loadingState]="activeMapItem.loadingState"
+            [viewProcessState]="activeMapItem.viewProcessState"
+            class="active-map-item__progress-bar"
+          ></loading-and-process-bar>
         </mat-expansion-panel-header>
         <!-- Expansion panel content -->
         <ng-template matExpansionPanelContent>

@@ -26,12 +26,6 @@
   .active-map-items__content {
     overflow-y: scroll;
 
-    .active-map-item-updating-progress {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-    }
-
     .active-map-item {
       padding-left: 12px;
       padding-right: 12px;
@@ -77,6 +71,13 @@
             right: 0;
           }
         }
+      }
+
+      .active-map-item__progress-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
       }
     }
 

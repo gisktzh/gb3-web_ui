@@ -4,7 +4,7 @@
       <mat-card-title>Verfügbare Karten nach Topic</mat-card-title>
     </div>
   </mat-card-header>
-  <mat-progress-bar mode="query" *ngIf="this.loadingState === 'loading'"></mat-progress-bar>
+  <loading-and-process-bar [loadingState]="this.loadingState"></loading-and-process-bar>
   <mat-accordion *ngIf="this.loadingState === 'loaded'" class="map-catalogue__content" multi="true" displayMode="flat">
     <ng-container *ngFor="let topic of topics">
       <mat-expansion-panel>
