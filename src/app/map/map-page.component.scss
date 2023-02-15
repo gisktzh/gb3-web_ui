@@ -1,22 +1,27 @@
 .map-container {
   height: 100%;
 
-  .map-catalogue {
+  .map-items-container {
     position: absolute;
+    display: flex;
+    flex-direction: column;
     top: 80px;
+    bottom: 25px;
     left: 15px;
-    width: 400px;
-    height: 70%;
-    overflow-y: scroll;
+    width: 450px;
+    overflow-y: hidden;
   }
 
   .active-map-items {
-    position: absolute;
-    top: 80px;
-    left: 430px;
-    width: 400px;
-    max-height: 70%;
-    overflow-y: scroll;
+    display: flex;
+    max-height: 50%;
+    padding-bottom: 4px;
+  }
+
+  .map-catalogue {
+    display: flex;
+    min-height: 50%;
+    padding-top: 4px;
   }
 }
 

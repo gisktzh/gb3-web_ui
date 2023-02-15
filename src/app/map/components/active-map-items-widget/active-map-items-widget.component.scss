@@ -2,118 +2,8 @@
 @import 'variables/ktzh-design-variables';
 
 .active-layer-widget {
-  min-width: 350px;
+  width: 100%;
   padding: 0;
-
-  .active-layer__header {
-    background-color: helper.get-color-from-palette($zh-light-primary);
-    color: helper.get-contrast-color-from-palette($zh-light-primary);
-    font-family: $zh-font-family;
-  }
-
-  .mat-mdc-button {
-    min-width: 24px;
-    padding: 0 8px;
-  }
-
-  .clear-active-map-items-button {
-    height: 48px;
-  }
-
-  .active-map-item-updating-progress {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-  }
-
-  .expansion-panel-header:hover {
-    .active-map-item__drag-handle {
-      visibility: visible;
-    }
-
-    .active-map-item-image {
-      opacity: 0.3;
-    }
-
-    .active-map-item-visibility-image {
-      display: inline-block;
-    }
-
-    .active-map-item-menu .active-map-item-menu-handle {
-      visibility: visible;
-    }
-  }
-
-  .sublayer:hover {
-    .active-map-item-image {
-      visibility: hidden;
-    }
-
-    .active-map-item-visibility-image {
-      display: inline-block;
-    }
-
-    .sublayer__drag-handle {
-      visibility: visible;
-    }
-  }
-
-  .active-map-item__drag-handle {
-    visibility: hidden;
-    margin-top: 8px;
-    min-width: 24px;
-  }
-
-  .active-map-item-image-box {
-    position: relative;
-    float: left;
-
-    .active-map-item-visibility-image {
-      position: absolute;
-      left: 0;
-      top: 0;
-      display: none;
-    }
-  }
-
-  .last-left-aligned-element {
-    margin-right: auto;
-  }
-
-  .active-map-item-menu {
-    .active-map-item-menu-handle {
-      margin-top: 8px;
-      visibility: hidden;
-    }
-
-    .mat-mdc-button {
-      .mat-mdc-menu-trigger {
-        position: absolute;
-        top: 0;
-        right: 0;
-      }
-    }
-  }
-
-  .sublayer {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin-left: 56px;
-    padding: 0 8px;
-  }
-
-  .sublayer__drag-handle {
-    visibility: hidden;
-    margin-top: 8px;
-    min-width: 24px;
-  }
-
-  .active-map-item-settings {
-    .active-map-item-settings__title {
-      margin: 0;
-    }
-  }
 
   .no-shadow {
     box-shadow: none;
@@ -124,5 +14,119 @@
     overflow: hidden;
     text-overflow: ellipsis;
     width: 100%;
+  }
+
+  .last-left-aligned-element {
+    margin-right: auto;
+  }
+
+  .active-layer__header {
+    background-color: helper.get-color-from-palette($zh-light-primary);
+    color: helper.get-contrast-color-from-palette($zh-light-primary);
+    font-family: $zh-font-family;
+
+    .mat-mdc-button {
+      min-width: 24px;
+      padding: 0 8px;
+    }
+
+    .clear-active-map-items-button {
+      height: 48px;
+    }
+
+    .active-map-item-updating-progress {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+    }
+  }
+
+  .active-layer__content {
+    overflow-y: scroll;
+
+    .expansion-panel-header:hover {
+      .active-map-item__drag-handle {
+        visibility: visible;
+      }
+
+      .active-map-item-image {
+        opacity: 0.3;
+      }
+
+      .active-map-item-visibility-image {
+        display: inline-block;
+      }
+
+      .active-map-item-menu .active-map-item-menu-handle {
+        visibility: visible;
+      }
+    }
+
+    .sublayer:hover {
+      .active-map-item-image {
+        visibility: hidden;
+      }
+
+      .active-map-item-visibility-image {
+        display: inline-block;
+      }
+
+      .sublayer__drag-handle {
+        visibility: visible;
+      }
+    }
+
+    .active-map-item__drag-handle {
+      visibility: hidden;
+      margin-top: 8px;
+      min-width: 24px;
+    }
+
+    .active-map-item-image-box {
+      position: relative;
+      float: left;
+
+      .active-map-item-visibility-image {
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: none;
+      }
+    }
+
+    .active-map-item-menu {
+      .active-map-item-menu-handle {
+        margin-top: 8px;
+        visibility: hidden;
+      }
+
+      .mat-mdc-button {
+        .mat-mdc-menu-trigger {
+          position: absolute;
+          top: 0;
+          right: 0;
+        }
+      }
+    }
+
+    .sublayer {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin-left: 56px;
+      padding: 0 8px;
+    }
+
+    .sublayer__drag-handle {
+      visibility: hidden;
+      margin-top: 8px;
+      min-width: 24px;
+    }
+
+    .active-map-item-settings {
+      .active-map-item-settings__title {
+        margin: 0;
+      }
+    }
   }
 }

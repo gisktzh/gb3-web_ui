@@ -14,7 +14,7 @@
       Legende
     </button>
   </mat-card-header>
-  <mat-accordion multi="true" displayMode="flat" cdkDropList (cdkDropListDropped)="dropMapItem($event)">
+  <mat-accordion class="active-layer__content" multi="true" displayMode="flat" cdkDropList (cdkDropListDropped)="dropMapItem($event)">
     <div *ngFor="let activeMapItem of activeMapItems; trackBy: trackByMapItemId" [@slideInOut]>
       <mat-expansion-panel cdkDrag hideToggle="true" #activeMapItemExpansionPanel>
         <mat-expansion-panel-header (click)="activeMapItemExpansionPanel.toggle()" class="expansion-panel-header">

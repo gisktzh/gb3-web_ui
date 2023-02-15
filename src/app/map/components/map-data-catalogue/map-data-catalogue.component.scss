@@ -2,6 +2,7 @@
 @import 'variables/ktzh-design-variables';
 
 .map-catalogue-widget {
+  width: 100%;
   padding: 0;
 
   .map-catalogue__header {
@@ -11,6 +12,8 @@
   }
 
   .map-catalogue__content {
+    overflow-y: scroll;
+
     .horizontal-stacked {
       display: flex;
       flex-direction: row;
