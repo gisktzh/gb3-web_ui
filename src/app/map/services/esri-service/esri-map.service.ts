@@ -30,8 +30,10 @@ import {BasemapConfigService} from '../basemap-config.service';
 import {ConfigService} from '../../../shared/services/config.service';
 import {selectActiveMapItems} from '../../../state/map/reducers/active-map-item.reducer';
 import esriConfig from '@arcgis/core/config';
-import OverrideWmsUrlInterceptor from './interceptors/override-wms-url.interceptor';
+import wmsAuthAndUrlOverrideInterceptorFactory from './interceptors/override-wms-url.interceptor';
 import {environment} from '../../../../environments/environment';
+import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.reducer';
+import {AuthService} from '../../../auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -64,13 +66,15 @@ export class EsriMapService implements MapService {
   private _mapView!: __esri.MapView;
   private readonly subscriptions: Subscription = new Subscription();
   private readonly activeBasemapId$ = this.store.select(selectActiveBasemapId);
+  private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
 
   constructor(
     private readonly store: Store,
     private readonly transformationService: TransformationService,
     private readonly geoJSONMapperService: GeoJSONMapperService,
     private readonly basemapConfigService: BasemapConfigService,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
+    private readonly authService: AuthService
   ) {
     /**
      * Because the GetCapabalities response often sends a non-secure http://wms.zh.ch response, Esri Javascript API fails on https environments
@@ -241,9 +245,17 @@ export class EsriMapService implements MapService {
    * @private
    */
   private initializeInterceptors() {
-    if (environment.baseUrls.overrideWmsUrl) {
-      esriConfig.request.interceptors?.push(OverrideWmsUrlInterceptor);
-    }
+    this.subscriptions.add(
+      this.isAuthenticated$
+        .pipe(
+          tap((_) => {
+            const newInterceptor = this.getWmsOverrideInterceptor(this.authService.getAccessToken());
+            esriConfig.request.interceptors = []; // todo: pop existing as soon as we add more interceptors
+            esriConfig.request.interceptors.push(newInterceptor);
+          })
+        )
+        .subscribe()
+    );
   }
 
   private addBasemapSubscription() {
@@ -418,5 +430,10 @@ export class EsriMapService implements MapService {
     this.mapView.map.basemap.baseLayers.map((baseLayer) => {
       baseLayer.visible = basemapId === baseLayer.id;
     });
+  }
+
+  private getWmsOverrideInterceptor(accessToken?: string): __esri.RequestInterceptor {
+    const wmsOverrideUrl = environment.baseUrls.overrideWmsUrl;
+    return wmsAuthAndUrlOverrideInterceptorFactory(wmsOverrideUrl, accessToken);
   }
 }

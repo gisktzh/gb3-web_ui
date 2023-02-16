@@ -41,11 +41,29 @@ const changeWmsUrlInCapabilitiesCallback: AfterInterceptorCallback = (response: 
 };
 
 /**
- * Interceptor that is attached to the gb3Api url and changes GetCapabilities requests hardcoded URLs to an override url, if existing.
+ * This factory returns an interceptor that
+ * * adds an access token to all requests as needed
+ * * adds an override function if needed
+ *
+ * @param hasWmsOverride
+ * @param accessToken
  */
-const OverrideWmsUrlInterceptor: RequestInterceptor = {
-  urls: [environment.baseUrls.gb3Api],
-  after: changeWmsUrlInCapabilitiesCallback
+const wmsAuthAndUrlOverrideInterceptorFactory = (hasWmsOverride?: string, accessToken?: string): __esri.RequestInterceptor => {
+  const baseInterceptor: RequestInterceptor = {
+    headers: {},
+    urls: [environment.baseUrls.gb3Api],
+    after: changeWmsUrlInCapabilitiesCallback
+  };
+
+  if (!hasWmsOverride) {
+    delete baseInterceptor.after;
+  }
+
+  if (accessToken) {
+    baseInterceptor.headers.Authorization = `Bearer ${accessToken}`;
+  }
+
+  return baseInterceptor;
 };
 
-export default OverrideWmsUrlInterceptor;
+export default wmsAuthAndUrlOverrideInterceptorFactory;

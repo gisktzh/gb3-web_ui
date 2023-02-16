@@ -2,7 +2,8 @@ import {Injectable} from '@angular/core';
 import {OAuthErrorEvent, OAuthService} from 'angular-oauth2-oidc';
 import {BehaviorSubject, distinctUntilChanged, interval, tap} from 'rxjs';
 import {environment} from '../../environments/environment';
-import esriConfig from '@arcgis/core/config';
+import {Store} from '@ngrx/store';
+import {AuthStatusActions} from '../state/auth/actions/auth-status.actions';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class AuthService {
   private readonly isAuthenticatedSubject$ = new BehaviorSubject<boolean>(false);
   public readonly isAuthenticated$ = this.isAuthenticatedSubject$.asObservable();
 
-  constructor(private readonly oauthService: OAuthService) {
+  constructor(private readonly oauthService: OAuthService, private readonly store: Store) {
     this.oauthService.events.subscribe((event) => {
       this.isAuthenticatedSubject$.next(this.oauthService.hasValidAccessToken());
 
@@ -34,6 +35,10 @@ export class AuthService {
 
   public logout() {
     this.isAuthenticatedSubject$.next(false);
+  }
+
+  public getAccessToken(): string {
+    return this.oauthService.getAccessToken();
   }
 
   /**
@@ -64,14 +69,7 @@ export class AuthService {
           if (!isAuthenticated) {
             this.oauthService.logOut();
           }
-          // todo: update, do this in a clean way.
-          // todo: can esri ignore the urls in the getcapabilities?
-          esriConfig.request.interceptors?.push({
-            urls: ['http://localhost:4200/wms'],
-            headers: {
-              Authorization: `Bearer ${this.oauthService.getAccessToken()}`
-            }
-          });
+          this.store.dispatch(AuthStatusActions.setStatus({isAuthenticated}));
         })
       )
       .subscribe();
