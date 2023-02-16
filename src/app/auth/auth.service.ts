@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {OAuthErrorEvent, OAuthService} from 'angular-oauth2-oidc';
 import {BehaviorSubject, distinctUntilChanged, interval, tap} from 'rxjs';
 import {environment} from '../../environments/environment';
+import esriConfig from '@arcgis/core/config';
 
 @Injectable({
   providedIn: 'root'
@@ -49,7 +50,6 @@ export class AuthService {
     interval(environment.auth.authenticatedPingInterval)
       .pipe(
         tap((_) => {
-          console.log(`in ping, ${this.oauthService.hasValidAccessToken()}`);
           this.isAuthenticatedSubject$.next(this.oauthService.hasValidAccessToken());
         })
       )
@@ -61,11 +61,17 @@ export class AuthService {
       .pipe(
         distinctUntilChanged(),
         tap((isAuthenticated) => {
-          console.log('in logout handler');
           if (!isAuthenticated) {
-            console.log('trigger logout');
             this.oauthService.logOut();
           }
+          // todo: update, do this in a clean way.
+          // todo: can esri ignore the urls in the getcapabilities?
+          esriConfig.request.interceptors?.push({
+            urls: ['http://localhost:4200/wms'],
+            headers: {
+              Authorization: `Bearer ${this.oauthService.getAccessToken()}`
+            }
+          });
         })
       )
       .subscribe();
