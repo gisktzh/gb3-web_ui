@@ -3,8 +3,9 @@
 // The list of file replacements can be found in `angular.json`.
 
 import {apiKey} from './environment.local';
+import {EnvironmentConfig} from './environment-config.interface';
 
-export const environment = {
+export const environment: EnvironmentConfig = {
   production: false,
   apiKey: apiKey,
   baseUrls: {

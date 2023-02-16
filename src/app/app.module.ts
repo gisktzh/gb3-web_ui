@@ -14,7 +14,7 @@ import {FeatureInfoEffects} from './state/map/effects/feature-info.effects';
 import {LegendEffects} from './state/map/effects/legend.effects';
 import {LayerCatalogEffects} from './state/map/effects/layer-catalog.effects';
 import {MapConfigEffects} from './state/map/effects/map-config-effects.service';
-import {EsriMapService} from './map/services/esri-map.service';
+import {EsriMapService} from './map/services/esri-service/esri-map.service';
 import {MapService} from './map/interfaces/map.service';
 import {httpInterceptorProviders} from './shared/interceptors';
 import {KTZHNewsMockService} from './shared/services/apis/ktzh/ktzhnews-mock.service';

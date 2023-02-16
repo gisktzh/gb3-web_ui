@@ -1,34 +1,37 @@
 import {Injectable} from '@angular/core';
-import {EsriLoadStatus, EsriMap, EsriMapView, EsriPoint, EsriWMSLayer} from '../../shared/external/esri.module';
+import {EsriLoadStatus, EsriMap, EsriMapView, EsriPoint, EsriWMSLayer} from '../../../shared/external/esri.module';
 import {Store} from '@ngrx/store';
-import {MapConfigActions} from '../../state/map/actions/map-config.actions';
-import {TransformationService} from './transformation.service';
+import {MapConfigActions} from '../../../state/map/actions/map-config.actions';
+import {TransformationService} from '../transformation.service';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
-import {MapConfigState, selectActiveBasemapId, selectMapConfigState} from '../../state/map/reducers/map-config.reducer';
+import {MapConfigState, selectActiveBasemapId, selectMapConfigState} from '../../../state/map/reducers/map-config.reducer';
 import {first, skip, Subscription, tap, withLatestFrom} from 'rxjs';
 import SpatialReference from '@arcgis/core/geometry/SpatialReference';
-import {FeatureInfoActions} from '../../state/map/actions/feature-info.actions';
+import {FeatureInfoActions} from '../../../state/map/actions/feature-info.actions';
 import Graphic from '@arcgis/core/Graphic';
 import {Geometry as GeoJsonGeometry} from 'geojson';
 import Color from '@arcgis/core/Color';
 import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
-import {GeoJSONMapperService} from '../../shared/services/geo-json-mapper.service';
+import {GeoJSONMapperService} from '../../../shared/services/geo-json-mapper.service';
 import {DefaultHighlightStyles} from 'src/app/shared/configs/feature-info-config';
-import {MapService} from '../interfaces/map.service';
-import {ActiveMapItem} from '../models/active-map-item.model';
-import {ActiveMapItemActions} from '../../state/map/actions/active-map-item.actions';
-import {LoadingState} from '../../shared/types/loading-state';
+import {MapService} from '../../interfaces/map.service';
+import {ActiveMapItem} from '../../models/active-map-item.model';
+import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
+import {LoadingState} from '../../../shared/types/loading-state';
 import WMSLayer from '@arcgis/core/layers/WMSLayer';
 import ScaleBar from '@arcgis/core/widgets/ScaleBar';
-import {ViewProcessState} from '../../shared/types/view-process-state';
-import {ZoomType} from '../../shared/types/zoom-type';
+import {ViewProcessState} from '../../../shared/types/view-process-state';
+import {ZoomType} from '../../../shared/types/zoom-type';
 import Basemap from '@arcgis/core/Basemap';
 import TileInfo from '@arcgis/core/layers/support/TileInfo';
-import {BasemapConfigService} from './basemap-config.service';
-import {ConfigService} from '../../shared/services/config.service';
-import {selectActiveMapItems} from '../../state/map/reducers/active-map-item.reducer';
+import {BasemapConfigService} from '../basemap-config.service';
+import {ConfigService} from '../../../shared/services/config.service';
+import {selectActiveMapItems} from '../../../state/map/reducers/active-map-item.reducer';
+import esriConfig from '@arcgis/core/config';
+import OverrideWmsUrlInterceptor from './interceptors/override-wms-url.interceptor';
+import {environment} from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -68,7 +71,16 @@ export class EsriMapService implements MapService {
     private readonly geoJSONMapperService: GeoJSONMapperService,
     private readonly basemapConfigService: BasemapConfigService,
     private readonly configService: ConfigService
-  ) {}
+  ) {
+    /**
+     * Because the GetCapabalities response often sends a non-secure http://wms.zh.ch response, Esri Javascript API fails on https environments
+     * to attach the token above if the urls is set to http://wms.zh.ch; because it automatically upgrades insecure links to https to avoid
+     * mixed-content. This configuration forces the WMS to be upgraded to https.
+     */
+    esriConfig.request.httpsDomains?.push('wms.zh.ch');
+
+    this.initializeInterceptors();
+  }
 
   private get mapView(): __esri.MapView {
     return this._mapView;
@@ -221,6 +233,16 @@ export class EsriMapService implements MapService {
     if (esriLayer && esriLayer instanceof WMSLayer) {
       // the index of sublayers is identical to their position (in contrast to the map items) where the lowest index/position has the highest visibility
       esriLayer.sublayers.reorder(esriLayer.sublayers.getItemAt(previousPosition), currentPosition);
+    }
+  }
+
+  /**
+   * We need several interceptors to trick ESRI Javascript API into working with the intricacies of the ZH GB2 configurations.
+   * @private
+   */
+  private initializeInterceptors() {
+    if (environment.baseUrls.overrideWmsUrl) {
+      esriConfig.request.interceptors?.push(OverrideWmsUrlInterceptor);
     }
   }
 

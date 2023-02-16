@@ -7,13 +7,15 @@
  */
 
 import {apiKey} from './environment.local';
+import {EnvironmentConfig} from './environment-config.interface';
 
-export const environment = {
+export const environment: EnvironmentConfig = {
   production: false,
   apiKey: apiKey,
   baseUrls: {
     gb3Api: 'http://localhost:4200',
-    geoLion: 'https://www.geolion.zh.ch'
+    geoLion: 'https://www.geolion.zh.ch',
+    overrideWmsUrl: 'http://localhost:4200/wms'
   },
   auth: {
     issuer: 'http://localhost:4200/',

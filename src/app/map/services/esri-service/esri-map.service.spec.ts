@@ -2,9 +2,9 @@ import {TestBed} from '@angular/core/testing';
 
 import {EsriMapService} from './esri-map.service';
 import {provideMockStore} from '@ngrx/store/testing';
-import {ActiveMapItem} from '../models/active-map-item.model';
-import {Map, MapLayer} from '../../shared/interfaces/topic.interface';
-import {EsriMapMock} from '../../testing/map-testing/esri-map.mock';
+import {ActiveMapItem} from '../../models/active-map-item.model';
+import {Map, MapLayer} from '../../../shared/interfaces/topic.interface';
+import {EsriMapMock} from '../../../testing/map-testing/esri-map.mock';
 
 function createActiveMapItemMock(id: string, numberOfLayers = 0): {id: string; activeMapItem: ActiveMapItem} {
   const mapMock = {id: id, title: id, layers: []} as Partial<Map>;
