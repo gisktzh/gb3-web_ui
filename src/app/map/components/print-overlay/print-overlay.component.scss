@@ -1,5 +1,7 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
 .print-overlay {
-  background-color: white;
+  background-color: ktzh-variables.$zh-white;
   position: absolute;
   top: 0;
   left: 0;

@@ -5,7 +5,7 @@
   flex-direction: row;
   align-items: center;
   font-family: ktzh-variables.$zh-font-family;
-  background-color: white;
+  background-color: ktzh-variables.$zh-white;
   padding: 5px;
 
   .scale-input__title {
@@ -16,8 +16,8 @@
   .scale-input__wrapper {
     display: flex;
     align-items: center;
-    background: white;
-    border: 1px solid #a0a0a0;
+    background: ktzh-variables.$zh-white;
+    border: 1px solid ktzh-variables.$zh-black60;
     padding-left: 0.5rem;
     overflow: hidden;
     font-size: 14px;
@@ -25,7 +25,7 @@
 
     .scale-input__input {
       flex-grow: 1;
-      background: white;
+      background: ktzh-variables.$zh-white;
       border: none;
       outline: none;
       padding: 0.5rem 0;

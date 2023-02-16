@@ -1,3 +1,5 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
 .map-controls {
   display: grid;
   padding: 5px;
@@ -9,7 +11,7 @@
   }
 
   .map-controls__button {
-    background-color: white;
+    background-color: ktzh-variables.$zh-white;
     margin-top: 2px;
     border-radius: 0;
   }
