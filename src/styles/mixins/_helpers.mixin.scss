@@ -4,3 +4,13 @@
   -ms-user-select: none;
   user-select: none;
 }
+
+@mixin single-line-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@mixin no-box-shadow {
+  box-shadow: none;
+}

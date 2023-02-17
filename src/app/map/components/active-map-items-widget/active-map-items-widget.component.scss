@@ -1,128 +1,105 @@
-@use 'functions/helper.function' as helper;
-@import 'variables/ktzh-design-variables';
+@use 'functions/helper.function' as functions;
+@use 'mixins/helpers.mixin' as mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
 
-.active-layer-widget {
-  min-width: 350px;
+.active-map-items-widget {
+  width: 100%;
   padding: 0;
+  border: none;
 
-  .active-layer__header {
-    background-color: helper.get-color-from-palette($zh-light-primary);
-    color: helper.get-contrast-color-from-palette($zh-light-primary);
-    font-family: $zh-font-family;
-  }
+  .active-map-items__header {
+    background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
+    color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+    font-family: ktzh-variables.$zh-font-family;
+    padding: 8px 16px 8px 16px;
+    height: 36px;
 
-  .mat-mdc-button {
-    min-width: 24px;
-    padding: 0 8px;
-  }
-
-  .clear-active-map-items-button {
-    height: 48px;
-  }
-
-  .active-map-item-updating-progress {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-  }
-
-  .expansion-panel-header:hover {
-    .active-map-item__drag-handle {
-      visibility: visible;
+    .active-map-items__header__title {
+      margin-right: auto;
+      align-self: center;
     }
 
-    .active-map-item-image {
-      opacity: 0.3;
-    }
-
-    .active-map-item-visibility-image {
-      display: inline-block;
-    }
-
-    .active-map-item-menu .active-map-item-menu-handle {
-      visibility: visible;
+    .active-map-items__header__buttons {
+      margin-left: 8px;
     }
   }
 
-  .sublayer:hover {
-    .active-map-item-image {
-      visibility: hidden;
-    }
+  .active-map-items__content {
+    overflow-y: scroll;
 
-    .active-map-item-visibility-image {
-      display: inline-block;
-    }
+    .active-map-item {
+      padding-left: 12px;
+      padding-right: 12px;
 
-    .sublayer__drag-handle {
-      visibility: visible;
-    }
-  }
+      .active-map-item__container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        overflow: hidden;
+      }
 
-  .active-map-item__drag-handle {
-    visibility: hidden;
-    margin-top: 8px;
-    min-width: 24px;
-  }
+      .active-map-item__drag-handle {
+        visibility: hidden;
+        min-width: 24px;
+      }
 
-  .active-map-item-image-box {
-    position: relative;
-    float: left;
+      .active-map-item__image-container {
+        position: relative;
+        float: left;
 
-    .active-map-item-visibility-image {
-      position: absolute;
-      left: 0;
-      top: 0;
-      display: none;
-    }
-  }
+        .active-map-item__image-container__visibility {
+          position: absolute;
+          left: 0;
+          top: 0;
+          display: none;
+        }
+      }
 
-  .last-left-aligned-element {
-    margin-right: auto;
-  }
+      .active-map-item__title {
+        @include mixins.single-line-text;
+        width: 100vh;
+      }
 
-  .active-map-item-menu {
-    .active-map-item-menu-handle {
-      margin-top: 8px;
-      visibility: hidden;
-    }
+      .active-map-item__menu {
+        .active-map-item__menu__handle {
+          visibility: hidden;
+        }
 
-    .mat-mdc-button {
-      .mat-mdc-menu-trigger {
+        .mat-mdc-button {
+          .mat-mdc-menu-trigger {
+            position: absolute;
+            top: 0;
+            right: 0;
+          }
+        }
+      }
+
+      .active-map-item__progress-bar {
         position: absolute;
-        top: 0;
-        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 100%;
       }
     }
-  }
 
-  .sublayer {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin-left: 56px;
-    padding: 0 8px;
-  }
+    .active-map-item:hover {
+      .active-map-item__drag-handle {
+        visibility: visible;
+      }
 
-  .sublayer__drag-handle {
-    visibility: hidden;
-    margin-top: 8px;
-    min-width: 24px;
-  }
+      .active-map-item__image-container {
+        .active-map-item__image-container__image {
+          opacity: 0.3;
+        }
 
-  .active-map-item-settings {
-    .active-map-item-settings__title {
-      margin: 0;
+        .active-map-item__image-container__visibility {
+          display: inline-block;
+        }
+      }
+
+      .active-map-item__menu .active-map-item__menu__handle {
+        visibility: visible;
+      }
     }
-  }
-
-  .no-shadow {
-    box-shadow: none;
-  }
-
-  .single-line-text {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    width: 100%;
   }
 }

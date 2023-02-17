@@ -1,6 +1,6 @@
 // CSS GLOBAL
 @use '@angular/material' as mat;
-@import 'variables/ktzh-design-variables';
+@use 'variables/ktzh-design-variables' as ktzh-variables;
 
 @include mat.core();
 
@@ -11,11 +11,11 @@
 $zh-light-theme: mat.define-light-theme(
   (
     color: (
-      primary: $zh-light-primary,
-      accent: $zh-light-accent,
-      warn: $zh-light-warn
+      primary: ktzh-variables.$zh-primary,
+      accent: ktzh-variables.$zh-accent,
+      warn: ktzh-variables.$zh-warn
     ),
-    typography: $zh-typography-config
+    typography: ktzh-variables.$zh-typography-config
   )
 );
 

@@ -7,6 +7,7 @@ import {GeoServiceDetailComponent} from './components/geo-service-detail/geo-ser
 import {GeoDataDetailComponent} from './components/geo-data-detail/geo-data-detail.component';
 import {MapDetailComponent} from './components/map-detail/map-detail.component';
 import {MaterialModule} from '../shared/external/material.module';
+import {SharedModule} from '../shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -16,6 +17,6 @@ import {MaterialModule} from '../shared/external/material.module';
     GeoDataDetailComponent,
     MapDetailComponent
   ],
-  imports: [CommonModule, DataCatalogueRoutingModule, MaterialModule]
+  imports: [CommonModule, DataCatalogueRoutingModule, MaterialModule, SharedModule]
 })
 export class DataCatalogueModule {}

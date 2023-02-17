@@ -1,8 +1,10 @@
 <div class="map-container">
   <map></map>
   <legend-widget (printLegendEvent)="this.showPrint('legend')"></legend-widget>
-  <map-data-catalogue class="map-catalogue"></map-data-catalogue>
+  <div class="map-container__all-map-items-container">
+    <active-map-items-widget class="all-map-items-container__active-map-items-widget"></active-map-items-widget>
+    <map-data-catalogue class="all-map-items-container__map-data-catalogue"></map-data-catalogue>
+  </div>
   <feature-info (printFeatureInfoEvent)="this.showPrint('featureInfo')"></feature-info>
-  <active-map-items-widget class="active-map-items"></active-map-items-widget>
 </div>
 <print-overlay></print-overlay>

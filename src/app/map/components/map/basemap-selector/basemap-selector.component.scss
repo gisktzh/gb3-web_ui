@@ -1,10 +1,11 @@
 @use '@angular/material' as mat;
-@import 'mixins/helpers.mixin';
+@use 'mixins/helpers.mixin' as mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
 
 .basemap-selector {
-  @include non-selectable-text;
+  @include mixins.non-selectable-text;
   display: flex;
-  flex-direction: row;
+  flex-direction: row-reverse;
 
   .basemap-selector__active {
     width: 80px;
@@ -47,7 +48,7 @@
     }
 
     .basemap-selector__map-choice__item--active {
-      border: 1px solid black;
+      border: 1px solid ktzh-variables.$zh-black100;
     }
   }
 }

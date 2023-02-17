@@ -1,17 +1,23 @@
-@import 'variables/ktzh-design-variables';
+@use 'variables/ktzh-design-variables' as ktzh-variables;
 
 .scale-input {
-  $_font-family: $zh-font-family;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-family: ktzh-variables.$zh-font-family;
+  background-color: ktzh-variables.$zh-white;
+  padding: 5px;
 
-  font-family: $_font-family;
-  background-color: white;
-  padding: 10px;
+  .scale-input__title {
+    margin: 0;
+    padding-right: 0.5rem;
+  }
 
   .scale-input__wrapper {
     display: flex;
     align-items: center;
-    background: white;
-    border: 1px solid #a0a0a0;
+    background: ktzh-variables.$zh-white;
+    border: 1px solid ktzh-variables.$zh-black40;
     padding-left: 0.5rem;
     overflow: hidden;
     font-size: 14px;
@@ -19,11 +25,11 @@
 
     .scale-input__input {
       flex-grow: 1;
-      background: white;
+      background: ktzh-variables.$zh-white;
       border: none;
       outline: none;
       padding: 0.5rem 0;
-      font-family: $_font-family;
+      font-family: ktzh-variables.$zh-font-family;
       font-size: 14px;
     }
   }

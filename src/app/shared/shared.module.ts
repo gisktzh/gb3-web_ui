@@ -5,10 +5,11 @@ import {NavbarComponent} from './components/navbar/navbar.component';
 import {PlaceholderPageComponent} from './components/placeholder-page/placeholder-page.component';
 import {RouterModule} from '@angular/router';
 import {CommonModule} from '@angular/common';
+import {LoadingAndProcessBarComponent} from './components/loading-and-process-bar/loading-and-process-bar.component';
 
 @NgModule({
-  declarations: [BasemapImageLinkPipe, NavbarComponent, PlaceholderPageComponent],
+  declarations: [BasemapImageLinkPipe, NavbarComponent, PlaceholderPageComponent, LoadingAndProcessBarComponent],
   imports: [MaterialModule, RouterModule, CommonModule],
-  exports: [MaterialModule, BasemapImageLinkPipe, NavbarComponent]
+  exports: [MaterialModule, BasemapImageLinkPipe, NavbarComponent, LoadingAndProcessBarComponent]
 })
 export class SharedModule {}
