@@ -6,13 +6,13 @@
 
   ::ng-deep {
     .mat-mdc-icon-button .mat-mdc-button-persistent-ripple {
-      border-radius: 0;
+      border-radius: ktzh-variables.$zh-border-radius;
     }
   }
 
   .map-controls__button {
-    background-color: ktzh-variables.$zh-white;
+    background-color: ktzh-variables.$zh-background-color;
     margin-top: 2px;
-    border-radius: 0;
+    border-radius: ktzh-variables.$zh-border-radius;
   }
 }

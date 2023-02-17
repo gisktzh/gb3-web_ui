@@ -19,7 +19,7 @@
     display: grid;
     grid-template-columns: auto 1fr;
     grid-gap: 12px;
-    border-bottom: 1px solid ktzh-variables.$zh-black100;
+    border-bottom: 1px solid ktzh-variables.$zh-border-color;
     padding-bottom: 8px;
 
     .feature-info__content__label {
