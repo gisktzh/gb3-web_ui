@@ -22,9 +22,21 @@
   .map-catalogue__content {
     overflow-y: scroll;
 
-    .map__header__title {
-      @include mixins.single-line-text;
-      margin-right: auto;
+    .map__header {
+      padding: 0 8px;
+
+      .map__header__image {
+        height: 32px;
+        width: 32px;
+        align-self: center;
+        margin-right: 8px;
+        border-radius: 4px;
+      }
+
+      .map__header__title {
+        @include mixins.single-line-text;
+        margin-right: auto;
+      }
     }
 
     .layer {
