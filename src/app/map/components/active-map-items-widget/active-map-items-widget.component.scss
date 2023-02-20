@@ -57,7 +57,7 @@
 
       .active-map-item__title {
         @include mixins.single-line-text;
-        width: 100vh;
+        width: 100vw;
       }
 
       .active-map-item__menu {
