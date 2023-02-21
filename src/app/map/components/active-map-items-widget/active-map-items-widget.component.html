@@ -35,7 +35,7 @@
             </button>
             <button mat-icon-button (click)="toggleMapItemVisibility(activeMapItem)">
               <div class="active-map-item__image-container">
-                <img [src]="activeMapItem.topicImageUrl" [alt]="activeMapItem.title" />
+                <img [src]="activeMapItem.mapImageUrl" [alt]="activeMapItem.title" />
                 <mat-icon
                   class="active-map-item__image-container__visibility"
                   [fontIcon]="activeMapItem.visible ? 'visibility' : 'visibility_off'"
