@@ -6,7 +6,7 @@
   }
 
   .navbar__item {
-    @include mixins.mat-button__align-icon-right;
+    @include mixins.mat-button--align-icon-right;
     padding-left: 10px;
     padding-right: 10px;
   }

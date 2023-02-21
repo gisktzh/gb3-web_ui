@@ -15,7 +15,7 @@
   box-shadow: none;
 }
 
-@mixin mat-button__align-icon-right {
+@mixin mat-button--align-icon-right {
   display: flex;
   flex-direction: row-reverse;
 
