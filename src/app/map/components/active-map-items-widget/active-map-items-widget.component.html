@@ -28,14 +28,14 @@
           <div class="active-map-item__container">
             <mat-icon class="active-map-item__drag-handle" cdkDragHandle>drag_indicator</mat-icon>
             <button mat-icon-button *ngIf="!activeMapItemExpansionPanel.expanded" (click)="activeMapItemExpansionPanel.open()">
-              <mat-icon>chevron_right</mat-icon>
+              <mat-icon>arrow_right</mat-icon>
             </button>
             <button mat-icon-button *ngIf="activeMapItemExpansionPanel.expanded" (click)="activeMapItemExpansionPanel.close()">
-              <mat-icon>expand_more</mat-icon>
+              <mat-icon>arrow_drop_down</mat-icon>
             </button>
             <button mat-icon-button (click)="toggleMapItemVisibility(activeMapItem)">
               <div class="active-map-item__image-container">
-                <mat-icon class="active-map-item__image-container__image">image</mat-icon>
+                <img [src]="activeMapItem.mapImageUrl" [alt]="activeMapItem.title" />
                 <mat-icon
                   class="active-map-item__image-container__visibility"
                   [fontIcon]="activeMapItem.visible ? 'visibility' : 'visibility_off'"

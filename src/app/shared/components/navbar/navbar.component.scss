@@ -1,9 +1,12 @@
+@use 'mixins/helpers.mixin' as mixins;
+
 .navbar {
   .navbar__spacer {
     flex: 1 1 auto;
   }
 
   .navbar__item {
+    @include mixins.mat-button--align-icon-right;
     padding-left: 10px;
     padding-right: 10px;
   }

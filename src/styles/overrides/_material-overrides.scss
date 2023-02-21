@@ -1,0 +1,5 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.mdc-button {
+  border-radius: ktzh-variables.$zh-border-radius !important;
+}

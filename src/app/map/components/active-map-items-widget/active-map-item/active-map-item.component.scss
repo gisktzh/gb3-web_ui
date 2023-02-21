@@ -19,7 +19,7 @@
     padding: 0 8px;
 
     .sublayer__drag-handle {
-      visibility: hidden;
+      min-width: 24px;
     }
 
     .sublayer__image-container {
@@ -36,15 +36,11 @@
 
     .sublayer__title {
       @include mixins.single-line-text;
-      width: 100vh;
+      width: 100vw;
     }
   }
 
   .sublayer:hover {
-    .sublayer__drag-handle {
-      visibility: visible;
-    }
-
     .sublayer__image-container {
       .sublayer__image-container__image {
         visibility: hidden;

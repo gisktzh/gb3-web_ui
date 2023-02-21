@@ -39,7 +39,6 @@
       }
 
       .active-map-item__drag-handle {
-        visibility: hidden;
         min-width: 24px;
       }
 
@@ -57,7 +56,7 @@
 
       .active-map-item__title {
         @include mixins.single-line-text;
-        width: 100vh;
+        width: 100vw;
       }
 
       .active-map-item__menu {
@@ -83,10 +82,6 @@
     }
 
     .active-map-item:hover {
-      .active-map-item__drag-handle {
-        visibility: visible;
-      }
-
       .active-map-item__image-container {
         .active-map-item__image-container__image {
           opacity: 0.3;

@@ -87,6 +87,7 @@ export class Gb3TopicsService extends Gb3ApiService {
               ...topic,
               id: topic.topic,
               printTitle: topic.print_title,
+              icon: this.createAbsoluteIconUrl(topic.icon),
               mainLevel: topic.main_level,
               backgroundLevel: topic.background_level,
               overlayLevel: topic.overlay_level,
@@ -114,8 +115,16 @@ export class Gb3TopicsService extends Gb3ApiService {
     };
   }
 
+  private createAbsoluteIconUrl(relativeIconUrl: string): string {
+    const url = new URL(`${this.apiBaseUrl}/${relativeIconUrl}`);
+    return url.toString();
+  }
+
   private createFeatureInfoUrl(topicName: string, x: number, y: number, queryLayers: string): string {
-    return `${this.getFullEndpointUrl()}/${topicName}/feature_info?bbox=${x},${y},${x},${y}&queryLayers=${queryLayers}`;
+    const url = new URL(`${this.getFullEndpointUrl()}/${topicName}/feature_info`);
+    url.searchParams.append('bbox', `${x},${y},${x},${y}`);
+    url.searchParams.append('queryLayers', queryLayers);
+    return url.toString();
   }
 
   /**

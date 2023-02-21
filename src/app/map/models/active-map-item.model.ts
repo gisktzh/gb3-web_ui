@@ -9,6 +9,7 @@ export class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewPro
   public readonly id: string;
   public readonly title: string;
   public readonly url: string;
+  public readonly mapImageUrl: string;
 
   public readonly mapId: string;
   public readonly layers: MapLayer[];
@@ -24,6 +25,7 @@ export class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewPro
     this.id = layer ? `${map.id}_${layer.layer}` : map.id;
     this.title = layer ? layer.title : map.title;
     this.url = map.wmsUrl;
+    this.mapImageUrl = map.icon;
     this.mapId = map.id;
     this.layers = layer ? [layer] : map.layers;
   }
