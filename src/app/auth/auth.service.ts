@@ -44,6 +44,8 @@ export class AuthService {
   public logout(isForced: boolean) {
     if (isForced) {
       this.authNotificationService.showForcedLogoutDialog();
+    } else {
+      this.authNotificationService.showProgrammaticLogoutDialog();
     }
 
     this.isAuthenticatedSubject$.next(false);

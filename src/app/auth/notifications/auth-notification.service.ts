@@ -19,6 +19,11 @@ const forcedLogoutDialogContent: DialogContent = {
   text: 'Sie wurden ausgeloggt, da entweder Ihr Login das Ende seiner Gültigkeit erreicht hat oder in einem anderen Tab ein Logout veranlasst wurde.',
   forceReload: true
 };
+const programmaticLogoutDialogContent: DialogContent = {
+  title: 'Information',
+  text: 'Sie wurden ausgeloggt.',
+  forceReload: true
+};
 
 @Injectable({
   providedIn: 'root'
@@ -34,6 +39,10 @@ export class AuthNotificationService {
     this.openDialog(forcedLogoutDialogContent);
   }
 
+  public showProgrammaticLogoutDialog() {
+    this.openDialog(programmaticLogoutDialogContent);
+  }
+
   private openDialog(content: DialogContent): void {
     const dialogRef = this.matDialogService.open(AuthNotificationDialogComponent, {
       enterAnimationDuration: 150,
@@ -44,7 +53,7 @@ export class AuthNotificationService {
     if (content.forceReload) {
       dialogRef
         .afterClosed()
-        .pipe(tap((_) => this.router.navigate(['/'])))
+        .pipe(tap((_) => window.location.reload()))
         .subscribe();
     }
   }
