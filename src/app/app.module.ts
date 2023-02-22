@@ -16,7 +16,6 @@ import {LayerCatalogEffects} from './state/map/effects/layer-catalog.effects';
 import {MapConfigEffects} from './state/map/effects/map-config-effects.service';
 import {EsriMapService} from './map/services/esri-service/esri-map.service';
 import {MapService} from './map/interfaces/map.service';
-import {httpInterceptorProviders} from './shared/interceptors';
 import {KTZHNewsMockService} from './shared/services/apis/ktzh/ktzhnews-mock.service';
 import {NewsService} from './shared/interfaces/news-service.interface';
 import {AuthModule} from './auth/auth.module';
@@ -48,8 +47,7 @@ export const NEWS_SERVICE = new InjectionToken<NewsService>('NewsService');
   ],
   providers: [
     {provide: MAP_SERVICE, useClass: EsriMapService},
-    {provide: NEWS_SERVICE, useClass: KTZHNewsMockService},
-    httpInterceptorProviders
+    {provide: NEWS_SERVICE, useClass: KTZHNewsMockService}
   ],
   bootstrap: [AppComponent]
 })

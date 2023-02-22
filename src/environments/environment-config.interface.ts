@@ -1,6 +1,5 @@
 export interface EnvironmentConfig {
   production: boolean;
-  apiKey: string;
   baseUrls: {
     gb2Api: string;
     gb2Wms: string;
