@@ -32,7 +32,7 @@ export const authConfig: AuthConfig = {
 
 export const oAuthConfig: OAuthModuleConfig = {
   resourceServer: {
-    allowedUrls: ['http://localhost:4200/v3', 'http://localhost:4200/wms'],
+    allowedUrls: [`${environment.baseUrls.gb3Api}/v3`],
     sendAccessToken: true
   }
 };
