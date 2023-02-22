@@ -1,6 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AuthService} from '../../../auth/auth.service';
 import {Subscription, tap} from 'rxjs';
+import {Store} from '@ngrx/store';
+import {AuthStatusActions} from '../../../state/auth/actions/auth-status.actions';
 
 @Component({
   selector: 'navbar',
@@ -11,7 +13,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   public isAuthenticated: boolean = false;
   private readonly subscriptions = new Subscription();
 
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService, private readonly store: Store) {}
 
   public ngOnInit() {
     this.initSubscriptions();
@@ -26,7 +28,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   public logout() {
-    this.authService.logout();
+    this.store.dispatch(AuthStatusActions.performLogout({forced: false}));
   }
 
   private initSubscriptions() {

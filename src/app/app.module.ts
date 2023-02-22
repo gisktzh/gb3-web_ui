@@ -20,6 +20,7 @@ import {httpInterceptorProviders} from './shared/interceptors';
 import {KTZHNewsMockService} from './shared/services/apis/ktzh/ktzhnews-mock.service';
 import {NewsService} from './shared/interfaces/news-service.interface';
 import {AuthModule} from './auth/auth.module';
+import {AuthStatusEffects} from './state/auth/effects/auth-status.effects';
 
 export const MAP_SERVICE = new InjectionToken<MapService>('MapService');
 export const NEWS_SERVICE = new InjectionToken<NewsService>('NewsService');
@@ -35,7 +36,14 @@ export const NEWS_SERVICE = new InjectionToken<NewsService>('NewsService');
     StoreModule.forRoot(reducers, {
       metaReducers
     }),
-    EffectsModule.forRoot([ActiveMapItemEffects, FeatureInfoEffects, LayerCatalogEffects, LegendEffects, MapConfigEffects]),
+    EffectsModule.forRoot([
+      ActiveMapItemEffects,
+      FeatureInfoEffects,
+      LayerCatalogEffects,
+      LegendEffects,
+      MapConfigEffects,
+      AuthStatusEffects
+    ]),
     AuthModule
   ],
   providers: [
