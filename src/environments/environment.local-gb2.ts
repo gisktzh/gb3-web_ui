@@ -13,7 +13,8 @@ export const environment: EnvironmentConfig = {
   production: false,
   apiKey: apiKey,
   baseUrls: {
-    gb3Api: 'http://localhost:4200',
+    gb2Api: 'http://localhost:4200',
+    gb2Wms: 'http://localhost:4200',
     geoLion: 'https://www.geolion.zh.ch',
     overrideWmsUrl: 'http://localhost:4200/wms'
   },

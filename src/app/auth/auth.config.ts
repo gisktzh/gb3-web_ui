@@ -32,7 +32,7 @@ export const authConfig: AuthConfig = {
 
 export const oAuthConfig: OAuthModuleConfig = {
   resourceServer: {
-    allowedUrls: [`${environment.baseUrls.gb3Api}/v3`],
+    allowedUrls: [`${environment.baseUrls.gb2Api}/v3`],
     sendAccessToken: true
   }
 };

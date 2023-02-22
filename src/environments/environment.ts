@@ -9,7 +9,8 @@ export const environment: EnvironmentConfig = {
   production: false,
   apiKey: apiKey,
   baseUrls: {
-    gb3Api: 'https://maps.zh.ch',
+    gb2Api: 'https://maps.zh.ch',
+    gb2Wms: 'https://wms.zh.ch',
     geoLion: 'https://www.geolion.zh.ch',
     ktzhWebsite: 'https://www.zh.ch'
   },

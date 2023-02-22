@@ -51,7 +51,7 @@ const changeWmsUrlInCapabilitiesCallback: AfterInterceptorCallback = (response: 
 const wmsAuthAndUrlOverrideInterceptorFactory = (hasWmsOverride?: string, accessToken?: string): __esri.RequestInterceptor => {
   const baseInterceptor: RequestInterceptor = {
     headers: {},
-    urls: [environment.baseUrls.gb3Api],
+    urls: [environment.baseUrls.gb2Api, environment.baseUrls.gb2Wms],
     after: changeWmsUrlInCapabilitiesCallback
   };
 
