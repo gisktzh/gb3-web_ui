@@ -40,14 +40,6 @@
             "style": "kebab-case"
           }
         ],
-        "@angular-eslint/directive-selector": [
-          "error",
-          {
-            "type": "attribute",
-            "prefix": "app",
-            "style": "camelCase"
-          }
-        ],
         "@typescript-eslint/explicit-member-accessibility": [
           "error",
           {

@@ -1,0 +1,34 @@
+<tour-step-template>
+  <ng-template let-step="step">
+    <mat-card (click)="$event.stopPropagation()">
+      <mat-card-header>
+        <div class="header-group">
+          <mat-card-title>
+            {{ step.title }}
+          </mat-card-title>
+        </div>
+      </mat-card-header>
+
+      <mat-card-content [innerHTML]="step.content" class="mat-body"></mat-card-content>
+
+      <mat-card-actions align="end">
+        <button (click)="tourService.end()" *ngIf="!tourService.hasPrev(step); else backButton" class="prev" mat-button>
+          Überspringen
+        </button>
+        <ng-template #backButton>
+          <button (click)="tourService.prev()" class="prev" mat-button>
+            <mat-icon>chevron_left</mat-icon>
+            {{ step.prevBtnTitle }}
+          </button>
+        </ng-template>
+        <button (click)="tourService.next()" *ngIf="tourService.hasNext(step) && !step.nextOnAnchorClick" class="next" mat-button>
+          {{ step.nextBtnTitle }}
+          <mat-icon iconPositionEnd>chevron_right</mat-icon>
+        </button>
+        <button (click)="tourService.end()" *ngIf="!tourService.hasNext(step)" mat-button>
+          {{ step.endBtnTitle }}
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </ng-template>
+</tour-step-template>

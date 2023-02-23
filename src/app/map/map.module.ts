@@ -18,6 +18,7 @@ import {ScaleInputComponent} from './components/map/scale-input/scale-input.comp
 import {MapControlsComponent} from './components/map/map-controls/map-controls.component';
 import {BasemapSelectorComponent} from './components/map/basemap-selector/basemap-selector.component';
 import {ActiveMapItemComponent} from './components/active-map-items-widget/active-map-item/active-map-item.component';
+import {OnboardingGuideModule} from './onboarding-guide/onboarding-guide.module';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,6 @@ import {ActiveMapItemComponent} from './components/active-map-items-widget/activ
     MapControlsComponent,
     BasemapSelectorComponent
   ],
-  imports: [CommonModule, SharedModule, MapRoutingModule]
+  imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule]
 })
 export class MapModule {}
