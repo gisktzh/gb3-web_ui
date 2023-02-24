@@ -1,8 +1,8 @@
 import {Inject, Injectable, InjectionToken} from '@angular/core';
 import {TourService} from 'ngx-ui-tour-md-menu';
 import {tap} from 'rxjs';
-import {LocalStorageService} from '../shared/services/local-storage/local-storage.service';
-import {OnboardingGuideConfig} from './interfaces/onboarding-guide-config.interface';
+import {LocalStorageService} from '../../shared/services/local-storage/local-storage.service';
+import {OnboardingGuideConfig} from '../interfaces/onboarding-guide-config.interface';
 
 export const ONBOARDING_STEPS = new InjectionToken<string>('onboardingSteps');
 

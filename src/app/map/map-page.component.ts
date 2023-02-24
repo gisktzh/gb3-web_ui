@@ -1,7 +1,7 @@
 import {AfterViewInit, Component} from '@angular/core';
 import {MapConfigUrlService} from './services/map-config-url.service';
 import {PrintType} from '../shared/types/print-type';
-import {ONBOARDING_STEPS, OnboardingGuideService} from '../onboarding-guide/onboarding-guide.service';
+import {ONBOARDING_STEPS, OnboardingGuideService} from '../onboarding-guide/services/onboarding-guide.service';
 import {mapOnboardingGuideConfig} from '../onboarding-guide/data/map-onboarding-guide.config';
 
 @Component({
