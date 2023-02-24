@@ -10,7 +10,7 @@ const routes: Routes = [
       {path: 'data', loadChildren: () => import('./data-catalogue/data-catalogue.module').then((m) => m.DataCatalogueModule)},
       {path: 'shop', component: PlaceholderPageComponent},
       {path: 'help', component: PlaceholderPageComponent},
-      {path: '', component: PlaceholderPageComponent}
+      {path: '', loadChildren: () => import('./start-page/start-page.module').then((m) => m.StartPageModule)}
     ]
   }
 ];
