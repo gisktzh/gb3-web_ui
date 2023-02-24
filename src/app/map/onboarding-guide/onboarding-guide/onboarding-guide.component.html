@@ -29,6 +29,9 @@
           {{ step.endBtnTitle }}
         </button>
       </mat-card-actions>
+      <mat-card-footer>
+        <mat-progress-bar [value]="this.progress"></mat-progress-bar>
+      </mat-card-footer>
     </mat-card>
   </ng-template>
 </tour-step-template>
