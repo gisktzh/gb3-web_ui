@@ -5,6 +5,10 @@ import {provideMockStore} from '@ngrx/store/testing';
 import {ActiveMapItem} from '../../models/active-map-item.model';
 import {Map, MapLayer} from '../../../shared/interfaces/topic.interface';
 import {EsriMapMock} from '../../../testing/map-testing/esri-map.mock';
+import {OAuthLogger, OAuthModule, OAuthService, UrlHelperService} from 'angular-oauth2-oidc';
+import {HttpClientModule} from '@angular/common/http';
+import {CommonModule} from '@angular/common';
+import {AuthModule} from '../../../auth/auth.module';
 
 function createActiveMapItemMock(id: string, numberOfLayers = 0): {id: string; activeMapItem: ActiveMapItem} {
   const mapMock = {id: id, title: id, layers: []} as Partial<Map>;
@@ -40,6 +44,7 @@ describe('EsriMapService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
+      imports: [AuthModule],
       providers: [provideMockStore({})]
     });
     service = TestBed.inject(EsriMapService);
