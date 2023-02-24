@@ -1,7 +1,15 @@
 import {IMdStepOption} from 'ngx-ui-tour-md-menu/lib/step-option.interface';
 
+/**
+ * All TourAnchors that are in use throughout the app. Do not use string anchors or tourAnchor directly, but add new steps and their anchors
+ * to this type.
+ */
 export type OnboardingGuideAnchor = 'start.tour' | 'map.catalogue' | 'active.map.items' | 'basemap.selector' | 'feature.info';
 
+/**
+ * Ovveride of the default IMdStepOption to force the usage of the OnboardingGuideAnchor types, which are also used in the TypedTourAnchor
+ * directive.
+ */
 interface OnboardingStep extends IMdStepOption {
   anchorId: OnboardingGuideAnchor;
 }
