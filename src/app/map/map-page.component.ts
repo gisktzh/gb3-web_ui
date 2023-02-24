@@ -13,7 +13,7 @@ export class MapPageComponent implements AfterViewInit {
   constructor(private readonly onboardingGuideService: OnboardingGuideService, private readonly mapConfigUrlService: MapConfigUrlService) {}
 
   public ngAfterViewInit() {
-    this.onboardingGuideService.start();
+    this.onboardingGuideService.autoStart();
   }
 
   public showPrint(printType: PrintType) {
