@@ -2,6 +2,12 @@
   <ng-template let-step="step">
     <mat-card (click)="$event.stopPropagation()">
       <img *ngIf="!this.hasPreviousStep" alt="Onboarding Guide Intro" mat-card-image src="/assets/images/onboarding-guide/intro.png" />
+      <img
+        *ngIf="!this.hasNextStep"
+        alt="Onboarding Guide Outro"
+        mat-card-image
+        src="https://media.tenor.com/Tvd3VKwtse0AAAAM/cat-cute.gif"
+      />
       <mat-card-header>
         <div class="header-group">
           <mat-card-title>
