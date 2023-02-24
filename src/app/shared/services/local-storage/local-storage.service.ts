@@ -12,8 +12,4 @@ export class LocalStorageService {
   public get(key: LocalStorageKey): string | null {
     return localStorage.getItem(key);
   }
-
-  public exists(key: LocalStorageKey): boolean {
-    return !!localStorage.getItem(key);
-  }
 }

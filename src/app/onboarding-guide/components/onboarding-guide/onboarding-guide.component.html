@@ -1,7 +1,7 @@
 <tour-step-template>
   <ng-template let-step="step">
     <mat-card (click)="$event.stopPropagation()">
-      <img *ngIf="!this.hasPreviousStep" alt="Onboarding Guide Intro" mat-card-image src="/assets/images/onboarding-guide/intro.png" />
+      <img *ngIf="this.introductionImage" alt="Onboarding Guide Intro" mat-card-image [src]="this.introductionImage" />
       <img
         *ngIf="!this.hasNextStep"
         alt="Onboarding Guide Outro"

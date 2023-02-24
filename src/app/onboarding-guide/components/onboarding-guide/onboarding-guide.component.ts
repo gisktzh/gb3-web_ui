@@ -1,6 +1,5 @@
-import {Component, OnDestroy} from '@angular/core';
+import {Component, Input, OnDestroy} from '@angular/core';
 import {TourService} from 'ngx-ui-tour-md-menu';
-import {IMdStepOption} from 'ngx-ui-tour-md-menu/lib/step-option.interface';
 import {Subscription, tap} from 'rxjs';
 
 @Component({
@@ -9,6 +8,7 @@ import {Subscription, tap} from 'rxjs';
   styleUrls: ['./onboarding-guide.component.scss']
 })
 export class OnboardingGuideComponent implements OnDestroy {
+  @Input() public introductionImage?: string;
   public progress: number = 0;
   public hasNextStep: boolean = false;
   public hasPreviousStep: boolean = false;

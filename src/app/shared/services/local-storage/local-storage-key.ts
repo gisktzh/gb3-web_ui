@@ -1,1 +1,1 @@
-export type LocalStorageKey = 'onboardingGuideViewed';
+export type LocalStorageKey = 'onboardingGuidesViewed';

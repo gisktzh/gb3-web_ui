@@ -29,15 +29,15 @@ describe('LocalStorageService', () => {
   describe('get', () => {
     it('returns an existing item', () => {
       const expected = 'expected-value';
-      store['onboardingGuideViewed'] = expected;
+      store['onboardingGuidesViewed'] = expected;
 
-      const result = service.get('onboardingGuideViewed');
+      const result = service.get('onboardingGuidesViewed');
 
       expect(result).toEqual(expected);
     });
 
     it('returns an null for key that does not exist', () => {
-      const result = service.get('onboardingGuideViewed');
+      const result = service.get('onboardingGuidesViewed');
 
       expect(result).toBeNull();
     });
@@ -47,24 +47,9 @@ describe('LocalStorageService', () => {
     it('sets a value for a given key', () => {
       const expected = 'new-value';
 
-      service.set('onboardingGuideViewed', expected);
+      service.set('onboardingGuidesViewed', expected);
 
-      expect(service.get('onboardingGuideViewed')).toEqual('new-value');
-    });
-  });
-
-  describe('exists', () => {
-    it('returns true if a key exists', () => {
-      store['onboardingGuideViewed'] = 'xxx';
-
-      const result = service.exists('onboardingGuideViewed');
-
-      expect(result).toBeTrue();
-    });
-    it('returns false if a key does not exist', () => {
-      const result = service.exists('onboardingGuideViewed');
-
-      expect(result).toBeFalse();
+      expect(service.get('onboardingGuidesViewed')).toEqual('new-value');
     });
   });
 });

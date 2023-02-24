@@ -4,14 +4,14 @@
   <div class="map-container__all-map-items-container">
     <active-map-items-widget
       class="all-map-items-container__active-map-items-widget"
-      typedTourAnchor="active.map.items"
+      typedTourAnchor="map.active.map.items"
     ></active-map-items-widget>
     <map-data-catalogue class="all-map-items-container__map-data-catalogue" typedTourAnchor="map.catalogue"></map-data-catalogue>
   </div>
   <feature-info (printFeatureInfoEvent)="this.showPrint('featureInfo')"></feature-info>
 </div>
 <print-overlay></print-overlay>
-<onboarding-guide></onboarding-guide>
-<center-anchor anchorName="start.tour"></center-anchor>
-<center-anchor anchorName="feature.info"></center-anchor>
-<center-anchor anchorName="end.tour"></center-anchor>
+<onboarding-guide [introductionImage]="this.onboardingGuideImage"></onboarding-guide>
+<center-anchor anchorName="map.start.tour"></center-anchor>
+<center-anchor anchorName="map.feature.info"></center-anchor>
+<center-anchor anchorName="map.end.tour"></center-anchor>

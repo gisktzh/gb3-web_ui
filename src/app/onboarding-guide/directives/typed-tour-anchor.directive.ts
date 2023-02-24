@@ -1,6 +1,6 @@
 import {Directive, Input, OnInit} from '@angular/core';
 import {TourAnchorMatMenuDirective} from 'ngx-ui-tour-md-menu';
-import {OnboardingGuideAnchor} from '../onboarding-guide-steps';
+import {OnboardingGuideAnchor} from '../../shared/types/onboarding-guide-anchor';
 
 /**
  * An extension of the TourAnchor directive of the ngx-ui-tour package which forces the usage of anchors that are defined in the
