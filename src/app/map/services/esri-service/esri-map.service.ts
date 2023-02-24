@@ -248,7 +248,7 @@ export class EsriMapService implements MapService {
     this.subscriptions.add(
       this.isAuthenticated$
         .pipe(
-          tap((_) => {
+          tap(() => {
             const newInterceptor = this.getWmsOverrideInterceptor(this.authService.getAccessToken());
             esriConfig.request.interceptors = []; // todo: pop existing as soon as we add more interceptors
             esriConfig.request.interceptors.push(newInterceptor);
