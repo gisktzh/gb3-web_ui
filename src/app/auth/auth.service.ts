@@ -56,7 +56,7 @@ export class AuthService {
   }
 
   /**
-   * Subscribe or unsubscribe to the handler that periodically checks whether the token is still valid.
+   * Subscribe to the handler that periodically checks whether the token is still valid.
    *
    * Because we do not have a refresh token, the only event we get from the library is 'token_expires', but no event is raised when the
    * token actually expires. Hence, we poll within the specified interval and check whether the token is still valid. In the worst case,
@@ -65,22 +65,22 @@ export class AuthService {
    * In an ideal world, we could use the refresh event handler and listen to the events from the api itself.
    * @private
    */
-  private registerIsAuthenticatedCheckIntervalHandler(subscribe: boolean) {
-    if (subscribe) {
-      this.isAuthenticatedCheckInterval$.add(
-        interval(environment.auth.authenticatedPingInterval)
-          .pipe(
-            tap((_) => {
-              if (!this.oauthService.hasValidAccessToken()) {
-                this.logout(true);
-              }
-            })
-          )
-          .subscribe()
-      );
-    } else {
-      this.isAuthenticatedCheckInterval$.unsubscribe();
-    }
+  private registerIsAuthenticatedCheckIntervalHandler() {
+    this.isAuthenticatedCheckInterval$.add(
+      interval(environment.auth.authenticatedPingInterval)
+        .pipe(
+          tap((_) => {
+            if (!this.oauthService.hasValidAccessToken()) {
+              this.logout(true);
+            }
+          })
+        )
+        .subscribe()
+    );
+  }
+
+  private unregisterIsAuthenticatedCheckIntervalHandler() {
+    this.isAuthenticatedCheckInterval$.unsubscribe();
   }
 
   /**
@@ -104,9 +104,9 @@ export class AuthService {
               this.oauthService.logOut();
             }
             this.oauthService.stopAutomaticRefresh(); // see: https://github.com/manfredsteyer/angular-oauth2-oidc/issues/1080
-            this.registerIsAuthenticatedCheckIntervalHandler(false);
+            this.unregisterIsAuthenticatedCheckIntervalHandler();
           } else {
-            this.registerIsAuthenticatedCheckIntervalHandler(true);
+            this.registerIsAuthenticatedCheckIntervalHandler();
           }
 
           this.store.dispatch(AuthStatusActions.setStatus({isAuthenticated}));
