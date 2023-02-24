@@ -10,6 +10,8 @@ import {Subscription, tap} from 'rxjs';
 })
 export class OnboardingGuideComponent implements OnDestroy {
   public progress: number = 0;
+  public hasNextStep: boolean = false;
+  public hasPreviousStep: boolean = false;
   private readonly numberOfSteps: number = this.tourService.steps.length;
   private readonly subscriptions: Subscription = new Subscription();
 
@@ -30,6 +32,8 @@ export class OnboardingGuideComponent implements OnDestroy {
             const currentStepNumber = stepIndex + 1;
 
             this.progress = (currentStepNumber / this.numberOfSteps) * 100;
+            this.hasNextStep = this.tourService.hasNext(step);
+            this.hasPreviousStep = this.tourService.hasPrev(step);
           })
         )
         .subscribe()

@@ -1,6 +1,7 @@
 <tour-step-template>
   <ng-template let-step="step">
     <mat-card (click)="$event.stopPropagation()">
+      <img *ngIf="!this.hasPreviousStep" alt="Onboarding Guide Intro" mat-card-image src="/assets/images/onboarding-guide/intro.png" />
       <mat-card-header>
         <div class="header-group">
           <mat-card-title>
@@ -12,20 +13,20 @@
       <mat-card-content [innerHTML]="step.content" class="mat-body"></mat-card-content>
 
       <mat-card-actions align="end">
-        <button (click)="tourService.end()" *ngIf="!tourService.hasPrev(step); else backButton" class="prev" mat-button>
+        <button (click)="this.tourService.end()" *ngIf="!this.hasPreviousStep; else backButton" class="prev" mat-button>
           Überspringen
         </button>
         <ng-template #backButton>
-          <button (click)="tourService.prev()" class="prev" mat-button>
+          <button (click)="this.tourService.prev()" class="prev" mat-button>
             <mat-icon>chevron_left</mat-icon>
             {{ step.prevBtnTitle }}
           </button>
         </ng-template>
-        <button (click)="tourService.next()" *ngIf="tourService.hasNext(step) && !step.nextOnAnchorClick" class="next" mat-button>
+        <button (click)="this.tourService.next()" *ngIf="this.hasNextStep && !step.nextOnAnchorClick" class="next" mat-button>
           {{ step.nextBtnTitle }}
           <mat-icon iconPositionEnd>chevron_right</mat-icon>
         </button>
-        <button (click)="tourService.end()" *ngIf="!tourService.hasNext(step)" mat-button>
+        <button (click)="this.tourService.end()" *ngIf="!this.hasNextStep" mat-button>
           {{ step.endBtnTitle }}
         </button>
       </mat-card-actions>

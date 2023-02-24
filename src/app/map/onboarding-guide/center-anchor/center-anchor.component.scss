@@ -2,7 +2,12 @@
   position: fixed;
   left: 50%;
   top: 50%;
-  /* The anchor should be translated to the left by half of your step width and half height  */
-  /* For example, if your tour step has dimensions of 280 × 156 px, you have to translate by (-140px, -78px) */
-  transform: translate(-140px, -78px);
+
+  /**
+  The anchor should be translated to the left by half of your step width and half height.
+  For example, if your tour step has dimensions of 280 × 156 px, you have to translate by (-140px, -78px)
+  Because we have images, they might be higher, so we use -200px.
+  Todo: check whether this works with the final images.
+   */
+  transform: translate(-140px, -200px);
 }
