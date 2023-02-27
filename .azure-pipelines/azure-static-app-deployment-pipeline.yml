@@ -1,5 +1,10 @@
 name: Azure Static Web Apps CI/CD
 
+variables:
+  - template: 'templates/variables.yaml'
+  - name: PUPPETEER_SKIP_DOWNLOAD
+    value: true
+
 trigger:
   - develop
 
@@ -8,10 +13,11 @@ jobs:
     displayName: Build and Deploy Job
     condition: or(eq(variables['Build.Reason'], 'Manual'),or(eq(variables['Build.Reason'], 'PullRequest'),eq(variables['Build.Reason'], 'IndividualCI')))
     pool:
-      vmImage: ubuntu-latest
+      vmImage: $(VM_IMAGE)
     variables:
       - group: Azure-Static-Web-Apps-calm-plant-0ecbec603-variable-group
     steps:
+      - template: 'templates/unit-tests.yaml'
       - checkout: self
         submodules: true
       - task: AzureStaticWebApp@0
@@ -22,5 +28,4 @@ jobs:
           app_location: '/' # App source code path
           api_location: '' # Api source code path - optional
           output_location: 'dist' # Built app content directory - optional
-###### End of Repository/Build Configurations ######
-
+          ###### End of Repository/Build Configurations ######
