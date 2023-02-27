@@ -1,5 +1,4 @@
-trigger:
-  - feature/*
+trigger: none # only run in PRs which are handled by branch policies
 
 variables:
   - template: 'templates/variables.yaml'
