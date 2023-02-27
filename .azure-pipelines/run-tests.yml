@@ -14,5 +14,5 @@ steps:
 
   - script: |
       npm ci
-      npm run test
+      npm run test-ci
     displayName: 'npm install and test'
