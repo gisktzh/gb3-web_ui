@@ -1,5 +1,8 @@
 name: Azure Static Web Apps CI/CD
 
+variables:
+  - template: 'templates/variables.yaml'
+
 trigger:
   - develop
 
@@ -8,7 +11,7 @@ jobs:
     displayName: Build and Deploy Job
     condition: or(eq(variables['Build.Reason'], 'Manual'),or(eq(variables['Build.Reason'], 'PullRequest'),eq(variables['Build.Reason'], 'IndividualCI')))
     pool:
-      vmImage: ubuntu-latest
+      vmImage: $(VM_IMAGE)
     variables:
       - group: Azure-Static-Web-Apps-calm-plant-0ecbec603-variable-group
     steps:

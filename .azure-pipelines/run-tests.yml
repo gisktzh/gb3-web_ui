@@ -1,4 +1,5 @@
-trigger: none
+trigger:
+  - feature/*
 
 variables:
   - template: 'templates/variables.yaml'
