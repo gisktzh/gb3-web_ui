@@ -8,7 +8,7 @@ import {mapOnboardingGuideConfig} from '../onboarding-guide/data/map-onboarding-
   selector: 'map-page',
   templateUrl: './map-page.component.html',
   styleUrls: ['./map-page.component.scss'],
-  providers: [MapConfigUrlService, OnboardingGuideService, {provide: ONBOARDING_STEPS, useValue: mapOnboardingGuideConfig}]
+  providers: [MapConfigUrlService]
 })
 export class MapPageComponent implements AfterViewInit {
   public readonly onboardingGuideImage = mapOnboardingGuideConfig.introductionImage;
