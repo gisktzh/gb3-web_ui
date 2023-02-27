@@ -2,9 +2,16 @@
   <map></map>
   <legend-widget (printLegendEvent)="this.showPrint('legend')"></legend-widget>
   <div class="map-container__all-map-items-container">
-    <active-map-items-widget class="all-map-items-container__active-map-items-widget"></active-map-items-widget>
-    <map-data-catalogue class="all-map-items-container__map-data-catalogue"></map-data-catalogue>
+    <active-map-items-widget
+      class="all-map-items-container__active-map-items-widget"
+      typedTourAnchor="map.active.map.items"
+    ></active-map-items-widget>
+    <map-data-catalogue class="all-map-items-container__map-data-catalogue" typedTourAnchor="map.catalogue"></map-data-catalogue>
   </div>
   <feature-info (printFeatureInfoEvent)="this.showPrint('featureInfo')"></feature-info>
 </div>
 <print-overlay></print-overlay>
+<onboarding-guide [introductionImage]="this.onboardingGuideImage"></onboarding-guide>
+<center-anchor anchorName="map.start.tour"></center-anchor>
+<center-anchor anchorName="map.feature.info"></center-anchor>
+<center-anchor anchorName="map.end.tour"></center-anchor>

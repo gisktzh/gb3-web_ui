@@ -1,4 +1,4 @@
-<div class="basemap-selector" #basemapSelector>
+<div class="basemap-selector" #basemapSelector typedTourAnchor="map.basemap.selector">
   <mat-card appearance="raised" (click)="this.toggleSelection()" class="basemap-selector__active">
     <img alt="Aktuelle Hintergrundkarte" [src]="this.activeBasemapId | basemapImageLink" class="basemap-selector__active-map-image" />
   </mat-card>

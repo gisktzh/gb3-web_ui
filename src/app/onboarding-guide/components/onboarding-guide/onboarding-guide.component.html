@@ -1,0 +1,49 @@
+<tour-step-template>
+  <ng-template let-step="step">
+    <mat-card (click)="$event.stopPropagation()">
+      <img
+        *ngIf="this.introductionImage && !this.hasPreviousStep"
+        alt="Onboarding Guide Intro"
+        mat-card-image
+        [src]="this.introductionImage"
+      />
+      <img
+        *ngIf="!this.hasNextStep"
+        alt="Onboarding Guide Outro"
+        mat-card-image
+        src="https://media.tenor.com/Tvd3VKwtse0AAAAM/cat-cute.gif"
+      />
+      <mat-card-header>
+        <div class="header-group">
+          <mat-card-title>
+            {{ step.title }}
+          </mat-card-title>
+        </div>
+      </mat-card-header>
+
+      <mat-card-content [innerHTML]="step.content" class="mat-body"></mat-card-content>
+
+      <mat-card-actions align="end">
+        <button (click)="this.tourService.end()" *ngIf="!this.hasPreviousStep; else backButton" class="prev" mat-button>
+          Überspringen
+        </button>
+        <ng-template #backButton>
+          <button (click)="this.tourService.prev()" class="prev" mat-button>
+            <mat-icon>chevron_left</mat-icon>
+            {{ step.prevBtnTitle }}
+          </button>
+        </ng-template>
+        <button (click)="this.tourService.next()" *ngIf="this.hasNextStep && !step.nextOnAnchorClick" class="next" mat-button>
+          {{ step.nextBtnTitle }}
+          <mat-icon iconPositionEnd>chevron_right</mat-icon>
+        </button>
+        <button (click)="this.tourService.end()" *ngIf="!this.hasNextStep" mat-button>
+          {{ step.endBtnTitle }}
+        </button>
+      </mat-card-actions>
+      <mat-card-footer>
+        <mat-progress-bar [value]="this.progress"></mat-progress-bar>
+      </mat-card-footer>
+    </mat-card>
+  </ng-template>
+</tour-step-template>
