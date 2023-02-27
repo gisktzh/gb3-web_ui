@@ -2,12 +2,12 @@ import {Injectable} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {AuthNotificationDialogComponent} from './auth-notification-dialog/auth-notification-dialog.component';
 import {tap} from 'rxjs';
-import {Router} from '@angular/router';
 
 export interface DialogContent {
   title: string;
   text: string;
   forceReload?: boolean;
+  forceCloseOthers?: boolean;
 }
 
 const impendingLogoutDialogContent: DialogContent = {
@@ -17,19 +17,21 @@ const impendingLogoutDialogContent: DialogContent = {
 const forcedLogoutDialogContent: DialogContent = {
   title: 'Information',
   text: 'Sie wurden ausgeloggt, da entweder Ihr Login das Ende seiner Gültigkeit erreicht hat oder in einem anderen Tab ein Logout veranlasst wurde.',
-  forceReload: true
+  forceReload: true,
+  forceCloseOthers: true
 };
 const programmaticLogoutDialogContent: DialogContent = {
   title: 'Information',
   text: 'Sie wurden ausgeloggt.',
-  forceReload: true
+  forceReload: true,
+  forceCloseOthers: true
 };
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthNotificationService {
-  constructor(private readonly matDialogService: MatDialog, private readonly router: Router) {}
+  constructor(private readonly matDialogService: MatDialog) {}
 
   public showImpendingLogoutDialog() {
     this.openDialog(impendingLogoutDialogContent);
@@ -44,6 +46,10 @@ export class AuthNotificationService {
   }
 
   private openDialog(content: DialogContent): void {
+    if (content.forceCloseOthers) {
+      this.forceCloseDialogs();
+    }
+
     const dialogRef = this.matDialogService.open(AuthNotificationDialogComponent, {
       enterAnimationDuration: 150,
       exitAnimationDuration: 150,
@@ -56,5 +62,11 @@ export class AuthNotificationService {
         .pipe(tap((_) => window.location.reload()))
         .subscribe();
     }
+  }
+
+  private forceCloseDialogs() {
+    this.matDialogService.openDialogs.forEach((dialog) => {
+      dialog.close();
+    });
   }
 }
