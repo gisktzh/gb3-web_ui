@@ -15,6 +15,7 @@ jobs:
     variables:
       - group: Azure-Static-Web-Apps-calm-plant-0ecbec603-variable-group
     steps:
+      - template: 'templates/unit-tests.yaml'
       - checkout: self
         submodules: true
       - task: AzureStaticWebApp@0
@@ -25,5 +26,4 @@ jobs:
           app_location: '/' # App source code path
           api_location: '' # Api source code path - optional
           output_location: 'dist' # Built app content directory - optional
-###### End of Repository/Build Configurations ######
-
+          ###### End of Repository/Build Configurations ######
