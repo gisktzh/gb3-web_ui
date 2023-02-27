@@ -12,6 +12,9 @@
     "generate-gb3-api": "npx swagger-typescript-api -p https://maps.zh.ch/api-docs/v3/swagger.yaml -o ./src/app/shared/models -n gb3-api-generated.interfaces.ts --no-client --extract-response-body"
   },
   "private": true,
+  "engines": {
+    "node": "18.x"
+  },
   "dependencies": {
     "@angular/animations": "^15.1.4",
     "@angular/cdk": "^15.1.4",
