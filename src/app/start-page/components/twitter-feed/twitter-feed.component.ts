@@ -56,7 +56,8 @@ export class TwitterFeedComponent implements AfterViewInit, OnDestroy {
         this.twitterFeedContainer.nativeElement,
         {
           dnt: true,
-          tweetLimit: TWITTER_MAX_TWEETS
+          tweetLimit: TWITTER_MAX_TWEETS,
+          lang: 'de'
         }
       )
       .then(() => {
