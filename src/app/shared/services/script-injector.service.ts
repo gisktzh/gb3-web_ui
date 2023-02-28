@@ -1,5 +1,5 @@
 import {Injectable, Renderer2, RendererFactory2} from '@angular/core';
-import {BehaviorSubject, combineLatest, filter, Observable, tap} from 'rxjs';
+import {BehaviorSubject, combineLatest, filter, Observable, tap, throwError} from 'rxjs';
 import {map} from 'rxjs/operators';
 
 interface InjectableExternalScript {
@@ -30,23 +30,33 @@ export class ScriptInjectorService {
   }
 
   public injectTwitterFeedApi(): Observable<TwitterLike> {
-    const hasScriptLoaded = new BehaviorSubject<boolean>(false);
+    const hasScriptLoaded = new BehaviorSubject<'loading' | 'loaded' | 'error'>('loading');
 
     const injectScript = this.injectScript(twitterFeedInjectableScript).pipe(
       tap((script) => {
         if (typeof twttr !== 'undefined') {
-          hasScriptLoaded.next(true);
+          hasScriptLoaded.next('loaded');
+        } else if (this.loadedScripts.find((loadedScript) => loadedScript.id === script.id)) {
+          hasScriptLoaded.next('error');
         } else {
           script.onload = () => {
-            hasScriptLoaded.next(true);
+            hasScriptLoaded.next('loaded');
+          };
+          script.onerror = () => {
+            hasScriptLoaded.next('error');
           };
         }
       })
     );
 
     return combineLatest([hasScriptLoaded, injectScript]).pipe(
-      filter(([isLoaded, _]) => isLoaded),
-      map(() => twttr)
+      filter(([isLoaded, _]) => isLoaded !== 'loading'),
+      map(([isLoaded, _]) => {
+        if (isLoaded === 'error') {
+          throw new Error('Error loading twitter feed.'); // todo: add error classes
+        }
+        return twttr;
+      })
     );
   }
 

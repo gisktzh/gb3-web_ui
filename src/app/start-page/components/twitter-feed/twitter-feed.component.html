@@ -1,6 +1,8 @@
 <h1>Twitterfeed</h1>
-<p *ngIf="!this.feedLoaded">
+<p *ngIf="this.feedLoaded === 'loading'">
   Lade die neusten Tweets...
   <mat-progress-bar mode="indeterminate"></mat-progress-bar>
 </p>
-<div #twitterFeed></div>
+<div #twitterFeed>
+  <p *ngIf="this.feedLoaded === 'error'">Fehler beim Laden des Twitterfeeds.</p>
+</div>

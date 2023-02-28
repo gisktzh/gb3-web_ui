@@ -1,6 +1,7 @@
 import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
 import {ScriptInjectorService} from '../../../shared/services/script-injector.service';
-import {Subscription, tap} from 'rxjs';
+import {of, Subscription, tap} from 'rxjs';
+import {catchError} from 'rxjs/operators';
 
 const TWITTER_ACCOUNT_NAME = 'geoktzh';
 const TWITTER_MAX_TWEETS = 4;
@@ -11,7 +12,7 @@ const TWITTER_MAX_TWEETS = 4;
   styleUrls: ['./twitter-feed.component.scss']
 })
 export class TwitterFeedComponent implements AfterViewInit, OnDestroy {
-  public feedLoaded: boolean = false;
+  public feedLoaded: 'loading' | 'loaded' | 'error' = 'loading';
   @ViewChild('twitterFeed') private readonly twitterFeedContainer!: ElementRef;
   private readonly subscriptions: Subscription = new Subscription();
 
@@ -30,6 +31,15 @@ export class TwitterFeedComponent implements AfterViewInit, OnDestroy {
             twitterEmbedScript.ready((twitterWidget) => {
               this.loadTwitterFeed(twitterWidget);
             });
+          }),
+          catchError(() => {
+            this.feedLoaded = 'error';
+            return of(null);
+          }),
+          tap((value) => {
+            if (value === null) {
+              this.feedLoaded = 'error';
+            }
           })
         )
         .subscribe()
@@ -50,7 +60,7 @@ export class TwitterFeedComponent implements AfterViewInit, OnDestroy {
         }
       )
       .then(() => {
-        this.feedLoaded = true;
+        this.feedLoaded = 'loaded';
       });
   }
 }
