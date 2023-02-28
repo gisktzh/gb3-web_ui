@@ -1,6 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {tap} from 'rxjs';
+import {AfterViewInit, Component} from '@angular/core';
+import {ScriptInjectorService} from '../shared/services/script-injector.service';
 
 @Component({
   selector: 'start-page',
