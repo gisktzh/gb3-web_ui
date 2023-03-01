@@ -1,3 +1,9 @@
 .content {
-  padding: 5px 35%;
+  display: flex;
+  justify-content: center;
+
+  .content__section {
+    width: 100%;
+    max-width: 900px;
+  }
 }

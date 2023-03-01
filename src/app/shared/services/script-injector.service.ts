@@ -1,6 +1,7 @@
 import {Injectable, Renderer2, RendererFactory2} from '@angular/core';
-import {BehaviorSubject, combineLatest, filter, Observable, tap, throwError} from 'rxjs';
+import {BehaviorSubject, combineLatest, filter, Observable, tap} from 'rxjs';
 import {map} from 'rxjs/operators';
+import {LoadingState} from '../types/loading-state';
 
 interface InjectableExternalScript {
   src: string;
@@ -29,38 +30,50 @@ export class ScriptInjectorService {
     this.renderer = rendererFactory.createRenderer(null, null);
   }
 
+  /**
+   * Injects the twitterfeed API and returns the (global) twttr API object. Gracefully awaits the onload event and also handles errors like
+   * wrong URLs or CDN failures.
+   *
+   * For more details: https://developer.twitter.com/en/docs/twitter-for-websites/javascript-api/overview
+   */
   public injectTwitterFeedApi(): Observable<TwitterLike> {
-    const hasScriptLoaded = new BehaviorSubject<'loading' | 'loaded' | 'error'>('loading');
+    const scriptLoadingState = new BehaviorSubject<LoadingState>('loading');
 
-    const injectScript = this.injectScript(twitterFeedInjectableScript).pipe(
+    const injectScript = this.injectExternalScript(twitterFeedInjectableScript).pipe(
       tap((script) => {
         if (typeof twttr !== 'undefined') {
-          hasScriptLoaded.next('loaded');
+          scriptLoadingState.next('loaded');
         } else if (this.loadedScripts.find((loadedScript) => loadedScript.id === script.id)) {
-          hasScriptLoaded.next('error');
+          scriptLoadingState.next('error');
         } else {
           script.onload = () => {
-            hasScriptLoaded.next('loaded');
+            scriptLoadingState.next('loaded');
           };
           script.onerror = () => {
-            hasScriptLoaded.next('error');
+            scriptLoadingState.next('error');
           };
         }
       })
     );
 
-    return combineLatest([hasScriptLoaded, injectScript]).pipe(
+    return combineLatest([scriptLoadingState, injectScript]).pipe(
       filter(([isLoaded, _]) => isLoaded !== 'loading'),
       map(([isLoaded, _]) => {
         if (isLoaded === 'error') {
-          throw new Error('Error loading twitter feed.'); // todo: add error classes
+          throw new Error('Error loading twitter feed.'); // todo: add error classes for overall app
         }
         return twttr;
       })
     );
   }
 
-  private injectScript(script: InjectableExternalScript): Observable<HTMLScriptElement> {
+  /**
+   * Loads a script from an external source and injects it to the DOM. Keeps track of already added scripts and returns the cached instance
+   * if it exists.
+   * @param script
+   * @private
+   */
+  private injectExternalScript(script: InjectableExternalScript): Observable<HTMLScriptElement> {
     return new Observable<HTMLScriptElement>((subscriber) => {
       const existingScript = this.loadedScripts.find((loadedScript) => loadedScript.id === script.id);
 
@@ -68,7 +81,7 @@ export class ScriptInjectorService {
         return subscriber.next(existingScript.scriptReference);
       }
 
-      const scriptElement = document.createElement('script');
+      const scriptElement = this.renderer.createElement('script');
       scriptElement.type = script.type;
       scriptElement.src = script.src;
 

@@ -2,6 +2,7 @@ import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild} from '@angul
 import {ScriptInjectorService} from '../../../shared/services/script-injector.service';
 import {of, Subscription, tap} from 'rxjs';
 import {catchError} from 'rxjs/operators';
+import {LoadingState} from 'src/app/shared/types/loading-state';
 
 const TWITTER_ACCOUNT_NAME = 'geoktzh';
 const TWITTER_MAX_TWEETS = 4;
@@ -12,7 +13,7 @@ const TWITTER_MAX_TWEETS = 4;
   styleUrls: ['./twitter-feed.component.scss']
 })
 export class TwitterFeedComponent implements AfterViewInit, OnDestroy {
-  public feedLoaded: 'loading' | 'loaded' | 'error' = 'loading';
+  public feedLoadingState: LoadingState = 'loading';
   @ViewChild('twitterFeed') private readonly twitterFeedContainer!: ElementRef;
   private readonly subscriptions: Subscription = new Subscription();
 
@@ -33,12 +34,11 @@ export class TwitterFeedComponent implements AfterViewInit, OnDestroy {
             });
           }),
           catchError(() => {
-            this.feedLoaded = 'error';
             return of(null);
           }),
           tap((value) => {
             if (value === null) {
-              this.feedLoaded = 'error';
+              this.feedLoadingState = 'error';
             }
           })
         )
@@ -57,11 +57,12 @@ export class TwitterFeedComponent implements AfterViewInit, OnDestroy {
         {
           dnt: true,
           tweetLimit: TWITTER_MAX_TWEETS,
-          lang: 'de'
+          lang: 'de',
+          chrome: 'nofooter'
         }
       )
       .then(() => {
-        this.feedLoaded = 'loaded';
+        this.feedLoadingState = 'loaded';
       });
   }
 }
