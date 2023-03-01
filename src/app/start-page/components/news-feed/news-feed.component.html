@@ -1,0 +1,15 @@
+<p *ngIf="this.loadingState === 'loading'">
+  Lade Neuigkeiten aus dem GIS-Team...
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+</p>
+<div>
+  <ng-container *ngFor="let newsEntry of this.news">
+    <div>
+      <p><strong>Mitteilung</strong> {{ newsEntry.date }}</p>
+      <a [href]="newsEntry.link" target="_blank"
+        ><h1>{{ newsEntry.title }}</h1></a
+      >
+      <p>{{ newsEntry.teaserText }}</p>
+    </div>
+  </ng-container>
+</div>
