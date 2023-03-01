@@ -23,7 +23,6 @@
 
     .news-feed__entry__header {
       margin: 0;
-      font-size: small;
 
       &:before {
         content: 'Mitteilung ';
@@ -35,7 +34,6 @@
       @include mixins.multiline-ellipsis(2);
       margin: 0;
       font-weight: bold;
-      font-size: larger;
     }
 
     .news-feed__entry__teaser-text {

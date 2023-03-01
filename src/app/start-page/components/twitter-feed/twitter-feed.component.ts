@@ -3,6 +3,7 @@ import {ScriptInjectorService} from '../../../shared/services/script-injector.se
 import {of, Subscription, tap} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {LoadingState} from 'src/app/shared/types/loading-state';
+import {HasLoadingState} from '../../../shared/interfaces/has-loading-state.interface';
 
 const TWITTER_ACCOUNT_NAME = 'geoktzh';
 const TWITTER_MAX_TWEETS = 4;
@@ -12,8 +13,8 @@ const TWITTER_MAX_TWEETS = 4;
   templateUrl: './twitter-feed.component.html',
   styleUrls: ['./twitter-feed.component.scss']
 })
-export class TwitterFeedComponent implements AfterViewInit, OnDestroy {
-  public feedLoadingState: LoadingState = 'loading';
+export class TwitterFeedComponent implements AfterViewInit, OnDestroy, HasLoadingState {
+  public loadingState: LoadingState = 'loading';
   @ViewChild('twitterFeed') private readonly twitterFeedContainer!: ElementRef;
   private readonly subscriptions: Subscription = new Subscription();
 
@@ -38,7 +39,7 @@ export class TwitterFeedComponent implements AfterViewInit, OnDestroy {
           }),
           tap((value) => {
             if (value === null) {
-              this.feedLoadingState = 'error';
+              this.loadingState = 'error';
             }
           })
         )
@@ -62,7 +63,7 @@ export class TwitterFeedComponent implements AfterViewInit, OnDestroy {
         }
       )
       .then(() => {
-        this.feedLoadingState = 'loaded';
+        this.loadingState = 'loaded';
       });
   }
 }
