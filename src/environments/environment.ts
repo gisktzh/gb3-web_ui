@@ -9,7 +9,8 @@ export const environment = {
   apiKey: apiKey,
   baseUrls: {
     gb3Api: 'https://maps.zh.ch',
-    geoLion: 'https://www.geolion.zh.ch'
+    geoLion: 'https://www.geolion.zh.ch',
+    ktzhWebsite: 'https://www.zh.ch'
   }
 };
 

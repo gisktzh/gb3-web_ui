@@ -1,0 +1,45 @@
+@use 'functions/helper.function' as functions;
+@use 'mixins/helpers.mixin' as mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.news-feed {
+  display: flex;
+  gap: 5px;
+
+  .news-feed__link-wrapper {
+    text-decoration: none;
+    color: inherit;
+    flex-grow: 1;
+    flex-basis: 100%;
+    border: solid #f0f0f0 4px;
+
+    &:hover {
+      border: solid #e4e4e4 4px;
+    }
+  }
+
+  .news-feed__entry {
+    padding: 2rem;
+
+    .news-feed__entry__header {
+      margin: 0;
+      font-size: small;
+
+      &:before {
+        content: 'Mitteilung ';
+        font-weight: bold;
+      }
+    }
+
+    .news-feed__entry__title {
+      @include mixins.multiline-ellipsis(2);
+      margin: 0;
+      font-weight: bold;
+      font-size: larger;
+    }
+
+    .news-feed__entry__teaser-text {
+      @include mixins.multiline-ellipsis(4);
+    }
+  }
+}

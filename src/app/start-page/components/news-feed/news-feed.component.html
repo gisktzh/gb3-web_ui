@@ -2,14 +2,14 @@
   Lade Neuigkeiten aus dem GIS-Team...
   <mat-progress-bar mode="indeterminate"></mat-progress-bar>
 </p>
-<div>
+<div class="news-feed">
   <ng-container *ngFor="let newsEntry of this.news">
-    <div>
-      <p><strong>Mitteilung</strong> {{ newsEntry.date }}</p>
-      <a [href]="newsEntry.link" target="_blank"
-        ><h1>{{ newsEntry.title }}</h1></a
-      >
-      <p>{{ newsEntry.teaserText }}</p>
-    </div>
+    <a [href]="newsEntry.link" [title]="newsEntry.title" class="news-feed__link-wrapper" target="_blank">
+      <div class="news-feed__entry">
+        <p class="news-feed__entry__header">{{ newsEntry.date }}</p>
+        <p class="news-feed__entry__title">{{ newsEntry.title }}</p>
+        <p class="news-feed__entry__teaser-text">{{ newsEntry.teaserText }}</p>
+      </div>
+    </a>
   </ng-container>
 </div>

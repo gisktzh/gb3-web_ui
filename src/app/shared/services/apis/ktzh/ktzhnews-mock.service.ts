@@ -15,7 +15,7 @@ export class KTZHNewsMockService extends KTZHNewsService {
   public override loadNews(): Observable<KTZHNews[]> {
     return of(mockData).pipe(
       delay(this.getRandomDelayInMs()),
-      map((mockResult) => mockResult.news)
+      map((mockResult) => this.transformNewsResult(mockResult))
     );
   }
 

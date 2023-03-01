@@ -4,6 +4,7 @@ import {RootObject as KTZHNewsRootObject} from '../../../models/ktzh-news-genera
 import {KTZHNews} from '../../../interfaces/ktzh-news.interface';
 import {map} from 'rxjs/operators';
 import {Observable} from 'rxjs';
+import {environment} from '../../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,16 @@ export class KTZHNewsService extends BaseApiService {
   private organisationFilter: string[] = ['kanton-zuerich', 'baudirektion', 'amt-fuer-raumentwicklung'];
 
   public loadNews(): Observable<KTZHNews[]> {
-    return this.get<KTZHNewsRootObject>(this.getNewsUrl()).pipe(map((result) => result.news));
+    return this.get<KTZHNewsRootObject>(this.getNewsUrl()).pipe(map((result) => this.transformNewsResult(result)));
+  }
+
+  protected transformNewsResult(result: KTZHNewsRootObject) {
+    return result.news.map((newsItem) => {
+      return {
+        ...newsItem,
+        link: `${environment.baseUrls.ktzhWebsite}${newsItem.link}`
+      };
+    });
   }
 
   private getNewsUrl(): string {
