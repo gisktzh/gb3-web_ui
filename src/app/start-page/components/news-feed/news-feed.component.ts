@@ -3,7 +3,7 @@ import {KTZHNewsService} from '../../../shared/services/apis/ktzh/ktzhnews.servi
 import {HasLoadingState} from '../../../shared/interfaces/has-loading-state.interface';
 import {LoadingState} from '../../../shared/types/loading-state';
 import {KTZHNews} from '../../../shared/interfaces/ktzh-news.interface';
-import {mergeMap, Subscription, tap} from 'rxjs';
+import {Subscription, tap} from 'rxjs';
 import {NEWS_SERVICE} from '../../../app.module';
 
 const NUMBER_OF_NEWS = 3;

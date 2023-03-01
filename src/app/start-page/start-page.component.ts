@@ -1,5 +1,4 @@
-import {AfterViewInit, Component} from '@angular/core';
-import {ScriptInjectorService} from '../shared/services/script-injector.service';
+import {Component} from '@angular/core';
 
 @Component({
   selector: 'start-page',

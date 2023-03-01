@@ -10,7 +10,7 @@ import {environment} from '../../../../../environments/environment';
   providedIn: 'root'
 })
 export class KTZHNewsService extends BaseApiService {
-  protected apiBaseUrl: string = 'https://www.zh.ch/de/news-uebersicht/_jcr_content.zhweb-news.zhweb-cache.json';
+  protected apiBaseUrl: string = `${environment.baseUrls.ktzhWebsite}/de/news-uebersicht/_jcr_content.zhweb-news.zhweb-cache.json`;
   private topicsFilter: string[] = ['planen-bauen', 'geoinformation'];
   private organisationFilter: string[] = ['kanton-zuerich', 'baudirektion', 'amt-fuer-raumentwicklung'];
 

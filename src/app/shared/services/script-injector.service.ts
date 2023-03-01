@@ -27,7 +27,7 @@ export class ScriptInjectorService {
   private readonly renderer: Renderer2;
 
   constructor(private readonly rendererFactory: RendererFactory2) {
-    this.renderer = rendererFactory.createRenderer(null, null);
+    this.renderer = this.rendererFactory.createRenderer(null, null);
   }
 
   /**
