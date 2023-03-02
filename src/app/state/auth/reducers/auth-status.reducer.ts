@@ -5,20 +5,22 @@ export const authStatusFeatureKey = 'authStatus';
 
 export interface AuthStatusState {
   isAuthenticated: boolean;
+  userName: string | undefined;
 }
 
 export const initialState: AuthStatusState = {
-  isAuthenticated: false
+  isAuthenticated: false,
+  userName: undefined
 };
 
 export const authStatusFeature = createFeature({
   name: authStatusFeatureKey,
   reducer: createReducer(
     initialState,
-    on(AuthStatusActions.setStatus, (state, {isAuthenticated}): AuthStatusState => {
-      return {...state, isAuthenticated};
+    on(AuthStatusActions.setStatus, (state, {isAuthenticated, userName}): AuthStatusState => {
+      return {...state, isAuthenticated, userName};
     })
   )
 });
 
-export const {name, reducer, selectAuthStatusState, selectIsAuthenticated} = authStatusFeature;
+export const {name, reducer, selectAuthStatusState, selectIsAuthenticated, selectUserName} = authStatusFeature;

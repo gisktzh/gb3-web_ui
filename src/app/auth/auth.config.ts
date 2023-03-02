@@ -8,7 +8,15 @@ export const authConfig: AuthConfig = {
   showDebugInformation: !environment.production,
   responseType: 'code',
   redirectUri: `${window.location.origin}/`,
-  scope: 'openid',
+  scope: 'openid profile',
+  /**
+   * The following flag is used because we do not have ID tokens; so we cannot do the strict subject check required by OIDC (compare the sub
+   * of the accesstoken with the ID token). The library errors if we check this, and rightly so.
+   *
+   * More info:
+   * https://github.com/manfredsteyer/angular-oauth2-oidc-angular-package-format/blob/master/angular-oauth2-oidc/src/oauth-service.ts#L492
+   */
+  skipSubjectCheck: true,
   /**
    * Both silentrefresh as well as session checks are not implemented in the GB2 backend. Hence, they need to be disabled to prevent the
    * tokens from being refreshed and the sessions from being checked for their validity.

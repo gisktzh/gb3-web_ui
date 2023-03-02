@@ -12,9 +12,15 @@
     <mat-icon>launch</mat-icon>
     <p>Geodatenshop</p>
   </a>
-  <mat-divider vertical class="navbar__divider"></mat-divider>
+  <mat-divider class="navbar__divider" vertical></mat-divider>
   <a (click)="this.startLogin()" *ngIf="!this.isAuthenticated; else logoutButton" class="navbar__item" mat-button>Login</a>
   <ng-template #logoutButton>
-    <a (click)="this.logout()" class="navbar__item" mat-button>Logout</a>
+    <a [matMenuTriggerFor]="userMenu" class="navbar__item" mat-button><mat-icon>account_circle</mat-icon>{{ this.userName }}</a>
+    <mat-menu #userMenu="matMenu">
+      <button mat-menu-item (click)="this.logout()">
+        <mat-icon>logout</mat-icon>
+        <span>Logout</span>
+      </button>
+    </mat-menu>
   </ng-template>
 </mat-toolbar>

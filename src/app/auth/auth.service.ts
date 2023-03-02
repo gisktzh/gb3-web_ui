@@ -5,6 +5,7 @@ import {environment} from '../../environments/environment';
 import {Store} from '@ngrx/store';
 import {AuthStatusActions} from '../state/auth/actions/auth-status.actions';
 import {AuthNotificationService} from './notifications/auth-notification.service';
+import {Gb2UserInfo} from '../shared/interfaces/gb2-user-info.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -98,7 +99,9 @@ export class AuthService {
     this.isAuthenticated$
       .pipe(
         distinctUntilChanged(),
-        tap((isAuthenticated) => {
+        tap(async (isAuthenticated) => {
+          let userName = undefined;
+
           if (!isAuthenticated) {
             if (this.oauthService.getAccessToken()) {
               this.oauthService.logOut();
@@ -107,12 +110,19 @@ export class AuthService {
             this.unregisterIsAuthenticatedCheckIntervalHandler();
           } else {
             this.registerIsAuthenticatedCheckIntervalHandler();
+            userName = await this.getUserInfo();
           }
 
-          this.store.dispatch(AuthStatusActions.setStatus({isAuthenticated}));
+          this.store.dispatch(AuthStatusActions.setStatus({isAuthenticated, userName}));
         })
       )
       .subscribe();
+  }
+
+  private async getUserInfo(): Promise<string> {
+    const userInfo = (await this.oauthService.loadUserProfile()) as Gb2UserInfo;
+
+    return userInfo.info.name;
   }
 
   private registerImpendingLogoutHandler() {

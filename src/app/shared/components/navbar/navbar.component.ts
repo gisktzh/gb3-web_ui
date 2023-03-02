@@ -3,6 +3,7 @@ import {AuthService} from '../../../auth/auth.service';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {AuthStatusActions} from '../../../state/auth/actions/auth-status.actions';
+import {selectUserName} from '../../../state/auth/reducers/auth-status.reducer';
 
 @Component({
   selector: 'navbar',
@@ -11,7 +12,9 @@ import {AuthStatusActions} from '../../../state/auth/actions/auth-status.actions
 })
 export class NavbarComponent implements OnInit, OnDestroy {
   public isAuthenticated: boolean = false;
+  public userName: string | undefined = undefined;
   private readonly subscriptions = new Subscription();
+  private readonly userName$ = this.store.select(selectUserName);
 
   constructor(private readonly authService: AuthService, private readonly store: Store) {}
 
@@ -33,5 +36,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   private initSubscriptions() {
     this.subscriptions.add(this.authService.isAuthenticated$.pipe(tap((value) => (this.isAuthenticated = value))).subscribe());
+    this.subscriptions.add(this.userName$.pipe(tap((userName) => (this.userName = userName))).subscribe());
   }
 }
