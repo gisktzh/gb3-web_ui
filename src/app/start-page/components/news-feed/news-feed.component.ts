@@ -3,8 +3,9 @@ import {KTZHNewsService} from '../../../shared/services/apis/ktzh/ktzhnews.servi
 import {HasLoadingState} from '../../../shared/interfaces/has-loading-state.interface';
 import {LoadingState} from '../../../shared/types/loading-state';
 import {KTZHNews} from '../../../shared/interfaces/ktzh-news.interface';
-import {Subscription, tap} from 'rxjs';
+import {Subscription, tap, throwError} from 'rxjs';
 import {NEWS_SERVICE} from '../../../app.module';
+import {catchError} from 'rxjs/operators';
 
 const NUMBER_OF_NEWS = 3;
 
@@ -32,6 +33,10 @@ export class NewsFeedComponent implements OnInit, HasLoadingState, OnDestroy {
           tap((news) => {
             this.news = news.slice(0, NUMBER_OF_NEWS);
             this.loadingState = 'loaded';
+          }),
+          catchError((err: unknown) => {
+            this.loadingState = 'error';
+            return throwError(() => err);
           })
         )
         .subscribe()

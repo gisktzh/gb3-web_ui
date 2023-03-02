@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
 import {ScriptInjectorService} from '../../../shared/services/script-injector.service';
-import {of, Subscription, tap} from 'rxjs';
+import {Subscription, tap, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {LoadingState} from 'src/app/shared/types/loading-state';
 import {HasLoadingState} from '../../../shared/interfaces/has-loading-state.interface';
@@ -34,13 +34,9 @@ export class TwitterFeedComponent implements AfterViewInit, OnDestroy, HasLoadin
               this.loadTwitterFeed(twitterWidget);
             });
           }),
-          catchError(() => {
-            return of(null);
-          }),
-          tap((value) => {
-            if (value === null) {
-              this.loadingState = 'error';
-            }
+          catchError((err: unknown) => {
+            this.loadingState = 'error';
+            return throwError(() => err);
           })
         )
         .subscribe()
