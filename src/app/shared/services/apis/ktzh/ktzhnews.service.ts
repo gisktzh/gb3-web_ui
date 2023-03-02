@@ -1,20 +1,21 @@
 import {Injectable} from '@angular/core';
 import {BaseApiService} from '../abstract-api.service';
 import {RootObject as KTZHNewsRootObject} from '../../../models/ktzh-news-generated.interfaces';
-import {KTZHNews} from '../../../interfaces/ktzh-news.interface';
+import {News} from '../../../interfaces/news.interface';
 import {map} from 'rxjs/operators';
 import {Observable} from 'rxjs';
 import {environment} from '../../../../../environments/environment';
+import {NewsService} from '../../../interfaces/news-service.interface';
 
 @Injectable({
   providedIn: 'root'
 })
-export class KTZHNewsService extends BaseApiService {
+export class KTZHNewsService extends BaseApiService implements NewsService {
   protected apiBaseUrl: string = `${environment.baseUrls.ktzhWebsite}/de/news-uebersicht/_jcr_content.zhweb-news.zhweb-cache.json`;
   private topicsFilter: string[] = ['planen-bauen', 'geoinformation'];
   private organisationFilter: string[] = ['kanton-zuerich', 'baudirektion', 'amt-fuer-raumentwicklung'];
 
-  public loadNews(): Observable<KTZHNews[]> {
+  public loadNews(): Observable<News[]> {
     return this.get<KTZHNewsRootObject>(this.getNewsUrl()).pipe(map((result) => this.transformNewsResult(result)));
   }
 

@@ -1,11 +1,11 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
-import {KTZHNewsService} from '../../../shared/services/apis/ktzh/ktzhnews.service';
 import {HasLoadingState} from '../../../shared/interfaces/has-loading-state.interface';
 import {LoadingState} from '../../../shared/types/loading-state';
-import {KTZHNews} from '../../../shared/interfaces/ktzh-news.interface';
 import {Subscription, tap, throwError} from 'rxjs';
 import {NEWS_SERVICE} from '../../../app.module';
 import {catchError} from 'rxjs/operators';
+import {NewsService} from '../../../shared/interfaces/news-service.interface';
+import {News} from '../../../shared/interfaces/news.interface';
 
 const NUMBER_OF_NEWS = 3;
 
@@ -16,10 +16,10 @@ const NUMBER_OF_NEWS = 3;
 })
 export class NewsFeedComponent implements OnInit, HasLoadingState, OnDestroy {
   public loadingState: LoadingState = 'loading';
-  public news: KTZHNews[] = [];
+  public news: News[] = [];
   private readonly subscriptions: Subscription = new Subscription();
 
-  constructor(@Inject(NEWS_SERVICE) private readonly newsService: KTZHNewsService) {}
+  constructor(@Inject(NEWS_SERVICE) private readonly newsService: NewsService) {}
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();

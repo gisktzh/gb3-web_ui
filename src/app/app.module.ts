@@ -18,10 +18,10 @@ import {EsriMapService} from './map/services/esri-map.service';
 import {MapService} from './map/interfaces/map.service';
 import {httpInterceptorProviders} from './shared/interceptors';
 import {KTZHNewsMockService} from './shared/services/apis/ktzh/ktzhnews-mock.service';
-import {KTZHNewsService} from './shared/services/apis/ktzh/ktzhnews.service';
+import {NewsService} from './shared/interfaces/news-service.interface';
 
 export const MAP_SERVICE = new InjectionToken<MapService>('MapService');
-export const NEWS_SERVICE = new InjectionToken<KTZHNewsService>('NewsService');
+export const NEWS_SERVICE = new InjectionToken<NewsService>('NewsService');
 
 @NgModule({
   declarations: [AppComponent],

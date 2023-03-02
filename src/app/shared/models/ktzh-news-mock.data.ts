@@ -1,9 +1,9 @@
-import {RootObject as KTZHNewsRootObject} from '../../../models/ktzh-news-generated.interfaces';
+import {RootObject as KTZHNewsRootObject} from './ktzh-news-generated.interfaces';
 
 /**
  * Mockdata response taken from the endpoint, used in the MockService.
  */
-export const mockData: KTZHNewsRootObject = {
+export const ktzhNewsMockData: KTZHNewsRootObject = {
   news: [
     {
       title: 'Neue Aufnahmen aus der Vogelperspektive ',
