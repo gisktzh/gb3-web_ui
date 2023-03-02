@@ -17,8 +17,11 @@ import {MapConfigEffects} from './state/map/effects/map-config-effects.service';
 import {EsriMapService} from './map/services/esri-map.service';
 import {MapService} from './map/interfaces/map.service';
 import {httpInterceptorProviders} from './shared/interceptors';
+import {KTZHNewsMockService} from './shared/services/apis/ktzh/ktzhnews-mock.service';
+import {NewsService} from './shared/interfaces/news-service.interface';
 
 export const MAP_SERVICE = new InjectionToken<MapService>('MapService');
+export const NEWS_SERVICE = new InjectionToken<NewsService>('NewsService');
 
 @NgModule({
   declarations: [AppComponent],
@@ -33,7 +36,11 @@ export const MAP_SERVICE = new InjectionToken<MapService>('MapService');
     }),
     EffectsModule.forRoot([ActiveMapItemEffects, FeatureInfoEffects, LayerCatalogEffects, LegendEffects, MapConfigEffects])
   ],
-  providers: [{provide: MAP_SERVICE, useClass: EsriMapService}, httpInterceptorProviders],
+  providers: [
+    {provide: MAP_SERVICE, useClass: EsriMapService},
+    {provide: NEWS_SERVICE, useClass: KTZHNewsMockService},
+    httpInterceptorProviders
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

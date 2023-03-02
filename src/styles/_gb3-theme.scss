@@ -24,3 +24,4 @@ $theme: $zh-light-theme;
 // Emit theme-dependent styles for common features used across multiple components.
 @include mat.core-theme($theme);
 @include mat.all-component-themes($theme);
+@include mat.all-component-typographies($theme);

@@ -1,0 +1,14 @@
+.content {
+  display: flex;
+  justify-content: center;
+
+  .content__section {
+    padding: 40px 0;
+    width: 100%;
+    max-width: 900px;
+
+    .content__section__item {
+      padding: 0 40px;
+    }
+  }
+}

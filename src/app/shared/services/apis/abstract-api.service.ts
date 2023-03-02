@@ -8,7 +8,7 @@ import {Observable} from 'rxjs';
 export abstract class BaseApiService {
   protected abstract apiBaseUrl: string;
 
-  protected constructor(private readonly http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
 
   protected get<T>(url: string): Observable<T> {
     return this.http.get<T>(url);
