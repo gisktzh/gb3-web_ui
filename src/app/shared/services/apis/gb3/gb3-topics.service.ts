@@ -5,7 +5,7 @@ import {Geometry} from 'geojson';
 import {QueryLayer} from '../../../interfaces/query-layer.interface';
 import {QueryLegend} from '../../../interfaces/query-legend.interface';
 import {LegendResponse} from '../../../interfaces/legend.interface';
-import {TopicsResponse} from '../../../interfaces/topic.interface';
+import {AttributeFilterConfiguration, TimesliderConfiguration, TopicsResponse} from '../../../interfaces/topic.interface';
 import {FeatureInfoResponse} from '../../../interfaces/feature-info.interface';
 import {forkJoin, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
@@ -88,13 +88,8 @@ export class Gb3TopicsService extends Gb3ApiService {
               id: topic.topic,
               printTitle: topic.print_title,
               icon: this.createAbsoluteIconUrl(topic.icon),
-              mainLevel: topic.main_level,
-              backgroundLevel: topic.background_level,
-              overlayLevel: topic.overlay_level,
               wmsUrl: topic.wms_url,
               minScale: topic.min_scale,
-              backgroundTopic: topic.background_topic,
-              overlayTopics: topic.overlay_topics,
               permissionMissing: topic.permission_missing,
               layers: topic.layers.map((layer) => {
                 return {
@@ -105,9 +100,12 @@ export class Gb3TopicsService extends Gb3ApiService {
                   wmsSort: layer.wms_sort,
                   tocSort: layer.toc_sort,
                   initiallyVisible: layer.initially_visible,
-                  visible: layer.initially_visible
+                  visible: layer.initially_visible,
+                  permissionMissing: layer.permission_missing
                 };
-              })
+              }),
+              timesliderConfiguration: topic.timesliderConfiguration as TimesliderConfiguration,
+              filterConfigurations: topic.filterConfigurations as AttributeFilterConfiguration[]
             };
           })
         };

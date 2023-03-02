@@ -20,12 +20,6 @@ export interface Map {
   geolion: number | null;
   /** Keywords */
   keywords: string[];
-  /** True if this is a main map */
-  mainLevel: boolean;
-  /** True if this is a background map */
-  backgroundLevel: boolean;
-  /** True if this is a overlay map */
-  overlayLevel: boolean;
   /**
    * WMS URL
    * @format uri
@@ -34,14 +28,12 @@ export interface Map {
   layers: MapLayer[];
   /** Min allowed scale denominator */
   minScale: number | null;
-  /** Topic name to load as background map if set */
-  backgroundTopic: string | null;
-  /** List of topic names to load as overlay maps */
-  overlayTopics: string[];
-  /** Available viewer tools */
-  tools: string[];
-  /** True if current user must sign in to view this topic */
-  permissionMissing: boolean;
+  /** True if unaccessible with current permissions. Not available in production environment. */
+  permissionMissing?: boolean;
+  /** Timeslider Settings */
+  timesliderConfiguration?: TimesliderConfiguration;
+  /** Filters Settings */
+  filterConfigurations?: AttributeFilterConfiguration[];
 }
 
 export interface MapLayer extends HasVisibility {
@@ -63,10 +55,56 @@ export interface MapLayer extends HasVisibility {
   tocSort: number;
   /** True if layer is initially enabled in TOC */
   initiallyVisible: boolean;
-  /** True if layer is editable by current user */
-  editable: boolean;
   /** True if layer is queryable by current user */
   queryable: boolean;
+  /** True if unaccessible with current permissions. Not available in production environment. */
+  permissionMissing?: boolean;
+}
+
+export interface TimesliderConfiguration {
+  name: string;
+  description?: string;
+  /** ISO-8601 date format (e.g. YYYY-MM-DD) */
+  dateFormat: string;
+  minimumDate: string;
+  maximumDate: string;
+  alwaysMaxRange: boolean;
+  /** ISO-8601 date range (PnYnMnD) */
+  minimalRange?: string;
+  /** ISO-8601 date range (PnYnMnD) */
+  range?: string;
+  /** ISO-8601 date range (PnYnMnD) */
+  sourceType: TimesliderSourceType;
+  source: TimesliderParameterSource | TimesliderLayerSource;
+}
+
+interface TimesliderParameterSource {
+  startRangeParameter: string;
+  endRangeParameter: string;
+  layerIdentifiers: string[];
+}
+
+interface TimesliderLayerSource {
+  layers: TimesliderLayer[];
+}
+
+interface TimesliderLayer {
+  layerName: string;
+  date: string;
+}
+
+type TimesliderSourceType = 'parameter' | 'layer';
+
+export interface AttributeFilterConfiguration {
+  name: string;
+  description?: string;
+  parameter: string;
+  filterValues: AttributeFilter[];
+}
+
+interface AttributeFilter {
+  name: string;
+  values: string[];
 }
 
 export interface TopicsResponse {
