@@ -14,6 +14,7 @@ export const environment: EnvironmentConfig = {
     gb2Api: 'http://localhost:4200',
     gb2Wms: 'http://localhost:4200',
     geoLion: 'https://www.geolion.zh.ch',
+    ktzhWebsite: 'https://www.zh.ch',
     overrideWmsUrl: 'http://localhost:4200/wms'
   },
   auth: {
