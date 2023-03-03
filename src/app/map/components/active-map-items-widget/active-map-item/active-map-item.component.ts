@@ -1,28 +1,19 @@
-import {AfterViewInit, Component, ElementRef, Inject, Input, ViewChild} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {ActiveMapItem} from '../../../models/active-map-item.model';
 import {ActiveMapItemActions} from '../../../../state/map/actions/active-map-item.actions';
 import {Store} from '@ngrx/store';
 import {MapLayer} from '../../../../shared/interfaces/topic.interface';
 import {CdkDrag, CdkDragDrop} from '@angular/cdk/drag-drop';
-import {TIME_SLIDER_SERVICE} from '../../../../app.module';
-import {TimeSliderService} from '../../../interfaces/time-slider.service';
 
 @Component({
   selector: 'active-map-item',
   templateUrl: './active-map-item.component.html',
   styleUrls: ['./active-map-item.component.scss']
 })
-export class ActiveMapItemComponent implements AfterViewInit {
+export class ActiveMapItemComponent {
   @Input() public activeMapItem!: ActiveMapItem;
-  @ViewChild('timeSlider') private readonly timeSliderContainer!: ElementRef;
 
-  constructor(private readonly store: Store, @Inject(TIME_SLIDER_SERVICE) private readonly timeSliderService: TimeSliderService) {}
-
-  public ngAfterViewInit(): void {
-    if (this.activeMapItem.timeSliderConfiguration) {
-      this.timeSliderService.assignTimeSliderWidget(this.activeMapItem.timeSliderConfiguration, this.timeSliderContainer.nativeElement);
-    }
-  }
+  constructor(private readonly store: Store) {}
 
   public trackByLayerId(index: number, item: MapLayer) {
     return item.id;

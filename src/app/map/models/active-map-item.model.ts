@@ -4,6 +4,7 @@ import {HasLoadingState} from '../../shared/interfaces/has-loading-state.interfa
 import {HasVisibility} from '../../shared/interfaces/has-visibility.interface';
 import {HasViewProcessState} from '../../shared/interfaces/has-view-process-state.interface';
 import {ViewProcessState} from '../../shared/types/view-process-state';
+import {TimeSliderExtent} from '../interfaces/time-slider-extent.interface';
 
 export class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewProcessState {
   public readonly id: string;
@@ -21,6 +22,7 @@ export class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewPro
   public viewProcessState: ViewProcessState = 'undefined';
   public visible = true;
   public opacity = 1;
+  public timeSliderExtent?: TimeSliderExtent;
 
   constructor(map: Map, layer?: MapLayer) {
     this.isSingleLayer = !!layer;

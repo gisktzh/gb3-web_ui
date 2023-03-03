@@ -6,7 +6,7 @@ import TimeSlider from '@arcgis/core/widgets/TimeSlider';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 import TimeExtent from '@arcgis/core/TimeExtent';
 import {TimeSliderService} from '../interfaces/time-slider.service';
-import {Observable, ReplaySubject} from 'rxjs';
+import {debounceTime, Observable, ReplaySubject} from 'rxjs';
 import {TimeSliderExtent} from '../interfaces/time-slider-extent.interface';
 
 @Injectable({
@@ -14,7 +14,10 @@ import {TimeSliderExtent} from '../interfaces/time-slider-extent.interface';
 })
 export class EsriTimeSliderService implements TimeSliderService {
   private readonly timeSliderExtentChanged$: ReplaySubject<TimeSliderExtent> = new ReplaySubject<TimeSliderExtent>(1);
-  public readonly timeSliderExtentChanged: Observable<TimeSliderExtent> = this.timeSliderExtentChanged$.asObservable();
+  public readonly timeSliderExtentChanged: Observable<TimeSliderExtent> = this.timeSliderExtentChanged$
+    .asObservable()
+    // add a debounce time as every step of the time slider creates a change of state which then creates a request to the server
+    .pipe(debounceTime(200));
 
   public assignTimeSliderWidget(timeSliderConfig: TimeSliderConfiguration, container: HTMLDivElement) {
     // TODO WES: remove

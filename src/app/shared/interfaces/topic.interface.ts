@@ -78,13 +78,13 @@ export interface TimeSliderConfiguration {
   source: TimeSliderParameterSource | TimeSliderLayerSource;
 }
 
-interface TimeSliderParameterSource {
+export interface TimeSliderParameterSource {
   startRangeParameter: string;
   endRangeParameter: string;
   layerIdentifiers: string[];
 }
 
-interface TimeSliderLayerSource {
+export interface TimeSliderLayerSource {
   layers: TimeSliderLayer[];
 }
 

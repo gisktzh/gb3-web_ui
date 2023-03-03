@@ -29,6 +29,8 @@ import TileInfo from '@arcgis/core/layers/support/TileInfo';
 import {BasemapConfigService} from './basemap-config.service';
 import {ConfigService} from '../../shared/services/config.service';
 import {selectActiveMapItems} from '../../state/map/reducers/active-map-item.reducer';
+import {TimeSliderExtent} from '../interfaces/time-slider-extent.interface';
+import {TimeSliderConfiguration, TimeSliderParameterSource} from '../../shared/interfaces/topic.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -127,6 +129,8 @@ export class EsriMapService implements MapService {
       return;
     }
 
+    // TODO WES: initial time slider extent (if any)
+
     const esriLayer: __esri.Layer = new EsriWMSLayer({
       id: mapItem.id,
       title: mapItem.title,
@@ -209,6 +213,21 @@ export class EsriMapService implements MapService {
     }
   }
 
+  public setTimeSliderExtent(timeSliderExtent: TimeSliderExtent, mapItem: ActiveMapItem) {
+    const esriLayer = this.findEsriLayer(mapItem.id);
+    if (esriLayer && esriLayer instanceof WMSLayer && mapItem.timeSliderConfiguration) {
+      switch (mapItem.timeSliderConfiguration.sourceType) {
+        case 'parameter':
+          esriLayer.customLayerParameters = this.createTimeSliderCustomParameter(timeSliderExtent, mapItem.timeSliderConfiguration);
+          break;
+        case 'layer':
+          // TODO WES: implement 'layer' source type handling
+          throw new Error('not implemented yet');
+      }
+      esriLayer.refresh();
+    }
+  }
+
   public reorderMapItem(previousPosition: number, currentPosition: number) {
     // index is the inverse position - the lowest index has the lowest visibility (it's on the bottom) while the lowest position has the highest visibility
     const previousIndex = this.mapView.map.layers.length - 1 - previousPosition;
@@ -222,6 +241,17 @@ export class EsriMapService implements MapService {
       // the index of sublayers is identical to their position (in contrast to the map items) where the lowest index/position has the highest visibility
       esriLayer.sublayers.reorder(esriLayer.sublayers.getItemAt(previousPosition), currentPosition);
     }
+  }
+
+  private createTimeSliderCustomParameter(
+    timeSliderExtent: TimeSliderExtent,
+    timeSliderConfiguration: TimeSliderConfiguration
+  ): {[index: string]: string} {
+    const timeSliderParameterSource = timeSliderConfiguration.source as TimeSliderParameterSource;
+    const customLayerParameters: {[index: string]: string} = {};
+    customLayerParameters[timeSliderParameterSource.startRangeParameter] = timeSliderExtent.startAsString;
+    customLayerParameters[timeSliderParameterSource.endRangeParameter] = timeSliderExtent.endAsString;
+    return customLayerParameters;
   }
 
   private addBasemapSubscription() {
