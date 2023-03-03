@@ -1,5 +1,5 @@
 import {LoadingState} from '../../shared/types/loading-state';
-import {Map, MapLayer} from '../../shared/interfaces/topic.interface';
+import {AttributeFilterConfiguration, Map, MapLayer, TimesliderConfiguration} from '../../shared/interfaces/topic.interface';
 import {HasLoadingState} from '../../shared/interfaces/has-loading-state.interface';
 import {HasVisibility} from '../../shared/interfaces/has-visibility.interface';
 import {HasViewProcessState} from '../../shared/interfaces/has-view-process-state.interface';
@@ -10,6 +10,8 @@ export class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewPro
   public readonly title: string;
   public readonly url: string;
   public readonly mapImageUrl: string;
+  public readonly timesliderConfiguration?: TimesliderConfiguration;
+  public readonly filterConfigurations?: AttributeFilterConfiguration[];
 
   public readonly mapId: string;
   public readonly layers: MapLayer[];
@@ -28,5 +30,7 @@ export class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewPro
     this.mapImageUrl = map.icon;
     this.mapId = map.id;
     this.layers = layer ? [layer] : map.layers;
+    this.timesliderConfiguration = map.timesliderConfiguration;
+    this.filterConfigurations = map.filterConfigurations;
   }
 }

@@ -8,6 +8,14 @@
   }
 }
 
+.timeslider {
+  @include mixins.no-box-shadow;
+
+  .timeslider__title {
+    margin: 0;
+  }
+}
+
 .sublayer-list {
   margin-left: 56px;
 

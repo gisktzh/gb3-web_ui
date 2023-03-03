@@ -6,7 +6,7 @@ import {Subscription, tap} from 'rxjs';
 import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
 import {LoadingState} from '../../../shared/types/loading-state';
 import {ActiveMapItem} from '../../models/active-map-item.model';
-import {Topic, Map, MapLayer} from '../../../shared/interfaces/topic.interface';
+import {Map, MapLayer, Topic} from '../../../shared/interfaces/topic.interface';
 
 @Component({
   selector: 'map-data-catalogue',
@@ -48,7 +48,18 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy {
   private initSubscriptions() {
     this.subscriptions.add(
       this.topics$.subscribe((value) => {
-        this.topics = value;
+        // TODO do NOT check that shit in!
+        const onlyTimesliderMaps = value
+          .filter((t) => t.maps.some((m) => m.timesliderConfiguration))
+          .map((t) => {
+            const topic = structuredClone(t);
+            topic.maps = t.maps.filter((m) => m.timesliderConfiguration);
+            return topic;
+          });
+        this.topics = onlyTimesliderMaps;
+        if (this.topics.length > 0) {
+          this.addActiveMap(this.topics[0].maps[0]);
+        }
       })
     );
 

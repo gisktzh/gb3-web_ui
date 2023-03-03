@@ -34,6 +34,7 @@
     "@types/geojson": "^7946.0.10",
     "@types/node": "^18.13.0",
     "@types/twitter-for-web": "^0.0.2",
+    "moment": "^2.29.4",
     "ngx-ui-tour-md-menu": "^10.4.0",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",

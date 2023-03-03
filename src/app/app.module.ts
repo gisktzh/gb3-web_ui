@@ -19,8 +19,10 @@ import {MapService} from './map/interfaces/map.service';
 import {httpInterceptorProviders} from './shared/interceptors';
 import {KTZHNewsMockService} from './shared/services/apis/ktzh/ktzhnews-mock.service';
 import {NewsService} from './shared/interfaces/news-service.interface';
+import {EsriTimesliderService} from './map/services/esri-timeslider.service';
 
 export const MAP_SERVICE = new InjectionToken<MapService>('MapService');
+export const TIMESLIDER_SERVICE = new InjectionToken<MapService>('TimesliderService');
 export const NEWS_SERVICE = new InjectionToken<NewsService>('NewsService');
 
 @NgModule({
@@ -38,6 +40,7 @@ export const NEWS_SERVICE = new InjectionToken<NewsService>('NewsService');
   ],
   providers: [
     {provide: MAP_SERVICE, useClass: EsriMapService},
+    {provide: TIMESLIDER_SERVICE, useClass: EsriTimesliderService},
     {provide: NEWS_SERVICE, useClass: KTZHNewsMockService},
     httpInterceptorProviders
   ],

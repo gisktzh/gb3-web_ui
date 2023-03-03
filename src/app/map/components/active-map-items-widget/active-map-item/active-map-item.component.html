@@ -1,9 +1,15 @@
-<!-- Opacity and special filter settings -->
+<!-- Opacity config -->
 <mat-card appearance="raised" class="transparency">
   <p class="transparency__title">Transparenz</p>
   <mat-slider discrete min="0" max="1" step="0.01" color="accent">
     <input matSliderThumb [value]="activeMapItem.opacity" (valueChange)="onOpacitySliderChange($event, activeMapItem)" />
   </mat-slider>
+</mat-card>
+
+<!-- timeslider config -->
+<mat-card appearance="raised" class="timeslider">
+  <p class="timeslider__title">Timeslider</p>
+  <div class="timeslider__container" #timeslider></div>
 </mat-card>
 
 <!-- List of sublayers (only if the map item is not a single layer itself) -->
