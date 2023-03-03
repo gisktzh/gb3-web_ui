@@ -6,31 +6,33 @@ import TimeSlider from '@arcgis/core/widgets/TimeSlider';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 import TimeExtent from '@arcgis/core/TimeExtent';
 import {TimesliderService} from '../interfaces/timeslider.service';
+import {Observable, ReplaySubject} from 'rxjs';
+import {TimesliderExtent} from '../interfaces/timeslider-extent.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EsriTimesliderService implements TimesliderService {
-  constructor() {}
+  private readonly timesliderExtentChanged$: ReplaySubject<TimesliderExtent> = new ReplaySubject<TimesliderExtent>(1);
+  public readonly timesliderExtentChanged: Observable<TimesliderExtent> = this.timesliderExtentChanged$.asObservable();
 
   public assignTimesliderWidget(timesliderConfig: TimesliderConfiguration, container: HTMLDivElement) {
     // TODO WES: remove
-    timesliderConfig = structuredClone(timesliderConfig);
-    timesliderConfig.range = timesliderConfig.minimalRange;
-    timesliderConfig.minimalRange = undefined;
+    // timesliderConfig = structuredClone(timesliderConfig);
+    // timesliderConfig.range = timesliderConfig.minimalRange;
+    // timesliderConfig.minimalRange = undefined;
+    // timesliderConfig.alwaysMaxRange = true;
     console.log(`minDate: ${timesliderConfig.minimumDate}, maxDate: ${timesliderConfig.maximumDate}`);
 
     const minimumDate: Date = moment(timesliderConfig.minimumDate, timesliderConfig.dateFormat).toDate();
     const maximumDate: Date = moment(timesliderConfig.maximumDate, timesliderConfig.dateFormat).toDate();
-    const initialRange = timesliderConfig.range ?? timesliderConfig.minimalRange;
+    const initialRange: string | null = timesliderConfig.range ?? timesliderConfig.minimalRange ?? null;
     const initialRangeDuration: Duration | null = initialRange ? moment.duration(initialRange) : null;
     if (initialRangeDuration && Math.abs(moment(minimumDate).diff(maximumDate)) <= initialRangeDuration.asMilliseconds()) {
       throw Error(`Invalid time slider configuration: min date + range > max date`); // TODO: error handling
     }
+    const initialTimeExtent = this.calculateTimeExtent(timesliderConfig);
 
-    const initialRangeStartDate: Date = minimumDate;
-    const initialRangeEndDate: Date =
-      !timesliderConfig.alwaysMaxRange && initialRangeDuration ? moment(minimumDate).add(initialRangeDuration).toDate() : maximumDate;
     const stops = initialRangeDuration ? this.createStopsByIntervalOrDates(initialRangeDuration, minimumDate, maximumDate) : undefined;
 
     const timeSlider = new TimeSlider({
@@ -41,11 +43,7 @@ export class EsriTimesliderService implements TimesliderService {
         start: minimumDate,
         end: maximumDate
       },
-      timeExtent: {
-        // location of timeSlider thumbs
-        start: initialRangeStartDate,
-        end: initialRangeEndDate
-      },
+      timeExtent: initialTimeExtent,
       stops: stops
     } as __esri.TimeSliderProperties);
 
@@ -54,6 +52,10 @@ export class EsriTimesliderService implements TimesliderService {
       (newValue: __esri.TimeExtent | undefined, oldValue: __esri.TimeExtent | undefined) =>
         this.onTimeExtentChanged(newValue, oldValue, timeSlider, timesliderConfig)
     );
+
+    // emit initial value
+    const timesliderExtent = this.convertEsriTimeExtent(initialTimeExtent, timesliderConfig.dateFormat);
+    this.timesliderExtentChanged$.next(timesliderExtent);
   }
 
   private createStopsByIntervalOrDates(
@@ -99,6 +101,77 @@ export class EsriTimesliderService implements TimesliderService {
     } as __esri.StopsByDates;
   }
 
+  private calculateTimeExtent(
+    timesliderConfig: TimesliderConfiguration,
+    newValue?: __esri.TimeExtent,
+    oldValue?: __esri.TimeExtent
+  ): __esri.TimeExtent {
+    const minimumDate: Date = moment(timesliderConfig.minimumDate, timesliderConfig.dateFormat).toDate();
+    const maximumDate: Date = moment(timesliderConfig.maximumDate, timesliderConfig.dateFormat).toDate();
+    const range: string | null = timesliderConfig.range ?? timesliderConfig.minimalRange ?? null;
+    const rangeDuration: Duration | null = range ? moment.duration(range) : null;
+
+    if (!newValue) {
+      /*
+          No new value: return initial extent
+        */
+      const initialStartDate: Date = minimumDate;
+      const initialEndDate: Date =
+        !timesliderConfig.alwaysMaxRange && rangeDuration ? moment(minimumDate).add(rangeDuration).toDate() : maximumDate;
+      return new TimeExtent({start: initialStartDate, end: initialEndDate});
+    }
+
+    const timeExtent = new TimeExtent({start: newValue.start, end: newValue.end});
+    if (!oldValue) {
+      /*
+          No old value: there was no change - just return the new values
+        */
+      return timeExtent;
+    }
+
+    const hasStartDateChanged: boolean = Math.abs(moment(newValue.start).diff(oldValue.start)) > 0;
+
+    if (timesliderConfig.alwaysMaxRange) {
+      /*
+          Always max range:
+            start/end date are always min/max
+        */
+      timeExtent.start = minimumDate;
+      timeExtent.end = maximumDate;
+      return timeExtent;
+    }
+
+    if (rangeDuration) {
+      /*
+          Minimal or fixed range
+            Either the start or end date has changed;
+            1. ensure that the changed date is still within the valid minimum range:
+              a. in case the start date was changed: startDate <= maxDate - range
+              b. in case the end date was changed:     endDate >= minDate + range
+            2. depending on whether it is a minimal or fixed range requirement do:
+              a. fixed range
+                 the previously unchanged value has to be adjusted accordingly to enforce the fixed range between start and end date
+              b. minimal range
+                 if the difference between the new start and end date is under the given minimum range then
+                 adjust the value of the previously unchanged value accordingly to enforce the minimal range between them
+         */
+      const hasFixedRange = !!timesliderConfig.range;
+      const maximumRangeStartDate: Date = rangeDuration ? moment(maximumDate).subtract(rangeDuration).toDate() : maximumDate;
+      const minimumRangeEndDate: Date = rangeDuration ? moment(minimumDate).add(rangeDuration).toDate() : minimumDate;
+      const startEndDiff: number = Math.abs(moment(timeExtent.start).diff(timeExtent.end));
+
+      if (hasStartDateChanged && (hasFixedRange || startEndDiff < rangeDuration.asMilliseconds())) {
+        timeExtent.start = timeExtent.start <= maximumRangeStartDate ? timeExtent.start : maximumRangeStartDate;
+        timeExtent.end = moment(timeExtent.start).add(rangeDuration).toDate();
+      } else if (!hasStartDateChanged && (hasFixedRange || startEndDiff < rangeDuration.asMilliseconds())) {
+        timeExtent.end = timeExtent.end >= minimumRangeEndDate ? timeExtent.end : minimumRangeEndDate;
+        timeExtent.start = moment(timeExtent.end).subtract(rangeDuration).toDate();
+      }
+    }
+
+    return timeExtent;
+  }
+
   private onTimeExtentChanged(
     newValue: __esri.TimeExtent | undefined,
     oldValue: __esri.TimeExtent | undefined,
@@ -116,61 +189,7 @@ export class EsriTimesliderService implements TimesliderService {
       ).format('YYYY')}-${moment(oldValue?.end).format('YYYY')}`
     );
 
-    const correctedTimeExtend = new TimeExtent({start: newValue.start, end: newValue.end});
-    if (oldValue) {
-      const startDateChanged: boolean = Math.abs(moment(newValue.start).diff(oldValue.start)) > 0;
-      const minimumDate: Date = moment(timesliderConfig.minimumDate, timesliderConfig.dateFormat).toDate();
-      const maximumDate: Date = moment(timesliderConfig.maximumDate, timesliderConfig.dateFormat).toDate();
-      const startEndDiff: number = Math.abs(moment(newValue.start).diff(newValue.end));
-      const anyRange: string | undefined = timesliderConfig.range ?? timesliderConfig.minimalRange;
-      const maximumRangeStartDate: Date = anyRange ? moment(maximumDate).subtract(anyRange).toDate() : maximumDate;
-      const minimumRangeEndDate: Date = anyRange ? moment(minimumDate).add(anyRange).toDate() : minimumDate;
-
-      if (timesliderConfig.alwaysMaxRange) {
-        /*
-          Always max range:
-            start/end date are always min/max
-        */
-        correctedTimeExtend.start = minimumDate;
-        correctedTimeExtend.end = maximumDate;
-      } else if (timesliderConfig.range) {
-        /*
-          Fixed range
-            Either the start or end date has changed;
-            1. ensure that the changed date is still within the valid range:
-              a. in case the start date was changed: startDate >= minDate + range
-              b. in case the end date was changed:     endDate <= maxDate - range
-            2. the previously unchanged value has to be adjusted accordingly to enforce the fixed range between start and end date
-         */
-        const rangeDuration = moment.duration(timesliderConfig.range);
-        if (startDateChanged) {
-          correctedTimeExtend.start = newValue.start <= maximumRangeStartDate ? newValue.start : maximumRangeStartDate;
-          correctedTimeExtend.end = moment(correctedTimeExtend.start).add(rangeDuration).toDate();
-        } else {
-          correctedTimeExtend.end = newValue.end >= minimumRangeEndDate ? newValue.end : minimumRangeEndDate;
-          correctedTimeExtend.start = moment(correctedTimeExtend.end).subtract(rangeDuration).toDate();
-        }
-      } else if (timesliderConfig.minimalRange) {
-        /*
-          Minimal range
-            Either the start or end date has changed;
-            1. ensure that the changed date is still within the valid minimum range:
-              a. in case the start date was changed: startDate >= minDate + range
-              b. in case the end date was changed:     endDate <= maxDate - range
-            2. if the difference between the new start and end date is under the given minimum range then
-               adjust the value of the previously unchanged value accordingly to enforce the minimal range between them
-         */
-        const minimalRangeDuration = moment.duration(timesliderConfig.minimalRange);
-        if (startDateChanged && startEndDiff < minimalRangeDuration.asMilliseconds()) {
-          correctedTimeExtend.start = newValue.start <= maximumRangeStartDate ? newValue.start : maximumRangeStartDate;
-          correctedTimeExtend.end = moment(correctedTimeExtend.start).add(minimalRangeDuration).toDate();
-        } else if (!startDateChanged && startEndDiff < minimalRangeDuration.asMilliseconds()) {
-          correctedTimeExtend.end = newValue.end >= minimumRangeEndDate ? newValue.end : minimumRangeEndDate;
-          correctedTimeExtend.start = moment(correctedTimeExtend.end).subtract(minimalRangeDuration).toDate();
-        }
-      }
-    }
-
+    const correctedTimeExtend = this.calculateTimeExtent(timesliderConfig, newValue, oldValue);
     if (Math.abs(moment(correctedTimeExtend.start).diff(newValue.start)) > 0) {
       timeSlider.timeExtent.start = correctedTimeExtend.start;
     }
@@ -179,10 +198,20 @@ export class EsriTimesliderService implements TimesliderService {
     }
 
     if (!oldValue || Math.abs(moment(oldValue.start).diff(newValue.start)) > 0 || Math.abs(moment(oldValue.end).diff(newValue.end)) > 0) {
-      // TODO WES: replace with filters
       console.log(
         `FILTER: new value ${moment(correctedTimeExtend.start).format('YYYY')}-${moment(correctedTimeExtend.end).format('YYYY')}`
       );
+      const timesliderExtent = this.convertEsriTimeExtent(correctedTimeExtend, timesliderConfig.dateFormat);
+      this.timesliderExtentChanged$.next(timesliderExtent);
     }
+  }
+
+  private convertEsriTimeExtent(esriTimeExtent: __esri.TimeExtent, dateFormat: string): TimesliderExtent {
+    return {
+      start: esriTimeExtent.start,
+      startAsString: moment(esriTimeExtent.start).format(dateFormat),
+      end: esriTimeExtent.end,
+      endAsString: moment(esriTimeExtent.end).format(dateFormat)
+    } as TimesliderExtent;
   }
 }
