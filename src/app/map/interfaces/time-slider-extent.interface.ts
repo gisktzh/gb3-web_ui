@@ -1,4 +1,4 @@
-export interface TimesliderExtent {
+export interface TimeSliderExtent {
   start: Date;
   startAsString: string;
   end: Date;

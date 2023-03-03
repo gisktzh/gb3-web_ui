@@ -5,7 +5,7 @@ import {Geometry} from 'geojson';
 import {QueryLayer} from '../../../interfaces/query-layer.interface';
 import {QueryLegend} from '../../../interfaces/query-legend.interface';
 import {LegendResponse} from '../../../interfaces/legend.interface';
-import {AttributeFilterConfiguration, TimesliderConfiguration, TopicsResponse} from '../../../interfaces/topic.interface';
+import {AttributeFilterConfiguration, TimeSliderConfiguration, TopicsResponse} from '../../../interfaces/topic.interface';
 import {FeatureInfoResponse} from '../../../interfaces/feature-info.interface';
 import {forkJoin, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
@@ -104,7 +104,7 @@ export class Gb3TopicsService extends Gb3ApiService {
                   permissionMissing: layer.permission_missing
                 };
               }),
-              timesliderConfiguration: topic.timesliderConfiguration as TimesliderConfiguration,
+              timeSliderConfiguration: topic.timesliderConfiguration as TimeSliderConfiguration,
               filterConfigurations: topic.filterConfigurations as AttributeFilterConfiguration[]
             };
           })

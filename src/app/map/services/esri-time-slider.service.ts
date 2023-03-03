@@ -1,37 +1,37 @@
 import {Injectable} from '@angular/core';
-import {TimesliderConfiguration} from '../../shared/interfaces/topic.interface';
+import {TimeSliderConfiguration} from '../../shared/interfaces/topic.interface';
 import * as moment from 'moment/moment';
 import {Duration} from 'moment';
 import TimeSlider from '@arcgis/core/widgets/TimeSlider';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 import TimeExtent from '@arcgis/core/TimeExtent';
-import {TimesliderService} from '../interfaces/timeslider.service';
+import {TimeSliderService} from '../interfaces/time-slider.service';
 import {Observable, ReplaySubject} from 'rxjs';
-import {TimesliderExtent} from '../interfaces/timeslider-extent.interface';
+import {TimeSliderExtent} from '../interfaces/time-slider-extent.interface';
 
 @Injectable({
   providedIn: 'root'
 })
-export class EsriTimesliderService implements TimesliderService {
-  private readonly timesliderExtentChanged$: ReplaySubject<TimesliderExtent> = new ReplaySubject<TimesliderExtent>(1);
-  public readonly timesliderExtentChanged: Observable<TimesliderExtent> = this.timesliderExtentChanged$.asObservable();
+export class EsriTimeSliderService implements TimeSliderService {
+  private readonly timeSliderExtentChanged$: ReplaySubject<TimeSliderExtent> = new ReplaySubject<TimeSliderExtent>(1);
+  public readonly timeSliderExtentChanged: Observable<TimeSliderExtent> = this.timeSliderExtentChanged$.asObservable();
 
-  public assignTimesliderWidget(timesliderConfig: TimesliderConfiguration, container: HTMLDivElement) {
+  public assignTimeSliderWidget(timeSliderConfig: TimeSliderConfiguration, container: HTMLDivElement) {
     // TODO WES: remove
-    // timesliderConfig = structuredClone(timesliderConfig);
-    // timesliderConfig.range = timesliderConfig.minimalRange;
-    // timesliderConfig.minimalRange = undefined;
-    // timesliderConfig.alwaysMaxRange = true;
-    console.log(`minDate: ${timesliderConfig.minimumDate}, maxDate: ${timesliderConfig.maximumDate}`);
+    // timeSliderConfig = structuredClone(timeSliderConfig);
+    // timeSliderConfig.range = timeSliderConfig.minimalRange;
+    // timeSliderConfig.minimalRange = undefined;
+    // timeSliderConfig.alwaysMaxRange = true;
+    console.log(`minDate: ${timeSliderConfig.minimumDate}, maxDate: ${timeSliderConfig.maximumDate}`);
 
-    const minimumDate: Date = moment(timesliderConfig.minimumDate, timesliderConfig.dateFormat).toDate();
-    const maximumDate: Date = moment(timesliderConfig.maximumDate, timesliderConfig.dateFormat).toDate();
-    const initialRange: string | null = timesliderConfig.range ?? timesliderConfig.minimalRange ?? null;
+    const minimumDate: Date = moment(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat).toDate();
+    const maximumDate: Date = moment(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat).toDate();
+    const initialRange: string | null = timeSliderConfig.range ?? timeSliderConfig.minimalRange ?? null;
     const initialRangeDuration: Duration | null = initialRange ? moment.duration(initialRange) : null;
     if (initialRangeDuration && Math.abs(moment(minimumDate).diff(maximumDate)) <= initialRangeDuration.asMilliseconds()) {
       throw Error(`Invalid time slider configuration: min date + range > max date`); // TODO: error handling
     }
-    const initialTimeExtent = this.calculateTimeExtent(timesliderConfig);
+    const initialTimeExtent = this.calculateTimeExtent(timeSliderConfig);
 
     const stops = initialRangeDuration ? this.createStopsByIntervalOrDates(initialRangeDuration, minimumDate, maximumDate) : undefined;
 
@@ -50,12 +50,12 @@ export class EsriTimesliderService implements TimesliderService {
     reactiveUtils.watch(
       () => timeSlider.timeExtent,
       (newValue: __esri.TimeExtent | undefined, oldValue: __esri.TimeExtent | undefined) =>
-        this.onTimeExtentChanged(newValue, oldValue, timeSlider, timesliderConfig)
+        this.onTimeExtentChanged(newValue, oldValue, timeSlider, timeSliderConfig)
     );
 
     // emit initial value
-    const timesliderExtent = this.convertEsriTimeExtent(initialTimeExtent, timesliderConfig.dateFormat);
-    this.timesliderExtentChanged$.next(timesliderExtent);
+    const timeSliderExtent = this.convertEsriTimeExtent(initialTimeExtent, timeSliderConfig.dateFormat);
+    this.timeSliderExtentChanged$.next(timeSliderExtent);
   }
 
   private createStopsByIntervalOrDates(
@@ -102,13 +102,13 @@ export class EsriTimesliderService implements TimesliderService {
   }
 
   private calculateTimeExtent(
-    timesliderConfig: TimesliderConfiguration,
+    timeSliderConfig: TimeSliderConfiguration,
     newValue?: __esri.TimeExtent,
     oldValue?: __esri.TimeExtent
   ): __esri.TimeExtent {
-    const minimumDate: Date = moment(timesliderConfig.minimumDate, timesliderConfig.dateFormat).toDate();
-    const maximumDate: Date = moment(timesliderConfig.maximumDate, timesliderConfig.dateFormat).toDate();
-    const range: string | null = timesliderConfig.range ?? timesliderConfig.minimalRange ?? null;
+    const minimumDate: Date = moment(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat).toDate();
+    const maximumDate: Date = moment(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat).toDate();
+    const range: string | null = timeSliderConfig.range ?? timeSliderConfig.minimalRange ?? null;
     const rangeDuration: Duration | null = range ? moment.duration(range) : null;
 
     if (!newValue) {
@@ -117,7 +117,7 @@ export class EsriTimesliderService implements TimesliderService {
         */
       const initialStartDate: Date = minimumDate;
       const initialEndDate: Date =
-        !timesliderConfig.alwaysMaxRange && rangeDuration ? moment(minimumDate).add(rangeDuration).toDate() : maximumDate;
+        !timeSliderConfig.alwaysMaxRange && rangeDuration ? moment(minimumDate).add(rangeDuration).toDate() : maximumDate;
       return new TimeExtent({start: initialStartDate, end: initialEndDate});
     }
 
@@ -131,7 +131,7 @@ export class EsriTimesliderService implements TimesliderService {
 
     const hasStartDateChanged: boolean = Math.abs(moment(newValue.start).diff(oldValue.start)) > 0;
 
-    if (timesliderConfig.alwaysMaxRange) {
+    if (timeSliderConfig.alwaysMaxRange) {
       /*
           Always max range:
             start/end date are always min/max
@@ -155,7 +155,7 @@ export class EsriTimesliderService implements TimesliderService {
                  if the difference between the new start and end date is under the given minimum range then
                  adjust the value of the previously unchanged value accordingly to enforce the minimal range between them
          */
-      const hasFixedRange = !!timesliderConfig.range;
+      const hasFixedRange = !!timeSliderConfig.range;
       const maximumRangeStartDate: Date = rangeDuration ? moment(maximumDate).subtract(rangeDuration).toDate() : maximumDate;
       const minimumRangeEndDate: Date = rangeDuration ? moment(minimumDate).add(rangeDuration).toDate() : minimumDate;
       const startEndDiff: number = Math.abs(moment(timeExtent.start).diff(timeExtent.end));
@@ -176,7 +176,7 @@ export class EsriTimesliderService implements TimesliderService {
     newValue: __esri.TimeExtent | undefined,
     oldValue: __esri.TimeExtent | undefined,
     timeSlider: __esri.TimeSlider,
-    timesliderConfig: TimesliderConfiguration
+    timeSliderConfig: TimeSliderConfiguration
   ) {
     if (!newValue) {
       return;
@@ -189,7 +189,7 @@ export class EsriTimesliderService implements TimesliderService {
       ).format('YYYY')}-${moment(oldValue?.end).format('YYYY')}`
     );
 
-    const correctedTimeExtend = this.calculateTimeExtent(timesliderConfig, newValue, oldValue);
+    const correctedTimeExtend = this.calculateTimeExtent(timeSliderConfig, newValue, oldValue);
     if (Math.abs(moment(correctedTimeExtend.start).diff(newValue.start)) > 0) {
       timeSlider.timeExtent.start = correctedTimeExtend.start;
     }
@@ -201,17 +201,17 @@ export class EsriTimesliderService implements TimesliderService {
       console.log(
         `FILTER: new value ${moment(correctedTimeExtend.start).format('YYYY')}-${moment(correctedTimeExtend.end).format('YYYY')}`
       );
-      const timesliderExtent = this.convertEsriTimeExtent(correctedTimeExtend, timesliderConfig.dateFormat);
-      this.timesliderExtentChanged$.next(timesliderExtent);
+      const timeSliderExtent = this.convertEsriTimeExtent(correctedTimeExtend, timeSliderConfig.dateFormat);
+      this.timeSliderExtentChanged$.next(timeSliderExtent);
     }
   }
 
-  private convertEsriTimeExtent(esriTimeExtent: __esri.TimeExtent, dateFormat: string): TimesliderExtent {
+  private convertEsriTimeExtent(esriTimeExtent: __esri.TimeExtent, dateFormat: string): TimeSliderExtent {
     return {
       start: esriTimeExtent.start,
       startAsString: moment(esriTimeExtent.start).format(dateFormat),
       end: esriTimeExtent.end,
       endAsString: moment(esriTimeExtent.end).format(dateFormat)
-    } as TimesliderExtent;
+    } as TimeSliderExtent;
   }
 }

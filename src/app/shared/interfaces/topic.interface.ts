@@ -31,7 +31,7 @@ export interface Map {
   /** True if unaccessible with current permissions. Not available in production environment. */
   permissionMissing?: boolean;
   /** Timeslider Settings */
-  timesliderConfiguration?: TimesliderConfiguration;
+  timeSliderConfiguration?: TimeSliderConfiguration;
   /** Filters Settings */
   filterConfigurations?: AttributeFilterConfiguration[];
 }
@@ -61,7 +61,7 @@ export interface MapLayer extends HasVisibility {
   permissionMissing?: boolean;
 }
 
-export interface TimesliderConfiguration {
+export interface TimeSliderConfiguration {
   name: string;
   description?: string;
   /** ISO-8601 date format (e.g. YYYY-MM-DD) */
@@ -74,26 +74,26 @@ export interface TimesliderConfiguration {
   /** ISO-8601 date range (PnYnMnD) */
   range?: string;
   /** ISO-8601 date range (PnYnMnD) */
-  sourceType: TimesliderSourceType;
-  source: TimesliderParameterSource | TimesliderLayerSource;
+  sourceType: TimeSliderSourceType;
+  source: TimeSliderParameterSource | TimeSliderLayerSource;
 }
 
-interface TimesliderParameterSource {
+interface TimeSliderParameterSource {
   startRangeParameter: string;
   endRangeParameter: string;
   layerIdentifiers: string[];
 }
 
-interface TimesliderLayerSource {
-  layers: TimesliderLayer[];
+interface TimeSliderLayerSource {
+  layers: TimeSliderLayer[];
 }
 
-interface TimesliderLayer {
+interface TimeSliderLayer {
   layerName: string;
   date: string;
 }
 
-type TimesliderSourceType = 'parameter' | 'layer';
+type TimeSliderSourceType = 'parameter' | 'layer';
 
 export interface AttributeFilterConfiguration {
   name: string;

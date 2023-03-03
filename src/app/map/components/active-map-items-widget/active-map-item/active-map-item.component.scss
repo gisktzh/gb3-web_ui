@@ -8,10 +8,10 @@
   }
 }
 
-.timeslider {
+.timeSlider {
   @include mixins.no-box-shadow;
 
-  .timeslider__title {
+  .time-slider__title {
     margin: 0;
   }
 }

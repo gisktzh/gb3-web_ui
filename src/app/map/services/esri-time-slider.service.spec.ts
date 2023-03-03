@@ -1,13 +1,13 @@
 import {TestBed} from '@angular/core/testing';
 
-import {EsriTimesliderService} from './esri-timeslider.service';
+import {EsriTimeSliderService} from './esri-time-slider.service';
 
-describe('EsriTimesliderService', () => {
-  let service: EsriTimesliderService;
+describe('EsriTimeSliderService', () => {
+  let service: EsriTimeSliderService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(EsriTimesliderService);
+    service = TestBed.inject(EsriTimeSliderService);
   });
 
   it('should be created', () => {

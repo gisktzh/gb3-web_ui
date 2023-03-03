@@ -4,8 +4,8 @@ import {ActiveMapItemActions} from '../../../../state/map/actions/active-map-ite
 import {Store} from '@ngrx/store';
 import {MapLayer} from '../../../../shared/interfaces/topic.interface';
 import {CdkDrag, CdkDragDrop} from '@angular/cdk/drag-drop';
-import {TIMESLIDER_SERVICE} from '../../../../app.module';
-import {TimesliderService} from '../../../interfaces/timeslider.service';
+import {TIME_SLIDER_SERVICE} from '../../../../app.module';
+import {TimeSliderService} from '../../../interfaces/time-slider.service';
 
 @Component({
   selector: 'active-map-item',
@@ -14,13 +14,13 @@ import {TimesliderService} from '../../../interfaces/timeslider.service';
 })
 export class ActiveMapItemComponent implements AfterViewInit {
   @Input() public activeMapItem!: ActiveMapItem;
-  @ViewChild('timeslider') private readonly timesliderContainer!: ElementRef;
+  @ViewChild('timeSlider') private readonly timeSliderContainer!: ElementRef;
 
-  constructor(private readonly store: Store, @Inject(TIMESLIDER_SERVICE) private readonly timesliderService: TimesliderService) {}
+  constructor(private readonly store: Store, @Inject(TIME_SLIDER_SERVICE) private readonly timeSliderService: TimeSliderService) {}
 
   public ngAfterViewInit(): void {
-    if (this.activeMapItem.timesliderConfiguration) {
-      this.timesliderService.assignTimesliderWidget(this.activeMapItem.timesliderConfiguration, this.timesliderContainer.nativeElement);
+    if (this.activeMapItem.timeSliderConfiguration) {
+      this.timeSliderService.assignTimeSliderWidget(this.activeMapItem.timeSliderConfiguration, this.timeSliderContainer.nativeElement);
     }
   }
 
