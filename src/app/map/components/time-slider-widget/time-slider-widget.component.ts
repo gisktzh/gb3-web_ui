@@ -21,7 +21,7 @@ export class TimeSliderWidgetComponent implements AfterViewInit, OnDestroy {
 
   public ngAfterViewInit(): void {
     if (this.activeMapItem.timeSliderConfiguration) {
-      this.timeSliderService.assignTimeSliderWidget(this.activeMapItem.timeSliderConfiguration, this.timeSliderContainer.nativeElement);
+      this.timeSliderService.assignTimeSliderWidget(this.activeMapItem, this.timeSliderContainer.nativeElement);
       this.subscriptions.add(
         this.timeSliderService.timeSliderExtentChanged
           .pipe(

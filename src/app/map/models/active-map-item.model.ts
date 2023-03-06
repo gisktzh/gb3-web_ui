@@ -5,6 +5,11 @@ import {HasVisibility} from '../../shared/interfaces/has-visibility.interface';
 import {HasViewProcessState} from '../../shared/interfaces/has-view-process-state.interface';
 import {ViewProcessState} from '../../shared/types/view-process-state';
 import {TimeSliderExtent} from '../interfaces/time-slider-extent.interface';
+import * as dayjs from 'dayjs';
+import * as duration from 'dayjs/plugin/duration';
+import {Duration} from 'dayjs/plugin/duration';
+
+dayjs.extend(duration);
 
 export class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewProcessState {
   public readonly id: string;
@@ -33,6 +38,25 @@ export class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewPro
     this.mapId = map.id;
     this.layers = layer ? [layer] : map.layers;
     this.timeSliderConfiguration = map.timeSliderConfiguration;
+    if (map.timeSliderConfiguration) {
+      this.timeSliderExtent = ActiveMapItem.createInitialTimeExtent(map.timeSliderConfiguration);
+    }
     this.filterConfigurations = map.filterConfigurations;
+  }
+
+  public static createInitialTimeExtent(timeSliderConfig: TimeSliderConfiguration): TimeSliderExtent {
+    const minimumDate: Date = dayjs(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat).toDate();
+    const maximumDate: Date = dayjs(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat).toDate();
+    const range: string | null = timeSliderConfig.range ?? timeSliderConfig.minimalRange ?? null;
+    const rangeDuration: Duration | null = range ? dayjs.duration(range) : null;
+    const initialStartDate: Date = minimumDate;
+    const initialEndDate: Date =
+      !timeSliderConfig.alwaysMaxRange && rangeDuration ? dayjs(minimumDate).add(rangeDuration).toDate() : maximumDate;
+    return {
+      start: initialStartDate,
+      startAsString: dayjs(initialStartDate).format(timeSliderConfig.dateFormat),
+      end: initialEndDate,
+      endAsString: dayjs(initialEndDate).format(timeSliderConfig.dateFormat)
+    };
   }
 }
