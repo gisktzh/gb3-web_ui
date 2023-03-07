@@ -16,13 +16,23 @@
           <ng-container *ngFor="let map of topic.maps">
             <mat-expansion-panel hideToggle="true" #mapExpansionPanel>
               <mat-expansion-panel-header (click)="mapExpansionPanel.toggle()" class="map__header">
-                <button mat-icon-button (click)="addActiveMap(map)" color="primary">
+                <button mat-icon-button (click)="addActiveMap(map)" color="primary" data-test-id="add-active-map">
                   <mat-icon>add</mat-icon>
                 </button>
-                <button mat-icon-button *ngIf="!mapExpansionPanel.expanded" (click)="mapExpansionPanel.open()">
+                <button
+                  mat-icon-button
+                  *ngIf="!mapExpansionPanel.expanded"
+                  (click)="mapExpansionPanel.open()"
+                  data-test-id="show-layers-of-the-map"
+                >
                   <mat-icon>arrow_right</mat-icon>
                 </button>
-                <button mat-icon-button *ngIf="mapExpansionPanel.expanded" (click)="mapExpansionPanel.close()">
+                <button
+                  mat-icon-button
+                  *ngIf="mapExpansionPanel.expanded"
+                  (click)="mapExpansionPanel.close()"
+                  data-test-id="hide-layers-of-the-map"
+                >
                   <mat-icon>arrow_drop_down</mat-icon>
                 </button>
                 <img class="map__header__image" [src]="map.icon" [alt]="map.title" />
