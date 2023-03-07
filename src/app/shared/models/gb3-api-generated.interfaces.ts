@@ -9,6 +9,39 @@
  * ---------------------------------------------------------------
  */
 
+export type FavoritesListData = {
+  /** Favorite title */
+  title: string;
+  /** Favorite content */
+  content: object;
+  /**
+   * Favorite updated at date and time
+   * @format datetime
+   */
+  updated_at: string;
+  /**
+   * Favorite created at date and time
+   * @format datetime
+   */
+  created_at: string;
+}[];
+
+export interface FavoritesCreatePayload {
+  /** Favorite title */
+  title: string;
+  /** Favorite content */
+  content: object;
+}
+
+export interface FavoritesDetailData {
+  /** Favorite ID */
+  id: string;
+  /** Favorite title */
+  title: string;
+  /** Favorite content */
+  content: object;
+}
+
 export interface TopicsFeatureInfoDetailData {
   feature_info: {
     /** Center x coord of query bbox */
