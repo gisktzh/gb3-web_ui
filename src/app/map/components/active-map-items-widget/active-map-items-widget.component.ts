@@ -7,6 +7,12 @@ import {Subscription} from 'rxjs';
 import {ActiveMapItem} from '../../models/active-map-item.model';
 import {LegendActions} from '../../../state/map/actions/legend.actions';
 import {slideInOutAnimation} from '../../../shared/animations/slideInOut.animation';
+import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.reducer';
+
+const favouriteHelperMessages = {
+  noMapsAdded: 'Fügen Sie mindestens 1 Karte hinzu, um einen Favoriten anzulegen.',
+  notAuthenticated: 'Loggen Sie sich ein, um Favoriten hinzuzufügen.'
+};
 
 @Component({
   selector: 'active-map-items-widget',
@@ -15,9 +21,11 @@ import {slideInOutAnimation} from '../../../shared/animations/slideInOut.animati
   animations: [slideInOutAnimation]
 })
 export class ActiveMapItemsWidgetComponent implements OnInit, OnDestroy {
+  public isAuthenticated: boolean = false;
+  public favouriteHelperMessages = favouriteHelperMessages;
   private readonly activeMapItems$ = this.store.select(selectActiveMapItems);
+  private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
   private readonly subscription: Subscription = new Subscription();
-
   private _activeMapItems: ActiveMapItem[] = [];
 
   constructor(private readonly store: Store) {}
@@ -27,11 +35,7 @@ export class ActiveMapItemsWidgetComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit() {
-    this.subscription.add(
-      this.activeMapItems$.subscribe((currentActiveMapItems) => {
-        this._activeMapItems = currentActiveMapItems;
-      })
-    );
+    this.initSubscriptions();
   }
 
   public ngOnDestroy() {
@@ -66,5 +70,18 @@ export class ActiveMapItemsWidgetComponent implements OnInit, OnDestroy {
 
   public createFavourite() {
     window.alert('Adding favourite!');
+  }
+
+  private initSubscriptions() {
+    this.subscription.add(
+      this.activeMapItems$.subscribe((currentActiveMapItems) => {
+        this._activeMapItems = currentActiveMapItems;
+      })
+    );
+    this.subscription.add(
+      this.isAuthenticated$.subscribe((isAuthenticated) => {
+        this.isAuthenticated = isAuthenticated;
+      })
+    );
   }
 }

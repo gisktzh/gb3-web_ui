@@ -7,9 +7,19 @@
       <button (click)="removeAllActiveMapItems()" [disabled]="activeMapItems.length === 0" mat-icon-button>
         <mat-icon>delete_outlined</mat-icon>
       </button>
-      <button (click)="createFavourite()" [disabled]="activeMapItems.length === 0" mat-icon-button>
-        <mat-icon>star_outlined</mat-icon>
-      </button>
+      <span
+        #tooltip="matTooltip"
+        [matTooltipDisabled]="this.isAuthenticated && this.activeMapItems.length > 0"
+        [matTooltip]="
+          this.isAuthenticated && this.activeMapItems.length === 0
+            ? this.favouriteHelperMessages.noMapsAdded
+            : this.favouriteHelperMessages.notAuthenticated
+        "
+      >
+        <button (click)="createFavourite()" [disabled]="activeMapItems.length === 0 || !this.isAuthenticated" mat-icon-button>
+          <mat-icon>star_outlined</mat-icon>
+        </button>
+      </span>
     </div>
   </mat-card-header>
   <mat-accordion (cdkDropListDropped)="dropMapItem($event)" cdkDropList class="active-map-items__content" displayMode="flat" multi="true">
