@@ -21,11 +21,18 @@
 
     .active-map-items__header__buttons {
       margin-left: 8px;
+      align-self: center;
+      color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
     }
   }
 
   .active-map-items__content {
     overflow-y: scroll;
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
 
     .active-map-item {
       padding-left: 12px;
@@ -95,6 +102,11 @@
       .active-map-item__menu .active-map-item__menu__handle {
         visibility: visible;
       }
+    }
+
+    .active-map-items__content__legend {
+      width: 80%;
+      margin: 8px;
     }
   }
 }

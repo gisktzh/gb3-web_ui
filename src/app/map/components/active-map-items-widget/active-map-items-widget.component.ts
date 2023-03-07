@@ -63,4 +63,8 @@ export class ActiveMapItemsWidgetComponent implements OnInit, OnDestroy {
   public toggleLegend() {
     this.store.dispatch(LegendActions.showLegend());
   }
+
+  public createFavourite() {
+    window.alert('Adding favourite!');
+  }
 }
