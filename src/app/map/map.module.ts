@@ -19,6 +19,8 @@ import {MapControlsComponent} from './components/map/map-controls/map-controls.c
 import {BasemapSelectorComponent} from './components/map/basemap-selector/basemap-selector.component';
 import {ActiveMapItemComponent} from './components/active-map-items-widget/active-map-item/active-map-item.component';
 import {OnboardingGuideModule} from '../onboarding-guide/onboarding-guide.module';
+import {FavouriteDialogComponent} from './components/favourite-dialog/favourite-dialog.component';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -37,8 +39,9 @@ import {OnboardingGuideModule} from '../onboarding-guide/onboarding-guide.module
     PrintDispatcherComponent,
     ScaleInputComponent,
     MapControlsComponent,
-    BasemapSelectorComponent
+    BasemapSelectorComponent,
+    FavouriteDialogComponent
   ],
-  imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule]
+  imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule]
 })
 export class MapModule {}

@@ -8,6 +8,7 @@ import {ActiveMapItem} from '../../models/active-map-item.model';
 import {LegendActions} from '../../../state/map/actions/legend.actions';
 import {slideInOutAnimation} from '../../../shared/animations/slideInOut.animation';
 import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.reducer';
+import {FavouritesService} from '../../services/favourites.service';
 
 const favouriteHelperMessages = {
   noMapsAdded: 'Fügen Sie mindestens 1 Karte hinzu, um einen Favoriten anzulegen.',
@@ -28,7 +29,7 @@ export class ActiveMapItemsWidgetComponent implements OnInit, OnDestroy {
   private readonly subscription: Subscription = new Subscription();
   private _activeMapItems: ActiveMapItem[] = [];
 
-  constructor(private readonly store: Store) {}
+  constructor(private readonly store: Store, private readonly favouritesService: FavouritesService) {}
 
   public get activeMapItems(): ActiveMapItem[] {
     return this._activeMapItems;
@@ -69,7 +70,7 @@ export class ActiveMapItemsWidgetComponent implements OnInit, OnDestroy {
   }
 
   public createFavourite() {
-    window.alert('Adding favourite!');
+    this.favouritesService.addFavourite();
   }
 
   private initSubscriptions() {

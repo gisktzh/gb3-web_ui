@@ -1,0 +1,12 @@
+<h1 mat-dialog-title>Aktive Karten als Favorit speichern</h1>
+<div class="favourite-dialog__content" mat-dialog-content>
+  <mat-form-field appearance="fill" class="favourite-dialog__content__form">
+    <mat-label>Name des Favoriten</mat-label>
+    <input [formControl]="this.nameFormControl" id="name" matInput />
+    <mat-error>Geben Sie einen gültigen, nicht leeren Namen ein.</mat-error>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button (click)="abort()" mat-button>Abbrechen</button>
+  <button (click)="close()" mat-button [disabled]="nameFormControl.status !== 'VALID'">Speichern</button>
+</div>
