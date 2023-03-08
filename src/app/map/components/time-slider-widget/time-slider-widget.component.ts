@@ -23,10 +23,10 @@ export class TimeSliderWidgetComponent implements AfterViewInit, OnDestroy {
     if (this.activeMapItem.timeSliderConfiguration) {
       this.timeSliderService.assignTimeSliderWidget(this.activeMapItem, this.timeSliderContainer.nativeElement);
       this.subscriptions.add(
-        this.timeSliderService.timeSliderExtentChanged
+        this.timeSliderService.timeExtentChanged
           .pipe(
-            tap((timeSliderExtent) => {
-              this.store.dispatch(ActiveMapItemActions.setTimeSliderExtent({timeSliderExtent, activeMapItem: this.activeMapItem}));
+            tap((timeExtent) => {
+              this.store.dispatch(ActiveMapItemActions.setTimeSliderExtent({timeExtent: timeExtent, activeMapItem: this.activeMapItem}));
             })
           )
           .subscribe()

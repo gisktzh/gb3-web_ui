@@ -114,11 +114,11 @@ export const activeMapItemFeature = createFeature({
       });
       return {...state, activeMapItems: [...activeMapItems]};
     }),
-    on(ActiveMapItemActions.setTimeSliderExtent, (state, {timeSliderExtent, activeMapItem}): ActiveMapItemState => {
+    on(ActiveMapItemActions.setTimeSliderExtent, (state, {timeExtent, activeMapItem}): ActiveMapItemState => {
       const activeMapItems = state.activeMapItems.map((mapItem) => {
         if (mapItem.id === activeMapItem.id) {
           const newActiveMapItem = structuredClone(mapItem);
-          newActiveMapItem.timeSliderExtent = timeSliderExtent;
+          newActiveMapItem.timeSliderExtent = timeExtent;
           return newActiveMapItem;
         } else {
           return mapItem;

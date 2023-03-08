@@ -108,7 +108,7 @@ export class ActiveMapItemEffects {
       return this.actions$.pipe(
         ofType(ActiveMapItemActions.setTimeSliderExtent),
         tap((action) => {
-          this.mapService.setTimeSliderExtent(action.timeSliderExtent, action.activeMapItem);
+          this.mapService.setTimeSliderExtent(action.timeExtent, action.activeMapItem);
         })
       );
     },

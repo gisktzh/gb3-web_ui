@@ -4,7 +4,7 @@ import {HasLoadingState} from '../../shared/interfaces/has-loading-state.interfa
 import {HasVisibility} from '../../shared/interfaces/has-visibility.interface';
 import {HasViewProcessState} from '../../shared/interfaces/has-view-process-state.interface';
 import {ViewProcessState} from '../../shared/types/view-process-state';
-import {TimeSliderExtent} from '../interfaces/time-slider-extent.interface';
+import {TimeExtent} from '../interfaces/time-extent.interface';
 import * as dayjs from 'dayjs';
 import * as duration from 'dayjs/plugin/duration';
 import {Duration} from 'dayjs/plugin/duration';
@@ -27,7 +27,7 @@ export class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewPro
   public viewProcessState: ViewProcessState = 'undefined';
   public visible = true;
   public opacity = 1;
-  public timeSliderExtent?: TimeSliderExtent;
+  public timeSliderExtent?: TimeExtent;
 
   constructor(map: Map, layer?: MapLayer) {
     this.isSingleLayer = !!layer;
@@ -39,12 +39,12 @@ export class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewPro
     this.layers = layer ? [layer] : map.layers;
     this.timeSliderConfiguration = map.timeSliderConfiguration;
     if (map.timeSliderConfiguration) {
-      this.timeSliderExtent = ActiveMapItem.createInitialTimeExtent(map.timeSliderConfiguration);
+      this.timeSliderExtent = ActiveMapItem.createInitialTimeSliderExtent(map.timeSliderConfiguration);
     }
     this.filterConfigurations = map.filterConfigurations;
   }
 
-  public static createInitialTimeExtent(timeSliderConfig: TimeSliderConfiguration): TimeSliderExtent {
+  public static createInitialTimeSliderExtent(timeSliderConfig: TimeSliderConfiguration): TimeExtent {
     const minimumDate: Date = dayjs(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat).toDate();
     const maximumDate: Date = dayjs(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat).toDate();
     const range: Duration | null = timeSliderConfig.range ? dayjs.duration(timeSliderConfig.range) : null;

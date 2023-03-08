@@ -1,16 +1,13 @@
 import {Injectable} from '@angular/core';
 import {TimeSliderConfiguration, TimeSliderLayerSource} from '../../shared/interfaces/topic.interface';
-import TimeSlider from '@arcgis/core/widgets/TimeSlider';
-import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
-import TimeExtent from '@arcgis/core/TimeExtent';
 import {TimeSliderService} from '../interfaces/time-slider.service';
 import {debounceTime, Observable, ReplaySubject} from 'rxjs';
-import {TimeSliderExtent} from '../interfaces/time-slider-extent.interface';
+import {TimeExtent} from '../interfaces/time-extent.interface';
 import * as dayjs from 'dayjs';
 import * as duration from 'dayjs/plugin/duration';
 import {Duration} from 'dayjs/plugin/duration';
 import {ActiveMapItem} from '../models/active-map-item.model';
-import {EsriTimeSliderMode} from '../../shared/external/esri.module';
+import {EsriReactiveUtils, EsriTimeExtent, EsriTimeSlider, EsriTimeSliderMode} from '../external/esri.module';
 
 dayjs.extend(duration);
 
@@ -18,15 +15,15 @@ dayjs.extend(duration);
   providedIn: 'root'
 })
 export class EsriTimeSliderService implements TimeSliderService {
-  private readonly timeSliderExtentChanged$: ReplaySubject<TimeSliderExtent> = new ReplaySubject<TimeSliderExtent>(1);
-  public readonly timeSliderExtentChanged: Observable<TimeSliderExtent> = this.timeSliderExtentChanged$
+  private readonly timeExtentChanged$: ReplaySubject<TimeExtent> = new ReplaySubject<TimeExtent>(1);
+  public readonly timeExtentChanged: Observable<TimeExtent> = this.timeExtentChanged$
     .asObservable()
     // add a debounce time as every step of the time slider creates a change of state which then creates a request to the server
     .pipe(debounceTime(200));
 
   constructor() {
     // TODO WES: remove
-    this.timeSliderExtentChanged.subscribe((t) => console.log(`${dayjs(t.start).format('MM.YYYY')} - ${dayjs(t.end).format('MM.YYYY')}`));
+    this.timeExtentChanged.subscribe((t) => console.log(`${dayjs(t.start).format('MM.YYYY')} - ${dayjs(t.end).format('MM.YYYY')}`));
   }
 
   public assignTimeSliderWidget(activeMapItem: ActiveMapItem, container: HTMLDivElement) {
@@ -36,7 +33,7 @@ export class EsriTimeSliderService implements TimeSliderService {
 
     const timeSliderConfig = activeMapItem.timeSliderConfiguration;
     if (!activeMapItem.timeSliderExtent) {
-      activeMapItem.timeSliderExtent = ActiveMapItem.createInitialTimeExtent(timeSliderConfig);
+      activeMapItem.timeSliderExtent = ActiveMapItem.createInitialTimeSliderExtent(timeSliderConfig);
     }
 
     // TODO WES: remove
@@ -52,7 +49,7 @@ export class EsriTimeSliderService implements TimeSliderService {
     const timeExtent = this.transformToEsriTimeExtent(activeMapItem.timeSliderExtent, timeSliderConfig);
     const stops = this.createStops(timeSliderConfig);
 
-    const timeSlider = new TimeSlider({
+    const timeSlider = new EsriTimeSlider({
       container: container,
       mode: mode,
       fullTimeExtent: {
@@ -81,14 +78,14 @@ export class EsriTimeSliderService implements TimeSliderService {
       // }]
     } as __esri.TimeSliderProperties);
 
-    reactiveUtils.watch(
+    EsriReactiveUtils.watch(
       () => timeSlider.timeExtent,
       (newValue: __esri.TimeExtent | undefined, oldValue: __esri.TimeExtent | undefined) =>
         this.onTimeExtentChanged(newValue, oldValue, timeSlider, timeSliderConfig)
     );
 
     // emit initial value
-    this.timeSliderExtentChanged$.next(activeMapItem.timeSliderExtent);
+    this.timeExtentChanged$.next(activeMapItem.timeSliderExtent);
   }
 
   private createStops(timeSliderConfig: TimeSliderConfiguration): __esri.StopsByInterval | __esri.StopsByDates | undefined {
@@ -199,7 +196,7 @@ export class EsriTimeSliderService implements TimeSliderService {
         console.log(
           `FILTER: new value ${dayjs(calculateTimeExtent.start).format('YYYY')}-${dayjs(calculateTimeExtent.end).format('YYYY')}`
         );
-        this.timeSliderExtentChanged$.next(calculateTimeExtent);
+        this.timeExtentChanged$.next(calculateTimeExtent);
       }
     }
   }
@@ -208,7 +205,7 @@ export class EsriTimeSliderService implements TimeSliderService {
     timeSliderConfig: TimeSliderConfiguration,
     newValue?: __esri.TimeExtent,
     oldValue?: __esri.TimeExtent
-  ): TimeSliderExtent | undefined {
+  ): TimeExtent | undefined {
     if (!newValue || !oldValue) {
       /*
           No new value: don't change anything
@@ -218,7 +215,7 @@ export class EsriTimeSliderService implements TimeSliderService {
 
     const minimumDate: Date = dayjs(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat).toDate();
     const maximumDate: Date = dayjs(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat).toDate();
-    const timeExtent: TimeSliderExtent = {start: newValue.start, end: newValue.end};
+    const timeExtent: TimeExtent = {start: newValue.start, end: newValue.end};
 
     if (timeSliderConfig.alwaysMaxRange) {
       /*
@@ -272,8 +269,8 @@ export class EsriTimeSliderService implements TimeSliderService {
     return timeExtent;
   }
 
-  private transformToEsriTimeExtent(timeExtent: TimeSliderExtent, timeSliderConfig: TimeSliderConfiguration): __esri.TimeExtent {
-    const esriTimeExtent = new TimeExtent({start: timeExtent.start, end: timeExtent.end});
+  private transformToEsriTimeExtent(timeExtent: TimeExtent, timeSliderConfig: TimeSliderConfiguration): __esri.TimeExtent {
+    const esriTimeExtent = new EsriTimeExtent({start: timeExtent.start, end: timeExtent.end});
     if (timeSliderConfig.range) {
       // if a range is given then the end date should be the same as the end date
       esriTimeExtent.end = esriTimeExtent.start;
