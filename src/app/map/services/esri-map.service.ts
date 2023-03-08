@@ -30,7 +30,9 @@ import {BasemapConfigService} from './basemap-config.service';
 import {ConfigService} from '../../shared/services/config.service';
 import {selectActiveMapItems} from '../../state/map/reducers/active-map-item.reducer';
 import {TimeSliderExtent} from '../interfaces/time-slider-extent.interface';
-import {TimeSliderConfiguration, TimeSliderParameterSource} from '../../shared/interfaces/topic.interface';
+import {TimeSliderConfiguration, TimeSliderLayerSource, TimeSliderParameterSource} from '../../shared/interfaces/topic.interface';
+import * as dayjs from 'dayjs';
+import WMSSublayer from '@arcgis/core/layers/support/WMSSublayer';
 
 @Injectable({
   providedIn: 'root'
@@ -129,8 +131,6 @@ export class EsriMapService implements MapService {
       return;
     }
 
-    // TODO WES: initial time slider extent (if any)
-
     const esriLayer: __esri.Layer = new EsriWMSLayer({
       id: mapItem.id,
       title: mapItem.title,
@@ -146,6 +146,10 @@ export class EsriMapService implements MapService {
         } as __esri.WMSSublayerProperties;
       })
     });
+    if (mapItem.timeSliderExtent) {
+      // apply initial time slider settings
+      this.setTimeSliderExtent(mapItem.timeSliderExtent, mapItem);
+    }
     this.attachLayerListeners(esriLayer);
     // index is the inverse position - the lowest index has the lowest visibility (it's on the bottom) while the lowest position has the highest visibility
     const index = this.mapView.map.layers.length - position;
@@ -221,8 +225,8 @@ export class EsriMapService implements MapService {
           esriLayer.customLayerParameters = this.createTimeSliderCustomParameter(timeSliderExtent, mapItem.timeSliderConfiguration);
           break;
         case 'layer':
-          // TODO WES: implement 'layer' source type handling
-          throw new Error('not implemented yet');
+          this.synchronizeTimeSliderLayers(esriLayer, timeSliderExtent, mapItem);
+          break;
       }
       esriLayer.refresh();
     }
@@ -249,9 +253,40 @@ export class EsriMapService implements MapService {
   ): {[index: string]: string} {
     const timeSliderParameterSource = timeSliderConfiguration.source as TimeSliderParameterSource;
     const customLayerParameters: {[index: string]: string} = {};
-    customLayerParameters[timeSliderParameterSource.startRangeParameter] = timeSliderExtent.startAsString;
-    customLayerParameters[timeSliderParameterSource.endRangeParameter] = timeSliderExtent.endAsString;
+    const dateFormat = timeSliderConfiguration.dateFormat;
+    customLayerParameters[timeSliderParameterSource.startRangeParameter] = dayjs(timeSliderExtent.start).format(dateFormat);
+    customLayerParameters[timeSliderParameterSource.endRangeParameter] = dayjs(timeSliderExtent.end).format(dateFormat);
     return customLayerParameters;
+  }
+
+  private synchronizeTimeSliderLayers(esriLayer: __esri.WMSLayer, timeSliderExtent: TimeSliderExtent, mapItem: ActiveMapItem): void {
+    if (!mapItem.timeSliderConfiguration) {
+      return;
+    }
+
+    const timeSliderConfig = mapItem.timeSliderConfiguration;
+    const timeSliderLayerSource = timeSliderConfig.source as TimeSliderLayerSource;
+    const timeSliderLayers = timeSliderLayerSource.layers.map((l) => l.layerName);
+    const timeSliderLayersToShow = timeSliderLayerSource.layers
+      .filter((l) => {
+        const date = dayjs(l.date, timeSliderConfig.dateFormat).toDate();
+        return date >= timeSliderExtent.start && date < timeSliderExtent.end;
+      })
+      .map((l) => l.layerName);
+    const layers = mapItem.layers.filter((l) => timeSliderLayersToShow.includes(l.layer));
+    const esriSublayers = esriLayer.sublayers.filter((sl) => !timeSliderLayers.includes(sl.name));
+    esriSublayers.addMany(
+      layers.map(
+        (layer) =>
+          new WMSSublayer({
+            id: layer.id,
+            name: layer.layer,
+            title: layer.title,
+            visible: true
+          } as __esri.WMSSublayerProperties)
+      )
+    );
+    esriLayer.sublayers = esriSublayers;
   }
 
   private addBasemapSubscription() {

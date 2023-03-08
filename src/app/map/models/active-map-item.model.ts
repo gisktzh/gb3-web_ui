@@ -47,16 +47,10 @@ export class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewPro
   public static createInitialTimeExtent(timeSliderConfig: TimeSliderConfiguration): TimeSliderExtent {
     const minimumDate: Date = dayjs(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat).toDate();
     const maximumDate: Date = dayjs(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat).toDate();
-    const range: string | null = timeSliderConfig.range ?? timeSliderConfig.minimalRange ?? null;
-    const rangeDuration: Duration | null = range ? dayjs.duration(range) : null;
-    const initialStartDate: Date = minimumDate;
-    const initialEndDate: Date =
-      !timeSliderConfig.alwaysMaxRange && rangeDuration ? dayjs(minimumDate).add(rangeDuration).toDate() : maximumDate;
+    const range: Duration | null = timeSliderConfig.range ? dayjs.duration(timeSliderConfig.range) : null;
     return {
-      start: initialStartDate,
-      startAsString: dayjs(initialStartDate).format(timeSliderConfig.dateFormat),
-      end: initialEndDate,
-      endAsString: dayjs(initialEndDate).format(timeSliderConfig.dateFormat)
+      start: minimumDate,
+      end: range ? dayjs(minimumDate).add(range).toDate() : maximumDate
     };
   }
 }

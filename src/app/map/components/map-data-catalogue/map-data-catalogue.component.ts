@@ -56,6 +56,7 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy {
             topic.maps = t.maps.filter((m) => m.timeSliderConfiguration);
             return topic;
           });
+
         this.topics = onlyTimeSliderMaps;
         if (this.topics.length > 0) {
           this.addActiveMap(this.topics[0].maps[0]);
