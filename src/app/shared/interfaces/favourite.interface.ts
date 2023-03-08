@@ -1,3 +1,6 @@
+import {ActiveMapItem} from '../../map/models/active-map-item.model';
+import {MapLayer} from './topic.interface';
+
 export interface Favourite {
   //todo: missing id
   title: string;
@@ -12,17 +15,8 @@ export type CreateFavourite = Pick<Favourite, 'title' | 'content'>;
 
 export type FavouritesResponse = Favourite[];
 
-interface FavouriteLayerSubLayerConfiguration {
-  id: number;
-  layer: string;
-  visible: boolean;
-}
+type FavouriteLayerSubLayerConfiguration = Pick<MapLayer, 'id' | 'layer' | 'visible'>;
 
-export interface FavouriteLayerConfiguration {
-  visible: boolean;
-  opacity: number;
-  isSingleLayer: boolean;
-  id: string;
-  mapId: string;
+export interface FavouriteLayerConfiguration extends Pick<ActiveMapItem, 'visible' | 'opacity' | 'isSingleLayer' | 'mapId'> {
   layers: FavouriteLayerSubLayerConfiguration[];
 }
