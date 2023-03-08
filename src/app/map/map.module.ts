@@ -21,6 +21,7 @@ import {ActiveMapItemComponent} from './components/active-map-items-widget/activ
 import {OnboardingGuideModule} from '../onboarding-guide/onboarding-guide.module';
 import {FavouriteDialogComponent} from './components/favourite-dialog/favourite-dialog.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {FavouriteSelectionComponent} from './components/map-data-catalogue/favourite-selection/favourite-selection.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
     ScaleInputComponent,
     MapControlsComponent,
     BasemapSelectorComponent,
-    FavouriteDialogComponent
+    FavouriteDialogComponent,
+    FavouriteSelectionComponent
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule]
 })

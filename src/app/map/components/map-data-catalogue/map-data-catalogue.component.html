@@ -4,8 +4,12 @@
       <mat-card-title>Verfügbare Karten nach Topic</mat-card-title>
     </div>
   </mat-card-header>
-  <loading-and-process-bar [loadingState]="this.loadingState"></loading-and-process-bar>
-  <mat-accordion *ngIf="this.loadingState === 'loaded'" class="map-catalogue__content" multi="true" displayMode="flat">
+  <loading-and-process-bar [loadingState]="this.catalogueLoadingState"></loading-and-process-bar>
+  <mat-accordion class="map-catalogue__content" displayMode="flat" multi="true">
+    <!-- Favourite selection is a conditional, one-off container -->
+    <favourite-selection></favourite-selection>
+
+    <!-- Layertree -->
     <ng-container *ngFor="let topic of topics">
       <mat-expansion-panel>
         <mat-expansion-panel-header>
@@ -14,18 +18,18 @@
         <!-- Expansion panel content -->
         <ng-template matExpansionPanelContent>
           <ng-container *ngFor="let map of topic.maps">
-            <mat-expansion-panel hideToggle="true" #mapExpansionPanel>
+            <mat-expansion-panel #mapExpansionPanel hideToggle="true">
               <mat-expansion-panel-header (click)="mapExpansionPanel.toggle()" class="map__header">
-                <button mat-icon-button (click)="addActiveMap(map)" color="primary">
+                <button (click)="addActiveMap(map)" color="primary" mat-icon-button>
                   <mat-icon>add</mat-icon>
                 </button>
-                <button mat-icon-button *ngIf="!mapExpansionPanel.expanded" (click)="mapExpansionPanel.open()">
+                <button (click)="mapExpansionPanel.open()" *ngIf="!mapExpansionPanel.expanded" mat-icon-button>
                   <mat-icon>arrow_right</mat-icon>
                 </button>
-                <button mat-icon-button *ngIf="mapExpansionPanel.expanded" (click)="mapExpansionPanel.close()">
+                <button (click)="mapExpansionPanel.close()" *ngIf="mapExpansionPanel.expanded" mat-icon-button>
                   <mat-icon>arrow_drop_down</mat-icon>
                 </button>
-                <img class="map__header__image" [src]="map.icon" [alt]="map.title" />
+                <img [alt]="map.title" [src]="map.icon" class="map__header__image" />
                 <p class="map__header__title" matTooltip="{{ map.title }}">{{ map.title }}</p>
               </mat-expansion-panel-header>
               <!-- Expansion panel content -->
@@ -34,7 +38,9 @@
                   <div class="layer">
                     <mat-icon class="layer__icon">layers</mat-icon>
                     <p class="layer__title" matTooltip="{{ layer.title }}">{{ layer.title }}</p>
-                    <button mat-icon-button (click)="addActiveLayer(map, layer)"><mat-icon>add</mat-icon></button>
+                    <button (click)="addActiveLayer(map, layer)" mat-icon-button>
+                      <mat-icon>add</mat-icon>
+                    </button>
                   </div>
                 </ng-container>
               </ng-template>

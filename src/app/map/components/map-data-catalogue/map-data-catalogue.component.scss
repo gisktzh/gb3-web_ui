@@ -22,6 +22,11 @@
   .map-catalogue__content {
     overflow-y: scroll;
 
+    & .mat-expansion-panel {
+      // Remove the material first and last border rounding
+      border-radius: 0;
+    }
+
     .map__header {
       padding: 0 8px;
 

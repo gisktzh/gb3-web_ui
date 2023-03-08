@@ -32,4 +32,8 @@ export class FavouritesService {
       )
       .subscribe();
   }
+
+  public loadFavourites() {
+    return this.gb3FavouritesService.loadFavourites();
+  }
 }
