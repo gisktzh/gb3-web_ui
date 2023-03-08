@@ -40,3 +40,14 @@ export const EsriWMSSublayer = WMSSublayer;
 /** Esri internal union types */
 export type EsriLoadStatus = 'not-loaded' | 'loading' | 'failed' | 'loaded';
 export type EsriTimeSliderMode = 'instant' | 'time-window' | 'cumulative-from-start' | 'cumulative-from-end';
+export type EsriTimeIntervalUnit =
+  | 'milliseconds'
+  | 'seconds'
+  | 'minutes'
+  | 'hours'
+  | 'days'
+  | 'weeks'
+  | 'months'
+  | 'years'
+  | 'decades'
+  | 'centuries';

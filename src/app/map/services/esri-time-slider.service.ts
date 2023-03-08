@@ -4,10 +4,12 @@ import {TimeSliderService} from '../interfaces/time-slider.service';
 import {debounceTime, Observable, ReplaySubject} from 'rxjs';
 import {TimeExtent} from '../interfaces/time-extent.interface';
 import * as dayjs from 'dayjs';
+import {ManipulateType} from 'dayjs';
 import * as duration from 'dayjs/plugin/duration';
 import {Duration} from 'dayjs/plugin/duration';
 import {ActiveMapItem} from '../models/active-map-item.model';
-import {EsriReactiveUtils, EsriTimeExtent, EsriTimeSlider, EsriTimeSliderMode} from '../external/esri.module';
+import {EsriReactiveUtils, EsriTimeExtent, EsriTimeIntervalUnit, EsriTimeSlider, EsriTimeSliderMode} from '../external/esri.module';
+import {TimeExtentUtil} from '../../shared/utils/time-extent.util';
 
 dayjs.extend(duration);
 
@@ -120,28 +122,15 @@ export class EsriTimeSliderService implements TimeSliderService {
       return undefined;
     }
 
-    // try to return as interval (cleanest solution) - this only works if the given interval is either only years, months or days.
-    if (initialRangeDuration.years() === initialRangeDuration.asYears()) {
+    // try to return as interval (cleanest solution)
+    const unit = TimeExtentUtil.extractUnitFromDuration(initialRangeDuration);
+    if (unit) {
+      const esriUnit = this.transformToEsriTimeIntervalUnit(unit);
+      const value = TimeExtentUtil.getDurationAsNumber(initialRangeDuration, unit);
       return {
         interval: {
-          unit: 'years',
-          value: initialRangeDuration.years()
-        }
-      } as __esri.StopsByInterval;
-    }
-    if (initialRangeDuration.months() === initialRangeDuration.asMonths()) {
-      return {
-        interval: {
-          unit: 'months',
-          value: initialRangeDuration.months()
-        }
-      } as __esri.StopsByInterval;
-    }
-    if (initialRangeDuration.days() === initialRangeDuration.asDays()) {
-      return {
-        interval: {
-          unit: 'days',
-          value: initialRangeDuration.days()
+          unit: esriUnit,
+          value: value
         }
       } as __esri.StopsByInterval;
     }
@@ -151,7 +140,7 @@ export class EsriTimeSliderService implements TimeSliderService {
     let date = minimumDate;
     while (date < maximumDate) {
       dates.push(date);
-      date = dayjs(date).add(initialRangeDuration).toDate();
+      date = TimeExtentUtil.addDuration(date, initialRangeDuration);
     }
     dates.push(maximumDate);
     return {
@@ -176,46 +165,77 @@ export class EsriTimeSliderService implements TimeSliderService {
       ).format('YYYY')}-${dayjs(oldValue?.end).format('YYYY')}`
     );
 
-    const calculateTimeExtent = this.calculateTimeExtent(timeSliderConfig, newValue, oldValue);
-    if (calculateTimeExtent) {
-      if (Math.abs(dayjs(calculateTimeExtent.start).diff(newValue.start)) > 0) {
-        timeSlider.timeExtent.start = calculateTimeExtent.start;
-      }
-      if (!timeSliderConfig.range && Math.abs(dayjs(calculateTimeExtent.end).diff(newValue.end)) > 0) {
-        // don't change the end date if it has a fixed range due to internal logic differences:
-        // - Esri Timeslider expects: start === end
-        // - Our implementation expects: start === (end - fixed range)
-        timeSlider.timeExtent.end = calculateTimeExtent.end;
-      }
+    const timeExtent = this.createValidTimeExtent(timeSliderConfig, newValue, oldValue);
+    if (Math.abs(dayjs(timeExtent.start).diff(newValue.start)) > 0) {
+      timeSlider.timeExtent.start = timeExtent.start;
+    }
+    if (!timeSliderConfig.range && Math.abs(dayjs(timeExtent.end).diff(newValue.end)) > 0) {
+      // don't change the end date if it has a fixed range due to internal logic differences:
+      // - Esri Timeslider expects: start === end
+      // - Our implementation expects: start === (end - fixed range)
+      timeSlider.timeExtent.end = timeExtent.end;
+    }
 
-      if (
-        !oldValue ||
-        Math.abs(dayjs(oldValue.start).diff(calculateTimeExtent.start)) > 0 ||
-        Math.abs(dayjs(oldValue.end).diff(calculateTimeExtent.end)) > 0
-      ) {
-        console.log(
-          `FILTER: new value ${dayjs(calculateTimeExtent.start).format('YYYY')}-${dayjs(calculateTimeExtent.end).format('YYYY')}`
-        );
-        this.timeExtentChanged$.next(calculateTimeExtent);
-      }
+    if (
+      timeSliderConfig.minimalRange &&
+      Math.abs(dayjs(timeExtent.start).diff(timeExtent.end)) <= dayjs.duration(timeSliderConfig.minimalRange).milliseconds()
+    ) {
+      console.warn(`TADAH: ${dayjs(timeExtent.end).format(timeSliderConfig.dateFormat)}`);
+    } else {
+      console.log(`mmmh: ${dayjs(timeExtent.end).format(timeSliderConfig.dateFormat)}`);
+    }
+
+    if (!oldValue || Math.abs(dayjs(oldValue.start).diff(timeExtent.start)) > 0 || Math.abs(dayjs(oldValue.end).diff(timeExtent.end)) > 0) {
+      console.log(`FILTER: new value ${dayjs(timeExtent.start).format('YYYY')}-${dayjs(timeExtent.end).format('YYYY')}`);
+      this.timeExtentChanged$.next(timeExtent);
     }
   }
 
-  private calculateTimeExtent(
-    timeSliderConfig: TimeSliderConfiguration,
-    newValue?: __esri.TimeExtent,
-    oldValue?: __esri.TimeExtent
-  ): TimeExtent | undefined {
-    if (!newValue || !oldValue) {
-      /*
-          No new value: don't change anything
-        */
-      return undefined;
+  private transformToEsriTimeIntervalUnit(unit: ManipulateType): EsriTimeIntervalUnit {
+    switch (unit) {
+      case 'ms':
+      case 'millisecond':
+      case 'milliseconds':
+        return 'milliseconds';
+      case 'second':
+      case 'seconds':
+      case 's':
+        return 'seconds';
+      case 'minute':
+      case 'minutes':
+      case 'm':
+        return 'minutes';
+      case 'hour':
+      case 'hours':
+      case 'h':
+        return 'hours';
+      case 'd':
+      case 'D':
+      case 'day':
+      case 'days':
+        return 'days';
+      case 'M':
+      case 'month':
+      case 'months':
+        return 'months';
+      case 'y':
+      case 'year':
+      case 'years':
+        return 'years';
+      case 'w':
+      case 'week':
+      case 'weeks':
+        return 'weeks';
     }
+  }
 
+  public createValidTimeExtent(timeSliderConfig: TimeSliderConfiguration, newValue: TimeExtent, oldValue?: TimeExtent): TimeExtent {
     const minimumDate: Date = dayjs(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat).toDate();
     const maximumDate: Date = dayjs(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat).toDate();
-    const timeExtent: TimeExtent = {start: newValue.start, end: newValue.end};
+    const timeExtent: TimeExtent = {
+      start: newValue.start < minimumDate ? minimumDate : newValue.start,
+      end: newValue.end > maximumDate ? maximumDate : newValue.end
+    };
 
     if (timeSliderConfig.alwaysMaxRange) {
       /*
@@ -224,46 +244,41 @@ export class EsriTimeSliderService implements TimeSliderService {
         */
       timeExtent.start = minimumDate;
       timeExtent.end = maximumDate;
-      return timeExtent;
-    }
-
-    if (timeSliderConfig.range) {
+    } else if (timeSliderConfig.range) {
       /*
           Fixed range
             The start has changed as fixed ranges technically don't have an end date
-            1. ensure that the changed date is still within the valid minimum range: startDate <= maxDate
+            1. ensure that the changed date is still within the valid minimum range: minDate <= startDate <= maxDate
             2. the end date has to be adjusted accordingly to enforce the fixed range between start and end date
          */
-      const rangeDuration: Duration = dayjs.duration(timeSliderConfig.range);
-      timeExtent.start = timeExtent.start <= maximumDate ? timeExtent.start : maximumDate;
-      timeExtent.end = dayjs(timeExtent.start).add(rangeDuration).toDate();
-      return timeExtent;
-    }
-
-    if (timeSliderConfig.minimalRange) {
+      const range: Duration = dayjs.duration(timeSliderConfig.range);
+      timeExtent.start = timeExtent.start > maximumDate ? maximumDate : timeExtent.start;
+      timeExtent.end = TimeExtentUtil.addDuration(timeExtent.start, range);
+    } else if (timeSliderConfig.minimalRange) {
       /*
           Minimal range
             Either the start or end date has changed;
             1. ensure that the changed date is still within the valid minimum range:
-              a. in case the start date was changed: startDate <= maxDate - range
-              b. in case the end date was changed:     endDate >= minDate + range
+              a. in case the start date was changed: minDate <= startDate <= maxDate - range
+              b. in case the end date was changed:   maxDate >= endDate >= minDate + range
             2. if the difference between the new start and end date is under the given minimum range then
                adjust the value of the previously unchanged value accordingly to enforce the minimal range between them
          */
-      const hasStartDateChanged: boolean = Math.abs(dayjs(newValue.start).diff(oldValue.start)) > 0;
-      const rangeDuration: Duration = dayjs.duration(timeSliderConfig.minimalRange);
-      const maximumRangeStartDate: Date = rangeDuration ? dayjs(maximumDate).subtract(rangeDuration).toDate() : maximumDate;
-      const minimumRangeEndDate: Date = rangeDuration ? dayjs(minimumDate).add(rangeDuration).toDate() : minimumDate;
       const startEndDiff: number = Math.abs(dayjs(timeExtent.start).diff(timeExtent.end));
+      const minimalRange: Duration = dayjs.duration(timeSliderConfig.minimalRange);
 
-      if (hasStartDateChanged && startEndDiff < rangeDuration.asMilliseconds()) {
-        timeExtent.start = timeExtent.start <= maximumRangeStartDate ? timeExtent.start : maximumRangeStartDate;
-        timeExtent.end = dayjs(timeExtent.start).add(rangeDuration).toDate();
-      } else if (!hasStartDateChanged && startEndDiff < rangeDuration.asMilliseconds()) {
-        timeExtent.end = timeExtent.end >= minimumRangeEndDate ? timeExtent.end : minimumRangeEndDate;
-        timeExtent.start = dayjs(timeExtent.end).subtract(rangeDuration).toDate();
+      if (startEndDiff < minimalRange.asMilliseconds()) {
+        const hasStartDateChanged: boolean = !oldValue || Math.abs(dayjs(timeExtent.start).diff(oldValue.start)) > 0;
+        if (hasStartDateChanged) {
+          const maximumRangeStartDate: Date = TimeExtentUtil.substractDuration(maximumDate, minimalRange);
+          timeExtent.start = timeExtent.start > maximumRangeStartDate ? maximumRangeStartDate : timeExtent.start;
+          timeExtent.end = TimeExtentUtil.addDuration(timeExtent.start, minimalRange);
+        } else {
+          const minimumRangeEndDate: Date = TimeExtentUtil.addDuration(minimumDate, minimalRange);
+          timeExtent.end = timeExtent.end < minimumRangeEndDate ? minimumRangeEndDate : timeExtent.end;
+          timeExtent.start = TimeExtentUtil.substractDuration(timeExtent.end, minimalRange);
+        }
       }
-      return timeExtent;
     }
 
     return timeExtent;

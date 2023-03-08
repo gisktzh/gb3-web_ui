@@ -47,21 +47,27 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy {
 
   private initSubscriptions() {
     this.subscriptions.add(
-      this.topics$.subscribe((value) => {
-        // TODO WES: remove
-        const onlyTimeSliderMaps = value
-          .filter((t) => t.maps.some((m) => m.timeSliderConfiguration))
-          .map((t) => {
-            const topic = structuredClone(t);
-            topic.maps = t.maps.filter((m) => m.timeSliderConfiguration);
-            return topic;
-          });
+      this.topics$
+        .pipe(
+          tap((topics) => {
+            this.topics = topics;
+          })
+        )
+        .subscribe((value) => {
+          // TODO WES: remove
+          const onlyTimeSliderMaps = value
+            .filter((t) => t.maps.some((m) => m.timeSliderConfiguration))
+            .map((t) => {
+              const topic = structuredClone(t);
+              topic.maps = t.maps.filter((m) => m.timeSliderConfiguration);
+              return topic;
+            });
 
-        this.topics = onlyTimeSliderMaps;
-        if (this.topics.length > 0) {
-          this.addActiveMap(this.topics[0].maps[0]);
-        }
-      })
+          this.topics = onlyTimeSliderMaps;
+          if (this.topics.length > 0) {
+            this.addActiveMap(this.topics[0].maps[0]);
+          }
+        })
     );
 
     this.subscriptions.add(

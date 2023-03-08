@@ -73,7 +73,6 @@ export interface TimeSliderConfiguration {
   minimalRange?: string;
   /** ISO-8601 date range (PnYnMnD) */
   range?: string;
-  /** ISO-8601 date range (PnYnMnD) */
   sourceType: TimeSliderSourceType;
   source: TimeSliderParameterSource | TimeSliderLayerSource;
 }
@@ -90,6 +89,7 @@ export interface TimeSliderLayerSource {
 
 interface TimeSliderLayer {
   layerName: string;
+  /** ISO-8601 date format (e.g. YYYY-MM-DD) */
   date: string;
 }
 

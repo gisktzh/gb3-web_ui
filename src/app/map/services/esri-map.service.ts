@@ -153,7 +153,7 @@ export class EsriMapService implements MapService {
     });
     if (mapItem.timeSliderExtent) {
       // apply initial time slider settings
-      this.setTimeSliderExtent(mapItem.timeSliderExtent, mapItem);
+      this.setEsriTimeSliderExtent(mapItem.timeSliderExtent, mapItem, esriLayer);
     }
     this.attachLayerListeners(esriLayer);
     // index is the inverse position - the lowest index has the lowest visibility (it's on the bottom) while the lowest position has the highest visibility
@@ -222,19 +222,9 @@ export class EsriMapService implements MapService {
     }
   }
 
-  public setTimeSliderExtent(timeSliderExtent: TimeExtent, mapItem: ActiveMapItem) {
+  public setTimeSliderExtent(timeExtent: TimeExtent, mapItem: ActiveMapItem) {
     const esriLayer = this.findEsriLayer(mapItem.id);
-    if (esriLayer && esriLayer instanceof EsriWMSLayer && mapItem.timeSliderConfiguration) {
-      switch (mapItem.timeSliderConfiguration.sourceType) {
-        case 'parameter':
-          esriLayer.customLayerParameters = this.createTimeSliderCustomParameter(timeSliderExtent, mapItem.timeSliderConfiguration);
-          break;
-        case 'layer':
-          this.synchronizeTimeSliderLayers(esriLayer, timeSliderExtent, mapItem);
-          break;
-      }
-      esriLayer.refresh();
-    }
+    this.setEsriTimeSliderExtent(timeExtent, mapItem, esriLayer);
   }
 
   public reorderMapItem(previousPosition: number, currentPosition: number) {
@@ -252,16 +242,31 @@ export class EsriMapService implements MapService {
     }
   }
 
-  private createTimeSliderCustomParameter(
+  private setEsriTimeSliderExtent(timeExtent: TimeExtent, mapItem: ActiveMapItem, esriLayer: __esri.Layer) {
+    if (esriLayer && esriLayer instanceof EsriWMSLayer && mapItem.timeSliderConfiguration) {
+      switch (mapItem.timeSliderConfiguration.sourceType) {
+        case 'parameter':
+          this.applyTimeSliderCustomParameters(esriLayer, timeExtent, mapItem.timeSliderConfiguration);
+          break;
+        case 'layer':
+          this.synchronizeTimeSliderLayers(esriLayer, timeExtent, mapItem);
+          break;
+      }
+      esriLayer.refresh();
+    }
+  }
+
+  private applyTimeSliderCustomParameters(
+    esriLayer: __esri.WMSLayer,
     timeSliderExtent: TimeExtent,
     timeSliderConfiguration: TimeSliderConfiguration
-  ): {[index: string]: string} {
+  ) {
     const timeSliderParameterSource = timeSliderConfiguration.source as TimeSliderParameterSource;
-    const customLayerParameters: {[index: string]: string} = {};
     const dateFormat = timeSliderConfiguration.dateFormat;
-    customLayerParameters[timeSliderParameterSource.startRangeParameter] = dayjs(timeSliderExtent.start).format(dateFormat);
-    customLayerParameters[timeSliderParameterSource.endRangeParameter] = dayjs(timeSliderExtent.end).format(dateFormat);
-    return customLayerParameters;
+
+    esriLayer.customLayerParameters = esriLayer.customLayerParameters ?? {};
+    esriLayer.customLayerParameters[timeSliderParameterSource.startRangeParameter] = dayjs(timeSliderExtent.start).format(dateFormat);
+    esriLayer.customLayerParameters[timeSliderParameterSource.endRangeParameter] = dayjs(timeSliderExtent.end).format(dateFormat);
   }
 
   private synchronizeTimeSliderLayers(esriLayer: __esri.WMSLayer, timeSliderExtent: TimeExtent, mapItem: ActiveMapItem): void {
@@ -279,7 +284,9 @@ export class EsriMapService implements MapService {
       })
       .map((l) => l.layerName);
     const layers = mapItem.layers.filter((l) => timeSliderLayersToShow.includes(l.layer));
+    // include all layers that are not specified in the time slider config
     const esriSublayers = esriLayer.sublayers.filter((sl) => !timeSliderLayers.includes(sl.name));
+    // now add all layers that are in the time slider config and currently within the time extent
     esriSublayers.addMany(
       layers.map(
         (layer) =>
