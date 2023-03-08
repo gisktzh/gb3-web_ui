@@ -4,6 +4,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {FavouriteDialogComponent} from '../components/favourite-dialog/favourite-dialog.component';
 import {Gb3FavouritesService} from '../../shared/services/apis/gb3/gb3-favourites.service';
 import {tap} from 'rxjs';
+import {FavouriteListActions} from '../../state/map/actions/favourite-list.actions';
 
 @Injectable({
   providedIn: 'root'
@@ -15,22 +16,23 @@ export class FavouritesService {
     private readonly gb3FavouritesService: Gb3FavouritesService
   ) {}
 
-  public addFavourite() {
-    const dialogRef = this.dialogService.open<FavouriteDialogComponent, undefined, string | undefined>(FavouriteDialogComponent);
+  public showFavouriteDialog() {
+    const dialogRef = this.dialogService.open<FavouriteDialogComponent, undefined, boolean>(FavouriteDialogComponent);
 
     dialogRef
       .afterClosed()
       .pipe(
-        tap((result) => {
-          if (result) {
-            this.gb3FavouritesService
-              .createFavourite({title: result, content: {a: 'b'}})
-              .pipe(tap((res) => console.log(res)))
-              .subscribe(); // todo: use state
+        tap((isAborted) => {
+          if (!isAborted) {
+            this.store.dispatch(FavouriteListActions.loadFavourites());
           }
         })
       )
       .subscribe();
+  }
+
+  public createFavourite(title: string) {
+    return this.gb3FavouritesService.createFavourite({title, content: {a: 'b'}}).pipe(tap((res) => console.log(res))); // todo: use state
   }
 
   public loadFavourites() {

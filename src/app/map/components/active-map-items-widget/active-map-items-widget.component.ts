@@ -70,7 +70,7 @@ export class ActiveMapItemsWidgetComponent implements OnInit, OnDestroy {
   }
 
   public createFavourite() {
-    this.favouritesService.addFavourite();
+    this.favouritesService.showFavouriteDialog();
   }
 
   private initSubscriptions() {

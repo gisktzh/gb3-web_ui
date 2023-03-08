@@ -7,6 +7,7 @@
   </mat-form-field>
 </div>
 <div mat-dialog-actions>
-  <button (click)="abort()" mat-button>Abbrechen</button>
-  <button (click)="close()" mat-button [disabled]="nameFormControl.status !== 'VALID'">Speichern</button>
+  <button (click)="this.abort()" [disabled]="this.isSaving" mat-button>Abbrechen</button>
+  <button (click)="this.save()" [disabled]="this.nameFormControl.status !== 'VALID' || this.isSaving" mat-button>Speichern</button>
 </div>
+<mat-progress-bar *ngIf="this.isSaving" mode="query"></mat-progress-bar>
