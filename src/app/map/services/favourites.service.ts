@@ -3,11 +3,12 @@ import {Store} from '@ngrx/store';
 import {MatDialog} from '@angular/material/dialog';
 import {FavouriteDialogComponent} from '../components/favourite-dialog/favourite-dialog.component';
 import {Gb3FavouritesService} from '../../shared/services/apis/gb3/gb3-favourites.service';
-import {tap} from 'rxjs';
+import {Observable, tap} from 'rxjs';
 import {FavouriteListActions} from '../../state/map/actions/favourite-list.actions';
 import {selectActiveMapItems} from '../../state/map/reducers/active-map-item.reducer';
 import {ActiveMapItem} from '../models/active-map-item.model';
-import {FavouriteLayerConfiguration} from '../../shared/interfaces/favourite.interface';
+import {FavouriteLayerConfiguration, FavouritesResponse} from '../../shared/interfaces/favourite.interface';
+import {map} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -39,13 +40,13 @@ export class FavouritesService {
       .subscribe();
   }
 
-  public createFavourite(title: string) {
+  public createFavourite(title: string): Observable<boolean> {
     const currentConfiguration = this.getCurrentFavouriteConfiguration();
 
-    return this.gb3FavouritesService.createFavourite({title, content: currentConfiguration}).pipe();
+    return this.gb3FavouritesService.createFavourite({title, content: currentConfiguration}).pipe(map(() => true));
   }
 
-  public loadFavourites() {
+  public loadFavourites(): Observable<FavouritesResponse> {
     return this.gb3FavouritesService.loadFavourites();
   }
 
