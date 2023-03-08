@@ -1,8 +1,20 @@
 import {Duration} from 'dayjs/plugin/duration';
 import * as dayjs from 'dayjs';
 import {ManipulateType} from 'dayjs';
+import {TimeSliderConfiguration} from '../interfaces/topic.interface';
+import {TimeExtent} from '../../map/interfaces/time-extent.interface';
 
 export class TimeExtentUtil {
+  public static createInitialTimeSliderExtent(timeSliderConfig: TimeSliderConfiguration): TimeExtent {
+    const minimumDate: Date = dayjs(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat).toDate();
+    const maximumDate: Date = dayjs(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat).toDate();
+    const range: Duration | null = timeSliderConfig.range ? dayjs.duration(timeSliderConfig.range) : null;
+    return {
+      start: minimumDate,
+      end: range ? TimeExtentUtil.addDuration(minimumDate, range) : maximumDate
+    };
+  }
+
   public static extractUnitFromDuration(duration: Duration): ManipulateType | undefined {
     if (duration.years() === duration.asYears()) return 'years';
     if (duration.months() === duration.asMonths()) return 'months';

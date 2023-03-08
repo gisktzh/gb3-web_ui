@@ -23,11 +23,6 @@ export class EsriTimeSliderService implements TimeSliderService {
     // add a debounce time as every step of the time slider creates a change of state which then creates a request to the server
     .pipe(debounceTime(200));
 
-  constructor() {
-    // TODO WES: remove
-    this.timeExtentChanged.subscribe((t) => console.log(`${dayjs(t.start).format('MM.YYYY')} - ${dayjs(t.end).format('MM.YYYY')}`));
-  }
-
   public assignTimeSliderWidget(activeMapItem: ActiveMapItem, container: HTMLDivElement) {
     if (!activeMapItem.timeSliderConfiguration) {
       throw Error('No valid timeslider config available!'); // TODO Error handling
@@ -35,15 +30,8 @@ export class EsriTimeSliderService implements TimeSliderService {
 
     const timeSliderConfig = activeMapItem.timeSliderConfiguration;
     if (!activeMapItem.timeSliderExtent) {
-      activeMapItem.timeSliderExtent = ActiveMapItem.createInitialTimeSliderExtent(timeSliderConfig);
+      activeMapItem.timeSliderExtent = TimeExtentUtil.createInitialTimeSliderExtent(timeSliderConfig);
     }
-
-    // TODO WES: remove
-    // timeSliderConfig = structuredClone(timeSliderConfig);
-    // timeSliderConfig.range = timeSliderConfig.minimalRange;
-    // timeSliderConfig.minimalRange = undefined;
-    // timeSliderConfig.alwaysMaxRange = true;
-    console.log(`minDate: ${timeSliderConfig.minimumDate}, maxDate: ${timeSliderConfig.maximumDate}`);
 
     const minimumDate: Date = dayjs(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat).toDate();
     const maximumDate: Date = dayjs(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat).toDate();
@@ -61,23 +49,6 @@ export class EsriTimeSliderService implements TimeSliderService {
       },
       timeExtent: timeExtent,
       stops: stops
-      // TODO WES: remove
-      // tickConfigs: [{
-      //   mode: "position",
-      //   values: [
-      //     new Date(2010, 0, 1), new Date(2012, 0, 1), new Date(2014, 0, 1),
-      //     new Date(2016, 0, 1), new Date(2018, 0, 1), new Date(2020, 0, 1)
-      //   ].map((date) => date.getTime()),
-      //   labelsVisible: true,
-      //   labelFormatFunction: (value) => {
-      //     const date = new Date(value);
-      //     return `'${date.getUTCFullYear() - 2000}`;
-      //   },
-      //   tickCreatedFunction: (value, tickElement, labelElement) => {
-      //     tickElement.classList.add("custom-ticks");
-      //     labelElement?.classList.add("custom-labels");
-      //   }
-      // }]
     } as __esri.TimeSliderProperties);
 
     EsriReactiveUtils.watch(
@@ -158,13 +129,6 @@ export class EsriTimeSliderService implements TimeSliderService {
       return;
     }
 
-    // TODO WES: remove
-    console.log(
-      `incoming values: new value ${dayjs(newValue?.start).format('YYYY')}-${dayjs(newValue?.end).format('YYYY')}, old value: ${dayjs(
-        oldValue?.start
-      ).format('YYYY')}-${dayjs(oldValue?.end).format('YYYY')}`
-    );
-
     const timeExtent = this.createValidTimeExtent(timeSliderConfig, newValue, oldValue);
     if (Math.abs(dayjs(timeExtent.start).diff(newValue.start)) > 0) {
       timeSlider.timeExtent.start = timeExtent.start;
@@ -176,17 +140,7 @@ export class EsriTimeSliderService implements TimeSliderService {
       timeSlider.timeExtent.end = timeExtent.end;
     }
 
-    if (
-      timeSliderConfig.minimalRange &&
-      Math.abs(dayjs(timeExtent.start).diff(timeExtent.end)) <= dayjs.duration(timeSliderConfig.minimalRange).milliseconds()
-    ) {
-      console.warn(`TADAH: ${dayjs(timeExtent.end).format(timeSliderConfig.dateFormat)}`);
-    } else {
-      console.log(`mmmh: ${dayjs(timeExtent.end).format(timeSliderConfig.dateFormat)}`);
-    }
-
     if (!oldValue || Math.abs(dayjs(oldValue.start).diff(timeExtent.start)) > 0 || Math.abs(dayjs(oldValue.end).diff(timeExtent.end)) > 0) {
-      console.log(`FILTER: new value ${dayjs(timeExtent.start).format('YYYY')}-${dayjs(timeExtent.end).format('YYYY')}`);
       this.timeExtentChanged$.next(timeExtent);
     }
   }
