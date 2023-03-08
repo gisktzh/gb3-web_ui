@@ -3,7 +3,7 @@ import {Gb3ApiService} from './gb3-api.service';
 import {FavoritesCreatePayload, FavoritesDetailData, FavoritesListData} from '../../../models/gb3-api-generated.interfaces';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {CreateFavourite, FavouritesResponse} from '../../../interfaces/favourite.interface';
+import {CreateFavourite, FavouriteLayerConfiguration, FavouritesResponse} from '../../../interfaces/favourite.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -22,8 +22,12 @@ export class Gb3FavouritesService extends Gb3ApiService {
 
   private mapFavouritesListDataToFavouritesResponse(favouritesListData: FavoritesListData): FavouritesResponse {
     return favouritesListData.map((data) => {
+      const title = data.title;
+      const content = data.content as FavouriteLayerConfiguration[]; // todo: remove type cast when backend is properly typed
+
       return {
-        ...data
+        title,
+        content
       };
     });
   }

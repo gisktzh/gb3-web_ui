@@ -17,10 +17,10 @@ export class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewPro
 
   public loadingState: LoadingState = 'undefined';
   public viewProcessState: ViewProcessState = 'undefined';
-  public visible = true;
-  public opacity = 1;
+  public visible: boolean;
+  public opacity: number;
 
-  constructor(map: Map, layer?: MapLayer) {
+  constructor(map: Map, layer?: MapLayer, visible?: boolean, opacity?: number) {
     this.isSingleLayer = !!layer;
     this.id = layer ? `${map.id}_${layer.layer}` : map.id;
     this.title = layer ? layer.title : map.title;
@@ -28,5 +28,7 @@ export class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewPro
     this.mapImageUrl = map.icon;
     this.mapId = map.id;
     this.layers = layer ? [layer] : map.layers;
+    this.visible = visible ?? true;
+    this.opacity = opacity ?? 1;
   }
 }

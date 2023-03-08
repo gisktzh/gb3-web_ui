@@ -7,7 +7,7 @@
   <ng-container *ngFor="let favourite of this.favourites">
     <mat-card class="favourite-selection__favourite">
       <mat-card-content class="favourite-selection__favourite__content">
-        <button (click)="this.addFavouriteToMap()" color="primary" mat-icon-button>
+        <button (click)="this.addFavouriteToMap(favourite.content)" color="primary" mat-icon-button>
           <mat-icon>add</mat-icon>
         </button>
         <span class="favourite-selection__favourite__placeholder"></span>

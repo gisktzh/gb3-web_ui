@@ -15,6 +15,7 @@ export const ActiveMapItemActions = createActionGroup({
     'Set Loading State': props<{loadingState: LoadingState; id: string}>(),
     'Set View Process State': props<{viewProcessState: ViewProcessState; id: string}>(),
     'Reorder Active Map Item': props<{previousPosition: number; currentPosition: number}>(),
-    'Reorder Sublayer': props<{activeMapItem: ActiveMapItem; previousPosition: number; currentPosition: number}>()
+    'Reorder Sublayer': props<{activeMapItem: ActiveMapItem; previousPosition: number; currentPosition: number}>(),
+    'Add Favourite': props<{favourite: ActiveMapItem[]}>()
   }
 });
