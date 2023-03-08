@@ -2,6 +2,10 @@ export interface Favourite {
   //todo: missing id
   title: string;
   content: FavouriteLayerConfiguration[];
+  /**
+   * Declares whether a favourite is invalid because e.g. its components do no longer exist.
+   */
+  invalid?: boolean;
 }
 
 export type CreateFavourite = Pick<Favourite, 'title' | 'content'>;

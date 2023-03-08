@@ -21,6 +21,10 @@
     border-radius: 0;
     @include mat.elevation(2);
 
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.04);
+    }
+
     .favourite-selection__favourite__content {
       padding: 0 8px;
       display: flex;
@@ -36,6 +40,10 @@
         margin-right: 8px;
         border-radius: 4px;
         background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
+
+        &.favourite-selection__favourite__icon--disabled {
+          background-color: grey;
+        }
       }
 
       .favourite-selection__favourite__placeholder {
@@ -46,6 +54,14 @@
       .favourite-selection__favourite__content__title {
         @include mixins.single-line-text;
         margin-right: auto;
+
+        &.favourite-selection__favourite__title--disabled {
+          color: grey;
+        }
+      }
+
+      .favourite-selection__favourite__content__error {
+        align-self: center;
       }
     }
   }

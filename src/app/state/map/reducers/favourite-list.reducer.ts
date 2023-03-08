@@ -26,6 +26,13 @@ export const favourteListeFeature = createFeature({
     }),
     on(FavouriteListActions.clearFavourites, (state): FavouriteListState => {
       return {...state, favourites: []};
+    }),
+    on(FavouriteListActions.setInvalid, (state, {id}): FavouriteListState => {
+      const {favourites} = structuredClone(state);
+
+      favourites.find((favourite) => favourite.title === id)!.invalid = true;
+
+      return {...state, favourites};
     })
   )
 });

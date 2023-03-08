@@ -6,6 +6,7 @@ export const FavouriteListActions = createActionGroup({
   events: {
     'Load Favourites': emptyProps(),
     'Set Favourites': props<{favourites: Favourite[]}>(),
-    'Clear Favourites': emptyProps()
+    'Clear Favourites': emptyProps(),
+    'Set Invalid': props<{id: string}>()
   }
 });

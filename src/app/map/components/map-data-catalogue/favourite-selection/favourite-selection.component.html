@@ -1,18 +1,33 @@
-<mat-expansion-panel class="favourite-selection" *ngIf="this.isAuthenticated">
+<mat-expansion-panel *ngIf="this.isAuthenticated" class="favourite-selection">
   <mat-expansion-panel-header class="favourite-selection__header">
-    <mat-panel-title> Favoriten </mat-panel-title>
+    <mat-panel-title> Favoriten</mat-panel-title>
     <!-- Todo: create a generic loading-view component -->
     <mat-progress-bar *ngIf="this.loadingState !== 'loaded'" class="favourite-selection__header__loader" mode="query"></mat-progress-bar>
   </mat-expansion-panel-header>
   <ng-container *ngFor="let favourite of this.favourites">
     <mat-card class="favourite-selection__favourite">
-      <mat-card-content class="favourite-selection__favourite__content">
-        <button (click)="this.addFavouriteToMap(favourite.content)" color="primary" mat-icon-button>
-          <mat-icon>add</mat-icon>
+      <mat-card-content
+        [matTooltipDisabled]="!favourite.invalid"
+        class="favourite-selection__favourite__content"
+        matTooltip="{{ this.errorTooltip }}"
+      >
+        <button (click)="this.addFavouriteToMap(favourite)" [disabled]="favourite.invalid" color="primary" mat-icon-button>
+          <mat-icon *ngIf="!favourite.invalid">add</mat-icon>
+          <mat-icon *ngIf="favourite.invalid" class="favourite-selection__favourite__content__error" color="warn">error </mat-icon>
         </button>
         <span class="favourite-selection__favourite__placeholder"></span>
-        <span class="favourite-selection__favourite__icon"></span>
-        <p class="favourite-selection__favourite__content__title" matTooltip="{{ favourite.title }}">{{ favourite.title }}</p>
+        <span
+          [class.favourite-selection__favourite__icon--disabled]="favourite.invalid"
+          class="favourite-selection__favourite__icon"
+        ></span>
+        <p
+          [class.favourite-selection__favourite__title--disabled]="favourite.invalid"
+          [matTooltipDisabled]="favourite.invalid"
+          class="favourite-selection__favourite__content__title"
+          matTooltip="{{ favourite.title }}"
+        >
+          {{ favourite.title }}
+        </p>
       </mat-card-content>
     </mat-card>
   </ng-container>
