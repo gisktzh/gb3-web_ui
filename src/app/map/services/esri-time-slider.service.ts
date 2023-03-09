@@ -8,7 +8,7 @@ import {ManipulateType} from 'dayjs';
 import * as duration from 'dayjs/plugin/duration';
 import {Duration} from 'dayjs/plugin/duration';
 import {ActiveMapItem} from '../models/active-map-item.model';
-import {EsriReactiveUtils, EsriTimeExtent, EsriTimeIntervalUnit, EsriTimeSlider, EsriTimeSliderMode} from '../external/esri.module';
+import {esriReactiveUtils, EsriTimeExtent, EsriTimeIntervalUnit, EsriTimeSlider, EsriTimeSliderMode} from '../external/esri.module';
 import {TimeExtentUtil} from '../../shared/utils/time-extent.util';
 
 dayjs.extend(duration);
@@ -51,7 +51,7 @@ export class EsriTimeSliderService implements TimeSliderService {
       stops: stops
     } as __esri.TimeSliderProperties);
 
-    EsriReactiveUtils.watch(
+    esriReactiveUtils.watch(
       () => timeSlider.timeExtent,
       (newValue: __esri.TimeExtent | undefined, oldValue: __esri.TimeExtent | undefined) =>
         this.onTimeExtentChanged(newValue, oldValue, timeSlider, timeSliderConfig)
@@ -61,6 +61,64 @@ export class EsriTimeSliderService implements TimeSliderService {
     this.timeExtentChanged$.next(activeMapItem.timeSliderExtent);
   }
 
+  public createValidTimeExtent(timeSliderConfig: TimeSliderConfiguration, newValue: TimeExtent, oldValue?: TimeExtent): TimeExtent {
+    const minimumDate: Date = dayjs(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat).toDate();
+    const maximumDate: Date = dayjs(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat).toDate();
+    const timeExtent: TimeExtent = {
+      start: newValue.start < minimumDate ? minimumDate : newValue.start,
+      end: newValue.end > maximumDate ? maximumDate : newValue.end
+    };
+
+    if (timeSliderConfig.alwaysMaxRange) {
+      /*
+          Always max range:
+            start/end date are always min/max
+        */
+      timeExtent.start = minimumDate;
+      timeExtent.end = maximumDate;
+    } else if (timeSliderConfig.range) {
+      /*
+          Fixed range
+            The start has changed as fixed ranges technically don't have an end date
+            1. ensure that the changed date is still within the valid minimum range: minDate <= startDate <= maxDate
+            2. the end date has to be adjusted accordingly to enforce the fixed range between start and end date
+         */
+      const range: Duration = dayjs.duration(timeSliderConfig.range);
+      timeExtent.start = timeExtent.start > maximumDate ? maximumDate : timeExtent.start;
+      timeExtent.end = TimeExtentUtil.addDuration(timeExtent.start, range);
+    } else if (timeSliderConfig.minimalRange) {
+      /*
+          Minimal range
+            Either the start or end date has changed;
+            1. ensure that the changed date is still within the valid minimum range:
+              a. in case the start date was changed: minDate <= startDate <= maxDate - range
+              b. in case the end date was changed:   maxDate >= endDate >= minDate + range
+            2. if the difference between the new start and end date is under the given minimum range then
+               adjust the value of the previously unchanged value accordingly to enforce the minimal range between them
+         */
+      const startEndDiff: number = Math.abs(dayjs(timeExtent.start).diff(timeExtent.end));
+      const minimalRange: Duration = dayjs.duration(timeSliderConfig.minimalRange);
+
+      if (startEndDiff < minimalRange.asMilliseconds()) {
+        const hasStartDateChanged: boolean = !oldValue || Math.abs(dayjs(timeExtent.start).diff(oldValue.start)) > 0;
+        if (hasStartDateChanged) {
+          const maximumRangeStartDate: Date = TimeExtentUtil.subtractDuration(maximumDate, minimalRange);
+          timeExtent.start = timeExtent.start > maximumRangeStartDate ? maximumRangeStartDate : timeExtent.start;
+          timeExtent.end = TimeExtentUtil.addDuration(timeExtent.start, minimalRange);
+        } else {
+          const minimumRangeEndDate: Date = TimeExtentUtil.addDuration(minimumDate, minimalRange);
+          timeExtent.end = timeExtent.end < minimumRangeEndDate ? minimumRangeEndDate : timeExtent.end;
+          timeExtent.start = TimeExtentUtil.subtractDuration(timeExtent.end, minimalRange);
+        }
+      }
+    }
+
+    return timeExtent;
+  }
+
+  /**
+   * Creates stops which define specific locations on the time slider where thumbs will snap to when manipulated.
+   */
   private createStops(timeSliderConfig: TimeSliderConfiguration): __esri.StopsByInterval | __esri.StopsByDates | undefined {
     switch (timeSliderConfig.sourceType) {
       case 'parameter':
@@ -70,6 +128,9 @@ export class EsriTimeSliderService implements TimeSliderService {
     }
   }
 
+  /**
+   * Creates stops for a layer source containing multiple dates which may not necessarily have constant gaps between them.
+   */
   private createStopsForLayerSource(timeSliderConfig: TimeSliderConfiguration): __esri.StopsByDates {
     const timeSliderLayerSource = timeSliderConfig.source as TimeSliderLayerSource;
     const dates = timeSliderLayerSource.layers.map((l) => dayjs(l.date, timeSliderConfig.dateFormat).toDate());
@@ -78,6 +139,12 @@ export class EsriTimeSliderService implements TimeSliderService {
     } as __esri.StopsByDates;
   }
 
+  /**
+   * Creates stops for a parameter source.
+   * @description This is done by using a strict interval (e.g. one year) if the default range duration only contains
+   *   a single type of unit (e.g. 'years'). Otherwise a more generic approach is used by creating date stops from
+   *   start to finish using the given duration; this can lead to gaps near the end but supports all cases.
+   */
   private createStopsForParameterSource(
     timeSliderConfig: TimeSliderConfiguration
   ): __esri.StopsByDates | __esri.StopsByInterval | undefined {
@@ -119,6 +186,13 @@ export class EsriTimeSliderService implements TimeSliderService {
     } as __esri.StopsByDates;
   }
 
+  /**
+   * Handles the new time extent value by validating it against the time slider configuration limits first and then emitting that corrected value.
+   * @param newValue The new time extent value; this is not necessarily a valid time extent as it can be outside the limitations.
+   * @param oldValue The old time extent value.
+   * @param timeSlider The corresponding time slider; necessary if the new time extent has to be corrected.
+   * @param timeSliderConfig The time slider configuration containing the limitations and rules for this time slider.
+   */
   private onTimeExtentChanged(
     newValue: __esri.TimeExtent | undefined,
     oldValue: __esri.TimeExtent | undefined,
@@ -181,61 +255,6 @@ export class EsriTimeSliderService implements TimeSliderService {
       case 'weeks':
         return 'weeks';
     }
-  }
-
-  public createValidTimeExtent(timeSliderConfig: TimeSliderConfiguration, newValue: TimeExtent, oldValue?: TimeExtent): TimeExtent {
-    const minimumDate: Date = dayjs(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat).toDate();
-    const maximumDate: Date = dayjs(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat).toDate();
-    const timeExtent: TimeExtent = {
-      start: newValue.start < minimumDate ? minimumDate : newValue.start,
-      end: newValue.end > maximumDate ? maximumDate : newValue.end
-    };
-
-    if (timeSliderConfig.alwaysMaxRange) {
-      /*
-          Always max range:
-            start/end date are always min/max
-        */
-      timeExtent.start = minimumDate;
-      timeExtent.end = maximumDate;
-    } else if (timeSliderConfig.range) {
-      /*
-          Fixed range
-            The start has changed as fixed ranges technically don't have an end date
-            1. ensure that the changed date is still within the valid minimum range: minDate <= startDate <= maxDate
-            2. the end date has to be adjusted accordingly to enforce the fixed range between start and end date
-         */
-      const range: Duration = dayjs.duration(timeSliderConfig.range);
-      timeExtent.start = timeExtent.start > maximumDate ? maximumDate : timeExtent.start;
-      timeExtent.end = TimeExtentUtil.addDuration(timeExtent.start, range);
-    } else if (timeSliderConfig.minimalRange) {
-      /*
-          Minimal range
-            Either the start or end date has changed;
-            1. ensure that the changed date is still within the valid minimum range:
-              a. in case the start date was changed: minDate <= startDate <= maxDate - range
-              b. in case the end date was changed:   maxDate >= endDate >= minDate + range
-            2. if the difference between the new start and end date is under the given minimum range then
-               adjust the value of the previously unchanged value accordingly to enforce the minimal range between them
-         */
-      const startEndDiff: number = Math.abs(dayjs(timeExtent.start).diff(timeExtent.end));
-      const minimalRange: Duration = dayjs.duration(timeSliderConfig.minimalRange);
-
-      if (startEndDiff < minimalRange.asMilliseconds()) {
-        const hasStartDateChanged: boolean = !oldValue || Math.abs(dayjs(timeExtent.start).diff(oldValue.start)) > 0;
-        if (hasStartDateChanged) {
-          const maximumRangeStartDate: Date = TimeExtentUtil.substractDuration(maximumDate, minimalRange);
-          timeExtent.start = timeExtent.start > maximumRangeStartDate ? maximumRangeStartDate : timeExtent.start;
-          timeExtent.end = TimeExtentUtil.addDuration(timeExtent.start, minimalRange);
-        } else {
-          const minimumRangeEndDate: Date = TimeExtentUtil.addDuration(minimumDate, minimalRange);
-          timeExtent.end = timeExtent.end < minimumRangeEndDate ? minimumRangeEndDate : timeExtent.end;
-          timeExtent.start = TimeExtentUtil.substractDuration(timeExtent.end, minimalRange);
-        }
-      }
-    }
-
-    return timeExtent;
   }
 
   private transformToEsriTimeExtent(timeExtent: TimeExtent, timeSliderConfig: TimeSliderConfiguration): __esri.TimeExtent {

@@ -5,8 +5,10 @@ import {TimeSliderConfiguration} from '../../shared/interfaces/topic.interface';
 
 export interface TimeSliderService {
   readonly timeExtentChanged: Observable<TimeExtent>;
+  /** Assigns a time slider widget to the given container based on the active map item */
   assignTimeSliderWidget(activeMapItem: ActiveMapItem, container: HTMLDivElement): void;
 
-  /** Creates a new time extent by combining the information from the time slider config and the given new and old time extent value */
+  /** Creates a new time extent from the given new time extent. The created time extent will be fully validated against
+   * the limitations and rules of the time slider configuration. */
   createValidTimeExtent(timeSliderConfig: TimeSliderConfiguration, newValue: TimeExtent, oldValue?: TimeExtent): TimeExtent;
 }

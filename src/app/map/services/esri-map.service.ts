@@ -7,7 +7,7 @@ import {
   EsriMap,
   EsriMapView,
   EsriPoint,
-  EsriReactiveUtils,
+  esriReactiveUtils,
   EsriScaleBar,
   EsriSimpleFillSymbol,
   EsriSimpleLineSymbol,
@@ -256,6 +256,10 @@ export class EsriMapService implements MapService {
     }
   }
 
+  /**
+   * Applies the time slider extent to the given layer by using custom WMS parameters.
+   * Those parameters are defined in the corresponding time slider configuration sent by the source server.
+   */
   private applyTimeSliderCustomParameters(
     esriLayer: __esri.WMSLayer,
     timeSliderExtent: TimeExtent,
@@ -269,7 +273,15 @@ export class EsriMapService implements MapService {
     esriLayer.customLayerParameters[timeSliderParameterSource.endRangeParameter] = dayjs(timeSliderExtent.end).format(dateFormat);
   }
 
-  private synchronizeTimeSliderLayers(esriLayer: __esri.WMSLayer, timeSliderExtent: TimeExtent, mapItem: ActiveMapItem): void {
+  /**
+   * Applies the time slider extent to the given layer by adding/removing the corresponding WMS sub-layers.
+   * @description Each time slider sub-layer corresponds to a time duration. The time slider is controlling the currently
+   *   visible data by adding/removing the corresponding sub-layers. However, there are other sub-layers in addition to
+   *   the time slider specific sub-layers which should not be modified in any way.
+   *   Therefore, first all time slider specific sub-layers are filtered. And from those only the ones which have a date inside the current
+   *   time extent are selected to be visible.
+   */
+  private synchronizeTimeSliderLayers(esriLayer: __esri.WMSLayer, timeSliderExtent: TimeExtent, mapItem: ActiveMapItem) {
     if (!mapItem.timeSliderConfiguration) {
       return;
     }
@@ -361,12 +373,12 @@ export class EsriMapService implements MapService {
   }
 
   private attachMapViewListeners() {
-    EsriReactiveUtils.when(
+    esriReactiveUtils.when(
       () => this.mapView.stationary,
       () => this.updateMapConfig()
     );
 
-    EsriReactiveUtils.on(
+    esriReactiveUtils.on(
       () => this.mapView,
       'click',
       (event: __esri.ViewClickEvent) => {
@@ -375,23 +387,25 @@ export class EsriMapService implements MapService {
       }
     );
 
-    EsriReactiveUtils.whenOnce(() => this.mapView.ready).then(() => {
-      /* eslint-disable @typescript-eslint/no-non-null-assertion */ // at this point, we know the values are ready
-      const {effectiveMaxScale, effectiveMinScale, effectiveMaxZoom, effectiveMinZoom} = this.mapView.constraints;
+    esriReactiveUtils
+      .whenOnce(() => this.mapView.ready)
+      .then(() => {
+        /* eslint-disable @typescript-eslint/no-non-null-assertion */ // at this point, we know the values are ready
+        const {effectiveMaxScale, effectiveMinScale, effectiveMaxZoom, effectiveMinZoom} = this.mapView.constraints;
 
-      this.effectiveMaxZoom = effectiveMaxZoom!;
-      this.effectiveMinZoom = effectiveMinZoom!;
-      this.effectiveMinScale = effectiveMinScale!;
+        this.effectiveMaxZoom = effectiveMaxZoom!;
+        this.effectiveMinZoom = effectiveMinZoom!;
+        this.effectiveMinScale = effectiveMinScale!;
 
-      this.store.dispatch(
-        MapConfigActions.setReady({
-          calculatedMinScale: effectiveMinScale!,
-          calculatedMaxScale: effectiveMaxScale!
-        })
-      );
-    });
+        this.store.dispatch(
+          MapConfigActions.setReady({
+            calculatedMinScale: effectiveMinScale!,
+            calculatedMaxScale: effectiveMaxScale!
+          })
+        );
+      });
 
-    EsriReactiveUtils.on(
+    esriReactiveUtils.on(
       () => this.mapView,
       'layerview-create',
       (event: __esri.ViewLayerviewCreateEvent) => {
@@ -402,7 +416,7 @@ export class EsriMapService implements MapService {
 
   private attachLayerListeners(esriLayer: __esri.Layer) {
     // watch and initialize the loading state by observing the 'loadStatus' property
-    EsriReactiveUtils.watch(
+    esriReactiveUtils.watch(
       () => esriLayer.loadStatus,
       (loadStatus) => {
         this.updateLoadingState(loadStatus, esriLayer.id);
@@ -413,7 +427,7 @@ export class EsriMapService implements MapService {
 
   private attachLayerViewListeners(esriLayerView: __esri.LayerView) {
     // watch and initialize the view process state by observing the 'updating' property
-    EsriReactiveUtils.watch(
+    esriReactiveUtils.watch(
       () => esriLayerView.updating,
       (updating) => {
         this.updateViewProcessState(updating, esriLayerView.layer?.id);

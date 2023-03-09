@@ -104,8 +104,8 @@ export class Gb3TopicsService extends Gb3ApiService {
                   permissionMissing: layer.permission_missing
                 };
               }),
-              timeSliderConfiguration: topic.timesliderConfiguration as TimeSliderConfiguration,
-              filterConfigurations: topic.filterConfigurations as AttributeFilterConfiguration[]
+              timeSliderConfiguration: topic.timesliderConfiguration as TimeSliderConfiguration, // todo: remove type cast when backend is properly typed
+              filterConfigurations: topic.filterConfigurations as AttributeFilterConfiguration[] // todo: remove type cast when backend is properly typed
             };
           })
         };
