@@ -20,10 +20,13 @@ export class TimeExtentUtil {
 
   /**
    * Extracts the unit from the given duration or <undefined> if it contains values with multiple units.
-   * @description It does return a unit ('years'/'months'/...) only if the given duration contains values of this unit and nothing else; <undefined> otherwise.
+   *
+   * @remarks
+   * It does return a unit ('years'/'months'/...) only if the given duration contains values of this unit and nothing else; <undefined> otherwise.
+   *
    * @example
-   *   'P3Y' is a duration of 3 years. The duration only contains years and therefore this method returns 'years'
-   *   'P1Y6M' is a duration of 1 year and 6 months. It contains years (1) and months (6) which is a mix of two units. The return value will be <undefined>.
+   * 'P3Y' is a duration of 3 years. The duration only contains years and therefore this method returns 'years'
+   * 'P1Y6M' is a duration of 1 year and 6 months. It contains years (1) and months (6) which is a mix of two units. The return value will be <undefined>.
    * */
   public static extractUnitFromDuration(duration: Duration): ManipulateType | undefined {
     if (duration.years() === duration.asYears()) return 'years';
@@ -38,12 +41,15 @@ export class TimeExtentUtil {
 
   /**
    * Adds the duration to the given date as exact as possible.
-   * @description It does more than a simple `dayjs(date).add(duration)`. It will add values of a specific unit to the date in case that
+   *
+   * @remarks
+   * It does more than a simple `dayjs(date).add(duration)`. It will add values of a specific unit to the date in case that
    * the duration contains only values of one specific unit (e.g. 'years'). This has the advantage that it does not use
    * a generic solution which would be 365 days in case of a year.
+   *
    * @example
-   *   addDuration(01.01.2000, duration(1, 'years')) === 01.01.2001
-   *   while the default way using `dayjs.add` would lead to an error: dayjs(01.01.2000).add(duration(1, 'years')) === 01.01.2000 + 365 days === 31.12.2000
+   * addDuration(01.01.2000, duration(1, 'years')) === 01.01.2001
+   * while the default way using `dayjs.add` would lead to an error: dayjs(01.01.2000).add(duration(1, 'years')) === 01.01.2000 + 365 days === 31.12.2000
    * */
   public static addDuration(date: Date, duration: Duration): Date {
     const unit = TimeExtentUtil.extractUnitFromDuration(duration);
@@ -56,12 +62,15 @@ export class TimeExtentUtil {
 
   /**
    * Subtracts the duration from the given date as exact as possible.
-   * @description It does more than a simple `dayjs(date).subtract(duration)`. It will subtract values of a specific unit from the date in case that
-   *   the duration contains only values of one specific unit (e.g. 'years'). This has the advantage that it does not use
-   *   a generic solution which would be 365 days in case of a year.
+   *
+   * @remarks
+   * It does more than a simple `dayjs(date).subtract(duration)`. It will subtract values of a specific unit from the date in case that
+   * the duration contains only values of one specific unit (e.g. 'years'). This has the advantage that it does not use
+   * a generic solution which would be 365 days in case of a year.
+   *
    * @example
-   *   subtractDuration(01.01.2001, duration(1, 'years')) === 01.01.2000
-   *   while the default way using `dayjs.subtract` would lead to an error: dayjs(01.01.2001).subtract(duration(1, 'years')) === 01.01.2001 - 365 days === 02.01.2000
+   * subtractDuration(01.01.2001, duration(1, 'years')) === 01.01.2000
+   * while the default way using `dayjs.subtract` would lead to an error: dayjs(01.01.2001).subtract(duration(1, 'years')) === 01.01.2001 - 365 days === 02.01.2000
    * */
   public static subtractDuration(date: Date, duration: Duration): Date {
     const unit = TimeExtentUtil.extractUnitFromDuration(duration);

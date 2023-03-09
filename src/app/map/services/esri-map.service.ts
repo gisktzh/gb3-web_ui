@@ -258,6 +258,8 @@ export class EsriMapService implements MapService {
 
   /**
    * Applies the time slider extent to the given layer by using custom WMS parameters.
+   *
+   * @remarks
    * Those parameters are defined in the corresponding time slider configuration sent by the source server.
    */
   private applyTimeSliderCustomParameters(
@@ -275,11 +277,13 @@ export class EsriMapService implements MapService {
 
   /**
    * Applies the time slider extent to the given layer by adding/removing the corresponding WMS sub-layers.
-   * @description Each time slider sub-layer corresponds to a time duration. The time slider is controlling the currently
-   *   visible data by adding/removing the corresponding sub-layers. However, there are other sub-layers in addition to
-   *   the time slider specific sub-layers which should not be modified in any way.
-   *   Therefore, first all time slider specific sub-layers are filtered. And from those only the ones which have a date inside the current
-   *   time extent are selected to be visible.
+   *
+   * @remarks
+   * Each time slider sub-layer corresponds to a time duration. The time slider is controlling the currently
+   * visible data by adding/removing the corresponding sub-layers. However, there are other sub-layers in addition to
+   * the time slider specific sub-layers which should not be modified in any way.
+   * Therefore, first all time slider specific sub-layers are filtered. And from those only the ones which have a date inside the current
+   * time extent are selected to be visible.
    */
   private synchronizeTimeSliderLayers(esriLayer: __esri.WMSLayer, timeSliderExtent: TimeExtent, mapItem: ActiveMapItem) {
     if (!mapItem.timeSliderConfiguration) {

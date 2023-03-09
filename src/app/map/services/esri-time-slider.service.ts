@@ -141,9 +141,11 @@ export class EsriTimeSliderService implements TimeSliderService {
 
   /**
    * Creates stops for a parameter source.
-   * @description This is done by using a strict interval (e.g. one year) if the default range duration only contains
-   *   a single type of unit (e.g. 'years'). Otherwise a more generic approach is used by creating date stops from
-   *   start to finish using the given duration; this can lead to gaps near the end but supports all cases.
+   *
+   * @remarks
+   * This is done by using a strict interval (e.g. one year) if the default range duration only contains
+   * a single type of unit (e.g. 'years'). Otherwise a more generic approach is used by creating date stops from
+   * start to finish using the given duration; this can lead to gaps near the end but supports all cases.
    */
   private createStopsForParameterSource(
     timeSliderConfig: TimeSliderConfiguration
