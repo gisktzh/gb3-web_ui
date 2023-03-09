@@ -5,8 +5,8 @@
     </div>
   </mat-card-header>
   <loading-and-process-bar [loadingState]="this.catalogueLoadingState"></loading-and-process-bar>
-  <mat-accordion class="map-catalogue__content" displayMode="flat" multi="true">
-    <!-- Favourite selection is a conditional, one-off container -->
+  <mat-accordion *ngIf="this.catalogueLoadingState === 'loaded'" class="map-catalogue__content" displayMode="flat" multi="true">
+    <!-- Favourite selection is a conditional, one-off container. It should only load once the catalog is here. -->
     <favourite-selection></favourite-selection>
 
     <!-- Layertree -->

@@ -5,9 +5,13 @@
     <input [formControl]="this.nameFormControl" id="name" matInput />
     <mat-error>Geben Sie einen gültigen, nicht leeren Namen ein.</mat-error>
   </mat-form-field>
+  <p class="mat-caption" *ngIf="this.saveProgress === 'error'">Beim Speichern ist etwas schief gelaufen.</p>
 </div>
 <div mat-dialog-actions>
-  <button (click)="this.abort()" [disabled]="this.isSaving" mat-button>Abbrechen</button>
-  <button (click)="this.save()" [disabled]="this.nameFormControl.status !== 'VALID' || this.isSaving" mat-button>Speichern</button>
+  <button (click)="this.abort()" [disabled]="this.saveProgress === 'saving'" mat-button>Abbrechen</button>
+  <button (click)="this.save()" [disabled]="this.nameFormControl.status !== 'VALID' || this.saveProgress === 'saving'" mat-button>
+    Speichern
+  </button>
 </div>
-<mat-progress-bar *ngIf="this.isSaving" mode="query"></mat-progress-bar>
+<mat-progress-bar *ngIf="this.saveProgress === 'saving'" mode="query"></mat-progress-bar>
+<mat-progress-bar *ngIf="this.saveProgress === 'error'" mode="determinate" value="100" color="warn"></mat-progress-bar>

@@ -2,7 +2,8 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MatDialogRef} from '@angular/material/dialog';
 import {FormControl, Validators} from '@angular/forms';
 import {FavouritesService} from '../../services/favourites.service';
-import {Subscription, tap} from 'rxjs';
+import {EMPTY, Subscription, tap} from 'rxjs';
+import {catchError} from 'rxjs/operators';
 
 @Component({
   selector: 'favourite-dialog',
@@ -11,7 +12,7 @@ import {Subscription, tap} from 'rxjs';
 })
 export class FavouriteDialogComponent implements OnInit, OnDestroy {
   public nameFormControl!: FormControl<string | null>;
-  public isSaving: boolean = false;
+  public saveProgress?: 'saving' | 'error';
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(
@@ -37,15 +38,18 @@ export class FavouriteDialogComponent implements OnInit, OnDestroy {
 
   public save() {
     if (this.name) {
-      this.isSaving = true;
+      this.saveProgress = 'saving';
 
       this.subscriptions.add(
         this.favouritesService
           .createFavourite(this.name)
           .pipe(
             tap((value) => {
-              this.isSaving = true;
               this.close();
+            }),
+            catchError(() => {
+              this.saveProgress = 'error';
+              return EMPTY;
             })
           )
           .subscribe()
