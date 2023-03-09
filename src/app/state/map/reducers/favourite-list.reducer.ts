@@ -30,7 +30,7 @@ export const favourteListeFeature = createFeature({
     on(FavouriteListActions.setInvalid, (state, {id}): FavouriteListState => {
       const {favourites} = structuredClone(state);
 
-      favourites.find((favourite) => favourite.title === id)!.invalid = true;
+      favourites.find((favourite) => favourite.id === id)!.invalid = true;
 
       return {...state, favourites};
     })

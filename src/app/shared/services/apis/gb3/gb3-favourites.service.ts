@@ -33,10 +33,12 @@ export class Gb3FavouritesService extends Gb3ApiService {
 
   private mapFavouritesListDataToFavouritesResponse(favouritesListData: FavoritesListData): FavouritesResponse {
     return favouritesListData.map((data) => {
+      const id = data.id as unknown as number; // todo: remove type cast when backend is properly typed
       const title = data.title;
       const content = data.content as FavouriteLayerConfiguration[]; // todo: remove type cast when backend is properly typed
 
       return {
+        id,
         title,
         content
       };

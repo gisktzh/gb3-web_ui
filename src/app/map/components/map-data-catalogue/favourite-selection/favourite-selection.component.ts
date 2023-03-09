@@ -64,12 +64,12 @@ export class FavouriteSelectionComponent implements HasLoadingState, OnInit, OnD
    * Dispatches an action that adds a favourite to the map.
    * @param favouriteLayerConfigurations
    */
-  public addFavouriteToMap({title, content}: Favourite) {
+  public addFavouriteToMap({id, content}: Favourite) {
     try {
       const activeMapItemsForFavourite = this.getActiveMapItemsForFavourite(content);
       this.store.dispatch(ActiveMapItemActions.addFavourite({favourite: activeMapItemsForFavourite}));
     } catch (e) {
-      this.store.dispatch(FavouriteListActions.setInvalid({id: title})); // todo: switch to ID once backend delivers that
+      this.store.dispatch(FavouriteListActions.setInvalid({id}));
     }
   }
 

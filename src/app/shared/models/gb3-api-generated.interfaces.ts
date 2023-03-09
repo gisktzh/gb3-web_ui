@@ -10,6 +10,8 @@
  */
 
 export type FavoritesListData = {
+  /** Favorite ID */
+  id: string;
   /** Favorite title */
   title: string;
   /** Favorite content */

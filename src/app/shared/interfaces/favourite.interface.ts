@@ -2,7 +2,7 @@ import {ActiveMapItem} from '../../map/models/active-map-item.model';
 import {MapLayer} from './topic.interface';
 
 export interface Favourite {
-  //todo: missing id
+  id: number;
   title: string;
   content: FavouriteLayerConfiguration[];
   /**

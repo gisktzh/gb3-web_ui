@@ -44,7 +44,7 @@ export class FavouriteDialogComponent implements OnInit, OnDestroy {
         this.favouritesService
           .createFavourite(this.name)
           .pipe(
-            tap((value) => {
+            tap(() => {
               this.close();
             }),
             catchError(() => {
