@@ -5,7 +5,13 @@ import {Geometry} from 'geojson';
 import {QueryLayer} from '../../../interfaces/query-layer.interface';
 import {QueryLegend} from '../../../interfaces/query-legend.interface';
 import {LegendResponse} from '../../../interfaces/legend.interface';
-import {AttributeFilterConfiguration, TimeSliderConfiguration, TopicsResponse} from '../../../interfaces/topic.interface';
+import {
+  AttributeFilterConfiguration,
+  Map,
+  TimeSliderConfiguration,
+  TimeSliderLayerSource,
+  TopicsResponse
+} from '../../../interfaces/topic.interface';
 import {FeatureInfoResponse} from '../../../interfaces/feature-info.interface';
 import {forkJoin, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
@@ -78,7 +84,7 @@ export class Gb3TopicsService extends Gb3ApiService {
    * Transforms the generic TopicsListData type from the API endpoint to the internal interface TopicsResponse
    */
   private transformTopicsListDataToTopicsResponse(topicsListData: TopicsListData): TopicsResponse {
-    return {
+    const topicsResponse: TopicsResponse = {
       topics: topicsListData.categories.map((category) => {
         return {
           ...category,
@@ -101,7 +107,8 @@ export class Gb3TopicsService extends Gb3ApiService {
                   tocSort: layer.toc_sort,
                   initiallyVisible: layer.initially_visible,
                   visible: layer.initially_visible,
-                  permissionMissing: layer.permission_missing
+                  permissionMissing: layer.permission_missing,
+                  isHidden: false
                 };
               }),
               timeSliderConfiguration: topic.timesliderConfiguration as TimeSliderConfiguration, // todo: remove type cast when backend is properly typed
@@ -111,6 +118,27 @@ export class Gb3TopicsService extends Gb3ApiService {
         };
       })
     };
+    topicsResponse.topics.forEach((topic) => {
+      topic.maps.forEach((map) => {
+        map.layers.forEach((layer) => {
+          layer.isHidden = this.isHiddenLayer(layer.layer, map);
+        });
+      });
+    });
+    return topicsResponse;
+  }
+
+  /**
+   * Returns whether the given layer should be hidden from all visible layer lists.
+   * For example if the layer is part of a time slider it should not be visible in any kind of layer list except the internal time slider control.
+   */
+  private isHiddenLayer(layer: string, map: Map): boolean {
+    let isHidden = false;
+    if (map.timeSliderConfiguration && map.timeSliderConfiguration.sourceType === 'layer') {
+      const timeSliderLayerSource = map.timeSliderConfiguration.source as TimeSliderLayerSource;
+      isHidden = timeSliderLayerSource.layers.some((l) => l.layerName === layer);
+    }
+    return isHidden;
   }
 
   private createAbsoluteIconUrl(relativeIconUrl: string): string {

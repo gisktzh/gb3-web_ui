@@ -16,7 +16,7 @@
   <div class="sublayer-list" cdkDropList (cdkDropListDropped)="dropSublayer($event, activeMapItem)">
     <ng-container *ngFor="let layer of activeMapItem.layers; trackBy: trackByLayerId">
       <!-- Sublayer-->
-      <mat-card appearance="raised" class="sublayer" cdkDrag>
+      <mat-card appearance="raised" class="sublayer" cdkDrag *ngIf="!layer.isHidden">
         <mat-icon class="sublayer__drag-handle" cdkDragHandle>drag_indicator</mat-icon>
         <button mat-icon-button (click)="toggleSublayerVisibility(activeMapItem, layer.id)" [disabled]="!activeMapItem.visible">
           <div class="sublayer__image-container">

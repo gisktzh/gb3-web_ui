@@ -59,6 +59,8 @@ export interface MapLayer extends HasVisibility {
   queryable: boolean;
   /** True if unaccessible with current permissions. Not available in production environment. */
   permissionMissing?: boolean;
+  /** True if this layer should not be visible in any layer list */
+  isHidden: boolean;
 }
 
 export interface TimeSliderConfiguration {

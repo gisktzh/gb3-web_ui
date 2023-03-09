@@ -288,17 +288,18 @@ export class EsriMapService implements MapService {
 
     const timeSliderConfig = mapItem.timeSliderConfiguration;
     const timeSliderLayerSource = timeSliderConfig.source as TimeSliderLayerSource;
-    const timeSliderLayers = timeSliderLayerSource.layers.map((l) => l.layerName);
-    const timeSliderLayersToShow = timeSliderLayerSource.layers
+    const timeSliderLayerNames = timeSliderLayerSource.layers.map((l) => l.layerName);
+    const timeSliderLayerNamesToShow = timeSliderLayerSource.layers
       .filter((l) => {
         const date = dayjs(l.date, timeSliderConfig.dateFormat).toDate();
         return date >= timeSliderExtent.start && date < timeSliderExtent.end;
       })
       .map((l) => l.layerName);
-    const layers = mapItem.layers.filter((l) => timeSliderLayersToShow.includes(l.layer));
+    // get the layer configs of all time slider specific layers that are  also within the current time extent
+    const layers = mapItem.layers.filter((l) => timeSliderLayerNamesToShow.includes(l.layer));
     // include all layers that are not specified in the time slider config
-    const esriSublayers = esriLayer.sublayers.filter((sl) => !timeSliderLayers.includes(sl.name));
-    // now add all layers that are in the time slider config and currently within the time extent
+    const esriSublayers = esriLayer.sublayers.filter((sl) => !timeSliderLayerNames.includes(sl.name));
+    // now add all layers that are in the time slider config and within the current time extent
     esriSublayers.addMany(
       layers.map(
         (layer) =>
