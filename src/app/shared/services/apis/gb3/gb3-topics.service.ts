@@ -142,7 +142,7 @@ export class Gb3TopicsService extends Gb3ApiService {
   }
 
   private createAbsoluteIconUrl(relativeIconUrl: string): string {
-    const url = new URL(`${this.apiBaseUrl}/${relativeIconUrl}`);
+    const url = new URL(`${this.apiBaseUrl}${relativeIconUrl}`);
     return url.toString();
   }
 

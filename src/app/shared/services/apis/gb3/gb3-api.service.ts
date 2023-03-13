@@ -6,5 +6,5 @@ import {environment} from '../../../../../environments/environment';
   providedIn: 'root'
 })
 export abstract class Gb3ApiService extends BaseApiService {
-  protected readonly apiBaseUrl = environment.baseUrls.gb3Api;
+  protected readonly apiBaseUrl = environment.baseUrls.gb2Api;
 }

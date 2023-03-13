@@ -14,12 +14,13 @@ import {FeatureInfoEffects} from './state/map/effects/feature-info.effects';
 import {LegendEffects} from './state/map/effects/legend.effects';
 import {LayerCatalogEffects} from './state/map/effects/layer-catalog.effects';
 import {MapConfigEffects} from './state/map/effects/map-config-effects.service';
-import {EsriMapService} from './map/services/esri-map.service';
+import {EsriMapService} from './map/services/esri-service/esri-map.service';
 import {MapService} from './map/interfaces/map.service';
-import {httpInterceptorProviders} from './shared/interceptors';
 import {KTZHNewsMockService} from './shared/services/apis/ktzh/ktzhnews-mock.service';
 import {NewsService} from './shared/interfaces/news-service.interface';
 import {EsriTimeSliderService} from './map/services/esri-time-slider.service';
+import {AuthModule} from './auth/auth.module';
+import {AuthStatusEffects} from './state/auth/effects/auth-status.effects';
 
 export const MAP_SERVICE = new InjectionToken<MapService>('MapService');
 export const TIME_SLIDER_SERVICE = new InjectionToken<MapService>('TimeSliderService');
@@ -36,13 +37,20 @@ export const NEWS_SERVICE = new InjectionToken<NewsService>('NewsService');
     StoreModule.forRoot(reducers, {
       metaReducers
     }),
-    EffectsModule.forRoot([ActiveMapItemEffects, FeatureInfoEffects, LayerCatalogEffects, LegendEffects, MapConfigEffects])
+    EffectsModule.forRoot([
+      ActiveMapItemEffects,
+      FeatureInfoEffects,
+      LayerCatalogEffects,
+      LegendEffects,
+      MapConfigEffects,
+      AuthStatusEffects
+    ]),
+    AuthModule
   ],
   providers: [
     {provide: MAP_SERVICE, useClass: EsriMapService},
     {provide: TIME_SLIDER_SERVICE, useClass: EsriTimeSliderService},
-    {provide: NEWS_SERVICE, useClass: KTZHNewsMockService},
-    httpInterceptorProviders
+    {provide: NEWS_SERVICE, useClass: KTZHNewsMockService}
   ],
   bootstrap: [AppComponent]
 })

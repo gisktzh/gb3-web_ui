@@ -1,15 +1,26 @@
-<mat-toolbar color="primary" class="navbar">
+<mat-toolbar class="navbar" color="primary">
   <img alt="KTZH Logo" class="navbar__item navbar__logo" src="assets/images/ktzh_inverted.svg" />
   <span class="navbar__item">GIS-Browser Zürich</span>
   <span class="navbar__spacer"></span>
-  <a mat-button class="navbar__item" routerLink="/" routerLinkActive="current" [routerLinkActiveOptions]="{exact: true}" [queryParams]="{}"
+  <a [queryParams]="{}" [routerLinkActiveOptions]="{exact: true}" class="navbar__item" mat-button routerLink="/" routerLinkActive="current"
     >Übersicht</a
   >
-  <a mat-button class="navbar__item" routerLink="/maps" routerLinkActive="current">GIS-Browser</a>
-  <a mat-button class="navbar__item" routerLink="/data" routerLinkActive="current">Datenkatalog</a>
-  <a mat-button class="navbar__item" routerLink="/help" routerLinkActive="current">Hilfe & Support</a>
-  <a mat-button class="navbar__item" href="https://geodatenshop.zh.ch" target="_blank">
+  <a class="navbar__item" mat-button routerLink="/maps" routerLinkActive="current">GIS-Browser</a>
+  <a class="navbar__item" mat-button routerLink="/data" routerLinkActive="current">Datenkatalog</a>
+  <a class="navbar__item" mat-button routerLink="/help" routerLinkActive="current">Hilfe & Support</a>
+  <a class="navbar__item" href="https://geodatenshop.zh.ch" mat-button target="_blank">
     <mat-icon>launch</mat-icon>
     <p>Geodatenshop</p>
   </a>
+  <mat-divider class="navbar__divider" vertical></mat-divider>
+  <a (click)="this.startLogin()" *ngIf="!this.isAuthenticated; else logoutButton" class="navbar__item" mat-button>Login</a>
+  <ng-template #logoutButton>
+    <a [matMenuTriggerFor]="userMenu" class="navbar__item" mat-button><mat-icon>account_circle</mat-icon>{{ this.userName }}</a>
+    <mat-menu #userMenu="matMenu">
+      <button mat-menu-item (click)="this.logout()">
+        <mat-icon>logout</mat-icon>
+        <span>Logout</span>
+      </button>
+    </mat-menu>
+  </ng-template>
 </mat-toolbar>

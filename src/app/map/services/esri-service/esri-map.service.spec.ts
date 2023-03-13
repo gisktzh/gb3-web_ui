@@ -2,9 +2,12 @@ import {TestBed} from '@angular/core/testing';
 
 import {EsriMapService} from './esri-map.service';
 import {provideMockStore} from '@ngrx/store/testing';
-import {ActiveMapItem} from '../models/active-map-item.model';
-import {Map, MapLayer} from '../../shared/interfaces/topic.interface';
-import {EsriMapMock} from '../../testing/map-testing/esri-map.mock';
+import {ActiveMapItem} from '../../models/active-map-item.model';
+import {Map, MapLayer} from '../../../shared/interfaces/topic.interface';
+import {EsriMapMock} from '../../../testing/map-testing/esri-map.mock';
+import {AuthModule} from '../../../auth/auth.module';
+import {AuthService} from '../../../auth/auth.service';
+import {Subject} from 'rxjs';
 
 function createActiveMapItemMock(id: string, numberOfLayers = 0): {id: string; activeMapItem: ActiveMapItem} {
   const mapMock = {id: id, title: id, layers: []} as Partial<Map>;
@@ -34,13 +37,21 @@ function compareMapItemToEsriLayer(expectedMapItem: ActiveMapItem, actualEsriLay
   });
 }
 
+const mockAuthService = jasmine.createSpyObj<AuthService>({
+  logout: void 0,
+  getAccessToken: void 0,
+  login: void 0,
+  isAuthenticated$: new Subject<boolean>().asObservable()
+});
+
 describe('EsriMapService', () => {
   let service: EsriMapService;
   let mapMock: EsriMapMock = new EsriMapMock();
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideMockStore({})]
+      imports: [AuthModule],
+      providers: [provideMockStore({}), {provide: AuthService, useValue: mockAuthService}]
     });
     service = TestBed.inject(EsriMapService);
     // mock the map view from Esri - otherwise any change to the layer list will create an error because the service call fails

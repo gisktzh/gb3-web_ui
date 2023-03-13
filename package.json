@@ -4,6 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "start-local-gb2": "ng serve --configuration=development-local-gb2",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
@@ -36,6 +37,7 @@
     "@types/twitter-for-web": "^0.0.2",
     "dayjs": "^1.11.7",
     "ngx-ui-tour-md-menu": "^10.4.0",
+    "angular-oauth2-oidc": "^15.0.1",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"

@@ -1,4 +1,28 @@
 import {Injectable} from '@angular/core';
+import {Store} from '@ngrx/store';
+import {MapConfigActions} from '../../../state/map/actions/map-config.actions';
+import {TransformationService} from '../transformation.service';
+import {MapConfigState, selectActiveBasemapId, selectMapConfigState} from '../../../state/map/reducers/map-config.reducer';
+import {first, skip, Subscription, tap, withLatestFrom} from 'rxjs';
+import {FeatureInfoActions} from '../../../state/map/actions/feature-info.actions';
+import {Geometry as GeoJsonGeometry} from 'geojson';
+import {GeoJSONMapperService} from '../../../shared/services/geo-json-mapper.service';
+import {DefaultHighlightStyles} from 'src/app/shared/configs/feature-info-config';
+import * as dayjs from 'dayjs';
+import {MapService} from '../../interfaces/map.service';
+import {ActiveMapItem} from '../../models/active-map-item.model';
+import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
+import {LoadingState} from '../../../shared/types/loading-state';
+import {ViewProcessState} from '../../../shared/types/view-process-state';
+import {ZoomType} from '../../../shared/types/zoom-type';
+import {BasemapConfigService} from '../basemap-config.service';
+import {ConfigService} from '../../../shared/services/config.service';
+import {selectActiveMapItems} from '../../../state/map/reducers/active-map-item.reducer';
+import esriConfig from '@arcgis/core/config';
+import wmsAuthAndUrlOverrideInterceptorFactory from './interceptors/override-wms-url.interceptor';
+import {environment} from '../../../../environments/environment';
+import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.reducer';
+import {AuthService} from '../../../auth/auth.service';
 import {
   EsriBasemap,
   EsriColor,
@@ -16,28 +40,9 @@ import {
   EsriTileInfo,
   EsriWMSLayer,
   EsriWMSSublayer
-} from '../external/esri.module';
-import {Store} from '@ngrx/store';
-import {MapConfigActions} from '../../state/map/actions/map-config.actions';
-import {TransformationService} from './transformation.service';
-import {MapConfigState, selectActiveBasemapId, selectMapConfigState} from '../../state/map/reducers/map-config.reducer';
-import {first, skip, Subscription, tap, withLatestFrom} from 'rxjs';
-import {FeatureInfoActions} from '../../state/map/actions/feature-info.actions';
-import {Geometry as GeoJsonGeometry} from 'geojson';
-import {GeoJSONMapperService} from '../../shared/services/geo-json-mapper.service';
-import {DefaultHighlightStyles} from 'src/app/shared/configs/feature-info-config';
-import {MapService} from '../interfaces/map.service';
-import {ActiveMapItem} from '../models/active-map-item.model';
-import {ActiveMapItemActions} from '../../state/map/actions/active-map-item.actions';
-import {LoadingState} from '../../shared/types/loading-state';
-import {ViewProcessState} from '../../shared/types/view-process-state';
-import {ZoomType} from '../../shared/types/zoom-type';
-import {BasemapConfigService} from './basemap-config.service';
-import {ConfigService} from '../../shared/services/config.service';
-import {selectActiveMapItems} from '../../state/map/reducers/active-map-item.reducer';
-import {TimeExtent} from '../interfaces/time-extent.interface';
-import {TimeSliderConfiguration, TimeSliderLayerSource, TimeSliderParameterSource} from '../../shared/interfaces/topic.interface';
-import * as dayjs from 'dayjs';
+} from '../../external/esri.module';
+import {TimeSliderConfiguration, TimeSliderLayerSource, TimeSliderParameterSource} from '../../../shared/interfaces/topic.interface';
+import {TimeExtent} from '../../interfaces/time-extent.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -70,14 +75,25 @@ export class EsriMapService implements MapService {
   private _mapView!: __esri.MapView;
   private readonly subscriptions: Subscription = new Subscription();
   private readonly activeBasemapId$ = this.store.select(selectActiveBasemapId);
+  private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
 
   constructor(
     private readonly store: Store,
     private readonly transformationService: TransformationService,
     private readonly geoJSONMapperService: GeoJSONMapperService,
     private readonly basemapConfigService: BasemapConfigService,
-    private readonly configService: ConfigService
-  ) {}
+    private readonly configService: ConfigService,
+    private readonly authService: AuthService
+  ) {
+    /**
+     * Because the GetCapabalities response often sends a non-secure http://wms.zh.ch response, Esri Javascript API fails on https environments
+     * to attach the token above if the urls is set to http://wms.zh.ch; because it automatically upgrades insecure links to https to avoid
+     * mixed-content. This configuration forces the WMS to be upgraded to https.
+     */
+    esriConfig.request.httpsDomains?.push('wms.zh.ch');
+
+    this.initializeInterceptors();
+  }
 
   private get mapView(): __esri.MapView {
     return this._mapView;
@@ -318,6 +334,24 @@ export class EsriMapService implements MapService {
     esriLayer.sublayers = esriSublayers;
   }
 
+  /**
+   * We need several interceptors to trick ESRI Javascript API into working with the intricacies of the ZH GB2 configurations.
+   * @private
+   */
+  private initializeInterceptors() {
+    this.subscriptions.add(
+      this.isAuthenticated$
+        .pipe(
+          tap(() => {
+            const newInterceptor = this.getWmsOverrideInterceptor(this.authService.getAccessToken());
+            esriConfig.request.interceptors = []; // todo: pop existing as soon as we add more interceptors
+            esriConfig.request.interceptors.push(newInterceptor);
+          })
+        )
+        .subscribe()
+    );
+  }
+
   private addBasemapSubscription() {
     this.subscriptions.add(
       this.activeBasemapId$
@@ -490,5 +524,10 @@ export class EsriMapService implements MapService {
     this.mapView.map.basemap.baseLayers.map((baseLayer) => {
       baseLayer.visible = basemapId === baseLayer.id;
     });
+  }
+
+  private getWmsOverrideInterceptor(accessToken?: string): __esri.RequestInterceptor {
+    const wmsOverrideUrl = environment.baseUrls.overrideWmsUrl;
+    return wmsAuthAndUrlOverrideInterceptorFactory(wmsOverrideUrl, accessToken);
   }
 }
