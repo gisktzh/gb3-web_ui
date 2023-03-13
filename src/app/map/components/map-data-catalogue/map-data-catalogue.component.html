@@ -41,7 +41,7 @@
               <!-- Expansion panel content -->
               <ng-template matExpansionPanelContent>
                 <ng-container *ngFor="let layer of map.layers">
-                  <div class="layer">
+                  <div class="layer" *ngIf="!layer.isHidden">
                     <mat-icon class="layer__icon">layers</mat-icon>
                     <p class="layer__title" matTooltip="{{ layer.title }}">{{ layer.title }}</p>
                     <button mat-icon-button (click)="addActiveLayer(map, layer)"><mat-icon>add</mat-icon></button>

@@ -98,12 +98,10 @@ export interface TopicsListData {
       geolion: number | null;
       /** Keywords */
       keywords: string[];
-      /** True if this is a main topic */
-      main_level: boolean;
-      /** True if this is a background topic */
-      background_level: boolean;
-      /** True if this is a overlay topic */
-      overlay_level: boolean;
+      /** Timeslider Settings */
+      timesliderConfiguration?: object | null;
+      /** Filters Settings */
+      filterConfigurations?: object[] | null;
       /**
        * WMS URL
        * @format uri
@@ -128,21 +126,15 @@ export interface TopicsListData {
         toc_sort: number;
         /** True if layer is initially enabled in TOC */
         initially_visible: boolean;
-        /** True if layer is editable by current user */
-        editable: boolean;
         /** True if layer is queryable for this topic */
         queryable: boolean;
+        /** True if unaccessible with current permissions. Not available in production environment. */
+        permission_missing?: boolean;
       }[];
       /** Min allowed scale denominator */
       min_scale: number | null;
-      /** Topic name to load as background topic if set */
-      background_topic: string | null;
-      /** List of topic names to load as overlay topics */
-      overlay_topics: string[];
-      /** Available viewer tools */
-      tools: string[];
-      /** True if current user must sign in to view this topic */
-      permission_missing: boolean;
+      /** True if unaccessible with current permissions. Not available in production environment. */
+      permission_missing?: boolean;
     }[];
   }[];
 }

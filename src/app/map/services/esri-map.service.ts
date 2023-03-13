@@ -1,34 +1,43 @@
 import {Injectable} from '@angular/core';
-import {EsriLoadStatus, EsriMap, EsriMapView, EsriPoint, EsriWMSLayer} from '../../shared/external/esri.module';
+import {
+  EsriBasemap,
+  EsriColor,
+  EsriGraphic,
+  EsriLoadStatus,
+  EsriMap,
+  EsriMapView,
+  EsriPoint,
+  esriReactiveUtils,
+  EsriScaleBar,
+  EsriSimpleFillSymbol,
+  EsriSimpleLineSymbol,
+  EsriSimpleMarkerSymbol,
+  EsriSpatialReference,
+  EsriTileInfo,
+  EsriWMSLayer,
+  EsriWMSSublayer
+} from '../external/esri.module';
 import {Store} from '@ngrx/store';
 import {MapConfigActions} from '../../state/map/actions/map-config.actions';
 import {TransformationService} from './transformation.service';
-import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 import {MapConfigState, selectActiveBasemapId, selectMapConfigState} from '../../state/map/reducers/map-config.reducer';
 import {first, skip, Subscription, tap, withLatestFrom} from 'rxjs';
-import SpatialReference from '@arcgis/core/geometry/SpatialReference';
 import {FeatureInfoActions} from '../../state/map/actions/feature-info.actions';
-import Graphic from '@arcgis/core/Graphic';
 import {Geometry as GeoJsonGeometry} from 'geojson';
-import Color from '@arcgis/core/Color';
-import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
-import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
-import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import {GeoJSONMapperService} from '../../shared/services/geo-json-mapper.service';
 import {DefaultHighlightStyles} from 'src/app/shared/configs/feature-info-config';
 import {MapService} from '../interfaces/map.service';
 import {ActiveMapItem} from '../models/active-map-item.model';
 import {ActiveMapItemActions} from '../../state/map/actions/active-map-item.actions';
 import {LoadingState} from '../../shared/types/loading-state';
-import WMSLayer from '@arcgis/core/layers/WMSLayer';
-import ScaleBar from '@arcgis/core/widgets/ScaleBar';
 import {ViewProcessState} from '../../shared/types/view-process-state';
 import {ZoomType} from '../../shared/types/zoom-type';
-import Basemap from '@arcgis/core/Basemap';
-import TileInfo from '@arcgis/core/layers/support/TileInfo';
 import {BasemapConfigService} from './basemap-config.service';
 import {ConfigService} from '../../shared/services/config.service';
 import {selectActiveMapItems} from '../../state/map/reducers/active-map-item.reducer';
+import {TimeExtent} from '../interfaces/time-extent.interface';
+import {TimeSliderConfiguration, TimeSliderLayerSource, TimeSliderParameterSource} from '../../shared/interfaces/topic.interface';
+import * as dayjs from 'dayjs';
 
 @Injectable({
   providedIn: 'root'
@@ -42,21 +51,21 @@ export class EsriMapService implements MapService {
 
   // TODO this should be moved to a config file
   private readonly highlightColors = {
-    feature: new Color(this.defaultHighlightStyles.feature.color),
-    outline: new Color(this.defaultHighlightStyles.outline.color)
+    feature: new EsriColor(this.defaultHighlightStyles.feature.color),
+    outline: new EsriColor(this.defaultHighlightStyles.outline.color)
   };
   // TODO this should be moved to a config file
   private readonly highlightStyles = new Map<__esri.Geometry['type'], __esri.Symbol>([
     [
       'polyline',
-      new SimpleLineSymbol({
+      new EsriSimpleLineSymbol({
         color: this.highlightColors.feature,
         width: this.defaultHighlightStyles.feature.width
       })
     ],
-    ['point', new SimpleMarkerSymbol({color: this.highlightColors.feature})],
-    ['multipoint', new SimpleMarkerSymbol({color: this.highlightColors.feature})],
-    ['polygon', new SimpleFillSymbol({color: this.highlightColors.feature})]
+    ['point', new EsriSimpleMarkerSymbol({color: this.highlightColors.feature})],
+    ['multipoint', new EsriSimpleMarkerSymbol({color: this.highlightColors.feature})],
+    ['polygon', new EsriSimpleFillSymbol({color: this.highlightColors.feature})]
   ]);
   private _mapView!: __esri.MapView;
   private readonly subscriptions: Subscription = new Subscription();
@@ -142,6 +151,10 @@ export class EsriMapService implements MapService {
         } as __esri.WMSSublayerProperties;
       })
     });
+    if (mapItem.timeSliderExtent) {
+      // apply initial time slider settings
+      this.setEsriTimeSliderExtent(mapItem.timeSliderExtent, mapItem, esriLayer);
+    }
     this.attachLayerListeners(esriLayer);
     // index is the inverse position - the lowest index has the lowest visibility (it's on the bottom) while the lowest position has the highest visibility
     const index = this.mapView.map.layers.length - position;
@@ -166,7 +179,7 @@ export class EsriMapService implements MapService {
   public addHighlightGeometry(geometry: GeoJsonGeometry): void {
     const esriGeometry = this.geoJSONMapperService.fromGeoJSONToEsri(geometry);
     const symbolization = this.highlightStyles.get(esriGeometry.type);
-    const highlightedFeature = new Graphic({geometry: esriGeometry, symbol: symbolization});
+    const highlightedFeature = new EsriGraphic({geometry: esriGeometry, symbol: symbolization});
 
     this.mapView.graphics.add(highlightedFeature);
   }
@@ -195,18 +208,23 @@ export class EsriMapService implements MapService {
       srsId,
       scale
     } = this.defaultMapConfig;
-    this.mapView.center = new EsriPoint({x: x, y: y, spatialReference: new SpatialReference({wkid: srsId})});
+    this.mapView.center = new EsriPoint({x: x, y: y, spatialReference: new EsriSpatialReference({wkid: srsId})});
     this.mapView.scale = scale;
   }
 
   public setSublayerVisibility(visible: boolean, mapItem: ActiveMapItem, layerId: number) {
     const esriLayer = this.findEsriLayer(mapItem.id);
-    if (esriLayer && esriLayer instanceof WMSLayer) {
+    if (esriLayer && esriLayer instanceof EsriWMSLayer) {
       const esriSubLayer = esriLayer.sublayers.find((sl) => sl.id === layerId);
       if (esriSubLayer) {
         esriSubLayer.visible = visible;
       }
     }
+  }
+
+  public setTimeSliderExtent(timeExtent: TimeExtent, mapItem: ActiveMapItem) {
+    const esriLayer = this.findEsriLayer(mapItem.id);
+    this.setEsriTimeSliderExtent(timeExtent, mapItem, esriLayer);
   }
 
   public reorderMapItem(previousPosition: number, currentPosition: number) {
@@ -218,10 +236,86 @@ export class EsriMapService implements MapService {
 
   public reorderSublayer(mapItem: ActiveMapItem, previousPosition: number, currentPosition: number) {
     const esriLayer = this.findEsriLayer(mapItem.id);
-    if (esriLayer && esriLayer instanceof WMSLayer) {
+    if (esriLayer && esriLayer instanceof EsriWMSLayer) {
       // the index of sublayers is identical to their position (in contrast to the map items) where the lowest index/position has the highest visibility
       esriLayer.sublayers.reorder(esriLayer.sublayers.getItemAt(previousPosition), currentPosition);
     }
+  }
+
+  private setEsriTimeSliderExtent(timeExtent: TimeExtent, mapItem: ActiveMapItem, esriLayer: __esri.Layer) {
+    if (esriLayer && esriLayer instanceof EsriWMSLayer && mapItem.timeSliderConfiguration) {
+      switch (mapItem.timeSliderConfiguration.sourceType) {
+        case 'parameter':
+          this.applyTimeSliderCustomParameters(esriLayer, timeExtent, mapItem.timeSliderConfiguration);
+          break;
+        case 'layer':
+          this.synchronizeTimeSliderLayers(esriLayer, timeExtent, mapItem);
+          break;
+      }
+      esriLayer.refresh();
+    }
+  }
+
+  /**
+   * Applies the time slider extent to the given layer by using custom WMS parameters.
+   *
+   * @remarks
+   * Those parameters are defined in the corresponding time slider configuration sent by the source server.
+   */
+  private applyTimeSliderCustomParameters(
+    esriLayer: __esri.WMSLayer,
+    timeSliderExtent: TimeExtent,
+    timeSliderConfiguration: TimeSliderConfiguration
+  ) {
+    const timeSliderParameterSource = timeSliderConfiguration.source as TimeSliderParameterSource;
+    const dateFormat = timeSliderConfiguration.dateFormat;
+
+    esriLayer.customLayerParameters = esriLayer.customLayerParameters ?? {};
+    esriLayer.customLayerParameters[timeSliderParameterSource.startRangeParameter] = dayjs(timeSliderExtent.start).format(dateFormat);
+    esriLayer.customLayerParameters[timeSliderParameterSource.endRangeParameter] = dayjs(timeSliderExtent.end).format(dateFormat);
+  }
+
+  /**
+   * Applies the time slider extent to the given layer by adding/removing the corresponding WMS sub-layers.
+   *
+   * @remarks
+   * Each time slider sub-layer corresponds to a time duration. The time slider is controlling the currently
+   * visible data by adding/removing the corresponding sub-layers. However, there are other sub-layers in addition to
+   * the time slider specific sub-layers which should not be modified in any way.
+   * Therefore, first all time slider specific sub-layers are filtered. And from those only the ones which have a date inside the current
+   * time extent are selected to be visible.
+   */
+  private synchronizeTimeSliderLayers(esriLayer: __esri.WMSLayer, timeSliderExtent: TimeExtent, mapItem: ActiveMapItem) {
+    if (!mapItem.timeSliderConfiguration) {
+      return;
+    }
+
+    const timeSliderConfig = mapItem.timeSliderConfiguration;
+    const timeSliderLayerSource = timeSliderConfig.source as TimeSliderLayerSource;
+    const timeSliderLayerNames = timeSliderLayerSource.layers.map((l) => l.layerName);
+    const timeSliderLayerNamesToShow = timeSliderLayerSource.layers
+      .filter((l) => {
+        const date = dayjs(l.date, timeSliderConfig.dateFormat).toDate();
+        return date >= timeSliderExtent.start && date < timeSliderExtent.end;
+      })
+      .map((l) => l.layerName);
+    // get the layer configs of all time slider specific layers that are  also within the current time extent
+    const layers = mapItem.layers.filter((l) => timeSliderLayerNamesToShow.includes(l.layer));
+    // include all layers that are not specified in the time slider config
+    const esriSublayers = esriLayer.sublayers.filter((sl) => !timeSliderLayerNames.includes(sl.name));
+    // now add all layers that are in the time slider config and within the current time extent
+    esriSublayers.addMany(
+      layers.map(
+        (layer) =>
+          new EsriWMSSublayer({
+            id: layer.id,
+            name: layer.layer,
+            title: layer.title,
+            visible: true
+          } as __esri.WMSSublayerProperties)
+      )
+    );
+    esriLayer.sublayers = esriSublayers;
   }
 
   private addBasemapSubscription() {
@@ -238,19 +332,19 @@ export class EsriMapService implements MapService {
   }
 
   private addScaleBar() {
-    const scaleBar = new ScaleBar({view: this.mapView, container: 'scale-bar-container', unit: 'metric'});
+    const scaleBar = new EsriScaleBar({view: this.mapView, container: 'scale-bar-container', unit: 'metric'});
     this.mapView.ui.add(scaleBar);
   }
 
   private createMap(initialBasemapId: string): __esri.Map {
     return new EsriMap({
-      basemap: new Basemap({
+      basemap: new EsriBasemap({
         baseLayers: this.basemapConfigService.availableBasemaps.map((baseMap) => {
-          return new WMSLayer({
+          return new EsriWMSLayer({
             id: baseMap.id,
             url: baseMap.url,
             title: baseMap.title,
-            spatialReference: new SpatialReference({wkid: baseMap.srsId}),
+            spatialReference: new EsriSpatialReference({wkid: baseMap.srsId}),
             sublayers: baseMap.layers.map((basemapLayer) => ({name: basemapLayer.name})),
             visible: initialBasemapId === baseMap.id
           });
@@ -260,7 +354,7 @@ export class EsriMapService implements MapService {
   }
 
   private setMapView(map: __esri.Map, scale: number, x: number, y: number, srsId: number, minScale: number, maxScale: number) {
-    const spatialReference = new SpatialReference({wkid: srsId});
+    const spatialReference = new EsriSpatialReference({wkid: srsId});
     this._mapView = new EsriMapView({
       map: map,
       ui: {
@@ -272,7 +366,7 @@ export class EsriMapService implements MapService {
         snapToZoom: false,
         minScale: minScale,
         maxScale: maxScale,
-        lods: TileInfo.create({
+        lods: EsriTileInfo.create({
           spatialReference
         }).lods
       }
@@ -284,12 +378,12 @@ export class EsriMapService implements MapService {
   }
 
   private attachMapViewListeners() {
-    reactiveUtils.when(
+    esriReactiveUtils.when(
       () => this.mapView.stationary,
       () => this.updateMapConfig()
     );
 
-    reactiveUtils.on(
+    esriReactiveUtils.on(
       () => this.mapView,
       'click',
       (event: __esri.ViewClickEvent) => {
@@ -298,7 +392,7 @@ export class EsriMapService implements MapService {
       }
     );
 
-    reactiveUtils
+    esriReactiveUtils
       .whenOnce(() => this.mapView.ready)
       .then(() => {
         /* eslint-disable @typescript-eslint/no-non-null-assertion */ // at this point, we know the values are ready
@@ -316,7 +410,7 @@ export class EsriMapService implements MapService {
         );
       });
 
-    reactiveUtils.on(
+    esriReactiveUtils.on(
       () => this.mapView,
       'layerview-create',
       (event: __esri.ViewLayerviewCreateEvent) => {
@@ -327,7 +421,7 @@ export class EsriMapService implements MapService {
 
   private attachLayerListeners(esriLayer: __esri.Layer) {
     // watch and initialize the loading state by observing the 'loadStatus' property
-    reactiveUtils.watch(
+    esriReactiveUtils.watch(
       () => esriLayer.loadStatus,
       (loadStatus) => {
         this.updateLoadingState(loadStatus, esriLayer.id);
@@ -338,7 +432,7 @@ export class EsriMapService implements MapService {
 
   private attachLayerViewListeners(esriLayerView: __esri.LayerView) {
     // watch and initialize the view process state by observing the 'updating' property
-    reactiveUtils.watch(
+    esriReactiveUtils.watch(
       () => esriLayerView.updating,
       (updating) => {
         this.updateViewProcessState(updating, esriLayerView.layer?.id);

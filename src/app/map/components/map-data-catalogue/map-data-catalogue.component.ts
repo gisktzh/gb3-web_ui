@@ -6,7 +6,7 @@ import {Subscription, tap} from 'rxjs';
 import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
 import {LoadingState} from '../../../shared/types/loading-state';
 import {ActiveMapItem} from '../../models/active-map-item.model';
-import {Topic, Map, MapLayer} from '../../../shared/interfaces/topic.interface';
+import {Map, MapLayer, Topic} from '../../../shared/interfaces/topic.interface';
 
 @Component({
   selector: 'map-data-catalogue',
@@ -47,9 +47,13 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy {
 
   private initSubscriptions() {
     this.subscriptions.add(
-      this.topics$.subscribe((value) => {
-        this.topics = value;
-      })
+      this.topics$
+        .pipe(
+          tap((topics) => {
+            this.topics = topics;
+          })
+        )
+        .subscribe()
     );
 
     this.subscriptions.add(
