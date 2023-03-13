@@ -34,7 +34,7 @@ export interface Map {
   /** Timeslider Settings */
   timeSliderConfiguration?: TimeSliderConfiguration;
   /** Filters Settings */
-  filterConfigurations?: AttributeFilterConfiguration[];
+  filterConfigurations?: FilterConfiguration[];
 }
 
 export interface MapLayer extends HasVisibility, HasHidingState {
@@ -96,14 +96,14 @@ interface TimeSliderLayer {
 
 type TimeSliderSourceType = 'parameter' | 'layer';
 
-export interface AttributeFilterConfiguration {
+export interface FilterConfiguration {
   name: string;
   description?: string;
   parameter: string;
-  filterValues: AttributeFilter[];
+  filterValues: FilterValue[];
 }
 
-export interface AttributeFilter {
+export interface FilterValue {
   name: string;
   values: string[];
 }

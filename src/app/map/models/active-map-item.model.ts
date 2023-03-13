@@ -1,5 +1,5 @@
 import {LoadingState} from '../../shared/types/loading-state';
-import {AttributeFilterConfiguration, Map, MapLayer, TimeSliderConfiguration} from '../../shared/interfaces/topic.interface';
+import {FilterConfiguration, Map, MapLayer, TimeSliderConfiguration} from '../../shared/interfaces/topic.interface';
 import {HasLoadingState} from '../../shared/interfaces/has-loading-state.interface';
 import {HasVisibility} from '../../shared/interfaces/has-visibility.interface';
 import {HasViewProcessState} from '../../shared/interfaces/has-view-process-state.interface';
@@ -7,6 +7,7 @@ import {ViewProcessState} from '../../shared/types/view-process-state';
 import {TimeExtent} from '../interfaces/time-extent.interface';
 import {TimeExtentUtil} from '../../shared/utils/time-extent.util';
 import {MapFilter} from '../interfaces/map-filter';
+import {MapFilterValue} from '../interfaces/map-filter-value.interface';
 
 export class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewProcessState {
   public readonly id: string;
@@ -14,7 +15,7 @@ export class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewPro
   public readonly url: string;
   public readonly mapImageUrl: string;
   public readonly timeSliderConfiguration?: TimeSliderConfiguration;
-  public readonly filterConfigurations?: AttributeFilterConfiguration[];
+  public readonly filterConfigurations?: FilterConfiguration[];
 
   public readonly mapId: string;
   public readonly layers: MapLayer[];
@@ -44,14 +45,13 @@ export class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewPro
       this.mapFilters = map.filterConfigurations.map((fc) => {
         return {
           parameter: fc.parameter,
-          filterValues: fc.filterValues.map((fv) => {
+          mapFilterValues: fc.filterValues.map((fv) => {
             return {
               name: fv.name,
-              values: fv.values,
               isActive: false // initial value => all filters are deactivated
-            };
+            } as MapFilterValue;
           })
-        };
+        } as MapFilter;
       });
     }
   }

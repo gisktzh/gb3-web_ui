@@ -248,14 +248,20 @@ export class EsriMapService implements MapService {
     const esriLayer = this.findEsriLayer(mapItem.id);
     if (esriLayer && esriLayer instanceof EsriWMSLayer && mapItem.filterConfigurations) {
       const customLayerParameters: {[index: string]: string} = esriLayer.customLayerParameters ?? {};
-      mapFilters.forEach((mf) => {
-        const filterValues = mf.filterValues
-          .map((fv) => {
-            const values: string[] = fv.isActive ? fv.values.map(() => '') : fv.values;
-            return values.map((v) => `'${v}'`).join(',');
-          })
-          .join(',');
-        customLayerParameters[mf.parameter] = filterValues;
+      mapItem.filterConfigurations.forEach((filterConfig) => {
+        const mapFilter = mapFilters.find((mf) => mf.parameter === filterConfig.parameter);
+        if (mapFilter) {
+          const filterValues = filterConfig.filterValues
+            .map((fv) => {
+              const mapFilterValue = mapFilter.mapFilterValues.find((mfv) => mfv.name === fv.name);
+              // all filter values must be sent; active ones as empty string
+              const values: string[] = mapFilterValue && mapFilterValue.isActive ? fv.values.map(() => '') : fv.values;
+              // all filter values (empty or not) must be enclosed by single quotation marks and separated by commas
+              return values.map((v) => `'${v}'`).join(',');
+            })
+            .join(',');
+          customLayerParameters[filterConfig.parameter] = filterValues;
+        }
       });
       esriLayer.customLayerParameters = customLayerParameters;
       esriLayer.refresh();

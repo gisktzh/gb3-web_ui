@@ -1,10 +1,6 @@
-interface MapFilterValue {
-  name: string;
-  values: string[];
-  isActive: boolean;
-}
+import {MapFilterValue} from './map-filter-value.interface';
 
 export interface MapFilter {
   parameter: string;
-  filterValues: MapFilterValue[];
+  mapFilterValues: MapFilterValue[];
 }

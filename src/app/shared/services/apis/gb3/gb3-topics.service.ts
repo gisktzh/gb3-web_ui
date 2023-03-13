@@ -6,7 +6,7 @@ import {QueryLayer} from '../../../interfaces/query-layer.interface';
 import {QueryLegend} from '../../../interfaces/query-legend.interface';
 import {LegendResponse} from '../../../interfaces/legend.interface';
 import {
-  AttributeFilterConfiguration,
+  FilterConfiguration,
   Map,
   TimeSliderConfiguration,
   TimeSliderLayerSource,
@@ -112,7 +112,7 @@ export class Gb3TopicsService extends Gb3ApiService {
                 };
               }),
               timeSliderConfiguration: topic.timesliderConfiguration as TimeSliderConfiguration, // todo: remove type cast when backend is properly typed
-              filterConfigurations: topic.filterConfigurations as AttributeFilterConfiguration[] // todo: remove type cast when backend is properly typed
+              filterConfigurations: topic.filterConfigurations as FilterConfiguration[] // todo: remove type cast when backend is properly typed
             };
           })
         };
