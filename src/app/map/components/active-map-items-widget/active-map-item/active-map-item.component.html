@@ -9,6 +9,8 @@
 <!-- time slider config -->
 <time-slider-widget *ngIf="activeMapItem.timeSliderConfiguration" [activeMapItem]="activeMapItem"></time-slider-widget>
 
+<map-attribute-filter *ngIf="activeMapItem.filterConfigurations" [activeMapItem]="activeMapItem"></map-attribute-filter>
+
 <!-- List of sublayers (only if the map item is not a single layer itself) -->
 <ng-container *ngIf="!activeMapItem.isSingleLayer">
   <mat-divider></mat-divider>

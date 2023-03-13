@@ -103,7 +103,7 @@ export interface AttributeFilterConfiguration {
   filterValues: AttributeFilter[];
 }
 
-interface AttributeFilter {
+export interface AttributeFilter {
   name: string;
   values: string[];
 }

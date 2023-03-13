@@ -43,6 +43,7 @@ import {
 } from '../../external/esri.module';
 import {TimeSliderConfiguration, TimeSliderLayerSource, TimeSliderParameterSource} from '../../../shared/interfaces/topic.interface';
 import {TimeExtent} from '../../interfaces/time-extent.interface';
+import {MapFilter} from '../../interfaces/map-filter';
 
 @Injectable({
   providedIn: 'root'
@@ -241,6 +242,24 @@ export class EsriMapService implements MapService {
   public setTimeSliderExtent(timeExtent: TimeExtent, mapItem: ActiveMapItem) {
     const esriLayer = this.findEsriLayer(mapItem.id);
     this.setEsriTimeSliderExtent(timeExtent, mapItem, esriLayer);
+  }
+
+  public setActiveFilters(mapFilters: MapFilter[], mapItem: ActiveMapItem) {
+    const esriLayer = this.findEsriLayer(mapItem.id);
+    if (esriLayer && esriLayer instanceof EsriWMSLayer && mapItem.filterConfigurations) {
+      const customLayerParameters: {[index: string]: string} = esriLayer.customLayerParameters ?? {};
+      mapFilters.forEach((mf) => {
+        const filterValues = mf.filterValues
+          .map((fv) => {
+            const values: string[] = fv.isActive ? fv.values.map(() => '') : fv.values;
+            return values.map((v) => `'${v}'`).join(',');
+          })
+          .join(',');
+        customLayerParameters[mf.parameter] = filterValues;
+      });
+      esriLayer.customLayerParameters = customLayerParameters;
+      esriLayer.refresh();
+    }
   }
 
   public reorderMapItem(previousPosition: number, currentPosition: number) {

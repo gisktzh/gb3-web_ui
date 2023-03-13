@@ -115,5 +115,17 @@ export class ActiveMapItemEffects {
     {dispatch: false}
   );
 
+  public dispatchActiveMapItemSetActiveFiltersEffect$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(ActiveMapItemActions.setMapFilters),
+        tap((action) => {
+          this.mapService.setActiveFilters(action.mapFilters, action.activeMapItem);
+        })
+      );
+    },
+    {dispatch: false}
+  );
+
   constructor(private readonly actions$: Actions, @Inject(MAP_SERVICE) private readonly mapService: MapService) {}
 }

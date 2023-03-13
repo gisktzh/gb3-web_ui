@@ -1,0 +1,12 @@
+<p>Attribut Filter</p>
+<mat-card *ngFor="let mapFilter of activeMapFilters">
+  <mat-card-header>
+    <mat-card-title>{{ mapFilter.filterConfig.name }}</mat-card-title>
+    <mat-card-subtitle *ngIf="mapFilter.filterConfig.description">{{ mapFilter.filterConfig.description }}</mat-card-subtitle>
+  </mat-card-header>
+  <ng-container *ngFor="let filterValue of mapFilter.mapFilter.filterValues">
+    <mat-checkbox [checked]="!filterValue.isActive" (change)="changeFilter(mapFilter.filterConfig, filterValue, $event.checked)">{{
+      filterValue.name
+    }}</mat-checkbox>
+  </ng-container>
+</mat-card>
