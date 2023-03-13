@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {TimeSliderConfiguration, TimeSliderLayerSource} from '../../shared/interfaces/topic.interface';
 import {TimeSliderService} from '../interfaces/time-slider.service';
-import {debounceTime, Observable, ReplaySubject} from 'rxjs';
+import {debounceTime, filter, Observable, Subject} from 'rxjs';
 import {TimeExtent} from '../interfaces/time-extent.interface';
 import * as dayjs from 'dayjs';
 import {ManipulateType} from 'dayjs';
@@ -10,6 +10,7 @@ import {Duration} from 'dayjs/plugin/duration';
 import {ActiveMapItem} from '../models/active-map-item.model';
 import {esriReactiveUtils, EsriTimeExtent, EsriTimeIntervalUnit, EsriTimeSlider, EsriTimeSliderMode} from '../external/esri.module';
 import {TimeExtentUtil} from '../../shared/utils/time-extent.util';
+import {map} from 'rxjs/operators';
 
 dayjs.extend(duration);
 
@@ -17,14 +18,10 @@ dayjs.extend(duration);
   providedIn: 'root'
 })
 export class EsriTimeSliderService implements TimeSliderService {
-  private readonly timeExtentChanged$: ReplaySubject<{activeMapItemId: string; timeExtent: TimeExtent}> = new ReplaySubject<{
+  private readonly timeExtentChanged$: Subject<{activeMapItemId: string; timeExtent: TimeExtent}> = new Subject<{
     activeMapItemId: string;
     timeExtent: TimeExtent;
-  }>(1);
-  public readonly timeExtentChanged: Observable<{activeMapItemId: string; timeExtent: TimeExtent}> = this.timeExtentChanged$
-    .asObservable()
-    // add a debounce time as every step of the time slider creates a change of state which then creates a request to the server
-    .pipe(debounceTime(200));
+  }>();
 
   public assignTimeSliderWidget(activeMapItem: ActiveMapItem, container: HTMLDivElement) {
     if (!activeMapItem.timeSliderConfiguration) {
@@ -62,6 +59,15 @@ export class EsriTimeSliderService implements TimeSliderService {
 
     // emit initial value
     this.timeExtentChanged$.next({activeMapItemId: activeMapItem.id, timeExtent: activeMapItem.timeSliderExtent});
+  }
+
+  public watchTimeExtent(activeMapItemId: string): Observable<TimeExtent> {
+    return this.timeExtentChanged$.asObservable().pipe(
+      filter((value) => value.activeMapItemId === activeMapItemId),
+      // add a debounce time as every step of the time slider creates a change of state which then creates a request to the server
+      debounceTime(200),
+      map((value) => value.timeExtent)
+    );
   }
 
   public createValidTimeExtent(timeSliderConfig: TimeSliderConfiguration, newValue: TimeExtent, oldValue?: TimeExtent): TimeExtent {
