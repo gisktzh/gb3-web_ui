@@ -3,7 +3,7 @@ import {ActiveMapItem} from '../../models/active-map-item.model';
 import {Store} from '@ngrx/store';
 import {TIME_SLIDER_SERVICE} from '../../../app.module';
 import {TimeSliderService} from '../../interfaces/time-slider.service';
-import {Subscription, tap} from 'rxjs';
+import {filter, Subscription, tap} from 'rxjs';
 import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
 
 @Component({
@@ -25,8 +25,11 @@ export class TimeSliderWidgetComponent implements AfterViewInit, OnDestroy {
       this.subscriptions.add(
         this.timeSliderService.timeExtentChanged
           .pipe(
-            tap((timeExtent) => {
-              this.store.dispatch(ActiveMapItemActions.setTimeSliderExtent({timeExtent: timeExtent, activeMapItem: this.activeMapItem}));
+            filter((value) => value.activeMapItemId === this.activeMapItem.id),
+            tap((value) => {
+              this.store.dispatch(
+                ActiveMapItemActions.setTimeSliderExtent({timeExtent: value.timeExtent, activeMapItem: this.activeMapItem})
+              );
             })
           )
           .subscribe()

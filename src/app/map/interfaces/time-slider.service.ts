@@ -4,7 +4,7 @@ import {ActiveMapItem} from '../models/active-map-item.model';
 import {TimeSliderConfiguration} from '../../shared/interfaces/topic.interface';
 
 export interface TimeSliderService {
-  readonly timeExtentChanged: Observable<TimeExtent>;
+  readonly timeExtentChanged: Observable<{activeMapItemId: string; timeExtent: TimeExtent}>;
   /** Assigns a time slider widget to the given container based on the active map item */
   assignTimeSliderWidget(activeMapItem: ActiveMapItem, container: HTMLDivElement): void;
 
