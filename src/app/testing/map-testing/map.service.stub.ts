@@ -2,6 +2,7 @@ import {MapService} from '../../map/interfaces/map.service';
 import {Geometry} from 'geojson';
 import {ActiveMapItem} from '../../map/models/active-map-item.model';
 import {ZoomType} from '../../shared/types/zoom-type';
+import {TimeExtent} from '../../map/interfaces/time-extent.interface';
 
 export class MapServiceStub implements MapService {
   public addHighlightGeometry(geometry: Geometry): void {}
@@ -33,4 +34,6 @@ export class MapServiceStub implements MapService {
   public setSublayerVisibility(visibility: boolean, mapItem: ActiveMapItem, layerId: number): void {}
 
   public setVisibility(visibility: boolean, mapItem: ActiveMapItem): void {}
+
+  public setTimeSliderExtent(timeSliderExtent: TimeExtent, mapItem: ActiveMapItem): void {}
 }

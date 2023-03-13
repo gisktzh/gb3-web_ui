@@ -19,6 +19,7 @@ import {MapControlsComponent} from './components/map/map-controls/map-controls.c
 import {BasemapSelectorComponent} from './components/map/basemap-selector/basemap-selector.component';
 import {ActiveMapItemComponent} from './components/active-map-items-widget/active-map-item/active-map-item.component';
 import {OnboardingGuideModule} from '../onboarding-guide/onboarding-guide.module';
+import {TimeSliderWidgetComponent} from './components/time-slider-widget/time-slider-widget.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import {OnboardingGuideModule} from '../onboarding-guide/onboarding-guide.module
     PrintDispatcherComponent,
     ScaleInputComponent,
     MapControlsComponent,
-    BasemapSelectorComponent
+    BasemapSelectorComponent,
+    TimeSliderWidgetComponent
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule]
 })

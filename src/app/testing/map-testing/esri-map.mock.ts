@@ -1,4 +1,4 @@
-import {EsriCollection} from '../../shared/external/esri.module';
+import {EsriCollection} from '../../map/external/esri.module';
 import Layer = __esri.Layer;
 import Map = __esri.Map;
 

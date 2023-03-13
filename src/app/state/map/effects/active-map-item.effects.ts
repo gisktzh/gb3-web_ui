@@ -103,5 +103,17 @@ export class ActiveMapItemEffects {
     {dispatch: false}
   );
 
+  public dispatchActiveMapItemSetTimeSliderExtentEffect$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(ActiveMapItemActions.setTimeSliderExtent),
+        tap((action) => {
+          this.mapService.setTimeSliderExtent(action.timeExtent, action.activeMapItem);
+        })
+      );
+    },
+    {dispatch: false}
+  );
+
   constructor(private readonly actions$: Actions, @Inject(MAP_SERVICE) private readonly mapService: MapService) {}
 }
