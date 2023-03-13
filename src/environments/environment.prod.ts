@@ -9,8 +9,8 @@ export const environment: EnvironmentConfig = {
     ktzhWebsite: 'https://www.zh.ch'
   },
   auth: {
-    issuer: 'tbd',
-    clientId: 'tbd',
+    issuer: 'https://maps.zh.ch/',
+    clientId: 'gb3',
     authenticatedPingInterval: 5000
   }
 };
