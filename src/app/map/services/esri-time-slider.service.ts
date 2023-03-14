@@ -11,6 +11,7 @@ import {ActiveMapItem} from '../models/active-map-item.model';
 import {esriReactiveUtils, EsriTimeExtent, EsriTimeIntervalUnit, EsriTimeSlider, EsriTimeSliderMode} from '../external/esri.module';
 import {TimeExtentUtil} from '../../shared/utils/time-extent.util';
 import {map} from 'rxjs/operators';
+import {MapConstants} from '../../shared/constants/map.constants';
 
 dayjs.extend(duration);
 
@@ -65,7 +66,7 @@ export class EsriTimeSliderService implements TimeSliderService {
     return this.timeExtentChanged$.asObservable().pipe(
       filter((value) => value.activeMapItemId === activeMapItemId),
       // add a debounce time as every step of the time slider creates a change of state which then creates a request to the server
-      debounceTime(200),
+      debounceTime(MapConstants.TIME_SLIDER_CHANGE_DEBOUNCE_TIME_IN_MS),
       map((value) => value.timeExtent)
     );
   }
