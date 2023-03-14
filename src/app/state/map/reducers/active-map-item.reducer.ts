@@ -38,9 +38,8 @@ export const activeMapItemFeature = createFeature({
           const newActiveMapItem = structuredClone(mapItem);
           newActiveMapItem.opacity = opacity;
           return newActiveMapItem;
-        } else {
-          return mapItem;
         }
+        return mapItem;
       });
       return {...state, activeMapItems: [...activeMapItems]};
     }),
@@ -50,9 +49,8 @@ export const activeMapItemFeature = createFeature({
           const newActiveMapItem = structuredClone(mapItem);
           newActiveMapItem.visible = visible;
           return newActiveMapItem;
-        } else {
-          return mapItem;
         }
+        return mapItem;
       });
       return {...state, activeMapItems: [...activeMapItems]};
     }),
@@ -65,9 +63,8 @@ export const activeMapItemFeature = createFeature({
             sublayer.visible = visible;
           }
           return newActiveMapItem;
-        } else {
-          return mapItem;
         }
+        return mapItem;
       });
       return {...state, activeMapItems: [...activeMapItems]};
     }),
@@ -77,9 +74,8 @@ export const activeMapItemFeature = createFeature({
           const newActiveMapItem = structuredClone(mapItem);
           newActiveMapItem.loadingState = loadingState;
           return newActiveMapItem;
-        } else {
-          return mapItem;
         }
+        return mapItem;
       });
       return {...state, activeMapItems: [...activeMapItems]};
     }),
@@ -89,9 +85,8 @@ export const activeMapItemFeature = createFeature({
           const newActiveMapItem = structuredClone(mapItem);
           newActiveMapItem.viewProcessState = viewProcessState;
           return newActiveMapItem;
-        } else {
-          return mapItem;
         }
+        return mapItem;
       });
       return {...state, activeMapItems: [...activeMapItems]};
     }),
@@ -108,9 +103,19 @@ export const activeMapItemFeature = createFeature({
           const sublayerToReorder = newActiveMapItem.layers.splice(previousPosition, 1);
           newActiveMapItem.layers.splice(currentPosition, 0, ...sublayerToReorder);
           return newActiveMapItem;
-        } else {
-          return mapItem;
         }
+        return mapItem;
+      });
+      return {...state, activeMapItems: [...activeMapItems]};
+    }),
+    on(ActiveMapItemActions.setTimeSliderExtent, (state, {timeExtent, activeMapItem}): ActiveMapItemState => {
+      const activeMapItems = state.activeMapItems.map((mapItem) => {
+        if (mapItem.id === activeMapItem.id) {
+          const newActiveMapItem = structuredClone(mapItem);
+          newActiveMapItem.timeSliderExtent = timeExtent;
+          return newActiveMapItem;
+        }
+        return mapItem;
       });
       return {...state, activeMapItems: [...activeMapItems]};
     }),

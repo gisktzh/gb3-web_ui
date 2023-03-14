@@ -20,13 +20,23 @@
           <ng-container *ngFor="let map of topic.maps">
             <mat-expansion-panel #mapExpansionPanel hideToggle="true">
               <mat-expansion-panel-header (click)="mapExpansionPanel.toggle()" class="map__header">
-                <button (click)="addActiveMap(map)" color="primary" mat-icon-button>
+                <button mat-icon-button (click)="addActiveMap(map)" color="primary" data-test-id="add-active-map">
                   <mat-icon>add</mat-icon>
                 </button>
-                <button (click)="mapExpansionPanel.open()" *ngIf="!mapExpansionPanel.expanded" mat-icon-button>
+                <button
+                  mat-icon-button
+                  *ngIf="!mapExpansionPanel.expanded"
+                  (click)="mapExpansionPanel.open()"
+                  data-test-id="show-layers-of-the-map"
+                >
                   <mat-icon>arrow_right</mat-icon>
                 </button>
-                <button (click)="mapExpansionPanel.close()" *ngIf="mapExpansionPanel.expanded" mat-icon-button>
+                <button
+                  mat-icon-button
+                  *ngIf="mapExpansionPanel.expanded"
+                  (click)="mapExpansionPanel.close()"
+                  data-test-id="hide-layers-of-the-map"
+                >
                   <mat-icon>arrow_drop_down</mat-icon>
                 </button>
                 <img [alt]="map.title" [src]="map.icon" class="map__header__image" />
@@ -35,7 +45,7 @@
               <!-- Expansion panel content -->
               <ng-template matExpansionPanelContent>
                 <ng-container *ngFor="let layer of map.layers">
-                  <div class="layer">
+                  <div class="layer" *ngIf="!layer.isHidden">
                     <mat-icon class="layer__icon">layers</mat-icon>
                     <p class="layer__title" matTooltip="{{ layer.title }}">{{ layer.title }}</p>
                     <button (click)="addActiveLayer(map, layer)" mat-icon-button>

@@ -1,15 +1,19 @@
 import {LoadingState} from '../../shared/types/loading-state';
-import {Map, MapLayer} from '../../shared/interfaces/topic.interface';
+import {AttributeFilterConfiguration, Map, MapLayer, TimeSliderConfiguration} from '../../shared/interfaces/topic.interface';
 import {HasLoadingState} from '../../shared/interfaces/has-loading-state.interface';
 import {HasVisibility} from '../../shared/interfaces/has-visibility.interface';
 import {HasViewProcessState} from '../../shared/interfaces/has-view-process-state.interface';
 import {ViewProcessState} from '../../shared/types/view-process-state';
+import {TimeExtent} from '../interfaces/time-extent.interface';
+import {TimeExtentUtil} from '../../shared/utils/time-extent.util';
 
 export class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewProcessState {
   public readonly id: string;
   public readonly title: string;
   public readonly url: string;
   public readonly mapImageUrl: string;
+  public readonly timeSliderConfiguration?: TimeSliderConfiguration;
+  public readonly filterConfigurations?: AttributeFilterConfiguration[];
 
   public readonly mapId: string;
   public readonly layers: MapLayer[];
@@ -19,6 +23,7 @@ export class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewPro
   public viewProcessState: ViewProcessState = 'undefined';
   public visible: boolean;
   public opacity: number;
+  public timeSliderExtent?: TimeExtent;
 
   constructor(map: Map, layer?: MapLayer, visible?: boolean, opacity?: number) {
     this.isSingleLayer = !!layer;
@@ -30,5 +35,10 @@ export class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewPro
     this.layers = layer ? [layer] : map.layers;
     this.visible = visible ?? true;
     this.opacity = opacity ?? 1;
+    this.timeSliderConfiguration = map.timeSliderConfiguration;
+    if (map.timeSliderConfiguration) {
+      this.timeSliderExtent = TimeExtentUtil.createInitialTimeSliderExtent(map.timeSliderConfiguration);
+    }
+    this.filterConfigurations = map.filterConfigurations;
   }
 }

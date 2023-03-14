@@ -49,8 +49,8 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.topics$
         .pipe(
-          tap((value) => {
-            this.topics = value;
+          tap((topics) => {
+            this.topics = topics;
           })
         )
         .subscribe()

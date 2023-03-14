@@ -103,6 +103,18 @@ export class ActiveMapItemEffects {
     {dispatch: false}
   );
 
+  public dispatchActiveMapItemSetTimeSliderExtentEffect$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(ActiveMapItemActions.setTimeSliderExtent),
+        tap((action) => {
+          this.mapService.setTimeSliderExtent(action.timeExtent, action.activeMapItem);
+        })
+      );
+    },
+    {dispatch: false}
+  );
+
   public dispatchAddFavouriteEffect$ = createEffect(
     () => {
       return this.actions$.pipe(

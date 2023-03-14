@@ -19,6 +19,7 @@ import {MapControlsComponent} from './components/map/map-controls/map-controls.c
 import {BasemapSelectorComponent} from './components/map/basemap-selector/basemap-selector.component';
 import {ActiveMapItemComponent} from './components/active-map-items-widget/active-map-item/active-map-item.component';
 import {OnboardingGuideModule} from '../onboarding-guide/onboarding-guide.module';
+import {TimeSliderWidgetComponent} from './components/time-slider-widget/time-slider-widget.component';
 import {FavouriteDialogComponent} from './components/favourite-dialog/favourite-dialog.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {FavouriteSelectionComponent} from './components/map-data-catalogue/favourite-selection/favourite-selection.component';
@@ -40,6 +41,8 @@ import {FavouriteSelectionComponent} from './components/map-data-catalogue/favou
     PrintDispatcherComponent,
     ScaleInputComponent,
     MapControlsComponent,
+    BasemapSelectorComponent,
+    TimeSliderWidgetComponent,
     BasemapSelectorComponent,
     FavouriteDialogComponent,
     FavouriteSelectionComponent

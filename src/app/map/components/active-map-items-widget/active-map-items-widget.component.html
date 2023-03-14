@@ -34,7 +34,7 @@
             <button (click)="activeMapItemExpansionPanel.close()" *ngIf="activeMapItemExpansionPanel.expanded" mat-icon-button>
               <mat-icon>arrow_drop_down</mat-icon>
             </button>
-            <button (click)="toggleMapItemVisibility(activeMapItem)" mat-icon-button>
+            <button (click)="toggleMapItemVisibility(activeMapItem)" mat-icon-button data-test-id="map-visibility">
               <div class="active-map-item__image-container">
                 <img [alt]="activeMapItem.title" [src]="activeMapItem.mapImageUrl" />
                 <mat-icon
@@ -44,11 +44,16 @@
               </div>
             </button>
             <p class="active-map-item__title" matTooltip="{{ activeMapItem.title }}">{{ activeMapItem.title }}</p>
-            <button (click)="removeActiveMapItem(activeMapItem)" mat-icon-button>
+            <button (click)="removeActiveMapItem(activeMapItem)" mat-icon-button data-test-id="delete">
               <mat-icon>delete</mat-icon>
             </button>
             <div class="active-map-item__menu">
-              <button (click)="activeMapItemMenuTrigger.openMenu()" class="active-map-item__menu__handle" mat-icon-button>
+              <button
+                mat-icon-button
+                class="active-map-item__menu__handle"
+                (click)="activeMapItemMenuTrigger.openMenu()"
+                data-test-id="map-options"
+              >
                 <mat-icon>more_horiz</mat-icon>
                 <div #activeMapItemMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="activeMapItemMenu"></div>
               </button>

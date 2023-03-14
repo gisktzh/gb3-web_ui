@@ -18,11 +18,13 @@ import {EsriMapService} from './map/services/esri-service/esri-map.service';
 import {MapService} from './map/interfaces/map.service';
 import {KTZHNewsMockService} from './shared/services/apis/ktzh/ktzhnews-mock.service';
 import {NewsService} from './shared/interfaces/news-service.interface';
+import {EsriTimeSliderService} from './map/services/esri-time-slider.service';
 import {AuthModule} from './auth/auth.module';
 import {AuthStatusEffects} from './state/auth/effects/auth-status.effects';
 import {FavouriteListEffects} from './state/map/effects/favourite-list.effects';
 
 export const MAP_SERVICE = new InjectionToken<MapService>('MapService');
+export const TIME_SLIDER_SERVICE = new InjectionToken<MapService>('TimeSliderService');
 export const NEWS_SERVICE = new InjectionToken<NewsService>('NewsService');
 
 @NgModule({
@@ -49,6 +51,7 @@ export const NEWS_SERVICE = new InjectionToken<NewsService>('NewsService');
   ],
   providers: [
     {provide: MAP_SERVICE, useClass: EsriMapService},
+    {provide: TIME_SLIDER_SERVICE, useClass: EsriTimeSliderService},
     {provide: NEWS_SERVICE, useClass: KTZHNewsMockService}
   ],
   bootstrap: [AppComponent]
