@@ -20,7 +20,7 @@ import {BasemapSelectorComponent} from './components/map/basemap-selector/basema
 import {ActiveMapItemComponent} from './components/active-map-items-widget/active-map-item/active-map-item.component';
 import {OnboardingGuideModule} from '../onboarding-guide/onboarding-guide.module';
 import {TimeSliderWidgetComponent} from './components/time-slider-widget/time-slider-widget.component';
-import {MapFilterComponent} from './components/active-map-items-widget/active-map-item/map-filter/map-filter.component';
+import {MapAttributeFilterComponent} from './components/map-attribute-filter/map-attribute-filter.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +41,7 @@ import {MapFilterComponent} from './components/active-map-items-widget/active-ma
     MapControlsComponent,
     BasemapSelectorComponent,
     TimeSliderWidgetComponent,
-    MapFilterComponent
+    MapAttributeFilterComponent
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule]
 })

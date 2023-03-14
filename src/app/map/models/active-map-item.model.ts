@@ -6,8 +6,8 @@ import {HasViewProcessState} from '../../shared/interfaces/has-view-process-stat
 import {ViewProcessState} from '../../shared/types/view-process-state';
 import {TimeExtent} from '../interfaces/time-extent.interface';
 import {TimeExtentUtil} from '../../shared/utils/time-extent.util';
-import {MapFilter} from '../interfaces/map-filter';
-import {MapFilterValue} from '../interfaces/map-filter-value.interface';
+import {AttributeFilter} from '../interfaces/attribute-filter.interface';
+import {AttributeFilterValue} from '../interfaces/attribute-filter-value.interface';
 
 export class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewProcessState {
   public readonly id: string;
@@ -26,7 +26,7 @@ export class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewPro
   public visible = true;
   public opacity = 1;
   public timeSliderExtent?: TimeExtent;
-  public mapFilters?: MapFilter[];
+  public attributeFilters?: AttributeFilter[];
 
   constructor(map: Map, layer?: MapLayer) {
     this.isSingleLayer = !!layer;
@@ -42,16 +42,16 @@ export class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewPro
     }
     this.filterConfigurations = map.filterConfigurations;
     if (map.filterConfigurations) {
-      this.mapFilters = map.filterConfigurations.map((fc) => {
+      this.attributeFilters = map.filterConfigurations.map((fc) => {
         return {
           parameter: fc.parameter,
-          mapFilterValues: fc.filterValues.map((fv) => {
+          attributeFilterValues: fc.filterValues.map((fv) => {
             return {
               name: fv.name,
               isActive: false // initial value => all filters are deactivated
-            } as MapFilterValue;
+            } as AttributeFilterValue;
           })
-        } as MapFilter;
+        } as AttributeFilter;
       });
     }
   }

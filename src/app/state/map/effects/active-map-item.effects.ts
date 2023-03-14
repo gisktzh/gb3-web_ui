@@ -118,9 +118,9 @@ export class ActiveMapItemEffects {
   public dispatchActiveMapItemSetActiveFiltersEffect$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(ActiveMapItemActions.setMapFilters),
+        ofType(ActiveMapItemActions.setAttributeFilters),
         tap((action) => {
-          this.mapService.setActiveFilters(action.mapFilters, action.activeMapItem);
+          this.mapService.setAttributeFilters(action.attributeFilters, action.activeMapItem);
         })
       );
     },

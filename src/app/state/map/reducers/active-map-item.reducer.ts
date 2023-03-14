@@ -119,11 +119,11 @@ export const activeMapItemFeature = createFeature({
       });
       return {...state, activeMapItems: [...activeMapItems]};
     }),
-    on(ActiveMapItemActions.setMapFilters, (state, {mapFilters: mapFilters, activeMapItem}): ActiveMapItemState => {
+    on(ActiveMapItemActions.setAttributeFilters, (state, {attributeFilters: attributeFilters, activeMapItem}): ActiveMapItemState => {
       const activeMapItems = state.activeMapItems.map((mapItem) => {
         if (mapItem.id === activeMapItem.id) {
           const newActiveMapItem = structuredClone(mapItem);
-          newActiveMapItem.mapFilters = mapFilters;
+          newActiveMapItem.attributeFilters = attributeFilters;
           return newActiveMapItem;
         }
         return mapItem;

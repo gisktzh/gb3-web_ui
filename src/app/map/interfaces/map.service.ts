@@ -2,7 +2,7 @@ import {Geometry} from 'geojson';
 import {ActiveMapItem} from '../models/active-map-item.model';
 import {ZoomType} from '../../shared/types/zoom-type';
 import {TimeExtent} from './time-extent.interface';
-import {MapFilter} from './map-filter';
+import {AttributeFilter} from './attribute-filter.interface';
 
 export interface MapService {
   /** Initializes the map by creating the initial background map and with a given extent */
@@ -41,7 +41,8 @@ export interface MapService {
   /** Sets the time slider extent for an existing item on the map */
   setTimeSliderExtent(timeExtent: TimeExtent, mapItem: ActiveMapItem): void;
 
-  setActiveFilters(activeFilters: MapFilter[], mapItem: ActiveMapItem): void;
+  /** Sets the attribute filters for an existing item on the map */
+  setAttributeFilters(attributeFilters: AttributeFilter[], mapItem: ActiveMapItem): void;
 
   /** Reorders a map item using its old index (previous) and the new index (current); 0 is the topmost item - the most visible one */
   reorderMapItem(previousPosition: number, currentPosition: number): void;
