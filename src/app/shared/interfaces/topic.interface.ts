@@ -63,42 +63,53 @@ export interface MapLayer extends HasVisibility, HasHidingState {
 }
 
 export interface TimeSliderConfiguration {
+  /** name of the timeslider for displaying in UI */
   name: string;
-  description?: string;
-  /** ISO-8601 date format (e.g. YYYY-MM-DD) */
+  /** additional description for the current timeslider */
+  description?: string | null;
+  /** ISO-8601 format which is used for the timeslider data */
   dateFormat: string;
+  /** lowermost (oldest) date for the displayed data range */
   minimumDate: string;
+  /** uppermost (newest) date for the displayed data range */
   maximumDate: string;
+  /** If flag is set, both date specifications (oldest and newest date) have to be used for time period selection */
   alwaysMaxRange: boolean;
-  /** ISO-8601 date range (PnYnMnD) */
-  minimalRange?: string;
-  /** ISO-8601 date range (PnYnMnD) */
-  range?: string;
+  /** The minimum time span that can be selected in ISO-8601 time span format. If range or alwaysMaxRange is set, this value is ignored */
+  minimalRange?: string | null;
+  /** The fixed time span, which can be selected in ISO-8601 time span format; if alwaysMaxRange is set, this value is ignored */
+  range?: string | null;
+  /** type of the data source ('parameter' or 'layer') */
   sourceType: TimeSliderSourceType;
   source: TimeSliderParameterSource | TimeSliderLayerSource;
 }
 
 export interface TimeSliderParameterSource {
+  /** for sourceType 'parameter': name of the filter for the starting date of selection */
   startRangeParameter: string;
+  /** for sourceType 'parameter': name of the filter for the ending date of selection */
   endRangeParameter: string;
+  /** for sourceType 'parameter':a list of unique layer identifiers affected by this timeslider */
   layerIdentifiers: string[];
 }
 
 export interface TimeSliderLayerSource {
+  /** for sourceType 'layer': a list of one to n layers and their date and name. Each entry in the list must contain the 'layer' and 'date' parameters */
   layers: TimeSliderLayer[];
 }
 
 interface TimeSliderLayer {
+  /** for sourceType 'layer': unique name of the layer */
   layerName: string;
-  /** ISO-8601 date format (e.g. YYYY-MM-DD) */
+  /** for sourceType 'layer': the date associated with this layer (formatted according to the 'dateFormat' parameter) */
   date: string;
 }
 
-type TimeSliderSourceType = 'parameter' | 'layer';
+export type TimeSliderSourceType = 'parameter' | 'layer';
 
 export interface FilterConfiguration {
   name: string;
-  description?: string;
+  description?: string | null;
   parameter: string;
   filterValues: FilterValue[];
 }

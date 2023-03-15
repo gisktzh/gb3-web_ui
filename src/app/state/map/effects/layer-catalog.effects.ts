@@ -1,9 +1,10 @@
 import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {EMPTY, switchMap} from 'rxjs';
+import {of, switchMap} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
 import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
 import {LayerCatalogActions} from '../actions/layer-catalog.actions';
+import {environment} from '../../../../environments/environment';
 
 @Injectable()
 export class LayerCatalogEffects {
@@ -15,7 +16,12 @@ export class LayerCatalogEffects {
           map((layerCatalogTopicResponse) => {
             return LayerCatalogActions.setLayerCatalog({layerCatalogItems: layerCatalogTopicResponse.topics});
           }),
-          catchError(() => EMPTY)
+          catchError((err: unknown) => {
+            if (!environment.production) {
+              console.error(err);
+            }
+            return of(LayerCatalogActions.failedLoadingCatalog()); // todo error handling
+          })
         )
       )
     );

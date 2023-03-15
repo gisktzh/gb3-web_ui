@@ -18,7 +18,7 @@ export class LegendEffects {
           map((legends) => {
             return LegendActions.addLegendContent({legends});
           }),
-          catchError(() => EMPTY)
+          catchError(() => EMPTY) // todo error handling
         )
       )
     );

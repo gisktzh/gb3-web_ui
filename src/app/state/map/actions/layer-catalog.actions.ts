@@ -7,6 +7,7 @@ export const LayerCatalogActions = createActionGroup({
     'Load Layer Catalog': emptyProps(),
     'Set Layer Catalog': props<{layerCatalogItems: Topic[]}>(),
     'Add Layer Catalog Item': props<{layerCatalogItem: Topic}>(),
-    'Clear Layer Catalog': emptyProps()
+    'Clear Layer Catalog': emptyProps(),
+    'Failed Loading Catalog': emptyProps()
   }
 });

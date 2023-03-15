@@ -6,10 +6,10 @@ import {QueryLayer} from '../../../interfaces/query-layer.interface';
 import {QueryLegend} from '../../../interfaces/query-legend.interface';
 import {LegendResponse} from '../../../interfaces/legend.interface';
 import {
-  FilterConfiguration,
   Map,
-  TimeSliderConfiguration,
   TimeSliderLayerSource,
+  TimeSliderParameterSource,
+  TimeSliderSourceType,
   TopicsResponse
 } from '../../../interfaces/topic.interface';
 import {FeatureInfoResponse} from '../../../interfaces/feature-info.interface';
@@ -111,31 +111,69 @@ export class Gb3TopicsService extends Gb3ApiService {
                   isHidden: false
                 };
               }),
-              timeSliderConfiguration: topic.timesliderConfiguration as TimeSliderConfiguration, // todo: remove type cast when backend is properly typed
-              filterConfigurations: topic.filterConfigurations as FilterConfiguration[] // todo: remove type cast when backend is properly typed
+              timeSliderConfiguration: topic.timesliderConfiguration
+                ? {
+                    ...topic.timesliderConfiguration,
+                    sourceType: topic.timesliderConfiguration.sourceType as TimeSliderSourceType,
+                    source: this.transformTimeSliderConfigurationSource(
+                      topic.timesliderConfiguration.source,
+                      topic.timesliderConfiguration.sourceType
+                    )
+                  }
+                : undefined
             };
           })
         };
       })
     };
     topicsResponse.topics.forEach((topic) => {
-      topic.maps.forEach((map) => {
-        map.layers.forEach((layer) => {
-          layer.isHidden = this.isHiddenLayer(layer.layer, map);
+      topic.maps.forEach((topicMap) => {
+        topicMap.layers.forEach((layer) => {
+          layer.isHidden = this.isHiddenLayer(layer.layer, topicMap);
         });
       });
     });
     return topicsResponse;
   }
 
+  private transformTimeSliderConfigurationSource(
+    source: TopicsListData['categories'][0]['topics'][0]['timesliderConfiguration']['source'],
+    sourceType: string
+  ): TimeSliderParameterSource | TimeSliderLayerSource {
+    const timeSliderSourceType: TimeSliderSourceType = sourceType as TimeSliderSourceType;
+    switch (timeSliderSourceType) {
+      case 'parameter':
+        if (!source.startRangeParameter || !source.endRangeParameter || !source.layerIdentifiers) {
+          throw new Error(`Invalid time slider configuration! Missing attributes inside the parameter configuration.`); // todo error handling
+        }
+        return {
+          startRangeParameter: source.startRangeParameter,
+          endRangeParameter: source.endRangeParameter,
+          layerIdentifiers: source.layerIdentifiers
+        } as TimeSliderParameterSource;
+      case 'layer':
+        if (!source.layers) {
+          throw new Error(`Invalid time slider configuration! Missing attributes inside the layer configuration.`); // todo error handling
+        }
+        return {
+          layers: source.layers.map((layer) => {
+            return {
+              layerName: layer.layerName,
+              date: layer.date
+            };
+          })
+        } as TimeSliderLayerSource;
+    }
+  }
+
   /**
    * Returns whether the given layer should be hidden from all visible layer lists.
    * For example if the layer is part of a time slider it should not be visible in any kind of layer list except the internal time slider control.
    */
-  private isHiddenLayer(layer: string, map: Map): boolean {
+  private isHiddenLayer(layer: string, topicMap: Map): boolean {
     let isHidden = false;
-    if (map.timeSliderConfiguration && map.timeSliderConfiguration.sourceType === 'layer') {
-      const timeSliderLayerSource = map.timeSliderConfiguration.source as TimeSliderLayerSource;
+    if (topicMap.timeSliderConfiguration && topicMap.timeSliderConfiguration.sourceType === 'layer') {
+      const timeSliderLayerSource = topicMap.timeSliderConfiguration.source as TimeSliderLayerSource;
       isHidden = timeSliderLayerSource.layers.some((l) => l.layerName === layer);
     }
     return isHidden;

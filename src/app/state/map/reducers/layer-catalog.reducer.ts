@@ -29,6 +29,9 @@ export const layerCatalogFeature = createFeature({
     }),
     on(LayerCatalogActions.clearLayerCatalog, (state): LayerCatalogState => {
       return {...state, layerCatalogItems: []};
+    }),
+    on(LayerCatalogActions.failedLoadingCatalog, (state): LayerCatalogState => {
+      return {...state, loadingState: 'error'};
     })
   )
 });
