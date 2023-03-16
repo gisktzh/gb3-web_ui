@@ -4,7 +4,6 @@ import {MatDialog} from '@angular/material/dialog';
 import {FavouriteDialogComponent} from '../components/favourite-dialog/favourite-dialog.component';
 import {Gb3FavouritesService} from '../../shared/services/apis/gb3/gb3-favourites.service';
 import {Observable, tap} from 'rxjs';
-import {FavouriteListActions} from '../../state/map/actions/favourite-list.actions';
 import {selectActiveMapItems} from '../../state/map/reducers/active-map-item.reducer';
 import {ActiveMapItem} from '../models/active-map-item.model';
 import {FavouriteLayerConfiguration, FavouritesResponse} from '../../shared/interfaces/favourite.interface';
@@ -30,18 +29,7 @@ export class FavouritesService {
   }
 
   public showFavouriteDialog() {
-    const dialogRef = this.dialogService.open<FavouriteDialogComponent, undefined, boolean>(FavouriteDialogComponent);
-
-    dialogRef
-      .afterClosed()
-      .pipe(
-        tap((isAborted) => {
-          if (!isAborted) {
-            this.store.dispatch(FavouriteListActions.loadFavourites());
-          }
-        })
-      )
-      .subscribe();
+    this.dialogService.open(FavouriteDialogComponent);
   }
 
   public createFavourite(title: string): Observable<boolean> {
