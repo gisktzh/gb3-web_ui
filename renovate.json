@@ -3,6 +3,7 @@
   "ignoreDeps": ["typescript", "zone.js"],
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "reviewers": ["lukas.merz@ebp.ch", "sebastian.wendland@ebp.ch"],
+  "platformAutomerge": true,
   "packageRules": [
     {
       "matchManagers": ["npm"],
@@ -13,8 +14,7 @@
       "matchManagers": ["npm"],
       "matchUpdateTypes": ["minor", "patch", "pin", "digest", "lockFileMaintenance", "bump"],
       "automerge": true,
-      "azureAutoApprove": true,
-      "azureAutoComplete": true
+      "azureAutoApprove": true
     },
     {
       "matchManagers": ["npm"],
@@ -34,6 +34,13 @@
         "@ngrx/",
         "typescript"
       ]
+    },
+    {
+      "matchManagers": ["npm"],
+      "groupName": "arcgis",
+      "matchPackagePrefixes": ["@arcgis/"],
+      "automerge": false,
+      "azureAutoApprove": false
     },
     {
       "matchManagers": ["npm"],
