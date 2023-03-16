@@ -2,7 +2,7 @@
   "extends": ["config:base"],
   "ignoreDeps": ["typescript", "zone.js"],
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "assignees": ["lukas.merz@ebp.ch", "sebastian.wendland@ebp.ch"],
+  "reviewers": ["lukas.merz@ebp.ch", "sebastian.wendland@ebp.ch"],
   "packageRules": [
     {
       "matchManagers": ["npm"],
@@ -12,6 +12,7 @@
     {
       "matchManagers": ["npm"],
       "matchUpdateTypes": ["minor", "patch", "pin", "digest", "lockFileMaintenance", "bump"],
+      "azureAutoApprove": true,
       "automerge": true
     },
     {
