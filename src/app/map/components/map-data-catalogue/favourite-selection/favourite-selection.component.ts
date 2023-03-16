@@ -103,11 +103,8 @@ export class FavouriteSelectionComponent implements HasLoadingState, OnInit, OnD
           map.layers.forEach((layer) => {
             const sublayerConfiguration = configuration.layers.find((favLayer) => favLayer.id === layer.id);
 
-            if (!sublayerConfiguration) {
-              throw new Error('Sublayer does not exist.');
-            }
-
-            layer.visible = sublayerConfiguration.visible;
+            // hide sublayer if it is a newly added layer to not interfere with favourite composition
+            layer.visible = sublayerConfiguration ? sublayerConfiguration.visible : false;
           });
           // ensure consistent sorting order with saved configuration in favourite
           const sortIds = configuration.layers.map((layer) => layer.id);

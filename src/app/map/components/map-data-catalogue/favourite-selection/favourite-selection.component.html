@@ -1,8 +1,7 @@
 <mat-expansion-panel *ngIf="this.isAuthenticated" class="favourite-selection">
   <mat-expansion-panel-header class="favourite-selection__header">
-    <mat-panel-title> Favoriten</mat-panel-title>
-    <!-- Todo: create a generic loading-view component -->
-    <mat-progress-bar *ngIf="this.loadingState !== 'loaded'" class="favourite-selection__header__loader" mode="query"></mat-progress-bar>
+    <mat-panel-title>Favoriten</mat-panel-title>
+    <loading-and-process-bar [loadingState]="this.loadingState" class="favourite-selection__header__loader"></loading-and-process-bar>
   </mat-expansion-panel-header>
   <ng-container *ngFor="let favourite of this.favourites">
     <mat-card class="favourite-selection__favourite">

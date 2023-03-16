@@ -77,14 +77,14 @@
         </ng-template>
       </mat-expansion-panel>
     </ng-container>
-    <button
-      (click)="this.toggleLegend()"
-      *ngIf="activeMapItems.length !== 0"
-      class="active-map-items__content__legend"
-      color="primary"
-      mat-raised-button
-    >
-      Legende
-    </button>
   </mat-accordion>
+  <button
+    (click)="this.toggleLegend()"
+    *ngIf="activeMapItems.length !== 0"
+    class="active-map-items__content__legend"
+    color="primary"
+    mat-raised-button
+  >
+    Legende
+  </button>
 </mat-card>

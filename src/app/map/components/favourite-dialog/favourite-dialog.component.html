@@ -3,9 +3,11 @@
   <mat-form-field appearance="fill" class="favourite-dialog__content__form">
     <mat-label>Name des Favoriten</mat-label>
     <input [formControl]="this.nameFormControl" id="name" matInput />
-    <mat-error>Geben Sie einen gültigen, nicht leeren Namen ein.</mat-error>
+    <mat-error *ngIf="this.nameFormControl.invalid && (this.nameFormControl.dirty || this.nameFormControl.touched)"
+      >Geben Sie einen gültigen, nicht leeren und mind. 5 Zeichen langen Namen ein.</mat-error
+    >
   </mat-form-field>
-  <p class="mat-caption" *ngIf="this.saveProgress === 'error'">Beim Speichern ist etwas schief gelaufen.</p>
+  <p *ngIf="this.saveProgress === 'error'" class="mat-caption">Beim Speichern ist etwas schief gelaufen.</p>
 </div>
 <div mat-dialog-actions>
   <button (click)="this.abort()" [disabled]="this.saveProgress === 'saving'" mat-button>Abbrechen</button>
@@ -14,4 +16,4 @@
   </button>
 </div>
 <mat-progress-bar *ngIf="this.saveProgress === 'saving'" mode="query"></mat-progress-bar>
-<mat-progress-bar *ngIf="this.saveProgress === 'error'" mode="determinate" value="100" color="warn"></mat-progress-bar>
+<mat-progress-bar *ngIf="this.saveProgress === 'error'" color="warn" mode="determinate" value="100"></mat-progress-bar>

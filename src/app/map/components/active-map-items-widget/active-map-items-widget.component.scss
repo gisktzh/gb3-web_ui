@@ -103,10 +103,12 @@
         visibility: visible;
       }
     }
+  }
 
-    .active-map-items__content__legend {
-      width: 80%;
-      margin: 8px;
-    }
+  .active-map-items__content__legend {
+    width: 80%;
+    margin: 8px;
+    min-height: 36px;
+    align-self: center;
   }
 }

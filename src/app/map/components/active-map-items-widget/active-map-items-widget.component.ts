@@ -3,7 +3,7 @@ import {CdkDrag, CdkDragDrop} from '@angular/cdk/drag-drop';
 import {Store} from '@ngrx/store';
 import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
 import {selectActiveMapItems} from '../../../state/map/reducers/active-map-item.reducer';
-import {Subscription} from 'rxjs';
+import {Subscription, tap} from 'rxjs';
 import {ActiveMapItem} from '../../models/active-map-item.model';
 import {LegendActions} from '../../../state/map/actions/legend.actions';
 import {slideInOutAnimation} from '../../../shared/animations/slideInOut.animation';
@@ -75,14 +75,22 @@ export class ActiveMapItemsWidgetComponent implements OnInit, OnDestroy {
 
   private initSubscriptions() {
     this.subscription.add(
-      this.activeMapItems$.subscribe((currentActiveMapItems) => {
-        this._activeMapItems = currentActiveMapItems;
-      })
+      this.activeMapItems$
+        .pipe(
+          tap((currentActiveMapItems) => {
+            this._activeMapItems = currentActiveMapItems;
+          })
+        )
+        .subscribe()
     );
     this.subscription.add(
-      this.isAuthenticated$.subscribe((isAuthenticated) => {
-        this.isAuthenticated = isAuthenticated;
-      })
+      this.isAuthenticated$
+        .pipe(
+          tap((isAuthenticated) => {
+            this.isAuthenticated = isAuthenticated;
+          })
+        )
+        .subscribe()
     );
   }
 }

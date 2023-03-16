@@ -43,7 +43,6 @@ import {FavouriteSelectionComponent} from './components/map-data-catalogue/favou
     MapControlsComponent,
     BasemapSelectorComponent,
     TimeSliderWidgetComponent,
-    BasemapSelectorComponent,
     FavouriteDialogComponent,
     FavouriteSelectionComponent
   ],

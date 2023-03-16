@@ -1,9 +1,11 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MatDialogRef} from '@angular/material/dialog';
-import {FormControl, Validators} from '@angular/forms';
+import {FormControl, ValidatorFn, Validators} from '@angular/forms';
 import {FavouritesService} from '../../services/favourites.service';
 import {EMPTY, Subscription, tap} from 'rxjs';
 import {catchError} from 'rxjs/operators';
+
+const FAVOURITE_NAME_CONSTRAINTS: ValidatorFn[] = [Validators.minLength(5), Validators.required, Validators.pattern(/[\S]/)];
 
 @Component({
   selector: 'favourite-dialog',
@@ -29,7 +31,7 @@ export class FavouriteDialogComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit() {
-    this.nameFormControl = new FormControl('', [Validators.min(5), Validators.required, Validators.pattern(/[\S]/)]);
+    this.nameFormControl = new FormControl('', FAVOURITE_NAME_CONSTRAINTS);
   }
 
   public abort() {
