@@ -18,8 +18,7 @@
     {
       "matchManagers": ["npm"],
       "matchUpdateTypes": ["minor", "patch", "pin", "digest", "lockFileMaintenance", "bump"],
-      "automerge": true,
-      "azureAutoApprove": true
+      "automerge": true
     },
     {
       "matchManagers": ["npm"],
