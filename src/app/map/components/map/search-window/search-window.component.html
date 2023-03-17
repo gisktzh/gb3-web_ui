@@ -1,0 +1,13 @@
+<div class="search-window__searchbar">
+    <input class="search-window__input" placeholder="Suchen nach Adressen, Orten, Karten und mehr..."
+           (input)="search($event)">
+    <mat-icon>search</mat-icon>
+</div>
+<div *ngIf="searchResults.length > 0" class="search-window__results">
+  <h3 class="search-window__header">Orte / Adressen</h3>
+  <mat-card *ngFor="let result of searchResults" class="search-window__element">
+    <mat-card-content class="search-window__element-content">{{ result }}</mat-card-content>
+    <mat-divider></mat-divider>
+  </mat-card>
+</div>
+
