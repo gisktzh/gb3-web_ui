@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {TimeSliderConfiguration, TimeSliderLayerSource} from '../../shared/interfaces/topic.interface';
 import {TimeSliderService} from '../interfaces/time-slider.service';
-import {debounceTime, Observable, ReplaySubject} from 'rxjs';
+import {debounceTime, filter, Observable, Subject} from 'rxjs';
 import {TimeExtent} from '../interfaces/time-extent.interface';
 import * as dayjs from 'dayjs';
 import {ManipulateType} from 'dayjs';
@@ -10,6 +10,8 @@ import {Duration} from 'dayjs/plugin/duration';
 import {ActiveMapItem} from '../models/active-map-item.model';
 import {esriReactiveUtils, EsriTimeExtent, EsriTimeIntervalUnit, EsriTimeSlider, EsriTimeSliderMode} from '../external/esri.module';
 import {TimeExtentUtil} from '../../shared/utils/time-extent.util';
+import {map} from 'rxjs/operators';
+import {MapConstants} from '../../shared/constants/map.constants';
 
 dayjs.extend(duration);
 
@@ -17,11 +19,10 @@ dayjs.extend(duration);
   providedIn: 'root'
 })
 export class EsriTimeSliderService implements TimeSliderService {
-  private readonly timeExtentChanged$: ReplaySubject<TimeExtent> = new ReplaySubject<TimeExtent>(1);
-  public readonly timeExtentChanged: Observable<TimeExtent> = this.timeExtentChanged$
-    .asObservable()
-    // add a debounce time as every step of the time slider creates a change of state which then creates a request to the server
-    .pipe(debounceTime(200));
+  private readonly timeExtentChanged$: Subject<{activeMapItemId: string; timeExtent: TimeExtent}> = new Subject<{
+    activeMapItemId: string;
+    timeExtent: TimeExtent;
+  }>();
 
   public assignTimeSliderWidget(activeMapItem: ActiveMapItem, container: HTMLDivElement) {
     if (!activeMapItem.timeSliderConfiguration) {
@@ -54,11 +55,20 @@ export class EsriTimeSliderService implements TimeSliderService {
     esriReactiveUtils.watch(
       () => timeSlider.timeExtent,
       (newValue: __esri.TimeExtent | undefined, oldValue: __esri.TimeExtent | undefined) =>
-        this.onTimeExtentChanged(newValue, oldValue, timeSlider, timeSliderConfig)
+        this.onTimeExtentChanged(newValue, oldValue, activeMapItem.id, timeSlider, timeSliderConfig)
     );
 
     // emit initial value
-    this.timeExtentChanged$.next(activeMapItem.timeSliderExtent);
+    this.timeExtentChanged$.next({activeMapItemId: activeMapItem.id, timeExtent: activeMapItem.timeSliderExtent});
+  }
+
+  public watchTimeExtent(activeMapItemId: string): Observable<TimeExtent> {
+    return this.timeExtentChanged$.asObservable().pipe(
+      filter((value) => value.activeMapItemId === activeMapItemId),
+      // add a debounce time as every step of the time slider creates a change of state which then creates a request to the server
+      debounceTime(MapConstants.TIME_SLIDER_CHANGE_DEBOUNCE_TIME_IN_MS),
+      map((value) => value.timeExtent)
+    );
   }
 
   public createValidTimeExtent(timeSliderConfig: TimeSliderConfiguration, newValue: TimeExtent, oldValue?: TimeExtent): TimeExtent {
@@ -192,12 +202,14 @@ export class EsriTimeSliderService implements TimeSliderService {
    * Handles the new time extent value by validating it against the time slider configuration limits first and then emitting that corrected value.
    * @param newValue The new time extent value; this is not necessarily a valid time extent as it can be outside the limitations.
    * @param oldValue The old time extent value.
+   * @param activeMapItemId The unique identification of the corresponding active map item.
    * @param timeSlider The corresponding time slider; necessary if the new time extent has to be corrected.
    * @param timeSliderConfig The time slider configuration containing the limitations and rules for this time slider.
    */
   private onTimeExtentChanged(
     newValue: __esri.TimeExtent | undefined,
     oldValue: __esri.TimeExtent | undefined,
+    activeMapItemId: string,
     timeSlider: __esri.TimeSlider,
     timeSliderConfig: TimeSliderConfiguration
   ) {
@@ -217,7 +229,7 @@ export class EsriTimeSliderService implements TimeSliderService {
     }
 
     if (!oldValue || Math.abs(dayjs(oldValue.start).diff(timeExtent.start)) > 0 || Math.abs(dayjs(oldValue.end).diff(timeExtent.end)) > 0) {
-      this.timeExtentChanged$.next(timeExtent);
+      this.timeExtentChanged$.next({activeMapItemId: activeMapItemId, timeExtent: timeExtent});
     }
   }
 
