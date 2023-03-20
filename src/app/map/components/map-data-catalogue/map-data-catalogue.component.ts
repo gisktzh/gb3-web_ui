@@ -7,6 +7,7 @@ import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.a
 import {LoadingState} from '../../../shared/types/loading-state';
 import {ActiveMapItem} from '../../models/active-map-item.model';
 import {Map, MapLayer, Topic} from '../../../shared/interfaces/topic.interface';
+import {selectFilteredLayerCatalog} from '../../../state/map/selectors/filtered-layer-catalog.selector';
 
 @Component({
   selector: 'map-data-catalogue',
@@ -18,7 +19,7 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy {
   public loadingState: LoadingState = 'undefined';
 
   private readonly loadingState$ = this.store.select(selectLoadingState);
-  private readonly topics$ = this.store.select(selectLayerCatalogItems);
+  private readonly topics$ = this.store.select(selectFilteredLayerCatalog);
   private readonly subscriptions = new Subscription();
 
   constructor(private readonly store: Store) {}
@@ -38,6 +39,14 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy {
 
   public addActiveLayer(map: Map, layer: MapLayer) {
     this.addActiveItem(new ActiveMapItem(map, layer));
+  }
+
+  public trackByTopicTitle(index: number, item: Topic) {
+    return item.title;
+  }
+
+  public trackByMapId(index: number, item: Map) {
+    return item.id;
   }
 
   private addActiveItem(activeMapItem: ActiveMapItem) {
@@ -65,5 +74,9 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy {
         )
         .subscribe()
     );
+  }
+
+  public filterCatalog(value: any) {
+    this.store.dispatch(LayerCatalogActions.filterCatalog({filterString: value.value}));
   }
 }

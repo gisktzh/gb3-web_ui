@@ -7,11 +7,13 @@ export const layerCatalogFeatureKey = 'layerCatalog';
 
 export interface LayerCatalogState extends HasLoadingState {
   layerCatalogItems: Topic[];
+  filterString: string;
 }
 
 export const initialState: LayerCatalogState = {
   layerCatalogItems: [],
-  loadingState: 'undefined'
+  loadingState: 'undefined',
+  filterString: ''
 };
 
 export const layerCatalogFeature = createFeature({
@@ -29,8 +31,11 @@ export const layerCatalogFeature = createFeature({
     }),
     on(LayerCatalogActions.clearLayerCatalog, (state): LayerCatalogState => {
       return {...state, layerCatalogItems: []};
+    }),
+    on(LayerCatalogActions.filterCatalog, (state, {filterString}): LayerCatalogState => {
+      return {...state, filterString};
     })
   )
 });
 
-export const {name, reducer, selectLayerCatalogItems, selectLoadingState} = layerCatalogFeature;
+export const {name, reducer, selectFilterString, selectLayerCatalogItems, selectLoadingState} = layerCatalogFeature;

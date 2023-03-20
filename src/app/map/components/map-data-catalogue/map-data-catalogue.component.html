@@ -4,16 +4,17 @@
       <mat-card-title>Verfügbare Karten nach Topic</mat-card-title>
     </div>
   </mat-card-header>
+  <input type="text" (keyup)="this.filterCatalog($event.target)" />
   <loading-and-process-bar [loadingState]="this.loadingState"></loading-and-process-bar>
   <mat-accordion *ngIf="this.loadingState === 'loaded'" class="map-catalogue__content" multi="true" displayMode="flat">
-    <ng-container *ngFor="let topic of topics">
+    <ng-container *ngFor="let topic of topics; trackBy: trackByTopicTitle">
       <mat-expansion-panel>
         <mat-expansion-panel-header>
           <p>{{ topic.title }}</p>
         </mat-expansion-panel-header>
         <!-- Expansion panel content -->
         <ng-template matExpansionPanelContent>
-          <ng-container *ngFor="let map of topic.maps">
+          <ng-container *ngFor="let map of topic.maps; trackBy: trackByMapId">
             <mat-expansion-panel hideToggle="true" #mapExpansionPanel>
               <mat-expansion-panel-header (click)="mapExpansionPanel.toggle()" class="map__header">
                 <button mat-icon-button (click)="addActiveMap(map)" color="primary" data-test-id="add-active-map">
@@ -36,14 +37,14 @@
                   <mat-icon>arrow_drop_down</mat-icon>
                 </button>
                 <img class="map__header__image" [src]="map.icon" [alt]="map.title" />
-                <p class="map__header__title" matTooltip="{{ map.title }}">{{ map.title }}</p>
+                <p class="map__header__title" matTooltip="{{ map.title }}" [innerHTML]="map.title"></p>
               </mat-expansion-panel-header>
               <!-- Expansion panel content -->
               <ng-template matExpansionPanelContent>
                 <ng-container *ngFor="let layer of map.layers">
                   <div class="layer" *ngIf="!layer.isHidden">
                     <mat-icon class="layer__icon">layers</mat-icon>
-                    <p class="layer__title" matTooltip="{{ layer.title }}">{{ layer.title }}</p>
+                    <p class="layer__title" matTooltip="{{ layer.title }}" [innerHTML]="layer.title"></p>
                     <button mat-icon-button (click)="addActiveLayer(map, layer)"><mat-icon>add</mat-icon></button>
                   </div>
                 </ng-container>
