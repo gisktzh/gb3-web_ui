@@ -1,7 +1,5 @@
 import {Injectable} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {MatDialog} from '@angular/material/dialog';
-import {FavouriteDialogComponent} from '../components/favourite-dialog/favourite-dialog.component';
 import {Gb3FavouritesService} from '../../shared/services/apis/gb3/gb3-favourites.service';
 import {Observable, tap} from 'rxjs';
 import {selectActiveMapItems} from '../../state/map/reducers/active-map-item.reducer';
@@ -20,16 +18,8 @@ export class FavouritesService {
   private readonly availableMaps$ = this.store.select(selectAvailableMaps);
   private availableMaps: Map[] = [];
 
-  constructor(
-    private readonly store: Store,
-    private readonly dialogService: MatDialog,
-    private readonly gb3FavouritesService: Gb3FavouritesService
-  ) {
+  constructor(private readonly store: Store, private readonly gb3FavouritesService: Gb3FavouritesService) {
     this.initSubscriptions();
-  }
-
-  public showFavouriteDialog() {
-    this.dialogService.open(FavouriteDialogComponent);
   }
 
   public createFavourite(title: string): Observable<boolean> {

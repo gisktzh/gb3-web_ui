@@ -8,7 +8,9 @@ import {ActiveMapItem} from '../../models/active-map-item.model';
 import {LegendActions} from '../../../state/map/actions/legend.actions';
 import {slideInOutAnimation} from '../../../shared/animations/slideInOut.animation';
 import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.reducer';
-import {FavouritesService} from '../../services/favourites.service';
+import {MatDialog} from '@angular/material/dialog';
+import {FavouriteDialogComponent} from '../favourite-dialog/favourite-dialog.component';
+import {FavouriteListActions} from 'src/app/state/map/actions/favourite-list.actions';
 
 const favouriteHelperMessages = {
   noMapsAdded: 'Fügen Sie mindestens 1 Karte hinzu, um einen Favoriten anzulegen.',
@@ -29,7 +31,7 @@ export class ActiveMapItemsWidgetComponent implements OnInit, OnDestroy {
   private readonly subscription: Subscription = new Subscription();
   private _activeMapItems: ActiveMapItem[] = [];
 
-  constructor(private readonly store: Store, private readonly favouritesService: FavouritesService) {}
+  constructor(private readonly store: Store, private readonly dialogService: MatDialog) {}
 
   public get activeMapItems(): ActiveMapItem[] {
     return this._activeMapItems;
@@ -69,8 +71,20 @@ export class ActiveMapItemsWidgetComponent implements OnInit, OnDestroy {
     this.store.dispatch(LegendActions.showLegend());
   }
 
-  public createFavourite() {
-    this.favouritesService.showFavouriteDialog();
+  public showFavouriteDialog() {
+    const dialogRef = this.dialogService.open<FavouriteDialogComponent, undefined, boolean>(FavouriteDialogComponent);
+    this.subscription.add(
+      dialogRef
+        .afterClosed()
+        .pipe(
+          tap((isAborted) => {
+            if (!isAborted) {
+              this.store.dispatch(FavouriteListActions.loadFavourites());
+            }
+          })
+        )
+        .subscribe()
+    );
   }
 
   private initSubscriptions() {

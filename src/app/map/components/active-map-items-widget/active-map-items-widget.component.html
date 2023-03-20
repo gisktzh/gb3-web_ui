@@ -16,7 +16,7 @@
             : this.favouriteHelperMessages.notAuthenticated
         "
       >
-        <button (click)="createFavourite()" [disabled]="activeMapItems.length === 0 || !this.isAuthenticated" mat-icon-button>
+        <button (click)="showFavouriteDialog()" [disabled]="activeMapItems.length === 0 || !this.isAuthenticated" mat-icon-button>
           <mat-icon>star_outlined</mat-icon>
         </button>
       </span>

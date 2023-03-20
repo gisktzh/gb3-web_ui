@@ -38,7 +38,7 @@ export class FavouriteDialogComponent implements OnInit, OnDestroy {
   }
 
   public abort() {
-    this.close();
+    this.close(true);
   }
 
   public save() {
@@ -50,7 +50,6 @@ export class FavouriteDialogComponent implements OnInit, OnDestroy {
           .createFavourite(this.name)
           .pipe(
             tap(() => {
-              this.store.dispatch(FavouriteListActions.loadFavourites());
               this.close();
             }),
             catchError(() => {
@@ -63,7 +62,7 @@ export class FavouriteDialogComponent implements OnInit, OnDestroy {
     }
   }
 
-  private close() {
-    this.dialogRef.close();
+  private close(isAborted: boolean = false) {
+    this.dialogRef.close(isAborted);
   }
 }
