@@ -3,7 +3,9 @@
   "ignoreDeps": ["typescript", "zone.js"],
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "reviewers": ["lukas.merz@ebp.ch", "sebastian.wendland@ebp.ch"],
+  "ignoreReviewers": ["s-ch-Renovate-TechnicalUser@ebp.ch"],
   "platformAutomerge": true,
+  "azureAutoApprove": false,
   "packageRules": [
     {
       "matchManagers": ["npm"],
@@ -43,8 +45,7 @@
       "matchManagers": ["npm"],
       "groupName": "arcgis",
       "matchPackagePrefixes": ["@arcgis/"],
-      "automerge": false,
-      "azureAutoApprove": false
+      "automerge": false
     },
     {
       "matchManagers": ["npm"],
