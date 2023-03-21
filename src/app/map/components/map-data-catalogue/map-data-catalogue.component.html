@@ -5,7 +5,7 @@
     </div>
   </mat-card-header>
   <div class="map-catalogue__filter">
-    <input (keyup)="this.filterCatalog($event.target)" class="map-catalogue__filter__input" type="text" />
+    <input class="map-catalogue__filter__input" type="text" placeholder="Karten und Layer filtern" #filterInput />
     <mat-icon class="map-catalogue__filter__input-icon">search</mat-icon>
   </div>
   <loading-and-process-bar [loadingState]="this.loadingState"></loading-and-process-bar>
