@@ -5,9 +5,12 @@
     </div>
   </mat-card-header>
   <div class="map-catalogue__filter">
-    <input class="map-catalogue__filter__input" type="text" placeholder="Karten und Layer filtern" #filterInput />
+    <input #filterInput class="map-catalogue__filter__input" placeholder="Karten und Layer filtern" type="text" />
     <mat-icon class="map-catalogue__filter__input-icon">search</mat-icon>
   </div>
+  <p *ngIf="this.filterString && this.topics.length === 0" class="map-catalogue__filter-no-results mat-body-2">
+    Keine Resultate zu diesem Filter.
+  </p>
   <loading-and-process-bar [loadingState]="this.loadingState"></loading-and-process-bar>
   <mat-accordion *ngIf="this.loadingState === 'loaded'" class="map-catalogue__content" displayMode="flat" multi="true">
     <ng-container *ngFor="let topic of topics; trackBy: trackByTopicTitle">
@@ -28,14 +31,14 @@
                 <button
                   (click)="mapExpansionPanel.toggle()"
                   [attr.data-test-id]="mapExpansionPanel.expanded ? 'hide-layers-of-the-map' : 'show-layers-of-the-map'"
-                  mat-icon-button
                   [disabled]="map.layers.length === 0"
+                  mat-icon-button
                 >
                   <mat-icon
                     [fontIcon]="mapExpansionPanel.expanded ? 'arrow_drop_down' : 'arrow_right'"
+                    [matBadgeDisabled]="map.layers.length === 0"
                     [matBadgeHidden]="!this.filterString"
                     [matBadge]="map.layers.length"
-                    [matBadgeDisabled]="map.layers.length === 0"
                     matBadgeOverlap
                   ></mat-icon>
                 </button>

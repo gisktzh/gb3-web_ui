@@ -19,7 +19,8 @@
     }
   }
 
-  .map-catalogue__content-wrapper {
+  .map-catalogue__filter-no-results {
+    align-self: center;
   }
 
   .map-catalogue__filter {
@@ -32,6 +33,7 @@
       border: 3px solid grey;
       margin: 5px;
       outline: none;
+      display: block;
     }
 
     .map-catalogue__filter__input:focus {
