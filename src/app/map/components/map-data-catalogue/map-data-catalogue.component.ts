@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {selectLayerCatalogItems, selectLoadingState} from '../../../state/map/reducers/layer-catalog.reducer';
+import {selectFilterString, selectLayerCatalogItems, selectLoadingState} from '../../../state/map/reducers/layer-catalog.reducer';
 import {LayerCatalogActions} from '../../../state/map/actions/layer-catalog.actions';
 import {Subscription, tap} from 'rxjs';
 import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
@@ -17,7 +17,9 @@ import {selectFilteredLayerCatalog} from '../../../state/map/selectors/filtered-
 export class MapDataCatalogueComponent implements OnInit, OnDestroy {
   public topics: Topic[] = [];
   public loadingState: LoadingState = 'undefined';
+  public filterString: string = '';
 
+  private readonly filterString$ = this.store.select(selectFilterString);
   private readonly loadingState$ = this.store.select(selectLoadingState);
   private readonly topics$ = this.store.select(selectFilteredLayerCatalog);
   private readonly subscriptions = new Subscription();
@@ -70,6 +72,16 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy {
         .pipe(
           tap(async (value) => {
             this.loadingState = value;
+          })
+        )
+        .subscribe()
+    );
+
+    this.subscriptions.add(
+      this.filterString$
+        .pipe(
+          tap(async (value) => {
+            this.filterString = value;
           })
         )
         .subscribe()

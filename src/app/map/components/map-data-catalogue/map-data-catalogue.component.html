@@ -4,7 +4,10 @@
       <mat-card-title>Verfügbare Karten nach Topic</mat-card-title>
     </div>
   </mat-card-header>
-  <input type="text" (keyup)="this.filterCatalog($event.target)" />
+  <div class="map-catalogue__filter">
+    <input class="map-catalogue__filter__input" type="text" (keyup)="this.filterCatalog($event.target)" />
+    <mat-icon class="map-catalogue__filter__input-icon">search</mat-icon>
+  </div>
   <loading-and-process-bar [loadingState]="this.loadingState"></loading-and-process-bar>
   <mat-accordion *ngIf="this.loadingState === 'loaded'" class="map-catalogue__content" multi="true" displayMode="flat">
     <ng-container *ngFor="let topic of topics; trackBy: trackByTopicTitle">
@@ -37,14 +40,22 @@
                   <mat-icon>arrow_drop_down</mat-icon>
                 </button>
                 <img class="map__header__image" [src]="map.icon" [alt]="map.title" />
-                <p class="map__header__title" matTooltip="{{ map.title }}" [innerHTML]="map.title"></p>
+                <p
+                  class="map__header__title"
+                  matTooltip="{{ map.title }}"
+                  [innerHTML]="map.title | highlightSearchQuery : this.filterString"
+                ></p>
               </mat-expansion-panel-header>
               <!-- Expansion panel content -->
               <ng-template matExpansionPanelContent>
                 <ng-container *ngFor="let layer of map.layers">
                   <div class="layer" *ngIf="!layer.isHidden">
                     <mat-icon class="layer__icon">layers</mat-icon>
-                    <p class="layer__title" matTooltip="{{ layer.title }}" [innerHTML]="layer.title"></p>
+                    <p
+                      class="layer__title"
+                      matTooltip="{{ layer.title }}"
+                      [innerHTML]="layer.title | highlightSearchQuery : this.filterString"
+                    ></p>
                     <button mat-icon-button (click)="addActiveLayer(map, layer)"><mat-icon>add</mat-icon></button>
                   </div>
                 </ng-container>
