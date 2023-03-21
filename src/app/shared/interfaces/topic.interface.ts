@@ -1,5 +1,6 @@
 import {HasVisibility} from './has-visibility.interface';
 import {HasHidingState} from './has-hiding-state.interface';
+import {HasActiveState} from './has-active-state.interface';
 
 export interface Topic {
   title: string;
@@ -114,7 +115,7 @@ export interface FilterConfiguration {
   filterValues: FilterValue[];
 }
 
-export interface FilterValue {
+export interface FilterValue extends HasActiveState {
   name: string;
   values: string[];
 }

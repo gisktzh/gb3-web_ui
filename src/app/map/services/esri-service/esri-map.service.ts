@@ -41,9 +41,13 @@ import {
   EsriWMSLayer,
   EsriWMSSublayer
 } from '../../external/esri.module';
-import {TimeSliderConfiguration, TimeSliderLayerSource, TimeSliderParameterSource} from '../../../shared/interfaces/topic.interface';
+import {
+  FilterConfiguration,
+  TimeSliderConfiguration,
+  TimeSliderLayerSource,
+  TimeSliderParameterSource
+} from '../../../shared/interfaces/topic.interface';
 import {TimeExtent} from '../../interfaces/time-extent.interface';
-import {AttributeFilter} from '../../interfaces/attribute-filter.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -172,8 +176,6 @@ export class EsriMapService implements MapService {
       // apply initial time slider settings
       this.setEsriTimeSliderExtent(mapItem.timeSliderExtent, mapItem, esriLayer);
     }
-    if (mapItem.attributeFilters) {
-    }
     this.attachLayerListeners(esriLayer);
     // index is the inverse position - the lowest index has the lowest visibility (it's on the bottom) while the lowest position has the highest visibility
     const index = this.mapView.map.layers.length - position;
@@ -246,24 +248,20 @@ export class EsriMapService implements MapService {
     this.setEsriTimeSliderExtent(timeExtent, mapItem, esriLayer);
   }
 
-  public setAttributeFilters(attributeFilters: AttributeFilter[], mapItem: ActiveMapItem) {
+  public setAttributeFilters(filterConfigurations: FilterConfiguration[], mapItem: ActiveMapItem) {
     const esriLayer = this.findEsriLayer(mapItem.id);
-    if (esriLayer && esriLayer instanceof EsriWMSLayer && mapItem.filterConfigurations) {
+    if (esriLayer && esriLayer instanceof EsriWMSLayer) {
       const customLayerParameters: {[index: string]: string} = esriLayer.customLayerParameters ?? {};
-      mapItem.filterConfigurations.forEach((filterConfig) => {
-        const attributeFilter = attributeFilters.find((mf) => mf.parameter === filterConfig.parameter);
-        if (attributeFilter) {
-          const filterValues = filterConfig.filterValues
-            .map((fv) => {
-              const attributeFilterValue = attributeFilter.attributeFilterValues.find((mfv) => mfv.name === fv.name);
-              // all filter values must be sent in the correct order; the active filtered ones as an empty string
-              const values: string[] = attributeFilterValue && attributeFilterValue.isActive ? fv.values.map(() => '') : fv.values;
-              // all filter values (empty or not) must be enclosed by single quotation marks and separated by commas
-              return values.map((v) => `'${v}'`).join(',');
-            })
-            .join(',');
-          customLayerParameters[filterConfig.parameter] = filterValues;
-        }
+      filterConfigurations.forEach((filterConfiguration) => {
+        const activeFilterValues = filterConfiguration.filterValues
+          .map((filterValue) => {
+            // all filter values must be sent in the correct order; the active filtered ones as an empty string
+            const values: string[] = filterValue.isActive ? filterValue.values.map(() => '') : filterValue.values;
+            // all filter values (empty or not) must be enclosed by single quotation marks and separated by commas
+            return values.map((v) => `'${v}'`).join(',');
+          })
+          .join(',');
+        customLayerParameters[filterConfiguration.parameter] = activeFilterValues;
       });
       esriLayer.customLayerParameters = customLayerParameters;
       esriLayer.refresh();

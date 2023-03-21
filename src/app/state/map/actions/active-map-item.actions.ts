@@ -3,7 +3,6 @@ import {ActiveMapItem} from '../../../map/models/active-map-item.model';
 import {LoadingState} from '../../../shared/types/loading-state';
 import {ViewProcessState} from '../../../shared/types/view-process-state';
 import {TimeExtent} from '../../../map/interfaces/time-extent.interface';
-import {AttributeFilter} from '../../../map/interfaces/attribute-filter.interface';
 
 export const ActiveMapItemActions = createActionGroup({
   source: 'ActiveMapItem',
@@ -19,6 +18,11 @@ export const ActiveMapItemActions = createActionGroup({
     'Reorder Active Map Item': props<{previousPosition: number; currentPosition: number}>(),
     'Reorder Sublayer': props<{activeMapItem: ActiveMapItem; previousPosition: number; currentPosition: number}>(),
     'Set Time Slider Extent': props<{timeExtent: TimeExtent; activeMapItem: ActiveMapItem}>(),
-    'Set Attribute Filters': props<{attributeFilters: AttributeFilter[]; activeMapItem: ActiveMapItem}>()
+    'Set Attribute Filter Value State': props<{
+      isFilterValueActive: boolean;
+      filterValueName: string;
+      attributeFilterParameter: string;
+      activeMapItem: ActiveMapItem;
+    }>()
   }
 });

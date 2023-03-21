@@ -106,8 +106,8 @@ export class Gb3TopicsService extends Gb3ApiService {
                   wmsSort: layer.wms_sort,
                   tocSort: layer.toc_sort,
                   initiallyVisible: layer.initially_visible,
-                  visible: layer.initially_visible,
                   permissionMissing: layer.permission_missing,
+                  visible: layer.initially_visible,
                   isHidden: false
                 };
               }),
@@ -120,7 +120,18 @@ export class Gb3TopicsService extends Gb3ApiService {
                       topic.timesliderConfiguration.sourceType
                     )
                   }
-                : undefined
+                : undefined,
+              filterConfigurations: topic.filterConfigurations?.map((filterConfiguration) => {
+                return {
+                  ...filterConfiguration,
+                  filterValues: filterConfiguration.filterValues.map((filterValue) => {
+                    return {
+                      ...filterValue,
+                      isActive: false
+                    };
+                  })
+                };
+              })
             };
           })
         };
