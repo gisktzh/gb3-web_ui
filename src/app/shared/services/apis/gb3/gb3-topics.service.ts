@@ -6,6 +6,7 @@ import {QueryLayer} from '../../../interfaces/query-layer.interface';
 import {QueryLegend} from '../../../interfaces/query-legend.interface';
 import {LegendResponse} from '../../../interfaces/legend.interface';
 import {
+  FilterConfiguration,
   Map,
   TimeSliderLayerSource,
   TimeSliderParameterSource,
@@ -50,6 +51,25 @@ export class Gb3TopicsService extends Gb3ApiService {
     }
 
     return url.toString();
+  }
+
+  /**
+   * Transforms the given filter configurations to URL parameters (name, value)
+   */
+  public transformFilterConfigurationToParameters(filterConfigurations: FilterConfiguration[]): {name: string; value: string}[] {
+    const attributeFilterParameters: {name: string; value: string}[] = [];
+    filterConfigurations.forEach((filterConfiguration) => {
+      const parameterValue = filterConfiguration.filterValues
+        .map((filterValue) => {
+          // all filter values must be sent in the correct order; the active filtered ones as an empty string
+          const values: string[] = filterValue.isActive ? filterValue.values.map(() => '') : filterValue.values;
+          // all filter values (empty or not) must be enclosed by single quotation marks and separated by commas
+          return values.map((v) => `'${v}'`).join(',');
+        })
+        .join(',');
+      attributeFilterParameters.push({name: filterConfiguration.parameter, value: parameterValue});
+    });
+    return attributeFilterParameters;
   }
 
   /**
@@ -148,6 +168,7 @@ export class Gb3TopicsService extends Gb3ApiService {
   }
 
   private transformTimeSliderConfigurationSource(
+    // the following typing for `source` is used to extract a subtype of the generated interface `TopicsListData`
     source: TopicsListData['categories'][0]['topics'][0]['timesliderConfiguration']['source'],
     sourceType: string
   ): TimeSliderParameterSource | TimeSliderLayerSource {

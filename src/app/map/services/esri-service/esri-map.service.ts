@@ -41,12 +41,7 @@ import {
   EsriWMSLayer,
   EsriWMSSublayer
 } from '../../external/esri.module';
-import {
-  FilterConfiguration,
-  TimeSliderConfiguration,
-  TimeSliderLayerSource,
-  TimeSliderParameterSource
-} from '../../../shared/interfaces/topic.interface';
+import {TimeSliderConfiguration, TimeSliderLayerSource, TimeSliderParameterSource} from '../../../shared/interfaces/topic.interface';
 import {TimeExtent} from '../../interfaces/time-extent.interface';
 
 @Injectable({
@@ -248,20 +243,12 @@ export class EsriMapService implements MapService {
     this.setEsriTimeSliderExtent(timeExtent, mapItem, esriLayer);
   }
 
-  public setAttributeFilters(filterConfigurations: FilterConfiguration[], mapItem: ActiveMapItem) {
+  public setAttributeFilters(attributeFilterParameters: {name: string; value: string}[], mapItem: ActiveMapItem) {
     const esriLayer = this.findEsriLayer(mapItem.id);
     if (esriLayer && esriLayer instanceof EsriWMSLayer) {
       const customLayerParameters: {[index: string]: string} = esriLayer.customLayerParameters ?? {};
-      filterConfigurations.forEach((filterConfiguration) => {
-        const activeFilterValues = filterConfiguration.filterValues
-          .map((filterValue) => {
-            // all filter values must be sent in the correct order; the active filtered ones as an empty string
-            const values: string[] = filterValue.isActive ? filterValue.values.map(() => '') : filterValue.values;
-            // all filter values (empty or not) must be enclosed by single quotation marks and separated by commas
-            return values.map((v) => `'${v}'`).join(',');
-          })
-          .join(',');
-        customLayerParameters[filterConfiguration.parameter] = activeFilterValues;
+      attributeFilterParameters.forEach((attributeFilterParameter) => {
+        customLayerParameters[attributeFilterParameter.name] = attributeFilterParameter.value;
       });
       esriLayer.customLayerParameters = customLayerParameters;
       esriLayer.refresh();

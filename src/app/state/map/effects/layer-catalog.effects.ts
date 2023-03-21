@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {of, switchMap} from 'rxjs';
+import {EMPTY, switchMap} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
 import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
 import {LayerCatalogActions} from '../actions/layer-catalog.actions';
@@ -20,7 +20,7 @@ export class LayerCatalogEffects {
             if (!environment.production) {
               console.error(err);
             }
-            return of(LayerCatalogActions.failedLoadingCatalog()); // todo error handling
+            return EMPTY; // todo error handling
           })
         )
       )

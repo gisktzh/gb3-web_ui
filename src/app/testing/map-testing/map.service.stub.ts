@@ -3,7 +3,6 @@ import {Geometry} from 'geojson';
 import {ActiveMapItem} from '../../map/models/active-map-item.model';
 import {ZoomType} from '../../shared/types/zoom-type';
 import {TimeExtent} from '../../map/interfaces/time-extent.interface';
-import {FilterConfiguration} from '../../shared/interfaces/topic.interface';
 
 export class MapServiceStub implements MapService {
   public addHighlightGeometry(geometry: Geometry): void {}
@@ -38,5 +37,5 @@ export class MapServiceStub implements MapService {
 
   public setTimeSliderExtent(timeSliderExtent: TimeExtent, mapItem: ActiveMapItem): void {}
 
-  public setAttributeFilters(filterConfigurations: FilterConfiguration[], mapItem: ActiveMapItem): void {}
+  public setAttributeFilters(attributeFilterParameters: {name: string; value: string}[], mapItem: ActiveMapItem): void {}
 }

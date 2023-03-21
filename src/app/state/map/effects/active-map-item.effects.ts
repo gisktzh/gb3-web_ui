@@ -6,6 +6,7 @@ import {MAP_SERVICE} from '../../../app.module';
 import {MapService} from '../../../map/interfaces/map.service';
 import {selectActiveMapItems} from '../reducers/active-map-item.reducer';
 import {Store} from '@ngrx/store';
+import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
 
 @Injectable()
 export class ActiveMapItemEffects {
@@ -123,9 +124,12 @@ export class ActiveMapItemEffects {
         ofType(ActiveMapItemActions.setAttributeFilterValueState),
         withLatestFrom(this.store.select(selectActiveMapItems)),
         tap(([action, activeMapItems]) => {
-          const activeMapItem = activeMapItems.find((activeMapItem) => activeMapItem.id === action.activeMapItem.id);
-          if (activeMapItem?.filterConfigurations) {
-            this.mapService.setAttributeFilters(activeMapItem.filterConfigurations, activeMapItem);
+          const currentActiveMapItem = activeMapItems.find((activeMapItem) => activeMapItem.id === action.activeMapItem.id);
+          if (currentActiveMapItem?.filterConfigurations) {
+            const attributeFilterParameters = this.gb3TopicsService.transformFilterConfigurationToParameters(
+              currentActiveMapItem.filterConfigurations
+            );
+            this.mapService.setAttributeFilters(attributeFilterParameters, currentActiveMapItem);
           }
         })
       );
@@ -136,6 +140,7 @@ export class ActiveMapItemEffects {
   constructor(
     private readonly actions$: Actions,
     @Inject(MAP_SERVICE) private readonly mapService: MapService,
+    private readonly gb3TopicsService: Gb3TopicsService,
     private readonly store: Store
   ) {}
 }
