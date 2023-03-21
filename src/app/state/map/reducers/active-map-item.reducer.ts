@@ -118,7 +118,26 @@ export const activeMapItemFeature = createFeature({
         return mapItem;
       });
       return {...state, activeMapItems: [...activeMapItems]};
-    })
+    }),
+    on(
+      ActiveMapItemActions.setAttributeFilterValueState,
+      (state, {isFilterValueActive, filterValueName, attributeFilterParameter, activeMapItem}): ActiveMapItemState => {
+        const activeMapItems = state.activeMapItems.map((mapItem) => {
+          if (mapItem.id === activeMapItem.id) {
+            const newActiveMapItem = structuredClone(mapItem);
+            const filterValue = newActiveMapItem.filterConfigurations
+              ?.find((filterConfig) => filterConfig.parameter === attributeFilterParameter)
+              ?.filterValues.find((filterValue) => filterValue.name === filterValueName);
+            if (filterValue) {
+              filterValue.isActive = isFilterValueActive;
+            }
+            return newActiveMapItem;
+          }
+          return mapItem;
+        });
+        return {...state, activeMapItems: [...activeMapItems]};
+      }
+    )
   )
 });
 

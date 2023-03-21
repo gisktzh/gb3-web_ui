@@ -98,10 +98,57 @@ export interface TopicsListData {
       geolion: number | null;
       /** Keywords */
       keywords: string[];
-      /** Timeslider Settings */
-      timesliderConfiguration?: object | null;
+      timesliderConfiguration: {
+        /** name of the timeslider for displaying in UI */
+        name: string;
+        /** additional description for the current timeslider */
+        description?: string | null;
+        /** ISO-8601 format which is used for the timeslider data */
+        dateFormat: string;
+        /** lowermost (oldest) date for the displayed data range */
+        minimumDate: string;
+        /** uppermost (newest) date for the displayed data range */
+        maximumDate: string;
+        /** If flag is set, both date specifications (oldest and newest date) have to be used for time period selection */
+        alwaysMaxRange: boolean;
+        /** The minimum time span that can be selected in ISO-8601 time span format. If range or alwaysMaxRange is set, this value is ignored */
+        minimalRange?: string | null;
+        /** The fixed time span, which can be selected in ISO-8601 time span format; if alwaysMaxRange is set, this value is ignored */
+        range?: string | null;
+        /** type of the data source ('parameter' or 'layer') */
+        sourceType: string;
+        source: {
+          /** for sourceType 'parameter': name of the filter for the starting date of selection */
+          startRangeParameter?: string;
+          /** for sourceType 'parameter': name of the filter for the ending date of selection */
+          endRangeParameter?: string;
+          /** for sourceType 'parameter':a list of unique layer identifiers affected by this timeslider */
+          layerIdentifiers?: string[];
+          /** for sourceType 'layer': a list of one to n layers and their date and name. Each entry in the list must contain the 'layer' and 'date' parameters */
+          layers?: {
+            /** for sourceType 'layer': unique name of the layer */
+            layerName: string;
+            /** for sourceType 'layer': the date associated with this layer (formatted according to the 'dateFormat' parameter) */
+            date: string;
+          }[];
+        };
+      };
       /** Filters Settings */
-      filterConfigurations?: object[] | null;
+      filterConfigurations: {
+        /** display name of the filter, which is used as a title for the filter options */
+        name: string;
+        /** additional description for the current filter */
+        description?: string | null;
+        /** name of the parameter which contains the filter values */
+        parameter: string;
+        /** a list of data (name/value pair) to filter by */
+        filterValues: {
+          /** name of the filter that is displayed in the UI */
+          name: string;
+          /** a list of strings containing the values to be filtered */
+          values: string[];
+        }[];
+      }[];
       /**
        * WMS URL
        * @format uri

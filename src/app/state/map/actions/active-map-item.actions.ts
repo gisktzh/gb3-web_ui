@@ -17,6 +17,12 @@ export const ActiveMapItemActions = createActionGroup({
     'Set View Process State': props<{viewProcessState: ViewProcessState; id: string}>(),
     'Reorder Active Map Item': props<{previousPosition: number; currentPosition: number}>(),
     'Reorder Sublayer': props<{activeMapItem: ActiveMapItem; previousPosition: number; currentPosition: number}>(),
-    'Set Time Slider Extent': props<{timeExtent: TimeExtent; activeMapItem: ActiveMapItem}>()
+    'Set Time Slider Extent': props<{timeExtent: TimeExtent; activeMapItem: ActiveMapItem}>(),
+    'Set Attribute Filter Value State': props<{
+      isFilterValueActive: boolean;
+      filterValueName: string;
+      attributeFilterParameter: string;
+      activeMapItem: ActiveMapItem;
+    }>()
   }
 });

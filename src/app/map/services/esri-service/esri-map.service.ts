@@ -243,6 +243,18 @@ export class EsriMapService implements MapService {
     this.setEsriTimeSliderExtent(timeExtent, mapItem, esriLayer);
   }
 
+  public setAttributeFilters(attributeFilterParameters: {name: string; value: string}[], mapItem: ActiveMapItem) {
+    const esriLayer = this.findEsriLayer(mapItem.id);
+    if (esriLayer && esriLayer instanceof EsriWMSLayer) {
+      const customLayerParameters: {[index: string]: string} = esriLayer.customLayerParameters ?? {};
+      attributeFilterParameters.forEach((attributeFilterParameter) => {
+        customLayerParameters[attributeFilterParameter.name] = attributeFilterParameter.value;
+      });
+      esriLayer.customLayerParameters = customLayerParameters;
+      esriLayer.refresh();
+    }
+  }
+
   public reorderMapItem(previousPosition: number, currentPosition: number) {
     // index is the inverse position - the lowest index has the lowest visibility (it's on the bottom) while the lowest position has the highest visibility
     const previousIndex = this.mapView.map.layers.length - 1 - previousPosition;

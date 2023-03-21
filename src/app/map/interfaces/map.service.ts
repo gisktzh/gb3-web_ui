@@ -40,6 +40,9 @@ export interface MapService {
   /** Sets the time slider extent for an existing item on the map */
   setTimeSliderExtent(timeExtent: TimeExtent, mapItem: ActiveMapItem): void;
 
+  /** Sets the attribute filters for an existing item on the map */
+  setAttributeFilters(attributeFilterParameters: {name: string; value: string}[], mapItem: ActiveMapItem): void;
+
   /** Reorders a map item using its old index (previous) and the new index (current); 0 is the topmost item - the most visible one */
   reorderMapItem(previousPosition: number, currentPosition: number): void;
 
