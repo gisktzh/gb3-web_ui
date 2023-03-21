@@ -12,21 +12,17 @@ export const selectFilteredLayerCatalog = createSelector(selectFilterString, sel
   return (
     filteredLayerCatalog
       .map((item) => {
-        const filteredMaps = item.maps.filter((map) => {
-          // Filter sublayer to only include those that match the filter
-          map.layers = map.layers.filter((layer) => layer.title.toLowerCase().includes(lowerCasedFilterString));
+        const filteredMaps = item.maps
+          .map((map) => {
+            // only take layers which match the filter
+            map.layers = map.layers.filter((layer) => layer.title.toLowerCase().includes(lowerCasedFilterString));
 
-          // Return true if the map title itself includes the filterstring...
-          if (map.title.toLowerCase().includes(lowerCasedFilterString)) {
-            return true;
-          }
-          // ... or if the map has sublayers that contain the filterstring ...
-          else if (map.layers.length > 0) {
-            return true;
-          }
-          // ... else the map is no match.
-          return false;
-        });
+            return map;
+          })
+          .filter((map) => {
+            // Return true if the map title or one of its sublayers itself includes the filterstring
+            return map.layers.length > 0 || map.title.toLowerCase().includes(lowerCasedFilterString);
+          });
 
         return {title: item.title, maps: filteredMaps};
       })
