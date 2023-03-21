@@ -32,7 +32,7 @@ export const layerCatalogFeature = createFeature({
     on(LayerCatalogActions.clearLayerCatalog, (state): LayerCatalogState => {
       return {...state, layerCatalogItems: []};
     }),
-    on(LayerCatalogActions.filterCatalog, (state, {filterString}): LayerCatalogState => {
+    on(LayerCatalogActions.setFilterString, (state, {filterString}): LayerCatalogState => {
       return {...state, filterString};
     })
   )

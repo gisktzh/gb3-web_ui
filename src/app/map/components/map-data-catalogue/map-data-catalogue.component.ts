@@ -104,6 +104,6 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   private filterCatalog(filterString: string) {
-    this.store.dispatch(LayerCatalogActions.filterCatalog({filterString}));
+    this.store.dispatch(LayerCatalogActions.setFilterString({filterString}));
   }
 }

@@ -8,6 +8,6 @@ export const LayerCatalogActions = createActionGroup({
     'Set Layer Catalog': props<{layerCatalogItems: Topic[]}>(),
     'Add Layer Catalog Item': props<{layerCatalogItem: Topic}>(),
     'Clear Layer Catalog': emptyProps(),
-    'Filter Catalog': props<{filterString: string}>()
+    'Set Filter String': props<{filterString: string}>()
   }
 });
