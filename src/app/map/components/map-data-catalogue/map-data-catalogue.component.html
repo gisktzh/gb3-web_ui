@@ -25,12 +25,18 @@
                 <button (click)="addActiveMap(map)" color="primary" data-test-id="add-active-map" mat-icon-button>
                   <mat-icon>add</mat-icon>
                 </button>
-                <button (click)="mapExpansionPanel.toggle()" data-test-id="show-layers-of-the-map" mat-icon-button>
+                <button
+                  (click)="mapExpansionPanel.toggle()"
+                  [attr.data-test-id]="mapExpansionPanel.expanded ? 'hide-layers-of-the-map' : 'show-layers-of-the-map'"
+                  mat-icon-button
+                  [disabled]="map.layers.length === 0"
+                >
                   <mat-icon
                     [fontIcon]="mapExpansionPanel.expanded ? 'arrow_drop_down' : 'arrow_right'"
                     [matBadgeHidden]="!this.filterString"
                     [matBadge]="map.layers.length"
-                    matBadgeOverlap="true"
+                    [matBadgeDisabled]="map.layers.length === 0"
+                    matBadgeOverlap
                   ></mat-icon>
                 </button>
                 <img [alt]="map.title" [src]="map.icon" class="map__header__image" />
