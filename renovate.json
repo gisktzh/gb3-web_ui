@@ -2,8 +2,7 @@
   "extends": ["config:base"],
   "ignoreDeps": ["typescript", "zone.js"],
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "reviewers": ["lukas.merz@ebp.ch", "sebastian.wendland@ebp.ch"],
-  "ignoreReviewers": ["s-ch-Renovate-TechnicalUser@ebp.ch"],
+  "assignees": ["lukas.merz@ebp.ch", "sebastian.wendland@ebp.ch"],
   "platformAutomerge": true,
   "azureAutoApprove": false,
   "packageRules": [
