@@ -5,58 +5,54 @@
     </div>
   </mat-card-header>
   <div class="map-catalogue__filter">
-    <input class="map-catalogue__filter__input" type="text" (keyup)="this.filterCatalog($event.target)" />
+    <input (keyup)="this.filterCatalog($event.target)" class="map-catalogue__filter__input" type="text" />
     <mat-icon class="map-catalogue__filter__input-icon">search</mat-icon>
   </div>
   <loading-and-process-bar [loadingState]="this.loadingState"></loading-and-process-bar>
-  <mat-accordion *ngIf="this.loadingState === 'loaded'" class="map-catalogue__content" multi="true" displayMode="flat">
+  <mat-accordion *ngIf="this.loadingState === 'loaded'" class="map-catalogue__content" displayMode="flat" multi="true">
     <ng-container *ngFor="let topic of topics; trackBy: trackByTopicTitle">
       <mat-expansion-panel>
         <mat-expansion-panel-header>
-          <p>{{ topic.title }}</p>
+          <p [matBadgeHidden]="!this.filterString" [matBadge]="topic.maps.length" matBadgeOverlap="false" matBadgePosition="above after">
+            {{ topic.title }}
+          </p>
         </mat-expansion-panel-header>
         <!-- Expansion panel content -->
         <ng-template matExpansionPanelContent>
           <ng-container *ngFor="let map of topic.maps; trackBy: trackByMapId">
-            <mat-expansion-panel hideToggle="true" #mapExpansionPanel>
+            <mat-expansion-panel #mapExpansionPanel hideToggle="true">
               <mat-expansion-panel-header (click)="mapExpansionPanel.toggle()" class="map__header">
-                <button mat-icon-button (click)="addActiveMap(map)" color="primary" data-test-id="add-active-map">
+                <button (click)="addActiveMap(map)" color="primary" data-test-id="add-active-map" mat-icon-button>
                   <mat-icon>add</mat-icon>
                 </button>
-                <button
-                  mat-icon-button
-                  *ngIf="!mapExpansionPanel.expanded"
-                  (click)="mapExpansionPanel.open()"
-                  data-test-id="show-layers-of-the-map"
-                >
-                  <mat-icon>arrow_right</mat-icon>
+                <button (click)="mapExpansionPanel.toggle()" data-test-id="show-layers-of-the-map" mat-icon-button>
+                  <mat-icon
+                    [fontIcon]="mapExpansionPanel.expanded ? 'arrow_drop_down' : 'arrow_right'"
+                    [matBadgeHidden]="!this.filterString"
+                    [matBadge]="map.layers.length"
+                    matBadgeOverlap="true"
+                  ></mat-icon>
                 </button>
-                <button
-                  mat-icon-button
-                  *ngIf="mapExpansionPanel.expanded"
-                  (click)="mapExpansionPanel.close()"
-                  data-test-id="hide-layers-of-the-map"
-                >
-                  <mat-icon>arrow_drop_down</mat-icon>
-                </button>
-                <img class="map__header__image" [src]="map.icon" [alt]="map.title" />
+                <img [alt]="map.title" [src]="map.icon" class="map__header__image" />
                 <p
+                  [innerHTML]="map.title | highlightSearchQuery : this.filterString"
                   class="map__header__title"
                   matTooltip="{{ map.title }}"
-                  [innerHTML]="map.title | highlightSearchQuery : this.filterString"
                 ></p>
               </mat-expansion-panel-header>
               <!-- Expansion panel content -->
               <ng-template matExpansionPanelContent>
                 <ng-container *ngFor="let layer of map.layers">
-                  <div class="layer" *ngIf="!layer.isHidden">
+                  <div *ngIf="!layer.isHidden" class="layer">
                     <mat-icon class="layer__icon">layers</mat-icon>
                     <p
+                      [innerHTML]="layer.title | highlightSearchQuery : this.filterString"
                       class="layer__title"
                       matTooltip="{{ layer.title }}"
-                      [innerHTML]="layer.title | highlightSearchQuery : this.filterString"
                     ></p>
-                    <button mat-icon-button (click)="addActiveLayer(map, layer)"><mat-icon>add</mat-icon></button>
+                    <button (click)="addActiveLayer(map, layer)" mat-icon-button>
+                      <mat-icon>add</mat-icon>
+                    </button>
                   </div>
                 </ng-container>
               </ng-template>
