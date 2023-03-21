@@ -19,6 +19,40 @@
     }
   }
 
+  .map-catalogue__filter-no-results {
+    align-self: center;
+  }
+
+  .map-catalogue__filter {
+    display: flex;
+
+    .map-catalogue__filter__input {
+      width: 100%;
+      height: 40px;
+      padding: 0 5px 0 45px;
+      border: 3px solid grey;
+      margin: 5px;
+      outline: none;
+      display: block;
+    }
+
+    .map-catalogue__filter__input:focus {
+      border: 3px solid ktzh-variables.$zh-cyan;
+
+      & + .map-catalogue__filter__input-icon {
+        color: black;
+      }
+    }
+
+    .map-catalogue__filter__input-icon {
+      height: 30px;
+      width: 30px;
+      margin: 16px 5px 5px 16px;
+      position: absolute;
+      color: grey;
+    }
+  }
+
   .map-catalogue__content {
     overflow-y: scroll;
 

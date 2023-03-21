@@ -119,6 +119,25 @@ export const activeMapItemFeature = createFeature({
       });
       return {...state, activeMapItems: [...activeMapItems]};
     }),
+    on(
+      ActiveMapItemActions.setAttributeFilterValueState,
+      (state, {isFilterValueActive, filterValueName, attributeFilterParameter, activeMapItem}): ActiveMapItemState => {
+        const activeMapItems = state.activeMapItems.map((mapItem) => {
+          if (mapItem.id === activeMapItem.id) {
+            const newActiveMapItem = structuredClone(mapItem);
+            const filterValue = newActiveMapItem.filterConfigurations
+              ?.find((filterConfig) => filterConfig.parameter === attributeFilterParameter)
+              ?.filterValues.find((filterValue) => filterValue.name === filterValueName);
+            if (filterValue) {
+              filterValue.isActive = isFilterValueActive;
+            }
+            return newActiveMapItem;
+          }
+          return mapItem;
+        });
+        return {...state, activeMapItems: [...activeMapItems]};
+      }
+    ),
     on(ActiveMapItemActions.addFavourite, (state, {favourite}): ActiveMapItemState => {
       const favouriteIds = favourite.map((fav) => fav.id);
       const activeMapItemsToStay = state.activeMapItems.filter((activeMapItem) => !favouriteIds.includes(activeMapItem.id));

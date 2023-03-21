@@ -1,5 +1,5 @@
 import {LoadingState} from '../../shared/types/loading-state';
-import {AttributeFilterConfiguration, Map, MapLayer, TimeSliderConfiguration} from '../../shared/interfaces/topic.interface';
+import {FilterConfiguration, Map, MapLayer, TimeSliderConfiguration} from '../../shared/interfaces/topic.interface';
 import {HasLoadingState} from '../../shared/interfaces/has-loading-state.interface';
 import {HasVisibility} from '../../shared/interfaces/has-visibility.interface';
 import {HasViewProcessState} from '../../shared/interfaces/has-view-process-state.interface';
@@ -13,7 +13,7 @@ export class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewPro
   public readonly url: string;
   public readonly mapImageUrl: string;
   public readonly timeSliderConfiguration?: TimeSliderConfiguration;
-  public readonly filterConfigurations?: AttributeFilterConfiguration[];
+  public readonly filterConfigurations?: FilterConfiguration[];
 
   public readonly mapId: string;
   public readonly layers: MapLayer[];

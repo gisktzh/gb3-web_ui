@@ -18,7 +18,7 @@ export class FeatureInfoEffects {
           map((featureInfos) => {
             return FeatureInfoActions.updateFeatureInfo({featureInfos});
           }),
-          catchError(() => EMPTY)
+          catchError(() => EMPTY) // todo error handling
         )
       )
     );

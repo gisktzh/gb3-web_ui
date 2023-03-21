@@ -1,25 +1,30 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {selectLayerCatalogItems, selectLoadingState} from '../../../state/map/reducers/layer-catalog.reducer';
+import {selectFilterString, selectLayerCatalogItems, selectLoadingState} from '../../../state/map/reducers/layer-catalog.reducer';
 import {LayerCatalogActions} from '../../../state/map/actions/layer-catalog.actions';
-import {Subscription, tap} from 'rxjs';
+import {debounceTime, distinctUntilChanged, fromEvent, Observable, Subject, Subscription, tap} from 'rxjs';
 import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
 import {LoadingState} from '../../../shared/types/loading-state';
 import {ActiveMapItem} from '../../models/active-map-item.model';
 import {Map, MapLayer, Topic} from '../../../shared/interfaces/topic.interface';
+import {selectFilteredLayerCatalog} from '../../../state/map/selectors/filtered-layer-catalog.selector';
+import {map} from 'rxjs/operators';
 
 @Component({
   selector: 'map-data-catalogue',
   templateUrl: './map-data-catalogue.component.html',
   styleUrls: ['./map-data-catalogue.component.scss']
 })
-export class MapDataCatalogueComponent implements OnInit, OnDestroy {
+export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewInit {
   public topics: Topic[] = [];
   public catalogueLoadingState: LoadingState = 'undefined';
+  public filterString: string = '';
 
+  private readonly filterString$ = this.store.select(selectFilterString);
   private readonly catalogueLoadingState$ = this.store.select(selectLoadingState);
-  private readonly topics$ = this.store.select(selectLayerCatalogItems);
+  private readonly topics$ = this.store.select(selectFilteredLayerCatalog);
   private readonly subscriptions = new Subscription();
+  @ViewChild('filterInput') private readonly input!: ElementRef;
 
   constructor(private readonly store: Store) {}
 
@@ -32,12 +37,33 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  public addActiveMap(map: Map) {
-    this.addActiveItem(new ActiveMapItem(map));
+  public ngAfterViewInit() {
+    this.subscriptions.add(this.filterInputHandler().subscribe());
   }
 
-  public addActiveLayer(map: Map, layer: MapLayer) {
-    this.addActiveItem(new ActiveMapItem(map, layer));
+  public addActiveMap(activeMap: Map) {
+    this.addActiveItem(new ActiveMapItem(activeMap));
+  }
+
+  public addActiveLayer(activeMap: Map, layer: MapLayer) {
+    this.addActiveItem(new ActiveMapItem(activeMap, layer));
+  }
+
+  public trackByTopicTitle(index: number, item: Topic) {
+    return item.title;
+  }
+
+  public trackByMapId(index: number, item: Map) {
+    return item.id;
+  }
+
+  private filterInputHandler(): Observable<string> {
+    return fromEvent<KeyboardEvent>(this.input.nativeElement, 'keyup').pipe(
+      debounceTime(300),
+      map((event) => (<HTMLInputElement>event.target).value),
+      distinctUntilChanged(),
+      tap((event) => this.filterCatalog(event))
+    );
   }
 
   private addActiveItem(activeMapItem: ActiveMapItem) {
@@ -65,5 +91,19 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy {
         )
         .subscribe()
     );
+
+    this.subscriptions.add(
+      this.filterString$
+        .pipe(
+          tap(async (value) => {
+            this.filterString = value;
+          })
+        )
+        .subscribe()
+    );
+  }
+
+  private filterCatalog(filterString: string) {
+    this.store.dispatch(LayerCatalogActions.setFilterString({filterString}));
   }
 }

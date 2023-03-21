@@ -36,4 +36,6 @@ export class MapServiceStub implements MapService {
   public setVisibility(visibility: boolean, mapItem: ActiveMapItem): void {}
 
   public setTimeSliderExtent(timeSliderExtent: TimeExtent, mapItem: ActiveMapItem): void {}
+
+  public setAttributeFilters(attributeFilterParameters: {name: string; value: string}[], mapItem: ActiveMapItem): void {}
 }
