@@ -284,6 +284,13 @@ export class EsriMapService implements MapService {
     }
   }
 
+  public zoomToPoint(x: number, y: number, scale: number) {
+    this.mapView.goTo({
+      center: [x, y],
+      scale: scale
+    });
+  }
+
   /**
    * Applies the time slider extent to the given layer by using custom WMS parameters.
    *

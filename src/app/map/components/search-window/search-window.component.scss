@@ -68,6 +68,11 @@
             padding: 5px;
           }
 
+          .search-window__element-content:hover {
+            cursor: pointer;
+            background-color: ktzh-variables.$zh-background-color;
+          }
+
           .search-window__map-content {
             display: flex;
             padding: 5px;

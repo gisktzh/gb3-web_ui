@@ -11,6 +11,7 @@
           <mat-card-content
             class="search-window__element-content"
             [innerHTML]="result.displayString | highlightSearchQuery : this.searchTerms"
+            (click)="mapGoTo(result)"
           ></mat-card-content>
           <mat-divider></mat-divider>
         </mat-card>

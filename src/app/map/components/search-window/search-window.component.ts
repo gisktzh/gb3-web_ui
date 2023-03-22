@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {SearchService} from "../../../search/services/search.service";
 import {debounceTime, distinctUntilChanged, fromEvent, Observable, Subscription, tap} from "rxjs";
 import {SearchApiResponse} from "../../../search/interfaces/search-api-response.interface";
@@ -11,6 +11,9 @@ import {selectMaps} from "../../../state/map/selectors/maps.selector";
 import {map} from "rxjs/operators";
 import {ActiveMapItem} from "../../models/active-map-item.model";
 import {ActiveMapItemActions} from "../../../state/map/actions/active-map-item.actions";
+import {TransformationService} from "../../services/transformation.service";
+import {MAP_SERVICE} from "../../../app.module";
+import {MapService} from "../../interfaces/map.service";
 
 @Component({
   selector: 'search-window',
@@ -29,7 +32,12 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly subscriptions: Subscription = new Subscription();
   @ViewChild('filterInput') private readonly input!: ElementRef;
 
-  constructor(private searchService: SearchService, private readonly store: Store) {}
+  constructor(
+    private searchService: SearchService,
+    private readonly store: Store,
+    private transformationService: TransformationService,
+    @Inject(MAP_SERVICE) private readonly mapService: MapService
+  ) {}
 
   public async ngOnInit() {
     this.initSubscriptions();
@@ -58,7 +66,8 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
               const hitSource = hit._source as AddressIndex;
               this.searchResults.push(<SearchWindowElement>{
                 displayString: `${hitSource.street} ${hitSource.no}, ${hitSource.plz} ${hitSource.town}`,
-                score: hit._score
+                score: hit._score,
+                geometry: hitSource.geometry
               });
             }
           }
@@ -68,7 +77,8 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
               const hitSource = hit._source as PlacesIndex;
               this.searchResults.push(<SearchWindowElement>{
                 displayString: `${hitSource.TYPE} ${hitSource.NAME}`,
-                score: hit._score
+                score: hit._score,
+                geometry: hitSource.geometry
               });
             }
           }
@@ -83,6 +93,14 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public addActiveMap(activeMap: Map) {
     this.addActiveItem(new ActiveMapItem(activeMap));
+  }
+
+  public mapGoTo(searchResult: SearchWindowElement) {
+    if (searchResult.geometry) {
+      this.mapService.zoomToPoint(searchResult.geometry[0], searchResult.geometry[1], 1000);
+    } else {
+      console.log('Geometry not available in the index');
+    }
   }
 
   private filterInputHandler(): Observable<string> {

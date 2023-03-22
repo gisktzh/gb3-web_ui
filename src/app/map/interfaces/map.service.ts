@@ -54,4 +54,7 @@ export interface MapService {
 
   /** Removes an existing highlight geometry from the map */
   removeAllHighlightGeometries(): void;
+
+  /** Zooms to a selected point based on latitude, longitude and scale */
+  zoomToPoint(x: number, y: number, scale: number): void;
 }
