@@ -1,6 +1,7 @@
 import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {selectFilterString, selectLoadingState} from '../../../state/map/reducers/layer-catalog.reducer';
+import {selectLoadingState as selectFavouritesLoadingState} from '../../../state/map/reducers/favourite-list.reducer';
+import {selectFilterString, selectLoadingState as selectCatalogueLoadingState} from '../../../state/map/reducers/layer-catalog.reducer';
 import {LayerCatalogActions} from '../../../state/map/actions/layer-catalog.actions';
 import {debounceTime, distinctUntilChanged, fromEvent, Observable, Subscription, tap} from 'rxjs';
 import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
@@ -10,6 +11,10 @@ import {Map, MapLayer, Topic} from '../../../shared/interfaces/topic.interface';
 import {selectFilteredLayerCatalog} from '../../../state/map/selectors/filtered-layer-catalog.selector';
 import {map} from 'rxjs/operators';
 import {selectMaps} from '../../../state/map/selectors/maps.selector';
+import {selectFilteredFavouriteList} from '../../../state/map/selectors/filtered-favourite-list.selector';
+import {Favourite} from '../../../shared/interfaces/favourite.interface';
+import {FavouriteListActions} from '../../../state/map/actions/favourite-list.actions';
+import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.reducer';
 
 @Component({
   selector: 'map-data-catalogue',
@@ -19,13 +24,19 @@ import {selectMaps} from '../../../state/map/selectors/maps.selector';
 export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewInit {
   public topics: Topic[] = [];
   public catalogueLoadingState: LoadingState = 'undefined';
+  public favouritesLoadingState: LoadingState = 'undefined';
   public filterString: string = '';
+  public filteredFavourites: Favourite[] = [];
+  public isAuthenticated: boolean = false;
 
   private originalMaps: Map[] = [];
   private readonly filterString$ = this.store.select(selectFilterString);
-  private readonly catalogueLoadingState$ = this.store.select(selectLoadingState);
+  private readonly catalogueLoadingState$ = this.store.select(selectCatalogueLoadingState);
+  private readonly favouritesLoadingState$ = this.store.select(selectFavouritesLoadingState);
+  private readonly filteredFavourites$ = this.store.select(selectFilteredFavouriteList);
   private readonly topics$ = this.store.select(selectFilteredLayerCatalog);
   private readonly originalMaps$ = this.store.select(selectMaps);
+  private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
   private readonly subscriptions = new Subscription();
   @ViewChild('filterInput') private readonly input!: ElementRef;
 
@@ -108,6 +119,16 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
     );
 
     this.subscriptions.add(
+      this.favouritesLoadingState$
+        .pipe(
+          tap(async (value) => {
+            this.favouritesLoadingState = value;
+          })
+        )
+        .subscribe()
+    );
+
+    this.subscriptions.add(
       this.filterString$
         .pipe(
           tap(async (value) => {
@@ -126,6 +147,24 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
         )
         .subscribe()
     );
+
+    this.subscriptions.add(
+      this.isAuthenticated$
+        .pipe(
+          distinctUntilChanged(),
+          tap((isAuthenticated) => {
+            this.isAuthenticated = isAuthenticated;
+
+            // This check is currently needed, because isAuthenticated might not be initialized yet
+            if (this.isAuthenticated) {
+              this.store.dispatch(FavouriteListActions.loadFavourites());
+            }
+          })
+        )
+        .subscribe()
+    );
+
+    this.subscriptions.add(this.filteredFavourites$.pipe(tap((favourites) => (this.filteredFavourites = favourites))).subscribe());
   }
 
   private filterCatalog(filterString: string) {

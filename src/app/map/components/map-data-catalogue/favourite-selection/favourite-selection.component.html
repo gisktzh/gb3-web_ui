@@ -1,9 +1,18 @@
-<mat-expansion-panel *ngIf="this.isAuthenticated" class="favourite-selection">
+<mat-expansion-panel *ngIf="this.loadingState === 'loading' || this.filteredFavourites.length > 0" class="favourite-selection">
   <mat-expansion-panel-header class="favourite-selection__header">
-    <mat-panel-title>Favoriten</mat-panel-title>
+    <mat-panel-title>
+      <p
+        [matBadgeHidden]="!this.filterString || this.loadingState === 'loading'"
+        [matBadge]="this.filteredFavourites.length"
+        matBadgeOverlap="false"
+        matBadgePosition="above after"
+      >
+        Favoriten
+      </p>
+    </mat-panel-title>
     <loading-and-process-bar [loadingState]="this.loadingState" class="favourite-selection__header__loader"></loading-and-process-bar>
   </mat-expansion-panel-header>
-  <ng-container *ngFor="let favourite of this.favourites">
+  <ng-container *ngFor="let favourite of this.filteredFavourites">
     <mat-card class="favourite-selection__favourite">
       <mat-card-content
         [matTooltipDisabled]="!favourite.invalid"
@@ -12,7 +21,7 @@
       >
         <button (click)="this.addFavouriteToMap(favourite)" [disabled]="favourite.invalid" color="primary" mat-icon-button>
           <mat-icon *ngIf="!favourite.invalid">add</mat-icon>
-          <mat-icon *ngIf="favourite.invalid" class="favourite-selection__favourite__content__error" color="warn">error </mat-icon>
+          <mat-icon *ngIf="favourite.invalid" class="favourite-selection__favourite__content__error" color="warn"> error </mat-icon>
         </button>
         <span class="favourite-selection__favourite__placeholder"></span>
         <span
@@ -21,12 +30,11 @@
         ></span>
         <p
           [class.favourite-selection__favourite__title--disabled]="favourite.invalid"
+          [innerHTML]="favourite.title | highlightSearchQuery : this.filterString"
           [matTooltipDisabled]="favourite.invalid"
           class="favourite-selection__favourite__content__title"
           matTooltip="{{ favourite.title }}"
-        >
-          {{ favourite.title }}
-        </p>
+        ></p>
       </mat-card-content>
     </mat-card>
   </ng-container>

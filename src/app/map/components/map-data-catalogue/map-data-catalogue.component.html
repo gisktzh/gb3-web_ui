@@ -8,13 +8,15 @@
     <input #filterInput class="map-catalogue__filter__input" placeholder="Karten und Layer filtern" type="text" />
     <mat-icon class="map-catalogue__filter__input-icon">search</mat-icon>
   </div>
-  <p *ngIf="this.filterString && this.topics.length === 0" class="map-catalogue__filter-no-results mat-body-2">
-    Keine Resultate zu diesem Filter.
-  </p>
   <loading-and-process-bar [loadingState]="this.catalogueLoadingState"></loading-and-process-bar>
   <mat-accordion *ngIf="this.catalogueLoadingState === 'loaded'" class="map-catalogue__content" displayMode="flat" multi="true">
     <!-- Favourite selection is a conditional, one-off container. It should only load once the catalog is here. -->
-    <favourite-selection></favourite-selection>
+    <favourite-selection
+      *ngIf="this.isAuthenticated"
+      [filterString]="this.filterString"
+      [filteredFavourites]="this.filteredFavourites"
+      [loadingState]="this.favouritesLoadingState"
+    ></favourite-selection>
 
     <!-- Layertree -->
     <ng-container *ngFor="let topic of topics; trackBy: trackByTopicTitle">
@@ -75,4 +77,10 @@
       </mat-expansion-panel>
     </ng-container>
   </mat-accordion>
+  <p
+    *ngIf="this.filterString && this.topics.length === 0 && this.filteredFavourites.length === 0"
+    class="map-catalogue__filter-no-results mat-body-2"
+  >
+    Keine Resultate zu diesem Filter.
+  </p>
 </mat-card>
