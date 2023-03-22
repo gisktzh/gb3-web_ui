@@ -1,14 +1,15 @@
 import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {selectFilterString, selectLayerCatalogItems, selectLoadingState} from '../../../state/map/reducers/layer-catalog.reducer';
+import {selectFilterString, selectLoadingState} from '../../../state/map/reducers/layer-catalog.reducer';
 import {LayerCatalogActions} from '../../../state/map/actions/layer-catalog.actions';
-import {debounceTime, distinctUntilChanged, fromEvent, Observable, Subject, Subscription, tap} from 'rxjs';
+import {debounceTime, distinctUntilChanged, fromEvent, Observable, Subscription, tap} from 'rxjs';
 import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
 import {LoadingState} from '../../../shared/types/loading-state';
 import {ActiveMapItem} from '../../models/active-map-item.model';
 import {Map, MapLayer, Topic} from '../../../shared/interfaces/topic.interface';
 import {selectFilteredLayerCatalog} from '../../../state/map/selectors/filtered-layer-catalog.selector';
 import {map} from 'rxjs/operators';
+import {selectMaps} from '../../../state/map/selectors/maps.selector';
 
 @Component({
   selector: 'map-data-catalogue',
@@ -20,9 +21,11 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
   public catalogueLoadingState: LoadingState = 'undefined';
   public filterString: string = '';
 
+  private originalMaps: Map[] = [];
   private readonly filterString$ = this.store.select(selectFilterString);
   private readonly catalogueLoadingState$ = this.store.select(selectLoadingState);
   private readonly topics$ = this.store.select(selectFilteredLayerCatalog);
+  private readonly originalMaps$ = this.store.select(selectMaps);
   private readonly subscriptions = new Subscription();
   @ViewChild('filterInput') private readonly input!: ElementRef;
 
@@ -41,7 +44,19 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
     this.subscriptions.add(this.filterInputHandler().subscribe());
   }
 
+  /**
+   * Adds an activeMap to the map. If a filter is active, takes the original map from the store to avoid adding a filtered, incomplete map.
+   * @param activeMap
+   */
   public addActiveMap(activeMap: Map) {
+    if (this.filterString !== '') {
+      const originalActiveMap = this.originalMaps.find((originalMap) => originalMap.id === activeMap.id);
+      if (!originalActiveMap) {
+        throw new Error('Map cannot be found.'); //todo: error handling (although this should never happen here)
+      }
+      activeMap = originalActiveMap;
+    }
+
     this.addActiveItem(new ActiveMapItem(activeMap));
   }
 
@@ -97,6 +112,16 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
         .pipe(
           tap(async (value) => {
             this.filterString = value;
+          })
+        )
+        .subscribe()
+    );
+
+    this.subscriptions.add(
+      this.originalMaps$
+        .pipe(
+          tap(async (value) => {
+            this.originalMaps = value;
           })
         )
         .subscribe()
