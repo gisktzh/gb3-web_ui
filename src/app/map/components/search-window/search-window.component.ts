@@ -20,6 +20,7 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public searchResults: SearchWindowElement[] = [];
   public filteredMaps: Map[] = [];
+  public searchTerms: string[] = [];
 
   private originalMaps: Map[] = [];
   private readonly originalMaps$ = this.store.select(selectMaps);
@@ -41,6 +42,7 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public search(term: string) {
+    this.searchTerms = term.split(' ');
     if (term === '') {
       this.searchResults = [];
       this.filteredMaps = [];
@@ -71,9 +73,8 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
           this.searchResults.sort((a,b)=> b.score > a.score ? 1 : -1);
         }
       ));
-      const singleTerms = term.split(' ');
       this.filteredMaps = this.originalMaps.filter(availableMap =>
-        singleTerms.every(searchTerm => availableMap.title.toLowerCase().includes(searchTerm.toLowerCase()))
+        this.searchTerms.every(searchTerm => availableMap.title.toLowerCase().includes(searchTerm.toLowerCase()))
       );
     }
   }
