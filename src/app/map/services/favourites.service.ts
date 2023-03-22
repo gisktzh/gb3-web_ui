@@ -88,7 +88,6 @@ export class FavouritesService {
     return this.activeMapItems.map((activeMapItem) => {
       // note: spread does not work here because ActiveMapItem is a class, hence too many attributes would be added to the object
       return {
-        id: activeMapItem.id,
         mapId: activeMapItem.mapId,
         layers: activeMapItem.layers.map((layer) => ({id: layer.id, layer: layer.layer, visible: layer.visible})),
         visible: activeMapItem.visible,

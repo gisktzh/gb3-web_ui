@@ -11,11 +11,31 @@
 
 export type FavoritesListData = {
   /** Favorite ID */
-  id: string;
+  id: number;
   /** Favorite title */
   title: string;
   /** Favorite content */
-  content: object;
+  content: {
+    /** duplicate of mapID */
+    id?: string;
+    /** name of map from which layers are referenced */
+    mapId?: string;
+    /** whether a set of layers is visible as a whole */
+    visible?: boolean;
+    /** opacity with which the layer is shown */
+    opacity?: number;
+    /** whether a layer is was added without adding the topic to which it belongs */
+    isSingleLayer?: boolean;
+    /** referenced layers */
+    layers?: {
+      /** layer ID */
+      id?: number;
+      /** layer name */
+      layer?: string;
+      /** whether a layer is visible */
+      visible?: boolean;
+    }[];
+  }[];
   /**
    * Favorite updated at date and time
    * @format datetime
@@ -32,16 +52,56 @@ export interface FavoritesCreatePayload {
   /** Favorite title */
   title: string;
   /** Favorite content */
-  content: object;
+  content: {
+    /** duplicate of mapID */
+    id?: string;
+    /** name of map from which layers are referenced */
+    mapId?: string;
+    /** whether a set of layers is visible as a whole */
+    visible?: boolean;
+    /** opacity with which the layer is shown */
+    opacity?: number;
+    /** whether a layer is was added without adding the topic to which it belongs */
+    isSingleLayer?: boolean;
+    /** referenced layers */
+    layers?: {
+      /** layer ID */
+      id?: number;
+      /** layer name */
+      layer?: string;
+      /** whether a layer is visible */
+      visible?: boolean;
+    }[];
+  }[];
 }
 
 export interface FavoritesDetailData {
   /** Favorite ID */
-  id: string;
+  id: number;
   /** Favorite title */
   title: string;
   /** Favorite content */
-  content: object;
+  content: {
+    /** duplicate of mapID */
+    id?: string;
+    /** name of map from which layers are referenced */
+    mapId?: string;
+    /** whether a set of layers is visible as a whole */
+    visible?: boolean;
+    /** opacity with which the layer is shown */
+    opacity?: number;
+    /** whether a layer is was added without adding the topic to which it belongs */
+    isSingleLayer?: boolean;
+    /** referenced layers */
+    layers?: {
+      /** layer ID */
+      id?: number;
+      /** layer name */
+      layer?: string;
+      /** whether a layer is visible */
+      visible?: boolean;
+    }[];
+  }[];
 }
 
 export interface TopicsFeatureInfoDetailData {
