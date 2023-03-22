@@ -1,0 +1,27 @@
+<div class="search-window__searchbar">
+    <input #filterInput class="search-window__input" placeholder="Suchen nach Adressen, Orten, Karten und mehr...">
+    <mat-icon>search</mat-icon>
+</div>
+<div class="search-window__results_container">
+  <div class="search-window__results">
+    <div *ngIf="searchResults.length > 0" class="search-window__group">
+      <h3 class="search-window__header">Orte / Adressen</h3>
+      <div class="search-window__element-container">
+        <mat-card *ngFor="let result of searchResults" class="search-window__element">
+          <mat-card-content class="search-window__element-content">{{ result.displayString }}</mat-card-content>
+          <mat-divider></mat-divider>
+        </mat-card>
+      </div>
+    </div>
+    <div *ngIf="filteredMaps.length > 0" class="search-window__group">
+      <h3 class="search-window__header">Karten</h3>
+      <div class="search-window__element-container">
+        <mat-card *ngFor="let result of filteredMaps" class="search-window__element">
+          <mat-card-content class="search-window__element-content">{{ result.title }}</mat-card-content>
+          <mat-divider></mat-divider>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+</div>
+

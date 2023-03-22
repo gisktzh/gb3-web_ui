@@ -1,0 +1,72 @@
+@use 'src/styles/variables/ktzh-design-variables' as ktzh-variables;
+
+.search-window__searchbar {
+  background-color: white;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+
+  .search-window__input {
+    width: 484px;
+    height: 40px;
+    padding: 0 5px 0 45px;
+    border: 3px solid grey;
+    margin: 5px;
+    outline: none;
+  }
+
+  .search-window__input:focus {
+    border: 3px solid ktzh-variables.$zh-cyan;
+  }
+
+  .mat-icon {
+    height: 30px;
+    width: 30px;
+    margin: 16px 5px 5px 16px;
+    position: absolute;
+    color: grey;
+  }
+}
+
+.search-window__results_container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin-top: 56px;
+
+  .search-window__results {
+    display: flex;
+    flex-direction: column;
+    width: 475px;
+    margin-left: 5px;
+    height: 100%;
+
+    .search-window__group {
+      padding: 5px;
+      max-height: 50%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background-color: white;
+
+      .search-window__header {
+        padding: 4px;
+        margin: 0;
+        background-color: lightgrey;
+        font-size: 15px;
+      }
+
+      .search-window__element-container {
+        overflow-y: scroll;
+
+        .search-window__element {
+          box-shadow: none;
+
+          .search-window__element-content {
+            padding: 5px;
+          }
+        }
+      }
+    }
+  }
+}
