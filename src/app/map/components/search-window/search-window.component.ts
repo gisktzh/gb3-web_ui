@@ -9,6 +9,8 @@ import {Store} from "@ngrx/store";
 import {Map} from "../../../shared/interfaces/topic.interface";
 import {selectMaps} from "../../../state/map/selectors/maps.selector";
 import {map} from "rxjs/operators";
+import {ActiveMapItem} from "../../models/active-map-item.model";
+import {ActiveMapItemActions} from "../../../state/map/actions/active-map-item.actions";
 
 @Component({
   selector: 'search-window',
@@ -79,6 +81,10 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  public addActiveMap(activeMap: Map) {
+    this.addActiveItem(new ActiveMapItem(activeMap));
+  }
+
   private filterInputHandler(): Observable<string> {
     return fromEvent<KeyboardEvent>(this.input.nativeElement, 'keyup').pipe(
       debounceTime(300),
@@ -98,5 +104,10 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
         )
         .subscribe()
     );
+  }
+
+  private addActiveItem(activeMapItem: ActiveMapItem) {
+    // add new map items on top (position 0)
+    this.store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem, position: 0}));
   }
 }

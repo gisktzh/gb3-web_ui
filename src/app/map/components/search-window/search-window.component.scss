@@ -1,4 +1,5 @@
 @use 'src/styles/variables/ktzh-design-variables' as ktzh-variables;
+@use 'mixins/helpers.mixin' as mixins;
 
 .search-window__searchbar {
   background-color: white;
@@ -61,9 +62,30 @@
 
         .search-window__element {
           box-shadow: none;
+          font-size: 14px;
 
           .search-window__element-content {
             padding: 5px;
+          }
+
+          .search-window__map-content {
+            display: flex;
+            padding: 5px;
+
+            .search-window__map-image {
+              height: 32px;
+              width: 32px;
+              align-self: center;
+              margin-right: 8px;
+              border-radius: 4px;
+            }
+
+            .search-window__map-title {
+              @include mixins.single-line-text;
+              margin-right: auto;
+              margin-top: auto;
+              margin-bottom: auto;
+            }
           }
         }
       }

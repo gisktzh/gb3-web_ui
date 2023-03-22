@@ -19,15 +19,21 @@
     <div *ngIf="filteredMaps.length > 0" class="search-window__group">
       <h3 class="search-window__header">Karten</h3>
       <div class="search-window__element-container">
-        <mat-card *ngFor="let result of filteredMaps" class="search-window__element">
-          <mat-card-content
-            class="search-window__element-content"
-            [innerHTML]="result.title | highlightSearchQuery : this.searchTerms"
-          ></mat-card-content>
+        <mat-card *ngFor="let map of filteredMaps" class="search-window__element">
+          <mat-card-content class=search-window__map-content>
+            <button (click)="addActiveMap(map)" color="primary" data-test-id="add-active-map" mat-icon-button>
+              <mat-icon>add</mat-icon>
+            </button>
+            <img [alt]="map.title" [src]="map.icon" class="search-window__map-image" />
+            <p
+              [innerHTML]="map.title | highlightSearchQuery : this.searchTerms"
+              class="search-window__map-title"
+              matTooltip="{{ map.title }}"
+            ></p>
+          </mat-card-content>
           <mat-divider></mat-divider>
         </mat-card>
       </div>
     </div>
   </div>
 </div>
-
