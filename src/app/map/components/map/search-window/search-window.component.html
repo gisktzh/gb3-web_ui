@@ -3,11 +3,20 @@
            (input)="search($event)">
     <mat-icon>search</mat-icon>
 </div>
-<div *ngIf="searchResults.length > 0" class="search-window__results">
-  <h3 class="search-window__header">Orte / Adressen</h3>
-  <mat-card *ngFor="let result of searchResults" class="search-window__element">
-    <mat-card-content class="search-window__element-content">{{ result }}</mat-card-content>
-    <mat-divider></mat-divider>
-  </mat-card>
+<div class="search-window__results">
+  <div *ngIf="searchResults.length > 0" class="search-window__group">
+    <h3 class="search-window__header">Orte / Adressen</h3>
+    <mat-card *ngFor="let result of searchResults" class="search-window__element">
+      <mat-card-content class="search-window__element-content">{{ result.displayString }}</mat-card-content>
+      <mat-divider></mat-divider>
+    </mat-card>
+  </div>
+  <div *ngIf="mapResults.length > 0" class="search-window__group">
+    <h3 class="search-window__header">Karten</h3>
+    <mat-card *ngFor="let result of mapResults" class="search-window__element">
+      <mat-card-content class="search-window__element-content">{{ result }}</mat-card-content>
+      <mat-divider></mat-divider>
+    </mat-card>
+  </div>
 </div>
 

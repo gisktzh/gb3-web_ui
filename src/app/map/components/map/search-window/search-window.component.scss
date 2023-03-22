@@ -9,7 +9,7 @@
   .search-window__input {
     width: 440px;
     height: 40px;
-    padding: 0px 5px 0px 45px;
+    padding: 0 5px 0 45px;
     border: 3px solid grey;
     margin: 5px;
     outline: none;
@@ -32,20 +32,23 @@
   background-color: white;
   display: flex;
   flex-direction: column;
-  padding: 5px;
 
-  .search-window__header {
-    padding: 4px;
-    margin: 0px;
-    background-color: lightgrey;
-    font-size: 15px;
-  }
+  .search-window__group {
+    padding: 5px;
 
-  .search-window__element {
-    box-shadow: none;
+    .search-window__header {
+      padding: 4px;
+      margin: 0;
+      background-color: lightgrey;
+      font-size: 15px;
+    }
 
-    .search-window__element-content {
-      padding: 5px;
+    .search-window__element {
+      box-shadow: none;
+
+      .search-window__element-content {
+        padding: 5px;
+      }
     }
   }
 }
