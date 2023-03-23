@@ -25,3 +25,4 @@ $theme: $zh-light-theme;
 @include mat.core-theme($theme);
 @include mat.all-component-themes($theme);
 @include mat.all-component-typographies($theme);
+@include mat.typography-hierarchy(ktzh-variables.$zh-typography-config);

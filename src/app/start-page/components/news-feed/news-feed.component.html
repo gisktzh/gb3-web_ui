@@ -1,8 +1,8 @@
-<p class="mat-body-2" *ngIf="this.loadingState === 'loading'">
+<p *ngIf="this.loadingState === 'loading'">
   Lade Neuigkeiten aus dem GIS-Team...
   <mat-progress-bar mode="query"></mat-progress-bar>
 </p>
-<p class="mat-body-2" *ngIf="this.loadingState === 'error'">
+<p *ngIf="this.loadingState === 'error'">
   <strong>Fehler beim Laden der News.</strong>
   <mat-progress-bar mode="determinate" color="warn"></mat-progress-bar>
 </p>
@@ -12,7 +12,7 @@
       <div class="news-feed__entry">
         <p class="mat-subtitle-2 news-feed__entry__header">{{ newsEntry.date }}</p>
         <p class="mat-headline-6 news-feed__entry__title">{{ newsEntry.title }}</p>
-        <p class="mat-body-1 news-feed__entry__teaser-text">{{ newsEntry.teaserText }}</p>
+        <p class="news-feed__entry__teaser-text">{{ newsEntry.teaserText }}</p>
       </div>
     </a>
   </ng-container>
