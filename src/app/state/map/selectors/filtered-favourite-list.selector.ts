@@ -8,5 +8,5 @@ export const selectFilteredFavouriteList = createSelector(selectFilterString, se
     return favourites;
   }
 
-  return favourites.filter((favourite) => favourite.title.includes(filterString));
+  return favourites.filter((favourite) => favourite.title.toLowerCase().includes(lowerCasedFilterString));
 });
