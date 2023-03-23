@@ -37,6 +37,8 @@
     .sublayer__title {
       @include mixins.single-line-text;
       width: 100vw;
+      margin-top: auto;
+      margin-bottom: auto;
     }
   }
 
