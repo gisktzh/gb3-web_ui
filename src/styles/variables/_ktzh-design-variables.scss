@@ -1,4 +1,5 @@
 @use '@angular/material' as mat;
+@use 'fonts';
 
 /**
   Kt. ZH Design System
@@ -178,8 +179,17 @@ $zh-warn: mat.define-palette($zh-bordeaux-palette);
 
 /* Typography
 ========================== */
-$zh-font-family: 'HelveticaNow', Arial, Helvetica, sans-serif;
+$zh-font-family: Inter, Arial, Helvetica, sans-serif;
+$zh-font-family-bold: 'Inter Black', Arial, Helvetica, sans-serif;
 // For usage, refer to: https://material.angular.io/guide/typography
 $zh-typography-config: mat.define-typography-config(
+  // define headline overrides
+  $headline-6: mat.define-typography-level('inherit', 'inherit', 'inherit', $zh-font-family-bold, 'inherit'),
+  $headline-5: mat.define-typography-level('inherit', 'inherit', 'inherit', $zh-font-family-bold, 'inherit'),
+  $headline-4: mat.define-typography-level('inherit', 'inherit', 'inherit', $zh-font-family-bold, 'inherit'),
+  $headline-3: mat.define-typography-level('inherit', 'inherit', 'inherit', $zh-font-family-bold, 'inherit'),
+  $headline-2: mat.define-typography-level('inherit', 'inherit', 'inherit', $zh-font-family-bold, 'inherit'),
+  $headline-1: mat.define-typography-level('inherit', 'inherit', 'inherit', $zh-font-family-bold, 'inherit'),
+  // Define default family, used in non-headlines and e.g. buttons
   $font-family: $zh-font-family
 );
