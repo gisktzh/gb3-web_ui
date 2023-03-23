@@ -3,10 +3,19 @@ import {CdkDrag, CdkDragDrop} from '@angular/cdk/drag-drop';
 import {Store} from '@ngrx/store';
 import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
 import {selectActiveMapItems} from '../../../state/map/reducers/active-map-item.reducer';
-import {Subscription} from 'rxjs';
+import {Subscription, tap} from 'rxjs';
 import {ActiveMapItem} from '../../models/active-map-item.model';
 import {LegendActions} from '../../../state/map/actions/legend.actions';
 import {slideInOutAnimation} from '../../../shared/animations/slideInOut.animation';
+import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.reducer';
+import {MatDialog} from '@angular/material/dialog';
+import {FavouriteDialogComponent} from '../favourite-dialog/favourite-dialog.component';
+import {FavouriteListActions} from 'src/app/state/map/actions/favourite-list.actions';
+
+const favouriteHelperMessages = {
+  noMapsAdded: 'Fügen Sie mindestens 1 Karte hinzu, um einen Favoriten anzulegen.',
+  notAuthenticated: 'Loggen Sie sich ein, um Favoriten hinzuzufügen.'
+};
 
 @Component({
   selector: 'active-map-items-widget',
@@ -15,23 +24,21 @@ import {slideInOutAnimation} from '../../../shared/animations/slideInOut.animati
   animations: [slideInOutAnimation]
 })
 export class ActiveMapItemsWidgetComponent implements OnInit, OnDestroy {
+  public isAuthenticated: boolean = false;
+  public favouriteHelperMessages = favouriteHelperMessages;
   private readonly activeMapItems$ = this.store.select(selectActiveMapItems);
+  private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
   private readonly subscription: Subscription = new Subscription();
-
   private _activeMapItems: ActiveMapItem[] = [];
 
-  constructor(private readonly store: Store) {}
+  constructor(private readonly store: Store, private readonly dialogService: MatDialog) {}
 
   public get activeMapItems(): ActiveMapItem[] {
     return this._activeMapItems;
   }
 
   public ngOnInit() {
-    this.subscription.add(
-      this.activeMapItems$.subscribe((currentActiveMapItems) => {
-        this._activeMapItems = currentActiveMapItems;
-      })
-    );
+    this.initSubscriptions();
   }
 
   public ngOnDestroy() {
@@ -62,5 +69,42 @@ export class ActiveMapItemsWidgetComponent implements OnInit, OnDestroy {
 
   public toggleLegend() {
     this.store.dispatch(LegendActions.showLegend());
+  }
+
+  public showFavouriteDialog() {
+    const dialogRef = this.dialogService.open<FavouriteDialogComponent, undefined, boolean>(FavouriteDialogComponent);
+    this.subscription.add(
+      dialogRef
+        .afterClosed()
+        .pipe(
+          tap((isAborted) => {
+            if (!isAborted) {
+              this.store.dispatch(FavouriteListActions.loadFavourites());
+            }
+          })
+        )
+        .subscribe()
+    );
+  }
+
+  private initSubscriptions() {
+    this.subscription.add(
+      this.activeMapItems$
+        .pipe(
+          tap((currentActiveMapItems) => {
+            this._activeMapItems = currentActiveMapItems;
+          })
+        )
+        .subscribe()
+    );
+    this.subscription.add(
+      this.isAuthenticated$
+        .pipe(
+          tap((isAuthenticated) => {
+            this.isAuthenticated = isAuthenticated;
+          })
+        )
+        .subscribe()
+    );
   }
 }

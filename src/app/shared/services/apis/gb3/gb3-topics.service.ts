@@ -21,7 +21,7 @@ import {map} from 'rxjs/operators';
   providedIn: 'root'
 })
 export class Gb3TopicsService extends Gb3ApiService {
-  private readonly endpoint = 'v3/topics';
+  protected readonly endpoint = 'v3/topics';
 
   public loadTopics(): Observable<TopicsResponse> {
     const requestUrl = this.createTopicsUrl();
@@ -260,9 +260,5 @@ export class Gb3TopicsService extends Gb3ApiService {
         }
       };
     });
-  }
-
-  private getFullEndpointUrl(): string {
-    return `${this.apiBaseUrl}/${this.endpoint}`;
   }
 }

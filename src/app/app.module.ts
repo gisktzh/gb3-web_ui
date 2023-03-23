@@ -21,6 +21,7 @@ import {NewsService} from './shared/interfaces/news-service.interface';
 import {EsriTimeSliderService} from './map/services/esri-time-slider.service';
 import {AuthModule} from './auth/auth.module';
 import {AuthStatusEffects} from './state/auth/effects/auth-status.effects';
+import {FavouriteListEffects} from './state/map/effects/favourite-list.effects';
 
 export const MAP_SERVICE = new InjectionToken<MapService>('MapService');
 export const TIME_SLIDER_SERVICE = new InjectionToken<MapService>('TimeSliderService');
@@ -43,7 +44,8 @@ export const NEWS_SERVICE = new InjectionToken<NewsService>('NewsService');
       LayerCatalogEffects,
       LegendEffects,
       MapConfigEffects,
-      AuthStatusEffects
+      AuthStatusEffects,
+      FavouriteListEffects
     ]),
     AuthModule
   ],

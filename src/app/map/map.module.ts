@@ -21,6 +21,9 @@ import {ActiveMapItemComponent} from './components/active-map-items-widget/activ
 import {OnboardingGuideModule} from '../onboarding-guide/onboarding-guide.module';
 import {TimeSliderWidgetComponent} from './components/time-slider-widget/time-slider-widget.component';
 import {MapAttributeFilterComponent} from './components/map-attribute-filter/map-attribute-filter.component';
+import {FavouriteDialogComponent} from './components/favourite-dialog/favourite-dialog.component';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {FavouriteSelectionComponent} from './components/map-data-catalogue/favourite-selection/favourite-selection.component';
 
 @NgModule({
   declarations: [
@@ -41,8 +44,11 @@ import {MapAttributeFilterComponent} from './components/map-attribute-filter/map
     MapControlsComponent,
     BasemapSelectorComponent,
     TimeSliderWidgetComponent,
-    MapAttributeFilterComponent
+    MapAttributeFilterComponent,
+    TimeSliderWidgetComponent,
+    FavouriteDialogComponent,
+    FavouriteSelectionComponent
   ],
-  imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule]
+  imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule]
 })
 export class MapModule {}

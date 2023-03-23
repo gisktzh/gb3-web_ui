@@ -13,4 +13,8 @@ export abstract class BaseApiService {
   protected get<T>(url: string): Observable<T> {
     return this.http.get<T>(url);
   }
+
+  protected post<T, R>(url: string, body?: T): Observable<R> {
+    return this.http.post<R>(url, body);
+  }
 }

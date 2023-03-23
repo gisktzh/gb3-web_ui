@@ -3,47 +3,48 @@
     <div class="active-map-items__header__title">
       <mat-card-title>Aktive Karten/Layer</mat-card-title>
     </div>
-    <button
-      class="active-map-items__header__buttons"
-      mat-raised-button
-      color="warn"
-      (click)="removeAllActiveMapItems()"
-      [disabled]="activeMapItems.length === 0"
-    >
-      Clear
-    </button>
-    <button
-      class="active-map-items__header__buttons"
-      mat-raised-button
-      (click)="this.toggleLegend()"
-      [disabled]="activeMapItems.length === 0"
-    >
-      Legende
-    </button>
+    <div class="active-map-items__header__buttons">
+      <button (click)="removeAllActiveMapItems()" [disabled]="activeMapItems.length === 0" mat-icon-button>
+        <mat-icon>delete_outlined</mat-icon>
+      </button>
+      <span
+        #tooltip="matTooltip"
+        [matTooltipDisabled]="this.isAuthenticated && this.activeMapItems.length > 0"
+        [matTooltip]="
+          this.isAuthenticated && this.activeMapItems.length === 0
+            ? this.favouriteHelperMessages.noMapsAdded
+            : this.favouriteHelperMessages.notAuthenticated
+        "
+      >
+        <button (click)="showFavouriteDialog()" [disabled]="activeMapItems.length === 0 || !this.isAuthenticated" mat-icon-button>
+          <mat-icon>star_outlined</mat-icon>
+        </button>
+      </span>
+    </div>
   </mat-card-header>
-  <mat-accordion class="active-map-items__content" multi="true" displayMode="flat" cdkDropList (cdkDropListDropped)="dropMapItem($event)">
+  <mat-accordion (cdkDropListDropped)="dropMapItem($event)" cdkDropList class="active-map-items__content" displayMode="flat" multi="true">
     <ng-container *ngFor="let activeMapItem of activeMapItems; trackBy: trackByMapItemId">
-      <mat-expansion-panel cdkDrag hideToggle="true" #activeMapItemExpansionPanel [@slideInOut]>
+      <mat-expansion-panel #activeMapItemExpansionPanel [@slideInOut] cdkDrag hideToggle="true">
         <mat-expansion-panel-header (click)="activeMapItemExpansionPanel.toggle()" class="active-map-item">
           <div class="active-map-item__container">
-            <mat-icon class="active-map-item__drag-handle" cdkDragHandle>drag_indicator</mat-icon>
-            <button mat-icon-button *ngIf="!activeMapItemExpansionPanel.expanded" (click)="activeMapItemExpansionPanel.open()">
+            <mat-icon cdkDragHandle class="active-map-item__drag-handle">drag_indicator</mat-icon>
+            <button (click)="activeMapItemExpansionPanel.open()" *ngIf="!activeMapItemExpansionPanel.expanded" mat-icon-button>
               <mat-icon>arrow_right</mat-icon>
             </button>
-            <button mat-icon-button *ngIf="activeMapItemExpansionPanel.expanded" (click)="activeMapItemExpansionPanel.close()">
+            <button (click)="activeMapItemExpansionPanel.close()" *ngIf="activeMapItemExpansionPanel.expanded" mat-icon-button>
               <mat-icon>arrow_drop_down</mat-icon>
             </button>
-            <button mat-icon-button (click)="toggleMapItemVisibility(activeMapItem)" data-test-id="map-visibility">
+            <button (click)="toggleMapItemVisibility(activeMapItem)" mat-icon-button data-test-id="map-visibility">
               <div class="active-map-item__image-container">
-                <img [src]="activeMapItem.mapImageUrl" [alt]="activeMapItem.title" />
+                <img [alt]="activeMapItem.title" [src]="activeMapItem.mapImageUrl" />
                 <mat-icon
-                  class="active-map-item__image-container__visibility"
                   [fontIcon]="activeMapItem.visible ? 'visibility' : 'visibility_off'"
+                  class="active-map-item__image-container__visibility"
                 ></mat-icon>
               </div>
             </button>
             <p class="active-map-item__title" matTooltip="{{ activeMapItem.title }}">{{ activeMapItem.title }}</p>
-            <button mat-icon-button (click)="removeActiveMapItem(activeMapItem)" data-test-id="delete">
+            <button (click)="removeActiveMapItem(activeMapItem)" mat-icon-button data-test-id="delete">
               <mat-icon>delete</mat-icon>
             </button>
             <div class="active-map-item__menu">
@@ -77,4 +78,13 @@
       </mat-expansion-panel>
     </ng-container>
   </mat-accordion>
+  <button
+    (click)="this.toggleLegend()"
+    *ngIf="activeMapItems.length !== 0"
+    class="active-map-items__content__legend"
+    color="primary"
+    mat-raised-button
+  >
+    Legende
+  </button>
 </mat-card>

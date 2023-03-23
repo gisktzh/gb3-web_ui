@@ -137,6 +137,21 @@ export class ActiveMapItemEffects {
     {dispatch: false}
   );
 
+  public dispatchAddFavouriteEffect$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(ActiveMapItemActions.addFavourite),
+        tap(({favourite}) => {
+          favourite.forEach((fav, idx) => {
+            this.mapService.removeMapItem(fav.id);
+            this.mapService.addMapItem(fav, idx);
+          });
+        })
+      );
+    },
+    {dispatch: false}
+  );
+
   constructor(
     private readonly actions$: Actions,
     @Inject(MAP_SERVICE) private readonly mapService: MapService,

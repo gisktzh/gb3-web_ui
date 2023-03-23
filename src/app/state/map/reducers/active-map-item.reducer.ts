@@ -137,7 +137,13 @@ export const activeMapItemFeature = createFeature({
         });
         return {...state, activeMapItems: [...activeMapItems]};
       }
-    )
+    ),
+    on(ActiveMapItemActions.addFavourite, (state, {favourite}): ActiveMapItemState => {
+      const favouriteIds = favourite.map((fav) => fav.id);
+      const activeMapItemsToStay = state.activeMapItems.filter((activeMapItem) => !favouriteIds.includes(activeMapItem.id));
+
+      return {...state, activeMapItems: [...favourite, ...activeMapItemsToStay]};
+    })
   )
 });
 

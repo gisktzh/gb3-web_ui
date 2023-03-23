@@ -23,6 +23,7 @@ export const ActiveMapItemActions = createActionGroup({
       filterValueName: string;
       attributeFilterParameter: string;
       activeMapItem: ActiveMapItem;
-    }>()
+    }>(),
+    'Add Favourite': props<{favourite: ActiveMapItem[]}>()
   }
 });
