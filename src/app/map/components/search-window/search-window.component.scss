@@ -6,6 +6,7 @@
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
+  pointer-events: all;
 
   .search-window__input {
     width: 484px;
@@ -49,6 +50,7 @@
       flex-direction: column;
       overflow: hidden;
       background-color: white;
+      pointer-events: all;
 
       .search-window__header {
         padding: 4px;
