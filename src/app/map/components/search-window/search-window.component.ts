@@ -1,10 +1,7 @@
 import {AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {SearchService} from "../../../search/services/search.service";
 import {debounceTime, distinctUntilChanged, fromEvent, Observable, Subscription, tap} from "rxjs";
-import {SearchApiResponse} from "../../../search/interfaces/search-api-response.interface";
-import {AddressIndex} from "../../../search/interfaces/address-index.interface";
-import {PlacesIndex} from "../../../search/interfaces/places-index.interface";
-import {SearchWindowElement} from "./interfaces/search-window-element.interface";
+import {SearchWindowElement} from "../../../search/interfaces/search-window-element.interface";
 import {Store} from "@ngrx/store";
 import {Map} from "../../../shared/interfaces/topic.interface";
 import {selectMaps} from "../../../state/map/selectors/maps.selector";
@@ -51,40 +48,13 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
     this.subscriptions.add(this.filterInputHandler().subscribe());
   }
 
-  public search(term: string) {
+  public async search(term: string) {
     this.searchTerms = term.split(' ');
     if (term === '') {
       this.searchResults = [];
       this.filteredMaps = [];
     } else {
-      this.subscriptions.add(this.searchService.search('fme-addresses,fme-places', term).subscribe(
-        (response: SearchApiResponse) => {
-          this.searchResults = [];
-          const addressHits = response.results[0].data.hits.hits;
-          if (addressHits.length > 0) {
-            for (const hit of addressHits) {
-              const hitSource = hit._source as AddressIndex;
-              this.searchResults.push(<SearchWindowElement>{
-                displayString: `${hitSource.street} ${hitSource.no}, ${hitSource.plz} ${hitSource.town}`,
-                score: hit._score,
-                geometry: hitSource.geometry
-              });
-            }
-          }
-          const placesHits = response.results[1].data.hits.hits;
-          if (placesHits.length > 0) {
-            for (const hit of placesHits) {
-              const hitSource = hit._source as PlacesIndex;
-              this.searchResults.push(<SearchWindowElement>{
-                displayString: `${hitSource.TYPE} ${hitSource.NAME}`,
-                score: hit._score,
-                geometry: hitSource.geometry
-              });
-            }
-          }
-          this.searchResults.sort((a,b)=> b.score > a.score ? 1 : -1);
-        }
-      ));
+      this.searchResults = await this.searchService.addressAndPlacesSearch(term);
       this.filteredMaps = this.originalMaps.filter(availableMap =>
         this.searchTerms.every(searchTerm => availableMap.title.toLowerCase().includes(searchTerm.toLowerCase()))
       );
