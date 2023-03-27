@@ -24,7 +24,7 @@ import {MapAttributeFilterComponent} from './components/map-attribute-filter/map
 import {FavouriteDialogComponent} from './components/favourite-dialog/favourite-dialog.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {FavouriteSelectionComponent} from './components/map-data-catalogue/favourite-selection/favourite-selection.component';
-import {SearchWindowComponent} from "./components/map/search-window/search-window.component";
+import {SearchWindowComponent} from "./components/search-window/search-window.component";
 
 @NgModule({
   declarations: [
