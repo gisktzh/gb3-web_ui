@@ -5,13 +5,14 @@ import {SearchApiResponse} from "../interfaces/search-api-response.interface";
 import {AddressIndex} from "../interfaces/address-index.interface";
 import {SearchWindowElement} from "../interfaces/search-window-element.interface";
 import {PlacesIndex} from "../interfaces/places-index.interface";
+import {environment} from "../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class SearchService {
 
-  private endpoint = 'http://localhost:8000/search';
+  private endpoint = `${environment.baseUrls.searchApi}/search`;
 
   constructor(private http: HttpClient) { }
 
