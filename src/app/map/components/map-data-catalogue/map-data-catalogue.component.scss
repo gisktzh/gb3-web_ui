@@ -13,6 +13,7 @@
     font-family: ktzh-variables.$zh-font-family;
     padding: 8px 16px 8px 16px;
     height: 36px;
+    min-height: 36px;
 
     .map-catalogue__header__title {
       align-self: center;
@@ -34,6 +35,7 @@
       margin: 5px;
       outline: none;
       display: block;
+      font-family: ktzh-variables.$zh-font-family;
     }
 
     .map-catalogue__filter__input:focus {
@@ -61,6 +63,11 @@
       border-radius: 0;
     }
 
+    .map-catalogue__content__topic-title {
+      // needed to avoid a cut-off results indicator
+      margin: 20px 0;
+    }
+
     .map__header {
       padding: 0 8px;
 
@@ -75,6 +82,8 @@
       .map__header__title {
         @include mixins.single-line-text;
         margin-right: auto;
+        margin-top: auto;
+        margin-bottom: auto;
       }
     }
 

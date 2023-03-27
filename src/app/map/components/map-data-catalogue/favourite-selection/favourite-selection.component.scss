@@ -10,6 +10,10 @@
     display: flex;
     flex-wrap: wrap;
 
+    .favourite-selection__header__title {
+      margin: 0;
+    }
+
     .favourite-selection__header__loader {
       position: absolute;
       bottom: 0;
@@ -55,6 +59,8 @@
       .favourite-selection__favourite__content__title {
         @include mixins.single-line-text;
         margin-right: auto;
+        margin-bottom: auto;
+        margin-top: auto;
 
         &.favourite-selection__favourite__title--disabled {
           color: grey;

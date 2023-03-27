@@ -7,8 +7,9 @@ export const mapOnboardingGuideConfig: OnboardingGuideConfig = {
     {
       anchorId: 'map.start.tour',
       content:
-        'Lernen Sie die wichtigsten Funktionen kennen.<br><small>Navigieren Sie mit der Maus oder den Pfeiltasten durch den Guide und beenden Sie ' +
-        'ihn wahlweise mit ESC oder durch den entsprechenden Button.</small>',
+        'Lernen Sie die wichtigsten Funktionen kennen.<br>' +
+        'Navigieren Sie mit der Maus oder den Pfeiltasten durch den Guide und beenden Sie ' +
+        'ihn wahlweise mit ESC oder durch den entsprechenden Button.',
       title: 'Willkommen auf dem GIS-Browser des Kanton Zürich',
       enableBackdrop: true
     },
