@@ -16,7 +16,7 @@ export class MapConfigUrlService implements OnDestroy {
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly store: Store,
-    private readonly basemapConfiService: BasemapConfigService
+    private readonly basemapConfigService: BasemapConfigService
   ) {
     this.getInitialMapConfig();
   }
@@ -56,10 +56,11 @@ export class MapConfigUrlService implements OnDestroy {
   }
 
   private extractMapParameters(params: Params) {
-    const {x, y, scale, basemap} = params;
-    if (x || y || scale || basemap) {
-      const basemapId = this.basemapConfiService.checkBasemapIdOrGetDefault(basemap);
-      this.store.dispatch(MapConfigActions.setInitialMapConfig({x, y, scale, basemapId}));
+    const {x, y, scale, basemap, initialMapIds} = params;
+    if (x || y || scale || basemap || initialMapIds) {
+      const basemapId = this.basemapConfigService.checkBasemapIdOrGetDefault(basemap);
+      const initialMaps = this.getInitialMapsForDisplayOrDefault(initialMapIds);
+      this.store.dispatch(MapConfigActions.setInitialMapConfig({x, y, scale, basemapId, initialMaps}));
     }
   }
 
@@ -90,5 +91,13 @@ export class MapConfigUrlService implements OnDestroy {
       },
       scale: Math.round(config.scale)
     };
+  }
+
+  private getInitialMapsForDisplayOrDefault(initialMapIds: string | undefined): string[] {
+    if (!initialMapIds) {
+      return [];
+    }
+
+    return initialMapIds.split(',');
   }
 }
