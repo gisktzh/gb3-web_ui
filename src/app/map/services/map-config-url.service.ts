@@ -1,11 +1,16 @@
 import {Injectable, OnDestroy} from '@angular/core';
-import {ActivatedRoute, Params, Router} from '@angular/router';
+import {ActivatedRoute, Params, QueryParamsHandling, Router} from '@angular/router';
 import {first, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {MapConfigActions} from '../../state/map/actions/map-config.actions';
 import {MapConfigState, selectMapConfigState} from '../../state/map/reducers/map-config.reducer';
 import {PrintType} from '../../shared/types/print-type';
 import {BasemapConfigService} from './basemap-config.service';
+
+/**
+ * Query params that are removed upon loading the initial map configuration.
+ */
+const TEMPORARY_URL_PARAMS = ['initialMapIds'];
 
 @Injectable()
 export class MapConfigUrlService implements OnDestroy {
@@ -16,7 +21,7 @@ export class MapConfigUrlService implements OnDestroy {
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly store: Store,
-    private readonly basemapConfiService: BasemapConfigService
+    private readonly basemapConfigService: BasemapConfigService
   ) {
     this.getInitialMapConfig();
   }
@@ -25,20 +30,14 @@ export class MapConfigUrlService implements OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  public activatePrintMode(printType: PrintType) {
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: {print: printType},
-      queryParamsHandling: 'merge'
-    });
+  public async activatePrintMode(printType: PrintType) {
+    const queryParams = {print: printType};
+    await this.updateQueryParams(queryParams, 'merge');
   }
 
-  public deactivatePrintMode() {
+  public async deactivatePrintMode() {
     const {print, ...otherParams} = this.route.snapshot.queryParams;
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: otherParams
-    });
+    await this.updateQueryParams(otherParams);
   }
 
   private getInitialMapConfig() {
@@ -46,8 +45,9 @@ export class MapConfigUrlService implements OnDestroy {
       this.route.queryParams
         .pipe(
           first(),
-          tap((params) => {
-            this.extractMapParameters(params);
+          tap(async (queryParams) => {
+            this.extractMapParameters(queryParams);
+            await this.removeTemporaryQueryParams(queryParams);
             this.subscribeToUrlChanges();
           })
         )
@@ -56,10 +56,11 @@ export class MapConfigUrlService implements OnDestroy {
   }
 
   private extractMapParameters(params: Params) {
-    const {x, y, scale, basemap} = params;
-    if (x || y || scale || basemap) {
-      const basemapId = this.basemapConfiService.checkBasemapIdOrGetDefault(basemap);
-      this.store.dispatch(MapConfigActions.setInitialMapConfig({x, y, scale, basemapId}));
+    const {x, y, scale, basemap, initialMapIds} = params;
+    if (x || y || scale || basemap || initialMapIds) {
+      const basemapId = this.basemapConfigService.checkBasemapIdOrGetDefault(basemap);
+      const initialMaps = this.getInitialMapsForDisplayOrDefault(initialMapIds);
+      this.store.dispatch(MapConfigActions.setInitialMapConfig({x, y, scale, basemapId, initialMaps}));
     }
   }
 
@@ -67,15 +68,11 @@ export class MapConfigUrlService implements OnDestroy {
     this.subscriptions.add(
       this.mapConfig$
         .pipe(
-          tap(async (config) => {
-            const {center, scale} = this.getRoundedMapParameters(config);
-            const {activeBasemapId} = config;
-            const queryParms: Params = {x: center.x, y: center.y, scale: scale, basemap: activeBasemapId};
-            await this.router.navigate([], {
-              relativeTo: this.route,
-              queryParams: queryParms,
-              queryParamsHandling: 'merge'
-            });
+          tap(async (mapConfig) => {
+            const {center, scale} = this.getRoundedMapParameters(mapConfig);
+            const {activeBasemapId} = mapConfig;
+            const queryParams: Params = {x: center.x, y: center.y, scale: scale, basemap: activeBasemapId};
+            await this.updateQueryParams(queryParams, 'merge');
           })
         )
         .subscribe()
@@ -90,5 +87,27 @@ export class MapConfigUrlService implements OnDestroy {
       },
       scale: Math.round(config.scale)
     };
+  }
+
+  private getInitialMapsForDisplayOrDefault(initialMapIds: string | undefined): string[] {
+    return initialMapIds ? initialMapIds.split(',') : [];
+  }
+
+  private async removeTemporaryQueryParams(params: Params) {
+    const paramsToRemove = TEMPORARY_URL_PARAMS.reduce((prev, curr) => ({...prev, [curr]: null}), {});
+    const adjustedParams: Params = {
+      ...params,
+      ...paramsToRemove
+    };
+
+    await this.updateQueryParams(adjustedParams, 'merge');
+  }
+
+  private async updateQueryParams(queryParams: Params, queryParamsHandling: QueryParamsHandling | null = null) {
+    await this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams,
+      queryParamsHandling
+    });
   }
 }

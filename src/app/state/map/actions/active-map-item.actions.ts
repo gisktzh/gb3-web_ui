@@ -24,6 +24,7 @@ export const ActiveMapItemActions = createActionGroup({
       attributeFilterParameter: string;
       activeMapItem: ActiveMapItem;
     }>(),
-    'Add Favourite': props<{favourite: ActiveMapItem[]}>()
+    'Add Favourite': props<{favourite: ActiveMapItem[]}>(),
+    'Add Initial Map Items': props<{initialMapItems: ActiveMapItem[]}>()
   }
 });
