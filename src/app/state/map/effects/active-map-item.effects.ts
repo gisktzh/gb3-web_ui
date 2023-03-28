@@ -162,9 +162,7 @@ export class ActiveMapItemEffects {
           this.mapService.addMapItem(initialMapItem, 0);
         });
       }),
-      map(() => {
-        return MapConfigActions.clearInitialMapsConfig();
-      })
+      map(() => MapConfigActions.clearInitialMapsConfig())
     );
   });
 

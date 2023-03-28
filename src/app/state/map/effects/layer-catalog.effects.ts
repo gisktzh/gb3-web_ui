@@ -42,9 +42,7 @@ export class LayerCatalogEffects {
       map(([availableMaps, {initialMaps}]) => {
         const initialMapItems = availableMaps
           .filter((availableMap) => initialMaps.includes(availableMap.id))
-          .map((availableMap) => {
-            return new ActiveMapItem(availableMap);
-          });
+          .map((availableMap) => new ActiveMapItem(availableMap));
 
         return ActiveMapItemActions.addInitialMapItems({initialMapItems});
       })
