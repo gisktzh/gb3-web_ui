@@ -1,0 +1,30 @@
+@use 'functions/helper.function' as functions;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.feature-info {
+  overflow-y: auto;
+
+  .feature-info__title {
+    font-weight: bolder;
+    font-size: larger;
+    padding-bottom: 12px;
+  }
+
+  @media print {
+    .feature-info__highlight-button {
+      display: none;
+    }
+  }
+
+  .feature-info__content {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-gap: 12px;
+    border-bottom: 1px solid functions.get-color-from-palette(ktzh-variables.$zh-accent);
+    padding-bottom: 8px;
+
+    .feature-info__content__label {
+      font-weight: bold;
+    }
+  }
+}

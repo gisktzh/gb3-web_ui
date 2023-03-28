@@ -1,0 +1,50 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.scale-input {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: ktzh-variables.$zh-background-color;
+  padding: 5px;
+  border-radius: ktzh-variables.$zh-border-radius;
+
+  .scale-input__title {
+    margin: 0;
+    padding-right: 0.5rem;
+  }
+
+  .scale-input__wrapper {
+    display: flex;
+    align-items: center;
+    background: ktzh-variables.$zh-background-color;
+    border: 1px solid ktzh-variables.$zh-border-color;
+    border-radius: ktzh-variables.$zh-border-radius;
+    padding-left: 0.5rem;
+    overflow: hidden;
+    font-size: 14px;
+    width: 100px;
+
+    .scale-input__input {
+      flex-grow: 1;
+      background: ktzh-variables.$zh-background-color;
+      border: none;
+      outline: none;
+      padding: 0.5rem 0;
+      font-family: ktzh-variables.$zh-font-family;
+      font-size: 14px;
+    }
+  }
+}
+
+/**
+ Hide input arrows on number field
+ */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+}

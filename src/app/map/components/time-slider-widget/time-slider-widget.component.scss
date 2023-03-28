@@ -1,0 +1,9 @@
+@use 'mixins/helpers.mixin' as mixins;
+
+.timeSlider {
+  @include mixins.no-box-shadow;
+
+  .time-slider__title {
+    margin: 0;
+  }
+}

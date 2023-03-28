@@ -1,0 +1,22 @@
+<map-overlay-list-item [title]="this.featureInfo.topic" [isPrintable]="this.isPrintable">
+  <b *ngIf="this.featureInfo.layers.length === 0">Keine Treffer!</b>
+  <div class="feature-info" *ngFor="let layerInfo of this.featureInfo.layers">
+    <div class="feature-info__title">{{ layerInfo.title }} ({{ layerInfo.features.length }} Treffer)</div>
+    <ng-container *ngFor="let feature of layerInfo.features; index as i">
+      <b>Treffer {{ i + 1 }}/{{ layerInfo.features.length }}</b>
+      <button
+        class="mat-raised-button feature-info__highlight-button"
+        (click)="this.highlightFeature(feature.geometry)"
+        data-test-id="highlight"
+      >
+        Highlight
+      </button>
+      <div class="feature-info__content">
+        <ng-container *ngFor="let data of feature.fields">
+          <div class="feature-info__content__label">{{ data.label }}</div>
+          <div class="feature-info__content__value">{{ data.value }}</div>
+        </ng-container>
+      </div>
+    </ng-container>
+  </div>
+</map-overlay-list-item>

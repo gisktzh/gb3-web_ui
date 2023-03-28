@@ -1,0 +1,31 @@
+.map-container {
+  height: 100%;
+
+  .map-container__all-map-items-container {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    top: 80px;
+    bottom: 25px;
+    left: 15px;
+    width: 450px;
+    overflow-y: hidden;
+
+    .all-map-items-container__active-map-items-widget {
+      display: flex;
+      max-height: 50%;
+      padding-bottom: 15px;
+    }
+
+    .all-map-items-container__map-data-catalogue {
+      display: flex;
+      min-height: 50%;
+    }
+  }
+}
+
+@media print {
+  .map-container {
+    display: none;
+  }
+}

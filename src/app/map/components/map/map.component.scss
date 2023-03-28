@@ -1,0 +1,33 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.main-map {
+  height: 100%;
+  width: 100%;
+
+  .main-map__scale-input {
+    position: absolute;
+    bottom: 30px;
+    right: 95px;
+  }
+
+  .main-map__map-controls {
+    position: absolute;
+    bottom: 25px;
+    right: 25px;
+  }
+
+  .main-map__basemap-selector {
+    position: absolute;
+    bottom: 98px;
+    right: 95px;
+  }
+
+  .main-map__scale-bar-container {
+    position: absolute;
+    bottom: 30px;
+    right: 300px;
+    padding: 5px;
+    border-radius: ktzh-variables.$zh-border-radius;
+    font-family: ktzh-variables.$zh-font-family;
+  }
+}

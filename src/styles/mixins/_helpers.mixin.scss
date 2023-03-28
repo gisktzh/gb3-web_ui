@@ -1,0 +1,36 @@
+/// Prevents text in an element (e.g. a div) from becoming selectable
+@mixin non-selectable-text {
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+@mixin single-line-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@mixin no-box-shadow {
+  box-shadow: none;
+}
+
+@mixin mat-button--align-icon-right {
+  display: flex;
+  flex-direction: row-reverse;
+
+  ::ng-deep {
+    .mat-icon {
+      margin-left: 8px;
+      margin-right: 0;
+    }
+  }
+}
+
+@mixin multiline-ellipsis($number-of-lines) {
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: $number-of-lines;
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

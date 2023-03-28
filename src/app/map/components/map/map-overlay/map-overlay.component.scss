@@ -1,0 +1,21 @@
+.map-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 300px;
+  box-sizing: border-box;
+  border-radius: 0;
+  padding-top: 0;
+  overflow: hidden scroll;
+  z-index: 9999; // todo: hackedihack
+
+  &.map-overlay--right {
+    left: unset;
+    right: 0;
+  }
+
+  .map-overlay__header {
+    justify-content: end;
+  }
+}

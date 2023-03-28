@@ -1,0 +1,29 @@
+<map-overlay-list-item [title]="legendItem.topic" [isPrintable]="this.isPrintable">
+  <div class="legend-item" *ngFor="let layer of legendItem.layers">
+    <div class="legend-item__layer-title">
+      <b>{{ layer.title }}</b>
+      <div class="legend-item__layer-attribution" *ngIf="layer.attribution">
+        {{ layer.attribution }}
+      </div>
+      <div class="legend-item__geolion" *ngIf="layer.geolion">
+        <a routerLink="{{ this.getDataTabLink(layer.geolion) }}">Zu den Metadaten</a>
+      </div>
+    </div>
+    <div class="legend-item__class-list" *ngIf="layer.layerClasses; else noLayerClasses">
+      <div class="legend-item__class-list-entry" *ngFor="let layerClass of layer.layerClasses">
+        <div class="legend-item__class-list-entry-col">
+          <img src="https://maps.zh.ch/{{ layerClass.image }}" alt="{{ layerClass.label }}" />
+        </div>
+        <div class="legend-item__class-list-entry-col">
+          {{ layerClass.label }}
+        </div>
+      </div>
+    </div>
+  </div>
+</map-overlay-list-item>
+
+<ng-template #noLayerClasses>
+  <div>
+    <i>Keine Klassen</i>
+  </div>
+</ng-template>

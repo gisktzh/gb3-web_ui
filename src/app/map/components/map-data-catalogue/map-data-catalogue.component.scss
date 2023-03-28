@@ -1,0 +1,106 @@
+@use 'functions/helper.function' as functions;
+@use 'mixins/helpers.mixin' as mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.map-catalogue-widget {
+  width: 100%;
+  padding: 0;
+  border: none;
+
+  .map-catalogue__header {
+    background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
+    color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+    font-family: ktzh-variables.$zh-font-family;
+    padding: 8px 16px 8px 16px;
+    height: 36px;
+    min-height: 36px;
+
+    .map-catalogue__header__title {
+      align-self: center;
+    }
+  }
+
+  .map-catalogue__filter-no-results {
+    align-self: center;
+  }
+
+  .map-catalogue__filter {
+    display: flex;
+
+    .map-catalogue__filter__input {
+      width: 100%;
+      height: 40px;
+      padding: 0 5px 0 45px;
+      border: 3px solid grey;
+      margin: 5px;
+      outline: none;
+      display: block;
+      font-family: ktzh-variables.$zh-font-family;
+    }
+
+    .map-catalogue__filter__input:focus {
+      border: 3px solid ktzh-variables.$zh-cyan;
+
+      & + .map-catalogue__filter__input-icon {
+        color: black;
+      }
+    }
+
+    .map-catalogue__filter__input-icon {
+      height: 30px;
+      width: 30px;
+      margin: 16px 5px 5px 16px;
+      position: absolute;
+      color: grey;
+    }
+  }
+
+  .map-catalogue__content {
+    overflow-y: scroll;
+
+    & .mat-expansion-panel {
+      // Remove the material first and last border rounding
+      border-radius: 0;
+    }
+
+    .map-catalogue__content__topic-title {
+      // needed to avoid a cut-off results indicator
+      margin: 20px 0;
+    }
+
+    .map__header {
+      padding: 0 8px;
+
+      .map__header__image {
+        height: 32px;
+        width: 32px;
+        align-self: center;
+        margin-right: 8px;
+        border-radius: 4px;
+      }
+
+      .map__header__title {
+        @include mixins.single-line-text;
+        margin-right: auto;
+        margin-top: auto;
+        margin-bottom: auto;
+      }
+    }
+
+    .layer {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      .layer__icon {
+        min-width: 24px;
+      }
+
+      .layer__title {
+        @include mixins.single-line-text;
+        margin-left: 8px;
+        flex-grow: 1;
+      }
+    }
+  }
+}

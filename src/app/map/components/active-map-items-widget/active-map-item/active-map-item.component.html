@@ -1,0 +1,33 @@
+<!-- Opacity config -->
+<mat-card appearance="raised" class="transparency">
+  <p class="transparency__title">Transparenz</p>
+  <mat-slider discrete min="0" max="1" step="0.01" color="accent">
+    <input matSliderThumb [value]="activeMapItem.opacity" (valueChange)="onOpacitySliderChange($event, activeMapItem)" />
+  </mat-slider>
+</mat-card>
+
+<!-- time slider config -->
+<time-slider-widget *ngIf="activeMapItem.timeSliderConfiguration" [activeMapItem]="activeMapItem"></time-slider-widget>
+
+<map-attribute-filter *ngIf="activeMapItem.filterConfigurations" [activeMapItem]="activeMapItem"></map-attribute-filter>
+
+<!-- List of sublayers (only if the map item is not a single layer itself) -->
+<ng-container *ngIf="!activeMapItem.isSingleLayer">
+  <mat-divider></mat-divider>
+
+  <div class="sublayer-list" cdkDropList (cdkDropListDropped)="dropSublayer($event, activeMapItem)">
+    <ng-container *ngFor="let layer of activeMapItem.layers; trackBy: trackByLayerId">
+      <!-- Sublayer-->
+      <mat-card appearance="raised" class="sublayer" cdkDrag *ngIf="!layer.isHidden">
+        <mat-icon class="sublayer__drag-handle" cdkDragHandle>drag_indicator</mat-icon>
+        <button mat-icon-button (click)="toggleSublayerVisibility(activeMapItem, layer.id)" [disabled]="!activeMapItem.visible">
+          <div class="sublayer__image-container">
+            <mat-icon class="sublayer__image-container__image">layers</mat-icon>
+            <mat-icon class="sublayer__image-container__visibility" [fontIcon]="layer.visible ? 'visibility' : 'visibility_off'"></mat-icon>
+          </div>
+        </button>
+        <p class="sublayer__title" matTooltip="{{ layer.title }}">{{ layer.title }}</p>
+      </mat-card>
+    </ng-container>
+  </div>
+</ng-container>

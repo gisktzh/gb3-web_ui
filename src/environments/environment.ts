@@ -2,8 +2,21 @@
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-export const environment = {
-  production: false
+import {EnvironmentConfig} from './environment-config.interface';
+
+export const environment: EnvironmentConfig = {
+  production: false,
+  baseUrls: {
+    gb2Api: 'https://maps.zh.ch',
+    gb2Wms: 'https://wms.zh.ch',
+    geoLion: 'https://www.geolion.zh.ch',
+    ktzhWebsite: 'https://www.zh.ch'
+  },
+  auth: {
+    issuer: 'https://maps.zh.ch/',
+    clientId: 'gb3',
+    authenticatedPingInterval: 5000
+  }
 };
 
 /*

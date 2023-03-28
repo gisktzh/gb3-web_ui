@@ -1,0 +1,10 @@
+.placeholder-page {
+  display: flex;
+  justify-content: center;
+
+  .placeholder-page__content {
+    padding: 40px 0;
+    width: 100%;
+    max-width: 900px;
+  }
+}

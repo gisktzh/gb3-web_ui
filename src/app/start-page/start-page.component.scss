@@ -1,0 +1,14 @@
+.start-page {
+  display: flex;
+  justify-content: center;
+
+  .start-page__content {
+    padding: 40px 0;
+    width: 100%;
+    max-width: 900px;
+
+    .start-page__content__news-feed {
+      padding: 0 40px;
+    }
+  }
+}

@@ -1,0 +1,28 @@
+// CSS GLOBAL
+@use '@angular/material' as mat;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+@include mat.core();
+
+/* Theme
+========================== */
+
+// For usage, refer to: https://material.angular.io/guide/theming
+$zh-light-theme: mat.define-light-theme(
+  (
+    color: (
+      primary: ktzh-variables.$zh-primary,
+      accent: ktzh-variables.$zh-accent,
+      warn: ktzh-variables.$zh-warn
+    ),
+    typography: ktzh-variables.$zh-typography-config
+  )
+);
+
+$theme: $zh-light-theme;
+
+// Emit theme-dependent styles for common features used across multiple components.
+@include mat.core-theme($theme);
+@include mat.all-component-themes($theme);
+@include mat.all-component-typographies($theme);
+@include mat.typography-hierarchy(ktzh-variables.$zh-typography-config);

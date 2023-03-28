@@ -1,0 +1,9 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+
+  .app-wrapper {
+    height: 100%;
+  }
+}

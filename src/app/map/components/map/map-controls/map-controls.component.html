@@ -1,0 +1,25 @@
+<div class="map-controls">
+  <button mat-icon-button (click)="this.goToInitialExtent()" color="accent" class="map-controls__button" data-test-id="map-home">
+    <mat-icon>home</mat-icon>
+  </button>
+  <button
+    mat-icon-button
+    (click)="this.handleZoom('zoomIn')"
+    color="accent"
+    [disabled]="this.isMaxZoomedIn"
+    class="map-controls__button"
+    data-test-id="map-add"
+  >
+    <mat-icon>add</mat-icon>
+  </button>
+  <button
+    mat-icon-button
+    (click)="this.handleZoom('zoomOut')"
+    color="accent"
+    [disabled]="this.isMaxZoomedOut"
+    class="map-controls__button"
+    data-test-id="map-remove"
+  >
+    <mat-icon>remove</mat-icon>
+  </button>
+</div>

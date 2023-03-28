@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import {Component, HostListener} from '@angular/core';
+import {DocumentService} from './shared/services/document.service';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,10 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'gb3-poc';
+  constructor(private readonly documentService: DocumentService) {}
+
+  @HostListener('document:click', ['$event'])
+  private onDocumentClick(event: PointerEvent) {
+    this.documentService.documentClicked$.next(event);
+  }
 }

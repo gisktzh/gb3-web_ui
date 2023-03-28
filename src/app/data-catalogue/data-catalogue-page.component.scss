@@ -1,0 +1,10 @@
+.data-catalogue {
+  display: flex;
+  justify-content: center;
+
+  .data-catalogue__content {
+    padding: 40px 0;
+    width: 100%;
+    max-width: 900px;
+  }
+}

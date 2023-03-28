@@ -1,0 +1,24 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.print-overlay {
+  background-color: ktzh-variables.$zh-print-white;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 9999; // todo: still hacky, draw order should not be relying on z-index
+  padding: 20px;
+  box-sizing: border-box;
+
+  .print-overlay__button {
+    margin-bottom: 10px;
+  }
+
+  @media print {
+    .print-overlay__button,
+    .print-overlay__info-title {
+      display: none;
+    }
+  }
+}

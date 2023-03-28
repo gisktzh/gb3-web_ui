@@ -1,0 +1,116 @@
+@use 'functions/helper.function' as functions;
+@use 'mixins/helpers.mixin' as mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.active-map-items-widget {
+  width: 100%;
+  padding: 0;
+  border: none;
+
+  .active-map-items__header {
+    background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
+    color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+    font-family: ktzh-variables.$zh-font-family;
+    padding: 8px 16px 8px 16px;
+    height: 36px;
+
+    .active-map-items__header__title {
+      margin-right: auto;
+      align-self: center;
+    }
+
+    .active-map-items__header__buttons {
+      margin-left: 8px;
+      align-self: center;
+      color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+    }
+  }
+
+  .active-map-items__content {
+    overflow-y: scroll;
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    .active-map-item {
+      padding-left: 12px;
+      padding-right: 12px;
+
+      .active-map-item__container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        overflow: hidden;
+      }
+
+      .active-map-item__drag-handle {
+        min-width: 24px;
+      }
+
+      .active-map-item__image-container {
+        position: relative;
+        float: left;
+
+        .active-map-item__image-container__visibility {
+          position: absolute;
+          left: 0;
+          top: 0;
+          display: none;
+        }
+      }
+
+      .active-map-item__title {
+        @include mixins.single-line-text;
+        width: 100vw;
+        margin-top: auto;
+        margin-bottom: auto;
+      }
+
+      .active-map-item__menu {
+        .active-map-item__menu__handle {
+          visibility: hidden;
+        }
+
+        .mat-mdc-button {
+          .mat-mdc-menu-trigger {
+            position: absolute;
+            top: 0;
+            right: 0;
+          }
+        }
+      }
+
+      .active-map-item__progress-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+      }
+    }
+
+    .active-map-item:hover {
+      .active-map-item__image-container {
+        .active-map-item__image-container__image {
+          opacity: 0.3;
+        }
+
+        .active-map-item__image-container__visibility {
+          display: inline-block;
+        }
+      }
+
+      .active-map-item__menu .active-map-item__menu__handle {
+        visibility: visible;
+      }
+    }
+  }
+
+  .active-map-items__content__legend {
+    width: 80%;
+    margin: 8px;
+    min-height: 36px;
+    align-self: center;
+  }
+}
