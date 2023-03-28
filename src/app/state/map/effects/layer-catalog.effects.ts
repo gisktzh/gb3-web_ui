@@ -35,10 +35,13 @@ export class LayerCatalogEffects {
   public dispatchInitialMapLoad = createEffect(() => {
     return this.actions$.pipe(
       ofType(LayerCatalogActions.setLayerCatalog),
+      // switch to maps only so we don't have to loop through the whole catalog
       switchMap(() => {
         return this.store.select(selectMaps);
       }),
+      // add the current mapconfiguration
       concatLatestFrom(() => [this.store.select(selectMapConfigState)]),
+      // create an array of ActiveMapItems for each id in the initialMaps configuration that has a matching map in the layer catalog
       map(([availableMaps, {initialMaps}]) => {
         const initialMapItems = availableMaps
           .filter((availableMap) => initialMaps.includes(availableMap.id))
