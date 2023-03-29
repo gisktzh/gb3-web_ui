@@ -22,7 +22,7 @@ export const environment: EnvironmentConfig = {
     },
     gravCms: {
       baseUrl: 'https://gb3-grav-cms.icycliff-4b8f6c95.switzerlandnorth.azurecontainerapps.io',
-      enabled: true
+      enabled: false
     },
     twitterWidget: {
       baseUrl: 'https://platform.twitter.com/widgets.js',
