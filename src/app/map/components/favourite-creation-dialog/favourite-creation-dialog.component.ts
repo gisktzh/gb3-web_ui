@@ -4,25 +4,24 @@ import {FormControl, ValidatorFn, Validators} from '@angular/forms';
 import {FavouritesService} from '../../services/favourites.service';
 import {EMPTY, Subscription, tap} from 'rxjs';
 import {catchError} from 'rxjs/operators';
-import {FavouriteListActions} from '../../../state/map/actions/favourite-list.actions';
-import {Store} from '@ngrx/store';
+import {HasSavingState} from '../../../shared/interfaces/has-saving-state.interface';
+import {SavingState} from '../../../shared/types/saving-state';
 
 const FAVOURITE_NAME_CONSTRAINTS: ValidatorFn[] = [Validators.minLength(5), Validators.required, Validators.pattern(/[\S]/)];
 
 @Component({
-  selector: 'favourite-dialog',
-  templateUrl: './favourite-dialog.component.html',
-  styleUrls: ['./favourite-dialog.component.scss']
+  selector: 'favourite-creation-dialog',
+  templateUrl: './favourite-creation-dialog.component.html',
+  styleUrls: ['./favourite-creation-dialog.component.scss']
 })
-export class FavouriteDialogComponent implements OnInit, OnDestroy {
+export class FavouriteCreationDialogComponent implements OnInit, OnDestroy, HasSavingState {
   public nameFormControl!: FormControl<string | null>;
-  public saveProgress?: 'saving' | 'error';
+  public savingState: SavingState | undefined = undefined;
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(
-    private readonly dialogRef: MatDialogRef<FavouriteDialogComponent, boolean>,
-    private readonly favouritesService: FavouritesService,
-    private readonly store: Store
+    private readonly dialogRef: MatDialogRef<FavouriteCreationDialogComponent, boolean>,
+    private readonly favouritesService: FavouritesService
   ) {}
 
   public get name() {
@@ -43,7 +42,7 @@ export class FavouriteDialogComponent implements OnInit, OnDestroy {
 
   public save() {
     if (this.name) {
-      this.saveProgress = 'saving';
+      this.savingState = 'saving';
 
       this.subscriptions.add(
         this.favouritesService
@@ -53,7 +52,7 @@ export class FavouriteDialogComponent implements OnInit, OnDestroy {
               this.close();
             }),
             catchError(() => {
-              this.saveProgress = 'error';
+              this.savingState = 'error';
               return EMPTY;
             })
           )

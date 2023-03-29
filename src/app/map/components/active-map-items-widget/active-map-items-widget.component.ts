@@ -9,7 +9,7 @@ import {LegendActions} from '../../../state/map/actions/legend.actions';
 import {slideInOutAnimation} from '../../../shared/animations/slideInOut.animation';
 import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.reducer';
 import {MatDialog} from '@angular/material/dialog';
-import {FavouriteDialogComponent} from '../favourite-dialog/favourite-dialog.component';
+import {FavouriteCreationDialogComponent} from '../favourite-creation-dialog/favourite-creation-dialog.component';
 import {FavouriteListActions} from 'src/app/state/map/actions/favourite-list.actions';
 
 const favouriteHelperMessages = {
@@ -72,7 +72,7 @@ export class ActiveMapItemsWidgetComponent implements OnInit, OnDestroy {
   }
 
   public showFavouriteDialog() {
-    const dialogRef = this.dialogService.open<FavouriteDialogComponent, undefined, boolean>(FavouriteDialogComponent);
+    const dialogRef = this.dialogService.open<FavouriteCreationDialogComponent, undefined, boolean>(FavouriteCreationDialogComponent);
     this.subscription.add(
       dialogRef
         .afterClosed()
