@@ -2,6 +2,7 @@ import {Injectable, Renderer2, RendererFactory2} from '@angular/core';
 import {BehaviorSubject, combineLatest, filter, Observable, tap} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {LoadingState} from '../types/loading-state';
+import {environment} from '../../../environments/environment';
 
 interface InjectableExternalScript {
   src: string;
@@ -16,7 +17,7 @@ interface InjectedExternalScript extends InjectableExternalScript {
 const twitterFeedInjectableScript: InjectableExternalScript = {
   id: 'twitter-feed',
   type: 'text/javascript',
-  src: 'https://platform.twitter.com/widgets.js'
+  src: environment.apiConfigs.twitterWidget.baseUrl
 };
 
 @Injectable({
