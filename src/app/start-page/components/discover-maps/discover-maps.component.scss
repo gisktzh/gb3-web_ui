@@ -1,0 +1,42 @@
+@use 'functions/helper.function' as functions;
+@use 'mixins/helpers.mixin' as mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.discover-maps {
+  display: flex;
+  gap: 5px;
+
+  .discover-maps__link-wrapper {
+    text-decoration: none;
+    color: inherit;
+    flex-grow: 1;
+    flex-basis: 100%;
+    border: solid #f0f0f0 4px;
+
+    display: flex;
+    flex-direction: row;
+
+    &:hover {
+      border: solid #e4e4e4 4px;
+    }
+  }
+
+  .discover-maps__image {
+    padding: 2rem 0 2rem 2rem;
+    height: 128px;
+  }
+
+  .discover-maps__entry {
+    padding: 2rem;
+
+    .discover-maps__entry__title {
+      @include mixins.multiline-ellipsis(2);
+      margin: 0;
+      font-weight: bold;
+    }
+
+    .discover-maps__entry__teaser-text {
+      @include mixins.multiline-ellipsis(4);
+    }
+  }
+}
