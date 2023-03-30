@@ -21,6 +21,7 @@ export class FavouriteSelectionComponent implements HasLoadingState {
   @Input() public filteredFavourites: Favourite[] = [];
   @Input() public isAuthenticated: boolean = false;
   @Input() public filterString: string = '';
+  @Input() public autoOpenThreshold: number = 0;
 
   public readonly errorTooltip: string = FAVOURITE_ERROR_TOOLTIP;
 
