@@ -72,7 +72,9 @@ export class ActiveMapItemsWidgetComponent implements OnInit, OnDestroy {
   }
 
   public showFavouriteDialog() {
-    const dialogRef = this.dialogService.open<FavouriteCreationDialogComponent, undefined, boolean>(FavouriteCreationDialogComponent);
+    const dialogRef = this.dialogService.open<FavouriteCreationDialogComponent, undefined, boolean>(FavouriteCreationDialogComponent, {
+      panelClass: 'api-wrapper-dialog'
+    });
     this.subscription.add(
       dialogRef
         .afterClosed()

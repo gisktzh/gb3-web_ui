@@ -30,10 +30,12 @@ export class FavouriteDeletionDialogComponent implements HasSavingState, OnDestr
   }
 
   public abort() {
-    this.close(true);
+    this.close();
   }
 
   public delete() {
+    this.savingState = 'saving';
+
     this.subscriptions.add(
       this.favouritesService
         .deleteFavourite(this.data.favourite)
@@ -51,7 +53,7 @@ export class FavouriteDeletionDialogComponent implements HasSavingState, OnDestr
     );
   }
 
-  private close(isAborted: boolean = false) {
+  private close() {
     this.dialogRef.close();
   }
 }

@@ -49,7 +49,7 @@ export class FavouriteSelectionComponent implements HasLoadingState {
   public deleteFavourite(favourite: Favourite) {
     const dialogRef = this.dialogService.open<FavouriteDeletionDialogComponent, {favourite: Favourite}, boolean>(
       FavouriteDeletionDialogComponent,
-      {data: {favourite}}
+      {data: {favourite}, panelClass: 'api-wrapper-dialog'}
     );
   }
 }
