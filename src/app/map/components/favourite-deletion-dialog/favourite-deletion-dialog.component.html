@@ -1,0 +1,7 @@
+<api-dialog-wrapper [savingState]="this.savingState" title="Favorit löschen">
+  <ng-container content> Das Löschen des Favoriten kann <strong>nicht</strong> rückgängig gemacht werden. </ng-container>
+  <ng-container actions>
+    <button (click)="this.abort()" [disabled]="this.savingState === 'saving'" mat-button>Abbrechen</button>
+    <button (click)="this.delete()" [disabled]="this.savingState === 'saving'" mat-button>Löschen</button>
+  </ng-container>
+</api-dialog-wrapper>

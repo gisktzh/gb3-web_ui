@@ -33,6 +33,11 @@ export const favourteListeFeature = createFeature({
       favourites.find((favourite) => favourite.id === id)!.invalid = true;
 
       return {...state, favourites};
+    }),
+    on(FavouriteListActions.removeFavourite, (state, {id}): FavouriteListState => {
+      const remainingFavourites = state.favourites.filter((favourite) => favourite.id !== id);
+
+      return {...state, favourites: remainingFavourites};
     })
   )
 });

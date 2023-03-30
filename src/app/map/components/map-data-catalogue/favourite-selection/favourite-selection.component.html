@@ -38,6 +38,9 @@
           class="favourite-selection__favourite__content__title"
           matTooltip="{{ favourite.title }}"
         ></p>
+        <button mat-icon-button (click)="this.deleteFavourite(favourite)">
+          <mat-icon>delete</mat-icon>
+        </button>
       </mat-card-content>
     </mat-card>
   </ng-container>

@@ -25,6 +25,7 @@ import {FavouriteCreationDialogComponent} from './components/favourite-creation-
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {FavouriteSelectionComponent} from './components/map-data-catalogue/favourite-selection/favourite-selection.component';
 import {ApiDialogWrapperComponent} from './components/api-dialog-wrapper/api-dialog-wrapper.component';
+import {FavouriteDeletionDialogComponent} from './components/favourite-deletion-dialog/favourite-deletion-dialog.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import {ApiDialogWrapperComponent} from './components/api-dialog-wrapper/api-dia
     TimeSliderWidgetComponent,
     FavouriteCreationDialogComponent,
     FavouriteSelectionComponent,
-    ApiDialogWrapperComponent
+    ApiDialogWrapperComponent,
+    FavouriteDeletionDialogComponent
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule]
 })
