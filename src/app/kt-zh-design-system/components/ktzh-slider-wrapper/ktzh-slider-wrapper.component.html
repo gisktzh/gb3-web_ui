@@ -1,0 +1,13 @@
+<div class="ktzh-slider-wrapper">
+  <div class="header">
+    <p class="header__title">{{ title }}</p>
+    <p class="header__value">{{ displayWith ? displayWith(value) : value }}</p>
+  </div>
+  <div class="content">
+    <ng-content></ng-content>
+  </div>
+  <div class="footer">
+    <p class="footer__min-value">{{ displayWith ? displayWith(minValue) : minValue }}</p>
+    <p class="footer__max-value">{{ displayWith ? displayWith(maxValue) : maxValue }}</p>
+  </div>
+</div>

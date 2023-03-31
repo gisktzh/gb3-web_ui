@@ -1,0 +1,37 @@
+@use 'functions/helper.function' as functions;
+@use 'mixins/helpers.mixin' as mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.ktzh-slider-wrapper {
+  width: 100%;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .header__text {
+      @include mixins.multiline-ellipsis(2);
+    }
+
+    .header__value {
+      background-color: lightblue;
+      padding: 8px;
+    }
+  }
+
+  .content {
+    width: 100%;
+  }
+
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .footer__min-value {
+    }
+    .footer__max-value {
+    }
+  }
+}

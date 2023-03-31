@@ -1,12 +1,18 @@
 <!-- Opacity config -->
-<mat-card appearance="raised" class="transparency">
-  <p class="transparency__title">Transparenz</p>
-  <mat-slider discrete min="0" max="1" step="0.01" color="accent">
-    <input matSliderThumb [value]="activeMapItem.opacity" (valueChange)="onOpacitySliderChange($event, activeMapItem)" />
+<ktzh-slider-wrapper
+  class="transparency"
+  title="Transparenz"
+  [value]="currentOpacity"
+  [minValue]="0"
+  [maxValue]="1"
+  [displayWith]="displayTransparency"
+>
+  <mat-slider [min]="0" [max]="1" [step]="0.01" color="accent" class="transparency__slider">
+    <input matSliderThumb [(ngModel)]="currentOpacity" (valueChange)="onOpacitySliderChange($event, activeMapItem)" />
   </mat-slider>
-</mat-card>
+</ktzh-slider-wrapper>
 
-<!-- time slider config -->
+<!-- Time slider config -->
 <time-slider-widget *ngIf="activeMapItem.timeSliderConfiguration" [activeMapItem]="activeMapItem"></time-slider-widget>
 
 <map-attribute-filter *ngIf="activeMapItem.filterConfigurations" [activeMapItem]="activeMapItem"></map-attribute-filter>

@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {ActiveMapItem} from '../../../models/active-map-item.model';
 import {ActiveMapItemActions} from '../../../../state/map/actions/active-map-item.actions';
 import {Store} from '@ngrx/store';
@@ -10,10 +10,16 @@ import {CdkDrag, CdkDragDrop} from '@angular/cdk/drag-drop';
   templateUrl: './active-map-item.component.html',
   styleUrls: ['./active-map-item.component.scss']
 })
-export class ActiveMapItemComponent {
+export class ActiveMapItemComponent implements OnInit {
   @Input() public activeMapItem!: ActiveMapItem;
 
+  public currentOpacity: number = 0;
+
   constructor(private readonly store: Store) {}
+
+  public ngOnInit(): void {
+    this.currentOpacity = this.activeMapItem.opacity;
+  }
 
   public trackByLayerId(index: number, item: MapLayer) {
     return item.id;
@@ -34,5 +40,9 @@ export class ActiveMapItemComponent {
 
   public onOpacitySliderChange(opacity: number, activeMapItem: ActiveMapItem) {
     this.store.dispatch(ActiveMapItemActions.setOpacity({opacity, activeMapItem}));
+  }
+
+  public displayTransparency(value?: number): string {
+    return value === undefined ? '' : `${Math.round(value * 100)}%`;
   }
 }
