@@ -1,8 +1,8 @@
 <div class="start-page">
   <div class="start-page__content">
     <h1>News</h1>
-    <section class="start-page__content__discover-maps" *ngIf="apiConfigs.gravCms.enabled">
-      <discover-maps></discover-maps>
+    <section *ngIf="apiConfigs.gravCms.enabled">
+      <discover-maps class="start-page__content__discover-maps"></discover-maps>
     </section>
     <section *ngIf="apiConfigs.ktzhWebsite.enabled">
       <news-feed class="start-page__content__news-feed"></news-feed>

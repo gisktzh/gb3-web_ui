@@ -1,11 +1,8 @@
-<p class="mat-body-2" *ngIf="this.loadingState === 'loading'">
-  Lade neue Karten zum Entdecken...
-  <mat-progress-bar mode="query"></mat-progress-bar>
-</p>
-<p class="mat-body-2" *ngIf="this.loadingState === 'error'">
-  <strong>Fehler beim Laden der Karten zum Entdecken.</strong>
-  <mat-progress-bar mode="determinate" color="warn"></mat-progress-bar>
-</p>
+<content-loading-state
+  [loadingState]="loadingState"
+  loadingText="Lade neue Karten zum Entdecken..."
+  loadingCompletedText="Fehler beim Laden der Karten zum Entdecken."
+></content-loading-state>
 <div class="discover-maps">
   <ng-container *ngFor="let discoverMapsEntry of this.discoverMapsItems">
     <a

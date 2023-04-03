@@ -1,0 +1,8 @@
+<p class="mat-body-2" *ngIf="this.loadingState === 'loading'">
+  {{ loadingText ?? 'Lade Inhalt...' }}
+  <mat-progress-bar mode="query"></mat-progress-bar>
+</p>
+<p class="mat-body-2" *ngIf="this.loadingState === 'error'">
+  <strong>{{ loadingCompletedText ?? 'Fehler beim Laden.' }}</strong>
+  <mat-progress-bar mode="determinate" color="warn"></mat-progress-bar>
+</p>
