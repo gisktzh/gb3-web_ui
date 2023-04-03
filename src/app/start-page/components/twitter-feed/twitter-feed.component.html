@@ -1,9 +1,6 @@
-<p class="mat-body-2" *ngIf="this.loadingState === 'loading'">
-  Lade die neusten Tweets...
-  <mat-progress-bar mode="query"></mat-progress-bar>
-</p>
-<p class="mat-body-2" *ngIf="this.loadingState === 'error'">
-  <strong>Fehler beim Laden des Twitterfeeds.</strong>
-  <mat-progress-bar mode="determinate" color="warn"></mat-progress-bar>
-</p>
+<content-loading-state
+  [loadingState]="loadingState"
+  loadingText="Lade die neusten Tweets..."
+  loadingCompletedText="Fehler beim Laden des Twitterfeeds."
+></content-loading-state>
 <div #twitterFeed></div>

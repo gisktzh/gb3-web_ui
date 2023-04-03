@@ -1,0 +1,21 @@
+<content-loading-state
+  [loadingState]="loadingState"
+  loadingText="Lade neue Karten zum Entdecken..."
+  loadingCompletedText="Fehler beim Laden der Karten zum Entdecken."
+></content-loading-state>
+<div class="discover-maps">
+  <ng-container *ngFor="let discoverMapsEntry of this.discoverMapsItems">
+    <a
+      [routerLink]="['maps']"
+      [queryParams]="{initialMapIds: discoverMapsEntry.mapId}"
+      [title]="discoverMapsEntry.title"
+      class="discover-maps__link-wrapper"
+    >
+      <img class="discover-maps__image" [src]="discoverMapsEntry.image.url" />
+      <div class="discover-maps__entry">
+        <p class="mat-headline-6 discover-maps__entry__title">{{ discoverMapsEntry.title }}</p>
+        <p class="mat-body-1 discover-maps__entry__teaser-text">{{ discoverMapsEntry.description }}</p>
+      </div>
+    </a>
+  </ng-container>
+</div>

@@ -19,7 +19,7 @@ const hardcodedWmsUrl = /http:\/\/wms\.zh\.ch/g;
  * @param response
  */
 const changeWmsUrlInCapabilitiesCallback: AfterInterceptorCallback = (response: RequestResponse) => {
-  const overrideWmsUrl = environment.baseUrls.overrideWmsUrl;
+  const overrideWmsUrl = environment.overrideWmsUrl;
 
   if (overrideWmsUrl && response.requestOptions?.query.REQUEST === 'GetCapabilities') {
     try {
@@ -51,7 +51,7 @@ const changeWmsUrlInCapabilitiesCallback: AfterInterceptorCallback = (response: 
 const wmsAuthAndUrlOverrideInterceptorFactory = (hasWmsOverride?: string, accessToken?: string): __esri.RequestInterceptor => {
   const baseInterceptor: RequestInterceptor = {
     headers: {},
-    urls: [environment.baseUrls.gb2Api, environment.baseUrls.gb2Wms],
+    urls: [environment.apiConfigs.gb2Api.baseUrl, environment.apiConfigs.gb2Wms.baseUrl],
     after: changeWmsUrlInCapabilitiesCallback
   };
 
