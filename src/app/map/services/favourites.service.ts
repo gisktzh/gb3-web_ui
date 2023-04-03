@@ -79,7 +79,7 @@ export class FavouritesService {
     return activeMapItems;
   }
 
-  public deleteFavourite(favourite: Favourite): Observable<boolean> {
+  public deleteFavourite(favourite: Favourite): Observable<void> {
     return this.gb3FavouritesService.deleteFavourite(favourite);
   }
 

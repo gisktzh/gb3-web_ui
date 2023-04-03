@@ -1,6 +1,11 @@
 import {Injectable} from '@angular/core';
 import {Gb3ApiService} from './gb3-api.service';
-import {FavoritesCreatePayload, FavoritesDetailData, FavoritesListData} from '../../../models/gb3-api-generated.interfaces';
+import {
+  FavoritesCreatePayload,
+  FavoritesDeleteData,
+  FavoritesDetailData,
+  FavoritesListData
+} from '../../../models/gb3-api-generated.interfaces';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {CreateFavourite, Favourite, FavouriteLayerConfiguration, FavouritesResponse} from '../../../interfaces/favourite.interface';
@@ -31,10 +36,10 @@ export class Gb3FavouritesService extends Gb3ApiService {
     );
   }
 
-  public deleteFavourite(favourite: Favourite): Observable<boolean> {
+  public deleteFavourite(favourite: Favourite): Observable<void> {
     const url = `${this.getFullEndpointUrl()}/${favourite.id}`;
 
-    return this.delete<boolean>(url);
+    return this.delete<FavoritesDeleteData>(url);
   }
 
   private mapFavouritesListDataToFavouritesResponse(favouritesListData: FavoritesListData): FavouritesResponse {
