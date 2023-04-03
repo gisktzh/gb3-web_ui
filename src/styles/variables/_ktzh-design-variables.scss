@@ -182,14 +182,21 @@ $zh-warn: mat.define-palette($zh-bordeaux-palette);
 $zh-font-family: Inter, Arial, Helvetica, sans-serif;
 $zh-font-family-bold: 'Inter Black', Arial, Helvetica, sans-serif;
 // For usage, refer to: https://material.angular.io/guide/typography
+$zh-typography-headline-override: mat.define-typography-level(
+  $font-size: 'inherit',
+  $line-height: 1,
+  $font-weight: 'inherit',
+  $font-family: $zh-font-family-bold,
+  $letter-spacing: 'inherit'
+);
+
 $zh-typography-config: mat.define-typography-config(
   // define headline overrides
-  $headline-6: mat.define-typography-level('inherit', 'inherit', 'inherit', $zh-font-family-bold, 'inherit'),
-  $headline-5: mat.define-typography-level('inherit', 'inherit', 'inherit', $zh-font-family-bold, 'inherit'),
-  $headline-4: mat.define-typography-level('inherit', 'inherit', 'inherit', $zh-font-family-bold, 'inherit'),
-  $headline-3: mat.define-typography-level('inherit', 'inherit', 'inherit', $zh-font-family-bold, 'inherit'),
-  $headline-2: mat.define-typography-level('inherit', 'inherit', 'inherit', $zh-font-family-bold, 'inherit'),
-  $headline-1: mat.define-typography-level('inherit', 'inherit', 'inherit', $zh-font-family-bold, 'inherit'),
-  // Define default family, used in non-headlines and e.g. buttons
-  $font-family: $zh-font-family
+  $headline-6: $zh-typography-headline-override,
+  $headline-5: $zh-typography-headline-override,
+  $headline-4: $zh-typography-headline-override,
+  $headline-3: $zh-typography-headline-override,
+  $headline-2: $zh-typography-headline-override,
+  $headline-1: $zh-typography-headline-override,
+  $font-family: $zh-font-family // Define default family, used in non-headlines and e.g. buttons
 );
