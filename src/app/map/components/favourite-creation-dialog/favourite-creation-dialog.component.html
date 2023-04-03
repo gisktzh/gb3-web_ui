@@ -9,8 +9,8 @@
     </mat-form-field>
   </ng-container>
   <ng-container actions>
-    <button (click)="this.abort()" [disabled]="this.savingState === 'saving'" mat-button>Abbrechen</button>
-    <button (click)="this.save()" [disabled]="this.nameFormControl.status !== 'VALID' || this.savingState === 'saving'" mat-button>
+    <button (click)="this.abort()" [disabled]="this.savingState === 'loading'" mat-button>Abbrechen</button>
+    <button (click)="this.save()" [disabled]="this.nameFormControl.status !== 'VALID' || this.savingState === 'loading'" mat-button>
       Speichern
     </button>
   </ng-container>

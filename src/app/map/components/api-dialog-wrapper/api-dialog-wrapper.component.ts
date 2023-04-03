@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {HasSavingState} from '../../../shared/interfaces/has-saving-state.interface';
-import {SavingState} from '../../../shared/types/saving-state';
+import {LoadingState} from '../../../shared/types/loading-state';
 
 @Component({
   selector: 'api-dialog-wrapper',
@@ -9,5 +9,5 @@ import {SavingState} from '../../../shared/types/saving-state';
 })
 export class ApiDialogWrapperComponent implements HasSavingState {
   @Input() public title: string = '';
-  @Input() public savingState: SavingState | undefined;
+  @Input() public savingState: LoadingState = 'undefined';
 }

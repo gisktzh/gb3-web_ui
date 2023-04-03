@@ -31,7 +31,7 @@
     padding: 0;
 
     & .mdc-button {
-      font-family: 'Inter Black', serif;
+      font-family: ktzh-variables.$zh-font-family-bold;
       background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 50);
       color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 300);
       height: 48px;

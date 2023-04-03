@@ -1,5 +1,5 @@
-import {SavingState} from '../types/saving-state';
+import {LoadingState} from '../types/loading-state';
 
 export interface HasSavingState {
-  savingState: SavingState | undefined;
+  savingState: LoadingState;
 }

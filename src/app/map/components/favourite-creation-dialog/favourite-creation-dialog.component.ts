@@ -5,9 +5,9 @@ import {FavouritesService} from '../../services/favourites.service';
 import {EMPTY, Subscription, tap} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {HasSavingState} from '../../../shared/interfaces/has-saving-state.interface';
-import {SavingState} from '../../../shared/types/saving-state';
 import {FavouriteListActions} from '../../../state/map/actions/favourite-list.actions';
 import {Store} from '@ngrx/store';
+import {LoadingState} from '../../../shared/types/loading-state';
 
 const FAVOURITE_NAME_CONSTRAINTS: ValidatorFn[] = [Validators.minLength(5), Validators.required, Validators.pattern(/[\S]/)];
 
@@ -18,7 +18,7 @@ const FAVOURITE_NAME_CONSTRAINTS: ValidatorFn[] = [Validators.minLength(5), Vali
 })
 export class FavouriteCreationDialogComponent implements OnInit, OnDestroy, HasSavingState {
   public nameFormControl!: FormControl<string | null>;
-  public savingState: SavingState | undefined = undefined;
+  public savingState: LoadingState = 'undefined';
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(
@@ -45,7 +45,7 @@ export class FavouriteCreationDialogComponent implements OnInit, OnDestroy, HasS
 
   public save() {
     if (this.name) {
-      this.savingState = 'saving';
+      this.savingState = 'loading';
 
       this.subscriptions.add(
         this.favouritesService

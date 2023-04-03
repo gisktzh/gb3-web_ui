@@ -6,5 +6,5 @@
 <div mat-dialog-actions>
   <ng-content select="[actions]"></ng-content>
 </div>
-<mat-progress-bar *ngIf="this.savingState === 'saving'" mode="query"></mat-progress-bar>
+<mat-progress-bar *ngIf="this.savingState === 'loading'" mode="query"></mat-progress-bar>
 <mat-progress-bar *ngIf="this.savingState === 'error'" color="warn" mode="determinate" value="100"></mat-progress-bar>
