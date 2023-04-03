@@ -1,2 +1,5 @@
-<h2>Nützliche Links</h2>
 <p>Die Folgenden Links finden wir nützlich.</p>
+<div *ngFor="let usefulLinksCollection of this.usefulLinksCollections" class="useful-links__content">
+  <h2 class="useful-links__content__title">{{ usefulLinksCollection.label }}</h2>
+  <link-list [links]="usefulLinksCollection.links"></link-list>
+</div>
