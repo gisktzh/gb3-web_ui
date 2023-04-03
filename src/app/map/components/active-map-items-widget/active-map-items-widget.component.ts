@@ -29,10 +29,9 @@ export class ActiveMapItemsWidgetComponent implements OnInit, OnDestroy {
   private readonly activeMapItems$ = this.store.select(selectActiveMapItems);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
   private readonly subscription: Subscription = new Subscription();
+  private _activeMapItems: ActiveMapItem[] = [];
 
   constructor(private readonly store: Store, private readonly dialogService: MatDialog) {}
-
-  private _activeMapItems: ActiveMapItem[] = [];
 
   public get activeMapItems(): ActiveMapItem[] {
     return this._activeMapItems;

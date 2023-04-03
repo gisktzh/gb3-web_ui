@@ -59,7 +59,7 @@
     overflow-y: scroll;
 
     & .mat-expansion-panel {
-      // Remove the material-overrides first and last border rounding
+      // Remove the material first and last border rounding
       border-radius: 0;
     }
 

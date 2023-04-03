@@ -16,6 +16,7 @@ import {FavouriteListActions} from '../../../state/map/actions/favourite-list.ac
 })
 export class FavouriteDeletionDialogComponent implements HasSavingState, OnDestroy {
   public savingState: SavingState | undefined = undefined;
+  public favourite: Favourite;
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(
@@ -23,7 +24,9 @@ export class FavouriteDeletionDialogComponent implements HasSavingState, OnDestr
     private readonly favouritesService: FavouritesService,
     @Inject(MAT_DIALOG_DATA) private readonly data: {favourite: Favourite},
     private readonly store: Store
-  ) {}
+  ) {
+    this.favourite = data.favourite;
+  }
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
@@ -38,10 +41,10 @@ export class FavouriteDeletionDialogComponent implements HasSavingState, OnDestr
 
     this.subscriptions.add(
       this.favouritesService
-        .deleteFavourite(this.data.favourite)
+        .deleteFavourite(this.favourite)
         .pipe(
           tap(() => {
-            this.store.dispatch(FavouriteListActions.removeFavourite({id: this.data.favourite.id}));
+            this.store.dispatch(FavouriteListActions.removeFavourite({id: this.favourite.id}));
             this.close();
           }),
           catchError(() => {

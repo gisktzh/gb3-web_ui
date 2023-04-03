@@ -22,7 +22,7 @@ export class FavouriteCreationDialogComponent implements OnInit, OnDestroy, HasS
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(
-    private readonly dialogRef: MatDialogRef<FavouriteCreationDialogComponent, boolean>,
+    private readonly dialogRef: MatDialogRef<FavouriteCreationDialogComponent>,
     private readonly favouritesService: FavouritesService,
     private readonly store: Store
   ) {}
