@@ -1,5 +1,5 @@
 <mat-expansion-panel
-  *ngIf="this.loadingState === 'loading' || this.filteredFavourites.length > 0"
+  *ngIf="!(!!this.filterString && this.filteredFavourites.length === 0)"
   class="favourite-selection"
   [expanded]="!!this.filterString && this.filteredFavourites.length <= this.autoOpenThreshold"
 >
@@ -7,14 +7,15 @@
     <p
       [matBadgeHidden]="!this.filterString || this.loadingState === 'loading'"
       [matBadge]="this.filteredFavourites.length"
-      matBadgeOverlap="false"
-      matBadgePosition="above after"
       class="favourite-selection__header__title"
+        matBadgeOverlap="false"
+        matBadgePosition="above after"
     >
       Favoriten
     </p>
     <loading-and-process-bar [loadingState]="this.loadingState" class="favourite-selection__header__loader"></loading-and-process-bar>
   </mat-expansion-panel-header>
+  <p *ngIf="this.filteredFavourites.length === 0"><em>Noch keine Favoriten hinzugefügt.</em></p>
   <ng-container *ngFor="let favourite of this.filteredFavourites">
     <mat-card class="favourite-selection__favourite">
       <mat-card-content
@@ -38,7 +39,7 @@
           class="favourite-selection__favourite__content__title"
           matTooltip="{{ favourite.title }}"
         ></p>
-        <button mat-icon-button (click)="this.deleteFavourite(favourite)">
+        <button (click)="this.deleteFavourite(favourite)" mat-icon-button>
           <mat-icon>delete</mat-icon>
         </button>
       </mat-card-content>
