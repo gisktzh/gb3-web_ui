@@ -7,6 +7,7 @@ import {LayerCatalogState, reducer as layerCatalogReducer} from './map/reducers/
 import {ActiveMapItemState, reducer as activeMapItemReducer} from './map/reducers/active-map-item.reducer';
 import {AuthStatusState, reducer as authStatusReducer} from './auth/reducers/auth-status.reducer';
 import {FavouriteListState, reducer as favouriteListReducer} from './map/reducers/favourite-list.reducer';
+import {reducer as supportContentReducer, SupportContentState} from './support/reducers/support-content.reducer';
 
 export interface State {
   mapConfig: MapConfigState;
@@ -16,6 +17,8 @@ export interface State {
   activeMapItem: ActiveMapItemState;
   authStatus: AuthStatusState;
   favouriteList: FavouriteListState;
+
+  supportContent: SupportContentState;
 }
 
 export const reducers: ActionReducerMap<State> = {
@@ -25,7 +28,8 @@ export const reducers: ActionReducerMap<State> = {
   layerCatalog: layerCatalogReducer,
   activeMapItem: activeMapItemReducer,
   authStatus: authStatusReducer,
-  favouriteList: favouriteListReducer
+  favouriteList: favouriteListReducer,
+  supportContent: supportContentReducer
 };
 
 export const metaReducers: MetaReducer<State>[] = !environment.production ? [] : [];
