@@ -50,7 +50,8 @@ export class FavouriteSelectionComponent implements HasLoadingState {
   public deleteFavourite(favourite: Favourite) {
     this.dialogService.open<FavouriteDeletionDialogComponent, {favourite: Favourite}, boolean>(FavouriteDeletionDialogComponent, {
       data: {favourite},
-      panelClass: PanelClass.API_WRAPPER_DIALOG
+      panelClass: PanelClass.API_WRAPPER_DIALOG,
+      restoreFocus: false
     });
   }
 }
