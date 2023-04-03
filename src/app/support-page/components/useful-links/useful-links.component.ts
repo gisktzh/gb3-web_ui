@@ -5,7 +5,7 @@ import {SupportLinkCollection} from '../../../shared/interfaces/support-link.int
 import {selectLinks} from '../../../state/support/reducers/support-content.reducer';
 
 @Component({
-  selector: 'app-useful-links',
+  selector: 'useful-links',
   templateUrl: './useful-links.component.html',
   styleUrls: ['./useful-links.component.scss']
 })

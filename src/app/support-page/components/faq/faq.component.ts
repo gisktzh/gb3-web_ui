@@ -5,7 +5,7 @@ import {Store} from '@ngrx/store';
 import {FaqCollection} from '../../../shared/interfaces/faq.interface';
 
 @Component({
-  selector: 'app-faq',
+  selector: 'faq',
   templateUrl: './faq.component.html',
   styleUrls: ['./faq.component.scss']
 })
