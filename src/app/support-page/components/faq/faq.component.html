@@ -1,2 +1,14 @@
-<h2>Frequently Asked Questions</h2>
 <p>Hier finden Sie Fragen, die wir häufig antreffen und wir somit beantworten.</p>
+<div class="faq__content" *ngFor="let faqCollection of this.faqCollections">
+  <h2>{{ faqCollection.category }}</h2>
+  <mat-accordion>
+    <mat-expansion-panel *ngFor="let item of faqCollection.items">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{ item.question }}
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <p>{{ item.answer }}</p>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>
