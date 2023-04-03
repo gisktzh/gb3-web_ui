@@ -6,6 +6,8 @@ import {EMPTY, Subscription, tap} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {HasSavingState} from '../../../shared/interfaces/has-saving-state.interface';
 import {SavingState} from '../../../shared/types/saving-state';
+import {FavouriteListActions} from '../../../state/map/actions/favourite-list.actions';
+import {Store} from '@ngrx/store';
 
 const FAVOURITE_NAME_CONSTRAINTS: ValidatorFn[] = [Validators.minLength(5), Validators.required, Validators.pattern(/[\S]/)];
 
@@ -21,7 +23,8 @@ export class FavouriteCreationDialogComponent implements OnInit, OnDestroy, HasS
 
   constructor(
     private readonly dialogRef: MatDialogRef<FavouriteCreationDialogComponent, boolean>,
-    private readonly favouritesService: FavouritesService
+    private readonly favouritesService: FavouritesService,
+    private readonly store: Store
   ) {}
 
   public get name() {
@@ -49,6 +52,7 @@ export class FavouriteCreationDialogComponent implements OnInit, OnDestroy, HasS
           .createFavourite(this.name)
           .pipe(
             tap(() => {
+              this.store.dispatch(FavouriteListActions.loadFavourites());
               this.close();
             }),
             catchError(() => {

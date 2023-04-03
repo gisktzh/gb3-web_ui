@@ -10,7 +10,7 @@ import {slideInOutAnimation} from '../../../shared/animations/slideInOut.animati
 import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.reducer';
 import {MatDialog} from '@angular/material/dialog';
 import {FavouriteCreationDialogComponent} from '../favourite-creation-dialog/favourite-creation-dialog.component';
-import {FavouriteListActions} from 'src/app/state/map/actions/favourite-list.actions';
+import {PanelClass} from '../../../shared/enums/panel-class.enum';
 
 const favouriteHelperMessages = {
   noMapsAdded: 'Fügen Sie mindestens 1 Karte hinzu, um einen Favoriten anzulegen.',
@@ -29,9 +29,10 @@ export class ActiveMapItemsWidgetComponent implements OnInit, OnDestroy {
   private readonly activeMapItems$ = this.store.select(selectActiveMapItems);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
   private readonly subscription: Subscription = new Subscription();
-  private _activeMapItems: ActiveMapItem[] = [];
 
   constructor(private readonly store: Store, private readonly dialogService: MatDialog) {}
+
+  private _activeMapItems: ActiveMapItem[] = [];
 
   public get activeMapItems(): ActiveMapItem[] {
     return this._activeMapItems;
@@ -72,21 +73,9 @@ export class ActiveMapItemsWidgetComponent implements OnInit, OnDestroy {
   }
 
   public showFavouriteDialog() {
-    const dialogRef = this.dialogService.open<FavouriteCreationDialogComponent, undefined, boolean>(FavouriteCreationDialogComponent, {
-      panelClass: 'api-wrapper-dialog'
+    this.dialogService.open(FavouriteCreationDialogComponent, {
+      panelClass: PanelClass.API_WRAPPER_DIALOG
     });
-    this.subscription.add(
-      dialogRef
-        .afterClosed()
-        .pipe(
-          tap((isAborted) => {
-            if (!isAborted) {
-              this.store.dispatch(FavouriteListActions.loadFavourites());
-            }
-          })
-        )
-        .subscribe()
-    );
   }
 
   private initSubscriptions() {

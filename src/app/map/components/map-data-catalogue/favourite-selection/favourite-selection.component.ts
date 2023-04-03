@@ -8,6 +8,7 @@ import {ActiveMapItemActions} from '../../../../state/map/actions/active-map-ite
 import {FavouritesService} from '../../../services/favourites.service';
 import {MatDialog} from '@angular/material/dialog';
 import {FavouriteDeletionDialogComponent} from '../../favourite-deletion-dialog/favourite-deletion-dialog.component';
+import {PanelClass} from '../../../../shared/enums/panel-class.enum';
 
 const FAVOURITE_ERROR_TOOLTIP =
   'Der Favorit kann nicht angezeigt werden. Dies kann verschiedene Gründe haben - z.B. existiert eine (' +
@@ -47,9 +48,9 @@ export class FavouriteSelectionComponent implements HasLoadingState {
   }
 
   public deleteFavourite(favourite: Favourite) {
-    const dialogRef = this.dialogService.open<FavouriteDeletionDialogComponent, {favourite: Favourite}, boolean>(
-      FavouriteDeletionDialogComponent,
-      {data: {favourite}, panelClass: 'api-wrapper-dialog'}
-    );
+    this.dialogService.open<FavouriteDeletionDialogComponent, {favourite: Favourite}, boolean>(FavouriteDeletionDialogComponent, {
+      data: {favourite},
+      panelClass: PanelClass.API_WRAPPER_DIALOG
+    });
   }
 }
