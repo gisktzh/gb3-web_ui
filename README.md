@@ -2,6 +2,10 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.2.3.
 
+## Installation
+
+- Husky
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you
@@ -40,13 +44,20 @@ In order to build the docker image use the following command (adjust tag as need
 docker build -t gb3-frontend:latest .
 ```
 
-## Run the image
+- **gb3-frontend** is the name of the image
+- **latest** is the tag used to mark the version of this image
 
-This image exposes port 80 and can be run like this:
+### Run the image
+
+This image exposes port 8080 and can be run like this:
 
 ```
-docker run -p 80:80 gb3-frontend:latest
+docker run -p 80:8080 gb3-frontend:latest
 ```
+
+- **80:8080** maps the internal port 8080 to the external port 80; the later can be chosen freely
+- **gb3-frontend** is the name of the image
+- **latest** is the version tag for this image
 
 ## Local Backend
 
