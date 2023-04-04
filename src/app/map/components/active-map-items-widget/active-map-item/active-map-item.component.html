@@ -8,12 +8,18 @@
   [displayWith]="displayTransparency"
 >
   <mat-slider [min]="0" [max]="1" [step]="0.01" color="accent" class="transparency__slider">
-    <input matSliderThumb [(ngModel)]="currentOpacity" (valueChange)="onOpacitySliderChange($event, activeMapItem)" />
+    <input matSliderThumb [(ngModel)]="currentOpacity" (valueChange)="onOpacitySliderChange($event)" />
   </mat-slider>
 </ktzh-slider-wrapper>
 
 <!-- Time slider config -->
-<time-slider-widget *ngIf="activeMapItem.timeSliderConfiguration" [activeMapItem]="activeMapItem"></time-slider-widget>
+<ng-container *ngIf="activeMapItem.timeSliderConfiguration && activeMapItem.timeSliderExtent">
+  <time-slider
+    [initialTimeExtent]="activeMapItem.timeSliderExtent"
+    [timeSliderConfiguration]="activeMapItem.timeSliderConfiguration"
+    (timeExtentChanged)="onTimeSliderExtentChange($event)"
+  ></time-slider>
+</ng-container>
 
 <map-attribute-filter *ngIf="activeMapItem.filterConfigurations" [activeMapItem]="activeMapItem"></map-attribute-filter>
 
@@ -21,12 +27,12 @@
 <ng-container *ngIf="!activeMapItem.isSingleLayer">
   <mat-divider></mat-divider>
 
-  <div class="sublayer-list" cdkDropList (cdkDropListDropped)="dropSublayer($event, activeMapItem)">
+  <div class="sublayer-list" cdkDropList (cdkDropListDropped)="dropSublayer($event)">
     <ng-container *ngFor="let layer of activeMapItem.layers; trackBy: trackByLayerId">
       <!-- Sublayer-->
       <mat-card appearance="raised" class="sublayer" cdkDrag *ngIf="!layer.isHidden">
         <mat-icon class="sublayer__drag-handle" cdkDragHandle>drag_indicator</mat-icon>
-        <button mat-icon-button (click)="toggleSublayerVisibility(activeMapItem, layer.id)" [disabled]="!activeMapItem.visible">
+        <button mat-icon-button (click)="toggleSublayerVisibility(layer)" [disabled]="!activeMapItem.visible">
           <div class="sublayer__image-container">
             <mat-icon class="sublayer__image-container__image">layers</mat-icon>
             <mat-icon class="sublayer__image-container__visibility" [fontIcon]="layer.visible ? 'visibility' : 'visibility_off'"></mat-icon>

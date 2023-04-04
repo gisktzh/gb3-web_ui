@@ -1,0 +1,33 @@
+<ktzh-slider-wrapper
+  class="time-slider"
+  title="{{ timeSliderConfiguration.name }}"
+  description="{{ timeSliderConfiguration.description }}"
+  [complexValue]="formattedTimeExtent"
+  [minValue]="effectiveFormattedMinimumValue"
+  [maxValue]="effectiveFormattedMaximumValue"
+>
+  <mat-slider [min]="0" [max]="numberOfAvailableDates - 1" [step]="1" color="accent" class="time-slider__slider">
+    <ng-container *ngIf="this.timeSliderConfiguration.range; else multi_slider">
+      <input
+        matSliderThumb
+        (valueChange)="setValidTimeExtent(true)"
+        [(ngModel)]="firstSliderPosition"
+        (ngModelChange)="refreshCurrentValue()"
+      />
+    </ng-container>
+    <ng-template #multi_slider>
+      <input
+        matSliderStartThumb
+        (valueChange)="setValidTimeExtent(true)"
+        [(ngModel)]="firstSliderPosition"
+        (ngModelChange)="refreshCurrentValue()"
+      />
+      <input
+        matSliderEndThumb
+        (valueChange)="setValidTimeExtent(false)"
+        [(ngModel)]="secondSliderPosition"
+        (ngModelChange)="refreshCurrentValue()"
+      />
+    </ng-template>
+  </mat-slider>
+</ktzh-slider-wrapper>

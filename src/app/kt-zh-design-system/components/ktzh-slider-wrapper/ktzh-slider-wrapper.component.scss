@@ -7,15 +7,28 @@
 
   .header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
 
-    .header__text {
-      @include mixins.multiline-ellipsis(2);
+    .header__title {
+      display: flex;
+      align-items: center;
+      margin-right: auto;
+
+      .header__title__info {
+        height: 24px;
+        width: 24px;
+        margin-right: 4px;
+      }
+
+      .header__title__text {
+        @include mixins.multiline-ellipsis(3);
+      }
     }
 
     .header__value {
-      background-color: lightblue;
+      white-space: nowrap;
+      color: ktzh-variables.$zh-white;
+      background-color: ktzh-variables.$zh-active-blue;
       padding: 8px;
     }
   }
@@ -28,10 +41,5 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-
-    .footer__min-value {
-    }
-    .footer__max-value {
-    }
   }
 }

@@ -40,6 +40,27 @@ export class TimeExtentUtil {
   }
 
   /**
+   * Extracts the smallest unit from the given date format (ISO8601) or <undefined> if nothing matches.
+   *
+   * @remarks
+   * It does return a unit ('years'/'months'/...) only if the given duration contains values of this unit and nothing else; <undefined> otherwise.
+   *
+   * @example
+   * 'YYYY-MM' is a date format containing years and months; The smallest unit is months (months < years) and therefore this method returns 'months'
+   * 'H:m s.SSS' is a date format containing hours, minutes, seconds and milliseconds; The smallest unit is milliseconds and therefore this method returns 'milliseconds'
+   * */
+  public static extractSmallestUnitFromDateFormat(dateFormat: string): ManipulateType | undefined {
+    if (dateFormat.includes('SSS')) return 'milliseconds';
+    if (dateFormat.includes('s')) return 'seconds';
+    if (dateFormat.includes('m')) return 'minutes';
+    if (dateFormat.includes('h') || dateFormat.includes('H')) return 'hours';
+    if (dateFormat.includes('d') || dateFormat.includes('D')) return 'days';
+    if (dateFormat.includes('M')) return 'months';
+    if (dateFormat.includes('Y')) return 'years';
+    return undefined;
+  }
+
+  /**
    * Adds the duration to the given date as exact as possible.
    *
    * @remarks
