@@ -1,10 +1,14 @@
-.placeholder-page {
+.support-page {
   display: flex;
   justify-content: center;
 
-  .placeholder-page__content {
+  .support-page__content {
     padding: 40px 0;
     width: 100%;
     max-width: 900px;
+
+    .support-page__content__tab {
+      padding: 20px;
+    }
   }
 }

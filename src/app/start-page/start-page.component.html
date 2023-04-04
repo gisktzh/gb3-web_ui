@@ -1,10 +1,14 @@
 <div class="start-page">
   <div class="start-page__content">
     <h1>News</h1>
-    <section>
+    <section *ngIf="apiConfigs.gravCms.enabled">
+      <discover-maps class="start-page__content__discover-maps"></discover-maps>
+    </section>
+    <section *ngIf="apiConfigs.ktzhWebsite.enabled">
       <news-feed class="start-page__content__news-feed"></news-feed>
     </section>
-    <section>
+    <section *ngIf="apiConfigs.twitterWidget.enabled">
+      <!-- We currently do not show the twitter feed due to legal reasons -->
       <twitter-feed></twitter-feed>
     </section>
   </div>

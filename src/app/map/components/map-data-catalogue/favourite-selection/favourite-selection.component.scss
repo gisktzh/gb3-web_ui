@@ -7,11 +7,9 @@
   border-radius: 0 !important;
 
   .favourite-selection__header {
-    display: flex;
-    flex-wrap: wrap;
-
     .favourite-selection__header__title {
-      margin: 0;
+      // needed to avoid a cut-off results indicator
+      margin: 20px 0;
     }
 
     .favourite-selection__header__loader {

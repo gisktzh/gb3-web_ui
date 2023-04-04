@@ -9,8 +9,8 @@ import {LegendActions} from '../../../state/map/actions/legend.actions';
 import {slideInOutAnimation} from '../../../shared/animations/slideInOut.animation';
 import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.reducer';
 import {MatDialog} from '@angular/material/dialog';
-import {FavouriteDialogComponent} from '../favourite-dialog/favourite-dialog.component';
-import {FavouriteListActions} from 'src/app/state/map/actions/favourite-list.actions';
+import {FavouriteCreationDialogComponent} from '../favourite-creation-dialog/favourite-creation-dialog.component';
+import {PanelClass} from '../../../shared/enums/panel-class.enum';
 
 const favouriteHelperMessages = {
   noMapsAdded: 'Fügen Sie mindestens 1 Karte hinzu, um einen Favoriten anzulegen.',
@@ -72,19 +72,10 @@ export class ActiveMapItemsWidgetComponent implements OnInit, OnDestroy {
   }
 
   public showFavouriteDialog() {
-    const dialogRef = this.dialogService.open<FavouriteDialogComponent, undefined, boolean>(FavouriteDialogComponent);
-    this.subscription.add(
-      dialogRef
-        .afterClosed()
-        .pipe(
-          tap((isAborted) => {
-            if (!isAborted) {
-              this.store.dispatch(FavouriteListActions.loadFavourites());
-            }
-          })
-        )
-        .subscribe()
-    );
+    this.dialogService.open(FavouriteCreationDialogComponent, {
+      panelClass: PanelClass.API_WRAPPER_DIALOG,
+      restoreFocus: false
+    });
   }
 
   private initSubscriptions() {
