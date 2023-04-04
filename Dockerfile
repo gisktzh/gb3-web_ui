@@ -3,7 +3,7 @@ FROM node:18.15-alpine as build-app
 WORKDIR /app
 COPY . .
 
-RUN npm ci
+RUN npm ci --omit=dev
 RUN npm run build
 
 FROM nginx:1.23-alpine as server
