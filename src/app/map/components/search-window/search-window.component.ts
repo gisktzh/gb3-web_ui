@@ -1,16 +1,17 @@
 import {AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {SearchService} from "../../../search/services/search.service";
-import {debounceTime, distinctUntilChanged, fromEvent, Observable, Subscription, tap} from "rxjs";
-import {SearchWindowElement} from "../../../search/interfaces/search-window-element.interface";
+import {SearchService} from "../../../shared/services/apis/search/services/search.service";
+import {debounceTime, distinctUntilChanged, first, fromEvent, Observable, Subscription, tap} from "rxjs";
+import {SearchWindowElement} from "../../../shared/services/apis/search/interfaces/search-window-element.interface";
 import {Store} from "@ngrx/store";
 import {Map} from "../../../shared/interfaces/topic.interface";
 import {selectMaps} from "../../../state/map/selectors/maps.selector";
 import {map} from "rxjs/operators";
 import {ActiveMapItem} from "../../models/active-map-item.model";
 import {ActiveMapItemActions} from "../../../state/map/actions/active-map-item.actions";
-import {TransformationService} from "../../services/transformation.service";
 import {MAP_SERVICE} from "../../../app.module";
 import {MapService} from "../../interfaces/map.service";
+
+const DEFAULT_ZOOM_SCALE = 1000;
 
 @Component({
   selector: 'search-window',
@@ -18,8 +19,6 @@ import {MapService} from "../../interfaces/map.service";
   styleUrls: ['./search-window.component.scss']
 })
 export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
-
-
   public searchResults: SearchWindowElement[] = [];
   public filteredMaps: Map[] = [];
   public searchTerms: string[] = [];
@@ -32,7 +31,6 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     private searchService: SearchService,
     private readonly store: Store,
-    private transformationService: TransformationService,
     @Inject(MAP_SERVICE) private readonly mapService: MapService
   ) {}
 
@@ -48,16 +46,12 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
     this.subscriptions.add(this.filterInputHandler().subscribe());
   }
 
-  public async search(term: string) {
-    this.searchTerms = term.split(' ');
-    if (term === '') {
-      this.searchResults = [];
-      this.filteredMaps = [];
+  public search(term: string) {
+    this.searchTerms = term.trim().split(' ');
+    if (this.searchTerms.length === 1 && this.searchTerms[0] === '') {
+      this.emptyResultsWindow();
     } else {
-      this.searchResults = await this.searchService.addressAndPlacesSearch(term);
-      this.filteredMaps = this.originalMaps.filter(availableMap =>
-        this.searchTerms.every(searchTerm => availableMap.title.toLowerCase().includes(searchTerm.toLowerCase()))
-      );
+      this.fillResultsWindow(term);
     }
   }
 
@@ -65,12 +59,34 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
     this.addActiveItem(new ActiveMapItem(activeMap));
   }
 
-  public mapGoTo(searchResult: SearchWindowElement) {
+  public zoomToResult(searchResult: SearchWindowElement) {
     if (searchResult.geometry) {
-      this.mapService.zoomToPoint(searchResult.geometry[0], searchResult.geometry[1], 1000);
+      const point = searchResult.geometry;
+      this.mapService.zoomToPoint(point, DEFAULT_ZOOM_SCALE);
     } else {
-      console.log('Geometry not available in the index');
+      console.log('Geometry not available in the index'); //todo: implement error handling
     }
+  }
+
+  public clearInput() {
+    this.input.nativeElement.value = '';
+    this.emptyResultsWindow();
+  }
+
+  private emptyResultsWindow() {
+    this.searchResults = [];
+    this.filteredMaps = [];
+  }
+
+  private fillResultsWindow(term: string) {
+    this.subscriptions.add(this.searchService.searchAddressesAndPlaces(term).pipe(first()).subscribe(
+      (searchResults: SearchWindowElement[]) => {
+        this.searchResults = searchResults;
+      }
+    ));
+    this.filteredMaps = this.originalMaps.filter(availableMap =>
+      this.searchTerms.every(searchTerm => availableMap.title.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
   }
 
   private filterInputHandler(): Observable<string> {

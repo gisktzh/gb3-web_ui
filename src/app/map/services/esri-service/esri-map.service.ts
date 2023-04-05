@@ -5,7 +5,7 @@ import {TransformationService} from '../transformation.service';
 import {MapConfigState, selectActiveBasemapId, selectMapConfigState} from '../../../state/map/reducers/map-config.reducer';
 import {first, skip, Subscription, tap, withLatestFrom} from 'rxjs';
 import {FeatureInfoActions} from '../../../state/map/actions/feature-info.actions';
-import {Geometry as GeoJsonGeometry} from 'geojson';
+import {Geometry as GeoJsonGeometry, Point} from 'geojson';
 import {GeoJSONMapperService} from '../../../shared/services/geo-json-mapper.service';
 import {DefaultHighlightStyles} from 'src/app/shared/configs/feature-info-config';
 import * as dayjs from 'dayjs';
@@ -284,9 +284,9 @@ export class EsriMapService implements MapService {
     }
   }
 
-  public zoomToPoint(x: number, y: number, scale: number) {
+  public zoomToPoint(point: Point, scale: number) {
     this.mapView.goTo({
-      center: [x, y],
+      center: point.coordinates,
       scale: scale
     });
   }

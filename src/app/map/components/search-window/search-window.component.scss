@@ -2,7 +2,7 @@
 @use 'mixins/helpers.mixin' as mixins;
 
 .search-window__searchbar {
-  background-color: white;
+  background-color: ktzh-variables.$zh-white;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -19,14 +19,31 @@
 
   .search-window__input:focus {
     border: 3px solid ktzh-variables.$zh-cyan;
+
+    & + .search-window__input-icon {
+      color: black;
+    }
   }
 
-  .mat-icon {
+  .search-window__input-icon {
     height: 30px;
     width: 30px;
     margin: 16px 5px 5px 16px;
     position: absolute;
     color: grey;
+  }
+
+  .search-window__x-icon {
+    height: 30px;
+    width: 30px;
+    margin: 16px 5px 5px 16px;
+    position: absolute;
+    color: black;
+    right: 5px;
+  }
+
+  .search-window__x-icon:hover {
+    cursor: pointer;
   }
 }
 
@@ -49,7 +66,7 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      background-color: white;
+      background-color: ktzh-variables.$zh-white;
       pointer-events: all;
 
       .search-window__header {

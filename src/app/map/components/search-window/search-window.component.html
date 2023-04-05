@@ -1,6 +1,7 @@
 <div class="search-window__searchbar">
     <input #filterInput class="search-window__input" placeholder="Suchen nach Adressen, Orten, Karten und mehr...">
-    <mat-icon>search</mat-icon>
+    <mat-icon class="search-window__input-icon">search</mat-icon>
+    <mat-icon class="search-window__x-icon" (click)="clearInput()">close</mat-icon>
 </div>
 <div class="search-window__results_container">
   <div class="search-window__results">
@@ -11,7 +12,7 @@
           <mat-card-content
             class="search-window__element-content"
             [innerHTML]="result.displayString | highlightSearchQuery : this.searchTerms"
-            (click)="mapGoTo(result)"
+            (click)="zoomToResult(result)"
           ></mat-card-content>
           <mat-divider></mat-divider>
         </mat-card>

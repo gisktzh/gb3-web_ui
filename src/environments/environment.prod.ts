@@ -6,7 +6,8 @@ export const environment: EnvironmentConfig = {
     gb2Api: 'https://maps.zh.ch',
     gb2Wms: 'https://wms.zh.ch',
     geoLion: 'https://www.geolion.zh.ch',
-    ktzhWebsite: 'https://www.zh.ch'
+    ktzhWebsite: 'https://www.zh.ch',
+    searchApi: 'https://gb3-search-api.icycliff-4b8f6c95.switzerlandnorth.azurecontainerapps.io'
   },
   auth: {
     issuer: 'https://maps.zh.ch/',

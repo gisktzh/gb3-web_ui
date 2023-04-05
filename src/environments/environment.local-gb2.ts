@@ -15,7 +15,8 @@ export const environment: EnvironmentConfig = {
     gb2Wms: 'http://localhost:4200',
     geoLion: 'https://www.geolion.zh.ch',
     ktzhWebsite: 'https://www.zh.ch',
-    overrideWmsUrl: 'http://localhost:4200/wms'
+    overrideWmsUrl: 'http://localhost:4200/wms',
+    searchApi: 'https://gb3-search-api.icycliff-4b8f6c95.switzerlandnorth.azurecontainerapps.io'
   },
   auth: {
     issuer: 'http://localhost:4200/',
