@@ -70,6 +70,7 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public clearInput() {
     this.input.nativeElement.value = '';
+    this.input.nativeElement.dispatchEvent(new KeyboardEvent('keyup'));
     this.emptyResultsWindow();
   }
 

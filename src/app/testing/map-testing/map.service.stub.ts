@@ -1,5 +1,5 @@
 import {MapService} from '../../map/interfaces/map.service';
-import {Geometry} from 'geojson';
+import {Geometry, Point} from 'geojson';
 import {ActiveMapItem} from '../../map/models/active-map-item.model';
 import {ZoomType} from '../../shared/types/zoom-type';
 import {TimeExtent} from '../../map/interfaces/time-extent.interface';
@@ -38,4 +38,6 @@ export class MapServiceStub implements MapService {
   public setTimeSliderExtent(timeSliderExtent: TimeExtent, mapItem: ActiveMapItem): void {}
 
   public setAttributeFilters(attributeFilterParameters: {name: string; value: string}[], mapItem: ActiveMapItem): void {}
+
+  public zoomToPoint(point: Point, number: number): void {}
 }
