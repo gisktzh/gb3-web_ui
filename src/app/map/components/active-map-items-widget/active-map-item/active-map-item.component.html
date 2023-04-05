@@ -15,6 +15,7 @@
 <!-- Time slider config -->
 <ng-container *ngIf="activeMapItem.timeSliderConfiguration && activeMapItem.timeSliderExtent">
   <time-slider
+    class="time-slider"
     [initialTimeExtent]="activeMapItem.timeSliderExtent"
     [timeSliderConfiguration]="activeMapItem.timeSliderConfiguration"
     (timeExtentChanged)="onTimeSliderExtentChange($event)"
