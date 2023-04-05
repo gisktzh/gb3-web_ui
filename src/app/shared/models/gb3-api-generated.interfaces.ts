@@ -104,6 +104,8 @@ export interface FavoritesDetailData {
   }[];
 }
 
+export type FavoritesDeleteData = any;
+
 export interface TopicsFeatureInfoDetailData {
   feature_info: {
     /** Center x coord of query bbox */

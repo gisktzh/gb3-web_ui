@@ -1,12 +1,14 @@
 import {Inject, Injectable} from '@angular/core';
-import {Actions, createEffect, ofType} from '@ngrx/effects';
+import {Actions, concatLatestFrom, createEffect, ofType} from '@ngrx/effects';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
-import {tap, withLatestFrom} from 'rxjs';
+import {tap} from 'rxjs';
 import {MAP_SERVICE} from '../../../app.module';
 import {MapService} from '../../../map/interfaces/map.service';
 import {selectActiveMapItems} from '../reducers/active-map-item.reducer';
 import {Store} from '@ngrx/store';
 import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
+import {MapConfigActions} from '../actions/map-config.actions';
+import {map} from 'rxjs/operators';
 
 @Injectable()
 export class ActiveMapItemEffects {
@@ -122,7 +124,7 @@ export class ActiveMapItemEffects {
     () => {
       return this.actions$.pipe(
         ofType(ActiveMapItemActions.setAttributeFilterValueState),
-        withLatestFrom(this.store.select(selectActiveMapItems)),
+        concatLatestFrom(() => this.store.select(selectActiveMapItems)),
         tap(([action, activeMapItems]) => {
           const currentActiveMapItem = activeMapItems.find((activeMapItem) => activeMapItem.id === action.activeMapItem.id);
           if (currentActiveMapItem?.filterConfigurations) {
@@ -151,6 +153,18 @@ export class ActiveMapItemEffects {
     },
     {dispatch: false}
   );
+
+  public dispatchInitialMapItemsAddEffect$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ActiveMapItemActions.addInitialMapItems),
+      tap(({initialMapItems}) => {
+        initialMapItems.forEach((initialMapItem) => {
+          this.mapService.addMapItem(initialMapItem, 0);
+        });
+      }),
+      map(() => MapConfigActions.clearInitialMapsConfig())
+    );
+  });
 
   constructor(
     private readonly actions$: Actions,

@@ -143,6 +143,12 @@ export const activeMapItemFeature = createFeature({
       const activeMapItemsToStay = state.activeMapItems.filter((activeMapItem) => !favouriteIds.includes(activeMapItem.id));
 
       return {...state, activeMapItems: [...favourite, ...activeMapItemsToStay]};
+    }),
+    on(ActiveMapItemActions.addInitialMapItems, (state, {initialMapItems}): ActiveMapItemState => {
+      const initialMapItemIds = initialMapItems.map((initialMapItem) => initialMapItem.id);
+      const activeMapItemsToStay = state.activeMapItems.filter((activeMapItem) => !initialMapItemIds.includes(activeMapItem.id));
+
+      return {...state, activeMapItems: [...initialMapItems, ...activeMapItemsToStay]};
     })
   )
 });

@@ -1,0 +1,14 @@
+.support-page {
+  display: flex;
+  justify-content: center;
+
+  .support-page__content {
+    padding: 40px 0;
+    width: 100%;
+    max-width: 900px;
+
+    .support-page__content__tab {
+      padding: 20px;
+    }
+  }
+}

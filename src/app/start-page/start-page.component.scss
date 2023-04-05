@@ -1,13 +1,17 @@
-.content {
+.start-page {
   display: flex;
   justify-content: center;
 
-  .content__section {
+  .start-page__content {
     padding: 40px 0;
     width: 100%;
     max-width: 900px;
 
-    .content__section__item {
+    .start-page__content__discover-maps {
+      padding: 0 40px;
+    }
+
+    .start-page__content__news-feed {
       padding: 0 40px;
     }
   }

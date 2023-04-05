@@ -7,8 +7,10 @@
   border-radius: 0 !important;
 
   .favourite-selection__header {
-    display: flex;
-    flex-wrap: wrap;
+    .favourite-selection__header__title {
+      // needed to avoid a cut-off results indicator
+      margin: 20px 0;
+    }
 
     .favourite-selection__header__loader {
       position: absolute;
@@ -55,6 +57,8 @@
       .favourite-selection__favourite__content__title {
         @include mixins.single-line-text;
         margin-right: auto;
+        margin-bottom: auto;
+        margin-top: auto;
 
         &.favourite-selection__favourite__title--disabled {
           color: grey;

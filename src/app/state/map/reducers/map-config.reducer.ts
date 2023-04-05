@@ -13,6 +13,7 @@ export interface MapConfigState {
   isMaxZoomedIn: boolean;
   isMaxZoomedOut: boolean;
   activeBasemapId: string;
+  initialMaps: string[];
 }
 
 export const initialState: MapConfigState = {
@@ -23,14 +24,15 @@ export const initialState: MapConfigState = {
   scaleSettings: defaultMapConfig.scaleSettings,
   activeBasemapId: defaultMapConfig.activeBasemapId,
   isMaxZoomedIn: defaultMapConfig.isMaxZoomedIn,
-  isMaxZoomedOut: defaultMapConfig.isMaxZoomedOut
+  isMaxZoomedOut: defaultMapConfig.isMaxZoomedOut,
+  initialMaps: defaultMapConfig.initialMaps
 };
 
 export const mapConfigFeature = createFeature({
   name: mapConfigFeatureKey,
   reducer: createReducer(
     initialState,
-    on(MapConfigActions.setInitialMapConfig, (state, {x, y, scale, basemapId}): MapConfigState => {
+    on(MapConfigActions.setInitialMapConfig, (state, {x, y, scale, basemapId, initialMaps}): MapConfigState => {
       const initialExtent = {
         center: {
           x: x ?? initialState.center.x,
@@ -40,7 +42,7 @@ export const mapConfigFeature = createFeature({
       };
       const activeBasemapId = basemapId ?? initialState.activeBasemapId;
 
-      return {...state, activeBasemapId, ...initialExtent};
+      return {...state, activeBasemapId, initialMaps, ...initialExtent};
     }),
     on(MapConfigActions.setMapExtent, (state, {x, y, scale}): MapConfigState => {
       /**
@@ -79,6 +81,9 @@ export const mapConfigFeature = createFeature({
     }),
     on(MapConfigActions.setBasemap, (state, {activeBasemapId}): MapConfigState => {
       return {...state, activeBasemapId};
+    }),
+    on(MapConfigActions.clearInitialMapsConfig, (state): MapConfigState => {
+      return {...state, initialMaps: []};
     })
   )
 });

@@ -18,5 +18,6 @@ export const defaultMapConfig: MapConfigState = {
   },
   isMaxZoomedIn: false,
   isMaxZoomedOut: false,
-  activeBasemapId: defaultBasemap.id
+  activeBasemapId: defaultBasemap.id,
+  initialMaps: []
 };

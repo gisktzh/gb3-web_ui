@@ -546,7 +546,7 @@ export class EsriMapService implements MapService {
   }
 
   private getWmsOverrideInterceptor(accessToken?: string): __esri.RequestInterceptor {
-    const wmsOverrideUrl = environment.baseUrls.overrideWmsUrl;
+    const wmsOverrideUrl = environment.overrideWmsUrl;
     return wmsAuthAndUrlOverrideInterceptorFactory(wmsOverrideUrl, accessToken);
   }
 }

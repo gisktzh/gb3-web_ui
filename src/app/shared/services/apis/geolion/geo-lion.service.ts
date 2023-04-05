@@ -3,13 +3,13 @@ import {BaseApiService} from '../abstract-api.service';
 import {environment} from '../../../../../environments/environment';
 import {GeoLionGeodatenMetaInterface} from '../../../interfaces/geolion-geodaten-meta.interface';
 import {RootObject as GeodatenMetaRootObject} from '../../../models/geolion-geodaten-meta-generated.interface';
-import {lastValueFrom, Observable} from 'rxjs';
+import {Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GeoLionService extends BaseApiService {
-  protected apiBaseUrl: string = environment.baseUrls.geoLion;
+  protected apiBaseUrl: string = environment.apiConfigs.geoLion.baseUrl;
   private readonly geodatenMetaEndpoint: string = 'api/v2/getGeodatenmeta.json';
 
   public loadGeodatenMetaData(id: string): Observable<GeoLionGeodatenMetaInterface> {

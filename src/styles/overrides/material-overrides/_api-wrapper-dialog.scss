@@ -1,0 +1,57 @@
+@use 'functions/helper.function' as functions;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+/**
+  A panel class override which can be used as input for MatDialog.
+
+  Can be referenced via PanelClassEnum type.
+ */
+.api-wrapper-dialog {
+  & .mat-mdc-dialog-container {
+    max-width: 500px;
+  }
+
+  & .mdc-dialog__surface::before {
+    border: none;
+  }
+
+  & .mat-mdc-dialog-container .mdc-dialog__title {
+    font-size: xx-large;
+    padding-top: 20px;
+  }
+
+  & .mat-mdc-dialog-container .mdc-dialog__surface {
+    border-radius: unset;
+  }
+
+  & .mdc-dialog__actions {
+    min-height: 49px;
+    max-height: 49px;
+    justify-content: right;
+    padding: 0;
+
+    & .mdc-button {
+      font-family: ktzh-variables.$zh-font-family-bold;
+      background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 50);
+      color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 300);
+      height: 48px;
+      margin: 0 !important;
+      border-radius: unset !important;
+      width: 137px;
+      padding: 12px 24px 12px 24px;
+
+      &:last-of-type {
+        background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent);
+        color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-accent);
+      }
+    }
+
+    & .mat-mdc-button__ripple {
+      border-radius: unset;
+    }
+
+    & .mat-mdc-button-touch-target {
+      height: 48px;
+    }
+  }
+}

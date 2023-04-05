@@ -16,6 +16,11 @@ import {Favourite} from '../../../shared/interfaces/favourite.interface';
 import {FavouriteListActions} from '../../../state/map/actions/favourite-list.actions';
 import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.reducer';
 
+/**
+ * Defines the upper limit (inclusive) of filtered results which trigger an automatic open of the associated expansion panel.
+ */
+const AUTO_OPEN_THRESHOLD = 3;
+
 @Component({
   selector: 'map-data-catalogue',
   templateUrl: './map-data-catalogue.component.html',
@@ -28,6 +33,7 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
   public filterString: string = '';
   public filteredFavourites: Favourite[] = [];
   public isAuthenticated: boolean = false;
+  public autoOpenThreshold: number = AUTO_OPEN_THRESHOLD;
 
   private originalMaps: Map[] = [];
   private readonly filterString$ = this.store.select(selectFilterString);

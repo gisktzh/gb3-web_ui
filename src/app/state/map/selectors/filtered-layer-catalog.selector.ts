@@ -20,8 +20,12 @@ export const selectFilteredLayerCatalog = createSelector(selectFilterString, sel
             return map;
           })
           .filter((map) => {
-            // Return true if the map title or one of its sublayers itself includes the filterstring
-            return map.layers.length > 0 || map.title.toLowerCase().includes(lowerCasedFilterString);
+            // Return true if one of the sublayers OR the map title OR one of the keywords includes the filterstring
+            return (
+              map.layers.length > 0 ||
+              map.title.toLowerCase().includes(lowerCasedFilterString) ||
+              map.keywords.map((keyword) => keyword.toLowerCase()).includes(lowerCasedFilterString)
+            );
           });
 
         return {title: item.title, maps: filteredMaps};

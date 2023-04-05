@@ -16,13 +16,20 @@
       [filterString]="this.filterString"
       [filteredFavourites]="this.filteredFavourites"
       [loadingState]="this.favouritesLoadingState"
+      [autoOpenThreshold]="this.autoOpenThreshold"
     ></favourite-selection>
 
     <!-- Layertree -->
     <ng-container *ngFor="let topic of topics; trackBy: trackByTopicTitle">
-      <mat-expansion-panel>
+      <mat-expansion-panel [expanded]="!!this.filterString && topic.maps.length <= this.autoOpenThreshold">
         <mat-expansion-panel-header>
-          <p [matBadgeHidden]="!this.filterString" [matBadge]="topic.maps.length" matBadgeOverlap="false" matBadgePosition="above after">
+          <p
+            class="map-catalogue__content__topic-title"
+            [matBadgeHidden]="!this.filterString"
+            [matBadge]="topic.maps.length"
+            matBadgeOverlap="false"
+            matBadgePosition="above after"
+          >
             {{ topic.title }}
           </p>
         </mat-expansion-panel-header>

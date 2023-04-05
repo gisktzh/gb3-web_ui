@@ -4,7 +4,7 @@ import {Gb3FavouritesService} from '../../shared/services/apis/gb3/gb3-favourite
 import {Observable, tap} from 'rxjs';
 import {selectActiveMapItems} from '../../state/map/reducers/active-map-item.reducer';
 import {ActiveMapItem} from '../models/active-map-item.model';
-import {FavouriteLayerConfiguration, FavouritesResponse} from '../../shared/interfaces/favourite.interface';
+import {Favourite, FavouriteLayerConfiguration, FavouritesResponse} from '../../shared/interfaces/favourite.interface';
 import {map} from 'rxjs/operators';
 import {Map, MapLayer} from '../../shared/interfaces/topic.interface';
 import {selectAvailableMaps} from '../../state/map/selectors/available-maps.selector';
@@ -77,6 +77,10 @@ export class FavouritesService {
     });
 
     return activeMapItems;
+  }
+
+  public deleteFavourite(favourite: Favourite): Observable<void> {
+    return this.gb3FavouritesService.deleteFavourite(favourite);
   }
 
   private initSubscriptions() {
