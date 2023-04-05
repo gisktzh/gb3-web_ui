@@ -4,6 +4,7 @@ export interface EnvironmentConfig {
     gb2Api: ApiConfig;
     gb2Wms: ApiConfig;
     geoLion: ApiConfig;
+    searchApi: ApiConfig;
     ktzhWebsite: OptionalApiConfig;
     gravCms: OptionalApiConfig;
     twitterWidget: OptionalApiConfig;

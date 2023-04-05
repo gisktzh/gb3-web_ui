@@ -1,4 +1,4 @@
-import {Geometry} from 'geojson';
+import {Geometry, Point} from 'geojson';
 import {ActiveMapItem} from '../models/active-map-item.model';
 import {ZoomType} from '../../shared/types/zoom-type';
 import {TimeExtent} from './time-extent.interface';
@@ -54,4 +54,7 @@ export interface MapService {
 
   /** Removes an existing highlight geometry from the map */
   removeAllHighlightGeometries(): void;
+
+  /** Zooms to a selected point based on latitude, longitude and scale */
+  zoomToPoint(point: Point, scale: number): void;
 }

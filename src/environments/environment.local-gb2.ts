@@ -20,6 +20,9 @@ export const environment: EnvironmentConfig = {
     geoLion: {
       baseUrl: 'https://www.geolion.zh.ch'
     },
+    searchApi: {
+      baseUrl: 'https://gb3-search-api.icycliff-4b8f6c95.switzerlandnorth.azurecontainerapps.io'
+    },
     ktzhWebsite: {
       baseUrl: 'https://www.zh.ch',
       enabled: true
@@ -33,7 +36,6 @@ export const environment: EnvironmentConfig = {
       enabled: false
     }
   },
-  overrideWmsUrl: 'http://localhost:4200/wms',
   auth: {
     issuer: 'http://localhost:4200/',
     clientId: 'gb3',
