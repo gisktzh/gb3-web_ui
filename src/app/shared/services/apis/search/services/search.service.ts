@@ -13,7 +13,7 @@ import {map} from "rxjs/operators";
   providedIn: 'root'
 })
 export class SearchService extends BaseApiService {
-  protected apiBaseUrl = `${environment.baseUrls.searchApi}`;
+  protected apiBaseUrl = `${environment.apiConfigs.searchApi.baseUrl}`;
 
   public searchAddressesAndPlaces(term: string): Observable<SearchWindowElement[]> {
     return this.getElasticsearch('fme-addresses,fme-places', term).pipe(map(
