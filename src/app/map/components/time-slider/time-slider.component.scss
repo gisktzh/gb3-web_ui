@@ -1,6 +1,30 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
 .time-slider {
   .time-slider__slider {
     width: 100%;
     margin: 0;
+  }
+  .time-slider__footer {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .time-slider__footer__date-picker {
+      height: 0;
+      width: 0;
+      visibility: hidden;
+    }
+
+    .time-slider__footer__button {
+      min-width: auto;
+      padding: 0;
+
+      &--modified {
+        color: ktzh-variables.$zh-active-blue;
+        font-weight: bold;
+      }
+    }
   }
 }

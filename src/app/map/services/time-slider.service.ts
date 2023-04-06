@@ -51,7 +51,7 @@ export class TimeSliderService {
     }
     let unit: ManipulateType | undefined;
     if (initialRangeDuration) {
-      unit = TimeExtentUtil.extractUnitFromDuration(initialRangeDuration);
+      unit = TimeExtentUtil.extractUniqueUnitFromDuration(initialRangeDuration);
     } else {
       unit = TimeExtentUtil.extractSmallestUnitFromDateFormat(timeSliderConfig.dateFormat);
       initialRangeDuration = dayjs.duration(1, unit);
@@ -71,9 +71,13 @@ export class TimeSliderService {
     return dates;
   }
 
-  public createValidTimeExtent(timeSliderConfig: TimeSliderConfiguration, newValue: TimeExtent, hasStartDateChanged: boolean): TimeExtent {
-    const minimumDate: Date = dayjs(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat).toDate();
-    const maximumDate: Date = dayjs(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat).toDate();
+  public createValidTimeExtent(
+    timeSliderConfig: TimeSliderConfiguration,
+    newValue: TimeExtent,
+    hasStartDateChanged: boolean,
+    minimumDate: Date,
+    maximumDate: Date
+  ): TimeExtent {
     const timeExtent: TimeExtent = {
       start: newValue.start < minimumDate ? minimumDate : newValue.start,
       end: newValue.end > maximumDate ? maximumDate : newValue.end

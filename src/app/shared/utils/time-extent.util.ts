@@ -28,7 +28,7 @@ export class TimeExtentUtil {
    * 'P3Y' is a duration of 3 years. The duration only contains years and therefore this method returns 'years'
    * 'P1Y6M' is a duration of 1 year and 6 months. It contains years (1) and months (6) which is a mix of two units. The return value will be <undefined>.
    * */
-  public static extractUnitFromDuration(duration: Duration): ManipulateType | undefined {
+  public static extractUniqueUnitFromDuration(duration: Duration): ManipulateType | undefined {
     if (duration.years() === duration.asYears()) return 'years';
     if (duration.months() === duration.asMonths()) return 'months';
     if (duration.days() === duration.asDays()) return 'days';
@@ -36,6 +36,27 @@ export class TimeExtentUtil {
     if (duration.minutes() === duration.asMinutes()) return 'minutes';
     if (duration.seconds() === duration.asSeconds()) return 'seconds';
     if (duration.milliseconds() === duration.asMilliseconds()) return 'milliseconds';
+    return undefined;
+  }
+
+  /**
+   * Extracts a unit from the given date format (ISO8601) if it contains exactly one or <undefined> if it contains multiple units.
+   *
+   * @remarks
+   * It does return a unit ('years'/'months'/...) only if the given duration contains values of this unit and nothing else; <undefined> otherwise.
+   *
+   * @example
+   * 'YYYY-MM' is a date format containing years and months; The smallest unit is months (months < years) and therefore this method returns 'months'
+   * 'H:m s.SSS' is a date format containing hours, minutes, seconds and milliseconds; The smallest unit is milliseconds and therefore this method returns 'milliseconds'
+   * */
+  public static extractUniqueUnitFromDateFormat(dateFormat: string): ManipulateType | undefined {
+    if (dateFormat.replace(/S/g, '').trim() === '') return 'milliseconds';
+    if (dateFormat.replace(/s/g, '').trim() === '') return 'seconds';
+    if (dateFormat.replace(/m/g, '').trim() === '') return 'minutes';
+    if (dateFormat.replace(/[hH]/g, '').trim() === '') return 'hours';
+    if (dateFormat.replace(/[dD]/g, '').trim() === '') return 'days';
+    if (dateFormat.replace(/M/g, '').trim() === '') return 'months';
+    if (dateFormat.replace(/Y/g, '').trim() === '') return 'years';
     return undefined;
   }
 
@@ -73,7 +94,7 @@ export class TimeExtentUtil {
    * while the default way using `dayjs.add` would lead to an error: dayjs(01.01.2000).add(duration(1, 'years')) === 01.01.2000 + 365 days === 31.12.2000
    * */
   public static addDuration(date: Date, duration: Duration): Date {
-    const unit = TimeExtentUtil.extractUnitFromDuration(duration);
+    const unit = TimeExtentUtil.extractUniqueUnitFromDuration(duration);
     if (!unit) {
       return dayjs(date).add(duration).toDate();
     }
@@ -94,7 +115,7 @@ export class TimeExtentUtil {
    * while the default way using `dayjs.subtract` would lead to an error: dayjs(01.01.2001).subtract(duration(1, 'years')) === 01.01.2001 - 365 days === 02.01.2000
    * */
   public static subtractDuration(date: Date, duration: Duration): Date {
-    const unit = TimeExtentUtil.extractUnitFromDuration(duration);
+    const unit = TimeExtentUtil.extractUniqueUnitFromDuration(duration);
     if (!unit) {
       return dayjs(date).subtract(duration).toDate();
     }

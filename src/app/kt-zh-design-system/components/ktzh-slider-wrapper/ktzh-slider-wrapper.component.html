@@ -1,21 +1,31 @@
 <div class="ktzh-slider-wrapper">
-  <div class="header">
-    <div class="header__title">
-      <div class="header__title__info" *ngIf="description" [matTooltip]="description">
-        <mat-icon>info</mat-icon>
+  <ng-container *ngIf="overwriteHeader; else default_header">
+    <ng-content select="[header]"></ng-content>
+  </ng-container>
+  <ng-template #default_header>
+    <div class="header">
+      <div class="header__title">
+        <div class="header__title__info" *ngIf="description" [matTooltip]="description">
+          <mat-icon>info</mat-icon>
+        </div>
+        <div class="header__title__text">{{ title }}</div>
       </div>
-      <div class="header__title__text">{{ title }}</div>
+      <div class="header__value">
+        <div *ngIf="hasSimpleValue; else complex_value">{{ displayWith ? displayWith(value) : value }}</div>
+        <ng-template #complex_value>{{ complexValue }}</ng-template>
+      </div>
     </div>
-    <div class="header__value">
-      <div *ngIf="hasSimpleValue; else complex_value">{{ displayWith ? displayWith(value) : value }}</div>
-      <ng-template #complex_value>{{ complexValue }}</ng-template>
-    </div>
-  </div>
+  </ng-template>
   <div class="content">
-    <ng-content></ng-content>
+    <ng-content select="[content]"></ng-content>
   </div>
-  <div class="footer">
-    <div>{{ displayWith ? displayWith(minValue) : minValue }}</div>
-    <div>{{ displayWith ? displayWith(maxValue) : maxValue }}</div>
-  </div>
+  <ng-container *ngIf="overwriteFooter; else default_footer">
+    <ng-content select="[footer]"></ng-content>
+  </ng-container>
+  <ng-template #default_footer>
+    <div class="footer">
+      <div>{{ displayWith ? displayWith(minValue) : minValue }}</div>
+      <div>{{ displayWith ? displayWith(maxValue) : maxValue }}</div>
+    </div>
+  </ng-template>
 </div>

@@ -26,7 +26,10 @@ export class KtzhSliderWrapperComponent<T> implements OnInit {
   @Input() public minValue!: T;
 
   /** An optional function to convert the current, maximum and minimum value from their current type `T` to string */
-  @Input() public displayWith?: (value?: T) => string;
+  @Input() public displayWith?: (value?: T, format?: string) => string;
+
+  @Input() public overwriteHeader: boolean = false;
+  @Input() public overwriteFooter: boolean = false;
 
   public hasSimpleValue: boolean = true;
 

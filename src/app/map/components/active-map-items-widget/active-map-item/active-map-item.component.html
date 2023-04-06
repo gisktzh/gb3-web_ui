@@ -7,9 +7,11 @@
   [maxValue]="1"
   [displayWith]="displayTransparency"
 >
-  <mat-slider [min]="0" [max]="1" [step]="0.01" color="accent" class="transparency__slider">
-    <input matSliderThumb [(ngModel)]="currentOpacity" (valueChange)="onOpacitySliderChange($event)" />
-  </mat-slider>
+  <ng-container content>
+    <mat-slider [min]="0" [max]="1" [step]="0.01" color="accent" class="transparency__slider">
+      <input matSliderThumb [(ngModel)]="currentOpacity" (valueChange)="onOpacitySliderChange($event)" />
+    </mat-slider>
+  </ng-container>
 </ktzh-slider-wrapper>
 
 <!-- Time slider config -->
