@@ -1,0 +1,100 @@
+<ktzh-slider-wrapper
+  class="time-slider"
+  title="{{ timeSliderConfiguration.name }}"
+  description="{{ timeSliderConfiguration.description }}"
+  [value]="formattedTimeExtent"
+  [minValue]="formattedEffectiveMinimumDate"
+  [maxValue]="formattedEffectiveMaximumDate"
+  [overwriteFooter]="hasDatePicker"
+>
+  <ng-container content>
+    <mat-slider [min]="effectiveMinimumDateNumber" [max]="effectiveMaximumDateNumber" [step]="1" color="accent" class="time-slider__slider">
+      <ng-container *ngIf="this.timeSliderConfiguration.range; else multiSlider">
+        <input
+          matSliderThumb
+          (valueChange)="setValidTimeExtent(true)"
+          [(ngModel)]="firstSliderPosition"
+          (ngModelChange)="refreshCurrentValue()"
+        />
+      </ng-container>
+      <ng-template #multiSlider>
+        <input
+          matSliderStartThumb
+          (valueChange)="setValidTimeExtent(true)"
+          [(ngModel)]="firstSliderPosition"
+          (ngModelChange)="refreshCurrentValue()"
+        />
+        <input
+          matSliderEndThumb
+          (valueChange)="setValidTimeExtent(false)"
+          [(ngModel)]="secondSliderPosition"
+          (ngModelChange)="refreshCurrentValue()"
+        />
+      </ng-template>
+    </mat-slider>
+  </ng-container>
+  <ng-container footer>
+    <div class="time-slider__footer">
+      <div>
+        <mat-form-field class="time-slider__footer__date-picker">
+          <!-- TODO: 'noinspection ValidateTypes' is necessary due to a InteliiJ bug:
+               https://youtrack.jetbrains.com/issue/WEB-56339/Angular-type-mismatch-errors-in-template-MatDatepicker-is-not-assignable-to-parameter-type-MatDatepickerMoment -->
+          <input
+            matInput
+            (dateChange)="selectedDatePickerDate($event.value, true)"
+            [matDatepicker]="minDatePicker //noinspection ValidateTypes"
+            [min]="availableDates[0]"
+            [max]="availableDates[effectiveMaximumDateNumber - 1]"
+          />
+          <!-- TODO: 'noinspection ValidateTypes' is necessary due to a InteliiJ bug:
+               https://youtrack.jetbrains.com/issue/WEB-56339/Angular-type-mismatch-errors-in-template-MatDatepicker-is-not-assignable-to-parameter-type-MatDatepickerMoment -->
+          <mat-datepicker
+            #minDatePicker
+            [startView]="datePickerStartView"
+            [startAt]="availableDates[effectiveMinimumDateNumber]"
+            (yearSelected)="yearOrMonthSelected($event, minDatePicker, true, 'years') //noinspection ValidateTypes"
+            (monthSelected)="yearOrMonthSelected($event, minDatePicker, true, 'months') //noinspection ValidateTypes"
+          ></mat-datepicker>
+        </mat-form-field>
+        <button
+          mat-button
+          [ngClass]="{'time-slider__footer__button--modified': effectiveMinimumDateNumber !== 0}"
+          class="time-slider__footer__button"
+          (click)="minDatePicker.open()"
+        >
+          {{ formattedEffectiveMinimumDate }}
+        </button>
+      </div>
+      <div>
+        <mat-form-field class="time-slider__footer__date-picker">
+          <!-- TODO: 'noinspection ValidateTypes' is necessary due to a InteliiJ bug:
+               https://youtrack.jetbrains.com/issue/WEB-56339/Angular-type-mismatch-errors-in-template-MatDatepicker-is-not-assignable-to-parameter-type-MatDatepickerMoment -->
+          <input
+            matInput
+            (dateChange)="selectedDatePickerDate($event.value, false)"
+            [matDatepicker]="maxDatePicker //noinspection ValidateTypes"
+            [min]="availableDates[effectiveMinimumDateNumber + 1]"
+            [max]="availableDates[availableDates.length - 1]"
+          />
+          <!-- TODO: 'noinspection ValidateTypes' is necessary due to a InteliiJ bug:
+               https://youtrack.jetbrains.com/issue/WEB-56339/Angular-type-mismatch-errors-in-template-MatDatepicker-is-not-assignable-to-parameter-type-MatDatepickerMoment -->
+          <mat-datepicker
+            #maxDatePicker
+            [startView]="datePickerStartView"
+            [startAt]="availableDates[effectiveMaximumDateNumber]"
+            (yearSelected)="yearOrMonthSelected($event, maxDatePicker, false, 'years') //noinspection ValidateTypes"
+            (monthSelected)="yearOrMonthSelected($event, maxDatePicker, false, 'months') //noinspection ValidateTypes"
+          ></mat-datepicker>
+        </mat-form-field>
+        <button
+          mat-button
+          [ngClass]="{'time-slider__footer__button--modified': effectiveMaximumDateNumber !== availableDates.length - 1}"
+          class="time-slider__footer__button"
+          (click)="maxDatePicker.open()"
+        >
+          {{ formattedEffectiveMaximumDate }}
+        </button>
+      </div>
+    </div>
+  </ng-container>
+</ktzh-slider-wrapper>

@@ -1,0 +1,45 @@
+@use 'functions/helper.function' as functions;
+@use 'mixins/helpers.mixin' as mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.ktzh-slider-wrapper {
+  width: 100%;
+
+  .header {
+    display: flex;
+    align-items: center;
+
+    .header__title {
+      display: flex;
+      align-items: center;
+      margin-right: auto;
+
+      .header__title__info {
+        height: 24px;
+        width: 24px;
+        margin-right: 8px;
+      }
+
+      .header__title__text {
+        @include mixins.multiline-ellipsis(3);
+      }
+    }
+
+    .header__value {
+      white-space: nowrap;
+      color: ktzh-variables.$zh-white;
+      background-color: ktzh-variables.$zh-active-blue;
+      padding: 8px;
+    }
+  }
+
+  .content {
+    width: 100%;
+  }
+
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
