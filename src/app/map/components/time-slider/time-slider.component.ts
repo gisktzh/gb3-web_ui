@@ -124,11 +124,11 @@ export class TimeSliderComponent implements OnInit {
 
     // correct the thumb that was modified with the calculated time extent if necessary (e.g. enforcing a minimal range)
     const hasStartTimeBeenCorrected = Math.abs(dayjs(newValidatedTimeExtent.start).diff(newTimeExtent.start)) > 0;
-    if (hasStartDateChanged && hasStartTimeBeenCorrected) {
+    if (hasStartTimeBeenCorrected) {
       this.firstSliderPosition = this.findPositionOfDate(newValidatedTimeExtent.start) ?? 0;
     }
     const hasEndTimeBeenCorrected = Math.abs(dayjs(newValidatedTimeExtent.end).diff(newTimeExtent.end)) > 0;
-    if (!hasStartDateChanged && !this.timeSliderConfiguration.range && hasEndTimeBeenCorrected) {
+    if (!this.timeSliderConfiguration.range && hasEndTimeBeenCorrected) {
       this.secondSliderPosition = this.findPositionOfDate(newValidatedTimeExtent.end) ?? 0;
     }
 
