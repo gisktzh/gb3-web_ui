@@ -10,6 +10,7 @@ export interface ApiConfig {
   gb2Api: ApiBaseUrlConfig;
   gb2Wms: ApiBaseUrlConfig;
   geoLion: ApiBaseUrlConfig;
+  searchApi: ApiBaseUrlConfig;
   ktzhWebsite: OptionalApiBaseUrlConfig;
   gravCms: OptionalApiBaseUrlConfig;
   twitterWidget: OptionalApiBaseUrlConfig;

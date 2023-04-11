@@ -16,6 +16,9 @@ export const remoteDeployments: RuntimeConfig[] = [
       geoLion: {
         baseUrl: 'https://uatgeolion.kt.ktzh.ch'
       },
+      searchApi: {
+        baseUrl: 'https://gb3-search-api.icycliff-4b8f6c95.switzerlandnorth.azurecontainerapps.io'
+      },
       ktzhWebsite: {
         baseUrl: 'https://www.zh.ch',
         enabled: true
@@ -42,6 +45,9 @@ export const remoteDeployments: RuntimeConfig[] = [
       },
       geoLion: {
         baseUrl: 'https://uatgeolion.kt.ktzh.ch'
+      },
+      searchApi: {
+        baseUrl: 'https://gb3-search-api.icycliff-4b8f6c95.switzerlandnorth.azurecontainerapps.io'
       },
       ktzhWebsite: {
         baseUrl: 'https://www.zh.ch',
@@ -70,6 +76,9 @@ export const remoteDeployments: RuntimeConfig[] = [
       geoLion: {
         baseUrl: 'https://geolion.ktzh.ch'
       },
+      searchApi: {
+        baseUrl: 'https://gb3-search-api.icycliff-4b8f6c95.switzerlandnorth.azurecontainerapps.io'
+      },
       ktzhWebsite: {
         baseUrl: 'https://www.zh.ch',
         enabled: true
@@ -97,6 +106,9 @@ export const remoteDeployments: RuntimeConfig[] = [
       geoLion: {
         baseUrl: 'https://geolion.zh.ch'
       },
+      searchApi: {
+        baseUrl: 'https://gb3-search-api.icycliff-4b8f6c95.switzerlandnorth.azurecontainerapps.io'
+      },
       ktzhWebsite: {
         baseUrl: 'https://www.zh.ch',
         enabled: true
@@ -123,6 +135,9 @@ export const remoteDeployments: RuntimeConfig[] = [
       },
       geoLion: {
         baseUrl: 'https://geolion.zh.ch'
+      },
+      searchApi: {
+        baseUrl: 'https://gb3-search-api.icycliff-4b8f6c95.switzerlandnorth.azurecontainerapps.io'
       },
       ktzhWebsite: {
         baseUrl: 'https://www.zh.ch',
