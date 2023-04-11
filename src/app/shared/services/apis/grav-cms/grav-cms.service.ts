@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {BaseApiService} from '../abstract-api.service';
-import {environment} from '../../../../../environments/environment';
 import {Observable} from 'rxjs';
 import {DiscoverMapsItem} from '../../../interfaces/discover-maps.interface';
 import {map} from 'rxjs/operators';
@@ -10,7 +9,7 @@ import {GravCmsRootObject, Map} from '../../../models/grav-cms-generated.interfa
   providedIn: 'root'
 })
 export class GravCmsService extends BaseApiService {
-  protected apiBaseUrl: string = environment.apiConfigs.gravCms.baseUrl;
+  protected apiBaseUrl: string = this.configService.apiConfig.gravCms.baseUrl;
   private readonly discoverMapsEndpoint: string = 'discovermaps.json';
 
   public loadDiscoverMapsData(): Observable<DiscoverMapsItem[]> {

@@ -69,8 +69,8 @@
               "namedChunks": true,
               "fileReplacements": [
                 {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.local-gb2.ts"
+                  "replace": "src/app/shared/configs/runtime-configs/local-runtime-config.ts",
+                  "with": "src/app/shared/configs/runtime-configs/local-gb2-runtime-config.ts"
                 }
               ]
             }

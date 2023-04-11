@@ -1,8 +1,11 @@
-import {Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {defaultBasemap, defaultBasemaps} from '../configs/base-map-config';
 import {defaultHighlightStyles} from '../configs/feature-info-config';
 import {defaultMapConfig} from '../configs/map-config';
 import {MapConstants} from '../constants/map.constants';
+import {DOCUMENT} from '@angular/common';
+import {defaultRuntimeConfig} from '../configs/runtime-config';
+import {ApiConfig, OverrideSettings, RuntimeConfig} from '../interfaces/runtime-config.interface';
 import {Gb2Constants} from '../constants/gb2.constants';
 
 @Injectable({
@@ -29,4 +32,24 @@ export class ConfigService {
       minScale: MapConstants.MINIMUM_MAP_SCALE
     }
   };
+
+  public readonly apiConfig: ApiConfig;
+  public readonly overridesConfig: OverrideSettings;
+
+  constructor(@Inject(DOCUMENT) private readonly document: Document) {
+    const runtimeConfig = this.getRuntimeConfigOrFail();
+    this.apiConfig = runtimeConfig.apiBasePaths;
+    this.overridesConfig = runtimeConfig.overrides;
+  }
+
+  private getRuntimeConfigOrFail(): RuntimeConfig {
+    const hostName = this.document.location.host;
+    const config = defaultRuntimeConfig.find((config) => config.hostMatch === hostName);
+
+    if (config) {
+      return config;
+    }
+
+    throw new Error('Cannot find a matching hostname for URL resolution.'); // todo: error handling for fatal errors
+  }
 }

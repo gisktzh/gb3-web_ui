@@ -71,3 +71,28 @@ running `ng serve --configuration=development-local-gb2` (or `npm run start-loca
 
 If using this, angular will proxy all requests to the GB2 via localhost, so you have to set all links to be relative (
 e.g. `/wms/asd` will become `http://localhost:4200/wms/asd`, and then proxied to `http://localhost:3000/wms/asd`).
+
+## Code documentation
+
+### Runtime configurations
+
+The app supports multiple environments with different endpoints. Because the production deployment has different
+endpoints depending on whether it is access via internet or intranet, these URLs need to be added during runtime, so
+Angular's environment files do not work.
+
+As a workaround, the `ConfigService` can be used. This service will check the current hostname and return the given API
+configurations. Because we also need to support two different localhost setups, the `angular.json` replaces these files
+as well.
+
+The configurations are found in `src/app/shared/configs/runtime-config.ts` and configured via the `runtime-configs`
+directory.
+
+#### Available URL configurations
+
+| Stagename |      Subdomain      |        Verwendung        |     GB2 Backend     |    WMS Backend     |        Geolion         |                 Bemerkung                  |
+| :-------: | :-----------------: | :----------------------: | :-----------------: | :----------------: | :--------------------: | :----------------------------------------: |
+|    DEV    |    dev.geo.zh.ch    |           EBP            |                     |                    |                        | calm-plant-0ecbec603.2.azurestaticapps.net |
+|   PROD    |      geo.zh.ch      |        öffentlich        |     maps.zh.ch      |     wms.zh.ch      |     geolion.zh.ch      |                                            |
+|   PROD    |     geo.ktzh.ch     |        Verwaltung        |   web.maps.zh.ch    |   web.wms.zh.ch    |    geolion.ktzh.ch     |                                            |
+|    UAT    |   uat.geo.ktzh.ch   | Verwaltungsinterne Tests | uatmaps.kt.ktzh.ch  | uatwms.kt.ktzh.ch  | uatgeolion.kt.ktzh.ch  |                                            |
+|  STAGING  | staging.geo.ktzh.ch | Produktionsvorbereitung  | testmaps.kt.ktzh.ch | testwms.kt.ktzh.ch | testgeolion.kt.ktzh.ch |                                            |

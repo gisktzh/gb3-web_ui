@@ -1,8 +1,8 @@
-import {EnvironmentConfig} from '../environment-config.interface';
+import {RuntimeConfig} from '../../interfaces/runtime-config.interface';
 
-export const environment: EnvironmentConfig = {
-  production: true,
-  apiConfigs: {
+export const localRuntimeConfig: RuntimeConfig = {
+  hostMatch: 'localhost:4200',
+  apiBasePaths: {
     gb2Api: {
       baseUrl: 'https://maps.zh.ch'
     },
@@ -10,7 +10,7 @@ export const environment: EnvironmentConfig = {
       baseUrl: 'https://wms.zh.ch'
     },
     geoLion: {
-      baseUrl: 'https://geolion.zh.ch'
+      baseUrl: 'https://www.geolion.zh.ch'
     },
     ktzhWebsite: {
       baseUrl: 'https://www.zh.ch',
@@ -25,9 +25,5 @@ export const environment: EnvironmentConfig = {
       enabled: false
     }
   },
-  auth: {
-    issuer: 'https://maps.zh.ch/',
-    clientId: 'gb3',
-    authenticatedPingInterval: 5000
-  }
+  overrides: {}
 };
