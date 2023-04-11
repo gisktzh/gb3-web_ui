@@ -5,7 +5,7 @@ import {RuntimeConfig} from '../../interfaces/runtime-config.interface';
  * the respective boot parameter.
  */
 export const localRuntimeConfig: RuntimeConfig = {
-  hostMatch: 'localhost:4200',
+  hostMatch: 'localhost',
   apiBasePaths: {
     gb2Api: {
       baseUrl: 'http://localhost:4200'

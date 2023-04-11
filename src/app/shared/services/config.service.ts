@@ -42,12 +42,18 @@ export class ConfigService {
     this.overridesConfig = runtimeConfig.overrides;
   }
 
+  /**
+   * Extracts the hostname from Document.location, also removing any port mappings.
+   *
+   * Then, tries to find a matching runtime configuration or raises an exception.
+   * @private
+   */
   private getRuntimeConfigOrFail(): RuntimeConfig {
-    const hostName = this.document.location.host;
-    const config = defaultRuntimeConfig.find((config) => config.hostMatch === hostName);
+    const hostName = this.document.location.host.split(':')[0];
+    const runtimeConfig = defaultRuntimeConfig.find((config) => config.hostMatch === hostName);
 
-    if (config) {
-      return config;
+    if (runtimeConfig) {
+      return runtimeConfig;
     }
 
     throw new Error('Cannot find a matching hostname for URL resolution.'); // todo: error handling for fatal errors
