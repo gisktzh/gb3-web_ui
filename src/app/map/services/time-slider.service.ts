@@ -4,7 +4,7 @@ import * as dayjs from 'dayjs';
 import {ManipulateType} from 'dayjs';
 import * as duration from 'dayjs/plugin/duration';
 import {Duration} from 'dayjs/plugin/duration';
-import {TimeExtentUtil} from '../../shared/utils/time-extent.util';
+import {TimeExtentUtils} from '../../shared/utils/time-extent.utils';
 import {TimeExtent} from '../interfaces/time-extent.interface';
 
 dayjs.extend(duration);
@@ -46,14 +46,17 @@ export class TimeSliderService {
     const maximumDate: Date = dayjs(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat).toDate();
     const initialRange: string | null = timeSliderConfig.range ?? timeSliderConfig.minimalRange ?? null;
     let initialRangeDuration: Duration | null = initialRange ? dayjs.duration(initialRange) : null;
-    if (initialRangeDuration && Math.abs(dayjs(minimumDate).diff(maximumDate)) <= initialRangeDuration.asMilliseconds()) {
+    if (
+      initialRangeDuration &&
+      TimeExtentUtils.calculateDifferenceBetweenDates(minimumDate, maximumDate) <= initialRangeDuration.asMilliseconds()
+    ) {
       throw Error(`Invalid time slider configuration: min date + range > max date`); // TODO: error handling
     }
     let unit: ManipulateType | undefined;
     if (initialRangeDuration) {
-      unit = TimeExtentUtil.extractUniqueUnitFromDuration(initialRangeDuration);
+      unit = TimeExtentUtils.extractUniqueUnitFromDuration(initialRangeDuration);
     } else {
-      unit = TimeExtentUtil.extractSmallestUnitFromDateFormat(timeSliderConfig.dateFormat);
+      unit = TimeExtentUtils.extractSmallestUnitFromDateFormat(timeSliderConfig.dateFormat);
       initialRangeDuration = dayjs.duration(1, unit);
     }
 
@@ -65,7 +68,7 @@ export class TimeSliderService {
     let date = minimumDate;
     while (date < maximumDate) {
       dates.push(date);
-      date = TimeExtentUtil.addDuration(date, initialRangeDuration);
+      date = TimeExtentUtils.addDuration(date, initialRangeDuration);
     }
     dates.push(maximumDate);
     return dates;
@@ -100,7 +103,7 @@ export class TimeSliderService {
          */
       const range: Duration = dayjs.duration(timeSliderConfig.range);
       timeExtent.start = timeExtent.start > maximumDate ? maximumDate : timeExtent.start;
-      timeExtent.end = TimeExtentUtil.addDuration(timeExtent.start, range);
+      timeExtent.end = TimeExtentUtils.addDuration(timeExtent.start, range);
     } else if (timeSliderConfig.minimalRange) {
       /*
           Minimal range
@@ -113,21 +116,21 @@ export class TimeSliderService {
             3. if the previous changes are not enough (e.g. in case the min/max limits have changed) then
                also adjust the value of the previously unchanged value.
          */
-      const startEndDiff: number = Math.abs(dayjs(timeExtent.start).diff(timeExtent.end));
+      const startEndDiff: number = TimeExtentUtils.calculateDifferenceBetweenDates(timeExtent.start, timeExtent.end);
       const minimalRange: Duration = dayjs.duration(timeSliderConfig.minimalRange);
 
       if (startEndDiff < minimalRange.asMilliseconds()) {
         if (hasStartDateChanged) {
-          const newStartDate = TimeExtentUtil.subtractDuration(timeExtent.end, minimalRange);
+          const newStartDate = TimeExtentUtils.subtractDuration(timeExtent.end, minimalRange);
           timeExtent.start = newStartDate < minimumDate ? minimumDate : newStartDate;
-          if (Math.abs(dayjs(timeExtent.start).diff(timeExtent.end)) < minimalRange.asMilliseconds()) {
-            timeExtent.end = TimeExtentUtil.addDuration(timeExtent.start, minimalRange);
+          if (TimeExtentUtils.calculateDifferenceBetweenDates(timeExtent.start, timeExtent.end) < minimalRange.asMilliseconds()) {
+            timeExtent.end = TimeExtentUtils.addDuration(timeExtent.start, minimalRange);
           }
         } else {
-          const newEndDate = TimeExtentUtil.addDuration(timeExtent.start, minimalRange);
+          const newEndDate = TimeExtentUtils.addDuration(timeExtent.start, minimalRange);
           timeExtent.end = newEndDate > maximumDate ? maximumDate : newEndDate;
-          if (Math.abs(dayjs(timeExtent.start).diff(timeExtent.end)) < minimalRange.asMilliseconds()) {
-            timeExtent.start = TimeExtentUtil.subtractDuration(timeExtent.end, minimalRange);
+          if (TimeExtentUtils.calculateDifferenceBetweenDates(timeExtent.start, timeExtent.end) < minimalRange.asMilliseconds()) {
+            timeExtent.start = TimeExtentUtils.subtractDuration(timeExtent.end, minimalRange);
           }
         }
       }

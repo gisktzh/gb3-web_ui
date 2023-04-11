@@ -1,16 +1,18 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Store} from '@ngrx/store';
 import {TimeExtent} from '../../interfaces/time-extent.interface';
 import {TimeSliderConfiguration, TimeSliderLayerSource} from '../../../shared/interfaces/topic.interface';
 import * as dayjs from 'dayjs';
 import {ManipulateType} from 'dayjs';
 import {TimeSliderService} from '../../services/time-slider.service';
-import {TimeExtentUtil} from '../../../shared/utils/time-extent.util';
+import {TimeExtentUtils} from '../../../shared/utils/time-extent.utils';
 import * as duration from 'dayjs/plugin/duration';
 import {MatDatepicker} from '@angular/material/datepicker';
 
 dayjs.extend(duration);
 
+// There is an array (`allowedDatePickerManipulationUnits`) and a new union type (`DatePickerManipulationUnits`) for two reasons:
+// To be able to extract a union type subset of `ManipulateType` AND to have an array used to check if a given value is in said union type.
+// => more infos: https://stackoverflow.com/questions/50085494/how-to-check-if-a-given-value-is-in-a-union-type-array
 const allowedDatePickerManipulationUnits = ['years', 'months', 'days'] as const; // TS3.4 syntax
 type DatePickerManipulationUnits = Extract<ManipulateType, (typeof allowedDatePickerManipulationUnits)[number]>;
 type DatePickerStartView = 'month' | 'year' | 'multi-year';
@@ -75,7 +77,7 @@ export class TimeSliderComponent implements OnInit {
     this.formattedEffectiveMaximumDate = this.convertDateToString(this.availableDates[value]);
   }
 
-  constructor(private readonly store: Store, private readonly timeSliderService: TimeSliderService) {}
+  constructor(private readonly timeSliderService: TimeSliderService) {}
 
   public ngOnInit() {
     this.availableDates = this.timeSliderService.createStops(this.timeSliderConfiguration);
@@ -123,19 +125,20 @@ export class TimeSliderComponent implements OnInit {
     );
 
     // correct the thumb that was modified with the calculated time extent if necessary (e.g. enforcing a minimal range)
-    const hasStartTimeBeenCorrected = Math.abs(dayjs(newValidatedTimeExtent.start).diff(newTimeExtent.start)) > 0;
+    const hasStartTimeBeenCorrected =
+      TimeExtentUtils.calculateDifferenceBetweenDates(newValidatedTimeExtent.start, newTimeExtent.start) > 0;
     if (hasStartTimeBeenCorrected) {
       this.firstSliderPosition = this.findPositionOfDate(newValidatedTimeExtent.start) ?? 0;
     }
-    const hasEndTimeBeenCorrected = Math.abs(dayjs(newValidatedTimeExtent.end).diff(newTimeExtent.end)) > 0;
+    const hasEndTimeBeenCorrected = TimeExtentUtils.calculateDifferenceBetweenDates(newValidatedTimeExtent.end, newTimeExtent.end) > 0;
     if (!this.timeSliderConfiguration.range && hasEndTimeBeenCorrected) {
       this.secondSliderPosition = this.findPositionOfDate(newValidatedTimeExtent.end) ?? 0;
     }
 
     // overwrite the current time extent and trigger the corresponding event if the new validated time extent is different from the previous one
     if (
-      Math.abs(dayjs(this.timeExtent.start).diff(newValidatedTimeExtent.start)) > 0 ||
-      Math.abs(dayjs(this.timeExtent.end).diff(newValidatedTimeExtent.end)) > 0
+      TimeExtentUtils.calculateDifferenceBetweenDates(this.timeExtent.start, newValidatedTimeExtent.start) > 0 ||
+      TimeExtentUtils.calculateDifferenceBetweenDates(this.timeExtent.end, newValidatedTimeExtent.end) > 0
     ) {
       this.timeExtent = newValidatedTimeExtent;
       this.timeExtentChanged.next(this.timeExtent);
@@ -191,8 +194,8 @@ export class TimeSliderComponent implements OnInit {
   private isRangeExactlyOneOfSingleTimeUnit(range: string | null | undefined): boolean {
     if (range) {
       const rangeDuration = dayjs.duration(range);
-      const unit = TimeExtentUtil.extractUniqueUnitFromDuration(rangeDuration);
-      return unit !== undefined && TimeExtentUtil.getDurationAsNumber(rangeDuration, unit) === 1;
+      const unit = TimeExtentUtils.extractUniqueUnitFromDuration(rangeDuration);
+      return unit !== undefined && TimeExtentUtils.getDurationAsNumber(rangeDuration, unit) === 1;
     }
     return false;
   }
@@ -221,10 +224,9 @@ export class TimeSliderComponent implements OnInit {
   }
 
   private extractUniqueDatePickerUnitFromDateFormat(dateFormat: string): DatePickerManipulationUnits | undefined {
-    const unit = TimeExtentUtil.extractUniqueUnitFromDateFormat(dateFormat);
+    const unit = TimeExtentUtils.extractUniqueUnitFromDateFormat(dateFormat);
     if (unit !== undefined && allowedDatePickerManipulationUnits.some((allowedUnit) => allowedUnit === unit)) {
-      const allowedUnit = unit as DatePickerManipulationUnits;
-      return allowedUnit;
+      return unit as DatePickerManipulationUnits;
     }
     return undefined;
   }
@@ -237,7 +239,9 @@ export class TimeSliderComponent implements OnInit {
   }
 
   private findPositionOfDate(date: Date): number | undefined {
-    const index = this.availableDates.findIndex((availableDate) => Math.abs(dayjs(availableDate).diff(date)) === 0);
+    const index = this.availableDates.findIndex(
+      (availableDate) => TimeExtentUtils.calculateDifferenceBetweenDates(availableDate, date) === 0
+    );
     return index === -1 ? undefined : index;
   }
 

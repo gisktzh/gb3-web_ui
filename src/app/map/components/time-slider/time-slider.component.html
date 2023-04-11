@@ -2,14 +2,14 @@
   class="time-slider"
   title="{{ timeSliderConfiguration.name }}"
   description="{{ timeSliderConfiguration.description }}"
-  [complexValue]="formattedTimeExtent"
+  [value]="formattedTimeExtent"
   [minValue]="formattedEffectiveMinimumDate"
   [maxValue]="formattedEffectiveMaximumDate"
   [overwriteFooter]="hasDatePicker"
 >
   <ng-container content>
     <mat-slider [min]="effectiveMinimumDateNumber" [max]="effectiveMaximumDateNumber" [step]="1" color="accent" class="time-slider__slider">
-      <ng-container *ngIf="this.timeSliderConfiguration.range; else multi_slider">
+      <ng-container *ngIf="this.timeSliderConfiguration.range; else multiSlider">
         <input
           matSliderThumb
           (valueChange)="setValidTimeExtent(true)"
@@ -17,7 +17,7 @@
           (ngModelChange)="refreshCurrentValue()"
         />
       </ng-container>
-      <ng-template #multi_slider>
+      <ng-template #multiSlider>
         <input
           matSliderStartThumb
           (valueChange)="setValidTimeExtent(true)"

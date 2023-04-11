@@ -266,7 +266,6 @@ describe('TimeSliderService', () => {
           layerIdentifiers: []
         }
       };
-      // const oldValue = new EsriTimeExtent({start: dayjs(minimumDate, dateFormat).toDate(), end: dayjs(maximumDate, dateFormat).toDate()});
       const newValue: TimeExtent = {start: dayjs(minimumDate, dateFormat).toDate(), end: dayjs(minimumDate, dateFormat).toDate()};
 
       const calculatedTimeExtent = service.createValidTimeExtent(

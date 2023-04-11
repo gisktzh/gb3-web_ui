@@ -14,7 +14,17 @@ import {TimeExtent} from '../../../interfaces/time-extent.interface';
 export class ActiveMapItemComponent implements OnInit {
   @Input() public activeMapItem!: ActiveMapItem;
 
-  public currentOpacity: number = 0;
+  public formattedCurrentOpacity: string = '';
+  private _currentOpacity: number = 0;
+
+  public get currentOpacity(): number {
+    return this._currentOpacity;
+  }
+
+  public set currentOpacity(value: number) {
+    this._currentOpacity = value;
+    this.formattedCurrentOpacity = this.convertTransparencyToString(value);
+  }
 
   constructor(private readonly store: Store) {}
 
@@ -50,7 +60,7 @@ export class ActiveMapItemComponent implements OnInit {
     this.store.dispatch(ActiveMapItemActions.setTimeSliderExtent({timeExtent, activeMapItem: this.activeMapItem}));
   }
 
-  public displayTransparency(value?: number): string {
+  private convertTransparencyToString(value?: number): string {
     return value === undefined ? '' : `${Math.round(value * 100)}%`;
   }
 }

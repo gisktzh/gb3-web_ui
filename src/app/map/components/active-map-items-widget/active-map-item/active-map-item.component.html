@@ -1,12 +1,5 @@
 <!-- Opacity config -->
-<ktzh-slider-wrapper
-  class="transparency"
-  title="Transparenz"
-  [value]="currentOpacity"
-  [minValue]="0"
-  [maxValue]="1"
-  [displayWith]="displayTransparency"
->
+<ktzh-slider-wrapper class="transparency" title="Transparenz" [value]="formattedCurrentOpacity" minValue="100%" maxValue="100%">
   <ng-container content>
     <mat-slider [min]="0" [max]="1" [step]="0.01" color="accent" class="transparency__slider">
       <input matSliderThumb [(ngModel)]="currentOpacity" (valueChange)="onOpacitySliderChange($event)" />

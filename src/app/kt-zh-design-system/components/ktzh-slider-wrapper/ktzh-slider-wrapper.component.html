@@ -1,8 +1,8 @@
 <div class="ktzh-slider-wrapper">
-  <ng-container *ngIf="overwriteHeader; else default_header">
+  <ng-container *ngIf="overwriteHeader; else defaultHeader">
     <ng-content select="[header]"></ng-content>
   </ng-container>
-  <ng-template #default_header>
+  <ng-template #defaultHeader>
     <div class="header">
       <div class="header__title">
         <div class="header__title__info" *ngIf="description" [matTooltip]="description">
@@ -11,21 +11,20 @@
         <div class="header__title__text">{{ title }}</div>
       </div>
       <div class="header__value">
-        <div *ngIf="hasSimpleValue; else complex_value">{{ displayWith ? displayWith(value) : value }}</div>
-        <ng-template #complex_value>{{ complexValue }}</ng-template>
+        <div>{{ value }}</div>
       </div>
     </div>
   </ng-template>
   <div class="content">
     <ng-content select="[content]"></ng-content>
   </div>
-  <ng-container *ngIf="overwriteFooter; else default_footer">
+  <ng-container *ngIf="overwriteFooter; else defaultFooter">
     <ng-content select="[footer]"></ng-content>
   </ng-container>
-  <ng-template #default_footer>
+  <ng-template #defaultFooter>
     <div class="footer">
-      <div>{{ displayWith ? displayWith(minValue) : minValue }}</div>
-      <div>{{ displayWith ? displayWith(maxValue) : maxValue }}</div>
+      <div>{{ minValue }}</div>
+      <div>{{ maxValue }}</div>
     </div>
   </ng-template>
 </div>
