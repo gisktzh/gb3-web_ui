@@ -1,13 +1,21 @@
 <!-- Opacity config -->
-<mat-card appearance="raised" class="transparency">
-  <p class="transparency__title">Transparenz</p>
-  <mat-slider discrete min="0" max="1" step="0.01" color="accent">
-    <input matSliderThumb [value]="activeMapItem.opacity" (valueChange)="onOpacitySliderChange($event, activeMapItem)" />
-  </mat-slider>
-</mat-card>
+<ktzh-slider-wrapper class="transparency" title="Transparenz" [value]="formattedCurrentOpacity" minValue="100%" maxValue="100%">
+  <ng-container content>
+    <mat-slider [min]="0" [max]="1" [step]="0.01" color="accent" class="transparency__slider">
+      <input matSliderThumb [(ngModel)]="currentOpacity" (valueChange)="onOpacitySliderChange($event)" />
+    </mat-slider>
+  </ng-container>
+</ktzh-slider-wrapper>
 
-<!-- time slider config -->
-<time-slider-widget *ngIf="activeMapItem.timeSliderConfiguration" [activeMapItem]="activeMapItem"></time-slider-widget>
+<!-- Time slider config -->
+<ng-container *ngIf="activeMapItem.timeSliderConfiguration && activeMapItem.timeSliderExtent">
+  <time-slider
+    class="time-slider"
+    [initialTimeExtent]="activeMapItem.timeSliderExtent"
+    [timeSliderConfiguration]="activeMapItem.timeSliderConfiguration"
+    (timeExtentChanged)="onTimeSliderExtentChange($event)"
+  ></time-slider>
+</ng-container>
 
 <map-attribute-filter *ngIf="activeMapItem.filterConfigurations" [activeMapItem]="activeMapItem"></map-attribute-filter>
 
@@ -15,12 +23,12 @@
 <ng-container *ngIf="!activeMapItem.isSingleLayer">
   <mat-divider></mat-divider>
 
-  <div class="sublayer-list" cdkDropList (cdkDropListDropped)="dropSublayer($event, activeMapItem)">
+  <div class="sublayer-list" cdkDropList (cdkDropListDropped)="dropSublayer($event)">
     <ng-container *ngFor="let layer of activeMapItem.layers; trackBy: trackByLayerId">
       <!-- Sublayer-->
       <mat-card appearance="raised" class="sublayer" cdkDrag *ngIf="!layer.isHidden">
         <mat-icon class="sublayer__drag-handle" cdkDragHandle>drag_indicator</mat-icon>
-        <button mat-icon-button (click)="toggleSublayerVisibility(activeMapItem, layer.id)" [disabled]="!activeMapItem.visible">
+        <button mat-icon-button (click)="toggleSublayerVisibility(layer)" [disabled]="!activeMapItem.visible">
           <div class="sublayer__image-container">
             <mat-icon class="sublayer__image-container__image">layers</mat-icon>
             <mat-icon class="sublayer__image-container__visibility" [fontIcon]="layer.visible ? 'visibility' : 'visibility_off'"></mat-icon>

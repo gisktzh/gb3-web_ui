@@ -9,7 +9,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "test-ci": "ng test --no-watch --no-progress",
-    "prepare": "husky install",
+    "install-husky": "husky install",
     "generate-gb3-api": "npx swagger-typescript-api -p https://maps.zh.ch/api-docs/v3/swagger.yaml -o ./src/app/shared/models -n gb3-api-generated.interfaces.ts --no-client --extract-response-body --extract-request-body"
   },
   "private": true,
@@ -17,8 +17,13 @@
     "node": "18.x"
   },
   "dependencies": {
+    "@angular-devkit/build-angular": "^15.1.5",
+    "@angular-eslint/schematics": "^15.2.1",
+    "@angular-eslint/template-parser": "^15.2.1",
     "@angular/animations": "^15.1.4",
     "@angular/cdk": "^15.1.4",
+    "@angular/cli": "~15.2.0",
+    "@angular/compiler-cli": "^15.1.4",
     "@angular/common": "^15.1.4",
     "@angular/compiler": "^15.1.4",
     "@angular/core": "^15.1.4",
@@ -32,6 +37,7 @@
     "@ngrx/entity": "^15.2.1",
     "@ngrx/store": "^15.2.1",
     "@ngrx/store-devtools": "^15.2.1",
+    "@types/elasticsearch": "^5.0.40",
     "@types/geojson": "^7946.0.10",
     "@types/node": "^18.13.0",
     "@types/twitter-for-web": "^0.0.2",
@@ -44,11 +50,6 @@
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^15.1.5",
-    "@angular-eslint/schematics": "^15.2.1",
-    "@angular-eslint/template-parser": "^15.2.1",
-    "@angular/cli": "~15.2.0",
-    "@angular/compiler-cli": "^15.1.4",
     "@ngrx/eslint-plugin": "^15.2.1",
     "@ngrx/schematics": "^15.2.1",
     "@types/jasmine": "~4.3.0",

@@ -1,11 +1,16 @@
 @use 'mixins/helpers.mixin' as mixins;
 
 .transparency {
-  @include mixins.no-box-shadow;
+  padding: 4px;
 
-  .transparency__title {
+  .transparency__slider {
+    width: 100%;
     margin: 0;
   }
+}
+
+.time-slider {
+  padding: 4px;
 }
 
 .sublayer-list {
