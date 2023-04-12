@@ -200,7 +200,8 @@ export class Gb3TopicsService extends Gb3ApiService {
 
   /**
    * Returns whether the given layer should be hidden from all visible layer lists.
-   * For example if the layer is part of a time slider it should not be visible in any kind of layer list except the internal time slider control.
+   * For example if the layer is part of a time slider it should not be visible in any kind of layer list except the internal time slider
+   * control.
    */
   private isHiddenLayer(layer: string, topicMap: Map): boolean {
     let isHidden = false;

@@ -37,7 +37,11 @@ export class ConfigService {
   public readonly overridesConfig: OverrideSettings;
 
   constructor(@Inject(DOCUMENT) private readonly document: Document) {
-    const runtimeConfig = this.getRuntimeConfigOrFail();
+    const runtimeConfig = this.findRuntimeConfig();
+    if (!runtimeConfig) {
+      throw new Error('Cannot find a matching hostname for URL resolution.'); // todo: error handling for fatal errors
+    }
+
     this.apiConfig = runtimeConfig.apiBasePaths;
     this.overridesConfig = runtimeConfig.overrides;
   }
@@ -45,17 +49,11 @@ export class ConfigService {
   /**
    * Extracts the hostname from Document.location, also removing any port mappings.
    *
-   * Then, tries to find a matching runtime configuration or raises an exception.
+   * Then, tries to find a matching runtime configuration or returns undefined.
    * @private
    */
-  private getRuntimeConfigOrFail(): RuntimeConfig {
+  private findRuntimeConfig(): RuntimeConfig | undefined {
     const hostName = this.document.location.host.split(':')[0];
-    const runtimeConfig = defaultRuntimeConfig.find((config) => config.hostMatch === hostName);
-
-    if (runtimeConfig) {
-      return runtimeConfig;
-    }
-
-    throw new Error('Cannot find a matching hostname for URL resolution.'); // todo: error handling for fatal errors
+    return defaultRuntimeConfig.find((config) => config.hostMatch === hostName);
   }
 }
