@@ -1,11 +1,11 @@
 import {RuntimeConfig} from '../interfaces/runtime-config.interface';
 
 /**
- * This runtime configuration is used for all unspecified build targets, i.e. local development. In other builds, this file is replaced.
+ * This runtime configuration is used for the EBP dev instance and replaces runtime.config.ts during build.
  */
 export const defaultRuntimeConfig: RuntimeConfig[] = [
   {
-    hostMatch: 'localhost',
+    hostMatch: 'calm-plant-0ecbec603.2.azurestaticapps.net',
     apiBasePaths: {
       gb2Api: {
         baseUrl: 'https://maps.zh.ch/v3'
@@ -17,7 +17,7 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
         baseUrl: 'https://wms.zh.ch'
       },
       geoLion: {
-        baseUrl: 'https://www.geolion.zh.ch'
+        baseUrl: 'https://geolion.zh.ch'
       },
       searchApi: {
         baseUrl: 'https://gb3-search-api.icycliff-4b8f6c95.switzerlandnorth.azurecontainerapps.io'
@@ -34,10 +34,6 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
         baseUrl: 'https://platform.twitter.com/widgets.js',
         enabled: false
       }
-    },
-    authSettings: {
-      clientId: 'gb3',
-      issuer: 'https://maps.zh.ch/'
     },
     overrides: {}
   }

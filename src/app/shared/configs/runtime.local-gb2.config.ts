@@ -1,20 +1,20 @@
 import {RuntimeConfig} from '../interfaces/runtime-config.interface';
 
 /**
- * This runtime configuration is used for all unspecified build targets, i.e. local development. In other builds, this file is replaced.
+ * This runtime configuration is used for a local gb2 instance and replaces runtime.config.ts during build.
  */
 export const defaultRuntimeConfig: RuntimeConfig[] = [
   {
     hostMatch: 'localhost',
     apiBasePaths: {
       gb2Api: {
-        baseUrl: 'https://maps.zh.ch/v3'
+        baseUrl: 'http://localhost:4200/v3'
       },
       gb2StaticFiles: {
-        baseUrl: 'https://maps.zh.ch'
+        baseUrl: 'http://localhost:4200'
       },
       gb2Wms: {
-        baseUrl: 'https://wms.zh.ch'
+        baseUrl: 'http://localhost:4200'
       },
       geoLion: {
         baseUrl: 'https://www.geolion.zh.ch'
@@ -35,10 +35,8 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
         enabled: false
       }
     },
-    authSettings: {
-      clientId: 'gb3',
-      issuer: 'https://maps.zh.ch/'
-    },
-    overrides: {}
+    overrides: {
+      overrideWmsUrl: 'http://localhost:4200/wms'
+    }
   }
 ];
