@@ -38,14 +38,27 @@ the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
 
 ### Building the image
 
+The docker image has to be built for each environment separately, since we cannot use runtime environment
+configurations.
+
 In order to build the docker image use the following command (adjust tag as needed):
 
 ```
-docker build -t gb3-frontend:latest .
+docker build --build-arg TARGET_ENVIRONMENT={target_environment} --t gb3-frontend:latest .
 ```
 
 - **gb3-frontend** is the name of the image
 - **latest** is the tag used to mark the version of this image
+- **target_environment** is the target build environment, which is one of the following:
+  - `local`: Default if this variable is missing; localhost development
+  - `local-gb2`: localhost development with locally deployed GB2 backend
+  - `dev-ebp`: production deployment for EBP environment
+  - `staging`: production deployment for KTZH staging environment
+  - `uat`: production deployment for KTZH UAT environment
+  - `production`: production deployment for KTZH production (internet & intranet) environment
+
+The `target_environment` is used to create environment specific build outputs so as to not divulge sensitive information
+such as internal domains. This is mainly reflected in the runtime configuration mechanism described below.
 
 ### Run the image
 
@@ -81,11 +94,11 @@ endpoints depending on whether it is access via internet or intranet, these URLs
 Angular's environment files do not work.
 
 As a workaround, the `ConfigService` can be used. This service will check the current hostname and return the given API
-configurations. Because we also need to support two different localhost setups, the `angular.json` replaces these files
-as well.
+configurations. The replacements are done (similar to the environment configurations) as part of the `angular.json`
+build file replacements.
 
-The configurations are found in `src/app/shared/configs/runtime.config.ts` and configured via the `runtime-configs`
-directory.
+The configurations are found in `src/app/shared/configs/runtime.config.ts` and configured via their environment
+replacement files.
 
 #### Available URL configurations
 

@@ -48,6 +48,85 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.prod.ts"
+                },
+                {
+                  "replace": "src/app/shared/configs/runtime.config.ts",
+                  "with": "src/app/shared/configs/runtime.prod.config.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "production-staging": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                },
+                {
+                  "replace": "src/app/shared/configs/runtime.config.ts",
+                  "with": "src/app/shared/configs/runtime.staging.config.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "production-uat": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                },
+                {
+                  "replace": "src/app/shared/configs/runtime.config.ts",
+                  "with": "src/app/shared/configs/runtime.uat.config.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "production-dev-ebp": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                },
+                {
+                  "replace": "src/app/shared/configs/runtime.config.ts",
+                  "with": "src/app/shared/configs/runtime.dev-ebp.config.ts"
                 }
               ],
               "outputHashing": "all"
@@ -69,13 +148,13 @@
               "namedChunks": true,
               "fileReplacements": [
                 {
-                  "replace": "src/app/shared/configs/runtime-configs/local-runtime-config.ts",
-                  "with": "src/app/shared/configs/runtime-configs/local-gb2-runtime-config.ts"
+                  "replace": "src/app/shared/configs/runtime.config.ts",
+                  "with": "src/app/shared/configs/runtime.local-gb2.config.ts"
                 }
               ]
             }
           },
-          "defaultConfiguration": "production"
+          "defaultConfiguration": "development"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
