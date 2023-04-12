@@ -6,10 +6,20 @@ import {RouterModule} from '@angular/router';
 import {CommonModule} from '@angular/common';
 import {LoadingAndProcessBarComponent} from './components/loading-and-process-bar/loading-and-process-bar.component';
 import {HighlightSearchQueryPipe} from './pipes/highlight-search-query.pipe';
+import {ResizableModule} from 'angular-resizable-element';
+import {ResizeHandlerComponent} from './components/resize-handler/resize-handler.component';
 
 @NgModule({
-  declarations: [BasemapImageLinkPipe, NavbarComponent, LoadingAndProcessBarComponent, HighlightSearchQueryPipe],
-  imports: [MaterialModule, RouterModule, CommonModule],
-  exports: [MaterialModule, BasemapImageLinkPipe, NavbarComponent, LoadingAndProcessBarComponent, HighlightSearchQueryPipe]
+  declarations: [BasemapImageLinkPipe, NavbarComponent, LoadingAndProcessBarComponent, HighlightSearchQueryPipe, ResizeHandlerComponent],
+  imports: [MaterialModule, RouterModule, CommonModule, ResizableModule],
+  exports: [
+    MaterialModule,
+    BasemapImageLinkPipe,
+    NavbarComponent,
+    LoadingAndProcessBarComponent,
+    HighlightSearchQueryPipe,
+    ResizableModule,
+    ResizeHandlerComponent
+  ]
 })
 export class SharedModule {}

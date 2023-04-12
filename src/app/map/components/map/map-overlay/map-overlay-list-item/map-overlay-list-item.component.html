@@ -4,5 +4,7 @@
       {{ title }}
     </mat-panel-title>
   </mat-expansion-panel-header>
-  <ng-content></ng-content>
+  <ng-template matExpansionPanelContent>
+    <ng-content></ng-content>
+  </ng-template>
 </mat-expansion-panel>

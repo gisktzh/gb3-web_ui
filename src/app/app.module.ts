@@ -25,6 +25,13 @@ import {FavouriteListEffects} from './state/map/effects/favourite-list.effects';
 export const MAP_SERVICE = new InjectionToken<MapService>('MapService');
 export const NEWS_SERVICE = new InjectionToken<NewsService>('NewsService');
 
+/**
+ * Generic window injection token to avoid using global window object in components.
+ */
+export const WINDOW = new InjectionToken<Window>('Global window object', {
+  factory: () => window
+});
+
 @NgModule({
   declarations: [AppComponent],
   imports: [
