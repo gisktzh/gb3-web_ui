@@ -1,7 +1,7 @@
-import {Component, Input} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {ActiveMapItem} from '../../models/active-map-item.model';
-import {Store} from '@ngrx/store';
 import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
+import {Store} from '@ngrx/store';
 
 @Component({
   selector: 'map-attribute-filter',
@@ -9,9 +9,15 @@ import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.a
   styleUrls: ['./map-attribute-filter.component.scss']
 })
 export class MapAttributeFilterComponent {
+  @Output() public closeEvent = new EventEmitter<void>();
+
   @Input() public activeMapItem!: ActiveMapItem;
 
   constructor(private readonly store: Store) {}
+
+  public close() {
+    this.closeEvent.next();
+  }
 
   public changeFilter(filterConfigParameter: string, filterValueName: string, checked: boolean) {
     this.store.dispatch(

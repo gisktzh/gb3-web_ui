@@ -1,0 +1,41 @@
+@use 'mixins/helpers.mixin' as mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.attribute-filter {
+  @include mixins.no-box-shadow;
+  max-height: inherit;
+  width: 450px;
+
+  .attribute-filter__header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &__title {
+      @include mixins.single-line-text;
+      font-weight: bold;
+      margin: 0;
+    }
+  }
+
+  .attribute-filter__content {
+    @include mixins.no-box-shadow;
+    overflow-y: scroll;
+
+    .attribute-filter__content__checkbox {
+      padding-left: 16px;
+
+      &--unchecked {
+        ::ng-deep {
+          .mdc-form-field .mdc-checkbox .mdc-checkbox__background {
+            border-color: ktzh-variables.$zh-black40;
+          }
+          .mdc-form-field > label {
+            color: ktzh-variables.$zh-black40;
+          }
+        }
+      }
+    }
+  }
+}

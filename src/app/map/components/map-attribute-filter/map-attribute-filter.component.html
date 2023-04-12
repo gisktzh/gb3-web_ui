@@ -1,14 +1,26 @@
-<p>Attribut-Filter</p>
-<mat-card *ngFor="let filterConfiguration of activeMapItem.filterConfigurations">
+<mat-card appearance="raised" class="attribute-filter">
   <mat-card-header>
-    <mat-card-title>{{ filterConfiguration.name }}</mat-card-title>
-    <mat-card-subtitle *ngIf="filterConfiguration.description">{{ filterConfiguration.description }}</mat-card-subtitle>
+    <div class="attribute-filter__header">
+      <h3 class="attribute-filter__header__title" [matTooltip]="activeMapItem.title">Attributfilter: {{ activeMapItem.title }}</h3>
+      <button mat-icon-button (click)="close()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
   </mat-card-header>
-  <ng-container *ngFor="let filterValue of filterConfiguration.filterValues">
-    <mat-checkbox
-      [checked]="!filterValue.isActive"
-      (change)="changeFilter(filterConfiguration.parameter, filterValue.name, $event.checked)"
-      >{{ filterValue.name }}</mat-checkbox
-    >
-  </ng-container>
+  <mat-card class="attribute-filter__content" appearance="raised" *ngFor="let filterConfiguration of activeMapItem.filterConfigurations">
+    <mat-card-header>
+      <mat-card-title>{{ filterConfiguration.name }}</mat-card-title>
+      <mat-card-subtitle *ngIf="filterConfiguration.description">{{ filterConfiguration.description }}</mat-card-subtitle>
+    </mat-card-header>
+    <ng-container *ngFor="let filterValue of filterConfiguration.filterValues">
+      <mat-checkbox
+        class="attribute-filter__content__checkbox"
+        [ngClass]="{'attribute-filter__content__checkbox--unchecked': filterValue.isActive}"
+        color="primary"
+        [checked]="!filterValue.isActive"
+        (change)="changeFilter(filterConfiguration.parameter, filterValue.name, $event.checked)"
+        >{{ filterValue.name }}</mat-checkbox
+      >
+    </ng-container>
+  </mat-card>
 </mat-card>

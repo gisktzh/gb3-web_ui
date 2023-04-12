@@ -22,6 +22,15 @@
       min-height: 50%;
     }
   }
+
+  .map-container__map-attribute-filter {
+    position: absolute;
+    top: 132px; // starting at the first 'active map item' position
+    left: 480px;
+    max-height: 30vh;
+    overflow-y: hidden;
+  }
+
   .map-container__search-window {
     position: absolute;
     top: 89px;

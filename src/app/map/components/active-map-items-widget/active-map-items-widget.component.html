@@ -47,23 +47,6 @@
             <button (click)="removeActiveMapItem(activeMapItem)" mat-icon-button data-test-id="delete">
               <mat-icon>delete</mat-icon>
             </button>
-            <div class="active-map-item__menu">
-              <button
-                mat-icon-button
-                class="active-map-item__menu__handle"
-                (click)="activeMapItemMenuTrigger.openMenu()"
-                data-test-id="map-options"
-              >
-                <mat-icon>more_horiz</mat-icon>
-                <div #activeMapItemMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="activeMapItemMenu"></div>
-              </button>
-              <mat-menu #activeMapItemMenu="matMenu">
-                <!-- TODO: replace this placeholder -->
-                <button mat-menu-item>Option 1</button>
-                <!-- TODO: replace this placeholder -->
-                <button mat-menu-item>Option 2</button>
-              </mat-menu>
-            </div>
           </div>
           <loading-and-process-bar
             [loadingState]="activeMapItem.loadingState"
@@ -73,7 +56,10 @@
         </mat-expansion-panel-header>
         <!-- Expansion panel content -->
         <ng-template matExpansionPanelContent>
-          <active-map-item [activeMapItem]="activeMapItem"></active-map-item>
+          <active-map-item
+            [activeMapItem]="activeMapItem"
+            (showAttributeFilterEvent)="this.showAttributeFilterEvent.next(activeMapItem)"
+          ></active-map-item>
         </ng-template>
       </mat-expansion-panel>
     </ng-container>
