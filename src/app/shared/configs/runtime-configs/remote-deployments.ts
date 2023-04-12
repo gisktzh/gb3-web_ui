@@ -8,13 +8,16 @@ export const remoteDeployments: RuntimeConfig[] = [
     hostMatch: 'staging.geo.ktzh.ch',
     apiBasePaths: {
       gb2Api: {
-        baseUrl: 'https://uatmaps.kt.ktzh.ch'
+        baseUrl: 'https://testmaps.kt.ktzh.ch/v3'
+      },
+      gb2StaticFiles: {
+        baseUrl: 'https://testmaps.kt.ktzh.ch'
       },
       gb2Wms: {
-        baseUrl: 'https://uatwms.kt.ktzh.ch'
+        baseUrl: 'https://testwms.kt.ktzh.ch'
       },
       geoLion: {
-        baseUrl: 'https://uatgeolion.kt.ktzh.ch'
+        baseUrl: 'https://testgeolion.kt.ktzh.ch'
       },
       searchApi: {
         baseUrl: 'https://gb3-search-api.icycliff-4b8f6c95.switzerlandnorth.azurecontainerapps.io'
@@ -38,6 +41,9 @@ export const remoteDeployments: RuntimeConfig[] = [
     hostMatch: 'uat.geo.ktzh.ch',
     apiBasePaths: {
       gb2Api: {
+        baseUrl: 'https://uatmaps.kt.ktzh.ch/v3'
+      },
+      gb2StaticFiles: {
         baseUrl: 'https://uatmaps.kt.ktzh.ch'
       },
       gb2Wms: {
@@ -68,6 +74,9 @@ export const remoteDeployments: RuntimeConfig[] = [
     hostMatch: 'geo.ktzh.ch',
     apiBasePaths: {
       gb2Api: {
+        baseUrl: 'https://web.maps.zh.ch/v3'
+      },
+      gb2StaticFiles: {
         baseUrl: 'https://web.maps.zh.ch'
       },
       gb2Wms: {
@@ -98,6 +107,9 @@ export const remoteDeployments: RuntimeConfig[] = [
     hostMatch: 'geo.zh.ch',
     apiBasePaths: {
       gb2Api: {
+        baseUrl: 'https://maps.zh.ch/v3'
+      },
+      gb2StaticFiles: {
         baseUrl: 'https://maps.zh.ch'
       },
       gb2Wms: {
@@ -128,6 +140,9 @@ export const remoteDeployments: RuntimeConfig[] = [
     hostMatch: 'calm-plant-0ecbec603.2.azurestaticapps.net',
     apiBasePaths: {
       gb2Api: {
+        baseUrl: 'https://maps.zh.ch/v3'
+      },
+      gb2StaticFiles: {
         baseUrl: 'https://maps.zh.ch'
       },
       gb2Wms: {

@@ -4,6 +4,9 @@ export const localRuntimeConfig: RuntimeConfig = {
   hostMatch: 'localhost',
   apiBasePaths: {
     gb2Api: {
+      baseUrl: 'https://maps.zh.ch/v3'
+    },
+    gb2StaticFiles: {
       baseUrl: 'https://maps.zh.ch'
     },
     gb2Wms: {
@@ -27,6 +30,10 @@ export const localRuntimeConfig: RuntimeConfig = {
       baseUrl: 'https://platform.twitter.com/widgets.js',
       enabled: false
     }
+  },
+  authSettings: {
+    clientId: 'gb3',
+    issuer: 'https://maps.zh.ch/'
   },
   overrides: {}
 };

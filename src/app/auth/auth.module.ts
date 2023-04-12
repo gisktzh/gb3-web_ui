@@ -16,7 +16,7 @@ function storageFactory(): OAuthStorage {
  */
 function oAuthConfigFactory(configService: ConfigService): OAuthModuleConfig {
   const config = oAuthConfig;
-  config.resourceServer.allowedUrls = [`${configService.apiConfig.gb2Api.baseUrl}/v3`];
+  config.resourceServer.allowedUrls = [configService.apiConfig.gb2Api.baseUrl];
 
   return config;
 }
@@ -27,7 +27,8 @@ function oAuthConfigFactory(configService: ConfigService): OAuthModuleConfig {
  */
 function authConfigFactory(configService: ConfigService): AuthConfig {
   const config = authConfig;
-  authConfig.issuer = `${configService.apiConfig.gb2Api.baseUrl}/`;
+  authConfig.issuer = configService.authConfig.issuer;
+  authConfig.clientId = configService.authConfig.clientId;
 
   return config;
 }

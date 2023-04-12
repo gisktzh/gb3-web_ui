@@ -4,7 +4,7 @@ import {environment} from '../../environments/environment';
 
 export const authConfig: AuthConfig = {
   issuer: '', // this is overriden in the module component via the factory to inject the correct runtime URL
-  clientId: environment.auth.clientId,
+  clientId: '', // this is overriden in the module component via the factory to inject the correct runtime clientId
   showDebugInformation: !environment.production,
   responseType: 'code',
   redirectUri: `${window.location.origin}/`,

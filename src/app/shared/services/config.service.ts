@@ -5,7 +5,7 @@ import {defaultMapConfig} from '../configs/map.config';
 import {MapConstants} from '../constants/map.constants';
 import {DOCUMENT} from '@angular/common';
 import {defaultRuntimeConfig} from '../configs/runtime.config';
-import {ApiConfig, OverrideSettings, RuntimeConfig} from '../interfaces/runtime-config.interface';
+import {ApiConfig, AuthSettings, OverrideSettings, RuntimeConfig} from '../interfaces/runtime-config.interface';
 import {Gb2Constants} from '../constants/gb2.constants';
 
 @Injectable({
@@ -35,6 +35,7 @@ export class ConfigService {
 
   public readonly apiConfig: ApiConfig;
   public readonly overridesConfig: OverrideSettings;
+  public readonly authConfig: AuthSettings;
 
   constructor(@Inject(DOCUMENT) private readonly document: Document) {
     const runtimeConfig = this.findRuntimeConfig();
@@ -44,6 +45,7 @@ export class ConfigService {
 
     this.apiConfig = runtimeConfig.apiBasePaths;
     this.overridesConfig = runtimeConfig.overrides;
+    this.authConfig = runtimeConfig.authSettings!;
   }
 
   /**

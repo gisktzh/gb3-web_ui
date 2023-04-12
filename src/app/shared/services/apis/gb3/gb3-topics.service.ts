@@ -21,7 +21,7 @@ import {map} from 'rxjs/operators';
   providedIn: 'root'
 })
 export class Gb3TopicsService extends Gb3ApiService {
-  protected readonly endpoint = 'v3/topics';
+  protected readonly endpoint = 'topics';
 
   public loadTopics(): Observable<TopicsResponse> {
     const requestUrl = this.createTopicsUrl();

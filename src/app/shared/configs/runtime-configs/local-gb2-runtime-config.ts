@@ -8,6 +8,9 @@ export const localRuntimeConfig: RuntimeConfig = {
   hostMatch: 'localhost',
   apiBasePaths: {
     gb2Api: {
+      baseUrl: 'http://localhost:4200/v3'
+    },
+    gb2StaticFiles: {
       baseUrl: 'http://localhost:4200'
     },
     gb2Wms: {
