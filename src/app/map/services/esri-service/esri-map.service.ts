@@ -44,8 +44,6 @@ import {
 import {TimeSliderConfiguration, TimeSliderLayerSource, TimeSliderParameterSource} from '../../../shared/interfaces/topic.interface';
 import {TimeExtent} from '../../interfaces/time-extent.interface';
 
-const DEFAULT_MIME_TYPE = 'image/png; mode=8bit';
-
 @Injectable({
   providedIn: 'root'
 })
@@ -78,6 +76,7 @@ export class EsriMapService implements MapService {
   private readonly subscriptions: Subscription = new Subscription();
   private readonly activeBasemapId$ = this.store.select(selectActiveBasemapId);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
+  private readonly wmsImageFormatMimeType = this.configService.gb2Config.wmsFormatMimeType;
 
   constructor(
     private readonly store: Store,
@@ -160,7 +159,7 @@ export class EsriMapService implements MapService {
       url: mapItem.url,
       visible: mapItem.visible,
       opacity: mapItem.opacity,
-      imageFormat: DEFAULT_MIME_TYPE,
+      imageFormat: this.wmsImageFormatMimeType,
       sublayers: mapItem.layers.map((layer) => {
         return {
           id: layer.id,
@@ -403,7 +402,7 @@ export class EsriMapService implements MapService {
             spatialReference: new EsriSpatialReference({wkid: baseMap.srsId}),
             sublayers: baseMap.layers.map((basemapLayer) => ({name: basemapLayer.name})),
             visible: initialBasemapId === baseMap.id,
-            imageFormat: DEFAULT_MIME_TYPE
+            imageFormat: this.wmsImageFormatMimeType
           });
         })
       })
