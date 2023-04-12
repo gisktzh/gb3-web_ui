@@ -10,6 +10,8 @@ import {ActiveMapItem} from "../../models/active-map-item.model";
 import {ActiveMapItemActions} from "../../../state/map/actions/active-map-item.actions";
 import {MAP_SERVICE} from "../../../app.module";
 import {MapService} from "../../interfaces/map.service";
+import {selectActiveMapItems} from "../../../state/map/reducers/active-map-item.reducer";
+import {SPECIAL_SEARCH_CONFIG} from "../../../shared/constants/special-search.constants";
 
 const DEFAULT_ZOOM_SCALE = 1000;
 
@@ -20,11 +22,14 @@ const DEFAULT_ZOOM_SCALE = 1000;
 })
 export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   public searchResults: SearchWindowElement[] = [];
+  public specialSearchResults: SearchWindowElement[] = [];
   public filteredMaps: Map[] = [];
   public searchTerms: string[] = [];
+  public availableSpecialSearchIndexes: string[] = [];
 
   private originalMaps: Map[] = [];
   private readonly originalMaps$ = this.store.select(selectMaps);
+  private readonly activeMapItems$ = this.store.select(selectActiveMapItems);
   private readonly subscriptions: Subscription = new Subscription();
   @ViewChild('filterInput') private readonly input!: ElementRef;
 
@@ -77,6 +82,7 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   private emptyResultsWindow() {
     this.searchResults = [];
     this.filteredMaps = [];
+    this.specialSearchResults = [];
   }
 
   private fillResultsWindow(term: string) {
@@ -85,6 +91,13 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
         this.searchResults = searchResults;
       }
     ));
+    if (this.availableSpecialSearchIndexes.length > 0) {
+      this.subscriptions.add(this.searchService.searchObjects(term, this.availableSpecialSearchIndexes).pipe(first()).subscribe(
+        (searchResults: SearchWindowElement[]) => {
+          this.specialSearchResults = searchResults;
+        }
+      ));
+    }
     this.filteredMaps = this.originalMaps.filter(availableMap =>
       this.searchTerms.every(searchTerm => availableMap.title.toLowerCase().includes(searchTerm.toLowerCase()))
     );
@@ -109,10 +122,34 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
         )
         .subscribe()
     );
+    this.subscriptions.add(
+      this.activeMapItems$
+        .pipe(
+          tap(async (value) => {
+            this.availableSpecialSearchIndexes = this.getActiveSpecialSearchIndexes(value);
+          })
+        )
+        .subscribe()
+    );
   }
 
   private addActiveItem(activeMapItem: ActiveMapItem) {
     // add new map items on top (position 0)
     this.store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem, position: 0}));
+  }
+
+  private getActiveSpecialSearchIndexes(activeMapItems: ActiveMapItem[]): string[] {
+    const availableIndexes: string[] = [];
+
+    for (const mapItem of activeMapItems) {
+      for (const searchConfig of SPECIAL_SEARCH_CONFIG) {
+        if (searchConfig.topics.includes(mapItem.id)) {
+          availableIndexes.push(searchConfig.index);
+          break;
+        }
+      }
+    }
+    return availableIndexes;
+
   }
 }

@@ -4,4 +4,5 @@ export interface SearchWindowElement {
   displayString: string;
   score: number;
   geometry: Point;
+  indexName?: string;
 }

@@ -1,7 +1,9 @@
 <div class="search-window__searchbar">
-    <input #filterInput class="search-window__input" placeholder="Suchen nach Adressen, Orten, Karten und mehr...">
-    <mat-icon class="search-window__input-icon">search</mat-icon>
-    <mat-icon class="search-window__x-icon" (click)="clearInput()">close</mat-icon>
+  <input #filterInput class="search-window__input" placeholder="Suchen nach Adressen, Orten, Karten und mehr...">
+  <mat-icon class="search-window__input-icon">search</mat-icon>
+  <mat-icon class="search-window__x-icon" (click)="clearInput()">close</mat-icon>
+  <mat-divider [vertical]="true" class="search-window__divider"></mat-divider>
+  <mat-icon class="search-window__filter-icon">filter_list</mat-icon>
 </div>
 <div class="search-window__results_container">
   <div class="search-window__results">
@@ -9,6 +11,20 @@
       <h3 class="search-window__header">Orte / Adressen</h3>
       <div class="search-window__element-container">
         <mat-card *ngFor="let result of searchResults" class="search-window__element">
+          <mat-card-content
+            class="search-window__element-content"
+            [innerHTML]="result.displayString | highlightSearchQuery : this.searchTerms"
+            (click)="zoomToResult(result)"
+          ></mat-card-content>
+          <mat-divider></mat-divider>
+        </mat-card>
+      </div>
+    </div>
+    <div *ngIf="specialSearchResults.length > 0" class="search-window__group">
+      <h3 class="search-window__header">Objekte</h3>
+      <div class="search-window__element-container">
+        <mat-card *ngFor="let result of specialSearchResults" class="search-window__element">
+          <mat-card-header class="search-window__element-header">{{result.indexName}}</mat-card-header>
           <mat-card-content
             class="search-window__element-content"
             [innerHTML]="result.displayString | highlightSearchQuery : this.searchTerms"

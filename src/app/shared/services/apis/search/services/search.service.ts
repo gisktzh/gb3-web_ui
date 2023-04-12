@@ -1,13 +1,11 @@
 import {Injectable} from '@angular/core';
 import {Observable} from "rxjs";
-import {SearchApiResponse} from "../interfaces/search-api-response.interface";
-import {AddressIndex} from "../interfaces/address-index.interface";
 import {SearchWindowElement} from "../interfaces/search-window-element.interface";
-import {PlacesIndex} from "../interfaces/places-index.interface";
 import {environment} from "../../../../../../environments/environment";
-import {Point} from "geojson";
 import {BaseApiService} from "../../abstract-api.service";
 import {map} from "rxjs/operators";
+import {SearchResult} from "../interfaces/search-result.interface";
+import {SPECIAL_SEARCH_CONFIG} from "../../../../constants/special-search.constants";
 
 @Injectable({
   providedIn: 'root'
@@ -17,47 +15,46 @@ export class SearchService extends BaseApiService {
 
   public searchAddressesAndPlaces(term: string): Observable<SearchWindowElement[]> {
     return this.getElasticsearch('fme-addresses,fme-places', term).pipe(map(
-      (response: SearchApiResponse) => this.getAddressAndPlaceSearchResults(response)
+      (response: SearchResult[]) => this.combineSearchResults(response)
     ));
   }
 
-  private getAddressAndPlaceSearchResults(searchResponse: SearchApiResponse): SearchWindowElement[] {
-    const addressResults = this.getAddressResults(searchResponse);
-    const placesResults = this.getPlacesResults(searchResponse);
-    const combinedResults = addressResults.concat(placesResults);
+  public searchObjects(term: string, indexes: string[]): Observable<SearchWindowElement[]> {
+    return this.getElasticsearch(indexes.toString(), term).pipe(map(
+      (response: SearchResult[]) => this.combineObjectSearchResults(response)
+    ));
+  }
+
+  private combineSearchResults(searchResponse: SearchResult[]): SearchWindowElement[] {
+    let combinedResults: SearchWindowElement[] = [];
+    for (const searchResult of searchResponse) {
+      combinedResults = combinedResults.concat(searchResult.matches);
+    }
     combinedResults.sort((a, b) => b.score > a.score ? 1 : -1);
     return combinedResults;
   }
 
-  private getAddressResults(searchResponse: SearchApiResponse): SearchWindowElement[] {
-    const searchResults: SearchWindowElement[] = [];
-    const addressHits = searchResponse.results[0].data.hits.hits;
-    for (const hit of addressHits) {
-      const hitSource = hit._source as AddressIndex;
-      searchResults.push({
-        displayString: `${hitSource.street} ${hitSource.no}, ${hitSource.plz} ${hitSource.town}`,
-        score: hit._score ?? -99,
-        geometry: {'coordinates': hitSource.geometry} as Point
-      });
+  private combineObjectSearchResults(searchResponse: SearchResult[]): SearchWindowElement[] {
+    let combinedResults: SearchWindowElement[] = [];
+    for (const searchResult of searchResponse) {
+      for (const match of searchResult.matches) {
+        match.indexName = this.getIndexName(searchResult.index);
+      }
+      combinedResults = combinedResults.concat(searchResult.matches);
     }
-    return searchResults;
+    combinedResults.sort((a, b) => b.score > a.score ? 1 : -1);
+    return combinedResults;
   }
 
-  private getPlacesResults(searchResponse: SearchApiResponse): SearchWindowElement[] {
-    const searchResults: SearchWindowElement[] = [];
-    const placesHits = searchResponse.results[1].data.hits.hits;
-    for (const hit of placesHits) {
-      const hitSource = hit._source as PlacesIndex;
-      searchResults.push({
-        displayString: `${hitSource.type} ${hitSource.name}`,
-        score: hit._score ?? -99,
-        geometry: {'coordinates': hitSource.geometry} as Point
-      });
+  private getIndexName(index: string): string {
+    const selectedConfig = SPECIAL_SEARCH_CONFIG.find((config) => config.index === index);
+    if (selectedConfig) {
+      return selectedConfig.title;
     }
-    return searchResults;
+    return 'Unknown';
   }
 
-  private getElasticsearch(indexes: string, term: string): Observable<SearchApiResponse> {
+  private getElasticsearch(indexes: string, term: string): Observable<SearchResult[]> {
     const params = [
       {
         'key': 'indexes',
@@ -69,7 +66,7 @@ export class SearchService extends BaseApiService {
       }
     ];
     const requestUrl = this.createFullEndpointUrl('search', params);
-    return this.get<SearchApiResponse>(requestUrl);
+    return this.get<SearchResult[]>(requestUrl);
   }
 
   private createFullEndpointUrl(endpoint: string, parameters: {key: string; value: string}[] = []): string {

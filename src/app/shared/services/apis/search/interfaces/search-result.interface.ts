@@ -1,6 +1,6 @@
-import {SearchResponse} from "elasticsearch";
+import {SearchWindowElement} from "./search-window-element.interface";
 
-export interface SearchResult<T> {
-  id: string;
-  data: SearchResponse<T>;
+export interface SearchResult {
+  index: string;
+  matches: SearchWindowElement[];
 }
