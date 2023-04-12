@@ -84,7 +84,7 @@ As a workaround, the `ConfigService` can be used. This service will check the cu
 configurations. Because we also need to support two different localhost setups, the `angular.json` replaces these files
 as well.
 
-The configurations are found in `src/app/shared/configs/runtime-config.ts` and configured via the `runtime-configs`
+The configurations are found in `src/app/shared/configs/runtime.config.ts` and configured via the `runtime-configs`
 directory.
 
 #### Available URL configurations

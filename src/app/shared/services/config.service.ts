@@ -1,10 +1,10 @@
 import {Inject, Injectable} from '@angular/core';
-import {defaultBasemap, defaultBasemaps} from '../configs/base-map-config';
-import {defaultHighlightStyles} from '../configs/feature-info-config';
-import {defaultMapConfig} from '../configs/map-config';
+import {defaultBasemap, defaultBasemaps} from '../configs/base-map.config';
+import {defaultHighlightStyles} from '../configs/feature-info.config';
+import {defaultMapConfig} from '../configs/map.config';
 import {MapConstants} from '../constants/map.constants';
 import {DOCUMENT} from '@angular/common';
-import {defaultRuntimeConfig} from '../configs/runtime-config';
+import {defaultRuntimeConfig} from '../configs/runtime.config';
 import {ApiConfig, OverrideSettings, RuntimeConfig} from '../interfaces/runtime-config.interface';
 import {Gb2Constants} from '../constants/gb2.constants';
 

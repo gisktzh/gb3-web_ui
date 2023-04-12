@@ -7,7 +7,7 @@ import {first, skip, Subscription, tap, withLatestFrom} from 'rxjs';
 import {FeatureInfoActions} from '../../../state/map/actions/feature-info.actions';
 import {Geometry as GeoJsonGeometry, Point} from 'geojson';
 import {GeoJSONMapperService} from '../../../shared/services/geo-json-mapper.service';
-import {DefaultHighlightStyles} from 'src/app/shared/configs/feature-info-config';
+import {DefaultHighlightStyles} from 'src/app/shared/configs/feature-info.config';
 import * as dayjs from 'dayjs';
 import {MapService} from '../../interfaces/map.service';
 import {ActiveMapItem} from '../../models/active-map-item.model';

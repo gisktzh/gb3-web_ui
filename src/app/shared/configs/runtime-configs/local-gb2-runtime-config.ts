@@ -1,7 +1,7 @@
 import {RuntimeConfig} from '../../interfaces/runtime-config.interface';
 
 /**
- * This configuration is based for a local deployment of the GB2 backend. It replaces the default local-runtime-config.ts when started with
+ * This configuration is based for a local deployment of the GB2 backend. It replaces the default local-runtime.config.ts when started with
  * the respective boot parameter.
  */
 export const localRuntimeConfig: RuntimeConfig = {
