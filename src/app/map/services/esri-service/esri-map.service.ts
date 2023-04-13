@@ -76,6 +76,7 @@ export class EsriMapService implements MapService {
   private readonly subscriptions: Subscription = new Subscription();
   private readonly activeBasemapId$ = this.store.select(selectActiveBasemapId);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
+  private readonly wmsImageFormatMimeType = this.configService.gb2Config.wmsFormatMimeType;
 
   constructor(
     private readonly store: Store,
@@ -86,9 +87,9 @@ export class EsriMapService implements MapService {
     private readonly authService: AuthService
   ) {
     /**
-     * Because the GetCapabalities response often sends a non-secure http://wms.zh.ch response, Esri Javascript API fails on https environments
-     * to attach the token above if the urls is set to http://wms.zh.ch; because it automatically upgrades insecure links to https to avoid
-     * mixed-content. This configuration forces the WMS to be upgraded to https.
+     * Because the GetCapabalities response often sends a non-secure http://wms.zh.ch response, Esri Javascript API fails on https
+     * environments to attach the token above if the urls is set to http://wms.zh.ch; because it automatically upgrades insecure links to
+     * https to avoid mixed-content. This configuration forces the WMS to be upgraded to https.
      */
     esriConfig.request.httpsDomains?.push('wms.zh.ch');
 
@@ -158,6 +159,7 @@ export class EsriMapService implements MapService {
       url: mapItem.url,
       visible: mapItem.visible,
       opacity: mapItem.opacity,
+      imageFormat: this.wmsImageFormatMimeType,
       sublayers: mapItem.layers.map((layer) => {
         return {
           id: layer.id,
@@ -399,7 +401,8 @@ export class EsriMapService implements MapService {
             title: baseMap.title,
             spatialReference: new EsriSpatialReference({wkid: baseMap.srsId}),
             sublayers: baseMap.layers.map((basemapLayer) => ({name: basemapLayer.name})),
-            visible: initialBasemapId === baseMap.id
+            visible: initialBasemapId === baseMap.id,
+            imageFormat: this.wmsImageFormatMimeType
           });
         })
       })
