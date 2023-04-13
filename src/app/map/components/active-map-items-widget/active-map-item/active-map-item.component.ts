@@ -1,12 +1,13 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {ActiveMapItem} from '../../../models/active-map-item.model';
 import {ActiveMapItemActions} from '../../../../state/map/actions/active-map-item.actions';
 import {Store} from '@ngrx/store';
 import {MapLayer} from '../../../../shared/interfaces/topic.interface';
 import {CdkDrag, CdkDragDrop} from '@angular/cdk/drag-drop';
 import {TimeExtent} from '../../../interfaces/time-extent.interface';
-import {selectActiveMapItems} from '../../../../state/map/reducers/active-map-item.reducer';
 import {Subscription, tap} from 'rxjs';
+import {MapAttributeFiltersItemActions} from '../../../../state/map/actions/map-attribute-filters-item.actions';
+import {selectActiveMapItems} from '../../../../state/map/reducers/active-map-item.reducer';
 
 @Component({
   selector: 'active-map-item',
@@ -14,8 +15,6 @@ import {Subscription, tap} from 'rxjs';
   styleUrls: ['./active-map-item.component.scss']
 })
 export class ActiveMapItemComponent implements OnInit, OnDestroy {
-  @Output() public showAttributeFilterEvent = new EventEmitter<void>();
-
   @Input() public activeMapItem!: ActiveMapItem;
 
   public formattedCurrentOpacity: string = '';
@@ -74,6 +73,10 @@ export class ActiveMapItemComponent implements OnInit, OnDestroy {
     this.store.dispatch(ActiveMapItemActions.setTimeSliderExtent({timeExtent, activeMapItem: this.activeMapItem}));
   }
 
+  public showMapAttributeFilters() {
+    this.store.dispatch(MapAttributeFiltersItemActions.setMapAttributeFiltersItemId(this.activeMapItem));
+  }
+
   private convertTransparencyToString(value?: number): string {
     return value === undefined ? '' : `${Math.round(value * 100)}%`;
   }
@@ -83,16 +86,16 @@ export class ActiveMapItemComponent implements OnInit, OnDestroy {
       this.activeMapItems$
         .pipe(
           tap((activeMapItems) => {
-            const currentActiveMapItem = activeMapItems.find((activeMapItem) => activeMapItem.id === this.activeMapItem.id);
-            if (currentActiveMapItem && currentActiveMapItem.filterConfigurations) {
-              // assumption: every filter is by default not active
-              this.numberOfChangedFilters =
-                currentActiveMapItem.filterConfigurations
-                  .flatMap((filterConfig) => filterConfig.filterValues)
-                  .filter((filterValue) => filterValue.isActive).length ?? 0;
-            } else {
-              this.numberOfChangedFilters = 0;
+            // calculate the number of active filters to display them as badge
+            let numberOfChangedFilters = 0;
+            const activeMapItem = activeMapItems.find((mapItem) => mapItem.id === this.activeMapItem.id);
+            if (activeMapItem && activeMapItem.filterConfigurations) {
+              // assumption: every filter is not active by default => only count active filters
+              numberOfChangedFilters = activeMapItem.filterConfigurations
+                .flatMap((filterConfig) => filterConfig.filterValues)
+                .filter((filterValue) => filterValue.isActive).length;
             }
+            this.numberOfChangedFilters = numberOfChangedFilters;
           })
         )
         .subscribe()

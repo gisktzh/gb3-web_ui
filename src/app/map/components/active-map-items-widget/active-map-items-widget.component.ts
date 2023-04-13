@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CdkDrag, CdkDragDrop} from '@angular/cdk/drag-drop';
 import {Store} from '@ngrx/store';
 import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
@@ -24,8 +24,6 @@ const favouriteHelperMessages = {
   animations: [slideInOutAnimation]
 })
 export class ActiveMapItemsWidgetComponent implements OnInit, OnDestroy {
-  @Output() public showAttributeFilterEvent = new EventEmitter<ActiveMapItem>();
-
   public isAuthenticated: boolean = false;
   public favouriteHelperMessages = favouriteHelperMessages;
   private readonly activeMapItems$ = this.store.select(selectActiveMapItems);

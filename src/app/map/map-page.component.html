@@ -5,16 +5,10 @@
     <active-map-items-widget
       class="all-map-items-container__active-map-items-widget"
       typedTourAnchor="map.active.map.items"
-      (showAttributeFilterEvent)="openMapAttributeFilter($event)"
     ></active-map-items-widget>
     <map-data-catalogue class="all-map-items-container__map-data-catalogue" typedTourAnchor="map.catalogue"></map-data-catalogue>
   </div>
-  <map-attribute-filter
-    class="map-container__map-attribute-filter"
-    *ngIf="mapAttributeFilterItem"
-    [activeMapItem]="mapAttributeFilterItem"
-    (closeEvent)="closeMapAttributeFilter()"
-  ></map-attribute-filter>
+  <map-attribute-filter class="map-container__map-attribute-filter"></map-attribute-filter>
   <feature-info (printFeatureInfoEvent)="this.showPrint('featureInfo')"></feature-info>
   <search-window class="map-container__search-window"></search-window>
 </div>

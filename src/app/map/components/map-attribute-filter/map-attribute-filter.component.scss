@@ -2,9 +2,13 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
 .attribute-filter {
-  @include mixins.no-box-shadow;
   max-height: inherit;
   width: 450px;
+
+  .no-box-shadow {
+    @include mixins.no-box-shadow;
+    border-radius: ktzh-variables.$zh-border-radius;
+  }
 
   .attribute-filter__header {
     width: 100%;
@@ -20,21 +24,17 @@
   }
 
   .attribute-filter__content {
-    @include mixins.no-box-shadow;
     overflow-y: scroll;
+
+    .attribute-filter__content__text {
+      padding: 1em 0;
+    }
 
     .attribute-filter__content__checkbox {
       padding-left: 16px;
 
       &--unchecked {
-        ::ng-deep {
-          .mdc-form-field .mdc-checkbox .mdc-checkbox__background {
-            border-color: ktzh-variables.$zh-black40;
-          }
-          .mdc-form-field > label {
-            color: ktzh-variables.$zh-black40;
-          }
-        }
+        @include mixins.mat-checkbox--unchecked;
       }
     }
   }

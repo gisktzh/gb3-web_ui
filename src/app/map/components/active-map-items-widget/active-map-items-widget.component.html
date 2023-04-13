@@ -56,10 +56,7 @@
         </mat-expansion-panel-header>
         <!-- Expansion panel content -->
         <ng-template matExpansionPanelContent>
-          <active-map-item
-            [activeMapItem]="activeMapItem"
-            (showAttributeFilterEvent)="this.showAttributeFilterEvent.next(activeMapItem)"
-          ></active-map-item>
+          <active-map-item [activeMapItem]="activeMapItem"></active-map-item>
         </ng-template>
       </mat-expansion-panel>
     </ng-container>
