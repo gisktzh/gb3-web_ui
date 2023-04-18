@@ -18,12 +18,12 @@ const favouriteHelperMessages = {
 };
 
 @Component({
-  selector: 'active-map-items-widget',
-  templateUrl: './active-map-items-widget.component.html',
-  styleUrls: ['./active-map-items-widget.component.scss'],
+  selector: 'active-map-items',
+  templateUrl: './active-map-items.component.html',
+  styleUrls: ['./active-map-items.component.scss'],
   animations: [slideInOutAnimation]
 })
-export class ActiveMapItemsWidgetComponent implements OnInit, OnDestroy {
+export class ActiveMapItemsComponent implements OnInit, OnDestroy {
   public isAuthenticated: boolean = false;
   public favouriteHelperMessages = favouriteHelperMessages;
   private readonly activeMapItems$ = this.store.select(selectActiveMapItems);

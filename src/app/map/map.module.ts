@@ -2,7 +2,7 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {MapComponent} from './components/map/map.component';
 import {SharedModule} from '../shared/shared.module';
-import {ActiveMapItemsWidgetComponent} from './components/active-map-items-widget/active-map-items-widget.component';
+import {ActiveMapItemsComponent} from './components/active-map-items/active-map-items.component';
 import {MapPageComponent} from './map-page.component';
 import {MapRoutingModule} from './map-routing.module';
 import {LegendComponent} from './components/legend/legend.component';
@@ -17,7 +17,7 @@ import {PrintDispatcherComponent} from './components/print-overlay/print-dispatc
 import {ScaleInputComponent} from './components/map/scale-input/scale-input.component';
 import {MapControlsComponent} from './components/map/map-controls/map-controls.component';
 import {BasemapSelectorComponent} from './components/map/basemap-selector/basemap-selector.component';
-import {ActiveMapItemComponent} from './components/active-map-items-widget/active-map-item/active-map-item.component';
+import {ActiveMapItemComponent} from './components/active-map-items/active-map-item/active-map-item.component';
 import {OnboardingGuideModule} from '../onboarding-guide/onboarding-guide.module';
 import {MapAttributeFilterComponent} from './components/map-attribute-filter/map-attribute-filter.component';
 import {FavouriteCreationDialogComponent} from './components/favourite-creation-dialog/favourite-creation-dialog.component';
@@ -35,7 +35,7 @@ import {FeatureInfoContentComponent} from './components/feature-info/feature-inf
   declarations: [
     MapPageComponent,
     MapComponent,
-    ActiveMapItemsWidgetComponent,
+    ActiveMapItemsComponent,
     ActiveMapItemComponent,
     LegendComponent,
     LegendItemComponent,
