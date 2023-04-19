@@ -1,5 +1,5 @@
 import {MapConfigState} from '../../state/map/reducers/map-config.reducer';
-import {defaultBasemap} from './base-map-config';
+import {defaultBasemap} from './base-map.config';
 import {MapConstants} from '../constants/map.constants';
 
 export const defaultMapConfig: MapConfigState = {

@@ -2,7 +2,7 @@ import {Injectable, Renderer2, RendererFactory2} from '@angular/core';
 import {BehaviorSubject, combineLatest, filter, Observable, tap} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {LoadingState} from '../types/loading-state';
-import {environment} from '../../../environments/environment';
+import {ConfigService} from './config.service';
 
 interface InjectableExternalScript {
   src: string;
@@ -14,20 +14,19 @@ interface InjectedExternalScript extends InjectableExternalScript {
   scriptReference: HTMLScriptElement;
 }
 
-const twitterFeedInjectableScript: InjectableExternalScript = {
-  id: 'twitter-feed',
-  type: 'text/javascript',
-  src: environment.apiConfigs.twitterWidget.baseUrl
-};
-
 @Injectable({
   providedIn: 'root'
 })
 export class ScriptInjectorService {
   private readonly loadedScripts: InjectedExternalScript[] = [];
   private readonly renderer: Renderer2;
+  private readonly twitterFeedInjectableScript: InjectableExternalScript = {
+    id: 'twitter-feed',
+    type: 'text/javascript',
+    src: this.configService.apiConfig.twitterWidget.baseUrl
+  };
 
-  constructor(private readonly rendererFactory: RendererFactory2) {
+  constructor(private readonly rendererFactory: RendererFactory2, private readonly configService: ConfigService) {
     this.renderer = this.rendererFactory.createRenderer(null, null);
   }
 
@@ -40,7 +39,7 @@ export class ScriptInjectorService {
   public injectTwitterFeedApi(): Observable<TwitterLike> {
     const scriptLoadingState = new BehaviorSubject<LoadingState>('loading');
 
-    const injectScript = this.injectExternalScript(twitterFeedInjectableScript).pipe(
+    const injectScript = this.injectExternalScript(this.twitterFeedInjectableScript).pipe(
       tap((script) => {
         if (typeof twttr !== 'undefined') {
           scriptLoadingState.next('loaded');
