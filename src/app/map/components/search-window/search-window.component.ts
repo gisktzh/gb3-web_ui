@@ -11,7 +11,8 @@ import {ActiveMapItemActions} from "../../../state/map/actions/active-map-item.a
 import {MAP_SERVICE} from "../../../app.module";
 import {MapService} from "../../interfaces/map.service";
 import {selectActiveMapItems} from "../../../state/map/reducers/active-map-item.reducer";
-import {SPECIAL_SEARCH_CONFIG} from "../../../shared/constants/special-search.constants";
+import {DEFAULT_SEARCHES, MAP_SEARCH, SPECIAL_SEARCH_CONFIG} from "../../../shared/constants/search.constants";
+import {AvailableIndex} from "../../../shared/services/apis/search/interfaces/available-index.interface";
 
 const DEFAULT_ZOOM_SCALE = 1000;
 
@@ -25,7 +26,7 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   public specialSearchResults: SearchWindowElement[] = [];
   public filteredMaps: Map[] = [];
   public searchTerms: string[] = [];
-  public availableSpecialSearchIndexes: string[] = [];
+  public availableSearchIndexes: AvailableIndex[] = DEFAULT_SEARCHES.concat(MAP_SEARCH);
 
   private originalMaps: Map[] = [];
   private readonly originalMaps$ = this.store.select(selectMaps);
@@ -86,21 +87,34 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private fillResultsWindow(term: string) {
-    this.subscriptions.add(this.searchService.searchAddressesAndPlaces(term).pipe(first()).subscribe(
-      (searchResults: SearchWindowElement[]) => {
-        this.searchResults = searchResults;
-      }
-    ));
-    if (this.availableSpecialSearchIndexes.length > 0) {
-      this.subscriptions.add(this.searchService.searchObjects(term, this.availableSpecialSearchIndexes).pipe(first()).subscribe(
+    const addressAndPlaceIndexes = this.availableSearchIndexes.slice(0, 2).filter(index => index.active).map(index => index.indexName);
+    const specialIndexes = this.availableSearchIndexes.slice(2, -1).filter(index => index.active).map(index => index.indexName);
+    const mapSearchActive = this.availableSearchIndexes[this.availableSearchIndexes.length -1].active;
+    if (addressAndPlaceIndexes.length > 0) {
+      this.subscriptions.add(this.searchService.searchIndexes(term, addressAndPlaceIndexes).pipe(first()).subscribe(
+        (searchResults: SearchWindowElement[]) => {
+          this.searchResults = searchResults;
+        }
+      ));
+    } else {
+      this.searchResults = [];
+    }
+    if (specialIndexes.length > 0) {
+      this.subscriptions.add(this.searchService.searchIndexes(term, specialIndexes).pipe(first()).subscribe(
         (searchResults: SearchWindowElement[]) => {
           this.specialSearchResults = searchResults;
         }
       ));
+    } else {
+      this.specialSearchResults = [];
     }
-    this.filteredMaps = this.originalMaps.filter(availableMap =>
-      this.searchTerms.every(searchTerm => availableMap.title.toLowerCase().includes(searchTerm.toLowerCase()))
-    );
+    if (mapSearchActive) {
+      this.filteredMaps = this.originalMaps.filter(availableMap =>
+        this.searchTerms.every(searchTerm => availableMap.title.toLowerCase().includes(searchTerm.toLowerCase()))
+      );
+    } else {
+      this.filteredMaps = [];
+    }
   }
 
   private filterInputHandler(): Observable<string> {
@@ -126,7 +140,7 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
       this.activeMapItems$
         .pipe(
           tap(async (value) => {
-            this.availableSpecialSearchIndexes = this.getActiveSpecialSearchIndexes(value);
+            this.availableSearchIndexes = DEFAULT_SEARCHES.concat(this.getActiveSpecialSearchIndexes(value)).concat(MAP_SEARCH);
           })
         )
         .subscribe()
@@ -138,14 +152,17 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
     this.store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem, position: 0}));
   }
 
-  private getActiveSpecialSearchIndexes(activeMapItems: ActiveMapItem[]): string[] {
-    const availableIndexes: string[] = [];
+  private getActiveSpecialSearchIndexes(activeMapItems: ActiveMapItem[]): AvailableIndex[] {
+    const availableIndexes: AvailableIndex[] = [];
 
     for (const mapItem of activeMapItems) {
       for (const searchConfig of SPECIAL_SEARCH_CONFIG) {
-        if (searchConfig.topics.includes(mapItem.id)) {
-          availableIndexes.push(searchConfig.index);
-          break;
+        if (searchConfig.topics.includes(mapItem.id) && !availableIndexes.map(index => index.indexName).includes(searchConfig.index)) {
+          availableIndexes.push({
+            indexName: searchConfig.index,
+            displayString: searchConfig.title,
+            active: true
+          });
         }
       }
     }

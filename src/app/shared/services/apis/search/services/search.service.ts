@@ -5,7 +5,7 @@ import {environment} from "../../../../../../environments/environment";
 import {BaseApiService} from "../../abstract-api.service";
 import {map} from "rxjs/operators";
 import {SearchResult} from "../interfaces/search-result.interface";
-import {SPECIAL_SEARCH_CONFIG} from "../../../../constants/special-search.constants";
+import {SPECIAL_SEARCH_CONFIG} from "../../../../constants/search.constants";
 
 @Injectable({
   providedIn: 'root'
@@ -13,28 +13,13 @@ import {SPECIAL_SEARCH_CONFIG} from "../../../../constants/special-search.consta
 export class SearchService extends BaseApiService {
   protected apiBaseUrl = `${environment.apiConfigs.searchApi.baseUrl}`;
 
-  public searchAddressesAndPlaces(term: string): Observable<SearchWindowElement[]> {
-    return this.getElasticsearch('fme-addresses,fme-places', term).pipe(map(
+  public searchIndexes(term: string, indexes: string[]): Observable<SearchWindowElement[]> {
+    return this.getElasticsearch(indexes.toString(), term).pipe(map(
       (response: SearchResult[]) => this.combineSearchResults(response)
     ));
   }
 
-  public searchObjects(term: string, indexes: string[]): Observable<SearchWindowElement[]> {
-    return this.getElasticsearch(indexes.toString(), term).pipe(map(
-      (response: SearchResult[]) => this.combineObjectSearchResults(response)
-    ));
-  }
-
   private combineSearchResults(searchResponse: SearchResult[]): SearchWindowElement[] {
-    let combinedResults: SearchWindowElement[] = [];
-    for (const searchResult of searchResponse) {
-      combinedResults = combinedResults.concat(searchResult.matches);
-    }
-    combinedResults.sort((a, b) => b.score > a.score ? 1 : -1);
-    return combinedResults;
-  }
-
-  private combineObjectSearchResults(searchResponse: SearchResult[]): SearchWindowElement[] {
     let combinedResults: SearchWindowElement[] = [];
     for (const searchResult of searchResponse) {
       for (const match of searchResult.matches) {

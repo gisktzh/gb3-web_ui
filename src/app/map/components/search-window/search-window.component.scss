@@ -34,12 +34,13 @@
   }
 
   .search-window__x-icon {
-    height: 30px;
-    width: 30px;
-    margin: 16px 5px 5px 16px;
+    height: 24px;
+    width: 24px;
+    padding: 5px;
+    margin: 11px;
     position: absolute;
     color: black;
-    right: 5px;
+    right: 0;
   }
 
   .search-window__x-icon:hover {
@@ -47,12 +48,13 @@
   }
 
   .search-window__filter-icon {
-    height: 30px;
-    width: 30px;
-    margin: 16px 5px 5px 16px;
+    height: 24px;
+    width: 24px;
+    padding: 5px;
+    margin: 11px;
     position: absolute;
     color: black;
-    right: 40px;
+    right: 35px;
   }
 
   .search-window__filter-icon:hover {
@@ -61,7 +63,7 @@
 
   .search-window__divider {
     position: absolute;
-    right: 43px;
+    right: 45px;
     height: 20px;
     top: 18px;
     border-width: 1px;
@@ -105,6 +107,7 @@
           box-shadow: none;
           font-size: 14px;
 
+
           .search-window__element-header {
             font-weight: bold;
             padding: 5px 5px 0 5px;
@@ -112,11 +115,6 @@
 
           .search-window__element-content {
             padding: 5px;
-          }
-
-          .search-window__element-content:hover {
-            cursor: pointer;
-            background-color: ktzh-variables.$zh-background-color;
           }
 
           .search-window__map-content {
@@ -138,6 +136,11 @@
               margin-bottom: auto;
             }
           }
+        }
+
+        .search-window__element:hover {
+          cursor: pointer;
+          background-color: ktzh-variables.$zh-background-color;
         }
       }
     }

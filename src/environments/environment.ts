@@ -17,7 +17,7 @@ export const environment: EnvironmentConfig = {
       baseUrl: 'https://www.geolion.zh.ch'
     },
     searchApi: {
-      baseUrl: 'https://gb3-search-api.icycliff-4b8f6c95.switzerlandnorth.azurecontainerapps.io'
+      baseUrl: 'http://localhost:8000'
     },
     ktzhWebsite: {
       baseUrl: 'https://www.zh.ch',
