@@ -22,6 +22,7 @@ import {map} from 'rxjs/operators';
 })
 export class Gb3TopicsService extends Gb3ApiService {
   protected readonly endpoint = 'topics';
+  private readonly staticFilesUrl = this.configService.apiConfig.gb2StaticFiles.baseUrl;
 
   public loadTopics(): Observable<TopicsResponse> {
     const requestUrl = this.createTopicsUrl();
@@ -213,7 +214,7 @@ export class Gb3TopicsService extends Gb3ApiService {
   }
 
   private createAbsoluteIconUrl(relativeIconUrl: string): string {
-    const url = new URL(`${this.apiBaseUrl}${relativeIconUrl}`);
+    const url = new URL(`${this.staticFilesUrl}${relativeIconUrl}`);
     return url.toString();
   }
 

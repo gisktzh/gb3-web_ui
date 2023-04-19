@@ -35,6 +35,10 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
         enabled: false
       }
     },
+    authSettings: {
+      clientId: 'gb3',
+      issuer: 'https://testmaps.kt.ktzh.ch/'
+    },
     overrides: {}
   }
 ];

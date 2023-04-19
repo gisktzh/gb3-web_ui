@@ -35,6 +35,10 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
         enabled: false
       }
     },
+    authSettings: {
+      clientId: 'gb3',
+      issuer: 'http://localhost:4200/'
+    },
     overrides: {
       overrideWmsUrl: 'http://localhost:4200/wms'
     }

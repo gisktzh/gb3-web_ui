@@ -45,7 +45,7 @@ export class ConfigService {
 
     this.apiConfig = runtimeConfig.apiBasePaths;
     this.overridesConfig = runtimeConfig.overrides;
-    this.authConfig = runtimeConfig.authSettings!;
+    this.authConfig = runtimeConfig.authSettings;
   }
 
   /**

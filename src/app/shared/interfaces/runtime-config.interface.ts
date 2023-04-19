@@ -34,5 +34,5 @@ export interface RuntimeConfig {
   hostMatch: string;
   apiBasePaths: ApiConfig;
   overrides: OverrideSettings;
-  authSettings?: AuthSettings;
+  authSettings: AuthSettings;
 }

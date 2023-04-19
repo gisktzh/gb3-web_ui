@@ -35,6 +35,10 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
         enabled: false
       }
     },
+    authSettings: {
+      clientId: 'gb3',
+      issuer: 'https://web.maps.zh.ch/'
+    },
     overrides: {}
   },
   {
@@ -67,6 +71,10 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
         baseUrl: 'https://platform.twitter.com/widgets.js',
         enabled: false
       }
+    },
+    authSettings: {
+      clientId: 'gb3',
+      issuer: 'https://maps.zh.ch/'
     },
     overrides: {}
   }
