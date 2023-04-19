@@ -21,7 +21,7 @@
     border: 3px solid ktzh-variables.$zh-cyan;
 
     & + .search-window__input-icon {
-      color: black;
+      color: ktzh-variables.$zh-black100;
     }
   }
 
@@ -53,11 +53,20 @@
     padding: 5px;
     margin: 11px;
     position: absolute;
-    color: black;
     right: 35px;
+    color: ktzh-variables.$zh-black100
   }
 
   .search-window__filter-icon:hover {
+    cursor: pointer;
+  }
+
+
+  .search-window__filter-icon.selected {
+     color: ktzh-variables.$zh-cyan;
+   }
+
+  .search-window__filter-icon-selected:hover {
     cursor: pointer;
   }
 
@@ -67,7 +76,49 @@
     height: 20px;
     top: 18px;
     border-width: 1px;
-    border-color: black;
+    border-color: ktzh-variables.$zh-black100;
+  }
+}
+
+::ng-deep  {
+  .search-window__filter-menu {
+    width: 300px;
+    .search-window__filter-x-icon {
+      height: 24px;
+      width: 24px;
+      padding: 5px;
+      margin: 0 11px 11px 11px;
+      position: absolute;
+      color: ktzh-variables.$zh-black100;
+      right: 0;
+    }
+    .search-window__filter-x-icon:hover {
+      cursor: pointer;
+    }
+    .search-window__filter-content {
+      .search-window__filter-header {
+        font-size: 15px;
+        padding: 10px;
+        margin: 0;
+      }
+      .search-window__filter-entry {
+        padding-left: 12px;
+        .search-window__filter-checkbox {
+          .mdc-checkbox__background {
+            --mdc-checkbox-selected-focus-icon-color: #00797b;
+            --mdc-checkbox-selected-hover-icon-color: #00797b;
+            --mdc-checkbox-selected-icon-color: #00797b;
+            --mdc-checkbox-selected-pressed-icon-color: #00797b;
+            --mdc-checkbox-unselected-focus-icon-color: #00797b;
+            --mdc-checkbox-unselected-hover-icon-color: #00797b;
+            --mdc-checkbox-disabled-selected-icon-color: #00797b;
+            --mdc-checkbox-disabled-unselected-icon-color: #00797b;
+            --mdc-checkbox-unselected-icon-color: #00797b;
+            --mdc-checkbox-unselected-pressed-icon-color: #00797b;
+          }
+        }
+      }
+    }
   }
 }
 
