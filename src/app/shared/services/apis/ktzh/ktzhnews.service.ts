@@ -4,14 +4,14 @@ import {RootObject as KTZHNewsRootObject} from '../../../models/ktzh-news-genera
 import {News} from '../../../interfaces/news.interface';
 import {map} from 'rxjs/operators';
 import {Observable} from 'rxjs';
-import {environment} from '../../../../../environments/environment';
 import {NewsService} from '../../../interfaces/news-service.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class KTZHNewsService extends BaseApiService implements NewsService {
-  protected apiBaseUrl: string = `${environment.apiConfigs.ktzhWebsite.baseUrl}/de/news-uebersicht/_jcr_content.zhweb-news.zhweb-cache.json`;
+  private readonly ktzhWebsiteBasePath = this.configService.apiConfig.ktzhWebsite.baseUrl;
+  protected apiBaseUrl: string = `${this.ktzhWebsiteBasePath}/de/news-uebersicht/_jcr_content.zhweb-news.zhweb-cache.json`;
   private topicsFilter: string[] = ['planen-bauen', 'geoinformation'];
   private organisationFilter: string[] = ['kanton-zuerich', 'baudirektion', 'amt-fuer-raumentwicklung'];
 
@@ -23,7 +23,7 @@ export class KTZHNewsService extends BaseApiService implements NewsService {
     return result.news.map((newsItem) => {
       return {
         ...newsItem,
-        link: `${environment.apiConfigs.ktzhWebsite.baseUrl}${newsItem.link}`
+        link: `${this.ktzhWebsiteBasePath}${newsItem.link}`
       };
     });
   }

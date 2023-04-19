@@ -8,6 +8,7 @@ import {GeoDataDetailComponent} from './components/geo-data-detail/geo-data-deta
 import {MapDetailComponent} from './components/map-detail/map-detail.component';
 import {MaterialModule} from '../shared/external/material.module';
 import {SharedModule} from '../shared/shared.module';
+import {DataCataloguePlaceholderComponent} from './components/data-catalogue-placeholder/data-catalogue-placeholder.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import {SharedModule} from '../shared/shared.module';
     DataCatalogueOverviewComponent,
     GeoServiceDetailComponent,
     GeoDataDetailComponent,
-    MapDetailComponent
+    MapDetailComponent,
+    DataCataloguePlaceholderComponent
   ],
   imports: [CommonModule, DataCatalogueRoutingModule, MaterialModule, SharedModule]
 })

@@ -21,7 +21,8 @@ import {map} from 'rxjs/operators';
   providedIn: 'root'
 })
 export class Gb3TopicsService extends Gb3ApiService {
-  protected readonly endpoint = 'v3/topics';
+  protected readonly endpoint = 'topics';
+  private readonly staticFilesUrl = this.configService.apiConfig.gb2StaticFiles.baseUrl;
 
   public loadTopics(): Observable<TopicsResponse> {
     const requestUrl = this.createTopicsUrl();
@@ -200,7 +201,8 @@ export class Gb3TopicsService extends Gb3ApiService {
 
   /**
    * Returns whether the given layer should be hidden from all visible layer lists.
-   * For example if the layer is part of a time slider it should not be visible in any kind of layer list except the internal time slider control.
+   * For example if the layer is part of a time slider it should not be visible in any kind of layer list except the internal time slider
+   * control.
    */
   private isHiddenLayer(layer: string, topicMap: Map): boolean {
     let isHidden = false;
@@ -212,7 +214,7 @@ export class Gb3TopicsService extends Gb3ApiService {
   }
 
   private createAbsoluteIconUrl(relativeIconUrl: string): string {
-    const url = new URL(`${this.apiBaseUrl}${relativeIconUrl}`);
+    const url = new URL(`${this.staticFilesUrl}${relativeIconUrl}`);
     return url.toString();
   }
 

@@ -38,14 +38,27 @@ the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
 
 ### Building the image
 
+The docker image has to be built for each environment separately, since we cannot use runtime environment
+configurations.
+
 In order to build the docker image use the following command (adjust tag as needed):
 
 ```
-docker build -t gb3-frontend:latest .
+docker build --build-arg TARGET_ENVIRONMENT={target_environment} --t gb3-frontend:latest .
 ```
 
 - **gb3-frontend** is the name of the image
 - **latest** is the tag used to mark the version of this image
+- **target_environment** is the target build environment, which is one of the following:
+  - `local`: Default if this variable is missing; localhost development
+  - `local-gb2`: localhost development with locally deployed GB2 backend
+  - `dev-ebp`: production deployment for EBP environment
+  - `staging`: production deployment for KTZH staging environment
+  - `uat`: production deployment for KTZH UAT environment
+  - `production`: production deployment for KTZH production (internet & intranet) environment
+
+The `target_environment` is used to create environment specific build outputs so as to not divulge sensitive information
+such as internal domains. This is mainly reflected in the runtime configuration mechanism described below.
 
 ### Run the image
 
@@ -71,3 +84,28 @@ running `ng serve --configuration=development-local-gb2` (or `npm run start-loca
 
 If using this, angular will proxy all requests to the GB2 via localhost, so you have to set all links to be relative (
 e.g. `/wms/asd` will become `http://localhost:4200/wms/asd`, and then proxied to `http://localhost:3000/wms/asd`).
+
+## Code documentation
+
+### Runtime configurations
+
+The app supports multiple environments with different endpoints. Because the production deployment has different
+endpoints depending on whether it is access via internet or intranet, these URLs need to be added during runtime, so
+Angular's environment files do not work.
+
+As a workaround, the `ConfigService` can be used. This service will check the current hostname and return the given API
+configurations. The replacements are done (similar to the environment configurations) as part of the `angular.json`
+build file replacements.
+
+The configurations are found in `src/app/shared/configs/runtime.config.ts` and configured via their environment
+replacement files.
+
+#### Available URL configurations
+
+| Stagename |      Subdomain      |        Verwendung        |     GB2 Backend     |    WMS Backend     |        Geolion         |                 Bemerkung                  |
+| :-------: | :-----------------: | :----------------------: | :-----------------: | :----------------: | :--------------------: | :----------------------------------------: |
+|    DEV    |    dev.geo.zh.ch    |           EBP            |                     |                    |                        | calm-plant-0ecbec603.2.azurestaticapps.net |
+|   PROD    |      geo.zh.ch      |        öffentlich        |     maps.zh.ch      |     wms.zh.ch      |     geolion.zh.ch      |                                            |
+|   PROD    |     geo.ktzh.ch     |        Verwaltung        |   web.maps.zh.ch    |   web.wms.zh.ch    |    geolion.ktzh.ch     |                                            |
+|    UAT    |   uat.geo.ktzh.ch   | Verwaltungsinterne Tests | uatmaps.kt.ktzh.ch  | uatwms.kt.ktzh.ch  | uatgeolion.kt.ktzh.ch  |                                            |
+|  STAGING  | staging.geo.ktzh.ch | Produktionsvorbereitung  | testmaps.kt.ktzh.ch | testwms.kt.ktzh.ch | testgeolion.kt.ktzh.ch |                                            |
