@@ -1,8 +1,7 @@
-import {Component, EventEmitter, Inject, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {ResizeHandlerLocation} from '../../types/resize-handler-location';
 import {ResizeEvent} from 'angular-resizable-element';
 import {StyleExpression} from '../../types/style-expression';
-import {WINDOW} from '../../../app.module';
 
 /**
  * The minimum width of the overlay window; cannot be resized below that.
@@ -25,14 +24,12 @@ export class ResizeHandlerComponent {
   public resizeableStyle: StyleExpression = {};
   public isResizeActive: boolean = false;
 
-  constructor(@Inject(WINDOW) private readonly window: Window) {}
-
   public onResizeStart() {
     this.isResizeActive = true;
   }
 
   public validate(event: ResizeEvent): boolean {
-    const maxResizeWidth = this.window.innerWidth * MAX_DIMENSION_PERCENTAGE;
+    const maxResizeWidth = window.innerWidth * MAX_DIMENSION_PERCENTAGE;
     return !!(
       event.rectangle.width &&
       event.rectangle.height &&
