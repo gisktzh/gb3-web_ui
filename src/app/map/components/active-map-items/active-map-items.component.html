@@ -7,6 +7,7 @@
       <button (click)="removeAllActiveMapItems()" [disabled]="activeMapItems.length === 0" mat-icon-button>
         <mat-icon>delete_outlined</mat-icon>
       </button>
+      <mat-divider [vertical]="true"></mat-divider>
       <span
         #tooltip="matTooltip"
         [matTooltipDisabled]="this.isAuthenticated && this.activeMapItems.length > 0"
@@ -27,26 +28,27 @@
       <mat-expansion-panel #activeMapItemExpansionPanel [@slideInOut] cdkDrag hideToggle="true">
         <mat-expansion-panel-header (click)="activeMapItemExpansionPanel.toggle()" class="active-map-item">
           <div class="active-map-item__container">
-            <mat-icon cdkDragHandle class="active-map-item__drag-handle">drag_indicator</mat-icon>
-            <button (click)="activeMapItemExpansionPanel.open()" *ngIf="!activeMapItemExpansionPanel.expanded" mat-icon-button>
-              <mat-icon>arrow_right</mat-icon>
+            <button
+              (click)="activeMapItemExpansionPanel.toggle()"
+              [attr.data-test-id]="activeMapItemExpansionPanel.expanded ? 'hide-layers-of-the-map' : 'show-layers-of-the-map'"
+              mat-icon-button
+            >
+              <mat-icon [fontIcon]="activeMapItemExpansionPanel.expanded ? 'arrow_drop_down' : 'arrow_right'"></mat-icon>
             </button>
-            <button (click)="activeMapItemExpansionPanel.close()" *ngIf="activeMapItemExpansionPanel.expanded" mat-icon-button>
-              <mat-icon>arrow_drop_down</mat-icon>
-            </button>
-            <button (click)="toggleMapItemVisibility(activeMapItem)" mat-icon-button data-test-id="map-visibility">
-              <div class="active-map-item__image-container">
-                <img [alt]="activeMapItem.title" [src]="activeMapItem.mapImageUrl" />
-                <mat-icon
-                  [fontIcon]="activeMapItem.visible ? 'visibility' : 'visibility_off'"
-                  class="active-map-item__image-container__visibility"
-                ></mat-icon>
-              </div>
-            </button>
+            <div class="active-map-item__image-container">
+              <img class="active-map-item__image-container__image" [alt]="activeMapItem.title" [src]="activeMapItem.mapImageUrl" />
+              <mat-checkbox
+                class="active-map-item__image-container__checkbox"
+                [checked]="activeMapItem.visible"
+                (change)="toggleMapItemVisibility(activeMapItem)"
+              ></mat-checkbox>
+            </div>
             <p class="active-map-item__title" matTooltip="{{ activeMapItem.title }}">{{ activeMapItem.title }}</p>
-            <button (click)="removeActiveMapItem(activeMapItem)" mat-icon-button data-test-id="delete">
-              <mat-icon>delete</mat-icon>
-            </button>
+            <!--            TODO: Is there no remove button for single objects?-->
+            <!--            <button (click)="removeActiveMapItem(activeMapItem)" mat-icon-button data-test-id="delete">-->
+            <!--              <mat-icon>delete</mat-icon>-->
+            <!--            </button>-->
+            <mat-icon cdkDragHandle class="active-map-item__drag-handle">drag_indicator</mat-icon>
           </div>
           <loading-and-process-bar
             [loadingState]="activeMapItem.loadingState"

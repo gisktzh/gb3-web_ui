@@ -20,9 +20,17 @@
     }
 
     .active-map-items__header__buttons {
+      display: flex;
+      align-items: center;
       margin-left: 8px;
-      align-self: center;
       color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+
+      ::ng-deep {
+        .mat-divider {
+          border-right-color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+          height: 40%;
+        }
+      }
     }
   }
 
@@ -43,29 +51,55 @@
         flex-direction: row;
         align-items: center;
         overflow: hidden;
-      }
 
-      .active-map-item__drag-handle {
-        min-width: 24px;
-      }
+        .active-map-item__image-container {
+          position: relative;
+          height: 44px;
+          width: 44px;
+          min-height: 44px;
+          min-width: 44px;
 
-      .active-map-item__image-container {
-        position: relative;
-        float: left;
+          &__image {
+            object-fit: cover;
+            height: 44px;
+            width: 44px;
+          }
 
-        .active-map-item__image-container__visibility {
-          position: absolute;
-          left: 0;
-          top: 0;
-          display: none;
+          &__checkbox {
+            position: absolute;
+            @include mixins.center-absolute-element;
+
+            ::ng-deep {
+              .mdc-checkbox__ripple {
+                opacity: 0;
+              }
+
+              .mdc-checkbox__background {
+                background-color: ktzh-variables.$zh-white !important;
+                border-color: ktzh-variables.$zh-active-blue !important;
+                .mdc-checkbox__checkmark {
+                  background-color: ktzh-variables.$zh-active-blue;
+                  .mdc-checkbox__checkmark-path {
+                    stroke: ktzh-variables.$zh-white;
+                  }
+                }
+              }
+            }
+          }
         }
-      }
 
-      .active-map-item__title {
-        @include mixins.single-line-text;
-        width: 100vw;
-        margin-top: auto;
-        margin-bottom: auto;
+        .active-map-item__title {
+          @include mixins.multiline-ellipsis(2);
+          width: 100vw;
+          margin-top: auto;
+          margin-bottom: auto;
+          padding-left: 1em;
+          overflow: hidden;
+        }
+
+        .active-map-item__drag-handle {
+          min-width: 24px;
+        }
       }
 
       .active-map-item__progress-bar {
@@ -73,18 +107,6 @@
         bottom: 0;
         left: 0;
         width: 100%;
-      }
-    }
-
-    .active-map-item:hover {
-      .active-map-item__image-container {
-        .active-map-item__image-container__image {
-          opacity: 0.3;
-        }
-
-        .active-map-item__image-container__visibility {
-          display: inline-block;
-        }
       }
     }
   }
