@@ -1,4 +1,4 @@
-<mat-card appearance="outlined" class="active-map-items">
+<mat-card appearance="raised" class="active-map-items">
   <mat-card-header class="active-map-items__header">
     <div class="active-map-items__header__title">
       <mat-card-title>Aktive Karten/Layer</mat-card-title>
@@ -25,9 +25,10 @@
   </mat-card-header>
   <mat-accordion (cdkDropListDropped)="dropMapItem($event)" cdkDropList class="active-map-items__content" displayMode="flat" multi="true">
     <ng-container *ngFor="let activeMapItem of activeMapItems; trackBy: trackByMapItemId">
-      <mat-expansion-panel #activeMapItemExpansionPanel [@slideInOut] cdkDrag hideToggle="true">
-        <mat-expansion-panel-header (click)="activeMapItemExpansionPanel.toggle()" class="active-map-item">
-          <div class="active-map-item__container">
+      <mat-expansion-panel #activeMapItemExpansionPanel [@slideInOut] cdkDrag hideToggle="true" class="no-box-shadow">
+        <div class="active-map-item__drag-placeholder" *cdkDragPlaceholder></div>
+        <mat-expansion-panel-header (click)="activeMapItemExpansionPanel.toggle()" class="active-map-item-header">
+          <div class="active-map-item-header__container">
             <button
               (click)="activeMapItemExpansionPanel.toggle()"
               [attr.data-test-id]="activeMapItemExpansionPanel.expanded ? 'hide-layers-of-the-map' : 'show-layers-of-the-map'"
@@ -35,25 +36,29 @@
             >
               <mat-icon [fontIcon]="activeMapItemExpansionPanel.expanded ? 'arrow_drop_down' : 'arrow_right'"></mat-icon>
             </button>
-            <div class="active-map-item__image-container">
-              <img class="active-map-item__image-container__image" [alt]="activeMapItem.title" [src]="activeMapItem.mapImageUrl" />
+            <div class="active-map-item-header__container__image-container">
+              <img
+                class="active-map-item-header__container__image-container__image"
+                [alt]="activeMapItem.title"
+                [src]="activeMapItem.mapImageUrl"
+              />
               <mat-checkbox
-                class="active-map-item__image-container__checkbox"
+                class="active-map-item-header__container__image-container__checkbox"
                 [checked]="activeMapItem.visible"
                 (change)="toggleMapItemVisibility(activeMapItem)"
               ></mat-checkbox>
             </div>
-            <p class="active-map-item__title" matTooltip="{{ activeMapItem.title }}">{{ activeMapItem.title }}</p>
-            <!--            TODO: Is there no remove button for single objects?-->
-            <!--            <button (click)="removeActiveMapItem(activeMapItem)" mat-icon-button data-test-id="delete">-->
-            <!--              <mat-icon>delete</mat-icon>-->
-            <!--            </button>-->
-            <mat-icon cdkDragHandle class="active-map-item__drag-handle">drag_indicator</mat-icon>
+            <p class="active-map-item-header__container__title" matTooltip="{{ activeMapItem.title }}">{{ activeMapItem.title }}</p>
+            <!--TODO: Is there no 'remove' button for single active map objects?-->
+            <!--<button (click)="removeActiveMapItem(activeMapItem)" mat-icon-button data-test-id="delete">-->
+            <!--  <mat-icon>delete</mat-icon>-->
+            <!--</button>-->
+            <mat-icon cdkDragHandle class="active-map-item-header__container__drag-handle">drag_indicator</mat-icon>
           </div>
           <loading-and-process-bar
             [loadingState]="activeMapItem.loadingState"
             [viewProcessState]="activeMapItem.viewProcessState"
-            class="active-map-item__progress-bar"
+            class="active-map-item-header__progress-bar"
           ></loading-and-process-bar>
         </mat-expansion-panel-header>
         <!-- Expansion panel content -->
@@ -66,7 +71,7 @@
   <button
     (click)="this.toggleLegend()"
     *ngIf="activeMapItems.length !== 0"
-    class="active-map-items__content__legend"
+    class="active-map-items__legend"
     color="primary"
     mat-raised-button
   >

@@ -4,8 +4,10 @@
 
 .active-map-items {
   width: 100%;
-  padding: 0;
-  border: none;
+
+  .no-box-shadow {
+    @include mixins.no-box-shadow;
+  }
 
   .active-map-items__header {
     background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
@@ -41,80 +43,89 @@
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
+    margin: 12px 24px 12px 24px;
+  }
 
-    .active-map-item {
-      padding-left: 12px;
-      padding-right: 12px;
+  .active-map-item__drag-placeholder {
+    background: ktzh-variables.$zh-blue;
+    border: dotted 3px ktzh-variables.$zh-darkblue;
+    height: 68px;
+    width: 100%;
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
 
-      .active-map-item__container {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        overflow: hidden;
+  .active-map-items__legend {
+    margin: 12px 24px 12px 24px;
+    min-height: 36px;
+  }
+}
 
-        .active-map-item__image-container {
-          position: relative;
-          height: 44px;
-          width: 44px;
-          min-height: 44px;
-          min-width: 44px;
+.active-map-item-header {
+  height: 68px;
+  display: flex;
+  align-items: center;
+  padding: 0;
 
-          &__image {
-            object-fit: cover;
-            height: 44px;
-            width: 44px;
+  .active-map-item-header__container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    overflow: hidden;
+
+    &__image-container {
+      position: relative;
+      height: 44px;
+      width: 44px;
+      min-height: 44px;
+      min-width: 44px;
+
+      &__image {
+        object-fit: cover;
+        height: 44px;
+        width: 44px;
+      }
+
+      &__checkbox {
+        position: absolute;
+        @include mixins.center-absolute-element;
+
+        ::ng-deep {
+          .mdc-checkbox__ripple {
+            opacity: 0;
           }
 
-          &__checkbox {
-            position: absolute;
-            @include mixins.center-absolute-element;
-
-            ::ng-deep {
-              .mdc-checkbox__ripple {
-                opacity: 0;
-              }
-
-              .mdc-checkbox__background {
-                background-color: ktzh-variables.$zh-white !important;
-                border-color: ktzh-variables.$zh-active-blue !important;
-                .mdc-checkbox__checkmark {
-                  background-color: ktzh-variables.$zh-active-blue;
-                  .mdc-checkbox__checkmark-path {
-                    stroke: ktzh-variables.$zh-white;
-                  }
-                }
+          .mdc-checkbox__background {
+            background-color: ktzh-variables.$zh-white !important;
+            border-color: ktzh-variables.$zh-active-blue !important;
+            .mdc-checkbox__checkmark {
+              background-color: ktzh-variables.$zh-active-blue;
+              .mdc-checkbox__checkmark-path {
+                stroke: ktzh-variables.$zh-white;
               }
             }
           }
         }
-
-        .active-map-item__title {
-          @include mixins.multiline-ellipsis(2);
-          width: 100vw;
-          margin-top: auto;
-          margin-bottom: auto;
-          padding-left: 1em;
-          overflow: hidden;
-        }
-
-        .active-map-item__drag-handle {
-          min-width: 24px;
-        }
       }
+    }
 
-      .active-map-item__progress-bar {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-      }
+    &__title {
+      @include mixins.multiline-ellipsis(2);
+      width: 100vw;
+      margin-top: auto;
+      margin-bottom: auto;
+      padding-left: 1em;
+      overflow: hidden;
+    }
+
+    &__drag-handle {
+      min-width: 24px;
     }
   }
 
-  .active-map-items__content__legend {
-    width: 80%;
-    margin: 8px;
-    min-height: 36px;
-    align-self: center;
+  .active-map-item-header__progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
   }
 }
