@@ -14,5 +14,8 @@
     <h1>{{ this.title }}</h1>
     <ng-content></ng-content>
   </mat-card-content>
+
+  <ng-content select="[overlay-footer]"></ng-content>
+
   <resize-handler [location]="this.location" (resizeEvent)="this.resizeOverlay($event)"></resize-handler>
 </mat-card>

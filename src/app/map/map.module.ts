@@ -5,8 +5,8 @@ import {SharedModule} from '../shared/shared.module';
 import {ActiveMapItemsWidgetComponent} from './components/active-map-items-widget/active-map-items-widget.component';
 import {MapPageComponent} from './map-page.component';
 import {MapRoutingModule} from './map-routing.module';
-import {LegendWidgetComponent} from './components/legend-widget/legend-widget.component';
-import {LegendItemComponent} from './components/legend-widget/legend-item/legend-item.component';
+import {LegendComponent} from './components/legend/legend.component';
+import {LegendItemComponent} from './components/legend/legend-item/legend-item.component';
 import {FeatureInfoComponent} from './components/feature-info/feature-info.component';
 import {MapDataCatalogueComponent} from './components/map-data-catalogue/map-data-catalogue.component';
 import {MapOverlayComponent} from './components/map/map-overlay/map-overlay.component';
@@ -25,7 +25,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {FavouriteSelectionComponent} from './components/map-data-catalogue/favourite-selection/favourite-selection.component';
 import {ApiDialogWrapperComponent} from './components/api-dialog-wrapper/api-dialog-wrapper.component';
 import {FavouriteDeletionDialogComponent} from './components/favourite-deletion-dialog/favourite-deletion-dialog.component';
-import {SearchWindowComponent} from "./components/search-window/search-window.component";
+import {SearchWindowComponent} from './components/search-window/search-window.component';
 import {KtZhDesignSystemModule} from '../kt-zh-design-system/kt-zh-design-system.module';
 import {TimeSliderComponent} from './components/time-slider/time-slider.component';
 
@@ -35,7 +35,7 @@ import {TimeSliderComponent} from './components/time-slider/time-slider.componen
     MapComponent,
     ActiveMapItemsWidgetComponent,
     ActiveMapItemComponent,
-    LegendWidgetComponent,
+    LegendComponent,
     LegendItemComponent,
     FeatureInfoComponent,
     MapOverlayComponent,

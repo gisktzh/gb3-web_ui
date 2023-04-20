@@ -7,11 +7,11 @@ import {LoadingState} from '../../../shared/types/loading-state';
 import {Legend} from '../../../shared/interfaces/legend.interface';
 
 @Component({
-  selector: 'legend-widget',
-  templateUrl: './legend-widget.component.html',
-  styleUrls: ['./legend-widget.component.scss']
+  selector: 'legend',
+  templateUrl: './legend.component.html',
+  styleUrls: ['./legend.component.scss']
 })
-export class LegendWidgetComponent implements OnInit, OnDestroy {
+export class LegendComponent implements OnInit, OnDestroy {
   @Output() public printLegendEvent = new EventEmitter<void>();
 
   public isVisible = false;
