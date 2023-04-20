@@ -6,7 +6,6 @@ import {selectActiveMapItems} from '../../../state/map/reducers/active-map-item.
 import {Subscription, tap} from 'rxjs';
 import {ActiveMapItem} from '../../models/active-map-item.model';
 import {LegendActions} from '../../../state/map/actions/legend.actions';
-import {slideInOutAnimation} from '../../../shared/animations/slideInOut.animation';
 import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.reducer';
 import {MatDialog} from '@angular/material/dialog';
 import {FavouriteCreationDialogComponent} from '../favourite-creation-dialog/favourite-creation-dialog.component';
@@ -20,8 +19,7 @@ const favouriteHelperMessages = {
 @Component({
   selector: 'active-map-items',
   templateUrl: './active-map-items.component.html',
-  styleUrls: ['./active-map-items.component.scss'],
-  animations: [slideInOutAnimation]
+  styleUrls: ['./active-map-items.component.scss']
 })
 export class ActiveMapItemsComponent implements OnInit, OnDestroy {
   public isAuthenticated: boolean = false;
@@ -61,10 +59,6 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
 
   public removeAllActiveMapItems() {
     this.store.dispatch(ActiveMapItemActions.removeAllActiveMapItems());
-  }
-
-  public toggleMapItemVisibility(activeMapItem: ActiveMapItem) {
-    this.store.dispatch(ActiveMapItemActions.setVisibility({visible: !activeMapItem.visible, activeMapItem}));
   }
 
   public toggleLegend() {

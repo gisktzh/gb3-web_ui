@@ -1,0 +1,73 @@
+@use 'mixins/helpers.mixin' as mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.active-map-item-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  overflow: hidden;
+  width: 100%;
+  height: 44px;
+
+  .active-map-item-header__image-container {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    height: 100%;
+
+    .active-map-item-header__image-container__image {
+      aspect-ratio: 1 / 1;
+      height: 100%;
+    }
+
+    .active-map-item-header__image-container__checkbox {
+      position: absolute;
+      @include mixins.center-absolute-element;
+
+      ::ng-deep {
+        .mdc-checkbox__ripple {
+          opacity: 0;
+        }
+
+        .mdc-checkbox__background {
+          background-color: ktzh-variables.$zh-white !important;
+          border-color: ktzh-variables.$zh-active-blue !important;
+          .mdc-checkbox__checkmark {
+            background-color: ktzh-variables.$zh-active-blue;
+            .mdc-checkbox__checkmark-path {
+              stroke: ktzh-variables.$zh-white;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .active-map-item-header__title {
+    @include mixins.multiline-ellipsis(2);
+    width: 100%;
+    margin-top: auto;
+    margin-bottom: auto;
+    padding-left: 1em;
+    overflow: hidden;
+  }
+
+  .active-map-item-header__drag {
+    min-width: 44px;
+    height: 44px;
+    display: grid;
+    align-items: center;
+
+    .active-map-item-header__drag__icon {
+      justify-self: center;
+      grid-column: 1;
+      grid-row: 1;
+    }
+  }
+}
+
+.active-map-item-header__progress-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}

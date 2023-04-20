@@ -1,0 +1,85 @@
+@use 'mixins/helpers.mixin' as mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.transparency {
+  padding: 4px;
+
+  .transparency__slider {
+    width: 100%;
+    margin: 0;
+  }
+}
+
+.time-slider {
+  padding: 4px;
+}
+
+.attribute-filter {
+  display: flex;
+  align-items: center;
+
+  .attribute-filter__badge {
+    width: 22px;
+    height: 22px;
+    margin: 0;
+
+    ::ng-deep {
+      .mat-badge-content {
+        top: auto;
+        left: auto;
+      }
+    }
+  }
+
+  .attribute-filter__button {
+    @include mixins.mat-button--align-icon-right;
+    color: ktzh-variables.$zh-active-blue;
+  }
+}
+
+.sublayer-list {
+  margin-left: 56px;
+
+  .sublayer {
+    @include mixins.no-box-shadow;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 8px;
+
+    .sublayer__drag-handle {
+      min-width: 24px;
+    }
+
+    .sublayer__image-container {
+      position: relative;
+      float: left;
+
+      .sublayer__image-container__visibility {
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: none;
+      }
+    }
+
+    .sublayer__title {
+      @include mixins.single-line-text;
+      width: 100vw;
+      margin-top: auto;
+      margin-bottom: auto;
+    }
+  }
+
+  .sublayer:hover {
+    .sublayer__image-container {
+      .sublayer__image-container__image {
+        visibility: hidden;
+      }
+
+      .sublayer__image-container__visibility {
+        display: inline-block;
+      }
+    }
+  }
+}
