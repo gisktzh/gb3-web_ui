@@ -1,8 +1,13 @@
 <mat-card appearance="raised" class="active-map-items">
   <mat-card-header class="active-map-items__header">
-    <div class="active-map-items__header__title">
-      <mat-card-title>Aktive Karten</mat-card-title>
-    </div>
+    <h2 class="active-map-items__header__title">Aktive Karten</h2>
+    <p
+      *ngIf="this.activeMapItems.length > 0"
+      class="active-map-items__header__badge"
+      [matBadge]="this.activeMapItems.length"
+      matBadgePosition="before"
+      matBadgeSize="large"
+    ></p>
     <div class="active-map-items__header__buttons">
       <button (click)="removeAllActiveMapItems()" [disabled]="activeMapItems.length === 0" mat-icon-button>
         <mat-icon>delete_outlined</mat-icon>

@@ -10,16 +10,33 @@
   }
 
   .active-map-items__header {
+    display: flex;
+    align-items: center;
     background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
     color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
     font-family: ktzh-variables.$zh-font-family;
-    font-size: 18px;
-    padding: 8px 16px 8px 16px;
+    padding: 0 24px 0 24px;
     height: 48px;
 
     .active-map-items__header__title {
+      margin-bottom: 0;
+      margin-right: 1em;
+    }
+
+    .active-map-items__header__badge {
       margin-right: auto;
-      align-self: center;
+      margin-bottom: 0;
+      height: 24px;
+      width: 24px;
+
+      ::ng-deep {
+        .mat-badge-content {
+          width: auto;
+          @include mixins.mat-badge-inherit-size;
+          background-color: ktzh-variables.$zh-white;
+          color: ktzh-variables.$zh-black100;
+        }
+      }
     }
 
     .active-map-items__header__buttons {

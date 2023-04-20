@@ -25,8 +25,7 @@
 
     ::ng-deep {
       .mat-badge-content {
-        top: auto;
-        left: auto;
+        @include mixins.mat-badge-inherit-size;
       }
     }
   }
