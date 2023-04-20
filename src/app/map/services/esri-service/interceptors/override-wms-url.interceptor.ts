@@ -3,9 +3,10 @@ import AfterInterceptorCallback = __esri.AfterInterceptorCallback;
 import RequestResponse = __esri.RequestResponse;
 
 /**
- * WMS URL that is hardcoded in the ZH WMS mapfiles
+ * WMS URL that is hardcoded in the ZH WMS mapfiles. It can be either prefixed
+ * with "web." if it is an intranet environment, or without; so the following * group captures both.
  */
-const hardcodedWmsUrl = /http:\/\/wms\.zh\.ch/g;
+const hardcodedWmsUrl = /http:\/\/(web\.)?wms\.zh\.ch/g;
 
 /**
  * Factory for the interceptor callback:
