@@ -1,0 +1,15 @@
+.legend-content {
+  padding-top: 16px;
+
+  .legend-item__class-list-entry {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-gap: 12px;
+    padding: 4px 0;
+
+    .legend-item__class-list-entry-col {
+      display: flex;
+      align-self: center;
+    }
+  }
+}

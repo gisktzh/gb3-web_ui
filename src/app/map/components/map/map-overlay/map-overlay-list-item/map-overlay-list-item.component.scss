@@ -11,23 +11,38 @@
     height: 38px;
     min-height: 38px;
 
-    .list-item__header__title {
-      font-family: ktzh-variables.$zh-font-family-bold;
+    .list-item__header__content {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      overflow: hidden;
+
+      .list-item__header__content__toggle {
+        min-width: 24px;
+        max-width: 24px;
+      }
+
+      .list-item__header__content__title {
+        @include mixins.multiline-ellipsis(2);
+        font-family: ktzh-variables.$zh-font-family-bold;
+        width: 100vw;
+        margin-top: auto;
+        margin-bottom: auto;
+      }
     }
   }
 }
 
 /**
-  Todo: Read more!
-   These parts should be moved to a SharedComponent; but this should not be done now while WES is working on the other
-   accordions. Otherwise, merge conflicts will be horrible :)
+  The print overrides are important because the grey color used as header background is so light that it's not always
+  visible in print. We add borders to add a visual guidance as to which elements belong to each other.
  */
-.mat-expansion-panel-header-title .open,
-.mat-expanded .mat-expansion-panel-header-title .close {
-  display: inline-block;
-}
+@media print {
+  .list-item {
+    border: 1px solid ktzh-variables.$zh-black100;
 
-.mat-expanded .mat-expansion-panel-header-title .open,
-.mat-expansion-panel-header-title .close {
-  display: none;
+    .list-item__header {
+      border-bottom: 1px solid ktzh-variables.$zh-black100;
+    }
+  }
 }

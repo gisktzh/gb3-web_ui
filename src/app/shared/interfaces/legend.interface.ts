@@ -3,7 +3,7 @@ interface LayerClass {
   image: string;
 }
 
-interface Layer {
+export interface Layer {
   layer: string;
   title: string;
   layerClasses?: LayerClass[];

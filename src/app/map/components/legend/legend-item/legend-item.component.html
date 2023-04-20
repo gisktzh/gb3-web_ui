@@ -1,32 +1,18 @@
 <map-overlay-list-item [isPrintable]="this.isPrintable" [title]="legendItem.title">
   <div *ngFor="let layer of legendItem.layers" class="legend-item">
-    <div class="legend-item__layer-title">
-      <b>{{ layer.title }}</b>
-      <div *ngIf="layer.attribution" class="legend-item__layer-attribution">
-        {{ layer.attribution }}
-      </div>
-      <div *ngIf="layer.geolion" class="legend-item__geolion">
-        <a routerLink="{{ this.getDataTabLink(layer.geolion) }}">Zu den Metadaten</a>
-      </div>
-    </div>
-    <div *ngIf="layer.layerClasses; else noLayerClasses" class="legend-item__class-list">
-      <div *ngFor="let layerClass of layer.layerClasses" class="legend-item__class-list-entry">
-        <div class="legend-item__class-list-entry-col">
-          <img alt="{{ layerClass.label }}" src="{{ this.staticFilesBaseUrl }}/{{ layerClass.image }}" />
-        </div>
-        <div class="legend-item__class-list-entry-col">
-          {{ layerClass.label }}
-        </div>
-      </div>
-    </div>
+    <map-overlay-list-item *ngIf="!legendItem.isSingleLayer; else legendContent" [isPrintable]="this.isPrintable" [title]="layer.title">
+      <mat-icon class="legend-item-icon" header-icon>layers</mat-icon>
+      <ng-container *ngTemplateOutlet="legendContent"></ng-container>
+    </map-overlay-list-item>
+    <ng-template #legendContent>
+      <legend-content [layer]="layer"></legend-content>
+    </ng-template>
   </div>
 
-  <img *ngIf="legendItem.icon" class="legend-item__icon" header-icon src="{{ legendItem.icon }}" />
-  <mat-icon *ngIf="!legendItem.icon" class="legend-item__icon" header-icon>layers</mat-icon>
+  <ng-container header-icon>
+    <img *ngIf="!legendItem.isSingleLayer && legendItem.icon; else defaultIcon" class="legend-item-icon" src="{{ legendItem.icon }}" />
+    <ng-template #defaultIcon>
+      <mat-icon class="legend-item-icon">layers</mat-icon>
+    </ng-template>
+  </ng-container>
 </map-overlay-list-item>
-
-<ng-template #noLayerClasses>
-  <div>
-    <i>Keine Klassen</i>
-  </div>
-</ng-template>

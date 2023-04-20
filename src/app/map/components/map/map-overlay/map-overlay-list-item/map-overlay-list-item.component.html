@@ -1,13 +1,11 @@
-<mat-expansion-panel [expanded]="this.isPrintable" hideToggle class="list-item">
+<mat-expansion-panel [expanded]="this.isPrintable" hideToggle class="list-item" #expansionPanel>
   <mat-expansion-panel-header class="list-item__header">
-    <mat-panel-title class="list-item__header__title">
-      <span class="material-icons open">arrow_right</span>
-      <span class="material-icons close">arrow_drop_down</span>
-
+    <div class="list-item__header__content">
+      <mat-icon *ngIf="expansionPanel.expanded" class="list-item__header__content__toggle">arrow_drop_down</mat-icon>
+      <mat-icon *ngIf="!expansionPanel.expanded" class="list-item__header__content__toggle">arrow_right</mat-icon>
       <ng-content select="[header-icon]"></ng-content>
-
-      {{ title }}
-    </mat-panel-title>
+      <p class="list-item__header__content__title">{{ title }}</p>
+    </div>
   </mat-expansion-panel-header>
   <ng-template matExpansionPanelContent>
     <ng-content></ng-content>

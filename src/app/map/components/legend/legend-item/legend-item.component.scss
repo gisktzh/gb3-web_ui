@@ -1,4 +1,8 @@
 .legend-item {
+  &:first-of-type {
+    padding-top: 8px;
+  }
+
   .legend-item__layer-title {
     padding-bottom: 8px;
 
@@ -8,22 +12,11 @@
       font-style: italic;
     }
   }
-
-  .legend-item__class-list {
-    .legend-item__class-list-entry {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      grid-gap: 12px;
-    }
-  }
 }
 
-.legend-item__layers:not(:first-child) {
-  padding-top: 8px;
-}
-
-.legend-item__icon {
+.legend-item-icon {
   margin: 0 12px;
   width: 24px;
   height: 24px;
+  min-width: 25px;
 }
