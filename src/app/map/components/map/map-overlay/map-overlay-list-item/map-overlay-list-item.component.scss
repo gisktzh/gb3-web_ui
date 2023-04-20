@@ -6,8 +6,28 @@
   margin-bottom: 12px;
 
   .list-item__header {
+    padding: 0 12px;
     background-color: ktzh-variables.$zh-black20;
-    height: 36px;
-    min-height: 36px;
+    height: 38px;
+    min-height: 38px;
+
+    .list-item__header__title {
+      font-family: ktzh-variables.$zh-font-family-bold;
+    }
   }
+}
+
+/**
+  Todo: Read more!
+   These parts should be moved to a SharedComponent; but this should not be done now while WES is working on the other
+   accordions. Otherwise, merge conflicts will be horrible :)
+ */
+.mat-expansion-panel-header-title .open,
+.mat-expanded .mat-expansion-panel-header-title .close {
+  display: inline-block;
+}
+
+.mat-expanded .mat-expansion-panel-header-title .open,
+.mat-expansion-panel-header-title .close {
+  display: none;
 }

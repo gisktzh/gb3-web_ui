@@ -1,6 +1,11 @@
-<mat-expansion-panel [expanded]="this.isPrintable" [hideToggle]="this.isPrintable" [togglePosition]="'before'" class="list-item">
+<mat-expansion-panel [expanded]="this.isPrintable" hideToggle class="list-item">
   <mat-expansion-panel-header class="list-item__header">
-    <mat-panel-title>
+    <mat-panel-title class="list-item__header__title">
+      <span class="material-icons open">arrow_right</span>
+      <span class="material-icons close">arrow_drop_down</span>
+
+      <ng-content select="[header-icon]"></ng-content>
+
       {{ title }}
     </mat-panel-title>
   </mat-expansion-panel-header>

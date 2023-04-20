@@ -1,10 +1,11 @@
 import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
-import {selectLegendItems, selectLoadingState} from '../../../state/map/reducers/legend.reducer';
+import {selectLoadingState} from '../../../state/map/reducers/legend.reducer';
 import {LegendActions} from '../../../state/map/actions/legend.actions';
 import {LoadingState} from '../../../shared/types/loading-state';
-import {Legend} from '../../../shared/interfaces/legend.interface';
+import {LegendDisplay} from '../../../shared/interfaces/legend.interface';
+import {selectDetailedLegends} from '../../../state/map/selectors/legend.selector';
 
 @Component({
   selector: 'legend',
@@ -15,11 +16,11 @@ export class LegendComponent implements OnInit, OnDestroy {
   @Output() public printLegendEvent = new EventEmitter<void>();
 
   public isVisible = false;
-  public legendItems: Legend[] = [];
+  public legendItems: LegendDisplay[] = [];
   public loadingState: LoadingState = 'undefined';
 
   private readonly loadingState$ = this.store.select(selectLoadingState);
-  private readonly legendItems$ = this.store.select(selectLegendItems);
+  private readonly legendItems$ = this.store.select(selectDetailedLegends);
   private readonly subscriptions = new Subscription();
 
   constructor(private readonly store: Store) {}

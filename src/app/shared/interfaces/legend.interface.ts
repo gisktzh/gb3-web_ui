@@ -19,3 +19,10 @@ export interface Legend {
 export interface LegendResponse {
   legend: Legend;
 }
+
+export interface LegendDisplay {
+  title: string;
+  icon: string | undefined;
+  layers: Layer[];
+  isSingleLayer: boolean;
+}
