@@ -44,7 +44,7 @@ configurations.
 In order to build the docker image use the following command (adjust tag as needed):
 
 ```
-docker build --build-arg TARGET_ENVIRONMENT={target_environment} --t gb3-frontend:latest .
+docker build --no-cache --build-arg TARGET_ENVIRONMENT={target_environment} --t gb3-frontend:latest .
 ```
 
 - **gb3-frontend** is the name of the image

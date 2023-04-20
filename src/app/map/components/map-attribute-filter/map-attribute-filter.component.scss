@@ -1,0 +1,41 @@
+@use 'mixins/helpers.mixin' as mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.attribute-filter {
+  max-height: inherit;
+  width: 450px;
+
+  .no-box-shadow {
+    @include mixins.no-box-shadow;
+    border-radius: ktzh-variables.$zh-border-radius;
+  }
+
+  .attribute-filter__header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .attribute-filter__header__title {
+      @include mixins.single-line-text;
+      font-weight: bold;
+      margin: 0;
+    }
+  }
+
+  .attribute-filter__content {
+    overflow-y: scroll;
+
+    .attribute-filter__content__text {
+      padding: 1em 0;
+    }
+
+    .attribute-filter__content__checkbox {
+      padding-left: 16px;
+
+      &--unchecked {
+        @include mixins.mat-checkbox--unchecked;
+      }
+    }
+  }
+}
