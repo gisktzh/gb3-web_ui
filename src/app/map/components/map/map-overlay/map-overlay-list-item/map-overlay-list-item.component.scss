@@ -1,3 +1,13 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'mixins/helpers.mixin' as mixins;
+
 .list-item {
+  @include mixins.no-box-shadow;
   margin-bottom: 12px;
+
+  .list-item__header {
+    background-color: ktzh-variables.$zh-black20;
+    height: 36px;
+    min-height: 36px;
+  }
 }
