@@ -34,7 +34,6 @@
   .attribute-filter__button {
     @include mixins.mat-button--align-icon-right;
     color: ktzh-variables.$zh-active-blue;
-    font-weight: bold;
   }
 }
 

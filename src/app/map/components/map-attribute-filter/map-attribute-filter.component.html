@@ -24,7 +24,7 @@
             [ngClass]="{'attribute-filter__content__checkbox--unchecked': filterValue.isActive}"
             color="primary"
             [checked]="!filterValue.isActive"
-            (change)="changeFilter(filterConfiguration.parameter, filterValue.name, $event.checked)"
+            (change)="updateFilter(filterConfiguration.parameter, filterValue.name, $event.checked)"
             >{{ filterValue.name }}</mat-checkbox
           >
         </ng-container>

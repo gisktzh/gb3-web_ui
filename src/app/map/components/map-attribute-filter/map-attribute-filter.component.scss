@@ -16,7 +16,7 @@
     justify-content: space-between;
     align-items: center;
 
-    &__title {
+    .attribute-filter__header__title {
       @include mixins.single-line-text;
       font-weight: bold;
       margin: 0;

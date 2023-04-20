@@ -34,7 +34,7 @@ export class MapAttributeFilterComponent implements OnInit, OnDestroy {
     this.store.dispatch(MapAttributeFiltersItemActions.clearMapAttributeFiltersItemId());
   }
 
-  public changeFilter(filterConfigParameter: string, filterValueName: string, checked: boolean) {
+  public updateFilter(filterConfigParameter: string, filterValueName: string, checked: boolean) {
     if (this.mapAttributeFiltersItem) {
       this.store.dispatch(
         ActiveMapItemActions.setAttributeFilterValueState({
