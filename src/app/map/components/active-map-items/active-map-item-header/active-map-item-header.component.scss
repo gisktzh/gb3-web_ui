@@ -22,21 +22,11 @@
     .active-map-item-header__image-container__checkbox {
       position: absolute;
       @include mixins.center-absolute-element;
+      @include mixins.mat-checkbox-override-color(ktzh-variables.$zh-active-blue, ktzh-variables.$zh-white);
 
       ::ng-deep {
         .mdc-checkbox__ripple {
           opacity: 0;
-        }
-
-        .mdc-checkbox__background {
-          background-color: ktzh-variables.$zh-white !important;
-          border-color: ktzh-variables.$zh-active-blue !important;
-          .mdc-checkbox__checkmark {
-            background-color: ktzh-variables.$zh-active-blue;
-            .mdc-checkbox__checkmark-path {
-              stroke: ktzh-variables.$zh-white;
-            }
-          }
         }
       }
     }
@@ -52,13 +42,13 @@
     overflow: hidden;
   }
 
-  .active-map-item-header__drag {
+  .active-map-item-header__drag-handle {
     min-width: 44px;
     height: 44px;
     display: grid;
     align-items: center;
 
-    .active-map-item-header__drag__icon {
+    .active-map-item-header__drag-handle__icon {
       justify-self: center;
       grid-column: 1;
       grid-row: 1;

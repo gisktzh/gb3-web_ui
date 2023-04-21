@@ -8,7 +8,12 @@
       <mat-icon [fontIcon]="activeMapItemExpansionPanel.expanded ? 'arrow_drop_down' : 'arrow_right'"></mat-icon>
     </button>
     <div class="active-map-item-header__image-container">
-      <img class="active-map-item-header__image-container__image" [alt]="activeMapItem.title" [src]="activeMapItem.mapImageUrl" />
+      <img
+        *ngIf="!activeMapItem.isSingleLayer"
+        class="active-map-item-header__image-container__image"
+        [alt]="activeMapItem.title"
+        [src]="activeMapItem.mapImageUrl"
+      />
       <mat-checkbox
         class="active-map-item-header__image-container__checkbox"
         [checked]="activeMapItem.visible"
@@ -20,9 +25,9 @@
     <!--<button (click)="removeActiveMapItem(activeMapItem)" mat-icon-button data-test-id="delete">-->
     <!--  <mat-icon>delete</mat-icon>-->
     <!--</button>-->
-    <div class="active-map-item-header__drag">
-      <ng-content select="[activeMapItemDragHandle]" class="active-map-item-header__drag__handle"></ng-content>
-      <mat-icon class="active-map-item-header__drag__icon" cdkDragHandle>drag_indicator</mat-icon>
+    <div class="active-map-item-header__drag-handle">
+      <ng-content select="[activeMapItemDragHandle]"></ng-content>
+      <mat-icon class="active-map-item-header__drag-handle__icon" cdkDragHandle>drag_indicator</mat-icon>
     </div>
   </div>
   <div class="active-map-item-header__drag-placeholder" *cdkDragPlaceholder></div>

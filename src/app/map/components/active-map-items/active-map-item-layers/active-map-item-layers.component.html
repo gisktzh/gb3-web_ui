@@ -1,16 +1,17 @@
 <!-- List of sublayers (only if the map item is not a single layer itself) -->
-<div class="sublayer-list" cdkDropList (cdkDropListDropped)="dropSublayer($event)">
+<div class="active-map-item-layers" cdkDropList (cdkDropListDropped)="dropSublayer($event)">
   <ng-container *ngFor="let layer of activeMapItem.layers; trackBy: trackByLayerId">
-    <!-- Sublayer-->
-    <mat-card appearance="raised" class="sublayer" cdkDrag *ngIf="!layer.isHidden">
-      <mat-icon class="sublayer__drag-handle" cdkDragHandle>drag_indicator</mat-icon>
-      <button mat-icon-button (click)="toggleSublayerVisibility(layer)" [disabled]="!activeMapItem.visible">
-        <div class="sublayer__image-container">
-          <mat-icon class="sublayer__image-container__image">layers</mat-icon>
-          <mat-icon class="sublayer__image-container__visibility" [fontIcon]="layer.visible ? 'visibility' : 'visibility_off'"></mat-icon>
-        </div>
-      </button>
-      <p class="sublayer__title" matTooltip="{{ layer.title }}">{{ layer.title }}</p>
-    </mat-card>
+    <!-- Sublayer (only shown if it is not marked as 'hidden') -->
+    <div class="active-map-item-layers__item" cdkDrag *ngIf="!layer.isHidden">
+      <active-map-item-layer [activeMapItem]="activeMapItem" [layer]="layer">
+        <ng-container activeMapItemLayerDragHandle>
+          <!-- The CDK drag handle is not detected within a child component; therefore, it's necessary to pass it down using ng-content
+               More information: https://stackoverflow.com/questions/54773383/cdkdraghandle-doesnt-work-inside-child-component
+          -->
+          <div class="active-map-item-layers__item__drag-handle" cdkDragHandle></div>
+        </ng-container>
+      </active-map-item-layer>
+      <div class="active-map-item-layers__item--drag-placeholder" *cdkDragPlaceholder></div>
+    </div>
   </ng-container>
 </div>

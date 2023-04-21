@@ -12,7 +12,7 @@
       <button (click)="removeAllActiveMapItems()" [disabled]="activeMapItems.length === 0" mat-icon-button>
         <mat-icon>delete_outlined</mat-icon>
       </button>
-      <mat-divider [vertical]="true"></mat-divider>
+      <mat-divider class="active-map-items__header__buttons__divider" [vertical]="true"></mat-divider>
       <span
         #tooltip="matTooltip"
         [matTooltipDisabled]="this.isAuthenticated && this.activeMapItems.length > 0"
@@ -30,9 +30,11 @@
   </mat-card-header>
   <mat-accordion (cdkDropListDropped)="dropMapItem($event)" cdkDropList class="active-map-items__content" displayMode="flat" multi="true">
     <ng-container *ngFor="let activeMapItem of activeMapItems; trackBy: trackByMapItemId">
-      <active-map-item [activeMapItem]="activeMapItem" cdkDrag [cdkDragData]="activeMapItem" class="active-map-items__content__item">
+      <active-map-item [activeMapItem]="activeMapItem" cdkDrag class="active-map-items__content__item">
         <ng-container activeMapItemDragHandle>
-          <!--          https://stackoverflow.com/questions/54773383/cdkdraghandle-doesnt-work-inside-child-component-->
+          <!-- The CDK drag handle is not detected within a child component; therefore, it's necessary to pass it down using ng-content
+               More information: https://stackoverflow.com/questions/54773383/cdkdraghandle-doesnt-work-inside-child-component
+          -->
           <div class="active-map-items__content__item__drag-handle" cdkDragHandle></div>
         </ng-container>
         <div class="active-map-items__content__item--drag-placeholder" *cdkDragPlaceholder></div>

@@ -33,6 +33,7 @@ import {FeatureInfoContentComponent} from './components/feature-info/feature-inf
 import {ActiveMapItemHeaderComponent} from './components/active-map-items/active-map-item-header/active-map-item-header.component';
 import {ActiveMapItemSettingsComponent} from './components/active-map-items/active-map-item-settings/active-map-item-settings.component';
 import {ActiveMapItemLayersComponent} from './components/active-map-items/active-map-item-layers/active-map-item-layers.component';
+import {ActiveMapItemLayerComponent} from './components/active-map-items/active-map-item-layers/active-map-item-layer/active-map-item-layer.component';
 
 @NgModule({
   declarations: [
@@ -65,7 +66,8 @@ import {ActiveMapItemLayersComponent} from './components/active-map-items/active
     FeatureInfoContentComponent,
     ActiveMapItemHeaderComponent,
     ActiveMapItemSettingsComponent,
-    ActiveMapItemLayersComponent
+    ActiveMapItemLayersComponent,
+    ActiveMapItemLayerComponent
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule, KtZhDesignSystemModule]
 })

@@ -19,12 +19,6 @@ export class ActiveMapItemLayersComponent {
     return item.id;
   }
 
-  public toggleSublayerVisibility(layer: MapLayer) {
-    this.store.dispatch(
-      ActiveMapItemActions.setSublayerVisibility({visible: !layer.visible, activeMapItem: this.activeMapItem, layerId: layer.id})
-    );
-  }
-
   public dropSublayer($event: CdkDragDrop<CdkDrag>) {
     this.store.dispatch(
       ActiveMapItemActions.reorderSublayer({

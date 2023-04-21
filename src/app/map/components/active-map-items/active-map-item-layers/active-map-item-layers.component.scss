@@ -1,46 +1,16 @@
 @use 'mixins/helpers.mixin' as mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
-.sublayer-list {
-  .sublayer {
-    @include mixins.no-box-shadow;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+.active-map-item-layers {
+  .active-map-item-layers__item {
+    width: 100%;
 
-    .sublayer__drag-handle {
-      min-width: 24px;
+    &--drag-placeholder {
+      @include mixins.cdk-drag-placeholder(44px);
     }
 
-    .sublayer__image-container {
-      position: relative;
-      float: left;
-
-      .sublayer__image-container__visibility {
-        position: absolute;
-        left: 0;
-        top: 0;
-        display: none;
-      }
-    }
-
-    .sublayer__title {
-      @include mixins.single-line-text;
-      width: 100vw;
-      margin-top: auto;
-      margin-bottom: auto;
-    }
-  }
-
-  .sublayer:hover {
-    .sublayer__image-container {
-      .sublayer__image-container__image {
-        visibility: hidden;
-      }
-
-      .sublayer__image-container__visibility {
-        display: inline-block;
-      }
+    .active-map-item-layers__item__drag-handle {
+      @include mixins.cdk-drag-handle-nested;
     }
   }
 }
