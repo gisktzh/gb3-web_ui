@@ -11,7 +11,7 @@ import {ActiveMapItemActions} from "../../../state/map/actions/active-map-item.a
 import {MAP_SERVICE} from "../../../app.module";
 import {MapService} from "../../interfaces/map.service";
 import {selectActiveMapItems} from "../../../state/map/reducers/active-map-item.reducer";
-import {DEFAULT_SEARCHES, MAP_SEARCH, SPECIAL_SEARCH_CONFIG} from "../../../shared/constants/search.constants";
+import {ACTIVE_SEARCH_INDICES, DEFAULT_SEARCHES, MAP_SEARCH} from "../../../shared/constants/search.constants";
 import {AvailableIndex} from "../../../shared/services/apis/search/interfaces/available-index.interface";
 
 const DEFAULT_ZOOM_SCALE = 1000;
@@ -87,8 +87,8 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private fillResultsWindow(term: string) {
-    const addressAndPlaceIndexes = this.availableSearchIndexes.slice(0, 2).filter(index => index.active).map(index => index.indexName);
-    const specialIndexes = this.availableSearchIndexes.slice(2, -1).filter(index => index.active).map(index => index.indexName);
+    const addressAndPlaceIndexes = this.availableSearchIndexes.slice(0, 2).filter(index => index.active);
+    const specialIndexes = this.availableSearchIndexes.slice(2, -1).filter(index => index.active);
     const mapSearchActive = this.availableSearchIndexes[this.availableSearchIndexes.length -1].active;
     if (addressAndPlaceIndexes.length > 0) {
       this.subscriptions.add(this.searchService.searchIndexes(term, addressAndPlaceIndexes).pipe(first()).subscribe(
@@ -156,13 +156,17 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
     const availableIndexes: AvailableIndex[] = [];
 
     for (const mapItem of activeMapItems) {
-      for (const searchConfig of SPECIAL_SEARCH_CONFIG) {
-        if (searchConfig.topics.includes(mapItem.id) && !availableIndexes.map(index => index.indexName).includes(searchConfig.index)) {
-          availableIndexes.push({
-            indexName: searchConfig.index,
-            displayString: searchConfig.title,
-            active: true
-          });
+      if (mapItem.searchConfigurations) {
+        for (const searchConfig of mapItem.searchConfigurations) {
+          const alreadyInElasticsearch = ACTIVE_SEARCH_INDICES.includes(searchConfig.index.toLowerCase());
+          const notInOutputYet = !availableIndexes.map(index => index.indexName).includes(searchConfig.index);
+          if (alreadyInElasticsearch && notInOutputYet) {
+            availableIndexes.push({
+              indexName: searchConfig.index,
+              displayString: searchConfig.title,
+              active: true
+            });
+          }
         }
       }
     }

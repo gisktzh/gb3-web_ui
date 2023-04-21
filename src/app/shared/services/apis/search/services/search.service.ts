@@ -5,7 +5,7 @@ import {environment} from "../../../../../../environments/environment";
 import {BaseApiService} from "../../abstract-api.service";
 import {map} from "rxjs/operators";
 import {SearchResult} from "../interfaces/search-result.interface";
-import {SPECIAL_SEARCH_CONFIG} from "../../../../constants/search.constants";
+import {AvailableIndex} from "../interfaces/available-index.interface";
 
 @Injectable({
   providedIn: 'root'
@@ -13,17 +13,17 @@ import {SPECIAL_SEARCH_CONFIG} from "../../../../constants/search.constants";
 export class SearchService extends BaseApiService {
   protected apiBaseUrl = `${environment.apiConfigs.searchApi.baseUrl}`;
 
-  public searchIndexes(term: string, indexes: string[]): Observable<SearchWindowElement[]> {
-    return this.getElasticsearch(indexes.toString(), term).pipe(map(
-      (response: SearchResult[]) => this.combineSearchResults(response)
+  public searchIndexes(term: string, indexes: AvailableIndex[]): Observable<SearchWindowElement[]> {
+    return this.getElasticsearch(indexes.map(index => index.indexName).toString(), term).pipe(map(
+      (response: SearchResult[]) => this.combineSearchResults(response, indexes)
     ));
   }
 
-  private combineSearchResults(searchResponse: SearchResult[]): SearchWindowElement[] {
+  private combineSearchResults(searchResponse: SearchResult[], indexes: AvailableIndex[]): SearchWindowElement[] {
     let combinedResults: SearchWindowElement[] = [];
     for (const searchResult of searchResponse) {
       for (const match of searchResult.matches) {
-        match.indexName = this.getIndexName(searchResult.index);
+        match.indexName = this.getIndexTitle(searchResult.index, indexes);
       }
       combinedResults = combinedResults.concat(searchResult.matches);
     }
@@ -31,10 +31,10 @@ export class SearchService extends BaseApiService {
     return combinedResults;
   }
 
-  private getIndexName(index: string): string {
-    const selectedConfig = SPECIAL_SEARCH_CONFIG.find((config) => config.index === index);
-    if (selectedConfig) {
-      return selectedConfig.title;
+  private getIndexTitle(indexName: string, indexes: AvailableIndex[]): string {
+    const fromIndex = indexes.find(index => index.indexName === indexName);
+    if (fromIndex) {
+      return fromIndex.displayString;
     }
     return 'Unknown';
   }
