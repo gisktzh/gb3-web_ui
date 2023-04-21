@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {environment} from '../../environments/environment';
+import {ConfigService} from '../shared/services/config.service';
 
 @Component({
   selector: 'start-page',
@@ -7,5 +7,7 @@ import {environment} from '../../environments/environment';
   styleUrls: ['./start-page.component.scss']
 })
 export class StartPageComponent {
-  public readonly apiConfigs = environment.apiConfigs;
+  public readonly apiConfigs = this.configService.apiConfig;
+
+  constructor(private readonly configService: ConfigService) {}
 }

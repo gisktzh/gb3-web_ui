@@ -14,7 +14,7 @@ import {CreateFavourite, Favourite, FavouriteLayerConfiguration, FavouritesRespo
   providedIn: 'root'
 })
 export class Gb3FavouritesService extends Gb3ApiService {
-  protected readonly endpoint = 'v3/favorites';
+  protected readonly endpoint = 'favorites';
 
   public createFavourite(createFavourite: CreateFavourite) {
     return this.post<FavoritesCreatePayload, FavoritesDetailData>(this.getFullEndpointUrl(), createFavourite);

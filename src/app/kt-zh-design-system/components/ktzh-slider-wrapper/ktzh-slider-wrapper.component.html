@@ -1,0 +1,30 @@
+<div class="ktzh-slider-wrapper">
+  <ng-container *ngIf="overwriteHeader; else defaultHeader">
+    <ng-content select="[header]"></ng-content>
+  </ng-container>
+  <ng-template #defaultHeader>
+    <div class="header">
+      <div class="header__title">
+        <div class="header__title__info" *ngIf="description" [matTooltip]="description">
+          <mat-icon>info</mat-icon>
+        </div>
+        <div class="header__title__text">{{ title }}</div>
+      </div>
+      <div class="header__value">
+        <strong>{{ value }}</strong>
+      </div>
+    </div>
+  </ng-template>
+  <div class="content">
+    <ng-content select="[content]"></ng-content>
+  </div>
+  <ng-container *ngIf="overwriteFooter; else defaultFooter">
+    <ng-content select="[footer]"></ng-content>
+  </ng-container>
+  <ng-template #defaultFooter>
+    <div class="footer">
+      <div>{{ minValue }}</div>
+      <div>{{ maxValue }}</div>
+    </div>
+  </ng-template>
+</div>

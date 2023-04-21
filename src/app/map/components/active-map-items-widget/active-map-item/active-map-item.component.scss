@@ -1,10 +1,39 @@
 @use 'mixins/helpers.mixin' as mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
 
 .transparency {
-  @include mixins.no-box-shadow;
+  padding: 4px;
 
-  .transparency__title {
+  .transparency__slider {
+    width: 100%;
     margin: 0;
+  }
+}
+
+.time-slider {
+  padding: 4px;
+}
+
+.attribute-filter {
+  display: flex;
+  align-items: center;
+
+  .attribute-filter__badge {
+    width: 22px;
+    height: 22px;
+    margin: 0;
+
+    ::ng-deep {
+      .mat-badge-content {
+        top: auto;
+        left: auto;
+      }
+    }
+  }
+
+  .attribute-filter__button {
+    @include mixins.mat-button--align-icon-right;
+    color: ktzh-variables.$zh-active-blue;
   }
 }
 

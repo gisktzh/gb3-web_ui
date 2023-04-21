@@ -7,7 +7,7 @@ import {first, skip, Subscription, tap, withLatestFrom} from 'rxjs';
 import {FeatureInfoActions} from '../../../state/map/actions/feature-info.actions';
 import {Geometry as GeoJsonGeometry, Point} from 'geojson';
 import {GeoJSONMapperService} from '../../../shared/services/geo-json-mapper.service';
-import {DefaultHighlightStyles} from 'src/app/shared/configs/feature-info-config';
+import {DefaultHighlightStyles} from 'src/app/shared/configs/feature-info.config';
 import * as dayjs from 'dayjs';
 import {MapService} from '../../interfaces/map.service';
 import {ActiveMapItem} from '../../models/active-map-item.model';
@@ -20,7 +20,6 @@ import {ConfigService} from '../../../shared/services/config.service';
 import {selectActiveMapItems} from '../../../state/map/reducers/active-map-item.reducer';
 import esriConfig from '@arcgis/core/config';
 import wmsAuthAndUrlOverrideInterceptorFactory from './interceptors/override-wms-url.interceptor';
-import {environment} from '../../../../environments/environment';
 import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.reducer';
 import {AuthService} from '../../../auth/auth.service';
 import {
@@ -76,6 +75,7 @@ export class EsriMapService implements MapService {
   private readonly subscriptions: Subscription = new Subscription();
   private readonly activeBasemapId$ = this.store.select(selectActiveBasemapId);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
+  private readonly wmsImageFormatMimeType = this.configService.gb2Config.wmsFormatMimeType;
 
   constructor(
     private readonly store: Store,
@@ -86,9 +86,9 @@ export class EsriMapService implements MapService {
     private readonly authService: AuthService
   ) {
     /**
-     * Because the GetCapabalities response often sends a non-secure http://wms.zh.ch response, Esri Javascript API fails on https environments
-     * to attach the token above if the urls is set to http://wms.zh.ch; because it automatically upgrades insecure links to https to avoid
-     * mixed-content. This configuration forces the WMS to be upgraded to https.
+     * Because the GetCapabalities response often sends a non-secure http://wms.zh.ch response, Esri Javascript API fails on https
+     * environments to attach the token above if the urls is set to http://wms.zh.ch; because it automatically upgrades insecure links to
+     * https to avoid mixed-content. This configuration forces the WMS to be upgraded to https.
      */
     esriConfig.request.httpsDomains?.push('wms.zh.ch');
 
@@ -158,6 +158,7 @@ export class EsriMapService implements MapService {
       url: mapItem.url,
       visible: mapItem.visible,
       opacity: mapItem.opacity,
+      imageFormat: this.wmsImageFormatMimeType,
       sublayers: mapItem.layers.map((layer) => {
         return {
           id: layer.id,
@@ -172,7 +173,8 @@ export class EsriMapService implements MapService {
       this.setEsriTimeSliderExtent(mapItem.timeSliderExtent, mapItem, esriLayer);
     }
     this.attachLayerListeners(esriLayer);
-    // index is the inverse position - the lowest index has the lowest visibility (it's on the bottom) while the lowest position has the highest visibility
+    // index is the inverse position - the lowest index has the lowest visibility (it's on the bottom) while the lowest position has the
+    // highest visibility
     const index = this.mapView.map.layers.length - position;
     this.mapView.map.add(esriLayer, index);
   }
@@ -256,7 +258,8 @@ export class EsriMapService implements MapService {
   }
 
   public reorderMapItem(previousPosition: number, currentPosition: number) {
-    // index is the inverse position - the lowest index has the lowest visibility (it's on the bottom) while the lowest position has the highest visibility
+    // index is the inverse position - the lowest index has the lowest visibility (it's on the bottom) while the lowest position has the
+    // highest visibility
     const previousIndex = this.mapView.map.layers.length - 1 - previousPosition;
     const currentIndex = this.mapView.map.layers.length - 1 - currentPosition;
     this.mapView.map.layers.reorder(this.mapView.map.layers.getItemAt(previousIndex), currentIndex);
@@ -265,7 +268,8 @@ export class EsriMapService implements MapService {
   public reorderSublayer(mapItem: ActiveMapItem, previousPosition: number, currentPosition: number) {
     const esriLayer = this.findEsriLayer(mapItem.id);
     if (esriLayer && esriLayer instanceof EsriWMSLayer) {
-      // the index of sublayers is identical to their position (in contrast to the map items) where the lowest index/position has the highest visibility
+      // the index of sublayers is identical to their position (in contrast to the map items) where the lowest index/position has the
+      // highest visibility
       esriLayer.sublayers.reorder(esriLayer.sublayers.getItemAt(previousPosition), currentPosition);
     }
   }
@@ -399,7 +403,8 @@ export class EsriMapService implements MapService {
             title: baseMap.title,
             spatialReference: new EsriSpatialReference({wkid: baseMap.srsId}),
             sublayers: baseMap.layers.map((basemapLayer) => ({name: basemapLayer.name})),
-            visible: initialBasemapId === baseMap.id
+            visible: initialBasemapId === baseMap.id,
+            imageFormat: this.wmsImageFormatMimeType
           });
         })
       })
@@ -546,7 +551,8 @@ export class EsriMapService implements MapService {
   }
 
   private getWmsOverrideInterceptor(accessToken?: string): __esri.RequestInterceptor {
-    const wmsOverrideUrl = environment.overrideWmsUrl;
-    return wmsAuthAndUrlOverrideInterceptorFactory(wmsOverrideUrl, accessToken);
+    const wmsOverrideUrl = this.configService.overridesConfig.overrideWmsUrl;
+    const {gb2Wms, gb2Api} = this.configService.apiConfig;
+    return wmsAuthAndUrlOverrideInterceptorFactory([gb2Wms.baseUrl, gb2Api.baseUrl], wmsOverrideUrl, accessToken);
   }
 }

@@ -3,8 +3,8 @@ import {environment} from '../../environments/environment';
 /* eslint-disable @typescript-eslint/naming-convention */
 
 export const authConfig: AuthConfig = {
-  issuer: environment.auth.issuer,
-  clientId: environment.auth.clientId,
+  issuer: '', // this is overriden in the module component via the factory to inject the correct runtime URL
+  clientId: '', // this is overriden in the module component via the factory to inject the correct runtime clientId
   showDebugInformation: !environment.production,
   responseType: 'code',
   redirectUri: `${window.location.origin}/`,
@@ -40,7 +40,7 @@ export const authConfig: AuthConfig = {
 
 export const oAuthConfig: OAuthModuleConfig = {
   resourceServer: {
-    allowedUrls: [`${environment.apiConfigs.gb2Api.baseUrl}/v3`],
+    allowedUrls: [], // this is overriden in the module component via the factory to inject the correct runtime URLs
     sendAccessToken: true
   }
 };

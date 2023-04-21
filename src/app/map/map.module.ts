@@ -19,7 +19,6 @@ import {MapControlsComponent} from './components/map/map-controls/map-controls.c
 import {BasemapSelectorComponent} from './components/map/basemap-selector/basemap-selector.component';
 import {ActiveMapItemComponent} from './components/active-map-items-widget/active-map-item/active-map-item.component';
 import {OnboardingGuideModule} from '../onboarding-guide/onboarding-guide.module';
-import {TimeSliderWidgetComponent} from './components/time-slider-widget/time-slider-widget.component';
 import {MapAttributeFilterComponent} from './components/map-attribute-filter/map-attribute-filter.component';
 import {FavouriteCreationDialogComponent} from './components/favourite-creation-dialog/favourite-creation-dialog.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -27,6 +26,8 @@ import {FavouriteSelectionComponent} from './components/map-data-catalogue/favou
 import {ApiDialogWrapperComponent} from './components/api-dialog-wrapper/api-dialog-wrapper.component';
 import {FavouriteDeletionDialogComponent} from './components/favourite-deletion-dialog/favourite-deletion-dialog.component';
 import {SearchWindowComponent} from "./components/search-window/search-window.component";
+import {KtZhDesignSystemModule} from '../kt-zh-design-system/kt-zh-design-system.module';
+import {TimeSliderComponent} from './components/time-slider/time-slider.component';
 
 @NgModule({
   declarations: [
@@ -46,17 +47,16 @@ import {SearchWindowComponent} from "./components/search-window/search-window.co
     ScaleInputComponent,
     MapControlsComponent,
     BasemapSelectorComponent,
-    TimeSliderWidgetComponent,
     MapAttributeFilterComponent,
-    TimeSliderWidgetComponent,
     FavouriteSelectionComponent,
     MapAttributeFilterComponent,
     SearchWindowComponent,
     FavouriteCreationDialogComponent,
     FavouriteSelectionComponent,
     ApiDialogWrapperComponent,
-    FavouriteDeletionDialogComponent
+    FavouriteDeletionDialogComponent,
+    TimeSliderComponent
   ],
-  imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule]
+  imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule, KtZhDesignSystemModule]
 })
 export class MapModule {}

@@ -5,7 +5,7 @@ import {HasVisibility} from '../../shared/interfaces/has-visibility.interface';
 import {HasViewProcessState} from '../../shared/interfaces/has-view-process-state.interface';
 import {ViewProcessState} from '../../shared/types/view-process-state';
 import {TimeExtent} from '../interfaces/time-extent.interface';
-import {TimeExtentUtil} from '../../shared/utils/time-extent.util';
+import {TimeExtentUtils} from '../../shared/utils/time-extent.utils';
 
 export class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewProcessState {
   public readonly id: string;
@@ -38,7 +38,7 @@ export class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewPro
     this.opacity = opacity ?? 1;
     this.timeSliderConfiguration = map.timeSliderConfiguration;
     if (map.timeSliderConfiguration) {
-      this.timeSliderExtent = TimeExtentUtil.createInitialTimeSliderExtent(map.timeSliderConfiguration);
+      this.timeSliderExtent = TimeExtentUtils.createInitialTimeSliderExtent(map.timeSliderConfiguration);
     }
     this.filterConfigurations = map.filterConfigurations;
     this.searchConfigurations = map.searchConfigurations;

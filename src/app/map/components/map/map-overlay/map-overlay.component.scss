@@ -4,11 +4,12 @@
   left: 0;
   height: 100%;
   width: 300px;
-  box-sizing: border-box;
+  box-sizing: content-box;
   border-radius: 0;
   padding-top: 0;
-  overflow: hidden scroll;
   z-index: 9999; // todo: hackedihack
+  display: flex;
+  flex-direction: column;
 
   &.map-overlay--right {
     left: unset;
@@ -17,5 +18,10 @@
 
   .map-overlay__header {
     justify-content: end;
+  }
+
+  .map-overlay__content {
+    flex: 1;
+    overflow: hidden auto;
   }
 }

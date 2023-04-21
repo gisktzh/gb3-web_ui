@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Observable} from "rxjs";
 import {SearchWindowElement} from "../interfaces/search-window-element.interface";
-import {environment} from "../../../../../../environments/environment";
 import {BaseApiService} from "../../abstract-api.service";
 import {map} from "rxjs/operators";
 import {SearchResult} from "../interfaces/search-result.interface";
@@ -11,7 +10,7 @@ import {AvailableIndex} from "../interfaces/available-index.interface";
   providedIn: 'root'
 })
 export class SearchService extends BaseApiService {
-  protected apiBaseUrl = `${environment.apiConfigs.searchApi.baseUrl}`;
+  protected apiBaseUrl = this.configService.apiConfig.searchApi.baseUrl;
 
   public searchIndexes(term: string, indexes: AvailableIndex[]): Observable<SearchWindowElement[]> {
     return this.getElasticsearch(indexes.map(index => index.indexName).toString(), term).pipe(map(
@@ -42,12 +41,12 @@ export class SearchService extends BaseApiService {
   private getElasticsearch(indexes: string, term: string): Observable<SearchResult[]> {
     const params = [
       {
-        'key': 'indexes',
-        'value': indexes
+        key: 'indexes',
+        value: indexes
       },
       {
-        'key': 'term',
-        'value': term
+        key: 'term',
+        value: term
       }
     ];
     const requestUrl = this.createFullEndpointUrl('search', params);

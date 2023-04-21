@@ -68,20 +68,6 @@
         margin-bottom: auto;
       }
 
-      .active-map-item__menu {
-        .active-map-item__menu__handle {
-          visibility: hidden;
-        }
-
-        .mat-mdc-button {
-          .mat-mdc-menu-trigger {
-            position: absolute;
-            top: 0;
-            right: 0;
-          }
-        }
-      }
-
       .active-map-item__progress-bar {
         position: absolute;
         bottom: 0;
@@ -99,10 +85,6 @@
         .active-map-item__image-container__visibility {
           display: inline-block;
         }
-      }
-
-      .active-map-item__menu .active-map-item__menu__handle {
-        visibility: visible;
       }
     }
   }
