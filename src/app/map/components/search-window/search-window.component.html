@@ -21,6 +21,7 @@
           class="search-window__filter-checkbox"
           [checked]="index.active"
           [(ngModel)]="index.active"
+          (change)="search(filterInput.value)"
         >{{index.displayString}}</mat-checkbox>
       </div>
     </div>
