@@ -31,7 +31,8 @@ import {TimeSliderComponent} from './components/time-slider/time-slider.componen
 import {LegendContentComponent} from './components/legend/legend-content/legend-content.component';
 import {FeatureInfoContentComponent} from './components/feature-info/feature-info-content/feature-info-content.component';
 import {ActiveMapItemHeaderComponent} from './components/active-map-items/active-map-item-header/active-map-item-header.component';
-import {ActiveMapItemContentComponent} from './components/active-map-items/active-map-item-content/active-map-item-content.component';
+import {ActiveMapItemSettingsComponent} from './components/active-map-items/active-map-item-settings/active-map-item-settings.component';
+import {ActiveMapItemLayersComponent} from './components/active-map-items/active-map-item-layers/active-map-item-layers.component';
 
 @NgModule({
   declarations: [
@@ -63,7 +64,8 @@ import {ActiveMapItemContentComponent} from './components/active-map-items/activ
     LegendContentComponent,
     FeatureInfoContentComponent,
     ActiveMapItemHeaderComponent,
-    ActiveMapItemContentComponent
+    ActiveMapItemSettingsComponent,
+    ActiveMapItemLayersComponent
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule, KtZhDesignSystemModule]
 })

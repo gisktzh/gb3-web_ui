@@ -32,6 +32,7 @@
     <ng-container *ngFor="let activeMapItem of activeMapItems; trackBy: trackByMapItemId">
       <active-map-item [activeMapItem]="activeMapItem" cdkDrag [cdkDragData]="activeMapItem" class="active-map-items__content__item">
         <ng-container activeMapItemDragHandle>
+          <!--          https://stackoverflow.com/questions/54773383/cdkdraghandle-doesnt-work-inside-child-component-->
           <div class="active-map-items__content__item__drag-handle" cdkDragHandle></div>
         </ng-container>
         <div class="active-map-items__content__item--drag-placeholder" *cdkDragPlaceholder></div>

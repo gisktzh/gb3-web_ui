@@ -1,0 +1,38 @@
+@use 'mixins/helpers.mixin' as mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.active-map-item-settings {
+  width: 100%;
+
+  .active-map-item-settings__divider {
+    margin-bottom: 24px;
+    margin-top: 24px;
+  }
+
+  .active-map-item-settings__transparency__slider {
+    width: 100%;
+    margin: 0;
+  }
+
+  .active-map-item-settings__attribute-filter {
+    display: flex;
+    align-items: center;
+
+    .active-map-item-settings__attribute-filter__badge {
+      width: 22px;
+      height: 22px;
+      margin: 0;
+
+      ::ng-deep {
+        .mat-badge-content {
+          @include mixins.mat-badge-inherit-size;
+        }
+      }
+    }
+
+    .active-map-item-settings__attribute-filter__button {
+      @include mixins.mat-button--align-icon-right;
+      color: ktzh-variables.$zh-active-blue;
+    }
+  }
+}

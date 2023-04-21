@@ -1,5 +1,15 @@
-<mat-expansion-panel #activeMapItemExpansionPanel [@slideInOut] hideToggle="true" class="active-map-item">
-  <mat-expansion-panel-header (click)="activeMapItemExpansionPanel.toggle()" class="active-map-item__header">
+<mat-expansion-panel
+  #activeMapItemExpansionPanel
+  [@slideInOut]
+  hideToggle="true"
+  class="active-map-item"
+  [ngClass]="{'active-map-item--active': activeMapItemExpansionPanel.expanded}"
+>
+  <mat-expansion-panel-header
+    (click)="activeMapItemExpansionPanel.toggle()"
+    class="active-map-item__header"
+    [ngClass]="{'active-map-item__header--active': activeMapItemExpansionPanel.expanded}"
+  >
     <active-map-item-header
       class="active-map-item__header__content"
       [activeMapItem]="activeMapItem"
@@ -12,6 +22,17 @@
   </mat-expansion-panel-header>
   <!-- Expansion panel content -->
   <ng-template matExpansionPanelContent>
-    <active-map-item-content [activeMapItem]="activeMapItem"></active-map-item-content>
+    <div>
+      <mat-tab-group animationDuration="0" backgroundColor="primary" dynamicHeight>
+        <mat-tab label="Einstellungen">
+          <active-map-item-settings [activeMapItem]="activeMapItem" class="active-map-item__content"></active-map-item-settings>
+        </mat-tab>
+        <mat-tab label="Ebenen" [disabled]="activeMapItem.isSingleLayer">
+          <ng-template matTabContent>
+            <active-map-item-layers [activeMapItem]="activeMapItem" class="active-map-item__content"></active-map-item-layers>
+          </ng-template>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
   </ng-template>
 </mat-expansion-panel>

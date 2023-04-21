@@ -3,18 +3,16 @@ import {ActiveMapItem} from '../../../models/active-map-item.model';
 import {Subscription, tap} from 'rxjs';
 import {selectActiveMapItems} from '../../../../state/map/reducers/active-map-item.reducer';
 import {Store} from '@ngrx/store';
-import {MapLayer} from '../../../../shared/interfaces/topic.interface';
 import {ActiveMapItemActions} from '../../../../state/map/actions/active-map-item.actions';
-import {CdkDrag, CdkDragDrop} from '@angular/cdk/drag-drop';
 import {TimeExtent} from '../../../interfaces/time-extent.interface';
 import {MapAttributeFiltersItemActions} from '../../../../state/map/actions/map-attribute-filters-item.actions';
 
 @Component({
-  selector: 'active-map-item-content',
-  templateUrl: './active-map-item-content.component.html',
-  styleUrls: ['./active-map-item-content.component.scss']
+  selector: 'active-map-item-settings',
+  templateUrl: './active-map-item-settings.component.html',
+  styleUrls: ['./active-map-item-settings.component.scss']
 })
-export class ActiveMapItemContentComponent implements OnInit, OnDestroy {
+export class ActiveMapItemSettingsComponent implements OnInit, OnDestroy {
   @Input() public activeMapItem!: ActiveMapItem;
 
   public formattedCurrentOpacity: string = '';
@@ -43,26 +41,6 @@ export class ActiveMapItemContentComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
-  }
-
-  public trackByLayerId(index: number, item: MapLayer) {
-    return item.id;
-  }
-
-  public toggleSublayerVisibility(layer: MapLayer) {
-    this.store.dispatch(
-      ActiveMapItemActions.setSublayerVisibility({visible: !layer.visible, activeMapItem: this.activeMapItem, layerId: layer.id})
-    );
-  }
-
-  public dropSublayer($event: CdkDragDrop<CdkDrag>) {
-    this.store.dispatch(
-      ActiveMapItemActions.reorderSublayer({
-        activeMapItem: this.activeMapItem,
-        previousPosition: $event.previousIndex,
-        currentPosition: $event.currentIndex
-      })
-    );
   }
 
   public onOpacitySliderChange(opacity: number) {

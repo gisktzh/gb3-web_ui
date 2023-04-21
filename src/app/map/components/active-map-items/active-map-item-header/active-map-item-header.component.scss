@@ -44,6 +44,7 @@
 
   .active-map-item-header__title {
     @include mixins.multiline-ellipsis(2);
+    @include mixins.non-selectable-text;
     width: 100%;
     margin-top: auto;
     margin-bottom: auto;

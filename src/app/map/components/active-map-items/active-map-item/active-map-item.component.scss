@@ -1,3 +1,4 @@
+@use 'functions/helper.function' as functions;
 @use 'mixins/helpers.mixin' as mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
@@ -5,13 +6,39 @@
   @include mixins.no-box-shadow;
   width: 100%;
 
+  &--active {
+    border-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
+    border-radius: 1px !important;
+    border-width: 2px;
+    border-style: solid;
+    // https://stackoverflow.com/questions/3254587/when-1-px-border-is-added-to-div-div-size-increases-dont-want-to-do-that
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box; /* Firefox, other Gecko */
+    box-sizing: border-box; /* Opera/IE 8+ */
+  }
+
+  ::ng-deep .mat-expansion-panel-content > .mat-expansion-panel-body {
+    padding: 0;
+  }
+
   .active-map-item__header {
     padding: 0;
     height: 68px;
     cursor: default;
+    border-radius: 0;
+
+    &--active {
+      background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
+      color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+    }
 
     .active-map-item__header__content {
       width: 100%;
     }
+  }
+
+  .active-map-item__content {
+    display: block;
+    margin: 24px;
   }
 }
