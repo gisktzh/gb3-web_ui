@@ -7,5 +7,6 @@ import {Component, Input} from '@angular/core';
 })
 export class MapOverlayListItemComponent {
   @Input() public title: string = '';
+  @Input() public metaDataLink: string | undefined;
   @Input() public isPrintable: boolean = false;
 }

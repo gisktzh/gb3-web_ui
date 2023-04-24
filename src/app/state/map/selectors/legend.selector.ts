@@ -35,14 +35,16 @@ export const selectDetailedLegends = createSelector<Record<string, any>, Legend[
           title: legendItem.layers[0].title,
           layers: legendItem.layers,
           icon: undefined,
-          isSingleLayer: true
+          isSingleLayer: true,
+          metaDataLink: legendItem.layers[0].metaDataLink // make sure we take the layer's metaDataLink and not its topic's one
         };
       } else {
         legendDisplay = {
           title: topic.title,
           layers: legendItem.layers,
           icon: topic.icon,
-          isSingleLayer: false
+          isSingleLayer: false,
+          metaDataLink: legendItem.metaDataLink
         };
       }
 

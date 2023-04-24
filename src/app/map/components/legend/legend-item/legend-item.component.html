@@ -1,6 +1,11 @@
-<map-overlay-list-item [isPrintable]="this.isPrintable" [title]="legendItem.title">
+<map-overlay-list-item [isPrintable]="this.isPrintable" [metaDataLink]="legendItem.metaDataLink" [title]="legendItem.title">
   <div *ngFor="let layer of legendItem.layers" class="legend-item">
-    <map-overlay-list-item *ngIf="!legendItem.isSingleLayer; else legendContent" [isPrintable]="this.isPrintable" [title]="layer.title">
+    <map-overlay-list-item
+      *ngIf="!legendItem.isSingleLayer; else legendContent"
+      [isPrintable]="this.isPrintable"
+      [metaDataLink]="layer.metaDataLink"
+      [title]="layer.title"
+    >
       <mat-icon class="legend-item-icon" header-icon>layers</mat-icon>
       <ng-container *ngTemplateOutlet="legendContent"></ng-container>
     </map-overlay-list-item>

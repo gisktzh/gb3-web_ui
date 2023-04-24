@@ -29,6 +29,22 @@
         margin-top: auto;
         margin-bottom: auto;
       }
+
+      .list-item__header__content__info-link {
+        text-decoration: none;
+        color: inherit;
+
+        :hover {
+          color: ktzh-variables.$zh-black40;
+        }
+
+        .list-item__header__content__info-link__icon {
+          display: flex;
+          min-width: 24px;
+          max-width: 24px;
+          scale: 0.8;
+        }
+      }
     }
   }
 }
@@ -45,4 +61,8 @@
       border-bottom: 1px solid ktzh-variables.$zh-black100;
     }
   }
+}
+
+:host::ng-deep .mat-expansion-panel-content .mat-expansion-panel-body {
+  padding-right: 0;
 }

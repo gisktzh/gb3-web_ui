@@ -12,13 +12,7 @@ export class LegendItemComponent {
   @Input() public isPrintable: boolean = false;
   public readonly staticFilesBaseUrl: string;
 
-  private readonly dataTabUrl = '/data/geodata';
-
   constructor(private readonly configService: ConfigService) {
     this.staticFilesBaseUrl = configService.apiConfig.gb2StaticFiles.baseUrl;
-  }
-
-  public getDataTabLink(id: number): string {
-    return `${this.dataTabUrl}/${id}`;
   }
 }
