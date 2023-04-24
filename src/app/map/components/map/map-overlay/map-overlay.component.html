@@ -15,7 +15,10 @@
     <ng-content></ng-content>
   </mat-card-content>
 
-  <ng-content select="[overlay-footer]"></ng-content>
+  <button (click)="this.onPrintButtonClick()" class="map-overlay__print-button" color="accent" mat-raised-button>
+    <mat-icon>print</mat-icon>
+    {{ this.overlayTitle }} drucken
+  </button>
 
   <resize-handler (resizeEvent)="this.resizeOverlay($event)" [location]="this.location"></resize-handler>
 </mat-card>

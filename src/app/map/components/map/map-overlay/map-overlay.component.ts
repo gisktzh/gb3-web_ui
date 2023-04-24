@@ -12,11 +12,16 @@ export class MapOverlayComponent {
   @Input() public overlayTitle: string = '';
   @Input() public location: ResizeHandlerLocation = 'left';
   @Output() public closeEvent = new EventEmitter<void>();
+  @Output() public printButtonEvent = new EventEmitter<void>();
   public resizeableStyle: StyleExpression = {};
 
   public onClose() {
     this.resizeableStyle = {};
     this.closeEvent.emit();
+  }
+
+  public onPrintButtonClick() {
+    this.printButtonEvent.emit();
   }
 
   public resizeOverlay(newStyle: StyleExpression) {
