@@ -87,7 +87,7 @@ export class Gb3TopicsService extends Gb3ApiService {
           layers: legend.layers.map((layer) => {
             return {
               ...layer,
-              metaDataLink: layer.geolion ? this.createDataTabLink(layer.geolion) : undefined,
+              metaDataLink: layer.geolion ? this.createDataTabLink(layer.geolion) : 'undefined',
               layerClasses: layer.layer_classes?.map((layerClass) => {
                 return {
                   ...layerClass

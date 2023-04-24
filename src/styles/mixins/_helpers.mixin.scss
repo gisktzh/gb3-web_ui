@@ -35,6 +35,7 @@
   display: -webkit-box;
   overflow: hidden;
   text-overflow: ellipsis;
+  word-wrap: break-word;
 }
 
 @mixin mat-checkbox--unchecked {

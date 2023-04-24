@@ -1,4 +1,4 @@
-<map-overlay (closeEvent)="this.close()" [isVisible]="this.isVisible" location="right" title="Resultate">
+<map-overlay (closeEvent)="this.close()" [isVisible]="this.isVisible" location="right" overlayTitle="Resultate">
   <loading-and-process-bar [loadingState]="this.loadingState"></loading-and-process-bar>
   <ng-container *ngIf="this.loadingState === 'loaded'">
     <button class="mat-raised-button print-button" (click)="this.print()">Drucken</button>

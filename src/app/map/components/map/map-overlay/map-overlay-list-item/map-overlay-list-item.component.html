@@ -4,7 +4,7 @@
       <mat-icon *ngIf="expansionPanel.expanded" class="list-item__header__content__toggle">arrow_drop_down</mat-icon>
       <mat-icon *ngIf="!expansionPanel.expanded" class="list-item__header__content__toggle">arrow_right</mat-icon>
       <ng-content select="[header-icon]"></ng-content>
-      <p class="list-item__header__content__title">{{ title }}</p>
+      <p class="list-item__header__content__title" [title]="title">{{ title }}</p>
       <a
         *ngIf="this.metaDataLink"
         href="{{ this.metaDataLink }}"

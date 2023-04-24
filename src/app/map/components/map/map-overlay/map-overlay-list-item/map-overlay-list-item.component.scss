@@ -3,13 +3,12 @@
 
 .list-item {
   @include mixins.no-box-shadow;
-  margin-bottom: 12px;
+  margin-bottom: 24px;
 
   .list-item__header {
     padding: 0 12px;
     background-color: ktzh-variables.$zh-black20;
-    height: 38px;
-    min-height: 38px;
+    max-height: 54px;
 
     .list-item__header__content {
       display: flex;
