@@ -1,4 +1,4 @@
-<map-overlay-list-item [title]="this.featureInfo.topic" [isPrintable]="this.isPrintable">
+<map-overlay-list-item [title]="this.featureInfo.topic" [forceExpanded]="this.isPrintable">
   <b *ngIf="this.featureInfo.layers.length === 0">Keine Treffer!</b>
   <div class="feature-info" *ngFor="let layerInfo of this.featureInfo.layers">
     <div class="feature-info__title">{{ layerInfo.title }} ({{ layerInfo.features.length }} Treffer)</div>
