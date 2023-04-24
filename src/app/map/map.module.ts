@@ -29,6 +29,7 @@ import {SearchWindowComponent} from './components/search-window/search-window.co
 import {KtZhDesignSystemModule} from '../kt-zh-design-system/kt-zh-design-system.module';
 import {TimeSliderComponent} from './components/time-slider/time-slider.component';
 import {LegendContentComponent} from './components/legend/legend-content/legend-content.component';
+import {FeatureInfoContentComponent} from './components/feature-info/feature-info-content/feature-info-content.component';
 
 @NgModule({
   declarations: [
@@ -57,7 +58,8 @@ import {LegendContentComponent} from './components/legend/legend-content/legend-
     ApiDialogWrapperComponent,
     FavouriteDeletionDialogComponent,
     TimeSliderComponent,
-    LegendContentComponent
+    LegendContentComponent,
+    FeatureInfoContentComponent
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule, KtZhDesignSystemModule]
 })

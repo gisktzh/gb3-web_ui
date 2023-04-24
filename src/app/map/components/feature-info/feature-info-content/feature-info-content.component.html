@@ -1,0 +1,13 @@
+<div *ngFor="let layerInfo of this.featureInfo.layers" class="feature-info">
+  <div class="feature-info__title">{{ layerInfo.title }} ({{ layerInfo.features.length }} Treffer)</div>
+  <ng-container *ngFor="let feature of layerInfo.features; index as i">
+    <b>Treffer {{ i + 1 }}/{{ layerInfo.features.length }}</b>
+    <button class="mat-raised-button feature-info__highlight-button" data-test-id="highlight">Highlight</button>
+    <div class="feature-info__content">
+      <ng-container *ngFor="let data of feature.fields">
+        <div class="feature-info__content__label">{{ data.label }}</div>
+        <div class="feature-info__content__value">{{ data.value }}</div>
+      </ng-container>
+    </div>
+  </ng-container>
+</div>
