@@ -8,6 +8,7 @@
   .list-item__header {
     padding: 0 12px;
     background-color: ktzh-variables.$zh-black20;
+    min-height: 54px;
     max-height: 54px;
 
     .list-item__header__content {

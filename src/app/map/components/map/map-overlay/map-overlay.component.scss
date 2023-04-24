@@ -16,7 +16,14 @@
   }
 
   .map-overlay__header {
-    justify-content: end;
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+
+    .map-overlay__header__title {
+      flex-grow: 1;
+      margin-bottom: 0;
+    }
   }
 
   .map-overlay__content {
