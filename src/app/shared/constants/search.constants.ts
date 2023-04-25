@@ -1,6 +1,6 @@
-import {AvailableIndex} from "../services/apis/search/interfaces/available-index.interface";
+import {SearchIndex} from "../services/apis/search/interfaces/search-index.interface";
 
-export const DEFAULT_SEARCHES: AvailableIndex[] = [
+export const DEFAULT_SEARCHES: SearchIndex[] = [
   {
     indexName: 'fme-addresses',
     displayString: 'Adressen',
@@ -13,7 +13,7 @@ export const DEFAULT_SEARCHES: AvailableIndex[] = [
   }
 ];
 
-export const MAP_SEARCH: AvailableIndex = {
+export const MAP_SEARCH: SearchIndex = {
   indexName: '',
   displayString: 'Karten',
   active: true

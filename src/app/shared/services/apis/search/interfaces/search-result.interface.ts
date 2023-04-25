@@ -1,6 +1,6 @@
-import {SearchWindowElement} from "./search-window-element.interface";
+import {SearchResultMatch} from "./search-result-match.interface";
 
 export interface SearchResult {
   index: string;
-  matches: SearchWindowElement[];
+  matches: SearchResultMatch[];
 }

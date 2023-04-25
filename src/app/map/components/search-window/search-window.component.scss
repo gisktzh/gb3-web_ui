@@ -39,12 +39,12 @@
     padding: 5px;
     margin: 11px;
     position: absolute;
-    color: black;
+    color: ktzh-variables.$zh-black100;
     right: 0;
-  }
 
-  .search-window__x-icon:hover {
-    cursor: pointer;
+    &:hover {
+      cursor: pointer;
+    }
   }
 
   .search-window__filter-icon {
@@ -54,20 +54,15 @@
     margin: 11px;
     position: absolute;
     right: 35px;
-    color: ktzh-variables.$zh-black100
-  }
+    color: ktzh-variables.$zh-black100;
 
-  .search-window__filter-icon:hover {
-    cursor: pointer;
+    &:hover {
+      cursor: pointer;
+    }
   }
-
 
   .search-window__filter-icon.selected {
-     color: ktzh-variables.$zh-cyan;
-   }
-
-  .search-window__filter-icon-selected:hover {
-    cursor: pointer;
+    color: ktzh-variables.$zh-cyan;
   }
 
   .search-window__divider {
@@ -80,9 +75,11 @@
   }
 }
 
-::ng-deep  {
+::ng-deep {
+
   .search-window__filter-menu {
     width: 300px;
+
     .search-window__filter-x-icon {
       height: 24px;
       width: 24px;
@@ -91,19 +88,25 @@
       position: absolute;
       color: ktzh-variables.$zh-black100;
       right: 0;
+
+      &:hover {
+        cursor: pointer;
+      }
     }
-    .search-window__filter-x-icon:hover {
-      cursor: pointer;
-    }
+
     .search-window__filter-content {
+
       .search-window__filter-header {
         font-size: 15px;
         padding: 10px;
         margin: 0;
       }
+
       .search-window__filter-entry {
         padding-left: 12px;
+
         .search-window__filter-checkbox {
+
           .mdc-checkbox__background {
             --mdc-checkbox-selected-focus-icon-color: #00797b;
             --mdc-checkbox-selected-hover-icon-color: #00797b;
@@ -158,7 +161,6 @@
           box-shadow: none;
           font-size: 14px;
 
-
           .search-window__element-header {
             font-weight: bold;
             padding: 5px 5px 0 5px;
@@ -187,11 +189,11 @@
               margin-bottom: auto;
             }
           }
-        }
 
-        .search-window__element:hover {
-          cursor: pointer;
-          background-color: ktzh-variables.$zh-background-color;
+          &:hover {
+            cursor: pointer;
+            background-color: ktzh-variables.$zh-background-color;
+          }
         }
       }
     }

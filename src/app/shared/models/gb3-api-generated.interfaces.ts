@@ -246,6 +246,15 @@ export interface TopicsListData {
           values: string[];
         }[];
       }[];
+      /** Search Settings */
+      searchConfigurations:
+        | {
+            /** Human-Readable Search Title */
+            title: string;
+            /** Index Name */
+            index: string;
+          }[]
+        | null;
       /**
        * WMS URL
        * @format uri

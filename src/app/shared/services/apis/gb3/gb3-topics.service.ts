@@ -152,7 +152,8 @@ export class Gb3TopicsService extends Gb3ApiService {
                     };
                   })
                 };
-              })
+              }),
+              searchConfigurations: topic.searchConfigurations ?? undefined
             };
           })
         };

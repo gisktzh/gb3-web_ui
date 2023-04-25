@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {SearchService} from "../../../shared/services/apis/search/services/search.service";
 import {debounceTime, distinctUntilChanged, first, fromEvent, Observable, Subscription, tap} from "rxjs";
-import {SearchWindowElement} from "../../../shared/services/apis/search/interfaces/search-window-element.interface";
+import {SearchResultMatch} from "../../../shared/services/apis/search/interfaces/search-result-match.interface";
 import {Store} from "@ngrx/store";
 import {Map} from "../../../shared/interfaces/topic.interface";
 import {selectMaps} from "../../../state/map/selectors/maps.selector";
@@ -12,7 +12,7 @@ import {MAP_SERVICE} from "../../../app.module";
 import {MapService} from "../../interfaces/map.service";
 import {selectActiveMapItems} from "../../../state/map/reducers/active-map-item.reducer";
 import {ACTIVE_SEARCH_INDICES, DEFAULT_SEARCHES, MAP_SEARCH} from "../../../shared/constants/search.constants";
-import {AvailableIndex} from "../../../shared/services/apis/search/interfaces/available-index.interface";
+import {SearchIndex} from "../../../shared/services/apis/search/interfaces/search-index.interface";
 
 const DEFAULT_ZOOM_SCALE = 1000;
 
@@ -22,11 +22,11 @@ const DEFAULT_ZOOM_SCALE = 1000;
   styleUrls: ['./search-window.component.scss']
 })
 export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
-  public searchResults: SearchWindowElement[] = [];
-  public specialSearchResults: SearchWindowElement[] = [];
+  public searchResults: SearchResultMatch[] = [];
+  public specialSearchResults: SearchResultMatch[] = [];
   public filteredMaps: Map[] = [];
   public searchTerms: string[] = [];
-  public availableSearchIndexes: AvailableIndex[] = DEFAULT_SEARCHES.concat(MAP_SEARCH);
+  public availableSearchIndexes: SearchIndex[] = DEFAULT_SEARCHES.concat(MAP_SEARCH);
 
   private originalMaps: Map[] = [];
   private readonly originalMaps$ = this.store.select(selectMaps);
@@ -65,7 +65,7 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
     this.addActiveItem(new ActiveMapItem(activeMap));
   }
 
-  public zoomToResult(searchResult: SearchWindowElement) {
+  public zoomToResult(searchResult: SearchResultMatch) {
     if (searchResult.geometry) {
       const point = searchResult.geometry;
       this.mapService.zoomToPoint(point, DEFAULT_ZOOM_SCALE);
@@ -91,20 +91,27 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
     const specialIndexes = this.availableSearchIndexes.slice(2, -1).filter(index => index.active);
     const mapSearchActive = this.availableSearchIndexes[this.availableSearchIndexes.length -1].active;
     if (addressAndPlaceIndexes.length > 0) {
-      this.subscriptions.add(this.searchService.searchIndexes(term, addressAndPlaceIndexes).pipe(first()).subscribe(
-        (searchResults: SearchWindowElement[]) => {
-          this.searchResults = searchResults;
-        }
-      ));
+      this.subscriptions.add(this.searchService.searchIndexes(term, addressAndPlaceIndexes)
+        .pipe(
+          first(),
+          tap((searchResults: SearchResultMatch[]) => {
+            this.searchResults = searchResults;
+          })
+        )
+        .subscribe()
+      );
     } else {
       this.searchResults = [];
     }
     if (specialIndexes.length > 0) {
-      this.subscriptions.add(this.searchService.searchIndexes(term, specialIndexes).pipe(first()).subscribe(
-        (searchResults: SearchWindowElement[]) => {
-          this.specialSearchResults = searchResults;
-        }
-      ));
+      this.subscriptions.add(this.searchService.searchIndexes(term, specialIndexes)
+        .pipe(
+          first(),
+          tap((searchResults: SearchResultMatch[]) => {
+            this.specialSearchResults = searchResults;
+          })
+        ).subscribe()
+      );
     } else {
       this.specialSearchResults = [];
     }
@@ -139,7 +146,7 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
     this.subscriptions.add(
       this.activeMapItems$
         .pipe(
-          tap(async (value) => {
+          tap((value) => {
             this.availableSearchIndexes = DEFAULT_SEARCHES.concat(this.getActiveSpecialSearchIndexes(value)).concat(MAP_SEARCH);
           })
         )
@@ -152,12 +159,12 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
     this.store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem, position: 0}));
   }
 
-  private getActiveSpecialSearchIndexes(activeMapItems: ActiveMapItem[]): AvailableIndex[] {
-    const availableIndexes: AvailableIndex[] = [];
+  private getActiveSpecialSearchIndexes(activeMapItems: ActiveMapItem[]): SearchIndex[] {
+    const availableIndexes: SearchIndex[] = [];
 
-    for (const mapItem of activeMapItems) {
+    activeMapItems.forEach((mapItem) => {
       if (mapItem.searchConfigurations) {
-        for (const searchConfig of mapItem.searchConfigurations) {
+        mapItem.searchConfigurations.forEach((searchConfig) => {
           const alreadyInElasticsearch = ACTIVE_SEARCH_INDICES.includes(searchConfig.index.toLowerCase());
           const notInOutputYet = !availableIndexes.map(index => index.indexName).includes(searchConfig.index);
           if (alreadyInElasticsearch && notInOutputYet) {
@@ -167,9 +174,9 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
               active: true
             });
           }
-        }
+        });
       }
-    }
+    });
     return availableIndexes;
 
   }

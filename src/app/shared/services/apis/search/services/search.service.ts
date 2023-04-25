@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
 import {Observable} from "rxjs";
-import {SearchWindowElement} from "../interfaces/search-window-element.interface";
+import {SearchResultMatch} from "../interfaces/search-result-match.interface";
 import {BaseApiService} from "../../abstract-api.service";
 import {map} from "rxjs/operators";
 import {SearchResult} from "../interfaces/search-result.interface";
-import {AvailableIndex} from "../interfaces/available-index.interface";
+import {SearchIndex} from "../interfaces/search-index.interface";
 
 @Injectable({
   providedIn: 'root'
@@ -12,30 +12,31 @@ import {AvailableIndex} from "../interfaces/available-index.interface";
 export class SearchService extends BaseApiService {
   protected apiBaseUrl = this.configService.apiConfig.searchApi.baseUrl;
 
-  public searchIndexes(term: string, indexes: AvailableIndex[]): Observable<SearchWindowElement[]> {
-    return this.getElasticsearch(indexes.map(index => index.indexName).toString(), term).pipe(map(
+  public searchIndexes(term: string, indexes: SearchIndex[]): Observable<SearchResultMatch[]> {
+    const searchIndexNames = indexes.map(index => index.indexName).toString();
+    return this.getElasticsearch(searchIndexNames, term).pipe(map(
       (response: SearchResult[]) => this.combineSearchResults(response, indexes)
     ));
   }
 
-  private combineSearchResults(searchResponse: SearchResult[], indexes: AvailableIndex[]): SearchWindowElement[] {
-    let combinedResults: SearchWindowElement[] = [];
-    for (const searchResult of searchResponse) {
-      for (const match of searchResult.matches) {
+  private combineSearchResults(searchResponse: SearchResult[], indexes: SearchIndex[]): SearchResultMatch[] {
+    const combinedResults: SearchResultMatch[] = [];
+    searchResponse.forEach((searchResult) => {
+      searchResult.matches.forEach((match) => {
         match.indexName = this.getIndexTitle(searchResult.index, indexes);
-      }
-      combinedResults = combinedResults.concat(searchResult.matches);
-    }
-    combinedResults.sort((a, b) => b.score > a.score ? 1 : -1);
+      });
+      combinedResults.push(...searchResult.matches);
+    });
+    combinedResults.sort((a, b) => b.score - a.score);
     return combinedResults;
   }
 
-  private getIndexTitle(indexName: string, indexes: AvailableIndex[]): string {
+  private getIndexTitle(indexName: string, indexes: SearchIndex[]): string {
     const fromIndex = indexes.find(index => index.indexName === indexName);
     if (fromIndex) {
       return fromIndex.displayString;
     }
-    return 'Unknown';
+    return indexName;
   }
 
   private getElasticsearch(indexes: string, term: string): Observable<SearchResult[]> {

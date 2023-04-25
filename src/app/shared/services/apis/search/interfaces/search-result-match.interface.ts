@@ -1,6 +1,6 @@
 import {Point} from "geojson";
 
-export interface SearchWindowElement {
+export interface SearchResultMatch {
   displayString: string;
   score: number;
   geometry: Point;
