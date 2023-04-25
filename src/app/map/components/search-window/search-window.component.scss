@@ -75,6 +75,7 @@
   }
 }
 
+// TODO WES Try to find alternative
 ::ng-deep {
 
   .search-window__filter-menu {
@@ -108,7 +109,7 @@
         .search-window__filter-menu__filter-content__filter-entry__filter-checkbox {
 
           .mdc-checkbox__background {
-            //TODO WES
+            //TODO WES Replace with mixin
             --mdc-checkbox-selected-focus-icon-color: #00797b;
             --mdc-checkbox-selected-hover-icon-color: #00797b;
             --mdc-checkbox-selected-icon-color: #00797b;
