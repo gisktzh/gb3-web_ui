@@ -4,74 +4,34 @@
   <mat-icon class="search-window__x-icon" (click)="clearInput()">close</mat-icon>
   <mat-divider [vertical]="true" class="search-window__divider"></mat-divider>
   <mat-icon
-    [matMenuTriggerFor]="menu"
-    #menuTrigger="matMenuTrigger"
-    class="search-window__filter-icon"
-    [ngClass]="menuTrigger.menuOpen ? 'selected':'deselected'"
+          [matMenuTriggerFor]="menu"
+          #menuTrigger="matMenuTrigger"
+          class="search-window__filter-icon"
+          [ngClass]="menuTrigger.menuOpen ? 'selected':'deselected'"
   >filter_list</mat-icon>
   <mat-menu #menu=matMenu class="search-window__filter-menu">
     <mat-icon class="search-window__filter-x-icon" (click)="menuTrigger.closeMenu()">close</mat-icon>
     <div class="search-window__filter-content" (click) = "$event.stopPropagation()">
       <h2 class="search-window__filter-header">Suche filtern nach</h2>
       <div
-        *ngFor="let index of availableSearchIndexes"
-        class="search-window__filter-entry"
+              *ngFor="let index of availableSearchIndexes"
+              class="search-window__filter-entry"
       >
         <mat-checkbox
-          class="search-window__filter-checkbox"
-          [checked]="index.active"
-          [(ngModel)]="index.active"
-          (change)="search(filterInput.value)"
+                class="search-window__filter-checkbox"
+                [checked]="index.active"
+                [(ngModel)]="index.active"
+                (change)="search(filterInput.value)"
         >{{index.displayString}}</mat-checkbox>
       </div>
     </div>
   </mat-menu>
 </div>
 <div class="search-window__results_container">
-  <div class="search-window__results">
-    <div *ngIf="searchResults.length > 0" class="search-window__group">
-      <h2 class="search-window__header">Orte / Adressen</h2>
-      <div class="search-window__element-container">
-        <mat-card *ngFor="let result of searchResults" (click)="zoomToResult(result)" class="search-window__element">
-          <mat-card-content
-            class="search-window__element-content"
-            [innerHTML]="result.displayString | highlightSearchQuery : this.searchTerms"
-          ></mat-card-content>
-          <mat-divider></mat-divider>
-        </mat-card>
-      </div>
-    </div>
-    <div *ngIf="specialSearchResults.length > 0" class="search-window__group">
-      <h2 class="search-window__header">Objekte</h2>
-      <div class="search-window__element-container">
-        <mat-card *ngFor="let result of specialSearchResults" (click)="zoomToResult(result)" class="search-window__element">
-          <mat-card-header class="search-window__element-header">{{result.indexName}}</mat-card-header>
-          <mat-card-content
-            class="search-window__element-content"
-            [innerHTML]="result.displayString | highlightSearchQuery : this.searchTerms"
-          ></mat-card-content>
-          <mat-divider></mat-divider>
-        </mat-card>
-      </div>
-    </div>
-    <div *ngIf="filteredMaps.length > 0" class="search-window__group">
-      <h2 class="search-window__header">Karten</h2>
-      <div class="search-window__element-container">
-        <mat-card *ngFor="let map of filteredMaps" class="search-window__element">
-          <mat-card-content class=search-window__map-content>
-            <button (click)="addActiveMap(map)" color="primary" data-test-id="add-active-map" mat-icon-button>
-              <mat-icon>add</mat-icon>
-            </button>
-            <img [alt]="map.title" [src]="map.icon" class="search-window__map-image" />
-            <p
-              [innerHTML]="map.title | highlightSearchQuery : this.searchTerms"
-              class="search-window__map-title"
-              matTooltip="{{ map.title }}"
-            ></p>
-          </mat-card-content>
-          <mat-divider></mat-divider>
-        </mat-card>
-      </div>
-    </div>
-  </div>
+  <result-window
+    [searchResults]="searchResults"
+    [specialSearchResults]="specialSearchResults"
+    [filteredMaps]="filteredMaps"
+    [searchTerms]="searchTerms"
+  ></result-window>
 </div>

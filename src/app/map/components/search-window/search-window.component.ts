@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {SearchService} from "../../../shared/services/apis/search/services/search.service";
 import {debounceTime, distinctUntilChanged, first, fromEvent, Observable, Subscription, tap} from "rxjs";
 import {SearchResultMatch} from "../../../shared/services/apis/search/interfaces/search-result-match.interface";
@@ -6,15 +6,9 @@ import {Store} from "@ngrx/store";
 import {Map} from "../../../shared/interfaces/topic.interface";
 import {selectMaps} from "../../../state/map/selectors/maps.selector";
 import {map} from "rxjs/operators";
-import {ActiveMapItem} from "../../models/active-map-item.model";
-import {ActiveMapItemActions} from "../../../state/map/actions/active-map-item.actions";
-import {MAP_SERVICE} from "../../../app.module";
-import {MapService} from "../../interfaces/map.service";
 import {DEFAULT_SEARCHES, MAP_SEARCH} from "../../../shared/constants/search.constants";
 import {SearchIndex} from "../../../shared/services/apis/search/interfaces/search-index.interface";
 import {selectAvailableSpecialSearchIndexes} from "../../../state/map/selectors/available-search-index.selector";
-
-const DEFAULT_ZOOM_SCALE = 1000;
 
 @Component({
   selector: 'search-window',
@@ -36,8 +30,7 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(
     private searchService: SearchService,
-    private readonly store: Store,
-    @Inject(MAP_SERVICE) private readonly mapService: MapService
+    private readonly store: Store
   ) {}
 
   public async ngOnInit() {
@@ -58,19 +51,6 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
       this.emptyResultsWindow();
     } else {
       this.fillResultsWindow(term);
-    }
-  }
-
-  public addActiveMap(activeMap: Map) {
-    this.addActiveItem(new ActiveMapItem(activeMap));
-  }
-
-  public zoomToResult(searchResult: SearchResultMatch) {
-    if (searchResult.geometry) {
-      const point = searchResult.geometry;
-      this.mapService.zoomToPoint(point, DEFAULT_ZOOM_SCALE);
-    } else {
-      console.log('Geometry not available in the index'); //todo: implement error handling
     }
   }
 
@@ -155,10 +135,5 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
         )
         .subscribe()
     );
-  }
-
-  private addActiveItem(activeMapItem: ActiveMapItem) {
-    // add new map items on top (position 0)
-    this.store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem, position: 0}));
   }
 }
