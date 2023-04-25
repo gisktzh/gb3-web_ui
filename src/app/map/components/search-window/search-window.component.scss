@@ -12,7 +12,7 @@
     width: 484px;
     height: 40px;
     padding: 0 5px 0 45px;
-    border: 3px solid grey;
+    border: 3px solid ktzh-variables.$zh-black50;
     margin: 5px;
     outline: none;
   }
@@ -30,7 +30,7 @@
     width: 30px;
     margin: 16px 5px 5px 16px;
     position: absolute;
-    color: grey;
+    color: ktzh-variables.$zh-black50;
   }
 
   .search-window__x-icon {
@@ -108,6 +108,7 @@
         .search-window__filter-checkbox {
 
           .mdc-checkbox__background {
+            //TODO WES
             --mdc-checkbox-selected-focus-icon-color: #00797b;
             --mdc-checkbox-selected-hover-icon-color: #00797b;
             --mdc-checkbox-selected-icon-color: #00797b;
@@ -150,7 +151,7 @@
       .search-window__header {
         padding: 4px;
         margin: 0;
-        background-color: lightgrey;
+        background-color: ktzh-variables.$zh-black20;
         font-size: 15px;
       }
 

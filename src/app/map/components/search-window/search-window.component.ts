@@ -10,9 +10,9 @@ import {ActiveMapItem} from "../../models/active-map-item.model";
 import {ActiveMapItemActions} from "../../../state/map/actions/active-map-item.actions";
 import {MAP_SERVICE} from "../../../app.module";
 import {MapService} from "../../interfaces/map.service";
-import {selectActiveMapItems} from "../../../state/map/reducers/active-map-item.reducer";
-import {ACTIVE_SEARCH_INDICES, DEFAULT_SEARCHES, MAP_SEARCH} from "../../../shared/constants/search.constants";
+import {DEFAULT_SEARCHES, MAP_SEARCH} from "../../../shared/constants/search.constants";
 import {SearchIndex} from "../../../shared/services/apis/search/interfaces/search-index.interface";
+import {selectAvailableSpecialSearchIndexes} from "../../../state/map/selectors/available-search-index.selector";
 
 const DEFAULT_ZOOM_SCALE = 1000;
 
@@ -30,7 +30,7 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private originalMaps: Map[] = [];
   private readonly originalMaps$ = this.store.select(selectMaps);
-  private readonly activeMapItems$ = this.store.select(selectActiveMapItems);
+  private readonly availableSpecialSearchIndexes$ = this.store.select(selectAvailableSpecialSearchIndexes);
   private readonly subscriptions: Subscription = new Subscription();
   @ViewChild('filterInput') private readonly input!: ElementRef;
 
@@ -87,11 +87,14 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private fillResultsWindow(term: string) {
-    const addressAndPlaceIndexes = this.availableSearchIndexes.slice(0, 2).filter(index => index.active);
-    const specialIndexes = this.availableSearchIndexes.slice(2, -1).filter(index => index.active);
-    const mapSearchActive = this.availableSearchIndexes[this.availableSearchIndexes.length -1].active;
-    if (addressAndPlaceIndexes.length > 0) {
-      this.subscriptions.add(this.searchService.searchIndexes(term, addressAndPlaceIndexes)
+    const defaultIndexes = this.availableSearchIndexes
+      .filter(index => index.indexType === 'default' && index.active);
+    const specialIndexes = this.availableSearchIndexes
+      .filter(index => index.indexType === 'special' && index.active);
+    const mapSearchActive = this.availableSearchIndexes
+      .filter(index => index.indexType === 'map' && index.active)[0].active;
+    if (defaultIndexes.length > 0) {
+      this.subscriptions.add(this.searchService.searchIndexes(term, defaultIndexes)
         .pipe(
           first(),
           tap((searchResults: SearchResultMatch[]) => {
@@ -144,10 +147,10 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
         .subscribe()
     );
     this.subscriptions.add(
-      this.activeMapItems$
+      this.availableSpecialSearchIndexes$
         .pipe(
           tap((value) => {
-            this.availableSearchIndexes = DEFAULT_SEARCHES.concat(this.getActiveSpecialSearchIndexes(value)).concat(MAP_SEARCH);
+            this.availableSearchIndexes = DEFAULT_SEARCHES.concat(value).concat(MAP_SEARCH);
           })
         )
         .subscribe()
@@ -157,27 +160,5 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   private addActiveItem(activeMapItem: ActiveMapItem) {
     // add new map items on top (position 0)
     this.store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem, position: 0}));
-  }
-
-  private getActiveSpecialSearchIndexes(activeMapItems: ActiveMapItem[]): SearchIndex[] {
-    const availableIndexes: SearchIndex[] = [];
-
-    activeMapItems.forEach((mapItem) => {
-      if (mapItem.searchConfigurations) {
-        mapItem.searchConfigurations.forEach((searchConfig) => {
-          const alreadyInElasticsearch = ACTIVE_SEARCH_INDICES.includes(searchConfig.index.toLowerCase());
-          const notInOutputYet = !availableIndexes.map(index => index.indexName).includes(searchConfig.index);
-          if (alreadyInElasticsearch && notInOutputYet) {
-            availableIndexes.push({
-              indexName: searchConfig.index,
-              displayString: searchConfig.title,
-              active: true
-            });
-          }
-        });
-      }
-    });
-    return availableIndexes;
-
   }
 }
