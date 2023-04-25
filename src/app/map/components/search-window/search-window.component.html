@@ -1,24 +1,24 @@
 <div class="search-window__searchbar">
-  <input #filterInput class="search-window__input" placeholder="Suchen nach Adressen, Orten, Karten und mehr...">
-  <mat-icon class="search-window__input-icon">search</mat-icon>
-  <mat-icon class="search-window__x-icon" (click)="clearInput()">close</mat-icon>
-  <mat-divider [vertical]="true" class="search-window__divider"></mat-divider>
+  <input #filterInput class="search-window__searchbar__input" placeholder="Suchen nach Adressen, Orten, Karten und mehr...">
+  <mat-icon class="search-window__searchbar__input-icon">search</mat-icon>
+  <mat-icon class="search-window__searchbar__close-icon" (click)="clearInput()">close</mat-icon>
+  <mat-divider [vertical]="true" class="search-window__searchbar__divider"></mat-divider>
   <mat-icon
           [matMenuTriggerFor]="menu"
           #menuTrigger="matMenuTrigger"
-          class="search-window__filter-icon"
+          class="search-window__searchbar__filter-icon"
           [ngClass]="menuTrigger.menuOpen ? 'selected':'deselected'"
   >filter_list</mat-icon>
   <mat-menu #menu=matMenu class="search-window__filter-menu">
-    <mat-icon class="search-window__filter-x-icon" (click)="menuTrigger.closeMenu()">close</mat-icon>
-    <div class="search-window__filter-content" (click) = "$event.stopPropagation()">
-      <h2 class="search-window__filter-header">Suche filtern nach</h2>
+    <mat-icon class="search-window__filter-menu__filter-close-icon" (click)="menuTrigger.closeMenu()">close</mat-icon>
+    <div class="search-window__filter-menu__filter-content" (click) = "$event.stopPropagation()">
+      <h2 class="search-window__filter-menu__filter-content__filter-header">Suche filtern nach</h2>
       <div
               *ngFor="let index of availableSearchIndexes"
-              class="search-window__filter-entry"
+              class="search-window__filter-menu__filter-content__filter-entry"
       >
         <mat-checkbox
-                class="search-window__filter-checkbox"
+                class="search-window__filter-menu__filter-content__filter-entry__filter-checkbox"
                 [checked]="index.active"
                 [(ngModel)]="index.active"
                 (change)="search(filterInput.value)"
