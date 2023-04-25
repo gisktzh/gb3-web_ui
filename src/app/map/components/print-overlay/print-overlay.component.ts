@@ -7,7 +7,7 @@ import {PrintType} from '../../../shared/types/print-type';
 import {LegendDisplay} from '../../../shared/interfaces/legend.interface';
 import {FeatureInfoResultDisplay} from '../../../shared/interfaces/feature-info.interface';
 import {selectDetailedLegends} from '../../../state/map/selectors/legend.selector';
-import {selectDetailedFeatureInfo} from '../../../state/map/selectors/feature-info.selector';
+import {selectFeatureInfoForDisplay} from '../../../state/map/selectors/feature-info.selector';
 
 @Component({
   selector: 'print-overlay',
@@ -19,7 +19,7 @@ export class PrintOverlayComponent implements OnInit, OnDestroy {
   public legendItems: LegendDisplay[] = [];
   public featureInfoData: FeatureInfoResultDisplay[] = [];
   private readonly legendItems$ = this.store.select(selectDetailedLegends);
-  private readonly featureInfoData$ = this.store.select(selectDetailedFeatureInfo);
+  private readonly featureInfoData$ = this.store.select(selectFeatureInfoForDisplay);
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(private readonly mapCon: MapConfigUrlService, private readonly store: Store, private readonly route: ActivatedRoute) {}

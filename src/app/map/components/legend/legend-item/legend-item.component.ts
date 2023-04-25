@@ -13,6 +13,6 @@ export class LegendItemComponent {
   public readonly staticFilesBaseUrl: string;
 
   constructor(private readonly configService: ConfigService) {
-    this.staticFilesBaseUrl = configService.apiConfig.gb2StaticFiles.baseUrl;
+    this.staticFilesBaseUrl = this.configService.apiConfig.gb2StaticFiles.baseUrl;
   }
 }
