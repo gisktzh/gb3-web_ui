@@ -53,10 +53,6 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
     );
   }
 
-  public removeActiveMapItem(activeMapItem: ActiveMapItem) {
-    this.store.dispatch(ActiveMapItemActions.removeActiveMapItem(activeMapItem));
-  }
-
   public removeAllActiveMapItems() {
     this.store.dispatch(ActiveMapItemActions.removeAllActiveMapItems());
   }

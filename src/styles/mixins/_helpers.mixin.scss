@@ -69,7 +69,7 @@
 
 @mixin mat-checkbox-override-color($color, $contrast-color) {
   ::ng-deep {
-    .mdc-checkbox__background {
+    .mdc-checkbox__native-control:not([disabled]) ~ .mdc-checkbox__background {
       background-color: $contrast-color !important;
       border-color: $color !important;
       .mdc-checkbox__checkmark {
@@ -78,6 +78,9 @@
           stroke: $contrast-color;
         }
       }
+    }
+    .mdc-checkbox__ripple {
+      background: $color !important;
     }
   }
 }

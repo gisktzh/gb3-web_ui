@@ -20,11 +20,30 @@
         (change)="toggleMapItemVisibility(activeMapItem)"
       ></mat-checkbox>
     </div>
-    <p class="active-map-item-header__title" matTooltip="{{ activeMapItem.title }}">{{ activeMapItem.title }}</p>
-    <!--TODO: Is there no 'remove' button for single active map objects?-->
-    <!--<button (click)="removeActiveMapItem(activeMapItem)" mat-icon-button data-test-id="delete">-->
-    <!--  <mat-icon>delete</mat-icon>-->
-    <!--</button>-->
+    <div class="active-map-item-header__title-container">
+      <p class="active-map-item-header__title-container__title" matTooltip="{{ activeMapItem.title }}">{{ activeMapItem.title }}</p>
+      <div
+        class="active-map-item-header__title-container__options"
+        [ngClass]="{'active-map-item-header__title-container__options--active': activeMapItemExpansionPanel.expanded}"
+      >
+        <button (click)="showActiveMapItemInfo(activeMapItem)" mat-icon-button data-test-id="delete">
+          <mat-icon>info</mat-icon>
+        </button>
+        <mat-divider
+          class="active-map-item-header__divider"
+          [ngClass]="{'active-map-item-header__divider--active': activeMapItemExpansionPanel.expanded}"
+          [vertical]="true"
+        ></mat-divider>
+        <button (click)="removeActiveMapItem(activeMapItem)" mat-icon-button data-test-id="delete">
+          <mat-icon>delete</mat-icon>
+        </button>
+        <mat-divider
+          class="active-map-item-header__divider"
+          [ngClass]="{'active-map-item-header__divider--active': activeMapItemExpansionPanel.expanded}"
+          [vertical]="true"
+        ></mat-divider>
+      </div>
+    </div>
     <div class="active-map-item-header__drag-handle">
       <ng-content select="[activeMapItemDragHandle]"></ng-content>
       <mat-icon class="active-map-item-header__drag-handle__icon" cdkDragHandle>drag_indicator</mat-icon>

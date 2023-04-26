@@ -39,7 +39,6 @@
   }
 
   .active-map-item-layer__title {
-    @include mixins.non-selectable-text;
     @include mixins.single-line-text;
     width: 100%;
     margin-top: auto;

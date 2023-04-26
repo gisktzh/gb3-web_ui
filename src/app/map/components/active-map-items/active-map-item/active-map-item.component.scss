@@ -27,6 +27,10 @@
     cursor: default;
     border-radius: 0;
 
+    &:hover:not(&--active) {
+      background-color: transparent;
+    }
+
     &--active {
       background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
       color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);

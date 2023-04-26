@@ -2,8 +2,8 @@
   <mat-card-header class="active-map-items__header">
     <h2 class="active-map-items__header__title">Aktive Karten</h2>
     <p
-      *ngIf="this.activeMapItems.length > 0"
       class="active-map-items__header__badge"
+      [ngClass]="{'active-map-items__header__badge--hidden': this.activeMapItems.length === 0}"
       [matBadge]="this.activeMapItems.length"
       matBadgePosition="before"
       matBadgeSize="large"

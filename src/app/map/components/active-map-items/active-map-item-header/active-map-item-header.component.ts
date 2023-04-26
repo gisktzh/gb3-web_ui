@@ -18,4 +18,13 @@ export class ActiveMapItemHeaderComponent {
   public toggleMapItemVisibility(activeMapItem: ActiveMapItem) {
     this.store.dispatch(ActiveMapItemActions.setVisibility({visible: !activeMapItem.visible, activeMapItem}));
   }
+
+  public removeActiveMapItem(activeMapItem: ActiveMapItem) {
+    this.store.dispatch(ActiveMapItemActions.removeActiveMapItem(activeMapItem));
+  }
+
+  public showActiveMapItemInfo(activeMapItem: ActiveMapItem) {
+    // TODO what kind of information is requested here?
+    throw new Error('Info button not implemented.');
+  }
 }
