@@ -6,6 +6,7 @@ import {MAP_SERVICE} from "../../../../../app.module";
 import {MapService} from "../../../../interfaces/map.service";
 import {ActiveMapItem} from "../../../../models/active-map-item.model";
 import {ActiveMapItemActions} from "../../../../../state/map/actions/active-map-item.actions";
+import {SearchIndexType} from "../../../../../shared/types/search-index-type";
 
 const DEFAULT_ZOOM_SCALE = 1000;
 
@@ -17,7 +18,7 @@ const DEFAULT_ZOOM_SCALE = 1000;
 export class ResultGroupComponent {
   @Input() public searchResults: SearchResultMatch[] = [];
   @Input() public filteredMaps: Map[] = [];
-  @Input() public type: 'default' | 'special' | 'map' = 'default';
+  @Input() public type: SearchIndexType = 'default';
   @Input() public header: string = '';
   @Input() public searchTerms: string[] = [];
 

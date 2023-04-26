@@ -7,29 +7,26 @@
   flex-direction: row;
   justify-content: flex-start;
   pointer-events: all;
+  align-items: center;
+  border: 3px solid ktzh-variables.$zh-black50;
 
-  .search-window__searchbar__input {
-    width: 484px;
-    height: 40px;
-    padding: 0 5px 0 45px;
-    border: 3px solid ktzh-variables.$zh-black50;
-    margin: 5px;
-    outline: none;
+  &:focus-within {
+    border: 3px solid ktzh-variables.$zh-cyan;
   }
 
-  .search-window__searchbar__input:focus {
-    border: 3px solid ktzh-variables.$zh-cyan;
-
-    & + .search-window__input-icon {
-      color: ktzh-variables.$zh-black100;
-    }
+  .search-window__searchbar__input {
+    width: 413px;
+    height: 40px;
+    outline: none;
+    border: none;
+    margin: 3px 0 3px 0;
   }
 
   .search-window__searchbar__input-icon {
-    height: 30px;
-    width: 30px;
-    margin: 16px 5px 5px 16px;
-    position: absolute;
+    height: 24px;
+    width: 24px;
+    padding: 5px;
+    margin: 4px;
     color: ktzh-variables.$zh-black50;
   }
 
@@ -37,10 +34,8 @@
     height: 24px;
     width: 24px;
     padding: 5px;
-    margin: 11px;
-    position: absolute;
+    margin: 4px;
     color: ktzh-variables.$zh-black100;
-    right: 0;
 
     &:hover {
       cursor: pointer;
@@ -51,9 +46,7 @@
     height: 24px;
     width: 24px;
     padding: 5px;
-    margin: 11px;
-    position: absolute;
-    right: 35px;
+    margin: 4px;
     color: ktzh-variables.$zh-black100;
 
     &:hover {
@@ -66,10 +59,8 @@
   }
 
   .search-window__searchbar__divider {
-    position: absolute;
     right: 45px;
     height: 20px;
-    top: 18px;
     border-width: 1px;
     border-color: ktzh-variables.$zh-black100;
   }

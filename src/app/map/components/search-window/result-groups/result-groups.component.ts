@@ -3,11 +3,11 @@ import {SearchResultMatch} from "../../../../shared/services/apis/search/interfa
 import {Map} from "../../../../shared/interfaces/topic.interface";
 
 @Component({
-  selector: 'result-window',
-  templateUrl: './result-window.component.html',
-  styleUrls: ['./result-window.component.scss']
+  selector: 'result-groups',
+  templateUrl: './result-groups.component.html',
+  styleUrls: ['./result-groups.component.scss']
 })
-export class ResultWindowComponent {
+export class ResultGroupsComponent {
   @Input() public searchResults: SearchResultMatch[] = [];
   @Input() public specialSearchResults: SearchResultMatch[] = [];
   @Input() public filteredMaps: Map[] = [];

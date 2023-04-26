@@ -1,14 +1,15 @@
 <div class="search-window__searchbar">
-  <input #filterInput class="search-window__searchbar__input" placeholder="Suchen nach Adressen, Orten, Karten und mehr...">
   <mat-icon class="search-window__searchbar__input-icon">search</mat-icon>
-  <mat-icon class="search-window__searchbar__close-icon" (click)="clearInput()">close</mat-icon>
-  <mat-divider [vertical]="true" class="search-window__searchbar__divider"></mat-divider>
+  <input #filterInput class="search-window__searchbar__input" placeholder="Suchen nach Adressen, Orten, Karten und mehr...">
   <mat-icon
-          [matMenuTriggerFor]="menu"
-          #menuTrigger="matMenuTrigger"
-          class="search-window__searchbar__filter-icon"
-          [ngClass]="menuTrigger.menuOpen ? 'selected':'deselected'"
+    [matMenuTriggerFor]="menu"
+    #menuTrigger="matMenuTrigger"
+    class="search-window__searchbar__filter-icon"
+    [ngClass]="menuTrigger.menuOpen ? 'selected':'deselected'"
   >filter_list</mat-icon>
+  <mat-divider [vertical]="true" class="search-window__searchbar__divider"></mat-divider>
+  <mat-icon class="search-window__searchbar__close-icon" (click)="clearInput()">close</mat-icon>
+
   <mat-menu #menu=matMenu class="search-window__filter-menu">
     <mat-icon class="search-window__filter-menu__filter-close-icon" (click)="menuTrigger.closeMenu()">close</mat-icon>
     <div class="search-window__filter-menu__filter-content" (click) = "$event.stopPropagation()">
@@ -28,10 +29,10 @@
   </mat-menu>
 </div>
 <div class="search-window__results_container">
-  <result-window
+  <result-groups
     [searchResults]="searchResults"
     [specialSearchResults]="specialSearchResults"
     [filteredMaps]="filteredMaps"
     [searchTerms]="searchTerms"
-  ></result-window>
+  ></result-groups>
 </div>

@@ -28,8 +28,8 @@ import {FavouriteDeletionDialogComponent} from './components/favourite-deletion-
 import {SearchWindowComponent} from "./components/search-window/search-window.component";
 import {KtZhDesignSystemModule} from '../kt-zh-design-system/kt-zh-design-system.module';
 import {TimeSliderComponent} from './components/time-slider/time-slider.component';
-import {ResultWindowComponent} from './components/search-window/result-window/result-window.component';
-import { ResultGroupComponent } from './components/search-window/result-window/result-group/result-group.component';
+import {ResultGroupsComponent} from './components/search-window/result-groups/result-groups.component';
+import {ResultGroupComponent} from './components/search-window/result-groups/result-group/result-group.component';
 
 @NgModule({
   declarations: [
@@ -58,7 +58,7 @@ import { ResultGroupComponent } from './components/search-window/result-window/r
     ApiDialogWrapperComponent,
     FavouriteDeletionDialogComponent,
     TimeSliderComponent,
-    ResultWindowComponent,
+    ResultGroupsComponent,
     ResultGroupComponent
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule, KtZhDesignSystemModule]

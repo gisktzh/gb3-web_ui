@@ -67,12 +67,25 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private fillResultsWindow(term: string) {
-    const defaultIndexes = this.availableSearchIndexes
-      .filter(index => index.indexType === 'default' && index.active);
-    const specialIndexes = this.availableSearchIndexes
-      .filter(index => index.indexType === 'special' && index.active);
-    const mapSearchActive = this.availableSearchIndexes
-      .filter(index => index.indexType === 'map' && index.active)[0].active;
+    const defaultIndexes: SearchIndex[] = [];
+    const specialIndexes: SearchIndex[] = [];
+    let mapSearchActive = false;
+    this.availableSearchIndexes.filter((index) => index.active).forEach((index) => {
+      switch (index.indexType) {
+        case 'default': {
+          defaultIndexes.push(index);
+          break;
+        }
+        case 'special': {
+          specialIndexes.push(index);
+          break;
+        }
+        case 'map': {
+          mapSearchActive = true;
+          break;
+        }
+      }
+    });
     if (defaultIndexes.length > 0) {
       this.subscriptions.add(this.searchService.searchIndexes(term, defaultIndexes)
         .pipe(
@@ -130,7 +143,7 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
       this.availableSpecialSearchIndexes$
         .pipe(
           tap((value) => {
-            this.availableSearchIndexes = DEFAULT_SEARCHES.concat(value).concat(MAP_SEARCH);
+            this.availableSearchIndexes = [...DEFAULT_SEARCHES, ...value, MAP_SEARCH];
           })
         )
         .subscribe()
