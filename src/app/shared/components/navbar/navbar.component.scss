@@ -8,18 +8,25 @@
   }
 
   .navbar__item {
-    @include mat-mixins.mat-button--align-icon-right;
     padding-left: 10px;
     padding-right: 10px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+
+    & + .navbar__item-icon {
+      @include mat-mixins.mat-button--align-icon-right;
+    }
+
+    .navbar__logo {
+      height: 80%;
+      padding-right: 10px;
+    }
   }
 
   .navbar__divider {
     height: 65%;
     border-color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
-  }
-
-  .navbar__logo {
-    height: 80%;
   }
 }
 

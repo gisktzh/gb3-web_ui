@@ -1,12 +1,15 @@
 import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {DocumentService} from './shared/services/document.service';
 import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
-import {Subscription, tap} from 'rxjs';
+import {filter, Subscription, tap} from 'rxjs';
 import {PageNotificationService} from './shared/services/page-notification.service';
 import {MatSnackBar, MatSnackBarRef} from '@angular/material/snack-bar';
 import {PageNotificationComponent} from './shared/components/page-notification/page-notification.component';
 import {PageNotification} from './shared/interfaces/page-notification.interface';
 import {PanelClass} from './shared/enums/panel-class.enum';
+import {NavigationEnd, Router} from '@angular/router';
+import {map} from 'rxjs/operators';
+import {GlobalConstants} from './shared/constants/global.constants';
 
 @Component({
   selector: 'app-root',
@@ -15,13 +18,17 @@ import {PanelClass} from './shared/enums/panel-class.enum';
 })
 export class AppComponent implements OnInit, OnDestroy {
   public showWarning: boolean = false;
-
+  /**
+   * Flag which can be used to toggle simplified layouts, e.g. no ZH Lion in the header.
+   */
+  public isSimplifiedPage: boolean = false;
+  private readonly useSimplifiedPageOn: string[] = [GlobalConstants.MAIN_PAGES.MAPS];
   private readonly subscriptions: Subscription = new Subscription();
   private snackBarRef?: MatSnackBarRef<PageNotificationComponent>;
 
   constructor(
     private readonly documentService: DocumentService,
-    private readonly breakpointObserver: BreakpointObserver,
+    private readonly router: Router, private readonly breakpointObserver: BreakpointObserver,
     private readonly snackBar: MatSnackBar,
     private readonly pageNotificationService: PageNotificationService
   ) {}
@@ -46,6 +53,18 @@ export class AppComponent implements OnInit, OnDestroy {
         .pipe(
           tap((result) => {
             this.showWarning = result.matches;
+          })
+        )
+        .subscribe()
+    );
+    this.subscriptions.add(
+      this.router.events
+        .pipe(
+          filter((evt) => evt instanceof NavigationEnd),
+          map((evt) => evt as NavigationEnd),
+          tap((evt) => {
+            const basePath = evt.url.split('?')[0];
+            this.isSimplifiedPage = this.useSimplifiedPageOn.some((page) => basePath === `/${page}`);
           })
         )
         .subscribe()

@@ -1,7 +1,10 @@
 <mat-toolbar class="navbar" color="primary">
-  <img alt="KTZH Logo" class="navbar__item navbar__logo" src="assets/images/ktzh_inverted.svg" />
-  <span class="navbar__item">GIS-Browser Zürich</span>
+  <span [style.visibility]="!this.isSimplifiedPage ? 'hidden' : 'visible'" class="navbar__item">
+    <img alt="KTZH Logo" class="navbar__logo" src="assets/images/ktzh_inverted.svg" />
+    GIS-Browser
+  </span>
   <span class="navbar__spacer"></span>
+
   <a
     [queryParams]="{}"
     [routerLinkActiveOptions]="{exact: true}"
@@ -21,9 +24,12 @@
   <mat-divider class="navbar__divider" vertical></mat-divider>
   <a (click)="this.startLogin()" *ngIf="!this.isAuthenticated; else logoutButton" class="navbar__item" mat-button>Login</a>
   <ng-template #logoutButton>
-    <a [matMenuTriggerFor]="userMenu" class="navbar__item" mat-button><mat-icon>account_circle</mat-icon>{{ this.userName }}</a>
+    <a [matMenuTriggerFor]="userMenu" class="navbar__item" mat-button>
+      <mat-icon>account_circle</mat-icon>
+      {{ this.userName }}</a
+    >
     <mat-menu #userMenu="matMenu">
-      <button mat-menu-item (click)="this.logout()">
+      <button (click)="this.logout()" mat-menu-item>
         <mat-icon>logout</mat-icon>
         <span>Logout</span>
       </button>

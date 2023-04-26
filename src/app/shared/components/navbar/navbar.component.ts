@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {AuthService} from '../../../auth/auth.service';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
@@ -14,7 +14,7 @@ import {MainPage} from '../../enums/main-page.enum';
 export class NavbarComponent implements OnInit, OnDestroy {
   // expose the enum to the HTML
   public readonly mainPageEnum = MainPage;
-
+  @Input() public isSimplifiedPage: boolean = false;
   public isAuthenticated: boolean = false;
   public userName: string | undefined = undefined;
   private readonly subscriptions = new Subscription();
