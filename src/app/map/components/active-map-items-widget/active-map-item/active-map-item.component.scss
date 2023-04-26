@@ -1,4 +1,5 @@
 @use 'mixins/helpers.mixin' as mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
 
 .transparency {
   padding: 4px;
@@ -11,6 +12,29 @@
 
 .time-slider {
   padding: 4px;
+}
+
+.attribute-filter {
+  display: flex;
+  align-items: center;
+
+  .attribute-filter__badge {
+    width: 22px;
+    height: 22px;
+    margin: 0;
+
+    ::ng-deep {
+      .mat-badge-content {
+        top: auto;
+        left: auto;
+      }
+    }
+  }
+
+  .attribute-filter__button {
+    @include mixins.mat-button--align-icon-right;
+    color: ktzh-variables.$zh-active-blue;
+  }
 }
 
 .sublayer-list {

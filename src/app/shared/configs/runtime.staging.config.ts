@@ -14,20 +14,20 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
         baseUrl: 'https://testmaps.kt.ktzh.ch'
       },
       gb2Wms: {
-        baseUrl: 'https://testwms.kt.ktzh.ch'
+        baseUrl: 'https://testmaps.kt.ktzh.ch'
       },
       geoLion: {
         baseUrl: 'https://testgeolion.kt.ktzh.ch'
       },
       searchApi: {
-        baseUrl: 'https://gb3-search-api.icycliff-4b8f6c95.switzerlandnorth.azurecontainerapps.io'
+        baseUrl: 'https://staging.geo.ktzh.ch/geosearch'
       },
       ktzhWebsite: {
         baseUrl: 'https://www.zh.ch',
         enabled: true
       },
       gravCms: {
-        baseUrl: 'https://gb3-grav-cms.icycliff-4b8f6c95.switzerlandnorth.azurecontainerapps.io',
+        baseUrl: 'https://staging.geo.ktzh.ch/cms',
         enabled: false
       },
       twitterWidget: {
@@ -39,6 +39,8 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       clientId: 'gb3',
       issuer: 'https://testmaps.kt.ktzh.ch/'
     },
-    overrides: {}
+    overrides: {
+      overrideWmsUrl: 'http://testwms.kt.ktzh.ch'
+    }
   }
 ];

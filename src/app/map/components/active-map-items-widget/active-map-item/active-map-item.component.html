@@ -1,4 +1,4 @@
-<!-- Opacity config -->
+<!-- Opacity -->
 <ktzh-slider-wrapper class="transparency" title="Transparenz" [value]="formattedCurrentOpacity" minValue="100%" maxValue="100%">
   <ng-container content>
     <mat-slider [min]="0" [max]="1" [step]="0.01" color="accent" class="transparency__slider">
@@ -7,8 +7,9 @@
   </ng-container>
 </ktzh-slider-wrapper>
 
-<!-- Time slider config -->
+<!-- Time slider -->
 <ng-container *ngIf="activeMapItem.timeSliderConfiguration && activeMapItem.timeSliderExtent">
+  <mat-divider></mat-divider>
   <time-slider
     class="time-slider"
     [initialTimeExtent]="activeMapItem.timeSliderExtent"
@@ -17,7 +18,17 @@
   ></time-slider>
 </ng-container>
 
-<map-attribute-filter *ngIf="activeMapItem.filterConfigurations" [activeMapItem]="activeMapItem"></map-attribute-filter>
+<!-- Attribute filter -->
+<ng-container *ngIf="activeMapItem.filterConfigurations">
+  <mat-divider></mat-divider>
+  <div class="attribute-filter">
+    <p *ngIf="numberOfChangedFilters > 0" class="attribute-filter__badge" [matBadge]="numberOfChangedFilters" matBadgePosition="before"></p>
+    <button class="attribute-filter__button" mat-button (click)="showMapAttributeFilters()">
+      <mat-icon>east</mat-icon>
+      <strong>Attributfilter</strong>
+    </button>
+  </div>
+</ng-container>
 
 <!-- List of sublayers (only if the map item is not a single layer itself) -->
 <ng-container *ngIf="!activeMapItem.isSingleLayer">

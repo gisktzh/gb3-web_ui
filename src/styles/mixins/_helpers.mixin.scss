@@ -1,3 +1,5 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
 /// Prevents text in an element (e.g. a div) from becoming selectable
 @mixin non-selectable-text {
   -webkit-user-select: none;
@@ -33,4 +35,15 @@
   display: -webkit-box;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+@mixin mat-checkbox--unchecked {
+  ::ng-deep {
+    .mdc-form-field .mdc-checkbox .mdc-checkbox__background {
+      border-color: ktzh-variables.$zh-black40;
+    }
+    .mdc-form-field > label {
+      color: ktzh-variables.$zh-black40;
+    }
+  }
 }

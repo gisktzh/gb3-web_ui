@@ -1,0 +1,52 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+$handle-width: 5px;
+$handle-indicator-width: 3px;
+$handle-hover: $handle-width solid ktzh-variables.$zh-black100;
+$handle-no-hover: $handle-indicator-width double ktzh-variables.$zh-black40;
+
+:host,
+.resize-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.resize-handle {
+  pointer-events: all;
+  position: absolute;
+  height: 100%;
+  cursor: col-resize;
+  width: $handle-width;
+
+  &.resize-handle--left {
+    left: 0;
+    border-left: $handle-no-hover;
+
+    &:hover {
+      border-left: $handle-hover;
+    }
+  }
+
+  &.resize-handle--right {
+    right: 0;
+    border-right: $handle-no-hover;
+
+    &:hover {
+      border-right: $handle-hover;
+    }
+  }
+}
+
+/**
+  This class is conditionally added once the resize state begins. It is not possible to use it within the resize-handle
+  classes due to the GhostElement, which somehow prevents the lower component from being shown and the GhostElement
+  does not have the newly set state variable.
+
+  So this adds a background which shows that the resize is active, and when the min/max are reached, the hover effect
+  fades away, but you can still see why.
+ */
+.resize-active {
+  background-color: rgba(ktzh-variables.$zh-black40, 0.1);
+}

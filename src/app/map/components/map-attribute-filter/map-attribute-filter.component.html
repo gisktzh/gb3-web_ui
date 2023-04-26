@@ -1,14 +1,34 @@
-<p>Attribut-Filter</p>
-<mat-card *ngFor="let filterConfiguration of activeMapItem.filterConfigurations">
-  <mat-card-header>
-    <mat-card-title>{{ filterConfiguration.name }}</mat-card-title>
-    <mat-card-subtitle *ngIf="filterConfiguration.description">{{ filterConfiguration.description }}</mat-card-subtitle>
-  </mat-card-header>
-  <ng-container *ngFor="let filterValue of filterConfiguration.filterValues">
-    <mat-checkbox
-      [checked]="!filterValue.isActive"
-      (change)="changeFilter(filterConfiguration.parameter, filterValue.name, $event.checked)"
-      >{{ filterValue.name }}</mat-checkbox
-    >
-  </ng-container>
-</mat-card>
+<ng-container *ngIf="mapAttributeFiltersItem">
+  <mat-card appearance="raised" class="attribute-filter no-box-shadow">
+    <mat-card-header>
+      <div class="attribute-filter__header">
+        <h3 class="attribute-filter__header__title" [matTooltip]="mapAttributeFiltersItem.title">
+          Attributfilter: {{ mapAttributeFiltersItem.title }}
+        </h3>
+        <button mat-icon-button (click)="close()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </mat-card-header>
+    <div class="attribute-filter__content">
+      <mat-card class="no-box-shadow" appearance="raised" *ngFor="let filterConfiguration of mapAttributeFiltersItem.filterConfigurations">
+        <mat-card-header>
+          <mat-card-title>{{ filterConfiguration.name }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p class="attribute-filter__content__text" *ngIf="filterConfiguration.description">{{ filterConfiguration.description }}</p>
+        </mat-card-content>
+        <ng-container *ngFor="let filterValue of filterConfiguration.filterValues">
+          <mat-checkbox
+            class="attribute-filter__content__checkbox"
+            [ngClass]="{'attribute-filter__content__checkbox--unchecked': filterValue.isActive}"
+            color="primary"
+            [checked]="!filterValue.isActive"
+            (change)="updateFilter(filterConfiguration.parameter, filterValue.name, $event.checked)"
+            >{{ filterValue.name }}</mat-checkbox
+          >
+        </ng-container>
+      </mat-card>
+    </div>
+  </mat-card>
+</ng-container>
