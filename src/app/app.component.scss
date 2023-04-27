@@ -3,7 +3,7 @@
 .main {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: calc(100vh - 64px); // subtracts height of navbar; maybe there's a nicer way?
 
   .app-wrapper {
     height: 100%;

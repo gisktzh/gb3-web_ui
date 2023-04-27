@@ -3,6 +3,9 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
 .navbar {
+  position: sticky;
+  top: 0;
+
   .navbar__spacer {
     flex: 1 1 auto;
   }

@@ -1,6 +1,6 @@
 <main class="main">
   <mobile-warning *ngIf="this.showWarning"></mobile-warning>
-  <navbar [isSimplifiedPage]="this.isSimplifiedPage"></navbar>
+  <navbar class="navbar" [isSimplifiedPage]="this.isSimplifiedPage"></navbar>
   <article class="app-wrapper">
     <router-outlet></router-outlet>
   </article>
