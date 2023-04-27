@@ -42,7 +42,7 @@
         align-self: center;
         margin-right: 8px;
         border-radius: 4px;
-        background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
+        background-color: ktzh-variables.$zh-dark-background-color;
 
         &.favourite-selection__favourite__icon--disabled {
           background-color: grey;

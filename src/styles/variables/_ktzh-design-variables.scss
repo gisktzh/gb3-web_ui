@@ -29,8 +29,12 @@ $zh-print-white: #ffffff;
 ========================== */
 
 $zh-background-color: $zh-white;
-$zh-text-color: $zh-black100;
+$zh-foreground-color: $zh-black100;
 $zh-border-color: $zh-black40;
+
+$zh-dark-background-color: $zh-darkblue;
+$zh-dark-foreground-color: $zh-white;
+$zh-dark-border-color: $zh-black40;
 
 /* Layout variables
 ========================== */
@@ -209,7 +213,7 @@ $zh-bordeaux-palette: (
 
 /* Theme palettes
 ========================== */
-$zh-primary: mat.define-palette($zh-darkblue-palette);
+$zh-primary: mat.define-palette($zh-active-blue-palette);
 $zh-accent: mat.define-palette($zh-black100-palette);
 $zh-warn: mat.define-palette($zh-bordeaux-palette);
 

@@ -3,6 +3,9 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
 .navbar {
+  background-color: ktzh-variables.$zh-dark-background-color;
+  color: ktzh-variables.$zh-dark-foreground-color;
+
   .navbar__spacer {
     flex: 1 1 auto;
   }
@@ -15,7 +18,7 @@
 
   .navbar__divider {
     height: 65%;
-    border-color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+    border-color: ktzh-variables.$zh-dark-foreground-color;
   }
 
   .navbar__logo {

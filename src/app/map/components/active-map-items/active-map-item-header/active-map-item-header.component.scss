@@ -28,7 +28,10 @@
     .active-map-item-header__image-container__checkbox {
       position: absolute;
       @include mixins.center-absolute-element;
-      @include mat-mixins.mat-checkbox-override-color(ktzh-variables.$zh-active-blue, ktzh-variables.$zh-white);
+      @include mat-mixins.mat-checkbox-override-color(
+        functions.get-color-from-palette(ktzh-variables.$zh-primary),
+        functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary)
+      );
 
       ::ng-deep {
         .mdc-checkbox__ripple {
@@ -40,10 +43,10 @@
 
   .active-map-item-header__divider {
     height: 40%;
-    border-right-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
+    border-right-color: ktzh-variables.$zh-foreground-color;
 
     &--active {
-      border-right-color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+      border-right-color: ktzh-variables.$zh-dark-foreground-color;
     }
   }
 
@@ -72,11 +75,11 @@
       align-items: center;
       height: inherit;
       width: 142px;
-      background: linear-gradient(90deg, transparent 0%, ktzh-variables.$zh-white 37.5%);
+      background: linear-gradient(90deg, transparent 0%, ktzh-variables.$zh-background-color 37.5%);
 
       &--active {
         display: flex;
-        background: linear-gradient(90deg, transparent 0%, functions.get-color-from-palette(ktzh-variables.$zh-primary) 37.5%);
+        background: linear-gradient(90deg, transparent 0%, ktzh-variables.$zh-dark-background-color 37.5%);
       }
     }
   }

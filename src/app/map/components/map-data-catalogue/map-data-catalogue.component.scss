@@ -8,8 +8,8 @@
   border: none;
 
   .map-catalogue__header {
-    background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
-    color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+    background-color: ktzh-variables.$zh-dark-background-color;
+    color: ktzh-variables.$zh-dark-foreground-color;
     font-family: ktzh-variables.$zh-font-family;
     padding: 8px 16px 8px 16px;
     height: 36px;

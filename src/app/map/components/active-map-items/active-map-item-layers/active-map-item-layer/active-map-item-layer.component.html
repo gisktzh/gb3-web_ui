@@ -5,6 +5,7 @@
   </div>
   <mat-checkbox
     class="active-map-item-layer__checkbox"
+    color="primary"
     [checked]="layer.visible"
     (change)="toggleSublayerVisibility(layer)"
     [disabled]="!activeMapItem.visible"

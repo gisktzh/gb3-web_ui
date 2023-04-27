@@ -13,8 +13,8 @@
   .active-map-items__header {
     display: flex;
     align-items: center;
-    background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
-    color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+    background-color: ktzh-variables.$zh-dark-background-color;
+    color: ktzh-variables.$zh-dark-foreground-color;
     font-family: ktzh-variables.$zh-font-family;
     padding: 0 24px 0 24px;
     height: 48px;
@@ -40,8 +40,8 @@
         .mat-badge-content {
           width: auto;
           @include mat-mixins.mat-badge-inherit-size;
-          background-color: ktzh-variables.$zh-white;
-          color: ktzh-variables.$zh-black100;
+          background-color: ktzh-variables.$zh-background-color;
+          color: ktzh-variables.$zh-foreground-color;
         }
       }
     }
@@ -51,11 +51,11 @@
       display: flex;
       align-items: center;
       margin-left: 8px;
-      color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+      color: ktzh-variables.$zh-dark-foreground-color;
 
       .active-map-items__header__buttons__divider {
         height: 40%;
-        border-right-color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+        border-right-color: ktzh-variables.$zh-dark-foreground-color;
       }
     }
   }
