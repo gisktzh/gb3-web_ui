@@ -1,0 +1,6 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.mat-expansion-panel {
+  // We want bulky, angular (no pun intended) expansion panels, not those fancy rounded corners
+  border-radius: ktzh-variables.$zh-border-radius !important;
+}

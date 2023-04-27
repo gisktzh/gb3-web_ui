@@ -1,0 +1,22 @@
+@use 'mixins/helpers.mixin' as mixins;
+
+.legend-content {
+  padding-top: 16px;
+
+  .legend-item__class-list-entry {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-gap: 12px;
+    padding: 4px 0;
+
+    .legend-item__class-list-entry__icon,
+    .legend-item__class-list-entry__text {
+      align-self: center;
+      display: flex;
+    }
+
+    .legend-item__class-list-entry__text {
+      @include mixins.multiline-ellipsis(2);
+    }
+  }
+}

@@ -6,7 +6,7 @@ import {StyleExpression} from '../../types/style-expression';
 /**
  * The minimum width of the overlay window; cannot be resized below that.
  */
-const MIN_DIMENSIONS_PX = 150;
+const MIN_DIMENSIONS_PX = 300;
 
 /**
  * Maximum width of resize windows in percentage; cannot be resized above that.

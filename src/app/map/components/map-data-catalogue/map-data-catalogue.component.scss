@@ -58,11 +58,6 @@
   .map-catalogue__content {
     overflow-y: scroll;
 
-    & .mat-expansion-panel {
-      // Remove the material first and last border rounding
-      border-radius: 0;
-    }
-
     .map-catalogue__content__topic-title {
       // needed to avoid a cut-off results indicator
       margin: 20px 0;

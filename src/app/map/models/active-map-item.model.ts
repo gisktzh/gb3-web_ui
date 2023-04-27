@@ -27,7 +27,7 @@ export class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewPro
 
   constructor(map: Map, layer?: MapLayer, visible?: boolean, opacity?: number) {
     this.isSingleLayer = !!layer;
-    this.id = layer ? `${map.id}_${layer.layer}` : map.id;
+    this.id = layer ? ActiveMapItem.createSingleLayerId(map.id, layer.layer) : map.id;
     this.title = layer ? layer.title : map.title;
     this.url = map.wmsUrl;
     this.mapImageUrl = map.icon;
@@ -40,5 +40,9 @@ export class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewPro
       this.timeSliderExtent = TimeExtentUtils.createInitialTimeSliderExtent(map.timeSliderConfiguration);
     }
     this.filterConfigurations = map.filterConfigurations;
+  }
+
+  public static createSingleLayerId(mapId: string, layerId: string): string {
+    return `${mapId}_${layerId}`;
   }
 }

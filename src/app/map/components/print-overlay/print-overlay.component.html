@@ -2,7 +2,7 @@
   <ng-container *ngIf="this.printType === 'legend'">
     <h1>Legende</h1>
     <p class="print-overlay__info-title"><i>Druckansicht</i></p>
-    <button (click)="this.closePrint()" class="mat-raised-button print-overlay__button">Schliessen</button>
+    <button (click)="this.closePrint()" mat-raised-button class="print-overlay__button">Schliessen</button>
     <legend-item *ngFor="let legendItem of legendItems" [isPrintable]="true" [legendItem]="legendItem"></legend-item>
     <print-dispatcher></print-dispatcher>
   </ng-container>
