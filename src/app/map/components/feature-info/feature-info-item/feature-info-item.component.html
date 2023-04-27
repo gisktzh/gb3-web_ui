@@ -1,7 +1,7 @@
 <!-- Currently. no [metaDataLink] tag is set as this information is currently not available. -->
-<map-overlay-list-item [forceExpanded]="this.isPrintable" [title]="featureInfo.title">
+<map-overlay-list-item [forceExpanded]="this.isPrintable" [overlayTitle]="featureInfo.title">
   <div *ngFor="let layer of featureInfo.layers" class="feature-info-item">
-    <map-overlay-list-item *ngIf="!featureInfo.isSingleLayer; else featureInfoContent" [forceExpanded]="true" [title]="layer.title">
+    <map-overlay-list-item *ngIf="!featureInfo.isSingleLayer; else featureInfoContent" [forceExpanded]="true" [overlayTitle]="layer.title">
       <mat-icon class="feature-info-item-icon" header-icon>layers</mat-icon>
       <ng-container *ngTemplateOutlet="featureInfoContent"></ng-container>
     </map-overlay-list-item>

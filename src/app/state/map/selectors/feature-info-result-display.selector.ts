@@ -6,7 +6,7 @@ import {ActiveMapItem} from '../../../map/models/active-map-item.model';
 import {selectData} from '../reducers/feature-info.reducer';
 import {FeatureInfoResult, FeatureInfoResultDisplay} from '../../../shared/interfaces/feature-info.interface';
 
-export const selectFeatureInfoForDisplay = createSelector<
+export const selectFeatureInfosForDisplay = createSelector<
   Record<string, any>,
   FeatureInfoResult[],
   Map[],
@@ -33,8 +33,8 @@ export const selectFeatureInfoForDisplay = createSelector<
       */
     let isSingleLayer = false;
     if (featureInfo.layers.length === 1) {
-      const singleLayerName = ActiveMapItem.getSingleLayerName(topic.id, featureInfo.layers[0].layer);
-      isSingleLayer = !!activeMapItems.find((a) => a.isSingleLayer && a.id === singleLayerName);
+      const singleLayerId = ActiveMapItem.createSingleLayerId(topic.id, featureInfo.layers[0].layer);
+      isSingleLayer = activeMapItems.some((a) => a.isSingleLayer && a.id === singleLayerId);
     }
 
     // todo: we do not set a metaDataLink because that is currently not returned from the API.

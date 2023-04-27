@@ -5,7 +5,7 @@ import {selectLoadingState} from '../../../state/map/reducers/feature-info.reduc
 import {FeatureInfoActions} from '../../../state/map/actions/feature-info.actions';
 import {LoadingState} from '../../../shared/types/loading-state';
 import {FeatureInfoResultDisplay} from '../../../shared/interfaces/feature-info.interface';
-import {selectFeatureInfoForDisplay} from '../../../state/map/selectors/feature-info.selector';
+import {selectFeatureInfosForDisplay} from '../../../state/map/selectors/feature-info-result-display.selector';
 
 @Component({
   selector: 'feature-info',
@@ -20,7 +20,7 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
   public loadingState: LoadingState = 'undefined';
 
   private readonly loadingState$ = this.store.select(selectLoadingState);
-  private readonly featureInfoData$ = this.store.select(selectFeatureInfoForDisplay);
+  private readonly featureInfoData$ = this.store.select(selectFeatureInfosForDisplay);
   private readonly subscriptions = new Subscription();
 
   constructor(private readonly store: Store) {}

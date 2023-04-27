@@ -6,8 +6,8 @@ import {Store} from '@ngrx/store';
 import {PrintType} from '../../../shared/types/print-type';
 import {LegendDisplay} from '../../../shared/interfaces/legend.interface';
 import {FeatureInfoResultDisplay} from '../../../shared/interfaces/feature-info.interface';
-import {selectDetailedLegends} from '../../../state/map/selectors/legend.selector';
-import {selectFeatureInfoForDisplay} from '../../../state/map/selectors/feature-info.selector';
+import {selectLegendItemsForDisplay} from '../../../state/map/selectors/legend-result-display.selector';
+import {selectFeatureInfosForDisplay} from '../../../state/map/selectors/feature-info-result-display.selector';
 
 @Component({
   selector: 'print-overlay',
@@ -18,8 +18,8 @@ export class PrintOverlayComponent implements OnInit, OnDestroy {
   public printType: PrintType | undefined = undefined;
   public legendItems: LegendDisplay[] = [];
   public featureInfoData: FeatureInfoResultDisplay[] = [];
-  private readonly legendItems$ = this.store.select(selectDetailedLegends);
-  private readonly featureInfoData$ = this.store.select(selectFeatureInfoForDisplay);
+  private readonly legendItems$ = this.store.select(selectLegendItemsForDisplay);
+  private readonly featureInfoData$ = this.store.select(selectFeatureInfosForDisplay);
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(private readonly mapCon: MapConfigUrlService, private readonly store: Store, private readonly route: ActivatedRoute) {}

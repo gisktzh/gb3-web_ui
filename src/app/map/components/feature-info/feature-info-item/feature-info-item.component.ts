@@ -1,5 +1,4 @@
 import {Component, Input} from '@angular/core';
-import {Store} from '@ngrx/store';
 import {FeatureInfoResultDisplay} from '../../../../shared/interfaces/feature-info.interface';
 
 @Component({
@@ -10,6 +9,4 @@ import {FeatureInfoResultDisplay} from '../../../../shared/interfaces/feature-in
 export class FeatureInfoItemComponent {
   @Input() public featureInfo!: FeatureInfoResultDisplay;
   @Input() public isPrintable: boolean = false;
-
-  constructor(private readonly store: Store) {}
 }

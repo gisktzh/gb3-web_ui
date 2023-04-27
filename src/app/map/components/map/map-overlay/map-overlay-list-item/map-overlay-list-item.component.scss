@@ -25,7 +25,7 @@
       .list-item__header__content__title {
         @include mixins.multiline-ellipsis(2);
         font-family: ktzh-variables.$zh-font-family-bold;
-        width: 100vw;
+        width: 100%;
         margin-top: auto;
         margin-bottom: auto;
       }

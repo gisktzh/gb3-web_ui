@@ -6,7 +6,7 @@ import {Component, Input} from '@angular/core';
   styleUrls: ['./map-overlay-list-item.component.scss']
 })
 export class MapOverlayListItemComponent {
-  @Input() public title: string = '';
-  @Input() public metaDataLink: string | undefined;
+  @Input() public overlayTitle: string = '';
+  @Input() public metaDataLink?: string;
   @Input() public forceExpanded: boolean = false;
 }

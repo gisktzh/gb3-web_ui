@@ -5,7 +5,7 @@ import {selectLoadingState} from '../../../state/map/reducers/legend.reducer';
 import {LegendActions} from '../../../state/map/actions/legend.actions';
 import {LoadingState} from '../../../shared/types/loading-state';
 import {LegendDisplay} from '../../../shared/interfaces/legend.interface';
-import {selectDetailedLegends} from '../../../state/map/selectors/legend.selector';
+import {selectLegendItemsForDisplay} from '../../../state/map/selectors/legend-result-display.selector';
 
 @Component({
   selector: 'legend',
@@ -20,7 +20,7 @@ export class LegendComponent implements OnInit, OnDestroy {
   public loadingState: LoadingState = 'undefined';
 
   private readonly loadingState$ = this.store.select(selectLoadingState);
-  private readonly legendItems$ = this.store.select(selectDetailedLegends);
+  private readonly legendItems$ = this.store.select(selectLegendItemsForDisplay);
   private readonly subscriptions = new Subscription();
 
   constructor(private readonly store: Store) {}

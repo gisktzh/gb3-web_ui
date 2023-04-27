@@ -6,7 +6,7 @@ import {Map} from '../../../shared/interfaces/topic.interface';
 import {selectActiveMapItems} from '../reducers/active-map-item.reducer';
 import {ActiveMapItem} from '../../../map/models/active-map-item.model';
 
-export const selectDetailedLegends = createSelector<Record<string, any>, Legend[], Map[], ActiveMapItem[], LegendDisplay[]>(
+export const selectLegendItemsForDisplay = createSelector<Record<string, any>, Legend[], Map[], ActiveMapItem[], LegendDisplay[]>(
   selectLegendItems,
   selectMaps,
   selectActiveMapItems,
@@ -26,8 +26,8 @@ export const selectDetailedLegends = createSelector<Record<string, any>, Legend[
       */
       let isSingleLayer = false;
       if (legendItem.layers.length === 1) {
-        const singleLayerName = ActiveMapItem.getSingleLayerName(topic.id, legendItem.layers[0].layer);
-        isSingleLayer = !!activeMapItems.find((a) => a.isSingleLayer && a.id === singleLayerName);
+        const singleLayerId = ActiveMapItem.createSingleLayerId(topic.id, legendItem.layers[0].layer);
+        isSingleLayer = activeMapItems.some((a) => a.isSingleLayer && a.id === singleLayerId);
       }
 
       let legendDisplay: LegendDisplay;
