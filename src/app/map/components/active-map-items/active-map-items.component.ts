@@ -24,6 +24,8 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
   public isAuthenticated: boolean = false;
   public favouriteHelperMessages = favouriteHelperMessages;
   public activeMapItems: ActiveMapItem[] = [];
+  public isMinimized = false;
+
   private readonly activeMapItems$ = this.store.select(selectActiveMapItems);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
   private readonly subscription: Subscription = new Subscription();
@@ -57,6 +59,10 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
       panelClass: PanelClass.API_WRAPPER_DIALOG,
       restoreFocus: false
     });
+  }
+
+  public toggleMinimizeActiveMapItems() {
+    this.isMinimized = !this.isMinimized;
   }
 
   private initSubscriptions() {

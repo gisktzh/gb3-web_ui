@@ -26,9 +26,20 @@
           <mat-icon>star_outlined</mat-icon>
         </button>
       </span>
+      <mat-divider class="active-map-items__header__buttons__divider" [vertical]="true"></mat-divider>
+      <button (click)="toggleMinimizeActiveMapItems()" mat-icon-button>
+        <mat-icon [fontIcon]="isMinimized ? 'arrow_drop_down' : 'arrow_drop_up'"></mat-icon>
+      </button>
     </div>
   </mat-card-header>
-  <mat-accordion (cdkDropListDropped)="dropMapItem($event)" cdkDropList class="active-map-items__content" displayMode="flat" multi="true">
+  <mat-accordion
+    (cdkDropListDropped)="dropMapItem($event)"
+    cdkDropList
+    class="active-map-items__content"
+    displayMode="flat"
+    multi="true"
+    [ngClass]="{'active-map-items__content--hidden': isMinimized || activeMapItems.length === 0}"
+  >
     <ng-container
       *ngFor="
         let activeMapItem of activeMapItems;
@@ -42,6 +53,7 @@
         [isFirstActiveMapItem]="isFirstActiveMapItem"
         [isLastActiveMapItem]="isLastActiveMapItem"
         cdkDrag
+        cdkDragBoundary="active-map-items"
         class="active-map-items__content__item"
       >
         <ng-container activeMapItemDragHandle>

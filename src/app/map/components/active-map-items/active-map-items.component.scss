@@ -16,7 +16,7 @@
     background-color: ktzh-variables.$zh-dark-background-color;
     color: ktzh-variables.$zh-dark-foreground-color;
     font-family: ktzh-variables.$zh-font-family;
-    padding: 0 24px 0 24px;
+    padding: 0 6px 0 24px;
     height: 48px;
 
     .active-map-items__header__title {
@@ -69,12 +69,16 @@
     justify-content: center;
     margin: 12px 24px 12px 24px;
 
+    &--hidden {
+      display: none;
+    }
+
     .active-map-items__content__item {
       width: 100%;
       position: relative;
 
       &--drag-placeholder {
-        @include mat-mixins.cdk-drag-placeholder(68px);
+        @include mat-mixins.cdk-drag-placeholder(62px);
       }
 
       .active-map-items__content__item__drag-handle {
