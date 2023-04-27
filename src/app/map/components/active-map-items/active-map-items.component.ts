@@ -5,7 +5,6 @@ import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.a
 import {selectActiveMapItems} from '../../../state/map/reducers/active-map-item.reducer';
 import {Subscription, tap} from 'rxjs';
 import {ActiveMapItem} from '../../models/active-map-item.model';
-import {LegendActions} from '../../../state/map/actions/legend.actions';
 import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.reducer';
 import {MatDialog} from '@angular/material/dialog';
 import {FavouriteCreationDialogComponent} from '../favourite-creation-dialog/favourite-creation-dialog.component';
@@ -24,16 +23,12 @@ const favouriteHelperMessages = {
 export class ActiveMapItemsComponent implements OnInit, OnDestroy {
   public isAuthenticated: boolean = false;
   public favouriteHelperMessages = favouriteHelperMessages;
+  public activeMapItems: ActiveMapItem[] = [];
   private readonly activeMapItems$ = this.store.select(selectActiveMapItems);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
   private readonly subscription: Subscription = new Subscription();
-  private _activeMapItems: ActiveMapItem[] = [];
 
   constructor(private readonly store: Store, private readonly dialogService: MatDialog) {}
-
-  public get activeMapItems(): ActiveMapItem[] {
-    return this._activeMapItems;
-  }
 
   public ngOnInit() {
     this.initSubscriptions();
@@ -57,10 +52,6 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
     this.store.dispatch(ActiveMapItemActions.removeAllActiveMapItems());
   }
 
-  public toggleLegend() {
-    this.store.dispatch(LegendActions.showLegend());
-  }
-
   public showFavouriteDialog() {
     this.dialogService.open(FavouriteCreationDialogComponent, {
       panelClass: PanelClass.API_WRAPPER_DIALOG,
@@ -73,7 +64,7 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
       this.activeMapItems$
         .pipe(
           tap((currentActiveMapItems) => {
-            this._activeMapItems = currentActiveMapItems;
+            this.activeMapItems = currentActiveMapItems;
           })
         )
         .subscribe()

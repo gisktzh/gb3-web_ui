@@ -1,3 +1,6 @@
+@use 'mixins/helpers.mixin' as mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
 .map-container {
   height: 100%;
 
@@ -12,18 +15,31 @@
     overflow-y: hidden;
 
     .all-map-items-container__active-map-items {
+      @include mixins.map-element-box-shadow;
       display: flex;
       max-height: 50%;
       padding-bottom: 15px;
     }
 
     .all-map-items-container__map-data-catalogue {
+      @include mixins.map-element-box-shadow;
       display: flex;
       min-height: 50%;
     }
   }
 
+  .map-container__legend-button {
+    @include mixins.map-element-box-shadow;
+    position: absolute;
+    top: 80px;
+    left: 480px;
+    height: 48px;
+    width: 125px;
+    background-color: ktzh-variables.$zh-white;
+  }
+
   .map-container__map-attribute-filter {
+    @include mixins.map-element-box-shadow;
     position: absolute;
     top: 132px; // starting at the first 'active map item' position
     left: 480px;

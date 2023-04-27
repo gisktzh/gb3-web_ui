@@ -17,6 +17,10 @@
   box-shadow: none;
 }
 
+@mixin map-element-box-shadow {
+  box-shadow: 0px 2px 16px rgba(0, 0, 0, 0.2);
+}
+
 @mixin multiline-ellipsis($number-of-lines) {
   -webkit-box-orient: vertical;
   -webkit-line-clamp: $number-of-lines;
