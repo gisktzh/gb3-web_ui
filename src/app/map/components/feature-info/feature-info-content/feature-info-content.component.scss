@@ -1,4 +1,5 @@
 @use 'mixins/helpers.mixin' as mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
 
 .feature-info-content {
   padding-top: 16px;
@@ -19,4 +20,66 @@
       @include mixins.multiline-ellipsis(2);
     }
   }
+}
+
+/** custom */
+.table {
+  width: 100%;
+  text-align: left;
+  border-collapse: collapse;
+  font-size: small;
+
+  & tr {
+    vertical-align: top;
+  }
+
+  & > tr > th:nth-of-type(1) {
+    min-width: 130px;
+    max-width: 130px;
+    position: sticky;
+    left: 0;
+  }
+
+  & > tr > th:not(:first-child) {
+    min-width: 200px;
+    max-width: 200px;
+  }
+
+  & th,
+  td {
+    background-color: ktzh-variables.$zh-white;
+    padding: 7px 8px;
+  }
+
+  // set background color for cells, alternating
+  & tr:nth-child(odd) {
+    & > th,
+    td {
+      background-color: ktzh-variables.$zh-black20;
+    }
+  }
+
+  // override the upper left cell to be white
+  & > tr:first-child > th:first-child {
+    background-color: ktzh-variables.$zh-white;
+  }
+
+  & .key-column {
+    border-right: 1px solid black;
+  }
+}
+
+.highlighted {
+  border-left: 1px solid ktzh-variables.$zh-active-blue !important;
+  border-right: 1px solid ktzh-variables.$zh-active-blue !important;
+}
+
+tr:first-of-type > th.highlighted {
+  background-color: ktzh-variables.$zh-active-blue !important;
+}
+
+tr:last-of-type > td.highlighted {
+  border-left: 1px solid ktzh-variables.$zh-active-blue !important;
+  border-right: 1px solid ktzh-variables.$zh-active-blue !important;
+  border-bottom: 1px solid ktzh-variables.$zh-active-blue !important;
 }

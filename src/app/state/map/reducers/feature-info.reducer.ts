@@ -26,6 +26,9 @@ export const featureInfoFeature = createFeature({
     }),
     on(FeatureInfoActions.highlightFeature, (state, {feature}): FeatureInfoState => {
       return {...state, highlightedFeature: feature};
+    }),
+    on(FeatureInfoActions.clearHighlight, (state): FeatureInfoState => {
+      return {...state, highlightedFeature: undefined};
     })
   )
 });

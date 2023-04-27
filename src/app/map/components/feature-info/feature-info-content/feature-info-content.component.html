@@ -1,20 +1,35 @@
-<!-- Todo: Styling for feature info; the tables will be components as well I guess -->
-<div *ngFor="let layerInfo of this.featureInfo.layers" class="feature-info">
-  <div class="feature-info__title">{{ layerInfo.title }} ({{ layerInfo.features.length }} Treffer)</div>
-  <ng-container *ngFor="let feature of layerInfo.features; index as i">
-    <b>Treffer {{ i + 1 }}/{{ layerInfo.features.length }}</b>
-    <button
-      class="mat-raised-button feature-info__highlight-button"
-      data-test-id="highlight"
-      (click)="this.highlightFeature(feature.geometry)"
-    >
-      Highlight
-    </button>
-    <div class="feature-info__content">
-      <ng-container *ngFor="let data of feature.fields">
-        <div class="feature-info__content__label">{{ data.label }}</div>
-        <div class="feature-info__content__value">{{ data.value }}</div>
-      </ng-container>
-    </div>
-  </ng-container>
+<div style="width: 100%; overflow: auto; padding-top: 20px">
+  <table class="table">
+    <tr>
+      <th class="key-column"></th>
+      <th
+        *ngFor="let tableHeader of this.tableHeaders; let i = index"
+        (mouseenter)="this.highlightFeature(tableHeader.geometry, tableHeader.fid)"
+        (mouseleave)="this.removeHighlight(tableHeader.fid)"
+        [attr.data-featureId]="tableHeader.fid"
+      >
+        {{ tableHeader.displayValue }}
+        <button
+          (click)="this.highlightFeature(tableHeader.geometry, tableHeader.fid)"
+          class="mat-raised-button feature-info__highlight-button"
+          data-test-id="highlight"
+        >
+          X
+        </button>
+      </th>
+    </tr>
+    <ng-container *ngFor="let tableRow of this.tableRows | keyvalue">
+      <tr>
+        <th class="key-column">{{ tableRow.key }}</th>
+        <td
+          *ngFor="let cellValue of tableRow.value"
+          [attr.data-featureId]="cellValue.fid"
+          (mouseenter)="this.highlightFeature(null, cellValue.fid)"
+          (mouseleave)="this.removeHighlight(cellValue.fid)"
+        >
+          {{ cellValue.displayValue }}
+        </td>
+      </tr>
+    </ng-container>
+  </table>
 </div>
