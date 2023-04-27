@@ -12,6 +12,8 @@ type TabType = 'layers' | 'settings';
 })
 export class ActiveMapItemComponent {
   @Input() public activeMapItem!: ActiveMapItem;
+  @Input() public isFirstActiveMapItem: boolean = false;
+  @Input() public isLastActiveMapItem: boolean = false;
 
   public activeTab: TabType = 'layers';
 

@@ -71,6 +71,7 @@
 
     .active-map-items__content__item {
       width: 100%;
+      position: relative;
 
       &--drag-placeholder {
         @include mat-mixins.cdk-drag-placeholder(68px);

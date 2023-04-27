@@ -1,3 +1,7 @@
+<div
+  class="active-map-item__connection-line active-map-item__connection-line-top"
+  *ngIf="!isFirstActiveMapItem && !activeMapItemExpansionPanel.expanded"
+></div>
 <mat-expansion-panel
   #activeMapItemExpansionPanel
   [@slideInOut]
@@ -57,3 +61,4 @@
     </div>
   </ng-template>
 </mat-expansion-panel>
+<div class="active-map-item__connection-line active-map-item__connection-line-bottom" *ngIf="!isLastActiveMapItem"></div>

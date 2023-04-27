@@ -29,8 +29,21 @@
     </div>
   </mat-card-header>
   <mat-accordion (cdkDropListDropped)="dropMapItem($event)" cdkDropList class="active-map-items__content" displayMode="flat" multi="true">
-    <ng-container *ngFor="let activeMapItem of activeMapItems; trackBy: trackByMapItemId">
-      <active-map-item [activeMapItem]="activeMapItem" cdkDrag class="active-map-items__content__item">
+    <ng-container
+      *ngFor="
+        let activeMapItem of activeMapItems;
+        trackBy: trackByMapItemId;
+        let isFirstActiveMapItem = first;
+        let isLastActiveMapItem = last
+      "
+    >
+      <active-map-item
+        [activeMapItem]="activeMapItem"
+        [isFirstActiveMapItem]="isFirstActiveMapItem"
+        [isLastActiveMapItem]="isLastActiveMapItem"
+        cdkDrag
+        class="active-map-items__content__item"
+      >
         <ng-container activeMapItemDragHandle>
           <!-- The CDK drag handle is not detected within a child component; therefore, it's necessary to pass it down using ng-content
                More information: https://stackoverflow.com/questions/54773383/cdkdraghandle-doesnt-work-inside-child-component
