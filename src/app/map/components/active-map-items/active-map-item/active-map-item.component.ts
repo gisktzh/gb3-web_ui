@@ -2,6 +2,8 @@ import {Component, Input} from '@angular/core';
 import {ActiveMapItem} from '../../../models/active-map-item.model';
 import {slideInOutAnimation} from '../../../../shared/animations/slideInOut.animation';
 
+type TabType = 'layers' | 'settings';
+
 @Component({
   selector: 'active-map-item',
   templateUrl: './active-map-item.component.html',
@@ -10,4 +12,10 @@ import {slideInOutAnimation} from '../../../../shared/animations/slideInOut.anim
 })
 export class ActiveMapItemComponent {
   @Input() public activeMapItem!: ActiveMapItem;
+
+  public activeTab: TabType = 'layers';
+
+  public changeTabs(tab: TabType) {
+    this.activeTab = tab;
+  }
 }

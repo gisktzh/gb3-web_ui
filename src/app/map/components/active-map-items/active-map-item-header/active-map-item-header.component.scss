@@ -1,14 +1,15 @@
 @use 'functions/helper.function' as functions;
 @use 'mixins/helpers.mixin' as mixins;
+@use 'mixins/material.mixin' as mat-mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
 .active-map-item-header {
   display: flex;
   flex-direction: row;
   align-items: center;
-  overflow: hidden;
   width: 100%;
   height: 44px;
+  padding: 0;
 
   &:hover .active-map-item-header__title-container__options {
     display: flex !important;
@@ -27,11 +28,11 @@
     .active-map-item-header__image-container__checkbox {
       position: absolute;
       @include mixins.center-absolute-element;
-      @include mixins.mat-checkbox-override-color(ktzh-variables.$zh-active-blue, ktzh-variables.$zh-white);
+      @include mat-mixins.mat-checkbox-override-color(ktzh-variables.$zh-active-blue, ktzh-variables.$zh-white);
 
       ::ng-deep {
         .mdc-checkbox__ripple {
-          opacity: 0;
+          display: none;
         }
       }
     }
@@ -58,7 +59,6 @@
       margin-top: auto;
       margin-bottom: auto;
       padding-left: 1em;
-      overflow: hidden;
     }
 
     .active-map-item-header__title-container__options {

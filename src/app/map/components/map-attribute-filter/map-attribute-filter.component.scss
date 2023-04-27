@@ -1,4 +1,5 @@
 @use 'mixins/helpers.mixin' as mixins;
+@use 'mixins/material.mixin' as mat-mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
 .attribute-filter {
@@ -34,7 +35,7 @@
       padding-left: 16px;
 
       &--unchecked {
-        @include mixins.mat-checkbox--unchecked;
+        @include mat-mixins.mat-checkbox-text--unchecked;
       }
     }
   }

@@ -1,4 +1,4 @@
-@use 'mixins/helpers.mixin' as mixins;
+@use 'mixins/material.mixin' as mat-mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
 .active-map-item-settings {
@@ -25,13 +25,13 @@
 
       ::ng-deep {
         .mat-badge-content {
-          @include mixins.mat-badge-inherit-size;
+          @include mat-mixins.mat-badge-inherit-size;
         }
       }
     }
 
     .active-map-item-settings__attribute-filter__button {
-      @include mixins.mat-button--align-icon-right;
+      @include mat-mixins.mat-button--align-icon-right;
       color: ktzh-variables.$zh-active-blue;
     }
   }

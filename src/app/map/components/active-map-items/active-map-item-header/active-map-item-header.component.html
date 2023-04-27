@@ -1,55 +1,52 @@
 <div class="active-map-item-header">
-  <div class="active-map-item-header">
-    <button
-      (click)="activeMapItemExpansionPanel.toggle()"
-      [attr.data-test-id]="activeMapItemExpansionPanel.expanded ? 'hide-layers-of-the-map' : 'show-layers-of-the-map'"
-      mat-icon-button
+  <button
+    (click)="activeMapItemExpansionPanel.toggle()"
+    [attr.data-test-id]="activeMapItemExpansionPanel.expanded ? 'hide-layers-of-the-map' : 'show-layers-of-the-map'"
+    mat-icon-button
+  >
+    <mat-icon [fontIcon]="activeMapItemExpansionPanel.expanded ? 'arrow_drop_down' : 'arrow_right'"></mat-icon>
+  </button>
+  <div class="active-map-item-header__image-container">
+    <img
+      *ngIf="!activeMapItem.isSingleLayer"
+      class="active-map-item-header__image-container__image"
+      [alt]="activeMapItem.title"
+      [src]="activeMapItem.mapImageUrl"
+    />
+    <mat-checkbox
+      class="active-map-item-header__image-container__checkbox"
+      [checked]="activeMapItem.visible"
+      (change)="toggleMapItemVisibility(activeMapItem)"
+    ></mat-checkbox>
+  </div>
+  <div class="active-map-item-header__title-container">
+    <p class="active-map-item-header__title-container__title" matTooltip="{{ activeMapItem.title }}">{{ activeMapItem.title }}</p>
+    <div
+      class="active-map-item-header__title-container__options"
+      [ngClass]="{'active-map-item-header__title-container__options--active': activeMapItemExpansionPanel.expanded}"
     >
-      <mat-icon [fontIcon]="activeMapItemExpansionPanel.expanded ? 'arrow_drop_down' : 'arrow_right'"></mat-icon>
-    </button>
-    <div class="active-map-item-header__image-container">
-      <img
-        *ngIf="!activeMapItem.isSingleLayer"
-        class="active-map-item-header__image-container__image"
-        [alt]="activeMapItem.title"
-        [src]="activeMapItem.mapImageUrl"
-      />
-      <mat-checkbox
-        class="active-map-item-header__image-container__checkbox"
-        [checked]="activeMapItem.visible"
-        (change)="toggleMapItemVisibility(activeMapItem)"
-      ></mat-checkbox>
-    </div>
-    <div class="active-map-item-header__title-container">
-      <p class="active-map-item-header__title-container__title" matTooltip="{{ activeMapItem.title }}">{{ activeMapItem.title }}</p>
-      <div
-        class="active-map-item-header__title-container__options"
-        [ngClass]="{'active-map-item-header__title-container__options--active': activeMapItemExpansionPanel.expanded}"
-      >
-        <button (click)="showActiveMapItemInfo(activeMapItem)" mat-icon-button data-test-id="delete">
-          <mat-icon>info</mat-icon>
-        </button>
-        <mat-divider
-          class="active-map-item-header__divider"
-          [ngClass]="{'active-map-item-header__divider--active': activeMapItemExpansionPanel.expanded}"
-          [vertical]="true"
-        ></mat-divider>
-        <button (click)="removeActiveMapItem(activeMapItem)" mat-icon-button data-test-id="delete">
-          <mat-icon>delete</mat-icon>
-        </button>
-        <mat-divider
-          class="active-map-item-header__divider"
-          [ngClass]="{'active-map-item-header__divider--active': activeMapItemExpansionPanel.expanded}"
-          [vertical]="true"
-        ></mat-divider>
-      </div>
-    </div>
-    <div class="active-map-item-header__drag-handle">
-      <ng-content select="[activeMapItemDragHandle]"></ng-content>
-      <mat-icon class="active-map-item-header__drag-handle__icon" cdkDragHandle>drag_indicator</mat-icon>
+      <button (click)="showActiveMapItemInfo(activeMapItem)" mat-icon-button data-test-id="delete">
+        <mat-icon>info</mat-icon>
+      </button>
+      <mat-divider
+        class="active-map-item-header__divider"
+        [ngClass]="{'active-map-item-header__divider--active': activeMapItemExpansionPanel.expanded}"
+        [vertical]="true"
+      ></mat-divider>
+      <button (click)="removeActiveMapItem(activeMapItem)" mat-icon-button data-test-id="delete">
+        <mat-icon>delete</mat-icon>
+      </button>
+      <mat-divider
+        class="active-map-item-header__divider"
+        [ngClass]="{'active-map-item-header__divider--active': activeMapItemExpansionPanel.expanded}"
+        [vertical]="true"
+      ></mat-divider>
     </div>
   </div>
-  <div class="active-map-item-header__drag-placeholder" *cdkDragPlaceholder></div>
+  <div class="active-map-item-header__drag-handle">
+    <ng-content select="[activeMapItemDragHandle]"></ng-content>
+    <mat-icon class="active-map-item-header__drag-handle__icon" cdkDragHandle>drag_indicator</mat-icon>
+  </div>
   <loading-and-process-bar
     [loadingState]="activeMapItem.loadingState"
     [viewProcessState]="activeMapItem.viewProcessState"

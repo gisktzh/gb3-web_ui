@@ -1,5 +1,6 @@
 @use 'functions/helper.function' as functions;
 @use 'mixins/helpers.mixin' as mixins;
+@use 'mixins/material.mixin' as mat-mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
 .active-map-items {
@@ -38,7 +39,7 @@
       ::ng-deep {
         .mat-badge-content {
           width: auto;
-          @include mixins.mat-badge-inherit-size;
+          @include mat-mixins.mat-badge-inherit-size;
           background-color: ktzh-variables.$zh-white;
           color: ktzh-variables.$zh-black100;
         }
@@ -72,11 +73,11 @@
       width: 100%;
 
       &--drag-placeholder {
-        @include mixins.cdk-drag-placeholder(68px);
+        @include mat-mixins.cdk-drag-placeholder(68px);
       }
 
       .active-map-items__content__item__drag-handle {
-        @include mixins.cdk-drag-handle-nested;
+        @include mat-mixins.cdk-drag-handle-nested;
       }
     }
   }

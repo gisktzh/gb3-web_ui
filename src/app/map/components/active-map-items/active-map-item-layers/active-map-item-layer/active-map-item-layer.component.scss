@@ -1,4 +1,5 @@
 @use 'mixins/helpers.mixin' as mixins;
+@use 'mixins/material.mixin' as mat-mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
 .active-map-item-layer {
@@ -35,7 +36,7 @@
   }
 
   .active-map-item-layer__checkbox {
-    @include mixins.mat-checkbox-override-color(ktzh-variables.$zh-active-blue, ktzh-variables.$zh-white);
+    @include mat-mixins.mat-checkbox-override-color(ktzh-variables.$zh-active-blue, ktzh-variables.$zh-white);
   }
 
   .active-map-item-layer__title {
