@@ -21,6 +21,7 @@ $zh-violet: #7f3da7;
 $zh-black20: #cccccc; // todo: the palettes don't match up with figma?
 $zh-black40: #999999;
 $zh-black50: #808080;
+$zh-black60: #666666;
 $zh-black100: #000000;
 $zh-white: #ffffff;
 $zh-print-white: #ffffff;
@@ -32,9 +33,8 @@ $zh-background-color: $zh-white;
 $zh-foreground-color: $zh-black100;
 $zh-border-color: $zh-black40;
 
-$zh-dark-background-color: $zh-darkblue;
-$zh-dark-foreground-color: $zh-white;
-$zh-dark-border-color: $zh-black40;
+$zh-darkblue-background-color: $zh-darkblue;
+$zh-darkblue-foreground-color: $zh-white;
 
 /* Layout variables
 ========================== */
@@ -118,7 +118,7 @@ $zh-active-blue-palette: (
   200: #80cff0,
   300: #4dbbe9,
   400: #26ade5,
-  500: #009ee0,
+  500: $zh-active-blue,
   600: #0096dc,
   700: #008cd8,
   800: #0082d3,

@@ -10,6 +10,7 @@
     <img
       *ngIf="!activeMapItem.isSingleLayer"
       class="active-map-item-header__image-container__image"
+      [ngClass]="{'active-map-item-header__image-container__image--inactive': !activeMapItem.visible}"
       [alt]="activeMapItem.title"
       [src]="activeMapItem.mapImageUrl"
     />
@@ -21,17 +22,26 @@
     ></mat-checkbox>
   </div>
   <div class="active-map-item-header__title-container">
-    <p class="active-map-item-header__title-container__title" matTooltip="{{ activeMapItem.title }}">{{ activeMapItem.title }}</p>
+    <p
+      class="active-map-item-header__title-container__title"
+      [ngClass]="{
+        'active-map-item-header__title-container__title--inactive': !activeMapItem.visible,
+        'active-map-item-header__title-container__title--inverted': activeMapItemExpansionPanel.expanded
+      }"
+      matTooltip="{{ activeMapItem.title }}"
+    >
+      {{ activeMapItem.title }}
+    </p>
     <div
       class="active-map-item-header__title-container__options"
-      [ngClass]="{'active-map-item-header__title-container__options--active': activeMapItemExpansionPanel.expanded}"
+      [ngClass]="{'active-map-item-header__title-container__options--inverted': activeMapItemExpansionPanel.expanded}"
     >
-      <button (click)="showActiveMapItemInfo(activeMapItem)" mat-icon-button data-test-id="delete">
+      <button (click)="showActiveMapItemInfo(activeMapItem)" mat-icon-button data-test-id="info">
         <mat-icon>info</mat-icon>
       </button>
       <mat-divider
         class="active-map-item-header__divider"
-        [ngClass]="{'active-map-item-header__divider--active': activeMapItemExpansionPanel.expanded}"
+        [ngClass]="{'active-map-item-header__divider--inverted': activeMapItemExpansionPanel.expanded}"
         [vertical]="true"
       ></mat-divider>
       <button (click)="removeActiveMapItem(activeMapItem)" mat-icon-button data-test-id="delete">
@@ -39,7 +49,7 @@
       </button>
       <mat-divider
         class="active-map-item-header__divider"
-        [ngClass]="{'active-map-item-header__divider--active': activeMapItemExpansionPanel.expanded}"
+        [ngClass]="{'active-map-item-header__divider--inverted': activeMapItemExpansionPanel.expanded}"
         [vertical]="true"
       ></mat-divider>
     </div>

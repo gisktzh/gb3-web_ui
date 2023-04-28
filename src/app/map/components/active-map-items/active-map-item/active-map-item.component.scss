@@ -10,8 +10,8 @@
   border-radius: ktzh-variables.$zh-border-radius !important;
 
   &--expanded {
-    background-color: ktzh-variables.$zh-dark-background-color;
-    color: ktzh-variables.$zh-dark-foreground-color;
+    background-color: ktzh-variables.$zh-darkblue-background-color;
+    color: ktzh-variables.$zh-darkblue-foreground-color;
   }
 
   ::ng-deep .mat-expansion-panel-content > .mat-expansion-panel-body {
@@ -22,6 +22,7 @@
     height: 44px;
     width: 100%;
     padding: 0;
+    // overwrite the 'pointer' cursor from the expansion panel
     cursor: default;
 
     ::ng-deep .mat-content {
@@ -32,7 +33,7 @@
       background-color: transparent;
     }
 
-    .active-map-item__header__active-map-item-header {
+    .active-map-item__header__item {
       width: 100%;
     }
   }
@@ -51,11 +52,11 @@
 
         .active-map-item__tabs__header__buttons__button {
           width: 100%;
-          color: ktzh-variables.$zh-dark-foreground-color;
+          color: ktzh-variables.$zh-darkblue-foreground-color;
           background-color: ktzh-variables.$zh-midnightblue;
 
-          &--active {
-            background-color: ktzh-variables.$zh-dark-background-color;
+          &--selected {
+            background-color: ktzh-variables.$zh-darkblue-background-color;
           }
         }
       }
@@ -74,16 +75,8 @@
       -moz-box-sizing: border-box; /* Firefox, other Gecko */
       box-sizing: border-box; /* Opera/IE 8+ */
 
-      &--expanded {
-        border-color: ktzh-variables.$zh-dark-background-color;
-      }
-
-      .active-map-item__tabs__content__item {
-        display: block;
-
-        &--hidden {
-          display: none;
-        }
+      &--inverted {
+        border-color: ktzh-variables.$zh-darkblue-background-color;
       }
     }
   }

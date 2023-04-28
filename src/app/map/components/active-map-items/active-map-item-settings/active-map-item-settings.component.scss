@@ -22,12 +22,7 @@
       width: 22px;
       height: 22px;
       margin: 0;
-
-      ::ng-deep {
-        .mat-badge-content {
-          @include mat-mixins.mat-badge-inherit-size;
-        }
-      }
+      @include mat-mixins.mat-badge-inherit-size;
     }
 
     .active-map-item-settings__attribute-filter__button {

@@ -23,6 +23,10 @@
     .active-map-item-header__image-container__image {
       aspect-ratio: 1 / 1;
       height: 100%;
+
+      &--inactive {
+        opacity: 0.2;
+      }
     }
 
     .active-map-item-header__image-container__checkbox {
@@ -45,8 +49,8 @@
     height: 40%;
     border-right-color: ktzh-variables.$zh-foreground-color;
 
-    &--active {
-      border-right-color: ktzh-variables.$zh-dark-foreground-color;
+    &--inverted {
+      border-right-color: ktzh-variables.$zh-darkblue-foreground-color;
     }
   }
 
@@ -62,6 +66,14 @@
       margin-top: auto;
       margin-bottom: auto;
       padding-left: 1em;
+
+      &--inactive {
+        color: ktzh-variables.$zh-black40;
+      }
+
+      &--inverted.active-map-item-header__title-container__title--inactive {
+        color: ktzh-variables.$zh-black20;
+      }
     }
 
     .active-map-item-header__title-container__options {
@@ -69,7 +81,7 @@
       grid-row: 1;
       justify-self: right;
 
-      display: none;
+      display: none; // if visible: 'flex'
       flex-direction: row;
       justify-content: right;
       align-items: center;
@@ -77,9 +89,9 @@
       width: 142px;
       background: linear-gradient(90deg, transparent 0%, ktzh-variables.$zh-background-color 37.5%);
 
-      &--active {
+      &--inverted {
         display: flex;
-        background: linear-gradient(90deg, transparent 0%, ktzh-variables.$zh-dark-background-color 37.5%);
+        background: linear-gradient(90deg, transparent 0%, ktzh-variables.$zh-darkblue-background-color 37.5%);
       }
     }
   }

@@ -2,7 +2,7 @@
 <div class="active-map-item-layers" cdkDropList (cdkDropListDropped)="dropSublayer($event)">
   <ng-container *ngFor="let layer of activeMapItem.layers; trackBy: trackByLayerId">
     <!-- Sublayer (only shown if it is not marked as 'hidden') -->
-    <div class="active-map-item-layers__item" cdkDrag cdkDragBoundary="active-map-item-layers" *ngIf="!layer.isHidden">
+    <div class="active-map-item-layers__item" cdkDrag dragCursor *ngIf="!layer.isHidden">
       <active-map-item-layer [activeMapItem]="activeMapItem" [layer]="layer">
         <ng-container activeMapItemLayerDragHandle>
           <!-- The CDK drag handle is not detected within a child component; therefore, it's necessary to pass it down using ng-content

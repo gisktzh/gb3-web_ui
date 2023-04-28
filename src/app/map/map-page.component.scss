@@ -48,6 +48,8 @@
   }
 
   .map-container__search-window {
+    // TODO this currently leads to some 'ghost' shadows as the element is always present over the whole screen (even when the content is invisible)
+    //@include mixins.map-element-box-shadow;
     position: absolute;
     top: 89px;
     right: 25px;

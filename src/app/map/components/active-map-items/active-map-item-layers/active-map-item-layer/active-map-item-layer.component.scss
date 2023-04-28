@@ -12,19 +12,6 @@
   background-color: background;
 
   .active-map-item-layer__drag-handle {
-    min-width: 24px;
-    cursor: grab;
-
-    &:active {
-      cursor: grabbing;
-    }
-
-    &:disabled {
-      cursor: inherit;
-    }
-  }
-
-  .active-map-item-layer__drag-handle {
     min-width: 44px;
     height: 44px;
     display: grid;
