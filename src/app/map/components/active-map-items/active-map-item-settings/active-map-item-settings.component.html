@@ -1,0 +1,37 @@
+<div class="active-map-item-settings">
+  <!-- Opacity -->
+  <ktzh-slider-wrapper title="Transparenz" [value]="formattedCurrentOpacity" minValue="0%" maxValue="100%">
+    <ng-container content>
+      <mat-slider [min]="0" [max]="1" [step]="0.01" color="primary" class="active-map-item-settings__transparency__slider">
+        <input matSliderThumb [(ngModel)]="currentOpacity" (valueChange)="onOpacitySliderChange($event)" />
+      </mat-slider>
+    </ng-container>
+  </ktzh-slider-wrapper>
+
+  <!-- Time slider -->
+  <ng-container *ngIf="activeMapItem.timeSliderConfiguration && activeMapItem.timeSliderExtent">
+    <mat-divider class="active-map-item-settings__divider"></mat-divider>
+    <time-slider
+      [initialTimeExtent]="activeMapItem.timeSliderExtent"
+      [timeSliderConfiguration]="activeMapItem.timeSliderConfiguration"
+      (timeExtentChanged)="onTimeSliderExtentChange($event)"
+    ></time-slider>
+  </ng-container>
+
+  <!-- Attribute filter -->
+  <ng-container *ngIf="activeMapItem.filterConfigurations">
+    <mat-divider class="active-map-item-settings__divider"></mat-divider>
+    <div class="active-map-item-settings__attribute-filter">
+      <p
+        *ngIf="numberOfChangedFilters > 0"
+        class="active-map-item-settings__attribute-filter__badge"
+        [matBadge]="numberOfChangedFilters"
+        matBadgePosition="before"
+      ></p>
+      <button class="active-map-item-settings__attribute-filter__button" mat-button (click)="showMapAttributeFilters()">
+        <mat-icon>east</mat-icon>
+        <strong>Attributfilter</strong>
+      </button>
+    </div>
+  </ng-container>
+</div>

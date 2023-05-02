@@ -2,12 +2,19 @@
   <map></map>
   <legend (printLegendEvent)="this.showPrint('legend')"></legend>
   <div class="map-container__all-map-items-container">
-    <active-map-items-widget
-      class="all-map-items-container__active-map-items-widget"
+    <active-map-items
+      class="map-container__all-map-items-container__active-map-items"
       typedTourAnchor="map.active.map.items"
-    ></active-map-items-widget>
-    <map-data-catalogue class="all-map-items-container__map-data-catalogue" typedTourAnchor="map.catalogue"></map-data-catalogue>
+    ></active-map-items>
+    <map-data-catalogue
+      class="map-container__all-map-items-container__map-data-catalogue"
+      typedTourAnchor="map.catalogue"
+    ></map-data-catalogue>
   </div>
+  <button mat-flat-button (click)="this.toggleLegend()" [disabled]="activeMapItems.length === 0" class="map-container__legend-button">
+    <mat-icon>map</mat-icon>
+    Legende
+  </button>
   <map-attribute-filter class="map-container__map-attribute-filter"></map-attribute-filter>
   <feature-info (printFeatureInfoEvent)="this.showPrint('featureInfo')"></feature-info>
   <search-window class="map-container__search-window"></search-window>

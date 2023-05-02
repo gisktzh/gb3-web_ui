@@ -1,0 +1,15 @@
+@use 'mixins/material.mixin' as mat-mixins;
+
+.active-map-item-layers {
+  .active-map-item-layers__item {
+    width: 100%;
+
+    &--drag-placeholder {
+      @include mat-mixins.cdk-drag-placeholder(38px);
+    }
+
+    .active-map-item-layers__item__drag-handle {
+      @include mat-mixins.cdk-drag-handle-nested;
+    }
+  }
+}
