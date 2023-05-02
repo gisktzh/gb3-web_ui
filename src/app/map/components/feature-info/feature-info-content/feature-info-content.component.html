@@ -4,19 +4,19 @@
       <th class="feature-info-content__table__row__column feature-info-content__table__row__column--header"></th>
       <th
         *ngFor="let tableHeader of this.tableHeaders"
-        (mouseenter)="this.addHighlightForFeature(tableHeader.fid)"
-        (mouseleave)="this.removeHighlightForFeature(tableHeader.fid)"
+        (mouseenter)="this.addHoverHighlightForFeature(tableHeader.fid)"
+        (mouseleave)="this.removeHoverHighlightForFeature(tableHeader.fid)"
         [attr.data-fid]="tableHeader.fid"
         class="feature-info-content__table__row__column feature-info-content__table__row__column--header"
       >
         {{ tableHeader.displayValue }}
-        <button
-          (click)="this.addHighlightForFeature(tableHeader.fid)"
-          class="mat-raised-button feature-info__highlight-button"
-          data-test-id="highlight"
+        <mat-radio-button
+          #highlightButton
+          (click)="this.toggleHighlightForFeature(tableHeader.fid, highlightButton)"
+          labelPosition="before"
         >
-          X
-        </button>
+          Markieren:
+        </mat-radio-button>
       </th>
     </tr>
     <ng-container *ngFor="let tableRow of this.tableRows | keyvalue">
@@ -25,8 +25,8 @@
         <td
           *ngFor="let cellValue of tableRow.value"
           [attr.data-fid]="cellValue.fid"
-          (mouseenter)="this.addHighlightForFeature(cellValue.fid)"
-          (mouseleave)="this.removeHighlightForFeature(cellValue.fid)"
+          (mouseenter)="this.addHoverHighlightForFeature(cellValue.fid)"
+          (mouseleave)="this.removeHoverHighlightForFeature(cellValue.fid)"
           class="feature-info-content__table__row__column"
         >
           {{ cellValue.displayValue }}

@@ -1,10 +1,13 @@
-import {Component, Inject, Input, OnInit} from '@angular/core';
+import {Component, Inject, Input, OnDestroy, OnInit} from '@angular/core';
 import {ConfigService} from '../../../../shared/services/config.service';
 import {FeatureInfoResultLayer} from '../../../../shared/interfaces/feature-info.interface';
 import {FeatureInfoActions} from '../../../../state/map/actions/feature-info.actions';
 import {Store} from '@ngrx/store';
 import {DOCUMENT} from '@angular/common';
 import {Geometry} from 'geojson';
+import {selectIsPinned} from '../../../../state/map/reducers/feature-info.reducer';
+import {Subscription, tap} from 'rxjs';
+import {MatRadioButton} from '@angular/material/radio';
 
 /**
  * A TableCell represents a single value which is tied to a given feature via its fid.
@@ -39,7 +42,7 @@ const DEFAULT_TABLE_HEADER_PREFIX = 'Resultat';
   templateUrl: './feature-info-content.component.html',
   styleUrls: ['./feature-info-content.component.scss']
 })
-export class FeatureInfoContentComponent implements OnInit {
+export class FeatureInfoContentComponent implements OnInit, OnDestroy {
   @Input() public layer!: FeatureInfoResultLayer;
   public readonly staticFilesBaseUrl: string;
 
@@ -50,6 +53,9 @@ export class FeatureInfoContentComponent implements OnInit {
   public readonly tableHeaders: TableCell[] = [];
 
   private readonly featureGeometries: Map<number, Geometry | null> = new Map();
+  private readonly isPinned$ = this.store.select(selectIsPinned);
+  private readonly subscriptions: Subscription = new Subscription();
+  private isPinned: boolean = false;
 
   constructor(
     private readonly store: Store,
@@ -61,30 +67,62 @@ export class FeatureInfoContentComponent implements OnInit {
 
   public ngOnInit() {
     this.initTableData();
+    this.initSubscriptions();
+  }
+
+  public ngOnDestroy() {
+    this.subscriptions.unsubscribe();
+  }
+
+  public toggleHighlightForFeature(fid: number, highlightButton: MatRadioButton) {
+    if (highlightButton.checked) {
+      this.store.dispatch(FeatureInfoActions.clearHighlight());
+      highlightButton.checked = false;
+    } else {
+      this.highlightFeatureIfExists(fid, true);
+    }
   }
 
   /**
    * Adds the highlight class to all cells for a given feature by using the fid to find all corresponding cells, mimicking a column
-   * selection. It then checks whether the feature has a geometry and, if so, dispatches a highlightFeature action.
+   * selection. Dispatches a highlight request only if no item is currently pinned.
    * @param fid
    */
-  public addHighlightForFeature(fid: number): void {
+  public addHoverHighlightForFeature(fid: number) {
     this.document.querySelectorAll(`[data-fid="${fid}"]`).forEach((cell) => {
       cell.classList.add(HIGHLIGHTED_CELL_CLASS);
     });
 
+    if (!this.isPinned) {
+      this.highlightFeatureIfExists(fid);
+    }
+  }
+
+  /**
+   * Removes the highlight class to all cells for a given feature by using the fid to find all corresponding cells, mimicking a column
+   * selection. Dispatches a clear highlight request only if no item is currently pinned.
+   * @param fid
+   */
+  public removeHoverHighlightForFeature(fid: number) {
+    this.document.querySelectorAll(`[data-fid="${fid}"]`).forEach((cell) => {
+      cell.classList.remove(HIGHLIGHTED_CELL_CLASS);
+    });
+
+    if (!this.isPinned) {
+      this.store.dispatch(FeatureInfoActions.clearHighlight());
+    }
+  }
+
+  private initSubscriptions() {
+    this.subscriptions.add(this.isPinned$.pipe(tap((isPinned) => (this.isPinned = isPinned))).subscribe());
+  }
+
+  private highlightFeatureIfExists(fid: number, isPinned: boolean = false) {
     const feature = this.featureGeometries.get(fid);
     if (!feature) {
       return;
     }
-    this.store.dispatch(FeatureInfoActions.highlightFeature({feature}));
-  }
-
-  public removeHighlightForFeature(fid: number) {
-    this.document.querySelectorAll(`[data-fid="${fid}"]`).forEach((cell) => {
-      cell.classList.remove(HIGHLIGHTED_CELL_CLASS);
-    });
-    this.store.dispatch(FeatureInfoActions.clearHighlight());
+    this.store.dispatch(FeatureInfoActions.highlightFeature({feature, isPinned}));
   }
 
   private getTableHeaderForFeature(fid: number, featureIndex: number, totalFeatures: number): TableCell {

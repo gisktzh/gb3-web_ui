@@ -4,10 +4,17 @@ import {FeatureInfoState} from '../states/feature-info.state';
 
 export const featureInfoFeatureKey = 'featureInfo';
 
+export interface FeatureInfoState extends HasLoadingState {
+  data: FeatureInfoResult[];
+  highlightedFeature: Geometry | undefined;
+  isPinned: boolean;
+}
+
 export const initialState: FeatureInfoState = {
   loadingState: 'undefined',
   data: [],
-  highlightedFeature: undefined
+  highlightedFeature: undefined,
+  isPinned: false
 };
 
 export const featureInfoFeature = createFeature({
@@ -24,13 +31,14 @@ export const featureInfoFeature = createFeature({
       const data = featureInfos.map((featureInfo) => featureInfo.featureInfo.results);
       return {...state, loadingState: 'loaded', data};
     }),
-    on(FeatureInfoActions.highlightFeature, (state, {feature}): FeatureInfoState => {
-      return {...state, highlightedFeature: feature};
+    on(FeatureInfoActions.highlightFeature, (state, {feature, isPinned}): FeatureInfoState => {
+      return {...state, highlightedFeature: feature, isPinned: !!isPinned};
     }),
     on(FeatureInfoActions.clearHighlight, (state): FeatureInfoState => {
-      return {...state, highlightedFeature: undefined};
+      return {...state, highlightedFeature: undefined, isPinned: false};
     })
   )
 });
 
-export const {name, reducer, selectFeatureInfoState, selectLoadingState, selectData, selectHighlightedFeature} = featureInfoFeature;
+export const {name, reducer, selectFeatureInfoState, selectLoadingState, selectData, selectHighlightedFeature, selectIsPinned} =
+  featureInfoFeature;
