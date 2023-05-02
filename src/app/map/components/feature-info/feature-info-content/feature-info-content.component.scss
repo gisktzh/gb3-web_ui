@@ -2,84 +2,72 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
 .feature-info-content {
-  padding-top: 16px;
-
-  .feature-info-item__class-list-entry {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    grid-gap: 12px;
-    padding: 4px 0;
-
-    .feature-info-item__class-list-entry__icon,
-    .feature-info-item__class-list-entry__text {
-      align-self: center;
-      display: flex;
-    }
-
-    .feature-info-item__class-list-entry__text {
-      @include mixins.multiline-ellipsis(2);
-    }
-  }
-}
-
-/** custom */
-.table {
   width: 100%;
-  text-align: left;
-  border-collapse: collapse;
-  font-size: small;
+  overflow: auto;
+  padding-top: 20px;
 
-  & tr {
-    vertical-align: top;
-  }
+  .feature-info-content__table {
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+    font-size: small;
 
-  & > tr > th:nth-of-type(1) {
-    min-width: 130px;
-    max-width: 130px;
-    position: sticky;
-    left: 0;
-  }
+    & .feature-info-content__table__row {
+      vertical-align: top;
 
-  & > tr > th:not(:first-child) {
-    min-width: 200px;
-    max-width: 200px;
-  }
+      // alternate row color with grey for odd rows
+      &:nth-child(odd) {
+        .feature-info-content__table__row__column {
+          background-color: ktzh-variables.$zh-black20;
+        }
+      }
 
-  & th,
-  td {
-    background-color: ktzh-variables.$zh-white;
-    padding: 7px 8px;
-  }
+      // override the upper left cell to be white (as per the design)
+      &:first-child > .feature-info-content__table__row__column--header:first-child {
+        background-color: ktzh-variables.$zh-white;
+      }
 
-  // set background color for cells, alternating
-  & tr:nth-child(odd) {
-    & > th,
-    td {
-      background-color: ktzh-variables.$zh-black20;
+      & .feature-info-content__table__row__column {
+        background-color: ktzh-variables.$zh-white;
+        padding: 7px 8px;
+
+        &--header {
+          // make the left-most column headers sticky and add a right border
+          &:nth-of-type(1) {
+            border-right: 1px solid black;
+            min-width: 130px;
+            max-width: 130px;
+            position: sticky;
+            left: 0;
+          }
+
+          // make all other headers (i.e. top row minus left-most) fixed width for fixed column width
+          &:not(:first-child) {
+            min-width: 200px;
+            max-width: 200px;
+          }
+        }
+
+        // This class is added automatically by Angular when hovered
+        &--highlighted {
+          border-left: 1px solid ktzh-variables.$zh-active-blue !important;
+          border-right: 1px solid ktzh-variables.$zh-active-blue !important;
+        }
+      }
+
+      // Add background on col header on hover
+      &:first-of-type {
+        & .feature-info-content__table__row__column--highlighted {
+          background-color: ktzh-variables.$zh-active-blue !important;
+        }
+      }
+
+      // Add border at the bottom for last column cell
+      &:last-of-type {
+        & .feature-info-content__table__row__column--highlighted {
+          border-bottom: 1px solid ktzh-variables.$zh-active-blue !important;
+        }
+      }
     }
   }
-
-  // override the upper left cell to be white
-  & > tr:first-child > th:first-child {
-    background-color: ktzh-variables.$zh-white;
-  }
-
-  & .key-column {
-    border-right: 1px solid black;
-  }
-}
-
-.highlighted {
-  border-left: 1px solid ktzh-variables.$zh-active-blue !important;
-  border-right: 1px solid ktzh-variables.$zh-active-blue !important;
-}
-
-tr:first-of-type > th.highlighted {
-  background-color: ktzh-variables.$zh-active-blue !important;
-}
-
-tr:last-of-type > td.highlighted {
-  border-left: 1px solid ktzh-variables.$zh-active-blue !important;
-  border-right: 1px solid ktzh-variables.$zh-active-blue !important;
-  border-bottom: 1px solid ktzh-variables.$zh-active-blue !important;
 }

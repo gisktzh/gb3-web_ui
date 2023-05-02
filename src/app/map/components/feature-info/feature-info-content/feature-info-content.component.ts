@@ -55,7 +55,7 @@ export class FeatureInfoContentComponent implements OnInit {
 
   public highlightFeature(feature: Geometry | null, fid: number): void {
     document.querySelectorAll(`[data-featureid="${fid}"]`).forEach((e) => {
-      e.classList.add('highlighted');
+      e.classList.add('feature-info-content__table__row__column--highlighted');
     });
     if (feature === null) {
       const featureWithGeometry = this.tableHeaders.find((f) => f.fid === fid);
@@ -70,7 +70,7 @@ export class FeatureInfoContentComponent implements OnInit {
 
   public removeHighlight(fid: number) {
     document.querySelectorAll(`[data-featureid="${fid}"]`).forEach((e) => {
-      e.classList.remove('highlighted');
+      e.classList.remove('feature-info-content__table__row__column--highlighted');
     });
     this.store.dispatch(FeatureInfoActions.clearHighlight());
   }

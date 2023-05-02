@@ -1,12 +1,13 @@
-<div style="width: 100%; overflow: auto; padding-top: 20px">
-  <table class="table">
-    <tr>
-      <th class="key-column"></th>
+<div class="feature-info-content">
+  <table class="feature-info-content__table">
+    <tr class="feature-info-content__table__row">
+      <th class="feature-info-content__table__row__column feature-info-content__table__row__column--header"></th>
       <th
         *ngFor="let tableHeader of this.tableHeaders; let i = index"
         (mouseenter)="this.highlightFeature(tableHeader.geometry, tableHeader.fid)"
         (mouseleave)="this.removeHighlight(tableHeader.fid)"
         [attr.data-featureId]="tableHeader.fid"
+        class="feature-info-content__table__row__column feature-info-content__table__row__column--header"
       >
         {{ tableHeader.displayValue }}
         <button
@@ -19,13 +20,14 @@
       </th>
     </tr>
     <ng-container *ngFor="let tableRow of this.tableRows | keyvalue">
-      <tr>
-        <th class="key-column">{{ tableRow.key }}</th>
+      <tr class="feature-info-content__table__row">
+        <th class="feature-info-content__table__row__column feature-info-content__table__row__column--header">{{ tableRow.key }}</th>
         <td
           *ngFor="let cellValue of tableRow.value"
           [attr.data-featureId]="cellValue.fid"
           (mouseenter)="this.highlightFeature(null, cellValue.fid)"
           (mouseleave)="this.removeHighlight(cellValue.fid)"
+          class="feature-info-content__table__row__column"
         >
           {{ cellValue.displayValue }}
         </td>
