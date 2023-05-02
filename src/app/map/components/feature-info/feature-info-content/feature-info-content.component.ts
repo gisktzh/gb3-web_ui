@@ -1,13 +1,10 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Inject, Input, OnInit} from '@angular/core';
 import {ConfigService} from '../../../../shared/services/config.service';
-import {
-  FeatureInfoResultFeature,
-  FeatureInfoResultFeatureField,
-  FeatureInfoResultLayer
-} from '../../../../shared/interfaces/feature-info.interface';
-import {Geometry} from 'geojson';
+import {FeatureInfoResultLayer} from '../../../../shared/interfaces/feature-info.interface';
 import {FeatureInfoActions} from '../../../../state/map/actions/feature-info.actions';
 import {Store} from '@ngrx/store';
+import {DOCUMENT} from '@angular/common';
+import {Geometry} from 'geojson';
 
 /**
  * A TableCell represents a single value which is tied to a given feature via its fid.
@@ -18,17 +15,24 @@ interface TableCell {
 }
 
 /**
- * A TableHeader is a special case of a TableCell in that it also contains a feature's geometry.
- */
-interface TableHeader extends TableCell {
-  fid: number;
-  geometry: Geometry;
-}
-
-/**
  * A row consists of a key which represents the attribute value ("header" in the transposed table) and a set of TableCell objects.
  */
 type TableRows = Map<string, TableCell[]>;
+
+/**
+ * Name of the css class which is used to designate a highlighted cell.
+ */
+const HIGHLIGHTED_CELL_CLASS = 'feature-info-content__table__row__column--highlighted';
+
+/**
+ * Default value to be displayed when a field has no value (i.e. undefined)
+ */
+const DEFAULT_CELL_VALUE = '-';
+
+/**
+ * Prefix that is added in front of the result stats (e.g. 1/3, 4/9) in the table header.
+ */
+const DEFAULT_TABLE_HEADER_PREFIX = 'Resultat';
 
 @Component({
   selector: 'feature-info-content',
@@ -43,9 +47,15 @@ export class FeatureInfoContentComponent implements OnInit {
    * The order of the TableCell elements reflects the order of the tableHeaders elements.
    */
   public readonly tableRows: TableRows = new Map<string, TableCell[]>();
-  public readonly tableHeaders: TableHeader[] = [];
+  public readonly tableHeaders: TableCell[] = [];
 
-  constructor(private readonly store: Store, private readonly configService: ConfigService) {
+  private readonly featureGeometries: Map<number, Geometry | null> = new Map();
+
+  constructor(
+    private readonly store: Store,
+    private readonly configService: ConfigService,
+    @Inject(DOCUMENT) private readonly document: Document
+  ) {
     this.staticFilesBaseUrl = this.configService.apiConfig.gb2StaticFiles.baseUrl;
   }
 
@@ -53,36 +63,38 @@ export class FeatureInfoContentComponent implements OnInit {
     this.initTableData();
   }
 
-  public highlightFeature(feature: Geometry | null, fid: number): void {
-    document.querySelectorAll(`[data-featureid="${fid}"]`).forEach((e) => {
-      e.classList.add('feature-info-content__table__row__column--highlighted');
+  /**
+   * Adds the highlight class to all cells for a given feature by using the fid to find all corresponding cells, mimicking a column
+   * selection. It then checks whether the feature has a geometry and, if so, dispatches a highlightFeature action.
+   * @param fid
+   */
+  public addHighlightForFeature(fid: number): void {
+    this.document.querySelectorAll(`[data-fid="${fid}"]`).forEach((cell) => {
+      cell.classList.add(HIGHLIGHTED_CELL_CLASS);
     });
-    if (feature === null) {
-      const featureWithGeometry = this.tableHeaders.find((f) => f.fid === fid);
-      if (!featureWithGeometry) {
-        return;
-      }
-      feature = featureWithGeometry.geometry;
-    }
 
+    const feature = this.featureGeometries.get(fid);
+    if (!feature) {
+      return;
+    }
     this.store.dispatch(FeatureInfoActions.highlightFeature({feature}));
   }
 
-  public removeHighlight(fid: number) {
-    document.querySelectorAll(`[data-featureid="${fid}"]`).forEach((e) => {
-      e.classList.remove('feature-info-content__table__row__column--highlighted');
+  public removeHighlightForFeature(fid: number) {
+    this.document.querySelectorAll(`[data-fid="${fid}"]`).forEach((cell) => {
+      cell.classList.remove(HIGHLIGHTED_CELL_CLASS);
     });
     this.store.dispatch(FeatureInfoActions.clearHighlight());
   }
 
-  private getTableHeaderForFeature(feature: FeatureInfoResultFeature, featureIndex: number, totalFeatures: number): TableHeader {
-    const header = `Resultat ${featureIndex + 1}/${totalFeatures}`;
-    return {displayValue: header, fid: feature.fid, geometry: feature.geometry};
+  private getTableHeaderForFeature(fid: number, featureIndex: number, totalFeatures: number): TableCell {
+    const displayValue = `${DEFAULT_TABLE_HEADER_PREFIX} ${featureIndex + 1}/${totalFeatures}`;
+    return {displayValue, fid};
   }
 
-  private getTableCellForFeatureAndField(feature: FeatureInfoResultFeature, field: FeatureInfoResultFeatureField): TableCell {
-    const parseValue = field.value?.toString() ?? '-';
-    return {fid: feature.fid, displayValue: parseValue};
+  private getTableCellForFeatureAndField(fid: number, value: string | number | null): TableCell {
+    const displayValue = value?.toString() ?? DEFAULT_CELL_VALUE;
+    return {fid, displayValue};
   }
 
   /**
@@ -96,18 +108,20 @@ export class FeatureInfoContentComponent implements OnInit {
    * @private
    */
   private initTableData() {
-    this.layer.features.forEach((feature, featureIdx, features) => {
-      const tableHeader = this.getTableHeaderForFeature(feature, featureIdx, features.length);
+    this.layer.features.forEach(({fid, geometry, fields}, featureIdx, features) => {
+      this.featureGeometries.set(fid, geometry);
+      const tableHeader = this.getTableHeaderForFeature(fid, featureIdx, features.length);
       this.tableHeaders.push(tableHeader);
 
-      feature.fields.forEach((field) => {
-        const tableCell = this.getTableCellForFeatureAndField(feature, field);
+      fields.forEach(({label, value}) => {
+        const tableCell = this.getTableCellForFeatureAndField(fid, value);
 
-        if (this.tableRows.has(field.label)) {
+        if (this.tableRows.has(label)) {
           // see: https://stackoverflow.com/questions/70723319/object-is-possibly-undefined-using-es6-map-get-right-after-map-set
-          this.tableRows.get(field.label)?.push(tableCell);
+          // -> it should never happen, but IF it were to happen, we are not doing anything.
+          this.tableRows.get(label)?.push(tableCell);
         } else {
-          this.tableRows.set(field.label, [tableCell]);
+          this.tableRows.set(label, [tableCell]);
         }
       });
     });

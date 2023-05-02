@@ -3,15 +3,15 @@
     <tr class="feature-info-content__table__row">
       <th class="feature-info-content__table__row__column feature-info-content__table__row__column--header"></th>
       <th
-        *ngFor="let tableHeader of this.tableHeaders; let i = index"
-        (mouseenter)="this.highlightFeature(tableHeader.geometry, tableHeader.fid)"
-        (mouseleave)="this.removeHighlight(tableHeader.fid)"
-        [attr.data-featureId]="tableHeader.fid"
+        *ngFor="let tableHeader of this.tableHeaders"
+        (mouseenter)="this.addHighlightForFeature(tableHeader.fid)"
+        (mouseleave)="this.removeHighlightForFeature(tableHeader.fid)"
+        [attr.data-fid]="tableHeader.fid"
         class="feature-info-content__table__row__column feature-info-content__table__row__column--header"
       >
         {{ tableHeader.displayValue }}
         <button
-          (click)="this.highlightFeature(tableHeader.geometry, tableHeader.fid)"
+          (click)="this.addHighlightForFeature(tableHeader.fid)"
           class="mat-raised-button feature-info__highlight-button"
           data-test-id="highlight"
         >
@@ -24,9 +24,9 @@
         <th class="feature-info-content__table__row__column feature-info-content__table__row__column--header">{{ tableRow.key }}</th>
         <td
           *ngFor="let cellValue of tableRow.value"
-          [attr.data-featureId]="cellValue.fid"
-          (mouseenter)="this.highlightFeature(null, cellValue.fid)"
-          (mouseleave)="this.removeHighlight(cellValue.fid)"
+          [attr.data-fid]="cellValue.fid"
+          (mouseenter)="this.addHighlightForFeature(cellValue.fid)"
+          (mouseleave)="this.removeHighlightForFeature(cellValue.fid)"
           class="feature-info-content__table__row__column"
         >
           {{ cellValue.displayValue }}
