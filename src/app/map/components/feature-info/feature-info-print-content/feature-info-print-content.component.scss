@@ -1,0 +1,19 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.feature-info-print-content {
+  padding-top: 8px;
+  border-bottom: 1px solid ktzh-variables.$zh-black100;
+
+  .feature-info-print-content__title {
+    font-family: ktzh-variables.$zh-font-family-bold;
+  }
+
+  .feature-info-print-content__result-list {
+    padding: 0;
+
+    & > span {
+      font-family: ktzh-variables.$zh-font-family;
+      font-size: small;
+    }
+  }
+}
