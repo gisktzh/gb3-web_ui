@@ -1,6 +1,6 @@
 <div class="active-map-item-settings">
   <!-- Opacity -->
-  <ktzh-slider-wrapper title="Transparenz" [value]="formattedCurrentOpacity" minValue="100%" maxValue="100%">
+  <ktzh-slider-wrapper title="Transparenz" [value]="formattedCurrentOpacity" minValue="0%" maxValue="100%">
     <ng-container content>
       <mat-slider [min]="0" [max]="1" [step]="0.01" color="primary" class="active-map-item-settings__transparency__slider">
         <input matSliderThumb [(ngModel)]="currentOpacity" (valueChange)="onOpacitySliderChange($event)" />

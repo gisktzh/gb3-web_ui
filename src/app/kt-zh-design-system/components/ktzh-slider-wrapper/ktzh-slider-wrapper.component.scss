@@ -27,8 +27,8 @@
 
     .header__value {
       white-space: nowrap;
-      color: ktzh-variables.$zh-white;
-      background-color: ktzh-variables.$zh-active-blue;
+      color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-secondary-accent);
+      background-color: functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent);
       padding: 8px;
     }
   }

@@ -3,6 +3,19 @@
 @use 'mixins/material.mixin' as mat-mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
+:host ::ng-deep {
+  .active-map-item-header__image-container__checkbox {
+    @include mat-mixins.mat-checkbox-override-color(
+      functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent),
+      functions.get-contrast-color-from-palette(ktzh-variables.$zh-secondary-accent)
+    );
+
+    .mdc-checkbox__ripple {
+      display: none;
+    }
+  }
+}
+
 .active-map-item-header {
   display: flex;
   flex-direction: row;
@@ -11,8 +24,8 @@
   height: 44px;
   padding: 0;
 
-  &:hover .active-map-item-header__title-container__options {
-    display: flex !important;
+  &:hover .active-map-item-header__title-container .active-map-item-header__title-container__options {
+    display: flex;
   }
 
   .active-map-item-header__image-container {
@@ -32,25 +45,15 @@
     .active-map-item-header__image-container__checkbox {
       position: absolute;
       @include mixins.center-absolute-element;
-      @include mat-mixins.mat-checkbox-override-color(
-        functions.get-color-from-palette(ktzh-variables.$zh-primary),
-        functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary)
-      );
-
-      ::ng-deep {
-        .mdc-checkbox__ripple {
-          display: none;
-        }
-      }
     }
   }
 
   .active-map-item-header__divider {
     height: 40%;
-    border-right-color: ktzh-variables.$zh-foreground-color;
+    border-right-color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
 
     &--inverted {
-      border-right-color: ktzh-variables.$zh-darkblue-foreground-color;
+      border-right-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
     }
   }
 
@@ -87,11 +90,11 @@
       align-items: center;
       height: inherit;
       width: 142px;
-      background: linear-gradient(90deg, transparent 0%, ktzh-variables.$zh-background-color 37.5%);
+      background: linear-gradient(90deg, transparent 0%, functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary) 37.5%);
 
       &--inverted {
         display: flex;
-        background: linear-gradient(90deg, transparent 0%, ktzh-variables.$zh-darkblue-background-color 37.5%);
+        background: linear-gradient(90deg, transparent 0%, functions.get-color-from-palette(ktzh-variables.$zh-primary) 37.5%);
       }
     }
   }
@@ -108,11 +111,11 @@
       grid-row: 1;
     }
   }
-}
 
-.active-map-item-header__progress-bar {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
+  .active-map-item-header__progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+  }
 }

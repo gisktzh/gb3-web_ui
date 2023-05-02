@@ -2,6 +2,16 @@
 @use 'mixins/helpers.mixin' as mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
+:host ::ng-deep {
+  .active-map-item .mat-expansion-panel-content .mat-expansion-panel-body {
+    padding: 0;
+  }
+
+  .active-map-item__header .mat-content {
+    margin-right: 0;
+  }
+}
+
 .active-map-item {
   @include mixins.no-box-shadow;
   width: 100%;
@@ -10,12 +20,8 @@
   border-radius: ktzh-variables.$zh-border-radius !important;
 
   &--expanded {
-    background-color: ktzh-variables.$zh-darkblue-background-color;
-    color: ktzh-variables.$zh-darkblue-foreground-color;
-  }
-
-  ::ng-deep .mat-expansion-panel-content > .mat-expansion-panel-body {
-    padding: 0;
+    background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
+    color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
   }
 
   .active-map-item__header {
@@ -24,10 +30,6 @@
     padding: 0;
     // overwrite the 'pointer' cursor from the expansion panel
     cursor: default;
-
-    ::ng-deep .mat-content {
-      margin-right: 0;
-    }
 
     &:hover {
       background-color: transparent;
@@ -47,16 +49,16 @@
 
         border-width: 3px;
         border-style: solid;
-        border-color: ktzh-variables.$zh-midnightblue;
+        border-color: functions.get-color-from-palette(ktzh-variables.$zh-primary, 900);
         border-radius: ktzh-variables.$zh-border-radius;
 
         .active-map-item__tabs__header__buttons__button {
           width: 100%;
-          color: ktzh-variables.$zh-darkblue-foreground-color;
-          background-color: ktzh-variables.$zh-midnightblue;
+          color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+          background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary, 900);
 
           &--selected {
-            background-color: ktzh-variables.$zh-darkblue-background-color;
+            background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
           }
         }
       }
@@ -70,13 +72,12 @@
       border-radius: 1px !important;
       border-width: 0 2px 2px 2px;
       border-style: solid;
-      // https://stackoverflow.com/questions/3254587/when-1-px-border-is-added-to-div-div-size-increases-dont-want-to-do-that
       -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
       -moz-box-sizing: border-box; /* Firefox, other Gecko */
       box-sizing: border-box; /* Opera/IE 8+ */
 
       &--inverted {
-        border-color: ktzh-variables.$zh-darkblue-background-color;
+        border-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
       }
     }
   }

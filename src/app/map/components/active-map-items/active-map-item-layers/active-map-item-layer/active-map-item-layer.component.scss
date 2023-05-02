@@ -3,6 +3,13 @@
 @use 'mixins/material.mixin' as mat-mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
+:host ::ng-deep .active-map-item-layer__checkbox {
+  @include mat-mixins.mat-checkbox-override-color(
+    functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent),
+    functions.get-contrast-color-from-palette(ktzh-variables.$zh-secondary-accent)
+  );
+}
+
 .active-map-item-layer {
   height: 44px;
   width: 100%;
@@ -22,13 +29,6 @@
       grid-column: 1;
       grid-row: 1;
     }
-  }
-
-  .active-map-item-layer__checkbox {
-    @include mat-mixins.mat-checkbox-override-color(
-      functions.get-color-from-palette(ktzh-variables.$zh-primary),
-      functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary)
-    );
   }
 
   .active-map-item-layer__title {

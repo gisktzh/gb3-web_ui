@@ -48,6 +48,7 @@
                   mat-icon-button
                 >
                   <mat-icon
+                    class="map__header__toggle-icon"
                     [fontIcon]="mapExpansionPanel.expanded ? 'arrow_drop_down' : 'arrow_right'"
                     [matBadgeDisabled]="map.layers.length === 0"
                     [matBadgeHidden]="!this.filterString"

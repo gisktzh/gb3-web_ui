@@ -30,18 +30,23 @@
 */
 
 @mixin mat-badge-inherit-size {
-  ::ng-deep {
-    .mat-badge-content {
-      height: inherit;
-      width: inherit;
-      display: grid;
-      font-size: 100%;
-      text-align: center;
-      align-items: center;
-      top: 0;
-      left: 0;
-      align-content: center;
-    }
+  .mat-badge-content {
+    height: inherit;
+    width: inherit;
+    display: grid;
+    font-size: 100%;
+    text-align: center;
+    align-items: center;
+    top: 0;
+    left: 0;
+    align-content: center;
+  }
+}
+
+@mixin mat-badge-override-color($background-color, $foreground-color) {
+  .mat-badge-content.mat-badge-active {
+    background-color: $background-color !important;
+    color: $foreground-color !important;
   }
 }
 
@@ -55,11 +60,9 @@
   display: flex;
   flex-direction: row-reverse;
 
-  ::ng-deep {
-    .mat-icon {
-      margin-left: 8px;
-      margin-right: 0;
-    }
+  .mat-icon {
+    margin-left: 8px;
+    margin-right: 0;
   }
 }
 
@@ -69,31 +72,29 @@
 * ======================
 */
 
-@mixin mat-checkbox-override-color($color, $contrast-color) {
-  ::ng-deep {
+@mixin mat-checkbox-override-color($background-color, $foreground-color) {
+  .mdc-checkbox {
     .mdc-checkbox__native-control:not([disabled]) ~ .mdc-checkbox__background {
-      background-color: $contrast-color !important;
-      border-color: $color !important;
+      background-color: $foreground-color !important;
+      border-color: $background-color !important;
+
       .mdc-checkbox__checkmark {
-        background-color: $color;
+        background-color: $background-color;
+
         .mdc-checkbox__checkmark-path {
-          stroke: $contrast-color;
+          stroke: $foreground-color;
         }
       }
     }
+
     .mdc-checkbox__ripple {
-      background: $color !important;
+      background: $background-color !important;
     }
   }
 }
 
-@mixin mat-checkbox-text--unchecked {
-  ::ng-deep {
-    .mdc-form-field .mdc-checkbox .mdc-checkbox__background {
-      border-color: ktzh-variables.$zh-black40;
-    }
-    .mdc-form-field > label {
-      color: ktzh-variables.$zh-black40;
-    }
+@mixin mat-checkbox-override-label-color($color) {
+  .mdc-form-field .mdc-checkbox > label {
+    color: $color;
   }
 }

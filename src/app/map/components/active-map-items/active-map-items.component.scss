@@ -13,8 +13,8 @@
   .active-map-items__header {
     display: flex;
     align-items: center;
-    background-color: ktzh-variables.$zh-darkblue-background-color;
-    color: ktzh-variables.$zh-darkblue-foreground-color;
+    background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
+    color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
     font-family: ktzh-variables.$zh-font-family;
     padding: 0 6px 0 24px;
     height: 48px;
@@ -31,17 +31,14 @@
       height: 24px;
       width: 24px;
       @include mat-mixins.mat-badge-inherit-size;
+      @include mat-mixins.mat-badge-override-color(
+        functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary),
+        functions.get-color-from-palette(ktzh-variables.$zh-primary)
+      );
 
       &--hidden {
         // `display: none` would not work as the element needs to be present
         visibility: hidden;
-      }
-
-      ::ng-deep {
-        .mat-badge-content {
-          background-color: ktzh-variables.$zh-background-color;
-          color: ktzh-variables.$zh-foreground-color;
-        }
       }
     }
 
@@ -50,11 +47,11 @@
       display: flex;
       align-items: center;
       margin-left: 8px;
-      color: ktzh-variables.$zh-darkblue-foreground-color;
+      color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
 
       .active-map-items__header__buttons__divider {
         height: 40%;
-        border-right-color: ktzh-variables.$zh-darkblue-foreground-color;
+        border-right-color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
       }
     }
   }

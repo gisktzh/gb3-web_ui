@@ -14,14 +14,14 @@
     width: 450px;
     overflow-y: hidden;
 
-    .all-map-items-container__active-map-items {
+    .map-container__all-map-items-container__active-map-items {
       @include mixins.map-element-box-shadow;
       display: flex;
       max-height: 50%;
       padding-bottom: 15px;
     }
 
-    .all-map-items-container__map-data-catalogue {
+    .map-container__all-map-items-container__map-data-catalogue {
       @include mixins.map-element-box-shadow;
       display: flex;
       min-height: 50%;
@@ -35,7 +35,6 @@
     left: 480px;
     height: 48px;
     width: 125px;
-    background-color: ktzh-variables.$zh-background-color;
   }
 
   .map-container__map-attribute-filter {

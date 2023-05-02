@@ -1,7 +1,14 @@
 @use 'functions/helper.function' as functions;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
-.mat-mdc-slider.mat-primary .mdc-slider__thumb-knob {
-  border-width: 2px;
-  background-color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+.mat-mdc-slider.mat-primary {
+  .mdc-slider__track .mdc-slider__track--active_fill {
+    border-color: functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent);
+  }
+
+  .mdc-slider__thumb .mdc-slider__thumb-knob {
+    border-color: functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent);
+    border-width: 2px;
+    background-color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-secondary-accent);
+  }
 }
