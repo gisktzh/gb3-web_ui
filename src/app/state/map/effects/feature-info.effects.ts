@@ -5,7 +5,7 @@ import {catchError, map} from 'rxjs/operators';
 import {FeatureInfoActions} from '../actions/feature-info.actions';
 import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
 import {Store} from '@ngrx/store';
-import {selectQueryLayers} from '../selectors/query-layers-selector';
+import {selectQueryLayers} from '../selectors/query-layers.selector';
 
 @Injectable()
 export class FeatureInfoEffects {

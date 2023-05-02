@@ -1,5 +1,6 @@
 @use 'functions/helper.function' as functions;
 @use 'mixins/helpers.mixin' as mixins;
+@use 'mixins/material.mixin' as mat-mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
 .map-catalogue-widget {
@@ -57,11 +58,6 @@
 
   .map-catalogue__content {
     overflow-y: scroll;
-
-    & .mat-expansion-panel {
-      // Remove the material first and last border rounding
-      border-radius: 0;
-    }
 
     .map-catalogue__content__topic-title {
       // needed to avoid a cut-off results indicator

@@ -12,14 +12,16 @@
 $zh-active-blue: #009ee0;
 $zh-blue: #0070b4;
 $zh-darkblue: #00407c;
+$zh-midnightblue: #002547;
 $zh-cyan: #00797b;
 $zh-green: #1a7f1f;
 $zh-bordeaux: #b01657;
 $zh-magenta: #d40053;
 $zh-violet: #7f3da7;
-$zh-black20:#d3d3d3;
+$zh-black20: #cccccc; // todo: the palettes don't match up with figma?
 $zh-black40: #999999;
-$zh-black50: #666666;
+$zh-black50: #808080;
+$zh-black60: #666666;
 $zh-black100: #000000;
 $zh-white: #ffffff;
 $zh-print-white: #ffffff;
@@ -27,8 +29,8 @@ $zh-print-white: #ffffff;
 /* Color variables
 ========================== */
 
+$zh-foreground-color: $zh-black100;
 $zh-background-color: $zh-white;
-$zh-text-color: $zh-black100;
 $zh-border-color: $zh-black40;
 
 /* Layout variables
@@ -84,7 +86,7 @@ $zh-darkblue-palette: (
   600: #003a74,
   700: #003269,
   800: #002a5f,
-  900: #001c4c,
+  900: $zh-midnightblue,
   A100: #80a1ff,
   A200: #4d7cff,
   A400: #1a57ff,
@@ -104,6 +106,39 @@ $zh-darkblue-palette: (
     A200: #ffffff,
     A400: #ffffff,
     A700: #ffffff
+  )
+);
+
+$zh-active-blue-palette: (
+  50: #e0f3fb,
+  100: #b3e2f6,
+  200: #80cff0,
+  300: #4dbbe9,
+  400: #26ade5,
+  500: $zh-active-blue,
+  600: #0096dc,
+  700: #008cd8,
+  800: #0082d3,
+  900: #0070cb,
+  A100: #f3f9ff,
+  A200: #c0dfff,
+  A400: #8dc5ff,
+  A700: #74b9ff,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #000000,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #000000,
+    A400: #000000,
+    A700: #000000
   )
 );
 
@@ -178,6 +213,8 @@ $zh-bordeaux-palette: (
 $zh-primary: mat.define-palette($zh-darkblue-palette);
 $zh-accent: mat.define-palette($zh-black100-palette);
 $zh-warn: mat.define-palette($zh-bordeaux-palette);
+// another theme palette used as an alternative color
+$zh-secondary-accent: mat.define-palette($zh-active-blue-palette);
 
 /* Typography
 ========================== */

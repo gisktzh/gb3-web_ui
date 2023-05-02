@@ -1,0 +1,59 @@
+<!-- small connection line between elements - this is the top element -->
+<div
+  class="active-map-item__connection-line active-map-item__connection-line-top"
+  *ngIf="!isFirstActiveMapItem && !activeMapItemExpansionPanel.expanded"
+></div>
+<mat-expansion-panel
+  #activeMapItemExpansionPanel
+  [@slideInOut]
+  hideToggle="true"
+  class="active-map-item"
+  [ngClass]="{'active-map-item--expanded': activeMapItemExpansionPanel.expanded}"
+>
+  <mat-expansion-panel-header (click)="activeMapItemExpansionPanel.toggle()" class="active-map-item__header">
+    <active-map-item-header
+      class="active-map-item__header__item"
+      [activeMapItem]="activeMapItem"
+      [activeMapItemExpansionPanel]="activeMapItemExpansionPanel"
+    >
+      <ng-container activeMapItemDragHandle>
+        <ng-content select="[activeMapItemDragHandle]"></ng-content>
+      </ng-container>
+    </active-map-item-header>
+  </mat-expansion-panel-header>
+  <!-- Expansion panel content -->
+  <ng-template matExpansionPanelContent>
+    <div class="active-map-item__tabs">
+      <div class="active-map-item__tabs__header">
+        <div class="active-map-item__tabs__header__buttons">
+          <button
+            [ngClass]="{'active-map-item__tabs__header__buttons__button--selected': activeTab === 'layers'}"
+            class="active-map-item__tabs__header__buttons__button"
+            mat-flat-button
+            (click)="changeTabs('layers')"
+          >
+            Ebenen
+          </button>
+          <button
+            [ngClass]="{'active-map-item__tabs__header__buttons__button--selected': activeTab === 'settings'}"
+            class="active-map-item__tabs__header__buttons__button"
+            mat-flat-button
+            (click)="changeTabs('settings')"
+          >
+            Einstellungen
+          </button>
+        </div>
+      </div>
+      <div
+        class="active-map-item__tabs__content"
+        [ngClass]="{'active-map-item__tabs__content--inverted': activeMapItemExpansionPanel.expanded}"
+        [ngSwitch]="activeTab"
+      >
+        <active-map-item-layers *ngSwitchCase="'layers'" [activeMapItem]="activeMapItem"></active-map-item-layers>
+        <active-map-item-settings *ngSwitchCase="'settings'" [activeMapItem]="activeMapItem"></active-map-item-settings>
+      </div>
+    </div>
+  </ng-template>
+</mat-expansion-panel>
+<!-- small connection line between elements - this is the bottom element -->
+<div class="active-map-item__connection-line active-map-item__connection-line-bottom" *ngIf="!isLastActiveMapItem"></div>

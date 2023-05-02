@@ -5,8 +5,6 @@ import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.a
 import {selectActiveMapItems} from '../../../state/map/reducers/active-map-item.reducer';
 import {Subscription, tap} from 'rxjs';
 import {ActiveMapItem} from '../../models/active-map-item.model';
-import {LegendActions} from '../../../state/map/actions/legend.actions';
-import {slideInOutAnimation} from '../../../shared/animations/slideInOut.animation';
 import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.reducer';
 import {MatDialog} from '@angular/material/dialog';
 import {FavouriteCreationDialogComponent} from '../favourite-creation-dialog/favourite-creation-dialog.component';
@@ -18,24 +16,21 @@ const favouriteHelperMessages = {
 };
 
 @Component({
-  selector: 'active-map-items-widget',
-  templateUrl: './active-map-items-widget.component.html',
-  styleUrls: ['./active-map-items-widget.component.scss'],
-  animations: [slideInOutAnimation]
+  selector: 'active-map-items',
+  templateUrl: './active-map-items.component.html',
+  styleUrls: ['./active-map-items.component.scss']
 })
-export class ActiveMapItemsWidgetComponent implements OnInit, OnDestroy {
+export class ActiveMapItemsComponent implements OnInit, OnDestroy {
   public isAuthenticated: boolean = false;
   public favouriteHelperMessages = favouriteHelperMessages;
+  public activeMapItems: ActiveMapItem[] = [];
+  public isMinimized = false;
+
   private readonly activeMapItems$ = this.store.select(selectActiveMapItems);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
   private readonly subscription: Subscription = new Subscription();
-  private _activeMapItems: ActiveMapItem[] = [];
 
   constructor(private readonly store: Store, private readonly dialogService: MatDialog) {}
-
-  public get activeMapItems(): ActiveMapItem[] {
-    return this._activeMapItems;
-  }
 
   public ngOnInit() {
     this.initSubscriptions();
@@ -55,20 +50,8 @@ export class ActiveMapItemsWidgetComponent implements OnInit, OnDestroy {
     );
   }
 
-  public removeActiveMapItem(activeMapItem: ActiveMapItem) {
-    this.store.dispatch(ActiveMapItemActions.removeActiveMapItem(activeMapItem));
-  }
-
   public removeAllActiveMapItems() {
     this.store.dispatch(ActiveMapItemActions.removeAllActiveMapItems());
-  }
-
-  public toggleMapItemVisibility(activeMapItem: ActiveMapItem) {
-    this.store.dispatch(ActiveMapItemActions.setVisibility({visible: !activeMapItem.visible, activeMapItem}));
-  }
-
-  public toggleLegend() {
-    this.store.dispatch(LegendActions.showLegend());
   }
 
   public showFavouriteDialog() {
@@ -78,12 +61,16 @@ export class ActiveMapItemsWidgetComponent implements OnInit, OnDestroy {
     });
   }
 
+  public toggleMinimizeActiveMapItems() {
+    this.isMinimized = !this.isMinimized;
+  }
+
   private initSubscriptions() {
     this.subscription.add(
       this.activeMapItems$
         .pipe(
           tap((currentActiveMapItems) => {
-            this._activeMapItems = currentActiveMapItems;
+            this.activeMapItems = currentActiveMapItems;
           })
         )
         .subscribe()

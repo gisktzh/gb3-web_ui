@@ -1,0 +1,22 @@
+@use 'mixins/helpers.mixin' as mixins;
+
+.feature-info-content {
+  padding-top: 16px;
+
+  .feature-info-item__class-list-entry {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-gap: 12px;
+    padding: 4px 0;
+
+    .feature-info-item__class-list-entry__icon,
+    .feature-info-item__class-list-entry__text {
+      align-self: center;
+      display: flex;
+    }
+
+    .feature-info-item__class-list-entry__text {
+      @include mixins.multiline-ellipsis(2);
+    }
+  }
+}

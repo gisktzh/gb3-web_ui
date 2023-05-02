@@ -1,20 +1,18 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {ActiveMapItem} from '../../../models/active-map-item.model';
-import {ActiveMapItemActions} from '../../../../state/map/actions/active-map-item.actions';
-import {Store} from '@ngrx/store';
-import {MapLayer} from '../../../../shared/interfaces/topic.interface';
-import {CdkDrag, CdkDragDrop} from '@angular/cdk/drag-drop';
-import {TimeExtent} from '../../../interfaces/time-extent.interface';
 import {Subscription, tap} from 'rxjs';
-import {MapAttributeFiltersItemActions} from '../../../../state/map/actions/map-attribute-filters-item.actions';
 import {selectActiveMapItems} from '../../../../state/map/reducers/active-map-item.reducer';
+import {Store} from '@ngrx/store';
+import {ActiveMapItemActions} from '../../../../state/map/actions/active-map-item.actions';
+import {TimeExtent} from '../../../interfaces/time-extent.interface';
+import {MapAttributeFiltersItemActions} from '../../../../state/map/actions/map-attribute-filters-item.actions';
 
 @Component({
-  selector: 'active-map-item',
-  templateUrl: './active-map-item.component.html',
-  styleUrls: ['./active-map-item.component.scss']
+  selector: 'active-map-item-settings',
+  templateUrl: './active-map-item-settings.component.html',
+  styleUrls: ['./active-map-item-settings.component.scss']
 })
-export class ActiveMapItemComponent implements OnInit, OnDestroy {
+export class ActiveMapItemSettingsComponent implements OnInit, OnDestroy {
   @Input() public activeMapItem!: ActiveMapItem;
 
   public formattedCurrentOpacity: string = '';
@@ -43,26 +41,6 @@ export class ActiveMapItemComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
-  }
-
-  public trackByLayerId(index: number, item: MapLayer) {
-    return item.id;
-  }
-
-  public toggleSublayerVisibility(layer: MapLayer) {
-    this.store.dispatch(
-      ActiveMapItemActions.setSublayerVisibility({visible: !layer.visible, activeMapItem: this.activeMapItem, layerId: layer.id})
-    );
-  }
-
-  public dropSublayer($event: CdkDragDrop<CdkDrag>) {
-    this.store.dispatch(
-      ActiveMapItemActions.reorderSublayer({
-        activeMapItem: this.activeMapItem,
-        previousPosition: $event.previousIndex,
-        currentPosition: $event.currentIndex
-      })
-    );
   }
 
   public onOpacitySliderChange(opacity: number) {

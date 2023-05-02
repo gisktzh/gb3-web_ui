@@ -1,8 +1,22 @@
-<mat-expansion-panel [expanded]="this.isPrintable" [hideToggle]="this.isPrintable" class="list-item">
-  <mat-expansion-panel-header>
-    <mat-panel-title>
-      {{ title }}
-    </mat-panel-title>
+<mat-expansion-panel [expanded]="this.forceExpanded" hideToggle class="list-item" #expansionPanel>
+  <mat-expansion-panel-header class="list-item__header">
+    <div class="list-item__header__content">
+      <mat-icon *ngIf="expansionPanel.expanded" class="list-item__header__content__toggle">arrow_drop_down</mat-icon>
+      <mat-icon *ngIf="!expansionPanel.expanded" class="list-item__header__content__toggle">arrow_right</mat-icon>
+      <ng-content select="[header-icon]"></ng-content>
+      <p class="list-item__header__content__title" [title]="overlayTitle">{{ overlayTitle }}</p>
+      <a
+        *ngIf="this.metaDataLink"
+        href="{{ this.metaDataLink }}"
+        (click)="$event.stopPropagation()"
+        target="_blank"
+        rel="noopener noreferrer"
+        title="Metadaten anzeigen"
+        class="list-item__header__content__info-link"
+      >
+        <mat-icon class="list-item__header__content__info-link__icon">info</mat-icon>
+      </a>
+    </div>
   </mat-expansion-panel-header>
   <ng-template matExpansionPanelContent>
     <ng-content></ng-content>

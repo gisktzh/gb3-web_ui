@@ -34,3 +34,10 @@ export interface FeatureInfoWrapper {
 export interface FeatureInfoResponse {
   featureInfo: FeatureInfoWrapper;
 }
+
+export interface FeatureInfoResultDisplay {
+  title: string;
+  layers: FeatureInfoResultLayer[];
+  icon?: string;
+  isSingleLayer: boolean;
+}

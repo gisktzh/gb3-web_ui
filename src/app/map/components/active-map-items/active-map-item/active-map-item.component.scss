@@ -1,0 +1,101 @@
+@use 'functions/helper.function' as functions;
+@use 'mixins/helpers.mixin' as mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+:host ::ng-deep {
+  .active-map-item .mat-expansion-panel-content .mat-expansion-panel-body {
+    padding: 0;
+  }
+
+  .active-map-item__header .mat-content {
+    margin-right: 0;
+  }
+}
+
+.active-map-item {
+  @include mixins.no-box-shadow;
+  width: 100%;
+  padding-top: 12px;
+  margin-bottom: 12px;
+  border-radius: ktzh-variables.$zh-border-radius !important;
+
+  &--expanded {
+    background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
+    color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+  }
+
+  .active-map-item__header {
+    height: 44px;
+    width: 100%;
+    padding: 0;
+    // overwrite the 'pointer' cursor from the expansion panel
+    cursor: default;
+
+    &:hover {
+      background-color: transparent;
+    }
+
+    .active-map-item__header__item {
+      width: 100%;
+    }
+  }
+
+  .active-map-item__tabs {
+    .active-map-item__tabs__header {
+      padding: 16px;
+
+      .active-map-item__tabs__header__buttons {
+        display: flex;
+
+        border-width: 3px;
+        border-style: solid;
+        border-color: functions.get-color-from-palette(ktzh-variables.$zh-primary, 900);
+        border-radius: ktzh-variables.$zh-border-radius;
+
+        .active-map-item__tabs__header__buttons__button {
+          width: 100%;
+          color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+          background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary, 900);
+
+          &--selected {
+            background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
+          }
+        }
+      }
+    }
+
+    .active-map-item__tabs__content {
+      padding: 24px;
+      color: ktzh-variables.$zh-foreground-color;
+      background-color: ktzh-variables.$zh-background-color;
+      border-color: ktzh-variables.$zh-background-color;
+      border-radius: 1px !important;
+      border-width: 0 2px 2px 2px;
+      border-style: solid;
+      -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+      -moz-box-sizing: border-box; /* Firefox, other Gecko */
+      box-sizing: border-box; /* Opera/IE 8+ */
+
+      &--inverted {
+        border-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
+      }
+    }
+  }
+}
+
+.active-map-item__connection-line {
+  position: absolute;
+  left: 69px;
+  height: 6px;
+  width: 2px;
+  z-index: 100; // todo: hackedihack
+  background-color: ktzh-variables.$zh-black20;
+}
+
+.active-map-item__connection-line-top {
+  top: 0;
+}
+
+.active-map-item__connection-line-bottom {
+  bottom: 0;
+}

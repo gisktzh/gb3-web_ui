@@ -1,0 +1,19 @@
+<div class="active-map-item-layer">
+  <div class="active-map-item-layer__drag-handle">
+    <ng-content select="[activeMapItemLayerDragHandle]"></ng-content>
+    <mat-icon class="active-map-item-layer__drag-handle__icon" cdkDragHandle>drag_indicator</mat-icon>
+  </div>
+  <mat-checkbox
+    class="active-map-item-layer__checkbox"
+    [checked]="layer.visible"
+    (change)="toggleSublayerVisibility(layer)"
+    [disabled]="!activeMapItem.visible"
+  ></mat-checkbox>
+  <p
+    class="active-map-item-layer__title"
+    matTooltip="{{ layer.title }}"
+    [ngClass]="{'active-map-item-layer__title--inactive': !activeMapItem.visible || !layer.visible}"
+  >
+    {{ layer.title }}
+  </p>
+</div>
