@@ -1,6 +1,17 @@
 @use 'mixins/helpers.mixin' as mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
+/**
+  The following variables are used for adding the borders on highlight. We cannot use box-sizing: border-box in <td>
+   because tables do not adhere to these standards. That's why we "fake" borders by adding a negative, inset border on all requested sides.
+ */
+$border-size: 2px;
+$right-border: inset calc(-1 * $border-size) 0 0 0 ktzh-variables.$zh-active-blue;
+$left-border: inset $border-size 0 0 0 ktzh-variables.$zh-active-blue;
+$bottom-border: inset 0 calc(-1 * $border-size) 0 0 ktzh-variables.$zh-active-blue;
+// The same holds true for our right hand side border in the first column.
+$fixed-border: inset calc(-1 * $border-size) 0 0 0 ktzh-variables.$zh-black100;
+
 .feature-info-content {
   width: 100%;
   overflow: auto;
@@ -34,7 +45,7 @@
         &--header {
           // make the left-most column headers sticky and add a right border
           &:nth-of-type(1) {
-            border-right: 1px solid black;
+            box-shadow: $fixed-border;
             min-width: 130px;
             max-width: 130px;
             position: sticky;
@@ -50,8 +61,8 @@
 
         // This class is added automatically by Angular when hovered
         &--highlighted {
-          border-left: 1px solid ktzh-variables.$zh-active-blue !important;
-          border-right: 1px solid ktzh-variables.$zh-active-blue !important;
+          -webkit-box-shadow: $left-border, $right-border;
+          box-shadow: $left-border, $right-border;
         }
       }
 
@@ -65,7 +76,8 @@
       // Add border at the bottom for last column cell
       &:last-of-type {
         & .feature-info-content__table__row__column--highlighted {
-          border-bottom: 1px solid ktzh-variables.$zh-active-blue !important;
+          -webkit-box-shadow: $bottom-border, $left-border, $right-border;
+          box-shadow: $bottom-border, $left-border, $right-border;
         }
       }
     }
