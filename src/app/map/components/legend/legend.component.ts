@@ -1,5 +1,5 @@
 import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
-import {Subscription, tap} from 'rxjs';
+import {distinctUntilChanged, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {selectLoadingState} from '../../../state/map/reducers/legend.reducer';
 import {LegendActions} from '../../../state/map/actions/legend.actions';
@@ -56,6 +56,10 @@ export class LegendComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.legendItems$
         .pipe(
+          // todo: This is a hacky fix for the non-normalized state, so as to not trigger component renders on each map interaction
+          distinctUntilChanged((previous, current) => {
+            return previous.length === current.length;
+          }),
           tap(async (value) => {
             this.legendItems = value;
           })

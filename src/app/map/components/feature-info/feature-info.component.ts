@@ -1,5 +1,5 @@
 import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
-import {Subscription, tap} from 'rxjs';
+import {distinctUntilChanged, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {selectLoadingState} from '../../../state/map/reducers/feature-info.reducer';
 import {FeatureInfoActions} from '../../../state/map/actions/feature-info.actions';
@@ -55,6 +55,10 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.featureInfoData$
         .pipe(
+          // todo: This is a hacky fix for the non-normalized state, so as to not trigger component renders on each map interaction
+          distinctUntilChanged((previous, current) => {
+            return previous.length === current.length;
+          }),
           tap(async (value) => {
             this.featureInfoData = value;
           })
