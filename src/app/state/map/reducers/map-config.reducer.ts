@@ -1,20 +1,9 @@
 import {createFeature, createReducer, on} from '@ngrx/store';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {defaultMapConfig} from '../../../shared/configs/map.config';
+import {MapConfigState} from '../states/map-config.state';
 
 export const mapConfigFeatureKey = 'mapConfig';
-
-export interface MapConfigState {
-  center: {x: number; y: number};
-  scale: number;
-  srsId: number;
-  ready: boolean;
-  scaleSettings: {minScale: number; maxScale: number; calculatedMinScale: number; calculatedMaxScale: number};
-  isMaxZoomedIn: boolean;
-  isMaxZoomedOut: boolean;
-  activeBasemapId: string;
-  initialMaps: string[];
-}
 
 export const initialState: MapConfigState = {
   center: defaultMapConfig.center,

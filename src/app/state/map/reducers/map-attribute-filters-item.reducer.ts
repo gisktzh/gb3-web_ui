@@ -1,11 +1,8 @@
 import {createFeature, createReducer, on} from '@ngrx/store';
 import {MapAttributeFiltersItemActions} from '../actions/map-attribute-filters-item.actions';
+import {MapAttributeFiltersItemState} from '../states/map-attribute-filters-item.state';
 
 export const mapAttributeFiltersItemFeatureKey = 'mapAttributeFiltersItem';
-
-export interface MapAttributeFiltersItemState {
-  mapAttributeFiltersItemId: string | undefined;
-}
 
 export const initialState: MapAttributeFiltersItemState = {
   mapAttributeFiltersItemId: undefined

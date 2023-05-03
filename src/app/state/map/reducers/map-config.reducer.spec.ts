@@ -1,5 +1,6 @@
-import {initialState as defaultMapConfigState, MapConfigState, reducer} from './map-config.reducer';
+import {initialState as defaultMapConfigState, reducer} from './map-config.reducer';
 import {MapConfigActions} from '../actions/map-config.actions';
+import {MapConfigState} from '../states/map-config.state';
 
 describe('MapConfig Reducer', () => {
   describe('setMapExtent', () => {

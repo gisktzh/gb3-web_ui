@@ -1,14 +1,23 @@
 import {ActionReducerMap, MetaReducer} from '@ngrx/store';
 import {environment} from '../../environments/environment';
-import {MapConfigState, reducer as mapConfigReducer} from './map/reducers/map-config.reducer';
-import {LegendState, reducer as legendReducer} from './map/reducers/legend.reducer';
-import {FeatureInfoState, reducer as featureInfoReducer} from './map/reducers/feature-info.reducer';
-import {LayerCatalogState, reducer as layerCatalogReducer} from './map/reducers/layer-catalog.reducer';
-import {ActiveMapItemState, reducer as activeMapItemReducer} from './map/reducers/active-map-item.reducer';
-import {AuthStatusState, reducer as authStatusReducer} from './auth/reducers/auth-status.reducer';
-import {FavouriteListState, reducer as favouriteListReducer} from './map/reducers/favourite-list.reducer';
-import {reducer as supportContentReducer, SupportContentState} from './support/reducers/support-content.reducer';
-import {MapAttributeFiltersItemState, reducer as mapAttributeFiltersItemReducer} from './map/reducers/map-attribute-filters-item.reducer';
+import {reducer as mapConfigReducer} from './map/reducers/map-config.reducer';
+import {reducer as legendReducer} from './map/reducers/legend.reducer';
+import {reducer as featureInfoReducer} from './map/reducers/feature-info.reducer';
+import {reducer as layerCatalogReducer} from './map/reducers/layer-catalog.reducer';
+import {reducer as activeMapItemReducer} from './map/reducers/active-map-item.reducer';
+import {reducer as authStatusReducer} from './auth/reducers/auth-status.reducer';
+import {reducer as favouriteListReducer} from './map/reducers/favourite-list.reducer';
+import {reducer as supportContentReducer} from './support/reducers/support-content.reducer';
+import {reducer as mapAttributeFiltersItemReducer} from './map/reducers/map-attribute-filters-item.reducer';
+import {ActiveMapItemState} from './map/states/active-map-item.state';
+import {FavouriteListState} from './map/states/favourite-list.state';
+import {FeatureInfoState} from './map/states/feature-info.state';
+import {LayerCatalogState} from './map/states/layer-catalog.state';
+import {LegendState} from './map/states/legend.state';
+import {MapAttributeFiltersItemState} from './map/states/map-attribute-filters-item.state';
+import {MapConfigState} from './map/states/map-config.state';
+import {SupportContentState} from './support/states/support-content.state';
+import {AuthStatusState} from './auth/states/auth-status.state';
 
 export interface State {
   mapConfig: MapConfigState;
