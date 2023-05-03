@@ -6,6 +6,7 @@
         *ngFor="let tableHeader of this.tableHeaders"
         (mouseenter)="this.addHoverHighlightForFeature(tableHeader.fid)"
         (mouseleave)="this.removeHoverHighlightForFeature(tableHeader.fid)"
+        [attr.data-resultId]="this.id"
         [attr.data-fid]="tableHeader.fid"
         class="feature-info-content__table__row__column feature-info-content__table__row__column--header"
       >

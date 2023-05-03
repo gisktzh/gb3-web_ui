@@ -44,6 +44,7 @@ const DEFAULT_TABLE_HEADER_PREFIX = 'Resultat';
 })
 export class FeatureInfoContentComponent implements OnInit, OnDestroy {
   @Input() public layer!: FeatureInfoResultLayer;
+  @Input() public id!: string;
   public readonly staticFilesBaseUrl: string;
 
   /**
@@ -84,12 +85,12 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Adds the highlight class to all cells for a given feature by using the fid to find all corresponding cells, mimicking a column
+   * Adds the highlight class to all cells for a given feature to find all corresponding cells, mimicking a column
    * selection. Dispatches a highlight request only if no item is currently pinned.
    * @param fid
    */
   public addHoverHighlightForFeature(fid: number) {
-    this.document.querySelectorAll(`[data-fid="${fid}"]`).forEach((cell) => {
+    this.getQuerySelector(fid).forEach((cell) => {
       cell.classList.add(HIGHLIGHTED_CELL_CLASS);
     });
 
@@ -99,18 +100,27 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Removes the highlight class to all cells for a given feature by using the fid to find all corresponding cells, mimicking a column
+   * Removes the highlight class to all cells for a given feature to find all corresponding cells, mimicking a column
    * selection. Dispatches a clear highlight request only if no item is currently pinned.
    * @param fid
    */
   public removeHoverHighlightForFeature(fid: number) {
-    this.document.querySelectorAll(`[data-fid="${fid}"]`).forEach((cell) => {
+    this.getQuerySelector(fid).forEach((cell) => {
       cell.classList.remove(HIGHLIGHTED_CELL_CLASS);
     });
 
     if (!this.isPinned) {
       this.store.dispatch(FeatureInfoActions.clearHighlight());
     }
+  }
+
+  /**
+   * Returns a list of all document nodes that match our selectors, i.e. the FID and the resultId must match.
+   * @param fid
+   * @private
+   */
+  private getQuerySelector(fid: number): NodeListOf<Element> {
+    return this.document.querySelectorAll(`[data-fid="${fid}"][data-resultId="${this.id}"]`);
   }
 
   private initSubscriptions() {

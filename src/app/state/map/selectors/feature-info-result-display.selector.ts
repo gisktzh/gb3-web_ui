@@ -31,6 +31,8 @@ export const selectFeatureInfosForDisplay = createSelector<
       check whether an activeMapItem exists as a single layer with this layer - otherwise, it's a topic with just one layer and this needs
       to be handled as a default layer itself.
       */
+
+    // todo: There is a bug if a topic with only 1 layer AND this layer is also added as single layer - this will return true for all.
     let isSingleLayer = false;
     if (featureInfo.layers.length === 1) {
       const singleLayerId = ActiveMapItem.createSingleLayerId(topic.id, featureInfo.layers[0].layer);
@@ -41,6 +43,7 @@ export const selectFeatureInfosForDisplay = createSelector<
     let featureInfoResultDisplay: FeatureInfoResultDisplay;
     if (isSingleLayer) {
       featureInfoResultDisplay = {
+        id: ActiveMapItem.createSingleLayerId(topic.id, featureInfo.layers[0].layer),
         title: featureInfo.layers[0].title,
         layers: featureInfo.layers,
         icon: undefined,
@@ -48,6 +51,7 @@ export const selectFeatureInfosForDisplay = createSelector<
       };
     } else {
       featureInfoResultDisplay = {
+        id: topic.id,
         title: topic.title,
         layers: featureInfo.layers,
         icon: topic.icon,

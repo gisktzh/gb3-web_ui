@@ -13,7 +13,7 @@
     </map-overlay-list-item>
     <ng-template #featureInfoContent>
       <!-- Depending on whether we're in printmode, render different component. -->
-      <feature-info-content *ngIf="!this.isPrintable" [layer]="layer"></feature-info-content>
+      <feature-info-content *ngIf="!this.isPrintable" [layer]="layer" [id]="featureInfo.id"></feature-info-content>
       <feature-info-print-content *ngIf="this.isPrintable" [layer]="layer"></feature-info-print-content>
     </ng-template>
   </div>
