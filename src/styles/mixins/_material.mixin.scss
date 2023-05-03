@@ -94,7 +94,7 @@
 }
 
 @mixin mat-checkbox-override-label-color($color) {
-  .mdc-form-field .mdc-checkbox > label {
+  .mdc-form-field .mdc-checkbox ~ label {
     color: $color;
   }
 }

@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
-import {SearchResultMatch} from "../../../../shared/services/apis/search/interfaces/search-result-match.interface";
-import {Map} from "../../../../shared/interfaces/topic.interface";
+import {SearchResultMatch} from '../../../../shared/services/apis/search/interfaces/search-result-match.interface';
+import {Map} from '../../../../shared/interfaces/topic.interface';
 
 @Component({
   selector: 'result-groups',

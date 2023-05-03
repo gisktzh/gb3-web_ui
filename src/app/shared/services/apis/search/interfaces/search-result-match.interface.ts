@@ -1,4 +1,4 @@
-import {Point} from "geojson";
+import {Point} from 'geojson';
 
 export interface SearchResultMatch {
   displayString: string;

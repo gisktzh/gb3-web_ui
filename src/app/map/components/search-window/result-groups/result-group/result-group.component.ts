@@ -1,12 +1,12 @@
 import {Component, Inject, Input} from '@angular/core';
-import {SearchResultMatch} from "../../../../../shared/services/apis/search/interfaces/search-result-match.interface";
-import {Map} from "../../../../../shared/interfaces/topic.interface";
-import {Store} from "@ngrx/store";
-import {MAP_SERVICE} from "../../../../../app.module";
-import {MapService} from "../../../../interfaces/map.service";
-import {ActiveMapItem} from "../../../../models/active-map-item.model";
-import {ActiveMapItemActions} from "../../../../../state/map/actions/active-map-item.actions";
-import {SearchIndexType} from "../../../../../shared/types/search-index-type";
+import {SearchResultMatch} from '../../../../../shared/services/apis/search/interfaces/search-result-match.interface';
+import {Map} from '../../../../../shared/interfaces/topic.interface';
+import {Store} from '@ngrx/store';
+import {MAP_SERVICE} from '../../../../../app.module';
+import {MapService} from '../../../../interfaces/map.service';
+import {ActiveMapItem} from '../../../../models/active-map-item.model';
+import {ActiveMapItemActions} from '../../../../../state/map/actions/active-map-item.actions';
+import {SearchIndexType} from '../../../../../shared/types/search-index-type';
 
 const DEFAULT_ZOOM_SCALE = 1000;
 
@@ -22,10 +22,7 @@ export class ResultGroupComponent {
   @Input() public header: string = '';
   @Input() public searchTerms: string[] = [];
 
-  constructor(
-    private readonly store: Store,
-    @Inject(MAP_SERVICE) private readonly mapService: MapService
-  ) {}
+  constructor(private readonly store: Store, @Inject(MAP_SERVICE) private readonly mapService: MapService) {}
 
   public zoomToResult(searchResult: SearchResultMatch) {
     if (searchResult.geometry) {

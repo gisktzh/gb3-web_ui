@@ -1,14 +1,14 @@
 import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {SearchService} from "../../../shared/services/apis/search/services/search.service";
-import {debounceTime, distinctUntilChanged, first, fromEvent, Observable, Subscription, tap} from "rxjs";
-import {SearchResultMatch} from "../../../shared/services/apis/search/interfaces/search-result-match.interface";
-import {Store} from "@ngrx/store";
-import {Map} from "../../../shared/interfaces/topic.interface";
-import {selectMaps} from "../../../state/map/selectors/maps.selector";
-import {map} from "rxjs/operators";
-import {DEFAULT_SEARCHES, MAP_SEARCH} from "../../../shared/constants/search.constants";
-import {SearchIndex} from "../../../shared/services/apis/search/interfaces/search-index.interface";
-import {selectAvailableSpecialSearchIndexes} from "../../../state/map/selectors/available-search-index.selector";
+import {SearchService} from '../../../shared/services/apis/search/services/search.service';
+import {debounceTime, distinctUntilChanged, first, fromEvent, Observable, Subscription, tap} from 'rxjs';
+import {SearchResultMatch} from '../../../shared/services/apis/search/interfaces/search-result-match.interface';
+import {Store} from '@ngrx/store';
+import {Map} from '../../../shared/interfaces/topic.interface';
+import {selectMaps} from '../../../state/map/selectors/maps.selector';
+import {map} from 'rxjs/operators';
+import {DEFAULT_SEARCHES, MAP_SEARCH} from '../../../shared/constants/search.constants';
+import {SearchIndex} from '../../../shared/services/apis/search/interfaces/search-index.interface';
+import {selectAvailableSpecialSearchIndexes} from '../../../state/map/selectors/available-search-index.selector';
 
 @Component({
   selector: 'search-window',
@@ -21,6 +21,7 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   public filteredMaps: Map[] = [];
   public searchTerms: string[] = [];
   public availableSearchIndexes: SearchIndex[] = DEFAULT_SEARCHES.concat(MAP_SEARCH);
+  public isFilterMenuOpen = false;
 
   private originalMaps: Map[] = [];
   private readonly originalMaps$ = this.store.select(selectMaps);
@@ -28,10 +29,7 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly subscriptions: Subscription = new Subscription();
   @ViewChild('filterInput') private readonly input!: ElementRef;
 
-  constructor(
-    private searchService: SearchService,
-    private readonly store: Store
-  ) {}
+  constructor(private searchService: SearchService, private readonly store: Store) {}
 
   public async ngOnInit() {
     this.initSubscriptions();
@@ -54,6 +52,14 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  public toggleFilterMenu() {
+    this.isFilterMenuOpen = !this.isFilterMenuOpen;
+  }
+
+  public closeFilterMenu() {
+    this.isFilterMenuOpen = false;
+  }
+
   public clearInput() {
     this.input.nativeElement.value = '';
     this.input.nativeElement.dispatchEvent(new KeyboardEvent('keyup'));
@@ -70,50 +76,57 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
     const defaultIndexes: SearchIndex[] = [];
     const specialIndexes: SearchIndex[] = [];
     let mapSearchActive = false;
-    this.availableSearchIndexes.filter((index) => index.active).forEach((index) => {
-      switch (index.indexType) {
-        case 'default': {
-          defaultIndexes.push(index);
-          break;
+    this.availableSearchIndexes
+      .filter((index) => index.active)
+      .forEach((index) => {
+        switch (index.indexType) {
+          case 'default': {
+            defaultIndexes.push(index);
+            break;
+          }
+          case 'special': {
+            specialIndexes.push(index);
+            break;
+          }
+          case 'map': {
+            mapSearchActive = true;
+            break;
+          }
         }
-        case 'special': {
-          specialIndexes.push(index);
-          break;
-        }
-        case 'map': {
-          mapSearchActive = true;
-          break;
-        }
-      }
-    });
+      });
     if (defaultIndexes.length > 0) {
-      this.subscriptions.add(this.searchService.searchIndexes(term, defaultIndexes)
-        .pipe(
-          first(),
-          tap((searchResults: SearchResultMatch[]) => {
-            this.searchResults = searchResults;
-          })
-        )
-        .subscribe()
+      this.subscriptions.add(
+        this.searchService
+          .searchIndexes(term, defaultIndexes)
+          .pipe(
+            first(),
+            tap((searchResults: SearchResultMatch[]) => {
+              this.searchResults = searchResults;
+            })
+          )
+          .subscribe()
       );
     } else {
       this.searchResults = [];
     }
     if (specialIndexes.length > 0) {
-      this.subscriptions.add(this.searchService.searchIndexes(term, specialIndexes)
-        .pipe(
-          first(),
-          tap((searchResults: SearchResultMatch[]) => {
-            this.specialSearchResults = searchResults;
-          })
-        ).subscribe()
+      this.subscriptions.add(
+        this.searchService
+          .searchIndexes(term, specialIndexes)
+          .pipe(
+            first(),
+            tap((searchResults: SearchResultMatch[]) => {
+              this.specialSearchResults = searchResults;
+            })
+          )
+          .subscribe()
       );
     } else {
       this.specialSearchResults = [];
     }
     if (mapSearchActive) {
-      this.filteredMaps = this.originalMaps.filter(availableMap =>
-        this.searchTerms.every(searchTerm => availableMap.title.toLowerCase().includes(searchTerm.toLowerCase()))
+      this.filteredMaps = this.originalMaps.filter((availableMap) =>
+        this.searchTerms.every((searchTerm) => availableMap.title.toLowerCase().includes(searchTerm.toLowerCase()))
       );
     } else {
       this.filteredMaps = [];

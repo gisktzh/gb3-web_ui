@@ -1,4 +1,4 @@
-import {SearchIndex} from "../services/apis/search/interfaces/search-index.interface";
+import {SearchIndex} from '../services/apis/search/interfaces/search-index.interface';
 
 export const DEFAULT_SEARCHES: SearchIndex[] = [
   {
@@ -23,16 +23,16 @@ export const MAP_SEARCH: SearchIndex = {
 };
 
 export const ACTIVE_SEARCH_INDICES: string[] = [
-  "schacht",
-  "boje",
-  "veloverbindungen",
-  "wasserrechtwww",
-  "strkm",
-  "verkehrsmessstellen",
-  "gvz",
-  "beleuchtung",
-  "gewaesserangaben",
-  "fassung",
-  "bienenstaende",
-  "verkehrstechnik"
+  'schacht',
+  'boje',
+  'veloverbindungen',
+  'wasserrechtwww',
+  'strkm',
+  'verkehrsmessstellen',
+  'gvz',
+  'beleuchtung',
+  'gewaesserangaben',
+  'fassung',
+  'bienenstaende',
+  'verkehrstechnik'
 ];
