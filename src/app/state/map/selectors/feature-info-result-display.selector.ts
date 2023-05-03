@@ -39,7 +39,6 @@ export const selectFeatureInfosForDisplay = createSelector<
 
     // todo: we do not set a metaDataLink because that is currently not returned from the API.
     let featureInfoResultDisplay: FeatureInfoResultDisplay;
-
     if (isSingleLayer) {
       featureInfoResultDisplay = {
         title: featureInfo.layers[0].title,

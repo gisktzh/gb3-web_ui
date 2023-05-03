@@ -9,4 +9,5 @@ export class MapOverlayListItemComponent {
   @Input() public overlayTitle: string = '';
   @Input() public metaDataLink?: string;
   @Input() public forceExpanded: boolean = false;
+  @Input() public disabled: boolean = false;
 }
