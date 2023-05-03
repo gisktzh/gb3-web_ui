@@ -1,41 +1,41 @@
 <div class="search-window__searchbar">
-    <input #filterInput class="search-window__input" placeholder="Suchen nach Adressen, Orten, Karten und mehr...">
-    <mat-icon class="search-window__input-icon">search</mat-icon>
-    <mat-icon class="search-window__x-icon" (click)="clearInput()">close</mat-icon>
+  <mat-icon class="search-window__searchbar__input-icon">search</mat-icon>
+  <input #filterInput class="search-window__searchbar__input" placeholder="Suchen nach Adressen, Orten, Karten und mehr..." />
+  <mat-icon
+    cdkOverlayOrigin
+    #filterOverlayTrigger="cdkOverlayOrigin"
+    class="search-window__searchbar__filter-icon"
+    [ngClass]="{'search-window__searchbar__filter-icon--selected': isFilterMenuOpen}"
+    (click)="toggleFilterMenu()"
+    >filter_list</mat-icon
+  >
+  <mat-divider [vertical]="true" class="search-window__searchbar__divider"></mat-divider>
+  <mat-icon class="search-window__searchbar__close-icon" (click)="clearInput()">close</mat-icon>
+
+  <ng-template cdkConnectedOverlay [cdkConnectedOverlayOrigin]="filterOverlayTrigger" [cdkConnectedOverlayOpen]="isFilterMenuOpen">
+    <div class="search-window__filter-menu">
+      <mat-icon class="search-window__filter-menu__filter-close-icon" (click)="closeFilterMenu()">close</mat-icon>
+      <div class="search-window__filter-menu__filter-content">
+        <h2 class="search-window__filter-menu__filter-content__filter-header">Suche filtern nach</h2>
+        <div *ngFor="let index of availableSearchIndexes" class="search-window__filter-menu__filter-content__filter-entry">
+          <mat-checkbox
+            class="search-window__filter-menu__filter-content__filter-entry__filter-checkbox"
+            [checked]="index.active"
+            [(ngModel)]="index.active"
+            (change)="search(filterInput.value)"
+            [ngClass]="{'search-window__filter-menu__filter-content__filter-entry__filter-checkbox--unchecked': !index.active}"
+            >{{ index.displayString }}</mat-checkbox
+          >
+        </div>
+      </div>
+    </div>
+  </ng-template>
 </div>
 <div class="search-window__results_container">
-  <div class="search-window__results">
-    <div *ngIf="searchResults.length > 0" class="search-window__group">
-      <h3 class="search-window__header">Orte / Adressen</h3>
-      <div class="search-window__element-container">
-        <mat-card *ngFor="let result of searchResults" class="search-window__element">
-          <mat-card-content
-            class="search-window__element-content"
-            [innerHTML]="result.displayString | highlightSearchQuery : this.searchTerms"
-            (click)="zoomToResult(result)"
-          ></mat-card-content>
-          <mat-divider></mat-divider>
-        </mat-card>
-      </div>
-    </div>
-    <div *ngIf="filteredMaps.length > 0" class="search-window__group">
-      <h3 class="search-window__header">Karten</h3>
-      <div class="search-window__element-container">
-        <mat-card *ngFor="let map of filteredMaps" class="search-window__element">
-          <mat-card-content class=search-window__map-content>
-            <button (click)="addActiveMap(map)" color="primary" data-test-id="add-active-map" mat-icon-button>
-              <mat-icon>add</mat-icon>
-            </button>
-            <img [alt]="map.title" [src]="map.icon" class="search-window__map-image" />
-            <p
-              [innerHTML]="map.title | highlightSearchQuery : this.searchTerms"
-              class="search-window__map-title"
-              matTooltip="{{ map.title }}"
-            ></p>
-          </mat-card-content>
-          <mat-divider></mat-divider>
-        </mat-card>
-      </div>
-    </div>
-  </div>
+  <result-groups
+    [searchResults]="searchResults"
+    [specialSearchResults]="specialSearchResults"
+    [filteredMaps]="filteredMaps"
+    [searchTerms]="searchTerms"
+  ></result-groups>
 </div>

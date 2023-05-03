@@ -30,6 +30,8 @@ import {KtZhDesignSystemModule} from '../kt-zh-design-system/kt-zh-design-system
 import {TimeSliderComponent} from './components/time-slider/time-slider.component';
 import {LegendContentComponent} from './components/legend/legend-content/legend-content.component';
 import {FeatureInfoContentComponent} from './components/feature-info/feature-info-content/feature-info-content.component';
+import {ResultGroupsComponent} from './components/search-window/result-groups/result-groups.component';
+import {ResultGroupComponent} from './components/search-window/result-groups/result-group/result-group.component';
 import {ActiveMapItemHeaderComponent} from './components/active-map-items/active-map-item-header/active-map-item-header.component';
 import {ActiveMapItemSettingsComponent} from './components/active-map-items/active-map-item-settings/active-map-item-settings.component';
 import {ActiveMapItemLayersComponent} from './components/active-map-items/active-map-item-layers/active-map-item-layers.component';
@@ -64,6 +66,8 @@ import {ActiveMapItemLayerComponent} from './components/active-map-items/active-
     TimeSliderComponent,
     LegendContentComponent,
     FeatureInfoContentComponent,
+    ResultGroupsComponent,
+    ResultGroupComponent,
     ActiveMapItemHeaderComponent,
     ActiveMapItemSettingsComponent,
     ActiveMapItemLayersComponent,

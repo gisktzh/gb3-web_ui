@@ -35,6 +35,7 @@
     left: 480px;
     height: 48px;
     width: 125px;
+    background-color: background;
   }
 
   .map-container__map-attribute-filter {
@@ -47,10 +48,8 @@
   }
 
   .map-container__search-window {
-    // TODO this currently leads to some 'ghost' shadows as the element is always present over the whole screen (even when the content is invisible)
-    //@include mixins.map-element-box-shadow;
     position: absolute;
-    top: 89px;
+    top: 80px;
     right: 25px;
     bottom: 85px;
     pointer-events: none;

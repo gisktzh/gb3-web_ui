@@ -1,49 +1,115 @@
+@use 'functions/helper.function' as functions;
 @use 'src/styles/variables/ktzh-design-variables' as ktzh-variables;
 @use 'mixins/helpers.mixin' as mixins;
+@use 'mixins/material.mixin' as mat-mixins;
 
 .search-window__searchbar {
-  background-color: ktzh-variables.$zh-white;
+  @include mixins.map-element-box-shadow;
+  background-color: background;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   pointer-events: all;
+  align-items: center;
+  border: 3px solid ktzh-variables.$zh-black50;
 
-  .search-window__input {
-    width: 484px;
-    height: 40px;
-    padding: 0 5px 0 45px;
-    border: 3px solid grey;
-    margin: 5px;
-    outline: none;
+  &:focus-within {
+    border: 3px solid ktzh-variables.$zh-cyan;
   }
 
-  .search-window__input:focus {
-    border: 3px solid ktzh-variables.$zh-cyan;
+  .search-window__searchbar__input {
+    width: 413px;
+    height: 40px;
+    outline: none;
+    border: none;
+    margin: 3px 0 3px 0;
+  }
 
-    & + .search-window__input-icon {
-      color: black;
+  .search-window__searchbar__input-icon {
+    height: 24px;
+    width: 24px;
+    padding: 5px;
+    margin: 4px;
+    color: ktzh-variables.$zh-black50;
+  }
+
+  .search-window__searchbar__close-icon {
+    height: 24px;
+    width: 24px;
+    padding: 5px;
+    margin: 4px;
+    color: ktzh-variables.$zh-black100;
+
+    &:hover {
+      cursor: pointer;
     }
   }
 
-  .search-window__input-icon {
-    height: 30px;
-    width: 30px;
-    margin: 16px 5px 5px 16px;
-    position: absolute;
-    color: grey;
+  .search-window__searchbar__filter-icon {
+    height: 24px;
+    width: 24px;
+    padding: 5px;
+    margin: 4px;
+    color: ktzh-variables.$zh-black100;
+
+    &:hover {
+      cursor: pointer;
+    }
+
+    &--selected {
+      color: ktzh-variables.$zh-cyan;
+    }
   }
 
-  .search-window__x-icon {
-    height: 30px;
-    width: 30px;
-    margin: 16px 5px 5px 16px;
+  .search-window__searchbar__divider {
+    right: 45px;
+    height: 20px;
+    border-width: 1px;
+    border-color: ktzh-variables.$zh-black100;
+  }
+}
+
+.search-window__filter-menu {
+  @include mixins.map-element-box-shadow;
+  width: 300px;
+  background-color: background;
+
+  .search-window__filter-menu__filter-close-icon {
+    height: 24px;
+    width: 24px;
+    padding: 5px;
+    margin: 5px;
     position: absolute;
-    color: black;
-    right: 5px;
+    color: ktzh-variables.$zh-black100;
+    right: 0;
+
+    &:hover {
+      cursor: pointer;
+    }
   }
 
-  .search-window__x-icon:hover {
-    cursor: pointer;
+  .search-window__filter-menu__filter-content {
+    .search-window__filter-menu__filter-content__filter-header {
+      font-size: 15px;
+      padding: 10px;
+      margin: 0;
+    }
+
+    .search-window__filter-menu__filter-content__filter-entry {
+      padding-left: 12px;
+
+      // ':host ::ng-deep' is not working here as the context is within the overlay container
+      ::ng-deep .search-window__filter-menu__filter-content__filter-entry__filter-checkbox {
+        @include mat-mixins.mat-checkbox-override-color(
+          functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent),
+          functions.get-contrast-color-from-palette(ktzh-variables.$zh-secondary-accent)
+        );
+
+        &--unchecked {
+          @include mat-mixins.mat-checkbox-override-label-color(ktzh-variables.$zh-black40);
+        }
+      }
+    }
   }
 }
 
@@ -52,67 +118,4 @@
   top: 0;
   bottom: 0;
   margin-top: 56px;
-
-  .search-window__results {
-    display: flex;
-    flex-direction: column;
-    width: 475px;
-    margin-left: 5px;
-    height: 100%;
-
-    .search-window__group {
-      padding: 5px;
-      max-height: 50%;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      background-color: ktzh-variables.$zh-white;
-      pointer-events: all;
-
-      .search-window__header {
-        padding: 4px;
-        margin: 0;
-        background-color: lightgrey;
-        font-size: 15px;
-      }
-
-      .search-window__element-container {
-        overflow-y: scroll;
-
-        .search-window__element {
-          box-shadow: none;
-          font-size: 14px;
-
-          .search-window__element-content {
-            padding: 5px;
-          }
-
-          .search-window__element-content:hover {
-            cursor: pointer;
-            background-color: ktzh-variables.$zh-background-color;
-          }
-
-          .search-window__map-content {
-            display: flex;
-            padding: 5px;
-
-            .search-window__map-image {
-              height: 32px;
-              width: 32px;
-              align-self: center;
-              margin-right: 8px;
-              border-radius: 4px;
-            }
-
-            .search-window__map-title {
-              @include mixins.single-line-text;
-              margin-right: auto;
-              margin-top: auto;
-              margin-bottom: auto;
-            }
-          }
-        }
-      }
-    }
-  }
 }
