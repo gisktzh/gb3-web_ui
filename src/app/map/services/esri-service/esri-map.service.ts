@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {MapConfigActions} from '../../../state/map/actions/map-config.actions';
 import {TransformationService} from '../transformation.service';
-import {MapConfigState, selectActiveBasemapId, selectMapConfigState} from '../../../state/map/reducers/map-config.reducer';
+import {selectActiveBasemapId, selectMapConfigState} from '../../../state/map/reducers/map-config.reducer';
 import {first, skip, Subscription, tap, withLatestFrom} from 'rxjs';
 import {FeatureInfoActions} from '../../../state/map/actions/feature-info.actions';
 import {Geometry as GeoJsonGeometry, Point} from 'geojson';
@@ -42,6 +42,7 @@ import {
 } from '../../external/esri.module';
 import {TimeSliderConfiguration, TimeSliderLayerSource, TimeSliderParameterSource} from '../../../shared/interfaces/topic.interface';
 import {TimeExtent} from '../../interfaces/time-extent.interface';
+import {MapConfigState} from '../../../state/map/states/map-config.state';
 
 @Injectable({
   providedIn: 'root'

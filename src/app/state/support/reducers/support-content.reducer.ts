@@ -1,15 +1,9 @@
 import {createFeature, createReducer} from '@ngrx/store';
 import {supportLinks} from '../../../shared/models/support-links.data';
-import {SupportLinkCollection} from '../../../shared/interfaces/support-link.interface';
-import {FaqCollection} from '../../../shared/interfaces/faq.interface';
 import {faqData} from '../../../shared/models/faq.data';
+import {SupportContentState} from '../states/support-content.state';
 
 export const supportContentFeatureKey = 'supportContent';
-
-export interface SupportContentState {
-  faq: FaqCollection[];
-  links: SupportLinkCollection[];
-}
 
 export const initialState: SupportContentState = {
   faq: faqData,

@@ -1,13 +1,8 @@
 import {createFeature, createReducer, on} from '@ngrx/store';
-import {HasLoadingState} from '../../../shared/interfaces/has-loading-state.interface';
-import {Favourite} from '../../../shared/interfaces/favourite.interface';
 import {FavouriteListActions} from '../actions/favourite-list.actions';
+import {FavouriteListState} from '../states/favourite-list.state';
 
 export const favouriteListFeatureKey = 'favouriteList';
-
-export interface FavouriteListState extends HasLoadingState {
-  favourites: Favourite[];
-}
 
 export const initialState: FavouriteListState = {
   favourites: [],

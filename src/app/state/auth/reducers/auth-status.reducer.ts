@@ -1,12 +1,8 @@
 import {createFeature, createReducer, on} from '@ngrx/store';
 import {AuthStatusActions} from '../actions/auth-status.actions';
+import {AuthStatusState} from '../states/auth-status.state';
 
 export const authStatusFeatureKey = 'authStatus';
-
-export interface AuthStatusState {
-  isAuthenticated: boolean;
-  userName: string | undefined;
-}
 
 export const initialState: AuthStatusState = {
   isAuthenticated: false,

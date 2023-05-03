@@ -1,12 +1,9 @@
 import {createFeature, createReducer, on} from '@ngrx/store';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {ActiveMapItem} from '../../../map/models/active-map-item.model';
+import {ActiveMapItemState} from '../states/active-map-item.state';
 
 export const activeMapItemFeatureKey = 'activeMapItem';
-
-export interface ActiveMapItemState {
-  activeMapItems: ActiveMapItem[];
-}
 
 export const initialState: ActiveMapItemState = {
   activeMapItems: []
