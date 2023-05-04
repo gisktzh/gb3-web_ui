@@ -1,13 +1,13 @@
-import {Component, Inject, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {ConfigService} from '../../../../shared/services/config.service';
 import {FeatureInfoResultLayer} from '../../../../shared/interfaces/feature-info.interface';
 import {FeatureInfoActions} from '../../../../state/map/actions/feature-info.actions';
 import {Store} from '@ngrx/store';
-import {DOCUMENT} from '@angular/common';
 import {Geometry} from 'geojson';
 import {selectIsPinned} from '../../../../state/map/reducers/feature-info.reducer';
 import {Subscription, tap} from 'rxjs';
 import {MatRadioButton} from '@angular/material/radio';
+import {TableColumnIdentifierDirective} from './table-column-identifier.directive';
 
 /**
  * A TableCell represents a single value which is tied to a given feature via its fid.
@@ -48,13 +48,6 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy {
   public readonly staticFilesBaseUrl: string;
 
   /**
-   * Because the layerId is not unique among topics, we create a unique identifier by concatenating the layer identifier with the topicId,
-   * which is what we can use to set the corresponding data attribute. With both this identifier AND the feature's FID, we can create unique
-   * column identifiers across all feature results.
-   */
-  public uniqueLayerIdentifier: string = '';
-
-  /**
    * The order of the TableCell elements reflects the order of the tableHeaders elements.
    */
   public readonly tableRows: TableRows = new Map<string, TableCell[]>();
@@ -64,19 +57,15 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy {
   private readonly isPinned$ = this.store.select(selectIsPinned);
   private readonly subscriptions: Subscription = new Subscription();
   private isPinned: boolean = false;
+  @ViewChildren(TableColumnIdentifierDirective) private readonly tableColumns!: QueryList<TableColumnIdentifierDirective>;
 
-  constructor(
-    private readonly store: Store,
-    private readonly configService: ConfigService,
-    @Inject(DOCUMENT) private readonly document: Document
-  ) {
+  constructor(private readonly store: Store, private readonly configService: ConfigService) {
     this.staticFilesBaseUrl = this.configService.apiConfig.gb2StaticFiles.baseUrl;
   }
 
   public ngOnInit() {
     this.initTableData();
     this.initSubscriptions();
-    this.uniqueLayerIdentifier = this.createLayerIdentifier();
   }
 
   public ngOnDestroy() {
@@ -100,9 +89,12 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy {
    * @param fid
    */
   public addHoverHighlightForFeature(fid: number) {
-    this.getQuerySelector(fid).forEach((cell) => {
-      cell.classList.add(HIGHLIGHTED_CELL_CLASS);
-    });
+    this.tableColumns
+      .filter(
+        (tableColumn) =>
+          tableColumn.uniqueIdentifier === TableColumnIdentifierDirective.getUniqueColumnIdentifier(this.topicId, this.layer.layer, fid)
+      )
+      .forEach((tableColumn) => tableColumn.host.nativeElement.classList.add(HIGHLIGHTED_CELL_CLASS));
 
     if (!this.isPinned) {
       this.highlightFeatureIfExists(fid);
@@ -115,26 +107,16 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy {
    * @param fid
    */
   public removeHoverHighlightForFeature(fid: number) {
-    this.getQuerySelector(fid).forEach((cell) => {
-      cell.classList.remove(HIGHLIGHTED_CELL_CLASS);
-    });
+    this.tableColumns
+      .filter(
+        (tableColumn) =>
+          tableColumn.uniqueIdentifier === TableColumnIdentifierDirective.getUniqueColumnIdentifier(this.topicId, this.layer.layer, fid)
+      )
+      .forEach((tableColumn) => tableColumn.host.nativeElement.classList.remove(HIGHLIGHTED_CELL_CLASS));
 
     if (!this.isPinned) {
       this.store.dispatch(FeatureInfoActions.clearHighlight());
     }
-  }
-
-  private createLayerIdentifier(): string {
-    return `${this.layer.layer}_${this.topicId}`;
-  }
-
-  /**
-   * Returns a list of all document nodes that match our selectors, i.e. the FID and the resultId must match.
-   * @param fid
-   * @private
-   */
-  private getQuerySelector(fid: number): NodeListOf<Element> {
-    return this.document.querySelectorAll(`[data-fid="${fid}"][data-resultId="${this.uniqueLayerIdentifier}"]`);
   }
 
   private initSubscriptions() {
