@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, QueryList, Renderer2, ViewChildren} from '@angular/core';
 import {ConfigService} from '../../../../shared/services/config.service';
 import {FeatureInfoResultLayer} from '../../../../shared/interfaces/feature-info.interface';
 import {FeatureInfoActions} from '../../../../state/map/actions/feature-info.actions';
@@ -59,7 +59,7 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy {
   private isPinned: boolean = false;
   @ViewChildren(TableColumnIdentifierDirective) private readonly tableColumns!: QueryList<TableColumnIdentifierDirective>;
 
-  constructor(private readonly store: Store, private readonly configService: ConfigService) {
+  constructor(private readonly store: Store, private readonly configService: ConfigService, private readonly renderer: Renderer2) {
     this.staticFilesBaseUrl = this.configService.apiConfig.gb2StaticFiles.baseUrl;
   }
 
@@ -92,9 +92,9 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy {
     this.tableColumns
       .filter(
         (tableColumn) =>
-          tableColumn.uniqueIdentifier === TableColumnIdentifierDirective.getUniqueColumnIdentifier(this.topicId, this.layer.layer, fid)
+          tableColumn.uniqueIdentifier === TableColumnIdentifierDirective.createUniqueColumnIdentifier(this.topicId, this.layer.layer, fid)
       )
-      .forEach((tableColumn) => tableColumn.host.nativeElement.classList.add(HIGHLIGHTED_CELL_CLASS));
+      .forEach((tableColumn) => this.renderer.addClass(tableColumn.host.nativeElement, HIGHLIGHTED_CELL_CLASS));
 
     if (!this.isPinned) {
       this.highlightFeatureIfExists(fid);
@@ -110,9 +110,9 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy {
     this.tableColumns
       .filter(
         (tableColumn) =>
-          tableColumn.uniqueIdentifier === TableColumnIdentifierDirective.getUniqueColumnIdentifier(this.topicId, this.layer.layer, fid)
+          tableColumn.uniqueIdentifier === TableColumnIdentifierDirective.createUniqueColumnIdentifier(this.topicId, this.layer.layer, fid)
       )
-      .forEach((tableColumn) => tableColumn.host.nativeElement.classList.remove(HIGHLIGHTED_CELL_CLASS));
+      .forEach((tableColumn) => this.renderer.removeClass(tableColumn.host.nativeElement, HIGHLIGHTED_CELL_CLASS));
 
     if (!this.isPinned) {
       this.store.dispatch(FeatureInfoActions.clearHighlight());
