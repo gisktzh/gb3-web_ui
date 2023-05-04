@@ -89,11 +89,9 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy {
    * @param fid
    */
   public addHoverHighlightForFeature(fid: number) {
+    const tableColumnIdentifier = TableColumnIdentifierDirective.createUniqueColumnIdentifier(this.topicId, this.layer.layer, fid);
     this.tableColumns
-      .filter(
-        (tableColumn) =>
-          tableColumn.uniqueIdentifier === TableColumnIdentifierDirective.createUniqueColumnIdentifier(this.topicId, this.layer.layer, fid)
-      )
+      .filter((tableColumn) => tableColumn.uniqueIdentifier === tableColumnIdentifier)
       .forEach((tableColumn) => this.renderer.addClass(tableColumn.host.nativeElement, HIGHLIGHTED_CELL_CLASS));
 
     if (!this.isPinned) {
@@ -107,11 +105,9 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy {
    * @param fid
    */
   public removeHoverHighlightForFeature(fid: number) {
+    const tableColumnIdentifier = TableColumnIdentifierDirective.createUniqueColumnIdentifier(this.topicId, this.layer.layer, fid);
     this.tableColumns
-      .filter(
-        (tableColumn) =>
-          tableColumn.uniqueIdentifier === TableColumnIdentifierDirective.createUniqueColumnIdentifier(this.topicId, this.layer.layer, fid)
-      )
+      .filter((tableColumn) => tableColumn.uniqueIdentifier === tableColumnIdentifier)
       .forEach((tableColumn) => this.renderer.removeClass(tableColumn.host.nativeElement, HIGHLIGHTED_CELL_CLASS));
 
     if (!this.isPinned) {
