@@ -5,7 +5,7 @@
 
 .search-window__searchbar {
   @include mixins.map-element-box-shadow;
-  background-color: background;
+  background-color: ktzh-variables.$zh-background-color;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -72,7 +72,7 @@
 .search-window__filter-menu {
   @include mixins.map-element-box-shadow;
   width: 300px;
-  background-color: background;
+  background-color: ktzh-variables.$zh-background-color;
 
   .search-window__filter-menu__filter-close-icon {
     height: 24px;

@@ -1,5 +1,6 @@
 <div class="active-map-item-header">
   <button
+    class="active-map-item-header__button"
     (click)="activeMapItemExpansionPanel.toggle()"
     [attr.data-test-id]="activeMapItemExpansionPanel.expanded ? 'hide-layers-of-the-map' : 'show-layers-of-the-map'"
     mat-icon-button
@@ -35,7 +36,7 @@
       class="active-map-item-header__title-container__options"
       [ngClass]="{'active-map-item-header__title-container__options--inverted': activeMapItemExpansionPanel.expanded}"
     >
-      <button (click)="showActiveMapItemInfo(activeMapItem)" mat-icon-button data-test-id="info">
+      <button class="active-map-item-header__button" (click)="showActiveMapItemInfo(activeMapItem)" mat-icon-button data-test-id="info">
         <mat-icon>info</mat-icon>
       </button>
       <mat-divider
@@ -43,7 +44,7 @@
         [ngClass]="{'active-map-item-header__divider--inverted': activeMapItemExpansionPanel.expanded}"
         [vertical]="true"
       ></mat-divider>
-      <button (click)="removeActiveMapItem(activeMapItem)" mat-icon-button data-test-id="delete">
+      <button class="active-map-item-header__button" (click)="removeActiveMapItem(activeMapItem)" mat-icon-button data-test-id="delete">
         <mat-icon>delete</mat-icon>
       </button>
       <mat-divider
