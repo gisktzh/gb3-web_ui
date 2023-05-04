@@ -35,3 +35,10 @@
   left: 50%;
   transform: translate(-50%, -50%);
 }
+
+/// todo: We take 960px as cutoff and hide mapitems; this is a temporary fix for our layout issues.
+@mixin hide-on-small-screens {
+  @media (max-width: 960px) {
+    display: none;
+  }
+}
