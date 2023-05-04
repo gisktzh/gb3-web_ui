@@ -6,7 +6,7 @@
         *ngFor="let tableHeader of this.tableHeaders"
         (mouseenter)="this.addHoverHighlightForFeature(tableHeader.fid)"
         (mouseleave)="this.removeHoverHighlightForFeature(tableHeader.fid)"
-        [attr.data-resultId]="this.id"
+        [attr.data-resultId]="this.uniqueLayerIdentifier"
         [attr.data-fid]="tableHeader.fid"
         class="feature-info-content__table__row__column feature-info-content__table__row__column--header"
       >
@@ -27,6 +27,7 @@
         <th class="feature-info-content__table__row__column feature-info-content__table__row__column--header">{{ tableRow.key }}</th>
         <td
           *ngFor="let cellValue of tableRow.value"
+          [attr.data-resultId]="this.uniqueLayerIdentifier"
           [attr.data-fid]="cellValue.fid"
           (mouseenter)="this.addHoverHighlightForFeature(cellValue.fid)"
           (mouseleave)="this.removeHoverHighlightForFeature(cellValue.fid)"

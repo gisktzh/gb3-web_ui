@@ -44,8 +44,15 @@ const DEFAULT_TABLE_HEADER_PREFIX = 'Resultat';
 })
 export class FeatureInfoContentComponent implements OnInit, OnDestroy {
   @Input() public layer!: FeatureInfoResultLayer;
-  @Input() public id!: string;
+  @Input() public topicId!: string;
   public readonly staticFilesBaseUrl: string;
+
+  /**
+   * Because the layerId is not unique among topics, we create a unique identifier by concatenating the layer identifier with the topicId,
+   * which is what we can use to set the corresponding data attribute. With both this identifier AND the feature's FID, we can create unique
+   * column identifiers across all feature results.
+   */
+  public uniqueLayerIdentifier: string = '';
 
   /**
    * The order of the TableCell elements reflects the order of the tableHeaders elements.
@@ -69,6 +76,7 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy {
   public ngOnInit() {
     this.initTableData();
     this.initSubscriptions();
+    this.uniqueLayerIdentifier = this.createLayerIdentifier();
   }
 
   public ngOnDestroy() {
@@ -116,13 +124,17 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy {
     }
   }
 
+  private createLayerIdentifier(): string {
+    return `${this.layer.layer}_${this.topicId}`;
+  }
+
   /**
    * Returns a list of all document nodes that match our selectors, i.e. the FID and the resultId must match.
    * @param fid
    * @private
    */
   private getQuerySelector(fid: number): NodeListOf<Element> {
-    return this.document.querySelectorAll(`[data-fid="${fid}"][data-resultId="${this.id}"]`);
+    return this.document.querySelectorAll(`[data-fid="${fid}"][data-resultId="${this.uniqueLayerIdentifier}"]`);
   }
 
   private initSubscriptions() {
