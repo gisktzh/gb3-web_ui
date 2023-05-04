@@ -1,5 +1,6 @@
 <main class="main">
-  <navbar></navbar>
+  <mobile-warning *ngIf="this.showWarning"></mobile-warning>
+  <navbar class="navbar"></navbar>
   <article class="app-wrapper">
     <router-outlet></router-outlet>
   </article>
