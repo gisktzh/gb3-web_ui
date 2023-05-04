@@ -33,6 +33,7 @@ export const selectLegendItemsForDisplay = createSelector<Record<string, any>, L
       let legendDisplay: LegendDisplay;
       if (isSingleLayer) {
         legendDisplay = {
+          id: ActiveMapItem.createSingleLayerId(topic.id, legendItem.layers[0].layer),
           title: legendItem.layers[0].title,
           layers: legendItem.layers,
           icon: undefined,
@@ -41,6 +42,7 @@ export const selectLegendItemsForDisplay = createSelector<Record<string, any>, L
         };
       } else {
         legendDisplay = {
+          id: topic.id,
           title: topic.title,
           layers: legendItem.layers,
           icon: topic.icon,
