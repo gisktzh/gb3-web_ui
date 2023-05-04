@@ -4,12 +4,6 @@ import {FeatureInfoState} from '../states/feature-info.state';
 
 export const featureInfoFeatureKey = 'featureInfo';
 
-export interface FeatureInfoState extends HasLoadingState {
-  data: FeatureInfoResult[];
-  highlightedFeature: Geometry | undefined;
-  isPinned: boolean;
-}
-
 export const initialState: FeatureInfoState = {
   loadingState: 'undefined',
   data: [],
