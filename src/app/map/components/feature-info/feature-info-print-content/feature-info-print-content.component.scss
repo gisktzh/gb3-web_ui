@@ -2,7 +2,8 @@
 
 .feature-info-print-content {
   padding-top: 8px;
-  border-bottom: 1px solid ktzh-variables.$zh-black100;
+  border-bottom: 1px solid ktzh-variables.$zh-print-black;
+  background-color: ktzh-variables.$zh-print-white;
 
   .feature-info-print-content__title {
     font-family: ktzh-variables.$zh-font-family-bold;

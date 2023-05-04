@@ -15,7 +15,7 @@ export class FeatureInfoEffects {
       concatLatestFrom(() => this.store.select(selectQueryLayers)),
       switchMap(([action, queryLayers]) =>
         iif(
-          () => queryLayers.length !== 0,
+          () => queryLayers.length > 0,
           this.topicsService.loadFeatureInfos(action.x, action.y, queryLayers).pipe(
             map((featureInfos) => {
               return FeatureInfoActions.updateFeatureInfo({featureInfos});

@@ -3,7 +3,10 @@
 
 /**
   The following variables are used for adding the borders on highlight. We cannot use box-sizing: border-box in <td>
-   because tables do not adhere to these standards. That's why we "fake" borders by adding a negative, inset border on all requested sides.
+   because tables do not adhere to these standards. That's why we "fake" borders by adding an inset box-shadow for each
+   side and combine them as needed (middle columns have left-right; bottom column has left-right-bottom).
+
+   The fixed border is used for adding a box-shadow on the right of the left-most (attribute) column.
  */
 $border-size: 2px;
 $right-border: inset calc(-1 * $border-size) 0 0 0 ktzh-variables.$zh-active-blue;

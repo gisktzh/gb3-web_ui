@@ -26,7 +26,7 @@ export const featureInfoFeature = createFeature({
       return {...state, loadingState: 'loaded', data};
     }),
     on(FeatureInfoActions.highlightFeature, (state, {feature, isPinned}): FeatureInfoState => {
-      return {...state, highlightedFeature: feature, isPinned: !!isPinned};
+      return {...state, highlightedFeature: feature, isPinned: isPinned};
     }),
     on(FeatureInfoActions.clearHighlight, (state): FeatureInfoState => {
       return {...state, highlightedFeature: undefined, isPinned: false};

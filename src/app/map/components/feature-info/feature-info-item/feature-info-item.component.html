@@ -4,7 +4,7 @@
     <!-- For some results, there may be no features; if so, hide the sublayer. This might be an error API-wise, but we can handle it gracefully. -->
     <map-overlay-list-item
       *ngIf="!featureInfo.isSingleLayer; else featureInfoContent"
-      [forceExpanded]="layer.features.length !== 0"
+      [forceExpanded]="layer.features.length > 0"
       [disabled]="layer.features.length === 0"
       [overlayTitle]="layer.title"
     >

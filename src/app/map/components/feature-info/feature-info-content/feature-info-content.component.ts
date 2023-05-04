@@ -33,7 +33,7 @@ const HIGHLIGHTED_CELL_CLASS = 'feature-info-content__table__row__column--highli
 const DEFAULT_CELL_VALUE = '-';
 
 /**
- * Prefix that is added in front of the result stats (e.g. 1/3, 4/9) in the table header.
+ * Prefix that is added in front of the result stats (e.g. 1/3, 3/7) in the table header.
  */
 const DEFAULT_TABLE_HEADER_PREFIX = 'Resultat';
 
@@ -78,6 +78,8 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy {
   public toggleHighlightForFeature(fid: number, highlightButton: MatRadioButton) {
     if (highlightButton.checked) {
       this.store.dispatch(FeatureInfoActions.clearHighlight());
+
+      // Also uncheck the radio button status, because radio buttons cannot be deactivated by default
       highlightButton.checked = false;
     } else {
       this.highlightFeatureIfExists(fid, true);
@@ -135,12 +137,12 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy {
     this.store.dispatch(FeatureInfoActions.highlightFeature({feature, isPinned}));
   }
 
-  private getTableHeaderForFeature(fid: number, featureIndex: number, totalFeatures: number): TableCell {
+  private createTableHeaderForFeature(fid: number, featureIndex: number, totalFeatures: number): TableCell {
     const displayValue = `${DEFAULT_TABLE_HEADER_PREFIX} ${featureIndex + 1}/${totalFeatures}`;
     return {displayValue, fid};
   }
 
-  private getTableCellForFeatureAndField(fid: number, value: string | number | null): TableCell {
+  private createTableCellForFeatureAndField(fid: number, value: string | number | null): TableCell {
     const displayValue = value?.toString() ?? DEFAULT_CELL_VALUE;
     return {fid, displayValue};
   }
@@ -158,11 +160,11 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy {
   private initTableData() {
     this.layer.features.forEach(({fid, geometry, fields}, featureIdx, features) => {
       this.featureGeometries.set(fid, geometry);
-      const tableHeader = this.getTableHeaderForFeature(fid, featureIdx, features.length);
+      const tableHeader = this.createTableHeaderForFeature(fid, featureIdx, features.length);
       this.tableHeaders.push(tableHeader);
 
       fields.forEach(({label, value}) => {
-        const tableCell = this.getTableCellForFeatureAndField(fid, value);
+        const tableCell = this.createTableCellForFeatureAndField(fid, value);
 
         if (this.tableRows.has(label)) {
           // see: https://stackoverflow.com/questions/70723319/object-is-possibly-undefined-using-es6-map-get-right-after-map-set
