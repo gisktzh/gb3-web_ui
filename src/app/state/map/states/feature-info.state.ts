@@ -5,4 +5,5 @@ import {Geometry} from 'geojson';
 export interface FeatureInfoState extends HasLoadingState {
   data: FeatureInfoResult[];
   highlightedFeature: Geometry | undefined;
+  isPinned: boolean;
 }

@@ -1,12 +1,20 @@
 <!-- Currently. no [metaDataLink] tag is set as this information is currently not available. -->
-<map-overlay-list-item [forceExpanded]="this.isPrintable" [overlayTitle]="featureInfo.title">
+<map-overlay-list-item [forceExpanded]="true" [overlayTitle]="featureInfo.title">
   <div *ngFor="let layer of featureInfo.layers" class="feature-info-item">
-    <map-overlay-list-item *ngIf="!featureInfo.isSingleLayer; else featureInfoContent" [forceExpanded]="true" [overlayTitle]="layer.title">
+    <!-- For some results, there may be no features; if so, hide the sublayer. This might be an error API-wise, but we can handle it gracefully. -->
+    <map-overlay-list-item
+      *ngIf="!featureInfo.isSingleLayer; else featureInfoContent"
+      [forceExpanded]="layer.features.length > 0"
+      [disabled]="layer.features.length === 0"
+      [overlayTitle]="layer.title"
+    >
       <mat-icon class="feature-info-item-icon" header-icon>layers</mat-icon>
       <ng-container *ngTemplateOutlet="featureInfoContent"></ng-container>
     </map-overlay-list-item>
     <ng-template #featureInfoContent>
-      <feature-info-content [featureInfo]="featureInfo"></feature-info-content>
+      <!-- Depending on whether we're in printmode, render different component. -->
+      <feature-info-content *ngIf="!this.isPrintable" [layer]="layer" [topicId]="featureInfo.id"></feature-info-content>
+      <feature-info-print-content *ngIf="this.isPrintable" [layer]="layer"></feature-info-print-content>
     </ng-template>
   </div>
 

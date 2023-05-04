@@ -36,6 +36,7 @@ export interface FeatureInfoResponse {
 }
 
 export interface FeatureInfoResultDisplay {
+  id: string;
   title: string;
   layers: FeatureInfoResultLayer[];
   icon?: string;

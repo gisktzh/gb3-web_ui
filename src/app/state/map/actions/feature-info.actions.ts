@@ -8,6 +8,7 @@ export const FeatureInfoActions = createActionGroup({
     'Send Request': props<{x: number; y: number}>(),
     'Update Feature Info': props<{featureInfos: FeatureInfoResponse[]}>(),
     'Clear Feature Info Content': emptyProps(),
-    'Highlight Feature': props<{feature: Geometry}>()
+    'Highlight Feature': props<{feature: Geometry; isPinned: boolean}>(),
+    'Clear Highlight': emptyProps()
   }
 });

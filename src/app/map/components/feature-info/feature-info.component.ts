@@ -41,6 +41,10 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
     this.printFeatureInfoEvent.emit();
   }
 
+  public trackById(index: number, item: FeatureInfoResultDisplay): string {
+    return item.id;
+  }
+
   private initSubscriptions() {
     this.subscriptions.add(
       this.loadingState$

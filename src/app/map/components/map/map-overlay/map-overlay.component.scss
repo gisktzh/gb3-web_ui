@@ -1,7 +1,7 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
 .map-overlay {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   height: 100%;

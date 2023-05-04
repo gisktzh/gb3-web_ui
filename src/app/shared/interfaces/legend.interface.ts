@@ -27,6 +27,7 @@ export interface LegendResponse {
 export interface LegendLayer extends Omit<Layer, 'geolion' | 'attribution'>, HasMetaDataLink {}
 
 export interface LegendDisplay extends HasMetaDataLink {
+  id: string;
   title: string;
   icon?: string;
   layers: LegendLayer[];

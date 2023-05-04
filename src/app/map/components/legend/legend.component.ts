@@ -41,6 +41,10 @@ export class LegendComponent implements OnInit, OnDestroy {
     this.printLegendEvent.emit();
   }
 
+  public trackById(index: number, item: LegendDisplay): string {
+    return item.id;
+  }
+
   private initSubscriptions() {
     this.subscriptions.add(
       this.loadingState$

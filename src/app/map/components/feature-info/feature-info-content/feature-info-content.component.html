@@ -1,20 +1,45 @@
-<!-- Todo: Styling for feature info; the tables will be components as well I guess -->
-<div *ngFor="let layerInfo of this.featureInfo.layers" class="feature-info">
-  <div class="feature-info__title">{{ layerInfo.title }} ({{ layerInfo.features.length }} Treffer)</div>
-  <ng-container *ngFor="let feature of layerInfo.features; index as i">
-    <b>Treffer {{ i + 1 }}/{{ layerInfo.features.length }}</b>
-    <button
-      class="mat-raised-button feature-info__highlight-button"
-      data-test-id="highlight"
-      (click)="this.highlightFeature(feature.geometry)"
-    >
-      Highlight
-    </button>
-    <div class="feature-info__content">
-      <ng-container *ngFor="let data of feature.fields">
-        <div class="feature-info__content__label">{{ data.label }}</div>
-        <div class="feature-info__content__value">{{ data.value }}</div>
-      </ng-container>
-    </div>
-  </ng-container>
+<div class="feature-info-content">
+  <table class="feature-info-content__table">
+    <tr class="feature-info-content__table__row">
+      <th class="feature-info-content__table__row__column feature-info-content__table__row__column--header"></th>
+      <th
+        (mouseenter)="this.addHoverHighlightForFeature(tableHeader.fid)"
+        (mouseleave)="this.removeHoverHighlightForFeature(tableHeader.fid)"
+        *ngFor="let tableHeader of this.tableHeaders"
+        [featureId]="tableHeader.fid"
+        [layerId]="this.layer.layer"
+        [topicId]="this.topicId"
+        class="feature-info-content__table__row__column feature-info-content__table__row__column--header"
+        tableColumnIdentifier
+      >
+        <div class="feature-info-content__table__row__column__wrapper">
+          {{ tableHeader.displayValue }}
+          <mat-radio-button
+            #highlightButton
+            (click)="this.toggleHighlightForFeature(tableHeader.fid, highlightButton)"
+            labelPosition="before"
+          >
+            Markieren:
+          </mat-radio-button>
+        </div>
+      </th>
+    </tr>
+    <ng-container *ngFor="let tableRow of this.tableRows | keyvalue">
+      <tr class="feature-info-content__table__row">
+        <th class="feature-info-content__table__row__column feature-info-content__table__row__column--header">{{ tableRow.key }}</th>
+        <td
+          (mouseenter)="this.addHoverHighlightForFeature(cellValue.fid)"
+          (mouseleave)="this.removeHoverHighlightForFeature(cellValue.fid)"
+          *ngFor="let cellValue of tableRow.value"
+          [featureId]="cellValue.fid"
+          [layerId]="this.layer.layer"
+          [topicId]="this.topicId"
+          class="feature-info-content__table__row__column"
+          tableColumnIdentifier
+        >
+          {{ cellValue.displayValue }}
+        </td>
+      </tr>
+    </ng-container>
+  </table>
 </div>
