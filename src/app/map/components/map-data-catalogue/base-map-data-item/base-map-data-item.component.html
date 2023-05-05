@@ -1,0 +1,54 @@
+<mat-expansion-panel #itemExpansionPanel hideToggle="true" class="base-map-data-item">
+  <mat-expansion-panel-header
+    (click)="itemExpansionPanel.toggle()"
+    class="base-map-data-item__header"
+    [matTooltipDisabled]="!invalid"
+    matTooltip="{{ this.errorTooltip }}"
+  >
+    <button
+      (click)="itemExpansionPanel.toggle()"
+      [attr.data-test-id]="itemExpansionPanel.expanded ? 'hide-layers-of-the-map' : 'show-layers-of-the-map'"
+      [disabled]="layers.length === 0"
+      mat-icon-button
+    >
+      <mat-icon
+        [fontIcon]="itemExpansionPanel.expanded ? 'arrow_drop_down' : 'arrow_right'"
+        [matBadgeDisabled]="layers.length === 0"
+        [matBadgeHidden]="!this.filterString || this.loadingState === 'loading'"
+        [matBadge]="layers.length"
+        matBadgeOverlap
+      ></mat-icon>
+    </button>
+    <div class="base-map-data-item__header__image-container">
+      <img
+        *ngIf="imageUrl; else imagePlaceholder"
+        class="base-map-data-item__header__image-container__image"
+        [alt]="title"
+        [src]="imageUrl"
+      />
+      <ng-template #imagePlaceholder>
+        <span class="base-map-data-item__header__image-container__image-placeholder"></span>
+      </ng-template>
+      <button (click)="addItem()" class="base-map-data-item__header__image-container__button" data-test-id="add-active-map" mat-icon-button>
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+    <p
+      [innerHTML]="title | highlightSearchQuery : this.filterString"
+      class="base-map-data-item__header__title"
+      matTooltip="{{ title }}"
+    ></p>
+  </mat-expansion-panel-header>
+  <!-- Expansion panel content -->
+  <ng-template matExpansionPanelContent>
+    <ng-container *ngFor="let layer of layers">
+      <div *ngIf="!layer.isHidden" class="layer">
+        <mat-icon class="layer__icon">layers</mat-icon>
+        <p [innerHTML]="layer.title | highlightSearchQuery : this.filterString" class="layer__title" matTooltip="{{ layer.title }}"></p>
+        <button (click)="addItemLayer(layer)" mat-icon-button>
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+    </ng-container>
+  </ng-template>
+</mat-expansion-panel>

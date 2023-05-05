@@ -38,6 +38,9 @@ import {ActiveMapItemLayersComponent} from './components/active-map-items/active
 import {ActiveMapItemLayerComponent} from './components/active-map-items/active-map-item-layers/active-map-item-layer/active-map-item-layer.component';
 import {FeatureInfoPrintContentComponent} from './components/feature-info/feature-info-print-content/feature-info-print-content.component';
 import {TableColumnIdentifierDirective} from './components/feature-info/feature-info-content/table-column-identifier.directive';
+import {BaseMapDataItemComponent} from './components/map-data-catalogue/base-map-data-item/base-map-data-item.component';
+import {MapDataItemMapComponent} from './components/map-data-catalogue/map-data-item-map/map-data-item-map.component';
+import {MapDataItemFavouriteComponent} from './components/map-data-catalogue/map-data-item-favourite/map-data-item-favourite.component';
 
 @NgModule({
   declarations: [
@@ -76,7 +79,10 @@ import {TableColumnIdentifierDirective} from './components/feature-info/feature-
     ActiveMapItemLayerComponent,
     FeatureInfoContentComponent,
     FeatureInfoPrintContentComponent,
-    TableColumnIdentifierDirective
+    TableColumnIdentifierDirective,
+    BaseMapDataItemComponent,
+    MapDataItemMapComponent,
+    MapDataItemFavouriteComponent,
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule, KtZhDesignSystemModule]
 })

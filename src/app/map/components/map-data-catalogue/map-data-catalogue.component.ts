@@ -15,6 +15,10 @@ import {selectFilteredFavouriteList} from '../../../state/map/selectors/filtered
 import {Favourite} from '../../../shared/interfaces/favourite.interface';
 import {FavouriteListActions} from '../../../state/map/actions/favourite-list.actions';
 import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.reducer';
+import {FavouriteDeletionDialogComponent} from '../favourite-deletion-dialog/favourite-deletion-dialog.component';
+import {PanelClass} from '../../../shared/enums/panel-class.enum';
+import {FavouritesService} from '../../services/favourites.service';
+import {MatDialog} from '@angular/material/dialog';
 
 /**
  * Defines the upper limit (inclusive) of filtered results which trigger an automatic open of the associated expansion panel.
@@ -46,7 +50,9 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
   private readonly subscriptions = new Subscription();
   @ViewChild('filterInput') private readonly input!: ElementRef;
 
-  constructor(private readonly store: Store) {}
+  constructor(private readonly store: Store,
+  private readonly favouritesService: FavouritesService,
+  private readonly dialogService: MatDialog) {}
 
   public ngOnInit() {
     this.initSubscriptions();
@@ -59,6 +65,27 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
 
   public ngAfterViewInit() {
     this.subscriptions.add(this.filterInputHandler().subscribe());
+  }
+
+  /**
+   * Dispatches an action that adds a favourite to the map.
+   * @param favouriteLayerConfigurations
+   */
+  public addFavouriteToMap({id, content}: Favourite) {
+    try {
+      const activeMapItemsForFavourite = this.favouritesService.getActiveMapItemsForFavourite(content);
+      this.store.dispatch(ActiveMapItemActions.addFavourite({favourite: activeMapItemsForFavourite}));
+    } catch (e) {
+      this.store.dispatch(FavouriteListActions.setInvalid({id}));
+    }
+  }
+
+  public deleteFavourite(favourite: Favourite) {
+    this.dialogService.open<FavouriteDeletionDialogComponent, {favourite: Favourite}, boolean>(FavouriteDeletionDialogComponent, {
+      data: {favourite},
+      panelClass: PanelClass.API_WRAPPER_DIALOG,
+      restoreFocus: false
+    });
   }
 
   /**
