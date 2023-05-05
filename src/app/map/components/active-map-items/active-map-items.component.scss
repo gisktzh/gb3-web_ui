@@ -6,10 +6,6 @@
 .active-map-items {
   width: 100%;
 
-  .no-box-shadow {
-    @include mixins.no-box-shadow;
-  }
-
   .active-map-items__header {
     display: flex;
     align-items: center;
@@ -21,8 +17,8 @@
 
     .active-map-items__header__title {
       @include mixins.non-selectable-text;
+      padding-right: 1em;
       margin-bottom: 0;
-      margin-right: 1em;
     }
 
     .active-map-items__header__badge {
@@ -58,12 +54,9 @@
 
   .active-map-items__content {
     overflow-y: auto;
-    align-items: center;
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin: 12px 24px 12px 24px;
+    flex-direction: column;
+    margin: 12px 0;
 
     &--hidden {
       display: none;
@@ -72,6 +65,8 @@
     .active-map-items__content__item {
       width: 100%;
       position: relative;
+      padding: 0 24px;
+      box-sizing: border-box;
 
       &--drag-placeholder {
         @include mat-mixins.cdk-drag-placeholder(62px);

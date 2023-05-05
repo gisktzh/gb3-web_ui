@@ -34,6 +34,10 @@
       background-color: transparent;
     }
 
+    .base-map-data-item__header__expand-button--hidden {
+      visibility: hidden;
+    }
+
     .base-map-data-item__header__image-container {
       position: relative;
       aspect-ratio: 1 / 1;
@@ -78,6 +82,7 @@
       margin-top: auto;
       margin-bottom: auto;
       padding-left: 1em;
+      width: 100%;
     }
   }
 }

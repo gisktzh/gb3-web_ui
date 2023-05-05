@@ -38,6 +38,7 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
   public filteredFavourites: Favourite[] = [];
   public isAuthenticated: boolean = false;
   public autoOpenThreshold: number = AUTO_OPEN_THRESHOLD;
+  public isMinimized = false;
 
   private originalMaps: Map[] = [];
   private readonly filterString$ = this.store.select(selectFilterString);
@@ -50,9 +51,11 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
   private readonly subscriptions = new Subscription();
   @ViewChild('filterInput') private readonly input!: ElementRef;
 
-  constructor(private readonly store: Store,
-  private readonly favouritesService: FavouritesService,
-  private readonly dialogService: MatDialog) {}
+  constructor(
+    private readonly store: Store,
+    private readonly favouritesService: FavouritesService,
+    private readonly dialogService: MatDialog
+  ) {}
 
   public ngOnInit() {
     this.initSubscriptions();
@@ -116,6 +119,10 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
     return item.id;
   }
 
+  public toggleMinimizeMapDataCatalogue() {
+    this.isMinimized = !this.isMinimized;
+  }
+
   private filterInputHandler(): Observable<string> {
     return fromEvent<KeyboardEvent>(this.input.nativeElement, 'keyup').pipe(
       debounceTime(300),
@@ -138,7 +145,29 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
             this.topics = topics;
           })
         )
-        .subscribe()
+        .subscribe((value) => {
+          // TODO WES: remove
+          // const onlyTimeSliderMaps = value
+          //   .filter((t) => t.maps.some((m) => m.filterConfigurations?.length))
+          //   .map((t) => {
+          //     const topic = structuredClone(t);
+          //     const description =
+          //       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
+          //     topic.maps = t.maps
+          //       .filter((m) => m.filterConfigurations?.length)
+          //       .map((m) => {
+          //         const cmap = structuredClone(m);
+          //         cmap.filterConfigurations?.forEach((f) => (f.description = description));
+          //         return cmap;
+          //       });
+          //     return topic;
+          //   });
+          // this.topics = onlyTimeSliderMaps;
+          if (this.topics.length > 1) {
+            this.addActiveMap(this.topics.flatMap((t) => t.maps)[0]);
+            this.addActiveMap(this.topics.flatMap((t) => t.maps)[1]);
+          }
+        })
     );
 
     this.subscriptions.add(

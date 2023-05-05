@@ -3,68 +3,139 @@
 @use 'mixins/material.mixin' as mat-mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
-.map-catalogue-widget {
-  width: 100%;
-  padding: 0;
-  border: none;
+:host ::ng-deep {
+  // TODO MIXIN
+  .map-data-catalogue__content__items__item .mat-expansion-panel-content .mat-expansion-panel-body {
+    padding: 0;
+  }
 
-  .map-catalogue__header {
+  .map-data-catalogue__content__items__item .mat-content {
+    margin-right: 0;
+  }
+}
+
+.map-data-catalogue {
+  width: 100%;
+
+  .map-data-catalogue__header {
+    display: flex;
+    align-items: center;
     background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
     color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
     font-family: ktzh-variables.$zh-font-family;
-    padding: 8px 16px 8px 16px;
-    height: 36px;
-    min-height: 36px;
+    padding: 0 6px 0 24px;
+    height: 48px;
 
-    .map-catalogue__header__title {
+    .map-data-catalogue__header__title {
+      @include mixins.non-selectable-text;
+      padding-right: 1em;
+      margin-bottom: 0;
+      margin-right: auto;
+    }
+  }
+
+  .map-data-catalogue__content {
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    &--hidden {
+      display: none;
+    }
+
+    .map-data-catalogue__content__filter-no-results {
       align-self: center;
     }
-  }
 
-  .map-catalogue__filter-no-results {
-    align-self: center;
-  }
+    .map-data-catalogue__content__filter {
+      display: flex;
+      padding: 24px 24px 18px 24px;
 
-  .map-catalogue__filter {
-    display: flex;
+      .map-data-catalogue__content__filter__input {
+        width: 100%;
+        height: 40px;
+        padding: 0 5px 0 45px;
+        border: 3px solid grey;
+        outline: none;
+        display: block;
+        font-family: ktzh-variables.$zh-font-family;
+      }
 
-    .map-catalogue__filter__input {
-      width: 100%;
-      height: 40px;
-      padding: 0 5px 0 45px;
-      border: 3px solid grey;
-      margin: 5px;
-      outline: none;
-      display: block;
-      font-family: ktzh-variables.$zh-font-family;
-    }
+      .map-data-catalogue__content__filter__input:focus {
+        border: 3px solid ktzh-variables.$zh-cyan;
 
-    .map-catalogue__filter__input:focus {
-      border: 3px solid ktzh-variables.$zh-cyan;
+        & + .map-data-catalogue__content__filter__input-icon {
+          color: black;
+        }
+      }
 
-      & + .map-catalogue__filter__input-icon {
-        color: black;
+      .map-data-catalogue__content__filter__input-icon {
+        height: 30px;
+        width: 30px;
+        margin: 16px 5px 5px 16px;
+        position: absolute;
+        color: grey;
       }
     }
 
-    .map-catalogue__filter__input-icon {
-      height: 30px;
-      width: 30px;
-      margin: 16px 5px 5px 16px;
-      position: absolute;
-      color: grey;
-    }
-  }
+    .map-data-catalogue__content__items {
+      overflow-y: auto;
+      padding: 0 24px 24px 24px;
+      margin-top: 6px;
+      box-sizing: border-box;
 
-  .map-catalogue__content {
-    overflow-y: scroll;
+      .map-data-catalogue__content__items__item {
+        @include mixins.no-box-shadow;
+        padding: 6px 0;
 
-    .map-catalogue__content__topic-title {
-      // needed to avoid a cut-off results indicator
-      margin: 20px 0;
+        .map-data-catalogue__content__items__item__header {
+          height: 36px;
+          padding: 0 0 0 12px;
+          background-color: ktzh-variables.$zh-black20;
 
-      .map-catalogue__content__item {
-        width: 100%;
+          .map-data-catalogue__content__items__item__header__title {
+            // needed to avoid a cut-off results indicator
+            margin: 20px 0;
+            @include mixins.single-line-text;
+            font-family: ktzh-variables.$zh-font-family-bold;
+            padding-right: 1em;
+
+            &.mat-badge {
+              overflow: visible;
+            }
+          }
+
+          .map-data-catalogue__content__items__item__header__expand-button {
+            height: 36px;
+            width: auto;
+            aspect-ratio: 1 / 1;
+            align-self: center;
+            margin-left: auto;
+
+            &.mat-mdc-icon-button {
+              padding: 0;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            }
+          }
+
+          .map-data-catalogue__content__items__item__header__loader {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+          }
+        }
+
+        .map-data-catalogue__content__items__item__content {
+          padding-top: 6px;
+
+          .map-data-catalogue__content__items__item__content__item {
+            width: 100%;
+          }
+        }
       }
     }
   }
