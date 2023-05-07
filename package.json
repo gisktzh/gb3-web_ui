@@ -50,7 +50,7 @@
     "dayjs": "^1.11.7",
     "material-icons": "^1.13.3",
     "ngx-ui-tour-md-menu": "^10.4.0",
-    "rxjs": "~7.5.0",
+    "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"
   },
