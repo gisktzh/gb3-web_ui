@@ -1,5 +1,6 @@
 import {createSelector} from '@ngrx/store';
 import {selectFilterString, selectLayerCatalogItems} from '../reducers/layer-catalog.reducer';
+import {produce} from 'immer';
 
 export const selectFilteredLayerCatalog = createSelector(selectFilterString, selectLayerCatalogItems, (filterString, layerCatalog) => {
   const lowerCasedFilterString = filterString.toLowerCase();
@@ -7,30 +8,23 @@ export const selectFilteredLayerCatalog = createSelector(selectFilterString, sel
     return layerCatalog;
   }
 
-  const filteredLayerCatalog = structuredClone(layerCatalog);
+  return produce(layerCatalog, (draft) => {
+    draft.map((item) => {
+      item.maps.forEach((map) => {
+        // only take layers which match the filter
+        map.layers = map.layers.filter((layer) => layer.title.toLowerCase().includes(lowerCasedFilterString));
+      });
 
-  return (
-    filteredLayerCatalog
-      .map((item) => {
-        const filteredMaps = item.maps
-          .map((map) => {
-            // only take layers which match the filter
-            map.layers = map.layers.filter((layer) => layer.title.toLowerCase().includes(lowerCasedFilterString));
-
-            return map;
-          })
-          .filter((map) => {
-            // Return true if one of the sublayers OR the map title OR one of the keywords includes the filterstring
-            return (
-              map.layers.length > 0 ||
-              map.title.toLowerCase().includes(lowerCasedFilterString) ||
-              map.keywords.map((keyword) => keyword.toLowerCase()).includes(lowerCasedFilterString)
-            );
-          });
-
-        return {title: item.title, maps: filteredMaps};
-      })
-      // only return those topics that contain at least one map
-      .filter((item) => item.maps.length > 0)
-  );
+      item.maps = item.maps.filter((map) => {
+        // Return true if one of the sublayers OR the map title OR one of the keywords includes the filterstring
+        return (
+          map.layers.length > 0 ||
+          map.title.toLowerCase().includes(lowerCasedFilterString) ||
+          map.keywords.map((keyword) => keyword.toLowerCase()).includes(lowerCasedFilterString)
+        );
+      });
+    });
+  })
+    .filter((item) => item.maps.length > 0)
+    .map((item) => ({title: item.title, maps: item.maps}));
 });

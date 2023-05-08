@@ -2,6 +2,7 @@ import {createFeature, createReducer, on} from '@ngrx/store';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {ActiveMapItem} from '../../../map/models/active-map-item.model';
 import {ActiveMapItemState} from '../states/active-map-item.state';
+import {produce} from 'immer';
 
 export const activeMapItemFeatureKey = 'activeMapItem';
 
@@ -40,31 +41,32 @@ export const activeMapItemFeature = createFeature({
       });
       return {...state, activeMapItems: [...activeMapItems]};
     }),
-    on(ActiveMapItemActions.setVisibility, (state, {visible, activeMapItem}): ActiveMapItemState => {
-      const activeMapItems = state.activeMapItems.map((mapItem) => {
-        if (mapItem.id === activeMapItem.id) {
-          const newActiveMapItem = structuredClone(mapItem);
-          newActiveMapItem.visible = visible;
-          return newActiveMapItem;
-        }
-        return mapItem;
-      });
-      return {...state, activeMapItems: [...activeMapItems]};
-    }),
-    on(ActiveMapItemActions.setSublayerVisibility, (state, {visible, activeMapItem, layerId}): ActiveMapItemState => {
-      const activeMapItems = state.activeMapItems.map((mapItem) => {
-        if (mapItem.id === activeMapItem.id) {
-          const newActiveMapItem = structuredClone(mapItem);
-          const sublayer = newActiveMapItem.layers.find((l) => l.id === layerId);
-          if (sublayer) {
-            sublayer.visible = visible;
+    on(
+      ActiveMapItemActions.setVisibility,
+      produce((draft, {visible, activeMapItem}) => {
+        draft.activeMapItems.map((mapItem) => {
+          if (mapItem.id === activeMapItem.id) {
+            mapItem.visible = visible;
           }
-          return newActiveMapItem;
-        }
-        return mapItem;
-      });
-      return {...state, activeMapItems: [...activeMapItems]};
-    }),
+          return mapItem;
+        });
+      })
+    ),
+    on(
+      ActiveMapItemActions.setSublayerVisibility,
+      produce((draft, {visible, activeMapItem, layerId}) => {
+        draft.activeMapItems.map((mapItem) => {
+          if (mapItem.id === activeMapItem.id) {
+            const sublayer = mapItem.layers.find((l) => l.id === layerId);
+            if (sublayer) {
+              sublayer.visible = visible;
+            }
+            return mapItem;
+          }
+          return mapItem;
+        });
+      })
+    ),
     on(ActiveMapItemActions.setLoadingState, (state, {loadingState, id}): ActiveMapItemState => {
       const activeMapItems = state.activeMapItems.map((mapItem) => {
         if (mapItem.id === id) {
@@ -105,35 +107,33 @@ export const activeMapItemFeature = createFeature({
       });
       return {...state, activeMapItems: [...activeMapItems]};
     }),
-    on(ActiveMapItemActions.setTimeSliderExtent, (state, {timeExtent, activeMapItem}): ActiveMapItemState => {
-      const activeMapItems = state.activeMapItems.map((mapItem) => {
-        if (mapItem.id === activeMapItem.id) {
-          const newActiveMapItem = structuredClone(mapItem);
-          newActiveMapItem.timeSliderExtent = timeExtent;
-          return newActiveMapItem;
-        }
-        return mapItem;
-      });
-      return {...state, activeMapItems: [...activeMapItems]};
-    }),
     on(
-      ActiveMapItemActions.setAttributeFilterValueState,
-      (state, {isFilterValueActive, filterValueName, attributeFilterParameter, activeMapItem}): ActiveMapItemState => {
-        const activeMapItems = state.activeMapItems.map((mapItem) => {
+      ActiveMapItemActions.setTimeSliderExtent,
+      produce((draft, {timeExtent, activeMapItem}) => {
+        draft.activeMapItems.map((mapItem) => {
           if (mapItem.id === activeMapItem.id) {
-            const newActiveMapItem = structuredClone(mapItem);
-            const filterValue = newActiveMapItem.filterConfigurations
-              ?.find((filterConfig) => filterConfig.parameter === attributeFilterParameter)
-              ?.filterValues.find((filterValue) => filterValue.name === filterValueName);
-            if (filterValue) {
-              filterValue.isActive = isFilterValueActive;
-            }
-            return newActiveMapItem;
+            mapItem.timeSliderExtent = timeExtent;
+            return mapItem;
           }
           return mapItem;
         });
-        return {...state, activeMapItems: [...activeMapItems]};
-      }
+      })
+    ),
+    on(
+      ActiveMapItemActions.setAttributeFilterValueState,
+      produce((draft, {isFilterValueActive, filterValueName, attributeFilterParameter, activeMapItem}) => {
+        draft.activeMapItems.map((mapItem) => {
+          if (mapItem.id === activeMapItem.id) {
+            const filterValue = mapItem.filterConfigurations
+              ?.find((filterConfig) => filterConfig.parameter === attributeFilterParameter)
+              ?.filterValues.find((fv) => fv.name === filterValueName);
+            if (filterValue) {
+              filterValue.isActive = isFilterValueActive;
+            }
+          }
+          return mapItem;
+        });
+      })
     ),
     on(ActiveMapItemActions.addFavourite, (state, {favourite}): ActiveMapItemState => {
       const favouriteIds = favourite.map((fav) => fav.id);
