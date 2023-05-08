@@ -1,15 +1,10 @@
 @use 'functions/helper.function' as functions;
 @use 'mixins/helpers.mixin' as mixins;
+@use 'mixins/material.mixin' as mat-mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
-:host ::ng-deep {
-  .active-map-item .mat-expansion-panel-content .mat-expansion-panel-body {
-    padding: 0;
-  }
-
-  .active-map-item__header .mat-content {
-    margin-right: 0;
-  }
+:host ::ng-deep .active-map-item {
+  @include mat-mixins.mat-expansion-panel-remove-content-offset;
 }
 
 .active-map-item {

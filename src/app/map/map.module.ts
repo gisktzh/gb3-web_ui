@@ -38,8 +38,8 @@ import {ActiveMapItemLayerComponent} from './components/active-map-items/active-
 import {FeatureInfoPrintContentComponent} from './components/feature-info/feature-info-print-content/feature-info-print-content.component';
 import {TableColumnIdentifierDirective} from './components/feature-info/feature-info-content/table-column-identifier.directive';
 import {BaseMapDataItemComponent} from './components/map-data-catalogue/base-map-data-item/base-map-data-item.component';
-import {MapDataItemMapComponent} from './components/map-data-catalogue/map-data-item-map/map-data-item-map.component';
-import {MapDataItemFavouriteComponent} from './components/map-data-catalogue/map-data-item-favourite/map-data-item-favourite.component';
+import {MapDataItemMapComponent} from './components/map-data-catalogue/base-map-data-item/map-data-item-map.component';
+import {MapDataItemFavouriteComponent} from './components/map-data-catalogue/base-map-data-item/map-data-item-favourite.component';
 import {MapDataItemMapLayerComponent} from './components/map-data-catalogue/map-data-item-map-layer/map-data-item-map-layer.component';
 import {MapDataItemHeaderComponent} from './components/map-data-catalogue/map-data-item-header/map-data-item-header.component';
 

@@ -3,14 +3,8 @@
 @use 'mixins/material.mixin' as mat-mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
-:host ::ng-deep {
-  .base-map-data-item .mat-expansion-panel-content .mat-expansion-panel-body {
-    padding: 0;
-  }
-
-  .base-map-data-item__header .mat-content {
-    margin-right: 0;
-  }
+:host ::ng-deep .base-map-data-item {
+  @include mat-mixins.mat-expansion-panel-remove-content-offset;
 }
 
 .base-map-data-item {
@@ -90,11 +84,7 @@
     }
 
     .base-map-data-item__header__loader {
-      // TODO WES MIXIN
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
+      @include mixins.loading-and-progress-bar-below;
     }
   }
 }

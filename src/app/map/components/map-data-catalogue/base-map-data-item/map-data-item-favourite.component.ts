@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {BaseMapDataItemComponent} from '../base-map-data-item/base-map-data-item.component';
+import {BaseMapDataItemComponent} from './base-map-data-item.component';
 import {LoadingState} from '../../../../shared/types/loading-state';
 
 const FAVOURITE_ERROR_TOOLTIP =
@@ -8,8 +8,8 @@ const FAVOURITE_ERROR_TOOLTIP =
 
 @Component({
   selector: 'map-data-item-favourite',
-  templateUrl: '../base-map-data-item/base-map-data-item.component.html',
-  styleUrls: ['../base-map-data-item/base-map-data-item.component.scss']
+  templateUrl: './base-map-data-item.component.html',
+  styleUrls: ['./base-map-data-item.component.scss']
 })
 export class MapDataItemFavouriteComponent extends BaseMapDataItemComponent {
   @Input() public override loadingState: LoadingState = 'undefined';
@@ -17,6 +17,7 @@ export class MapDataItemFavouriteComponent extends BaseMapDataItemComponent {
 
   @Output() public override deleteEvent = new EventEmitter<void>();
 
+  public override showExpandButton = false;
   public override showDeleteButton = true;
   public override errorTooltip: string = FAVOURITE_ERROR_TOOLTIP;
 }

@@ -17,22 +17,24 @@
       displayMode="flat"
       multi="true"
     >
+      <!-- Favorites -->
       <ng-container *ngIf="this.isAuthenticated">
         <mat-expansion-panel
           #favouriteExpansionPanel
           *ngIf="!(!!this.filterString && this.filteredFavourites.length === 0)"
           class="map-data-catalogue__content__items__item"
-          [expanded]="(!!this.filterString && this.filteredFavourites.length <= this.autoOpenThreshold) || true"
+          [expanded]="!!this.filterString && this.filteredFavourites.length <= this.autoOpenThreshold"
           hideToggle="true"
         >
+          <!-- 'Favourite' header -->
           <mat-expansion-panel-header class="map-data-catalogue__content__items__item__header">
             <map-data-item-header
               class="map-data-catalogue__content__items__item__header__item"
               [filterString]="filterString"
-              [title]="'Favoriten'"
-              [loadingState]="favouritesLoadingState"
               [isExpanded]="favouriteExpansionPanel.expanded"
+              [loadingState]="favouritesLoadingState"
               [numberOfItems]="filteredFavourites.length"
+              [title]="'Favoriten'"
             ></map-data-item-header>
           </mat-expansion-panel-header>
 
@@ -40,9 +42,10 @@
           <p *ngIf="this.filteredFavourites.length === 0"><em>Noch keine Favoriten hinzugefügt.</em></p>
           <ng-container *ngFor="let favourite of this.filteredFavourites">
             <map-data-item-favourite
-              [title]="favourite.title"
               [filterString]="filterString"
+              [invalid]="favourite.invalid"
               [loadingState]="favouritesLoadingState"
+              [title]="favourite.title"
               (addEvent)="addFavouriteToMap(favourite)"
               (deleteEvent)="deleteFavourite(favourite)"
             ></map-data-item-favourite>
@@ -50,13 +53,15 @@
         </mat-expansion-panel>
       </ng-container>
 
-      <ng-container *ngFor="let topic of topics; index as i; trackBy: trackByTopicTitle">
+      <!-- Topics -->
+      <ng-container *ngFor="let topic of topics; trackBy: trackByTopicTitle">
         <mat-expansion-panel
           #topicExpansionPanel
           class="map-data-catalogue__content__items__item"
-          [expanded]="(!!this.filterString && topic.maps.length <= this.autoOpenThreshold) || i < 1"
+          [expanded]="!!this.filterString && topic.maps.length <= this.autoOpenThreshold"
           hideToggle="true"
         >
+          <!-- 'Topic' header -->
           <mat-expansion-panel-header class="map-data-catalogue__content__items__item__header">
             <map-data-item-header
               class="map-data-catalogue__content__items__item__header__item"
@@ -86,6 +91,7 @@
         </mat-expansion-panel>
       </ng-container>
     </mat-accordion>
+
     <p
       *ngIf="this.filterString && this.topics.length === 0 && this.filteredFavourites.length === 0"
       class="map-data-catalogue__content__filter-no-results mat-body-2"

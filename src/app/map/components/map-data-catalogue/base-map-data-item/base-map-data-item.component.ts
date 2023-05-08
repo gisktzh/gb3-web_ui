@@ -17,6 +17,7 @@ export class BaseMapDataItemComponent {
 
   public addLayerEvent = new EventEmitter<MapLayer>();
   public deleteEvent = new EventEmitter<void>();
+  public showExpandButton: boolean = true;
 
   public showDeleteButton: boolean = false;
   public loadingState: LoadingState = 'undefined';

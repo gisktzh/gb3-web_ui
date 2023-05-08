@@ -9,7 +9,7 @@
       (click)="itemExpansionPanel.toggle()"
       [attr.data-test-id]="itemExpansionPanel.expanded ? 'hide-layers-of-the-map' : 'show-layers-of-the-map'"
       [disabled]="layers.length === 0"
-      [ngClass]="{'base-map-data-item__header__expand-button--hidden': layers.length === 0}"
+      [ngClass]="{'base-map-data-item__header__expand-button--hidden': !showExpandButton}"
       mat-icon-button
     >
       <mat-icon
@@ -63,5 +63,6 @@
         (addLayerEvent)="addItemLayer(layer)"
       ></map-data-item-map-layer>
     </ng-container>
+    <mat-divider></mat-divider>
   </ng-template>
 </mat-expansion-panel>

@@ -145,29 +145,7 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
             this.topics = topics;
           })
         )
-        .subscribe((value) => {
-          // TODO WES: remove
-          // const onlyTimeSliderMaps = value
-          //   .filter((t) => t.maps.some((m) => m.filterConfigurations?.length))
-          //   .map((t) => {
-          //     const topic = structuredClone(t);
-          //     const description =
-          //       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
-          //     topic.maps = t.maps
-          //       .filter((m) => m.filterConfigurations?.length)
-          //       .map((m) => {
-          //         const cmap = structuredClone(m);
-          //         cmap.filterConfigurations?.forEach((f) => (f.description = description));
-          //         return cmap;
-          //       });
-          //     return topic;
-          //   });
-          // this.topics = onlyTimeSliderMaps;
-          if (this.topics.length > 1) {
-            this.addActiveMap(this.topics.flatMap((t) => t.maps)[0]);
-            this.addActiveMap(this.topics.flatMap((t) => t.maps)[1]);
-          }
-        })
+        .subscribe()
     );
 
     this.subscriptions.add(

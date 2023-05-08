@@ -93,7 +93,6 @@
 * ======================
 */
 
-// TODO WES out of deep host?
 // overrides 'accent' theme as 'accent' is the default theme for material checkboxes (there is no 'unthemed' class)
 @mixin mat-checkbox-override-accent-color($background-color, $foreground-color) {
   &.mat-mdc-checkbox.mat-accent .mdc-form-field .mdc-checkbox {
@@ -117,8 +116,20 @@
 }
 
 @mixin mat-checkbox-override-label-color($color) {
-  .mdc-form-field .mdc-checkbox ~ label {
+  &.mat-mdc-checkbox .mdc-form-field .mdc-checkbox ~ label {
     color: $color;
+  }
+}
+
+/**
+* ======================
+*  mat-expansion-panel
+* ======================
+*/
+
+@mixin mat-expansion-panel-remove-content-offset {
+  &.mat-expansion-panel .mat-expansion-panel-content .mat-expansion-panel-body {
+    padding: 0;
   }
 }
 

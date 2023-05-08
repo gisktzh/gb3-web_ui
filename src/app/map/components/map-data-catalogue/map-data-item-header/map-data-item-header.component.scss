@@ -41,9 +41,6 @@
   }
 
   .map-data-item-header__loader {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
+    @include mixins.loading-and-progress-bar-below;
   }
 }
