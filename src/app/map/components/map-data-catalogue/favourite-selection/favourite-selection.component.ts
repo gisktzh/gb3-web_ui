@@ -41,7 +41,6 @@ export class FavouriteSelectionComponent implements HasLoadingState {
   public addFavouriteToMap({id, content}: Favourite) {
     try {
       const activeMapItemsForFavourite = this.favouritesService.getActiveMapItemsForFavourite(content);
-      console.log(activeMapItemsForFavourite);
       this.store.dispatch(ActiveMapItemActions.addFavourite({favourite: activeMapItemsForFavourite}));
     } catch (e) {
       this.store.dispatch(FavouriteListActions.setInvalid({id}));

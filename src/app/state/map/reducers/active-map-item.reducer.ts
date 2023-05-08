@@ -30,99 +30,90 @@ export const activeMapItemFeature = createFeature({
     on(ActiveMapItemActions.removeAllActiveMapItems, (state): ActiveMapItemState => {
       return {...state, activeMapItems: []};
     }),
-    on(ActiveMapItemActions.setOpacity, (state, {opacity, activeMapItem}): ActiveMapItemState => {
-      const activeMapItems = state.activeMapItems.map((mapItem) => {
-        if (mapItem.id === activeMapItem.id) {
-          const newActiveMapItem = structuredClone(mapItem);
-          newActiveMapItem.opacity = opacity;
-          return newActiveMapItem;
-        }
-        return mapItem;
-      });
-      return {...state, activeMapItems: [...activeMapItems]};
-    }),
+    on(
+      ActiveMapItemActions.setOpacity,
+      produce((draft, {opacity, activeMapItem}) => {
+        draft.activeMapItems.forEach((mapItem) => {
+          if (mapItem.id === activeMapItem.id) {
+            mapItem.opacity = opacity;
+          }
+        });
+      })
+    ),
     on(
       ActiveMapItemActions.setVisibility,
       produce((draft, {visible, activeMapItem}) => {
-        draft.activeMapItems.map((mapItem) => {
+        draft.activeMapItems.forEach((mapItem) => {
           if (mapItem.id === activeMapItem.id) {
             mapItem.visible = visible;
           }
-          return mapItem;
         });
       })
     ),
     on(
       ActiveMapItemActions.setSublayerVisibility,
       produce((draft, {visible, activeMapItem, layerId}) => {
-        draft.activeMapItems.map((mapItem) => {
+        draft.activeMapItems.forEach((mapItem) => {
           if (mapItem.id === activeMapItem.id) {
             const sublayer = mapItem.layers.find((l) => l.id === layerId);
             if (sublayer) {
               sublayer.visible = visible;
             }
-            return mapItem;
           }
-          return mapItem;
         });
       })
     ),
-    on(ActiveMapItemActions.setLoadingState, (state, {loadingState, id}): ActiveMapItemState => {
-      const activeMapItems = state.activeMapItems.map((mapItem) => {
-        if (mapItem.id === id) {
-          const newActiveMapItem = structuredClone(mapItem);
-          newActiveMapItem.loadingState = loadingState;
-          return newActiveMapItem;
-        }
-        return mapItem;
-      });
-      return {...state, activeMapItems: [...activeMapItems]};
-    }),
-    on(ActiveMapItemActions.setViewProcessState, (state, {viewProcessState, id}): ActiveMapItemState => {
-      const activeMapItems = state.activeMapItems.map((mapItem) => {
-        if (mapItem.id === id) {
-          const newActiveMapItem = structuredClone(mapItem);
-          newActiveMapItem.viewProcessState = viewProcessState;
-          return newActiveMapItem;
-        }
-        return mapItem;
-      });
-      return {...state, activeMapItems: [...activeMapItems]};
-    }),
+    on(
+      ActiveMapItemActions.setLoadingState,
+      produce((draft, {loadingState, id}) => {
+        draft.activeMapItems.forEach((mapItem) => {
+          if (mapItem.id === id) {
+            mapItem.loadingState = loadingState;
+          }
+        });
+      })
+    ),
+    on(
+      ActiveMapItemActions.setViewProcessState,
+      produce((draft, {viewProcessState, id}) => {
+        draft.activeMapItems.forEach((mapItem) => {
+          if (mapItem.id === id) {
+            mapItem.viewProcessState = viewProcessState;
+          }
+        });
+      })
+    ),
     on(ActiveMapItemActions.reorderActiveMapItem, (state, {previousPosition, currentPosition}): ActiveMapItemState => {
       const mapItemToReorder = state.activeMapItems[previousPosition];
       const reorderedActiveMapItems = state.activeMapItems.filter((mapItem) => mapItem !== mapItemToReorder);
       reorderedActiveMapItems.splice(currentPosition, 0, mapItemToReorder);
       return {...state, activeMapItems: [...reorderedActiveMapItems]};
     }),
-    on(ActiveMapItemActions.reorderSublayer, (state, {activeMapItem, previousPosition, currentPosition}): ActiveMapItemState => {
-      const activeMapItems = state.activeMapItems.map((mapItem) => {
-        if (mapItem.id === activeMapItem.id) {
-          const newActiveMapItem = structuredClone(mapItem);
-          const sublayerToReorder = newActiveMapItem.layers.splice(previousPosition, 1);
-          newActiveMapItem.layers.splice(currentPosition, 0, ...sublayerToReorder);
-          return newActiveMapItem;
-        }
-        return mapItem;
-      });
-      return {...state, activeMapItems: [...activeMapItems]};
-    }),
+    on(
+      ActiveMapItemActions.reorderSublayer,
+      produce((draft, {activeMapItem, previousPosition, currentPosition}) => {
+        draft.activeMapItems.forEach((mapItem) => {
+          if (mapItem.id === activeMapItem.id) {
+            const sublayerToReorder = mapItem.layers.splice(previousPosition, 1);
+            mapItem.layers.splice(currentPosition, 0, ...sublayerToReorder);
+          }
+        });
+      })
+    ),
     on(
       ActiveMapItemActions.setTimeSliderExtent,
       produce((draft, {timeExtent, activeMapItem}) => {
-        draft.activeMapItems.map((mapItem) => {
+        draft.activeMapItems.forEach((mapItem) => {
           if (mapItem.id === activeMapItem.id) {
             mapItem.timeSliderExtent = timeExtent;
-            return mapItem;
           }
-          return mapItem;
         });
       })
     ),
     on(
       ActiveMapItemActions.setAttributeFilterValueState,
       produce((draft, {isFilterValueActive, filterValueName, attributeFilterParameter, activeMapItem}) => {
-        draft.activeMapItems.map((mapItem) => {
+        draft.activeMapItems.forEach((mapItem) => {
           if (mapItem.id === activeMapItem.id) {
             const filterValue = mapItem.filterConfigurations
               ?.find((filterConfig) => filterConfig.parameter === attributeFilterParameter)
@@ -131,7 +122,6 @@ export const activeMapItemFeature = createFeature({
               filterValue.isActive = isFilterValueActive;
             }
           }
-          return mapItem;
         });
       })
     ),
