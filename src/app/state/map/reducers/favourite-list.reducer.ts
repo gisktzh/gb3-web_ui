@@ -25,10 +25,8 @@ export const favourteListeFeature = createFeature({
     }),
     on(
       FavouriteListActions.setInvalid,
-      produce((draft, {id}): FavouriteListState => {
+      produce((draft, {id}) => {
         draft.favourites.find((favourite) => favourite.id === id)!.invalid = true;
-
-        return draft;
       })
     ),
     on(FavouriteListActions.removeFavourite, (state, {id}): FavouriteListState => {
