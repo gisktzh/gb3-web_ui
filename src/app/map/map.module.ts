@@ -22,7 +22,6 @@ import {OnboardingGuideModule} from '../onboarding-guide/onboarding-guide.module
 import {MapAttributeFilterComponent} from './components/map-attribute-filter/map-attribute-filter.component';
 import {FavouriteCreationDialogComponent} from './components/favourite-creation-dialog/favourite-creation-dialog.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {FavouriteSelectionComponent} from './components/map-data-catalogue/favourite-selection/favourite-selection.component';
 import {ApiDialogWrapperComponent} from './components/api-dialog-wrapper/api-dialog-wrapper.component';
 import {FavouriteDeletionDialogComponent} from './components/favourite-deletion-dialog/favourite-deletion-dialog.component';
 import {SearchWindowComponent} from './components/search-window/search-window.component';
@@ -41,6 +40,8 @@ import {TableColumnIdentifierDirective} from './components/feature-info/feature-
 import {BaseMapDataItemComponent} from './components/map-data-catalogue/base-map-data-item/base-map-data-item.component';
 import {MapDataItemMapComponent} from './components/map-data-catalogue/map-data-item-map/map-data-item-map.component';
 import {MapDataItemFavouriteComponent} from './components/map-data-catalogue/map-data-item-favourite/map-data-item-favourite.component';
+import {MapDataItemMapLayerComponent} from './components/map-data-catalogue/map-data-item-map-layer/map-data-item-map-layer.component';
+import {MapDataItemHeaderComponent} from './components/map-data-catalogue/map-data-item-header/map-data-item-header.component';
 
 @NgModule({
   declarations: [
@@ -61,11 +62,8 @@ import {MapDataItemFavouriteComponent} from './components/map-data-catalogue/map
     MapControlsComponent,
     BasemapSelectorComponent,
     MapAttributeFilterComponent,
-    FavouriteSelectionComponent,
-    MapAttributeFilterComponent,
     SearchWindowComponent,
     FavouriteCreationDialogComponent,
-    FavouriteSelectionComponent,
     ApiDialogWrapperComponent,
     FavouriteDeletionDialogComponent,
     TimeSliderComponent,
@@ -83,6 +81,8 @@ import {MapDataItemFavouriteComponent} from './components/map-data-catalogue/map
     BaseMapDataItemComponent,
     MapDataItemMapComponent,
     MapDataItemFavouriteComponent,
+    MapDataItemMapLayerComponent,
+    MapDataItemHeaderComponent
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule, KtZhDesignSystemModule]
 })

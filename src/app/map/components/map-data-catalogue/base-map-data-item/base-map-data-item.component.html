@@ -28,31 +28,40 @@
         [src]="imageUrl"
       />
       <ng-template #imagePlaceholder>
-        <span class="base-map-data-item__header__image-container__image-placeholder"></span>
+        <span
+          class="base-map-data-item__header__image-container__image-placeholder"
+          [ngClass]="{'base-map-data-item__header__image-container__image-placeholder--disabled': invalid}"
+        ></span>
       </ng-template>
-      <button (click)="addItem()" class="base-map-data-item__header__image-container__button" data-test-id="add-active-map" mat-icon-button>
-        <mat-icon>add</mat-icon>
+      <button
+        (click)="addItem()"
+        class="base-map-data-item__header__image-container__button"
+        [disabled]="invalid"
+        data-test-id="add-active-map"
+        mat-icon-button
+      >
+        <mat-icon [fontIcon]="invalid ? 'error' : 'add'" [color]="invalid ? 'warn' : null"></mat-icon>
       </button>
     </div>
     <p
       [innerHTML]="title | highlightSearchQuery : this.filterString"
       class="base-map-data-item__header__title"
+      [ngClass]="{'base-map-data-item__header__title--disabled': invalid}"
       matTooltip="{{ title }}"
     ></p>
     <button (click)="deleteItem()" mat-icon-button *ngIf="showDeleteButton">
       <mat-icon>delete</mat-icon>
     </button>
+    <loading-and-process-bar [loadingState]="this.loadingState" class="base-map-data-item__header__loader"></loading-and-process-bar>
   </mat-expansion-panel-header>
   <!-- Expansion panel content -->
   <ng-template matExpansionPanelContent>
     <ng-container *ngFor="let layer of layers">
-      <div *ngIf="!layer.isHidden" class="layer">
-        <mat-icon class="layer__icon">layers</mat-icon>
-        <p [innerHTML]="layer.title | highlightSearchQuery : this.filterString" class="layer__title" matTooltip="{{ layer.title }}"></p>
-        <button (click)="addItemLayer(layer)" mat-icon-button>
-          <mat-icon>add</mat-icon>
-        </button>
-      </div>
+      <map-data-item-map-layer
+        [filterString]="filterString"
+        [layer]="layer"
+        (addLayerEvent)="addItemLayer(layer)"
+      ></map-data-item-map-layer>
     </ng-container>
   </ng-template>
 </mat-expansion-panel>

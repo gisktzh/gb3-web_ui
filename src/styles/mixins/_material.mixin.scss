@@ -68,12 +68,35 @@
 
 /**
 * ======================
+*  mat-icon-button
+* ======================
+*/
+
+@mixin mat-icon-button-override-unthemed-color($background-color, $foreground-color) {
+  &.mdc-icon-button.mat-unthemed {
+    @include mat-icon-override-unthemed-color($background-color, $foreground-color);
+  }
+}
+
+@mixin mat-icon-button-override-icon-size($size: 24px) {
+  &.mdc-icon-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    @include mat-icon-override-size($size);
+  }
+}
+
+/**
+* ======================
 *  mat-checkbox
 * ======================
 */
 
-@mixin mat-checkbox-override-color($background-color, $foreground-color) {
-  .mdc-checkbox {
+// TODO WES out of deep host?
+// overrides 'accent' theme as 'accent' is the default theme for material checkboxes (there is no 'unthemed' class)
+@mixin mat-checkbox-override-accent-color($background-color, $foreground-color) {
+  &.mat-mdc-checkbox.mat-accent .mdc-form-field .mdc-checkbox {
     .mdc-checkbox__native-control:not([disabled]) ~ .mdc-checkbox__background {
       background-color: $foreground-color !important;
       border-color: $background-color !important;
@@ -96,5 +119,26 @@
 @mixin mat-checkbox-override-label-color($color) {
   .mdc-form-field .mdc-checkbox ~ label {
     color: $color;
+  }
+}
+
+/**
+* ======================
+*  mat-icon
+* ======================
+*/
+
+@mixin mat-icon-override-unthemed-color($background-color, $foreground-color) {
+  .mat-icon.mat-icon-no-color {
+    background-color: $background-color;
+    color: $foreground-color;
+  }
+}
+
+@mixin mat-icon-override-size($size: 24px) {
+  .mat-icon {
+    font-size: $size;
+    height: $size;
+    width: $size;
   }
 }

@@ -114,7 +114,7 @@
 
       // ':host ::ng-deep' is not working here as the context is within the overlay container
       ::ng-deep .search-window__filter-menu__filter-content__filter-entry__filter-checkbox {
-        @include mat-mixins.mat-checkbox-override-color(
+        @include mat-mixins.mat-checkbox-override-accent-color(
           functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent),
           functions.get-contrast-color-from-palette(ktzh-variables.$zh-secondary-accent)
         );

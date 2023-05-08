@@ -1,0 +1,56 @@
+@use 'functions/helper.function' as functions;
+@use 'mixins/helpers.mixin' as mixins;
+@use 'mixins/material.mixin' as mat-mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.map-data-item-map-layer {
+  position: relative;
+  height: 44px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: 48px;
+
+  .map-data-item-map-layer__connection-line {
+    position: absolute;
+    left: 20px;
+    height: 6px;
+    border-right: ktzh-variables.$zh-black20 solid 2px;
+
+    &.map-data-item-map-layer__connection-line-top {
+      top: 0;
+    }
+
+    &.map-data-item-map-layer__connection-line.map-data-item-map-layer__connection-line-bottom {
+      bottom: 0;
+    }
+  }
+
+  &:nth-of-type(1) .map-data-item-map-layer__connection-line.map-data-item-map-layer__connection-line-top {
+    height: 12px;
+    top: -6px;
+    overflow: visible;
+  }
+
+  &:nth-last-of-type(1) .map-data-item-map-layer__connection-line.map-data-item-map-layer__connection-line-bottom {
+    border: none;
+  }
+
+  .map-data-item-map-layer__add-button {
+    aspect-ratio: 1 / 1;
+    height: 100%;
+    width: auto;
+
+    @include mat-mixins.mat-icon-button-override-unthemed-color(
+      functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent),
+      functions.get-contrast-color-from-palette(ktzh-variables.$zh-secondary-accent)
+    );
+    @include mat-mixins.mat-icon-button-override-icon-size(18px);
+  }
+
+  .map-data-item-map-layer__title {
+    @include mixins.single-line-text;
+    margin-bottom: 0;
+    flex-grow: 1;
+  }
+}

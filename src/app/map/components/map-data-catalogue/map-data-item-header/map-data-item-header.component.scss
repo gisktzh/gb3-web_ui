@@ -1,0 +1,49 @@
+@use 'functions/helper.function' as functions;
+@use 'mixins/helpers.mixin' as mixins;
+@use 'mixins/material.mixin' as mat-mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.map-data-item-header {
+  display: flex;
+  align-items: center;
+  height: inherit;
+  background-color: ktzh-variables.$zh-black20;
+  position: relative;
+
+  .map-data-item-header__title {
+    @include mixins.single-line-text;
+    font-family: ktzh-variables.$zh-font-family-bold;
+    margin: 0;
+    padding: 0 1em;
+
+    &.mat-badge {
+      overflow: visible;
+    }
+  }
+
+  .map-data-item-header__badge {
+    margin-bottom: 0;
+  }
+
+  .map-data-item-header__expand-button {
+    height: inherit;
+    width: auto;
+    aspect-ratio: 1 / 1;
+    align-self: center;
+    margin-left: auto;
+
+    &.mat-mdc-icon-button {
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  .map-data-item-header__loader {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+  }
+}

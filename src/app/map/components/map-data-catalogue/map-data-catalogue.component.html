@@ -17,36 +17,26 @@
       displayMode="flat"
       multi="true"
     >
-      <!-- Favourite selection is a conditional, one-off container. It should only load once the catalog is here. -->
-      <!--    <favourite-selection-->
-      <!--      *ngIf="this.isAuthenticated"-->
-      <!--      [filterString]="this.filterString"-->
-      <!--      [filteredFavourites]="this.filteredFavourites"-->
-      <!--      [loadingState]="this.favouritesLoadingState"-->
-      <!--      [autoOpenThreshold]="this.autoOpenThreshold"-->
-      <!--    ></favourite-selection>-->
-
       <ng-container *ngIf="this.isAuthenticated">
         <mat-expansion-panel
+          #favouriteExpansionPanel
           *ngIf="!(!!this.filterString && this.filteredFavourites.length === 0)"
           class="map-data-catalogue__content__items__item"
           [expanded]="(!!this.filterString && this.filteredFavourites.length <= this.autoOpenThreshold) || true"
+          hideToggle="true"
         >
           <mat-expansion-panel-header class="map-data-catalogue__content__items__item__header">
-            <p
-              [matBadgeHidden]="!this.filterString || this.favouritesLoadingState === 'loading'"
-              [matBadge]="this.filteredFavourites.length"
-              class="map-data-catalogue__content__items__item__header__title"
-              matBadgeOverlap="false"
-              matBadgePosition="above after"
-            >
-              Favoriten
-            </p>
-            <loading-and-process-bar
-              [loadingState]="this.favouritesLoadingState"
-              class="map-data-catalogue__content__items__item__header__loader"
-            ></loading-and-process-bar>
+            <map-data-item-header
+              class="map-data-catalogue__content__items__item__header__item"
+              [filterString]="filterString"
+              [title]="'Favoriten'"
+              [loadingState]="favouritesLoadingState"
+              [isExpanded]="favouriteExpansionPanel.expanded"
+              [numberOfItems]="filteredFavourites.length"
+            ></map-data-item-header>
           </mat-expansion-panel-header>
+
+          <!-- 'Favourite' content -->
           <p *ngIf="this.filteredFavourites.length === 0"><em>Noch keine Favoriten hinzugefügt.</em></p>
           <ng-container *ngFor="let favourite of this.filteredFavourites">
             <map-data-item-favourite
@@ -68,25 +58,16 @@
           hideToggle="true"
         >
           <mat-expansion-panel-header class="map-data-catalogue__content__items__item__header">
-            <p
-              class="map-data-catalogue__content__items__item__header__title"
+            <map-data-item-header
+              class="map-data-catalogue__content__items__item__header__item"
+              [filterString]="filterString"
               [title]="topic.title"
-              [matBadgeHidden]="!this.filterString"
-              [matBadge]="topic.maps.length"
-              matBadgeOverlap="true"
-              matBadgePosition="above after"
-            >
-              {{ topic.title }}
-            </p>
-            <button
-              class="map-data-catalogue__content__items__item__header__expand-button"
-              [attr.data-test-id]="topicExpansionPanel.expanded ? 'hide-topics-of-the-map' : 'show-topics-of-the-map'"
-              mat-icon-button
-            >
-              <mat-icon [fontIcon]="topicExpansionPanel.expanded ? 'arrow_drop_down' : 'arrow_right'"></mat-icon>
-            </button>
+              [isExpanded]="topicExpansionPanel.expanded"
+              [numberOfItems]="topic.maps.length"
+            ></map-data-item-header>
           </mat-expansion-panel-header>
-          <!-- Expansion panel content -->
+
+          <!-- 'Topic' content -->
           <ng-template matExpansionPanelContent>
             <div class="map-data-catalogue__content__items__item__content">
               <ng-container *ngFor="let map of topic.maps; trackBy: trackByMapId">
@@ -99,50 +80,6 @@
                   (addEvent)="addActiveMap(map)"
                   (addLayerEvent)="addActiveLayer(map, $event)"
                 ></map-data-item-map>
-                <!--            <mat-expansion-panel #mapExpansionPanel hideToggle="true">-->
-                <!--              <mat-expansion-panel-header (click)="mapExpansionPanel.toggle()" class="map__header">-->
-                <!--                <button (click)="addActiveMap(map)" color="primary" data-test-id="add-active-map" mat-icon-button>-->
-                <!--                  <mat-icon>add</mat-icon>-->
-                <!--                </button>-->
-                <!--                <button-->
-                <!--                  (click)="mapExpansionPanel.toggle()"-->
-                <!--                  [attr.data-test-id]="mapExpansionPanel.expanded ? 'hide-layers-of-the-map' : 'show-layers-of-the-map'"-->
-                <!--                  [disabled]="map.layers.length === 0"-->
-                <!--                  mat-icon-button-->
-                <!--                >-->
-                <!--                  <mat-icon-->
-                <!--                    class="map__header__toggle-icon"-->
-                <!--                    [fontIcon]="mapExpansionPanel.expanded ? 'arrow_drop_down' : 'arrow_right'"-->
-                <!--                    [matBadgeDisabled]="map.layers.length === 0"-->
-                <!--                    [matBadgeHidden]="!this.filterString"-->
-                <!--                    [matBadge]="map.layers.length"-->
-                <!--                    matBadgeOverlap-->
-                <!--                  ></mat-icon>-->
-                <!--                </button>-->
-                <!--                <img [alt]="map.title" [src]="map.icon" class="map__header__image" />-->
-                <!--                <p-->
-                <!--                  [innerHTML]="map.title | highlightSearchQuery : this.filterString"-->
-                <!--                  class="map__header__title"-->
-                <!--                  matTooltip="{{ map.title }}"-->
-                <!--                ></p>-->
-                <!--              </mat-expansion-panel-header>-->
-                <!--              &lt;!&ndash; Expansion panel content &ndash;&gt;-->
-                <!--              <ng-template matExpansionPanelContent>-->
-                <!--                <ng-container *ngFor="let layer of map.layers">-->
-                <!--                  <div *ngIf="!layer.isHidden" class="layer">-->
-                <!--                    <mat-icon class="layer__icon">layers</mat-icon>-->
-                <!--                    <p-->
-                <!--                      [innerHTML]="layer.title | highlightSearchQuery : this.filterString"-->
-                <!--                      class="layer__title"-->
-                <!--                      matTooltip="{{ layer.title }}"-->
-                <!--                    ></p>-->
-                <!--                    <button (click)="addActiveLayer(map, layer)" mat-icon-button>-->
-                <!--                      <mat-icon>add</mat-icon>-->
-                <!--                    </button>-->
-                <!--                  </div>-->
-                <!--                </ng-container>-->
-                <!--              </ng-template>-->
-                <!--            </mat-expansion-panel>-->
               </ng-container>
             </div>
           </ng-template>

@@ -87,15 +87,14 @@
   position: absolute;
   left: 89px;
   height: 6px;
-  width: 2px;
   z-index: 100; // todo: hackedihack
-  background-color: ktzh-variables.$zh-black20;
-}
+  border-right: ktzh-variables.$zh-black20 solid 2px;
 
-.active-map-item__connection-line-top {
-  top: 0;
-}
+  &.active-map-item__connection-line-top {
+    top: 0;
+  }
 
-.active-map-item__connection-line-bottom {
-  bottom: 0;
+  &.active-map-item__connection-line-bottom {
+    bottom: 0;
+  }
 }
