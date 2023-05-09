@@ -6,8 +6,10 @@ import {HasViewProcessState} from '../../shared/interfaces/has-view-process-stat
 import {ViewProcessState} from '../../shared/types/view-process-state';
 import {TimeExtent} from '../interfaces/time-extent.interface';
 import {TimeExtentUtils} from '../../shared/utils/time-extent.utils';
+import {IsImmerable} from '../../shared/interfaces/immerable.interface';
+import {immerable} from 'immer';
 
-export class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewProcessState {
+export class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewProcessState, IsImmerable {
   public readonly id: string;
   public readonly title: string;
   public readonly url: string;
@@ -15,16 +17,15 @@ export class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewPro
   public readonly timeSliderConfiguration?: TimeSliderConfiguration;
   public readonly filterConfigurations?: FilterConfiguration[];
   public readonly searchConfigurations?: SearchConfiguration[];
-
   public readonly mapId: string;
   public readonly layers: MapLayer[];
   public readonly isSingleLayer: boolean;
-
   public loadingState: LoadingState = 'undefined';
   public viewProcessState: ViewProcessState = 'undefined';
   public visible: boolean;
   public opacity: number;
   public timeSliderExtent?: TimeExtent;
+  public readonly [immerable] = true;
 
   constructor(map: Map, layer?: MapLayer, visible?: boolean, opacity?: number) {
     this.isSingleLayer = !!layer;
