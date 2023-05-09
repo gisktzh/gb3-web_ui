@@ -9,6 +9,9 @@ import {DiscoverMapsComponent} from './components/discover-maps/discover-maps.co
 import {ContentLoadingStateComponent} from './components/content-loading-state/content-loading-state.component';
 import {StartPagePlaceholderComponent} from './components/start-page-placeholder/start-page-placeholder.component';
 import {KtZhDesignSystemModule} from '../kt-zh-design-system/kt-zh-design-system.module';
+import {StartPageSectionComponent} from './components/start-page-section/start-page-section.component';
+import {HeroHeaderComponent} from './components/hero-header/hero-header.component';
+import {GisBrowserTeaserComponent} from './components/gis-browser-teaser/gis-browser-teaser.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +20,10 @@ import {KtZhDesignSystemModule} from '../kt-zh-design-system/kt-zh-design-system
     NewsFeedComponent,
     DiscoverMapsComponent,
     ContentLoadingStateComponent,
-    StartPagePlaceholderComponent
+    StartPagePlaceholderComponent,
+    StartPageSectionComponent,
+    HeroHeaderComponent,
+    GisBrowserTeaserComponent
   ],
   imports: [CommonModule, SharedModule, StartPageRoutingModule, KtZhDesignSystemModule]
 })

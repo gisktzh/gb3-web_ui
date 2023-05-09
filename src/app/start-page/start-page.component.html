@@ -1,45 +1,11 @@
-<section class="section section__primary">
-  <div class="section__content">
-    <div class="header">
-      <img class="header__image" src="./assets/images/ktzh_inverted.svg" />
-      <h1 class="header__title mat-headline-3">Übersicht</h1>
-      <p class="header__intro-paragraph">
-        Geoinformationen sind verlässliche, raumbezogene Daten und Karten. Sie dienen als wichtige Grundlage für vielfältige Aufgaben und
-        Entscheide und stehen über verschiedene Portale zur Einsicht und Nutzung bereit.
-      </p>
-    </div>
-  </div>
-</section>
-<section class="section">
-  <div class="section__content">
-    <div class="gis-browser-link">
-      <h2>GIS-Browser</h2>
-      <p>
-        Mit dem GIS-Browser lassen sich über 100 unterschiedliche Karten zu spezifischen Themen darstellen. Er ist das zentrale Instrument
-        der Visualisierung von Geodaten des Kantons Zürich.
-      </p>
-      <a mat-flat-button routerLink="/maps" class="gis-browser-link__start-button">Starten</a>
-    </div>
-  </div>
-</section>
-<section class="section">
-  <div class="section__content">
-    <h1 class="section__content__title">Häufig verwendet</h1>
-  </div>
-</section>
-<!-- TODO: use the following code instead of the placeholder above as soon as there is real content to show -->
-<!--<div class="start-page">-->
-<!--  <div class="start-page__content">-->
-<!--    <h1>News</h1>-->
-<!--    <section *ngIf="apiConfigs.gravCms.enabled">-->
-<!--      <discover-maps class="start-page__content__discover-maps"></discover-maps>-->
-<!--    </section>-->
-<!--    <section *ngIf="apiConfigs.ktzhWebsite.enabled">-->
-<!--      <news-feed class="start-page__content__news-feed"></news-feed>-->
-<!--    </section>-->
-<!--    <section *ngIf="apiConfigs.twitterWidget.enabled">-->
-<!--      &lt;!&ndash; We currently do not show the twitter feed due to legal reasons &ndash;&gt;-->
-<!--      <twitter-feed></twitter-feed>-->
-<!--    </section>-->
-<!--  </div>-->
-<!--</div>-->
+<start-page-section [background]="'primary'">
+  <hero-header></hero-header>
+</start-page-section>
+
+<start-page-section>
+  <gis-browser-teaser></gis-browser-teaser>
+</start-page-section>
+
+<start-page-section sectionTitle="Häufig verwendet">
+  <b>swag</b>
+</start-page-section>

@@ -1,0 +1,6 @@
+<section class="section" [ngClass]="this.background ? 'section__' + this.background : ''">
+  <div class="section__content">
+    <h1 *ngIf="this.sectionTitle" class="section__content__title">{{ this.sectionTitle }}</h1>
+    <ng-content></ng-content>
+  </div>
+</section>
