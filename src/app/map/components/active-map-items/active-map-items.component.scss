@@ -69,7 +69,7 @@
       box-sizing: border-box;
 
       &--drag-placeholder {
-        @include mat-mixins.cdk-drag-placeholder(62px);
+        @include mat-mixins.cdk-drag-placeholder(68px);
       }
 
       .active-map-items__content__item__drag-handle {

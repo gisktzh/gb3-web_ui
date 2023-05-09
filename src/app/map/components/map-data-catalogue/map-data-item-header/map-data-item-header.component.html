@@ -1,14 +1,8 @@
 <div class="map-data-item-header">
+  <span class="map-data-item-header__badge" [matBadge]="numberOfItems" *ngIf="this.filterString && this.loadingState !== 'loading'"></span>
   <p class="map-data-item-header__title" [title]="title">
     {{ title }}
   </p>
-  <span
-    class="map-data-item-header__badge"
-    [matBadgeHidden]="!this.filterString || this.loadingState === 'loading'"
-    [matBadge]="numberOfItems"
-    matBadgeOverlap="true"
-    matBadgePosition="above after"
-  ></span>
   <button
     class="map-data-item-header__expand-button"
     (click)="toggleExpand()"

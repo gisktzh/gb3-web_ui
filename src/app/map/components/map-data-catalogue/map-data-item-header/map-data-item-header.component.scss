@@ -10,6 +10,13 @@
   background-color: ktzh-variables.$zh-black20;
   position: relative;
 
+  .map-data-item-header__badge {
+    margin-left: 1em;
+    height: 22px;
+    width: 22px;
+    @include mat-mixins.mat-badge-inherit-size;
+  }
+
   .map-data-item-header__title {
     @include mixins.single-line-text;
     font-family: ktzh-variables.$zh-font-family-bold;
@@ -19,10 +26,6 @@
     &.mat-badge {
       overflow: visible;
     }
-  }
-
-  .map-data-item-header__badge {
-    margin-bottom: 0;
   }
 
   .map-data-item-header__expand-button {

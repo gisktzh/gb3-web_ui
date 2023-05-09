@@ -75,7 +75,7 @@
           <!-- 'Topic' content -->
           <ng-template matExpansionPanelContent>
             <div class="map-data-catalogue__content__items__item__content">
-              <ng-container *ngFor="let map of topic.maps; trackBy: trackByMapId">
+              <ng-container *ngFor="let map of topic.maps; trackBy: trackByMapId; let isLastMap = last">
                 <map-data-item-map
                   class="map-data-catalogue__content__items__item__content__item"
                   [filterString]="filterString"
@@ -85,6 +85,7 @@
                   (addEvent)="addActiveMap(map)"
                   (addLayerEvent)="addActiveLayer(map, $event)"
                 ></map-data-item-map>
+                <mat-divider *ngIf="!isLastMap"></mat-divider>
               </ng-container>
             </div>
           </ng-template>
