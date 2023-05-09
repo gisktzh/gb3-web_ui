@@ -1,0 +1,38 @@
+@use 'functions/helper.function' as functions;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.link-list {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+
+  .link-list__item {
+    display: flex;
+    border-bottom: functions.get-color-from-palette(ktzh-variables.$zh-accent, 50) solid 2px;
+    margin-bottom: 12px;
+
+    &:last-of-type {
+      margin-bottom: 30px;
+    }
+
+    &:hover {
+      border-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 900);
+    }
+
+    .link-list__item__link {
+      text-decoration: none;
+      font-family: ktzh-variables.$zh-font-family-bold;
+      color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 200);
+      font-size: larger;
+      padding-top: 8px;
+      padding-bottom: 8px;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+
+      &:hover {
+        color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 900);
+      }
+    }
+  }
+}

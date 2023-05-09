@@ -8,7 +8,12 @@
 
   .link-list__item {
     display: flex;
-    border-bottom: transparent solid 2px;
+    border-bottom: functions.get-color-from-palette(ktzh-variables.$zh-accent, 50) solid 2px;
+    margin-bottom: 12px;
+
+    &:last-of-type {
+      margin-bottom: 30px;
+    }
 
     &:hover {
       border-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 900);
@@ -21,6 +26,9 @@
       font-size: larger;
       padding-top: 8px;
       padding-bottom: 8px;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
 
       &:hover {
         color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 900);

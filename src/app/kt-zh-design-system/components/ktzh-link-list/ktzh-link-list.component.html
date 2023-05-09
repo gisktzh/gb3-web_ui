@@ -1,5 +1,4 @@
-<ul class="link-list">
-  <li *ngFor="let link of links" class="link-list__item">
-    <a [href]="link.url" [title]="link.title" class="link-list__item__link" target="_blank">{{ link.label }}</a>
-  </li>
-</ul>
+<div *ngFor="let linksGroup of this.linksGroups" class="useful-links__content">
+  <h2 class="useful-links__content__title">{{ linksGroup.label }}</h2>
+  <ktzh-link-list-item [links]="linksGroup.links"></ktzh-link-list-item>
+</div>

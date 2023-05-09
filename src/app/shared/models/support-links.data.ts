@@ -1,6 +1,6 @@
-import {SupportLinkCollection} from '../interfaces/support-link.interface';
+import {LinksGroup} from '../interfaces/support-link.interface';
 
-export const supportLinks: SupportLinkCollection[] = [
+export const supportLinks: LinksGroup[] = [
   {
     label: 'Rechtliche Grundlagen',
     links: [

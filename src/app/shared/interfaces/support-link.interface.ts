@@ -1,8 +1,6 @@
 import {LinkableElement} from './linkable-element.interface';
 
-export type SupportLink = LinkableElement;
-
-export interface SupportLinkCollection {
+export interface LinksGroup {
   label: string;
-  links: SupportLink[];
+  links: LinkableElement[];
 }
