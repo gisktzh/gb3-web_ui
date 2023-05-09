@@ -3,15 +3,18 @@
 
 .map-container {
   height: 100%;
+  position: relative;
+  $all-map-items-container-width: 450px;
+  $minimal-bottom-height: ktzh-variables.$esri-attribution-widget-height;
 
   .map-container__all-map-items-container {
     @include mixins.hide-on-small-screens;
 
     position: absolute;
-    top: 76px;
+    top: 12px;
     left: 12px;
-    bottom: 28px;
-    width: 450px;
+    bottom: calc(12px + $minimal-bottom-height);
+    width: $all-map-items-container-width;
     pointer-events: none;
 
     .map-container__all-map-items-container__inner-container {
@@ -54,8 +57,8 @@
     @include mixins.map-element-box-shadow;
     @include mixins.hide-on-small-screens;
     position: absolute;
-    top: 80px;
-    left: 480px;
+    top: 12px;
+    left: calc(24px + $all-map-items-container-width);
     height: 48px;
     width: 125px;
     background-color: ktzh-variables.$zh-background-color;
@@ -65,15 +68,15 @@
     @include mixins.map-element-box-shadow;
     position: absolute;
     top: 132px; // starting at the first 'active map item' position
-    left: 480px;
+    left: calc(24px + $all-map-items-container-width);
     max-height: 30vh;
     overflow-y: hidden;
   }
 
   .map-container__search-window {
     position: absolute;
-    top: 80px;
-    right: 25px;
+    top: 12px;
+    right: 12px;
     bottom: 85px;
     pointer-events: none;
   }
