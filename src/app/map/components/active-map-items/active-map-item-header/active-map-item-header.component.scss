@@ -14,6 +14,10 @@
       display: none;
     }
   }
+
+  .active-map-item-header__image-container__progress-bar {
+    @include mat-mixins.mat-progress-bar-override-height(6px);
+  }
 }
 
 .active-map-item-header {
@@ -59,6 +63,10 @@
     .active-map-item-header__image-container__checkbox {
       position: absolute;
       @include mixins.center-absolute-element;
+    }
+
+    .active-map-item-header__image-container__progress-bar {
+      @include mixins.loading-and-progress-bar-below;
     }
   }
 
@@ -125,9 +133,5 @@
       grid-column: 1;
       grid-row: 1;
     }
-  }
-
-  .active-map-item-header__progress-bar {
-    @include mixins.loading-and-progress-bar-below;
   }
 }

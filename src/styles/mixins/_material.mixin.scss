@@ -153,3 +153,23 @@
     width: $size;
   }
 }
+
+/**
+* ======================
+*  mat-progress-bar
+* ======================
+*/
+
+@mixin mat-progress-bar-override-height($height: 4px) {
+  mat-progress-bar {
+    height: $height;
+
+    .mdc-linear-progress__bar-inner {
+      border-top-width: $height;
+    }
+
+    .mdc-linear-progress__buffer-dots {
+      background-size: 10px $height;
+    }
+  }
+}
