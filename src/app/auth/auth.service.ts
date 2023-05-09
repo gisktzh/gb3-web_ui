@@ -6,6 +6,7 @@ import {Store} from '@ngrx/store';
 import {AuthStatusActions} from '../state/auth/actions/auth-status.actions';
 import {AuthNotificationService} from './notifications/auth-notification.service';
 import {Gb2UserInfo} from '../shared/interfaces/gb2-user-info.interface';
+import {Router} from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,8 @@ export class AuthService {
   constructor(
     private readonly oauthService: OAuthService,
     private readonly store: Store,
-    private readonly authNotificationService: AuthNotificationService
+    private readonly authNotificationService: AuthNotificationService,
+    private readonly router: Router
   ) {
     this.oauthService.events.subscribe((event) => {
       this.isAuthenticatedSubject$.next(this.oauthService.hasValidAccessToken());
@@ -28,14 +30,18 @@ export class AuthService {
       }
     });
 
-    this.oauthService.loadDiscoveryDocumentAndTryLogin().then(() => {
+    this.oauthService.loadDiscoveryDocumentAndTryLogin().then(async () => {
       this.registerIsAuthenticatedHandler();
       this.registerImpendingLogoutHandler();
+      if (this.oauthService.state) {
+        await this.redirect(this.oauthService.state);
+      }
     });
   }
 
   public login() {
-    this.oauthService.initCodeFlow();
+    const currentUrl = this.router.url;
+    this.oauthService.initCodeFlow(currentUrl);
   }
 
   /**
@@ -142,5 +148,11 @@ export class AuthService {
     } else {
       console.warn('OAuthEvent Object:', event);
     }
+  }
+
+  private redirect(state: string): Promise<boolean> {
+    const url = decodeURIComponent(state);
+
+    return this.router.navigateByUrl(url);
   }
 }
