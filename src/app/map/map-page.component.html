@@ -2,14 +2,20 @@
   <map></map>
   <legend (printLegendEvent)="this.showPrint('legend')"></legend>
   <div class="map-container__all-map-items-container">
-    <active-map-items
-      class="map-container__all-map-items-container__active-map-items"
-      typedTourAnchor="map.active.map.items"
-    ></active-map-items>
-    <map-data-catalogue
-      class="map-container__all-map-items-container__map-data-catalogue"
-      typedTourAnchor="map.catalogue"
-    ></map-data-catalogue>
+    <div class="map-container__all-map-items-container__inner-container">
+      <active-map-items
+        class="map-container__all-map-items-container__inner-container__active-map-items"
+        [ngClass]="{'map-container__all-map-items-container__inner-container__active-map-items--maximized': isMapDataCatalogueMinimized}"
+        typedTourAnchor="map.active.map.items"
+      ></active-map-items>
+      <span class="map-container__all-map-items-container__inner-container__divider"></span>
+      <map-data-catalogue
+        class="map-container__all-map-items-container__inner-container__map-data-catalogue"
+        [ngClass]="{'map-container__all-map-items-container__inner-container__map-data-catalogue--minimized': isMapDataCatalogueMinimized}"
+        typedTourAnchor="map.catalogue"
+        (isMinimizedChanged)="onMapDataCatalogueIsMinimizedChanged($event)"
+      ></map-data-catalogue>
+    </div>
   </div>
   <button mat-flat-button (click)="this.toggleLegend()" [disabled]="activeMapItems.length === 0" class="map-container__legend-button">
     <mat-icon>map</mat-icon>

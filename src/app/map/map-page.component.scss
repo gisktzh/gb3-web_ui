@@ -8,25 +8,45 @@
     @include mixins.hide-on-small-screens;
 
     position: absolute;
-    display: flex;
-    flex-direction: column;
-    top: 80px;
-    bottom: 25px;
-    left: 15px;
+    top: 76px;
+    left: 12px;
+    bottom: 28px;
     width: 450px;
-    overflow-y: hidden;
+    pointer-events: none;
 
-    .map-container__all-map-items-container__active-map-items {
-      @include mixins.map-element-box-shadow;
+    .map-container__all-map-items-container__inner-container {
       display: flex;
-      max-height: 50%;
-      padding-bottom: 15px;
-    }
+      flex-direction: column;
+      height: 100%;
 
-    .map-container__all-map-items-container__map-data-catalogue {
-      @include mixins.map-element-box-shadow;
-      display: flex;
-      min-height: 50%;
+      .map-container__all-map-items-container__inner-container__active-map-items {
+        @include mixins.map-element-box-shadow;
+        display: flex;
+        // max height is 50% subtracted by the divider height between this element and the map data catalogue (12px / 2)
+        max-height: calc(50% - 6px);
+        overflow-y: unset;
+        pointer-events: all;
+
+        &--maximized {
+          max-height: 100%;
+          overflow-y: hidden;
+        }
+      }
+
+      .map-container__all-map-items-container__inner-container__divider {
+        min-height: 12px;
+      }
+
+      .map-container__all-map-items-container__inner-container__map-data-catalogue {
+        @include mixins.map-element-box-shadow;
+        display: flex;
+        overflow-y: hidden;
+        pointer-events: all;
+
+        &--minimized {
+          overflow-y: unset;
+        }
+      }
     }
   }
 

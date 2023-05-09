@@ -18,6 +18,8 @@ import {ActiveMapItem} from './models/active-map-item.model';
 export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
   public readonly onboardingGuideImage = mapOnboardingGuideConfig.introductionImage;
   public activeMapItems: ActiveMapItem[] = [];
+  public isMapDataCatalogueMinimized: boolean = false;
+
   private readonly activeMapItems$ = this.store.select(selectActiveMapItems);
   private readonly subscription: Subscription = new Subscription();
 
@@ -45,6 +47,10 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
 
   public toggleLegend() {
     this.store.dispatch(LegendActions.showLegend());
+  }
+
+  public onMapDataCatalogueIsMinimizedChanged(isMinimized: boolean) {
+    this.isMapDataCatalogueMinimized = isMinimized;
   }
 
   private initSubscriptions() {

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectLoadingState as selectFavouritesLoadingState} from '../../../state/map/reducers/favourite-list.reducer';
 import {selectFilterString, selectLoadingState as selectCatalogueLoadingState} from '../../../state/map/reducers/layer-catalog.reducer';
@@ -31,6 +31,8 @@ const AUTO_OPEN_THRESHOLD = 3;
   styleUrls: ['./map-data-catalogue.component.scss']
 })
 export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewInit {
+  @Output() isMinimizedChanged = new EventEmitter<boolean>();
+
   public topics: Topic[] = [];
   public catalogueLoadingState: LoadingState = 'undefined';
   public favouritesLoadingState: LoadingState = 'undefined';
@@ -121,6 +123,7 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
 
   public toggleMinimizeMapDataCatalogue() {
     this.isMinimized = !this.isMinimized;
+    this.isMinimizedChanged.emit(this.isMinimized);
   }
 
   private filterInputHandler(): Observable<string> {
