@@ -1,41 +1,43 @@
-<div class="search-window__searchbar">
-  <mat-icon class="search-window__searchbar__input-icon">search</mat-icon>
-  <input #filterInput class="search-window__searchbar__input" placeholder="Suchen nach Adressen, Orten, Karten und mehr..." />
-  <mat-icon
-    cdkOverlayOrigin
-    #filterOverlayTrigger="cdkOverlayOrigin"
-    class="search-window__searchbar__filter-icon"
-    [ngClass]="{'search-window__searchbar__filter-icon--selected': isFilterMenuOpen}"
-    (click)="toggleFilterMenu()"
-    >filter_list</mat-icon
-  >
-  <mat-divider [vertical]="true" class="search-window__searchbar__divider"></mat-divider>
-  <mat-icon class="search-window__searchbar__close-icon" (click)="clearInput()">close</mat-icon>
+<div class="search-window">
+  <div class="search-window__searchbar">
+    <mat-icon class="search-window__searchbar__input-icon">search</mat-icon>
+    <input #filterInput class="search-window__searchbar__input" placeholder="Suchen nach Adressen, Orten, Karten und mehr..." />
+    <mat-icon
+      cdkOverlayOrigin
+      #filterOverlayTrigger="cdkOverlayOrigin"
+      class="search-window__searchbar__filter-icon"
+      [ngClass]="{'search-window__searchbar__filter-icon--selected': isFilterMenuOpen}"
+      (click)="toggleFilterMenu()"
+      >filter_list
+    </mat-icon>
+    <mat-divider [vertical]="true" class="search-window__searchbar__divider"></mat-divider>
+    <mat-icon class="search-window__searchbar__close-icon" (click)="clearInput()">close</mat-icon>
 
-  <ng-template cdkConnectedOverlay [cdkConnectedOverlayOrigin]="filterOverlayTrigger" [cdkConnectedOverlayOpen]="isFilterMenuOpen">
-    <div class="search-window__filter-menu">
-      <mat-icon class="search-window__filter-menu__filter-close-icon" (click)="closeFilterMenu()">close</mat-icon>
-      <div class="search-window__filter-menu__filter-content">
-        <h2 class="search-window__filter-menu__filter-content__filter-header">Suche filtern nach</h2>
-        <div *ngFor="let index of availableSearchIndexes" class="search-window__filter-menu__filter-content__filter-entry">
-          <mat-checkbox
-            class="search-window__filter-menu__filter-content__filter-entry__filter-checkbox"
-            [checked]="index.active"
-            [(ngModel)]="index.active"
-            (change)="search(filterInput.value)"
-            [ngClass]="{'search-window__filter-menu__filter-content__filter-entry__filter-checkbox--unchecked': !index.active}"
-            >{{ index.displayString }}</mat-checkbox
-          >
+    <ng-template cdkConnectedOverlay [cdkConnectedOverlayOrigin]="filterOverlayTrigger" [cdkConnectedOverlayOpen]="isFilterMenuOpen">
+      <div class="search-window__filter-menu">
+        <mat-icon class="search-window__filter-menu__filter-close-icon" (click)="closeFilterMenu()">close</mat-icon>
+        <div class="search-window__filter-menu__filter-content">
+          <h2 class="search-window__filter-menu__filter-content__filter-header">Suche filtern nach</h2>
+          <div *ngFor="let index of availableSearchIndexes" class="search-window__filter-menu__filter-content__filter-entry">
+            <mat-checkbox
+              class="search-window__filter-menu__filter-content__filter-entry__filter-checkbox"
+              [checked]="index.active"
+              [(ngModel)]="index.active"
+              (change)="search(filterInput.value)"
+              [ngClass]="{'search-window__filter-menu__filter-content__filter-entry__filter-checkbox--unchecked': !index.active}"
+              >{{ index.displayString }}</mat-checkbox
+            >
+          </div>
         </div>
       </div>
-    </div>
-  </ng-template>
-</div>
-<div class="search-window__results_container">
-  <result-groups
-    [searchResults]="searchResults"
-    [specialSearchResults]="specialSearchResults"
-    [filteredMaps]="filteredMaps"
-    [searchTerms]="searchTerms"
-  ></result-groups>
+    </ng-template>
+  </div>
+  <div class="search-window__results_container">
+    <result-groups
+      [searchResults]="searchResults"
+      [specialSearchResults]="specialSearchResults"
+      [filteredMaps]="filteredMaps"
+      [searchTerms]="searchTerms"
+    ></result-groups>
+  </div>
 </div>
