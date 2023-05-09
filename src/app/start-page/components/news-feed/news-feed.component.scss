@@ -5,21 +5,27 @@
 .news-feed {
   display: flex;
   gap: 5px;
+  width: 100%;
 
-  .news-feed__link-wrapper {
+  & .news-feed__loader {
+    width: 100%;
+  }
+
+  & .news-feed__link-wrapper {
     text-decoration: none;
     color: inherit;
     flex-grow: 1;
     flex-basis: 100%;
-    border: solid #f0f0f0 4px;
+    border: solid ktzh-variables.$zh-black20 4px;
 
     &:hover {
-      border: solid #e4e4e4 4px;
+      border-color: ktzh-variables.$zh-black40;
     }
   }
 
   .news-feed__entry {
     padding: 2rem;
+    background-color: ktzh-variables.$zh-white;
 
     .news-feed__entry__header {
       margin: 0;
@@ -34,6 +40,7 @@
       @include mixins.multiline-ellipsis(2);
       margin: 0;
       font-weight: bold;
+      color: ktzh-variables.$zh-blue;
     }
 
     .news-feed__entry__teaser-text {

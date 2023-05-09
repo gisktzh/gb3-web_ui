@@ -1,5 +1,9 @@
 import {Component, Input} from '@angular/core';
 
+export interface TitleLink {
+  url: string;
+  displayTitle: string;
+}
 @Component({
   selector: 'start-page-section',
   templateUrl: './start-page-section.component.html',
@@ -8,4 +12,5 @@ import {Component, Input} from '@angular/core';
 export class StartPageSectionComponent {
   @Input() public background?: 'primary' | 'secondary';
   @Input() public sectionTitle?: string;
+  @Input() public titleLink?: TitleLink;
 }
