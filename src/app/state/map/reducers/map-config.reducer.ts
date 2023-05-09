@@ -58,6 +58,8 @@ export const mapConfigFeature = createFeature({
          */
         draft.scaleSettings.calculatedMinScale = Math.floor(calculatedMinScale);
         draft.scaleSettings.calculatedMaxScale = Math.ceil(calculatedMaxScale);
+
+        draft.ready = true;
       })
     ),
     on(MapConfigActions.setScale, (state, {scale}): MapConfigState => {
