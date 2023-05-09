@@ -1,0 +1,17 @@
+.login-redirect {
+  padding: 20px;
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  justify-content: center;
+
+  & .login-redirect__header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    & .login-redirect__item {
+      margin: 4px;
+    }
+  }
+}

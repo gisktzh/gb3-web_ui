@@ -5,6 +5,8 @@ import {authConfig, oAuthConfig} from './auth.config';
 import {AuthNotificationDialogComponent} from './notifications/auth-notification-dialog/auth-notification-dialog.component';
 import {SharedModule} from '../shared/shared.module';
 import {ConfigService} from '../shared/services/config.service';
+import {AuthRoutingModule} from './auth-routing.module';
+import {LoginRedirectComponent} from './components/login-redirect/login-redirect.component';
 
 function storageFactory(): OAuthStorage {
   return localStorage;
@@ -34,8 +36,8 @@ function authConfigFactory(configService: ConfigService): AuthConfig {
 }
 
 @NgModule({
-  declarations: [AuthNotificationDialogComponent],
-  imports: [OAuthModule.forRoot(), HttpClientModule, SharedModule],
+  declarations: [AuthNotificationDialogComponent, LoginRedirectComponent],
+  imports: [OAuthModule.forRoot(), HttpClientModule, SharedModule, AuthRoutingModule],
   providers: [
     {provide: AuthConfig, useFactory: authConfigFactory, deps: [ConfigService]},
     {provide: OAuthModuleConfig, useFactory: oAuthConfigFactory, deps: [ConfigService]},
