@@ -10,6 +10,7 @@ import {ResizableModule} from 'angular-resizable-element';
 import {ResizeHandlerComponent} from './components/resize-handler/resize-handler.component';
 import {DragCursorDirective} from './directives/drag-cursor.directive';
 import {MobileWarningComponent} from './components/mobile-warning/mobile-warning.component';
+import {FormatContentPipe} from './pipes/format-content.pipe';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import {MobileWarningComponent} from './components/mobile-warning/mobile-warning
     HighlightSearchQueryPipe,
     ResizeHandlerComponent,
     DragCursorDirective,
-    MobileWarningComponent
+    MobileWarningComponent,
+    FormatContentPipe
   ],
   imports: [MaterialModule, RouterModule, CommonModule, ResizableModule],
   exports: [
@@ -31,7 +33,8 @@ import {MobileWarningComponent} from './components/mobile-warning/mobile-warning
     ResizableModule,
     ResizeHandlerComponent,
     DragCursorDirective,
-    MobileWarningComponent
+    MobileWarningComponent,
+    FormatContentPipe
   ]
 })
 export class SharedModule {}
