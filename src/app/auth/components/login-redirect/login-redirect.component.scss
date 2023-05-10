@@ -5,12 +5,12 @@
   align-items: center;
   justify-content: center;
 
-  & .login-redirect__header {
+  .login-redirect__header {
     display: flex;
     align-items: center;
     justify-content: center;
 
-    & .login-redirect__item {
+    .redirect__header__item {
       margin: 4px;
     }
   }
