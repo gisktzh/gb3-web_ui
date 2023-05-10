@@ -13,7 +13,7 @@
         class="map-container__all-map-items-container__inner-container__map-data-catalogue"
         [ngClass]="{'map-container__all-map-items-container__inner-container__map-data-catalogue--minimized': isMapDataCatalogueMinimized}"
         typedTourAnchor="map.catalogue"
-        (isMinimizedChanged)="onMapDataCatalogueIsMinimizedChanged($event)"
+        (changeIsMinimizedEvent)="setIsMapDataCatalogueMinimized($event)"
       ></map-data-catalogue>
     </div>
   </div>

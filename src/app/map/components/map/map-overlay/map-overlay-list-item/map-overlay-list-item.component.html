@@ -1,8 +1,10 @@
 <mat-expansion-panel [expanded]="this.forceExpanded" hideToggle class="list-item" #expansionPanel [disabled]="this.disabled">
   <mat-expansion-panel-header class="list-item__header">
     <div class="list-item__header__content">
-      <mat-icon *ngIf="expansionPanel.expanded" class="list-item__header__content__toggle">arrow_drop_down</mat-icon>
-      <mat-icon *ngIf="!expansionPanel.expanded" class="list-item__header__content__toggle">arrow_right</mat-icon>
+      <mat-icon
+        class="list-item__header__content__toggle"
+        [fontIcon]="expansionPanel.expanded ? 'arrow_drop_down' : 'arrow_right'"
+      ></mat-icon>
       <ng-content select="[header-icon]"></ng-content>
       <p class="list-item__header__content__title" [title]="overlayTitle">{{ overlayTitle }}</p>
       <a

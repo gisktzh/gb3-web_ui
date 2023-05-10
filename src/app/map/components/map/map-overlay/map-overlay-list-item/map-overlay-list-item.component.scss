@@ -1,10 +1,5 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 @use 'mixins/helpers.mixin' as mixins;
-@use 'mixins/material.mixin' as mat-mixins;
-
-:host ::ng-deep .list-item {
-  @include mat-mixins.mat-expansion-panel-remove-content-offset;
-}
 
 .list-item {
   @include mixins.no-box-shadow;
@@ -60,10 +55,14 @@
  */
 @media print {
   .list-item {
-    border: 1px solid ktzh-variables.$zh-black100;
+    border: 1px solid ktzh-variables.$zh-print-black;
 
     .list-item__header {
-      border-bottom: 1px solid ktzh-variables.$zh-black100;
+      border-bottom: 1px solid ktzh-variables.$zh-print-black;
     }
   }
+}
+
+:host::ng-deep .list-item .mat-expansion-panel-content .mat-expansion-panel-body {
+  padding-right: 0;
 }

@@ -57,6 +57,13 @@
       .active-map-items__header__buttons .active-map-items__header__buttons__divider {
         border-right-color: ktzh-variables.$zh-foreground-color;
       }
+
+      .active-map-items__header__badge {
+        @include mat-mixins.mat-badge-override-color(
+          functions.get-color-from-palette(ktzh-variables.$zh-primary),
+          functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary)
+        );
+      }
     }
   }
 

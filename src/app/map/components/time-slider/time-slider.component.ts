@@ -23,7 +23,7 @@ type DatePickerStartView = 'month' | 'year' | 'multi-year';
   styleUrls: ['./time-slider.component.scss']
 })
 export class TimeSliderComponent implements OnInit {
-  @Output() public timeExtentChanged = new EventEmitter<TimeExtent>();
+  @Output() public changeTimeExtentEvent = new EventEmitter<TimeExtent>();
 
   @Input() public initialTimeExtent!: TimeExtent;
   @Input() public timeSliderConfiguration!: TimeSliderConfiguration;
@@ -141,7 +141,7 @@ export class TimeSliderComponent implements OnInit {
       TimeExtentUtils.calculateDifferenceBetweenDates(this.timeExtent.end, newValidatedTimeExtent.end) > 0
     ) {
       this.timeExtent = newValidatedTimeExtent;
-      this.timeExtentChanged.next(this.timeExtent);
+      this.changeTimeExtentEvent.next(this.timeExtent);
     }
 
     // set the current time extent even if there is no difference; it's still possible that a value was automatically corrected

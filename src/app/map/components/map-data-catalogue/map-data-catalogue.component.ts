@@ -31,7 +31,7 @@ const AUTO_OPEN_THRESHOLD = 3;
   styleUrls: ['./map-data-catalogue.component.scss']
 })
 export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewInit {
-  @Output() isMinimizedChanged = new EventEmitter<boolean>();
+  @Output() changeIsMinimizedEvent = new EventEmitter<boolean>();
 
   public topics: Topic[] = [];
   public catalogueLoadingState: LoadingState = 'undefined';
@@ -123,7 +123,7 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
 
   public toggleMinimizeMapDataCatalogue() {
     this.isMinimized = !this.isMinimized;
-    this.isMinimizedChanged.emit(this.isMinimized);
+    this.changeIsMinimizedEvent.emit(this.isMinimized);
   }
 
   private filterInputHandler(): Observable<string> {

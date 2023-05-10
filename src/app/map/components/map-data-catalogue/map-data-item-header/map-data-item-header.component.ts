@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {LoadingState} from '../../../../shared/types/loading-state';
 
 @Component({
@@ -12,10 +12,4 @@ export class MapDataItemHeaderComponent {
   @Input() public isExpanded: boolean = true;
   @Input() public loadingState: LoadingState = 'undefined';
   @Input() public numberOfItems: number = 0;
-
-  @Output() public expandEvent = new EventEmitter<void>();
-
-  public toggleExpand() {
-    this.expandEvent.emit();
-  }
 }

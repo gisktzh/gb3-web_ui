@@ -1,15 +1,8 @@
-<div class="map-data-item-header">
+<div class="map-data-item-header" [attr.data-test-id]="isExpanded ? 'hide-catalogue-items-of-the-map' : 'show-catalogue-items-of-the-map'">
   <span class="map-data-item-header__badge" [matBadge]="numberOfItems" *ngIf="this.filterString && this.loadingState !== 'loading'"></span>
   <p class="map-data-item-header__title" [title]="title">
     {{ title }}
   </p>
-  <button
-    class="map-data-item-header__expand-button"
-    (click)="toggleExpand()"
-    [attr.data-test-id]="isExpanded ? 'hide-catalogue-items-of-the-map' : 'show-catalogue-items-of-the-map'"
-    mat-icon-button
-  >
-    <mat-icon [fontIcon]="isExpanded ? 'arrow_drop_up' : 'arrow_drop_down'"></mat-icon>
-  </button>
+  <mat-icon class="map-data-item-header__expand-icon" [fontIcon]="isExpanded ? 'arrow_drop_up' : 'arrow_drop_down'"></mat-icon>
   <loading-and-process-bar [loadingState]="this.loadingState" class="map-data-item-header__loader"></loading-and-process-bar>
 </div>

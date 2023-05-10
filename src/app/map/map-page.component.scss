@@ -27,7 +27,6 @@
         display: flex;
         // max height is 50% subtracted by the divider height between this element and the map data catalogue (12px / 2)
         max-height: calc(50% - 6px);
-        overflow-y: unset;
         pointer-events: all;
 
         &--maximized {
@@ -47,7 +46,7 @@
         pointer-events: all;
 
         &--minimized {
-          overflow-y: unset;
+          overflow-y: visible;
         }
       }
     }

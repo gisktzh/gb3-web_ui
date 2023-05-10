@@ -49,7 +49,7 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
     this.store.dispatch(LegendActions.showLegend());
   }
 
-  public onMapDataCatalogueIsMinimizedChanged(isMinimized: boolean) {
+  public setIsMapDataCatalogueMinimized(isMinimized: boolean) {
     this.isMapDataCatalogueMinimized = isMinimized;
   }
 

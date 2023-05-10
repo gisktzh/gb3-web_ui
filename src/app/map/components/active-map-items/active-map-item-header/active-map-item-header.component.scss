@@ -66,7 +66,7 @@
     }
 
     .active-map-item-header__image-container__progress-bar {
-      @include mixins.loading-and-progress-bar-below;
+      @include mixins.position-element-at-bottom-with-full-width;
     }
   }
 

@@ -88,7 +88,7 @@
     }
 
     .base-map-data-item__header__loader {
-      @include mixins.loading-and-progress-bar-below;
+      @include mixins.position-element-at-bottom-with-full-width;
     }
   }
 }

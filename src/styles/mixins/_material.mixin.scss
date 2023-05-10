@@ -6,7 +6,7 @@
 * ======================
 */
 
-@mixin cdk-drag-placeholder($height: 16px) {
+@mixin cdk-drag-placeholder($height) {
   background: ktzh-variables.$zh-blue;
   border: dotted 3px ktzh-variables.$zh-darkblue;
   box-sizing: border-box;
@@ -79,7 +79,7 @@
   }
 }
 
-@mixin mat-icon-button-override-icon-size($size: 24px) {
+@mixin mat-icon-button-override-icon-size($size) {
   &.mdc-icon-button {
     display: flex;
     align-items: center;
@@ -147,7 +147,7 @@
   }
 }
 
-@mixin mat-icon-override-size($size: 24px) {
+@mixin mat-icon-override-size($size) {
   .mat-icon {
     font-size: $size;
     height: $size;
@@ -161,7 +161,7 @@
 * ======================
 */
 
-@mixin mat-progress-bar-override-height($height: 4px) {
+@mixin mat-progress-bar-override-height($height) {
   mat-progress-bar {
     height: $height;
 

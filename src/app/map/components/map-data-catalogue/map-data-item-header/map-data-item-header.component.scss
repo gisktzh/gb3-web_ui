@@ -9,9 +9,10 @@
   height: inherit;
   background-color: ktzh-variables.$zh-black20;
   position: relative;
+  padding: 0 12px;
 
   .map-data-item-header__badge {
-    margin-left: 1em;
+    margin-right: 12px;
     height: 22px;
     width: 22px;
     @include mat-mixins.mat-badge-inherit-size;
@@ -21,29 +22,20 @@
     @include mixins.single-line-text;
     font-family: ktzh-variables.$zh-font-family-bold;
     margin: 0;
-    padding: 0 1em;
+    padding-right: 1em;
 
     &.mat-badge {
       overflow: visible;
     }
   }
 
-  .map-data-item-header__expand-button {
-    height: inherit;
-    width: auto;
-    aspect-ratio: 1 / 1;
-    align-self: center;
+  .map-data-item-header__expand-icon {
+    height: 24px;
+    width: 24px;
     margin-left: auto;
-
-    &.mat-mdc-icon-button {
-      padding: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
   }
 
   .map-data-item-header__loader {
-    @include mixins.loading-and-progress-bar-below;
+    @include mixins.position-element-at-bottom-with-full-width;
   }
 }
