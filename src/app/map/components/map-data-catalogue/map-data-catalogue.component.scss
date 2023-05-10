@@ -19,6 +19,11 @@
     padding: 0 6px 0 24px;
     height: 48px;
 
+    &--minimized {
+      background-color: ktzh-variables.$zh-background-color;
+      color: ktzh-variables.$zh-foreground-color;
+    }
+
     .map-data-catalogue__header__title {
       @include mixins.non-selectable-text;
       padding-right: 1em;

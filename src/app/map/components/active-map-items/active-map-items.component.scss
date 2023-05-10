@@ -43,11 +43,19 @@
       display: flex;
       align-items: center;
       margin-left: 8px;
-      color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
 
       .active-map-items__header__buttons__divider {
         height: 40%;
         border-right-color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+      }
+    }
+
+    &--minimized {
+      background-color: ktzh-variables.$zh-background-color;
+      color: ktzh-variables.$zh-foreground-color;
+
+      .active-map-items__header__buttons .active-map-items__header__buttons__divider {
+        border-right-color: ktzh-variables.$zh-foreground-color;
       }
     }
   }
