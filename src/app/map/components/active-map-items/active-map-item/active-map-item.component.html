@@ -31,6 +31,7 @@
             class="active-map-item__tabs__header__buttons__button"
             mat-flat-button
             (click)="changeTabs('layers')"
+            [disabled]="activeMapItem.isSingleLayer"
           >
             Ebenen
           </button>

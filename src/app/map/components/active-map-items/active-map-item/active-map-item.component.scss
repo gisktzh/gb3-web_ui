@@ -55,6 +55,10 @@
           &--selected {
             background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
           }
+
+          &:disabled {
+            color: ktzh-variables.$zh-black40;
+          }
         }
       }
     }
