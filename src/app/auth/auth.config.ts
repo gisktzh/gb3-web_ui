@@ -2,12 +2,13 @@ import {AuthConfig, OAuthModuleConfig} from 'angular-oauth2-oidc';
 import {environment} from '../../environments/environment';
 /* eslint-disable @typescript-eslint/naming-convention */
 
+export const AUTH_REDIRECT_PATH = 'login-redirect';
 export const authConfig: AuthConfig = {
   issuer: '', // this is overriden in the module component via the factory to inject the correct runtime URL
   clientId: '', // this is overriden in the module component via the factory to inject the correct runtime clientId
   showDebugInformation: !environment.production,
   responseType: 'code',
-  redirectUri: `${window.location.origin}/`,
+  redirectUri: `${window.location.origin}/${AUTH_REDIRECT_PATH}`,
   scope: 'openid profile',
   /**
    * The following flag is used because we do not have ID tokens; so we cannot do the strict subject check required by OIDC (compare the sub

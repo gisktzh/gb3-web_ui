@@ -108,7 +108,8 @@ export class MapConfigUrlService implements OnDestroy {
     await this.router.navigate([], {
       relativeTo: this.route,
       queryParams,
-      queryParamsHandling
+      queryParamsHandling,
+      replaceUrl: true
     });
   }
 }
