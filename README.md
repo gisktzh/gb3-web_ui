@@ -44,7 +44,7 @@ configurations.
 In order to build the docker image use the following command (adjust tag as needed):
 
 ```
-docker build --no-cache --build-arg TARGET_ENVIRONMENT={target_environment} --t gb3-frontend:latest .
+docker build --no-cache --build-arg TARGET_ENVIRONMENT={target_environment} -t gb3-frontend:latest .
 ```
 
 - **gb3-frontend** is the name of the image
@@ -54,6 +54,7 @@ docker build --no-cache --build-arg TARGET_ENVIRONMENT={target_environment} --t 
   - `local-gb2`: localhost development with locally deployed GB2 backend
   - `dev-ebp`: production deployment for EBP environment
   - `staging`: production deployment for KTZH staging environment
+  - `staging-using-productive-gb2-backend`: production deployment for KTZH staging environment which uses the productive GB2 backend infrastructure.
   - `uat`: production deployment for KTZH UAT environment
   - `production`: production deployment for KTZH production (internet & intranet) environment
 
