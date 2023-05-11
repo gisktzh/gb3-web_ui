@@ -1,0 +1,67 @@
+<mat-expansion-panel #itemExpansionPanel hideToggle="true" class="base-map-data-item">
+  <mat-expansion-panel-header
+    (click)="itemExpansionPanel.toggle()"
+    class="base-map-data-item__header"
+    [matTooltipDisabled]="!invalid"
+    matTooltip="{{ this.errorTooltip }}"
+  >
+    <button
+      (click)="itemExpansionPanel.toggle()"
+      [attr.data-test-id]="itemExpansionPanel.expanded ? 'hide-layers-of-the-map' : 'show-layers-of-the-map'"
+      [disabled]="layers.length === 0"
+      [ngClass]="{'base-map-data-item__header__expand-button--hidden': !showExpandButton}"
+      mat-icon-button
+    >
+      <mat-icon
+        [fontIcon]="itemExpansionPanel.expanded ? 'arrow_drop_down' : 'arrow_right'"
+        [matBadgeDisabled]="layers.length === 0"
+        [matBadgeHidden]="!this.filterString || this.loadingState === 'loading'"
+        [matBadge]="layers.length"
+        matBadgeOverlap
+      ></mat-icon>
+    </button>
+    <div class="base-map-data-item__header__image-container">
+      <img
+        *ngIf="imageUrl; else imagePlaceholder"
+        class="base-map-data-item__header__image-container__image"
+        [alt]="title"
+        [src]="imageUrl"
+      />
+      <ng-template #imagePlaceholder>
+        <span
+          class="base-map-data-item__header__image-container__image-placeholder"
+          [ngClass]="{'base-map-data-item__header__image-container__image-placeholder--disabled': invalid}"
+        ></span>
+      </ng-template>
+      <button
+        (click)="addItem()"
+        class="base-map-data-item__header__image-container__button"
+        [disabled]="invalid"
+        data-test-id="add-active-map"
+        mat-icon-button
+      >
+        <mat-icon [fontIcon]="invalid ? 'error' : 'add'" [color]="invalid ? 'warn' : null"></mat-icon>
+      </button>
+    </div>
+    <p
+      [innerHTML]="title | highlightSearchQuery : this.filterString"
+      class="base-map-data-item__header__title"
+      [ngClass]="{'base-map-data-item__header__title--disabled': invalid}"
+      matTooltip="{{ title }}"
+    ></p>
+    <button (click)="deleteItem()" mat-icon-button *ngIf="showDeleteButton">
+      <mat-icon>delete</mat-icon>
+    </button>
+    <loading-and-process-bar [loadingState]="this.loadingState" class="base-map-data-item__header__loader"></loading-and-process-bar>
+  </mat-expansion-panel-header>
+  <!-- Expansion panel content -->
+  <ng-template matExpansionPanelContent>
+    <ng-container *ngFor="let layer of layers">
+      <map-data-item-map-layer
+        [filterString]="filterString"
+        [layer]="layer"
+        (addLayerEvent)="addItemLayer(layer)"
+      ></map-data-item-map-layer>
+    </ng-container>
+  </ng-template>
+</mat-expansion-panel>

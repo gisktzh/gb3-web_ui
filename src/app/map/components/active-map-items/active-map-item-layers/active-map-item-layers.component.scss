@@ -5,7 +5,7 @@
     width: 100%;
 
     &--drag-placeholder {
-      @include mat-mixins.cdk-drag-placeholder(38px);
+      @include mat-mixins.cdk-drag-placeholder(44px);
     }
 
     .active-map-item-layers__item__drag-handle {

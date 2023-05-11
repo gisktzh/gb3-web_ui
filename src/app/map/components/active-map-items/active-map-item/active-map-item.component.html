@@ -1,8 +1,8 @@
 <!-- small connection line between elements - this is the top element -->
-<div
+<span
   class="active-map-item__connection-line active-map-item__connection-line-top"
   *ngIf="!isFirstActiveMapItem && !activeMapItemExpansionPanel.expanded"
-></div>
+></span>
 <mat-expansion-panel
   #activeMapItemExpansionPanel
   [@slideInOut]
@@ -31,6 +31,7 @@
             class="active-map-item__tabs__header__buttons__button"
             mat-flat-button
             (click)="changeTabs('layers')"
+            [disabled]="activeMapItem.isSingleLayer"
           >
             Ebenen
           </button>
@@ -56,4 +57,4 @@
   </ng-template>
 </mat-expansion-panel>
 <!-- small connection line between elements - this is the bottom element -->
-<div class="active-map-item__connection-line active-map-item__connection-line-bottom" *ngIf="!isLastActiveMapItem"></div>
+<span class="active-map-item__connection-line active-map-item__connection-line-bottom" *ngIf="!isLastActiveMapItem"></span>

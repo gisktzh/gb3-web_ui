@@ -55,14 +55,14 @@
  */
 @media print {
   .list-item {
-    border: 1px solid ktzh-variables.$zh-black100;
+    border: 1px solid ktzh-variables.$zh-print-black;
 
     .list-item__header {
-      border-bottom: 1px solid ktzh-variables.$zh-black100;
+      border-bottom: 1px solid ktzh-variables.$zh-print-black;
     }
   }
 }
 
-:host::ng-deep .mat-expansion-panel-content .mat-expansion-panel-body {
+:host::ng-deep .list-item .mat-expansion-panel-content .mat-expansion-panel-body {
   padding-right: 0;
 }

@@ -5,7 +5,7 @@
 
 :host ::ng-deep {
   .active-map-item-header__image-container__checkbox {
-    @include mat-mixins.mat-checkbox-override-color(
+    @include mat-mixins.mat-checkbox-override-accent-color(
       functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent),
       functions.get-contrast-color-from-palette(ktzh-variables.$zh-secondary-accent)
     );
@@ -13,6 +13,10 @@
     .mdc-checkbox__ripple {
       display: none;
     }
+  }
+
+  .active-map-item-header__image-container__progress-bar {
+    @include mat-mixins.mat-progress-bar-override-height(6px);
   }
 }
 
@@ -59,6 +63,10 @@
     .active-map-item-header__image-container__checkbox {
       position: absolute;
       @include mixins.center-absolute-element;
+    }
+
+    .active-map-item-header__image-container__progress-bar {
+      @include mixins.position-element-at-bottom-with-full-width;
     }
   }
 
@@ -125,12 +133,5 @@
       grid-column: 1;
       grid-row: 1;
     }
-  }
-
-  .active-map-item-header__progress-bar {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
   }
 }

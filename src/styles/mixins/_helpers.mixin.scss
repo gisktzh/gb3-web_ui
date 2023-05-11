@@ -42,3 +42,11 @@
     display: none;
   }
 }
+
+/** Positions the element (e.g. loading bar) at the bottom of the parent element and uses the whole given width */
+@mixin position-element-at-bottom-with-full-width {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}

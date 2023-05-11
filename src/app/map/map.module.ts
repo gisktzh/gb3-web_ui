@@ -22,7 +22,6 @@ import {OnboardingGuideModule} from '../onboarding-guide/onboarding-guide.module
 import {MapAttributeFilterComponent} from './components/map-attribute-filter/map-attribute-filter.component';
 import {FavouriteCreationDialogComponent} from './components/favourite-creation-dialog/favourite-creation-dialog.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {FavouriteSelectionComponent} from './components/map-data-catalogue/favourite-selection/favourite-selection.component';
 import {ApiDialogWrapperComponent} from './components/api-dialog-wrapper/api-dialog-wrapper.component';
 import {FavouriteDeletionDialogComponent} from './components/favourite-deletion-dialog/favourite-deletion-dialog.component';
 import {SearchWindowComponent} from './components/search-window/search-window.component';
@@ -38,6 +37,11 @@ import {ActiveMapItemLayersComponent} from './components/active-map-items/active
 import {ActiveMapItemLayerComponent} from './components/active-map-items/active-map-item-layers/active-map-item-layer/active-map-item-layer.component';
 import {FeatureInfoPrintContentComponent} from './components/feature-info/feature-info-print-content/feature-info-print-content.component';
 import {TableColumnIdentifierDirective} from './components/feature-info/feature-info-content/table-column-identifier.directive';
+import {BaseMapDataItemComponent} from './components/map-data-catalogue/base-map-data-item/base-map-data-item.component';
+import {MapDataItemMapComponent} from './components/map-data-catalogue/base-map-data-item/map-data-item-map.component';
+import {MapDataItemFavouriteComponent} from './components/map-data-catalogue/base-map-data-item/map-data-item-favourite.component';
+import {MapDataItemMapLayerComponent} from './components/map-data-catalogue/map-data-item-map-layer/map-data-item-map-layer.component';
+import {MapDataItemHeaderComponent} from './components/map-data-catalogue/map-data-item-header/map-data-item-header.component';
 
 @NgModule({
   declarations: [
@@ -58,11 +62,8 @@ import {TableColumnIdentifierDirective} from './components/feature-info/feature-
     MapControlsComponent,
     BasemapSelectorComponent,
     MapAttributeFilterComponent,
-    FavouriteSelectionComponent,
-    MapAttributeFilterComponent,
     SearchWindowComponent,
     FavouriteCreationDialogComponent,
-    FavouriteSelectionComponent,
     ApiDialogWrapperComponent,
     FavouriteDeletionDialogComponent,
     TimeSliderComponent,
@@ -76,7 +77,12 @@ import {TableColumnIdentifierDirective} from './components/feature-info/feature-
     ActiveMapItemLayerComponent,
     FeatureInfoContentComponent,
     FeatureInfoPrintContentComponent,
-    TableColumnIdentifierDirective
+    TableColumnIdentifierDirective,
+    BaseMapDataItemComponent,
+    MapDataItemMapComponent,
+    MapDataItemFavouriteComponent,
+    MapDataItemMapLayerComponent,
+    MapDataItemHeaderComponent
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule, KtZhDesignSystemModule]
 })

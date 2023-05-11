@@ -3,30 +3,52 @@
 
 .map-container {
   height: 100%;
+  position: relative;
+  $all-map-items-container-width: 450px;
+  $minimal-bottom-height: ktzh-variables.$esri-attribution-widget-height;
 
   .map-container__all-map-items-container {
     @include mixins.hide-on-small-screens;
 
     position: absolute;
-    display: flex;
-    flex-direction: column;
-    top: 80px;
-    bottom: 25px;
-    left: 15px;
-    width: 450px;
-    overflow-y: hidden;
+    top: 12px;
+    left: 12px;
+    bottom: calc(12px + $minimal-bottom-height);
+    width: $all-map-items-container-width;
+    pointer-events: none;
 
-    .map-container__all-map-items-container__active-map-items {
-      @include mixins.map-element-box-shadow;
+    .map-container__all-map-items-container__inner-container {
       display: flex;
-      max-height: 50%;
-      padding-bottom: 15px;
-    }
+      flex-direction: column;
+      height: 100%;
 
-    .map-container__all-map-items-container__map-data-catalogue {
-      @include mixins.map-element-box-shadow;
-      display: flex;
-      min-height: 50%;
+      .map-container__all-map-items-container__inner-container__active-map-items {
+        @include mixins.map-element-box-shadow;
+        display: flex;
+        // max height is 50% subtracted by the divider height between this element and the map data catalogue (12px / 2)
+        max-height: calc(50% - 6px);
+        pointer-events: all;
+
+        &--maximized {
+          max-height: 100%;
+          overflow-y: hidden;
+        }
+      }
+
+      .map-container__all-map-items-container__inner-container__divider {
+        min-height: 12px;
+      }
+
+      .map-container__all-map-items-container__inner-container__map-data-catalogue {
+        @include mixins.map-element-box-shadow;
+        display: flex;
+        overflow-y: hidden;
+        pointer-events: all;
+
+        &--minimized {
+          overflow-y: visible;
+        }
+      }
     }
   }
 
@@ -34,8 +56,8 @@
     @include mixins.map-element-box-shadow;
     @include mixins.hide-on-small-screens;
     position: absolute;
-    top: 80px;
-    left: 480px;
+    top: 12px;
+    left: calc(24px + $all-map-items-container-width);
     height: 48px;
     width: 125px;
     background-color: ktzh-variables.$zh-background-color;
@@ -45,15 +67,15 @@
     @include mixins.map-element-box-shadow;
     position: absolute;
     top: 132px; // starting at the first 'active map item' position
-    left: 480px;
+    left: calc(24px + $all-map-items-container-width);
     max-height: 30vh;
     overflow-y: hidden;
   }
 
   .map-container__search-window {
     position: absolute;
-    top: 80px;
-    right: 25px;
+    top: 12px;
+    right: 12px;
     bottom: 85px;
     pointer-events: none;
   }

@@ -4,7 +4,7 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
 :host ::ng-deep .active-map-item-layer__checkbox {
-  @include mat-mixins.mat-checkbox-override-color(
+  @include mat-mixins.mat-checkbox-override-accent-color(
     functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent),
     functions.get-contrast-color-from-palette(ktzh-variables.$zh-secondary-accent)
   );

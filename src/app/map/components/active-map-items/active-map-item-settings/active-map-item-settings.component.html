@@ -14,7 +14,7 @@
     <time-slider
       [initialTimeExtent]="activeMapItem.timeSliderExtent"
       [timeSliderConfiguration]="activeMapItem.timeSliderConfiguration"
-      (timeExtentChanged)="onTimeSliderExtentChange($event)"
+      (changeTimeExtentEvent)="onTimeSliderExtentChange($event)"
     ></time-slider>
   </ng-container>
 

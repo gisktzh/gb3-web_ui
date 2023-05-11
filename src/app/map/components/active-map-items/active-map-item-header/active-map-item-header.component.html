@@ -20,6 +20,11 @@
       [checked]="activeMapItem.visible"
       (change)="toggleMapItemVisibility(activeMapItem)"
     ></mat-checkbox>
+    <loading-and-process-bar
+      [loadingState]="activeMapItem.loadingState"
+      [viewProcessState]="activeMapItem.viewProcessState"
+      class="active-map-item-header__image-container__progress-bar"
+    ></loading-and-process-bar>
   </div>
   <div class="active-map-item-header__title-container">
     <p
@@ -58,9 +63,4 @@
     <ng-content select="[activeMapItemDragHandle]"></ng-content>
     <mat-icon class="active-map-item-header__drag-handle__icon" cdkDragHandle>drag_indicator</mat-icon>
   </div>
-  <loading-and-process-bar
-    [loadingState]="activeMapItem.loadingState"
-    [viewProcessState]="activeMapItem.viewProcessState"
-    class="active-map-item-header__progress-bar"
-  ></loading-and-process-bar>
 </div>
