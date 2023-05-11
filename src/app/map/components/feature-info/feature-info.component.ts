@@ -1,10 +1,11 @@
 import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
-import {selectData, selectLoadingState} from '../../../state/map/reducers/feature-info.reducer';
+import {selectLoadingState} from '../../../state/map/reducers/feature-info.reducer';
 import {FeatureInfoActions} from '../../../state/map/actions/feature-info.actions';
 import {LoadingState} from '../../../shared/types/loading-state';
-import {FeatureInfoResult} from '../../../shared/interfaces/feature-info.interface';
+import {FeatureInfoResultDisplay} from '../../../shared/interfaces/feature-info.interface';
+import {selectFeatureInfosForDisplay} from '../../../state/map/selectors/feature-info-result-display.selector';
 
 @Component({
   selector: 'feature-info',
@@ -15,11 +16,11 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
   @Output() public printFeatureInfoEvent = new EventEmitter<void>();
 
   public isVisible: boolean = false;
-  public featureInfoData: FeatureInfoResult[] = [];
+  public featureInfoData: FeatureInfoResultDisplay[] = [];
   public loadingState: LoadingState = 'undefined';
 
   private readonly loadingState$ = this.store.select(selectLoadingState);
-  private readonly featureInfoData$ = this.store.select(selectData);
+  private readonly featureInfoData$ = this.store.select(selectFeatureInfosForDisplay);
   private readonly subscriptions = new Subscription();
 
   constructor(private readonly store: Store) {}
@@ -38,6 +39,10 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
 
   public print() {
     this.printFeatureInfoEvent.emit();
+  }
+
+  public trackById(index: number, item: FeatureInfoResultDisplay): string {
+    return item.id;
   }
 
   private initSubscriptions() {

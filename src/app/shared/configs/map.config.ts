@@ -1,6 +1,6 @@
-import {MapConfigState} from '../../state/map/reducers/map-config.reducer';
 import {defaultBasemap} from './base-map.config';
 import {MapConstants} from '../constants/map.constants';
+import {MapConfigState} from '../../state/map/states/map-config.state';
 
 export const defaultMapConfig: MapConfigState = {
   srsId: 2056,

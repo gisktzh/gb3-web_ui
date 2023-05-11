@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectLoadingState as selectFavouritesLoadingState} from '../../../state/map/reducers/favourite-list.reducer';
 import {selectFilterString, selectLoadingState as selectCatalogueLoadingState} from '../../../state/map/reducers/layer-catalog.reducer';
@@ -15,6 +15,10 @@ import {selectFilteredFavouriteList} from '../../../state/map/selectors/filtered
 import {Favourite} from '../../../shared/interfaces/favourite.interface';
 import {FavouriteListActions} from '../../../state/map/actions/favourite-list.actions';
 import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.reducer';
+import {FavouriteDeletionDialogComponent} from '../favourite-deletion-dialog/favourite-deletion-dialog.component';
+import {PanelClass} from '../../../shared/enums/panel-class.enum';
+import {FavouritesService} from '../../services/favourites.service';
+import {MatDialog} from '@angular/material/dialog';
 
 /**
  * Defines the upper limit (inclusive) of filtered results which trigger an automatic open of the associated expansion panel.
@@ -27,6 +31,8 @@ const AUTO_OPEN_THRESHOLD = 3;
   styleUrls: ['./map-data-catalogue.component.scss']
 })
 export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewInit {
+  @Output() changeIsMinimizedEvent = new EventEmitter<boolean>();
+
   public topics: Topic[] = [];
   public catalogueLoadingState: LoadingState = 'undefined';
   public favouritesLoadingState: LoadingState = 'undefined';
@@ -34,6 +40,7 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
   public filteredFavourites: Favourite[] = [];
   public isAuthenticated: boolean = false;
   public autoOpenThreshold: number = AUTO_OPEN_THRESHOLD;
+  public isMinimized = false;
 
   private originalMaps: Map[] = [];
   private readonly filterString$ = this.store.select(selectFilterString);
@@ -46,7 +53,11 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
   private readonly subscriptions = new Subscription();
   @ViewChild('filterInput') private readonly input!: ElementRef;
 
-  constructor(private readonly store: Store) {}
+  constructor(
+    private readonly store: Store,
+    private readonly favouritesService: FavouritesService,
+    private readonly dialogService: MatDialog
+  ) {}
 
   public ngOnInit() {
     this.initSubscriptions();
@@ -59,6 +70,27 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
 
   public ngAfterViewInit() {
     this.subscriptions.add(this.filterInputHandler().subscribe());
+  }
+
+  /**
+   * Dispatches an action that adds a favourite to the map.
+   * @param favouriteLayerConfigurations
+   */
+  public addFavouriteToMap({id, content}: Favourite) {
+    try {
+      const activeMapItemsForFavourite = this.favouritesService.getActiveMapItemsForFavourite(content);
+      this.store.dispatch(ActiveMapItemActions.addFavourite({favourite: activeMapItemsForFavourite}));
+    } catch (e) {
+      this.store.dispatch(FavouriteListActions.setInvalid({id}));
+    }
+  }
+
+  public deleteFavourite(favourite: Favourite) {
+    this.dialogService.open<FavouriteDeletionDialogComponent, {favourite: Favourite}, boolean>(FavouriteDeletionDialogComponent, {
+      data: {favourite},
+      panelClass: PanelClass.API_WRAPPER_DIALOG,
+      restoreFocus: false
+    });
   }
 
   /**
@@ -87,6 +119,11 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
 
   public trackByMapId(index: number, item: Map) {
     return item.id;
+  }
+
+  public toggleMinimizeMapDataCatalogue() {
+    this.isMinimized = !this.isMinimized;
+    this.changeIsMinimizedEvent.emit(this.isMinimized);
   }
 
   private filterInputHandler(): Observable<string> {

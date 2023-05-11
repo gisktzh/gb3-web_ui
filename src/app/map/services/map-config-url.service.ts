@@ -3,9 +3,10 @@ import {ActivatedRoute, Params, QueryParamsHandling, Router} from '@angular/rout
 import {first, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {MapConfigActions} from '../../state/map/actions/map-config.actions';
-import {MapConfigState, selectMapConfigState} from '../../state/map/reducers/map-config.reducer';
+import {selectMapConfigState} from '../../state/map/reducers/map-config.reducer';
 import {PrintType} from '../../shared/types/print-type';
 import {BasemapConfigService} from './basemap-config.service';
+import {MapConfigState} from '../../state/map/states/map-config.state';
 
 /**
  * Query params that are removed upon loading the initial map configuration.
@@ -107,7 +108,8 @@ export class MapConfigUrlService implements OnDestroy {
     await this.router.navigate([], {
       relativeTo: this.route,
       queryParams,
-      queryParamsHandling
+      queryParamsHandling,
+      replaceUrl: true
     });
   }
 }

@@ -1,20 +1,10 @@
 import {createFeature, createReducer, on} from '@ngrx/store';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {defaultMapConfig} from '../../../shared/configs/map.config';
+import {MapConfigState} from '../states/map-config.state';
+import {produce} from 'immer';
 
 export const mapConfigFeatureKey = 'mapConfig';
-
-export interface MapConfigState {
-  center: {x: number; y: number};
-  scale: number;
-  srsId: number;
-  ready: boolean;
-  scaleSettings: {minScale: number; maxScale: number; calculatedMinScale: number; calculatedMaxScale: number};
-  isMaxZoomedIn: boolean;
-  isMaxZoomedOut: boolean;
-  activeBasemapId: string;
-  initialMaps: string[];
-}
 
 export const initialState: MapConfigState = {
   center: defaultMapConfig.center,
@@ -55,21 +45,23 @@ export const mapConfigFeature = createFeature({
       const isMaxZoomedOut = Math.ceil(scale) >= state.scaleSettings.calculatedMinScale;
       return {...state, center: {x, y}, scale, isMaxZoomedIn, isMaxZoomedOut};
     }),
-    on(MapConfigActions.setReady, (state, {calculatedMinScale, calculatedMaxScale}): MapConfigState => {
-      /**
-       * Because the calculatedMinScale/calculatedMaxScale can be float values, we round them: minScale is ceiled (as
-       * e.g. 100.45 should be 101), maxScale is floored (as 1000.45 should be 1000).
-       *
-       * The reason for this is that we need to compare the actual scale with the max values to discern whether we are
-       * maximally zoomedIn/zoomedOut, but that scale might not reflect the same precision as the calculatedMax/Min
-       * values.
-       */
-      const scaleSettings = structuredClone(state.scaleSettings);
-      scaleSettings.calculatedMinScale = Math.floor(calculatedMinScale);
-      scaleSettings.calculatedMaxScale = Math.ceil(calculatedMaxScale);
+    on(
+      MapConfigActions.setReady,
+      produce((draft, {calculatedMinScale, calculatedMaxScale}) => {
+        /**
+         * Because the calculatedMinScale/calculatedMaxScale can be float values, we round them: minScale is ceiled (as
+         * e.g. 100.45 should be 101), maxScale is floored (as 1000.45 should be 1000).
+         *
+         * The reason for this is that we need to compare the actual scale with the max values to discern whether we are
+         * maximally zoomedIn/zoomedOut, but that scale might not reflect the same precision as the calculatedMax/Min
+         * values.
+         */
+        draft.scaleSettings.calculatedMinScale = Math.floor(calculatedMinScale);
+        draft.scaleSettings.calculatedMaxScale = Math.ceil(calculatedMaxScale);
 
-      return {...state, scaleSettings, ready: true};
-    }),
+        draft.ready = true;
+      })
+    ),
     on(MapConfigActions.setScale, (state, {scale}): MapConfigState => {
       return {...state, scale};
     }),

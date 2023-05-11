@@ -4,7 +4,7 @@
   display: grid;
   padding: 5px;
 
-  ::ng-deep {
+  :host ::ng-deep {
     .mat-mdc-icon-button .mat-mdc-button-persistent-ripple {
       border-radius: ktzh-variables.$zh-border-radius;
     }

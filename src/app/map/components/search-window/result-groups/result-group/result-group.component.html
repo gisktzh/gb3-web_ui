@@ -1,0 +1,27 @@
+<h2 class="result-group__header">{{ header }}</h2>
+<div *ngIf="type !== 'map'" class="result-group__container">
+  <mat-card *ngFor="let result of searchResults" (click)="zoomToResult(result)" class="result-group__container__element">
+    <mat-card-header *ngIf="type === 'special'" class="result-group__container__element__header">{{ result.indexName }}</mat-card-header>
+    <mat-card-content
+      class="result-group__container__element__content"
+      [innerHTML]="result.displayString | highlightSearchQuery : this.searchTerms"
+    ></mat-card-content>
+    <mat-divider></mat-divider>
+  </mat-card>
+</div>
+<div *ngIf="type === 'map'" class="result-group__container">
+  <mat-card *ngFor="let map of filteredMaps" class="result-group__container__element">
+    <mat-card-content class="result-group__container__element__map-content">
+      <button (click)="addActiveMap(map)" color="primary" data-test-id="add-active-map" mat-icon-button>
+        <mat-icon>add</mat-icon>
+      </button>
+      <img [alt]="map.title" [src]="map.icon" class="result-group__container__element__map-content__image" />
+      <p
+        [innerHTML]="map.title | highlightSearchQuery : this.searchTerms"
+        class="result-group__container__element__map-content__title"
+        matTooltip="{{ map.title }}"
+      ></p>
+    </mat-card-content>
+    <mat-divider></mat-divider>
+  </mat-card>
+</div>

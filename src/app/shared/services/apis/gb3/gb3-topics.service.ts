@@ -23,6 +23,7 @@ import {map} from 'rxjs/operators';
 export class Gb3TopicsService extends Gb3ApiService {
   protected readonly endpoint = 'topics';
   private readonly staticFilesUrl = this.configService.apiConfig.gb2StaticFiles.baseUrl;
+  private readonly dataTabUrl = '/api/v2/getGeodatenmeta.html'; // Note: this is currently geoLion, not geotab
 
   public loadTopics(): Observable<TopicsResponse> {
     const requestUrl = this.createTopicsUrl();
@@ -82,9 +83,11 @@ export class Gb3TopicsService extends Gb3ApiService {
       return {
         legend: {
           ...legend,
+          metaDataLink: undefined, // Currently, a topic does not have any meta data link; this is all on its layers.
           layers: legend.layers.map((layer) => {
             return {
               ...layer,
+              metaDataLink: layer.geolion ? this.createDataTabLink(layer.geolion) : undefined,
               layerClasses: layer.layer_classes?.map((layerClass) => {
                 return {
                   ...layerClass
@@ -95,6 +98,13 @@ export class Gb3TopicsService extends Gb3ApiService {
         }
       };
     });
+  }
+
+  private createDataTabLink(id: number): string {
+    const url = new URL(`${this.configService.apiConfig.geoLion.baseUrl}${this.dataTabUrl}`);
+    url.searchParams.set('giszhnr', String(id));
+
+    return url.toString();
   }
 
   private createTopicsUrl(): string {
@@ -152,7 +162,8 @@ export class Gb3TopicsService extends Gb3ApiService {
                     };
                   })
                 };
-              })
+              }),
+              searchConfigurations: topic.searchConfigurations ?? undefined
             };
           })
         };

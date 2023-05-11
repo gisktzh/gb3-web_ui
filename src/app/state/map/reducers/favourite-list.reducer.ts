@@ -1,13 +1,9 @@
 import {createFeature, createReducer, on} from '@ngrx/store';
-import {HasLoadingState} from '../../../shared/interfaces/has-loading-state.interface';
-import {Favourite} from '../../../shared/interfaces/favourite.interface';
 import {FavouriteListActions} from '../actions/favourite-list.actions';
+import {FavouriteListState} from '../states/favourite-list.state';
+import {produce} from 'immer';
 
 export const favouriteListFeatureKey = 'favouriteList';
-
-export interface FavouriteListState extends HasLoadingState {
-  favourites: Favourite[];
-}
 
 export const initialState: FavouriteListState = {
   favourites: [],
@@ -27,13 +23,12 @@ export const favourteListeFeature = createFeature({
     on(FavouriteListActions.clearFavourites, (state): FavouriteListState => {
       return {...state, favourites: []};
     }),
-    on(FavouriteListActions.setInvalid, (state, {id}): FavouriteListState => {
-      const {favourites} = structuredClone(state);
-
-      favourites.find((favourite) => favourite.id === id)!.invalid = true;
-
-      return {...state, favourites};
-    }),
+    on(
+      FavouriteListActions.setInvalid,
+      produce((draft, {id}) => {
+        draft.favourites.find((favourite) => favourite.id === id)!.invalid = true;
+      })
+    ),
     on(FavouriteListActions.removeFavourite, (state, {id}): FavouriteListState => {
       const remainingFavourites = state.favourites.filter((favourite) => favourite.id !== id);
 

@@ -8,7 +8,13 @@
   [overwriteFooter]="hasDatePicker"
 >
   <ng-container content>
-    <mat-slider [min]="effectiveMinimumDateNumber" [max]="effectiveMaximumDateNumber" [step]="1" color="accent" class="time-slider__slider">
+    <mat-slider
+      [min]="effectiveMinimumDateNumber"
+      [max]="effectiveMaximumDateNumber"
+      [step]="1"
+      color="primary"
+      class="time-slider__slider"
+    >
       <ng-container *ngIf="this.timeSliderConfiguration.range; else multiSlider">
         <input
           matSliderThumb

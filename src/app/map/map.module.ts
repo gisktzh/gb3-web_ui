@@ -2,11 +2,11 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {MapComponent} from './components/map/map.component';
 import {SharedModule} from '../shared/shared.module';
-import {ActiveMapItemsWidgetComponent} from './components/active-map-items-widget/active-map-items-widget.component';
+import {ActiveMapItemsComponent} from './components/active-map-items/active-map-items.component';
 import {MapPageComponent} from './map-page.component';
 import {MapRoutingModule} from './map-routing.module';
-import {LegendWidgetComponent} from './components/legend-widget/legend-widget.component';
-import {LegendItemComponent} from './components/legend-widget/legend-item/legend-item.component';
+import {LegendComponent} from './components/legend/legend.component';
+import {LegendItemComponent} from './components/legend/legend-item/legend-item.component';
 import {FeatureInfoComponent} from './components/feature-info/feature-info.component';
 import {MapDataCatalogueComponent} from './components/map-data-catalogue/map-data-catalogue.component';
 import {MapOverlayComponent} from './components/map/map-overlay/map-overlay.component';
@@ -17,25 +17,39 @@ import {PrintDispatcherComponent} from './components/print-overlay/print-dispatc
 import {ScaleInputComponent} from './components/map/scale-input/scale-input.component';
 import {MapControlsComponent} from './components/map/map-controls/map-controls.component';
 import {BasemapSelectorComponent} from './components/map/basemap-selector/basemap-selector.component';
-import {ActiveMapItemComponent} from './components/active-map-items-widget/active-map-item/active-map-item.component';
+import {ActiveMapItemComponent} from './components/active-map-items/active-map-item/active-map-item.component';
 import {OnboardingGuideModule} from '../onboarding-guide/onboarding-guide.module';
 import {MapAttributeFilterComponent} from './components/map-attribute-filter/map-attribute-filter.component';
 import {FavouriteCreationDialogComponent} from './components/favourite-creation-dialog/favourite-creation-dialog.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {FavouriteSelectionComponent} from './components/map-data-catalogue/favourite-selection/favourite-selection.component';
 import {ApiDialogWrapperComponent} from './components/api-dialog-wrapper/api-dialog-wrapper.component';
 import {FavouriteDeletionDialogComponent} from './components/favourite-deletion-dialog/favourite-deletion-dialog.component';
-import {SearchWindowComponent} from "./components/search-window/search-window.component";
+import {SearchWindowComponent} from './components/search-window/search-window.component';
 import {KtZhDesignSystemModule} from '../kt-zh-design-system/kt-zh-design-system.module';
 import {TimeSliderComponent} from './components/time-slider/time-slider.component';
+import {LegendContentComponent} from './components/legend/legend-content/legend-content.component';
+import {FeatureInfoContentComponent} from './components/feature-info/feature-info-content/feature-info-content.component';
+import {ResultGroupsComponent} from './components/search-window/result-groups/result-groups.component';
+import {ResultGroupComponent} from './components/search-window/result-groups/result-group/result-group.component';
+import {ActiveMapItemHeaderComponent} from './components/active-map-items/active-map-item-header/active-map-item-header.component';
+import {ActiveMapItemSettingsComponent} from './components/active-map-items/active-map-item-settings/active-map-item-settings.component';
+import {ActiveMapItemLayersComponent} from './components/active-map-items/active-map-item-layers/active-map-item-layers.component';
+import {ActiveMapItemLayerComponent} from './components/active-map-items/active-map-item-layers/active-map-item-layer/active-map-item-layer.component';
+import {FeatureInfoPrintContentComponent} from './components/feature-info/feature-info-print-content/feature-info-print-content.component';
+import {TableColumnIdentifierDirective} from './components/feature-info/feature-info-content/table-column-identifier.directive';
+import {BaseMapDataItemComponent} from './components/map-data-catalogue/base-map-data-item/base-map-data-item.component';
+import {MapDataItemMapComponent} from './components/map-data-catalogue/base-map-data-item/map-data-item-map.component';
+import {MapDataItemFavouriteComponent} from './components/map-data-catalogue/base-map-data-item/map-data-item-favourite.component';
+import {MapDataItemMapLayerComponent} from './components/map-data-catalogue/map-data-item-map-layer/map-data-item-map-layer.component';
+import {MapDataItemHeaderComponent} from './components/map-data-catalogue/map-data-item-header/map-data-item-header.component';
 
 @NgModule({
   declarations: [
     MapPageComponent,
     MapComponent,
-    ActiveMapItemsWidgetComponent,
+    ActiveMapItemsComponent,
     ActiveMapItemComponent,
-    LegendWidgetComponent,
+    LegendComponent,
     LegendItemComponent,
     FeatureInfoComponent,
     MapOverlayComponent,
@@ -48,14 +62,27 @@ import {TimeSliderComponent} from './components/time-slider/time-slider.componen
     MapControlsComponent,
     BasemapSelectorComponent,
     MapAttributeFilterComponent,
-    FavouriteSelectionComponent,
-    MapAttributeFilterComponent,
     SearchWindowComponent,
     FavouriteCreationDialogComponent,
-    FavouriteSelectionComponent,
     ApiDialogWrapperComponent,
     FavouriteDeletionDialogComponent,
-    TimeSliderComponent
+    TimeSliderComponent,
+    LegendContentComponent,
+    FeatureInfoContentComponent,
+    ResultGroupsComponent,
+    ResultGroupComponent,
+    ActiveMapItemHeaderComponent,
+    ActiveMapItemSettingsComponent,
+    ActiveMapItemLayersComponent,
+    ActiveMapItemLayerComponent,
+    FeatureInfoContentComponent,
+    FeatureInfoPrintContentComponent,
+    TableColumnIdentifierDirective,
+    BaseMapDataItemComponent,
+    MapDataItemMapComponent,
+    MapDataItemFavouriteComponent,
+    MapDataItemMapLayerComponent,
+    MapDataItemHeaderComponent
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule, KtZhDesignSystemModule]
 })

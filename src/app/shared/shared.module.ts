@@ -8,9 +8,21 @@ import {LoadingAndProcessBarComponent} from './components/loading-and-process-ba
 import {HighlightSearchQueryPipe} from './pipes/highlight-search-query.pipe';
 import {ResizableModule} from 'angular-resizable-element';
 import {ResizeHandlerComponent} from './components/resize-handler/resize-handler.component';
+import {DragCursorDirective} from './directives/drag-cursor.directive';
+import {MobileWarningComponent} from './components/mobile-warning/mobile-warning.component';
+import {FormatContentPipe} from './pipes/format-content.pipe';
 
 @NgModule({
-  declarations: [BasemapImageLinkPipe, NavbarComponent, LoadingAndProcessBarComponent, HighlightSearchQueryPipe, ResizeHandlerComponent],
+  declarations: [
+    BasemapImageLinkPipe,
+    NavbarComponent,
+    LoadingAndProcessBarComponent,
+    HighlightSearchQueryPipe,
+    ResizeHandlerComponent,
+    DragCursorDirective,
+    MobileWarningComponent,
+    FormatContentPipe
+  ],
   imports: [MaterialModule, RouterModule, CommonModule, ResizableModule],
   exports: [
     MaterialModule,
@@ -19,7 +31,10 @@ import {ResizeHandlerComponent} from './components/resize-handler/resize-handler
     LoadingAndProcessBarComponent,
     HighlightSearchQueryPipe,
     ResizableModule,
-    ResizeHandlerComponent
+    ResizeHandlerComponent,
+    DragCursorDirective,
+    MobileWarningComponent,
+    FormatContentPipe
   ]
 })
 export class SharedModule {}

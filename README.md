@@ -44,7 +44,7 @@ configurations.
 In order to build the docker image use the following command (adjust tag as needed):
 
 ```
-docker build --no-cache --build-arg TARGET_ENVIRONMENT={target_environment} --t gb3-frontend:latest .
+docker build --no-cache --build-arg TARGET_ENVIRONMENT={target_environment} -t gb3-frontend:latest .
 ```
 
 - **gb3-frontend** is the name of the image
@@ -54,6 +54,7 @@ docker build --no-cache --build-arg TARGET_ENVIRONMENT={target_environment} --t 
   - `local-gb2`: localhost development with locally deployed GB2 backend
   - `dev-ebp`: production deployment for EBP environment
   - `staging`: production deployment for KTZH staging environment
+  - `staging-using-productive-gb2-backend`: production deployment for KTZH staging environment which uses the productive GB2 backend infrastructure.
   - `uat`: production deployment for KTZH UAT environment
   - `production`: production deployment for KTZH production (internet & intranet) environment
 
@@ -86,6 +87,93 @@ If using this, angular will proxy all requests to the GB2 via localhost, so you 
 e.g. `/wms/asd` will become `http://localhost:4200/wms/asd`, and then proxied to `http://localhost:3000/wms/asd`).
 
 ## Code documentation
+
+### State
+
+All application-wide state is handled by [NGRX](https://ngrx.io/).
+
+TODO: Explain our state in detail :)
+
+#### Mutating nested state
+
+As of now, we still have (deeply) nested state and for as long as we do not normalize our state, this will pose some
+challenges, namely that mutating the state in reducers requires a deep copy of the current state object. Luckily,
+there's a nifty package called [immer](https://immerjs.github.io/immer/) that helps working with mutable objects. All it
+does is leverage [Proxy objects](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy)
+to create "clever" deep copies. Inside its lifecycle, you can mutate the object as if it were mutable, yet it becomes
+immutable once it is returned. It also is more performant than
+e.g. [structuredClone](https://developer.mozilla.org/en-US/docs/Web/API/structuredClone) because it keeps track of what
+has changed and only changes (deeply) nested objects if they actually did change.
+
+Apart from performance considerations (which could be further optimized by restructuring our state and/or our reducers),
+the main reason for introducting `immer` was that our typings broke with `rxjs > 7.8.x` in that using `structuredClone`
+broke type recognition in Angular's compiler, leading to an inconsistent state between IDE and tooling. So it was either
+using a proper library (as recommended by `ngrx` (!)) or adding `xxx as xyz` typecasts after each `structuredClone`.
+
+##### Example
+
+Let's take our `ActiveMapItemState` as an example, which is the state that is most deeply nested:
+
+```typescript
+export interface ActiveMapItemState {
+  activeMapItems: ActiveMapItem[];
+}
+```
+
+A simple reducer for updating the visibility on a given `ActiveMapItem` would look like this:
+
+```typescript
+on(ActiveMapItemActions.setVisibility, (state, {visible, activeMapItem}): ActiveMapItemState => {
+  const activeMapItems = state.activeMapItems.map((mapItem) => {
+    if (mapItem.id === activeMapItem.id) {
+      const newActiveMapItem = structuredClone(mapItem);
+      newActiveMapItem.visible = visible;
+      return newActiveMapItem;
+    }
+    return mapItem;
+  });
+  return {...state, activeMapItems: [...activeMapItems]};
+});
+```
+
+Not only does it copy the whole object, it also requires a verbose `Array.map` operation. With `immer`, we can inject
+its `produce` function directly in the `on()` parameters, like so:
+
+```typescript
+on(
+  ActiveMapItemActions.setVisibility,
+  produce((draft, {visible, activeMapItem}) => {
+    draft.activeMapItems.forEach((mapItem) => {
+      if (mapItem.id === activeMapItem.id) {
+        mapItem.visible = visible;
+      }
+    });
+  })
+);
+```
+
+This yields the same result as the first example, but it is much more readable and more in a functional programming
+style. All it does is creating a proxy object of our state (clarified by using `draft` and not `state`), which can then
+be directly modified using `Array.forEach` - and then,
+the [result is returned automatically](<https://immerjs.github.io/immer/return#:~:text=It%20is%20not%20needed%20to%20return%20anything%20from%20a%20producer%2C%20as%20Immer%20will%20return%20the%20(finalized)%20version%20of%20the%20draft%20anyway.%20However%2C%20it%20is%20allowed%20to%20just%20return%20draft>).
+
+##### Using `immer` with ES6 classes
+
+The above workflow works for all basic `Object` types as well as interfaces. As soon as ES6 classes are involved, they
+need to be [marked as such](https://immerjs.github.io/immer/complex-objects). For convenience, we have a `IsImmerable`
+interface available that encapsulates this behaviour. Note that if you fail to do so, you will
+get `Cannot assign to read only property xxxx of object` errors, because these class instances are not `immer`ized.
+
+##### Conventions
+
+Some conventions exist and should be adhered to when dealing with immutable state mutations:
+
+- Always use the `immer` approach - do not use things like `lodash` or `structuredClone`.
+- In reducers, always try to add the `produce` call at the top-most level to avoid nasty sideeffects.
+- Most likely, you can add the call at the `on` parameter level as in the example above.
+  - If so, name the state variable `draft` to signal to the user that this is mutable.
+- Only use `immer` when it is actually needed - if you don't modify deeply nested states, you're most likely not going
+  to need it.
 
 ### Runtime configurations
 

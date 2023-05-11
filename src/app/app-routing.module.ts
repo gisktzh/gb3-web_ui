@@ -5,6 +5,7 @@ const routes: Routes = [
   {
     path: '',
     children: [
+      {path: 'auth', loadChildren: () => import('./auth/auth.module').then((m) => m.AuthModule)},
       {path: 'maps', loadChildren: () => import('./map/map.module').then((m) => m.MapModule)},
       {path: 'data', loadChildren: () => import('./data-catalogue/data-catalogue.module').then((m) => m.DataCatalogueModule)},
       {path: 'support', loadChildren: () => import('./support-page/support-page.module').then((m) => m.SupportPageModule)},

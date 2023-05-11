@@ -1,0 +1,95 @@
+@use 'functions/helper.function' as functions;
+@use 'mixins/helpers.mixin' as mixins;
+@use 'mixins/material.mixin' as mat-mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.active-map-items {
+  width: 100%;
+
+  .active-map-items__header {
+    display: flex;
+    align-items: center;
+    background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
+    color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+    font-family: ktzh-variables.$zh-font-family;
+    padding: 0 6px 0 24px;
+    height: 48px;
+
+    .active-map-items__header__title {
+      @include mixins.non-selectable-text;
+      padding-right: 1em;
+      margin-bottom: 0;
+    }
+
+    .active-map-items__header__badge {
+      margin-right: auto;
+      margin-bottom: 0;
+      height: 24px;
+      width: 24px;
+      @include mat-mixins.mat-badge-inherit-size;
+      @include mat-mixins.mat-badge-override-color(
+        functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary),
+        functions.get-color-from-palette(ktzh-variables.$zh-primary)
+      );
+
+      &--hidden {
+        // `display: none` would not work as the element needs to be present
+        visibility: hidden;
+      }
+    }
+
+    .active-map-items__header__buttons {
+      height: inherit;
+      display: flex;
+      align-items: center;
+      margin-left: 8px;
+
+      .active-map-items__header__buttons__divider {
+        height: 40%;
+        border-right-color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+      }
+    }
+
+    &--minimized {
+      background-color: ktzh-variables.$zh-background-color;
+      color: ktzh-variables.$zh-foreground-color;
+
+      .active-map-items__header__buttons .active-map-items__header__buttons__divider {
+        border-right-color: ktzh-variables.$zh-foreground-color;
+      }
+
+      .active-map-items__header__badge {
+        @include mat-mixins.mat-badge-override-color(
+          functions.get-color-from-palette(ktzh-variables.$zh-primary),
+          functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary)
+        );
+      }
+    }
+  }
+
+  .active-map-items__content {
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    margin: 12px 0;
+
+    &--hidden {
+      display: none;
+    }
+
+    .active-map-items__content__item {
+      width: 100%;
+      position: relative;
+      padding: 0 24px;
+      box-sizing: border-box;
+
+      &--drag-placeholder {
+        @include mat-mixins.cdk-drag-placeholder(68px);
+      }
+
+      .active-map-items__content__item__drag-handle {
+        @include mat-mixins.cdk-drag-handle-nested;
+      }
+    }
+  }
+}

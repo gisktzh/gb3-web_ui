@@ -31,12 +31,10 @@
     padding: 0;
 
     & .mdc-button {
-      font-family: ktzh-variables.$zh-font-family-bold;
       background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 50);
       color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 300);
       height: 48px;
       margin: 0 !important;
-      border-radius: unset !important;
       width: 137px;
       padding: 12px 24px 12px 24px;
 

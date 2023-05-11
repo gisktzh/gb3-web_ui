@@ -6,8 +6,9 @@ import {selectActiveMapItems} from '../../state/map/reducers/active-map-item.red
 import {ActiveMapItem} from '../models/active-map-item.model';
 import {Favourite, FavouriteLayerConfiguration, FavouritesResponse} from '../../shared/interfaces/favourite.interface';
 import {map} from 'rxjs/operators';
-import {Map, MapLayer} from '../../shared/interfaces/topic.interface';
+import {Map} from '../../shared/interfaces/topic.interface';
 import {selectAvailableMaps} from '../../state/map/selectors/available-maps.selector';
+import {produce} from 'immer';
 
 @Injectable({
   providedIn: 'root'
@@ -48,29 +49,30 @@ export class FavouritesService {
     const activeMapItems: ActiveMapItem[] = [];
 
     favouriteLayerConfigurations.forEach((configuration) => {
-      const existingMap = structuredClone(this.availableMaps.find((availableMap) => availableMap.id === configuration.mapId));
+      const existingMap = this.availableMaps.find((availableMap) => availableMap.id === configuration.mapId);
 
       if (existingMap) {
-        let subLayer: MapLayer | undefined = undefined;
         if (configuration.isSingleLayer) {
-          subLayer = existingMap.layers.find((layer) => layer.id === configuration.layers[0].id);
+          const subLayer = existingMap.layers.find((layer) => layer.id === configuration.layers[0].id);
 
           if (!subLayer) {
             throw new Error('Sublayer does not exist.');
           }
+          activeMapItems.push(new ActiveMapItem(existingMap, subLayer, configuration.visible, configuration.opacity));
         } else {
-          existingMap.layers.forEach((layer) => {
-            const sublayerConfiguration = configuration.layers.find((favLayer) => favLayer.id === layer.id);
+          const adjustedMap = produce(existingMap, (draft) => {
+            draft.layers.forEach((layer) => {
+              const sublayerConfiguration = configuration.layers.find((favLayer) => favLayer.id === layer.id);
 
-            // hide sublayer if it is a newly added layer to not interfere with favourite composition
-            layer.visible = sublayerConfiguration ? sublayerConfiguration.visible : false;
+              // hide sublayer if it is a newly added layer to not interfere with favourite composition
+              layer.visible = sublayerConfiguration ? sublayerConfiguration.visible : false;
+            });
+            // ensure consistent sorting order with saved configuration in favourite
+            const sortIds = configuration.layers.map((layer) => layer.id);
+            draft.layers.sort((a, b) => sortIds.indexOf(a.id) - sortIds.indexOf(b.id));
           });
-          // ensure consistent sorting order with saved configuration in favourite
-          const sortIds = configuration.layers.map((layer) => layer.id);
-          existingMap.layers.sort((a, b) => sortIds.indexOf(a.id) - sortIds.indexOf(b.id));
+          activeMapItems.push(new ActiveMapItem(adjustedMap, undefined, configuration.visible, configuration.opacity));
         }
-
-        activeMapItems.push(new ActiveMapItem(existingMap, subLayer, configuration.visible, configuration.opacity));
       } else {
         throw new Error('Map does not exist');
       }

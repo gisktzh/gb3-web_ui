@@ -17,16 +17,8 @@
   box-shadow: none;
 }
 
-@mixin mat-button--align-icon-right {
-  display: flex;
-  flex-direction: row-reverse;
-
-  ::ng-deep {
-    .mat-icon {
-      margin-left: 8px;
-      margin-right: 0;
-    }
-  }
+@mixin map-element-box-shadow {
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.2);
 }
 
 @mixin multiline-ellipsis($number-of-lines) {
@@ -35,15 +27,26 @@
   display: -webkit-box;
   overflow: hidden;
   text-overflow: ellipsis;
+  word-wrap: break-word;
 }
 
-@mixin mat-checkbox--unchecked {
-  ::ng-deep {
-    .mdc-form-field .mdc-checkbox .mdc-checkbox__background {
-      border-color: ktzh-variables.$zh-black40;
-    }
-    .mdc-form-field > label {
-      color: ktzh-variables.$zh-black40;
-    }
+@mixin center-absolute-element {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/// todo: We take 960px as cutoff and hide mapitems; this is a temporary fix for our layout issues.
+@mixin hide-on-small-screens {
+  @media (max-width: 960px) {
+    display: none;
   }
+}
+
+/** Positions the element (e.g. loading bar) at the bottom of the parent element and uses the whole given width */
+@mixin position-element-at-bottom-with-full-width {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
 }

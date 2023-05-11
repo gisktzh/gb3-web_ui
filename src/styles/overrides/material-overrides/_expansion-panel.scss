@@ -1,0 +1,11 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.mat-expansion-panel {
+  // We want bulky, angular (no pun intended) expansion panels, not those fancy rounded corners
+  border-radius: ktzh-variables.$zh-border-radius !important;
+
+  // Remove the margin on the right-hand side of the header in case the default expand-toggle is hidden
+  .mat-expansion-panel-header .mat-content.mat-content-hide-toggle {
+    margin-right: 0;
+  }
+}

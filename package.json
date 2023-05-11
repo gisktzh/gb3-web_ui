@@ -10,6 +10,7 @@
     "build-dev-ebp": "ng build --configuration=production-dev-ebp",
     "build-uat": "ng build --configuration=production-uat",
     "build-staging": "ng build --configuration=production-staging",
+    "build-staging-using-productive-gb2-backend": "ng build --configuration=production-staging-using-productive-gb2-backend",
     "build-production": "ng build --configuration=production",
     "watch": "ng build --configuration development",
     "test": "ng test",
@@ -42,16 +43,16 @@
     "@ngrx/entity": "^15.2.1",
     "@ngrx/store": "^15.2.1",
     "@ngrx/store-devtools": "^15.2.1",
-    "@types/elasticsearch": "^5.0.40",
     "@types/geojson": "^7946.0.10",
     "@types/node": "^18.13.0",
     "@types/twitter-for-web": "^0.0.2",
     "angular-oauth2-oidc": "^15.0.1",
     "angular-resizable-element": "^7.0.2",
     "dayjs": "^1.11.7",
+    "immer": "^10.0.1",
     "material-icons": "^1.13.3",
     "ngx-ui-tour-md-menu": "^10.4.0",
-    "rxjs": "~7.5.0",
+    "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"
   },
@@ -75,7 +76,7 @@
     "karma-jasmine-html-reporter": "~2.0.0",
     "prettier": "^2.7.1",
     "pretty-quick": "^3.1.3",
-    "puppeteer": "^19.6.2",
+    "puppeteer": "^20.0.0",
     "typescript": "~4.9.5"
   }
 }

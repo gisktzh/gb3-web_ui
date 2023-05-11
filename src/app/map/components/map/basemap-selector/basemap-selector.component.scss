@@ -15,7 +15,7 @@
     padding: 5px;
     align-self: flex-end;
     border-radius: ktzh-variables.$zh-border-radius;
-    background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary, default);
+    background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
 
     .basemap-selector__active-map-image {
       width: 100%;

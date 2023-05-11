@@ -1,13 +1,8 @@
 import {createFeature, createReducer, on} from '@ngrx/store';
 import {LegendActions} from '../actions/legend.actions';
-import {HasLoadingState} from '../../../shared/interfaces/has-loading-state.interface';
-import {Legend} from '../../../shared/interfaces/legend.interface';
+import {LegendState} from '../states/legend.state';
 
 export const legendFeatureKey = 'legend';
-
-export interface LegendState extends HasLoadingState {
-  legendItems: Legend[];
-}
 
 export const initialState: LegendState = {
   legendItems: [],

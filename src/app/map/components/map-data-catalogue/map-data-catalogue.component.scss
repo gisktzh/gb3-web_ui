@@ -1,105 +1,114 @@
 @use 'functions/helper.function' as functions;
 @use 'mixins/helpers.mixin' as mixins;
+@use 'mixins/material.mixin' as mat-mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
-.map-catalogue-widget {
-  width: 100%;
-  padding: 0;
-  border: none;
+:host ::ng-deep .map-data-catalogue__content__items__item {
+  @include mat-mixins.mat-expansion-panel-remove-content-offset;
+}
 
-  .map-catalogue__header {
+.map-data-catalogue {
+  width: 100%;
+
+  .map-data-catalogue__header {
+    display: flex;
+    align-items: center;
     background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
     color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
     font-family: ktzh-variables.$zh-font-family;
-    padding: 8px 16px 8px 16px;
-    height: 36px;
-    min-height: 36px;
+    padding: 0 6px 0 24px;
+    height: 48px;
 
-    .map-catalogue__header__title {
-      align-self: center;
+    &--minimized {
+      background-color: ktzh-variables.$zh-background-color;
+      color: ktzh-variables.$zh-foreground-color;
+    }
+
+    .map-data-catalogue__header__title {
+      @include mixins.non-selectable-text;
+      padding-right: 1em;
+      margin-bottom: 0;
+      margin-right: auto;
     }
   }
 
-  .map-catalogue__filter-no-results {
-    align-self: center;
-  }
-
-  .map-catalogue__filter {
+  .map-data-catalogue__content {
+    max-height: 100%;
     display: flex;
+    flex-direction: column;
+    overflow: hidden;
 
-    .map-catalogue__filter__input {
-      width: 100%;
-      height: 40px;
-      padding: 0 5px 0 45px;
-      border: 3px solid grey;
-      margin: 5px;
-      outline: none;
-      display: block;
-      font-family: ktzh-variables.$zh-font-family;
+    &--hidden {
+      display: none;
     }
 
-    .map-catalogue__filter__input:focus {
-      border: 3px solid ktzh-variables.$zh-cyan;
-
-      & + .map-catalogue__filter__input-icon {
-        color: black;
-      }
+    .map-data-catalogue__content__filter-no-results {
+      align-self: center;
+      padding: 6px 24px;
     }
 
-    .map-catalogue__filter__input-icon {
-      height: 30px;
-      width: 30px;
-      margin: 16px 5px 5px 16px;
-      position: absolute;
-      color: grey;
-    }
-  }
-
-  .map-catalogue__content {
-    overflow-y: scroll;
-
-    & .mat-expansion-panel {
-      // Remove the material first and last border rounding
-      border-radius: 0;
-    }
-
-    .map-catalogue__content__topic-title {
-      // needed to avoid a cut-off results indicator
-      margin: 20px 0;
-    }
-
-    .map__header {
-      padding: 0 8px;
-
-      .map__header__image {
-        height: 32px;
-        width: 32px;
-        align-self: center;
-        margin-right: 8px;
-        border-radius: 4px;
-      }
-
-      .map__header__title {
-        @include mixins.single-line-text;
-        margin-right: auto;
-        margin-top: auto;
-        margin-bottom: auto;
-      }
-    }
-
-    .layer {
+    .map-data-catalogue__content__filter {
       display: flex;
-      flex-direction: row;
-      align-items: center;
+      padding: 24px 24px 18px 24px;
 
-      .layer__icon {
-        min-width: 24px;
+      .map-data-catalogue__content__filter__input {
+        width: 100%;
+        height: 40px;
+        padding: 0 5px 0 45px;
+        border: 3px solid grey;
+        outline: none;
+        display: block;
+        font-family: ktzh-variables.$zh-font-family;
       }
 
-      .layer__title {
-        @include mixins.single-line-text;
-        margin-left: 8px;
-        flex-grow: 1;
+      .map-data-catalogue__content__filter__input:focus {
+        border: 3px solid ktzh-variables.$zh-cyan;
+
+        & + .map-data-catalogue__content__filter__input-icon {
+          color: black;
+        }
+      }
+
+      .map-data-catalogue__content__filter__input-icon {
+        height: 30px;
+        width: 30px;
+        margin: 12px 5px 5px 16px;
+        position: absolute;
+        color: grey;
+      }
+    }
+
+    .map-data-catalogue__content__items {
+      overflow-y: auto;
+      padding: 0 24px 18px 24px;
+      margin-top: 6px;
+      box-sizing: border-box;
+
+      &--hidden {
+        display: none;
+      }
+
+      .map-data-catalogue__content__items__item {
+        @include mixins.no-box-shadow;
+        padding: 6px 0;
+
+        .map-data-catalogue__content__items__item__header {
+          height: auto;
+          padding: 0;
+
+          .map-data-catalogue__content__items__item__header__item {
+            height: 36px;
+            width: 100%;
+          }
+        }
+
+        .map-data-catalogue__content__items__item__content {
+          padding-top: 6px;
+
+          .map-data-catalogue__content__items__item__content__item {
+            width: 100%;
+          }
+        }
       }
     }
   }

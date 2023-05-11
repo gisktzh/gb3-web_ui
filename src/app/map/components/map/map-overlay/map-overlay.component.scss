@@ -1,10 +1,11 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
 .map-overlay {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   height: 100%;
-  width: 300px;
-  box-sizing: content-box;
+  width: 450px;
   border-radius: 0;
   padding-top: 0;
   z-index: 9999; // todo: hackedihack
@@ -17,11 +18,27 @@
   }
 
   .map-overlay__header {
-    justify-content: end;
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+
+    .map-overlay__header__title {
+      flex-grow: 1;
+      margin-bottom: 0;
+    }
   }
 
   .map-overlay__content {
     flex: 1;
-    overflow: hidden auto;
+    overflow: hidden scroll;
+  }
+
+  .map-overlay__print-button {
+    width: 80%;
+    max-width: 420px;
+    margin: 8px;
+    min-height: 36px;
+    align-self: center;
+    font-size: small;
   }
 }

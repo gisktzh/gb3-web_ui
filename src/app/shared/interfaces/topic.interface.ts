@@ -36,6 +36,7 @@ export interface Map {
   timeSliderConfiguration?: TimeSliderConfiguration;
   /** Filters Settings */
   filterConfigurations?: FilterConfiguration[];
+  searchConfigurations?: SearchConfiguration[];
 }
 
 export interface MapLayer extends HasVisibility, HasHidingState {
@@ -113,6 +114,11 @@ export interface FilterConfiguration {
   description?: string | null;
   parameter: string;
   filterValues: FilterValue[];
+}
+
+export interface SearchConfiguration {
+  index: string;
+  title: string;
 }
 
 export interface FilterValue extends HasActiveState {

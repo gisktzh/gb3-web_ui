@@ -1,4 +1,4 @@
-@use 'mixins/helpers.mixin' as mixins;
+@use 'mixins/material.mixin' as mat-mixins;
 @use 'functions/helper.function' as functions;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
@@ -8,7 +8,7 @@
   }
 
   .navbar__item {
-    @include mixins.mat-button--align-icon-right;
+    @include mat-mixins.mat-button--align-icon-right;
     padding-left: 10px;
     padding-right: 10px;
   }
