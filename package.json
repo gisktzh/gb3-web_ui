@@ -10,6 +10,7 @@
     "build-dev-ebp": "ng build --configuration=production-dev-ebp",
     "build-uat": "ng build --configuration=production-uat",
     "build-staging": "ng build --configuration=production-staging",
+    "build-staging-using-productive-gb2-backend": "ng build --configuration=production-staging-using-productive-gb2-backend",
     "build-production": "ng build --configuration=production",
     "watch": "ng build --configuration development",
     "test": "ng test",
