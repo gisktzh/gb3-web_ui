@@ -1,0 +1,38 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.coordinate-scale-inputs {
+  display: flex;
+  flex-direction: row-reverse;
+  background-color: ktzh-variables.$zh-white;
+  column-gap: 3px;
+  padding: 3px;
+
+  & .coordinate-scale-inputs__scale {
+    width: 75px;
+  }
+
+  & .coordinate-scale-inputs__input {
+    border: none;
+    outline: none;
+    padding: 0.5rem 0;
+    font-family: ktzh-variables.$zh-font-family;
+    font-size: 12px;
+  }
+
+  & .coordinate-scale-inputs__coordinate {
+    width: 130px;
+  }
+}
+
+/**
+ Hide input arrows on number field
+ */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+}

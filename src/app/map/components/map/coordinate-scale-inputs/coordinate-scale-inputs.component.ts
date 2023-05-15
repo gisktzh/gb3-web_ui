@@ -7,11 +7,11 @@ import {ConfigService} from '../../../../shared/services/config.service';
 import {CoordinateParserService} from '../../../services/coordinate-parser.service';
 
 @Component({
-  selector: 'scale-input',
-  templateUrl: './scale-input.component.html',
-  styleUrls: ['./scale-input.component.scss']
+  selector: 'coordinate-scale-inputs',
+  templateUrl: './coordinate-scale-inputs.component.html',
+  styleUrls: ['./coordinate-scale-inputs.component.scss']
 })
-export class ScaleInputComponent implements OnInit, OnDestroy {
+export class CoordinateScaleInputsComponent implements OnInit, OnDestroy {
   public scale: number = 0;
   public mapCenter: string = '';
   public readonly maxScale = this.configService.mapConfig.mapScaleConfig.maxScale;

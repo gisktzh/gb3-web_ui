@@ -1,0 +1,20 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.data-input {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: ktzh-variables.$zh-background-color;
+  border-radius: ktzh-variables.$zh-border-radius;
+
+  .data-input__wrapper {
+    display: flex;
+    align-items: center;
+    border: 2px solid ktzh-variables.$zh-border-color;
+    border-radius: ktzh-variables.$zh-border-radius;
+    padding-left: 0.5rem;
+    overflow: hidden;
+    font-size: 12px;
+    width: 100%;
+  }
+}
