@@ -1,8 +1,8 @@
-import {Geometry, Point} from 'geojson';
+import {Geometry} from 'geojson';
 import {ActiveMapItem} from '../models/active-map-item.model';
 import {ZoomType} from '../../shared/types/zoom-type';
 import {TimeExtent} from './time-extent.interface';
-import {PointWithCrs} from '../../shared/interfaces/point-location.interface';
+import {PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
 
 export interface MapService {
   /** Initializes the map by creating the initial background map and with a given extent */
@@ -15,7 +15,7 @@ export interface MapService {
   setScale(scale: number): void;
 
   /** Sets the map center point */
-  setMapCenter(center: PointWithCrs): void;
+  setMapCenter(center: PointWithSrs): void;
 
   /** Resets the extent of the map to the initial extent */
   resetExtent(): void;
@@ -59,6 +59,6 @@ export interface MapService {
   /** Removes an existing highlight geometry from the map */
   removeAllHighlightGeometries(): void;
 
-  /** Zooms to a selected point based on latitude, longitude and scale */
-  zoomToPoint(point: Point, scale: number): void;
+  /** Zooms to a selected point based on latitude, longitude, Srs and scale */
+  zoomToPoint(point: PointWithSrs, scale: number): void;
 }

@@ -1,6 +1,6 @@
 import {createActionGroup, emptyProps, props} from '@ngrx/store';
 import {ZoomType} from '../../../shared/types/zoom-type';
-import {PointWithCrs} from '../../../shared/interfaces/point-location.interface';
+import {PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 
 export const MapConfigActions = createActionGroup({
   source: 'Map Config',
@@ -13,7 +13,7 @@ export const MapConfigActions = createActionGroup({
       initialMaps: string[];
     }>(),
     'Set Map Extent': props<{x: number; y: number; scale: number}>(),
-    'Set Map Center': props<{center: PointWithCrs}>(),
+    'Set Map Center': props<{center: PointWithSrs}>(),
     'Set Ready': props<{calculatedMinScale: number; calculatedMaxScale: number}>(),
     'Set Scale': props<{scale: number}>(),
     'Reset Extent': emptyProps(),

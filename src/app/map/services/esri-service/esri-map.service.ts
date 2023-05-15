@@ -5,7 +5,6 @@ import {TransformationService} from '../transformation.service';
 import {selectActiveBasemapId, selectMapConfigState} from '../../../state/map/reducers/map-config.reducer';
 import {first, skip, Subscription, tap, withLatestFrom} from 'rxjs';
 import {FeatureInfoActions} from '../../../state/map/actions/feature-info.actions';
-import {Geometry as GeoJsonGeometry, Point} from 'geojson';
 import {GeoJSONMapperService} from '../../../shared/services/geo-json-mapper.service';
 import {DefaultHighlightStyles} from 'src/app/shared/configs/feature-info.config';
 import * as dayjs from 'dayjs';
@@ -43,7 +42,7 @@ import {
 import {TimeSliderConfiguration, TimeSliderLayerSource, TimeSliderParameterSource} from '../../../shared/interfaces/topic.interface';
 import {TimeExtent} from '../../interfaces/time-extent.interface';
 import {MapConfigState} from '../../../state/map/states/map-config.state';
-import {PointWithCrs} from '../../../shared/interfaces/point-location.interface';
+import {GeometryWithSrs, PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -196,7 +195,7 @@ export class EsriMapService implements MapService {
     this.mapView.container = container;
   }
 
-  public addHighlightGeometry(geometry: GeoJsonGeometry): void {
+  public addHighlightGeometry(geometry: GeometryWithSrs): void {
     const esriGeometry = this.geoJSONMapperService.fromGeoJSONToEsri(geometry);
     const symbolization = this.highlightStyles.get(esriGeometry.type);
     const highlightedFeature = new EsriGraphic({geometry: esriGeometry, symbol: symbolization});
@@ -242,10 +241,9 @@ export class EsriMapService implements MapService {
     }
   }
 
-  public setMapCenter({coordinates, crs}: PointWithCrs): Promise<never> {
-    const point = new EsriPoint({spatialReference: {wkid: crs}, x: coordinates[0], y: coordinates[1]});
+  public setMapCenter(center: PointWithSrs): Promise<never> {
     return this.mapView.goTo({
-      center: point
+      center: this.createGeoReferencedPoint(center)
     }) as never;
   }
 
@@ -283,6 +281,17 @@ export class EsriMapService implements MapService {
     }
   }
 
+  public zoomToPoint(point: PointWithSrs, scale: number): Promise<never> {
+    return this.mapView.goTo({
+      center: this.createGeoReferencedPoint(point),
+      scale: scale
+    }) as never;
+  }
+
+  private createGeoReferencedPoint({coordinates, srs}: PointWithSrs): __esri.Point {
+    return new EsriPoint({spatialReference: {wkid: srs}, x: coordinates[0], y: coordinates[1]});
+  }
+
   private setEsriTimeSliderExtent(timeExtent: TimeExtent, mapItem: ActiveMapItem, esriLayer: __esri.Layer) {
     if (esriLayer && esriLayer instanceof EsriWMSLayer && mapItem.timeSliderConfiguration) {
       switch (mapItem.timeSliderConfiguration.sourceType) {
@@ -295,13 +304,6 @@ export class EsriMapService implements MapService {
       }
       esriLayer.refresh();
     }
-  }
-
-  public zoomToPoint(point: Point, scale: number) {
-    this.mapView.goTo({
-      center: point.coordinates,
-      scale: scale
-    });
   }
 
   /**

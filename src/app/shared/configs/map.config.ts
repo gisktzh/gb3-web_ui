@@ -3,7 +3,7 @@ import {MapConstants} from '../constants/map.constants';
 import {MapConfigState} from '../../state/map/states/map-config.state';
 
 export const defaultMapConfig: MapConfigState = {
-  srsId: 2056,
+  srsId: MapConstants.DEFAULT_SRS,
   center: {
     x: 2682260.0,
     y: 1248390.0

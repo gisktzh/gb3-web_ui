@@ -1,6 +1,7 @@
 import {TestBed} from '@angular/core/testing';
 
 import {CoordinateParserService} from './coordinate-parser.service';
+import {PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
 
 describe('CoordinateParserService', () => {
   let service: CoordinateParserService;
@@ -17,7 +18,7 @@ describe('CoordinateParserService', () => {
 
         const result = service.parse(testString);
 
-        const expected = {x: 123, y: 456};
+        const expected: PointWithSrs = {type: 'Point', coordinates: [123, 456], srs: 2056};
         expect(result).toEqual(expected);
       });
     });
@@ -39,7 +40,7 @@ describe('CoordinateParserService', () => {
 
       const result = service.parse(testString);
 
-      const expected = {x: 123, y: 456};
+      const expected: PointWithSrs = {type: 'Point', coordinates: [123, 456], srs: 2056};
       expect(result).toEqual(expected);
     });
 

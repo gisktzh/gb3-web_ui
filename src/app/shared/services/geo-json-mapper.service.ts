@@ -1,26 +1,26 @@
 import {Injectable} from '@angular/core';
 import {
-  Geometry as GeoJSONGeometry,
-  LineString as GeoJSONLineString,
-  MultiLineString as GeoJSONMultiLineString,
-  MultiPoint as GeoJSONMultiPoint,
-  MultiPolygon as GeoJSONMultiPolygon,
-  Point as GeoJSONPoint,
-  Polygon as GeoJSONPolygon
-} from 'geojson';
-import {
   Geometry as EsriGeometry,
   Multipoint as EsriMultiPoint,
   Point as EsriPoint,
   Polygon as EsriPolygon,
   Polyline as EsriPolyline
 } from '@arcgis/core/geometry';
+import {
+  GeometryWithSrs,
+  LineStringWithSrs,
+  MultiLineStringWithSrs,
+  MultiPointWithSrs,
+  MultiPolygonWithSrs,
+  PointWithSrs,
+  PolygonWithSrs
+} from '../interfaces/geojson-types-with-srs.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GeoJSONMapperService {
-  public fromGeoJSONToEsri<T extends GeoJSONGeometry>(geometry: T): EsriGeometry {
+  public fromGeoJSONToEsri<T extends GeometryWithSrs>(geometry: T): EsriGeometry {
     switch (geometry.type) {
       case 'Point':
         return this.geoJSONPointToEsriPoint(geometry);
@@ -41,32 +41,32 @@ export class GeoJSONMapperService {
     }
   }
 
-  private geoJSONPointToEsriPoint(point: GeoJSONPoint): EsriPoint {
-    return new EsriPoint({x: point.coordinates[0], y: point.coordinates[1], spatialReference: {wkid: 2056}});
+  private geoJSONPointToEsriPoint(point: PointWithSrs): EsriPoint {
+    return new EsriPoint({x: point.coordinates[0], y: point.coordinates[1], spatialReference: {wkid: point.srs}});
   }
 
-  private geoJSONMultiPointToEsriMultiPoint(multipoint: GeoJSONMultiPoint): EsriMultiPoint {
-    const points = multipoint.coordinates.map((point) => [point[0], point[1]]);
-    return new EsriMultiPoint({points: points, spatialReference: {wkid: 2056}});
+  private geoJSONMultiPointToEsriMultiPoint(multiPoint: MultiPointWithSrs): EsriMultiPoint {
+    const points = multiPoint.coordinates.map((point) => [point[0], point[1]]);
+    return new EsriMultiPoint({points: points, spatialReference: {wkid: multiPoint.srs}});
   }
 
-  private geoJSONPolygonToEsriPolygon(polygon: GeoJSONPolygon): EsriPolygon {
-    return new EsriPolygon({rings: polygon.coordinates, spatialReference: {wkid: 2056}});
+  private geoJSONPolygonToEsriPolygon(polygon: PolygonWithSrs): EsriPolygon {
+    return new EsriPolygon({rings: polygon.coordinates, spatialReference: {wkid: polygon.srs}});
   }
 
-  private geoJSONMultiPolygonToEsriPolygon(multiPolygon: GeoJSONMultiPolygon): EsriPolygon {
+  private geoJSONMultiPolygonToEsriPolygon(multiPolygon: MultiPolygonWithSrs): EsriPolygon {
     // Esri does not deal with MultiPolygon, all polygons are treated one and the same. A MultiPolygon just extracts all
     // polygon coordinates as flat array and returns a Polygon
-    return new EsriPolygon({rings: multiPolygon.coordinates.flat(), spatialReference: {wkid: 2056}});
+    return new EsriPolygon({rings: multiPolygon.coordinates.flat(), spatialReference: {wkid: multiPolygon.srs}});
   }
 
-  private geoJSONLineStringToEsriPolyline(linestring: GeoJSONLineString): EsriPolyline {
-    return new EsriPolyline({paths: [linestring.coordinates], spatialReference: {wkid: 2056}});
+  private geoJSONLineStringToEsriPolyline(lineString: LineStringWithSrs): EsriPolyline {
+    return new EsriPolyline({paths: [lineString.coordinates], spatialReference: {wkid: lineString.srs}});
   }
 
-  private geoJSONMultiLineStringToEsriPolyline(linestring: GeoJSONMultiLineString): EsriPolyline {
+  private geoJSONMultiLineStringToEsriPolyline(multiLineString: MultiLineStringWithSrs): EsriPolyline {
     // Esri does not deal with MultiLineString, all linestrings are treated one and the same. A MultiLineString just
     // extracts all linestring coordinates as flat array and returns a Polyline
-    return new EsriPolyline({paths: [linestring.coordinates.flat()], spatialReference: {wkid: 2056}});
+    return new EsriPolyline({paths: [multiLineString.coordinates.flat()], spatialReference: {wkid: multiLineString.srs}});
   }
 }
