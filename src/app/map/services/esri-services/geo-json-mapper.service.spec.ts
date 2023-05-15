@@ -9,8 +9,8 @@ import {
   MultiPolygonWithSrs,
   PointWithSrs,
   PolygonWithSrs
-} from '../interfaces/geojson-types-with-srs.interface';
-import {SupportedSrs} from '../types/supported-srs';
+} from '../../../shared/interfaces/geojson-types-with-srs.interface';
+import {SupportedSrs} from '../../../shared/types/supported-srs';
 
 describe('GeoJsonMapperService', () => {
   const defaultSrs: SupportedSrs = 4326;

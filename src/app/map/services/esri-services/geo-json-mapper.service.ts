@@ -14,7 +14,7 @@ import {
   MultiPolygonWithSrs,
   PointWithSrs,
   PolygonWithSrs
-} from '../interfaces/geojson-types-with-srs.interface';
+} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 
 @Injectable({
   providedIn: 'root'
