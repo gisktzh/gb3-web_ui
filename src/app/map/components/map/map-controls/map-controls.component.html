@@ -8,6 +8,7 @@
     #tooltip="matTooltip"
     [matTooltip]="this.geolocationState.errorReason ?? ''"
     [matTooltipDisabled]="this.geolocationState.loadingState !== 'error'"
+    [disabled]="this.geolocationState.loadingState === 'loading'"
   >
     <mat-icon>my_location</mat-icon>
     <loading-and-process-bar
