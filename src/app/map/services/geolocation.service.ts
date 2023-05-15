@@ -4,6 +4,7 @@ import {Store} from '@ngrx/store';
 import {MAP_SERVICE} from '../../app.module';
 import {MapService} from '../interfaces/map.service';
 import {PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
+import {GeolocationActions} from '../../state/map/actions/geolocation.actions';
 
 @Injectable({
   providedIn: 'root'
@@ -23,11 +24,10 @@ export class GeolocationService {
     this.navigator.geolocation.getCurrentPosition(
       (position) => {
         const location: PointWithSrs = {coordinates: [position.coords.longitude, position.coords.latitude], srs: 4326, type: 'Point'};
-        this.mapService.zoomToPoint(location, 750);
+        this.store.dispatch(GeolocationActions.setSuccess({location}));
       },
-      (data) => {
-        console.log('error');
-        console.log(data);
+      (error) => {
+        this.store.dispatch(GeolocationActions.setFailure({error}));
       }
     );
   }

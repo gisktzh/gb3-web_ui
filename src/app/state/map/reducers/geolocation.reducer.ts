@@ -2,6 +2,12 @@ import {createFeature, createReducer, on} from '@ngrx/store';
 import {GeolocationState} from '../states/geolocation.state';
 import {GeolocationActions} from '../actions/geolocation.actions';
 
+const GEOLOCATION_ERRORS = new Map<number, string>([
+  [GeolocationPositionError.TIMEOUT, 'Die Berechtiungsanfrage hat das Zeitlimit überschritten.'],
+  [GeolocationPositionError.PERMISSION_DENIED, 'Die Berechtiungsanfrage wurde abgelehnt.'],
+  [GeolocationPositionError.POSITION_UNAVAILABLE, 'Die Position konnte nicht korrekt eruiert werden.']
+]);
+
 export const geolocationFeatureConfigKey = 'geolocation';
 
 export const initialState: GeolocationState = {
@@ -18,6 +24,9 @@ export const geolocationFeature = createFeature({
     }),
     on(GeolocationActions.setSuccess, (): GeolocationState => {
       return {...initialState, loadingState: 'loaded'};
+    }),
+    on(GeolocationActions.setFailure, (state, {error}): GeolocationState => {
+      return {...initialState, loadingState: 'error', errorReason: GEOLOCATION_ERRORS.get(error.code)};
     })
   )
 });
