@@ -28,7 +28,7 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
 
   private readonly activeMapItems$ = this.store.select(selectActiveMapItems);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
-  private readonly subscription: Subscription = new Subscription();
+  private readonly subscriptions: Subscription = new Subscription();
 
   constructor(private readonly store: Store, private readonly dialogService: MatDialog) {}
 
@@ -37,7 +37,7 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.subscriptions.unsubscribe();
   }
 
   public trackByMapItemId(index: number, item: ActiveMapItem) {
@@ -56,7 +56,7 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
 
   public showFavouriteDialog() {
     this.dialogService.open(FavouriteCreationDialogComponent, {
-      panelClass: PanelClass.API_WRAPPER_DIALOG,
+      panelClass: PanelClass.ApiWrapperDialog,
       restoreFocus: false
     });
   }
@@ -66,7 +66,7 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
   }
 
   private initSubscriptions() {
-    this.subscription.add(
+    this.subscriptions.add(
       this.activeMapItems$
         .pipe(
           tap((currentActiveMapItems) => {
@@ -75,7 +75,7 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
         )
         .subscribe()
     );
-    this.subscription.add(
+    this.subscriptions.add(
       this.isAuthenticated$
         .pipe(
           tap((isAuthenticated) => {

@@ -3,5 +3,5 @@
  * accordingly.
  */
 export enum PanelClass {
-  API_WRAPPER_DIALOG = 'api-wrapper-dialog'
+  ApiWrapperDialog = 'api-wrapper-dialog'
 }

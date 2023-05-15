@@ -3,7 +3,7 @@ import {HasLoadingState} from '../../../shared/interfaces/has-loading-state.inte
 import {LoadingState} from '../../../shared/types/loading-state';
 import {Subscription, tap, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
-import {DiscoverMapsItem} from '../../../shared/interfaces/discover-maps.interface';
+import {DiscoverMapsItem} from '../../../shared/interfaces/discover-maps-item.interface';
 import {GravCmsService} from '../../../shared/services/apis/grav-cms/grav-cms.service';
 
 @Component({

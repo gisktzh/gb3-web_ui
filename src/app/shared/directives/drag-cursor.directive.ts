@@ -7,7 +7,7 @@ import {DOCUMENT} from '@angular/common';
   selector: '[dragCursor]'
 })
 export class DragCursorDirective implements OnInit, OnDestroy {
-  private readonly subscription: Subscription = new Subscription();
+  private readonly subscriptions: Subscription = new Subscription();
 
   constructor(@Inject(DOCUMENT) private document: Document, private cdkDrag: CdkDrag) {}
 
@@ -16,11 +16,11 @@ export class DragCursorDirective implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.subscriptions.unsubscribe();
   }
 
   private initSubscriptions() {
-    this.subscription.add(
+    this.subscriptions.add(
       this.cdkDrag.started
         .pipe(
           tap(() => {
@@ -30,7 +30,7 @@ export class DragCursorDirective implements OnInit, OnDestroy {
         .subscribe()
     );
 
-    this.subscription.add(
+    this.subscriptions.add(
       this.cdkDrag.ended
         .pipe(
           tap(() => {

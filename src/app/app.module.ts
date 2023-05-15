@@ -21,6 +21,7 @@ import {NewsService} from './shared/interfaces/news-service.interface';
 import {AuthModule} from './auth/auth.module';
 import {AuthStatusEffects} from './state/auth/effects/auth-status.effects';
 import {FavouriteListEffects} from './state/map/effects/favourite-list.effects';
+import {PageNotificationEffects} from './state/app/effects/page-notification.effects';
 
 export const MAP_SERVICE = new InjectionToken<MapService>('MapService');
 export const NEWS_SERVICE = new InjectionToken<NewsService>('NewsService');
@@ -43,7 +44,8 @@ export const NEWS_SERVICE = new InjectionToken<NewsService>('NewsService');
       LegendEffects,
       MapConfigEffects,
       AuthStatusEffects,
-      FavouriteListEffects
+      FavouriteListEffects,
+      PageNotificationEffects
     ]),
     AuthModule
   ],

@@ -21,7 +21,7 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
   public isMapDataCatalogueMinimized: boolean = false;
 
   private readonly activeMapItems$ = this.store.select(selectActiveMapItems);
-  private readonly subscription: Subscription = new Subscription();
+  private readonly subscriptions: Subscription = new Subscription();
 
   constructor(
     private readonly onboardingGuideService: OnboardingGuideService,
@@ -34,7 +34,7 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.subscriptions.unsubscribe();
   }
 
   public ngAfterViewInit() {
@@ -54,7 +54,7 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   private initSubscriptions() {
-    this.subscription.add(
+    this.subscriptions.add(
       this.activeMapItems$
         .pipe(
           tap((currentActiveMapItems) => {

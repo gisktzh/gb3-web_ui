@@ -1,0 +1,9 @@
+<span class="page-notification" [ngClass]="data.severity" matSnackBarLabel>
+  <h2>{{ data.title }}</h2>
+  <p>{{ data.description }}</p>
+</span>
+<span matSnackBarActions>
+  <button (click)="close()" mat-icon-button>
+    <mat-icon>close</mat-icon>
+  </button>
+</span>

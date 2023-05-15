@@ -1,4 +1,5 @@
 export interface DiscoverMapsItem {
+  id: string;
   title: string;
   description: string;
   mapId: string;
