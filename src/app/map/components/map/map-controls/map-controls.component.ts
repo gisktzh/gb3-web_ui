@@ -4,6 +4,8 @@ import {MapConfigActions} from '../../../../state/map/actions/map-config.actions
 import {ZoomType} from '../../../../shared/types/zoom-type';
 import {Subscription, tap} from 'rxjs';
 import {selectIsMaxZoomedIn, selectIsMaxZoomedOut} from '../../../../state/map/reducers/map-config.reducer';
+import {GeolocationService} from '../../../services/geolocation.service';
+import {GeolocationActions} from '../../../../state/map/actions/geolocation.actions';
 
 @Component({
   selector: 'map-controls',
@@ -17,7 +19,7 @@ export class MapControlsComponent implements OnInit, OnDestroy {
   private readonly isMaxZoomedIn$ = this.store.select(selectIsMaxZoomedIn);
   private readonly isMaxZoomedOut$ = this.store.select(selectIsMaxZoomedOut);
 
-  constructor(private readonly store: Store) {}
+  constructor(private readonly store: Store, private readonly geoLocationService: GeolocationService) {}
 
   public ngOnInit() {
     this.initSubscriptions();
@@ -38,5 +40,9 @@ export class MapControlsComponent implements OnInit, OnDestroy {
   private initSubscriptions() {
     this.subscriptions.add(this.isMaxZoomedIn$.pipe(tap((value) => (this.isMaxZoomedIn = value))).subscribe());
     this.subscriptions.add(this.isMaxZoomedOut$.pipe(tap((value) => (this.isMaxZoomedOut = value))).subscribe());
+  }
+
+  public locateClient() {
+    this.store.dispatch(GeolocationActions.startLocationRequest());
   }
 }

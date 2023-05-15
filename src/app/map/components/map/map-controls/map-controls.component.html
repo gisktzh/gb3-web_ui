@@ -1,4 +1,7 @@
 <div class="map-controls">
+  <button mat-icon-button (click)="this.locateClient()" color="accent" class="map-controls__button" data-test-id="map-locate-me">
+    <mat-icon>my_location</mat-icon>
+  </button>
   <button mat-icon-button (click)="this.goToInitialExtent()" color="accent" class="map-controls__button" data-test-id="map-home">
     <mat-icon>home</mat-icon>
   </button>
