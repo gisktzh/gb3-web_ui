@@ -2,10 +2,10 @@ import {Inject, Injectable, OnDestroy} from '@angular/core';
 import {selectHighlightedFeature} from '../../state/map/reducers/feature-info.reducer';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
-import {Geometry as GeoJSONGeometry} from 'geojson';
 import {selectReady} from '../../state/map/reducers/map-config.reducer';
 import {MapService} from '../interfaces/map.service';
 import {MAP_SERVICE} from '../../app.module';
+import {GeometryWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
 
 @Injectable()
 export class FeatureHighlightingService implements OnDestroy {
@@ -46,7 +46,7 @@ export class FeatureHighlightingService implements OnDestroy {
     );
   }
 
-  private highlightFeature(feature: GeoJSONGeometry) {
+  private highlightFeature(feature: GeometryWithSrs) {
     this.removeHighlightedFeature(); // make sure we have a clean slate
     this.mapService.addHighlightGeometry(feature);
   }

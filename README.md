@@ -88,6 +88,18 @@ e.g. `/wms/asd` will become `http://localhost:4200/wms/asd`, and then proxied to
 
 ## Code documentation
 
+### Spatial Reference System(s)
+
+Because we're using different datasources, we cannot always determin what SRS our GeoJSON objects have. In order to
+specify the SRS of a given GeoJSON object, use the wrapper classes defined
+in `src/app/shared/interfaces/geojson-types-with-srs.interface.ts` which also specify the SRS.
+
+All supported SRS in our app are defined as `SupportedSrs` type.
+
+Using these helper interfaces and types allows us to properly leverage Esri's built-in transformation services without
+relying on the implicit conversion of coordinates. As such, whenever possible, we should not rely on the `geojson`
+package itself, but rather on its wrapper classes.
+
 ### State
 
 All application-wide state is handled by [NGRX](https://ngrx.io/).

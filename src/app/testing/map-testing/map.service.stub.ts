@@ -1,12 +1,11 @@
 import {MapService} from '../../map/interfaces/map.service';
-import {Geometry} from 'geojson';
 import {ActiveMapItem} from '../../map/models/active-map-item.model';
 import {ZoomType} from '../../shared/types/zoom-type';
 import {TimeExtent} from '../../map/interfaces/time-extent.interface';
-import {PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
+import {GeometryWithSrs, PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
 
 export class MapServiceStub implements MapService {
-  public addHighlightGeometry(geometry: Geometry): void {}
+  public addHighlightGeometry(geometry: GeometryWithSrs): void {}
 
   public addMapItem(mapItem: ActiveMapItem): void {}
 

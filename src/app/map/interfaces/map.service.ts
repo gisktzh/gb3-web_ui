@@ -1,8 +1,7 @@
-import {Geometry} from 'geojson';
 import {ActiveMapItem} from '../models/active-map-item.model';
 import {ZoomType} from '../../shared/types/zoom-type';
 import {TimeExtent} from './time-extent.interface';
-import {PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
+import {GeometryWithSrs, PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
 
 export interface MapService {
   /** Initializes the map by creating the initial background map and with a given extent */
@@ -54,7 +53,7 @@ export interface MapService {
   reorderSublayer(mapItem: ActiveMapItem, previousPosition: number, currentPosition: number): void;
 
   /** Adds a new highlight geometry to the map */
-  addHighlightGeometry(geometry: Geometry): void;
+  addHighlightGeometry(geometry: GeometryWithSrs): void;
 
   /** Removes an existing highlight geometry from the map */
   removeAllHighlightGeometries(): void;

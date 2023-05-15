@@ -1,4 +1,4 @@
-import {Geometry} from 'geojson';
+import {GeometryWithSrs} from './geojson-types-with-srs.interface';
 
 export interface FeatureInfoResultFeatureField {
   label: string;
@@ -9,7 +9,7 @@ export interface FeatureInfoResultFeature {
   fid: number;
   fields: FeatureInfoResultFeatureField[];
   bbox: number[];
-  geometry: Geometry;
+  geometry: GeometryWithSrs;
 }
 
 export interface FeatureInfoResultLayer {
