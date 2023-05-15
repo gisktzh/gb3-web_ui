@@ -43,6 +43,7 @@ import {
 import {TimeSliderConfiguration, TimeSliderLayerSource, TimeSliderParameterSource} from '../../../shared/interfaces/topic.interface';
 import {TimeExtent} from '../../interfaces/time-extent.interface';
 import {MapConfigState} from '../../../state/map/states/map-config.state';
+import {PointWithCrs} from '../../../shared/interfaces/point-location.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -239,6 +240,13 @@ export class EsriMapService implements MapService {
         esriSubLayer.visible = visible;
       }
     }
+  }
+
+  public setMapCenter({coordinates, crs}: PointWithCrs): Promise<never> {
+    const point = new EsriPoint({spatialReference: {wkid: crs}, x: coordinates[0], y: coordinates[1]});
+    return this.mapView.goTo({
+      center: point
+    }) as never;
   }
 
   public setTimeSliderExtent(timeExtent: TimeExtent, mapItem: ActiveMapItem) {

@@ -2,6 +2,7 @@ import {Geometry, Point} from 'geojson';
 import {ActiveMapItem} from '../models/active-map-item.model';
 import {ZoomType} from '../../shared/types/zoom-type';
 import {TimeExtent} from './time-extent.interface';
+import {PointWithCrs} from '../../shared/interfaces/point-location.interface';
 
 export interface MapService {
   /** Initializes the map by creating the initial background map and with a given extent */
@@ -12,6 +13,9 @@ export interface MapService {
 
   /** Sets the scale of the whole map */
   setScale(scale: number): void;
+
+  /** Sets the map center point */
+  setMapCenter(center: PointWithCrs): void;
 
   /** Resets the extent of the map to the initial extent */
   resetExtent(): void;

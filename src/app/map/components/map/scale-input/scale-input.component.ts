@@ -1,9 +1,10 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Observable, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
-import {selectScale} from '../../../../state/map/reducers/map-config.reducer';
+import {selectCenter, selectScale} from '../../../../state/map/reducers/map-config.reducer';
 import {MapConfigActions} from '../../../../state/map/actions/map-config.actions';
 import {ConfigService} from '../../../../shared/services/config.service';
+import {CoordinateParserService} from '../../../services/coordinate-parser.service';
 
 @Component({
   selector: 'scale-input',
@@ -12,16 +13,31 @@ import {ConfigService} from '../../../../shared/services/config.service';
 })
 export class ScaleInputComponent implements OnInit, OnDestroy {
   public scale: number = 0;
+  public mapCenter: string = '';
   public readonly maxScale = this.configService.mapConfig.mapScaleConfig.maxScale;
   public readonly minScale = this.configService.mapConfig.mapScaleConfig.minScale;
   private readonly subscriptions: Subscription = new Subscription();
   private readonly scaleState$: Observable<number> = this.store.select(selectScale);
+  private readonly centerState$: Observable<{x: number; y: number}> = this.store.select(selectCenter);
 
-  constructor(private readonly store: Store, private readonly configService: ConfigService) {}
+  constructor(
+    private readonly coordinateParserService: CoordinateParserService,
+    private readonly store: Store,
+    private readonly configService: ConfigService
+  ) {}
 
   public setScale(event: Event) {
     const newScale = (event.target as HTMLInputElement).valueAsNumber;
     this.store.dispatch(MapConfigActions.setScale({scale: newScale}));
+  }
+
+  public setMapCenter(event: Event) {
+    const inputString = (event.target as HTMLInputElement).value;
+    const center = this.coordinateParserService.parse(inputString);
+
+    if (center) {
+      this.store.dispatch(MapConfigActions.setMapCenter({center}));
+    }
   }
 
   public ngOnInit(): void {
@@ -34,5 +50,15 @@ export class ScaleInputComponent implements OnInit, OnDestroy {
 
   private initSubscriptions() {
     this.subscriptions.add(this.scaleState$.pipe(tap((value) => (this.scale = Math.round(value)))).subscribe());
+
+    this.subscriptions.add(
+      this.centerState$
+        .pipe(
+          tap(({x, y}) => {
+            this.mapCenter = `${Math.round(x)} / ${Math.round(y)}`;
+          })
+        )
+        .subscribe()
+    );
   }
 }

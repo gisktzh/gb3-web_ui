@@ -1,5 +1,4 @@
 <div class="scale-input">
-  <p class="scale-input__title">Massstab</p>
   <div class="scale-input__wrapper">
     <span class="scale-input__prefix">1:</span>
     <input
@@ -10,5 +9,8 @@
       [min]="this.minScale"
       type="number"
     />
+  </div>
+  <div class="scale-input__wrapper">
+    <input (change)="this.setMapCenter($event)" [value]="this.mapCenter" class="scale-input__input" type="text" />
   </div>
 </div>
