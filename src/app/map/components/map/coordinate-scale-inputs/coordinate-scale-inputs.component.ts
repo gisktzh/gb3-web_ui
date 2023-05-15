@@ -32,11 +32,13 @@ export class CoordinateScaleInputsComponent implements OnInit, OnDestroy {
   }
 
   public setMapCenter(event: Event) {
-    const inputString = (event.target as HTMLInputElement).value;
-    const center = this.coordinateParserService.parse(inputString);
+    const input = event.target as HTMLInputElement;
+    const center = this.coordinateParserService.parse(input.value);
 
     if (center) {
       this.store.dispatch(MapConfigActions.setMapCenter({center}));
+    } else {
+      input.value = this.mapCenter;
     }
   }
 
