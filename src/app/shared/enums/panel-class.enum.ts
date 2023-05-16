@@ -3,5 +3,6 @@
  * accordingly.
  */
 export enum PanelClass {
-  ApiWrapperDialog = 'api-wrapper-dialog'
+  ApiWrapperDialog = 'api-wrapper-dialog',
+  PageNotificationSnackbar = 'page-notification-snackbar'
 }

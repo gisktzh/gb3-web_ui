@@ -6,6 +6,7 @@ import {PageNotificationService} from './shared/services/page-notification.servi
 import {MatSnackBar, MatSnackBarRef} from '@angular/material/snack-bar';
 import {PageNotificationComponent} from './shared/components/page-notification/page-notification.component';
 import {PageNotification} from './shared/interfaces/page-notification.interface';
+import {PanelClass} from './shared/enums/panel-class.enum';
 
 @Component({
   selector: 'app-root',
@@ -81,7 +82,8 @@ export class AppComponent implements OnInit, OnDestroy {
     this.snackBarRef = this.snackBar.openFromComponent(PageNotificationComponent, {
       data: this.pageNotification,
       horizontalPosition: 'center',
-      verticalPosition: 'bottom'
+      verticalPosition: 'bottom',
+      panelClass: PanelClass.PageNotificationSnackbar
     });
   }
 }
