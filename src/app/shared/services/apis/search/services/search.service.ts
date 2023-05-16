@@ -24,6 +24,7 @@ export class SearchService extends BaseApiService {
     searchResponse.forEach((searchResult) => {
       searchResult.matches.forEach((match) => {
         match.indexName = this.getIndexTitle(searchResult.index, indexes);
+        match.geometry = {...match.geometry, srs: 4326}; // elastic search always delivers pure GeoJSON with 4326 coordinates
       });
       combinedResults.push(...searchResult.matches);
     });

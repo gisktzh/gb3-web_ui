@@ -1,8 +1,8 @@
-import {Point} from 'geojson';
+import {PointWithSrs} from '../../../../interfaces/geojson-types-with-srs.interface';
 
 export interface SearchResultMatch {
   displayString: string;
   score: number;
-  geometry: Point;
+  geometry: PointWithSrs;
   indexName?: string;
 }

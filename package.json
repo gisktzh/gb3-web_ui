@@ -15,7 +15,7 @@
     "watch": "ng build --configuration development",
     "test": "ng test",
     "test-ci": "ng test --no-watch --no-progress",
-    "install-husky": "husky install",
+    "prepare": "node ./prepare.js",
     "generate-gb3-api": "npx swagger-typescript-api -p https://maps.zh.ch/api-docs/v3/swagger.yaml -o ./src/app/shared/models -n gb3-api-generated.interfaces.ts --no-client --extract-response-body --extract-request-body"
   },
   "private": true,
@@ -54,7 +54,7 @@
     "ngx-ui-tour-md-menu": "^10.4.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.11.4"
+    "zone.js": "~0.13"
   },
   "devDependencies": {
     "@ngrx/eslint-plugin": "^15.2.1",

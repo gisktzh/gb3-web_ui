@@ -1,6 +1,6 @@
 <div class="map-container">
   <map></map>
-  <legend (printLegendEvent)="this.showPrint('legend')"></legend>
+  <legend-overlay class="map-container__legend-overlay" (printLegendEvent)="this.showPrint('legend')"></legend-overlay>
   <div class="map-container__all-map-items-container">
     <div class="map-container__all-map-items-container__inner-container">
       <active-map-items
@@ -22,7 +22,10 @@
     Legende
   </button>
   <map-attribute-filter class="map-container__map-attribute-filter"></map-attribute-filter>
-  <feature-info (printFeatureInfoEvent)="this.showPrint('featureInfo')"></feature-info>
+  <feature-info-overlay
+    class="map-container__feature-info-overlay"
+    (printFeatureInfoEvent)="this.showPrint('featureInfo')"
+  ></feature-info-overlay>
   <search-window class="map-container__search-window"></search-window>
 </div>
 <print-overlay></print-overlay>

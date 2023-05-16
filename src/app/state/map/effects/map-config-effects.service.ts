@@ -41,5 +41,17 @@ export class MapConfigEffects {
     {dispatch: false}
   );
 
+  public dispatchMapCenterChange$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(MapConfigActions.setMapCenter),
+        tap(({center}) => {
+          this.mapService.setMapCenter(center);
+        })
+      );
+    },
+    {dispatch: false}
+  );
+
   constructor(private readonly actions$: Actions, @Inject(MAP_SERVICE) private readonly mapService: MapService) {}
 }

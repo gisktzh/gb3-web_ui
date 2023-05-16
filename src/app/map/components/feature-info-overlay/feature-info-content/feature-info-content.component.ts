@@ -3,11 +3,11 @@ import {ConfigService} from '../../../../shared/services/config.service';
 import {FeatureInfoResultLayer} from '../../../../shared/interfaces/feature-info.interface';
 import {FeatureInfoActions} from '../../../../state/map/actions/feature-info.actions';
 import {Store} from '@ngrx/store';
-import {Geometry} from 'geojson';
 import {selectIsPinned} from '../../../../state/map/reducers/feature-info.reducer';
 import {Subscription, tap} from 'rxjs';
 import {MatRadioButton} from '@angular/material/radio';
 import {TableColumnIdentifierDirective} from './table-column-identifier.directive';
+import {GeometryWithSrs} from '../../../../shared/interfaces/geojson-types-with-srs.interface';
 
 /**
  * A TableCell represents a single value which is tied to a given feature via its fid.
@@ -53,7 +53,7 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy {
   public readonly tableRows: TableRows = new Map<string, TableCell[]>();
   public readonly tableHeaders: TableCell[] = [];
 
-  private readonly featureGeometries: Map<number, Geometry | null> = new Map();
+  private readonly featureGeometries: Map<number, GeometryWithSrs | null> = new Map();
   private readonly isPinned$ = this.store.select(selectIsPinned);
   private readonly subscriptions: Subscription = new Subscription();
   private isPinned: boolean = false;

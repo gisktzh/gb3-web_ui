@@ -32,7 +32,7 @@ $fixed-border: inset calc(-1 * $border-size) 0 0 0 ktzh-variables.$zh-black100;
       // alternate row color with grey for odd rows
       &:nth-child(odd) {
         .feature-info-content__table__row__column {
-          background-color: ktzh-variables.$zh-black20;
+          background-color: ktzh-variables.$zh-light-grey;
         }
       }
 
