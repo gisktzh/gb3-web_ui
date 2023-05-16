@@ -8,11 +8,11 @@ import {FeatureInfoResultDisplay} from '../../../shared/interfaces/feature-info.
 import {selectFeatureInfosForDisplay} from '../../../state/map/selectors/feature-info-result-display.selector';
 
 @Component({
-  selector: 'feature-info',
-  templateUrl: './feature-info.component.html',
-  styleUrls: ['./feature-info.component.scss']
+  selector: 'feature-info-overlay',
+  templateUrl: './feature-info-overlay.component.html',
+  styleUrls: ['./feature-info-overlay.component.scss']
 })
-export class FeatureInfoComponent implements OnInit, OnDestroy {
+export class FeatureInfoOverlayComponent implements OnInit, OnDestroy {
   @Output() public printFeatureInfoEvent = new EventEmitter<void>();
 
   public isVisible: boolean = false;
