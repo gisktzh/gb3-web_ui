@@ -25,7 +25,7 @@ export class GeolocationEffects {
       return this.actions$.pipe(
         ofType(GeolocationActions.setSuccess),
         tap(({location}) => {
-          this.mapService.zoomToPoint(location, 750);
+          this.mapService.markClientLocation(location);
         })
       );
     },

@@ -60,4 +60,7 @@ export interface MapService {
 
   /** Zooms to a selected point based on latitude, longitude, Srs and scale */
   zoomToPoint(point: PointWithSrs, scale: number): void;
+
+  /** Marks the user's location on  the map */
+  markClientLocation(point: PointWithSrs): void;
 }
