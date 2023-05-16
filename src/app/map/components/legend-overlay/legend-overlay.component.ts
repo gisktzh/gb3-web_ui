@@ -8,11 +8,11 @@ import {LegendDisplay} from '../../../shared/interfaces/legend.interface';
 import {selectLegendItemsForDisplay} from '../../../state/map/selectors/legend-result-display.selector';
 
 @Component({
-  selector: 'legend',
-  templateUrl: './legend.component.html',
-  styleUrls: ['./legend.component.scss']
+  selector: 'legend-overlay',
+  templateUrl: './legend-overlay.component.html',
+  styleUrls: ['./legend-overlay.component.scss']
 })
-export class LegendComponent implements OnInit, OnDestroy {
+export class LegendOverlayComponent implements OnInit, OnDestroy {
   @Output() public printLegendEvent = new EventEmitter<void>();
 
   public isVisible = false;

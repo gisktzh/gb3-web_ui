@@ -7,7 +7,7 @@
   $all-map-items-container-width: 450px;
   $minimal-bottom-height: ktzh-variables.$esri-attribution-widget-height;
 
-  .map-container__legend {
+  .map-container__legend-overlay {
     position: absolute;
     top: 0;
     left: 0;
@@ -79,7 +79,7 @@
     overflow-y: hidden;
   }
 
-  .map-container__feature-info {
+  .map-container__feature-info-overlay {
     position: absolute;
     top: 0;
     right: 0;
