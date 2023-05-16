@@ -12,6 +12,8 @@ export class CoordinateParserService {
   }
 
   private isValidCoordinatePair(value: string): PointWithSrs | undefined {
+    // Create two matching groups (xCoord & yCoord) of a random amount of digits, seperated by , or ; or /; and ONLY if both groups have
+    // a match. E.g. "5/456.123" will match (xCoord = 5; yCoord = 456.123), whereas "5.1234,", "1112", "5/5/4" or "5/5a" will not match.
     const coordinatePairPattern = /^(?<xCoord>\d+(?:\.\d+)?)[,;/](?<yCoord>\d+(?:\.\d+)?)$/;
     const match = value.match(coordinatePairPattern);
 
