@@ -7,11 +7,12 @@
   $map-controls-width: 58px;
   $minimal-bottom-height: ktzh-variables.$esri-attribution-widget-height;
 
-  .main-map__scale-input {
+  .main-map__data-inputs {
     @include mixins.map-element-box-shadow;
     position: absolute;
     bottom: calc(12px + $minimal-bottom-height);
     right: calc(24px + $map-controls-width);
+    display: flex;
   }
 
   .main-map__map-controls {

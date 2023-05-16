@@ -14,7 +14,7 @@ import {MapOverlayListItemComponent} from './components/map/map-overlay/map-over
 import {FeatureInfoItemComponent} from './components/feature-info/feature-info-item/feature-info-item.component';
 import {PrintOverlayComponent} from './components/print-overlay/print-overlay.component';
 import {PrintDispatcherComponent} from './components/print-overlay/print-dispatcher/print-dispatcher.component';
-import {ScaleInputComponent} from './components/map/scale-input/scale-input.component';
+import {CoordinateScaleInputsComponent} from './components/map/coordinate-scale-inputs/coordinate-scale-inputs.component';
 import {MapControlsComponent} from './components/map/map-controls/map-controls.component';
 import {BasemapSelectorComponent} from './components/map/basemap-selector/basemap-selector.component';
 import {ActiveMapItemComponent} from './components/active-map-items/active-map-item/active-map-item.component';
@@ -42,6 +42,7 @@ import {MapDataItemMapComponent} from './components/map-data-catalogue/base-map-
 import {MapDataItemFavouriteComponent} from './components/map-data-catalogue/base-map-data-item/map-data-item-favourite.component';
 import {MapDataItemMapLayerComponent} from './components/map-data-catalogue/map-data-item-map-layer/map-data-item-map-layer.component';
 import {MapDataItemHeaderComponent} from './components/map-data-catalogue/map-data-item-header/map-data-item-header.component';
+import {DataInputComponent} from './components/map/data-input/data-input.component';
 
 @NgModule({
   declarations: [
@@ -58,7 +59,7 @@ import {MapDataItemHeaderComponent} from './components/map-data-catalogue/map-da
     FeatureInfoItemComponent,
     PrintOverlayComponent,
     PrintDispatcherComponent,
-    ScaleInputComponent,
+    CoordinateScaleInputsComponent,
     MapControlsComponent,
     BasemapSelectorComponent,
     MapAttributeFilterComponent,
@@ -82,7 +83,8 @@ import {MapDataItemHeaderComponent} from './components/map-data-catalogue/map-da
     MapDataItemMapComponent,
     MapDataItemFavouriteComponent,
     MapDataItemMapLayerComponent,
-    MapDataItemHeaderComponent
+    MapDataItemHeaderComponent,
+    DataInputComponent
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule, KtZhDesignSystemModule]
 })

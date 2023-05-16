@@ -1,17 +1,19 @@
 import {MapService} from '../../map/interfaces/map.service';
-import {Geometry, Point} from 'geojson';
 import {ActiveMapItem} from '../../map/models/active-map-item.model';
 import {ZoomType} from '../../shared/types/zoom-type';
 import {TimeExtent} from '../../map/interfaces/time-extent.interface';
+import {GeometryWithSrs, PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
 
 export class MapServiceStub implements MapService {
-  public addHighlightGeometry(geometry: Geometry): void {}
+  public addHighlightGeometry(geometry: GeometryWithSrs): void {}
 
   public addMapItem(mapItem: ActiveMapItem): void {}
 
   public assignMapElement(container: HTMLDivElement): void {}
 
   public handleZoom(zoomType: ZoomType): void {}
+
+  public setMapCenter(center: PointWithSrs): void {}
 
   public init(): void {}
 
@@ -39,5 +41,5 @@ export class MapServiceStub implements MapService {
 
   public setAttributeFilters(attributeFilterParameters: {name: string; value: string}[], mapItem: ActiveMapItem): void {}
 
-  public zoomToPoint(point: Point, number: number): void {}
+  public zoomToPoint(point: PointWithSrs, number: number): void {}
 }

@@ -16,6 +16,9 @@ import {
 import {FeatureInfoResponse} from '../../../interfaces/feature-info.interface';
 import {forkJoin, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
+import {SupportedSrs} from '../../../types/supported-srs';
+
+const FEATURE_INFO_SRS: SupportedSrs = 2056;
 
 @Injectable({
   providedIn: 'root'
@@ -264,7 +267,7 @@ export class Gb3TopicsService extends Gb3ApiService {
                       };
                     }),
                     // The cast is required because the API typing delivers "type: string" which is not narrow enough
-                    geometry: feature.geometry as Geometry
+                    geometry: {...(feature.geometry as Geometry), srs: FEATURE_INFO_SRS}
                   };
                 })
               };

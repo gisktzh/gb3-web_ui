@@ -1,3 +1,5 @@
+import {SupportedSrs} from '../types/supported-srs';
+
 interface BasemapLayer {
   name: string;
 }
@@ -16,6 +18,6 @@ export interface Basemap {
   relativeImagePath: string;
   url: string;
   title: string;
-  srsId: number;
+  srsId: SupportedSrs;
   layers: BasemapLayer[];
 }
