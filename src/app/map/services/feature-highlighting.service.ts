@@ -1,11 +1,10 @@
-import {Inject, Injectable, OnDestroy} from '@angular/core';
+import {Injectable, OnDestroy} from '@angular/core';
 import {selectHighlightedFeature} from '../../state/map/reducers/feature-info.reducer';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {selectReady} from '../../state/map/reducers/map-config.reducer';
-import {MapService} from '../interfaces/map.service';
-import {MAP_SERVICE} from '../../app.module';
 import {GeometryWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
+import {MapDrawingService} from './map-drawing.service';
 
 @Injectable()
 export class FeatureHighlightingService implements OnDestroy {
@@ -13,7 +12,7 @@ export class FeatureHighlightingService implements OnDestroy {
   private readonly mapReadyState$ = this.store.select(selectReady);
   private readonly subscriptions = new Subscription();
 
-  constructor(private readonly store: Store, @Inject(MAP_SERVICE) private readonly mapService: MapService) {}
+  constructor(private readonly store: Store, private readonly mapDrawingService: MapDrawingService) {}
 
   public init() {
     this.initMapReadySubscription();
@@ -48,10 +47,10 @@ export class FeatureHighlightingService implements OnDestroy {
 
   private highlightFeature(feature: GeometryWithSrs) {
     this.removeHighlightedFeature(); // make sure we have a clean slate
-    this.mapService.addHighlightGeometry(feature);
+    this.mapDrawingService.drawFeatureInfoHighlight(feature);
   }
 
   private removeHighlightedFeature() {
-    this.mapService.removeAllHighlightGeometries();
+    this.mapDrawingService.clearFeatureInfoHighlight();
   }
 }

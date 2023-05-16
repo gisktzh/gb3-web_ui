@@ -20,18 +20,6 @@ export class GeolocationEffects {
     {dispatch: false}
   );
 
-  public dispatchZoomToPositionRequest$ = createEffect(
-    () => {
-      return this.actions$.pipe(
-        ofType(GeolocationActions.setSuccess),
-        tap(({location}) => {
-          this.mapService.markClientLocation(location);
-        })
-      );
-    },
-    {dispatch: false}
-  );
-
   constructor(
     private readonly actions$: Actions,
     @Inject(MAP_SERVICE) private readonly mapService: MapService,

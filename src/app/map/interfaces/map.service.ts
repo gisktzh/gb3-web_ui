@@ -2,6 +2,7 @@ import {ActiveMapItem} from '../models/active-map-item.model';
 import {ZoomType} from '../../shared/types/zoom-type';
 import {TimeExtent} from './time-extent.interface';
 import {GeometryWithSrs, PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
+import {DrawingLayer} from '../../shared/enums/drawing-layer.enum';
 
 export interface MapService {
   /** Initializes the map by creating the initial background map and with a given extent */
@@ -52,15 +53,12 @@ export interface MapService {
   /** Reorders a sublayer within a map item using its old index (previous) and the new index (current); 0 is the topmost layer - the most visible one */
   reorderSublayer(mapItem: ActiveMapItem, previousPosition: number, currentPosition: number): void;
 
-  /** Adds a new highlight geometry to the map */
-  addHighlightGeometry(geometry: GeometryWithSrs): void;
-
-  /** Removes an existing highlight geometry from the map */
-  removeAllHighlightGeometries(): void;
-
   /** Zooms to a selected point based on latitude, longitude, Srs and scale */
   zoomToPoint(point: PointWithSrs, scale: number): void;
 
-  /** Marks the user's location on  the map */
-  markClientLocation(point: PointWithSrs): void;
+  /** Adds a geometry to a DrawingLayer */
+  addGeometryToDrawingLayer(geometry: GeometryWithSrs, drawingLayer: DrawingLayer): void;
+
+  /** Clears all geometries from a DrawingLayer */
+  clearDrawingLayer(drawingLayer: DrawingLayer): void;
 }

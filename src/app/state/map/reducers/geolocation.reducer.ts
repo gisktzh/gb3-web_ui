@@ -12,7 +12,8 @@ export const geolocationFeatureConfigKey = 'geolocation';
 
 export const initialState: GeolocationState = {
   loadingState: 'undefined',
-  errorReason: undefined
+  errorReason: undefined,
+  currentGpsLocation: undefined
 };
 
 export const geolocationFeature = createFeature({
@@ -22,13 +23,13 @@ export const geolocationFeature = createFeature({
     on(GeolocationActions.startLocationRequest, (): GeolocationState => {
       return {...initialState, loadingState: 'loading'};
     }),
-    on(GeolocationActions.setSuccess, (): GeolocationState => {
-      return {...initialState, loadingState: 'loaded'};
+    on(GeolocationActions.setSuccess, (state, {location}): GeolocationState => {
+      return {...initialState, loadingState: 'loaded', currentGpsLocation: location};
     }),
     on(GeolocationActions.setFailure, (state, {error}): GeolocationState => {
-      return {...initialState, loadingState: 'error', errorReason: GEOLOCATION_ERRORS.get(error.code)};
+      return {loadingState: 'error', errorReason: GEOLOCATION_ERRORS.get(error.code), currentGpsLocation: undefined};
     })
   )
 });
 
-export const {name, reducer, selectGeolocationState, selectLoadingState, selectErrorReason} = geolocationFeature;
+export const {name, reducer, selectGeolocationState, selectLoadingState, selectErrorReason, selectCurrentGpsLocation} = geolocationFeature;

@@ -43,6 +43,8 @@ import {TimeSliderConfiguration, TimeSliderLayerSource, TimeSliderParameterSourc
 import {TimeExtent} from '../../interfaces/time-extent.interface';
 import {MapConfigState} from '../../../state/map/states/map-config.state';
 import {GeometryWithSrs, PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
+import {DrawingLayer} from '../../../shared/enums/drawing-layer.enum';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 
 @Injectable({
   providedIn: 'root'
@@ -73,6 +75,7 @@ export class EsriMapService implements MapService {
     ['polygon', new EsriSimpleFillSymbol({color: this.highlightColors.feature})]
   ]);
   private _mapView!: __esri.MapView;
+  private readonly numberOfDrawingLayers = Object.keys(DrawingLayer).length;
   private readonly subscriptions: Subscription = new Subscription();
   private readonly activeBasemapId$ = this.store.select(selectActiveBasemapId);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
@@ -139,6 +142,7 @@ export class EsriMapService implements MapService {
           this.setMapView(map, scale, x, y, srsId, minScale, maxScale);
           this.attachMapViewListeners();
           this.addBasemapSubscription();
+          this.initDrawingLayers();
           this.addScaleBar();
           activeMapItems.forEach((mapItem, position) => {
             this.addMapItem(mapItem, position);
@@ -176,7 +180,7 @@ export class EsriMapService implements MapService {
     this.attachLayerListeners(esriLayer);
     // index is the inverse position - the lowest index has the lowest visibility (it's on the bottom) while the lowest position has the
     // highest visibility
-    const index = this.mapView.map.layers.length - position;
+    const index = this.getNumberOfNonDrawingLayers() - position;
     this.mapView.map.add(esriLayer, index);
   }
 
@@ -193,18 +197,6 @@ export class EsriMapService implements MapService {
 
   public assignMapElement(container: HTMLDivElement) {
     this.mapView.container = container;
-  }
-
-  public addHighlightGeometry(geometry: GeometryWithSrs): void {
-    const esriGeometry = this.geoJSONMapperService.fromGeoJSONToEsri(geometry);
-    const symbolization = this.highlightStyles.get(esriGeometry.type);
-    const highlightedFeature = new EsriGraphic({geometry: esriGeometry, symbol: symbolization});
-
-    this.mapView.graphics.add(highlightedFeature);
-  }
-
-  public removeAllHighlightGeometries(): void {
-    this.mapView.graphics.removeAll();
   }
 
   public setOpacity(opacity: number, mapItem: ActiveMapItem): void {
@@ -267,8 +259,8 @@ export class EsriMapService implements MapService {
   public reorderMapItem(previousPosition: number, currentPosition: number) {
     // index is the inverse position - the lowest index has the lowest visibility (it's on the bottom) while the lowest position has the
     // highest visibility
-    const previousIndex = this.mapView.map.layers.length - 1 - previousPosition;
-    const currentIndex = this.mapView.map.layers.length - 1 - currentPosition;
+    const previousIndex = this.getNumberOfNonDrawingLayers() - 1 - previousPosition;
+    const currentIndex = this.getNumberOfNonDrawingLayers() - 1 - currentPosition;
     this.mapView.map.layers.reorder(this.mapView.map.layers.getItemAt(previousIndex), currentIndex);
   }
 
@@ -286,6 +278,44 @@ export class EsriMapService implements MapService {
       center: this.createGeoReferencedPoint(point),
       scale: scale
     }) as never;
+  }
+
+  public addGeometryToDrawingLayer(geometry: GeometryWithSrs, drawingLayer: DrawingLayer) {
+    const esriGeometry = this.geoJSONMapperService.fromGeoJSONToEsri(geometry);
+    const symbolization = this.highlightStyles.get(esriGeometry.type);
+    const highlightedFeature = new EsriGraphic({geometry: esriGeometry, symbol: symbolization});
+    const targetLayer = this.findEsriLayer(this.createDrawingLayerName(drawingLayer)) as GraphicsLayer;
+
+    targetLayer.add(highlightedFeature);
+  }
+
+  public clearDrawingLayer(drawingLayer: DrawingLayer) {
+    const layer = this.findEsriLayer(this.createDrawingLayerName(drawingLayer)) as GraphicsLayer;
+
+    layer.removeAll();
+  }
+
+  private initDrawingLayers() {
+    Object.values(DrawingLayer).forEach((drawingLayer) => {
+      const graphicsLayer = new GraphicsLayer({
+        id: this.createDrawingLayerName(drawingLayer)
+      });
+
+      this.mapView.map.add(graphicsLayer);
+    });
+  }
+
+  private createDrawingLayerName(drawingLayer: DrawingLayer): string {
+    return `${this.configService.mapConfig.drawingLayerPrefix}${drawingLayer}`;
+  }
+
+  /**
+   * Returns the number of layers without counting DrawingLayers. Used whenever user-provided layers are dealt with in order to exclude the
+   * fixed internal DrawingLayers.
+   * @private
+   */
+  private getNumberOfNonDrawingLayers(): number {
+    return this.mapView.map.layers.length - this.numberOfDrawingLayers;
   }
 
   private createGeoReferencedPoint({coordinates, srs}: PointWithSrs): __esri.Point {
@@ -565,9 +595,5 @@ export class EsriMapService implements MapService {
     const wmsOverrideUrl = this.configService.overridesConfig.overrideWmsUrl;
     const {gb2Wms, gb2Api} = this.configService.apiConfig;
     return wmsAuthAndUrlOverrideInterceptorFactory([gb2Wms.baseUrl, gb2Api.baseUrl], wmsOverrideUrl, accessToken);
-  }
-
-  public markClientLocation(point: PointWithSrs): void {
-    console.log('todo: implement');
   }
 }
