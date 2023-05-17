@@ -25,8 +25,8 @@ export class EsriSymbolizationService {
       case 'MultiPolygon':
         return this.createPolygonSymbolization(drawingLayer);
       case 'GeometryCollection': {
-        throw new Error('Unsupported in Esri');
-      } // todo: error handling
+        throw new Error('Unsupported in Esri'); // todo: error handling
+      }
     }
   }
 
