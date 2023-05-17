@@ -6,7 +6,6 @@ import {selectActiveBasemapId, selectMapConfigState} from '../../../state/map/re
 import {first, skip, Subscription, tap, withLatestFrom} from 'rxjs';
 import {FeatureInfoActions} from '../../../state/map/actions/feature-info.actions';
 import {GeoJSONMapperService} from './geo-json-mapper.service';
-import {DefaultHighlightStyles} from 'src/app/shared/configs/feature-info.config';
 import * as dayjs from 'dayjs';
 import {MapService} from '../../interfaces/map.service';
 import {ActiveMapItem} from '../../models/active-map-item.model';
@@ -23,7 +22,6 @@ import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.re
 import {AuthService} from '../../../auth/auth.service';
 import {
   EsriBasemap,
-  EsriColor,
   EsriGraphic,
   EsriLoadStatus,
   EsriMap,
@@ -31,9 +29,6 @@ import {
   EsriPoint,
   esriReactiveUtils,
   EsriScaleBar,
-  EsriSimpleFillSymbol,
-  EsriSimpleLineSymbol,
-  EsriSimpleMarkerSymbol,
   EsriSpatialReference,
   EsriTileInfo,
   EsriWMSLayer,
@@ -45,6 +40,7 @@ import {MapConfigState} from '../../../state/map/states/map-config.state';
 import {GeometryWithSrs, PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {DrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import {SymbolizationService} from './symbolization.service';
 
 @Injectable({
   providedIn: 'root'
@@ -53,27 +49,7 @@ export class EsriMapService implements MapService {
   private effectiveMaxZoom = 23;
   private effectiveMinZoom = 0;
   private effectiveMinScale = 0;
-  private readonly defaultHighlightStyles: DefaultHighlightStyles = this.configService.featureInfoConfig.defaultHighlightStyles;
   private readonly defaultMapConfig: MapConfigState = this.configService.mapConfig.defaultMapConfig;
-
-  // TODO this should be moved to a config file
-  private readonly highlightColors = {
-    feature: new EsriColor(this.defaultHighlightStyles.feature.color),
-    outline: new EsriColor(this.defaultHighlightStyles.outline.color)
-  };
-  // TODO this should be moved to a config file
-  private readonly highlightStyles = new Map<__esri.Geometry['type'], __esri.Symbol>([
-    [
-      'polyline',
-      new EsriSimpleLineSymbol({
-        color: this.highlightColors.feature,
-        width: this.defaultHighlightStyles.feature.width
-      })
-    ],
-    ['point', new EsriSimpleMarkerSymbol({color: this.highlightColors.feature})],
-    ['multipoint', new EsriSimpleMarkerSymbol({color: this.highlightColors.feature})],
-    ['polygon', new EsriSimpleFillSymbol({color: this.highlightColors.feature})]
-  ]);
   private _mapView!: __esri.MapView;
   private readonly numberOfDrawingLayers = Object.keys(DrawingLayer).length;
   private readonly subscriptions: Subscription = new Subscription();
@@ -87,7 +63,8 @@ export class EsriMapService implements MapService {
     private readonly geoJSONMapperService: GeoJSONMapperService,
     private readonly basemapConfigService: BasemapConfigService,
     private readonly configService: ConfigService,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly symbolizationService: SymbolizationService
   ) {
     /**
      * Because the GetCapabalities response often sends a non-secure http://wms.zh.ch response, Esri Javascript API fails on https
@@ -281,8 +258,8 @@ export class EsriMapService implements MapService {
   }
 
   public addGeometryToDrawingLayer(geometry: GeometryWithSrs, drawingLayer: DrawingLayer) {
+    const symbolization = this.symbolizationService.createSymbolizationForDrawingLayer(geometry, drawingLayer);
     const esriGeometry = this.geoJSONMapperService.fromGeoJSONToEsri(geometry);
-    const symbolization = this.highlightStyles.get(esriGeometry.type);
     const highlightedFeature = new EsriGraphic({geometry: esriGeometry, symbol: symbolization});
     const targetLayer = this.findEsriLayer(this.createDrawingLayerName(drawingLayer)) as GraphicsLayer;
 
