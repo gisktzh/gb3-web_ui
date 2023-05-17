@@ -24,11 +24,12 @@ interface AbstractPointSymbolization extends HasColor {
   size: number;
 }
 
-interface SimplePointSymbolization extends AbstractPointSymbolization {
+export interface SimplePointSymbolization extends AbstractPointSymbolization {
   type: 'simple';
+  outline: HasWidth & HasColor;
 }
 
-interface SvgPointSymbolization extends AbstractPointSymbolization {
+export interface SvgPointSymbolization extends AbstractPointSymbolization {
   type: 'svg';
   /** SVG path string */
   path: string;
@@ -42,13 +43,13 @@ interface SvgPointSymbolization extends AbstractPointSymbolization {
 
 type PointSymbolization = SimplePointSymbolization | SvgPointSymbolization;
 
-interface LineSymbolization extends HasColor, HasWidth {}
+export interface LineSymbolization extends HasColor, HasWidth {}
 
 type PolygonFillSymbolization = HasColor;
 
 interface PolygonOutlineSymbolization extends HasColor, HasWidth {}
 
-interface PolygonSymbolization {
+export interface PolygonSymbolization {
   fill: PolygonFillSymbolization;
   outline: PolygonOutlineSymbolization;
 }

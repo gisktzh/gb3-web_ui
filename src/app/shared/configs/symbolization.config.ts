@@ -1,6 +1,16 @@
 import {DrawingLayer} from '../enums/drawing-layer.enum';
 import {LayerSymbolizations, SymbolizationStyle} from '../interfaces/symbolization.interface';
 
+const defaultOutline = {
+  width: 1,
+  color: {
+    r: 0,
+    g: 0,
+    b: 0,
+    a: 1.0
+  }
+};
+
 const defaultSymbolization: SymbolizationStyle = {
   point: {
     type: 'simple',
@@ -10,7 +20,8 @@ const defaultSymbolization: SymbolizationStyle = {
       g: 0,
       b: 0,
       a: 1.0
-    }
+    },
+    outline: defaultOutline
   },
   line: {
     width: 5,
@@ -78,7 +89,8 @@ export const layerSymbolizations: LayerSymbolizations = {
         g: 255,
         b: 0,
         a: 0.6
-      }
+      },
+      outline: defaultOutline
     },
     line: {
       width: 5,
@@ -98,15 +110,7 @@ export const layerSymbolizations: LayerSymbolizations = {
           a: 0.6
         }
       },
-      outline: {
-        width: 5,
-        color: {
-          r: 255,
-          g: 255,
-          b: 0,
-          a: 1.0
-        }
-      }
+      outline: defaultOutline
     }
   }
 };

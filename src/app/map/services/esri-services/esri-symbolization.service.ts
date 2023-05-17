@@ -4,6 +4,10 @@ import {ConfigService} from '../../../shared/services/config.service';
 import {DrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {GeometryWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {LayerSymbolizations, SymbolizationColor} from '../../../shared/interfaces/symbolization.interface';
+import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
+import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
+import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
+import Color from '@arcgis/core/Color';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +17,7 @@ export class EsriSymbolizationService {
 
   constructor(private readonly configService: ConfigService) {}
 
-  public createSymbolizationForDrawingLayer(geometry: GeometryWithSrs, drawingLayer: DrawingLayer) {
+  public createSymbolizationForDrawingLayer(geometry: GeometryWithSrs, drawingLayer: DrawingLayer): __esri.Symbol {
     switch (geometry.type) {
       case 'Point':
       case 'MultiPoint':
@@ -30,13 +34,17 @@ export class EsriSymbolizationService {
     }
   }
 
-  private createPointSymbolization(drawingLayer: DrawingLayer) {
+  private createPointSymbolization(drawingLayer: DrawingLayer): SimpleMarkerSymbol {
     const pointSymbology = this.layerSymbolizations[drawingLayer].point;
     switch (pointSymbology.type) {
       case 'simple':
         return new EsriSimpleMarkerSymbol({
           color: this.createEsriColor(pointSymbology.color),
-          size: pointSymbology.size
+          size: pointSymbology.size,
+          outline: {
+            width: pointSymbology.outline.width,
+            color: this.createEsriColor(pointSymbology.outline.color)
+          }
         });
       case 'svg':
         return new EsriSimpleMarkerSymbol({
@@ -50,18 +58,26 @@ export class EsriSymbolizationService {
     }
   }
 
-  private createLineSymbolization(drawingLayer: DrawingLayer) {
+  private createLineSymbolization(drawingLayer: DrawingLayer): SimpleLineSymbol {
+    const lineSymbology = this.layerSymbolizations[drawingLayer].line;
     return new EsriSimpleLineSymbol({
-      color: this.createEsriColor(this.layerSymbolizations[drawingLayer].line.color),
-      width: this.layerSymbolizations[drawingLayer].line.width
+      color: this.createEsriColor(lineSymbology.color),
+      width: lineSymbology.width
     });
   }
 
-  private createPolygonSymbolization(drawingLayer: DrawingLayer) {
-    return new EsriSimpleFillSymbol({color: this.createEsriColor(this.layerSymbolizations[drawingLayer].polygon.fill.color)});
+  private createPolygonSymbolization(drawingLayer: DrawingLayer): SimpleFillSymbol {
+    const polygonSymbology = this.layerSymbolizations[drawingLayer].polygon;
+    return new EsriSimpleFillSymbol({
+      color: this.createEsriColor(polygonSymbology.fill.color),
+      outline: {
+        width: polygonSymbology.outline.width,
+        color: this.createEsriColor(polygonSymbology.outline.color)
+      }
+    });
   }
 
-  private createEsriColor(color: SymbolizationColor) {
+  private createEsriColor(color: SymbolizationColor): Color {
     return new EsriColor(color);
   }
 }
