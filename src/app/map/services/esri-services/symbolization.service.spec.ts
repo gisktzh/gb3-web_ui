@@ -1,13 +1,13 @@
 import {TestBed} from '@angular/core/testing';
 
-import {SymbolizationService} from './symbolization.service';
+import {EsriSymbolizationService} from './esri-symbolization.service';
 
 describe('SymbolizationService', () => {
-  let service: SymbolizationService;
+  let service: EsriSymbolizationService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(SymbolizationService);
+    service = TestBed.inject(EsriSymbolizationService);
   });
 
   it('should be created', () => {

@@ -40,7 +40,7 @@ import {MapConfigState} from '../../../state/map/states/map-config.state';
 import {GeometryWithSrs, PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {DrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
-import {SymbolizationService} from './symbolization.service';
+import {EsriSymbolizationService} from './esri-symbolization.service';
 
 @Injectable({
   providedIn: 'root'
@@ -64,7 +64,7 @@ export class EsriMapService implements MapService {
     private readonly basemapConfigService: BasemapConfigService,
     private readonly configService: ConfigService,
     private readonly authService: AuthService,
-    private readonly symbolizationService: SymbolizationService
+    private readonly esriSymbolizationService: EsriSymbolizationService
   ) {
     /**
      * Because the GetCapabalities response often sends a non-secure http://wms.zh.ch response, Esri Javascript API fails on https
@@ -258,12 +258,12 @@ export class EsriMapService implements MapService {
   }
 
   public addGeometryToDrawingLayer(geometry: GeometryWithSrs, drawingLayer: DrawingLayer) {
-    const symbolization = this.symbolizationService.createSymbolizationForDrawingLayer(geometry, drawingLayer);
+    const symbolization = this.esriSymbolizationService.createSymbolizationForDrawingLayer(geometry, drawingLayer);
     const esriGeometry = this.geoJSONMapperService.fromGeoJSONToEsri(geometry);
-    const highlightedFeature = new EsriGraphic({geometry: esriGeometry, symbol: symbolization});
+    const graphicItem = new EsriGraphic({geometry: esriGeometry, symbol: symbolization});
     const targetLayer = this.findEsriLayer(this.createDrawingLayerName(drawingLayer)) as GraphicsLayer;
 
-    targetLayer.add(highlightedFeature);
+    targetLayer.add(graphicItem);
   }
 
   public clearDrawingLayer(drawingLayer: DrawingLayer) {

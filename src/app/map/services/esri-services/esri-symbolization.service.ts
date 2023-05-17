@@ -8,7 +8,7 @@ import {LayerSymbolizations, SymbolizationColor} from '../../../shared/interface
 @Injectable({
   providedIn: 'root'
 })
-export class SymbolizationService {
+export class EsriSymbolizationService {
   private readonly layerSymbolizations: LayerSymbolizations = this.configService.layerSymbolizations;
 
   constructor(private readonly configService: ConfigService) {}
