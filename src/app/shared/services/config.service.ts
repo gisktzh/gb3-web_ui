@@ -24,8 +24,8 @@ export class ConfigService {
   };
 
   public readonly mapConfig = {
-    drawingLayerPrefix: 'INTERNAL__',
-    locateMeZoom: 750,
+    drawingLayerPrefix: MapConstants.DRAWING_LAYER_PREFIX,
+    locateMeZoom: MapConstants.LOCATE_ME_ZOOM,
     defaultMapConfig: defaultMapConfig,
     mapScaleConfig: {
       maxScale: MapConstants.MAXIMUM_MAP_SCALE,
