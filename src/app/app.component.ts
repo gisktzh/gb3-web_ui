@@ -17,13 +17,11 @@ export class AppComponent implements OnInit, OnDestroy {
   public showWarning: boolean = false;
 
   private readonly subscriptions: Subscription = new Subscription();
-  public pageNotification?: PageNotification;
   private snackBarRef?: MatSnackBarRef<PageNotificationComponent>;
 
   constructor(
     private readonly documentService: DocumentService,
     private readonly breakpointObserver: BreakpointObserver,
-    private readonly page: PageNotificationService,
     private readonly snackBar: MatSnackBar,
     private readonly pageNotificationService: PageNotificationService
   ) {}
@@ -57,12 +55,11 @@ export class AppComponent implements OnInit, OnDestroy {
       this.pageNotificationService.currentPageNotifications$
         .pipe(
           tap((pageNotifications) => {
-            // only show the first page info notification
-            this.pageNotification = pageNotifications.length > 0 ? pageNotifications[0] : undefined;
-            if (this.pageNotification) {
-              this.openSnackBar();
+            if (pageNotifications.length > 0) {
+              // only show the first available notification for this page
+              this.openPageNotificationSnackBar(pageNotifications[0]);
             } else {
-              this.closeSnackBar();
+              this.closePageNotificationSnackBar();
             }
           })
         )
@@ -70,17 +67,14 @@ export class AppComponent implements OnInit, OnDestroy {
     );
   }
 
-  public closeSnackBar() {
+  private closePageNotificationSnackBar() {
     this.snackBarRef?.dismiss();
     this.snackBarRef = undefined;
   }
 
-  private openSnackBar() {
-    if (!this.pageNotification) {
-      this.closeSnackBar();
-    }
+  private openPageNotificationSnackBar(pageNotification: PageNotification) {
     this.snackBarRef = this.snackBar.openFromComponent(PageNotificationComponent, {
-      data: this.pageNotification,
+      data: pageNotification,
       horizontalPosition: 'center',
       verticalPosition: 'bottom',
       panelClass: PanelClass.PageNotificationSnackbar

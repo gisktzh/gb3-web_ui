@@ -30,7 +30,7 @@ export class GravCmsService extends BaseApiService {
   }
 
   public loadMapInfosData(): Observable<MapInfoNotification[]> {
-    const requestUrl = this.createFullEndpointUrl(this.discoverMapsEndpoint);
+    const requestUrl = this.createFullEndpointUrl(this.mapInfosEndpoint);
     return this.get<MapInfosRoot>(requestUrl).pipe(map((response) => this.transformMapInfosData(response)));
   }
 
@@ -58,7 +58,8 @@ export class GravCmsService extends BaseApiService {
         fromDate: dayjs(pageInfoData.from_date, this.timeFormat).toDate(),
         toDate: dayjs(pageInfoData.to_date, this.timeFormat).toDate(),
         pages: this.transformPagesToEnumArray(pageInfoData.pages),
-        severity: pageInfoData.severity as PageNotificationSeverity
+        severity: pageInfoData.severity as PageNotificationSeverity,
+        isMarkedAsRead: false
       };
     });
   }

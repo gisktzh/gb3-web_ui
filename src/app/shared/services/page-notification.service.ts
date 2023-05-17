@@ -1,13 +1,11 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {NavigationEnd, Router} from '@angular/router';
-import {BehaviorSubject, filter, Observable, share, Subscription, tap, timer} from 'rxjs';
-import {ConfigService} from './config.service';
+import {BehaviorSubject, filter, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {MainPage} from '../enums/main-page.enum';
 import {PageNotificationActions} from '../../state/app/actions/page-notification.actions';
 import {PageNotification} from '../interfaces/page-notification.interface';
-import {selectAllPageNotifications} from '../../state/app/selectors/page-notification.selector';
-import {AppConstants} from '../constants/app.constants';
+import {selectAllUnreadPageNotifications} from '../../state/app/selectors/page-notification.selector';
 
 @Injectable({
   providedIn: 'root'
@@ -15,13 +13,13 @@ import {AppConstants} from '../constants/app.constants';
 export class PageNotificationService implements OnDestroy {
   public readonly currentPageNotifications$ = new BehaviorSubject<PageNotification[]>([]);
 
-  private readonly pageNotifications$ = this.store.select(selectAllPageNotifications);
+  private readonly pageNotifications$ = this.store.select(selectAllUnreadPageNotifications);
   private readonly subscriptions: Subscription = new Subscription();
 
-  private currentMainUrlPathElement?: MainPage;
+  private currentMainPageOrUndefined?: MainPage;
   private pageNotifications: PageNotification[] = [];
 
-  constructor(private readonly router: Router, private readonly configService: ConfigService, private readonly store: Store) {
+  constructor(private readonly router: Router, private readonly store: Store) {
     this.initSubscriptions();
   }
 
@@ -30,13 +28,13 @@ export class PageNotificationService implements OnDestroy {
   }
 
   private initSubscriptions() {
+    // TODO: this can be replaced with NGRX Router
     this.subscriptions.add(
       this.router.events
         .pipe(
-          filter((event): event is NavigationEnd => event instanceof NavigationEnd), // TODO: NGRX Router
+          filter((event): event is NavigationEnd => event instanceof NavigationEnd),
           tap(() => {
-            const firstUrlPathElement = this.getCurrentFirstUrlPathElement();
-            this.currentMainUrlPathElement = this.transformFirstUrlPathElement(firstUrlPathElement);
+            this.currentMainPageOrUndefined = this.tryGetCurrentMainPage();
             this.refreshCurrentPageNotifications();
           })
         )
@@ -54,42 +52,41 @@ export class PageNotificationService implements OnDestroy {
         .subscribe()
     );
 
-    this.subscriptions.add(this.createPageNotificationPolling(AppConstants.PAGE_NOTIFICATION_POLLING_TIME_IN_SECONDS * 1000).subscribe());
+    // load the page notifications once
+    this.store.dispatch(PageNotificationActions.loadPageNotifications());
   }
 
   private refreshCurrentPageNotifications() {
     let currentPageNotifications: PageNotification[] = [];
-    if (this.currentMainUrlPathElement !== undefined && Object.keys(this.pageNotifications).length > 0) {
-      const currentMainUrlPathElement = this.currentMainUrlPathElement;
-      currentPageNotifications = Object.values(this.pageNotifications).filter((pageNotification) =>
-        pageNotification.pages.includes(currentMainUrlPathElement)
-      );
+    if (this.currentMainPageOrUndefined !== undefined && this.pageNotifications.length > 0) {
+      const currentMainPage = this.currentMainPageOrUndefined;
+      currentPageNotifications = this.pageNotifications.filter((pageNotification) => pageNotification.pages.includes(currentMainPage));
     }
     this.currentPageNotifications$.next(currentPageNotifications);
   }
 
-  private transformFirstUrlPathElement(firstUrlPathElement: string | undefined): MainPage | undefined {
-    return firstUrlPathElement !== undefined && Object.values<string>(MainPage).includes(firstUrlPathElement)
-      ? (firstUrlPathElement as MainPage)
-      : undefined;
+  /** Tries to get the first URL path part parsed as enum `MainPage`; Returns `undefined` if either the extraction or parsing failed. */
+  private tryGetCurrentMainPage(): MainPage | undefined {
+    const currentLocationPathname = this.getCurrentLocationPathname();
+    const extractedMainPageString = this.extractMainPageStringFromUrl(currentLocationPathname, 1);
+    return this.parseStringToMainPage(extractedMainPageString);
   }
 
-  private createPageNotificationPolling(pollingTimeInMs: number): Observable<number> {
-    return timer(1, pollingTimeInMs).pipe(
-      tap(() => this.store.dispatch(PageNotificationActions.loadPageNotifications())),
-      share()
-    );
+  private getCurrentLocationPathname(): string {
+    return location.pathname;
   }
 
-  private getCurrentFirstUrlPathElement(): string | undefined {
-    return this.extractUrlPathElement(location.pathname, 1);
-  }
-
-  private extractUrlPathElement(url: string, partNumber: number): string | undefined {
+  private extractMainPageStringFromUrl(url: string, partNumber: number): string | undefined {
     const urlPathParts = url.split('/');
     if (urlPathParts.length < partNumber + 1) {
       return undefined;
     }
     return urlPathParts[partNumber];
+  }
+
+  private parseStringToMainPage(mainPageString: string | undefined): MainPage | undefined {
+    return mainPageString !== undefined && Object.values<string>(MainPage).includes(mainPageString)
+      ? (mainPageString as MainPage)
+      : undefined;
   }
 }

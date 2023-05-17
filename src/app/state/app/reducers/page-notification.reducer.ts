@@ -13,11 +13,14 @@ export const pageNotificationFeature = createFeature({
   name: pageNotificationFeatureKey,
   reducer: createReducer(
     initialState,
-    on(PageNotificationActions.loadPageNotifications, (): PageNotificationState => {
-      return {...initialState, loadingState: 'loading'};
+    on(PageNotificationActions.loadPageNotifications, (state): PageNotificationState => {
+      return {...state, loadingState: 'loading'};
     }),
     on(PageNotificationActions.setPageNotifications, (state, {pageNotifications}): PageNotificationState => {
       return PageNotificationAdapter.setMany(pageNotifications, {...state, loadingState: 'loaded'});
+    }),
+    on(PageNotificationActions.markPageNotificationAsRead, (state, {id}): PageNotificationState => {
+      return PageNotificationAdapter.updateOne({id: id, changes: {isMarkedAsRead: true}}, state);
     })
   )
 });

@@ -6,7 +6,7 @@
   </div>
 </div>
 <div matSnackBarActions class="page-notification-actions" [ngClass]="'page-notification-actions--' + data.severity">
-  <button class="page-notification-actions__close-button" (click)="close()" mat-icon-button>
+  <button class="page-notification-actions__close-button" (click)="markPageNotificationAsRead()" mat-icon-button>
     <mat-icon>close</mat-icon>
   </button>
 </div>

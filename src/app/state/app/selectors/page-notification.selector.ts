@@ -2,12 +2,8 @@ import {PageNotificationAdapter} from '../adapters/page-notification.adapter';
 import {createSelector} from '@ngrx/store';
 import {selectPageNotificationState} from '../reducers/page-notification.reducer';
 
-const {selectIds, selectEntities, selectTotal, selectAll} = PageNotificationAdapter.getSelectors();
-
-export const selectPageNotificationIds = createSelector(selectPageNotificationState, selectIds);
-
-export const selectPageNotificationEntities = createSelector(selectPageNotificationState, selectEntities);
-
+const {selectAll} = PageNotificationAdapter.getSelectors();
 export const selectAllPageNotifications = createSelector(selectPageNotificationState, selectAll);
-
-export const selectPageNotificationTotal = createSelector(selectPageNotificationState, selectTotal);
+export const selectAllUnreadPageNotifications = createSelector(selectAllPageNotifications, (pageNotifications) =>
+  pageNotifications.filter((pageNotification) => !pageNotification.isMarkedAsRead)
+);

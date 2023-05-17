@@ -1,6 +1,8 @@
 import {Component, Inject} from '@angular/core';
 import {MAT_SNACK_BAR_DATA, MatSnackBarRef} from '@angular/material/snack-bar';
 import {PageNotification, PageNotificationSeverity} from '../../interfaces/page-notification.interface';
+import {Store} from '@ngrx/store';
+import {PageNotificationActions} from '../../../state/app/actions/page-notification.actions';
 
 @Component({
   selector: 'page-notification',
@@ -11,13 +13,14 @@ export class PageNotificationComponent {
   public readonly icon: string;
   constructor(
     @Inject(MAT_SNACK_BAR_DATA) public data: PageNotification,
-    private matSnackBarRef: MatSnackBarRef<PageNotificationComponent>
+    private matSnackBarRef: MatSnackBarRef<PageNotificationComponent>,
+    private readonly store: Store
   ) {
     this.icon = this.transformSeverityToMatIconFont(data.severity);
   }
 
-  public close() {
-    this.matSnackBarRef.dismiss();
+  public markPageNotificationAsRead() {
+    this.store.dispatch(PageNotificationActions.markPageNotificationAsRead({id: this.data.id}));
   }
 
   private transformSeverityToMatIconFont(severity: PageNotificationSeverity): string {

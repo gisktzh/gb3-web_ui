@@ -5,6 +5,7 @@ export const PageNotificationActions = createActionGroup({
   source: 'PageNotification',
   events: {
     'Load Page Notifications': emptyProps(),
-    'Set Page Notifications': props<{pageNotifications: PageNotification[]}>()
+    'Set Page Notifications': props<{pageNotifications: PageNotification[]}>(),
+    'Mark Page Notification As Read': props<{id: string}>()
   }
 });
