@@ -31,7 +31,23 @@ export class SymbolizationService {
   }
 
   private createPointSymbolization(drawingLayer: DrawingLayer) {
-    return new EsriSimpleMarkerSymbol({color: this.createEsriColor(this.layerSymbolizations[drawingLayer].point.color)});
+    const pointSymbology = this.layerSymbolizations[drawingLayer].point;
+    switch (pointSymbology.type) {
+      case 'simple':
+        return new EsriSimpleMarkerSymbol({
+          color: this.createEsriColor(pointSymbology.color),
+          size: pointSymbology.size
+        });
+      case 'svg':
+        return new EsriSimpleMarkerSymbol({
+          color: this.createEsriColor(pointSymbology.color),
+          path: pointSymbology.path,
+          xoffset: pointSymbology.xOffset,
+          yoffset: pointSymbology.yOffset,
+          size: pointSymbology.size,
+          angle: pointSymbology.angle
+        });
+    }
   }
 
   private createLineSymbolization(drawingLayer: DrawingLayer) {

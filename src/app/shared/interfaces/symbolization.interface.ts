@@ -18,9 +18,29 @@ interface HasWidth {
   width: number;
 }
 
-interface PointSymbolization extends HasColor {
-  type: 'point';
+interface AbstractPointSymbolization extends HasColor {
+  /** A 'simple' point is rendered as a circle with color as fill; 'svg' is rendered as an SVG path icon */
+  type: 'svg' | 'simple';
+  size: number;
 }
+
+interface SimplePointSymbolization extends AbstractPointSymbolization {
+  type: 'simple';
+}
+
+interface SvgPointSymbolization extends AbstractPointSymbolization {
+  type: 'svg';
+  /** SVG path string */
+  path: string;
+  /** Horizontal offset - by default, the anchorpoint is in the center of the path */
+  xOffset: number;
+  /** Vertical offset - by default, the anchorpoint is in the center of the path */
+  yOffset: number;
+  /** Rotation of the icon, [-180.0..180.0] */
+  angle: number;
+}
+
+type PointSymbolization = SimplePointSymbolization | SvgPointSymbolization;
 
 interface LineSymbolization extends HasColor, HasWidth {}
 
