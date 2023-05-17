@@ -29,7 +29,7 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       },
       gravCms: {
         baseUrl: 'https://staging.geo.ktzh.ch/cms',
-        enabled: false
+        enabled: true
       },
       twitterWidget: {
         baseUrl: 'https://platform.twitter.com/widgets.js',

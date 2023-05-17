@@ -28,7 +28,7 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       },
       gravCms: {
         baseUrl: 'https://gb3-grav-cms.icycliff-4b8f6c95.switzerlandnorth.azurecontainerapps.io',
-        enabled: false
+        enabled: true
       },
       twitterWidget: {
         baseUrl: 'https://platform.twitter.com/widgets.js',
