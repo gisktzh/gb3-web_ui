@@ -222,7 +222,10 @@ export class EsriMapService implements MapService {
 
   public setTimeSliderExtent(timeExtent: TimeExtent, mapItem: ActiveMapItem) {
     const esriLayer = this.findEsriLayer(mapItem.id);
-    this.setEsriTimeSliderExtent(timeExtent, mapItem, esriLayer);
+
+    if (esriLayer) {
+      this.setEsriTimeSliderExtent(timeExtent, mapItem, esriLayer);
+    }
   }
 
   public setAttributeFilters(attributeFilterParameters: {name: string; value: string}[], mapItem: ActiveMapItem) {
@@ -269,15 +272,19 @@ export class EsriMapService implements MapService {
     const symbolization = this.esriSymbolizationService.createSymbolizationForDrawingLayer(geometry, drawingLayer);
     const esriGeometry = this.geoJSONMapperService.fromGeoJSONToEsri(geometry);
     const graphicItem = new EsriGraphic({geometry: esriGeometry, symbol: symbolization});
-    const targetLayer = this.findEsriLayer(this.createDrawingLayerId(drawingLayer)) as GraphicsLayer;
+    const targetLayer = this.findEsriLayer(this.createDrawingLayerId(drawingLayer));
 
-    targetLayer.add(graphicItem);
+    if (targetLayer) {
+      (targetLayer as GraphicsLayer).add(graphicItem);
+    }
   }
 
   public clearDrawingLayer(drawingLayer: DrawingLayer) {
-    const layer = this.findEsriLayer(this.createDrawingLayerId(drawingLayer)) as GraphicsLayer;
+    const layer = this.findEsriLayer(this.createDrawingLayerId(drawingLayer));
 
-    layer.removeAll();
+    if (layer) {
+      (layer as GraphicsLayer).removeAll();
+    }
   }
 
   private initDrawingLayers() {
@@ -457,7 +464,8 @@ export class EsriMapService implements MapService {
     });
   }
 
-  private findEsriLayer(id: string): __esri.Layer {
+  private findEsriLayer(id: string): __esri.Layer | undefined {
+    // note: the typehint for Collection.find() is wrong, as it may, in fact, return undefined
     return this.mapView.map.layers.find((layer) => layer.id === id);
   }
 
