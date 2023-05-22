@@ -7,6 +7,6 @@ if ! [[ $message =~ $valid_commit_pattern ]];
 then
   echo -e "\033[31m⚠️ Commit message does not adhere to naming convention $valid_commit_pattern! \e[0m"
 else
-  echo "✅ Commit message!"
+  echo -e "✅  Commit message!"
 fi
 echo ""

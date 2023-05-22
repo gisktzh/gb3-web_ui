@@ -12,6 +12,6 @@ valid_branch_regex='^((hotfix|feature)\/gb3-[0-9]*-[a-zA-Z0-9\-]+)$'
 if [[ ! $local_branch_name =~ $valid_branch_regex ]]; then
     echo -e "\033[31m⚠️ Branchname does not adhere to naming convention $valid_branch_regex! \e[0m"
 else
-  echo "✅ Branchname!"
+  echo -e "✅  Branchname!"
 fi
 echo ""
