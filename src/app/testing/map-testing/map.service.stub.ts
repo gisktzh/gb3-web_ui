@@ -3,9 +3,12 @@ import {ActiveMapItem} from '../../map/models/active-map-item.model';
 import {ZoomType} from '../../shared/types/zoom-type';
 import {TimeExtent} from '../../map/interfaces/time-extent.interface';
 import {GeometryWithSrs, PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
+import {DrawingLayer} from 'src/app/shared/enums/drawing-layer.enum';
 
 export class MapServiceStub implements MapService {
-  public addHighlightGeometry(geometry: GeometryWithSrs): void {}
+  addGeometryToDrawingLayer(geometry: GeometryWithSrs, drawingLayer: DrawingLayer): void {}
+
+  clearDrawingLayer(drawingLayer: DrawingLayer): void {}
 
   public addMapItem(mapItem: ActiveMapItem): void {}
 
@@ -16,8 +19,6 @@ export class MapServiceStub implements MapService {
   public setMapCenter(center: PointWithSrs): void {}
 
   public init(): void {}
-
-  public removeAllHighlightGeometries(): void {}
 
   public removeAllMapItems(): void {}
 

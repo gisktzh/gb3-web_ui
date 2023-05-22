@@ -6,7 +6,6 @@ import {selectActiveBasemapId, selectMapConfigState} from '../../../state/map/re
 import {first, skip, Subscription, tap, withLatestFrom} from 'rxjs';
 import {FeatureInfoActions} from '../../../state/map/actions/feature-info.actions';
 import {GeoJSONMapperService} from './geo-json-mapper.service';
-import {DefaultHighlightStyles} from 'src/app/shared/configs/feature-info.config';
 import * as dayjs from 'dayjs';
 import {MapService} from '../../interfaces/map.service';
 import {ActiveMapItem} from '../../models/active-map-item.model';
@@ -23,7 +22,6 @@ import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.re
 import {AuthService} from '../../../auth/auth.service';
 import {
   EsriBasemap,
-  EsriColor,
   EsriGraphic,
   EsriLoadStatus,
   EsriMap,
@@ -31,9 +29,6 @@ import {
   EsriPoint,
   esriReactiveUtils,
   EsriScaleBar,
-  EsriSimpleFillSymbol,
-  EsriSimpleLineSymbol,
-  EsriSimpleMarkerSymbol,
   EsriSpatialReference,
   EsriTileInfo,
   EsriWMSLayer,
@@ -43,6 +38,9 @@ import {TimeSliderConfiguration, TimeSliderLayerSource, TimeSliderParameterSourc
 import {TimeExtent} from '../../interfaces/time-extent.interface';
 import {MapConfigState} from '../../../state/map/states/map-config.state';
 import {GeometryWithSrs, PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
+import {DrawingLayer} from '../../../shared/enums/drawing-layer.enum';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import {EsriSymbolizationService} from './esri-symbolization.service';
 
 @Injectable({
   providedIn: 'root'
@@ -51,32 +49,14 @@ export class EsriMapService implements MapService {
   private effectiveMaxZoom = 23;
   private effectiveMinZoom = 0;
   private effectiveMinScale = 0;
-  private readonly defaultHighlightStyles: DefaultHighlightStyles = this.configService.featureInfoConfig.defaultHighlightStyles;
   private readonly defaultMapConfig: MapConfigState = this.configService.mapConfig.defaultMapConfig;
-
-  // TODO this should be moved to a config file
-  private readonly highlightColors = {
-    feature: new EsriColor(this.defaultHighlightStyles.feature.color),
-    outline: new EsriColor(this.defaultHighlightStyles.outline.color)
-  };
-  // TODO this should be moved to a config file
-  private readonly highlightStyles = new Map<__esri.Geometry['type'], __esri.Symbol>([
-    [
-      'polyline',
-      new EsriSimpleLineSymbol({
-        color: this.highlightColors.feature,
-        width: this.defaultHighlightStyles.feature.width
-      })
-    ],
-    ['point', new EsriSimpleMarkerSymbol({color: this.highlightColors.feature})],
-    ['multipoint', new EsriSimpleMarkerSymbol({color: this.highlightColors.feature})],
-    ['polygon', new EsriSimpleFillSymbol({color: this.highlightColors.feature})]
-  ]);
   private _mapView!: __esri.MapView;
+  private readonly numberOfDrawingLayers = Object.keys(DrawingLayer).length;
   private readonly subscriptions: Subscription = new Subscription();
   private readonly activeBasemapId$ = this.store.select(selectActiveBasemapId);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
   private readonly wmsImageFormatMimeType = this.configService.gb2Config.wmsFormatMimeType;
+  private readonly internalLayerPrefix = this.configService.mapConfig.internalLayerPrefix;
 
   constructor(
     private readonly store: Store,
@@ -84,7 +64,8 @@ export class EsriMapService implements MapService {
     private readonly geoJSONMapperService: GeoJSONMapperService,
     private readonly basemapConfigService: BasemapConfigService,
     private readonly configService: ConfigService,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly esriSymbolizationService: EsriSymbolizationService
   ) {
     /**
      * Because the GetCapabalities response often sends a non-secure http://wms.zh.ch response, Esri Javascript API fails on https
@@ -139,6 +120,7 @@ export class EsriMapService implements MapService {
           this.setMapView(map, scale, x, y, srsId, minScale, maxScale);
           this.attachMapViewListeners();
           this.addBasemapSubscription();
+          this.initDrawingLayers();
           this.addScaleBar();
           activeMapItems.forEach((mapItem, position) => {
             this.addMapItem(mapItem, position);
@@ -174,9 +156,13 @@ export class EsriMapService implements MapService {
       this.setEsriTimeSliderExtent(mapItem.timeSliderExtent, mapItem, esriLayer);
     }
     this.attachLayerListeners(esriLayer);
-    // index is the inverse position - the lowest index has the lowest visibility (it's on the bottom) while the lowest position has the
-    // highest visibility
-    const index = this.mapView.map.layers.length - position;
+    /**
+     * `position` is the map/layer position from the state/GUI: lowest position <=> highest visibility
+     * `index` is the position inside the Esri layer array. It's inverse to the position from the state/GUI: the lowest index <=> lowest
+     * visibility Additionally, there is a number of default layers that must always keep the highest visibility (e.g. highlight layer)
+     * independent from the state/GUI layers.
+     */
+    const index = this.getNumberOfNonDrawingLayers() - position;
     this.mapView.map.add(esriLayer, index);
   }
 
@@ -188,23 +174,13 @@ export class EsriMapService implements MapService {
   }
 
   public removeAllMapItems() {
-    this.mapView.map.removeAll();
+    const nonFixedLayers = this.mapView.map.layers.filter((layer) => !layer.id.startsWith(this.internalLayerPrefix));
+
+    this.mapView.map.removeMany(nonFixedLayers.toArray());
   }
 
   public assignMapElement(container: HTMLDivElement) {
     this.mapView.container = container;
-  }
-
-  public addHighlightGeometry(geometry: GeometryWithSrs): void {
-    const esriGeometry = this.geoJSONMapperService.fromGeoJSONToEsri(geometry);
-    const symbolization = this.highlightStyles.get(esriGeometry.type);
-    const highlightedFeature = new EsriGraphic({geometry: esriGeometry, symbol: symbolization});
-
-    this.mapView.graphics.add(highlightedFeature);
-  }
-
-  public removeAllHighlightGeometries(): void {
-    this.mapView.graphics.removeAll();
   }
 
   public setOpacity(opacity: number, mapItem: ActiveMapItem): void {
@@ -249,7 +225,10 @@ export class EsriMapService implements MapService {
 
   public setTimeSliderExtent(timeExtent: TimeExtent, mapItem: ActiveMapItem) {
     const esriLayer = this.findEsriLayer(mapItem.id);
-    this.setEsriTimeSliderExtent(timeExtent, mapItem, esriLayer);
+
+    if (esriLayer) {
+      this.setEsriTimeSliderExtent(timeExtent, mapItem, esriLayer);
+    }
   }
 
   public setAttributeFilters(attributeFilterParameters: {name: string; value: string}[], mapItem: ActiveMapItem) {
@@ -265,10 +244,14 @@ export class EsriMapService implements MapService {
   }
 
   public reorderMapItem(previousPosition: number, currentPosition: number) {
-    // index is the inverse position - the lowest index has the lowest visibility (it's on the bottom) while the lowest position has the
-    // highest visibility
-    const previousIndex = this.mapView.map.layers.length - 1 - previousPosition;
-    const currentIndex = this.mapView.map.layers.length - 1 - currentPosition;
+    /**
+     * `position` is the map/layer position from the state/GUI: lowest position <=> highest visibility
+     * `index` is the position inside the Esri layer array. It's inverse to the position from the state/GUI: the lowest index <=> lowest
+     * visibility Additionally, there is a number of default layers that must always keep the highest visibility (e.g. highlight layer)
+     * independent from the state/GUI layers.
+     */
+    const previousIndex = this.getNumberOfNonDrawingLayers() - 1 - previousPosition;
+    const currentIndex = this.getNumberOfNonDrawingLayers() - 1 - currentPosition;
     this.mapView.map.layers.reorder(this.mapView.map.layers.getItemAt(previousIndex), currentIndex);
   }
 
@@ -286,6 +269,48 @@ export class EsriMapService implements MapService {
       center: this.createGeoReferencedPoint(point),
       scale: scale
     }) as never;
+  }
+
+  public addGeometryToDrawingLayer(geometry: GeometryWithSrs, drawingLayer: DrawingLayer) {
+    const symbolization = this.esriSymbolizationService.createSymbolizationForDrawingLayer(geometry, drawingLayer);
+    const esriGeometry = this.geoJSONMapperService.fromGeoJSONToEsri(geometry);
+    const graphicItem = new EsriGraphic({geometry: esriGeometry, symbol: symbolization});
+    const targetLayer = this.findEsriLayer(this.createDrawingLayerId(drawingLayer));
+
+    if (targetLayer) {
+      (targetLayer as GraphicsLayer).add(graphicItem);
+    }
+  }
+
+  public clearDrawingLayer(drawingLayer: DrawingLayer) {
+    const layer = this.findEsriLayer(this.createDrawingLayerId(drawingLayer));
+
+    if (layer) {
+      (layer as GraphicsLayer).removeAll();
+    }
+  }
+
+  private initDrawingLayers() {
+    Object.values(DrawingLayer).forEach((drawingLayer) => {
+      const graphicsLayer = new GraphicsLayer({
+        id: this.createDrawingLayerId(drawingLayer)
+      });
+
+      this.mapView.map.add(graphicsLayer);
+    });
+  }
+
+  private createDrawingLayerId(drawingLayer: DrawingLayer): string {
+    return `${this.internalLayerPrefix}${drawingLayer}`;
+  }
+
+  /**
+   * Returns the number of layers without counting DrawingLayers. Used whenever user-provided layers are dealt with in order to exclude the
+   * fixed internal DrawingLayers.
+   * @private
+   */
+  private getNumberOfNonDrawingLayers(): number {
+    return this.mapView.map.layers.length - this.numberOfDrawingLayers;
   }
 
   private createGeoReferencedPoint({coordinates, srs}: PointWithSrs): __esri.Point {
@@ -442,7 +467,8 @@ export class EsriMapService implements MapService {
     });
   }
 
-  private findEsriLayer(id: string): __esri.Layer {
+  private findEsriLayer(id: string): __esri.Layer | undefined {
+    // note: the typehint for Collection.find() is wrong, as it may, in fact, return undefined
     return this.mapView.map.layers.find((layer) => layer.id === id);
   }
 

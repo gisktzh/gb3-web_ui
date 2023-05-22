@@ -1,9 +1,10 @@
 export interface DiscoverMapsItem {
+  id: string;
   title: string;
   description: string;
   mapId: string;
-  fromDate: string;
-  toDate: string;
+  fromDate: Date;
+  toDate: Date;
   image: DiscoverMapsItemImage;
 }
 

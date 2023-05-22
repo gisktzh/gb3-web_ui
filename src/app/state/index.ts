@@ -9,6 +9,8 @@ import {reducer as authStatusReducer} from './auth/reducers/auth-status.reducer'
 import {reducer as favouriteListReducer} from './map/reducers/favourite-list.reducer';
 import {reducer as supportContentReducer} from './support/reducers/support-content.reducer';
 import {reducer as mapAttributeFiltersItemReducer} from './map/reducers/map-attribute-filters-item.reducer';
+import {reducer as pageNotificationReducer} from './app/reducers/page-notification.reducer';
+import {reducer as geolocationReducer} from './map/reducers/geolocation.reducer';
 import {ActiveMapItemState} from './map/states/active-map-item.state';
 import {FavouriteListState} from './map/states/favourite-list.state';
 import {FeatureInfoState} from './map/states/feature-info.state';
@@ -18,6 +20,8 @@ import {MapAttributeFiltersItemState} from './map/states/map-attribute-filters-i
 import {MapConfigState} from './map/states/map-config.state';
 import {SupportContentState} from './support/states/support-content.state';
 import {AuthStatusState} from './auth/states/auth-status.state';
+import {PageNotificationState} from './app/states/page-notification.state';
+import {GeolocationState} from './map/states/geolocation.state';
 
 export interface State {
   mapConfig: MapConfigState;
@@ -29,6 +33,8 @@ export interface State {
   favouriteList: FavouriteListState;
   supportContent: SupportContentState;
   mapAttributeFiltersItem: MapAttributeFiltersItemState;
+  pageNotification: PageNotificationState;
+  geolocation: GeolocationState;
 }
 
 export const reducers: ActionReducerMap<State> = {
@@ -40,7 +46,9 @@ export const reducers: ActionReducerMap<State> = {
   authStatus: authStatusReducer,
   favouriteList: favouriteListReducer,
   supportContent: supportContentReducer,
-  mapAttributeFiltersItem: mapAttributeFiltersItemReducer
+  mapAttributeFiltersItem: mapAttributeFiltersItemReducer,
+  pageNotification: pageNotificationReducer,
+  geolocation: geolocationReducer
 };
 
 export const metaReducers: MetaReducer<State>[] = !environment.production ? [] : [];

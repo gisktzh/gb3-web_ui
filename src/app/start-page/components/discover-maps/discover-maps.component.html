@@ -6,7 +6,7 @@
 <div class="discover-maps">
   <ng-container *ngFor="let discoverMapsEntry of this.discoverMapsItems">
     <a
-      [routerLink]="['maps']"
+      [routerLink]="[mainPageEnum.Maps]"
       [queryParams]="{initialMapIds: discoverMapsEntry.mapId}"
       [title]="discoverMapsEntry.title"
       class="discover-maps__link-wrapper"

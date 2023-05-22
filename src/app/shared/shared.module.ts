@@ -11,6 +11,7 @@ import {ResizeHandlerComponent} from './components/resize-handler/resize-handler
 import {DragCursorDirective} from './directives/drag-cursor.directive';
 import {MobileWarningComponent} from './components/mobile-warning/mobile-warning.component';
 import {FormatContentPipe} from './pipes/format-content.pipe';
+import {PageNotificationComponent} from './components/page-notification/page-notification.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import {FormatContentPipe} from './pipes/format-content.pipe';
     ResizeHandlerComponent,
     DragCursorDirective,
     MobileWarningComponent,
-    FormatContentPipe
+    FormatContentPipe,
+    PageNotificationComponent
   ],
   imports: [MaterialModule, RouterModule, CommonModule, ResizableModule],
   exports: [
@@ -34,7 +36,8 @@ import {FormatContentPipe} from './pipes/format-content.pipe';
     ResizeHandlerComponent,
     DragCursorDirective,
     MobileWarningComponent,
-    FormatContentPipe
+    FormatContentPipe,
+    PageNotificationComponent
   ]
 })
 export class SharedModule {}

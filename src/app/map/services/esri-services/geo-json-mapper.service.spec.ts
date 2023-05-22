@@ -11,6 +11,7 @@ import {
   PolygonWithSrs
 } from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {SupportedSrs} from '../../../shared/types/supported-srs';
+import {MinimalGeometriesUtils} from '../../../testing/map-testing/minimal-geometries.utils';
 
 describe('GeoJsonMapperService', () => {
   const defaultSrs: SupportedSrs = 4326;
@@ -23,7 +24,7 @@ describe('GeoJsonMapperService', () => {
 
   describe('Point', () => {
     it('transforms a GeoJSON point to an Esri point', () => {
-      const minimalPoint: PointWithSrs = {type: 'Point', coordinates: [48.0, 8.0], srs: defaultSrs};
+      const minimalPoint: PointWithSrs = MinimalGeometriesUtils.getMinimalPoint(defaultSrs);
       const esriPoint = service.fromGeoJSONToEsri(minimalPoint);
 
       expect(esriPoint).toBeInstanceOf(EsriPoint);
@@ -36,14 +37,7 @@ describe('GeoJsonMapperService', () => {
 
   describe('MultiPoint', () => {
     it('transforms a GeoJSON multipoint to an Esri multipoint', () => {
-      const minimalMultiPoint: MultiPointWithSrs = {
-        type: 'MultiPoint',
-        coordinates: [
-          [48.0, 8.0],
-          [49.0, 9.0]
-        ],
-        srs: defaultSrs
-      };
+      const minimalMultiPoint: MultiPointWithSrs = MinimalGeometriesUtils.getMinimalMultiPoint(defaultSrs);
 
       const esriMultiPoint = service.fromGeoJSONToEsri(minimalMultiPoint);
 
@@ -57,26 +51,7 @@ describe('GeoJsonMapperService', () => {
   describe('Polygon', () => {
     it('transforms a GeoJSON polygon to an Esri polygon', () => {
       // Represents a minimal polygon with an interior ring
-      const minimalPolygon: PolygonWithSrs = {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [100.0, 0.0],
-            [101.0, 0.0],
-            [101.0, 1.0],
-            [100.0, 1.0],
-            [100.0, 0.0]
-          ],
-          [
-            [100.8, 0.8],
-            [100.8, 0.2],
-            [100.2, 0.2],
-            [100.2, 0.8],
-            [100.8, 0.8]
-          ]
-        ],
-        srs: defaultSrs
-      };
+      const minimalPolygon: PolygonWithSrs = MinimalGeometriesUtils.getMinimalPolygon(defaultSrs);
 
       const esriPolygon = service.fromGeoJSONToEsri(minimalPolygon);
 
@@ -86,38 +61,7 @@ describe('GeoJsonMapperService', () => {
     });
 
     it('transforms a GeoJSON multipolygon to an Esri polygon', () => {
-      // Represents a minimal polygon with an interior ring and a polygon without a ring, as MultiPolygon
-      const minimalMultiPolygon: MultiPolygonWithSrs = {
-        type: 'MultiPolygon',
-        coordinates: [
-          [
-            [
-              [102.0, 2.0],
-              [103.0, 2.0],
-              [103.0, 3.0],
-              [102.0, 3.0],
-              [102.0, 2.0]
-            ]
-          ],
-          [
-            [
-              [100.0, 0.0],
-              [101.0, 0.0],
-              [101.0, 1.0],
-              [100.0, 1.0],
-              [100.0, 0.0]
-            ],
-            [
-              [100.2, 0.2],
-              [100.2, 0.8],
-              [100.8, 0.8],
-              [100.8, 0.2],
-              [100.2, 0.2]
-            ]
-          ]
-        ],
-        srs: defaultSrs
-      };
+      const minimalMultiPolygon: MultiPolygonWithSrs = MinimalGeometriesUtils.getMinimalMultiPolygon(defaultSrs);
 
       const esriPolygon = service.fromGeoJSONToEsri(minimalMultiPolygon);
 
@@ -129,14 +73,7 @@ describe('GeoJsonMapperService', () => {
 
   describe('Polyline', () => {
     it('transforms a GeoJSON linestring to an Esri polyline', () => {
-      const minimalLineString: LineStringWithSrs = {
-        type: 'LineString',
-        coordinates: [
-          [100.0, 0.0],
-          [101.0, 1.0]
-        ],
-        srs: defaultSrs
-      };
+      const minimalLineString: LineStringWithSrs = MinimalGeometriesUtils.getMinimalLineString(defaultSrs);
 
       const esriPolyline = service.fromGeoJSONToEsri(minimalLineString);
 
@@ -145,20 +82,7 @@ describe('GeoJsonMapperService', () => {
     });
 
     it('transforms a GeoJSON multilinestring to an Esri polyline', () => {
-      const minimalMultiLineString: MultiLineStringWithSrs = {
-        type: 'MultiLineString',
-        coordinates: [
-          [
-            [100.0, 0.0],
-            [101.0, 1.0]
-          ],
-          [
-            [102.0, 2.0],
-            [103.0, 3.0]
-          ]
-        ],
-        srs: defaultSrs
-      };
+      const minimalMultiLineString: MultiLineStringWithSrs = MinimalGeometriesUtils.getMinimalMultiLineString(defaultSrs);
 
       const esriPolyline = service.fromGeoJSONToEsri(minimalMultiLineString);
 

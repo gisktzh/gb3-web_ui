@@ -2,12 +2,18 @@
   <img alt="KTZH Logo" class="navbar__item navbar__logo" src="assets/images/ktzh_inverted.svg" />
   <span class="navbar__item">GIS-Browser Zürich</span>
   <span class="navbar__spacer"></span>
-  <a [queryParams]="{}" [routerLinkActiveOptions]="{exact: true}" class="navbar__item" mat-button routerLink="/" routerLinkActive="current"
+  <a
+    [queryParams]="{}"
+    [routerLinkActiveOptions]="{exact: true}"
+    class="navbar__item"
+    mat-button
+    [routerLink]="[mainPageEnum.Start]"
+    routerLinkActive="current"
     >Übersicht</a
   >
-  <a class="navbar__item" mat-button routerLink="/maps" routerLinkActive="current">GIS-Browser</a>
-  <a class="navbar__item" mat-button routerLink="/data" routerLinkActive="current">Datenkatalog</a>
-  <a class="navbar__item" mat-button routerLink="/support" routerLinkActive="current">Hilfe & Support</a>
+  <a class="navbar__item" mat-button [routerLink]="[mainPageEnum.Maps]" routerLinkActive="current">GIS-Browser</a>
+  <a class="navbar__item" mat-button [routerLink]="[mainPageEnum.Data]" routerLinkActive="current">Datenkatalog</a>
+  <a class="navbar__item" mat-button [routerLink]="[mainPageEnum.Support]" routerLinkActive="current">Hilfe & Support</a>
   <a class="navbar__item" href="https://geodatenshop.zh.ch" mat-button target="_blank" rel="noopener noreferrer">
     <mat-icon>launch</mat-icon>
     Geodatenshop
