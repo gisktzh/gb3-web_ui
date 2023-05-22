@@ -149,7 +149,7 @@ describe('EsriMapService', () => {
     service.addMapItem(mapItem2, 1);
     service.addMapItem(mapItem3, 2);
 
-    expect(mapMock.layers.length).toBe(3 + internalLayers.length);
+    expect(mapMock.layers.length).toBe(getExpectedNumberOfLayersWithInternalLayers(3));
 
     service.removeAllMapItems();
 
