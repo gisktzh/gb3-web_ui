@@ -1,0 +1,11 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.page-notification-snackbar.mat-mdc-snack-bar-container {
+  width: 640px;
+
+  .mdc-snackbar__surface {
+    width: 100%;
+    border-radius: ktzh-variables.$zh-border-radius;
+    padding-right: 0;
+  }
+}

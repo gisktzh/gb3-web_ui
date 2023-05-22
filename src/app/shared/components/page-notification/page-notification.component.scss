@@ -1,0 +1,62 @@
+@use 'functions/helper.function' as functions;
+@use 'mixins/helpers.mixin' as mixins;
+@use 'mixins/material.mixin' as mat-mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+:host {
+  display: flex;
+}
+
+.page-notification-label {
+  display: flex;
+  align-items: center;
+  color: ktzh-variables.$zh-white;
+  height: 80px;
+
+  .page-notification-label__icon {
+    height: 36px;
+    min-width: 36px;
+    font-size: 36px;
+  }
+
+  .page-notification-label__text-container {
+    display: flex;
+    flex-direction: column;
+    padding-left: 12px;
+
+    .page-notification-label__text-container__title {
+      @include mixins.single-line-text;
+      font-family: ktzh-variables.$zh-font-family-bold;
+    }
+
+    .page-notification-label__text-container__text {
+      @include mixins.multiline-ellipsis(2);
+    }
+  }
+
+  &--info {
+    background-color: ktzh-variables.$zh-green;
+  }
+
+  &--warning {
+    background-color: ktzh-variables.$zh-red;
+  }
+}
+
+.page-notification-actions {
+  padding-right: 8px;
+
+  &--info {
+    background-color: ktzh-variables.$zh-green;
+    .page-notification-actions__close-button {
+      @include mat-mixins.mat-icon-button-override-unthemed-color(ktzh-variables.$zh-green, ktzh-variables.$zh-white);
+    }
+  }
+
+  &--warning {
+    background-color: ktzh-variables.$zh-red;
+    .page-notification-actions__close-button {
+      @include mat-mixins.mat-icon-button-override-unthemed-color(ktzh-variables.$zh-red, ktzh-variables.$zh-white);
+    }
+  }
+}

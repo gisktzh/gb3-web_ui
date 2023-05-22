@@ -88,7 +88,7 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
   public deleteFavourite(favourite: Favourite) {
     this.dialogService.open<FavouriteDeletionDialogComponent, {favourite: Favourite}, boolean>(FavouriteDeletionDialogComponent, {
       data: {favourite},
-      panelClass: PanelClass.API_WRAPPER_DIALOG,
+      panelClass: PanelClass.ApiWrapperDialog,
       restoreFocus: false
     });
   }

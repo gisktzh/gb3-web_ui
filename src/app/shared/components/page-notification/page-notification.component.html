@@ -1,0 +1,12 @@
+<div matSnackBarLabel class="page-notification-label" [ngClass]="'page-notification-label--' + data.severity">
+  <mat-icon class="page-notification-label__icon" [fontIcon]="this.icon">info</mat-icon>
+  <div class="page-notification-label__text-container">
+    <span class="page-notification-label__text-container__title">{{ data.title }}</span>
+    <span class="page-notification-label__text-container__text">{{ data.description }}</span>
+  </div>
+</div>
+<div matSnackBarActions class="page-notification-actions" [ngClass]="'page-notification-actions--' + data.severity">
+  <button class="page-notification-actions__close-button" (click)="markPageNotificationAsRead()" mat-icon-button>
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
