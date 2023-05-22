@@ -56,7 +56,8 @@ export class AppComponent implements OnInit, OnDestroy {
         .pipe(
           tap((pageNotifications) => {
             if (pageNotifications.length > 0) {
-              // only show the first available notification for this page
+              // there should be only one page notification active at the same time by definition
+              // if there are more than one (as that's technically possible) we only the first one and ignore the rest for now
               this.openPageNotificationSnackBar(pageNotifications[0]);
             } else {
               this.closePageNotificationSnackBar();

@@ -40,8 +40,8 @@ export class GravCmsService extends BaseApiService {
         ...discoverMapData,
         id: discoverMapData.flex_id,
         mapId: discoverMapData.id,
-        fromDate: discoverMapData.from_date,
-        toDate: discoverMapData.to_date,
+        fromDate: dayjs(discoverMapData.from_date, this.timeFormat).toDate(),
+        toDate: dayjs(discoverMapData.to_date, this.timeFormat).toDate(),
         image: {
           ...discoverMapData.image,
           url: this.createFullImageUrl(discoverMapData.image.path)
@@ -57,19 +57,27 @@ export class GravCmsService extends BaseApiService {
         id: pageInfoData.flex_id,
         fromDate: dayjs(pageInfoData.from_date, this.timeFormat).toDate(),
         toDate: dayjs(pageInfoData.to_date, this.timeFormat).toDate(),
-        pages: this.transformPagesToEnumArray(pageInfoData.pages),
+        pages: this.transformPagesToMainPages(pageInfoData.pages),
         severity: pageInfoData.severity as PageNotificationSeverity,
         isMarkedAsRead: false
       };
     });
   }
 
-  private transformPagesToEnumArray(pages: Pages): MainPage[] {
+  private transformPagesToMainPages(pages: Pages): MainPage[] {
     const transformedPages: MainPage[] = [];
-    if (pages.map) transformedPages.push(MainPage.Maps);
-    if (pages.start) transformedPages.push(MainPage.Start);
-    if (pages.datacatalogue) transformedPages.push(MainPage.Data);
-    if (pages.support) transformedPages.push(MainPage.Support);
+    if (pages.map) {
+      transformedPages.push(MainPage.Maps);
+    }
+    if (pages.start) {
+      transformedPages.push(MainPage.Start);
+    }
+    if (pages.datacatalogue) {
+      transformedPages.push(MainPage.Data);
+    }
+    if (pages.support) {
+      transformedPages.push(MainPage.Support);
+    }
     return transformedPages;
   }
 

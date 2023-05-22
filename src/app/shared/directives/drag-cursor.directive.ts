@@ -9,7 +9,7 @@ import {DOCUMENT} from '@angular/common';
 export class DragCursorDirective implements OnInit, OnDestroy {
   private readonly subscriptions: Subscription = new Subscription();
 
-  constructor(@Inject(DOCUMENT) private document: Document, private cdkDrag: CdkDrag) {}
+  constructor(@Inject(DOCUMENT) private readonly document: Document, private readonly cdkDrag: CdkDrag) {}
 
   public ngOnInit() {
     this.initSubscriptions();

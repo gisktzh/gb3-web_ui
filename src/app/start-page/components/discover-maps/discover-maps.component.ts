@@ -5,6 +5,7 @@ import {Subscription, tap, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {DiscoverMapsItem} from '../../../shared/interfaces/discover-maps-item.interface';
 import {GravCmsService} from '../../../shared/services/apis/grav-cms/grav-cms.service';
+import {MainPage} from '../../../shared/enums/main-page.enum';
 
 @Component({
   selector: 'discover-maps',
@@ -12,6 +13,9 @@ import {GravCmsService} from '../../../shared/services/apis/grav-cms/grav-cms.se
   styleUrls: ['./discover-maps.component.scss']
 })
 export class DiscoverMapsComponent implements OnInit, HasLoadingState, OnDestroy {
+  // expose the enum to the HTML
+  public readonly mainPageEnum = MainPage;
+
   public loadingState: LoadingState = 'loading';
   public discoverMapsItems: DiscoverMapsItem[] = [];
   private readonly subscriptions: Subscription = new Subscription();

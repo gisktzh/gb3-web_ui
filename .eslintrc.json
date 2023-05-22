@@ -77,6 +77,10 @@
             "selector": ["objectLiteralProperty"],
             "format": null,
             "modifiers": ["requiresQuotes"]
+          },
+          {
+            "selector": ["enum", "enumMember"],
+            "format": ["PascalCase"]
           }
         ],
         "arrow-parens": ["off", "always"],

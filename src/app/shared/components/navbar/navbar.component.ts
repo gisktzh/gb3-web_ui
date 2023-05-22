@@ -4,6 +4,7 @@ import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {AuthStatusActions} from '../../../state/auth/actions/auth-status.actions';
 import {selectUserName} from '../../../state/auth/reducers/auth-status.reducer';
+import {MainPage} from '../../enums/main-page.enum';
 
 @Component({
   selector: 'navbar',
@@ -11,6 +12,9 @@ import {selectUserName} from '../../../state/auth/reducers/auth-status.reducer';
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent implements OnInit, OnDestroy {
+  // expose the enum to the HTML
+  public readonly mainPageEnum = MainPage;
+
   public isAuthenticated: boolean = false;
   public userName: string | undefined = undefined;
   private readonly subscriptions = new Subscription();

@@ -1,4 +1,4 @@
-import {Injectable, OnDestroy} from '@angular/core';
+import {Inject, Injectable, OnDestroy} from '@angular/core';
 import {NavigationEnd, Router} from '@angular/router';
 import {BehaviorSubject, filter, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
@@ -6,6 +6,7 @@ import {MainPage} from '../enums/main-page.enum';
 import {PageNotificationActions} from '../../state/app/actions/page-notification.actions';
 import {PageNotification} from '../interfaces/page-notification.interface';
 import {selectAllUnreadPageNotifications} from '../../state/app/selectors/page-notification.selector';
+import {DOCUMENT} from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,7 @@ export class PageNotificationService implements OnDestroy {
   private currentMainPageOrUndefined?: MainPage;
   private pageNotifications: PageNotification[] = [];
 
-  constructor(private readonly router: Router, private readonly store: Store) {
+  constructor(private readonly router: Router, private readonly store: Store, @Inject(DOCUMENT) private readonly document: Document) {
     this.initSubscriptions();
   }
 
@@ -34,7 +35,7 @@ export class PageNotificationService implements OnDestroy {
         .pipe(
           filter((event): event is NavigationEnd => event instanceof NavigationEnd),
           tap(() => {
-            this.currentMainPageOrUndefined = this.tryGetCurrentMainPage();
+            this.currentMainPageOrUndefined = this.getCurrentMainPage();
             this.refreshCurrentPageNotifications();
           })
         )
@@ -65,26 +66,22 @@ export class PageNotificationService implements OnDestroy {
     this.currentPageNotifications$.next(currentPageNotifications);
   }
 
-  /** Tries to get the first URL path part parsed as enum `MainPage`; Returns `undefined` if either the extraction or parsing failed. */
-  private tryGetCurrentMainPage(): MainPage | undefined {
-    const currentLocationPathname = this.getCurrentLocationPathname();
-    const extractedMainPageString = this.extractMainPageStringFromUrl(currentLocationPathname, 1);
-    return this.parseStringToMainPage(extractedMainPageString);
+  /**
+   * Returns the first URL path part parsed as enum `MainPage` or `undefined` if either the extraction or parsing failed.
+   * @private
+   */
+  private getCurrentMainPage(): MainPage | undefined {
+    const currentLocationPathname = this.document.location.pathname;
+    const extractedMainPageString = this.extractMainPageStringFromUrl(currentLocationPathname);
+    return this.transformStringToMainPage(extractedMainPageString);
   }
 
-  private getCurrentLocationPathname(): string {
-    return location.pathname;
-  }
-
-  private extractMainPageStringFromUrl(url: string, partNumber: number): string | undefined {
+  private extractMainPageStringFromUrl(url: string): string | undefined {
     const urlPathParts = url.split('/');
-    if (urlPathParts.length < partNumber + 1) {
-      return undefined;
-    }
-    return urlPathParts[partNumber];
+    return urlPathParts.length > 1 ? urlPathParts[1] : undefined;
   }
 
-  private parseStringToMainPage(mainPageString: string | undefined): MainPage | undefined {
+  private transformStringToMainPage(mainPageString: string | undefined): MainPage | undefined {
     return mainPageString !== undefined && Object.values<string>(MainPage).includes(mainPageString)
       ? (mainPageString as MainPage)
       : undefined;
