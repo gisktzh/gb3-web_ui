@@ -155,8 +155,12 @@ export class EsriMapService implements MapService {
       this.setEsriTimeSliderExtent(mapItem.timeSliderExtent, mapItem, esriLayer);
     }
     this.attachLayerListeners(esriLayer);
-    // index is the inverse position - the lowest index has the lowest visibility (it's on the bottom) while the lowest position has the
-    // highest visibility
+    /**
+     * `position` is the map/layer position from the state/GUI: lowest position <=> highest visibility
+     * `index` is the position inside the Esri layer array. It's inverse to the position from the state/GUI: the lowest index <=> lowest
+     * visibility Additionally, there is a number of default layers that must always keep the highest visibility (e.g. highlight layer)
+     * independent from the state/GUI layers.
+     */
     const index = this.getNumberOfNonDrawingLayers() - position;
     this.mapView.map.add(esriLayer, index);
   }
@@ -234,8 +238,12 @@ export class EsriMapService implements MapService {
   }
 
   public reorderMapItem(previousPosition: number, currentPosition: number) {
-    // index is the inverse position - the lowest index has the lowest visibility (it's on the bottom) while the lowest position has the
-    // highest visibility
+    /**
+     * `position` is the map/layer position from the state/GUI: lowest position <=> highest visibility
+     * `index` is the position inside the Esri layer array. It's inverse to the position from the state/GUI: the lowest index <=> lowest
+     * visibility Additionally, there is a number of default layers that must always keep the highest visibility (e.g. highlight layer)
+     * independent from the state/GUI layers.
+     */
     const previousIndex = this.getNumberOfNonDrawingLayers() - 1 - previousPosition;
     const currentIndex = this.getNumberOfNonDrawingLayers() - 1 - currentPosition;
     this.mapView.map.layers.reorder(this.mapView.map.layers.getItemAt(previousIndex), currentIndex);
@@ -261,13 +269,13 @@ export class EsriMapService implements MapService {
     const symbolization = this.esriSymbolizationService.createSymbolizationForDrawingLayer(geometry, drawingLayer);
     const esriGeometry = this.geoJSONMapperService.fromGeoJSONToEsri(geometry);
     const graphicItem = new EsriGraphic({geometry: esriGeometry, symbol: symbolization});
-    const targetLayer = this.findEsriLayer(this.createDrawingLayerName(drawingLayer)) as GraphicsLayer;
+    const targetLayer = this.findEsriLayer(this.createDrawingLayerId(drawingLayer)) as GraphicsLayer;
 
     targetLayer.add(graphicItem);
   }
 
   public clearDrawingLayer(drawingLayer: DrawingLayer) {
-    const layer = this.findEsriLayer(this.createDrawingLayerName(drawingLayer)) as GraphicsLayer;
+    const layer = this.findEsriLayer(this.createDrawingLayerId(drawingLayer)) as GraphicsLayer;
 
     layer.removeAll();
   }
@@ -275,14 +283,14 @@ export class EsriMapService implements MapService {
   private initDrawingLayers() {
     Object.values(DrawingLayer).forEach((drawingLayer) => {
       const graphicsLayer = new GraphicsLayer({
-        id: this.createDrawingLayerName(drawingLayer)
+        id: this.createDrawingLayerId(drawingLayer)
       });
 
       this.mapView.map.add(graphicsLayer);
     });
   }
 
-  private createDrawingLayerName(drawingLayer: DrawingLayer): string {
+  private createDrawingLayerId(drawingLayer: DrawingLayer): string {
     return `${this.configService.mapConfig.drawingLayerPrefix}${drawingLayer}`;
   }
 

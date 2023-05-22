@@ -23,7 +23,7 @@ export const geolocationFeature = createFeature({
     on(GeolocationActions.startLocationRequest, (): GeolocationState => {
       return {...initialState, loadingState: 'loading'};
     }),
-    on(GeolocationActions.setSuccess, (state, {location}): GeolocationState => {
+    on(GeolocationActions.setGeolocation, (state, {location}): GeolocationState => {
       return {...initialState, loadingState: 'loaded', currentGpsLocation: location};
     }),
     on(GeolocationActions.setFailure, (state, {error}): GeolocationState => {

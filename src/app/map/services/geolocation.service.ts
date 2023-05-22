@@ -22,14 +22,13 @@ export class GeolocationService {
 
   public getPosition() {
     if (!this.navigator) {
-      // todo: at some point in the future, we need to check whether this works - so we need a browser that does not have the navigator API.
       this.store.dispatch(GeolocationActions.setFailure({error: new GeolocationPositionError()}));
     } else {
       this.navigator.geolocation.getCurrentPosition(
         (position) => {
           // Geolocation API always returns 4326 coordinates
           const location: PointWithSrs = {coordinates: [position.coords.longitude, position.coords.latitude], srs: 4326, type: 'Point'};
-          this.store.dispatch(GeolocationActions.setSuccess({location}));
+          this.store.dispatch(GeolocationActions.setGeolocation({location}));
         },
         (error) => {
           this.store.dispatch(GeolocationActions.setFailure({error}));

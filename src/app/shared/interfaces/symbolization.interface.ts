@@ -60,4 +60,8 @@ export interface SymbolizationStyle {
   polygon: PolygonSymbolization;
 }
 
+/**
+ * Represents a collection of symbolizations for all DrawingLayers that exist. By using the enum as key, it enforces that each
+ * DrawingLayer has a symbolization associated with it or else the compiler raises an error.
+ */
 export type LayerSymbolizations = {[key in DrawingLayer]: SymbolizationStyle};

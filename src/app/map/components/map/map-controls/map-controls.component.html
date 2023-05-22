@@ -11,10 +11,7 @@
     [disabled]="this.geolocationState.loadingState === 'loading'"
   >
     <mat-icon>my_location</mat-icon>
-    <loading-and-process-bar
-      *ngIf="this.geolocationState.loadingState === 'loading' || 'error'"
-      [loadingState]="this.geolocationState.loadingState"
-    ></loading-and-process-bar>
+    <loading-and-process-bar [loadingState]="this.geolocationState.loadingState"></loading-and-process-bar>
   </button>
   <button mat-icon-button (click)="this.goToInitialExtent()" color="accent" class="map-controls__button" data-test-id="map-home">
     <mat-icon>home</mat-icon>
