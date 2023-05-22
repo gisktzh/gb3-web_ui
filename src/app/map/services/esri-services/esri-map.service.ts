@@ -56,6 +56,7 @@ export class EsriMapService implements MapService {
   private readonly activeBasemapId$ = this.store.select(selectActiveBasemapId);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
   private readonly wmsImageFormatMimeType = this.configService.gb2Config.wmsFormatMimeType;
+  private readonly internalLayerPrefix = this.configService.mapConfig.internalLayerPrefix;
 
   constructor(
     private readonly store: Store,
@@ -173,7 +174,9 @@ export class EsriMapService implements MapService {
   }
 
   public removeAllMapItems() {
-    this.mapView.map.removeAll();
+    const nonFixedLayers = this.mapView.map.layers.filter((layer) => !layer.id.startsWith(this.internalLayerPrefix));
+
+    this.mapView.map.removeMany(nonFixedLayers.toArray());
   }
 
   public assignMapElement(container: HTMLDivElement) {
@@ -298,7 +301,7 @@ export class EsriMapService implements MapService {
   }
 
   private createDrawingLayerId(drawingLayer: DrawingLayer): string {
-    return `${this.configService.mapConfig.drawingLayerPrefix}${drawingLayer}`;
+    return `${this.internalLayerPrefix}${drawingLayer}`;
   }
 
   /**
