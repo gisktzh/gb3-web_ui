@@ -1,5 +1,5 @@
 export enum DrawingLayer {
-  FEATURE_HIGHLIGHT = 'feature_highlight',
-  LOCATE_POSITION = 'locate_position',
-  REDLINING = 'redlining'
+  FeatureHighlight = 'feature_highlight',
+  LocatePosition = 'locate_position',
+  Redlining = 'redlining'
 }

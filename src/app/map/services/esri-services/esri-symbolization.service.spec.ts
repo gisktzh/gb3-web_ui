@@ -59,7 +59,7 @@ const minimalTestSet = [
 
 // we only mock some of the values; because we mainly need to test different colors and point types.
 const mockSymbolizations: LayerSymbolizations = {
-  [DrawingLayer.LOCATE_POSITION]: {
+  [DrawingLayer.LocatePosition]: {
     point: {
       type: 'svg',
       size: 24,
@@ -75,7 +75,7 @@ const mockSymbolizations: LayerSymbolizations = {
       angle: 0
     }
   },
-  [DrawingLayer.FEATURE_HIGHLIGHT]: {
+  [DrawingLayer.FeatureHighlight]: {
     point: {
       type: 'simple',
       size: 12,
@@ -142,7 +142,7 @@ describe('EsriSymbolizationService', () => {
   describe('geometry-dependent symbolization', () => {
     minimalTestSet.forEach(({expected, expectedInstanceOf, geometry, type}) => {
       it(`returns ${expected} for ${type}`, () => {
-        const result = service.createSymbolizationForDrawingLayer(geometry, DrawingLayer.FEATURE_HIGHLIGHT);
+        const result = service.createSymbolizationForDrawingLayer(geometry, DrawingLayer.FeatureHighlight);
 
         expect(result).toBeInstanceOf(expectedInstanceOf);
       });
@@ -151,14 +151,14 @@ describe('EsriSymbolizationService', () => {
     it('throws for GeometryCollection', () => {
       const collection: GeometryCollectionWithSrs = {type: 'GeometryCollection', geometries: [], srs: SRS};
 
-      expect(() => service.createSymbolizationForDrawingLayer(collection, DrawingLayer.FEATURE_HIGHLIGHT)).toThrow();
+      expect(() => service.createSymbolizationForDrawingLayer(collection, DrawingLayer.FeatureHighlight)).toThrow();
     });
   });
 
   describe('point symbol types', () => {
     it("returns a simple point symbol for type 'simple'", () => {
       const point = MinimalGeometriesUtils.getMinimalPoint(SRS);
-      const testLayer = DrawingLayer.FEATURE_HIGHLIGHT;
+      const testLayer = DrawingLayer.FeatureHighlight;
 
       const result = service.createSymbolizationForDrawingLayer(point, testLayer) as SimpleMarkerSymbol;
 
@@ -176,7 +176,7 @@ describe('EsriSymbolizationService', () => {
 
     it("returns an svg point symbol for type 'svg'", () => {
       const point = MinimalGeometriesUtils.getMinimalPoint(SRS);
-      const testLayer = DrawingLayer.LOCATE_POSITION;
+      const testLayer = DrawingLayer.LocatePosition;
 
       const result = service.createSymbolizationForDrawingLayer(point, testLayer) as SimpleMarkerSymbol;
 
@@ -193,7 +193,7 @@ describe('EsriSymbolizationService', () => {
   describe('line symbol type', () => {
     it('returns a line symbol', () => {
       const point = MinimalGeometriesUtils.getMinimalLineString(SRS);
-      const testLayer = DrawingLayer.FEATURE_HIGHLIGHT;
+      const testLayer = DrawingLayer.FeatureHighlight;
 
       const result = service.createSymbolizationForDrawingLayer(point, testLayer) as SimpleLineSymbol;
 
@@ -207,7 +207,7 @@ describe('EsriSymbolizationService', () => {
   describe('polygon symbol type', () => {
     it('returns a polygon symbol', () => {
       const point = MinimalGeometriesUtils.getMinimalPolygon(SRS);
-      const testLayer = DrawingLayer.FEATURE_HIGHLIGHT;
+      const testLayer = DrawingLayer.FeatureHighlight;
 
       const result = service.createSymbolizationForDrawingLayer(point, testLayer) as SimpleFillSymbol;
 

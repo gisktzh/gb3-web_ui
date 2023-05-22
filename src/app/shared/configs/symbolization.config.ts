@@ -54,12 +54,12 @@ const defaultSymbolization: SymbolizationStyle = {
 };
 
 export const layerSymbolizations: LayerSymbolizations = {
-  [DrawingLayer.REDLINING]: {
+  [DrawingLayer.Redlining]: {
     point: defaultSymbolization.point,
     line: defaultSymbolization.line,
     polygon: defaultSymbolization.polygon
   },
-  [DrawingLayer.LOCATE_POSITION]: {
+  [DrawingLayer.LocatePosition]: {
     point: {
       type: 'svg',
       size: 24,
@@ -80,7 +80,7 @@ export const layerSymbolizations: LayerSymbolizations = {
     line: defaultSymbolization.line,
     polygon: defaultSymbolization.polygon
   },
-  [DrawingLayer.FEATURE_HIGHLIGHT]: {
+  [DrawingLayer.FeatureHighlight]: {
     point: {
       type: 'simple',
       size: 12,
