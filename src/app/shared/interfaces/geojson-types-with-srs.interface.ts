@@ -1,5 +1,5 @@
 import {SupportedSrs} from '../types/supported-srs';
-import {Geometry, LineString, MultiLineString, MultiPoint, MultiPolygon, Point, Polygon} from 'geojson';
+import {Geometry, GeometryCollection, LineString, MultiLineString, MultiPoint, MultiPolygon, Point, Polygon} from 'geojson';
 
 /**
  * A generic interface for adding SRS information that is supported in the application to any object.
@@ -25,3 +25,5 @@ export interface MultiPolygonWithSrs extends MultiPolygon, HasSrs {}
 export interface LineStringWithSrs extends LineString, HasSrs {}
 
 export interface MultiLineStringWithSrs extends MultiLineString, HasSrs {}
+
+export interface GeometryCollectionWithSrs extends GeometryCollection, HasSrs {}

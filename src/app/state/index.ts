@@ -10,6 +10,7 @@ import {reducer as favouriteListReducer} from './map/reducers/favourite-list.red
 import {reducer as supportContentReducer} from './support/reducers/support-content.reducer';
 import {reducer as mapAttributeFiltersItemReducer} from './map/reducers/map-attribute-filters-item.reducer';
 import {reducer as pageNotificationReducer} from './app/reducers/page-notification.reducer';
+import {reducer as geolocationReducer} from './map/reducers/geolocation.reducer';
 import {ActiveMapItemState} from './map/states/active-map-item.state';
 import {FavouriteListState} from './map/states/favourite-list.state';
 import {FeatureInfoState} from './map/states/feature-info.state';
@@ -20,6 +21,7 @@ import {MapConfigState} from './map/states/map-config.state';
 import {SupportContentState} from './support/states/support-content.state';
 import {AuthStatusState} from './auth/states/auth-status.state';
 import {PageNotificationState} from './app/states/page-notification.state';
+import {GeolocationState} from './map/states/geolocation.state';
 
 export interface State {
   mapConfig: MapConfigState;
@@ -32,6 +34,7 @@ export interface State {
   supportContent: SupportContentState;
   mapAttributeFiltersItem: MapAttributeFiltersItemState;
   pageNotification: PageNotificationState;
+  geolocation: GeolocationState;
 }
 
 export const reducers: ActionReducerMap<State> = {
@@ -44,7 +47,8 @@ export const reducers: ActionReducerMap<State> = {
   favouriteList: favouriteListReducer,
   supportContent: supportContentReducer,
   mapAttributeFiltersItem: mapAttributeFiltersItemReducer,
-  pageNotification: pageNotificationReducer
+  pageNotification: pageNotificationReducer,
+  geolocation: geolocationReducer
 };
 
 export const metaReducers: MetaReducer<State>[] = !environment.production ? [] : [];

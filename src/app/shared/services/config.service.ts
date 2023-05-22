@@ -1,12 +1,12 @@
 import {Inject, Injectable} from '@angular/core';
 import {defaultBasemap, defaultBasemaps} from '../configs/base-map.config';
-import {defaultHighlightStyles} from '../configs/feature-info.config';
 import {defaultMapConfig} from '../configs/map.config';
 import {MapConstants} from '../constants/map.constants';
 import {DOCUMENT} from '@angular/common';
 import {defaultRuntimeConfig} from '../configs/runtime.config';
 import {ApiConfig, AuthSettings, OverrideSettings, RuntimeConfig} from '../interfaces/runtime-config.interface';
 import {Gb2Constants} from '../constants/gb2.constants';
+import {layerSymbolizations} from '../configs/symbolization.config';
 
 @Injectable({
   providedIn: 'root'
@@ -17,15 +17,15 @@ export class ConfigService {
     defaultBasemap: defaultBasemap
   };
 
-  public readonly featureInfoConfig = {
-    defaultHighlightStyles: defaultHighlightStyles
-  };
+  public readonly layerSymbolizations = layerSymbolizations;
 
   public readonly gb2Config = {
     wmsFormatMimeType: Gb2Constants.WMS_IMAGE_FORMAT_MIME_TYPE
   };
 
   public readonly mapConfig = {
+    internalLayerPrefix: MapConstants.INTERNAL_LAYER_PREFIX,
+    locateMeZoom: MapConstants.LOCATE_ME_ZOOM,
     defaultMapConfig: defaultMapConfig,
     mapScaleConfig: {
       maxScale: MapConstants.MAXIMUM_MAP_SCALE,
