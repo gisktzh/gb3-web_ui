@@ -38,6 +38,7 @@ export class MapDrawingService implements OnDestroy {
   }
 
   private initSubscriptions() {
+    // todo: when adding the redlining, this might be refactored away as an effect.
     this.subscriptions.add(
       this.currentGpsLocation$
         .pipe(
