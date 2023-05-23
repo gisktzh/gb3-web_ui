@@ -1,7 +1,12 @@
 <mat-toolbar class="navbar" color="primary">
-  <span [style.visibility]="!this.isSimplifiedPage ? 'hidden' : 'visible'" class="navbar__item">
-    <img alt="KTZH Logo" class="navbar__logo" src="assets/images/ktzh_inverted.svg" />
-    GIS-Browser
+  <span class="navbar__item">
+    <img
+      [style.display]="!this.isSimplifiedPage ? 'none' : 'inline'"
+      alt="KTZH Logo"
+      class="navbar__logo"
+      src="assets/images/ktzh_inverted.svg"
+    />
+    GIS-Browser Zürich
   </span>
   <span class="navbar__spacer"></span>
 
