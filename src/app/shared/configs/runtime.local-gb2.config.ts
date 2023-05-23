@@ -13,6 +13,9 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       gb2StaticFiles: {
         baseUrl: 'http://localhost:4200'
       },
+      gb2WmsCapabilities: {
+        baseUrl: 'http://localhost:4200/wms'
+      },
       gb2Wms: {
         baseUrl: 'http://localhost:4200'
       },

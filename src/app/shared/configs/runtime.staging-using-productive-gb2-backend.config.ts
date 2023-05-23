@@ -1,8 +1,8 @@
 import {RuntimeConfig} from '../interfaces/runtime-config.interface';
 
 /**
- * This runtime configuration is used for the staging instance with a direct connection to the productive GB2 backend and replaces runtime.config.ts during build.
- * Note that this is a temporary solution as it is a mix between staging and productive environment.
+ * This runtime configuration is used for the staging instance with a direct connection to the productive GB2 backend and replaces
+ * runtime.config.ts during build. Note that this is a temporary solution as it is a mix between staging and productive environment.
  */
 export const defaultRuntimeConfig: RuntimeConfig[] = [
   {
@@ -13,6 +13,9 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       },
       gb2StaticFiles: {
         baseUrl: 'https://web.maps.zh.ch'
+      },
+      gb2WmsCapabilities: {
+        baseUrl: 'https://web.maps.zh.ch/wms'
       },
       gb2Wms: {
         baseUrl: 'https://web.maps.zh.ch'

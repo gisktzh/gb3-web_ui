@@ -9,6 +9,14 @@ interface OptionalApiBaseUrlConfig extends ApiBaseUrlConfig {
 export interface ApiConfig {
   gb2Api: ApiBaseUrlConfig;
   gb2StaticFiles: ApiBaseUrlConfig;
+  /** Since the GetCapabilities requests might be routed to another domain than the *actual* WMS (e.g.
+   * https://maps.zh.ch/wms/MAPNAME?request=GetCapabilities), this URL is hardcoded as well to ensure the token is attached to all
+   * required requests.
+   */
+  gb2WmsCapabilities: ApiBaseUrlConfig;
+  /**
+   * This is the actual WMS URL that serves the map images.
+   */
   gb2Wms: ApiBaseUrlConfig;
   geoLion: ApiBaseUrlConfig;
   searchApi: ApiBaseUrlConfig;

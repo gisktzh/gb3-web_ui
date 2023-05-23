@@ -13,6 +13,9 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       gb2StaticFiles: {
         baseUrl: 'https://uatmaps.kt.ktzh.ch'
       },
+      gb2WmsCapabilities: {
+        baseUrl: 'https://uatmaps.kt.ktzh.ch/wms'
+      },
       gb2Wms: {
         baseUrl: 'https://uatmaps.kt.ktzh.ch'
       },

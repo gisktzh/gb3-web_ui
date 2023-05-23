@@ -589,7 +589,7 @@ export class EsriMapService implements MapService {
 
   private getWmsOverrideInterceptor(accessToken?: string): __esri.RequestInterceptor {
     const wmsOverrideUrl = this.configService.overridesConfig.overrideWmsUrl;
-    const {gb2Wms, gb2Api} = this.configService.apiConfig;
-    return wmsAuthAndUrlOverrideInterceptorFactory([gb2Wms.baseUrl, gb2Api.baseUrl], wmsOverrideUrl, accessToken);
+    const {gb2Wms, gb2WmsCapabilities} = this.configService.apiConfig;
+    return wmsAuthAndUrlOverrideInterceptorFactory([gb2Wms.baseUrl, gb2WmsCapabilities.baseUrl], wmsOverrideUrl, accessToken);
   }
 }
