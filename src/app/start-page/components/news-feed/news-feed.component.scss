@@ -17,6 +17,7 @@
     flex-grow: 1;
     flex-basis: 100%;
     border: solid ktzh-variables.$zh-black20 4px;
+    height: 344px;
 
     &:hover {
       border-color: ktzh-variables.$zh-black40;
@@ -29,6 +30,7 @@
 
     .news-feed__entry__header {
       margin: 0;
+      font-size: x-small;
 
       &:before {
         content: 'Mitteilung ';
@@ -37,7 +39,7 @@
     }
 
     .news-feed__entry__title {
-      @include mixins.multiline-ellipsis(2);
+      @include mixins.multiline-ellipsis(3);
       margin: 0;
       font-weight: bold;
       color: ktzh-variables.$zh-blue;

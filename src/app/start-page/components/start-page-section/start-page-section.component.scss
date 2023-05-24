@@ -8,9 +8,7 @@
   flex-direction: row;
   flex-wrap: nowrap;
   justify-content: center;
-  align-items: stretch;
-  align-content: stretch;
-  padding: 40px 6px;
+  padding: 80px 0;
   overflow-x: hidden; // This is needed due to the section title cut off...
 
   &.section__primary {
@@ -19,8 +17,8 @@
   }
 
   &.section__secondary {
-    background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 50);
-    color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-accent, 50);
+    background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 5);
+    color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-accent, 5);
   }
 
   & .section__content-container {
@@ -44,10 +42,16 @@
       display: flex;
       width: 100%;
       justify-content: space-between;
-      margin-bottom: 19px;
+      margin-bottom: 40px;
+
+      .section__content__title-wrapper__title {
+        margin-bottom: 0;
+      }
 
       & .section__content-container__title-wrapper__link {
-        color: ktzh-variables.$zh-black50;
+        color: functions.convert-hex-to-rgba(ktzh-variables.$zh-black100, 0.6);
+        font-family: ktzh-variables.$zh-font-family;
+        letter-spacing: normal;
         @include mat-mixins.mat-button--align-icon-right;
       }
     }
