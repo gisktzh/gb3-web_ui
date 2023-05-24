@@ -10,3 +10,8 @@
 @function get-contrast-color-from-palette($palette: 'primary', $hue: default) {
   @return get-color-from-palette($palette, $hue + '-contrast');
 }
+
+/// returns the rgba value for a HEX-encoded color
+@function convert-hex-to-rgba($hex, $alpha: 1) {
+  @return rgba(red($hex), green($hex), blue($hex), $alpha);
+}

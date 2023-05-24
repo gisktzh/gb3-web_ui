@@ -3,5 +3,6 @@
   <navbar class="navbar" [isSimplifiedPage]="this.isSimplifiedPage"></navbar>
   <article class="app-wrapper">
     <router-outlet></router-outlet>
+    <main-footer *ngIf="!isSimplifiedPage"></main-footer>
   </article>
 </main>

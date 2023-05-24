@@ -12,6 +12,7 @@ import {DragCursorDirective} from './directives/drag-cursor.directive';
 import {MobileWarningComponent} from './components/mobile-warning/mobile-warning.component';
 import {FormatContentPipe} from './pipes/format-content.pipe';
 import {PageNotificationComponent} from './components/page-notification/page-notification.component';
+import {MainFooterComponent} from './components/footer/main-footer.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import {PageNotificationComponent} from './components/page-notification/page-not
     DragCursorDirective,
     MobileWarningComponent,
     FormatContentPipe,
-    PageNotificationComponent
+    PageNotificationComponent,
+    MainFooterComponent
   ],
   imports: [MaterialModule, RouterModule, CommonModule, ResizableModule],
   exports: [
@@ -37,7 +39,8 @@ import {PageNotificationComponent} from './components/page-notification/page-not
     DragCursorDirective,
     MobileWarningComponent,
     FormatContentPipe,
-    PageNotificationComponent
+    PageNotificationComponent,
+    MainFooterComponent
   ]
 })
 export class SharedModule {}
