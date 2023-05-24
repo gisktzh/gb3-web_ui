@@ -2,50 +2,110 @@
 @use 'mixins/helpers.mixin' as mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
+/// The border width around the link elements
+$border-width: 8px;
+
+/**
+  This... thing is rebuilt after the official zh.ch website component. The reason for doing so is that it has a very
+  weird (but nice) effect that the border between the flex-aligned items collapses. This is done with quite some CSS
+  trickery, which *seems* to be working as follows:
+    - The wrapper is a UL element without a style, that has full width and row wrap
+    - The child elements are LI elements which have a fixed height (310px) and a bottom and right margin of $border-width.
+      - More importantly, their flex-basis AND max-width is calculated (and this part differs from the zh.ch implementation,
+        because our wrapper layout prevents us from having a simpler layout): It takes the max-content width divided by 3
+        (because we want 3 items per row), and subtracts twice the border-width (because we have left and right the
+        $border-width wide border). Due to this, they wrap nicely, also accounting for the border; and they are always
+        appropriately sized.
+      - The real magic happens in the :before pseudo element: It sets the background color to grey and content to "";
+        while its height and width are 100% of the size of its parent (which is the host element and thus the link
+        element) with 2 times the $boder-width added each to account for the border. Add a hover effect (with z-index 1,
+        to ensure the hovered element is above all else) to change the background, and this is the magic that highlight
+        the element, mimicking both borders and collapsed shared borders.
+    - The content itself is wrapped in an A element that sets the background color and has full height; its items are
+      flex column aligned. The rest is standard CSS stuff.
+
+   🤷
+ */
+
 .news-feed {
-  display: flex;
-  gap: 5px;
   width: 100%;
 
-  & .news-feed__loader {
-    width: 100%;
-  }
+  .news-feed__list {
+    display: flex;
+    flex-flow: row wrap;
+    list-style-type: none;
+    margin: 0;
+    width: calc(100% - $border-width);
+    padding: 0 0 0 $border-width;
+    justify-content: center;
 
-  & .news-feed__link-wrapper {
-    text-decoration: none;
-    color: inherit;
-    flex-grow: 1;
-    flex-basis: 100%;
-    border: solid ktzh-variables.$zh-black20 4px;
+    .news-feed__list__item {
+      margin-bottom: $border-width;
+      margin-right: $border-width;
+      position: relative;
+      flex-basis: calc((#{ktzh-variables.$zh-layout-max-content-width} / 3) - 2 * $border-width);
+      max-width: calc((#{ktzh-variables.$zh-layout-max-content-width} / 3) - 2 * $border-width);
+      height: 310px;
 
-    &:hover {
-      border-color: ktzh-variables.$zh-black40;
-    }
-  }
+      .news-feed__list__item__link {
+        background-color: ktzh-variables.$zh-white;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        text-decoration: none;
+        height: 100%;
+        color: inherit;
 
-  .news-feed__entry {
-    padding: 2rem;
-    background-color: ktzh-variables.$zh-white;
+        .news-feed__list__item__link__content {
+          background-color: ktzh-variables.$zh-white;
+          padding: 40px;
 
-    .news-feed__entry__header {
-      margin: 0;
-      font-size: x-small;
+          .news-feed__list__item__link__content__header {
+            margin-bottom: 4px;
+            font-size: x-small;
+
+            &:before {
+              content: 'Mitteilung ';
+              font-weight: bold;
+            }
+          }
+
+          .news-feed__list__item__link__content__news-title {
+            @include mixins.multiline-ellipsis(3);
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: ktzh-variables.$zh-blue;
+            line-height: 1.05;
+          }
+
+          .news-feed__list__item__link__content__news-text {
+            @include mixins.multiline-ellipsis(6);
+          }
+        }
+      }
 
       &:before {
-        content: 'Mitteilung ';
-        font-weight: bold;
+        background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 25);
+        content: '';
+        display: block;
+        height: calc(100% + 2 * $border-width);
+        left: -$border-width;
+        position: absolute;
+        top: -$border-width;
+        width: calc(100% + 2 * $border-width);
       }
-    }
 
-    .news-feed__entry__title {
-      @include mixins.multiline-ellipsis(2);
-      margin: 0;
-      font-weight: bold;
-      color: ktzh-variables.$zh-blue;
-    }
+      &:hover {
+        z-index: 1;
 
-    .news-feed__entry__teaser-text {
-      @include mixins.multiline-ellipsis(4);
+        & .news-feed__list__item__link__content__news-title {
+          color: ktzh-variables.$zh-black100 !important;
+        }
+
+        &:before {
+          background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 50);
+        }
+      }
     }
   }
 }
