@@ -50,10 +50,10 @@
         .active-map-item__tabs__header__buttons__button {
           width: 100%;
           color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
-          background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary, 900);
+          background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
 
           &--selected {
-            background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
+            background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary, 900);
           }
 
           &:disabled {
