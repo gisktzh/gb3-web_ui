@@ -24,7 +24,7 @@
   & .section__content-container {
     display: flex;
     flex-flow: row wrap;
-    max-width: 800px;
+    max-width: ktzh-variables.$zh-layout-max-content-width;
     width: 100%;
 
     & .section__content-container__title-line {

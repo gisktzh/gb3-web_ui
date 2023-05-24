@@ -12,7 +12,7 @@
   .main-footer__content {
     display: flex;
     flex-flow: column wrap;
-    max-width: 800px;
+    max-width: ktzh-variables.$zh-layout-max-content-width;
     width: 100%;
     row-gap: 24px;
 

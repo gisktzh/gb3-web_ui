@@ -148,6 +148,7 @@ $zh-active-blue-palette: (
 
 $zh-black100-palette: (
   5: #f7f7f7,
+  25: #e4e4e4,
   50: #e0e0e0,
   100: #b3b3b3,
   200: #808080,
@@ -164,6 +165,7 @@ $zh-black100-palette: (
   A700: #666666,
   contrast: (
     5: #000000,
+    25: #000000,
     50: #000000,
     100: #000000,
     200: #000000,
@@ -245,3 +247,7 @@ $zh-typography-config: mat.define-typography-config(
   $headline-1: $zh-typography-headline-override,
   $font-family: $zh-font-family // Define default family, used in non-headlines and e.g. buttons
 );
+
+/* Layout specs
+========================== */
+$zh-layout-max-content-width: 1166px; // defines the max width the content should have (e.g. in sections)
