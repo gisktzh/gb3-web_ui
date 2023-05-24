@@ -39,13 +39,20 @@
       padding: 5px;
 
       .basemap-selector__map-choice__item__image {
+        display: block;
         height: 48px;
         width: 96px;
         object-fit: cover;
+
+        &--blank {
+          border: 1px solid ktzh-variables.$zh-black100;
+          box-sizing: border-box;
+        }
       }
 
       .basemap-selector__map-choice__item__title {
         @include mixins.multiline-ellipsis(2);
+        width: 96px;
         font-family: ktzh-variables.$zh-font-family;
         font-size: 12px;
         text-align: left;
