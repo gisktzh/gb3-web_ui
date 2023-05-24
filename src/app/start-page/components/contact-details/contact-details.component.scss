@@ -1,0 +1,68 @@
+@use 'mixins/helpers.mixin' as mixins;
+@use 'functions/helper.function' as functions;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'mixins/material.mixin' as mat-mixins;
+
+.contact-details {
+  display: flex;
+  flex-direction: column;
+
+  a {
+    color: ktzh-variables.$zh-white;
+    text-underline-offset: 6px; // todo: does not work in IE11, but that's not required?
+
+    &:hover {
+      color: ktzh-variables.$zh-light-grey;
+    }
+  }
+
+  .contact-details__addresses {
+    display: flex;
+    flex-flow: row wrap;
+    row-gap: 16px;
+    margin-top: 32px;
+
+    .contact-details__addresses__entry {
+      min-width: 50%;
+      display: grid;
+      grid-template-columns: 40px auto;
+      grid-template-rows: min(40px);
+      grid-gap: 16px;
+      grid-template-areas:
+        'icon address'
+        'icon links';
+
+      .contact-details__addresses__entry__icon {
+        grid-area: icon;
+
+        .contact-details__addresses__entry__icon__icon-wrapper {
+          display: flex;
+          width: 40px;
+          height: 40px;
+          background-color: ktzh-variables.$zh-white;
+          color: ktzh-variables.$zh-black100;
+          justify-content: center;
+          align-items: center;
+          border-radius: 20px;
+        }
+      }
+
+      .contact-details__addresses__entry__address {
+        grid-area: address;
+        align-self: center;
+        font-family: ktzh-variables.$zh-font-family-bold;
+
+        & address {
+          font-style: normal;
+        }
+      }
+
+      .contact-details__addresses__entry__links {
+        grid-area: links;
+        display: flex;
+        flex-direction: column;
+        row-gap: 8px;
+      }
+    }
+  }
+}

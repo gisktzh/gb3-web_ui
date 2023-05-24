@@ -11,9 +11,17 @@
   padding: 80px 0;
   overflow-x: hidden; // This is needed due to the section title cut off...
 
+  & .section__content-container__title-line:before {
+    background: ktzh-variables.$zh-black100;
+  }
+
   &.section__primary {
     background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
     color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+
+    & .section__content-container__title-line:before {
+      background: ktzh-variables.$zh-white;
+    }
   }
 
   &.section__secondary {
@@ -29,7 +37,6 @@
 
     & .section__content-container__title-line {
       &:before {
-        background: #000;
         content: ' ';
         display: block;
         height: 0.1875rem;
