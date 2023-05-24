@@ -86,6 +86,20 @@ running `ng serve --configuration=development-local-gb2` (or `npm run start-loca
 If using this, angular will proxy all requests to the GB2 via localhost, so you have to set all links to be relative (
 e.g. `/wms/asd` will become `http://localhost:4200/wms/asd`, and then proxied to `http://localhost:3000/wms/asd`).
 
+## Naming conventions
+
+WIP - add more naming conventions :)
+
+### Branchname and commit message
+
+Whenever possible, a Jira ticket should be referenced in both branchname and commit message:
+
+- Branches: `[feature|hotfix]/gb3-[xxx]-[name-of-branch]`, where `xxx` refers to a Jira ticket and the `name-of-branch` is a short summary of the feature/hotfix.`
+- Commits: `GB3-[xxx]: Your commit message`, , where `xxx` refers to a Jira ticket
+
+Our githooks check for both the branch name and the commit message, but they will only output a warning if they don't
+match. This is because there are times when you _might_ want to deviate from these rules.
+
 ## Code documentation
 
 ### Spatial Reference System(s)

@@ -50,10 +50,10 @@
         .active-map-item__tabs__header__buttons__button {
           width: 100%;
           color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
-          background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary, 900);
+          background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
 
           &--selected {
-            background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
+            background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary, 900);
           }
 
           &:disabled {
@@ -71,9 +71,7 @@
       border-radius: 1px !important;
       border-width: 0 2px 2px 2px;
       border-style: solid;
-      -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-      -moz-box-sizing: border-box; /* Firefox, other Gecko */
-      box-sizing: border-box; /* Opera/IE 8+ */
+      box-sizing: border-box;
 
       &--inverted {
         border-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);

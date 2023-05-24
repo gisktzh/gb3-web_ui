@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Basemap} from '../../shared/interfaces/background-map.interface';
+import {Basemap} from '../../shared/interfaces/basemap.interface';
 import {ConfigService} from '../../shared/services/config.service';
 
 @Injectable({

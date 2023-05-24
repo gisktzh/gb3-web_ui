@@ -16,10 +16,14 @@ import ScaleBar from '@arcgis/core/widgets/ScaleBar';
 import Basemap from '@arcgis/core/Basemap';
 import TileInfo from '@arcgis/core/layers/support/TileInfo';
 import WMSSublayer from '@arcgis/core/layers/support/WMSSublayer';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 
 /** Esri classes/modules */
 export const EsriMap = Map;
 export const EsriMapView = MapView;
+export const EsriFeatureLayer = FeatureLayer;
+export const EsriGraphicsLayer = GraphicsLayer;
 export const EsriWMSLayer = WMSLayer;
 export const EsriPoint = Point;
 export const EsriCollection = Collection;

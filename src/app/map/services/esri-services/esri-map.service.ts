@@ -22,7 +22,9 @@ import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.re
 import {AuthService} from '../../../auth/auth.service';
 import {
   EsriBasemap,
+  EsriFeatureLayer,
   EsriGraphic,
+  EsriGraphicsLayer,
   EsriLoadStatus,
   EsriMap,
   EsriMapView,
@@ -39,8 +41,8 @@ import {TimeExtent} from '../../interfaces/time-extent.interface';
 import {MapConfigState} from '../../../state/map/states/map-config.state';
 import {GeometryWithSrs, PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {DrawingLayer} from '../../../shared/enums/drawing-layer.enum';
-import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {EsriSymbolizationService} from './esri-symbolization.service';
+import {MapConstants} from '../../../shared/constants/map.constants';
 
 @Injectable({
   providedIn: 'root'
@@ -278,7 +280,7 @@ export class EsriMapService implements MapService {
     const targetLayer = this.findEsriLayer(this.createDrawingLayerId(drawingLayer));
 
     if (targetLayer) {
-      (targetLayer as GraphicsLayer).add(graphicItem);
+      (targetLayer as __esri.GraphicsLayer).add(graphicItem);
     }
   }
 
@@ -286,13 +288,13 @@ export class EsriMapService implements MapService {
     const layer = this.findEsriLayer(this.createDrawingLayerId(drawingLayer));
 
     if (layer) {
-      (layer as GraphicsLayer).removeAll();
+      (layer as __esri.GraphicsLayer).removeAll();
     }
   }
 
   private initDrawingLayers() {
     Object.values(DrawingLayer).forEach((drawingLayer) => {
-      const graphicsLayer = new GraphicsLayer({
+      const graphicsLayer = new EsriGraphicsLayer({
         id: this.createDrawingLayerId(drawingLayer)
       });
 
@@ -433,15 +435,28 @@ export class EsriMapService implements MapService {
     return new EsriMap({
       basemap: new EsriBasemap({
         baseLayers: this.basemapConfigService.availableBasemaps.map((baseMap) => {
-          return new EsriWMSLayer({
-            id: baseMap.id,
-            url: baseMap.url,
-            title: baseMap.title,
-            spatialReference: new EsriSpatialReference({wkid: baseMap.srsId}),
-            sublayers: baseMap.layers.map((basemapLayer) => ({name: basemapLayer.name})),
-            visible: initialBasemapId === baseMap.id,
-            imageFormat: this.wmsImageFormatMimeType
-          });
+          switch (baseMap.type) {
+            case 'wms':
+              return new EsriWMSLayer({
+                id: baseMap.id,
+                url: baseMap.url,
+                title: baseMap.title,
+                spatialReference: new EsriSpatialReference({wkid: baseMap.srsId}),
+                sublayers: baseMap.layers.map((basemapLayer) => ({name: basemapLayer.name})),
+                visible: initialBasemapId === baseMap.id,
+                imageFormat: this.wmsImageFormatMimeType
+              });
+            case 'blank':
+              return new EsriFeatureLayer({
+                id: baseMap.id,
+                geometryType: 'point', // a feature layer needs a geometry and 'point' is the simplest one
+                objectIdField: 'ObjectID', // a feature layer needs this property even if its never used
+                title: baseMap.title,
+                source: [], // empty source as this is a blank basemap
+                spatialReference: new EsriSpatialReference({wkid: MapConstants.DEFAULT_SRS}),
+                visible: initialBasemapId === baseMap.id
+              });
+          }
         })
       })
     });
@@ -589,7 +604,7 @@ export class EsriMapService implements MapService {
 
   private getWmsOverrideInterceptor(accessToken?: string): __esri.RequestInterceptor {
     const wmsOverrideUrl = this.configService.overridesConfig.overrideWmsUrl;
-    const {gb2Wms, gb2Api} = this.configService.apiConfig;
-    return wmsAuthAndUrlOverrideInterceptorFactory([gb2Wms.baseUrl, gb2Api.baseUrl], wmsOverrideUrl, accessToken);
+    const {gb2Wms, gb2WmsCapabilities} = this.configService.apiConfig;
+    return wmsAuthAndUrlOverrideInterceptorFactory([gb2Wms.baseUrl, gb2WmsCapabilities.baseUrl], wmsOverrideUrl, accessToken);
   }
 }

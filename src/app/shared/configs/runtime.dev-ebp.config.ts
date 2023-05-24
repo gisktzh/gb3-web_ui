@@ -13,6 +13,9 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       gb2StaticFiles: {
         baseUrl: 'https://maps.zh.ch'
       },
+      gb2WmsCapabilities: {
+        baseUrl: 'https://maps.zh.ch/wms'
+      },
       gb2Wms: {
         baseUrl: 'https://wms.zh.ch'
       },
@@ -49,6 +52,9 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       },
       gb2StaticFiles: {
         baseUrl: 'https://maps.zh.ch'
+      },
+      gb2WmsCapabilities: {
+        baseUrl: 'https://maps.zh.ch/wms'
       },
       gb2Wms: {
         baseUrl: 'https://wms.zh.ch'
