@@ -22,10 +22,10 @@
   }
 
   .main-map__basemap-selector {
-    @include mixins.map-element-box-shadow;
     position: absolute;
-    bottom: 98px;
+    bottom: 79px;
     right: calc(24px + $map-controls-width);
+    pointer-events: none;
   }
 
   .main-map__scale-bar-container {

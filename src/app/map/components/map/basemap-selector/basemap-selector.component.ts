@@ -2,7 +2,7 @@ import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {selectActiveBasemapId} from '../../../../state/map/reducers/map-config.reducer';
-import {Basemap} from '../../../../shared/interfaces/background-map.interface';
+import {Basemap} from '../../../../shared/interfaces/basemap.interface';
 import {MapConfigActions} from '../../../../state/map/actions/map-config.actions';
 import {BasemapConfigService} from '../../../services/basemap-config.service';
 import {DocumentService} from '../../../../shared/services/document.service';
@@ -15,7 +15,7 @@ import {DocumentService} from '../../../../shared/services/document.service';
 export class BasemapSelectorComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('basemapSelector', {read: ElementRef, static: false}) private basemapSelectorRef!: ElementRef;
 
-  public activeBasemapId: string = '';
+  public activeBasemap?: Basemap;
   public isSelectionOpen: boolean = false;
   public availableBasemaps: Basemap[] = [];
   private readonly subscriptions: Subscription = new Subscription();
@@ -65,7 +65,7 @@ export class BasemapSelectorComponent implements OnInit, OnDestroy, AfterViewIni
       this.activeBasemapId$
         .pipe(
           tap((activeBasemapId) => {
-            this.activeBasemapId = activeBasemapId;
+            this.activeBasemap = this.availableBasemaps.find((basemap) => basemap.id === activeBasemapId);
           })
         )
         .subscribe()

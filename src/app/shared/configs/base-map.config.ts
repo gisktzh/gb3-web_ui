@@ -1,44 +1,19 @@
-import {Basemap} from '../interfaces/background-map.interface';
+import {Basemap} from '../interfaces/basemap.interface';
+import {MapConstants} from '../constants/map.constants';
 
+/**
+ * A list of all available basemaps.
+ * The order matters: the first item in this list will be shown on the left-hand side of the basemap widget.
+ */
 export const defaultBasemaps: Basemap[] = [
   {
-    id: 'arelkbackgroundzh',
-    relativeImagePath: 'assets/images/basemaps/arelkbackgroundzh.png',
-    url: 'https://maps.zh.ch/wms/ARElkBackgroundZH',
-    title: 'Landeskarte',
-    srsId: 2056,
-    layers: [
-      {
-        name: 'lk500'
-      },
-      {
-        name: 'lk200'
-      },
-      {
-        name: 'lk100'
-      },
-      {
-        name: 'lk50'
-      },
-      {
-        name: 'lk25'
-      },
-      {
-        name: 'up8'
-      },
-      {
-        name: 'up24'
-      },
-      {
-        name: 'grenzen'
-      },
-      {
-        name: 'gemeindegrenzen'
-      }
-    ]
+    id: `${MapConstants.INTERNAL_LAYER_PREFIX}blank`,
+    type: 'blank',
+    title: 'Leer'
   },
   {
     id: 'aredtmbackgroundzh',
+    type: 'wms',
     relativeImagePath: 'assets/images/basemaps/aredtmbackgroundzh.png',
     url: 'https://maps.zh.ch/wms/AREDTMBackgroundZH',
     title: 'Digitales Terrainmodell',
@@ -51,6 +26,7 @@ export const defaultBasemaps: Basemap[] = [
   },
   {
     id: 'arewildbackgroundzh',
+    type: 'wms',
     relativeImagePath: 'assets/images/basemaps/arewildbackgroundzh.png',
     url: 'https://maps.zh.ch/wms/AREWildBackgroundZH',
     title: 'Historische Karte J. Wild',
@@ -63,6 +39,7 @@ export const defaultBasemaps: Basemap[] = [
   },
   {
     id: 'areupbackgroundzh',
+    type: 'wms',
     relativeImagePath: 'assets/images/basemaps/areupbackgroundzh.png',
     url: 'https://maps.zh.ch/wms/AREUPBackgroundZH',
     title: 'Übersichtsplan',
@@ -165,7 +142,44 @@ export const defaultBasemaps: Basemap[] = [
         name: 'upnk_beschriftung'
       }
     ]
+  },
+  {
+    id: 'arelkbackgroundzh',
+    type: 'wms',
+    relativeImagePath: 'assets/images/basemaps/arelkbackgroundzh.png',
+    url: 'https://maps.zh.ch/wms/ARElkBackgroundZH',
+    title: 'Landeskarte',
+    srsId: 2056,
+    layers: [
+      {
+        name: 'lk500'
+      },
+      {
+        name: 'lk200'
+      },
+      {
+        name: 'lk100'
+      },
+      {
+        name: 'lk50'
+      },
+      {
+        name: 'lk25'
+      },
+      {
+        name: 'up8'
+      },
+      {
+        name: 'up24'
+      },
+      {
+        name: 'grenzen'
+      },
+      {
+        name: 'gemeindegrenzen'
+      }
+    ]
   }
 ];
 
-export const defaultBasemap = defaultBasemaps[0];
+export const defaultBasemap = defaultBasemaps[4];
