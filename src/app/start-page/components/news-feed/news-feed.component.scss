@@ -35,7 +35,9 @@ $border-width: 8px;
     flex-flow: row wrap;
     list-style-type: none;
     margin: 0;
-    width: 100%;
+    width: calc(100% - $border-width);
+    padding: 0 0 0 $border-width;
+    justify-content: center;
 
     .news-feed__list__item {
       margin-bottom: $border-width;
