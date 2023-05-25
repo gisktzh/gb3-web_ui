@@ -2,41 +2,94 @@
 @use 'mixins/helpers.mixin' as mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
+/// The border width around the link elements
+$border-width: 8px;
+
+/// Number of entries to be displayed
+$number-of-entries: 2;
+
 .discover-maps {
-  display: flex;
-  gap: 5px;
+  width: 100%;
 
-  .discover-maps__link-wrapper {
-    text-decoration: none;
-    color: inherit;
-    flex-grow: 1;
-    flex-basis: 100%;
-    border: solid #f0f0f0 4px;
-
+  .discover-maps__list {
     display: flex;
-    flex-direction: row;
+    flex-flow: row wrap;
+    list-style-type: none;
+    margin: 0;
+    width: calc(100% - $border-width);
+    padding: 0 0 0 $border-width;
+    justify-content: center;
 
-    &:hover {
-      border: solid #e4e4e4 4px;
-    }
-  }
+    .discover-maps__list__item {
+      margin-bottom: $border-width;
+      margin-right: $border-width;
+      position: relative;
+      flex-basis: calc((#{ktzh-variables.$zh-layout-max-content-width} / #{$number-of-entries}) - 2 * $border-width);
+      max-width: calc((#{ktzh-variables.$zh-layout-max-content-width} / #{$number-of-entries}) - 2 * $border-width);
+      height: 649px;
 
-  .discover-maps__image {
-    padding: 2rem 0 2rem 2rem;
-    height: 128px;
-  }
+      .discover-maps__list__item__wrapper {
+        background-color: ktzh-variables.$zh-white;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        text-decoration: none;
+        height: 100%;
+        color: inherit;
 
-  .discover-maps__entry {
-    padding: 2rem;
+        .discover-maps__list__item__wrapper__content {
+          background-color: ktzh-variables.$zh-white;
 
-    .discover-maps__entry__title {
-      @include mixins.multiline-ellipsis(2);
-      margin: 0;
-      font-weight: bold;
-    }
+          .discover-maps__list__item__wrapper__content__image {
+            display: block;
+            width: 100%;
+            height: 327px;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center center;
+            // The url is added dynamically via ngStyle
+          }
 
-    .discover-maps__entry__teaser-text {
-      @include mixins.multiline-ellipsis(4);
+          .discover-maps__list__item__wrapper__content__container {
+            padding: 40px;
+
+            .discover-maps__list__item__wrapper__content__container__title {
+              @include mixins.multiline-ellipsis(2);
+              margin-bottom: 8px;
+              font-weight: bold;
+              color: ktzh-variables.$zh-blue;
+              line-height: 1.05;
+            }
+
+            .discover-maps__list__item__wrapper__content__container__text {
+              @include mixins.multiline-ellipsis(6);
+            }
+          }
+        }
+      }
+
+      &:before {
+        background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 25);
+        content: '';
+        display: block;
+        height: calc(100% + 2 * $border-width);
+        left: -$border-width;
+        position: absolute;
+        top: -$border-width;
+        width: calc(100% + 2 * $border-width);
+      }
+
+      &:hover {
+        z-index: 1;
+
+        & .news-feed__list__item__link__content__news-title {
+          color: ktzh-variables.$zh-black100 !important;
+        }
+
+        &:before {
+          background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 50);
+        }
+      }
     }
   }
 }
