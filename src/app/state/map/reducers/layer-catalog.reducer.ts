@@ -14,7 +14,12 @@ export const layerCatalogFeature = createFeature({
   name: layerCatalogFeatureKey,
   reducer: createReducer(
     initialState,
-    on(LayerCatalogActions.loadLayerCatalog, (): LayerCatalogState => {
+    on(LayerCatalogActions.loadLayerCatalog, (state): LayerCatalogState => {
+      // If we already have items, we do not reset the state
+      if (state.layerCatalogItems.length > 0) {
+        return state;
+      }
+
       return {...initialState, loadingState: 'loading'};
     }),
     on(LayerCatalogActions.setLayerCatalog, (state, {layerCatalogItems}): LayerCatalogState => {
