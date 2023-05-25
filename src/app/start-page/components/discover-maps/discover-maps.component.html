@@ -1,21 +1,27 @@
 <content-loading-state
   [loadingState]="loadingState"
-  loadingText="Lade neue Karten zum Entdecken..."
   loadingCompletedText="Fehler beim Laden der Karten zum Entdecken."
+  loadingText="Lade neue Karten zum Entdecken..."
 ></content-loading-state>
 <div class="discover-maps">
-  <ng-container *ngFor="let discoverMapsEntry of this.discoverMapsItems">
-    <a
-      [routerLink]="[mainPageEnum.Maps]"
-      [queryParams]="{initialMapIds: discoverMapsEntry.mapId}"
-      [title]="discoverMapsEntry.title"
-      class="discover-maps__link-wrapper"
-    >
-      <img class="discover-maps__image" [src]="discoverMapsEntry.image.url" />
-      <div class="discover-maps__entry">
-        <p class="mat-headline-6 discover-maps__entry__title">{{ discoverMapsEntry.title }}</p>
-        <p class="mat-body-1 discover-maps__entry__teaser-text">{{ discoverMapsEntry.description }}</p>
+  <ul class="discover-maps__list">
+    <li *ngFor="let discoverMapsEntry of this.discoverMapsItems" class="discover-maps__list__item">
+      <div class="discover-maps__list__item__wrapper">
+        <div class="discover-maps__list__item__wrapper__content">
+          <span
+            [ngStyle]="{backgroundImage: 'url(' + discoverMapsEntry.image.url + ')'}"
+            class="discover-maps__list__item__wrapper__content__image"
+          ></span>
+          <div class="discover-maps__list__item__wrapper__content__container">
+            <p class="mat-headline-6 discover-maps__list__item__wrapper__content__container__title">{{ discoverMapsEntry.title }}</p>
+            <p class="discover-maps__list__item__wrapper__content__container__text">{{ discoverMapsEntry.description }}</p>
+            <a [color]="'accent'" [queryParams]="{initialMapIds: discoverMapsEntry.mapId}" [routerLink]="mainPageEnum.Maps" mat-flat-button
+              >Karte öffnen</a
+            >
+          </div>
+        </div>
       </div>
-    </a>
-  </ng-container>
+    </li>
+  </ul>
 </div>
+<p *ngIf="discoverMapsItems.length === 0" class="mat-caption">Aktuell gibt es keine Empfehlungen.</p>
