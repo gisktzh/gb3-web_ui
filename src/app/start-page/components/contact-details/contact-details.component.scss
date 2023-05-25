@@ -66,3 +66,20 @@
     }
   }
 }
+
+.contact-details__media-collapsible {
+  margin-top: 30px;
+  border-width: 1px 0 1px 0;
+  border-style: solid;
+  border-color: white;
+
+  .contact-details__media-collapsible__item {
+    .contact-details__media-collapsible__item__header {
+      margin: 18px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+  }
+}

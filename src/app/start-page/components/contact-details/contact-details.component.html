@@ -15,7 +15,7 @@
           title="Route (Google Maps)"
           >Route (Google Maps)</a
         >
-        <a href="" (click)="copyToClipboard($event, 'Stampfenbachstrasse 12, 8090 Zürich')" title="Adresse kopieren">Adresse kopieren</a>
+        <a (click)="copyToClipboard($event, 'Stampfenbachstrasse 12, 8090 Zürich')" href="" title="Adresse kopieren">Adresse kopieren</a>
       </div>
     </div>
     <div class="contact-details__addresses__entry">
@@ -25,4 +25,31 @@
       <div class="contact-details__addresses__entry__address"><a href="mailto:gis@bd.zh.ch" title="gis@bd.zh.ch">gis@bd.zh.ch</a></div>
     </div>
   </div>
+  <cdk-accordion class="contact-details__media-collapsible">
+    <cdk-accordion-item
+      #accordionItem="cdkAccordionItem"
+      [attr.aria-controls]="'media-contact-body'"
+      [attr.aria-expanded]="accordionItem.expanded"
+      [attr.id]="'media-contact-header'"
+      class="contact-details__media-collapsible__item"
+      role="button"
+      tabindex="0"
+    >
+      <div (click)="accordionItem.toggle()" class="contact-details__media-collapsible__item__header mat-h2">
+        <span>Für Medien</span>
+        <span>
+          <mat-icon>{{ accordionItem.expanded ? 'remove' : 'add' }}</mat-icon>
+        </span>
+      </div>
+      <div
+        [attr.aria-labelledby]="'media-contact-header'"
+        [attr.id]="'media-contact-body'"
+        [style.display]="accordionItem.expanded ? '' : 'none'"
+        role="region"
+      >
+        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Perferendis excepturi incidunt ipsum deleniti labore, tempore non nam
+        doloribus blanditiis veritatis illo autem iure aliquid ullam rem tenetur deserunt velit culpa?
+      </div>
+    </cdk-accordion-item>
+  </cdk-accordion>
 </div>
