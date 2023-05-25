@@ -1,6 +1,5 @@
-import {Component, Inject, Input} from '@angular/core';
-import {DOCUMENT} from '@angular/common';
-import {Store} from '@ngrx/store';
+import {Component, Input} from '@angular/core';
+import {Clipboard} from '@angular/cdk/clipboard';
 
 @Component({
   selector: 'contact-detail',
@@ -14,17 +13,10 @@ export class ContactDetailComponent {
   @Input() public email?: string;
   @Input() public coordinates?: string;
 
-  private readonly clipBoard?: Clipboard;
+  constructor(private readonly clipboard: Clipboard) {}
 
-  constructor(@Inject(DOCUMENT) private readonly document: Document, private readonly store: Store) {
-    // since this is unimportant, we fail silently by not assigning the Clipboard
-    if (this.document.defaultView) {
-      this.clipBoard = this.document.defaultView.navigator.clipboard;
-    }
-  }
-
-  public async copyToClipboard(event: Event) {
+  public copyToClipboard(event: Event) {
     event.preventDefault();
-    await this.clipBoard?.writeText(`${this.street}, ${this.place}`);
+    this.clipboard.copy(`${this.street}, ${this.place}`);
   }
 }
