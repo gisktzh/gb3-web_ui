@@ -1,4 +1,7 @@
-<section [ngClass]="this.background ? 'section__' + this.background : ''" class="section">
+<section
+  [ngClass]="[this.background ? 'section__' + this.background : '', this.hideBottomPadding ? 'section--no-padding-bottom' : '']"
+  class="section"
+>
   <div class="section__content-container">
     <span *ngIf="this.sectionTitle" class="section__content-container__title-line"></span>
     <div class="section__content-container__title-wrapper">
