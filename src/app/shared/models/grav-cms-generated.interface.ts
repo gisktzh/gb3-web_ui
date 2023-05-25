@@ -67,7 +67,7 @@ export interface FrequentlyUsed {
   title: string;
   description: string;
   url?: string;
-  image?: Image;
+  image: Image | null;
   created: string;
   flex_id: string;
 }

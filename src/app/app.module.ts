@@ -23,9 +23,11 @@ import {AuthStatusEffects} from './state/auth/effects/auth-status.effects';
 import {FavouriteListEffects} from './state/map/effects/favourite-list.effects';
 import {PageNotificationEffects} from './state/app/effects/page-notification.effects';
 import {GeolocationEffects} from './state/map/effects/geolocation.effects';
+import {GravCmsService} from './shared/services/apis/grav-cms/grav-cms.service';
 
 export const MAP_SERVICE = new InjectionToken<MapService>('MapService');
 export const NEWS_SERVICE = new InjectionToken<NewsService>('NewsService');
+export const GRAV_CMS_SERVICE = new InjectionToken<GravCmsService>('GravCmsService');
 
 @NgModule({
   declarations: [AppComponent],
@@ -53,7 +55,8 @@ export const NEWS_SERVICE = new InjectionToken<NewsService>('NewsService');
   ],
   providers: [
     {provide: MAP_SERVICE, useClass: EsriMapService},
-    {provide: NEWS_SERVICE, useClass: KTZHNewsMockService}
+    {provide: NEWS_SERVICE, useClass: KTZHNewsMockService},
+    {provide: GRAV_CMS_SERVICE, useClass: GravCmsService}
   ],
   bootstrap: [AppComponent]
 })

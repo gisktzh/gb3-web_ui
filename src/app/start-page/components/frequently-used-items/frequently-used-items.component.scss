@@ -4,16 +4,23 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
 .frequently-used-items {
+  width: 100%;
+
   .frequently-used-item {
     display: flex;
     flex-direction: row;
     padding: 24px 0;
 
-    .frequently-used-item__image {
+    .frequently-used-item__image-container {
       width: 268px;
-      height: 151px;
+      max-height: 151px;
       min-width: 268px;
-      object-fit: cover;
+
+      .frequently-used-item__image-container__image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
     }
 
     .frequently-used-item__text-container {

@@ -41,7 +41,7 @@ export class GravCmsService extends BaseApiService {
     return this.get<FrequentlyUsedRoot>(requestUrl).pipe(map((response) => this.transformFrequentlyUsedData(response)));
   }
 
-  private transformDiscoverMapsData(rootObject: DiscoverMapsRoot): DiscoverMapsItem[] {
+  protected transformDiscoverMapsData(rootObject: DiscoverMapsRoot): DiscoverMapsItem[] {
     return rootObject['discover-maps'].map((discoverMapData) => {
       return {
         ...discoverMapData,
@@ -57,7 +57,7 @@ export class GravCmsService extends BaseApiService {
     });
   }
 
-  private transformPageInfosData(rootObject: PageInfosRoot): PageNotification[] {
+  protected transformPageInfosData(rootObject: PageInfosRoot): PageNotification[] {
     return rootObject['page-infos'].map((pageInfoData) => {
       return {
         ...pageInfoData,
@@ -67,6 +67,33 @@ export class GravCmsService extends BaseApiService {
         pages: this.transformPagesToMainPages(pageInfoData.pages),
         severity: pageInfoData.severity as PageNotificationSeverity,
         isMarkedAsRead: false
+      };
+    });
+  }
+
+  protected transformMapInfosData(rootObject: MapInfosRoot): MapInfoNotification[] {
+    return rootObject['map-infos'].map((mapInfoData) => {
+      return {
+        ...mapInfoData,
+        id: mapInfoData.flex_id,
+        fromDate: dayjs(mapInfoData.from_date, this.timeFormat).toDate(),
+        toDate: dayjs(mapInfoData.to_date, this.timeFormat).toDate()
+      };
+    });
+  }
+
+  protected transformFrequentlyUsedData(rootObject: FrequentlyUsedRoot): FrequentlyUsedItem[] {
+    return rootObject['frequently-used'].map((frequentlyUsedData) => {
+      return {
+        ...frequentlyUsedData,
+        id: frequentlyUsedData.flex_id,
+        image: frequentlyUsedData.image
+          ? {
+              ...frequentlyUsedData.image,
+              url: this.createFullImageUrl(frequentlyUsedData.image.path)
+            }
+          : undefined,
+        created: dayjs.unix(+frequentlyUsedData.created).toDate()
       };
     });
   }
@@ -86,33 +113,6 @@ export class GravCmsService extends BaseApiService {
       transformedPages.push(MainPage.Support);
     }
     return transformedPages;
-  }
-
-  private transformMapInfosData(rootObject: MapInfosRoot): MapInfoNotification[] {
-    return rootObject['map-infos'].map((mapInfoData) => {
-      return {
-        ...mapInfoData,
-        id: mapInfoData.flex_id,
-        fromDate: dayjs(mapInfoData.from_date, this.timeFormat).toDate(),
-        toDate: dayjs(mapInfoData.to_date, this.timeFormat).toDate()
-      };
-    });
-  }
-
-  private transformFrequentlyUsedData(rootObject: FrequentlyUsedRoot): FrequentlyUsedItem[] {
-    return rootObject['frequently-used'].map((frequentlyUsedData) => {
-      return {
-        ...frequentlyUsedData,
-        id: frequentlyUsedData.flex_id,
-        image: frequentlyUsedData.image
-          ? {
-              ...frequentlyUsedData.image,
-              url: this.createFullImageUrl(frequentlyUsedData.image.path)
-            }
-          : undefined,
-        created: dayjs(frequentlyUsedData.created).toDate()
-      };
-    });
   }
 
   private createFullImageUrl(imagePath: string): string {

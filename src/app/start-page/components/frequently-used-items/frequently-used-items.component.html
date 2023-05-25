@@ -1,7 +1,19 @@
 <div class="frequently-used-items">
+  <content-loading-state
+    [loadingState]="loadingState"
+    loadingText="Lade häufig verwendete Karten und Daten..."
+    loadingCompletedText="Fehler beim Laden der häufig verwendeten Karten und Daten."
+  ></content-loading-state>
   <ng-container *ngFor="let frequentlyUsedItem of frequentlyUsedItems">
     <div class="frequently-used-item">
-      <img [src]="frequentlyUsedItem.image?.url" class="frequently-used-item__image" />
+      <div class="frequently-used-item__image-container">
+        <img
+          *ngIf="frequentlyUsedItem.image !== undefined"
+          [src]="frequentlyUsedItem.image.url"
+          [alt]="frequentlyUsedItem.image.name"
+          class="frequently-used-item__image-container__image"
+        />
+      </div>
       <div class="frequently-used-item__text-container">
         <h1>{{ frequentlyUsedItem.title }}</h1>
         <p class="frequently-used-item__text-container__text">{{ frequentlyUsedItem.description }}</p>
