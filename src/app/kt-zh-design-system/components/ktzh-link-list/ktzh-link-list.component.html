@@ -1,4 +1,4 @@
-<div *ngFor="let linksGroup of this.linksGroups" class="useful-links__content">
-  <h2 class="useful-links__content__title">{{ linksGroup.label }}</h2>
+<div *ngFor="let linksGroup of this.linksGroups" class="ktzh-link-list">
+  <h2 class="ktzh-link-list__title">{{ linksGroup.label }}</h2>
   <ktzh-link-list-item [links]="linksGroup.links"></ktzh-link-list-item>
 </div>
