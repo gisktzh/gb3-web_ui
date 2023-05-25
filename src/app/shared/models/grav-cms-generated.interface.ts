@@ -58,3 +58,16 @@ export interface MapInfo {
   to_date: string;
   flex_id: string;
 }
+
+export interface FrequentlyUsedRoot {
+  'frequently-used': FrequentlyUsed[];
+}
+
+export interface FrequentlyUsed {
+  title: string;
+  description: string;
+  url?: string;
+  image?: Image;
+  created: string;
+  flex_id: string;
+}

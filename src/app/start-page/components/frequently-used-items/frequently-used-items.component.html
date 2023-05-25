@@ -1,0 +1,23 @@
+<div class="frequently-used-items">
+  <ng-container *ngFor="let frequentlyUsedItem of frequentlyUsedItems">
+    <div class="frequently-used-item">
+      <img [src]="frequentlyUsedItem.image?.url" class="frequently-used-item__image" />
+      <div class="frequently-used-item__text-container">
+        <h1>{{ frequentlyUsedItem.title }}</h1>
+        <p class="frequently-used-item__text-container__text">{{ frequentlyUsedItem.description }}</p>
+        <a
+          *ngIf="frequentlyUsedItem.url"
+          [href]="frequentlyUsedItem.url"
+          class="frequently-used-item__text-container__link"
+          mat-button
+          target="_self"
+          rel="noopener noreferrer"
+        >
+          Link öffnen
+          <mat-icon>arrow_forward</mat-icon>
+        </a>
+      </div>
+    </div>
+    <mat-divider></mat-divider>
+  </ng-container>
+</div>

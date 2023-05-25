@@ -1,0 +1,39 @@
+@use 'functions/helper.function' as functions;
+@use 'mixins/helpers.mixin' as mixins;
+@use 'mixins/material.mixin' as mat-mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.frequently-used-items {
+  .frequently-used-item {
+    display: flex;
+    flex-direction: row;
+    padding: 24px 0;
+
+    .frequently-used-item__image {
+      width: 268px;
+      height: 151px;
+      min-width: 268px;
+      object-fit: cover;
+    }
+
+    .frequently-used-item__text-container {
+      display: flex;
+      flex-direction: column;
+      padding-left: 24px;
+      width: 100%;
+
+      .frequently-used-item__text-container__text {
+        @include mixins.multiline-ellipsis(3);
+      }
+
+      .frequently-used-item__text-container__link {
+        @include mat-mixins.mat-button--align-icon-right;
+        color: functions.convert-hex-to-rgba(ktzh-variables.$zh-black100, 0.6);
+        font-family: ktzh-variables.$zh-font-family;
+        letter-spacing: normal;
+        width: max-content;
+        padding: 0;
+      }
+    }
+  }
+}
