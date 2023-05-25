@@ -13,6 +13,7 @@ import {StartPageSectionComponent} from './components/start-page-section/start-p
 import {HeroHeaderComponent} from './components/hero-header/hero-header.component';
 import {GisBrowserTeaserComponent} from './components/gis-browser-teaser/gis-browser-teaser.component';
 import {ContactDetailsComponent} from './components/contact-details/contact-details.component';
+import {ContactDetailComponent} from './components/contact-details/contact-detail/contact-detail.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import {ContactDetailsComponent} from './components/contact-details/contact-deta
     StartPageSectionComponent,
     HeroHeaderComponent,
     GisBrowserTeaserComponent,
-    ContactDetailsComponent
+    ContactDetailsComponent,
+    ContactDetailComponent
   ],
   imports: [CommonModule, SharedModule, StartPageRoutingModule, KtZhDesignSystemModule]
 })

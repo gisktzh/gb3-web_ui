@@ -1,29 +1,14 @@
 <div class="contact-details">
   <h1>Amt für Raumentwicklung - Abteilung Geoinformation</h1>
   <div class="contact-details__addresses">
-    <div class="contact-details__addresses__entry">
-      <div class="contact-details__addresses__entry__icon">
-        <mat-icon class="contact-details__addresses__entry__icon__icon-wrapper">location_on</mat-icon>
-      </div>
-      <div class="contact-details__addresses__entry__address">
-        <address>Stampfenbachstrasse 12<br />8090 Zürich</address>
-      </div>
-      <div class="contact-details__addresses__entry__links">
-        <a
-          href="https://www.google.com/maps/dir/?api=1&destination=47.3781675,8.543847399999999"
-          target="_blank"
-          title="Route (Google Maps)"
-          >Route (Google Maps)</a
-        >
-        <a (click)="copyToClipboard($event, 'Stampfenbachstrasse 12, 8090 Zürich')" href="" title="Adresse kopieren">Adresse kopieren</a>
-      </div>
-    </div>
-    <div class="contact-details__addresses__entry">
-      <div class="contact-details__addresses__entry__icon">
-        <mat-icon class="contact-details__addresses__entry__icon__icon-wrapper">drafts</mat-icon>
-      </div>
-      <div class="contact-details__addresses__entry__address"><a href="mailto:gis@bd.zh.ch" title="gis@bd.zh.ch">gis@bd.zh.ch</a></div>
-    </div>
+    <contact-detail
+      [contactType]="'address'"
+      [coordinates]="'47.3781675,8.543847399999999'"
+      [place]="'8090 Zürich'"
+      [street]="'Stampfenbachstrasse 12'"
+      class="contact-details__addresses__entry"
+    ></contact-detail>
+    <contact-detail [contactType]="'email'" [email]="'gis@bd.zh.ch'" class="contact-details__addresses__entry"></contact-detail>
   </div>
   <cdk-accordion class="contact-details__media-collapsible">
     <cdk-accordion-item
