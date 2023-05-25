@@ -13,4 +13,5 @@ export class StartPageSectionComponent {
   @Input() public background?: 'primary' | 'secondary';
   @Input() public sectionTitle?: string;
   @Input() public titleLink?: TitleLink;
+  @Input() public hideBottomPadding: boolean = false;
 }

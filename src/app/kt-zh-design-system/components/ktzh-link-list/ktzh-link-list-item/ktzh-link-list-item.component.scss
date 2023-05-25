@@ -11,10 +11,6 @@
     border-bottom: functions.get-color-from-palette(ktzh-variables.$zh-accent, 50) solid 2px;
     margin-bottom: 12px;
 
-    &:last-of-type {
-      margin-bottom: 30px;
-    }
-
     &:hover {
       border-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 900);
     }
