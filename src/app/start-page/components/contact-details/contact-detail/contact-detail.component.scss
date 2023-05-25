@@ -4,6 +4,7 @@
 @use 'mixins/material.mixin' as mat-mixins;
 
 .contact-detail {
+  @include mixins.white-underlined-simple-link;
   display: grid;
   grid-template-columns: 40px auto;
   grid-template-rows: min(40px);
@@ -11,15 +12,6 @@
   grid-template-areas:
     'icon address'
     'icon links';
-
-  a {
-    color: ktzh-variables.$zh-white;
-    text-underline-offset: 6px; // todo: does not work in IE11, but that's not required?
-
-    &:hover {
-      color: ktzh-variables.$zh-light-grey;
-    }
-  }
 
   .contact-detail__icon {
     grid-area: icon;

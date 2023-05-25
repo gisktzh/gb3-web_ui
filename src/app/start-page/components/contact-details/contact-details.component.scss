@@ -4,6 +4,7 @@
 @use 'mixins/material.mixin' as mat-mixins;
 
 .contact-details {
+  @include mixins.white-underlined-simple-link;
   display: flex;
   flex-direction: column;
 
@@ -31,6 +32,10 @@
         align-items: center;
         justify-content: space-between;
         cursor: pointer;
+      }
+
+      .contact-details__media-collapsible__item__body {
+        margin-bottom: 24px;
       }
     }
   }
