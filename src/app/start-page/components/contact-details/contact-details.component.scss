@@ -1,7 +1,5 @@
 @use 'mixins/helpers.mixin' as mixins;
-@use 'functions/helper.function' as functions;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
-@use 'mixins/material.mixin' as mat-mixins;
 
 .contact-details {
   @include mixins.white-underlined-simple-link;
@@ -23,7 +21,7 @@
     margin-top: 30px;
     border-width: 1px 0 1px 0;
     border-style: solid;
-    border-color: white;
+    border-color: ktzh-variables.$zh-white;
 
     .contact-details__media-collapsible__item {
       .contact-details__media-collapsible__item__header {

@@ -8,6 +8,10 @@ $border-width: 8px;
 /// Number of entries to be displayed
 $number-of-entries: 2;
 
+/**
+  For more information on the CSS shenanigans in here, consult the NewsFeedComponent CSS - the logic is the same.
+ */
+
 .discover-maps {
   width: 100%;
 
