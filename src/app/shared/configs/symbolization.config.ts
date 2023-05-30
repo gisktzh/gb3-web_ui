@@ -72,6 +72,22 @@ export const layerSymbolizations: LayerSymbolizations = {
     line: defaultSymbolization.line,
     polygon: defaultSymbolization.polygon
   },
+  [DrawingLayer.FeatureQueryLocation]: {
+    point: {
+      type: 'picture',
+      url: '/assets/images/map-icons/info-pin.svg',
+      width: 32,
+      height: 40,
+      // so, the yOffset should be (height/2) to ensure the pin of the marker is exactly where we clicked. However, because the SVG uses
+      // a filter which adds to its height, we need to take this into account. Empiricially tested (🤞), it seems to be 4px wide, so we
+      // take 8px off the yOffset to ensure our tip is exactly where it should be.
+      yOffset: 12,
+      xOffset: 0,
+      angle: 0
+    },
+    line: defaultSymbolization.line,
+    polygon: defaultSymbolization.polygon
+  },
   [DrawingLayer.FeatureHighlight]: {
     point: {
       type: 'simple',
