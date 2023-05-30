@@ -12,9 +12,9 @@ import {ConfigService} from '../../../shared/services/config.service';
 import {
   LayerSymbolizations,
   LineSymbolization,
+  PicturePointSymbolization,
   PolygonSymbolization,
-  SimplePointSymbolization,
-  SvgPointSymbolization
+  SimplePointSymbolization
 } from '../../../shared/interfaces/symbolization.interface';
 
 const SRS: SupportedSrs = 2056;
@@ -180,7 +180,7 @@ describe('EsriSymbolizationService', () => {
 
       const result = service.createSymbolizationForDrawingLayer(point, testLayer) as SimpleMarkerSymbol;
 
-      const expected = mockSymbolizations[testLayer].point as SvgPointSymbolization;
+      const expected = mockSymbolizations[testLayer].point as PicturePointSymbolization;
       expect(result.style).toEqual('path');
       expect(result.path).toEqual(expected.path);
       expect(result.yoffset).toEqual(expected.yOffset);

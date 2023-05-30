@@ -61,19 +61,11 @@ export const layerSymbolizations: LayerSymbolizations = {
   },
   [DrawingLayer.LocatePosition]: {
     point: {
-      type: 'svg',
-      size: 24,
-      color: {
-        r: 0,
-        g: 158,
-        b: 224,
-        a: 0.6
-      },
-      // taken from: https://commons.wikimedia.org/wiki/File:Maki-marker-15.svg; CC0 license
-      path:
-        'M7.5,0C5.0676,0,2.2297,1.4865,2.2297,5.2703' +
-        '  C2.2297,7.8378,6.2838,13.5135,7.5,15c1.0811-1.4865,5.2703-7.027,5.2703-9.7297C12.7703,1.4865,9.9324,0,7.5,0z',
-      yOffset: 12, // half of the image size to set needle at the actual point location
+      type: 'picture',
+      url: '/assets/images/map-icons/locate-me.svg',
+      width: 26,
+      height: 26,
+      yOffset: 0,
       xOffset: 0,
       angle: 0
     },

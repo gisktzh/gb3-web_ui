@@ -18,6 +18,7 @@ import TileInfo from '@arcgis/core/layers/support/TileInfo';
 import WMSSublayer from '@arcgis/core/layers/support/WMSSublayer';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
+import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol';
 
 /** Esri classes/modules */
 export const EsriMap = Map;
@@ -36,6 +37,7 @@ export const EsriColor = Color;
 export const EsriSimpleLineSymbol = SimpleLineSymbol;
 export const EsriSimpleMarkerSymbol = SimpleMarkerSymbol;
 export const EsriSimpleFillSymbol = SimpleFillSymbol;
+export const EsriPictureMarkerSymbol = PictureMarkerSymbol;
 export const EsriScaleBar = ScaleBar;
 export const EsriBasemap = Basemap;
 export const EsriTileInfo = TileInfo;
