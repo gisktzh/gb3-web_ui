@@ -1,8 +1,10 @@
 <main class="main">
   <mobile-warning *ngIf="this.showWarning"></mobile-warning>
-  <navbar class="navbar" [isSimplifiedPage]="this.isSimplifiedPage"></navbar>
+  <navbar [appContentWidth]="contentWidth" class="navbar" [isSimplifiedPage]="this.isSimplifiedPage"></navbar>
   <article class="app-wrapper">
-    <router-outlet></router-outlet>
-    <main-footer *ngIf="!isSimplifiedPage"></main-footer>
+    <div class="app-wrapper__content" #content>
+      <router-outlet (activate)="setAppContentWidth()"></router-outlet>
+      <main-footer *ngIf="!isSimplifiedPage"></main-footer>
+    </div>
   </article>
 </main>

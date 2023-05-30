@@ -3,11 +3,19 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
 .navbar {
-  position: sticky;
-  top: 0;
+  position: relative;
+  height: 100%;
 
   .navbar__spacer {
     flex: 1 1 auto;
+  }
+
+  a.navbar__item {
+    font-family: ktzh-variables.$zh-font-family;
+
+    &.navbar__item--active {
+      font-family: ktzh-variables.$zh-font-family-bold;
+    }
   }
 
   .navbar__item {
@@ -17,7 +25,7 @@
     display: flex;
     align-items: center;
 
-    & + .navbar__item-icon {
+    &.mdc-button {
       @include mat-mixins.mat-button--align-icon-right;
     }
 
@@ -31,8 +39,23 @@
     height: 65%;
     border-color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
   }
-}
 
-.current {
-  font-weight: bolder;
+  .navbar__underline-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    display: flex;
+
+    .navbar__underline-container__content-container {
+      display: grid;
+      grid-template-columns: auto ktzh-variables.$zh-layout-max-content-width auto;
+      // the `min-width` is set programmatically in the HTML file
+    }
+
+    .navbar__underline {
+      width: 100%;
+      border-top: 5px solid ktzh-variables.$zh-white;
+    }
+  }
 }

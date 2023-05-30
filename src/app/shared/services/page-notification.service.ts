@@ -1,4 +1,4 @@
-import {Inject, Injectable, OnDestroy} from '@angular/core';
+import {Injectable, OnDestroy} from '@angular/core';
 import {NavigationEnd, Router} from '@angular/router';
 import {BehaviorSubject, filter, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
@@ -6,7 +6,8 @@ import {MainPage} from '../enums/main-page.enum';
 import {PageNotificationActions} from '../../state/app/actions/page-notification.actions';
 import {PageNotification} from '../interfaces/page-notification.interface';
 import {selectAllUnreadPageNotifications} from '../../state/app/selectors/page-notification.selector';
-import {DOCUMENT} from '@angular/common';
+import {map} from 'rxjs/operators';
+import {UrlUtils} from '../utils/url.utils';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +21,7 @@ export class PageNotificationService implements OnDestroy {
   private currentMainPageOrUndefined?: MainPage;
   private pageNotifications: PageNotification[] = [];
 
-  constructor(private readonly router: Router, private readonly store: Store, @Inject(DOCUMENT) private readonly document: Document) {
+  constructor(private readonly router: Router, private readonly store: Store) {
     this.initSubscriptions();
   }
 
@@ -34,9 +35,11 @@ export class PageNotificationService implements OnDestroy {
       this.router.events
         .pipe(
           filter((event): event is NavigationEnd => event instanceof NavigationEnd),
-          tap(() => {
-            this.currentMainPageOrUndefined = this.getCurrentMainPage();
-            this.refreshCurrentPageNotifications();
+          map((event) => event as NavigationEnd),
+          tap((event) => {
+            const firstUrlSegmentPath = UrlUtils.extractFirstUrlSegmentPath(event.url, this.router);
+            this.currentMainPageOrUndefined = UrlUtils.transformStringToMainPage(firstUrlSegmentPath);
+            this.refreshCurrentPageNotifications(this.currentMainPageOrUndefined, this.pageNotifications);
           })
         )
         .subscribe()
@@ -47,7 +50,7 @@ export class PageNotificationService implements OnDestroy {
         .pipe(
           tap((pageNotifications) => {
             this.pageNotifications = pageNotifications;
-            this.refreshCurrentPageNotifications();
+            this.refreshCurrentPageNotifications(this.currentMainPageOrUndefined, this.pageNotifications);
           })
         )
         .subscribe()
@@ -57,33 +60,11 @@ export class PageNotificationService implements OnDestroy {
     this.store.dispatch(PageNotificationActions.loadPageNotifications());
   }
 
-  private refreshCurrentPageNotifications() {
+  private refreshCurrentPageNotifications(currentMainPage: MainPage | undefined, pageNotifications: PageNotification[]) {
     let currentPageNotifications: PageNotification[] = [];
-    if (this.currentMainPageOrUndefined !== undefined && this.pageNotifications.length > 0) {
-      const currentMainPage = this.currentMainPageOrUndefined;
-      currentPageNotifications = this.pageNotifications.filter((pageNotification) => pageNotification.pages.includes(currentMainPage));
+    if (currentMainPage !== undefined && pageNotifications.length > 0) {
+      currentPageNotifications = pageNotifications.filter((pageNotification) => pageNotification.pages.includes(currentMainPage));
     }
     this.currentPageNotifications$.next(currentPageNotifications);
-  }
-
-  /**
-   * Returns the first URL path part parsed as enum `MainPage` or `undefined` if either the extraction or parsing failed.
-   * @private
-   */
-  private getCurrentMainPage(): MainPage | undefined {
-    const currentLocationPathname = this.document.location.pathname;
-    const extractedMainPageString = this.extractMainPageStringFromUrl(currentLocationPathname);
-    return this.transformStringToMainPage(extractedMainPageString);
-  }
-
-  private extractMainPageStringFromUrl(url: string): string | undefined {
-    const urlPathParts = url.split('/');
-    return urlPathParts.length > 1 ? urlPathParts[1] : undefined;
-  }
-
-  private transformStringToMainPage(mainPageString: string | undefined): MainPage | undefined {
-    return mainPageString !== undefined && Object.values<string>(MainPage).includes(mainPageString)
-      ? (mainPageString as MainPage)
-      : undefined;
   }
 }

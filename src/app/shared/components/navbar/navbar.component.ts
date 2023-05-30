@@ -14,9 +14,13 @@ import {MainPage} from '../../enums/main-page.enum';
 export class NavbarComponent implements OnInit, OnDestroy {
   // expose the enum to the HTML
   public readonly mainPageEnum = MainPage;
+
   @Input() public isSimplifiedPage: boolean = false;
+  @Input() public appContentWidth?: string;
+
   public isAuthenticated: boolean = false;
   public userName: string | undefined = undefined;
+
   private readonly subscriptions = new Subscription();
   private readonly userName$ = this.store.select(selectUserName);
 

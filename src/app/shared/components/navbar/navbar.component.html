@@ -1,7 +1,7 @@
 <mat-toolbar class="navbar" color="primary">
   <span class="navbar__item">
     <img
-      [style.display]="!this.isSimplifiedPage ? 'none' : 'inline'"
+      [ngStyle]="{display: !this.isSimplifiedPage ? 'none' : 'inline'}"
       alt="KTZH Logo"
       class="navbar__logo"
       src="assets/images/ktzh_inverted.svg"
@@ -16,12 +16,12 @@
     class="navbar__item"
     mat-button
     [routerLink]="[mainPageEnum.Start]"
-    routerLinkActive="current"
+    routerLinkActive="navbar__item--active"
     >Übersicht</a
   >
-  <a class="navbar__item" mat-button [routerLink]="[mainPageEnum.Maps]" routerLinkActive="current">GIS-Browser</a>
-  <a class="navbar__item" mat-button [routerLink]="[mainPageEnum.Data]" routerLinkActive="current">Datenkatalog</a>
-  <a class="navbar__item" mat-button [routerLink]="[mainPageEnum.Support]" routerLinkActive="current">Hilfe & Support</a>
+  <a class="navbar__item" mat-button [routerLink]="[mainPageEnum.Maps]" routerLinkActive="navbar__item--active">GIS-Browser</a>
+  <a class="navbar__item" mat-button [routerLink]="[mainPageEnum.Data]" routerLinkActive="navbar__item--active">Datenkatalog</a>
+  <a class="navbar__item" mat-button [routerLink]="[mainPageEnum.Support]" routerLinkActive="navbar__item--active">Hilfe & Support</a>
   <a class="navbar__item" href="https://geodatenshop.zh.ch" mat-button target="_blank" rel="noopener noreferrer">
     <mat-icon>launch</mat-icon>
     Geodatenshop
@@ -40,4 +40,12 @@
       </button>
     </mat-menu>
   </ng-template>
+  <div class="navbar__underline-container" *ngIf="!isSimplifiedPage && appContentWidth">
+    <div class="navbar__underline-container__content-container" [ngStyle]="{'min-width': appContentWidth}">
+      <span></span>
+      <span class="navbar__underline"></span>
+      <span class="navbar__underline"></span>
+    </div>
+    <span class="navbar__underline"></span>
+  </div>
 </mat-toolbar>
