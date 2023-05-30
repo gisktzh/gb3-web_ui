@@ -27,15 +27,14 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       },
       ktzhWebsite: {
         baseUrl: 'https://www.zh.ch',
-        enabled: true
+        useMockData: false
       },
       gravCms: {
         baseUrl: 'https://uat.geo.ktzh.ch/cms',
-        enabled: true
+        useMockData: false
       },
       twitterWidget: {
-        baseUrl: 'https://platform.twitter.com/widgets.js',
-        enabled: false
+        baseUrl: 'https://platform.twitter.com/widgets.js'
       }
     },
     authSettings: {

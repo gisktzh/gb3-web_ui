@@ -24,4 +24,4 @@
     </li>
   </ul>
 </div>
-<p *ngIf="discoverMapsItems.length === 0" class="mat-caption">Aktuell gibt es keine Empfehlungen.</p>
+<p *ngIf="discoverMapsItems.length === 0 && loadingState === 'loaded'" class="mat-caption">Aktuell gibt es keine Empfehlungen.</p>
