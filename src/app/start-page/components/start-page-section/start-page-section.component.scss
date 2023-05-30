@@ -8,7 +8,7 @@
   flex-direction: row;
   flex-wrap: nowrap;
   justify-content: center;
-  padding: 80px 0;
+  padding: 80px 24px;
   overflow-x: hidden; // This is needed due to the section title cut off...
 
   &--no-padding-bottom {
@@ -45,6 +45,7 @@
         display: block;
         height: 0.1875rem;
         width: 100vw;
+        margin-left: 200px;
         margin-bottom: 19px;
       }
     }
@@ -53,6 +54,7 @@
       display: flex;
       width: 100%;
       justify-content: space-between;
+      margin-left: 200px;
       margin-bottom: 40px;
 
       .section__content-container__title-wrapper__title {
