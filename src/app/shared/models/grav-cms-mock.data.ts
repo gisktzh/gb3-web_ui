@@ -11,7 +11,7 @@ export const discoverMapsMockData: DiscoverMapsRoot = {
       id: 'AVfarbigZH',
       image: {
         name: 'areupbackgroundzh.png',
-        path: 'assets/imgages/basemaps/areupbackgroundzh.png',
+        path: 'assets/images/basemaps/areupbackgroundzh.png',
         size: 106551,
         type: 'image/png'
       },
@@ -26,7 +26,7 @@ export const discoverMapsMockData: DiscoverMapsRoot = {
       id: 'OrthoZH',
       image: {
         name: 'aredtmbackgroundzh.png',
-        path: 'assets/imgages/basemaps/aredtmbackgroundzh.png',
+        path: 'assets/images/basemaps/aredtmbackgroundzh.png',
         size: 99094,
         type: 'image/png'
       },
@@ -41,7 +41,7 @@ export const discoverMapsMockData: DiscoverMapsRoot = {
       id: 'Lageklassen2019ZH',
       image: {
         name: 'arewildbackgroundzh.png',
-        path: 'assets/imgages/basemaps/arewildbackgroundzh.png',
+        path: 'assets/images/basemaps/arewildbackgroundzh.png',
         size: 108516,
         type: 'image/png'
       },

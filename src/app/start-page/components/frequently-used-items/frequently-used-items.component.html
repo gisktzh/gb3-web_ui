@@ -4,6 +4,9 @@
     loadingText="Lade häufig verwendete Karten und Daten..."
     loadingCompletedText="Fehler beim Laden der häufig verwendeten Karten und Daten."
   ></content-loading-state>
+  <p *ngIf="frequentlyUsedItems.length === 0 && loadingState === 'loaded'" class="mat-caption">
+    Aktuell gibt es keine häufig verwendete Karten oder Daten.
+  </p>
   <ng-container *ngFor="let frequentlyUsedItem of frequentlyUsedItems">
     <div class="frequently-used-item">
       <div class="frequently-used-item__image-container">
@@ -18,12 +21,13 @@
         <h1>{{ frequentlyUsedItem.title }}</h1>
         <p class="frequently-used-item__text-container__text">{{ frequentlyUsedItem.description }}</p>
         <a
-          *ngIf="frequentlyUsedItem.url"
+          *ngIf="frequentlyUsedItem.url !== undefined"
           [href]="frequentlyUsedItem.url"
           class="frequently-used-item__text-container__link"
           mat-button
           target="_self"
           rel="noopener noreferrer"
+          title="Link öffnen"
         >
           Link öffnen
           <mat-icon>arrow_forward</mat-icon>

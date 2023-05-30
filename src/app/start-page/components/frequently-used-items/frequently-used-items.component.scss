@@ -34,10 +34,7 @@
       }
 
       .frequently-used-item__text-container__link {
-        @include mat-mixins.mat-button--align-icon-right;
-        color: functions.convert-hex-to-rgba(ktzh-variables.$zh-black100, 0.6);
-        font-family: ktzh-variables.$zh-font-family;
-        letter-spacing: normal;
+        @include mat-mixins.mat-button-ktzh-link;
         width: max-content;
         padding: 0;
       }

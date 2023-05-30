@@ -60,10 +60,7 @@
       }
 
       & .section__content-container__title-wrapper__link {
-        color: functions.convert-hex-to-rgba(ktzh-variables.$zh-black100, 0.6);
-        font-family: ktzh-variables.$zh-font-family;
-        letter-spacing: normal;
-        @include mat-mixins.mat-button--align-icon-right;
+        @include mat-mixins.mat-button-ktzh-link;
       }
     }
 
