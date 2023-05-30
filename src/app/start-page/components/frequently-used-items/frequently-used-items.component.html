@@ -8,22 +8,22 @@
     Aktuell gibt es keine häufig verwendete Karten oder Daten.
   </p>
   <ng-container *ngFor="let frequentlyUsedItem of frequentlyUsedItems">
-    <div class="frequently-used-item">
-      <div class="frequently-used-item__image-container">
+    <div class="frequently-used-items__item">
+      <div class="frequently-used-items__item__image-container">
         <img
           *ngIf="frequentlyUsedItem.image !== undefined"
           [src]="frequentlyUsedItem.image.url"
           [alt]="frequentlyUsedItem.image.name"
-          class="frequently-used-item__image-container__image"
+          class="frequently-used-items__item__image-container__image"
         />
       </div>
-      <div class="frequently-used-item__text-container">
+      <div class="frequently-used-items__item__text-container">
         <h1>{{ frequentlyUsedItem.title }}</h1>
-        <p class="frequently-used-item__text-container__text">{{ frequentlyUsedItem.description }}</p>
+        <p class="frequently-used-items__item__text-container__text">{{ frequentlyUsedItem.description }}</p>
         <a
           *ngIf="frequentlyUsedItem.url !== undefined"
           [href]="frequentlyUsedItem.url"
-          class="frequently-used-item__text-container__link"
+          class="frequently-used-items__item__text-container__link"
           mat-button
           target="_self"
           rel="noopener noreferrer"

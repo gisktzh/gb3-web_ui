@@ -24,6 +24,21 @@ import {FavouriteListEffects} from './state/map/effects/favourite-list.effects';
 import {PageNotificationEffects} from './state/app/effects/page-notification.effects';
 import {GeolocationEffects} from './state/map/effects/geolocation.effects';
 import {GravCmsService} from './shared/services/apis/grav-cms/grav-cms.service';
+import {GravCmsMockService} from './shared/services/apis/grav-cms/grav-cms.mock.service';
+import {ConfigService} from './shared/services/config.service';
+import {KTZHNewsService} from './shared/services/apis/ktzh/ktzhnews.service';
+
+function newsFactory<T>(service: T, mockService: T, configService: ConfigService): T {
+  return serviceFactory(service, mockService, configService.apiConfig.ktzhWebsite.useMockData);
+}
+
+function gravCmsFactory<T>(service: T, mockService: T, configService: ConfigService): T {
+  return serviceFactory(service, mockService, configService.apiConfig.gravCms.useMockData);
+}
+
+function serviceFactory<T>(service: T, mockService: T, useMockService: boolean = false): T {
+  return useMockService ? mockService : service;
+}
 
 export const MAP_SERVICE = new InjectionToken<MapService>('MapService');
 export const NEWS_SERVICE = new InjectionToken<NewsService>('NewsService');
@@ -55,8 +70,8 @@ export const GRAV_CMS_SERVICE = new InjectionToken<GravCmsService>('GravCmsServi
   ],
   providers: [
     {provide: MAP_SERVICE, useClass: EsriMapService},
-    {provide: NEWS_SERVICE, useClass: KTZHNewsMockService},
-    {provide: GRAV_CMS_SERVICE, useClass: GravCmsService}
+    {provide: NEWS_SERVICE, deps: [KTZHNewsService, KTZHNewsMockService, ConfigService], useFactory: newsFactory},
+    {provide: GRAV_CMS_SERVICE, deps: [GravCmsService, GravCmsMockService, ConfigService], useFactory: gravCmsFactory}
   ],
   bootstrap: [AppComponent]
 })
