@@ -7,11 +7,11 @@
 <div class="news-feed">
   <ul class="news-feed__list">
     <li *ngFor="let newsEntry of this.news" class="news-feed__list__item">
-      <a [href]="newsEntry.link" [title]="newsEntry.title" target="_blank" class="news-feed__list__item__link">
-        <div class="news-feed__list__item__link__content">
-          <p class="mat-subtitle-2 news-feed__list__item__link__content__header">{{ newsEntry.date }}</p>
-          <p class="mat-headline-6 news-feed__list__item__link__content__news-title">{{ newsEntry.title }}</p>
-          <p class="news-feed__list__item__link__content__news-text">{{ newsEntry.teaserText }}</p>
+      <a [href]="newsEntry.link" [title]="newsEntry.title" target="_blank" class="news-feed__list__item__wrapper">
+        <div class="news-feed__list__item__wrapper__content">
+          <p class="mat-subtitle-2 news-feed__list__item__wrapper__content__header">{{ newsEntry.date }}</p>
+          <p class="mat-headline-6 news-feed__list__item__wrapper__content__news-title">{{ newsEntry.title }}</p>
+          <p class="news-feed__list__item__wrapper__content__news-text">{{ newsEntry.teaserText }}</p>
         </div>
       </a>
     </li>

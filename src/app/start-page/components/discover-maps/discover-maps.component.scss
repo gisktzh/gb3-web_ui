@@ -1,6 +1,7 @@
 @use 'functions/helper.function' as functions;
 @use 'mixins/helpers.mixin' as mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'mixins/collapsing-flexbox-list.mixin' as collapsing-flexbox-list;
 
 /// The border width around the link elements
 $border-width: 8px;
@@ -8,42 +9,30 @@ $border-width: 8px;
 /// Number of entries to be displayed
 $number-of-entries: 2;
 
-/**
-  For more information on the CSS shenanigans in here, consult the NewsFeedComponent CSS - the logic is the same.
- */
-
 .discover-maps {
   width: 100%;
 
   .discover-maps__list {
-    display: flex;
-    flex-flow: row wrap;
-    list-style-type: none;
-    margin: 0;
-    width: calc(100% - $border-width);
-    padding: 0 0 0 $border-width;
-    justify-content: center;
+    @include collapsing-flexbox-list.list($border-width);
 
     .discover-maps__list__item {
-      margin-bottom: $border-width;
-      margin-right: $border-width;
-      position: relative;
-      flex-basis: calc((#{ktzh-variables.$zh-layout-max-content-width} / #{$number-of-entries}) - 2 * $border-width);
-      max-width: calc((#{ktzh-variables.$zh-layout-max-content-width} / #{$number-of-entries}) - 2 * $border-width);
-      height: 649px;
+      @include collapsing-flexbox-list.list__item(
+        $border-width: $border-width,
+        $max-content-width: ktzh-variables.$zh-layout-max-content-width,
+        $number-of-entries: $number-of-entries,
+        $height: 649px
+      );
 
       .discover-maps__list__item__wrapper {
-        background-color: ktzh-variables.$zh-white;
-        display: flex;
-        flex-direction: column;
-        position: relative;
-        text-decoration: none;
-        height: 100%;
-        color: inherit;
+        @include collapsing-flexbox-list.list__item__wrapper(ktzh-variables.$zh-white);
+
+        &:hover {
+          & .discover-maps__list__item__wrapper__content__container__title {
+            color: ktzh-variables.$zh-black100 !important; // override title color on hover
+          }
+        }
 
         .discover-maps__list__item__wrapper__content {
-          background-color: ktzh-variables.$zh-white;
-
           .discover-maps__list__item__wrapper__content__image {
             display: block;
             width: 100%;
@@ -69,29 +58,6 @@ $number-of-entries: 2;
               @include mixins.multiline-ellipsis(6);
             }
           }
-        }
-      }
-
-      &:before {
-        background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 25);
-        content: '';
-        display: block;
-        height: calc(100% + 2 * $border-width);
-        left: -$border-width;
-        position: absolute;
-        top: -$border-width;
-        width: calc(100% + 2 * $border-width);
-      }
-
-      &:hover {
-        z-index: 1;
-
-        & .news-feed__list__item__link__content__news-title {
-          color: ktzh-variables.$zh-black100 !important;
-        }
-
-        &:before {
-          background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 50);
         }
       }
     }
