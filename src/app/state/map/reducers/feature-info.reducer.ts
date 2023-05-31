@@ -8,7 +8,7 @@ export const initialState: FeatureInfoState = {
   loadingState: 'undefined',
   data: [],
   highlightedFeature: undefined,
-  isPinned: false
+  pinnedFeatureId: undefined
 };
 
 export const featureInfoFeature = createFeature({
@@ -25,14 +25,14 @@ export const featureInfoFeature = createFeature({
       const data = featureInfos.map((featureInfo) => featureInfo.featureInfo.results);
       return {...state, loadingState: 'loaded', data};
     }),
-    on(FeatureInfoActions.highlightFeature, (state, {feature, isPinned}): FeatureInfoState => {
-      return {...state, highlightedFeature: feature, isPinned: isPinned};
+    on(FeatureInfoActions.highlightFeature, (state, {feature, pinnedFeatureId}): FeatureInfoState => {
+      return {...state, highlightedFeature: feature, pinnedFeatureId};
     }),
     on(FeatureInfoActions.clearHighlight, (state): FeatureInfoState => {
-      return {...state, highlightedFeature: undefined, isPinned: false};
+      return {...state, highlightedFeature: undefined, pinnedFeatureId: undefined};
     })
   )
 });
 
-export const {name, reducer, selectFeatureInfoState, selectLoadingState, selectData, selectHighlightedFeature, selectIsPinned} =
+export const {name, reducer, selectFeatureInfoState, selectLoadingState, selectData, selectHighlightedFeature, selectPinnedFeatureId} =
   featureInfoFeature;

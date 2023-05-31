@@ -1,13 +1,13 @@
 import {Injectable} from '@angular/core';
-import {EsriColor, EsriSimpleFillSymbol, EsriSimpleLineSymbol, EsriSimpleMarkerSymbol} from '../../external/esri.module';
+import {EsriColor, EsriPictureMarkerSymbol, EsriSimpleFillSymbol, EsriSimpleLineSymbol, EsriSimpleMarkerSymbol} from './esri.module';
 import {ConfigService} from '../../../shared/services/config.service';
 import {DrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {GeometryWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {LayerSymbolizations, SymbolizationColor} from '../../../shared/interfaces/symbolization.interface';
-import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
 import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import Color from '@arcgis/core/Color';
+import MarkerSymbol from '@arcgis/core/symbols/MarkerSymbol';
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +34,7 @@ export class EsriSymbolizationService {
     }
   }
 
-  private createPointSymbolization(drawingLayer: DrawingLayer): SimpleMarkerSymbol {
+  private createPointSymbolization(drawingLayer: DrawingLayer): MarkerSymbol {
     const pointSymbology = this.layerSymbolizations[drawingLayer].point;
     switch (pointSymbology.type) {
       case 'simple':
@@ -46,13 +46,13 @@ export class EsriSymbolizationService {
             color: this.createEsriColor(pointSymbology.outline.color)
           }
         });
-      case 'svg':
-        return new EsriSimpleMarkerSymbol({
-          color: this.createEsriColor(pointSymbology.color),
-          path: pointSymbology.path,
+      case 'picture':
+        return new EsriPictureMarkerSymbol({
+          url: pointSymbology.url,
+          width: pointSymbology.width,
+          height: pointSymbology.height,
           xoffset: pointSymbology.xOffset,
           yoffset: pointSymbology.yOffset,
-          size: pointSymbology.size,
           angle: pointSymbology.angle
         });
     }

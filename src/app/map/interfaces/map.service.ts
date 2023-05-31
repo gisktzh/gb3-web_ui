@@ -56,6 +56,9 @@ export interface MapService {
   /** Zooms to a selected point based on latitude, longitude, Srs and scale */
   zoomToPoint(point: PointWithSrs, scale: number): void;
 
+  /** Zooms to the extent of a given geometry */
+  zoomToExtent(geometry: GeometryWithSrs): void;
+
   /** Adds a geometry to a DrawingLayer */
   addGeometryToDrawingLayer(geometry: GeometryWithSrs, drawingLayer: DrawingLayer): void;
 

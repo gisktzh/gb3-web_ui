@@ -12,12 +12,14 @@ import {ConfigService} from '../../../shared/services/config.service';
 import {
   LayerSymbolizations,
   LineSymbolization,
+  PicturePointSymbolization,
   PolygonSymbolization,
-  SimplePointSymbolization,
-  SvgPointSymbolization
+  SimplePointSymbolization
 } from '../../../shared/interfaces/symbolization.interface';
+import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol';
 
 const SRS: SupportedSrs = 2056;
+const mockIconUrl = '/path/to/icon.svg';
 const minimalTestSet = [
   {
     expected: 'SimpleLineSymbol',
@@ -61,15 +63,10 @@ const minimalTestSet = [
 const mockSymbolizations: LayerSymbolizations = {
   [DrawingLayer.LocatePosition]: {
     point: {
-      type: 'svg',
-      size: 24,
-      color: {
-        r: 0,
-        g: 158,
-        b: 224,
-        a: 0.6
-      },
-      path: 'svgPath',
+      type: 'picture',
+      width: 24,
+      height: 45,
+      url: mockIconUrl,
       yOffset: 12, // half of the image size to set needle at the actual point location
       xOffset: 0,
       angle: 0
@@ -174,19 +171,20 @@ describe('EsriSymbolizationService', () => {
       expect(result.outline.width).toEqual(expected.outline.width);
     });
 
-    it("returns an svg point symbol for type 'svg'", () => {
+    it("returns a picture point symbol for type 'picture'", () => {
       const point = MinimalGeometriesUtils.getMinimalPoint(SRS);
       const testLayer = DrawingLayer.LocatePosition;
 
-      const result = service.createSymbolizationForDrawingLayer(point, testLayer) as SimpleMarkerSymbol;
+      const result = service.createSymbolizationForDrawingLayer(point, testLayer) as PictureMarkerSymbol;
 
-      const expected = mockSymbolizations[testLayer].point as SvgPointSymbolization;
-      expect(result.style).toEqual('path');
-      expect(result.path).toEqual(expected.path);
+      const expected = mockSymbolizations[testLayer].point as PicturePointSymbolization;
+      expect(result.url).toEqual(mockIconUrl);
+      expect(result.url).toEqual(expected.url);
+      expect(result.width).toEqual(expected.width);
+      expect(result.height).toEqual(expected.height);
       expect(result.yoffset).toEqual(expected.yOffset);
       expect(result.xoffset).toEqual(expected.xOffset);
       expect(result.angle).toEqual(expected.angle);
-      expect(result.color.toRgba()).toEqual([expected.color.r, expected.color.g, expected.color.b, expected.color.a]);
     });
   });
 

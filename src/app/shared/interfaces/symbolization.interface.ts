@@ -18,21 +18,24 @@ interface HasWidth {
   width: number;
 }
 
-interface AbstractPointSymbolization extends HasColor {
-  /** A 'simple' point is rendered as a circle with color as fill; 'svg' is rendered as an SVG path icon */
-  type: 'svg' | 'simple';
+interface AbstractPointSymbolization {
+  type: 'picture' | 'simple';
+}
+
+export interface SimplePointSymbolization extends AbstractPointSymbolization, HasColor {
+  type: 'simple';
+  outline: HasWidth & HasColor;
   size: number;
 }
 
-export interface SimplePointSymbolization extends AbstractPointSymbolization {
-  type: 'simple';
-  outline: HasWidth & HasColor;
-}
-
-export interface SvgPointSymbolization extends AbstractPointSymbolization {
-  type: 'svg';
-  /** SVG path string */
-  path: string;
+export interface PicturePointSymbolization extends AbstractPointSymbolization {
+  type: 'picture';
+  /** Image URL string */
+  url: string;
+  /** Width of the icon */
+  width: number;
+  /** Height of the icon */
+  height: number;
   /** Horizontal offset - by default, the anchorpoint is in the center of the path */
   xOffset: number;
   /** Vertical offset - by default, the anchorpoint is in the center of the path */
@@ -41,7 +44,7 @@ export interface SvgPointSymbolization extends AbstractPointSymbolization {
   angle: number;
 }
 
-type PointSymbolization = SimplePointSymbolization | SvgPointSymbolization;
+type PointSymbolization = SimplePointSymbolization | PicturePointSymbolization;
 
 export interface LineSymbolization extends HasColor, HasWidth {}
 
