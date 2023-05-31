@@ -13,6 +13,7 @@ import {MobileWarningComponent} from './components/mobile-warning/mobile-warning
 import {FormatContentPipe} from './pipes/format-content.pipe';
 import {PageNotificationComponent} from './components/page-notification/page-notification.component';
 import {MainFooterComponent} from './components/footer/main-footer.component';
+import {ScrollbarWidthCalculationComponent} from './components/scrollbar-width-calculation/scrollbar-width-calculation.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import {MainFooterComponent} from './components/footer/main-footer.component';
     MobileWarningComponent,
     FormatContentPipe,
     PageNotificationComponent,
-    MainFooterComponent
+    MainFooterComponent,
+    ScrollbarWidthCalculationComponent
   ],
   imports: [MaterialModule, RouterModule, CommonModule, ResizableModule],
   exports: [
@@ -40,7 +42,8 @@ import {MainFooterComponent} from './components/footer/main-footer.component';
     MobileWarningComponent,
     FormatContentPipe,
     PageNotificationComponent,
-    MainFooterComponent
+    MainFooterComponent,
+    ScrollbarWidthCalculationComponent
   ]
 })
 export class SharedModule {}

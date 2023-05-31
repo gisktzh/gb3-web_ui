@@ -41,6 +41,7 @@ $zh-border-color: $zh-black40;
 
 $zh-border-radius: 1px;
 $esri-attribution-widget-height: 16px; // 'Powered by Esri' banner height
+$zh-layout-max-content-width: 1166px; // defines the max width the content should have (e.g. in sections)
 
 /* Palettes
 ========================== */
@@ -247,7 +248,3 @@ $zh-typography-config: mat.define-typography-config(
   $headline-1: $zh-typography-headline-override,
   $font-family: $zh-font-family // Define default family, used in non-headlines and e.g. buttons
 );
-
-/* Layout specs
-========================== */
-$zh-layout-max-content-width: 1166px; // defines the max width the content should have (e.g. in sections)
