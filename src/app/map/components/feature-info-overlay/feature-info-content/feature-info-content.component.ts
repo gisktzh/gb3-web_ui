@@ -1,9 +1,9 @@
-import {Component, Input, OnDestroy, OnInit, QueryList, Renderer2, ViewChildren} from '@angular/core';
+import {AfterViewInit, Component, Input, OnDestroy, OnInit, QueryList, Renderer2, ViewChildren} from '@angular/core';
 import {ConfigService} from '../../../../shared/services/config.service';
 import {FeatureInfoResultLayer} from '../../../../shared/interfaces/feature-info.interface';
 import {FeatureInfoActions} from '../../../../state/map/actions/feature-info.actions';
 import {Store} from '@ngrx/store';
-import {selectIsPinned} from '../../../../state/map/reducers/feature-info.reducer';
+import {selectPinnedFeatureId} from '../../../../state/map/reducers/feature-info.reducer';
 import {Subscription, tap} from 'rxjs';
 import {MatRadioButton} from '@angular/material/radio';
 import {TableColumnIdentifierDirective} from './table-column-identifier.directive';
@@ -37,12 +37,16 @@ const DEFAULT_CELL_VALUE = '-';
  */
 const DEFAULT_TABLE_HEADER_PREFIX = 'Resultat';
 
+/**
+ * Important to know: All tables are isolated from each other, yet the pinned state is shared among all of them. As such, the pinnedFeature
+ * is added to the global state and handled accordingly in this component here.
+ */
 @Component({
   selector: 'feature-info-content',
   templateUrl: './feature-info-content.component.html',
   styleUrls: ['./feature-info-content.component.scss']
 })
-export class FeatureInfoContentComponent implements OnInit, OnDestroy {
+export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() public layer!: FeatureInfoResultLayer;
   @Input() public topicId!: string;
   public readonly staticFilesBaseUrl: string;
@@ -54,9 +58,9 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy {
   public readonly tableHeaders: TableCell[] = [];
 
   private readonly featureGeometries: Map<number, GeometryWithSrs | null> = new Map();
-  private readonly isPinned$ = this.store.select(selectIsPinned);
+  private readonly pinnedFeatureId$ = this.store.select(selectPinnedFeatureId);
   private readonly subscriptions: Subscription = new Subscription();
-  private isPinned: boolean = false;
+  private pinnedFeatureId: number | undefined;
   @ViewChildren(TableColumnIdentifierDirective) private readonly tableColumns!: QueryList<TableColumnIdentifierDirective>;
 
   constructor(private readonly store: Store, private readonly configService: ConfigService, private readonly renderer: Renderer2) {
@@ -65,66 +69,110 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy {
 
   public ngOnInit() {
     this.initTableData();
-    this.initSubscriptions();
   }
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
   }
 
+  public ngAfterViewInit() {
+    this.initPinnedFeatureIdHandler();
+  }
+
   public toggleHighlightForFeature(fid: number, highlightButton: MatRadioButton) {
     if (highlightButton.checked) {
       this.store.dispatch(FeatureInfoActions.clearHighlight());
-
+      // Programmaticaly dispatch the hover effect which is not triggered anymore because the button is inside the hover area
+      this.onFeatureHoverStart(fid);
       // Also uncheck the radio button status, because radio buttons cannot be deactivated by default
       highlightButton.checked = false;
     } else {
-      this.highlightFeatureIfExists(fid, true);
+      this.highlightFeatureOnMapIfExists(fid, true);
+    }
+  }
+
+  public onFeatureHoverStart(fid: number) {
+    if (!this.pinnedFeatureId) {
+      this.addHighlightClassToCellsForFid(fid);
+      this.highlightFeatureOnMapIfExists(fid);
+    }
+  }
+
+  public onFeatureHoverEnd(fid: number) {
+    if (!this.pinnedFeatureId) {
+      this.removeHighlightClassFromCellsForFid(fid);
+      this.store.dispatch(FeatureInfoActions.clearHighlight());
     }
   }
 
   /**
    * Adds the highlight class to all cells for a given feature to find all corresponding cells, mimicking a column
-   * selection. Dispatches a highlight request only if no item is currently pinned.
+   * selection.
    * @param fid
    */
-  public addHoverHighlightForFeature(fid: number) {
+  private addHighlightClassToCellsForFid(fid: number) {
     const tableColumnIdentifier = TableColumnIdentifierDirective.createUniqueColumnIdentifier(this.topicId, this.layer.layer, fid);
     this.tableColumns
       .filter((tableColumn) => tableColumn.uniqueIdentifier === tableColumnIdentifier)
       .forEach((tableColumn) => this.renderer.addClass(tableColumn.host.nativeElement, HIGHLIGHTED_CELL_CLASS));
-
-    if (!this.isPinned) {
-      this.highlightFeatureIfExists(fid);
-    }
   }
 
   /**
    * Removes the highlight class to all cells for a given feature to find all corresponding cells, mimicking a column
-   * selection. Dispatches a clear highlight request only if no item is currently pinned.
+   * selection.
    * @param fid
    */
-  public removeHoverHighlightForFeature(fid: number) {
+  private removeHighlightClassFromCellsForFid(fid: number) {
     const tableColumnIdentifier = TableColumnIdentifierDirective.createUniqueColumnIdentifier(this.topicId, this.layer.layer, fid);
     this.tableColumns
       .filter((tableColumn) => tableColumn.uniqueIdentifier === tableColumnIdentifier)
-      .forEach((tableColumn) => this.renderer.removeClass(tableColumn.host.nativeElement, HIGHLIGHTED_CELL_CLASS));
-
-    if (!this.isPinned) {
-      this.store.dispatch(FeatureInfoActions.clearHighlight());
-    }
+      .forEach((tableColumn) => {
+        this.renderer.removeClass(tableColumn.host.nativeElement, HIGHLIGHTED_CELL_CLASS);
+      });
   }
 
-  private initSubscriptions() {
-    this.subscriptions.add(this.isPinned$.pipe(tap((isPinned) => (this.isPinned = isPinned))).subscribe());
+  /**
+   * Removes the highligh class from all cells that currently have it.
+   * @private
+   */
+  private removeHighlightClassFromAllCells() {
+    this.tableColumns
+      .filter((tableColumn) => tableColumn.host.nativeElement.classList.contains(HIGHLIGHTED_CELL_CLASS))
+      .forEach((tableColumn) => {
+        this.renderer.removeClass(tableColumn.host.nativeElement, HIGHLIGHTED_CELL_CLASS);
+      });
   }
 
-  private highlightFeatureIfExists(fid: number, isPinned: boolean = false) {
+  /**
+   * Whenever the global state changes (indicating a pinned feature), we need to remove the highlight class from all cells - the reason is
+   * that we cannot remove it from the specific FID because it might be in another table, so the FIDs won't match. If a feature is pinned,
+   * we also add it (if it exists).
+   * @private
+   */
+  private initPinnedFeatureIdHandler() {
+    this.subscriptions.add(
+      this.pinnedFeatureId$
+        .pipe(
+          tap((pinnedFeatureId) => {
+            this.pinnedFeatureId = pinnedFeatureId;
+            this.removeHighlightClassFromAllCells();
+            if (pinnedFeatureId) {
+              this.addHighlightClassToCellsForFid(pinnedFeatureId);
+            }
+          })
+        )
+        .subscribe()
+    );
+  }
+
+  private highlightFeatureOnMapIfExists(fid: number, isPinned: boolean = false) {
     const feature = this.featureGeometries.get(fid);
     if (!feature) {
       return;
     }
-    this.store.dispatch(FeatureInfoActions.highlightFeature({feature, isPinned}));
+
+    const pinnedFeatureId = isPinned ? fid : undefined;
+    this.store.dispatch(FeatureInfoActions.highlightFeature({feature, pinnedFeatureId}));
   }
 
   private createTableHeaderForFeature(fid: number, featureIndex: number, totalFeatures: number): TableCell {
