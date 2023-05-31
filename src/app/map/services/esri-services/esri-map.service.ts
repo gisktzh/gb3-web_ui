@@ -44,6 +44,8 @@ import {DrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {EsriSymbolizationService} from './esri-symbolization.service';
 import {MapConstants} from '../../../shared/constants/map.constants';
 
+const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
+
 @Injectable({
   providedIn: 'root'
 })
@@ -270,6 +272,21 @@ export class EsriMapService implements MapService {
     return this.mapView.goTo({
       center: this.createGeoReferencedPoint(point),
       scale: scale
+    }) as never;
+  }
+
+  public zoomToExtent(geometry: GeometryWithSrs): Promise<never> {
+    const esriGeometry = this.geoJSONMapperService.fromGeoJSONToEsri(geometry);
+
+    if (esriGeometry instanceof EsriPoint) {
+      return this.mapView.goTo({
+        center: esriGeometry,
+        scale: DEFAULT_POINT_ZOOM_EXTENT_SCALE
+      }) as never;
+    }
+
+    return this.mapView.goTo({
+      center: esriGeometry.extent
     }) as never;
   }
 

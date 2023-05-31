@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Input, OnDestroy, OnInit, QueryList, Renderer2, ViewChildren} from '@angular/core';
+import {AfterViewInit, Component, Inject, Input, OnDestroy, OnInit, QueryList, Renderer2, ViewChildren} from '@angular/core';
 import {ConfigService} from '../../../../shared/services/config.service';
 import {FeatureInfoResultLayer} from '../../../../shared/interfaces/feature-info.interface';
 import {FeatureInfoActions} from '../../../../state/map/actions/feature-info.actions';
@@ -8,6 +8,8 @@ import {Subscription, tap} from 'rxjs';
 import {MatRadioButton} from '@angular/material/radio';
 import {TableColumnIdentifierDirective} from './table-column-identifier.directive';
 import {GeometryWithSrs} from '../../../../shared/interfaces/geojson-types-with-srs.interface';
+import {MAP_SERVICE} from '../../../../app.module';
+import {MapService} from '../../../interfaces/map.service';
 
 /**
  * A TableCell represents a single value which is tied to a given feature via its fid.
@@ -63,7 +65,12 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
   private pinnedFeatureId: number | undefined;
   @ViewChildren(TableColumnIdentifierDirective) private readonly tableColumns!: QueryList<TableColumnIdentifierDirective>;
 
-  constructor(private readonly store: Store, private readonly configService: ConfigService, private readonly renderer: Renderer2) {
+  constructor(
+    private readonly store: Store,
+    private readonly configService: ConfigService,
+    private readonly renderer: Renderer2,
+    @Inject(MAP_SERVICE) private readonly mapService: MapService
+  ) {
     this.staticFilesBaseUrl = this.configService.apiConfig.gb2StaticFiles.baseUrl;
   }
 
@@ -87,7 +94,7 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
       // Also uncheck the radio button status, because radio buttons cannot be deactivated by default
       highlightButton.checked = false;
     } else {
-      this.highlightFeatureOnMapIfExists(fid, true);
+      this.highlightFeatureOnMapIfExists(fid, true, true);
     }
   }
 
@@ -165,7 +172,7 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
     );
   }
 
-  private highlightFeatureOnMapIfExists(fid: number, isPinned: boolean = false) {
+  private highlightFeatureOnMapIfExists(fid: number, isPinned: boolean = false, zoomToFeature: boolean = false) {
     const feature = this.featureGeometries.get(fid);
     if (!feature) {
       return;
@@ -173,6 +180,10 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
 
     const pinnedFeatureId = isPinned ? fid : undefined;
     this.store.dispatch(FeatureInfoActions.highlightFeature({feature, pinnedFeatureId}));
+
+    if (zoomToFeature) {
+      this.mapService.zoomToExtent(feature);
+    }
   }
 
   private createTableHeaderForFeature(fid: number, featureIndex: number, totalFeatures: number): TableCell {
