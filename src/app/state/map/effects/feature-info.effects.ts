@@ -9,9 +9,17 @@ import {selectQueryLayers} from '../selectors/query-layers.selector';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {MapConstants} from '../../../shared/constants/map.constants';
+import {MapConfigActions} from '../actions/map-config.actions';
 
 @Injectable()
 export class FeatureInfoEffects {
+  public interceptMapClick = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapConfigActions.handleMapClick),
+      map(({x, y}) => FeatureInfoActions.sendRequest({x, y}))
+    );
+  });
+
   public dispatchFeatureInfoRequest$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(FeatureInfoActions.sendRequest),

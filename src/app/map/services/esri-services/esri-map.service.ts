@@ -4,7 +4,6 @@ import {MapConfigActions} from '../../../state/map/actions/map-config.actions';
 import {TransformationService} from './transformation.service';
 import {selectActiveBasemapId, selectMapConfigState} from '../../../state/map/reducers/map-config.reducer';
 import {first, skip, Subscription, tap, withLatestFrom} from 'rxjs';
-import {FeatureInfoActions} from '../../../state/map/actions/feature-info.actions';
 import {GeoJSONMapperService} from './geo-json-mapper.service';
 import * as dayjs from 'dayjs';
 import {MapService} from '../../interfaces/map.service';
@@ -604,7 +603,7 @@ export class EsriMapService implements MapService {
   }
 
   private dispatchFeatureInfoRequest(x: number, y: number) {
-    this.store.dispatch(FeatureInfoActions.sendRequest({x, y}));
+    this.store.dispatch(MapConfigActions.handleMapClick({x, y}));
   }
 
   private updateMapConfig() {

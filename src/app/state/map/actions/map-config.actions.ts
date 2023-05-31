@@ -19,6 +19,7 @@ export const MapConfigActions = createActionGroup({
     'Reset Extent': emptyProps(),
     'Change Zoom': props<{zoomType: ZoomType}>(),
     'Set Basemap': props<{activeBasemapId: string}>(),
-    'Clear Initial Maps Config': emptyProps()
+    'Clear Initial Maps Config': emptyProps(),
+    'Handle Map Click': props<{x: number; y: number}>() // meta action which effects can hook into that need to deal with map clicks
   }
 });

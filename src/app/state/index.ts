@@ -11,6 +11,7 @@ import {reducer as supportContentReducer} from './support/reducers/support-conte
 import {reducer as mapAttributeFiltersItemReducer} from './map/reducers/map-attribute-filters-item.reducer';
 import {reducer as pageNotificationReducer} from './app/reducers/page-notification.reducer';
 import {reducer as geolocationReducer} from './map/reducers/geolocation.reducer';
+import {reducer as generalInfoReducer} from './map/reducers/general-info.reducer';
 import {reducer as appLayoutReducer} from './app/reducers/app-layout.reducer';
 import {ActiveMapItemState} from './map/states/active-map-item.state';
 import {FavouriteListState} from './map/states/favourite-list.state';
@@ -23,6 +24,7 @@ import {SupportContentState} from './support/states/support-content.state';
 import {AuthStatusState} from './auth/states/auth-status.state';
 import {PageNotificationState} from './app/states/page-notification.state';
 import {GeolocationState} from './map/states/geolocation.state';
+import {GeneralInfoState} from './map/states/general-info.state';
 import {AppLayoutState} from './app/states/app-layout.state';
 
 export interface State {
@@ -37,6 +39,7 @@ export interface State {
   mapAttributeFiltersItem: MapAttributeFiltersItemState;
   pageNotification: PageNotificationState;
   geolocation: GeolocationState;
+  generalInfo: GeneralInfoState;
   appLayout: AppLayoutState;
 }
 
@@ -52,6 +55,7 @@ export const reducers: ActionReducerMap<State> = {
   mapAttributeFiltersItem: mapAttributeFiltersItemReducer,
   pageNotification: pageNotificationReducer,
   geolocation: geolocationReducer,
+  generalInfo: generalInfoReducer,
   appLayout: appLayoutReducer
 };
 
