@@ -62,7 +62,7 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
   private readonly featureGeometries: Map<number, GeometryWithSrs | null> = new Map();
   private readonly pinnedFeatureId$ = this.store.select(selectPinnedFeatureId);
   private readonly subscriptions: Subscription = new Subscription();
-  private pinnedFeatureId: number | undefined;
+  private pinnedFeatureId: string | undefined;
   @ViewChildren(TableColumnIdentifierDirective) private readonly tableColumns!: QueryList<TableColumnIdentifierDirective>;
 
   constructor(
@@ -118,7 +118,7 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
    * @param fid
    */
   private addHighlightClassToCellsForFid(fid: number) {
-    const tableColumnIdentifier = TableColumnIdentifierDirective.createUniqueColumnIdentifier(this.topicId, this.layer.layer, fid);
+    const tableColumnIdentifier = this.createUniqueColumnIdentifierForFid(fid);
     this.tableColumns
       .filter((tableColumn) => tableColumn.uniqueIdentifier === tableColumnIdentifier)
       .forEach((tableColumn) => this.renderer.addClass(tableColumn.host.nativeElement, HIGHLIGHTED_CELL_CLASS));
@@ -130,12 +130,16 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
    * @param fid
    */
   private removeHighlightClassFromCellsForFid(fid: number) {
-    const tableColumnIdentifier = TableColumnIdentifierDirective.createUniqueColumnIdentifier(this.topicId, this.layer.layer, fid);
+    const tableColumnIdentifier = this.createUniqueColumnIdentifierForFid(fid);
     this.tableColumns
       .filter((tableColumn) => tableColumn.uniqueIdentifier === tableColumnIdentifier)
       .forEach((tableColumn) => {
         this.renderer.removeClass(tableColumn.host.nativeElement, HIGHLIGHTED_CELL_CLASS);
       });
+  }
+
+  private createUniqueColumnIdentifierForFid(fid: number): string {
+    return TableColumnIdentifierDirective.createUniqueColumnIdentifier(this.topicId, this.layer.layer, fid);
   }
 
   /**
@@ -164,7 +168,11 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
             this.pinnedFeatureId = pinnedFeatureId;
             this.removeHighlightClassFromAllCells();
             if (pinnedFeatureId) {
-              this.addHighlightClassToCellsForFid(pinnedFeatureId);
+              const feature = this.tableColumns.find((tableColumn) => tableColumn.uniqueIdentifier === pinnedFeatureId);
+
+              if (feature) {
+                this.addHighlightClassToCellsForFid(feature.featureId);
+              }
             }
           })
         )
@@ -178,7 +186,7 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
       return;
     }
 
-    const pinnedFeatureId = isPinned ? fid : undefined;
+    const pinnedFeatureId = isPinned ? this.createUniqueColumnIdentifierForFid(fid) : undefined;
     this.store.dispatch(FeatureInfoActions.highlightFeature({feature, pinnedFeatureId}));
 
     if (zoomToFeature) {

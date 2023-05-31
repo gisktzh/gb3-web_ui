@@ -5,5 +5,5 @@ import {GeometryWithSrs} from '../../../shared/interfaces/geojson-types-with-srs
 export interface FeatureInfoState extends HasLoadingState {
   data: FeatureInfoResult[];
   highlightedFeature: GeometryWithSrs | undefined;
-  pinnedFeatureId: number | undefined;
+  pinnedFeatureId: string | undefined;
 }
