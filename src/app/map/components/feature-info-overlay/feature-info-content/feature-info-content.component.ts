@@ -143,7 +143,7 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
   }
 
   /**
-   * Removes the highligh class from all cells that currently have it.
+   * Removes the highlight class from all cells that currently have it.
    * @private
    */
   private removeHighlightClassFromAllCells() {
