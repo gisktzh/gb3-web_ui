@@ -1,13 +1,26 @@
-<map-overlay
-  (closeEvent)="this.close()"
-  [isVisible]="this.isVisible"
-  location="right"
-  overlayTitle="Info"
-  (printButtonEvent)="this.print()"
->
-  <loading-and-process-bar [loadingState]="this.loadingState"></loading-and-process-bar>
-  <ng-container *ngIf="this.loadingState === 'loaded'">
-    <feature-info-item *ngFor="let featureInfo of this.featureInfoData; trackBy: trackById" [featureInfo]="featureInfo"></feature-info-item>
-    <i *ngIf="this.featureInfoData.length === 0">Keine Treffer!</i>
+<map-overlay (closeEvent)="close()" [isVisible]="isVisible" location="right" overlayTitle="Info" (printButtonEvent)="print()">
+  <loading-and-process-bar [loadingState]="loadingState"></loading-and-process-bar>
+  <ng-container *ngIf="loadingState === 'loaded'">
+    <!-- Todo: Add final styling -->
+    <map-overlay-list-item *ngIf="generalInfoData" overlayTitle="Allgemeine Informationen">
+      <b>Landeskoordinaten</b>
+      <li style="list-style: none">
+        LV95: {{ generalInfoData.locationInformation.lv95x }} / {{ generalInfoData.locationInformation.lv95y }} E/N
+      </li>
+      <b>Höhe über Meer (+/- 10cm)</b>
+      <li style="list-style: none">DTM: {{ generalInfoData.locationInformation.heightDtm }} m (Terrainmodell)</li>
+      <li style="list-style: none">DTM: {{ generalInfoData.locationInformation.heightDom }} m (Oberflächenmodell)</li>
+      <b>Weitere Koordinatensysteme</b>
+      <li *ngFor="let aCrs of generalInfoData.alternativeSpatialReferences" style="list-style: none">
+        {{ aCrs.crs }}: {{ aCrs.coordinates.join(' / ') }}
+      </li>
+      <b>Links auf andere Kartenanbieter</b>
+      <li *ngFor="let extMap of generalInfoData.externalMaps" style="list-style: none">
+        {{ extMap.name }}: <a [href]="extMap.url" target="_blank">In neuem Fenster öffnen</a>
+      </li>
+    </map-overlay-list-item>
+    <!-- End final styling -->
+    <feature-info-item *ngFor="let featureInfo of featureInfoData; trackBy: trackById" [featureInfo]="featureInfo"></feature-info-item>
+    <i *ngIf="featureInfoData.length === 0">Keine Treffer!</i>
   </ng-container>
 </map-overlay>
