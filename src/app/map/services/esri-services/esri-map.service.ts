@@ -35,7 +35,7 @@ import {
   EsriTileInfo,
   EsriWMSLayer,
   EsriWMSSublayer
-} from '../../external/esri.module';
+} from './esri.module';
 import {TimeSliderConfiguration, TimeSliderLayerSource, TimeSliderParameterSource} from '../../../shared/interfaces/topic.interface';
 import {TimeExtent} from '../../interfaces/time-extent.interface';
 import {MapConfigState} from '../../../state/map/states/map-config.state';

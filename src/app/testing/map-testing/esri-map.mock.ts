@@ -1,4 +1,4 @@
-import {EsriCollection} from '../../map/external/esri.module';
+import {EsriCollection} from '../../map/services/esri-services/esri.module';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import Layer = __esri.Layer;
 import Map = __esri.Map;

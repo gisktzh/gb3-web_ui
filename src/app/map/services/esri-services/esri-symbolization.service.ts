@@ -1,11 +1,5 @@
 import {Injectable} from '@angular/core';
-import {
-  EsriColor,
-  EsriPictureMarkerSymbol,
-  EsriSimpleFillSymbol,
-  EsriSimpleLineSymbol,
-  EsriSimpleMarkerSymbol
-} from '../../external/esri.module';
+import {EsriColor, EsriPictureMarkerSymbol, EsriSimpleFillSymbol, EsriSimpleLineSymbol, EsriSimpleMarkerSymbol} from './esri.module';
 import {ConfigService} from '../../../shared/services/config.service';
 import {DrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {GeometryWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
