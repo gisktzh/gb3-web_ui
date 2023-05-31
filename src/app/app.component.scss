@@ -1,7 +1,8 @@
 @use 'mixins/helpers.mixin' as mixins;
 
+$navbar-height: 72px;
+
 .main {
-  $navbar-height: 72px;
   height: calc(100vh - #{$navbar-height}); // subtracts height of navbar; maybe there's a nicer way?
 
   .navbar {
@@ -14,9 +15,11 @@
   .app-wrapper {
     height: 100%;
     overflow-y: auto;
+  }
 
-    .app-wrapper__content {
-      height: inherit;
-    }
+  .scrollbar-width-calculation {
+    position: fixed;
+    top: 0;
+    left: 0;
   }
 }

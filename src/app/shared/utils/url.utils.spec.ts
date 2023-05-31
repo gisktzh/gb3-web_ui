@@ -13,16 +13,16 @@ describe('UrlUtils', () => {
 
   it('should extract the correct URL segment', () => {
     const router = TestBed.inject(Router);
-    expect(UrlUtils.extractFirstUrlSegmentPath('', router)).toBe('');
-    expect(UrlUtils.extractFirstUrlSegmentPath('?argument=value', router)).toBe('');
-    expect(UrlUtils.extractFirstUrlSegmentPath('/', router)).toBe('');
-    expect(UrlUtils.extractFirstUrlSegmentPath('/?argument=value', router)).toBe('');
-    expect(UrlUtils.extractFirstUrlSegmentPath('/first/second', router)).toBe('first');
-    expect(UrlUtils.extractFirstUrlSegmentPath('/first?argument=value', router)).toBe('first');
-    expect(UrlUtils.extractFirstUrlSegmentPath('first/second/third?argument=value', router)).toBe('first');
-    expect(UrlUtils.extractFirstUrlSegmentPath('//first/second/third?argument=value', router)).toBe('first');
+    expect(UrlUtils.extractFirstUrlSegmentPath(router.parseUrl(''))).toBe('');
+    expect(UrlUtils.extractFirstUrlSegmentPath(router.parseUrl('?argument=value'))).toBe('');
+    expect(UrlUtils.extractFirstUrlSegmentPath(router.parseUrl('/'))).toBe('');
+    expect(UrlUtils.extractFirstUrlSegmentPath(router.parseUrl('/?argument=value'))).toBe('');
+    expect(UrlUtils.extractFirstUrlSegmentPath(router.parseUrl('/first/second'))).toBe('first');
+    expect(UrlUtils.extractFirstUrlSegmentPath(router.parseUrl('/first?argument=value'))).toBe('first');
+    expect(UrlUtils.extractFirstUrlSegmentPath(router.parseUrl('first/second/third?argument=value'))).toBe('first');
+    expect(UrlUtils.extractFirstUrlSegmentPath(router.parseUrl('//first/second/third?argument=value'))).toBe('first');
 
-    expect(UrlUtils.extractFirstUrlSegmentPath('%ç*/*ç%&/&%//*ç%/', router)).toBe('');
+    expect(UrlUtils.extractFirstUrlSegmentPath(router.parseUrl('%ç*/*ç%&/&%//*ç%/'))).toBe('');
   });
 
   it('should transform an URL string into the correct MainPage enum (or undefined)', () => {

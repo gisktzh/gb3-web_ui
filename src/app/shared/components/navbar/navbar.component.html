@@ -40,12 +40,12 @@
       </button>
     </mat-menu>
   </ng-template>
-  <div class="navbar__underline-container" *ngIf="!isSimplifiedPage && appContentWidth">
-    <div class="navbar__underline-container__content-container" [ngStyle]="{'min-width': appContentWidth}">
+  <div class="navbar__underline-container" *ngIf="!isSimplifiedPage">
+    <div class="navbar__underline-container__content-container">
       <span></span>
       <span class="navbar__underline"></span>
       <span class="navbar__underline"></span>
     </div>
-    <span class="navbar__underline"></span>
+    <span class="navbar__underline" [ngStyle]="{width: scrollbarWidth + 'px'}"></span>
   </div>
 </mat-toolbar>
