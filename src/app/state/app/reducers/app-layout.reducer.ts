@@ -13,7 +13,9 @@ export const appLayoutFeature = createFeature({
   reducer: createReducer(
     initialState,
     on(AppLayoutActions.setScrollbarWidth, (state, {scrollbarWidth}): AppLayoutState => {
-      if (state.scrollbarWidth !== undefined) {
+      if (state.scrollbarWidth !== initialState.scrollbarWidth) {
+        // only change the state once as the scrollbar will only be measured once
+        // all further changes will be ignored
         return state;
       }
       return {...state, scrollbarWidth: scrollbarWidth};
