@@ -26,8 +26,6 @@ export interface FeatureInfoResult {
 export interface FeatureInfoWrapper {
   x: number;
   y: number;
-  heightDtm: number;
-  heightDom: number;
   results: FeatureInfoResult;
 }
 

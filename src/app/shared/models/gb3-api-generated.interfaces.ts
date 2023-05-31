@@ -112,10 +112,6 @@ export interface TopicsFeatureInfoDetailData {
     x: number;
     /** Center y coord of query bbox */
     y: number;
-    /** DTM height at query pos (-1 if unknown) */
-    height_dtm: number;
-    /** DOM height at query pos (-1 if unknown) */
-    height_dom: number;
     results: {
       /** Topic name */
       topic: string;
@@ -150,6 +146,35 @@ export interface TopicsFeatureInfoDetailData {
         }[];
       }[];
     };
+  };
+}
+
+export interface GeneralInfoListData {
+  general_info: {
+    /** LV95 x coord */
+    lv95_e: number;
+    /** LV95 y coord */
+    lv95_n: number;
+    /** LV95 CRS */
+    crs: string;
+    /** Height above sea level (Digitales Oberflächenmodell) */
+    height_dom: number;
+    /** Height above sea level (Digitales Terrainmodell) */
+    height_dtm: number;
+    /** Alternative spatial references */
+    alternative_spatial_references: {
+      /** Coordinates */
+      coordinates: number[];
+      /** CRS */
+      crs: string;
+    }[];
+    /** External maps */
+    external_maps: {
+      /** Name */
+      name: string;
+      /** URL */
+      url: string;
+    }[];
   };
 }
 
