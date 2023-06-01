@@ -10,7 +10,7 @@ export interface TitleLink {
   styleUrls: ['./start-page-section.component.scss']
 })
 export class StartPageSectionComponent {
-  @Input() public background?: 'primary' | 'secondary';
+  @Input() public background?: 'primary' | 'accent';
   @Input() public sectionTitle?: string;
   @Input() public titleLink?: TitleLink;
   @Input() public hideBottomPadding: boolean = false;

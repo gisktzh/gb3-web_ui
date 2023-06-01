@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {LinksGroup} from '../../../shared/interfaces/support-link.interface';
+import {LinksGroup} from '../../../shared/interfaces/links-group.interface';
 
 @Component({
   selector: 'ktzh-link-list',

@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Observable, Subscription, tap} from 'rxjs';
-import {LinksGroup} from '../../../shared/interfaces/support-link.interface';
+import {LinksGroup} from '../../../shared/interfaces/links-group.interface';
 import {selectLinks} from '../../../state/support/reducers/support-content.reducer';
 
 @Component({

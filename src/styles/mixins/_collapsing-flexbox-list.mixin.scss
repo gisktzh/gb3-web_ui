@@ -14,7 +14,7 @@
         appropriately sized.
       - The real magic happens in the :before pseudo element: It sets the background color to grey and content to "";
         while its height and width are 100% of the size of its parent (which is the host element and thus the link
-        element) with 2 times the $boder-width added each to account for the border. Add a hover effect (with z-index 1,
+        element) with 2 times the $border-width added each to account for the border. Add a hover effect (with z-index 1,
         to ensure the hovered element is above all else) to change the background, and this is the magic that highlight
         the element, mimicking both borders and collapsed shared borders.
     - The content itself is wrapped in an any element (mixin 'list__item__wrapper') that sets the $background-color and has full height; its items are

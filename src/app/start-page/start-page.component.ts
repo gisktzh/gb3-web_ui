@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {TitleLink} from './components/start-page-section/start-page-section.component';
-import {LinksGroup} from '../shared/interfaces/support-link.interface';
+import {LinksGroup} from '../shared/interfaces/links-group.interface';
 import {Observable, Subscription, tap} from 'rxjs';
 import {selectLinks} from '../state/support/reducers/support-content.reducer';
 import {Store} from '@ngrx/store';

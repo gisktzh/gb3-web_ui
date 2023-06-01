@@ -55,7 +55,7 @@
 @mixin white-underlined-simple-link {
   a {
     color: ktzh-variables.$zh-white;
-    text-underline-offset: 6px; // todo: does not work in IE11, but that's not required?
+    text-underline-offset: 6px;
 
     &:hover {
       color: ktzh-variables.$zh-light-grey;

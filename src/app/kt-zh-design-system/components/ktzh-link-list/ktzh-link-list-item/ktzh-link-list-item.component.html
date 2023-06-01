@@ -1,6 +1,6 @@
 <ul class="link-list">
   <li *ngFor="let link of links" class="link-list__item">
-    <a [href]="link.url" [title]="link.title" class="link-list__item__link" target="_blank">
+    <a [href]="link.url" [title]="link.title" rel="noopener noreferrer" class="link-list__item__link" target="_blank">
       <span>{{ link.label }}</span>
       <mat-icon>arrow_forward</mat-icon>
     </a>

@@ -7,7 +7,7 @@
 
 <ng-template #emailTemplate>
   <div class="contact-detail__address">
-    <a [title]="email" href="mailto:{{ email }}">{{ email }}</a>
+    <a [title]="email" rel="noopener noreferrer" href="mailto:{{ email }}">{{ email }}</a>
   </div>
 </ng-template>
 
@@ -16,7 +16,11 @@
     <address>{{ street }}<br />{{ place }}</address>
   </div>
   <div class="contact-detail__links">
-    <a href="https://www.google.com/maps/dir/?api=1&destination={{ coordinates }}" target="_blank" title="Route (Google Maps)"
+    <a
+      href="https://www.google.com/maps/dir/?api=1&destination={{ coordinates }}"
+      rel="noopener noreferrer"
+      target="_blank"
+      title="Route (Google Maps)"
       >Route (Google Maps)</a
     >
     <a (click)="copyToClipboard($event)" href="" title="Adresse kopieren">Adresse kopieren</a>

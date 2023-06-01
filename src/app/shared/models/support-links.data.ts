@@ -1,4 +1,4 @@
-import {LinksGroup} from '../interfaces/support-link.interface';
+import {LinksGroup} from '../interfaces/links-group.interface';
 
 export const supportLinks: LinksGroup[] = [
   {

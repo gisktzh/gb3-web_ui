@@ -28,7 +28,7 @@
     }
   }
 
-  &.section__secondary {
+  &.section__accent {
     background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 5);
     color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-accent, 5);
   }
@@ -55,7 +55,7 @@
       justify-content: space-between;
       margin-bottom: 40px;
 
-      .section__content__title-wrapper__title {
+      .section__content-container__title-wrapper__title {
         margin-bottom: 0;
       }
 

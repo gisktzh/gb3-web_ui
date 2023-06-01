@@ -19,7 +19,7 @@ $number-of-entries: 3;
       @include collapsing-flexbox-list.list__item(
         $border-width: $border-width,
         $max-content-width: ktzh-variables.$zh-layout-max-content-width,
-        $number-of-entries: 3,
+        $number-of-entries: $number-of-entries,
         $height: 310px
       );
 
