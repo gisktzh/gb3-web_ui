@@ -1,0 +1,40 @@
+@use 'mixins/helpers.mixin' as mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.contact-details {
+  @include mixins.white-underlined-simple-link;
+  display: flex;
+  flex-direction: column;
+
+  .contact-details__addresses {
+    display: flex;
+    flex-flow: row wrap;
+    row-gap: 16px;
+    margin-top: 32px;
+
+    .contact-details__addresses__entry {
+      min-width: 50%;
+    }
+  }
+
+  .contact-details__media-collapsible {
+    margin-top: 30px;
+    border-width: 1px 0 1px 0;
+    border-style: solid;
+    border-color: ktzh-variables.$zh-white;
+
+    .contact-details__media-collapsible__item {
+      .contact-details__media-collapsible__item__header {
+        margin: 18px 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+      }
+
+      .contact-details__media-collapsible__item__body {
+        margin-bottom: 24px;
+      }
+    }
+  }
+}

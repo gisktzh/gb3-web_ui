@@ -1,4 +1,5 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'functions/helper.function' as functions;
 
 /**
 * ======================
@@ -65,6 +66,16 @@
     margin-left: 8px;
     margin-right: 0;
   }
+}
+
+/**
+ * Creates a link button element in the Kt. ZH style.
+ */
+@mixin mat-button-ktzh-link {
+  @include mat-button--align-icon-right;
+  color: functions.convert-hex-to-rgba(ktzh-variables.$zh-black100, 0.6);
+  font-family: ktzh-variables.$zh-font-family;
+  letter-spacing: normal;
 }
 
 /**

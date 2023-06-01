@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {LinkableElement} from '../../../shared/interfaces/linkable-element.interface';
+import {LinksGroup} from '../../../shared/interfaces/links-group.interface';
 
 @Component({
   selector: 'ktzh-link-list',
@@ -7,5 +7,5 @@ import {LinkableElement} from '../../../shared/interfaces/linkable-element.inter
   styleUrls: ['./ktzh-link-list.component.scss']
 })
 export class KtzhLinkListComponent {
-  @Input() public links: LinkableElement[] = [];
+  @Input() public linksGroups: LinksGroup[] = [];
 }

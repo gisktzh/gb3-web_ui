@@ -1,0 +1,26 @@
+<section
+  [ngClass]="[this.background ? 'section__' + this.background : '', this.hideBottomPadding ? 'section--no-padding-bottom' : '']"
+  class="section"
+>
+  <div class="section__content-container">
+    <span *ngIf="this.sectionTitle" class="section__content-container__title-line"></span>
+    <div class="section__content-container__title-wrapper">
+      <h1 class="section__content-container__title-wrapper__title mat-headline-4">{{ this.sectionTitle }}</h1>
+      <a
+        *ngIf="this.titleLink"
+        [href]="this.titleLink.url"
+        [title]="this.titleLink.displayTitle"
+        rel="noopener noreferrer"
+        class="section__content-container__title-wrapper__link"
+        mat-button
+        target="_blank"
+      >
+        {{ this.titleLink.displayTitle }}
+        <mat-icon>arrow_forward</mat-icon>
+      </a>
+    </div>
+    <div class="section__content-container__content">
+      <ng-content></ng-content>
+    </div>
+  </div>
+</section>

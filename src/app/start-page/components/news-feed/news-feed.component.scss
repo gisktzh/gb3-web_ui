@@ -1,43 +1,63 @@
 @use 'functions/helper.function' as functions;
 @use 'mixins/helpers.mixin' as mixins;
+@use 'mixins/collapsing-flexbox-list.mixin' as collapsing-flexbox-list;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
+/// The border width around the link elements
+$border-width: 8px;
+
+/// Number of entries to be displayed
+$number-of-entries: 3;
+
 .news-feed {
-  display: flex;
-  gap: 5px;
+  width: 100%;
 
-  .news-feed__link-wrapper {
-    text-decoration: none;
-    color: inherit;
-    flex-grow: 1;
-    flex-basis: 100%;
-    border: solid #f0f0f0 4px;
+  .news-feed__list {
+    @include collapsing-flexbox-list.list($border-width);
 
-    &:hover {
-      border: solid #e4e4e4 4px;
-    }
-  }
+    .news-feed__list__item {
+      @include collapsing-flexbox-list.list__item(
+        $border-width: $border-width,
+        $max-content-width: ktzh-variables.$zh-layout-max-content-width,
+        $number-of-entries: $number-of-entries,
+        $height: 310px
+      );
 
-  .news-feed__entry {
-    padding: 2rem;
+      .news-feed__list__item__wrapper {
+        @include collapsing-flexbox-list.list__item__wrapper(ktzh-variables.$zh-white);
 
-    .news-feed__entry__header {
-      margin: 0;
+        &:hover {
+          & .news-feed__list__item__wrapper__content__news-title {
+            color: ktzh-variables.$zh-black100 !important; // override title color on hover
+          }
+        }
 
-      &:before {
-        content: 'Mitteilung ';
-        font-weight: bold;
+        .news-feed__list__item__wrapper__content {
+          padding: 40px;
+
+          .news-feed__list__item__wrapper__content__header {
+            margin-bottom: 4px;
+            font-size: x-small;
+
+            &:before {
+              content: 'Mitteilung ';
+              font-weight: bold;
+            }
+          }
+
+          .news-feed__list__item__wrapper__content__news-title {
+            @include mixins.multiline-ellipsis(3);
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: ktzh-variables.$zh-blue;
+            line-height: 1.05;
+          }
+
+          .news-feed__list__item__wrapper__content__news-text {
+            @include mixins.multiline-ellipsis(6);
+          }
+        }
       }
-    }
-
-    .news-feed__entry__title {
-      @include mixins.multiline-ellipsis(2);
-      margin: 0;
-      font-weight: bold;
-    }
-
-    .news-feed__entry__teaser-text {
-      @include mixins.multiline-ellipsis(4);
     }
   }
 }

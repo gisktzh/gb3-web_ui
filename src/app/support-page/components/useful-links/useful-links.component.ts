@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Observable, Subscription, tap} from 'rxjs';
-import {SupportLinkCollection} from '../../../shared/interfaces/support-link.interface';
+import {LinksGroup} from '../../../shared/interfaces/links-group.interface';
 import {selectLinks} from '../../../state/support/reducers/support-content.reducer';
 
 @Component({
@@ -10,8 +10,8 @@ import {selectLinks} from '../../../state/support/reducers/support-content.reduc
   styleUrls: ['./useful-links.component.scss']
 })
 export class UsefulLinksComponent implements OnInit, OnDestroy {
-  public usefulLinksCollections: SupportLinkCollection[] = [];
-  private readonly usefulLinksCollections$: Observable<SupportLinkCollection[]> = this.store.select(selectLinks);
+  public usefulLinksGroups: LinksGroup[] = [];
+  private readonly usefulLinksGroups$: Observable<LinksGroup[]> = this.store.select(selectLinks);
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(private readonly store: Store) {}
@@ -26,10 +26,10 @@ export class UsefulLinksComponent implements OnInit, OnDestroy {
 
   private initSubscriptions() {
     this.subscriptions.add(
-      this.usefulLinksCollections$
+      this.usefulLinksGroups$
         .pipe(
           tap((usefulLinks) => {
-            this.usefulLinksCollections = usefulLinks;
+            this.usefulLinksGroups = usefulLinks;
           })
         )
         .subscribe()

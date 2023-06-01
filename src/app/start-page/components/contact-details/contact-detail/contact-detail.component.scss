@@ -1,0 +1,45 @@
+@use 'mixins/helpers.mixin' as mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.contact-detail {
+  @include mixins.white-underlined-simple-link;
+  display: grid;
+  grid-template-columns: 40px auto;
+  grid-template-rows: min(40px);
+  grid-gap: 16px;
+  grid-template-areas:
+    'icon address'
+    'icon links';
+
+  .contact-detail__icon {
+    grid-area: icon;
+
+    .contact-detail__icon__wrapper {
+      display: flex;
+      width: 40px;
+      height: 40px;
+      background-color: ktzh-variables.$zh-white;
+      color: ktzh-variables.$zh-black100;
+      justify-content: center;
+      align-items: center;
+      border-radius: 20px;
+    }
+  }
+
+  .contact-detail__address {
+    grid-area: address;
+    align-self: center;
+    font-family: ktzh-variables.$zh-font-family-bold;
+
+    & address {
+      font-style: normal;
+    }
+  }
+
+  .contact-detail__links {
+    grid-area: links;
+    display: flex;
+    flex-direction: column;
+    row-gap: 8px;
+  }
+}

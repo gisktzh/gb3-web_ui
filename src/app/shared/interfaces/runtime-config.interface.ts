@@ -2,8 +2,8 @@ interface ApiBaseUrlConfig {
   baseUrl: string;
 }
 
-interface OptionalApiBaseUrlConfig extends ApiBaseUrlConfig {
-  enabled: boolean;
+interface MockedApiBaseUrlConfig extends ApiBaseUrlConfig {
+  useMockData: boolean;
 }
 
 export interface ApiConfig {
@@ -20,9 +20,9 @@ export interface ApiConfig {
   gb2Wms: ApiBaseUrlConfig;
   geoLion: ApiBaseUrlConfig;
   searchApi: ApiBaseUrlConfig;
-  ktzhWebsite: OptionalApiBaseUrlConfig;
-  gravCms: OptionalApiBaseUrlConfig;
-  twitterWidget: OptionalApiBaseUrlConfig;
+  ktzhWebsite: MockedApiBaseUrlConfig;
+  gravCms: MockedApiBaseUrlConfig;
+  twitterWidget: ApiBaseUrlConfig;
 }
 
 export interface OverrideSettings {

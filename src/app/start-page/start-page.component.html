@@ -1,17 +1,27 @@
-<start-page-placeholder></start-page-placeholder>
-<!-- TODO: use the following code instead of the placeholder above as soon as there is real content to show -->
-<!--<div class="start-page">-->
-<!--  <div class="start-page__content">-->
-<!--    <h1>News</h1>-->
-<!--    <section *ngIf="apiConfigs.gravCms.enabled">-->
-<!--      <discover-maps class="start-page__content__discover-maps"></discover-maps>-->
-<!--    </section>-->
-<!--    <section *ngIf="apiConfigs.ktzhWebsite.enabled">-->
-<!--      <news-feed class="start-page__content__news-feed"></news-feed>-->
-<!--    </section>-->
-<!--    <section *ngIf="apiConfigs.twitterWidget.enabled">-->
-<!--      &lt;!&ndash; We currently do not show the twitter feed due to legal reasons &ndash;&gt;-->
-<!--      <twitter-feed></twitter-feed>-->
-<!--    </section>-->
-<!--  </div>-->
-<!--</div>-->
+<start-page-section [background]="'primary'">
+  <hero-header></hero-header>
+</start-page-section>
+
+<start-page-section [hideBottomPadding]="true">
+  <gis-browser-teaser></gis-browser-teaser>
+</start-page-section>
+
+<start-page-section sectionTitle="Häufig verwendet">
+  <frequently-used-items></frequently-used-items>
+</start-page-section>
+
+<start-page-section [background]="'accent'" sectionTitle="News" [titleLink]="this.externalNewsFeedLink">
+  <news-feed></news-feed>
+</start-page-section>
+
+<start-page-section sectionTitle="Entdecken" [hideBottomPadding]="true">
+  <discover-maps></discover-maps>
+</start-page-section>
+
+<start-page-section sectionTitle="Weiterführende Informationen">
+  <ktzh-link-list [linksGroups]="usefulLinksGroups"></ktzh-link-list>
+</start-page-section>
+
+<start-page-section [background]="'primary'" sectionTitle="Kontakt">
+  <contact-details></contact-details>
+</start-page-section>
