@@ -175,6 +175,38 @@ export interface GeneralInfoListData {
       /** URL */
       url: string;
     }[];
+    parcel: {
+      /** BFS number */
+      bfsnr: number;
+      /** EGRIS egrid */
+      egris_egrid: string;
+      /** Municipality name */
+      municipality_name: string;
+      oereb_extract: {
+        /** JSON URL */
+        json_url: string;
+        /** XML URL */
+        xml_url: string;
+        /** PDF URL */
+        pdf_url: string;
+        /** GB2 Dynamic Extract URL */
+        gb2_url: string;
+      };
+      // TODO: The following 'geometry' part was not generated automatically
+      /** GeoJSON geometry */
+      geometry: {
+        /** GeoJSON geometry type */
+        type: string;
+        /** GeoJSON geometry coordinates */
+        coordinates: any[];
+        crs: {
+          properties: {
+            name: string;
+          };
+          type: string;
+        };
+      };
+    } | null;
   };
 }
 

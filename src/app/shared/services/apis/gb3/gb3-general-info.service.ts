@@ -4,6 +4,10 @@ import {GeneralInfoListData} from '../../../models/gb3-api-generated.interfaces'
 import {Observable} from 'rxjs';
 import {GeneralInfoResponse} from '../../../interfaces/general-info.interface';
 import {map} from 'rxjs/operators';
+import {Geometry} from 'geojson';
+import {SupportedSrs} from '../../../types/supported-srs';
+
+const GENERAL_INFO_SRS: SupportedSrs = 2056;
 
 @Injectable({
   providedIn: 'root'
@@ -35,7 +39,22 @@ export class Gb3GeneralInfoService extends Gb3ApiService {
         heightDtm: generalInfo.height_dtm,
         lv95x: generalInfo.lv95_e,
         lv95y: generalInfo.lv95_n
-      }
+      },
+      parcel: generalInfo.parcel
+        ? {
+            ...generalInfo.parcel,
+            egrisEgrid: generalInfo.parcel.egris_egrid,
+            municipalityName: generalInfo.parcel.municipality_name,
+            oerebExtract: {
+              jsonUrl: generalInfo.parcel.oereb_extract.json_url,
+              xmlUrl: generalInfo.parcel.oereb_extract.xml_url,
+              pdfUrl: generalInfo.parcel.oereb_extract.pdf_url,
+              gb2Url: generalInfo.parcel.oereb_extract.gb2_url
+            },
+            // TODO: replace this explicit cast as soon as the API documentation is complete and contains the 'geometry'.
+            geometry: {...(generalInfo.parcel.geometry as Geometry), srs: GENERAL_INFO_SRS}
+          }
+        : undefined
     };
   }
 }

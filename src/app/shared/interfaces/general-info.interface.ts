@@ -1,3 +1,5 @@
+import {GeometryWithSrs} from './geojson-types-with-srs.interface';
+
 interface AlternativeSpatialReference {
   coordinates: number[];
   crs: string;
@@ -16,8 +18,29 @@ interface LocationInformation {
   heightDtm: number;
 }
 
+interface Parcel {
+  /** BFS number */
+  bfsnr: number;
+  /** EGRIS egrid */
+  egrisEgrid: string;
+  /** Municipality name */
+  municipalityName: string;
+  oerebExtract: {
+    /** JSON URL */
+    jsonUrl: string;
+    /** XML URL */
+    xmlUrl: string;
+    /** PDF URL */
+    pdfUrl: string;
+    /** GB2 Dynamic Extract URL */
+    gb2Url: string;
+  };
+  geometry: GeometryWithSrs;
+}
+
 export interface GeneralInfoResponse {
   locationInformation: LocationInformation;
   alternativeSpatialReferences: AlternativeSpatialReference[];
   externalMaps: ExternalMap[];
+  parcel?: Parcel;
 }
