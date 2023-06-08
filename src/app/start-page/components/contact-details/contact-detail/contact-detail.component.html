@@ -1,0 +1,28 @@
+<div class="contact-detail">
+  <div class="contact-detail__icon">
+    <mat-icon class="contact-detail__icon__wrapper">{{ contactType === 'address' ? 'location_on' : 'drafts' }}</mat-icon>
+  </div>
+  <ng-container *ngIf="contactType === 'email'; then emailTemplate; else addressTemplate"></ng-container>
+</div>
+
+<ng-template #emailTemplate>
+  <div class="contact-detail__address">
+    <a [title]="email" rel="noopener noreferrer" href="mailto:{{ email }}">{{ email }}</a>
+  </div>
+</ng-template>
+
+<ng-template #addressTemplate>
+  <div class="contact-detail__address">
+    <address>{{ street }}<br />{{ place }}</address>
+  </div>
+  <div class="contact-detail__links">
+    <a
+      href="https://www.google.com/maps/dir/?api=1&destination={{ coordinates }}"
+      rel="noopener noreferrer"
+      target="_blank"
+      title="Route (Google Maps)"
+      >Route (Google Maps)</a
+    >
+    <a (click)="copyToClipboard($event)" href="" title="Adresse kopieren">Adresse kopieren</a>
+  </div>
+</ng-template>

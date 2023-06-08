@@ -27,15 +27,14 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       },
       ktzhWebsite: {
         baseUrl: 'https://www.zh.ch',
-        enabled: true
+        useMockData: true
       },
       gravCms: {
         baseUrl: 'https://gb3-grav-cms.icycliff-4b8f6c95.switzerlandnorth.azurecontainerapps.io',
-        enabled: true
+        useMockData: true
       },
       twitterWidget: {
-        baseUrl: 'https://platform.twitter.com/widgets.js',
-        enabled: false
+        baseUrl: 'https://platform.twitter.com/widgets.js'
       }
     },
     authSettings: {
@@ -67,15 +66,14 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       },
       ktzhWebsite: {
         baseUrl: 'https://www.zh.ch',
-        enabled: true
+        useMockData: true
       },
       gravCms: {
         baseUrl: 'https://gb3-grav-cms.icycliff-4b8f6c95.switzerlandnorth.azurecontainerapps.io',
-        enabled: false
+        useMockData: true
       },
       twitterWidget: {
-        baseUrl: 'https://platform.twitter.com/widgets.js',
-        enabled: false
+        baseUrl: 'https://platform.twitter.com/widgets.js'
       }
     },
     authSettings: {

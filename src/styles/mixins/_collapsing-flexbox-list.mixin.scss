@@ -1,0 +1,72 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'functions/helper.function' as functions;
+
+/**
+  This... thing is rebuilt after the official zh.ch website component. The reason for doing so is that it has a very
+  weird (but nice) effect that the border between the flex-aligned items collapses. This is done with quite some CSS
+  trickery, which *seems* to be working as follows:
+    - The wrapper (mixin 'list') is a UL element without a style, that has full width and row wrap
+    - The child elements (mixin 'list__item') are LI elements which have a fixed height ($height) and a bottom and right margin of $border-width.
+      - More importantly, their flex-basis AND max-width is calculated (and this part differs from the zh.ch implementation,
+        because our wrapper layout prevents us from having a simpler layout): It takes the max-content width divided by $number-of-entries,
+        and subtracts twice the border-width (because we have left and right the
+        $border-width wide border). Due to this, they wrap nicely, also accounting for the border; and they are always
+        appropriately sized.
+      - The real magic happens in the :before pseudo element: It sets the background color to grey and content to "";
+        while its height and width are 100% of the size of its parent (which is the host element and thus the link
+        element) with 2 times the $border-width added each to account for the border. Add a hover effect (with z-index 1,
+        to ensure the hovered element is above all else) to change the background, and this is the magic that highlight
+        the element, mimicking both borders and collapsed shared borders.
+    - The content itself is wrapped in an any element (mixin 'list__item__wrapper') that sets the $background-color and has full height; its items are
+      flex column aligned.
+
+   🤷
+ */
+
+@mixin list($border-width) {
+  display: flex;
+  flex-flow: row wrap;
+  list-style-type: none;
+  margin: 0;
+  width: calc(100% - $border-width);
+  padding: 0 0 0 $border-width;
+  justify-content: center;
+}
+
+@mixin list__item($border-width, $max-content-width, $number-of-entries, $height) {
+  margin-bottom: $border-width;
+  margin-right: $border-width;
+  position: relative;
+  flex-basis: calc((#{$max-content-width} / #{$number-of-entries}) - 2 * $border-width);
+  max-width: calc((#{$max-content-width} / #{$number-of-entries}) - 2 * $border-width);
+  height: $height;
+
+  &:before {
+    background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 25);
+    content: '';
+    display: block;
+    height: calc(100% + 2 * $border-width);
+    left: -$border-width;
+    position: absolute;
+    top: -$border-width;
+    width: calc(100% + 2 * $border-width);
+  }
+
+  &:hover {
+    z-index: 1;
+
+    &:before {
+      background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 100);
+    }
+  }
+}
+
+@mixin list__item__wrapper($background-color) {
+  background-color: $background-color;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  text-decoration: none;
+  height: 100%;
+  color: inherit;
+}

@@ -50,3 +50,15 @@
   left: 0;
   width: 100%;
 }
+
+/// creates a white link with a hover effect and an underline
+@mixin white-underlined-simple-link {
+  a {
+    color: ktzh-variables.$zh-white;
+    text-underline-offset: 6px;
+
+    &:hover {
+      color: ktzh-variables.$zh-light-grey;
+    }
+  }
+}

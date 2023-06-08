@@ -8,7 +8,7 @@ COPY . .
 RUN npm ci --omit=dev
 RUN npm run build-$TARGET_ENVIRONMENT
 
-FROM nginx:1.24-alpine as server
+FROM nginx:1.25-alpine as server
 COPY ./.docker/nginx.conf /etc/nginx/conf.d/configfile.template
 
 COPY --from=build-app /app/dist /usr/share/nginx/html

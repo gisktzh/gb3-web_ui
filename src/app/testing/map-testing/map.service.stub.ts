@@ -43,4 +43,6 @@ export class MapServiceStub implements MapService {
   public setAttributeFilters(attributeFilterParameters: {name: string; value: string}[], mapItem: ActiveMapItem): void {}
 
   public zoomToPoint(point: PointWithSrs, number: number): void {}
+
+  public zoomToExtent(geometry: GeometryWithSrs): void {}
 }

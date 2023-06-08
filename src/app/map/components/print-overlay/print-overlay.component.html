@@ -8,7 +8,7 @@
   </ng-container>
   <ng-container *ngIf="this.printType === 'featureInfo'">
     <h1>Resultate</h1>
-    <button (click)="this.closePrint()" class="mat-raised-button print-overlay__button">Schliessen</button>
+    <button (click)="this.closePrint()" mat-raised-button class="print-overlay__button">Schliessen</button>
     <feature-info-item
       *ngFor="let featureInfo of this.featureInfoData"
       [featureInfo]="featureInfo"

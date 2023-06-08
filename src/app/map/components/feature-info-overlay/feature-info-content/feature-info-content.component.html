@@ -3,8 +3,8 @@
     <tr class="feature-info-content__table__row">
       <th class="feature-info-content__table__row__column feature-info-content__table__row__column--header"></th>
       <th
-        (mouseenter)="this.addHoverHighlightForFeature(tableHeader.fid)"
-        (mouseleave)="this.removeHoverHighlightForFeature(tableHeader.fid)"
+        (mouseenter)="this.onFeatureHoverStart(tableHeader.fid)"
+        (mouseleave)="this.onFeatureHoverEnd(tableHeader.fid)"
         *ngFor="let tableHeader of this.tableHeaders"
         [featureId]="tableHeader.fid"
         [layerId]="this.layer.layer"
@@ -28,8 +28,8 @@
       <tr class="feature-info-content__table__row">
         <th class="feature-info-content__table__row__column feature-info-content__table__row__column--header">{{ tableRow.key }}</th>
         <td
-          (mouseenter)="this.addHoverHighlightForFeature(cellValue.fid)"
-          (mouseleave)="this.removeHoverHighlightForFeature(cellValue.fid)"
+          (mouseenter)="this.onFeatureHoverStart(cellValue.fid)"
+          (mouseleave)="this.onFeatureHoverEnd(cellValue.fid)"
           *ngFor="let cellValue of tableRow.value"
           [featureId]="cellValue.fid"
           [layerId]="this.layer.layer"

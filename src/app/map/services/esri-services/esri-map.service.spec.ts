@@ -115,7 +115,9 @@ describe('EsriMapService', () => {
     expect(mapMock.layers.getItemAt(2).id).toBe(topic3Id);
     internalLayers.forEach((fixedLayer, idx) => {
       // assert that fixed layers are not changed
-      expect(mapMock.layers.getItemAt(getExpectedNumberOfLayersWithInternalLayers(idx)).id).toBe(fixedLayer.id);
+      // note: internal layers are at the end of all layers
+      const internalLayerIndex = mapMock.layers.length - internalLayers.length + idx;
+      expect(mapMock.layers.getItemAt(internalLayerIndex).id).toBe(fixedLayer.id);
     });
   });
 
@@ -186,7 +188,9 @@ describe('EsriMapService', () => {
     expect(mapMock.layers.getItemAt(2).id).toBe(topic2Id);
     internalLayers.forEach((fixedLayer, idx) => {
       // assert that fixed layers are not changed
-      expect(mapMock.layers.getItemAt(getExpectedNumberOfLayersWithInternalLayers(idx)).id).toBe(fixedLayer.id);
+      // note: internal layers are at the end of all layers
+      const internalLayerIndex = mapMock.layers.length - internalLayers.length + idx;
+      expect(mapMock.layers.getItemAt(internalLayerIndex).id).toBe(fixedLayer.id);
     });
   });
 
