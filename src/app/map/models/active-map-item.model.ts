@@ -20,11 +20,13 @@ export class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewPro
   public readonly mapId: string;
   public readonly layers: MapLayer[];
   public readonly isSingleLayer: boolean;
+  public readonly notice?: string;
   public loadingState: LoadingState = 'undefined';
   public viewProcessState: ViewProcessState = 'undefined';
   public visible: boolean;
   public opacity: number;
   public timeSliderExtent?: TimeExtent;
+  public isNoticeMarkedAsRead = false;
   public readonly [immerable] = true;
 
   constructor(map: Map, layer?: MapLayer, visible?: boolean, opacity?: number) {
@@ -43,6 +45,7 @@ export class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewPro
     }
     this.filterConfigurations = map.filterConfigurations;
     this.searchConfigurations = map.searchConfigurations;
+    this.notice = map.notice ?? undefined;
   }
 
   public static createSingleLayerId(mapId: string, layerId: string): string {

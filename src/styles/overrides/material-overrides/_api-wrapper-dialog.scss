@@ -7,10 +7,6 @@
   Can be referenced via PanelClassEnum type.
  */
 .api-wrapper-dialog {
-  & .mat-mdc-dialog-container {
-    max-width: 500px;
-  }
-
   & .mdc-dialog__surface::before {
     border: none;
   }

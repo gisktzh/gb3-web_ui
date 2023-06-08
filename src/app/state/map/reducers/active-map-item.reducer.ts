@@ -136,7 +136,15 @@ export const activeMapItemFeature = createFeature({
       const activeMapItemsToStay = state.activeMapItems.filter((activeMapItem) => !initialMapItemIds.includes(activeMapItem.id));
 
       return {...state, activeMapItems: [...initialMapItems, ...activeMapItemsToStay]};
-    })
+    }),
+    on(
+      ActiveMapItemActions.markAllActiveMapItemNoticeAsRead,
+      produce((draft) => {
+        draft.activeMapItems.forEach((mapItem) => {
+          mapItem.isNoticeMarkedAsRead = true;
+        });
+      })
+    )
   )
 });
 

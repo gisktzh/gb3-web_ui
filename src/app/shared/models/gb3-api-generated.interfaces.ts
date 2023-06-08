@@ -195,6 +195,8 @@ export interface TopicsListData {
       geolion: number | null;
       /** Keywords */
       keywords: string[];
+      /** Topic-specific notice for end-users */
+      notice: string | null;
       timesliderConfiguration: {
         /** name of the timeslider for displaying in UI */
         name: string;

@@ -24,6 +24,7 @@ import {MatDialog} from '@angular/material/dialog';
  * Defines the upper limit (inclusive) of filtered results which trigger an automatic open of the associated expansion panel.
  */
 const AUTO_OPEN_THRESHOLD = 3;
+const FAVOURITE_DELETION_DIALOG_MAX_WIDTH = 500;
 
 @Component({
   selector: 'map-data-catalogue',
@@ -89,7 +90,8 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
     this.dialogService.open<FavouriteDeletionDialogComponent, {favourite: Favourite}, boolean>(FavouriteDeletionDialogComponent, {
       data: {favourite},
       panelClass: PanelClass.ApiWrapperDialog,
-      restoreFocus: false
+      restoreFocus: false,
+      maxWidth: FAVOURITE_DELETION_DIALOG_MAX_WIDTH
     });
   }
 
