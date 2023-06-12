@@ -76,7 +76,7 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
     this.dialogService.open(MapNoticeDialogComponent, {
       panelClass: PanelClass.ApiWrapperDialog,
       restoreFocus: false,
-      data: this.activeMapItems,
+      data: this.activeMapItems.filter((activeMapItem) => activeMapItem.notice),
       maxWidth: MAP_NOTICES_DIALOG_MAX_WIDTH
     });
   }
