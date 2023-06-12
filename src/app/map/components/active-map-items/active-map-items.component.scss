@@ -3,6 +3,19 @@
 @use 'mixins/material.mixin' as mat-mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
+:host ::ng-deep {
+  .active-map-items__header__buttons__notices {
+    .mat-badge-content.mat-badge-active {
+      top: 6px;
+      right: 10px;
+      font-size: 0;
+      width: 8px;
+      height: 8px;
+    }
+    @include mat-mixins.mat-badge-override-color(ktzh-variables.$zh-red, ktzh-variables.$zh-white);
+  }
+}
+
 .active-map-items {
   width: 100%;
 

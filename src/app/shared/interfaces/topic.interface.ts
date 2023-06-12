@@ -37,6 +37,8 @@ export interface Map {
   /** Filters Settings */
   filterConfigurations?: FilterConfiguration[];
   searchConfigurations?: SearchConfiguration[];
+  /** Topic-specific notice for end-users */
+  notice: string | null;
 }
 
 export interface MapLayer extends HasVisibility, HasHidingState {
