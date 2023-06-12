@@ -9,7 +9,7 @@ import {ActiveMapItem} from '../../models/active-map-item.model';
 })
 export class MapNoticeDialogComponent {
   constructor(
-    @Inject(MAT_DIALOG_DATA) public readonly activeMapItems: ActiveMapItem[],
+    @Inject(MAT_DIALOG_DATA) public readonly activeMapItemsWithNotices: ActiveMapItem[],
     private readonly dialogRef: MatDialogRef<MapNoticeDialogComponent>
   ) {}
 
