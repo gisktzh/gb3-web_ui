@@ -5,6 +5,7 @@ import {selectCenter, selectScale} from '../../../../state/map/reducers/map-conf
 import {MapConfigActions} from '../../../../state/map/actions/map-config.actions';
 import {ConfigService} from '../../../../shared/services/config.service';
 import {CoordinateParserService} from '../../../services/coordinate-parser.service';
+import {NumberUtils} from '../../../../shared/utils/number.utils';
 
 @Component({
   selector: 'coordinate-scale-inputs',
@@ -51,13 +52,13 @@ export class CoordinateScaleInputsComponent implements OnInit, OnDestroy {
   }
 
   private initSubscriptions() {
-    this.subscriptions.add(this.scaleState$.pipe(tap((value) => (this.scale = Math.round(value)))).subscribe());
+    this.subscriptions.add(this.scaleState$.pipe(tap((value) => (this.scale = NumberUtils.roundToDecimals(value)))).subscribe());
 
     this.subscriptions.add(
       this.centerState$
         .pipe(
           tap(({x, y}) => {
-            this.mapCenter = `${Math.round(x)} / ${Math.round(y)}`;
+            this.mapCenter = `${NumberUtils.roundToDecimals(x)} / ${NumberUtils.roundToDecimals(y)}`;
           })
         )
         .subscribe()

@@ -6,6 +6,7 @@ import {GeneralInfoResponse} from '../../../interfaces/general-info.interface';
 import {map} from 'rxjs/operators';
 import {Geometry} from 'geojson';
 import {SupportedSrs} from '../../../types/supported-srs';
+import {NumberUtils} from '../../../utils/number.utils';
 
 const GENERAL_INFO_SRS: SupportedSrs = 2056;
 
@@ -35,10 +36,10 @@ export class Gb3GeneralInfoService extends Gb3ApiService {
       externalMaps: generalInfo.external_maps,
       locationInformation: {
         crs: generalInfo.crs,
-        heightDom: generalInfo.height_dom,
-        heightDtm: generalInfo.height_dtm,
-        lv95x: generalInfo.lv95_e,
-        lv95y: generalInfo.lv95_n
+        heightDom: NumberUtils.roundToDecimals(generalInfo.height_dom, 1),
+        heightDtm: NumberUtils.roundToDecimals(generalInfo.height_dtm, 1),
+        lv95x: NumberUtils.roundToDecimals(generalInfo.lv95_e, 2),
+        lv95y: NumberUtils.roundToDecimals(generalInfo.lv95_n, 2)
       },
       parcel: generalInfo.parcel
         ? {
