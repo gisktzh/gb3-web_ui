@@ -8,8 +8,8 @@
   .list-item__header {
     padding: 0 12px;
     background-color: ktzh-variables.$zh-light-grey;
-    min-height: 54px;
-    max-height: 54px;
+    min-height: 38px;
+    max-height: 38px;
 
     .list-item__header__content {
       display: flex;
@@ -23,7 +23,7 @@
       }
 
       .list-item__header__content__title {
-        @include mixins.multiline-ellipsis(2);
+        @include mixins.multiline-ellipsis(1);
         font-family: ktzh-variables.$zh-font-family-bold;
         width: 100%;
         margin-top: auto;
@@ -65,4 +65,5 @@
 
 :host::ng-deep .list-item .mat-expansion-panel-content .mat-expansion-panel-body {
   padding-right: 0;
+  padding-bottom: 0;
 }

@@ -6,8 +6,8 @@ export const FeatureInfoActions = createActionGroup({
   source: 'FeatureInfo',
   events: {
     'Send Request': props<{x: number; y: number}>(),
-    'Update Feature Info': props<{featureInfos: FeatureInfoResponse[]}>(),
-    'Clear Feature Info Content': emptyProps(),
+    'Update Content': props<{featureInfos: FeatureInfoResponse[]}>(),
+    'Clear Content': emptyProps(),
     'Highlight Feature': props<{feature: GeometryWithSrs; pinnedFeatureId: string | undefined}>(),
     'Clear Highlight': emptyProps()
   }

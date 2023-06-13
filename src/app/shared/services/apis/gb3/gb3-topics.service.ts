@@ -251,8 +251,6 @@ export class Gb3TopicsService extends Gb3ApiService {
       return {
         featureInfo: {
           ...featureInfo,
-          heightDtm: featureInfo.height_dtm,
-          heightDom: featureInfo.height_dom,
           results: {
             topic: featureInfo.results.topic,
             layers: featureInfo.results.layers.map((layer) => {

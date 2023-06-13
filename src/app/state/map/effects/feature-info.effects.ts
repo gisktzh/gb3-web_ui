@@ -9,9 +9,24 @@ import {selectQueryLayers} from '../selectors/query-layers.selector';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {MapConstants} from '../../../shared/constants/map.constants';
+import {MapConfigActions} from '../actions/map-config.actions';
 
 @Injectable()
 export class FeatureInfoEffects {
+  public clearData = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapConfigActions.clearFeatureInfoContent),
+      map(() => FeatureInfoActions.clearContent())
+    );
+  });
+
+  public interceptMapClick = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapConfigActions.handleMapClick),
+      map(({x, y}) => FeatureInfoActions.sendRequest({x, y}))
+    );
+  });
+
   public dispatchFeatureInfoRequest$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(FeatureInfoActions.sendRequest),
@@ -25,19 +40,20 @@ export class FeatureInfoEffects {
           () => queryLayers.length > 0,
           this.topicsService.loadFeatureInfos(action.x, action.y, queryLayers).pipe(
             map((featureInfos) => {
-              return FeatureInfoActions.updateFeatureInfo({featureInfos});
+              return FeatureInfoActions.updateContent({featureInfos});
             }),
             catchError(() => EMPTY) // todo error handling
           ),
-          of(FeatureInfoActions.updateFeatureInfo({featureInfos: []}))
+          of(FeatureInfoActions.updateContent({featureInfos: []}))
         )
       )
     );
   });
-  public closeFeatureInfo = createEffect(
+
+  public removeHighlightOnContentClear = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(FeatureInfoActions.clearFeatureInfoContent),
+        ofType(FeatureInfoActions.clearContent),
         tap(() => {
           this.mapDrawingService.clearFeatureQueryLocation();
         })

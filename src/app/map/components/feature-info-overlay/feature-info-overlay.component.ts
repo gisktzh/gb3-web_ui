@@ -1,11 +1,13 @@
 import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
-import {selectLoadingState} from '../../../state/map/reducers/feature-info.reducer';
-import {FeatureInfoActions} from '../../../state/map/actions/feature-info.actions';
 import {LoadingState} from '../../../shared/types/loading-state';
 import {FeatureInfoResultDisplay} from '../../../shared/interfaces/feature-info.interface';
 import {selectFeatureInfosForDisplay} from '../../../state/map/selectors/feature-info-result-display.selector';
+import {selectFeatureInfoQueryLoadingState} from '../../../state/map/selectors/feature-info-query-loading-state.selector';
+import {selectGeneralInfoState} from '../../../state/map/reducers/general-info.reducer';
+import {GeneralInfoResponse} from '../../../shared/interfaces/general-info.interface';
+import {MapConfigActions} from '../../../state/map/actions/map-config.actions';
 
 @Component({
   selector: 'feature-info-overlay',
@@ -17,10 +19,12 @@ export class FeatureInfoOverlayComponent implements OnInit, OnDestroy {
 
   public isVisible: boolean = false;
   public featureInfoData: FeatureInfoResultDisplay[] = [];
+  public generalInfoData?: GeneralInfoResponse;
   public loadingState: LoadingState = 'undefined';
 
-  private readonly loadingState$ = this.store.select(selectLoadingState);
+  private readonly loadingState$ = this.store.select(selectFeatureInfoQueryLoadingState);
   private readonly featureInfoData$ = this.store.select(selectFeatureInfosForDisplay);
+  private readonly generalInfoData$ = this.store.select(selectGeneralInfoState);
   private readonly subscriptions = new Subscription();
 
   constructor(private readonly store: Store) {}
@@ -34,7 +38,7 @@ export class FeatureInfoOverlayComponent implements OnInit, OnDestroy {
   }
 
   public close() {
-    this.store.dispatch(FeatureInfoActions.clearFeatureInfoContent());
+    this.store.dispatch(MapConfigActions.clearFeatureInfoContent());
   }
 
   public print() {
@@ -61,6 +65,15 @@ export class FeatureInfoOverlayComponent implements OnInit, OnDestroy {
         .pipe(
           tap(async (value) => {
             this.featureInfoData = value;
+          })
+        )
+        .subscribe()
+    );
+    this.subscriptions.add(
+      this.generalInfoData$
+        .pipe(
+          tap(async (value) => {
+            this.generalInfoData = value.data;
           })
         )
         .subscribe()

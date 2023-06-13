@@ -44,6 +44,7 @@ import {MapDataItemMapLayerComponent} from './components/map-data-catalogue/map-
 import {MapDataItemHeaderComponent} from './components/map-data-catalogue/map-data-item-header/map-data-item-header.component';
 import {DataInputComponent} from './components/map/data-input/data-input.component';
 import {MapNoticeDialogComponent} from './components/map-notice-dialog/map-notice-dialog.component';
+import {FeatureInfoGeneralInformationComponent} from './components/feature-info-overlay/feature-info-general-information/feature-info-general-information.component';
 
 @NgModule({
   declarations: [
@@ -86,7 +87,8 @@ import {MapNoticeDialogComponent} from './components/map-notice-dialog/map-notic
     MapDataItemMapLayerComponent,
     MapDataItemHeaderComponent,
     DataInputComponent,
-    MapNoticeDialogComponent
+    MapNoticeDialogComponent,
+    FeatureInfoGeneralInformationComponent
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule, KtZhDesignSystemModule]
 })

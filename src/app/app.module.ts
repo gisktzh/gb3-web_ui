@@ -27,6 +27,7 @@ import {GravCmsService} from './shared/services/apis/grav-cms/grav-cms.service';
 import {GravCmsMockService} from './shared/services/apis/grav-cms/grav-cms.mock.service';
 import {ConfigService} from './shared/services/config.service';
 import {KTZHNewsService} from './shared/services/apis/ktzh/ktzhnews.service';
+import {GeneralInfoEffects} from './state/map/effects/general-info.effects';
 
 function newsFactory<T>(service: T, mockService: T, configService: ConfigService): T {
   return serviceFactory(service, mockService, configService.apiConfig.ktzhWebsite.useMockData);
@@ -64,7 +65,8 @@ export const GRAV_CMS_SERVICE = new InjectionToken<GravCmsService>('GravCmsServi
       AuthStatusEffects,
       FavouriteListEffects,
       PageNotificationEffects,
-      GeolocationEffects
+      GeolocationEffects,
+      GeneralInfoEffects
     ]),
     AuthModule
   ],
