@@ -192,20 +192,6 @@ export interface GeneralInfoListData {
         /** GB2 Dynamic Extract URL */
         gb2_url: string;
       };
-      // TODO: The following 'geometry' part was not generated automatically
-      /** GeoJSON geometry */
-      geometry: {
-        /** GeoJSON geometry type */
-        type: string;
-        /** GeoJSON geometry coordinates */
-        coordinates: any[];
-        crs: {
-          properties: {
-            name: string;
-          };
-          type: string;
-        };
-      };
     } | null;
   };
 }

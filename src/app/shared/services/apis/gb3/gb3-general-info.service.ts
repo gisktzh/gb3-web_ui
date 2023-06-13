@@ -4,7 +4,6 @@ import {GeneralInfoListData} from '../../../models/gb3-api-generated.interfaces'
 import {Observable} from 'rxjs';
 import {GeneralInfoResponse} from '../../../interfaces/general-info.interface';
 import {map} from 'rxjs/operators';
-import {Geometry} from 'geojson';
 import {SupportedSrs} from '../../../types/supported-srs';
 import {NumberUtils} from '../../../utils/number.utils';
 
@@ -51,9 +50,7 @@ export class Gb3GeneralInfoService extends Gb3ApiService {
               xmlUrl: generalInfo.parcel.oereb_extract.xml_url,
               pdfUrl: generalInfo.parcel.oereb_extract.pdf_url,
               gb2Url: generalInfo.parcel.oereb_extract.gb2_url
-            },
-            // TODO: replace this explicit cast as soon as the API documentation is complete and contains the 'geometry'.
-            geometry: {...(generalInfo.parcel.geometry as Geometry), srs: GENERAL_INFO_SRS}
+            }
           }
         : undefined
     };

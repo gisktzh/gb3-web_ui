@@ -1,5 +1,3 @@
-import {GeometryWithSrs} from './geojson-types-with-srs.interface';
-
 interface AlternativeSpatialReference {
   coordinates: number[];
   crs: string;
@@ -35,7 +33,6 @@ interface Parcel {
     /** GB2 Dynamic Extract URL */
     gb2Url: string;
   };
-  geometry: GeometryWithSrs;
 }
 
 export interface GeneralInfoResponse {
