@@ -1,0 +1,41 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'functions/helper.function' as functions;
+
+.general-information {
+  margin-bottom: 8px;
+}
+
+.additional-general-information {
+  margin-top: 8px;
+
+  .additional-general-information__content {
+    padding-top: 16px;
+
+    .additional-general-information__content__crs,
+    .additional-general-information__content__links {
+      list-style: none;
+    }
+
+    .additional-general-information__content__links {
+      .additional-general-information__content__links__entry {
+        text-decoration: none;
+        color: ktzh-variables.$zh-active-blue;
+        display: inline-flex;
+        height: 0;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
+
+.parcel-button {
+  margin: 8px 0;
+  background-color: functions.convert-hex-to-rgba(ktzh-variables.$zh-black100, 0.1);
+}
+/// todo: maybe add font-family to global CSS styles for all bold tags - needs more checks though
+b {
+  font-family: ktzh-variables.$zh-font-family-bold;
+}
