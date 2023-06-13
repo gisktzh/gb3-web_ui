@@ -1,13 +1,13 @@
 import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
-import {FeatureInfoActions} from '../../../state/map/actions/feature-info.actions';
 import {LoadingState} from '../../../shared/types/loading-state';
 import {FeatureInfoResultDisplay} from '../../../shared/interfaces/feature-info.interface';
 import {selectFeatureInfosForDisplay} from '../../../state/map/selectors/feature-info-result-display.selector';
 import {selectFeatureInfoQueryLoadingState} from '../../../state/map/selectors/feature-info-query-loading-state.selector';
 import {selectGeneralInfoState} from '../../../state/map/reducers/general-info.reducer';
 import {GeneralInfoResponse} from '../../../shared/interfaces/general-info.interface';
+import {MapConfigActions} from '../../../state/map/actions/map-config.actions';
 
 @Component({
   selector: 'feature-info-overlay',
@@ -38,7 +38,7 @@ export class FeatureInfoOverlayComponent implements OnInit, OnDestroy {
   }
 
   public close() {
-    this.store.dispatch(FeatureInfoActions.clearFeatureInfoContent());
+    this.store.dispatch(MapConfigActions.clearFeatureInfoContent());
   }
 
   public print() {

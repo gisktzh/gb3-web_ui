@@ -9,6 +9,13 @@ import {MapConfigActions} from '../actions/map-config.actions';
 
 @Injectable()
 export class GeneralInfoEffects {
+  public clearData = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapConfigActions.clearFeatureInfoContent),
+      map(() => GeneralInfoActions.clearContent())
+    );
+  });
+
   public interceptMapClick = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapConfigActions.handleMapClick),
@@ -22,7 +29,7 @@ export class GeneralInfoEffects {
       switchMap(({x, y}) =>
         this.generalInfoService.loadGeneralInfo(x, y).pipe(
           map((generalInfo) => {
-            return GeneralInfoActions.updateGeneralInfo({generalInfo});
+            return GeneralInfoActions.updateContent({generalInfo});
           }),
           catchError(() => EMPTY)
         )

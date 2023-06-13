@@ -16,10 +16,10 @@ export const generalInfoFeature = createFeature({
     on(GeneralInfoActions.sendRequest, (): GeneralInfoState => {
       return {...initialState, loadingState: 'loading'};
     }),
-    on(GeneralInfoActions.clearGeneralInfoContent, (): GeneralInfoState => {
+    on(GeneralInfoActions.clearContent, (): GeneralInfoState => {
       return {...initialState};
     }),
-    on(GeneralInfoActions.updateGeneralInfo, (state, {generalInfo}): GeneralInfoState => {
+    on(GeneralInfoActions.updateContent, (state, {generalInfo}): GeneralInfoState => {
       return {...state, loadingState: 'loaded', data: generalInfo};
     })
   )

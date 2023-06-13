@@ -4,10 +4,7 @@ import {GeneralInfoListData} from '../../../models/gb3-api-generated.interfaces'
 import {Observable} from 'rxjs';
 import {GeneralInfoResponse} from '../../../interfaces/general-info.interface';
 import {map} from 'rxjs/operators';
-import {SupportedSrs} from '../../../types/supported-srs';
 import {NumberUtils} from '../../../utils/number.utils';
-
-const GENERAL_INFO_SRS: SupportedSrs = 2056;
 
 @Injectable({
   providedIn: 'root'
