@@ -11,7 +11,7 @@ import {NewsService} from '../../../interfaces/news-service.interface';
 })
 export class KTZHNewsService extends BaseApiService implements NewsService {
   private readonly ktzhWebsiteBasePath = this.configService.apiConfig.ktzhWebsite.baseUrl;
-  protected apiBaseUrl: string = `${this.ktzhWebsiteBasePath}/de/news-uebersicht/_jcr_content.zhweb-news.zhweb-cache.json`;
+  protected apiBaseUrl: string = `${this.ktzhWebsiteBasePath}/de/news-uebersicht/_jcr_content.zhweb-news.json`;
   private topicsFilter: string[] = ['planen-bauen', 'geoinformation'];
   private organisationFilter: string[] = ['kanton-zuerich', 'baudirektion', 'amt-fuer-raumentwicklung'];
 
