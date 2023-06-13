@@ -31,7 +31,7 @@ export class GeneralInfoEffects {
           map((generalInfo) => {
             return GeneralInfoActions.updateContent({generalInfo});
           }),
-          catchError(() => EMPTY)
+          catchError(() => EMPTY) // todo error handling
         )
       )
     );

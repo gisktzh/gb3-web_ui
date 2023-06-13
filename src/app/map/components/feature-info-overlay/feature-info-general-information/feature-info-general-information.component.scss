@@ -17,15 +17,13 @@
     }
 
     .additional-general-information__content__links {
-      .additional-general-information__content__links__entry {
-        text-decoration: none;
-        color: ktzh-variables.$zh-active-blue;
-        display: inline-flex;
-        height: 0;
+      text-decoration: none;
+      color: ktzh-variables.$zh-active-blue;
+      display: inline-flex;
+      height: 0;
 
-        &:hover {
-          text-decoration: underline;
-        }
+      &:hover {
+        text-decoration: underline;
       }
     }
   }

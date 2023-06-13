@@ -57,6 +57,7 @@
     "zone.js": "~0.13"
   },
   "devDependencies": {
+    "@angular/localize": "^15.2.9",
     "@ngrx/eslint-plugin": "^15.2.1",
     "@ngrx/schematics": "^15.2.1",
     "@types/jasmine": "~4.3.0",

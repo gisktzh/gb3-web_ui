@@ -4,7 +4,6 @@ import {GeneralInfoListData} from '../../../models/gb3-api-generated.interfaces'
 import {Observable} from 'rxjs';
 import {GeneralInfoResponse} from '../../../interfaces/general-info.interface';
 import {map} from 'rxjs/operators';
-import {NumberUtils} from '../../../utils/number.utils';
 
 @Injectable({
   providedIn: 'root'
@@ -32,10 +31,10 @@ export class Gb3GeneralInfoService extends Gb3ApiService {
       externalMaps: generalInfo.external_maps,
       locationInformation: {
         crs: generalInfo.crs,
-        heightDom: NumberUtils.roundToDecimals(generalInfo.height_dom, 1),
-        heightDtm: NumberUtils.roundToDecimals(generalInfo.height_dtm, 1),
-        lv95x: NumberUtils.roundToDecimals(generalInfo.lv95_e, 2),
-        lv95y: NumberUtils.roundToDecimals(generalInfo.lv95_n, 2)
+        heightDom: generalInfo.height_dom,
+        heightDtm: generalInfo.height_dtm,
+        lv95x: generalInfo.lv95_e,
+        lv95y: generalInfo.lv95_n
       },
       parcel: generalInfo.parcel
         ? {

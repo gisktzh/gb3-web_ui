@@ -1,5 +1,6 @@
 <div class="general-information">
-  <b>Koordinaten:</b> {{ generalInfoData.locationInformation.lv95x }} / {{ generalInfoData.locationInformation.lv95y }}
+  <b>Koordinaten:</b> {{ generalInfoData.locationInformation.lv95x | number : '1.0-2' }} /
+  {{ generalInfoData.locationInformation.lv95y | number : '1.0-2' }}
   <br />
   <b>DTM:</b> {{ generalInfoData.locationInformation.heightDtm }} m / <b>DOM:</b> {{ generalInfoData.locationInformation.heightDom }} m
 </div>
@@ -10,19 +11,26 @@
   mat-flat-button
   target="_blank"
   class="parcel-button"
+  rel="noopener noreferrer"
 >
   <mat-icon>download</mat-icon>
   ÖREB-Auszug
 </a>
 <div class="additional-general-information">
-  <map-overlay-list-item overlayTitle="Weitere Standortinformationenen">
+  <map-overlay-list-item overlayTitle="Weitere Standortinformationen">
     <div class="additional-general-information__content">
       <li *ngFor="let aCrs of generalInfoData.alternativeSpatialReferences" class="additional-general-information__content__crs">
-        <b>{{ aCrs.crs }}:</b> {{ aCrs.coordinates.join(' / ') }}
+        <b>{{ aCrs.crs }}:</b> {{ aCrs.coordinates[0] | number : '1.0-6' }} / {{ aCrs.coordinates[1] | number : '1.0-6' }}
       </li>
       <b>Weitere Kartendienste:</b>
-      <li *ngFor="let extMap of generalInfoData.externalMaps" class="additional-general-information__content__links">
-        <a [href]="extMap.url" [title]="extMap.name" class="additional-general-information__content__links__entry" target="_blank">
+      <li *ngFor="let extMap of generalInfoData.externalMaps">
+        <a
+          [href]="extMap.url"
+          [title]="extMap.name"
+          class="additional-general-information__content__links"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <span>{{ extMap.name }}</span
           ><span><mat-icon [inline]="true">north_east</mat-icon></span></a
         >
