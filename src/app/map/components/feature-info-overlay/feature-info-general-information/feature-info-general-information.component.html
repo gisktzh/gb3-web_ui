@@ -15,11 +15,10 @@
   ÖREB-Auszug
 </a>
 <div class="additional-general-information">
-  <map-overlay-list-item overlayTitle="Allgemeine Informationen">
+  <map-overlay-list-item overlayTitle="Weitere Standortinformationenen">
     <div class="additional-general-information__content">
-      <b>Weitere Koordinatensysteme:</b>
       <li *ngFor="let aCrs of generalInfoData.alternativeSpatialReferences" class="additional-general-information__content__crs">
-        {{ aCrs.crs }}: {{ aCrs.coordinates.join(' / ') }}
+        <b>{{ aCrs.crs }}:</b> {{ aCrs.coordinates.join(' / ') }}
       </li>
       <b>Weitere Kartendienste:</b>
       <li *ngFor="let extMap of generalInfoData.externalMaps" class="additional-general-information__content__links">
