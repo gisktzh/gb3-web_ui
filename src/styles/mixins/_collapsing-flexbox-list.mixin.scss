@@ -8,10 +8,10 @@
     - The wrapper (mixin 'list') is a UL element without a style, that has full width and row wrap
     - The child elements (mixin 'list__item') are LI elements which have a fixed height ($height) and a bottom and right margin of $border-width.
       - More importantly, their flex-basis AND max-width is calculated (and this part differs from the zh.ch implementation,
-        because our wrapper layout prevents us from having a simpler layout): It takes the max-content width divided by $number-of-entries,
-        and subtracts twice the border-width (because we have left and right the
-        $border-width wide border). Due to this, they wrap nicely, also accounting for the border; and they are always
-        appropriately sized.
+        because our wrapper layout prevents us from having a simpler layout):
+        It takes the max-content width divided by $number-of-entries, subtracts the border-width once, and finally subtracts the
+        border-width again, this time divided by $number-of-entries (because one border side is shared with the other items).
+        Due to this, they wrap nicely, also accounting for the border; and they are always appropriately sized.
       - The real magic happens in the :before pseudo element: It sets the background color to grey and content to "";
         while its height and width are 100% of the size of its parent (which is the host element and thus the link
         element) with 2 times the $border-width added each to account for the border. Add a hover effect (with z-index 1,
@@ -29,16 +29,17 @@
   list-style-type: none;
   margin: 0;
   width: calc(100% - $border-width);
-  padding: 0 0 0 $border-width;
+  padding-left: $border-width;
   justify-content: center;
 }
 
 @mixin list__item($border-width, $max-content-width, $number-of-entries, $height) {
+  $calc-width: calc((#{$max-content-width} / #{$number-of-entries}) - $border-width - (#{$border-width} / #{$number-of-entries}));
   margin-bottom: $border-width;
   margin-right: $border-width;
   position: relative;
-  flex-basis: calc((#{$max-content-width} / #{$number-of-entries}) - 2 * $border-width);
-  max-width: calc((#{$max-content-width} / #{$number-of-entries}) - 2 * $border-width);
+  flex-basis: $calc-width;
+  max-width: $calc-width;
   height: $height;
 
   &:before {
