@@ -10,6 +10,7 @@ import {Map} from '../../shared/interfaces/topic.interface';
 import {selectAvailableMaps} from '../../state/map/selectors/available-maps.selector';
 import {produce} from 'immer';
 import {ActiveMapItemFactory} from '../../shared/factories/active-map-item.factory';
+import {isActiveMapItemOfType} from '../../shared/type-guards/active-map-item-type.type-guard';
 
 @Injectable({
   providedIn: 'root'
@@ -98,18 +99,15 @@ export class FavouritesService {
   }
 
   private getCurrentFavouriteConfiguration(): FavouriteLayerConfiguration[] {
-    return this.activeMapItems
-      .filter((activeMapItem) => activeMapItem.configuration.type === 'gb2Wms') // todo: remove
-      .map((a) => a as ActiveMapItem<Gb2WmsMapItemConfiguration>)
-      .map((activeMapItem) => {
-        // note: spread does not work here because ActiveMapItem is a class, hence too many attributes would be added to the object
-        return {
-          mapId: activeMapItem.configuration.mapId,
-          layers: activeMapItem.configuration.layers.map((layer) => ({id: layer.id, layer: layer.layer, visible: layer.visible})),
-          visible: activeMapItem.visible,
-          opacity: activeMapItem.opacity,
-          isSingleLayer: activeMapItem.isSingleLayer
-        };
-      });
+    return this.activeMapItems.filter(isActiveMapItemOfType(Gb2WmsMapItemConfiguration)).map((activeMapItem) => {
+      // note: spread does not work here because ActiveMapItem is a class, hence too many attributes would be added to the object
+      return {
+        mapId: activeMapItem.configuration.mapId,
+        layers: activeMapItem.configuration.layers.map((layer) => ({id: layer.id, layer: layer.layer, visible: layer.visible})),
+        visible: activeMapItem.visible,
+        opacity: activeMapItem.opacity,
+        isSingleLayer: activeMapItem.isSingleLayer
+      };
+    });
   }
 }

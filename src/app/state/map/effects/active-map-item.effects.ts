@@ -9,7 +9,8 @@ import {Store} from '@ngrx/store';
 import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {map} from 'rxjs/operators';
-import {ActiveMapItem, Gb2WmsMapItemConfiguration} from '../../../map/models/active-map-item.model';
+import {Gb2WmsMapItemConfiguration} from '../../../map/models/active-map-item.model';
+import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
 
 @Injectable()
 export class ActiveMapItemEffects {
@@ -128,8 +129,7 @@ export class ActiveMapItemEffects {
         concatLatestFrom(() => this.store.select(selectActiveMapItems)),
         tap(([action, activeMapItems]) => {
           const currentActiveMapItem = activeMapItems
-            .filter((m) => m.configuration.type === 'gb2Wms') // todo: remove
-            .map((m) => m as ActiveMapItem<Gb2WmsMapItemConfiguration>)
+            .filter(isActiveMapItemOfType(Gb2WmsMapItemConfiguration))
             .find((activeMapItem) => activeMapItem.id === action.activeMapItem.id);
           if (currentActiveMapItem?.configuration.filterConfigurations) {
             const attributeFilterParameters = this.gb3TopicsService.transformFilterConfigurationToParameters(

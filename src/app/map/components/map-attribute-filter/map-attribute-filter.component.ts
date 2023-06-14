@@ -7,6 +7,7 @@ import {MapAttributeFiltersItemActions} from '../../../state/map/actions/map-att
 import {concatLatestFrom} from '@ngrx/effects';
 import {selectActiveMapItems} from '../../../state/map/reducers/active-map-item.reducer';
 import {selectMapAttributeFiltersItemId} from '../../../state/map/reducers/map-attribute-filters-item.reducer';
+import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
 
 @Component({
   selector: 'map-attribute-filter',
@@ -68,9 +69,7 @@ export class MapAttributeFilterComponent implements OnInit, OnDestroy {
         .pipe(
           concatLatestFrom(() => this.activeMapItems$),
           tap(([activeMapItemId, activeMapItems]) => {
-            const gb2WmsMapItems = activeMapItems
-              .filter((m) => m.configuration.type === 'gb2Wms')
-              .map((m) => m as ActiveMapItem<Gb2WmsMapItemConfiguration>); // todo: remove
+            const gb2WmsMapItems = activeMapItems.filter(isActiveMapItemOfType(Gb2WmsMapItemConfiguration));
             this.handleMapAttributeFiltersItemChange(activeMapItemId, gb2WmsMapItems);
           })
         )
@@ -81,9 +80,7 @@ export class MapAttributeFilterComponent implements OnInit, OnDestroy {
       this.activeMapItems$
         .pipe(
           tap((activeMapItems) => {
-            const gb2WmsMapItems = activeMapItems
-              .filter((m) => m.configuration.type === 'gb2Wms')
-              .map((m) => m as ActiveMapItem<Gb2WmsMapItemConfiguration>); // todo: remove
+            const gb2WmsMapItems = activeMapItems.filter(isActiveMapItemOfType(Gb2WmsMapItemConfiguration));
             this.handleMapAttributeFiltersItemChange(this.mapAttributeFiltersItem?.id, gb2WmsMapItems);
           })
         )

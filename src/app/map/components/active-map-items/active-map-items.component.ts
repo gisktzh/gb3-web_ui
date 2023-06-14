@@ -10,6 +10,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {FavouriteCreationDialogComponent} from '../favourite-creation-dialog/favourite-creation-dialog.component';
 import {PanelClass} from '../../../shared/enums/panel-class.enum';
 import {MapNoticeDialogComponent} from '../map-notice-dialog/map-notice-dialog.component';
+import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
 
 const FAVOURITE_HELPER_MESSAGES = {
   noMapsAdded: 'Fügen Sie mindestens 1 Karte hinzu, um einen Favoriten anzulegen.',
@@ -78,7 +79,7 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
       restoreFocus: false,
       data: this.activeMapItems.filter(
         (activeMapItem) => activeMapItem.configuration.type === 'gb2Wms' && activeMapItem.configuration.notice
-      ), // todo: selector
+      ), // todo: As soon as more layers with notices come into play, a selector on the interface would be required.
       maxWidth: MAP_NOTICES_DIALOG_MAX_WIDTH
     });
   }
@@ -89,9 +90,7 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
         .pipe(
           tap((currentActiveMapItems) => {
             this.activeMapItems = currentActiveMapItems;
-            const gb2ActiveMapItems = currentActiveMapItems
-              .filter((m) => m.configuration.type === 'gb2Wms')
-              .map((m) => m as ActiveMapItem<Gb2WmsMapItemConfiguration>);
+            const gb2ActiveMapItems = currentActiveMapItems.filter(isActiveMapItemOfType(Gb2WmsMapItemConfiguration));
             this.updateNumberOfNotices(gb2ActiveMapItems);
           })
         )

@@ -7,6 +7,7 @@ import {ActiveMapItemActions} from '../../../../state/map/actions/active-map-ite
 import {TimeExtent} from '../../../interfaces/time-extent.interface';
 import {MapAttributeFiltersItemActions} from '../../../../state/map/actions/map-attribute-filters-item.actions';
 import {NumberUtils} from '../../../../shared/utils/number.utils';
+import {isActiveMapItemOfType} from '../../../../shared/type-guards/active-map-item-type.type-guard';
 
 @Component({
   selector: 'active-map-item-settings',
@@ -69,11 +70,7 @@ export class ActiveMapItemSettingsComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.activeMapItems$
         .pipe(
-          map((m) =>
-            m
-              .filter((aM) => aM.configuration.type === 'gb2Wms') // todo: remove
-              .map((aM) => aM as ActiveMapItem<Gb2WmsMapItemConfiguration>)
-          ),
+          map((m) => m.filter(isActiveMapItemOfType(Gb2WmsMapItemConfiguration))),
           tap((activeMapItems) => {
             // calculate the number of active filters to display them as badge
             let numberOfChangedFilters = 0;
