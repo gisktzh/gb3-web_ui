@@ -1,18 +1,16 @@
-@use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'mixins/helpers.mixin' as mixins;
 @use 'mixins/material.mixin' as mat-mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
 
 :host ::ng-deep {
-  .map-controls__button {
+  .map-tools__print-button {
     @include mat-mixins.mat-icon-button-override-border-radius(ktzh-variables.$zh-border-radius);
   }
 }
 
-.map-controls {
-  display: grid;
-  padding: 5px;
-
-  .map-controls__button {
+.map-tools {
+  .map-tools__print-button {
+    @include mixins.map-element-box-shadow;
     background-color: ktzh-variables.$zh-background-color;
-    margin-top: 2px;
   }
 }

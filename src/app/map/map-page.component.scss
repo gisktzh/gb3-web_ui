@@ -93,6 +93,12 @@
     bottom: 85px;
     pointer-events: none;
   }
+
+  .map-container__map-tools {
+    position: absolute;
+    top: 120px;
+    right: 24px;
+  }
 }
 
 @media print {

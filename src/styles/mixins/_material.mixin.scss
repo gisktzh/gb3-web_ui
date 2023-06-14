@@ -99,6 +99,16 @@
   }
 }
 
+@mixin mat-icon-button-override-border-radius($radius) {
+  &.mat-mdc-icon-button {
+    border-radius: $radius;
+
+    .mat-mdc-button-persistent-ripple.mdc-icon-button__ripple {
+      border-radius: $radius;
+    }
+  }
+}
+
 /**
 * ======================
 *  mat-checkbox
