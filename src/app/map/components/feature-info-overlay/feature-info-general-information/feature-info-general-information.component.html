@@ -2,7 +2,8 @@
   <b>Koordinaten:</b> {{ generalInfoData.locationInformation.lv95x | number : '1.0-2' }} /
   {{ generalInfoData.locationInformation.lv95y | number : '1.0-2' }}
   <br />
-  <b>DTM:</b> {{ generalInfoData.locationInformation.heightDtm }} m / <b>DOM:</b> {{ generalInfoData.locationInformation.heightDom }} m
+  <b>DTM:</b> {{ generalInfoData.locationInformation.heightDtm | number : '1.0-2' }} m / <b>DOM:</b>
+  {{ generalInfoData.locationInformation.heightDom | number : '1.0-2' }} m
 </div>
 <a
   *ngIf="generalInfoData.parcel"
@@ -23,11 +24,11 @@
         <b>{{ aCrs.crs }}:</b> {{ aCrs.coordinates[0] | number : '1.0-6' }} / {{ aCrs.coordinates[1] | number : '1.0-6' }}
       </li>
       <b>Weitere Kartendienste:</b>
-      <li *ngFor="let extMap of generalInfoData.externalMaps">
+      <li *ngFor="let extMap of generalInfoData.externalMaps" class="additional-general-information__content__links">
         <a
           [href]="extMap.url"
           [title]="extMap.name"
-          class="additional-general-information__content__links"
+          class="additional-general-information__content__links__ref"
           target="_blank"
           rel="noopener noreferrer"
         >
