@@ -2,7 +2,7 @@ import {TestBed} from '@angular/core/testing';
 
 import {EsriMapService} from './esri-map.service';
 import {provideMockStore} from '@ngrx/store/testing';
-import {ActiveMapItem} from '../../models/active-map-item.model';
+import {ActiveMapItem, Gb2WmsMapItemConfiguration} from '../../models/active-map-item.model';
 import {Map, MapLayer} from '../../../shared/interfaces/topic.interface';
 import {EsriMapMock} from '../../../testing/map-testing/esri-map.mock';
 import {AuthModule} from '../../../auth/auth.module';
@@ -11,27 +11,28 @@ import {Subject} from 'rxjs';
 import {DrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {MapConstants} from '../../../shared/constants/map.constants';
+import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 
-function createActiveMapItemMock(id: string, numberOfLayers = 0): {id: string; activeMapItem: ActiveMapItem} {
+function createActiveMapItemMock(id: string, numberOfLayers = 0): {id: string; activeMapItem: ActiveMapItem<Gb2WmsMapItemConfiguration>} {
   const mapMock = {id: id, title: id, layers: []} as Partial<Map>;
   for (let layerNumber = 0; layerNumber < numberOfLayers; layerNumber++) {
     const uniqueLayerName = `layer${layerNumber}_${id}`;
     const layerMock = {layer: uniqueLayerName, title: uniqueLayerName, id: layerNumber, visible: true} as Partial<MapLayer>;
     mapMock.layers?.push(<MapLayer>layerMock);
   }
-  return {id: id, activeMapItem: new ActiveMapItem(<Map>mapMock)};
+  return {id: id, activeMapItem: ActiveMapItemFactory.createGb2WmsMapItem(<Map>mapMock)};
 }
 
-function compareMapItemToEsriLayer(expectedMapItem: ActiveMapItem, actualEsriLayer: __esri.Layer) {
+function compareMapItemToEsriLayer(expectedMapItem: ActiveMapItem<Gb2WmsMapItemConfiguration>, actualEsriLayer: __esri.Layer) {
   expect(actualEsriLayer.id).toBe(expectedMapItem.id);
   expect(actualEsriLayer.opacity).toBe(expectedMapItem.opacity);
   expect(actualEsriLayer.title).toBe(expectedMapItem.title);
   expect(actualEsriLayer.visible).toBe(expectedMapItem.visible);
 
   const actualEsriWmsLayer = actualEsriLayer as __esri.WMSLayer;
-  expect(actualEsriWmsLayer.url).toBe(expectedMapItem.url);
-  expect(actualEsriWmsLayer.sublayers.length).toBe(expectedMapItem.layers.length);
-  expectedMapItem.layers.forEach((expectedLayer) => {
+  expect(actualEsriWmsLayer.url).toBe(expectedMapItem.configuration.url);
+  expect(actualEsriWmsLayer.sublayers.length).toBe(expectedMapItem.configuration.layers.length);
+  expectedMapItem.configuration.layers.forEach((expectedLayer) => {
     const actualEsriSublayer = actualEsriWmsLayer.sublayers.find((sl) => sl.id === expectedLayer.id);
     expect(actualEsriSublayer).toBeDefined();
     expect(actualEsriSublayer.name).toBe(expectedLayer.layer);
@@ -88,7 +89,7 @@ describe('EsriMapService', () => {
     mapItem1.opacity = 0.5;
     mapItem1.visible = false;
     const {id: topic2Id, activeMapItem: mapItem2} = createActiveMapItemMock('mapTwo', 2);
-    mapItem2.layers[0].visible = false;
+    mapItem2.configuration.layers[0].visible = false;
     const {id: topic3Id, activeMapItem: mapItem3} = createActiveMapItemMock('mapThree');
 
     expect(mapMock.layers.length).toBe(getExpectedNumberOfLayersWithInternalLayers(0));

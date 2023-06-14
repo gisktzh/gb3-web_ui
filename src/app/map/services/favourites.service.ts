@@ -3,12 +3,13 @@ import {Store} from '@ngrx/store';
 import {Gb3FavouritesService} from '../../shared/services/apis/gb3/gb3-favourites.service';
 import {Observable, tap} from 'rxjs';
 import {selectActiveMapItems} from '../../state/map/reducers/active-map-item.reducer';
-import {ActiveMapItem} from '../models/active-map-item.model';
+import {ActiveMapItem, Gb2WmsMapItemConfiguration} from '../models/active-map-item.model';
 import {Favourite, FavouriteLayerConfiguration, FavouritesResponse} from '../../shared/interfaces/favourite.interface';
 import {map} from 'rxjs/operators';
 import {Map} from '../../shared/interfaces/topic.interface';
 import {selectAvailableMaps} from '../../state/map/selectors/available-maps.selector';
 import {produce} from 'immer';
+import {ActiveMapItemFactory} from '../../shared/factories/active-map-item.factory';
 
 @Injectable({
   providedIn: 'root'
@@ -45,8 +46,10 @@ export class FavouritesService {
    * @param favouriteLayerConfigurations
    * @private
    */
-  public getActiveMapItemsForFavourite(favouriteLayerConfigurations: FavouriteLayerConfiguration[]): ActiveMapItem[] {
-    const activeMapItems: ActiveMapItem[] = [];
+  public getActiveMapItemsForFavourite(
+    favouriteLayerConfigurations: FavouriteLayerConfiguration[]
+  ): ActiveMapItem<Gb2WmsMapItemConfiguration>[] {
+    const activeMapItems: ActiveMapItem<Gb2WmsMapItemConfiguration>[] = [];
 
     favouriteLayerConfigurations.forEach((configuration) => {
       const existingMap = this.availableMaps.find((availableMap) => availableMap.id === configuration.mapId);
@@ -58,7 +61,9 @@ export class FavouritesService {
           if (!subLayer) {
             throw new Error('Sublayer does not exist.');
           }
-          activeMapItems.push(new ActiveMapItem(existingMap, subLayer, configuration.visible, configuration.opacity));
+          activeMapItems.push(
+            ActiveMapItemFactory.createGb2WmsMapItem(existingMap, subLayer, configuration.visible, configuration.opacity)
+          );
         } else {
           const adjustedMap = produce(existingMap, (draft) => {
             draft.layers.forEach((layer) => {
@@ -71,7 +76,9 @@ export class FavouritesService {
             const sortIds = configuration.layers.map((layer) => layer.id);
             draft.layers.sort((a, b) => sortIds.indexOf(a.id) - sortIds.indexOf(b.id));
           });
-          activeMapItems.push(new ActiveMapItem(adjustedMap, undefined, configuration.visible, configuration.opacity));
+          activeMapItems.push(
+            ActiveMapItemFactory.createGb2WmsMapItem(adjustedMap, undefined, configuration.visible, configuration.opacity)
+          );
         }
       } else {
         throw new Error('Map does not exist');
@@ -91,15 +98,18 @@ export class FavouritesService {
   }
 
   private getCurrentFavouriteConfiguration(): FavouriteLayerConfiguration[] {
-    return this.activeMapItems.map((activeMapItem) => {
-      // note: spread does not work here because ActiveMapItem is a class, hence too many attributes would be added to the object
-      return {
-        mapId: activeMapItem.mapId,
-        layers: activeMapItem.layers.map((layer) => ({id: layer.id, layer: layer.layer, visible: layer.visible})),
-        visible: activeMapItem.visible,
-        opacity: activeMapItem.opacity,
-        isSingleLayer: activeMapItem.isSingleLayer
-      };
-    });
+    return this.activeMapItems
+      .filter((activeMapItem) => activeMapItem.configuration.type === 'gb2Wms') // todo: remove
+      .map((a) => a as ActiveMapItem<Gb2WmsMapItemConfiguration>)
+      .map((activeMapItem) => {
+        // note: spread does not work here because ActiveMapItem is a class, hence too many attributes would be added to the object
+        return {
+          mapId: activeMapItem.configuration.mapId,
+          layers: activeMapItem.configuration.layers.map((layer) => ({id: layer.id, layer: layer.layer, visible: layer.visible})),
+          visible: activeMapItem.visible,
+          opacity: activeMapItem.opacity,
+          isSingleLayer: activeMapItem.isSingleLayer
+        };
+      });
   }
 }

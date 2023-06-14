@@ -1,4 +1,4 @@
-import {ActiveMapItem} from '../models/active-map-item.model';
+import {ActiveMapItem, Gb2WmsMapItemConfiguration} from '../models/active-map-item.model';
 import {ZoomType} from '../../shared/types/zoom-type';
 import {TimeExtent} from './time-extent.interface';
 import {GeometryWithSrs, PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
@@ -42,10 +42,13 @@ export interface MapService {
   setSublayerVisibility(visibility: boolean, mapItem: ActiveMapItem, layerId: number): void;
 
   /** Sets the time slider extent for an existing item on the map */
-  setTimeSliderExtent(timeExtent: TimeExtent, mapItem: ActiveMapItem): void;
+  setTimeSliderExtent(timeExtent: TimeExtent, mapItem: ActiveMapItem<Gb2WmsMapItemConfiguration>): void; // todo: make generic
 
   /** Sets the attribute filters for an existing item on the map */
-  setAttributeFilters(attributeFilterParameters: {name: string; value: string}[], mapItem: ActiveMapItem): void;
+  setAttributeFilters(
+    attributeFilterParameters: {name: string; value: string}[],
+    mapItem: ActiveMapItem<Gb2WmsMapItemConfiguration> // todo: make generic
+  ): void;
 
   /** Reorders a map item using its old index (previous) and the new index (current); 0 is the topmost item - the most visible one */
   reorderMapItem(previousPosition: number, currentPosition: number): void;

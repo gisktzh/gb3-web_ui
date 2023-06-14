@@ -9,8 +9,8 @@ import {selectMaps} from '../selectors/maps.selector';
 import {Store} from '@ngrx/store';
 import {selectMapConfigState} from '../reducers/map-config.reducer';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
-import {ActiveMapItem} from '../../../map/models/active-map-item.model';
 import {selectLayerCatalogItems} from '../reducers/layer-catalog.reducer';
+import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 
 @Injectable()
 export class LayerCatalogEffects {
@@ -53,7 +53,7 @@ export class LayerCatalogEffects {
       map(([availableMaps, {initialMaps}]) => {
         const initialMapItems = availableMaps
           .filter((availableMap) => initialMaps.includes(availableMap.id))
-          .map((availableMap) => new ActiveMapItem(availableMap));
+          .map((availableMap) => ActiveMapItemFactory.createGb2WmsMapItem(availableMap));
         return ActiveMapItemActions.addInitialMapItems({initialMapItems});
       })
     );

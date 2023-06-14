@@ -9,17 +9,23 @@
   </ktzh-slider-wrapper>
 
   <!-- Time slider -->
-  <ng-container *ngIf="activeMapItem.timeSliderConfiguration && activeMapItem.timeSliderExtent">
+  <ng-container
+    *ngIf="
+      activeMapItem.configuration.type === 'gb2Wms' &&
+      activeMapItem.configuration.timeSliderConfiguration &&
+      activeMapItem.configuration.timeSliderExtent
+    "
+  >
     <mat-divider class="active-map-item-settings__divider"></mat-divider>
     <time-slider
-      [initialTimeExtent]="activeMapItem.timeSliderExtent"
-      [timeSliderConfiguration]="activeMapItem.timeSliderConfiguration"
+      [initialTimeExtent]="activeMapItem.configuration.timeSliderExtent"
+      [timeSliderConfiguration]="activeMapItem.configuration.timeSliderConfiguration"
       (changeTimeExtentEvent)="onTimeSliderExtentChange($event)"
     ></time-slider>
   </ng-container>
 
   <!-- Attribute filter -->
-  <ng-container *ngIf="activeMapItem.filterConfigurations">
+  <ng-container *ngIf="activeMapItem.configuration.type === 'gb2Wms' && activeMapItem.configuration.filterConfigurations">
     <mat-divider class="active-map-item-settings__divider"></mat-divider>
     <div class="active-map-item-settings__attribute-filter">
       <p

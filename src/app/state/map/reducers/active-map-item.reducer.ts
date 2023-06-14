@@ -1,6 +1,6 @@
 import {createFeature, createReducer, on} from '@ngrx/store';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
-import {ActiveMapItem} from '../../../map/models/active-map-item.model';
+import {ActiveMapItem, Gb2WmsMapItemConfiguration} from '../../../map/models/active-map-item.model';
 import {ActiveMapItemState} from '../states/active-map-item.state';
 import {produce} from 'immer';
 
@@ -53,14 +53,17 @@ export const activeMapItemFeature = createFeature({
     on(
       ActiveMapItemActions.setSublayerVisibility,
       produce((draft, {visible, activeMapItem, layerId}) => {
-        draft.activeMapItems.forEach((mapItem) => {
-          if (mapItem.id === activeMapItem.id) {
-            const sublayer = mapItem.layers.find((l) => l.id === layerId);
-            if (sublayer) {
-              sublayer.visible = visible;
+        draft.activeMapItems // todo: remove all filters
+          .filter((m) => m.configuration.type === 'gb2Wms')
+          .map((m) => m as ActiveMapItem<Gb2WmsMapItemConfiguration>)
+          .forEach((mapItem) => {
+            if (mapItem.id === activeMapItem.id) {
+              const sublayer = mapItem.configuration.layers.find((l) => l.id === layerId);
+              if (sublayer) {
+                sublayer.visible = visible;
+              }
             }
-          }
-        });
+          });
       })
     ),
     on(
@@ -92,37 +95,46 @@ export const activeMapItemFeature = createFeature({
     on(
       ActiveMapItemActions.reorderSublayer,
       produce((draft, {activeMapItem, previousPosition, currentPosition}) => {
-        draft.activeMapItems.forEach((mapItem) => {
-          if (mapItem.id === activeMapItem.id) {
-            const sublayerToReorder = mapItem.layers.splice(previousPosition, 1);
-            mapItem.layers.splice(currentPosition, 0, ...sublayerToReorder);
-          }
-        });
+        draft.activeMapItems
+          .filter((m) => m.configuration.type === 'gb2Wms')
+          .map((m) => m as ActiveMapItem<Gb2WmsMapItemConfiguration>)
+          .forEach((mapItem) => {
+            if (mapItem.id === activeMapItem.id) {
+              const sublayerToReorder = mapItem.configuration.layers.splice(previousPosition, 1);
+              mapItem.configuration.layers.splice(currentPosition, 0, ...sublayerToReorder);
+            }
+          });
       })
     ),
     on(
       ActiveMapItemActions.setTimeSliderExtent,
       produce((draft, {timeExtent, activeMapItem}) => {
-        draft.activeMapItems.forEach((mapItem) => {
-          if (mapItem.id === activeMapItem.id) {
-            mapItem.timeSliderExtent = timeExtent;
-          }
-        });
+        draft.activeMapItems
+          .filter((m) => m.configuration.type === 'gb2Wms')
+          .map((m) => m as ActiveMapItem<Gb2WmsMapItemConfiguration>)
+          .forEach((mapItem) => {
+            if (mapItem.id === activeMapItem.id) {
+              mapItem.configuration.timeSliderExtent = timeExtent;
+            }
+          });
       })
     ),
     on(
       ActiveMapItemActions.setAttributeFilterValueState,
       produce((draft, {isFilterValueActive, filterValueName, attributeFilterParameter, activeMapItem}) => {
-        draft.activeMapItems.forEach((mapItem) => {
-          if (mapItem.id === activeMapItem.id) {
-            const filterValue = mapItem.filterConfigurations
-              ?.find((filterConfig) => filterConfig.parameter === attributeFilterParameter)
-              ?.filterValues.find((fv) => fv.name === filterValueName);
-            if (filterValue) {
-              filterValue.isActive = isFilterValueActive;
+        draft.activeMapItems
+          .filter((m) => m.configuration.type === 'gb2Wms')
+          .map((m) => m as ActiveMapItem<Gb2WmsMapItemConfiguration>)
+          .forEach((mapItem) => {
+            if (mapItem.id === activeMapItem.id) {
+              const filterValue = mapItem.configuration.filterConfigurations
+                ?.find((filterConfig) => filterConfig.parameter === attributeFilterParameter)
+                ?.filterValues.find((fv) => fv.name === filterValueName);
+              if (filterValue) {
+                filterValue.isActive = isFilterValueActive;
+              }
             }
-          }
-        });
+          });
       })
     ),
     on(ActiveMapItemActions.addFavourite, (state, {favourite}): ActiveMapItemState => {
@@ -140,9 +152,12 @@ export const activeMapItemFeature = createFeature({
     on(
       ActiveMapItemActions.markAllActiveMapItemNoticeAsRead,
       produce((draft) => {
-        draft.activeMapItems.forEach((mapItem) => {
-          mapItem.isNoticeMarkedAsRead = true;
-        });
+        draft.activeMapItems
+          .filter((m) => m.configuration.type === 'gb2Wms')
+          .map((m) => m as ActiveMapItem<Gb2WmsMapItemConfiguration>)
+          .forEach((mapItem) => {
+            mapItem.configuration.isNoticeMarkedAsRead = true;
+          });
       })
     )
   )
