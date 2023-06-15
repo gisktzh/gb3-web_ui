@@ -8,7 +8,8 @@ import {TimeExtent} from '../interfaces/time-extent.interface';
 import {TimeExtentUtils} from '../../shared/utils/time-extent.utils';
 import {IsImmerable} from '../../shared/interfaces/immerable.interface';
 import {immerable} from 'immer';
-import {AddToMapVisitor} from '../interfaces/map.service';
+
+import {AddToMapVisitor} from '../interfaces/add-to-map.visitor';
 
 type ActiveMapItemType = 'gb2Wms' | 'drawing';
 

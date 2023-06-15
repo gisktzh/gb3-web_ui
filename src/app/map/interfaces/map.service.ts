@@ -3,18 +3,7 @@ import {ZoomType} from '../../shared/types/zoom-type';
 import {TimeExtent} from './time-extent.interface';
 import {GeometryWithSrs, PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
 import {DrawingLayer} from '../../shared/enums/drawing-layer.enum';
-
-/**
- * Contains the logic for adding an item to the map. The MapService implements this interface and acts as a visitor (variation of the
- * pattern).
- *
- * todo: to make the visitor pattern complete, the visitor should be an object that handles the logic; but this also requires a cleaner
- * separation in the add method
- */
-export interface AddToMapVisitor {
-  /** Adds a new item to the map in the given position (0 is the topmost item - the most visible one)  */
-  addGb2WmsLayer(mapItem: Gb2WmsActiveMapItem, position: number): void;
-}
+import {AddToMapVisitor} from './add-to-map.visitor';
 
 export interface MapService extends AddToMapVisitor {
   /** Initializes the map by creating the initial background map and with a given extent */
@@ -51,7 +40,7 @@ export interface MapService extends AddToMapVisitor {
   setSublayerVisibility(visibility: boolean, mapItem: ActiveMapItem, layerId: number): void;
 
   /** Sets the time slider extent for an existing item on the map */
-  setTimeSliderExtent(timeExtent: TimeExtent, mapItem: Gb2WmsActiveMapItem): void; // todo: make gb2 specific
+  setTimeSliderExtent(timeExtent: TimeExtent, mapItem: Gb2WmsActiveMapItem): void;
 
   /** Sets the attribute filters for an existing item on the map */
   setAttributeFilters(

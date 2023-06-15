@@ -55,7 +55,7 @@ export class ActiveMapItemSettingsComponent implements OnInit, OnDestroy {
         timeExtent,
         activeMapItem: this.activeMapItem as Gb2WmsActiveMapItem
       })
-    ); // todo: can we get rid of this?
+    );
   }
 
   public showMapAttributeFilters() {

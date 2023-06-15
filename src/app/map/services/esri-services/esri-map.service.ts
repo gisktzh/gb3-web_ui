@@ -156,8 +156,7 @@ export class EsriMapService implements MapService {
     });
     if (mapItem.configuration.timeSliderExtent) {
       // apply initial time slider settings
-      this.setEsriTimeSliderExtent(mapItem.configuration.timeSliderExtent, mapItem, esriLayer); // todo:
-      // remove
+      this.setEsriTimeSliderExtent(mapItem.configuration.timeSliderExtent, mapItem, esriLayer);
     }
     this.attachLayerListeners(esriLayer);
     /**
