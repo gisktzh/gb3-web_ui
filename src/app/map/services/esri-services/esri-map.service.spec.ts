@@ -30,9 +30,9 @@ function compareMapItemToEsriLayer(expectedMapItem: Gb2WmsActiveMapItem, actualE
   expect(actualEsriLayer.visible).toBe(expectedMapItem.visible);
 
   const actualEsriWmsLayer = actualEsriLayer as __esri.WMSLayer;
-  expect(actualEsriWmsLayer.url).toBe(expectedMapItem.configuration.url);
-  expect(actualEsriWmsLayer.sublayers.length).toBe(expectedMapItem.configuration.layers.length);
-  expectedMapItem.configuration.layers.forEach((expectedLayer) => {
+  expect(actualEsriWmsLayer.url).toBe(expectedMapItem.settings.url);
+  expect(actualEsriWmsLayer.sublayers.length).toBe(expectedMapItem.settings.layers.length);
+  expectedMapItem.settings.layers.forEach((expectedLayer) => {
     const actualEsriSublayer = actualEsriWmsLayer.sublayers.find((sl) => sl.id === expectedLayer.id);
     expect(actualEsriSublayer).toBeDefined();
     expect(actualEsriSublayer.name).toBe(expectedLayer.layer);
@@ -89,7 +89,7 @@ describe('EsriMapService', () => {
     mapItem1.opacity = 0.5;
     mapItem1.visible = false;
     const {id: topic2Id, activeMapItem: mapItem2} = createActiveMapItemMock('mapTwo', 2);
-    mapItem2.configuration.layers[0].visible = false;
+    mapItem2.settings.layers[0].visible = false;
     const {id: topic3Id, activeMapItem: mapItem3} = createActiveMapItemMock('mapThree');
 
     expect(mapMock.layers.length).toBe(getExpectedNumberOfLayersWithInternalLayers(0));

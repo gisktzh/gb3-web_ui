@@ -101,8 +101,8 @@ export class FavouritesService {
     return this.activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).map((activeMapItem) => {
       // note: spread does not work here because ActiveMapItem is a class, hence too many attributes would be added to the object
       return {
-        mapId: activeMapItem.configuration.mapId,
-        layers: activeMapItem.configuration.layers.map((layer) => ({id: layer.id, layer: layer.layer, visible: layer.visible})),
+        mapId: activeMapItem.settings.mapId,
+        layers: activeMapItem.settings.layers.map((layer) => ({id: layer.id, layer: layer.layer, visible: layer.visible})),
         visible: activeMapItem.visible,
         opacity: activeMapItem.opacity,
         isSingleLayer: activeMapItem.isSingleLayer

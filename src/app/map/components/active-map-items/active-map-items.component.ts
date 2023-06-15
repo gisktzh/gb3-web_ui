@@ -78,9 +78,7 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
     this.dialogService.open(MapNoticeDialogComponent, {
       panelClass: PanelClass.ApiWrapperDialog,
       restoreFocus: false,
-      data: this.activeMapItems.filter(
-        (activeMapItem) => activeMapItem.configuration.type === 'gb2Wms' && activeMapItem.configuration.notice
-      ), // todo: As soon as more layers with notices come into play, a selector on the interface would be required.
+      data: this.activeMapItems.filter((activeMapItem) => activeMapItem.settings.type === 'gb2Wms' && activeMapItem.settings.notice), // todo: As soon as more layers with notices come into play, a selector on the interface would be required.
       maxWidth: MAP_NOTICES_DIALOG_MAX_WIDTH
     });
   }
@@ -109,10 +107,8 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
   }
 
   private updateNumberOfNotices(currentActiveMapItems: Gb2WmsActiveMapItem[]) {
-    const activeMapItemsWithNotices = currentActiveMapItems.filter((activeMapItem) => activeMapItem.configuration.notice);
+    const activeMapItemsWithNotices = currentActiveMapItems.filter((activeMapItem) => activeMapItem.settings.notice);
     this.numberOfNotices = activeMapItemsWithNotices.length;
-    this.numberOfUnreadNotices = activeMapItemsWithNotices.filter(
-      (activeMapItem) => !activeMapItem.configuration.isNoticeMarkedAsRead
-    ).length;
+    this.numberOfUnreadNotices = activeMapItemsWithNotices.filter((activeMapItem) => !activeMapItem.settings.isNoticeMarkedAsRead).length;
   }
 }

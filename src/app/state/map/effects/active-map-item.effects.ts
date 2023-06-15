@@ -131,9 +131,9 @@ export class ActiveMapItemEffects {
           const currentActiveMapItem = activeMapItems
             .filter(isActiveMapItemOfType(Gb2WmsActiveMapItem))
             .find((activeMapItem) => activeMapItem.id === action.activeMapItem.id);
-          if (currentActiveMapItem?.configuration.filterConfigurations) {
+          if (currentActiveMapItem?.settings.filterConfigurations) {
             const attributeFilterParameters = this.gb3TopicsService.transformFilterConfigurationToParameters(
-              currentActiveMapItem.configuration.filterConfigurations
+              currentActiveMapItem.settings.filterConfigurations
             );
             this.mapService.setAttributeFilters(attributeFilterParameters, currentActiveMapItem);
           }

@@ -142,11 +142,11 @@ export class EsriMapService implements MapService {
     const esriLayer: __esri.Layer = new EsriWMSLayer({
       id: mapItem.id,
       title: mapItem.title,
-      url: mapItem.configuration.url,
+      url: mapItem.settings.url,
       visible: mapItem.visible,
       opacity: mapItem.opacity,
       imageFormat: this.wmsImageFormatMimeType,
-      sublayers: mapItem.configuration.layers.map((layer) => {
+      sublayers: mapItem.settings.layers.map((layer) => {
         return {
           id: layer.id,
           name: layer.layer,
@@ -155,9 +155,9 @@ export class EsriMapService implements MapService {
         } as __esri.WMSSublayerProperties;
       })
     });
-    if (mapItem.configuration.timeSliderExtent) {
+    if (mapItem.settings.timeSliderExtent) {
       // apply initial time slider settings
-      this.setEsriTimeSliderExtent(mapItem.configuration.timeSliderExtent, mapItem, esriLayer);
+      this.setEsriTimeSliderExtent(mapItem.settings.timeSliderExtent, mapItem, esriLayer);
     }
     this.attachLayerListeners(esriLayer);
     /**
@@ -337,10 +337,10 @@ export class EsriMapService implements MapService {
   }
 
   private setEsriTimeSliderExtent(timeExtent: TimeExtent, mapItem: Gb2WmsActiveMapItem, esriLayer: __esri.Layer) {
-    if (esriLayer && esriLayer instanceof EsriWMSLayer && mapItem.configuration.timeSliderConfiguration) {
-      switch (mapItem.configuration.timeSliderConfiguration.sourceType) {
+    if (esriLayer && esriLayer instanceof EsriWMSLayer && mapItem.settings.timeSliderConfiguration) {
+      switch (mapItem.settings.timeSliderConfiguration.sourceType) {
         case 'parameter':
-          this.applyTimeSliderCustomParameters(esriLayer, timeExtent, mapItem.configuration.timeSliderConfiguration);
+          this.applyTimeSliderCustomParameters(esriLayer, timeExtent, mapItem.settings.timeSliderConfiguration);
           break;
         case 'layer':
           this.synchronizeTimeSliderLayers(esriLayer, timeExtent, mapItem);
@@ -380,11 +380,11 @@ export class EsriMapService implements MapService {
    * time extent are selected to be visible.
    */
   private synchronizeTimeSliderLayers(esriLayer: __esri.WMSLayer, timeSliderExtent: TimeExtent, mapItem: Gb2WmsActiveMapItem) {
-    if (!mapItem.configuration.timeSliderConfiguration) {
+    if (!mapItem.settings.timeSliderConfiguration) {
       return;
     }
 
-    const timeSliderConfig = mapItem.configuration.timeSliderConfiguration;
+    const timeSliderConfig = mapItem.settings.timeSliderConfiguration;
     const timeSliderLayerSource = timeSliderConfig.source as TimeSliderLayerSource;
     const timeSliderLayerNames = timeSliderLayerSource.layers.map((l) => l.layerName);
     const timeSliderLayerNamesToShow = timeSliderLayerSource.layers
@@ -394,7 +394,7 @@ export class EsriMapService implements MapService {
       })
       .map((l) => l.layerName);
     // get the layer configs of all time slider specific layers that are  also within the current time extent
-    const layers = mapItem.configuration.layers.filter((l) => timeSliderLayerNamesToShow.includes(l.layer));
+    const layers = mapItem.settings.layers.filter((l) => timeSliderLayerNamesToShow.includes(l.layer));
     // include all layers that are not specified in the time slider config
     const esriSublayers = esriLayer.sublayers.filter((sl) => !timeSliderLayerNames.includes(sl.name));
     // now add all layers that are in the time slider config and within the current time extent

@@ -1,7 +1,7 @@
 <!-- List of sublayers (only if the map item is not a single layer itself) -->
 <div (cdkDropListDropped)="dropSublayer($event)" cdkDropList class="active-map-item-layers">
-  <ng-container *ngIf="activeMapItem.configuration.type === 'gb2Wms'">
-    <ng-container *ngFor="let layer of activeMapItem.configuration.layers; trackBy: trackByLayerId">
+  <ng-container *ngIf="activeMapItem.settings.type === 'gb2Wms'">
+    <ng-container *ngFor="let layer of activeMapItem.settings.layers; trackBy: trackByLayerId">
       <!-- Sublayer (only shown if it is not marked as 'hidden') -->
       <div *ngIf="!layer.isHidden" cdkDrag class="active-map-item-layers__item" dragCursor>
         <active-map-item-layer [activeMapItem]="activeMapItem" [layer]="layer">

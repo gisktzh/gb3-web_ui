@@ -1,5 +1,5 @@
-import {AbstractActiveMapItemConfiguration} from '../active-map-item.model';
+import {AbstractActiveMapItemSettings} from '../active-map-item.model';
 
-export class DrawingLayerTestConfiguration extends AbstractActiveMapItemConfiguration {
+export class DrawingLayerSettings extends AbstractActiveMapItemSettings {
   public readonly type = 'drawing';
 }

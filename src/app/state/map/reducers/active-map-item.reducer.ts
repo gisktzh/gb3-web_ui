@@ -57,7 +57,7 @@ export const activeMapItemFeature = createFeature({
       produce((draft, {visible, activeMapItem, layerId}) => {
         draft.activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).forEach((mapItem) => {
           if (mapItem.id === activeMapItem.id) {
-            const sublayer = mapItem.configuration.layers.find((l) => l.id === layerId);
+            const sublayer = mapItem.settings.layers.find((l) => l.id === layerId);
             if (sublayer) {
               sublayer.visible = visible;
             }
@@ -96,8 +96,8 @@ export const activeMapItemFeature = createFeature({
       produce((draft, {activeMapItem, previousPosition, currentPosition}) => {
         draft.activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).forEach((mapItem) => {
           if (mapItem.id === activeMapItem.id) {
-            const sublayerToReorder = mapItem.configuration.layers.splice(previousPosition, 1);
-            mapItem.configuration.layers.splice(currentPosition, 0, ...sublayerToReorder);
+            const sublayerToReorder = mapItem.settings.layers.splice(previousPosition, 1);
+            mapItem.settings.layers.splice(currentPosition, 0, ...sublayerToReorder);
           }
         });
       })
@@ -107,7 +107,7 @@ export const activeMapItemFeature = createFeature({
       produce((draft, {timeExtent, activeMapItem}) => {
         draft.activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).forEach((mapItem) => {
           if (mapItem.id === activeMapItem.id) {
-            mapItem.configuration.timeSliderExtent = timeExtent;
+            mapItem.settings.timeSliderExtent = timeExtent;
           }
         });
       })
@@ -117,7 +117,7 @@ export const activeMapItemFeature = createFeature({
       produce((draft, {isFilterValueActive, filterValueName, attributeFilterParameter, activeMapItem}) => {
         draft.activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).forEach((mapItem) => {
           if (mapItem.id === activeMapItem.id) {
-            const filterValue = mapItem.configuration.filterConfigurations
+            const filterValue = mapItem.settings.filterConfigurations
               ?.find((filterConfig) => filterConfig.parameter === attributeFilterParameter)
               ?.filterValues.find((fv) => fv.name === filterValueName);
             if (filterValue) {
@@ -143,7 +143,7 @@ export const activeMapItemFeature = createFeature({
       ActiveMapItemActions.markAllActiveMapItemNoticeAsRead,
       produce((draft) => {
         draft.activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).forEach((mapItem) => {
-          mapItem.configuration.isNoticeMarkedAsRead = true;
+          mapItem.settings.isNoticeMarkedAsRead = true;
         });
       })
     )

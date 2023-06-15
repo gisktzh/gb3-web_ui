@@ -11,21 +11,19 @@
   <!-- Time slider -->
   <ng-container
     *ngIf="
-      activeMapItem.configuration.type === 'gb2Wms' &&
-      activeMapItem.configuration.timeSliderConfiguration &&
-      activeMapItem.configuration.timeSliderExtent
+      activeMapItem.settings.type === 'gb2Wms' && activeMapItem.settings.timeSliderConfiguration && activeMapItem.settings.timeSliderExtent
     "
   >
     <mat-divider class="active-map-item-settings__divider"></mat-divider>
     <time-slider
-      [initialTimeExtent]="activeMapItem.configuration.timeSliderExtent"
-      [timeSliderConfiguration]="activeMapItem.configuration.timeSliderConfiguration"
+      [initialTimeExtent]="activeMapItem.settings.timeSliderExtent"
+      [timeSliderConfiguration]="activeMapItem.settings.timeSliderConfiguration"
       (changeTimeExtentEvent)="onTimeSliderExtentChange($event)"
     ></time-slider>
   </ng-container>
 
   <!-- Attribute filter -->
-  <ng-container *ngIf="activeMapItem.configuration.type === 'gb2Wms' && activeMapItem.configuration.filterConfigurations">
+  <ng-container *ngIf="activeMapItem.settings.type === 'gb2Wms' && activeMapItem.settings.filterConfigurations">
     <mat-divider class="active-map-item-settings__divider"></mat-divider>
     <div class="active-map-item-settings__attribute-filter">
       <p

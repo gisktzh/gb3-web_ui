@@ -1,10 +1,10 @@
 import {FilterConfiguration, Map, MapLayer, SearchConfiguration, TimeSliderConfiguration} from '../../../shared/interfaces/topic.interface';
 import {TimeExtent} from '../../interfaces/time-extent.interface';
 import {TimeExtentUtils} from '../../../shared/utils/time-extent.utils';
-import {AbstractActiveMapItemConfiguration, ActiveMapItem} from '../active-map-item.model';
+import {AbstractActiveMapItemSettings, ActiveMapItem} from '../active-map-item.model';
 import {AddToMapVisitor} from '../../interfaces/add-to-map.visitor';
 
-export class Gb2WmsMapItemConfiguration extends AbstractActiveMapItemConfiguration {
+export class Gb2WmsSettings extends AbstractActiveMapItemSettings {
   public readonly type = 'gb2Wms';
   public readonly url: string;
   public readonly timeSliderConfiguration?: TimeSliderConfiguration;
@@ -32,7 +32,7 @@ export class Gb2WmsMapItemConfiguration extends AbstractActiveMapItemConfigurati
 }
 
 export class Gb2WmsActiveMapItem extends ActiveMapItem {
-  public readonly configuration: Gb2WmsMapItemConfiguration;
+  public readonly settings: Gb2WmsSettings;
   public readonly id: string;
   public readonly mapImageUrl: string;
   public readonly title: string;
@@ -45,7 +45,7 @@ export class Gb2WmsActiveMapItem extends ActiveMapItem {
     this.id = layer ? Gb2WmsActiveMapItem.createSingleLayerId(map.id, layer.layer) : map.id;
     this.title = layer ? layer.title : map.title;
     this.mapImageUrl = map.icon;
-    this.configuration = new Gb2WmsMapItemConfiguration(map, layer);
+    this.settings = new Gb2WmsSettings(map, layer);
   }
 
   public static createSingleLayerId(mapId: string, layerId: string): string {

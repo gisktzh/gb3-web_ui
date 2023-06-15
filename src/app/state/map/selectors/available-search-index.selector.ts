@@ -9,7 +9,7 @@ export const selectAvailableSpecialSearchIndexes = createSelector(selectActiveMa
   const availableIndexes: SearchIndex[] = [];
 
   activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).forEach((mapItem) => {
-    mapItem.configuration.searchConfigurations?.forEach((searchConfig) => {
+    mapItem.settings.searchConfigurations?.forEach((searchConfig) => {
       const alreadyInElasticsearch = ACTIVE_SEARCH_INDICES.includes(searchConfig.index.toLowerCase());
       const notInOutputYet = !availableIndexes.map((index) => index.indexName).includes(searchConfig.index);
       if (alreadyInElasticsearch && notInOutputYet) {

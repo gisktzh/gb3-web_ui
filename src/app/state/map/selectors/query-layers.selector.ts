@@ -8,9 +8,9 @@ export const selectQueryLayers = createSelector(selectActiveMapItems, (activeMap
   const queryLayers: QueryLayer[] = [];
 
   activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).map((mapItem) => {
-    const layersToQuery: string[] = mapItem.configuration.layers.filter((layer) => layer.queryable).map((layer) => layer.layer);
+    const layersToQuery: string[] = mapItem.settings.layers.filter((layer) => layer.queryable).map((layer) => layer.layer);
     const queryLayer: QueryLayer = {
-      topic: mapItem.configuration.mapId,
+      topic: mapItem.settings.mapId,
       layersToQuery: layersToQuery.join(',')
     };
 

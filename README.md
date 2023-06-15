@@ -118,8 +118,8 @@ etc.
 The `ActiveMapItem` is an abstract class; the actual implementation is delegated to subclasses within
 the `implementations` subfolder, representing different
 types of layers that can be added to a map, such as `Gb2WmsActiveMapItem`. Since configuration for these layers differs,
-the `ActiveMapItem` has a property `configuration` which is a discriminated union type `ActiveMapItemConfiguration`,
-holding all layer configurations. This allows for a flexible combination of `ActiveMapItem`s and their configurations.
+the `ActiveMapItem` has a property `settings` which is a discriminated union type `ActiveMapItemSettings`,
+holding all layer settings. This allows for a flexible combination of `ActiveMapItem`s and their settings.
 
 As a variation of the [visitor pattern](https://refactoring.guru/design-patterns/visitor), the `ActiveMapItem` also has
 an abstract method `addToMap` which the subclasses need to imlement - this method is responsible for adding a given

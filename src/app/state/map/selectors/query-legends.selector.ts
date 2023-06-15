@@ -6,8 +6,8 @@ import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.m
 
 export const selectQueryLegends = createSelector(selectActiveMapItems, (activeMapItems) => {
   const queryLegends: QueryLegend[] = activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).map((mapItem) => {
-    const singleLayer: string | undefined = mapItem.isSingleLayer ? mapItem.configuration.layers[0].layer : undefined;
-    return {topic: mapItem.configuration.mapId, layer: singleLayer};
+    const singleLayer: string | undefined = mapItem.isSingleLayer ? mapItem.settings.layers[0].layer : undefined;
+    return {topic: mapItem.settings.mapId, layer: singleLayer};
   });
   return queryLegends;
 });
