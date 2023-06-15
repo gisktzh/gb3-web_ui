@@ -1,6 +1,6 @@
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {ActiveMapItem, Gb2WmsMapItemConfiguration} from '../../models/active-map-item.model';
+import {Gb2WmsActiveMapItem} from '../../models/active-map-item.model';
 
 @Component({
   selector: 'map-notice-dialog',
@@ -9,7 +9,7 @@ import {ActiveMapItem, Gb2WmsMapItemConfiguration} from '../../models/active-map
 })
 export class MapNoticeDialogComponent {
   constructor(
-    @Inject(MAT_DIALOG_DATA) public readonly activeMapItemsWithNotices: ActiveMapItem<Gb2WmsMapItemConfiguration>[],
+    @Inject(MAT_DIALOG_DATA) public readonly activeMapItemsWithNotices: Gb2WmsActiveMapItem[],
     private readonly dialogRef: MatDialogRef<MapNoticeDialogComponent>
   ) {}
 

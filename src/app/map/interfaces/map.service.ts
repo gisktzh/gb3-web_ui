@@ -1,4 +1,4 @@
-import {ActiveMapItem, Gb2WmsActiveMapItem, Gb2WmsMapItemConfiguration} from '../models/active-map-item.model';
+import {ActiveMapItem, Gb2WmsActiveMapItem} from '../models/active-map-item.model';
 import {ZoomType} from '../../shared/types/zoom-type';
 import {TimeExtent} from './time-extent.interface';
 import {GeometryWithSrs, PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
@@ -51,12 +51,12 @@ export interface MapService extends AddToMapVisitor {
   setSublayerVisibility(visibility: boolean, mapItem: ActiveMapItem, layerId: number): void;
 
   /** Sets the time slider extent for an existing item on the map */
-  setTimeSliderExtent(timeExtent: TimeExtent, mapItem: ActiveMapItem<Gb2WmsMapItemConfiguration>): void; // todo: make generic
+  setTimeSliderExtent(timeExtent: TimeExtent, mapItem: Gb2WmsActiveMapItem): void; // todo: make gb2 specific
 
   /** Sets the attribute filters for an existing item on the map */
   setAttributeFilters(
     attributeFilterParameters: {name: string; value: string}[],
-    mapItem: ActiveMapItem<Gb2WmsMapItemConfiguration> // todo: make generic
+    mapItem: Gb2WmsActiveMapItem // todo: make gb2 specific
   ): void;
 
   /** Reorders a map item using its old index (previous) and the new index (current); 0 is the topmost item - the most visible one */

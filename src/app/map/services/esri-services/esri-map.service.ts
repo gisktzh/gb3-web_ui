@@ -7,7 +7,7 @@ import {first, skip, Subscription, tap, withLatestFrom} from 'rxjs';
 import {GeoJSONMapperService} from './geo-json-mapper.service';
 import * as dayjs from 'dayjs';
 import {MapService} from '../../interfaces/map.service';
-import {ActiveMapItem, Gb2WmsMapItemConfiguration} from '../../models/active-map-item.model';
+import {ActiveMapItem, Gb2WmsActiveMapItem} from '../../models/active-map-item.model';
 import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
 import {LoadingState} from '../../../shared/types/loading-state';
 import {ViewProcessState} from '../../../shared/types/view-process-state';
@@ -133,48 +133,41 @@ export class EsriMapService implements MapService {
       .subscribe();
   }
 
-  public addGb2WmsLayer(mapItem: ActiveMapItem, position: number) {
+  public addGb2WmsLayer(mapItem: Gb2WmsActiveMapItem, position: number) {
     if (this.findEsriLayer(mapItem.id)) {
       return;
     }
 
-    if (mapItem.configuration.type === 'gb2Wms') {
-      // todo: remove
-      const esriLayer: __esri.Layer = new EsriWMSLayer({
-        id: mapItem.id,
-        title: mapItem.title,
-        url: mapItem.configuration.url,
-        visible: mapItem.visible,
-        opacity: mapItem.opacity,
-        imageFormat: this.wmsImageFormatMimeType,
-        sublayers: mapItem.configuration.layers.map((layer) => {
-          return {
-            id: layer.id,
-            name: layer.layer,
-            title: layer.title,
-            visible: layer.visible
-          } as __esri.WMSSublayerProperties;
-        })
-      });
-      if (mapItem.configuration.timeSliderExtent) {
-        // apply initial time slider settings
-        this.setEsriTimeSliderExtent(
-          mapItem.configuration.timeSliderExtent,
-          mapItem as ActiveMapItem<Gb2WmsMapItemConfiguration>,
-          esriLayer
-        ); // todo:
-        // remove
-      }
-      this.attachLayerListeners(esriLayer);
-      /**
-       * `position` is the map/layer position from the state/GUI: lowest position <=> highest visibility
-       * `index` is the position inside the Esri layer array. It's inverse to the position from the state/GUI: the lowest index <=> lowest
-       * visibility Additionally, there is a number of default layers that must always keep the highest visibility (e.g. highlight layer)
-       * independent from the state/GUI layers.
-       */
-      const index = this.getNumberOfNonDrawingLayers() - position;
-      this.mapView.map.add(esriLayer, index);
+    const esriLayer: __esri.Layer = new EsriWMSLayer({
+      id: mapItem.id,
+      title: mapItem.title,
+      url: mapItem.configuration.url,
+      visible: mapItem.visible,
+      opacity: mapItem.opacity,
+      imageFormat: this.wmsImageFormatMimeType,
+      sublayers: mapItem.configuration.layers.map((layer) => {
+        return {
+          id: layer.id,
+          name: layer.layer,
+          title: layer.title,
+          visible: layer.visible
+        } as __esri.WMSSublayerProperties;
+      })
+    });
+    if (mapItem.configuration.timeSliderExtent) {
+      // apply initial time slider settings
+      this.setEsriTimeSliderExtent(mapItem.configuration.timeSliderExtent, mapItem, esriLayer); // todo:
+      // remove
     }
+    this.attachLayerListeners(esriLayer);
+    /**
+     * `position` is the map/layer position from the state/GUI: lowest position <=> highest visibility
+     * `index` is the position inside the Esri layer array. It's inverse to the position from the state/GUI: the lowest index <=> lowest
+     * visibility Additionally, there is a number of default layers that must always keep the highest visibility (e.g. highlight layer)
+     * independent from the state/GUI layers.
+     */
+    const index = this.getNumberOfNonDrawingLayers() - position;
+    this.mapView.map.add(esriLayer, index);
   }
 
   public removeMapItem(id: string) {
@@ -234,7 +227,7 @@ export class EsriMapService implements MapService {
     }) as never;
   }
 
-  public setTimeSliderExtent(timeExtent: TimeExtent, mapItem: ActiveMapItem<Gb2WmsMapItemConfiguration>) {
+  public setTimeSliderExtent(timeExtent: TimeExtent, mapItem: Gb2WmsActiveMapItem) {
     const esriLayer = this.findEsriLayer(mapItem.id);
 
     if (esriLayer) {
@@ -242,10 +235,7 @@ export class EsriMapService implements MapService {
     }
   }
 
-  public setAttributeFilters(
-    attributeFilterParameters: {name: string; value: string}[],
-    mapItem: ActiveMapItem<Gb2WmsMapItemConfiguration>
-  ) {
+  public setAttributeFilters(attributeFilterParameters: {name: string; value: string}[], mapItem: Gb2WmsActiveMapItem) {
     const esriLayer = this.findEsriLayer(mapItem.id);
     if (esriLayer && esriLayer instanceof EsriWMSLayer) {
       const customLayerParameters: {[index: string]: string} = esriLayer.customLayerParameters ?? {};
@@ -346,7 +336,7 @@ export class EsriMapService implements MapService {
     return new EsriPoint({spatialReference: {wkid: srs}, x: coordinates[0], y: coordinates[1]});
   }
 
-  private setEsriTimeSliderExtent(timeExtent: TimeExtent, mapItem: ActiveMapItem<Gb2WmsMapItemConfiguration>, esriLayer: __esri.Layer) {
+  private setEsriTimeSliderExtent(timeExtent: TimeExtent, mapItem: Gb2WmsActiveMapItem, esriLayer: __esri.Layer) {
     if (esriLayer && esriLayer instanceof EsriWMSLayer && mapItem.configuration.timeSliderConfiguration) {
       switch (mapItem.configuration.timeSliderConfiguration.sourceType) {
         case 'parameter':
@@ -389,11 +379,7 @@ export class EsriMapService implements MapService {
    * Therefore, first all time slider specific sub-layers are filtered. And from those only the ones which have a date inside the current
    * time extent are selected to be visible.
    */
-  private synchronizeTimeSliderLayers(
-    esriLayer: __esri.WMSLayer,
-    timeSliderExtent: TimeExtent,
-    mapItem: ActiveMapItem<Gb2WmsMapItemConfiguration>
-  ) {
+  private synchronizeTimeSliderLayers(esriLayer: __esri.WMSLayer, timeSliderExtent: TimeExtent, mapItem: Gb2WmsActiveMapItem) {
     if (!mapItem.configuration.timeSliderConfiguration) {
       return;
     }

@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActiveMapItem, Gb2WmsMapItemConfiguration} from '../../models/active-map-item.model';
+import {Gb2WmsActiveMapItem} from '../../models/active-map-item.model';
 import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
@@ -15,7 +15,7 @@ import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item
   styleUrls: ['./map-attribute-filter.component.scss']
 })
 export class MapAttributeFilterComponent implements OnInit, OnDestroy {
-  public mapAttributeFiltersItem: ActiveMapItem<Gb2WmsMapItemConfiguration> | undefined;
+  public mapAttributeFiltersItem: Gb2WmsActiveMapItem | undefined;
 
   private readonly subscriptions: Subscription = new Subscription();
   private readonly mapAttributeFiltersItem$ = this.store.select(selectMapAttributeFiltersItemId);
@@ -48,10 +48,7 @@ export class MapAttributeFilterComponent implements OnInit, OnDestroy {
     }
   }
 
-  private handleMapAttributeFiltersItemChange(
-    mapAttributeFiltersItemId: string | undefined,
-    activeMapItems: ActiveMapItem<Gb2WmsMapItemConfiguration>[]
-  ) {
+  private handleMapAttributeFiltersItemChange(mapAttributeFiltersItemId: string | undefined, activeMapItems: Gb2WmsActiveMapItem[]) {
     let mapAttributeFiltersItem;
     if (mapAttributeFiltersItemId !== undefined) {
       mapAttributeFiltersItem = activeMapItems.find((activeMapItem) => activeMapItem.id === mapAttributeFiltersItemId);
@@ -69,7 +66,7 @@ export class MapAttributeFilterComponent implements OnInit, OnDestroy {
         .pipe(
           concatLatestFrom(() => this.activeMapItems$),
           tap(([activeMapItemId, activeMapItems]) => {
-            const gb2WmsMapItems = activeMapItems.filter(isActiveMapItemOfType(Gb2WmsMapItemConfiguration));
+            const gb2WmsMapItems = activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem));
             this.handleMapAttributeFiltersItemChange(activeMapItemId, gb2WmsMapItems);
           })
         )
@@ -80,7 +77,7 @@ export class MapAttributeFilterComponent implements OnInit, OnDestroy {
       this.activeMapItems$
         .pipe(
           tap((activeMapItems) => {
-            const gb2WmsMapItems = activeMapItems.filter(isActiveMapItemOfType(Gb2WmsMapItemConfiguration));
+            const gb2WmsMapItems = activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem));
             this.handleMapAttributeFiltersItemChange(this.mapAttributeFiltersItem?.id, gb2WmsMapItems);
           })
         )

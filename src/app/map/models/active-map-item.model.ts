@@ -17,7 +17,7 @@ abstract class AbstractActiveMapItemConfiguration implements IsImmerable {
   public abstract readonly type: ActiveMapItemType;
 }
 
-export class Gb2WmsMapItemConfiguration extends AbstractActiveMapItemConfiguration {
+class Gb2WmsMapItemConfiguration extends AbstractActiveMapItemConfiguration {
   public readonly type = 'gb2Wms';
   public readonly url: string;
   public readonly timeSliderConfiguration?: TimeSliderConfiguration;
@@ -42,47 +42,28 @@ export class Gb2WmsMapItemConfiguration extends AbstractActiveMapItemConfigurati
     this.searchConfigurations = map.searchConfigurations;
     this.notice = map.notice ?? undefined;
   }
-
-  public static createSingleLayerId(mapId: string, layerId: string): string {
-    return `${mapId}_${layerId}`;
-  }
 }
 
-export class DrawingLayerTestConfiguration extends AbstractActiveMapItemConfiguration {
+class DrawingLayerTestConfiguration extends AbstractActiveMapItemConfiguration {
   public readonly type = 'drawing';
 }
 
-// https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions
 export type ActiveMapItemConfiguration = Gb2WmsMapItemConfiguration | DrawingLayerTestConfiguration;
 
-export abstract class ActiveMapItem<T extends ActiveMapItemConfiguration = ActiveMapItemConfiguration>
-  implements HasLoadingState, HasVisibility, HasViewProcessState, IsImmerable
-{
-  public readonly id: string;
-  public readonly title: string;
-  public readonly mapImageUrl: string;
-  public loadingState: LoadingState = 'undefined';
-  public viewProcessState: ViewProcessState = 'undefined';
+export abstract class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewProcessState, IsImmerable {
+  public abstract readonly id: string;
+  public abstract readonly title: string;
+  public abstract readonly mapImageUrl: string;
+  public abstract readonly configuration: ActiveMapItemConfiguration;
+  public abstract readonly isSingleLayer: boolean;
+
+  public readonly [immerable] = true;
   public visible: boolean;
   public opacity: number;
-  public readonly [immerable] = true;
-  public readonly configuration: T;
-  public readonly isSingleLayer: boolean;
+  public loadingState: LoadingState = 'undefined';
+  public viewProcessState: ViewProcessState = 'undefined';
 
-  protected constructor(
-    id: string,
-    title: string,
-    configuration: T,
-    icon: string,
-    hasSublayers: boolean = false,
-    visible?: boolean,
-    opacity?: number
-  ) {
-    this.id = id;
-    this.title = title;
-    this.configuration = configuration;
-    this.isSingleLayer = hasSublayers;
-    this.mapImageUrl = icon;
+  protected constructor(visible?: boolean, opacity?: number) {
     this.visible = visible ?? true;
     this.opacity = opacity ?? 1;
   }
@@ -98,19 +79,27 @@ export abstract class ActiveMapItem<T extends ActiveMapItemConfiguration = Activ
 }
 
 export class Gb2WmsActiveMapItem extends ActiveMapItem {
-  constructor(
-    id: string,
-    title: string,
-    configuration: Gb2WmsMapItemConfiguration,
-    icon: string,
-    hasSublayers: boolean = false,
-    visible?: boolean,
-    opacity?: number
-  ) {
-    super(id, title, configuration, icon, hasSublayers, visible, opacity);
+  public readonly configuration: Gb2WmsMapItemConfiguration;
+  public readonly id: string;
+  public readonly mapImageUrl: string;
+  public readonly title: string;
+  public readonly isSingleLayer: boolean;
+
+  constructor(map: Map, layer?: MapLayer, visible?: boolean, opacity?: number) {
+    super(visible, opacity);
+
+    this.isSingleLayer = !!layer;
+    this.id = layer ? Gb2WmsActiveMapItem.createSingleLayerId(map.id, layer.layer) : map.id;
+    this.title = layer ? layer.title : map.title;
+    this.mapImageUrl = map.icon;
+    this.configuration = new Gb2WmsMapItemConfiguration(map, layer);
   }
 
   public override addToMap(addToMapVisitor: AddToMapVisitor, position: number) {
     addToMapVisitor.addGb2WmsLayer(this, position);
+  }
+
+  public static createSingleLayerId(mapId: string, layerId: string): string {
+    return `${mapId}_${layerId}`;
   }
 }

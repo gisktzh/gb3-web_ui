@@ -1,6 +1,6 @@
 import {createFeature, createReducer, on} from '@ngrx/store';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
-import {ActiveMapItem, Gb2WmsMapItemConfiguration} from '../../../map/models/active-map-item.model';
+import {ActiveMapItem, Gb2WmsActiveMapItem} from '../../../map/models/active-map-item.model';
 import {ActiveMapItemState} from '../states/active-map-item.state';
 import {produce} from 'immer';
 import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
@@ -54,7 +54,7 @@ export const activeMapItemFeature = createFeature({
     on(
       ActiveMapItemActions.setSublayerVisibility,
       produce((draft, {visible, activeMapItem, layerId}) => {
-        draft.activeMapItems.filter(isActiveMapItemOfType(Gb2WmsMapItemConfiguration)).forEach((mapItem) => {
+        draft.activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).forEach((mapItem) => {
           if (mapItem.id === activeMapItem.id) {
             const sublayer = mapItem.configuration.layers.find((l) => l.id === layerId);
             if (sublayer) {
@@ -93,7 +93,7 @@ export const activeMapItemFeature = createFeature({
     on(
       ActiveMapItemActions.reorderSublayer,
       produce((draft, {activeMapItem, previousPosition, currentPosition}) => {
-        draft.activeMapItems.filter(isActiveMapItemOfType(Gb2WmsMapItemConfiguration)).forEach((mapItem) => {
+        draft.activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).forEach((mapItem) => {
           if (mapItem.id === activeMapItem.id) {
             const sublayerToReorder = mapItem.configuration.layers.splice(previousPosition, 1);
             mapItem.configuration.layers.splice(currentPosition, 0, ...sublayerToReorder);
@@ -104,7 +104,7 @@ export const activeMapItemFeature = createFeature({
     on(
       ActiveMapItemActions.setTimeSliderExtent,
       produce((draft, {timeExtent, activeMapItem}) => {
-        draft.activeMapItems.filter(isActiveMapItemOfType(Gb2WmsMapItemConfiguration)).forEach((mapItem) => {
+        draft.activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).forEach((mapItem) => {
           if (mapItem.id === activeMapItem.id) {
             mapItem.configuration.timeSliderExtent = timeExtent;
           }
@@ -114,7 +114,7 @@ export const activeMapItemFeature = createFeature({
     on(
       ActiveMapItemActions.setAttributeFilterValueState,
       produce((draft, {isFilterValueActive, filterValueName, attributeFilterParameter, activeMapItem}) => {
-        draft.activeMapItems.filter(isActiveMapItemOfType(Gb2WmsMapItemConfiguration)).forEach((mapItem) => {
+        draft.activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).forEach((mapItem) => {
           if (mapItem.id === activeMapItem.id) {
             const filterValue = mapItem.configuration.filterConfigurations
               ?.find((filterConfig) => filterConfig.parameter === attributeFilterParameter)
@@ -141,7 +141,7 @@ export const activeMapItemFeature = createFeature({
     on(
       ActiveMapItemActions.markAllActiveMapItemNoticeAsRead,
       produce((draft) => {
-        draft.activeMapItems.filter(isActiveMapItemOfType(Gb2WmsMapItemConfiguration)).forEach((mapItem) => {
+        draft.activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).forEach((mapItem) => {
           mapItem.configuration.isNoticeMarkedAsRead = true;
         });
       })

@@ -4,7 +4,7 @@ import {Store} from '@ngrx/store';
 import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
 import {selectActiveMapItems} from '../../../state/map/reducers/active-map-item.reducer';
 import {Subscription, tap} from 'rxjs';
-import {ActiveMapItem, Gb2WmsMapItemConfiguration} from '../../models/active-map-item.model';
+import {ActiveMapItem, Gb2WmsActiveMapItem} from '../../models/active-map-item.model';
 import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.reducer';
 import {MatDialog} from '@angular/material/dialog';
 import {FavouriteCreationDialogComponent} from '../favourite-creation-dialog/favourite-creation-dialog.component';
@@ -90,7 +90,7 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
         .pipe(
           tap((currentActiveMapItems) => {
             this.activeMapItems = currentActiveMapItems;
-            const gb2ActiveMapItems = currentActiveMapItems.filter(isActiveMapItemOfType(Gb2WmsMapItemConfiguration));
+            const gb2ActiveMapItems = currentActiveMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem));
             this.updateNumberOfNotices(gb2ActiveMapItems);
           })
         )
@@ -107,7 +107,7 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
     );
   }
 
-  private updateNumberOfNotices(currentActiveMapItems: ActiveMapItem<Gb2WmsMapItemConfiguration>[]) {
+  private updateNumberOfNotices(currentActiveMapItems: Gb2WmsActiveMapItem[]) {
     const activeMapItemsWithNotices = currentActiveMapItems.filter((activeMapItem) => activeMapItem.configuration.notice);
     this.numberOfNotices = activeMapItemsWithNotices.length;
     this.numberOfUnreadNotices = activeMapItemsWithNotices.filter(

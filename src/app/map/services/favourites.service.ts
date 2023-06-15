@@ -3,7 +3,7 @@ import {Store} from '@ngrx/store';
 import {Gb3FavouritesService} from '../../shared/services/apis/gb3/gb3-favourites.service';
 import {Observable, tap} from 'rxjs';
 import {selectActiveMapItems} from '../../state/map/reducers/active-map-item.reducer';
-import {ActiveMapItem, Gb2WmsMapItemConfiguration} from '../models/active-map-item.model';
+import {ActiveMapItem, Gb2WmsActiveMapItem} from '../models/active-map-item.model';
 import {Favourite, FavouriteLayerConfiguration, FavouritesResponse} from '../../shared/interfaces/favourite.interface';
 import {map} from 'rxjs/operators';
 import {Map} from '../../shared/interfaces/topic.interface';
@@ -97,7 +97,7 @@ export class FavouritesService {
   }
 
   private getCurrentFavouriteConfiguration(): FavouriteLayerConfiguration[] {
-    return this.activeMapItems.filter(isActiveMapItemOfType(Gb2WmsMapItemConfiguration)).map((activeMapItem) => {
+    return this.activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).map((activeMapItem) => {
       // note: spread does not work here because ActiveMapItem is a class, hence too many attributes would be added to the object
       return {
         mapId: activeMapItem.configuration.mapId,

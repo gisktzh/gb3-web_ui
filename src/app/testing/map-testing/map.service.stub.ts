@@ -1,5 +1,5 @@
 import {MapService} from '../../map/interfaces/map.service';
-import {ActiveMapItem, Gb2WmsMapItemConfiguration} from '../../map/models/active-map-item.model';
+import {ActiveMapItem, Gb2WmsActiveMapItem} from '../../map/models/active-map-item.model';
 import {ZoomType} from '../../shared/types/zoom-type';
 import {TimeExtent} from '../../map/interfaces/time-extent.interface';
 import {GeometryWithSrs, PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
@@ -38,14 +38,13 @@ export class MapServiceStub implements MapService {
 
   public setVisibility(visibility: boolean, mapItem: ActiveMapItem): void {}
 
-  public setTimeSliderExtent(timeSliderExtent: TimeExtent, mapItem: ActiveMapItem<Gb2WmsMapItemConfiguration>): void {}
+  public setTimeSliderExtent(timeSliderExtent: TimeExtent, mapItem: Gb2WmsActiveMapItem): void {}
 
-  public setAttributeFilters(
-    attributeFilterParameters: {name: string; value: string}[],
-    mapItem: ActiveMapItem<Gb2WmsMapItemConfiguration>
-  ): void {}
+  public setAttributeFilters(attributeFilterParameters: {name: string; value: string}[], mapItem: Gb2WmsActiveMapItem): void {}
 
   public zoomToPoint(point: PointWithSrs, number: number): void {}
 
   public zoomToExtent(geometry: GeometryWithSrs): void {}
+
+  public addGb2WmsLayer(mapItem: Gb2WmsActiveMapItem, position: number): void {}
 }

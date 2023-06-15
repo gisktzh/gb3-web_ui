@@ -1,5 +1,5 @@
 import {createActionGroup, emptyProps, props} from '@ngrx/store';
-import {ActiveMapItem, Gb2WmsMapItemConfiguration} from '../../../map/models/active-map-item.model';
+import {ActiveMapItem, Gb2WmsActiveMapItem} from '../../../map/models/active-map-item.model';
 import {LoadingState} from '../../../shared/types/loading-state';
 import {ViewProcessState} from '../../../shared/types/view-process-state';
 import {TimeExtent} from '../../../map/interfaces/time-extent.interface';
@@ -21,12 +21,12 @@ export const ActiveMapItemActions = createActionGroup({
       previousPosition: number;
       currentPosition: number;
     }>(),
-    'Set Time Slider Extent': props<{timeExtent: TimeExtent; activeMapItem: ActiveMapItem<Gb2WmsMapItemConfiguration>}>(),
+    'Set Time Slider Extent': props<{timeExtent: TimeExtent; activeMapItem: Gb2WmsActiveMapItem}>(),
     'Set Attribute Filter Value State': props<{
       isFilterValueActive: boolean;
       filterValueName: string;
       attributeFilterParameter: string;
-      activeMapItem: ActiveMapItem<Gb2WmsMapItemConfiguration>;
+      activeMapItem: Gb2WmsActiveMapItem;
     }>(),
     'Add Favourite': props<{favourite: ActiveMapItem[]}>(),
     'Add Initial Map Items': props<{initialMapItems: ActiveMapItem[]}>(),

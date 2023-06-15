@@ -1,5 +1,5 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {ActiveMapItem, Gb2WmsMapItemConfiguration} from '../../../models/active-map-item.model';
+import {ActiveMapItem, Gb2WmsActiveMapItem} from '../../../models/active-map-item.model';
 import {map, Subscription, tap} from 'rxjs';
 import {selectActiveMapItems} from '../../../../state/map/reducers/active-map-item.reducer';
 import {Store} from '@ngrx/store';
@@ -53,7 +53,7 @@ export class ActiveMapItemSettingsComponent implements OnInit, OnDestroy {
     this.store.dispatch(
       ActiveMapItemActions.setTimeSliderExtent({
         timeExtent,
-        activeMapItem: this.activeMapItem as ActiveMapItem<Gb2WmsMapItemConfiguration>
+        activeMapItem: this.activeMapItem as Gb2WmsActiveMapItem
       })
     ); // todo: can we get rid of this?
   }
@@ -70,7 +70,7 @@ export class ActiveMapItemSettingsComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.activeMapItems$
         .pipe(
-          map((m) => m.filter(isActiveMapItemOfType(Gb2WmsMapItemConfiguration))),
+          map((m) => m.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem))),
           tap((activeMapItems) => {
             // calculate the number of active filters to display them as badge
             let numberOfChangedFilters = 0;
