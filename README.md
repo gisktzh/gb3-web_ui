@@ -54,7 +54,8 @@ docker build --no-cache --build-arg TARGET_ENVIRONMENT={target_environment} -t g
   - `local-gb2`: localhost development with locally deployed GB2 backend
   - `dev-ebp`: production deployment for EBP environment
   - `staging`: production deployment for KTZH staging environment
-  - `staging-using-productive-gb2-backend`: production deployment for KTZH staging environment which uses the productive GB2 backend infrastructure.
+  - `staging-using-productive-gb2-backend`: production deployment for KTZH staging environment which uses the productive
+    GB2 backend infrastructure.
   - `uat`: production deployment for KTZH UAT environment
   - `production`: production deployment for KTZH production (internet & intranet) environment
 
@@ -94,13 +95,37 @@ WIP - add more naming conventions :)
 
 Whenever possible, a Jira ticket should be referenced in both branchname and commit message:
 
-- Branches: `[feature|hotfix]/gb3-[xxx]-[name-of-branch]`, where `xxx` refers to a Jira ticket and the `name-of-branch` is a short summary of the feature/hotfix.`
+- Branches: `[feature|hotfix]/gb3-[xxx]-[name-of-branch]`, where `xxx` refers to a Jira ticket and the `name-of-branch`
+  is a short summary of the feature/hotfix.`
 - Commits: `GB3-[xxx]: Your commit message`, , where `xxx` refers to a Jira ticket
 
 Our githooks check for both the branch name and the commit message, but they will only output a warning if they don't
 match. This is because there are times when you _might_ want to deviate from these rules.
 
 ## Code documentation
+
+### The `ActiveMapItem` class
+
+The heart of the application is the `ActiveMapItem` class. All data the user can add to the map (and reorder, toggle
+visibility, interact with in terms of settings, etc.) is an instance of the abstract `ActiveMapItem` class.
+All `ActiveMapItem`s are available in the `ActiveMapItemState`. In order for the map to correctly render the state,
+the `MapService` implementation has to be synchronized with the state: If e.g. an item is added, the `MapService` has to
+handle this accordingly: Create a new framework-dependent instance of the layer, add it to the map, handle ordering,
+etc.
+
+#### Usage
+
+The `ActiveMapItem` is an abstract class; the actual implementation is delegated to subclasses representing different
+types of layers that can be added to a map, such as `Gb2WmsActiveMapItem`. Since configuration for these layers differs,
+the `ActiveMapItem` has a property `configuration` which is a discriminated union type `ActiveMapItemConfiguration`,
+holding all layer configurations. This allows for a flexible combination of `ActiveMapItem`s and their configurations.
+
+As a variation of the [visitor pattern](https://refactoring.guru/design-patterns/visitor), the `ActiveMapItem` also has
+an abstract method `addToMap` which the subclasses need to imlement - this method is responsible for adding a given
+instance of `ActiveMapItem` to the map by using the appropriate method on the `AddToMapVisitor` interface.
+
+In order to avoid the `Array.filter(m => m instanceof x).map(m => m as x)` pattern, the `isActiveMapItemOfType`
+typeguard can be used: `Array.filter(isActiveMapItemOfType(x))`.
 
 ### Spatial Reference System(s)
 
