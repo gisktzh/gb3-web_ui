@@ -8,6 +8,7 @@ import {TimeExtent} from '../interfaces/time-extent.interface';
 import {TimeExtentUtils} from '../../shared/utils/time-extent.utils';
 import {IsImmerable} from '../../shared/interfaces/immerable.interface';
 import {immerable} from 'immer';
+import {AddToMapVisitor} from '../interfaces/map.service';
 
 type ActiveMapItemType = 'gb2Wms' | 'drawing';
 
@@ -54,7 +55,7 @@ export class DrawingLayerTestConfiguration extends AbstractActiveMapItemConfigur
 // https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions
 export type ActiveMapItemConfiguration = Gb2WmsMapItemConfiguration | DrawingLayerTestConfiguration;
 
-export class ActiveMapItem<T extends ActiveMapItemConfiguration = ActiveMapItemConfiguration>
+export abstract class ActiveMapItem<T extends ActiveMapItemConfiguration = ActiveMapItemConfiguration>
   implements HasLoadingState, HasVisibility, HasViewProcessState, IsImmerable
 {
   public readonly id: string;
@@ -68,7 +69,7 @@ export class ActiveMapItem<T extends ActiveMapItemConfiguration = ActiveMapItemC
   public readonly configuration: T;
   public readonly isSingleLayer: boolean;
 
-  constructor(
+  protected constructor(
     id: string,
     title: string,
     configuration: T,
@@ -84,5 +85,32 @@ export class ActiveMapItem<T extends ActiveMapItemConfiguration = ActiveMapItemC
     this.mapImageUrl = icon;
     this.visible = visible ?? true;
     this.opacity = opacity ?? 1;
+  }
+
+  /**
+   * Takes an addToMapVisitor and calls the appropriate submethod. This is a variation of the Visitor pattern in that the MapService
+   * implements this interface and can handle different types of map to be added, without having to use switch cases.
+   *
+   * @param addToMapVisitor
+   * @param position
+   */
+  public abstract addToMap(addToMapVisitor: AddToMapVisitor, position: number): void;
+}
+
+export class Gb2WmsActiveMapItem extends ActiveMapItem {
+  constructor(
+    id: string,
+    title: string,
+    configuration: Gb2WmsMapItemConfiguration,
+    icon: string,
+    hasSublayers: boolean = false,
+    visible?: boolean,
+    opacity?: number
+  ) {
+    super(id, title, configuration, icon, hasSublayers, visible, opacity);
+  }
+
+  public override addToMap(addToMapVisitor: AddToMapVisitor, position: number) {
+    addToMapVisitor.addGb2WmsLayer(this, position);
   }
 }

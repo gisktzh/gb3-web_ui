@@ -126,14 +126,14 @@ export class EsriMapService implements MapService {
           this.initDrawingLayers();
           this.addScaleBar();
           activeMapItems.forEach((mapItem, position) => {
-            this.addMapItem(mapItem, position);
+            mapItem.addToMap(this, position);
           });
         })
       )
       .subscribe();
   }
 
-  public addMapItem(mapItem: ActiveMapItem, position: number) {
+  public addGb2WmsLayer(mapItem: ActiveMapItem, position: number) {
     if (this.findEsriLayer(mapItem.id)) {
       return;
     }

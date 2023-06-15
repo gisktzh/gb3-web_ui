@@ -28,7 +28,7 @@ export const ActiveMapItemActions = createActionGroup({
       attributeFilterParameter: string;
       activeMapItem: ActiveMapItem<Gb2WmsMapItemConfiguration>;
     }>(),
-    'Add Favourite': props<{favourite: ActiveMapItem<Gb2WmsMapItemConfiguration>[]}>(),
+    'Add Favourite': props<{favourite: ActiveMapItem[]}>(),
     'Add Initial Map Items': props<{initialMapItems: ActiveMapItem[]}>(),
     'Mark All Active Map Item Notice As Read': emptyProps()
   }

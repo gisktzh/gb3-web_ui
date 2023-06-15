@@ -47,10 +47,8 @@ export class FavouritesService {
    * @param favouriteLayerConfigurations
    * @private
    */
-  public getActiveMapItemsForFavourite(
-    favouriteLayerConfigurations: FavouriteLayerConfiguration[]
-  ): ActiveMapItem<Gb2WmsMapItemConfiguration>[] {
-    const activeMapItems: ActiveMapItem<Gb2WmsMapItemConfiguration>[] = [];
+  public getActiveMapItemsForFavourite(favouriteLayerConfigurations: FavouriteLayerConfiguration[]): ActiveMapItem[] {
+    const activeMapItems: ActiveMapItem[] = [];
 
     favouriteLayerConfigurations.forEach((configuration) => {
       const existingMap = this.availableMaps.find((availableMap) => availableMap.id === configuration.mapId);

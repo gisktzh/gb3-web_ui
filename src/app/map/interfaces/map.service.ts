@@ -1,10 +1,22 @@
-import {ActiveMapItem, Gb2WmsMapItemConfiguration} from '../models/active-map-item.model';
+import {ActiveMapItem, Gb2WmsActiveMapItem, Gb2WmsMapItemConfiguration} from '../models/active-map-item.model';
 import {ZoomType} from '../../shared/types/zoom-type';
 import {TimeExtent} from './time-extent.interface';
 import {GeometryWithSrs, PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
 import {DrawingLayer} from '../../shared/enums/drawing-layer.enum';
 
-export interface MapService {
+/**
+ * Contains the logic for adding an item to the map. The MapService implements this interface and acts as a visitor (variation of the
+ * pattern).
+ *
+ * todo: to make the visitor pattern complete, the visitor should be an object that handles the logic; but this also requires a cleaner
+ * separation in the add method
+ */
+export interface AddToMapVisitor {
+  /** Adds a new item to the map in the given position (0 is the topmost item - the most visible one)  */
+  addGb2WmsLayer(mapItem: Gb2WmsActiveMapItem, position: number): void;
+}
+
+export interface MapService extends AddToMapVisitor {
   /** Initializes the map by creating the initial background map and with a given extent */
   init(): void;
 
@@ -22,9 +34,6 @@ export interface MapService {
 
   /** Triggers a zoomevent, which is either zooming in or out */
   handleZoom(zoomType: ZoomType): void;
-
-  /** Adds a new item to the map in the given position (0 is the topmost item - the most visible one)  */
-  addMapItem(mapItem: ActiveMapItem, position: number): void;
 
   /** Removes an existing item from the map given its unique ID */
   removeMapItem(id: string): void;

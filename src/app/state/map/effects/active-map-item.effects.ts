@@ -18,8 +18,8 @@ export class ActiveMapItemEffects {
     () => {
       return this.actions$.pipe(
         ofType(ActiveMapItemActions.addActiveMapItem),
-        tap((action) => {
-          this.mapService.addMapItem(action.activeMapItem, action.position);
+        tap(({activeMapItem, position}) => {
+          activeMapItem.addToMap(this.mapService, position);
         })
       );
     },
@@ -150,7 +150,7 @@ export class ActiveMapItemEffects {
         tap(({favourite}) => {
           favourite.forEach((fav, idx) => {
             this.mapService.removeMapItem(fav.id);
-            this.mapService.addMapItem(fav, idx);
+            fav.addToMap(this.mapService, idx);
           });
         })
       );
@@ -163,7 +163,7 @@ export class ActiveMapItemEffects {
       ofType(ActiveMapItemActions.addInitialMapItems),
       tap(({initialMapItems}) => {
         initialMapItems.forEach((initialMapItem) => {
-          this.mapService.addMapItem(initialMapItem, 0);
+          initialMapItem.addToMap(this.mapService, 0);
         });
       }),
       map(() => MapConfigActions.clearInitialMapsConfig())
