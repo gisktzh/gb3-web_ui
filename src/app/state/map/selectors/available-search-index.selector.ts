@@ -2,8 +2,8 @@ import {createSelector} from '@ngrx/store';
 import {selectActiveMapItems} from '../reducers/active-map-item.reducer';
 import {SearchIndex} from '../../../shared/services/apis/search/interfaces/search-index.interface';
 import {ACTIVE_SEARCH_INDICES} from '../../../shared/constants/search.constants';
-import {Gb2WmsActiveMapItem} from '../../../map/models/active-map-item.model';
 import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
+import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
 
 export const selectAvailableSpecialSearchIndexes = createSelector(selectActiveMapItems, (activeMapItems) => {
   const availableIndexes: SearchIndex[] = [];

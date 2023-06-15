@@ -3,7 +3,7 @@ import {Store} from '@ngrx/store';
 import {Gb3FavouritesService} from '../../shared/services/apis/gb3/gb3-favourites.service';
 import {Observable, tap} from 'rxjs';
 import {selectActiveMapItems} from '../../state/map/reducers/active-map-item.reducer';
-import {ActiveMapItem, Gb2WmsActiveMapItem} from '../models/active-map-item.model';
+import {ActiveMapItem} from '../models/active-map-item.model';
 import {Favourite, FavouriteLayerConfiguration, FavouritesResponse} from '../../shared/interfaces/favourite.interface';
 import {map} from 'rxjs/operators';
 import {Map} from '../../shared/interfaces/topic.interface';
@@ -11,6 +11,7 @@ import {selectAvailableMaps} from '../../state/map/selectors/available-maps.sele
 import {produce} from 'immer';
 import {ActiveMapItemFactory} from '../../shared/factories/active-map-item.factory';
 import {isActiveMapItemOfType} from '../../shared/type-guards/active-map-item-type.type-guard';
+import {Gb2WmsActiveMapItem} from '../models/implementations/gb2-wms.model';
 
 @Injectable({
   providedIn: 'root'

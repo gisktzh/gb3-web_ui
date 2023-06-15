@@ -9,8 +9,8 @@ import {Store} from '@ngrx/store';
 import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {map} from 'rxjs/operators';
-import {Gb2WmsActiveMapItem} from '../../../map/models/active-map-item.model';
 import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
+import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
 
 @Injectable()
 export class ActiveMapItemEffects {

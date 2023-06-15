@@ -1,8 +1,9 @@
 import {createActionGroup, emptyProps, props} from '@ngrx/store';
-import {ActiveMapItem, Gb2WmsActiveMapItem} from '../../../map/models/active-map-item.model';
+import {ActiveMapItem} from '../../../map/models/active-map-item.model';
 import {LoadingState} from '../../../shared/types/loading-state';
 import {ViewProcessState} from '../../../shared/types/view-process-state';
 import {TimeExtent} from '../../../map/interfaces/time-extent.interface';
+import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
 
 export const ActiveMapItemActions = createActionGroup({
   source: 'ActiveMapItem',

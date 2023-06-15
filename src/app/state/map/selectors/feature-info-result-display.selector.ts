@@ -2,9 +2,10 @@ import {createSelector} from '@ngrx/store';
 import {selectMaps} from './maps.selector';
 import {Map} from '../../../shared/interfaces/topic.interface';
 import {selectActiveMapItems} from '../reducers/active-map-item.reducer';
-import {ActiveMapItem, Gb2WmsActiveMapItem} from '../../../map/models/active-map-item.model';
+import {ActiveMapItem} from '../../../map/models/active-map-item.model';
 import {selectData} from '../reducers/feature-info.reducer';
 import {FeatureInfoResult, FeatureInfoResultDisplay} from '../../../shared/interfaces/feature-info.interface';
+import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
 
 export const selectFeatureInfosForDisplay = createSelector<
   Record<string, any>,

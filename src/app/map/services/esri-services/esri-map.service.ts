@@ -7,7 +7,7 @@ import {first, skip, Subscription, tap, withLatestFrom} from 'rxjs';
 import {GeoJSONMapperService} from './geo-json-mapper.service';
 import * as dayjs from 'dayjs';
 import {MapService} from '../../interfaces/map.service';
-import {ActiveMapItem, Gb2WmsActiveMapItem} from '../../models/active-map-item.model';
+import {ActiveMapItem} from '../../models/active-map-item.model';
 import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
 import {LoadingState} from '../../../shared/types/loading-state';
 import {ViewProcessState} from '../../../shared/types/view-process-state';
@@ -42,6 +42,7 @@ import {GeometryWithSrs, PointWithSrs} from '../../../shared/interfaces/geojson-
 import {DrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {EsriSymbolizationService} from './esri-symbolization.service';
 import {MapConstants} from '../../../shared/constants/map.constants';
+import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
 

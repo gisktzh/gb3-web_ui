@@ -1,8 +1,8 @@
 import {createSelector} from '@ngrx/store';
 import {selectActiveMapItems} from '../reducers/active-map-item.reducer';
 import {QueryLayer} from '../../../shared/interfaces/query-layer.interface';
-import {Gb2WmsActiveMapItem} from '../../../map/models/active-map-item.model';
 import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
+import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
 
 export const selectQueryLayers = createSelector(selectActiveMapItems, (activeMapItems) => {
   const queryLayers: QueryLayer[] = [];

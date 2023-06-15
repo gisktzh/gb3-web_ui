@@ -115,7 +115,8 @@ etc.
 
 #### Usage
 
-The `ActiveMapItem` is an abstract class; the actual implementation is delegated to subclasses representing different
+The `ActiveMapItem` is an abstract class; the actual implementation is delegated to subclasses within
+the `implementations` subfolder, representing different
 types of layers that can be added to a map, such as `Gb2WmsActiveMapItem`. Since configuration for these layers differs,
 the `ActiveMapItem` has a property `configuration` which is a discriminated union type `ActiveMapItemConfiguration`,
 holding all layer configurations. This allows for a flexible combination of `ActiveMapItem`s and their configurations.

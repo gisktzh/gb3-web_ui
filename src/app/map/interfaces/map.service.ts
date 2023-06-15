@@ -1,9 +1,10 @@
-import {ActiveMapItem, Gb2WmsActiveMapItem} from '../models/active-map-item.model';
+import {ActiveMapItem} from '../models/active-map-item.model';
 import {ZoomType} from '../../shared/types/zoom-type';
 import {TimeExtent} from './time-extent.interface';
 import {GeometryWithSrs, PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
 import {DrawingLayer} from '../../shared/enums/drawing-layer.enum';
 import {AddToMapVisitor} from './add-to-map.visitor';
+import {Gb2WmsActiveMapItem} from '../models/implementations/gb2-wms.model';
 
 export interface MapService extends AddToMapVisitor {
   /** Initializes the map by creating the initial background map and with a given extent */

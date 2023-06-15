@@ -1,9 +1,10 @@
 import {createFeature, createReducer, on} from '@ngrx/store';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
-import {ActiveMapItem, Gb2WmsActiveMapItem} from '../../../map/models/active-map-item.model';
+import {ActiveMapItem} from '../../../map/models/active-map-item.model';
 import {ActiveMapItemState} from '../states/active-map-item.state';
 import {produce} from 'immer';
 import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
+import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
 
 export const activeMapItemFeatureKey = 'activeMapItem';
 

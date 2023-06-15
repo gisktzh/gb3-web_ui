@@ -1,4 +1,4 @@
-import {Gb2WmsActiveMapItem} from '../models/active-map-item.model';
+import {Gb2WmsActiveMapItem} from '../models/implementations/gb2-wms.model';
 
 /**
  * Contains the logic for adding an item to the map. The MapService implements this interface and acts as a visitor

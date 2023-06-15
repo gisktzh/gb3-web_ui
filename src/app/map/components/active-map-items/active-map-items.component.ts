@@ -4,13 +4,14 @@ import {Store} from '@ngrx/store';
 import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
 import {selectActiveMapItems} from '../../../state/map/reducers/active-map-item.reducer';
 import {Subscription, tap} from 'rxjs';
-import {ActiveMapItem, Gb2WmsActiveMapItem} from '../../models/active-map-item.model';
+import {ActiveMapItem} from '../../models/active-map-item.model';
 import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.reducer';
 import {MatDialog} from '@angular/material/dialog';
 import {FavouriteCreationDialogComponent} from '../favourite-creation-dialog/favourite-creation-dialog.component';
 import {PanelClass} from '../../../shared/enums/panel-class.enum';
 import {MapNoticeDialogComponent} from '../map-notice-dialog/map-notice-dialog.component';
 import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
+import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
 
 const FAVOURITE_HELPER_MESSAGES = {
   noMapsAdded: 'Fügen Sie mindestens 1 Karte hinzu, um einen Favoriten anzulegen.',

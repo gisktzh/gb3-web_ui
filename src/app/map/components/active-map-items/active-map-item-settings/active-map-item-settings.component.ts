@@ -1,5 +1,5 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {ActiveMapItem, Gb2WmsActiveMapItem} from '../../../models/active-map-item.model';
+import {ActiveMapItem} from '../../../models/active-map-item.model';
 import {map, Subscription, tap} from 'rxjs';
 import {selectActiveMapItems} from '../../../../state/map/reducers/active-map-item.reducer';
 import {Store} from '@ngrx/store';
@@ -8,6 +8,7 @@ import {TimeExtent} from '../../../interfaces/time-extent.interface';
 import {MapAttributeFiltersItemActions} from '../../../../state/map/actions/map-attribute-filters-item.actions';
 import {NumberUtils} from '../../../../shared/utils/number.utils';
 import {isActiveMapItemOfType} from '../../../../shared/type-guards/active-map-item-type.type-guard';
+import {Gb2WmsActiveMapItem} from '../../../models/implementations/gb2-wms.model';
 
 @Component({
   selector: 'active-map-item-settings',

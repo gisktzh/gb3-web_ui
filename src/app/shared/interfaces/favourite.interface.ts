@@ -1,5 +1,5 @@
-import {Gb2WmsActiveMapItem} from '../../map/models/active-map-item.model';
 import {MapLayer} from './topic.interface';
+import {Gb2WmsActiveMapItem} from '../../map/models/implementations/gb2-wms.model';
 
 export interface Favourite {
   id: number;

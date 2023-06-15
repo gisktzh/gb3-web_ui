@@ -1,5 +1,4 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Gb2WmsActiveMapItem} from '../../models/active-map-item.model';
 import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
@@ -8,6 +7,7 @@ import {concatLatestFrom} from '@ngrx/effects';
 import {selectActiveMapItems} from '../../../state/map/reducers/active-map-item.reducer';
 import {selectMapAttributeFiltersItemId} from '../../../state/map/reducers/map-attribute-filters-item.reducer';
 import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
+import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
 
 @Component({
   selector: 'map-attribute-filter',
