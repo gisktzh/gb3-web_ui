@@ -7,6 +7,7 @@ import {selectIsMaxZoomedIn, selectIsMaxZoomedOut} from '../../../../state/map/r
 import {GeolocationActions} from '../../../../state/map/actions/geolocation.actions';
 import {initialState as initialGeolocationState, selectGeolocationState} from '../../../../state/map/reducers/geolocation.reducer';
 import {GeolocationState} from '../../../../state/map/states/geolocation.state';
+import {ToolActions} from '../../../../state/map/actions/tool.actions';
 
 @Component({
   selector: 'map-controls',
@@ -42,6 +43,10 @@ export class MapControlsComponent implements OnInit, OnDestroy {
 
   public locateClient() {
     this.store.dispatch(GeolocationActions.startLocationRequest());
+  }
+
+  public toggleMeasurement() {
+    this.store.dispatch(ToolActions.toggle());
   }
 
   private initSubscriptions() {
