@@ -12,6 +12,7 @@ import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {MapConstants} from '../../../shared/constants/map.constants';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
+import {EsriMapViewService} from './esri-map-view.service';
 
 function createActiveMapItemMock(id: string, numberOfLayers = 0): {id: string; activeMapItem: Gb2WmsActiveMapItem} {
   const mapMock = {id: id, title: id, layers: []} as Partial<Map>;
@@ -67,17 +68,26 @@ function getExpectedNumberOfLayersWithInternalLayers(expectedNumber: number): nu
 describe('EsriMapService', () => {
   let service: EsriMapService;
   let mapMock: EsriMapMock;
+  let mapViewService: jasmine.SpyObj<EsriMapViewService>;
+  const mapViewServiceSpy = jasmine.createSpyObj<EsriMapViewService>(['mapView']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [AuthModule],
-      providers: [provideMockStore({}), {provide: AuthService, useValue: mockAuthService}]
+      providers: [
+        provideMockStore({}),
+        {provide: AuthService, useValue: mockAuthService},
+        {
+          provide: EsriMapViewService,
+          useValue: mapViewServiceSpy
+        }
+      ]
     });
     service = TestBed.inject(EsriMapService);
     // mock the map view from Esri - otherwise any change to the layer list will create an error because the service call fails
     mapMock = new EsriMapMock(internalLayers);
-    // eslint-disable-next-line @typescript-eslint/dot-notation
-    service['_mapView'] = {map: mapMock} as __esri.MapView;
+    mapViewService = TestBed.inject(EsriMapViewService) as jasmine.SpyObj<EsriMapViewService>;
+    mapViewService.mapView = {map: mapMock} as __esri.MapView;
   });
 
   it('should be created', () => {
