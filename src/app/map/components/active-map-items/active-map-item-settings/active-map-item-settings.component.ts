@@ -1,12 +1,14 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {ActiveMapItem} from '../../../models/active-map-item.model';
-import {Subscription, tap} from 'rxjs';
+import {map, Subscription, tap} from 'rxjs';
 import {selectActiveMapItems} from '../../../../state/map/reducers/active-map-item.reducer';
 import {Store} from '@ngrx/store';
 import {ActiveMapItemActions} from '../../../../state/map/actions/active-map-item.actions';
 import {TimeExtent} from '../../../interfaces/time-extent.interface';
 import {MapAttributeFiltersItemActions} from '../../../../state/map/actions/map-attribute-filters-item.actions';
 import {NumberUtils} from '../../../../shared/utils/number.utils';
+import {isActiveMapItemOfType} from '../../../../shared/type-guards/active-map-item-type.type-guard';
+import {Gb2WmsActiveMapItem} from '../../../models/implementations/gb2-wms.model';
 
 @Component({
   selector: 'active-map-item-settings',
@@ -49,7 +51,12 @@ export class ActiveMapItemSettingsComponent implements OnInit, OnDestroy {
   }
 
   public onTimeSliderExtentChange(timeExtent: TimeExtent) {
-    this.store.dispatch(ActiveMapItemActions.setTimeSliderExtent({timeExtent, activeMapItem: this.activeMapItem}));
+    this.store.dispatch(
+      ActiveMapItemActions.setTimeSliderExtent({
+        timeExtent,
+        activeMapItem: this.activeMapItem as Gb2WmsActiveMapItem
+      })
+    );
   }
 
   public showMapAttributeFilters() {
@@ -64,13 +71,14 @@ export class ActiveMapItemSettingsComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.activeMapItems$
         .pipe(
+          map((m) => m.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem))),
           tap((activeMapItems) => {
             // calculate the number of active filters to display them as badge
             let numberOfChangedFilters = 0;
             const activeMapItem = activeMapItems.find((mapItem) => mapItem.id === this.activeMapItem.id);
-            if (activeMapItem && activeMapItem.filterConfigurations) {
+            if (activeMapItem && activeMapItem.settings.filterConfigurations) {
               // assumption: every filter is not active by default => only count active filters
-              numberOfChangedFilters = activeMapItem.filterConfigurations
+              numberOfChangedFilters = activeMapItem.settings.filterConfigurations
                 .flatMap((filterConfig) => filterConfig.filterValues)
                 .filter((filterValue) => filterValue.isActive).length;
             }

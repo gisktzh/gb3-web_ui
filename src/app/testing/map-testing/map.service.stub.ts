@@ -4,6 +4,7 @@ import {ZoomType} from '../../shared/types/zoom-type';
 import {TimeExtent} from '../../map/interfaces/time-extent.interface';
 import {GeometryWithSrs, PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
 import {DrawingLayer} from 'src/app/shared/enums/drawing-layer.enum';
+import {Gb2WmsActiveMapItem} from '../../map/models/implementations/gb2-wms.model';
 
 export class MapServiceStub implements MapService {
   addGeometryToDrawingLayer(geometry: GeometryWithSrs, drawingLayer: DrawingLayer): void {}
@@ -38,11 +39,13 @@ export class MapServiceStub implements MapService {
 
   public setVisibility(visibility: boolean, mapItem: ActiveMapItem): void {}
 
-  public setTimeSliderExtent(timeSliderExtent: TimeExtent, mapItem: ActiveMapItem): void {}
+  public setTimeSliderExtent(timeSliderExtent: TimeExtent, mapItem: Gb2WmsActiveMapItem): void {}
 
-  public setAttributeFilters(attributeFilterParameters: {name: string; value: string}[], mapItem: ActiveMapItem): void {}
+  public setAttributeFilters(attributeFilterParameters: {name: string; value: string}[], mapItem: Gb2WmsActiveMapItem): void {}
 
   public zoomToPoint(point: PointWithSrs, number: number): void {}
 
   public zoomToExtent(geometry: GeometryWithSrs): void {}
+
+  public addGb2WmsLayer(mapItem: Gb2WmsActiveMapItem, position: number): void {}
 }

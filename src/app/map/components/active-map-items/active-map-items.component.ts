@@ -10,6 +10,8 @@ import {MatDialog} from '@angular/material/dialog';
 import {FavouriteCreationDialogComponent} from '../favourite-creation-dialog/favourite-creation-dialog.component';
 import {PanelClass} from '../../../shared/enums/panel-class.enum';
 import {MapNoticeDialogComponent} from '../map-notice-dialog/map-notice-dialog.component';
+import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
+import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
 
 const FAVOURITE_HELPER_MESSAGES = {
   noMapsAdded: 'Fügen Sie mindestens 1 Karte hinzu, um einen Favoriten anzulegen.',
@@ -76,7 +78,7 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
     this.dialogService.open(MapNoticeDialogComponent, {
       panelClass: PanelClass.ApiWrapperDialog,
       restoreFocus: false,
-      data: this.activeMapItems.filter((activeMapItem) => activeMapItem.notice),
+      data: this.activeMapItems.filter((activeMapItem) => activeMapItem.settings.type === 'gb2Wms' && activeMapItem.settings.notice), // todo: As soon as more layers with notices come into play, a selector on the interface would be required.
       maxWidth: MAP_NOTICES_DIALOG_MAX_WIDTH
     });
   }
@@ -87,7 +89,8 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
         .pipe(
           tap((currentActiveMapItems) => {
             this.activeMapItems = currentActiveMapItems;
-            this.updateNumberOfNotices(currentActiveMapItems);
+            const gb2ActiveMapItems = currentActiveMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem));
+            this.updateNumberOfNotices(gb2ActiveMapItems);
           })
         )
         .subscribe()
@@ -103,9 +106,9 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
     );
   }
 
-  private updateNumberOfNotices(currentActiveMapItems: ActiveMapItem[]) {
-    const activeMapItemsWithNotices = currentActiveMapItems.filter((activeMapItem) => activeMapItem.notice);
+  private updateNumberOfNotices(currentActiveMapItems: Gb2WmsActiveMapItem[]) {
+    const activeMapItemsWithNotices = currentActiveMapItems.filter((activeMapItem) => activeMapItem.settings.notice);
     this.numberOfNotices = activeMapItemsWithNotices.length;
-    this.numberOfUnreadNotices = activeMapItemsWithNotices.filter((activeMapItem) => !activeMapItem.isNoticeMarkedAsRead).length;
+    this.numberOfUnreadNotices = activeMapItemsWithNotices.filter((activeMapItem) => !activeMapItem.settings.isNoticeMarkedAsRead).length;
   }
 }

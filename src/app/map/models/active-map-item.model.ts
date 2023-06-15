@@ -1,54 +1,48 @@
 import {LoadingState} from '../../shared/types/loading-state';
-import {FilterConfiguration, Map, MapLayer, SearchConfiguration, TimeSliderConfiguration} from '../../shared/interfaces/topic.interface';
 import {HasLoadingState} from '../../shared/interfaces/has-loading-state.interface';
 import {HasVisibility} from '../../shared/interfaces/has-visibility.interface';
 import {HasViewProcessState} from '../../shared/interfaces/has-view-process-state.interface';
 import {ViewProcessState} from '../../shared/types/view-process-state';
-import {TimeExtent} from '../interfaces/time-extent.interface';
-import {TimeExtentUtils} from '../../shared/utils/time-extent.utils';
 import {IsImmerable} from '../../shared/interfaces/immerable.interface';
 import {immerable} from 'immer';
 
-export class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewProcessState, IsImmerable {
-  public readonly id: string;
-  public readonly title: string;
-  public readonly url: string;
-  public readonly mapImageUrl: string;
-  public readonly timeSliderConfiguration?: TimeSliderConfiguration;
-  public readonly filterConfigurations?: FilterConfiguration[];
-  public readonly searchConfigurations?: SearchConfiguration[];
-  public readonly mapId: string;
-  public readonly layers: MapLayer[];
-  public readonly isSingleLayer: boolean;
-  public readonly notice?: string;
-  public loadingState: LoadingState = 'undefined';
-  public viewProcessState: ViewProcessState = 'undefined';
+import {AddToMapVisitor} from '../interfaces/add-to-map.visitor';
+import {Gb2WmsSettings} from './implementations/gb2-wms.model';
+import {DrawingLayerSettings} from './implementations/drawing-test.model';
+
+type ActiveMapItemSettingsType = 'gb2Wms' | 'drawing';
+
+export abstract class AbstractActiveMapItemSettings implements IsImmerable {
+  public readonly [immerable] = true;
+  public abstract readonly type: ActiveMapItemSettingsType;
+}
+
+export type ActiveMapItemSettings = Gb2WmsSettings | DrawingLayerSettings;
+
+export abstract class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewProcessState, IsImmerable {
+  public abstract readonly id: string;
+  public abstract readonly title: string;
+  public abstract readonly mapImageUrl: string;
+  public abstract readonly settings: ActiveMapItemSettings;
+  public abstract readonly isSingleLayer: boolean;
+
+  public readonly [immerable] = true;
   public visible: boolean;
   public opacity: number;
-  public timeSliderExtent?: TimeExtent;
-  public isNoticeMarkedAsRead = false;
-  public readonly [immerable] = true;
+  public loadingState: LoadingState = 'undefined';
+  public viewProcessState: ViewProcessState = 'undefined';
 
-  constructor(map: Map, layer?: MapLayer, visible?: boolean, opacity?: number) {
-    this.isSingleLayer = !!layer;
-    this.id = layer ? ActiveMapItem.createSingleLayerId(map.id, layer.layer) : map.id;
-    this.title = layer ? layer.title : map.title;
-    this.url = map.wmsUrl;
-    this.mapImageUrl = map.icon;
-    this.mapId = map.id;
-    this.layers = layer ? [layer] : map.layers;
+  protected constructor(visible?: boolean, opacity?: number) {
     this.visible = visible ?? true;
     this.opacity = opacity ?? 1;
-    this.timeSliderConfiguration = map.timeSliderConfiguration;
-    if (map.timeSliderConfiguration) {
-      this.timeSliderExtent = TimeExtentUtils.createInitialTimeSliderExtent(map.timeSliderConfiguration);
-    }
-    this.filterConfigurations = map.filterConfigurations;
-    this.searchConfigurations = map.searchConfigurations;
-    this.notice = map.notice ?? undefined;
   }
 
-  public static createSingleLayerId(mapId: string, layerId: string): string {
-    return `${mapId}_${layerId}`;
-  }
+  /**
+   * Takes an addToMapVisitor and calls the appropriate submethod. This is a variation of the Visitor pattern in that the MapService
+   * implements this interface and can handle different types of map to be added, without having to use switch cases.
+   *
+   * @param addToMapVisitor Visitor implementation which can be used to add the ActiveMapItem to the map
+   * @param position The position where the item should be added on the map
+   */
+  public abstract addToMap(addToMapVisitor: AddToMapVisitor, position: number): void;
 }

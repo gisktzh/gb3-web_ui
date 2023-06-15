@@ -5,6 +5,7 @@ import {selectActiveMapItems} from '../reducers/active-map-item.reducer';
 import {ActiveMapItem} from '../../../map/models/active-map-item.model';
 import {selectData} from '../reducers/feature-info.reducer';
 import {FeatureInfoResult, FeatureInfoResultDisplay} from '../../../shared/interfaces/feature-info.interface';
+import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
 
 export const selectFeatureInfosForDisplay = createSelector<
   Record<string, any>,
@@ -35,7 +36,7 @@ export const selectFeatureInfosForDisplay = createSelector<
     // todo: There is a bug if a topic with only 1 layer AND this layer is also added as single layer - this will return true for all.
     let isSingleLayer = false;
     if (featureInfo.layers.length === 1) {
-      const singleLayerId = ActiveMapItem.createSingleLayerId(topic.id, featureInfo.layers[0].layer);
+      const singleLayerId = Gb2WmsActiveMapItem.createSingleLayerId(topic.id, featureInfo.layers[0].layer);
       isSingleLayer = activeMapItems.some((a) => a.isSingleLayer && a.id === singleLayerId);
     }
 
@@ -43,7 +44,7 @@ export const selectFeatureInfosForDisplay = createSelector<
     let featureInfoResultDisplay: FeatureInfoResultDisplay;
     if (isSingleLayer) {
       featureInfoResultDisplay = {
-        id: ActiveMapItem.createSingleLayerId(topic.id, featureInfo.layers[0].layer),
+        id: Gb2WmsActiveMapItem.createSingleLayerId(topic.id, featureInfo.layers[0].layer),
         title: featureInfo.layers[0].title,
         layers: featureInfo.layers,
         icon: undefined,

@@ -5,6 +5,7 @@ import {Legend, LegendDisplay} from '../../../shared/interfaces/legend.interface
 import {Map} from '../../../shared/interfaces/topic.interface';
 import {selectActiveMapItems} from '../reducers/active-map-item.reducer';
 import {ActiveMapItem} from '../../../map/models/active-map-item.model';
+import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
 
 export const selectLegendItemsForDisplay = createSelector<Record<string, any>, Legend[], Map[], ActiveMapItem[], LegendDisplay[]>(
   selectLegendItems,
@@ -26,14 +27,14 @@ export const selectLegendItemsForDisplay = createSelector<Record<string, any>, L
       */
       let isSingleLayer = false;
       if (legendItem.layers.length === 1) {
-        const singleLayerId = ActiveMapItem.createSingleLayerId(topic.id, legendItem.layers[0].layer);
+        const singleLayerId = Gb2WmsActiveMapItem.createSingleLayerId(topic.id, legendItem.layers[0].layer);
         isSingleLayer = activeMapItems.some((a) => a.isSingleLayer && a.id === singleLayerId);
       }
 
       let legendDisplay: LegendDisplay;
       if (isSingleLayer) {
         legendDisplay = {
-          id: ActiveMapItem.createSingleLayerId(topic.id, legendItem.layers[0].layer),
+          id: Gb2WmsActiveMapItem.createSingleLayerId(topic.id, legendItem.layers[0].layer),
           title: legendItem.layers[0].title,
           layers: legendItem.layers,
           icon: undefined,

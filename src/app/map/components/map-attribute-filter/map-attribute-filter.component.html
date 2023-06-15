@@ -11,7 +11,11 @@
       </div>
     </mat-card-header>
     <div class="attribute-filter__content">
-      <mat-card class="no-box-shadow" appearance="raised" *ngFor="let filterConfiguration of mapAttributeFiltersItem.filterConfigurations">
+      <mat-card
+        class="no-box-shadow"
+        appearance="raised"
+        *ngFor="let filterConfiguration of mapAttributeFiltersItem.settings.filterConfigurations"
+      >
         <mat-card-header>
           <mat-card-title>{{ filterConfiguration.name }}</mat-card-title>
         </mat-card-header>

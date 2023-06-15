@@ -2,7 +2,6 @@ import {TestBed} from '@angular/core/testing';
 
 import {EsriMapService} from './esri-map.service';
 import {provideMockStore} from '@ngrx/store/testing';
-import {ActiveMapItem} from '../../models/active-map-item.model';
 import {Map, MapLayer} from '../../../shared/interfaces/topic.interface';
 import {EsriMapMock} from '../../../testing/map-testing/esri-map.mock';
 import {AuthModule} from '../../../auth/auth.module';
@@ -11,27 +10,29 @@ import {Subject} from 'rxjs';
 import {DrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {MapConstants} from '../../../shared/constants/map.constants';
+import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
+import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
 
-function createActiveMapItemMock(id: string, numberOfLayers = 0): {id: string; activeMapItem: ActiveMapItem} {
+function createActiveMapItemMock(id: string, numberOfLayers = 0): {id: string; activeMapItem: Gb2WmsActiveMapItem} {
   const mapMock = {id: id, title: id, layers: []} as Partial<Map>;
   for (let layerNumber = 0; layerNumber < numberOfLayers; layerNumber++) {
     const uniqueLayerName = `layer${layerNumber}_${id}`;
     const layerMock = {layer: uniqueLayerName, title: uniqueLayerName, id: layerNumber, visible: true} as Partial<MapLayer>;
     mapMock.layers?.push(<MapLayer>layerMock);
   }
-  return {id: id, activeMapItem: new ActiveMapItem(<Map>mapMock)};
+  return {id: id, activeMapItem: ActiveMapItemFactory.createGb2WmsMapItem(<Map>mapMock)};
 }
 
-function compareMapItemToEsriLayer(expectedMapItem: ActiveMapItem, actualEsriLayer: __esri.Layer) {
+function compareMapItemToEsriLayer(expectedMapItem: Gb2WmsActiveMapItem, actualEsriLayer: __esri.Layer) {
   expect(actualEsriLayer.id).toBe(expectedMapItem.id);
   expect(actualEsriLayer.opacity).toBe(expectedMapItem.opacity);
   expect(actualEsriLayer.title).toBe(expectedMapItem.title);
   expect(actualEsriLayer.visible).toBe(expectedMapItem.visible);
 
   const actualEsriWmsLayer = actualEsriLayer as __esri.WMSLayer;
-  expect(actualEsriWmsLayer.url).toBe(expectedMapItem.url);
-  expect(actualEsriWmsLayer.sublayers.length).toBe(expectedMapItem.layers.length);
-  expectedMapItem.layers.forEach((expectedLayer) => {
+  expect(actualEsriWmsLayer.url).toBe(expectedMapItem.settings.url);
+  expect(actualEsriWmsLayer.sublayers.length).toBe(expectedMapItem.settings.layers.length);
+  expectedMapItem.settings.layers.forEach((expectedLayer) => {
     const actualEsriSublayer = actualEsriWmsLayer.sublayers.find((sl) => sl.id === expectedLayer.id);
     expect(actualEsriSublayer).toBeDefined();
     expect(actualEsriSublayer.name).toBe(expectedLayer.layer);
@@ -88,14 +89,14 @@ describe('EsriMapService', () => {
     mapItem1.opacity = 0.5;
     mapItem1.visible = false;
     const {id: topic2Id, activeMapItem: mapItem2} = createActiveMapItemMock('mapTwo', 2);
-    mapItem2.layers[0].visible = false;
+    mapItem2.settings.layers[0].visible = false;
     const {id: topic3Id, activeMapItem: mapItem3} = createActiveMapItemMock('mapThree');
 
     expect(mapMock.layers.length).toBe(getExpectedNumberOfLayersWithInternalLayers(0));
 
-    service.addMapItem(mapItem1, 0);
-    service.addMapItem(mapItem2, 1);
-    service.addMapItem(mapItem3, 2);
+    service.addGb2WmsLayer(mapItem1, 0);
+    service.addGb2WmsLayer(mapItem2, 1);
+    service.addGb2WmsLayer(mapItem3, 2);
 
     expect(mapMock.layers.length).toBe(getExpectedNumberOfLayersWithInternalLayers(3));
     // index <> position; position 0 should be the highest index for Esri.
@@ -104,9 +105,9 @@ describe('EsriMapService', () => {
     compareMapItemToEsriLayer(mapItem3, mapMock.layers.getItemAt(0));
 
     service.removeAllMapItems();
-    service.addMapItem(mapItem1, 0);
-    service.addMapItem(mapItem2, 0);
-    service.addMapItem(mapItem3, 0);
+    service.addGb2WmsLayer(mapItem1, 0);
+    service.addGb2WmsLayer(mapItem2, 0);
+    service.addGb2WmsLayer(mapItem3, 0);
 
     expect(mapMock.layers.length).toBe(getExpectedNumberOfLayersWithInternalLayers(3));
     // index <> position; position 0 should be the highest index for Esri.
@@ -125,9 +126,9 @@ describe('EsriMapService', () => {
     const {id: topic1Id, activeMapItem: mapItem1} = createActiveMapItemMock('mapOne');
     const {id: topic2Id, activeMapItem: mapItem2} = createActiveMapItemMock('mapTwo');
     const {id: topic3Id, activeMapItem: mapItem3} = createActiveMapItemMock('mapThree');
-    service.addMapItem(mapItem1, 0);
-    service.addMapItem(mapItem2, 1);
-    service.addMapItem(mapItem3, 2);
+    service.addGb2WmsLayer(mapItem1, 0);
+    service.addGb2WmsLayer(mapItem2, 1);
+    service.addGb2WmsLayer(mapItem3, 2);
 
     expect(mapMock.layers.length).toBe(getExpectedNumberOfLayersWithInternalLayers(3));
 
@@ -147,9 +148,9 @@ describe('EsriMapService', () => {
     const {activeMapItem: mapItem2} = createActiveMapItemMock('mapTwo');
     const {activeMapItem: mapItem3} = createActiveMapItemMock('mapThree');
 
-    service.addMapItem(mapItem1, 0);
-    service.addMapItem(mapItem2, 1);
-    service.addMapItem(mapItem3, 2);
+    service.addGb2WmsLayer(mapItem1, 0);
+    service.addGb2WmsLayer(mapItem2, 1);
+    service.addGb2WmsLayer(mapItem3, 2);
 
     expect(mapMock.layers.length).toBe(getExpectedNumberOfLayersWithInternalLayers(3));
 
@@ -166,9 +167,9 @@ describe('EsriMapService', () => {
     const {id: topic2Id, activeMapItem: mapItem2} = createActiveMapItemMock('mapTwo');
     const {id: topic3Id, activeMapItem: mapItem3} = createActiveMapItemMock('mapThree');
 
-    service.addMapItem(mapItem1, 0);
-    service.addMapItem(mapItem2, 1);
-    service.addMapItem(mapItem3, 2);
+    service.addGb2WmsLayer(mapItem1, 0);
+    service.addGb2WmsLayer(mapItem2, 1);
+    service.addGb2WmsLayer(mapItem3, 2);
     // order: mapItem1, mapItem2, mapItem3
 
     service.reorderMapItem(0, 0);
@@ -197,7 +198,7 @@ describe('EsriMapService', () => {
   it('should reorder sublayers from existing items to the desired position', () => {
     const {activeMapItem: mapItem} = createActiveMapItemMock('topic', 3);
 
-    service.addMapItem(mapItem, 0);
+    service.addGb2WmsLayer(mapItem, 0);
     const wmsLayer = mapMock.layers.getItemAt(0) as __esri.WMSLayer;
 
     expect(wmsLayer.sublayers.getItemAt(0).id).toBe(0);

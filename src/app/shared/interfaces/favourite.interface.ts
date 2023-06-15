@@ -1,5 +1,5 @@
-import {ActiveMapItem} from '../../map/models/active-map-item.model';
 import {MapLayer} from './topic.interface';
+import {Gb2WmsActiveMapItem} from '../../map/models/implementations/gb2-wms.model';
 
 export interface Favourite {
   id: number;
@@ -17,6 +17,7 @@ export type FavouritesResponse = Favourite[];
 
 type FavouriteLayerSubLayerConfiguration = Pick<MapLayer, 'id' | 'layer' | 'visible'>;
 
-export interface FavouriteLayerConfiguration extends Pick<ActiveMapItem, 'visible' | 'opacity' | 'isSingleLayer' | 'mapId'> {
+export interface FavouriteLayerConfiguration extends Pick<Gb2WmsActiveMapItem, 'visible' | 'opacity' | 'isSingleLayer'> {
   layers: FavouriteLayerSubLayerConfiguration[];
+  mapId: string; // todo: nested type not pickable
 }
