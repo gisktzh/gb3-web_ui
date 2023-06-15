@@ -25,6 +25,11 @@ export class Gb3PrintService extends Gb3ApiService {
     );
   }
 
+  protected override getFullEndpointUrl(): string {
+    // TODO Remove this override method as soon as the API gets fixed
+    return `${this.configService.apiConfig.gb2StaticFiles.baseUrl}/${this.endpoint}`;
+  }
+
   private createInfoUrl(): string {
     return `${this.getFullEndpointUrl()}/info.json`;
   }
@@ -45,10 +50,18 @@ export class Gb3PrintService extends Gb3ApiService {
 
   private mapPrintCreationToCreateCreatePayload(printCreation: PrintCreation): CreateCreatePayload {
     return {
-      ...printCreation,
+      dpi: printCreation.dpi,
+      layout: printCreation.layout,
+      srs: printCreation.srs,
+      outputFormat: printCreation.outputFormat,
+      units: printCreation.units,
       pages: printCreation.pages.map((page) => {
         return {
-          ...page,
+          center: page.center,
+          scale: page.scale,
+          extent: page.extent,
+          rotation: page.rotation,
+          topic: page.topic,
           header_img: page.headerImg,
           topic_title: page.topicTitle,
           user_comment: page.userComment,
@@ -58,11 +71,18 @@ export class Gb3PrintService extends Gb3ApiService {
       }),
       layers: printCreation.layers.map((layer) => {
         return {
-          ...layer,
+          layers: layer.layers,
+          type: layer.type,
+          baseURL: layer.baseURL,
+          format: layer.format,
+          opacity: layer.opacity,
+          singleTile: layer.singleTile,
+          styles: layer.styles,
           customParams: layer.customParams
             ? {
-                ...layer.customParams,
-                TRANSPARENT: layer.customParams?.transparent
+                format: layer.customParams.format,
+                dpi: layer.customParams.dpi,
+                TRANSPARENT: layer.customParams.transparent
               }
             : null
         };

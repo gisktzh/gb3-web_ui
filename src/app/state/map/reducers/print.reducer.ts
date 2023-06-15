@@ -30,9 +30,10 @@ export const printFeature = createFeature({
       return {...state, printCreation, printCreationLoadingState: 'loading'};
     }),
     on(PrintActions.setPrintCreationResponse, (state, {printCreationResponse}): PrintState => {
-      return {...state, printCreationResponse, printInfoLoadingState: 'loaded'};
+      return {...state, printCreationResponse, printCreationLoadingState: 'loaded'};
     })
   )
 });
 
-export const {name, reducer} = printFeature;
+export const {name, reducer, selectPrintInfo, selectPrintInfoLoadingState, selectPrintCreationLoadingState, selectPrintCreationResponse} =
+  printFeature;

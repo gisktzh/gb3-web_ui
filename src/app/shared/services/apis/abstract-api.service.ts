@@ -16,7 +16,7 @@ export abstract class BaseApiService {
   }
 
   protected post<T, R>(url: string, body?: T): Observable<R> {
-    return this.http.post<R>(url, body);
+    return this.http.post<R>(url, body, {headers: {accept: 'application/json'}});
   }
 
   protected delete<T>(url: string): Observable<T> {

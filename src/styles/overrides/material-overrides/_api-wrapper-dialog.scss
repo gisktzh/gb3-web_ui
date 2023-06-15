@@ -38,6 +38,10 @@
         background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent);
         color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-accent);
       }
+
+      &:disabled {
+        color: ktzh-variables.$zh-black40;
+      }
     }
 
     & .mat-mdc-button__ripple {

@@ -1,0 +1,12 @@
+.print-dialog {
+  .print-dialog__content {
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+  }
+
+  .print-dialog__content__form {
+    display: flex;
+    flex-direction: column;
+  }
+}
