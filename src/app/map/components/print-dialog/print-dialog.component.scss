@@ -1,12 +1,29 @@
+:host ::ng-deep .print-dialog__content__form__element .mat-mdc-form-field-subscript-wrapper {
+  height: 0;
+}
+
 .print-dialog {
+  width: 50vw;
+
   .print-dialog__content {
     display: flex;
     flex-direction: column;
     padding: 24px;
-  }
 
-  .print-dialog__content__form {
-    display: flex;
-    flex-direction: column;
+    .print-dialog__content__form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+
+      .print-dialog__content__form__divider {
+        margin: 16px 0;
+      }
+
+      .print-dialog__content__form__format {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+    }
   }
 }

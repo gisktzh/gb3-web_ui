@@ -16,6 +16,7 @@ export abstract class BaseApiService {
   }
 
   protected post<T, R>(url: string, body?: T): Observable<R> {
+    // TODO WES: search for a better solution or wait for the API fix
     return this.http.post<R>(url, body, {headers: {accept: 'application/json'}});
   }
 

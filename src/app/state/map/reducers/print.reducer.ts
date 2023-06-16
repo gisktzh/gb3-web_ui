@@ -5,6 +5,7 @@ import {PrintActions} from '../actions/print.actions';
 export const printFeatureKey = 'print';
 
 export const initialState: PrintState = {
+  printDialogVisible: false,
   printInfo: undefined,
   printInfoLoadingState: 'undefined',
   printCreation: undefined,
@@ -16,12 +17,15 @@ export const printFeature = createFeature({
   name: printFeatureKey,
   reducer: createReducer(
     initialState,
+    on(PrintActions.setPrintDialogVisible, (state, {printDialogVisible}): PrintState => {
+      return {...state, printDialogVisible: printDialogVisible};
+    }),
     on(PrintActions.loadPrintInfo, (state): PrintState => {
       // If we already have infos, we do not reset the state
       if (state.printInfo) {
         return state;
       }
-      return {...initialState, printInfoLoadingState: 'loading'};
+      return {...state, printInfoLoadingState: 'loading'};
     }),
     on(PrintActions.setPrintInfo, (state, {printInfo}): PrintState => {
       return {...state, printInfo, printInfoLoadingState: 'loaded'};
@@ -35,5 +39,12 @@ export const printFeature = createFeature({
   )
 });
 
-export const {name, reducer, selectPrintInfo, selectPrintInfoLoadingState, selectPrintCreationLoadingState, selectPrintCreationResponse} =
-  printFeature;
+export const {
+  name,
+  reducer,
+  selectPrintDialogVisible,
+  selectPrintInfo,
+  selectPrintInfoLoadingState,
+  selectPrintCreationLoadingState,
+  selectPrintCreationResponse
+} = printFeature;

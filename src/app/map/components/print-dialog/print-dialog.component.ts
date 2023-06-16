@@ -1,7 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {LoadingState} from '../../../shared/types/loading-state';
-import {MatDialogRef} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {HasSavingState} from '../../../shared/interfaces/has-saving-state.interface';
@@ -13,14 +12,19 @@ import {
 } from '../../../state/map/reducers/print.reducer';
 import {PrintCreation, PrintCreationResponse, PrintInfo} from '../../../shared/interfaces/print.interface';
 import {PrintActions} from '../../../state/map/actions/print.actions';
+import {MapConfigState} from '../../../state/map/states/map-config.state';
+import {selectMapConfigState} from '../../../state/map/reducers/map-config.reducer';
 
 interface PrintForm {
   title: FormControl<string | null>;
   comment: FormControl<string | null>;
   layout: FormControl<string | null>;
   dpi: FormControl<number | null>;
+  rotation: FormControl<number | null>;
   scale: FormControl<number | null>;
   outputFormat: FormControl<string | null>;
+  showLegend: FormControl<boolean | null>;
+  printActiveMapsSeparately: FormControl<boolean | null>;
 }
 
 @Component({
@@ -34,18 +38,22 @@ export class PrintDialogComponent implements OnInit, OnDestroy, HasSavingState {
     comment: new FormControl(''),
     layout: new FormControl('', [Validators.required]),
     dpi: new FormControl(0, [Validators.required]),
+    rotation: new FormControl(0, [Validators.min(-90), Validators.max(90)]),
     scale: new FormControl(0, [Validators.required]),
-    outputFormat: new FormControl('', [Validators.required])
+    outputFormat: new FormControl('', [Validators.required]),
+    showLegend: new FormControl(false, [Validators.required]),
+    printActiveMapsSeparately: new FormControl(false, [Validators.required])
   });
 
   public savingState: LoadingState = 'undefined';
   public printInfo?: PrintInfo;
   public printInfoLoadingState: LoadingState = 'undefined';
   public printCreationResponse?: PrintCreationResponse;
+  public mapConfigState?: MapConfigState;
 
   private readonly subscriptions: Subscription = new Subscription();
 
-  constructor(private readonly dialogRef: MatDialogRef<PrintDialogComponent>, private readonly store: Store) {
+  constructor(private readonly store: Store) {
     this.formGroup.disable();
   }
 
@@ -105,6 +113,17 @@ export class PrintDialogComponent implements OnInit, OnDestroy, HasSavingState {
         )
         .subscribe()
     );
+
+    this.subscriptions.add(
+      this.store
+        .select(selectMapConfigState)
+        .pipe(
+          tap((mapConfigState) => {
+            this.mapConfigState = mapConfigState;
+          })
+        )
+        .subscribe()
+    );
   }
 
   private updateFormGroupState() {
@@ -112,22 +131,29 @@ export class PrintDialogComponent implements OnInit, OnDestroy, HasSavingState {
       this.formGroup.disable();
     } else {
       this.formGroup.enable();
+      // TODO WES: remove the following two
+      this.formGroup.controls.showLegend.disable();
+      this.formGroup.controls.printActiveMapsSeparately.disable();
     }
   }
 
   private initializeDefaultFormValues(printInfo: PrintInfo | undefined) {
+    const defaultLayout = printInfo?.layouts[0];
     this.formGroup.setValue({
       title: '',
       comment: '',
-      layout: printInfo?.layouts[0]?.name ?? '',
+      layout: defaultLayout?.name ?? '',
       dpi: printInfo?.dpis[0]?.value ?? 0,
+      rotation: defaultLayout?.rotation ? 0 : null,
       scale: printInfo?.scales[0]?.value ?? 0,
-      outputFormat: printInfo?.outputFormats[0]?.name ?? ''
+      outputFormat: printInfo?.outputFormats[0]?.name ?? '',
+      showLegend: false,
+      printActiveMapsSeparately: false
     });
   }
 
-  public cancel() {
-    this.close(true);
+  public close() {
+    this.store.dispatch(PrintActions.setPrintDialogVisible({printDialogVisible: false}));
   }
 
   public print() {
@@ -135,8 +161,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy, HasSavingState {
       return;
     }
 
-    console.log(this.formGroup.value);
-
+    // TODO WES: remove all the default values from this and replace them using the current active map items / map state / and so on
     const value = this.formGroup.value;
     const printCreation: PrintCreation = {
       units: 'm',
@@ -153,7 +178,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy, HasSavingState {
             format: 'image/png; mode=8bit'
           },
           format: 'image/png; mode=8bit',
-          baseURL: 'http://127.0.0.1:3000/wms/BASISKARTEZH',
+          baseURL: 'https://maps.zh.ch/wms/BASISKARTEZH',
           opacity: 1,
           singleTile: true,
           styles: [''],
@@ -162,23 +187,19 @@ export class PrintDialogComponent implements OnInit, OnDestroy, HasSavingState {
       ],
       pages: [
         {
-          scale: 5000,
-          withLegend: 0,
+          scale: value.scale ?? 0,
+          withLegend: value.showLegend ? 1 : 0,
           userTitle: value.title ?? '',
           userComment: value.comment ?? '',
           topicTitle: 'Landeskarten, Übersichtsplan',
           headerImg: 'http://127.0.0.1/images/LogoGIS.jpg',
-          center: [2692500, 1252500],
+          center: [this.mapConfigState?.center.x ?? 0, this.mapConfigState?.center.y ?? 0],
           extent: [2663148, 1215246, 2721851, 1289753],
-          rotation: 0,
+          rotation: value.rotation ?? 0,
           topic: 'BASISKARTEZH'
         }
       ]
     };
     this.store.dispatch(PrintActions.requestPrintCreation({printCreation}));
-  }
-
-  private close(isAborted: boolean = false) {
-    this.dialogRef.close(isAborted);
   }
 }

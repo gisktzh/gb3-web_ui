@@ -4,6 +4,7 @@ import {PrintCreation, PrintCreationResponse, PrintInfo} from '../../../shared/i
 export const PrintActions = createActionGroup({
   source: 'Print',
   events: {
+    'Set Print Dialog Visible': props<{printDialogVisible: boolean}>(),
     'Load Print Info': emptyProps(),
     'Set Print Info': props<{printInfo: PrintInfo}>(),
     'Request Print Creation': props<{printCreation: PrintCreation}>(),

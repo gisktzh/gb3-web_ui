@@ -1,12 +1,20 @@
 import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {EMPTY, switchMap} from 'rxjs';
+import {EMPTY, filter, switchMap} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
 import {PrintActions} from '../actions/print.actions';
 import {Gb3PrintService} from '../../../shared/services/apis/gb3/gb3-print.service';
 
 @Injectable()
 export class PrintEffects {
+  public dispatchPrintDialogVisibleRequest$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(PrintActions.setPrintDialogVisible),
+      filter((value) => value.printDialogVisible),
+      map(() => PrintActions.loadPrintInfo())
+    );
+  });
+
   public dispatchPrintInfoRequest$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(PrintActions.loadPrintInfo),

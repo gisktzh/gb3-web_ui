@@ -3,48 +3,61 @@
   <ng-container content>
     <div class="print-dialog__content">
       <form [formGroup]="formGroup" class="print-dialog__content__form" id="printForm">
-        <mat-form-field appearance="fill">
+        <mat-form-field appearance="fill" class="print-dialog__content__form__element">
           <mat-label>Kartentitel</mat-label>
           <input matInput formControlName="title" />
           <mat-error> Geben Sie einen gültigen, nicht leeren Kartentitel ein. </mat-error>
         </mat-form-field>
-        <mat-form-field appearance="fill">
+        <mat-form-field appearance="fill" class="print-dialog__content__form__element">
           <mat-label>Kommentar</mat-label>
           <textarea matInput formControlName="comment"></textarea>
         </mat-form-field>
         <ng-container *ngIf="printInfo">
-          <mat-form-field>
-            <mat-label>Layout</mat-label>
-            <mat-select formControlName="layout">
-              <mat-option *ngFor="let layout of printInfo.layouts" [value]="layout.name">
-                {{ layout.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>DPI</mat-label>
-            <mat-select formControlName="dpi">
-              <mat-option *ngFor="let dpi of printInfo.dpis" [value]="dpi.value">
-                {{ dpi.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>Massstab</mat-label>
-            <mat-select formControlName="scale">
-              <mat-option *ngFor="let scale of printInfo.scales" [value]="scale.value">
-                {{ scale.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>Format</mat-label>
-            <mat-select formControlName="outputFormat">
-              <mat-option *ngFor="let outputFormat of printInfo.outputFormats" [value]="outputFormat.name">
-                {{ outputFormat.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+          <mat-divider class="print-dialog__content__form__divider"></mat-divider>
+          <div class="print-dialog__content__form__format">
+            <mat-form-field class="print-dialog__content__form__element">
+              <mat-label>Rotation</mat-label>
+              <input matInput formControlName="rotation" type="number" min="-90" max="90" />
+            </mat-form-field>
+            <mat-form-field class="print-dialog__content__form__element">
+              <mat-label>Massstab</mat-label>
+              <mat-select formControlName="scale">
+                <mat-option *ngFor="let scale of printInfo.scales" [value]="scale.value">
+                  {{ scale.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field class="print-dialog__content__form__element">
+              <mat-label>Auflösung</mat-label>
+              <mat-select formControlName="dpi">
+                <mat-option *ngFor="let dpi of printInfo.dpis" [value]="dpi.value">
+                  {{ dpi.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field class="print-dialog__content__form__element">
+              <mat-label>Layout</mat-label>
+              <mat-select formControlName="layout">
+                <mat-option *ngFor="let layout of printInfo.layouts" [value]="layout.name">
+                  {{ layout.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field class="print-dialog__content__form__element">
+              <mat-label>Format</mat-label>
+              <mat-select formControlName="outputFormat">
+                <mat-option *ngFor="let outputFormat of printInfo.outputFormats" [value]="outputFormat.name">
+                  {{ outputFormat.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <mat-divider class="print-dialog__content__form__divider"></mat-divider>
+          <mat-checkbox formControlName="showLegend" class="print-dialog__content__form__element">Legende</mat-checkbox>
+          <mat-divider class="print-dialog__content__form__divider"></mat-divider>
+          <mat-checkbox formControlName="printActiveMapsSeparately" class="print-dialog__content__form__element"
+            >Aktive Karten separat drucken</mat-checkbox
+          >
         </ng-container>
       </form>
       <a
@@ -61,7 +74,7 @@
     <loading-and-process-bar [loadingState]="printInfoLoadingState"></loading-and-process-bar>
   </ng-container>
   <ng-container actions>
-    <button (click)="cancel()" [disabled]="savingState === 'loading'" mat-button>Abbrechen</button>
+    <button (click)="close()" [disabled]="savingState === 'loading'" mat-button>Abbrechen</button>
     <button
       (click)="print()"
       type="submit"

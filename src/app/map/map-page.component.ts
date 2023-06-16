@@ -8,6 +8,9 @@ import {Store} from '@ngrx/store';
 import {selectActiveMapItems} from '../state/map/reducers/active-map-item.reducer';
 import {Subscription, tap} from 'rxjs';
 import {ActiveMapItem} from './models/active-map-item.model';
+import {selectPrintDialogVisible} from '../state/map/reducers/print.reducer';
+
+type SideDrawerContent = 'none' | 'print';
 
 @Component({
   selector: 'map-page',
@@ -19,8 +22,10 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
   public readonly onboardingGuideImage = mapOnboardingGuideConfig.introductionImage;
   public activeMapItems: ActiveMapItem[] = [];
   public isMapDataCatalogueMinimized: boolean = false;
+  public currentSideDrawerContent: SideDrawerContent = 'none';
 
   private readonly activeMapItems$ = this.store.select(selectActiveMapItems);
+  private readonly printDialogVisible$ = this.store.select(selectPrintDialogVisible);
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(
@@ -59,6 +64,20 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
         .pipe(
           tap((currentActiveMapItems) => {
             this.activeMapItems = currentActiveMapItems;
+          })
+        )
+        .subscribe()
+    );
+
+    this.subscriptions.add(
+      this.printDialogVisible$
+        .pipe(
+          tap((printDialogVisible) => {
+            if (printDialogVisible) {
+              this.currentSideDrawerContent = 'print';
+            } else if (this.currentSideDrawerContent === 'print') {
+              this.currentSideDrawerContent = 'none';
+            }
           })
         )
         .subscribe()

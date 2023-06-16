@@ -1,8 +1,6 @@
 import {AfterViewInit, Component} from '@angular/core';
-import {PanelClass} from '../../../shared/enums/panel-class.enum';
 import {Store} from '@ngrx/store';
-import {MatDialog} from '@angular/material/dialog';
-import {PrintDialogComponent} from '../print-dialog/print-dialog.component';
+import {PrintActions} from '../../../state/map/actions/print.actions';
 
 @Component({
   selector: 'map-tools',
@@ -10,13 +8,10 @@ import {PrintDialogComponent} from '../print-dialog/print-dialog.component';
   styleUrls: ['./map-tools.component.scss']
 })
 export class MapToolsComponent implements AfterViewInit {
-  constructor(private readonly store: Store, private readonly dialogService: MatDialog) {}
+  constructor(private readonly store: Store) {}
 
   public showPrintDialog() {
-    this.dialogService.open(PrintDialogComponent, {
-      panelClass: PanelClass.ApiWrapperDialog,
-      restoreFocus: false
-    });
+    this.store.dispatch(PrintActions.setPrintDialogVisible({printDialogVisible: true}));
   }
 
   public ngAfterViewInit() {
