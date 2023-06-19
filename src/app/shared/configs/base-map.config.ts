@@ -20,7 +20,7 @@ export const defaultBasemaps: Basemap[] = [
     srsId: 2056,
     layers: [
       {
-        name: 'dtm2017_relief'
+        name: 'dtm2022_relief'
       }
     ]
   },
