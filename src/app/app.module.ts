@@ -1,4 +1,4 @@
-import {InjectionToken, NgModule} from '@angular/core';
+import {InjectionToken, LOCALE_ID, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 
 import {AppComponent} from './app.component';
@@ -73,7 +73,8 @@ export const GRAV_CMS_SERVICE = new InjectionToken<GravCmsService>('GravCmsServi
   providers: [
     {provide: MAP_SERVICE, useClass: EsriMapService},
     {provide: NEWS_SERVICE, deps: [KTZHNewsService, KTZHNewsMockService, ConfigService], useFactory: newsFactory},
-    {provide: GRAV_CMS_SERVICE, deps: [GravCmsService, GravCmsMockService, ConfigService], useFactory: gravCmsFactory}
+    {provide: GRAV_CMS_SERVICE, deps: [GravCmsService, GravCmsMockService, ConfigService], useFactory: gravCmsFactory},
+    {provide: LOCALE_ID, useValue: 'de-CH'}
   ],
   bootstrap: [AppComponent]
 })
