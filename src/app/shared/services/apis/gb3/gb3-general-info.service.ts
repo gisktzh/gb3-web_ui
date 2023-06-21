@@ -30,11 +30,9 @@ export class Gb3GeneralInfoService extends Gb3ApiService {
       alternativeSpatialReferences: generalInfo.alternative_spatial_references,
       externalMaps: generalInfo.external_maps,
       locationInformation: {
-        crs: generalInfo.crs,
         heightDom: generalInfo.height_dom,
         heightDtm: generalInfo.height_dtm,
-        lv95x: generalInfo.lv95_e,
-        lv95y: generalInfo.lv95_n
+        spatialReference: generalInfo.spatial_reference
       },
       parcel: generalInfo.parcel
         ? {
@@ -42,10 +40,7 @@ export class Gb3GeneralInfoService extends Gb3ApiService {
             egrisEgrid: generalInfo.parcel.egris_egrid,
             municipalityName: generalInfo.parcel.municipality_name,
             oerebExtract: {
-              jsonUrl: generalInfo.parcel.oereb_extract.json_url,
-              xmlUrl: generalInfo.parcel.oereb_extract.xml_url,
-              pdfUrl: generalInfo.parcel.oereb_extract.pdf_url,
-              gb2Url: generalInfo.parcel.oereb_extract.gb2_url
+              pdfUrl: generalInfo.parcel.oereb_extract.pdf_url
             }
           }
         : undefined
