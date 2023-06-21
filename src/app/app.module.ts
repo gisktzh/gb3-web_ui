@@ -28,6 +28,12 @@ import {GravCmsMockService} from './shared/services/apis/grav-cms/grav-cms.mock.
 import {ConfigService} from './shared/services/config.service';
 import {KTZHNewsService} from './shared/services/apis/ktzh/ktzhnews.service';
 import {GeneralInfoEffects} from './state/map/effects/general-info.effects';
+import {registerLocaleData} from '@angular/common';
+import localeDeCH from '@angular/common/locales/de-CH';
+
+// necessary for the locale 'de-CH' to work
+// see https://stackoverflow.com/questions/46419026/missing-locale-data-for-the-locale-xxx-with-angular
+registerLocaleData(localeDeCH);
 
 function newsFactory<T>(service: T, mockService: T, configService: ConfigService): T {
   return serviceFactory(service, mockService, configService.apiConfig.ktzhWebsite.useMockData);
