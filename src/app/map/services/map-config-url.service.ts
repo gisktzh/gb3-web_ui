@@ -7,6 +7,7 @@ import {selectMapConfigState} from '../../state/map/reducers/map-config.reducer'
 import {PrintType} from '../../shared/types/print-type';
 import {BasemapConfigService} from './basemap-config.service';
 import {MapConfigState} from '../../state/map/states/map-config.state';
+import {NumberUtils} from '../../shared/utils/number.utils';
 
 /**
  * Query params that are removed upon loading the initial map configuration.
@@ -83,10 +84,10 @@ export class MapConfigUrlService implements OnDestroy {
   private getRoundedMapParameters(config: MapConfigState): Pick<MapConfigState, 'center' | 'scale'> {
     return {
       center: {
-        x: Math.round(config.center.x),
-        y: Math.round(config.center.y)
+        x: NumberUtils.roundToDecimals(config.center.x),
+        y: NumberUtils.roundToDecimals(config.center.y)
       },
-      scale: Math.round(config.scale)
+      scale: NumberUtils.roundToDecimals(config.scale)
     };
   }
 

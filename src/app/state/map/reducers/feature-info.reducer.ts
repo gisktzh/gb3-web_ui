@@ -18,10 +18,10 @@ export const featureInfoFeature = createFeature({
     on(FeatureInfoActions.sendRequest, (): FeatureInfoState => {
       return {...initialState, loadingState: 'loading'};
     }),
-    on(FeatureInfoActions.clearFeatureInfoContent, (): FeatureInfoState => {
+    on(FeatureInfoActions.clearContent, (): FeatureInfoState => {
       return {...initialState};
     }),
-    on(FeatureInfoActions.updateFeatureInfo, (state, {featureInfos}): FeatureInfoState => {
+    on(FeatureInfoActions.updateContent, (state, {featureInfos}): FeatureInfoState => {
       const data = featureInfos.map((featureInfo) => featureInfo.featureInfo.results);
       return {...state, loadingState: 'loaded', data};
     }),

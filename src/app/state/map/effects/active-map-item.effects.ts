@@ -9,6 +9,8 @@ import {Store} from '@ngrx/store';
 import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {map} from 'rxjs/operators';
+import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
+import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
 
 @Injectable()
 export class ActiveMapItemEffects {
@@ -16,8 +18,8 @@ export class ActiveMapItemEffects {
     () => {
       return this.actions$.pipe(
         ofType(ActiveMapItemActions.addActiveMapItem),
-        tap((action) => {
-          this.mapService.addMapItem(action.activeMapItem, action.position);
+        tap(({activeMapItem, position}) => {
+          activeMapItem.addToMap(this.mapService, position);
         })
       );
     },
@@ -126,10 +128,12 @@ export class ActiveMapItemEffects {
         ofType(ActiveMapItemActions.setAttributeFilterValueState),
         concatLatestFrom(() => this.store.select(selectActiveMapItems)),
         tap(([action, activeMapItems]) => {
-          const currentActiveMapItem = activeMapItems.find((activeMapItem) => activeMapItem.id === action.activeMapItem.id);
-          if (currentActiveMapItem?.filterConfigurations) {
+          const currentActiveMapItem = activeMapItems
+            .filter(isActiveMapItemOfType(Gb2WmsActiveMapItem))
+            .find((activeMapItem) => activeMapItem.id === action.activeMapItem.id);
+          if (currentActiveMapItem?.settings.filterConfigurations) {
             const attributeFilterParameters = this.gb3TopicsService.transformFilterConfigurationToParameters(
-              currentActiveMapItem.filterConfigurations
+              currentActiveMapItem.settings.filterConfigurations
             );
             this.mapService.setAttributeFilters(attributeFilterParameters, currentActiveMapItem);
           }
@@ -146,7 +150,7 @@ export class ActiveMapItemEffects {
         tap(({favourite}) => {
           favourite.forEach((fav, idx) => {
             this.mapService.removeMapItem(fav.id);
-            this.mapService.addMapItem(fav, idx);
+            fav.addToMap(this.mapService, idx);
           });
         })
       );
@@ -159,7 +163,7 @@ export class ActiveMapItemEffects {
       ofType(ActiveMapItemActions.addInitialMapItems),
       tap(({initialMapItems}) => {
         initialMapItems.forEach((initialMapItem) => {
-          this.mapService.addMapItem(initialMapItem, 0);
+          initialMapItem.addToMap(this.mapService, 0);
         });
       }),
       map(() => MapConfigActions.clearInitialMapsConfig())

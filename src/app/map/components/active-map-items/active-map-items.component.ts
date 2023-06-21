@@ -9,11 +9,16 @@ import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.re
 import {MatDialog} from '@angular/material/dialog';
 import {FavouriteCreationDialogComponent} from '../favourite-creation-dialog/favourite-creation-dialog.component';
 import {PanelClass} from '../../../shared/enums/panel-class.enum';
+import {MapNoticeDialogComponent} from '../map-notice-dialog/map-notice-dialog.component';
+import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
+import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
 
-const favouriteHelperMessages = {
+const FAVOURITE_HELPER_MESSAGES = {
   noMapsAdded: 'Fügen Sie mindestens 1 Karte hinzu, um einen Favoriten anzulegen.',
   notAuthenticated: 'Loggen Sie sich ein, um Favoriten hinzuzufügen.'
 };
+const FAVOURITE_CREATION_DIALOG_MAX_WIDTH = 500;
+const MAP_NOTICES_DIALOG_MAX_WIDTH = 968;
 
 @Component({
   selector: 'active-map-items',
@@ -22,9 +27,11 @@ const favouriteHelperMessages = {
 })
 export class ActiveMapItemsComponent implements OnInit, OnDestroy {
   public isAuthenticated: boolean = false;
-  public favouriteHelperMessages = favouriteHelperMessages;
   public activeMapItems: ActiveMapItem[] = [];
   public isMinimized = false;
+  public numberOfNotices: number = 0;
+  public numberOfUnreadNotices: number = 0;
+  public readonly favouriteHelperMessages = FAVOURITE_HELPER_MESSAGES;
 
   private readonly activeMapItems$ = this.store.select(selectActiveMapItems);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
@@ -57,12 +64,23 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
   public showFavouriteDialog() {
     this.dialogService.open(FavouriteCreationDialogComponent, {
       panelClass: PanelClass.ApiWrapperDialog,
-      restoreFocus: false
+      restoreFocus: false,
+      maxWidth: FAVOURITE_CREATION_DIALOG_MAX_WIDTH
     });
   }
 
   public toggleMinimizeActiveMapItems() {
     this.isMinimized = !this.isMinimized;
+  }
+
+  public showMapNotices() {
+    this.store.dispatch(ActiveMapItemActions.markAllActiveMapItemNoticeAsRead());
+    this.dialogService.open(MapNoticeDialogComponent, {
+      panelClass: PanelClass.ApiWrapperDialog,
+      restoreFocus: false,
+      data: this.activeMapItems.filter((activeMapItem) => activeMapItem.settings.type === 'gb2Wms' && activeMapItem.settings.notice), // todo: As soon as more layers with notices come into play, a selector on the interface would be required.
+      maxWidth: MAP_NOTICES_DIALOG_MAX_WIDTH
+    });
   }
 
   private initSubscriptions() {
@@ -71,6 +89,8 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
         .pipe(
           tap((currentActiveMapItems) => {
             this.activeMapItems = currentActiveMapItems;
+            const gb2ActiveMapItems = currentActiveMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem));
+            this.updateNumberOfNotices(gb2ActiveMapItems);
           })
         )
         .subscribe()
@@ -84,5 +104,11 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
         )
         .subscribe()
     );
+  }
+
+  private updateNumberOfNotices(currentActiveMapItems: Gb2WmsActiveMapItem[]) {
+    const activeMapItemsWithNotices = currentActiveMapItems.filter((activeMapItem) => activeMapItem.settings.notice);
+    this.numberOfNotices = activeMapItemsWithNotices.length;
+    this.numberOfUnreadNotices = activeMapItemsWithNotices.filter((activeMapItem) => !activeMapItem.settings.isNoticeMarkedAsRead).length;
   }
 }

@@ -2,12 +2,14 @@ import {createSelector} from '@ngrx/store';
 import {selectActiveMapItems} from '../reducers/active-map-item.reducer';
 import {SearchIndex} from '../../../shared/services/apis/search/interfaces/search-index.interface';
 import {ACTIVE_SEARCH_INDICES} from '../../../shared/constants/search.constants';
+import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
+import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
 
 export const selectAvailableSpecialSearchIndexes = createSelector(selectActiveMapItems, (activeMapItems) => {
   const availableIndexes: SearchIndex[] = [];
 
-  activeMapItems.forEach((mapItem) => {
-    mapItem.searchConfigurations?.forEach((searchConfig) => {
+  activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).forEach((mapItem) => {
+    mapItem.settings.searchConfigurations?.forEach((searchConfig) => {
       const alreadyInElasticsearch = ACTIVE_SEARCH_INDICES.includes(searchConfig.index.toLowerCase());
       const notInOutputYet = !availableIndexes.map((index) => index.indexName).includes(searchConfig.index);
       if (alreadyInElasticsearch && notInOutputYet) {

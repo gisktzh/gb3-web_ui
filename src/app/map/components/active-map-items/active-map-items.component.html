@@ -7,6 +7,17 @@
       [matBadge]="this.activeMapItems.length"
     ></span>
     <div class="active-map-items__header__buttons">
+      <button
+        class="active-map-items__header__buttons__notices"
+        (click)="showMapNotices()"
+        [disabled]="numberOfNotices === 0"
+        [matBadge]="numberOfUnreadNotices"
+        [matBadgeHidden]="numberOfUnreadNotices === 0"
+        mat-icon-button
+      >
+        <mat-icon>notifications</mat-icon>
+      </button>
+      <mat-divider class="active-map-items__header__buttons__divider" [vertical]="true"></mat-divider>
       <button (click)="removeAllActiveMapItems()" [disabled]="activeMapItems.length === 0" mat-icon-button>
         <mat-icon>delete_outlined</mat-icon>
       </button>

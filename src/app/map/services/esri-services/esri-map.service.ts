@@ -4,7 +4,6 @@ import {MapConfigActions} from '../../../state/map/actions/map-config.actions';
 import {TransformationService} from './transformation.service';
 import {selectActiveBasemapId, selectMapConfigState} from '../../../state/map/reducers/map-config.reducer';
 import {first, skip, Subscription, tap, withLatestFrom} from 'rxjs';
-import {FeatureInfoActions} from '../../../state/map/actions/feature-info.actions';
 import {GeoJSONMapperService} from './geo-json-mapper.service';
 import * as dayjs from 'dayjs';
 import {MapService} from '../../interfaces/map.service';
@@ -43,6 +42,7 @@ import {GeometryWithSrs, PointWithSrs} from '../../../shared/interfaces/geojson-
 import {DrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {EsriSymbolizationService} from './esri-symbolization.service';
 import {MapConstants} from '../../../shared/constants/map.constants';
+import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
 
@@ -127,14 +127,14 @@ export class EsriMapService implements MapService {
           this.initDrawingLayers();
           this.addScaleBar();
           activeMapItems.forEach((mapItem, position) => {
-            this.addMapItem(mapItem, position);
+            mapItem.addToMap(this, position);
           });
         })
       )
       .subscribe();
   }
 
-  public addMapItem(mapItem: ActiveMapItem, position: number) {
+  public addGb2WmsLayer(mapItem: Gb2WmsActiveMapItem, position: number) {
     if (this.findEsriLayer(mapItem.id)) {
       return;
     }
@@ -142,11 +142,11 @@ export class EsriMapService implements MapService {
     const esriLayer: __esri.Layer = new EsriWMSLayer({
       id: mapItem.id,
       title: mapItem.title,
-      url: mapItem.url,
+      url: mapItem.settings.url,
       visible: mapItem.visible,
       opacity: mapItem.opacity,
       imageFormat: this.wmsImageFormatMimeType,
-      sublayers: mapItem.layers.map((layer) => {
+      sublayers: mapItem.settings.layers.map((layer) => {
         return {
           id: layer.id,
           name: layer.layer,
@@ -155,9 +155,9 @@ export class EsriMapService implements MapService {
         } as __esri.WMSSublayerProperties;
       })
     });
-    if (mapItem.timeSliderExtent) {
+    if (mapItem.settings.timeSliderExtent) {
       // apply initial time slider settings
-      this.setEsriTimeSliderExtent(mapItem.timeSliderExtent, mapItem, esriLayer);
+      this.setEsriTimeSliderExtent(mapItem.settings.timeSliderExtent, mapItem, esriLayer);
     }
     this.attachLayerListeners(esriLayer);
     /**
@@ -227,7 +227,7 @@ export class EsriMapService implements MapService {
     }) as never;
   }
 
-  public setTimeSliderExtent(timeExtent: TimeExtent, mapItem: ActiveMapItem) {
+  public setTimeSliderExtent(timeExtent: TimeExtent, mapItem: Gb2WmsActiveMapItem) {
     const esriLayer = this.findEsriLayer(mapItem.id);
 
     if (esriLayer) {
@@ -235,7 +235,7 @@ export class EsriMapService implements MapService {
     }
   }
 
-  public setAttributeFilters(attributeFilterParameters: {name: string; value: string}[], mapItem: ActiveMapItem) {
+  public setAttributeFilters(attributeFilterParameters: {name: string; value: string}[], mapItem: Gb2WmsActiveMapItem) {
     const esriLayer = this.findEsriLayer(mapItem.id);
     if (esriLayer && esriLayer instanceof EsriWMSLayer) {
       const customLayerParameters: {[index: string]: string} = esriLayer.customLayerParameters ?? {};
@@ -336,11 +336,11 @@ export class EsriMapService implements MapService {
     return new EsriPoint({spatialReference: {wkid: srs}, x: coordinates[0], y: coordinates[1]});
   }
 
-  private setEsriTimeSliderExtent(timeExtent: TimeExtent, mapItem: ActiveMapItem, esriLayer: __esri.Layer) {
-    if (esriLayer && esriLayer instanceof EsriWMSLayer && mapItem.timeSliderConfiguration) {
-      switch (mapItem.timeSliderConfiguration.sourceType) {
+  private setEsriTimeSliderExtent(timeExtent: TimeExtent, mapItem: Gb2WmsActiveMapItem, esriLayer: __esri.Layer) {
+    if (esriLayer && esriLayer instanceof EsriWMSLayer && mapItem.settings.timeSliderConfiguration) {
+      switch (mapItem.settings.timeSliderConfiguration.sourceType) {
         case 'parameter':
-          this.applyTimeSliderCustomParameters(esriLayer, timeExtent, mapItem.timeSliderConfiguration);
+          this.applyTimeSliderCustomParameters(esriLayer, timeExtent, mapItem.settings.timeSliderConfiguration);
           break;
         case 'layer':
           this.synchronizeTimeSliderLayers(esriLayer, timeExtent, mapItem);
@@ -379,12 +379,12 @@ export class EsriMapService implements MapService {
    * Therefore, first all time slider specific sub-layers are filtered. And from those only the ones which have a date inside the current
    * time extent are selected to be visible.
    */
-  private synchronizeTimeSliderLayers(esriLayer: __esri.WMSLayer, timeSliderExtent: TimeExtent, mapItem: ActiveMapItem) {
-    if (!mapItem.timeSliderConfiguration) {
+  private synchronizeTimeSliderLayers(esriLayer: __esri.WMSLayer, timeSliderExtent: TimeExtent, mapItem: Gb2WmsActiveMapItem) {
+    if (!mapItem.settings.timeSliderConfiguration) {
       return;
     }
 
-    const timeSliderConfig = mapItem.timeSliderConfiguration;
+    const timeSliderConfig = mapItem.settings.timeSliderConfiguration;
     const timeSliderLayerSource = timeSliderConfig.source as TimeSliderLayerSource;
     const timeSliderLayerNames = timeSliderLayerSource.layers.map((l) => l.layerName);
     const timeSliderLayerNamesToShow = timeSliderLayerSource.layers
@@ -394,7 +394,7 @@ export class EsriMapService implements MapService {
       })
       .map((l) => l.layerName);
     // get the layer configs of all time slider specific layers that are  also within the current time extent
-    const layers = mapItem.layers.filter((l) => timeSliderLayerNamesToShow.includes(l.layer));
+    const layers = mapItem.settings.layers.filter((l) => timeSliderLayerNamesToShow.includes(l.layer));
     // include all layers that are not specified in the time slider config
     const esriSublayers = esriLayer.sublayers.filter((sl) => !timeSliderLayerNames.includes(sl.name));
     // now add all layers that are in the time slider config and within the current time extent
@@ -604,7 +604,7 @@ export class EsriMapService implements MapService {
   }
 
   private dispatchFeatureInfoRequest(x: number, y: number) {
-    this.store.dispatch(FeatureInfoActions.sendRequest({x, y}));
+    this.store.dispatch(MapConfigActions.handleMapClick({x, y}));
   }
 
   private updateMapConfig() {

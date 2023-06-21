@@ -112,10 +112,6 @@ export interface TopicsFeatureInfoDetailData {
     x: number;
     /** Center y coord of query bbox */
     y: number;
-    /** DTM height at query pos (-1 if unknown) */
-    height_dtm: number;
-    /** DOM height at query pos (-1 if unknown) */
-    height_dom: number;
     results: {
       /** Topic name */
       topic: string;
@@ -150,6 +146,49 @@ export interface TopicsFeatureInfoDetailData {
         }[];
       }[];
     };
+  };
+}
+
+export interface GeneralInfoListData {
+  general_info: {
+    spatial_reference: {
+      /** Coordinates */
+      coordinates: number[];
+      /** CRS */
+      crs: string;
+      /** Spatial Reference Name */
+      name: string;
+    };
+    /** Height above sea level (Digitales Oberflächenmodell) */
+    height_dom: number;
+    /** Height above sea level (Digitales Terrainmodell) */
+    height_dtm: number;
+    /** Alternative spatial references */
+    alternative_spatial_references: {
+      /** Coordinates */
+      coordinates: number[];
+      /** CRS */
+      crs: string;
+    }[];
+    /** External maps */
+    external_maps: {
+      /** Name */
+      name: string;
+      /** URL */
+      url: string;
+    }[];
+    parcel: {
+      /** BFS number */
+      bfsnr: number;
+      /** EGRIS egrid */
+      egris_egrid: string;
+      /** Municipality name */
+      municipality_name: string;
+      oereb_extract: {
+        /** PDF URL */
+        pdf_url: string;
+      };
+    } | null;
   };
 }
 
@@ -195,6 +234,8 @@ export interface TopicsListData {
       geolion: number | null;
       /** Keywords */
       keywords: string[];
+      /** Topic-specific notice for end-users */
+      notice: string | null;
       timesliderConfiguration: {
         /** name of the timeslider for displaying in UI */
         name: string;

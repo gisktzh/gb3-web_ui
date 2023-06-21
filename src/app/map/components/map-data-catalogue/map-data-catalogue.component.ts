@@ -19,11 +19,13 @@ import {FavouriteDeletionDialogComponent} from '../favourite-deletion-dialog/fav
 import {PanelClass} from '../../../shared/enums/panel-class.enum';
 import {FavouritesService} from '../../services/favourites.service';
 import {MatDialog} from '@angular/material/dialog';
+import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 
 /**
  * Defines the upper limit (inclusive) of filtered results which trigger an automatic open of the associated expansion panel.
  */
 const AUTO_OPEN_THRESHOLD = 3;
+const FAVOURITE_DELETION_DIALOG_MAX_WIDTH = 500;
 
 @Component({
   selector: 'map-data-catalogue',
@@ -31,7 +33,7 @@ const AUTO_OPEN_THRESHOLD = 3;
   styleUrls: ['./map-data-catalogue.component.scss']
 })
 export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewInit {
-  @Output() changeIsMinimizedEvent = new EventEmitter<boolean>();
+  @Output() public readonly changeIsMinimizedEvent = new EventEmitter<boolean>();
 
   public topics: Topic[] = [];
   public catalogueLoadingState: LoadingState = 'undefined';
@@ -89,7 +91,8 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
     this.dialogService.open<FavouriteDeletionDialogComponent, {favourite: Favourite}, boolean>(FavouriteDeletionDialogComponent, {
       data: {favourite},
       panelClass: PanelClass.ApiWrapperDialog,
-      restoreFocus: false
+      restoreFocus: false,
+      maxWidth: FAVOURITE_DELETION_DIALOG_MAX_WIDTH
     });
   }
 
@@ -106,11 +109,11 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
       activeMap = originalActiveMap;
     }
 
-    this.addActiveItem(new ActiveMapItem(activeMap));
+    this.addActiveItem(ActiveMapItemFactory.createGb2WmsMapItem(activeMap));
   }
 
   public addActiveLayer(activeMap: Map, layer: MapLayer) {
-    this.addActiveItem(new ActiveMapItem(activeMap, layer));
+    this.addActiveItem(ActiveMapItemFactory.createGb2WmsMapItem(activeMap, layer));
   }
 
   public trackByTopicTitle(index: number, item: Topic) {

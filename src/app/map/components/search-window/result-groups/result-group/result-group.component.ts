@@ -7,6 +7,7 @@ import {MapService} from '../../../../interfaces/map.service';
 import {ActiveMapItem} from '../../../../models/active-map-item.model';
 import {ActiveMapItemActions} from '../../../../../state/map/actions/active-map-item.actions';
 import {SearchIndexType} from '../../../../../shared/types/search-index-type';
+import {ActiveMapItemFactory} from '../../../../../shared/factories/active-map-item.factory';
 
 const DEFAULT_ZOOM_SCALE = 1000;
 
@@ -34,7 +35,7 @@ export class ResultGroupComponent {
   }
 
   public addActiveMap(activeMap: Map) {
-    this.addActiveItem(new ActiveMapItem(activeMap));
+    this.addActiveItem(ActiveMapItemFactory.createGb2WmsMapItem(activeMap));
   }
 
   private addActiveItem(activeMapItem: ActiveMapItem) {

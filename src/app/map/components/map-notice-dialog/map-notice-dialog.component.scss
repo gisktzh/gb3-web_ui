@@ -1,0 +1,25 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.map-notice {
+  display: flex;
+  padding: 32px 0;
+
+  .map-notice__image {
+    height: 35px;
+    width: 35px;
+    border-radius: 2px;
+  }
+
+  .map-notice__text-section {
+    padding-left: 1em;
+    width: 100%;
+
+    .map-notice__text-section__title {
+      font-family: ktzh-variables.$zh-font-family-bold;
+    }
+
+    .map-notice__text-section__text {
+      margin: 0;
+    }
+  }
+}

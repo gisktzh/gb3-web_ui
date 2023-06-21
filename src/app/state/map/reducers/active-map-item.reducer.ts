@@ -3,6 +3,8 @@ import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {ActiveMapItem} from '../../../map/models/active-map-item.model';
 import {ActiveMapItemState} from '../states/active-map-item.state';
 import {produce} from 'immer';
+import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
+import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
 
 export const activeMapItemFeatureKey = 'activeMapItem';
 
@@ -53,9 +55,9 @@ export const activeMapItemFeature = createFeature({
     on(
       ActiveMapItemActions.setSublayerVisibility,
       produce((draft, {visible, activeMapItem, layerId}) => {
-        draft.activeMapItems.forEach((mapItem) => {
+        draft.activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).forEach((mapItem) => {
           if (mapItem.id === activeMapItem.id) {
-            const sublayer = mapItem.layers.find((l) => l.id === layerId);
+            const sublayer = mapItem.settings.layers.find((l) => l.id === layerId);
             if (sublayer) {
               sublayer.visible = visible;
             }
@@ -92,10 +94,10 @@ export const activeMapItemFeature = createFeature({
     on(
       ActiveMapItemActions.reorderSublayer,
       produce((draft, {activeMapItem, previousPosition, currentPosition}) => {
-        draft.activeMapItems.forEach((mapItem) => {
+        draft.activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).forEach((mapItem) => {
           if (mapItem.id === activeMapItem.id) {
-            const sublayerToReorder = mapItem.layers.splice(previousPosition, 1);
-            mapItem.layers.splice(currentPosition, 0, ...sublayerToReorder);
+            const sublayerToReorder = mapItem.settings.layers.splice(previousPosition, 1);
+            mapItem.settings.layers.splice(currentPosition, 0, ...sublayerToReorder);
           }
         });
       })
@@ -103,9 +105,9 @@ export const activeMapItemFeature = createFeature({
     on(
       ActiveMapItemActions.setTimeSliderExtent,
       produce((draft, {timeExtent, activeMapItem}) => {
-        draft.activeMapItems.forEach((mapItem) => {
+        draft.activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).forEach((mapItem) => {
           if (mapItem.id === activeMapItem.id) {
-            mapItem.timeSliderExtent = timeExtent;
+            mapItem.settings.timeSliderExtent = timeExtent;
           }
         });
       })
@@ -113,9 +115,9 @@ export const activeMapItemFeature = createFeature({
     on(
       ActiveMapItemActions.setAttributeFilterValueState,
       produce((draft, {isFilterValueActive, filterValueName, attributeFilterParameter, activeMapItem}) => {
-        draft.activeMapItems.forEach((mapItem) => {
+        draft.activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).forEach((mapItem) => {
           if (mapItem.id === activeMapItem.id) {
-            const filterValue = mapItem.filterConfigurations
+            const filterValue = mapItem.settings.filterConfigurations
               ?.find((filterConfig) => filterConfig.parameter === attributeFilterParameter)
               ?.filterValues.find((fv) => fv.name === filterValueName);
             if (filterValue) {
@@ -136,7 +138,15 @@ export const activeMapItemFeature = createFeature({
       const activeMapItemsToStay = state.activeMapItems.filter((activeMapItem) => !initialMapItemIds.includes(activeMapItem.id));
 
       return {...state, activeMapItems: [...initialMapItems, ...activeMapItemsToStay]};
-    })
+    }),
+    on(
+      ActiveMapItemActions.markAllActiveMapItemNoticeAsRead,
+      produce((draft) => {
+        draft.activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).forEach((mapItem) => {
+          mapItem.settings.isNoticeMarkedAsRead = true;
+        });
+      })
+    )
   )
 });
 

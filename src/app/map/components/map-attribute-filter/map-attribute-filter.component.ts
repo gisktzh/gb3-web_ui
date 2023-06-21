@@ -1,5 +1,4 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActiveMapItem} from '../../models/active-map-item.model';
 import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
@@ -7,6 +6,8 @@ import {MapAttributeFiltersItemActions} from '../../../state/map/actions/map-att
 import {concatLatestFrom} from '@ngrx/effects';
 import {selectActiveMapItems} from '../../../state/map/reducers/active-map-item.reducer';
 import {selectMapAttributeFiltersItemId} from '../../../state/map/reducers/map-attribute-filters-item.reducer';
+import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
+import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
 
 @Component({
   selector: 'map-attribute-filter',
@@ -14,7 +15,7 @@ import {selectMapAttributeFiltersItemId} from '../../../state/map/reducers/map-a
   styleUrls: ['./map-attribute-filter.component.scss']
 })
 export class MapAttributeFilterComponent implements OnInit, OnDestroy {
-  public mapAttributeFiltersItem: ActiveMapItem | undefined;
+  public mapAttributeFiltersItem: Gb2WmsActiveMapItem | undefined;
 
   private readonly subscriptions: Subscription = new Subscription();
   private readonly mapAttributeFiltersItem$ = this.store.select(selectMapAttributeFiltersItemId);
@@ -47,7 +48,7 @@ export class MapAttributeFilterComponent implements OnInit, OnDestroy {
     }
   }
 
-  private handleMapAttributeFiltersItemChange(mapAttributeFiltersItemId: string | undefined, activeMapItems: ActiveMapItem[]) {
+  private handleMapAttributeFiltersItemChange(mapAttributeFiltersItemId: string | undefined, activeMapItems: Gb2WmsActiveMapItem[]) {
     let mapAttributeFiltersItem;
     if (mapAttributeFiltersItemId !== undefined) {
       mapAttributeFiltersItem = activeMapItems.find((activeMapItem) => activeMapItem.id === mapAttributeFiltersItemId);
@@ -65,7 +66,8 @@ export class MapAttributeFilterComponent implements OnInit, OnDestroy {
         .pipe(
           concatLatestFrom(() => this.activeMapItems$),
           tap(([activeMapItemId, activeMapItems]) => {
-            this.handleMapAttributeFiltersItemChange(activeMapItemId, activeMapItems);
+            const gb2WmsMapItems = activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem));
+            this.handleMapAttributeFiltersItemChange(activeMapItemId, gb2WmsMapItems);
           })
         )
         .subscribe()
@@ -75,7 +77,8 @@ export class MapAttributeFilterComponent implements OnInit, OnDestroy {
       this.activeMapItems$
         .pipe(
           tap((activeMapItems) => {
-            this.handleMapAttributeFiltersItemChange(this.mapAttributeFiltersItem?.id, activeMapItems);
+            const gb2WmsMapItems = activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem));
+            this.handleMapAttributeFiltersItemChange(this.mapAttributeFiltersItem?.id, gb2WmsMapItems);
           })
         )
         .subscribe()

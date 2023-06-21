@@ -1,11 +1,11 @@
 import {Observable} from 'rxjs';
 import {TimeExtent} from './time-extent.interface';
-import {ActiveMapItem} from '../models/active-map-item.model';
 import {TimeSliderConfiguration} from '../../shared/interfaces/topic.interface';
+import {Gb2WmsActiveMapItem} from '../models/implementations/gb2-wms.model';
 
 export interface TimeSliderService {
   /** Assigns a time slider widget to the given container based on the active map item */
-  assignTimeSliderWidget(activeMapItem: ActiveMapItem, container: HTMLDivElement): void;
+  assignTimeSliderWidget(activeMapItem: Gb2WmsActiveMapItem, container: HTMLDivElement): void;
 
   /** Returns an observable which fires an event in case the time extent changes for the active map item with the given ID */
   watchTimeExtent(activeMapItemId: string): Observable<TimeExtent>;

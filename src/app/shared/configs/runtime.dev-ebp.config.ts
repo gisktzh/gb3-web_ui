@@ -27,7 +27,7 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       },
       ktzhWebsite: {
         baseUrl: 'https://www.zh.ch',
-        useMockData: true
+        useMockData: false
       },
       gravCms: {
         baseUrl: 'https://gb3-grav-cms.icycliff-4b8f6c95.switzerlandnorth.azurecontainerapps.io',
@@ -66,7 +66,7 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       },
       ktzhWebsite: {
         baseUrl: 'https://www.zh.ch',
-        useMockData: true
+        useMockData: false
       },
       gravCms: {
         baseUrl: 'https://gb3-grav-cms.icycliff-4b8f6c95.switzerlandnorth.azurecontainerapps.io',
