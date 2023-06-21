@@ -15,6 +15,7 @@ export class MapToolsComponent implements AfterViewInit {
   }
 
   public ngAfterViewInit() {
+    // TODO WES: remove
     this.showPrintDialog();
   }
 }

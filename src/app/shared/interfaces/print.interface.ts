@@ -21,32 +21,8 @@ export interface PrintInfo {
   }[];
   /** available layouts */
   layouts: {
-    /** layout name */
-    name:
-      | 'A4 hoch'
-      | 'A4 quer'
-      | 'A3 hoch'
-      | 'A3 quer'
-      | 'A2 hoch'
-      | 'A2 quer'
-      | 'A1 hoch'
-      | 'A1 quer'
-      | 'A0 hoch'
-      | 'A0 quer'
-      | 'FomesBeitragsabrechnung'
-      | 'Strassenlaerm'
-      | 'Baustellen_SR'
-      | 'Baustellen_UB'
-      | 'Baustellen_ZH'
-      | 'Baustellen_SR_edit'
-      | 'Baustellen_UB_edit'
-      | 'Baustellen_ZH_edit'
-      | 'Forstfeuer'
-      | 'Fluglaerm'
-      | 'Schadenmeldeformular'
-      | 'Naturgefahren'
-      | 'Kartenset'
-      | 'Wanderwege';
+    size: string;
+    orientation?: PrintOrientation;
     map: {
       /** map width in pixels */
       width: number;
@@ -70,10 +46,15 @@ export interface PrintCreation {
    */
   srs: string;
   /**
-   * layout
-   * @example "A4 hoch"
+   * layout size
+   * @example "A4"
    */
-  layout: string;
+  layoutSize: string;
+  /**
+   * layout orientation
+   * @example "hoch"
+   */
+  layoutOrientation: PrintOrientation | undefined;
   /**
    * dpi
    * @example 300
@@ -199,6 +180,8 @@ export interface PrintCreation {
     withLegend: number;
   }[];
 }
+
+export type PrintOrientation = 'hoch' | 'quer';
 
 export interface PrintCreationResponse {
   /** print document retrieval endpoint URL */

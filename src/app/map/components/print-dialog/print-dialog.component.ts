@@ -10,7 +10,7 @@ import {
   selectPrintInfo,
   selectPrintInfoLoadingState
 } from '../../../state/map/reducers/print.reducer';
-import {PrintCreation, PrintCreationResponse, PrintInfo} from '../../../shared/interfaces/print.interface';
+import {PrintCreation, PrintCreationResponse, PrintInfo, PrintOrientation} from '../../../shared/interfaces/print.interface';
 import {PrintActions} from '../../../state/map/actions/print.actions';
 import {MapConfigState} from '../../../state/map/states/map-config.state';
 import {selectMapConfigState} from '../../../state/map/reducers/map-config.reducer';
@@ -18,7 +18,8 @@ import {selectMapConfigState} from '../../../state/map/reducers/map-config.reduc
 interface PrintForm {
   title: FormControl<string | null>;
   comment: FormControl<string | null>;
-  layout: FormControl<string | null>;
+  layoutSize: FormControl<string | null>;
+  layoutOrientation: FormControl<PrintOrientation | null>;
   dpi: FormControl<number | null>;
   rotation: FormControl<number | null>;
   scale: FormControl<number | null>;
@@ -35,8 +36,9 @@ interface PrintForm {
 export class PrintDialogComponent implements OnInit, OnDestroy, HasSavingState {
   public readonly formGroup: FormGroup<PrintForm> = new FormGroup({
     title: new FormControl('', [Validators.required, Validators.pattern(/[\S]/)]),
-    comment: new FormControl(''),
-    layout: new FormControl('', [Validators.required]),
+    comment: new FormControl(),
+    layoutSize: new FormControl('', [Validators.required]),
+    layoutOrientation: new FormControl(),
     dpi: new FormControl(0, [Validators.required]),
     rotation: new FormControl(0, [Validators.min(-90), Validators.max(90)]),
     scale: new FormControl(0, [Validators.required]),
@@ -50,6 +52,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy, HasSavingState {
   public printInfoLoadingState: LoadingState = 'undefined';
   public printCreationResponse?: PrintCreationResponse;
   public mapConfigState?: MapConfigState;
+  public uniqueLayoutSizes: string[] = [];
 
   private readonly subscriptions: Subscription = new Subscription();
 
@@ -124,6 +127,17 @@ export class PrintDialogComponent implements OnInit, OnDestroy, HasSavingState {
         )
         .subscribe()
     );
+
+    this.subscriptions.add(
+      this.formGroup.valueChanges
+        .pipe(
+          tap(() => {
+            console.log('bip!');
+            this.updateFormGroupControlsState();
+          })
+        )
+        .subscribe()
+    );
   }
 
   private updateFormGroupState() {
@@ -131,25 +145,48 @@ export class PrintDialogComponent implements OnInit, OnDestroy, HasSavingState {
       this.formGroup.disable();
     } else {
       this.formGroup.enable();
-      // TODO WES: remove the following two
-      this.formGroup.controls.showLegend.disable();
-      this.formGroup.controls.printActiveMapsSeparately.disable();
+      this.updateFormGroupControlsState();
     }
+  }
+
+  private updateFormGroupControlsState(emitEvent = false) {
+    if (this.formGroup.disabled) {
+      return;
+    }
+
+    const formGroupValue = this.formGroup.value;
+    const currentLayout = this.printInfo?.layouts.find((layout) => layout.size === formGroupValue.layoutSize);
+    if (!currentLayout?.rotation) {
+      this.formGroup.controls.rotation.disable({emitEvent});
+    } else {
+      this.formGroup.controls.rotation.enable({emitEvent});
+    }
+    if (!currentLayout?.orientation) {
+      this.formGroup.controls.layoutOrientation.disable({emitEvent});
+    } else {
+      this.formGroup.controls.layoutOrientation.enable({emitEvent});
+    }
+
+    // TODO WES: remove the following two
+    this.formGroup.controls.showLegend.disable({emitEvent});
+    this.formGroup.controls.printActiveMapsSeparately.disable({emitEvent});
   }
 
   private initializeDefaultFormValues(printInfo: PrintInfo | undefined) {
     const defaultLayout = printInfo?.layouts[0];
     this.formGroup.setValue({
       title: '',
-      comment: '',
-      layout: defaultLayout?.name ?? '',
+      comment: null,
+      layoutSize: defaultLayout?.size ?? '',
+      layoutOrientation: defaultLayout?.orientation ?? 'hoch',
       dpi: printInfo?.dpis[0]?.value ?? 0,
-      rotation: defaultLayout?.rotation ? 0 : null,
+      rotation: null,
       scale: printInfo?.scales[0]?.value ?? 0,
       outputFormat: printInfo?.outputFormats[0]?.name ?? '',
       showLegend: false,
       printActiveMapsSeparately: false
     });
+    this.uniqueLayoutSizes = printInfo ? [...new Set(printInfo.layouts.map((layout) => layout.size))] : [];
   }
 
   public close() {
@@ -166,7 +203,8 @@ export class PrintDialogComponent implements OnInit, OnDestroy, HasSavingState {
     const printCreation: PrintCreation = {
       units: 'm',
       dpi: value.dpi ?? 0,
-      layout: value.layout ?? '',
+      layoutSize: value.layoutSize ?? '',
+      layoutOrientation: value.layoutOrientation ?? undefined,
       outputFormat: value.outputFormat ?? '',
       srs: 'EPSG:2056',
       layers: [

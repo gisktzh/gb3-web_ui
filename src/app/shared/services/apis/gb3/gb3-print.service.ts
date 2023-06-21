@@ -3,7 +3,7 @@ import {Gb3ApiService} from './gb3-api.service';
 import {CreateCreateData, CreateCreatePayload, InfoJsonListData} from '../../../models/gb3-api-generated.interfaces';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {PrintCreation, PrintCreationResponse, PrintInfo} from '../../../interfaces/print.interface';
+import {PrintCreation, PrintCreationResponse, PrintInfo, PrintOrientation} from '../../../interfaces/print.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +13,14 @@ export class Gb3PrintService extends Gb3ApiService {
 
   public loadPrintInfo(): Observable<PrintInfo> {
     const printInfoData = this.get<InfoJsonListData>(this.createInfoUrl());
-    return printInfoData.pipe(map((data) => this.mapInfoJsonListDataToPrintInfo(data)));
+    return printInfoData.pipe(
+      map((data) => {
+        // TODO WES: remove
+        data.layouts?.push({map: {height: 1, width: 1}, name: 'FomesBeitragsabrechnung', rotation: false});
+        return data;
+      }),
+      map((data) => this.mapInfoJsonListDataToPrintInfo(data))
+    );
   }
 
   public createPrintJob(printCreation: PrintCreation): Observable<PrintCreationResponse> {
@@ -44,14 +51,25 @@ export class Gb3PrintService extends Gb3ApiService {
       outputFormats: data.outputFormats ?? [],
       scales: data.scales ?? [],
       dpis: data.dpis ?? [],
-      layouts: data.layouts ?? []
+      layouts: data.layouts
+        ? data.layouts.map((layout) => {
+            const {size, orientation} = this.transformLayoutNameToSizeAndOrientation(layout.name);
+            return {
+              name: layout.name,
+              map: layout.map,
+              rotation: layout.rotation,
+              size: size,
+              orientation: orientation
+            };
+          })
+        : []
     };
   }
 
   private mapPrintCreationToCreateCreatePayload(printCreation: PrintCreation): CreateCreatePayload {
     return {
       dpi: printCreation.dpi,
-      layout: printCreation.layout,
+      layout: this.transformSizeAndOrientationToLayoutName(printCreation.layoutSize, printCreation.layoutOrientation),
       srs: printCreation.srs,
       outputFormat: printCreation.outputFormat,
       units: printCreation.units,
@@ -88,5 +106,34 @@ export class Gb3PrintService extends Gb3ApiService {
         };
       })
     };
+  }
+
+  /**
+   * Transforms the given layout string (e.g. `A4 hoch`) into size (`A4`) and orientation (`hoch`)
+   */
+  private transformLayoutNameToSizeAndOrientation(name: string): {size: string; orientation: PrintOrientation | undefined} {
+    const layout: {size: string; orientation: PrintOrientation | undefined} = {size: name, orientation: undefined};
+    const splitName = name.split(' ');
+    if (splitName.length === 2) {
+      const size = splitName[0];
+      let orientation: PrintOrientation | undefined;
+      switch (splitName[1] as PrintOrientation) {
+        case 'hoch':
+        case 'quer':
+          orientation = splitName[1] as PrintOrientation;
+      }
+      if (size && orientation) {
+        layout.size = size;
+        layout.orientation = orientation;
+      }
+    }
+    return layout;
+  }
+
+  private transformSizeAndOrientationToLayoutName(size: string, orientation: PrintOrientation | undefined): string {
+    if (!orientation) {
+      return size;
+    }
+    return `${size} ${orientation}`;
   }
 }
