@@ -1,6 +1,6 @@
 <div class="general-information">
-  <b>Koordinaten:</b> {{ generalInfoData.locationInformation.lv95x | number : '1.0-2' }} /
-  {{ generalInfoData.locationInformation.lv95y | number : '1.0-2' }}
+  <b>Koordinaten:</b> {{ generalInfoData.locationInformation.spatialReference.coordinates[0] | number : '1.0-10' }} /
+  {{ generalInfoData.locationInformation.spatialReference.coordinates[1] | number : '1.0-10' }}
   <br />
   <b>DTM:</b> {{ generalInfoData.locationInformation.heightDtm | number : '1.0-2' }} m / <b>DOM:</b>
   {{ generalInfoData.locationInformation.heightDom | number : '1.0-2' }} m
@@ -21,7 +21,7 @@
   <map-overlay-list-item overlayTitle="Weitere Standortinformationen">
     <div class="additional-general-information__content">
       <li *ngFor="let aCrs of generalInfoData.alternativeSpatialReferences" class="additional-general-information__content__crs">
-        <b>{{ aCrs.crs }}:</b> {{ aCrs.coordinates[0] | number : '1.0-6' }} / {{ aCrs.coordinates[1] | number : '1.0-6' }}
+        <b>{{ aCrs.crs }}:</b> {{ aCrs.coordinates[0] | number : '1.0-10' }} / {{ aCrs.coordinates[1] | number : '1.0-10' }}
       </li>
       <b>Weitere Kartendienste:</b>
       <li *ngFor="let extMap of generalInfoData.externalMaps" class="additional-general-information__content__links">

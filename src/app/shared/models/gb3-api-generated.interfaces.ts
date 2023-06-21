@@ -151,12 +151,14 @@ export interface TopicsFeatureInfoDetailData {
 
 export interface GeneralInfoListData {
   general_info: {
-    /** LV95 x coord */
-    lv95_e: number;
-    /** LV95 y coord */
-    lv95_n: number;
-    /** LV95 CRS */
-    crs: string;
+    spatial_reference: {
+      /** Coordinates */
+      coordinates: number[];
+      /** CRS */
+      crs: string;
+      /** Spatial Reference Name */
+      name: string;
+    };
     /** Height above sea level (Digitales Oberflächenmodell) */
     height_dom: number;
     /** Height above sea level (Digitales Terrainmodell) */
@@ -183,14 +185,8 @@ export interface GeneralInfoListData {
       /** Municipality name */
       municipality_name: string;
       oereb_extract: {
-        /** JSON URL */
-        json_url: string;
-        /** XML URL */
-        xml_url: string;
         /** PDF URL */
         pdf_url: string;
-        /** GB2 Dynamic Extract URL */
-        gb2_url: string;
       };
     } | null;
   };

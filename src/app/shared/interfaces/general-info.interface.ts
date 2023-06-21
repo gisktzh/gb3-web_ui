@@ -9,9 +9,14 @@ interface ExternalMap {
 }
 
 interface LocationInformation {
-  lv95x: number;
-  lv95y: number;
-  crs: string;
+  spatialReference: {
+    /** Coordinates */
+    coordinates: number[];
+    /** CRS */
+    crs: string;
+    /** Spatial Reference Name */
+    name: string;
+  };
   heightDom: number;
   heightDtm: number;
 }
@@ -24,14 +29,8 @@ interface Parcel {
   /** Municipality name */
   municipalityName: string;
   oerebExtract: {
-    /** JSON URL */
-    jsonUrl: string;
-    /** XML URL */
-    xmlUrl: string;
     /** PDF URL */
     pdfUrl: string;
-    /** GB2 Dynamic Extract URL */
-    gb2Url: string;
   };
 }
 
