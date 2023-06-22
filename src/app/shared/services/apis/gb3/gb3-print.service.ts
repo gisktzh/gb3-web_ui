@@ -84,7 +84,7 @@ export class Gb3PrintService extends Gb3ApiService {
           topic_title: page.topicTitle,
           user_comment: page.userComment,
           user_title: page.userTitle,
-          withlegend: page.withLegend
+          withlegend: page.withLegend ? 0 : 1
         };
       }),
       layers: printCreation.layers.map((layer) => {

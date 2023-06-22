@@ -10,10 +10,21 @@ import {
   selectPrintInfo,
   selectPrintInfoLoadingState
 } from '../../../state/map/reducers/print.reducer';
-import {PrintCreation, PrintCreationResponse, PrintInfo, PrintOrientation} from '../../../shared/interfaces/print.interface';
+import {
+  PrintCreation,
+  PrintCreationLayer,
+  PrintCreationResponse,
+  PrintInfo,
+  PrintOrientation
+} from '../../../shared/interfaces/print.interface';
 import {PrintActions} from '../../../state/map/actions/print.actions';
 import {MapConfigState} from '../../../state/map/states/map-config.state';
 import {selectMapConfigState} from '../../../state/map/reducers/map-config.reducer';
+import {ActiveMapItem} from '../../models/active-map-item.model';
+import {selectActiveMapItems} from '../../../state/map/reducers/active-map-item.reducer';
+import {MapDrawingService} from '../../services/map-drawing.service';
+import {MapConstants} from '../../../shared/constants/map.constants';
+import {BasemapConfigService} from '../../services/basemap-config.service';
 
 interface PrintForm {
   title: FormControl<string | null>;
@@ -35,7 +46,7 @@ interface PrintForm {
 })
 export class PrintDialogComponent implements OnInit, OnDestroy, HasSavingState {
   public readonly formGroup: FormGroup<PrintForm> = new FormGroup({
-    title: new FormControl('', [Validators.required, Validators.pattern(/[\S]/)]),
+    title: new FormControl(),
     comment: new FormControl(),
     layoutSize: new FormControl('', [Validators.required]),
     layoutOrientation: new FormControl(),
@@ -52,16 +63,22 @@ export class PrintDialogComponent implements OnInit, OnDestroy, HasSavingState {
   public printInfoLoadingState: LoadingState = 'undefined';
   public printCreationResponse?: PrintCreationResponse;
   public mapConfigState?: MapConfigState;
+  public activeMapItems?: ActiveMapItem[];
   public uniqueLayoutSizes: string[] = [];
 
   private readonly subscriptions: Subscription = new Subscription();
 
-  constructor(private readonly store: Store) {
+  constructor(
+    private readonly store: Store,
+    private readonly mapDrawingService: MapDrawingService,
+    private readonly basemapConfigService: BasemapConfigService
+  ) {
     this.formGroup.disable();
   }
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
+    this.mapDrawingService.clearPrintAreaHighlight();
   }
 
   public ngOnInit() {
@@ -132,8 +149,18 @@ export class PrintDialogComponent implements OnInit, OnDestroy, HasSavingState {
       this.formGroup.valueChanges
         .pipe(
           tap(() => {
-            console.log('bip!');
             this.updateFormGroupControlsState();
+          })
+        )
+        .subscribe()
+    );
+
+    this.subscriptions.add(
+      this.store
+        .select(selectActiveMapItems)
+        .pipe(
+          tap((activeMapItems) => {
+            this.activeMapItems = activeMapItems;
           })
         )
         .subscribe()
@@ -198,46 +225,97 @@ export class PrintDialogComponent implements OnInit, OnDestroy, HasSavingState {
       return;
     }
 
+    const printCreation = this.createPrintCreation();
+    this.store.dispatch(PrintActions.requestPrintCreation({printCreation}));
+  }
+
+  private createPrintCreation(): PrintCreation {
     // TODO WES: remove all the default values from this and replace them using the current active map items / map state / and so on
     const value = this.formGroup.value;
-    const printCreation: PrintCreation = {
-      units: 'm',
-      dpi: value.dpi ?? 0,
+
+    return {
+      units: 'm', // TODO WES: what?
+      dpi: value.dpi! ?? 0,
       layoutSize: value.layoutSize ?? '',
       layoutOrientation: value.layoutOrientation ?? undefined,
       outputFormat: value.outputFormat ?? '',
-      srs: 'EPSG:2056',
-      layers: [
-        {
-          layers: ['wald', 'seen'],
-          customParams: {
-            dpi: 96,
-            transparent: true,
-            format: 'image/png; mode=8bit'
-          },
-          format: 'image/png; mode=8bit',
-          baseURL: 'https://maps.zh.ch/wms/BASISKARTEZH',
-          opacity: 1,
-          singleTile: true,
-          styles: [''],
-          type: 'WMS'
-        }
-      ],
+      srs: `EPSG:${MapConstants.DEFAULT_SRS}`,
+      layers: this.createPrintCreationLayers(),
       pages: [
         {
           scale: value.scale ?? 0,
-          withLegend: value.showLegend ? 1 : 0,
+          withLegend: value.showLegend ?? false,
           userTitle: value.title ?? '',
           userComment: value.comment ?? '',
-          topicTitle: 'Landeskarten, Übersichtsplan',
-          headerImg: 'http://127.0.0.1/images/LogoGIS.jpg',
+          topicTitle: this.activeMapItems ? this.activeMapItems.map((activeMapItem) => activeMapItem.title).join(', ') : '',
+          headerImg: 'http://127.0.0.1/images/LogoGIS.jpg', // TODO WES: what?
           center: [this.mapConfigState?.center.x ?? 0, this.mapConfigState?.center.y ?? 0],
-          extent: [2663148, 1215246, 2721851, 1289753],
+          extent: [], // this seems to be optional
           rotation: value.rotation ?? 0,
-          topic: 'BASISKARTEZH'
+          topic: '' // TODO WES: what?
         }
       ]
     };
-    this.store.dispatch(PrintActions.requestPrintCreation({printCreation}));
+  }
+
+  private createPrintCreationLayers(): PrintCreationLayer[] {
+    const layers: PrintCreationLayer[] = [];
+
+    // add basemap
+    const activeBasemapId = this.mapConfigState?.activeBasemapId;
+    const activeBasemap = this.basemapConfigService.availableBasemaps.find((basemap) => basemap.id === activeBasemapId);
+    if (activeBasemap) {
+      switch (activeBasemap.type) {
+        case 'blank':
+          // a blank basemap does not have to be printed
+          break;
+        case 'wms':
+          layers.push({
+            layers: activeBasemap.layers.map((layer) => layer.name),
+            type: 'WMS',
+            opacity: 1,
+            customParams: {
+              dpi: 96, // TODO WES: what?
+              transparent: true, // TODO WES: what?
+              format: 'image/png; mode=8bit' // TODO WES: what?
+            },
+            format: 'image/png; mode=8bit', // TODO WES: what?
+            styles: [''], // TODO WES: what?
+            singleTile: true, // TODO WES: what?
+            baseURL: activeBasemap.url
+          });
+          break;
+      }
+    }
+
+    // add all active map items
+    if (this.activeMapItems) {
+      this.activeMapItems.forEach((activeMapItem) => {
+        switch (activeMapItem.settings.type) {
+          case 'drawing':
+            throw new Error('Printing drawings is not implemented yet.');
+            break;
+          case 'gb2Wms':
+            layers.push({
+              layers: activeMapItem.settings.layers.map((layer) => layer.layer),
+              type: 'WMS',
+              opacity: activeMapItem.opacity,
+              customParams: {
+                dpi: 96, // TODO WES: what?
+                transparent: true, // TODO WES: what?
+                format: 'image/png; mode=8bit' // TODO WES: what?
+              },
+              format: 'image/png; mode=8bit', // TODO WES: what?
+              styles: [''], // TODO WES: what?
+              singleTile: true, // TODO WES: what?
+              baseURL: activeMapItem.settings.url
+            });
+            break;
+        }
+      });
+    }
+
+    // reverse the order as the print API uses an inverse positioning to draw them
+    return layers.map((layer, index, array) => array[array.length - 1 - index]);
   }
 }

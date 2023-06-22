@@ -46,6 +46,14 @@ export class MapDrawingService implements OnDestroy {
     this.mapService.clearDrawingLayer(DrawingLayer.FeatureQueryLocation);
   }
 
+  public drawPrintAreaHighlight(geometry: GeometryWithSrs) {
+    this.mapService.addGeometryToDrawingLayer(geometry, DrawingLayer.FeatureHighlight);
+  }
+
+  public clearPrintAreaHighlight() {
+    this.mapService.clearDrawingLayer(DrawingLayer.FeatureHighlight);
+  }
+
   private initSubscriptions() {
     // todo: when adding the redlining, this might be refactored away as an effect.
     this.subscriptions.add(
