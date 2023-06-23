@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {LoadingState} from '../../../../shared/types/loading-state';
 import {Store} from '@ngrx/store';
@@ -44,6 +44,8 @@ interface PrintForm {
   styleUrls: ['./print-dialog.component.scss']
 })
 export class PrintDialogComponent implements OnInit, OnDestroy, HasSavingState {
+  @Output() public closeEvent = new EventEmitter<void>();
+
   public readonly formGroup: FormGroup<PrintForm> = new FormGroup({
     title: new FormControl(),
     comment: new FormControl(),
@@ -67,10 +69,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy, HasSavingState {
 
   private readonly subscriptions: Subscription = new Subscription();
 
-  constructor(
-    private readonly store: Store,
-    private readonly basemapConfigService: BasemapConfigService
-  ) {
+  constructor(private readonly store: Store, private readonly basemapConfigService: BasemapConfigService) {
     this.formGroup.disable();
   }
 
@@ -214,7 +213,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy, HasSavingState {
   }
 
   public close() {
-    this.store.dispatch(PrintActions.setPrintDialogVisible({printDialogVisible: false}));
+    this.closeEvent.emit();
   }
 
   public print() {

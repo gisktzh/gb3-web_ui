@@ -1,12 +1,21 @@
 <mat-drawer-container class="map-container" [ngClass]="'map-container__map-element--' + mapElementsVisibility">
-  <mat-drawer mode="side" position="end" [opened]="currentSideDrawerContent !== 'none'" [ngSwitch]="currentSideDrawerContent">
-    <print-dialog *ngSwitchCase="'print'"></print-dialog>
+  <mat-drawer
+    mode="side"
+    position="end"
+    [opened]="currentSideDrawerContent !== 'none'"
+    (closedStart)="closeSideDrawer()"
+    [ngSwitch]="currentSideDrawerContent"
+  >
+    <print-dialog *ngSwitchCase="'print'" (closeEvent)="closeSideDrawer()"></print-dialog>
   </mat-drawer>
 
   <map></map>
 
   <map-controls class="map-container__map-controls map-container__map-element"></map-controls>
-  <legend-overlay class="map-container__legend-overlay map-container__map-element" (printLegendEvent)="showPrint('legend')"></legend-overlay>
+  <legend-overlay
+    class="map-container__legend-overlay map-container__map-element"
+    (printLegendEvent)="showPrint('legend')"
+  ></legend-overlay>
   <div class="map-container__all-map-items-container map-container__map-element">
     <div class="map-container__all-map-items-container__inner-container">
       <active-map-items
@@ -23,7 +32,12 @@
       ></map-data-catalogue>
     </div>
   </div>
-  <button mat-flat-button (click)="toggleLegend()" [disabled]="activeMapItems.length === 0" class="map-container__legend-button map-container__map-element">
+  <button
+    mat-flat-button
+    (click)="toggleLegend()"
+    [disabled]="activeMapItems.length === 0"
+    class="map-container__legend-button map-container__map-element"
+  >
     <mat-icon>map</mat-icon>
     Legende
   </button>
@@ -33,7 +47,7 @@
     (printFeatureInfoEvent)="showPrint('featureInfo')"
   ></feature-info-overlay>
   <search-window class="map-container__search-window map-container__map-element"></search-window>
-  <map-tools class="map-container__map-tools map-container__map-element"></map-tools>
+  <map-tools class="map-container__map-tools map-container__map-element" (openPrintDialogEvent)="openSideDrawer('print')"></map-tools>
 </mat-drawer-container>
 <print-overlay></print-overlay>
 <onboarding-guide [introductionImage]="onboardingGuideImage"></onboarding-guide>

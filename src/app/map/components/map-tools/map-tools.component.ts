@@ -1,6 +1,4 @@
-import {AfterViewInit, Component} from '@angular/core';
-import {Store} from '@ngrx/store';
-import {PrintActions} from '../../../state/map/actions/print.actions';
+import {AfterViewInit, Component, EventEmitter, Output} from '@angular/core';
 
 @Component({
   selector: 'map-tools',
@@ -8,10 +6,10 @@ import {PrintActions} from '../../../state/map/actions/print.actions';
   styleUrls: ['./map-tools.component.scss']
 })
 export class MapToolsComponent implements AfterViewInit {
-  constructor(private readonly store: Store) {}
+  @Output() public openPrintDialogEvent = new EventEmitter<void>();
 
   public showPrintDialog() {
-    this.store.dispatch(PrintActions.setPrintDialogVisible({printDialogVisible: true}));
+    this.openPrintDialogEvent.emit();
   }
 
   public ngAfterViewInit() {

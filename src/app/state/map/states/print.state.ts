@@ -2,7 +2,6 @@ import {PrintCreation, PrintCreationResponse, PrintInfo} from '../../../shared/i
 import {LoadingState} from '../../../shared/types/loading-state';
 
 export interface PrintState {
-  printDialogVisible: boolean;
   printInfo: PrintInfo | undefined;
   printInfoLoadingState: LoadingState;
   printCreation: PrintCreation | undefined;
