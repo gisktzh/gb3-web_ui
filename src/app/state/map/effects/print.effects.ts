@@ -1,6 +1,6 @@
 import {Inject, Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {EMPTY, switchMap, tap} from 'rxjs';
+import {EMPTY, switchMap} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
 import {PrintActions} from '../actions/print.actions';
 import {Gb3PrintService} from '../../../shared/services/apis/gb3/gb3-print.service';
@@ -36,17 +36,15 @@ export class PrintEffects {
     );
   });
 
-  public dispatchPrintCreationResponseRequest$ = createEffect(
-    () => {
-      return this.actions$.pipe(
-        ofType(PrintActions.setPrintCreationResponse),
-        tap((value) => {
-          this.document.defaultView?.window.open(value.printCreationResponse.getURL, '_blank');
-        })
-      );
-    },
-    {dispatch: false}
-  );
+  public dispatchPrintCreationResponseRequest$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(PrintActions.setPrintCreationResponse),
+      map((value) => {
+        this.document.defaultView?.window.open(value.printCreationResponse.getURL, '_blank');
+        return PrintActions.clearPrintCreation();
+      })
+    );
+  });
 
   constructor(
     private readonly actions$: Actions,

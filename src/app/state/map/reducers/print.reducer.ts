@@ -31,6 +31,14 @@ export const printFeature = createFeature({
     }),
     on(PrintActions.setPrintCreationResponse, (state, {printCreationResponse}): PrintState => {
       return {...state, printCreationResponse, printCreationLoadingState: 'loaded'};
+    }),
+    on(PrintActions.clearPrintCreation, (state): PrintState => {
+      return {
+        ...state,
+        printCreation: initialState.printCreation,
+        printCreationResponse: initialState.printCreationResponse,
+        printCreationLoadingState: 'undefined'
+      };
     })
   )
 });

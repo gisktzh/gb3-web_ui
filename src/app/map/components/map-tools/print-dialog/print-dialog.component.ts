@@ -82,6 +82,19 @@ export class PrintDialogComponent implements OnInit, OnDestroy, HasSavingState {
     this.store.dispatch(PrintActions.loadPrintInfo());
   }
 
+  public print() {
+    if (!this.formGroup.valid || this.savingState === 'loading') {
+      return;
+    }
+
+    const printCreation = this.createPrintCreation();
+    this.store.dispatch(PrintActions.requestPrintCreation({printCreation}));
+  }
+
+  public close() {
+    this.closeEvent.emit();
+  }
+
   private initSubscriptions() {
     this.subscriptions.add(
       this.store
@@ -212,25 +225,11 @@ export class PrintDialogComponent implements OnInit, OnDestroy, HasSavingState {
     this.uniqueLayoutSizes = printInfo ? [...new Set(printInfo.layouts.map((layout) => layout.size))] : [];
   }
 
-  public close() {
-    this.closeEvent.emit();
-  }
-
-  public print() {
-    if (!this.formGroup.valid) {
-      return;
-    }
-
-    const printCreation = this.createPrintCreation();
-    this.store.dispatch(PrintActions.requestPrintCreation({printCreation}));
-  }
-
   private createPrintCreation(): PrintCreation {
-    // TODO WES: remove all the default values from this and replace them using the current active map items / map state / and so on
     const value = this.formGroup.value;
 
     return {
-      units: 'm', // TODO WES: what?
+      units: 'm', // TODO: where does this unit come from and for what is it used?
       dpi: value.dpi! ?? 0,
       layoutSize: value.layoutSize ?? '',
       layoutOrientation: value.layoutOrientation ?? undefined,
@@ -244,11 +243,11 @@ export class PrintDialogComponent implements OnInit, OnDestroy, HasSavingState {
           userTitle: value.title ?? '',
           userComment: value.comment ?? '',
           topicTitle: this.activeMapItems ? this.activeMapItems.map((activeMapItem) => activeMapItem.title).join(', ') : '',
-          headerImg: 'http://127.0.0.1/images/LogoGIS.jpg', // TODO WES: what?
+          headerImg: 'http://127.0.0.1/images/LogoGIS.jpg', // TODO: what?
           center: [this.mapConfigState?.center.x ?? 0, this.mapConfigState?.center.y ?? 0],
           extent: [], // this seems to be optional
           rotation: value.rotation ?? 0,
-          topic: '' // TODO WES: what?
+          topic: '' // TODO: what is this property used for?
         }
       ]
     };
@@ -271,13 +270,13 @@ export class PrintDialogComponent implements OnInit, OnDestroy, HasSavingState {
               type: 'WMS',
               opacity: activeMapItem.opacity,
               customParams: {
-                dpi: 96, // TODO WES: what?
-                transparent: true, // TODO WES: what?
-                format: 'image/png; mode=8bit' // TODO WES: what?
+                dpi: 96, // TODO: where does this come from and what is it used for?
+                transparent: true, // TODO: where does this come from and what is it used for?
+                format: 'image/png; mode=8bit' // TODO: where does this come from and what is it used for?
               },
-              format: 'image/png; mode=8bit', // TODO WES: what?
-              styles: [''], // TODO WES: what?
-              singleTile: true, // TODO WES: what?
+              format: 'image/png; mode=8bit', // TODO: where does this come from and what is it used for?
+              styles: [''], // TODO: what?
+              singleTile: true, // TODO: what?
               baseURL: activeMapItem.settings.url
             });
             break;
@@ -299,13 +298,13 @@ export class PrintDialogComponent implements OnInit, OnDestroy, HasSavingState {
             type: 'WMS',
             opacity: 1,
             customParams: {
-              dpi: 96, // TODO WES: what?
-              transparent: true, // TODO WES: what?
-              format: 'image/png; mode=8bit' // TODO WES: what?
+              dpi: 96, // TODO: where does this come from and what is it used for?
+              transparent: true, // TODO: where does this come from and what is it used for?
+              format: 'image/png; mode=8bit' // TODO: where does this come from and what is it used for?
             },
-            format: 'image/png; mode=8bit', // TODO WES: what?
-            styles: [''], // TODO WES: what?
-            singleTile: true, // TODO WES: what?
+            format: 'image/png; mode=8bit', // TODO: where does this come from and what is it used for?
+            styles: [''], // TODO: what?
+            singleTile: true, // TODO: what?
             baseURL: activeBasemap.url
           });
           break;

@@ -68,20 +68,11 @@
         >
       </ng-container>
     </form>
-    <a
-      mat-button
-      [href]="printCreationResponse.getURL"
-      [title]="printCreationResponse.getURL"
-      rel="noopener noreferrer"
-      target="_blank"
-      *ngIf="printCreationResponse"
-      >RESULTAT</a
-    >
     <loading-and-process-bar [loadingState]="savingState"></loading-and-process-bar>
     <loading-and-process-bar [loadingState]="printInfoLoadingState"></loading-and-process-bar>
   </div>
   <div class="print-dialog__footer">
-    <button class="print-dialog__footer__button" (click)="close()" [disabled]="savingState === 'loading'" mat-raised-button color="accent">
+    <button class="print-dialog__footer__button" (click)="close()" [disabled]="savingState === 'loading'" mat-raised-button>
       Abbrechen
     </button>
     <button

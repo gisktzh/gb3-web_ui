@@ -36,7 +36,6 @@
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    padding: 24px;
     overflow-y: auto;
 
     .print-dialog__content__form {
@@ -63,6 +62,20 @@
     .print-dialog__footer__button {
       height: 48px;
       margin-left: 12px;
+
+      &.mdc-button {
+        background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 50);
+        color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 300);
+
+        &:last-of-type {
+          background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent);
+          color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-accent);
+        }
+
+        &:disabled {
+          color: ktzh-variables.$zh-black40;
+        }
+      }
     }
   }
 }

@@ -7,6 +7,7 @@ export const PrintActions = createActionGroup({
     'Load Print Info': emptyProps(),
     'Set Print Info': props<{printInfo: PrintInfo}>(),
     'Request Print Creation': props<{printCreation: PrintCreation}>(),
-    'Set Print Creation Response': props<{printCreationResponse: PrintCreationResponse}>()
+    'Set Print Creation Response': props<{printCreationResponse: PrintCreationResponse}>(),
+    'Clear Print Creation': emptyProps()
   }
 });

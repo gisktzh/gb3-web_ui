@@ -10,22 +10,16 @@ import {PrintCreation, PrintCreationResponse, PrintInfo, PrintOrientation} from 
 })
 export class Gb3PrintService extends Gb3ApiService {
   protected readonly endpoint = 'print';
+  private readonly postHeaders = {accept: 'application/json'};
 
   public loadPrintInfo(): Observable<PrintInfo> {
     const printInfoData = this.get<InfoJsonListData>(this.createInfoUrl());
-    return printInfoData.pipe(
-      map((data) => {
-        // TODO WES: remove
-        data.layouts?.push({map: {height: 1, width: 1}, name: 'FomesBeitragsabrechnung', rotation: false});
-        return data;
-      }),
-      map((data) => this.mapInfoJsonListDataToPrintInfo(data))
-    );
+    return printInfoData.pipe(map((data) => this.mapInfoJsonListDataToPrintInfo(data)));
   }
 
   public createPrintJob(printCreation: PrintCreation): Observable<PrintCreationResponse> {
     const createCreatePayload: CreateCreatePayload = this.mapPrintCreationToCreateCreatePayload(printCreation);
-    return this.post<CreateCreatePayload, CreateCreateData>(this.createCreateUrl(), createCreatePayload).pipe(
+    return this.post<CreateCreatePayload, CreateCreateData>(this.createCreateUrl(), createCreatePayload, this.postHeaders).pipe(
       map((response) => {
         return {...response};
       })
@@ -84,7 +78,7 @@ export class Gb3PrintService extends Gb3ApiService {
           topic_title: page.topicTitle,
           user_comment: page.userComment,
           user_title: page.userTitle,
-          withlegend: page.withLegend ? 0 : 1
+          withlegend: page.withLegend ? 1 : 0
         };
       }),
       layers: printCreation.layers.map((layer) => {

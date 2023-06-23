@@ -58,6 +58,16 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
     this.isMapDataCatalogueMinimized = isMinimized;
   }
 
+  public openSideDrawer(content: SideDrawerContent) {
+    this.currentSideDrawerContent = content;
+    this.updateToolVisibility();
+  }
+
+  public closeSideDrawer() {
+    this.currentSideDrawerContent = 'none';
+    this.updateToolVisibility();
+  }
+
   private initSubscriptions() {
     this.subscriptions.add(
       this.activeMapItems$
@@ -76,15 +86,5 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
     } else {
       this.mapElementsVisibility = 'visible';
     }
-  }
-
-  public closeSideDrawer() {
-    this.currentSideDrawerContent = 'none';
-    this.updateToolVisibility();
-  }
-
-  public openSideDrawer(content: SideDrawerContent) {
-    this.currentSideDrawerContent = 'print';
-    this.updateToolVisibility();
   }
 }

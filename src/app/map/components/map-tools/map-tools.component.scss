@@ -9,6 +9,12 @@
 }
 
 .map-tools {
+  @include mixins.map-element-box-shadow;
+  width: 48px;
+  display: flex;
+  flex-direction: column;
+  background-color: ktzh-variables.$zh-background-color;
+
   .map-tools__print-button {
     @include mixins.map-element-box-shadow;
     background-color: ktzh-variables.$zh-background-color;
