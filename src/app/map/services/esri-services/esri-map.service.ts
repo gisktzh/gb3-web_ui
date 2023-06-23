@@ -130,7 +130,6 @@ export class EsriMapService implements MapService {
           this.attachMapViewListeners();
           this.addBasemapSubscription();
           this.initDrawingLayers();
-          this.addScaleBar();
           activeMapItems.forEach((mapItem, position) => {
             mapItem.addToMap(this, position);
           });
@@ -190,6 +189,10 @@ export class EsriMapService implements MapService {
 
   public assignMapElement(container: HTMLDivElement) {
     this.mapView.container = container;
+  }
+
+  public assignScaleBarElement(container: HTMLDivElement) {
+    new EsriScaleBar({view: this.mapView, container: container, unit: 'metric'});
   }
 
   public setOpacity(opacity: number, mapItem: ActiveMapItem): void {
@@ -446,11 +449,6 @@ export class EsriMapService implements MapService {
         )
         .subscribe()
     );
-  }
-
-  private addScaleBar() {
-    const scaleBar = new EsriScaleBar({view: this.mapView, container: 'scale-bar-container', unit: 'metric'});
-    this.mapView.ui.add(scaleBar);
   }
 
   private createMap(initialBasemapId: string): __esri.Map {

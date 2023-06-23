@@ -1,9 +1,10 @@
-import {Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {EMPTY, filter, switchMap} from 'rxjs';
+import {EMPTY, filter, switchMap, tap} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
 import {PrintActions} from '../actions/print.actions';
 import {Gb3PrintService} from '../../../shared/services/apis/gb3/gb3-print.service';
+import {DOCUMENT} from '@angular/common';
 
 @Injectable()
 export class PrintEffects {
@@ -43,5 +44,17 @@ export class PrintEffects {
     );
   });
 
-  constructor(private readonly actions$: Actions, private readonly printService: Gb3PrintService) {}
+  public dispatchPrintCreationResponseRequest$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(PrintActions.setPrintCreationResponse),
+        tap((value) => {
+          this.document.defaultView?.window.open(value.printCreationResponse.getURL, '_blank');
+        })
+      );
+    },
+    {dispatch: false}
+  );
+
+  constructor(private readonly actions$: Actions, private readonly printService: Gb3PrintService, @Inject(DOCUMENT) private readonly document: Document) {}
 }

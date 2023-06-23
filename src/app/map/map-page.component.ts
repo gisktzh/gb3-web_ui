@@ -9,6 +9,7 @@ import {selectActiveMapItems} from '../state/map/reducers/active-map-item.reduce
 import {Subscription, tap} from 'rxjs';
 import {ActiveMapItem} from './models/active-map-item.model';
 import {selectPrintDialogVisible} from '../state/map/reducers/print.reducer';
+import {MapElementsVisibility} from '../shared/types/map-elements-visibility';
 
 type SideDrawerContent = 'none' | 'print';
 
@@ -23,6 +24,7 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
   public activeMapItems: ActiveMapItem[] = [];
   public isMapDataCatalogueMinimized: boolean = false;
   public currentSideDrawerContent: SideDrawerContent = 'none';
+  public mapElementsVisibility: MapElementsVisibility = 'visible';
 
   private readonly activeMapItems$ = this.store.select(selectActiveMapItems);
   private readonly printDialogVisible$ = this.store.select(selectPrintDialogVisible);
@@ -75,12 +77,18 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
           tap((printDialogVisible) => {
             if (printDialogVisible) {
               this.currentSideDrawerContent = 'print';
+              this.mapElementsVisibility = 'hidden';
             } else if (this.currentSideDrawerContent === 'print') {
               this.currentSideDrawerContent = 'none';
+              this.mapElementsVisibility = 'visible';
             }
           })
         )
         .subscribe()
     );
+  }
+
+  private updateToolVisibility() {
+
   }
 }

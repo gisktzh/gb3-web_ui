@@ -4,36 +4,4 @@
 .main-map {
   height: 100%;
   width: 100%;
-  $map-controls-width: 58px;
-  $minimal-bottom-height: ktzh-variables.$esri-attribution-widget-height;
-
-  .main-map__data-inputs {
-    @include mixins.map-element-box-shadow;
-    position: absolute;
-    bottom: calc(12px + $minimal-bottom-height);
-    right: calc(24px + $map-controls-width);
-    display: flex;
-  }
-
-  .main-map__map-controls {
-    position: absolute;
-    bottom: calc(12px + $minimal-bottom-height);
-    right: 12px;
-  }
-
-  .main-map__basemap-selector {
-    position: absolute;
-    bottom: 79px;
-    right: calc(24px + $map-controls-width);
-    pointer-events: none;
-  }
-
-  .main-map__scale-bar-container {
-    position: absolute;
-    bottom: calc(12px + $minimal-bottom-height);
-    right: 300px;
-    padding: 5px;
-    border-radius: ktzh-variables.$zh-border-radius;
-    font-family: ktzh-variables.$zh-font-family;
-  }
 }

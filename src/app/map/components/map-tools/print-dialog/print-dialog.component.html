@@ -1,7 +1,7 @@
 <div class="print-dialog">
   <div class="print-dialog__header">
     <h1 class="print-dialog__header__title">Drucken</h1>
-    <button mat-icon-button (click)="close()">
+    <button mat-icon-button (click)="close()" [disabled]="savingState === 'loading'">
       <mat-icon>close</mat-icon>
     </button>
   </div>
@@ -27,7 +27,7 @@
             <mat-label>Rotation</mat-label>
             <input matInput formControlName="rotation" type="number" min="-90" max="90" placeholder="0" />
           </mat-form-field>
-          <mat-form-field class="print-dialog__content__form__element">
+          <mat-form-field class="print-dialog__content__form__element" hideRequiredMarker>
             <mat-label>Massstab</mat-label>
             <mat-select formControlName="scale">
               <mat-option *ngFor="let scale of printInfo.scales" [value]="scale.value">
@@ -35,7 +35,7 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
-          <mat-form-field class="print-dialog__content__form__element">
+          <mat-form-field class="print-dialog__content__form__element" hideRequiredMarker>
             <mat-label>Auflösung</mat-label>
             <mat-select formControlName="dpi">
               <mat-option *ngFor="let dpi of printInfo.dpis" [value]="dpi.value">
@@ -43,7 +43,7 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
-          <mat-form-field class="print-dialog__content__form__element">
+          <mat-form-field class="print-dialog__content__form__element" hideRequiredMarker>
             <mat-label>Layout</mat-label>
             <mat-select formControlName="layoutSize">
               <mat-option *ngFor="let layoutSize of uniqueLayoutSizes" [value]="layoutSize">
@@ -51,7 +51,7 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
-          <mat-form-field class="print-dialog__content__form__element">
+          <mat-form-field class="print-dialog__content__form__element" hideRequiredMarker>
             <mat-label>Format</mat-label>
             <mat-select formControlName="outputFormat">
               <mat-option *ngFor="let outputFormat of printInfo.outputFormats" [value]="outputFormat.name">

@@ -1,30 +1,29 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {LoadingState} from '../../../shared/types/loading-state';
+import {LoadingState} from '../../../../shared/types/loading-state';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
-import {HasSavingState} from '../../../shared/interfaces/has-saving-state.interface';
+import {HasSavingState} from '../../../../shared/interfaces/has-saving-state.interface';
 import {
   selectPrintCreationLoadingState,
   selectPrintCreationResponse,
   selectPrintInfo,
   selectPrintInfoLoadingState
-} from '../../../state/map/reducers/print.reducer';
+} from '../../../../state/map/reducers/print.reducer';
 import {
   PrintCreation,
   PrintCreationLayer,
   PrintCreationResponse,
   PrintInfo,
   PrintOrientation
-} from '../../../shared/interfaces/print.interface';
-import {PrintActions} from '../../../state/map/actions/print.actions';
-import {MapConfigState} from '../../../state/map/states/map-config.state';
-import {selectMapConfigState} from '../../../state/map/reducers/map-config.reducer';
-import {ActiveMapItem} from '../../models/active-map-item.model';
-import {selectActiveMapItems} from '../../../state/map/reducers/active-map-item.reducer';
-import {MapDrawingService} from '../../services/map-drawing.service';
-import {MapConstants} from '../../../shared/constants/map.constants';
-import {BasemapConfigService} from '../../services/basemap-config.service';
+} from '../../../../shared/interfaces/print.interface';
+import {PrintActions} from '../../../../state/map/actions/print.actions';
+import {MapConfigState} from '../../../../state/map/states/map-config.state';
+import {selectMapConfigState} from '../../../../state/map/reducers/map-config.reducer';
+import {ActiveMapItem} from '../../../models/active-map-item.model';
+import {selectActiveMapItems} from '../../../../state/map/reducers/active-map-item.reducer';
+import {MapConstants} from '../../../../shared/constants/map.constants';
+import {BasemapConfigService} from '../../../services/basemap-config.service';
 
 interface PrintForm {
   title: FormControl<string | null>;
@@ -70,7 +69,6 @@ export class PrintDialogComponent implements OnInit, OnDestroy, HasSavingState {
 
   constructor(
     private readonly store: Store,
-    private readonly mapDrawingService: MapDrawingService,
     private readonly basemapConfigService: BasemapConfigService
   ) {
     this.formGroup.disable();
@@ -78,7 +76,6 @@ export class PrintDialogComponent implements OnInit, OnDestroy, HasSavingState {
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
-    this.mapDrawingService.clearPrintAreaHighlight();
   }
 
   public ngOnInit() {
@@ -259,34 +256,8 @@ export class PrintDialogComponent implements OnInit, OnDestroy, HasSavingState {
   }
 
   private createPrintCreationLayers(): PrintCreationLayer[] {
+    // order matters: the lowest index has the highest visibility
     const layers: PrintCreationLayer[] = [];
-
-    // add basemap
-    const activeBasemapId = this.mapConfigState?.activeBasemapId;
-    const activeBasemap = this.basemapConfigService.availableBasemaps.find((basemap) => basemap.id === activeBasemapId);
-    if (activeBasemap) {
-      switch (activeBasemap.type) {
-        case 'blank':
-          // a blank basemap does not have to be printed
-          break;
-        case 'wms':
-          layers.push({
-            layers: activeBasemap.layers.map((layer) => layer.name),
-            type: 'WMS',
-            opacity: 1,
-            customParams: {
-              dpi: 96, // TODO WES: what?
-              transparent: true, // TODO WES: what?
-              format: 'image/png; mode=8bit' // TODO WES: what?
-            },
-            format: 'image/png; mode=8bit', // TODO WES: what?
-            styles: [''], // TODO WES: what?
-            singleTile: true, // TODO WES: what?
-            baseURL: activeBasemap.url
-          });
-          break;
-      }
-    }
 
     // add all active map items
     if (this.activeMapItems) {
@@ -315,7 +286,34 @@ export class PrintDialogComponent implements OnInit, OnDestroy, HasSavingState {
       });
     }
 
-    // reverse the order as the print API uses an inverse positioning to draw them
+    // add basemap
+    const activeBasemapId = this.mapConfigState?.activeBasemapId;
+    const activeBasemap = this.basemapConfigService.availableBasemaps.find((basemap) => basemap.id === activeBasemapId);
+    if (activeBasemap) {
+      switch (activeBasemap.type) {
+        case 'blank':
+          // a blank basemap does not have to be printed
+          break;
+        case 'wms':
+          layers.push({
+            layers: activeBasemap.layers.map((layer) => layer.name),
+            type: 'WMS',
+            opacity: 1,
+            customParams: {
+              dpi: 96, // TODO WES: what?
+              transparent: true, // TODO WES: what?
+              format: 'image/png; mode=8bit' // TODO WES: what?
+            },
+            format: 'image/png; mode=8bit', // TODO WES: what?
+            styles: [''], // TODO WES: what?
+            singleTile: true, // TODO WES: what?
+            baseURL: activeBasemap.url
+          });
+          break;
+      }
+    }
+
+    // reverse the order as the print API uses an inverse positioning to draw them (lowest index has lowest visibility)
     return layers.map((layer, index, array) => array[array.length - 1 - index]);
   }
 }

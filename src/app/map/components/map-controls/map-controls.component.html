@@ -1,0 +1,49 @@
+<div class="map-controls">
+  <div class="map-controls__inputs">
+    <basemap-selector class="map-controls__inputs__basemap-selector"></basemap-selector>
+    <div class="map-controls__inputs__bottom">
+      <div class="map-controls__inputs__bottom__scale-bar-container" #scaleBarContainer></div>
+      <coordinate-scale-inputs class="map-controls__inputs__bottom__data-inputs"></coordinate-scale-inputs>
+    </div>
+  </div>
+  <div class="map-controls__buttons">
+    <button
+      mat-icon-button
+      (click)="this.locateClient()"
+      color="accent"
+      class="map-controls__buttons__button"
+      data-test-id="map-locate-me"
+      #tooltip="matTooltip"
+      [matTooltip]="this.geolocationState.errorReason ?? ''"
+      [matTooltipDisabled]="this.geolocationState.loadingState !== 'error'"
+      [disabled]="this.geolocationState.loadingState === 'loading'"
+    >
+      <mat-icon>my_location</mat-icon>
+      <loading-and-process-bar [loadingState]="this.geolocationState.loadingState"></loading-and-process-bar>
+    </button>
+    <mat-divider class="map-controls__buttons__divider"></mat-divider>
+    <button mat-icon-button (click)="this.goToInitialExtent()" color="accent" class="map-controls__buttons__button" data-test-id="map-home">
+      <mat-icon>home</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      (click)="this.handleZoom('zoomIn')"
+      color="accent"
+      [disabled]="this.isMaxZoomedIn"
+      class="map-controls__buttons__button"
+      data-test-id="map-add"
+    >
+      <mat-icon>add</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      (click)="this.handleZoom('zoomOut')"
+      color="accent"
+      [disabled]="this.isMaxZoomedOut"
+      class="map-controls__buttons__button"
+      data-test-id="map-remove"
+    >
+      <mat-icon>remove</mat-icon>
+    </button>
+  </div>
+</div>

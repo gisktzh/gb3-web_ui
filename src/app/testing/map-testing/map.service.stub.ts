@@ -11,9 +11,9 @@ export class MapServiceStub implements MapService {
 
   clearDrawingLayer(drawingLayer: DrawingLayer): void {}
 
-  public addMapItem(mapItem: ActiveMapItem): void {}
-
   public assignMapElement(container: HTMLDivElement): void {}
+
+  public assignScaleBarElement(container: HTMLDivElement): void {}
 
   public handleZoom(zoomType: ZoomType): void {}
 
