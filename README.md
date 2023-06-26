@@ -43,6 +43,13 @@ configurations.
 
 In order to build the docker image use the following command (adjust tag as needed):
 
+
+first create volume for log files
+```
+docker volume create nginx-logs
+```
+
+
 ```
 docker build --no-cache --build-arg TARGET_ENVIRONMENT={target_environment} -t gb3-frontend:latest .
 ```
@@ -67,12 +74,14 @@ such as internal domains. This is mainly reflected in the runtime configuration 
 This image exposes port 8080 and can be run like this:
 
 ```
-docker run -p 80:8080 gb3-frontend:latest
+docker run -p 80:8080 --mount source=nginx-logs,destination=/var/log/nginx  --name gb3-frontend gb3-frontend:latest
 ```
 
 - **80:8080** maps the internal port 8080 to the external port 80; the later can be chosen freely
 - **gb3-frontend** is the name of the image
 - **latest** is the version tag for this image
+- **--mount source=nginx-logs,destination=/var/log/nginx** mounts folder with log files for filebeat
+
 
 ## Local Backend
 
