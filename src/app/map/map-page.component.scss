@@ -7,8 +7,8 @@
   $all-map-items-container-width: 450px;
   $minimal-bottom-height: ktzh-variables.$esri-attribution-widget-height;
 
-  &.map-container__map-element--hidden .map-container__map-element {
-    display: none;
+  .map-container__map-element--hidden {
+    display: none !important;
   }
 
   .map-container__map-controls {

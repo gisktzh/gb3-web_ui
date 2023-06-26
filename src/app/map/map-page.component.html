@@ -1,4 +1,4 @@
-<mat-drawer-container class="map-container" [ngClass]="'map-container__map-element--' + mapElementsVisibility">
+<mat-drawer-container class="map-container">
   <mat-drawer
     mode="side"
     position="end"
@@ -11,22 +11,29 @@
 
   <map></map>
 
-  <map-controls class="map-container__map-controls map-container__map-element"></map-controls>
+  <map-controls class="map-container__map-controls"></map-controls>
   <legend-overlay
-    class="map-container__legend-overlay map-container__map-element"
+    class="map-container__legend-overlay"
+    [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideLegendOverlay}"
     (printLegendEvent)="showPrint('legend')"
   ></legend-overlay>
-  <div class="map-container__all-map-items-container map-container__map-element">
+  <div class="map-container__all-map-items-container">
     <div class="map-container__all-map-items-container__inner-container">
       <active-map-items
         class="map-container__all-map-items-container__inner-container__active-map-items"
-        [ngClass]="{'map-container__all-map-items-container__inner-container__active-map-items--maximized': isMapDataCatalogueMinimized}"
+        [ngClass]="{
+          'map-container__all-map-items-container__inner-container__active-map-items--maximized': isMapDataCatalogueMinimized,
+          'map-container__map-element--hidden': mapUiState?.hideActiveMapItems
+        }"
         typedTourAnchor="map.active.map.items"
       ></active-map-items>
       <span class="map-container__all-map-items-container__inner-container__divider"></span>
       <map-data-catalogue
         class="map-container__all-map-items-container__inner-container__map-data-catalogue"
-        [ngClass]="{'map-container__all-map-items-container__inner-container__map-data-catalogue--minimized': isMapDataCatalogueMinimized}"
+        [ngClass]="{
+          'map-container__all-map-items-container__inner-container__map-data-catalogue--minimized': isMapDataCatalogueMinimized,
+          'map-container__map-element--hidden': mapUiState?.hideMapCatalogue
+        }"
         typedTourAnchor="map.catalogue"
         (changeIsMinimizedEvent)="setIsMapDataCatalogueMinimized($event)"
       ></map-data-catalogue>
@@ -36,18 +43,30 @@
     mat-flat-button
     (click)="toggleLegend()"
     [disabled]="activeMapItems.length === 0"
-    class="map-container__legend-button map-container__map-element"
+    class="map-container__legend-button"
+    [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideLegendButton}"
   >
     <mat-icon>map</mat-icon>
     Legende
   </button>
-  <map-attribute-filter class="map-container__map-attribute-filter map-container__map-element"></map-attribute-filter>
+  <map-attribute-filter
+    class="map-container__map-attribute-filter"
+    [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideActiveMapItems}"
+  ></map-attribute-filter>
   <feature-info-overlay
-    class="map-container__feature-info-overlay map-container__map-element"
+    class="map-container__feature-info-overlay"
     (printFeatureInfoEvent)="showPrint('featureInfo')"
+    [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideFeatureInfoOverlay}"
   ></feature-info-overlay>
-  <search-window class="map-container__search-window map-container__map-element"></search-window>
-  <map-tools class="map-container__map-tools map-container__map-element" (openPrintDialogEvent)="openSideDrawer('print')"></map-tools>
+  <search-window
+    class="map-container__search-window"
+    [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideMapSearch}"
+  ></search-window>
+  <map-tools
+    class="map-container__map-tools"
+    [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideMapTools}"
+    (openPrintDialogEvent)="openSideDrawer('print')"
+  ></map-tools>
 </mat-drawer-container>
 <print-overlay></print-overlay>
 <onboarding-guide [introductionImage]="onboardingGuideImage"></onboarding-guide>

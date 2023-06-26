@@ -13,6 +13,10 @@
   flex-direction: row;
   gap: 12px;
 
+  .map-controls__map-element--hidden {
+    display: none !important;
+  }
+
   .map-controls__inputs {
     display: flex;
     flex-direction: column;

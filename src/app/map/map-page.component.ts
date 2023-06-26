@@ -8,7 +8,9 @@ import {Store} from '@ngrx/store';
 import {selectActiveMapItems} from '../state/map/reducers/active-map-item.reducer';
 import {Subscription, tap} from 'rxjs';
 import {ActiveMapItem} from './models/active-map-item.model';
-import {MapElementsVisibility} from '../shared/types/map-elements-visibility';
+import {selectMapUiState} from '../state/map/reducers/map-ui.reducer';
+import {MapUiState} from '../state/map/states/map-ui.state';
+import {MapUiActions} from '../state/map/actions/map-ui.actions';
 
 type SideDrawerContent = 'none' | 'print';
 
@@ -23,9 +25,10 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
   public activeMapItems: ActiveMapItem[] = [];
   public isMapDataCatalogueMinimized: boolean = false;
   public currentSideDrawerContent: SideDrawerContent = 'none';
-  public mapElementsVisibility: MapElementsVisibility = 'visible';
+  public mapUiState?: MapUiState;
 
   private readonly activeMapItems$ = this.store.select(selectActiveMapItems);
+  private readonly mapUiState$ = this.store.select(selectMapUiState);
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(
@@ -60,12 +63,12 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
 
   public openSideDrawer(content: SideDrawerContent) {
     this.currentSideDrawerContent = content;
-    this.updateToolVisibility();
+    this.updateMapElementsVisibility();
   }
 
   public closeSideDrawer() {
     this.currentSideDrawerContent = 'none';
-    this.updateToolVisibility();
+    this.updateMapElementsVisibility();
   }
 
   private initSubscriptions() {
@@ -78,13 +81,26 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
         )
         .subscribe()
     );
+
+    this.subscriptions.add(
+      this.mapUiState$
+        .pipe(
+          tap((mapUiState) => {
+            this.mapUiState = mapUiState;
+          })
+        )
+        .subscribe()
+    );
   }
 
-  private updateToolVisibility() {
-    if (this.currentSideDrawerContent !== 'none') {
-      this.mapElementsVisibility = 'hidden';
-    } else {
-      this.mapElementsVisibility = 'visible';
+  private updateMapElementsVisibility() {
+    switch (this.currentSideDrawerContent) {
+      case 'none':
+        this.store.dispatch(MapUiActions.toggleAllUiElements({hideAllElements: false}));
+        break;
+      case 'print':
+        this.store.dispatch(MapUiActions.toggleAllUiElements({hideAllElements: true}));
+        break;
     }
   }
 }

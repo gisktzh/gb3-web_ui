@@ -9,6 +9,8 @@ import {initialState as initialGeolocationState, selectGeolocationState} from '.
 import {GeolocationState} from '../../../state/map/states/geolocation.state';
 import {MAP_SERVICE} from '../../../app.module';
 import {MapService} from '../../interfaces/map.service';
+import {MapUiState} from '../../../state/map/states/map-ui.state';
+import {selectMapUiState} from '../../../state/map/reducers/map-ui.reducer';
 
 @Component({
   selector: 'map-controls',
@@ -21,10 +23,13 @@ export class MapControlsComponent implements OnInit, OnDestroy, AfterViewInit {
   public isMaxZoomedIn: boolean = false;
   public isMaxZoomedOut: boolean = false;
   public geolocationState: GeolocationState = initialGeolocationState;
+  public mapUiState?: MapUiState;
+
   private readonly subscriptions: Subscription = new Subscription();
   private readonly isMaxZoomedIn$ = this.store.select(selectIsMaxZoomedIn);
   private readonly isMaxZoomedOut$ = this.store.select(selectIsMaxZoomedOut);
   private readonly geolocationState$ = this.store.select(selectGeolocationState);
+  private readonly mapUiState$ = this.store.select(selectMapUiState);
 
   constructor(private readonly store: Store, @Inject(MAP_SERVICE) private readonly mapService: MapService) {}
 
@@ -56,5 +61,6 @@ export class MapControlsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.subscriptions.add(this.isMaxZoomedIn$.pipe(tap((value) => (this.isMaxZoomedIn = value))).subscribe());
     this.subscriptions.add(this.isMaxZoomedOut$.pipe(tap((value) => (this.isMaxZoomedOut = value))).subscribe());
     this.subscriptions.add(this.geolocationState$.pipe(tap((value) => (this.geolocationState = value))).subscribe());
+    this.subscriptions.add(this.mapUiState$.pipe(tap((value) => (this.mapUiState = value))).subscribe());
   }
 }
