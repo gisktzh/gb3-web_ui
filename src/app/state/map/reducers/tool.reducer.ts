@@ -13,7 +13,6 @@ export const toolFeature = createFeature({
   reducer: createReducer(
     initialState,
     on(ToolActions.toggle, (): ToolState => {
-      console.log('initializing tool');
       return {...initialState, activeTool: 'measure-line'};
     })
   )

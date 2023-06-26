@@ -44,6 +44,7 @@ import {EsriSymbolizationService} from './esri-symbolization.service';
 import {MapConstants} from '../../../shared/constants/map.constants';
 import {EsriMapViewService} from './esri-map-view.service';
 import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
+import {DrawingActiveMapItem} from '../../models/implementations/drawing-test.model';
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
 
@@ -139,8 +140,20 @@ export class EsriMapService implements MapService {
       .subscribe();
   }
 
+  public addDrawingLayer(mapItem: DrawingActiveMapItem, position: number) {
+    if (this.esriMapViewService.findEsriLayer(mapItem.id)) {
+      return;
+    }
+    const graphicsLayer = new EsriGraphicsLayer({
+      id: mapItem.id
+    });
+
+    const index = this.getNumberOfNonDrawingLayers() - position;
+    this.mapView.map.add(graphicsLayer, index);
+  }
+
   public addGb2WmsLayer(mapItem: Gb2WmsActiveMapItem, position: number) {
-    if (this.findEsriLayer(mapItem.id)) {
+    if (this.esriMapViewService.findEsriLayer(mapItem.id)) {
       return;
     }
 
@@ -176,7 +189,7 @@ export class EsriMapService implements MapService {
   }
 
   public removeMapItem(id: string) {
-    const esriLayer = this.findEsriLayer(id);
+    const esriLayer = this.esriMapViewService.findEsriLayer(id);
     if (esriLayer) {
       this.mapView.map.remove(esriLayer);
     }
@@ -193,14 +206,14 @@ export class EsriMapService implements MapService {
   }
 
   public setOpacity(opacity: number, mapItem: ActiveMapItem): void {
-    const esriLayer = this.findEsriLayer(mapItem.id);
+    const esriLayer = this.esriMapViewService.findEsriLayer(mapItem.id);
     if (esriLayer) {
       esriLayer.opacity = opacity;
     }
   }
 
   public setVisibility(visible: boolean, mapItem: ActiveMapItem): void {
-    const esriLayer = this.findEsriLayer(mapItem.id);
+    const esriLayer = this.esriMapViewService.findEsriLayer(mapItem.id);
     if (esriLayer) {
       esriLayer.visible = visible;
     }
@@ -217,7 +230,7 @@ export class EsriMapService implements MapService {
   }
 
   public setSublayerVisibility(visible: boolean, mapItem: ActiveMapItem, layerId: number) {
-    const esriLayer = this.findEsriLayer(mapItem.id);
+    const esriLayer = this.esriMapViewService.findEsriLayer(mapItem.id);
     if (esriLayer && esriLayer instanceof EsriWMSLayer) {
       const esriSubLayer = esriLayer.sublayers.find((sl) => sl.id === layerId);
       if (esriSubLayer) {
@@ -233,7 +246,7 @@ export class EsriMapService implements MapService {
   }
 
   public setTimeSliderExtent(timeExtent: TimeExtent, mapItem: Gb2WmsActiveMapItem) {
-    const esriLayer = this.findEsriLayer(mapItem.id);
+    const esriLayer = this.esriMapViewService.findEsriLayer(mapItem.id);
 
     if (esriLayer) {
       this.setEsriTimeSliderExtent(timeExtent, mapItem, esriLayer);
@@ -241,7 +254,7 @@ export class EsriMapService implements MapService {
   }
 
   public setAttributeFilters(attributeFilterParameters: {name: string; value: string}[], mapItem: Gb2WmsActiveMapItem) {
-    const esriLayer = this.findEsriLayer(mapItem.id);
+    const esriLayer = this.esriMapViewService.findEsriLayer(mapItem.id);
     if (esriLayer && esriLayer instanceof EsriWMSLayer) {
       const customLayerParameters: {[index: string]: string} = esriLayer.customLayerParameters ?? {};
       attributeFilterParameters.forEach((attributeFilterParameter) => {
@@ -265,7 +278,7 @@ export class EsriMapService implements MapService {
   }
 
   public reorderSublayer(mapItem: ActiveMapItem, previousPosition: number, currentPosition: number) {
-    const esriLayer = this.findEsriLayer(mapItem.id);
+    const esriLayer = this.esriMapViewService.findEsriLayer(mapItem.id);
     if (esriLayer && esriLayer instanceof EsriWMSLayer) {
       // the index of sublayers is identical to their position (in contrast to the map items) where the lowest index/position has the
       // highest visibility
@@ -299,7 +312,7 @@ export class EsriMapService implements MapService {
     const symbolization = this.esriSymbolizationService.createSymbolizationForDrawingLayer(geometry, drawingLayer);
     const esriGeometry = this.geoJSONMapperService.fromGeoJSONToEsri(geometry);
     const graphicItem = new EsriGraphic({geometry: esriGeometry, symbol: symbolization});
-    const targetLayer = this.findEsriLayer(this.createDrawingLayerId(drawingLayer));
+    const targetLayer = this.esriMapViewService.findEsriLayer(this.createDrawingLayerId(drawingLayer));
 
     if (targetLayer) {
       (targetLayer as __esri.GraphicsLayer).add(graphicItem);
@@ -307,7 +320,7 @@ export class EsriMapService implements MapService {
   }
 
   public clearDrawingLayer(drawingLayer: DrawingLayer) {
-    const layer = this.findEsriLayer(this.createDrawingLayerId(drawingLayer));
+    const layer = this.esriMapViewService.findEsriLayer(this.createDrawingLayerId(drawingLayer));
 
     if (layer) {
       (layer as __esri.GraphicsLayer).removeAll();
@@ -502,11 +515,6 @@ export class EsriMapService implements MapService {
         }).lods
       }
     });
-  }
-
-  private findEsriLayer(id: string): __esri.Layer | undefined {
-    // note: the typehint for Collection.find() is wrong, as it may, in fact, return undefined
-    return this.mapView.map.layers.find((layer) => layer.id === id);
   }
 
   private attachMapViewListeners() {

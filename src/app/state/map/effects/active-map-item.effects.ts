@@ -50,6 +50,19 @@ export class ActiveMapItemEffects {
     {dispatch: false}
   );
 
+  public dispatchActiveMapItemForceFullVisibility = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(ActiveMapItemActions.forceFullVisibility),
+        tap((action) => {
+          this.mapService.setOpacity(1.0, action.activeMapItem);
+          this.mapService.setVisibility(true, action.activeMapItem);
+        })
+      );
+    },
+    {dispatch: false}
+  );
+
   public dispatchActiveMapItemSetOpacityEffect$ = createEffect(
     () => {
       return this.actions$.pipe(
