@@ -42,6 +42,7 @@ import {GeometryWithSrs, PointWithSrs} from '../../../shared/interfaces/geojson-
 import {DrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {EsriSymbolizationService} from './esri-symbolization.service';
 import {MapConstants} from '../../../shared/constants/map.constants';
+import {EsriMapViewService} from './esri-map-view.service';
 import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
@@ -54,7 +55,6 @@ export class EsriMapService implements MapService {
   private effectiveMinZoom = 0;
   private effectiveMinScale = 0;
   private readonly defaultMapConfig: MapConfigState = this.configService.mapConfig.defaultMapConfig;
-  private _mapView!: __esri.MapView;
   private readonly numberOfDrawingLayers = Object.keys(DrawingLayer).length;
   private readonly subscriptions: Subscription = new Subscription();
   private readonly activeBasemapId$ = this.store.select(selectActiveBasemapId);
@@ -69,7 +69,8 @@ export class EsriMapService implements MapService {
     private readonly basemapConfigService: BasemapConfigService,
     private readonly configService: ConfigService,
     private readonly authService: AuthService,
-    private readonly esriSymbolizationService: EsriSymbolizationService
+    private readonly esriSymbolizationService: EsriSymbolizationService,
+    private readonly esriMapViewService: EsriMapViewService
   ) {
     /**
      * Because the GetCapabalities response often sends a non-secure http://wms.zh.ch response, Esri Javascript API fails on https
@@ -82,7 +83,11 @@ export class EsriMapService implements MapService {
   }
 
   private get mapView(): __esri.MapView {
-    return this._mapView;
+    return this.esriMapViewService.mapView;
+  }
+
+  private set mapView(value: __esri.MapView) {
+    this.esriMapViewService.mapView = value;
   }
 
   public setScale(scale: number) {
@@ -481,7 +486,7 @@ export class EsriMapService implements MapService {
 
   private setMapView(map: __esri.Map, scale: number, x: number, y: number, srsId: number, minScale: number, maxScale: number) {
     const spatialReference = new EsriSpatialReference({wkid: srsId});
-    this._mapView = new EsriMapView({
+    this.mapView = new EsriMapView({
       map: map,
       ui: {
         components: ['attribution'] // todo: may be removed, check licensing
