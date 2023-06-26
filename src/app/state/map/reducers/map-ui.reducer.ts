@@ -5,6 +5,7 @@ import {MapUiActions} from '../actions/map-ui.actions';
 export const mapUiFeatureKey = 'mapUi';
 
 export const initialState: MapUiState = {
+  mapSideDrawerContent: 'none',
   hideActiveMapItems: false,
   hideMapCatalogue: false,
   hideLegendButton: false,
@@ -26,6 +27,7 @@ export const mapUiFeature = createFeature({
     initialState,
     on(MapUiActions.toggleAllUiElements, (state, {hideAllElements}): MapUiState => {
       return {
+        mapSideDrawerContent: state.mapSideDrawerContent,
         hideActiveMapItems: hideAllElements,
         hideMapCatalogue: hideAllElements,
         hideLegendButton: hideAllElements,
@@ -43,6 +45,7 @@ export const mapUiFeature = createFeature({
     }),
     on(MapUiActions.toggleAllUiElementsExceptToggleButton, (state, {hideAllElements}): MapUiState => {
       return {
+        mapSideDrawerContent: state.mapSideDrawerContent,
         hideActiveMapItems: hideAllElements,
         hideMapCatalogue: hideAllElements,
         hideLegendButton: hideAllElements,
@@ -56,6 +59,12 @@ export const mapUiFeature = createFeature({
         hideLocateMeButton: hideAllElements,
         hideLegendOverlay: hideAllElements,
         hideFeatureInfoOverlay: hideAllElements
+      };
+    }),
+    on(MapUiActions.setMapSideDrawerContent, (state, {mapSideDrawerContent}): MapUiState => {
+      return {
+        ...state,
+        mapSideDrawerContent: mapSideDrawerContent
       };
     })
   )

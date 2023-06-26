@@ -2,9 +2,9 @@
   <mat-drawer
     mode="side"
     position="end"
-    [opened]="currentSideDrawerContent !== 'none'"
+    [opened]="mapSideDrawerContent !== 'none'"
     (closedStart)="closeSideDrawer()"
-    [ngSwitch]="currentSideDrawerContent"
+    [ngSwitch]="mapSideDrawerContent"
   >
     <print-dialog *ngSwitchCase="'print'" (closeEvent)="closeSideDrawer()"></print-dialog>
   </mat-drawer>

@@ -242,7 +242,12 @@ export class PrintDialogComponent implements OnInit, OnDestroy, HasSavingState {
           withLegend: value.showLegend ?? false,
           userTitle: value.title ?? '',
           userComment: value.comment ?? '',
-          topicTitle: this.activeMapItems ? this.activeMapItems.map((activeMapItem) => activeMapItem.title).join(', ') : '',
+          topicTitle: this.activeMapItems
+            ? this.activeMapItems
+                .filter((activeMapItem) => activeMapItem.visible)
+                .map((activeMapItem) => activeMapItem.title)
+                .join(', ')
+            : '',
           headerImg: 'http://127.0.0.1/images/LogoGIS.jpg', // TODO: what?
           center: [this.mapConfigState?.center.x ?? 0, this.mapConfigState?.center.y ?? 0],
           extent: [], // this seems to be optional
@@ -259,29 +264,31 @@ export class PrintDialogComponent implements OnInit, OnDestroy, HasSavingState {
 
     // add all active map items
     if (this.activeMapItems) {
-      this.activeMapItems.forEach((activeMapItem) => {
-        switch (activeMapItem.settings.type) {
-          case 'drawing':
-            throw new Error('Printing drawings is not implemented yet.');
-            break;
-          case 'gb2Wms':
-            layers.push({
-              layers: activeMapItem.settings.layers.map((layer) => layer.layer),
-              type: 'WMS',
-              opacity: activeMapItem.opacity,
-              customParams: {
-                dpi: 96, // TODO: where does this come from and what is it used for?
-                transparent: true, // TODO: where does this come from and what is it used for?
-                format: 'image/png; mode=8bit' // TODO: where does this come from and what is it used for?
-              },
-              format: 'image/png; mode=8bit', // TODO: where does this come from and what is it used for?
-              styles: [''], // TODO: what?
-              singleTile: true, // TODO: what?
-              baseURL: activeMapItem.settings.url
-            });
-            break;
-        }
-      });
+      this.activeMapItems
+        .filter((activeMapItem) => activeMapItem.visible)
+        .forEach((activeMapItem) => {
+          switch (activeMapItem.settings.type) {
+            case 'drawing':
+              throw new Error('Printing drawings is not implemented yet.');
+              break;
+            case 'gb2Wms':
+              layers.push({
+                layers: activeMapItem.settings.layers.filter((layer) => layer.visible).map((layer) => layer.layer),
+                type: 'WMS',
+                opacity: activeMapItem.opacity,
+                customParams: {
+                  dpi: 96, // TODO: where does this come from and what is it used for?
+                  transparent: true, // TODO: where does this come from and what is it used for?
+                  format: 'image/png; mode=8bit' // TODO: where does this come from and what is it used for?
+                },
+                format: 'image/png; mode=8bit', // TODO: where does this come from and what is it used for?
+                styles: [''], // TODO: what?
+                singleTile: true, // TODO: what?
+                baseURL: activeMapItem.settings.url
+              });
+              break;
+          }
+        });
     }
 
     // add basemap

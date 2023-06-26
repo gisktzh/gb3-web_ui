@@ -1,4 +1,7 @@
+import {MapSideDrawerContent} from '../../../shared/types/map-side-drawer-content';
+
 export interface MapUiState {
+  mapSideDrawerContent: MapSideDrawerContent;
   hideActiveMapItems: boolean;
   hideMapCatalogue: boolean;
   hideLegendButton: boolean;
