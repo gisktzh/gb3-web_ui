@@ -1,6 +1,7 @@
 interface AlternativeSpatialReference {
   coordinates: number[];
   crs: string;
+  name: string;
 }
 
 interface ExternalMap {
