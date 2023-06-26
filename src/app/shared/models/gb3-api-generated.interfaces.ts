@@ -169,6 +169,8 @@ export interface GeneralInfoListData {
       coordinates: number[];
       /** CRS */
       crs: string;
+      /** Spatial Reference Name */
+      name: string;
     }[];
     /** External maps */
     external_maps: {

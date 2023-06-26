@@ -21,7 +21,7 @@
   <map-overlay-list-item overlayTitle="Weitere Standortinformationen">
     <div class="additional-general-information__content">
       <li *ngFor="let aCrs of generalInfoData.alternativeSpatialReferences" class="additional-general-information__content__crs">
-        <b>{{ aCrs.crs }}:</b> {{ aCrs.coordinates[0] | number : '1.0-10' }} / {{ aCrs.coordinates[1] | number : '1.0-10' }}
+        <b>{{ aCrs.name }}:</b> {{ aCrs.coordinates[0] | number : '1.0-10' }} / {{ aCrs.coordinates[1] | number : '1.0-10' }}
       </li>
       <b>Weitere Kartendienste:</b>
       <li *ngFor="let extMap of generalInfoData.externalMaps" class="additional-general-information__content__links">
