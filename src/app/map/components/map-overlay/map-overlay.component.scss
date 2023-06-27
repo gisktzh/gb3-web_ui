@@ -1,11 +1,12 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'variables/z-index-variables' as z-index-variables;
 
 .map-overlay {
   height: 100%;
   width: 450px;
   border-radius: 0;
   padding-top: 0;
-  z-index: ktzh-variables.$map-overlay;
+  z-index: z-index-variables.$map-overlay;
   display: flex;
   flex-direction: column;
 

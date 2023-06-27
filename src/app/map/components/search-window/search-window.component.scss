@@ -2,6 +2,7 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 @use 'mixins/helpers.mixin' as mixins;
 @use 'mixins/material.mixin' as mat-mixins;
+@use 'variables/z-index-variables' as z-index-variables;
 
 .search-window {
   .search-window__searchbar {
@@ -80,7 +81,7 @@
     bottom: 0;
     margin-top: 56px;
     width: 100%;
-    z-index: ktzh-variables.$search-window-results;
+    z-index: z-index-variables.$search-window-results;
   }
 }
 

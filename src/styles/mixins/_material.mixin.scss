@@ -1,5 +1,6 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 @use 'functions/helper.function' as functions;
+@use 'variables/z-index-variables' as z-index-variables;
 
 /**
 * ======================
@@ -19,7 +20,7 @@
 @mixin cdk-drag-handle-nested {
   width: 100%;
   height: 100%;
-  z-index: ktzh-variables.$cdk-drag-handle;
+  z-index: z-index-variables.$cdk-drag-handle;
   grid-column: 1;
   grid-row: 1;
   cursor: grab;

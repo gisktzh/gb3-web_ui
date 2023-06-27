@@ -1,11 +1,12 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'variables/z-index-variables' as z-index-variables;
 
 .mobile-warning {
   position: absolute;
   width: 100%;
   height: 100%;
   background-color: ktzh-variables.$zh-white;
-  z-index: ktzh-variables.$mobile-warning-overlay;
+  z-index: z-index-variables.$mobile-warning-overlay;
   display: flex;
   align-items: center;
   flex-direction: column;

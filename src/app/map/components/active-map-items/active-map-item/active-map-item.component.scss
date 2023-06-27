@@ -2,6 +2,7 @@
 @use 'mixins/helpers.mixin' as mixins;
 @use 'mixins/material.mixin' as mat-mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'variables/z-index-variables' as z-index-variables;
 
 :host ::ng-deep .active-map-item {
   @include mat-mixins.mat-expansion-panel-remove-content-offset;
@@ -84,7 +85,7 @@
   position: absolute;
   left: 89px;
   height: 6px;
-  z-index: ktzh-variables.$active-map-item-connection-line;
+  z-index: z-index-variables.$active-map-item-connection-line;
   border-right: ktzh-variables.$zh-black20 solid 2px;
 
   &.active-map-item__connection-line-top {
