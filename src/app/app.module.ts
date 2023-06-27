@@ -29,7 +29,7 @@ import {ConfigService} from './shared/services/config.service';
 import {KTZHNewsService} from './shared/services/apis/ktzh/ktzhnews.service';
 import {GeneralInfoEffects} from './state/map/effects/general-info.effects';
 import {ToolService} from './map/interfaces/tool.service';
-import {EsriToolService} from './map/services/esri-services/esri-tool.service';
+import {EsriToolService} from './map/services/esri-services/tool-service/esri-tool.service';
 import {ToolEffects} from './state/map/effects/tool.effects';
 import {registerLocaleData} from '@angular/common';
 import localeDeCH from '@angular/common/locales/de-CH';
