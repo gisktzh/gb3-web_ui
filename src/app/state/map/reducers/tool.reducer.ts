@@ -12,8 +12,8 @@ export const toolFeature = createFeature({
   name: toolFeatureKey,
   reducer: createReducer(
     initialState,
-    on(ToolActions.toggle, (): ToolState => {
-      return {...initialState, activeTool: 'measure-line'};
+    on(ToolActions.toggle, (state, {tool}): ToolState => {
+      return {...initialState, activeTool: tool};
     })
   )
 });

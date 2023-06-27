@@ -1,3 +1,5 @@
+import {MeasurementTool} from '../../state/map/states/tool.state';
+
 export interface ToolService {
-  testDrawing(): void;
+  startMeasurement(measurementType: MeasurementTool): void;
 }

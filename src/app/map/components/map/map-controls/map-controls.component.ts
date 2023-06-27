@@ -45,8 +45,8 @@ export class MapControlsComponent implements OnInit, OnDestroy {
     this.store.dispatch(GeolocationActions.startLocationRequest());
   }
 
-  public toggleMeasurement() {
-    this.store.dispatch(ToolActions.toggle());
+  public toggleLineMeasurement() {
+    this.store.dispatch(ToolActions.toggle({tool: 'measure-line'}));
   }
 
   private initSubscriptions() {

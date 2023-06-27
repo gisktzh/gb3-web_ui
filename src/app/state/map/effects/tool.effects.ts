@@ -7,11 +7,19 @@ import {TOOL_SERVICE} from '../../../app.module';
 
 @Injectable()
 export class ToolEffects {
-  public dispatchToggleTestDrawing = createEffect(
+  public dispatchToolToggle = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(ToolActions.toggle),
-        tap(() => this.toolService.testDrawing())
+        tap(({tool}) => {
+          switch (tool) {
+            case 'measure-line':
+            case 'measure-point':
+            case 'measure-area':
+              this.toolService.startMeasurement(tool);
+              break;
+          }
+        })
       );
     },
     {dispatch: false}

@@ -79,6 +79,7 @@ import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {selectDrawingLayers} from '../../../state/map/selectors/drawing-layers.selector';
 import {Subscription, tap} from 'rxjs';
 import {ActiveMapItem} from '../../models/active-map-item.model';
+import {MeasurementTool} from '../../../state/map/states/tool.state';
 import Layer = __esri.Layer;
 
 @Injectable({
@@ -97,16 +98,24 @@ export class EsriToolService implements ToolService, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  public testDrawing(): void {
-    const drawingLayer = this.esriMapViewService.findEsriLayer('measurement');
+  public startMeasurement(measurementType: MeasurementTool): void {
+    switch (measurementType) {
+      case 'measure-area':
+        throw Error('Measure Area not yet implemented!');
+      case 'measure-line':
+        const drawingLayer = this.esriMapViewService.findEsriLayer('measurement');
 
-    if (!drawingLayer) {
-      reactiveUtils.once(() => this.esriMapViewService.findEsriLayer('measurement')).then((layer) => this.startDrawing(layer!));
+        if (!drawingLayer) {
+          reactiveUtils.once(() => this.esriMapViewService.findEsriLayer('measurement')).then((layer) => this.startDrawing(layer!));
 
-      const drawingLayerAdd = ActiveMapItemFactory.createDrawingMapItem();
-      this.store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem: drawingLayerAdd, position: 0}));
-    } else {
-      this.startDrawing(drawingLayer);
+          const drawingLayerAdd = ActiveMapItemFactory.createDrawingMapItem();
+          this.store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem: drawingLayerAdd, position: 0}));
+        } else {
+          this.startDrawing(drawingLayer);
+        }
+        break;
+      case 'measure-point':
+        throw Error('Measure Point not yet implemented!');
     }
   }
 

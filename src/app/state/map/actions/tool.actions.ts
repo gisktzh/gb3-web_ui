@@ -1,8 +1,9 @@
-import {createActionGroup, emptyProps} from '@ngrx/store';
+import {createActionGroup, props} from '@ngrx/store';
+import {ToolType} from '../states/tool.state';
 
 export const ToolActions = createActionGroup({
   source: 'Tool',
   events: {
-    toggle: emptyProps()
+    toggle: props<{tool: ToolType}>()
   }
 });
