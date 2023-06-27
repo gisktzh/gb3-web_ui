@@ -43,6 +43,20 @@ $zh-border-radius: 1px;
 $esri-attribution-widget-height: 16px; // 'Powered by Esri' banner height
 $zh-layout-max-content-width: 1166px; // defines the max width the content should have (e.g. in sections)
 
+/* z-indices
+========================== */
+
+$mobile-warning-overlay: 300;
+$print-overlay: 200;
+$map-overlay: 100;
+$basemap-selector: 2;
+$active-map-item-connection-line: 1;
+$feature-info-content-table-header: 1;
+$search-window-results: 1;
+$cdk-drag-handle: 1;
+$collapsing-flexbox-list-item-hover: 1;
+$scrollbar-width-calculation-container: 0;
+
 /* Palettes
 ========================== */
 

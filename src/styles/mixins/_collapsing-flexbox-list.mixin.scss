@@ -54,7 +54,7 @@
   }
 
   &:hover {
-    z-index: 1;
+    z-index: ktzh-variables.$collapsing-flexbox-list-item-hover;
 
     &:before {
       background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 100);

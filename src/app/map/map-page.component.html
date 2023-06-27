@@ -14,7 +14,7 @@
   <map-controls class="map-container__map-controls"></map-controls>
   <legend-overlay
     class="map-container__legend-overlay"
-    [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideLegendOverlay}"
+    [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
     (printLegendEvent)="showPrint('legend')"
   ></legend-overlay>
   <div class="map-container__all-map-items-container">
@@ -23,7 +23,7 @@
         class="map-container__all-map-items-container__inner-container__active-map-items"
         [ngClass]="{
           'map-container__all-map-items-container__inner-container__active-map-items--maximized': isMapDataCatalogueMinimized,
-          'map-container__map-element--hidden': mapUiState?.hideActiveMapItems
+          'map-container__map-element--hidden': mapUiState?.hideUiElements
         }"
         typedTourAnchor="map.active.map.items"
       ></active-map-items>
@@ -32,7 +32,7 @@
         class="map-container__all-map-items-container__inner-container__map-data-catalogue"
         [ngClass]="{
           'map-container__all-map-items-container__inner-container__map-data-catalogue--minimized': isMapDataCatalogueMinimized,
-          'map-container__map-element--hidden': mapUiState?.hideMapCatalogue
+          'map-container__map-element--hidden': mapUiState?.hideUiElements
         }"
         typedTourAnchor="map.catalogue"
         (changeIsMinimizedEvent)="setIsMapDataCatalogueMinimized($event)"
@@ -44,27 +44,27 @@
     (click)="toggleLegend()"
     [disabled]="activeMapItems.length === 0"
     class="map-container__legend-button"
-    [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideLegendButton}"
+    [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
   >
     <mat-icon>map</mat-icon>
     Legende
   </button>
   <map-attribute-filter
     class="map-container__map-attribute-filter"
-    [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideActiveMapItems}"
+    [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
   ></map-attribute-filter>
   <feature-info-overlay
     class="map-container__feature-info-overlay"
     (printFeatureInfoEvent)="showPrint('featureInfo')"
-    [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideFeatureInfoOverlay}"
+    [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
   ></feature-info-overlay>
   <search-window
     class="map-container__search-window"
-    [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideMapSearch}"
+    [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
   ></search-window>
   <map-tools
     class="map-container__map-tools"
-    [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideMapTools}"
+    [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
     (openPrintDialogEvent)="openSideDrawer('print')"
   ></map-tools>
 </mat-drawer-container>

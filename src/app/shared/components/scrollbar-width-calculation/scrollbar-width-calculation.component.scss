@@ -1,8 +1,10 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
 .container {
   height: 50px;
   width: 50px;
   overflow: scroll;
   visibility: hidden;
   pointer-events: none;
-  z-index: 0;
+  z-index: ktzh-variables.$scrollbar-width-calculation-container;
 }

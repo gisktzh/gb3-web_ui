@@ -3,7 +3,6 @@ import {MapConfigUrlService} from './services/map-config-url.service';
 import {PrintType} from '../shared/types/print-type';
 import {OnboardingGuideService} from '../onboarding-guide/services/onboarding-guide.service';
 import {mapOnboardingGuideConfig} from '../onboarding-guide/data/map-onboarding-guide.config';
-import {LegendActions} from '../state/map/actions/legend.actions';
 import {Store} from '@ngrx/store';
 import {selectActiveMapItems} from '../state/map/reducers/active-map-item.reducer';
 import {Subscription, tap} from 'rxjs';
@@ -53,7 +52,7 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   public toggleLegend() {
-    this.store.dispatch(LegendActions.showLegend());
+    this.store.dispatch(MapUiActions.showLegend());
   }
 
   public setIsMapDataCatalogueMinimized(isMinimized: boolean) {

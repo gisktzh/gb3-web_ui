@@ -12,7 +12,7 @@
   display: flex;
   flex-direction: row-reverse;
   align-items: center;
-  z-index: 100; // todo: hackedihack
+  z-index: ktzh-variables.$basemap-selector;
   position: relative;
 
   .basemap-selector__active {

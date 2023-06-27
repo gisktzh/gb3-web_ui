@@ -3,7 +3,6 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {LoadingState} from '../../../../shared/types/loading-state';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
-import {HasSavingState} from '../../../../shared/interfaces/has-saving-state.interface';
 import {
   selectPrintCreationLoadingState,
   selectPrintCreationResponse,
@@ -43,7 +42,7 @@ interface PrintForm {
   templateUrl: './print-dialog.component.html',
   styleUrls: ['./print-dialog.component.scss']
 })
-export class PrintDialogComponent implements OnInit, OnDestroy, HasSavingState {
+export class PrintDialogComponent implements OnInit, OnDestroy {
   @Output() public closeEvent = new EventEmitter<void>();
 
   public readonly formGroup: FormGroup<PrintForm> = new FormGroup({
@@ -59,10 +58,10 @@ export class PrintDialogComponent implements OnInit, OnDestroy, HasSavingState {
     printActiveMapsSeparately: new FormControl(false, [Validators.required])
   });
 
-  public savingState: LoadingState = 'undefined';
   public printInfo?: PrintInfo;
   public printInfoLoadingState: LoadingState = 'undefined';
   public printCreationResponse?: PrintCreationResponse;
+  public printCreationLoadingState: LoadingState = 'undefined';
   public mapConfigState?: MapConfigState;
   public activeMapItems?: ActiveMapItem[];
   public uniqueLayoutSizes: string[] = [];
@@ -70,6 +69,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy, HasSavingState {
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(private readonly store: Store, private readonly basemapConfigService: BasemapConfigService) {
+    // disable the form until the print info from the print API returns; otherwise the form is not complete.
     this.formGroup.disable();
   }
 
@@ -83,7 +83,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy, HasSavingState {
   }
 
   public print() {
-    if (!this.formGroup.valid || this.savingState === 'loading') {
+    if (!this.formGroup.valid || this.printCreationLoadingState === 'loading') {
       return;
     }
 
@@ -125,7 +125,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy, HasSavingState {
         .select(selectPrintCreationLoadingState)
         .pipe(
           tap((printCreationLoadingState) => {
-            this.savingState = printCreationLoadingState;
+            this.printCreationLoadingState = printCreationLoadingState;
             this.updateFormGroupState();
           })
         )
@@ -177,7 +177,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy, HasSavingState {
   }
 
   private updateFormGroupState() {
-    if (this.printInfoLoadingState !== 'loaded' || this.savingState === 'loading') {
+    if (this.printInfoLoadingState !== 'loaded' || this.printCreationLoadingState === 'loading') {
       this.formGroup.disable();
     } else {
       this.formGroup.enable();
@@ -269,7 +269,8 @@ export class PrintDialogComponent implements OnInit, OnDestroy, HasSavingState {
         .forEach((activeMapItem) => {
           switch (activeMapItem.settings.type) {
             case 'drawing':
-              throw new Error('Printing drawings is not implemented yet.');
+              // TODO: Print drawings
+              console.warn('Printing drawings is not implemented yet.');
               break;
             case 'gb2Wms':
               layers.push({

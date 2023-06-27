@@ -2,17 +2,17 @@
   <div class="map-controls__inputs">
     <basemap-selector
       class="map-controls__inputs__basemap-selector"
-      [ngClass]="{'map-controls__map-element--hidden': mapUiState?.hideBasemapSelector}"
+      [ngClass]="{'map-controls__map-element--hidden': mapUiState?.hideUiElements}"
     ></basemap-selector>
     <div class="map-controls__inputs__bottom">
       <div
         class="map-controls__inputs__bottom__scale-bar-container"
         #scaleBarContainer
-        [ngClass]="{'map-controls__map-element--hidden': mapUiState?.hideScaleBar}"
+        [ngClass]="{'map-controls__map-element--hidden': mapUiState?.hideUiElements}"
       ></div>
       <coordinate-scale-inputs
         class="map-controls__inputs__bottom__data-inputs"
-        [ngClass]="{'map-controls__map-element--hidden': mapUiState?.hideCoordinateScaleInputs}"
+        [ngClass]="{'map-controls__map-element--hidden': mapUiState?.hideUiElements}"
       ></coordinate-scale-inputs>
     </div>
   </div>
@@ -27,14 +27,14 @@
       [matTooltip]="this.geolocationState.errorReason ?? ''"
       [matTooltipDisabled]="this.geolocationState.loadingState !== 'error'"
       [disabled]="this.geolocationState.loadingState === 'loading'"
-      [ngClass]="{'map-controls__map-element--hidden': mapUiState?.hideLocateMeButton}"
+      [ngClass]="{'map-controls__map-element--hidden': mapUiState?.hideUiElements}"
     >
       <mat-icon>my_location</mat-icon>
       <loading-and-process-bar [loadingState]="this.geolocationState.loadingState"></loading-and-process-bar>
     </button>
     <mat-divider
       class="map-controls__buttons__divider"
-      [ngClass]="{'map-controls__map-element--hidden': mapUiState?.hideLocateMeButton || mapUiState?.hideZoomButtons}"
+      [ngClass]="{'map-controls__map-element--hidden': mapUiState?.hideUiElements || mapUiState?.hideZoomButtons}"
     ></mat-divider>
     <div [ngClass]="{'map-controls__map-element--hidden': mapUiState?.hideZoomButtons}">
       <button

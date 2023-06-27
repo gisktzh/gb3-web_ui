@@ -1,7 +1,7 @@
 <div class="print-dialog">
   <div class="print-dialog__header">
     <h1 class="print-dialog__header__title">Drucken</h1>
-    <button mat-icon-button (click)="close()" [disabled]="savingState === 'loading'">
+    <button mat-icon-button (click)="close()" [disabled]="printCreationLoadingState === 'loading'">
       <mat-icon>close</mat-icon>
     </button>
   </div>
@@ -10,7 +10,6 @@
       <mat-form-field appearance="fill" class="print-dialog__content__form__element">
         <mat-label>Kartentitel</mat-label>
         <input matInput formControlName="title" />
-        <mat-error> Geben Sie einen gültigen, nicht leeren Kartentitel ein. </mat-error>
       </mat-form-field>
       <mat-form-field appearance="fill" class="print-dialog__content__form__element">
         <mat-label>Kommentar</mat-label>
@@ -26,6 +25,7 @@
           <mat-form-field class="print-dialog__content__form__element">
             <mat-label>Rotation</mat-label>
             <input matInput formControlName="rotation" type="number" min="-90" max="90" placeholder="0" />
+            <mat-error>Minimum: -90° Maximum: 90°</mat-error>
           </mat-form-field>
           <mat-form-field class="print-dialog__content__form__element" hideRequiredMarker>
             <mat-label>Massstab</mat-label>
@@ -68,11 +68,11 @@
         >
       </ng-container>
     </form>
-    <loading-and-process-bar [loadingState]="savingState"></loading-and-process-bar>
+    <loading-and-process-bar [loadingState]="printCreationLoadingState"></loading-and-process-bar>
     <loading-and-process-bar [loadingState]="printInfoLoadingState"></loading-and-process-bar>
   </div>
   <div class="print-dialog__footer">
-    <button class="print-dialog__footer__button" (click)="close()" [disabled]="savingState === 'loading'" mat-raised-button>
+    <button class="print-dialog__footer__button" (click)="close()" [disabled]="printCreationLoadingState === 'loading'" mat-button>
       Abbrechen
     </button>
     <button
@@ -81,8 +81,8 @@
       color="accent"
       type="submit"
       form="printForm"
-      [disabled]="!formGroup || formGroup.status !== 'VALID' || savingState === 'loading'"
-      mat-raised-button
+      [disabled]="!formGroup || formGroup.status !== 'VALID' || printCreationLoadingState === 'loading'"
+      mat-button
     >
       Drucken
     </button>

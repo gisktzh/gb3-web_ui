@@ -11,7 +11,7 @@ import {selectQueryLegends} from '../selectors/query-legends.selector';
 export class LegendEffects {
   public dispatchLegendRequest$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(LegendActions.showLegend),
+      ofType(LegendActions.loadLegend),
       concatLatestFrom(() => this.store.select(selectQueryLegends)),
       switchMap(([_, queryLegends]) =>
         this.topicsService.loadLegends(queryLegends).pipe(

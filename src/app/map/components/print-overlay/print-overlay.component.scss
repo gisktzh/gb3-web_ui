@@ -7,7 +7,7 @@
   left: 0;
   height: 100%;
   width: 100%;
-  z-index: 9999; // todo: still hacky, draw order should not be relying on z-index
+  z-index: ktzh-variables.$print-overlay;
   padding: 20px;
   box-sizing: border-box;
 

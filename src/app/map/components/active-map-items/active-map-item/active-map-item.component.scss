@@ -84,7 +84,7 @@
   position: absolute;
   left: 89px;
   height: 6px;
-  z-index: 100; // todo: hackedihack
+  z-index: ktzh-variables.$active-map-item-connection-line;
   border-right: ktzh-variables.$zh-black20 solid 2px;
 
   &.active-map-item__connection-line-top {

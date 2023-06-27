@@ -111,7 +111,7 @@ export interface PrintCreationLayer {
   /** custom parameters */
   customParams: {
     /**
-     * TRANSPARENT
+     * transparent
      * @example true
      */
     transparent: boolean;

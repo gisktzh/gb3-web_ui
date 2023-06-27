@@ -5,7 +5,7 @@
   width: 100%;
   height: 100%;
   background-color: ktzh-variables.$zh-white;
-  z-index: 99999;
+  z-index: ktzh-variables.$mobile-warning-overlay;
   display: flex;
   align-items: center;
   flex-direction: column;
