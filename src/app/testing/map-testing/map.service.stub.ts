@@ -5,13 +5,14 @@ import {TimeExtent} from '../../map/interfaces/time-extent.interface';
 import {GeometryWithSrs, PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
 import {InternalDrawingLayer} from 'src/app/shared/enums/drawing-layers.enum';
 import {Gb2WmsActiveMapItem} from '../../map/models/implementations/gb2-wms.model';
+import {DrawingActiveMapItem} from '../../map/models/implementations/drawing.model';
 
 export class MapServiceStub implements MapService {
   addGeometryToDrawingLayer(geometry: GeometryWithSrs, drawingLayer: InternalDrawingLayer): void {}
 
   clearDrawingLayer(drawingLayer: InternalDrawingLayer): void {}
 
-  public addMapItem(mapItem: ActiveMapItem): void {}
+  addDrawingLayer(mapItem: DrawingActiveMapItem, position: number) {}
 
   public assignMapElement(container: HTMLDivElement): void {}
 

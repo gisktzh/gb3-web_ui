@@ -69,7 +69,7 @@ describe('EsriMapService', () => {
   let service: EsriMapService;
   let mapMock: EsriMapMock;
   let mapViewService: jasmine.SpyObj<EsriMapViewService>;
-  const mapViewServiceSpy = jasmine.createSpyObj<EsriMapViewService>(['mapView']);
+  const mapViewServiceSpy = jasmine.createSpyObj<EsriMapViewService>(['mapView', 'findEsriLayer']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({

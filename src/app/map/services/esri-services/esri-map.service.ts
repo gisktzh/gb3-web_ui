@@ -44,7 +44,7 @@ import {EsriSymbolizationService} from './esri-symbolization.service';
 import {MapConstants} from '../../../shared/constants/map.constants';
 import {EsriMapViewService} from './esri-map-view.service';
 import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
-import {DrawingActiveMapItem} from '../../models/implementations/drawing-test.model';
+import {DrawingActiveMapItem} from '../../models/implementations/drawing.model';
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
 

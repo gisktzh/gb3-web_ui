@@ -1,5 +1,5 @@
 import {Gb2WmsActiveMapItem} from '../models/implementations/gb2-wms.model';
-import {DrawingActiveMapItem} from '../models/implementations/drawing-test.model';
+import {DrawingActiveMapItem} from '../models/implementations/drawing.model';
 
 /**
  * Contains the logic for adding an item to the map. The MapService implements this interface and acts as a visitor

@@ -8,7 +8,7 @@ import {immerable} from 'immer';
 
 import {AddToMapVisitor} from '../interfaces/add-to-map.visitor';
 import {Gb2WmsSettings} from './implementations/gb2-wms.model';
-import {DrawingLayerSettings} from './implementations/drawing-test.model';
+import {DrawingLayerSettings} from './implementations/drawing.model';
 
 type ActiveMapItemSettingsType = 'gb2Wms' | 'drawing';
 
