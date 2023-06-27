@@ -38,16 +38,15 @@ the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
 
 ### Building the image
 
+Before the **first start** create volume for log files. It has to be done only **once**
+```
+docker volume create nginx-logs
+```
+
 The docker image has to be built for each environment separately, since we cannot use runtime environment
 configurations.
 
 In order to build the docker image use the following command (adjust tag as needed):
-
-
-first create volume for log files
-```
-docker volume create nginx-logs
-```
 
 
 ```
@@ -74,13 +73,13 @@ such as internal domains. This is mainly reflected in the runtime configuration 
 This image exposes port 8080 and can be run like this:
 
 ```
-docker run -p 80:8080 --mount source=nginx-logs,destination=/var/log/nginx  --name gb3-frontend gb3-frontend:latest
+docker run -p 80:8080 -v nginxlogs:/var/log/nginx  --name gb3-frontend gb3-frontend:latest
 ```
 
 - **80:8080** maps the internal port 8080 to the external port 80; the later can be chosen freely
 - **gb3-frontend** is the name of the image
 - **latest** is the version tag for this image
-- **--mount source=nginx-logs,destination=/var/log/nginx** mounts folder with log files for filebeat
+- **-v nginxlogs:/var/log/nginx** volume folder with log files for filebeat
 
 
 ## Local Backend
