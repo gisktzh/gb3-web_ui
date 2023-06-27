@@ -1,4 +1,4 @@
-import {DrawingLayer} from '../enums/drawing-layer.enum';
+import {DrawingLayers} from '../enums/drawing-layers.enum';
 
 /**
  * RGBA values, where R,G,B = [0..255] and A = [0.0..1.0]; used for coloring elements
@@ -19,13 +19,22 @@ interface HasWidth {
 }
 
 interface AbstractPointSymbolization {
-  type: 'picture' | 'simple';
+  type: 'picture' | 'simple' | 'text';
 }
 
 export interface SimplePointSymbolization extends AbstractPointSymbolization, HasColor {
   type: 'simple';
   outline: HasWidth & HasColor;
   size: number;
+}
+
+export interface TextSymbolization extends HasColor {
+  outline: HasColor & HasWidth;
+  size: number;
+  /** Horizontal offset - by default, the anchorpoint is in the center of the point */
+  xOffset: number;
+  /** Vertical offset - by default, the anchorpoint is in the center of the point */
+  yOffset: number;
 }
 
 export interface PicturePointSymbolization extends AbstractPointSymbolization {
@@ -61,10 +70,11 @@ export interface SymbolizationStyle {
   point: PointSymbolization;
   line: LineSymbolization;
   polygon: PolygonSymbolization;
+  text: TextSymbolization;
 }
 
 /**
  * Represents a collection of symbolizations for all DrawingLayers that exist. By using the enum as key, it enforces that each
  * DrawingLayer has a symbolization associated with it or else the compiler raises an error.
  */
-export type LayerSymbolizations = {[key in DrawingLayer]: SymbolizationStyle};
+export type LayerSymbolizations = {[key in DrawingLayers]: SymbolizationStyle};

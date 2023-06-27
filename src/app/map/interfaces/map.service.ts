@@ -2,7 +2,7 @@ import {ActiveMapItem} from '../models/active-map-item.model';
 import {ZoomType} from '../../shared/types/zoom-type';
 import {TimeExtent} from './time-extent.interface';
 import {GeometryWithSrs, PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
-import {DrawingLayer} from '../../shared/enums/drawing-layer.enum';
+import {InternalDrawingLayer} from '../../shared/enums/drawing-layers.enum';
 import {AddToMapVisitor} from './add-to-map.visitor';
 import {Gb2WmsActiveMapItem} from '../models/implementations/gb2-wms.model';
 
@@ -62,8 +62,8 @@ export interface MapService extends AddToMapVisitor {
   zoomToExtent(geometry: GeometryWithSrs): void;
 
   /** Adds a geometry to a DrawingLayer */
-  addGeometryToDrawingLayer(geometry: GeometryWithSrs, drawingLayer: DrawingLayer): void;
+  addGeometryToDrawingLayer(geometry: GeometryWithSrs, drawingLayer: InternalDrawingLayer): void;
 
   /** Clears all geometries from a DrawingLayer */
-  clearDrawingLayer(drawingLayer: DrawingLayer): void;
+  clearDrawingLayer(drawingLayer: InternalDrawingLayer): void;
 }

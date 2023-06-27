@@ -7,17 +7,12 @@ export abstract class AbstractMeasurementStrategy implements EsriToolStrategy {
   protected readonly sketchViewModel: SketchViewModel;
   protected readonly layer: GraphicsLayer;
 
-  constructor(layer: GraphicsLayer, mapView: MapView) {
+  protected constructor(layer: GraphicsLayer, mapView: MapView) {
     // todo: check whether new SketchViewModels are okay; otherwise -> singleton and reuse the model.
     this.sketchViewModel = new SketchViewModel({
       view: mapView,
       layer: layer,
       tooltipOptions: {enabled: true},
-      polylineSymbol: {
-        type: 'simple-line',
-        color: '#FF0000',
-        width: 2
-      },
       updateOnGraphicClick: false
     });
 

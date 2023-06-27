@@ -2,7 +2,7 @@ import {Inject, Injectable, OnDestroy} from '@angular/core';
 import {MAP_SERVICE} from '../../app.module';
 import {MapService} from '../interfaces/map.service';
 import {GeometryWithSrs, PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
-import {DrawingLayer} from '../../shared/enums/drawing-layer.enum';
+import {InternalDrawingLayer} from '../../shared/enums/drawing-layers.enum';
 import {combineLatestWith, filter, Subscription, tap} from 'rxjs';
 import {selectCurrentGpsLocation} from '../../state/map/reducers/geolocation.reducer';
 import {Store} from '@ngrx/store';
@@ -30,20 +30,20 @@ export class MapDrawingService implements OnDestroy {
   }
 
   public drawFeatureInfoHighlight(geometry: GeometryWithSrs): void {
-    this.mapService.addGeometryToDrawingLayer(geometry, DrawingLayer.FeatureHighlight);
+    this.mapService.addGeometryToDrawingLayer(geometry, InternalDrawingLayer.FeatureHighlight);
   }
 
   public clearFeatureInfoHighlight() {
-    this.mapService.clearDrawingLayer(DrawingLayer.FeatureHighlight);
+    this.mapService.clearDrawingLayer(InternalDrawingLayer.FeatureHighlight);
   }
 
   public drawFeatureQueryLocation(geometry: GeometryWithSrs): void {
     this.clearFeatureQueryLocation();
-    this.mapService.addGeometryToDrawingLayer(geometry, DrawingLayer.FeatureQueryLocation);
+    this.mapService.addGeometryToDrawingLayer(geometry, InternalDrawingLayer.FeatureQueryLocation);
   }
 
   public clearFeatureQueryLocation(): void {
-    this.mapService.clearDrawingLayer(DrawingLayer.FeatureQueryLocation);
+    this.mapService.clearDrawingLayer(InternalDrawingLayer.FeatureQueryLocation);
   }
 
   private initSubscriptions() {
@@ -62,9 +62,9 @@ export class MapDrawingService implements OnDestroy {
   }
 
   private handleGpsLocation(location: PointWithSrs | undefined): Promise<never> | void {
-    this.mapService.clearDrawingLayer(DrawingLayer.LocatePosition);
+    this.mapService.clearDrawingLayer(InternalDrawingLayer.LocatePosition);
     if (location) {
-      this.mapService.addGeometryToDrawingLayer(location, DrawingLayer.LocatePosition);
+      this.mapService.addGeometryToDrawingLayer(location, InternalDrawingLayer.LocatePosition);
       return this.mapService.zoomToPoint(location, this.configService.mapConfig.locateMeZoom);
     }
   }

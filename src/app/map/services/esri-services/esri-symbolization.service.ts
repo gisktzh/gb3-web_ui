@@ -1,13 +1,14 @@
 import {Injectable} from '@angular/core';
 import {EsriColor, EsriPictureMarkerSymbol, EsriSimpleFillSymbol, EsriSimpleLineSymbol, EsriSimpleMarkerSymbol} from './esri.module';
 import {ConfigService} from '../../../shared/services/config.service';
-import {DrawingLayer} from '../../../shared/enums/drawing-layer.enum';
+import {DrawingLayers, InternalDrawingLayer} from '../../../shared/enums/drawing-layers.enum';
 import {GeometryWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {LayerSymbolizations, SymbolizationColor} from '../../../shared/interfaces/symbolization.interface';
 import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import Color from '@arcgis/core/Color';
 import MarkerSymbol from '@arcgis/core/symbols/MarkerSymbol';
+import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,7 @@ export class EsriSymbolizationService {
 
   constructor(private readonly configService: ConfigService) {}
 
-  public createSymbolizationForDrawingLayer(geometry: GeometryWithSrs, drawingLayer: DrawingLayer): __esri.Symbol {
+  public createSymbolizationForDrawingLayer(geometry: GeometryWithSrs, drawingLayer: InternalDrawingLayer): __esri.Symbol {
     switch (geometry.type) {
       case 'Point':
       case 'MultiPoint':
@@ -34,7 +35,21 @@ export class EsriSymbolizationService {
     }
   }
 
-  private createPointSymbolization(drawingLayer: DrawingLayer): MarkerSymbol {
+  public createTextSymbolization(drawingLayer: DrawingLayers): TextSymbol {
+    const textSymbology = this.layerSymbolizations[drawingLayer].text;
+    return new TextSymbol({
+      font: {
+        size: textSymbology.size
+      },
+      color: this.createEsriColor(textSymbology.color),
+      haloColor: this.createEsriColor(textSymbology.outline.color),
+      haloSize: textSymbology.outline.width,
+      yoffset: textSymbology.yOffset,
+      xoffset: textSymbology.xOffset
+    });
+  }
+
+  public createPointSymbolization(drawingLayer: DrawingLayers): MarkerSymbol {
     const pointSymbology = this.layerSymbolizations[drawingLayer].point;
     switch (pointSymbology.type) {
       case 'simple':
@@ -58,7 +73,7 @@ export class EsriSymbolizationService {
     }
   }
 
-  private createLineSymbolization(drawingLayer: DrawingLayer): SimpleLineSymbol {
+  public createLineSymbolization(drawingLayer: DrawingLayers): SimpleLineSymbol {
     const lineSymbology = this.layerSymbolizations[drawingLayer].line;
     return new EsriSimpleLineSymbol({
       color: this.createEsriColor(lineSymbology.color),
@@ -66,7 +81,7 @@ export class EsriSymbolizationService {
     });
   }
 
-  private createPolygonSymbolization(drawingLayer: DrawingLayer): SimpleFillSymbol {
+  public createPolygonSymbolization(drawingLayer: DrawingLayers): SimpleFillSymbol {
     const polygonSymbology = this.layerSymbolizations[drawingLayer].polygon;
     return new EsriSimpleFillSymbol({
       color: this.createEsriColor(polygonSymbology.fill.color),

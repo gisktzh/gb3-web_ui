@@ -4,17 +4,19 @@ import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import Graphic from '@arcgis/core/Graphic';
 import {NumberUtils} from '../../../../../shared/utils/number.utils';
 import {AbstractMeasurementStrategy} from './abstract-measurement.strategy';
-import TextSymbolProperties = __esri.TextSymbolProperties;
-
-const MEASUREMENT_LABEL: TextSymbolProperties = {
-  color: '#FF0000',
-  verticalAlignment: 'bottom',
-  yoffset: -12,
-  haloColor: '#FFFFFF',
-  haloSize: 2
-};
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import MapView from '@arcgis/core/views/MapView';
 
 export class LineMeasurementStrategy extends AbstractMeasurementStrategy {
+  private readonly labelSymbolization: TextSymbol;
+
+  constructor(layer: GraphicsLayer, mapView: MapView, polylineSymbol: __esri.SimpleLineSymbol, labelSymbolization: TextSymbol) {
+    super(layer, mapView);
+
+    this.sketchViewModel.polylineSymbol = polylineSymbol;
+    this.labelSymbolization = labelSymbolization;
+  }
+
   public end(): void {
     // todo: add logic for disabling the tool (if needed)
     console.log('ending');
@@ -26,13 +28,12 @@ export class LineMeasurementStrategy extends AbstractMeasurementStrategy {
       if (event.state === 'complete') {
         const geometry: Polyline = event.graphic.geometry as Polyline;
         const length = this.getRoundedPolylineLength(geometry);
-        const txtSymbol = new TextSymbol({
-          ...MEASUREMENT_LABEL,
-          text: `${length}m`
-        });
+
+        // prepare symbolization
+        this.labelSymbolization.text = `${length}m`;
         const label = new Graphic({
           geometry: geometry.getPoint(0, geometry.paths[0].length - 1),
-          symbol: txtSymbol
+          symbol: this.labelSymbolization
         });
 
         this.layer.addMany([label]);

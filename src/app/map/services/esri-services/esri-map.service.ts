@@ -39,7 +39,7 @@ import {TimeSliderConfiguration, TimeSliderLayerSource, TimeSliderParameterSourc
 import {TimeExtent} from '../../interfaces/time-extent.interface';
 import {MapConfigState} from '../../../state/map/states/map-config.state';
 import {GeometryWithSrs, PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
-import {DrawingLayer} from '../../../shared/enums/drawing-layer.enum';
+import {InternalDrawingLayer} from '../../../shared/enums/drawing-layers.enum';
 import {EsriSymbolizationService} from './esri-symbolization.service';
 import {MapConstants} from '../../../shared/constants/map.constants';
 import {EsriMapViewService} from './esri-map-view.service';
@@ -56,7 +56,7 @@ export class EsriMapService implements MapService {
   private effectiveMinZoom = 0;
   private effectiveMinScale = 0;
   private readonly defaultMapConfig: MapConfigState = this.configService.mapConfig.defaultMapConfig;
-  private readonly numberOfDrawingLayers = Object.keys(DrawingLayer).length;
+  private readonly numberOfDrawingLayers = Object.keys(InternalDrawingLayer).length;
   private readonly subscriptions: Subscription = new Subscription();
   private readonly activeBasemapId$ = this.store.select(selectActiveBasemapId);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
@@ -308,7 +308,7 @@ export class EsriMapService implements MapService {
     }) as never;
   }
 
-  public addGeometryToDrawingLayer(geometry: GeometryWithSrs, drawingLayer: DrawingLayer) {
+  public addGeometryToDrawingLayer(geometry: GeometryWithSrs, drawingLayer: InternalDrawingLayer) {
     const symbolization = this.esriSymbolizationService.createSymbolizationForDrawingLayer(geometry, drawingLayer);
     const esriGeometry = this.geoJSONMapperService.fromGeoJSONToEsri(geometry);
     const graphicItem = new EsriGraphic({geometry: esriGeometry, symbol: symbolization});
@@ -319,7 +319,7 @@ export class EsriMapService implements MapService {
     }
   }
 
-  public clearDrawingLayer(drawingLayer: DrawingLayer) {
+  public clearDrawingLayer(drawingLayer: InternalDrawingLayer) {
     const layer = this.esriMapViewService.findEsriLayer(this.createDrawingLayerId(drawingLayer));
 
     if (layer) {
@@ -328,7 +328,7 @@ export class EsriMapService implements MapService {
   }
 
   private initDrawingLayers() {
-    Object.values(DrawingLayer).forEach((drawingLayer) => {
+    Object.values(InternalDrawingLayer).forEach((drawingLayer) => {
       const graphicsLayer = new EsriGraphicsLayer({
         id: this.createDrawingLayerId(drawingLayer)
       });
@@ -337,7 +337,7 @@ export class EsriMapService implements MapService {
     });
   }
 
-  private createDrawingLayerId(drawingLayer: DrawingLayer): string {
+  private createDrawingLayerId(drawingLayer: InternalDrawingLayer): string {
     return `${this.internalLayerPrefix}${drawingLayer}`;
   }
 

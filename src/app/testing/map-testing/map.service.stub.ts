@@ -3,13 +3,13 @@ import {ActiveMapItem} from '../../map/models/active-map-item.model';
 import {ZoomType} from '../../shared/types/zoom-type';
 import {TimeExtent} from '../../map/interfaces/time-extent.interface';
 import {GeometryWithSrs, PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
-import {DrawingLayer} from 'src/app/shared/enums/drawing-layer.enum';
+import {InternalDrawingLayer} from 'src/app/shared/enums/drawing-layers.enum';
 import {Gb2WmsActiveMapItem} from '../../map/models/implementations/gb2-wms.model';
 
 export class MapServiceStub implements MapService {
-  addGeometryToDrawingLayer(geometry: GeometryWithSrs, drawingLayer: DrawingLayer): void {}
+  addGeometryToDrawingLayer(geometry: GeometryWithSrs, drawingLayer: InternalDrawingLayer): void {}
 
-  clearDrawingLayer(drawingLayer: DrawingLayer): void {}
+  clearDrawingLayer(drawingLayer: InternalDrawingLayer): void {}
 
   public addMapItem(mapItem: ActiveMapItem): void {}
 

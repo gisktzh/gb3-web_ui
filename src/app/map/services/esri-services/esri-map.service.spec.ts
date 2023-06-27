@@ -7,7 +7,7 @@ import {EsriMapMock} from '../../../testing/map-testing/esri-map.mock';
 import {AuthModule} from '../../../auth/auth.module';
 import {AuthService} from '../../../auth/auth.service';
 import {Subject} from 'rxjs';
-import {DrawingLayer} from '../../../shared/enums/drawing-layer.enum';
+import {InternalDrawingLayer} from '../../../shared/enums/drawing-layers.enum';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {MapConstants} from '../../../shared/constants/map.constants';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
@@ -50,7 +50,7 @@ const mockAuthService = jasmine.createSpyObj<AuthService>({
 });
 
 const internalLayerPrefix = MapConstants.INTERNAL_LAYER_PREFIX;
-const internalLayers = Object.values(DrawingLayer).map((drawingLayer) => {
+const internalLayers = Object.values(InternalDrawingLayer).map((drawingLayer) => {
   return new GraphicsLayer({
     id: `${internalLayerPrefix}${drawingLayer}`
   });

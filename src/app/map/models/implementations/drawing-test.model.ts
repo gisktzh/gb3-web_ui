@@ -1,5 +1,6 @@
 import {AbstractActiveMapItemSettings, ActiveMapItem} from '../active-map-item.model';
 import {AddToMapVisitor} from '../../interfaces/add-to-map.visitor';
+import {UserDrawingLayer} from '../../../shared/enums/drawing-layers.enum';
 
 export class DrawingLayerSettings extends AbstractActiveMapItemSettings {
   public readonly type = 'drawing';
@@ -15,7 +16,7 @@ export class DrawingActiveMapItem extends ActiveMapItem {
   constructor(visible?: boolean, opacity?: number) {
     super(visible, opacity);
 
-    this.id = 'measurement';
+    this.id = UserDrawingLayer.Measurements;
     this.title = 'Messungen';
     this.settings = new DrawingLayerSettings();
   }

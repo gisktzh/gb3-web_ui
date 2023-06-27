@@ -13,6 +13,8 @@ import {EsriToolStrategy} from './interfaces/strategy.interface';
 import {DefaultStrategy} from './strategies/default.strategy';
 import {LineMeasurementStrategy} from './strategies/line-measurement.strategy';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import {EsriSymbolizationService} from '../esri-symbolization.service';
+import {UserDrawingLayer} from '../../../../shared/enums/drawing-layers.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +25,11 @@ export class EsriToolService implements ToolService, OnDestroy {
   private readonly drawingLayers$ = this.store.select(selectDrawingLayers);
   private readonly subscriptions: Subscription = new Subscription();
 
-  constructor(private readonly esriMapViewService: EsriMapViewService, private readonly store: Store) {
+  constructor(
+    private readonly esriMapViewService: EsriMapViewService,
+    private readonly store: Store,
+    private readonly esriSymbolizationService: EsriSymbolizationService
+  ) {
     this.initSubscriptions();
   }
 
@@ -32,11 +38,11 @@ export class EsriToolService implements ToolService, OnDestroy {
   }
 
   public startMeasurement(measurementType: MeasurementTool): void {
-    const drawingLayer = this.esriMapViewService.findEsriLayer('measurement');
+    const drawingLayer = this.esriMapViewService.findEsriLayer(UserDrawingLayer.Measurements);
 
     if (!drawingLayer) {
       reactiveUtils
-        .once(() => this.esriMapViewService.findEsriLayer('measurement'))
+        .once(() => this.esriMapViewService.findEsriLayer(UserDrawingLayer.Measurements))
         .then((layer) => {
           this.setMeasurementStrategy(measurementType, layer as GraphicsLayer);
           this.startDrawing();
@@ -65,16 +71,19 @@ export class EsriToolService implements ToolService, OnDestroy {
    */
   private forceVisibility() {
     // todo: refactor to array once we have more to avoid non-null assertion
-    const activeMapItem = this.drawingLayers.find((l) => l.id === 'measurement')!;
+    const activeMapItem = this.drawingLayers.find((l) => l.id === UserDrawingLayer.Measurements)!;
     this.store.dispatch(ActiveMapItemActions.forceFullVisibility({activeMapItem}));
   }
 
   private setMeasurementStrategy(measurementType: MeasurementTool, layer: GraphicsLayer) {
+    const lineStyle = this.esriSymbolizationService.createLineSymbolization(UserDrawingLayer.Measurements);
+    const labelStyle = this.esriSymbolizationService.createTextSymbolization(UserDrawingLayer.Measurements);
+
     switch (measurementType) {
       case 'measure-area':
         throw Error('Measure Area not yet implemented!');
       case 'measure-line':
-        this.toolStrategy = new LineMeasurementStrategy(layer, this.esriMapViewService.mapView);
+        this.toolStrategy = new LineMeasurementStrategy(layer, this.esriMapViewService.mapView, lineStyle, labelStyle);
         break;
       case 'measure-point':
         throw Error('Measure Point not yet implemented!');
