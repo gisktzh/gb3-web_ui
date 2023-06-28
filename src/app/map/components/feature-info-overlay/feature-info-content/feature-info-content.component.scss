@@ -1,5 +1,6 @@
 @use 'mixins/helpers.mixin' as mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'variables/z-index-variables' as z-index-variables;
 
 /**
   The following variables are used for adding the borders on highlight. We cannot use box-sizing: border-box in <td>
@@ -39,7 +40,7 @@ $fixed-border: inset calc(-1 * $border-size) 0 0 0 ktzh-variables.$zh-black100;
       // override the upper left cell to be white (as per the design)
       &:first-child > .feature-info-content__table__row__column--header:first-child {
         background-color: ktzh-variables.$zh-white;
-        z-index: 1; //hackedihack; otherwise, radio buttons will shine through
+        z-index: z-index-variables.$feature-info-content-table-header;
       }
 
       & .feature-info-content__table__row__column {

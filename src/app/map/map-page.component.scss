@@ -7,6 +7,16 @@
   $all-map-items-container-width: 450px;
   $minimal-bottom-height: ktzh-variables.$esri-attribution-widget-height;
 
+  .map-container__map-element--hidden {
+    display: none !important;
+  }
+
+  .map-container__map-controls {
+    position: absolute;
+    bottom: calc(12px + $minimal-bottom-height);
+    right: 12px;
+  }
+
   .map-container__legend-overlay {
     position: absolute;
     top: 0;
@@ -92,6 +102,12 @@
     right: 12px;
     bottom: 85px;
     pointer-events: none;
+  }
+
+  .map-container__map-tools {
+    position: absolute;
+    top: 120px;
+    right: 24px;
   }
 }
 

@@ -1,4 +1,5 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'variables/z-index-variables' as z-index-variables;
 
 .print-overlay {
   background-color: ktzh-variables.$zh-print-white;
@@ -7,7 +8,7 @@
   left: 0;
   height: 100%;
   width: 100%;
-  z-index: 9999; // todo: still hacky, draw order should not be relying on z-index
+  z-index: z-index-variables.$print-overlay;
   padding: 20px;
   box-sizing: border-box;
 

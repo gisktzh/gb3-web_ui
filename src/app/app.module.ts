@@ -28,8 +28,10 @@ import {GravCmsMockService} from './shared/services/apis/grav-cms/grav-cms.mock.
 import {ConfigService} from './shared/services/config.service';
 import {KTZHNewsService} from './shared/services/apis/ktzh/ktzhnews.service';
 import {GeneralInfoEffects} from './state/map/effects/general-info.effects';
+import {PrintEffects} from './state/map/effects/print.effects';
 import {registerLocaleData} from '@angular/common';
 import localeDeCH from '@angular/common/locales/de-CH';
+import {MapUiEffects} from './state/map/effects/map-ui.effects';
 
 // necessary for the locale 'de-CH' to work
 // see https://stackoverflow.com/questions/46419026/missing-locale-data-for-the-locale-xxx-with-angular
@@ -72,7 +74,9 @@ export const GRAV_CMS_SERVICE = new InjectionToken<GravCmsService>('GravCmsServi
       FavouriteListEffects,
       PageNotificationEffects,
       GeolocationEffects,
-      GeneralInfoEffects
+      GeneralInfoEffects,
+      PrintEffects,
+      MapUiEffects
     ]),
     AuthModule
   ],
