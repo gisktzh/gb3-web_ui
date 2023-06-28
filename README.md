@@ -73,7 +73,7 @@ such as internal domains. This is mainly reflected in the runtime configuration 
 This image exposes port 8080 and can be run like this:
 
 ```
-docker run -p 80:8080 -v nginxlogs:/var/log/nginx  --name gb3-frontend gb3-frontend:latest
+docker run -p 80:8080 -v nginx-logs:/var/log/nginx  --name gb3-frontend gb3-frontend:latest
 ```
 
 - **80:8080** maps the internal port 8080 to the external port 80; the later can be chosen freely
