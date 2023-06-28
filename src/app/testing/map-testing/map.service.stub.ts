@@ -16,6 +16,8 @@ export class MapServiceStub implements MapService {
 
   public assignMapElement(container: HTMLDivElement): void {}
 
+  public assignScaleBarElement(container: HTMLDivElement): void {}
+
   public handleZoom(zoomType: ZoomType): void {}
 
   public setMapCenter(center: PointWithSrs): void {}

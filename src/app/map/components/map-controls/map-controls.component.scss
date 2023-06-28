@@ -1,0 +1,59 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'mixins/helpers.mixin' as mixins;
+@use 'mixins/material.mixin' as mat-mixins;
+
+:host ::ng-deep {
+  .map-controls__buttons__button {
+    @include mat-mixins.mat-icon-button-override-border-radius(ktzh-variables.$zh-border-radius);
+  }
+}
+
+.map-controls {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+
+  .map-controls__map-element--hidden {
+    display: none !important;
+  }
+
+  .map-controls__inputs {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
+    gap: 12px;
+
+    .map-controls__inputs__basemap-selector {
+      pointer-events: none;
+    }
+
+    .map-controls__inputs__bottom {
+      display: flex;
+      align-items: flex-end;
+      gap: 12px;
+
+      .map-controls__inputs__bottom__scale-bar-container {
+        border-radius: ktzh-variables.$zh-border-radius;
+        font-family: ktzh-variables.$zh-font-family;
+      }
+      .map-controls__inputs__bottom__data-inputs {
+        @include mixins.map-element-box-shadow;
+        display: block;
+      }
+    }
+  }
+
+  .map-controls__buttons {
+    @include mixins.map-element-box-shadow;
+    width: 48px;
+    display: flex;
+    flex-direction: column;
+    background-color: ktzh-variables.$zh-background-color;
+
+    .map-controls__buttons__divider {
+      width: 50%;
+      align-self: center;
+    }
+  }
+}

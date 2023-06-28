@@ -28,6 +28,8 @@ import {GravCmsMockService} from './shared/services/apis/grav-cms/grav-cms.mock.
 import {ConfigService} from './shared/services/config.service';
 import {KTZHNewsService} from './shared/services/apis/ktzh/ktzhnews.service';
 import {GeneralInfoEffects} from './state/map/effects/general-info.effects';
+import {PrintEffects} from './state/map/effects/print.effects';
+import {MapUiEffects} from './state/map/effects/map-ui.effects';
 import {ToolService} from './map/interfaces/tool.service';
 import {EsriToolService} from './map/services/esri-services/tool-service/esri-tool.service';
 import {ToolEffects} from './state/map/effects/tool.effects';
@@ -77,6 +79,8 @@ export const GRAV_CMS_SERVICE = new InjectionToken<GravCmsService>('GravCmsServi
       PageNotificationEffects,
       GeolocationEffects,
       GeneralInfoEffects,
+      PrintEffects,
+      MapUiEffects,
       ToolEffects
     ]),
     AuthModule

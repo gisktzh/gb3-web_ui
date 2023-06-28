@@ -13,7 +13,7 @@ export const legendFeature = createFeature({
   name: legendFeatureKey,
   reducer: createReducer(
     initialState,
-    on(LegendActions.showLegend, (state): LegendState => {
+    on(LegendActions.loadLegend, (state): LegendState => {
       return {...state, loadingState: 'loading'};
     }),
     on(LegendActions.addLegendContent, (state, {legends}): LegendState => {

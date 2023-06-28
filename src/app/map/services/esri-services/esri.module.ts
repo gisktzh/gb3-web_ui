@@ -19,6 +19,10 @@ import WMSSublayer from '@arcgis/core/layers/support/WMSSublayer';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol';
+import Geometry from '@arcgis/core/geometry/Geometry';
+import Multipoint from '@arcgis/core/geometry/Multipoint';
+import Polygon from '@arcgis/core/geometry/Polygon';
+import Polyline from '@arcgis/core/geometry/Polyline';
 
 /** Esri classes/modules */
 export const EsriMap = Map;
@@ -42,6 +46,10 @@ export const EsriScaleBar = ScaleBar;
 export const EsriBasemap = Basemap;
 export const EsriTileInfo = TileInfo;
 export const EsriWMSSublayer = WMSSublayer;
+export const EsriGeometry = Geometry;
+export const EsriMultiPoint = Multipoint;
+export const EsriPolygon = Polygon;
+export const EsriPolyline = Polyline;
 
 /** Esri internal union types */
 export type EsriLoadStatus = 'not-loaded' | 'loading' | 'failed' | 'loaded';

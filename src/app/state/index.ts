@@ -14,6 +14,8 @@ import {reducer as geolocationReducer} from './map/reducers/geolocation.reducer'
 import {reducer as generalInfoReducer} from './map/reducers/general-info.reducer';
 import {reducer as toolReducer} from './map/reducers/tool.reducer';
 import {reducer as appLayoutReducer} from './app/reducers/app-layout.reducer';
+import {reducer as printReducer} from './map/reducers/print.reducer';
+import {reducer as mapUiReducer} from './map/reducers/map-ui.reducer';
 import {ActiveMapItemState} from './map/states/active-map-item.state';
 import {FavouriteListState} from './map/states/favourite-list.state';
 import {FeatureInfoState} from './map/states/feature-info.state';
@@ -27,6 +29,8 @@ import {PageNotificationState} from './app/states/page-notification.state';
 import {GeolocationState} from './map/states/geolocation.state';
 import {GeneralInfoState} from './map/states/general-info.state';
 import {AppLayoutState} from './app/states/app-layout.state';
+import {PrintState} from './map/states/print.state';
+import {MapUiState} from './map/states/map-ui.state';
 import {ToolState} from './map/states/tool.state';
 
 export interface State {
@@ -43,6 +47,8 @@ export interface State {
   geolocation: GeolocationState;
   generalInfo: GeneralInfoState;
   appLayout: AppLayoutState;
+  print: PrintState;
+  mapUi: MapUiState;
   tool: ToolState;
 }
 
@@ -60,6 +66,8 @@ export const reducers: ActionReducerMap<State> = {
   geolocation: geolocationReducer,
   generalInfo: generalInfoReducer,
   appLayout: appLayoutReducer,
+  print: printReducer,
+  mapUi: mapUiReducer,
   tool: toolReducer
 };
 

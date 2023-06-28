@@ -4,7 +4,7 @@ import {LegendResponse} from '../../../shared/interfaces/legend.interface';
 export const LegendActions = createActionGroup({
   source: 'Legend',
   events: {
-    'Show Legend': emptyProps(),
+    'Load Legend': emptyProps(),
     'Add Legend Content': props<{legends: LegendResponse[]}>(),
     'Hide Legend': emptyProps()
   }

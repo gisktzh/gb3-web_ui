@@ -1,0 +1,16 @@
+steps:
+  - task: SonarCloudPrepare@1
+    displayName: 'Prepare Sonar Cloud WebClient'
+    inputs:
+      SonarCloud: 'EBP Sonar Cloud'
+      organization: 'ebpgroup'
+      scannerMode: 'CLI'
+      configMode: 'manual'
+      cliProjectKey: '222262_GB3_frontend'
+      cliProjectName: '222262_GB3_frontend'
+      cliSources: 'src'
+
+  - task: SonarCloudAnalyze@1
+  - task: SonarCloudPublish@1
+    inputs:
+      pollingTimeoutSec: '300'

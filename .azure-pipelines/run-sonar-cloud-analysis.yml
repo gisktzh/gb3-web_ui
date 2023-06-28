@@ -1,0 +1,11 @@
+trigger: none # only run in PRs which are handled by branch policies
+
+variables:
+  - template: 'templates/variables.yaml'
+
+pool:
+  vmImage: $(VM_IMAGE)
+
+steps:
+  - template: 'templates/git-checkout-code.yaml'
+  - template: 'templates/sonar-cloud-analysis.yaml'

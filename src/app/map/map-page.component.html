@@ -1,35 +1,75 @@
-<div class="map-container">
+<mat-drawer-container class="map-container">
+  <mat-drawer
+    mode="side"
+    position="end"
+    [opened]="mapSideDrawerContent !== 'none'"
+    (closedStart)="closeSideDrawer()"
+    [ngSwitch]="mapSideDrawerContent"
+  >
+    <print-dialog *ngSwitchCase="'print'" (closeEvent)="closeSideDrawer()"></print-dialog>
+  </mat-drawer>
+
   <map></map>
-  <legend-overlay class="map-container__legend-overlay" (printLegendEvent)="this.showPrint('legend')"></legend-overlay>
+
+  <map-controls class="map-container__map-controls"></map-controls>
+  <legend-overlay
+    class="map-container__legend-overlay"
+    [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
+    (printLegendEvent)="showPrint('legend')"
+  ></legend-overlay>
   <div class="map-container__all-map-items-container">
     <div class="map-container__all-map-items-container__inner-container">
       <active-map-items
         class="map-container__all-map-items-container__inner-container__active-map-items"
-        [ngClass]="{'map-container__all-map-items-container__inner-container__active-map-items--maximized': isMapDataCatalogueMinimized}"
+        [ngClass]="{
+          'map-container__all-map-items-container__inner-container__active-map-items--maximized': isMapDataCatalogueMinimized,
+          'map-container__map-element--hidden': mapUiState?.hideUiElements
+        }"
         typedTourAnchor="map.active.map.items"
       ></active-map-items>
       <span class="map-container__all-map-items-container__inner-container__divider"></span>
       <map-data-catalogue
         class="map-container__all-map-items-container__inner-container__map-data-catalogue"
-        [ngClass]="{'map-container__all-map-items-container__inner-container__map-data-catalogue--minimized': isMapDataCatalogueMinimized}"
+        [ngClass]="{
+          'map-container__all-map-items-container__inner-container__map-data-catalogue--minimized': isMapDataCatalogueMinimized,
+          'map-container__map-element--hidden': mapUiState?.hideUiElements
+        }"
         typedTourAnchor="map.catalogue"
         (changeIsMinimizedEvent)="setIsMapDataCatalogueMinimized($event)"
       ></map-data-catalogue>
     </div>
   </div>
-  <button mat-flat-button (click)="this.toggleLegend()" [disabled]="activeMapItems.length === 0" class="map-container__legend-button">
+  <button
+    mat-flat-button
+    (click)="toggleLegend()"
+    [disabled]="activeMapItems.length === 0"
+    class="map-container__legend-button"
+    [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
+  >
     <mat-icon>map</mat-icon>
     Legende
   </button>
-  <map-attribute-filter class="map-container__map-attribute-filter"></map-attribute-filter>
+  <map-attribute-filter
+    class="map-container__map-attribute-filter"
+    [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
+  ></map-attribute-filter>
   <feature-info-overlay
     class="map-container__feature-info-overlay"
-    (printFeatureInfoEvent)="this.showPrint('featureInfo')"
+    (printFeatureInfoEvent)="showPrint('featureInfo')"
+    [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
   ></feature-info-overlay>
-  <search-window class="map-container__search-window"></search-window>
-</div>
+  <search-window
+    class="map-container__search-window"
+    [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
+  ></search-window>
+  <map-tools
+    class="map-container__map-tools"
+    [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
+    (openPrintDialogEvent)="openSideDrawer('print')"
+  ></map-tools>
+</mat-drawer-container>
 <print-overlay></print-overlay>
-<onboarding-guide [introductionImage]="this.onboardingGuideImage"></onboarding-guide>
+<onboarding-guide [introductionImage]="onboardingGuideImage"></onboarding-guide>
 <center-anchor anchorName="map.start.tour"></center-anchor>
 <center-anchor anchorName="map.feature.info"></center-anchor>
 <center-anchor anchorName="map.end.tour"></center-anchor>

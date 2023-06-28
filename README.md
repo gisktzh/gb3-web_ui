@@ -1,6 +1,15 @@
-# Gb3Poc
+# GB3 Frontend
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.2.3.
+
+> # Table of Contents
+>
+> 1.  [Installation](#installation)
+> 2.  [Development server](#development-server)
+> 3.  [Docker](#docker)
+> 4.  [Local Backend](#local-backend)
+> 5.  [Naming conventions](#naming-conventions)
+> 6.  [Code documentation](#code-documentation)
 
 ## Installation
 
@@ -38,6 +47,12 @@ the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
 
 ### Building the image
 
+Before the **first start** create volume for log files. It has to be done only **once**
+
+```
+docker volume create nginx-logs
+```
+
 The docker image has to be built for each environment separately, since we cannot use runtime environment
 configurations.
 
@@ -67,12 +82,13 @@ such as internal domains. This is mainly reflected in the runtime configuration 
 This image exposes port 8080 and can be run like this:
 
 ```
-docker run -p 80:8080 gb3-frontend:latest
+docker run -p 80:8080 -v nginx-logs:/var/log/nginx  --name gb3-frontend gb3-frontend:latest
 ```
 
 - **80:8080** maps the internal port 8080 to the external port 80; the later can be chosen freely
 - **gb3-frontend** is the name of the image
 - **latest** is the version tag for this image
+- **-v nginxlogs:/var/log/nginx** volume folder with log files for filebeat
 
 ## Local Backend
 
@@ -89,6 +105,8 @@ e.g. `/wms/asd` will become `http://localhost:4200/wms/asd`, and then proxied to
 
 ## Naming conventions
 
+Generally, we are orientating ourselves at the default Typescript naming conventions.
+
 WIP - add more naming conventions :)
 
 ### Branchname and commit message
@@ -103,6 +121,12 @@ Our githooks check for both the branch name and the commit message, but they wil
 match. This is because there are times when you _might_ want to deviate from these rules.
 
 ## Code documentation
+
+> 1.  [The `ActiveMapItem` class](#the-activemapitem-class)
+> 2.  [Spatial Reference System(s)](#spatial-reference-systems)
+> 3.  [State](#state)
+> 4.  [Runtime configurations](#runtime-configurations)
+> 5.  [(S)CSS structure](#scss-structure)
 
 ### The `ActiveMapItem` class
 
@@ -249,3 +273,52 @@ replacement files.
 |   PROD    |     geo.ktzh.ch     |        Verwaltung        |   web.maps.zh.ch    |   web.wms.zh.ch    |    geolion.ktzh.ch     |                                            |
 |    UAT    |   uat.geo.ktzh.ch   | Verwaltungsinterne Tests | uatmaps.kt.ktzh.ch  | uatwms.kt.ktzh.ch  | uatgeolion.kt.ktzh.ch  |                                            |
 |  STAGING  | staging.geo.ktzh.ch | Produktionsvorbereitung  | testmaps.kt.ktzh.ch | testwms.kt.ktzh.ch | testgeolion.kt.ktzh.ch |                                            |
+
+### (S)CSS structure
+
+#### BEM - structured CSS
+
+We are using BEM to structure our (S)CSS: https://getbem.com/introduction/
+
+Basically there are three important elements to keep track of:
+
+- **blocks** \
+  Standalone entity that is meaningful on its own. \
+  Example: `active-map-item-header` \
+  How to use: `active-map-item-header` (no change)
+- **Element** \
+  A part of a block that has no standalone meaning and is semantically tied to its block. \
+  Example: `header-title` \
+  How to use: `active-map-item-header__title` (connect to a _block_ using two underscores)
+- **Modifier** \
+  A flag on a block or element. Use them to change appearance or behavior. \
+  Example: `disabled` \
+  How to use: `active-map-item-header--disabled` (connect to a _block_ or _element_ using two dashes)
+
+#### Global functions / variables / mixins / overrides
+
+Each component is responsible for its own styling. However, to prevent too much code duplications we have some global helper files in our `\styles` folder:
+
+- **functions/...** contains some helper functions to calculate e.g. the RGBA value of a hex value.
+- **mixins/...** contains mixin files divided into categories used to style specific sections of the application. These are the styles that can be shared between different components.
+- **overrides/...** contains a couple of style files used to globally override certain elements. Use with caution.
+- **variables/\_ktzh-design-variables.scss** contains all important variables used within the GB3 application. Most notable the color palettes that are used everywhere. Try to avoid hard-coded color values inside some local SCSS file.
+- **variables/\_z-index-variables.scss** contains all z-indices ordered by the highest value first. This is used to keep track of which element should be on top of which element in one place.
+
+To use those global styles within a local SCSS file use the following syntax (or part of it):
+
+```SCSS
+@use 'functions/helper.function' as functions;
+@use 'mixins/helpers.mixin' as mixins;
+@use 'mixins/material.mixin' as mat-mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'variables/z-index-variables' as z-index-variables;
+```
+
+Example of a potential usage:
+
+```SCSS
+.button {
+  background-color: functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent);
+}
+```

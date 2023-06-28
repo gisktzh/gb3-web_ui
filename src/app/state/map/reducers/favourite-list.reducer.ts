@@ -10,7 +10,7 @@ export const initialState: FavouriteListState = {
   loadingState: 'undefined'
 };
 
-export const favourteListeFeature = createFeature({
+export const favouriteListeFeature = createFeature({
   name: favouriteListFeatureKey,
   reducer: createReducer(
     initialState,
@@ -37,4 +37,4 @@ export const favourteListeFeature = createFeature({
   )
 });
 
-export const {name, reducer, selectFavourites, selectLoadingState} = favourteListeFeature;
+export const {name, reducer, selectFavourites, selectLoadingState} = favouriteListeFeature;
