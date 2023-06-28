@@ -1,7 +1,4 @@
 steps:
-  - checkout: self
-    fetchDepth: 0
-
   - task: SonarCloudPrepare@1
     displayName: 'Prepare Sonar Cloud WebClient'
     inputs:
