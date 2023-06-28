@@ -15,8 +15,7 @@ jobs:
     variables:
       - group: Azure-Static-Web-Apps-calm-plant-0ecbec603-variable-group
     steps:
-      - checkout: self
-        submodules: true
+      - template: 'templates/git-checkout-code.yaml'
       - template: 'templates/unit-tests.yaml'
       - task: AzureStaticWebApp@0
         inputs:

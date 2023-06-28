@@ -7,5 +7,6 @@ pool:
   vmImage: $(VM_IMAGE)
 
 steps:
+  - template: 'templates/git-checkout-code.yaml'
   - template: 'templates/unit-tests.yaml'
   - template: 'templates/sonar-cloud-analysis.yaml'
