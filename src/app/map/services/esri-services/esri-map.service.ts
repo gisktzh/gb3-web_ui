@@ -51,6 +51,7 @@ const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
   providedIn: 'root'
 })
 export class EsriMapService implements MapService {
+  private scaleBar?: __esri.ScaleBar;
   private effectiveMaxZoom = 23;
   private effectiveMinZoom = 0;
   private effectiveMinScale = 0;
@@ -192,7 +193,11 @@ export class EsriMapService implements MapService {
   }
 
   public assignScaleBarElement(container: HTMLDivElement) {
-    new EsriScaleBar({view: this.mapView, container: container, unit: 'metric'});
+    if (this.scaleBar) {
+      this.scaleBar.container = container;
+    } else {
+      this.scaleBar = new EsriScaleBar({view: this.mapView, container: container, unit: 'metric'});
+    }
   }
 
   public setOpacity(opacity: number, mapItem: ActiveMapItem): void {
