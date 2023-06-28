@@ -60,11 +60,11 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   public openSideDrawer(content: Exclude<MapSideDrawerContent, 'none'>) {
-    this.store.dispatch(MapUiActions.setMapSideDrawerContent({mapSideDrawerContent: content}));
+    this.store.dispatch(MapUiActions.showMapSideDrawerContent({mapSideDrawerContent: content}));
   }
 
   public closeSideDrawer() {
-    this.store.dispatch(MapUiActions.setMapSideDrawerContent({mapSideDrawerContent: 'none'}));
+    this.store.dispatch(MapUiActions.hideMapSideDrawerContent());
   }
 
   private initSubscriptions() {

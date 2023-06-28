@@ -23,10 +23,16 @@ export const mapUiFeature = createFeature({
         hideZoomButtons: hideAllUiElements
       };
     }),
-    on(MapUiActions.setMapSideDrawerContent, (state, {mapSideDrawerContent}): MapUiState => {
+    on(MapUiActions.showMapSideDrawerContent, (state, {mapSideDrawerContent}): MapUiState => {
       return {
         ...state,
         mapSideDrawerContent: mapSideDrawerContent
+      };
+    }),
+    on(MapUiActions.hideMapSideDrawerContent, (state): MapUiState => {
+      return {
+        ...state,
+        mapSideDrawerContent: 'none'
       };
     })
   )

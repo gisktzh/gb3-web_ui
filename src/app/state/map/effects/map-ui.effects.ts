@@ -6,16 +6,23 @@ import {LegendActions} from '../actions/legend.actions';
 
 @Injectable()
 export class MapUiEffects {
-  public dispatchSetMapSideDrawerContentRequest$ = createEffect(() => {
+  public dispatchShowMapSideDrawerContentRequest$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(MapUiActions.setMapSideDrawerContent),
+      ofType(MapUiActions.showMapSideDrawerContent),
       map((value) => {
         switch (value.mapSideDrawerContent) {
-          case 'none':
-            return MapUiActions.changeUiElementsVisibility({hideAllUiElements: false, hideUiToggleButton: false});
           case 'print':
             return MapUiActions.changeUiElementsVisibility({hideAllUiElements: true, hideUiToggleButton: true});
         }
+      })
+    );
+  });
+
+  public dispatchHideMapSideDrawerContentRequest$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapUiActions.hideMapSideDrawerContent),
+      map(() => {
+        return MapUiActions.changeUiElementsVisibility({hideAllUiElements: false, hideUiToggleButton: false});
       })
     );
   });
