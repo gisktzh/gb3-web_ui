@@ -9,7 +9,7 @@ export const selectFilteredLayerCatalog = createSelector(selectFilterString, sel
   }
 
   return produce(layerCatalog, (draft) => {
-    draft.map((item) => {
+    draft.forEach((item) => {
       item.maps.forEach((map) => {
         // only take layers which match the filter
         map.layers = map.layers.filter((layer) => layer.title.toLowerCase().includes(lowerCasedFilterString));

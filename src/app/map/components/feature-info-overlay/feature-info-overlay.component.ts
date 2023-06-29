@@ -53,7 +53,7 @@ export class FeatureInfoOverlayComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.loadingState$
         .pipe(
-          tap(async (value) => {
+          tap((value) => {
             this.loadingState = value;
             this.updateVisibility(value);
           })
@@ -63,7 +63,7 @@ export class FeatureInfoOverlayComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.featureInfoData$
         .pipe(
-          tap(async (value) => {
+          tap((value) => {
             this.featureInfoData = value;
           })
         )
@@ -72,7 +72,7 @@ export class FeatureInfoOverlayComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.generalInfoData$
         .pipe(
-          tap(async (value) => {
+          tap((value) => {
             this.generalInfoData = value.data;
           })
         )

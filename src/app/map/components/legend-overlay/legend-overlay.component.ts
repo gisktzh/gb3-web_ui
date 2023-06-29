@@ -49,7 +49,7 @@ export class LegendOverlayComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.loadingState$
         .pipe(
-          tap(async (value) => {
+          tap((value) => {
             this.loadingState = value;
             this.updateVisibility(value);
           })
@@ -60,7 +60,7 @@ export class LegendOverlayComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.legendItems$
         .pipe(
-          tap(async (value) => {
+          tap((value) => {
             this.legendItems = value;
           })
         )

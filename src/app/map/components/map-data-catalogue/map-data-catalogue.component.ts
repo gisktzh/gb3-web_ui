@@ -157,7 +157,7 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
     this.subscriptions.add(
       this.catalogueLoadingState$
         .pipe(
-          tap(async (value) => {
+          tap((value) => {
             this.catalogueLoadingState = value;
           })
         )
@@ -167,7 +167,7 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
     this.subscriptions.add(
       this.favouritesLoadingState$
         .pipe(
-          tap(async (value) => {
+          tap((value) => {
             this.favouritesLoadingState = value;
           })
         )
@@ -177,7 +177,7 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
     this.subscriptions.add(
       this.filterString$
         .pipe(
-          tap(async (value) => {
+          tap((value) => {
             this.filterString = value;
           })
         )
@@ -187,7 +187,7 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
     this.subscriptions.add(
       this.originalMaps$
         .pipe(
-          tap(async (value) => {
+          tap((value) => {
             this.originalMaps = value;
           })
         )

@@ -1,5 +1,4 @@
 import {ActionReducerMap, MetaReducer} from '@ngrx/store';
-import {environment} from '../../environments/environment';
 import {reducer as mapConfigReducer} from './map/reducers/map-config.reducer';
 import {reducer as legendReducer} from './map/reducers/legend.reducer';
 import {reducer as featureInfoReducer} from './map/reducers/feature-info.reducer';
@@ -67,4 +66,4 @@ export const reducers: ActionReducerMap<State> = {
   mapUi: mapUiReducer
 };
 
-export const metaReducers: MetaReducer<State>[] = !environment.production ? [] : [];
+export const metaReducers: MetaReducer<State>[] = [];
