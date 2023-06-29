@@ -1,6 +1,10 @@
 <div class="map-tools">
   <!-- TODO: enable this button as soon as the print preview is done -->
-  <button mat-icon-button (click)="showPrintDialog()" class="map-tools__print-button" data-test-id="map-print" disabled="true">
+  <button mat-icon-button (click)="showPrintDialog()" class="map-tools__button" data-test-id="map-print" disabled="true">
     <mat-icon>print</mat-icon>
+  </button>
+  <mat-divider class="map-tools__divider"></mat-divider>
+  <button mat-icon-button (click)="showShareLinkDialog()" class="map-tools__button" data-test-id="map-share">
+    <mat-icon>share</mat-icon>
   </button>
 </div>

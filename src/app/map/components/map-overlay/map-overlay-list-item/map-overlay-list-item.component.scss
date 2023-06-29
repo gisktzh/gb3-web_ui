@@ -1,5 +1,10 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 @use 'mixins/helpers.mixin' as mixins;
+@use 'mixins/material.mixin' as mat-mixins;
+
+:host ::ng-deep .list-item--no-content-indent {
+  @include mat-mixins.mat-expansion-panel-remove-content-indent;
+}
 
 .list-item {
   @include mixins.no-box-shadow;
@@ -16,10 +21,17 @@
       flex-direction: row;
       align-items: center;
       overflow: hidden;
+      width: 100%;
 
       .list-item__header__content__toggle {
         min-width: 24px;
         max-width: 24px;
+        order: 1;
+
+        &--position-end {
+          margin-left: auto;
+          order: 4;
+        }
       }
 
       .list-item__header__content__title {
@@ -28,11 +40,13 @@
         width: 100%;
         margin-top: auto;
         margin-bottom: auto;
+        order: 2;
       }
 
       .list-item__header__content__info-link {
         text-decoration: none;
         color: inherit;
+        order: 3;
 
         :hover {
           color: ktzh-variables.$zh-black40;

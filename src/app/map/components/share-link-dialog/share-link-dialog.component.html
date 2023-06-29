@@ -1,0 +1,28 @@
+<api-dialog-wrapper [savingState]="savingState" title="Teilen">
+  <ng-container content>
+    <mat-form-field appearance="fill" class="share-link-dialog__form">
+      <mat-label>Link auf aktive Karten</mat-label>
+      <input [value]="shareLink ?? 'Generiere Link...'" matInput readonly [disabled]="savingState === 'loading'" />
+      <button matSuffix mat-icon-button aria-label="Copy" [cdkCopyToClipboard]="shareLink ?? ''" [disabled]="!shareLink">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+    </mat-form-field>
+    <map-overlay-list-item
+      [disabled]="savingState === 'loading'"
+      [overlayTitle]="'Aktive Karten einbetten'"
+      [toggleButtonPosition]="'end'"
+      [removeContentIndent]="true"
+    >
+      <mat-form-field appearance="fill" class="share-link-dialog__form">
+        <mat-label>iframe Link</mat-label>
+        <input [value]="iframeCode ?? 'Generiere Link...'" matInput readonly />
+        <button matSuffix mat-icon-button aria-label="Copy" [cdkCopyToClipboard]="iframeCode ?? ''" [disabled]="!iframeCode">
+          <mat-icon>content_copy</mat-icon>
+        </button>
+      </mat-form-field>
+    </map-overlay-list-item>
+  </ng-container>
+  <ng-container actions>
+    <button (click)="close()" [disabled]="savingState === 'loading'" mat-button>Schliessen</button>
+  </ng-container>
+</api-dialog-wrapper>

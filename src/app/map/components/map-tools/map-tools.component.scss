@@ -3,7 +3,7 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
 :host ::ng-deep {
-  .map-tools__print-button {
+  .map-tools__button {
     @include mat-mixins.mat-icon-button-override-border-radius(ktzh-variables.$zh-border-radius);
   }
 }
@@ -15,8 +15,8 @@
   flex-direction: column;
   background-color: ktzh-variables.$zh-background-color;
 
-  .map-tools__print-button {
-    @include mixins.map-element-box-shadow;
-    background-color: ktzh-variables.$zh-background-color;
+  .map-tools__divider {
+    width: 50%;
+    align-self: center;
   }
 }
