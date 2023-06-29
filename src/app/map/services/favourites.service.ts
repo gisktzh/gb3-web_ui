@@ -2,23 +2,22 @@ import {Injectable} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Gb3FavouritesService} from '../../shared/services/apis/gb3/gb3-favourites.service';
 import {Observable, tap} from 'rxjs';
-import {selectActiveMapItems} from '../../state/map/reducers/active-map-item.reducer';
 import {ActiveMapItem} from '../models/active-map-item.model';
-import {Favourite, FavouriteLayerConfiguration, FavouritesResponse} from '../../shared/interfaces/favourite.interface';
-import {map} from 'rxjs/operators';
+import {Favourite, FavouritesResponse} from '../../shared/interfaces/favourite.interface';
 import {Map} from '../../shared/interfaces/topic.interface';
 import {selectAvailableMaps} from '../../state/map/selectors/available-maps.selector';
 import {produce} from 'immer';
 import {ActiveMapItemFactory} from '../../shared/factories/active-map-item.factory';
-import {isActiveMapItemOfType} from '../../shared/type-guards/active-map-item-type.type-guard';
-import {Gb2WmsActiveMapItem} from '../models/implementations/gb2-wms.model';
+import {ActiveMapItemConfiguration} from '../../shared/interfaces/active-map-item-configuration.interface';
+import {selectActiveMapItemConfigurations} from '../../state/map/selectors/active-map-item-configuration.selector';
+import {FavoritesDetailData} from '../../shared/models/gb3-api-generated.interfaces';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FavouritesService {
-  private activeMapItems: ActiveMapItem[] = [];
-  private readonly activeMapItems$ = this.store.select(selectActiveMapItems);
+  private activeMapItemConfigurations: ActiveMapItemConfiguration[] = [];
+  private readonly activeMapItemConfigurations$ = this.store.select(selectActiveMapItemConfigurations);
   private readonly availableMaps$ = this.store.select(selectAvailableMaps);
   private availableMaps: Map[] = [];
 
@@ -26,10 +25,8 @@ export class FavouritesService {
     this.initSubscriptions();
   }
 
-  public createFavourite(title: string): Observable<boolean> {
-    const currentConfiguration = this.getCurrentFavouriteConfiguration();
-
-    return this.gb3FavouritesService.createFavourite({title, content: currentConfiguration}).pipe(map(() => true));
+  public createFavourite(title: string): Observable<FavoritesDetailData> {
+    return this.gb3FavouritesService.createFavourite({title, content: this.activeMapItemConfigurations});
   }
 
   public loadFavourites(): Observable<FavouritesResponse> {
@@ -45,13 +42,13 @@ export class FavouritesService {
    *
    * Throws at the first occurrence of an error - this is to ensure that a favourite is somewhat stable, instead of showing only those parts
    * of the favourite that exist.
-   * @param favouriteLayerConfigurations
+   * @param activeMapItemConfigurations
    * @private
    */
-  public getActiveMapItemsForFavourite(favouriteLayerConfigurations: FavouriteLayerConfiguration[]): ActiveMapItem[] {
+  public getActiveMapItemsForFavourite(activeMapItemConfigurations: ActiveMapItemConfiguration[]): ActiveMapItem[] {
     const activeMapItems: ActiveMapItem[] = [];
 
-    favouriteLayerConfigurations.forEach((configuration) => {
+    activeMapItemConfigurations.forEach((configuration) => {
       const existingMap = this.availableMaps.find((availableMap) => availableMap.id === configuration.mapId);
 
       if (existingMap) {
@@ -94,19 +91,8 @@ export class FavouritesService {
 
   private initSubscriptions() {
     this.availableMaps$.pipe(tap((value) => (this.availableMaps = value))).subscribe();
-    this.activeMapItems$.pipe(tap((activeMapItems) => (this.activeMapItems = activeMapItems))).subscribe();
-  }
-
-  private getCurrentFavouriteConfiguration(): FavouriteLayerConfiguration[] {
-    return this.activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).map((activeMapItem) => {
-      // note: spread does not work here because ActiveMapItem is a class, hence too many attributes would be added to the object
-      return {
-        mapId: activeMapItem.settings.mapId,
-        layers: activeMapItem.settings.layers.map((layer) => ({id: layer.id, layer: layer.layer, visible: layer.visible})),
-        visible: activeMapItem.visible,
-        opacity: activeMapItem.opacity,
-        isSingleLayer: activeMapItem.isSingleLayer
-      };
-    });
+    this.activeMapItemConfigurations$
+      .pipe(tap((activeMapItemConfigurations) => (this.activeMapItemConfigurations = activeMapItemConfigurations)))
+      .subscribe();
   }
 }

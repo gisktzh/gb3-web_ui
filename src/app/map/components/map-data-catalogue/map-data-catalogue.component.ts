@@ -76,7 +76,6 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
 
   /**
    * Dispatches an action that adds a favourite to the map.
-   * @param favouriteLayerConfigurations
    */
   public addFavouriteToMap({id, content}: Favourite) {
     try {

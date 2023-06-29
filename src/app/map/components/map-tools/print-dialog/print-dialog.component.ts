@@ -203,7 +203,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
       this.formGroup.controls.layoutOrientation.enable({emitEvent});
     }
 
-    // TODO WES: remove the following two
+    // TODO: remove the following two as soon as the legends gets printed or the active map items can be printed separately
     this.formGroup.controls.showLegend.disable({emitEvent});
     this.formGroup.controls.printActiveMapsSeparately.disable({emitEvent});
   }

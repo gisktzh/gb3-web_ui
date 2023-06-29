@@ -1,20 +1,20 @@
 import {createSelector} from '@ngrx/store';
 import {ShareLinkItem} from 'src/app/shared/interfaces/share-link.interface';
-import {selectActiveMapItems} from '../reducers/active-map-item.reducer';
 import {selectActiveBasemapId, selectMapConfigState} from '../reducers/map-config.reducer';
+import {selectActiveMapItemConfigurations} from './active-map-item-configuration.selector';
 
 export const selectCurrentShareLinkItem = createSelector(
-  selectActiveMapItems,
+  selectActiveMapItemConfigurations,
   selectMapConfigState,
   selectActiveBasemapId,
-  (activeMapItems, mapConfigState, activeBasemapId) => {
+  (activeMapItemConfigurations, mapConfigState, activeBasemapId) => {
     const shareLinkItem: ShareLinkItem = {
       center: mapConfigState.center,
       scale: mapConfigState.scale,
       basemapId: activeBasemapId,
-      content: [],
-      drawings: [],
-      measurements: []
+      content: activeMapItemConfigurations,
+      drawings: [], // TODO: Add drawings as soon as they're ready
+      measurements: [] // TODO: Add measurements as soon as they're ready
     };
     return shareLinkItem;
   }
