@@ -14,6 +14,7 @@ import {reducer as generalInfoReducer} from './map/reducers/general-info.reducer
 import {reducer as appLayoutReducer} from './app/reducers/app-layout.reducer';
 import {reducer as printReducer} from './map/reducers/print.reducer';
 import {reducer as mapUiReducer} from './map/reducers/map-ui.reducer';
+import {reducer as shareLinkReducer} from './map/reducers/share-link.reducer';
 import {ActiveMapItemState} from './map/states/active-map-item.state';
 import {FavouriteListState} from './map/states/favourite-list.state';
 import {FeatureInfoState} from './map/states/feature-info.state';
@@ -29,6 +30,7 @@ import {GeneralInfoState} from './map/states/general-info.state';
 import {AppLayoutState} from './app/states/app-layout.state';
 import {PrintState} from './map/states/print.state';
 import {MapUiState} from './map/states/map-ui.state';
+import {ShareLinkState} from './map/states/share-link.state';
 
 export interface State {
   mapConfig: MapConfigState;
@@ -46,6 +48,7 @@ export interface State {
   appLayout: AppLayoutState;
   print: PrintState;
   mapUi: MapUiState;
+  shareLink: ShareLinkState;
 }
 
 export const reducers: ActionReducerMap<State> = {
@@ -63,7 +66,8 @@ export const reducers: ActionReducerMap<State> = {
   generalInfo: generalInfoReducer,
   appLayout: appLayoutReducer,
   print: printReducer,
-  mapUi: mapUiReducer
+  mapUi: mapUiReducer,
+  shareLink: shareLinkReducer
 };
 
 export const metaReducers: MetaReducer<State>[] = [];

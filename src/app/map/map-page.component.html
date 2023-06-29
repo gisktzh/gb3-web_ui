@@ -62,11 +62,7 @@
     class="map-container__search-window"
     [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
   ></search-window>
-  <map-tools
-    class="map-container__map-tools"
-    [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
-    (openPrintDialogEvent)="openSideDrawer('print')"
-  ></map-tools>
+  <map-tools class="map-container__map-tools" [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"></map-tools>
 </mat-drawer-container>
 <print-overlay></print-overlay>
 <onboarding-guide [introductionImage]="onboardingGuideImage"></onboarding-guide>

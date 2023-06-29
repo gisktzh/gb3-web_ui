@@ -1,9 +1,10 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {HasSavingState} from '../../../shared/interfaces/has-saving-state.interface';
 import {LoadingState} from '../../../shared/types/loading-state';
-import {Subscription} from 'rxjs';
+import {Subscription, tap} from 'rxjs';
 import {MatDialogRef} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
+import {selectSavingState, selectShareLinkId} from '../../../state/map/reducers/share-link.reducer';
 
 @Component({
   selector: 'share-link-dialog',
@@ -16,17 +17,30 @@ export class ShareLinkDialogComponent implements OnInit, OnDestroy, HasSavingSta
   public savingState: LoadingState = 'undefined';
 
   private readonly subscriptions: Subscription = new Subscription();
+  private readonly shareLinkId$ = this.store.select(selectShareLinkId);
+  private readonly savingState$ = this.store.select(selectSavingState);
 
   constructor(private readonly dialogRef: MatDialogRef<ShareLinkDialogComponent>, private readonly store: Store) {}
+
+  public ngOnInit() {
+    this.initSubscriptions();
+  }
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
   }
 
-  public ngOnInit() {}
-
-  public abort() {
-    this.close(true);
+  public initSubscriptions() {
+    this.subscriptions.add(this.savingState$.pipe(tap((savingState) => (this.savingState = savingState))).subscribe());
+    this.subscriptions.add(
+      this.shareLinkId$
+        .pipe(
+          tap((shareLinkId) => {
+            this.shareLink = shareLinkId; // TODO WES: ID => url
+          })
+        )
+        .subscribe()
+    );
   }
 
   public close(isAborted: boolean = false) {

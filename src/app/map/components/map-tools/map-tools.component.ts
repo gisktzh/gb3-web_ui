@@ -1,10 +1,6 @@
-import {Component, EventEmitter, Output} from '@angular/core';
+import {Component} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {PanelClass} from '../../../shared/enums/panel-class.enum';
-import {MatDialog} from '@angular/material/dialog';
-import {ShareLinkDialogComponent} from '../share-link-dialog/share-link-dialog.component';
-
-const SHARE_LINK_DIALOG_WIDTH = '657px';
+import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
 
 @Component({
   selector: 'map-tools',
@@ -12,19 +8,13 @@ const SHARE_LINK_DIALOG_WIDTH = '657px';
   styleUrls: ['./map-tools.component.scss']
 })
 export class MapToolsComponent {
-  @Output() public openPrintDialogEvent = new EventEmitter<void>();
-
-  constructor(private readonly store: Store, private readonly dialogService: MatDialog) {}
+  constructor(private readonly store: Store) {}
 
   public showPrintDialog() {
-    this.openPrintDialogEvent.emit();
+    this.store.dispatch(MapUiActions.showMapSideDrawerContent({mapSideDrawerContent: 'print'}));
   }
 
   public showShareLinkDialog() {
-    this.dialogService.open(ShareLinkDialogComponent, {
-      panelClass: PanelClass.ApiWrapperDialog,
-      restoreFocus: false,
-      width: SHARE_LINK_DIALOG_WIDTH
-    });
+    this.store.dispatch(MapUiActions.showShareLinkDialog());
   }
 }

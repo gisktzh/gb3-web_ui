@@ -32,6 +32,7 @@ import {PrintEffects} from './state/map/effects/print.effects';
 import {registerLocaleData} from '@angular/common';
 import localeDeCH from '@angular/common/locales/de-CH';
 import {MapUiEffects} from './state/map/effects/map-ui.effects';
+import {ShareLinkEffects} from './state/map/effects/share-link.effects';
 
 // necessary for the locale 'de-CH' to work
 // see https://stackoverflow.com/questions/46419026/missing-locale-data-for-the-locale-xxx-with-angular
@@ -76,7 +77,8 @@ export const GRAV_CMS_SERVICE = new InjectionToken<GravCmsService>('GravCmsServi
       GeolocationEffects,
       GeneralInfoEffects,
       PrintEffects,
-      MapUiEffects
+      MapUiEffects,
+      ShareLinkEffects
     ]),
     AuthModule
   ],

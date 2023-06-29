@@ -8,6 +8,6 @@ export const MapUiActions = createActionGroup({
     'Show Map Side Drawer Content': props<{mapSideDrawerContent: Exclude<MapSideDrawerContent, 'none'>}>(),
     'Hide Map Side Drawer Content': emptyProps(),
     'Show Legend': emptyProps(),
-    'Show Feature Info': emptyProps()
+    'Show Share Link Dialog': emptyProps()
   }
 });
