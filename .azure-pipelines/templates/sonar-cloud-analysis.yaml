@@ -9,6 +9,8 @@ steps:
       cliProjectKey: '222262_GB3_frontend'
       cliProjectName: '222262_GB3_frontend'
       cliSources: 'src'
+      extraProperties: |
+        sonar.javascript.lcov.reportPaths=$(System.DefaultWorkingDirectory)/coverage/gb3-frontend/lcov.info
 
   - task: SonarCloudAnalyze@1
   - task: SonarCloudPublish@1
