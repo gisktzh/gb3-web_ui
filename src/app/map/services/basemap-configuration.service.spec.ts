@@ -42,7 +42,6 @@ const mockBasemapConfig = {
 
 describe('BasemapConfigService', () => {
   let service: BasemapConfigService;
-  let configServiceSpy: jasmine.SpyObj<ConfigService>;
   beforeEach(() => {
     const spy = jasmine.createSpyObj('ConfigService', [], {basemapConfig: mockBasemapConfig});
 
@@ -56,7 +55,6 @@ describe('BasemapConfigService', () => {
       ]
     });
     service = TestBed.inject(BasemapConfigService);
-    configServiceSpy = TestBed.inject(ConfigService) as jasmine.SpyObj<ConfigService>;
   });
 
   describe('get availableBasemaps', () => {
