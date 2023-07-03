@@ -39,12 +39,13 @@ import {TimeSliderConfiguration, TimeSliderLayerSource, TimeSliderParameterSourc
 import {TimeExtent} from '../../interfaces/time-extent.interface';
 import {MapConfigState} from '../../../state/map/states/map-config.state';
 import {GeometryWithSrs, PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
-import {InternalDrawingLayer} from '../../../shared/enums/drawing-layers.enum';
+import {InternalDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {EsriSymbolizationService} from './esri-symbolization.service';
 import {MapConstants} from '../../../shared/constants/map.constants';
 import {EsriMapViewService} from './esri-map-view.service';
 import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
 import {DrawingActiveMapItem} from '../../models/implementations/drawing.model';
+import {EsriToolService} from './tool-service/esri-tool.service';
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
 
@@ -72,7 +73,8 @@ export class EsriMapService implements MapService {
     private readonly configService: ConfigService,
     private readonly authService: AuthService,
     private readonly esriSymbolizationService: EsriSymbolizationService,
-    private readonly esriMapViewService: EsriMapViewService
+    private readonly esriMapViewService: EsriMapViewService,
+    private readonly esriToolService: EsriToolService
   ) {
     /**
      * Because the GetCapabalities response often sends a non-secure http://wms.zh.ch response, Esri Javascript API fails on https
@@ -90,6 +92,14 @@ export class EsriMapService implements MapService {
 
   private set mapView(value: __esri.MapView) {
     this.esriMapViewService.mapView = value;
+  }
+
+  public moveLayerToTop(mapItem: ActiveMapItem) {
+    const esriLayer = this.esriMapViewService.findEsriLayer(mapItem.id);
+
+    if (esriLayer) {
+      this.mapView.map.layers.reorder(esriLayer, this.mapView.map.layers.length - this.numberOfDrawingLayers - 1);
+    }
   }
 
   public setScale(scale: number) {
@@ -148,7 +158,7 @@ export class EsriMapService implements MapService {
       id: mapItem.id
     });
 
-    const index = this.getNumberOfNonDrawingLayers() - position;
+    const index = this.getIndexForPosition(position);
     this.mapView.map.add(graphicsLayer, index);
   }
 
@@ -184,7 +194,7 @@ export class EsriMapService implements MapService {
      * visibility Additionally, there is a number of default layers that must always keep the highest visibility (e.g. highlight layer)
      * independent from the state/GUI layers.
      */
-    const index = this.getNumberOfNonDrawingLayers() - position;
+    const index = this.getIndexForPosition(position);
     this.mapView.map.add(esriLayer, index);
   }
 
@@ -333,6 +343,20 @@ export class EsriMapService implements MapService {
     if (layer) {
       (layer as __esri.GraphicsLayer).removeAll();
     }
+  }
+
+  public getToolService(): EsriToolService {
+    return this.esriToolService;
+  }
+
+  /**
+   * `position` is the map/layer position from the state/GUI: lowest position <=> highest visibility
+   * `index` is the position inside the Esri layer array. It's inverse to the position from the state/GUI: the lowest index <=> lowest
+   * visibility Additionally, there is a number of default layers that must always keep the highest visibility (e.g. highlight layer)
+   * independent from the state/GUI layers.
+   */
+  private getIndexForPosition(position: number) {
+    return this.getNumberOfNonDrawingLayers() - position;
   }
 
   private initDrawingLayers() {

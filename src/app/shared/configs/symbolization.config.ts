@@ -1,4 +1,4 @@
-import {InternalDrawingLayer, UserDrawingLayer} from '../enums/drawing-layers.enum';
+import {InternalDrawingLayer, UserDrawingLayer} from '../enums/drawing-layer.enum';
 import {LayerSymbolizations, SymbolizationStyle} from '../interfaces/symbolization.interface';
 
 const defaultOutline = {

@@ -4,6 +4,6 @@ import {ToolType} from '../states/tool.state';
 export const ToolActions = createActionGroup({
   source: 'Tool',
   events: {
-    toggle: props<{tool: ToolType}>()
+    'Activate Tool': props<{tool: ToolType}>()
   }
 });

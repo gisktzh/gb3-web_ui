@@ -3,11 +3,11 @@ import Polyline from '@arcgis/core/geometry/Polyline';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import Graphic from '@arcgis/core/Graphic';
 import {NumberUtils} from '../../../../../shared/utils/number.utils';
-import {AbstractMeasurementStrategy} from './abstract-measurement.strategy';
+import {AbstractEsriMeasurementStrategy} from './abstract-esri-measurement.strategy';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import MapView from '@arcgis/core/views/MapView';
 
-export class LineMeasurementStrategy extends AbstractMeasurementStrategy {
+export class EsriLineMeasurementStrategy extends AbstractEsriMeasurementStrategy {
   private readonly labelSymbolization: TextSymbol;
 
   constructor(layer: GraphicsLayer, mapView: MapView, polylineSymbol: __esri.SimpleLineSymbol, labelSymbolization: TextSymbol) {

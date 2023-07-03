@@ -17,6 +17,6 @@ export class MapToolsComponent {
   }
 
   public toggleLineMeasurement() {
-    this.store.dispatch(ToolActions.toggle({tool: 'measure-line'}));
+    this.store.dispatch(ToolActions.activateTool({tool: 'measure-line'}));
   }
 }

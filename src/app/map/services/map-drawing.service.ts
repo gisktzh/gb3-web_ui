@@ -2,7 +2,7 @@ import {Inject, Injectable, OnDestroy} from '@angular/core';
 import {MAP_SERVICE} from '../../app.module';
 import {MapService} from '../interfaces/map.service';
 import {GeometryWithSrs, PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
-import {InternalDrawingLayer} from '../../shared/enums/drawing-layers.enum';
+import {InternalDrawingLayer} from '../../shared/enums/drawing-layer.enum';
 import {combineLatestWith, filter, Subscription, tap} from 'rxjs';
 import {selectCurrentGpsLocation} from '../../state/map/reducers/geolocation.reducer';
 import {Store} from '@ngrx/store';

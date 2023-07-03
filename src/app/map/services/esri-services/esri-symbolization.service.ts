@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {EsriColor, EsriPictureMarkerSymbol, EsriSimpleFillSymbol, EsriSimpleLineSymbol, EsriSimpleMarkerSymbol} from './esri.module';
 import {ConfigService} from '../../../shared/services/config.service';
-import {DrawingLayers, InternalDrawingLayer} from '../../../shared/enums/drawing-layers.enum';
+import {DrawingLayer, InternalDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {GeometryWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {LayerSymbolizations, SymbolizationColor} from '../../../shared/interfaces/symbolization.interface';
 import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
@@ -35,7 +35,7 @@ export class EsriSymbolizationService {
     }
   }
 
-  public createTextSymbolization(drawingLayer: DrawingLayers): TextSymbol {
+  public createTextSymbolization(drawingLayer: DrawingLayer): TextSymbol {
     const textSymbology = this.layerSymbolizations[drawingLayer].text;
     return new TextSymbol({
       font: {
@@ -49,7 +49,7 @@ export class EsriSymbolizationService {
     });
   }
 
-  public createPointSymbolization(drawingLayer: DrawingLayers): MarkerSymbol {
+  public createPointSymbolization(drawingLayer: DrawingLayer): MarkerSymbol {
     const pointSymbology = this.layerSymbolizations[drawingLayer].point;
     switch (pointSymbology.type) {
       case 'simple':
@@ -73,7 +73,7 @@ export class EsriSymbolizationService {
     }
   }
 
-  public createLineSymbolization(drawingLayer: DrawingLayers): SimpleLineSymbol {
+  public createLineSymbolization(drawingLayer: DrawingLayer): SimpleLineSymbol {
     const lineSymbology = this.layerSymbolizations[drawingLayer].line;
     return new EsriSimpleLineSymbol({
       color: this.createEsriColor(lineSymbology.color),
@@ -81,7 +81,7 @@ export class EsriSymbolizationService {
     });
   }
 
-  public createPolygonSymbolization(drawingLayer: DrawingLayers): SimpleFillSymbol {
+  public createPolygonSymbolization(drawingLayer: DrawingLayer): SimpleFillSymbol {
     const polygonSymbology = this.layerSymbolizations[drawingLayer].polygon;
     return new EsriSimpleFillSymbol({
       color: this.createEsriColor(polygonSymbology.fill.color),

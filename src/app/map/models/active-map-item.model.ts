@@ -22,7 +22,7 @@ export type ActiveMapItemSettings = Gb2WmsSettings | DrawingLayerSettings;
 export abstract class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewProcessState, IsImmerable {
   public abstract readonly id: string;
   public abstract readonly title: string;
-  public abstract readonly mapImageUrl: string;
+  public abstract readonly mapImageUrl: string | null;
   public abstract readonly settings: ActiveMapItemSettings;
   public abstract readonly isSingleLayer: boolean;
 

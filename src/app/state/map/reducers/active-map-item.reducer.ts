@@ -33,10 +33,17 @@ export const activeMapItemFeature = createFeature({
       return {...state, activeMapItems: []};
     }),
     on(
+      ActiveMapItemActions.moveToTop,
+      produce((draft, {activeMapItem}) => {
+        const index = draft.activeMapItems.findIndex((item) => item.id === activeMapItem.id);
+        const entry = draft.activeMapItems.splice(index, 1);
+        draft.activeMapItems.unshift(...entry);
+      })
+    ),
+    on(
       ActiveMapItemActions.forceFullVisibility,
       produce((draft, {activeMapItem}) => {
         draft.activeMapItems.forEach((mapItem) => {
-          console.log(activeMapItem.id);
           if (mapItem.id === activeMapItem.id) {
             mapItem.opacity = 1.0;
             mapItem.visible = true;

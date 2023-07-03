@@ -1,6 +1,6 @@
 import {AbstractActiveMapItemSettings, ActiveMapItem} from '../active-map-item.model';
 import {AddToMapVisitor} from '../../interfaces/add-to-map.visitor';
-import {UserDrawingLayer} from '../../../shared/enums/drawing-layers.enum';
+import {UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 
 export class DrawingLayerSettings extends AbstractActiveMapItemSettings {
   public readonly type = 'drawing';
@@ -9,7 +9,7 @@ export class DrawingLayerSettings extends AbstractActiveMapItemSettings {
 export class DrawingActiveMapItem extends ActiveMapItem {
   public readonly settings: DrawingLayerSettings;
   public readonly id: string;
-  public readonly mapImageUrl: string = '';
+  public readonly mapImageUrl = null;
   public readonly title: string;
   public readonly isSingleLayer: boolean = true;
 

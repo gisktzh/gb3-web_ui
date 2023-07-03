@@ -30,8 +30,6 @@ import {KTZHNewsService} from './shared/services/apis/ktzh/ktzhnews.service';
 import {GeneralInfoEffects} from './state/map/effects/general-info.effects';
 import {PrintEffects} from './state/map/effects/print.effects';
 import {MapUiEffects} from './state/map/effects/map-ui.effects';
-import {ToolService} from './map/interfaces/tool.service';
-import {EsriToolService} from './map/services/esri-services/tool-service/esri-tool.service';
 import {ToolEffects} from './state/map/effects/tool.effects';
 import {registerLocaleData} from '@angular/common';
 import localeDeCH from '@angular/common/locales/de-CH';
@@ -53,7 +51,6 @@ function serviceFactory<T>(service: T, mockService: T, useMockService: boolean =
 }
 
 export const MAP_SERVICE = new InjectionToken<MapService>('MapService');
-export const TOOL_SERVICE = new InjectionToken<ToolService>('ToolService');
 export const NEWS_SERVICE = new InjectionToken<NewsService>('NewsService');
 export const GRAV_CMS_SERVICE = new InjectionToken<GravCmsService>('GravCmsService');
 
@@ -87,7 +84,6 @@ export const GRAV_CMS_SERVICE = new InjectionToken<GravCmsService>('GravCmsServi
   ],
   providers: [
     {provide: MAP_SERVICE, useClass: EsriMapService},
-    {provide: TOOL_SERVICE, useClass: EsriToolService},
     {provide: NEWS_SERVICE, deps: [KTZHNewsService, KTZHNewsMockService, ConfigService], useFactory: newsFactory},
     {provide: GRAV_CMS_SERVICE, deps: [GravCmsService, GravCmsMockService, ConfigService], useFactory: gravCmsFactory},
     {provide: LOCALE_ID, useValue: 'de-CH'}

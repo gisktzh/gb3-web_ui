@@ -11,4 +11,4 @@ export enum UserDrawingLayer {
 /**
  * All layers which can be used to draw on them; may be internal or external.
  */
-export type DrawingLayers = UserDrawingLayer | InternalDrawingLayer;
+export type DrawingLayer = UserDrawingLayer | InternalDrawingLayer;

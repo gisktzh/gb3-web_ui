@@ -3,14 +3,16 @@ import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {tap} from 'rxjs';
 import {ToolActions} from '../actions/tool.actions';
 import {ToolService} from '../../../map/interfaces/tool.service';
-import {TOOL_SERVICE} from '../../../app.module';
+import {MAP_SERVICE} from '../../../app.module';
+import {MapService} from '../../../map/interfaces/map.service';
 
 @Injectable()
 export class ToolEffects {
+  private readonly toolService: ToolService;
   public dispatchToolToggle = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(ToolActions.toggle),
+        ofType(ToolActions.activateTool),
         tap(({tool}) => {
           switch (tool) {
             case 'measure-line':
@@ -25,5 +27,7 @@ export class ToolEffects {
     {dispatch: false}
   );
 
-  constructor(private readonly actions$: Actions, @Inject(TOOL_SERVICE) private readonly toolService: ToolService) {}
+  constructor(private readonly actions$: Actions, @Inject(MAP_SERVICE) private readonly mapService: MapService) {
+    this.toolService = this.mapService.getToolService();
+  }
 }

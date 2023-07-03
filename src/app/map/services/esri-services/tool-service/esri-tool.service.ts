@@ -7,21 +7,21 @@ import {ActiveMapItemFactory} from '../../../../shared/factories/active-map-item
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 import {selectDrawingLayers} from '../../../../state/map/selectors/drawing-layers.selector';
 import {Subscription, tap} from 'rxjs';
-import {ActiveMapItem} from '../../../models/active-map-item.model';
 import {MeasurementTool} from '../../../../state/map/states/tool.state';
 import {EsriToolStrategy} from './interfaces/strategy.interface';
-import {DefaultStrategy} from './strategies/default.strategy';
-import {LineMeasurementStrategy} from './strategies/line-measurement.strategy';
+import {EsriDefaultStrategy} from './strategies/esriDefaultStrategy';
+import {EsriLineMeasurementStrategy} from './strategies/esri-line-measurement.strategy';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {EsriSymbolizationService} from '../esri-symbolization.service';
-import {UserDrawingLayer} from '../../../../shared/enums/drawing-layers.enum';
+import {UserDrawingLayer} from '../../../../shared/enums/drawing-layer.enum';
+import {DrawingActiveMapItem} from '../../../models/implementations/drawing.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EsriToolService implements ToolService, OnDestroy {
-  private toolStrategy: EsriToolStrategy = new DefaultStrategy();
-  private drawingLayers: ActiveMapItem[] = [];
+  private toolStrategy: EsriToolStrategy = new EsriDefaultStrategy();
+  private drawingLayers: DrawingActiveMapItem[] = [];
   private readonly drawingLayers$ = this.store.select(selectDrawingLayers);
   private readonly subscriptions: Subscription = new Subscription();
 
@@ -37,14 +37,19 @@ export class EsriToolService implements ToolService, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  public startMeasurement(measurementType: MeasurementTool): void {
+  public startMeasurement(measurementTool: MeasurementTool): void {
     const drawingLayer = this.esriMapViewService.findEsriLayer(UserDrawingLayer.Measurements);
 
     if (!drawingLayer) {
+      /**
+       * In case we don't have a drawing layer yet, we add it to the map. However, because this is not done immediately, we need a one-off
+       * listener to this layer in order to then start the drawing functionality when the layer is effectively added. Starting the drawing
+       * immediately after dispatching the layer addition will yield undefined errors.
+       */
       reactiveUtils
         .once(() => this.esriMapViewService.findEsriLayer(UserDrawingLayer.Measurements))
         .then((layer) => {
-          this.setMeasurementStrategy(measurementType, layer as GraphicsLayer);
+          this.setMeasurementStrategy(measurementTool, layer as GraphicsLayer);
           this.startDrawing();
         });
 
@@ -52,7 +57,7 @@ export class EsriToolService implements ToolService, OnDestroy {
       this.store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem: drawingLayerAdd, position: 0}));
     } else {
       this.forceVisibility();
-      this.setMeasurementStrategy(measurementType, drawingLayer as GraphicsLayer);
+      this.setMeasurementStrategy(measurementTool, drawingLayer as GraphicsLayer);
       this.startDrawing();
     }
   }
@@ -72,7 +77,11 @@ export class EsriToolService implements ToolService, OnDestroy {
   private forceVisibility() {
     // todo: refactor to array once we have more to avoid non-null assertion
     const activeMapItem = this.drawingLayers.find((l) => l.id === UserDrawingLayer.Measurements)!;
-    this.store.dispatch(ActiveMapItemActions.forceFullVisibility({activeMapItem}));
+    const drawingLayer = this.esriMapViewService.findEsriLayer(activeMapItem.id)!;
+    const currentIndex = this.esriMapViewService.mapView.map.layers.indexOf(drawingLayer);
+    const topIndex = this.esriMapViewService.mapView.map.layers.length;
+
+    this.store.dispatch(ActiveMapItemActions.forceFullVisibility({activeMapItem, currentIndex, topIndex}));
   }
 
   private setMeasurementStrategy(measurementType: MeasurementTool, layer: GraphicsLayer) {
@@ -81,12 +90,12 @@ export class EsriToolService implements ToolService, OnDestroy {
 
     switch (measurementType) {
       case 'measure-area':
-        throw Error('Measure Area not yet implemented!');
+        throw Error('Measure Area not yet implemented!'); // todo: implement measure area
       case 'measure-line':
-        this.toolStrategy = new LineMeasurementStrategy(layer, this.esriMapViewService.mapView, lineStyle, labelStyle);
+        this.toolStrategy = new EsriLineMeasurementStrategy(layer, this.esriMapViewService.mapView, lineStyle, labelStyle);
         break;
       case 'measure-point':
-        throw Error('Measure Point not yet implemented!');
+        throw Error('Measure Point not yet implemented!'); // todo: implement point measure
     }
   }
 }

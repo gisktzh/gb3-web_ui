@@ -1,4 +1,4 @@
-import {DrawingLayers} from '../enums/drawing-layers.enum';
+import {DrawingLayer} from '../enums/drawing-layer.enum';
 
 /**
  * RGBA values, where R,G,B = [0..255] and A = [0.0..1.0]; used for coloring elements
@@ -77,4 +77,4 @@ export interface SymbolizationStyle {
  * Represents a collection of symbolizations for all DrawingLayers that exist. By using the enum as key, it enforces that each
  * DrawingLayer has a symbolization associated with it or else the compiler raises an error.
  */
-export type LayerSymbolizations = {[key in DrawingLayers]: SymbolizationStyle};
+export type LayerSymbolizations = {[key in DrawingLayer]: SymbolizationStyle};

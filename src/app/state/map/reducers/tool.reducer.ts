@@ -12,7 +12,7 @@ export const toolFeature = createFeature({
   name: toolFeatureKey,
   reducer: createReducer(
     initialState,
-    on(ToolActions.toggle, (state, {tool}): ToolState => {
+    on(ToolActions.activateTool, (state, {tool}): ToolState => {
       return {...initialState, activeTool: tool};
     })
   )

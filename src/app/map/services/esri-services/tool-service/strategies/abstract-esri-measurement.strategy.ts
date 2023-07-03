@@ -3,7 +3,7 @@ import SketchViewModel from '@arcgis/core/widgets/Sketch/SketchViewModel';
 import MapView from '@arcgis/core/views/MapView';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 
-export abstract class AbstractMeasurementStrategy implements EsriToolStrategy {
+export abstract class AbstractEsriMeasurementStrategy implements EsriToolStrategy {
   protected readonly sketchViewModel: SketchViewModel;
   protected readonly layer: GraphicsLayer;
 
@@ -12,7 +12,8 @@ export abstract class AbstractMeasurementStrategy implements EsriToolStrategy {
     this.sketchViewModel = new SketchViewModel({
       view: mapView,
       layer: layer,
-      tooltipOptions: {enabled: true},
+      tooltipOptions: {enabled: false}, // todo: check how we can fix the display; seems not implemented:
+      // https://community.esri.com/t5/arcgis-javascript-maps-sdk-questions/how-to-show-cursor-tooltips-when-a-sketch-tool-is/td-p/1276503
       updateOnGraphicClick: false
     });
 
