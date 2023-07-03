@@ -13,6 +13,7 @@ import {MapConstants} from '../../../shared/constants/map.constants';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
 import {EsriMapViewService} from './esri-map-view.service';
+import {EsriToolService} from './tool-service/esri-tool.service';
 
 function createActiveMapItemMock(id: string, numberOfLayers = 0): {id: string; activeMapItem: Gb2WmsActiveMapItem} {
   const mapMock = {id: id, title: id, layers: []} as Partial<Map>;
@@ -68,10 +69,11 @@ function getExpectedNumberOfLayersWithInternalLayers(expectedNumber: number): nu
 describe('EsriMapService', () => {
   let service: EsriMapService;
   let mapMock: EsriMapMock;
-  let mapViewService: jasmine.SpyObj<EsriMapViewService>;
-  const mapViewServiceSpy = jasmine.createSpyObj<EsriMapViewService>(['mapView', 'findEsriLayer']);
+  let mapViewService: EsriMapViewService = new EsriMapViewService();
 
   beforeEach(() => {
+    const toolServiceSpy = jasmine.createSpyObj<EsriToolService>(['startMeasurement']);
+
     TestBed.configureTestingModule({
       imports: [AuthModule],
       providers: [
@@ -79,14 +81,20 @@ describe('EsriMapService', () => {
         {provide: AuthService, useValue: mockAuthService},
         {
           provide: EsriMapViewService,
-          useValue: mapViewServiceSpy
+          useValue: mapViewService
+        },
+        {
+          provide: EsriToolService,
+          useValue: toolServiceSpy
         }
       ]
     });
     service = TestBed.inject(EsriMapService);
+    TestBed.inject(EsriToolService);
+
     // mock the map view from Esri - otherwise any change to the layer list will create an error because the service call fails
     mapMock = new EsriMapMock(internalLayers);
-    mapViewService = TestBed.inject(EsriMapViewService) as jasmine.SpyObj<EsriMapViewService>;
+    mapViewService = TestBed.inject(EsriMapViewService);
     mapViewService.mapView = {map: mapMock} as __esri.MapView;
   });
 

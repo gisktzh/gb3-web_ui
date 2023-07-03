@@ -6,6 +6,7 @@ import {GeometryWithSrs, PointWithSrs} from '../../shared/interfaces/geojson-typ
 import {InternalDrawingLayer} from 'src/app/shared/enums/drawing-layer.enum';
 import {Gb2WmsActiveMapItem} from '../../map/models/implementations/gb2-wms.model';
 import {DrawingActiveMapItem} from '../../map/models/implementations/drawing.model';
+import {ToolService} from '../../map/interfaces/tool.service';
 
 export class MapServiceStub implements MapService {
   addGeometryToDrawingLayer(geometry: GeometryWithSrs, drawingLayer: InternalDrawingLayer): void {}
@@ -51,4 +52,10 @@ export class MapServiceStub implements MapService {
   public zoomToExtent(geometry: GeometryWithSrs): void {}
 
   public addGb2WmsLayer(mapItem: Gb2WmsActiveMapItem, position: number): void {}
+
+  public moveLayerToTop(mapItem: ActiveMapItem) {}
+
+  public getToolService(): ToolService {
+    return {} as ToolService;
+  }
 }
