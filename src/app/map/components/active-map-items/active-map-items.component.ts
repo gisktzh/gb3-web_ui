@@ -6,19 +6,14 @@ import {selectActiveMapItems} from '../../../state/map/reducers/active-map-item.
 import {Subscription, tap} from 'rxjs';
 import {ActiveMapItem} from '../../models/active-map-item.model';
 import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.reducer';
-import {MatDialog} from '@angular/material/dialog';
-import {FavouriteCreationDialogComponent} from '../favourite-creation-dialog/favourite-creation-dialog.component';
-import {PanelClass} from '../../../shared/enums/panel-class.enum';
-import {MapNoticeDialogComponent} from '../map-notice-dialog/map-notice-dialog.component';
 import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
 import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
+import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
 
 const FAVOURITE_HELPER_MESSAGES = {
   noMapsAdded: 'Fügen Sie mindestens 1 Karte hinzu, um einen Favoriten anzulegen.',
   notAuthenticated: 'Loggen Sie sich ein, um Favoriten hinzuzufügen.'
 };
-const FAVOURITE_CREATION_DIALOG_MAX_WIDTH = 500;
-const MAP_NOTICES_DIALOG_MAX_WIDTH = 968;
 
 @Component({
   selector: 'active-map-items',
@@ -37,7 +32,7 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
   private readonly subscriptions: Subscription = new Subscription();
 
-  constructor(private readonly store: Store, private readonly dialogService: MatDialog) {}
+  constructor(private readonly store: Store) {}
 
   public ngOnInit() {
     this.initSubscriptions();
@@ -62,11 +57,7 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
   }
 
   public showFavouriteDialog() {
-    this.dialogService.open(FavouriteCreationDialogComponent, {
-      panelClass: PanelClass.ApiWrapperDialog,
-      restoreFocus: false,
-      maxWidth: FAVOURITE_CREATION_DIALOG_MAX_WIDTH
-    });
+    this.store.dispatch(MapUiActions.showCreateFavouriteDialog());
   }
 
   public toggleMinimizeActiveMapItems() {
@@ -74,13 +65,7 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
   }
 
   public showMapNotices() {
-    this.store.dispatch(ActiveMapItemActions.markAllActiveMapItemNoticeAsRead());
-    this.dialogService.open(MapNoticeDialogComponent, {
-      panelClass: PanelClass.ApiWrapperDialog,
-      restoreFocus: false,
-      data: this.activeMapItems.filter((activeMapItem) => activeMapItem.settings.type === 'gb2Wms' && activeMapItem.settings.notice), // todo: As soon as more layers with notices come into play, a selector on the interface would be required.
-      maxWidth: MAP_NOTICES_DIALOG_MAX_WIDTH
-    });
+    this.store.dispatch(MapUiActions.showMapNoticesDialog());
   }
 
   private initSubscriptions() {
