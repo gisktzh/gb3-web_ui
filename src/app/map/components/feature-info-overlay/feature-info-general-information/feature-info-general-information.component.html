@@ -20,22 +20,26 @@
 <div class="additional-general-information">
   <map-overlay-list-item overlayTitle="Weitere Standortinformationen">
     <div class="additional-general-information__content">
-      <li *ngFor="let aCrs of generalInfoData.alternativeSpatialReferences" class="additional-general-information__content__crs">
-        <b>{{ aCrs.name }}:</b> {{ aCrs.coordinates[0] | number : '1.0-10' }} / {{ aCrs.coordinates[1] | number : '1.0-10' }}
-      </li>
+      <ul class="additional-general-information__content__list">
+        <li *ngFor="let aCrs of generalInfoData.alternativeSpatialReferences" class="additional-general-information__content__crs">
+          <b>{{ aCrs.name }}:</b> {{ aCrs.coordinates[0] | number : '1.0-10' }} / {{ aCrs.coordinates[1] | number : '1.0-10' }}
+        </li>
+      </ul>
       <b>Weitere Kartendienste:</b>
-      <li *ngFor="let extMap of generalInfoData.externalMaps" class="additional-general-information__content__links">
-        <a
-          [href]="extMap.url"
-          [title]="extMap.name"
-          class="additional-general-information__content__links__ref"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <span>{{ extMap.name }}</span
-          ><span><mat-icon [inline]="true">north_east</mat-icon></span></a
-        >
-      </li>
+      <ul class="additional-general-information__content__list">
+        <li *ngFor="let extMap of generalInfoData.externalMaps" class="additional-general-information__content__links">
+          <a
+            [href]="extMap.url"
+            [title]="extMap.name"
+            class="additional-general-information__content__links__ref"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span>{{ extMap.name }}</span
+            ><span><mat-icon [inline]="true">north_east</mat-icon></span></a
+          >
+        </li>
+      </ul>
     </div>
   </map-overlay-list-item>
 </div>
