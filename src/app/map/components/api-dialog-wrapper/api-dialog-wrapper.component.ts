@@ -10,6 +10,5 @@ import {LoadingState} from '../../../shared/types/loading-state';
 export class ApiDialogWrapperComponent implements HasSavingState {
   @Input() public title: string = '';
   @Input() public savingState: LoadingState = 'undefined';
-  @Input() public errorText: string = 'Beim Speichern ist etwas schief gelaufen.';
-  @Input() public suppressError: boolean = false;
+  @Input() public errorText?: string = 'Beim Speichern ist etwas schief gelaufen.';
 }

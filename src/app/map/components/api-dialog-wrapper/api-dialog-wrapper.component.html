@@ -1,7 +1,7 @@
 <h1 mat-dialog-title>{{ title }}</h1>
 <div class="content" mat-dialog-content>
   <ng-content select="[content]"></ng-content>
-  <mat-error *ngIf="!suppressError && savingState === 'error'" class="mat-caption">{{ errorText }}</mat-error>
+  <mat-error *ngIf="errorText && savingState === 'error'" class="mat-caption">{{ errorText }}</mat-error>
 </div>
 <div mat-dialog-actions>
   <ng-content select="[actions]"></ng-content>
