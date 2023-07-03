@@ -50,6 +50,29 @@ export class ActiveMapItemEffects {
     {dispatch: false}
   );
 
+  public dispatchActiveMapItemMoveToTop = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(ActiveMapItemActions.moveToTop),
+        tap(({activeMapItem}) => {
+          this.mapService.moveLayerToTop(activeMapItem);
+        })
+      );
+    },
+    {dispatch: false}
+  );
+
+  public dispatchActiveMapItemForceFullVisibility = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ActiveMapItemActions.forceFullVisibility),
+      tap(({activeMapItem}) => {
+        this.mapService.setOpacity(1.0, activeMapItem);
+        this.mapService.setVisibility(true, activeMapItem);
+      }),
+      map(({activeMapItem}) => ActiveMapItemActions.moveToTop({activeMapItem}))
+    );
+  });
+
   public dispatchActiveMapItemSetOpacityEffect$ = createEffect(
     () => {
       return this.actions$.pipe(

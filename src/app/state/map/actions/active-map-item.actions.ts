@@ -11,6 +11,7 @@ export const ActiveMapItemActions = createActionGroup({
     'Add Active Map Item': props<{activeMapItem: ActiveMapItem; position: number}>(),
     'Remove Active Map Item': props<ActiveMapItem>(),
     'Remove All Active Map Items': emptyProps(),
+    'Force Full Visibility': props<{activeMapItem: ActiveMapItem; currentIndex: number; topIndex: number}>(),
     'Set Opacity': props<{opacity: number; activeMapItem: ActiveMapItem}>(),
     'Set Visibility': props<{visible: boolean; activeMapItem: ActiveMapItem}>(),
     'Set Sublayer Visibility': props<{visible: boolean; activeMapItem: ActiveMapItem; layerId: number}>(),
@@ -22,6 +23,7 @@ export const ActiveMapItemActions = createActionGroup({
       previousPosition: number;
       currentPosition: number;
     }>(),
+    'Move To Top': props<{activeMapItem: ActiveMapItem}>(),
     'Set Time Slider Extent': props<{timeExtent: TimeExtent; activeMapItem: Gb2WmsActiveMapItem}>(),
     'Set Attribute Filter Value State': props<{
       isFilterValueActive: boolean;

@@ -3,13 +3,17 @@ import {ActiveMapItem} from '../../map/models/active-map-item.model';
 import {ZoomType} from '../../shared/types/zoom-type';
 import {TimeExtent} from '../../map/interfaces/time-extent.interface';
 import {GeometryWithSrs, PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
-import {DrawingLayer} from 'src/app/shared/enums/drawing-layer.enum';
+import {InternalDrawingLayer} from 'src/app/shared/enums/drawing-layer.enum';
 import {Gb2WmsActiveMapItem} from '../../map/models/implementations/gb2-wms.model';
+import {DrawingActiveMapItem} from '../../map/models/implementations/drawing.model';
+import {ToolService} from '../../map/interfaces/tool.service';
 
 export class MapServiceStub implements MapService {
-  addGeometryToDrawingLayer(geometry: GeometryWithSrs, drawingLayer: DrawingLayer): void {}
+  addGeometryToDrawingLayer(geometry: GeometryWithSrs, drawingLayer: InternalDrawingLayer): void {}
 
-  clearDrawingLayer(drawingLayer: DrawingLayer): void {}
+  clearDrawingLayer(drawingLayer: InternalDrawingLayer): void {}
+
+  addDrawingLayer(mapItem: DrawingActiveMapItem, position: number) {}
 
   public assignMapElement(container: HTMLDivElement): void {}
 
@@ -48,4 +52,10 @@ export class MapServiceStub implements MapService {
   public zoomToExtent(geometry: GeometryWithSrs): void {}
 
   public addGb2WmsLayer(mapItem: Gb2WmsActiveMapItem, position: number): void {}
+
+  public moveLayerToTop(mapItem: ActiveMapItem) {}
+
+  public getToolService(): ToolService {
+    return {} as ToolService;
+  }
 }

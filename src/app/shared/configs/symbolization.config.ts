@@ -1,4 +1,4 @@
-import {DrawingLayer} from '../enums/drawing-layer.enum';
+import {InternalDrawingLayer, UserDrawingLayer} from '../enums/drawing-layer.enum';
 import {LayerSymbolizations, SymbolizationStyle} from '../interfaces/symbolization.interface';
 
 const defaultOutline = {
@@ -12,6 +12,19 @@ const defaultOutline = {
 };
 
 const defaultSymbolization: SymbolizationStyle = {
+  text: {
+    color: {
+      r: 0,
+      g: 0,
+      b: 0,
+      a: 1.0
+    },
+    outline: defaultOutline,
+    size: 10,
+    xOffset: 0,
+    yOffset: 0
+  },
+
   point: {
     type: 'simple',
     size: 12,
@@ -54,12 +67,8 @@ const defaultSymbolization: SymbolizationStyle = {
 };
 
 export const layerSymbolizations: LayerSymbolizations = {
-  [DrawingLayer.Redlining]: {
-    point: defaultSymbolization.point,
-    line: defaultSymbolization.line,
-    polygon: defaultSymbolization.polygon
-  },
-  [DrawingLayer.LocatePosition]: {
+  [InternalDrawingLayer.LocatePosition]: {
+    text: defaultSymbolization.text,
     point: {
       type: 'picture',
       url: '/assets/images/map-icons/locate-me.svg',
@@ -72,7 +81,8 @@ export const layerSymbolizations: LayerSymbolizations = {
     line: defaultSymbolization.line,
     polygon: defaultSymbolization.polygon
   },
-  [DrawingLayer.FeatureQueryLocation]: {
+  [InternalDrawingLayer.FeatureQueryLocation]: {
+    text: defaultSymbolization.text,
     point: {
       type: 'picture',
       url: '/assets/images/map-icons/info-pin.svg',
@@ -88,7 +98,8 @@ export const layerSymbolizations: LayerSymbolizations = {
     line: defaultSymbolization.line,
     polygon: defaultSymbolization.polygon
   },
-  [DrawingLayer.FeatureHighlight]: {
+  [InternalDrawingLayer.FeatureHighlight]: {
+    text: defaultSymbolization.text,
     point: {
       type: 'simple',
       size: 12,
@@ -120,5 +131,38 @@ export const layerSymbolizations: LayerSymbolizations = {
       },
       outline: defaultOutline
     }
+  },
+  [UserDrawingLayer.Measurements]: {
+    text: {
+      color: {
+        r: 255,
+        g: 0,
+        b: 0,
+        a: 1.0
+      },
+      outline: {
+        color: {
+          r: 255,
+          g: 255,
+          b: 255,
+          a: 1.0
+        },
+        width: 1
+      },
+      size: 12,
+      xOffset: 0,
+      yOffset: 6
+    },
+    point: defaultSymbolization.point,
+    line: {
+      width: 2,
+      color: {
+        r: 255,
+        g: 0,
+        b: 0,
+        a: 1.0
+      }
+    },
+    polygon: defaultSymbolization.polygon
   }
 };
