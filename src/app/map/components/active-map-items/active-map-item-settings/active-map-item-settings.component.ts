@@ -76,7 +76,7 @@ export class ActiveMapItemSettingsComponent implements OnInit, OnDestroy {
             // calculate the number of active filters to display them as badge
             let numberOfChangedFilters = 0;
             const activeMapItem = activeMapItems.find((mapItem) => mapItem.id === this.activeMapItem.id);
-            if (activeMapItem && activeMapItem.settings.filterConfigurations) {
+            if (activeMapItem?.settings.filterConfigurations) {
               // assumption: every filter is not active by default => only count active filters
               numberOfChangedFilters = activeMapItem.settings.filterConfigurations
                 .flatMap((filterConfig) => filterConfig.filterValues)

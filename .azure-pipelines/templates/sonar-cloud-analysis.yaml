@@ -11,6 +11,7 @@ steps:
       cliSources: 'src'
       extraProperties: |
         sonar.coverage.exclusions=**/*.spec.ts
+        sonar.javascript.exclusions=gb3-api-generated.interfaces.ts, geolion-geodaten-meta-generated.interface.ts, grav-cms-generated.interface.ts, ktzh-news-generated.interfaces.ts
         sonar.javascript.lcov.reportPaths=$(System.DefaultWorkingDirectory)/coverage/gb3-frontend/lcov.info
 
   - task: SonarCloudAnalyze@1
