@@ -9,11 +9,6 @@ steps:
       cliProjectKey: '222262_GB3_frontend'
       cliProjectName: '222262_GB3_frontend'
       cliSources: 'src'
-      extraProperties: |
-        sonar.coverage.exclusions=**/*.spec.ts
-        sonar.javascript.exclusions=gb3-api-generated.interfaces.ts, geolion-geodaten-meta-generated.interface.ts, grav-cms-generated.interface.ts, ktzh-news-generated.interfaces.ts
-        sonar.javascript.lcov.reportPaths=$(System.DefaultWorkingDirectory)/coverage/gb3-frontend/lcov.info
-
   - task: SonarCloudAnalyze@1
   - task: SonarCloudPublish@1
     inputs:

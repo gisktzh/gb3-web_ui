@@ -5,7 +5,7 @@ import {GravCmsService} from './grav-cms.service';
 import {DiscoverMapsItem} from '../../../interfaces/discover-maps-item.interface';
 import {PageNotification} from '../../../interfaces/page-notification.interface';
 import {FrequentlyUsedItem} from '../../../interfaces/frequently-used-item.interface';
-import {discoverMapsMockData, frequentlyUsedMockData, pageInfosMockData} from '../../../models/grav-cms-mock.data';
+import {discoverMapsDataMock, frequentlyUsedDataMock, pageInfosDataMock} from '../../../models/grav-cms-data.mock';
 
 /**
  * Returns mockdata and mimicks an API request delay between 1ms and 1000ms.
@@ -17,21 +17,21 @@ export class GravCmsMockService extends GravCmsService {
   protected override apiBaseUrl: string = window.location.origin;
 
   public override loadDiscoverMapsData(): Observable<DiscoverMapsItem[]> {
-    return of(discoverMapsMockData).pipe(
+    return of(discoverMapsDataMock).pipe(
       delay(this.getRandomDelayInMs()),
       map((mockResult) => this.transformDiscoverMapsData(mockResult))
     );
   }
 
   public override loadPageInfosData(): Observable<PageNotification[]> {
-    return of(pageInfosMockData).pipe(
+    return of(pageInfosDataMock).pipe(
       delay(this.getRandomDelayInMs()),
       map((mockResult) => this.transformPageInfosData(mockResult))
     );
   }
 
   public override loadFrequentlyUsedData(): Observable<FrequentlyUsedItem[]> {
-    return of(frequentlyUsedMockData).pipe(
+    return of(frequentlyUsedDataMock).pipe(
       delay(this.getRandomDelayInMs()),
       map((mockResult) => this.transformFrequentlyUsedData(mockResult))
     );
