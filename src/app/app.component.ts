@@ -42,9 +42,9 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly pageNotificationService: PageNotificationService,
     private readonly store: Store,
     private readonly changeDetectorRef: ChangeDetectorRef,
-    private readonly ktzhIconsService: IconsService
+    private readonly iconsService: IconsService
   ) {
-    this.ktzhIconsService.initIcons();
+    this.iconsService.initIcons();
   }
 
   public ngOnInit() {
