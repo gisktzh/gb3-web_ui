@@ -16,6 +16,8 @@ import {EsriSymbolizationService} from '../esri-symbolization.service';
 import {UserDrawingLayer} from '../../../../shared/enums/drawing-layer.enum';
 import {DrawingActiveMapItem} from '../../../models/implementations/drawing.model';
 import {EsriAreaMeasurementStrategy} from './strategies/esri-area-measurement.strategy';
+import {EsriPointMeasurementStrategy} from './strategies/esri-point-measurement.strategy';
+import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
 
 @Injectable({
   providedIn: 'root'
@@ -86,6 +88,7 @@ export class EsriToolService implements ToolService, OnDestroy {
   }
 
   private setMeasurementStrategy(measurementType: MeasurementTool, layer: GraphicsLayer) {
+    const pointStyle = this.esriSymbolizationService.createPointSymbolization(UserDrawingLayer.Measurements) as SimpleMarkerSymbol;
     const lineStyle = this.esriSymbolizationService.createLineSymbolization(UserDrawingLayer.Measurements);
     const areaStyle = this.esriSymbolizationService.createPolygonSymbolization(UserDrawingLayer.Measurements);
     const labelStyle = this.esriSymbolizationService.createTextSymbolization(UserDrawingLayer.Measurements);
@@ -98,7 +101,7 @@ export class EsriToolService implements ToolService, OnDestroy {
         this.toolStrategy = new EsriLineMeasurementStrategy(layer, this.esriMapViewService.mapView, lineStyle, labelStyle);
         break;
       case 'measure-point':
-        throw Error('Measure Point not yet implemented!'); // todo: implement point measure
+        this.toolStrategy = new EsriPointMeasurementStrategy(layer, this.esriMapViewService.mapView, pointStyle, labelStyle);
     }
   }
 }
