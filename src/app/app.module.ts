@@ -16,7 +16,7 @@ import {LayerCatalogEffects} from './state/map/effects/layer-catalog.effects';
 import {MapConfigEffects} from './state/map/effects/map-config-effects.service';
 import {EsriMapService} from './map/services/esri-services/esri-map.service';
 import {MapService} from './map/interfaces/map.service';
-import {KTZHNewsMockService} from './shared/services/apis/ktzh/ktzhnews-mock.service';
+import {KTZHNewsMockService} from './shared/services/apis/ktzh/ktzhnews.mock.service';
 import {NewsService} from './shared/interfaces/news-service.interface';
 import {AuthModule} from './auth/auth.module';
 import {AuthStatusEffects} from './state/auth/effects/auth-status.effects';

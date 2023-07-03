@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import {DiscoverMapsRoot, FrequentlyUsedRoot, PageInfosRoot} from './grav-cms-generated.interface';
+import {DiscoverMapsRoot, FrequentlyUsedRoot, PageInfosRoot} from './grav-cms-generated.interfaces';
 
-export const discoverMapsMockData: DiscoverMapsRoot = {
+export const discoverMapsDataMock: DiscoverMapsRoot = {
   'discover-maps': [
     {
       description:
@@ -51,7 +51,7 @@ export const discoverMapsMockData: DiscoverMapsRoot = {
   ]
 };
 
-export const pageInfosMockData: PageInfosRoot = {
+export const pageInfosDataMock: PageInfosRoot = {
   'page-infos': [
     {
       description:
@@ -85,7 +85,7 @@ export const pageInfosMockData: PageInfosRoot = {
   ]
 };
 
-export const frequentlyUsedMockData: FrequentlyUsedRoot = {
+export const frequentlyUsedDataMock: FrequentlyUsedRoot = {
   'frequently-used': [
     {
       created: '1685000932',

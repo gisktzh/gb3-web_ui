@@ -3,7 +3,7 @@ import {RootObject as KTZHNewsRootObject} from './ktzh-news-generated.interfaces
 /**
  * Mockdata response taken from the endpoint, used in the MockService.
  */
-export const ktzhNewsMockData: KTZHNewsRootObject = {
+export const ktzhNewsDataMock: KTZHNewsRootObject = {
   news: [
     {
       title: 'Neue Aufnahmen aus der Vogelperspektive ',
