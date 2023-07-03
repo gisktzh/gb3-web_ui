@@ -163,6 +163,24 @@ export const layerSymbolizations: LayerSymbolizations = {
         a: 1.0
       }
     },
-    polygon: defaultSymbolization.polygon
+    polygon: {
+      fill: {
+        color: {
+          r: 255,
+          g: 0,
+          b: 0,
+          a: 0.3
+        }
+      },
+      outline: {
+        width: 2,
+        color: {
+          r: 255,
+          g: 0,
+          b: 0,
+          a: 1.0
+        }
+      }
+    }
   }
 };

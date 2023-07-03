@@ -9,12 +9,13 @@ import {selectDrawingLayers} from '../../../../state/map/selectors/drawing-layer
 import {Subscription, tap} from 'rxjs';
 import {MeasurementTool} from '../../../../state/map/states/tool.state';
 import {EsriToolStrategy} from './interfaces/strategy.interface';
-import {EsriDefaultStrategy} from './strategies/esriDefaultStrategy';
+import {EsriDefaultStrategy} from './strategies/esri-default.strategy';
 import {EsriLineMeasurementStrategy} from './strategies/esri-line-measurement.strategy';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {EsriSymbolizationService} from '../esri-symbolization.service';
 import {UserDrawingLayer} from '../../../../shared/enums/drawing-layer.enum';
 import {DrawingActiveMapItem} from '../../../models/implementations/drawing.model';
+import {EsriAreaMeasurementStrategy} from './strategies/esri-area-measurement.strategy';
 
 @Injectable({
   providedIn: 'root'
@@ -86,11 +87,13 @@ export class EsriToolService implements ToolService, OnDestroy {
 
   private setMeasurementStrategy(measurementType: MeasurementTool, layer: GraphicsLayer) {
     const lineStyle = this.esriSymbolizationService.createLineSymbolization(UserDrawingLayer.Measurements);
+    const areaStyle = this.esriSymbolizationService.createPolygonSymbolization(UserDrawingLayer.Measurements);
     const labelStyle = this.esriSymbolizationService.createTextSymbolization(UserDrawingLayer.Measurements);
 
     switch (measurementType) {
       case 'measure-area':
-        throw Error('Measure Area not yet implemented!'); // todo: implement measure area
+        this.toolStrategy = new EsriAreaMeasurementStrategy(layer, this.esriMapViewService.mapView, areaStyle, labelStyle);
+        break;
       case 'measure-line':
         this.toolStrategy = new EsriLineMeasurementStrategy(layer, this.esriMapViewService.mapView, lineStyle, labelStyle);
         break;
