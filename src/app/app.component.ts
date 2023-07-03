@@ -13,6 +13,7 @@ import {MainPage} from './shared/enums/main-page.enum';
 import {UrlUtils} from './shared/utils/url.utils';
 import {Store} from '@ngrx/store';
 import {selectScrollbarWidth} from './state/app/reducers/app-layout.reducer';
+import {IconsService} from './shared/services/icons.service';
 
 @Component({
   selector: 'app-root',
@@ -40,8 +41,11 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly snackBar: MatSnackBar,
     private readonly pageNotificationService: PageNotificationService,
     private readonly store: Store,
-    private readonly changeDetectorRef: ChangeDetectorRef
-  ) {}
+    private readonly changeDetectorRef: ChangeDetectorRef,
+    private readonly ktzhIconsService: IconsService
+  ) {
+    this.ktzhIconsService.initIcons();
+  }
 
   public ngOnInit() {
     this.initSubscriptions();
