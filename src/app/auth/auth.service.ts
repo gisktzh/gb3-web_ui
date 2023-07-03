@@ -105,21 +105,23 @@ export class AuthService {
     this.isAuthenticated$
       .pipe(
         distinctUntilChanged(),
-        tap(async (isAuthenticated) => {
-          let userName = undefined;
+        tap((isAuthenticated) => {
+          return void (async () => {
+            let userName = undefined;
 
-          if (!isAuthenticated) {
-            if (this.oauthService.getAccessToken()) {
-              this.oauthService.logOut();
+            if (!isAuthenticated) {
+              if (this.oauthService.getAccessToken()) {
+                this.oauthService.logOut();
+              }
+              this.oauthService.stopAutomaticRefresh(); // see: https://github.com/manfredsteyer/angular-oauth2-oidc/issues/1080
+              this.unregisterIsAuthenticatedCheckIntervalHandler();
+            } else {
+              this.registerIsAuthenticatedCheckIntervalHandler();
+              userName = await this.getUserInfo();
             }
-            this.oauthService.stopAutomaticRefresh(); // see: https://github.com/manfredsteyer/angular-oauth2-oidc/issues/1080
-            this.unregisterIsAuthenticatedCheckIntervalHandler();
-          } else {
-            this.registerIsAuthenticatedCheckIntervalHandler();
-            userName = await this.getUserInfo();
-          }
 
-          this.store.dispatch(AuthStatusActions.setStatus({isAuthenticated, userName}));
+            this.store.dispatch(AuthStatusActions.setStatus({isAuthenticated, userName}));
+          })();
         })
       )
       .subscribe();

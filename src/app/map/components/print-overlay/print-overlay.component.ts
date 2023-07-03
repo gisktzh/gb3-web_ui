@@ -57,7 +57,7 @@ export class PrintOverlayComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.legendItems$
         .pipe(
-          tap(async (value) => {
+          tap((value) => {
             this.legendItems = value;
           })
         )
@@ -66,7 +66,7 @@ export class PrintOverlayComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.featureInfoData$
         .pipe(
-          tap(async (value) => {
+          tap((value) => {
             this.featureInfoData = value;
           })
         )

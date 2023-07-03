@@ -1,7 +1,7 @@
 <div class="feature-info-content">
   <table class="feature-info-content__table">
     <tr class="feature-info-content__table__row">
-      <th class="feature-info-content__table__row__column feature-info-content__table__row__column--header"></th>
+      <th class="feature-info-content__table__row__column feature-info-content__table__row__column--header" scope="col"></th>
       <th
         (mouseenter)="this.onFeatureHoverStart(tableHeader.fid)"
         (mouseleave)="this.onFeatureHoverEnd(tableHeader.fid)"
@@ -10,6 +10,7 @@
         [layerId]="this.layer.layer"
         [topicId]="this.topicId"
         class="feature-info-content__table__row__column feature-info-content__table__row__column--header"
+        scope="col"
         tableColumnIdentifier
       >
         <div class="feature-info-content__table__row__column__wrapper">
@@ -26,7 +27,9 @@
     </tr>
     <ng-container *ngFor="let tableRow of this.tableRows | keyvalue">
       <tr class="feature-info-content__table__row">
-        <th class="feature-info-content__table__row__column feature-info-content__table__row__column--header">{{ tableRow.key }}</th>
+        <th class="feature-info-content__table__row__column feature-info-content__table__row__column--header" scope="col">
+          {{ tableRow.key }}
+        </th>
         <td
           (mouseenter)="this.onFeatureHoverStart(cellValue.fid)"
           (mouseleave)="this.onFeatureHoverEnd(cellValue.fid)"

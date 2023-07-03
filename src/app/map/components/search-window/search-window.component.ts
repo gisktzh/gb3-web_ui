@@ -31,7 +31,7 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(private searchService: SearchService, private readonly store: Store) {}
 
-  public async ngOnInit() {
+  public ngOnInit() {
     this.initSubscriptions();
   }
 
@@ -146,7 +146,7 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
     this.subscriptions.add(
       this.originalMaps$
         .pipe(
-          tap(async (value) => {
+          tap((value) => {
             this.originalMaps = value;
           })
         )

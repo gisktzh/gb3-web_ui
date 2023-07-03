@@ -32,12 +32,12 @@ export class MapConfigUrlService implements OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  public async activatePrintMode(printType: PrintType) {
+  public async activatePrintMode(printType: PrintType): Promise<void> {
     const queryParams = {print: printType};
     await this.updateQueryParams(queryParams, 'merge');
   }
 
-  public async deactivatePrintMode() {
+  public async deactivatePrintMode(): Promise<void> {
     const {print, ...otherParams} = this.route.snapshot.queryParams;
     await this.updateQueryParams(otherParams);
   }
@@ -47,10 +47,12 @@ export class MapConfigUrlService implements OnDestroy {
       this.route.queryParams
         .pipe(
           first(),
-          tap(async (queryParams) => {
-            this.extractMapParameters(queryParams);
-            await this.removeTemporaryQueryParams(queryParams);
-            this.subscribeToUrlChanges();
+          tap((queryParams) => {
+            return void (async () => {
+              this.extractMapParameters(queryParams);
+              await this.removeTemporaryQueryParams(queryParams);
+              this.subscribeToUrlChanges();
+            })();
           })
         )
         .subscribe()
@@ -70,11 +72,13 @@ export class MapConfigUrlService implements OnDestroy {
     this.subscriptions.add(
       this.mapConfig$
         .pipe(
-          tap(async (mapConfig) => {
-            const {center, scale} = this.getRoundedMapParameters(mapConfig);
-            const {activeBasemapId} = mapConfig;
-            const queryParams: Params = {x: center.x, y: center.y, scale: scale, basemap: activeBasemapId};
-            await this.updateQueryParams(queryParams, 'merge');
+          tap((mapConfig) => {
+            return void (async () => {
+              const {center, scale} = this.getRoundedMapParameters(mapConfig);
+              const {activeBasemapId} = mapConfig;
+              const queryParams: Params = {x: center.x, y: center.y, scale: scale, basemap: activeBasemapId};
+              await this.updateQueryParams(queryParams, 'merge');
+            })();
           })
         )
         .subscribe()
@@ -95,7 +99,7 @@ export class MapConfigUrlService implements OnDestroy {
     return initialMapIds ? initialMapIds.split(',') : [];
   }
 
-  private async removeTemporaryQueryParams(params: Params) {
+  private async removeTemporaryQueryParams(params: Params): Promise<void> {
     const paramsToRemove = TEMPORARY_URL_PARAMS.reduce((prev, curr) => ({...prev, [curr]: null}), {});
     const adjustedParams: Params = {
       ...params,
@@ -105,7 +109,7 @@ export class MapConfigUrlService implements OnDestroy {
     await this.updateQueryParams(adjustedParams, 'merge');
   }
 
-  private async updateQueryParams(queryParams: Params, queryParamsHandling: QueryParamsHandling | null = null) {
+  private async updateQueryParams(queryParams: Params, queryParamsHandling: QueryParamsHandling | null = null): Promise<void> {
     await this.router.navigate([], {
       relativeTo: this.route,
       queryParams,
