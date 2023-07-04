@@ -16,6 +16,10 @@ export class MapToolsComponent {
     this.openPrintDialogEvent.emit();
   }
 
+  public togglePointMeasurement() {
+    this.store.dispatch(ToolActions.activateTool({tool: 'measure-point'}));
+  }
+
   public toggleLineMeasurement() {
     this.store.dispatch(ToolActions.activateTool({tool: 'measure-line'}));
   }
