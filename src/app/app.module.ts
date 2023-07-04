@@ -11,13 +11,15 @@ import {SharedModule} from './shared/shared.module';
 import {EffectsModule} from '@ngrx/effects';
 import {EsriMapService} from './map/services/esri-services/esri-map.service';
 import {MapService} from './map/interfaces/map.service';
-import {KTZHNewsMockService} from './shared/services/apis/ktzh/ktzhnews-mock.service';
+import {KTZHNewsMockService} from './shared/services/apis/ktzh/ktzhnews.mock.service';
 import {NewsService} from './shared/interfaces/news-service.interface';
 import {AuthModule} from './auth/auth.module';
 import {GravCmsService} from './shared/services/apis/grav-cms/grav-cms.service';
 import {GravCmsMockService} from './shared/services/apis/grav-cms/grav-cms.mock.service';
 import {ConfigService} from './shared/services/config.service';
 import {KTZHNewsService} from './shared/services/apis/ktzh/ktzhnews.service';
+import {MapUiEffects} from './state/map/effects/map-ui.effects';
+import {ToolEffects} from './state/map/effects/tool.effects';
 import {registerLocaleData} from '@angular/common';
 import localeDeCH from '@angular/common/locales/de-CH';
 

@@ -23,6 +23,7 @@
       *ngIf="!featureInfo.isSingleLayer && featureInfo.icon; else defaultIcon"
       class="feature-info-item-icon"
       src="{{ featureInfo.icon }}"
+      [alt]="featureInfo.title"
     />
     <ng-template #defaultIcon>
       <mat-icon class="feature-info-item-icon">layers</mat-icon>

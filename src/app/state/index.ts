@@ -11,6 +11,7 @@ import {reducer as mapAttributeFiltersItemReducer} from './map/reducers/map-attr
 import {reducer as pageNotificationReducer} from './app/reducers/page-notification.reducer';
 import {reducer as geolocationReducer} from './map/reducers/geolocation.reducer';
 import {reducer as generalInfoReducer} from './map/reducers/general-info.reducer';
+import {reducer as toolReducer} from './map/reducers/tool.reducer';
 import {reducer as appLayoutReducer} from './app/reducers/app-layout.reducer';
 import {reducer as printReducer} from './map/reducers/print.reducer';
 import {reducer as mapUiReducer} from './map/reducers/map-ui.reducer';
@@ -30,6 +31,7 @@ import {GeneralInfoState} from './map/states/general-info.state';
 import {AppLayoutState} from './app/states/app-layout.state';
 import {PrintState} from './map/states/print.state';
 import {MapUiState} from './map/states/map-ui.state';
+import {ToolState} from './map/states/tool.state';
 import {ShareLinkState} from './map/states/share-link.state';
 import {ActiveMapItemEffects} from './map/effects/active-map-item.effects';
 import {FeatureInfoEffects} from './map/effects/feature-info.effects';
@@ -61,6 +63,7 @@ export interface State {
   appLayout: AppLayoutState;
   print: PrintState;
   mapUi: MapUiState;
+  tool: ToolState;
   shareLink: ShareLinkState;
 }
 
@@ -80,6 +83,7 @@ export const reducers: ActionReducerMap<State> = {
   appLayout: appLayoutReducer,
   print: printReducer,
   mapUi: mapUiReducer,
+  tool: toolReducer,
   shareLink: shareLinkReducer
 };
 

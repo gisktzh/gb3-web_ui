@@ -122,11 +122,12 @@ match. This is because there are times when you _might_ want to deviate from the
 
 ## Code documentation
 
-> 1.  [The `ActiveMapItem` class](#the-activemapitem-class)
-> 2.  [Spatial Reference System(s)](#spatial-reference-systems)
-> 3.  [State](#state)
-> 4.  [Runtime configurations](#runtime-configurations)
-> 5.  [(S)CSS structure](#scss-structure)
+> 1. [The `ActiveMapItem` class](#the-activemapitem-class)
+> 2. [Spatial Reference System(s)](#spatial-reference-systems)
+> 3. [State](#state)
+> 4. [Runtime configurations](#runtime-configurations)
+> 5. [(S)CSS structure](#scss-structure)
+> 6. [Custom icons](#custom-icons)
 
 ### The `ActiveMapItem` class
 
@@ -321,4 +322,14 @@ Example of a potential usage:
 .button {
   background-color: functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent);
 }
+```
+
+### Custom icons
+
+All custom icons are handled via the `IconsService` and the `iconsConfig`. Add the identifier and the path to the URL (
+relative or absolute) and the service adds the icons. Use them as follows:
+
+```angular2html
+
+<mat-icon svgIcon="icon_id_from_config"></mat-icon>
 ```

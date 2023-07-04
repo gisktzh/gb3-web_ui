@@ -17,4 +17,9 @@ export class EsriMapViewService {
   public set mapView(value: __esri.MapView) {
     this._mapView = value;
   }
+
+  public findEsriLayer(id: string): __esri.Layer | undefined {
+    // note: the typehint for Collection.find() is wrong, as it may, in fact, return undefined
+    return this.mapView.map.layers.find((layer) => layer.id === id);
+  }
 }

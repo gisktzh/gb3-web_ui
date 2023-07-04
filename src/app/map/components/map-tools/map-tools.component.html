@@ -1,4 +1,20 @@
 <div class="map-tools">
+  <button mat-icon-button (click)="this.togglePointMeasurement()" color="accent" class="map-tools__button" data-test-id="map-ruler">
+    <mat-icon svgIcon="ktzh_measure_point"></mat-icon>
+  </button>
+  <button mat-icon-button (click)="this.toggleLineMeasurement()" color="accent" class="map-tools__button" data-test-id="map-ruler">
+    <mat-icon svgIcon="ktzh_measure_line"></mat-icon>
+  </button>
+  <button
+    mat-icon-button
+    (click)="this.toggleAreaMeasurement()"
+    color="accent"
+    class="map-tools__button"
+    data-test-id="map-area-measurement"
+  >
+    <mat-icon svgIcon="ktzh_measure_area"></mat-icon>
+  </button>
+  <mat-divider class="map-tools__divider"></mat-divider>
   <!-- TODO: enable this button as soon as the print preview is done -->
   <button mat-icon-button (click)="showPrintDialog()" class="map-tools__button" data-test-id="map-print" disabled="true">
     <mat-icon>print</mat-icon>

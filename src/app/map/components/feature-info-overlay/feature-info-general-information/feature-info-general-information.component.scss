@@ -12,8 +12,11 @@
     padding-top: 16px;
 
     .additional-general-information__content__crs,
-    .additional-general-information__content__links {
+    .additional-general-information__content__links,
+    .additional-general-information__content__list {
       list-style: none;
+      padding: 0;
+      margin: 0;
     }
 
     .additional-general-information__content__links__ref {

@@ -8,7 +8,7 @@ import {immerable} from 'immer';
 
 import {AddToMapVisitor} from '../interfaces/add-to-map.visitor';
 import {Gb2WmsSettings} from './implementations/gb2-wms.model';
-import {DrawingLayerSettings} from './implementations/drawing-test.model';
+import {DrawingLayerSettings} from './implementations/drawing.model';
 
 type ActiveMapItemSettingsType = 'gb2Wms' | 'drawing';
 
@@ -22,7 +22,7 @@ export type ActiveMapItemSettings = Gb2WmsSettings | DrawingLayerSettings;
 export abstract class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewProcessState, IsImmerable {
   public abstract readonly id: string;
   public abstract readonly title: string;
-  public abstract readonly mapImageUrl: string;
+  public abstract readonly mapImageUrl: string | null;
   public abstract readonly settings: ActiveMapItemSettings;
   public abstract readonly isSingleLayer: boolean;
 

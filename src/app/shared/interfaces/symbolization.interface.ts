@@ -19,13 +19,22 @@ interface HasWidth {
 }
 
 interface AbstractPointSymbolization {
-  type: 'picture' | 'simple';
+  type: 'picture' | 'simple' | 'text';
 }
 
 export interface SimplePointSymbolization extends AbstractPointSymbolization, HasColor {
   type: 'simple';
   outline: HasWidth & HasColor;
   size: number;
+}
+
+export interface TextSymbolization extends HasColor {
+  outline: HasColor & HasWidth;
+  size: number;
+  /** Horizontal offset - by default, the anchorpoint is in the center of the point */
+  xOffset: number;
+  /** Vertical offset - by default, the anchorpoint is in the center of the point */
+  yOffset: number;
 }
 
 export interface PicturePointSymbolization extends AbstractPointSymbolization {
@@ -61,6 +70,7 @@ export interface SymbolizationStyle {
   point: PointSymbolization;
   line: LineSymbolization;
   polygon: PolygonSymbolization;
+  text: TextSymbolization;
 }
 
 /**
