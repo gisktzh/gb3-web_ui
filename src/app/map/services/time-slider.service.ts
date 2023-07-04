@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {TimeSliderConfiguration, TimeSliderLayerSource} from '../../shared/interfaces/topic.interface';
 import * as dayjs from 'dayjs';
-import {ManipulateType} from 'dayjs';
 import * as duration from 'dayjs/plugin/duration';
 import {Duration} from 'dayjs/plugin/duration';
 import {TimeExtentUtils} from '../../shared/utils/time-extent.utils';
@@ -45,30 +44,28 @@ export class TimeSliderService {
     const minimumDate: Date = dayjs(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat).toDate();
     const maximumDate: Date = dayjs(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat).toDate();
     const initialRange: string | null = timeSliderConfig.range ?? timeSliderConfig.minimalRange ?? null;
-    let initialRangeDuration: Duration | null = initialRange ? dayjs.duration(initialRange) : null;
+    let stopRangeDuration: Duration | null = initialRange ? dayjs.duration(initialRange) : null;
     if (
-      initialRangeDuration &&
-      TimeExtentUtils.calculateDifferenceBetweenDates(minimumDate, maximumDate) <= initialRangeDuration.asMilliseconds()
+      stopRangeDuration &&
+      TimeExtentUtils.calculateDifferenceBetweenDates(minimumDate, maximumDate) <= stopRangeDuration.asMilliseconds()
     ) {
       throw Error(`Invalid time slider configuration: min date + range > max date`); // TODO: error handling
     }
-    let unit: ManipulateType | undefined;
-    if (initialRangeDuration) {
-      unit = TimeExtentUtils.extractUniqueUnitFromDuration(initialRangeDuration);
-    } else {
-      unit = TimeExtentUtils.extractSmallestUnitFromDateFormat(timeSliderConfig.dateFormat);
-      initialRangeDuration = dayjs.duration(1, unit);
-    }
+    if (!stopRangeDuration) {
+      const unit = TimeExtentUtils.extractSmallestUnitFromDateFormat(timeSliderConfig.dateFormat);
+      if (!unit) {
+        throw Error(`Invalid time slider configuration: neither the date format nor the (minimal) range duration is valid`); // TODO: error handling
+      }
 
-    if (!unit) {
-      throw Error(`Invalid time slider configuration: neither the date format nor the (minimal) range duration is valid`); // TODO: error handling
+      // create a new duration base on the smallest unit with the lowest valid unit number (1)
+      stopRangeDuration = dayjs.duration(1, unit);
     }
 
     const dates: Date[] = [];
     let date = minimumDate;
     while (date < maximumDate) {
       dates.push(date);
-      date = TimeExtentUtils.addDuration(date, initialRangeDuration);
+      date = TimeExtentUtils.addDuration(date, stopRangeDuration);
     }
     dates.push(maximumDate);
     return dates;
@@ -83,8 +80,8 @@ export class TimeSliderService {
   ): TimeExtent {
     const timeExtent: TimeExtent = {
       // ensure that the new start/end values are within the min/max limits
-      start: newValue.start < minimumDate ? minimumDate : newValue.start > maximumDate ? maximumDate : newValue.start,
-      end: newValue.end > maximumDate ? maximumDate : newValue.end < minimumDate ? minimumDate : newValue.end
+      start: this.validateDateWithinLimits(newValue.start, minimumDate, maximumDate),
+      end: this.validateDateWithinLimits(newValue.end, minimumDate, maximumDate)
     };
 
     if (timeSliderConfig.alwaysMaxRange) {
@@ -98,11 +95,9 @@ export class TimeSliderService {
       /*
           Fixed range
             The start has changed as fixed ranges technically don't have an end date
-            1. ensure that the changed date is still within the valid minimum range: minDate <= startDate <= maxDate
-            2. the end date has to be adjusted accordingly to enforce the fixed range between start and end date
+            => the end date has to be adjusted accordingly to enforce the fixed range between start and end date
          */
       const range: Duration = dayjs.duration(timeSliderConfig.range);
-      timeExtent.start = timeExtent.start > maximumDate ? maximumDate : timeExtent.start;
       timeExtent.end = TimeExtentUtils.addDuration(timeExtent.start, range);
     } else if (timeSliderConfig.minimalRange) {
       /*
@@ -122,13 +117,13 @@ export class TimeSliderService {
       if (startEndDiff < minimalRange.asMilliseconds()) {
         if (hasStartDateChanged) {
           const newStartDate = TimeExtentUtils.subtractDuration(timeExtent.end, minimalRange);
-          timeExtent.start = newStartDate < minimumDate ? minimumDate : newStartDate;
+          timeExtent.start = this.validateDateWithinLimits(newStartDate, minimumDate, maximumDate);
           if (TimeExtentUtils.calculateDifferenceBetweenDates(timeExtent.start, timeExtent.end) < minimalRange.asMilliseconds()) {
             timeExtent.end = TimeExtentUtils.addDuration(timeExtent.start, minimalRange);
           }
         } else {
           const newEndDate = TimeExtentUtils.addDuration(timeExtent.start, minimalRange);
-          timeExtent.end = newEndDate > maximumDate ? maximumDate : newEndDate;
+          timeExtent.end = this.validateDateWithinLimits(newEndDate, minimumDate, maximumDate);
           if (TimeExtentUtils.calculateDifferenceBetweenDates(timeExtent.start, timeExtent.end) < minimalRange.asMilliseconds()) {
             timeExtent.start = TimeExtentUtils.subtractDuration(timeExtent.end, minimalRange);
           }
@@ -137,5 +132,18 @@ export class TimeSliderService {
     }
 
     return timeExtent;
+  }
+
+  /**
+   * Validates that the date is within the given min and max date; returns the date if it is within or the corresponding min/max date otherwise.
+   */
+  private validateDateWithinLimits(date: Date, minimumDate: Date, maximumDate: Date): Date {
+    let validDate = date;
+    if (date < minimumDate) {
+      validDate = minimumDate;
+    } else if (date > maximumDate) {
+      validDate = maximumDate;
+    }
+    return validDate;
   }
 }

@@ -15,9 +15,9 @@ jobs:
     variables:
       - group: Azure-Static-Web-Apps-calm-plant-0ecbec603-variable-group
     steps:
-      - checkout: self
-        submodules: true
+      - template: 'templates/git-checkout-code.yaml'
       - template: 'templates/unit-tests.yaml'
+      - template: 'templates/sonar-cloud-analysis.yaml'
       - task: AzureStaticWebApp@0
         inputs:
           azure_static_web_apps_api_token: $(AZURE_STATIC_WEB_APPS_API_TOKEN_CALM_PLANT_0ECBEC603)

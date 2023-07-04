@@ -4,6 +4,8 @@ process.env.CHROME_BIN = require('puppeteer').executablePath();
 
 module.exports = function (config) {
   config.set({
+    browserNoActivityTimeout: 60000,
+    browserDisconnectTimeout: 60000,
     basePath: '',
     frameworks: ['jasmine', '@angular-devkit/build-angular'],
     plugins: [
@@ -26,9 +28,9 @@ module.exports = function (config) {
       suppressAll: true // removes the duplicated traces
     },
     coverageReporter: {
-      dir: require('path').join(__dirname, './coverage/gb3-poc'),
+      dir: require('path').join(__dirname, './coverage/gb3-frontend'),
       subdir: '.',
-      reporters: [{type: 'html'}, {type: 'text-summary'}]
+      reporters: [{type: 'html'}, {type: 'text-summary'}, {type: 'lcov'}]
     },
     reporters: ['progress', 'kjhtml'],
     port: 9876,

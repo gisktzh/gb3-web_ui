@@ -222,7 +222,8 @@
             "stylePreprocessorOptions": {
               "includePaths": ["src/styles"]
             },
-            "scripts": []
+            "scripts": [],
+            "codeCoverageExclude": ["**/*.module.ts"]
           },
           "configurations": {
             "test": {

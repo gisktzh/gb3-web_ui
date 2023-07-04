@@ -39,10 +39,13 @@ import {TimeSliderConfiguration, TimeSliderLayerSource, TimeSliderParameterSourc
 import {TimeExtent} from '../../interfaces/time-extent.interface';
 import {MapConfigState} from '../../../state/map/states/map-config.state';
 import {GeometryWithSrs, PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
-import {DrawingLayer} from '../../../shared/enums/drawing-layer.enum';
+import {InternalDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {EsriSymbolizationService} from './esri-symbolization.service';
 import {MapConstants} from '../../../shared/constants/map.constants';
+import {EsriMapViewService} from './esri-map-view.service';
 import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
+import {DrawingActiveMapItem} from '../../models/implementations/drawing.model';
+import {EsriToolService} from './tool-service/esri-tool.service';
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
 
@@ -50,12 +53,12 @@ const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
   providedIn: 'root'
 })
 export class EsriMapService implements MapService {
+  private scaleBar?: __esri.ScaleBar;
   private effectiveMaxZoom = 23;
   private effectiveMinZoom = 0;
   private effectiveMinScale = 0;
   private readonly defaultMapConfig: MapConfigState = this.configService.mapConfig.defaultMapConfig;
-  private _mapView!: __esri.MapView;
-  private readonly numberOfDrawingLayers = Object.keys(DrawingLayer).length;
+  private readonly numberOfDrawingLayers = Object.keys(InternalDrawingLayer).length;
   private readonly subscriptions: Subscription = new Subscription();
   private readonly activeBasemapId$ = this.store.select(selectActiveBasemapId);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
@@ -69,7 +72,9 @@ export class EsriMapService implements MapService {
     private readonly basemapConfigService: BasemapConfigService,
     private readonly configService: ConfigService,
     private readonly authService: AuthService,
-    private readonly esriSymbolizationService: EsriSymbolizationService
+    private readonly esriSymbolizationService: EsriSymbolizationService,
+    private readonly esriMapViewService: EsriMapViewService,
+    private readonly esriToolService: EsriToolService
   ) {
     /**
      * Because the GetCapabalities response often sends a non-secure http://wms.zh.ch response, Esri Javascript API fails on https
@@ -82,7 +87,19 @@ export class EsriMapService implements MapService {
   }
 
   private get mapView(): __esri.MapView {
-    return this._mapView;
+    return this.esriMapViewService.mapView;
+  }
+
+  private set mapView(value: __esri.MapView) {
+    this.esriMapViewService.mapView = value;
+  }
+
+  public moveLayerToTop(mapItem: ActiveMapItem) {
+    const esriLayer = this.esriMapViewService.findEsriLayer(mapItem.id);
+
+    if (esriLayer) {
+      this.mapView.map.layers.reorder(esriLayer, this.mapView.map.layers.length - this.numberOfDrawingLayers - 1);
+    }
   }
 
   public setScale(scale: number) {
@@ -125,7 +142,6 @@ export class EsriMapService implements MapService {
           this.attachMapViewListeners();
           this.addBasemapSubscription();
           this.initDrawingLayers();
-          this.addScaleBar();
           activeMapItems.forEach((mapItem, position) => {
             mapItem.addToMap(this, position);
           });
@@ -134,8 +150,20 @@ export class EsriMapService implements MapService {
       .subscribe();
   }
 
+  public addDrawingLayer(mapItem: DrawingActiveMapItem, position: number) {
+    if (this.esriMapViewService.findEsriLayer(mapItem.id)) {
+      return;
+    }
+    const graphicsLayer = new EsriGraphicsLayer({
+      id: mapItem.id
+    });
+
+    const index = this.getIndexForPosition(position);
+    this.mapView.map.add(graphicsLayer, index);
+  }
+
   public addGb2WmsLayer(mapItem: Gb2WmsActiveMapItem, position: number) {
-    if (this.findEsriLayer(mapItem.id)) {
+    if (this.esriMapViewService.findEsriLayer(mapItem.id)) {
       return;
     }
 
@@ -166,12 +194,12 @@ export class EsriMapService implements MapService {
      * visibility Additionally, there is a number of default layers that must always keep the highest visibility (e.g. highlight layer)
      * independent from the state/GUI layers.
      */
-    const index = this.getNumberOfNonDrawingLayers() - position;
+    const index = this.getIndexForPosition(position);
     this.mapView.map.add(esriLayer, index);
   }
 
   public removeMapItem(id: string) {
-    const esriLayer = this.findEsriLayer(id);
+    const esriLayer = this.esriMapViewService.findEsriLayer(id);
     if (esriLayer) {
       this.mapView.map.remove(esriLayer);
     }
@@ -187,15 +215,23 @@ export class EsriMapService implements MapService {
     this.mapView.container = container;
   }
 
+  public assignScaleBarElement(container: HTMLDivElement) {
+    if (this.scaleBar) {
+      this.scaleBar.container = container;
+    } else {
+      this.scaleBar = new EsriScaleBar({view: this.mapView, container: container, unit: 'metric'});
+    }
+  }
+
   public setOpacity(opacity: number, mapItem: ActiveMapItem): void {
-    const esriLayer = this.findEsriLayer(mapItem.id);
+    const esriLayer = this.esriMapViewService.findEsriLayer(mapItem.id);
     if (esriLayer) {
       esriLayer.opacity = opacity;
     }
   }
 
   public setVisibility(visible: boolean, mapItem: ActiveMapItem): void {
-    const esriLayer = this.findEsriLayer(mapItem.id);
+    const esriLayer = this.esriMapViewService.findEsriLayer(mapItem.id);
     if (esriLayer) {
       esriLayer.visible = visible;
     }
@@ -212,7 +248,7 @@ export class EsriMapService implements MapService {
   }
 
   public setSublayerVisibility(visible: boolean, mapItem: ActiveMapItem, layerId: number) {
-    const esriLayer = this.findEsriLayer(mapItem.id);
+    const esriLayer = this.esriMapViewService.findEsriLayer(mapItem.id);
     if (esriLayer && esriLayer instanceof EsriWMSLayer) {
       const esriSubLayer = esriLayer.sublayers.find((sl) => sl.id === layerId);
       if (esriSubLayer) {
@@ -228,7 +264,7 @@ export class EsriMapService implements MapService {
   }
 
   public setTimeSliderExtent(timeExtent: TimeExtent, mapItem: Gb2WmsActiveMapItem) {
-    const esriLayer = this.findEsriLayer(mapItem.id);
+    const esriLayer = this.esriMapViewService.findEsriLayer(mapItem.id);
 
     if (esriLayer) {
       this.setEsriTimeSliderExtent(timeExtent, mapItem, esriLayer);
@@ -236,7 +272,7 @@ export class EsriMapService implements MapService {
   }
 
   public setAttributeFilters(attributeFilterParameters: {name: string; value: string}[], mapItem: Gb2WmsActiveMapItem) {
-    const esriLayer = this.findEsriLayer(mapItem.id);
+    const esriLayer = this.esriMapViewService.findEsriLayer(mapItem.id);
     if (esriLayer && esriLayer instanceof EsriWMSLayer) {
       const customLayerParameters: {[index: string]: string} = esriLayer.customLayerParameters ?? {};
       attributeFilterParameters.forEach((attributeFilterParameter) => {
@@ -260,7 +296,7 @@ export class EsriMapService implements MapService {
   }
 
   public reorderSublayer(mapItem: ActiveMapItem, previousPosition: number, currentPosition: number) {
-    const esriLayer = this.findEsriLayer(mapItem.id);
+    const esriLayer = this.esriMapViewService.findEsriLayer(mapItem.id);
     if (esriLayer && esriLayer instanceof EsriWMSLayer) {
       // the index of sublayers is identical to their position (in contrast to the map items) where the lowest index/position has the
       // highest visibility
@@ -290,27 +326,41 @@ export class EsriMapService implements MapService {
     }) as never;
   }
 
-  public addGeometryToDrawingLayer(geometry: GeometryWithSrs, drawingLayer: DrawingLayer) {
+  public addGeometryToDrawingLayer(geometry: GeometryWithSrs, drawingLayer: InternalDrawingLayer) {
     const symbolization = this.esriSymbolizationService.createSymbolizationForDrawingLayer(geometry, drawingLayer);
     const esriGeometry = this.geoJSONMapperService.fromGeoJSONToEsri(geometry);
     const graphicItem = new EsriGraphic({geometry: esriGeometry, symbol: symbolization});
-    const targetLayer = this.findEsriLayer(this.createDrawingLayerId(drawingLayer));
+    const targetLayer = this.esriMapViewService.findEsriLayer(this.createDrawingLayerId(drawingLayer));
 
     if (targetLayer) {
       (targetLayer as __esri.GraphicsLayer).add(graphicItem);
     }
   }
 
-  public clearDrawingLayer(drawingLayer: DrawingLayer) {
-    const layer = this.findEsriLayer(this.createDrawingLayerId(drawingLayer));
+  public clearDrawingLayer(drawingLayer: InternalDrawingLayer) {
+    const layer = this.esriMapViewService.findEsriLayer(this.createDrawingLayerId(drawingLayer));
 
     if (layer) {
       (layer as __esri.GraphicsLayer).removeAll();
     }
   }
 
+  public getToolService(): EsriToolService {
+    return this.esriToolService;
+  }
+
+  /**
+   * `position` is the map/layer position from the state/GUI: lowest position <=> highest visibility
+   * `index` is the position inside the Esri layer array. It's inverse to the position from the state/GUI: the lowest index <=> lowest
+   * visibility Additionally, there is a number of default layers that must always keep the highest visibility (e.g. highlight layer)
+   * independent from the state/GUI layers.
+   */
+  private getIndexForPosition(position: number) {
+    return this.getNumberOfNonDrawingLayers() - position;
+  }
+
   private initDrawingLayers() {
-    Object.values(DrawingLayer).forEach((drawingLayer) => {
+    Object.values(InternalDrawingLayer).forEach((drawingLayer) => {
       const graphicsLayer = new EsriGraphicsLayer({
         id: this.createDrawingLayerId(drawingLayer)
       });
@@ -319,7 +369,7 @@ export class EsriMapService implements MapService {
     });
   }
 
-  private createDrawingLayerId(drawingLayer: DrawingLayer): string {
+  private createDrawingLayerId(drawingLayer: InternalDrawingLayer): string {
     return `${this.internalLayerPrefix}${drawingLayer}`;
   }
 
@@ -443,11 +493,6 @@ export class EsriMapService implements MapService {
     );
   }
 
-  private addScaleBar() {
-    const scaleBar = new EsriScaleBar({view: this.mapView, container: 'scale-bar-container', unit: 'metric'});
-    this.mapView.ui.add(scaleBar);
-  }
-
   private createMap(initialBasemapId: string): __esri.Map {
     return new EsriMap({
       basemap: new EsriBasemap({
@@ -481,7 +526,7 @@ export class EsriMapService implements MapService {
 
   private setMapView(map: __esri.Map, scale: number, x: number, y: number, srsId: number, minScale: number, maxScale: number) {
     const spatialReference = new EsriSpatialReference({wkid: srsId});
-    this._mapView = new EsriMapView({
+    this.mapView = new EsriMapView({
       map: map,
       ui: {
         components: ['attribution'] // todo: may be removed, check licensing
@@ -497,11 +542,6 @@ export class EsriMapService implements MapService {
         }).lods
       }
     });
-  }
-
-  private findEsriLayer(id: string): __esri.Layer | undefined {
-    // note: the typehint for Collection.find() is wrong, as it may, in fact, return undefined
-    return this.mapView.map.layers.find((layer) => layer.id === id);
   }
 
   private attachMapViewListeners() {

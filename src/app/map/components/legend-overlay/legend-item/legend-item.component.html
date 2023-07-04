@@ -15,7 +15,12 @@
   </div>
 
   <ng-container header-icon>
-    <img *ngIf="!legendItem.isSingleLayer && legendItem.icon; else defaultIcon" class="legend-item-icon" src="{{ legendItem.icon }}" />
+    <img
+      *ngIf="!legendItem.isSingleLayer && legendItem.icon; else defaultIcon"
+      class="legend-item-icon"
+      src="{{ legendItem.icon }}"
+      [alt]="legendItem.title"
+    />
     <ng-template #defaultIcon>
       <mat-icon class="legend-item-icon">layers</mat-icon>
     </ng-template>

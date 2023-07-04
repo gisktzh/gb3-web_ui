@@ -9,14 +9,14 @@ import {LegendOverlayComponent} from './components/legend-overlay/legend-overlay
 import {LegendItemComponent} from './components/legend-overlay/legend-item/legend-item.component';
 import {FeatureInfoOverlayComponent} from './components/feature-info-overlay/feature-info-overlay.component';
 import {MapDataCatalogueComponent} from './components/map-data-catalogue/map-data-catalogue.component';
-import {MapOverlayComponent} from './components/map/map-overlay/map-overlay.component';
-import {MapOverlayListItemComponent} from './components/map/map-overlay/map-overlay-list-item/map-overlay-list-item.component';
+import {MapOverlayComponent} from './components/map-overlay/map-overlay.component';
+import {MapOverlayListItemComponent} from './components/map-overlay/map-overlay-list-item/map-overlay-list-item.component';
 import {FeatureInfoItemComponent} from './components/feature-info-overlay/feature-info-item/feature-info-item.component';
 import {PrintOverlayComponent} from './components/print-overlay/print-overlay.component';
 import {PrintDispatcherComponent} from './components/print-overlay/print-dispatcher/print-dispatcher.component';
-import {CoordinateScaleInputsComponent} from './components/map/coordinate-scale-inputs/coordinate-scale-inputs.component';
-import {MapControlsComponent} from './components/map/map-controls/map-controls.component';
-import {BasemapSelectorComponent} from './components/map/basemap-selector/basemap-selector.component';
+import {CoordinateScaleInputsComponent} from './components/map-controls/coordinate-scale-inputs/coordinate-scale-inputs.component';
+import {MapControlsComponent} from './components/map-controls/map-controls.component';
+import {BasemapSelectorComponent} from './components/map-controls/basemap-selector/basemap-selector.component';
 import {ActiveMapItemComponent} from './components/active-map-items/active-map-item/active-map-item.component';
 import {OnboardingGuideModule} from '../onboarding-guide/onboarding-guide.module';
 import {MapAttributeFilterComponent} from './components/map-attribute-filter/map-attribute-filter.component';
@@ -42,9 +42,11 @@ import {MapDataItemMapComponent} from './components/map-data-catalogue/base-map-
 import {MapDataItemFavouriteComponent} from './components/map-data-catalogue/base-map-data-item/map-data-item-favourite.component';
 import {MapDataItemMapLayerComponent} from './components/map-data-catalogue/map-data-item-map-layer/map-data-item-map-layer.component';
 import {MapDataItemHeaderComponent} from './components/map-data-catalogue/map-data-item-header/map-data-item-header.component';
-import {DataInputComponent} from './components/map/data-input/data-input.component';
+import {DataInputComponent} from './components/map-controls/data-input/data-input.component';
 import {MapNoticeDialogComponent} from './components/map-notice-dialog/map-notice-dialog.component';
 import {FeatureInfoGeneralInformationComponent} from './components/feature-info-overlay/feature-info-general-information/feature-info-general-information.component';
+import {MapToolsComponent} from './components/map-tools/map-tools.component';
+import {PrintDialogComponent} from './components/map-tools/print-dialog/print-dialog.component';
 
 @NgModule({
   declarations: [
@@ -88,7 +90,9 @@ import {FeatureInfoGeneralInformationComponent} from './components/feature-info-
     MapDataItemHeaderComponent,
     DataInputComponent,
     MapNoticeDialogComponent,
-    FeatureInfoGeneralInformationComponent
+    FeatureInfoGeneralInformationComponent,
+    MapToolsComponent,
+    PrintDialogComponent
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule, KtZhDesignSystemModule]
 })

@@ -23,7 +23,6 @@ const mockBasemapConfig = {
 
 describe('BasemapImageLinkPipe', () => {
   let pipe: BasemapImageLinkPipe;
-  let configServiceSpy: jasmine.SpyObj<ConfigService>;
   beforeEach(() => {
     const spy = jasmine.createSpyObj('ConfigService', [], {basemapConfig: mockBasemapConfig});
 
@@ -37,7 +36,6 @@ describe('BasemapImageLinkPipe', () => {
       ]
     });
     pipe = TestBed.inject(BasemapImageLinkPipe);
-    configServiceSpy = TestBed.inject(ConfigService) as jasmine.SpyObj<ConfigService>;
   });
 
   it('returns the correct image path for existing id', () => {

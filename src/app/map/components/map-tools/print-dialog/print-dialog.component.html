@@ -1,0 +1,90 @@
+<div class="print-dialog">
+  <div class="print-dialog__header">
+    <h1 class="print-dialog__header__title">Drucken</h1>
+    <button mat-icon-button (click)="close()" [disabled]="printCreationLoadingState === 'loading'">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div class="print-dialog__content">
+    <form [formGroup]="formGroup" class="print-dialog__content__form" id="printForm">
+      <mat-form-field appearance="fill" class="print-dialog__content__form__element">
+        <mat-label>Kartentitel</mat-label>
+        <input matInput formControlName="title" />
+      </mat-form-field>
+      <mat-form-field appearance="fill" class="print-dialog__content__form__element">
+        <mat-label>Kommentar</mat-label>
+        <textarea matInput formControlName="comment"></textarea>
+      </mat-form-field>
+      <ng-container *ngIf="printInfo">
+        <mat-divider class="print-dialog__content__form__divider"></mat-divider>
+        <mat-radio-group formControlName="layoutOrientation">
+          <mat-radio-button value="hoch">Hochformat</mat-radio-button>
+          <mat-radio-button value="quer">Querformat</mat-radio-button>
+        </mat-radio-group>
+        <div class="print-dialog__content__form__format-section">
+          <mat-form-field class="print-dialog__content__form__element">
+            <mat-label>Rotation</mat-label>
+            <input matInput formControlName="rotation" type="number" min="-90" max="90" placeholder="0" />
+            <mat-error>Minimum: -90° Maximum: 90°</mat-error>
+          </mat-form-field>
+          <mat-form-field class="print-dialog__content__form__element" hideRequiredMarker>
+            <mat-label>Massstab</mat-label>
+            <mat-select formControlName="scale">
+              <mat-option *ngFor="let scale of printInfo.scales" [value]="scale.value">
+                {{ scale.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field class="print-dialog__content__form__element" hideRequiredMarker>
+            <mat-label>Auflösung</mat-label>
+            <mat-select formControlName="dpi">
+              <mat-option *ngFor="let dpi of printInfo.dpis" [value]="dpi.value">
+                {{ dpi.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field class="print-dialog__content__form__element" hideRequiredMarker>
+            <mat-label>Layout</mat-label>
+            <mat-select formControlName="layoutSize">
+              <mat-option *ngFor="let layoutSize of uniqueLayoutSizes" [value]="layoutSize">
+                {{ layoutSize }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field class="print-dialog__content__form__element" hideRequiredMarker>
+            <mat-label>Format</mat-label>
+            <mat-select formControlName="outputFormat">
+              <mat-option *ngFor="let outputFormat of printInfo.outputFormats" [value]="outputFormat.name">
+                {{ outputFormat.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <mat-divider class="print-dialog__content__form__divider"></mat-divider>
+        <mat-checkbox formControlName="showLegend" class="print-dialog__content__form__element">Legende</mat-checkbox>
+        <mat-divider class="print-dialog__content__form__divider"></mat-divider>
+        <mat-checkbox formControlName="printActiveMapsSeparately" class="print-dialog__content__form__element"
+          >Aktive Karten separat drucken</mat-checkbox
+        >
+      </ng-container>
+    </form>
+    <loading-and-process-bar [loadingState]="printCreationLoadingState"></loading-and-process-bar>
+    <loading-and-process-bar [loadingState]="printInfoLoadingState"></loading-and-process-bar>
+  </div>
+  <div class="print-dialog__footer">
+    <button class="print-dialog__footer__button" (click)="close()" [disabled]="printCreationLoadingState === 'loading'" mat-button>
+      Abbrechen
+    </button>
+    <button
+      class="print-dialog__footer__button"
+      (click)="print()"
+      color="accent"
+      type="submit"
+      form="printForm"
+      [disabled]="!formGroup || formGroup.status !== 'VALID' || printCreationLoadingState === 'loading'"
+      mat-button
+    >
+      Drucken
+    </button>
+  </div>
+</div>

@@ -2,9 +2,10 @@ import {ActiveMapItem} from '../models/active-map-item.model';
 import {ZoomType} from '../../shared/types/zoom-type';
 import {TimeExtent} from './time-extent.interface';
 import {GeometryWithSrs, PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
-import {DrawingLayer} from '../../shared/enums/drawing-layer.enum';
+import {InternalDrawingLayer} from '../../shared/enums/drawing-layer.enum';
 import {AddToMapVisitor} from './add-to-map.visitor';
 import {Gb2WmsActiveMapItem} from '../models/implementations/gb2-wms.model';
+import {ToolService} from './tool.service';
 
 export interface MapService extends AddToMapVisitor {
   /** Initializes the map by creating the initial background map and with a given extent */
@@ -12,6 +13,9 @@ export interface MapService extends AddToMapVisitor {
 
   /** Assigns the map to an element on the HTML */
   assignMapElement(container: HTMLDivElement): void;
+
+  /** Assigns the scale bar to an element on the HTML */
+  assignScaleBarElement(container: HTMLDivElement): void;
 
   /** Sets the scale of the whole map */
   setScale(scale: number): void;
@@ -52,6 +56,9 @@ export interface MapService extends AddToMapVisitor {
   /** Reorders a map item using its old index (previous) and the new index (current); 0 is the topmost item - the most visible one */
   reorderMapItem(previousPosition: number, currentPosition: number): void;
 
+  /** Moves a layer to the top */
+  moveLayerToTop(mapItem: ActiveMapItem): void;
+
   /** Reorders a sublayer within a map item using its old index (previous) and the new index (current); 0 is the topmost layer - the most visible one */
   reorderSublayer(mapItem: ActiveMapItem, previousPosition: number, currentPosition: number): void;
 
@@ -62,8 +69,11 @@ export interface MapService extends AddToMapVisitor {
   zoomToExtent(geometry: GeometryWithSrs): void;
 
   /** Adds a geometry to a DrawingLayer */
-  addGeometryToDrawingLayer(geometry: GeometryWithSrs, drawingLayer: DrawingLayer): void;
+  addGeometryToDrawingLayer(geometry: GeometryWithSrs, drawingLayer: InternalDrawingLayer): void;
 
   /** Clears all geometries from a DrawingLayer */
-  clearDrawingLayer(drawingLayer: DrawingLayer): void;
+  clearDrawingLayer(drawingLayer: InternalDrawingLayer): void;
+
+  /** Returns the toolservice that is used for the given MapService implementation. */
+  getToolService(): ToolService;
 }

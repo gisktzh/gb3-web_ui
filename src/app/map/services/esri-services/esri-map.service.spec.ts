@@ -7,11 +7,13 @@ import {EsriMapMock} from '../../../testing/map-testing/esri-map.mock';
 import {AuthModule} from '../../../auth/auth.module';
 import {AuthService} from '../../../auth/auth.service';
 import {Subject} from 'rxjs';
-import {DrawingLayer} from '../../../shared/enums/drawing-layer.enum';
+import {InternalDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {MapConstants} from '../../../shared/constants/map.constants';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
+import {EsriMapViewService} from './esri-map-view.service';
+import {EsriToolService} from './tool-service/esri-tool.service';
 
 function createActiveMapItemMock(id: string, numberOfLayers = 0): {id: string; activeMapItem: Gb2WmsActiveMapItem} {
   const mapMock = {id: id, title: id, layers: []} as Partial<Map>;
@@ -49,7 +51,7 @@ const mockAuthService = jasmine.createSpyObj<AuthService>({
 });
 
 const internalLayerPrefix = MapConstants.INTERNAL_LAYER_PREFIX;
-const internalLayers = Object.values(DrawingLayer).map((drawingLayer) => {
+const internalLayers = Object.values(InternalDrawingLayer).map((drawingLayer) => {
   return new GraphicsLayer({
     id: `${internalLayerPrefix}${drawingLayer}`
   });
@@ -67,17 +69,33 @@ function getExpectedNumberOfLayersWithInternalLayers(expectedNumber: number): nu
 describe('EsriMapService', () => {
   let service: EsriMapService;
   let mapMock: EsriMapMock;
+  let mapViewService: EsriMapViewService = new EsriMapViewService();
 
   beforeEach(() => {
+    const toolServiceSpy = jasmine.createSpyObj<EsriToolService>(['startMeasurement']);
+
     TestBed.configureTestingModule({
       imports: [AuthModule],
-      providers: [provideMockStore({}), {provide: AuthService, useValue: mockAuthService}]
+      providers: [
+        provideMockStore({}),
+        {provide: AuthService, useValue: mockAuthService},
+        {
+          provide: EsriMapViewService,
+          useValue: mapViewService
+        },
+        {
+          provide: EsriToolService,
+          useValue: toolServiceSpy
+        }
+      ]
     });
     service = TestBed.inject(EsriMapService);
+    TestBed.inject(EsriToolService);
+
     // mock the map view from Esri - otherwise any change to the layer list will create an error because the service call fails
     mapMock = new EsriMapMock(internalLayers);
-    // eslint-disable-next-line @typescript-eslint/dot-notation
-    service['_mapView'] = {map: mapMock} as __esri.MapView;
+    mapViewService = TestBed.inject(EsriMapViewService);
+    mapViewService.mapView = {map: mapMock} as __esri.MapView;
   });
 
   it('should be created', () => {

@@ -3,7 +3,7 @@ import {BaseApiService} from '../abstract-api.service';
 import {Observable} from 'rxjs';
 import {DiscoverMapsItem} from '../../../interfaces/discover-maps-item.interface';
 import {map} from 'rxjs/operators';
-import {DiscoverMapsRoot, FrequentlyUsedRoot, MapInfosRoot, PageInfosRoot, Pages} from '../../../models/grav-cms-generated.interface';
+import {DiscoverMapsRoot, FrequentlyUsedRoot, MapInfosRoot, PageInfosRoot, Pages} from '../../../models/grav-cms-generated.interfaces';
 import {PageNotification, PageNotificationSeverity} from '../../../interfaces/page-notification.interface';
 import * as dayjs from 'dayjs';
 import {MapInfoNotification} from '../../../interfaces/map-info-notification.interface';

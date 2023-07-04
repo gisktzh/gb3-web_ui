@@ -5,17 +5,13 @@ import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item
 import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
 
 export const selectQueryLayers = createSelector(selectActiveMapItems, (activeMapItems) => {
-  const queryLayers: QueryLayer[] = [];
-
-  activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).map((mapItem) => {
+  const queryLayers: QueryLayer[] = activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).map((mapItem) => {
     const layersToQuery: string[] = mapItem.settings.layers.filter((layer) => layer.queryable).map((layer) => layer.layer);
     const queryLayer: QueryLayer = {
       topic: mapItem.settings.mapId,
       layersToQuery: layersToQuery.join(',')
     };
-
-    queryLayers.push(queryLayer);
+    return queryLayer;
   });
-
   return queryLayers;
 });

@@ -17,7 +17,7 @@ export class CoordinateParserService {
     const coordinatePairPattern = /^(?<xCoord>\d+(?:\.\d+)?)[,;/](?<yCoord>\d+(?:\.\d+)?)$/;
     const match = value.match(coordinatePairPattern);
 
-    if (match && match.groups && match.groups['xCoord'] && match.groups['yCoord']) {
+    if (match?.groups && match.groups['xCoord'] && match.groups['yCoord']) {
       return {type: 'Point', coordinates: [Number(match.groups['xCoord']), Number(match.groups['yCoord'])], srs: 2056};
     }
 
