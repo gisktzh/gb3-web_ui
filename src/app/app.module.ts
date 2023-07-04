@@ -18,8 +18,6 @@ import {GravCmsService} from './shared/services/apis/grav-cms/grav-cms.service';
 import {GravCmsMockService} from './shared/services/apis/grav-cms/grav-cms.mock.service';
 import {ConfigService} from './shared/services/config.service';
 import {KTZHNewsService} from './shared/services/apis/ktzh/ktzhnews.service';
-import {MapUiEffects} from './state/map/effects/map-ui.effects';
-import {ToolEffects} from './state/map/effects/tool.effects';
 import {registerLocaleData} from '@angular/common';
 import localeDeCH from '@angular/common/locales/de-CH';
 
