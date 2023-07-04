@@ -1,7 +1,7 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {ActiveMapItem} from '../../../models/active-map-item.model';
 import {map, Subscription, tap} from 'rxjs';
-import {selectActiveMapItems} from '../../../../state/map/reducers/active-map-item.reducer';
+import {selectItems} from '../../../../state/map/reducers/active-map-item.reducer';
 import {Store} from '@ngrx/store';
 import {ActiveMapItemActions} from '../../../../state/map/actions/active-map-item.actions';
 import {TimeExtent} from '../../../interfaces/time-extent.interface';
@@ -24,7 +24,7 @@ export class ActiveMapItemSettingsComponent implements OnInit, OnDestroy {
   private _currentOpacity: number = 0;
 
   private readonly subscriptions: Subscription = new Subscription();
-  private readonly activeMapItems$ = this.store.select(selectActiveMapItems);
+  private readonly activeMapItems$ = this.store.select(selectItems);
 
   public get currentOpacity(): number {
     return this._currentOpacity;

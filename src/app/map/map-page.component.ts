@@ -4,7 +4,7 @@ import {PrintType} from '../shared/types/print-type';
 import {OnboardingGuideService} from '../onboarding-guide/services/onboarding-guide.service';
 import {mapOnboardingGuideConfig} from '../onboarding-guide/data/map-onboarding-guide.config';
 import {Store} from '@ngrx/store';
-import {selectActiveMapItems} from '../state/map/reducers/active-map-item.reducer';
+import {selectItems} from '../state/map/reducers/active-map-item.reducer';
 import {Subscription, tap} from 'rxjs';
 import {ActiveMapItem} from './models/active-map-item.model';
 import {selectMapUiState} from '../state/map/reducers/map-ui.reducer';
@@ -25,7 +25,7 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
   public mapUiState?: MapUiState;
   public mapSideDrawerContent: MapSideDrawerContent = 'none';
 
-  private readonly activeMapItems$ = this.store.select(selectActiveMapItems);
+  private readonly activeMapItems$ = this.store.select(selectItems);
   private readonly mapUiState$ = this.store.select(selectMapUiState);
   private readonly subscriptions: Subscription = new Subscription();
 

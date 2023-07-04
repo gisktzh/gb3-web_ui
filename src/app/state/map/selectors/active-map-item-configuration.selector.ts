@@ -1,10 +1,10 @@
 import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
 import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
 import {createSelector} from '@ngrx/store';
-import {selectActiveMapItems} from '../reducers/active-map-item.reducer';
+import {selectItems} from '../reducers/active-map-item.reducer';
 import {ActiveMapItemConfiguration} from '../../../shared/interfaces/active-map-item-configuration.interface';
 
-export const selectActiveMapItemConfigurations = createSelector(selectActiveMapItems, (activeMapItems) => {
+export const selectActiveMapItemConfigurations = createSelector(selectItems, (activeMapItems) => {
   const activeMapItemConfigurations: ActiveMapItemConfiguration[] = activeMapItems
     .filter(isActiveMapItemOfType(Gb2WmsActiveMapItem))
     .map((activeMapItem) => {

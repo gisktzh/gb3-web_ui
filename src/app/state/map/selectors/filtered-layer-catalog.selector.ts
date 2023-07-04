@@ -1,8 +1,8 @@
 import {createSelector} from '@ngrx/store';
-import {selectFilterString, selectLayerCatalogItems} from '../reducers/layer-catalog.reducer';
+import {selectFilterString, selectItems} from '../reducers/layer-catalog.reducer';
 import {produce} from 'immer';
 
-export const selectFilteredLayerCatalog = createSelector(selectFilterString, selectLayerCatalogItems, (filterString, layerCatalog) => {
+export const selectFilteredLayerCatalog = createSelector(selectFilterString, selectItems, (filterString, layerCatalog) => {
   const lowerCasedFilterString = filterString.toLowerCase();
   if (lowerCasedFilterString === '') {
     return layerCatalog;

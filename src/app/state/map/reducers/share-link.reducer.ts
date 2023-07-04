@@ -5,8 +5,8 @@ import {ShareLinkState} from '../states/share-link.state';
 export const shareLinkFeatureKey = 'shareLink';
 
 export const initialState: ShareLinkState = {
-  shareLinkItem: undefined,
-  shareLinkId: undefined,
+  item: undefined,
+  id: undefined,
   loadingState: 'undefined',
   savingState: 'undefined'
 };
@@ -16,18 +16,18 @@ export const shareLinkFeature = createFeature({
   reducer: createReducer(
     initialState,
     on(ShareLinkActions.loadShareLinkItem, (state): ShareLinkState => {
-      return {...state, shareLinkItem: initialState.shareLinkItem, loadingState: 'loading'};
+      return {...state, item: initialState.item, loadingState: 'loading'};
     }),
-    on(ShareLinkActions.setShareLinkItem, (state, {shareLinkItem}): ShareLinkState => {
-      return {...state, shareLinkItem: shareLinkItem, loadingState: 'loaded'};
+    on(ShareLinkActions.setShareLinkItem, (state, {item}): ShareLinkState => {
+      return {...state, item, loadingState: 'loaded'};
     }),
-    on(ShareLinkActions.createShareLinkId, (state): ShareLinkState => {
-      return {...state, shareLinkId: initialState.shareLinkId, savingState: 'loading'};
+    on(ShareLinkActions.createShareLinkItem, (state): ShareLinkState => {
+      return {...state, id: initialState.id, savingState: 'loading'};
     }),
-    on(ShareLinkActions.setShareLinkId, (state, {shareLinkId}): ShareLinkState => {
-      return {...state, shareLinkId, savingState: 'loaded'};
+    on(ShareLinkActions.setShareLinkId, (state, {id}): ShareLinkState => {
+      return {...state, id, savingState: 'loaded'};
     })
   )
 });
 
-export const {name, reducer, selectShareLinkItem, selectLoadingState, selectShareLinkId, selectSavingState} = shareLinkFeature;
+export const {name, reducer, selectItem, selectLoadingState, selectId, selectSavingState} = shareLinkFeature;

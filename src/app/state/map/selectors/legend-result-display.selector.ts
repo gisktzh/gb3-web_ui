@@ -1,9 +1,9 @@
 import {createSelector} from '@ngrx/store';
-import {selectLegendItems} from '../reducers/legend.reducer';
+import {selectItems as selectLegendItems} from '../reducers/legend.reducer';
 import {selectMaps} from './maps.selector';
 import {Legend, LegendDisplay} from '../../../shared/interfaces/legend.interface';
 import {Map} from '../../../shared/interfaces/topic.interface';
-import {selectActiveMapItems} from '../reducers/active-map-item.reducer';
+import {selectItems as selectActiveMapItems} from '../reducers/active-map-item.reducer';
 import {ActiveMapItem} from '../../../map/models/active-map-item.model';
 import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
 

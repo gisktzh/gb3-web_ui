@@ -14,7 +14,7 @@ export class PrintEffects {
       switchMap(() =>
         this.printService.loadPrintInfo().pipe(
           map((printInfo) => {
-            return PrintActions.setPrintInfo({printInfo});
+            return PrintActions.setPrintInfo({info: printInfo});
           }),
           catchError(() => EMPTY) // todo error handling
         )
@@ -26,9 +26,9 @@ export class PrintEffects {
     return this.actions$.pipe(
       ofType(PrintActions.requestPrintCreation),
       switchMap((value) =>
-        this.printService.createPrintJob(value.printCreation).pipe(
+        this.printService.createPrintJob(value.creation).pipe(
           map((printCreationResponse) => {
-            return PrintActions.setPrintCreationResponse({printCreationResponse});
+            return PrintActions.setPrintCreationResponse({creationResponse: printCreationResponse});
           }),
           catchError(() => EMPTY) // todo error handling
         )
@@ -40,7 +40,7 @@ export class PrintEffects {
     return this.actions$.pipe(
       ofType(PrintActions.setPrintCreationResponse),
       map((value) => {
-        this.document.defaultView?.window.open(value.printCreationResponse.getURL, '_blank');
+        this.document.defaultView?.window.open(value.creationResponse.getURL, '_blank');
         return PrintActions.clearPrintCreation();
       })
     );

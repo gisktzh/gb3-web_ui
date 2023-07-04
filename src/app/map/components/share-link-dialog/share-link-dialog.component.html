@@ -15,7 +15,7 @@
     >
       <mat-form-field appearance="fill" class="share-link-dialog__content">
         <mat-label>iframe Link</mat-label>
-        <input [value]="iframeCode ?? 'Generiere Link...'" matInput readonly />
+        <input [value]="iframeCode ?? 'Generiere iframe Code zum einbetten...'" matInput readonly />
         <button matSuffix mat-icon-button aria-label="Copy" [cdkCopyToClipboard]="iframeCode ?? ''" [disabled]="savingState !== 'loaded'">
           <mat-icon>content_copy</mat-icon>
         </button>

@@ -14,7 +14,7 @@ import {ViewProcessState} from '../../../shared/types/view-process-state';
 import {ZoomType} from '../../../shared/types/zoom-type';
 import {BasemapConfigService} from '../basemap-config.service';
 import {ConfigService} from '../../../shared/services/config.service';
-import {selectActiveMapItems} from '../../../state/map/reducers/active-map-item.reducer';
+import {selectItems} from '../../../state/map/reducers/active-map-item.reducer';
 import esriConfig from '@arcgis/core/config';
 import wmsAuthAndUrlOverrideInterceptorFactory from './interceptors/override-wms-url.interceptor';
 import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.reducer';
@@ -121,7 +121,7 @@ export class EsriMapService implements MapService {
       .select(selectMapConfigState)
       .pipe(
         first(),
-        withLatestFrom(this.store.select(selectActiveMapItems)),
+        withLatestFrom(this.store.select(selectItems)),
         tap(([config, activeMapItems]) => {
           const {x, y} = config.center;
           const {minScale, maxScale} = config.scaleSettings;

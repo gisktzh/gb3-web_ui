@@ -64,7 +64,7 @@ export class MapUiEffects {
       ),
       concatLatestFrom(() => this.store.select(selectCurrentShareLinkItem)),
       map(([_, shareLinkItem]) => {
-        return ShareLinkActions.createShareLinkId({shareLinkItem});
+        return ShareLinkActions.createShareLinkItem({item: shareLinkItem});
       })
     );
   });

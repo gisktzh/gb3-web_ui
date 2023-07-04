@@ -31,6 +31,19 @@ import {AppLayoutState} from './app/states/app-layout.state';
 import {PrintState} from './map/states/print.state';
 import {MapUiState} from './map/states/map-ui.state';
 import {ShareLinkState} from './map/states/share-link.state';
+import {ActiveMapItemEffects} from './map/effects/active-map-item.effects';
+import {FeatureInfoEffects} from './map/effects/feature-info.effects';
+import {LayerCatalogEffects} from './map/effects/layer-catalog.effects';
+import {LegendEffects} from './map/effects/legend.effects';
+import {MapConfigEffects} from './map/effects/map-config-effects.service';
+import {AuthStatusEffects} from './auth/effects/auth-status.effects';
+import {FavouriteListEffects} from './map/effects/favourite-list.effects';
+import {PageNotificationEffects} from './app/effects/page-notification.effects';
+import {GeolocationEffects} from './map/effects/geolocation.effects';
+import {GeneralInfoEffects} from './map/effects/general-info.effects';
+import {PrintEffects} from './map/effects/print.effects';
+import {MapUiEffects} from './map/effects/map-ui.effects';
+import {ShareLinkEffects} from './map/effects/share-link.effects';
 
 export interface State {
   mapConfig: MapConfigState;
@@ -69,5 +82,21 @@ export const reducers: ActionReducerMap<State> = {
   mapUi: mapUiReducer,
   shareLink: shareLinkReducer
 };
+
+export const effects = [
+  ActiveMapItemEffects,
+  FeatureInfoEffects,
+  LayerCatalogEffects,
+  LegendEffects,
+  MapConfigEffects,
+  AuthStatusEffects,
+  FavouriteListEffects,
+  PageNotificationEffects,
+  GeolocationEffects,
+  GeneralInfoEffects,
+  PrintEffects,
+  MapUiEffects,
+  ShareLinkEffects
+];
 
 export const metaReducers: MetaReducer<State>[] = [];

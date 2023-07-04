@@ -4,10 +4,10 @@ import {LoadingState} from '../../../../shared/types/loading-state';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {
-  selectPrintCreationLoadingState,
-  selectPrintCreationResponse,
-  selectPrintInfo,
-  selectPrintInfoLoadingState
+  selectCreationLoadingState,
+  selectCreationResponse,
+  selectInfo,
+  selectInfoLoadingState
 } from '../../../../state/map/reducers/print.reducer';
 import {
   PrintCreation,
@@ -20,7 +20,7 @@ import {PrintActions} from '../../../../state/map/actions/print.actions';
 import {MapConfigState} from '../../../../state/map/states/map-config.state';
 import {selectMapConfigState} from '../../../../state/map/reducers/map-config.reducer';
 import {ActiveMapItem} from '../../../models/active-map-item.model';
-import {selectActiveMapItems} from '../../../../state/map/reducers/active-map-item.reducer';
+import {selectItems} from '../../../../state/map/reducers/active-map-item.reducer';
 import {MapConstants} from '../../../../shared/constants/map.constants';
 import {BasemapConfigService} from '../../../services/basemap-config.service';
 
@@ -88,7 +88,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     }
 
     const printCreation = this.createPrintCreation();
-    this.store.dispatch(PrintActions.requestPrintCreation({printCreation}));
+    this.store.dispatch(PrintActions.requestPrintCreation({creation: printCreation}));
   }
 
   public close() {
@@ -98,7 +98,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
   private initSubscriptions() {
     this.subscriptions.add(
       this.store
-        .select(selectPrintInfoLoadingState)
+        .select(selectInfoLoadingState)
         .pipe(
           tap((printInfoLoadingState) => {
             this.printInfoLoadingState = printInfoLoadingState;
@@ -110,7 +110,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
 
     this.subscriptions.add(
       this.store
-        .select(selectPrintInfo)
+        .select(selectInfo)
         .pipe(
           tap((printInfo) => {
             this.printInfo = printInfo;
@@ -122,7 +122,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
 
     this.subscriptions.add(
       this.store
-        .select(selectPrintCreationLoadingState)
+        .select(selectCreationLoadingState)
         .pipe(
           tap((printCreationLoadingState) => {
             this.printCreationLoadingState = printCreationLoadingState;
@@ -134,7 +134,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
 
     this.subscriptions.add(
       this.store
-        .select(selectPrintCreationResponse)
+        .select(selectCreationResponse)
         .pipe(
           tap((printCreationResponse) => {
             this.printCreationResponse = printCreationResponse;
@@ -166,7 +166,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
 
     this.subscriptions.add(
       this.store
-        .select(selectActiveMapItems)
+        .select(selectItems)
         .pipe(
           tap((activeMapItems) => {
             this.activeMapItems = activeMapItems;

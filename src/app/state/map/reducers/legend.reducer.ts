@@ -5,7 +5,7 @@ import {LegendState} from '../states/legend.state';
 export const legendFeatureKey = 'legend';
 
 export const initialState: LegendState = {
-  legendItems: [],
+  items: [],
   loadingState: 'undefined'
 };
 
@@ -18,7 +18,7 @@ export const legendFeature = createFeature({
     }),
     on(LegendActions.addLegendContent, (state, {legends}): LegendState => {
       const legendItems = legends.map((legend) => legend.legend);
-      return {...state, loadingState: 'loaded', legendItems};
+      return {...state, loadingState: 'loaded', items: legendItems};
     }),
     on(LegendActions.hideLegend, (): LegendState => {
       return {...initialState};
@@ -26,4 +26,4 @@ export const legendFeature = createFeature({
   )
 });
 
-export const {name, reducer, selectLegendState, selectLegendItems, selectLoadingState} = legendFeature;
+export const {name, reducer, selectLegendState, selectItems, selectLoadingState} = legendFeature;

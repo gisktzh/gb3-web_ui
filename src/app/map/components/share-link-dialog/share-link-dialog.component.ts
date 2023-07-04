@@ -4,7 +4,7 @@ import {LoadingState} from '../../../shared/types/loading-state';
 import {Subscription, tap} from 'rxjs';
 import {MatDialogRef} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
-import {selectSavingState, selectShareLinkId} from '../../../state/map/reducers/share-link.reducer';
+import {selectId, selectSavingState} from '../../../state/map/reducers/share-link.reducer';
 
 @Component({
   selector: 'share-link-dialog',
@@ -17,7 +17,7 @@ export class ShareLinkDialogComponent implements OnInit, OnDestroy, HasSavingSta
   public savingState: LoadingState = 'undefined';
 
   private readonly subscriptions: Subscription = new Subscription();
-  private readonly shareLinkId$ = this.store.select(selectShareLinkId);
+  private readonly shareLinkId$ = this.store.select(selectId);
   private readonly savingState$ = this.store.select(selectSavingState);
 
   constructor(private readonly dialogRef: MatDialogRef<ShareLinkDialogComponent>, private readonly store: Store) {}

@@ -5,7 +5,7 @@ import {LayerCatalogState} from '../states/layer-catalog.state';
 export const layerCatalogFeatureKey = 'layerCatalog';
 
 export const initialState: LayerCatalogState = {
-  layerCatalogItems: [],
+  items: [],
   loadingState: 'undefined',
   filterString: ''
 };
@@ -16,20 +16,20 @@ export const layerCatalogFeature = createFeature({
     initialState,
     on(LayerCatalogActions.loadLayerCatalog, (state): LayerCatalogState => {
       // If we already have items, we do not reset the state
-      if (state.layerCatalogItems.length > 0) {
+      if (state.items.length > 0) {
         return state;
       }
 
       return {...initialState, loadingState: 'loading'};
     }),
-    on(LayerCatalogActions.setLayerCatalog, (state, {layerCatalogItems}): LayerCatalogState => {
-      return {...state, layerCatalogItems: layerCatalogItems, loadingState: 'loaded'};
+    on(LayerCatalogActions.setLayerCatalog, (state, {items}): LayerCatalogState => {
+      return {...state, items, loadingState: 'loaded'};
     }),
-    on(LayerCatalogActions.addLayerCatalogItem, (state, {layerCatalogItem}): LayerCatalogState => {
-      return {...state, layerCatalogItems: [...state.layerCatalogItems, layerCatalogItem]};
+    on(LayerCatalogActions.addLayerCatalogItem, (state, {item}): LayerCatalogState => {
+      return {...state, items: [...state.items, item]};
     }),
     on(LayerCatalogActions.clearLayerCatalog, (state): LayerCatalogState => {
-      return {...state, layerCatalogItems: []};
+      return {...state, items: []};
     }),
     on(LayerCatalogActions.setFilterString, (state, {filterString}): LayerCatalogState => {
       return {...state, filterString};
@@ -37,4 +37,4 @@ export const layerCatalogFeature = createFeature({
   )
 });
 
-export const {name, reducer, selectFilterString, selectLayerCatalogItems, selectLoadingState} = layerCatalogFeature;
+export const {name, reducer, selectFilterString, selectItems, selectLoadingState} = layerCatalogFeature;

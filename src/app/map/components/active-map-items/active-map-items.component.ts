@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CdkDrag, CdkDragDrop} from '@angular/cdk/drag-drop';
 import {Store} from '@ngrx/store';
 import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
-import {selectActiveMapItems} from '../../../state/map/reducers/active-map-item.reducer';
+import {selectItems} from '../../../state/map/reducers/active-map-item.reducer';
 import {Subscription, tap} from 'rxjs';
 import {ActiveMapItem} from '../../models/active-map-item.model';
 import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.reducer';
@@ -28,7 +28,7 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
   public numberOfUnreadNotices: number = 0;
   public readonly favouriteHelperMessages = FAVOURITE_HELPER_MESSAGES;
 
-  private readonly activeMapItems$ = this.store.select(selectActiveMapItems);
+  private readonly activeMapItems$ = this.store.select(selectItems);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
   private readonly subscriptions: Subscription = new Subscription();
 

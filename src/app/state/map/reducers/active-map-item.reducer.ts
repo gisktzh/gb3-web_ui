@@ -9,7 +9,7 @@ import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.m
 export const activeMapItemFeatureKey = 'activeMapItem';
 
 export const initialState: ActiveMapItemState = {
-  activeMapItems: []
+  items: []
 };
 
 export const activeMapItemFeature = createFeature({
@@ -17,25 +17,25 @@ export const activeMapItemFeature = createFeature({
   reducer: createReducer(
     initialState,
     on(ActiveMapItemActions.addActiveMapItem, (state, {activeMapItem, position}): ActiveMapItemState => {
-      if (state.activeMapItems.some((mapItem) => mapItem.id === activeMapItem.id)) {
+      if (state.items.some((mapItem) => mapItem.id === activeMapItem.id)) {
         // the map item is already active - no state changes necessary
         return {...state};
       }
-      const newActiveMapItems: ActiveMapItem[] = [...state.activeMapItems];
+      const newActiveMapItems: ActiveMapItem[] = [...state.items];
       newActiveMapItems.splice(position, 0, activeMapItem);
-      return {...state, activeMapItems: newActiveMapItems};
+      return {...state, items: newActiveMapItems};
     }),
     on(ActiveMapItemActions.removeActiveMapItem, (state, activeMapItem): ActiveMapItemState => {
-      const remainingActiveMapItems = state.activeMapItems.filter((mapItem) => mapItem.id !== activeMapItem.id);
-      return {...state, activeMapItems: [...remainingActiveMapItems]};
+      const remainingActiveMapItems = state.items.filter((mapItem) => mapItem.id !== activeMapItem.id);
+      return {...state, items: [...remainingActiveMapItems]};
     }),
     on(ActiveMapItemActions.removeAllActiveMapItems, (state): ActiveMapItemState => {
-      return {...state, activeMapItems: []};
+      return {...state, items: []};
     }),
     on(
       ActiveMapItemActions.setOpacity,
       produce((draft, {opacity, activeMapItem}) => {
-        draft.activeMapItems.forEach((mapItem) => {
+        draft.items.forEach((mapItem) => {
           if (mapItem.id === activeMapItem.id) {
             mapItem.opacity = opacity;
           }
@@ -45,7 +45,7 @@ export const activeMapItemFeature = createFeature({
     on(
       ActiveMapItemActions.setVisibility,
       produce((draft, {visible, activeMapItem}) => {
-        draft.activeMapItems.forEach((mapItem) => {
+        draft.items.forEach((mapItem) => {
           if (mapItem.id === activeMapItem.id) {
             mapItem.visible = visible;
           }
@@ -55,7 +55,7 @@ export const activeMapItemFeature = createFeature({
     on(
       ActiveMapItemActions.setSublayerVisibility,
       produce((draft, {visible, activeMapItem, layerId}) => {
-        draft.activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).forEach((mapItem) => {
+        draft.items.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).forEach((mapItem) => {
           if (mapItem.id === activeMapItem.id) {
             const sublayer = mapItem.settings.layers.find((l) => l.id === layerId);
             if (sublayer) {
@@ -68,7 +68,7 @@ export const activeMapItemFeature = createFeature({
     on(
       ActiveMapItemActions.setLoadingState,
       produce((draft, {loadingState, id}) => {
-        draft.activeMapItems.forEach((mapItem) => {
+        draft.items.forEach((mapItem) => {
           if (mapItem.id === id) {
             mapItem.loadingState = loadingState;
           }
@@ -78,7 +78,7 @@ export const activeMapItemFeature = createFeature({
     on(
       ActiveMapItemActions.setViewProcessState,
       produce((draft, {viewProcessState, id}) => {
-        draft.activeMapItems.forEach((mapItem) => {
+        draft.items.forEach((mapItem) => {
           if (mapItem.id === id) {
             mapItem.viewProcessState = viewProcessState;
           }
@@ -86,15 +86,15 @@ export const activeMapItemFeature = createFeature({
       })
     ),
     on(ActiveMapItemActions.reorderActiveMapItem, (state, {previousPosition, currentPosition}): ActiveMapItemState => {
-      const mapItemToReorder = state.activeMapItems[previousPosition];
-      const reorderedActiveMapItems = state.activeMapItems.filter((mapItem) => mapItem !== mapItemToReorder);
+      const mapItemToReorder = state.items[previousPosition];
+      const reorderedActiveMapItems = state.items.filter((mapItem) => mapItem !== mapItemToReorder);
       reorderedActiveMapItems.splice(currentPosition, 0, mapItemToReorder);
-      return {...state, activeMapItems: [...reorderedActiveMapItems]};
+      return {...state, items: [...reorderedActiveMapItems]};
     }),
     on(
       ActiveMapItemActions.reorderSublayer,
       produce((draft, {activeMapItem, previousPosition, currentPosition}) => {
-        draft.activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).forEach((mapItem) => {
+        draft.items.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).forEach((mapItem) => {
           if (mapItem.id === activeMapItem.id) {
             const sublayerToReorder = mapItem.settings.layers.splice(previousPosition, 1);
             mapItem.settings.layers.splice(currentPosition, 0, ...sublayerToReorder);
@@ -105,7 +105,7 @@ export const activeMapItemFeature = createFeature({
     on(
       ActiveMapItemActions.setTimeSliderExtent,
       produce((draft, {timeExtent, activeMapItem}) => {
-        draft.activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).forEach((mapItem) => {
+        draft.items.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).forEach((mapItem) => {
           if (mapItem.id === activeMapItem.id) {
             mapItem.settings.timeSliderExtent = timeExtent;
           }
@@ -115,7 +115,7 @@ export const activeMapItemFeature = createFeature({
     on(
       ActiveMapItemActions.setAttributeFilterValueState,
       produce((draft, {isFilterValueActive, filterValueName, attributeFilterParameter, activeMapItem}) => {
-        draft.activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).forEach((mapItem) => {
+        draft.items.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).forEach((mapItem) => {
           if (mapItem.id === activeMapItem.id) {
             const filterValue = mapItem.settings.filterConfigurations
               ?.find((filterConfig) => filterConfig.parameter === attributeFilterParameter)
@@ -129,20 +129,20 @@ export const activeMapItemFeature = createFeature({
     ),
     on(ActiveMapItemActions.addFavourite, (state, {favourite}): ActiveMapItemState => {
       const favouriteIds = favourite.map((fav) => fav.id);
-      const activeMapItemsToStay = state.activeMapItems.filter((activeMapItem) => !favouriteIds.includes(activeMapItem.id));
+      const activeMapItemsToStay = state.items.filter((activeMapItem) => !favouriteIds.includes(activeMapItem.id));
 
-      return {...state, activeMapItems: [...favourite, ...activeMapItemsToStay]};
+      return {...state, items: [...favourite, ...activeMapItemsToStay]};
     }),
     on(ActiveMapItemActions.addInitialMapItems, (state, {initialMapItems}): ActiveMapItemState => {
       const initialMapItemIds = initialMapItems.map((initialMapItem) => initialMapItem.id);
-      const activeMapItemsToStay = state.activeMapItems.filter((activeMapItem) => !initialMapItemIds.includes(activeMapItem.id));
+      const activeMapItemsToStay = state.items.filter((activeMapItem) => !initialMapItemIds.includes(activeMapItem.id));
 
-      return {...state, activeMapItems: [...initialMapItems, ...activeMapItemsToStay]};
+      return {...state, items: [...initialMapItems, ...activeMapItemsToStay]};
     }),
     on(
       ActiveMapItemActions.markAllActiveMapItemNoticeAsRead,
       produce((draft) => {
-        draft.activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).forEach((mapItem) => {
+        draft.items.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).forEach((mapItem) => {
           mapItem.settings.isNoticeMarkedAsRead = true;
         });
       })
@@ -150,4 +150,4 @@ export const activeMapItemFeature = createFeature({
   )
 });
 
-export const {name, reducer, selectActiveMapItemState, selectActiveMapItems} = activeMapItemFeature;
+export const {name, reducer, selectActiveMapItemState, selectItems} = activeMapItemFeature;
