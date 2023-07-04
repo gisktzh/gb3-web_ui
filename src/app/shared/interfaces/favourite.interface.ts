@@ -1,10 +1,9 @@
-import {MapLayer} from './topic.interface';
-import {Gb2WmsActiveMapItem} from '../../map/models/implementations/gb2-wms.model';
+import {ActiveMapItemConfiguration} from './active-map-item-configuration.interface';
 
 export interface Favourite {
   id: number;
   title: string;
-  content: FavouriteLayerConfiguration[];
+  content: ActiveMapItemConfiguration[];
   /**
    * Declares whether a favourite is invalid because e.g. its components do no longer exist.
    */
@@ -14,10 +13,3 @@ export interface Favourite {
 export type CreateFavourite = Pick<Favourite, 'title' | 'content'>;
 
 export type FavouritesResponse = Favourite[];
-
-type FavouriteLayerSubLayerConfiguration = Pick<MapLayer, 'id' | 'layer' | 'visible'>;
-
-export interface FavouriteLayerConfiguration extends Pick<Gb2WmsActiveMapItem, 'visible' | 'opacity' | 'isSingleLayer'> {
-  layers: FavouriteLayerSubLayerConfiguration[];
-  mapId: string; // todo: nested type not pickable
-}

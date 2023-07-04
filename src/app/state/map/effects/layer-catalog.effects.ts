@@ -9,7 +9,7 @@ import {selectMaps} from '../selectors/maps.selector';
 import {Store} from '@ngrx/store';
 import {selectMapConfigState} from '../reducers/map-config.reducer';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
-import {selectLayerCatalogItems} from '../reducers/layer-catalog.reducer';
+import {selectItems} from '../reducers/layer-catalog.reducer';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 
 @Injectable()
@@ -17,16 +17,16 @@ export class LayerCatalogEffects {
   public dispatchLayerCatalogRequest$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(LayerCatalogActions.loadLayerCatalog),
-      concatLatestFrom(() => [this.store.select(selectLayerCatalogItems)]),
-      switchMap(([_, layerCatalogItems]) =>
+      concatLatestFrom(() => [this.store.select(selectItems)]),
+      switchMap(([_, items]) =>
         // If we already have a layerCatalog, we set this as the current state, else we fetch the api. This is required to also trigger
         // the initialMapLoad and thus set initialMaps.
         iif(
-          () => layerCatalogItems.length > 0,
-          of(LayerCatalogActions.setLayerCatalog({layerCatalogItems})),
+          () => items.length > 0,
+          of(LayerCatalogActions.setLayerCatalog({items})),
           this.topicsService.loadTopics().pipe(
             map((layerCatalogTopicResponse) => {
-              return LayerCatalogActions.setLayerCatalog({layerCatalogItems: layerCatalogTopicResponse.topics});
+              return LayerCatalogActions.setLayerCatalog({items: layerCatalogTopicResponse.topics});
             }),
             catchError((err: unknown) => {
               if (!environment.production) {

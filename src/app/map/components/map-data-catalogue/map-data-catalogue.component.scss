@@ -4,7 +4,7 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
 :host ::ng-deep .map-data-catalogue__content__items__item {
-  @include mat-mixins.mat-expansion-panel-remove-content-offset;
+  @include mat-mixins.mat-expansion-panel-remove-content-indent;
 }
 
 .map-data-catalogue {

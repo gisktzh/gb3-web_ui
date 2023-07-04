@@ -15,17 +15,14 @@ import {selectFilteredFavouriteList} from '../../../state/map/selectors/filtered
 import {Favourite} from '../../../shared/interfaces/favourite.interface';
 import {FavouriteListActions} from '../../../state/map/actions/favourite-list.actions';
 import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.reducer';
-import {FavouriteDeletionDialogComponent} from '../favourite-deletion-dialog/favourite-deletion-dialog.component';
-import {PanelClass} from '../../../shared/enums/panel-class.enum';
 import {FavouritesService} from '../../services/favourites.service';
-import {MatDialog} from '@angular/material/dialog';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
+import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
 
 /**
  * Defines the upper limit (inclusive) of filtered results which trigger an automatic open of the associated expansion panel.
  */
 const AUTO_OPEN_THRESHOLD = 3;
-const FAVOURITE_DELETION_DIALOG_MAX_WIDTH = 500;
 
 @Component({
   selector: 'map-data-catalogue',
@@ -57,8 +54,7 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
 
   constructor(
     private readonly store: Store,
-    private readonly favouritesService: FavouritesService,
-    private readonly dialogService: MatDialog
+    private readonly favouritesService: FavouritesService
   ) {}
 
   public ngOnInit() {
@@ -76,7 +72,6 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
 
   /**
    * Dispatches an action that adds a favourite to the map.
-   * @param favouriteLayerConfigurations
    */
   public addFavouriteToMap({id, content}: Favourite) {
     try {
@@ -88,12 +83,7 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   public deleteFavourite(favourite: Favourite) {
-    this.dialogService.open<FavouriteDeletionDialogComponent, {favourite: Favourite}, boolean>(FavouriteDeletionDialogComponent, {
-      data: {favourite},
-      panelClass: PanelClass.ApiWrapperDialog,
-      restoreFocus: false,
-      maxWidth: FAVOURITE_DELETION_DIALOG_MAX_WIDTH
-    });
+    this.store.dispatch(MapUiActions.showDeleteFavouriteDialog({favouriteToDelete: favourite}));
   }
 
   /**

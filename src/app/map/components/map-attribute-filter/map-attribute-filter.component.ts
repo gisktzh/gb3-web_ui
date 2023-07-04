@@ -4,8 +4,8 @@ import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {MapAttributeFiltersItemActions} from '../../../state/map/actions/map-attribute-filters-item.actions';
 import {concatLatestFrom} from '@ngrx/effects';
-import {selectActiveMapItems} from '../../../state/map/reducers/active-map-item.reducer';
-import {selectMapAttributeFiltersItemId} from '../../../state/map/reducers/map-attribute-filters-item.reducer';
+import {selectItems} from '../../../state/map/reducers/active-map-item.reducer';
+import {selectId} from '../../../state/map/reducers/map-attribute-filters-item.reducer';
 import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
 import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
 
@@ -18,8 +18,8 @@ export class MapAttributeFilterComponent implements OnInit, OnDestroy {
   public mapAttributeFiltersItem: Gb2WmsActiveMapItem | undefined;
 
   private readonly subscriptions: Subscription = new Subscription();
-  private readonly mapAttributeFiltersItem$ = this.store.select(selectMapAttributeFiltersItemId);
-  private readonly activeMapItems$ = this.store.select(selectActiveMapItems);
+  private readonly mapAttributeFiltersItem$ = this.store.select(selectId);
+  private readonly activeMapItems$ = this.store.select(selectItems);
 
   constructor(private readonly store: Store) {}
 

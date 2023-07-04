@@ -4,7 +4,7 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
 :host ::ng-deep .base-map-data-item {
-  @include mat-mixins.mat-expansion-panel-remove-content-offset;
+  @include mat-mixins.mat-expansion-panel-remove-content-indent;
 
   .base-map-data-item__header.mat-expansion-panel-header .mat-content.mat-content-hide-toggle {
     align-items: center;

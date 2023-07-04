@@ -1,6 +1,7 @@
-import {Component, EventEmitter, Output} from '@angular/core';
+import {Component} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {ToolActions} from 'src/app/state/map/actions/tool.actions';
+import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
 
 @Component({
   selector: 'map-tools',
@@ -8,12 +9,10 @@ import {ToolActions} from 'src/app/state/map/actions/tool.actions';
   styleUrls: ['./map-tools.component.scss']
 })
 export class MapToolsComponent {
-  @Output() public openPrintDialogEvent = new EventEmitter<void>();
-
   constructor(private readonly store: Store) {}
 
   public showPrintDialog() {
-    this.openPrintDialogEvent.emit();
+    this.store.dispatch(MapUiActions.showMapSideDrawerContent({mapSideDrawerContent: 'print'}));
   }
 
   public togglePointMeasurement() {
@@ -26,5 +25,9 @@ export class MapToolsComponent {
 
   public toggleAreaMeasurement() {
     this.store.dispatch(ToolActions.activateTool({tool: 'measure-area'}));
+  }
+
+  public showShareLinkDialog() {
+    this.store.dispatch(MapUiActions.showShareLinkDialog());
   }
 }

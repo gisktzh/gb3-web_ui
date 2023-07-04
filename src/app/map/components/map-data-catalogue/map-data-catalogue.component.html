@@ -10,24 +10,25 @@
       <input #filterInput class="map-data-catalogue__content__filter__input" placeholder="Karten und Layer filtern" type="text" />
       <mat-icon class="map-data-catalogue__content__filter__input-icon">search</mat-icon>
     </div>
-    <loading-and-process-bar [loadingState]="this.catalogueLoadingState"></loading-and-process-bar>
+    <loading-and-process-bar [loadingState]="catalogueLoadingState"></loading-and-process-bar>
     <mat-accordion
-      *ngIf="this.catalogueLoadingState === 'loaded'"
+      *ngIf="catalogueLoadingState === 'loaded'"
       class="map-data-catalogue__content__items"
       [ngClass]="{
-        'map-data-catalogue__content__items--hidden': this.filterString && this.topics.length === 0 && this.filteredFavourites.length === 0
+        'map-data-catalogue__content__items--hidden': filterString && topics.length === 0 && filteredFavourites.length === 0
       }"
       displayMode="flat"
       multi="true"
     >
       <!-- Favourites -->
-      <ng-container *ngIf="this.isAuthenticated">
+      <ng-container *ngIf="isAuthenticated">
         <mat-expansion-panel
           #favouriteExpansionPanel
-          *ngIf="!(!!this.filterString && this.filteredFavourites.length === 0)"
+          *ngIf="!(!!filterString && filteredFavourites.length === 0)"
           class="map-data-catalogue__content__items__item"
-          [expanded]="!!this.filterString && this.filteredFavourites.length <= this.autoOpenThreshold"
+          [expanded]="!!filterString && filteredFavourites.length <= autoOpenThreshold"
           hideToggle="true"
+          [disabled]="favouritesLoadingState === 'loading'"
         >
           <!-- 'Favourite' header -->
           <mat-expansion-panel-header class="map-data-catalogue__content__items__item__header">
@@ -42,8 +43,8 @@
           </mat-expansion-panel-header>
 
           <!-- 'Favourite' content -->
-          <p *ngIf="this.filteredFavourites.length === 0"><em>Noch keine Favoriten hinzugefügt.</em></p>
-          <ng-container *ngFor="let favourite of this.filteredFavourites">
+          <p *ngIf="filteredFavourites.length === 0"><em>Noch keine Favoriten hinzugefügt.</em></p>
+          <ng-container *ngFor="let favourite of filteredFavourites">
             <map-data-item-favourite
               [filterString]="filterString"
               [invalid]="favourite.invalid"
@@ -61,7 +62,7 @@
         <mat-expansion-panel
           #topicExpansionPanel
           class="map-data-catalogue__content__items__item"
-          [expanded]="!!this.filterString && topic.maps.length <= this.autoOpenThreshold"
+          [expanded]="!!filterString && topic.maps.length <= autoOpenThreshold"
           hideToggle="true"
         >
           <!-- 'Topic' header -->
@@ -97,7 +98,7 @@
     </mat-accordion>
 
     <p
-      *ngIf="this.filterString && this.topics.length === 0 && this.filteredFavourites.length === 0"
+      *ngIf="filterString && topics.length === 0 && filteredFavourites.length === 0"
       class="map-data-catalogue__content__filter-no-results mat-body-2"
     >
       Keine Resultate zu diesem Filter.

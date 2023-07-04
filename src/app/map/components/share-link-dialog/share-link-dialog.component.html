@@ -1,0 +1,28 @@
+<api-dialog-wrapper [savingState]="savingState" title="Teilen" errorText="Fehler beim Laden der Links!">
+  <ng-container content>
+    <mat-form-field appearance="fill" class="share-link-dialog__content">
+      <mat-label>Link auf aktive Karten</mat-label>
+      <input [value]="shareLink ?? 'Generiere Link...'" matInput readonly [disabled]="savingState !== 'loaded'" />
+      <button matSuffix mat-icon-button aria-label="Copy" [cdkCopyToClipboard]="shareLink ?? ''" [disabled]="savingState !== 'loaded'">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+    </mat-form-field>
+    <map-overlay-list-item
+      [disabled]="savingState !== 'loaded'"
+      [overlayTitle]="'Aktive Karten einbetten'"
+      [toggleButtonPosition]="'end'"
+      [removeContentIndent]="true"
+    >
+      <mat-form-field appearance="fill" class="share-link-dialog__content">
+        <mat-label>iframe Link</mat-label>
+        <input [value]="iframeCode ?? 'Generiere iframe Code zum einbetten...'" matInput readonly />
+        <button matSuffix mat-icon-button aria-label="Copy" [cdkCopyToClipboard]="iframeCode ?? ''" [disabled]="savingState !== 'loaded'">
+          <mat-icon>content_copy</mat-icon>
+        </button>
+      </mat-form-field>
+    </map-overlay-list-item>
+  </ng-container>
+  <ng-container actions>
+    <button (click)="close()" mat-button>Schliessen</button>
+  </ng-container>
+</api-dialog-wrapper>

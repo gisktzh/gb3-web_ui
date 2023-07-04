@@ -4,7 +4,7 @@ import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {tap} from 'rxjs';
 import {MAP_SERVICE} from '../../../app.module';
 import {MapService} from '../../../map/interfaces/map.service';
-import {selectActiveMapItems} from '../reducers/active-map-item.reducer';
+import {selectItems} from '../reducers/active-map-item.reducer';
 import {Store} from '@ngrx/store';
 import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
 import {MapConfigActions} from '../actions/map-config.actions';
@@ -149,7 +149,7 @@ export class ActiveMapItemEffects {
     () => {
       return this.actions$.pipe(
         ofType(ActiveMapItemActions.setAttributeFilterValueState),
-        concatLatestFrom(() => this.store.select(selectActiveMapItems)),
+        concatLatestFrom(() => this.store.select(selectItems)),
         tap(([action, activeMapItems]) => {
           const currentActiveMapItem = activeMapItems
             .filter(isActiveMapItemOfType(Gb2WmsActiveMapItem))

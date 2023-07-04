@@ -150,7 +150,7 @@
 * ======================
 */
 
-@mixin mat-expansion-panel-remove-content-offset {
+@mixin mat-expansion-panel-remove-content-indent {
   &.mat-expansion-panel .mat-expansion-panel-content .mat-expansion-panel-body {
     padding: 0;
   }
@@ -193,6 +193,24 @@
 
     .mdc-linear-progress__buffer-dots {
       background-size: 10px $height;
+    }
+  }
+}
+
+/**
+* ======================
+*  mat-text-field
+* ======================
+*/
+
+@mixin mat-text-field-override-background() {
+  & .mat-mdc-text-field-wrapper.mdc-text-field {
+    border-top-left-radius: ktzh-variables.$zh-border-radius;
+    border-top-right-radius: ktzh-variables.$zh-border-radius;
+    background-color: ktzh-variables.$zh-background-color;
+
+    .mat-mdc-form-field-focus-overlay {
+      background-color: ktzh-variables.$zh-black20;
     }
   }
 }

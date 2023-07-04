@@ -1,7 +1,7 @@
 import {createSelector} from '@ngrx/store';
 import {selectMaps} from './maps.selector';
 import {Map} from '../../../shared/interfaces/topic.interface';
-import {selectActiveMapItems} from '../reducers/active-map-item.reducer';
+import {selectItems} from '../reducers/active-map-item.reducer';
 import {ActiveMapItem} from '../../../map/models/active-map-item.model';
 import {selectData} from '../reducers/feature-info.reducer';
 import {FeatureInfoResult, FeatureInfoResultDisplay} from '../../../shared/interfaces/feature-info.interface';
@@ -13,7 +13,7 @@ export const selectFeatureInfosForDisplay = createSelector<
   Map[],
   ActiveMapItem[],
   FeatureInfoResultDisplay[]
->(selectData, selectMaps, selectActiveMapItems, (featureInfoResult, maps, activeMapItems) => {
+>(selectData, selectMaps, selectItems, (featureInfoResult, maps, activeMapItems) => {
   const featureInfoResultDisplays: FeatureInfoResultDisplay[] = [];
   featureInfoResult.forEach((featureInfo) => {
     // Abort if a featureinfo returned no hits for any of its layers.

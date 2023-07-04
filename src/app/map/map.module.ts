@@ -47,6 +47,7 @@ import {MapNoticeDialogComponent} from './components/map-notice-dialog/map-notic
 import {FeatureInfoGeneralInformationComponent} from './components/feature-info-overlay/feature-info-general-information/feature-info-general-information.component';
 import {MapToolsComponent} from './components/map-tools/map-tools.component';
 import {PrintDialogComponent} from './components/map-tools/print-dialog/print-dialog.component';
+import {ShareLinkDialogComponent} from './components/share-link-dialog/share-link-dialog.component';
 
 @NgModule({
   declarations: [
@@ -92,7 +93,8 @@ import {PrintDialogComponent} from './components/map-tools/print-dialog/print-di
     MapNoticeDialogComponent,
     FeatureInfoGeneralInformationComponent,
     MapToolsComponent,
-    PrintDialogComponent
+    PrintDialogComponent,
+    ShareLinkDialogComponent
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule, KtZhDesignSystemModule]
 })

@@ -15,7 +15,7 @@ export class FavouriteListEffects {
           map((favourites) => {
             return FavouriteListActions.setFavourites({favourites});
           }),
-          catchError(() => EMPTY)
+          catchError(() => EMPTY) // todo error handling
         )
       )
     );

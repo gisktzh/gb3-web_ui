@@ -8,7 +8,8 @@ import {
 } from '../../../models/gb3-api-generated.interfaces';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {CreateFavourite, Favourite, FavouriteLayerConfiguration, FavouritesResponse} from '../../../interfaces/favourite.interface';
+import {CreateFavourite, Favourite, FavouritesResponse} from '../../../interfaces/favourite.interface';
+import {ActiveMapItemConfiguration} from '../../../interfaces/active-map-item-configuration.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -46,7 +47,7 @@ export class Gb3FavouritesService extends Gb3ApiService {
     return favouritesListData.map((data) => {
       const id = data.id;
       const title = data.title;
-      const content = data.content as FavouriteLayerConfiguration[]; // todo: remove type cast when backend is properly typed
+      const content = data.content as ActiveMapItemConfiguration[]; // todo: remove type cast when backend is properly typed
 
       return {
         id,
