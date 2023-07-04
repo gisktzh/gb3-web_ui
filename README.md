@@ -333,3 +333,7 @@ relative or absolute) and the service adds the icons. Use them as follows:
 
 <mat-icon svgIcon="icon_id_from_config"></mat-icon>
 ```
+
+In order to have the SVG adjust itself to the color (e.g. disabled state), replace all `fill="color"` occurrences in the
+SVG which should be assigned the font color with `fill="currentColor"`. In some cases, the color might also be
+within `stroke` or other attributes.

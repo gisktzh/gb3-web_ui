@@ -22,9 +22,9 @@ export class PageNotificationComponent {
   private transformSeverityToMatIconFont(severity: PageNotificationSeverity): string {
     switch (severity) {
       case 'info':
-        return 'info';
+        return 'ktzh_info_notification';
       case 'warning':
-        return 'error';
+        return 'ktzh_caution';
     }
   }
 }

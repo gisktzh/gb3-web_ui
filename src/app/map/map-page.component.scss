@@ -1,4 +1,5 @@
 @use 'mixins/helpers.mixin' as mixins;
+@use 'mixins/material.mixin' as material-mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
 .map-container {
@@ -72,6 +73,8 @@
   .map-container__legend-button {
     @include mixins.map-element-box-shadow;
     @include mixins.hide-on-small-screens;
+    @include material-mixins.mat-icon-custom-svg-size(16px);
+
     position: absolute;
     top: 12px;
     left: calc(24px + $all-map-items-container-width);

@@ -57,6 +57,8 @@
           min-width: 24px;
           max-width: 24px;
           scale: 0.8;
+
+          @include mat-mixins.mat-icon-custom-svg-size(16px);
         }
       }
     }

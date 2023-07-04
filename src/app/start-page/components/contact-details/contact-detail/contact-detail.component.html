@@ -1,6 +1,11 @@
 <div class="contact-detail">
   <div class="contact-detail__icon">
-    <mat-icon class="contact-detail__icon__wrapper">{{ contactType === 'address' ? 'location_on' : 'drafts' }}</mat-icon>
+    <span class="contact-detail__icon__wrapper">
+      <mat-icon
+        class="contact-detail__icon__wrapper"
+        [svgIcon]="contactType === 'address' ? 'ktzh_location' : 'ktzh_envelope_open'"
+      ></mat-icon>
+    </span>
   </div>
   <ng-container *ngIf="contactType === 'email'; then emailTemplate; else addressTemplate"></ng-container>
 </div>
