@@ -46,6 +46,7 @@ import {GeneralInfoEffects} from './map/effects/general-info.effects';
 import {PrintEffects} from './map/effects/print.effects';
 import {MapUiEffects} from './map/effects/map-ui.effects';
 import {ShareLinkEffects} from './map/effects/share-link.effects';
+import {ToolEffects} from './map/effects/tool.effects';
 
 export interface State {
   mapConfig: MapConfigState;
@@ -100,7 +101,8 @@ export const effects = [
   GeneralInfoEffects,
   PrintEffects,
   MapUiEffects,
-  ShareLinkEffects
+  ShareLinkEffects,
+  ToolEffects
 ];
 
 export const metaReducers: MetaReducer<State>[] = [];
