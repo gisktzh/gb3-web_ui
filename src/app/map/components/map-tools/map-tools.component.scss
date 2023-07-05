@@ -5,6 +5,7 @@
 :host ::ng-deep {
   .map-tools__button {
     @include mat-mixins.mat-icon-button-override-border-radius(ktzh-variables.$zh-border-radius);
+    @include mat-mixins.mat-icon-custom-svg-size(18px);
   }
 }
 

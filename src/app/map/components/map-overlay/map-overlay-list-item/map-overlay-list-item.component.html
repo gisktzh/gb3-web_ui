@@ -1,30 +1,32 @@
 <mat-expansion-panel
-  [expanded]="this.forceExpanded"
-  hideToggle
-  class="list-item"
   #expansionPanel
   [disabled]="this.disabled"
+  [expanded]="this.forceExpanded"
   [ngClass]="{'list-item--no-content-indent': removeContentIndent}"
+  class="list-item"
+  hideToggle
 >
   <mat-expansion-panel-header class="list-item__header">
     <div class="list-item__header__content">
       <mat-icon
-        class="list-item__header__content__toggle"
         [fontIcon]="expansionPanel.expanded ? 'arrow_drop_down' : 'arrow_right'"
         [ngClass]="{'list-item__header__content__toggle--position-end': toggleButtonPosition === 'end'}"
+        class="list-item__header__content__toggle"
       ></mat-icon>
       <ng-content select="[header-icon]"></ng-content>
-      <p class="list-item__header__content__title" [title]="overlayTitle">{{ overlayTitle }}</p>
+      <p [title]="overlayTitle" class="list-item__header__content__title">{{ overlayTitle }}</p>
       <a
-        *ngIf="this.metaDataLink"
-        href="{{ this.metaDataLink }}"
         (click)="$event.stopPropagation()"
-        target="_blank"
-        rel="noopener noreferrer"
-        title="Metadaten anzeigen"
+        *ngIf="this.metaDataLink"
         class="list-item__header__content__info-link"
+        href="{{ this.metaDataLink }}"
+        rel="noopener noreferrer"
+        target="_blank"
+        title="Metadaten anzeigen"
       >
-        <mat-icon class="list-item__header__content__info-link__icon">info</mat-icon>
+        <span class="list-item__header__content__info-link__icon">
+          <mat-icon svgIcon="ktzh_info"></mat-icon>
+        </span>
       </a>
     </div>
   </mat-expansion-panel-header>

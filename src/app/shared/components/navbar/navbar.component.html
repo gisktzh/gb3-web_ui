@@ -30,9 +30,9 @@
   <a (click)="this.startLogin()" *ngIf="!this.isAuthenticated; else logoutButton" class="navbar__item" mat-button>Login</a>
   <ng-template #logoutButton>
     <a [matMenuTriggerFor]="userMenu" class="navbar__item" mat-button>
-      <mat-icon>account_circle</mat-icon>
-      {{ this.userName }}</a
-    >
+      <mat-icon svgIcon="ktzh_user"></mat-icon>
+      {{ this.userName }}
+    </a>
     <mat-menu #userMenu="matMenu">
       <button (click)="this.logout()" mat-menu-item>
         <mat-icon>logout</mat-icon>

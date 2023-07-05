@@ -70,11 +70,13 @@
       }
 
       .map-data-catalogue__content__filter__input-icon {
-        height: 30px;
-        width: 30px;
-        margin: 12px 5px 5px 16px;
+        margin: 14px 5px 5px 16px;
         position: absolute;
         color: grey;
+        display: flex;
+        align-items: center;
+
+        @include mat-mixins.mat-icon-custom-svg-size(18px);
       }
     }
 

@@ -1,22 +1,24 @@
 <mat-card appearance="raised" class="map-data-catalogue">
-  <mat-card-header class="map-data-catalogue__header" [ngClass]="{'map-data-catalogue__header--minimized': isMinimized}">
+  <mat-card-header [ngClass]="{'map-data-catalogue__header--minimized': isMinimized}" class="map-data-catalogue__header">
     <h2 class="map-data-catalogue__header__title">Kartenkatalog</h2>
     <button (click)="toggleMinimizeMapDataCatalogue()" mat-icon-button>
       <mat-icon [fontIcon]="isMinimized ? 'arrow_drop_down' : 'arrow_drop_up'"></mat-icon>
     </button>
   </mat-card-header>
-  <div class="map-data-catalogue__content" [ngClass]="{'map-data-catalogue__content--hidden': isMinimized}">
+  <div [ngClass]="{'map-data-catalogue__content--hidden': isMinimized}" class="map-data-catalogue__content">
     <div class="map-data-catalogue__content__filter">
       <input #filterInput class="map-data-catalogue__content__filter__input" placeholder="Karten und Layer filtern" type="text" />
-      <mat-icon class="map-data-catalogue__content__filter__input-icon">search</mat-icon>
+      <span class="map-data-catalogue__content__filter__input-icon">
+        <mat-icon svgIcon="ktzh_search"></mat-icon>
+      </span>
     </div>
     <loading-and-process-bar [loadingState]="catalogueLoadingState"></loading-and-process-bar>
     <mat-accordion
       *ngIf="catalogueLoadingState === 'loaded'"
-      class="map-data-catalogue__content__items"
       [ngClass]="{
         'map-data-catalogue__content__items--hidden': filterString && topics.length === 0 && filteredFavourites.length === 0
       }"
+      class="map-data-catalogue__content__items"
       displayMode="flat"
       multi="true"
     >
@@ -25,20 +27,20 @@
         <mat-expansion-panel
           #favouriteExpansionPanel
           *ngIf="!(!!filterString && filteredFavourites.length === 0)"
-          class="map-data-catalogue__content__items__item"
           [expanded]="!!filterString && filteredFavourites.length <= autoOpenThreshold"
+          class="map-data-catalogue__content__items__item"
           hideToggle="true"
           [disabled]="favouritesLoadingState === 'loading'"
         >
           <!-- 'Favourite' header -->
           <mat-expansion-panel-header class="map-data-catalogue__content__items__item__header">
             <map-data-item-header
-              class="map-data-catalogue__content__items__item__header__item"
               [filterString]="filterString"
               [isExpanded]="favouriteExpansionPanel.expanded"
               [loadingState]="favouritesLoadingState"
               [numberOfItems]="filteredFavourites.length"
               [title]="'Favoriten'"
+              class="map-data-catalogue__content__items__item__header__item"
             ></map-data-item-header>
           </mat-expansion-panel-header>
 
@@ -46,12 +48,12 @@
           <p *ngIf="filteredFavourites.length === 0"><em>Noch keine Favoriten hinzugefügt.</em></p>
           <ng-container *ngFor="let favourite of filteredFavourites">
             <map-data-item-favourite
+              (addEvent)="addFavouriteToMap(favourite)"
+              (deleteEvent)="deleteFavourite(favourite)"
               [filterString]="filterString"
               [invalid]="favourite.invalid"
               [loadingState]="favouritesLoadingState"
               [title]="favourite.title"
-              (addEvent)="addFavouriteToMap(favourite)"
-              (deleteEvent)="deleteFavourite(favourite)"
             ></map-data-item-favourite>
           </ng-container>
         </mat-expansion-panel>
@@ -61,18 +63,18 @@
       <ng-container *ngFor="let topic of topics; trackBy: trackByTopicTitle">
         <mat-expansion-panel
           #topicExpansionPanel
-          class="map-data-catalogue__content__items__item"
           [expanded]="!!filterString && topic.maps.length <= autoOpenThreshold"
+          class="map-data-catalogue__content__items__item"
           hideToggle="true"
         >
           <!-- 'Topic' header -->
           <mat-expansion-panel-header class="map-data-catalogue__content__items__item__header">
             <map-data-item-header
-              class="map-data-catalogue__content__items__item__header__item"
               [filterString]="filterString"
-              [title]="topic.title"
               [isExpanded]="topicExpansionPanel.expanded"
               [numberOfItems]="topic.maps.length"
+              [title]="topic.title"
+              class="map-data-catalogue__content__items__item__header__item"
             ></map-data-item-header>
           </mat-expansion-panel-header>
 
@@ -81,13 +83,13 @@
             <div class="map-data-catalogue__content__items__item__content">
               <ng-container *ngFor="let map of topic.maps; trackBy: trackByMapId; let isLastMap = last">
                 <map-data-item-map
-                  class="map-data-catalogue__content__items__item__content__item"
+                  (addEvent)="addActiveMap(map)"
+                  (addLayerEvent)="addActiveLayer(map, $event)"
                   [filterString]="filterString"
                   [imageUrl]="map.icon"
                   [layers]="map.layers"
                   [title]="map.title"
-                  (addEvent)="addActiveMap(map)"
-                  (addLayerEvent)="addActiveLayer(map, $event)"
+                  class="map-data-catalogue__content__items__item__content__item"
                 ></map-data-item-map>
                 <mat-divider *ngIf="!isLastMap"></mat-divider>
               </ng-container>

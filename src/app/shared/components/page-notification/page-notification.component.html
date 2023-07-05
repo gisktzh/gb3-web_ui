@@ -1,5 +1,5 @@
 <div matSnackBarLabel class="page-notification-label" [ngClass]="'page-notification-label--' + data.severity">
-  <mat-icon class="page-notification-label__icon" [fontIcon]="this.icon">info</mat-icon>
+  <mat-icon class="page-notification-label__icon" [svgIcon]="this.icon"></mat-icon>
   <div class="page-notification-label__text-container">
     <span class="page-notification-label__text-container__title">{{ data.title }}</span>
     <span class="page-notification-label__text-container__text">{{ data.description }}</span>

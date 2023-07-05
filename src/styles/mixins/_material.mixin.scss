@@ -110,6 +110,19 @@
   }
 }
 
+@mixin mat-icon-custom-svg-size($icon-size) {
+  .mat-icon {
+    width: $icon-size;
+    height: $icon-size;
+
+    svg {
+      width: $icon-size;
+      height: $icon-size;
+      vertical-align: text-top;
+    }
+  }
+}
+
 /**
 * ======================
 *  mat-checkbox

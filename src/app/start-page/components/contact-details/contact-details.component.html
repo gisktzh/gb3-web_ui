@@ -23,7 +23,7 @@
       <div (click)="accordionItem.toggle()" class="contact-details__media-collapsible__item__header mat-h2">
         <span>Für Medien</span>
         <span>
-          <mat-icon>{{ accordionItem.expanded ? 'remove' : 'add' }}</mat-icon>
+          <mat-icon [svgIcon]="accordionItem.expanded ? 'ktzh_remove' : 'ktzh_add'"></mat-icon>
         </span>
       </div>
       <div
