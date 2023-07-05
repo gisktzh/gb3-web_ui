@@ -25,10 +25,6 @@
     display: flex;
     align-items: center;
 
-    &.mdc-button {
-      @include mat-mixins.mat-button--align-icon-right;
-    }
-
     .navbar__logo {
       height: 80%;
       padding-right: 10px;

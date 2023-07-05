@@ -1,10 +1,9 @@
-<h1 mat-dialog-title>{{ this.title }}</h1>
+<h1 mat-dialog-title>{{ title }}</h1>
 <div class="content" mat-dialog-content>
   <ng-content select="[content]"></ng-content>
-  <p *ngIf="this.savingState === 'error'" class="mat-caption">Beim Speichern ist etwas schief gelaufen.</p>
+  <mat-error *ngIf="errorText && savingState === 'error'" class="mat-caption">{{ errorText }}</mat-error>
 </div>
 <div mat-dialog-actions>
   <ng-content select="[actions]"></ng-content>
 </div>
-<mat-progress-bar *ngIf="this.savingState === 'loading'" mode="query"></mat-progress-bar>
-<mat-progress-bar *ngIf="this.savingState === 'error'" color="warn" mode="determinate" value="100"></mat-progress-bar>
+<loading-and-process-bar [loadingState]="savingState"></loading-and-process-bar>

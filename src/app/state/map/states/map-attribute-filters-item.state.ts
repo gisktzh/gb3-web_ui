@@ -1,3 +1,3 @@
 export interface MapAttributeFiltersItemState {
-  mapAttributeFiltersItemId: string | undefined;
+  id: string | undefined;
 }

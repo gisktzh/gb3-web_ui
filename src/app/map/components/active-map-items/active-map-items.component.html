@@ -8,18 +8,23 @@
     ></span>
     <div class="active-map-items__header__buttons">
       <button
-        class="active-map-items__header__buttons__notices"
+        class="active-map-items__header__buttons__action active-map-items__header__buttons__action--notices"
         (click)="showMapNotices()"
         [disabled]="numberOfNotices === 0"
         [matBadge]="numberOfUnreadNotices"
         [matBadgeHidden]="numberOfUnreadNotices === 0"
         mat-icon-button
       >
-        <mat-icon>notifications</mat-icon>
+        <mat-icon svgIcon="ktzh_notification"></mat-icon>
       </button>
       <mat-divider class="active-map-items__header__buttons__divider" [vertical]="true"></mat-divider>
-      <button (click)="removeAllActiveMapItems()" [disabled]="activeMapItems.length === 0" mat-icon-button>
-        <mat-icon>delete_outlined</mat-icon>
+      <button
+        (click)="removeAllActiveMapItems()"
+        [disabled]="activeMapItems.length === 0"
+        mat-icon-button
+        class="active-map-items__header__buttons__action"
+      >
+        <mat-icon svgIcon="ktzh_delete"></mat-icon>
       </button>
       <mat-divider class="active-map-items__header__buttons__divider" [vertical]="true"></mat-divider>
       <span
@@ -31,8 +36,13 @@
             : this.favouriteHelperMessages.notAuthenticated
         "
       >
-        <button (click)="showFavouriteDialog()" [disabled]="activeMapItems.length === 0 || !this.isAuthenticated" mat-icon-button>
-          <mat-icon>star_outlined</mat-icon>
+        <button
+          (click)="showFavouriteDialog()"
+          [disabled]="activeMapItems.length === 0 || !this.isAuthenticated"
+          mat-icon-button
+          class="active-map-items__header__buttons__action"
+        >
+          <mat-icon svgIcon="ktzh_star"></mat-icon>
         </button>
       </span>
       <mat-divider class="active-map-items__header__buttons__divider" [vertical]="true"></mat-divider>

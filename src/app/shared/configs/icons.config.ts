@@ -1,7 +1,11 @@
 /**
  * Icons prefixed with 'ktzh' are exported from figma.
  */
-export const iconsConfig = [
+
+/**
+ * Icons representing tools
+ */
+const toolIconsConfig = [
   {
     id: 'ktzh_measure_line',
     path: 'assets/icons/tools/measure-line.svg'
@@ -13,5 +17,100 @@ export const iconsConfig = [
   {
     id: 'ktzh_measure_point',
     path: 'assets/icons/tools/measure-point.svg'
+  },
+  {
+    id: 'ktzh_measure_menu',
+    path: 'assets/icons/tools/measure-menu.svg'
+  },
+  {
+    id: 'ktzh_print',
+    path: 'assets/icons/tools/print.svg'
+  },
+  {
+    id: 'ktzh_share',
+    path: 'assets/icons/tools/share.svg'
   }
 ];
+
+/**
+ * Icons representing controls
+ */
+const controlIconsConfig = [
+  {
+    id: 'ktzh_home_extent',
+    path: 'assets/icons/controls/home-extent.svg'
+  },
+  {
+    id: 'ktzh_locate_me',
+    path: 'assets/icons/controls/locate-me.svg'
+  }
+];
+
+/**
+ * Icons representing actions a user can trigger
+ */
+const actionIconsConfig = [
+  {
+    id: 'ktzh_delete',
+    path: 'assets/icons/actions/delete.svg'
+  },
+  {
+    id: 'ktzh_star',
+    path: 'assets/icons/actions/star.svg'
+  },
+  {
+    id: 'ktzh_notification',
+    path: 'assets/icons/actions/notification.svg'
+  },
+  {
+    id: 'ktzh_legend',
+    path: 'assets/icons/actions/legend.svg'
+  },
+  {
+    id: 'ktzh_search',
+    path: 'assets/icons/actions/search.svg'
+  },
+  {
+    id: 'ktzh_add',
+    path: 'assets/icons/actions/add.svg'
+  },
+  {
+    id: 'ktzh_remove',
+    path: 'assets/icons/actions/remove.svg'
+  }
+];
+
+/**
+ * Icons representing generic symbols
+ */
+const symbolIconsConfig = [
+  {
+    id: 'ktzh_location',
+    path: 'assets/icons/symbols/location.svg'
+  },
+  {
+    id: 'ktzh_envelope_open',
+    path: 'assets/icons/symbols/envelope-open.svg'
+  },
+  {
+    id: 'ktzh_arrow_right',
+    path: 'assets/icons/symbols/arrow-right.svg'
+  },
+  {
+    id: 'ktzh_info',
+    path: 'assets/icons/symbols/info.svg'
+  },
+  {
+    id: 'ktzh_user',
+    path: 'assets/icons/symbols/user.svg'
+  },
+  {
+    id: 'ktzh_caution',
+    path: 'assets/icons/symbols/caution.svg'
+  },
+  {
+    id: 'ktzh_info_notification',
+    path: 'assets/icons/symbols/info-notification.svg'
+  }
+];
+export const iconsConfig = [...toolIconsConfig, ...controlIconsConfig, ...actionIconsConfig, ...symbolIconsConfig];

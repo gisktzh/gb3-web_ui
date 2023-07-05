@@ -1,6 +1,6 @@
 import {createSelector} from '@ngrx/store';
-import {selectLayerCatalogItems} from '../reducers/layer-catalog.reducer';
+import {selectItems} from '../reducers/layer-catalog.reducer';
 
-export const selectMaps = createSelector(selectLayerCatalogItems, (layerCatalog) => {
+export const selectMaps = createSelector(selectItems, (layerCatalog) => {
   return layerCatalog.flatMap((topic) => topic.maps);
 });

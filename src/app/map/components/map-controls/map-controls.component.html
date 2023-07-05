@@ -29,7 +29,7 @@
       [disabled]="this.geolocationState.loadingState === 'loading'"
       [ngClass]="{'map-controls__map-element--hidden': mapUiState?.hideUiElements}"
     >
-      <mat-icon>my_location</mat-icon>
+      <mat-icon class="map-tools__button__icon" svgIcon="ktzh_locate_me"></mat-icon>
       <loading-and-process-bar [loadingState]="this.geolocationState.loadingState"></loading-and-process-bar>
     </button>
     <mat-divider
@@ -44,7 +44,7 @@
         class="map-controls__buttons__button"
         data-test-id="map-home"
       >
-        <mat-icon>home</mat-icon>
+        <mat-icon class="map-tools__button__icon" svgIcon="ktzh_home_extent"></mat-icon>
       </button>
       <button
         mat-icon-button
@@ -54,7 +54,7 @@
         class="map-controls__buttons__button"
         data-test-id="map-add"
       >
-        <mat-icon>add</mat-icon>
+        <mat-icon class="map-tools__button__icon" svgIcon="ktzh_add"></mat-icon>
       </button>
       <button
         mat-icon-button
@@ -64,7 +64,7 @@
         class="map-controls__buttons__button"
         data-test-id="map-remove"
       >
-        <mat-icon>remove</mat-icon>
+        <mat-icon class="map-tools__button__icon" svgIcon="ktzh_remove"></mat-icon>
       </button>
     </div>
   </div>

@@ -2,9 +2,9 @@ import {PrintCreation, PrintCreationResponse, PrintInfo} from '../../../shared/i
 import {LoadingState} from '../../../shared/types/loading-state';
 
 export interface PrintState {
-  printInfo: PrintInfo | undefined;
-  printInfoLoadingState: LoadingState;
-  printCreation: PrintCreation | undefined;
-  printCreationLoadingState: LoadingState;
-  printCreationResponse: PrintCreationResponse | undefined;
+  info: PrintInfo | undefined;
+  infoLoadingState: LoadingState;
+  creation: PrintCreation | undefined;
+  creationLoadingState: LoadingState;
+  creationResponse: PrintCreationResponse | undefined;
 }

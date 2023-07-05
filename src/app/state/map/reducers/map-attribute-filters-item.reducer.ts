@@ -5,7 +5,7 @@ import {MapAttributeFiltersItemState} from '../states/map-attribute-filters-item
 export const mapAttributeFiltersItemFeatureKey = 'mapAttributeFiltersItem';
 
 export const initialState: MapAttributeFiltersItemState = {
-  mapAttributeFiltersItemId: undefined
+  id: undefined
 };
 
 export const mapAttributeFiltersItemFeature = createFeature({
@@ -13,7 +13,7 @@ export const mapAttributeFiltersItemFeature = createFeature({
   reducer: createReducer(
     initialState,
     on(MapAttributeFiltersItemActions.setMapAttributeFiltersItemId, (state, {id}): MapAttributeFiltersItemState => {
-      return {...initialState, mapAttributeFiltersItemId: id};
+      return {...initialState, id: id};
     }),
     on(MapAttributeFiltersItemActions.clearMapAttributeFiltersItemId, (): MapAttributeFiltersItemState => {
       return {...initialState};
@@ -21,4 +21,4 @@ export const mapAttributeFiltersItemFeature = createFeature({
   )
 });
 
-export const {name, reducer, selectMapAttributeFiltersItemState, selectMapAttributeFiltersItemId} = mapAttributeFiltersItemFeature;
+export const {name, reducer, selectMapAttributeFiltersItemState, selectId} = mapAttributeFiltersItemFeature;

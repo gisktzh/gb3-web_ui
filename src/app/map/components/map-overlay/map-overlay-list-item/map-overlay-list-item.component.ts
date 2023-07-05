@@ -1,4 +1,5 @@
 import {Component, Input} from '@angular/core';
+import {ToggleButtonPosition} from '../../../../shared/types/toggle-button-position';
 
 @Component({
   selector: 'map-overlay-list-item',
@@ -10,4 +11,6 @@ export class MapOverlayListItemComponent {
   @Input() public metaDataLink?: string;
   @Input() public forceExpanded: boolean = false;
   @Input() public disabled: boolean = false;
+  @Input() public toggleButtonPosition: ToggleButtonPosition = 'start';
+  @Input() public removeContentIndent: boolean = false;
 }

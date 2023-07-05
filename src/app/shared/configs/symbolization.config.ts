@@ -153,7 +153,25 @@ export const layerSymbolizations: LayerSymbolizations = {
       xOffset: 0,
       yOffset: 6
     },
-    point: defaultSymbolization.point,
+    point: {
+      type: 'simple',
+      size: 5,
+      color: {
+        r: 255,
+        g: 0,
+        b: 0,
+        a: 1.0
+      },
+      outline: {
+        width: 1,
+        color: {
+          r: 255,
+          g: 255,
+          b: 255,
+          a: 1.0
+        }
+      }
+    },
     line: {
       width: 2,
       color: {

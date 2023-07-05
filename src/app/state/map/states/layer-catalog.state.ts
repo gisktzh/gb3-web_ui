@@ -2,6 +2,6 @@ import {HasLoadingState} from '../../../shared/interfaces/has-loading-state.inte
 import {Topic} from '../../../shared/interfaces/topic.interface';
 
 export interface LayerCatalogState extends HasLoadingState {
-  layerCatalogItems: Topic[];
+  items: Topic[];
   filterString: string;
 }
