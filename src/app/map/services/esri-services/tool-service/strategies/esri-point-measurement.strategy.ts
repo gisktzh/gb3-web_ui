@@ -21,7 +21,7 @@ export class EsriPointMeasurementStrategy extends AbstractEsriMeasurementStrateg
     console.log('ending');
   }
 
-  public start(): void {
+  public start(finalizeCallback: () => void): void {
     this.sketchViewModel.create('point');
     this.sketchViewModel.on('create', (event) => {
       if (event.state === 'complete') {
@@ -35,6 +35,8 @@ export class EsriPointMeasurementStrategy extends AbstractEsriMeasurementStrateg
         });
 
         this.layer.addMany([label]);
+
+        finalizeCallback();
       }
     });
   }

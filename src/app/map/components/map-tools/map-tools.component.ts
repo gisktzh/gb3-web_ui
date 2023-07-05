@@ -43,4 +43,6 @@ export class MapToolsComponent implements OnInit, OnDestroy {
       this.toolMenuVisibility$.pipe(tap((toolMenuVisibility) => (this.toolMenuVisibility = toolMenuVisibility))).subscribe()
     );
   }
+
+  protected readonly undefined = undefined;
 }

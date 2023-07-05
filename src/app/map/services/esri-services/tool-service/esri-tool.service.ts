@@ -18,6 +18,7 @@ import {DrawingActiveMapItem} from '../../../models/implementations/drawing.mode
 import {EsriAreaMeasurementStrategy} from './strategies/esri-area-measurement.strategy';
 import {EsriPointMeasurementStrategy} from './strategies/esri-point-measurement.strategy';
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
+import {ToolActions} from '../../../../state/map/actions/tool.actions';
 
 @Injectable({
   providedIn: 'root'
@@ -70,7 +71,11 @@ export class EsriToolService implements ToolService, OnDestroy {
   }
 
   private startDrawing() {
-    this.toolStrategy.start();
+    this.toolStrategy.start(() => this.endDrawing());
+  }
+
+  private endDrawing() {
+    this.store.dispatch(ToolActions.deactivateTool());
   }
 
   /**

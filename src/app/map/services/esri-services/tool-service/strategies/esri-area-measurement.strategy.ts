@@ -23,7 +23,7 @@ export class EsriAreaMeasurementStrategy extends AbstractEsriMeasurementStrategy
     console.log('ending');
   }
 
-  public start(): void {
+  public start(finalizeCallback: () => void): void {
     this.sketchViewModel.create('polygon');
     this.sketchViewModel.on('create', (event) => {
       if (event.state === 'complete') {
@@ -38,13 +38,14 @@ export class EsriAreaMeasurementStrategy extends AbstractEsriMeasurementStrategy
         });
 
         this.layer.addMany([label]);
+        finalizeCallback();
       }
     });
   }
 
   /**
-   * Returns the area string of the given polygon, rounded to two decimals and converted to km2 if it is larger than the defined
-   * threshold in M2_TO_KM2_CONVERSION_THRESHOLD.
+   * Returns the area string of the given polygon, rounded to two decimals and converted to km2 if it is larger than
+   * the defined threshold in M2_TO_KM2_CONVERSION_THRESHOLD.
    * @param polygon
    * @private
    */

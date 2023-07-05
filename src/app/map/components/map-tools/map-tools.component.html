@@ -1,23 +1,37 @@
 <div class="map-tools">
   <div class="map-tools__list">
-    <button mat-icon-button (click)="toggleToolMenu('measurement')" color="accent" class="map-tools__button" data-test-id="map-ruler">
+    <button
+      (click)="toggleToolMenu('measurement')"
+      [ngClass]="{'map-tools__button--active': toolMenuVisibility === 'measurement'}"
+      class="map-tools__button"
+      color="accent"
+      data-test-id="map-ruler"
+      mat-icon-button
+    >
       <mat-icon class="map-tools__button__icon" svgIcon="ktzh_measure_menu"></mat-icon>
     </button>
-    <button mat-icon-button (click)="toggleToolMenu('drawing')" color="accent" class="map-tools__button" data-test-id="map-drawing">
+    <button
+      (click)="toggleToolMenu('drawing')"
+      [ngClass]="{'map-tools__button--active': toolMenuVisibility === 'drawing'}"
+      class="map-tools__button"
+      color="accent"
+      data-test-id="map-drawing"
+      mat-icon-button
+    >
       <mat-icon class="map-tools__button__icon" svgIcon="ktzh_drawing_menu"></mat-icon>
     </button>
     <mat-divider class="map-tools__divider"></mat-divider>
     <!-- TODO: enable this button as soon as the print preview is done -->
-    <button mat-icon-button (click)="showPrintDialog()" class="map-tools__button" data-test-id="map-print" disabled="true">
+    <button (click)="showPrintDialog()" class="map-tools__button" data-test-id="map-print" disabled="true" mat-icon-button>
       <mat-icon class="map-tools__button__icon" svgIcon="ktzh_print"></mat-icon>
     </button>
     <mat-divider class="map-tools__divider"></mat-divider>
     <!-- TODO: enable this button as soon as the share link API is done and connected -->
-    <button mat-icon-button (click)="showShareLinkDialog()" class="map-tools__button" data-test-id="map-share" disabled="true">
+    <button (click)="showShareLinkDialog()" class="map-tools__button" data-test-id="map-share" disabled="true" mat-icon-button>
       <mat-icon class="map-tools__button__icon" svgIcon="ktzh_share"></mat-icon>
     </button>
   </div>
-  <div class="map-tools__list">
+  <div class="map-tools__list" *ngIf="toolMenuVisibility !== undefined">
     <measurement-tools *ngIf="toolMenuVisibility === 'measurement'"></measurement-tools>
     <drawing-tools *ngIf="toolMenuVisibility === 'drawing'"></drawing-tools>
   </div>

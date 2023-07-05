@@ -22,5 +22,5 @@ export abstract class AbstractEsriMeasurementStrategy implements EsriToolStrateg
 
   public abstract end(): void;
 
-  public abstract start(): void;
+  public abstract start(finalizeCallback: () => void): void;
 }

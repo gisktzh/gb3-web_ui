@@ -8,6 +8,7 @@ import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import MapView from '@arcgis/core/views/MapView';
 
 const M_TO_KM_CONVERSION_THRESHOLD = 10_000;
+
 export class EsriLineMeasurementStrategy extends AbstractEsriMeasurementStrategy {
   private readonly labelSymbolization: TextSymbol;
 
@@ -23,7 +24,7 @@ export class EsriLineMeasurementStrategy extends AbstractEsriMeasurementStrategy
     console.log('ending');
   }
 
-  public start(): void {
+  public start(finalizeCallback: () => void): void {
     this.sketchViewModel.create('polyline');
     this.sketchViewModel.on('create', (event) => {
       if (event.state === 'complete') {
@@ -38,6 +39,8 @@ export class EsriLineMeasurementStrategy extends AbstractEsriMeasurementStrategy
         });
 
         this.layer.addMany([label]);
+
+        finalizeCallback();
       }
     });
   }
