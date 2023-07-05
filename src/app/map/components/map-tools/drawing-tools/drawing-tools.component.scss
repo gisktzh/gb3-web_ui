@@ -1,0 +1,19 @@
+@use 'mixins/material.mixin' as mat-mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+:host ::ng-deep {
+  .drawing-tools__button {
+    @include mat-mixins.mat-icon-button-override-border-radius(ktzh-variables.$zh-border-radius);
+    @include mat-mixins.mat-icon-custom-svg-size(18px);
+  }
+}
+
+.drawing-tools {
+  display: flex;
+  flex-direction: column;
+
+  .drawing-tools__divider {
+    width: 50%;
+    align-self: center;
+  }
+}

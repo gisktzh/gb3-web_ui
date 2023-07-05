@@ -1,6 +1,7 @@
 import {createActionGroup, emptyProps, props} from '@ngrx/store';
 import {MapSideDrawerContent} from '../../../shared/types/map-side-drawer-content';
 import {Favourite} from '../../../shared/interfaces/favourite.interface';
+import {ToolMenuVisibility} from '../../../shared/types/tool-menu-visibility';
 
 export const MapUiActions = createActionGroup({
   source: 'MapUi',
@@ -12,6 +13,7 @@ export const MapUiActions = createActionGroup({
     'Show Share Link Dialog': emptyProps(),
     'Show Create Favourite Dialog': emptyProps(),
     'Show Delete Favourite Dialog': props<{favouriteToDelete: Favourite}>(),
-    'Show Map Notices Dialog': emptyProps()
+    'Show Map Notices Dialog': emptyProps(),
+    'Toggle Tool Menu': props<{tool?: ToolMenuVisibility}>()
   }
 });

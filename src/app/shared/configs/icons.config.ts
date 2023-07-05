@@ -7,18 +7,6 @@
  */
 const toolIconsConfig = [
   {
-    id: 'ktzh_measure_line',
-    path: 'assets/icons/tools/measure-line.svg'
-  },
-  {
-    id: 'ktzh_measure_area',
-    path: 'assets/icons/tools/measure-area.svg'
-  },
-  {
-    id: 'ktzh_measure_point',
-    path: 'assets/icons/tools/measure-point.svg'
-  },
-  {
     id: 'ktzh_measure_menu',
     path: 'assets/icons/tools/measure-menu.svg'
   },
@@ -29,6 +17,18 @@ const toolIconsConfig = [
   {
     id: 'ktzh_share',
     path: 'assets/icons/tools/share.svg'
+  },
+  {
+    id: 'ktzh_drawing_menu',
+    path: 'assets/icons/tools/drawing-menu.svg'
+  },
+  {
+    id: 'ktzh_download',
+    path: 'assets/icons/tools/download.svg'
+  },
+  {
+    id: 'ktzh_upload',
+    path: 'assets/icons/tools/upload.svg'
   }
 ];
 
@@ -113,4 +113,37 @@ const symbolIconsConfig = [
     path: 'assets/icons/symbols/info-notification.svg'
   }
 ];
-export const iconsConfig = [...toolIconsConfig, ...controlIconsConfig, ...actionIconsConfig, ...symbolIconsConfig];
+
+const drawingSymbolIconsConfig = [
+  {
+    id: 'ktzh_drawing_symbol_line',
+    path: 'assets/icons/drawing-symbols/line.svg'
+  },
+  {
+    id: 'ktzh_drawing_symbol_polygon',
+    path: 'assets/icons/drawing-symbols/polygon.svg'
+  },
+  {
+    id: 'ktzh_drawing_symbol_point',
+    path: 'assets/icons/drawing-symbols/point.svg'
+  },
+  {
+    id: 'ktzh_drawing_symbol_text',
+    path: 'assets/icons/drawing-symbols/text.svg'
+  },
+  {
+    id: 'ktzh_drawing_symbol_rectangle',
+    path: 'assets/icons/drawing-symbols/rectangle.svg'
+  },
+  {
+    id: 'ktzh_drawing_symbol_circle',
+    path: 'assets/icons/drawing-symbols/circle.svg'
+  }
+];
+export const iconsConfig = [
+  ...toolIconsConfig,
+  ...controlIconsConfig,
+  ...actionIconsConfig,
+  ...symbolIconsConfig,
+  ...drawingSymbolIconsConfig
+];
