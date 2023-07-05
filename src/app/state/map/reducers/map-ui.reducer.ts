@@ -8,15 +8,23 @@ export const initialState: MapUiState = {
   mapSideDrawerContent: 'none',
   hideUiElements: false,
   hideToggleUiElementsButton: false,
-  hideZoomButtons: false
+  hideZoomButtons: false,
+  toolMenuVisibility: undefined
 };
 
 export const mapUiFeature = createFeature({
   name: mapUiFeatureKey,
   reducer: createReducer(
     initialState,
+    on(MapUiActions.toggleToolMenu, (state, {tool}): MapUiState => {
+      return {
+        ...state,
+        toolMenuVisibility: tool
+      };
+    }),
     on(MapUiActions.changeUiElementsVisibility, (state, {hideAllUiElements, hideUiToggleButton}): MapUiState => {
       return {
+        ...state, // todo: what needs to be done here for toolmenu?
         mapSideDrawerContent: state.mapSideDrawerContent,
         hideUiElements: hideAllUiElements,
         hideToggleUiElementsButton: hideUiToggleButton,
@@ -38,4 +46,4 @@ export const mapUiFeature = createFeature({
   )
 });
 
-export const {name, reducer, selectMapUiState} = mapUiFeature;
+export const {name, reducer, selectMapUiState, selectToolMenuVisibility} = mapUiFeature;

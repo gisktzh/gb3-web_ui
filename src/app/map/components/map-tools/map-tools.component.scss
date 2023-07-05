@@ -10,14 +10,21 @@
 }
 
 .map-tools {
-  @include mixins.map-element-box-shadow;
-  width: 48px;
   display: flex;
-  flex-direction: column;
-  background-color: ktzh-variables.$zh-background-color;
+  gap: 6px;
+  flex-direction: row-reverse;
+  align-items: flex-start;
 
-  .map-tools__divider {
-    width: 50%;
-    align-self: center;
+  .map-tools__list {
+    @include mixins.map-element-box-shadow;
+    width: 48px;
+    display: flex;
+    flex-direction: column;
+    background-color: ktzh-variables.$zh-background-color;
+
+    .map-tools__divider {
+      width: 50%;
+      align-self: center;
+    }
   }
 }
