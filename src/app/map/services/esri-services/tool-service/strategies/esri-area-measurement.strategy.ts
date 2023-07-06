@@ -1,19 +1,23 @@
 import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
-import Graphic from '@arcgis/core/Graphic';
 import {NumberUtils} from '../../../../../shared/utils/number.utils';
-import {AbstractEsriMeasurementStrategy} from './abstract-esri-measurement.strategy';
+import {AbstractEsriMeasurementStrategy, LabelConfiguration, SupportedEsriTool} from './abstract-esri-measurement.strategy';
 import Polygon from '@arcgis/core/geometry/Polygon';
+import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import MapView from '@arcgis/core/views/MapView';
 
 const M2_TO_KM2_CONVERSION_THRESHOLD = 100_000;
-export class EsriAreaMeasurementStrategy extends AbstractEsriMeasurementStrategy {
+
+export class EsriAreaMeasurementStrategy extends AbstractEsriMeasurementStrategy<Polygon> {
+  protected readonly tool: SupportedEsriTool = 'polygon';
   private readonly labelSymbolization: TextSymbol;
 
   constructor(
-    layer: __esri.GraphicsLayer,
-    mapView: __esri.MapView,
-    polygonSymbol: __esri.SimpleFillSymbol,
-    labelSymbolization: __esri.TextSymbol,
+    layer: GraphicsLayer,
+    mapView: MapView,
+    polygonSymbol: SimpleFillSymbol,
+    labelSymbolization: TextSymbol,
     callbackHandler: () => void
   ) {
     super(layer, mapView, callbackHandler);
@@ -22,29 +26,10 @@ export class EsriAreaMeasurementStrategy extends AbstractEsriMeasurementStrategy
     this.labelSymbolization = labelSymbolization;
   }
 
-  public end(): void {
-    // todo: add logic for disabling the tool (if needed)
-    console.log('ending');
-  }
+  protected override createLabelForGeometry(geometry: Polygon): LabelConfiguration {
+    this.labelSymbolization.text = this.getRoundedPolygonAreaString(geometry);
 
-  public start(): void {
-    this.sketchViewModel.create('polygon');
-    this.sketchViewModel.on('create', (event) => {
-      if (event.state === 'complete') {
-        const geometry: Polygon = event.graphic.geometry as Polygon;
-        const areaString = this.getRoundedPolygonAreaString(geometry);
-
-        // prepare symbolization
-        this.labelSymbolization.text = areaString;
-        const label = new Graphic({
-          geometry: geometry.centroid,
-          symbol: this.labelSymbolization
-        });
-
-        this.layer.addMany([label]);
-        this.callbackHandler();
-      }
-    });
+    return {location: geometry.centroid, symbolization: this.labelSymbolization};
   }
 
   /**
