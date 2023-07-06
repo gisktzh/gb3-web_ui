@@ -1,4 +1,4 @@
 export interface EsriToolStrategy {
-  start: (finalizeCallback: () => void) => void;
+  start: () => void;
   end: () => void;
 }

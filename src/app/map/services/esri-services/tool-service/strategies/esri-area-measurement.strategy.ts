@@ -3,16 +3,20 @@ import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import Graphic from '@arcgis/core/Graphic';
 import {NumberUtils} from '../../../../../shared/utils/number.utils';
 import {AbstractEsriMeasurementStrategy} from './abstract-esri-measurement.strategy';
-import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
-import MapView from '@arcgis/core/views/MapView';
 import Polygon from '@arcgis/core/geometry/Polygon';
 
 const M2_TO_KM2_CONVERSION_THRESHOLD = 100_000;
 export class EsriAreaMeasurementStrategy extends AbstractEsriMeasurementStrategy {
   private readonly labelSymbolization: TextSymbol;
 
-  constructor(layer: GraphicsLayer, mapView: MapView, polygonSymbol: __esri.SimpleFillSymbol, labelSymbolization: TextSymbol) {
-    super(layer, mapView);
+  constructor(
+    layer: __esri.GraphicsLayer,
+    mapView: __esri.MapView,
+    polygonSymbol: __esri.SimpleFillSymbol,
+    labelSymbolization: __esri.TextSymbol,
+    callbackHandler: () => void
+  ) {
+    super(layer, mapView, callbackHandler);
 
     this.sketchViewModel.polygonSymbol = polygonSymbol;
     this.labelSymbolization = labelSymbolization;
@@ -23,7 +27,7 @@ export class EsriAreaMeasurementStrategy extends AbstractEsriMeasurementStrategy
     console.log('ending');
   }
 
-  public start(finalizeCallback: () => void): void {
+  public start(): void {
     this.sketchViewModel.create('polygon');
     this.sketchViewModel.on('create', (event) => {
       if (event.state === 'complete') {
@@ -38,7 +42,7 @@ export class EsriAreaMeasurementStrategy extends AbstractEsriMeasurementStrategy
         });
 
         this.layer.addMany([label]);
-        finalizeCallback();
+        this.callbackHandler();
       }
     });
   }

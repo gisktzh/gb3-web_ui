@@ -5,7 +5,7 @@ import {EsriToolStrategy} from '../interfaces/strategy.interface';
  * raises an exception, which indicates that no actual strategy has been set.
  */
 export class EsriDefaultStrategy implements EsriToolStrategy {
-  public start(endDrawing: () => void): void {
+  public start(): void {
     throw Error('Default Strategy is not implemented.');
   }
 

@@ -71,7 +71,7 @@ export class EsriToolService implements ToolService, OnDestroy {
   }
 
   private startDrawing() {
-    this.toolStrategy.start(() => this.endDrawing());
+    this.toolStrategy.start();
   }
 
   private endDrawing() {
@@ -100,13 +100,19 @@ export class EsriToolService implements ToolService, OnDestroy {
 
     switch (measurementType) {
       case 'measure-area':
-        this.toolStrategy = new EsriAreaMeasurementStrategy(layer, this.esriMapViewService.mapView, areaStyle, labelStyle);
+        this.toolStrategy = new EsriAreaMeasurementStrategy(layer, this.esriMapViewService.mapView, areaStyle, labelStyle, () =>
+          this.endDrawing()
+        );
         break;
       case 'measure-line':
-        this.toolStrategy = new EsriLineMeasurementStrategy(layer, this.esriMapViewService.mapView, lineStyle, labelStyle);
+        this.toolStrategy = new EsriLineMeasurementStrategy(layer, this.esriMapViewService.mapView, lineStyle, labelStyle, () =>
+          this.endDrawing()
+        );
         break;
       case 'measure-point':
-        this.toolStrategy = new EsriPointMeasurementStrategy(layer, this.esriMapViewService.mapView, pointStyle, labelStyle);
+        this.toolStrategy = new EsriPointMeasurementStrategy(layer, this.esriMapViewService.mapView, pointStyle, labelStyle, () =>
+          this.endDrawing()
+        );
     }
   }
 }

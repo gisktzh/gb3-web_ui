@@ -6,8 +6,9 @@ import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 export abstract class AbstractEsriMeasurementStrategy implements EsriToolStrategy {
   protected readonly sketchViewModel: SketchViewModel;
   protected readonly layer: GraphicsLayer;
+  protected readonly callbackHandler: () => void;
 
-  protected constructor(layer: GraphicsLayer, mapView: MapView) {
+  protected constructor(layer: GraphicsLayer, mapView: MapView, callbackHandler: () => void) {
     // todo: check whether new SketchViewModels are okay; otherwise -> singleton and reuse the model.
     this.sketchViewModel = new SketchViewModel({
       view: mapView,
@@ -18,9 +19,10 @@ export abstract class AbstractEsriMeasurementStrategy implements EsriToolStrateg
     });
 
     this.layer = layer;
+    this.callbackHandler = callbackHandler;
   }
 
   public abstract end(): void;
 
-  public abstract start(finalizeCallback: () => void): void;
+  public abstract start(): void;
 }

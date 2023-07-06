@@ -1,16 +1,20 @@
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import Graphic from '@arcgis/core/Graphic';
 import {AbstractEsriMeasurementStrategy} from './abstract-esri-measurement.strategy';
-import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
-import MapView from '@arcgis/core/views/MapView';
 import Point from '@arcgis/core/geometry/Point';
 import {NumberUtils} from '../../../../../shared/utils/number.utils';
 
 export class EsriPointMeasurementStrategy extends AbstractEsriMeasurementStrategy {
   private readonly labelSymbolization: TextSymbol;
 
-  constructor(layer: GraphicsLayer, mapView: MapView, pointSymbol: __esri.SimpleMarkerSymbol, labelSymbolization: TextSymbol) {
-    super(layer, mapView);
+  constructor(
+    layer: __esri.GraphicsLayer,
+    mapView: __esri.MapView,
+    pointSymbol: __esri.SimpleMarkerSymbol,
+    labelSymbolization: __esri.TextSymbol,
+    callbackHandler: () => void
+  ) {
+    super(layer, mapView, callbackHandler);
 
     this.sketchViewModel.pointSymbol = pointSymbol;
     this.labelSymbolization = labelSymbolization;
@@ -21,7 +25,7 @@ export class EsriPointMeasurementStrategy extends AbstractEsriMeasurementStrateg
     console.log('ending');
   }
 
-  public start(finalizeCallback: () => void): void {
+  public start(): void {
     this.sketchViewModel.create('point');
     this.sketchViewModel.on('create', (event) => {
       if (event.state === 'complete') {
@@ -36,7 +40,7 @@ export class EsriPointMeasurementStrategy extends AbstractEsriMeasurementStrateg
 
         this.layer.addMany([label]);
 
-        finalizeCallback();
+        this.callbackHandler();
       }
     });
   }

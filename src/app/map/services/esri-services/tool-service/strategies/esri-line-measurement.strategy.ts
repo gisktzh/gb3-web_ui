@@ -4,16 +4,20 @@ import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import Graphic from '@arcgis/core/Graphic';
 import {NumberUtils} from '../../../../../shared/utils/number.utils';
 import {AbstractEsriMeasurementStrategy} from './abstract-esri-measurement.strategy';
-import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
-import MapView from '@arcgis/core/views/MapView';
 
 const M_TO_KM_CONVERSION_THRESHOLD = 10_000;
 
 export class EsriLineMeasurementStrategy extends AbstractEsriMeasurementStrategy {
   private readonly labelSymbolization: TextSymbol;
 
-  constructor(layer: GraphicsLayer, mapView: MapView, polylineSymbol: __esri.SimpleLineSymbol, labelSymbolization: TextSymbol) {
-    super(layer, mapView);
+  constructor(
+    layer: __esri.GraphicsLayer,
+    mapView: __esri.MapView,
+    polylineSymbol: __esri.SimpleLineSymbol,
+    labelSymbolization: __esri.TextSymbol,
+    callbackHandler: () => void
+  ) {
+    super(layer, mapView, callbackHandler);
 
     this.sketchViewModel.polylineSymbol = polylineSymbol;
     this.labelSymbolization = labelSymbolization;
@@ -24,7 +28,7 @@ export class EsriLineMeasurementStrategy extends AbstractEsriMeasurementStrategy
     console.log('ending');
   }
 
-  public start(finalizeCallback: () => void): void {
+  public start(): void {
     this.sketchViewModel.create('polyline');
     this.sketchViewModel.on('create', (event) => {
       if (event.state === 'complete') {
@@ -39,8 +43,7 @@ export class EsriLineMeasurementStrategy extends AbstractEsriMeasurementStrategy
         });
 
         this.layer.addMany([label]);
-
-        finalizeCallback();
+        this.callbackHandler();
       }
     });
   }
