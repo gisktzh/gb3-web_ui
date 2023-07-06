@@ -40,16 +40,17 @@ export abstract class AbstractEsriMeasurementStrategy<T extends Polygon | Polyli
   public start(): void {
     this.sketchViewModel.create(this.tool);
     this.sketchViewModel.on('create', (event) => {
-      if (event.state === 'complete') {
-        const geometry: T = event.graphic.geometry as T;
-        const {location, symbolization} = this.createLabelForGeometry(geometry);
-        const label = new Graphic({
-          geometry: location,
-          symbol: symbolization
-        });
-        this.layer.addMany([label]);
-
-        this.callbackHandler();
+      switch (event.state) {
+        case 'active':
+        case 'start':
+          break; // currently, these events do not trigger any action
+        case 'complete':
+          this.persistSketchToLayer(event.graphic.geometry as T);
+          this.callbackHandler();
+          break;
+        case 'cancel':
+          this.callbackHandler();
+          break;
       }
     });
   }
@@ -61,4 +62,13 @@ export abstract class AbstractEsriMeasurementStrategy<T extends Polygon | Polyli
    * @protected
    */
   protected abstract createLabelForGeometry(geometry: T): LabelConfiguration;
+
+  private persistSketchToLayer(geometry: T) {
+    const {location, symbolization} = this.createLabelForGeometry(geometry);
+    const label = new Graphic({
+      geometry: location,
+      symbol: symbolization
+    });
+    this.layer.addMany([label]);
+  }
 }
