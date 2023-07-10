@@ -1,10 +1,8 @@
-@use 'mixins/material.mixin' as mat-mixins;
-@use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'mixins/helpers.mixin' as mixins;
 
 :host ::ng-deep {
   .drawing-tools__button {
-    @include mat-mixins.mat-icon-button-override-border-radius(ktzh-variables.$zh-border-radius);
-    @include mat-mixins.mat-icon-custom-svg-size(18px);
+    @include mixins.tool-button;
   }
 }
 

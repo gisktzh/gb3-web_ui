@@ -7,7 +7,6 @@ import {ActiveMapItemFactory} from '../../../../shared/factories/active-map-item
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 import {selectDrawingLayers} from '../../../../state/map/selectors/drawing-layers.selector';
 import {Subscription, tap} from 'rxjs';
-import {MeasurementTool} from '../../../../state/map/states/tool.state';
 import {EsriToolStrategy} from './interfaces/strategy.interface';
 import {EsriDefaultStrategy} from './strategies/esri-default.strategy';
 import {EsriLineMeasurementStrategy} from './strategies/esri-line-measurement.strategy';
@@ -18,6 +17,8 @@ import {DrawingActiveMapItem} from '../../../models/implementations/drawing.mode
 import {EsriAreaMeasurementStrategy} from './strategies/esri-area-measurement.strategy';
 import {EsriPointMeasurementStrategy} from './strategies/esri-point-measurement.strategy';
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
+import {ToolActions} from '../../../../state/map/actions/tool.actions';
+import {MeasurementTool} from '../../../../shared/types/measurement-tool';
 
 @Injectable({
   providedIn: 'root'
@@ -38,6 +39,10 @@ export class EsriToolService implements ToolService, OnDestroy {
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
+  }
+
+  public cancelMeasurement() {
+    this.toolStrategy.cancel();
   }
 
   public startMeasurement(measurementTool: MeasurementTool): void {
@@ -73,6 +78,10 @@ export class EsriToolService implements ToolService, OnDestroy {
     this.toolStrategy.start();
   }
 
+  private endDrawing() {
+    this.store.dispatch(ToolActions.deactivateTool());
+  }
+
   /**
    * Forces the drawing layer to become visible to prevent users from measuring on transparent or invisible drawing layers.
    * @private
@@ -80,11 +89,8 @@ export class EsriToolService implements ToolService, OnDestroy {
   private forceVisibility() {
     // todo: refactor to array once we have more to avoid non-null assertion
     const activeMapItem = this.drawingLayers.find((l) => l.id === UserDrawingLayer.Measurements)!;
-    const drawingLayer = this.esriMapViewService.findEsriLayer(activeMapItem.id)!;
-    const currentIndex = this.esriMapViewService.mapView.map.layers.indexOf(drawingLayer);
-    const topIndex = this.esriMapViewService.mapView.map.layers.length;
 
-    this.store.dispatch(ActiveMapItemActions.forceFullVisibility({activeMapItem, currentIndex, topIndex}));
+    this.store.dispatch(ActiveMapItemActions.forceFullVisibility({activeMapItem}));
   }
 
   private setMeasurementStrategy(measurementType: MeasurementTool, layer: GraphicsLayer) {
@@ -95,13 +101,19 @@ export class EsriToolService implements ToolService, OnDestroy {
 
     switch (measurementType) {
       case 'measure-area':
-        this.toolStrategy = new EsriAreaMeasurementStrategy(layer, this.esriMapViewService.mapView, areaStyle, labelStyle);
+        this.toolStrategy = new EsriAreaMeasurementStrategy(layer, this.esriMapViewService.mapView, areaStyle, labelStyle, () =>
+          this.endDrawing()
+        );
         break;
       case 'measure-line':
-        this.toolStrategy = new EsriLineMeasurementStrategy(layer, this.esriMapViewService.mapView, lineStyle, labelStyle);
+        this.toolStrategy = new EsriLineMeasurementStrategy(layer, this.esriMapViewService.mapView, lineStyle, labelStyle, () =>
+          this.endDrawing()
+        );
         break;
       case 'measure-point':
-        this.toolStrategy = new EsriPointMeasurementStrategy(layer, this.esriMapViewService.mapView, pointStyle, labelStyle);
+        this.toolStrategy = new EsriPointMeasurementStrategy(layer, this.esriMapViewService.mapView, pointStyle, labelStyle, () =>
+          this.endDrawing()
+        );
     }
   }
 }

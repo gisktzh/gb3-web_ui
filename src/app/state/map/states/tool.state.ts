@@ -1,5 +1,4 @@
-export type MeasurementTool = 'measure-line' | 'measure-point' | 'measure-area';
-export type ToolType = MeasurementTool; // todo: add drawing tools
+import {ToolType} from '../../../shared/types/tool-type';
 
 export interface ToolState {
   activeTool: ToolType | undefined;
