@@ -124,7 +124,7 @@ export class MapUiEffects {
   public dispatchToolCancellationOnUiAction = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapUiActions.changeUiElementsVisibility),
-      filter(({hideAllUiElements}) => hideAllUiElements === true),
+      filter(({hideAllUiElements}) => hideAllUiElements),
       map(() => ToolActions.cancelTool())
     );
   });
