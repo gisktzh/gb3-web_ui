@@ -29,7 +29,7 @@ export class ToolEffects {
   public dispatchToolCancellation = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(ToolActions.cancelTool),
+        ofType(ToolActions.cancelTool, ToolActions.deactivateTool),
         tap(() => this.toolService.cancelMeasurement())
       );
     },

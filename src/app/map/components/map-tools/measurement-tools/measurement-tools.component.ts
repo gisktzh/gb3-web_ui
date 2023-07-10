@@ -27,15 +27,23 @@ export class MeasurementToolsComponent implements OnInit, OnDestroy {
   }
 
   public togglePointMeasurement() {
-    this.store.dispatch(ToolActions.activateTool({tool: 'measure-point'}));
+    this.toggleTool('measure-point');
   }
 
   public toggleLineMeasurement() {
-    this.store.dispatch(ToolActions.activateTool({tool: 'measure-line'}));
+    this.toggleTool('measure-line');
   }
 
   public toggleAreaMeasurement() {
-    this.store.dispatch(ToolActions.activateTool({tool: 'measure-area'}));
+    this.toggleTool('measure-area');
+  }
+
+  private toggleTool(tool: MeasurementTool) {
+    if (this.activeTool === tool) {
+      this.store.dispatch(ToolActions.deactivateTool());
+    } else {
+      this.store.dispatch(ToolActions.activateTool({tool}));
+    }
   }
 
   private initSubscriptions() {
