@@ -9,7 +9,7 @@ import {MapService} from '../../../map/interfaces/map.service';
 @Injectable()
 export class ToolEffects {
   private readonly toolService: ToolService;
-  public dispatchToolToggle = createEffect(
+  public dispatchToolActivation = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(ToolActions.activateTool),
@@ -22,6 +22,15 @@ export class ToolEffects {
               break;
           }
         })
+      );
+    },
+    {dispatch: false}
+  );
+  public dispatchToolCancellation = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(ToolActions.cancelTool),
+        tap(() => this.toolService.cancelMeasurement())
       );
     },
     {dispatch: false}

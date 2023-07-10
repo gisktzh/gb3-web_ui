@@ -6,6 +6,7 @@ export const ToolActions = createActionGroup({
   source: 'Tool',
   events: {
     'Activate Tool': props<{tool: ToolType}>(),
-    'Deactivate Tool': emptyProps()
+    'Deactivate Tool': emptyProps(),
+    'Cancel Tool': emptyProps()
   }
 });

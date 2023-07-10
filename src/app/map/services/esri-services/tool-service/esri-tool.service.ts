@@ -41,6 +41,10 @@ export class EsriToolService implements ToolService, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
+  public cancelMeasurement() {
+    this.toolStrategy.cancel();
+  }
+
   public startMeasurement(measurementTool: MeasurementTool): void {
     const drawingLayer = this.esriMapViewService.findEsriLayer(UserDrawingLayer.Measurements);
 

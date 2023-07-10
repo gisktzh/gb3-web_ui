@@ -6,7 +6,7 @@ import {LegendActions} from '../actions/legend.actions';
 import {ShareLinkActions} from '../actions/share-link.actions';
 import {selectCurrentShareLinkItem} from '../selectors/current-share-link-item.selector';
 import {Store} from '@ngrx/store';
-import {tap} from 'rxjs';
+import {filter, tap} from 'rxjs';
 import {ShareLinkDialogComponent} from '../../../map/components/share-link-dialog/share-link-dialog.component';
 import {PanelClass} from '../../../shared/enums/panel-class.enum';
 import {MatDialog} from '@angular/material/dialog';
@@ -16,6 +16,7 @@ import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {selectGb2WmsActiveMapItemsWithMapNotices} from '../selectors/active-map-items.selector';
 import {FavouriteDeletionDialogComponent} from '../../../map/components/favourite-deletion-dialog/favourite-deletion-dialog.component';
 import {Favourite} from '../../../shared/interfaces/favourite.interface';
+import {ToolActions} from '../actions/tool.actions';
 
 const CREATE_FAVOURITE_DIALOG_MAX_WIDTH = 500;
 const DELETE_FAVOURITE_DIALOG_MAX_WIDTH = 500;
@@ -117,6 +118,14 @@ export class MapUiEffects {
       map(() => {
         return ActiveMapItemActions.markAllActiveMapItemNoticeAsRead();
       })
+    );
+  });
+
+  public dispatchToolCancellationOnUiAction = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapUiActions.changeUiElementsVisibility),
+      filter(({hideAllUiElements}) => hideAllUiElements === true),
+      map(() => ToolActions.cancelTool())
     );
   });
 

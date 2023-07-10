@@ -32,6 +32,10 @@ export abstract class AbstractEsriMeasurementStrategy<T extends Polygon | Polyli
     this.callbackHandler = callbackHandler;
   }
 
+  public cancel(): void {
+    this.sketchViewModel.cancel();
+  }
+
   public start(): void {
     this.sketchViewModel.create(this.tool);
     this.sketchViewModel.on('create', (event) => {

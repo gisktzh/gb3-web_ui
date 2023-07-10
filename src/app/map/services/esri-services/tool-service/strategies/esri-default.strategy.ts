@@ -9,7 +9,7 @@ export class EsriDefaultStrategy implements EsriToolStrategy {
     throw Error('Default Strategy is not implemented.');
   }
 
-  public end() {
+  public cancel() {
     throw Error('Default Strategy is not implemented.');
   }
 }
