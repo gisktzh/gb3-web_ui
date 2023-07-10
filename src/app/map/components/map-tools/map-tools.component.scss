@@ -1,9 +1,9 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
-@use 'mixins/helpers.mixin';
+@use 'mixins/helpers.mixin' as mixins;
 
 :host ::ng-deep {
   .map-tools__button {
-    @include helpers.tool-button;
+    @include mixins.tool-button;
   }
 }
 
@@ -14,7 +14,7 @@
   align-items: flex-start;
 
   .map-tools__list {
-    @include helpers.map-element-box-shadow;
+    @include mixins.map-element-box-shadow;
     width: 44px;
     padding: 2px;
     display: flex;

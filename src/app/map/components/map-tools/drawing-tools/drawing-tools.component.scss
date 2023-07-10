@@ -1,8 +1,8 @@
-@use 'mixins/helpers.mixin';
+@use 'mixins/helpers.mixin' as mixins;
 
 :host ::ng-deep {
   .drawing-tools__button {
-    @include helpers.tool-button;
+    @include mixins.tool-button;
   }
 }
 
