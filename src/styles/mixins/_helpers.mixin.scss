@@ -1,4 +1,6 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'material.mixin' as mat-mixins;
+@use 'functions/helper.function' as helper-functions;
 
 /// Prevents text in an element (e.g. a div) from becoming selectable
 @mixin non-selectable-text {
@@ -60,5 +62,19 @@
     &:hover {
       color: ktzh-variables.$zh-light-grey;
     }
+  }
+}
+
+/// creates the hover effect and centered icon for the tool buttons
+@mixin tool-button {
+  @include mat-mixins.mat-icon-button-override-border-radius(ktzh-variables.$zh-border-radius);
+  @include mat-mixins.mat-icon-custom-svg-size(18px);
+  width: 44px;
+  height: 44px;
+  padding: 10px;
+
+  &--active {
+    background-color: helper-functions.get-color-from-palette(ktzh-variables.$zh-primary);
+    color: helper-functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
   }
 }

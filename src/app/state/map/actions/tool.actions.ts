@@ -1,5 +1,6 @@
 import {createActionGroup, emptyProps, props} from '@ngrx/store';
-import {ToolType} from '../states/tool.state';
+
+import {ToolType} from '../../../shared/types/tool-type';
 
 export const ToolActions = createActionGroup({
   source: 'Tool',

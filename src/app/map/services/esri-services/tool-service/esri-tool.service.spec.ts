@@ -68,8 +68,6 @@ describe('EsriToolService', () => {
           tap((lastAction) => {
             const expected = {
               activeMapItem: {id: UserDrawingLayer.Measurements},
-              currentIndex: 0,
-              topIndex: 1,
               type: ActiveMapItemActions.forceFullVisibility.type
             };
             expect(lastAction).toEqual(expected);

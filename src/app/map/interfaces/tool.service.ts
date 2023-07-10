@@ -1,4 +1,4 @@
-import {MeasurementTool} from '../../state/map/states/tool.state';
+import {MeasurementTool} from '../../shared/types/measurement-tool';
 
 export interface ToolService {
   startMeasurement(measurementTool: MeasurementTool): void;

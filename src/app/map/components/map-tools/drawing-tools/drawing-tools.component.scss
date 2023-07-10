@@ -1,19 +1,8 @@
-@use 'mixins/material.mixin' as mat-mixins;
-@use 'variables/ktzh-design-variables' as ktzh-variables;
-@use 'functions/helper.function' as helper-functions;
+@use 'mixins/helpers.mixin';
 
 :host ::ng-deep {
   .drawing-tools__button {
-    @include mat-mixins.mat-icon-button-override-border-radius(ktzh-variables.$zh-border-radius);
-    @include mat-mixins.mat-icon-custom-svg-size(18px);
-    width: 44px;
-    height: 44px;
-    padding: 10px;
-
-    &--active {
-      background-color: helper-functions.get-color-from-palette(ktzh-variables.$zh-primary, 500);
-      color: helper-functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary, 500);
-    }
+    @include helpers.tool-button;
   }
 }
 

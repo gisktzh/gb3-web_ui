@@ -3,7 +3,8 @@ import {ToolActions} from '../../../../state/map/actions/tool.actions';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {selectActiveTool} from '../../../../state/map/reducers/tool.reducer';
-import {MeasurementTool} from '../../../../state/map/states/tool.state';
+
+import {MeasurementTool} from '../../../../shared/types/measurement-tool';
 
 @Component({
   selector: 'measurement-tools',
