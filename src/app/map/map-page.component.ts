@@ -4,13 +4,12 @@ import {PrintType} from '../shared/types/print-type';
 import {OnboardingGuideService} from '../onboarding-guide/services/onboarding-guide.service';
 import {mapOnboardingGuideConfig} from '../onboarding-guide/data/map-onboarding-guide.config';
 import {Store} from '@ngrx/store';
-import {selectItems} from '../state/map/reducers/active-map-item.reducer';
 import {Subscription, tap} from 'rxjs';
-import {ActiveMapItem} from './models/active-map-item.model';
 import {selectMapUiState} from '../state/map/reducers/map-ui.reducer';
 import {MapUiState} from '../state/map/states/map-ui.state';
 import {MapUiActions} from '../state/map/actions/map-ui.actions';
 import {MapSideDrawerContent} from '../shared/types/map-side-drawer-content';
+import {selectQueryLegends} from '../state/map/selectors/query-legends.selector';
 
 @Component({
   selector: 'map-page',
@@ -20,12 +19,12 @@ import {MapSideDrawerContent} from '../shared/types/map-side-drawer-content';
 })
 export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
   public readonly onboardingGuideImage = mapOnboardingGuideConfig.introductionImage;
-  public activeMapItems: ActiveMapItem[] = [];
+  public numberOfQueryLegends: number = 0;
   public isMapDataCatalogueMinimized: boolean = false;
   public mapUiState?: MapUiState;
   public mapSideDrawerContent: MapSideDrawerContent = 'none';
 
-  private readonly activeMapItems$ = this.store.select(selectItems);
+  private readonly queryLegends$ = this.store.select(selectQueryLegends);
   private readonly mapUiState$ = this.store.select(selectMapUiState);
   private readonly subscriptions: Subscription = new Subscription();
 
@@ -69,10 +68,10 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
 
   private initSubscriptions() {
     this.subscriptions.add(
-      this.activeMapItems$
+      this.queryLegends$
         .pipe(
           tap((currentActiveMapItems) => {
-            this.activeMapItems = currentActiveMapItems;
+            this.numberOfQueryLegends = currentActiveMapItems.length;
           })
         )
         .subscribe()
