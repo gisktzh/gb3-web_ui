@@ -12,6 +12,14 @@ export type MapDataItemType = 'map' | 'favorite';
 export class BaseMapDataItemComponent {
   @Input() public title!: string;
   @Input() public filterString: string = '';
+  /**
+   * URL to gb2, if the given mapitem is not yet gb3-capable.
+   */
+  public gb2Url: string | null = null;
+  /**
+   * Full URL to gb2 including mapcenter and  scale
+   */
+  public fullGb2Url: string | null = null;
 
   @Output() public addEvent = new EventEmitter<void>();
 

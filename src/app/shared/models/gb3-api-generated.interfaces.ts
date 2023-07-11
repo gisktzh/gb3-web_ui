@@ -511,6 +511,11 @@ export interface TopicsListData {
        * @format uri
        */
       wms_url: string;
+      /**
+       * GB2 URL
+       * @format uri
+       */
+      gb2_url: string | null;
       layers: {
         /** Layer ID */
         id: number;
