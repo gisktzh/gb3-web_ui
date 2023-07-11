@@ -31,11 +31,12 @@ export class MapDataItemMapComponent extends BaseMapDataItemComponent implements
   public ngOnInit() {
     // only add subscription if the item is a gb2-only item
     if (this.gb2Url) {
+      this.showExpandButton = false;
+
       this.subscriptions.add(
         this.mapConfigState$
           .pipe(
             tap((mapConfigState) => {
-              this.showExpandButton = false;
               this.updateGb2Url(mapConfigState);
             })
           )
