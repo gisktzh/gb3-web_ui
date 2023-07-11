@@ -108,4 +108,15 @@ describe('EsriPointMeasurementStrategy', () => {
       expect((addedGraphic.symbol as TextSymbol).text).toEqual(`${location.x}/${location.y}`);
     });
   });
+
+  describe('mode', () => {
+    it('sets mode to click', () => {
+      const strategy = new EsriPointMeasurementStrategyWrapper(layer, mapView, pointSymbol, textSymbol, () => callbackHandler.handle());
+      const spy = spyOn(strategy.svm, 'create');
+
+      strategy.start();
+
+      expect(spy).toHaveBeenCalledOnceWith('point', {mode: 'click'});
+    });
+  });
 });

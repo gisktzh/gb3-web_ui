@@ -205,4 +205,15 @@ describe('EsriAreaMeasurementStrategy', () => {
       expect((addedGraphic.symbol as TextSymbol).text).toEqual(`${expextedLength} km²`);
     });
   });
+
+  describe('mode', () => {
+    it('sets mode to click', () => {
+      const strategy = new EsriAreaMeasurementStrategyWrapper(layer, mapView, fillSymbol, textSymbol, () => callbackHandler.handle());
+      const spy = spyOn(strategy.svm, 'create');
+
+      strategy.start();
+
+      expect(spy).toHaveBeenCalledOnceWith('polygon', {mode: 'click'});
+    });
+  });
 });

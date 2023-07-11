@@ -199,4 +199,15 @@ describe('EsriLineMeasurementStrategy', () => {
       expect((addedGraphic.symbol as TextSymbol).text).toEqual(`${expextedLength} km`);
     });
   });
+
+  describe('mode', () => {
+    it('sets mode to click', () => {
+      const strategy = new EsriLineMeasurementStrategyWrapper(layer, mapView, lineSymbol, textSymbol, () => callbackHandler.handle());
+      const spy = spyOn(strategy.svm, 'create');
+
+      strategy.start();
+
+      expect(spy).toHaveBeenCalledOnceWith('polyline', {mode: 'click'});
+    });
+  });
 });
