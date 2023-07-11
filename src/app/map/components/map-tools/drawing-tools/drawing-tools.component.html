@@ -1,5 +1,11 @@
 <div class="drawing-tools">
-  <button class="drawing-tools__button" color="accent" disabled mat-icon-button>
+  <button
+    (click)="this.togglePointDrawing()"
+    [ngClass]="{'drawing-tools__button--active': activeTool === 'draw-point'}"
+    class="drawing-tools__button"
+    color="accent"
+    mat-icon-button
+  >
     <mat-icon svgIcon="ktzh_drawing_symbol_point"></mat-icon>
   </button>
   <button class="drawing-tools__button" color="accent" disabled mat-icon-button>

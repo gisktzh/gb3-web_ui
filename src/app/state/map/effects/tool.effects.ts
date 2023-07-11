@@ -18,7 +18,11 @@ export class ToolEffects {
             case 'measure-line':
             case 'measure-point':
             case 'measure-area':
-              this.toolService.startMeasurement(tool);
+              this.toolService.initializeMeasurement(tool);
+              break;
+            case 'draw-point':
+            case 'draw-line':
+              this.toolService.initializeDrawing(tool);
               break;
           }
         })
@@ -30,7 +34,7 @@ export class ToolEffects {
     () => {
       return this.actions$.pipe(
         ofType(ToolActions.cancelTool, ToolActions.deactivateTool),
-        tap(() => this.toolService.cancelMeasurement())
+        tap(() => this.toolService.cancelTool())
       );
     },
     {dispatch: false}

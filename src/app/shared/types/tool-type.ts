@@ -1,3 +1,4 @@
 import {MeasurementTool} from './measurement-tool';
+import {DrawingTool} from './drawing-tool';
 
-export type ToolType = MeasurementTool; // todo: add drawing tools
+export type ToolType = MeasurementTool | DrawingTool;
