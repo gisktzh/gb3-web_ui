@@ -4,7 +4,7 @@ import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {EsriSketchTool} from '../../esri.module';
 import {EsriToolStrategy} from '../interfaces/strategy.interface';
 
-export type SupportedEsriTool = Extract<EsriSketchTool, 'polygon' | 'polyline' | 'point'>;
+export type SupportedEsriTool = Extract<EsriSketchTool, 'polygon' | 'polyline' | 'point' | 'rectangle' | 'circle'>;
 
 export abstract class AbstractEsriDrawableToolStrategy implements EsriToolStrategy {
   protected readonly sketchViewModel: SketchViewModel;

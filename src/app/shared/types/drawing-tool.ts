@@ -1,1 +1,1 @@
-export type DrawingTool = 'draw-point' | 'draw-line';
+export type DrawingTool = 'draw-point' | 'draw-line' | 'draw-polygon' | 'draw-rectangle' | 'draw-circle';

@@ -21,6 +21,9 @@ import {ToolActions} from '../../../../state/map/actions/tool.actions';
 import {MeasurementTool} from '../../../../shared/types/measurement-tool';
 import {DrawingTool} from '../../../../shared/types/drawing-tool';
 import {ConfigService} from '../../../../shared/services/config.service';
+import {EsriPointDrawingStrategy} from './strategies/drawing/esri-point-drawing.strategy';
+import {EsriLineDrawingStrategy} from './strategies/drawing/esri-line-drawing.strategy';
+import {EsriPolygonDrawingStrategy} from './strategies/drawing/esri-polygon-drawing.strategy';
 
 @Injectable({
   providedIn: 'root'
@@ -142,18 +145,42 @@ export class EsriToolService implements ToolService, OnDestroy {
     const pointStyle = this.esriSymbolizationService.createPointSymbolization(UserDrawingLayer.Drawings) as SimpleMarkerSymbol;
     const lineStyle = this.esriSymbolizationService.createLineSymbolization(UserDrawingLayer.Drawings);
     const areaStyle = this.esriSymbolizationService.createPolygonSymbolization(UserDrawingLayer.Drawings);
-    const labelStyle = this.esriSymbolizationService.createTextSymbolization(UserDrawingLayer.Drawings);
 
     switch (drawingType) {
       case 'draw-point':
-        this.toolStrategy = new EsriPointMeasurementStrategy(layer, this.esriMapViewService.mapView, pointStyle, labelStyle, () =>
-          this.endDrawing()
-        );
+        this.toolStrategy = new EsriPointDrawingStrategy(layer, this.esriMapViewService.mapView, pointStyle, () => this.endDrawing());
         break;
       case 'draw-line':
-        this.toolStrategy = new EsriLineMeasurementStrategy(layer, this.esriMapViewService.mapView, lineStyle, labelStyle, () =>
-          this.endDrawing()
+        this.toolStrategy = new EsriLineDrawingStrategy(layer, this.esriMapViewService.mapView, lineStyle, () => this.endDrawing());
+        break;
+      case 'draw-polygon':
+        this.toolStrategy = new EsriPolygonDrawingStrategy(
+          layer,
+          this.esriMapViewService.mapView,
+          areaStyle,
+          () => this.endDrawing(),
+          'polygon'
         );
+        break;
+      case 'draw-rectangle':
+        this.toolStrategy = new EsriPolygonDrawingStrategy(
+          layer,
+          this.esriMapViewService.mapView,
+          areaStyle,
+          () => this.endDrawing(),
+          'rectangle'
+        );
+        break;
+      case 'draw-circle':
+        this.toolStrategy = new EsriPolygonDrawingStrategy(
+          layer,
+          this.esriMapViewService.mapView,
+          areaStyle,
+          () => this.endDrawing(),
+          'circle'
+        );
+        break;
+      default:
         break;
     }
   }

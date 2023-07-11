@@ -15,7 +15,7 @@ export abstract class AbstractEsriMeasurementStrategy<T extends Polygon | Polyli
   }
 
   public start(): void {
-    this.sketchViewModel.create(this.tool);
+    this.sketchViewModel.create(this.tool, {mode: 'click'});
     this.sketchViewModel.on('create', (event) => {
       switch (event.state) {
         case 'active':

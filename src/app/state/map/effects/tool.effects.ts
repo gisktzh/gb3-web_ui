@@ -22,6 +22,9 @@ export class ToolEffects {
               break;
             case 'draw-point':
             case 'draw-line':
+            case 'draw-polygon':
+            case 'draw-rectangle':
+            case 'draw-circle':
               this.toolService.initializeDrawing(tool);
               break;
           }
