@@ -1,11 +1,12 @@
 import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
-import {NumberUtils} from '../../../../../shared/utils/number.utils';
-import {AbstractEsriMeasurementStrategy, LabelConfiguration, SupportedEsriTool} from './abstract-esri-measurement.strategy';
+import {NumberUtils} from '../../../../../../shared/utils/number.utils';
+import {AbstractEsriMeasurementStrategy, LabelConfiguration} from './abstract-esri-measurement.strategy';
 import Polygon from '@arcgis/core/geometry/Polygon';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import MapView from '@arcgis/core/views/MapView';
+import {SupportedEsriTool} from '../abstract-esri-drawable-tool.strategy';
 
 const M2_TO_KM2_CONVERSION_THRESHOLD = 100_000;
 

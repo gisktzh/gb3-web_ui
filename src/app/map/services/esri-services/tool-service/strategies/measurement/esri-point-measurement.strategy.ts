@@ -1,7 +1,8 @@
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
-import {AbstractEsriMeasurementStrategy, LabelConfiguration, SupportedEsriTool} from './abstract-esri-measurement.strategy';
+import {AbstractEsriMeasurementStrategy, LabelConfiguration} from './abstract-esri-measurement.strategy';
 import Point from '@arcgis/core/geometry/Point';
-import {NumberUtils} from '../../../../../shared/utils/number.utils';
+import {NumberUtils} from '../../../../../../shared/utils/number.utils';
+import {SupportedEsriTool} from '../abstract-esri-drawable-tool.strategy';
 
 export class EsriPointMeasurementStrategy extends AbstractEsriMeasurementStrategy<Point> {
   protected readonly tool: SupportedEsriTool = 'point';

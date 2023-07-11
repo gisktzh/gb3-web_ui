@@ -1,6 +1,6 @@
 import MapView from '@arcgis/core/views/MapView';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
-import {UserDrawingLayer} from '../../../../../shared/enums/drawing-layer.enum';
+import {UserDrawingLayer} from '../../../../../../shared/enums/drawing-layer.enum';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import Map from '@arcgis/core/Map';
 import Graphic from '@arcgis/core/Graphic';

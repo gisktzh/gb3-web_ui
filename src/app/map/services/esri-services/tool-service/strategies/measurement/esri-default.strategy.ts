@@ -1,4 +1,4 @@
-import {EsriToolStrategy} from '../interfaces/strategy.interface';
+import {EsriToolStrategy} from '../../interfaces/strategy.interface';
 
 /**
  * This is the default strategy which is assigned to the ToolService by default. It does not have any functionality and
