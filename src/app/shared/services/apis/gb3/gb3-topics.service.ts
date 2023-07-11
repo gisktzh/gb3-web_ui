@@ -127,6 +127,7 @@ export class Gb3TopicsService extends Gb3ApiService {
               ...topic,
               id: topic.topic,
               printTitle: topic.print_title,
+              gb2Url: topic.gb2_url,
               icon: this.createAbsoluteIconUrl(topic.icon),
               wmsUrl: topic.wms_url,
               minScale: topic.min_scale,
