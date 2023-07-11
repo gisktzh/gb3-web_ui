@@ -9,7 +9,8 @@ export const initialState: PrintState = {
   infoLoadingState: 'undefined',
   creation: undefined,
   creationLoadingState: 'undefined',
-  creationResponse: undefined
+  creationResponse: undefined,
+  showPreview: false
 };
 
 export const printFeature = createFeature({
@@ -39,8 +40,15 @@ export const printFeature = createFeature({
         creationResponse: initialState.creationResponse,
         creationLoadingState: 'undefined'
       };
+    }),
+    on(PrintActions.showPrintPreview, (state): PrintState => {
+      return {...state, showPreview: true};
+    }),
+    on(PrintActions.clearPrintPreview, (state): PrintState => {
+      return {...state, showPreview: initialState.showPreview};
     })
   )
 });
 
-export const {name, reducer, selectInfo, selectInfoLoadingState, selectCreationLoadingState, selectCreationResponse} = printFeature;
+export const {name, reducer, selectInfo, selectInfoLoadingState, selectCreationLoadingState, selectCreationResponse, selectShowPreview} =
+  printFeature;

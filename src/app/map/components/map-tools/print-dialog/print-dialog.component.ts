@@ -1,13 +1,14 @@
-import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {LoadingState} from '../../../../shared/types/loading-state';
 import {Store} from '@ngrx/store';
-import {Subscription, tap} from 'rxjs';
+import {combineLatestWith, filter, Subscription, tap} from 'rxjs';
 import {
   selectCreationLoadingState,
   selectCreationResponse,
   selectInfo,
-  selectInfoLoadingState
+  selectInfoLoadingState,
+  selectShowPreview
 } from '../../../../state/map/reducers/print.reducer';
 import {
   PrintCreation,
@@ -23,6 +24,8 @@ import {ActiveMapItem} from '../../../models/active-map-item.model';
 import {selectItems} from '../../../../state/map/reducers/active-map-item.reducer';
 import {MapConstants} from '../../../../shared/constants/map.constants';
 import {BasemapConfigService} from '../../../services/basemap-config.service';
+import {MapUiActions} from '../../../../state/map/actions/map-ui.actions';
+import {PrintPreviewLayout} from '../../../../shared/interfaces/print-preview-layout.interface';
 
 interface PrintForm {
   title: FormControl<string | null>;
@@ -43,8 +46,6 @@ interface PrintForm {
   styleUrls: ['./print-dialog.component.scss']
 })
 export class PrintDialogComponent implements OnInit, OnDestroy {
-  @Output() public closeEvent = new EventEmitter<void>();
-
   public readonly formGroup: FormGroup<PrintForm> = new FormGroup({
     title: new FormControl(),
     comment: new FormControl(),
@@ -92,7 +93,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
   }
 
   public close() {
-    this.closeEvent.emit();
+    this.store.dispatch(MapUiActions.hideMapSideDrawerContent());
   }
 
   private initSubscriptions() {
@@ -157,8 +158,40 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.formGroup.valueChanges
         .pipe(
-          tap(() => {
+          tap((value) => {
             this.updateFormGroupControlsState();
+            const currentLayout = this.printInfo?.layouts.find(
+              (layout) => layout.size === value.layoutSize && layout.orientation === value.layoutOrientation
+            );
+            const printPreviewLayout: PrintPreviewLayout = {
+              scale: value.scale ?? 0,
+              height: currentLayout?.map.height ?? 0,
+              width: currentLayout?.map.width ?? 0,
+              rotation: value.rotation ?? 0
+            };
+            this.store.dispatch(PrintActions.showPrintPreview({layout: printPreviewLayout}));
+          })
+        )
+        .subscribe()
+    );
+
+    this.subscriptions.add(
+      this.store
+        .select(selectMapConfigState)
+        .pipe(
+          combineLatestWith(this.store.select(selectShowPreview)),
+          filter(([_, showPreview]) => showPreview),
+          tap(() => {
+            const currentLayout = this.printInfo?.layouts.find(
+              (layout) => layout.size === this.formGroup.value.layoutSize && layout.orientation === this.formGroup.value.layoutOrientation
+            );
+            const printPreviewLayout: PrintPreviewLayout = {
+              scale: this.formGroup.value.scale ?? 0,
+              height: currentLayout?.map.height ?? 0,
+              width: currentLayout?.map.width ?? 0,
+              rotation: this.formGroup.value.rotation ?? 0
+            };
+            // this.store.dispatch(PrintActions.showPrintPreview({layout: printPreviewLayout}));
           })
         )
         .subscribe()
@@ -230,7 +263,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
 
     return {
       units: 'm', // TODO: where does this unit come from and for what is it used?
-      dpi: value.dpi! ?? 0,
+      dpi: value.dpi ?? 0,
       layoutSize: value.layoutSize ?? '',
       layoutOrientation: value.layoutOrientation ?? undefined,
       outputFormat: value.outputFormat ?? '',

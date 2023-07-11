@@ -38,7 +38,7 @@ import {
 import {TimeSliderConfiguration, TimeSliderLayerSource, TimeSliderParameterSource} from '../../../shared/interfaces/topic.interface';
 import {TimeExtent} from '../../interfaces/time-extent.interface';
 import {MapConfigState} from '../../../state/map/states/map-config.state';
-import {GeometryWithSrs, PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
+import {GeometryWithSrs, PointWithSrs, PolygonWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {InternalDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {EsriSymbolizationService} from './esri-symbolization.service';
 import {MapConstants} from '../../../shared/constants/map.constants';
@@ -347,6 +347,50 @@ export class EsriMapService implements MapService {
 
   public getToolService(): EsriToolService {
     return this.esriToolService;
+  }
+
+  private printPreviewCenter: __esri.Point = new EsriPoint();
+  private printPreviewHandle?: IHandle;
+
+  public startDrawPrintPreview(extentWidth: number, extentHeight: number, rotation: number) {
+    // reset print preview center point
+    this.stopDrawPrintPreview();
+    this.printPreviewHandle = esriReactiveUtils.watch(
+      () => this.mapView.center,
+      () => {
+        const center = this.mapView.center;
+        if (center.x === this.printPreviewCenter.x && center.y === this.printPreviewCenter.y) {
+          return;
+        }
+        this.handlePrintPreview(center, extentWidth, extentHeight, rotation);
+      }
+    );
+    this.handlePrintPreview(this.mapView.center, extentWidth, extentHeight, rotation);
+  }
+
+  private handlePrintPreview(center: __esri.Point, extentWidth: number, extentHeight: number, rotation: number) {
+    this.printPreviewCenter = new EsriPoint(this.mapView.center);
+    const geometryWithSrs: PolygonWithSrs = {
+      srs: MapConstants.DEFAULT_SRS,
+      type: 'Polygon',
+      coordinates: [
+        [
+          [center.x - extentWidth, center.y - extentHeight],
+          [center.x - extentWidth, center.y + extentHeight],
+          [center.x + extentWidth, center.y + extentHeight],
+          [center.x + extentWidth, center.y - extentHeight]
+        ]
+      ]
+    };
+    this.clearDrawingLayer(InternalDrawingLayer.PrintPreview);
+    this.addGeometryToDrawingLayer(geometryWithSrs, InternalDrawingLayer.PrintPreview);
+  }
+
+  public stopDrawPrintPreview() {
+    if (this.printPreviewHandle) {
+      this.printPreviewHandle.remove();
+    }
+    this.printPreviewCenter = new EsriPoint();
   }
 
   /**

@@ -76,4 +76,8 @@ export interface MapService extends AddToMapVisitor {
 
   /** Returns the toolservice that is used for the given MapService implementation. */
   getToolService(): ToolService;
+
+  startDrawPrintPreview(extentWidth: number, extentHeight: number, rotation: number): void;
+
+  stopDrawPrintPreview(): void;
 }

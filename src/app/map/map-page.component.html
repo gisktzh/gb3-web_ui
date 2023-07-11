@@ -6,7 +6,7 @@
     (closedStart)="closeSideDrawer()"
     [ngSwitch]="mapSideDrawerContent"
   >
-    <print-dialog *ngSwitchCase="'print'" (closeEvent)="closeSideDrawer()"></print-dialog>
+    <print-dialog *ngSwitchCase="'print'"></print-dialog>
   </mat-drawer>
 
   <map></map>
