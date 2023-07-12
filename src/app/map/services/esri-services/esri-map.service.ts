@@ -46,6 +46,8 @@ import {EsriMapViewService} from './esri-map-view.service';
 import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
 import {DrawingActiveMapItem} from '../../models/implementations/drawing.model';
 import {EsriToolService} from './tool-service/esri-tool.service';
+import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
+import {PrintUtils} from '../../../shared/utils/print.utils';
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
 
@@ -311,27 +313,40 @@ export class EsriMapService implements MapService {
     }) as never;
   }
 
-  public zoomToExtent(geometry: GeometryWithSrs): Promise<never> {
+  public zoomToExtent(geometry: GeometryWithSrs, expandFactor: number = 1, duration: number = 0): Promise<never> {
     const esriGeometry = this.geoJSONMapperService.fromGeoJSONToEsri(geometry);
 
     if (esriGeometry instanceof EsriPoint) {
-      return this.mapView.goTo({
-        center: esriGeometry,
-        scale: DEFAULT_POINT_ZOOM_EXTENT_SCALE
-      }) as never;
+      return this.mapView.goTo(
+        {
+          center: esriGeometry.extent.clone().expand(expandFactor),
+          scale: DEFAULT_POINT_ZOOM_EXTENT_SCALE
+        },
+        {duration}
+      ) as never;
     }
 
-    return this.mapView.goTo({
-      center: esriGeometry.extent
-    }) as never;
+    return this.mapView.goTo(
+      {
+        center: esriGeometry.extent.clone().expand(expandFactor)
+      },
+      {duration}
+    ) as never;
   }
 
   public addGeometryToDrawingLayer(geometry: GeometryWithSrs, drawingLayer: InternalDrawingLayer) {
     const symbolization = this.esriSymbolizationService.createSymbolizationForDrawingLayer(geometry, drawingLayer);
     const esriGeometry = this.geoJSONMapperService.fromGeoJSONToEsri(geometry);
-    const graphicItem = new EsriGraphic({geometry: esriGeometry, symbol: symbolization});
-    const targetLayer = this.esriMapViewService.findEsriLayer(this.createDrawingLayerId(drawingLayer));
+    this.addEsriGeometryToDrawingLayer(esriGeometry, symbolization, drawingLayer);
+  }
 
+  private addEsriGeometryToDrawingLayer(
+    esriGeometry: __esri.Geometry,
+    esriSymbolization: __esri.Symbol,
+    drawingLayer: InternalDrawingLayer
+  ) {
+    const graphicItem = new EsriGraphic({geometry: esriGeometry, symbol: esriSymbolization});
+    const targetLayer = this.esriMapViewService.findEsriLayer(this.createDrawingLayerId(drawingLayer));
     if (targetLayer) {
       (targetLayer as __esri.GraphicsLayer).add(graphicItem);
     }
@@ -353,37 +368,33 @@ export class EsriMapService implements MapService {
   private printPreviewHandle?: IHandle;
 
   public startDrawPrintPreview(extentWidth: number, extentHeight: number, rotation: number) {
-    // reset print preview center point
     this.stopDrawPrintPreview();
+    const geometryWithSrs: PolygonWithSrs = this.handlePrintPreview(this.mapView.center, extentWidth, extentHeight, rotation);
+    this.zoomToExtent(geometryWithSrs, 1.5, 500);
     this.printPreviewHandle = esriReactiveUtils.watch(
       () => this.mapView.center,
-      () => {
-        const center = this.mapView.center;
-        if (center.x === this.printPreviewCenter.x && center.y === this.printPreviewCenter.y) {
-          return;
+      (center) => {
+        if (center.x !== this.printPreviewCenter.x || center.y !== this.printPreviewCenter.y) {
+          this.handlePrintPreview(center, extentWidth, extentHeight, rotation);
         }
-        this.handlePrintPreview(center, extentWidth, extentHeight, rotation);
       }
     );
-    this.handlePrintPreview(this.mapView.center, extentWidth, extentHeight, rotation);
   }
 
-  private handlePrintPreview(center: __esri.Point, extentWidth: number, extentHeight: number, rotation: number) {
-    this.printPreviewCenter = new EsriPoint(this.mapView.center);
-    const geometryWithSrs: PolygonWithSrs = {
-      srs: MapConstants.DEFAULT_SRS,
-      type: 'Polygon',
-      coordinates: [
-        [
-          [center.x - extentWidth, center.y - extentHeight],
-          [center.x - extentWidth, center.y + extentHeight],
-          [center.x + extentWidth, center.y + extentHeight],
-          [center.x + extentWidth, center.y - extentHeight]
-        ]
-      ]
-    };
+  private handlePrintPreview(center: __esri.Point, extentWidth: number, extentHeight: number, rotation: number): PolygonWithSrs {
+    this.printPreviewCenter = new EsriPoint(center);
+    const printPreviewArea = PrintUtils.createPrintPreviewArea(center, extentWidth, extentHeight);
+    const symbolization = this.esriSymbolizationService.createSymbolizationForDrawingLayer(
+      printPreviewArea,
+      InternalDrawingLayer.PrintPreview
+    );
+    const esriGeometry = this.geoJSONMapperService.fromGeoJSONToEsri(printPreviewArea);
+    // negate the rotation as the geometry engine rotates counter-clockwise by default
+    const rotatedEsriGeometry = geometryEngine.rotate(esriGeometry, -rotation);
+
     this.clearDrawingLayer(InternalDrawingLayer.PrintPreview);
-    this.addGeometryToDrawingLayer(geometryWithSrs, InternalDrawingLayer.PrintPreview);
+    this.addEsriGeometryToDrawingLayer(rotatedEsriGeometry, symbolization, InternalDrawingLayer.PrintPreview);
+    return printPreviewArea;
   }
 
   public stopDrawPrintPreview() {
@@ -391,6 +402,7 @@ export class EsriMapService implements MapService {
       this.printPreviewHandle.remove();
     }
     this.printPreviewCenter = new EsriPoint();
+    this.clearDrawingLayer(InternalDrawingLayer.PrintPreview);
   }
 
   /**

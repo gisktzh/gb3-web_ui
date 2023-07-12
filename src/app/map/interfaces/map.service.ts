@@ -65,8 +65,13 @@ export interface MapService extends AddToMapVisitor {
   /** Zooms to a selected point based on latitude, longitude, Srs and scale */
   zoomToPoint(point: PointWithSrs, scale: number): void;
 
-  /** Zooms to the extent of a given geometry */
-  zoomToExtent(geometry: GeometryWithSrs): void;
+  /**
+   * Zooms to the extent of a given geometry
+   * @param geometry The geometry to which extents shall be zoomed
+   * @param expandFactor An optional factor (default: 1) that expands the geometry extend by this number.
+   * @param animationDuration An optional duration in milliseconds (default: 0) for the animation to pan/zoom to the given extent.
+   */
+  zoomToExtent(geometry: GeometryWithSrs, expandFactor?: number, animationDuration?: number): void;
 
   /** Adds a geometry to a DrawingLayer */
   addGeometryToDrawingLayer(geometry: GeometryWithSrs, drawingLayer: InternalDrawingLayer): void;
@@ -77,7 +82,13 @@ export interface MapService extends AddToMapVisitor {
   /** Returns the toolservice that is used for the given MapService implementation. */
   getToolService(): ToolService;
 
+  /**
+   * Starts drawing the print preview area with the given extent width and height as well as an rotation (clockwise)
+   */
   startDrawPrintPreview(extentWidth: number, extentHeight: number, rotation: number): void;
 
+  /**
+   * Stops drawing a print preview
+   */
   stopDrawPrintPreview(): void;
 }

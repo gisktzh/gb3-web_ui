@@ -49,7 +49,7 @@ export class MapServiceStub implements MapService {
 
   public zoomToPoint(point: PointWithSrs, number: number): void {}
 
-  public zoomToExtent(geometry: GeometryWithSrs): void {}
+  public zoomToExtent(geometry: GeometryWithSrs, expandFactor?: number, duration?: number): void {}
 
   public addGb2WmsLayer(mapItem: Gb2WmsActiveMapItem, position: number): void {}
 
@@ -59,5 +59,7 @@ export class MapServiceStub implements MapService {
     return {} as ToolService;
   }
 
-  // TODO WES add print preview
+  startDrawPrintPreview(extentWidth: number, extentHeight: number, rotation: number) {}
+
+  stopDrawPrintPreview() {}
 }

@@ -17,6 +17,7 @@ import {selectGb2WmsActiveMapItemsWithMapNotices} from '../selectors/active-map-
 import {FavouriteDeletionDialogComponent} from '../../../map/components/favourite-deletion-dialog/favourite-deletion-dialog.component';
 import {Favourite} from '../../../shared/interfaces/favourite.interface';
 import {ToolActions} from '../actions/tool.actions';
+import {PrintActions} from '../actions/print.actions';
 
 const CREATE_FAVOURITE_DIALOG_MAX_WIDTH = 500;
 const DELETE_FAVOURITE_DIALOG_MAX_WIDTH = 500;
@@ -24,13 +25,25 @@ const MAP_NOTICES_DIALOG_MAX_WIDTH = 968;
 
 @Injectable()
 export class MapUiEffects {
-  public dispatchShowMapSideDrawerContentRequest$ = createEffect(() => {
+  public changeUiDependingOnShownSideDrawer$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapUiActions.showMapSideDrawerContent),
       map((value) => {
         switch (value.mapSideDrawerContent) {
           case 'print':
             return MapUiActions.changeUiElementsVisibility({hideAllUiElements: true, hideUiToggleButton: true});
+        }
+      })
+    );
+  });
+
+  public loadDataForSideDrawer$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapUiActions.showMapSideDrawerContent),
+      map((value) => {
+        switch (value.mapSideDrawerContent) {
+          case 'print':
+            return PrintActions.loadPrintInfo();
         }
       })
     );

@@ -46,11 +46,11 @@ export class MapDrawingService implements OnDestroy {
     this.mapService.clearDrawingLayer(InternalDrawingLayer.FeatureQueryLocation);
   }
 
-  public drawPrintPreview(extentWidth: number, extentHeight: number, rotation: number) {
+  public startDrawPrintPreview(extentWidth: number, extentHeight: number, rotation: number) {
     this.mapService.startDrawPrintPreview(extentWidth, extentHeight, rotation);
   }
 
-  public clearPrintPreview() {
+  public stopDrawPrintPreview() {
     this.mapService.stopDrawPrintPreview();
   }
 

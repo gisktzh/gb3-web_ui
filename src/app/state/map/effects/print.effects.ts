@@ -1,14 +1,13 @@
 import {Inject, Injectable} from '@angular/core';
-import {Actions, concatLatestFrom, createEffect, ofType} from '@ngrx/effects';
+import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {EMPTY, switchMap, tap} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
 import {PrintActions} from '../actions/print.actions';
 import {Gb3PrintService} from '../../../shared/services/apis/gb3/gb3-print.service';
 import {DOCUMENT} from '@angular/common';
-import {MapConstants} from '../../../shared/constants/map.constants';
 import {Store} from '@ngrx/store';
-import {selectMapConfigState} from '../reducers/map-config.reducer';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
+import {PrintUtils} from '../../../shared/utils/print.utils';
 
 @Injectable()
 export class PrintEffects {
@@ -50,39 +49,25 @@ export class PrintEffects {
     );
   });
 
-  public drawPrintPreview = createEffect(
+  public startDrawPrintPreview = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(PrintActions.showPrintPreview),
-        concatLatestFrom(() => this.store.select(selectMapConfigState)),
-        tap(([{layout}, mapConfigState]) => {
-          const resolution = layout.scale / 72 / MapConstants.INCHES_PER_UNIT.m;
-          const printExtentWidth = (layout.width * resolution) / 2; // m
-          const printExtentHeight = (layout.height * resolution) / 2; // m
-          console.log('showPrintPreview effect');
-          this.mapDrawingService.drawPrintPreview(printExtentWidth, printExtentHeight, 0);
-          // const geometryWithSrs: PolygonWithSrs = {
-          //   srs: MapConstants.DEFAULT_SRS,
-          //   type: 'Polygon',
-          //   coordinates: [[
-          //     [mapConfigState.center.x - printExtentWidth, mapConfigState.center.y - printExtentHeight],
-          //     [mapConfigState.center.x - printExtentWidth, mapConfigState.center.y + printExtentHeight],
-          //     [mapConfigState.center.x + printExtentWidth, mapConfigState.center.y + printExtentHeight],
-          //     [mapConfigState.center.x + printExtentWidth, mapConfigState.center.y - printExtentHeight]
-          //   ]]};
-          // this.mapDrawingService.drawPrintPreview(geometryWithSrs);
+        tap(({width, height, scale, rotation}) => {
+          const {extentWidth, extentHeight} = PrintUtils.calculateGb2PrintPreviewExtent(width, height, scale);
+          this.mapDrawingService.startDrawPrintPreview(extentWidth, extentHeight, rotation);
         })
       );
     },
     {dispatch: false}
   );
 
-  public clearPrintPreview = createEffect(
+  public removePrintPreview = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(PrintActions.clearPrintPreview),
+        ofType(PrintActions.removePrintPreview),
         tap(() => {
-          // this.mapDrawingService.clearPrintPreview();
+          this.mapDrawingService.stopDrawPrintPreview();
         })
       );
     },

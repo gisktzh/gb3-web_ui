@@ -7,5 +7,4 @@ export interface PrintState {
   creation: PrintCreation | undefined;
   creationLoadingState: LoadingState;
   creationResponse: PrintCreationResponse | undefined;
-  showPreview: boolean;
 }
