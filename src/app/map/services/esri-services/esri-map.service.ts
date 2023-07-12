@@ -534,6 +534,7 @@ export class EsriMapService implements MapService {
       scale: scale,
       center: new EsriPoint({x, y, spatialReference}),
       constraints: {
+        rotationEnabled: false,
         snapToZoom: false,
         minScale: minScale,
         maxScale: maxScale,
