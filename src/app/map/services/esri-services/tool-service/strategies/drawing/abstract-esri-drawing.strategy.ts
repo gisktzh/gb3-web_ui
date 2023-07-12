@@ -3,8 +3,8 @@ import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {AbstractEsriDrawableToolStrategy} from '../abstract-esri-drawable-tool.strategy';
 
 export abstract class AbstractEsriDrawingStrategy extends AbstractEsriDrawableToolStrategy {
-  protected constructor(layer: GraphicsLayer, mapView: MapView, callbackHandler: () => void) {
-    super(layer, mapView, callbackHandler);
+  protected constructor(layer: GraphicsLayer, mapView: MapView, completeCallbackHandler: () => void) {
+    super(layer, mapView, completeCallbackHandler);
   }
 
   public start(): void {
@@ -13,12 +13,10 @@ export abstract class AbstractEsriDrawingStrategy extends AbstractEsriDrawableTo
       switch (event.state) {
         case 'active':
         case 'start':
+        case 'cancel':
           break; // currently, these events do not trigger any action
         case 'complete':
-          this.callbackHandler();
-          break;
-        case 'cancel':
-          this.callbackHandler();
+          this.completeCallbackHandler();
           break;
       }
     });

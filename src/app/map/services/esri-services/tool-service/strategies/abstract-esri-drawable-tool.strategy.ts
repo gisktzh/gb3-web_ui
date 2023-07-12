@@ -9,10 +9,14 @@ export type SupportedEsriTool = Extract<EsriSketchTool, 'polygon' | 'polyline' |
 export abstract class AbstractEsriDrawableToolStrategy implements EsriToolStrategy {
   protected readonly sketchViewModel: SketchViewModel;
   protected readonly layer: GraphicsLayer;
-  protected readonly callbackHandler: () => void;
+  /**
+   * Called when the SketchViewModel emits a 'complete' event.
+   * @protected
+   */
+  protected readonly completeCallbackHandler: () => void;
   protected abstract readonly tool: SupportedEsriTool;
 
-  protected constructor(layer: GraphicsLayer, mapView: MapView, callbackHandler: () => void) {
+  protected constructor(layer: GraphicsLayer, mapView: MapView, completeCallbackHandler: () => void) {
     // todo: check whether new SketchViewModels are okay; otherwise -> singleton and reuse the model.
     this.sketchViewModel = new SketchViewModel({
       view: mapView,
@@ -23,7 +27,7 @@ export abstract class AbstractEsriDrawableToolStrategy implements EsriToolStrate
     });
 
     this.layer = layer;
-    this.callbackHandler = callbackHandler;
+    this.completeCallbackHandler = completeCallbackHandler;
   }
 
   public cancel(): void {

@@ -13,9 +13,9 @@ export class EsriPointMeasurementStrategy extends AbstractEsriMeasurementStrateg
     mapView: __esri.MapView,
     pointSymbol: __esri.SimpleMarkerSymbol,
     labelSymbolization: __esri.TextSymbol,
-    callbackHandler: () => void
+    completeCallbackHandler: () => void
   ) {
-    super(layer, mapView, callbackHandler);
+    super(layer, mapView, completeCallbackHandler);
 
     this.sketchViewModel.pointSymbol = pointSymbol;
     this.labelSymbolization = labelSymbolization;

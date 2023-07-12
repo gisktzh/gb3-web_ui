@@ -10,8 +10,8 @@ import {AbstractEsriDrawableToolStrategy} from '../abstract-esri-drawable-tool.s
 export type LabelConfiguration = {location: Point; symbolization: TextSymbol};
 
 export abstract class AbstractEsriMeasurementStrategy<T extends Polygon | Polyline | Point> extends AbstractEsriDrawableToolStrategy {
-  protected constructor(layer: GraphicsLayer, mapView: MapView, callbackHandler: () => void) {
-    super(layer, mapView, callbackHandler);
+  protected constructor(layer: GraphicsLayer, mapView: MapView, completeCallbackHandler: () => void) {
+    super(layer, mapView, completeCallbackHandler);
   }
 
   public start(): void {
@@ -20,13 +20,11 @@ export abstract class AbstractEsriMeasurementStrategy<T extends Polygon | Polyli
       switch (event.state) {
         case 'active':
         case 'start':
+        case 'cancel':
           break; // currently, these events do not trigger any action
         case 'complete':
           this.persistSketchToLayer(event.graphic.geometry as T);
-          this.callbackHandler();
-          break;
-        case 'cancel':
-          this.callbackHandler();
+          this.completeCallbackHandler();
           break;
       }
     });
