@@ -6,11 +6,11 @@ import {ActivatedRoute} from '@angular/router';
 import {GeoLionService} from '../../../shared/services/apis/geolion/geo-lion.service';
 
 @Component({
-  selector: 'geo-data-detail',
-  templateUrl: './geo-data-detail.component.html',
-  styleUrls: ['./geo-data-detail.component.scss']
+  selector: 'dataset-detail',
+  templateUrl: './dataset-detail.component.html',
+  styleUrls: ['./dataset-detail.component.scss'],
 })
-export class GeoDataDetailComponent implements OnInit, OnDestroy {
+export class DatasetDetailComponent implements OnInit, OnDestroy {
   public mapDetailData: GeoLionGeodatenMetaInterface | undefined;
   public loadingState: LoadingState = 'loading';
   private readonly subscriptions: Subscription = new Subscription();

@@ -3,9 +3,10 @@ import {RouterModule, Routes} from '@angular/router';
 import {SharedModule} from '../shared/shared.module';
 import {DataCataloguePageComponent} from './data-catalogue-page.component';
 import {DataCatalogueOverviewComponent} from './components/data-catalogue-overview/data-catalogue-overview.component';
-import {GeoServiceDetailComponent} from './components/geo-service-detail/geo-service-detail.component';
+import {ServiceDetailComponent} from './components/service-detail/service-detail.component';
 import {MapDetailComponent} from './components/map-detail/map-detail.component';
-import {GeoDataDetailComponent} from './components/geo-data-detail/geo-data-detail.component';
+import {DatasetDetailComponent} from './components/dataset-detail/dataset-detail.component';
+import {ProductDetailComponent} from './components/product-detail/product-detail.component';
 
 export type DetailRouteType = 'geodata' | 'geoservice' | 'map';
 
@@ -16,27 +17,31 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        component: DataCatalogueOverviewComponent
+        component: DataCatalogueOverviewComponent,
       },
       {
-        path: 'geodata/:id',
-        component: GeoDataDetailComponent
+        path: 'dataset/:id',
+        component: DatasetDetailComponent,
       },
       {
-        path: 'geoservice/:id',
-        component: GeoServiceDetailComponent
+        path: 'service/:id',
+        component: ServiceDetailComponent,
       },
       {
         path: 'map/:id',
-        component: MapDetailComponent
-      }
-    ]
-  }
+        component: MapDetailComponent,
+      },
+      {
+        path: 'product/:id',
+        component: ProductDetailComponent,
+      },
+    ],
+  },
 ];
 
 @NgModule({
   declarations: [],
   imports: [RouterModule.forChild(routes), SharedModule],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class DataCatalogueRoutingModule {}

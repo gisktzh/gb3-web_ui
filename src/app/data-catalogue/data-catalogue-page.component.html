@@ -1,11 +1,8 @@
-<data-catalogue-placeholder></data-catalogue-placeholder>
-<!-- TODO: use the following code instead of the placeholder above as soon as there is real content to show
-<main class="data-catalogue">
-  <article class="data-catalogue__content">
-    <section>
-      <h1>Datenkatalog</h1>
+<data-catalogue-placeholder *ngIf="isIndex; else actualPage"></data-catalogue-placeholder>
+<ng-template #actualPage>
+  <div class="data-catalogue">
+    <div class="data-catalogue__content">
       <router-outlet></router-outlet>
-    </section>
-  </article>
-</main>
--->
+    </div>
+  </div>
+</ng-template>
