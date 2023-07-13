@@ -28,13 +28,13 @@ describe('EsriAreaMeasurementStrategy', () => {
   const callbackHandler = {
     handle: () => {
       return undefined;
-    }
+    },
   };
 
   beforeEach(() => {
     mapView = new MapView({map: new Map()});
     layer = new GraphicsLayer({
-      id: UserDrawingLayer.Measurements
+      id: UserDrawingLayer.Measurements,
     });
     mapView.map.layers.add(layer);
     fillSymbol = new SimpleFillSymbol();
@@ -42,14 +42,14 @@ describe('EsriAreaMeasurementStrategy', () => {
   });
 
   describe('cancellation', () => {
-    it('fires the callback handler on cancel and does not add the label', () => {
+    it('does not fire the callback handler on cancel and does not add the label', () => {
       const callbackSpy = spyOn(callbackHandler, 'handle');
       const strategy = new EsriAreaMeasurementStrategyWrapper(layer, mapView, fillSymbol, textSymbol, () => callbackHandler.handle());
 
       strategy.start();
       strategy.svm.emit('create', {state: 'cancel', graphic: new Graphic()});
 
-      expect(callbackSpy).toHaveBeenCalled();
+      expect(callbackSpy).not.toHaveBeenCalled();
       expect(layer.graphics.length).toEqual(0);
     });
   });
@@ -65,10 +65,10 @@ describe('EsriAreaMeasurementStrategy', () => {
             [
               [0, 0],
               [12, 0],
-              [0, 12]
-            ]
-          ]
-        })
+              [0, 12],
+            ],
+          ],
+        }),
       });
 
       strategy.start();
@@ -86,9 +86,9 @@ describe('EsriAreaMeasurementStrategy', () => {
           [
             [0, 0],
             [12, 0],
-            [0, 12]
-          ]
-        ]
+            [0, 12],
+          ],
+        ],
       });
       const graphic = new Graphic({geometry: location});
 
@@ -112,10 +112,10 @@ describe('EsriAreaMeasurementStrategy', () => {
             [
               [0, 0],
               [12, 0],
-              [0, 12]
-            ]
-          ]
-        })
+              [0, 12],
+            ],
+          ],
+        }),
       });
 
       strategy.start();
@@ -140,9 +140,9 @@ describe('EsriAreaMeasurementStrategy', () => {
             [0, 0],
             [0, sideLength],
             [sideLength, sideLength],
-            [sideLength, 0]
-          ]
-        ]
+            [sideLength, 0],
+          ],
+        ],
       });
       const graphic = new Graphic({geometry: location});
 
@@ -165,9 +165,9 @@ describe('EsriAreaMeasurementStrategy', () => {
             [0, 0],
             [0, sideLength],
             [sideLength, sideLength],
-            [sideLength, 0]
-          ]
-        ]
+            [sideLength, 0],
+          ],
+        ],
       });
       const graphic = new Graphic({geometry: location});
 
@@ -190,9 +190,9 @@ describe('EsriAreaMeasurementStrategy', () => {
             [0, 0],
             [0, sideLength],
             [sideLength, sideLength],
-            [sideLength, 0]
-          ]
-        ]
+            [sideLength, 0],
+          ],
+        ],
       });
       const graphic = new Graphic({geometry: location});
 

@@ -25,27 +25,27 @@ describe('EsriPolygonDrawingStrategy', () => {
   const callbackHandler = {
     handle: () => {
       return undefined;
-    }
+    },
   };
 
   beforeEach(() => {
     mapView = new MapView({map: new Map()});
     layer = new GraphicsLayer({
-      id: UserDrawingLayer.Measurements
+      id: UserDrawingLayer.Measurements,
     });
     mapView.map.layers.add(layer);
     fillSymbol = new SimpleFillSymbol();
   });
 
   describe('cancellation', () => {
-    it('fires the callback handler on cancel', () => {
+    it('does not fire the callback handler on cancel', () => {
       const callbackSpy = spyOn(callbackHandler, 'handle');
       const strategy = new EsriPolygonDrawingStrategyWrapper(layer, mapView, fillSymbol, () => callbackHandler.handle(), 'polygon');
 
       strategy.start();
       strategy.svm.emit('create', {state: 'cancel', graphic: new Graphic()});
 
-      expect(callbackSpy).toHaveBeenCalled();
+      expect(callbackSpy).not.toHaveBeenCalled();
     });
   });
 
@@ -60,10 +60,10 @@ describe('EsriPolygonDrawingStrategy', () => {
             [
               [0, 0],
               [12, 0],
-              [0, 12]
-            ]
-          ]
-        })
+              [0, 12],
+            ],
+          ],
+        }),
       });
 
       strategy.start();

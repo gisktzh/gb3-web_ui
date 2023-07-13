@@ -25,6 +25,22 @@ import {EsriPointDrawingStrategy} from './strategies/drawing/esri-point-drawing.
 import {EsriLineDrawingStrategy} from './strategies/drawing/esri-line-drawing.strategy';
 import {EsriPolygonDrawingStrategy} from './strategies/drawing/esri-polygon-drawing.strategy';
 
+const HANDLE_GROUP_KEY = 'EsriToolService';
+
+/**
+ * Handles the measurement and sketch drawings. It employs the Strategy pattern to delegate the actual drawing logic to dedicated
+ * strategies. This service only handles the instantiation of the correct strategy and acts as a mediator for interacting with the
+ * strategies.
+ *
+ * Due to the nature of Esri's SketchViewModel implementation, a lot is handled implicitly. There is no need to deactivate an active
+ * SketchViewModel if another one becomes active (i.e. the tools are switched) since that happens automatically. Two quirks exist, however:
+ * * Each strategy takes a callback for the completion - since we need to know for our state when a tool is done (and can be removed
+ * from the activeTool state property), this callback is used by the SketchViewModel.on() handler upon draw completion. Other events do
+ * NOT fire anything, but be careful if you're adding more logic - i.e. the `cancel` event should not fire any event that dispatches a
+ * state change, because this might lead to race conditions.
+ * * Because Esri cancels drawings when pressing escape, we need to intercept this in order for our state to become updated. This is
+ * done via custom handles on the MapView object which manually fire the deactivation event for our state to become updated.
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -97,11 +113,31 @@ export class EsriToolService implements ToolService, OnDestroy {
   }
 
   private startDrawing() {
+    this.registerEscapeEventHandler();
     this.toolStrategy.start();
   }
 
   private endDrawing() {
+    this.esriMapViewService.mapView.removeHandles(HANDLE_GROUP_KEY);
     this.store.dispatch(ToolActions.deactivateTool());
+  }
+
+  /**
+   * Adds an event handler on the mapView object for catching the Escape button. Since the Escape button triggers a tool cancellation,
+   * we need to intercept this and end the drawing on the service as well.
+   * @private
+   */
+  private registerEscapeEventHandler() {
+    const handle = reactiveUtils.on(
+      () => this.esriMapViewService.mapView,
+      'key-down',
+      (event) => {
+        if (event.key === 'Escape') {
+          this.endDrawing();
+        }
+      }
+    );
+    this.esriMapViewService.mapView.addHandles(handle, HANDLE_GROUP_KEY);
   }
 
   /**

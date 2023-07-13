@@ -24,27 +24,27 @@ describe('EsriPointDrawingStrategy', () => {
   const callbackHandler = {
     handle: () => {
       return undefined;
-    }
+    },
   };
 
   beforeEach(() => {
     mapView = new MapView({map: new Map()});
     layer = new GraphicsLayer({
-      id: UserDrawingLayer.Measurements
+      id: UserDrawingLayer.Measurements,
     });
     mapView.map.layers.add(layer);
     pointSymbol = new SimpleMarkerSymbol();
   });
 
   describe('cancellation', () => {
-    it('fires the callback handler on cancel', () => {
+    it('does not fire the callback handler on cancel', () => {
       const callbackSpy = spyOn(callbackHandler, 'handle');
       const strategy = new EsriPointDrawingStrategyWrapper(layer, mapView, pointSymbol, () => callbackHandler.handle());
 
       strategy.start();
       strategy.svm.emit('create', {state: 'cancel', graphic: new Graphic()});
 
-      expect(callbackSpy).toHaveBeenCalled();
+      expect(callbackSpy).not.toHaveBeenCalled();
     });
   });
 

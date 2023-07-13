@@ -13,10 +13,10 @@ export class EsriPolygonDrawingStrategy extends AbstractEsriDrawingStrategy {
     layer: GraphicsLayer,
     mapView: MapView,
     polygonSymbol: SimpleFillSymbol,
-    callbackHandler: () => void,
+    completeCallbackHandler: () => void,
     polygonType: PolygonType
   ) {
-    super(layer, mapView, callbackHandler);
+    super(layer, mapView, completeCallbackHandler);
 
     this.sketchViewModel.polygonSymbol = polygonSymbol;
     this.tool = polygonType;

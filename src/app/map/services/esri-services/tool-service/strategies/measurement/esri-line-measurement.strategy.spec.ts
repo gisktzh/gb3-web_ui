@@ -28,13 +28,13 @@ describe('EsriLineMeasurementStrategy', () => {
   const callbackHandler = {
     handle: () => {
       return undefined;
-    }
+    },
   };
 
   beforeEach(() => {
     mapView = new MapView({map: new Map()});
     layer = new GraphicsLayer({
-      id: UserDrawingLayer.Measurements
+      id: UserDrawingLayer.Measurements,
     });
     mapView.map.layers.add(layer);
     lineSymbol = new SimpleLineSymbol();
@@ -42,14 +42,14 @@ describe('EsriLineMeasurementStrategy', () => {
   });
 
   describe('cancellation', () => {
-    it('fires the callback handler on cancel and does not add the label', () => {
+    it('does not fire the callback handler on cancel and does not add the label', () => {
       const callbackSpy = spyOn(callbackHandler, 'handle');
       const strategy = new EsriLineMeasurementStrategyWrapper(layer, mapView, lineSymbol, textSymbol, () => callbackHandler.handle());
 
       strategy.start();
       strategy.svm.emit('create', {state: 'cancel', graphic: new Graphic()});
 
-      expect(callbackSpy).toHaveBeenCalled();
+      expect(callbackSpy).not.toHaveBeenCalled();
       expect(layer.graphics.length).toEqual(0);
     });
   });
@@ -64,10 +64,10 @@ describe('EsriLineMeasurementStrategy', () => {
           paths: [
             [
               [0, 0],
-              [12, 0]
-            ]
-          ]
-        })
+              [12, 0],
+            ],
+          ],
+        }),
       });
 
       strategy.start();
@@ -85,9 +85,9 @@ describe('EsriLineMeasurementStrategy', () => {
           [
             [0, 0],
             [12, 0],
-            [555, 64]
-          ]
-        ]
+            [555, 64],
+          ],
+        ],
       });
       const graphic = new Graphic({geometry: location});
 
@@ -110,10 +110,10 @@ describe('EsriLineMeasurementStrategy', () => {
           paths: [
             [
               [0, 0],
-              [12, 0]
-            ]
-          ]
-        })
+              [12, 0],
+            ],
+          ],
+        }),
       });
 
       strategy.start();
@@ -136,9 +136,9 @@ describe('EsriLineMeasurementStrategy', () => {
         paths: [
           [
             [0, 0],
-            [lengthOfLine, 0]
-          ]
-        ]
+            [lengthOfLine, 0],
+          ],
+        ],
       });
       const graphic = new Graphic({geometry: location});
 
@@ -161,9 +161,9 @@ describe('EsriLineMeasurementStrategy', () => {
         paths: [
           [
             [0, 0],
-            [x, y]
-          ]
-        ]
+            [x, y],
+          ],
+        ],
       });
       const graphic = new Graphic({geometry: location});
 
@@ -184,9 +184,9 @@ describe('EsriLineMeasurementStrategy', () => {
         paths: [
           [
             [0, 0],
-            [lengthOfLine, 0]
-          ]
-        ]
+            [lengthOfLine, 0],
+          ],
+        ],
       });
       const graphic = new Graphic({geometry: location});
 
