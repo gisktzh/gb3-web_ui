@@ -223,7 +223,7 @@ export const layerSymbolizations: LayerSymbolizations = {
       yOffset: 6
     },
     point: {
-      type: 'simple',
+      type: 'simple', // note: if this is changed, adjust the typecast in EsriToolService!
       size: 5,
       color: {
         r: 255,

@@ -101,7 +101,6 @@ export class EsriToolService implements ToolService, OnDestroy {
   }
 
   private endDrawing() {
-    1;
     this.store.dispatch(ToolActions.deactivateTool());
   }
 
@@ -118,6 +117,7 @@ export class EsriToolService implements ToolService, OnDestroy {
   }
 
   private setMeasurementStrategy(measurementType: MeasurementTool, layer: GraphicsLayer) {
+    // because we currently do not have pictures symbols, the pointStyle is cast to SimpleMarkerSymbol.
     const pointStyle = this.esriSymbolizationService.createPointSymbolization(UserDrawingLayer.Measurements) as SimpleMarkerSymbol;
     const lineStyle = this.esriSymbolizationService.createLineSymbolization(UserDrawingLayer.Measurements);
     const areaStyle = this.esriSymbolizationService.createPolygonSymbolization(UserDrawingLayer.Measurements);
@@ -179,8 +179,6 @@ export class EsriToolService implements ToolService, OnDestroy {
           () => this.endDrawing(),
           'circle'
         );
-        break;
-      default:
         break;
     }
   }
