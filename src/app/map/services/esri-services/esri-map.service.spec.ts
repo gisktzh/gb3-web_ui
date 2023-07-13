@@ -72,7 +72,7 @@ describe('EsriMapService', () => {
   let mapViewService: EsriMapViewService = new EsriMapViewService();
 
   beforeEach(() => {
-    const toolServiceSpy = jasmine.createSpyObj<EsriToolService>(['startMeasurement']);
+    const toolServiceSpy = jasmine.createSpyObj<EsriToolService>(['initializeMeasurement']);
 
     TestBed.configureTestingModule({
       imports: [AuthModule],

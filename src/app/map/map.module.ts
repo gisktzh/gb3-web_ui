@@ -50,6 +50,7 @@ import {PrintDialogComponent} from './components/map-tools/print-dialog/print-di
 import {ShareLinkDialogComponent} from './components/share-link-dialog/share-link-dialog.component';
 import {MeasurementToolsComponent} from './components/map-tools/measurement-tools/measurement-tools.component';
 import {DrawingToolsComponent} from './components/map-tools/drawing-tools/drawing-tools.component';
+import {AbstractToolsComponent} from './components/map-tools/abstract-tools/abstract-tools.component';
 
 @NgModule({
   declarations: [
@@ -98,7 +99,8 @@ import {DrawingToolsComponent} from './components/map-tools/drawing-tools/drawin
     PrintDialogComponent,
     ShareLinkDialogComponent,
     MeasurementToolsComponent,
-    DrawingToolsComponent
+    DrawingToolsComponent,
+    AbstractToolsComponent
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule, KtZhDesignSystemModule]
 })

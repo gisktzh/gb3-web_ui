@@ -5,7 +5,8 @@ export enum InternalDrawingLayer {
 }
 
 export enum UserDrawingLayer {
-  Measurements = 'measurements'
+  Measurements = 'measurements',
+  Drawings = 'drawings'
 }
 
 /**

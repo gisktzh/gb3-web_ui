@@ -1,8 +1,9 @@
 import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
 import Polyline from '@arcgis/core/geometry/Polyline';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
-import {NumberUtils} from '../../../../../shared/utils/number.utils';
-import {AbstractEsriMeasurementStrategy, LabelConfiguration, SupportedEsriTool} from './abstract-esri-measurement.strategy';
+import {NumberUtils} from '../../../../../../shared/utils/number.utils';
+import {AbstractEsriMeasurementStrategy, LabelConfiguration} from './abstract-esri-measurement.strategy';
+import {SupportedEsriTool} from '../abstract-esri-drawable-tool.strategy';
 
 const M_TO_KM_CONVERSION_THRESHOLD = 10_000;
 

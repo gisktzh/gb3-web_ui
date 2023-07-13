@@ -1,15 +1,15 @@
 import MapView from '@arcgis/core/views/MapView';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
-import {UserDrawingLayer} from '../../../../../shared/enums/drawing-layer.enum';
+import {UserDrawingLayer} from '../../../../../../shared/enums/drawing-layer.enum';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import Map from '@arcgis/core/Map';
 import Graphic from '@arcgis/core/Graphic';
 import Point from '@arcgis/core/geometry/Point';
-import {EsriAreaMeasurementStrategy} from './esri-area-measurement.strategy';
-import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
-import Polygon from '@arcgis/core/geometry/Polygon';
+import {EsriLineMeasurementStrategy} from './esri-line-measurement.strategy';
+import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
+import Polyline from '@arcgis/core/geometry/Polyline';
 
-class EsriAreaMeasurementStrategyWrapper extends EsriAreaMeasurementStrategy {
+class EsriLineMeasurementStrategyWrapper extends EsriLineMeasurementStrategy {
   public get svm() {
     return this.sketchViewModel;
   }
@@ -20,10 +20,10 @@ class EsriAreaMeasurementStrategyWrapper extends EsriAreaMeasurementStrategy {
  * As such, we only test for the labels, which are also our custom logic and should be tested. This is why we e.g. assert for a length
  * of 0 on the graphics layer, even though in reality, it should be 2 (when Esri properly adds the graphic).
  */
-describe('EsriAreaMeasurementStrategy', () => {
+describe('EsriLineMeasurementStrategy', () => {
   let mapView: MapView;
   let layer: GraphicsLayer;
-  let fillSymbol: SimpleFillSymbol;
+  let lineSymbol: SimpleLineSymbol;
   let textSymbol: TextSymbol;
   const callbackHandler = {
     handle: () => {
@@ -37,14 +37,14 @@ describe('EsriAreaMeasurementStrategy', () => {
       id: UserDrawingLayer.Measurements
     });
     mapView.map.layers.add(layer);
-    fillSymbol = new SimpleFillSymbol();
+    lineSymbol = new SimpleLineSymbol();
     textSymbol = new TextSymbol();
   });
 
   describe('cancellation', () => {
     it('fires the callback handler on cancel and does not add the label', () => {
       const callbackSpy = spyOn(callbackHandler, 'handle');
-      const strategy = new EsriAreaMeasurementStrategyWrapper(layer, mapView, fillSymbol, textSymbol, () => callbackHandler.handle());
+      const strategy = new EsriLineMeasurementStrategyWrapper(layer, mapView, lineSymbol, textSymbol, () => callbackHandler.handle());
 
       strategy.start();
       strategy.svm.emit('create', {state: 'cancel', graphic: new Graphic()});
@@ -57,15 +57,14 @@ describe('EsriAreaMeasurementStrategy', () => {
   describe('completion', () => {
     it('adds the label and fires the callback handler on completion', () => {
       const callbackSpy = spyOn(callbackHandler, 'handle');
-      const strategy = new EsriAreaMeasurementStrategyWrapper(layer, mapView, fillSymbol, textSymbol, () => callbackHandler.handle());
+      const strategy = new EsriLineMeasurementStrategyWrapper(layer, mapView, lineSymbol, textSymbol, () => callbackHandler.handle());
       const graphic = new Graphic({
-        geometry: new Polygon({
+        geometry: new Polyline({
           spatialReference: {wkid: 2056},
-          rings: [
+          paths: [
             [
               [0, 0],
-              [12, 0],
-              [0, 12]
+              [12, 0]
             ]
           ]
         })
@@ -78,15 +77,15 @@ describe('EsriAreaMeasurementStrategy', () => {
       expect(layer.graphics.length).toEqual(1);
     });
 
-    it('creates the label at the centroid of the polygon', () => {
-      const strategy = new EsriAreaMeasurementStrategyWrapper(layer, mapView, fillSymbol, textSymbol, () => callbackHandler.handle());
-      const location = new Polygon({
+    it('creates the label at the last point of the line geometry', () => {
+      const strategy = new EsriLineMeasurementStrategyWrapper(layer, mapView, lineSymbol, textSymbol, () => callbackHandler.handle());
+      const location = new Polyline({
         spatialReference: {wkid: 2056},
-        rings: [
+        paths: [
           [
             [0, 0],
             [12, 0],
-            [0, 12]
+            [555, 64]
           ]
         ]
       });
@@ -96,23 +95,22 @@ describe('EsriAreaMeasurementStrategy', () => {
       strategy.svm.emit('create', {state: 'complete', graphic: graphic});
 
       const addedGraphic = layer.graphics.getItemAt(0);
-      const expectedLocation = location.centroid;
+      const numberOfVertices = location.paths[0].length;
       expect(addedGraphic.geometry.type).toEqual('point');
-      expect((addedGraphic.geometry as Point).x).toEqual(expectedLocation.x);
-      expect((addedGraphic.geometry as Point).y).toEqual(expectedLocation.y);
+      expect((addedGraphic.geometry as Point).x).toEqual(location.getPoint(0, numberOfVertices - 1).x);
+      expect((addedGraphic.geometry as Point).y).toEqual(location.getPoint(0, numberOfVertices - 1).y);
     });
 
     it('applies the defined styling to the created label', () => {
       textSymbol = new TextSymbol({haloColor: 'red', xoffset: 42, color: 'blue'});
-      const strategy = new EsriAreaMeasurementStrategyWrapper(layer, mapView, fillSymbol, textSymbol, () => callbackHandler.handle());
+      const strategy = new EsriLineMeasurementStrategyWrapper(layer, mapView, lineSymbol, textSymbol, () => callbackHandler.handle());
       const graphic = new Graphic({
-        geometry: new Polygon({
+        geometry: new Polyline({
           spatialReference: {wkid: 2056},
-          rings: [
+          paths: [
             [
               [0, 0],
-              [12, 0],
-              [0, 12]
+              [12, 0]
             ]
           ]
         })
@@ -130,17 +128,15 @@ describe('EsriAreaMeasurementStrategy', () => {
   });
 
   describe('label', () => {
-    it('adds the area of the polygon as label', () => {
-      const strategy = new EsriAreaMeasurementStrategyWrapper(layer, mapView, fillSymbol, textSymbol, () => callbackHandler.handle());
-      const sideLength = 12;
-      const location = new Polygon({
+    it('adds the length of the line as label', () => {
+      const strategy = new EsriLineMeasurementStrategyWrapper(layer, mapView, lineSymbol, textSymbol, () => callbackHandler.handle());
+      const lengthOfLine = 12;
+      const location = new Polyline({
         spatialReference: {wkid: 2056},
-        rings: [
+        paths: [
           [
             [0, 0],
-            [0, sideLength],
-            [sideLength, sideLength],
-            [sideLength, 0]
+            [lengthOfLine, 0]
           ]
         ]
       });
@@ -151,21 +147,21 @@ describe('EsriAreaMeasurementStrategy', () => {
       strategy.svm.emit('create', {state: 'complete', graphic: graphic});
 
       const addedGraphic = layer.graphics.getItemAt(0);
-      const expectedArea = Math.pow(sideLength, 2);
-      expect((addedGraphic.symbol as TextSymbol).text).toEqual(`${expectedArea} m²`);
+      expect((addedGraphic.symbol as TextSymbol).text).toEqual(`${lengthOfLine} m`);
     });
 
-    it('rounds the area to 2 decimals', () => {
-      const strategy = new EsriAreaMeasurementStrategyWrapper(layer, mapView, fillSymbol, textSymbol, () => callbackHandler.handle());
-      const sideLength = 42.1337;
-      const location = new Polygon({
+    it('rounds the length to 2 decimals', () => {
+      const strategy = new EsriLineMeasurementStrategyWrapper(layer, mapView, lineSymbol, textSymbol, () => callbackHandler.handle());
+      // create the second point at a known position, so we can use pythagorean theorem to calculate the length; e.g. (0/0), (2/3) ->
+      // a=2, b=3
+      const x = 2;
+      const y = 3;
+      const location = new Polyline({
         spatialReference: {wkid: 2056},
-        rings: [
+        paths: [
           [
             [0, 0],
-            [0, sideLength],
-            [sideLength, sideLength],
-            [sideLength, 0]
+            [x, y]
           ]
         ]
       });
@@ -175,22 +171,20 @@ describe('EsriAreaMeasurementStrategy', () => {
       strategy.svm.complete();
       strategy.svm.emit('create', {state: 'complete', graphic: graphic});
 
-      const expected = (sideLength * sideLength).toFixed(2);
+      const expected = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)).toFixed(2);
       const addedGraphic = layer.graphics.getItemAt(0);
-      expect((addedGraphic.symbol as TextSymbol).text).toEqual(`${expected} m²`);
+      expect((addedGraphic.symbol as TextSymbol).text).toEqual(`${expected} m`);
     });
 
-    it('rounds the area to km² after 100000 square metres', () => {
-      const strategy = new EsriAreaMeasurementStrategyWrapper(layer, mapView, fillSymbol, textSymbol, () => callbackHandler.handle());
-      const sideLength = 10_000;
-      const location = new Polygon({
+    it('rounds the length to km after 10001 metres', () => {
+      const strategy = new EsriLineMeasurementStrategyWrapper(layer, mapView, lineSymbol, textSymbol, () => callbackHandler.handle());
+      const lengthOfLine = 10_001;
+      const location = new Polyline({
         spatialReference: {wkid: 2056},
-        rings: [
+        paths: [
           [
             [0, 0],
-            [0, sideLength],
-            [sideLength, sideLength],
-            [sideLength, 0]
+            [lengthOfLine, 0]
           ]
         ]
       });
@@ -201,8 +195,19 @@ describe('EsriAreaMeasurementStrategy', () => {
       strategy.svm.emit('create', {state: 'complete', graphic: graphic});
 
       const addedGraphic = layer.graphics.getItemAt(0);
-      const expextedLength = Math.round((sideLength * sideLength) / 1_000_000);
-      expect((addedGraphic.symbol as TextSymbol).text).toEqual(`${expextedLength} km²`);
+      const expextedLength = Math.round(lengthOfLine / 1000);
+      expect((addedGraphic.symbol as TextSymbol).text).toEqual(`${expextedLength} km`);
+    });
+  });
+
+  describe('mode', () => {
+    it('sets mode to click', () => {
+      const strategy = new EsriLineMeasurementStrategyWrapper(layer, mapView, lineSymbol, textSymbol, () => callbackHandler.handle());
+      const spy = spyOn(strategy.svm, 'create');
+
+      strategy.start();
+
+      expect(spy).toHaveBeenCalledOnceWith('polyline', {mode: 'click'});
     });
   });
 });

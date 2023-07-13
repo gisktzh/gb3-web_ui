@@ -8,17 +8,22 @@ import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 import {selectDrawingLayers} from '../../../../state/map/selectors/drawing-layers.selector';
 import {Subscription, tap} from 'rxjs';
 import {EsriToolStrategy} from './interfaces/strategy.interface';
-import {EsriDefaultStrategy} from './strategies/esri-default.strategy';
-import {EsriLineMeasurementStrategy} from './strategies/esri-line-measurement.strategy';
+import {EsriDefaultStrategy} from './strategies/measurement/esri-default.strategy';
+import {EsriLineMeasurementStrategy} from './strategies/measurement/esri-line-measurement.strategy';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {EsriSymbolizationService} from '../esri-symbolization.service';
 import {UserDrawingLayer} from '../../../../shared/enums/drawing-layer.enum';
 import {DrawingActiveMapItem} from '../../../models/implementations/drawing.model';
-import {EsriAreaMeasurementStrategy} from './strategies/esri-area-measurement.strategy';
-import {EsriPointMeasurementStrategy} from './strategies/esri-point-measurement.strategy';
+import {EsriAreaMeasurementStrategy} from './strategies/measurement/esri-area-measurement.strategy';
+import {EsriPointMeasurementStrategy} from './strategies/measurement/esri-point-measurement.strategy';
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
 import {ToolActions} from '../../../../state/map/actions/tool.actions';
 import {MeasurementTool} from '../../../../shared/types/measurement-tool';
+import {DrawingTool} from '../../../../shared/types/drawing-tool';
+import {ConfigService} from '../../../../shared/services/config.service';
+import {EsriPointDrawingStrategy} from './strategies/drawing/esri-point-drawing.strategy';
+import {EsriLineDrawingStrategy} from './strategies/drawing/esri-line-drawing.strategy';
+import {EsriPolygonDrawingStrategy} from './strategies/drawing/esri-polygon-drawing.strategy';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +37,8 @@ export class EsriToolService implements ToolService, OnDestroy {
   constructor(
     private readonly esriMapViewService: EsriMapViewService,
     private readonly store: Store,
-    private readonly esriSymbolizationService: EsriSymbolizationService
+    private readonly esriSymbolizationService: EsriSymbolizationService,
+    private readonly configService: ConfigService
   ) {
     this.initSubscriptions();
   }
@@ -41,12 +47,28 @@ export class EsriToolService implements ToolService, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  public cancelMeasurement() {
+  public cancelTool() {
     this.toolStrategy.cancel();
   }
 
-  public startMeasurement(measurementTool: MeasurementTool): void {
-    const drawingLayer = this.esriMapViewService.findEsriLayer(UserDrawingLayer.Measurements);
+  public initializeDrawing(drawingTool: DrawingTool) {
+    this.initializeTool(UserDrawingLayer.Drawings, (layer) => this.setDrawingStrategy(drawingTool, layer));
+  }
+
+  public initializeMeasurement(measurementTool: MeasurementTool): void {
+    this.initializeTool(UserDrawingLayer.Measurements, (layer) => this.setMeasurementStrategy(measurementTool, layer));
+  }
+
+  /**
+   * Initializes a given tool by handling the addition and/or visibility setting ot the drawing layer and uses the supplied setter
+   * function to set the correct toolStrategy.
+   * @param layerIdentifier Layer name within the map that should be used as identifier
+   * @param strategySetter A setter function that takes a given layer and sets a strategy for the given tool.
+   * @private
+   */
+  private initializeTool(layerIdentifier: UserDrawingLayer, strategySetter: (layer: GraphicsLayer) => void) {
+    const fullLayerIdentifier = this.configService.mapConfig.internalLayerPrefix + layerIdentifier;
+    const drawingLayer = this.esriMapViewService.findEsriLayer(fullLayerIdentifier);
 
     if (!drawingLayer) {
       /**
@@ -55,17 +77,17 @@ export class EsriToolService implements ToolService, OnDestroy {
        * immediately after dispatching the layer addition will yield undefined errors.
        */
       reactiveUtils
-        .once(() => this.esriMapViewService.findEsriLayer(UserDrawingLayer.Measurements))
+        .once(() => this.esriMapViewService.findEsriLayer(fullLayerIdentifier))
         .then((layer) => {
-          this.setMeasurementStrategy(measurementTool, layer as GraphicsLayer);
+          strategySetter(layer as GraphicsLayer);
           this.startDrawing();
         });
 
-      const drawingLayerAdd = ActiveMapItemFactory.createDrawingMapItem();
+      const drawingLayerAdd = ActiveMapItemFactory.createDrawingMapItem(layerIdentifier, this.configService.mapConfig.internalLayerPrefix);
       this.store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem: drawingLayerAdd, position: 0}));
     } else {
-      this.forceVisibility();
-      this.setMeasurementStrategy(measurementTool, drawingLayer as GraphicsLayer);
+      this.forceVisibility(fullLayerIdentifier);
+      strategySetter(drawingLayer as GraphicsLayer);
       this.startDrawing();
     }
   }
@@ -86,14 +108,16 @@ export class EsriToolService implements ToolService, OnDestroy {
    * Forces the drawing layer to become visible to prevent users from measuring on transparent or invisible drawing layers.
    * @private
    */
-  private forceVisibility() {
-    // todo: refactor to array once we have more to avoid non-null assertion
-    const activeMapItem = this.drawingLayers.find((l) => l.id === UserDrawingLayer.Measurements)!;
+  private forceVisibility(fullLayerIdentifier: string) {
+    const activeMapItem = this.drawingLayers.find((l) => l.id === fullLayerIdentifier);
 
-    this.store.dispatch(ActiveMapItemActions.forceFullVisibility({activeMapItem}));
+    if (activeMapItem) {
+      this.store.dispatch(ActiveMapItemActions.forceFullVisibility({activeMapItem}));
+    }
   }
 
   private setMeasurementStrategy(measurementType: MeasurementTool, layer: GraphicsLayer) {
+    // because we currently do not have pictures symbols, the pointStyle is cast to SimpleMarkerSymbol.
     const pointStyle = this.esriSymbolizationService.createPointSymbolization(UserDrawingLayer.Measurements) as SimpleMarkerSymbol;
     const lineStyle = this.esriSymbolizationService.createLineSymbolization(UserDrawingLayer.Measurements);
     const areaStyle = this.esriSymbolizationService.createPolygonSymbolization(UserDrawingLayer.Measurements);
@@ -114,6 +138,48 @@ export class EsriToolService implements ToolService, OnDestroy {
         this.toolStrategy = new EsriPointMeasurementStrategy(layer, this.esriMapViewService.mapView, pointStyle, labelStyle, () =>
           this.endDrawing()
         );
+    }
+  }
+
+  private setDrawingStrategy(drawingType: DrawingTool, layer: GraphicsLayer) {
+    const pointStyle = this.esriSymbolizationService.createPointSymbolization(UserDrawingLayer.Drawings) as SimpleMarkerSymbol;
+    const lineStyle = this.esriSymbolizationService.createLineSymbolization(UserDrawingLayer.Drawings);
+    const areaStyle = this.esriSymbolizationService.createPolygonSymbolization(UserDrawingLayer.Drawings);
+
+    switch (drawingType) {
+      case 'draw-point':
+        this.toolStrategy = new EsriPointDrawingStrategy(layer, this.esriMapViewService.mapView, pointStyle, () => this.endDrawing());
+        break;
+      case 'draw-line':
+        this.toolStrategy = new EsriLineDrawingStrategy(layer, this.esriMapViewService.mapView, lineStyle, () => this.endDrawing());
+        break;
+      case 'draw-polygon':
+        this.toolStrategy = new EsriPolygonDrawingStrategy(
+          layer,
+          this.esriMapViewService.mapView,
+          areaStyle,
+          () => this.endDrawing(),
+          'polygon'
+        );
+        break;
+      case 'draw-rectangle':
+        this.toolStrategy = new EsriPolygonDrawingStrategy(
+          layer,
+          this.esriMapViewService.mapView,
+          areaStyle,
+          () => this.endDrawing(),
+          'rectangle'
+        );
+        break;
+      case 'draw-circle':
+        this.toolStrategy = new EsriPolygonDrawingStrategy(
+          layer,
+          this.esriMapViewService.mapView,
+          areaStyle,
+          () => this.endDrawing(),
+          'circle'
+        );
+        break;
     }
   }
 }

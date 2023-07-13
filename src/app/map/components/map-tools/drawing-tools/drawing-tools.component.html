@@ -1,17 +1,47 @@
 <div class="drawing-tools">
-  <button class="drawing-tools__button" color="accent" disabled mat-icon-button>
+  <button
+    (click)="this.togglePointDrawing()"
+    [ngClass]="{'drawing-tools__button--active': activeTool === 'draw-point'}"
+    class="drawing-tools__button"
+    color="accent"
+    mat-icon-button
+  >
     <mat-icon svgIcon="ktzh_drawing_symbol_point"></mat-icon>
   </button>
-  <button class="drawing-tools__button" color="accent" disabled mat-icon-button>
+  <button
+    (click)="this.toggleLineDrawing()"
+    [ngClass]="{'drawing-tools__button--active': activeTool === 'draw-line'}"
+    class="drawing-tools__button"
+    color="accent"
+    mat-icon-button
+  >
     <mat-icon svgIcon="ktzh_drawing_symbol_line"></mat-icon>
   </button>
-  <button class="drawing-tools__button" color="accent" disabled mat-icon-button>
+  <button
+    (click)="this.togglePolygonDrawing()"
+    [ngClass]="{'drawing-tools__button--active': activeTool === 'draw-polygon'}"
+    class="drawing-tools__button"
+    color="accent"
+    mat-icon-button
+  >
     <mat-icon svgIcon="ktzh_drawing_symbol_polygon"></mat-icon>
   </button>
-  <button class="drawing-tools__button" color="accent" disabled mat-icon-button>
+  <button
+    (click)="this.toggleRectangleDrawing()"
+    [ngClass]="{'drawing-tools__button--active': activeTool === 'draw-rectangle'}"
+    class="drawing-tools__button"
+    color="accent"
+    mat-icon-button
+  >
     <mat-icon svgIcon="ktzh_drawing_symbol_rectangle"></mat-icon>
   </button>
-  <button class="drawing-tools__button" color="accent" disabled mat-icon-button>
+  <button
+    (click)="this.toggleCircleDrawing()"
+    [ngClass]="{'drawing-tools__button--active': activeTool === 'draw-circle'}"
+    class="drawing-tools__button"
+    color="accent"
+    mat-icon-button
+  >
     <mat-icon svgIcon="ktzh_drawing_symbol_circle"></mat-icon>
   </button>
   <button class="drawing-tools__button" color="accent" disabled mat-icon-button>

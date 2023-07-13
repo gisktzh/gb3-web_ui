@@ -200,5 +200,74 @@ export const layerSymbolizations: LayerSymbolizations = {
         }
       }
     }
+  },
+  [UserDrawingLayer.Drawings]: {
+    text: {
+      color: {
+        r: 255,
+        g: 0,
+        b: 0,
+        a: 1.0
+      },
+      outline: {
+        color: {
+          r: 255,
+          g: 255,
+          b: 255,
+          a: 1.0
+        },
+        width: 1
+      },
+      size: 12,
+      xOffset: 0,
+      yOffset: 6
+    },
+    point: {
+      type: 'simple', // note: if this is changed, adjust the typecast in EsriToolService!
+      size: 5,
+      color: {
+        r: 255,
+        g: 0,
+        b: 0,
+        a: 1.0
+      },
+      outline: {
+        width: 1,
+        color: {
+          r: 255,
+          g: 255,
+          b: 255,
+          a: 1.0
+        }
+      }
+    },
+    line: {
+      width: 2,
+      color: {
+        r: 255,
+        g: 0,
+        b: 0,
+        a: 1.0
+      }
+    },
+    polygon: {
+      fill: {
+        color: {
+          r: 255,
+          g: 0,
+          b: 0,
+          a: 0.3
+        }
+      },
+      outline: {
+        width: 2,
+        color: {
+          r: 255,
+          g: 0,
+          b: 0,
+          a: 1.0
+        }
+      }
+    }
   }
 };

@@ -16,16 +16,16 @@ describe('selectQueryLayers', () => {
         id: 'test-map1',
         layers: [
           {layer: 'layer-1', visible: true, queryable: true},
-          {layer: 'layer-2', visible: true, queryable: true}
-        ]
+          {layer: 'layer-2', visible: true, queryable: true},
+        ],
       } as Map),
       new Gb2WmsActiveMapItem({
         id: 'test-map2',
         layers: [
           {layer: 'layer-a', visible: true, queryable: true},
-          {layer: 'layer-b', visible: true, queryable: true}
-        ]
-      } as Map)
+          {layer: 'layer-b', visible: true, queryable: true},
+        ],
+      } as Map),
     ];
   });
   it('returns all visible topic IDs with all visible and queryable sublayer IDs (joined with ,) as QueryLayer list', () => {
@@ -33,7 +33,7 @@ describe('selectQueryLayers', () => {
 
     const expected: QueryLayer[] = [
       {topic: basicMockState[0].id, layersToQuery: basicMockState[0].settings.layers.map((l) => l.layer).join(',')},
-      {topic: basicMockState[1].id, layersToQuery: basicMockState[1].settings.layers.map((l) => l.layer).join(',')}
+      {topic: basicMockState[1].id, layersToQuery: basicMockState[1].settings.layers.map((l) => l.layer).join(',')},
     ];
     expect(actual).toEqual(expected);
   });
@@ -44,7 +44,7 @@ describe('selectQueryLayers', () => {
     const actual = selectQueryLayers.projector(basicMockState);
 
     const expected: QueryLayer[] = [
-      {topic: basicMockState[1].id, layersToQuery: basicMockState[1].settings.layers.map((l) => l.layer).join(',')}
+      {topic: basicMockState[1].id, layersToQuery: basicMockState[1].settings.layers.map((l) => l.layer).join(',')},
     ];
     expect(actual).toEqual(expected);
   });
@@ -56,7 +56,7 @@ describe('selectQueryLayers', () => {
 
     const expected: QueryLayer[] = [
       {topic: basicMockState[0].id, layersToQuery: basicMockState[0].settings.layers[1].layer},
-      {topic: basicMockState[1].id, layersToQuery: basicMockState[1].settings.layers.map((l) => l.layer).join(',')}
+      {topic: basicMockState[1].id, layersToQuery: basicMockState[1].settings.layers.map((l) => l.layer).join(',')},
     ];
     expect(actual).toEqual(expected);
   });
@@ -68,7 +68,7 @@ describe('selectQueryLayers', () => {
 
     const expected: QueryLayer[] = [
       {topic: basicMockState[0].id, layersToQuery: basicMockState[0].settings.layers[1].layer},
-      {topic: basicMockState[1].id, layersToQuery: basicMockState[1].settings.layers.map((l) => l.layer).join(',')}
+      {topic: basicMockState[1].id, layersToQuery: basicMockState[1].settings.layers.map((l) => l.layer).join(',')},
     ];
     expect(actual).toEqual(expected);
   });
@@ -81,7 +81,7 @@ describe('selectQueryLayers', () => {
 
     const expected: QueryLayer[] = [
       {topic: basicMockState[0].id, layersToQuery: ''},
-      {topic: basicMockState[1].id, layersToQuery: basicMockState[1].settings.layers.map((l) => l.layer).join(',')}
+      {topic: basicMockState[1].id, layersToQuery: basicMockState[1].settings.layers.map((l) => l.layer).join(',')},
     ];
     expect(actual).toEqual(expected);
   });
@@ -94,20 +94,20 @@ describe('selectQueryLayers', () => {
 
     const expected: QueryLayer[] = [
       {topic: basicMockState[0].id, layersToQuery: ''},
-      {topic: basicMockState[1].id, layersToQuery: basicMockState[1].settings.layers.map((l) => l.layer).join(',')}
+      {topic: basicMockState[1].id, layersToQuery: basicMockState[1].settings.layers.map((l) => l.layer).join(',')},
     ];
     expect(actual).toEqual(expected);
   });
 
   it('does not return layers other than Gb2WmsActiveMapItem', () => {
-    const drawingLayer = new DrawingActiveMapItem();
+    const drawingLayer = new DrawingActiveMapItem('', '');
     (basicMockState as ActiveMapItem[]).push(drawingLayer);
 
     const actual = selectQueryLayers.projector(basicMockState);
 
     const expected: QueryLayer[] = [
       {topic: basicMockState[0].id, layersToQuery: basicMockState[0].settings.layers.map((l) => l.layer).join(',')},
-      {topic: basicMockState[1].id, layersToQuery: basicMockState[1].settings.layers.map((l) => l.layer).join(',')}
+      {topic: basicMockState[1].id, layersToQuery: basicMockState[1].settings.layers.map((l) => l.layer).join(',')},
     ];
 
     expect(actual.length).toEqual(2);

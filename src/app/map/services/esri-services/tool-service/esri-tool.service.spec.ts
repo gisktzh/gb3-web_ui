@@ -4,15 +4,16 @@ import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {selectDrawingLayers} from '../../../../state/map/selectors/drawing-layers.selector';
 import {EsriMapMock} from '../../../../testing/map-testing/esri-map.mock';
 import {EsriMapViewService} from '../esri-map-view.service';
-import {EsriPointMeasurementStrategy} from './strategies/esri-point-measurement.strategy';
+import {EsriPointMeasurementStrategy} from './strategies/measurement/esri-point-measurement.strategy';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {UserDrawingLayer} from '../../../../shared/enums/drawing-layer.enum';
 import {DrawingActiveMapItem} from '../../../models/implementations/drawing.model';
-import {EsriLineMeasurementStrategy} from './strategies/esri-line-measurement.strategy';
-import {EsriAreaMeasurementStrategy} from './strategies/esri-area-measurement.strategy';
+import {EsriLineMeasurementStrategy} from './strategies/measurement/esri-line-measurement.strategy';
+import {EsriAreaMeasurementStrategy} from './strategies/measurement/esri-area-measurement.strategy';
 import {take, tap} from 'rxjs';
 import {ActiveMapItemActions} from '../../../../state/map/actions/active-map-item.actions';
 import {ActiveMapItemFactory} from '../../../../shared/factories/active-map-item.factory';
+import {MapConstants} from '../../../../shared/constants/map.constants';
 
 describe('EsriToolService', () => {
   let service: EsriToolService;
@@ -50,24 +51,29 @@ describe('EsriToolService', () => {
   });
 
   describe('Visibility Handling', () => {
+    let internalLayerId: string;
+    beforeEach(() => {
+      internalLayerId = MapConstants.INTERNAL_LAYER_PREFIX + UserDrawingLayer.Measurements;
+    });
+
     it('forces visibility if layer is present by dispatching an action', () => {
       // add the graphic layer to the view to avoid the initialization
       mapViewService.mapView.map.layers.add(
         new GraphicsLayer({
-          id: UserDrawingLayer.Measurements
+          id: internalLayerId
         })
       );
-      store.overrideSelector(selectDrawingLayers, [{id: UserDrawingLayer.Measurements} as DrawingActiveMapItem]);
+      store.overrideSelector(selectDrawingLayers, [{id: internalLayerId} as DrawingActiveMapItem]);
       store.refreshState();
 
-      service.startMeasurement('measure-point');
+      service.initializeMeasurement('measure-point');
 
       store.scannedActions$
         .pipe(
           take(1),
           tap((lastAction) => {
             const expected = {
-              activeMapItem: {id: UserDrawingLayer.Measurements},
+              activeMapItem: {id: internalLayerId},
               type: ActiveMapItemActions.forceFullVisibility.type
             };
             expect(lastAction).toEqual(expected);
@@ -76,14 +82,14 @@ describe('EsriToolService', () => {
         .subscribe();
     });
     it('adds a new mapitem if the layer is not present', () => {
-      service.startMeasurement('measure-point');
+      service.initializeMeasurement('measure-point');
 
       store.scannedActions$
         .pipe(
           take(1),
           tap((lastAction) => {
             const expected = {
-              activeMapItem: ActiveMapItemFactory.createDrawingMapItem(),
+              activeMapItem: ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Measurements, MapConstants.INTERNAL_LAYER_PREFIX),
               position: 0,
               type: ActiveMapItemActions.addActiveMapItem.type
             };
@@ -96,28 +102,29 @@ describe('EsriToolService', () => {
 
   describe('Strategy Handling', () => {
     beforeEach(() => {
+      const internalLayerId = MapConstants.INTERNAL_LAYER_PREFIX + UserDrawingLayer.Measurements;
       // add the graphic layer to the view to avoid the initialization
       mapViewService.mapView.map.layers.add(
         new GraphicsLayer({
-          id: UserDrawingLayer.Measurements
+          id: internalLayerId
         })
       );
-      store.overrideSelector(selectDrawingLayers, [{id: UserDrawingLayer.Measurements} as DrawingActiveMapItem]);
+      store.overrideSelector(selectDrawingLayers, [{id: internalLayerId} as DrawingActiveMapItem]);
       store.refreshState();
     });
     it(`sets the correct strategy for point measurement`, () => {
       const pointSpy = spyOn(EsriPointMeasurementStrategy.prototype, 'start');
-      service.startMeasurement('measure-point');
+      service.initializeMeasurement('measure-point');
       expect(pointSpy).toHaveBeenCalled();
     });
     it(`sets the correct strategy for line measurement`, () => {
       const lineSpy = spyOn(EsriLineMeasurementStrategy.prototype, 'start');
-      service.startMeasurement('measure-line');
+      service.initializeMeasurement('measure-line');
       expect(lineSpy).toHaveBeenCalled();
     });
     it(`sets the correct strategy for area measurement`, () => {
       const polygonSpy = spyOn(EsriAreaMeasurementStrategy.prototype, 'start');
-      service.startMeasurement('measure-area');
+      service.initializeMeasurement('measure-area');
       expect(polygonSpy).toHaveBeenCalled();
     });
   });

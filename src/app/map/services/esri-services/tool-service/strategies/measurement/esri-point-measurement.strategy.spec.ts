@@ -1,7 +1,7 @@
 import {EsriPointMeasurementStrategy} from './esri-point-measurement.strategy';
 import MapView from '@arcgis/core/views/MapView';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
-import {UserDrawingLayer} from '../../../../../shared/enums/drawing-layer.enum';
+import {UserDrawingLayer} from '../../../../../../shared/enums/drawing-layer.enum';
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import Map from '@arcgis/core/Map';
@@ -106,6 +106,17 @@ describe('EsriPointMeasurementStrategy', () => {
 
       const addedGraphic = layer.graphics.getItemAt(0);
       expect((addedGraphic.symbol as TextSymbol).text).toEqual(`${location.x}/${location.y}`);
+    });
+  });
+
+  describe('mode', () => {
+    it('sets mode to click', () => {
+      const strategy = new EsriPointMeasurementStrategyWrapper(layer, mapView, pointSymbol, textSymbol, () => callbackHandler.handle());
+      const spy = spyOn(strategy.svm, 'create');
+
+      strategy.start();
+
+      expect(spy).toHaveBeenCalledOnceWith('point', {mode: 'click'});
     });
   });
 });
