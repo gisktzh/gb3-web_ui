@@ -1,0 +1,27 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.gb2-exit-button {
+  rotate: -45deg;
+
+  &--highlighted {
+    background-color: ktzh-variables.$zh-light-grey;
+  }
+
+  &--small {
+    /**
+      Override the size of the button to the (fixed) 30px size of figma.
+      Adapted from https://stackoverflow.com/a/57759753 for use with SvgIcon.
+     */
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    .mat-mdc-button-touch-target {
+      width: 30px;
+      height: 30px;
+    }
+  }
+}
