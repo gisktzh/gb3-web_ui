@@ -39,6 +39,7 @@
         [disabled]="invalid"
         data-test-id="add-active-map"
         mat-icon-button
+        *ngIf="!fullGb2Url"
       >
         <mat-icon [fontIcon]="invalid ? 'error' : 'add'" [color]="invalid ? 'warn' : null"></mat-icon>
       </button>
@@ -49,6 +50,17 @@
       [ngClass]="{'base-map-data-item__header__title--disabled': invalid}"
       matTooltip="{{ title }}"
     ></p>
+    <a
+      class="base-map-data-item__header__gb2-link"
+      [href]="fullGb2Url"
+      mat-icon-button
+      *ngIf="fullGb2Url"
+      target="_blank"
+      rel="noopener noreferrer"
+      matTooltip="Diese Karte ist noch nicht im neuen GIS-Browser verfügbar. Öffnen Sie die Karte im alten GIS-Browser mit diesem Link."
+    >
+      <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
+    </a>
     <button (click)="deleteItem()" mat-icon-button *ngIf="showDeleteButton">
       <mat-icon>delete</mat-icon>
     </button>
