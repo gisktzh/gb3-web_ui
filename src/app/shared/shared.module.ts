@@ -15,6 +15,7 @@ import {PageNotificationComponent} from './components/page-notification/page-not
 import {MainFooterComponent} from './components/footer/main-footer.component';
 import {ScrollbarWidthCalculationComponent} from './components/scrollbar-width-calculation/scrollbar-width-calculation.component';
 import {KeyValuePreserveOrderPipe} from './pipes/key-value-preserve-order.pipe';
+import {FullGb2ExitUrlPipe} from './pipes/full-gb2-exit-url.pipe';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import {KeyValuePreserveOrderPipe} from './pipes/key-value-preserve-order.pipe';
     PageNotificationComponent,
     MainFooterComponent,
     ScrollbarWidthCalculationComponent,
-    KeyValuePreserveOrderPipe
+    KeyValuePreserveOrderPipe,
+    FullGb2ExitUrlPipe
   ],
   imports: [MaterialModule, RouterModule, CommonModule, ResizableModule],
   exports: [
@@ -46,7 +48,8 @@ import {KeyValuePreserveOrderPipe} from './pipes/key-value-preserve-order.pipe';
     PageNotificationComponent,
     MainFooterComponent,
     ScrollbarWidthCalculationComponent,
-    KeyValuePreserveOrderPipe
+    KeyValuePreserveOrderPipe,
+    FullGb2ExitUrlPipe
   ]
 })
 export class SharedModule {}

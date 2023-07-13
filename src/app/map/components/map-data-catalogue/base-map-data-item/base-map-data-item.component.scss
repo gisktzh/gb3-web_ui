@@ -87,27 +87,6 @@
       }
     }
 
-    .base-map-data-item__header__gb2-link {
-      rotate: -45deg;
-      background-color: ktzh-variables.$zh-light-grey;
-
-      /**
-        Override the size of the button to the (fixed) 30px size of figma.
-        Adapted from https://stackoverflow.com/a/57759753 for use with SvgIcon.
-       */
-      width: 30px !important;
-      height: 30px !important;
-      padding: 0 !important;
-      display: inline-flex !important;
-      align-items: center;
-      justify-content: center;
-
-      .mat-mdc-button-touch-target {
-        width: 30px !important;
-        height: 30px !important;
-      }
-    }
-
     .base-map-data-item__header__loader {
       @include mixins.position-element-at-bottom-with-full-width;
     }

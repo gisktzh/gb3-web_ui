@@ -1,4 +1,4 @@
-import {Component, Inject, Input} from '@angular/core';
+import {Component, Inject, Input, OnDestroy, OnInit} from '@angular/core';
 import {SearchResultMatch} from '../../../../../shared/services/apis/search/interfaces/search-result-match.interface';
 import {Map} from '../../../../../shared/interfaces/topic.interface';
 import {Store} from '@ngrx/store';
@@ -8,6 +8,9 @@ import {ActiveMapItem} from '../../../../models/active-map-item.model';
 import {ActiveMapItemActions} from '../../../../../state/map/actions/active-map-item.actions';
 import {SearchIndexType} from '../../../../../shared/types/search-index-type';
 import {ActiveMapItemFactory} from '../../../../../shared/factories/active-map-item.factory';
+import {selectMapConfigState} from '../../../../../state/map/reducers/map-config.reducer';
+import {Subscription, tap} from 'rxjs';
+import {MapConfigState} from '../../../../../state/map/states/map-config.state';
 
 const DEFAULT_ZOOM_SCALE = 1000;
 
@@ -16,14 +19,34 @@ const DEFAULT_ZOOM_SCALE = 1000;
   templateUrl: './result-group.component.html',
   styleUrls: ['./result-group.component.scss']
 })
-export class ResultGroupComponent {
+export class ResultGroupComponent implements OnInit, OnDestroy {
   @Input() public searchResults: SearchResultMatch[] = [];
   @Input() public filteredMaps: Map[] = [];
   @Input() public type: SearchIndexType = 'default';
   @Input() public header: string = '';
   @Input() public searchTerms: string[] = [];
 
+  public mapConfigState?: MapConfigState;
+  private readonly mapConfigState$ = this.store.select(selectMapConfigState);
+  private readonly subscriptions: Subscription = new Subscription();
+
   constructor(private readonly store: Store, @Inject(MAP_SERVICE) private readonly mapService: MapService) {}
+
+  public ngOnInit() {
+    this.subscriptions.add(
+      this.mapConfigState$
+        .pipe(
+          tap((mapConfigState) => {
+            this.mapConfigState = mapConfigState;
+          })
+        )
+        .subscribe()
+    );
+  }
+
+  public ngOnDestroy() {
+    this.subscriptions.unsubscribe();
+  }
 
   public zoomToResult(searchResult: SearchResultMatch) {
     if (searchResult.geometry) {

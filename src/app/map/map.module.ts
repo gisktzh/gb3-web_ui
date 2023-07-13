@@ -51,6 +51,7 @@ import {ShareLinkDialogComponent} from './components/share-link-dialog/share-lin
 import {MeasurementToolsComponent} from './components/map-tools/measurement-tools/measurement-tools.component';
 import {DrawingToolsComponent} from './components/map-tools/drawing-tools/drawing-tools.component';
 import {AbstractToolsComponent} from './components/map-tools/abstract-tools/abstract-tools.component';
+import {Gb2ExitButtonComponent} from './components/gb2-exit-button/gb2-exit-button.component';
 
 @NgModule({
   declarations: [
@@ -100,7 +101,8 @@ import {AbstractToolsComponent} from './components/map-tools/abstract-tools/abst
     ShareLinkDialogComponent,
     MeasurementToolsComponent,
     DrawingToolsComponent,
-    AbstractToolsComponent
+    AbstractToolsComponent,
+    Gb2ExitButtonComponent
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule, KtZhDesignSystemModule]
 })
