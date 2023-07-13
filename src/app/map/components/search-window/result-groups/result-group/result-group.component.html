@@ -12,7 +12,10 @@
 <div *ngIf="type === 'map'" class="result-group__container">
   <mat-card *ngFor="let map of filteredMaps" class="result-group__container__element">
     <mat-card-content class="result-group__container__element__map-content">
-      <gb2-exit-button *ngIf="map.gb2Url; else addToMap" [url]="map.gb2Url | fullGb2ExitUrl : mapConfigState"></gb2-exit-button>
+      <gb2-exit-button
+        *ngIf="map.gb2Url; else addToMap"
+        [url]="map.gb2Url | appendMapConfigurationToUrl : mapConfigState"
+      ></gb2-exit-button>
       <ng-template #addToMap>
         <button (click)="addActiveMap(map)" color="primary" data-test-id="add-active-map" mat-icon-button>
           <mat-icon>add</mat-icon>

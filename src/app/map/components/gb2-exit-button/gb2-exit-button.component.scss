@@ -12,16 +12,16 @@
       Override the size of the button to the (fixed) 30px size of figma.
       Adapted from https://stackoverflow.com/a/57759753 for use with SvgIcon.
      */
-    width: 30px !important;
-    height: 30px !important;
-    padding: 0 !important;
-    display: inline-flex !important;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
 
     .mat-mdc-button-touch-target {
-      width: 30px !important;
-      height: 30px !important;
+      width: 30px;
+      height: 30px;
     }
   }
 }

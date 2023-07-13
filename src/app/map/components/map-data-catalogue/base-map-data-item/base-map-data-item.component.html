@@ -36,12 +36,12 @@
       <button
         (click)="addItem()"
         *ngIf="!gb2Url"
-        [disabled]="invalid"
+        [disabled]="invalid === true"
         class="base-map-data-item__header__image-container__button"
         data-test-id="add-active-map"
         mat-icon-button
       >
-        <mat-icon [color]="invalid ? 'warn' : null" [fontIcon]="invalid ? 'error' : 'add'"></mat-icon>
+        <mat-icon [color]="invalid === true ? 'warn' : null" [fontIcon]="invalid ? 'error' : 'add'"></mat-icon>
       </button>
     </div>
     <p
@@ -55,7 +55,7 @@
       [color]="'accent'"
       [highlighted]="true"
       [size]="'small'"
-      [url]="gb2Url | fullGb2ExitUrl : mapConfigState"
+      [url]="gb2Url | appendMapConfigurationToUrl : mapConfigState"
     ></gb2-exit-button>
     <button (click)="deleteItem()" *ngIf="showDeleteButton" mat-icon-button>
       <mat-icon>delete</mat-icon>
