@@ -2,20 +2,9 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {LoadingState} from '../../../../shared/types/loading-state';
 import {Store} from '@ngrx/store';
-import {BehaviorSubject, combineLatestWith, filter, Subscription, take, tap} from 'rxjs';
-import {
-  selectCreationLoadingState,
-  selectCreationResponse,
-  selectInfo,
-  selectInfoLoadingState
-} from '../../../../state/map/reducers/print.reducer';
-import {
-  PrintCreation,
-  PrintCreationLayer,
-  PrintCreationResponse,
-  PrintInfo,
-  PrintOrientation
-} from '../../../../shared/interfaces/print.interface';
+import {BehaviorSubject, combineLatestWith, distinctUntilChanged, filter, Subscription, take, tap} from 'rxjs';
+import {selectCreationLoadingState, selectInfo, selectInfoLoadingState} from '../../../../state/map/reducers/print.reducer';
+import {PrintCreation, PrintCreationLayer, PrintInfo, PrintOrientation} from '../../../../shared/interfaces/print.interface';
 import {PrintActions} from '../../../../state/map/actions/print.actions';
 import {MapConfigState} from '../../../../state/map/states/map-config.state';
 import {selectMapConfigState} from '../../../../state/map/reducers/map-config.reducer';
@@ -25,6 +14,7 @@ import {MapConstants} from '../../../../shared/constants/map.constants';
 import {BasemapConfigService} from '../../../services/basemap-config.service';
 import {MapUiActions} from '../../../../state/map/actions/map-ui.actions';
 import {Gb2Constants} from '../../../../shared/constants/gb2.constants';
+import {map} from 'rxjs/operators';
 
 interface PrintForm {
   title: FormControl<string | null>;
@@ -60,7 +50,6 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
 
   public printInfo?: PrintInfo;
   public printInfoLoadingState: LoadingState = 'undefined';
-  public printCreationResponse?: PrintCreationResponse;
   public printCreationLoadingState: LoadingState = 'undefined';
   public mapConfigState?: MapConfigState;
   public activeMapItems?: ActiveMapItem[];
@@ -97,13 +86,31 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
   }
 
   private initSubscriptions() {
+    // update form state and adjust print preview
     this.subscriptions.add(
-      this.store
-        .select(selectInfoLoadingState)
+      this.formGroup.valueChanges
         .pipe(
-          tap((printInfoLoadingState) => {
-            this.printInfoLoadingState = printInfoLoadingState;
-            this.updateFormGroupState();
+          combineLatestWith(this.isFormInitialized),
+          filter(([_, isFormInitialized]) => isFormInitialized),
+          tap(([value, _]) => {
+            this.updateFormGroupControlsState();
+          }),
+          // for the print preview we only use some properties and only if they've changed
+          map(([value, _]) => ({
+            layoutSize: value.layoutSize,
+            layoutOrientation: value.layoutOrientation,
+            scale: value.scale,
+            rotation: value.rotation
+          })),
+          distinctUntilChanged(
+            (previous, current) =>
+              previous.layoutSize === current.layoutSize &&
+              previous.layoutOrientation === current.layoutOrientation &&
+              previous.scale === current.scale &&
+              previous.rotation === current.rotation
+          ),
+          tap((value) => {
+            this.updatePrintPreview(value.layoutSize, value.layoutOrientation, value.scale, value.rotation);
           })
         )
         .subscribe()
@@ -127,6 +134,18 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
 
     this.subscriptions.add(
       this.store
+        .select(selectInfoLoadingState)
+        .pipe(
+          tap((printInfoLoadingState) => {
+            this.printInfoLoadingState = printInfoLoadingState;
+            this.updateFormGroupState();
+          })
+        )
+        .subscribe()
+    );
+
+    this.subscriptions.add(
+      this.store
         .select(selectCreationLoadingState)
         .pipe(
           tap((printCreationLoadingState) => {
@@ -139,37 +158,10 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
 
     this.subscriptions.add(
       this.store
-        .select(selectCreationResponse)
-        .pipe(
-          tap((printCreationResponse) => {
-            this.printCreationResponse = printCreationResponse;
-          })
-        )
-        .subscribe()
-    );
-
-    this.subscriptions.add(
-      this.store
         .select(selectMapConfigState)
         .pipe(
           tap((mapConfigState) => {
             this.mapConfigState = mapConfigState;
-          })
-        )
-        .subscribe()
-    );
-
-    // update form state and adjust print preview
-    this.subscriptions.add(
-      this.formGroup.valueChanges
-        .pipe(
-          tap((value) => console.log(`${value.layoutOrientation} (before)`)),
-          combineLatestWith(this.isFormInitialized),
-          tap(([value, init]) => console.log(`${value.layoutOrientation}, ${init}`)),
-          filter(([_, isFormInitialized]) => isFormInitialized),
-          tap(([value, _]) => {
-            this.updateFormGroupControlsState();
-            this.updatePrintPreview(value.layoutSize, value.layoutOrientation, value.scale, value.rotation);
           })
         )
         .subscribe()
@@ -194,7 +186,6 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     rotation: number | null | undefined
   ) {
     const currentLayout = this.printInfo?.layouts.find((layout) => layout.size === layoutSize && layout.orientation === layoutOrientation);
-    console.log(`value changed ${layoutSize}, ${layoutOrientation}, ${scale}, ${rotation}`);
     this.store.dispatch(
       PrintActions.showPrintPreview({
         scale: scale ?? 0,
@@ -238,7 +229,6 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
   }
 
   private initializeDefaultFormValues(printInfo: PrintInfo | undefined, currentScale: number) {
-    console.log(`init: ${printInfo}`);
     const defaultLayout = printInfo?.layouts[0];
     const defaultScale = printInfo?.scales
       .map((scale) => scale.value)
@@ -265,7 +255,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
   private createPrintCreation(): PrintCreation {
     const value = this.formGroup.value;
     return {
-      units: 'm', // TODO: where does this unit come from and for what is it used?
+      units: 'm', // TODO: where does this unit come from and for what is it used for?
       dpi: value.dpi ?? 0,
       layoutSize: value.layoutSize ?? '',
       layoutOrientation: value.layoutOrientation ?? undefined,
@@ -314,7 +304,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
                 type: 'WMS',
                 opacity: activeMapItem.opacity,
                 customParams: {
-                  dpi: 96, // TODO: where does this come from and what is it used for?
+                  dpi: MapConstants.DEFAULT_DPI, // TODO: where does this come from and what is it used for?
                   transparent: true, // TODO: where does this come from and what is it used for?
                   format: Gb2Constants.WMS_IMAGE_FORMAT_MIME_TYPE
                 },
@@ -342,7 +332,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
             type: 'WMS',
             opacity: 1,
             customParams: {
-              dpi: 96, // TODO: where does this come from and what is it used for?
+              dpi: MapConstants.DEFAULT_DPI, // TODO: where does this come from and what is it used for?
               transparent: true, // TODO: where does this come from and what is it used for?
               format: Gb2Constants.WMS_IMAGE_FORMAT_MIME_TYPE
             },

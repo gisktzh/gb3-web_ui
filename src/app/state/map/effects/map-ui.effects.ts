@@ -6,7 +6,7 @@ import {LegendActions} from '../actions/legend.actions';
 import {ShareLinkActions} from '../actions/share-link.actions';
 import {selectCurrentShareLinkItem} from '../selectors/current-share-link-item.selector';
 import {Store} from '@ngrx/store';
-import {filter, tap} from 'rxjs';
+import {combineLatestWith, filter, tap} from 'rxjs';
 import {ShareLinkDialogComponent} from '../../../map/components/share-link-dialog/share-link-dialog.component';
 import {PanelClass} from '../../../shared/enums/panel-class.enum';
 import {MatDialog} from '@angular/material/dialog';
@@ -18,6 +18,7 @@ import {FavouriteDeletionDialogComponent} from '../../../map/components/favourit
 import {Favourite} from '../../../shared/interfaces/favourite.interface';
 import {ToolActions} from '../actions/tool.actions';
 import {PrintActions} from '../actions/print.actions';
+import {selectActiveTool} from '../reducers/tool.reducer';
 
 const CREATE_FAVOURITE_DIALOG_MAX_WIDTH = 500;
 const DELETE_FAVOURITE_DIALOG_MAX_WIDTH = 500;
@@ -137,7 +138,8 @@ export class MapUiEffects {
   public dispatchToolCancellationOnUiAction = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapUiActions.changeUiElementsVisibility),
-      filter(({hideAllUiElements}) => hideAllUiElements),
+      combineLatestWith(this.store.select(selectActiveTool)),
+      filter(([{hideAllUiElements}, activeTool]) => hideAllUiElements && activeTool !== undefined),
       map(() => ToolActions.cancelTool())
     );
   });

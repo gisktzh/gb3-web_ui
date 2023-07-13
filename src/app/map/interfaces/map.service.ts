@@ -68,7 +68,7 @@ export interface MapService extends AddToMapVisitor {
   /**
    * Zooms to the extent of a given geometry
    * @param geometry The geometry to which extents shall be zoomed
-   * @param expandFactor An optional factor (default: 1) that expands the geometry extend by this number.
+   * @param expandFactor An optional factor (default: 1) that expands the geometry's extent by this number.
    * @param animationDuration An optional duration in milliseconds (default: 0) for the animation to pan/zoom to the given extent.
    */
   zoomToExtent(geometry: GeometryWithSrs, expandFactor?: number, animationDuration?: number): void;

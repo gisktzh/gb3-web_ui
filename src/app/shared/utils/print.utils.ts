@@ -12,15 +12,17 @@ export class PrintUtils {
   }
 
   public static createPrintPreviewArea(center: {x: number; y: number}, extentWidth: number, extentHeight: number): PolygonWithSrs {
+    const halfExtentWidth = extentWidth / 2;
+    const halfExtentHeight = extentHeight / 2;
     const printPreviewArea: PolygonWithSrs = {
       srs: MapConstants.DEFAULT_SRS,
       type: 'Polygon',
       coordinates: [
         [
-          [center.x - extentWidth, center.y - extentHeight],
-          [center.x - extentWidth, center.y + extentHeight],
-          [center.x + extentWidth, center.y + extentHeight],
-          [center.x + extentWidth, center.y - extentHeight]
+          [center.x - halfExtentWidth, center.y - halfExtentHeight],
+          [center.x - halfExtentWidth, center.y + halfExtentHeight],
+          [center.x + halfExtentWidth, center.y + halfExtentHeight],
+          [center.x + halfExtentWidth, center.y - halfExtentHeight]
         ]
       ]
     };
