@@ -27,9 +27,9 @@ describe('EsriToolService', () => {
         provideMockStore({selectors: [{selector: selectDrawingLayers, value: []}]}),
         {
           provide: EsriMapViewService,
-          useValue: mapViewService
-        }
-      ]
+          useValue: mapViewService,
+        },
+      ],
     });
     service = TestBed.inject(EsriToolService);
     store = TestBed.inject(MockStore);
@@ -40,9 +40,11 @@ describe('EsriToolService', () => {
     mapViewService = TestBed.inject(EsriMapViewService);
     mapViewService.mapView = {
       map: mapMock,
+      addHandles<T>(handles: IHandle | IHandle[], groupKey?: GroupKey<T>) {},
+      removeHandles<T>(groupKey?: GroupKey<T>) {},
       on(type: string | string[], listener: __esri.EventHandler): IHandle {
         return {} as IHandle;
-      }
+      },
     } as __esri.MapView;
   });
 
@@ -60,7 +62,7 @@ describe('EsriToolService', () => {
       // add the graphic layer to the view to avoid the initialization
       mapViewService.mapView.map.layers.add(
         new GraphicsLayer({
-          id: internalLayerId
+          id: internalLayerId,
         })
       );
       store.overrideSelector(selectDrawingLayers, [{id: internalLayerId} as DrawingActiveMapItem]);
@@ -74,7 +76,7 @@ describe('EsriToolService', () => {
           tap((lastAction) => {
             const expected = {
               activeMapItem: {id: internalLayerId},
-              type: ActiveMapItemActions.forceFullVisibility.type
+              type: ActiveMapItemActions.forceFullVisibility.type,
             };
             expect(lastAction).toEqual(expected);
           })
@@ -91,12 +93,30 @@ describe('EsriToolService', () => {
             const expected = {
               activeMapItem: ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Measurements, MapConstants.INTERNAL_LAYER_PREFIX),
               position: 0,
-              type: ActiveMapItemActions.addActiveMapItem.type
+              type: ActiveMapItemActions.addActiveMapItem.type,
             };
             expect(lastAction).toEqual(expected);
           })
         )
         .subscribe();
+    });
+
+    it('adds an Esri handle for this service group on drawing start', () => {
+      // add the graphic layer to the view to avoid the initialization
+      const spy = spyOn(mapViewService.mapView, 'addHandles');
+      mapViewService.mapView.map.layers.add(
+        new GraphicsLayer({
+          id: internalLayerId,
+        })
+      );
+      store.overrideSelector(selectDrawingLayers, [{id: internalLayerId} as DrawingActiveMapItem]);
+      store.refreshState();
+
+      service.initializeMeasurement('measure-point');
+
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect((spy.calls.first().args[0] as any).remove).toBeDefined(); // we know that it must be a WatchHandle
+      expect(spy.calls.first().args[1]).toEqual('EsriToolService');
     });
   });
 
@@ -106,7 +126,7 @@ describe('EsriToolService', () => {
       // add the graphic layer to the view to avoid the initialization
       mapViewService.mapView.map.layers.add(
         new GraphicsLayer({
-          id: internalLayerId
+          id: internalLayerId,
         })
       );
       store.overrideSelector(selectDrawingLayers, [{id: internalLayerId} as DrawingActiveMapItem]);

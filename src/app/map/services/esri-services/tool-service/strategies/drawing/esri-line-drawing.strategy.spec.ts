@@ -24,27 +24,27 @@ describe('EsriLineDrawingStrategy', () => {
   const callbackHandler = {
     handle: () => {
       return undefined;
-    }
+    },
   };
 
   beforeEach(() => {
     mapView = new MapView({map: new Map()});
     layer = new GraphicsLayer({
-      id: UserDrawingLayer.Measurements
+      id: UserDrawingLayer.Measurements,
     });
     mapView.map.layers.add(layer);
     lineSymbol = new SimpleLineSymbol();
   });
 
   describe('cancellation', () => {
-    it('fires the callback handler on cancel', () => {
+    it('does not fire the callback handler on cancel', () => {
       const callbackSpy = spyOn(callbackHandler, 'handle');
       const strategy = new EsriLineDrawingStrategyWrapper(layer, mapView, lineSymbol, () => callbackHandler.handle());
 
       strategy.start();
       strategy.svm.emit('create', {state: 'cancel', graphic: new Graphic()});
 
-      expect(callbackSpy).toHaveBeenCalled();
+      expect(callbackSpy).not.toHaveBeenCalled();
     });
   });
 
@@ -58,10 +58,10 @@ describe('EsriLineDrawingStrategy', () => {
           paths: [
             [
               [0, 0],
-              [12, 0]
-            ]
-          ]
-        })
+              [12, 0],
+            ],
+          ],
+        }),
       });
 
       strategy.start();
