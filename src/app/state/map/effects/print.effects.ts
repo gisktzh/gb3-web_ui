@@ -5,13 +5,12 @@ import {catchError, map} from 'rxjs/operators';
 import {PrintActions} from '../actions/print.actions';
 import {Gb3PrintService} from '../../../shared/services/apis/gb3/gb3-print.service';
 import {DOCUMENT} from '@angular/common';
-import {Store} from '@ngrx/store';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {PrintUtils} from '../../../shared/utils/print.utils';
 
 @Injectable()
 export class PrintEffects {
-  public dispatchPrintInfoRequest$ = createEffect(() => {
+  public setPrintInfoAfterSuccessfullyLoading$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(PrintActions.loadPrintInfo),
       switchMap(() =>
@@ -19,13 +18,13 @@ export class PrintEffects {
           map((printInfo) => {
             return PrintActions.setPrintInfo({info: printInfo});
           }),
-          catchError(() => EMPTY) // todo error handling
-        )
-      )
+          catchError(() => EMPTY), // todo error handling
+        ),
+      ),
     );
   });
 
-  public dispatchPrintCreationRequest$ = createEffect(() => {
+  public setPrintCreationAfterSuccessfullyLoading$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(PrintActions.requestPrintCreation),
       switchMap((value) =>
@@ -33,19 +32,19 @@ export class PrintEffects {
           map((printCreationResponse) => {
             return PrintActions.setPrintCreationResponse({creationResponse: printCreationResponse});
           }),
-          catchError(() => EMPTY) // todo error handling
-        )
-      )
+          catchError(() => EMPTY), // todo error handling
+        ),
+      ),
     );
   });
 
-  public dispatchPrintCreationResponseRequest$ = createEffect(() => {
+  public openPrintDocumentInNewTab$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(PrintActions.setPrintCreationResponse),
       map((value) => {
         this.document.defaultView?.window.open(value.creationResponse.getURL, '_blank');
         return PrintActions.clearPrintCreation();
-      })
+      }),
     );
   });
 
@@ -53,13 +52,13 @@ export class PrintEffects {
     () => {
       return this.actions$.pipe(
         ofType(PrintActions.showPrintPreview),
-        tap(({width, height, scale, rotation}) => {
+        switchMap(({width, height, scale, rotation}) => {
           const {extentWidth, extentHeight} = PrintUtils.calculateGb2PrintPreviewExtent(width, height, scale);
-          this.mapDrawingService.startDrawPrintPreview(extentWidth, extentHeight, rotation);
-        })
+          return this.mapDrawingService.startDrawPrintPreview(extentWidth, extentHeight, rotation);
+        }),
       );
     },
-    {dispatch: false}
+    {dispatch: false},
   );
 
   public removePrintPreview = createEffect(
@@ -68,17 +67,16 @@ export class PrintEffects {
         ofType(PrintActions.removePrintPreview),
         tap(() => {
           this.mapDrawingService.stopDrawPrintPreview();
-        })
+        }),
       );
     },
-    {dispatch: false}
+    {dispatch: false},
   );
 
   constructor(
     private readonly actions$: Actions,
     private readonly printService: Gb3PrintService,
     @Inject(DOCUMENT) private readonly document: Document,
-    private readonly store: Store,
-    private readonly mapDrawingService: MapDrawingService
+    private readonly mapDrawingService: MapDrawingService,
   ) {}
 }

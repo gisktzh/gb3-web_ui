@@ -59,7 +59,7 @@ export class MapServiceStub implements MapService {
     return {} as ToolService;
   }
 
-  startDrawPrintPreview(extentWidth: number, extentHeight: number, rotation: number) {}
+  public async startDrawPrintPreview(extentWidth: number, extentHeight: number, rotation: number) {}
 
-  stopDrawPrintPreview() {}
+  public stopDrawPrintPreview() {}
 }

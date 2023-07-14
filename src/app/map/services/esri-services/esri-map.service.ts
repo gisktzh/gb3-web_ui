@@ -33,7 +33,7 @@ import {
   EsriSpatialReference,
   EsriTileInfo,
   EsriWMSLayer,
-  EsriWMSSublayer
+  EsriWMSSublayer,
 } from './esri.module';
 import {TimeSliderConfiguration, TimeSliderLayerSource, TimeSliderParameterSource} from '../../../shared/interfaces/topic.interface';
 import {TimeExtent} from '../../interfaces/time-extent.interface';
@@ -41,7 +41,6 @@ import {MapConfigState} from '../../../state/map/states/map-config.state';
 import {GeometryWithSrs, PointWithSrs, PolygonWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {InternalDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {EsriSymbolizationService} from './esri-symbolization.service';
-import {MapConstants} from '../../../shared/constants/map.constants';
 import {EsriMapViewService} from './esri-map-view.service';
 import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
 import {DrawingActiveMapItem} from '../../models/implementations/drawing.model';
@@ -50,15 +49,19 @@ import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
 import {PrintUtils} from '../../../shared/utils/print.utils';
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
+const DEFAULT_PRINT_PREVIEW_ANIMATION_DURATION_IN_MS = 500;
+const DEFAULT_PRINT_PREVIEW_EXPAND_FACTOR = 1.5;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class EsriMapService implements MapService {
   private scaleBar?: __esri.ScaleBar;
   private effectiveMaxZoom = 23;
   private effectiveMinZoom = 0;
   private effectiveMinScale = 0;
+  private printPreviewCenter: __esri.Point = new EsriPoint();
+  private printPreviewHandle?: IHandle;
   private readonly defaultMapConfig: MapConfigState = this.configService.mapConfig.defaultMapConfig;
   private readonly numberOfDrawingLayers = Object.keys(InternalDrawingLayer).length;
   private readonly subscriptions: Subscription = new Subscription();
@@ -76,7 +79,7 @@ export class EsriMapService implements MapService {
     private readonly authService: AuthService,
     private readonly esriSymbolizationService: EsriSymbolizationService,
     private readonly esriMapViewService: EsriMapViewService,
-    private readonly esriToolService: EsriToolService
+    private readonly esriToolService: EsriToolService,
   ) {
     /**
      * Because the GetCapabalities response often sends a non-secure http://wms.zh.ch response, Esri Javascript API fails on https
@@ -147,7 +150,7 @@ export class EsriMapService implements MapService {
           activeMapItems.forEach((mapItem, position) => {
             mapItem.addToMap(this, position);
           });
-        })
+        }),
       )
       .subscribe();
   }
@@ -157,7 +160,7 @@ export class EsriMapService implements MapService {
       return;
     }
     const graphicsLayer = new EsriGraphicsLayer({
-      id: mapItem.id
+      id: mapItem.id,
     });
 
     const index = this.getIndexForPosition(position);
@@ -181,9 +184,9 @@ export class EsriMapService implements MapService {
           id: layer.id,
           name: layer.layer,
           title: layer.title,
-          visible: layer.visible
+          visible: layer.visible,
         } as __esri.WMSSublayerProperties;
-      })
+      }),
     });
     if (mapItem.settings.timeSliderExtent) {
       // apply initial time slider settings
@@ -243,7 +246,7 @@ export class EsriMapService implements MapService {
     const {
       center: {x, y},
       srsId,
-      scale
+      scale,
     } = this.defaultMapConfig;
     this.mapView.center = new EsriPoint({x: x, y: y, spatialReference: new EsriSpatialReference({wkid: srsId})});
     this.mapView.scale = scale;
@@ -261,7 +264,7 @@ export class EsriMapService implements MapService {
 
   public setMapCenter(center: PointWithSrs): Promise<never> {
     return this.mapView.goTo({
-      center: this.createGeoReferencedPoint(center)
+      center: this.createGeoReferencedPoint(center),
     }) as never;
   }
 
@@ -309,28 +312,29 @@ export class EsriMapService implements MapService {
   public zoomToPoint(point: PointWithSrs, scale: number): Promise<never> {
     return this.mapView.goTo({
       center: this.createGeoReferencedPoint(point),
-      scale: scale
+      scale: scale,
     }) as never;
   }
 
-  public zoomToExtent(geometry: GeometryWithSrs, expandFactor: number = 1, duration: number = 0): Promise<never> {
+  public zoomToExtent(geometry: GeometryWithSrs, expandFactor: number = 1, duration?: number): Promise<never> {
     const esriGeometry = this.geoJSONMapperService.fromGeoJSONToEsri(geometry);
+    const center = esriGeometry.extent.clone().expand(expandFactor);
 
     if (esriGeometry instanceof EsriPoint) {
       return this.mapView.goTo(
         {
-          center: esriGeometry.extent.clone().expand(expandFactor),
-          scale: DEFAULT_POINT_ZOOM_EXTENT_SCALE
+          center: center,
+          scale: DEFAULT_POINT_ZOOM_EXTENT_SCALE,
         },
-        {duration}
+        {duration},
       ) as never;
     }
 
     return this.mapView.goTo(
       {
-        center: esriGeometry.extent.clone().expand(expandFactor)
+        center: center,
       },
-      {duration}
+      {duration},
     ) as never;
   }
 
@@ -338,18 +342,6 @@ export class EsriMapService implements MapService {
     const symbolization = this.esriSymbolizationService.createSymbolizationForDrawingLayer(geometry, drawingLayer);
     const esriGeometry = this.geoJSONMapperService.fromGeoJSONToEsri(geometry);
     this.addEsriGeometryToDrawingLayer(esriGeometry, symbolization, drawingLayer);
-  }
-
-  private addEsriGeometryToDrawingLayer(
-    esriGeometry: __esri.Geometry,
-    esriSymbolization: __esri.Symbol,
-    drawingLayer: InternalDrawingLayer
-  ) {
-    const graphicItem = new EsriGraphic({geometry: esriGeometry, symbol: esriSymbolization});
-    const targetLayer = this.esriMapViewService.findEsriLayer(this.createDrawingLayerId(drawingLayer));
-    if (targetLayer) {
-      (targetLayer as __esri.GraphicsLayer).add(graphicItem);
-    }
   }
 
   public clearDrawingLayer(drawingLayer: InternalDrawingLayer) {
@@ -364,37 +356,23 @@ export class EsriMapService implements MapService {
     return this.esriToolService;
   }
 
-  private printPreviewCenter: __esri.Point = new EsriPoint();
-  private printPreviewHandle?: IHandle;
-
-  public startDrawPrintPreview(extentWidth: number, extentHeight: number, rotation: number) {
-    this.stopDrawPrintPreview();
+  public async startDrawPrintPreview(extentWidth: number, extentHeight: number, rotation: number) {
+    // first of all: remove the old print preview handle that redraws the area if the map center changes
+    //               we're about to change the extent width, height or the rotation therefore we need a new handle
+    if (this.printPreviewHandle) {
+      this.printPreviewHandle.remove();
+    }
+    // draw the new geometry once as it is entirely possible that the map center didn't change yet
     const geometryWithSrs: PolygonWithSrs = this.handlePrintPreview(this.mapView.center, extentWidth, extentHeight, rotation);
-    this.zoomToExtent(geometryWithSrs, 1.5, 500);
+    await this.zoomToExtent(geometryWithSrs, DEFAULT_PRINT_PREVIEW_EXPAND_FACTOR, DEFAULT_PRINT_PREVIEW_ANIMATION_DURATION_IN_MS);
+    // now listen to any map center changes and redraw the print preview area to keep it in the center of the map
     this.printPreviewHandle = esriReactiveUtils.watch(
-      () => this.mapView.center,
-      (center) => {
-        if (center.x !== this.printPreviewCenter.x || center.y !== this.printPreviewCenter.y) {
-          this.handlePrintPreview(center, extentWidth, extentHeight, rotation);
-        }
-      }
+      () => [this.mapView.center.x, this.mapView.center.y],
+      ([x, y]) => {
+        // redraw the print preview area if either the x or the y coordinate of the map center changes so that it is always in the center
+        this.handlePrintPreview({x, y}, extentWidth, extentHeight, rotation);
+      },
     );
-  }
-
-  private handlePrintPreview(center: __esri.Point, extentWidth: number, extentHeight: number, rotation: number): PolygonWithSrs {
-    this.printPreviewCenter = new EsriPoint(center);
-    const printPreviewArea = PrintUtils.createPrintPreviewArea(center, extentWidth, extentHeight);
-    const symbolization = this.esriSymbolizationService.createSymbolizationForDrawingLayer(
-      printPreviewArea,
-      InternalDrawingLayer.PrintPreview
-    );
-    const esriGeometry = this.geoJSONMapperService.fromGeoJSONToEsri(printPreviewArea);
-    // negate the rotation as the geometry engine rotates counter-clockwise by default
-    const rotatedEsriGeometry = geometryEngine.rotate(esriGeometry, -rotation);
-
-    this.clearDrawingLayer(InternalDrawingLayer.PrintPreview);
-    this.addEsriGeometryToDrawingLayer(rotatedEsriGeometry, symbolization, InternalDrawingLayer.PrintPreview);
-    return printPreviewArea;
   }
 
   public stopDrawPrintPreview() {
@@ -403,6 +381,34 @@ export class EsriMapService implements MapService {
     }
     this.printPreviewCenter = new EsriPoint();
     this.clearDrawingLayer(InternalDrawingLayer.PrintPreview);
+  }
+
+  private addEsriGeometryToDrawingLayer(
+    esriGeometry: __esri.Geometry,
+    esriSymbolization: __esri.Symbol,
+    drawingLayer: InternalDrawingLayer,
+  ) {
+    const graphicItem = new EsriGraphic({geometry: esriGeometry, symbol: esriSymbolization});
+    const targetLayer = this.esriMapViewService.findEsriLayer(this.createDrawingLayerId(drawingLayer));
+    if (targetLayer) {
+      (targetLayer as __esri.GraphicsLayer).add(graphicItem);
+    }
+  }
+
+  private handlePrintPreview(center: {x: number; y: number}, extentWidth: number, extentHeight: number, rotation: number): PolygonWithSrs {
+    this.printPreviewCenter = new EsriPoint(center);
+    const printPreviewArea = PrintUtils.createPrintPreviewArea(center, extentWidth, extentHeight);
+    const symbolization = this.esriSymbolizationService.createSymbolizationForDrawingLayer(
+      printPreviewArea,
+      InternalDrawingLayer.PrintPreview,
+    );
+    const esriGeometry = this.geoJSONMapperService.fromGeoJSONToEsri(printPreviewArea);
+    // negate the rotation as the geometry engine rotates counter-clockwise by default
+    const rotatedEsriGeometry = geometryEngine.rotate(esriGeometry, -rotation);
+
+    this.clearDrawingLayer(InternalDrawingLayer.PrintPreview);
+    this.addEsriGeometryToDrawingLayer(rotatedEsriGeometry, symbolization, InternalDrawingLayer.PrintPreview);
+    return printPreviewArea;
   }
 
   /**
@@ -418,7 +424,7 @@ export class EsriMapService implements MapService {
   private initDrawingLayers() {
     Object.values(InternalDrawingLayer).forEach((drawingLayer) => {
       const graphicsLayer = new EsriGraphicsLayer({
-        id: this.createDrawingLayerId(drawingLayer)
+        id: this.createDrawingLayerId(drawingLayer),
       });
 
       this.mapView.map.add(graphicsLayer);
@@ -465,7 +471,7 @@ export class EsriMapService implements MapService {
   private applyTimeSliderCustomParameters(
     esriLayer: __esri.WMSLayer,
     timeSliderExtent: TimeExtent,
-    timeSliderConfiguration: TimeSliderConfiguration
+    timeSliderConfiguration: TimeSliderConfiguration,
   ) {
     const timeSliderParameterSource = timeSliderConfiguration.source as TimeSliderParameterSource;
     const dateFormat = timeSliderConfiguration.dateFormat;
@@ -511,9 +517,9 @@ export class EsriMapService implements MapService {
             id: layer.id,
             name: layer.layer,
             title: layer.title,
-            visible: true
-          } as __esri.WMSSublayerProperties)
-      )
+            visible: true,
+          } as __esri.WMSSublayerProperties),
+      ),
     );
     esriLayer.sublayers = esriSublayers;
   }
@@ -530,9 +536,9 @@ export class EsriMapService implements MapService {
             const newInterceptor = this.getWmsOverrideInterceptor(this.authService.getAccessToken());
             esriConfig.request.interceptors = []; // todo: pop existing as soon as we add more interceptors
             esriConfig.request.interceptors.push(newInterceptor);
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 
@@ -543,9 +549,9 @@ export class EsriMapService implements MapService {
           skip(1), // Skip first, because the first is set by init()
           tap((activeBasemapId) => {
             this.switchBasemap(activeBasemapId);
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 
@@ -562,7 +568,7 @@ export class EsriMapService implements MapService {
                 spatialReference: new EsriSpatialReference({wkid: baseMap.srsId}),
                 sublayers: baseMap.layers.map((basemapLayer) => ({name: basemapLayer.name})),
                 visible: initialBasemapId === baseMap.id,
-                imageFormat: this.wmsImageFormatMimeType
+                imageFormat: this.wmsImageFormatMimeType,
               });
             case 'blank':
               return new EsriFeatureLayer({
@@ -571,12 +577,12 @@ export class EsriMapService implements MapService {
                 objectIdField: 'ObjectID', // a feature layer needs this property even if its never used
                 title: baseMap.title,
                 source: [], // empty source as this is a blank basemap
-                spatialReference: new EsriSpatialReference({wkid: MapConstants.DEFAULT_SRS}),
-                visible: initialBasemapId === baseMap.id
+                spatialReference: new EsriSpatialReference({wkid: this.configService.mapConfig.defaultMapConfig.srsId}),
+                visible: initialBasemapId === baseMap.id,
               });
           }
-        })
-      })
+        }),
+      }),
     });
   }
 
@@ -585,7 +591,7 @@ export class EsriMapService implements MapService {
     this.mapView = new EsriMapView({
       map: map,
       ui: {
-        components: ['attribution'] // todo: may be removed, check licensing
+        components: ['attribution'], // todo: may be removed, check licensing
       },
       scale: scale,
       center: new EsriPoint({x, y, spatialReference}),
@@ -595,16 +601,16 @@ export class EsriMapService implements MapService {
         minScale: minScale,
         maxScale: maxScale,
         lods: EsriTileInfo.create({
-          spatialReference
-        }).lods
-      }
+          spatialReference,
+        }).lods,
+      },
     });
   }
 
   private attachMapViewListeners() {
     esriReactiveUtils.when(
       () => this.mapView.stationary,
-      () => this.updateMapConfig()
+      () => this.updateMapConfig(),
     );
 
     esriReactiveUtils.on(
@@ -613,7 +619,7 @@ export class EsriMapService implements MapService {
       (event: __esri.ViewClickEvent) => {
         const {x, y} = this.transformationService.transform(event.mapPoint);
         this.dispatchFeatureInfoRequest(x, y);
-      }
+      },
     );
 
     esriReactiveUtils
@@ -629,8 +635,8 @@ export class EsriMapService implements MapService {
         this.store.dispatch(
           MapConfigActions.setReady({
             calculatedMinScale: effectiveMinScale!,
-            calculatedMaxScale: effectiveMaxScale!
-          })
+            calculatedMaxScale: effectiveMaxScale!,
+          }),
         );
       });
 
@@ -639,7 +645,7 @@ export class EsriMapService implements MapService {
       'layerview-create',
       (event: __esri.ViewLayerviewCreateEvent) => {
         this.attachLayerViewListeners(event.layerView);
-      }
+      },
     );
   }
 
@@ -649,7 +655,7 @@ export class EsriMapService implements MapService {
       () => esriLayer.loadStatus,
       (loadStatus) => {
         this.updateLoadingState(loadStatus, esriLayer.id);
-      }
+      },
     );
     this.updateLoadingState(esriLayer.loadStatus, esriLayer.id);
   }
@@ -660,7 +666,7 @@ export class EsriMapService implements MapService {
       () => esriLayerView.updating,
       (updating) => {
         this.updateViewProcessState(updating, esriLayerView.layer?.id);
-      }
+      },
     );
     this.updateViewProcessState(esriLayerView.updating, esriLayerView.layer?.id);
   }

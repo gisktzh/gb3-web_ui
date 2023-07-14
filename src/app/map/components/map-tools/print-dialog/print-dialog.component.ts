@@ -10,11 +10,10 @@ import {MapConfigState} from '../../../../state/map/states/map-config.state';
 import {selectMapConfigState} from '../../../../state/map/reducers/map-config.reducer';
 import {ActiveMapItem} from '../../../models/active-map-item.model';
 import {selectItems} from '../../../../state/map/reducers/active-map-item.reducer';
-import {MapConstants} from '../../../../shared/constants/map.constants';
 import {BasemapConfigService} from '../../../services/basemap-config.service';
 import {MapUiActions} from '../../../../state/map/actions/map-ui.actions';
-import {Gb2Constants} from '../../../../shared/constants/gb2.constants';
 import {map} from 'rxjs/operators';
+import {ConfigService} from '../../../../shared/services/config.service';
 
 interface PrintForm {
   title: FormControl<string | null>;
@@ -32,7 +31,7 @@ interface PrintForm {
 @Component({
   selector: 'print-dialog',
   templateUrl: './print-dialog.component.html',
-  styleUrls: ['./print-dialog.component.scss']
+  styleUrls: ['./print-dialog.component.scss'],
 })
 export class PrintDialogComponent implements OnInit, OnDestroy {
   public readonly formGroup: FormGroup<PrintForm> = new FormGroup({
@@ -45,7 +44,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     scale: new FormControl(0, [Validators.required]),
     outputFormat: new FormControl('', [Validators.required]),
     showLegend: new FormControl(false, [Validators.required]),
-    printActiveMapsSeparately: new FormControl(false, [Validators.required])
+    printActiveMapsSeparately: new FormControl(false, [Validators.required]),
   });
 
   public printInfo?: PrintInfo;
@@ -58,7 +57,11 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
   private readonly isFormInitialized: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private readonly subscriptions: Subscription = new Subscription();
 
-  constructor(private readonly store: Store, private readonly basemapConfigService: BasemapConfigService) {
+  constructor(
+    private readonly store: Store,
+    private readonly basemapConfigService: BasemapConfigService,
+    private readonly configService: ConfigService,
+  ) {
     // disable the form until the print info from the print API returns; otherwise the form is not complete.
     this.formGroup.disable();
   }
@@ -100,20 +103,20 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
             layoutSize: value.layoutSize,
             layoutOrientation: value.layoutOrientation,
             scale: value.scale,
-            rotation: value.rotation
+            rotation: value.rotation,
           })),
           distinctUntilChanged(
             (previous, current) =>
               previous.layoutSize === current.layoutSize &&
               previous.layoutOrientation === current.layoutOrientation &&
               previous.scale === current.scale &&
-              previous.rotation === current.rotation
+              previous.rotation === current.rotation,
           ),
           tap((value) => {
             this.updatePrintPreview(value.layoutSize, value.layoutOrientation, value.scale, value.rotation);
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
 
     // initialize the form (once)
@@ -127,9 +130,9 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
           tap(([printInfo, mapConfigState]) => {
             this.printInfo = printInfo;
             this.initializeDefaultFormValues(printInfo, mapConfigState.scale);
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
 
     this.subscriptions.add(
@@ -139,9 +142,9 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
           tap((printInfoLoadingState) => {
             this.printInfoLoadingState = printInfoLoadingState;
             this.updateFormGroupState();
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
 
     this.subscriptions.add(
@@ -151,9 +154,9 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
           tap((printCreationLoadingState) => {
             this.printCreationLoadingState = printCreationLoadingState;
             this.updateFormGroupState();
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
 
     this.subscriptions.add(
@@ -162,9 +165,9 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
         .pipe(
           tap((mapConfigState) => {
             this.mapConfigState = mapConfigState;
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
 
     this.subscriptions.add(
@@ -173,9 +176,9 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
         .pipe(
           tap((activeMapItems) => {
             this.activeMapItems = activeMapItems;
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 
@@ -183,7 +186,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     layoutSize: string | null | undefined,
     layoutOrientation: string | null | undefined,
     scale: number | null | undefined,
-    rotation: number | null | undefined
+    rotation: number | null | undefined,
   ) {
     const currentLayout = this.printInfo?.layouts.find((layout) => layout.size === layoutSize && layout.orientation === layoutOrientation);
     this.store.dispatch(
@@ -191,8 +194,8 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
         scale: scale ?? 0,
         height: currentLayout?.map.height ?? 0,
         width: currentLayout?.map.width ?? 0,
-        rotation: rotation ?? 0
-      })
+        rotation: rotation ?? 0,
+      }),
     );
   }
 
@@ -245,7 +248,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
       scale: defaultScale ?? 0,
       outputFormat: printInfo?.outputFormats[0]?.name ?? '',
       showLegend: false,
-      printActiveMapsSeparately: false
+      printActiveMapsSeparately: false,
     });
     this.uniqueLayoutSizes = printInfo ? [...new Set(printInfo.layouts.map((layout) => layout.size))] : [];
     this.updateFormGroupControlsState(true);
@@ -260,7 +263,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
       layoutSize: value.layoutSize ?? '',
       layoutOrientation: value.layoutOrientation ?? undefined,
       outputFormat: value.outputFormat ?? '',
-      srs: `EPSG:${MapConstants.DEFAULT_SRS}`,
+      srs: `EPSG:${this.configService.mapConfig.defaultMapConfig.srsId}`,
       layers: this.createPrintCreationLayers(),
       pages: [
         {
@@ -278,9 +281,9 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
           center: [this.mapConfigState?.center.x ?? 0, this.mapConfigState?.center.y ?? 0],
           extent: [], // this seems to be optional
           rotation: value.rotation ?? 0,
-          topic: '' // TODO: what is this property used for?
-        }
-      ]
+          topic: '', // TODO: what is this property used for?
+        },
+      ],
     };
   }
 
@@ -304,14 +307,14 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
                 type: 'WMS',
                 opacity: activeMapItem.opacity,
                 customParams: {
-                  dpi: MapConstants.DEFAULT_DPI, // TODO: where does this come from and what is it used for?
+                  dpi: this.configService.mapConfig.defaultMapConfig.srsId, // TODO: where does this come from and what is it used for?
                   transparent: true, // TODO: where does this come from and what is it used for?
-                  format: Gb2Constants.WMS_IMAGE_FORMAT_MIME_TYPE
+                  format: this.configService.gb2Config.wmsFormatMimeType,
                 },
-                format: Gb2Constants.WMS_IMAGE_FORMAT_MIME_TYPE,
+                format: this.configService.gb2Config.wmsFormatMimeType,
                 styles: [''], // TODO: what?
                 singleTile: true, // TODO: what?
-                baseURL: activeMapItem.settings.url
+                baseURL: activeMapItem.settings.url,
               });
               break;
           }
@@ -332,14 +335,14 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
             type: 'WMS',
             opacity: 1,
             customParams: {
-              dpi: MapConstants.DEFAULT_DPI, // TODO: where does this come from and what is it used for?
+              dpi: this.configService.mapConfig.defaultMapConfig.srsId, // TODO: where does this come from and what is it used for?
               transparent: true, // TODO: where does this come from and what is it used for?
-              format: Gb2Constants.WMS_IMAGE_FORMAT_MIME_TYPE
+              format: this.configService.gb2Config.wmsFormatMimeType,
             },
-            format: Gb2Constants.WMS_IMAGE_FORMAT_MIME_TYPE,
+            format: this.configService.gb2Config.wmsFormatMimeType,
             styles: [''], // TODO: what?
             singleTile: true, // TODO: what?
-            baseURL: activeBasemap.url
+            baseURL: activeBasemap.url,
           });
           break;
       }

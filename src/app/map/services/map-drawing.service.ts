@@ -10,7 +10,7 @@ import {ConfigService} from '../../shared/services/config.service';
 import {selectReady} from '../../state/map/reducers/map-config.reducer';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MapDrawingService implements OnDestroy {
   private readonly isMapReady$ = this.store.select(selectReady);
@@ -20,7 +20,7 @@ export class MapDrawingService implements OnDestroy {
   constructor(
     @Inject(MAP_SERVICE) private readonly mapService: MapService,
     private readonly store: Store,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
   ) {
     this.initSubscriptions();
   }
@@ -46,8 +46,8 @@ export class MapDrawingService implements OnDestroy {
     this.mapService.clearDrawingLayer(InternalDrawingLayer.FeatureQueryLocation);
   }
 
-  public startDrawPrintPreview(extentWidth: number, extentHeight: number, rotation: number) {
-    this.mapService.startDrawPrintPreview(extentWidth, extentHeight, rotation);
+  public async startDrawPrintPreview(extentWidth: number, extentHeight: number, rotation: number) {
+    await this.mapService.startDrawPrintPreview(extentWidth, extentHeight, rotation);
   }
 
   public stopDrawPrintPreview() {
@@ -63,9 +63,9 @@ export class MapDrawingService implements OnDestroy {
           filter(([_, isMapReady]) => isMapReady),
           tap(([location, _]) => {
             this.handleGpsLocation(location);
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 

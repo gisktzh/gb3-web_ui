@@ -9,11 +9,12 @@ import {map} from 'rxjs/operators';
 import {DEFAULT_SEARCHES, MAP_SEARCH} from '../../../shared/constants/search.constants';
 import {SearchIndex} from '../../../shared/services/apis/search/interfaces/search-index.interface';
 import {selectAvailableSpecialSearchIndexes} from '../../../state/map/selectors/available-search-index.selector';
+import {selectMapUiState} from '../../../state/map/reducers/map-ui.reducer';
 
 @Component({
   selector: 'search-window',
   templateUrl: './search-window.component.html',
-  styleUrls: ['./search-window.component.scss']
+  styleUrls: ['./search-window.component.scss'],
 })
 export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   public searchResults: SearchResultMatch[] = [];
@@ -26,10 +27,14 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   private originalMaps: Map[] = [];
   private readonly originalMaps$ = this.store.select(selectMaps);
   private readonly availableSpecialSearchIndexes$ = this.store.select(selectAvailableSpecialSearchIndexes);
+  private readonly mapUiState$ = this.store.select(selectMapUiState);
   private readonly subscriptions: Subscription = new Subscription();
   @ViewChild('filterInput') private readonly input!: ElementRef;
 
-  constructor(private searchService: SearchService, private readonly store: Store) {}
+  constructor(
+    private searchService: SearchService,
+    private readonly store: Store,
+  ) {}
 
   public ngOnInit() {
     this.initSubscriptions();
@@ -102,9 +107,9 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
             first(),
             tap((searchResults: SearchResultMatch[]) => {
               this.searchResults = searchResults;
-            })
+            }),
           )
-          .subscribe()
+          .subscribe(),
       );
     } else {
       this.searchResults = [];
@@ -117,16 +122,16 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
             first(),
             tap((searchResults: SearchResultMatch[]) => {
               this.specialSearchResults = searchResults;
-            })
+            }),
           )
-          .subscribe()
+          .subscribe(),
       );
     } else {
       this.specialSearchResults = [];
     }
     if (mapSearchActive) {
       this.filteredMaps = this.originalMaps.filter((availableMap) =>
-        this.searchTerms.every((searchTerm) => availableMap.title.toLowerCase().includes(searchTerm.toLowerCase()))
+        this.searchTerms.every((searchTerm) => availableMap.title.toLowerCase().includes(searchTerm.toLowerCase())),
       );
     } else {
       this.filteredMaps = [];
@@ -138,7 +143,7 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
       debounceTime(300),
       map((event) => (<HTMLInputElement>event.target).value),
       distinctUntilChanged(),
-      tap((event) => this.search(event))
+      tap((event) => this.search(event)),
     );
   }
 
@@ -148,18 +153,29 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
         .pipe(
           tap((value) => {
             this.originalMaps = value;
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
+
     this.subscriptions.add(
       this.availableSpecialSearchIndexes$
         .pipe(
           tap((value) => {
             this.availableSearchIndexes = [...DEFAULT_SEARCHES, ...value, MAP_SEARCH];
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
+    );
+
+    this.subscriptions.add(
+      this.mapUiState$
+        .pipe(
+          tap((value) => {
+            this.isFilterMenuOpen = this.isFilterMenuOpen && !value.hideUiElements;
+          }),
+        )
+        .subscribe(),
     );
   }
 }

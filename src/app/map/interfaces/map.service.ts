@@ -50,7 +50,7 @@ export interface MapService extends AddToMapVisitor {
   /** Sets the attribute filters for an existing item on the map */
   setAttributeFilters(
     attributeFilterParameters: {name: string; value: string}[],
-    mapItem: Gb2WmsActiveMapItem // todo: make gb2 specific
+    mapItem: Gb2WmsActiveMapItem, // todo: make gb2 specific
   ): void;
 
   /** Reorders a map item using its old index (previous) and the new index (current); 0 is the topmost item - the most visible one */
@@ -68,8 +68,8 @@ export interface MapService extends AddToMapVisitor {
   /**
    * Zooms to the extent of a given geometry
    * @param geometry The geometry to which extents shall be zoomed
-   * @param expandFactor An optional factor (default: 1) that expands the geometry's extent by this number.
-   * @param animationDuration An optional duration in milliseconds (default: 0) for the animation to pan/zoom to the given extent.
+   * @param expandFactor An optional factor that expands the geometry's extent by this number.
+   * @param animationDuration An optional duration in milliseconds for the animation to pan/zoom to the given extent.
    */
   zoomToExtent(geometry: GeometryWithSrs, expandFactor?: number, animationDuration?: number): void;
 
@@ -83,9 +83,9 @@ export interface MapService extends AddToMapVisitor {
   getToolService(): ToolService;
 
   /**
-   * Starts drawing the print preview area with the given extent width and height as well as an rotation (clockwise)
+   * Starts drawing the print preview area on the current center of the map with the given extent width and height as well as a rotation (clockwise)
    */
-  startDrawPrintPreview(extentWidth: number, extentHeight: number, rotation: number): void;
+  startDrawPrintPreview(extentWidth: number, extentHeight: number, rotation: number): Promise<void>;
 
   /**
    * Stops drawing a print preview
