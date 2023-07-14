@@ -2,7 +2,7 @@
 LC_ALL=C
 
 echo "🚀 Running linter!"
-npx pretty-quick --staged
+npx lint-staged
 echo ""
 
 echo "🚀 Checking branchname!"
