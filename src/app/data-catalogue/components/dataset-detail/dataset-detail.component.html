@@ -1,6 +1,46 @@
 <loading-and-process-bar [loadingState]="this.loadingState"></loading-and-process-bar>
-<div *ngIf="data">
-  <h2>{{ data.name }}</h2>
-  <img [alt]="data.name" [src]="apiBaseUrl + data.imageUrl" />
-  <p>{{ data.description }}</p>
+<div *ngIf="datasetInformation" class="dataset-detail">
+  <a class="dataset-detail__back-button" [routerLink]="'/data'" mat-button>
+    <mat-icon [svgIcon]="'ktzh_arrow_left'"></mat-icon>
+    Zur Übersicht
+  </a>
+  <h1 class="dataset-detail__title mat-headline-4">{{ datasetInformation.title }}</h1>
+  <p class="dataset-detail__description mat-body">{{ datasetInformation.description }}</p>
+  <keyword-list *ngIf="datasetInformation.keywords.length > 0" [keywords]="datasetInformation.keywords"></keyword-list>
+
+  <div class="dataset-detail__data dataset-detail__data--horizontal">
+    <data-display-section [dataDisplayElements]="geodataContactElements" [sectionTitle]="'Verantwortlich Geodaten'"></data-display-section>
+    <data-display-section
+      [dataDisplayElements]="metadataContactElements"
+      [sectionTitle]="'Zuständig für Geometadaten'"
+    ></data-display-section>
+  </div>
+  <div class="dataset-detail__data">
+    <data-display-section [dataDisplayElements]="informationElements" [sectionTitle]="'Inhalt / Identifikation'"></data-display-section>
+  </div>
+  <div class="dataset-detail__data">
+    <data-display-section [dataDisplayElements]="dataBasisElements" [sectionTitle]="'Datengrundlage'"></data-display-section>
+  </div>
+  <div class="dataset-detail__data">
+    <data-display-section [dataDisplayElements]="dataProcurement" [sectionTitle]="'Datenbezug'"></data-display-section>
+  </div>
+  <!-- todo: as soon as design is fixed, maybe refactor with generic data-display-section -->
+  <div class="dataset-detail__data">
+    <h2>Karten mit diesem Datensatz</h2>
+    <div class="dataset-detail__data__links">
+      <ng-container *ngFor="let map of linkedData.maps">
+        <div class="dataset-detail__data__links__entry">
+          {{ map.name }}:
+          <a [routerLink]="'/maps'" [queryParams]="{initialMapIds: map.topic}" mat-button class="dataset-detail__data__links__entry__link">
+            <mat-icon [svgIcon]="'ktzh_legend'"></mat-icon>
+            Im GIS-Browser öffnen
+          </a>
+          <a [routerLink]="'/data/maps/' + map.guid" mat-button class="dataset-detail__data__links__entry__link">
+            <mat-icon [svgIcon]="'ktzh_arrow_right'"></mat-icon>
+            Zu Metadaten springen
+          </a>
+        </div>
+      </ng-container>
+    </div>
+  </div>
 </div>

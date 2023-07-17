@@ -77,8 +77,8 @@ $zh-blue-palette: (
     A100: #000000,
     A200: #000000,
     A400: #000000,
-    A700: #ffffff
-  )
+    A700: #ffffff,
+  ),
 );
 
 $zh-darkblue-palette: (
@@ -110,8 +110,8 @@ $zh-darkblue-palette: (
     A100: #000000,
     A200: #ffffff,
     A400: #ffffff,
-    A700: #ffffff
-  )
+    A700: #ffffff,
+  ),
 );
 
 $zh-active-blue-palette: (
@@ -143,14 +143,15 @@ $zh-active-blue-palette: (
     A100: #000000,
     A200: #000000,
     A400: #000000,
-    A700: #000000
-  )
+    A700: #000000,
+  ),
 );
 
 $zh-black100-palette: (
   5: #f7f7f7,
   25: #e4e4e4,
   50: #e0e0e0,
+  75: #cfcfcf,
   100: #b3b3b3,
   200: #808080,
   300: #4d4d4d,
@@ -168,6 +169,7 @@ $zh-black100-palette: (
     5: #000000,
     25: #000000,
     50: #000000,
+    75: #000000,
     100: #000000,
     200: #000000,
     300: #ffffff,
@@ -180,8 +182,8 @@ $zh-black100-palette: (
     A100: #000000,
     A200: #000000,
     A400: #ffffff,
-    A700: #ffffff
-  )
+    A700: #ffffff,
+  ),
 );
 
 $zh-bordeaux-palette: (
@@ -213,8 +215,8 @@ $zh-bordeaux-palette: (
     A100: #000000,
     A200: #000000,
     A400: #000000,
-    A700: #ffffff
-  )
+    A700: #ffffff,
+  ),
 );
 
 /* Theme palettes
@@ -235,7 +237,7 @@ $zh-typography-headline-override: mat.define-typography-level(
   $line-height: 1,
   $font-weight: 'inherit',
   $font-family: $zh-font-family-bold,
-  $letter-spacing: 'inherit'
+  $letter-spacing: 'inherit',
 );
 
 $zh-typography-config: mat.define-typography-config(

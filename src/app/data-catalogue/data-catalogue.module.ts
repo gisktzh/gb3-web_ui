@@ -10,6 +10,9 @@ import {MaterialModule} from '../shared/external/material.module';
 import {SharedModule} from '../shared/shared.module';
 import {DataCataloguePlaceholderComponent} from './components/data-catalogue-placeholder/data-catalogue-placeholder.component';
 import {ProductDetailComponent} from './components/product-detail/product-detail.component';
+import {KeywordListComponent} from './components/keyword-list/keyword-list.component';
+import {DataDisplayComponent} from './components/data-display/data-display.component';
+import {DataDisplaySectionComponent} from './components/data-display-section/data-display-section.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +23,9 @@ import {ProductDetailComponent} from './components/product-detail/product-detail
     MapDetailComponent,
     DataCataloguePlaceholderComponent,
     ProductDetailComponent,
+    KeywordListComponent,
+    DataDisplayComponent,
+    DataDisplaySectionComponent,
   ],
   imports: [CommonModule, DataCatalogueRoutingModule, MaterialModule, SharedModule],
 })

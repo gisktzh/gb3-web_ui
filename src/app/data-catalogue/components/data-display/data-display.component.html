@@ -1,0 +1,20 @@
+<div class="data-display">
+  <div *ngFor="let element of elements" class="data-display__item">
+    <span class="data-display__item__title">{{ element.title }}</span>
+    <span class="data-display__item__value">
+      <ng-container [ngSwitch]="element.type">
+        <ng-container *ngSwitchCase="'text'">
+          <span [innerText]="element.value ?? '-'"></span>
+        </ng-container>
+        <ng-container *ngSwitchCase="'url'">
+          <a class="data-display__item__value--link" href="{{ element.value }}" target="_blank">{{
+            element.type === 'url' && element.displayText !== undefined ? element.displayText : element.value
+          }}</a>
+        </ng-container>
+        <ng-container *ngSwitchCase="'email'">
+          <a class="data-display__item__value--link" href="mailto:{{ element.value }}" target="_blank">{{ element.value }}</a>
+        </ng-container>
+      </ng-container>
+    </span>
+  </div>
+</div>
