@@ -41,6 +41,7 @@
       .map-controls__inputs__bottom__data-inputs {
         @include mixins.map-element-box-shadow;
         display: block;
+        pointer-events: all;
       }
     }
   }
@@ -51,6 +52,7 @@
     display: flex;
     flex-direction: column;
     background-color: ktzh-variables.$zh-background-color;
+    pointer-events: all;
 
     .map-controls__buttons__divider {
       width: 50%;

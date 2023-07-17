@@ -7,7 +7,7 @@ export class NumberUtils {
    * @param value
    * @param decimals
    */
-  public static roundToDecimals(value: number, decimals?: number) {
+  public static roundToDecimals(value: number, decimals?: number): number {
     if (!decimals || decimals < 1 || !Number.isSafeInteger(decimals)) {
       return Math.round(value);
     }

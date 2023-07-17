@@ -58,10 +58,6 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
     this.isMapDataCatalogueMinimized = isMinimized;
   }
 
-  public openSideDrawer(content: Exclude<MapSideDrawerContent, 'none'>) {
-    this.store.dispatch(MapUiActions.showMapSideDrawerContent({mapSideDrawerContent: content}));
-  }
-
   public closeSideDrawer() {
     this.store.dispatch(MapUiActions.hideMapSideDrawerContent());
   }

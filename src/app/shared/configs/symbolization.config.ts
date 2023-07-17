@@ -132,6 +132,22 @@ export const layerSymbolizations: LayerSymbolizations = {
       outline: defaultOutline
     }
   },
+  [InternalDrawingLayer.PrintPreview]: {
+    text: defaultSymbolization.text,
+    point: defaultSymbolization.point,
+    line: defaultSymbolization.line,
+    polygon: {
+      fill: {
+        color: {
+          r: 255,
+          g: 255,
+          b: 0,
+          a: 0.6
+        }
+      },
+      outline: defaultOutline
+    }
+  },
   [UserDrawingLayer.Measurements]: {
     text: {
       color: {

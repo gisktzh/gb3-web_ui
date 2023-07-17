@@ -6,7 +6,7 @@ import {LegendActions} from '../actions/legend.actions';
 import {ShareLinkActions} from '../actions/share-link.actions';
 import {selectCurrentShareLinkItem} from '../selectors/current-share-link-item.selector';
 import {Store} from '@ngrx/store';
-import {filter, tap} from 'rxjs';
+import {combineLatestWith, filter, tap} from 'rxjs';
 import {ShareLinkDialogComponent} from '../../../map/components/share-link-dialog/share-link-dialog.component';
 import {PanelClass} from '../../../shared/enums/panel-class.enum';
 import {MatDialog} from '@angular/material/dialog';
@@ -17,6 +17,8 @@ import {selectGb2WmsActiveMapItemsWithMapNotices} from '../selectors/active-map-
 import {FavouriteDeletionDialogComponent} from '../../../map/components/favourite-deletion-dialog/favourite-deletion-dialog.component';
 import {Favourite} from '../../../shared/interfaces/favourite.interface';
 import {ToolActions} from '../actions/tool.actions';
+import {PrintActions} from '../actions/print.actions';
+import {selectActiveTool} from '../reducers/tool.reducer';
 
 const CREATE_FAVOURITE_DIALOG_MAX_WIDTH = 500;
 const DELETE_FAVOURITE_DIALOG_MAX_WIDTH = 500;
@@ -24,7 +26,7 @@ const MAP_NOTICES_DIALOG_MAX_WIDTH = 968;
 
 @Injectable()
 export class MapUiEffects {
-  public dispatchShowMapSideDrawerContentRequest$ = createEffect(() => {
+  public hideUiElementsDependingOnShownSideDrawer$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapUiActions.showMapSideDrawerContent),
       map((value) => {
@@ -32,45 +34,57 @@ export class MapUiEffects {
           case 'print':
             return MapUiActions.changeUiElementsVisibility({hideAllUiElements: true, hideUiToggleButton: true});
         }
-      })
+      }),
     );
   });
 
-  public dispatchHideMapSideDrawerContentRequest$ = createEffect(() => {
+  public loadDataForSideDrawer$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapUiActions.showMapSideDrawerContent),
+      map((value) => {
+        switch (value.mapSideDrawerContent) {
+          case 'print':
+            return PrintActions.loadPrintInfo();
+        }
+      }),
+    );
+  });
+
+  public showUiElementsAfterClosingSideDrawer$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapUiActions.hideMapSideDrawerContent),
       map(() => {
         return MapUiActions.changeUiElementsVisibility({hideAllUiElements: false, hideUiToggleButton: false});
-      })
+      }),
     );
   });
 
-  public dispatchShowLegendRequest$ = createEffect(() => {
+  public loadLegend$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapUiActions.showLegend),
       map(() => {
         return LegendActions.loadLegend();
-      })
+      }),
     );
   });
 
-  public dispatchShowShareLinkDialogRequest$ = createEffect(() => {
+  public openShareLinkDialogAndCreateShareLink$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapUiActions.showShareLinkDialog),
       tap(() =>
         this.dialogService.open(ShareLinkDialogComponent, {
           panelClass: PanelClass.ApiWrapperDialog,
-          restoreFocus: false
-        })
+          restoreFocus: false,
+        }),
       ),
       concatLatestFrom(() => this.store.select(selectCurrentShareLinkItem)),
       map(([_, shareLinkItem]) => {
         return ShareLinkActions.createShareLinkItem({item: shareLinkItem});
-      })
+      }),
     );
   });
 
-  public dispatchShowCreateFavouriteDialogRequest$ = createEffect(
+  public openCreateFavouriteDialog$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(MapUiActions.showCreateFavouriteDialog),
@@ -78,15 +92,15 @@ export class MapUiEffects {
           this.dialogService.open(FavouriteCreationDialogComponent, {
             panelClass: PanelClass.ApiWrapperDialog,
             restoreFocus: false,
-            maxWidth: CREATE_FAVOURITE_DIALOG_MAX_WIDTH
-          })
-        )
+            maxWidth: CREATE_FAVOURITE_DIALOG_MAX_WIDTH,
+          }),
+        ),
       );
     },
-    {dispatch: false}
+    {dispatch: false},
   );
 
-  public dispatchShowDeleteFavouriteDialogRequest$ = createEffect(
+  public openDeleteFavouriteDialog$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(MapUiActions.showDeleteFavouriteDialog),
@@ -95,15 +109,15 @@ export class MapUiEffects {
             data: {favourite: favouriteToDelete},
             panelClass: PanelClass.ApiWrapperDialog,
             restoreFocus: false,
-            maxWidth: DELETE_FAVOURITE_DIALOG_MAX_WIDTH
-          })
-        )
+            maxWidth: DELETE_FAVOURITE_DIALOG_MAX_WIDTH,
+          }),
+        ),
       );
     },
-    {dispatch: false}
+    {dispatch: false},
   );
 
-  public dispatchShowMapNoticesDialogRequest$ = createEffect(() => {
+  public openMapNoticesDialogAndMarkThemAsRead$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapUiActions.showMapNoticesDialog),
       concatLatestFrom(() => this.store.select(selectGb2WmsActiveMapItemsWithMapNotices)),
@@ -112,22 +126,27 @@ export class MapUiEffects {
           panelClass: PanelClass.ApiWrapperDialog,
           restoreFocus: false,
           data: gb2WmsActiveMapItemsWithMapNotices,
-          maxWidth: MAP_NOTICES_DIALOG_MAX_WIDTH
-        })
+          maxWidth: MAP_NOTICES_DIALOG_MAX_WIDTH,
+        }),
       ),
       map(() => {
         return ActiveMapItemActions.markAllActiveMapItemNoticeAsRead();
-      })
+      }),
     );
   });
 
-  public dispatchToolCancellationOnUiAction = createEffect(() => {
+  public cancelToolAfterHidingUiElements = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapUiActions.changeUiElementsVisibility),
-      filter(({hideAllUiElements}) => hideAllUiElements),
-      map(() => ToolActions.cancelTool())
+      combineLatestWith(this.store.select(selectActiveTool)),
+      filter(([{hideAllUiElements}, activeTool]) => hideAllUiElements && activeTool !== undefined),
+      map(() => ToolActions.cancelTool()),
     );
   });
 
-  constructor(private readonly actions$: Actions, private readonly store: Store, private readonly dialogService: MatDialog) {}
+  constructor(
+    private readonly actions$: Actions,
+    private readonly store: Store,
+    private readonly dialogService: MatDialog,
+  ) {}
 }
