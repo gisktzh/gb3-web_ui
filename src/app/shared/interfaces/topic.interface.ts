@@ -18,8 +18,8 @@ export interface Map {
   icon: string;
   /** Organisation title */
   organisation: string | null;
-  /** Geolion ID of map */
-  geolion: number | null;
+  /** Unique dataset identifier for geometadata */
+  guid: number | null;
   gb2Url: string | null;
   /** Keywords */
   keywords: string[];

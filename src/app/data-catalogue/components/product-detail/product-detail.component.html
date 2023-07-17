@@ -1,1 +1,6 @@
-<p>product-detail works!</p>
+<loading-and-process-bar [loadingState]="this.loadingState"></loading-and-process-bar>
+<div *ngIf="data">
+  <h2>{{ data.name }}</h2>
+  <img [alt]="data.name" [src]="apiBaseUrl + data.imageUrl" />
+  <p>{{ data.description }}</p>
+</div>

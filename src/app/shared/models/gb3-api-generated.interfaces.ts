@@ -425,6 +425,615 @@ export interface TopicsLegendDetailData {
   };
 }
 
+export interface MetadataDatasetsListData {
+  datasets: {
+    /** Dataset ID */
+    guid: number;
+    /** Name des Geodatensatzes */
+    name: string;
+    /** Kurzbeschreibung */
+    kurzbeschreibung: string;
+    /** Beschreibung */
+    beschreibung: string;
+    /** eCH Geokategorien / Themen */
+    themen: string | null;
+    /** Schlüsselwörter */
+    keywords: string | null;
+    /** Datengrundlage */
+    datengrundlage: string | null;
+    /** Bemerkungen */
+    bemerkungen: string | null;
+    /** Abgabeformat */
+    abgabeformat: string;
+    /** Anwendungeinschränkung */
+    anwendungeinschraenkung: string;
+    /** Link auf Bild */
+    image_url: string | null;
+    /** Name des PDFs */
+    pdf_name: string | null;
+    /** Link auf PDF */
+    pdf_url: string | null;
+    kontakt: {
+      /** Kontakt: Verantwortlich für Geodaten */
+      geodaten: {
+        /** Amt */
+        amt: string;
+        /** Fachstelle */
+        fachstelle: string | null;
+        /** Sektion */
+        sektion: string | null;
+        /** Vorname */
+        vorname: string;
+        /** Nachname */
+        nachname: string;
+        /** Strassenname */
+        strassenname: string;
+        /** Hausnummer */
+        hausnummer: number;
+        /** Postfach */
+        postfach: string | null;
+        /** PLZ */
+        plz: number;
+        /** Ortschaft */
+        ortschaft: string;
+        /** Telephon */
+        telephon: string;
+        /** Telephon direkt */
+        telephon_direkt: string;
+        /** E-Mail */
+        email: string;
+        /** URL */
+        weburl: string;
+      };
+      /** Kontakt: Zuständig für Geometadaten */
+      metadaten: {
+        /** Amt */
+        amt: string;
+        /** Fachstelle */
+        fachstelle: string | null;
+        /** Sektion */
+        sektion: string | null;
+        /** Vorname */
+        vorname: string;
+        /** Nachname */
+        nachname: string;
+        /** Strassenname */
+        strassenname: string;
+        /** Hausnummer */
+        hausnummer: number;
+        /** Postfach */
+        postfach: string | null;
+        /** PLZ */
+        plz: number;
+        /** Ortschaft */
+        ortschaft: string;
+        /** Telephon */
+        telephon: string;
+        /** Telephon direkt */
+        telephon_direkt: string;
+        /** E-Mail */
+        email: string;
+        /** URL */
+        weburl: string;
+      };
+    };
+    maps: {
+      /** Map ID */
+      guid: number;
+      /** Topic name */
+      topic: string;
+      /** Kartenname */
+      name: string;
+    }[];
+    layers: {
+      /** Layer ID */
+      guid: string;
+      /** Layername */
+      name: string;
+      /** Beschreibung des Layers */
+      beschreibung: string;
+      /** Metadaten Sichtbarkeit */
+      metadaten_sichtbarkeit: string;
+      /** Datenbezugart */
+      datenbezugart: string;
+    }[];
+    services: {
+      /** Service ID */
+      guid: number;
+      /** Servicetyp, z.B. WMS, WFS */
+      servicetyp: string;
+      /** Name des Geodienstes */
+      name: string;
+    }[];
+    products: {
+      /** Product ID */
+      guid: number;
+      /** Produktname */
+      name: string;
+    }[];
+  }[];
+}
+
+export interface MetadataDatasetsDetailData {
+  dataset: {
+    /** Dataset ID */
+    guid: number;
+    /** Name des Geodatensatzes */
+    name: string;
+    /** Kurzbeschreibung */
+    kurzbeschreibung: string;
+    /** Beschreibung */
+    beschreibung: string;
+    /** eCH Geokategorien / Themen */
+    themen: string | null;
+    /** Schlüsselwörter */
+    keywords: string | null;
+    /** Datengrundlage */
+    datengrundlage: string | null;
+    /** Bemerkungen */
+    bemerkungen: string | null;
+    /** Abgabeformat */
+    abgabeformat: string;
+    /** Anwendungeinschränkung */
+    anwendungeinschraenkung: string;
+    /** Link auf Bild */
+    image_url: string | null;
+    /** Name des PDFs */
+    pdf_name: string | null;
+    /** Link auf PDF */
+    pdf_url: string | null;
+    kontakt: {
+      /** Kontakt: Verantwortlich für Geodaten */
+      geodaten: {
+        /** Amt */
+        amt: string;
+        /** Fachstelle */
+        fachstelle: string | null;
+        /** Sektion */
+        sektion: string | null;
+        /** Vorname */
+        vorname: string;
+        /** Nachname */
+        nachname: string;
+        /** Strassenname */
+        strassenname: string;
+        /** Hausnummer */
+        hausnummer: number;
+        /** Postfach */
+        postfach: string | null;
+        /** PLZ */
+        plz: number;
+        /** Ortschaft */
+        ortschaft: string;
+        /** Telephon */
+        telephon: string;
+        /** Telephon direkt */
+        telephon_direkt: string;
+        /** E-Mail */
+        email: string;
+        /** URL */
+        weburl: string;
+      };
+      /** Kontakt: Zuständig für Geometadaten */
+      metadaten: {
+        /** Amt */
+        amt: string;
+        /** Fachstelle */
+        fachstelle: string | null;
+        /** Sektion */
+        sektion: string | null;
+        /** Vorname */
+        vorname: string;
+        /** Nachname */
+        nachname: string;
+        /** Strassenname */
+        strassenname: string;
+        /** Hausnummer */
+        hausnummer: number;
+        /** Postfach */
+        postfach: string | null;
+        /** PLZ */
+        plz: number;
+        /** Ortschaft */
+        ortschaft: string;
+        /** Telephon */
+        telephon: string;
+        /** Telephon direkt */
+        telephon_direkt: string;
+        /** E-Mail */
+        email: string;
+        /** URL */
+        weburl: string;
+      };
+    };
+    maps: {
+      /** Map ID */
+      guid: number;
+      /** Topic name */
+      topic: string;
+      /** Kartenname */
+      name: string;
+    }[];
+    layers: {
+      /** Layer ID */
+      guid: string;
+      /** Layername */
+      name: string;
+      /** Beschreibung des Layers */
+      beschreibung: string;
+      /** Metadaten Sichtbarkeit */
+      metadaten_sichtbarkeit: string;
+      /** Datenbezugart */
+      datenbezugart: string;
+    }[];
+    services: {
+      /** Service ID */
+      guid: number;
+      /** Servicetyp, z.B. WMS, WFS */
+      servicetyp: string;
+      /** Servicename */
+      name: string;
+    }[];
+    products: {
+      /** Product ID */
+      guid: number;
+      /** Produktname */
+      name: string;
+    }[];
+  };
+}
+
+export interface MetadataGeoshopProductsListData {
+  geoshop_products: {
+    /** Geoshop product ID */
+    giszhnr: number;
+  }[];
+}
+
+export interface MetadataMapsListData {
+  maps: {
+    /** Map ID */
+    guid: number;
+    /** Topic name */
+    topic: string;
+    /** Kartenname */
+    name: string;
+    /** Beschreibung der Karte */
+    beschreibung: string;
+    /** Link auf Bild */
+    image_url: string | null;
+    kontakt: {
+      /** Kontakt: Verantwortlich für Geodaten */
+      geodaten: {
+        /** Amt */
+        amt: string;
+        /** Fachstelle */
+        fachstelle: string | null;
+        /** Sektion */
+        sektion: string | null;
+        /** Vorname */
+        vorname: string;
+        /** Nachname */
+        nachname: string;
+        /** Strassenname */
+        strassenname: string;
+        /** Hausnummer */
+        hausnummer: number;
+        /** Postfach */
+        postfach: string | null;
+        /** PLZ */
+        plz: number;
+        /** Ortschaft */
+        ortschaft: string;
+        /** Telephon */
+        telephon: string;
+        /** Telephon direkt */
+        telephon_direkt: string;
+        /** E-Mail */
+        email: string;
+        /** URL */
+        weburl: string;
+      };
+    };
+    datasets: {
+      /** Dataset ID */
+      guid: number;
+      /** Name des Geodatensatzes */
+      name: string;
+      /** Kurzbeschreibung des Geodatensatzes */
+      kurzbeschreibung: string;
+    }[];
+  }[];
+}
+
+export interface MetadataMapsDetailData {
+  map: {
+    /** Map ID */
+    guid: number;
+    /** Topic name */
+    topic: string;
+    /** Kartenname */
+    name: string;
+    /** Beschreibung der Karte */
+    beschreibung: string;
+    /** Link auf Bild */
+    image_url: string | null;
+    kontakt: {
+      /** Kontakt: Verantwortlich für Geodaten */
+      geodaten: {
+        /** Amt */
+        amt: string;
+        /** Fachstelle */
+        fachstelle: string | null;
+        /** Sektion */
+        sektion: string | null;
+        /** Vorname */
+        vorname: string;
+        /** Nachname */
+        nachname: string;
+        /** Strassenname */
+        strassenname: string;
+        /** Hausnummer */
+        hausnummer: number;
+        /** Postfach */
+        postfach: string | null;
+        /** PLZ */
+        plz: number;
+        /** Ortschaft */
+        ortschaft: string;
+        /** Telephon */
+        telephon: string;
+        /** Telephon direkt */
+        telephon_direkt: string;
+        /** E-Mail */
+        email: string;
+        /** URL */
+        weburl: string;
+      };
+    };
+    datasets: {
+      /** Dataset ID */
+      guid: number;
+      /** Name des Geodatensatzes */
+      name: string;
+      /** Kurzbeschreibung des Geodatensatzes */
+      kurzbeschreibung: string;
+    }[];
+  };
+}
+
+export interface MetadataProductsListData {
+  products: {
+    /** Product ID */
+    guid: number;
+    /** Name des Geodatenprodukts */
+    name: string;
+    /** Beschreibung */
+    beschreibung: string;
+    /** Link auf Bild */
+    image_url: string | null;
+    kontakt: {
+      /** Kontakt: Zuständig für Geometadaten */
+      metadaten: {
+        /** Amt */
+        amt: string;
+        /** Fachstelle */
+        fachstelle: string | null;
+        /** Sektion */
+        sektion: string | null;
+        /** Vorname */
+        vorname: string;
+        /** Nachname */
+        nachname: string;
+        /** Strassenname */
+        strassenname: string;
+        /** Hausnummer */
+        hausnummer: number;
+        /** Postfach */
+        postfach: string | null;
+        /** PLZ */
+        plz: number;
+        /** Ortschaft */
+        ortschaft: string;
+        /** Telephon */
+        telephon: string;
+        /** Telephon direkt */
+        telephon_direkt: string;
+        /** E-Mail */
+        email: string;
+        /** URL */
+        weburl: string;
+      };
+    };
+    datasets: {
+      /** Dataset ID */
+      guid: number;
+      /** Name des Geodatensatzes */
+      name: string;
+      /** Kurzbeschreibung des Geodatensatzes */
+      kurzbeschreibung: string;
+    }[];
+  }[];
+}
+
+export interface MetadataProductsDetailData {
+  product: {
+    /** Product ID */
+    guid: number;
+    /** Name des Geodatenprodukts */
+    name: string;
+    /** Beschreibung */
+    beschreibung: string;
+    /** Link auf Bild */
+    image_url: string | null;
+    kontakt: {
+      /** Kontakt: Zuständig für Geometadaten */
+      metadaten: {
+        /** Amt */
+        amt: string;
+        /** Fachstelle */
+        fachstelle: string | null;
+        /** Sektion */
+        sektion: string | null;
+        /** Vorname */
+        vorname: string;
+        /** Nachname */
+        nachname: string;
+        /** Strassenname */
+        strassenname: string;
+        /** Hausnummer */
+        hausnummer: number;
+        /** Postfach */
+        postfach: string | null;
+        /** PLZ */
+        plz: number;
+        /** Ortschaft */
+        ortschaft: string;
+        /** Telephon */
+        telephon: string;
+        /** Telephon direkt */
+        telephon_direkt: string;
+        /** E-Mail */
+        email: string;
+        /** URL */
+        weburl: string;
+      };
+    };
+    datasets: {
+      /** Dataset ID */
+      guid: number;
+      /** Name des Geodatensatzes */
+      name: string;
+      /** Kurzbeschreibung des Geodatensatzes */
+      kurzbeschreibung: string;
+    }[];
+  };
+}
+
+export interface MetadataServicesListData {
+  services: {
+    /** Service ID */
+    guid: number;
+    /** Servicetyp, z.B. WMS, WFS */
+    servicetyp: string;
+    /** Name des Geodienstes */
+    name: string;
+    /** Beschreibung */
+    beschreibung: string;
+    /** URL */
+    url: string;
+    /** Version */
+    version: string;
+    /** Zugang */
+    zugang: string;
+    /** Link auf Bild */
+    image_url: string | null;
+    kontakt: {
+      /** Kontakt: Zuständig für Geometadaten */
+      metadaten: {
+        /** Amt */
+        amt: string;
+        /** Fachstelle */
+        fachstelle: string | null;
+        /** Sektion */
+        sektion: string | null;
+        /** Vorname */
+        vorname: string;
+        /** Nachname */
+        nachname: string;
+        /** Strassenname */
+        strassenname: string;
+        /** Hausnummer */
+        hausnummer: number;
+        /** Postfach */
+        postfach: string | null;
+        /** PLZ */
+        plz: number;
+        /** Ortschaft */
+        ortschaft: string;
+        /** Telephon */
+        telephon: string;
+        /** Telephon direkt */
+        telephon_direkt: string;
+        /** E-Mail */
+        email: string;
+        /** URL */
+        weburl: string;
+      };
+    };
+    datasets: {
+      /** Dataset ID */
+      guid: number;
+      /** Name des Geodatensatzes */
+      name: string;
+      /** Kurzbeschreibung des Geodatensatzes */
+      kurzbeschreibung: string;
+    }[];
+  }[];
+}
+
+export interface MetadataServicesDetailData {
+  service: {
+    /** Service ID */
+    guid: number;
+    /** Servicetyp, z.B. WMS, WFS */
+    servicetyp: string;
+    /** Name des Geodienstes */
+    name: string;
+    /** Beschreibung */
+    beschreibung: string;
+    /** URL */
+    url: string;
+    /** Version */
+    version: string;
+    /** Zugang */
+    zugang: string;
+    /** Link auf Bild */
+    image_url: string | null;
+    kontakt: {
+      /** Kontakt: Zuständig für Geometadaten */
+      metadaten: {
+        /** Amt */
+        amt: string;
+        /** Fachstelle */
+        fachstelle: string | null;
+        /** Sektion */
+        sektion: string | null;
+        /** Vorname */
+        vorname: string;
+        /** Nachname */
+        nachname: string;
+        /** Strassenname */
+        strassenname: string;
+        /** Hausnummer */
+        hausnummer: number;
+        /** Postfach */
+        postfach: string | null;
+        /** PLZ */
+        plz: number;
+        /** Ortschaft */
+        ortschaft: string;
+        /** Telephon */
+        telephon: string;
+        /** Telephon direkt */
+        telephon_direkt: string;
+        /** E-Mail */
+        email: string;
+        /** URL */
+        weburl: string;
+      };
+    };
+    datasets: {
+      /** Dataset ID */
+      guid: number;
+      /** Name des Geodatensatzes */
+      name: string;
+      /** Kurzbeschreibung des Geodatensatzes */
+      kurzbeschreibung: string;
+    }[];
+  };
+}
+
 export interface TopicsListData {
   categories: {
     /** Category title */
@@ -441,7 +1050,7 @@ export interface TopicsListData {
       /** Organisation title */
       organisation: string | null;
       /** Geolion ID of topic */
-      geolion: number | null;
+      guid: number | null;
       /** Keywords */
       keywords: string[];
       /** Topic-specific notice for end-users */
@@ -519,6 +1128,8 @@ export interface TopicsListData {
       layers: {
         /** Layer ID */
         id: number;
+        /** Geolion ID of layer */
+        guid: number | null;
         /** Layer name */
         layer: string;
         /** Layer group title if set */

@@ -7,8 +7,7 @@ import {ServiceDetailComponent} from './components/service-detail/service-detail
 import {MapDetailComponent} from './components/map-detail/map-detail.component';
 import {DatasetDetailComponent} from './components/dataset-detail/dataset-detail.component';
 import {ProductDetailComponent} from './components/product-detail/product-detail.component';
-
-export type DetailRouteType = 'geodata' | 'geoservice' | 'map';
+import {DataCataloguePage} from '../shared/enums/data-catalogue-page.enum';
 
 const routes: Routes = [
   {
@@ -20,19 +19,19 @@ const routes: Routes = [
         component: DataCatalogueOverviewComponent,
       },
       {
-        path: 'dataset/:id',
+        path: `${DataCataloguePage.Datasets}/:id`,
         component: DatasetDetailComponent,
       },
       {
-        path: 'service/:id',
+        path: `${DataCataloguePage.Services}/:id`,
         component: ServiceDetailComponent,
       },
       {
-        path: 'map/:id',
+        path: `${DataCataloguePage.Maps}/:id`,
         component: MapDetailComponent,
       },
       {
-        path: 'product/:id',
+        path: `${DataCataloguePage.Products}/:id`,
         component: ProductDetailComponent,
       },
     ],
