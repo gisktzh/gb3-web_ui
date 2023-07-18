@@ -3,6 +3,7 @@
 .dataset-detail {
   .dataset-detail__back-button {
     width: fit-content;
+    margin-bottom: 60px;
     @include mat-mixins.mat-button-ktzh-link($align-item-right: false);
   }
 

@@ -1,6 +1,41 @@
 <loading-and-process-bar [loadingState]="this.loadingState"></loading-and-process-bar>
-<div *ngIf="data">
-  <h2>{{ data.name }}</h2>
-  <img [alt]="data.name" [src]="apiBaseUrl + data.imageUrl" />
-  <p>{{ data.description }}</p>
+<div *ngIf="datasetInformation" class="map-detail">
+  <a [routerLink]="'/data'" class="map-detail__back-button" mat-button>
+    <mat-icon [svgIcon]="'ktzh_arrow_left'"></mat-icon>
+    Zur Übersicht
+  </a>
+  <h1 class="map-detail__title mat-headline-4">{{ datasetInformation.title }}</h1>
+  <div class="map-detail__data">
+    <div class="map-detail__data__map-link">
+      <b class="map-detail__data__map-link__title mat-headline-6">Karte auf GIS-Browser ansehen</b>
+      <a [routerLink]="'/maps'" [queryParams]="{initialMapIds: datasetInformation.topic}" mat-icon-button>
+        <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
+      </a>
+    </div>
+  </div>
+  <div class="map-detail__data">
+    <data-display-section [dataDisplayElements]="geodataContactElements" [sectionTitle]="'Verantwortlich Geodaten'"></data-display-section>
+  </div>
+  <div class="map-detail__data">
+    <data-display-section [dataDisplayElements]="informationElements" [sectionTitle]="'Informationen'"></data-display-section>
+  </div>
+  <!-- todo: as soon as design is fixed, maybe refactor with generic data-display-section -->
+  <div class="map-detail__data">
+    <h2>Verwendete Geodatensätze</h2>
+    <div class="map-detail__data__linked-datasets">
+      <ng-container *ngFor="let linkedDataset of linkedDatasets">
+        <div class="map-detail__data__linked-datasets__entry">
+          <div class="map-detail__data__linked-datasets__entry__content">
+            <b>{{ linkedDataset.name }}</b>
+            <p class="map-detail__data__linked-datasets__entry__content__description">{{ linkedDataset.shortDescription }}</p>
+          </div>
+          <div class="map-detail__data__linked-datasets__entry__link">
+            <a [routerLink]="'/data/datasets/' + linkedDataset.guid" mat-icon-button>
+              <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
+            </a>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
 </div>

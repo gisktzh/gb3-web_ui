@@ -1,0 +1,75 @@
+@use 'mixins/material.mixin' as mat-mixins;
+@use 'functions/helper.function' as functions;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.map-detail {
+  .map-detail__back-button {
+    width: fit-content;
+    margin-bottom: 60px;
+    @include mat-mixins.mat-button-ktzh-link($align-item-right: false);
+  }
+
+  .map-detail__title {
+    margin-bottom: 12px;
+  }
+
+  .map-detail__description {
+    margin-bottom: 60px;
+  }
+
+  .map-detail__data {
+    padding: 30px 0;
+
+    &--horizontal {
+      display: flex;
+      flex-flow: nowrap;
+      gap: 60px;
+    }
+
+    .map-detail__data__map-link {
+      // todo: use container from below
+      display: flex;
+      align-items: center;
+      width: 100%;
+      flex-wrap: nowrap;
+      background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 25);
+      color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-accent, 25);
+      padding: 24px 16px;
+      height: 20px;
+
+      .map-detail__data__map-link__title {
+        margin-bottom: 0;
+      }
+
+      a {
+        margin-left: auto;
+      }
+    }
+
+    .map-detail__data__linked-datasets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+
+      .map-detail__data__linked-datasets__entry {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        flex-wrap: nowrap;
+        background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 25);
+        color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-accent, 25);
+        padding: 24px 16px;
+
+        .map-detail__data__linked-datasets__entry__content {
+          .map-detail__data__linked-datasets__entry__content__description {
+            margin-bottom: 0;
+          }
+        }
+
+        .map-detail__data__linked-datasets__entry__link {
+          margin-left: auto;
+        }
+      }
+    }
+  }
+}
