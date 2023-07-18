@@ -1,6 +1,6 @@
 <loading-and-process-bar [loadingState]="this.loadingState"></loading-and-process-bar>
 <div *ngIf="datasetInformation" class="map-detail">
-  <a [routerLink]="'/data'" class="map-detail__back-button" mat-button>
+  <a [routerLink]="'/' + mainPageEnum.Data" class="map-detail__back-button" mat-button>
     <mat-icon [svgIcon]="'ktzh_arrow_left'"></mat-icon>
     Zur Übersicht
   </a>
@@ -8,7 +8,7 @@
   <div class="map-detail__data">
     <div class="map-detail__data__map-link">
       <b class="map-detail__data__map-link__title mat-headline-6">Karte auf GIS-Browser ansehen</b>
-      <a [routerLink]="'/maps'" [queryParams]="{initialMapIds: datasetInformation.topic}" mat-icon-button>
+      <a [routerLink]="'/' + mainPageEnum.Maps" [queryParams]="{initialMapIds: datasetInformation.topic}" mat-icon-button>
         <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
       </a>
     </div>
@@ -30,7 +30,7 @@
             <p class="map-detail__data__linked-datasets__entry__content__description">{{ linkedDataset.shortDescription }}</p>
           </div>
           <div class="map-detail__data__linked-datasets__entry__link">
-            <a [routerLink]="'/data/datasets/' + linkedDataset.guid" mat-icon-button>
+            <a [routerLink]="'/' + mainPageEnum.Data + '/' + dataCataloguePageEnum.Datasets + '/' + linkedDataset.guid" mat-icon-button>
               <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
             </a>
           </div>

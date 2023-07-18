@@ -6,6 +6,8 @@ import {ActivatedRoute} from '@angular/router';
 import {Gb3MetadataService} from '../../../shared/services/apis/gb3/gb3-metadata.service';
 import {ConfigService} from '../../../shared/services/config.service';
 import {DataDisplayElement} from '../data-display/data-display.component';
+import {MainPage} from '../../../shared/enums/main-page.enum';
+import {DataCataloguePage} from '../../../shared/enums/data-catalogue-page.enum';
 
 interface DatasetInformation {
   title: string;
@@ -30,6 +32,8 @@ export class MapDetailComponent implements OnInit, OnDestroy {
   public linkedDatasets: DataLink[] = [];
   public loadingState: LoadingState = 'loading';
   public readonly apiBaseUrl: string;
+  public readonly mainPageEnum = MainPage;
+  public readonly dataCataloguePageEnum = DataCataloguePage;
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(

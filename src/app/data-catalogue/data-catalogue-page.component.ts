@@ -2,6 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Router, Scroll} from '@angular/router';
 import {filter, Subscription, tap} from 'rxjs';
 import {map} from 'rxjs/operators';
+import {MainPage} from '../shared/enums/main-page.enum';
 
 @Component({
   selector: 'data-catalogue-page',
@@ -22,10 +23,10 @@ export class DataCataloguePageComponent implements OnInit, OnDestroy {
           filter((evt) => evt instanceof Scroll),
           map((evt) => evt as Scroll),
           tap((scroll) => {
-            this.isIndex = scroll.routerEvent.url === '/data';
-          })
+            this.isIndex = scroll.routerEvent.url === `/${MainPage.Data}`;
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 

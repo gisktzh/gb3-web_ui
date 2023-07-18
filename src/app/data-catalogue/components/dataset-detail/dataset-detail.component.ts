@@ -6,6 +6,8 @@ import {Gb3MetadataService} from '../../../shared/services/apis/gb3/gb3-metadata
 import {DatasetMetadata, DepartmentalContact} from '../../../shared/interfaces/gb3-metadata.interface';
 import {ConfigService} from '../../../shared/services/config.service';
 import {DataDisplayElement} from '../data-display/data-display.component';
+import {MainPage} from '../../../shared/enums/main-page.enum';
+import {DataCataloguePage} from '../../../shared/enums/data-catalogue-page.enum';
 
 interface DatasetInformation {
   title: string;
@@ -40,16 +42,16 @@ export class DatasetDetailComponent implements OnInit, OnDestroy {
     products: [],
   };
   public loadingState: LoadingState = 'loading';
-  public readonly apiBaseUrl: string;
+  public readonly apiBaseUrl: string = this.configService.apiConfig.gb2StaticFiles.baseUrl;
+  public readonly mainPageEnum = MainPage;
+  public readonly dataCataloguePageEnum = DataCataloguePage;
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(
     private readonly route: ActivatedRoute,
     private readonly gb3MetadataService: Gb3MetadataService,
-    private readonly configService: ConfigService
-  ) {
-    this.apiBaseUrl = this.configService.apiConfig.gb2StaticFiles.baseUrl;
-  }
+    private readonly configService: ConfigService,
+  ) {}
 
   public ngOnInit(): void {
     this.initSubscriptions();
@@ -82,9 +84,9 @@ export class DatasetDetailComponent implements OnInit, OnDestroy {
             this.linkedData.services = [...results.services];
             this.linkedData.products = [...results.products];
             this.loadingState = 'loaded';
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 
