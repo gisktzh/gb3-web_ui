@@ -1,6 +1,6 @@
 <loading-and-process-bar [loadingState]="this.loadingState"></loading-and-process-bar>
 <div *ngIf="datasetInformation" class="dataset-detail">
-  <a class="dataset-detail__back-button" [routerLink]="'/' + mainPageEnum.Data" mat-button>
+  <a [routerLink]="'/' + mainPageEnum.Data" class="dataset-detail__back-button" mat-button>
     <mat-icon [svgIcon]="'ktzh_arrow_left'"></mat-icon>
     Zur Übersicht
   </a>
@@ -9,47 +9,48 @@
   <keyword-list *ngIf="datasetInformation.keywords.length > 0" [keywords]="datasetInformation.keywords"></keyword-list>
 
   <div class="dataset-detail__data dataset-detail__data--horizontal">
-    <data-display-section [dataDisplayElements]="geodataContactElements" [sectionTitle]="'Verantwortlich Geodaten'"></data-display-section>
-    <data-display-section
-      [dataDisplayElements]="metadataContactElements"
-      [sectionTitle]="'Zuständig für Geometadaten'"
-    ></data-display-section>
+    <div class="dataset-detail__data__item">
+      <data-display-section
+        [dataDisplayElements]="geodataContactElements"
+        [sectionTitle]="'Verantwortlich Geodaten'"
+      ></data-display-section>
+    </div>
+    <div class="dataset-detail__data__item">
+      <data-display-section
+        [dataDisplayElements]="metadataContactElements"
+        [sectionTitle]="'Zuständig für Geometadaten'"
+      ></data-display-section>
+    </div>
   </div>
   <div class="dataset-detail__data">
-    <data-display-section [dataDisplayElements]="informationElements" [sectionTitle]="'Inhalt / Identifikation'"></data-display-section>
+    <div class="dataset-detail__data__item">
+      <data-display-section [dataDisplayElements]="informationElements" [sectionTitle]="'Inhalt / Identifikation'"></data-display-section>
+    </div>
   </div>
   <div class="dataset-detail__data">
-    <data-display-section [dataDisplayElements]="dataBasisElements" [sectionTitle]="'Datengrundlage'"></data-display-section>
+    <div class="dataset-detail__data__item">
+      <data-display-section [dataDisplayElements]="dataBasisElements" [sectionTitle]="'Datengrundlage'"></data-display-section>
+    </div>
   </div>
   <div class="dataset-detail__data">
-    <data-display-section [dataDisplayElements]="dataProcurement" [sectionTitle]="'Datenbezug'"></data-display-section>
+    <div class="dataset-detail__data__item">
+      <data-display-section [dataDisplayElements]="dataProcurement" [sectionTitle]="'Datenbezug'"></data-display-section>
+    </div>
   </div>
   <!-- todo: as soon as design is fixed, maybe refactor with generic data-display-section -->
   <div class="dataset-detail__data">
     <h2>Karten mit diesem Datensatz</h2>
     <div class="dataset-detail__data__links">
-      <ng-container *ngFor="let map of linkedData.maps">
-        <div class="dataset-detail__data__links__entry">
-          {{ map.name }}:
-          <a
-            [routerLink]="'/' + mainPageEnum.Maps"
-            [queryParams]="{initialMapIds: map.topic}"
-            mat-button
-            class="dataset-detail__data__links__entry__link"
-          >
-            <mat-icon [svgIcon]="'ktzh_legend'"></mat-icon>
-            Im GIS-Browser öffnen
-          </a>
-          <a
-            [routerLink]="'/' + mainPageEnum.Data + '/' + dataCataloguePageEnum.Maps + '/' + map.guid"
-            mat-button
-            class="dataset-detail__data__links__entry__link"
-          >
-            <mat-icon [svgIcon]="'ktzh_arrow_right'"></mat-icon>
-            Zu Metadaten springen
-          </a>
-        </div>
-      </ng-container>
+      <descriptive-highlighted-link *ngFor="let map of linkedData.maps" [title]="map.name">
+        <a [queryParams]="{initialMapIds: map.topic}" [routerLink]="'/' + mainPageEnum.Maps" class="linked-data-button" mat-button>
+          <mat-icon [svgIcon]="'ktzh_arrow_right'"></mat-icon>
+          Im GIS-Browser öffnen
+        </a>
+        <a [routerLink]="'/' + mainPageEnum.Data + '/' + dataCataloguePageEnum.Maps + '/' + map.guid" class="linked-data-button" mat-button>
+          <mat-icon [svgIcon]="'ktzh_arrow_right'"></mat-icon>
+          Zu Metadaten springen
+        </a>
+      </descriptive-highlighted-link>
     </div>
   </div>
 </div>

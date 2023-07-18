@@ -1,0 +1,35 @@
+@use 'mixins/material.mixin' as mat-mixins;
+@use 'functions/helper.function' as functions;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.descriptive-highlighted-link {
+  display: flex;
+  align-items: center;
+  width: auto;
+  flex-wrap: nowrap;
+  background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 25);
+  color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-accent, 25);
+  padding: 12px 16px;
+  justify-content: space-between;
+
+  .descriptive-highlighted-link__links {
+    display: flex;
+    justify-content: end;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .descriptive-highlighted-link__content {
+    display: flex;
+    flex-flow: column;
+
+    .descriptive-highlighted-link__content__title {
+      margin-bottom: 0;
+      font-family: ktzh-variables.$zh-font-family-bold;
+    }
+
+    .descriptive-highlighted-link__content__description {
+      margin-bottom: 0;
+    }
+  }
+}
