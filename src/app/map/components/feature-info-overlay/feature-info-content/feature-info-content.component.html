@@ -25,7 +25,7 @@
         </div>
       </th>
     </tr>
-    <ng-container *ngFor="let tableRow of this.tableRows | keyvalue">
+    <ng-container *ngFor="let tableRow of this.tableRows | keyValuePreserveOrder">
       <tr class="feature-info-content__table__row">
         <th class="feature-info-content__table__row__column feature-info-content__table__row__column--header" scope="col">
           {{ tableRow.key }}

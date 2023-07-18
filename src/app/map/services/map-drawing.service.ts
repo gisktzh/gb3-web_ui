@@ -10,7 +10,7 @@ import {ConfigService} from '../../shared/services/config.service';
 import {selectReady} from '../../state/map/reducers/map-config.reducer';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MapDrawingService implements OnDestroy {
   private readonly isMapReady$ = this.store.select(selectReady);
@@ -20,7 +20,7 @@ export class MapDrawingService implements OnDestroy {
   constructor(
     @Inject(MAP_SERVICE) private readonly mapService: MapService,
     private readonly store: Store,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
   ) {
     this.initSubscriptions();
   }
@@ -29,7 +29,7 @@ export class MapDrawingService implements OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  public drawFeatureInfoHighlight(geometry: GeometryWithSrs): void {
+  public drawFeatureInfoHighlight(geometry: GeometryWithSrs) {
     this.mapService.addGeometryToDrawingLayer(geometry, InternalDrawingLayer.FeatureHighlight);
   }
 
@@ -37,13 +37,21 @@ export class MapDrawingService implements OnDestroy {
     this.mapService.clearDrawingLayer(InternalDrawingLayer.FeatureHighlight);
   }
 
-  public drawFeatureQueryLocation(geometry: GeometryWithSrs): void {
+  public drawFeatureQueryLocation(geometry: GeometryWithSrs) {
     this.clearFeatureQueryLocation();
     this.mapService.addGeometryToDrawingLayer(geometry, InternalDrawingLayer.FeatureQueryLocation);
   }
 
-  public clearFeatureQueryLocation(): void {
+  public clearFeatureQueryLocation() {
     this.mapService.clearDrawingLayer(InternalDrawingLayer.FeatureQueryLocation);
+  }
+
+  public async startDrawPrintPreview(extentWidth: number, extentHeight: number, rotation: number) {
+    await this.mapService.startDrawPrintPreview(extentWidth, extentHeight, rotation);
+  }
+
+  public stopDrawPrintPreview() {
+    this.mapService.stopDrawPrintPreview();
   }
 
   private initSubscriptions() {
@@ -55,9 +63,9 @@ export class MapDrawingService implements OnDestroy {
           filter(([_, isMapReady]) => isMapReady),
           tap(([location, _]) => {
             this.handleGpsLocation(location);
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 

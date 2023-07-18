@@ -1,0 +1,17 @@
+@use 'mixins/helpers.mixin' as mixins;
+
+:host ::ng-deep {
+  .drawing-tools__button {
+    @include mixins.tool-button;
+  }
+}
+
+.drawing-tools {
+  display: flex;
+  flex-direction: column;
+
+  .drawing-tools__divider {
+    width: 50%;
+    align-self: center;
+  }
+}

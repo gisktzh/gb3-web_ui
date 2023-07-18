@@ -16,6 +16,7 @@
     position: absolute;
     bottom: calc(12px + $minimal-bottom-height);
     right: 12px;
+    pointer-events: none;
   }
 
   .map-container__legend-overlay {

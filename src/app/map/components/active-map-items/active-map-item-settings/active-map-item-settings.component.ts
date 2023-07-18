@@ -1,6 +1,6 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {ActiveMapItem} from '../../../models/active-map-item.model';
-import {map, Subscription, tap} from 'rxjs';
+import {filter, map, Subscription, tap} from 'rxjs';
 import {selectItems} from '../../../../state/map/reducers/active-map-item.reducer';
 import {Store} from '@ngrx/store';
 import {ActiveMapItemActions} from '../../../../state/map/actions/active-map-item.actions';
@@ -84,6 +84,16 @@ export class ActiveMapItemSettingsComponent implements OnInit, OnDestroy {
             }
             this.numberOfChangedFilters = numberOfChangedFilters;
           })
+        )
+        .subscribe()
+    );
+
+    this.subscriptions.add(
+      this.activeMapItems$
+        .pipe(
+          map((activeMapItems) => activeMapItems.find((activeMapItem) => activeMapItem.id === this.activeMapItem.id)),
+          filter((activeMapItem) => activeMapItem !== undefined),
+          tap((activeMapItem) => (this.currentOpacity = activeMapItem!.opacity))
         )
         .subscribe()
     );

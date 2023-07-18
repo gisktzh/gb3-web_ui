@@ -20,6 +20,7 @@ export interface Map {
   organisation: string | null;
   /** Geolion ID of map */
   geolion: number | null;
+  gb2Url: string | null;
   /** Keywords */
   keywords: string[];
   /**

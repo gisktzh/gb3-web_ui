@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {MapLayer} from '../../../../shared/interfaces/topic.interface';
 import {LoadingState} from '../../../../shared/types/loading-state';
+import {MapConfigState} from '../../../../state/map/states/map-config.state';
 
 export type MapDataItemType = 'map' | 'favorite';
 
@@ -12,6 +13,11 @@ export type MapDataItemType = 'map' | 'favorite';
 export class BaseMapDataItemComponent {
   @Input() public title!: string;
   @Input() public filterString: string = '';
+  /**
+   * URL to gb2, if the given mapitem is not yet gb3-capable.
+   */
+  public gb2Url: string | null = null;
+  public mapConfigState?: MapConfigState;
 
   @Output() public addEvent = new EventEmitter<void>();
 

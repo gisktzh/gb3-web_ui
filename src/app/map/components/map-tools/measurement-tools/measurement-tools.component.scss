@@ -1,0 +1,10 @@
+@use 'mixins/helpers.mixin' as mixins;
+
+:host ::ng-deep {
+  .measurement-tools__button {
+    @include mixins.tool-button;
+  }
+}
+
+.measurement-tools {
+}

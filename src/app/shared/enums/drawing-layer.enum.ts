@@ -1,11 +1,13 @@
 export enum InternalDrawingLayer {
   FeatureHighlight = 'feature_highlight',
   FeatureQueryLocation = 'feature_query_location',
-  LocatePosition = 'locate_position'
+  LocatePosition = 'locate_position',
+  PrintPreview = 'print_preview'
 }
 
 export enum UserDrawingLayer {
-  Measurements = 'measurements'
+  Measurements = 'measurements',
+  Drawings = 'drawings'
 }
 
 /**
