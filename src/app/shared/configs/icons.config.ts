@@ -78,6 +78,10 @@ const actionIconsConfig = [
     id: 'ktzh_remove',
     path: 'assets/icons/actions/remove.svg',
   },
+  {
+    id: 'ktzh_copy_to_clipboard',
+    path: 'assets/icons/actions/copy-to-clipboard.svg',
+  },
 ];
 
 /**

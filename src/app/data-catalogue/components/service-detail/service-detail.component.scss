@@ -1,0 +1,35 @@
+@use 'mixins/material.mixin' as mat-mixins;
+@use 'functions/helper.function' as functions;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.service-detail {
+  .service-detail__back-button {
+    width: fit-content;
+    margin-bottom: 60px;
+    @include mat-mixins.mat-button-ktzh-link($align-item-right: false);
+  }
+
+  .service-detail__title {
+    margin-bottom: 12px;
+  }
+
+  .service-detail__description {
+    margin-bottom: 60px;
+  }
+
+  .service-detail__data {
+    padding: 30px 0;
+
+    &--horizontal {
+      display: flex;
+      flex-flow: nowrap;
+      gap: 60px;
+    }
+
+    .service-detail__data__linked-data {
+      display: flex;
+      flex-flow: column;
+      gap: 30px;
+    }
+  }
+}

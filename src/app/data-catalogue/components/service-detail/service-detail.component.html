@@ -1,6 +1,39 @@
 <loading-and-process-bar [loadingState]="this.loadingState"></loading-and-process-bar>
-<div *ngIf="data">
-  <h2>{{ data.name }}</h2>
-  <img [alt]="data.name" [src]="apiBaseUrl + data.imageUrl" />
-  <p>{{ data.description }}</p>
+<div *ngIf="datasetInformation" class="service-detail">
+  <a [routerLink]="'/' + mainPageEnum.Data" class="service-detail__back-button" mat-button>
+    <mat-icon [svgIcon]="'ktzh_arrow_left'"></mat-icon>
+    Zur Übersicht
+  </a>
+  <h1 class="service-detail__title mat-headline-4">{{ datasetInformation.title }}</h1>
+  <div class="service-detail__data">
+    <descriptive-highlighted-link [title]="'Geodienst URL kopieren'" [description]="serviceUrlForCopy">
+      <button mat-icon-button (click)="copyToClipboard()">
+        <mat-icon svgIcon="ktzh_copy_to_clipboard"></mat-icon>
+      </button>
+    </descriptive-highlighted-link>
+  </div>
+  <div class="service-detail__data">
+    <data-display-section
+      [dataDisplayElements]="metadataContactElements"
+      [sectionTitle]="'Verantwortlich für Geometadaten'"
+    ></data-display-section>
+  </div>
+  <div class="service-detail__data">
+    <data-display-section [dataDisplayElements]="informationElements" [sectionTitle]="'Informationen'"></data-display-section>
+  </div>
+  <!-- todo: as soon as design is fixed, maybe refactor with generic data-display-section -->
+  <div *ngIf="linkedDatasets.length > 0" class="service-detail__data">
+    <h2>Verwendete Geodatensätze</h2>
+    <div class="service-detail__data__linked-data">
+      <descriptive-highlighted-link
+        *ngFor="let linkedDataset of linkedDatasets"
+        [title]="linkedDataset.name"
+        [description]="linkedDataset.shortDescription"
+      >
+        <a [routerLink]="'/' + mainPageEnum.Data + '/' + dataCataloguePageEnum.Datasets + '/' + linkedDataset.guid" mat-icon-button>
+          <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
+        </a>
+      </descriptive-highlighted-link>
+    </div>
+  </div>
 </div>

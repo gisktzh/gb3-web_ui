@@ -19,7 +19,7 @@
     <data-display-section [dataDisplayElements]="informationElements" [sectionTitle]="'Informationen'"></data-display-section>
   </div>
   <!-- todo: as soon as design is fixed, maybe refactor with generic data-display-section -->
-  <div class="map-detail__data">
+  <div *ngIf="linkedDatasets.length > 0" class="map-detail__data">
     <h2>Verwendete Geodatensätze</h2>
     <div class="map-detail__data__linked-data">
       <descriptive-highlighted-link

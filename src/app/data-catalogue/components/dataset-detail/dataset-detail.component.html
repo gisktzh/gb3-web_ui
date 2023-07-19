@@ -38,7 +38,7 @@
     </div>
   </div>
   <!-- todo: as soon as design is fixed, maybe refactor with generic data-display-section -->
-  <div class="dataset-detail__data">
+  <div *ngIf="linkedData.maps.length > 0" class="dataset-detail__data">
     <h2>Karten mit diesem Datensatz</h2>
     <div class="dataset-detail__data__links">
       <descriptive-highlighted-link *ngFor="let map of linkedData.maps" [title]="map.name">
@@ -49,6 +49,16 @@
         <a [routerLink]="'/' + mainPageEnum.Data + '/' + dataCataloguePageEnum.Maps + '/' + map.guid" class="linked-data-button" mat-button>
           <mat-icon [svgIcon]="'ktzh_arrow_right'"></mat-icon>
           Zu Metadaten springen
+        </a>
+      </descriptive-highlighted-link>
+    </div>
+  </div>
+  <div *ngIf="linkedData.services.length > 0" class="dataset-detail__data">
+    <h2>Geodienste mit diesem Datensatz</h2>
+    <div class="dataset-detail__data__links">
+      <descriptive-highlighted-link *ngFor="let service of linkedData.services" [title]="service.name">
+        <a [routerLink]="'/' + mainPageEnum.Data + '/' + dataCataloguePageEnum.Services + '/' + service.guid" mat-icon-button>
+          <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
         </a>
       </descriptive-highlighted-link>
     </div>
