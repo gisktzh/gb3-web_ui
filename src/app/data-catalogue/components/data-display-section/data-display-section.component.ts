@@ -1,5 +1,4 @@
 import {Component, Input} from '@angular/core';
-import {DataDisplayElement} from '../data-display/data-display.component';
 
 @Component({
   selector: 'data-display-section',
@@ -8,5 +7,4 @@ import {DataDisplayElement} from '../data-display/data-display.component';
 })
 export class DataDisplaySectionComponent {
   @Input() public sectionTitle: string = '';
-  @Input() public dataDisplayElements: DataDisplayElement[] = [];
 }

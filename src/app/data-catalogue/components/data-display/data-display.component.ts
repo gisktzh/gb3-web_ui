@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
 
-export interface AbstractDataDisplayElement {
+interface AbstractDataDisplayElement {
   title: string;
   value: string | null;
   type: 'text' | 'url' | 'email';

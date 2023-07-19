@@ -11,10 +11,11 @@
   color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-accent, 25);
   padding: 12px 16px;
   justify-content: space-between;
+  gap: 12px;
 
   .descriptive-highlighted-link__links {
     display: flex;
-    justify-content: end;
+    justify-content: flex-end;
     gap: 8px;
     flex-shrink: 0;
   }

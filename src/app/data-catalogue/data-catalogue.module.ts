@@ -13,6 +13,8 @@ import {ProductDetailComponent} from './components/product-detail/product-detail
 import {KeywordListComponent} from './components/keyword-list/keyword-list.component';
 import {DataDisplayComponent} from './components/data-display/data-display.component';
 import {DataDisplaySectionComponent} from './components/data-display-section/data-display-section.component';
+import {DataCatalogueDetailPageComponent} from './components/data-catalogue-detail-page/data-catalogue-detail-page.component';
+import {DataCatalogueDetailPageSectionComponent} from './components/data-catalogue-detail-page-section/data-catalogue-detail-page-section.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +28,8 @@ import {DataDisplaySectionComponent} from './components/data-display-section/dat
     KeywordListComponent,
     DataDisplayComponent,
     DataDisplaySectionComponent,
+    DataCatalogueDetailPageComponent,
+    DataCatalogueDetailPageSectionComponent,
   ],
   imports: [CommonModule, DataCatalogueRoutingModule, MaterialModule, SharedModule],
 })

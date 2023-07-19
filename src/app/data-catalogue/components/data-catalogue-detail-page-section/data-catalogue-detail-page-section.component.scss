@@ -1,0 +1,11 @@
+.data-catalogue-detail-page-section {
+  display: flex;
+  gap: 24px;
+  padding: 30px 0;
+  flex-flow: column;
+
+  &--row {
+    flex-flow: row;
+    display: flex;
+  }
+}

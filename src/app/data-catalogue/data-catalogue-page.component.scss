@@ -1,10 +1,12 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
 .data-catalogue {
   display: flex;
   justify-content: center;
 
   .data-catalogue__content {
-    padding: 40px 0;
+    padding: 40px 24px;
+    max-width: ktzh-variables.$zh-layout-max-content-width;
     width: 100%;
-    max-width: 900px;
   }
 }

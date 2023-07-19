@@ -2,43 +2,6 @@
 @use 'functions/helper.function' as functions;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
-.dataset-detail {
-  .dataset-detail__back-button {
-    width: fit-content;
-    margin-bottom: 60px;
-    @include mat-mixins.mat-button-ktzh-link($align-item-right: false);
-  }
-
-  .dataset-detail__title {
-    margin-bottom: 12px;
-  }
-
-  .dataset-detail__description {
-    margin-bottom: 60px;
-  }
-
-  .dataset-detail__data {
-    padding: 30px 0;
-
-    .dataset-detail__data__item {
-      flex: 1 1 0;
-    }
-
-    &--horizontal {
-      display: flex;
-      flex-flow: nowrap;
-      gap: 60px;
-      flex-basis: 0;
-    }
-
-    .dataset-detail__data__links {
-      display: flex;
-      flex-flow: column;
-      gap: 30px;
-    }
-  }
-}
-
 .linked-data-button {
   @include mat-mixins.mat-button-ktzh-link();
   background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent);

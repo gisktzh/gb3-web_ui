@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {DepartmentalContact, MapMetadata} from '../../../shared/interfaces/gb3-metadata.interface';
+import {MapMetadata} from '../../../shared/interfaces/gb3-metadata.interface';
 import {LoadingState} from '../../../shared/types/loading-state';
 import {Subscription, switchMap, tap, throwError} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
@@ -8,17 +8,12 @@ import {ConfigService} from '../../../shared/services/config.service';
 import {DataDisplayElement} from '../data-display/data-display.component';
 import {MainPage} from '../../../shared/enums/main-page.enum';
 import {DataCataloguePage} from '../../../shared/enums/data-catalogue-page.enum';
+import {BaseMetadataInformation} from '../../../shared/interfaces/base-metadata-information.interface';
+import {MetadataLink} from '../../../shared/interfaces/metadata-link.interface';
+import {DataExtractionUtils} from '../../utils/data-extraction.utils';
 
-interface DatasetInformation {
-  title: string;
+interface BaseMetadataWithTopicInformation extends BaseMetadataInformation {
   topic: string;
-  keywords: string[];
-}
-
-interface DataLink {
-  name: string;
-  guid: number;
-  shortDescription: string;
 }
 
 @Component({
@@ -27,10 +22,10 @@ interface DataLink {
   styleUrls: ['./map-detail.component.scss'],
 })
 export class MapDetailComponent implements OnInit, OnDestroy {
-  public datasetInformation: DatasetInformation | undefined;
+  public baseMetadataInformation: BaseMetadataWithTopicInformation | undefined;
   public geodataContactElements: DataDisplayElement[] = [];
   public informationElements: DataDisplayElement[] = [];
-  public linkedDatasets: DataLink[] = [];
+  public linkedDatasets: MetadataLink[] = [];
   public loadingState: LoadingState = 'loading';
   public readonly apiBaseUrl: string;
   public readonly mainPageEnum = MainPage;
@@ -65,10 +60,10 @@ export class MapDetailComponent implements OnInit, OnDestroy {
             return this.gb3MetadataService.loadMapDetail(id);
           }),
           tap((results) => {
-            this.datasetInformation = this.extractDatasetInformation(results);
-            this.geodataContactElements = this.extractContactElements(results.contact.geodata);
+            this.baseMetadataInformation = this.extractBaseMetadataInformation(results);
+            this.geodataContactElements = DataExtractionUtils.extractContactElements(results.contact.geodata);
             this.informationElements = this.extractInformationElements(results);
-            this.linkedDatasets = this.extractLinkedDatasets(results);
+            this.linkedDatasets = results.datasets;
             this.loadingState = 'loaded';
           }),
         )
@@ -76,22 +71,9 @@ export class MapDetailComponent implements OnInit, OnDestroy {
     );
   }
 
-  private extractContactElements(contact: DepartmentalContact): DataDisplayElement[] {
-    return [
-      {title: 'Organisation', value: contact.department, type: 'text'},
-      {title: 'Abteilung', value: contact.division, type: 'text'},
-      {title: 'Kontaktperson', value: `${contact.firstName} ${contact.lastName}`, type: 'text'},
-      {title: 'Adresse', value: `${contact.street} ${contact.houseNumber}, ${contact.zipCode} ${contact.village}`, type: 'text'},
-      {title: 'Tel', value: contact.phone, type: 'text'},
-      {title: 'Tel direkt', value: contact.phoneDirect, type: 'text'},
-      {title: 'E-Mail', value: contact.email, type: 'email'},
-      {title: 'www', value: contact.url, type: 'url'},
-    ];
-  }
-
-  private extractDatasetInformation(results: MapMetadata): DatasetInformation {
+  private extractBaseMetadataInformation(results: MapMetadata): BaseMetadataWithTopicInformation {
     return {
-      title: results.name,
+      itemTitle: results.name,
       topic: results.topic,
       keywords: ['GIS-Browser Karte'], // todo: add OGD status once API delivers that
     };
@@ -103,9 +85,5 @@ export class MapDetailComponent implements OnInit, OnDestroy {
       {title: 'Bezeichnung', value: data.name, type: 'text'},
       {title: 'Beschreibung', value: data.description, type: 'text'},
     ];
-  }
-
-  private extractLinkedDatasets({datasets}: MapMetadata): DataLink[] {
-    return datasets.map((dataset) => ({...dataset}));
   }
 }

@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {DepartmentalContact, ServiceMetadata} from '../../../shared/interfaces/gb3-metadata.interface';
+import {ServiceMetadata} from '../../../shared/interfaces/gb3-metadata.interface';
 import {LoadingState} from '../../../shared/types/loading-state';
 import {Subscription, switchMap, tap, throwError} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
@@ -9,17 +9,9 @@ import {MainPage} from '../../../shared/enums/main-page.enum';
 import {DataCataloguePage} from '../../../shared/enums/data-catalogue-page.enum';
 import {DataDisplayElement} from '../data-display/data-display.component';
 import {Clipboard} from '@angular/cdk/clipboard';
-
-interface DataLink {
-  name: string;
-  guid: number;
-  shortDescription: string;
-}
-
-interface DatasetInformation {
-  title: string;
-  keywords: string[];
-}
+import {BaseMetadataInformation} from '../../../shared/interfaces/base-metadata-information.interface';
+import {MetadataLink} from '../../../shared/interfaces/metadata-link.interface';
+import {DataExtractionUtils} from '../../utils/data-extraction.utils';
 
 @Component({
   selector: 'service-detail',
@@ -27,10 +19,10 @@ interface DatasetInformation {
   styleUrls: ['./service-detail.component.scss'],
 })
 export class ServiceDetailComponent implements OnInit, OnDestroy {
-  public datasetInformation: DatasetInformation | undefined;
+  public baseMetadataInformation: BaseMetadataInformation | undefined;
   public metadataContactElements: DataDisplayElement[] = [];
   public informationElements: DataDisplayElement[] = [];
-  public linkedDatasets: DataLink[] = [];
+  public linkedDatasets: MetadataLink[] = [];
   public loadingState: LoadingState = 'loading';
   public serviceUrlForCopy?: string;
   public readonly apiBaseUrl: string;
@@ -73,29 +65,16 @@ export class ServiceDetailComponent implements OnInit, OnDestroy {
             return this.gb3MetadataService.loadServiceDetail(id);
           }),
           tap((results) => {
-            this.datasetInformation = this.extractDatasetInformation(results);
-            this.metadataContactElements = this.extractContactElements(results.contact.metadata);
+            this.baseMetadataInformation = this.extractBaseMetadataInformation(results);
+            this.metadataContactElements = DataExtractionUtils.extractContactElements(results.contact.metadata);
             this.informationElements = this.extractInformationElements(results);
-            this.linkedDatasets = this.extractLinkedDatasets(results);
+            this.linkedDatasets = results.datasets;
             this.serviceUrlForCopy = results.url;
             this.loadingState = 'loaded';
           }),
         )
         .subscribe(),
     );
-  }
-
-  private extractContactElements(contact: DepartmentalContact): DataDisplayElement[] {
-    return [
-      {title: 'Organisation', value: contact.department, type: 'text'},
-      {title: 'Abteilung', value: contact.division, type: 'text'},
-      {title: 'Kontaktperson', value: `${contact.firstName} ${contact.lastName}`, type: 'text'},
-      {title: 'Adresse', value: `${contact.street} ${contact.houseNumber}, ${contact.zipCode} ${contact.village}`, type: 'text'},
-      {title: 'Tel', value: contact.phone, type: 'text'},
-      {title: 'Tel direkt', value: contact.phoneDirect, type: 'text'},
-      {title: 'E-Mail', value: contact.email, type: 'email'},
-      {title: 'www', value: contact.url, type: 'url'},
-    ];
   }
 
   private extractInformationElements(data: ServiceMetadata): DataDisplayElement[] {
@@ -111,15 +90,11 @@ export class ServiceDetailComponent implements OnInit, OnDestroy {
     ];
   }
 
-  private extractDatasetInformation(results: ServiceMetadata): DatasetInformation {
+  private extractBaseMetadataInformation(results: ServiceMetadata): BaseMetadataInformation {
     return {
-      title: results.name,
+      itemTitle: results.name,
       keywords: ['Geodienst'], // todo: add OGD status once API delivers that
     };
-  }
-
-  private extractLinkedDatasets({datasets}: ServiceMetadata): DataLink[] {
-    return datasets.map((dataset) => ({...dataset}));
   }
 
   private createGetCapabilitiesLink(baseUrl: string, serviceType: string): string {

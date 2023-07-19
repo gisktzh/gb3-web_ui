@@ -3,24 +3,21 @@ import {LoadingState} from '../../../shared/types/loading-state';
 import {Subscription, switchMap, tap, throwError} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {Gb3MetadataService} from '../../../shared/services/apis/gb3/gb3-metadata.service';
-import {DatasetMetadata, DepartmentalContact} from '../../../shared/interfaces/gb3-metadata.interface';
+import {DatasetMetadata} from '../../../shared/interfaces/gb3-metadata.interface';
 import {ConfigService} from '../../../shared/services/config.service';
 import {DataDisplayElement} from '../data-display/data-display.component';
 import {MainPage} from '../../../shared/enums/main-page.enum';
 import {DataCataloguePage} from '../../../shared/enums/data-catalogue-page.enum';
+import {BaseMetadataInformation} from '../../../shared/interfaces/base-metadata-information.interface';
+import {MetadataLink} from '../../../shared/interfaces/metadata-link.interface';
+import {DataExtractionUtils} from '../../utils/data-extraction.utils';
 
-interface DatasetInformation {
-  title: string;
-  description: string;
-  keywords: string[];
-}
+/**
+ We do not get a description in the case of the dataset...
+ */
+type MetadataLinkWithoutDescription = Omit<MetadataLink, 'shortDescription'>;
 
-interface DataLink {
-  name: string;
-  guid: number;
-}
-
-interface MapLink extends DataLink {
+interface MetadataLinkWithTopicId extends MetadataLinkWithoutDescription {
   topic: string;
 }
 
@@ -30,13 +27,17 @@ interface MapLink extends DataLink {
   styleUrls: ['./dataset-detail.component.scss'],
 })
 export class DatasetDetailComponent implements OnInit, OnDestroy {
-  public datasetInformation: DatasetInformation | undefined;
+  public baseMetadataInformation: BaseMetadataInformation | undefined;
   public informationElements: DataDisplayElement[] = [];
   public geodataContactElements: DataDisplayElement[] = [];
   public metadataContactElements: DataDisplayElement[] = [];
   public dataBasisElements: DataDisplayElement[] = [];
   public dataProcurement: DataDisplayElement[] = [];
-  public linkedData: {maps: MapLink[]; services: DataLink[]; products: DataLink[]} = {
+  public linkedData: {
+    maps: MetadataLinkWithTopicId[];
+    services: MetadataLinkWithoutDescription[];
+    products: MetadataLinkWithoutDescription[];
+  } = {
     maps: [],
     services: [],
     products: [],
@@ -73,10 +74,10 @@ export class DatasetDetailComponent implements OnInit, OnDestroy {
             return this.gb3MetadataService.loadDatasetDetail(id);
           }),
           tap((results) => {
-            this.datasetInformation = this.extractDatasetInformation(results);
+            this.baseMetadataInformation = this.extractBaseMetadataInformation(results);
             this.informationElements = this.extractInformationElements(results);
-            this.geodataContactElements = this.extractContactElements(results.contact.geodata);
-            this.metadataContactElements = this.extractContactElements(results.contact.metadata);
+            this.geodataContactElements = DataExtractionUtils.extractContactElements(results.contact.geodata);
+            this.metadataContactElements = DataExtractionUtils.extractContactElements(results.contact.metadata);
             this.dataBasisElements = this.extractDataBasisElements(results);
             this.dataProcurement = this.extractDataProcurementElements(results);
 
@@ -101,25 +102,12 @@ export class DatasetDetailComponent implements OnInit, OnDestroy {
     ];
   }
 
-  private extractDatasetInformation(results: DatasetMetadata): DatasetInformation {
+  private extractBaseMetadataInformation(results: DatasetMetadata): BaseMetadataInformation {
     return {
-      title: results.name,
-      description: results.description,
+      itemTitle: results.name,
+      shortDescription: results.description,
       keywords: ['Geodatensatz'], // todo: add OGD status once API delivers that
     };
-  }
-
-  private extractContactElements(contact: DepartmentalContact): DataDisplayElement[] {
-    return [
-      {title: 'Organisation', value: contact.department, type: 'text'},
-      {title: 'Abteilung', value: contact.division, type: 'text'},
-      {title: 'Kontaktperson', value: `${contact.firstName} ${contact.lastName}`, type: 'text'},
-      {title: 'Adresse', value: `${contact.street} ${contact.houseNumber}, ${contact.zipCode} ${contact.village}`, type: 'text'},
-      {title: 'Tel', value: contact.phone, type: 'text'},
-      {title: 'Tel direkt', value: contact.phoneDirect, type: 'text'},
-      {title: 'E-Mail', value: contact.email, type: 'email'},
-      {title: 'www', value: contact.url, type: 'url'},
-    ];
   }
 
   private extractDataBasisElements(results: DatasetMetadata): DataDisplayElement[] {

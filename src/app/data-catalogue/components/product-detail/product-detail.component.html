@@ -1,24 +1,20 @@
-<loading-and-process-bar [loadingState]="this.loadingState"></loading-and-process-bar>
-<div *ngIf="datasetInformation" class="product-detail">
-  <a [routerLink]="'/' + mainPageEnum.Data" class="product-detail__back-button" mat-button>
-    <mat-icon [svgIcon]="'ktzh_arrow_left'"></mat-icon>
-    Zur Übersicht
-  </a>
-  <h1 class="product-detail__title mat-headline-4">{{ datasetInformation.title }}</h1>
-  <keyword-list [keywords]="datasetInformation.keywords"></keyword-list>
-  <div class="product-detail__data">
-    <data-display-section
-      [dataDisplayElements]="metadataContactElements"
-      [sectionTitle]="'Verantwortlich für Geometadaten'"
-    ></data-display-section>
-  </div>
-  <div class="product-detail__data">
-    <data-display-section [dataDisplayElements]="informationElements" [sectionTitle]="'Informationen'"></data-display-section>
-  </div>
-  <!-- todo: as soon as design is fixed, maybe refactor with generic data-display-section -->
-  <div *ngIf="linkedDatasets.length > 0" class="product-detail__data">
-    <h2>Verwendete Geodatensätze</h2>
-    <div class="product-detail__data__linked-data">
+<loading-and-process-bar [loadingState]="loadingState"></loading-and-process-bar>
+
+<data-catalogue-detail-page *ngIf="baseMetadataInformation" [baseMetadataInformation]="baseMetadataInformation">
+  <data-catalogue-detail-page-section>
+    <data-display-section [sectionTitle]="'Zuständig für Geometadaten'">
+      <data-display [elements]="metadataContactElements"></data-display>
+    </data-display-section>
+  </data-catalogue-detail-page-section>
+
+  <data-catalogue-detail-page-section>
+    <data-display-section [sectionTitle]="'Informationen'">
+      <data-display [elements]="informationElements"></data-display>
+    </data-display-section>
+  </data-catalogue-detail-page-section>
+
+  <data-catalogue-detail-page-section *ngIf="linkedDatasets.length > 0">
+    <data-display-section [sectionTitle]="'Verwendete Geodatensätze'">
       <descriptive-highlighted-link
         *ngFor="let linkedDataset of linkedDatasets"
         [description]="linkedDataset.shortDescription"
@@ -28,6 +24,6 @@
           <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
         </a>
       </descriptive-highlighted-link>
-    </div>
-  </div>
-</div>
+    </data-display-section>
+  </data-catalogue-detail-page-section>
+</data-catalogue-detail-page>
