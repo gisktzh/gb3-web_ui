@@ -1,7 +1,7 @@
 <mat-expansion-panel
   #expansionPanel
-  [disabled]="this.disabled"
-  [expanded]="this.forceExpanded"
+  [disabled]="disabled"
+  [expanded]="forceExpanded"
   [ngClass]="{'list-item--no-content-indent': removeContentIndent}"
   class="list-item"
   hideToggle
@@ -17,11 +17,9 @@
       <p [title]="overlayTitle" class="list-item__header__content__title">{{ overlayTitle }}</p>
       <a
         (click)="$event.stopPropagation()"
-        *ngIf="this.metaDataLink"
+        *ngIf="metaDataLink"
         class="list-item__header__content__info-link"
-        href="{{ this.metaDataLink }}"
-        rel="noopener noreferrer"
-        target="_blank"
+        [routerLink]="metaDataLink"
         title="Metadaten anzeigen"
       >
         <span class="list-item__header__content__info-link__icon">
