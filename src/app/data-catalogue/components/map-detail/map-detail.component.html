@@ -12,8 +12,12 @@
       </a>
     </descriptive-highlighted-link>
   </div>
+  <keyword-list [keywords]="datasetInformation.keywords"></keyword-list>
   <div class="map-detail__data">
-    <data-display-section [dataDisplayElements]="geodataContactElements" [sectionTitle]="'Verantwortlich Geodaten'"></data-display-section>
+    <data-display-section
+      [dataDisplayElements]="geodataContactElements"
+      [sectionTitle]="'Verantwortlich für Geodaten'"
+    ></data-display-section>
   </div>
   <div class="map-detail__data">
     <data-display-section [dataDisplayElements]="informationElements" [sectionTitle]="'Informationen'"></data-display-section>
@@ -24,8 +28,8 @@
     <div class="map-detail__data__linked-data">
       <descriptive-highlighted-link
         *ngFor="let linkedDataset of linkedDatasets"
-        [title]="linkedDataset.name"
         [description]="linkedDataset.shortDescription"
+        [title]="linkedDataset.name"
       >
         <a [routerLink]="'/' + mainPageEnum.Data + '/' + dataCataloguePageEnum.Datasets + '/' + linkedDataset.guid" mat-icon-button>
           <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>

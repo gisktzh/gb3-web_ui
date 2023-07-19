@@ -5,10 +5,11 @@
     Zur Übersicht
   </a>
   <h1 class="product-detail__title mat-headline-4">{{ datasetInformation.title }}</h1>
+  <keyword-list [keywords]="datasetInformation.keywords"></keyword-list>
   <div class="product-detail__data">
     <data-display-section
       [dataDisplayElements]="metadataContactElements"
-      [sectionTitle]="'Verantwortlich Geometadaten'"
+      [sectionTitle]="'Verantwortlich für Geometadaten'"
     ></data-display-section>
   </div>
   <div class="product-detail__data">
@@ -20,8 +21,8 @@
     <div class="product-detail__data__linked-data">
       <descriptive-highlighted-link
         *ngFor="let linkedDataset of linkedDatasets"
-        [title]="linkedDataset.name"
         [description]="linkedDataset.shortDescription"
+        [title]="linkedDataset.name"
       >
         <a [routerLink]="'/' + mainPageEnum.Data + '/' + dataCataloguePageEnum.Datasets + '/' + linkedDataset.guid" mat-icon-button>
           <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>

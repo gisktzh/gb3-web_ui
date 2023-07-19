@@ -97,6 +97,7 @@ export class DatasetDetailComponent implements OnInit, OnDestroy {
       {title: 'Kurzbeschreibung', value: data.shortDescription, type: 'text'},
       {title: 'Beschreibung', value: data.description, type: 'text'},
       {title: 'eCH Geokategorien / Themen', value: data.topics, type: 'text'},
+      {title: 'Schlüsselwörter', value: data.keywords, type: 'text'},
     ];
   }
 
@@ -104,7 +105,7 @@ export class DatasetDetailComponent implements OnInit, OnDestroy {
     return {
       title: results.name,
       description: results.description,
-      keywords: results.keywords ? results.keywords?.split(',') : [],
+      keywords: ['Geodatensatz'], // todo: add OGD status once API delivers that
     };
   }
 

@@ -6,12 +6,13 @@
   </a>
   <h1 class="service-detail__title mat-headline-4">{{ datasetInformation.title }}</h1>
   <div class="service-detail__data">
-    <descriptive-highlighted-link [title]="'Geodienst URL kopieren'" [description]="serviceUrlForCopy">
-      <button mat-icon-button (click)="copyToClipboard()">
+    <descriptive-highlighted-link [description]="serviceUrlForCopy" [title]="'Geodienst URL kopieren'">
+      <button (click)="copyToClipboard()" mat-icon-button>
         <mat-icon svgIcon="ktzh_copy_to_clipboard"></mat-icon>
       </button>
     </descriptive-highlighted-link>
   </div>
+  <keyword-list [keywords]="datasetInformation.keywords"></keyword-list>
   <div class="service-detail__data">
     <data-display-section
       [dataDisplayElements]="metadataContactElements"
@@ -27,8 +28,8 @@
     <div class="service-detail__data__linked-data">
       <descriptive-highlighted-link
         *ngFor="let linkedDataset of linkedDatasets"
-        [title]="linkedDataset.name"
         [description]="linkedDataset.shortDescription"
+        [title]="linkedDataset.name"
       >
         <a [routerLink]="'/' + mainPageEnum.Data + '/' + dataCataloguePageEnum.Datasets + '/' + linkedDataset.guid" mat-icon-button>
           <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>

@@ -6,13 +6,13 @@
   </a>
   <h1 class="dataset-detail__title mat-headline-4">{{ datasetInformation.title }}</h1>
   <p class="dataset-detail__description mat-body">{{ datasetInformation.description }}</p>
-  <keyword-list *ngIf="datasetInformation.keywords.length > 0" [keywords]="datasetInformation.keywords"></keyword-list>
+  <keyword-list [keywords]="datasetInformation.keywords"></keyword-list>
 
   <div class="dataset-detail__data dataset-detail__data--horizontal">
     <div class="dataset-detail__data__item">
       <data-display-section
         [dataDisplayElements]="geodataContactElements"
-        [sectionTitle]="'Verantwortlich Geodaten'"
+        [sectionTitle]="'Verantwortlich für Geodaten'"
       ></data-display-section>
     </div>
     <div class="dataset-detail__data__item">

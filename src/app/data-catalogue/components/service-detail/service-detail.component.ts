@@ -18,6 +18,7 @@ interface DataLink {
 
 interface DatasetInformation {
   title: string;
+  keywords: string[];
 }
 
 @Component({
@@ -113,6 +114,7 @@ export class ServiceDetailComponent implements OnInit, OnDestroy {
   private extractDatasetInformation(results: ServiceMetadata): DatasetInformation {
     return {
       title: results.name,
+      keywords: ['Geodienst'], // todo: add OGD status once API delivers that
     };
   }
 

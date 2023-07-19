@@ -12,6 +12,7 @@ import {DataCataloguePage} from '../../../shared/enums/data-catalogue-page.enum'
 interface DatasetInformation {
   title: string;
   topic: string;
+  keywords: string[];
 }
 
 interface DataLink {
@@ -92,6 +93,7 @@ export class MapDetailComponent implements OnInit, OnDestroy {
     return {
       title: results.name,
       topic: results.topic,
+      keywords: ['GIS-Browser Karte'], // todo: add OGD status once API delivers that
     };
   }
 

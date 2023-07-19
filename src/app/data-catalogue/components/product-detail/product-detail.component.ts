@@ -11,6 +11,7 @@ import {DataDisplayElement} from '../data-display/data-display.component';
 
 interface DatasetInformation {
   title: string;
+  keywords: string[];
 }
 
 interface DataLink {
@@ -102,6 +103,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
   private extractDatasetInformation(results: ProductMetadata): DatasetInformation {
     return {
       title: results.name,
+      keywords: ['Produkt'], // todo: add OGD status once API delivers that
     };
   }
 }
