@@ -63,4 +63,14 @@
       </descriptive-highlighted-link>
     </div>
   </div>
+  <div *ngIf="linkedData.products.length > 0" class="dataset-detail__data">
+    <h2>Produkte mit diesem Datensatz</h2>
+    <div class="dataset-detail__data__links">
+      <descriptive-highlighted-link *ngFor="let product of linkedData.products" [title]="product.name">
+        <a [routerLink]="'/' + mainPageEnum.Data + '/' + dataCataloguePageEnum.Products + '/' + product.guid" mat-icon-button>
+          <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
+        </a>
+      </descriptive-highlighted-link>
+    </div>
+  </div>
 </div>

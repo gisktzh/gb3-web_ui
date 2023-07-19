@@ -1,6 +1,32 @@
 <loading-and-process-bar [loadingState]="this.loadingState"></loading-and-process-bar>
-<div *ngIf="data">
-  <h2>{{ data.name }}</h2>
-  <img [alt]="data.name" [src]="apiBaseUrl + data.imageUrl" />
-  <p>{{ data.description }}</p>
+<div *ngIf="datasetInformation" class="product-detail">
+  <a [routerLink]="'/' + mainPageEnum.Data" class="product-detail__back-button" mat-button>
+    <mat-icon [svgIcon]="'ktzh_arrow_left'"></mat-icon>
+    Zur Übersicht
+  </a>
+  <h1 class="product-detail__title mat-headline-4">{{ datasetInformation.title }}</h1>
+  <div class="product-detail__data">
+    <data-display-section
+      [dataDisplayElements]="metadataContactElements"
+      [sectionTitle]="'Verantwortlich Geometadaten'"
+    ></data-display-section>
+  </div>
+  <div class="product-detail__data">
+    <data-display-section [dataDisplayElements]="informationElements" [sectionTitle]="'Informationen'"></data-display-section>
+  </div>
+  <!-- todo: as soon as design is fixed, maybe refactor with generic data-display-section -->
+  <div *ngIf="linkedDatasets.length > 0" class="product-detail__data">
+    <h2>Verwendete Geodatensätze</h2>
+    <div class="product-detail__data__linked-data">
+      <descriptive-highlighted-link
+        *ngFor="let linkedDataset of linkedDatasets"
+        [title]="linkedDataset.name"
+        [description]="linkedDataset.shortDescription"
+      >
+        <a [routerLink]="'/' + mainPageEnum.Data + '/' + dataCataloguePageEnum.Datasets + '/' + linkedDataset.guid" mat-icon-button>
+          <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
+        </a>
+      </descriptive-highlighted-link>
+    </div>
+  </div>
 </div>
