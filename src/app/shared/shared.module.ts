@@ -18,6 +18,10 @@ import {KeyValuePreserveOrderPipe} from './pipes/key-value-preserve-order.pipe';
 import {AppendMapConfigurationToUrlPipe} from './pipes/append-map-configuration-to-url.pipe';
 import {LayerTooltipPipe} from './pipes/layer-tooltip.pipe';
 import {DescriptiveHighlightedLinkComponent} from './components/descriptive-highlighted-link/descriptive-highlighted-link.component';
+import {HeroHeaderComponent} from './components/hero-header/hero-header.component';
+import {StartPageSectionComponent} from './components/start-page-section/start-page-section.component';
+import {ContactDetailsComponent} from './components/contact-details/contact-details.component';
+import {ContactDetailComponent} from './components/contact-details/contact-detail/contact-detail.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +40,10 @@ import {DescriptiveHighlightedLinkComponent} from './components/descriptive-high
     AppendMapConfigurationToUrlPipe,
     LayerTooltipPipe,
     DescriptiveHighlightedLinkComponent,
+    HeroHeaderComponent,
+    StartPageSectionComponent,
+    ContactDetailComponent,
+    ContactDetailsComponent,
   ],
   imports: [MaterialModule, RouterModule, CommonModule, ResizableModule],
   exports: [
@@ -56,6 +64,9 @@ import {DescriptiveHighlightedLinkComponent} from './components/descriptive-high
     AppendMapConfigurationToUrlPipe,
     LayerTooltipPipe,
     DescriptiveHighlightedLinkComponent,
+    HeroHeaderComponent,
+    StartPageSectionComponent,
+    ContactDetailsComponent,
   ],
 })
 export class SharedModule {}
