@@ -1,9 +1,9 @@
-import {Injectable} from '@angular/core';
+import {Injectable, OnDestroy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {MapConfigActions} from '../../../state/map/actions/map-config.actions';
 import {TransformationService} from './transformation.service';
 import {selectActiveBasemapId, selectMapConfigState} from '../../../state/map/reducers/map-config.reducer';
-import {first, skip, Subscription, tap, withLatestFrom} from 'rxjs';
+import {first, pairwise, skip, startWith, Subject, Subscription, tap, withLatestFrom} from 'rxjs';
 import {GeoJSONMapperService} from './geo-json-mapper.service';
 import * as dayjs from 'dayjs';
 import {MapService} from '../../interfaces/map.service';
@@ -47,6 +47,7 @@ import {DrawingActiveMapItem} from '../../models/implementations/drawing.model';
 import {EsriToolService} from './tool-service/esri-tool.service';
 import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
 import {PrintUtils} from '../../../shared/utils/print.utils';
+import {map} from 'rxjs/operators';
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
 const DEFAULT_PRINT_PREVIEW_ANIMATION_DURATION_IN_MS = 500;
@@ -55,13 +56,12 @@ const DEFAULT_PRINT_PREVIEW_EXPAND_FACTOR = 1.5;
 @Injectable({
   providedIn: 'root',
 })
-export class EsriMapService implements MapService {
+export class EsriMapService implements MapService, OnDestroy {
   private scaleBar?: __esri.ScaleBar;
   private effectiveMaxZoom = 23;
   private effectiveMinZoom = 0;
   private effectiveMinScale = 0;
-  private printPreviewCenter: __esri.Point = new EsriPoint();
-  private printPreviewHandle?: IHandle;
+  private readonly printPreviewHandle$: Subject<IHandle | null> = new Subject<IHandle | null>();
   private readonly defaultMapConfig: MapConfigState = this.configService.mapConfig.defaultMapConfig;
   private readonly numberOfDrawingLayers = Object.keys(InternalDrawingLayer).length;
   private readonly subscriptions: Subscription = new Subscription();
@@ -89,6 +89,7 @@ export class EsriMapService implements MapService {
     esriConfig.request.httpsDomains?.push('wms.zh.ch');
 
     this.initializeInterceptors();
+    this.initializeSubscriptions();
   }
 
   private get mapView(): __esri.MapView {
@@ -356,31 +357,31 @@ export class EsriMapService implements MapService {
     return this.esriToolService;
   }
 
-  public async startDrawPrintPreview(extentWidth: number, extentHeight: number, rotation: number) {
-    // first of all: remove the old print preview handle that redraws the area if the map center changes
-    //               we're about to change the extent width, height or the rotation therefore we need a new handle
-    if (this.printPreviewHandle) {
-      this.printPreviewHandle.remove();
-    }
-    // draw the new geometry once as it is entirely possible that the map center didn't change yet
+  public async startDrawPrintPreview(extentWidth: number, extentHeight: number, rotation: number): Promise<void> {
+    // listen to any map center changes and redraw the print preview area to keep it in the center of the map
+    // the old print preview handle gets removed automatically using a subscription that listens to the value changes and removes old handlers
+    this.printPreviewHandle$.next(
+      esriReactiveUtils.watch(
+        () => [this.mapView.center.x, this.mapView.center.y],
+        ([x, y]) => {
+          // redraw the print preview area if either the x or the y coordinate of the map center changes so that it is always in the center
+          this.handlePrintPreview({x, y}, extentWidth, extentHeight, rotation);
+        },
+      ),
+    );
+
+    // draw the new geometry once as it is entirely possible that the map center didn't change yet and then zoom to the geometry.
     const geometryWithSrs: PolygonWithSrs = this.handlePrintPreview(this.mapView.center, extentWidth, extentHeight, rotation);
     await this.zoomToExtent(geometryWithSrs, DEFAULT_PRINT_PREVIEW_EXPAND_FACTOR, DEFAULT_PRINT_PREVIEW_ANIMATION_DURATION_IN_MS);
-    // now listen to any map center changes and redraw the print preview area to keep it in the center of the map
-    this.printPreviewHandle = esriReactiveUtils.watch(
-      () => [this.mapView.center.x, this.mapView.center.y],
-      ([x, y]) => {
-        // redraw the print preview area if either the x or the y coordinate of the map center changes so that it is always in the center
-        this.handlePrintPreview({x, y}, extentWidth, extentHeight, rotation);
-      },
-    );
   }
 
   public stopDrawPrintPreview() {
-    if (this.printPreviewHandle) {
-      this.printPreviewHandle.remove();
-    }
-    this.printPreviewCenter = new EsriPoint();
+    this.printPreviewHandle$.next(null);
     this.clearDrawingLayer(InternalDrawingLayer.PrintPreview);
+  }
+
+  public ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 
   private addEsriGeometryToDrawingLayer(
@@ -396,7 +397,6 @@ export class EsriMapService implements MapService {
   }
 
   private handlePrintPreview(center: {x: number; y: number}, extentWidth: number, extentHeight: number, rotation: number): PolygonWithSrs {
-    this.printPreviewCenter = new EsriPoint(center);
     const printPreviewArea = PrintUtils.createPrintPreviewArea(center, extentWidth, extentHeight);
     const symbolization = this.esriSymbolizationService.createSymbolizationForDrawingLayer(
       printPreviewArea,
@@ -536,6 +536,24 @@ export class EsriMapService implements MapService {
             const newInterceptor = this.getWmsOverrideInterceptor(this.authService.getAccessToken());
             esriConfig.request.interceptors = []; // todo: pop existing as soon as we add more interceptors
             esriConfig.request.interceptors.push(newInterceptor);
+          }),
+        )
+        .subscribe(),
+    );
+  }
+
+  private initializeSubscriptions() {
+    this.subscriptions.add(
+      this.printPreviewHandle$
+        .pipe(
+          startWith(null),
+          pairwise(),
+          map(([prev, active]) => {
+            if (prev) {
+              // properly destroy the old handle
+              prev.remove();
+            }
+            return active;
           }),
         )
         .subscribe(),
