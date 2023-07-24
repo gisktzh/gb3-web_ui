@@ -6,11 +6,10 @@ import {MainPage} from '../enums/main-page.enum';
 import {PageNotificationActions} from '../../state/app/actions/page-notification.actions';
 import {PageNotification} from '../interfaces/page-notification.interface';
 import {selectAllUnreadPageNotifications} from '../../state/app/selectors/page-notification.selector';
-import {map} from 'rxjs/operators';
 import {UrlUtils} from '../utils/url.utils';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PageNotificationService implements OnDestroy {
   public readonly currentPageNotifications$ = new BehaviorSubject<PageNotification[]>([]);
@@ -21,7 +20,10 @@ export class PageNotificationService implements OnDestroy {
   private currentMainPageOrUndefined?: MainPage;
   private pageNotifications: PageNotification[] = [];
 
-  constructor(private readonly router: Router, private readonly store: Store) {
+  constructor(
+    private readonly router: Router,
+    private readonly store: Store,
+  ) {
     this.initSubscriptions();
   }
 
@@ -35,15 +37,14 @@ export class PageNotificationService implements OnDestroy {
       this.router.events
         .pipe(
           filter((event): event is NavigationEnd => event instanceof NavigationEnd),
-          map((event) => event as NavigationEnd),
           tap((event) => {
             const urlTree: UrlTree = this.router.parseUrl(event.url);
             const firstUrlSegmentPath = UrlUtils.extractFirstUrlSegmentPath(urlTree);
             this.currentMainPageOrUndefined = UrlUtils.transformStringToMainPage(firstUrlSegmentPath);
             this.refreshCurrentPageNotifications(this.currentMainPageOrUndefined, this.pageNotifications);
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
 
     this.subscriptions.add(
@@ -52,9 +53,9 @@ export class PageNotificationService implements OnDestroy {
           tap((pageNotifications) => {
             this.pageNotifications = pageNotifications;
             this.refreshCurrentPageNotifications(this.currentMainPageOrUndefined, this.pageNotifications);
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
 
     // load the page notifications once
