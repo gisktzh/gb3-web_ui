@@ -3,7 +3,7 @@ import {Store} from '@ngrx/store';
 import {MapConfigActions} from '../../../state/map/actions/map-config.actions';
 import {TransformationService} from './transformation.service';
 import {selectActiveBasemapId, selectMapConfigState} from '../../../state/map/reducers/map-config.reducer';
-import {first, pairwise, skip, startWith, Subject, Subscription, tap, withLatestFrom} from 'rxjs';
+import {BehaviorSubject, first, pairwise, skip, Subscription, tap, withLatestFrom} from 'rxjs';
 import {GeoJSONMapperService} from './geo-json-mapper.service';
 import * as dayjs from 'dayjs';
 import {MapService} from '../../interfaces/map.service';
@@ -61,7 +61,7 @@ export class EsriMapService implements MapService, OnDestroy {
   private effectiveMaxZoom = 23;
   private effectiveMinZoom = 0;
   private effectiveMinScale = 0;
-  private readonly printPreviewHandle$: Subject<IHandle | null> = new Subject<IHandle | null>();
+  private readonly printPreviewHandle$: BehaviorSubject<IHandle | null> = new BehaviorSubject<IHandle | null>(null);
   private readonly defaultMapConfig: MapConfigState = this.configService.mapConfig.defaultMapConfig;
   private readonly numberOfDrawingLayers = Object.keys(InternalDrawingLayer).length;
   private readonly subscriptions: Subscription = new Subscription();
@@ -544,16 +544,20 @@ export class EsriMapService implements MapService, OnDestroy {
 
   private initializeSubscriptions() {
     this.subscriptions.add(
+      /**
+       * This pipe tracks the active print preview handle changes and automatically destroys old handles properly.
+       * Otherwise this could result in potential memory leaks as we could lose the reference to
+       * an old (but still active) handle which will be still active in the background forever.
+       */
       this.printPreviewHandle$
         .pipe(
-          startWith(null),
           pairwise(),
-          map(([prev, active]) => {
-            if (prev) {
+          map(([previousHandle, activeHandle]) => {
+            if (previousHandle) {
               // properly destroy the old handle
-              prev.remove();
+              previousHandle.remove();
             }
-            return active;
+            return activeHandle;
           }),
         )
         .subscribe(),
