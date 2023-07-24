@@ -16,6 +16,7 @@ import {MainFooterComponent} from './components/footer/main-footer.component';
 import {ScrollbarWidthCalculationComponent} from './components/scrollbar-width-calculation/scrollbar-width-calculation.component';
 import {KeyValuePreserveOrderPipe} from './pipes/key-value-preserve-order.pipe';
 import {AppendMapConfigurationToUrlPipe} from './pipes/append-map-configuration-to-url.pipe';
+import {LayerTooltipPipe} from './pipes/layer-tooltip.pipe';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import {AppendMapConfigurationToUrlPipe} from './pipes/append-map-configuration-
     ScrollbarWidthCalculationComponent,
     KeyValuePreserveOrderPipe,
     AppendMapConfigurationToUrlPipe,
+    LayerTooltipPipe,
   ],
   imports: [MaterialModule, RouterModule, CommonModule, ResizableModule],
   exports: [
@@ -50,6 +52,7 @@ import {AppendMapConfigurationToUrlPipe} from './pipes/append-map-configuration-
     ScrollbarWidthCalculationComponent,
     KeyValuePreserveOrderPipe,
     AppendMapConfigurationToUrlPipe,
+    LayerTooltipPipe,
   ],
 })
 export class SharedModule {}

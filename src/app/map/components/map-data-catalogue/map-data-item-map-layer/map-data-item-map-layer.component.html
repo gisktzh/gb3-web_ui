@@ -4,9 +4,9 @@
     <mat-icon>add</mat-icon>
   </button>
   <p
-    [innerHTML]="layer.title | highlightSearchQuery : this.filterString"
+    [innerHTML]="layer.title | highlightSearchQuery: this.filterString"
     class="map-data-item-map-layer__title"
-    matTooltip="{{ layer.title }}"
+    matTooltip="{{ layer | layerTooltip }}"
   ></p>
   <span class="map-data-item-map-layer__connection-line map-data-item-map-layer__connection-line-bottom"></span>
 </div>
