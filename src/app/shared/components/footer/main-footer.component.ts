@@ -8,6 +8,6 @@ import {SupportPage} from '../../enums/support-page.enum';
   styleUrls: ['./main-footer.component.scss'],
 })
 export class MainFooterComponent {
-  public readonly dataProtectionLink = `${MainPage.Support}/${SupportPage.UsefulLinks}`;
-  public readonly usageNotesLink = `${MainPage.Support}/${SupportPage.Faq}`;
+  public readonly dataProtectionLink = [MainPage.Support, SupportPage.UsefulLinks];
+  public readonly usageNotesLink = [MainPage.Support, SupportPage.Faq];
 }
