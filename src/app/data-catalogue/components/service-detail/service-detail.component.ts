@@ -5,7 +5,7 @@ import {Gb3MetadataService} from '../../../shared/services/apis/gb3/gb3-metadata
 import {ConfigService} from '../../../shared/services/config.service';
 import {DataDisplayElement} from '../../types/data-display-element';
 import {BaseMetadataInformation} from '../../interfaces/base-metadata-information.interface';
-import {AbstractBaseDetail} from '../abstract-base-detail/abstract-base-detail.component';
+import {AbstractBaseDetailComponent} from '../abstract-base-detail/abstract-base-detail.component';
 import {MetadataLink} from '../../interfaces/metadata-link.interface';
 import {DataExtractionUtils} from '../../utils/data-extraction.utils';
 
@@ -14,7 +14,7 @@ import {DataExtractionUtils} from '../../utils/data-extraction.utils';
   templateUrl: './service-detail.component.html',
   styleUrls: ['./service-detail.component.scss'],
 })
-export class ServiceDetailComponent extends AbstractBaseDetail<ServiceMetadata> {
+export class ServiceDetailComponent extends AbstractBaseDetailComponent<ServiceMetadata> {
   public baseMetadataInformation?: BaseMetadataInformation;
   public informationElements: DataDisplayElement[] = [];
   public metadataContactElements: DataDisplayElement[] = [];

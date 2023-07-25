@@ -6,7 +6,7 @@ import {ConfigService} from '../../../shared/services/config.service';
 import {DataDisplayElement} from '../../types/data-display-element';
 import {BaseMetadataInformation} from '../../interfaces/base-metadata-information.interface';
 import {MetadataLink} from '../../interfaces/metadata-link.interface';
-import {AbstractBaseDetail} from '../abstract-base-detail/abstract-base-detail.component';
+import {AbstractBaseDetailComponent} from '../abstract-base-detail/abstract-base-detail.component';
 import {DataExtractionUtils} from '../../utils/data-extraction.utils';
 
 /**
@@ -23,7 +23,7 @@ interface MetadataLinkWithTopicId extends MetadataLinkWithoutDescription {
   templateUrl: './dataset-detail.component.html',
   styleUrls: ['./dataset-detail.component.scss'],
 })
-export class DatasetDetailComponent extends AbstractBaseDetail<DatasetMetadata> {
+export class DatasetDetailComponent extends AbstractBaseDetailComponent<DatasetMetadata> {
   public baseMetadataInformation?: BaseMetadataInformation;
   public informationElements: DataDisplayElement[] = [];
   public geodataContactElements: DataDisplayElement[] = [];

@@ -5,7 +5,7 @@ import {ConfigService} from '../../../shared/services/config.service';
 import {ProductMetadata} from '../../../shared/interfaces/gb3-metadata.interface';
 import {DataDisplayElement} from '../../types/data-display-element';
 import {BaseMetadataInformation} from '../../interfaces/base-metadata-information.interface';
-import {AbstractBaseDetail} from '../abstract-base-detail/abstract-base-detail.component';
+import {AbstractBaseDetailComponent} from '../abstract-base-detail/abstract-base-detail.component';
 import {MetadataLink} from '../../interfaces/metadata-link.interface';
 import {DataExtractionUtils} from '../../utils/data-extraction.utils';
 
@@ -14,7 +14,7 @@ import {DataExtractionUtils} from '../../utils/data-extraction.utils';
   templateUrl: './product-detail.component.html',
   styleUrls: ['./product-detail.component.scss'],
 })
-export class ProductDetailComponent extends AbstractBaseDetail<ProductMetadata> {
+export class ProductDetailComponent extends AbstractBaseDetailComponent<ProductMetadata> {
   public baseMetadataInformation?: BaseMetadataInformation;
   public informationElements: DataDisplayElement[] = [];
   public metadataContactElements: DataDisplayElement[] = [];

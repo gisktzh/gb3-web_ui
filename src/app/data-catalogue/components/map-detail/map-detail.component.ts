@@ -5,7 +5,7 @@ import {Gb3MetadataService} from '../../../shared/services/apis/gb3/gb3-metadata
 import {ConfigService} from '../../../shared/services/config.service';
 import {DataDisplayElement} from '../../types/data-display-element';
 import {BaseMetadataInformation} from '../../interfaces/base-metadata-information.interface';
-import {AbstractBaseDetail} from '../abstract-base-detail/abstract-base-detail.component';
+import {AbstractBaseDetailComponent} from '../abstract-base-detail/abstract-base-detail.component';
 import {MetadataLink} from '../../interfaces/metadata-link.interface';
 import {DataExtractionUtils} from '../../utils/data-extraction.utils';
 
@@ -18,7 +18,7 @@ interface BaseMetadataWithTopicInformation extends BaseMetadataInformation {
   templateUrl: './map-detail.component.html',
   styleUrls: ['./map-detail.component.scss'],
 })
-export class MapDetailComponent extends AbstractBaseDetail<MapMetadata> {
+export class MapDetailComponent extends AbstractBaseDetailComponent<MapMetadata> {
   public baseMetadataInformation?: BaseMetadataWithTopicInformation;
   public informationElements: DataDisplayElement[] = [];
   public geodataContactElements: DataDisplayElement[] = [];

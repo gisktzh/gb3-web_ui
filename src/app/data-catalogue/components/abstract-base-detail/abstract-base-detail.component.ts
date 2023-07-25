@@ -1,4 +1,4 @@
-import {Injectable, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {LoadingState} from '../../../shared/types/loading-state';
 import {Observable, Subscription, switchMap, tap, throwError} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
@@ -14,8 +14,10 @@ import {RouteParamConstants} from '../../../shared/constants/route-param.constan
 
 type DetailMetadata = ProductMetadata | MapMetadata | ServiceMetadata | DatasetMetadata;
 
-@Injectable()
-export abstract class AbstractBaseDetail<T extends DetailMetadata> implements OnInit, OnDestroy {
+@Component({
+  template: '',
+})
+export abstract class AbstractBaseDetailComponent<T extends DetailMetadata> implements OnInit, OnDestroy {
   public abstract baseMetadataInformation?: BaseMetadataInformation;
   public abstract informationElements: DataDisplayElement[];
   public loadingState: LoadingState = 'loading';
