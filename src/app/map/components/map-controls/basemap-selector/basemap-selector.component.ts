@@ -10,7 +10,7 @@ import {DocumentService} from '../../../../shared/services/document.service';
 @Component({
   selector: 'basemap-selector',
   templateUrl: './basemap-selector.component.html',
-  styleUrls: ['./basemap-selector.component.scss']
+  styleUrls: ['./basemap-selector.component.scss'],
 })
 export class BasemapSelectorComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('basemapSelector', {read: ElementRef, static: false}) private basemapSelectorRef!: ElementRef;
@@ -24,7 +24,7 @@ export class BasemapSelectorComponent implements OnInit, OnDestroy, AfterViewIni
   constructor(
     private readonly store: Store,
     private readonly basemapConfigService: BasemapConfigService,
-    private readonly documentService: DocumentService
+    private readonly documentService: DocumentService,
   ) {
     this.availableBasemaps = this.basemapConfigService.availableBasemaps;
   }
@@ -45,9 +45,9 @@ export class BasemapSelectorComponent implements OnInit, OnDestroy, AfterViewIni
             if (!this.basemapSelectorRef.nativeElement.contains(event.target)) {
               this.isSelectionOpen = false;
             }
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 
@@ -66,9 +66,9 @@ export class BasemapSelectorComponent implements OnInit, OnDestroy, AfterViewIni
         .pipe(
           tap((activeBasemapId) => {
             this.activeBasemap = this.availableBasemaps.find((basemap) => basemap.id === activeBasemapId);
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 }

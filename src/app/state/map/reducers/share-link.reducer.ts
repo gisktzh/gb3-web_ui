@@ -8,7 +8,7 @@ export const initialState: ShareLinkState = {
   item: undefined,
   id: undefined,
   loadingState: 'undefined',
-  savingState: 'undefined'
+  savingState: 'undefined',
 };
 
 export const shareLinkFeature = createFeature({
@@ -26,8 +26,8 @@ export const shareLinkFeature = createFeature({
     }),
     on(ShareLinkActions.setShareLinkId, (state, {id}): ShareLinkState => {
       return {...state, id, savingState: 'loaded'};
-    })
-  )
+    }),
+  ),
 });
 
 export const {name, reducer, selectItem, selectLoadingState, selectId, selectSavingState} = shareLinkFeature;

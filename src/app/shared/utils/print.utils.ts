@@ -7,7 +7,7 @@ export class PrintUtils {
     const resolution = scale / Gb2Constants.PRINT_DPI / MapConstants.INCHES_PER_UNIT.m;
     return {
       extentWidth: width * resolution,
-      extentHeight: height * resolution
+      extentHeight: height * resolution,
     };
   }
 
@@ -22,9 +22,9 @@ export class PrintUtils {
           [center.x - halfExtentWidth, center.y - halfExtentHeight],
           [center.x - halfExtentWidth, center.y + halfExtentHeight],
           [center.x + halfExtentWidth, center.y + halfExtentHeight],
-          [center.x + halfExtentWidth, center.y - halfExtentHeight]
-        ]
-      ]
+          [center.x + halfExtentWidth, center.y - halfExtentHeight],
+        ],
+      ],
     };
     return printPreviewArea;
   }

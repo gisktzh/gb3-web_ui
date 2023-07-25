@@ -12,7 +12,7 @@ const NUMBER_OF_ENTRIES = 2;
 @Component({
   selector: 'discover-maps',
   templateUrl: './discover-maps.component.html',
-  styleUrls: ['./discover-maps.component.scss']
+  styleUrls: ['./discover-maps.component.scss'],
 })
 export class DiscoverMapsComponent implements OnInit, HasLoadingState, OnDestroy {
   // expose the enum to the HTML
@@ -40,9 +40,9 @@ export class DiscoverMapsComponent implements OnInit, HasLoadingState, OnDestroy
           catchError((err: unknown) => {
             this.loadingState = 'error';
             return throwError(() => err);
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 }

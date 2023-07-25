@@ -9,7 +9,7 @@ const FAVOURITE_ERROR_TOOLTIP =
 @Component({
   selector: 'map-data-item-favourite',
   templateUrl: './base-map-data-item.component.html',
-  styleUrls: ['./base-map-data-item.component.scss']
+  styleUrls: ['./base-map-data-item.component.scss'],
 })
 export class MapDataItemFavouriteComponent extends BaseMapDataItemComponent {
   @Input() public override loadingState: LoadingState = 'undefined';

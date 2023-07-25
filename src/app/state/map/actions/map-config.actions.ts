@@ -21,6 +21,6 @@ export const MapConfigActions = createActionGroup({
     'Set Basemap': props<{activeBasemapId: string}>(),
     'Clear Initial Maps Config': emptyProps(),
     'Handle Map Click': props<{x: number; y: number}>(), // meta action which effects can hook into that need to deal with map clicks
-    'Clear Feature Info Content': emptyProps() // meta action which effects can hook into that need to clear the feature info
-  }
+    'Clear Feature Info Content': emptyProps(), // meta action which effects can hook into that need to clear the feature info
+  },
 });

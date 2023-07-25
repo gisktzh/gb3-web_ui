@@ -51,14 +51,14 @@ export const GRAV_CMS_SERVICE = new InjectionToken<GravCmsService>('GravCmsServi
     SharedModule,
     StoreModule.forRoot(reducers, {metaReducers}),
     EffectsModule.forRoot(effects),
-    AuthModule
+    AuthModule,
   ],
   providers: [
     {provide: MAP_SERVICE, useClass: EsriMapService},
     {provide: NEWS_SERVICE, deps: [KTZHNewsService, KTZHNewsMockService, ConfigService], useFactory: newsFactory},
     {provide: GRAV_CMS_SERVICE, deps: [GravCmsService, GravCmsMockService, ConfigService], useFactory: gravCmsFactory},
-    {provide: LOCALE_ID, useValue: 'de-CH'}
+    {provide: LOCALE_ID, useValue: 'de-CH'},
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {}

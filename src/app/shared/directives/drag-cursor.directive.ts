@@ -4,12 +4,15 @@ import {Subscription, tap} from 'rxjs';
 import {DOCUMENT} from '@angular/common';
 
 @Directive({
-  selector: '[dragCursor]'
+  selector: '[dragCursor]',
 })
 export class DragCursorDirective implements OnInit, OnDestroy {
   private readonly subscriptions: Subscription = new Subscription();
 
-  constructor(@Inject(DOCUMENT) private readonly document: Document, private readonly cdkDrag: CdkDrag) {}
+  constructor(
+    @Inject(DOCUMENT) private readonly document: Document,
+    private readonly cdkDrag: CdkDrag,
+  ) {}
 
   public ngOnInit() {
     this.initSubscriptions();
@@ -25,9 +28,9 @@ export class DragCursorDirective implements OnInit, OnDestroy {
         .pipe(
           tap(() => {
             this.document.body.style.cursor = 'grabbing';
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
 
     this.subscriptions.add(
@@ -35,9 +38,9 @@ export class DragCursorDirective implements OnInit, OnDestroy {
         .pipe(
           tap(() => {
             this.document.body.style.cursor = 'auto';
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 }

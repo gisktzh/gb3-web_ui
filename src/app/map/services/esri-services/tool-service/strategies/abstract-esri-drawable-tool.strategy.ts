@@ -23,7 +23,7 @@ export abstract class AbstractEsriDrawableToolStrategy implements EsriToolStrate
       layer: layer,
       tooltipOptions: {enabled: false}, // todo: check how we can fix the display; seems not implemented:
       // https://community.esri.com/t5/arcgis-javascript-maps-sdk-questions/how-to-show-cursor-tooltips-when-a-sketch-tool-is/td-p/1276503
-      updateOnGraphicClick: false
+      updateOnGraphicClick: false,
     });
 
     this.layer = layer;

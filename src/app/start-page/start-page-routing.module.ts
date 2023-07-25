@@ -6,13 +6,13 @@ import {StartPageComponent} from './start-page.component';
 const routes: Routes = [
   {
     path: '',
-    component: StartPageComponent
-  }
+    component: StartPageComponent,
+  },
 ];
 
 @NgModule({
   declarations: [],
   imports: [RouterModule.forChild(routes), SharedModule],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class StartPageRoutingModule {}

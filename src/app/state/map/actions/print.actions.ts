@@ -10,6 +10,6 @@ export const PrintActions = createActionGroup({
     'Set Print Creation Response': props<{creationResponse: PrintCreationResponse}>(),
     'Clear Print Creation': emptyProps(),
     'Show Print Preview': props<{width: number; height: number; scale: number; rotation: number}>(),
-    'Remove Print Preview': emptyProps()
-  }
+    'Remove Print Preview': emptyProps(),
+  },
 });

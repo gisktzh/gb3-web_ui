@@ -13,9 +13,9 @@ $zh-light-theme: mat.define-light-theme(
     color: (
       primary: ktzh-variables.$zh-primary,
       accent: ktzh-variables.$zh-accent,
-      warn: ktzh-variables.$zh-warn
+      warn: ktzh-variables.$zh-warn,
     ),
-    typography: ktzh-variables.$zh-typography-config
+    typography: ktzh-variables.$zh-typography-config,
   )
 );
 

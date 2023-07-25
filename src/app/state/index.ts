@@ -85,7 +85,7 @@ export const reducers: ActionReducerMap<State> = {
   print: printReducer,
   mapUi: mapUiReducer,
   tool: toolReducer,
-  shareLink: shareLinkReducer
+  shareLink: shareLinkReducer,
 };
 
 export const effects = [
@@ -102,7 +102,7 @@ export const effects = [
   PrintEffects,
   MapUiEffects,
   ShareLinkEffects,
-  ToolEffects
+  ToolEffects,
 ];
 
 export const metaReducers: MetaReducer<State>[] = [];

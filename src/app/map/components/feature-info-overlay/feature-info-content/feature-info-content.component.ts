@@ -46,7 +46,7 @@ const DEFAULT_TABLE_HEADER_PREFIX = 'Resultat';
 @Component({
   selector: 'feature-info-content',
   templateUrl: './feature-info-content.component.html',
-  styleUrls: ['./feature-info-content.component.scss']
+  styleUrls: ['./feature-info-content.component.scss'],
 })
 export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() public layer!: FeatureInfoResultLayer;
@@ -69,7 +69,7 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
     private readonly store: Store,
     private readonly configService: ConfigService,
     private readonly renderer: Renderer2,
-    @Inject(MAP_SERVICE) private readonly mapService: MapService
+    @Inject(MAP_SERVICE) private readonly mapService: MapService,
   ) {
     this.staticFilesBaseUrl = this.configService.apiConfig.gb2StaticFiles.baseUrl;
   }
@@ -174,9 +174,9 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
                 this.addHighlightClassToCellsForFid(feature.featureId);
               }
             }
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 

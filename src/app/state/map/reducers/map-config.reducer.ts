@@ -15,7 +15,7 @@ export const initialState: MapConfigState = {
   activeBasemapId: defaultMapConfig.activeBasemapId,
   isMaxZoomedIn: defaultMapConfig.isMaxZoomedIn,
   isMaxZoomedOut: defaultMapConfig.isMaxZoomedOut,
-  initialMaps: defaultMapConfig.initialMaps
+  initialMaps: defaultMapConfig.initialMaps,
 };
 
 export const mapConfigFeature = createFeature({
@@ -26,9 +26,9 @@ export const mapConfigFeature = createFeature({
       const initialExtent = {
         center: {
           x: x ?? initialState.center.x,
-          y: y ?? initialState.center.y
+          y: y ?? initialState.center.y,
         },
-        scale: scale ?? initialState.scale
+        scale: scale ?? initialState.scale,
       };
       const activeBasemapId = basemapId ?? initialState.activeBasemapId;
 
@@ -60,7 +60,7 @@ export const mapConfigFeature = createFeature({
         draft.scaleSettings.calculatedMaxScale = Math.ceil(calculatedMaxScale);
 
         draft.ready = true;
-      })
+      }),
     ),
     on(MapConfigActions.setScale, (state, {scale}): MapConfigState => {
       return {...state, scale};
@@ -76,8 +76,8 @@ export const mapConfigFeature = createFeature({
     }),
     on(MapConfigActions.clearInitialMapsConfig, (state): MapConfigState => {
       return {...state, initialMaps: []};
-    })
-  )
+    }),
+  ),
 });
 
 export const {
@@ -90,5 +90,5 @@ export const {
   selectReady,
   selectIsMaxZoomedIn,
   selectIsMaxZoomedOut,
-  selectActiveBasemapId
+  selectActiveBasemapId,
 } = mapConfigFeature;

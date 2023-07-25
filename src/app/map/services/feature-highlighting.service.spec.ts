@@ -10,7 +10,7 @@ describe('FeatureHighlightingService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [FeatureHighlightingService, provideMockStore({}), {provide: MAP_SERVICE, useClass: MapServiceStub}]
+      providers: [FeatureHighlightingService, provideMockStore({}), {provide: MAP_SERVICE, useClass: MapServiceStub}],
     });
     service = TestBed.inject(FeatureHighlightingService);
   });

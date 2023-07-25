@@ -14,7 +14,7 @@ export class EsriPolygonDrawingStrategy extends AbstractEsriDrawingStrategy {
     mapView: MapView,
     polygonSymbol: SimpleFillSymbol,
     completeCallbackHandler: () => void,
-    polygonType: PolygonType
+    polygonType: PolygonType,
   ) {
     super(layer, mapView, completeCallbackHandler);
 

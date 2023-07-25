@@ -4,12 +4,15 @@ import {Observable} from 'rxjs';
 import {ConfigService} from '../config.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export abstract class BaseApiService {
   protected abstract apiBaseUrl: string;
 
-  constructor(private readonly http: HttpClient, protected readonly configService: ConfigService) {}
+  constructor(
+    private readonly http: HttpClient,
+    protected readonly configService: ConfigService,
+  ) {}
 
   protected get<T>(url: string): Observable<T> {
     return this.http.get<T>(url);

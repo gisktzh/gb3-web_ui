@@ -12,11 +12,14 @@ export class AuthStatusEffects {
         ofType(AuthStatusActions.performLogout),
         tap(({forced}) => {
           this.authService.logout(forced);
-        })
+        }),
       );
     },
-    {dispatch: false}
+    {dispatch: false},
   );
 
-  constructor(private readonly actions$: Actions, private readonly authService: AuthService) {}
+  constructor(
+    private readonly actions$: Actions,
+    private readonly authService: AuthService,
+  ) {}
 }

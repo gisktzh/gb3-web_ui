@@ -22,7 +22,7 @@ export const selectQueryLayers = createSelector(selectItems, (activeMapItems) =>
         .map((layer) => layer.layer);
       const queryLayer: QueryLayer = {
         topic: mapItem.settings.mapId,
-        layersToQuery: layersToQuery.join(',')
+        layersToQuery: layersToQuery.join(','),
       };
       return queryLayer;
     });

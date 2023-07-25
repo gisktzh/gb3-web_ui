@@ -12,7 +12,7 @@ import {LoadingState} from '../../../shared/types/loading-state';
 @Component({
   selector: 'app-favourite-deletion-dialog',
   templateUrl: './favourite-deletion-dialog.component.html',
-  styleUrls: ['./favourite-deletion-dialog.component.scss']
+  styleUrls: ['./favourite-deletion-dialog.component.scss'],
 })
 export class FavouriteDeletionDialogComponent implements HasSavingState, OnDestroy {
   public savingState: LoadingState = 'undefined';
@@ -23,7 +23,7 @@ export class FavouriteDeletionDialogComponent implements HasSavingState, OnDestr
     private readonly dialogRef: MatDialogRef<FavouriteDeletionDialogComponent, boolean>,
     private readonly favouritesService: FavouritesService,
     @Inject(MAT_DIALOG_DATA) private readonly data: {favourite: Favourite},
-    private readonly store: Store
+    private readonly store: Store,
   ) {
     this.favourite = data.favourite;
   }
@@ -50,9 +50,9 @@ export class FavouriteDeletionDialogComponent implements HasSavingState, OnDestr
           catchError(() => {
             this.savingState = 'error';
             return EMPTY;
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 

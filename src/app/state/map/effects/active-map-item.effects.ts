@@ -20,10 +20,10 @@ export class ActiveMapItemEffects {
         ofType(ActiveMapItemActions.addActiveMapItem),
         tap(({activeMapItem, position}) => {
           activeMapItem.addToMap(this.mapService, position);
-        })
+        }),
       );
     },
-    {dispatch: false}
+    {dispatch: false},
   );
 
   public dispatchActiveMapItemRemoveEffect$ = createEffect(
@@ -32,10 +32,10 @@ export class ActiveMapItemEffects {
         ofType(ActiveMapItemActions.removeActiveMapItem),
         tap((action) => {
           this.mapService.removeMapItem(action.id);
-        })
+        }),
       );
     },
-    {dispatch: false}
+    {dispatch: false},
   );
 
   public dispatchActiveMapItemClearEffect$ = createEffect(
@@ -44,10 +44,10 @@ export class ActiveMapItemEffects {
         ofType(ActiveMapItemActions.removeAllActiveMapItems),
         tap((action) => {
           this.mapService.removeAllMapItems();
-        })
+        }),
       );
     },
-    {dispatch: false}
+    {dispatch: false},
   );
 
   public dispatchActiveMapItemMoveToTop = createEffect(
@@ -56,10 +56,10 @@ export class ActiveMapItemEffects {
         ofType(ActiveMapItemActions.moveToTop),
         tap(({activeMapItem}) => {
           this.mapService.moveLayerToTop(activeMapItem);
-        })
+        }),
       );
     },
-    {dispatch: false}
+    {dispatch: false},
   );
 
   public dispatchActiveMapItemForceFullVisibility = createEffect(() => {
@@ -69,7 +69,7 @@ export class ActiveMapItemEffects {
         this.mapService.setOpacity(1.0, activeMapItem);
         this.mapService.setVisibility(true, activeMapItem);
       }),
-      map(({activeMapItem}) => ActiveMapItemActions.moveToTop({activeMapItem}))
+      map(({activeMapItem}) => ActiveMapItemActions.moveToTop({activeMapItem})),
     );
   });
 
@@ -79,10 +79,10 @@ export class ActiveMapItemEffects {
         ofType(ActiveMapItemActions.setOpacity),
         tap((action) => {
           this.mapService.setOpacity(action.opacity, action.activeMapItem);
-        })
+        }),
       );
     },
-    {dispatch: false}
+    {dispatch: false},
   );
 
   public dispatchActiveMapItemSetVisibilityEffect$ = createEffect(
@@ -91,10 +91,10 @@ export class ActiveMapItemEffects {
         ofType(ActiveMapItemActions.setVisibility),
         tap((action) => {
           this.mapService.setVisibility(action.visible, action.activeMapItem);
-        })
+        }),
       );
     },
-    {dispatch: false}
+    {dispatch: false},
   );
 
   public dispatchActiveMapItemSetSublayerVisibilityEffect$ = createEffect(
@@ -103,10 +103,10 @@ export class ActiveMapItemEffects {
         ofType(ActiveMapItemActions.setSublayerVisibility),
         tap((action) => {
           this.mapService.setSublayerVisibility(action.visible, action.activeMapItem, action.layerId);
-        })
+        }),
       );
     },
-    {dispatch: false}
+    {dispatch: false},
   );
 
   public dispatchActiveMapItemReorderActiveMapItemEffect$ = createEffect(
@@ -115,10 +115,10 @@ export class ActiveMapItemEffects {
         ofType(ActiveMapItemActions.reorderActiveMapItem),
         tap((action) => {
           this.mapService.reorderMapItem(action.previousPosition, action.currentPosition);
-        })
+        }),
       );
     },
-    {dispatch: false}
+    {dispatch: false},
   );
 
   public dispatchActiveMapItemReorderSublayerEffect$ = createEffect(
@@ -127,10 +127,10 @@ export class ActiveMapItemEffects {
         ofType(ActiveMapItemActions.reorderSublayer),
         tap((action) => {
           this.mapService.reorderSublayer(action.activeMapItem, action.previousPosition, action.currentPosition);
-        })
+        }),
       );
     },
-    {dispatch: false}
+    {dispatch: false},
   );
 
   public dispatchActiveMapItemSetTimeSliderExtentEffect$ = createEffect(
@@ -139,10 +139,10 @@ export class ActiveMapItemEffects {
         ofType(ActiveMapItemActions.setTimeSliderExtent),
         tap((action) => {
           this.mapService.setTimeSliderExtent(action.timeExtent, action.activeMapItem);
-        })
+        }),
       );
     },
-    {dispatch: false}
+    {dispatch: false},
   );
 
   public dispatchActiveMapItemSetActiveFiltersEffect$ = createEffect(
@@ -156,14 +156,14 @@ export class ActiveMapItemEffects {
             .find((activeMapItem) => activeMapItem.id === action.activeMapItem.id);
           if (currentActiveMapItem?.settings.filterConfigurations) {
             const attributeFilterParameters = this.gb3TopicsService.transformFilterConfigurationToParameters(
-              currentActiveMapItem.settings.filterConfigurations
+              currentActiveMapItem.settings.filterConfigurations,
             );
             this.mapService.setAttributeFilters(attributeFilterParameters, currentActiveMapItem);
           }
-        })
+        }),
       );
     },
-    {dispatch: false}
+    {dispatch: false},
   );
 
   public dispatchAddFavouriteEffect$ = createEffect(
@@ -175,10 +175,10 @@ export class ActiveMapItemEffects {
             this.mapService.removeMapItem(fav.id);
             fav.addToMap(this.mapService, idx);
           });
-        })
+        }),
       );
     },
-    {dispatch: false}
+    {dispatch: false},
   );
 
   public dispatchInitialMapItemsAddEffect$ = createEffect(() => {
@@ -189,7 +189,7 @@ export class ActiveMapItemEffects {
           initialMapItem.addToMap(this.mapService, 0);
         });
       }),
-      map(() => MapConfigActions.clearInitialMapsConfig())
+      map(() => MapConfigActions.clearInitialMapsConfig()),
     );
   });
 
@@ -197,6 +197,6 @@ export class ActiveMapItemEffects {
     private readonly actions$: Actions,
     @Inject(MAP_SERVICE) private readonly mapService: MapService,
     private readonly gb3TopicsService: Gb3TopicsService,
-    private readonly store: Store
+    private readonly store: Store,
   ) {}
 }

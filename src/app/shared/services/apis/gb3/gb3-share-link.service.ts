@@ -5,7 +5,7 @@ import {map} from 'rxjs/operators';
 import {Observable} from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class Gb3ShareLinkService extends Gb3ApiService {
   protected readonly endpoint = 'share'; // TODO: specify when the API interface is done
@@ -18,7 +18,7 @@ export class Gb3ShareLinkService extends Gb3ApiService {
   public createShareLink(shareLink: ShareLinkItem): Observable<string> {
     const shareLinkPayload = this.mapShareLinkToShareLinkPayload(shareLink);
     return this.post<ShareLinkItem, ShareLinkResponse>(this.createCreateUrl(), shareLinkPayload).pipe(
-      map((shareLinkResponse) => shareLinkResponse.shareLinkId)
+      map((shareLinkResponse) => shareLinkResponse.shareLinkId),
     );
   }
 
@@ -34,13 +34,13 @@ export class Gb3ShareLinkService extends Gb3ApiService {
 
   private mapShareLinkDataToShareLink(shareLink: ShareLinkItem): ShareLinkItem {
     return {
-      ...shareLink
+      ...shareLink,
     };
   }
 
   private mapShareLinkToShareLinkPayload(shareLink: ShareLinkItem): ShareLinkItem {
     return {
-      ...shareLink
+      ...shareLink,
     };
   }
 }

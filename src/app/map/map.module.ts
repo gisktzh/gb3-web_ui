@@ -102,8 +102,8 @@ import {Gb2ExitButtonComponent} from './components/gb2-exit-button/gb2-exit-butt
     MeasurementToolsComponent,
     DrawingToolsComponent,
     AbstractToolsComponent,
-    Gb2ExitButtonComponent
+    Gb2ExitButtonComponent,
   ],
-  imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule, KtZhDesignSystemModule]
+  imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule, KtZhDesignSystemModule],
 })
 export class MapModule {}

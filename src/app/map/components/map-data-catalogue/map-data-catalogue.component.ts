@@ -27,7 +27,7 @@ const AUTO_OPEN_THRESHOLD = 3;
 @Component({
   selector: 'map-data-catalogue',
   templateUrl: './map-data-catalogue.component.html',
-  styleUrls: ['./map-data-catalogue.component.scss']
+  styleUrls: ['./map-data-catalogue.component.scss'],
 })
 export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewInit {
   @Output() public readonly changeIsMinimizedEvent = new EventEmitter<boolean>();
@@ -54,7 +54,7 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
 
   constructor(
     private readonly store: Store,
-    private readonly favouritesService: FavouritesService
+    private readonly favouritesService: FavouritesService,
   ) {}
 
   public ngOnInit() {
@@ -124,7 +124,7 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
       debounceTime(300),
       map((event) => (<HTMLInputElement>event.target).value),
       distinctUntilChanged(),
-      tap((event) => this.filterCatalog(event))
+      tap((event) => this.filterCatalog(event)),
     );
   }
 
@@ -139,9 +139,9 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
         .pipe(
           tap((topics) => {
             this.topics = topics;
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
 
     this.subscriptions.add(
@@ -149,9 +149,9 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
         .pipe(
           tap((value) => {
             this.catalogueLoadingState = value;
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
 
     this.subscriptions.add(
@@ -159,9 +159,9 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
         .pipe(
           tap((value) => {
             this.favouritesLoadingState = value;
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
 
     this.subscriptions.add(
@@ -169,9 +169,9 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
         .pipe(
           tap((value) => {
             this.filterString = value;
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
 
     this.subscriptions.add(
@@ -179,9 +179,9 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
         .pipe(
           tap((value) => {
             this.originalMaps = value;
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
 
     this.subscriptions.add(
@@ -195,9 +195,9 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
             if (this.isAuthenticated) {
               this.store.dispatch(FavouriteListActions.loadFavourites());
             }
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
 
     this.subscriptions.add(this.filteredFavourites$.pipe(tap((favourites) => (this.filteredFavourites = favourites))).subscribe());

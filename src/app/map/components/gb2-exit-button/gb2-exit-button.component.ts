@@ -3,7 +3,7 @@ import {Component, Input} from '@angular/core';
 @Component({
   selector: 'gb2-exit-button',
   templateUrl: './gb2-exit-button.component.html',
-  styleUrls: ['./gb2-exit-button.component.scss']
+  styleUrls: ['./gb2-exit-button.component.scss'],
 })
 export class Gb2ExitButtonComponent {
   @Input() public url!: string;

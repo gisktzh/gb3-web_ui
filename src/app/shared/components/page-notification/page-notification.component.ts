@@ -7,11 +7,14 @@ import {PageNotificationActions} from '../../../state/app/actions/page-notificat
 @Component({
   selector: 'page-notification',
   templateUrl: './page-notification.component.html',
-  styleUrls: ['./page-notification.component.scss']
+  styleUrls: ['./page-notification.component.scss'],
 })
 export class PageNotificationComponent {
   public readonly icon: string;
-  constructor(@Inject(MAT_SNACK_BAR_DATA) public data: PageNotification, private readonly store: Store) {
+  constructor(
+    @Inject(MAT_SNACK_BAR_DATA) public data: PageNotification,
+    private readonly store: Store,
+  ) {
     this.icon = this.transformSeverityToMatIconFont(data.severity);
   }
 

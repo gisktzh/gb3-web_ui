@@ -28,22 +28,25 @@ export class ToolEffects {
               this.toolService.initializeDrawing(tool);
               break;
           }
-        })
+        }),
       );
     },
-    {dispatch: false}
+    {dispatch: false},
   );
   public dispatchToolCancellation = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(ToolActions.cancelTool, ToolActions.deactivateTool),
-        tap(() => this.toolService.cancelTool())
+        tap(() => this.toolService.cancelTool()),
       );
     },
-    {dispatch: false}
+    {dispatch: false},
   );
 
-  constructor(private readonly actions$: Actions, @Inject(MAP_SERVICE) private readonly mapService: MapService) {
+  constructor(
+    private readonly actions$: Actions,
+    @Inject(MAP_SERVICE) private readonly mapService: MapService,
+  ) {
     this.toolService = this.mapService.getToolService();
   }
 }

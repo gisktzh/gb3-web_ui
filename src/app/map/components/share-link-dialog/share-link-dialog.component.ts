@@ -9,7 +9,7 @@ import {selectId, selectSavingState} from '../../../state/map/reducers/share-lin
 @Component({
   selector: 'share-link-dialog',
   templateUrl: './share-link-dialog.component.html',
-  styleUrls: ['./share-link-dialog.component.scss']
+  styleUrls: ['./share-link-dialog.component.scss'],
 })
 export class ShareLinkDialogComponent implements OnInit, OnDestroy, HasSavingState {
   public shareLink?: string;
@@ -20,7 +20,10 @@ export class ShareLinkDialogComponent implements OnInit, OnDestroy, HasSavingSta
   private readonly shareLinkId$ = this.store.select(selectId);
   private readonly savingState$ = this.store.select(selectSavingState);
 
-  constructor(private readonly dialogRef: MatDialogRef<ShareLinkDialogComponent>, private readonly store: Store) {}
+  constructor(
+    private readonly dialogRef: MatDialogRef<ShareLinkDialogComponent>,
+    private readonly store: Store,
+  ) {}
 
   public ngOnInit() {
     this.initSubscriptions();
@@ -37,9 +40,9 @@ export class ShareLinkDialogComponent implements OnInit, OnDestroy, HasSavingSta
         .pipe(
           tap((shareLinkId) => {
             this.shareLink = shareLinkId; // TODO WES: ID => url
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 

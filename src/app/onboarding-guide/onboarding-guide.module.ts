@@ -9,6 +9,6 @@ import {TypedTourAnchorDirective} from './directives/typed-tour-anchor.directive
 @NgModule({
   declarations: [CenterAnchorComponent, OnboardingGuideComponent, TypedTourAnchorDirective],
   imports: [CommonModule, TourMatMenuModule, MaterialModule],
-  exports: [TourMatMenuModule, CenterAnchorComponent, OnboardingGuideComponent, TypedTourAnchorDirective]
+  exports: [TourMatMenuModule, CenterAnchorComponent, OnboardingGuideComponent, TypedTourAnchorDirective],
 })
 export class OnboardingGuideModule {}

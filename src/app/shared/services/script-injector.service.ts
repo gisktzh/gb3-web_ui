@@ -15,7 +15,7 @@ interface InjectedExternalScript extends InjectableExternalScript {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ScriptInjectorService {
   private readonly loadedScripts: InjectedExternalScript[] = [];
@@ -23,10 +23,13 @@ export class ScriptInjectorService {
   private readonly twitterFeedInjectableScript: InjectableExternalScript = {
     id: 'twitter-feed',
     type: 'text/javascript',
-    src: this.configService.apiConfig.twitterWidget.baseUrl
+    src: this.configService.apiConfig.twitterWidget.baseUrl,
   };
 
-  constructor(private readonly rendererFactory: RendererFactory2, private readonly configService: ConfigService) {
+  constructor(
+    private readonly rendererFactory: RendererFactory2,
+    private readonly configService: ConfigService,
+  ) {
     this.renderer = this.rendererFactory.createRenderer(null, null);
   }
 
@@ -53,7 +56,7 @@ export class ScriptInjectorService {
             scriptLoadingState.next('error');
           };
         }
-      })
+      }),
     );
 
     return combineLatest([scriptLoadingState, injectScript]).pipe(
@@ -63,7 +66,7 @@ export class ScriptInjectorService {
           throw new Error('Error loading twitter feed.'); // todo: add error classes for overall app
         }
         return twttr;
-      })
+      }),
     );
   }
 

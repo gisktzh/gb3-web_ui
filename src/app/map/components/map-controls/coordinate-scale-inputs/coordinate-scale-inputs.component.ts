@@ -10,7 +10,7 @@ import {NumberUtils} from '../../../../shared/utils/number.utils';
 @Component({
   selector: 'coordinate-scale-inputs',
   templateUrl: './coordinate-scale-inputs.component.html',
-  styleUrls: ['./coordinate-scale-inputs.component.scss']
+  styleUrls: ['./coordinate-scale-inputs.component.scss'],
 })
 export class CoordinateScaleInputsComponent implements OnInit, OnDestroy {
   public scale: number = 0;
@@ -24,7 +24,7 @@ export class CoordinateScaleInputsComponent implements OnInit, OnDestroy {
   constructor(
     private readonly coordinateParserService: CoordinateParserService,
     private readonly store: Store,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
   ) {}
 
   public setScale(event: Event) {
@@ -59,9 +59,9 @@ export class CoordinateScaleInputsComponent implements OnInit, OnDestroy {
         .pipe(
           tap(({x, y}) => {
             this.mapCenter = `${NumberUtils.roundToDecimals(x)} / ${NumberUtils.roundToDecimals(y)}`;
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 }

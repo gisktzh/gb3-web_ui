@@ -10,7 +10,7 @@ import {selectScrollbarWidth} from '../../../state/app/reducers/app-layout.reduc
 @Component({
   selector: 'navbar',
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.scss']
+  styleUrls: ['./navbar.component.scss'],
 })
 export class NavbarComponent implements OnInit, OnDestroy {
   /** expose the enum to the HTML */
@@ -25,7 +25,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
   private readonly userName$ = this.store.select(selectUserName);
   private readonly scrollbarWidth$ = this.store.select(selectScrollbarWidth);
 
-  constructor(private readonly authService: AuthService, private readonly store: Store) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly store: Store,
+  ) {}
 
   public ngOnInit() {
     this.initSubscriptions();

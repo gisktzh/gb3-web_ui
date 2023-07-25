@@ -94,8 +94,8 @@ import {DialogModule} from '@angular/cdk/dialog';
     OverlayModule,
     PortalModule,
     ScrollingModule,
-    DialogModule
+    DialogModule,
   ],
-  providers: [{provide: MAT_DATE_LOCALE, useValue: 'de-CH'}]
+  providers: [{provide: MAT_DATE_LOCALE, useValue: 'de-CH'}],
 })
 export class MaterialModule {}

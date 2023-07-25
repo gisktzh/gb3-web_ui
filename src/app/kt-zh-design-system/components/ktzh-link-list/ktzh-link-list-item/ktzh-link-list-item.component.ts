@@ -4,7 +4,7 @@ import {LinkableElement} from '../../../../shared/interfaces/linkable-element.in
 @Component({
   selector: 'ktzh-link-list-item',
   templateUrl: './ktzh-link-list-item.component.html',
-  styleUrls: ['./ktzh-link-list-item.component.scss']
+  styleUrls: ['./ktzh-link-list-item.component.scss'],
 })
 export class KtzhLinkListItemComponent {
   @Input() public links: LinkableElement[] = [];

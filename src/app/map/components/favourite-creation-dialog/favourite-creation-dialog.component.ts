@@ -14,7 +14,7 @@ const FAVOURITE_NAME_CONSTRAINTS: ValidatorFn[] = [Validators.minLength(1), Vali
 @Component({
   selector: 'favourite-creation-dialog',
   templateUrl: './favourite-creation-dialog.component.html',
-  styleUrls: ['./favourite-creation-dialog.component.scss']
+  styleUrls: ['./favourite-creation-dialog.component.scss'],
 })
 export class FavouriteCreationDialogComponent implements OnInit, OnDestroy, HasSavingState {
   public nameFormControl!: FormControl<string | null>;
@@ -24,7 +24,7 @@ export class FavouriteCreationDialogComponent implements OnInit, OnDestroy, HasS
   constructor(
     private readonly dialogRef: MatDialogRef<FavouriteCreationDialogComponent>,
     private readonly favouritesService: FavouritesService,
-    private readonly store: Store
+    private readonly store: Store,
   ) {}
 
   public get name() {
@@ -58,9 +58,9 @@ export class FavouriteCreationDialogComponent implements OnInit, OnDestroy, HasS
             catchError(() => {
               this.savingState = 'error';
               return EMPTY;
-            })
+            }),
           )
-          .subscribe()
+          .subscribe(),
       );
     }
   }

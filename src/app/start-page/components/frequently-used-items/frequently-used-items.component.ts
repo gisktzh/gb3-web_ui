@@ -12,7 +12,7 @@ const NUMBER_OF_FREQUENTLY_USED_ITEMS = 3;
 @Component({
   selector: 'frequently-used-items',
   templateUrl: './frequently-used-items.component.html',
-  styleUrls: ['./frequently-used-items.component.scss']
+  styleUrls: ['./frequently-used-items.component.scss'],
 })
 export class FrequentlyUsedItemsComponent implements OnInit, OnDestroy, HasLoadingState {
   public frequentlyUsedItems: FrequentlyUsedItem[] = [];
@@ -41,9 +41,9 @@ export class FrequentlyUsedItemsComponent implements OnInit, OnDestroy, HasLoadi
           catchError((err: unknown) => {
             this.loadingState = 'error';
             return throwError(() => err);
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 }

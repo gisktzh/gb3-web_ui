@@ -7,7 +7,7 @@ import {FaqCollection} from '../../../shared/interfaces/faq.interface';
 @Component({
   selector: 'faq',
   templateUrl: './faq.component.html',
-  styleUrls: ['./faq.component.scss']
+  styleUrls: ['./faq.component.scss'],
 })
 export class FaqComponent implements OnInit, OnDestroy {
   public faqCollections: FaqCollection[] = [];
@@ -30,9 +30,9 @@ export class FaqComponent implements OnInit, OnDestroy {
         .pipe(
           tap((faqCollections) => {
             this.faqCollections = faqCollections;
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 }

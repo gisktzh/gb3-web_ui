@@ -13,7 +13,7 @@ import {selectActiveMapItemConfigurations} from '../../state/map/selectors/activ
 import {FavoritesDetailData} from '../../shared/models/gb3-api-generated.interfaces';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FavouritesService {
   private activeMapItemConfigurations: ActiveMapItemConfiguration[] = [];
@@ -21,7 +21,10 @@ export class FavouritesService {
   private readonly availableMaps$ = this.store.select(selectAvailableMaps);
   private availableMaps: Map[] = [];
 
-  constructor(private readonly store: Store, private readonly gb3FavouritesService: Gb3FavouritesService) {
+  constructor(
+    private readonly store: Store,
+    private readonly gb3FavouritesService: Gb3FavouritesService,
+  ) {
     this.initSubscriptions();
   }
 
@@ -59,7 +62,7 @@ export class FavouritesService {
             throw new Error('Sublayer does not exist.');
           }
           activeMapItems.push(
-            ActiveMapItemFactory.createGb2WmsMapItem(existingMap, subLayer, configuration.visible, configuration.opacity)
+            ActiveMapItemFactory.createGb2WmsMapItem(existingMap, subLayer, configuration.visible, configuration.opacity),
           );
         } else {
           const adjustedMap = produce(existingMap, (draft) => {
@@ -74,7 +77,7 @@ export class FavouritesService {
             draft.layers.sort((a, b) => sortIds.indexOf(a.id) - sortIds.indexOf(b.id));
           });
           activeMapItems.push(
-            ActiveMapItemFactory.createGb2WmsMapItem(adjustedMap, undefined, configuration.visible, configuration.opacity)
+            ActiveMapItemFactory.createGb2WmsMapItem(adjustedMap, undefined, configuration.visible, configuration.opacity),
           );
         }
       } else {

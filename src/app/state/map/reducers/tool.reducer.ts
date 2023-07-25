@@ -5,7 +5,7 @@ import {ToolActions} from '../actions/tool.actions';
 export const toolFeatureKey = 'tool';
 
 export const initialState: ToolState = {
-  activeTool: undefined
+  activeTool: undefined,
 };
 
 export const toolFeature = createFeature({
@@ -20,8 +20,8 @@ export const toolFeature = createFeature({
     }),
     on(ToolActions.activateTool, (state, {tool}): ToolState => {
       return {...initialState, activeTool: tool};
-    })
-  )
+    }),
+  ),
 });
 
 export const {name, reducer, selectToolState, selectActiveTool} = toolFeature;

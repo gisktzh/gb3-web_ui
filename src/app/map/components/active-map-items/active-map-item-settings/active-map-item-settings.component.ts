@@ -13,7 +13,7 @@ import {Gb2WmsActiveMapItem} from '../../../models/implementations/gb2-wms.model
 @Component({
   selector: 'active-map-item-settings',
   templateUrl: './active-map-item-settings.component.html',
-  styleUrls: ['./active-map-item-settings.component.scss']
+  styleUrls: ['./active-map-item-settings.component.scss'],
 })
 export class ActiveMapItemSettingsComponent implements OnInit, OnDestroy {
   @Input() public activeMapItem!: ActiveMapItem;
@@ -54,8 +54,8 @@ export class ActiveMapItemSettingsComponent implements OnInit, OnDestroy {
     this.store.dispatch(
       ActiveMapItemActions.setTimeSliderExtent({
         timeExtent,
-        activeMapItem: this.activeMapItem as Gb2WmsActiveMapItem
-      })
+        activeMapItem: this.activeMapItem as Gb2WmsActiveMapItem,
+      }),
     );
   }
 
@@ -83,9 +83,9 @@ export class ActiveMapItemSettingsComponent implements OnInit, OnDestroy {
                 .filter((filterValue) => filterValue.isActive).length;
             }
             this.numberOfChangedFilters = numberOfChangedFilters;
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
 
     this.subscriptions.add(
@@ -93,9 +93,9 @@ export class ActiveMapItemSettingsComponent implements OnInit, OnDestroy {
         .pipe(
           map((activeMapItems) => activeMapItems.find((activeMapItem) => activeMapItem.id === this.activeMapItem.id)),
           filter((activeMapItem) => activeMapItem !== undefined),
-          tap((activeMapItem) => (this.currentOpacity = activeMapItem!.opacity))
+          tap((activeMapItem) => (this.currentOpacity = activeMapItem!.opacity)),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 }

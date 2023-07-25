@@ -2,7 +2,7 @@ import {Pipe, PipeTransform} from '@angular/core';
 import {ConfigService} from '../services/config.service';
 
 @Pipe({
-  name: 'basemapImageLink'
+  name: 'basemapImageLink',
 })
 export class BasemapImageLinkPipe implements PipeTransform {
   constructor(private readonly configService: ConfigService) {}

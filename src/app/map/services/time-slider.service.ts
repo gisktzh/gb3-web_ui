@@ -9,7 +9,7 @@ import {TimeExtent} from '../interfaces/time-extent.interface';
 dayjs.extend(duration);
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TimeSliderService {
   /**
@@ -76,12 +76,12 @@ export class TimeSliderService {
     newValue: TimeExtent,
     hasStartDateChanged: boolean,
     minimumDate: Date,
-    maximumDate: Date
+    maximumDate: Date,
   ): TimeExtent {
     const timeExtent: TimeExtent = {
       // ensure that the new start/end values are within the min/max limits
       start: this.validateDateWithinLimits(newValue.start, minimumDate, maximumDate),
-      end: this.validateDateWithinLimits(newValue.end, minimumDate, maximumDate)
+      end: this.validateDateWithinLimits(newValue.end, minimumDate, maximumDate),
     };
 
     if (timeSliderConfig.alwaysMaxRange) {

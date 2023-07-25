@@ -7,6 +7,6 @@ export const ShareLinkActions = createActionGroup({
     'Load Share Link Item': props<{id: string}>(),
     'Set Share Link Item': props<{item: ShareLinkItem}>(),
     'Create Share Link Item': props<{item: ShareLinkItem}>(),
-    'Set Share Link Id': props<{id: string}>()
-  }
+    'Set Share Link Id': props<{id: string}>(),
+  },
 });

@@ -7,7 +7,7 @@ import {SearchResult} from '../interfaces/search-result.interface';
 import {SearchIndex} from '../interfaces/search-index.interface';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SearchService extends BaseApiService {
   protected apiBaseUrl = this.configService.apiConfig.searchApi.baseUrl;
@@ -15,7 +15,7 @@ export class SearchService extends BaseApiService {
   public searchIndexes(term: string, indexes: SearchIndex[]): Observable<SearchResultMatch[]> {
     const searchIndexNames = indexes.map((index) => index.indexName).toString();
     return this.getElasticsearch(searchIndexNames, term).pipe(
-      map((response: SearchResult[]) => this.combineSearchResults(response, indexes))
+      map((response: SearchResult[]) => this.combineSearchResults(response, indexes)),
     );
   }
 
@@ -44,12 +44,12 @@ export class SearchService extends BaseApiService {
     const params = [
       {
         key: 'indexes',
-        value: indexes
+        value: indexes,
       },
       {
         key: 'term',
-        value: term
-      }
+        value: term,
+      },
     ];
     const requestUrl = this.createFullEndpointUrl('search', params);
     return this.get<SearchResult[]>(requestUrl);

@@ -8,7 +8,7 @@ export type MapDataItemType = 'map' | 'favorite';
 @Component({
   // no selector here as it is a base component
   templateUrl: './base-map-data-item.component.html',
-  styleUrls: ['./base-map-data-item.component.scss']
+  styleUrls: ['./base-map-data-item.component.scss'],
 })
 export class BaseMapDataItemComponent {
   @Input() public title!: string;

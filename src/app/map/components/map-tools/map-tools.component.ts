@@ -8,7 +8,7 @@ import {ToolMenuVisibility} from '../../../shared/types/tool-menu-visibility';
 @Component({
   selector: 'map-tools',
   templateUrl: './map-tools.component.html',
-  styleUrls: ['./map-tools.component.scss']
+  styleUrls: ['./map-tools.component.scss'],
 })
 export class MapToolsComponent implements OnInit, OnDestroy {
   public toolMenuVisibility: ToolMenuVisibility | undefined = undefined;
@@ -40,7 +40,7 @@ export class MapToolsComponent implements OnInit, OnDestroy {
 
   private initSubscriptions() {
     this.subscriptions.add(
-      this.toolMenuVisibility$.pipe(tap((toolMenuVisibility) => (this.toolMenuVisibility = toolMenuVisibility))).subscribe()
+      this.toolMenuVisibility$.pipe(tap((toolMenuVisibility) => (this.toolMenuVisibility = toolMenuVisibility))).subscribe(),
     );
   }
 }

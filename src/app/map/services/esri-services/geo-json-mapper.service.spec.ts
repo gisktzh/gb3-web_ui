@@ -8,7 +8,7 @@ import {
   MultiPointWithSrs,
   MultiPolygonWithSrs,
   PointWithSrs,
-  PolygonWithSrs
+  PolygonWithSrs,
 } from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {SupportedSrs} from '../../../shared/types/supported-srs';
 import {MinimalGeometriesUtils} from '../../../testing/map-testing/minimal-geometries.utils';

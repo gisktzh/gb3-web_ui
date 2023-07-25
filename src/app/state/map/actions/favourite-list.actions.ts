@@ -8,6 +8,6 @@ export const FavouriteListActions = createActionGroup({
     'Set Favourites': props<{favourites: Favourite[]}>(),
     'Clear Favourites': emptyProps(),
     'Set Invalid': props<{id: number}>(),
-    'Remove Favourite': props<{id: number}>()
-  }
+    'Remove Favourite': props<{id: number}>(),
+  },
 });

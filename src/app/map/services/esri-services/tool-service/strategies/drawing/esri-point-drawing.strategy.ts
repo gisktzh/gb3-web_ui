@@ -8,7 +8,7 @@ export class EsriPointDrawingStrategy extends AbstractEsriDrawingStrategy {
     layer: __esri.GraphicsLayer,
     mapView: __esri.MapView,
     pointSymbol: __esri.SimpleMarkerSymbol,
-    completeCallbackHandler: () => void
+    completeCallbackHandler: () => void,
   ) {
     super(layer, mapView, completeCallbackHandler);
 

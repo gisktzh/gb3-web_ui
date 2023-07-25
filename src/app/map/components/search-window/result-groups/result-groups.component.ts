@@ -5,7 +5,7 @@ import {Map} from '../../../../shared/interfaces/topic.interface';
 @Component({
   selector: 'result-groups',
   templateUrl: './result-groups.component.html',
-  styleUrls: ['./result-groups.component.scss']
+  styleUrls: ['./result-groups.component.scss'],
 })
 export class ResultGroupsComponent {
   @Input() public searchResults: SearchResultMatch[] = [];

@@ -7,11 +7,11 @@ import {
   MultiPointWithSrs,
   MultiPolygonWithSrs,
   PointWithSrs,
-  PolygonWithSrs
+  PolygonWithSrs,
 } from '../../../shared/interfaces/geojson-types-with-srs.interface';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class GeoJSONMapperService {
   public fromGeoJSONToEsri<T extends GeometryWithSrs>(geometry: T): __esri.Geometry {

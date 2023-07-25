@@ -8,7 +8,7 @@ import {CdkDrag, CdkDragDrop} from '@angular/cdk/drag-drop';
 @Component({
   selector: 'active-map-item-layers',
   templateUrl: './active-map-item-layers.component.html',
-  styleUrls: ['./active-map-item-layers.component.scss']
+  styleUrls: ['./active-map-item-layers.component.scss'],
 })
 export class ActiveMapItemLayersComponent {
   @Input() public activeMapItem!: ActiveMapItem;
@@ -24,8 +24,8 @@ export class ActiveMapItemLayersComponent {
       ActiveMapItemActions.reorderSublayer({
         activeMapItem: this.activeMapItem,
         previousPosition: $event.previousIndex,
-        currentPosition: $event.currentIndex
-      })
+        currentPosition: $event.currentIndex,
+      }),
     );
   }
 }

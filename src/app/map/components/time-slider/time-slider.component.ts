@@ -20,7 +20,7 @@ type DatePickerStartView = 'month' | 'year' | 'multi-year';
 @Component({
   selector: 'time-slider',
   templateUrl: './time-slider.component.html',
-  styleUrls: ['./time-slider.component.scss']
+  styleUrls: ['./time-slider.component.scss'],
 })
 export class TimeSliderComponent implements OnInit {
   @Output() public changeTimeExtentEvent = new EventEmitter<TimeExtent>();
@@ -99,7 +99,7 @@ export class TimeSliderComponent implements OnInit {
   public refreshCurrentValue() {
     const currentTimeExtent: TimeExtent = {
       start: this.availableDates[this.firstSliderPosition],
-      end: this.secondSliderPosition ? this.availableDates[this.secondSliderPosition] : this.availableDates[this.firstSliderPosition]
+      end: this.secondSliderPosition ? this.availableDates[this.secondSliderPosition] : this.availableDates[this.firstSliderPosition],
     };
     this.formattedTimeExtent = this.convertTimeExtentToString(currentTimeExtent, this.hasSimpleCurrentValue);
   }
@@ -112,7 +112,7 @@ export class TimeSliderComponent implements OnInit {
     // create a new time extent based on the current slider position(s)
     const newTimeExtent: TimeExtent = {
       start: this.availableDates[this.firstSliderPosition],
-      end: this.secondSliderPosition ? this.availableDates[this.secondSliderPosition] : this.availableDates[this.firstSliderPosition]
+      end: this.secondSliderPosition ? this.availableDates[this.secondSliderPosition] : this.availableDates[this.firstSliderPosition],
     };
     // calculate a valid time extent based on the new one
     // it can differ to the given time extent due to active limitations such as a minimal range between start and end time
@@ -121,7 +121,7 @@ export class TimeSliderComponent implements OnInit {
       newTimeExtent,
       hasStartDateChanged,
       this.availableDates[this.effectiveMinimumDateNumber],
-      this.availableDates[this.effectiveMaximumDateNumber]
+      this.availableDates[this.effectiveMaximumDateNumber],
     );
 
     // correct the thumb that was modified with the calculated time extent if necessary (e.g. enforcing a minimal range)
@@ -156,7 +156,7 @@ export class TimeSliderComponent implements OnInit {
     $event: Date | null,
     datePicker: MatDatepicker<Date>,
     changedMinimumDate: boolean,
-    currentDatePickerSelectionUnit: DatePickerManipulationUnits
+    currentDatePickerSelectionUnit: DatePickerManipulationUnits,
   ) {
     if (currentDatePickerSelectionUnit === this.datePickerUnit) {
       this.selectedDatePickerDate($event, changedMinimumDate);
@@ -215,7 +215,7 @@ export class TimeSliderComponent implements OnInit {
         case 'layer':
           isRangeContinuousWithinAllowedTimeUnits = this.isLayerSourceContinuous(
             <TimeSliderLayerSource>timeSliderConfiguration.source,
-            unit
+            unit,
           );
           break;
       }
@@ -240,7 +240,7 @@ export class TimeSliderComponent implements OnInit {
 
   private findPositionOfDate(date: Date): number | undefined {
     const index = this.availableDates.findIndex(
-      (availableDate) => TimeExtentUtils.calculateDifferenceBetweenDates(availableDate, date) === 0
+      (availableDate) => TimeExtentUtils.calculateDifferenceBetweenDates(availableDate, date) === 0,
     );
     return index === -1 ? undefined : index;
   }

@@ -12,7 +12,7 @@ const NUMBER_OF_NEWS = 3;
 @Component({
   selector: 'news-feed',
   templateUrl: './news-feed.component.html',
-  styleUrls: ['./news-feed.component.scss']
+  styleUrls: ['./news-feed.component.scss'],
 })
 export class NewsFeedComponent implements OnInit, HasLoadingState, OnDestroy {
   public loadingState: LoadingState = 'loading';
@@ -37,9 +37,9 @@ export class NewsFeedComponent implements OnInit, HasLoadingState, OnDestroy {
           catchError((err: unknown) => {
             this.loadingState = 'error';
             return throwError(() => err);
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 }

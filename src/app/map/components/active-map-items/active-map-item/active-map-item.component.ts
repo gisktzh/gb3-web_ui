@@ -8,7 +8,7 @@ type TabType = 'layers' | 'settings';
   selector: 'active-map-item',
   templateUrl: './active-map-item.component.html',
   styleUrls: ['./active-map-item.component.scss'],
-  animations: [slideInOutAnimation]
+  animations: [slideInOutAnimation],
 })
 export class ActiveMapItemComponent implements OnInit {
   @Input() public activeMapItem!: ActiveMapItem;

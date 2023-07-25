@@ -38,14 +38,14 @@ describe('TimeSliderService', () => {
         source: {
           startRangeParameter: '',
           endRangeParameter: '',
-          layerIdentifiers: []
-        }
+          layerIdentifiers: [],
+        },
       };
 
       it('should create always the same time extent using min-/max values', () => {
         const newValue: TimeExtent = {
           start: dayjs('2000-02', dateFormat).toDate(),
-          end: dayjs('2000-03', dateFormat).toDate()
+          end: dayjs('2000-03', dateFormat).toDate(),
         };
 
         const calculatedTimeExtent = service.createValidTimeExtent(
@@ -53,7 +53,7 @@ describe('TimeSliderService', () => {
           newValue,
           true,
           minimumDate.toDate(),
-          maximumDate.toDate()
+          maximumDate.toDate(),
         );
         expect(dayjs(calculatedTimeExtent.start).diff(minimumDate)).toBe(0);
         expect(dayjs(calculatedTimeExtent.end).diff(maximumDate)).toBe(0);
@@ -79,21 +79,21 @@ describe('TimeSliderService', () => {
         source: {
           startRangeParameter: '',
           endRangeParameter: '',
-          layerIdentifiers: []
-        }
+          layerIdentifiers: [],
+        },
       };
 
       it('should not create a new time extent if it is already valid', () => {
         const newValue: TimeExtent = {
           start: dayjs('2000-02', dateFormat).toDate(),
-          end: dayjs('2000-03', dateFormat).toDate()
+          end: dayjs('2000-03', dateFormat).toDate(),
         };
         const calculatedTimeExtent = service.createValidTimeExtent(
           timeSliderConfig,
           newValue,
           true,
           minimumDate.toDate(),
-          maximumDate.toDate()
+          maximumDate.toDate(),
         );
         expect(dayjs(calculatedTimeExtent.start).diff(newValue.start)).toBe(0);
         expect(dayjs(calculatedTimeExtent.end).diff(newValue.end)).toBe(0);
@@ -106,7 +106,7 @@ describe('TimeSliderService', () => {
           newValue,
           true,
           minimumDate.toDate(),
-          maximumDate.toDate()
+          maximumDate.toDate(),
         );
         expect(dayjs(calculatedTimeExtent.start).diff(dayjs('2001-03', dateFormat))).toBe(0);
         expect(dayjs(calculatedTimeExtent.end).diff(dayjs('2001-04', dateFormat))).toBe(0);
@@ -119,7 +119,7 @@ describe('TimeSliderService', () => {
           newValue,
           true,
           minimumDate.toDate(),
-          maximumDate.toDate()
+          maximumDate.toDate(),
         );
         expect(dayjs(calculatedTimeExtent.start).diff(dayjs('2000-01', dateFormat))).toBe(0);
         expect(dayjs(calculatedTimeExtent.end).diff(dayjs('2000-02', dateFormat))).toBe(0);
@@ -132,7 +132,7 @@ describe('TimeSliderService', () => {
           newValue,
           true,
           minimumDate.toDate(),
-          maximumDate.toDate()
+          maximumDate.toDate(),
         );
         expect(dayjs(calculatedTimeExtent.start).diff(dayjs('2001-03', dateFormat))).toBe(0);
         expect(dayjs(calculatedTimeExtent.end).diff(dayjs('2001-04', dateFormat))).toBe(0);
@@ -158,21 +158,21 @@ describe('TimeSliderService', () => {
         source: {
           startRangeParameter: '',
           endRangeParameter: '',
-          layerIdentifiers: []
-        }
+          layerIdentifiers: [],
+        },
       };
 
       it('should not create a new time extent if it is already valid', () => {
         const newValue: TimeExtent = {
           start: dayjs('2000-02', dateFormat).toDate(),
-          end: dayjs('2000-05', dateFormat).toDate()
+          end: dayjs('2000-05', dateFormat).toDate(),
         };
         const calculatedTimeExtent = service.createValidTimeExtent(
           timeSliderConfig,
           newValue,
           true,
           minimumDate.toDate(),
-          maximumDate.toDate()
+          maximumDate.toDate(),
         );
         expect(dayjs(calculatedTimeExtent.start).diff(newValue.start)).toBe(0);
         expect(dayjs(calculatedTimeExtent.end).diff(newValue.end)).toBe(0);
@@ -181,14 +181,14 @@ describe('TimeSliderService', () => {
       it('should create a new start/end date if it is over/under the limits', () => {
         const newValue: TimeExtent = {
           start: dayjs('1999-12', dateFormat).toDate(),
-          end: dayjs('2001-04', dateFormat).toDate()
+          end: dayjs('2001-04', dateFormat).toDate(),
         };
         const calculatedTimeExtent = service.createValidTimeExtent(
           timeSliderConfig,
           newValue,
           true,
           minimumDate.toDate(),
-          maximumDate.toDate()
+          maximumDate.toDate(),
         );
         expect(dayjs(calculatedTimeExtent.start).diff(minimumDate)).toBe(0);
         expect(dayjs(calculatedTimeExtent.end).diff(maximumDate)).toBe(0);
@@ -197,14 +197,14 @@ describe('TimeSliderService', () => {
       it('should adjust the start date if the new start date is too close to the original start date', () => {
         const newValue: TimeExtent = {
           start: dayjs('2000-03', dateFormat).toDate(),
-          end: dayjs('2000-04', dateFormat).toDate()
+          end: dayjs('2000-04', dateFormat).toDate(),
         };
         const calculatedTimeExtent = service.createValidTimeExtent(
           timeSliderConfig,
           newValue,
           true,
           minimumDate.toDate(),
-          maximumDate.toDate()
+          maximumDate.toDate(),
         );
         expect(dayjs(calculatedTimeExtent.start).diff(dayjs('2000-02', dateFormat))).toBe(0);
         expect(dayjs(calculatedTimeExtent.end).diff(dayjs('2000-04', dateFormat))).toBe(0);
@@ -213,14 +213,14 @@ describe('TimeSliderService', () => {
       it('should adjust the end date if the new end date is too close to the original end date', () => {
         const newValue: TimeExtent = {
           start: dayjs('2000-02', dateFormat).toDate(),
-          end: dayjs('2000-03', dateFormat).toDate()
+          end: dayjs('2000-03', dateFormat).toDate(),
         };
         const calculatedTimeExtent = service.createValidTimeExtent(
           timeSliderConfig,
           newValue,
           false,
           minimumDate.toDate(),
-          maximumDate.toDate()
+          maximumDate.toDate(),
         );
         expect(dayjs(calculatedTimeExtent.start).diff(dayjs('2000-02', dateFormat))).toBe(0);
         expect(dayjs(calculatedTimeExtent.end).diff(dayjs('2000-04', dateFormat))).toBe(0);
@@ -229,14 +229,14 @@ describe('TimeSliderService', () => {
       it('should create a new start date if if is too close to the end date and the end date is the maximum possible date', () => {
         const newValue: TimeExtent = {
           start: dayjs('2001-02', dateFormat).toDate(),
-          end: dayjs('2001-03', dateFormat).toDate()
+          end: dayjs('2001-03', dateFormat).toDate(),
         };
         const calculatedTimeExtent = service.createValidTimeExtent(
           timeSliderConfig,
           newValue,
           true,
           minimumDate.toDate(),
-          maximumDate.toDate()
+          maximumDate.toDate(),
         );
         expect(dayjs(calculatedTimeExtent.start).diff(dayjs('2001-01', dateFormat))).toBe(0);
         expect(dayjs(calculatedTimeExtent.end).diff(dayjs('2001-03', dateFormat))).toBe(0);
@@ -263,8 +263,8 @@ describe('TimeSliderService', () => {
         source: {
           startRangeParameter: '',
           endRangeParameter: '',
-          layerIdentifiers: []
-        }
+          layerIdentifiers: [],
+        },
       };
       const newValue: TimeExtent = {start: dayjs(minimumDate, dateFormat).toDate(), end: dayjs(minimumDate, dateFormat).toDate()};
 
@@ -273,7 +273,7 @@ describe('TimeSliderService', () => {
         newValue,
         true,
         minimumDate.toDate(),
-        maximumDate.toDate()
+        maximumDate.toDate(),
       );
       expect(dayjs(calculatedTimeExtent.start).diff(dayjs('2000', dateFormat).toDate())).toBe(0);
       expect(dayjs(calculatedTimeExtent.start).format(timeSliderConfig.dateFormat)).toBe('2000');
@@ -300,9 +300,9 @@ describe('TimeSliderService', () => {
           layers: [
             {layerName: 'layerOne', date: firstStop},
             {layerName: 'layerTwo', date: secondStop},
-            {layerName: 'layerThree', date: thirdStop}
-          ]
-        }
+            {layerName: 'layerThree', date: thirdStop},
+          ],
+        },
       };
 
       it('should create the correct stops', () => {
@@ -334,8 +334,8 @@ describe('TimeSliderService', () => {
           source: {
             startRangeParameter: '',
             endRangeParameter: '',
-            layerIdentifiers: []
-          }
+            layerIdentifiers: [],
+          },
         };
 
         it('should create the correct stops', () => {
@@ -353,7 +353,7 @@ describe('TimeSliderService', () => {
         const parameterSource: TimeSliderParameterSource = {
           startRangeParameter: '',
           endRangeParameter: '',
-          layerIdentifiers: []
+          layerIdentifiers: [],
         };
 
         describe('and a range', () => {
@@ -367,7 +367,7 @@ describe('TimeSliderService', () => {
             range: range, // one month and 10 days
             minimalRange: undefined,
             sourceType: 'parameter',
-            source: parameterSource
+            source: parameterSource,
           };
 
           it('should create the correct stops', () => {
@@ -395,7 +395,7 @@ describe('TimeSliderService', () => {
             range: undefined,
             minimalRange: undefined,
             sourceType: 'parameter',
-            source: parameterSource
+            source: parameterSource,
           };
 
           it('should create the correct stops', () => {

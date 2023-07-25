@@ -5,7 +5,7 @@ describe('NumberUtils', () => {
     [
       {input: 1337.4444444, decimals: 0, expected: 1337},
       {input: 1337.4444444, decimals: 1, expected: 1337.4},
-      {input: 1337.4444444, decimals: 5, expected: 1337.44444}
+      {input: 1337.4444444, decimals: 5, expected: 1337.44444},
     ].forEach((testCase) => {
       it(`rounds value to ${testCase.decimals} decimals`, () => {
         expect(NumberUtils.roundToDecimals(testCase.input, testCase.decimals)).toBe(testCase.expected);
@@ -18,7 +18,7 @@ describe('NumberUtils', () => {
       {input: 1337.4444444, decimals: undefined, expected: 1337},
       {input: 1337.4444444, decimals: -5, expected: 1337},
       {input: 1337.4444444, decimals: 0.5, expected: 1337},
-      {input: 1337.4444444, decimals: 1.5, expected: 1337}
+      {input: 1337.4444444, decimals: 1.5, expected: 1337},
     ].forEach((testCase) => {
       it(`rounds ${testCase.decimals} decimal value to no decimal`, () => {
         expect(NumberUtils.roundToDecimals(testCase.input, testCase.decimals)).toBe(testCase.expected);

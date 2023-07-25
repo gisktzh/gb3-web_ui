@@ -39,7 +39,7 @@ export const selectLegendItemsForDisplay = createSelector<Record<string, any>, L
           layers: legendItem.layers,
           icon: undefined,
           isSingleLayer: true,
-          metaDataLink: legendItem.layers[0].metaDataLink // make sure we take the layer's metaDataLink and not its topic's one
+          metaDataLink: legendItem.layers[0].metaDataLink, // make sure we take the layer's metaDataLink and not its topic's one
         };
       } else {
         legendDisplay = {
@@ -48,12 +48,12 @@ export const selectLegendItemsForDisplay = createSelector<Record<string, any>, L
           layers: legendItem.layers,
           icon: topic.icon,
           isSingleLayer: false,
-          metaDataLink: legendItem.metaDataLink
+          metaDataLink: legendItem.metaDataLink,
         };
       }
 
       legendDisplays.push(legendDisplay);
     });
     return legendDisplays;
-  }
+  },
 );

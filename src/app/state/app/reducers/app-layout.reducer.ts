@@ -5,7 +5,7 @@ import {AppLayoutActions} from '../actions/app-layout.actions';
 export const appLayoutFeatureKey = 'appLayout';
 
 export const initialState: AppLayoutState = {
-  scrollbarWidth: undefined
+  scrollbarWidth: undefined,
 };
 
 export const appLayoutFeature = createFeature({
@@ -19,8 +19,8 @@ export const appLayoutFeature = createFeature({
         return state;
       }
       return {...state, scrollbarWidth: scrollbarWidth};
-    })
-  )
+    }),
+  ),
 });
 
 export const {name, reducer, selectAppLayoutState, selectScrollbarWidth} = appLayoutFeature;

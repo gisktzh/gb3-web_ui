@@ -13,7 +13,7 @@ export class OnboardingGuideService {
   constructor(
     private readonly tourService: TourService,
     private readonly localStorageService: LocalStorageService,
-    @Inject(ONBOARDING_STEPS) private readonly onboardingGuideConfig: OnboardingGuideConfig
+    @Inject(ONBOARDING_STEPS) private readonly onboardingGuideConfig: OnboardingGuideConfig,
   ) {
     const {id, steps} = this.onboardingGuideConfig;
     this.tourService.initialize(steps, {nextBtnTitle: 'Weiter', prevBtnTitle: 'Zurück', endBtnTitle: 'Beenden'});
@@ -40,7 +40,7 @@ export class OnboardingGuideService {
       .pipe(
         tap(() => {
           this.markGuideAsViewed();
-        })
+        }),
       )
       .subscribe();
   }

@@ -48,7 +48,7 @@ export const selectFeatureInfosForDisplay = createSelector<
         title: featureInfo.layers[0].title,
         layers: featureInfo.layers,
         icon: undefined,
-        isSingleLayer: true
+        isSingleLayer: true,
       };
     } else {
       featureInfoResultDisplay = {
@@ -56,7 +56,7 @@ export const selectFeatureInfosForDisplay = createSelector<
         title: topic.title,
         layers: featureInfo.layers,
         icon: topic.icon,
-        isSingleLayer: false
+        isSingleLayer: false,
       };
     }
 

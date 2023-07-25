@@ -5,7 +5,7 @@ import {Subscription, tap} from 'rxjs';
 @Component({
   selector: 'onboarding-guide',
   templateUrl: './onboarding-guide.component.html',
-  styleUrls: ['./onboarding-guide.component.scss']
+  styleUrls: ['./onboarding-guide.component.scss'],
 })
 export class OnboardingGuideComponent implements OnDestroy {
   @Input() public introductionImage?: string;
@@ -34,9 +34,9 @@ export class OnboardingGuideComponent implements OnDestroy {
             this.progress = (currentStepNumber / this.numberOfSteps) * 100;
             this.hasNextStep = this.tourService.hasNext(step);
             this.hasPreviousStep = this.tourService.hasPrev(step);
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 }

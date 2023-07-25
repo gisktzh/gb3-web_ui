@@ -11,37 +11,37 @@ export const mapOnboardingGuideConfig: OnboardingGuideConfig = {
         'Navigieren Sie mit der Maus oder den Pfeiltasten durch den Guide und beenden Sie ' +
         'ihn wahlweise mit ESC oder durch den entsprechenden Button.',
       title: 'Willkommen auf dem GIS-Browser des Kanton Zürich',
-      enableBackdrop: true
+      enableBackdrop: true,
     },
     {
       anchorId: 'map.catalogue',
       content: 'Wählen Sie eine oder mehrere Karten aus.',
       title: 'Kartenkatalog',
-      enableBackdrop: true
+      enableBackdrop: true,
     },
     {
       anchorId: 'map.active.map.items',
       content: 'Passen Sie Reihenfolge, Transparenz und Einstellung der dargestellten Karten an.',
       title: 'Dargestellte Karten',
-      enableBackdrop: true
+      enableBackdrop: true,
     },
     {
       anchorId: 'map.basemap.selector',
       content: 'Wechseln Sie die Hintergrundkarte.',
       title: 'Hintergrund',
-      enableBackdrop: true
+      enableBackdrop: true,
     },
     {
       anchorId: 'map.feature.info',
       content: 'Klicken Sie auf Kartenobjekte und erhalten Sie Informationen dazu.',
       title: 'Info-Klick',
-      enableBackdrop: false
+      enableBackdrop: false,
     },
     {
       anchorId: 'map.end.tour',
       content: 'Wir wünschen viel Vergnügen bei der Nutzung des GIS-Browsers!',
       title: 'Das wars!',
-      enableBackdrop: false
-    }
-  ]
+      enableBackdrop: false,
+    },
+  ],
 };

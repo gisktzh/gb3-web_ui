@@ -6,7 +6,7 @@ import {PageNotificationAdapter} from '../adapters/page-notification.adapter';
 export const pageNotificationFeatureKey = 'pageNotification';
 
 export const initialState: PageNotificationState = PageNotificationAdapter.getInitialState({
-  loadingState: 'undefined'
+  loadingState: 'undefined',
 });
 
 export const pageNotificationFeature = createFeature({
@@ -21,8 +21,8 @@ export const pageNotificationFeature = createFeature({
     }),
     on(PageNotificationActions.markPageNotificationAsRead, (state, {id}): PageNotificationState => {
       return PageNotificationAdapter.updateOne({id: id, changes: {isMarkedAsRead: true}}, state);
-    })
-  )
+    }),
+  ),
 });
 
 export const {name, reducer, selectPageNotificationState} = pageNotificationFeature;

@@ -11,7 +11,7 @@ import {discoverMapsDataMock, frequentlyUsedDataMock, pageInfosDataMock} from '.
  * Returns mockdata and mimicks an API request delay between 1ms and 1000ms.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class GravCmsMockService extends GravCmsService {
   protected override apiBaseUrl: string = window.location.origin;
@@ -19,21 +19,21 @@ export class GravCmsMockService extends GravCmsService {
   public override loadDiscoverMapsData(): Observable<DiscoverMapsItem[]> {
     return of(discoverMapsDataMock).pipe(
       delay(this.getRandomDelayInMs()),
-      map((mockResult) => this.transformDiscoverMapsData(mockResult))
+      map((mockResult) => this.transformDiscoverMapsData(mockResult)),
     );
   }
 
   public override loadPageInfosData(): Observable<PageNotification[]> {
     return of(pageInfosDataMock).pipe(
       delay(this.getRandomDelayInMs()),
-      map((mockResult) => this.transformPageInfosData(mockResult))
+      map((mockResult) => this.transformPageInfosData(mockResult)),
     );
   }
 
   public override loadFrequentlyUsedData(): Observable<FrequentlyUsedItem[]> {
     return of(frequentlyUsedDataMock).pipe(
       delay(this.getRandomDelayInMs()),
-      map((mockResult) => this.transformFrequentlyUsedData(mockResult))
+      map((mockResult) => this.transformFrequentlyUsedData(mockResult)),
     );
   }
 

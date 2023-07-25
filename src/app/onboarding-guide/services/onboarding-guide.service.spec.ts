@@ -9,14 +9,14 @@ const mockTour: OnboardingGuideConfig = {
     {
       anchorId: 'map.start.tour',
       content: 'Lorem Ipsum',
-      title: 'Lorem'
+      title: 'Lorem',
     },
     {
       anchorId: 'map.catalogue',
       content: 'Lorem Ipsum 2',
-      title: 'Lorem 2'
-    }
-  ]
+      title: 'Lorem 2',
+    },
+  ],
 };
 
 describe('OnboardingGuideService', () => {
@@ -24,7 +24,7 @@ describe('OnboardingGuideService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [OnboardingGuideService, {provide: ONBOARDING_STEPS, useValue: mockTour}]
+      providers: [OnboardingGuideService, {provide: ONBOARDING_STEPS, useValue: mockTour}],
     });
     service = TestBed.inject(OnboardingGuideService);
 

@@ -4,7 +4,7 @@ import {AbstractToolsComponent} from '../abstract-tools/abstract-tools.component
 @Component({
   selector: 'measurement-tools',
   templateUrl: './measurement-tools.component.html',
-  styleUrls: ['./measurement-tools.component.scss']
+  styleUrls: ['./measurement-tools.component.scss'],
 })
 export class MeasurementToolsComponent extends AbstractToolsComponent {
   public togglePointMeasurement() {

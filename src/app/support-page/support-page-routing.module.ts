@@ -13,28 +13,28 @@ const routes: Routes = [
     children: [
       {
         path: 'faq',
-        component: FaqComponent
+        component: FaqComponent,
       },
       {
         path: 'useful-links',
-        component: UsefulLinksComponent
+        component: UsefulLinksComponent,
       },
       {
         path: 'contact',
-        component: ContactComponent
+        component: ContactComponent,
       },
       {
         pathMatch: 'full',
         path: '',
-        redirectTo: 'faq'
-      }
-    ]
-  }
+        redirectTo: 'faq',
+      },
+    ],
+  },
 ];
 
 @NgModule({
   declarations: [],
   imports: [RouterModule.forChild(routes), SharedModule],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class SupportPageRoutingModule {}

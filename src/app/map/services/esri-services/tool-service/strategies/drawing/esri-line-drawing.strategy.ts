@@ -8,7 +8,7 @@ export class EsriLineDrawingStrategy extends AbstractEsriDrawingStrategy {
     layer: __esri.GraphicsLayer,
     mapView: __esri.MapView,
     polylineSymbol: __esri.SimpleLineSymbol,
-    completeCallbackHandler: () => void
+    completeCallbackHandler: () => void,
   ) {
     super(layer, mapView, completeCallbackHandler);
 
