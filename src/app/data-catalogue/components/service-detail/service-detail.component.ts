@@ -7,11 +7,12 @@ import {Gb3MetadataService} from '../../../shared/services/apis/gb3/gb3-metadata
 import {ConfigService} from '../../../shared/services/config.service';
 import {MainPage} from '../../../shared/enums/main-page.enum';
 import {DataCataloguePage} from '../../../shared/enums/data-catalogue-page.enum';
-import {DataDisplayElement} from '../data-display/data-display.component';
-import {Clipboard} from '@angular/cdk/clipboard';
 import {BaseMetadataInformation} from '../../../shared/interfaces/base-metadata-information.interface';
 import {MetadataLink} from '../../../shared/interfaces/metadata-link.interface';
 import {DataExtractionUtils} from '../../utils/data-extraction.utils';
+import {catchError} from 'rxjs/operators';
+import {DataDisplayElement} from '../../types/data-display-element';
+import {RouteParamConstants} from '../../../shared/constants/route-param.constants';
 
 @Component({
   selector: 'service-detail',
@@ -19,7 +20,7 @@ import {DataExtractionUtils} from '../../utils/data-extraction.utils';
   styleUrls: ['./service-detail.component.scss'],
 })
 export class ServiceDetailComponent implements OnInit, OnDestroy {
-  public baseMetadataInformation: BaseMetadataInformation | undefined;
+  public baseMetadataInformation?: BaseMetadataInformation;
   public metadataContactElements: DataDisplayElement[] = [];
   public informationElements: DataDisplayElement[] = [];
   public linkedDatasets: MetadataLink[] = [];
@@ -34,7 +35,6 @@ export class ServiceDetailComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly gb3MetadataService: Gb3MetadataService,
     private readonly configService: ConfigService,
-    private readonly clipboardService: Clipboard,
   ) {
     this.apiBaseUrl = this.configService.apiConfig.gb2StaticFiles.baseUrl;
   }
@@ -47,29 +47,29 @@ export class ServiceDetailComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  public copyToClipboard() {
-    if (this.serviceUrlForCopy) {
-      this.clipboardService.copy(this.serviceUrlForCopy);
-    }
-  }
-
   private initSubscriptions() {
     this.subscriptions.add(
       this.route.paramMap
         .pipe(
           switchMap((params) => {
-            const id = params.get('id');
+            const id = params.get(RouteParamConstants.RESOURCE_IDENTIFIER);
             if (!id) {
+              // note: this can never happen since the :id always matches - but Angular does not know typed URL parameters.
               return throwError(() => new Error('No id specified'));
             }
-            return this.gb3MetadataService.loadServiceDetail(id);
+            return this.gb3MetadataService.loadServiceDetail(id).pipe(
+              catchError((err: unknown) => {
+                this.loadingState = 'error';
+                return throwError(() => err); // todo: forward to 404 page
+              }),
+            );
           }),
-          tap((results) => {
-            this.baseMetadataInformation = this.extractBaseMetadataInformation(results);
-            this.metadataContactElements = DataExtractionUtils.extractContactElements(results.contact.metadata);
-            this.informationElements = this.extractInformationElements(results);
-            this.linkedDatasets = results.datasets;
-            this.serviceUrlForCopy = results.url;
+          tap((serviceMetadata) => {
+            this.baseMetadataInformation = this.extractBaseMetadataInformation(serviceMetadata);
+            this.metadataContactElements = DataExtractionUtils.extractContactElements(serviceMetadata.contact.metadata);
+            this.informationElements = this.extractInformationElements(serviceMetadata);
+            this.linkedDatasets = serviceMetadata.datasets;
+            this.serviceUrlForCopy = serviceMetadata.url;
             this.loadingState = 'loaded';
           }),
         )
@@ -77,22 +77,22 @@ export class ServiceDetailComponent implements OnInit, OnDestroy {
     );
   }
 
-  private extractInformationElements(data: ServiceMetadata): DataDisplayElement[] {
+  private extractInformationElements(serviceMetadata: ServiceMetadata): DataDisplayElement[] {
     return [
-      {title: 'GIS-ZH Nr.', value: data.guid.toString(), type: 'text'},
-      {title: 'Geodienst', value: data.serviceType, type: 'text'},
-      {title: 'Bezeichnung', value: data.name, type: 'text'},
-      {title: 'Beschreibung', value: data.description, type: 'text'},
-      {title: 'URL', value: data.url, type: 'url'},
-      {title: 'GetCapabilities', value: this.createGetCapabilitiesLink(data.url, data.serviceType), type: 'url'},
-      {title: 'Version', value: data.version, type: 'text'},
-      {title: 'Zugang', value: data.access, type: 'text'},
+      {title: 'GIS-ZH Nr.', value: serviceMetadata.guid.toString(), type: 'text'},
+      {title: 'Geodienst', value: serviceMetadata.serviceType, type: 'text'},
+      {title: 'Bezeichnung', value: serviceMetadata.name, type: 'text'},
+      {title: 'Beschreibung', value: serviceMetadata.description, type: 'text'},
+      {title: 'URL', value: serviceMetadata.url, type: 'url'},
+      {title: 'GetCapabilities', value: this.createGetCapabilitiesLink(serviceMetadata.url, serviceMetadata.serviceType), type: 'url'},
+      {title: 'Version', value: serviceMetadata.version, type: 'text'},
+      {title: 'Zugang', value: serviceMetadata.access, type: 'text'},
     ];
   }
 
-  private extractBaseMetadataInformation(results: ServiceMetadata): BaseMetadataInformation {
+  private extractBaseMetadataInformation(serviceMetadata: ServiceMetadata): BaseMetadataInformation {
     return {
-      itemTitle: results.name,
+      itemTitle: serviceMetadata.name,
       keywords: ['Geodienst'], // todo: add OGD status once API delivers that
     };
   }

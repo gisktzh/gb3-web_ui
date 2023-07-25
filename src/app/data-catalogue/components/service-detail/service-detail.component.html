@@ -3,7 +3,7 @@
 <data-catalogue-detail-page *ngIf="baseMetadataInformation" [baseMetadataInformation]="baseMetadataInformation">
   <data-catalogue-detail-page-section topLink>
     <descriptive-highlighted-link [description]="serviceUrlForCopy" [title]="'Geodienst URL kopieren'">
-      <button (click)="copyToClipboard()" mat-icon-button>
+      <button [cdkCopyToClipboard]="serviceUrlForCopy ?? ''" mat-icon-button>
         <mat-icon svgIcon="ktzh_copy_to_clipboard"></mat-icon>
       </button>
     </descriptive-highlighted-link>
@@ -28,7 +28,7 @@
         [description]="linkedDataset.shortDescription"
         [title]="linkedDataset.name"
       >
-        <a [routerLink]="'/' + mainPageEnum.Data + '/' + dataCataloguePageEnum.Datasets + '/' + linkedDataset.guid" mat-icon-button>
+        <a [routerLink]="['/', mainPageEnum.Data, dataCataloguePageEnum.Datasets, linkedDataset.guid]" mat-icon-button>
           <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
         </a>
       </descriptive-highlighted-link>

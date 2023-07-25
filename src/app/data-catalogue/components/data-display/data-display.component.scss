@@ -19,8 +19,10 @@
       margin-top: 9px;
     }
 
-    .data-display__item__value--link {
-      color: ktzh-variables.$zh-active-blue;
+    .data-display__item__value {
+      a {
+        color: ktzh-variables.$zh-active-blue;
+      }
     }
   }
 }

@@ -5,12 +5,14 @@ import {Subscription, switchMap, tap, throwError} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {Gb3MetadataService} from '../../../shared/services/apis/gb3/gb3-metadata.service';
 import {ConfigService} from '../../../shared/services/config.service';
-import {DataDisplayElement} from '../data-display/data-display.component';
 import {MainPage} from '../../../shared/enums/main-page.enum';
 import {DataCataloguePage} from '../../../shared/enums/data-catalogue-page.enum';
 import {BaseMetadataInformation} from '../../../shared/interfaces/base-metadata-information.interface';
 import {MetadataLink} from '../../../shared/interfaces/metadata-link.interface';
 import {DataExtractionUtils} from '../../utils/data-extraction.utils';
+import {catchError} from 'rxjs/operators';
+import {DataDisplayElement} from '../../types/data-display-element';
+import {RouteParamConstants} from '../../../shared/constants/route-param.constants';
 
 interface BaseMetadataWithTopicInformation extends BaseMetadataInformation {
   topic: string;
@@ -22,7 +24,7 @@ interface BaseMetadataWithTopicInformation extends BaseMetadataInformation {
   styleUrls: ['./map-detail.component.scss'],
 })
 export class MapDetailComponent implements OnInit, OnDestroy {
-  public baseMetadataInformation: BaseMetadataWithTopicInformation | undefined;
+  public baseMetadataInformation?: BaseMetadataWithTopicInformation;
   public geodataContactElements: DataDisplayElement[] = [];
   public informationElements: DataDisplayElement[] = [];
   public linkedDatasets: MetadataLink[] = [];
@@ -53,17 +55,23 @@ export class MapDetailComponent implements OnInit, OnDestroy {
       this.route.paramMap
         .pipe(
           switchMap((params) => {
-            const id = params.get('id');
+            const id = params.get(RouteParamConstants.RESOURCE_IDENTIFIER);
             if (!id) {
+              // note: this can never happen since the :id always matches - but Angular does not know typed URL parameters.
               return throwError(() => new Error('No id specified'));
             }
-            return this.gb3MetadataService.loadMapDetail(id);
+            return this.gb3MetadataService.loadMapDetail(id).pipe(
+              catchError((err: unknown) => {
+                this.loadingState = 'error';
+                return throwError(() => err); // todo: forward to 404 page
+              }),
+            );
           }),
-          tap((results) => {
-            this.baseMetadataInformation = this.extractBaseMetadataInformation(results);
-            this.geodataContactElements = DataExtractionUtils.extractContactElements(results.contact.geodata);
-            this.informationElements = this.extractInformationElements(results);
-            this.linkedDatasets = results.datasets;
+          tap((mapMetadata) => {
+            this.baseMetadataInformation = this.extractBaseMetadataInformation(mapMetadata);
+            this.geodataContactElements = DataExtractionUtils.extractContactElements(mapMetadata.contact.geodata);
+            this.informationElements = this.extractInformationElements(mapMetadata);
+            this.linkedDatasets = mapMetadata.datasets;
             this.loadingState = 'loaded';
           }),
         )
@@ -71,19 +79,19 @@ export class MapDetailComponent implements OnInit, OnDestroy {
     );
   }
 
-  private extractBaseMetadataInformation(results: MapMetadata): BaseMetadataWithTopicInformation {
+  private extractBaseMetadataInformation(mapMetadata: MapMetadata): BaseMetadataWithTopicInformation {
     return {
-      itemTitle: results.name,
-      topic: results.topic,
+      itemTitle: mapMetadata.name,
+      topic: mapMetadata.topic,
       keywords: ['GIS-Browser Karte'], // todo: add OGD status once API delivers that
     };
   }
 
-  private extractInformationElements(data: MapMetadata): DataDisplayElement[] {
+  private extractInformationElements(mapMetadata: MapMetadata): DataDisplayElement[] {
     return [
-      {title: 'GIS-ZH Nr.', value: data.guid.toString(), type: 'text'},
-      {title: 'Bezeichnung', value: data.name, type: 'text'},
-      {title: 'Beschreibung', value: data.description, type: 'text'},
+      {title: 'GIS-ZH Nr.', value: mapMetadata.guid.toString(), type: 'text'},
+      {title: 'Bezeichnung', value: mapMetadata.name, type: 'text'},
+      {title: 'Beschreibung', value: mapMetadata.description, type: 'text'},
     ];
   }
 }

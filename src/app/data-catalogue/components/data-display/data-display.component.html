@@ -7,14 +7,18 @@
           <span [innerText]="element.value ?? '-'"></span>
         </ng-container>
         <ng-container *ngSwitchCase="'url'">
-          <a class="data-display__item__value--link" href="{{ element.value }}" target="_blank">{{
+          <a *ngIf="element.value; else noResult" href="{{ element.value }}" rel="noopener noreferrer" target="_blank">{{
             element.type === 'url' && element.displayText !== undefined ? element.displayText : element.value
           }}</a>
         </ng-container>
         <ng-container *ngSwitchCase="'email'">
-          <a class="data-display__item__value--link" href="mailto:{{ element.value }}" target="_blank">{{ element.value }}</a>
+          <a *ngIf="element.value; else noResult" href="mailto:{{ element.value }}" rel="noopener noreferrer" target="_blank">{{
+            element.value
+          }}</a>
         </ng-container>
       </ng-container>
     </span>
   </div>
 </div>
+
+<ng-template #noResult> - </ng-template>

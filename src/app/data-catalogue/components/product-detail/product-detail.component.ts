@@ -7,10 +7,12 @@ import {ConfigService} from '../../../shared/services/config.service';
 import {ProductMetadata} from '../../../shared/interfaces/gb3-metadata.interface';
 import {MainPage} from '../../../shared/enums/main-page.enum';
 import {DataCataloguePage} from '../../../shared/enums/data-catalogue-page.enum';
-import {DataDisplayElement} from '../data-display/data-display.component';
 import {BaseMetadataInformation} from '../../../shared/interfaces/base-metadata-information.interface';
 import {MetadataLink} from '../../../shared/interfaces/metadata-link.interface';
 import {DataExtractionUtils} from '../../utils/data-extraction.utils';
+import {catchError} from 'rxjs/operators';
+import {DataDisplayElement} from '../../types/data-display-element';
+import {RouteParamConstants} from '../../../shared/constants/route-param.constants';
 
 @Component({
   selector: 'product-detail',
@@ -18,7 +20,7 @@ import {DataExtractionUtils} from '../../utils/data-extraction.utils';
   styleUrls: ['./product-detail.component.scss'],
 })
 export class ProductDetailComponent implements OnInit, OnDestroy {
-  public baseMetadataInformation: BaseMetadataInformation | undefined;
+  public baseMetadataInformation?: BaseMetadataInformation;
   public metadataContactElements: DataDisplayElement[] = [];
   public informationElements: DataDisplayElement[] = [];
   public linkedDatasets: MetadataLink[] = [];
@@ -49,17 +51,23 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
       this.route.paramMap
         .pipe(
           switchMap((params) => {
-            const id = params.get('id');
+            const id = params.get(RouteParamConstants.RESOURCE_IDENTIFIER);
             if (!id) {
+              // note: this can never happen since the :id always matches - but Angular does not know typed URL parameters.
               return throwError(() => new Error('No id specified'));
             }
-            return this.gb3MetadataService.loadProductDetail(id);
+            return this.gb3MetadataService.loadProductDetail(id).pipe(
+              catchError((err: unknown) => {
+                this.loadingState = 'error';
+                return throwError(() => err); // todo: forward to 404 page
+              }),
+            );
           }),
-          tap((results) => {
-            this.baseMetadataInformation = this.extractBaseMetadataInformation(results);
-            this.metadataContactElements = DataExtractionUtils.extractContactElements(results.contact.metadata);
-            this.informationElements = this.extractInformationElements(results);
-            this.linkedDatasets = results.datasets;
+          tap((productMetadata) => {
+            this.baseMetadataInformation = this.extractBaseMetadataInformation(productMetadata);
+            this.metadataContactElements = DataExtractionUtils.extractContactElements(productMetadata.contact.metadata);
+            this.informationElements = this.extractInformationElements(productMetadata);
+            this.linkedDatasets = productMetadata.datasets;
             this.loadingState = 'loaded';
           }),
         )
@@ -67,17 +75,17 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     );
   }
 
-  private extractInformationElements(data: ProductMetadata): DataDisplayElement[] {
+  private extractInformationElements(productMetadata: ProductMetadata): DataDisplayElement[] {
     return [
-      {title: 'GIS-ZH Nr.', value: data.guid.toString(), type: 'text'},
-      {title: 'Bezeichnung', value: data.name, type: 'text'},
-      {title: 'Beschreibung', value: data.description, type: 'text'},
+      {title: 'GIS-ZH Nr.', value: productMetadata.guid.toString(), type: 'text'},
+      {title: 'Bezeichnung', value: productMetadata.name, type: 'text'},
+      {title: 'Beschreibung', value: productMetadata.description, type: 'text'},
     ];
   }
 
-  private extractBaseMetadataInformation(results: ProductMetadata): BaseMetadataInformation {
+  private extractBaseMetadataInformation(productMetadata: ProductMetadata): BaseMetadataInformation {
     return {
-      itemTitle: results.name,
+      itemTitle: productMetadata.name,
       keywords: ['Produkt'], // todo: add OGD status once API delivers that
     };
   }

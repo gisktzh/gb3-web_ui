@@ -5,12 +5,14 @@ import {ActivatedRoute} from '@angular/router';
 import {Gb3MetadataService} from '../../../shared/services/apis/gb3/gb3-metadata.service';
 import {DatasetMetadata} from '../../../shared/interfaces/gb3-metadata.interface';
 import {ConfigService} from '../../../shared/services/config.service';
-import {DataDisplayElement} from '../data-display/data-display.component';
 import {MainPage} from '../../../shared/enums/main-page.enum';
 import {DataCataloguePage} from '../../../shared/enums/data-catalogue-page.enum';
 import {BaseMetadataInformation} from '../../../shared/interfaces/base-metadata-information.interface';
 import {MetadataLink} from '../../../shared/interfaces/metadata-link.interface';
 import {DataExtractionUtils} from '../../utils/data-extraction.utils';
+import {catchError} from 'rxjs/operators';
+import {DataDisplayElement} from '../../types/data-display-element';
+import {RouteParamConstants} from '../../../shared/constants/route-param.constants';
 
 /**
  We do not get a description in the case of the dataset...
@@ -27,7 +29,7 @@ interface MetadataLinkWithTopicId extends MetadataLinkWithoutDescription {
   styleUrls: ['./dataset-detail.component.scss'],
 })
 export class DatasetDetailComponent implements OnInit, OnDestroy {
-  public baseMetadataInformation: BaseMetadataInformation | undefined;
+  public baseMetadataInformation?: BaseMetadataInformation;
   public informationElements: DataDisplayElement[] = [];
   public geodataContactElements: DataDisplayElement[] = [];
   public metadataContactElements: DataDisplayElement[] = [];
@@ -67,23 +69,29 @@ export class DatasetDetailComponent implements OnInit, OnDestroy {
       this.route.paramMap
         .pipe(
           switchMap((params) => {
-            const id = params.get('id');
+            const id = params.get(RouteParamConstants.RESOURCE_IDENTIFIER);
             if (!id) {
+              // note: this can never happen since the :id always matches - but Angular does not know typed URL parameters.
               return throwError(() => new Error('No id specified'));
             }
-            return this.gb3MetadataService.loadDatasetDetail(id);
+            return this.gb3MetadataService.loadDatasetDetail(id).pipe(
+              catchError((err: unknown) => {
+                this.loadingState = 'error';
+                return throwError(() => err); // todo: forward to 404 page
+              }),
+            );
           }),
-          tap((results) => {
-            this.baseMetadataInformation = this.extractBaseMetadataInformation(results);
-            this.informationElements = this.extractInformationElements(results);
-            this.geodataContactElements = DataExtractionUtils.extractContactElements(results.contact.geodata);
-            this.metadataContactElements = DataExtractionUtils.extractContactElements(results.contact.metadata);
-            this.dataBasisElements = this.extractDataBasisElements(results);
-            this.dataProcurement = this.extractDataProcurementElements(results);
+          tap((datasetMetadata) => {
+            this.baseMetadataInformation = this.extractBaseMetadataInformation(datasetMetadata);
+            this.informationElements = this.extractInformationElements(datasetMetadata);
+            this.geodataContactElements = DataExtractionUtils.extractContactElements(datasetMetadata.contact.geodata);
+            this.metadataContactElements = DataExtractionUtils.extractContactElements(datasetMetadata.contact.metadata);
+            this.dataBasisElements = this.extractDataBasisElements(datasetMetadata);
+            this.dataProcurement = this.extractDataProcurementElements(datasetMetadata);
 
-            this.linkedData.maps = [...results.maps];
-            this.linkedData.services = [...results.services];
-            this.linkedData.products = [...results.products];
+            this.linkedData.maps = [...datasetMetadata.maps];
+            this.linkedData.services = [...datasetMetadata.services];
+            this.linkedData.products = [...datasetMetadata.products];
             this.loadingState = 'loaded';
           }),
         )
@@ -91,37 +99,42 @@ export class DatasetDetailComponent implements OnInit, OnDestroy {
     );
   }
 
-  private extractInformationElements(data: DatasetMetadata): DataDisplayElement[] {
+  private extractInformationElements(datasetMetadata: DatasetMetadata): DataDisplayElement[] {
     return [
-      {title: 'GIS-ZH Nr.', value: data.guid.toString(), type: 'text'},
-      {title: 'Bezeichnung', value: data.name, type: 'text'},
-      {title: 'Kurzbeschreibung', value: data.shortDescription, type: 'text'},
-      {title: 'Beschreibung', value: data.description, type: 'text'},
-      {title: 'eCH Geokategorien / Themen', value: data.topics, type: 'text'},
-      {title: 'Schlüsselwörter', value: data.keywords, type: 'text'},
+      {title: 'GIS-ZH Nr.', value: datasetMetadata.guid.toString(), type: 'text'},
+      {title: 'Bezeichnung', value: datasetMetadata.name, type: 'text'},
+      {title: 'Kurzbeschreibung', value: datasetMetadata.shortDescription, type: 'text'},
+      {title: 'Beschreibung', value: datasetMetadata.description, type: 'text'},
+      {title: 'eCH Geokategorien / Themen', value: datasetMetadata.topics, type: 'text'},
+      {title: 'Schlüsselwörter', value: datasetMetadata.keywords, type: 'text'},
     ];
   }
 
-  private extractBaseMetadataInformation(results: DatasetMetadata): BaseMetadataInformation {
+  private extractBaseMetadataInformation(datasetMetadata: DatasetMetadata): BaseMetadataInformation {
     return {
-      itemTitle: results.name,
-      shortDescription: results.description,
+      itemTitle: datasetMetadata.name,
+      shortDescription: datasetMetadata.description,
       keywords: ['Geodatensatz'], // todo: add OGD status once API delivers that
     };
   }
 
-  private extractDataBasisElements(results: DatasetMetadata): DataDisplayElement[] {
+  private extractDataBasisElements(datasetMetadata: DatasetMetadata): DataDisplayElement[] {
     return [
-      {title: 'Datengrundlage', value: results.dataBasis, type: 'text'},
-      {title: 'Dokumentation (PDF)', value: this.apiBaseUrl + results.pdfUrl, displayText: results.pdfName ?? undefined, type: 'url'},
-      {title: 'Bemerkungen', value: results.remarks, type: 'text'},
+      {title: 'Datengrundlage', value: datasetMetadata.dataBasis, type: 'text'},
+      {
+        title: 'Dokumentation (PDF)',
+        value: datasetMetadata.pdfUrl ? this.apiBaseUrl + datasetMetadata.pdfUrl : null,
+        displayText: datasetMetadata.pdfName ?? undefined,
+        type: 'url',
+      },
+      {title: 'Bemerkungen', value: datasetMetadata.remarks, type: 'text'},
     ];
   }
 
-  private extractDataProcurementElements(results: DatasetMetadata): DataDisplayElement[] {
+  private extractDataProcurementElements(datasetMetadata: DatasetMetadata): DataDisplayElement[] {
     return [
-      {title: 'Abgabeformat', value: results.outputFormat, type: 'text'},
-      {title: 'Nutzungseinschränkungen', value: results.usageRestrictions, type: 'text'},
+      {title: 'Abgabeformat', value: datasetMetadata.outputFormat, type: 'text'},
+      {title: 'Nutzungseinschränkungen', value: datasetMetadata.usageRestrictions, type: 'text'},
     ];
   }
 }

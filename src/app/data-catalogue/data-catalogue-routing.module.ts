@@ -8,6 +8,7 @@ import {MapDetailComponent} from './components/map-detail/map-detail.component';
 import {DatasetDetailComponent} from './components/dataset-detail/dataset-detail.component';
 import {ProductDetailComponent} from './components/product-detail/product-detail.component';
 import {DataCataloguePage} from '../shared/enums/data-catalogue-page.enum';
+import {RouteParamConstants} from '../shared/constants/route-param.constants';
 
 const routes: Routes = [
   {
@@ -19,19 +20,19 @@ const routes: Routes = [
         component: DataCatalogueOverviewComponent,
       },
       {
-        path: `${DataCataloguePage.Datasets}/:id`,
+        path: `${DataCataloguePage.Datasets}/:${RouteParamConstants.RESOURCE_IDENTIFIER}`,
         component: DatasetDetailComponent,
       },
       {
-        path: `${DataCataloguePage.Services}/:id`,
+        path: `${DataCataloguePage.Services}/:${RouteParamConstants.RESOURCE_IDENTIFIER}`,
         component: ServiceDetailComponent,
       },
       {
-        path: `${DataCataloguePage.Maps}/:id`,
+        path: `${DataCataloguePage.Maps}/:${RouteParamConstants.RESOURCE_IDENTIFIER}`,
         component: MapDetailComponent,
       },
       {
-        path: `${DataCataloguePage.Products}/:id`,
+        path: `${DataCataloguePage.Products}/:${RouteParamConstants.RESOURCE_IDENTIFIER}`,
         component: ProductDetailComponent,
       },
     ],
