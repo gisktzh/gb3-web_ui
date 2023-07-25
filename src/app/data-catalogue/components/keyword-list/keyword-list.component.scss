@@ -1,0 +1,21 @@
+@use 'functions/helper.function' as functions;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.keyword-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  .keyword-list__keywords {
+    display: flex;
+    gap: 10px;
+    flex-flow: wrap;
+
+    .keyword-list__keywords__pill {
+      background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 50);
+      color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-accent, 50);
+      padding: 6px 16px 6px 16px;
+      border-radius: 50px;
+    }
+  }
+}

@@ -1,4 +1,4 @@
-import {HasVisibility} from './has-visibility.interface';
+import {HasVisibility} from '../../map/interfaces/has-visibility.interface';
 import {HasHidingState} from './has-hiding-state.interface';
 import {HasActiveState} from './has-active-state.interface';
 
@@ -18,8 +18,8 @@ export interface Map {
   icon: string;
   /** Organisation title */
   organisation: string | null;
-  /** Geolion ID of map */
-  geolion: number | null;
+  /** Unique dataset identifier for geometadata */
+  guid: number | null;
   gb2Url: string | null;
   /** Keywords */
   keywords: string[];

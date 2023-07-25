@@ -17,6 +17,7 @@ import {ScrollbarWidthCalculationComponent} from './components/scrollbar-width-c
 import {KeyValuePreserveOrderPipe} from './pipes/key-value-preserve-order.pipe';
 import {AppendMapConfigurationToUrlPipe} from './pipes/append-map-configuration-to-url.pipe';
 import {LayerTooltipPipe} from './pipes/layer-tooltip.pipe';
+import {DescriptiveHighlightedLinkComponent} from './components/descriptive-highlighted-link/descriptive-highlighted-link.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import {LayerTooltipPipe} from './pipes/layer-tooltip.pipe';
     KeyValuePreserveOrderPipe,
     AppendMapConfigurationToUrlPipe,
     LayerTooltipPipe,
+    DescriptiveHighlightedLinkComponent,
   ],
   imports: [MaterialModule, RouterModule, CommonModule, ResizableModule],
   exports: [
@@ -53,6 +55,7 @@ import {LayerTooltipPipe} from './pipes/layer-tooltip.pipe';
     KeyValuePreserveOrderPipe,
     AppendMapConfigurationToUrlPipe,
     LayerTooltipPipe,
+    DescriptiveHighlightedLinkComponent,
   ],
 })
 export class SharedModule {}

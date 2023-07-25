@@ -3,11 +3,12 @@ import {RouterModule, Routes} from '@angular/router';
 import {SharedModule} from '../shared/shared.module';
 import {DataCataloguePageComponent} from './data-catalogue-page.component';
 import {DataCatalogueOverviewComponent} from './components/data-catalogue-overview/data-catalogue-overview.component';
-import {GeoServiceDetailComponent} from './components/geo-service-detail/geo-service-detail.component';
+import {ServiceDetailComponent} from './components/service-detail/service-detail.component';
 import {MapDetailComponent} from './components/map-detail/map-detail.component';
-import {GeoDataDetailComponent} from './components/geo-data-detail/geo-data-detail.component';
-
-export type DetailRouteType = 'geodata' | 'geoservice' | 'map';
+import {DatasetDetailComponent} from './components/dataset-detail/dataset-detail.component';
+import {ProductDetailComponent} from './components/product-detail/product-detail.component';
+import {DataCataloguePage} from '../shared/enums/data-catalogue-page.enum';
+import {RouteParamConstants} from '../shared/constants/route-param.constants';
 
 const routes: Routes = [
   {
@@ -16,27 +17,31 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        component: DataCatalogueOverviewComponent
+        component: DataCatalogueOverviewComponent,
       },
       {
-        path: 'geodata/:id',
-        component: GeoDataDetailComponent
+        path: `${DataCataloguePage.Datasets}/:${RouteParamConstants.RESOURCE_IDENTIFIER}`,
+        component: DatasetDetailComponent,
       },
       {
-        path: 'geoservice/:id',
-        component: GeoServiceDetailComponent
+        path: `${DataCataloguePage.Services}/:${RouteParamConstants.RESOURCE_IDENTIFIER}`,
+        component: ServiceDetailComponent,
       },
       {
-        path: 'map/:id',
-        component: MapDetailComponent
-      }
-    ]
-  }
+        path: `${DataCataloguePage.Maps}/:${RouteParamConstants.RESOURCE_IDENTIFIER}`,
+        component: MapDetailComponent,
+      },
+      {
+        path: `${DataCataloguePage.Products}/:${RouteParamConstants.RESOURCE_IDENTIFIER}`,
+        component: ProductDetailComponent,
+      },
+    ],
+  },
 ];
 
 @NgModule({
   declarations: [],
   imports: [RouterModule.forChild(routes), SharedModule],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class DataCatalogueRoutingModule {}

@@ -3,7 +3,7 @@ import {MapConfigUrlService} from '../../services/map-config-url.service';
 import {ActivatedRoute} from '@angular/router';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
-import {PrintType} from '../../../shared/types/print-type';
+import {PrintType} from '../../types/print-type';
 import {LegendDisplay} from '../../../shared/interfaces/legend.interface';
 import {FeatureInfoResultDisplay} from '../../../shared/interfaces/feature-info.interface';
 import {selectLegendItemsForDisplay} from '../../../state/map/selectors/legend-result-display.selector';
@@ -12,7 +12,7 @@ import {selectFeatureInfosForDisplay} from '../../../state/map/selectors/feature
 @Component({
   selector: 'print-overlay',
   templateUrl: './print-overlay.component.html',
-  styleUrls: ['./print-overlay.component.scss']
+  styleUrls: ['./print-overlay.component.scss'],
 })
 export class PrintOverlayComponent implements OnInit, OnDestroy {
   public printType: PrintType | undefined = undefined;
@@ -22,7 +22,11 @@ export class PrintOverlayComponent implements OnInit, OnDestroy {
   private readonly featureInfoData$ = this.store.select(selectFeatureInfosForDisplay);
   private readonly subscriptions: Subscription = new Subscription();
 
-  constructor(private readonly mapCon: MapConfigUrlService, private readonly store: Store, private readonly route: ActivatedRoute) {}
+  constructor(
+    private readonly mapCon: MapConfigUrlService,
+    private readonly store: Store,
+    private readonly route: ActivatedRoute,
+  ) {}
 
   public ngOnInit() {
     this.initSubscriptions();
@@ -50,27 +54,27 @@ export class PrintOverlayComponent implements OnInit, OnDestroy {
               this.printType = undefined;
               this.closePrint();
             }
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
     this.subscriptions.add(
       this.legendItems$
         .pipe(
           tap((value) => {
             this.legendItems = value;
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
     this.subscriptions.add(
       this.featureInfoData$
         .pipe(
           tap((value) => {
             this.featureInfoData = value;
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 }

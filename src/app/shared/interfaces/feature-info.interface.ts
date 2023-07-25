@@ -1,11 +1,11 @@
 import {GeometryWithSrs} from './geojson-types-with-srs.interface';
 
-export interface FeatureInfoResultFeatureField {
+interface FeatureInfoResultFeatureField {
   label: string;
   value: string | number | null;
 }
 
-export interface FeatureInfoResultFeature {
+interface FeatureInfoResultFeature {
   fid: number;
   fields: FeatureInfoResultFeatureField[];
   bbox: number[];
@@ -23,7 +23,7 @@ export interface FeatureInfoResult {
   layers: FeatureInfoResultLayer[];
 }
 
-export interface FeatureInfoWrapper {
+interface FeatureInfoWrapper {
   x: number;
   y: number;
   results: FeatureInfoResult;

@@ -70,10 +70,12 @@
 }
 
 /**
- * Creates a link button element in the Kt. ZH style.
+ * Creates a link button element in the Kt. ZH style. Per default, aligns any mat-icon item to the right.
  */
-@mixin mat-button-ktzh-link {
-  @include mat-button--align-icon-right;
+@mixin mat-button-ktzh-link($align-item-right: true) {
+  @if $align-item-right {
+    @include mat-button--align-icon-right;
+  }
   color: functions.convert-hex-to-rgba(ktzh-variables.$zh-black100, 0.6);
   font-family: ktzh-variables.$zh-font-family;
   letter-spacing: normal;

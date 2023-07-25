@@ -1,0 +1,13 @@
+/* Make sure that our content is growing linearly if more than one items are added. */
+:host {
+  flex: 1;
+  min-width: 0;
+}
+
+.data-display-section {
+  .data-display-section__content {
+    display: flex;
+    flex-flow: column;
+    gap: 12px;
+  }
+}

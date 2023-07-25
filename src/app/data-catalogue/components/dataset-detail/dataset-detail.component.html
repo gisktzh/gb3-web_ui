@@ -1,0 +1,65 @@
+<loading-and-process-bar [loadingState]="loadingState"></loading-and-process-bar>
+
+<data-catalogue-detail-page *ngIf="baseMetadataInformation" [baseMetadataInformation]="baseMetadataInformation">
+  <data-catalogue-detail-page-section [hasTwoColumns]="true">
+    <data-display-section [sectionTitle]="'Verantwortlich für Geodaten'">
+      <data-display [elements]="geodataContactElements"></data-display>
+    </data-display-section>
+    <data-display-section [sectionTitle]="'Zuständig für Geometadaten'">
+      <data-display [elements]="metadataContactElements"></data-display>
+    </data-display-section>
+  </data-catalogue-detail-page-section>
+
+  <data-catalogue-detail-page-section>
+    <data-display-section [sectionTitle]="'Informationen'">
+      <data-display [elements]="informationElements"></data-display>
+    </data-display-section>
+  </data-catalogue-detail-page-section>
+
+  <data-catalogue-detail-page-section>
+    <data-display-section [sectionTitle]="'Datengrundlage'">
+      <data-display [elements]="dataBasisElements"></data-display>
+    </data-display-section>
+  </data-catalogue-detail-page-section>
+
+  <data-catalogue-detail-page-section>
+    <data-display-section [sectionTitle]="'Datenbezug'">
+      <data-display [elements]="dataProcurement"></data-display>
+    </data-display-section>
+  </data-catalogue-detail-page-section>
+
+  <data-catalogue-detail-page-section *ngIf="linkedData.maps.length > 0">
+    <data-display-section [sectionTitle]="'Karten mit diesem Datensatz'">
+      <descriptive-highlighted-link *ngFor="let map of linkedData.maps" [title]="map.name">
+        <a [queryParams]="{initialMapIds: map.topic}" [routerLink]="['/', mainPageEnum.Maps]" class="linked-data-button" mat-button>
+          <mat-icon [svgIcon]="'ktzh_arrow_right'"></mat-icon>
+          Im GIS-Browser öffnen
+        </a>
+        <a [routerLink]="['/', mainPageEnum.Data, dataCataloguePageEnum.Maps, map.guid]" class="linked-data-button" mat-button>
+          <mat-icon [svgIcon]="'ktzh_arrow_right'"></mat-icon>
+          Zu Metadaten springen
+        </a>
+      </descriptive-highlighted-link>
+    </data-display-section>
+  </data-catalogue-detail-page-section>
+
+  <data-catalogue-detail-page-section *ngIf="linkedData.services.length > 0">
+    <data-display-section [sectionTitle]="'Geodienste mit diesem Datensatz'">
+      <descriptive-highlighted-link *ngFor="let service of linkedData.services" [title]="service.name">
+        <a [routerLink]="['/', mainPageEnum.Data, dataCataloguePageEnum.Services, service.guid]" mat-icon-button>
+          <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
+        </a>
+      </descriptive-highlighted-link>
+    </data-display-section>
+  </data-catalogue-detail-page-section>
+
+  <data-catalogue-detail-page-section *ngIf="linkedData.products.length > 0">
+    <data-display-section [sectionTitle]="'Produkte mit diesem Datensatz'">
+      <descriptive-highlighted-link *ngFor="let product of linkedData.products" [title]="product.name">
+        <a [routerLink]="['/', mainPageEnum.Data, dataCataloguePageEnum.Products, product.guid]" mat-icon-button>
+          <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
+        </a>
+      </descriptive-highlighted-link>
+    </data-display-section>
+  </data-catalogue-detail-page-section>
+</data-catalogue-detail-page>
