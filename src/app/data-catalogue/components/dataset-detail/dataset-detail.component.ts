@@ -1,18 +1,13 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {LoadingState} from '../../../shared/types/loading-state';
-import {Subscription, switchMap, tap, throwError} from 'rxjs';
+import {Component, Inject} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Gb3MetadataService} from '../../../shared/services/apis/gb3/gb3-metadata.service';
 import {DatasetMetadata} from '../../../shared/interfaces/gb3-metadata.interface';
 import {ConfigService} from '../../../shared/services/config.service';
-import {MainPage} from '../../../shared/enums/main-page.enum';
-import {DataCataloguePage} from '../../../shared/enums/data-catalogue-page.enum';
+import {DataDisplayElement} from '../../types/data-display-element';
 import {BaseMetadataInformation} from '../../interfaces/base-metadata-information.interface';
 import {MetadataLink} from '../../interfaces/metadata-link.interface';
+import {AbstractBaseDetail} from '../abstract-base-detail/abstract-base-detail.component';
 import {DataExtractionUtils} from '../../utils/data-extraction.utils';
-import {catchError} from 'rxjs/operators';
-import {DataDisplayElement} from '../../types/data-display-element';
-import {RouteParamConstants} from '../../../shared/constants/route-param.constants';
 
 /**
  We do not get a description in the case of the dataset...
@@ -28,7 +23,7 @@ interface MetadataLinkWithTopicId extends MetadataLinkWithoutDescription {
   templateUrl: './dataset-detail.component.html',
   styleUrls: ['./dataset-detail.component.scss'],
 })
-export class DatasetDetailComponent implements OnInit, OnDestroy {
+export class DatasetDetailComponent extends AbstractBaseDetail<DatasetMetadata> {
   public baseMetadataInformation?: BaseMetadataInformation;
   public informationElements: DataDisplayElement[] = [];
   public geodataContactElements: DataDisplayElement[] = [];
@@ -44,59 +39,38 @@ export class DatasetDetailComponent implements OnInit, OnDestroy {
     services: [],
     products: [],
   };
-  public loadingState: LoadingState = 'loading';
-  public readonly apiBaseUrl: string = this.configService.apiConfig.gb2StaticFiles.baseUrl;
-  public readonly mainPageEnum = MainPage;
-  public readonly dataCataloguePageEnum = DataCataloguePage;
-  private readonly subscriptions: Subscription = new Subscription();
 
   constructor(
-    private readonly route: ActivatedRoute,
-    private readonly gb3MetadataService: Gb3MetadataService,
-    private readonly configService: ConfigService,
-  ) {}
-
-  public ngOnInit(): void {
-    this.initSubscriptions();
+    @Inject(ActivatedRoute) route: ActivatedRoute,
+    @Inject(Gb3MetadataService) gb3MetadataService: Gb3MetadataService,
+    @Inject(ConfigService) configService: ConfigService,
+  ) {
+    super(route, gb3MetadataService, configService);
   }
 
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
+  protected loadMetadata(id: string) {
+    return this.gb3MetadataService.loadDatasetDetail(id);
   }
 
-  private initSubscriptions() {
-    this.subscriptions.add(
-      this.route.paramMap
-        .pipe(
-          switchMap((params) => {
-            const id = params.get(RouteParamConstants.RESOURCE_IDENTIFIER);
-            if (!id) {
-              // note: this can never happen since the :id always matches - but Angular does not know typed URL parameters.
-              return throwError(() => new Error('No id specified'));
-            }
-            return this.gb3MetadataService.loadDatasetDetail(id).pipe(
-              catchError((err: unknown) => {
-                this.loadingState = 'error';
-                return throwError(() => err); // todo: forward to 404 page
-              }),
-            );
-          }),
-          tap((datasetMetadata) => {
-            this.baseMetadataInformation = this.extractBaseMetadataInformation(datasetMetadata);
-            this.informationElements = this.extractInformationElements(datasetMetadata);
-            this.geodataContactElements = DataExtractionUtils.extractContactElements(datasetMetadata.contact.geodata);
-            this.metadataContactElements = DataExtractionUtils.extractContactElements(datasetMetadata.contact.metadata);
-            this.dataBasisElements = this.extractDataBasisElements(datasetMetadata);
-            this.dataProcurement = this.extractDataProcurementElements(datasetMetadata);
+  protected handleMetadata(datasetMetadata: DatasetMetadata) {
+    this.baseMetadataInformation = this.extractBaseMetadataInformation(datasetMetadata);
+    this.informationElements = this.extractInformationElements(datasetMetadata);
+    this.geodataContactElements = DataExtractionUtils.extractContactElements(datasetMetadata.contact.geodata);
+    this.metadataContactElements = DataExtractionUtils.extractContactElements(datasetMetadata.contact.metadata);
+    this.dataBasisElements = this.extractDataBasisElements(datasetMetadata);
+    this.dataProcurement = this.extractDataProcurementElements(datasetMetadata);
 
-            this.linkedData.maps = [...datasetMetadata.maps];
-            this.linkedData.services = [...datasetMetadata.services];
-            this.linkedData.products = [...datasetMetadata.products];
-            this.loadingState = 'loaded';
-          }),
-        )
-        .subscribe(),
-    );
+    this.linkedData.maps = [...datasetMetadata.maps];
+    this.linkedData.services = [...datasetMetadata.services];
+    this.linkedData.products = [...datasetMetadata.products];
+  }
+
+  private extractBaseMetadataInformation(datasetMetadata: DatasetMetadata): BaseMetadataInformation {
+    return {
+      itemTitle: datasetMetadata.name,
+      shortDescription: datasetMetadata.description,
+      keywords: ['Geodatensatz'], // todo: add OGD status once API delivers that
+    };
   }
 
   private extractInformationElements(datasetMetadata: DatasetMetadata): DataDisplayElement[] {
@@ -108,14 +82,6 @@ export class DatasetDetailComponent implements OnInit, OnDestroy {
       {title: 'eCH Geokategorien / Themen', value: datasetMetadata.topics, type: 'text'},
       {title: 'Schlüsselwörter', value: datasetMetadata.keywords, type: 'text'},
     ];
-  }
-
-  private extractBaseMetadataInformation(datasetMetadata: DatasetMetadata): BaseMetadataInformation {
-    return {
-      itemTitle: datasetMetadata.name,
-      shortDescription: datasetMetadata.description,
-      keywords: ['Geodatensatz'], // todo: add OGD status once API delivers that
-    };
   }
 
   private extractDataBasisElements(datasetMetadata: DatasetMetadata): DataDisplayElement[] {

@@ -1,80 +1,51 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, Inject} from '@angular/core';
 import {ServiceMetadata} from '../../../shared/interfaces/gb3-metadata.interface';
-import {LoadingState} from '../../../shared/types/loading-state';
-import {Subscription, switchMap, tap, throwError} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {Gb3MetadataService} from '../../../shared/services/apis/gb3/gb3-metadata.service';
 import {ConfigService} from '../../../shared/services/config.service';
-import {MainPage} from '../../../shared/enums/main-page.enum';
-import {DataCataloguePage} from '../../../shared/enums/data-catalogue-page.enum';
+import {DataDisplayElement} from '../../types/data-display-element';
 import {BaseMetadataInformation} from '../../interfaces/base-metadata-information.interface';
+import {AbstractBaseDetail} from '../abstract-base-detail/abstract-base-detail.component';
 import {MetadataLink} from '../../interfaces/metadata-link.interface';
 import {DataExtractionUtils} from '../../utils/data-extraction.utils';
-import {catchError} from 'rxjs/operators';
-import {DataDisplayElement} from '../../types/data-display-element';
-import {RouteParamConstants} from '../../../shared/constants/route-param.constants';
 
 @Component({
   selector: 'service-detail',
   templateUrl: './service-detail.component.html',
   styleUrls: ['./service-detail.component.scss'],
 })
-export class ServiceDetailComponent implements OnInit, OnDestroy {
+export class ServiceDetailComponent extends AbstractBaseDetail<ServiceMetadata> {
   public baseMetadataInformation?: BaseMetadataInformation;
-  public metadataContactElements: DataDisplayElement[] = [];
   public informationElements: DataDisplayElement[] = [];
-  public linkedDatasets: MetadataLink[] = [];
-  public loadingState: LoadingState = 'loading';
+  public metadataContactElements: DataDisplayElement[] = [];
   public serviceUrlForCopy?: string;
-  public readonly apiBaseUrl: string;
-  public readonly mainPageEnum = MainPage;
-  public readonly dataCataloguePageEnum = DataCataloguePage;
-  private readonly subscriptions: Subscription = new Subscription();
+  public linkedDatasets: MetadataLink[] = [];
 
   constructor(
-    private readonly route: ActivatedRoute,
-    private readonly gb3MetadataService: Gb3MetadataService,
-    private readonly configService: ConfigService,
+    @Inject(ActivatedRoute) route: ActivatedRoute,
+    @Inject(Gb3MetadataService) gb3MetadataService: Gb3MetadataService,
+    @Inject(ConfigService) configService: ConfigService,
   ) {
-    this.apiBaseUrl = this.configService.apiConfig.gb2StaticFiles.baseUrl;
+    super(route, gb3MetadataService, configService);
   }
 
-  public ngOnInit(): void {
-    this.initSubscriptions();
+  protected loadMetadata(id: string) {
+    return this.gb3MetadataService.loadServiceDetail(id);
   }
 
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
+  protected handleMetadata(serviceMetadata: ServiceMetadata) {
+    this.baseMetadataInformation = this.extractBaseMetadataInformation(serviceMetadata);
+    this.informationElements = this.extractInformationElements(serviceMetadata);
+    this.metadataContactElements = DataExtractionUtils.extractContactElements(serviceMetadata.contact.metadata);
+    this.linkedDatasets = serviceMetadata.datasets;
+    this.serviceUrlForCopy = serviceMetadata.url;
   }
 
-  private initSubscriptions() {
-    this.subscriptions.add(
-      this.route.paramMap
-        .pipe(
-          switchMap((params) => {
-            const id = params.get(RouteParamConstants.RESOURCE_IDENTIFIER);
-            if (!id) {
-              // note: this can never happen since the :id always matches - but Angular does not know typed URL parameters.
-              return throwError(() => new Error('No id specified'));
-            }
-            return this.gb3MetadataService.loadServiceDetail(id).pipe(
-              catchError((err: unknown) => {
-                this.loadingState = 'error';
-                return throwError(() => err); // todo: forward to 404 page
-              }),
-            );
-          }),
-          tap((serviceMetadata) => {
-            this.baseMetadataInformation = this.extractBaseMetadataInformation(serviceMetadata);
-            this.metadataContactElements = DataExtractionUtils.extractContactElements(serviceMetadata.contact.metadata);
-            this.informationElements = this.extractInformationElements(serviceMetadata);
-            this.linkedDatasets = serviceMetadata.datasets;
-            this.serviceUrlForCopy = serviceMetadata.url;
-            this.loadingState = 'loaded';
-          }),
-        )
-        .subscribe(),
-    );
+  private extractBaseMetadataInformation(serviceMetadata: ServiceMetadata): BaseMetadataInformation {
+    return {
+      itemTitle: serviceMetadata.name,
+      keywords: ['Geodienst'], // todo: add OGD status once API delivers that
+    };
   }
 
   private extractInformationElements(serviceMetadata: ServiceMetadata): DataDisplayElement[] {
@@ -88,13 +59,6 @@ export class ServiceDetailComponent implements OnInit, OnDestroy {
       {title: 'Version', value: serviceMetadata.version, type: 'text'},
       {title: 'Zugang', value: serviceMetadata.access, type: 'text'},
     ];
-  }
-
-  private extractBaseMetadataInformation(serviceMetadata: ServiceMetadata): BaseMetadataInformation {
-    return {
-      itemTitle: serviceMetadata.name,
-      keywords: ['Geodienst'], // todo: add OGD status once API delivers that
-    };
   }
 
   private createGetCapabilitiesLink(baseUrl: string, serviceType: string): string {
