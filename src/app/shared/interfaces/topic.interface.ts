@@ -1,4 +1,4 @@
-import {HasVisibility} from './has-visibility.interface';
+import {HasVisibility} from '../../map/interfaces/has-visibility.interface';
 import {HasHidingState} from './has-hiding-state.interface';
 import {HasActiveState} from './has-active-state.interface';
 

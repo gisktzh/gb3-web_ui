@@ -1,9 +1,9 @@
 import {LoadingState} from '../../shared/types/loading-state';
 import {HasLoadingState} from '../../shared/interfaces/has-loading-state.interface';
-import {HasVisibility} from '../../shared/interfaces/has-visibility.interface';
-import {HasViewProcessState} from '../../shared/interfaces/has-view-process-state.interface';
+import {HasVisibility} from '../interfaces/has-visibility.interface';
+import {HasViewProcessState} from '../interfaces/has-view-process-state.interface';
 import {ViewProcessState} from '../../shared/types/view-process-state';
-import {IsImmerable} from '../../shared/interfaces/immerable.interface';
+import {IsImmerable} from '../interfaces/immerable.interface';
 import {immerable} from 'immer';
 
 import {AddToMapVisitor} from '../interfaces/add-to-map.visitor';

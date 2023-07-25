@@ -7,8 +7,8 @@ import {Gb3MetadataService} from '../../../shared/services/apis/gb3/gb3-metadata
 import {ConfigService} from '../../../shared/services/config.service';
 import {MainPage} from '../../../shared/enums/main-page.enum';
 import {DataCataloguePage} from '../../../shared/enums/data-catalogue-page.enum';
-import {BaseMetadataInformation} from '../../../shared/interfaces/base-metadata-information.interface';
-import {MetadataLink} from '../../../shared/interfaces/metadata-link.interface';
+import {BaseMetadataInformation} from '../../interfaces/base-metadata-information.interface';
+import {MetadataLink} from '../../interfaces/metadata-link.interface';
 import {DataExtractionUtils} from '../../utils/data-extraction.utils';
 import {catchError} from 'rxjs/operators';
 import {DataDisplayElement} from '../../types/data-display-element';

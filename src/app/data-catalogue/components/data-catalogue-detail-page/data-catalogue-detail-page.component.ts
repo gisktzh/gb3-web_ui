@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {MainPage} from '../../../shared/enums/main-page.enum';
-import {BaseMetadataInformation} from '../../../shared/interfaces/base-metadata-information.interface';
+import {BaseMetadataInformation} from '../../interfaces/base-metadata-information.interface';
 
 @Component({
   selector: 'data-catalogue-detail-page',

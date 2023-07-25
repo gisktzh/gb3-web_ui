@@ -4,7 +4,7 @@ import {first, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {MapConfigActions} from '../../state/map/actions/map-config.actions';
 import {selectMapConfigState} from '../../state/map/reducers/map-config.reducer';
-import {PrintType} from '../../shared/types/print-type';
+import {PrintType} from '../types/print-type';
 import {BasemapConfigService} from './basemap-config.service';
 import {MapConfigState} from '../../state/map/states/map-config.state';
 import {NumberUtils} from '../../shared/utils/number.utils';
@@ -23,7 +23,7 @@ export class MapConfigUrlService implements OnDestroy {
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly store: Store,
-    private readonly basemapConfigService: BasemapConfigService
+    private readonly basemapConfigService: BasemapConfigService,
   ) {
     this.getInitialMapConfig();
   }
@@ -53,9 +53,9 @@ export class MapConfigUrlService implements OnDestroy {
               await this.removeTemporaryQueryParams(queryParams);
               this.subscribeToUrlChanges();
             })();
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 
@@ -79,9 +79,9 @@ export class MapConfigUrlService implements OnDestroy {
               const queryParams: Params = {x: center.x, y: center.y, scale: scale, basemap: activeBasemapId};
               await this.updateQueryParams(queryParams, 'merge');
             })();
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 
@@ -89,9 +89,9 @@ export class MapConfigUrlService implements OnDestroy {
     return {
       center: {
         x: NumberUtils.roundToDecimals(config.center.x),
-        y: NumberUtils.roundToDecimals(config.center.y)
+        y: NumberUtils.roundToDecimals(config.center.y),
       },
-      scale: NumberUtils.roundToDecimals(config.scale)
+      scale: NumberUtils.roundToDecimals(config.scale),
     };
   }
 
@@ -103,7 +103,7 @@ export class MapConfigUrlService implements OnDestroy {
     const paramsToRemove = TEMPORARY_URL_PARAMS.reduce((prev, curr) => ({...prev, [curr]: null}), {});
     const adjustedParams: Params = {
       ...params,
-      ...paramsToRemove
+      ...paramsToRemove,
     };
 
     await this.updateQueryParams(adjustedParams, 'merge');
@@ -114,7 +114,7 @@ export class MapConfigUrlService implements OnDestroy {
       relativeTo: this.route,
       queryParams,
       queryParamsHandling,
-      replaceUrl: true
+      replaceUrl: true,
     });
   }
 }
