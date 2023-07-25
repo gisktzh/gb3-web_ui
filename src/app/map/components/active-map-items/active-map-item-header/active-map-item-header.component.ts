@@ -7,7 +7,7 @@ import {Store} from '@ngrx/store';
 @Component({
   selector: 'active-map-item-header',
   templateUrl: './active-map-item-header.component.html',
-  styleUrls: ['./active-map-item-header.component.scss']
+  styleUrls: ['./active-map-item-header.component.scss'],
 })
 export class ActiveMapItemHeaderComponent {
   @Input() public activeMapItem!: ActiveMapItem;

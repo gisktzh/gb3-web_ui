@@ -10,6 +10,6 @@ import {KtZhDesignSystemModule} from '../kt-zh-design-system/kt-zh-design-system
 
 @NgModule({
   declarations: [SupportPageComponent, FaqComponent, ContactComponent, UsefulLinksComponent],
-  imports: [CommonModule, SharedModule, SupportPageRoutingModule, KtZhDesignSystemModule]
+  imports: [CommonModule, SharedModule, SupportPageRoutingModule, KtZhDesignSystemModule],
 })
 export class SupportPageModule {}

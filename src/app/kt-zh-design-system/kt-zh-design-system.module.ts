@@ -8,6 +8,6 @@ import {KtzhLinkListItemComponent} from './components/ktzh-link-list/ktzh-link-l
 @NgModule({
   declarations: [KtzhSliderWrapperComponent, KtzhLinkListComponent, KtzhLinkListItemComponent],
   imports: [CommonModule, SharedModule],
-  exports: [KtzhSliderWrapperComponent, KtzhLinkListComponent]
+  exports: [KtzhSliderWrapperComponent, KtzhLinkListComponent],
 })
 export class KtZhDesignSystemModule {}

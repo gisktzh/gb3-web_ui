@@ -10,20 +10,20 @@ const routes: Routes = [
     children: [
       {
         path: AUTH_REDIRECT_PATH,
-        component: LoginRedirectComponent
+        component: LoginRedirectComponent,
       },
       {
         pathMatch: 'full',
         path: '',
-        redirectTo: '/'
-      }
-    ]
-  }
+        redirectTo: '/',
+      },
+    ],
+  },
 ];
 
 @NgModule({
   declarations: [],
   imports: [RouterModule.forChild(routes), SharedModule],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class AuthRoutingModule {}

@@ -1,7 +1,7 @@
 import {Directive, ElementRef, Input} from '@angular/core';
 
 @Directive({
-  selector: '[tableColumnIdentifier]'
+  selector: '[tableColumnIdentifier]',
 })
 export class TableColumnIdentifierDirective {
   @Input() public topicId!: string;

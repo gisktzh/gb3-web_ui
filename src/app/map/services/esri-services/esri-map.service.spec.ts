@@ -47,13 +47,13 @@ const mockAuthService = jasmine.createSpyObj<AuthService>({
   logout: void 0,
   getAccessToken: void 0,
   login: void 0,
-  isAuthenticated$: new Subject<boolean>().asObservable()
+  isAuthenticated$: new Subject<boolean>().asObservable(),
 });
 
 const internalLayerPrefix = MapConstants.INTERNAL_LAYER_PREFIX;
 const internalLayers = Object.values(InternalDrawingLayer).map((drawingLayer) => {
   return new GraphicsLayer({
-    id: `${internalLayerPrefix}${drawingLayer}`
+    id: `${internalLayerPrefix}${drawingLayer}`,
   });
 });
 
@@ -81,13 +81,13 @@ describe('EsriMapService', () => {
         {provide: AuthService, useValue: mockAuthService},
         {
           provide: EsriMapViewService,
-          useValue: mapViewService
+          useValue: mapViewService,
         },
         {
           provide: EsriToolService,
-          useValue: toolServiceSpy
-        }
-      ]
+          useValue: toolServiceSpy,
+        },
+      ],
     });
     service = TestBed.inject(EsriMapService);
     TestBed.inject(EsriToolService);

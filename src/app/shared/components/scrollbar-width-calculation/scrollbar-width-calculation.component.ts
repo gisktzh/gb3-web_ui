@@ -9,7 +9,7 @@ import {AppLayoutActions} from '../../../state/app/actions/app-layout.actions';
 @Component({
   selector: 'scrollbar-width-calculation',
   templateUrl: './scrollbar-width-calculation.component.html',
-  styleUrls: ['./scrollbar-width-calculation.component.scss']
+  styleUrls: ['./scrollbar-width-calculation.component.scss'],
 })
 export class ScrollbarWidthCalculationComponent implements AfterViewInit {
   @ViewChild('container') private readonly containerRef!: ElementRef;

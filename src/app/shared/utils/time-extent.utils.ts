@@ -14,7 +14,7 @@ export class TimeExtentUtils {
     const range: Duration | null = timeSliderConfig.range ? dayjs.duration(timeSliderConfig.range) : null;
     return {
       start: minimumDate,
-      end: range ? TimeExtentUtils.addDuration(minimumDate, range) : maximumDate
+      end: range ? TimeExtentUtils.addDuration(minimumDate, range) : maximumDate,
     };
   }
 

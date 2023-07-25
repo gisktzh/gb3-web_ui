@@ -4,7 +4,7 @@ import {FeatureInfoResultDisplay} from '../../../../shared/interfaces/feature-in
 @Component({
   selector: 'feature-info-item',
   templateUrl: './feature-info-item.component.html',
-  styleUrls: ['./feature-info-item.component.scss']
+  styleUrls: ['./feature-info-item.component.scss'],
 })
 export class FeatureInfoItemComponent {
   @Input() public featureInfo!: FeatureInfoResultDisplay;

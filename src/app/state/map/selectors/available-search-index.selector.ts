@@ -17,7 +17,7 @@ export const selectAvailableSpecialSearchIndexes = createSelector(selectItems, (
           indexName: searchConfig.index,
           displayString: searchConfig.title,
           active: true,
-          indexType: 'special'
+          indexType: 'special',
         });
       }
     });

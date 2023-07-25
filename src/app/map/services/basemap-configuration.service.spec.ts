@@ -12,7 +12,7 @@ const mockBasemaps: Basemap[] = [
     url: 'https://www.my-test.com/test1',
     title: 'Test 1',
     srsId: 2056,
-    layers: []
+    layers: [],
   },
   {
     id: 'test-2',
@@ -21,7 +21,7 @@ const mockBasemaps: Basemap[] = [
     url: 'https://www.my-test.com/test2',
     title: 'Test 2',
     srsId: 2056,
-    layers: []
+    layers: [],
   },
   {
     id: 'test-3',
@@ -30,14 +30,14 @@ const mockBasemaps: Basemap[] = [
     url: 'https://www.my-test.com/test3',
     title: 'Test 3',
     srsId: 2056,
-    layers: []
+    layers: [],
   },
-  {id: 'test-4', type: 'blank', title: 'Test 4'}
+  {id: 'test-4', type: 'blank', title: 'Test 4'},
 ];
 
 const mockBasemapConfig = {
   availableBasemaps: mockBasemaps,
-  defaultBasemap: mockBasemaps[0]
+  defaultBasemap: mockBasemaps[0],
 };
 
 describe('BasemapConfigService', () => {
@@ -50,9 +50,9 @@ describe('BasemapConfigService', () => {
         BasemapConfigService,
         {
           provide: ConfigService,
-          useValue: spy
-        }
-      ]
+          useValue: spy,
+        },
+      ],
     });
     service = TestBed.inject(BasemapConfigService);
   });

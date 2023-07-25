@@ -6,6 +6,6 @@ export const GeolocationActions = createActionGroup({
   events: {
     'Start Location Request': emptyProps(),
     'Set Geolocation': props<{location: PointWithSrs}>(),
-    'Set Failure': props<{error: GeolocationPositionError}>()
-  }
+    'Set Failure': props<{error: GeolocationPositionError}>(),
+  },
 });

@@ -15,9 +15,9 @@ export class ShareLinkEffects {
           map((item) => {
             return ShareLinkActions.setShareLinkItem({item});
           }),
-          catchError(() => EMPTY) // todo error handling
-        )
-      )
+          catchError(() => EMPTY), // todo error handling
+        ),
+      ),
     );
   });
 
@@ -29,11 +29,14 @@ export class ShareLinkEffects {
           map((id) => {
             return ShareLinkActions.setShareLinkId({id});
           }),
-          catchError(() => EMPTY) // todo error handling
-        )
-      )
+          catchError(() => EMPTY), // todo error handling
+        ),
+      ),
     );
   });
 
-  constructor(private readonly actions$: Actions, private readonly shareLinkService: Gb3ShareLinkService) {}
+  constructor(
+    private readonly actions$: Actions,
+    private readonly shareLinkService: Gb3ShareLinkService,
+  ) {}
 }

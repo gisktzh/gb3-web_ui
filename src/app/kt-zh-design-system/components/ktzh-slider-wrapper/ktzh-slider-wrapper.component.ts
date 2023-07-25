@@ -3,7 +3,7 @@ import {Component, Input} from '@angular/core';
 @Component({
   selector: 'ktzh-slider-wrapper',
   templateUrl: './ktzh-slider-wrapper.component.html',
-  styleUrls: ['./ktzh-slider-wrapper.component.scss']
+  styleUrls: ['./ktzh-slider-wrapper.component.scss'],
 })
 export class KtzhSliderWrapperComponent<T> {
   /** The title of the slider wrapper */

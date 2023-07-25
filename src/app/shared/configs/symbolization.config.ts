@@ -7,8 +7,8 @@ const defaultOutline = {
     r: 0,
     g: 0,
     b: 0,
-    a: 1.0
-  }
+    a: 1.0,
+  },
 };
 
 const defaultSymbolization: SymbolizationStyle = {
@@ -17,12 +17,12 @@ const defaultSymbolization: SymbolizationStyle = {
       r: 0,
       g: 0,
       b: 0,
-      a: 1.0
+      a: 1.0,
     },
     outline: defaultOutline,
     size: 10,
     xOffset: 0,
-    yOffset: 0
+    yOffset: 0,
   },
 
   point: {
@@ -32,9 +32,9 @@ const defaultSymbolization: SymbolizationStyle = {
       r: 0,
       g: 0,
       b: 0,
-      a: 1.0
+      a: 1.0,
     },
-    outline: defaultOutline
+    outline: defaultOutline,
   },
   line: {
     width: 5,
@@ -42,8 +42,8 @@ const defaultSymbolization: SymbolizationStyle = {
       r: 0,
       g: 0,
       b: 0,
-      a: 1.0
-    }
+      a: 1.0,
+    },
   },
   polygon: {
     fill: {
@@ -51,8 +51,8 @@ const defaultSymbolization: SymbolizationStyle = {
         r: 0,
         g: 0,
         b: 0,
-        a: 1.0
-      }
+        a: 1.0,
+      },
     },
     outline: {
       width: 5,
@@ -60,10 +60,10 @@ const defaultSymbolization: SymbolizationStyle = {
         r: 0,
         g: 0,
         b: 0,
-        a: 1.0
-      }
-    }
-  }
+        a: 1.0,
+      },
+    },
+  },
 };
 
 export const layerSymbolizations: LayerSymbolizations = {
@@ -76,10 +76,10 @@ export const layerSymbolizations: LayerSymbolizations = {
       height: 26,
       yOffset: 0,
       xOffset: 0,
-      angle: 0
+      angle: 0,
     },
     line: defaultSymbolization.line,
-    polygon: defaultSymbolization.polygon
+    polygon: defaultSymbolization.polygon,
   },
   [InternalDrawingLayer.FeatureQueryLocation]: {
     text: defaultSymbolization.text,
@@ -93,10 +93,10 @@ export const layerSymbolizations: LayerSymbolizations = {
       // take 8px off the yOffset to ensure our tip is exactly where it should be.
       yOffset: 12,
       xOffset: 0,
-      angle: 0
+      angle: 0,
     },
     line: defaultSymbolization.line,
-    polygon: defaultSymbolization.polygon
+    polygon: defaultSymbolization.polygon,
   },
   [InternalDrawingLayer.FeatureHighlight]: {
     text: defaultSymbolization.text,
@@ -107,9 +107,9 @@ export const layerSymbolizations: LayerSymbolizations = {
         r: 255,
         g: 255,
         b: 0,
-        a: 0.6
+        a: 0.6,
       },
-      outline: defaultOutline
+      outline: defaultOutline,
     },
     line: {
       width: 5,
@@ -117,8 +117,8 @@ export const layerSymbolizations: LayerSymbolizations = {
         r: 255,
         g: 255,
         b: 0,
-        a: 0.6
-      }
+        a: 0.6,
+      },
     },
     polygon: {
       fill: {
@@ -126,11 +126,11 @@ export const layerSymbolizations: LayerSymbolizations = {
           r: 255,
           g: 255,
           b: 0,
-          a: 0.6
-        }
+          a: 0.6,
+        },
       },
-      outline: defaultOutline
-    }
+      outline: defaultOutline,
+    },
   },
   [InternalDrawingLayer.PrintPreview]: {
     text: defaultSymbolization.text,
@@ -142,11 +142,11 @@ export const layerSymbolizations: LayerSymbolizations = {
           r: 255,
           g: 255,
           b: 0,
-          a: 0.6
-        }
+          a: 0.6,
+        },
       },
-      outline: defaultOutline
-    }
+      outline: defaultOutline,
+    },
   },
   [UserDrawingLayer.Measurements]: {
     text: {
@@ -154,20 +154,20 @@ export const layerSymbolizations: LayerSymbolizations = {
         r: 255,
         g: 0,
         b: 0,
-        a: 1.0
+        a: 1.0,
       },
       outline: {
         color: {
           r: 255,
           g: 255,
           b: 255,
-          a: 1.0
+          a: 1.0,
         },
-        width: 1
+        width: 1,
       },
       size: 12,
       xOffset: 0,
-      yOffset: 6
+      yOffset: 6,
     },
     point: {
       type: 'simple',
@@ -176,7 +176,7 @@ export const layerSymbolizations: LayerSymbolizations = {
         r: 255,
         g: 0,
         b: 0,
-        a: 1.0
+        a: 1.0,
       },
       outline: {
         width: 1,
@@ -184,9 +184,9 @@ export const layerSymbolizations: LayerSymbolizations = {
           r: 255,
           g: 255,
           b: 255,
-          a: 1.0
-        }
-      }
+          a: 1.0,
+        },
+      },
     },
     line: {
       width: 2,
@@ -194,8 +194,8 @@ export const layerSymbolizations: LayerSymbolizations = {
         r: 255,
         g: 0,
         b: 0,
-        a: 1.0
-      }
+        a: 1.0,
+      },
     },
     polygon: {
       fill: {
@@ -203,8 +203,8 @@ export const layerSymbolizations: LayerSymbolizations = {
           r: 255,
           g: 0,
           b: 0,
-          a: 0.3
-        }
+          a: 0.3,
+        },
       },
       outline: {
         width: 2,
@@ -212,10 +212,10 @@ export const layerSymbolizations: LayerSymbolizations = {
           r: 255,
           g: 0,
           b: 0,
-          a: 1.0
-        }
-      }
-    }
+          a: 1.0,
+        },
+      },
+    },
   },
   [UserDrawingLayer.Drawings]: {
     text: {
@@ -223,20 +223,20 @@ export const layerSymbolizations: LayerSymbolizations = {
         r: 255,
         g: 0,
         b: 0,
-        a: 1.0
+        a: 1.0,
       },
       outline: {
         color: {
           r: 255,
           g: 255,
           b: 255,
-          a: 1.0
+          a: 1.0,
         },
-        width: 1
+        width: 1,
       },
       size: 12,
       xOffset: 0,
-      yOffset: 6
+      yOffset: 6,
     },
     point: {
       type: 'simple', // note: if this is changed, adjust the typecast in EsriToolService!
@@ -245,7 +245,7 @@ export const layerSymbolizations: LayerSymbolizations = {
         r: 255,
         g: 0,
         b: 0,
-        a: 1.0
+        a: 1.0,
       },
       outline: {
         width: 1,
@@ -253,9 +253,9 @@ export const layerSymbolizations: LayerSymbolizations = {
           r: 255,
           g: 255,
           b: 255,
-          a: 1.0
-        }
-      }
+          a: 1.0,
+        },
+      },
     },
     line: {
       width: 2,
@@ -263,8 +263,8 @@ export const layerSymbolizations: LayerSymbolizations = {
         r: 255,
         g: 0,
         b: 0,
-        a: 1.0
-      }
+        a: 1.0,
+      },
     },
     polygon: {
       fill: {
@@ -272,8 +272,8 @@ export const layerSymbolizations: LayerSymbolizations = {
           r: 255,
           g: 0,
           b: 0,
-          a: 0.3
-        }
+          a: 0.3,
+        },
       },
       outline: {
         width: 2,
@@ -281,9 +281,9 @@ export const layerSymbolizations: LayerSymbolizations = {
           r: 255,
           g: 0,
           b: 0,
-          a: 1.0
-        }
-      }
-    }
-  }
+          a: 1.0,
+        },
+      },
+    },
+  },
 };

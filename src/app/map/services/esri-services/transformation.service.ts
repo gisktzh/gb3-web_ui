@@ -6,14 +6,17 @@ import SpatialReference from '@arcgis/core/geometry/SpatialReference';
 import {ConfigService} from '../../../shared/services/config.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TransformationService {
   private readonly defaultSrs: __esri.SpatialReference;
   private readonly srs$ = this.store.select(selectSrsId);
   private srs: __esri.SpatialReference | undefined;
 
-  constructor(private readonly store: Store, private readonly configService: ConfigService) {
+  constructor(
+    private readonly store: Store,
+    private readonly configService: ConfigService,
+  ) {
     this.defaultSrs = new SpatialReference({wkid: this.configService.mapConfig.defaultMapConfig.srsId});
     this.srs$.subscribe((srsId) => (this.srs = new SpatialReference({wkid: srsId})));
   }

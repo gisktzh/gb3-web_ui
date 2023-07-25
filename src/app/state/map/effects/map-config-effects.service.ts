@@ -11,10 +11,10 @@ export class MapConfigEffects {
     () => {
       return this.actions$.pipe(
         ofType(MapConfigActions.setScale),
-        tap(({scale}) => this.mapService.setScale(scale))
+        tap(({scale}) => this.mapService.setScale(scale)),
       );
     },
-    {dispatch: false}
+    {dispatch: false},
   );
 
   public dispatchResetScale$ = createEffect(
@@ -23,10 +23,10 @@ export class MapConfigEffects {
         ofType(MapConfigActions.resetExtent),
         tap(() => {
           this.mapService.resetExtent();
-        })
+        }),
       );
     },
-    {dispatch: false}
+    {dispatch: false},
   );
 
   public dispatchZoomChange$ = createEffect(
@@ -35,10 +35,10 @@ export class MapConfigEffects {
         ofType(MapConfigActions.changeZoom),
         tap(({zoomType}) => {
           this.mapService.handleZoom(zoomType);
-        })
+        }),
       );
     },
-    {dispatch: false}
+    {dispatch: false},
   );
 
   public dispatchMapCenterChange$ = createEffect(
@@ -47,11 +47,14 @@ export class MapConfigEffects {
         ofType(MapConfigActions.setMapCenter),
         tap(({center}) => {
           this.mapService.setMapCenter(center);
-        })
+        }),
       );
     },
-    {dispatch: false}
+    {dispatch: false},
   );
 
-  constructor(private readonly actions$: Actions, @Inject(MAP_SERVICE) private readonly mapService: MapService) {}
+  constructor(
+    private readonly actions$: Actions,
+    @Inject(MAP_SERVICE) private readonly mapService: MapService,
+  ) {}
 }

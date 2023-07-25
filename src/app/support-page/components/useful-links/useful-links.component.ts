@@ -7,7 +7,7 @@ import {selectLinks} from '../../../state/support/reducers/support-content.reduc
 @Component({
   selector: 'useful-links',
   templateUrl: './useful-links.component.html',
-  styleUrls: ['./useful-links.component.scss']
+  styleUrls: ['./useful-links.component.scss'],
 })
 export class UsefulLinksComponent implements OnInit, OnDestroy {
   public usefulLinksGroups: LinksGroup[] = [];
@@ -30,9 +30,9 @@ export class UsefulLinksComponent implements OnInit, OnDestroy {
         .pipe(
           tap((usefulLinks) => {
             this.usefulLinksGroups = usefulLinks;
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 }

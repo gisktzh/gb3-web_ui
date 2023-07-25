@@ -12,14 +12,14 @@ export class GeneralInfoEffects {
   public clearData = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapConfigActions.clearFeatureInfoContent),
-      map(() => GeneralInfoActions.clearContent())
+      map(() => GeneralInfoActions.clearContent()),
     );
   });
 
   public interceptMapClick = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapConfigActions.handleMapClick),
-      map(({x, y}) => GeneralInfoActions.sendRequest({x, y}))
+      map(({x, y}) => GeneralInfoActions.sendRequest({x, y})),
     );
   });
 
@@ -31,15 +31,15 @@ export class GeneralInfoEffects {
           map((generalInfo) => {
             return GeneralInfoActions.updateContent({generalInfo});
           }),
-          catchError(() => EMPTY) // todo error handling
-        )
-      )
+          catchError(() => EMPTY), // todo error handling
+        ),
+      ),
     );
   });
 
   constructor(
     private readonly actions$: Actions,
     private readonly topicsService: Gb3TopicsService,
-    private readonly generalInfoService: Gb3GeneralInfoService
+    private readonly generalInfoService: Gb3GeneralInfoService,
   ) {}
 }

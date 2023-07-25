@@ -6,7 +6,7 @@ import {KTZHNewsService} from './ktzhnews.service';
 import {ktzhNewsDataMock} from '../../../models/ktzh-news-data.mock';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class KTZHNewsMockService extends KTZHNewsService {
   /**
@@ -15,7 +15,7 @@ export class KTZHNewsMockService extends KTZHNewsService {
   public override loadNews(): Observable<News[]> {
     return of(ktzhNewsDataMock).pipe(
       delay(this.getRandomDelayInMs()),
-      map((mockResult) => this.transformNewsResult(mockResult))
+      map((mockResult) => this.transformNewsResult(mockResult)),
     );
   }
 

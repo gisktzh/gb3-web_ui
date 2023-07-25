@@ -15,11 +15,14 @@ export class FavouriteListEffects {
           map((favourites) => {
             return FavouriteListActions.setFavourites({favourites});
           }),
-          catchError(() => EMPTY) // todo error handling
-        )
-      )
+          catchError(() => EMPTY), // todo error handling
+        ),
+      ),
     );
   });
 
-  constructor(private readonly actions$: Actions, private readonly favouritesService: Gb3FavouritesService) {}
+  constructor(
+    private readonly actions$: Actions,
+    private readonly favouritesService: Gb3FavouritesService,
+  ) {}
 }

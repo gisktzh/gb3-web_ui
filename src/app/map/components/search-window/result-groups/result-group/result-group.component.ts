@@ -17,7 +17,7 @@ const DEFAULT_ZOOM_SCALE = 1000;
 @Component({
   selector: 'result-group',
   templateUrl: './result-group.component.html',
-  styleUrls: ['./result-group.component.scss']
+  styleUrls: ['./result-group.component.scss'],
 })
 export class ResultGroupComponent implements OnInit, OnDestroy {
   @Input() public searchResults: SearchResultMatch[] = [];
@@ -30,7 +30,10 @@ export class ResultGroupComponent implements OnInit, OnDestroy {
   private readonly mapConfigState$ = this.store.select(selectMapConfigState);
   private readonly subscriptions: Subscription = new Subscription();
 
-  constructor(private readonly store: Store, @Inject(MAP_SERVICE) private readonly mapService: MapService) {}
+  constructor(
+    private readonly store: Store,
+    @Inject(MAP_SERVICE) private readonly mapService: MapService,
+  ) {}
 
   public ngOnInit() {
     this.subscriptions.add(
@@ -38,9 +41,9 @@ export class ResultGroupComponent implements OnInit, OnDestroy {
         .pipe(
           tap((mapConfigState) => {
             this.mapConfigState = mapConfigState;
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 

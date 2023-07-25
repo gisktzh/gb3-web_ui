@@ -42,7 +42,7 @@ export abstract class AbstractEsriMeasurementStrategy<T extends Polygon | Polyli
     const {location, symbolization} = this.createLabelForGeometry(geometry);
     const label = new Graphic({
       geometry: location,
-      symbol: symbolization
+      symbol: symbolization,
     });
     this.layer.addMany([label]);
   }

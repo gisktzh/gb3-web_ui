@@ -4,7 +4,7 @@ import {
   FavoritesCreatePayload,
   FavoritesDeleteData,
   FavoritesDetailData,
-  FavoritesListData
+  FavoritesListData,
 } from '../../../models/gb3-api-generated.interfaces';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
@@ -12,7 +12,7 @@ import {CreateFavourite, Favourite, FavouritesResponse} from '../../../interface
 import {ActiveMapItemConfiguration} from '../../../interfaces/active-map-item-configuration.interface';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class Gb3FavouritesService extends Gb3ApiService {
   protected readonly endpoint = 'favorites';
@@ -33,7 +33,7 @@ export class Gb3FavouritesService extends Gb3ApiService {
           return next.getTime() - current.getTime();
         });
         return this.mapFavouritesListDataToFavouritesResponse(data);
-      })
+      }),
     );
   }
 
@@ -52,7 +52,7 @@ export class Gb3FavouritesService extends Gb3ApiService {
       return {
         id,
         title,
-        content
+        content,
       };
     });
   }

@@ -16,7 +16,7 @@ const MAX_DIMENSION_PERCENTAGE = 0.9;
 @Component({
   selector: 'resize-handler',
   templateUrl: './resize-handler.component.html',
-  styleUrls: ['./resize-handler.component.scss']
+  styleUrls: ['./resize-handler.component.scss'],
 })
 export class ResizeHandlerComponent {
   @Input() public location!: ResizeHandlerLocation;
@@ -40,7 +40,7 @@ export class ResizeHandlerComponent {
 
   public onResizeEnd(event: ResizeEvent): void {
     this.resizeableStyle = {
-      width: `${event.rectangle.width}px`
+      width: `${event.rectangle.width}px`,
     };
 
     this.resizeEvent.emit(this.resizeableStyle);

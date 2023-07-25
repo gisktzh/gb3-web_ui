@@ -7,7 +7,7 @@ export interface TitleLink {
 @Component({
   selector: 'start-page-section',
   templateUrl: './start-page-section.component.html',
-  styleUrls: ['./start-page-section.component.scss']
+  styleUrls: ['./start-page-section.component.scss'],
 })
 export class StartPageSectionComponent {
   @Input() public background?: 'primary' | 'accent';

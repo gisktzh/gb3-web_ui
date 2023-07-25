@@ -8,41 +8,41 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
     hostMatch: 'localhost',
     apiBasePaths: {
       gb2Api: {
-        baseUrl: 'http://localhost:4200/v3'
+        baseUrl: 'http://localhost:4200/v3',
       },
       gb2StaticFiles: {
-        baseUrl: 'http://localhost:4200'
+        baseUrl: 'http://localhost:4200',
       },
       gb2WmsCapabilities: {
-        baseUrl: 'http://localhost:4200/wms'
+        baseUrl: 'http://localhost:4200/wms',
       },
       gb2Wms: {
-        baseUrl: 'http://localhost:4200'
+        baseUrl: 'http://localhost:4200',
       },
       geoLion: {
-        baseUrl: 'https://www.geolion.zh.ch'
+        baseUrl: 'https://www.geolion.zh.ch',
       },
       searchApi: {
-        baseUrl: 'https://gb3-search-api.icycliff-4b8f6c95.switzerlandnorth.azurecontainerapps.io'
+        baseUrl: 'https://gb3-search-api.icycliff-4b8f6c95.switzerlandnorth.azurecontainerapps.io',
       },
       ktzhWebsite: {
         baseUrl: 'https://www.zh.ch',
-        useMockData: true
+        useMockData: true,
       },
       gravCms: {
         baseUrl: 'https://gb3-grav-cms.icycliff-4b8f6c95.switzerlandnorth.azurecontainerapps.io',
-        useMockData: true
+        useMockData: true,
       },
       twitterWidget: {
-        baseUrl: 'https://platform.twitter.com/widgets.js'
-      }
+        baseUrl: 'https://platform.twitter.com/widgets.js',
+      },
     },
     authSettings: {
       clientId: 'gb3',
-      issuer: 'http://localhost:4200/'
+      issuer: 'http://localhost:4200/',
     },
     overrides: {
-      overrideWmsUrl: 'http://localhost:4200/wms'
-    }
-  }
+      overrideWmsUrl: 'http://localhost:4200/wms',
+    },
+  },
 ];

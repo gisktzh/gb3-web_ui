@@ -14,7 +14,7 @@ export const selectActiveMapItemConfigurations = createSelector(selectItems, (ac
         layers: activeMapItem.settings.layers.map((layer) => ({id: layer.id, layer: layer.layer, visible: layer.visible})),
         visible: activeMapItem.visible,
         opacity: activeMapItem.opacity,
-        isSingleLayer: activeMapItem.isSingleLayer
+        isSingleLayer: activeMapItem.isSingleLayer,
       };
     });
   return activeMapItemConfigurations;

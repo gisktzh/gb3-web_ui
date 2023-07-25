@@ -7,8 +7,8 @@ import {EnvironmentConfig} from './environment-config.interface';
 export const environment: EnvironmentConfig = {
   production: false,
   auth: {
-    authenticatedPingInterval: 5000
-  }
+    authenticatedPingInterval: 5000,
+  },
 };
 
 /*

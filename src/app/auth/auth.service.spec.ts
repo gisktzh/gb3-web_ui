@@ -11,7 +11,7 @@ import {AuthNotificationService} from './notifications/auth-notification.service
 const mockAuthNotificationService = jasmine.createSpyObj<AuthNotificationService>({
   showImpendingLogoutDialog: void 0,
   showForcedLogoutDialog: void 0,
-  showProgrammaticLogoutDialog: void 0
+  showProgrammaticLogoutDialog: void 0,
 });
 describe('AuthService', () => {
   let service: AuthService;
@@ -37,19 +37,19 @@ describe('AuthService', () => {
         tryLoginImplicitFlow: Promise.resolve(false),
         logOut: void 0,
         getAccessToken: '',
-        initCodeFlow: void 0
+        initCodeFlow: void 0,
       },
       {
-        events: mockOAuthEvents.asObservable()
-      }
+        events: mockOAuthEvents.asObservable(),
+      },
     );
     TestBed.configureTestingModule({
       imports: [HttpClientModule, SharedModule],
       providers: [
         provideMockStore({}),
         {provide: OAuthService, useValue: mockOAuthService},
-        {provide: AuthNotificationService, useValue: mockAuthNotificationService}
-      ]
+        {provide: AuthNotificationService, useValue: mockAuthNotificationService},
+      ],
     });
 
     service = TestBed.inject(AuthService);

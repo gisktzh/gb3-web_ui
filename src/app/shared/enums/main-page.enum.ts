@@ -3,5 +3,5 @@ export enum MainPage {
   Maps = 'maps',
   Data = 'data',
   Support = 'support',
-  Auth = 'auth'
+  Auth = 'auth',
 }

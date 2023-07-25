@@ -5,21 +5,21 @@ export const DEFAULT_SEARCHES: SearchIndex[] = [
     indexName: 'fme-addresses',
     displayString: 'Adressen',
     active: true,
-    indexType: 'default'
+    indexType: 'default',
   },
   {
     indexName: 'fme-places',
     displayString: 'Orte',
     active: true,
-    indexType: 'default'
-  }
+    indexType: 'default',
+  },
 ];
 
 export const MAP_SEARCH: SearchIndex = {
   indexName: '',
   displayString: 'Karten',
   active: true,
-  indexType: 'map'
+  indexType: 'map',
 };
 
 export const ACTIVE_SEARCH_INDICES: string[] = [
@@ -34,5 +34,5 @@ export const ACTIVE_SEARCH_INDICES: string[] = [
   'gewaesserangaben',
   'fassung',
   'bienenstaende',
-  'verkehrstechnik'
+  'verkehrstechnik',
 ];

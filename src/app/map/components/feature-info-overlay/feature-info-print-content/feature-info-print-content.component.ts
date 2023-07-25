@@ -4,7 +4,7 @@ import {FeatureInfoResultLayer} from '../../../../shared/interfaces/feature-info
 @Component({
   selector: 'feature-info-print-content',
   templateUrl: './feature-info-print-content.component.html',
-  styleUrls: ['./feature-info-print-content.component.scss']
+  styleUrls: ['./feature-info-print-content.component.scss'],
 })
 export class FeatureInfoPrintContentComponent {
   @Input() public layer!: FeatureInfoResultLayer;

@@ -130,7 +130,7 @@ export class Gb3MetadataService extends Gb3ApiService {
    * typehint and create an ad-hoc schema for the contact.
    */
   private extractContactDetails<K extends keyof MetadataDatasetsDetailData['dataset']['kontakt']>(
-    contact: MetadataDatasetsDetailData['dataset']['kontakt'][K]
+    contact: MetadataDatasetsDetailData['dataset']['kontakt'][K],
   ): DepartmentalContact {
     return {
       department: contact.amt,

@@ -9,6 +9,6 @@ export const FeatureInfoActions = createActionGroup({
     'Update Content': props<{featureInfos: FeatureInfoResponse[]}>(),
     'Clear Content': emptyProps(),
     'Highlight Feature': props<{feature: GeometryWithSrs; pinnedFeatureId: string | undefined}>(),
-    'Clear Highlight': emptyProps()
-  }
+    'Clear Highlight': emptyProps(),
+  },
 });

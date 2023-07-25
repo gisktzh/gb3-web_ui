@@ -6,7 +6,7 @@ import {map} from 'rxjs/operators';
 import {PrintCreation, PrintCreationResponse, PrintInfo, PrintOrientation} from '../../../interfaces/print.interface';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class Gb3PrintService extends Gb3ApiService {
   protected readonly endpoint = 'print';
@@ -22,7 +22,7 @@ export class Gb3PrintService extends Gb3ApiService {
     return this.post<CreateCreatePayload, CreateCreateData>(this.createCreateUrl(), createCreatePayload, this.postHeaders).pipe(
       map((response) => {
         return {...response};
-      })
+      }),
     );
   }
 
@@ -53,10 +53,10 @@ export class Gb3PrintService extends Gb3ApiService {
               map: layout.map,
               rotation: layout.rotation,
               size: size,
-              orientation: orientation
+              orientation: orientation,
             };
           })
-        : []
+        : [],
     };
   }
 
@@ -78,7 +78,7 @@ export class Gb3PrintService extends Gb3ApiService {
           topic_title: page.topicTitle,
           user_comment: page.userComment,
           user_title: page.userTitle,
-          withlegend: page.withLegend ? 1 : 0
+          withlegend: page.withLegend ? 1 : 0,
         };
       }),
       layers: printCreation.layers.map((layer) => {
@@ -94,11 +94,11 @@ export class Gb3PrintService extends Gb3ApiService {
             ? {
                 format: layer.customParams.format,
                 dpi: layer.customParams.dpi,
-                TRANSPARENT: layer.customParams.transparent
+                TRANSPARENT: layer.customParams.transparent,
               }
-            : null
+            : null,
         };
-      })
+      }),
     };
   }
 

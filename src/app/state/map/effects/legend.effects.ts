@@ -18,11 +18,15 @@ export class LegendEffects {
           map((legends) => {
             return LegendActions.addLegendContent({legends});
           }),
-          catchError(() => EMPTY) // todo error handling
-        )
-      )
+          catchError(() => EMPTY), // todo error handling
+        ),
+      ),
     );
   });
 
-  constructor(private readonly actions$: Actions, private readonly topicsService: Gb3TopicsService, private readonly store: Store) {}
+  constructor(
+    private readonly actions$: Actions,
+    private readonly topicsService: Gb3TopicsService,
+    private readonly store: Store,
+  ) {}
 }

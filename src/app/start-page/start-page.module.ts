@@ -29,8 +29,8 @@ import {FrequentlyUsedItemsComponent} from './components/frequently-used-items/f
     GisBrowserTeaserComponent,
     ContactDetailsComponent,
     ContactDetailComponent,
-    FrequentlyUsedItemsComponent
+    FrequentlyUsedItemsComponent,
   ],
-  imports: [CommonModule, SharedModule, StartPageRoutingModule, KtZhDesignSystemModule]
+  imports: [CommonModule, SharedModule, StartPageRoutingModule, KtZhDesignSystemModule],
 })
 export class StartPageModule {}

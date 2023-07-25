@@ -1,11 +1,15 @@
 @font-face {
   font-family: 'Inter';
-  src: local('Inter Regular'), url(../assets/fonts/Inter-Regular.ttf) format('TrueType');
+  src:
+    local('Inter Regular'),
+    url(../assets/fonts/Inter-Regular.ttf) format('TrueType');
   font-style: normal;
 }
 
 @font-face {
   font-family: 'Inter Black';
-  src: local('Inter Black'), url(../assets/fonts/Inter-Black.ttf) format('TrueType');
+  src:
+    local('Inter Black'),
+    url(../assets/fonts/Inter-Black.ttf) format('TrueType');
   font-style: normal;
 }

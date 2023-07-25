@@ -45,7 +45,7 @@
       </button>
     </div>
     <p
-      [innerHTML]="title | highlightSearchQuery : this.filterString"
+      [innerHTML]="title | highlightSearchQuery: this.filterString"
       [ngClass]="{'base-map-data-item__header__title--disabled': invalid}"
       class="base-map-data-item__header__title"
       matTooltip="{{ title }}"
@@ -55,7 +55,7 @@
       [color]="'accent'"
       [highlighted]="true"
       [size]="'small'"
-      [url]="gb2Url | appendMapConfigurationToUrl : mapConfigState"
+      [url]="gb2Url | appendMapConfigurationToUrl: mapConfigState"
     ></gb2-exit-button>
     <button (click)="deleteItem()" *ngIf="showDeleteButton" mat-icon-button>
       <mat-icon>delete</mat-icon>

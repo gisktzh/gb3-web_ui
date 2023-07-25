@@ -12,7 +12,7 @@ import {MapConfigActions} from '../../../state/map/actions/map-config.actions';
 @Component({
   selector: 'feature-info-overlay',
   templateUrl: './feature-info-overlay.component.html',
-  styleUrls: ['./feature-info-overlay.component.scss']
+  styleUrls: ['./feature-info-overlay.component.scss'],
 })
 export class FeatureInfoOverlayComponent implements OnInit, OnDestroy {
   @Output() public printFeatureInfoEvent = new EventEmitter<void>();
@@ -56,27 +56,27 @@ export class FeatureInfoOverlayComponent implements OnInit, OnDestroy {
           tap((value) => {
             this.loadingState = value;
             this.updateVisibility(value);
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
     this.subscriptions.add(
       this.featureInfoData$
         .pipe(
           tap((value) => {
             this.featureInfoData = value;
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
     this.subscriptions.add(
       this.generalInfoData$
         .pipe(
           tap((value) => {
             this.generalInfoData = value.data;
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 

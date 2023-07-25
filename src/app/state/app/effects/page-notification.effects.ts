@@ -27,11 +27,14 @@ export class PageNotificationEffects {
               console.error(err);
             }
             return EMPTY; // todo error handling
-          })
-        )
-      )
+          }),
+        ),
+      ),
     );
   });
 
-  constructor(private readonly actions$: Actions, @Inject(GRAV_CMS_SERVICE) private readonly gravCmsService: GravCmsService) {}
+  constructor(
+    private readonly actions$: Actions,
+    @Inject(GRAV_CMS_SERVICE) private readonly gravCmsService: GravCmsService,
+  ) {}
 }

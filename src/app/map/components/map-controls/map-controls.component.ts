@@ -15,7 +15,7 @@ import {selectMapUiState} from '../../../state/map/reducers/map-ui.reducer';
 @Component({
   selector: 'map-controls',
   templateUrl: './map-controls.component.html',
-  styleUrls: ['./map-controls.component.scss']
+  styleUrls: ['./map-controls.component.scss'],
 })
 export class MapControlsComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('scaleBarContainer', {static: true}) private scaleBarContainerRef!: ElementRef;
@@ -31,7 +31,10 @@ export class MapControlsComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly geolocationState$ = this.store.select(selectGeolocationState);
   private readonly mapUiState$ = this.store.select(selectMapUiState);
 
-  constructor(private readonly store: Store, @Inject(MAP_SERVICE) private readonly mapService: MapService) {}
+  constructor(
+    private readonly store: Store,
+    @Inject(MAP_SERVICE) private readonly mapService: MapService,
+  ) {}
 
   public ngOnInit() {
     this.initSubscriptions();

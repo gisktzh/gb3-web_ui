@@ -10,8 +10,8 @@ describe('MapConfig Reducer', () => {
         calculatedMinScale: 200,
         calculatedMaxScale: 100,
         minScale: 200,
-        maxScale: 100
-      }
+        maxScale: 100,
+      },
     };
 
     describe('zoomedIn calculation', () => {

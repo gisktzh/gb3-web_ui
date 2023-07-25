@@ -7,7 +7,7 @@ export const layerCatalogFeatureKey = 'layerCatalog';
 export const initialState: LayerCatalogState = {
   items: [],
   loadingState: 'undefined',
-  filterString: ''
+  filterString: '',
 };
 
 export const layerCatalogFeature = createFeature({
@@ -33,8 +33,8 @@ export const layerCatalogFeature = createFeature({
     }),
     on(LayerCatalogActions.setFilterString, (state, {filterString}): LayerCatalogState => {
       return {...state, filterString};
-    })
-  )
+    }),
+  ),
 });
 
 export const {name, reducer, selectFilterString, selectItems, selectLoadingState} = layerCatalogFeature;

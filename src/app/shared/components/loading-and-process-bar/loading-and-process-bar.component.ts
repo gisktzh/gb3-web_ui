@@ -5,7 +5,7 @@ import {ViewProcessState} from '../../types/view-process-state';
 @Component({
   selector: 'loading-and-process-bar',
   templateUrl: './loading-and-process-bar.component.html',
-  styleUrls: ['./loading-and-process-bar.component.scss']
+  styleUrls: ['./loading-and-process-bar.component.scss'],
 })
 export class LoadingAndProcessBarComponent {
   @Input() public loadingState: LoadingState = 'undefined';

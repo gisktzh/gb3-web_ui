@@ -6,7 +6,7 @@ export const generalInfoFeatureKey = 'generalInfo';
 
 export const initialState: GeneralInfoState = {
   loadingState: 'undefined',
-  data: undefined
+  data: undefined,
 };
 
 export const generalInfoFeature = createFeature({
@@ -21,8 +21,8 @@ export const generalInfoFeature = createFeature({
     }),
     on(GeneralInfoActions.updateContent, (state, {generalInfo}): GeneralInfoState => {
       return {...state, loadingState: 'loaded', data: generalInfo};
-    })
-  )
+    }),
+  ),
 });
 
 export const {name, reducer, selectGeneralInfoState, selectLoadingState, selectData} = generalInfoFeature;

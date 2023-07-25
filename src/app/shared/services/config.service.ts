@@ -9,18 +9,18 @@ import {Gb2Constants} from '../constants/gb2.constants';
 import {layerSymbolizations} from '../configs/symbolization.config';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ConfigService {
   public readonly basemapConfig = {
     availableBasemaps: defaultBasemaps,
-    defaultBasemap: defaultBasemap
+    defaultBasemap: defaultBasemap,
   };
 
   public readonly layerSymbolizations = layerSymbolizations;
 
   public readonly gb2Config = {
-    wmsFormatMimeType: Gb2Constants.WMS_IMAGE_FORMAT_MIME_TYPE
+    wmsFormatMimeType: Gb2Constants.WMS_IMAGE_FORMAT_MIME_TYPE,
   };
 
   public readonly mapConfig = {
@@ -29,8 +29,8 @@ export class ConfigService {
     defaultMapConfig: defaultMapConfig,
     mapScaleConfig: {
       maxScale: MapConstants.MAXIMUM_MAP_SCALE,
-      minScale: MapConstants.MINIMUM_MAP_SCALE
-    }
+      minScale: MapConstants.MINIMUM_MAP_SCALE,
+    },
   };
 
   public readonly apiConfig: ApiConfig;

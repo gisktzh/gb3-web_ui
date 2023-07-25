@@ -9,7 +9,7 @@ export const initialState: PrintState = {
   infoLoadingState: 'undefined',
   creation: undefined,
   creationLoadingState: 'undefined',
-  creationResponse: undefined
+  creationResponse: undefined,
 };
 
 export const printFeature = createFeature({
@@ -37,10 +37,10 @@ export const printFeature = createFeature({
         ...state,
         creation: initialState.creation,
         creationResponse: initialState.creationResponse,
-        creationLoadingState: 'undefined'
+        creationLoadingState: 'undefined',
       };
-    })
-  )
+    }),
+  ),
 });
 
 export const {name, reducer, selectInfo, selectInfoLoadingState, selectCreationLoadingState, selectCreationResponse} = printFeature;

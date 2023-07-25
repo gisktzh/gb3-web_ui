@@ -10,7 +10,7 @@ import {selectLegendItemsForDisplay} from '../../../state/map/selectors/legend-r
 @Component({
   selector: 'legend-overlay',
   templateUrl: './legend-overlay.component.html',
-  styleUrls: ['./legend-overlay.component.scss']
+  styleUrls: ['./legend-overlay.component.scss'],
 })
 export class LegendOverlayComponent implements OnInit, OnDestroy {
   @Output() public printLegendEvent = new EventEmitter<void>();
@@ -52,9 +52,9 @@ export class LegendOverlayComponent implements OnInit, OnDestroy {
           tap((value) => {
             this.loadingState = value;
             this.updateVisibility(value);
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
 
     this.subscriptions.add(
@@ -62,9 +62,9 @@ export class LegendOverlayComponent implements OnInit, OnDestroy {
         .pipe(
           tap((value) => {
             this.legendItems = value;
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 

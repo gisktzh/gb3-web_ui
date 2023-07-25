@@ -7,14 +7,14 @@ import {MAP_SERVICE} from '../../../app.module';
   selector: 'map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
-  providers: [FeatureHighlightingService]
+  providers: [FeatureHighlightingService],
 })
 export class MapComponent implements OnInit, AfterViewInit {
   @ViewChild('mainMap', {static: true}) mainMapRef!: ElementRef;
 
   constructor(
     @Inject(MAP_SERVICE) private readonly mapService: MapService,
-    private readonly featureHighlightingService: FeatureHighlightingService
+    private readonly featureHighlightingService: FeatureHighlightingService,
   ) {}
 
   public ngOnInit() {

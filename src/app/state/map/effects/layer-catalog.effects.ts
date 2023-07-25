@@ -33,10 +33,10 @@ export class LayerCatalogEffects {
                 console.error(err);
               }
               return EMPTY; // todo error handling
-            })
-          )
-        )
-      )
+            }),
+          ),
+        ),
+      ),
     );
   });
 
@@ -55,9 +55,13 @@ export class LayerCatalogEffects {
           .filter((availableMap) => initialMaps.includes(availableMap.id))
           .map((availableMap) => ActiveMapItemFactory.createGb2WmsMapItem(availableMap));
         return ActiveMapItemActions.addInitialMapItems({initialMapItems});
-      })
+      }),
     );
   });
 
-  constructor(private readonly actions$: Actions, private readonly topicsService: Gb3TopicsService, private readonly store: Store) {}
+  constructor(
+    private readonly actions$: Actions,
+    private readonly topicsService: Gb3TopicsService,
+    private readonly store: Store,
+  ) {}
 }

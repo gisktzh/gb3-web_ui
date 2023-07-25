@@ -6,6 +6,6 @@ export const GeneralInfoActions = createActionGroup({
   events: {
     'Send Request': props<{x: number; y: number}>(),
     'Update Content': props<{generalInfo: GeneralInfoResponse}>(),
-    'Clear Content': emptyProps()
-  }
+    'Clear Content': emptyProps(),
+  },
 });

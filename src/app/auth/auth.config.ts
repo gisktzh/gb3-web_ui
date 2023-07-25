@@ -26,7 +26,7 @@ export const authConfig: AuthConfig = {
   sessionChecksEnabled: false,
   customQueryParams: {
     // The following query is required by the GB2 backend as it's not set to default
-    response_mode: 'query'
+    response_mode: 'query',
   },
   /**
    * Because we do not have refresh tokens, we need to log the user out as soon as the access token is expired. The skew factor in the used
@@ -36,12 +36,12 @@ export const authConfig: AuthConfig = {
    * * https://github.com/manfredsteyer/angular-oauth2-oidc/issues/1135
    * * https://github.com/manfredsteyer/angular-oauth2-oidc/issues/1214
    */
-  clockSkewInSec: 2
+  clockSkewInSec: 2,
 };
 
 export const oAuthConfig: OAuthModuleConfig = {
   resourceServer: {
     allowedUrls: [], // this is overriden in the module component via the factory to inject the correct runtime URLs
-    sendAccessToken: true
-  }
+    sendAccessToken: true,
+  },
 };

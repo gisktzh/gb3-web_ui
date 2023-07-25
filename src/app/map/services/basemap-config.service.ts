@@ -3,7 +3,7 @@ import {Basemap} from '../../shared/interfaces/basemap.interface';
 import {ConfigService} from '../../shared/services/config.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class BasemapConfigService {
   private readonly _availableBasemaps: Basemap[] = this.configService.basemapConfig.availableBasemaps;

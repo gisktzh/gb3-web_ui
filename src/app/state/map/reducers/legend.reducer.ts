@@ -6,7 +6,7 @@ export const legendFeatureKey = 'legend';
 
 export const initialState: LegendState = {
   items: [],
-  loadingState: 'undefined'
+  loadingState: 'undefined',
 };
 
 export const legendFeature = createFeature({
@@ -22,8 +22,8 @@ export const legendFeature = createFeature({
     }),
     on(LegendActions.hideLegend, (): LegendState => {
       return {...initialState};
-    })
-  )
+    }),
+  ),
 });
 
 export const {name, reducer, selectLegendState, selectItems, selectLoadingState} = legendFeature;

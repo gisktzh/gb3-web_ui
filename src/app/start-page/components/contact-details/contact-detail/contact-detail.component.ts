@@ -4,7 +4,7 @@ import {Clipboard} from '@angular/cdk/clipboard';
 @Component({
   selector: 'contact-detail',
   templateUrl: './contact-detail.component.html',
-  styleUrls: ['./contact-detail.component.scss']
+  styleUrls: ['./contact-detail.component.scss'],
 })
 export class ContactDetailComponent {
   @Input() public contactType!: 'address' | 'email';

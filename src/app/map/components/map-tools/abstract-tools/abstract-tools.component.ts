@@ -6,7 +6,7 @@ import {selectActiveTool} from '../../../../state/map/reducers/tool.reducer';
 import {Store} from '@ngrx/store';
 
 @Component({
-  template: ''
+  template: '',
 })
 export class AbstractToolsComponent implements OnInit, OnDestroy {
   public activeTool: ToolType | undefined = undefined;

@@ -7,7 +7,7 @@ import {MainPage} from '../enums/main-page.enum';
 describe('UrlUtils', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule]
+      imports: [RouterTestingModule],
     });
   });
 

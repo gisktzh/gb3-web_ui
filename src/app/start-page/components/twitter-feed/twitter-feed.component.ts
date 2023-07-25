@@ -11,7 +11,7 @@ const TWITTER_MAX_TWEETS = 4;
 @Component({
   selector: 'twitter-feed',
   templateUrl: './twitter-feed.component.html',
-  styleUrls: ['./twitter-feed.component.scss']
+  styleUrls: ['./twitter-feed.component.scss'],
 })
 export class TwitterFeedComponent implements AfterViewInit, OnDestroy, HasLoadingState {
   public loadingState: LoadingState = 'loading';
@@ -37,9 +37,9 @@ export class TwitterFeedComponent implements AfterViewInit, OnDestroy, HasLoadin
           catchError((err: unknown) => {
             this.loadingState = 'error';
             return throwError(() => err);
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 
@@ -48,15 +48,15 @@ export class TwitterFeedComponent implements AfterViewInit, OnDestroy, HasLoadin
       .createTimeline(
         {
           sourceType: 'profile',
-          screenName: TWITTER_ACCOUNT_NAME
+          screenName: TWITTER_ACCOUNT_NAME,
         },
         this.twitterFeedContainer.nativeElement,
         {
           dnt: true,
           tweetLimit: TWITTER_MAX_TWEETS,
           lang: 'de',
-          chrome: 'nofooter'
-        }
+          chrome: 'nofooter',
+        },
       )
       .then(() => {
         this.loadingState = 'loaded';

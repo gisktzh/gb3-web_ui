@@ -4,7 +4,7 @@ import {LoadingState} from '../../../../shared/types/loading-state';
 @Component({
   selector: 'map-data-item-header',
   templateUrl: './map-data-item-header.component.html',
-  styleUrls: ['./map-data-item-header.component.scss']
+  styleUrls: ['./map-data-item-header.component.scss'],
 })
 export class MapDataItemHeaderComponent {
   @Input() public title!: string;

@@ -16,7 +16,7 @@ export class EsriLineMeasurementStrategy extends AbstractEsriMeasurementStrategy
     mapView: __esri.MapView,
     polylineSymbol: __esri.SimpleLineSymbol,
     labelSymbolization: __esri.TextSymbol,
-    completeCallbackHandler: () => void
+    completeCallbackHandler: () => void,
   ) {
     super(layer, mapView, completeCallbackHandler);
 

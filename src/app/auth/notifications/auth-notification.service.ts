@@ -12,23 +12,23 @@ export interface DialogContent {
 
 const impendingLogoutDialogContent: DialogContent = {
   title: 'Information',
-  text: 'Sie werden in Kürze ausgeloggt. Bitte schliessen Sie aktuelle Arbeiten ab oder starten Sie eine neue Sitzung.'
+  text: 'Sie werden in Kürze ausgeloggt. Bitte schliessen Sie aktuelle Arbeiten ab oder starten Sie eine neue Sitzung.',
 };
 const forcedLogoutDialogContent: DialogContent = {
   title: 'Information',
   text: 'Sie wurden ausgeloggt, da entweder Ihr Login das Ende seiner Gültigkeit erreicht hat oder in einem anderen Tab ein Logout veranlasst wurde.',
   forceReload: true,
-  forceCloseOthers: true
+  forceCloseOthers: true,
 };
 const programmaticLogoutDialogContent: DialogContent = {
   title: 'Information',
   text: 'Sie wurden ausgeloggt.',
   forceReload: true,
-  forceCloseOthers: true
+  forceCloseOthers: true,
 };
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthNotificationService {
   constructor(private readonly matDialogService: MatDialog) {}
@@ -53,7 +53,7 @@ export class AuthNotificationService {
     const dialogRef = this.matDialogService.open(AuthNotificationDialogComponent, {
       enterAnimationDuration: 150,
       exitAnimationDuration: 150,
-      data: content
+      data: content,
     });
 
     if (content.forceReload) {

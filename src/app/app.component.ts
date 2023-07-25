@@ -18,7 +18,7 @@ import {IconsService} from './shared/services/icons.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit, OnDestroy {
   @ViewChild('content') private readonly contentContainer?: ElementRef;
@@ -42,7 +42,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly pageNotificationService: PageNotificationService,
     private readonly store: Store,
     private readonly changeDetectorRef: ChangeDetectorRef,
-    private readonly iconsService: IconsService
+    private readonly iconsService: IconsService,
   ) {
     this.iconsService.initIcons();
   }
@@ -67,9 +67,9 @@ export class AppComponent implements OnInit, OnDestroy {
         .pipe(
           tap((result) => {
             this.showWarning = result.matches;
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
 
     this.subscriptions.add(
@@ -82,9 +82,9 @@ export class AppComponent implements OnInit, OnDestroy {
             const firstUrlSegmentPath = UrlUtils.extractFirstUrlSegmentPath(urlTree);
             const mainPage = UrlUtils.transformStringToMainPage(firstUrlSegmentPath);
             this.isSimplifiedPage = mainPage !== undefined && this.useSimplifiedPageOn.includes(mainPage);
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
 
     this.subscriptions.add(
@@ -98,9 +98,9 @@ export class AppComponent implements OnInit, OnDestroy {
             } else {
               this.closePageNotificationSnackBar();
             }
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
 
     this.subscriptions.add(
@@ -113,9 +113,9 @@ export class AppComponent implements OnInit, OnDestroy {
             // that the UI update cycle was not yet fully completed.
             this.changeDetectorRef.detectChanges();
           }),
-          take(1)
+          take(1),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 
@@ -129,7 +129,7 @@ export class AppComponent implements OnInit, OnDestroy {
       data: pageNotification,
       horizontalPosition: 'center',
       verticalPosition: 'bottom',
-      panelClass: PanelClass.PageNotificationSnackbar
+      panelClass: PanelClass.PageNotificationSnackbar,
     });
   }
 }
