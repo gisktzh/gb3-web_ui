@@ -6,6 +6,7 @@ import {NEWS_SERVICE} from '../../../app.module';
 import {catchError} from 'rxjs/operators';
 import {NewsService} from '../../../shared/interfaces/news-service.interface';
 import {News} from '../../../shared/interfaces/news.interface';
+import {NewsCouldNotBeLoaded} from '../../models/errors';
 
 const NUMBER_OF_NEWS = 3;
 
@@ -36,7 +37,7 @@ export class NewsFeedComponent implements OnInit, HasLoadingState, OnDestroy {
           }),
           catchError((err: unknown) => {
             this.loadingState = 'error';
-            return throwError(() => err);
+            return throwError(() => new NewsCouldNotBeLoaded());
           }),
         )
         .subscribe(),

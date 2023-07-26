@@ -4,4 +4,5 @@ export enum MainPage {
   Data = 'data',
   Support = 'support',
   Auth = 'auth',
+  Error = 'error',
 }

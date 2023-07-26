@@ -1,0 +1,16 @@
+<div class="fatal-error-page">
+  <div class="fatal-error-page__content">
+    <span class="fatal-error-page__content__icon">
+      <mat-icon svgIcon="ktzh_caution"></mat-icon>
+    </span>
+    <div class="fatal-error-page__content__text">
+      <h1>Fehler</h1>
+      <p>Die Applikation kann gerade nicht geladen werden. Laden Sie die Seite erneut oder versuchen Sie es später noch einmal.</p>
+      <p *ngIf="errorMessage" class="fatal-error-page__content__text__error-message">Fehler: {{ errorMessage }}</p>
+      <a [routerLink]="'/'" class="fatal-error-page__content__text__home-link" mat-button>
+        <mat-icon [svgIcon]="'ktzh_arrow_right'"></mat-icon>
+        Zur Startseite
+      </a>
+    </div>
+  </div>
+</div>

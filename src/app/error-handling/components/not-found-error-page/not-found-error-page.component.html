@@ -6,6 +6,9 @@
   ></hero-header>
 </start-page-section>
 <start-page-section>
-  <!-- Todo: add descriptive link once merged -->
-  <p>Here will be pagelinks :)</p>
+  <descriptive-highlighted-link [title]="'Zur Startseite'">
+    <a [routerLink]="'/'" mat-icon-button>
+      <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
+    </a>
+  </descriptive-highlighted-link>
 </start-page-section>
