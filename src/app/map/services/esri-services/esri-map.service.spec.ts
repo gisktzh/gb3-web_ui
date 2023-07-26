@@ -218,21 +218,27 @@ describe('EsriMapService', () => {
 
     service.addGb2WmsLayer(mapItem, 0);
     const wmsLayer = mapMock.layers.getItemAt(0) as __esri.WMSLayer;
+    // order: layer2, layer1, layer0
 
-    expect(wmsLayer.sublayers.getItemAt(0).id).toBe(0);
+    // index <> position; position 0 should be the highest index for Esri.
+    expect(wmsLayer.sublayers.getItemAt(0).id).toBe(2);
     expect(wmsLayer.sublayers.getItemAt(1).id).toBe(1);
-    expect(wmsLayer.sublayers.getItemAt(2).id).toBe(2);
+    expect(wmsLayer.sublayers.getItemAt(2).id).toBe(0);
 
     service.reorderSublayer(mapItem, 0, 0);
+    // order: layer2, layer1, layer0
 
-    expect(wmsLayer.sublayers.getItemAt(0).id).toBe(0);
+    // index <> position; position 0 should be the highest index for Esri.
+    expect(wmsLayer.sublayers.getItemAt(0).id).toBe(2);
     expect(wmsLayer.sublayers.getItemAt(1).id).toBe(1);
-    expect(wmsLayer.sublayers.getItemAt(2).id).toBe(2);
+    expect(wmsLayer.sublayers.getItemAt(2).id).toBe(0);
 
     service.reorderSublayer(mapItem, 0, 1);
+    // order: layer2, layer0, layer1
 
-    expect(wmsLayer.sublayers.getItemAt(0).id).toBe(1);
+    // index <> position; position 0 should be the highest index for Esri.
+    expect(wmsLayer.sublayers.getItemAt(0).id).toBe(2);
     expect(wmsLayer.sublayers.getItemAt(1).id).toBe(0);
-    expect(wmsLayer.sublayers.getItemAt(2).id).toBe(2);
+    expect(wmsLayer.sublayers.getItemAt(2).id).toBe(1);
   });
 });

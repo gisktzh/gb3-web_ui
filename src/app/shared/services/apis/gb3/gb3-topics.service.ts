@@ -131,20 +131,22 @@ export class Gb3TopicsService extends Gb3ApiService {
               wmsUrl: topic.wms_url,
               minScale: topic.min_scale,
               permissionMissing: topic.permission_missing,
-              layers: topic.layers.map((layer) => {
-                return {
-                  ...layer,
-                  groupTitle: layer.group_title,
-                  minScale: layer.min_scale,
-                  maxScale: layer.max_scale,
-                  wmsSort: layer.wms_sort,
-                  tocSort: layer.toc_sort,
-                  initiallyVisible: layer.initially_visible,
-                  permissionMissing: layer.permission_missing,
-                  visible: layer.initially_visible,
-                  isHidden: false,
-                };
-              }),
+              layers: topic.layers
+                .map((layer) => {
+                  return {
+                    ...layer,
+                    groupTitle: layer.group_title,
+                    minScale: layer.min_scale,
+                    maxScale: layer.max_scale,
+                    wmsSort: layer.wms_sort,
+                    tocSort: layer.toc_sort,
+                    initiallyVisible: layer.initially_visible,
+                    permissionMissing: layer.permission_missing,
+                    visible: layer.initially_visible,
+                    isHidden: false,
+                  };
+                })
+                .reverse(), // reverse the order of the layers because the order in the GB3 interfaces (Topic, ActiveMapItem) is inverted to the order of the WMS specifications
               timeSliderConfiguration: topic.timesliderConfiguration
                 ? {
                     ...topic.timesliderConfiguration,

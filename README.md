@@ -128,6 +128,7 @@ match. This is because there are times when you _might_ want to deviate from the
 > 4. [Runtime configurations](#runtime-configurations)
 > 5. [(S)CSS structure](#scss-structure)
 > 6. [Custom icons](#custom-icons)
+> 7. [Transformation from GB2 backend API to GB3 interfaces](#transformation-from-gb2-backend-api-to-gb3-interfaces)
 
 ### The `ActiveMapItem` class
 
@@ -225,7 +226,7 @@ on(
         mapItem.visible = visible;
       }
     });
-  })
+  }),
 );
 ```
 
@@ -337,3 +338,29 @@ relative or absolute) and the service adds the icons. Use them as follows:
 In order to have the SVG adjust itself to the color (e.g. disabled state), replace all `fill="color"` occurrences in the
 SVG which should be assigned the font color with `fill="currentColor"`. In some cases, the color might also be
 within `stroke` or other attributes.
+
+### Transformation from GB2 backend API to GB3 interfaces
+
+To separate the GB2 API interfaces from the internal ones we use transformation methods inside the corresponding
+GB3-services. Usually it's used to adjust some minor issues like naming (`gb2_url` => `gb2Url`).
+There are a few exceptions where more logic is used to transform values:
+
+#### Topics endpoint
+
+There are many mayor changes during the transformation of the `topics.json` from the GB2 API.
+First of all the naming is different:
+
+| GB2 API interface name | GB3 interface name |      Example      |
+| :--------------------: | :----------------: | :---------------: |
+|        category        |       topic        | _Luft und Klima_  |
+|         topic          |        map         | _Lichtemissionen_ |
+|         layer          |       layer        |   _August 2018_   |
+
+Another noticeable change is the order of layers. WMS 1.3 describes the order as follows:
+
+> A WMS shall render the requested layers by drawing the leftmost in the list bottommost,
+> the next one over that, and so on.
+
+Meaning that the layer with the lowest index has the lowest visibility. However, in GB3 the order is inverted
+to that as the item with the lowest index has the highest visibility. Therefore, the order of the GB2 API layers
+get inverted to tackle that problem.
