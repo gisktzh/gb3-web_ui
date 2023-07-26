@@ -4,9 +4,10 @@ import {NotFoundErrorPageComponent} from './components/not-found-error-page/not-
 import {SharedModule} from '../shared/shared.module';
 import {FatalErrorPageComponent} from './components/fatal-error-page/fatal-error-page.component';
 import {RouterModule} from '@angular/router';
+import {ErrorNotificationComponent} from './components/error-notification/error-notification.component';
 
 @NgModule({
-  declarations: [NotFoundErrorPageComponent, FatalErrorPageComponent],
+  declarations: [NotFoundErrorPageComponent, FatalErrorPageComponent, ErrorNotificationComponent],
   imports: [CommonModule, SharedModule, RouterModule],
 })
 export class ErrorHandlingModule {}

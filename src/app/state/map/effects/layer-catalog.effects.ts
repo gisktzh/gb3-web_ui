@@ -1,16 +1,16 @@
 import {Injectable} from '@angular/core';
 import {Actions, concatLatestFrom, createEffect, ofType} from '@ngrx/effects';
-import {EMPTY, iif, of, switchMap} from 'rxjs';
+import {iif, of, switchMap} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
 import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
 import {LayerCatalogActions} from '../actions/layer-catalog.actions';
-import {environment} from '../../../../environments/environment';
 import {selectMaps} from '../selectors/maps.selector';
 import {Store} from '@ngrx/store';
 import {selectMapConfigState} from '../reducers/map-config.reducer';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {selectItems} from '../reducers/layer-catalog.reducer';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
+import {TopicsCouldNotBeLoaded} from '../../../map/models/errors';
 
 @Injectable()
 export class LayerCatalogEffects {
@@ -29,10 +29,7 @@ export class LayerCatalogEffects {
               return LayerCatalogActions.setLayerCatalog({items: layerCatalogTopicResponse.topics});
             }),
             catchError((err: unknown) => {
-              if (!environment.production) {
-                console.error(err);
-              }
-              return EMPTY; // todo error handling
+              throw new TopicsCouldNotBeLoaded();
             }),
           ),
         ),
