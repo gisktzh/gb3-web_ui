@@ -6,10 +6,13 @@
 
 :host ::ng-deep .active-map-item {
   @include mat-mixins.mat-expansion-panel-remove-content-indent;
+
+  &.mat-expansion-panel {
+    @include mixins.no-box-shadow;
+  }
 }
 
 .active-map-item {
-  @include mixins.no-box-shadow;
   width: 100%;
   padding-top: 12px;
   margin-bottom: 12px;
