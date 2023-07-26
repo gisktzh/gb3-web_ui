@@ -180,14 +180,16 @@ export class EsriMapService implements MapService, OnDestroy {
       visible: mapItem.visible,
       opacity: mapItem.opacity,
       imageFormat: this.wmsImageFormatMimeType,
-      sublayers: mapItem.settings.layers.map((layer) => {
-        return {
-          id: layer.id,
-          name: layer.layer,
-          title: layer.title,
-          visible: layer.visible,
-        } as __esri.WMSSublayerProperties;
-      }),
+      sublayers: mapItem.settings.layers
+        .map((layer) => {
+          return {
+            id: layer.id,
+            name: layer.layer,
+            title: layer.title,
+            visible: layer.visible,
+          } as __esri.WMSSublayerProperties;
+        })
+        .reverse(), // reverse the order of the sublayers because the order in the GB3 interfaces (Topic, ActiveMapItem) is inverted to the order of the WMS specifications
     });
     if (mapItem.settings.timeSliderExtent) {
       // apply initial time slider settings
@@ -293,7 +295,7 @@ export class EsriMapService implements MapService, OnDestroy {
     /**
      * `position` is the map/layer position from the state/GUI: lowest position <=> highest visibility
      * `index` is the position inside the Esri layer array. It's inverse to the position from the state/GUI: the lowest index <=> lowest
-     * visibility Additionally, there is a number of default layers that must always keep the highest visibility (e.g. highlight layer)
+     * visibility. Additionally, there is a number of default layers that must always keep the highest visibility (e.g. highlight layer)
      * independent from the state/GUI layers.
      */
     const previousIndex = this.getNumberOfNonDrawingLayers() - 1 - previousPosition;
@@ -304,9 +306,15 @@ export class EsriMapService implements MapService, OnDestroy {
   public reorderSublayer(mapItem: ActiveMapItem, previousPosition: number, currentPosition: number) {
     const esriLayer = this.esriMapViewService.findEsriLayer(mapItem.id);
     if (esriLayer && esriLayer instanceof EsriWMSLayer) {
-      // the index of sublayers is identical to their position (in contrast to the map items) where the lowest index/position has the
-      // highest visibility
-      esriLayer.sublayers.reorder(esriLayer.sublayers.getItemAt(previousPosition), currentPosition);
+      /**
+       * `position` is the map/layer position from the state/GUI: lowest position <=> highest visibility
+       * `index` is the position inside the Esri layer array. It's inverse to the position from the state/GUI: the lowest index <=> lowest
+       * visibility. Additionally, there is a number of default layers that must always keep the highest visibility (e.g. highlight layer)
+       * independent from the state/GUI layers.
+       */
+      const previousIndex = esriLayer.sublayers.length - 1 - previousPosition;
+      const currentIndex = esriLayer.sublayers.length - 1 - currentPosition;
+      esriLayer.sublayers.reorder(esriLayer.sublayers.getItemAt(previousIndex), currentIndex);
     }
   }
 
@@ -511,15 +519,17 @@ export class EsriMapService implements MapService, OnDestroy {
     const esriSublayers = esriLayer.sublayers.filter((sl) => !timeSliderLayerNames.includes(sl.name));
     // now add all layers that are in the time slider config and within the current time extent
     esriSublayers.addMany(
-      layers.map(
-        (layer) =>
-          new EsriWMSSublayer({
-            id: layer.id,
-            name: layer.layer,
-            title: layer.title,
-            visible: true,
-          } as __esri.WMSSublayerProperties),
-      ),
+      layers
+        .map(
+          (layer) =>
+            new EsriWMSSublayer({
+              id: layer.id,
+              name: layer.layer,
+              title: layer.title,
+              visible: true,
+            } as __esri.WMSSublayerProperties),
+        )
+        .reverse(), // reverse the order of the sublayers because the order in the GB3 interfaces (Topic, ActiveMapItem) is inverted to the order of the WMS specifications
     );
     esriLayer.sublayers = esriSublayers;
   }

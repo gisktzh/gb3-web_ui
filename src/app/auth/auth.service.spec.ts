@@ -2,11 +2,11 @@ import {TestBed} from '@angular/core/testing';
 
 import {AuthService} from './auth.service';
 import {OAuthEvent, OAuthService, OAuthSuccessEvent} from 'angular-oauth2-oidc';
-import {HttpClientModule} from '@angular/common/http';
 import {provideMockStore} from '@ngrx/store/testing';
 import {SharedModule} from '../shared/shared.module';
 import {Subject} from 'rxjs';
 import {AuthNotificationService} from './notifications/auth-notification.service';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
 
 const mockAuthNotificationService = jasmine.createSpyObj<AuthNotificationService>({
   showImpendingLogoutDialog: void 0,
@@ -44,7 +44,7 @@ describe('AuthService', () => {
       },
     );
     TestBed.configureTestingModule({
-      imports: [HttpClientModule, SharedModule],
+      imports: [HttpClientTestingModule, SharedModule],
       providers: [
         provideMockStore({}),
         {provide: OAuthService, useValue: mockOAuthService},
