@@ -415,3 +415,7 @@ dedicated `setError` action which sets the loading state through the reducer, an
 to this action and then raises the appropriate error. In order to also have the originally thrown error, the
 helper `errorProps()` can be used as `ActionProp` so you can pass along the original error for usage within the effect.
 For examples of this, see e.g. the `LegendEffect`.
+
+**Importantly**, if you throw exceptions within the `constructor` of a service, make sure to inject the `ErrorHandler`
+interface and throw it explicitly using the `handleError` method. Otherwise, depending on the order of Angular's DI, the
+error handler might not yet be registered and throw the exception outside of the Angular error handler.
