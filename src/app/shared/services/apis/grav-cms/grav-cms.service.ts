@@ -15,7 +15,7 @@ import {FrequentlyUsedItem} from '../../../interfaces/frequently-used-item.inter
 })
 export class GravCmsService extends BaseApiService {
   protected apiBaseUrl: string = this.configService.apiConfig.gravCms.baseUrl;
-  private readonly discoverMapsEndpoint: string = 'discovermaps.json';
+  private readonly discoverMapsEndpoint: string = 'discovermaps.jsons';
   private readonly pageInfosEndpoint: string = 'pageinfos.json';
   private readonly mapInfosEndpoint: string = 'mapinfos.json';
   private readonly frequentlyUsedItemsEndpoint: string = 'frequentlyused.json';

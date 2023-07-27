@@ -1,4 +1,4 @@
-import {Injectable, OnDestroy} from '@angular/core';
+import {Injectable, NgZone, OnDestroy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {MapConfigActions} from '../../../state/map/actions/map-config.actions';
 import {TransformationService} from './transformation.service';
@@ -80,6 +80,7 @@ export class EsriMapService implements MapService, OnDestroy {
     private readonly esriSymbolizationService: EsriSymbolizationService,
     private readonly esriMapViewService: EsriMapViewService,
     private readonly esriToolService: EsriToolService,
+    private readonly zone: NgZone,
   ) {
     /**
      * Because the GetCapabalities response often sends a non-secure http://wms.zh.ch response, Esri Javascript API fails on https
@@ -623,7 +624,7 @@ export class EsriMapService implements MapService, OnDestroy {
     this.mapView = new EsriMapView({
       map: map,
       ui: {
-        components: ['attribution'], // todo: may be removed, check licensing
+        components: ['attribution'],
       },
       scale: scale,
       center: new EsriPoint({x, y, spatialReference}),

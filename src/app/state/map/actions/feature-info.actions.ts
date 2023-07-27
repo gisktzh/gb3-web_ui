@@ -10,5 +10,6 @@ export const FeatureInfoActions = createActionGroup({
     'Clear Content': emptyProps(),
     'Highlight Feature': props<{feature: GeometryWithSrs; pinnedFeatureId: string | undefined}>(),
     'Clear Highlight': emptyProps(),
+    'Set Error': emptyProps(),
   },
 });

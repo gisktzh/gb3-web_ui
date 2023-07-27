@@ -6,6 +6,8 @@ import {Duration} from 'dayjs/plugin/duration';
 import {TimeExtentUtils} from '../../shared/utils/time-extent.utils';
 import {TimeExtent} from '../interfaces/time-extent.interface';
 
+import {InvalidTimeSliderConfiguration} from '../../shared/models/errors';
+
 dayjs.extend(duration);
 
 @Injectable({
@@ -22,53 +24,6 @@ export class TimeSliderService {
       case 'layer':
         return this.createStopsForLayerSource(timeSliderConfig);
     }
-  }
-
-  /**
-   * Creates stops for a layer source containing multiple dates which may not necessarily have constant gaps between them.
-   */
-  private createStopsForLayerSource(timeSliderConfig: TimeSliderConfiguration): Array<Date> {
-    const timeSliderLayerSource = timeSliderConfig.source as TimeSliderLayerSource;
-    return timeSliderLayerSource.layers.map((l) => dayjs(l.date, timeSliderConfig.dateFormat).toDate());
-  }
-
-  /**
-   * Creates stops for a parameter source.
-   *
-   * @remarks
-   * This is done by using a strict interval (e.g. one year) if the default range duration only contains
-   * a single type of unit (e.g. 'years'). Otherwise a more generic approach is used by creating date stops from
-   * start to finish using the given duration; this can lead to gaps near the end but supports all cases.
-   */
-  private createStopsForParameterSource(timeSliderConfig: TimeSliderConfiguration): Array<Date> {
-    const minimumDate: Date = dayjs(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat).toDate();
-    const maximumDate: Date = dayjs(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat).toDate();
-    const initialRange: string | null = timeSliderConfig.range ?? timeSliderConfig.minimalRange ?? null;
-    let stopRangeDuration: Duration | null = initialRange ? dayjs.duration(initialRange) : null;
-    if (
-      stopRangeDuration &&
-      TimeExtentUtils.calculateDifferenceBetweenDates(minimumDate, maximumDate) <= stopRangeDuration.asMilliseconds()
-    ) {
-      throw Error(`Invalid time slider configuration: min date + range > max date`); // TODO: error handling
-    }
-    if (!stopRangeDuration) {
-      const unit = TimeExtentUtils.extractSmallestUnitFromDateFormat(timeSliderConfig.dateFormat);
-      if (!unit) {
-        throw Error(`Invalid time slider configuration: neither the date format nor the (minimal) range duration is valid`); // TODO: error handling
-      }
-
-      // create a new duration base on the smallest unit with the lowest valid unit number (1)
-      stopRangeDuration = dayjs.duration(1, unit);
-    }
-
-    const dates: Date[] = [];
-    let date = minimumDate;
-    while (date < maximumDate) {
-      dates.push(date);
-      date = TimeExtentUtils.addDuration(date, stopRangeDuration);
-    }
-    dates.push(maximumDate);
-    return dates;
   }
 
   public createValidTimeExtent(
@@ -135,7 +90,55 @@ export class TimeSliderService {
   }
 
   /**
-   * Validates that the date is within the given min and max date; returns the date if it is within or the corresponding min/max date otherwise.
+   * Creates stops for a layer source containing multiple dates which may not necessarily have constant gaps between them.
+   */
+  private createStopsForLayerSource(timeSliderConfig: TimeSliderConfiguration): Array<Date> {
+    const timeSliderLayerSource = timeSliderConfig.source as TimeSliderLayerSource;
+    return timeSliderLayerSource.layers.map((l) => dayjs(l.date, timeSliderConfig.dateFormat).toDate());
+  }
+
+  /**
+   * Creates stops for a parameter source.
+   *
+   * @remarks
+   * This is done by using a strict interval (e.g. one year) if the default range duration only contains
+   * a single type of unit (e.g. 'years'). Otherwise a more generic approach is used by creating date stops from
+   * start to finish using the given duration; this can lead to gaps near the end but supports all cases.
+   */
+  private createStopsForParameterSource(timeSliderConfig: TimeSliderConfiguration): Array<Date> {
+    const minimumDate: Date = dayjs(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat).toDate();
+    const maximumDate: Date = dayjs(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat).toDate();
+    const initialRange: string | null = timeSliderConfig.range ?? timeSliderConfig.minimalRange ?? null;
+    let stopRangeDuration: Duration | null = initialRange ? dayjs.duration(initialRange) : null;
+    if (
+      stopRangeDuration &&
+      TimeExtentUtils.calculateDifferenceBetweenDates(minimumDate, maximumDate) <= stopRangeDuration.asMilliseconds()
+    ) {
+      throw new InvalidTimeSliderConfiguration('min date + range > max date');
+    }
+    if (!stopRangeDuration) {
+      const unit = TimeExtentUtils.extractSmallestUnitFromDateFormat(timeSliderConfig.dateFormat);
+      if (!unit) {
+        throw new InvalidTimeSliderConfiguration('Datumsformat sowie minimale Range sind ungültig.');
+      }
+
+      // create a new duration base on the smallest unit with the lowest valid unit number (1)
+      stopRangeDuration = dayjs.duration(1, unit);
+    }
+
+    const dates: Date[] = [];
+    let date = minimumDate;
+    while (date < maximumDate) {
+      dates.push(date);
+      date = TimeExtentUtils.addDuration(date, stopRangeDuration);
+    }
+    dates.push(maximumDate);
+    return dates;
+  }
+
+  /**
+   * Validates that the date is within the given min and max date; returns the date if it is within or the corresponding min/max date
+   * otherwise.
    */
   private validateDateWithinLimits(date: Date, minimumDate: Date, maximumDate: Date): Date {
     let validDate = date;

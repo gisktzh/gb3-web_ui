@@ -7,6 +7,7 @@ import {defaultRuntimeConfig} from '../configs/runtime.config';
 import {ApiConfig, AuthSettings, OverrideSettings, RuntimeConfig} from '../interfaces/runtime-config.interface';
 import {Gb2Constants} from '../constants/gb2.constants';
 import {layerSymbolizations} from '../configs/symbolization.config';
+import {HostNameResolutionMismatch} from '../../models/errors';
 
 @Injectable({
   providedIn: 'root',
@@ -40,7 +41,7 @@ export class ConfigService {
   constructor(@Inject(DOCUMENT) private readonly document: Document) {
     const runtimeConfig = this.findRuntimeConfig();
     if (!runtimeConfig) {
-      throw new Error('Cannot find a matching hostname for URL resolution.'); // todo: error handling for fatal errors
+      throw new HostNameResolutionMismatch(); // note: this will actually prevent the app from loading in general
     }
 
     this.apiConfig = runtimeConfig.apiBasePaths;

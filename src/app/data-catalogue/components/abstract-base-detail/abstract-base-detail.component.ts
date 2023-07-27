@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {LoadingState} from '../../../shared/types/loading-state';
-import {Observable, Subscription, switchMap, tap, throwError} from 'rxjs';
+import {Observable, Subscription, switchMap, tap} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {Gb3MetadataService} from '../../../shared/services/apis/gb3/gb3-metadata.service';
 import {ConfigService} from '../../../shared/services/config.service';
@@ -11,6 +11,8 @@ import {DatasetMetadata, MapMetadata, ProductMetadata, ServiceMetadata} from '..
 import {catchError} from 'rxjs/operators';
 import {BaseMetadataInformation} from '../../interfaces/base-metadata-information.interface';
 import {RouteParamConstants} from '../../../shared/constants/route-param.constants';
+import {MetadataCouldNotBeLoaded, MetadataNotFound} from '../../models/errors';
+import {HttpErrorResponse} from '@angular/common/http';
 
 type DetailMetadata = ProductMetadata | MapMetadata | ServiceMetadata | DatasetMetadata;
 
@@ -51,12 +53,17 @@ export abstract class AbstractBaseDetailComponent<T extends DetailMetadata> impl
             const id = params.get(RouteParamConstants.RESOURCE_IDENTIFIER);
             if (!id) {
               // note: this can never happen since the :id always matches - but Angular does not know typed URL parameters.
-              return throwError(() => new Error('No id specified'));
+              throw new MetadataCouldNotBeLoaded();
             }
             return this.loadMetadata(id).pipe(
               catchError((err: unknown) => {
                 this.loadingState = 'error';
-                return throwError(() => err); // todo: forward to 404 page
+
+                if (err instanceof HttpErrorResponse && err.status === 404) {
+                  throw new MetadataNotFound();
+                } else {
+                  throw new MetadataCouldNotBeLoaded();
+                }
               }),
             );
           }),

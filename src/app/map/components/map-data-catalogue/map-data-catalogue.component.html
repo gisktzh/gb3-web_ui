@@ -30,7 +30,7 @@
           [expanded]="!!filterString && filteredFavourites.length <= autoOpenThreshold"
           class="map-data-catalogue__content__items__item"
           hideToggle="true"
-          [disabled]="favouritesLoadingState === 'loading'"
+          [disabled]="favouritesLoadingState === 'loading' || favouritesLoadingState === 'error'"
         >
           <!-- 'Favourite' header -->
           <mat-expansion-panel-header class="map-data-catalogue__content__items__item__header">

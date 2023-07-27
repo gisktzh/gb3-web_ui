@@ -3,6 +3,7 @@ import {DOCUMENT} from '@angular/common';
 import {Store} from '@ngrx/store';
 import {PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
 import {GeolocationActions} from '../../state/map/actions/geolocation.actions';
+import {NavigatorNotAvailable} from '../models/errors';
 
 const GEOLOCATION_TIMEOUT_IN_MS = 5000;
 
@@ -19,7 +20,7 @@ export class GeolocationService {
     if (this.document.defaultView) {
       this.navigator = this.document.defaultView.navigator;
     } else {
-      console.error('Navigator not available.'); // todo: error handling
+      throw new NavigatorNotAvailable();
     }
   }
 

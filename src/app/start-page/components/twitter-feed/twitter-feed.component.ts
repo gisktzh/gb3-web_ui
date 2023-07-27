@@ -1,9 +1,10 @@
 import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
 import {ScriptInjectorService} from '../../../shared/services/script-injector.service';
-import {Subscription, tap, throwError} from 'rxjs';
+import {Subscription, tap} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {LoadingState} from 'src/app/shared/types/loading-state';
 import {HasLoadingState} from '../../../shared/interfaces/has-loading-state.interface';
+import {TwitterFeedCouldNotBeLoaded} from '../../../models/errors';
 
 const TWITTER_ACCOUNT_NAME = 'geoktzh';
 const TWITTER_MAX_TWEETS = 4;
@@ -36,7 +37,7 @@ export class TwitterFeedComponent implements AfterViewInit, OnDestroy, HasLoadin
           }),
           catchError((err: unknown) => {
             this.loadingState = 'error';
-            return throwError(() => err);
+            throw new TwitterFeedCouldNotBeLoaded();
           }),
         )
         .subscribe(),

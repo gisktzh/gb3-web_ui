@@ -22,6 +22,9 @@ export const generalInfoFeature = createFeature({
     on(GeneralInfoActions.updateContent, (state, {generalInfo}): GeneralInfoState => {
       return {...state, loadingState: 'loaded', data: generalInfo};
     }),
+    on(GeneralInfoActions.setError, (): GeneralInfoState => {
+      return {...initialState, loadingState: 'error'};
+    }),
   ),
 });
 

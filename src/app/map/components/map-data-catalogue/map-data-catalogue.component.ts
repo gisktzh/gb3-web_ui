@@ -18,6 +18,7 @@ import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.re
 import {FavouritesService} from '../../services/favourites.service';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
+import {MapCouldNotBeFound} from '../../models/errors';
 
 /**
  * Defines the upper limit (inclusive) of filtered results which trigger an automatic open of the associated expansion panel.
@@ -99,7 +100,7 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
     if (this.filterString !== '') {
       const originalActiveMap = this.originalMaps.find((originalMap) => originalMap.id === activeMap.id);
       if (!originalActiveMap) {
-        throw new Error('Map cannot be found.'); //todo: error handling (although this should never happen here)
+        throw new MapCouldNotBeFound(); // although this should never happen here becase the item WILL always exist
       }
       activeMap = originalActiveMap;
     }

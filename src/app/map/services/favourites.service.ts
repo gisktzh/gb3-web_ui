@@ -12,6 +12,7 @@ import {selectActiveMapItemConfigurations} from '../../state/map/selectors/activ
 import {FavoritesDetailData} from '../../shared/models/gb3-api-generated.interfaces';
 import {selectMaps} from '../../state/map/selectors/maps.selector';
 import {selectFavouriteBaseConfig} from '../../state/map/selectors/favourite-base-config.selector';
+import {FavouriteIsInvalid} from '../models/errors';
 
 @Injectable({
   providedIn: 'root',
@@ -73,7 +74,7 @@ export class FavouritesService implements OnDestroy {
           const subLayer = existingMap.layers.find((layer) => layer.id === configuration.layers[0].id);
 
           if (!subLayer) {
-            throw new Error('Sublayer does not exist.');
+            throw new FavouriteIsInvalid(`Der Layer ${configuration.layers[0].layer} existiert nicht (mehr).`);
           }
           activeMapItems.push(
             ActiveMapItemFactory.createGb2WmsMapItem(existingMap, subLayer, configuration.visible, configuration.opacity),
@@ -95,7 +96,7 @@ export class FavouritesService implements OnDestroy {
           );
         }
       } else {
-        throw new Error('Map does not exist');
+        throw new FavouriteIsInvalid(`Die Karte ${configuration.mapId} existiert nicht (mehr).`);
       }
     });
 

@@ -23,6 +23,9 @@ export const legendFeature = createFeature({
     on(LegendActions.hideLegend, (): LegendState => {
       return {...initialState};
     }),
+    on(LegendActions.setError, (): LegendState => {
+      return {...initialState, loadingState: 'error'};
+    }),
   ),
 });
 

@@ -1,12 +1,13 @@
 import {Inject, Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {EMPTY, switchMap, tap} from 'rxjs';
+import {of, switchMap, tap} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
 import {PrintActions} from '../actions/print.actions';
 import {Gb3PrintService} from '../../../shared/services/apis/gb3/gb3-print.service';
 import {DOCUMENT} from '@angular/common';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {PrintUtils} from '../../../shared/utils/print.utils';
+import {PrintInfoCouldNotBeLoaded, PrintRequestCouldNotBeHandled} from '../../../models/errors';
 
 @Injectable()
 export class PrintEffects {
@@ -18,7 +19,7 @@ export class PrintEffects {
           map((printInfo) => {
             return PrintActions.setPrintInfo({info: printInfo});
           }),
-          catchError(() => EMPTY), // todo error handling
+          catchError(() => of(PrintActions.setPrintInfoError())),
         ),
       ),
     );
@@ -32,11 +33,35 @@ export class PrintEffects {
           map((printCreationResponse) => {
             return PrintActions.setPrintCreationResponse({creationResponse: printCreationResponse});
           }),
-          catchError(() => EMPTY), // todo error handling
+          catchError(() => of(PrintActions.setPrintRequestError())),
         ),
       ),
     );
   });
+
+  public setPrintRequestError$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(PrintActions.setPrintRequestError),
+        tap(() => {
+          throw new PrintRequestCouldNotBeHandled();
+        }),
+      );
+    },
+    {dispatch: false},
+  );
+
+  public setPrintInfoError$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(PrintActions.setPrintInfoError),
+        tap(() => {
+          throw new PrintInfoCouldNotBeLoaded();
+        }),
+      );
+    },
+    {dispatch: false},
+  );
 
   public openPrintDocumentInNewTab$ = createEffect(() => {
     return this.actions$.pipe(

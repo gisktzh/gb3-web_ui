@@ -32,6 +32,12 @@ export const printFeature = createFeature({
     on(PrintActions.setPrintCreationResponse, (state, {creationResponse}): PrintState => {
       return {...state, creationResponse, creationLoadingState: 'loaded'};
     }),
+    on(PrintActions.setPrintRequestError, (state): PrintState => {
+      return {...state, creationLoadingState: 'error'};
+    }),
+    on(PrintActions.setPrintInfoError, (state): PrintState => {
+      return {...state, infoLoadingState: 'error'};
+    }),
     on(PrintActions.clearPrintCreation, (state): PrintState => {
       return {
         ...state,

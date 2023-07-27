@@ -11,7 +11,7 @@ export const discoverMapsDataMock: DiscoverMapsRoot = {
       id: 'AVfarbigZH',
       image: {
         name: 'areupbackgroundzh.png',
-        path: 'assets/images/basemaps/areupbackgroundzh.png',
+        path: 'assets/images/basemaps/areavbackgroundzh.png',
         size: 106551,
         type: 'image/png',
       },
@@ -67,20 +67,6 @@ export const pageInfosDataMock: PageInfosRoot = {
       severity: 'info',
       title: 'Diese Seite noch nicht fertig implementiert',
       to_date: '31.08.2023',
-    },
-    {
-      description: 'Aktuell gibt es nicht genug Gurkenbröter und es kann zu einem Engpass kommen.',
-      flex_id: '80a94be751b8f5255240a386a5564bca',
-      from_date: '01.02.2023',
-      pages: {
-        datacatalogue: false,
-        map: true,
-        start: true,
-        support: false,
-      },
-      severity: 'warning',
-      title: 'Gurkenbröter-Notfall',
-      to_date: '31.07.2023',
     },
   ],
 };

@@ -15,7 +15,7 @@ export class ShareLinkEffects {
           map((item) => {
             return ShareLinkActions.setShareLinkItem({item});
           }),
-          catchError(() => EMPTY), // todo error handling
+          catchError(() => EMPTY), // todo  error handling
         ),
       ),
     );

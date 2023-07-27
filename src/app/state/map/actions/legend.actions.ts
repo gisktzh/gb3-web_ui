@@ -7,5 +7,6 @@ export const LegendActions = createActionGroup({
     'Load Legend': emptyProps(),
     'Add Legend Content': props<{legends: LegendResponse[]}>(),
     'Hide Legend': emptyProps(),
+    'Set Error': emptyProps(),
   },
 });

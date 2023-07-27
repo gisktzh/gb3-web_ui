@@ -11,5 +11,7 @@ export const PrintActions = createActionGroup({
     'Clear Print Creation': emptyProps(),
     'Show Print Preview': props<{width: number; height: number; scale: number; rotation: number}>(),
     'Remove Print Preview': emptyProps(),
+    'Set Print Request Error': emptyProps(),
+    'Set Print Info Error': emptyProps(),
   },
 });

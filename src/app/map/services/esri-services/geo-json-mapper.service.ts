@@ -9,6 +9,7 @@ import {
   PointWithSrs,
   PolygonWithSrs,
 } from '../../../shared/interfaces/geojson-types-with-srs.interface';
+import {UnsupportedGeometryType} from './models/errors';
 
 @Injectable({
   providedIn: 'root',
@@ -29,9 +30,7 @@ export class GeoJSONMapperService {
       case 'MultiLineString':
         return this.geoJSONMultiLineStringToEsriPolyline(geometry);
       case 'GeometryCollection':
-      default:
-        // Todo: add proper error classes
-        throw new Error('Unsupported Geometry from API.');
+        throw new UnsupportedGeometryType(geometry.type);
     }
   }
 

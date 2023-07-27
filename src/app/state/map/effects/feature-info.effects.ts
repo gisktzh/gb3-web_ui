@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Actions, concatLatestFrom, createEffect, ofType} from '@ngrx/effects';
-import {EMPTY, iif, of, switchMap, tap} from 'rxjs';
+import {iif, of, switchMap, tap} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
 import {FeatureInfoActions} from '../actions/feature-info.actions';
 import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
@@ -10,6 +10,7 @@ import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {ConfigService} from '../../../shared/services/config.service';
+import {FeatureInfoCouldNotBeLoaded} from '../../../models/errors';
 
 @Injectable()
 export class FeatureInfoEffects {
@@ -27,7 +28,7 @@ export class FeatureInfoEffects {
     );
   });
 
-  public dispatchFeatureInfoRequest$ = createEffect(() => {
+  public featureInfoRequest$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(FeatureInfoActions.sendRequest),
       tap(({x, y}) => {
@@ -46,13 +47,25 @@ export class FeatureInfoEffects {
             map((featureInfos) => {
               return FeatureInfoActions.updateContent({featureInfos});
             }),
-            catchError(() => EMPTY), // todo error handling
+            catchError(() => of(FeatureInfoActions.setError())),
           ),
           of(FeatureInfoActions.updateContent({featureInfos: []})),
         ),
       ),
     );
   });
+
+  public setError = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(FeatureInfoActions.setError),
+        tap(() => {
+          throw new FeatureInfoCouldNotBeLoaded();
+        }),
+      );
+    },
+    {dispatch: false},
+  );
 
   public removeHighlightOnContentClear = createEffect(
     () => {

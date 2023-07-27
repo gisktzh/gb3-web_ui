@@ -1,7 +1,7 @@
 import {ErrorHandler, Injectable, NgZone} from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {PanelClass} from '../shared/enums/panel-class.enum';
-import {RecoverableError} from './models/errors';
+import {RecoverableError, SilentError} from './models/errors';
 import {Router} from '@angular/router';
 import {environment} from '../../environments/environment';
 import {ErrorNotificationComponent} from './components/error-notification/error-notification.component';
@@ -25,10 +25,14 @@ export class ErrorHandlerService implements ErrorHandler {
       console.error(error);
     }
 
-    if (error instanceof RecoverableError) {
+    if (error instanceof SilentError) {
+      // these errors should only be logged to a frontend logging service, but not displayed.
+    } else if (error instanceof RecoverableError) {
       this.showRecoverableErrorMessage(error.message);
     } else {
-      await this.router.navigate(['/error'], {queryParams: {error: error.message}, skipLocationChange: true});
+      this.zone.run(() => {
+        this.router.navigate(['/error'], {queryParams: {error: error.message}, skipLocationChange: true});
+      });
     }
   }
 

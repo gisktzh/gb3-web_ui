@@ -1,13 +1,14 @@
 import {Component, Inject, OnDestroy} from '@angular/core';
 import {HasSavingState} from '../../../shared/interfaces/has-saving-state.interface';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {EMPTY, Subscription, tap} from 'rxjs';
+import {Subscription, tap} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {FavouritesService} from '../../services/favourites.service';
 import {Favourite} from '../../../shared/interfaces/favourite.interface';
 import {Store} from '@ngrx/store';
 import {FavouriteListActions} from '../../../state/map/actions/favourite-list.actions';
 import {LoadingState} from '../../../shared/types/loading-state';
+import {FavouriteCouldNotBeRemoved} from '../../models/errors';
 
 @Component({
   selector: 'app-favourite-deletion-dialog',
@@ -49,7 +50,7 @@ export class FavouriteDeletionDialogComponent implements HasSavingState, OnDestr
           }),
           catchError(() => {
             this.savingState = 'error';
-            return EMPTY;
+            throw new FavouriteCouldNotBeRemoved();
           }),
         )
         .subscribe(),
