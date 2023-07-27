@@ -10,7 +10,8 @@ import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {ConfigService} from '../../../shared/services/config.service';
-import {FeatureInfoCouldNotBeLoaded} from '../../../models/errors';
+
+import {FeatureInfoCouldNotBeLoaded} from '../../../shared/errors/map.errors';
 
 @Injectable()
 export class FeatureInfoEffects {

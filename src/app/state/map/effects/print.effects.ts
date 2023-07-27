@@ -7,7 +7,7 @@ import {Gb3PrintService} from '../../../shared/services/apis/gb3/gb3-print.servi
 import {DOCUMENT} from '@angular/common';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {PrintUtils} from '../../../shared/utils/print.utils';
-import {PrintInfoCouldNotBeLoaded, PrintRequestCouldNotBeHandled} from '../../../models/errors';
+import {PrintInfoCouldNotBeLoaded, PrintRequestCouldNotBeHandled} from '../../../shared/errors/print.errors';
 
 @Injectable()
 export class PrintEffects {

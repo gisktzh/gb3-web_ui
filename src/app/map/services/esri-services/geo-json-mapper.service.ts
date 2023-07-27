@@ -9,7 +9,7 @@ import {
   PointWithSrs,
   PolygonWithSrs,
 } from '../../../shared/interfaces/geojson-types-with-srs.interface';
-import {UnsupportedGeometryType} from './models/errors';
+import {UnsupportedGeometryType} from './errors/esri.errors';
 
 @Injectable({
   providedIn: 'root',

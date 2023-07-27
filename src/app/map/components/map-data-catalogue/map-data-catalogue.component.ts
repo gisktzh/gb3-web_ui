@@ -18,7 +18,8 @@ import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.re
 import {FavouritesService} from '../../services/favourites.service';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
-import {MapCouldNotBeFound} from '../../models/errors';
+
+import {MapCouldNotBeFound} from '../../../shared/errors/map.errors';
 
 /**
  * Defines the upper limit (inclusive) of filtered results which trigger an automatic open of the associated expansion panel.

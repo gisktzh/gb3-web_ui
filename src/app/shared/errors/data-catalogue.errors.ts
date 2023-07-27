@@ -1,4 +1,4 @@
-import {RecoverableError} from '../../error-handling/models/errors';
+import {RecoverableError} from './abstract.errors';
 
 export class MetadataCouldNotBeLoaded extends RecoverableError {
   public override message = 'Metadaten konnten nicht geladen werden.';

@@ -1,11 +1,11 @@
 import {ErrorHandler, Injectable, NgZone} from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {PanelClass} from '../shared/enums/panel-class.enum';
-import {RecoverableError, SilentError} from './models/errors';
 import {Router} from '@angular/router';
 import {environment} from '../../environments/environment';
 import {ErrorNotificationComponent} from './components/error-notification/error-notification.component';
 import {ErrorNotificationInterface} from './interfaces/error-notification.interface';
+import {RecoverableError, SilentError} from '../shared/errors/abstract.errors';
 
 const NOTIFICATION_DURATION_IN_MS = 10_000;
 

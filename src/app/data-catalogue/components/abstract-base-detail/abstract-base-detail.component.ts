@@ -11,8 +11,8 @@ import {DatasetMetadata, MapMetadata, ProductMetadata, ServiceMetadata} from '..
 import {catchError} from 'rxjs/operators';
 import {BaseMetadataInformation} from '../../interfaces/base-metadata-information.interface';
 import {RouteParamConstants} from '../../../shared/constants/route-param.constants';
-import {MetadataCouldNotBeLoaded, MetadataNotFound} from '../../models/errors';
 import {HttpErrorResponse} from '@angular/common/http';
+import {MetadataCouldNotBeLoaded, MetadataNotFound} from '../../../shared/errors/data-catalogue.errors';
 
 type DetailMetadata = ProductMetadata | MapMetadata | ServiceMetadata | DatasetMetadata;
 

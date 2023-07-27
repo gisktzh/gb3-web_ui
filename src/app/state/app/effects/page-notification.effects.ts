@@ -6,7 +6,8 @@ import {GravCmsService} from '../../../shared/services/apis/grav-cms/grav-cms.se
 import {PageNotificationActions} from '../actions/page-notification.actions';
 import {PageNotification} from '../../../shared/interfaces/page-notification.interface';
 import {GRAV_CMS_SERVICE} from '../../../app.module';
-import {PageNotificationsCouldNotBeLoaded} from '../../../models/errors';
+
+import {PageNotificationsCouldNotBeLoaded} from '../../../shared/errors/app.errors';
 
 @Injectable()
 export class PageNotificationEffects {

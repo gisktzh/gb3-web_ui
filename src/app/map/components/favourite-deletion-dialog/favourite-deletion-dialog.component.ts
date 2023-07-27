@@ -8,7 +8,8 @@ import {Favourite} from '../../../shared/interfaces/favourite.interface';
 import {Store} from '@ngrx/store';
 import {FavouriteListActions} from '../../../state/map/actions/favourite-list.actions';
 import {LoadingState} from '../../../shared/types/loading-state';
-import {FavouriteCouldNotBeRemoved} from '../../models/errors';
+
+import {FavouriteCouldNotBeRemoved} from '../../../shared/errors/favourite.errors';
 
 @Component({
   selector: 'app-favourite-deletion-dialog',

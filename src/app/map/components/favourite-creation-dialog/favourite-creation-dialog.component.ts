@@ -8,7 +8,8 @@ import {HasSavingState} from '../../../shared/interfaces/has-saving-state.interf
 import {FavouriteListActions} from '../../../state/map/actions/favourite-list.actions';
 import {Store} from '@ngrx/store';
 import {LoadingState} from '../../../shared/types/loading-state';
-import {FavouriteCouldNotBeCreated} from '../../models/errors';
+
+import {FavouriteCouldNotBeCreated} from '../../../shared/errors/favourite.errors';
 
 const FAVOURITE_NAME_CONSTRAINTS: ValidatorFn[] = [Validators.minLength(1), Validators.required, Validators.pattern(/\S/)];
 

@@ -9,7 +9,7 @@ import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import Color from '@arcgis/core/Color';
 import MarkerSymbol from '@arcgis/core/symbols/MarkerSymbol';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
-import {UnsupportedGeometryType} from './models/errors';
+import {UnsupportedGeometryType} from './errors/esri.errors';
 
 @Injectable({
   providedIn: 'root',

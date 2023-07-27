@@ -6,7 +6,8 @@ import {NEWS_SERVICE} from '../../../app.module';
 import {catchError} from 'rxjs/operators';
 import {NewsService} from '../../../shared/interfaces/news-service.interface';
 import {News} from '../../../shared/interfaces/news.interface';
-import {NewsCouldNotBeLoaded} from '../../models/errors';
+
+import {NewsCouldNotBeLoaded} from '../../../shared/errors/start-page.errors';
 
 const NUMBER_OF_NEWS = 3;
 

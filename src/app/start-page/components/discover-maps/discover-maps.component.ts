@@ -7,9 +7,11 @@ import {DiscoverMapsItem} from '../../../shared/interfaces/discover-maps-item.in
 import {GravCmsService} from '../../../shared/services/apis/grav-cms/grav-cms.service';
 import {MainPage} from '../../../shared/enums/main-page.enum';
 import {GRAV_CMS_SERVICE} from '../../../app.module';
-import {DiscoverMapsCouldNotBeLoaded} from '../../models/errors';
+
+import {DiscoverMapsCouldNotBeLoaded} from '../../../shared/errors/start-page.errors';
 
 const NUMBER_OF_ENTRIES = 2;
+
 @Component({
   selector: 'discover-maps',
   templateUrl: './discover-maps.component.html',

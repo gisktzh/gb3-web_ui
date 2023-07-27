@@ -6,7 +6,8 @@ import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.ser
 import {Store} from '@ngrx/store';
 import {LegendActions} from '../actions/legend.actions';
 import {selectQueryLegends} from '../selectors/query-legends.selector';
-import {LegendCouldNotBeLoaded} from '../../../models/errors';
+
+import {LegendCouldNotBeLoaded} from '../../../shared/errors/map.errors';
 
 @Injectable()
 export class LegendEffects {

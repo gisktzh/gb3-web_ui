@@ -6,7 +6,8 @@ import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.ser
 import {Gb3GeneralInfoService} from '../../../shared/services/apis/gb3/gb3-general-info.service';
 import {GeneralInfoActions} from '../actions/general-info.actions';
 import {MapConfigActions} from '../actions/map-config.actions';
-import {GeneralInfoCouldNotBeLoaded} from '../../../models/errors';
+
+import {GeneralInfoCouldNotBeLoaded} from '../../../shared/errors/map.errors';
 
 @Injectable()
 export class GeneralInfoEffects {

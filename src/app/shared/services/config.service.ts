@@ -7,7 +7,8 @@ import {defaultRuntimeConfig} from '../configs/runtime.config';
 import {ApiConfig, AuthSettings, OverrideSettings, RuntimeConfig} from '../interfaces/runtime-config.interface';
 import {Gb2Constants} from '../constants/gb2.constants';
 import {layerSymbolizations} from '../configs/symbolization.config';
-import {HostNameResolutionMismatch} from '../../models/errors';
+
+import {HostNameResolutionMismatch} from '../errors/app.errors';
 
 @Injectable({
   providedIn: 'root',

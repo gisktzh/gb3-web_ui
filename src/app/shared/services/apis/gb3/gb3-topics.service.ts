@@ -19,7 +19,8 @@ import {map} from 'rxjs/operators';
 import {SupportedSrs} from '../../../types/supported-srs';
 import {DataCataloguePage} from '../../../enums/data-catalogue-page.enum';
 import {MainPage} from '../../../enums/main-page.enum';
-import {InvalidTimeSliderConfiguration} from '../../../models/errors';
+
+import {InvalidTimeSliderConfiguration} from '../../../errors/map.errors';
 
 const FEATURE_INFO_SRS: SupportedSrs = 2056;
 

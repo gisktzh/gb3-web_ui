@@ -6,7 +6,7 @@ import {Duration} from 'dayjs/plugin/duration';
 import {TimeExtentUtils} from '../../shared/utils/time-extent.utils';
 import {TimeExtent} from '../interfaces/time-extent.interface';
 
-import {InvalidTimeSliderConfiguration} from '../../shared/models/errors';
+import {InvalidTimeSliderConfiguration} from '../../shared/errors/map.errors';
 
 dayjs.extend(duration);
 

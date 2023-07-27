@@ -3,8 +3,9 @@ import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {of, switchMap, tap} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
 import {FavouriteListActions} from '../actions/favourite-list.actions';
-import {FavouritesCouldNotBeLoaded} from '../../../models/errors';
 import {FavouritesService} from '../../../map/services/favourites.service';
+
+import {FavouritesCouldNotBeLoaded} from '../../../shared/errors/favourite.errors';
 
 @Injectable()
 export class FavouriteListEffects {

@@ -10,7 +10,8 @@ import {selectMapConfigState} from '../reducers/map-config.reducer';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {selectItems} from '../reducers/layer-catalog.reducer';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
-import {TopicsCouldNotBeLoaded} from '../../../map/models/errors';
+
+import {TopicsCouldNotBeLoaded} from '../../../shared/errors/map.errors';
 
 @Injectable()
 export class LayerCatalogEffects {

@@ -3,7 +3,8 @@ import {DOCUMENT} from '@angular/common';
 import {Store} from '@ngrx/store';
 import {PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
 import {GeolocationActions} from '../../state/map/actions/geolocation.actions';
-import {NavigatorNotAvailable} from '../models/errors';
+
+import {NavigatorNotAvailable} from '../../shared/errors/map.errors';
 
 const GEOLOCATION_TIMEOUT_IN_MS = 5000;
 

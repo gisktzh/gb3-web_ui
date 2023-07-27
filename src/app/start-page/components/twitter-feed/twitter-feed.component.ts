@@ -4,7 +4,8 @@ import {Subscription, tap} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {LoadingState} from 'src/app/shared/types/loading-state';
 import {HasLoadingState} from '../../../shared/interfaces/has-loading-state.interface';
-import {TwitterFeedCouldNotBeLoaded} from '../../../models/errors';
+
+import {TwitterFeedCouldNotBeLoaded} from '../../../shared/errors/start-page.errors';
 
 const TWITTER_ACCOUNT_NAME = 'geoktzh';
 const TWITTER_MAX_TWEETS = 4;

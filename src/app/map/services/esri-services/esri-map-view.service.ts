@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {MapViewNotInitialized} from './models/errors';
+import {MapViewNotInitialized} from './errors/esri.errors';
 
 @Injectable({
   providedIn: 'root',

@@ -6,7 +6,8 @@ import {GRAV_CMS_SERVICE} from '../../../app.module';
 import {HasLoadingState} from '../../../shared/interfaces/has-loading-state.interface';
 import {LoadingState} from '../../../shared/types/loading-state';
 import {catchError} from 'rxjs/operators';
-import {FrequentlyUsedItemsCouldNotBeLoaded} from '../../models/errors';
+
+import {FrequentlyUsedItemsCouldNotBeLoaded} from '../../../shared/errors/start-page.errors';
 
 const NUMBER_OF_FREQUENTLY_USED_ITEMS = 3;
 

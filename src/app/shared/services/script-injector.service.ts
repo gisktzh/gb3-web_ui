@@ -3,7 +3,8 @@ import {BehaviorSubject, combineLatest, filter, Observable, tap} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {LoadingState} from '../types/loading-state';
 import {ConfigService} from './config.service';
-import {TwitterFeedCouldNotBeLoaded} from '../../models/errors';
+
+import {TwitterFeedCouldNotBeLoaded} from '../errors/start-page.errors';
 
 interface InjectableExternalScript {
   src: string;
