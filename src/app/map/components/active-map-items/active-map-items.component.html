@@ -59,30 +59,28 @@
     multi="true"
     [ngClass]="{'active-map-items__content--hidden': isMinimized || activeMapItems.length === 0}"
   >
-    <ng-container
+    <active-map-item
       *ngFor="
         let activeMapItem of activeMapItems;
         trackBy: trackByMapItemId;
         let isFirstActiveMapItem = first;
         let isLastActiveMapItem = last
       "
+      [activeMapItem]="activeMapItem"
+      [isFirstActiveMapItem]="isFirstActiveMapItem"
+      [isLastActiveMapItem]="isLastActiveMapItem"
+      cdkDrag
+      dragCursor
+      class="active-map-items__content__item"
+      [@slideInOut]
     >
-      <active-map-item
-        [activeMapItem]="activeMapItem"
-        [isFirstActiveMapItem]="isFirstActiveMapItem"
-        [isLastActiveMapItem]="isLastActiveMapItem"
-        cdkDrag
-        dragCursor
-        class="active-map-items__content__item"
-      >
-        <ng-container activeMapItemDragHandle>
-          <!-- The CDK drag handle is not detected within a child component; therefore, it's necessary to pass it down using ng-content
+      <ng-container activeMapItemDragHandle>
+        <!-- The CDK drag handle is not detected within a child component; therefore, it's necessary to pass it down using ng-content
                More information: https://stackoverflow.com/questions/54773383/cdkdraghandle-doesnt-work-inside-child-component
           -->
-          <div class="active-map-items__content__item__drag-handle" cdkDragHandle></div>
-        </ng-container>
-        <div class="active-map-items__content__item--drag-placeholder" *cdkDragPlaceholder></div>
-      </active-map-item>
-    </ng-container>
+        <div class="active-map-items__content__item__drag-handle" cdkDragHandle></div>
+      </ng-container>
+      <div class="active-map-items__content__item--drag-placeholder" *cdkDragPlaceholder></div>
+    </active-map-item>
   </mat-accordion>
 </mat-card>

@@ -9,6 +9,7 @@ import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.re
 import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
 import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
 import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
+import {slideInOutAnimation} from '../../../shared/animations/slideInOut.animation';
 
 const FAVOURITE_HELPER_MESSAGES = {
   noMapsAdded: 'Fügen Sie mindestens 1 Karte hinzu, um einen Favoriten anzulegen.',
@@ -19,6 +20,7 @@ const FAVOURITE_HELPER_MESSAGES = {
   selector: 'active-map-items',
   templateUrl: './active-map-items.component.html',
   styleUrls: ['./active-map-items.component.scss'],
+  animations: [slideInOutAnimation],
 })
 export class ActiveMapItemsComponent implements OnInit, OnDestroy {
   public isAuthenticated: boolean = false;
