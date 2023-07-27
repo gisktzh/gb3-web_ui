@@ -36,6 +36,7 @@ export class ErrorHandlerService implements ErrorHandler {
     } else if (error instanceof RecoverableError) {
       this.showRecoverableErrorMessage(error.message);
     } else {
+      // sometimes, the error handler is not yet tied to the Angular zone, so we make sure it is run *within* the angular zone.
       this.zone.run(() => {
         this.router.navigate([MainPage.Error], {queryParams: {error: error.message}, skipLocationChange: true});
       });
