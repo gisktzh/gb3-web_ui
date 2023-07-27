@@ -60,9 +60,9 @@ export abstract class AbstractBaseDetailComponent<T extends DetailMetadata> impl
                 this.loadingState = 'error';
 
                 if (err instanceof HttpErrorResponse && err.status === 404) {
-                  throw new MetadataNotFound();
+                  throw new MetadataNotFound(err);
                 } else {
-                  throw new MetadataCouldNotBeLoaded();
+                  throw new MetadataCouldNotBeLoaded(err);
                 }
               }),
             );

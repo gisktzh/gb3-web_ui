@@ -48,7 +48,7 @@ export class FeatureInfoEffects {
             map((featureInfos) => {
               return FeatureInfoActions.updateContent({featureInfos});
             }),
-            catchError(() => of(FeatureInfoActions.setError())),
+            catchError((error: unknown) => of(FeatureInfoActions.setError({error}))),
           ),
           of(FeatureInfoActions.updateContent({featureInfos: []})),
         ),
@@ -60,8 +60,8 @@ export class FeatureInfoEffects {
     () => {
       return this.actions$.pipe(
         ofType(FeatureInfoActions.setError),
-        tap(() => {
-          throw new FeatureInfoCouldNotBeLoaded();
+        tap(({error}) => {
+          throw new FeatureInfoCouldNotBeLoaded(error);
         }),
       );
     },

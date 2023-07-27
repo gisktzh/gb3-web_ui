@@ -24,7 +24,7 @@ export class PageNotificationEffects {
             return PageNotificationActions.setPageNotifications({pageNotifications});
           }),
           catchError((err: unknown) => {
-            throw new PageNotificationsCouldNotBeLoaded();
+            throw new PageNotificationsCouldNotBeLoaded(err);
           }),
         ),
       ),

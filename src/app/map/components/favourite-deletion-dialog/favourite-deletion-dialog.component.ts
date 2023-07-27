@@ -49,9 +49,9 @@ export class FavouriteDeletionDialogComponent implements HasSavingState, OnDestr
             this.store.dispatch(FavouriteListActions.removeFavourite({id: this.favourite.id}));
             this.close();
           }),
-          catchError(() => {
+          catchError((err: unknown) => {
             this.savingState = 'error';
-            throw new FavouriteCouldNotBeRemoved();
+            throw new FavouriteCouldNotBeRemoved(err);
           }),
         )
         .subscribe(),

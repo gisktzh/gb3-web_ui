@@ -5,7 +5,7 @@ import {Router} from '@angular/router';
 import {environment} from '../../environments/environment';
 import {ErrorNotificationComponent} from './components/error-notification/error-notification.component';
 import {ErrorNotificationInterface} from './interfaces/error-notification.interface';
-import {RecoverableError, SilentError} from '../shared/errors/abstract.errors';
+import {Gb3RuntimeError, RecoverableError, SilentError} from '../shared/errors/abstract.errors';
 
 const NOTIFICATION_DURATION_IN_MS = 10_000;
 
@@ -23,6 +23,11 @@ export class ErrorHandlerService implements ErrorHandler {
     // log errors to console for easier debugging in production
     if (!environment.production) {
       console.error(error);
+
+      if (error instanceof Gb3RuntimeError && error.originalError) {
+        console.warn('Original error was:');
+        console.error(error.originalError);
+      }
     }
 
     if (error instanceof SilentError) {

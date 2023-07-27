@@ -101,7 +101,7 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
     if (this.filterString !== '') {
       const originalActiveMap = this.originalMaps.find((originalMap) => originalMap.id === activeMap.id);
       if (!originalActiveMap) {
-        throw new MapCouldNotBeFound(); // although this should never happen here becase the item WILL always exist
+        throw new MapCouldNotBeFound(); // although this should never happen here because the item WILL always exist
       }
       activeMap = originalActiveMap;
     }

@@ -20,7 +20,7 @@ export class LegendEffects {
           map((legends) => {
             return LegendActions.addLegendContent({legends});
           }),
-          catchError(() => of(LegendActions.setError())),
+          catchError((error: unknown) => of(LegendActions.setError({error}))),
         ),
       ),
     );
@@ -30,8 +30,8 @@ export class LegendEffects {
     () => {
       return this.actions$.pipe(
         ofType(LegendActions.setError),
-        tap(() => {
-          throw new LegendCouldNotBeLoaded();
+        tap(({error}) => {
+          throw new LegendCouldNotBeLoaded(error);
         }),
       );
     },

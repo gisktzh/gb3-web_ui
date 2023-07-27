@@ -33,7 +33,7 @@ export class GeneralInfoEffects {
           map((generalInfo) => {
             return GeneralInfoActions.updateContent({generalInfo});
           }),
-          catchError(() => of(GeneralInfoActions.setError())),
+          catchError((error: unknown) => of(GeneralInfoActions.setError({error}))),
         ),
       ),
     );
@@ -43,8 +43,8 @@ export class GeneralInfoEffects {
     () => {
       return this.actions$.pipe(
         ofType(GeneralInfoActions.setError),
-        tap(() => {
-          throw new GeneralInfoCouldNotBeLoaded();
+        tap(({error}) => {
+          throw new GeneralInfoCouldNotBeLoaded(error);
         }),
       );
     },

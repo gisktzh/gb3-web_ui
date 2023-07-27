@@ -1,5 +1,6 @@
 import {createActionGroup, emptyProps, props} from '@ngrx/store';
 import {Favourite} from '../../../shared/interfaces/favourite.interface';
+import {errorProps} from '../../../shared/utils/error-props.utils';
 
 export const FavouriteListActions = createActionGroup({
   source: 'FavouriteList',
@@ -9,6 +10,6 @@ export const FavouriteListActions = createActionGroup({
     'Clear Favourites': emptyProps(),
     'Set Invalid': props<{id: string}>(),
     'Remove Favourite': props<{id: string}>(),
-    'Set Error': emptyProps(),
+    'Set Error': errorProps(),
   },
 });

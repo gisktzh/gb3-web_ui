@@ -41,7 +41,7 @@ export class DiscoverMapsComponent implements OnInit, HasLoadingState, OnDestroy
           }),
           catchError((err: unknown) => {
             this.loadingState = 'error';
-            throw new DiscoverMapsCouldNotBeLoaded();
+            throw new DiscoverMapsCouldNotBeLoaded(err);
           }),
         )
         .subscribe(),

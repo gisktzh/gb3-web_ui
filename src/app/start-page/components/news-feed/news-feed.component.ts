@@ -38,7 +38,7 @@ export class NewsFeedComponent implements OnInit, HasLoadingState, OnDestroy {
           }),
           catchError((err: unknown) => {
             this.loadingState = 'error';
-            throw new NewsCouldNotBeLoaded();
+            throw new NewsCouldNotBeLoaded(err);
           }),
         )
         .subscribe(),

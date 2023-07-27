@@ -17,7 +17,7 @@ export class FavouriteListEffects {
           map((favourites) => {
             return FavouriteListActions.setFavourites({favourites});
           }),
-          catchError(() => of(FavouriteListActions.setError())),
+          catchError((error: unknown) => of(FavouriteListActions.setError({error}))),
         ),
       ),
     );
@@ -27,8 +27,8 @@ export class FavouriteListEffects {
     () => {
       return this.actions$.pipe(
         ofType(FavouriteListActions.setError),
-        tap(() => {
-          throw new FavouritesCouldNotBeLoaded();
+        tap(({error}) => {
+          throw new FavouritesCouldNotBeLoaded(error);
         }),
       );
     },

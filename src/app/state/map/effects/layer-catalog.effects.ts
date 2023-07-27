@@ -30,7 +30,7 @@ export class LayerCatalogEffects {
               return LayerCatalogActions.setLayerCatalog({items: layerCatalogTopicResponse.topics});
             }),
             catchError((err: unknown) => {
-              throw new TopicsCouldNotBeLoaded();
+              throw new TopicsCouldNotBeLoaded(err);
             }),
           ),
         ),

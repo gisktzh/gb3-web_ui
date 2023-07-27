@@ -19,7 +19,7 @@ export class PrintEffects {
           map((printInfo) => {
             return PrintActions.setPrintInfo({info: printInfo});
           }),
-          catchError(() => of(PrintActions.setPrintInfoError())),
+          catchError((error: unknown) => of(PrintActions.setPrintInfoError({error}))),
         ),
       ),
     );
@@ -33,7 +33,7 @@ export class PrintEffects {
           map((printCreationResponse) => {
             return PrintActions.setPrintCreationResponse({creationResponse: printCreationResponse});
           }),
-          catchError(() => of(PrintActions.setPrintRequestError())),
+          catchError((error: unknown) => of(PrintActions.setPrintRequestError({error}))),
         ),
       ),
     );
@@ -43,8 +43,8 @@ export class PrintEffects {
     () => {
       return this.actions$.pipe(
         ofType(PrintActions.setPrintRequestError),
-        tap(() => {
-          throw new PrintRequestCouldNotBeHandled();
+        tap(({error}) => {
+          throw new PrintRequestCouldNotBeHandled(error);
         }),
       );
     },
@@ -55,8 +55,8 @@ export class PrintEffects {
     () => {
       return this.actions$.pipe(
         ofType(PrintActions.setPrintInfoError),
-        tap(() => {
-          throw new PrintInfoCouldNotBeLoaded();
+        tap(({error}) => {
+          throw new PrintInfoCouldNotBeLoaded(error);
         }),
       );
     },

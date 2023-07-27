@@ -42,7 +42,7 @@ export class FrequentlyUsedItemsComponent implements OnInit, OnDestroy, HasLoadi
           }),
           catchError((err: unknown) => {
             this.loadingState = 'error';
-            throw new FrequentlyUsedItemsCouldNotBeLoaded();
+            throw new FrequentlyUsedItemsCouldNotBeLoaded(err);
           }),
         )
         .subscribe(),

@@ -57,9 +57,9 @@ export class FavouriteCreationDialogComponent implements OnInit, OnDestroy, HasS
               this.store.dispatch(FavouriteListActions.loadFavourites());
               this.close();
             }),
-            catchError(() => {
+            catchError((err: unknown) => {
               this.savingState = 'error';
-              throw new FavouriteCouldNotBeCreated();
+              throw new FavouriteCouldNotBeCreated(err);
             }),
           )
           .subscribe(),
