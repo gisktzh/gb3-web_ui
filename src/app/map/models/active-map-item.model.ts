@@ -25,6 +25,7 @@ export abstract class ActiveMapItem implements HasLoadingState, HasVisibility, H
   public abstract readonly mapImageUrl: string | null;
   public abstract readonly settings: ActiveMapItemSettings;
   public abstract readonly isSingleLayer: boolean;
+  public abstract readonly geometadataId: number | null;
 
   public readonly [immerable] = true;
   public visible: boolean;
