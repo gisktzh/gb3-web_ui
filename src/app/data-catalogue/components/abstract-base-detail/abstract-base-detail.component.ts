@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {LoadingState} from '../../../shared/types/loading-state';
-import {Observable, Subscription, switchMap, tap} from 'rxjs';
-import {ActivatedRoute} from '@angular/router';
+import {Observable, of, Subscription, switchMap, tap} from 'rxjs';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Gb3MetadataService} from '../../../shared/services/apis/gb3/gb3-metadata.service';
 import {ConfigService} from '../../../shared/services/config.service';
 import {DataDisplayElement} from '../../types/data-display-element';
@@ -13,6 +13,7 @@ import {BaseMetadataInformation} from '../../interfaces/base-metadata-informatio
 import {RouteParamConstants} from '../../../shared/constants/route-param.constants';
 import {HttpErrorResponse} from '@angular/common/http';
 import {MetadataCouldNotBeLoaded, MetadataNotFound} from '../../../shared/errors/data-catalogue.errors';
+import {ErrorHandlerService} from '../../../error-handling/error-handler.service';
 
 type DetailMetadata = ProductMetadata | MapMetadata | ServiceMetadata | DatasetMetadata;
 
@@ -33,6 +34,8 @@ export abstract class AbstractBaseDetailComponent<T extends DetailMetadata> impl
     private readonly route: ActivatedRoute,
     protected readonly gb3MetadataService: Gb3MetadataService,
     private readonly configService: ConfigService,
+    private readonly router: Router,
+    private readonly errorHandlerService: ErrorHandlerService,
   ) {
     this.apiBaseUrl = this.configService.apiConfig.gb2StaticFiles.baseUrl;
   }
@@ -70,6 +73,14 @@ export abstract class AbstractBaseDetailComponent<T extends DetailMetadata> impl
           tap((metadata: T) => {
             this.handleMetadata(metadata);
             this.loadingState = 'loaded';
+          }),
+          catchError(async (error: unknown) => {
+            if (error instanceof MetadataNotFound) {
+              await this.errorHandlerService.handleError(error); // make sure we log the error before redirect
+              return of(this.router.navigate([MainPage.NotFound], {skipLocationChange: true}));
+            }
+
+            throw error;
           }),
         )
         .subscribe(),

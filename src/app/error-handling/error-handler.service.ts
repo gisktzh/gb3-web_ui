@@ -6,6 +6,7 @@ import {environment} from '../../environments/environment';
 import {ErrorNotificationComponent} from './components/error-notification/error-notification.component';
 import {ErrorNotificationInterface} from './interfaces/error-notification.interface';
 import {Gb3RuntimeError, RecoverableError, SilentError} from '../shared/errors/abstract.errors';
+import {MainPage} from '../shared/enums/main-page.enum';
 
 const NOTIFICATION_DURATION_IN_MS = 10_000;
 
@@ -36,7 +37,7 @@ export class ErrorHandlerService implements ErrorHandler {
       this.showRecoverableErrorMessage(error.message);
     } else {
       this.zone.run(() => {
-        this.router.navigate(['/error'], {queryParams: {error: error.message}, skipLocationChange: true});
+        this.router.navigate([MainPage.Error], {queryParams: {error: error.message}, skipLocationChange: true});
       });
     }
   }

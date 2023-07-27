@@ -5,4 +5,5 @@ export enum MainPage {
   Support = 'support',
   Auth = 'auth',
   Error = 'error',
+  NotFound = 'not-found',
 }

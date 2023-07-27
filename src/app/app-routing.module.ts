@@ -14,6 +14,7 @@ const routes: Routes = [
       {path: MainPage.Support, loadChildren: () => import('./support-page/support-page.module').then((m) => m.SupportPageModule)},
       {path: MainPage.Start, loadChildren: () => import('./start-page/start-page.module').then((m) => m.StartPageModule)},
       {path: MainPage.Error, component: FatalErrorPageComponent},
+      {path: MainPage.NotFound, component: NotFoundErrorPageComponent},
       {path: '**', component: NotFoundErrorPageComponent},
     ],
   },
