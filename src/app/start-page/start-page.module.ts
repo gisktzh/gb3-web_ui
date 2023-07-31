@@ -32,5 +32,6 @@ import {FrequentlyUsedItemsComponent} from './components/frequently-used-items/f
     FrequentlyUsedItemsComponent,
   ],
   imports: [CommonModule, SharedModule, StartPageRoutingModule, KtZhDesignSystemModule],
+  exports: [HeroHeaderComponent],
 })
 export class StartPageModule {}

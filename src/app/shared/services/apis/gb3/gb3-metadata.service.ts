@@ -2,12 +2,20 @@ import {Injectable} from '@angular/core';
 import {Gb3ApiService} from './gb3-api.service';
 import {DataCataloguePage} from '../../../enums/data-catalogue-page.enum';
 import {
+  Dataset,
+  Map,
   MetadataDatasetsDetailData,
+  MetadataDatasetsListData,
   MetadataMapsDetailData,
+  MetadataMapsListData,
   MetadataProductsDetailData,
+  MetadataProductsListData,
   MetadataServicesDetailData,
+  MetadataServicesListData,
+  Product,
+  Service,
 } from '../../../models/gb3-api-generated.interfaces';
-import {Observable} from 'rxjs';
+import {forkJoin, Observable, tap} from 'rxjs';
 import {
   DatasetMetadata,
   DepartmentalContact,
@@ -16,6 +24,12 @@ import {
   ServiceMetadata,
 } from '../../../interfaces/gb3-metadata.interface';
 import {map} from 'rxjs/operators';
+import {
+  DatasetOverviewMetadataItem,
+  MapOverviewMetadataItem,
+  ProductOverviewMetadataItem,
+  ServiceOverviewMetadataItem,
+} from '../../../models/overview-metadata-item.model';
 
 @Injectable({
   providedIn: 'root',
@@ -23,31 +37,87 @@ import {map} from 'rxjs/operators';
 export class Gb3MetadataService extends Gb3ApiService {
   protected endpoint: string = 'metadata';
 
+  public loadFullList() {
+    return forkJoin([this.loadDatasets(), this.loadProducts(), this.loadMaps(), this.loadServices()]).pipe(tap((r) => console.log(r)));
+  }
+
   public loadDatasetDetail(id: string): Observable<DatasetMetadata> {
     const requestUrl = this.createFullEndpointUrl(DataCataloguePage.Datasets, id);
     const datasetsDetailData = this.get<MetadataDatasetsDetailData>(requestUrl);
-    return datasetsDetailData.pipe(map((result) => this.transformDatasetsDetailDataToDatasetMetadata(result)));
+    return datasetsDetailData.pipe(map(({dataset}) => this.transformDatasetsDetailDataToDatasetMetadata(dataset)));
   }
 
   public loadMapDetail(id: string): Observable<MapMetadata> {
     const requestUrl = this.createFullEndpointUrl(DataCataloguePage.Maps, id);
     const mapsDetailData = this.get<MetadataMapsDetailData>(requestUrl);
-    return mapsDetailData.pipe(map((result) => this.transformMapsDetailToMapMetadata(result)));
+    return mapsDetailData.pipe(map(({map: mapDetail}) => this.transformMapsDetailToMapMetadata(mapDetail)));
   }
 
   public loadServiceDetail(id: string): Observable<ServiceMetadata> {
     const requestUrl = this.createFullEndpointUrl(DataCataloguePage.Services, id);
     const servicesDetailData = this.get<MetadataServicesDetailData>(requestUrl);
-    return servicesDetailData.pipe(map((result) => this.transformServicesDetailToMapMetadata(result)));
+    return servicesDetailData.pipe(map(({service}) => this.transformServicesDetailToServiceMetadata(service)));
   }
 
   public loadProductDetail(id: string): Observable<ProductMetadata> {
     const requestUrl = this.createFullEndpointUrl(DataCataloguePage.Products, id);
     const productsDetailData = this.get<MetadataProductsDetailData>(requestUrl);
-    return productsDetailData.pipe(map((result) => this.transformProductDetailToMapMetadata(result)));
+    return productsDetailData.pipe(map(({product}) => this.transformProductDetailToProductMetadata(product)));
   }
 
-  private transformDatasetsDetailDataToDatasetMetadata({dataset}: MetadataDatasetsDetailData): DatasetMetadata {
+  private loadDatasets(): Observable<DatasetOverviewMetadataItem[]> {
+    const requestUrl = this.createFullEndpointUrl(DataCataloguePage.Datasets);
+    const datasets = this.get<MetadataDatasetsListData>(requestUrl);
+    return datasets.pipe(
+      map((result) =>
+        result.datasets.map((dataset) => {
+          const {guid, description, name} = this.transformDatasetsDetailDataToDatasetMetadata(dataset);
+          return new DatasetOverviewMetadataItem(guid, description, name);
+        }),
+      ),
+    );
+  }
+
+  private loadProducts(): Observable<ProductOverviewMetadataItem[]> {
+    const requestUrl = this.createFullEndpointUrl(DataCataloguePage.Products);
+    const datasets = this.get<MetadataProductsListData>(requestUrl);
+    return datasets.pipe(
+      map((result) =>
+        result.products.map((product) => {
+          const {guid, description, name} = this.transformProductDetailToProductMetadata(product);
+          return new MapOverviewMetadataItem(guid, description, name);
+        }),
+      ),
+    );
+  }
+
+  private loadMaps(): Observable<MapOverviewMetadataItem[]> {
+    const requestUrl = this.createFullEndpointUrl(DataCataloguePage.Maps);
+    const datasets = this.get<MetadataMapsListData>(requestUrl);
+    return datasets.pipe(
+      map((result) =>
+        result.maps.map((mapMetadata) => {
+          const {guid, description, name} = this.transformMapsDetailToMapMetadata(mapMetadata);
+          return new MapOverviewMetadataItem(guid, description, name);
+        }),
+      ),
+    );
+  }
+
+  private loadServices(): Observable<ServiceOverviewMetadataItem[]> {
+    const requestUrl = this.createFullEndpointUrl(DataCataloguePage.Services);
+    const datasets = this.get<MetadataServicesListData>(requestUrl);
+    return datasets.pipe(
+      map((result) =>
+        result.services.map((service) => {
+          const {guid, description, name} = this.transformServicesDetailToServiceMetadata(service);
+          return new ServiceOverviewMetadataItem(guid, description, name);
+        }),
+      ),
+    );
+  }
+
+  private transformDatasetsDetailDataToDatasetMetadata(dataset: Dataset): DatasetMetadata {
     return {
       ...dataset,
       shortDescription: dataset.kurzbeschreibung,
@@ -77,7 +147,7 @@ export class Gb3MetadataService extends Gb3ApiService {
     };
   }
 
-  private transformMapsDetailToMapMetadata({map: mapData}: MetadataMapsDetailData): MapMetadata {
+  private transformMapsDetailToMapMetadata(mapData: Map): MapMetadata {
     return {
       ...mapData,
       description: mapData.beschreibung,
@@ -92,7 +162,7 @@ export class Gb3MetadataService extends Gb3ApiService {
     };
   }
 
-  private transformServicesDetailToMapMetadata({service}: MetadataServicesDetailData): ServiceMetadata {
+  private transformServicesDetailToServiceMetadata(service: Service): ServiceMetadata {
     return {
       ...service,
       access: service.zugang,
@@ -109,7 +179,7 @@ export class Gb3MetadataService extends Gb3ApiService {
     };
   }
 
-  private transformProductDetailToMapMetadata({product}: MetadataProductsDetailData): ProductMetadata {
+  private transformProductDetailToProductMetadata(product: Product): ProductMetadata {
     return {
       ...product,
       contact: {
@@ -150,8 +220,12 @@ export class Gb3MetadataService extends Gb3ApiService {
     };
   }
 
-  private createFullEndpointUrl(endpoint: DataCataloguePage, id: string): string {
-    const url = new URL(`${this.getFullEndpointUrl()}/${endpoint}/${id}`);
+  private createFullEndpointUrl(endpoint: DataCataloguePage, id?: string): string {
+    const url = new URL(`${this.getFullEndpointUrl()}/${endpoint}`);
+
+    if (id) {
+      url.pathname += `/${id}`;
+    }
 
     return url.toString();
   }

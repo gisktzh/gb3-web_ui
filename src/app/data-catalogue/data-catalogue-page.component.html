@@ -1,8 +1,5 @@
-<data-catalogue-placeholder *ngIf="isIndex; else actualPage"></data-catalogue-placeholder>
-<ng-template #actualPage>
-  <div class="data-catalogue">
-    <div class="data-catalogue__content">
-      <router-outlet></router-outlet>
-    </div>
+<div class="data-catalogue">
+  <div class="data-catalogue__content">
+    <router-outlet></router-outlet>
   </div>
-</ng-template>
+</div>
