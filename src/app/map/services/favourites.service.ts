@@ -1,7 +1,7 @@
-import {Injectable} from '@angular/core';
+import {Injectable, OnDestroy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Gb3FavouritesService} from '../../shared/services/apis/gb3/gb3-favourites.service';
-import {Observable, tap} from 'rxjs';
+import {Observable, Subscription, tap} from 'rxjs';
 import {ActiveMapItem} from '../models/active-map-item.model';
 import {Favourite, FavouritesResponse} from '../../shared/interfaces/favourite.interface';
 import {Map} from '../../shared/interfaces/topic.interface';
@@ -11,15 +11,20 @@ import {ActiveMapItemConfiguration} from '../../shared/interfaces/active-map-ite
 import {selectActiveMapItemConfigurations} from '../../state/map/selectors/active-map-item-configuration.selector';
 import {FavoritesDetailData} from '../../shared/models/gb3-api-generated.interfaces';
 import {selectMaps} from '../../state/map/selectors/maps.selector';
+import {MapConfigState} from '../../state/map/states/map-config.state';
+import {selectFavouriteMapConfig} from '../../state/map/selectors/favourite-map-config.selector';
 
 @Injectable({
   providedIn: 'root',
 })
-export class FavouritesService {
+export class FavouritesService implements OnDestroy {
   private activeMapItemConfigurations: ActiveMapItemConfiguration[] = [];
   private readonly activeMapItemConfigurations$ = this.store.select(selectActiveMapItemConfigurations);
   private readonly availableMaps$ = this.store.select(selectMaps);
   private availableMaps: Map[] = [];
+  private readonly mapConfig$ = this.store.select(selectFavouriteMapConfig);
+  private mapConfig!: Pick<MapConfigState, 'activeBasemapId' | 'center' | 'scale'>;
+  private readonly subscriptions: Subscription = new Subscription();
 
   constructor(
     private readonly store: Store,
@@ -29,7 +34,20 @@ export class FavouritesService {
   }
 
   public createFavourite(title: string): Observable<FavoritesDetailData> {
-    return this.gb3FavouritesService.createFavourite({title, content: this.activeMapItemConfigurations});
+    return this.gb3FavouritesService.createFavourite({
+      title,
+      content: this.activeMapItemConfigurations,
+      east: this.mapConfig.center.x,
+      north: this.mapConfig.center.y,
+      scaledenom: this.mapConfig.scale,
+      drawings: [],
+      measurements: [],
+      basemap: this.mapConfig.activeBasemapId,
+    });
+  }
+
+  public ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 
   public loadFavourites(): Observable<FavouritesResponse> {
@@ -93,9 +111,12 @@ export class FavouritesService {
   }
 
   private initSubscriptions() {
-    this.availableMaps$.pipe(tap((value) => (this.availableMaps = value))).subscribe();
-    this.activeMapItemConfigurations$
-      .pipe(tap((activeMapItemConfigurations) => (this.activeMapItemConfigurations = activeMapItemConfigurations)))
-      .subscribe();
+    this.subscriptions.add(this.availableMaps$.pipe(tap((value) => (this.availableMaps = value))).subscribe());
+    this.subscriptions.add(
+      this.activeMapItemConfigurations$
+        .pipe(tap((activeMapItemConfigurations) => (this.activeMapItemConfigurations = activeMapItemConfigurations)))
+        .subscribe(),
+    );
+    this.subscriptions.add(this.mapConfig$.pipe(tap((mapConfig) => (this.mapConfig = mapConfig))).subscribe());
   }
 }
