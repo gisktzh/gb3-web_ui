@@ -9,7 +9,7 @@ import {FavouriteListActions} from '../../../state/map/actions/favourite-list.ac
 import {Store} from '@ngrx/store';
 import {LoadingState} from '../../../shared/types/loading-state';
 
-const FAVOURITE_NAME_CONSTRAINTS: ValidatorFn[] = [Validators.minLength(1), Validators.required, Validators.pattern(/^\S+$/)];
+const FAVOURITE_NAME_CONSTRAINTS: ValidatorFn[] = [Validators.minLength(1), Validators.required, Validators.pattern(/\S/)];
 
 @Component({
   selector: 'favourite-creation-dialog',
