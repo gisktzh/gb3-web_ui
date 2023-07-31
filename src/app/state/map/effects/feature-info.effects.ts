@@ -15,21 +15,21 @@ import {FeatureInfoCouldNotBeLoaded} from '../../../shared/errors/map.errors';
 
 @Injectable()
 export class FeatureInfoEffects {
-  public clearData = createEffect(() => {
+  public clearData$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapConfigActions.clearFeatureInfoContent),
       map(() => FeatureInfoActions.clearContent()),
     );
   });
 
-  public interceptMapClick = createEffect(() => {
+  public interceptMapClick$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapConfigActions.handleMapClick),
       map(({x, y}) => FeatureInfoActions.sendRequest({x, y})),
     );
   });
 
-  public featureInfoRequest$ = createEffect(() => {
+  public requestFeatureInfo$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(FeatureInfoActions.sendRequest),
       tap(({x, y}) => {
@@ -56,7 +56,7 @@ export class FeatureInfoEffects {
     );
   });
 
-  public setError = createEffect(
+  public setError$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(FeatureInfoActions.setError),
@@ -68,7 +68,7 @@ export class FeatureInfoEffects {
     {dispatch: false},
   );
 
-  public removeHighlightOnContentClear = createEffect(
+  public removeHighlightOnContentClear$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(FeatureInfoActions.clearContent),

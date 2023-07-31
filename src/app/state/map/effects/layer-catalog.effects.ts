@@ -15,7 +15,7 @@ import {TopicsCouldNotBeLoaded} from '../../../shared/errors/map.errors';
 
 @Injectable()
 export class LayerCatalogEffects {
-  public dispatchLayerCatalogRequest$ = createEffect(() => {
+  public requestLayerCatalog$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(LayerCatalogActions.loadLayerCatalog),
       concatLatestFrom(() => [this.store.select(selectItems)]),
@@ -38,7 +38,7 @@ export class LayerCatalogEffects {
     );
   });
 
-  public dispatchInitialMapLoad = createEffect(() => {
+  public handleInitialMapLoad = createEffect(() => {
     return this.actions$.pipe(
       ofType(LayerCatalogActions.setLayerCatalog),
       // switch to maps only so we don't have to loop through the whole catalog

@@ -11,21 +11,21 @@ import {GeneralInfoCouldNotBeLoaded} from '../../../shared/errors/map.errors';
 
 @Injectable()
 export class GeneralInfoEffects {
-  public clearData = createEffect(() => {
+  public clearData$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapConfigActions.clearFeatureInfoContent),
       map(() => GeneralInfoActions.clearContent()),
     );
   });
 
-  public interceptMapClick = createEffect(() => {
+  public interceptMapClick$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapConfigActions.handleMapClick),
       map(({x, y}) => GeneralInfoActions.sendRequest({x, y})),
     );
   });
 
-  public generalInfoRequest = createEffect(() => {
+  public requestGeneralInfo = createEffect(() => {
     return this.actions$.pipe(
       ofType(GeneralInfoActions.sendRequest),
       switchMap(({x, y}) =>
@@ -39,7 +39,7 @@ export class GeneralInfoEffects {
     );
   });
 
-  public generalInfoError = createEffect(
+  public setGeneralInfoError$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(GeneralInfoActions.setError),

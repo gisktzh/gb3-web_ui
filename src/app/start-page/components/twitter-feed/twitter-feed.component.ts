@@ -38,7 +38,7 @@ export class TwitterFeedComponent implements AfterViewInit, OnDestroy, HasLoadin
           }),
           catchError((err: unknown) => {
             this.loadingState = 'error';
-            throw new TwitterFeedCouldNotBeLoaded();
+            throw new TwitterFeedCouldNotBeLoaded(err);
           }),
         )
         .subscribe(),

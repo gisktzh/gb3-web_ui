@@ -11,7 +11,7 @@ import {LegendCouldNotBeLoaded} from '../../../shared/errors/map.errors';
 
 @Injectable()
 export class LegendEffects {
-  public legendRequest$ = createEffect(() => {
+  public requestLegend$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(LegendActions.loadLegend),
       concatLatestFrom(() => this.store.select(selectQueryLegends)),

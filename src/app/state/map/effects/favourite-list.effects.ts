@@ -9,7 +9,7 @@ import {FavouritesCouldNotBeLoaded} from '../../../shared/errors/favourite.error
 
 @Injectable()
 export class FavouriteListEffects {
-  public favouriteListRequest$ = createEffect(() => {
+  public requestFavouriteList$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(FavouriteListActions.loadFavourites),
       switchMap(() =>
@@ -23,7 +23,7 @@ export class FavouriteListEffects {
     );
   });
 
-  public favouriteError = createEffect(
+  public setError$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(FavouriteListActions.setError),
