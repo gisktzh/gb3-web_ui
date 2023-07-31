@@ -73,12 +73,17 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
   /**
    * Dispatches an action that adds a favourite to the map.
    */
-  public addFavouriteToMap({id, content}: Favourite) {
+  public addFavouriteToMap(favourite: Favourite) {
     try {
-      const activeMapItemsForFavourite = this.favouritesService.getActiveMapItemsForFavourite(content);
-      this.store.dispatch(ActiveMapItemActions.addFavourite({favourite: activeMapItemsForFavourite}));
+      const activeMapItemsForFavourite = this.favouritesService.getActiveMapItemsForFavourite(favourite.content);
+      this.store.dispatch(
+        ActiveMapItemActions.addFavourite({
+          activeMapItems: activeMapItemsForFavourite,
+          baseConfig: favourite.baseConfig,
+        }),
+      );
     } catch (e) {
-      this.store.dispatch(FavouriteListActions.setInvalid({id}));
+      this.store.dispatch(FavouriteListActions.setInvalid({id: favourite.id}));
     }
   }
 

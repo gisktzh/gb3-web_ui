@@ -3,7 +3,7 @@ import {Store} from '@ngrx/store';
 import {Gb3FavouritesService} from '../../shared/services/apis/gb3/gb3-favourites.service';
 import {Observable, Subscription, tap} from 'rxjs';
 import {ActiveMapItem} from '../models/active-map-item.model';
-import {Favourite, FavouritesResponse} from '../../shared/interfaces/favourite.interface';
+import {Favourite, FavouriteBaseConfig, FavouritesResponse} from '../../shared/interfaces/favourite.interface';
 import {Map} from '../../shared/interfaces/topic.interface';
 import {produce} from 'immer';
 import {ActiveMapItemFactory} from '../../shared/factories/active-map-item.factory';
@@ -11,8 +11,7 @@ import {ActiveMapItemConfiguration} from '../../shared/interfaces/active-map-ite
 import {selectActiveMapItemConfigurations} from '../../state/map/selectors/active-map-item-configuration.selector';
 import {FavoritesDetailData} from '../../shared/models/gb3-api-generated.interfaces';
 import {selectMaps} from '../../state/map/selectors/maps.selector';
-import {MapConfigState} from '../../state/map/states/map-config.state';
-import {selectFavouriteMapConfig} from '../../state/map/selectors/favourite-map-config.selector';
+import {selectFavouriteBaseConfig} from '../../state/map/selectors/favourite-base-config.selector';
 
 @Injectable({
   providedIn: 'root',
@@ -22,8 +21,8 @@ export class FavouritesService implements OnDestroy {
   private readonly activeMapItemConfigurations$ = this.store.select(selectActiveMapItemConfigurations);
   private readonly availableMaps$ = this.store.select(selectMaps);
   private availableMaps: Map[] = [];
-  private readonly mapConfig$ = this.store.select(selectFavouriteMapConfig);
-  private mapConfig!: Pick<MapConfigState, 'activeBasemapId' | 'center' | 'scale'>;
+  private readonly favouriteBaseConfig$ = this.store.select(selectFavouriteBaseConfig);
+  private favouriteBaseConfig!: FavouriteBaseConfig;
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(
@@ -37,12 +36,9 @@ export class FavouritesService implements OnDestroy {
     return this.gb3FavouritesService.createFavourite({
       title,
       content: this.activeMapItemConfigurations,
-      east: this.mapConfig.center.x,
-      north: this.mapConfig.center.y,
-      scaledenom: this.mapConfig.scale,
+      baseConfig: this.favouriteBaseConfig,
       drawings: [],
       measurements: [],
-      basemap: this.mapConfig.activeBasemapId,
     });
   }
 
@@ -117,6 +113,6 @@ export class FavouritesService implements OnDestroy {
         .pipe(tap((activeMapItemConfigurations) => (this.activeMapItemConfigurations = activeMapItemConfigurations)))
         .subscribe(),
     );
-    this.subscriptions.add(this.mapConfig$.pipe(tap((mapConfig) => (this.mapConfig = mapConfig))).subscribe());
+    this.subscriptions.add(this.favouriteBaseConfig$.pipe(tap((mapConfig) => (this.favouriteBaseConfig = mapConfig))).subscribe());
   }
 }

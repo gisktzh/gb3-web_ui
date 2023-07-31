@@ -1,7 +1,9 @@
-import {selectFavouriteMapConfig} from './favourite-map-config.selector';
+import {selectFavouriteBaseConfig} from './favourite-base-config.selector';
 import {MapConfigState} from '../states/map-config.state';
 
-describe('selectQueryLayers', () => {
+import {FavouriteBaseConfig} from '../../../shared/interfaces/favourite.interface';
+
+describe('selectFavouriteBaseConfig', () => {
   let basicMockState: MapConfigState;
   beforeEach(() => {
     basicMockState = {
@@ -17,11 +19,11 @@ describe('selectQueryLayers', () => {
     };
   });
   it('returns the correct subset of the current map config', () => {
-    const actual = selectFavouriteMapConfig.projector(basicMockState);
+    const actual = selectFavouriteBaseConfig.projector(basicMockState);
 
-    const expected: Pick<MapConfigState, 'center' | 'activeBasemapId' | 'scale'> = {
+    const expected: FavouriteBaseConfig = {
       center: basicMockState.center,
-      activeBasemapId: basicMockState.activeBasemapId,
+      basemap: basicMockState.activeBasemapId,
       scale: basicMockState.scale,
     };
     expect(actual).toEqual(expected);
