@@ -1,13 +1,13 @@
 import {ActiveMapItemConfiguration} from './active-map-item-configuration.interface';
+import {MapConfigState} from '../../state/map/states/map-config.state';
+
+export type FavouriteBaseConfig = Pick<MapConfigState, 'center' | 'scale'> & {basemap: string};
 
 export interface Favourite {
   id: string;
   title: string;
   content: ActiveMapItemConfiguration[];
-  east: number;
-  north: number;
-  scaledenom: number;
-  basemap: string;
+  baseConfig: FavouriteBaseConfig;
   drawings: any[]; // todo: finalize interface once API is ready
   measurements: any[]; // todo: finalize interface once API is ready
   /**

@@ -11,6 +11,7 @@ import {MapConfigActions} from '../actions/map-config.actions';
 import {map} from 'rxjs/operators';
 import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
 import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
+import {PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 
 @Injectable()
 export class ActiveMapItemEffects {
@@ -166,20 +167,29 @@ export class ActiveMapItemEffects {
     {dispatch: false},
   );
 
-  public dispatchAddFavouriteEffect$ = createEffect(
-    () => {
-      return this.actions$.pipe(
-        ofType(ActiveMapItemActions.addFavourite),
-        tap(({favourite}) => {
-          favourite.forEach((fav, idx) => {
+  public addFavourite$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ActiveMapItemActions.addFavourite),
+      tap(
+        ({
+          activeMapItems,
+          baseConfig: {
+            scale,
+            center: {x, y},
+          },
+        }) => {
+          activeMapItems.forEach((fav, idx) => {
             this.mapService.removeMapItem(fav.id);
             fav.addToMap(this.mapService, idx);
           });
-        }),
-      );
-    },
-    {dispatch: false},
-  );
+
+          const center: PointWithSrs = {type: 'Point', srs: 2056, coordinates: [x, y]};
+          this.mapService.zoomToPoint(center, scale);
+        },
+      ),
+      map(({baseConfig}) => MapConfigActions.setBasemap({activeBasemapId: baseConfig.basemap})),
+    );
+  });
 
   public dispatchInitialMapItemsAddEffect$ = createEffect(() => {
     return this.actions$.pipe(
