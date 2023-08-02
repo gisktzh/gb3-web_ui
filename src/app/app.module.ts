@@ -1,4 +1,4 @@
-import {InjectionToken, LOCALE_ID, NgModule} from '@angular/core';
+import {ErrorHandler, InjectionToken, LOCALE_ID, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 
 import {AppComponent} from './app.component';
@@ -20,6 +20,8 @@ import {ConfigService} from './shared/services/config.service';
 import {KTZHNewsService} from './shared/services/apis/ktzh/ktzhnews.service';
 import {registerLocaleData} from '@angular/common';
 import localeDeCH from '@angular/common/locales/de-CH';
+import {ErrorHandlingModule} from './error-handling/error-handling.module';
+import {ErrorHandlerService} from './error-handling/error-handler.service';
 
 // necessary for the locale 'de-CH' to work
 // see https://stackoverflow.com/questions/46419026/missing-locale-data-for-the-locale-xxx-with-angular
@@ -52,8 +54,10 @@ export const GRAV_CMS_SERVICE = new InjectionToken<GravCmsService>('GravCmsServi
     StoreModule.forRoot(reducers, {metaReducers}),
     EffectsModule.forRoot(effects),
     AuthModule,
+    ErrorHandlingModule,
   ],
   providers: [
+    {provide: ErrorHandler, useClass: ErrorHandlerService},
     {provide: MAP_SERVICE, useClass: EsriMapService},
     {provide: NEWS_SERVICE, deps: [KTZHNewsService, KTZHNewsMockService, ConfigService], useFactory: newsFactory},
     {provide: GRAV_CMS_SERVICE, deps: [GravCmsService, GravCmsMockService, ConfigService], useFactory: gravCmsFactory},

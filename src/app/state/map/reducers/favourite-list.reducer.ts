@@ -34,6 +34,9 @@ export const favouriteListeFeature = createFeature({
 
       return {...state, favourites: remainingFavourites};
     }),
+    on(FavouriteListActions.setError, (): FavouriteListState => {
+      return {...initialState, loadingState: 'error'};
+    }),
   ),
 });
 

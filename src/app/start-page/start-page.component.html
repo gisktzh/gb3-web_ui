@@ -1,5 +1,8 @@
 <start-page-section [background]="'primary'">
-  <hero-header></hero-header>
+  <hero-header
+    heroText="Geoinformationen sind verlässliche, raumbezogene Daten und Karten. Sie dienen als wichtige Grundlage für vielfältige Aufgaben und Entscheide und stehen über verschiedene Portale zur Einsicht und Nutzung bereit."
+    heroTitle="Übersicht"
+  ></hero-header>
 </start-page-section>
 
 <start-page-section [hideBottomPadding]="true">
@@ -10,18 +13,14 @@
   <frequently-used-items></frequently-used-items>
 </start-page-section>
 
-<start-page-section [background]="'accent'" sectionTitle="News" [titleLink]="this.externalNewsFeedLink">
+<start-page-section [background]="'accent'" [titleLink]="this.externalNewsFeedLink" sectionTitle="News">
   <news-feed></news-feed>
 </start-page-section>
 
-<start-page-section sectionTitle="Entdecken" [hideBottomPadding]="true">
+<start-page-section [hideBottomPadding]="true" sectionTitle="Entdecken">
   <discover-maps></discover-maps>
 </start-page-section>
 
 <start-page-section sectionTitle="Weiterführende Informationen">
   <ktzh-link-list [linksGroups]="usefulLinksGroups"></ktzh-link-list>
-</start-page-section>
-
-<start-page-section [background]="'primary'" sectionTitle="Kontakt">
-  <contact-details></contact-details>
 </start-page-section>

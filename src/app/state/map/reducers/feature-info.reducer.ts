@@ -31,6 +31,9 @@ export const featureInfoFeature = createFeature({
     on(FeatureInfoActions.clearHighlight, (state): FeatureInfoState => {
       return {...state, highlightedFeature: undefined, pinnedFeatureId: undefined};
     }),
+    on(FeatureInfoActions.setError, (): FeatureInfoState => {
+      return {...initialState, loadingState: 'error'};
+    }),
   ),
 });
 

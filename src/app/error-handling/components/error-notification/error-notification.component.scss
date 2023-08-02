@@ -1,0 +1,15 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'mixins/material.mixin' as mat-mixins;
+
+.error-notification {
+  .error-notification__content {
+    display: flex;
+
+    .error-notification__content__actions {
+      .error-notification__content__actions__button {
+        @include mat-mixins.mat-icon-button-override-icon-size(16px);
+        @include mat-mixins.mat-icon-override-unthemed-color(ktzh-variables.$zh-red, ktzh-variables.$zh-white);
+      }
+    }
+  }
+}

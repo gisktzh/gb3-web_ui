@@ -1,0 +1,40 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'mixins/material.mixin' as mat-mixins;
+
+.fatal-error-page {
+  background-color: ktzh-variables.$zh-red;
+  color: ktzh-variables.$zh-white;
+  display: flex;
+  justify-content: center;
+  padding: 80px 24px;
+  height: 50%;
+  align-items: center;
+
+  .fatal-error-page__content {
+    display: flex;
+    gap: 32px;
+    height: fit-content;
+
+    .fatal-error-page__content__icon {
+      @include mat-mixins.mat-icon-custom-svg-size(50px);
+      height: fit-content;
+    }
+
+    .fatal-error-page__content__text {
+      display: flex;
+      flex-flow: column;
+      height: fit-content;
+
+      .fatal-error-page__content__text__error-message {
+        font-size: small;
+      }
+
+      .fatal-error-page__content__text__home-link {
+        color: ktzh-variables.$zh-white !important;
+        width: fit-content;
+        align-self: center;
+        @include mat-mixins.mat-button-ktzh-link();
+      }
+    }
+  }
+}

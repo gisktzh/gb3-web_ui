@@ -11,7 +11,7 @@ export const discoverMapsDataMock: DiscoverMapsRoot = {
       id: 'AVfarbigZH',
       image: {
         name: 'areupbackgroundzh.png',
-        path: 'assets/images/basemaps/areupbackgroundzh.png',
+        path: 'assets/images/basemaps/areavbackgroundzh.png',
         size: 106551,
         type: 'image/png',
       },
