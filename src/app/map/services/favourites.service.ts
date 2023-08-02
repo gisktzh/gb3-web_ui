@@ -5,12 +5,12 @@ import {Observable, Subscription, tap} from 'rxjs';
 import {ActiveMapItem} from '../models/active-map-item.model';
 import {Favourite, FavouriteBaseConfig, FavouritesResponse} from '../../shared/interfaces/favourite.interface';
 import {Map} from '../../shared/interfaces/topic.interface';
-import {selectAvailableMaps} from '../../state/map/selectors/available-maps.selector';
 import {produce} from 'immer';
 import {ActiveMapItemFactory} from '../../shared/factories/active-map-item.factory';
 import {ActiveMapItemConfiguration} from '../../shared/interfaces/active-map-item-configuration.interface';
 import {selectActiveMapItemConfigurations} from '../../state/map/selectors/active-map-item-configuration.selector';
 import {FavoritesDetailData} from '../../shared/models/gb3-api-generated.interfaces';
+import {selectMaps} from '../../state/map/selectors/maps.selector';
 import {selectFavouriteBaseConfig} from '../../state/map/selectors/favourite-base-config.selector';
 
 @Injectable({
@@ -19,7 +19,7 @@ import {selectFavouriteBaseConfig} from '../../state/map/selectors/favourite-bas
 export class FavouritesService implements OnDestroy {
   private activeMapItemConfigurations: ActiveMapItemConfiguration[] = [];
   private readonly activeMapItemConfigurations$ = this.store.select(selectActiveMapItemConfigurations);
-  private readonly availableMaps$ = this.store.select(selectAvailableMaps);
+  private readonly availableMaps$ = this.store.select(selectMaps);
   private availableMaps: Map[] = [];
   private readonly favouriteBaseConfig$ = this.store.select(selectFavouriteBaseConfig);
   private favouriteBaseConfig!: FavouriteBaseConfig;

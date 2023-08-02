@@ -40,7 +40,7 @@ export class Gb3MetadataService extends Gb3ApiService {
 
   public loadFullList(): Observable<OverviewMetadataItem[]> {
     return forkJoin([this.loadDatasets(), this.loadProducts(), this.loadMaps(), this.loadServices()]).pipe(
-      map((results) => results.flat()),
+      map((results) => results.flat().sort((a, b) => a.name.localeCompare(b.name))),
     );
   }
 

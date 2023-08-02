@@ -1,8 +1,7 @@
 <!-- todo: add heroheader once errorhandler is implemented -->
 <loading-and-process-bar [loadingState]="loadingState"></loading-and-process-bar>
 <div class="data-catalogue-overview">
-  <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
-
+  <mat-paginator [pageSize]="20" showFirstLastButtons hidePageSize pageIndex="5"></mat-paginator>
   <cdk-table [dataSource]="dataCatalogueItems">
     <ng-container cdkColumnDef="data">
       <cdk-cell *cdkCellDef="let row">

@@ -13,7 +13,10 @@ export const dataCatalogueFeature = createFeature({
   name: dataCatalogueFeatureKey,
   reducer: createReducer(
     initialState,
-    on(DataCatalogueActions.loadCatalogue, (): DataCatalogueState => {
+    on(DataCatalogueActions.loadCatalogue, (state): DataCatalogueState => {
+      if (state.loadingState === 'loaded') {
+        return state;
+      }
       return {...initialState, loadingState: 'loading'};
     }),
     on(DataCatalogueActions.setCatalogue, (state, {items}): DataCatalogueState => {
