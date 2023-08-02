@@ -9,11 +9,13 @@
   class="active-map-item"
   [ngClass]="{'active-map-item--expanded': activeMapItemExpansionPanel.expanded}"
 >
-  <mat-expansion-panel-header (click)="activeMapItemExpansionPanel.toggle()" class="active-map-item__header">
+  <mat-expansion-panel-header class="active-map-item__header">
+    <!-- the `stopPropagation` prevents the expansion panel from opening by just clicking somewhere on the header -->
     <active-map-item-header
       class="active-map-item__header__item"
       [activeMapItem]="activeMapItem"
       [activeMapItemExpansionPanel]="activeMapItemExpansionPanel"
+      (click)="$event.stopPropagation()"
     >
       <ng-container activeMapItemDragHandle>
         <ng-content select="[activeMapItemDragHandle]"></ng-content>
