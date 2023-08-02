@@ -75,7 +75,7 @@ export class FavouritesService implements OnDestroy {
           const subLayer = existingMap.layers.find((layer) => layer.id === configuration.layers[0].id);
 
           if (!subLayer) {
-            throw new FavouriteIsInvalid(`Der Layer ${configuration.layers[0].layer} existiert nicht (mehr).`);
+            throw new FavouriteIsInvalid(`Der Layer '${configuration.layers[0].layer}' existiert nicht (mehr).`);
           }
           activeMapItems.push(
             ActiveMapItemFactory.createGb2WmsMapItem(existingMap, subLayer, configuration.visible, configuration.opacity),
@@ -97,7 +97,7 @@ export class FavouritesService implements OnDestroy {
           );
         }
       } else {
-        throw new FavouriteIsInvalid(`Die Karte ${configuration.mapId} existiert nicht (mehr).`);
+        throw new FavouriteIsInvalid(`Die Karte '${configuration.mapId}' existiert nicht (mehr).`);
       }
     });
 

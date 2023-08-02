@@ -142,10 +142,9 @@ describe('ErrorHandlerService', () => {
 
       service.handleError(testError);
 
-      expect(console.warn).toHaveBeenCalledOnceWith('Original error was:');
       expect(console.error).toHaveBeenCalledTimes(2);
       expect(console.error).toHaveBeenCalledWith(testError);
-      expect(console.error).toHaveBeenCalledWith(testWrappedError);
+      expect(console.error).toHaveBeenCalledWith('Original error was:', testWrappedError);
     });
   });
 });

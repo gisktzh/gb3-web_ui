@@ -21,13 +21,12 @@ export class ErrorHandlerService implements ErrorHandler {
   ) {}
 
   public async handleError(error: any): Promise<void> {
-    // log errors to console for easier debugging in production
+    // log errors to console for easier debugging in non-productive environments
     if (!environment.production) {
       console.error(error);
 
       if (error instanceof Gb3RuntimeError && error.originalError) {
-        console.warn('Original error was:');
-        console.error(error.originalError);
+        console.error('Original error was:', error.originalError);
       }
     }
 

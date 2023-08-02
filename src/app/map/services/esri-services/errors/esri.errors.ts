@@ -9,5 +9,5 @@ export class UnsupportedGeometryType extends RecoverableError {
 }
 
 export class MapViewNotInitialized extends FatalError {
-  public override message = 'Mapview ist nicht initialisiert.';
+  public override message = 'Es ist ein technischer Fehler während dem Initialisieren der Karte aufgetreten.';
 }
