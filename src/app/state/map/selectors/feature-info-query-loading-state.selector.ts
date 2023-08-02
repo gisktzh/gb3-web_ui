@@ -23,7 +23,7 @@ export const selectFeatureInfoQueryLoadingState = createSelector<Record<string, 
       return 'loading';
     }
 
-    if (featureInfoLoadingState === 'loaded' || generalInfoLoadingState === 'loaded') {
+    if (featureInfoLoadingState === 'loaded' && generalInfoLoadingState === 'loaded') {
       return 'loaded';
     }
 
