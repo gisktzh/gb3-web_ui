@@ -1,10 +1,12 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {HasSavingState} from '../../../shared/interfaces/has-saving-state.interface';
 import {LoadingState} from '../../../shared/types/loading-state';
-import {Subscription, tap} from 'rxjs';
+import {filter, Subscription, tap} from 'rxjs';
 import {MatDialogRef} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
 import {selectId, selectSavingState} from '../../../state/map/reducers/share-link.reducer';
+import {Router} from '@angular/router';
+import {MainPage} from '../../../shared/enums/main-page.enum';
 
 @Component({
   selector: 'share-link-dialog',
@@ -12,7 +14,7 @@ import {selectId, selectSavingState} from '../../../state/map/reducers/share-lin
   styleUrls: ['./share-link-dialog.component.scss'],
 })
 export class ShareLinkDialogComponent implements OnInit, OnDestroy, HasSavingState {
-  public shareLink?: string;
+  public shareLinkUrl?: string;
   public iframeCode?: string;
   public savingState: LoadingState = 'undefined';
 
@@ -23,6 +25,7 @@ export class ShareLinkDialogComponent implements OnInit, OnDestroy, HasSavingSta
   constructor(
     private readonly dialogRef: MatDialogRef<ShareLinkDialogComponent>,
     private readonly store: Store,
+    private readonly router: Router,
   ) {}
 
   public ngOnInit() {
@@ -38,8 +41,11 @@ export class ShareLinkDialogComponent implements OnInit, OnDestroy, HasSavingSta
     this.subscriptions.add(
       this.shareLinkId$
         .pipe(
-          tap((shareLinkId) => {
-            this.shareLink = shareLinkId; // TODO WES: ID => url
+          filter((id) => id !== undefined),
+          tap((id) => {
+            const baseUrl = window.location.origin;
+            const relativeUrl = this.router.createUrlTree([MainPage.ShareLink, id]).toString();
+            this.shareLinkUrl = new URL(relativeUrl, baseUrl).toString();
           }),
         )
         .subscribe(),

@@ -7,6 +7,7 @@ export const shareLinkFeatureKey = 'shareLink';
 export const initialState: ShareLinkState = {
   item: undefined,
   id: undefined,
+  initializeApplicationLoadingState: 'undefined',
   loadingState: 'undefined',
   savingState: 'undefined',
 };
@@ -27,7 +28,14 @@ export const shareLinkFeature = createFeature({
     on(ShareLinkActions.setShareLinkId, (state, {id}): ShareLinkState => {
       return {...state, id, savingState: 'loaded'};
     }),
+    on(ShareLinkActions.initializeApplicationBasedOnShareLinkId, (state): ShareLinkState => {
+      return {...state, initializeApplicationLoadingState: 'loading'};
+    }),
+    on(ShareLinkActions.completeApplicationInitialization, (state): ShareLinkState => {
+      return {...state, initializeApplicationLoadingState: 'loaded'};
+    }),
   ),
 });
 
-export const {name, reducer, selectItem, selectLoadingState, selectId, selectSavingState} = shareLinkFeature;
+export const {name, reducer, selectItem, selectLoadingState, selectId, selectSavingState, selectInitializeApplicationLoadingState} =
+  shareLinkFeature;

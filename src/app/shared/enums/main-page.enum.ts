@@ -4,6 +4,7 @@ export enum MainPage {
   Data = 'data',
   Support = 'support',
   Auth = 'auth',
+  ShareLink = 's',
   Error = 'error',
   NotFound = 'not-found',
 }

@@ -35,5 +35,6 @@ export const ActiveMapItemActions = createActionGroup({
     'Add Favourite': props<{activeMapItems: ActiveMapItem[]; baseConfig: FavouriteBaseConfig}>(),
     'Add Initial Map Items': props<{initialMapItems: ActiveMapItem[]}>(),
     'Mark All Active Map Item Notice As Read': emptyProps(),
+    'Set Active Map Items': props<{activeMapItems: ActiveMapItem[]}>(),
   },
 });

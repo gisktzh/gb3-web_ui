@@ -1,5 +1,4 @@
 import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
 import {SupportPageComponent} from './support-page.component';
 import {SupportPageRoutingModule} from './support-page-routing.module';
 import {SharedModule} from '../shared/shared.module';
@@ -10,6 +9,6 @@ import {KtZhDesignSystemModule} from '../kt-zh-design-system/kt-zh-design-system
 
 @NgModule({
   declarations: [SupportPageComponent, FaqComponent, ContactComponent, UsefulLinksComponent],
-  imports: [CommonModule, SharedModule, SupportPageRoutingModule, KtZhDesignSystemModule],
+  imports: [SharedModule, SupportPageRoutingModule, KtZhDesignSystemModule],
 })
 export class SupportPageModule {}

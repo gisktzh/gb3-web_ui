@@ -13,6 +13,7 @@ const routes: Routes = [
       {path: MainPage.Data, loadChildren: () => import('./data-catalogue/data-catalogue.module').then((m) => m.DataCatalogueModule)},
       {path: MainPage.Support, loadChildren: () => import('./support-page/support-page.module').then((m) => m.SupportPageModule)},
       {path: MainPage.Start, loadChildren: () => import('./start-page/start-page.module').then((m) => m.StartPageModule)},
+      {path: MainPage.ShareLink, loadChildren: () => import('./share-link/share-link.module').then((m) => m.ShareLinkModule)},
       {path: MainPage.Error, component: FatalErrorPageComponent},
       {path: MainPage.NotFound, component: NotFoundErrorPageComponent},
       {path: '**', component: NotFoundErrorPageComponent},

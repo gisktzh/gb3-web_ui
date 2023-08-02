@@ -1,0 +1,9 @@
+<div class="share-link-redirect">
+  <div class="share-link-redirect__header">
+    <mat-spinner [diameter]="20" class="redirect__header__item"></mat-spinner>
+    <span class="redirect__header__item">Prüfe Link {{ id ?? '' }}...</span>
+  </div>
+  <p class="mat-caption">
+    Falls nichts passiert, klicken Sie auf bitte <a [routerLink]="[mainPageEnum.Start]">hier</a> oder nutzen Sie die Navigation.
+  </p>
+</div>

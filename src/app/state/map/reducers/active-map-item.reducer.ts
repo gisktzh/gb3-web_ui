@@ -166,6 +166,9 @@ export const activeMapItemFeature = createFeature({
         });
       }),
     ),
+    on(ActiveMapItemActions.setActiveMapItems, (state, {activeMapItems}): ActiveMapItemState => {
+      return {...state, items: activeMapItems};
+    }),
   ),
 });
 
