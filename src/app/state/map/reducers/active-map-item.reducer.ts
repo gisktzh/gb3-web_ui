@@ -146,11 +146,11 @@ export const activeMapItemFeature = createFeature({
         });
       }),
     ),
-    on(ActiveMapItemActions.addFavourite, (state, {favourite}): ActiveMapItemState => {
-      const favouriteIds = favourite.map((fav) => fav.id);
+    on(ActiveMapItemActions.addFavourite, (state, {activeMapItems}): ActiveMapItemState => {
+      const favouriteIds = activeMapItems.map((activeMapItem) => activeMapItem.id);
       const activeMapItemsToStay = state.items.filter((activeMapItem) => !favouriteIds.includes(activeMapItem.id));
 
-      return {...state, items: [...favourite, ...activeMapItemsToStay]};
+      return {...state, items: [...activeMapItems, ...activeMapItemsToStay]};
     }),
     on(ActiveMapItemActions.addInitialMapItems, (state, {initialMapItems}): ActiveMapItemState => {
       const initialMapItemIds = initialMapItems.map((initialMapItem) => initialMapItem.id);

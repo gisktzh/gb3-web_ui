@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Gb3ApiService} from './gb3-api.service';
-import {CreateCreateData, CreateCreatePayload, InfoJsonListData} from '../../../models/gb3-api-generated.interfaces';
+import {CreateCreateData, InfoJsonListData, PrintNew} from '../../../models/gb3-api-generated.interfaces';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {PrintCreation, PrintCreationResponse, PrintInfo, PrintOrientation} from '../../../interfaces/print.interface';
@@ -18,8 +18,8 @@ export class Gb3PrintService extends Gb3ApiService {
   }
 
   public createPrintJob(printCreation: PrintCreation): Observable<PrintCreationResponse> {
-    const createCreatePayload: CreateCreatePayload = this.mapPrintCreationToCreateCreatePayload(printCreation);
-    return this.post<CreateCreatePayload, CreateCreateData>(this.createCreateUrl(), createCreatePayload, this.postHeaders).pipe(
+    const createCreatePayload: PrintNew = this.mapPrintCreationToCreateCreatePayload(printCreation);
+    return this.post<PrintNew, CreateCreateData>(this.createCreateUrl(), createCreatePayload, this.postHeaders).pipe(
       map((response) => {
         return {...response};
       }),
@@ -60,7 +60,7 @@ export class Gb3PrintService extends Gb3ApiService {
     };
   }
 
-  private mapPrintCreationToCreateCreatePayload(printCreation: PrintCreation): CreateCreatePayload {
+  private mapPrintCreationToCreateCreatePayload(printCreation: PrintCreation): PrintNew {
     return {
       dpi: printCreation.dpi,
       layout: this.transformSizeAndOrientationToLayoutName(printCreation.layoutSize, printCreation.layoutOrientation),

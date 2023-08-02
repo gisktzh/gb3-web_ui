@@ -4,6 +4,7 @@ import {LoadingState} from '../../../shared/types/loading-state';
 import {ViewProcessState} from '../../../shared/types/view-process-state';
 import {TimeExtent} from '../../../map/interfaces/time-extent.interface';
 import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
+import {FavouriteBaseConfig} from '../../../shared/interfaces/favourite.interface';
 
 export const ActiveMapItemActions = createActionGroup({
   source: 'ActiveMapItem',
@@ -31,7 +32,7 @@ export const ActiveMapItemActions = createActionGroup({
       attributeFilterParameter: string;
       activeMapItem: Gb2WmsActiveMapItem;
     }>(),
-    'Add Favourite': props<{favourite: ActiveMapItem[]}>(),
+    'Add Favourite': props<{activeMapItems: ActiveMapItem[]; baseConfig: FavouriteBaseConfig}>(),
     'Add Initial Map Items': props<{initialMapItems: ActiveMapItem[]}>(),
     'Mark All Active Map Item Notice As Read': emptyProps(),
   },
