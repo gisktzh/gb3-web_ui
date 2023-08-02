@@ -16,6 +16,7 @@ import {reducer as appLayoutReducer} from './app/reducers/app-layout.reducer';
 import {reducer as printReducer} from './map/reducers/print.reducer';
 import {reducer as mapUiReducer} from './map/reducers/map-ui.reducer';
 import {reducer as shareLinkReducer} from './map/reducers/share-link.reducer';
+import {reducer as dataCatalogueReducer} from './data-catalogue/reducers/data-catalogue.reducer';
 import {ActiveMapItemState} from './map/states/active-map-item.state';
 import {FavouriteListState} from './map/states/favourite-list.state';
 import {FeatureInfoState} from './map/states/feature-info.state';
@@ -47,6 +48,8 @@ import {PrintEffects} from './map/effects/print.effects';
 import {MapUiEffects} from './map/effects/map-ui.effects';
 import {ShareLinkEffects} from './map/effects/share-link.effects';
 import {ToolEffects} from './map/effects/tool.effects';
+import {DataCatalogueState} from './data-catalogue/states/data-catalogue.state';
+import {DataCatalogueEffects} from './data-catalogue/effects/data-catalogue.effects';
 
 export interface State {
   mapConfig: MapConfigState;
@@ -66,6 +69,7 @@ export interface State {
   mapUi: MapUiState;
   tool: ToolState;
   shareLink: ShareLinkState;
+  dataCatalogue: DataCatalogueState;
 }
 
 export const reducers: ActionReducerMap<State> = {
@@ -86,6 +90,7 @@ export const reducers: ActionReducerMap<State> = {
   mapUi: mapUiReducer,
   tool: toolReducer,
   shareLink: shareLinkReducer,
+  dataCatalogue: dataCatalogueReducer,
 };
 
 export const effects = [
@@ -103,6 +108,7 @@ export const effects = [
   MapUiEffects,
   ShareLinkEffects,
   ToolEffects,
+  DataCatalogueEffects,
 ];
 
 export const metaReducers: MetaReducer<State>[] = [];

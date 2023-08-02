@@ -1,2 +1,6 @@
 <!-- todo: add heroheader once errorhandler is implemented -->
-<h1>Hello</h1>
+<loading-and-process-bar [loadingState]="loadingState"></loading-and-process-bar>
+<div *ngIf="loadingState === 'loaded'">
+  <li *ngFor="let item of dataCatalogueItems">{{ item.name }}</li>
+  <div></div>
+</div>

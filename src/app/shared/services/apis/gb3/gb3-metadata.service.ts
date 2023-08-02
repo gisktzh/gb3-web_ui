@@ -15,7 +15,7 @@ import {
   Product,
   Service,
 } from '../../../models/gb3-api-generated.interfaces';
-import {forkJoin, Observable, tap} from 'rxjs';
+import {forkJoin, Observable} from 'rxjs';
 import {
   DatasetMetadata,
   DepartmentalContact,
@@ -27,6 +27,7 @@ import {map} from 'rxjs/operators';
 import {
   DatasetOverviewMetadataItem,
   MapOverviewMetadataItem,
+  OverviewMetadataItem,
   ProductOverviewMetadataItem,
   ServiceOverviewMetadataItem,
 } from '../../../models/overview-metadata-item.model';
@@ -37,8 +38,10 @@ import {
 export class Gb3MetadataService extends Gb3ApiService {
   protected endpoint: string = 'metadata';
 
-  public loadFullList() {
-    return forkJoin([this.loadDatasets(), this.loadProducts(), this.loadMaps(), this.loadServices()]).pipe(tap((r) => console.log(r)));
+  public loadFullList(): Observable<OverviewMetadataItem[]> {
+    return forkJoin([this.loadDatasets(), this.loadProducts(), this.loadMaps(), this.loadServices()]).pipe(
+      map((results) => results.flat()),
+    );
   }
 
   public loadDatasetDetail(id: string): Observable<DatasetMetadata> {
