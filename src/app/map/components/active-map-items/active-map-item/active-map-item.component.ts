@@ -1,6 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {ActiveMapItem} from '../../../models/active-map-item.model';
-import {slideInOutAnimation} from '../../../../shared/animations/slideInOut.animation';
 
 type TabType = 'layers' | 'settings';
 
@@ -8,7 +7,6 @@ type TabType = 'layers' | 'settings';
   selector: 'active-map-item',
   templateUrl: './active-map-item.component.html',
   styleUrls: ['./active-map-item.component.scss'],
-  animations: [slideInOutAnimation],
 })
 export class ActiveMapItemComponent implements OnInit {
   @Input() public activeMapItem!: ActiveMapItem;
