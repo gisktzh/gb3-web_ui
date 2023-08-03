@@ -22,6 +22,9 @@ export const dataCatalogueFeature = createFeature({
     on(DataCatalogueActions.setCatalogue, (state, {items}): DataCatalogueState => {
       return {...state, items, loadingState: 'loaded'};
     }),
+    on(DataCatalogueActions.setError, (): DataCatalogueState => {
+      return {...initialState, loadingState: 'error'};
+    }),
   ),
 });
 

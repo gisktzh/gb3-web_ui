@@ -21,5 +21,6 @@
         <cdk-row *cdkRowDef="let row; columns: ['data']"></cdk-row>
       </cdk-table>
     </ng-container>
+    <b *ngIf="loadingState === 'error'">Fehler beim Laden der Metadatenübersicht.</b>
   </div>
 </div>

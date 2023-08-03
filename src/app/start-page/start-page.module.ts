@@ -24,6 +24,5 @@ import {FrequentlyUsedItemsComponent} from './components/frequently-used-items/f
     FrequentlyUsedItemsComponent,
   ],
   imports: [CommonModule, SharedModule, StartPageRoutingModule, KtZhDesignSystemModule],
-  exports: [],
 })
 export class StartPageModule {}
