@@ -19,6 +19,7 @@ import {forkJoin, Observable} from 'rxjs';
 import {
   DatasetMetadata,
   DepartmentalContact,
+  LinkedDataset,
   MapMetadata,
   ProductMetadata,
   ServiceMetadata,
@@ -122,7 +123,11 @@ export class Gb3MetadataService extends Gb3ApiService {
 
   private transformDatasetsDetailDataToDatasetMetadata(dataset: Dataset): DatasetMetadata {
     return {
-      ...dataset,
+      name: dataset.name,
+      maps: dataset.maps.map(({guid, name, topic}) => ({guid, name, topic})),
+      guid: dataset.guid,
+      keywords: dataset.keywords,
+      products: dataset.products.map(({name, guid}) => ({name, guid})),
       shortDescription: dataset.kurzbeschreibung,
       description: dataset.beschreibung,
       remarks: dataset.bemerkungen,
@@ -141,24 +146,25 @@ export class Gb3MetadataService extends Gb3ApiService {
         dataProcurementType: layer.datenbezugart,
         metadataVisibility: layer.metadaten_sichtbarkeit,
         description: layer.beschreibung,
-        ...layer,
+        guid: layer.guid,
+        name: layer.name,
       })),
       services: dataset.services.map((service) => ({
         serviceType: service.servicetyp,
-        ...service,
+        guid: service.guid,
+        name: service.name,
       })),
     };
   }
 
   private transformMapsDetailToMapMetadata(mapData: Map): MapMetadata {
     return {
-      ...mapData,
+      topic: mapData.topic,
+      guid: mapData.guid,
+      name: mapData.name,
       description: mapData.beschreibung,
       imageUrl: mapData.image_url,
-      datasets: mapData.datasets.map((dataset) => ({
-        shortDescription: dataset.kurzbeschreibung,
-        ...dataset,
-      })),
+      datasets: mapData.datasets.map(this.extractDatasetDetail),
       contact: {
         geodata: this.extractContactDetails(mapData.kontakt.geodaten),
       },
@@ -167,15 +173,15 @@ export class Gb3MetadataService extends Gb3ApiService {
 
   private transformServicesDetailToServiceMetadata(service: Service): ServiceMetadata {
     return {
-      ...service,
+      guid: service.guid,
+      name: service.name,
+      url: service.url,
+      version: service.version,
       access: service.zugang,
       contact: {
         metadata: this.extractContactDetails(service.kontakt.metadaten),
       },
-      datasets: service.datasets.map((dataset) => ({
-        shortDescription: dataset.kurzbeschreibung,
-        ...dataset,
-      })),
+      datasets: service.datasets.map(this.extractDatasetDetail),
       serviceType: service.servicetyp,
       description: service.beschreibung,
       imageUrl: service.image_url,
@@ -184,16 +190,33 @@ export class Gb3MetadataService extends Gb3ApiService {
 
   private transformProductDetailToProductMetadata(product: Product): ProductMetadata {
     return {
-      ...product,
+      guid: product.guid,
+      name: product.name,
       contact: {
         metadata: this.extractContactDetails(product.kontakt.metadaten),
       },
       description: product.beschreibung,
       imageUrl: product.image_url,
-      datasets: product.datasets.map((dataset) => ({
-        shortDescription: dataset.kurzbeschreibung,
-        ...dataset,
-      })),
+      datasets: product.datasets.map(this.extractDatasetDetail),
+    };
+  }
+
+  /**
+   * Extracts a dataset detail in the correct way for usage within MetadataDetailPages
+   * @param dataset
+   * @private
+   */
+  private extractDatasetDetail<
+    T extends (
+      | MetadataMapsDetailData['map']
+      | MetadataProductsDetailData['product']
+      | MetadataServicesDetailData['service']
+    )['datasets'][number],
+  >(dataset: T): LinkedDataset {
+    return {
+      shortDescription: dataset.kurzbeschreibung,
+      guid: dataset.guid,
+      name: dataset.name,
     };
   }
 

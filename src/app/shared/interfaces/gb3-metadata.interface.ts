@@ -60,6 +60,12 @@ export interface DatasetMetadata {
   }[];
 }
 
+export interface LinkedDataset {
+  guid: number;
+  name: string;
+  shortDescription: string;
+}
+
 export interface MapMetadata {
   guid: number;
   topic: string;
@@ -70,11 +76,7 @@ export interface MapMetadata {
     /** Responsible for geodata */
     geodata: DepartmentalContact;
   };
-  datasets: {
-    guid: number;
-    name: string;
-    shortDescription: string;
-  }[];
+  datasets: LinkedDataset[];
 }
 
 export interface ServiceMetadata {
@@ -90,11 +92,7 @@ export interface ServiceMetadata {
     /** Kontakt: Zuständig für Geometadaten */
     metadata: DepartmentalContact;
   };
-  datasets: {
-    guid: number;
-    name: string;
-    shortDescription: string;
-  }[];
+  datasets: LinkedDataset[];
 }
 
 export interface ProductMetadata {
@@ -106,9 +104,5 @@ export interface ProductMetadata {
     /** Kontakt: Zuständig für Geometadaten */
     metadata: DepartmentalContact;
   };
-  datasets: {
-    guid: number;
-    name: string;
-    shortDescription: string;
-  }[];
+  datasets: LinkedDataset[];
 }
