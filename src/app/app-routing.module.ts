@@ -1,8 +1,17 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
+import {inject, NgModule} from '@angular/core';
+import {CanActivateFn, RouterModule, Routes} from '@angular/router';
 import {MainPage} from './shared/enums/main-page.enum';
+import {AuthService} from './auth/auth.service';
+import {filter, Observable} from 'rxjs';
 import {NotFoundErrorPageComponent} from './error-handling/components/not-found-error-page/not-found-error-page.component';
 import {FatalErrorPageComponent} from './error-handling/components/fatal-error-page/fatal-error-page.component';
+
+/**
+ * This guard waits for the authentication service to finish loading the current login-state.
+ */
+export const AuthLoadingGuard: CanActivateFn = (): Observable<boolean> => {
+  return inject(AuthService).isDoneLoading$.pipe(filter((isDoneLoading) => isDoneLoading));
+};
 
 const routes: Routes = [
   {
@@ -13,7 +22,11 @@ const routes: Routes = [
       {path: MainPage.Data, loadChildren: () => import('./data-catalogue/data-catalogue.module').then((m) => m.DataCatalogueModule)},
       {path: MainPage.Support, loadChildren: () => import('./support-page/support-page.module').then((m) => m.SupportPageModule)},
       {path: MainPage.Start, loadChildren: () => import('./start-page/start-page.module').then((m) => m.StartPageModule)},
-      {path: MainPage.ShareLink, loadChildren: () => import('./share-link/share-link.module').then((m) => m.ShareLinkModule)},
+      {
+        path: MainPage.ShareLink,
+        loadChildren: () => import('./share-link/share-link.module').then((m) => m.ShareLinkModule),
+        canActivate: [AuthLoadingGuard],
+      },
       {path: MainPage.Error, component: FatalErrorPageComponent},
       {path: MainPage.NotFound, component: NotFoundErrorPageComponent},
       {path: '**', component: NotFoundErrorPageComponent},

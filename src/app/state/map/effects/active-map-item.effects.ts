@@ -203,18 +203,6 @@ export class ActiveMapItemEffects {
     );
   });
 
-  public setActiveMapItemsToTheMap$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(ActiveMapItemActions.setActiveMapItems),
-      tap(({activeMapItems}) => {
-        activeMapItems.forEach((activeMapItem) => {
-          activeMapItem.addToMap(this.mapService, 0);
-        });
-      }),
-      map(() => MapConfigActions.clearInitialMapsConfig()),
-    );
-  });
-
   constructor(
     private readonly actions$: Actions,
     @Inject(MAP_SERVICE) private readonly mapService: MapService,

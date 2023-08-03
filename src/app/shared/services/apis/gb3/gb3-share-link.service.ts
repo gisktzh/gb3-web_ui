@@ -15,9 +15,10 @@ export class Gb3ShareLinkService extends Gb3ApiService {
     return of({
       basemapId: 'arelkbackgroundzh',
       center: {x: 2675158, y: 1259964},
-      scale: 320000,
+      scale: 18000,
       content: [
         {
+          id: 'StatGebAlterZH',
           mapId: 'StatGebAlterZH',
           layers: [
             {
@@ -36,11 +37,12 @@ export class Gb3ShareLinkService extends Gb3ApiService {
               visible: true,
             },
           ],
-          opacity: 1,
+          opacity: 0.5,
           visible: true,
           isSingleLayer: false,
         },
         {
+          id: 'Lageklassen2003ZH',
           mapId: 'Lageklassen2003ZH',
           layers: [
             {

@@ -13,7 +13,11 @@ import {Router} from '@angular/router';
 })
 export class AuthService {
   private readonly isAuthenticatedSubject$ = new BehaviorSubject<boolean>(false);
+  private readonly isDoneLoadingSubject$ = new BehaviorSubject<boolean>(false);
+
   public readonly isAuthenticated$ = this.isAuthenticatedSubject$.asObservable();
+  public readonly isDoneLoading$ = this.isDoneLoadingSubject$.asObservable();
+
   private readonly isAuthenticatedCheckInterval$: Subscription = new Subscription();
 
   constructor(
@@ -27,6 +31,10 @@ export class AuthService {
 
       if (isDevMode()) {
         this.enableOauthDebug(event);
+      }
+
+      if (event.type === 'discovery_document_loaded') {
+        this.isDoneLoadingSubject$.next(true);
       }
     });
 
