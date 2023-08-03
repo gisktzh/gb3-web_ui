@@ -4,4 +4,6 @@ export enum MainPage {
   Data = 'data',
   Support = 'support',
   Auth = 'auth',
+  Error = 'error',
+  NotFound = 'not-found',
 }

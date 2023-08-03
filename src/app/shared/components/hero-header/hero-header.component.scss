@@ -22,5 +22,10 @@ $left-offset: calc(16.66667% - 1.5rem);
     font-family: ktzh-variables.$zh-font-family-bold;
     font-size: large;
     margin-left: $left-offset;
+
+    &--subtext {
+      font-family: ktzh-variables.$zh-font-family;
+      font-size: small;
+    }
   }
 }

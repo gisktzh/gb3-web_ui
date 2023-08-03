@@ -18,44 +18,34 @@ import {KeyValuePreserveOrderPipe} from './pipes/key-value-preserve-order.pipe';
 import {AppendMapConfigurationToUrlPipe} from './pipes/append-map-configuration-to-url.pipe';
 import {LayerTooltipPipe} from './pipes/layer-tooltip.pipe';
 import {DescriptiveHighlightedLinkComponent} from './components/descriptive-highlighted-link/descriptive-highlighted-link.component';
+import {HeroHeaderComponent} from './components/hero-header/hero-header.component';
+import {StartPageSectionComponent} from './components/start-page-section/start-page-section.component';
+import {ContactDetailsComponent} from './components/contact-details/contact-details.component';
+import {ContactDetailComponent} from './components/contact-details/contact-detail/contact-detail.component';
 
+const declaredAndExportedModules = [
+  BasemapImageLinkPipe,
+  NavbarComponent,
+  LoadingAndProcessBarComponent,
+  HighlightSearchQueryPipe,
+  ResizeHandlerComponent,
+  DragCursorDirective,
+  MobileWarningComponent,
+  FormatContentPipe,
+  PageNotificationComponent,
+  MainFooterComponent,
+  ScrollbarWidthCalculationComponent,
+  KeyValuePreserveOrderPipe,
+  AppendMapConfigurationToUrlPipe,
+  LayerTooltipPipe,
+  DescriptiveHighlightedLinkComponent,
+  HeroHeaderComponent,
+  StartPageSectionComponent,
+  ContactDetailsComponent,
+];
 @NgModule({
-  declarations: [
-    BasemapImageLinkPipe,
-    NavbarComponent,
-    LoadingAndProcessBarComponent,
-    HighlightSearchQueryPipe,
-    ResizeHandlerComponent,
-    DragCursorDirective,
-    MobileWarningComponent,
-    FormatContentPipe,
-    PageNotificationComponent,
-    MainFooterComponent,
-    ScrollbarWidthCalculationComponent,
-    KeyValuePreserveOrderPipe,
-    AppendMapConfigurationToUrlPipe,
-    LayerTooltipPipe,
-    DescriptiveHighlightedLinkComponent,
-  ],
+  declarations: [...declaredAndExportedModules, ContactDetailComponent],
   imports: [MaterialModule, RouterModule, CommonModule, ResizableModule],
-  exports: [
-    MaterialModule,
-    BasemapImageLinkPipe,
-    NavbarComponent,
-    LoadingAndProcessBarComponent,
-    HighlightSearchQueryPipe,
-    ResizableModule,
-    ResizeHandlerComponent,
-    DragCursorDirective,
-    MobileWarningComponent,
-    FormatContentPipe,
-    PageNotificationComponent,
-    MainFooterComponent,
-    ScrollbarWidthCalculationComponent,
-    KeyValuePreserveOrderPipe,
-    AppendMapConfigurationToUrlPipe,
-    LayerTooltipPipe,
-    DescriptiveHighlightedLinkComponent,
-  ],
+  exports: [MaterialModule, ResizableModule, ...declaredAndExportedModules],
 })
 export class SharedModule {}

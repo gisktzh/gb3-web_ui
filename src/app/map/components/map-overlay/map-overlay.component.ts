@@ -8,6 +8,7 @@ import {StyleExpression} from '../../../shared/types/style-expression';
   styleUrls: ['./map-overlay.component.scss'],
 })
 export class MapOverlayComponent {
+  @Input() public isPrintButtonEnabled: boolean = false;
   @Input() public isVisible: boolean = false;
   @Input() public overlayTitle: string = '';
   @Input() public location: ResizeHandlerLocation = 'left';

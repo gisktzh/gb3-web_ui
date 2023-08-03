@@ -623,7 +623,7 @@ export class EsriMapService implements MapService, OnDestroy {
     this.mapView = new EsriMapView({
       map: map,
       ui: {
-        components: ['attribution'], // todo: may be removed, check licensing
+        components: ['attribution'],
       },
       scale: scale,
       center: new EsriPoint({x, y, spatialReference}),

@@ -2,12 +2,14 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MatDialogRef} from '@angular/material/dialog';
 import {FormControl, ValidatorFn, Validators} from '@angular/forms';
 import {FavouritesService} from '../../services/favourites.service';
-import {EMPTY, Subscription, tap} from 'rxjs';
+import {Subscription, tap} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {HasSavingState} from '../../../shared/interfaces/has-saving-state.interface';
 import {FavouriteListActions} from '../../../state/map/actions/favourite-list.actions';
 import {Store} from '@ngrx/store';
 import {LoadingState} from '../../../shared/types/loading-state';
+
+import {FavouriteCouldNotBeCreated} from '../../../shared/errors/favourite.errors';
 
 const FAVOURITE_NAME_CONSTRAINTS: ValidatorFn[] = [Validators.minLength(1), Validators.required, Validators.pattern(/\S/)];
 
@@ -55,9 +57,9 @@ export class FavouriteCreationDialogComponent implements OnInit, OnDestroy, HasS
               this.store.dispatch(FavouriteListActions.loadFavourites());
               this.close();
             }),
-            catchError(() => {
+            catchError((err: unknown) => {
               this.savingState = 'error';
-              return EMPTY;
+              throw new FavouriteCouldNotBeCreated(err);
             }),
           )
           .subscribe(),

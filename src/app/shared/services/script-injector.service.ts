@@ -4,6 +4,8 @@ import {map} from 'rxjs/operators';
 import {LoadingState} from '../types/loading-state';
 import {ConfigService} from './config.service';
 
+import {TwitterFeedCouldNotBeLoaded} from '../errors/start-page.errors';
+
 interface InjectableExternalScript {
   src: string;
   type: string;
@@ -63,7 +65,7 @@ export class ScriptInjectorService {
       filter(([isLoaded, _]) => isLoaded !== 'loading'),
       map(([isLoaded, _]) => {
         if (isLoaded === 'error') {
-          throw new Error('Error loading twitter feed.'); // todo: add error classes for overall app
+          throw new TwitterFeedCouldNotBeLoaded();
         }
         return twttr;
       }),

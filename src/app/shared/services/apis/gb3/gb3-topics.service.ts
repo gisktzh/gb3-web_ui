@@ -20,6 +20,8 @@ import {SupportedSrs} from '../../../types/supported-srs';
 import {DataCataloguePage} from '../../../enums/data-catalogue-page.enum';
 import {MainPage} from '../../../enums/main-page.enum';
 
+import {InvalidTimeSliderConfiguration} from '../../../errors/map.errors';
+
 const FEATURE_INFO_SRS: SupportedSrs = 2056;
 
 @Injectable({
@@ -193,7 +195,8 @@ export class Gb3TopicsService extends Gb3ApiService {
     switch (timeSliderSourceType) {
       case 'parameter':
         if (!source.startRangeParameter || !source.endRangeParameter || !source.layerIdentifiers) {
-          throw new Error(`Invalid time slider configuration! Missing attributes inside the parameter configuration.`); // todo error handling
+          throw new InvalidTimeSliderConfiguration('Missing attributes inside the parameter configuration.');
+          // handling
         }
         return {
           startRangeParameter: source.startRangeParameter,
@@ -202,7 +205,7 @@ export class Gb3TopicsService extends Gb3ApiService {
         } as TimeSliderParameterSource;
       case 'layer':
         if (!source.layers) {
-          throw new Error(`Invalid time slider configuration! Missing attributes inside the layer configuration.`); // todo error handling
+          throw new InvalidTimeSliderConfiguration('Missing attributes inside the layer configuration.');
         }
         return {
           layers: source.layers.map((layer) => {

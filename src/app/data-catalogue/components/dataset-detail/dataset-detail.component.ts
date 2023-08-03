@@ -1,5 +1,5 @@
 import {Component, Inject} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Gb3MetadataService} from '../../../shared/services/apis/gb3/gb3-metadata.service';
 import {DatasetMetadata} from '../../../shared/interfaces/gb3-metadata.interface';
 import {ConfigService} from '../../../shared/services/config.service';
@@ -8,6 +8,7 @@ import {BaseMetadataInformation} from '../../interfaces/base-metadata-informatio
 import {MetadataLink} from '../../interfaces/metadata-link.interface';
 import {AbstractBaseDetailComponent} from '../abstract-base-detail/abstract-base-detail.component';
 import {DataExtractionUtils} from '../../utils/data-extraction.utils';
+import {ErrorHandlerService} from '../../../error-handling/error-handler.service';
 
 /**
  We do not get a description in the case of the dataset...
@@ -44,8 +45,10 @@ export class DatasetDetailComponent extends AbstractBaseDetailComponent<DatasetM
     @Inject(ActivatedRoute) route: ActivatedRoute,
     @Inject(Gb3MetadataService) gb3MetadataService: Gb3MetadataService,
     @Inject(ConfigService) configService: ConfigService,
+    @Inject(Router) router: Router,
+    @Inject(ErrorHandlerService) errorHandlerService: ErrorHandlerService,
   ) {
-    super(route, gb3MetadataService, configService);
+    super(route, gb3MetadataService, configService, router, errorHandlerService);
   }
 
   protected loadMetadata(id: string) {

@@ -1,12 +1,13 @@
 import {Inject, Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {EMPTY, switchMap} from 'rxjs';
+import {switchMap} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
-import {environment} from '../../../../environments/environment';
 import {GravCmsService} from '../../../shared/services/apis/grav-cms/grav-cms.service';
 import {PageNotificationActions} from '../actions/page-notification.actions';
 import {PageNotification} from '../../../shared/interfaces/page-notification.interface';
 import {GRAV_CMS_SERVICE} from '../../../app.module';
+
+import {PageNotificationsCouldNotBeLoaded} from '../../../shared/errors/app.errors';
 
 @Injectable()
 export class PageNotificationEffects {
@@ -23,10 +24,7 @@ export class PageNotificationEffects {
             return PageNotificationActions.setPageNotifications({pageNotifications});
           }),
           catchError((err: unknown) => {
-            if (!environment.production) {
-              console.error(err);
-            }
-            return EMPTY; // todo error handling
+            throw new PageNotificationsCouldNotBeLoaded(err);
           }),
         ),
       ),

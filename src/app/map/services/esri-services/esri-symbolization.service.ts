@@ -9,6 +9,7 @@ import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import Color from '@arcgis/core/Color';
 import MarkerSymbol from '@arcgis/core/symbols/MarkerSymbol';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
+import {UnsupportedGeometryType} from './errors/esri.errors';
 
 @Injectable({
   providedIn: 'root',
@@ -30,7 +31,7 @@ export class EsriSymbolizationService {
       case 'MultiPolygon':
         return this.createPolygonSymbolization(drawingLayer);
       case 'GeometryCollection': {
-        throw new Error('Unsupported in Esri'); // todo: error handling
+        throw new UnsupportedGeometryType(geometry.type);
       }
     }
   }

@@ -1,0 +1,13 @@
+<div class="error-notification">
+  <div class="error-notification__content">
+    <div matSnackBarLabel>
+      <span>{{ data.error }}</span>
+    </div>
+    <div class="error-notification__content__actions" matSnackBarActions>
+      <button (click)="close()" class="error-notification__content__actions__button" mat-icon-button>
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
+  <mat-progress-bar color="warn" [value]="(progressbarValue$ | async)!" mode="determinate"></mat-progress-bar>
+</div>

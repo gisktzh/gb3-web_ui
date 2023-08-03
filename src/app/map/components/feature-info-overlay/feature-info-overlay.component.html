@@ -1,4 +1,11 @@
-<map-overlay (closeEvent)="close()" [isVisible]="isVisible" location="right" overlayTitle="Info" (printButtonEvent)="print()">
+<map-overlay
+  [isPrintButtonEnabled]="loadingState === 'loaded'"
+  (closeEvent)="close()"
+  [isVisible]="isVisible"
+  location="right"
+  overlayTitle="Info"
+  (printButtonEvent)="print()"
+>
   <loading-and-process-bar [loadingState]="loadingState"></loading-and-process-bar>
   <ng-container *ngIf="loadingState === 'loaded'">
     <feature-info-general-information *ngIf="generalInfoData" [generalInfoData]="generalInfoData"></feature-info-general-information>

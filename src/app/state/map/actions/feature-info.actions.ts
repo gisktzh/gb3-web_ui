@@ -1,5 +1,6 @@
 import {createActionGroup, emptyProps, props} from '@ngrx/store';
 import {FeatureInfoResponse} from '../../../shared/interfaces/feature-info.interface';
+import {errorProps} from '../../../shared/utils/error-props.utils';
 import {GeometryWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 
 export const FeatureInfoActions = createActionGroup({
@@ -10,5 +11,6 @@ export const FeatureInfoActions = createActionGroup({
     'Clear Content': emptyProps(),
     'Highlight Feature': props<{feature: GeometryWithSrs; pinnedFeatureId: string | undefined}>(),
     'Clear Highlight': emptyProps(),
+    'Set Error': errorProps(),
   },
 });

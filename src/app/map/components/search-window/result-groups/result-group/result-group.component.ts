@@ -52,11 +52,10 @@ export class ResultGroupComponent implements OnInit, OnDestroy {
   }
 
   public zoomToResult(searchResult: SearchResultMatch) {
+    // only zoom to result if the geometry is available in the index
     if (searchResult.geometry) {
       const point = searchResult.geometry;
       this.mapService.zoomToPoint(point, DEFAULT_ZOOM_SCALE);
-    } else {
-      console.log('Geometry not available in the index'); //todo: implement error handling
     }
   }
 

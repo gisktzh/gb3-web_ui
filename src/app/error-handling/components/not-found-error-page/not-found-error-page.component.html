@@ -1,0 +1,14 @@
+<start-page-section [background]="'primary'">
+  <hero-header
+    heroSubText="Fehlercode: 404 Not Found"
+    heroText="Unsere Themen finden Sie über die Hauptnavigation oder mit der Suche."
+    heroTitle="Seite nicht gefunden"
+  ></hero-header>
+</start-page-section>
+<start-page-section>
+  <descriptive-highlighted-link [title]="'Zur Startseite'">
+    <a [routerLink]="'/'" mat-icon-button>
+      <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
+    </a>
+  </descriptive-highlighted-link>
+</start-page-section>

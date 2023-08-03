@@ -1,11 +1,13 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {HasLoadingState} from '../../../shared/interfaces/has-loading-state.interface';
 import {LoadingState} from '../../../shared/types/loading-state';
-import {Subscription, tap, throwError} from 'rxjs';
+import {Subscription, tap} from 'rxjs';
 import {NEWS_SERVICE} from '../../../app.module';
 import {catchError} from 'rxjs/operators';
 import {NewsService} from '../../../shared/interfaces/news-service.interface';
 import {News} from '../../../shared/interfaces/news.interface';
+
+import {NewsCouldNotBeLoaded} from '../../../shared/errors/start-page.errors';
 
 const NUMBER_OF_NEWS = 3;
 
@@ -36,7 +38,7 @@ export class NewsFeedComponent implements OnInit, HasLoadingState, OnDestroy {
           }),
           catchError((err: unknown) => {
             this.loadingState = 'error';
-            return throwError(() => err);
+            throw new NewsCouldNotBeLoaded(err);
           }),
         )
         .subscribe(),
