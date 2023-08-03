@@ -1,13 +1,15 @@
 <div class="data-catalogue-detail-page">
-  <a [routerLink]="'/' + mainPageEnum.Data" class="data-catalogue-detail-page__back-button" mat-button>
-    <mat-icon [svgIcon]="'ktzh_arrow_left'"></mat-icon>
-    Zur Übersicht
-  </a>
-  <h1 class="data-catalogue-detail-page__title mat-headline-4">{{ baseMetadataInformation.itemTitle }}</h1>
-  <p *ngIf="baseMetadataInformation.shortDescription" class="data-catalogue-detail-page__description mat-body">
-    {{ baseMetadataInformation.shortDescription }}
-  </p>
-  <ng-content select="[topLink]"></ng-content>
-  <keyword-list [keywords]="baseMetadataInformation.keywords" listTitle="Schlagwörter"></keyword-list>
-  <ng-content></ng-content>
+  <div class="data-catalogue-detail-page__content">
+    <a [routerLink]="'/' + mainPageEnum.Data" class="data-catalogue-detail-page__back-button" mat-button>
+      <mat-icon [svgIcon]="'ktzh_arrow_left'"></mat-icon>
+      Zur Übersicht
+    </a>
+    <h1 class="data-catalogue-detail-page__title mat-headline-4">{{ baseMetadataInformation.itemTitle }}</h1>
+    <p *ngIf="baseMetadataInformation.shortDescription" class="data-catalogue-detail-page__description mat-body">
+      {{ baseMetadataInformation.shortDescription }}
+    </p>
+    <ng-content select="[topLink]"></ng-content>
+    <keyword-list [keywords]="baseMetadataInformation.keywords" listTitle="Schlagwörter"></keyword-list>
+    <ng-content></ng-content>
+  </div>
 </div>

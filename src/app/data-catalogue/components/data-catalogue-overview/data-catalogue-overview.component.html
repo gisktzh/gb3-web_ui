@@ -1,15 +1,22 @@
-<!-- todo: add heroheader once errorhandler is implemented -->
+<start-page-section [background]="'primary'">
+  <hero-header
+    heroTitle="Datenkatalog"
+    heroText="Der Datenkatalog listet Geodaten auf und lässt sich nach verschiedenen Kriterien sortieren. Die Geodaten bestehen aus Geodatensätzen, Geodiensten und GIS-Browser Karten sowie den eigentlichen Geometadaten."
+  ></hero-header>
+</start-page-section>
 <loading-and-process-bar [loadingState]="loadingState"></loading-and-process-bar>
 <div class="data-catalogue-overview">
-  <mat-paginator [pageSize]="20" showFirstLastButtons hidePageSize pageIndex="5"></mat-paginator>
-  <cdk-table [dataSource]="dataCatalogueItems">
-    <ng-container cdkColumnDef="data">
-      <cdk-cell *cdkCellDef="let row">
-        <data-catalogue-overview-item [item]="row"></data-catalogue-overview-item>
-      </cdk-cell>
-    </ng-container>
+  <div class="data-catalogue-overview__content">
+    <mat-paginator [pageSize]="20" hidePageSize pageIndex="5" showFirstLastButtons></mat-paginator>
+    <cdk-table [dataSource]="dataCatalogueItems">
+      <ng-container cdkColumnDef="data">
+        <cdk-cell *cdkCellDef="let row">
+          <data-catalogue-overview-item [item]="row"></data-catalogue-overview-item>
+        </cdk-cell>
+      </ng-container>
 
-    <!-- Header and Row Declarations -->
-    <cdk-row *cdkRowDef="let row; columns: ['data']"></cdk-row>
-  </cdk-table>
+      <!-- Header and Row Declarations -->
+      <cdk-row *cdkRowDef="let row; columns: ['data']"></cdk-row>
+    </cdk-table>
+  </div>
 </div>
