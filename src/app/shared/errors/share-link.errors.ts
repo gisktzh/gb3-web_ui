@@ -10,14 +10,26 @@ export class ShareLinkItemCouldNotBeCreated extends RecoverableError {
   public override name = 'ShareLinkItemCouldNotBeCreated';
 }
 
+export class ShareLinkPropertyCouldNotBeValidated extends RecoverableError {
+  public override name = 'ShareLinkPropertyCouldNotBeValidated';
+
+  constructor(message: string) {
+    super();
+    this.message = message;
+  }
+}
+
 export class ShareLinkCouldNotBeValidated extends RecoverableError {
   public override message = 'Beim Laden Inhalt des geteilten Links ist etwas schief gelaufen.';
   public override name = 'ShareLinkCouldNotBeValidated';
 
-  constructor(reason: string) {
-    super();
-    this.message = `Ungültiger Inhalt im geteilten Link: ${reason}`;
-    // TODO WES: add message about login if not logged in
+  constructor(reason: string, isAuthenticated: boolean, originalError?: unknown) {
+    super(originalError);
+    let message = `Ungültiger Inhalt im geteilten Link: ${reason}`;
+    if (!isAuthenticated) {
+      message += '\nMöglicherweise hilft es, wenn Sie sich einloggen.';
+    }
+    this.message = message;
   }
 }
 

@@ -4,7 +4,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {Store} from '@ngrx/store';
 import {filter, from, Subscription, switchMap, tap} from 'rxjs';
 import {ShareLinkActions} from '../../../state/map/actions/share-link.actions';
-import {selectInitializeApplicationLoadingState} from '../../../state/map/reducers/share-link.reducer';
+import {selectInitializeApplicationLoadingState, selectLoadingState} from '../../../state/map/reducers/share-link.reducer';
 import {LoadingState} from '../../../shared/types/loading-state';
 import {ShareLinkParameterInvalid} from '../../../shared/errors/share-link.errors';
 import {RouteParamConstants} from '../../../shared/constants/route-param.constants';
@@ -22,6 +22,7 @@ export class ShareLinkRedirectComponent implements OnInit {
 
   private readonly subscriptions: Subscription = new Subscription();
   private readonly initializeApplicationLoadingState$ = this.store.select(selectInitializeApplicationLoadingState);
+  private readonly shareLinkLoadingState$ = this.store.select(selectLoadingState);
   constructor(
     private readonly route: ActivatedRoute,
     private readonly store: Store,
@@ -34,7 +35,7 @@ export class ShareLinkRedirectComponent implements OnInit {
     if (this.id !== null) {
       this.store.dispatch(ShareLinkActions.initializeApplicationBasedOnId({id: this.id}));
     } else {
-      // TODO WES handle - even if it's impossible
+      // note: this can never happen since the :id always matches - but Angular does not know typed URL parameters.
       throw new ShareLinkParameterInvalid();
     }
   }
@@ -49,6 +50,17 @@ export class ShareLinkRedirectComponent implements OnInit {
         .pipe(
           tap((loadingState) => (this.loadingState = loadingState)),
           filter((loadingState) => loadingState === 'error' || loadingState === 'loaded'),
+          switchMap(() => {
+            return from(this.router.navigate([MainPage.Maps]));
+          }),
+        )
+        .subscribe(),
+    );
+
+    this.subscriptions.add(
+      this.shareLinkLoadingState$
+        .pipe(
+          filter((loadingState) => loadingState === 'error'),
           switchMap(() => {
             return from(this.router.navigate([MainPage.Maps]));
           }),

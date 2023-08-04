@@ -166,7 +166,7 @@ export const activeMapItemFeature = createFeature({
         });
       }),
     ),
-    on(ActiveMapItemActions.prepareActiveMapItems, (state, {activeMapItems}): ActiveMapItemState => {
+    on(ActiveMapItemActions.initializeActiveMapItems, (state, {activeMapItems}): ActiveMapItemState => {
       return {...state, items: activeMapItems};
     }),
   ),

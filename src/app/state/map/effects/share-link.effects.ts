@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Actions, createEffect, ofType} from '@ngrx/effects';
+import {Actions, concatLatestFrom, createEffect, ofType} from '@ngrx/effects';
 import {combineLatestWith, filter, of, switchMap, take, tap} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
 import {ShareLinkActions} from '../actions/share-link.actions';
@@ -16,12 +16,14 @@ import {
   ShareLinkCouldNotBeLoaded,
   ShareLinkCouldNotBeValidated,
   ShareLinkItemCouldNotBeCreated,
+  ShareLinkPropertyCouldNotBeValidated,
 } from '../../../shared/errors/share-link.errors';
 import {ErrorHandlerService} from '../../../error-handling/error-handler.service';
 import {selectLoadedLayerCatalogueAndShareItem} from '../selectors/loaded-layer-catalogue-and-share-item.selector';
 import {selectItems} from '../reducers/active-map-item.reducer';
+import {Gb3RuntimeError} from '../../../shared/errors/abstract.errors';
+import {AuthService} from '../../../auth/auth.service';
 
-// FIXME WES remove console prints
 @Injectable()
 export class ShareLinkEffects {
   public loadShareLinkItem$ = createEffect(() => {
@@ -98,11 +100,9 @@ export class ShareLinkEffects {
     return this.actions$.pipe(
       ofType(ShareLinkActions.initializeApplicationBasedOnId),
       combineLatestWith(this.store.select(selectLoadedLayerCatalogueAndShareItem)),
-      tap(() => console.log('still alive: initializeApplicationByVerifyingSharedItem$')),
       filter(([_, value]) => value !== undefined),
       take(1),
       map(([_, value]) => {
-        console.log('initializeApplicationByVerifyingSharedItem$');
         return ShareLinkActions.validateItem({item: value!.shareLinkItem, topics: value!.topics});
       }),
     );
@@ -112,27 +112,27 @@ export class ShareLinkEffects {
     return this.actions$.pipe(
       ofType(ShareLinkActions.validateItem),
       map((value) => {
-        // check basemap
+        // validate basemap
         const basemapId = this.basemapConfigService.checkBasemapIdOrGetDefault(value.item.basemapId);
         if (basemapId !== value.item.basemapId) {
-          throw new ShareLinkCouldNotBeValidated(`Basemap konnte nicht geladen werden: '${value.item.basemapId}'`);
+          throw new ShareLinkPropertyCouldNotBeValidated(`Basemap ist ungültig: '${value.item.basemapId}'`);
         }
 
-        // check scale
+        // validate scale
         let scale = value.item.scale;
         const maxScale = this.configService.mapConfig.mapScaleConfig.maxScale;
         const minScale = this.configService.mapConfig.mapScaleConfig.minScale;
         if (scale > minScale || scale < maxScale) {
-          throw new ShareLinkCouldNotBeValidated(`Massstab ist ungültig: '${value.item.scale}'`);
+          throw new ShareLinkPropertyCouldNotBeValidated(`Massstab ist ungültig: '${value.item.scale}'`);
         }
 
-        // check center
+        // validate center => all values are allowed
         const center = {x: value.item.center.x, y: value.item.center.y};
 
-        // check active map items
+        // validate active map items => validated within the favourite service
         const activeMapItems = this.favouritesService.getActiveMapItemsForFavourite(value.item.content);
 
-        // complete initialization
+        // complete validation
         return ShareLinkActions.completeValidation({activeMapItems, scale, basemapId, ...center});
       }),
       catchError((error: unknown) => of(ShareLinkActions.setValidationError({error}))),
@@ -142,8 +142,15 @@ export class ShareLinkEffects {
   public handleValidationError$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ShareLinkActions.setValidationError),
-      switchMap(({error}) => {
-        return of(this.errorHandlerService.handleError(error)).pipe(map(() => error));
+      concatLatestFrom(() => this.authService.isAuthenticated$),
+      switchMap(([{error}, isAuthenticated]) => {
+        const shareLinkCouldNotBeValidatedError =
+          error instanceof Gb3RuntimeError
+            ? new ShareLinkCouldNotBeValidated(error.message, isAuthenticated)
+            : new ShareLinkCouldNotBeValidated('Unbekannter Fehler', isAuthenticated, error);
+        return of(this.errorHandlerService.handleError(shareLinkCouldNotBeValidatedError)).pipe(
+          map(() => shareLinkCouldNotBeValidatedError),
+        );
       }),
       map((error) => {
         return ShareLinkActions.setInitializationError({error});
@@ -170,7 +177,7 @@ export class ShareLinkEffects {
     return this.actions$.pipe(
       ofType(ShareLinkActions.completeValidation),
       map((value) => {
-        return ActiveMapItemActions.prepareActiveMapItems({activeMapItems: value.activeMapItems});
+        return ActiveMapItemActions.initializeActiveMapItems({activeMapItems: value.activeMapItems});
       }),
     );
   });
@@ -179,12 +186,10 @@ export class ShareLinkEffects {
     return this.actions$.pipe(
       ofType(ShareLinkActions.completeValidation),
       combineLatestWith(this.store.select(selectItems)),
-      tap(() => console.log('still alive: completeInitialization$')),
       // ensure that the active map items have been set before continuing
       filter(([value, activeMapItems]) => value.activeMapItems.length === activeMapItems.length),
       take(1),
       map(([value, _]) => {
-        console.log('completeInitialization$');
         return ShareLinkActions.completeApplicationInitialization();
       }),
     );
@@ -199,5 +204,6 @@ export class ShareLinkEffects {
     private readonly favouritesService: FavouritesService,
     private readonly router: Router,
     private readonly errorHandlerService: ErrorHandlerService,
+    private readonly authService: AuthService,
   ) {}
 }

@@ -85,6 +85,7 @@ export class FavouritesService implements OnDestroy {
             draft.layers.forEach((layer) => {
               const sublayerConfiguration = configuration.layers.find((favLayer) => favLayer.id === layer.id);
 
+              // TODO if a sublayer cannot be found this should throw an error instead of ignoring it
               // hide sublayer if it is a newly added layer to not interfere with favourite composition
               layer.visible = sublayerConfiguration ? sublayerConfiguration.visible : false;
             });
