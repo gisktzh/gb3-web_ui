@@ -24,6 +24,44 @@ import {selectItems} from '../reducers/active-map-item.reducer';
 import {Gb3RuntimeError} from '../../../shared/errors/abstract.errors';
 import {AuthService} from '../../../auth/auth.service';
 
+/**
+ * This class contains a bunch of effects. Most of them are straightforward: do something asynchronous and return a new action afterward or go to an error state.
+ *
+ * Initialize application based on a given ID
+ *   However there is the whole `initializeApplication` and `validation` part where this application gets initialized based on a previously shared link ID.
+ *   The whole section is a big state machine used to control the initialization of the application. It's taking care of all potential side effects like
+ *   invalid share link item content or topics that are not getting loaded.
+ *
+ *   The basic flow based on actions and effects goes like this:
+ *
+ *                                      ┌─────────────────────────────────────────────────┐
+ *                                      │ ShareLinkActions.initializeApplicationBasedOnId │
+ *                                      └───────┬─────────────┬─────────────────┬─────────┘
+ * initializeApplicationByLoadingShareLinkItem$ │             │                 │ initializeApplicationByLoadingTopics$
+ *                              ┌───────────────▼───────────┐ │ ┌───────────────▼──────────────────────┐
+ *                              │ ShareLinkActions.loadItem │ │ │ LayerCatalogActions.loadLayerCatalog │
+ *                              └───────────────┬───────────┘ │ └───────────────┬──────────────────────┘
+ *                                              └───────────► │◄────────────────┘
+ *                initializeApplicationByVerifyingSharedItem$ │
+ *                                           ┌────────────────▼──────────────┐
+ *                                           │ ShareLinkActions.validateItem │
+ *                                           └────────────────┬──────────────┘
+ *                                     validateShareLinkItem$ │
+ *                                        ┌───────────────────▼─────────────────┐
+ *                                        │ ShareLinkActions.completeValidation │
+ *                                        └──────┬────────────┬──────────┬──────┘
+ *                  setMapConfigAfterValidation$ │            │          │ setActiveMapItemsAfterValidation$
+ *                   ┌───────────────────────────▼──────────┐ │ ┌────────▼──────────────────────────────────────┐
+ *                   │ MapConfigActions.setInitialMapConfig │ │ │ ActiveMapItemActions.initializeActiveMapItems │
+ *                   └──────────────────────────────────────┘ │ └────────┬──────────────────────────────────────┘
+ *                                                            │ ◄────────┘
+ *                                    completeInitialization$ │
+ *                                  ┌─────────────────────────▼──────────────────────────┐
+ *                                  │ ShareLinkActions.completeApplicationInitialization │
+ *                                  └────────────────────────────────────────────────────┘
+ *
+ *   Note that error actions/effects are not visible on this diagram
+ */
 @Injectable()
 export class ShareLinkEffects {
   public loadShareLinkItem$ = createEffect(() => {
@@ -108,7 +146,7 @@ export class ShareLinkEffects {
     );
   });
 
-  public validateShareLinkItem = createEffect(() => {
+  public validateShareLinkItem$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ShareLinkActions.validateItem),
       map((value) => {
