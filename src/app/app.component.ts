@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {DocumentService} from './shared/services/document.service';
 import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
 import {filter, Subscription, take, tap} from 'rxjs';
@@ -41,7 +41,6 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly snackBar: MatSnackBar,
     private readonly pageNotificationService: PageNotificationService,
     private readonly store: Store,
-    private readonly changeDetectorRef: ChangeDetectorRef,
     private readonly iconsService: IconsService,
   ) {
     this.iconsService.initIcons();
@@ -108,10 +107,9 @@ export class AppComponent implements OnInit, OnDestroy {
         .pipe(
           filter((scrollbarWidth) => scrollbarWidth !== undefined),
           tap((scrollbarWidth) => {
-            this.scrollbarWidth = scrollbarWidth;
             // this is necessary to prevent an error (NG0100: ExpressionChangedAfterItHasBeenCheckedError) as the value usually gets updated so fast
             // that the UI update cycle was not yet fully completed.
-            this.changeDetectorRef.detectChanges();
+            setTimeout(() => (this.scrollbarWidth = scrollbarWidth));
           }),
           take(1),
         )

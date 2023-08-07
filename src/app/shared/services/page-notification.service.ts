@@ -24,6 +24,7 @@ export class PageNotificationService implements OnDestroy {
     private readonly router: Router,
     private readonly store: Store,
   ) {
+    this.store.dispatch(PageNotificationActions.loadPageNotifications());
     this.initSubscriptions();
   }
 
@@ -57,9 +58,6 @@ export class PageNotificationService implements OnDestroy {
         )
         .subscribe(),
     );
-
-    // load the page notifications once
-    this.store.dispatch(PageNotificationActions.loadPageNotifications());
   }
 
   private refreshCurrentPageNotifications(currentMainPage: MainPage | undefined, pageNotifications: PageNotification[]) {
