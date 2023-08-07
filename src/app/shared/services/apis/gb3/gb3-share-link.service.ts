@@ -10,7 +10,6 @@ import {SharedFavorite, SharedFavoriteNew} from '../../../models/gb3-api-generat
 })
 export class Gb3ShareLinkService extends Gb3ApiService {
   protected readonly endpoint = 'favorites';
-  private readonly postHeaders = {accept: 'application/json'};
 
   public loadShareLink(shareLinkId: string): Observable<ShareLinkItem> {
     const sharedFavorite = this.get<SharedFavorite>(this.createLoadUrl(shareLinkId));
@@ -19,7 +18,7 @@ export class Gb3ShareLinkService extends Gb3ApiService {
 
   public createShareLink(shareLink: ShareLinkItem): Observable<string> {
     const shareLinkPayload = this.mapShareLinkToSharedFavoriteNew(shareLink);
-    return this.post<SharedFavoriteNew, SharedFavorite>(this.createCreateUrl(), shareLinkPayload, this.postHeaders).pipe(
+    return this.post<SharedFavoriteNew, SharedFavorite>(this.createCreateUrl(), shareLinkPayload).pipe(
       map((shareLinkResponse) => shareLinkResponse.id),
     );
   }
