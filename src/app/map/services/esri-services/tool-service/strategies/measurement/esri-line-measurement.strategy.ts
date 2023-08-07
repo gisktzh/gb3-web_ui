@@ -4,6 +4,7 @@ import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import {NumberUtils} from '../../../../../../shared/utils/number.utils';
 import {AbstractEsriMeasurementStrategy, LabelConfiguration} from './abstract-esri-measurement.strategy';
 import {SupportedEsriTool} from '../abstract-esri-drawable-tool.strategy';
+import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
 
 const M_TO_KM_CONVERSION_THRESHOLD = 10_000;
 
@@ -16,15 +17,15 @@ export class EsriLineMeasurementStrategy extends AbstractEsriMeasurementStrategy
     mapView: __esri.MapView,
     polylineSymbol: __esri.SimpleLineSymbol,
     labelSymbolization: __esri.TextSymbol,
-    completeCallbackHandler: () => void,
+    completeDrawingCallbackHandler: DrawingCallbackHandler['complete'],
   ) {
-    super(layer, mapView, completeCallbackHandler);
+    super(layer, mapView, completeDrawingCallbackHandler);
 
     this.sketchViewModel.polylineSymbol = polylineSymbol;
     this.labelSymbolization = labelSymbolization;
   }
 
-  protected override createLabelForGeometry(geometry: Polyline): LabelConfiguration {
+  protected override createLabelConfigurationForGeometry(geometry: Polyline): LabelConfiguration {
     this.labelSymbolization.text = this.getRoundedPolylineLengthString(geometry);
     const lastVertex = geometry.getPoint(0, geometry.paths[0].length - 1);
 

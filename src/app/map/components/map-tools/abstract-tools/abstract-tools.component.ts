@@ -24,7 +24,7 @@ export class AbstractToolsComponent implements OnInit, OnDestroy {
   }
   protected toggleTool(tool: ToolType) {
     if (this.activeTool === tool) {
-      this.store.dispatch(ToolActions.deactivateTool());
+      this.store.dispatch(ToolActions.deactivateTool({}));
     } else {
       this.store.dispatch(ToolActions.activateTool({tool}));
     }

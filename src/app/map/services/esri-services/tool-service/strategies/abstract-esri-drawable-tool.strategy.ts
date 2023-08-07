@@ -3,6 +3,7 @@ import MapView from '@arcgis/core/views/MapView';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {EsriSketchTool} from '../../esri.module';
 import {EsriToolStrategy} from '../interfaces/strategy.interface';
+import {DrawingCallbackHandler} from '../interfaces/drawing-callback-handler.interface';
 
 export type SupportedEsriTool = Extract<EsriSketchTool, 'polygon' | 'polyline' | 'point' | 'rectangle' | 'circle'>;
 
@@ -13,10 +14,10 @@ export abstract class AbstractEsriDrawableToolStrategy implements EsriToolStrate
    * Called when the SketchViewModel emits a 'complete' event.
    * @protected
    */
-  protected readonly completeCallbackHandler: () => void;
+  protected readonly completeDrawingCallbackHandler: DrawingCallbackHandler['complete'];
   protected abstract readonly tool: SupportedEsriTool;
 
-  protected constructor(layer: GraphicsLayer, mapView: MapView, completeCallbackHandler: () => void) {
+  protected constructor(layer: GraphicsLayer, mapView: MapView, completeDrawingCallbackHandler: DrawingCallbackHandler['complete']) {
     // todo: check whether new SketchViewModels are okay; otherwise -> singleton and reuse the model.
     this.sketchViewModel = new SketchViewModel({
       view: mapView,
@@ -27,7 +28,7 @@ export abstract class AbstractEsriDrawableToolStrategy implements EsriToolStrate
     });
 
     this.layer = layer;
-    this.completeCallbackHandler = completeCallbackHandler;
+    this.completeDrawingCallbackHandler = completeDrawingCallbackHandler;
   }
 
   public cancel(): void {

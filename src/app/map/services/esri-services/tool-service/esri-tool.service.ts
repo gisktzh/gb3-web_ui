@@ -24,6 +24,12 @@ import {ConfigService} from '../../../../shared/services/config.service';
 import {EsriPointDrawingStrategy} from './strategies/drawing/esri-point-drawing.strategy';
 import {EsriLineDrawingStrategy} from './strategies/drawing/esri-line-drawing.strategy';
 import {EsriPolygonDrawingStrategy} from './strategies/drawing/esri-polygon-drawing.strategy';
+import {DrawingCallbackHandler} from './interfaces/drawing-callback-handler.interface';
+import {GeometryWithSrs} from '../../../../shared/interfaces/geojson-types-with-srs.interface';
+import Geometry from '@arcgis/core/geometry/Geometry';
+import {arcgisToGeoJSON} from '@terraformer/arcgis';
+import {TransformationService} from '../transformation.service';
+import SpatialReference from '@arcgis/core/geometry/SpatialReference';
 
 const HANDLE_GROUP_KEY = 'EsriToolService';
 
@@ -44,7 +50,7 @@ const HANDLE_GROUP_KEY = 'EsriToolService';
 @Injectable({
   providedIn: 'root',
 })
-export class EsriToolService implements ToolService, OnDestroy {
+export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackHandler {
   private toolStrategy: EsriToolStrategy = new EsriDefaultStrategy();
   private drawingLayers: DrawingActiveMapItem[] = [];
   private readonly drawingLayers$ = this.store.select(selectDrawingLayers);
@@ -55,6 +61,7 @@ export class EsriToolService implements ToolService, OnDestroy {
     private readonly store: Store,
     private readonly esriSymbolizationService: EsriSymbolizationService,
     private readonly configService: ConfigService,
+    private readonly transformationService: TransformationService,
   ) {
     this.initSubscriptions();
   }
@@ -120,9 +127,18 @@ export class EsriToolService implements ToolService, OnDestroy {
     this.toolStrategy.start();
   }
 
-  private endDrawing() {
+  public complete(geometries: Geometry[]) {
+    const geoJsonGeometries: GeometryWithSrs[] = [];
+    geometries.map((geometry) => {
+      const transformedGeometry = this.transformationService.transformTo(geometry, new SpatialReference({wkid: 4326}));
+      geoJsonGeometries.push({...arcgisToGeoJSON(transformedGeometry), srs: 4326});
+    });
+    this.endDrawing(geoJsonGeometries);
+  }
+
+  private endDrawing(geometries?: GeometryWithSrs[]) {
     this.esriMapViewService.mapView.removeHandles(HANDLE_GROUP_KEY);
-    this.store.dispatch(ToolActions.deactivateTool());
+    this.store.dispatch(ToolActions.deactivateTool({geometries}));
   }
 
   /**
@@ -164,18 +180,18 @@ export class EsriToolService implements ToolService, OnDestroy {
 
     switch (measurementType) {
       case 'measure-area':
-        this.toolStrategy = new EsriAreaMeasurementStrategy(layer, this.esriMapViewService.mapView, areaStyle, labelStyle, () =>
-          this.endDrawing(),
+        this.toolStrategy = new EsriAreaMeasurementStrategy(layer, this.esriMapViewService.mapView, areaStyle, labelStyle, (geometry) =>
+          this.complete(geometry),
         );
         break;
       case 'measure-line':
-        this.toolStrategy = new EsriLineMeasurementStrategy(layer, this.esriMapViewService.mapView, lineStyle, labelStyle, () =>
-          this.endDrawing(),
+        this.toolStrategy = new EsriLineMeasurementStrategy(layer, this.esriMapViewService.mapView, lineStyle, labelStyle, (geometry) =>
+          this.complete(geometry),
         );
         break;
       case 'measure-point':
-        this.toolStrategy = new EsriPointMeasurementStrategy(layer, this.esriMapViewService.mapView, pointStyle, labelStyle, () =>
-          this.endDrawing(),
+        this.toolStrategy = new EsriPointMeasurementStrategy(layer, this.esriMapViewService.mapView, pointStyle, labelStyle, (geometry) =>
+          this.complete(geometry),
         );
     }
   }
@@ -187,17 +203,21 @@ export class EsriToolService implements ToolService, OnDestroy {
 
     switch (drawingType) {
       case 'draw-point':
-        this.toolStrategy = new EsriPointDrawingStrategy(layer, this.esriMapViewService.mapView, pointStyle, () => this.endDrawing());
+        this.toolStrategy = new EsriPointDrawingStrategy(layer, this.esriMapViewService.mapView, pointStyle, (geometry) =>
+          this.complete(geometry),
+        );
         break;
       case 'draw-line':
-        this.toolStrategy = new EsriLineDrawingStrategy(layer, this.esriMapViewService.mapView, lineStyle, () => this.endDrawing());
+        this.toolStrategy = new EsriLineDrawingStrategy(layer, this.esriMapViewService.mapView, lineStyle, (geometry) =>
+          this.complete(geometry),
+        );
         break;
       case 'draw-polygon':
         this.toolStrategy = new EsriPolygonDrawingStrategy(
           layer,
           this.esriMapViewService.mapView,
           areaStyle,
-          () => this.endDrawing(),
+          (geometry) => this.complete(geometry),
           'polygon',
         );
         break;
@@ -206,7 +226,7 @@ export class EsriToolService implements ToolService, OnDestroy {
           layer,
           this.esriMapViewService.mapView,
           areaStyle,
-          () => this.endDrawing(),
+          (geometry) => this.complete(geometry),
           'rectangle',
         );
         break;
@@ -215,7 +235,7 @@ export class EsriToolService implements ToolService, OnDestroy {
           layer,
           this.esriMapViewService.mapView,
           areaStyle,
-          () => this.endDrawing(),
+          (geometry) => this.complete(geometry),
           'circle',
         );
         break;

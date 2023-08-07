@@ -1,5 +1,6 @@
 import {SupportedEsriTool} from '../abstract-esri-drawable-tool.strategy';
 import {AbstractEsriDrawingStrategy} from './abstract-esri-drawing.strategy';
+import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
 
 export class EsriPointDrawingStrategy extends AbstractEsriDrawingStrategy {
   protected readonly tool: SupportedEsriTool = 'point';
@@ -8,9 +9,9 @@ export class EsriPointDrawingStrategy extends AbstractEsriDrawingStrategy {
     layer: __esri.GraphicsLayer,
     mapView: __esri.MapView,
     pointSymbol: __esri.SimpleMarkerSymbol,
-    completeCallbackHandler: () => void,
+    completeDrawingCallbackHandler: DrawingCallbackHandler['complete'],
   ) {
-    super(layer, mapView, completeCallbackHandler);
+    super(layer, mapView, completeDrawingCallbackHandler);
 
     this.sketchViewModel.pointSymbol = pointSymbol;
   }

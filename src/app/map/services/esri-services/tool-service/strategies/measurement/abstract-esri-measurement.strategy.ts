@@ -6,25 +6,28 @@ import Polyline from '@arcgis/core/geometry/Polyline';
 import Point from '@arcgis/core/geometry/Point';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import {AbstractEsriDrawableToolStrategy} from '../abstract-esri-drawable-tool.strategy';
+import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
 
 export type LabelConfiguration = {location: Point; symbolization: TextSymbol};
 
 export abstract class AbstractEsriMeasurementStrategy<T extends Polygon | Polyline | Point> extends AbstractEsriDrawableToolStrategy {
-  protected constructor(layer: GraphicsLayer, mapView: MapView, completeCallbackHandler: () => void) {
-    super(layer, mapView, completeCallbackHandler);
+  protected constructor(layer: GraphicsLayer, mapView: MapView, completeDrawingCallbackHandler: DrawingCallbackHandler['complete']) {
+    super(layer, mapView, completeDrawingCallbackHandler);
   }
 
   public start(): void {
     this.sketchViewModel.create(this.tool, {mode: 'click'});
-    this.sketchViewModel.on('create', (event) => {
-      switch (event.state) {
+    this.sketchViewModel.on('create', ({state, graphic}) => {
+      let label: Graphic;
+      switch (state) {
         case 'active':
         case 'start':
         case 'cancel':
           break; // currently, these events do not trigger any action
         case 'complete':
-          this.persistSketchToLayer(event.graphic.geometry as T);
-          this.completeCallbackHandler();
+          label = this.createLabelForGeometry(graphic.geometry as T);
+          this.layer.add(label);
+          this.completeDrawingCallbackHandler([graphic.geometry, label.geometry]);
           break;
       }
     });
@@ -36,14 +39,15 @@ export abstract class AbstractEsriMeasurementStrategy<T extends Polygon | Polyli
    * @param geometry
    * @protected
    */
-  protected abstract createLabelForGeometry(geometry: T): LabelConfiguration;
+  protected abstract createLabelConfigurationForGeometry(geometry: T): LabelConfiguration;
 
-  private persistSketchToLayer(geometry: T) {
-    const {location, symbolization} = this.createLabelForGeometry(geometry);
+  private createLabelForGeometry(geometry: T): Graphic {
+    const {location, symbolization} = this.createLabelConfigurationForGeometry(geometry);
     const label = new Graphic({
       geometry: location,
       symbol: symbolization,
     });
-    this.layer.addMany([label]);
+
+    return label;
   }
 }
