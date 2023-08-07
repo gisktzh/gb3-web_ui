@@ -12,8 +12,8 @@ export const toolFeature = createFeature({
   name: toolFeatureKey,
   reducer: createReducer(
     initialState,
-    on(ToolActions.deactivateTool, (_, {geometries}): ToolState => {
-      console.log(geometries);
+    on(ToolActions.deactivateTool, (_, {features}): ToolState => {
+      console.log(features);
       return {...initialState};
     }),
     on(ToolActions.cancelTool, (): ToolState => {

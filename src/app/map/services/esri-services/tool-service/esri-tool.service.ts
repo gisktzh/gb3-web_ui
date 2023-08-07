@@ -25,11 +25,11 @@ import {EsriPointDrawingStrategy} from './strategies/drawing/esri-point-drawing.
 import {EsriLineDrawingStrategy} from './strategies/drawing/esri-line-drawing.strategy';
 import {EsriPolygonDrawingStrategy} from './strategies/drawing/esri-polygon-drawing.strategy';
 import {DrawingCallbackHandler} from './interfaces/drawing-callback-handler.interface';
-import {GeometryWithSrs} from '../../../../shared/interfaces/geojson-types-with-srs.interface';
-import Geometry from '@arcgis/core/geometry/Geometry';
-import {arcgisToGeoJSON} from '@terraformer/arcgis';
 import {TransformationService} from '../transformation.service';
 import SpatialReference from '@arcgis/core/geometry/SpatialReference';
+import {Feature} from 'geojson';
+import Graphic from '@arcgis/core/Graphic';
+import {arcgisToGeoJSON} from '@terraformer/arcgis';
 
 const HANDLE_GROUP_KEY = 'EsriToolService';
 
@@ -127,18 +127,22 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
     this.toolStrategy.start();
   }
 
-  public complete(geometries: Geometry[]) {
-    const geoJsonGeometries: GeometryWithSrs[] = [];
-    geometries.map((geometry) => {
-      const transformedGeometry = this.transformationService.transformTo(geometry, new SpatialReference({wkid: 4326}));
-      geoJsonGeometries.push({...arcgisToGeoJSON(transformedGeometry), srs: 4326});
+  public complete(graphics: Graphic[]) {
+    const geoJsonGeometries: Feature[] = [];
+    graphics.map((graphic) => {
+      const transformedGeometry = this.transformationService.transformTo(graphic.geometry, new SpatialReference({wkid: 4326}));
+      geoJsonGeometries.push({
+        type: 'Feature',
+        geometry: {...arcgisToGeoJSON(transformedGeometry)},
+        properties: graphic.attributes,
+      });
     });
     this.endDrawing(geoJsonGeometries);
   }
 
-  private endDrawing(geometries?: GeometryWithSrs[]) {
+  private endDrawing(features?: Feature[]) {
     this.esriMapViewService.mapView.removeHandles(HANDLE_GROUP_KEY);
-    this.store.dispatch(ToolActions.deactivateTool({geometries}));
+    this.store.dispatch(ToolActions.deactivateTool({features}));
   }
 
   /**

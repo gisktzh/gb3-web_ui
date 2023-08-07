@@ -17,7 +17,8 @@ export abstract class AbstractEsriDrawingStrategy extends AbstractEsriDrawableTo
         case 'cancel':
           break; // currently, these events do not trigger any action
         case 'complete':
-          this.completeDrawingCallbackHandler([graphic.geometry]);
+          this.setIdentifierOnGraphic(graphic);
+          this.completeDrawingCallbackHandler([graphic]);
           break;
       }
     });

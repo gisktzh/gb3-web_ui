@@ -1,5 +1,5 @@
-import Geometry from '@arcgis/core/geometry/Geometry';
+import Graphic from '@arcgis/core/Graphic';
 
 export interface DrawingCallbackHandler {
-  complete: (geometries: Geometry[]) => void;
+  complete: (geometries: Graphic[]) => void;
 }
