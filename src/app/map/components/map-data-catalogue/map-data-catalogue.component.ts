@@ -57,11 +57,12 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
   constructor(
     private readonly store: Store,
     private readonly favouritesService: FavouritesService,
-  ) {}
+  ) {
+    this.store.dispatch(LayerCatalogActions.loadLayerCatalog());
+  }
 
   public ngOnInit() {
     this.initSubscriptions();
-    this.store.dispatch(LayerCatalogActions.loadLayerCatalog());
   }
 
   public ngOnDestroy() {
