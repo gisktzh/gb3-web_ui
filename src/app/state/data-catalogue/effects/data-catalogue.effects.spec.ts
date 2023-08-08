@@ -9,7 +9,7 @@ import {DataCatalogueActions} from '../actions/data-catalogue.actions';
 import {MetadataOverviewCouldNotBeLoaded} from '../../../shared/errors/data-catalogue.errors';
 import {Gb3MetadataService} from '../../../shared/services/apis/gb3/gb3-metadata.service';
 import {MapOverviewMetadataItem} from '../../../shared/models/overview-metadata-item.model';
-import {initialState, selectLoadingState} from '../reducers/data-catalogue.reducer';
+import {selectLoadingState} from '../reducers/data-catalogue.reducer';
 
 describe('DataCatalogueEffects', () => {
   let actions$: Observable<Action>;
@@ -37,7 +37,7 @@ describe('DataCatalogueEffects', () => {
       const mockError = new Error('ErrorWrap - delicious and only 5$');
       actions$ = of(DataCatalogueActions.setError({error: mockError}));
 
-      effects.setError$.subscribe({
+      effects.throwError$.subscribe({
         error: (err: unknown) => {
           expect(err).toBeInstanceOf(MetadataOverviewCouldNotBeLoaded);
           expect((err as MetadataOverviewCouldNotBeLoaded).originalError).toEqual(mockError);

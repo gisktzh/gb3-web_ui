@@ -20,10 +20,14 @@ class DataCataloguePaginatorIntl implements MatPaginatorIntl {
 
   public getRangeLabel(page: number, pageSize: number, length: number): string {
     if (length === 0) {
-      return 'Seite 1 von 1';
+      return this.getRangeLabelText(1, 1, 0);
     }
     const amountPages = Math.ceil(length / pageSize);
-    return `Seite ${page + 1} von ${amountPages} | ${length} Elemente`;
+    return this.getRangeLabelText(page + 1, amountPages, length);
+  }
+
+  private getRangeLabelText(currentPage: number, amountPages: number, length: number): string {
+    return `Seite ${currentPage} von ${amountPages} | ${length} Elemente`;
   }
 }
 
@@ -46,7 +50,7 @@ export class DataCatalogueOverviewComponent implements OnInit, OnDestroy, AfterV
     this.store.dispatch(DataCatalogueActions.loadCatalogue());
   }
 
-  ngAfterViewInit() {
+  public ngAfterViewInit() {
     // In order for the paginator to correctly work, we need to wait for its rendered state in the DOM.
     this.subscriptions.add(
       this.dataCatalogue$

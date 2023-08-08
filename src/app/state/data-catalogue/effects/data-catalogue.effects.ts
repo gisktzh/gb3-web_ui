@@ -14,19 +14,14 @@ export class DataCatalogueEffects {
     return this.actions$.pipe(
       ofType(DataCatalogueActions.loadCatalogue),
       concatLatestFrom(() => [this.store.select(selectLoadingState)]),
-      filter(([_, loadingState]) => loadingState !== 'loaded'),
-      switchMap(() =>
-        this.gb3MetadataService.loadFullList().pipe(
-          map((items) => {
-            return DataCatalogueActions.setCatalogue({items});
-          }),
-          catchError((error: unknown) => of(DataCatalogueActions.setError({error}))),
-        ),
-      ),
+      filter(([_, loadingState]) => loadingState !== 'loaded'), // only dispatch once per app load, else serve from cache
+      switchMap(() => this.gb3MetadataService.loadFullList()),
+      map((items) => DataCatalogueActions.setCatalogue({items})),
+      catchError((error: unknown) => of(DataCatalogueActions.setError({error}))),
     );
   });
 
-  public setError$ = createEffect(
+  public throwError$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(DataCatalogueActions.setError),
