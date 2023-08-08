@@ -27,35 +27,23 @@ describe('selectLoadedLayerCatalogueAndShareItem', () => {
     };
   });
 
-  it('returns the current topics and the share link item if both are loaded', () => {
-    const topicsLoadingState = 'loaded';
-    const shareLinkLoadingState = 'loaded';
-    const actual = selectLoadedLayerCatalogueAndShareItem.projector(
-      topicsMockState,
-      topicsLoadingState,
-      shareLinkItemState,
-      shareLinkLoadingState,
-    );
-    const expected = {topics: topicsMockState, shareLinkItem: shareLinkItemState};
-    expect(actual).toEqual(expected);
-  });
-
-  it('returns `undefined` if either the topics or the share link item are not yet loaded', () => {
+  it('returns the current topics and the share link item if both have the state `loaded`; returns `undefined` otherwise', () => {
     const allLoadingStates: LoadingState[] = ['undefined', 'error', 'loading', 'loaded'];
     allLoadingStates.forEach((topicsLoadingState) => {
       allLoadingStates.forEach((shareLinkLoadingState) => {
-        if (topicsLoadingState === 'loaded' && shareLinkLoadingState === 'loaded') {
-          // this is the state where 'undefined' is not returned! Skip for this test.
-          return;
-        }
-
         const actual = selectLoadedLayerCatalogueAndShareItem.projector(
           topicsMockState,
           topicsLoadingState,
           shareLinkItemState,
           shareLinkLoadingState,
         );
-        const expected = undefined;
+
+        let expected;
+        if (topicsLoadingState === 'loaded' && shareLinkLoadingState === 'loaded') {
+          expected = {topics: topicsMockState, shareLinkItem: shareLinkItemState};
+        } else {
+          expected = undefined;
+        }
         expect(actual).toEqual(expected);
       });
     });

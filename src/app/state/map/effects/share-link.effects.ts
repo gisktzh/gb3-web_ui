@@ -10,7 +10,6 @@ import {BasemapConfigService} from '../../../map/services/basemap-config.service
 import {ConfigService} from '../../../shared/services/config.service';
 import {FavouritesService} from '../../../map/services/favourites.service';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
-import {Router} from '@angular/router';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {
   ShareLinkCouldNotBeLoaded,
@@ -28,39 +27,9 @@ import {AuthService} from '../../../auth/auth.service';
  * This class contains a bunch of effects. Most of them are straightforward: do something asynchronous and return a new action afterward or go to an error state.
  *
  * Initialize application based on a given ID
- *   However there is the whole `initializeApplication` and `validation` part where this application gets initialized based on a previously shared link ID.
- *   The whole section is a big state machine used to control the initialization of the application. It's taking care of all potential side effects like
- *   invalid share link item content or topics that are not getting loaded.
- *
- *   The basic flow based on actions and effects goes like this:
- *
- *                                      ┌─────────────────────────────────────────────────┐
- *                                      │ ShareLinkActions.initializeApplicationBasedOnId │
- *                                      └───────┬─────────────┬─────────────────┬─────────┘
- * initializeApplicationByLoadingShareLinkItem$ │             │                 │ initializeApplicationByLoadingTopics$
- *                              ┌───────────────▼───────────┐ │ ┌───────────────▼──────────────────────┐
- *                              │ ShareLinkActions.loadItem │ │ │ LayerCatalogActions.loadLayerCatalog │
- *                              └───────────────┬───────────┘ │ └───────────────┬──────────────────────┘
- *                                              └───────────► │◄────────────────┘
- *                initializeApplicationByVerifyingSharedItem$ │
- *                                           ┌────────────────▼──────────────┐
- *                                           │ ShareLinkActions.validateItem │
- *                                           └────────────────┬──────────────┘
- *                                     validateShareLinkItem$ │
- *                                        ┌───────────────────▼─────────────────┐
- *                                        │ ShareLinkActions.completeValidation │
- *                                        └──────┬────────────┬──────────┬──────┘
- *                  setMapConfigAfterValidation$ │            │          │ setActiveMapItemsAfterValidation$
- *                   ┌───────────────────────────▼──────────┐ │ ┌────────▼──────────────────────────────────────┐
- *                   │ MapConfigActions.setInitialMapConfig │ │ │ ActiveMapItemActions.initializeActiveMapItems │
- *                   └──────────────────────────────────────┘ │ └────────┬──────────────────────────────────────┘
- *                                                            │ ◄────────┘
- *                                    completeInitialization$ │
- *                                  ┌─────────────────────────▼──────────────────────────┐
- *                                  │ ShareLinkActions.completeApplicationInitialization │
- *                                  └────────────────────────────────────────────────────┘
- *
- *   Note that error actions/effects are not visible on this diagram
+ *   However, there is the whole `initializeApplication` and `validation` part where this application gets initialized based on a previously shared link ID.
+ *   The whole section is basically a big state machine.
+ *   In the README.md is a more detailed explanation of the basic logic flow (see 'Application Initialization based on share link')
  */
 @Injectable()
 export class ShareLinkEffects {
@@ -137,6 +106,7 @@ export class ShareLinkEffects {
   public initializeApplicationByVerifyingSharedItem$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ShareLinkActions.initializeApplicationBasedOnId),
+      // we can't use `concatLatestFrom` here because the selector will return undefined values until all internal values are successfully loaded
       combineLatestWith(this.store.select(selectLoadedLayerCatalogueAndShareItem)),
       filter(([_, value]) => value !== undefined),
       take(1),
@@ -227,7 +197,7 @@ export class ShareLinkEffects {
       // ensure that the active map items have been set before continuing
       filter(([value, activeMapItems]) => value.activeMapItems.length === activeMapItems.length),
       take(1),
-      map(([value, _]) => {
+      map(() => {
         return ShareLinkActions.completeApplicationInitialization();
       }),
     );
@@ -240,7 +210,6 @@ export class ShareLinkEffects {
     private readonly basemapConfigService: BasemapConfigService,
     private readonly configService: ConfigService,
     private readonly favouritesService: FavouritesService,
-    private readonly router: Router,
     private readonly errorHandlerService: ErrorHandlerService,
     private readonly authService: AuthService,
   ) {}

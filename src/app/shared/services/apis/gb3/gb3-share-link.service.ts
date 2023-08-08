@@ -18,17 +18,13 @@ export class Gb3ShareLinkService extends Gb3ApiService {
 
   public createShareLink(shareLink: ShareLinkItem): Observable<string> {
     const shareLinkPayload = this.mapShareLinkToSharedFavoriteNew(shareLink);
-    return this.post<SharedFavoriteNew, SharedFavorite>(this.createCreateUrl(), shareLinkPayload).pipe(
+    return this.post<SharedFavoriteNew, SharedFavorite>(this.getFullEndpointUrl(), shareLinkPayload).pipe(
       map((shareLinkResponse) => shareLinkResponse.id),
     );
   }
 
   private createLoadUrl(shareLinkId: string): string {
     return `${this.getFullEndpointUrl()}/${shareLinkId}`;
-  }
-
-  private createCreateUrl(): string {
-    return this.getFullEndpointUrl();
   }
 
   private mapSharedFavoriteToShareLink(sharedFavorite: SharedFavorite): ShareLinkItem {

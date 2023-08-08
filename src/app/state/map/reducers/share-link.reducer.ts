@@ -9,7 +9,7 @@ export const initialState: ShareLinkState = {
   id: undefined,
   loadingState: 'undefined',
   savingState: 'undefined',
-  initializeApplicationLoadingState: 'undefined',
+  applicationInitializationLoadingState: 'undefined',
 };
 
 export const shareLinkFeature = createFeature({
@@ -19,8 +19,8 @@ export const shareLinkFeature = createFeature({
     on(ShareLinkActions.loadItem, (state): ShareLinkState => {
       return {...state, item: initialState.item, loadingState: 'loading'};
     }),
-    on(ShareLinkActions.setLoadingError, (state): ShareLinkState => {
-      return {...state, item: initialState.item, loadingState: 'error'};
+    on(ShareLinkActions.setLoadingError, (): ShareLinkState => {
+      return {...initialState, loadingState: 'error'};
     }),
     on(ShareLinkActions.setItem, (state, {item}): ShareLinkState => {
       return {...state, item, loadingState: 'loaded'};
@@ -28,23 +28,23 @@ export const shareLinkFeature = createFeature({
     on(ShareLinkActions.createItem, (state): ShareLinkState => {
       return {...state, id: initialState.id, savingState: 'loading'};
     }),
-    on(ShareLinkActions.setCreationError, (state): ShareLinkState => {
-      return {...state, id: initialState.id, savingState: 'error'};
+    on(ShareLinkActions.setCreationError, (): ShareLinkState => {
+      return {...initialState, savingState: 'error'};
     }),
     on(ShareLinkActions.setItemId, (state, {id}): ShareLinkState => {
       return {...state, id, savingState: 'loaded'};
     }),
-    on(ShareLinkActions.initializeApplicationBasedOnId, (state): ShareLinkState => {
-      return {...initialState, initializeApplicationLoadingState: 'loading'};
+    on(ShareLinkActions.initializeApplicationBasedOnId, (): ShareLinkState => {
+      return {...initialState, applicationInitializationLoadingState: 'loading'};
     }),
-    on(ShareLinkActions.setInitializationError, (state): ShareLinkState => {
-      return {...state, initializeApplicationLoadingState: 'error'};
+    on(ShareLinkActions.setInitializationError, (): ShareLinkState => {
+      return {...initialState, applicationInitializationLoadingState: 'error'};
     }),
     on(ShareLinkActions.completeApplicationInitialization, (state): ShareLinkState => {
-      return {...state, initializeApplicationLoadingState: 'loaded'};
+      return {...state, applicationInitializationLoadingState: 'loaded'};
     }),
   ),
 });
 
-export const {name, reducer, selectItem, selectLoadingState, selectId, selectSavingState, selectInitializeApplicationLoadingState} =
+export const {name, reducer, selectItem, selectLoadingState, selectId, selectSavingState, selectApplicationInitializationLoadingState} =
   shareLinkFeature;

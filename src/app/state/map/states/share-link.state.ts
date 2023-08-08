@@ -6,5 +6,5 @@ import {LoadingState} from '../../../shared/types/loading-state';
 export interface ShareLinkState extends HasLoadingState, HasSavingState {
   item: ShareLinkItem | undefined;
   id: string | undefined;
-  initializeApplicationLoadingState: LoadingState;
+  applicationInitializationLoadingState: LoadingState;
 }

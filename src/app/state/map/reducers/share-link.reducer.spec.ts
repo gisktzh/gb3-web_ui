@@ -14,8 +14,18 @@ describe('shareLink Reducer', () => {
   };
 
   const shareLinkItemIdMock: string = 'mock-id';
-
   const errorMock: Error = new Error('oh no! anyway...');
+  let existingState: ShareLinkState;
+
+  beforeEach(() => {
+    existingState = {
+      loadingState: 'loaded',
+      item: shareLinkItemMock,
+      id: 'abc',
+      applicationInitializationLoadingState: 'loaded',
+      savingState: 'loaded',
+    };
+  });
 
   describe('an unknown action', () => {
     it('should return the previous state', () => {
@@ -28,13 +38,6 @@ describe('shareLink Reducer', () => {
 
   describe('loadItem', () => {
     it('sets the loading state to `loading` and resets the item to its initial state', () => {
-      const existingState: ShareLinkState = {
-        loadingState: 'loaded',
-        item: shareLinkItemMock,
-        id: 'abc',
-        initializeApplicationLoadingState: 'loaded',
-        savingState: 'loaded',
-      };
       const action = ShareLinkActions.loadItem({id: 'mock-id'});
       const state = reducer(existingState, action);
 
@@ -42,39 +45,27 @@ describe('shareLink Reducer', () => {
       expect(state.id).toBe('abc');
       expect(state.item).toEqual(initialState.item);
       expect(state.savingState).toBe('loaded');
-      expect(state.initializeApplicationLoadingState).toBe('loaded');
+      expect(state.applicationInitializationLoadingState).toBe('loaded');
     });
   });
 
   describe('setLoadingError', () => {
     it('sets the loading state to `error` on failure and resets the item to its initial state', () => {
-      const existingState: ShareLinkState = {
-        loadingState: 'loaded',
-        item: shareLinkItemMock,
-        id: 'abc',
-        initializeApplicationLoadingState: 'loaded',
-        savingState: 'loaded',
-      };
       const action = ShareLinkActions.setLoadingError({error: errorMock});
       const state = reducer(existingState, action);
 
       expect(state.loadingState).toBe('error');
-      expect(state.id).toBe('abc');
+      expect(state.id).toBe(initialState.id);
       expect(state.item).toEqual(initialState.item);
-      expect(state.savingState).toBe('loaded');
-      expect(state.initializeApplicationLoadingState).toBe('loaded');
+      expect(state.savingState).toBe(initialState.savingState);
+      expect(state.applicationInitializationLoadingState).toBe(initialState.applicationInitializationLoadingState);
     });
   });
 
   describe('setItem', () => {
     it('sets the loading state to `loaded` on success and sets the item', () => {
-      const existingState: ShareLinkState = {
-        loadingState: 'loading',
-        item: undefined,
-        id: 'abc',
-        initializeApplicationLoadingState: 'loaded',
-        savingState: 'loaded',
-      };
+      existingState.loadingState = 'loading';
+      existingState.item = undefined;
       const action = ShareLinkActions.setItem({item: shareLinkItemMock});
       const state = reducer(existingState, action);
 
@@ -82,19 +73,12 @@ describe('shareLink Reducer', () => {
       expect(state.id).toBe('abc');
       expect(state.item).toEqual(shareLinkItemMock);
       expect(state.savingState).toBe('loaded');
-      expect(state.initializeApplicationLoadingState).toBe('loaded');
+      expect(state.applicationInitializationLoadingState).toBe('loaded');
     });
   });
 
   describe('createItem', () => {
     it('sets the saving state to `loading` and resets the id', () => {
-      const existingState: ShareLinkState = {
-        loadingState: 'loaded',
-        item: shareLinkItemMock,
-        id: 'abc',
-        initializeApplicationLoadingState: 'loaded',
-        savingState: 'loaded',
-      };
       const action = ShareLinkActions.createItem({item: shareLinkItemMock});
       const state = reducer(existingState, action);
 
@@ -102,39 +86,27 @@ describe('shareLink Reducer', () => {
       expect(state.id).toBe(initialState.id);
       expect(state.item).toEqual(shareLinkItemMock);
       expect(state.savingState).toBe('loading');
-      expect(state.initializeApplicationLoadingState).toBe('loaded');
+      expect(state.applicationInitializationLoadingState).toBe('loaded');
     });
   });
 
   describe('setCreationError', () => {
-    it('sets the saving state to `error` on failure and resets the id to its initial state', () => {
-      const existingState: ShareLinkState = {
-        loadingState: 'loaded',
-        item: shareLinkItemMock,
-        id: 'abc',
-        initializeApplicationLoadingState: 'loaded',
-        savingState: 'loaded',
-      };
+    it('sets the saving state to `error` on failure and resets the state to its initial state', () => {
       const action = ShareLinkActions.setCreationError({error: errorMock});
       const state = reducer(existingState, action);
 
-      expect(state.loadingState).toBe('loaded');
+      expect(state.loadingState).toBe(initialState.loadingState);
       expect(state.id).toBe(initialState.id);
-      expect(state.item).toEqual(shareLinkItemMock);
+      expect(state.item).toEqual(initialState.item);
       expect(state.savingState).toBe('error');
-      expect(state.initializeApplicationLoadingState).toBe('loaded');
+      expect(state.applicationInitializationLoadingState).toBe(initialState.applicationInitializationLoadingState);
     });
   });
 
   describe('setItemId', () => {
     it('sets the saving state to `loaded` on success and sets the item id', () => {
-      const existingState: ShareLinkState = {
-        loadingState: 'loaded',
-        item: shareLinkItemMock,
-        id: 'abc',
-        initializeApplicationLoadingState: 'loaded',
-        savingState: 'loading',
-      };
+      existingState.savingState = 'loading';
+      existingState.id = undefined;
       const action = ShareLinkActions.setItemId({id: shareLinkItemIdMock});
       const state = reducer(existingState, action);
 
@@ -142,19 +114,12 @@ describe('shareLink Reducer', () => {
       expect(state.id).toBe(shareLinkItemIdMock);
       expect(state.item).toEqual(shareLinkItemMock);
       expect(state.savingState).toBe('loaded');
-      expect(state.initializeApplicationLoadingState).toBe('loaded');
+      expect(state.applicationInitializationLoadingState).toBe('loaded');
     });
   });
 
   describe('initializeApplicationBasedOnId', () => {
-    it('sets the initialize application loading state to `loading` and resets the rest if the state to its initial state', () => {
-      const existingState: ShareLinkState = {
-        loadingState: 'loaded',
-        item: shareLinkItemMock,
-        id: 'abc',
-        initializeApplicationLoadingState: 'loaded',
-        savingState: 'loaded',
-      };
+    it('sets the application initialization loading state to `loading` and resets the rest if the state to its initial state', () => {
       const action = ShareLinkActions.initializeApplicationBasedOnId({id: shareLinkItemIdMock});
       const state = reducer(existingState, action);
 
@@ -162,39 +127,26 @@ describe('shareLink Reducer', () => {
       expect(state.id).toBe(initialState.id);
       expect(state.item).toEqual(initialState.item);
       expect(state.savingState).toBe(initialState.savingState);
-      expect(state.initializeApplicationLoadingState).toBe('loading');
+      expect(state.applicationInitializationLoadingState).toBe('loading');
     });
   });
 
   describe('setInitializationError', () => {
-    it('sets the initialize application loading state to `error` on failure', () => {
-      const existingState: ShareLinkState = {
-        loadingState: 'loaded',
-        item: shareLinkItemMock,
-        id: 'abc',
-        initializeApplicationLoadingState: 'loaded',
-        savingState: 'loaded',
-      };
+    it('sets the application initialization loading state to `error` on failure and resets the state to its initial state', () => {
       const action = ShareLinkActions.setInitializationError({error: errorMock});
       const state = reducer(existingState, action);
 
-      expect(state.loadingState).toBe('loaded');
-      expect(state.id).toBe('abc');
-      expect(state.item).toEqual(shareLinkItemMock);
-      expect(state.savingState).toBe('loaded');
-      expect(state.initializeApplicationLoadingState).toBe('error');
+      expect(state.loadingState).toBe(initialState.loadingState);
+      expect(state.id).toBe(initialState.id);
+      expect(state.item).toEqual(initialState.item);
+      expect(state.savingState).toBe(initialState.savingState);
+      expect(state.applicationInitializationLoadingState).toBe('error');
     });
   });
 
   describe('completeApplicationInitialization', () => {
-    it('sets the initialize application loading state to `loaded` on success', () => {
-      const existingState: ShareLinkState = {
-        loadingState: 'loaded',
-        item: shareLinkItemMock,
-        id: 'abc',
-        initializeApplicationLoadingState: 'loading',
-        savingState: 'loaded',
-      };
+    it('sets the application initialization loading state to `loaded` on success', () => {
+      existingState.applicationInitializationLoadingState = 'loading';
       const action = ShareLinkActions.completeApplicationInitialization();
       const state = reducer(existingState, action);
 
@@ -202,7 +154,7 @@ describe('shareLink Reducer', () => {
       expect(state.id).toBe('abc');
       expect(state.item).toEqual(shareLinkItemMock);
       expect(state.savingState).toBe('loaded');
-      expect(state.initializeApplicationLoadingState).toBe('loaded');
+      expect(state.applicationInitializationLoadingState).toBe('loaded');
     });
   });
 });

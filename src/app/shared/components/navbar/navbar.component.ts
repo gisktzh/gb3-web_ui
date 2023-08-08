@@ -13,7 +13,6 @@ import {selectScrollbarWidth} from '../../../state/app/reducers/app-layout.reduc
   styleUrls: ['./navbar.component.scss'],
 })
 export class NavbarComponent implements OnInit, OnDestroy {
-  /** expose the enum to the HTML */
   public readonly mainPageEnum = MainPage;
 
   @Input() public isSimplifiedPage: boolean = false;

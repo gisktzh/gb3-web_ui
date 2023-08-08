@@ -1,17 +1,9 @@
-import {inject, NgModule} from '@angular/core';
-import {CanActivateFn, RouterModule, Routes} from '@angular/router';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
 import {MainPage} from './shared/enums/main-page.enum';
-import {AuthService} from './auth/auth.service';
-import {filter, Observable} from 'rxjs';
 import {NotFoundErrorPageComponent} from './error-handling/components/not-found-error-page/not-found-error-page.component';
 import {FatalErrorPageComponent} from './error-handling/components/fatal-error-page/fatal-error-page.component';
-
-/**
- * This guard waits for the authentication service to finish loading the current login-state.
- */
-export const AuthLoadingGuard: CanActivateFn = (): Observable<boolean> => {
-  return inject(AuthService).isDoneLoading$.pipe(filter((isDoneLoading) => isDoneLoading));
-};
+import {AuthLoadingGuard} from './shared/guards/auth-loading-guard.guard';
 
 const routes: Routes = [
   {

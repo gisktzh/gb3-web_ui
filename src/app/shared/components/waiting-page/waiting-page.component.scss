@@ -1,0 +1,17 @@
+.waiting-page {
+  padding: 20px;
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  justify-content: center;
+
+  .waiting-page__header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .waiting-page__header__item {
+      margin: 4px;
+    }
+  }
+}

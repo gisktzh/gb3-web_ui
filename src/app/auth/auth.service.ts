@@ -26,6 +26,10 @@ export class AuthService {
     private readonly authNotificationService: AuthNotificationService,
     private readonly router: Router,
   ) {
+    if (!this.getAccessToken()) {
+      // no token => the current user is definitely not logged in
+      this.isDoneLoadingSubject$.next(true);
+    }
     this.oauthService.events.subscribe((event) => {
       this.isAuthenticatedSubject$.next(this.oauthService.hasValidAccessToken());
 
@@ -33,7 +37,8 @@ export class AuthService {
         this.enableOauthDebug(event);
       }
 
-      if (event.type === 'discovery_document_loaded') {
+      if (event.type === 'user_profile_loaded') {
+        // the user profile is loaded and there is either a valid or invalid token
         this.isDoneLoadingSubject$.next(true);
       }
     });
