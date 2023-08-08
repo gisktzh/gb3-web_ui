@@ -82,6 +82,11 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
     this.initializeTool(UserDrawingLayer.Measurements, (layer) => this.setMeasurementStrategy(measurementTool, layer));
   }
 
+  public complete(graphic: Graphic) {
+    const elementJson = this.convertToGeoJson(graphic);
+    this.endDrawing(elementJson);
+  }
+
   /**
    * Initializes a given tool by handling the addition and/or visibility setting ot the drawing layer and uses the supplied setter
    * function to set the correct toolStrategy.
@@ -127,22 +132,22 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
     this.toolStrategy.start();
   }
 
-  public complete(graphics: Graphic[]) {
-    const geoJsonGeometries: Feature[] = [];
-    graphics.map((graphic) => {
-      const transformedGeometry = this.transformationService.transformTo(graphic.geometry, new SpatialReference({wkid: 4326}));
-      geoJsonGeometries.push({
-        type: 'Feature',
-        geometry: {...arcgisToGeoJSON(transformedGeometry)},
-        properties: graphic.attributes,
-      });
-    });
-    this.endDrawing(geoJsonGeometries);
+  private convertToGeoJson(graphic: Graphic): Feature {
+    const transformedGeometry = this.transformationService.transformTo(graphic.geometry, new SpatialReference({wkid: 4326}));
+
+    return {
+      type: 'Feature',
+      geometry: {...arcgisToGeoJSON(transformedGeometry)},
+      properties: {
+        style: this.esriSymbolizationService.extractGb3SymbolizationFromSymbol(graphic.symbol),
+        ...graphic.attributes,
+      },
+    };
   }
 
-  private endDrawing(features?: Feature[]) {
+  private endDrawing(feature?: Feature) {
     this.esriMapViewService.mapView.removeHandles(HANDLE_GROUP_KEY);
-    this.store.dispatch(ToolActions.deactivateTool({features}));
+    this.store.dispatch(ToolActions.deactivateTool({feature}));
   }
 
   /**

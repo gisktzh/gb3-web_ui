@@ -18,7 +18,7 @@ export abstract class AbstractEsriDrawingStrategy extends AbstractEsriDrawableTo
           break; // currently, these events do not trigger any action
         case 'complete':
           this.setIdentifierOnGraphic(graphic);
-          this.completeDrawingCallbackHandler([graphic]);
+          this.completeDrawingCallbackHandler(graphic);
           break;
       }
     });

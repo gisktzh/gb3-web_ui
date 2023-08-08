@@ -29,7 +29,7 @@ export abstract class AbstractEsriMeasurementStrategy<T extends Polygon | Polyli
           graphicIdentifier = this.setAndGetIdentifierOnGraphic(graphic);
           label = this.createLabelForGeometry(graphic.geometry as T, graphicIdentifier);
           this.layer.add(label);
-          this.completeDrawingCallbackHandler([graphic, label]);
+          this.completeDrawingCallbackHandler(graphic); // todo: add label graphic
           break;
       }
     });
