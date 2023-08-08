@@ -5,7 +5,10 @@ ARG TARGET_ENVIRONMENT=local
 WORKDIR /app
 COPY . .
 
-RUN npm ci --omit=dev
+ENV NODE_ENV=production
+# increase the available memory size to prevent the 'Reached heap limit Allocation failed - JavaScript heap out of memory' error
+ENV NODE_OPTIONS=--max_old_space_size=4096
+RUN npm ci --ignore-scripts --omit=dev
 RUN npm run build-$TARGET_ENVIRONMENT
 
 FROM nginx:1.25-alpine AS server
