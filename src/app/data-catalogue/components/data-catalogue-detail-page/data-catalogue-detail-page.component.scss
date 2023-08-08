@@ -3,17 +3,26 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
 .data-catalogue-detail-page {
-  .data-catalogue-detail-page__back-button {
-    width: fit-content;
-    margin-bottom: 60px;
-    @include mat-mixins.mat-button-ktzh-link($align-item-right: false);
-  }
+  display: flex;
+  justify-content: center;
 
-  .data-catalogue-detail-page__title {
-    margin-bottom: 12px;
-  }
+  .data-catalogue-detail-page__content {
+    padding: 40px 24px;
+    max-width: ktzh-variables.$zh-layout-max-content-width;
+    width: 100%;
 
-  .dataset-detail__description {
-    margin-bottom: 60px;
+    .data-catalogue-detail-page__back-button {
+      width: fit-content;
+      margin-bottom: 60px;
+      @include mat-mixins.mat-button-ktzh-link($align-item-right: false);
+    }
+
+    .data-catalogue-detail-page__title {
+      margin-bottom: 12px;
+    }
+
+    .dataset-detail__description {
+      margin-bottom: 60px;
+    }
   }
 }

@@ -3,11 +3,13 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
 $left-offset: calc(16.66667% - 1.5rem);
+$column-gap: 8px;
+
 .hero-header {
   display: flex;
   flex-flow: row wrap;
   align-items: center;
-  column-gap: 8px;
+  column-gap: $column-gap;
 
   & .hero-header__image {
     width: $left-offset;
@@ -22,6 +24,7 @@ $left-offset: calc(16.66667% - 1.5rem);
     font-family: ktzh-variables.$zh-font-family-bold;
     font-size: large;
     margin-left: $left-offset;
+    padding-left: $column-gap;
 
     &--subtext {
       font-family: ktzh-variables.$zh-font-family;

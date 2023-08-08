@@ -1,0 +1,19 @@
+<div class="data-catalogue-overview-item">
+  <div class="data-catalogue-overview-item__content">
+    <span class="data-catalogue-overview-item__title">{{ item.name }}</span>
+    <div class="data-catalogue-overview-item__details">
+      <div class="data-catalogue-overview-item__details__item">
+        <span class="data-catalogue-overview-item__details__item__title">Typ:</span>
+        <span class="data-catalogue-overview-item__details__item__content">{{ item.type }}</span>
+      </div>
+      <!-- todo: Add short description and OGD availability as soon as API delivers this -->
+    </div>
+  </div>
+
+  <div class="data-catalogue-overview-item__link">
+    <a mat-icon-button [routerLink]="item.relativeUrl">
+      <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
+    </a>
+  </div>
+</div>
+<mat-divider></mat-divider>
