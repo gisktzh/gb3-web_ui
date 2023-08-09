@@ -40,9 +40,7 @@ export class PageNotificationService implements OnDestroy {
           filter((event): event is NavigationEnd => event instanceof NavigationEnd),
           tap((event) => {
             const urlTree = this.router.parseUrl(event.url);
-            const urlSegments = UrlUtils.extractUrlSegments(urlTree);
-            const firstUrlSegmentPath = UrlUtils.extractFirstUrlSegmentPath(urlSegments);
-            this.currentMainPageOrUndefined = UrlUtils.transformStringToMainPage(firstUrlSegmentPath);
+            this.currentMainPageOrUndefined = UrlUtils.extractMainPage(urlTree);
             this.refreshCurrentPageNotifications(this.currentMainPageOrUndefined, this.pageNotifications);
           }),
         )

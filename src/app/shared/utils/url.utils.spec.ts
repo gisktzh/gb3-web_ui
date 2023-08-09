@@ -52,6 +52,18 @@ describe('UrlUtils', () => {
     expect(UrlUtils.transformStringToMainPage(MainPage.Maps.toUpperCase())).toBeUndefined();
   });
 
+  it('should extract a MainPage enum (or undefined) from an UrlTree', () => {
+    const router = TestBed.inject(Router);
+    for (const mainPageKey in MainPage) {
+      const mainPage: MainPage = MainPage[mainPageKey as keyof typeof MainPage];
+      expect(UrlUtils.extractMainPage(router.parseUrl(`/${mainPage}`))).toBe(mainPage);
+    }
+
+    expect(UrlUtils.extractMainPage(router.parseUrl('notmainpage'))).toBeUndefined();
+    expect(UrlUtils.extractMainPage(router.parseUrl('maps x'))).toBeUndefined();
+    expect(UrlUtils.extractMainPage(router.parseUrl(`/${MainPage.Maps.toUpperCase()}`))).toBeUndefined();
+  });
+
   it('should compare two segment path arrays for equality', () => {
     expect(UrlUtils.areSegmentPathsEqual([], [])).toBeTrue();
     expect(UrlUtils.areSegmentPathsEqual(['path01'], ['path01'])).toBeTrue();

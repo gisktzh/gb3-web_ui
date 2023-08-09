@@ -1,4 +1,4 @@
-import {Component, Inject} from '@angular/core';
+import {Component, ErrorHandler, Inject} from '@angular/core';
 import {ServiceMetadata} from '../../../shared/interfaces/gb3-metadata.interface';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Gb3MetadataService} from '../../../shared/services/apis/gb3/gb3-metadata.service';
@@ -8,7 +8,6 @@ import {BaseMetadataInformation} from '../../interfaces/base-metadata-informatio
 import {AbstractBaseDetailComponent} from '../abstract-base-detail/abstract-base-detail.component';
 import {MetadataLink} from '../../interfaces/metadata-link.interface';
 import {DataExtractionUtils} from '../../utils/data-extraction.utils';
-import {ErrorHandlerService} from '../../../error-handling/error-handler.service';
 
 @Component({
   selector: 'service-detail',
@@ -27,9 +26,9 @@ export class ServiceDetailComponent extends AbstractBaseDetailComponent<ServiceM
     @Inject(Gb3MetadataService) gb3MetadataService: Gb3MetadataService,
     @Inject(ConfigService) configService: ConfigService,
     @Inject(Router) router: Router,
-    @Inject(ErrorHandlerService) errorHandlerService: ErrorHandlerService,
+    @Inject(ErrorHandler) errorHandler: ErrorHandler,
   ) {
-    super(route, gb3MetadataService, configService, router, errorHandlerService);
+    super(route, gb3MetadataService, configService, router, errorHandler);
   }
 
   protected loadMetadata(id: string) {

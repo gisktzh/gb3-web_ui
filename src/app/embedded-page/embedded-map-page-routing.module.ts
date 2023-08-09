@@ -11,6 +11,12 @@ const routes: Routes = [
     component: EmbeddedMapPageComponent,
     canDeactivate: [embeddedMapGuard],
   },
+  {
+    // also allow empty ID to be routed to the embedded map page
+    path: '',
+    component: EmbeddedMapPageComponent,
+    canDeactivate: [embeddedMapGuard],
+  },
 ];
 
 @NgModule({

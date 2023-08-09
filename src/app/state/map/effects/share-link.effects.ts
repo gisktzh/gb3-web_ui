@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {ErrorHandler, Injectable} from '@angular/core';
 import {Actions, concatLatestFrom, createEffect, ofType} from '@ngrx/effects';
 import {combineLatestWith, filter, of, switchMap, take, tap} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
@@ -17,7 +17,6 @@ import {
   ShareLinkItemCouldNotBeCreated,
   ShareLinkPropertyCouldNotBeValidated,
 } from '../../../shared/errors/share-link.errors';
-import {ErrorHandlerService} from '../../../error-handling/error-handler.service';
 import {selectLoadedLayerCatalogueAndShareItem} from '../selectors/loaded-layer-catalogue-and-share-item.selector';
 import {selectItems} from '../reducers/active-map-item.reducer';
 import {Gb3RuntimeError} from '../../../shared/errors/abstract.errors';
@@ -156,9 +155,7 @@ export class ShareLinkEffects {
           error instanceof Gb3RuntimeError
             ? new ShareLinkCouldNotBeValidated(error.message, isAuthenticated)
             : new ShareLinkCouldNotBeValidated('Unbekannter Fehler', isAuthenticated, error);
-        return of(this.errorHandlerService.handleError(shareLinkCouldNotBeValidatedError)).pipe(
-          map(() => shareLinkCouldNotBeValidatedError),
-        );
+        return of(this.errorHandler.handleError(shareLinkCouldNotBeValidatedError)).pipe(map(() => shareLinkCouldNotBeValidatedError));
       }),
       map((error) => {
         return ShareLinkActions.setInitializationError({error});
@@ -210,7 +207,7 @@ export class ShareLinkEffects {
     private readonly basemapConfigService: BasemapConfigService,
     private readonly configService: ConfigService,
     private readonly favouritesService: FavouritesService,
-    private readonly errorHandlerService: ErrorHandlerService,
+    private readonly errorHandler: ErrorHandler,
     private readonly authService: AuthService,
   ) {}
 }

@@ -37,6 +37,16 @@ export class UrlUtils {
       : undefined;
   }
 
+  /**
+   * Extracts the first segment and transforms it to MainPage enum or `undefined` if it is not within the MainPage enum.
+   * @param urlTree The UrlTree (parsed by using Angular router) of which the MainPage shall be extracted
+   */
+  public static extractMainPage(urlTree: UrlTree): MainPage | undefined {
+    const urlSegments = UrlUtils.extractUrlSegments(urlTree);
+    const firstUrlSegmentPath = UrlUtils.extractFirstUrlSegmentPath(urlSegments);
+    return UrlUtils.transformStringToMainPage(firstUrlSegmentPath);
+  }
+
   public static areSegmentPathsEqual(firstSegmentPaths: string[], secondSegmentPaths: string[]): boolean {
     return (
       firstSegmentPaths.length === secondSegmentPaths.length && firstSegmentPaths.every((path, index) => path === secondSegmentPaths[index])

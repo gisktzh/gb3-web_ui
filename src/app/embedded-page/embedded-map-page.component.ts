@@ -44,7 +44,7 @@ export class EmbeddedMapPageComponent {
     if (this.id !== null) {
       this.store.dispatch(ShareLinkActions.initializeApplicationBasedOnId({id: this.id}));
     } else {
-      // note: this can never happen since the :id always matches - but Angular does not know typed URL parameters.
+      // note: this can happen
       throw new ShareLinkParameterInvalid();
     }
   }
