@@ -52,6 +52,7 @@ import {MeasurementToolsComponent} from './components/map-tools/measurement-tool
 import {DrawingToolsComponent} from './components/map-tools/drawing-tools/drawing-tools.component';
 import {AbstractToolsComponent} from './components/map-tools/abstract-tools/abstract-tools.component';
 import {Gb2ExitButtonComponent} from './components/gb2-exit-button/gb2-exit-button.component';
+import {ZoomControlsComponent} from './components/map-controls/zoom-controls/zoom-controls.component';
 
 @NgModule({
   declarations: [
@@ -103,8 +104,9 @@ import {Gb2ExitButtonComponent} from './components/gb2-exit-button/gb2-exit-butt
     DrawingToolsComponent,
     AbstractToolsComponent,
     Gb2ExitButtonComponent,
+    ZoomControlsComponent,
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule, KtZhDesignSystemModule],
-  exports: [LegendOverlayComponent, MapContainerComponent],
+  exports: [LegendOverlayComponent, MapContainerComponent, ZoomControlsComponent],
 })
 export class MapModule {}

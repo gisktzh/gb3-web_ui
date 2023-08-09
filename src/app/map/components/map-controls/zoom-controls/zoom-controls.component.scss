@@ -1,0 +1,27 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'mixins/helpers.mixin' as mixins;
+@use 'mixins/material.mixin' as mat-mixins;
+
+:host ::ng-deep {
+  .map-zoom-controls__button {
+    @include mat-mixins.mat-icon-button-override-border-radius(ktzh-variables.$zh-border-radius);
+    @include mat-mixins.mat-icon-custom-svg-size(20px);
+  }
+}
+
+.map-zoom-controls {
+  width: 48px;
+  display: flex;
+  flex-direction: column;
+  background-color: ktzh-variables.$zh-background-color;
+  pointer-events: all;
+
+  .map-zoom-controls--hidden {
+    display: none !important;
+  }
+
+  .map-zoom-controls__divider {
+    width: 50%;
+    align-self: center;
+  }
+}

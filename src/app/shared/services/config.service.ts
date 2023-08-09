@@ -9,6 +9,7 @@ import {Gb2Constants} from '../constants/gb2.constants';
 import {layerSymbolizations} from '../configs/symbolization.config';
 
 import {HostNameResolutionMismatch} from '../errors/app.errors';
+import {EmbeddedMapConstants} from '../constants/embedded-map.constants';
 
 @Injectable({
   providedIn: 'root',
@@ -38,6 +39,13 @@ export class ConfigService {
   public readonly apiConfig: ApiConfig;
   public readonly overridesConfig: OverrideSettings;
   public readonly authConfig: AuthSettings;
+
+  public readonly embeddedMapConfig = {
+    title: EmbeddedMapConstants.DEFAULT_TITLE,
+    width: EmbeddedMapConstants.DEFAULT_WIDTH,
+    height: EmbeddedMapConstants.DEFAULT_HEIGHT,
+    borderSize: EmbeddedMapConstants.DEFAULT_BORDER_SIZE,
+  };
 
   constructor(@Inject(DOCUMENT) private readonly document: Document) {
     const runtimeConfig = this.findRuntimeConfig();

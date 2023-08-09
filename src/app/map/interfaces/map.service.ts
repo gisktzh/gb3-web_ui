@@ -8,8 +8,11 @@ import {Gb2WmsActiveMapItem} from '../models/implementations/gb2-wms.model';
 import {ToolService} from './tool.service';
 
 export interface MapService extends AddToMapVisitor {
-  /** Initializes the map by creating the initial background map and with a given extent */
-  init(): void;
+  /**
+   * Initializes the map by creating the initial background map and with a given extent
+   * @param isInteractive A value indicating whether the map should be interactive e.g. by clicking on it to create a feature request.
+   */
+  init(isInteractive?: boolean): void;
 
   /** Assigns the map to an element on the HTML */
   assignMapElement(container: HTMLDivElement): void;

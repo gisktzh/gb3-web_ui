@@ -2,12 +2,17 @@
 @use 'mixins/helpers.mixin' as mixins;
 @use 'mixins/material.mixin' as mat-mixins;
 
-:host ::ng-deep .list-item--no-content-indent {
-  @include mat-mixins.mat-expansion-panel-remove-content-indent;
+:host ::ng-deep .list-item {
+  &.mat-expansion-panel {
+    @include mixins.no-box-shadow;
+  }
+
+  &--no-content-indent {
+    @include mat-mixins.mat-expansion-panel-remove-content-indent;
+  }
 }
 
 .list-item {
-  @include mixins.no-box-shadow;
   margin-bottom: 24px;
 
   .list-item__header {
