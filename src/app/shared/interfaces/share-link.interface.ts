@@ -5,8 +5,8 @@ export interface ShareLinkItem {
   scale: number;
   basemapId: string;
   content: ActiveMapItemConfiguration[];
-  drawings: object[]; // TODO: specify when the API interface is done
-  measurements: object[]; // TODO: specify when the API interface is done
+  drawings: any[]; // TODO: specify when the API interface is done
+  measurements: any[]; // TODO: specify when the API interface is done
 }
 
 export interface ShareLinkResponse {

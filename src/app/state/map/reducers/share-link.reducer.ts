@@ -9,25 +9,42 @@ export const initialState: ShareLinkState = {
   id: undefined,
   loadingState: 'undefined',
   savingState: 'undefined',
+  applicationInitializationLoadingState: 'undefined',
 };
 
 export const shareLinkFeature = createFeature({
   name: shareLinkFeatureKey,
   reducer: createReducer(
     initialState,
-    on(ShareLinkActions.loadShareLinkItem, (state): ShareLinkState => {
+    on(ShareLinkActions.loadItem, (state): ShareLinkState => {
       return {...state, item: initialState.item, loadingState: 'loading'};
     }),
-    on(ShareLinkActions.setShareLinkItem, (state, {item}): ShareLinkState => {
+    on(ShareLinkActions.setLoadingError, (): ShareLinkState => {
+      return {...initialState, loadingState: 'error'};
+    }),
+    on(ShareLinkActions.setItem, (state, {item}): ShareLinkState => {
       return {...state, item, loadingState: 'loaded'};
     }),
-    on(ShareLinkActions.createShareLinkItem, (state): ShareLinkState => {
+    on(ShareLinkActions.createItem, (state): ShareLinkState => {
       return {...state, id: initialState.id, savingState: 'loading'};
     }),
-    on(ShareLinkActions.setShareLinkId, (state, {id}): ShareLinkState => {
+    on(ShareLinkActions.setCreationError, (): ShareLinkState => {
+      return {...initialState, savingState: 'error'};
+    }),
+    on(ShareLinkActions.setItemId, (state, {id}): ShareLinkState => {
       return {...state, id, savingState: 'loaded'};
+    }),
+    on(ShareLinkActions.initializeApplicationBasedOnId, (): ShareLinkState => {
+      return {...initialState, applicationInitializationLoadingState: 'loading'};
+    }),
+    on(ShareLinkActions.setInitializationError, (): ShareLinkState => {
+      return {...initialState, applicationInitializationLoadingState: 'error'};
+    }),
+    on(ShareLinkActions.completeApplicationInitialization, (state): ShareLinkState => {
+      return {...state, applicationInitializationLoadingState: 'loaded'};
     }),
   ),
 });
 
-export const {name, reducer, selectItem, selectLoadingState, selectId, selectSavingState} = shareLinkFeature;
+export const {name, reducer, selectItem, selectLoadingState, selectId, selectSavingState, selectApplicationInitializationLoadingState} =
+  shareLinkFeature;

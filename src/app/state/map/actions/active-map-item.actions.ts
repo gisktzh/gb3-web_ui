@@ -35,5 +35,12 @@ export const ActiveMapItemActions = createActionGroup({
     'Add Favourite': props<{activeMapItems: ActiveMapItem[]; baseConfig: FavouriteBaseConfig}>(),
     'Add Initial Map Items': props<{initialMapItems: ActiveMapItem[]}>(),
     'Mark All Active Map Item Notice As Read': emptyProps(),
+    /**
+     * This action does not have an effect to add items to the map in contrast to the other 'add' actions.
+     * It can be used to prepare a pre-filled list of active map items to show **before** routing to the map tab
+     * This is the same behaviour as changing tabs and then coming back to the 'maps' tab while still having some
+     * previously loaded items.
+     */
+    'Initialize Active Map Items': props<{activeMapItems: ActiveMapItem[]}>(),
   },
 });

@@ -130,6 +130,7 @@ match. This is because there are times when you _might_ want to deviate from the
 > 6. [Custom icons](#custom-icons)
 > 7. [Transformation from GB2 backend API to GB3 interfaces](#transformation-from-gb2-backend-api-to-gb3-interfaces)
 > 8. [Error handling](#error-handling)
+> 9. [Application Initialization based on share link](#application-initialization-based-on-share-link)
 
 ### The `ActiveMapItem` class
 
@@ -419,3 +420,42 @@ For examples of this, see e.g. the `LegendEffect`.
 **Importantly**, if you throw exceptions within the `constructor` of a service, make sure to inject the `ErrorHandler`
 interface and throw it explicitly using the `handleError` method. Otherwise, depending on the order of Angular's DI, the
 error handler might not yet be registered and throw the exception outside of the Angular error handler.
+
+### Application Initialization based on share link
+
+Loading and initializing of the application based on a previously shared link ID is completely done within the `share-link.state`.
+There is the whole `initializeApplication` and `validation` part where the application gets initialized.
+This part is basically a big state machine used to control the initialization flow. It's taking care of all potential side effects like
+invalid share link item contents or topics that are not getting loaded.
+
+The basic flow based on actions and effects goes like this:
+
+```
+                                     ┌─────────────────────────────────────────────────┐
+                                     │ ShareLinkActions.initializeApplicationBasedOnId │
+                                     └───────┬─────────────┬─────────────────┬─────────┘
+initializeApplicationByLoadingShareLinkItem$ │             │                 │ initializeApplicationByLoadingTopics$
+                             ┌───────────────▼───────────┐ │ ┌───────────────▼──────────────────────┐
+                             │ ShareLinkActions.loadItem │ │ │ LayerCatalogActions.loadLayerCatalog │
+                             └───────────────┬───────────┘ │ └───────────────┬──────────────────────┘
+                                             └───────────► │◄────────────────┘
+               initializeApplicationByVerifyingSharedItem$ │
+                                          ┌────────────────▼──────────────┐
+                                          │ ShareLinkActions.validateItem │
+                                          └────────────────┬──────────────┘
+                                    validateShareLinkItem$ │
+                                       ┌───────────────────▼─────────────────┐
+                                       │ ShareLinkActions.completeValidation │
+                                       └──────┬────────────┬──────────┬──────┘
+                 setMapConfigAfterValidation$ │            │          │ setActiveMapItemsAfterValidation$
+                  ┌───────────────────────────▼──────────┐ │ ┌────────▼──────────────────────────────────────┐
+                  │ MapConfigActions.setInitialMapConfig │ │ │ ActiveMapItemActions.initializeActiveMapItems │
+                  └──────────────────────────────────────┘ │ └────────┬──────────────────────────────────────┘
+                                                           │ ◄────────┘
+                                   completeInitialization$ │
+                                 ┌─────────────────────────▼──────────────────────────┐
+                                 │ ShareLinkActions.completeApplicationInitialization │
+                                 └────────────────────────────────────────────────────┘
+```
+
+Note that error actions/effects are not visible on this diagram

@@ -1,6 +1,5 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {SharedModule} from '../shared/shared.module';
 import {SupportPageComponent} from './support-page.component';
 import {FaqComponent} from './components/faq/faq.component';
 import {ContactComponent} from './components/contact/contact.component';
@@ -34,7 +33,7 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [],
-  imports: [RouterModule.forChild(routes), SharedModule],
+  imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
 export class SupportPageRoutingModule {}

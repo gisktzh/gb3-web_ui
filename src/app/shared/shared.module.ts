@@ -22,6 +22,7 @@ import {HeroHeaderComponent} from './components/hero-header/hero-header.componen
 import {StartPageSectionComponent} from './components/start-page-section/start-page-section.component';
 import {ContactDetailsComponent} from './components/contact-details/contact-details.component';
 import {ContactDetailComponent} from './components/contact-details/contact-detail/contact-detail.component';
+import {WaitingPageComponent} from './components/waiting-page/waiting-page.component';
 
 @NgModule({
   declarations: [
@@ -44,6 +45,7 @@ import {ContactDetailComponent} from './components/contact-details/contact-detai
     StartPageSectionComponent,
     ContactDetailsComponent,
     ContactDetailComponent,
+    WaitingPageComponent,
   ],
   imports: [MaterialModule, RouterModule, CommonModule, ResizableModule],
   exports: [
@@ -67,6 +69,7 @@ import {ContactDetailComponent} from './components/contact-details/contact-detai
     HeroHeaderComponent,
     StartPageSectionComponent,
     ContactDetailsComponent,
+    WaitingPageComponent,
   ],
 })
 export class SharedModule {}

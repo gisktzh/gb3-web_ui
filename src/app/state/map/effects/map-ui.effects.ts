@@ -6,7 +6,7 @@ import {LegendActions} from '../actions/legend.actions';
 import {ShareLinkActions} from '../actions/share-link.actions';
 import {selectCurrentShareLinkItem} from '../selectors/current-share-link-item.selector';
 import {Store} from '@ngrx/store';
-import {combineLatestWith, filter, tap} from 'rxjs';
+import {filter, tap} from 'rxjs';
 import {ShareLinkDialogComponent} from '../../../map/components/share-link-dialog/share-link-dialog.component';
 import {PanelClass} from '../../../shared/enums/panel-class.enum';
 import {MatDialog} from '@angular/material/dialog';
@@ -79,7 +79,7 @@ export class MapUiEffects {
       ),
       concatLatestFrom(() => this.store.select(selectCurrentShareLinkItem)),
       map(([_, shareLinkItem]) => {
-        return ShareLinkActions.createShareLinkItem({item: shareLinkItem});
+        return ShareLinkActions.createItem({item: shareLinkItem});
       }),
     );
   });
@@ -138,7 +138,7 @@ export class MapUiEffects {
   public cancelToolAfterHidingUiElements = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapUiActions.changeUiElementsVisibility),
-      combineLatestWith(this.store.select(selectActiveTool)),
+      concatLatestFrom(() => this.store.select(selectActiveTool)),
       filter(([{hideAllUiElements}, activeTool]) => hideAllUiElements && activeTool !== undefined),
       map(() => ToolActions.cancelTool()),
     );

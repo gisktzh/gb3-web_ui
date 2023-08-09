@@ -13,7 +13,11 @@ import {Router} from '@angular/router';
 })
 export class AuthService {
   private readonly isAuthenticatedSubject$ = new BehaviorSubject<boolean>(false);
+  private readonly isDoneLoadingSubject$ = new BehaviorSubject<boolean>(false);
+
   public readonly isAuthenticated$ = this.isAuthenticatedSubject$.asObservable();
+  public readonly isDoneLoading$ = this.isDoneLoadingSubject$.asObservable();
+
   private readonly isAuthenticatedCheckInterval$: Subscription = new Subscription();
 
   constructor(
@@ -22,11 +26,20 @@ export class AuthService {
     private readonly authNotificationService: AuthNotificationService,
     private readonly router: Router,
   ) {
+    if (!this.getAccessToken()) {
+      // no token => the current user is definitely not logged in
+      this.isDoneLoadingSubject$.next(true);
+    }
     this.oauthService.events.subscribe((event) => {
       this.isAuthenticatedSubject$.next(this.oauthService.hasValidAccessToken());
 
       if (isDevMode()) {
         this.enableOauthDebug(event);
+      }
+
+      if (event.type === 'user_profile_loaded') {
+        // the user profile is loaded and there is either a valid or invalid token
+        this.isDoneLoadingSubject$.next(true);
       }
     });
 

@@ -7,6 +7,5 @@ import {MainPage} from '../../../shared/enums/main-page.enum';
   styleUrls: ['./login-redirect.component.scss'],
 })
 export class LoginRedirectComponent {
-  // expose the enum to the HTML
   public readonly mainPageEnum = MainPage;
 }
