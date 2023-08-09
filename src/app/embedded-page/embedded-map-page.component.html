@@ -1,0 +1,39 @@
+<div class="embedded-map-page">
+  <map-container *ngIf="loadingState === 'loaded'"></map-container>
+  <legend-overlay class="embedded-map-page__legend-overlay"></legend-overlay>
+  <button mat-flat-button (click)="toggleLegend()" [disabled]="numberOfQueryLegends === 0" class="embedded-map-page__legend-button">
+    <mat-icon svgIcon="ktzh_legend"></mat-icon>
+    Legende
+  </button>
+  <!--TODO WES: minified header-->
+  <button mat-flat-button color="primary" class="embedded-map-page__minified-header">
+    <mat-icon svgIcon="ktzh_logo"></mat-icon>
+    GIS Browser Zürich
+  </button>
+  <!--TODO WES: basic map controls as component -->
+  <div class="embedded-map-page__controls">
+    <button mat-icon-button (click)="this.goToInitialExtent()" color="accent" class="map-controls__buttons__button" data-test-id="map-home">
+      <mat-icon class="map-tools__button__icon" svgIcon="ktzh_home_extent"></mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      (click)="this.handleZoom('zoomIn')"
+      color="accent"
+      [disabled]="this.isMaxZoomedIn"
+      class="map-controls__buttons__button"
+      data-test-id="map-add"
+    >
+      <mat-icon class="map-tools__button__icon" svgIcon="ktzh_add"></mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      (click)="this.handleZoom('zoomOut')"
+      color="accent"
+      [disabled]="this.isMaxZoomedOut"
+      class="map-controls__buttons__button"
+      data-test-id="map-remove"
+    >
+      <mat-icon class="map-tools__button__icon" svgIcon="ktzh_remove"></mat-icon>
+    </button>
+  </div>
+</div>

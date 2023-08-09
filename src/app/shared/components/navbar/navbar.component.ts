@@ -48,6 +48,16 @@ export class NavbarComponent implements OnInit, OnDestroy {
   private initSubscriptions() {
     this.subscriptions.add(this.authService.isAuthenticated$.pipe(tap((value) => (this.isAuthenticated = value))).subscribe());
     this.subscriptions.add(this.userName$.pipe(tap((userName) => (this.userName = userName))).subscribe());
-    this.subscriptions.add(this.scrollbarWidth$.pipe(tap((scrollbarWidth) => (this.scrollbarWidth = scrollbarWidth ?? 0))).subscribe());
+    this.subscriptions.add(
+      this.scrollbarWidth$
+        .pipe(
+          tap((scrollbarWidth) => {
+            // this is necessary to prevent an error (NG0100: ExpressionChangedAfterItHasBeenCheckedError) as the value usually gets updated so fast
+            // that the UI update cycle was not yet fully completed.
+            setTimeout(() => (this.scrollbarWidth = scrollbarWidth ?? 0));
+          }),
+        )
+        .subscribe(),
+    );
   }
 }

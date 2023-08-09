@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {MapComponent} from './components/map/map.component';
+import {MapContainerComponent} from './components/map-container/map-container.component';
 import {SharedModule} from '../shared/shared.module';
 import {ActiveMapItemsComponent} from './components/active-map-items/active-map-items.component';
 import {MapPageComponent} from './map-page.component';
@@ -56,7 +56,7 @@ import {Gb2ExitButtonComponent} from './components/gb2-exit-button/gb2-exit-butt
 @NgModule({
   declarations: [
     MapPageComponent,
-    MapComponent,
+    MapContainerComponent,
     ActiveMapItemsComponent,
     ActiveMapItemComponent,
     LegendOverlayComponent,
@@ -105,5 +105,6 @@ import {Gb2ExitButtonComponent} from './components/gb2-exit-button/gb2-exit-butt
     Gb2ExitButtonComponent,
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule, KtZhDesignSystemModule],
+  exports: [LegendOverlayComponent, MapContainerComponent],
 })
 export class MapModule {}

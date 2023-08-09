@@ -5,6 +5,10 @@ $navbar-height: 72px;
 .main {
   height: calc(100vh - #{$navbar-height}); // subtracts height of navbar; maybe there's a nicer way?
 
+  &--headless {
+    height: 100vh;
+  }
+
   .navbar {
     display: block;
     height: $navbar-height;

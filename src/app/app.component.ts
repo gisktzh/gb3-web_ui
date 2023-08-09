@@ -7,7 +7,7 @@ import {MatSnackBar, MatSnackBarRef} from '@angular/material/snack-bar';
 import {PageNotificationComponent} from './shared/components/page-notification/page-notification.component';
 import {PageNotification} from './shared/interfaces/page-notification.interface';
 import {PanelClass} from './shared/enums/panel-class.enum';
-import {NavigationEnd, Router, UrlTree} from '@angular/router';
+import {NavigationEnd, NavigationStart, Router, UrlTree} from '@angular/router';
 import {map} from 'rxjs/operators';
 import {MainPage} from './shared/enums/main-page.enum';
 import {UrlUtils} from './shared/utils/url.utils';
@@ -25,12 +25,17 @@ export class AppComponent implements OnInit, OnDestroy {
 
   public showWarning: boolean = false;
   /**
+   * Flag which can be used to completely hide header and footer, e.g. on an iframe page
+   */
+  public isHeadlessPage: boolean = false;
+  /**
    * Flag which can be used to toggle simplified layouts, e.g. no ZH Lion in the header.
    */
   public isSimplifiedPage: boolean = false;
   public scrollbarWidth?: number;
   private snackBarRef?: MatSnackBarRef<PageNotificationComponent>;
   private readonly useSimplifiedPageOn: MainPage[] = [MainPage.Maps];
+  private readonly useHeadlesPageOn: string[][] = [[MainPage.Embedded]];
   private readonly subscriptions: Subscription = new Subscription();
   private readonly scrollbarWidth$ = this.store.select(selectScrollbarWidth);
 
@@ -81,6 +86,26 @@ export class AppComponent implements OnInit, OnDestroy {
             const firstUrlSegmentPath = UrlUtils.extractFirstUrlSegmentPath(urlTree);
             const mainPage = UrlUtils.transformStringToMainPage(firstUrlSegmentPath);
             this.isSimplifiedPage = mainPage !== undefined && this.useSimplifiedPageOn.includes(mainPage);
+            const segmentPaths: string[] = UrlUtils.extractUrlSegments(urlTree).map((segment) => segment.path);
+            this.isHeadlessPage =
+              segmentPaths.length > 0 &&
+              this.useHeadlesPageOn.some((headlessPagePaths) => UrlUtils.containsSegmentPaths(headlessPagePaths, segmentPaths));
+          }),
+        )
+        .subscribe(),
+    );
+
+    this.subscriptions.add(
+      this.router.events
+        .pipe(
+          filter((evt) => evt instanceof NavigationStart),
+          map((evt) => evt as NavigationStart),
+          tap((evt) => {
+            const urlTree: UrlTree = this.router.parseUrl(evt.url);
+            const segmentPaths: string[] = UrlUtils.extractUrlSegments(urlTree).map((segment) => segment.path);
+            this.isHeadlessPage =
+              segmentPaths.length > 0 &&
+              this.useHeadlesPageOn.some((headlessPagePaths) => UrlUtils.containsSegmentPaths(headlessPagePaths, segmentPaths));
           }),
         )
         .subscribe(),

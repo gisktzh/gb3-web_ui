@@ -19,6 +19,10 @@ const routes: Routes = [
         loadChildren: () => import('./share-link/share-link.module').then((m) => m.ShareLinkModule),
         canActivate: [AuthLoadingGuard],
       },
+      {
+        path: MainPage.Embedded,
+        loadChildren: () => import('./embedded-page/embedded-map-page.module').then((m) => m.EmbeddedMapPageModule),
+      },
       {path: MainPage.Error, component: FatalErrorPageComponent},
       {path: MainPage.NotFound, component: NotFoundErrorPageComponent},
       {path: '**', component: NotFoundErrorPageComponent},

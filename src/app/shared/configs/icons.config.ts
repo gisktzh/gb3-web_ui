@@ -120,6 +120,10 @@ const symbolIconsConfig = [
     id: 'ktzh_info_notification',
     path: 'assets/icons/symbols/info-notification.svg',
   },
+  {
+    id: 'ktzh_logo',
+    path: 'assets/images/ktzh_inverted.svg',
+  },
 ];
 
 const drawingSymbolIconsConfig = [
