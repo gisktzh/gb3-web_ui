@@ -4,6 +4,12 @@
     heroText="Der Datenkatalog listet Geodaten auf und lässt sich nach verschiedenen Kriterien sortieren. Die Geodaten bestehen aus Geodatensätzen, Geodiensten und GIS-Browser Karten sowie den eigentlichen Geometadaten."
   ></hero-header>
 </start-page-section>
+<div *ngIf="dataCatalogueFilters" style="display: flex">
+  <div *ngFor="let filter of dataCatalogueFilters | keyvalue">
+    <b>{{ filter.key.label }}</b>
+    <li *ngFor="let filterValue of filter.value" (click)="toggleFilter(filter.key.key, filterValue)">{{ filterValue }}</li>
+  </div>
+</div>
 <div class="data-catalogue-overview">
   <div class="data-catalogue-overview__content">
     <loading-and-process-bar [loadingState]="loadingState"></loading-and-process-bar>

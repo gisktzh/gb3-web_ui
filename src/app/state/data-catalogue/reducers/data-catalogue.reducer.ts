@@ -1,11 +1,13 @@
 import {createFeature, createReducer, on} from '@ngrx/store';
 import {DataCatalogueState} from '../states/data-catalogue.state';
 import {DataCatalogueActions} from '../actions/data-catalogue.actions';
+import {produce} from 'immer';
 
 export const dataCatalogueFeatureKey = 'dataCatalogue';
 
 export const initialState: DataCatalogueState = {
   items: [],
+  activeFilters: [],
   loadingState: 'undefined',
 };
 
@@ -25,7 +27,19 @@ export const dataCatalogueFeature = createFeature({
     on(DataCatalogueActions.setError, (): DataCatalogueState => {
       return {...initialState, loadingState: 'error'};
     }),
+    on(
+      DataCatalogueActions.toggleFilter,
+      produce((draft, {key, value}) => {
+        const existingFilter = draft.activeFilters.findIndex((activeFilter) => activeFilter.key === key && activeFilter.value === value);
+
+        if (existingFilter === -1) {
+          draft.activeFilters.push({key, value});
+        } else {
+          draft.activeFilters.splice(existingFilter, 1);
+        }
+      }),
+    ),
   ),
 });
 
-export const {name, reducer, selectDataCatalogueState, selectItems, selectLoadingState} = dataCatalogueFeature;
+export const {name, reducer, selectDataCatalogueState, selectItems, selectActiveFilters, selectLoadingState} = dataCatalogueFeature;

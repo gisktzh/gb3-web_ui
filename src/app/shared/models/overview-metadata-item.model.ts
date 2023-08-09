@@ -11,6 +11,7 @@ export abstract class OverviewMetadataItem {
     public readonly name: string,
     public readonly description: string,
     public readonly type: OverviewMetadataItemModel,
+    public readonly responsibleDepartment: string,
   ) {
     switch (this.type) {
       case 'Geodatensatz':
@@ -34,25 +35,28 @@ export abstract class OverviewMetadataItem {
 }
 
 export class ServiceOverviewMetadataItem extends OverviewMetadataItem {
-  constructor(guid: number, name: string, description: string) {
-    super(guid, name, description, 'Geoservice');
+  constructor(guid: number, name: string, description: string, responsibleDepartment: string) {
+    super(guid, name, description, 'Geoservice', responsibleDepartment);
   }
 }
 
 export class DatasetOverviewMetadataItem extends OverviewMetadataItem {
-  constructor(guid: number, name: string, description: string) {
-    super(guid, name, description, 'Geodatensatz');
+  public readonly outputFormat: string;
+
+  constructor(guid: number, name: string, description: string, responsibleDepartment: string, outputFormat: string) {
+    super(guid, name, description, 'Geodatensatz', responsibleDepartment);
+    this.outputFormat = outputFormat;
   }
 }
 
 export class ProductOverviewMetadataItem extends OverviewMetadataItem {
-  constructor(guid: number, name: string, description: string) {
-    super(guid, name, description, 'Produkt');
+  constructor(guid: number, name: string, description: string, responsibleDepartment: string) {
+    super(guid, name, description, 'Produkt', responsibleDepartment);
   }
 }
 
 export class MapOverviewMetadataItem extends OverviewMetadataItem {
-  constructor(guid: number, name: string, description: string) {
-    super(guid, name, description, 'Karte');
+  constructor(guid: number, name: string, description: string, responsibleDepartment: string) {
+    super(guid, name, description, 'Karte', responsibleDepartment);
   }
 }
