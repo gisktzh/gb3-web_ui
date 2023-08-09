@@ -74,9 +74,9 @@ export const pageInfosDataMock: PageInfosRoot = {
       from_date: '01.02.2023',
       pages: {
         datacatalogue: false,
-        map: true,
-        start: true,
-        support: false,
+        map: false,
+        start: false,
+        support: true,
       },
       severity: 'warning',
       title: 'Gurkenbröter-Notfall',
