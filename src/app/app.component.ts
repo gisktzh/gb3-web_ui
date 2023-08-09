@@ -7,7 +7,7 @@ import {MatSnackBar, MatSnackBarRef} from '@angular/material/snack-bar';
 import {PageNotificationComponent} from './shared/components/page-notification/page-notification.component';
 import {PageNotification} from './shared/interfaces/page-notification.interface';
 import {PanelClass} from './shared/enums/panel-class.enum';
-import {NavigationEnd, NavigationStart, Router, UrlTree} from '@angular/router';
+import {NavigationEnd, Router} from '@angular/router';
 import {map} from 'rxjs/operators';
 import {MainPage} from './shared/enums/main-page.enum';
 import {UrlUtils} from './shared/utils/url.utils';
@@ -35,7 +35,7 @@ export class AppComponent implements OnInit, OnDestroy {
   public scrollbarWidth?: number;
   private snackBarRef?: MatSnackBarRef<PageNotificationComponent>;
   private readonly useSimplifiedPageOn: MainPage[] = [MainPage.Maps];
-  private readonly useHeadlesPageOn: string[][] = [[MainPage.Embedded]];
+  private readonly useHeadlessPageOn: string[][] = [[MainPage.Embedded]];
   private readonly subscriptions: Subscription = new Subscription();
   private readonly scrollbarWidth$ = this.store.select(selectScrollbarWidth);
 
@@ -52,6 +52,8 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit() {
+    // initialize some values based on the current URL before the first routing happens
+    this.handleNavigationChanges(window.location.pathname);
     this.initSubscriptions();
   }
 
@@ -82,30 +84,7 @@ export class AppComponent implements OnInit, OnDestroy {
           filter((evt) => evt instanceof NavigationEnd),
           map((evt) => evt as NavigationEnd),
           tap((evt) => {
-            const urlTree: UrlTree = this.router.parseUrl(evt.url);
-            const firstUrlSegmentPath = UrlUtils.extractFirstUrlSegmentPath(urlTree);
-            const mainPage = UrlUtils.transformStringToMainPage(firstUrlSegmentPath);
-            this.isSimplifiedPage = mainPage !== undefined && this.useSimplifiedPageOn.includes(mainPage);
-            const segmentPaths: string[] = UrlUtils.extractUrlSegments(urlTree).map((segment) => segment.path);
-            this.isHeadlessPage =
-              segmentPaths.length > 0 &&
-              this.useHeadlesPageOn.some((headlessPagePaths) => UrlUtils.containsSegmentPaths(headlessPagePaths, segmentPaths));
-          }),
-        )
-        .subscribe(),
-    );
-
-    this.subscriptions.add(
-      this.router.events
-        .pipe(
-          filter((evt) => evt instanceof NavigationStart),
-          map((evt) => evt as NavigationStart),
-          tap((evt) => {
-            const urlTree: UrlTree = this.router.parseUrl(evt.url);
-            const segmentPaths: string[] = UrlUtils.extractUrlSegments(urlTree).map((segment) => segment.path);
-            this.isHeadlessPage =
-              segmentPaths.length > 0 &&
-              this.useHeadlesPageOn.some((headlessPagePaths) => UrlUtils.containsSegmentPaths(headlessPagePaths, segmentPaths));
+            this.handleNavigationChanges(evt.url);
           }),
         )
         .subscribe(),
@@ -154,5 +133,17 @@ export class AppComponent implements OnInit, OnDestroy {
       verticalPosition: 'bottom',
       panelClass: PanelClass.PageNotificationSnackbar,
     });
+  }
+
+  private handleNavigationChanges(url: string) {
+    const urlTree = this.router.parseUrl(url);
+    const urlSegments = UrlUtils.extractUrlSegments(urlTree);
+    const firstUrlSegmentPath = UrlUtils.extractFirstUrlSegmentPath(urlSegments);
+    const mainPage = UrlUtils.transformStringToMainPage(firstUrlSegmentPath);
+    this.isSimplifiedPage = mainPage !== undefined && this.useSimplifiedPageOn.includes(mainPage);
+    const segmentPaths: string[] = urlSegments.map((segment) => segment.path);
+    this.isHeadlessPage =
+      segmentPaths.length > 0 &&
+      this.useHeadlessPageOn.some((headlessPagePaths) => UrlUtils.containsSegmentPaths(headlessPagePaths, segmentPaths));
   }
 }

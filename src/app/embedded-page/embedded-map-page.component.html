@@ -1,6 +1,6 @@
 <div class="embedded-map-page" *ngIf="isEmbedded; else notEmbeddedError">
-  <map-container *ngIf="loadingState === 'loaded'"></map-container>
-  <legend-overlay class="embedded-map-page__legend-overlay" [showInteractiveElements]="false"></legend-overlay>
+  <map-container *ngIf="initializeApplicationLoadingState === 'loaded'"></map-container>
+  <legend-overlay *ngIf="showLegendOverlay" class="embedded-map-page__legend-overlay" [showInteractiveElements]="false"></legend-overlay>
   <button mat-flat-button (click)="toggleLegend()" [disabled]="numberOfQueryLegends === 0" class="embedded-map-page__legend-button">
     <mat-icon svgIcon="ktzh_legend"></mat-icon>
     Legende

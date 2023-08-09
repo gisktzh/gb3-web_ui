@@ -1,5 +1,5 @@
 import {Injectable, OnDestroy} from '@angular/core';
-import {NavigationEnd, Router, UrlTree} from '@angular/router';
+import {NavigationEnd, Router} from '@angular/router';
 import {BehaviorSubject, filter, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {MainPage} from '../enums/main-page.enum';
@@ -39,8 +39,9 @@ export class PageNotificationService implements OnDestroy {
         .pipe(
           filter((event): event is NavigationEnd => event instanceof NavigationEnd),
           tap((event) => {
-            const urlTree: UrlTree = this.router.parseUrl(event.url);
-            const firstUrlSegmentPath = UrlUtils.extractFirstUrlSegmentPath(urlTree);
+            const urlTree = this.router.parseUrl(event.url);
+            const urlSegments = UrlUtils.extractUrlSegments(urlTree);
+            const firstUrlSegmentPath = UrlUtils.extractFirstUrlSegmentPath(urlSegments);
             this.currentMainPageOrUndefined = UrlUtils.transformStringToMainPage(firstUrlSegmentPath);
             this.refreshCurrentPageNotifications(this.currentMainPageOrUndefined, this.pageNotifications);
           }),

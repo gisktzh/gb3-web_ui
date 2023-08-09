@@ -3,10 +3,10 @@ import {ActivatedRouteSnapshot, CanActivateFn, RouterStateSnapshot} from '@angul
 
 import {AuthService} from '../../auth/auth.service';
 import {BehaviorSubject, Observable} from 'rxjs';
-import {AuthLoadingGuard} from './auth-loading-guard.guard';
+import {authLoadingGuard} from './auth-loading-guard.guard';
 
 describe('authLoadingGuardGuard', () => {
-  const executeGuard: CanActivateFn = (...guardParameters) => TestBed.runInInjectionContext(() => AuthLoadingGuard(...guardParameters));
+  const executeGuard: CanActivateFn = (...guardParameters) => TestBed.runInInjectionContext(() => authLoadingGuard(...guardParameters));
 
   const dummyRoute = {} as ActivatedRouteSnapshot;
   const dummyState = {url: '/'} as RouterStateSnapshot;

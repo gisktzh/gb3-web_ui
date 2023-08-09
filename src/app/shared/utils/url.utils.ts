@@ -15,17 +15,16 @@ export class UrlUtils {
   }
 
   /**
-   * Extracts the first segment path of the given URL tree (UrlTree).
-   * @param urlTree The UrlTree (parsed by using Angular router) of which the first segment shall be extracted
+   * Extracts the first segment path of the given URL tree (UrlTree); or empty string if there is no segment
+   * @param urlSegments The URL segments (parsed by using Angular router) of which the first segment path shall be extracted
    *
    * @example
    * extractFirstUrlSegmentPath('/maps?x=2682260&y=1248390&scale=320000&basemap=arelkbackgroundzh?') will return 'maps'
    * extractFirstUrlSegmentPath('/support/faq') will return 'support'
    * extractFirstUrlSegmentPath('/') will return ''
    */
-  public static extractFirstUrlSegmentPath(urlTree: UrlTree): string {
-    const urlSegment: UrlSegment[] = UrlUtils.extractUrlSegments(urlTree);
-    return urlSegment.length > 0 ? urlSegment[0].path : '';
+  public static extractFirstUrlSegmentPath(urlSegments: UrlSegment[]): string {
+    return urlSegments.length > 0 ? urlSegments[0].path : '';
   }
 
   /**

@@ -10,6 +10,7 @@ import {ActivatedRoute} from '@angular/router';
 import {LoadingState} from '../shared/types/loading-state';
 import {selectApplicationInitializationLoadingState} from '../state/map/reducers/share-link.reducer';
 import {MainPage} from '../shared/enums/main-page.enum';
+import {selectLoadingState} from '../state/map/reducers/legend.reducer';
 
 @Component({
   selector: 'embedded-map-page',
@@ -19,13 +20,15 @@ import {MainPage} from '../shared/enums/main-page.enum';
 export class EmbeddedMapPageComponent {
   public numberOfQueryLegends: number = 0;
   public id: string | null = null;
-  public loadingState: LoadingState = 'undefined';
+  public initializeApplicationLoadingState: LoadingState = 'undefined';
   public isEmbedded: boolean = false;
+  public showLegendOverlay: boolean = false;
   public readonly MainPageEnum = MainPage;
 
   private readonly subscriptions: Subscription = new Subscription();
   private readonly queryLegends$ = this.store.select(selectQueryLegends);
   private readonly initializeApplicationLoadingState$ = this.store.select(selectApplicationInitializationLoadingState);
+  private readonly legendLoadingState$ = this.store.select(selectLoadingState);
 
   constructor(
     private readonly store: Store,
@@ -65,7 +68,12 @@ export class EmbeddedMapPageComponent {
         .subscribe(),
     );
     this.subscriptions.add(
-      this.initializeApplicationLoadingState$.pipe(tap((loadingState) => (this.loadingState = loadingState))).subscribe(),
+      this.initializeApplicationLoadingState$
+        .pipe(tap((loadingState) => (this.initializeApplicationLoadingState = loadingState)))
+        .subscribe(),
+    );
+    this.subscriptions.add(
+      this.legendLoadingState$.pipe(tap((loadingState) => (this.showLegendOverlay = loadingState === 'loaded'))).subscribe(),
     );
   }
 }

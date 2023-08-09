@@ -3,17 +3,13 @@ import {RouterModule, Routes} from '@angular/router';
 import {EmbeddedMapPageComponent} from './embedded-map-page.component';
 import {RouteParamConstants} from '../shared/constants/route-param.constants';
 import {SharedModule} from '../shared/shared.module';
+import {embeddedMapGuard} from './guards/embedded-map.guard';
 
 const routes: Routes = [
   {
     path: `:${RouteParamConstants.RESOURCE_IDENTIFIER}`,
     component: EmbeddedMapPageComponent,
-  },
-  // TODO WES errorhandling, check if in iframe
-  {
-    pathMatch: 'full',
-    path: '',
-    redirectTo: '/',
+    canDeactivate: [embeddedMapGuard],
   },
 ];
 
