@@ -7,7 +7,7 @@ export const dataCatalogueFeatureKey = 'dataCatalogue';
 
 export const initialState: DataCatalogueState = {
   items: [],
-  activeFilters: [],
+  filters: [],
   loadingState: 'undefined',
 };
 
@@ -27,19 +27,23 @@ export const dataCatalogueFeature = createFeature({
     on(DataCatalogueActions.setError, (): DataCatalogueState => {
       return {...initialState, loadingState: 'error'};
     }),
+    on(DataCatalogueActions.setFilters, (state, {dataCatalogueFilters}): DataCatalogueState => {
+      return {...state, filters: dataCatalogueFilters};
+    }),
     on(
       DataCatalogueActions.toggleFilter,
       produce((draft, {key, value}) => {
-        const existingFilter = draft.activeFilters.findIndex((activeFilter) => activeFilter.key === key && activeFilter.value === value);
-
-        if (existingFilter === -1) {
-          draft.activeFilters.push({key, value});
-        } else {
-          draft.activeFilters.splice(existingFilter, 1);
-        }
+        draft.filters
+          .find((filter) => filter.key === key)!
+          .filterValues.forEach((filterValue) => {
+            if (filterValue.value === value) {
+              filterValue.isActive = !filterValue.isActive;
+              return; // todo: maybe simpler?
+            }
+          });
       }),
     ),
   ),
 });
 
-export const {name, reducer, selectDataCatalogueState, selectItems, selectActiveFilters, selectLoadingState} = dataCatalogueFeature;
+export const {name, reducer, selectDataCatalogueState, selectFilters, selectItems, selectLoadingState} = dataCatalogueFeature;

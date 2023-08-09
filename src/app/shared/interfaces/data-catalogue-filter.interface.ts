@@ -4,3 +4,12 @@ export interface DataCatalogueFilterProperty {
   key: DataCatalogueFilterKey;
   label: string;
 }
+
+export interface DataCatalogueFilter {
+  key: DataCatalogueFilterKey;
+  label: string;
+  filterValues: {
+    value: string;
+    isActive: boolean;
+  }[];
+}

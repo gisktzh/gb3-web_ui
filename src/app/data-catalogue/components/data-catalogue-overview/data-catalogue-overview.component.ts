@@ -2,14 +2,14 @@ import {AfterViewInit, Component, Injectable, OnDestroy, OnInit, ViewChild} from
 import {filter, Observable, Subject, Subscription, take, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {DataCatalogueActions} from '../../../state/data-catalogue/actions/data-catalogue.actions';
-import {selectLoadingState} from '../../../state/data-catalogue/reducers/data-catalogue.reducer';
+import {selectFilters, selectLoadingState} from '../../../state/data-catalogue/reducers/data-catalogue.reducer';
 import {OverviewMetadataItem} from '../../../shared/models/overview-metadata-item.model';
 import {LoadingState} from '../../../shared/types/loading-state.type';
 import {MatPaginator, MatPaginatorIntl} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
-import {selectDataCatalogueFilters} from '../../../state/data-catalogue/selectors/data-catalogue-filters.selector';
 import {selectDataCatalogueItems} from '../../../state/data-catalogue/selectors/data-catalogue-items.selector';
-import {DataCatalogueFilter} from '../../../shared/types/data-catalogue-filter';
+
+import {DataCatalogueFilter} from '../../../shared/interfaces/data-catalogue-filter.interface';
 
 @Injectable()
 class DataCataloguePaginatorIntl implements MatPaginatorIntl {
@@ -44,8 +44,8 @@ export class DataCatalogueOverviewComponent implements OnInit, OnDestroy, AfterV
   // We use the MatTableDataSource here because it already has pagination handling embedded - depending on our needs, we might to
   // implement a custom DataSource and handle pagination manually.
   public dataCatalogueItems: MatTableDataSource<OverviewMetadataItem> = new MatTableDataSource<OverviewMetadataItem>([]);
-  public dataCatalogueFilters: DataCatalogueFilter = new Map();
-  private readonly dataCatalogueFilters$: Observable<DataCatalogueFilter> = this.store.select(selectDataCatalogueFilters);
+  public dataCatalogueFilters: DataCatalogueFilter[] = [];
+  private readonly dataCatalogueFilters$: Observable<DataCatalogueFilter[]> = this.store.select(selectFilters);
   private readonly dataCatalogueItems$: Observable<OverviewMetadataItem[]> = this.store.select(selectDataCatalogueItems);
   private readonly dataCatalogueLoadingState$: Observable<LoadingState> = this.store.select(selectLoadingState);
   private readonly subscriptions: Subscription = new Subscription();
@@ -56,9 +56,6 @@ export class DataCatalogueOverviewComponent implements OnInit, OnDestroy, AfterV
   }
 
   public ngAfterViewInit() {
-    this.subscriptions.add(
-      this.dataCatalogueFilters$.pipe(tap((dataCatalogueFilters) => (this.dataCatalogueFilters = dataCatalogueFilters))).subscribe(),
-    );
     // In order for the paginator to correctly work, we need to wait for its rendered state in the DOM.
     this.subscriptions.add(
       this.dataCatalogueLoadingState$
@@ -69,6 +66,16 @@ export class DataCatalogueOverviewComponent implements OnInit, OnDestroy, AfterV
             // This is necessary to force it to be rendered in the next tick, otherwise, changedetection won't pick it up
             setTimeout(() => (this.dataCatalogueItems.paginator = this.paginator), 0);
           }),
+        )
+        .subscribe(),
+    );
+    this.subscriptions.add(
+      this.dataCatalogueFilters$
+        .pipe(
+          tap((dataCatalogueFilters) =>
+            // This is necessary because the filters are loaded so fast that they are directly updated, triggering NG100
+            setTimeout(() => (this.dataCatalogueFilters = dataCatalogueFilters), 0),
+          ),
         )
         .subscribe(),
     );
