@@ -20,7 +20,7 @@ export class ErrorHandlerService implements ErrorHandler {
     private zone: NgZone,
   ) {}
 
-  public async handleError(error: any): Promise<void> {
+  public handleError(error: any) {
     // log errors to console for easier debugging in non-productive environments
     if (!environment.production) {
       console.error(error);
@@ -37,7 +37,9 @@ export class ErrorHandlerService implements ErrorHandler {
     } else {
       // sometimes, the error handler is not yet tied to the Angular zone, so we make sure it is run *within* the angular zone.
       this.zone.run(() => {
-        this.router.navigate([MainPage.Error], {queryParams: {error: error.message}, skipLocationChange: true});
+        // ignore the returning promise of `navigate` because `ErrorHandler` is synchronous.
+        // and to make the IDE happy we'll add `void` in front of the promise function.
+        void this.router.navigate([MainPage.Error], {queryParams: {error: error.message}, skipLocationChange: true});
       });
     }
   }

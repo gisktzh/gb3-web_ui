@@ -4,6 +4,6 @@ import {EmbeddedMapPageComponent} from '../embedded-map-page.component';
 /**
  * This guard simply prevents every navigation to any other site.
  */
-export const embeddedMapGuard: CanDeactivateFn<EmbeddedMapPageComponent> = (component, currentRoute, currentState, nextState) => {
+export const embeddedMapGuard: CanDeactivateFn<EmbeddedMapPageComponent> = () => {
   return false;
 };

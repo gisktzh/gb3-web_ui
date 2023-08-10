@@ -1,48 +1,48 @@
-<div class="map-zoom-controls">
+<div class="zoom-controls">
   <ng-container *ngIf="showLocateMeButton">
     <button
       mat-icon-button
       (click)="this.locateClient()"
       color="accent"
-      class="map-controls__buttons__button"
+      class="zoom-controls__button"
       data-test-id="map-locate-me"
       #tooltip="matTooltip"
       [matTooltip]="this.geolocationState.errorReason ?? ''"
       [matTooltipDisabled]="this.geolocationState.loadingState !== 'error'"
       [disabled]="this.geolocationState.loadingState === 'loading'"
-      [ngClass]="{'map-zoom-controls--hidden': mapUiState?.hideUiElements}"
+      [ngClass]="{'zoom-controls--hidden': mapUiState?.hideUiElements}"
     >
-      <mat-icon class="map-tools__button__icon" svgIcon="ktzh_locate_me"></mat-icon>
+      <mat-icon svgIcon="ktzh_locate_me"></mat-icon>
       <loading-and-process-bar [loadingState]="this.geolocationState.loadingState"></loading-and-process-bar>
     </button>
     <mat-divider
-      class="map-controls__buttons__divider"
-      [ngClass]="{'map-zoom-controls--hidden': mapUiState?.hideUiElements || mapUiState?.hideZoomButtons}"
+      class="zoom-controls__divider"
+      [ngClass]="{'zoom-controls--hidden': mapUiState?.hideUiElements || mapUiState?.hideZoomButtons}"
     ></mat-divider>
   </ng-container>
-  <div [ngClass]="{'map-zoom-controls--hidden': mapUiState?.hideZoomButtons}">
-    <button mat-icon-button (click)="this.goToInitialExtent()" color="accent" class="map-zoom-controls__button" data-test-id="map-home">
-      <mat-icon class="map-tools__button__icon" svgIcon="ktzh_home_extent"></mat-icon>
+  <div [ngClass]="{'zoom-controls--hidden': mapUiState?.hideZoomButtons}">
+    <button mat-icon-button (click)="this.goToInitialExtent()" color="accent" class="zoom-controls__button" data-test-id="map-home">
+      <mat-icon svgIcon="ktzh_home_extent"></mat-icon>
     </button>
     <button
       mat-icon-button
       (click)="this.handleZoom('zoomIn')"
       color="accent"
       [disabled]="this.isMaxZoomedIn"
-      class="map-zoom-controls__button"
+      class="zoom-controls__button"
       data-test-id="map-add"
     >
-      <mat-icon class="map-tools__button__icon" svgIcon="ktzh_add"></mat-icon>
+      <mat-icon svgIcon="ktzh_add"></mat-icon>
     </button>
     <button
       mat-icon-button
       (click)="this.handleZoom('zoomOut')"
       color="accent"
       [disabled]="this.isMaxZoomedOut"
-      class="map-zoom-controls__button"
+      class="zoom-controls__button"
       data-test-id="map-remove"
     >
-      <mat-icon class="map-tools__button__icon" svgIcon="ktzh_remove"></mat-icon>
+      <mat-icon svgIcon="ktzh_remove"></mat-icon>
     </button>
   </div>
 </div>

@@ -7,7 +7,7 @@ export class UrlUtils {
    * @param urlTree The UrlTree (parsed by using Angular router) of which the first segment shall be extracted
    *
    * @example
-   * router.parseUrl('/support/faq') will return two segments UrlSegment('support') and UrlSegment('faq')
+   * extractUrlSegments(router.parseUrl('/support/faq')) will return two segments UrlSegment('support') and UrlSegment('faq')
    */
   public static extractUrlSegments(urlTree: UrlTree): UrlSegment[] {
     const urlSegmentGroup: UrlSegmentGroup | undefined = urlTree.root.children[PRIMARY_OUTLET];
@@ -16,7 +16,7 @@ export class UrlUtils {
 
   /**
    * Extracts the first segment path of the given URL tree (UrlTree); or empty string if there is no segment
-   * @param urlSegments The URL segments (parsed by using Angular router) of which the first segment path shall be extracted
+   * @param urlSegments The URL segments of which the first segment path shall be extracted
    *
    * @example
    * extractFirstUrlSegmentPath('/maps?x=2682260&y=1248390&scale=320000&basemap=arelkbackgroundzh?') will return 'maps'
@@ -47,12 +47,18 @@ export class UrlUtils {
     return UrlUtils.transformStringToMainPage(firstUrlSegmentPath);
   }
 
+  /**
+   * Returns a value indicating whether the two given segment path arrays are equal
+   */
   public static areSegmentPathsEqual(firstSegmentPaths: string[], secondSegmentPaths: string[]): boolean {
     return (
       firstSegmentPaths.length === secondSegmentPaths.length && firstSegmentPaths.every((path, index) => path === secondSegmentPaths[index])
     );
   }
 
+  /**
+   * Returns a value indicating whether the `mainSegmentPaths` is a subset of `otherSegmentPaths`
+   */
   public static containsSegmentPaths(mainSegmentPaths: string[], otherSegmentPaths: string[]): boolean {
     return (
       mainSegmentPaths.length <= otherSegmentPaths.length && mainSegmentPaths.every((path, index) => path === otherSegmentPaths[index])

@@ -35,7 +35,7 @@ export class AppComponent implements OnInit, OnDestroy {
   public scrollbarWidth?: number;
   private snackBarRef?: MatSnackBarRef<PageNotificationComponent>;
   private readonly useSimplifiedPageOn: MainPage[] = [MainPage.Maps];
-  private readonly useHeadlessPageOn: string[][] = [[MainPage.Embedded]];
+  private readonly useHeadlessPageOn: MainPage[] = [MainPage.Embedded];
   private readonly subscriptions: Subscription = new Subscription();
   private readonly scrollbarWidth$ = this.store.select(selectScrollbarWidth);
 
@@ -142,8 +142,8 @@ export class AppComponent implements OnInit, OnDestroy {
     const mainPage = UrlUtils.transformStringToMainPage(firstUrlSegmentPath);
     this.isSimplifiedPage = mainPage !== undefined && this.useSimplifiedPageOn.includes(mainPage);
     const segmentPaths: string[] = urlSegments.map((segment) => segment.path);
-    this.isHeadlessPage =
-      segmentPaths.length > 0 &&
-      this.useHeadlessPageOn.some((headlessPagePaths) => UrlUtils.containsSegmentPaths(headlessPagePaths, segmentPaths));
+    this.isHeadlessPage = this.useHeadlessPageOn.some((headlessPagePaths) =>
+      UrlUtils.containsSegmentPaths([headlessPagePaths], segmentPaths),
+    );
   }
 }

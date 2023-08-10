@@ -122,7 +122,7 @@ const symbolIconsConfig = [
   },
   {
     id: 'ktzh_logo',
-    path: 'assets/images/ktzh_inverted.svg',
+    path: 'assets/icons/symbols/ktzh_canton.svg',
   },
 ];
 

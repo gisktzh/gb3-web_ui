@@ -44,7 +44,6 @@ export class EmbeddedMapPageComponent {
     if (this.id !== null) {
       this.store.dispatch(ShareLinkActions.initializeApplicationBasedOnId({id: this.id}));
     } else {
-      // note: this can happen
       throw new ShareLinkParameterInvalid();
     }
   }

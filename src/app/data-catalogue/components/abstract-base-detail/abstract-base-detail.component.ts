@@ -73,9 +73,9 @@ export abstract class AbstractBaseDetailComponent<T extends DetailMetadata> impl
             this.handleMetadata(metadata);
             this.loadingState = 'loaded';
           }),
-          catchError(async (error: unknown) => {
+          catchError((error: unknown) => {
             if (error instanceof MetadataNotFound) {
-              await this.errorHandler.handleError(error); // make sure we log the error before redirect
+              this.errorHandler.handleError(error); // make sure we log the error before redirect
               return of(this.router.navigate([MainPage.NotFound], {skipLocationChange: true}));
             }
 

@@ -6,7 +6,7 @@ import {Gb3RuntimeError} from '../../shared/errors/abstract.errors';
   providedIn: 'root',
 })
 export class EmbeddedErrorHandlerService implements ErrorHandler {
-  public async handleError(error: any): Promise<void> {
+  public handleError(error: any) {
     // log errors to console for easier debugging in non-productive environments
     if (!environment.production) {
       console.error(error);

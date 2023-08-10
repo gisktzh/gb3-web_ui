@@ -1,7 +1,7 @@
-<main class="main" [ngClass]="{'main--headless': isHeadlessPage}">
+<main class="main">
   <mobile-warning *ngIf="showWarning && !isHeadlessPage"></mobile-warning>
   <navbar *ngIf="!isHeadlessPage" class="navbar" [isSimplifiedPage]="isSimplifiedPage"></navbar>
-  <article class="app-wrapper">
+  <article class="app-wrapper" [ngClass]="{'app-wrapper--headless': isHeadlessPage}">
     <router-outlet></router-outlet>
     <main-footer *ngIf="!isSimplifiedPage && !isHeadlessPage"></main-footer>
   </article>
