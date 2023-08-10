@@ -10,22 +10,26 @@ import {MetadataOverviewCouldNotBeLoaded} from '../../../shared/errors/data-cata
 import {Gb3MetadataService} from '../../../shared/services/apis/gb3/gb3-metadata.service';
 import {MapOverviewMetadataItem} from '../../../shared/models/overview-metadata-item.model';
 import {selectLoadingState} from '../reducers/data-catalogue.reducer';
+import {ConfigService} from '../../../shared/services/config.service';
+import {DataCatalogueFilter, DataCatalogueFilterProperty} from '../../../shared/interfaces/data-catalogue-filter.interface';
 
 describe('DataCatalogueEffects', () => {
   let actions$: Observable<Action>;
   let store: MockStore;
   let effects: DataCatalogueEffects;
   let gb3MetadataService: Gb3MetadataService;
+  let configService: ConfigService;
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [DataCatalogueEffects, provideMockActions(() => actions$), provideMockStore(), Gb3MetadataService],
+      providers: [DataCatalogueEffects, provideMockActions(() => actions$), provideMockStore(), Gb3MetadataService, ConfigService],
     });
     effects = TestBed.inject(DataCatalogueEffects);
     gb3MetadataService = TestBed.inject(Gb3MetadataService);
     store = TestBed.inject(MockStore);
+    configService = TestBed.inject(ConfigService);
   });
 
   afterEach(() => {
@@ -51,8 +55,8 @@ describe('DataCatalogueEffects', () => {
   });
 
   describe('requestDataCatalogueItems$', () => {
-    it('dispatches DataCatalogueActions.setCatalogue() with the service response on success YYYY', (done: DoneFn) => {
-      const expected = [new MapOverviewMetadataItem(1377, 'Test', 'Testbeschreibung')];
+    it('dispatches DataCatalogueActions.setCatalogue() with the service response on success', (done: DoneFn) => {
+      const expected = [new MapOverviewMetadataItem(1377, 'Test', 'Testbeschreibung', 'Testamt')];
       spyOn(gb3MetadataService, 'loadFullList').and.callFake(() => {
         return of(expected);
       });
@@ -85,6 +89,89 @@ describe('DataCatalogueEffects', () => {
           expect(gb3MetadataService.loadFullList).not.toHaveBeenCalled();
           done();
         },
+      });
+    });
+  });
+
+  describe('initializeDataCatalogueFilters$', () => {
+    it('extracts the configured filter values', (done: DoneFn) => {
+      const mockItems = [new MapOverviewMetadataItem(1377, 'Test', 'Testbeschreibung', 'Testamt')];
+      const mockConfig: DataCatalogueFilterProperty[] = [
+        {key: 'description', label: 'Description'},
+        {key: 'responsibleDepartment', label: 'Verantwortlich'},
+      ];
+      spyOnProperty(configService, 'filterConfig', 'get').and.returnValue({
+        dataCatalogue: mockConfig,
+      });
+
+      actions$ = of(DataCatalogueActions.setCatalogue({items: mockItems}));
+
+      const expected: DataCatalogueFilter[] = [
+        {key: mockConfig[0].key, label: mockConfig[0].label, filterValues: [{value: mockItems[0].description, isActive: false}]},
+        {key: mockConfig[1].key, label: mockConfig[1].label, filterValues: [{value: mockItems[0].responsibleDepartment, isActive: false}]},
+      ];
+
+      effects.initializeDataCatalogueFilters$.subscribe((action) => {
+        expect(action).toEqual(DataCatalogueActions.setFilters({dataCatalogueFilters: expected}));
+        done();
+      });
+    });
+
+    it('does not add a non-existing property if no values are present', (done: DoneFn) => {
+      const mockItems = [new MapOverviewMetadataItem(1377, 'Test', 'Testbeschreibung', 'Testamt')];
+      const mockConfig: DataCatalogueFilterProperty[] = [{key: 'outputFormat', label: 'Exists only on DatasetDetails :)'}];
+      spyOnProperty(configService, 'filterConfig', 'get').and.returnValue({
+        dataCatalogue: mockConfig,
+      });
+
+      actions$ = of(DataCatalogueActions.setCatalogue({items: mockItems}));
+
+      const expected: DataCatalogueFilter[] = [];
+
+      effects.initializeDataCatalogueFilters$.subscribe((action) => {
+        expect(action).toEqual(DataCatalogueActions.setFilters({dataCatalogueFilters: expected}));
+        done();
+      });
+    });
+
+    it('extracts unique values once', (done: DoneFn) => {
+      const mockItems = [
+        new MapOverviewMetadataItem(1377, 'Test A', 'Testbeschreibung', 'Testamt'),
+        new MapOverviewMetadataItem(1377, 'Test B', 'Testbeschreibung', 'Testamt'),
+        new MapOverviewMetadataItem(1377, 'Test B', 'Testbeschreibung', 'Testamt mit anderem Beschrieb'),
+      ];
+      const mockConfig: DataCatalogueFilterProperty[] = [
+        {key: 'name', label: 'Name'},
+        {key: 'responsibleDepartment', label: 'Amt'},
+      ];
+      spyOnProperty(configService, 'filterConfig', 'get').and.returnValue({
+        dataCatalogue: mockConfig,
+      });
+
+      actions$ = of(DataCatalogueActions.setCatalogue({items: mockItems}));
+
+      const expected: DataCatalogueFilter[] = [
+        {
+          key: 'name',
+          label: 'Name',
+          filterValues: [
+            {value: 'Test A', isActive: false},
+            {value: 'Test B', isActive: false},
+          ],
+        },
+        {
+          key: 'responsibleDepartment',
+          label: 'Amt',
+          filterValues: [
+            {value: 'Testamt', isActive: false},
+            {value: 'Testamt mit anderem Beschrieb', isActive: false},
+          ],
+        },
+      ];
+
+      effects.initializeDataCatalogueFilters$.subscribe((action) => {
+        expect(action).toEqual(DataCatalogueActions.setFilters({dataCatalogueFilters: expected}));
+        done();
       });
     });
   });

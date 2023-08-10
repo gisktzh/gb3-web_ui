@@ -41,11 +41,9 @@ export const dataCatalogueFeature = createFeature({
       produce((draft, {key, value}) => {
         draft.filters
           .find((filter) => filter.key === key)!
-          .filterValues.forEach((filterValue) => {
-            if (filterValue.value === value) {
-              filterValue.isActive = !filterValue.isActive;
-              return; // todo: maybe simpler?
-            }
+          .filterValues.filter((filterValue) => filterValue.value === value)
+          .forEach((filterValue) => {
+            filterValue.isActive = !filterValue.isActive;
           });
       }),
     ),

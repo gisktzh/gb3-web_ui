@@ -7,14 +7,8 @@ import {Gb3MetadataService} from '../../../shared/services/apis/gb3/gb3-metadata
 import {Store} from '@ngrx/store';
 import {selectLoadingState} from '../reducers/data-catalogue.reducer';
 import {MetadataOverviewCouldNotBeLoaded} from '../../../shared/errors/data-catalogue.errors';
-import {DataCatalogueFilter, DataCatalogueFilterProperty} from '../../../shared/interfaces/data-catalogue-filter.interface';
-
-const filters: DataCatalogueFilterProperty[] = [
-  // todo: add ogd
-  {key: 'type', label: 'Kategorie'},
-  {key: 'responsibleDepartment', label: 'Datenbereitsteller'},
-  {key: 'outputFormat', label: 'Dateiformate'},
-];
+import {DataCatalogueFilter} from '../../../shared/interfaces/data-catalogue-filter.interface';
+import {ConfigService} from '../../../shared/services/config.service';
 
 @Injectable()
 export class DataCatalogueEffects {
@@ -29,30 +23,32 @@ export class DataCatalogueEffects {
     );
   });
 
-  public initializeDataCatalogueFilters = createEffect(() => {
+  public initializeDataCatalogueFilters$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(DataCatalogueActions.setCatalogue),
       map(({items}) => {
         const uniqueValues: Map<Pick<DataCatalogueFilter, 'key' | 'label'>, Set<string>> = new Map();
 
-        items.forEach((m) => {
-          filters.forEach((filter) => {
-            if (filter.key in m) {
-              const value: string = (m as any)[filter.key]; //this typecast is safe here because we _know_ the property exists here
-              if (!uniqueValues.has(filter)) {
-                uniqueValues.set(filter, new Set());
+        items.forEach((item) => {
+          this.configService.filterConfig.dataCatalogue.forEach((dataCatalogueFilter) => {
+            if (dataCatalogueFilter.key in item) {
+              const value: string = (item as any)[dataCatalogueFilter.key]; //this typecast is safe here because we _know_ the property
+              // exists
+              // here
+              if (!uniqueValues.has(dataCatalogueFilter)) {
+                uniqueValues.set(dataCatalogueFilter, new Set());
               }
-              uniqueValues.get(filter)?.add(value);
+              uniqueValues.get(dataCatalogueFilter)?.add(value);
             }
           });
         });
 
         const dataCatalogueFilters: DataCatalogueFilter[] = [];
-        uniqueValues.forEach((value, key) =>
+        uniqueValues.forEach((uniqueValue, key) =>
           dataCatalogueFilters.push({
             key: key.key,
             label: key.label,
-            filterValues: Array.from(value).map((value) => ({value, isActive: false})),
+            filterValues: Array.from(uniqueValue).map((uniqueFilterValue) => ({value: uniqueFilterValue, isActive: false})),
           }),
         );
 
@@ -77,5 +73,6 @@ export class DataCatalogueEffects {
     private readonly actions$: Actions,
     private readonly gb3MetadataService: Gb3MetadataService,
     private readonly store: Store,
+    private readonly configService: ConfigService,
   ) {}
 }
