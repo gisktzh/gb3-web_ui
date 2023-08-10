@@ -1,0 +1,27 @@
+<cdk-accordion-item
+  #accordionItem="cdkAccordionItem"
+  [attr.aria-controls]="'media-contact-body-' + header"
+  [attr.aria-expanded]="accordionItem.expanded"
+  [attr.id]="'media-contact-header-' + header"
+  class="accordion-item"
+  role="button"
+  tabindex="0"
+>
+  <div class="accordion-item__content" [ngClass]="{'accordion-item__content--dark': variant === 'dark'}">
+    <div (click)="accordionItem.toggle()" class="accordion-item__content__header mat-h2">
+      <span>{{ header }}</span>
+      <span class="accordion-item__content__header__icon-wrapper">
+        <mat-icon [svgIcon]="accordionItem.expanded ? 'ktzh_remove' : 'ktzh_add'"></mat-icon>
+      </span>
+    </div>
+    <div
+      [attr.aria-labelledby]="'media-contact-header-' + header"
+      [attr.id]="'media-contact-body-' + header"
+      [style.display]="accordionItem.expanded ? '' : 'none'"
+      class="accordion-item__content__body"
+      role="region"
+    >
+      <ng-content></ng-content>
+    </div>
+  </div>
+</cdk-accordion-item>

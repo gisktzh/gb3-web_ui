@@ -10,50 +10,28 @@
     ></contact-detail>
     <contact-detail [contactType]="'email'" [email]="'gis@bd.zh.ch'" class="contact-details__addresses__entry"></contact-detail>
   </div>
-  <cdk-accordion class="contact-details__media-collapsible">
-    <cdk-accordion-item
-      #accordionItem="cdkAccordionItem"
-      [attr.aria-controls]="'media-contact-body'"
-      [attr.aria-expanded]="accordionItem.expanded"
-      [attr.id]="'media-contact-header'"
-      class="contact-details__media-collapsible__item"
-      role="button"
-      tabindex="0"
-    >
-      <div (click)="accordionItem.toggle()" class="contact-details__media-collapsible__item__header mat-h2">
-        <span>Für Medien</span>
-        <span>
-          <mat-icon [svgIcon]="accordionItem.expanded ? 'ktzh_remove' : 'ktzh_add'"></mat-icon>
-        </span>
+  <cdk-accordion>
+    <accordion-item header="Für Medien">
+      <h1>
+        <a
+          href="https://www.zh.ch/de/baudirektion/medienstelle.html"
+          rel="noopener noreferrer"
+          target="_blank"
+          title="Medienstelle der Baudirektion"
+        >
+          Medienstelle der Baudirektion
+        </a>
+      </h1>
+      <div class="contact-details__addresses">
+        <contact-detail
+          [contactType]="'address'"
+          [coordinates]="'47.3787639,8.5411231'"
+          [place]="'8001 Zürich'"
+          [street]="'Walcheplatz 2'"
+          class="contact-details__addresses__entry"
+        ></contact-detail>
+        <contact-detail [contactType]="'email'" [email]="'media@bd.zh.ch'" class="contact-details__addresses__entry"></contact-detail>
       </div>
-      <div
-        [attr.aria-labelledby]="'media-contact-header'"
-        [attr.id]="'media-contact-body'"
-        [style.display]="accordionItem.expanded ? '' : 'none'"
-        role="region"
-        class="contact-details__media-collapsible__item__body"
-      >
-        <h1>
-          <a
-            href="https://www.zh.ch/de/baudirektion/medienstelle.html"
-            rel="noopener noreferrer"
-            target="_blank"
-            title="Medienstelle der Baudirektion"
-          >
-            Medienstelle der Baudirektion
-          </a>
-        </h1>
-        <div class="contact-details__addresses">
-          <contact-detail
-            [contactType]="'address'"
-            [coordinates]="'47.3787639,8.5411231'"
-            [place]="'8001 Zürich'"
-            [street]="'Walcheplatz 2'"
-            class="contact-details__addresses__entry"
-          ></contact-detail>
-          <contact-detail [contactType]="'email'" [email]="'media@bd.zh.ch'" class="contact-details__addresses__entry"></contact-detail>
-        </div>
-      </div>
-    </cdk-accordion-item>
+    </accordion-item>
   </cdk-accordion>
 </div>
