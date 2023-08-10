@@ -5,9 +5,10 @@ import {SharedModule} from '../shared/shared.module';
 import {FaqComponent} from './components/faq/faq.component';
 import {ContactComponent} from './components/contact/contact.component';
 import {UsefulLinksComponent} from './components/useful-links/useful-links.component';
+import {CommonModule} from '@angular/common';
 
 @NgModule({
   declarations: [SupportPageComponent, FaqComponent, ContactComponent, UsefulLinksComponent],
-  imports: [SharedModule, SupportPageRoutingModule],
+  imports: [CommonModule, SharedModule, SupportPageRoutingModule],
 })
 export class SupportPageModule {}

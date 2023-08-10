@@ -4,6 +4,7 @@
     local('Inter Regular'),
     url(../assets/fonts/Inter-Regular.ttf) format('TrueType');
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -12,4 +13,5 @@
     local('Inter Black'),
     url(../assets/fonts/Inter-Black.ttf) format('TrueType');
   font-style: normal;
+  font-display: swap;
 }
