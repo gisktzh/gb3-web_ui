@@ -2,30 +2,30 @@
 @use 'mixins/helpers.mixin' as mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
-.ktzh-slider-wrapper {
+.slider-wrapper {
   width: 100%;
 
-  .header {
+  .slider-wrapper__header {
     display: flex;
     align-items: center;
 
-    .header__title {
+    .slider-wrapper__header__title {
       display: flex;
       align-items: center;
       margin-right: auto;
 
-      .header__title__info {
+      .slider-wrapper__header__title__info {
         height: 24px;
         width: 24px;
         margin-right: 8px;
       }
 
-      .header__title__text {
+      .slider-wrapper__header__title__text {
         @include mixins.multiline-ellipsis(3);
       }
     }
 
-    .header__value {
+    .slider-wrapper__header__value {
       white-space: nowrap;
       color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-secondary-accent);
       background-color: functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent);
@@ -33,11 +33,11 @@
     }
   }
 
-  .content {
+  .slider-wrapper__content {
     width: 100%;
   }
 
-  .footer {
+  .slider-wrapper__footer {
     display: flex;
     justify-content: space-between;
     align-items: center;

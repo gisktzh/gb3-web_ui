@@ -1,4 +1,4 @@
-import {SupportedSrs} from '../types/supported-srs';
+import {SupportedSrs} from '../types/supported-srs.type';
 import {Geometry, GeometryCollection, LineString, MultiLineString, MultiPoint, MultiPolygon, Point, Polygon} from 'geojson';
 
 /**

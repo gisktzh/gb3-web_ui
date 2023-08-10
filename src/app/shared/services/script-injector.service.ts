@@ -1,7 +1,7 @@
 import {Injectable, Renderer2, RendererFactory2} from '@angular/core';
 import {BehaviorSubject, combineLatest, filter, Observable, tap} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {LoadingState} from '../types/loading-state';
+import {LoadingState} from '../types/loading-state.type';
 import {ConfigService} from './config.service';
 
 import {TwitterFeedCouldNotBeLoaded} from '../errors/start-page.errors';

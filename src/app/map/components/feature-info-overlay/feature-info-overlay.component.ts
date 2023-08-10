@@ -1,7 +1,7 @@
 import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
-import {LoadingState} from '../../../shared/types/loading-state';
+import {LoadingState} from '../../../shared/types/loading-state.type';
 import {FeatureInfoResultDisplay} from '../../../shared/interfaces/feature-info.interface';
 import {selectFeatureInfosForDisplay} from '../../../state/map/selectors/feature-info-result-display.selector';
 import {selectFeatureInfoQueryLoadingState} from '../../../state/map/selectors/feature-info-query-loading-state.selector';

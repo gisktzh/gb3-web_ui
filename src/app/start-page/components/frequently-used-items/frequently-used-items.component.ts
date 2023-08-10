@@ -4,7 +4,7 @@ import {FrequentlyUsedItem} from '../../../shared/interfaces/frequently-used-ite
 import {Subscription, tap} from 'rxjs';
 import {GRAV_CMS_SERVICE} from '../../../app.module';
 import {HasLoadingState} from '../../../shared/interfaces/has-loading-state.interface';
-import {LoadingState} from '../../../shared/types/loading-state';
+import {LoadingState} from '../../../shared/types/loading-state.type';
 import {catchError} from 'rxjs/operators';
 
 import {FrequentlyUsedItemsCouldNotBeLoaded} from '../../../shared/errors/start-page.errors';

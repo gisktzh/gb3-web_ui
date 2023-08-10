@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {LoadingState} from '../../../../shared/types/loading-state';
+import {LoadingState} from '../../../../shared/types/loading-state.type';
 
 @Component({
   selector: 'map-data-item-header',

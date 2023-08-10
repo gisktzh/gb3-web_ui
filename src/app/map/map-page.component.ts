@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import {MapConfigUrlService} from './services/map-config-url.service';
-import {PrintType} from './types/print-type';
+import {PrintType} from './types/print.type';
 import {OnboardingGuideService} from '../onboarding-guide/services/onboarding-guide.service';
 import {mapOnboardingGuideConfig} from '../onboarding-guide/data/map-onboarding-guide.config';
 import {Store} from '@ngrx/store';
@@ -8,7 +8,7 @@ import {Subscription, tap} from 'rxjs';
 import {selectMapUiState} from '../state/map/reducers/map-ui.reducer';
 import {MapUiState} from '../state/map/states/map-ui.state';
 import {MapUiActions} from '../state/map/actions/map-ui.actions';
-import {MapSideDrawerContent} from '../shared/types/map-side-drawer-content';
+import {MapSideDrawerContent} from '../shared/types/map-side-drawer-content.type';
 import {selectQueryLegends} from '../state/map/selectors/query-legends.selector';
 
 @Component({

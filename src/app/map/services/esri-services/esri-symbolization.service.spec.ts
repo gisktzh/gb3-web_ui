@@ -2,7 +2,7 @@ import {TestBed} from '@angular/core/testing';
 
 import {EsriSymbolizationService} from './esri-symbolization.service';
 import {MinimalGeometriesUtils} from '../../../testing/map-testing/minimal-geometries.utils';
-import {SupportedSrs} from '../../../shared/types/supported-srs';
+import {SupportedSrs} from '../../../shared/types/supported-srs.type';
 import {InternalDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';

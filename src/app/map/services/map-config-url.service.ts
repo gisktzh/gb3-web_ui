@@ -4,7 +4,7 @@ import {first, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {MapConfigActions} from '../../state/map/actions/map-config.actions';
 import {selectMapConfigState} from '../../state/map/reducers/map-config.reducer';
-import {PrintType} from '../types/print-type';
+import {PrintType} from '../types/print.type';
 import {BasemapConfigService} from './basemap-config.service';
 import {MapConfigState} from '../../state/map/states/map-config.state';
 import {NumberUtils} from '../../shared/utils/number.utils';

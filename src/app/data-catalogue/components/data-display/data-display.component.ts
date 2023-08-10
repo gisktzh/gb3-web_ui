@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {DataDisplayElement} from '../../types/data-display-element';
+import {DataDisplayElement} from '../../types/data-display-element.type';
 
 @Component({
   selector: 'data-display',

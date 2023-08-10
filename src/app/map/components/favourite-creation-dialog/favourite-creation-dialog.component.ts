@@ -7,7 +7,7 @@ import {catchError} from 'rxjs/operators';
 import {HasSavingState} from '../../../shared/interfaces/has-saving-state.interface';
 import {FavouriteListActions} from '../../../state/map/actions/favourite-list.actions';
 import {Store} from '@ngrx/store';
-import {LoadingState} from '../../../shared/types/loading-state';
+import {LoadingState} from '../../../shared/types/loading-state.type';
 
 import {FavouriteCouldNotBeCreated} from '../../../shared/errors/favourite.errors';
 

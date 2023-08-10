@@ -1,7 +1,7 @@
 import {DepartmentalContact} from '../../shared/interfaces/gb3-metadata.interface';
 import {DataExtractionUtils} from './data-extraction.utils';
 
-import {DataDisplayElement} from '../types/data-display-element';
+import {DataDisplayElement} from '../types/data-display-element.type';
 
 describe('DataExtractionUtils', () => {
   it('extracts the contact elements correctly', () => {

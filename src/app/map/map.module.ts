@@ -25,7 +25,6 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {ApiDialogWrapperComponent} from './components/api-dialog-wrapper/api-dialog-wrapper.component';
 import {FavouriteDeletionDialogComponent} from './components/favourite-deletion-dialog/favourite-deletion-dialog.component';
 import {SearchWindowComponent} from './components/search-window/search-window.component';
-import {KtZhDesignSystemModule} from '../kt-zh-design-system/kt-zh-design-system.module';
 import {TimeSliderComponent} from './components/time-slider/time-slider.component';
 import {LegendContentComponent} from './components/legend-overlay/legend-content/legend-content.component';
 import {FeatureInfoContentComponent} from './components/feature-info-overlay/feature-info-content/feature-info-content.component';
@@ -106,7 +105,7 @@ import {ZoomControlsComponent} from './components/map-controls/zoom-controls/zoo
     Gb2ExitButtonComponent,
     ZoomControlsComponent,
   ],
-  imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule, KtZhDesignSystemModule],
+  imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule],
   exports: [LegendOverlayComponent, MapContainerComponent, ZoomControlsComponent],
 })
 export class MapModule {}

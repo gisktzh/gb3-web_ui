@@ -1,6 +1,6 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {HasLoadingState} from '../../../shared/interfaces/has-loading-state.interface';
-import {LoadingState} from '../../../shared/types/loading-state';
+import {LoadingState} from '../../../shared/types/loading-state.type';
 import {Subscription, tap} from 'rxjs';
 import {NEWS_SERVICE} from '../../../app.module';
 import {catchError} from 'rxjs/operators';

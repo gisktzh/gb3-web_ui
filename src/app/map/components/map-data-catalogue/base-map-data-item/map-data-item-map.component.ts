@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {BaseMapDataItemComponent} from './base-map-data-item.component';
 import {MapLayer} from '../../../../shared/interfaces/topic.interface';
-import {LoadingState} from '../../../../shared/types/loading-state';
+import {LoadingState} from '../../../../shared/types/loading-state.type';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {selectMapConfigState} from '../../../../state/map/reducers/map-config.reducer';

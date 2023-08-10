@@ -1,4 +1,4 @@
-import {LoadingState} from '../../../shared/types/loading-state';
+import {LoadingState} from '../../../shared/types/loading-state.type';
 import {selectFeatureInfoQueryLoadingState} from './feature-info-query-loading-state.selector';
 
 describe('selectFeatureInfoQueryLoadingState', () => {

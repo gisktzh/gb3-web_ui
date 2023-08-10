@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {LoadingState} from '../../../../shared/types/loading-state';
+import {LoadingState} from '../../../../shared/types/loading-state.type';
 import {Store} from '@ngrx/store';
 import {BehaviorSubject, combineLatestWith, distinctUntilChanged, filter, Subscription, take, tap} from 'rxjs';
 import {selectCreationLoadingState, selectInfo, selectInfoLoadingState} from '../../../../state/map/reducers/print.reducer';

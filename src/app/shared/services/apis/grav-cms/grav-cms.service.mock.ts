@@ -13,7 +13,7 @@ import {discoverMapsDataMock, frequentlyUsedDataMock, pageInfosDataMock} from '.
 @Injectable({
   providedIn: 'root',
 })
-export class GravCmsMockService extends GravCmsService {
+export class GravCmsServiceMock extends GravCmsService {
   protected override apiBaseUrl: string = window.location.origin;
 
   public override loadDiscoverMapsData(): Observable<DiscoverMapsItem[]> {

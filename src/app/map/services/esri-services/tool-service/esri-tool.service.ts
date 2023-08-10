@@ -18,8 +18,8 @@ import {EsriAreaMeasurementStrategy} from './strategies/measurement/esri-area-me
 import {EsriPointMeasurementStrategy} from './strategies/measurement/esri-point-measurement.strategy';
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
 import {ToolActions} from '../../../../state/map/actions/tool.actions';
-import {MeasurementTool} from '../../../../shared/types/measurement-tool';
-import {DrawingTool} from '../../../../shared/types/drawing-tool';
+import {MeasurementTool} from '../../../../shared/types/measurement-tool.type';
+import {DrawingTool} from '../../../../shared/types/drawing-tool.type';
 import {ConfigService} from '../../../../shared/services/config.service';
 import {EsriPointDrawingStrategy} from './strategies/drawing/esri-point-drawing.strategy';
 import {EsriLineDrawingStrategy} from './strategies/drawing/esri-line-drawing.strategy';

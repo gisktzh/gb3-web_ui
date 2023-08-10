@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {ResizeHandlerLocation} from '../../../shared/types/resize-handler-location';
-import {StyleExpression} from '../../../shared/types/style-expression';
+import {ResizeHandlerLocation} from '../../../shared/types/resize-handler-location.type';
+import {StyleExpression} from '../../../shared/types/style-expression.type';
 
 @Component({
   selector: 'map-overlay',

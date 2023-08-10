@@ -1,4 +1,4 @@
-import {SupportedSrs} from '../../shared/types/supported-srs';
+import {SupportedSrs} from '../../shared/types/supported-srs.type';
 import {
   LineStringWithSrs,
   MultiLineStringWithSrs,

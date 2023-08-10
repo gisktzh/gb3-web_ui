@@ -1,11 +1,11 @@
 import {Component, Input} from '@angular/core';
 
 @Component({
-  selector: 'ktzh-slider-wrapper',
-  templateUrl: './ktzh-slider-wrapper.component.html',
-  styleUrls: ['./ktzh-slider-wrapper.component.scss'],
+  selector: 'slider-wrapper',
+  templateUrl: './slider-wrapper.component.html',
+  styleUrls: ['./slider-wrapper.component.scss'],
 })
-export class KtzhSliderWrapperComponent<T> {
+export class SliderWrapperComponent<T> {
   /** The title of the slider wrapper */
   @Input() public title!: string;
   /** An optional description; will be shown as tooltip on top of an info icon */

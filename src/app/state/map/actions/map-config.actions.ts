@@ -1,5 +1,5 @@
 import {createActionGroup, emptyProps, props} from '@ngrx/store';
-import {ZoomType} from '../../../shared/types/zoom-type';
+import {ZoomType} from '../../../shared/types/zoom.type';
 import {PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 
 export const MapConfigActions = createActionGroup({

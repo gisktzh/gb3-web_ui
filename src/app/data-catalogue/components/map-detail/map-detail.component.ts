@@ -3,7 +3,7 @@ import {MapMetadata} from '../../../shared/interfaces/gb3-metadata.interface';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Gb3MetadataService} from '../../../shared/services/apis/gb3/gb3-metadata.service';
 import {ConfigService} from '../../../shared/services/config.service';
-import {DataDisplayElement} from '../../types/data-display-element';
+import {DataDisplayElement} from '../../types/data-display-element.type';
 import {BaseMetadataInformation} from '../../interfaces/base-metadata-information.interface';
 import {AbstractBaseDetailComponent} from '../abstract-base-detail/abstract-base-detail.component';
 import {MetadataLink} from '../../interfaces/metadata-link.interface';
