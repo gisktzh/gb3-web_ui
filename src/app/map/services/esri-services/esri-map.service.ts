@@ -133,7 +133,7 @@ export class EsriMapService implements MapService, OnDestroy {
     }
   }
 
-  public init(isInteractive: boolean = false): void {
+  public init(isInteractive: boolean = true): void {
     this.store
       .select(selectMapConfigState)
       .pipe(
