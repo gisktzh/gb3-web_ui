@@ -7,7 +7,7 @@ import {RouteParamConstants} from '../shared/constants/route-param.constants';
 import {ShareLinkActions} from '../state/map/actions/share-link.actions';
 import {ShareLinkParameterInvalid} from '../shared/errors/share-link.errors';
 import {ActivatedRoute} from '@angular/router';
-import {LoadingState} from '../shared/types/loading-state';
+import {LoadingState} from '../shared/types/loading-state.type';
 import {selectApplicationInitializationLoadingState} from '../state/map/reducers/share-link.reducer';
 import {MainPage} from '../shared/enums/main-page.enum';
 import {selectLoadingState} from '../state/map/reducers/legend.reducer';

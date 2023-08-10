@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ToolActions} from '../../../../state/map/actions/tool.actions';
 import {Subscription, tap} from 'rxjs';
-import {ToolType} from '../../../../shared/types/tool-type';
+import {ToolType} from '../../../../shared/types/tool.type';
 import {selectActiveTool} from '../../../../state/map/reducers/tool.reducer';
 import {Store} from '@ngrx/store';
 

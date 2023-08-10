@@ -1,6 +1,6 @@
 import {Map, Topic} from '../../../shared/interfaces/topic.interface';
 import {selectLoadedLayerCatalogueAndShareItem} from './loaded-layer-catalogue-and-share-item.selector';
-import {LoadingState} from '../../../shared/types/loading-state';
+import {LoadingState} from '../../../shared/types/loading-state.type';
 import {ShareLinkItem} from '../../../shared/interfaces/share-link.interface';
 
 describe('selectLoadedLayerCatalogueAndShareItem', () => {

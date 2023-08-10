@@ -1,4 +1,4 @@
-import {SupportedSrs} from '../../../shared/types/supported-srs';
+import {SupportedSrs} from '../../../shared/types/supported-srs.type';
 
 export interface MapConfigState {
   center: {x: number; y: number};

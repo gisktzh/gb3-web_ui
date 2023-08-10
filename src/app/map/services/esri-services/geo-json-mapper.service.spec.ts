@@ -10,7 +10,7 @@ import {
   PointWithSrs,
   PolygonWithSrs,
 } from '../../../shared/interfaces/geojson-types-with-srs.interface';
-import {SupportedSrs} from '../../../shared/types/supported-srs';
+import {SupportedSrs} from '../../../shared/types/supported-srs.type';
 import {MinimalGeometriesUtils} from '../../../testing/map-testing/minimal-geometries.utils';
 
 describe('GeoJsonMapperService', () => {

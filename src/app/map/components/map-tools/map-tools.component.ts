@@ -3,7 +3,7 @@ import {Store} from '@ngrx/store';
 import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
 import {Subscription, tap} from 'rxjs';
 import {selectToolMenuVisibility} from '../../../state/map/reducers/map-ui.reducer';
-import {ToolMenuVisibility} from '../../../shared/types/tool-menu-visibility';
+import {ToolMenuVisibility} from '../../../shared/types/tool-menu-visibility.type';
 
 @Component({
   selector: 'map-tools',

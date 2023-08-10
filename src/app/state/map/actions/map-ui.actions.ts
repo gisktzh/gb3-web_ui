@@ -1,7 +1,7 @@
 import {createActionGroup, emptyProps, props} from '@ngrx/store';
-import {MapSideDrawerContent} from '../../../shared/types/map-side-drawer-content';
+import {MapSideDrawerContent} from '../../../shared/types/map-side-drawer-content.type';
 import {Favourite} from '../../../shared/interfaces/favourite.interface';
-import {ToolMenuVisibility} from '../../../shared/types/tool-menu-visibility';
+import {ToolMenuVisibility} from '../../../shared/types/tool-menu-visibility.type';
 
 export const MapUiActions = createActionGroup({
   source: 'MapUi',

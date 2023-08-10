@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {ToggleButtonPosition} from '../../../types/toggle-button-position';
+import {ToggleButtonPosition} from '../../../types/toggle-button-position.type';
 
 @Component({
   selector: 'map-overlay-list-item',

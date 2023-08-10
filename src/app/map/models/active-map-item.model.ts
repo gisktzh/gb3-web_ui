@@ -1,8 +1,8 @@
-import {LoadingState} from '../../shared/types/loading-state';
+import {LoadingState} from '../../shared/types/loading-state.type';
 import {HasLoadingState} from '../../shared/interfaces/has-loading-state.interface';
 import {HasVisibility} from '../interfaces/has-visibility.interface';
 import {HasViewProcessState} from '../interfaces/has-view-process-state.interface';
-import {ViewProcessState} from '../../shared/types/view-process-state';
+import {ViewProcessState} from '../../shared/types/view-process-state.type';
 import {IsImmerable} from '../interfaces/immerable.interface';
 import {immerable} from 'immer';
 

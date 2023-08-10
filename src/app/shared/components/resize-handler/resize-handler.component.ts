@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {ResizeHandlerLocation} from '../../types/resize-handler-location';
+import {ResizeHandlerLocation} from '../../types/resize-handler-location.type';
 import {ResizeEvent} from 'angular-resizable-element';
-import {StyleExpression} from '../../types/style-expression';
+import {StyleExpression} from '../../types/style-expression.type';
 
 /**
  * The minimum width of the overlay window; cannot be resized below that.

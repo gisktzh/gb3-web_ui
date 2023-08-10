@@ -16,7 +16,7 @@ import {
 import {FeatureInfoResponse} from '../../../interfaces/feature-info.interface';
 import {forkJoin, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {SupportedSrs} from '../../../types/supported-srs';
+import {SupportedSrs} from '../../../types/supported-srs.type';
 import {DataCataloguePage} from '../../../enums/data-catalogue-page.enum';
 import {MainPage} from '../../../enums/main-page.enum';
 

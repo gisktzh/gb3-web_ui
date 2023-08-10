@@ -1,4 +1,4 @@
-import {SupportedSrs} from '../types/supported-srs';
+import {SupportedSrs} from '../types/supported-srs.type';
 
 export class MapConstants {
   public static readonly MINIMUM_MAP_SCALE = 1_500_000;

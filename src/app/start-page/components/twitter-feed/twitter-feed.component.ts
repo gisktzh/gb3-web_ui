@@ -2,7 +2,7 @@ import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild} from '@angul
 import {ScriptInjectorService} from '../../../shared/services/script-injector.service';
 import {Subscription, tap} from 'rxjs';
 import {catchError} from 'rxjs/operators';
-import {LoadingState} from 'src/app/shared/types/loading-state';
+import {LoadingState} from 'src/app/shared/types/loading-state.type';
 import {HasLoadingState} from '../../../shared/interfaces/has-loading-state.interface';
 
 import {TwitterFeedCouldNotBeLoaded} from '../../../shared/errors/start-page.errors';

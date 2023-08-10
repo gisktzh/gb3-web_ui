@@ -3,7 +3,7 @@ import {MapConfigUrlService} from '../../services/map-config-url.service';
 import {ActivatedRoute} from '@angular/router';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
-import {PrintType} from '../../types/print-type';
+import {PrintType} from '../../types/print.type';
 import {LegendDisplay} from '../../../shared/interfaces/legend.interface';
 import {FeatureInfoResultDisplay} from '../../../shared/interfaces/feature-info.interface';
 import {selectLegendItemsForDisplay} from '../../../state/map/selectors/legend-result-display.selector';

@@ -6,7 +6,7 @@ import {MAP_SERVICE} from '../../../../../app.module';
 import {MapService} from '../../../../interfaces/map.service';
 import {ActiveMapItem} from '../../../../models/active-map-item.model';
 import {ActiveMapItemActions} from '../../../../../state/map/actions/active-map-item.actions';
-import {SearchIndexType} from '../../../../../shared/types/search-index-type';
+import {SearchIndexType} from '../../../../../shared/types/search-index.type';
 import {ActiveMapItemFactory} from '../../../../../shared/factories/active-map-item.factory';
 import {selectMapConfigState} from '../../../../../state/map/reducers/map-config.reducer';
 import {Subscription, tap} from 'rxjs';

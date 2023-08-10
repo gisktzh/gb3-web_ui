@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {MapConfigActions} from '../../../../state/map/actions/map-config.actions';
-import {ZoomType} from '../../../../shared/types/zoom-type';
+import {ZoomType} from '../../../../shared/types/zoom.type';
 import {Store} from '@ngrx/store';
 import {GeolocationState} from '../../../../state/map/states/geolocation.state';
 import {initialState as initialGeolocationState, selectGeolocationState} from '../../../../state/map/reducers/geolocation.reducer';

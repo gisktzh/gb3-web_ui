@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {HasSavingState} from '../../../shared/interfaces/has-saving-state.interface';
-import {LoadingState} from '../../../shared/types/loading-state';
+import {LoadingState} from '../../../shared/types/loading-state.type';
 import {filter, Subscription, tap} from 'rxjs';
 import {MatDialogRef} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';

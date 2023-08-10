@@ -1,5 +1,5 @@
-import {MapSideDrawerContent} from '../../../shared/types/map-side-drawer-content';
-import {ToolMenuVisibility} from '../../../shared/types/tool-menu-visibility';
+import {MapSideDrawerContent} from '../../../shared/types/map-side-drawer-content.type';
+import {ToolMenuVisibility} from '../../../shared/types/tool-menu-visibility.type';
 
 export interface MapUiState {
   mapSideDrawerContent: MapSideDrawerContent;

@@ -1,6 +1,6 @@
 import {DepartmentalContact} from '../../shared/interfaces/gb3-metadata.interface';
 
-import {DataDisplayElement} from '../types/data-display-element';
+import {DataDisplayElement} from '../types/data-display-element.type';
 
 export class DataExtractionUtils {
   public static extractContactElements(contact: DepartmentalContact): DataDisplayElement[] {

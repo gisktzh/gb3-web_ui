@@ -31,31 +31,6 @@ describe('EmbeddedErrorHandlerService', () => {
     expect(service).toBeTruthy();
   });
 
-  describe('error handling', () => {
-    it('handles SilentErrors silently', () => {
-      const testError = new TestSilentError();
-      service.handleError(testError);
-    });
-
-    it('handles RecoverableErrors silently', () => {
-      const testErrorMessage = 'error message';
-      const testError = new TestRecoverableError(testErrorMessage);
-      service.handleError(testError);
-    });
-
-    it('handles FatalErrors silently', () => {
-      const testErrorMessage = 'error message';
-      const testError = new TestFatalError(testErrorMessage);
-      service.handleError(testError);
-    });
-
-    it('handles non Gb3RuntimeErrors silently', () => {
-      const testErrorMessage = 'error message';
-      const testError = new Error(testErrorMessage);
-      service.handleError(testError);
-    });
-  });
-
   describe('logging', () => {
     beforeEach(() => {
       spyOn(console, 'warn');

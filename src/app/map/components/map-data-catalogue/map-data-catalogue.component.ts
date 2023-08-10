@@ -5,7 +5,7 @@ import {selectFilterString, selectLoadingState as selectCatalogueLoadingState} f
 import {LayerCatalogActions} from '../../../state/map/actions/layer-catalog.actions';
 import {debounceTime, distinctUntilChanged, fromEvent, Observable, Subscription, tap} from 'rxjs';
 import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
-import {LoadingState} from '../../../shared/types/loading-state';
+import {LoadingState} from '../../../shared/types/loading-state.type';
 import {ActiveMapItem} from '../../models/active-map-item.model';
 import {Map, MapLayer, Topic} from '../../../shared/interfaces/topic.interface';
 import {selectFilteredLayerCatalog} from '../../../state/map/selectors/filtered-layer-catalog.selector';

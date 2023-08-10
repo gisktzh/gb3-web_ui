@@ -1,5 +1,5 @@
 import {ActiveMapItem} from '../models/active-map-item.model';
-import {ZoomType} from '../../shared/types/zoom-type';
+import {ZoomType} from '../../shared/types/zoom.type';
 import {TimeExtent} from './time-extent.interface';
 import {GeometryWithSrs, PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
 import {InternalDrawingLayer} from '../../shared/enums/drawing-layer.enum';

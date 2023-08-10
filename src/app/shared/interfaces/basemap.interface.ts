@@ -1,4 +1,4 @@
-import {SupportedSrs} from '../types/supported-srs';
+import {SupportedSrs} from '../types/supported-srs.type';
 
 interface BasemapLayer {
   name: string;

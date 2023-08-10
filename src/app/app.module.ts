@@ -11,11 +11,11 @@ import {SharedModule} from './shared/shared.module';
 import {EffectsModule} from '@ngrx/effects';
 import {EsriMapService} from './map/services/esri-services/esri-map.service';
 import {MapService} from './map/interfaces/map.service';
-import {KTZHNewsMockService} from './shared/services/apis/ktzh/ktzhnews.mock.service';
+import {KTZHNewsServiceMock} from './shared/services/apis/ktzh/ktzhnews.service.mock';
 import {NewsService} from './shared/interfaces/news-service.interface';
 import {AuthModule} from './auth/auth.module';
 import {GravCmsService} from './shared/services/apis/grav-cms/grav-cms.service';
-import {GravCmsMockService} from './shared/services/apis/grav-cms/grav-cms.mock.service';
+import {GravCmsServiceMock} from './shared/services/apis/grav-cms/grav-cms.service.mock';
 import {ConfigService} from './shared/services/config.service';
 import {KTZHNewsService} from './shared/services/apis/ktzh/ktzhnews.service';
 import {registerLocaleData} from '@angular/common';
@@ -77,8 +77,8 @@ export const GRAV_CMS_SERVICE = new InjectionToken<GravCmsService>('GravCmsServi
   providers: [
     {provide: ErrorHandler, deps: [Router, ErrorHandlerService, EmbeddedErrorHandlerService], useFactory: errorHandlerServiceFactory},
     {provide: MAP_SERVICE, useClass: EsriMapService},
-    {provide: NEWS_SERVICE, deps: [KTZHNewsService, KTZHNewsMockService, ConfigService], useFactory: newsFactory},
-    {provide: GRAV_CMS_SERVICE, deps: [GravCmsService, GravCmsMockService, ConfigService], useFactory: gravCmsFactory},
+    {provide: NEWS_SERVICE, deps: [KTZHNewsService, KTZHNewsServiceMock, ConfigService], useFactory: newsFactory},
+    {provide: GRAV_CMS_SERVICE, deps: [GravCmsService, GravCmsServiceMock, ConfigService], useFactory: gravCmsFactory},
     {provide: LOCALE_ID, useValue: 'de-CH'},
   ],
   bootstrap: [AppComponent],

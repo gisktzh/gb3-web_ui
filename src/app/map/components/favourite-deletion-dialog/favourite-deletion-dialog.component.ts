@@ -7,7 +7,7 @@ import {FavouritesService} from '../../services/favourites.service';
 import {Favourite} from '../../../shared/interfaces/favourite.interface';
 import {Store} from '@ngrx/store';
 import {FavouriteListActions} from '../../../state/map/actions/favourite-list.actions';
-import {LoadingState} from '../../../shared/types/loading-state';
+import {LoadingState} from '../../../shared/types/loading-state.type';
 
 import {FavouriteCouldNotBeRemoved} from '../../../shared/errors/favourite.errors';
 

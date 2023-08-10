@@ -1,5 +1,5 @@
-import {MeasurementTool} from '../../shared/types/measurement-tool';
-import {DrawingTool} from '../../shared/types/drawing-tool';
+import {MeasurementTool} from '../../shared/types/measurement-tool.type';
+import {DrawingTool} from '../../shared/types/drawing-tool.type';
 
 export interface ToolService {
   initializeMeasurement(measurementTool: MeasurementTool): void;

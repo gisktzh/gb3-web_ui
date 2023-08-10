@@ -8,7 +8,7 @@ import {ktzhNewsDataMock} from '../../../models/ktzh-news-data.mock';
 @Injectable({
   providedIn: 'root',
 })
-export class KTZHNewsMockService extends KTZHNewsService {
+export class KTZHNewsServiceMock extends KTZHNewsService {
   /**
    * Returns mockdata and mimicks an API request delay between 1ms and 1000ms.
    */

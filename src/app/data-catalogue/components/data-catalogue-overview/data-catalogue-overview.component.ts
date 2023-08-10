@@ -5,7 +5,7 @@ import {DataCatalogueActions} from '../../../state/data-catalogue/actions/data-c
 import {DataCatalogueState} from '../../../state/data-catalogue/states/data-catalogue.state';
 import {selectDataCatalogueState} from '../../../state/data-catalogue/reducers/data-catalogue.reducer';
 import {OverviewMetadataItem} from '../../../shared/models/overview-metadata-item.model';
-import {LoadingState} from '../../../shared/types/loading-state';
+import {LoadingState} from '../../../shared/types/loading-state.type';
 import {MatPaginator, MatPaginatorIntl} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
 

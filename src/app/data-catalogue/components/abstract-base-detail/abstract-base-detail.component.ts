@@ -1,10 +1,10 @@
 import {Component, ErrorHandler, OnDestroy, OnInit} from '@angular/core';
-import {LoadingState} from '../../../shared/types/loading-state';
+import {LoadingState} from '../../../shared/types/loading-state.type';
 import {Observable, of, Subscription, switchMap, tap} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Gb3MetadataService} from '../../../shared/services/apis/gb3/gb3-metadata.service';
 import {ConfigService} from '../../../shared/services/config.service';
-import {DataDisplayElement} from '../../types/data-display-element';
+import {DataDisplayElement} from '../../types/data-display-element.type';
 import {MainPage} from '../../../shared/enums/main-page.enum';
 import {DataCataloguePage} from '../../../shared/enums/data-catalogue-page.enum';
 import {DatasetMetadata, MapMetadata, ProductMetadata, ServiceMetadata} from '../../../shared/interfaces/gb3-metadata.interface';

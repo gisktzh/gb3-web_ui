@@ -3,7 +3,7 @@ import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {selectLoadingState} from '../../../state/map/reducers/legend.reducer';
 import {LegendActions} from '../../../state/map/actions/legend.actions';
-import {LoadingState} from '../../../shared/types/loading-state';
+import {LoadingState} from '../../../shared/types/loading-state.type';
 import {LegendDisplay} from '../../../shared/interfaces/legend.interface';
 import {selectLegendItemsForDisplay} from '../../../state/map/selectors/legend-result-display.selector';
 
