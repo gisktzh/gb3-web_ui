@@ -31,6 +31,12 @@ export const dataCatalogueFeature = createFeature({
       return {...state, filters: dataCatalogueFilters};
     }),
     on(
+      DataCatalogueActions.resetFilters,
+      produce((draft) => {
+        draft.filters.forEach((filter) => filter.filterValues.forEach((f) => (f.isActive = false)));
+      }),
+    ),
+    on(
       DataCatalogueActions.toggleFilter,
       produce((draft, {key, value}) => {
         draft.filters

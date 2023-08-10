@@ -2,14 +2,15 @@ import {AfterViewInit, Component, Injectable, OnDestroy, OnInit, ViewChild} from
 import {filter, Observable, Subject, Subscription, take, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {DataCatalogueActions} from '../../../state/data-catalogue/actions/data-catalogue.actions';
-import {selectFilters, selectLoadingState} from '../../../state/data-catalogue/reducers/data-catalogue.reducer';
+import {selectLoadingState} from '../../../state/data-catalogue/reducers/data-catalogue.reducer';
 import {OverviewMetadataItem} from '../../../shared/models/overview-metadata-item.model';
 import {LoadingState} from '../../../shared/types/loading-state.type';
 import {MatPaginator, MatPaginatorIntl} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
 import {selectDataCatalogueItems} from '../../../state/data-catalogue/selectors/data-catalogue-items.selector';
-
-import {DataCatalogueFilter} from '../../../shared/interfaces/data-catalogue-filter.interface';
+import {PanelClass} from '../../../shared/enums/panel-class.enum';
+import {MatDialog} from '@angular/material/dialog';
+import {DataCatalogueFilterDialogComponent} from '../data-catalogue-filter-dialog/data-catalogue-filter-dialog.component';
 
 @Injectable()
 class DataCataloguePaginatorIntl implements MatPaginatorIntl {
@@ -41,17 +42,16 @@ class DataCataloguePaginatorIntl implements MatPaginatorIntl {
 })
 export class DataCatalogueOverviewComponent implements OnInit, OnDestroy, AfterViewInit {
   public loadingState: LoadingState = 'undefined';
-  // We use the MatTableDataSource here because it already has pagination handling embedded - depending on our needs, we might to
-  // implement a custom DataSource and handle pagination manually.
   public dataCatalogueItems: MatTableDataSource<OverviewMetadataItem> = new MatTableDataSource<OverviewMetadataItem>([]);
-  public dataCatalogueFilters: DataCatalogueFilter[] = [];
-  private readonly dataCatalogueFilters$: Observable<DataCatalogueFilter[]> = this.store.select(selectFilters);
   private readonly dataCatalogueItems$: Observable<OverviewMetadataItem[]> = this.store.select(selectDataCatalogueItems);
   private readonly dataCatalogueLoadingState$: Observable<LoadingState> = this.store.select(selectLoadingState);
   private readonly subscriptions: Subscription = new Subscription();
   @ViewChild(MatPaginator) private paginator!: MatPaginator;
 
-  constructor(private readonly store: Store) {
+  constructor(
+    private readonly store: Store,
+    private readonly dialogService: MatDialog,
+  ) {
     this.store.dispatch(DataCatalogueActions.loadCatalogue());
   }
 
@@ -66,16 +66,6 @@ export class DataCatalogueOverviewComponent implements OnInit, OnDestroy, AfterV
             // This is necessary to force it to be rendered in the next tick, otherwise, changedetection won't pick it up
             setTimeout(() => (this.dataCatalogueItems.paginator = this.paginator), 0);
           }),
-        )
-        .subscribe(),
-    );
-    this.subscriptions.add(
-      this.dataCatalogueFilters$
-        .pipe(
-          tap((dataCatalogueFilters) =>
-            // This is necessary because the filters are loaded so fast that they are directly updated, triggering NG100
-            setTimeout(() => (this.dataCatalogueFilters = dataCatalogueFilters), 0),
-          ),
         )
         .subscribe(),
     );
@@ -98,11 +88,11 @@ export class DataCatalogueOverviewComponent implements OnInit, OnDestroy, AfterV
     this.subscriptions.unsubscribe();
   }
 
-  public toggleFilter(
-    key: 'outputFormat' | 'relativeUrl' | 'guid' | 'name' | 'description' | 'type' | 'responsibleDepartment',
-    filterValue: string,
-  ) {
-    console.log(`Filter for ${key} with value ${filterValue}`);
-    this.store.dispatch(DataCatalogueActions.toggleFilter({key, value: filterValue}));
+  public openFilterWindow() {
+    this.dialogService.open<DataCatalogueFilterDialogComponent>(DataCatalogueFilterDialogComponent, {
+      panelClass: PanelClass.ApiWrapperDialog,
+      restoreFocus: false,
+      width: '956px',
+    });
   }
 }

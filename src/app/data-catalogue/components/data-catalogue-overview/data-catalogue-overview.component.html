@@ -4,19 +4,15 @@
     heroText="Der Datenkatalog listet Geodaten auf und lässt sich nach verschiedenen Kriterien sortieren. Die Geodaten bestehen aus Geodatensätzen, Geodiensten und GIS-Browser Karten sowie den eigentlichen Geometadaten."
   ></hero-header>
 </start-page-section>
-<div *ngIf="dataCatalogueFilters" style="display: flex">
-  <div *ngFor="let filter of dataCatalogueFilters">
-    <b>{{ filter.label }}</b>
-    <li *ngFor="let filterValue of filter.filterValues" (click)="toggleFilter(filter.key, filterValue.value)">
-      <span *ngIf="filterValue.isActive">X</span>{{ filterValue.value }}
-    </li>
-  </div>
-</div>
 <div class="data-catalogue-overview">
   <div class="data-catalogue-overview__content">
     <loading-and-process-bar [loadingState]="loadingState"></loading-and-process-bar>
 
     <ng-container *ngIf="loadingState === 'loaded'">
+      <!-- TODO: this button will be styled and located properly within the search bar when that's done -->
+      <div style="display: flex; justify-content: end">
+        <button mat-flat-button color="accent" (click)="openFilterWindow()">Filter</button>
+      </div>
       <mat-paginator [pageSize]="20" hidePageSize showFirstLastButtons></mat-paginator>
       <cdk-table [dataSource]="dataCatalogueItems">
         <ng-container cdkColumnDef="data">

@@ -13,5 +13,6 @@ export const DataCatalogueActions = createActionGroup({
     'Set Error': errorProps(),
     'Set Filters': props<{dataCatalogueFilters: DataCatalogueFilter[]}>(),
     'Toggle Filter': props<{key: DataCatalogueFilterKey; value: string}>(),
+    'Reset Filters': emptyProps(),
   },
 });
