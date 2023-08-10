@@ -23,6 +23,9 @@ import {StartPageSectionComponent} from './components/start-page-section/start-p
 import {ContactDetailsComponent} from './components/contact-details/contact-details.component';
 import {ContactDetailComponent} from './components/contact-details/contact-detail/contact-detail.component';
 import {WaitingPageComponent} from './components/waiting-page/waiting-page.component';
+import {SliderWrapperComponent} from './components/slider-wrapper/slider-wrapper.component';
+import {LinkListComponent} from './components/link-list/link-list.component';
+import {LinkListItemComponent} from './components/link-list/link-list-item/link-list-item.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +49,9 @@ import {WaitingPageComponent} from './components/waiting-page/waiting-page.compo
     ContactDetailsComponent,
     ContactDetailComponent,
     WaitingPageComponent,
+    SliderWrapperComponent,
+    LinkListComponent,
+    LinkListItemComponent,
   ],
   imports: [MaterialModule, RouterModule, CommonModule, ResizableModule],
   exports: [
@@ -70,6 +76,8 @@ import {WaitingPageComponent} from './components/waiting-page/waiting-page.compo
     StartPageSectionComponent,
     ContactDetailsComponent,
     WaitingPageComponent,
+    SliderWrapperComponent,
+    LinkListComponent,
   ],
 })
 export class SharedModule {}

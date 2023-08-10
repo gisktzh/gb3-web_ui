@@ -5,10 +5,9 @@ import {SharedModule} from '../shared/shared.module';
 import {FaqComponent} from './components/faq/faq.component';
 import {ContactComponent} from './components/contact/contact.component';
 import {UsefulLinksComponent} from './components/useful-links/useful-links.component';
-import {KtZhDesignSystemModule} from '../kt-zh-design-system/kt-zh-design-system.module';
 
 @NgModule({
   declarations: [SupportPageComponent, FaqComponent, ContactComponent, UsefulLinksComponent],
-  imports: [SharedModule, SupportPageRoutingModule, KtZhDesignSystemModule],
+  imports: [SharedModule, SupportPageRoutingModule],
 })
 export class SupportPageModule {}
