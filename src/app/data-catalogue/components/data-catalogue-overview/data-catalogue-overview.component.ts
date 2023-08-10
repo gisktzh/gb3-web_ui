@@ -11,6 +11,8 @@ import {selectDataCatalogueItems} from '../../../state/data-catalogue/selectors/
 import {PanelClass} from '../../../shared/enums/panel-class.enum';
 import {MatDialog} from '@angular/material/dialog';
 import {DataCatalogueFilterDialogComponent} from '../data-catalogue-filter-dialog/data-catalogue-filter-dialog.component';
+import {ActiveDataCatalogueFilter} from '../../../shared/interfaces/data-catalogue-filter.interface';
+import {selectActiveFilterValues} from '../../../state/data-catalogue/selectors/active-filter-values.selector';
 
 @Injectable()
 class DataCataloguePaginatorIntl implements MatPaginatorIntl {
@@ -23,14 +25,14 @@ class DataCataloguePaginatorIntl implements MatPaginatorIntl {
 
   public getRangeLabel(page: number, pageSize: number, length: number): string {
     if (length === 0) {
-      return this.getRangeLabelText(1, 1, 0);
+      return this.getRangeLabelText(1, 1);
     }
     const amountPages = Math.ceil(length / pageSize);
-    return this.getRangeLabelText(page + 1, amountPages, length);
+    return this.getRangeLabelText(page + 1, amountPages);
   }
 
-  private getRangeLabelText(currentPage: number, amountPages: number, length: number): string {
-    return `Seite ${currentPage} von ${amountPages} | ${length} Elemente`;
+  private getRangeLabelText(currentPage: number, amountPages: number): string {
+    return `Seite ${currentPage} von ${amountPages}`;
   }
 }
 
@@ -43,6 +45,8 @@ class DataCataloguePaginatorIntl implements MatPaginatorIntl {
 export class DataCatalogueOverviewComponent implements OnInit, OnDestroy, AfterViewInit {
   public loadingState: LoadingState = 'undefined';
   public dataCatalogueItems: MatTableDataSource<OverviewMetadataItem> = new MatTableDataSource<OverviewMetadataItem>([]);
+  public activeFilters: ActiveDataCatalogueFilter[] = [];
+  private readonly activeFilters$: Observable<ActiveDataCatalogueFilter[]> = this.store.select(selectActiveFilterValues);
   private readonly dataCatalogueItems$: Observable<OverviewMetadataItem[]> = this.store.select(selectDataCatalogueItems);
   private readonly dataCatalogueLoadingState$: Observable<LoadingState> = this.store.select(selectLoadingState);
   private readonly subscriptions: Subscription = new Subscription();
@@ -82,6 +86,7 @@ export class DataCatalogueOverviewComponent implements OnInit, OnDestroy, AfterV
         )
         .subscribe(),
     );
+    this.subscriptions.add(this.activeFilters$.pipe(tap((activeFilters) => (this.activeFilters = activeFilters))).subscribe());
   }
 
   public ngOnDestroy() {
@@ -94,5 +99,9 @@ export class DataCatalogueOverviewComponent implements OnInit, OnDestroy, AfterV
       restoreFocus: false,
       width: '956px',
     });
+  }
+
+  public removeFilter({key, value}: ActiveDataCatalogueFilter) {
+    this.store.dispatch(DataCatalogueActions.toggleFilter({key, value}));
   }
 }

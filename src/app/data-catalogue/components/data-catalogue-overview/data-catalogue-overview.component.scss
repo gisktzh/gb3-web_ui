@@ -9,6 +9,17 @@
     max-width: ktzh-variables.$zh-layout-max-content-width;
     width: 100%;
 
+    .data-catalogue-overview__content__active-filters {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .data-catalogue-overview__content__active-filters__result-size {
+        display: flex;
+        flex-shrink: 0;
+      }
+    }
+
     .cdk-table {
       display: flex;
       flex-flow: column;

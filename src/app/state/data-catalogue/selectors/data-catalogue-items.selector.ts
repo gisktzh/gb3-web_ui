@@ -1,19 +1,9 @@
 import {createSelector} from '@ngrx/store';
-import {selectFilters, selectItems} from '../reducers/data-catalogue.reducer';
+import {selectItems} from '../reducers/data-catalogue.reducer';
 import {OverviewMetadataItem} from '../../../shared/models/overview-metadata-item.model';
+import {selectActiveFiltersPerGroup} from './active-filters-per-group.selector';
 
-export const selectActiveFilters = createSelector(selectFilters, (filters) => {
-  return filters
-    .filter((filter) => filter.filterValues.some((filterValue) => filterValue.isActive))
-    .map((filter) => {
-      return {
-        key: filter.key,
-        values: filter.filterValues.filter((filterValue) => filterValue.isActive).map((filterValue) => filterValue.value),
-      };
-    });
-});
-
-export const selectDataCatalogueItems = createSelector(selectItems, selectActiveFilters, (items, activeFilters) => {
+export const selectDataCatalogueItems = createSelector(selectItems, selectActiveFiltersPerGroup, (items, activeFilters) => {
   let filteredItems: OverviewMetadataItem[] = items;
 
   if (activeFilters.length > 0) {

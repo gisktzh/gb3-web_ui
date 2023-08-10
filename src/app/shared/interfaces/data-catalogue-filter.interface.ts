@@ -13,3 +13,13 @@ export interface DataCatalogueFilter {
     isActive: boolean;
   }[];
 }
+
+export interface ActiveDataCatalogueFilterGroup {
+  key: DataCatalogueFilterKey;
+  values: string[];
+}
+
+export interface ActiveDataCatalogueFilter {
+  key: DataCatalogueFilterKey;
+  value: string;
+}
