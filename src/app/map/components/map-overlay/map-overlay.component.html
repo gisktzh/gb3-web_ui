@@ -16,6 +16,7 @@
   </mat-card-content>
 
   <button
+    *ngIf="showPrintButton"
     [disabled]="!isPrintButtonEnabled"
     (click)="this.onPrintButtonClick()"
     class="map-overlay__print-button"

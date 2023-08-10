@@ -23,7 +23,7 @@ export class MapServiceStub implements MapService {
 
   public setMapCenter(center: PointWithSrs): void {}
 
-  public init(): void {}
+  public init(isInteractive?: boolean): void {}
 
   public removeAllMapItems(): void {}
 

@@ -4,12 +4,12 @@ import {MapService} from '../../interfaces/map.service';
 import {MAP_SERVICE} from '../../../app.module';
 
 @Component({
-  selector: 'map',
-  templateUrl: './map.component.html',
-  styleUrls: ['./map.component.scss'],
+  selector: 'map-container',
+  templateUrl: './map-container.component.html',
+  styleUrls: ['./map-container.component.scss'],
   providers: [FeatureHighlightingService],
 })
-export class MapComponent implements OnInit, AfterViewInit {
+export class MapContainerComponent implements OnInit, AfterViewInit {
   @ViewChild('mainMap', {static: true}) mainMapRef!: ElementRef;
 
   constructor(

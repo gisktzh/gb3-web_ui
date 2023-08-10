@@ -10,7 +10,6 @@ import {ShareLinkActions} from '../actions/share-link.actions';
 import {ShareLinkItem} from '../../../shared/interfaces/share-link.interface';
 import {AuthService} from '../../../auth/auth.service';
 import {FavouritesService} from '../../../map/services/favourites.service';
-import {ErrorHandlerService} from '../../../error-handling/error-handler.service';
 import {RouterTestingModule} from '@angular/router/testing';
 import {catchError} from 'rxjs/operators';
 import {
@@ -29,6 +28,7 @@ import {selectItems} from '../reducers/active-map-item.reducer';
 import {ActiveMapItemConfiguration} from '../../../shared/interfaces/active-map-item-configuration.interface';
 import {ActiveMapItem} from '../../../map/models/active-map-item.model';
 import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
+import {ErrorHandler} from '@angular/core';
 
 function createActiveMapItemsFromConfigs(activeMapItemConfigurations: ActiveMapItemConfiguration[]): ActiveMapItem[] {
   return activeMapItemConfigurations.map(
@@ -47,7 +47,7 @@ describe('ShareLinkEffects', () => {
   let gb3ShareLinkService: Gb3ShareLinkService;
   let authServiceMock: jasmine.SpyObj<AuthService>;
   let favouriteServiceMock: jasmine.SpyObj<FavouritesService>;
-  let errorHandlerServiceMock: jasmine.SpyObj<ErrorHandlerService>;
+  let errorHandlerMock: jasmine.SpyObj<ErrorHandler>;
 
   const shareLinkItemMock: ShareLinkItem = {
     basemapId: 'arelkbackgroundzh',
@@ -106,7 +106,7 @@ describe('ShareLinkEffects', () => {
     actions$ = new Observable<Action>();
     authServiceMock = jasmine.createSpyObj<AuthService>([], {isAuthenticated$: of(false)});
     favouriteServiceMock = jasmine.createSpyObj<FavouritesService>(['getActiveMapItemsForFavourite']);
-    errorHandlerServiceMock = jasmine.createSpyObj<ErrorHandlerService>(['handleError']);
+    errorHandlerMock = jasmine.createSpyObj<ErrorHandler>(['handleError']);
 
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterTestingModule],
@@ -115,7 +115,7 @@ describe('ShareLinkEffects', () => {
         provideMockActions(() => actions$),
         provideMockStore(),
         {provide: FavouritesService, useValue: favouriteServiceMock},
-        {provide: ErrorHandlerService, useValue: errorHandlerServiceMock},
+        {provide: ErrorHandler, useValue: errorHandlerMock},
         {provide: AuthService, useValue: authServiceMock},
       ],
     });
@@ -331,7 +331,7 @@ describe('ShareLinkEffects', () => {
           const expectedError = new ShareLinkCouldNotBeValidated(expectedOriginalError.message, isAuthenticated, expectedOriginalError);
           actions$ = of(ShareLinkActions.setValidationError({error: expectedOriginalError}));
           effects.handleValidationError$.subscribe((action) => {
-            expect(errorHandlerServiceMock.handleError).toHaveBeenCalledOnceWith(expectedError);
+            expect(errorHandlerMock.handleError).toHaveBeenCalledOnceWith(expectedError);
             expect(action).toEqual(ShareLinkActions.setInitializationError({error: expectedError}));
             expect(action.error).toBeInstanceOf(ShareLinkCouldNotBeValidated);
             expect((action.error as ShareLinkCouldNotBeValidated).message).not.toContain(
@@ -347,7 +347,7 @@ describe('ShareLinkEffects', () => {
           const expectedError = new ShareLinkCouldNotBeValidated(expectedOriginalError.message, isAuthenticated, expectedOriginalError);
           actions$ = of(ShareLinkActions.setValidationError({error: expectedOriginalError}));
           effects.handleValidationError$.subscribe((action) => {
-            expect(errorHandlerServiceMock.handleError).toHaveBeenCalledOnceWith(expectedError);
+            expect(errorHandlerMock.handleError).toHaveBeenCalledOnceWith(expectedError);
             expect(action).toEqual(ShareLinkActions.setInitializationError({error: expectedError}));
             expect(action.error).toBeInstanceOf(ShareLinkCouldNotBeValidated);
             expect((action.error as ShareLinkCouldNotBeValidated).message).toContain('Möglicherweise hilft es, wenn Sie sich einloggen.');

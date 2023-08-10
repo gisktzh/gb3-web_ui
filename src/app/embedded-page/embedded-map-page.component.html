@@ -1,0 +1,23 @@
+<div class="embedded-map-page" *ngIf="isEmbedded; else notEmbeddedError">
+  <map-container *ngIf="initializeApplicationLoadingState === 'loaded'"></map-container>
+  <legend-overlay *ngIf="showLegendOverlay" class="embedded-map-page__legend-overlay" [showInteractiveElements]="false"></legend-overlay>
+  <button mat-flat-button (click)="toggleLegend()" [disabled]="numberOfQueryLegends === 0" class="embedded-map-page__legend-button">
+    <mat-icon svgIcon="ktzh_legend"></mat-icon>
+    Legende
+  </button>
+  <a
+    mat-flat-button
+    color="primary"
+    class="embedded-map-page__minified-header"
+    [routerLink]="['/', MainPageEnum.ShareLink, id]"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <mat-icon svgIcon="ktzh_logo"></mat-icon>
+    GIS Browser Zürich
+  </a>
+  <zoom-controls class="embedded-map-page__zoom-controls" [showLocateMeButton]="false"></zoom-controls>
+</div>
+<ng-template #notEmbeddedError>
+  <p>Diese Karte des GIS Browser Zürich muss in einem <i>iframe</i> verwendet werden.</p>
+</ng-template>

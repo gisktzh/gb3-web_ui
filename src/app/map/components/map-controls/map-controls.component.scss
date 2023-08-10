@@ -46,17 +46,7 @@
     }
   }
 
-  .map-controls__buttons {
+  .map-controls__zoom-controls {
     @include mixins.map-element-box-shadow;
-    width: 48px;
-    display: flex;
-    flex-direction: column;
-    background-color: ktzh-variables.$zh-background-color;
-    pointer-events: all;
-
-    .map-controls__buttons__divider {
-      width: 50%;
-      align-self: center;
-    }
   }
 }

@@ -1,6 +1,16 @@
-<map-overlay (closeEvent)="this.close()" (printButtonEvent)="this.print()" [isVisible]="this.isVisible" overlayTitle="Legende">
+<map-overlay
+  (closeEvent)="this.close()"
+  [showPrintButton]="showInteractiveElements"
+  (printButtonEvent)="this.print()"
+  [isVisible]="this.isVisible"
+  overlayTitle="Legende"
+>
   <loading-and-process-bar [loadingState]="this.loadingState"></loading-and-process-bar>
   <ng-container *ngIf="this.loadingState === 'loaded'">
-    <legend-item *ngFor="let legendItem of legendItems; trackBy: trackById" [legendItem]="legendItem"></legend-item>
+    <legend-item
+      *ngFor="let legendItem of legendItems; trackBy: trackById"
+      [legendItem]="legendItem"
+      [showInteractiveElements]="showInteractiveElements"
+    ></legend-item>
   </ng-container>
 </map-overlay>

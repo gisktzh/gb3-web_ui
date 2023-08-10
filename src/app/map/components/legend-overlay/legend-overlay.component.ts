@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {selectLoadingState} from '../../../state/map/reducers/legend.reducer';
@@ -13,6 +13,8 @@ import {selectLegendItemsForDisplay} from '../../../state/map/selectors/legend-r
   styleUrls: ['./legend-overlay.component.scss'],
 })
 export class LegendOverlayComponent implements OnInit, OnDestroy {
+  /** A value indicating whether interactive elements (like buttons) should be shown. [Default: true] */
+  @Input() public showInteractiveElements: boolean = true;
   @Output() public printLegendEvent = new EventEmitter<void>();
 
   public isVisible = false;

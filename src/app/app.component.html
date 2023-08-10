@@ -1,9 +1,9 @@
 <main class="main">
-  <mobile-warning *ngIf="showWarning"></mobile-warning>
-  <navbar class="navbar" [isSimplifiedPage]="isSimplifiedPage"></navbar>
-  <article class="app-wrapper">
+  <mobile-warning *ngIf="showWarning && !isHeadlessPage"></mobile-warning>
+  <navbar *ngIf="!isHeadlessPage" class="navbar" [isSimplifiedPage]="isSimplifiedPage"></navbar>
+  <article class="app-wrapper" [ngClass]="{'app-wrapper--headless': isHeadlessPage}">
     <router-outlet></router-outlet>
-    <main-footer *ngIf="!isSimplifiedPage"></main-footer>
+    <main-footer *ngIf="!isSimplifiedPage && !isHeadlessPage"></main-footer>
   </article>
   <scrollbar-width-calculation class="scrollbar-width-calculation" *ngIf="scrollbarWidth === undefined"></scrollbar-width-calculation>
 </main>

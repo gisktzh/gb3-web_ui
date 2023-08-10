@@ -54,7 +54,6 @@ describe('DataCatalogueEffects', () => {
     it('dispatches DataCatalogueActions.setCatalogue() with the service response on success YYYY', (done: DoneFn) => {
       const expected = [new MapOverviewMetadataItem(1377, 'Test', 'Testbeschreibung')];
       spyOn(gb3MetadataService, 'loadFullList').and.callFake(() => {
-        console.warn('bleb');
         return of(expected);
       });
       actions$ = of(DataCatalogueActions.loadCatalogue());

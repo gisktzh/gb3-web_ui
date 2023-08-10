@@ -21,6 +21,10 @@ import {KTZHNewsService} from './shared/services/apis/ktzh/ktzhnews.service';
 import {registerLocaleData} from '@angular/common';
 import localeDeCH from '@angular/common/locales/de-CH';
 import {ErrorHandlingModule} from './error-handling/error-handling.module';
+import {UrlUtils} from './shared/utils/url.utils';
+import {Router} from '@angular/router';
+import {MainPage} from './shared/enums/main-page.enum';
+import {EmbeddedErrorHandlerService} from './embedded-page/services/embedded-error-handler.service';
 import {ErrorHandlerService} from './error-handling/error-handler.service';
 
 // necessary for the locale 'de-CH' to work
@@ -37,6 +41,20 @@ function gravCmsFactory<T>(service: T, mockService: T, configService: ConfigServ
 
 function serviceFactory<T>(service: T, mockService: T, useMockService: boolean = false): T {
   return useMockService ? mockService : service;
+}
+
+function errorHandlerServiceFactory(
+  router: Router,
+  errorHandlerService: ErrorHandlerService,
+  embeddedErrorHandlerService: EmbeddedErrorHandlerService,
+) {
+  const urlTree = router.parseUrl(window.location.pathname);
+  const mainPage = UrlUtils.extractMainPage(urlTree);
+  if (mainPage === MainPage.Embedded) {
+    return embeddedErrorHandlerService;
+  } else {
+    return errorHandlerService;
+  }
 }
 
 export const MAP_SERVICE = new InjectionToken<MapService>('MapService');
@@ -57,7 +75,7 @@ export const GRAV_CMS_SERVICE = new InjectionToken<GravCmsService>('GravCmsServi
     ErrorHandlingModule,
   ],
   providers: [
-    {provide: ErrorHandler, useClass: ErrorHandlerService},
+    {provide: ErrorHandler, deps: [Router, ErrorHandlerService, EmbeddedErrorHandlerService], useFactory: errorHandlerServiceFactory},
     {provide: MAP_SERVICE, useClass: EsriMapService},
     {provide: NEWS_SERVICE, deps: [KTZHNewsService, KTZHNewsMockService, ConfigService], useFactory: newsFactory},
     {provide: GRAV_CMS_SERVICE, deps: [GravCmsService, GravCmsMockService, ConfigService], useFactory: gravCmsFactory},

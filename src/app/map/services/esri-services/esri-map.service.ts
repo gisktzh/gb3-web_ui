@@ -133,7 +133,7 @@ export class EsriMapService implements MapService, OnDestroy {
     }
   }
 
-  public init(): void {
+  public init(isInteractive: boolean = false): void {
     this.store
       .select(selectMapConfigState)
       .pipe(
@@ -145,7 +145,7 @@ export class EsriMapService implements MapService, OnDestroy {
           const {scale, srsId, activeBasemapId} = config;
           const map = this.createMap(activeBasemapId);
           this.setMapView(map, scale, x, y, srsId, minScale, maxScale);
-          this.attachMapViewListeners();
+          this.attachMapViewListeners(isInteractive);
           this.addBasemapSubscription();
           this.initDrawingLayers();
           activeMapItems.forEach((mapItem, position) => {
@@ -639,20 +639,22 @@ export class EsriMapService implements MapService, OnDestroy {
     });
   }
 
-  private attachMapViewListeners() {
+  private attachMapViewListeners(isInteractive: boolean) {
     esriReactiveUtils.when(
       () => this.mapView.stationary,
       () => this.updateMapConfig(),
     );
 
-    esriReactiveUtils.on(
-      () => this.mapView,
-      'click',
-      (event: __esri.ViewClickEvent) => {
-        const {x, y} = this.transformationService.transform(event.mapPoint);
-        this.dispatchFeatureInfoRequest(x, y);
-      },
-    );
+    if (isInteractive) {
+      esriReactiveUtils.on(
+        () => this.mapView,
+        'click',
+        (event: __esri.ViewClickEvent) => {
+          const {x, y} = this.transformationService.transform(event.mapPoint);
+          this.dispatchFeatureInfoRequest(x, y);
+        },
+      );
+    }
 
     esriReactiveUtils
       .whenOnce(() => this.mapView.ready)

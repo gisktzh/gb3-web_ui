@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, ErrorHandler, OnDestroy, OnInit} from '@angular/core';
 import {LoadingState} from '../../../shared/types/loading-state';
 import {Observable, of, Subscription, switchMap, tap} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -13,7 +13,6 @@ import {BaseMetadataInformation} from '../../interfaces/base-metadata-informatio
 import {RouteParamConstants} from '../../../shared/constants/route-param.constants';
 import {HttpErrorResponse} from '@angular/common/http';
 import {MetadataCouldNotBeLoaded, MetadataNotFound} from '../../../shared/errors/data-catalogue.errors';
-import {ErrorHandlerService} from '../../../error-handling/error-handler.service';
 
 type DetailMetadata = ProductMetadata | MapMetadata | ServiceMetadata | DatasetMetadata;
 
@@ -35,7 +34,7 @@ export abstract class AbstractBaseDetailComponent<T extends DetailMetadata> impl
     protected readonly gb3MetadataService: Gb3MetadataService,
     private readonly configService: ConfigService,
     private readonly router: Router,
-    private readonly errorHandlerService: ErrorHandlerService,
+    private readonly errorHandler: ErrorHandler,
   ) {
     this.apiBaseUrl = this.configService.apiConfig.gb2StaticFiles.baseUrl;
   }
@@ -74,9 +73,9 @@ export abstract class AbstractBaseDetailComponent<T extends DetailMetadata> impl
             this.handleMetadata(metadata);
             this.loadingState = 'loaded';
           }),
-          catchError(async (error: unknown) => {
+          catchError((error: unknown) => {
             if (error instanceof MetadataNotFound) {
-              await this.errorHandlerService.handleError(error); // make sure we log the error before redirect
+              this.errorHandler.handleError(error); // make sure we log the error before redirect
               return of(this.router.navigate([MainPage.NotFound], {skipLocationChange: true}));
             }
 

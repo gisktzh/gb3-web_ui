@@ -1,0 +1,42 @@
+@use 'mixins/helpers.mixin' as mixins;
+@use 'mixins/material.mixin' as material-mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.embedded-map-page {
+  height: 100%;
+  position: relative;
+  $minimal-bottom-height: ktzh-variables.$esri-attribution-widget-height;
+
+  .embedded-map-page__legend-button {
+    @include mixins.map-element-box-shadow;
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    height: 48px;
+    padding: 0 18px;
+  }
+
+  .embedded-map-page__legend-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 50%;
+  }
+
+  .embedded-map-page__minified-header {
+    @include mixins.map-element-box-shadow;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    height: 48px;
+    padding: 0 18px;
+  }
+
+  .embedded-map-page__zoom-controls {
+    @include mixins.map-element-box-shadow;
+    position: absolute;
+    bottom: calc(12px + $minimal-bottom-height);
+    right: 12px;
+  }
+}
