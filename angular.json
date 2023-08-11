@@ -223,6 +223,7 @@
               "includePaths": ["src/styles"]
             },
             "scripts": [],
+            "codeCoverage": true,
             "codeCoverageExclude": [
               "**/main.ts",
               "**/configs/*.config.ts",
