@@ -1,6 +1,6 @@
-import {DataCatalogueFilterProperty} from '../interfaces/data-catalogue-filter.interface';
+import {DataCatalogueFilterConfiguration} from '../interfaces/data-catalogue-filter.interface';
 
-export const dataCatalogueFilterConfig: DataCatalogueFilterProperty[] = [
+export const dataCatalogueFilterConfig: DataCatalogueFilterConfiguration[] = [
   // todo: add ogd
   {key: 'type', label: 'Kategorie'},
   {key: 'responsibleDepartment', label: 'Datenbereitsteller'},

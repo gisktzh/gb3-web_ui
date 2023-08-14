@@ -11,7 +11,7 @@ import {layerSymbolizations} from '../configs/symbolization.config';
 import {HostNameResolutionMismatch} from '../errors/app.errors';
 import {EmbeddedMapConstants} from '../constants/embedded-map.constants';
 import {dataCatalogueFilterConfig} from '../configs/filter.config';
-import {DataCatalogueFilterProperty} from '../interfaces/data-catalogue-filter.interface';
+import {DataCatalogueFilterConfiguration} from '../interfaces/data-catalogue-filter.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -44,7 +44,7 @@ export class ConfigService {
     borderSize: EmbeddedMapConstants.DEFAULT_BORDER_SIZE,
   };
 
-  public get filterConfig(): {dataCatalogue: DataCatalogueFilterProperty[]} {
+  public get filterConfig(): {dataCatalogue: DataCatalogueFilterConfiguration[]} {
     return {
       dataCatalogue: dataCatalogueFilterConfig,
     };

@@ -5,7 +5,7 @@ import {Observable, Subscription, tap} from 'rxjs';
 import {selectFilters} from '../../../state/data-catalogue/reducers/data-catalogue.reducer';
 import {Store} from '@ngrx/store';
 import {DataCatalogueActions} from '../../../state/data-catalogue/actions/data-catalogue.actions';
-import {DataCatalogueFilterKey} from '../../../shared/types/data-catalogue-filter';
+import {DataCatalogueFilterKey} from '../../../shared/types/data-catalogue-filter.type';
 
 @Component({
   selector: 'data-catalogue-filter-dialog',

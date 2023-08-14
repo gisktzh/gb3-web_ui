@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, Injectable, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {filter, Observable, Subject, Subscription, take, tap} from 'rxjs';
+import {filter, Observable, Subject, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {DataCatalogueActions} from '../../../state/data-catalogue/actions/data-catalogue.actions';
 import {selectLoadingState} from '../../../state/data-catalogue/reducers/data-catalogue.reducer';
@@ -13,6 +13,8 @@ import {MatDialog} from '@angular/material/dialog';
 import {DataCatalogueFilterDialogComponent} from '../data-catalogue-filter-dialog/data-catalogue-filter-dialog.component';
 import {ActiveDataCatalogueFilter} from '../../../shared/interfaces/data-catalogue-filter.interface';
 import {selectActiveFilterValues} from '../../../state/data-catalogue/selectors/active-filter-values.selector';
+
+const FILTER_DIALOG_WIDTH_IN_PX = 956;
 
 @Injectable()
 class DataCataloguePaginatorIntl implements MatPaginatorIntl {
@@ -65,7 +67,6 @@ export class DataCatalogueOverviewComponent implements OnInit, OnDestroy, AfterV
       this.dataCatalogueLoadingState$
         .pipe(
           filter((loadingState) => loadingState === 'loaded'),
-          take(1),
           tap(() => {
             // This is necessary to force it to be rendered in the next tick, otherwise, changedetection won't pick it up
             setTimeout(() => (this.dataCatalogueItems.paginator = this.paginator), 0);
@@ -76,6 +77,26 @@ export class DataCatalogueOverviewComponent implements OnInit, OnDestroy, AfterV
   }
 
   public ngOnInit() {
+    this.initSubscriptions();
+  }
+
+  public ngOnDestroy() {
+    this.subscriptions.unsubscribe();
+  }
+
+  public openFilterWindow() {
+    this.dialogService.open<DataCatalogueFilterDialogComponent>(DataCatalogueFilterDialogComponent, {
+      panelClass: PanelClass.ApiWrapperDialog,
+      restoreFocus: false,
+      width: `${FILTER_DIALOG_WIDTH_IN_PX}px`,
+    });
+  }
+
+  public toggleFilter({key, value}: ActiveDataCatalogueFilter) {
+    this.store.dispatch(DataCatalogueActions.toggleFilter({key, value}));
+  }
+
+  private initSubscriptions() {
     this.subscriptions.add(this.dataCatalogueLoadingState$.pipe(tap((loadingState) => (this.loadingState = loadingState))).subscribe());
     this.subscriptions.add(
       this.dataCatalogueItems$
@@ -87,21 +108,5 @@ export class DataCatalogueOverviewComponent implements OnInit, OnDestroy, AfterV
         .subscribe(),
     );
     this.subscriptions.add(this.activeFilters$.pipe(tap((activeFilters) => (this.activeFilters = activeFilters))).subscribe());
-  }
-
-  public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
-  }
-
-  public openFilterWindow() {
-    this.dialogService.open<DataCatalogueFilterDialogComponent>(DataCatalogueFilterDialogComponent, {
-      panelClass: PanelClass.ApiWrapperDialog,
-      restoreFocus: false,
-      width: '956px',
-    });
-  }
-
-  public removeFilter({key, value}: ActiveDataCatalogueFilter) {
-    this.store.dispatch(DataCatalogueActions.toggleFilter({key, value}));
   }
 }

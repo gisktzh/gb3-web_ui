@@ -1,8 +1,8 @@
 <cdk-accordion-item
   #accordionItem="cdkAccordionItem"
-  [attr.aria-controls]="'media-contact-body-' + header"
+  [attr.aria-controls]="'media-contact-body-' + ariaIdentifier"
   [attr.aria-expanded]="accordionItem.expanded"
-  [attr.id]="'media-contact-header-' + header"
+  [attr.id]="'media-contact-header-' + ariaIdentifier"
   class="accordion-item"
   role="button"
   tabindex="0"
@@ -15,8 +15,8 @@
       </span>
     </div>
     <div
-      [attr.aria-labelledby]="'media-contact-header-' + header"
-      [attr.id]="'media-contact-body-' + header"
+      [attr.aria-labelledby]="'media-contact-header-' + ariaIdentifier"
+      [attr.id]="'media-contact-body-' + ariaIdentifier"
       [style.display]="accordionItem.expanded ? '' : 'none'"
       class="accordion-item__content__body"
       role="region"

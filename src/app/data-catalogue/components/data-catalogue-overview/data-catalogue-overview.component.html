@@ -13,7 +13,7 @@
           {{ dataCatalogueItems.data.length }} {{ dataCatalogueItems.data.length === 1 ? 'Resultat' : 'Resultate' }}
         </span>
         <div>
-          <mat-chip-row *ngFor="let activeFilter of activeFilters" (removed)="removeFilter(activeFilter)">
+          <mat-chip-row *ngFor="let activeFilter of activeFilters" (removed)="toggleFilter(activeFilter)">
             {{ activeFilter.value }}
             <button matChipRemove>
               <mat-icon>cancel</mat-icon>

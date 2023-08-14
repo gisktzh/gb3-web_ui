@@ -1,7 +1,7 @@
 import {createActionGroup, emptyProps, props} from '@ngrx/store';
 import {OverviewMetadataItem} from '../../../shared/models/overview-metadata-item.model';
 import {errorProps} from '../../../shared/utils/error-props.utils';
-import {DataCatalogueFilterKey} from '../../../shared/types/data-catalogue-filter';
+import {DataCatalogueFilterKey} from '../../../shared/types/data-catalogue-filter.type';
 
 import {DataCatalogueFilter} from '../../../shared/interfaces/data-catalogue-filter.interface';
 

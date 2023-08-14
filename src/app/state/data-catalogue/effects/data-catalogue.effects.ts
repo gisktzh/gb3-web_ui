@@ -32,9 +32,7 @@ export class DataCatalogueEffects {
         items.forEach((item) => {
           this.configService.filterConfig.dataCatalogue.forEach((dataCatalogueFilter) => {
             if (dataCatalogueFilter.key in item) {
-              const value: string = (item as any)[dataCatalogueFilter.key]; //this typecast is safe here because we _know_ the property
-              // exists
-              // here
+              const value: string = (item as any)[dataCatalogueFilter.key]; //typecast is safe here -> we _know_ the property exists here
               if (!uniqueValues.has(dataCatalogueFilter)) {
                 uniqueValues.set(dataCatalogueFilter, new Set());
               }
