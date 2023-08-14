@@ -27,6 +27,7 @@ import {SliderWrapperComponent} from './components/slider-wrapper/slider-wrapper
 import {LinkListComponent} from './components/link-list/link-list.component';
 import {LinkListItemComponent} from './components/link-list/link-list-item/link-list-item.component';
 import {AccordionItemComponent} from './components/accordion-item/accordion-item.component';
+import {SearchComponent} from './components/search/search.component';
 
 @NgModule({
   declarations: [
@@ -54,6 +55,7 @@ import {AccordionItemComponent} from './components/accordion-item/accordion-item
     LinkListComponent,
     LinkListItemComponent,
     AccordionItemComponent,
+    SearchComponent,
   ],
   imports: [MaterialModule, RouterModule, CommonModule, ResizableModule],
   exports: [
@@ -81,6 +83,7 @@ import {AccordionItemComponent} from './components/accordion-item/accordion-item
     SliderWrapperComponent,
     LinkListComponent,
     AccordionItemComponent,
+    SearchComponent,
   ],
 })
 export class SharedModule {}

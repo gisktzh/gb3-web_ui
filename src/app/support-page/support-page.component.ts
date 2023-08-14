@@ -7,5 +7,5 @@ import {SupportPage} from '../shared/enums/support-page.enum';
   styleUrls: ['./support-page.component.scss'],
 })
 export class SupportPageComponent {
-  public readonly supportPageEnum = SupportPage;
+  protected readonly supportPageEnum = SupportPage;
 }

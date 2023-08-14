@@ -1,0 +1,10 @@
+<div class="search">
+  <div class="search__bar" [ngClass]="{'search__bar--active': searchInput.value.length > 0}">
+    <mat-icon class="search__bar__icon" svgIcon="ktzh_search"></mat-icon>
+    <input #searchInput class="search__bar__input" [placeholder]="placeholderText" type="text" />
+    <button mat-icon-button (click)="clearInput()" class="search__bar__close-button" *ngIf="searchInput.value.length > 0">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <button mat-flat-button *ngIf="showFilterButton" (click)="openFilter()" [disabled]="searchInput.value.length === 0">Filter</button>
+</div>

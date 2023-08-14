@@ -4,6 +4,11 @@ import {LinksGroup} from '../shared/interfaces/links-group.interface';
 import {Observable, Subscription, tap} from 'rxjs';
 import {selectLinks} from '../state/support/reducers/support-content.reducer';
 import {Store} from '@ngrx/store';
+import {DEFAULT_SEARCHES, MAP_SEARCH} from '../shared/constants/search.constants';
+import {LayerCatalogActions} from '../state/map/actions/layer-catalog.actions';
+import {SearchActions} from '../state/app/actions/search.actions';
+import {initialState, selectSearchState} from '../state/app/reducers/search.reducer';
+import {SearchState} from '../state/app/states/search.state';
 
 @Component({
   selector: 'start-page',
@@ -16,10 +21,16 @@ export class StartPageComponent implements OnInit, OnDestroy {
     displayTitle: 'Mehr Beiträge',
   };
   public usefulLinksGroups: LinksGroup[] = [];
+  public searchState: SearchState = initialState;
+
   private readonly usefulLinksGroups$: Observable<LinksGroup[]> = this.store.select(selectLinks);
+  private readonly searchState$ = this.store.select(selectSearchState);
   private readonly subscriptions: Subscription = new Subscription();
 
-  constructor(private readonly store: Store) {}
+  constructor(private readonly store: Store) {
+    // load the maps/layers for the search
+    this.store.dispatch(LayerCatalogActions.loadLayerCatalog());
+  }
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
@@ -30,14 +41,19 @@ export class StartPageComponent implements OnInit, OnDestroy {
   }
 
   private initSubscriptions() {
-    this.subscriptions.add(
-      this.usefulLinksGroups$
-        .pipe(
-          tap((usefulLinks) => {
-            this.usefulLinksGroups = usefulLinks;
-          }),
-        )
-        .subscribe(),
-    );
+    this.subscriptions.add(this.usefulLinksGroups$.pipe(tap((usefulLinks) => (this.usefulLinksGroups = usefulLinks))).subscribe());
+    this.subscriptions.add(this.searchState$.pipe(tap((searchState) => (this.searchState = searchState))).subscribe());
+  }
+
+  public searchForTerm(term: string) {
+    this.store.dispatch(SearchActions.searchTermAndIndexes({term, indexes: DEFAULT_SEARCHES.concat(MAP_SEARCH)}));
+  }
+
+  public clearSearchTerm() {
+    this.store.dispatch(SearchActions.clear());
+  }
+
+  public openFilterMenu() {
+    console.log('open filter menu');
   }
 }

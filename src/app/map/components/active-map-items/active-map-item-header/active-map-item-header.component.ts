@@ -16,8 +16,8 @@ export class ActiveMapItemHeaderComponent {
   @Input() public activeMapItem!: ActiveMapItem;
   @Input() public activeMapItemExpansionPanel!: MatExpansionPanel;
 
-  public readonly mainPageEnum = MainPage;
-  public readonly dataCataloguePageEnum = DataCataloguePage;
+  protected readonly mainPageEnum = MainPage;
+  protected readonly dataCataloguePageEnum = DataCataloguePage;
 
   constructor(
     private readonly store: Store,

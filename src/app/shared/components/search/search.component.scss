@@ -1,0 +1,48 @@
+@use 'functions/helper.function' as functions;
+@use 'mixins/helpers.mixin' as mixins;
+@use 'mixins/material.mixin' as mat-mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: inherit;
+  padding: 17px;
+
+  .search__bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 100%;
+    padding: 0 12px;
+    border: 2px solid ktzh-variables.$zh-black40;
+    border-radius: ktzh-variables.$zh-border-radius;
+    flex-grow: 1;
+
+    &--active {
+      border-color: ktzh-variables.$zh-active-blue;
+    }
+
+    .search__bar__icon {
+      height: 18px;
+    }
+
+    .search__bar__input {
+      border: none;
+      outline: none;
+      flex-grow: 1;
+    }
+
+    .search__bar__close-button {
+      @include mat-mixins.mat-icon-button-override-icon-size(24px);
+    }
+  }
+}
+
+.results {
+  display: flex;
+  height: 300px;
+  background-color: white;
+}

@@ -5,6 +5,26 @@
   ></hero-header>
 </start-page-section>
 
+<search
+  placeholderText="Suche nach Karten, Kartendaten, Geodaten und Geodiensten"
+  [showFilterButton]="false"
+  (changeSearchTermEvent)="searchForTerm($event)"
+  (clearSearchTermEvent)="clearSearchTerm()"
+  (openFilterEvent)="openFilterMenu()"
+  class="blub"
+></search>
+
+<div class="results">
+  <p>SearchService</p>
+  <loading-and-process-bar [loadingState]="searchState.searchServiceLoadingState"></loading-and-process-bar>
+  <ul *ngFor="let result of searchState.searchServiceResults">
+    <li>{{ result.displayString }} - {{ result.score }}</li>
+  </ul>
+  <p>FilteredMaps</p>
+  <loading-and-process-bar [loadingState]="searchState.filteredMapsLoadingState"></loading-and-process-bar>
+  <p>Number of maps: {{ searchState.filteredMaps.length }}</p>
+</div>
+
 <start-page-section [hideBottomPadding]="true">
   <gis-browser-teaser></gis-browser-teaser>
 </start-page-section>
