@@ -22,6 +22,7 @@ import {
 import {
   DatasetOverviewMetadataItem,
   MapOverviewMetadataItem,
+  OverviewMetadataItem,
   ProductOverviewMetadataItem,
   ServiceOverviewMetadataItem,
 } from '../../../models/overview-metadata-item.model';
@@ -337,26 +338,31 @@ describe('Gb3MetadataService', () => {
         .loadFullList()
         .pipe()
         .subscribe((result) => {
-          const expected: DatasetOverviewMetadataItem[] = [
+          const expected: OverviewMetadataItem[] = [
             new ServiceOverviewMetadataItem(
               mockServiceDetailResponse.service.guid,
               mockServiceDetailResponse.service.name,
               mockServiceDetailResponse.service.beschreibung,
+              mockServiceDetailResponse.service.kontakt.metadaten.amt,
             ),
             new MapOverviewMetadataItem(
               mockMapDetailResponse.map.guid,
               mockMapDetailResponse.map.name,
               mockMapDetailResponse.map.beschreibung,
+              mockMapDetailResponse.map.kontakt.geodaten.amt,
             ),
             new ProductOverviewMetadataItem(
               mockProductDetailResponse.product.guid,
               mockProductDetailResponse.product.name,
               mockProductDetailResponse.product.beschreibung,
+              mockProductDetailResponse.product.kontakt.metadaten.amt,
             ),
             new DatasetOverviewMetadataItem(
               mockDatasetDetailResponse.dataset.guid,
               mockDatasetDetailResponse.dataset.name,
               mockDatasetDetailResponse.dataset.beschreibung,
+              mockDatasetDetailResponse.dataset.kontakt.metadaten.amt,
+              mockDatasetDetailResponse.dataset.abgabeformat,
             ),
           ];
           httpTestingController.verify();

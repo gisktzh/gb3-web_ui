@@ -7,6 +7,8 @@ import {Gb3MetadataService} from '../../../shared/services/apis/gb3/gb3-metadata
 import {Store} from '@ngrx/store';
 import {selectLoadingState} from '../reducers/data-catalogue.reducer';
 import {MetadataOverviewCouldNotBeLoaded} from '../../../shared/errors/data-catalogue.errors';
+import {DataCatalogueFilter} from '../../../shared/interfaces/data-catalogue-filter.interface';
+import {ConfigService} from '../../../shared/services/config.service';
 
 @Injectable()
 export class DataCatalogueEffects {
@@ -18,6 +20,38 @@ export class DataCatalogueEffects {
       switchMap(() => this.gb3MetadataService.loadFullList()),
       map((items) => DataCatalogueActions.setCatalogue({items})),
       catchError((error: unknown) => of(DataCatalogueActions.setError({error}))),
+    );
+  });
+
+  public initializeDataCatalogueFilters$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(DataCatalogueActions.setCatalogue),
+      map(({items}) => {
+        const uniqueValues: Map<Pick<DataCatalogueFilter, 'key' | 'label'>, Set<string>> = new Map();
+
+        items.forEach((item) => {
+          this.configService.filterConfig.dataCatalogue.forEach((dataCatalogueFilter) => {
+            if (dataCatalogueFilter.key in item) {
+              const value: string = (item as any)[dataCatalogueFilter.key]; //typecast is safe here -> we _know_ the property exists here
+              if (!uniqueValues.has(dataCatalogueFilter)) {
+                uniqueValues.set(dataCatalogueFilter, new Set());
+              }
+              uniqueValues.get(dataCatalogueFilter)?.add(value);
+            }
+          });
+        });
+
+        const dataCatalogueFilters: DataCatalogueFilter[] = [];
+        uniqueValues.forEach((uniqueValue, key) =>
+          dataCatalogueFilters.push({
+            key: key.key,
+            label: key.label,
+            filterValues: Array.from(uniqueValue).map((uniqueFilterValue) => ({value: uniqueFilterValue, isActive: false})),
+          }),
+        );
+
+        return DataCatalogueActions.setFilters({dataCatalogueFilters});
+      }),
     );
   });
 
@@ -37,5 +71,6 @@ export class DataCatalogueEffects {
     private readonly actions$: Actions,
     private readonly gb3MetadataService: Gb3MetadataService,
     private readonly store: Store,
+    private readonly configService: ConfigService,
   ) {}
 }

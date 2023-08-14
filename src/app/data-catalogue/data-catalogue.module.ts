@@ -15,6 +15,7 @@ import {DataDisplaySectionComponent} from './components/data-display-section/dat
 import {DataCatalogueDetailPageComponent} from './components/data-catalogue-detail-page/data-catalogue-detail-page.component';
 import {DataCatalogueDetailPageSectionComponent} from './components/data-catalogue-detail-page-section/data-catalogue-detail-page-section.component';
 import {DataCatalogueOverviewItemComponent} from './components/data-catalogue-overview-item/data-catalogue-overview-item.component';
+import {DataCatalogueFilterDialogComponent} from './components/data-catalogue-filter-dialog/data-catalogue-filter-dialog.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import {DataCatalogueOverviewItemComponent} from './components/data-catalogue-ov
     DataCatalogueDetailPageComponent,
     DataCatalogueDetailPageSectionComponent,
     DataCatalogueOverviewItemComponent,
+    DataCatalogueFilterDialogComponent,
   ],
   imports: [CommonModule, DataCatalogueRoutingModule, MaterialModule, SharedModule],
 })

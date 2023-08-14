@@ -15,19 +15,19 @@ function expectUrlForType(dataCataloguePage: DataCataloguePage): string {
 
 describe('OverviewMetadataItemModel', () => {
   it('creates the correct URL for ServiceOverviewMetadataItem', () => {
-    const testItem = new ServiceOverviewMetadataItem(TEST_GUID, '', '');
+    const testItem = new ServiceOverviewMetadataItem(TEST_GUID, '', '', '');
     expect(testItem.relativeUrl).toEqual(expectUrlForType(DataCataloguePage.Services));
   });
   it('creates the correct URL for MapOverviewMetadataItem', () => {
-    const testItem = new MapOverviewMetadataItem(TEST_GUID, '', '');
+    const testItem = new MapOverviewMetadataItem(TEST_GUID, '', '', '');
     expect(testItem.relativeUrl).toEqual(expectUrlForType(DataCataloguePage.Maps));
   });
   it('creates the correct URL for ProductOverviewMetadataItem', () => {
-    const testItem = new ProductOverviewMetadataItem(TEST_GUID, '', '');
+    const testItem = new ProductOverviewMetadataItem(TEST_GUID, '', '', '');
     expect(testItem.relativeUrl).toEqual(expectUrlForType(DataCataloguePage.Products));
   });
   it('creates the correct URL for DatasetOverviewMetadataItem', () => {
-    const testItem = new DatasetOverviewMetadataItem(TEST_GUID, '', '');
+    const testItem = new DatasetOverviewMetadataItem(TEST_GUID, '', '', '', '');
     expect(testItem.relativeUrl).toEqual(expectUrlForType(DataCataloguePage.Datasets));
   });
 });

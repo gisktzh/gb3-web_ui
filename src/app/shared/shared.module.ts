@@ -26,6 +26,7 @@ import {WaitingPageComponent} from './components/waiting-page/waiting-page.compo
 import {SliderWrapperComponent} from './components/slider-wrapper/slider-wrapper.component';
 import {LinkListComponent} from './components/link-list/link-list.component';
 import {LinkListItemComponent} from './components/link-list/link-list-item/link-list-item.component';
+import {AccordionItemComponent} from './components/accordion-item/accordion-item.component';
 
 @NgModule({
   declarations: [
@@ -52,6 +53,7 @@ import {LinkListItemComponent} from './components/link-list/link-list-item/link-
     SliderWrapperComponent,
     LinkListComponent,
     LinkListItemComponent,
+    AccordionItemComponent,
   ],
   imports: [MaterialModule, RouterModule, CommonModule, ResizableModule],
   exports: [
@@ -78,6 +80,7 @@ import {LinkListItemComponent} from './components/link-list/link-list-item/link-
     WaitingPageComponent,
     SliderWrapperComponent,
     LinkListComponent,
+    AccordionItemComponent,
   ],
 })
 export class SharedModule {}

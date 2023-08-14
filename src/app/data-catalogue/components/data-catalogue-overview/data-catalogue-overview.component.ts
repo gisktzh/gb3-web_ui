@@ -1,13 +1,20 @@
 import {AfterViewInit, Component, Injectable, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {filter, Observable, Subject, Subscription, take, tap} from 'rxjs';
+import {filter, Observable, Subject, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {DataCatalogueActions} from '../../../state/data-catalogue/actions/data-catalogue.actions';
-import {DataCatalogueState} from '../../../state/data-catalogue/states/data-catalogue.state';
-import {selectDataCatalogueState} from '../../../state/data-catalogue/reducers/data-catalogue.reducer';
+import {selectLoadingState} from '../../../state/data-catalogue/reducers/data-catalogue.reducer';
 import {OverviewMetadataItem} from '../../../shared/models/overview-metadata-item.model';
 import {LoadingState} from '../../../shared/types/loading-state.type';
 import {MatPaginator, MatPaginatorIntl} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
+import {selectDataCatalogueItems} from '../../../state/data-catalogue/selectors/data-catalogue-items.selector';
+import {PanelClass} from '../../../shared/enums/panel-class.enum';
+import {MatDialog} from '@angular/material/dialog';
+import {DataCatalogueFilterDialogComponent} from '../data-catalogue-filter-dialog/data-catalogue-filter-dialog.component';
+import {ActiveDataCatalogueFilter} from '../../../shared/interfaces/data-catalogue-filter.interface';
+import {selectActiveFilterValues} from '../../../state/data-catalogue/selectors/active-filter-values.selector';
+
+const FILTER_DIALOG_WIDTH_IN_PX = 956;
 
 @Injectable()
 class DataCataloguePaginatorIntl implements MatPaginatorIntl {
@@ -20,14 +27,14 @@ class DataCataloguePaginatorIntl implements MatPaginatorIntl {
 
   public getRangeLabel(page: number, pageSize: number, length: number): string {
     if (length === 0) {
-      return this.getRangeLabelText(1, 1, 0);
+      return this.getRangeLabelText(1, 1);
     }
     const amountPages = Math.ceil(length / pageSize);
-    return this.getRangeLabelText(page + 1, amountPages, length);
+    return this.getRangeLabelText(page + 1, amountPages);
   }
 
-  private getRangeLabelText(currentPage: number, amountPages: number, length: number): string {
-    return `Seite ${currentPage} von ${amountPages} | ${length} Elemente`;
+  private getRangeLabelText(currentPage: number, amountPages: number): string {
+    return `Seite ${currentPage} von ${amountPages}`;
   }
 }
 
@@ -39,24 +46,27 @@ class DataCataloguePaginatorIntl implements MatPaginatorIntl {
 })
 export class DataCatalogueOverviewComponent implements OnInit, OnDestroy, AfterViewInit {
   public loadingState: LoadingState = 'undefined';
-  // We use the MatTableDataSource here because it already has pagination handling embedded - depending on our needs, we might to
-  // implement a custom DataSource and handle pagination manually.
   public dataCatalogueItems: MatTableDataSource<OverviewMetadataItem> = new MatTableDataSource<OverviewMetadataItem>([]);
-  private readonly dataCatalogue$: Observable<DataCatalogueState> = this.store.select(selectDataCatalogueState);
+  public activeFilters: ActiveDataCatalogueFilter[] = [];
+  private readonly activeFilters$: Observable<ActiveDataCatalogueFilter[]> = this.store.select(selectActiveFilterValues);
+  private readonly dataCatalogueItems$: Observable<OverviewMetadataItem[]> = this.store.select(selectDataCatalogueItems);
+  private readonly dataCatalogueLoadingState$: Observable<LoadingState> = this.store.select(selectLoadingState);
   private readonly subscriptions: Subscription = new Subscription();
   @ViewChild(MatPaginator) private paginator!: MatPaginator;
 
-  constructor(private readonly store: Store) {
+  constructor(
+    private readonly store: Store,
+    private readonly dialogService: MatDialog,
+  ) {
     this.store.dispatch(DataCatalogueActions.loadCatalogue());
   }
 
   public ngAfterViewInit() {
     // In order for the paginator to correctly work, we need to wait for its rendered state in the DOM.
     this.subscriptions.add(
-      this.dataCatalogue$
+      this.dataCatalogueLoadingState$
         .pipe(
-          filter(({loadingState}) => loadingState === 'loaded'),
-          take(1),
+          filter((loadingState) => loadingState === 'loaded'),
           tap(() => {
             // This is necessary to force it to be rendered in the next tick, otherwise, changedetection won't pick it up
             setTimeout(() => (this.dataCatalogueItems.paginator = this.paginator), 0);
@@ -67,19 +77,36 @@ export class DataCatalogueOverviewComponent implements OnInit, OnDestroy, AfterV
   }
 
   public ngOnInit() {
-    this.subscriptions.add(
-      this.dataCatalogue$
-        .pipe(
-          tap(({items, loadingState}) => {
-            this.dataCatalogueItems.data = items;
-            this.loadingState = loadingState;
-          }),
-        )
-        .subscribe(),
-    );
+    this.initSubscriptions();
   }
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
+  }
+
+  public openFilterWindow() {
+    this.dialogService.open<DataCatalogueFilterDialogComponent>(DataCatalogueFilterDialogComponent, {
+      panelClass: PanelClass.ApiWrapperDialog,
+      restoreFocus: false,
+      width: `${FILTER_DIALOG_WIDTH_IN_PX}px`,
+    });
+  }
+
+  public toggleFilter({key, value}: ActiveDataCatalogueFilter) {
+    this.store.dispatch(DataCatalogueActions.toggleFilter({key, value}));
+  }
+
+  private initSubscriptions() {
+    this.subscriptions.add(this.dataCatalogueLoadingState$.pipe(tap((loadingState) => (this.loadingState = loadingState))).subscribe());
+    this.subscriptions.add(
+      this.dataCatalogueItems$
+        .pipe(
+          tap((items) => {
+            this.dataCatalogueItems.data = items;
+          }),
+        )
+        .subscribe(),
+    );
+    this.subscriptions.add(this.activeFilters$.pipe(tap((activeFilters) => (this.activeFilters = activeFilters))).subscribe());
   }
 }

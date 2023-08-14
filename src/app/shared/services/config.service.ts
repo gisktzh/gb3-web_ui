@@ -10,6 +10,8 @@ import {layerSymbolizations} from '../configs/symbolization.config';
 
 import {HostNameResolutionMismatch} from '../errors/app.errors';
 import {EmbeddedMapConstants} from '../constants/embedded-map.constants';
+import {dataCatalogueFilterConfig} from '../configs/filter.config';
+import {DataCatalogueFilterConfiguration} from '../interfaces/data-catalogue-filter.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -19,13 +21,10 @@ export class ConfigService {
     availableBasemaps: defaultBasemaps,
     defaultBasemap: defaultBasemap,
   };
-
   public readonly layerSymbolizations = layerSymbolizations;
-
   public readonly gb2Config = {
     wmsFormatMimeType: Gb2Constants.WMS_IMAGE_FORMAT_MIME_TYPE,
   };
-
   public readonly mapConfig = {
     internalLayerPrefix: MapConstants.INTERNAL_LAYER_PREFIX,
     locateMeZoom: MapConstants.LOCATE_ME_ZOOM,
@@ -35,17 +34,21 @@ export class ConfigService {
       minScale: MapConstants.MINIMUM_MAP_SCALE,
     },
   };
-
   public readonly apiConfig: ApiConfig;
   public readonly overridesConfig: OverrideSettings;
   public readonly authConfig: AuthSettings;
-
   public readonly embeddedMapConfig = {
     title: EmbeddedMapConstants.DEFAULT_TITLE,
     width: EmbeddedMapConstants.DEFAULT_WIDTH,
     height: EmbeddedMapConstants.DEFAULT_HEIGHT,
     borderSize: EmbeddedMapConstants.DEFAULT_BORDER_SIZE,
   };
+
+  public get filterConfig(): {dataCatalogue: DataCatalogueFilterConfiguration[]} {
+    return {
+      dataCatalogue: dataCatalogueFilterConfig,
+    };
+  }
 
   constructor(@Inject(DOCUMENT) private readonly document: Document) {
     const runtimeConfig = this.findRuntimeConfig();

@@ -75,8 +75,16 @@ export class Gb3MetadataService extends Gb3ApiService {
     return datasets.pipe(
       map((result) =>
         result.datasets.map((dataset) => {
-          const {guid, description, name} = this.transformDatasetsDetailDataToDatasetMetadata(dataset);
-          return new DatasetOverviewMetadataItem(guid, name, description);
+          const {
+            guid,
+            description,
+            name,
+            contact: {
+              metadata: {department},
+            },
+            outputFormat,
+          } = this.transformDatasetsDetailDataToDatasetMetadata(dataset);
+          return new DatasetOverviewMetadataItem(guid, name, description, department, outputFormat);
         }),
       ),
     );
@@ -88,8 +96,15 @@ export class Gb3MetadataService extends Gb3ApiService {
     return datasets.pipe(
       map((result) =>
         result.products.map((product) => {
-          const {guid, description, name} = this.transformProductDetailToProductMetadata(product);
-          return new ProductOverviewMetadataItem(guid, name, description);
+          const {
+            guid,
+            description,
+            name,
+            contact: {
+              metadata: {department},
+            },
+          } = this.transformProductDetailToProductMetadata(product);
+          return new ProductOverviewMetadataItem(guid, name, description, department);
         }),
       ),
     );
@@ -101,8 +116,15 @@ export class Gb3MetadataService extends Gb3ApiService {
     return datasets.pipe(
       map((result) =>
         result.maps.map((mapMetadata) => {
-          const {guid, description, name} = this.transformMapsDetailToMapMetadata(mapMetadata);
-          return new MapOverviewMetadataItem(guid, name, description);
+          const {
+            guid,
+            description,
+            name,
+            contact: {
+              geodata: {department},
+            },
+          } = this.transformMapsDetailToMapMetadata(mapMetadata);
+          return new MapOverviewMetadataItem(guid, name, description, department);
         }),
       ),
     );
@@ -114,8 +136,15 @@ export class Gb3MetadataService extends Gb3ApiService {
     return datasets.pipe(
       map((result) =>
         result.services.map((service) => {
-          const {guid, description, name} = this.transformServicesDetailToServiceMetadata(service);
-          return new ServiceOverviewMetadataItem(guid, name, description);
+          const {
+            guid,
+            description,
+            name,
+            contact: {
+              metadata: {department},
+            },
+          } = this.transformServicesDetailToServiceMetadata(service);
+          return new ServiceOverviewMetadataItem(guid, name, description, department);
         }),
       ),
     );

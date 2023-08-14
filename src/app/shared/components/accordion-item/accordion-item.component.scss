@@ -1,0 +1,36 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.accordion-item {
+  .accordion-item__content {
+    border-width: 1px 0;
+    border-color: ktzh-variables.$zh-white;
+    border-style: solid;
+    /* Use negative margin to overlap the borders. Hack? */
+    /* todo: The issue here is that for this to work, you'd also have to
+       * set border-bottom to none for all .accordion_item__content:not(:last-child)
+       * set the negative margin on .accordion_item + .accordion_item
+       -> That way, it would be properly faked. But it does not work because we cannot access the host container of the host, which would be the accordion?
+     */
+    margin-top: -1px;
+
+    &--dark {
+      border-color: ktzh-variables.$zh-black20;
+    }
+
+    .accordion-item__content__header {
+      margin: 18px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+
+      .accordion-item__content__header__icon-wrapper {
+        display: flex;
+      }
+    }
+
+    .accordion-item__content__body {
+      margin-bottom: 24px;
+    }
+  }
+}
