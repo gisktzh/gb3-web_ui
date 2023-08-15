@@ -12,5 +12,5 @@ export class MainFooterComponent {
   public readonly dataProtectionLink = [MainPage.Support, SupportPage.UsefulLinks];
   public readonly usageNotesLink = [MainPage.Support, SupportPage.Faq];
   public readonly appVersion: string = environment.appVersion;
-  public readonly appRelease?: string = environment.appRelease;
+  public readonly appRelease: string = environment.appRelease;
 }

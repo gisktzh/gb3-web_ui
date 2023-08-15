@@ -1,5 +1,11 @@
 FROM node:18.15-alpine AS build-app
 
+# Provide overrides for APP_VERSION and APP_RELEASE as build-args and expose them as ENV variables for the update-version.js script
+ARG APP_VERSION
+ARG APP_RELEASE
+ENV APP_VERSION=$APP_VERSION
+ENV APP_RELEASE=$APP_RELEASE
+
 ARG TARGET_ENVIRONMENT=local
 
 WORKDIR /app

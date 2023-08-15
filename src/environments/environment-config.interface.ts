@@ -4,5 +4,5 @@ export interface EnvironmentConfig {
     authenticatedPingInterval: number;
   };
   appVersion: string;
-  appRelease?: string;
+  appRelease: string;
 }

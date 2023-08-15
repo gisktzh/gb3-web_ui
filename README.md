@@ -77,6 +77,27 @@ docker build --no-cache --build-arg TARGET_ENVIRONMENT={target_environment} -t g
 The `target_environment` is used to create environment specific build outputs so as to not divulge sensitive information
 such as internal domains. This is mainly reflected in the runtime configuration mechanism described below.
 
+#### Overriding app version and release number
+
+During build, the Dockerfile will run `npm run update-version`. Per default, it tries to extract the last git commit
+hash as app version number and the last tag as release number. This _only_ works if the build command is run within the
+context of a repository-checkout; if it fails, it will display `UNKNOWN_VERSION`.
+
+If you're building the image outside of a repository context (i.e. within a pipeline), you can specify the version and
+release number explicitly using the following build-args:
+
+- `APP_VERSION`: The version number, usually the last git commit hash in `--short` form
+- `APP_RELEASE`: The release number, usually in the form of "Release-xx"
+
+An example command would look like this:
+
+```
+docker build --no-cache --build-arg APP_VERSION=MyCustomAppVersion --build-arg APP_RELEASE=MyCustomRelease -t gb3-frontend:latest .
+```
+
+Irrespective of how the versions are extracted, they overwrite the `/src/version.ts` file, which is in turn exposed via
+Angular's environment configs.
+
 ### Run the image
 
 This image exposes port 8080 and can be run like this:
@@ -423,9 +444,11 @@ error handler might not yet be registered and throw the exception outside of the
 
 ### Application Initialization based on share link
 
-Loading and initializing of the application based on a previously shared link ID is completely done within the `share-link.state`.
+Loading and initializing of the application based on a previously shared link ID is completely done within
+the `share-link.state`.
 There is the whole `initializeApplication` and `validation` part where the application gets initialized.
-This part is basically a big state machine used to control the initialization flow. It's taking care of all potential side effects like
+This part is basically a big state machine used to control the initialization flow. It's taking care of all potential
+side effects like
 invalid share link item contents or topics that are not getting loaded.
 
 The basic flow based on actions and effects goes like this:
