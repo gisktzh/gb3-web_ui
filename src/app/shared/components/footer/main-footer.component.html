@@ -11,5 +11,9 @@
       <a [routerLink]="dataProtectionLink">Datenschutz</a>
       <a [routerLink]="usageNotesLink">Nutzungshinweise</a>
     </div>
+    <div class="main-footer__content__links">
+      <small>Version: {{ appVersion }} </small>
+      <small *ngIf="appRelease">Release: {{ appRelease }} </small>
+    </div>
   </div>
 </footer>

@@ -8,6 +8,11 @@ COPY . .
 ENV NODE_ENV=production
 # increase the available memory size to prevent the 'Reached heap limit Allocation failed - JavaScript heap out of memory' error
 ENV NODE_OPTIONS=--max_old_space_size=4096
+
+# Install git and run our update-version command (which requires git as process)
+RUN apk --no-cache add git
+RUN npm run update-version
+
 RUN npm ci --ignore-scripts --omit=dev
 RUN npm run build-$TARGET_ENVIRONMENT
 
