@@ -28,3 +28,6 @@ jobs:
           app_build_command: 'npm run build-dev-ebp'
           output_location: 'dist' # Built app content directory - optional
           ###### End of Repository/Build Configurations ######
+        env:
+          APP_RELEASE: 'EBP Dev Release'
+          APP_VERSION: $(Build.SourceVersion)
