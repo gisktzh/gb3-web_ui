@@ -19,8 +19,8 @@ function createAppVersion() {
     console.log('Extracting git commit hash as app version...');
     return cp.execSync('git rev-parse --short HEAD').toString().trim();
   } catch (e) {
-    console.log('Could not extract hash, reason:\n' + e.message);
-    console.log('Returning default hash');
+    console.warn('Could not extract hash, reason:\n' + e.message);
+    console.warn('Returning default hash');
     return 'UNKNOWN_VERSION';
   }
 }

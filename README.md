@@ -73,6 +73,8 @@ docker build --no-cache --build-arg TARGET_ENVIRONMENT={target_environment} -t g
     GB2 backend infrastructure.
   - `uat`: production deployment for KTZH UAT environment
   - `production`: production deployment for KTZH production (internet & intranet) environment
+- **APP_VERSION**: see below (optional)
+- **APP_RELEASE**: see below (optional)
 
 The `target_environment` is used to create environment specific build outputs so as to not divulge sensitive information
 such as internal domains. This is mainly reflected in the runtime configuration mechanism described below.
