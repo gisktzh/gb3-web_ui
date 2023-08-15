@@ -106,6 +106,6 @@ import {ZoomControlsComponent} from './components/map-controls/zoom-controls/zoo
     ZoomControlsComponent,
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule],
-  exports: [LegendOverlayComponent, MapContainerComponent, ZoomControlsComponent],
+  exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent],
 })
 export class MapModule {}

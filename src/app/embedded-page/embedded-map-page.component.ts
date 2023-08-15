@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MapUiActions} from '../state/map/actions/map-ui.actions';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
@@ -10,25 +10,28 @@ import {ActivatedRoute} from '@angular/router';
 import {LoadingState} from '../shared/types/loading-state.type';
 import {selectApplicationInitializationLoadingState} from '../state/map/reducers/share-link.reducer';
 import {MainPage} from '../shared/enums/main-page.enum';
-import {selectLoadingState} from '../state/map/reducers/legend.reducer';
+import {selectLoadingState as selectLegendLoadingState} from '../state/map/reducers/legend.reducer';
+import {selectLoadingState as selectFeatureInfoLoadingState} from '../state/map/reducers/feature-info.reducer';
 
 @Component({
   selector: 'embedded-map-page',
   templateUrl: './embedded-map-page.component.html',
   styleUrls: ['./embedded-map-page.component.scss'],
 })
-export class EmbeddedMapPageComponent {
+export class EmbeddedMapPageComponent implements OnInit, OnDestroy {
   public numberOfQueryLegends: number = 0;
   public id: string | null = null;
   public initializeApplicationLoadingState: LoadingState = 'undefined';
   public isEmbedded: boolean = false;
   public showLegendOverlay: boolean = false;
+  public showFeatureInfoOverlay: boolean = false;
   public readonly MainPageEnum = MainPage;
 
   private readonly subscriptions: Subscription = new Subscription();
   private readonly queryLegends$ = this.store.select(selectQueryLegends);
   private readonly initializeApplicationLoadingState$ = this.store.select(selectApplicationInitializationLoadingState);
-  private readonly legendLoadingState$ = this.store.select(selectLoadingState);
+  private readonly legendLoadingState$ = this.store.select(selectLegendLoadingState);
+  private readonly featureInfoLoadingState$ = this.store.select(selectFeatureInfoLoadingState);
 
   constructor(
     private readonly store: Store,
@@ -73,6 +76,9 @@ export class EmbeddedMapPageComponent {
     );
     this.subscriptions.add(
       this.legendLoadingState$.pipe(tap((loadingState) => (this.showLegendOverlay = loadingState === 'loaded'))).subscribe(),
+    );
+    this.subscriptions.add(
+      this.featureInfoLoadingState$.pipe(tap((loadingState) => (this.showFeatureInfoOverlay = loadingState === 'loaded'))).subscribe(),
     );
   }
 }
