@@ -133,7 +133,7 @@ export class EsriMapService implements MapService, OnDestroy {
     }
   }
 
-  public init(isInteractive: boolean = true): void {
+  public init(): void {
     this.store
       .select(selectMapConfigState)
       .pipe(
@@ -145,7 +145,7 @@ export class EsriMapService implements MapService, OnDestroy {
           const {scale, srsId, activeBasemapId} = config;
           const map = this.createMap(activeBasemapId);
           this.setMapView(map, scale, x, y, srsId, minScale, maxScale);
-          this.attachMapViewListeners(isInteractive);
+          this.attachMapViewListeners();
           this.addBasemapSubscription();
           this.initDrawingLayers();
           activeMapItems.forEach((mapItem, position) => {
@@ -642,7 +642,7 @@ export class EsriMapService implements MapService, OnDestroy {
     });
   }
 
-  private attachMapViewListeners(isInteractive: boolean) {
+  private attachMapViewListeners() {
     esriReactiveUtils.when(
       () => this.mapView.stationary,
       () => this.updateMapConfig(),

@@ -1,4 +1,5 @@
 <map-overlay
+  [isPrintButtonEnabled]="showInteractiveElements && loadingState === 'loaded' && featureInfoData.length > 0"
   [showPrintButton]="showInteractiveElements"
   (closeEvent)="close()"
   [isVisible]="isVisible"
