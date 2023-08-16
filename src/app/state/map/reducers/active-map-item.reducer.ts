@@ -9,7 +9,7 @@ import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.m
 export const activeMapItemFeatureKey = 'activeMapItem';
 
 export const initialState: ActiveMapItemState = {
-  items: []
+  items: [],
 };
 
 export const activeMapItemFeature = createFeature({
@@ -38,7 +38,7 @@ export const activeMapItemFeature = createFeature({
         const index = draft.items.findIndex((item) => item.id === activeMapItem.id);
         const entry = draft.items.splice(index, 1);
         draft.items.unshift(...entry);
-      })
+      }),
     ),
     on(
       ActiveMapItemActions.forceFullVisibility,
@@ -49,7 +49,7 @@ export const activeMapItemFeature = createFeature({
             mapItem.visible = true;
           }
         });
-      })
+      }),
     ),
     on(
       ActiveMapItemActions.setOpacity,
@@ -59,7 +59,7 @@ export const activeMapItemFeature = createFeature({
             mapItem.opacity = opacity;
           }
         });
-      })
+      }),
     ),
     on(
       ActiveMapItemActions.setVisibility,
@@ -69,7 +69,7 @@ export const activeMapItemFeature = createFeature({
             mapItem.visible = visible;
           }
         });
-      })
+      }),
     ),
     on(
       ActiveMapItemActions.setSublayerVisibility,
@@ -82,7 +82,7 @@ export const activeMapItemFeature = createFeature({
             }
           }
         });
-      })
+      }),
     ),
     on(
       ActiveMapItemActions.setLoadingState,
@@ -92,7 +92,7 @@ export const activeMapItemFeature = createFeature({
             mapItem.loadingState = loadingState;
           }
         });
-      })
+      }),
     ),
     on(
       ActiveMapItemActions.setViewProcessState,
@@ -102,7 +102,7 @@ export const activeMapItemFeature = createFeature({
             mapItem.viewProcessState = viewProcessState;
           }
         });
-      })
+      }),
     ),
     on(ActiveMapItemActions.reorderActiveMapItem, (state, {previousPosition, currentPosition}): ActiveMapItemState => {
       const mapItemToReorder = state.items[previousPosition];
@@ -119,7 +119,7 @@ export const activeMapItemFeature = createFeature({
             mapItem.settings.layers.splice(currentPosition, 0, ...sublayerToReorder);
           }
         });
-      })
+      }),
     ),
     on(
       ActiveMapItemActions.setTimeSliderExtent,
@@ -129,7 +129,7 @@ export const activeMapItemFeature = createFeature({
             mapItem.settings.timeSliderExtent = timeExtent;
           }
         });
-      })
+      }),
     ),
     on(
       ActiveMapItemActions.setAttributeFilterValueState,
@@ -144,13 +144,13 @@ export const activeMapItemFeature = createFeature({
             }
           }
         });
-      })
+      }),
     ),
-    on(ActiveMapItemActions.addFavourite, (state, {favourite}): ActiveMapItemState => {
-      const favouriteIds = favourite.map((fav) => fav.id);
+    on(ActiveMapItemActions.addFavourite, (state, {activeMapItems}): ActiveMapItemState => {
+      const favouriteIds = activeMapItems.map((activeMapItem) => activeMapItem.id);
       const activeMapItemsToStay = state.items.filter((activeMapItem) => !favouriteIds.includes(activeMapItem.id));
 
-      return {...state, items: [...favourite, ...activeMapItemsToStay]};
+      return {...state, items: [...activeMapItems, ...activeMapItemsToStay]};
     }),
     on(ActiveMapItemActions.addInitialMapItems, (state, {initialMapItems}): ActiveMapItemState => {
       const initialMapItemIds = initialMapItems.map((initialMapItem) => initialMapItem.id);
@@ -164,9 +164,12 @@ export const activeMapItemFeature = createFeature({
         draft.items.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).forEach((mapItem) => {
           mapItem.settings.isNoticeMarkedAsRead = true;
         });
-      })
-    )
-  )
+      }),
+    ),
+    on(ActiveMapItemActions.initializeActiveMapItems, (state, {activeMapItems}): ActiveMapItemState => {
+      return {...state, items: activeMapItems};
+    }),
+  ),
 });
 
 export const {name, reducer, selectActiveMapItemState, selectItems} = activeMapItemFeature;

@@ -1,28 +1,28 @@
 import {Injectable} from '@angular/core';
 import {Gb3ApiService} from './gb3-api.service';
 import {
-  FavoritesCreatePayload,
-  FavoritesDeleteData,
   FavoritesDetailData,
-  FavoritesListData
+  PersonalFavoriteNew,
+  UserFavoritesDeleteData,
+  UserFavoritesListData,
 } from '../../../models/gb3-api-generated.interfaces';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {CreateFavourite, Favourite, FavouritesResponse} from '../../../interfaces/favourite.interface';
-import {ActiveMapItemConfiguration} from '../../../interfaces/active-map-item-configuration.interface';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class Gb3FavouritesService extends Gb3ApiService {
-  protected readonly endpoint = 'favorites';
+  protected readonly endpoint = 'user/favorites';
 
   public createFavourite(createFavourite: CreateFavourite) {
-    return this.post<FavoritesCreatePayload, FavoritesDetailData>(this.getFullEndpointUrl(), createFavourite);
+    const createFavouritePayload = this.mapCreateFavouriteToCreatePersonalFavoritePayload(createFavourite);
+    return this.post<PersonalFavoriteNew, FavoritesDetailData>(this.getFullEndpointUrl(), createFavouritePayload);
   }
 
   public loadFavourites(): Observable<FavouritesResponse> {
-    const favouritesListData = this.get<FavoritesListData>(this.getFullEndpointUrl());
+    const favouritesListData = this.get<UserFavoritesListData>(this.getFullEndpointUrl());
     return favouritesListData.pipe(
       map((data) => {
         data.sort((a, b) => {
@@ -33,27 +33,37 @@ export class Gb3FavouritesService extends Gb3ApiService {
           return next.getTime() - current.getTime();
         });
         return this.mapFavouritesListDataToFavouritesResponse(data);
-      })
+      }),
     );
   }
 
   public deleteFavourite(favourite: Favourite): Observable<void> {
     const url = `${this.getFullEndpointUrl()}/${favourite.id}`;
 
-    return this.delete<FavoritesDeleteData>(url);
+    return this.delete<UserFavoritesDeleteData>(url);
   }
 
-  private mapFavouritesListDataToFavouritesResponse(favouritesListData: FavoritesListData): FavouritesResponse {
-    return favouritesListData.map((data) => {
-      const id = data.id;
-      const title = data.title;
-      const content = data.content as ActiveMapItemConfiguration[]; // todo: remove type cast when backend is properly typed
+  private mapFavouritesListDataToFavouritesResponse(favouritesListData: UserFavoritesListData): FavouritesResponse {
+    return favouritesListData.map((data) => ({
+      ...data,
+      baseConfig: {
+        basemap: data.basemap,
+        scale: data.scaledenom,
+        center: {
+          x: data.east,
+          y: data.north,
+        },
+      },
+    }));
+  }
 
-      return {
-        id,
-        title,
-        content
-      };
-    });
+  private mapCreateFavouriteToCreatePersonalFavoritePayload({baseConfig, ...payload}: CreateFavourite): PersonalFavoriteNew {
+    return {
+      ...payload,
+      east: baseConfig.center.x,
+      north: baseConfig.center.y,
+      scaledenom: baseConfig.scale,
+      basemap: baseConfig.basemap,
+    };
   }
 }

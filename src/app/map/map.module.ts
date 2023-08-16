@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {MapComponent} from './components/map/map.component';
+import {MapContainerComponent} from './components/map-container/map-container.component';
 import {SharedModule} from '../shared/shared.module';
 import {ActiveMapItemsComponent} from './components/active-map-items/active-map-items.component';
 import {MapPageComponent} from './map-page.component';
@@ -25,7 +25,6 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {ApiDialogWrapperComponent} from './components/api-dialog-wrapper/api-dialog-wrapper.component';
 import {FavouriteDeletionDialogComponent} from './components/favourite-deletion-dialog/favourite-deletion-dialog.component';
 import {SearchWindowComponent} from './components/search-window/search-window.component';
-import {KtZhDesignSystemModule} from '../kt-zh-design-system/kt-zh-design-system.module';
 import {TimeSliderComponent} from './components/time-slider/time-slider.component';
 import {LegendContentComponent} from './components/legend-overlay/legend-content/legend-content.component';
 import {FeatureInfoContentComponent} from './components/feature-info-overlay/feature-info-content/feature-info-content.component';
@@ -52,11 +51,12 @@ import {MeasurementToolsComponent} from './components/map-tools/measurement-tool
 import {DrawingToolsComponent} from './components/map-tools/drawing-tools/drawing-tools.component';
 import {AbstractToolsComponent} from './components/map-tools/abstract-tools/abstract-tools.component';
 import {Gb2ExitButtonComponent} from './components/gb2-exit-button/gb2-exit-button.component';
+import {ZoomControlsComponent} from './components/map-controls/zoom-controls/zoom-controls.component';
 
 @NgModule({
   declarations: [
     MapPageComponent,
-    MapComponent,
+    MapContainerComponent,
     ActiveMapItemsComponent,
     ActiveMapItemComponent,
     LegendOverlayComponent,
@@ -102,8 +102,10 @@ import {Gb2ExitButtonComponent} from './components/gb2-exit-button/gb2-exit-butt
     MeasurementToolsComponent,
     DrawingToolsComponent,
     AbstractToolsComponent,
-    Gb2ExitButtonComponent
+    Gb2ExitButtonComponent,
+    ZoomControlsComponent,
   ],
-  imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule, KtZhDesignSystemModule]
+  imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule],
+  exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent],
 })
 export class MapModule {}

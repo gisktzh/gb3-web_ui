@@ -6,7 +6,7 @@ import {MAP_SERVICE} from '../../../../../app.module';
 import {MapService} from '../../../../interfaces/map.service';
 import {ActiveMapItem} from '../../../../models/active-map-item.model';
 import {ActiveMapItemActions} from '../../../../../state/map/actions/active-map-item.actions';
-import {SearchIndexType} from '../../../../../shared/types/search-index-type';
+import {SearchIndexType} from '../../../../../shared/types/search-index.type';
 import {ActiveMapItemFactory} from '../../../../../shared/factories/active-map-item.factory';
 import {selectMapConfigState} from '../../../../../state/map/reducers/map-config.reducer';
 import {Subscription, tap} from 'rxjs';
@@ -17,7 +17,7 @@ const DEFAULT_ZOOM_SCALE = 1000;
 @Component({
   selector: 'result-group',
   templateUrl: './result-group.component.html',
-  styleUrls: ['./result-group.component.scss']
+  styleUrls: ['./result-group.component.scss'],
 })
 export class ResultGroupComponent implements OnInit, OnDestroy {
   @Input() public searchResults: SearchResultMatch[] = [];
@@ -30,7 +30,10 @@ export class ResultGroupComponent implements OnInit, OnDestroy {
   private readonly mapConfigState$ = this.store.select(selectMapConfigState);
   private readonly subscriptions: Subscription = new Subscription();
 
-  constructor(private readonly store: Store, @Inject(MAP_SERVICE) private readonly mapService: MapService) {}
+  constructor(
+    private readonly store: Store,
+    @Inject(MAP_SERVICE) private readonly mapService: MapService,
+  ) {}
 
   public ngOnInit() {
     this.subscriptions.add(
@@ -38,9 +41,9 @@ export class ResultGroupComponent implements OnInit, OnDestroy {
         .pipe(
           tap((mapConfigState) => {
             this.mapConfigState = mapConfigState;
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 
@@ -49,11 +52,10 @@ export class ResultGroupComponent implements OnInit, OnDestroy {
   }
 
   public zoomToResult(searchResult: SearchResultMatch) {
+    // only zoom to result if the geometry is available in the index
     if (searchResult.geometry) {
       const point = searchResult.geometry;
       this.mapService.zoomToPoint(point, DEFAULT_ZOOM_SCALE);
-    } else {
-      console.log('Geometry not available in the index'); //todo: implement error handling
     }
   }
 

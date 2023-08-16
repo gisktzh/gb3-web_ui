@@ -11,7 +11,7 @@ import {MainPage} from '../../../enums/main-page.enum';
 import {FrequentlyUsedItem} from '../../../interfaces/frequently-used-item.interface';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class GravCmsService extends BaseApiService {
   protected apiBaseUrl: string = this.configService.apiConfig.gravCms.baseUrl;
@@ -51,8 +51,8 @@ export class GravCmsService extends BaseApiService {
         toDate: dayjs(discoverMapData.to_date, this.timeFormat).toDate(),
         image: {
           ...discoverMapData.image,
-          url: this.createFullImageUrl(discoverMapData.image.path)
-        }
+          url: this.createFullImageUrl(discoverMapData.image.path),
+        },
       };
     });
   }
@@ -66,7 +66,7 @@ export class GravCmsService extends BaseApiService {
         toDate: dayjs(pageInfoData.to_date, this.timeFormat).toDate(),
         pages: this.transformPagesToMainPages(pageInfoData.pages),
         severity: pageInfoData.severity as PageNotificationSeverity,
-        isMarkedAsRead: false
+        isMarkedAsRead: false,
       };
     });
   }
@@ -77,7 +77,7 @@ export class GravCmsService extends BaseApiService {
         ...mapInfoData,
         id: mapInfoData.flex_id,
         fromDate: dayjs(mapInfoData.from_date, this.timeFormat).toDate(),
-        toDate: dayjs(mapInfoData.to_date, this.timeFormat).toDate()
+        toDate: dayjs(mapInfoData.to_date, this.timeFormat).toDate(),
       };
     });
   }
@@ -90,10 +90,10 @@ export class GravCmsService extends BaseApiService {
         image: frequentlyUsedData.image
           ? {
               ...frequentlyUsedData.image,
-              url: this.createFullImageUrl(frequentlyUsedData.image.path)
+              url: this.createFullImageUrl(frequentlyUsedData.image.path),
             }
           : undefined,
-        created: dayjs.unix(+frequentlyUsedData.created).toDate()
+        created: dayjs.unix(+frequentlyUsedData.created).toDate(),
       };
     });
   }

@@ -12,7 +12,7 @@ import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
 @Component({
   selector: 'map-attribute-filter',
   templateUrl: './map-attribute-filter.component.html',
-  styleUrls: ['./map-attribute-filter.component.scss']
+  styleUrls: ['./map-attribute-filter.component.scss'],
 })
 export class MapAttributeFilterComponent implements OnInit, OnDestroy {
   public mapAttributeFiltersItem: Gb2WmsActiveMapItem | undefined;
@@ -42,8 +42,8 @@ export class MapAttributeFilterComponent implements OnInit, OnDestroy {
           isFilterValueActive: !checked, // not checked means the filter is active
           filterValueName: filterValueName,
           attributeFilterParameter: filterConfigParameter,
-          activeMapItem: this.mapAttributeFiltersItem
-        })
+          activeMapItem: this.mapAttributeFiltersItem,
+        }),
       );
     }
   }
@@ -68,9 +68,9 @@ export class MapAttributeFilterComponent implements OnInit, OnDestroy {
           tap(([activeMapItemId, activeMapItems]) => {
             const gb2WmsMapItems = activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem));
             this.handleMapAttributeFiltersItemChange(activeMapItemId, gb2WmsMapItems);
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
 
     this.subscriptions.add(
@@ -79,9 +79,9 @@ export class MapAttributeFilterComponent implements OnInit, OnDestroy {
           tap((activeMapItems) => {
             const gb2WmsMapItems = activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem));
             this.handleMapAttributeFiltersItemChange(this.mapAttributeFiltersItem?.id, gb2WmsMapItems);
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 }

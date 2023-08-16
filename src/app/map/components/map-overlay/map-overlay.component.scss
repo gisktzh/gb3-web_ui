@@ -3,12 +3,12 @@
 
 .map-overlay {
   height: 100%;
-  width: 450px;
   border-radius: 0;
   padding-top: 0;
   z-index: z-index-variables.$map-overlay;
   display: flex;
   flex-direction: column;
+  width: 450px;
 
   &.map-overlay--right {
     left: unset;

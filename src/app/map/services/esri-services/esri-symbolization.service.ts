@@ -9,9 +9,10 @@ import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import Color from '@arcgis/core/Color';
 import MarkerSymbol from '@arcgis/core/symbols/MarkerSymbol';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
+import {UnsupportedGeometryType} from './errors/esri.errors';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class EsriSymbolizationService {
   private readonly layerSymbolizations: LayerSymbolizations = this.configService.layerSymbolizations;
@@ -30,7 +31,7 @@ export class EsriSymbolizationService {
       case 'MultiPolygon':
         return this.createPolygonSymbolization(drawingLayer);
       case 'GeometryCollection': {
-        throw new Error('Unsupported in Esri'); // todo: error handling
+        throw new UnsupportedGeometryType(geometry.type);
       }
     }
   }
@@ -39,13 +40,13 @@ export class EsriSymbolizationService {
     const textSymbology = this.layerSymbolizations[drawingLayer].text;
     return new TextSymbol({
       font: {
-        size: textSymbology.size
+        size: textSymbology.size,
       },
       color: this.createEsriColor(textSymbology.color),
       haloColor: this.createEsriColor(textSymbology.outline.color),
       haloSize: textSymbology.outline.width,
       yoffset: textSymbology.yOffset,
-      xoffset: textSymbology.xOffset
+      xoffset: textSymbology.xOffset,
     });
   }
 
@@ -58,8 +59,8 @@ export class EsriSymbolizationService {
           size: pointSymbology.size,
           outline: {
             width: pointSymbology.outline.width,
-            color: this.createEsriColor(pointSymbology.outline.color)
-          }
+            color: this.createEsriColor(pointSymbology.outline.color),
+          },
         });
       case 'picture':
         return new EsriPictureMarkerSymbol({
@@ -68,7 +69,7 @@ export class EsriSymbolizationService {
           height: pointSymbology.height,
           xoffset: pointSymbology.xOffset,
           yoffset: pointSymbology.yOffset,
-          angle: pointSymbology.angle
+          angle: pointSymbology.angle,
         });
     }
   }
@@ -77,7 +78,7 @@ export class EsriSymbolizationService {
     const lineSymbology = this.layerSymbolizations[drawingLayer].line;
     return new EsriSimpleLineSymbol({
       color: this.createEsriColor(lineSymbology.color),
-      width: lineSymbology.width
+      width: lineSymbology.width,
     });
   }
 
@@ -87,8 +88,8 @@ export class EsriSymbolizationService {
       color: this.createEsriColor(polygonSymbology.fill.color),
       outline: {
         width: polygonSymbology.outline.width,
-        color: this.createEsriColor(polygonSymbology.outline.color)
-      }
+        color: this.createEsriColor(polygonSymbology.outline.color),
+      },
     });
   }
 

@@ -7,12 +7,12 @@ export const supportContentFeatureKey = 'supportContent';
 
 export const initialState: SupportContentState = {
   faq: faqData,
-  links: supportLinks
+  links: supportLinks,
 };
 
 export const supportContentFeature = createFeature({
   name: supportContentFeatureKey,
-  reducer: createReducer(initialState)
+  reducer: createReducer(initialState),
 });
 
 export const {name, reducer, selectLinks, selectFaq} = supportContentFeature;

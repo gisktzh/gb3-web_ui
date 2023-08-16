@@ -1,9 +1,11 @@
 import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
 import {ScriptInjectorService} from '../../../shared/services/script-injector.service';
-import {Subscription, tap, throwError} from 'rxjs';
+import {Subscription, tap} from 'rxjs';
 import {catchError} from 'rxjs/operators';
-import {LoadingState} from 'src/app/shared/types/loading-state';
+import {LoadingState} from 'src/app/shared/types/loading-state.type';
 import {HasLoadingState} from '../../../shared/interfaces/has-loading-state.interface';
+
+import {TwitterFeedCouldNotBeLoaded} from '../../../shared/errors/start-page.errors';
 
 const TWITTER_ACCOUNT_NAME = 'geoktzh';
 const TWITTER_MAX_TWEETS = 4;
@@ -11,7 +13,7 @@ const TWITTER_MAX_TWEETS = 4;
 @Component({
   selector: 'twitter-feed',
   templateUrl: './twitter-feed.component.html',
-  styleUrls: ['./twitter-feed.component.scss']
+  styleUrls: ['./twitter-feed.component.scss'],
 })
 export class TwitterFeedComponent implements AfterViewInit, OnDestroy, HasLoadingState {
   public loadingState: LoadingState = 'loading';
@@ -36,10 +38,10 @@ export class TwitterFeedComponent implements AfterViewInit, OnDestroy, HasLoadin
           }),
           catchError((err: unknown) => {
             this.loadingState = 'error';
-            return throwError(() => err);
-          })
+            throw new TwitterFeedCouldNotBeLoaded(err);
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 
@@ -48,15 +50,15 @@ export class TwitterFeedComponent implements AfterViewInit, OnDestroy, HasLoadin
       .createTimeline(
         {
           sourceType: 'profile',
-          screenName: TWITTER_ACCOUNT_NAME
+          screenName: TWITTER_ACCOUNT_NAME,
         },
         this.twitterFeedContainer.nativeElement,
         {
           dnt: true,
           tweetLimit: TWITTER_MAX_TWEETS,
           lang: 'de',
-          chrome: 'nofooter'
-        }
+          chrome: 'nofooter',
+        },
       )
       .then(() => {
         this.loadingState = 'loaded';

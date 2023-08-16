@@ -1,0 +1,45 @@
+@use 'functions/helper.function' as functions;
+@use 'mixins/helpers.mixin' as mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.slider-wrapper {
+  width: 100%;
+
+  .slider-wrapper__header {
+    display: flex;
+    align-items: center;
+
+    .slider-wrapper__header__title {
+      display: flex;
+      align-items: center;
+      margin-right: auto;
+
+      .slider-wrapper__header__title__info {
+        height: 24px;
+        width: 24px;
+        margin-right: 8px;
+      }
+
+      .slider-wrapper__header__title__text {
+        @include mixins.multiline-ellipsis(3);
+      }
+    }
+
+    .slider-wrapper__header__value {
+      white-space: nowrap;
+      color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-secondary-accent);
+      background-color: functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent);
+      padding: 8px;
+    }
+  }
+
+  .slider-wrapper__content {
+    width: 100%;
+  }
+
+  .slider-wrapper__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}

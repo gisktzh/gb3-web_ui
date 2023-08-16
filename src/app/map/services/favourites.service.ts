@@ -1,32 +1,51 @@
-import {Injectable} from '@angular/core';
+import {Injectable, OnDestroy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Gb3FavouritesService} from '../../shared/services/apis/gb3/gb3-favourites.service';
-import {Observable, tap} from 'rxjs';
+import {Observable, Subscription, tap} from 'rxjs';
 import {ActiveMapItem} from '../models/active-map-item.model';
-import {Favourite, FavouritesResponse} from '../../shared/interfaces/favourite.interface';
+import {Favourite, FavouriteBaseConfig, FavouritesResponse} from '../../shared/interfaces/favourite.interface';
 import {Map} from '../../shared/interfaces/topic.interface';
-import {selectAvailableMaps} from '../../state/map/selectors/available-maps.selector';
 import {produce} from 'immer';
 import {ActiveMapItemFactory} from '../../shared/factories/active-map-item.factory';
 import {ActiveMapItemConfiguration} from '../../shared/interfaces/active-map-item-configuration.interface';
 import {selectActiveMapItemConfigurations} from '../../state/map/selectors/active-map-item-configuration.selector';
 import {FavoritesDetailData} from '../../shared/models/gb3-api-generated.interfaces';
 
+import {selectMaps} from '../../state/map/selectors/maps.selector';
+import {selectFavouriteBaseConfig} from '../../state/map/selectors/favourite-base-config.selector';
+import {FavouriteIsInvalid} from '../../shared/errors/favourite.errors';
+
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class FavouritesService {
+export class FavouritesService implements OnDestroy {
   private activeMapItemConfigurations: ActiveMapItemConfiguration[] = [];
   private readonly activeMapItemConfigurations$ = this.store.select(selectActiveMapItemConfigurations);
-  private readonly availableMaps$ = this.store.select(selectAvailableMaps);
+  private readonly availableMaps$ = this.store.select(selectMaps);
   private availableMaps: Map[] = [];
+  private readonly favouriteBaseConfig$ = this.store.select(selectFavouriteBaseConfig);
+  private favouriteBaseConfig!: FavouriteBaseConfig;
+  private readonly subscriptions: Subscription = new Subscription();
 
-  constructor(private readonly store: Store, private readonly gb3FavouritesService: Gb3FavouritesService) {
+  constructor(
+    private readonly store: Store,
+    private readonly gb3FavouritesService: Gb3FavouritesService,
+  ) {
     this.initSubscriptions();
   }
 
   public createFavourite(title: string): Observable<FavoritesDetailData> {
-    return this.gb3FavouritesService.createFavourite({title, content: this.activeMapItemConfigurations});
+    return this.gb3FavouritesService.createFavourite({
+      title,
+      content: this.activeMapItemConfigurations,
+      baseConfig: this.favouriteBaseConfig,
+      drawings: [],
+      measurements: [],
+    });
+  }
+
+  public ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 
   public loadFavourites(): Observable<FavouritesResponse> {
@@ -56,10 +75,10 @@ export class FavouritesService {
           const subLayer = existingMap.layers.find((layer) => layer.id === configuration.layers[0].id);
 
           if (!subLayer) {
-            throw new Error('Sublayer does not exist.');
+            throw new FavouriteIsInvalid(`Der Layer '${configuration.layers[0].layer}' existiert nicht (mehr).`);
           }
           activeMapItems.push(
-            ActiveMapItemFactory.createGb2WmsMapItem(existingMap, subLayer, configuration.visible, configuration.opacity)
+            ActiveMapItemFactory.createGb2WmsMapItem(existingMap, subLayer, configuration.visible, configuration.opacity),
           );
         } else {
           const adjustedMap = produce(existingMap, (draft) => {
@@ -74,11 +93,11 @@ export class FavouritesService {
             draft.layers.sort((a, b) => sortIds.indexOf(a.id) - sortIds.indexOf(b.id));
           });
           activeMapItems.push(
-            ActiveMapItemFactory.createGb2WmsMapItem(adjustedMap, undefined, configuration.visible, configuration.opacity)
+            ActiveMapItemFactory.createGb2WmsMapItem(adjustedMap, undefined, configuration.visible, configuration.opacity),
           );
         }
       } else {
-        throw new Error('Map does not exist');
+        throw new FavouriteIsInvalid(`Die Karte '${configuration.mapId}' existiert nicht (mehr).`);
       }
     });
 
@@ -90,9 +109,12 @@ export class FavouritesService {
   }
 
   private initSubscriptions() {
-    this.availableMaps$.pipe(tap((value) => (this.availableMaps = value))).subscribe();
-    this.activeMapItemConfigurations$
-      .pipe(tap((activeMapItemConfigurations) => (this.activeMapItemConfigurations = activeMapItemConfigurations)))
-      .subscribe();
+    this.subscriptions.add(this.availableMaps$.pipe(tap((value) => (this.availableMaps = value))).subscribe());
+    this.subscriptions.add(
+      this.activeMapItemConfigurations$
+        .pipe(tap((activeMapItemConfigurations) => (this.activeMapItemConfigurations = activeMapItemConfigurations)))
+        .subscribe(),
+    );
+    this.subscriptions.add(this.favouriteBaseConfig$.pipe(tap((mapConfig) => (this.favouriteBaseConfig = mapConfig))).subscribe());
   }
 }

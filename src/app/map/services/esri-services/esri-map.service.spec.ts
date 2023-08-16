@@ -47,13 +47,13 @@ const mockAuthService = jasmine.createSpyObj<AuthService>({
   logout: void 0,
   getAccessToken: void 0,
   login: void 0,
-  isAuthenticated$: new Subject<boolean>().asObservable()
+  isAuthenticated$: new Subject<boolean>().asObservable(),
 });
 
 const internalLayerPrefix = MapConstants.INTERNAL_LAYER_PREFIX;
 const internalLayers = Object.values(InternalDrawingLayer).map((drawingLayer) => {
   return new GraphicsLayer({
-    id: `${internalLayerPrefix}${drawingLayer}`
+    id: `${internalLayerPrefix}${drawingLayer}`,
   });
 });
 
@@ -81,13 +81,13 @@ describe('EsriMapService', () => {
         {provide: AuthService, useValue: mockAuthService},
         {
           provide: EsriMapViewService,
-          useValue: mapViewService
+          useValue: mapViewService,
         },
         {
           provide: EsriToolService,
-          useValue: toolServiceSpy
-        }
-      ]
+          useValue: toolServiceSpy,
+        },
+      ],
     });
     service = TestBed.inject(EsriMapService);
     TestBed.inject(EsriToolService);
@@ -218,21 +218,27 @@ describe('EsriMapService', () => {
 
     service.addGb2WmsLayer(mapItem, 0);
     const wmsLayer = mapMock.layers.getItemAt(0) as __esri.WMSLayer;
+    // order: layer2, layer1, layer0
 
-    expect(wmsLayer.sublayers.getItemAt(0).id).toBe(0);
+    // index <> position; position 0 should be the highest index for Esri.
+    expect(wmsLayer.sublayers.getItemAt(0).id).toBe(2);
     expect(wmsLayer.sublayers.getItemAt(1).id).toBe(1);
-    expect(wmsLayer.sublayers.getItemAt(2).id).toBe(2);
+    expect(wmsLayer.sublayers.getItemAt(2).id).toBe(0);
 
     service.reorderSublayer(mapItem, 0, 0);
+    // order: layer2, layer1, layer0
 
-    expect(wmsLayer.sublayers.getItemAt(0).id).toBe(0);
+    // index <> position; position 0 should be the highest index for Esri.
+    expect(wmsLayer.sublayers.getItemAt(0).id).toBe(2);
     expect(wmsLayer.sublayers.getItemAt(1).id).toBe(1);
-    expect(wmsLayer.sublayers.getItemAt(2).id).toBe(2);
+    expect(wmsLayer.sublayers.getItemAt(2).id).toBe(0);
 
     service.reorderSublayer(mapItem, 0, 1);
+    // order: layer2, layer0, layer1
 
-    expect(wmsLayer.sublayers.getItemAt(0).id).toBe(1);
+    // index <> position; position 0 should be the highest index for Esri.
+    expect(wmsLayer.sublayers.getItemAt(0).id).toBe(2);
     expect(wmsLayer.sublayers.getItemAt(1).id).toBe(0);
-    expect(wmsLayer.sublayers.getItemAt(2).id).toBe(2);
+    expect(wmsLayer.sublayers.getItemAt(2).id).toBe(1);
   });
 });

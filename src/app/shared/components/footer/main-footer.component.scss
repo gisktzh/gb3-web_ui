@@ -29,6 +29,15 @@
       strong {
         font-family: ktzh-variables.$zh-font-family-bold;
       }
+
+      a {
+        text-decoration: none;
+        color: inherit;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
     }
   }
 }

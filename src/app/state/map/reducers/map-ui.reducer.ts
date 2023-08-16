@@ -9,7 +9,7 @@ export const initialState: MapUiState = {
   hideUiElements: false,
   hideToggleUiElementsButton: false,
   hideZoomButtons: false,
-  toolMenuVisibility: undefined
+  toolMenuVisibility: undefined,
 };
 
 export const mapUiFeature = createFeature({
@@ -19,7 +19,7 @@ export const mapUiFeature = createFeature({
     on(MapUiActions.toggleToolMenu, (state, {tool}): MapUiState => {
       return {
         ...state,
-        toolMenuVisibility: tool
+        toolMenuVisibility: tool,
       };
     }),
     on(MapUiActions.changeUiElementsVisibility, (state, {hideAllUiElements, hideUiToggleButton}): MapUiState => {
@@ -28,22 +28,22 @@ export const mapUiFeature = createFeature({
         mapSideDrawerContent: state.mapSideDrawerContent,
         hideUiElements: hideAllUiElements,
         hideToggleUiElementsButton: hideUiToggleButton,
-        hideZoomButtons: hideAllUiElements
+        hideZoomButtons: hideAllUiElements,
       };
     }),
     on(MapUiActions.showMapSideDrawerContent, (state, {mapSideDrawerContent}): MapUiState => {
       return {
         ...state,
-        mapSideDrawerContent: mapSideDrawerContent
+        mapSideDrawerContent: mapSideDrawerContent,
       };
     }),
     on(MapUiActions.hideMapSideDrawerContent, (state): MapUiState => {
       return {
         ...state,
-        mapSideDrawerContent: 'none'
+        mapSideDrawerContent: 'none',
       };
-    })
-  )
+    }),
+  ),
 });
 
 export const {name, reducer, selectMapUiState, selectToolMenuVisibility} = mapUiFeature;

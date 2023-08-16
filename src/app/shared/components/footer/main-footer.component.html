@@ -1,13 +1,19 @@
+<start-page-section [background]="'primary'" sectionTitle="Kontakt">
+  <contact-details></contact-details>
+</start-page-section>
 <footer class="main-footer">
   <div class="main-footer__content">
     <h1 class="main-footer__content__title mat-headline-3">Kanton Zürich</h1>
     <div class="main-footer__content__links">
       <span>
-        <strong>&copy;{{ currentYear }} Kanton Zürich</strong>
+        <strong>&copy; 2023 Kanton Zürich</strong>
       </span>
-      <span>Datenschutz</span>
-      <span>Impressum</span>
-      <span>Version</span>
+      <a [routerLink]="dataProtectionLink">Datenschutz</a>
+      <a [routerLink]="usageNotesLink">Nutzungshinweise</a>
+    </div>
+    <div class="main-footer__content__links">
+      <small>Version: {{ appVersion }} </small>
+      <small *ngIf="appRelease">Release: {{ appRelease }} </small>
     </div>
   </div>
 </footer>

@@ -1,14 +1,18 @@
 import {Injectable} from '@angular/core';
+import {MapViewNotInitialized} from './errors/esri.errors';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class EsriMapViewService {
   private _mapView: __esri.MapView | undefined;
 
+  /**
+   * @throws MapViewNotInitialized
+   */
   public get mapView(): __esri.MapView {
     if (!this._mapView) {
-      throw new Error('MapView not initialized!');
+      throw new MapViewNotInitialized();
     }
 
     return this._mapView;

@@ -6,7 +6,7 @@ import {GeneralInfoResponse} from '../../../interfaces/general-info.interface';
 import {map} from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class Gb3GeneralInfoService extends Gb3ApiService {
   protected readonly endpoint = 'general_info';
@@ -32,7 +32,7 @@ export class Gb3GeneralInfoService extends Gb3ApiService {
       locationInformation: {
         heightDom: generalInfo.height_dom,
         heightDtm: generalInfo.height_dtm,
-        spatialReference: generalInfo.spatial_reference
+        spatialReference: generalInfo.spatial_reference,
       },
       parcel: generalInfo.parcel
         ? {
@@ -40,10 +40,10 @@ export class Gb3GeneralInfoService extends Gb3ApiService {
             egrisEgrid: generalInfo.parcel.egris_egrid,
             municipalityName: generalInfo.parcel.municipality_name,
             oerebExtract: {
-              pdfUrl: generalInfo.parcel.oereb_extract.pdf_url
-            }
+              pdfUrl: generalInfo.parcel.oereb_extract.pdf_url,
+            },
           }
-        : undefined
+        : undefined,
     };
   }
 }

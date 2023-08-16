@@ -8,14 +8,14 @@ import {mapOnboardingGuideConfig} from '../onboarding-guide/data/map-onboarding-
 const routes: Routes = [
   {
     path: '',
-    component: MapPageComponent
-  }
+    component: MapPageComponent,
+  },
 ];
 
 @NgModule({
   declarations: [],
   imports: [RouterModule.forChild(routes), SharedModule],
   exports: [RouterModule],
-  providers: [OnboardingGuideService, {provide: ONBOARDING_STEPS, useValue: mapOnboardingGuideConfig}]
+  providers: [OnboardingGuideService, {provide: ONBOARDING_STEPS, useValue: mapOnboardingGuideConfig}],
 })
 export class MapRoutingModule {}

@@ -1,9 +1,9 @@
 <div class="general-information">
-  <b>Koordinaten:</b> {{ generalInfoData.locationInformation.spatialReference.coordinates[0] | number : '1.0-10' }} /
-  {{ generalInfoData.locationInformation.spatialReference.coordinates[1] | number : '1.0-10' }}
+  <b>Koordinaten:</b> {{ generalInfoData.locationInformation.spatialReference.coordinates[0] | number: '1.0-10' }} /
+  {{ generalInfoData.locationInformation.spatialReference.coordinates[1] | number: '1.0-10' }}
   <br />
-  <b>DTM:</b> {{ generalInfoData.locationInformation.heightDtm | number : '1.0-2' }} m / <b>DOM:</b>
-  {{ generalInfoData.locationInformation.heightDom | number : '1.0-2' }} m
+  <b>DTM:</b> {{ generalInfoData.locationInformation.heightDtm | number: '1.0-2' }} m / <b>DOM:</b>
+  {{ generalInfoData.locationInformation.heightDom | number: '1.0-2' }} m
 </div>
 <a
   *ngIf="generalInfoData.parcel"
@@ -22,7 +22,7 @@
     <div class="additional-general-information__content">
       <ul class="additional-general-information__content__list">
         <li *ngFor="let aCrs of generalInfoData.alternativeSpatialReferences" class="additional-general-information__content__crs">
-          <b>{{ aCrs.name }}:</b> {{ aCrs.coordinates[0] | number : '1.0-10' }} / {{ aCrs.coordinates[1] | number : '1.0-10' }}
+          <b>{{ aCrs.name }}:</b> {{ aCrs.coordinates[0] | number: '1.0-10' }} / {{ aCrs.coordinates[1] | number: '1.0-10' }}
         </li>
       </ul>
       <b>Weitere Kartendienste:</b>

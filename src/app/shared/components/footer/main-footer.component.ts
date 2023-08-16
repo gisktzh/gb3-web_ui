@@ -1,10 +1,16 @@
 import {Component} from '@angular/core';
+import {MainPage} from '../../enums/main-page.enum';
+import {SupportPage} from '../../enums/support-page.enum';
+import {environment} from '../../../../environments/environment';
 
 @Component({
   selector: 'main-footer',
   templateUrl: './main-footer.component.html',
-  styleUrls: ['./main-footer.component.scss']
+  styleUrls: ['./main-footer.component.scss'],
 })
 export class MainFooterComponent {
-  public readonly currentYear = new Date().getFullYear();
+  public readonly dataProtectionLink = [MainPage.Support, SupportPage.UsefulLinks];
+  public readonly usageNotesLink = [MainPage.Support, SupportPage.Faq];
+  public readonly appVersion: string = environment.appVersion;
+  public readonly appRelease: string = environment.appRelease;
 }

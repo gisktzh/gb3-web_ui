@@ -1,10 +1,10 @@
 import {Component, Input} from '@angular/core';
-import {LoadingState} from '../../../shared/types/loading-state';
+import {LoadingState} from '../../../shared/types/loading-state.type';
 
 @Component({
   selector: 'content-loading-state',
   templateUrl: './content-loading-state.component.html',
-  styleUrls: ['./content-loading-state.component.scss']
+  styleUrls: ['./content-loading-state.component.scss'],
 })
 export class ContentLoadingStateComponent {
   @Input() public loadingState: LoadingState = 'loading';

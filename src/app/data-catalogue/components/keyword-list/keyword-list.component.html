@@ -1,0 +1,6 @@
+<div class="keyword-list">
+  <b *ngIf="listTitle">{{ listTitle }}</b>
+  <div class="keyword-list__keywords">
+    <span *ngFor="let keyword of keywords" class="keyword-list__keywords__pill">{{ keyword }}</span>
+  </div>
+</div>

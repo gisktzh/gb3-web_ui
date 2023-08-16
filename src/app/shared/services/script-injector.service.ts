@@ -1,8 +1,10 @@
 import {Injectable, Renderer2, RendererFactory2} from '@angular/core';
 import {BehaviorSubject, combineLatest, filter, Observable, tap} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {LoadingState} from '../types/loading-state';
+import {LoadingState} from '../types/loading-state.type';
 import {ConfigService} from './config.service';
+
+import {TwitterFeedCouldNotBeLoaded} from '../errors/start-page.errors';
 
 interface InjectableExternalScript {
   src: string;
@@ -15,7 +17,7 @@ interface InjectedExternalScript extends InjectableExternalScript {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ScriptInjectorService {
   private readonly loadedScripts: InjectedExternalScript[] = [];
@@ -23,10 +25,13 @@ export class ScriptInjectorService {
   private readonly twitterFeedInjectableScript: InjectableExternalScript = {
     id: 'twitter-feed',
     type: 'text/javascript',
-    src: this.configService.apiConfig.twitterWidget.baseUrl
+    src: this.configService.apiConfig.twitterWidget.baseUrl,
   };
 
-  constructor(private readonly rendererFactory: RendererFactory2, private readonly configService: ConfigService) {
+  constructor(
+    private readonly rendererFactory: RendererFactory2,
+    private readonly configService: ConfigService,
+  ) {
     this.renderer = this.rendererFactory.createRenderer(null, null);
   }
 
@@ -53,17 +58,17 @@ export class ScriptInjectorService {
             scriptLoadingState.next('error');
           };
         }
-      })
+      }),
     );
 
     return combineLatest([scriptLoadingState, injectScript]).pipe(
       filter(([isLoaded, _]) => isLoaded !== 'loading'),
       map(([isLoaded, _]) => {
         if (isLoaded === 'error') {
-          throw new Error('Error loading twitter feed.'); // todo: add error classes for overall app
+          throw new TwitterFeedCouldNotBeLoaded();
         }
         return twttr;
-      })
+      }),
     );
   }
 

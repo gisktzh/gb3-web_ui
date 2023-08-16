@@ -3,7 +3,7 @@
 $navbar-height: 72px;
 
 .main {
-  height: calc(100vh - #{$navbar-height}); // subtracts height of navbar; maybe there's a nicer way?
+  height: 100vh;
 
   .navbar {
     display: block;
@@ -13,8 +13,12 @@ $navbar-height: 72px;
   }
 
   .app-wrapper {
-    height: 100%;
+    height: calc(100vh - #{$navbar-height}); // subtracts height of navbar
     overflow-y: auto;
+
+    &--headless {
+      height: 100vh;
+    }
   }
 
   .scrollbar-width-calculation {

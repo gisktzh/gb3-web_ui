@@ -41,14 +41,21 @@
       class="active-map-item-header__title-container__options"
       [ngClass]="{'active-map-item-header__title-container__options--inverted': activeMapItemExpansionPanel.expanded}"
     >
-      <button class="active-map-item-header__button" (click)="showActiveMapItemInfo(activeMapItem)" mat-icon-button data-test-id="info">
-        <mat-icon>info</mat-icon>
-      </button>
-      <mat-divider
-        class="active-map-item-header__divider"
-        [ngClass]="{'active-map-item-header__divider--inverted': activeMapItemExpansionPanel.expanded}"
-        [vertical]="true"
-      ></mat-divider>
+      <ng-container *ngIf="activeMapItem.geometadataId">
+        <a
+          class="active-map-item-header__button"
+          [routerLink]="['/', mainPageEnum.Data, dataCataloguePageEnum.Maps, activeMapItem.geometadataId]"
+          mat-icon-button
+          data-test-id="info"
+        >
+          <mat-icon>info</mat-icon>
+        </a>
+        <mat-divider
+          class="active-map-item-header__divider"
+          [ngClass]="{'active-map-item-header__divider--inverted': activeMapItemExpansionPanel.expanded}"
+          [vertical]="true"
+        ></mat-divider>
+      </ng-container>
       <button class="active-map-item-header__button" (click)="removeActiveMapItem(activeMapItem)" mat-icon-button data-test-id="delete">
         <mat-icon>delete</mat-icon>
       </button>

@@ -4,5 +4,6 @@
  */
 export enum PanelClass {
   ApiWrapperDialog = 'api-wrapper-dialog',
-  PageNotificationSnackbar = 'page-notification-snackbar'
+  PageNotificationSnackbar = 'page-notification-snackbar',
+  ErrorSnackbar = 'error-snackbar',
 }

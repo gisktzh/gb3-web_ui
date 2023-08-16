@@ -3,4 +3,6 @@ export interface EnvironmentConfig {
   auth: {
     authenticatedPingInterval: number;
   };
+  appVersion: string;
+  appRelease: string;
 }

@@ -1,7 +1,7 @@
 import {createSelector} from '@ngrx/store';
 import {selectLoadingState as selectFeatureInfoLoadingState} from '../reducers/feature-info.reducer';
 import {selectLoadingState as selectGeneralInfoLoadingState} from '../reducers/general-info.reducer';
-import {LoadingState} from '../../../shared/types/loading-state';
+import {LoadingState} from '../../../shared/types/loading-state.type';
 
 /**
  * This selector aggregates the loading state of both the FeatureInfo and the GeneralInfo into one LoadingState. The logic is as follows
@@ -23,10 +23,10 @@ export const selectFeatureInfoQueryLoadingState = createSelector<Record<string, 
       return 'loading';
     }
 
-    if (featureInfoLoadingState === 'loaded' || generalInfoLoadingState === 'loaded') {
+    if (featureInfoLoadingState === 'loaded' && generalInfoLoadingState === 'loaded') {
       return 'loaded';
     }
 
     return 'undefined';
-  }
+  },
 );

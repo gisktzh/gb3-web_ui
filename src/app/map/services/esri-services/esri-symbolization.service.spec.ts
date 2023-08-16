@@ -2,7 +2,7 @@ import {TestBed} from '@angular/core/testing';
 
 import {EsriSymbolizationService} from './esri-symbolization.service';
 import {MinimalGeometriesUtils} from '../../../testing/map-testing/minimal-geometries.utils';
-import {SupportedSrs} from '../../../shared/types/supported-srs';
+import {SupportedSrs} from '../../../shared/types/supported-srs.type';
 import {InternalDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
@@ -14,7 +14,7 @@ import {
   LineSymbolization,
   PicturePointSymbolization,
   PolygonSymbolization,
-  SimplePointSymbolization
+  SimplePointSymbolization,
 } from '../../../shared/interfaces/symbolization.interface';
 import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol';
 
@@ -25,38 +25,38 @@ const minimalTestSet = [
     expected: 'SimpleLineSymbol',
     expectedInstanceOf: SimpleLineSymbol,
     geometry: MinimalGeometriesUtils.getMinimalLineString(SRS),
-    type: 'LineString'
+    type: 'LineString',
   },
   {
     expected: 'SimpleLineSymbol',
     expectedInstanceOf: SimpleLineSymbol,
     geometry: MinimalGeometriesUtils.getMinimalMultiLineString(SRS),
-    type: 'MultiLineString'
+    type: 'MultiLineString',
   },
   {
     expected: 'SimpleMarkerSymbol',
     expectedInstanceOf: SimpleMarkerSymbol,
     geometry: MinimalGeometriesUtils.getMinimalPoint(SRS),
-    type: 'Point'
+    type: 'Point',
   },
   {
     expected: 'SimpleMarkerSymbol',
     expectedInstanceOf: SimpleMarkerSymbol,
     geometry: MinimalGeometriesUtils.getMinimalMultiPoint(SRS),
-    type: 'MultiPoint'
+    type: 'MultiPoint',
   },
   {
     expected: 'SimpleFillSymbol',
     expectedInstanceOf: SimpleFillSymbol,
     geometry: MinimalGeometriesUtils.getMinimalPolygon(SRS),
-    type: 'Polygon'
+    type: 'Polygon',
   },
   {
     expected: 'SimpleFillSymbol',
     expectedInstanceOf: SimpleFillSymbol,
     geometry: MinimalGeometriesUtils.getMinimalMultiPolygon(SRS),
-    type: 'MultiPolygon'
-  }
+    type: 'MultiPolygon',
+  },
 ];
 
 // we only mock some of the values; because we mainly need to test different colors and point types.
@@ -69,8 +69,8 @@ const mockSymbolizations: LayerSymbolizations = {
       url: mockIconUrl,
       yOffset: 12, // half of the image size to set needle at the actual point location
       xOffset: 0,
-      angle: 0
-    }
+      angle: 0,
+    },
   },
   [InternalDrawingLayer.FeatureHighlight]: {
     point: {
@@ -80,7 +80,7 @@ const mockSymbolizations: LayerSymbolizations = {
         r: 255,
         g: 255,
         b: 0,
-        a: 0.6
+        a: 0.6,
       },
       outline: {
         width: 1232,
@@ -88,9 +88,9 @@ const mockSymbolizations: LayerSymbolizations = {
           r: 22,
           g: 12,
           b: 99,
-          a: 0.11
-        }
-      }
+          a: 0.11,
+        },
+      },
     },
     line: {
       width: 5,
@@ -98,8 +98,8 @@ const mockSymbolizations: LayerSymbolizations = {
         r: 255,
         g: 169,
         b: 0,
-        a: 0.6
-      }
+        a: 0.6,
+      },
     },
     polygon: {
       fill: {
@@ -107,8 +107,8 @@ const mockSymbolizations: LayerSymbolizations = {
           r: 255,
           g: 255,
           b: 0,
-          a: 0.6
-        }
+          a: 0.6,
+        },
       },
       outline: {
         width: 5,
@@ -116,11 +116,11 @@ const mockSymbolizations: LayerSymbolizations = {
           r: 164,
           g: 255,
           b: 0,
-          a: 1.0
-        }
-      }
-    }
-  }
+          a: 1.0,
+        },
+      },
+    },
+  },
 } as LayerSymbolizations;
 
 describe('EsriSymbolizationService', () => {
@@ -131,7 +131,7 @@ describe('EsriSymbolizationService', () => {
     let configService = new ConfigService(document);
     configService = Object.assign(configService, {layerSymbolizations: mockSymbolizations});
     TestBed.configureTestingModule({
-      providers: [EsriSymbolizationService, {provide: ConfigService, useValue: configService}]
+      providers: [EsriSymbolizationService, {provide: ConfigService, useValue: configService}],
     });
     service = TestBed.get(EsriSymbolizationService);
   });
@@ -166,7 +166,7 @@ describe('EsriSymbolizationService', () => {
         expected.outline.color.r,
         expected.outline.color.g,
         expected.outline.color.b,
-        expected.outline.color.a
+        expected.outline.color.a,
       ]);
       expect(result.outline.width).toEqual(expected.outline.width);
     });
@@ -216,7 +216,7 @@ describe('EsriSymbolizationService', () => {
         expected.outline.color.r,
         expected.outline.color.g,
         expected.outline.color.b,
-        expected.outline.color.a
+        expected.outline.color.a,
       ]);
       expect(result.outline.width).toEqual(expected.outline.width);
     });

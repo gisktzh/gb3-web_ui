@@ -6,7 +6,7 @@ import {KeyValuePipe} from '@angular/common';
  * is necessary because the KeyValuePipe orders the keys ascending: https://angular.io/api/common/KeyValuePipe#description
  */
 @Pipe({
-  name: 'keyValuePreserveOrder'
+  name: 'keyValuePreserveOrder',
 })
 export class KeyValuePreserveOrderPipe extends KeyValuePipe implements PipeTransform {
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any

@@ -5,11 +5,10 @@ steps:
       SonarCloud: 'EBP Sonar Cloud'
       organization: 'ebpgroup'
       scannerMode: 'CLI'
-      configMode: 'manual'
-      cliProjectKey: '222262_GB3_frontend'
-      cliProjectName: '222262_GB3_frontend'
-      cliSources: 'src'
+      configMode: 'file'
   - task: SonarCloudAnalyze@1
+    inputs:
+      jdkversion: 'JAVA_HOME_17_X64'
   - task: SonarCloudPublish@1
     inputs:
       pollingTimeoutSec: '300'

@@ -8,41 +8,41 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
     hostMatch: 'staging.geo.ktzh.ch',
     apiBasePaths: {
       gb2Api: {
-        baseUrl: 'https://testmaps.kt.ktzh.ch/v3'
+        baseUrl: 'https://testmaps.kt.ktzh.ch/v3',
       },
       gb2StaticFiles: {
-        baseUrl: 'https://testmaps.kt.ktzh.ch'
+        baseUrl: 'https://testmaps.kt.ktzh.ch',
       },
       gb2WmsCapabilities: {
-        baseUrl: 'https://testmaps.kt.ktzh.ch/wms'
+        baseUrl: 'https://testmaps.kt.ktzh.ch/wms',
       },
       gb2Wms: {
-        baseUrl: 'https://testmaps.kt.ktzh.ch'
+        baseUrl: 'https://testmaps.kt.ktzh.ch',
       },
       geoLion: {
-        baseUrl: 'https://testgeolion.kt.ktzh.ch'
+        baseUrl: 'https://testgeolion.kt.ktzh.ch',
       },
       searchApi: {
-        baseUrl: 'https://staging.geo.ktzh.ch/geosearch'
+        baseUrl: 'https://staging.geo.ktzh.ch/geosearch',
       },
       ktzhWebsite: {
         baseUrl: 'https://www.zh.ch',
-        useMockData: false
+        useMockData: false,
       },
       gravCms: {
         baseUrl: 'https://staging.geo.ktzh.ch/cms',
-        useMockData: false
+        useMockData: false,
       },
       twitterWidget: {
-        baseUrl: 'https://platform.twitter.com/widgets.js'
-      }
+        baseUrl: 'https://platform.twitter.com/widgets.js',
+      },
     },
     authSettings: {
       clientId: 'gb3',
-      issuer: 'https://testmaps.kt.ktzh.ch/'
+      issuer: 'https://testmaps.kt.ktzh.ch/',
     },
     overrides: {
-      overrideWmsUrl: 'http://testwms.kt.ktzh.ch'
-    }
-  }
+      overrideWmsUrl: 'http://testwms.kt.ktzh.ch',
+    },
+  },
 ];

@@ -1,0 +1,28 @@
+@use 'functions/helper.function' as functions;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.data-display {
+  .data-display__item {
+    border-bottom: 1px solid ktzh-variables.$zh-black100;
+    display: flex;
+    flex-flow: column;
+    padding-bottom: 9px;
+    line-height: normal;
+    gap: 9px;
+
+    .data-display__item__title {
+      color: ktzh-variables.$zh-black60;
+      font-size: small;
+    }
+
+    &:not(:first-of-type) {
+      margin-top: 9px;
+    }
+
+    .data-display__item__value {
+      a {
+        color: ktzh-variables.$zh-active-blue;
+      }
+    }
+  }
+}

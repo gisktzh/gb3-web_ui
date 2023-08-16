@@ -63,7 +63,7 @@ describe('EsriToolService', () => {
       mapViewService.mapView.map.layers.add(
         new GraphicsLayer({
           id: internalLayerId,
-        })
+        }),
       );
       store.overrideSelector(selectDrawingLayers, [{id: internalLayerId} as DrawingActiveMapItem]);
       store.refreshState();
@@ -79,7 +79,7 @@ describe('EsriToolService', () => {
               type: ActiveMapItemActions.forceFullVisibility.type,
             };
             expect(lastAction).toEqual(expected);
-          })
+          }),
         )
         .subscribe();
     });
@@ -96,7 +96,7 @@ describe('EsriToolService', () => {
               type: ActiveMapItemActions.addActiveMapItem.type,
             };
             expect(lastAction).toEqual(expected);
-          })
+          }),
         )
         .subscribe();
     });
@@ -107,7 +107,7 @@ describe('EsriToolService', () => {
       mapViewService.mapView.map.layers.add(
         new GraphicsLayer({
           id: internalLayerId,
-        })
+        }),
       );
       store.overrideSelector(selectDrawingLayers, [{id: internalLayerId} as DrawingActiveMapItem]);
       store.refreshState();
@@ -127,7 +127,7 @@ describe('EsriToolService', () => {
       mapViewService.mapView.map.layers.add(
         new GraphicsLayer({
           id: internalLayerId,
-        })
+        }),
       );
       store.overrideSelector(selectDrawingLayers, [{id: internalLayerId} as DrawingActiveMapItem]);
       store.refreshState();

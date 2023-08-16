@@ -8,7 +8,7 @@
       data-test-id="map-ruler"
       mat-icon-button
     >
-      <mat-icon class="map-tools__button__icon" svgIcon="ktzh_measure_menu"></mat-icon>
+      <mat-icon svgIcon="ktzh_measure_menu"></mat-icon>
     </button>
     <button
       (click)="toggleToolMenu('drawing')"
@@ -18,16 +18,15 @@
       data-test-id="map-drawing"
       mat-icon-button
     >
-      <mat-icon class="map-tools__button__icon" svgIcon="ktzh_drawing_menu"></mat-icon>
+      <mat-icon svgIcon="ktzh_drawing_menu"></mat-icon>
     </button>
     <mat-divider class="map-tools__divider"></mat-divider>
     <button (click)="showPrintDialog()" class="map-tools__button" data-test-id="map-print" mat-icon-button>
-      <mat-icon class="map-tools__button__icon" svgIcon="ktzh_print"></mat-icon>
+      <mat-icon svgIcon="ktzh_print"></mat-icon>
     </button>
     <mat-divider class="map-tools__divider"></mat-divider>
-    <!-- TODO: enable this button as soon as the share link API is done and connected -->
-    <button (click)="showShareLinkDialog()" class="map-tools__button" data-test-id="map-share" disabled="true" mat-icon-button>
-      <mat-icon class="map-tools__button__icon" svgIcon="ktzh_share"></mat-icon>
+    <button (click)="showShareLinkDialog()" class="map-tools__button" data-test-id="map-share" mat-icon-button>
+      <mat-icon svgIcon="ktzh_share"></mat-icon>
     </button>
   </div>
   <div class="map-tools__list" *ngIf="toolMenuVisibility !== undefined">

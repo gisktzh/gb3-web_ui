@@ -10,11 +10,12 @@ export const selectActiveMapItemConfigurations = createSelector(selectItems, (ac
     .map((activeMapItem) => {
       // note: spread does not work here because ActiveMapItem is a class, hence too many attributes would be added to the object
       return {
+        id: activeMapItem.id,
         mapId: activeMapItem.settings.mapId,
         layers: activeMapItem.settings.layers.map((layer) => ({id: layer.id, layer: layer.layer, visible: layer.visible})),
         visible: activeMapItem.visible,
         opacity: activeMapItem.opacity,
-        isSingleLayer: activeMapItem.isSingleLayer
+        isSingleLayer: activeMapItem.isSingleLayer,
       };
     });
   return activeMapItemConfigurations;

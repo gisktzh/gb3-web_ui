@@ -15,7 +15,14 @@
     <ng-content></ng-content>
   </mat-card-content>
 
-  <button (click)="this.onPrintButtonClick()" class="map-overlay__print-button" color="accent" mat-raised-button>
+  <button
+    *ngIf="showPrintButton"
+    [disabled]="!isPrintButtonEnabled"
+    (click)="this.onPrintButtonClick()"
+    class="map-overlay__print-button"
+    color="accent"
+    mat-raised-button
+  >
     <mat-icon>print</mat-icon>
     {{ this.overlayTitle }} drucken
   </button>

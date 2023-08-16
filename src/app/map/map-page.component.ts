@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import {MapConfigUrlService} from './services/map-config-url.service';
-import {PrintType} from '../shared/types/print-type';
+import {PrintType} from './types/print.type';
 import {OnboardingGuideService} from '../onboarding-guide/services/onboarding-guide.service';
 import {mapOnboardingGuideConfig} from '../onboarding-guide/data/map-onboarding-guide.config';
 import {Store} from '@ngrx/store';
@@ -8,14 +8,14 @@ import {Subscription, tap} from 'rxjs';
 import {selectMapUiState} from '../state/map/reducers/map-ui.reducer';
 import {MapUiState} from '../state/map/states/map-ui.state';
 import {MapUiActions} from '../state/map/actions/map-ui.actions';
-import {MapSideDrawerContent} from '../shared/types/map-side-drawer-content';
+import {MapSideDrawerContent} from '../shared/types/map-side-drawer-content.type';
 import {selectQueryLegends} from '../state/map/selectors/query-legends.selector';
 
 @Component({
   selector: 'map-page',
   templateUrl: './map-page.component.html',
   styleUrls: ['./map-page.component.scss'],
-  providers: [MapConfigUrlService]
+  providers: [MapConfigUrlService],
 })
 export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
   public readonly onboardingGuideImage = mapOnboardingGuideConfig.introductionImage;
@@ -31,7 +31,7 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
   constructor(
     private readonly onboardingGuideService: OnboardingGuideService,
     private readonly mapConfigUrlService: MapConfigUrlService,
-    private readonly store: Store
+    private readonly store: Store,
   ) {}
 
   public ngOnInit() {
@@ -68,9 +68,9 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
         .pipe(
           tap((currentActiveMapItems) => {
             this.numberOfQueryLegends = currentActiveMapItems.length;
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
 
     this.subscriptions.add(
@@ -79,9 +79,9 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
           tap((mapUiState) => {
             this.mapUiState = mapUiState;
             this.mapSideDrawerContent = mapUiState.mapSideDrawerContent;
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 }

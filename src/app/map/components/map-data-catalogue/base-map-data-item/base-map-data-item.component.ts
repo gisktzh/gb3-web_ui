@@ -1,14 +1,12 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {MapLayer} from '../../../../shared/interfaces/topic.interface';
-import {LoadingState} from '../../../../shared/types/loading-state';
+import {LoadingState} from '../../../../shared/types/loading-state.type';
 import {MapConfigState} from '../../../../state/map/states/map-config.state';
-
-export type MapDataItemType = 'map' | 'favorite';
 
 @Component({
   // no selector here as it is a base component
   templateUrl: './base-map-data-item.component.html',
-  styleUrls: ['./base-map-data-item.component.scss']
+  styleUrls: ['./base-map-data-item.component.scss'],
 })
 export class BaseMapDataItemComponent {
   @Input() public title!: string;

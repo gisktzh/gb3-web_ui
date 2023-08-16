@@ -2,16 +2,16 @@ import {TestBed} from '@angular/core/testing';
 
 import {AuthService} from './auth.service';
 import {OAuthEvent, OAuthService, OAuthSuccessEvent} from 'angular-oauth2-oidc';
-import {HttpClientModule} from '@angular/common/http';
 import {provideMockStore} from '@ngrx/store/testing';
 import {SharedModule} from '../shared/shared.module';
 import {Subject} from 'rxjs';
 import {AuthNotificationService} from './notifications/auth-notification.service';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
 
 const mockAuthNotificationService = jasmine.createSpyObj<AuthNotificationService>({
   showImpendingLogoutDialog: void 0,
   showForcedLogoutDialog: void 0,
-  showProgrammaticLogoutDialog: void 0
+  showProgrammaticLogoutDialog: void 0,
 });
 describe('AuthService', () => {
   let service: AuthService;
@@ -37,19 +37,19 @@ describe('AuthService', () => {
         tryLoginImplicitFlow: Promise.resolve(false),
         logOut: void 0,
         getAccessToken: '',
-        initCodeFlow: void 0
+        initCodeFlow: void 0,
       },
       {
-        events: mockOAuthEvents.asObservable()
-      }
+        events: mockOAuthEvents.asObservable(),
+      },
     );
     TestBed.configureTestingModule({
-      imports: [HttpClientModule, SharedModule],
+      imports: [HttpClientTestingModule, SharedModule],
       providers: [
         provideMockStore({}),
         {provide: OAuthService, useValue: mockOAuthService},
-        {provide: AuthNotificationService, useValue: mockAuthNotificationService}
-      ]
+        {provide: AuthNotificationService, useValue: mockAuthNotificationService},
+      ],
     });
 
     service = TestBed.inject(AuthService);

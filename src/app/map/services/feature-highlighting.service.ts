@@ -12,7 +12,10 @@ export class FeatureHighlightingService implements OnDestroy {
   private readonly mapReadyState$ = this.store.select(selectReady);
   private readonly subscriptions = new Subscription();
 
-  constructor(private readonly store: Store, private readonly mapDrawingService: MapDrawingService) {}
+  constructor(
+    private readonly store: Store,
+    private readonly mapDrawingService: MapDrawingService,
+  ) {}
 
   public init() {
     this.initMapReadySubscription();
@@ -31,9 +34,9 @@ export class FeatureHighlightingService implements OnDestroy {
             if (isReady) {
               this.initHighlightSubscription();
             }
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 
@@ -41,7 +44,7 @@ export class FeatureHighlightingService implements OnDestroy {
     this.subscriptions.add(
       this.highlightedFeature$
         .pipe(tap((feature) => (feature ? this.highlightFeature(feature) : this.removeHighlightedFeature())))
-        .subscribe()
+        .subscribe(),
     );
   }
 

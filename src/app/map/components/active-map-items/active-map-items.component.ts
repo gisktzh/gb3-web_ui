@@ -12,13 +12,13 @@ import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
 
 const FAVOURITE_HELPER_MESSAGES = {
   noMapsAdded: 'Fügen Sie mindestens 1 Karte hinzu, um einen Favoriten anzulegen.',
-  notAuthenticated: 'Loggen Sie sich ein, um Favoriten hinzuzufügen.'
+  notAuthenticated: 'Loggen Sie sich ein, um Favoriten hinzuzufügen.',
 };
 
 @Component({
   selector: 'active-map-items',
   templateUrl: './active-map-items.component.html',
-  styleUrls: ['./active-map-items.component.scss']
+  styleUrls: ['./active-map-items.component.scss'],
 })
 export class ActiveMapItemsComponent implements OnInit, OnDestroy {
   public isAuthenticated: boolean = false;
@@ -48,7 +48,7 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
 
   public dropMapItem($event: CdkDragDrop<CdkDrag>) {
     this.store.dispatch(
-      ActiveMapItemActions.reorderActiveMapItem({previousPosition: $event.previousIndex, currentPosition: $event.currentIndex})
+      ActiveMapItemActions.reorderActiveMapItem({previousPosition: $event.previousIndex, currentPosition: $event.currentIndex}),
     );
   }
 
@@ -76,18 +76,18 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
             this.activeMapItems = currentActiveMapItems;
             const gb2ActiveMapItems = currentActiveMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem));
             this.updateNumberOfNotices(gb2ActiveMapItems);
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
     this.subscriptions.add(
       this.isAuthenticated$
         .pipe(
           tap((isAuthenticated) => {
             this.isAuthenticated = isAuthenticated;
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 

@@ -18,8 +18,8 @@ import {EsriAreaMeasurementStrategy} from './strategies/measurement/esri-area-me
 import {EsriPointMeasurementStrategy} from './strategies/measurement/esri-point-measurement.strategy';
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
 import {ToolActions} from '../../../../state/map/actions/tool.actions';
-import {MeasurementTool} from '../../../../shared/types/measurement-tool';
-import {DrawingTool} from '../../../../shared/types/drawing-tool';
+import {MeasurementTool} from '../../../../shared/types/measurement-tool.type';
+import {DrawingTool} from '../../../../shared/types/drawing-tool.type';
 import {ConfigService} from '../../../../shared/services/config.service';
 import {EsriPointDrawingStrategy} from './strategies/drawing/esri-point-drawing.strategy';
 import {EsriLineDrawingStrategy} from './strategies/drawing/esri-line-drawing.strategy';
@@ -42,7 +42,7 @@ const HANDLE_GROUP_KEY = 'EsriToolService';
  * done via custom handles on the MapView object which manually fire the deactivation event for our state to become updated.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class EsriToolService implements ToolService, OnDestroy {
   private toolStrategy: EsriToolStrategy = new EsriDefaultStrategy();
@@ -54,7 +54,7 @@ export class EsriToolService implements ToolService, OnDestroy {
     private readonly esriMapViewService: EsriMapViewService,
     private readonly store: Store,
     private readonly esriSymbolizationService: EsriSymbolizationService,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
   ) {
     this.initSubscriptions();
   }
@@ -135,7 +135,7 @@ export class EsriToolService implements ToolService, OnDestroy {
         if (event.key === 'Escape') {
           this.endDrawing();
         }
-      }
+      },
     );
     this.esriMapViewService.mapView.addHandles(handle, HANDLE_GROUP_KEY);
   }
@@ -162,17 +162,17 @@ export class EsriToolService implements ToolService, OnDestroy {
     switch (measurementType) {
       case 'measure-area':
         this.toolStrategy = new EsriAreaMeasurementStrategy(layer, this.esriMapViewService.mapView, areaStyle, labelStyle, () =>
-          this.endDrawing()
+          this.endDrawing(),
         );
         break;
       case 'measure-line':
         this.toolStrategy = new EsriLineMeasurementStrategy(layer, this.esriMapViewService.mapView, lineStyle, labelStyle, () =>
-          this.endDrawing()
+          this.endDrawing(),
         );
         break;
       case 'measure-point':
         this.toolStrategy = new EsriPointMeasurementStrategy(layer, this.esriMapViewService.mapView, pointStyle, labelStyle, () =>
-          this.endDrawing()
+          this.endDrawing(),
         );
     }
   }
@@ -195,7 +195,7 @@ export class EsriToolService implements ToolService, OnDestroy {
           this.esriMapViewService.mapView,
           areaStyle,
           () => this.endDrawing(),
-          'polygon'
+          'polygon',
         );
         break;
       case 'draw-rectangle':
@@ -204,7 +204,7 @@ export class EsriToolService implements ToolService, OnDestroy {
           this.esriMapViewService.mapView,
           areaStyle,
           () => this.endDrawing(),
-          'rectangle'
+          'rectangle',
         );
         break;
       case 'draw-circle':
@@ -213,7 +213,7 @@ export class EsriToolService implements ToolService, OnDestroy {
           this.esriMapViewService.mapView,
           areaStyle,
           () => this.endDrawing(),
-          'circle'
+          'circle',
         );
         break;
     }

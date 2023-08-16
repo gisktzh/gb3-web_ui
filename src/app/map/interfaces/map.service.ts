@@ -1,5 +1,5 @@
 import {ActiveMapItem} from '../models/active-map-item.model';
-import {ZoomType} from '../../shared/types/zoom-type';
+import {ZoomType} from '../../shared/types/zoom.type';
 import {TimeExtent} from './time-extent.interface';
 import {GeometryWithSrs, PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
 import {InternalDrawingLayer} from '../../shared/enums/drawing-layer.enum';
@@ -8,7 +8,9 @@ import {Gb2WmsActiveMapItem} from '../models/implementations/gb2-wms.model';
 import {ToolService} from './tool.service';
 
 export interface MapService extends AddToMapVisitor {
-  /** Initializes the map by creating the initial background map and with a given extent */
+  /**
+   * Initializes the map by creating the initial background map and with a given extent
+   */
   init(): void;
 
   /** Assigns the map to an element on the HTML */
@@ -83,7 +85,8 @@ export interface MapService extends AddToMapVisitor {
   getToolService(): ToolService;
 
   /**
-   * Starts drawing the print preview area on the current center of the map with the given extent width and height as well as a rotation (clockwise)
+   * Starts drawing the print preview area on the current center of the map with the given extent width and height as well as a rotation
+   * (clockwise)
    */
   startDrawPrintPreview(extentWidth: number, extentHeight: number, rotation: number): Promise<void>;
 

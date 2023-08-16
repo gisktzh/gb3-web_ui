@@ -9,7 +9,7 @@ export const initialState: PrintState = {
   infoLoadingState: 'undefined',
   creation: undefined,
   creationLoadingState: 'undefined',
-  creationResponse: undefined
+  creationResponse: undefined,
 };
 
 export const printFeature = createFeature({
@@ -32,15 +32,21 @@ export const printFeature = createFeature({
     on(PrintActions.setPrintCreationResponse, (state, {creationResponse}): PrintState => {
       return {...state, creationResponse, creationLoadingState: 'loaded'};
     }),
+    on(PrintActions.setPrintRequestError, (state): PrintState => {
+      return {...state, creationLoadingState: 'error'};
+    }),
+    on(PrintActions.setPrintInfoError, (state): PrintState => {
+      return {...state, infoLoadingState: 'error'};
+    }),
     on(PrintActions.clearPrintCreation, (state): PrintState => {
       return {
         ...state,
         creation: initialState.creation,
         creationResponse: initialState.creationResponse,
-        creationLoadingState: 'undefined'
+        creationLoadingState: 'undefined',
       };
-    })
-  )
+    }),
+  ),
 });
 
 export const {name, reducer, selectInfo, selectInfoLoadingState, selectCreationLoadingState, selectCreationResponse} = printFeature;

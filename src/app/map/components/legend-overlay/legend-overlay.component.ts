@@ -1,18 +1,20 @@
-import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {selectLoadingState} from '../../../state/map/reducers/legend.reducer';
 import {LegendActions} from '../../../state/map/actions/legend.actions';
-import {LoadingState} from '../../../shared/types/loading-state';
+import {LoadingState} from '../../../shared/types/loading-state.type';
 import {LegendDisplay} from '../../../shared/interfaces/legend.interface';
 import {selectLegendItemsForDisplay} from '../../../state/map/selectors/legend-result-display.selector';
 
 @Component({
   selector: 'legend-overlay',
   templateUrl: './legend-overlay.component.html',
-  styleUrls: ['./legend-overlay.component.scss']
+  styleUrls: ['./legend-overlay.component.scss'],
 })
 export class LegendOverlayComponent implements OnInit, OnDestroy {
+  /** A value indicating whether interactive elements (like buttons) should be shown. [Default: true] */
+  @Input() public showInteractiveElements: boolean = true;
   @Output() public printLegendEvent = new EventEmitter<void>();
 
   public isVisible = false;
@@ -52,9 +54,9 @@ export class LegendOverlayComponent implements OnInit, OnDestroy {
           tap((value) => {
             this.loadingState = value;
             this.updateVisibility(value);
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
 
     this.subscriptions.add(
@@ -62,9 +64,9 @@ export class LegendOverlayComponent implements OnInit, OnDestroy {
         .pipe(
           tap((value) => {
             this.legendItems = value;
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 

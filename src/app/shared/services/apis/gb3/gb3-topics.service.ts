@@ -11,22 +11,26 @@ import {
   TimeSliderLayerSource,
   TimeSliderParameterSource,
   TimeSliderSourceType,
-  TopicsResponse
+  TopicsResponse,
 } from '../../../interfaces/topic.interface';
 import {FeatureInfoResponse} from '../../../interfaces/feature-info.interface';
 import {forkJoin, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {SupportedSrs} from '../../../types/supported-srs';
+import {SupportedSrs} from '../../../types/supported-srs.type';
+import {DataCataloguePage} from '../../../enums/data-catalogue-page.enum';
+import {MainPage} from '../../../enums/main-page.enum';
+
+import {InvalidTimeSliderConfiguration} from '../../../errors/map.errors';
 
 const FEATURE_INFO_SRS: SupportedSrs = 2056;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class Gb3TopicsService extends Gb3ApiService {
   protected readonly endpoint = 'topics';
   private readonly staticFilesUrl = this.configService.apiConfig.gb2StaticFiles.baseUrl;
-  private readonly dataTabUrl = '/api/v2/getGeodatenmeta.html'; // Note: this is currently geoLion, not geotab
+  private readonly dataTabUrl = `/${MainPage.Data}/${DataCataloguePage.Datasets}`;
 
   public loadTopics(): Observable<TopicsResponse> {
     const requestUrl = this.createTopicsUrl();
@@ -37,14 +41,14 @@ export class Gb3TopicsService extends Gb3ApiService {
   public loadLegends(queryLegends: QueryLegend[]): Observable<LegendResponse[]> {
     const requestUrls = queryLegends.map((queryLegend) => this.createLegendUrl(queryLegend));
     return forkJoin(requestUrls.map((requestUrl) => this.get<TopicsLegendDetailData>(requestUrl))).pipe(
-      map((data) => this.mapTopicsLegendDetailDataToLegendResponse(data))
+      map((data) => this.mapTopicsLegendDetailDataToLegendResponse(data)),
     );
   }
 
   public loadFeatureInfos(x: number, y: number, queryLayers: QueryLayer[]): Observable<FeatureInfoResponse[]> {
     const requestUrls = queryLayers.map(({topic, layersToQuery}) => this.createFeatureInfoUrl(topic, x, y, layersToQuery));
     return forkJoin(requestUrls.map((requestUrl) => this.get<TopicsFeatureInfoDetailData>(requestUrl))).pipe(
-      map((data) => this.mapTopicsFeatureInfoDetailDataToFeatureInfoResponse(data))
+      map((data) => this.mapTopicsFeatureInfoDetailDataToFeatureInfoResponse(data)),
     );
   }
 
@@ -93,21 +97,18 @@ export class Gb3TopicsService extends Gb3ApiService {
               metaDataLink: layer.geolion ? this.createDataTabLink(layer.geolion) : undefined,
               layerClasses: layer.layer_classes?.map((layerClass) => {
                 return {
-                  ...layerClass
+                  ...layerClass,
                 };
-              })
+              }),
             };
-          })
-        }
+          }),
+        },
       };
     });
   }
 
   private createDataTabLink(id: number): string {
-    const url = new URL(`${this.configService.apiConfig.geoLion.baseUrl}${this.dataTabUrl}`);
-    url.searchParams.set('giszhnr', String(id));
-
-    return url.toString();
+    return `${this.dataTabUrl}/${id}`;
   }
 
   private createTopicsUrl(): string {
@@ -132,28 +133,30 @@ export class Gb3TopicsService extends Gb3ApiService {
               wmsUrl: topic.wms_url,
               minScale: topic.min_scale,
               permissionMissing: topic.permission_missing,
-              layers: topic.layers.map((layer) => {
-                return {
-                  ...layer,
-                  groupTitle: layer.group_title,
-                  minScale: layer.min_scale,
-                  maxScale: layer.max_scale,
-                  wmsSort: layer.wms_sort,
-                  tocSort: layer.toc_sort,
-                  initiallyVisible: layer.initially_visible,
-                  permissionMissing: layer.permission_missing,
-                  visible: layer.initially_visible,
-                  isHidden: false
-                };
-              }),
+              layers: topic.layers
+                .map((layer) => {
+                  return {
+                    ...layer,
+                    groupTitle: layer.group_title,
+                    minScale: layer.min_scale,
+                    maxScale: layer.max_scale,
+                    wmsSort: layer.wms_sort,
+                    tocSort: layer.toc_sort,
+                    initiallyVisible: layer.initially_visible,
+                    permissionMissing: layer.permission_missing,
+                    visible: layer.initially_visible,
+                    isHidden: false,
+                  };
+                })
+                .reverse(), // reverse the order of the layers because the order in the GB3 interfaces (Topic, ActiveMapItem) is inverted to the order of the WMS specifications
               timeSliderConfiguration: topic.timesliderConfiguration
                 ? {
                     ...topic.timesliderConfiguration,
                     sourceType: topic.timesliderConfiguration.sourceType as TimeSliderSourceType,
                     source: this.transformTimeSliderConfigurationSource(
                       topic.timesliderConfiguration.source,
-                      topic.timesliderConfiguration.sourceType
-                    )
+                      topic.timesliderConfiguration.sourceType,
+                    ),
                   }
                 : undefined,
               filterConfigurations: topic.filterConfigurations?.map((filterConfiguration) => {
@@ -162,16 +165,16 @@ export class Gb3TopicsService extends Gb3ApiService {
                   filterValues: filterConfiguration.filterValues.map((filterValue) => {
                     return {
                       ...filterValue,
-                      isActive: false
+                      isActive: false,
                     };
-                  })
+                  }),
                 };
               }),
-              searchConfigurations: topic.searchConfigurations ?? undefined
+              searchConfigurations: topic.searchConfigurations ?? undefined,
             };
-          })
+          }),
         };
-      })
+      }),
     };
     topicsResponse.topics.forEach((topic) => {
       topic.maps.forEach((topicMap) => {
@@ -186,30 +189,31 @@ export class Gb3TopicsService extends Gb3ApiService {
   private transformTimeSliderConfigurationSource(
     // the following typing for `source` is used to extract a subtype of the generated interface `TopicsListData`
     source: TopicsListData['categories'][0]['topics'][0]['timesliderConfiguration']['source'],
-    sourceType: string
+    sourceType: string,
   ): TimeSliderParameterSource | TimeSliderLayerSource {
     const timeSliderSourceType: TimeSliderSourceType = sourceType as TimeSliderSourceType;
     switch (timeSliderSourceType) {
       case 'parameter':
         if (!source.startRangeParameter || !source.endRangeParameter || !source.layerIdentifiers) {
-          throw new Error(`Invalid time slider configuration! Missing attributes inside the parameter configuration.`); // todo error handling
+          throw new InvalidTimeSliderConfiguration('Missing attributes inside the parameter configuration.');
+          // handling
         }
         return {
           startRangeParameter: source.startRangeParameter,
           endRangeParameter: source.endRangeParameter,
-          layerIdentifiers: source.layerIdentifiers
+          layerIdentifiers: source.layerIdentifiers,
         } as TimeSliderParameterSource;
       case 'layer':
         if (!source.layers) {
-          throw new Error(`Invalid time slider configuration! Missing attributes inside the layer configuration.`); // todo error handling
+          throw new InvalidTimeSliderConfiguration('Missing attributes inside the layer configuration.');
         }
         return {
           layers: source.layers.map((layer) => {
             return {
               layerName: layer.layerName,
-              date: layer.date
+              date: layer.date,
             };
-          })
+          }),
         } as TimeSliderLayerSource;
     }
   }
@@ -244,7 +248,7 @@ export class Gb3TopicsService extends Gb3ApiService {
    * Maps the generic TopicsFeatureInfoDetailData type from the API endpoint to the internal interface FeatureInfoResponse
    */
   private mapTopicsFeatureInfoDetailDataToFeatureInfoResponse(
-    topicsFeatureInfoDetailData: TopicsFeatureInfoDetailData[]
+    topicsFeatureInfoDetailData: TopicsFeatureInfoDetailData[],
   ): FeatureInfoResponse[] {
     return topicsFeatureInfoDetailData.map((data) => {
       const {feature_info: featureInfo} = data;
@@ -262,17 +266,17 @@ export class Gb3TopicsService extends Gb3ApiService {
                     ...feature,
                     fields: feature.fields.map((field) => {
                       return {
-                        ...field
+                        ...field,
                       };
                     }),
                     // The cast is required because the API typing delivers "type: string" which is not narrow enough
-                    geometry: {...(feature.geometry as Geometry), srs: FEATURE_INFO_SRS}
+                    geometry: {...(feature.geometry as Geometry), srs: FEATURE_INFO_SRS},
                   };
-                })
+                }),
               };
-            })
-          }
-        }
+            }),
+          },
+        },
       };
     });
   }

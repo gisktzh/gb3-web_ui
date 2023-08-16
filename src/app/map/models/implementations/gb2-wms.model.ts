@@ -37,6 +37,7 @@ export class Gb2WmsActiveMapItem extends ActiveMapItem {
   public readonly mapImageUrl: string;
   public readonly title: string;
   public readonly isSingleLayer: boolean;
+  public readonly geometadataId: number | null;
 
   constructor(map: Map, layer?: MapLayer, visible?: boolean, opacity?: number) {
     super(visible, opacity);
@@ -46,6 +47,7 @@ export class Gb2WmsActiveMapItem extends ActiveMapItem {
     this.title = layer ? layer.title : map.title;
     this.mapImageUrl = map.icon;
     this.settings = new Gb2WmsSettings(map, layer);
+    this.geometadataId = map.guid;
   }
 
   public static createSingleLayerId(mapId: string, layerId: string): string {

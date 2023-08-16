@@ -1,4 +1,4 @@
-import {InjectionToken, LOCALE_ID, NgModule} from '@angular/core';
+import {ErrorHandler, InjectionToken, LOCALE_ID, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 
 import {AppComponent} from './app.component';
@@ -11,15 +11,21 @@ import {SharedModule} from './shared/shared.module';
 import {EffectsModule} from '@ngrx/effects';
 import {EsriMapService} from './map/services/esri-services/esri-map.service';
 import {MapService} from './map/interfaces/map.service';
-import {KTZHNewsMockService} from './shared/services/apis/ktzh/ktzhnews.mock.service';
+import {KTZHNewsServiceMock} from './shared/services/apis/ktzh/ktzhnews.service.mock';
 import {NewsService} from './shared/interfaces/news-service.interface';
 import {AuthModule} from './auth/auth.module';
 import {GravCmsService} from './shared/services/apis/grav-cms/grav-cms.service';
-import {GravCmsMockService} from './shared/services/apis/grav-cms/grav-cms.mock.service';
+import {GravCmsServiceMock} from './shared/services/apis/grav-cms/grav-cms.service.mock';
 import {ConfigService} from './shared/services/config.service';
 import {KTZHNewsService} from './shared/services/apis/ktzh/ktzhnews.service';
 import {registerLocaleData} from '@angular/common';
 import localeDeCH from '@angular/common/locales/de-CH';
+import {ErrorHandlingModule} from './error-handling/error-handling.module';
+import {UrlUtils} from './shared/utils/url.utils';
+import {Router} from '@angular/router';
+import {MainPage} from './shared/enums/main-page.enum';
+import {EmbeddedErrorHandlerService} from './embedded-page/services/embedded-error-handler.service';
+import {ErrorHandlerService} from './error-handling/error-handler.service';
 
 // necessary for the locale 'de-CH' to work
 // see https://stackoverflow.com/questions/46419026/missing-locale-data-for-the-locale-xxx-with-angular
@@ -37,6 +43,20 @@ function serviceFactory<T>(service: T, mockService: T, useMockService: boolean =
   return useMockService ? mockService : service;
 }
 
+function errorHandlerServiceFactory(
+  router: Router,
+  errorHandlerService: ErrorHandlerService,
+  embeddedErrorHandlerService: EmbeddedErrorHandlerService,
+) {
+  const urlTree = router.parseUrl(window.location.pathname);
+  const mainPage = UrlUtils.extractMainPage(urlTree);
+  if (mainPage === MainPage.Embedded) {
+    return embeddedErrorHandlerService;
+  } else {
+    return errorHandlerService;
+  }
+}
+
 export const MAP_SERVICE = new InjectionToken<MapService>('MapService');
 export const NEWS_SERVICE = new InjectionToken<NewsService>('NewsService');
 export const GRAV_CMS_SERVICE = new InjectionToken<GravCmsService>('GravCmsService');
@@ -51,14 +71,16 @@ export const GRAV_CMS_SERVICE = new InjectionToken<GravCmsService>('GravCmsServi
     SharedModule,
     StoreModule.forRoot(reducers, {metaReducers}),
     EffectsModule.forRoot(effects),
-    AuthModule
+    AuthModule,
+    ErrorHandlingModule,
   ],
   providers: [
+    {provide: ErrorHandler, deps: [Router, ErrorHandlerService, EmbeddedErrorHandlerService], useFactory: errorHandlerServiceFactory},
     {provide: MAP_SERVICE, useClass: EsriMapService},
-    {provide: NEWS_SERVICE, deps: [KTZHNewsService, KTZHNewsMockService, ConfigService], useFactory: newsFactory},
-    {provide: GRAV_CMS_SERVICE, deps: [GravCmsService, GravCmsMockService, ConfigService], useFactory: gravCmsFactory},
-    {provide: LOCALE_ID, useValue: 'de-CH'}
+    {provide: NEWS_SERVICE, deps: [KTZHNewsService, KTZHNewsServiceMock, ConfigService], useFactory: newsFactory},
+    {provide: GRAV_CMS_SERVICE, deps: [GravCmsService, GravCmsServiceMock, ConfigService], useFactory: gravCmsFactory},
+    {provide: LOCALE_ID, useValue: 'de-CH'},
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {}

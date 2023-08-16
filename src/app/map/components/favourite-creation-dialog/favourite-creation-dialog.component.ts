@@ -2,19 +2,21 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MatDialogRef} from '@angular/material/dialog';
 import {FormControl, ValidatorFn, Validators} from '@angular/forms';
 import {FavouritesService} from '../../services/favourites.service';
-import {EMPTY, Subscription, tap} from 'rxjs';
+import {Subscription, tap} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {HasSavingState} from '../../../shared/interfaces/has-saving-state.interface';
 import {FavouriteListActions} from '../../../state/map/actions/favourite-list.actions';
 import {Store} from '@ngrx/store';
-import {LoadingState} from '../../../shared/types/loading-state';
+import {LoadingState} from '../../../shared/types/loading-state.type';
 
-const FAVOURITE_NAME_CONSTRAINTS: ValidatorFn[] = [Validators.minLength(1), Validators.required, Validators.pattern(/^\S+$/)];
+import {FavouriteCouldNotBeCreated} from '../../../shared/errors/favourite.errors';
+
+const FAVOURITE_NAME_CONSTRAINTS: ValidatorFn[] = [Validators.minLength(1), Validators.required, Validators.pattern(/\S/)];
 
 @Component({
   selector: 'favourite-creation-dialog',
   templateUrl: './favourite-creation-dialog.component.html',
-  styleUrls: ['./favourite-creation-dialog.component.scss']
+  styleUrls: ['./favourite-creation-dialog.component.scss'],
 })
 export class FavouriteCreationDialogComponent implements OnInit, OnDestroy, HasSavingState {
   public nameFormControl!: FormControl<string | null>;
@@ -24,7 +26,7 @@ export class FavouriteCreationDialogComponent implements OnInit, OnDestroy, HasS
   constructor(
     private readonly dialogRef: MatDialogRef<FavouriteCreationDialogComponent>,
     private readonly favouritesService: FavouritesService,
-    private readonly store: Store
+    private readonly store: Store,
   ) {}
 
   public get name() {
@@ -55,12 +57,12 @@ export class FavouriteCreationDialogComponent implements OnInit, OnDestroy, HasS
               this.store.dispatch(FavouriteListActions.loadFavourites());
               this.close();
             }),
-            catchError(() => {
+            catchError((err: unknown) => {
               this.savingState = 'error';
-              return EMPTY;
-            })
+              throw new FavouriteCouldNotBeCreated(err);
+            }),
           )
-          .subscribe()
+          .subscribe(),
       );
     }
   }

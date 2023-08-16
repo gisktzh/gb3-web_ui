@@ -1,0 +1,29 @@
+<loading-and-process-bar [loadingState]="loadingState"></loading-and-process-bar>
+
+<data-catalogue-detail-page *ngIf="baseMetadataInformation" [baseMetadataInformation]="baseMetadataInformation">
+  <data-catalogue-detail-page-section>
+    <data-display-section [sectionTitle]="'Zuständig für Geometadaten'">
+      <data-display [elements]="metadataContactElements"></data-display>
+    </data-display-section>
+  </data-catalogue-detail-page-section>
+
+  <data-catalogue-detail-page-section>
+    <data-display-section [sectionTitle]="'Informationen'">
+      <data-display [elements]="informationElements"></data-display>
+    </data-display-section>
+  </data-catalogue-detail-page-section>
+
+  <data-catalogue-detail-page-section *ngIf="linkedDatasets.length > 0">
+    <data-display-section [sectionTitle]="'Verwendete Geodatensätze'">
+      <descriptive-highlighted-link
+        *ngFor="let linkedDataset of linkedDatasets"
+        [description]="linkedDataset.shortDescription"
+        [title]="linkedDataset.name"
+      >
+        <a [routerLink]="['/', mainPageEnum.Data, dataCataloguePageEnum.Datasets, linkedDataset.guid]" mat-icon-button>
+          <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
+        </a>
+      </descriptive-highlighted-link>
+    </data-display-section>
+  </data-catalogue-detail-page-section>
+</data-catalogue-detail-page>

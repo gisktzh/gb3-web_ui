@@ -1,17 +1,17 @@
-import {Injectable} from '@angular/core';
+import {Injectable, OnDestroy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {MapConfigActions} from '../../../state/map/actions/map-config.actions';
 import {TransformationService} from './transformation.service';
 import {selectActiveBasemapId, selectMapConfigState} from '../../../state/map/reducers/map-config.reducer';
-import {first, skip, Subscription, tap, withLatestFrom} from 'rxjs';
+import {BehaviorSubject, first, pairwise, skip, Subscription, tap, withLatestFrom} from 'rxjs';
 import {GeoJSONMapperService} from './geo-json-mapper.service';
 import * as dayjs from 'dayjs';
 import {MapService} from '../../interfaces/map.service';
 import {ActiveMapItem} from '../../models/active-map-item.model';
 import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
-import {LoadingState} from '../../../shared/types/loading-state';
-import {ViewProcessState} from '../../../shared/types/view-process-state';
-import {ZoomType} from '../../../shared/types/zoom-type';
+import {LoadingState} from '../../../shared/types/loading-state.type';
+import {ViewProcessState} from '../../../shared/types/view-process-state.type';
+import {ZoomType} from '../../../shared/types/zoom.type';
 import {BasemapConfigService} from '../basemap-config.service';
 import {ConfigService} from '../../../shared/services/config.service';
 import {selectItems} from '../../../state/map/reducers/active-map-item.reducer';
@@ -47,6 +47,7 @@ import {DrawingActiveMapItem} from '../../models/implementations/drawing.model';
 import {EsriToolService} from './tool-service/esri-tool.service';
 import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
 import {PrintUtils} from '../../../shared/utils/print.utils';
+import {map} from 'rxjs/operators';
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
 const DEFAULT_PRINT_PREVIEW_ANIMATION_DURATION_IN_MS = 500;
@@ -55,13 +56,12 @@ const DEFAULT_PRINT_PREVIEW_EXPAND_FACTOR = 1.5;
 @Injectable({
   providedIn: 'root',
 })
-export class EsriMapService implements MapService {
+export class EsriMapService implements MapService, OnDestroy {
   private scaleBar?: __esri.ScaleBar;
   private effectiveMaxZoom = 23;
   private effectiveMinZoom = 0;
   private effectiveMinScale = 0;
-  private printPreviewCenter: __esri.Point = new EsriPoint();
-  private printPreviewHandle?: IHandle;
+  private readonly printPreviewHandle$: BehaviorSubject<IHandle | null> = new BehaviorSubject<IHandle | null>(null);
   private readonly defaultMapConfig: MapConfigState = this.configService.mapConfig.defaultMapConfig;
   private readonly numberOfDrawingLayers = Object.keys(InternalDrawingLayer).length;
   private readonly subscriptions: Subscription = new Subscription();
@@ -89,6 +89,7 @@ export class EsriMapService implements MapService {
     esriConfig.request.httpsDomains?.push('wms.zh.ch');
 
     this.initializeInterceptors();
+    this.initializeSubscriptions();
   }
 
   private get mapView(): __esri.MapView {
@@ -179,14 +180,17 @@ export class EsriMapService implements MapService {
       visible: mapItem.visible,
       opacity: mapItem.opacity,
       imageFormat: this.wmsImageFormatMimeType,
-      sublayers: mapItem.settings.layers.map((layer) => {
-        return {
-          id: layer.id,
-          name: layer.layer,
-          title: layer.title,
-          visible: layer.visible,
-        } as __esri.WMSSublayerProperties;
-      }),
+      sublayers: mapItem.settings.layers
+        .map((layer) => {
+          return {
+            id: layer.id,
+            name: layer.layer,
+            title: layer.title,
+            visible: layer.visible,
+          } as __esri.WMSSublayerProperties;
+        })
+        .reverse(), // reverse the order of the sublayers because the order in the GB3 interfaces (Topic, ActiveMapItem) is inverted to the
+      // order of the WMS specifications
     });
     if (mapItem.settings.timeSliderExtent) {
       // apply initial time slider settings
@@ -292,7 +296,7 @@ export class EsriMapService implements MapService {
     /**
      * `position` is the map/layer position from the state/GUI: lowest position <=> highest visibility
      * `index` is the position inside the Esri layer array. It's inverse to the position from the state/GUI: the lowest index <=> lowest
-     * visibility Additionally, there is a number of default layers that must always keep the highest visibility (e.g. highlight layer)
+     * visibility. Additionally, there is a number of default layers that must always keep the highest visibility (e.g. highlight layer)
      * independent from the state/GUI layers.
      */
     const previousIndex = this.getNumberOfNonDrawingLayers() - 1 - previousPosition;
@@ -303,9 +307,15 @@ export class EsriMapService implements MapService {
   public reorderSublayer(mapItem: ActiveMapItem, previousPosition: number, currentPosition: number) {
     const esriLayer = this.esriMapViewService.findEsriLayer(mapItem.id);
     if (esriLayer && esriLayer instanceof EsriWMSLayer) {
-      // the index of sublayers is identical to their position (in contrast to the map items) where the lowest index/position has the
-      // highest visibility
-      esriLayer.sublayers.reorder(esriLayer.sublayers.getItemAt(previousPosition), currentPosition);
+      /**
+       * `position` is the map/layer position from the state/GUI: lowest position <=> highest visibility
+       * `index` is the position inside the Esri layer array. It's inverse to the position from the state/GUI: the lowest index <=> lowest
+       * visibility. Additionally, there is a number of default layers that must always keep the highest visibility (e.g. highlight layer)
+       * independent from the state/GUI layers.
+       */
+      const previousIndex = esriLayer.sublayers.length - 1 - previousPosition;
+      const currentIndex = esriLayer.sublayers.length - 1 - currentPosition;
+      esriLayer.sublayers.reorder(esriLayer.sublayers.getItemAt(previousIndex), currentIndex);
     }
   }
 
@@ -356,31 +366,32 @@ export class EsriMapService implements MapService {
     return this.esriToolService;
   }
 
-  public async startDrawPrintPreview(extentWidth: number, extentHeight: number, rotation: number) {
-    // first of all: remove the old print preview handle that redraws the area if the map center changes
-    //               we're about to change the extent width, height or the rotation therefore we need a new handle
-    if (this.printPreviewHandle) {
-      this.printPreviewHandle.remove();
-    }
-    // draw the new geometry once as it is entirely possible that the map center didn't change yet
+  public async startDrawPrintPreview(extentWidth: number, extentHeight: number, rotation: number): Promise<void> {
+    // listen to any map center changes and redraw the print preview area to keep it in the center of the map
+    // the old print preview handle gets removed automatically using a subscription that listens to the value changes and removes old
+    // handlers
+    this.printPreviewHandle$.next(
+      esriReactiveUtils.watch(
+        () => [this.mapView.center.x, this.mapView.center.y],
+        ([x, y]) => {
+          // redraw the print preview area if either the x or the y coordinate of the map center changes so that it is always in the center
+          this.handlePrintPreview({x, y}, extentWidth, extentHeight, rotation);
+        },
+      ),
+    );
+
+    // draw the new geometry once as it is entirely possible that the map center didn't change yet and then zoom to the geometry.
     const geometryWithSrs: PolygonWithSrs = this.handlePrintPreview(this.mapView.center, extentWidth, extentHeight, rotation);
     await this.zoomToExtent(geometryWithSrs, DEFAULT_PRINT_PREVIEW_EXPAND_FACTOR, DEFAULT_PRINT_PREVIEW_ANIMATION_DURATION_IN_MS);
-    // now listen to any map center changes and redraw the print preview area to keep it in the center of the map
-    this.printPreviewHandle = esriReactiveUtils.watch(
-      () => [this.mapView.center.x, this.mapView.center.y],
-      ([x, y]) => {
-        // redraw the print preview area if either the x or the y coordinate of the map center changes so that it is always in the center
-        this.handlePrintPreview({x, y}, extentWidth, extentHeight, rotation);
-      },
-    );
   }
 
   public stopDrawPrintPreview() {
-    if (this.printPreviewHandle) {
-      this.printPreviewHandle.remove();
-    }
-    this.printPreviewCenter = new EsriPoint();
+    this.printPreviewHandle$.next(null);
     this.clearDrawingLayer(InternalDrawingLayer.PrintPreview);
+  }
+
+  public ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 
   private addEsriGeometryToDrawingLayer(
@@ -396,7 +407,6 @@ export class EsriMapService implements MapService {
   }
 
   private handlePrintPreview(center: {x: number; y: number}, extentWidth: number, extentHeight: number, rotation: number): PolygonWithSrs {
-    this.printPreviewCenter = new EsriPoint(center);
     const printPreviewArea = PrintUtils.createPrintPreviewArea(center, extentWidth, extentHeight);
     const symbolization = this.esriSymbolizationService.createSymbolizationForDrawingLayer(
       printPreviewArea,
@@ -511,15 +521,18 @@ export class EsriMapService implements MapService {
     const esriSublayers = esriLayer.sublayers.filter((sl) => !timeSliderLayerNames.includes(sl.name));
     // now add all layers that are in the time slider config and within the current time extent
     esriSublayers.addMany(
-      layers.map(
-        (layer) =>
-          new EsriWMSSublayer({
-            id: layer.id,
-            name: layer.layer,
-            title: layer.title,
-            visible: true,
-          } as __esri.WMSSublayerProperties),
-      ),
+      layers
+        .map(
+          (layer) =>
+            new EsriWMSSublayer({
+              id: layer.id,
+              name: layer.layer,
+              title: layer.title,
+              visible: true,
+            } as __esri.WMSSublayerProperties),
+        )
+        .reverse(), // reverse the order of the sublayers because the order in the GB3 interfaces (Topic, ActiveMapItem) is inverted to the
+      // order of the WMS specifications
     );
     esriLayer.sublayers = esriSublayers;
   }
@@ -536,6 +549,28 @@ export class EsriMapService implements MapService {
             const newInterceptor = this.getWmsOverrideInterceptor(this.authService.getAccessToken());
             esriConfig.request.interceptors = []; // todo: pop existing as soon as we add more interceptors
             esriConfig.request.interceptors.push(newInterceptor);
+          }),
+        )
+        .subscribe(),
+    );
+  }
+
+  private initializeSubscriptions() {
+    this.subscriptions.add(
+      /**
+       * This pipe tracks the active print preview handle changes and automatically destroys old handles properly.
+       * Otherwise this could result in potential memory leaks as we could lose the reference to
+       * an old (but still active) handle which will be still active in the background forever.
+       */
+      this.printPreviewHandle$
+        .pipe(
+          pairwise(),
+          map(([previousHandle, activeHandle]) => {
+            if (previousHandle) {
+              // properly destroy the old handle
+              previousHandle.remove();
+            }
+            return activeHandle;
           }),
         )
         .subscribe(),
@@ -591,7 +626,7 @@ export class EsriMapService implements MapService {
     this.mapView = new EsriMapView({
       map: map,
       ui: {
-        components: ['attribution'], // todo: may be removed, check licensing
+        components: ['attribution'],
       },
       scale: scale,
       center: new EsriPoint({x, y, spatialReference}),

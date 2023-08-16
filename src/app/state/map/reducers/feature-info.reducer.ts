@@ -8,7 +8,7 @@ export const initialState: FeatureInfoState = {
   loadingState: 'undefined',
   data: [],
   highlightedFeature: undefined,
-  pinnedFeatureId: undefined
+  pinnedFeatureId: undefined,
 };
 
 export const featureInfoFeature = createFeature({
@@ -30,8 +30,11 @@ export const featureInfoFeature = createFeature({
     }),
     on(FeatureInfoActions.clearHighlight, (state): FeatureInfoState => {
       return {...state, highlightedFeature: undefined, pinnedFeatureId: undefined};
-    })
-  )
+    }),
+    on(FeatureInfoActions.setError, (): FeatureInfoState => {
+      return {...initialState, loadingState: 'error'};
+    }),
+  ),
 });
 
 export const {name, reducer, selectFeatureInfoState, selectLoadingState, selectData, selectHighlightedFeature, selectPinnedFeatureId} =

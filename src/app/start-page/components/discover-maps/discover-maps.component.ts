@@ -1,21 +1,23 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {HasLoadingState} from '../../../shared/interfaces/has-loading-state.interface';
-import {LoadingState} from '../../../shared/types/loading-state';
-import {Subscription, tap, throwError} from 'rxjs';
+import {LoadingState} from '../../../shared/types/loading-state.type';
+import {Subscription, tap} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {DiscoverMapsItem} from '../../../shared/interfaces/discover-maps-item.interface';
 import {GravCmsService} from '../../../shared/services/apis/grav-cms/grav-cms.service';
 import {MainPage} from '../../../shared/enums/main-page.enum';
 import {GRAV_CMS_SERVICE} from '../../../app.module';
 
+import {DiscoverMapsCouldNotBeLoaded} from '../../../shared/errors/start-page.errors';
+
 const NUMBER_OF_ENTRIES = 2;
+
 @Component({
   selector: 'discover-maps',
   templateUrl: './discover-maps.component.html',
-  styleUrls: ['./discover-maps.component.scss']
+  styleUrls: ['./discover-maps.component.scss'],
 })
 export class DiscoverMapsComponent implements OnInit, HasLoadingState, OnDestroy {
-  // expose the enum to the HTML
   public readonly mainPageEnum = MainPage;
 
   public loadingState: LoadingState = 'loading';
@@ -39,10 +41,10 @@ export class DiscoverMapsComponent implements OnInit, HasLoadingState, OnDestroy
           }),
           catchError((err: unknown) => {
             this.loadingState = 'error';
-            return throwError(() => err);
-          })
+            throw new DiscoverMapsCouldNotBeLoaded(err);
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 }

@@ -1,0 +1,33 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'animations/snackbar/error-animations' as error-animations;
+
+.error-snackbar {
+  animation: error-shake 1s;
+
+  &.mat-mdc-snack-bar-container {
+    max-width: 500px;
+    background-color: ktzh-variables.$zh-red;
+    --mdc-snackbar-container-color: ktzh-variables.$zh-red;
+
+    .mdc-snackbar__surface {
+      width: 100%;
+      border-radius: ktzh-variables.$zh-border-radius;
+      padding-right: 0;
+    }
+  }
+
+  &::after {
+    z-index: -1; // move behind the element to have ripple appear from the back
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: inherit;
+    border-radius: inherit;
+    pointer-events: none;
+    animation: error-ripple 0.5s linear;
+    visibility: hidden;
+  }
+}

@@ -3,7 +3,7 @@ import {Gb2WmsActiveMapItem} from '../../map/models/implementations/gb2-wms.mode
 
 type ActiveMapItemLayerConfiguration = Pick<MapLayer, 'id' | 'layer' | 'visible'>;
 
-export interface ActiveMapItemConfiguration extends Pick<Gb2WmsActiveMapItem, 'visible' | 'opacity' | 'isSingleLayer'> {
+export interface ActiveMapItemConfiguration extends Pick<Gb2WmsActiveMapItem, 'id' | 'visible' | 'opacity' | 'isSingleLayer'> {
   layers: ActiveMapItemLayerConfiguration[];
   mapId: string;
 }

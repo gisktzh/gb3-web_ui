@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {BaseMapDataItemComponent} from './base-map-data-item.component';
 import {MapLayer} from '../../../../shared/interfaces/topic.interface';
-import {LoadingState} from '../../../../shared/types/loading-state';
+import {LoadingState} from '../../../../shared/types/loading-state.type';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {selectMapConfigState} from '../../../../state/map/reducers/map-config.reducer';
@@ -9,7 +9,7 @@ import {selectMapConfigState} from '../../../../state/map/reducers/map-config.re
 @Component({
   selector: 'map-data-item-map',
   templateUrl: './base-map-data-item.component.html',
-  styleUrls: ['./base-map-data-item.component.scss']
+  styleUrls: ['./base-map-data-item.component.scss'],
 })
 export class MapDataItemMapComponent extends BaseMapDataItemComponent implements OnInit, OnDestroy {
   @Input() public override layers: MapLayer[] = [];
@@ -37,9 +37,9 @@ export class MapDataItemMapComponent extends BaseMapDataItemComponent implements
           .pipe(
             tap((mapConfigState) => {
               this.mapConfigState = mapConfigState;
-            })
+            }),
           )
-          .subscribe()
+          .subscribe(),
       );
     }
   }

@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Actions, concatLatestFrom, createEffect, ofType} from '@ngrx/effects';
-import {EMPTY, iif, of, switchMap, tap} from 'rxjs';
+import {iif, of, switchMap, tap} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
 import {FeatureInfoActions} from '../actions/feature-info.actions';
 import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
@@ -11,23 +11,25 @@ import {PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.in
 import {MapConfigActions} from '../actions/map-config.actions';
 import {ConfigService} from '../../../shared/services/config.service';
 
+import {FeatureInfoCouldNotBeLoaded} from '../../../shared/errors/map.errors';
+
 @Injectable()
 export class FeatureInfoEffects {
-  public clearData = createEffect(() => {
+  public clearData$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapConfigActions.clearFeatureInfoContent),
       map(() => FeatureInfoActions.clearContent()),
     );
   });
 
-  public interceptMapClick = createEffect(() => {
+  public interceptMapClick$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapConfigActions.handleMapClick),
       map(({x, y}) => FeatureInfoActions.sendRequest({x, y})),
     );
   });
 
-  public dispatchFeatureInfoRequest$ = createEffect(() => {
+  public requestFeatureInfo$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(FeatureInfoActions.sendRequest),
       tap(({x, y}) => {
@@ -46,7 +48,7 @@ export class FeatureInfoEffects {
             map((featureInfos) => {
               return FeatureInfoActions.updateContent({featureInfos});
             }),
-            catchError(() => EMPTY), // todo error handling
+            catchError((error: unknown) => of(FeatureInfoActions.setError({error}))),
           ),
           of(FeatureInfoActions.updateContent({featureInfos: []})),
         ),
@@ -54,7 +56,19 @@ export class FeatureInfoEffects {
     );
   });
 
-  public removeHighlightOnContentClear = createEffect(
+  public setError$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(FeatureInfoActions.setError),
+        tap(({error}) => {
+          throw new FeatureInfoCouldNotBeLoaded(error);
+        }),
+      );
+    },
+    {dispatch: false},
+  );
+
+  public removeHighlightOnContentClear$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(FeatureInfoActions.clearContent),

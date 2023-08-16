@@ -19,7 +19,7 @@ export class EsriAreaMeasurementStrategy extends AbstractEsriMeasurementStrategy
     mapView: MapView,
     polygonSymbol: SimpleFillSymbol,
     labelSymbolization: TextSymbol,
-    completeCallbackHandler: () => void
+    completeCallbackHandler: () => void,
   ) {
     super(layer, mapView, completeCallbackHandler);
 

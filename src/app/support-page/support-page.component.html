@@ -8,16 +8,30 @@
       Informationen, die Sie benötigen, um den neuen Kartenviewer zu nutzen.
     </p>
     <nav mat-tab-nav-bar [tabPanel]="tabPanel">
-      <a routerLink="faq" mat-tab-link routerLinkActive="current" #faqIsActive="routerLinkActive" [active]="faqIsActive.isActive">FAQ</a>
       <a
-        routerLink="useful-links"
+        [routerLink]="supportPageEnum.Faq"
+        mat-tab-link
+        routerLinkActive="current"
+        #faqIsActive="routerLinkActive"
+        [active]="faqIsActive.isActive"
+        >FAQ</a
+      >
+      <a
+        [routerLink]="supportPageEnum.UsefulLinks"
         mat-tab-link
         routerLinkActive="current"
         #linksIsActive="routerLinkActive"
         [active]="linksIsActive.isActive"
         >Hilfreiche Links</a
       >
-      <a routerLink="contact" mat-tab-link routerLinkActive="current" #rla="routerLinkActive" [active]="rla.isActive">Supportanfrage</a>
+      <a
+        [routerLink]="supportPageEnum.Contact"
+        mat-tab-link
+        routerLinkActive="current"
+        #contactIsActive="routerLinkActive"
+        [active]="contactIsActive.isActive"
+        >Supportanfrage</a
+      >
     </nav>
     <mat-tab-nav-panel #tabPanel class="support-page__content__tab">
       <router-outlet></router-outlet>

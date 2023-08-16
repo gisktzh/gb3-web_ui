@@ -12,11 +12,14 @@ export class GeolocationEffects {
         ofType(GeolocationActions.startLocationRequest),
         tap(() => {
           this.geoLocationService.getPosition();
-        })
+        }),
       );
     },
-    {dispatch: false}
+    {dispatch: false},
   );
 
-  constructor(private readonly actions$: Actions, private readonly geoLocationService: GeolocationService) {}
+  constructor(
+    private readonly actions$: Actions,
+    private readonly geoLocationService: GeolocationService,
+  ) {}
 }

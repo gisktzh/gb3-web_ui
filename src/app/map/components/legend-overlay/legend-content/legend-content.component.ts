@@ -5,7 +5,7 @@ import {ConfigService} from '../../../../shared/services/config.service';
 @Component({
   selector: 'legend-content',
   templateUrl: './legend-content.component.html',
-  styleUrls: ['./legend-content.component.scss']
+  styleUrls: ['./legend-content.component.scss'],
 })
 export class LegendContentComponent {
   @Input() public layer!: Layer;

@@ -14,8 +14,8 @@ export const selectCurrentShareLinkItem = createSelector(
       basemapId: activeBasemapId,
       content: activeMapItemConfigurations,
       drawings: [], // TODO: Add drawings as soon as they're ready
-      measurements: [] // TODO: Add measurements as soon as they're ready
+      measurements: [], // TODO: Add measurements as soon as they're ready
     };
     return shareLinkItem;
-  }
+  },
 );

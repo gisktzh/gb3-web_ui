@@ -6,7 +6,7 @@ export const authStatusFeatureKey = 'authStatus';
 
 export const initialState: AuthStatusState = {
   isAuthenticated: false,
-  userName: undefined
+  userName: undefined,
 };
 
 export const authStatusFeature = createFeature({
@@ -15,8 +15,8 @@ export const authStatusFeature = createFeature({
     initialState,
     on(AuthStatusActions.setStatus, (state, {isAuthenticated, userName}): AuthStatusState => {
       return {...state, isAuthenticated, userName};
-    })
-  )
+    }),
+  ),
 });
 
 export const {name, reducer, selectAuthStatusState, selectIsAuthenticated, selectUserName} = authStatusFeature;

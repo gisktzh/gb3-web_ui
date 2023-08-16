@@ -7,7 +7,7 @@ export const favouriteListFeatureKey = 'favouriteList';
 
 export const initialState: FavouriteListState = {
   favourites: [],
-  loadingState: 'undefined'
+  loadingState: 'undefined',
 };
 
 export const favouriteListeFeature = createFeature({
@@ -27,14 +27,17 @@ export const favouriteListeFeature = createFeature({
       FavouriteListActions.setInvalid,
       produce((draft, {id}) => {
         draft.favourites.find((favourite) => favourite.id === id)!.invalid = true;
-      })
+      }),
     ),
     on(FavouriteListActions.removeFavourite, (state, {id}): FavouriteListState => {
       const remainingFavourites = state.favourites.filter((favourite) => favourite.id !== id);
 
       return {...state, favourites: remainingFavourites};
-    })
-  )
+    }),
+    on(FavouriteListActions.setError, (): FavouriteListState => {
+      return {...initialState, loadingState: 'error'};
+    }),
+  ),
 });
 
 export const {name, reducer, selectFavourites, selectLoadingState} = favouriteListeFeature;

@@ -52,12 +52,12 @@ const callbackFactory: (overrideWmsUrl: string) => AfterInterceptorCallback = (o
 const wmsAuthAndUrlOverrideInterceptorFactory = (
   urlsToListenTo: string[],
   hasWmsOverride?: string,
-  accessToken?: string
+  accessToken?: string,
 ): __esri.RequestInterceptor => {
   const baseInterceptor: RequestInterceptor = {
     headers: {},
     urls: urlsToListenTo,
-    after: hasWmsOverride ? callbackFactory(hasWmsOverride) : undefined
+    after: hasWmsOverride ? callbackFactory(hasWmsOverride) : undefined,
   };
 
   if (accessToken) {

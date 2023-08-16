@@ -1,0 +1,9 @@
+<div class="waiting-page">
+  <div class="waiting-page__header">
+    <mat-spinner [diameter]="20" class="waiting-page__header__item"></mat-spinner>
+    <span class="waiting-page__header__item">{{ waitingText }}</span>
+  </div>
+  <p class="mat-caption">
+    Falls nichts passiert, klicken Sie auf bitte <a [routerLink]="['/', redirectMainPage]">hier</a> oder nutzen Sie die Navigation.
+  </p>
+</div>

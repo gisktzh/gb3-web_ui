@@ -5,11 +5,13 @@ import {ConfigService} from '../../../../shared/services/config.service';
 @Component({
   selector: 'legend-item',
   templateUrl: './legend-item.component.html',
-  styleUrls: ['./legend-item.component.scss']
+  styleUrls: ['./legend-item.component.scss'],
 })
 export class LegendItemComponent {
   @Input() public legendItem!: LegendDisplay;
   @Input() public isPrintable: boolean = false;
+  /** A value indicating whether interactive elements (like buttons) should be shown. [Default: true] */
+  @Input() public showInteractiveElements: boolean = true;
   public readonly staticFilesBaseUrl: string;
 
   constructor(private readonly configService: ConfigService) {

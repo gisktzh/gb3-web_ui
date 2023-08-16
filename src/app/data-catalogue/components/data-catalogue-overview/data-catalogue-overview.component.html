@@ -1,5 +1,42 @@
-<ul>
-  <li><a routerLink="/data/geodata/250">Link zu einem Geodatensatz</a></li>
-  <li><a routerLink="/data/geoservice/1337">Link zu einem Geoservice</a></li>
-  <li><a routerLink="/data/map/1337">Link zu einer Karte</a></li>
-</ul>
+<start-page-section [background]="'primary'">
+  <hero-header
+    heroText="Der Datenkatalog listet Geodaten auf und lässt sich nach verschiedenen Kriterien sortieren. Die Geodaten bestehen aus Geodatensätzen, Geodiensten und GIS-Browser Karten sowie den eigentlichen Geometadaten."
+    heroTitle="Datenkatalog"
+  ></hero-header>
+</start-page-section>
+<div class="data-catalogue-overview">
+  <div class="data-catalogue-overview__content">
+    <loading-and-process-bar [loadingState]="loadingState"></loading-and-process-bar>
+    <ng-container *ngIf="loadingState === 'loaded'">
+      <div class="data-catalogue-overview__content__active-filters">
+        <span class="data-catalogue-overview__content__active-filters__result-size">
+          {{ dataCatalogueItems.data.length }} {{ dataCatalogueItems.data.length === 1 ? 'Resultat' : 'Resultate' }}
+        </span>
+        <div>
+          <mat-chip-row *ngFor="let activeFilter of activeFilters" (removed)="toggleFilter(activeFilter)">
+            {{ activeFilter.value }}
+            <button matChipRemove>
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip-row>
+        </div>
+      </div>
+      <!-- TODO: this button will be styled and located properly within the search bar when that's done -->
+      <div style="display: flex; justify-content: end">
+        <button (click)="openFilterWindow()" color="accent" mat-flat-button>Filter</button>
+      </div>
+      <cdk-table [dataSource]="dataCatalogueItems">
+        <ng-container cdkColumnDef="data">
+          <cdk-cell *cdkCellDef="let row">
+            <data-catalogue-overview-item [item]="row"></data-catalogue-overview-item>
+          </cdk-cell>
+        </ng-container>
+
+        <!-- Header and Row Declarations -->
+        <cdk-row *cdkRowDef="let row; columns: ['data']"></cdk-row>
+      </cdk-table>
+      <mat-paginator [pageSize]="10" hidePageSize showFirstLastButtons></mat-paginator>
+    </ng-container>
+    <b *ngIf="loadingState === 'error'">Fehler beim Laden der Metadatenübersicht.</b>
+  </div>
+</div>

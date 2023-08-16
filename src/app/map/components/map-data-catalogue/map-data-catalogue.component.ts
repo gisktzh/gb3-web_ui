@@ -5,7 +5,7 @@ import {selectFilterString, selectLoadingState as selectCatalogueLoadingState} f
 import {LayerCatalogActions} from '../../../state/map/actions/layer-catalog.actions';
 import {debounceTime, distinctUntilChanged, fromEvent, Observable, Subscription, tap} from 'rxjs';
 import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
-import {LoadingState} from '../../../shared/types/loading-state';
+import {LoadingState} from '../../../shared/types/loading-state.type';
 import {ActiveMapItem} from '../../models/active-map-item.model';
 import {Map, MapLayer, Topic} from '../../../shared/interfaces/topic.interface';
 import {selectFilteredLayerCatalog} from '../../../state/map/selectors/filtered-layer-catalog.selector';
@@ -19,6 +19,8 @@ import {FavouritesService} from '../../services/favourites.service';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
 
+import {MapCouldNotBeFound} from '../../../shared/errors/map.errors';
+
 /**
  * Defines the upper limit (inclusive) of filtered results which trigger an automatic open of the associated expansion panel.
  */
@@ -27,7 +29,7 @@ const AUTO_OPEN_THRESHOLD = 3;
 @Component({
   selector: 'map-data-catalogue',
   templateUrl: './map-data-catalogue.component.html',
-  styleUrls: ['./map-data-catalogue.component.scss']
+  styleUrls: ['./map-data-catalogue.component.scss'],
 })
 export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewInit {
   @Output() public readonly changeIsMinimizedEvent = new EventEmitter<boolean>();
@@ -54,12 +56,13 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
 
   constructor(
     private readonly store: Store,
-    private readonly favouritesService: FavouritesService
-  ) {}
+    private readonly favouritesService: FavouritesService,
+  ) {
+    this.store.dispatch(LayerCatalogActions.loadLayerCatalog());
+  }
 
   public ngOnInit() {
     this.initSubscriptions();
-    this.store.dispatch(LayerCatalogActions.loadLayerCatalog());
   }
 
   public ngOnDestroy() {
@@ -73,12 +76,17 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
   /**
    * Dispatches an action that adds a favourite to the map.
    */
-  public addFavouriteToMap({id, content}: Favourite) {
+  public addFavouriteToMap(favourite: Favourite) {
     try {
-      const activeMapItemsForFavourite = this.favouritesService.getActiveMapItemsForFavourite(content);
-      this.store.dispatch(ActiveMapItemActions.addFavourite({favourite: activeMapItemsForFavourite}));
+      const activeMapItemsForFavourite = this.favouritesService.getActiveMapItemsForFavourite(favourite.content);
+      this.store.dispatch(
+        ActiveMapItemActions.addFavourite({
+          activeMapItems: activeMapItemsForFavourite,
+          baseConfig: favourite.baseConfig,
+        }),
+      );
     } catch (e) {
-      this.store.dispatch(FavouriteListActions.setInvalid({id}));
+      this.store.dispatch(FavouriteListActions.setInvalid({id: favourite.id}));
     }
   }
 
@@ -94,7 +102,7 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
     if (this.filterString !== '') {
       const originalActiveMap = this.originalMaps.find((originalMap) => originalMap.id === activeMap.id);
       if (!originalActiveMap) {
-        throw new Error('Map cannot be found.'); //todo: error handling (although this should never happen here)
+        throw new MapCouldNotBeFound(); // although this should never happen here because the item WILL always exist
       }
       activeMap = originalActiveMap;
     }
@@ -124,7 +132,7 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
       debounceTime(300),
       map((event) => (<HTMLInputElement>event.target).value),
       distinctUntilChanged(),
-      tap((event) => this.filterCatalog(event))
+      tap((event) => this.filterCatalog(event)),
     );
   }
 
@@ -139,9 +147,9 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
         .pipe(
           tap((topics) => {
             this.topics = topics;
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
 
     this.subscriptions.add(
@@ -149,9 +157,9 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
         .pipe(
           tap((value) => {
             this.catalogueLoadingState = value;
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
 
     this.subscriptions.add(
@@ -159,9 +167,9 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
         .pipe(
           tap((value) => {
             this.favouritesLoadingState = value;
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
 
     this.subscriptions.add(
@@ -169,9 +177,9 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
         .pipe(
           tap((value) => {
             this.filterString = value;
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
 
     this.subscriptions.add(
@@ -179,9 +187,9 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
         .pipe(
           tap((value) => {
             this.originalMaps = value;
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
 
     this.subscriptions.add(
@@ -195,9 +203,9 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
             if (this.isAuthenticated) {
               this.store.dispatch(FavouriteListActions.loadFavourites());
             }
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
 
     this.subscriptions.add(this.filteredFavourites$.pipe(tap((favourites) => (this.filteredFavourites = favourites))).subscribe());

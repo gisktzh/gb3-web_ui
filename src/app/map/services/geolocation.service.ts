@@ -4,19 +4,24 @@ import {Store} from '@ngrx/store';
 import {PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
 import {GeolocationActions} from '../../state/map/actions/geolocation.actions';
 
+import {NavigatorNotAvailable} from '../../shared/errors/map.errors';
+
 const GEOLOCATION_TIMEOUT_IN_MS = 5000;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class GeolocationService {
   private readonly navigator?: Navigator;
 
-  constructor(@Inject(DOCUMENT) private readonly document: Document, private readonly store: Store) {
+  constructor(
+    @Inject(DOCUMENT) private readonly document: Document,
+    private readonly store: Store,
+  ) {
     if (this.document.defaultView) {
       this.navigator = this.document.defaultView.navigator;
     } else {
-      console.error('Navigator not available.'); // todo: error handling
+      throw new NavigatorNotAvailable();
     }
   }
 
@@ -34,8 +39,8 @@ export class GeolocationService {
           this.store.dispatch(GeolocationActions.setFailure({error}));
         },
         {
-          timeout: GEOLOCATION_TIMEOUT_IN_MS
-        }
+          timeout: GEOLOCATION_TIMEOUT_IN_MS,
+        },
       );
     }
   }

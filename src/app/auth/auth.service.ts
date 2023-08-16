@@ -5,28 +5,41 @@ import {environment} from '../../environments/environment';
 import {Store} from '@ngrx/store';
 import {AuthStatusActions} from '../state/auth/actions/auth-status.actions';
 import {AuthNotificationService} from './notifications/auth-notification.service';
-import {Gb2UserInfo} from '../shared/interfaces/gb2-user-info.interface';
+import {Gb2UserInfo} from './interfaces/gb2-user-info.interface';
 import {Router} from '@angular/router';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private readonly isAuthenticatedSubject$ = new BehaviorSubject<boolean>(false);
+  private readonly isDoneLoadingSubject$ = new BehaviorSubject<boolean>(false);
+
   public readonly isAuthenticated$ = this.isAuthenticatedSubject$.asObservable();
+  public readonly isDoneLoading$ = this.isDoneLoadingSubject$.asObservable();
+
   private readonly isAuthenticatedCheckInterval$: Subscription = new Subscription();
 
   constructor(
     private readonly oauthService: OAuthService,
     private readonly store: Store,
     private readonly authNotificationService: AuthNotificationService,
-    private readonly router: Router
+    private readonly router: Router,
   ) {
+    if (!this.getAccessToken()) {
+      // no token => the current user is definitely not logged in
+      this.isDoneLoadingSubject$.next(true);
+    }
     this.oauthService.events.subscribe((event) => {
       this.isAuthenticatedSubject$.next(this.oauthService.hasValidAccessToken());
 
       if (isDevMode()) {
         this.enableOauthDebug(event);
+      }
+
+      if (event.type === 'user_profile_loaded') {
+        // the user profile is loaded and there is either a valid or invalid token
+        this.isDoneLoadingSubject$.next(true);
       }
     });
 
@@ -80,9 +93,9 @@ export class AuthService {
             if (!this.oauthService.hasValidAccessToken()) {
               this.logout(true);
             }
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 
@@ -122,7 +135,7 @@ export class AuthService {
 
             this.store.dispatch(AuthStatusActions.setStatus({isAuthenticated, userName}));
           })();
-        })
+        }),
       )
       .subscribe();
   }
@@ -139,7 +152,7 @@ export class AuthService {
         filter((event) => event.type === 'token_expires'),
         tap(() => {
           this.authNotificationService.showImpendingLogoutDialog();
-        })
+        }),
       )
       .subscribe();
   }

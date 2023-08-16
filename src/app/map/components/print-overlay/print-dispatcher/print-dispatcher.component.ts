@@ -10,7 +10,7 @@ const PRINT_DELAY_IN_MS = 300;
 @Component({
   selector: 'print-dispatcher',
   templateUrl: './print-dispatcher.component.html',
-  styleUrls: ['./print-dispatcher.component.scss']
+  styleUrls: ['./print-dispatcher.component.scss'],
 })
 export class PrintDispatcherComponent implements OnInit {
   constructor(private readonly mapConfigUrlService: MapConfigUrlService) {}

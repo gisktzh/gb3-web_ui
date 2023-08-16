@@ -1,9 +1,9 @@
-import {LoadingState} from '../../shared/types/loading-state';
+import {LoadingState} from '../../shared/types/loading-state.type';
 import {HasLoadingState} from '../../shared/interfaces/has-loading-state.interface';
-import {HasVisibility} from '../../shared/interfaces/has-visibility.interface';
-import {HasViewProcessState} from '../../shared/interfaces/has-view-process-state.interface';
-import {ViewProcessState} from '../../shared/types/view-process-state';
-import {IsImmerable} from '../../shared/interfaces/immerable.interface';
+import {HasVisibility} from '../interfaces/has-visibility.interface';
+import {HasViewProcessState} from '../interfaces/has-view-process-state.interface';
+import {ViewProcessState} from '../../shared/types/view-process-state.type';
+import {IsImmerable} from '../interfaces/immerable.interface';
 import {immerable} from 'immer';
 
 import {AddToMapVisitor} from '../interfaces/add-to-map.visitor';
@@ -25,6 +25,7 @@ export abstract class ActiveMapItem implements HasLoadingState, HasVisibility, H
   public abstract readonly mapImageUrl: string | null;
   public abstract readonly settings: ActiveMapItemSettings;
   public abstract readonly isSingleLayer: boolean;
+  public abstract readonly geometadataId: number | null;
 
   public readonly [immerable] = true;
   public visible: boolean;

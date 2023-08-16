@@ -1,6 +1,5 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {SharedModule} from '../shared/shared.module';
 import {SupportPageComponent} from './support-page.component';
 import {FaqComponent} from './components/faq/faq.component';
 import {ContactComponent} from './components/contact/contact.component';
@@ -13,28 +12,28 @@ const routes: Routes = [
     children: [
       {
         path: 'faq',
-        component: FaqComponent
+        component: FaqComponent,
       },
       {
         path: 'useful-links',
-        component: UsefulLinksComponent
+        component: UsefulLinksComponent,
       },
       {
         path: 'contact',
-        component: ContactComponent
+        component: ContactComponent,
       },
       {
         pathMatch: 'full',
         path: '',
-        redirectTo: 'faq'
-      }
-    ]
-  }
+        redirectTo: 'faq',
+      },
+    ],
+  },
 ];
 
 @NgModule({
   declarations: [],
-  imports: [RouterModule.forChild(routes), SharedModule],
-  exports: [RouterModule]
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule],
 })
 export class SupportPageRoutingModule {}

@@ -11,12 +11,12 @@ export const discoverMapsDataMock: DiscoverMapsRoot = {
       id: 'AVfarbigZH',
       image: {
         name: 'areupbackgroundzh.png',
-        path: 'assets/images/basemaps/areupbackgroundzh.png',
+        path: 'assets/images/basemaps/areavbackgroundzh.png',
         size: 106551,
-        type: 'image/png'
+        type: 'image/png',
       },
       title: 'AV Farbig',
-      to_date: '31.12.2023'
+      to_date: '31.12.2023',
     },
     {
       description:
@@ -28,10 +28,10 @@ export const discoverMapsDataMock: DiscoverMapsRoot = {
         name: 'aredtmbackgroundzh.png',
         path: 'assets/images/basemaps/aredtmbackgroundzh.png',
         size: 99094,
-        type: 'image/png'
+        type: 'image/png',
       },
       title: 'Höhenmodell',
-      to_date: '31.10.2023'
+      to_date: '31.10.2023',
     },
     {
       description:
@@ -43,12 +43,12 @@ export const discoverMapsDataMock: DiscoverMapsRoot = {
         name: 'arewildbackgroundzh.png',
         path: 'assets/images/basemaps/arewildbackgroundzh.png',
         size: 108516,
-        type: 'image/png'
+        type: 'image/png',
       },
       title: 'Lagerklassen',
-      to_date: '31.08.2023'
-    }
-  ]
+      to_date: '31.08.2023',
+    },
+  ],
 };
 
 export const pageInfosDataMock: PageInfosRoot = {
@@ -62,11 +62,11 @@ export const pageInfosDataMock: PageInfosRoot = {
         datacatalogue: true,
         map: false,
         start: false,
-        support: false
+        support: false,
       },
       severity: 'info',
       title: 'Diese Seite noch nicht fertig implementiert',
-      to_date: '31.08.2023'
+      to_date: '31.08.2023',
     },
     {
       description: 'Aktuell gibt es nicht genug Gurkenbröter und es kann zu einem Engpass kommen.',
@@ -74,15 +74,15 @@ export const pageInfosDataMock: PageInfosRoot = {
       from_date: '01.02.2023',
       pages: {
         datacatalogue: false,
-        map: true,
-        start: true,
-        support: false
+        map: false,
+        start: false,
+        support: true,
       },
       severity: 'warning',
       title: 'Gurkenbröter-Notfall',
-      to_date: '31.07.2023'
-    }
-  ]
+      to_date: '31.07.2023',
+    },
+  ],
 };
 
 export const frequentlyUsedDataMock: FrequentlyUsedRoot = {
@@ -95,10 +95,10 @@ export const frequentlyUsedDataMock: FrequentlyUsedRoot = {
         name: 'aredtmbackgroundzh.png',
         path: 'assets/images/basemaps/aredtmbackgroundzh.png',
         size: 108482,
-        type: 'image/png'
+        type: 'image/png',
       },
       title: 'Orthofotos',
-      url: 'http://localhost:4200/maps?initialMapIds=OrthoZH'
+      url: 'http://localhost:4200/maps?initialMapIds=OrthoZH',
     },
     {
       created: '1684938059',
@@ -107,7 +107,7 @@ export const frequentlyUsedDataMock: FrequentlyUsedRoot = {
       flex_id: '4a368a8e51e9899d7f0fad0eb4c57893',
       image: null,
       title: 'Überarbeitete Höhenmodelle',
-      url: 'https://de.wikipedia.org/wiki/Digitales_H%C3%B6henmodell'
+      url: 'https://de.wikipedia.org/wiki/Digitales_H%C3%B6henmodell',
     },
     {
       created: '1684938038',
@@ -118,9 +118,9 @@ export const frequentlyUsedDataMock: FrequentlyUsedRoot = {
         name: 'arelkbackgroundzh.png',
         path: 'assets/images/basemaps/arelkbackgroundzh.png',
         size: 133726,
-        type: 'image/png'
+        type: 'image/png',
       },
-      title: 'Grossmünster'
-    }
-  ]
+      title: 'Grossmünster',
+    },
+  ],
 };

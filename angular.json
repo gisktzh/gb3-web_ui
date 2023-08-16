@@ -223,7 +223,17 @@
               "includePaths": ["src/styles"]
             },
             "scripts": [],
-            "codeCoverageExclude": ["**/*.module.ts"]
+            "codeCoverage": true,
+            "codeCoverageExclude": [
+              "**/main.ts",
+              "**/configs/*.config.ts",
+              "**/*.module.ts",
+              "**/*.mock.ts",
+              "**/*.stub.ts",
+              "**/app/testing/**",
+              "**/*.component.ts",
+              "**/environments/environment*.ts"
+            ]
           },
           "configurations": {
             "test": {

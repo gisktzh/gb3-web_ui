@@ -1,18 +1,20 @@
 import {Component, Inject, OnDestroy} from '@angular/core';
 import {HasSavingState} from '../../../shared/interfaces/has-saving-state.interface';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {EMPTY, Subscription, tap} from 'rxjs';
+import {Subscription, tap} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {FavouritesService} from '../../services/favourites.service';
 import {Favourite} from '../../../shared/interfaces/favourite.interface';
 import {Store} from '@ngrx/store';
 import {FavouriteListActions} from '../../../state/map/actions/favourite-list.actions';
-import {LoadingState} from '../../../shared/types/loading-state';
+import {LoadingState} from '../../../shared/types/loading-state.type';
+
+import {FavouriteCouldNotBeRemoved} from '../../../shared/errors/favourite.errors';
 
 @Component({
   selector: 'app-favourite-deletion-dialog',
   templateUrl: './favourite-deletion-dialog.component.html',
-  styleUrls: ['./favourite-deletion-dialog.component.scss']
+  styleUrls: ['./favourite-deletion-dialog.component.scss'],
 })
 export class FavouriteDeletionDialogComponent implements HasSavingState, OnDestroy {
   public savingState: LoadingState = 'undefined';
@@ -23,7 +25,7 @@ export class FavouriteDeletionDialogComponent implements HasSavingState, OnDestr
     private readonly dialogRef: MatDialogRef<FavouriteDeletionDialogComponent, boolean>,
     private readonly favouritesService: FavouritesService,
     @Inject(MAT_DIALOG_DATA) private readonly data: {favourite: Favourite},
-    private readonly store: Store
+    private readonly store: Store,
   ) {
     this.favourite = data.favourite;
   }
@@ -47,12 +49,12 @@ export class FavouriteDeletionDialogComponent implements HasSavingState, OnDestr
             this.store.dispatch(FavouriteListActions.removeFavourite({id: this.favourite.id}));
             this.close();
           }),
-          catchError(() => {
+          catchError((err: unknown) => {
             this.savingState = 'error';
-            return EMPTY;
-          })
+            throw new FavouriteCouldNotBeRemoved(err);
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 

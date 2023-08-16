@@ -10,7 +10,7 @@ const wmsBasemap: WmsBasemap = {
   url: 'https://www.my-test.com/test1',
   title: 'Test 1',
   srsId: 2056,
-  layers: []
+  layers: [],
 };
 const blankBasemap: BlankBasemap = {id: 'test-2', type: 'blank', title: 'Test 2'};
 
@@ -18,7 +18,7 @@ const mockBasemaps: Basemap[] = [wmsBasemap, blankBasemap];
 
 const mockBasemapConfig = {
   availableBasemaps: mockBasemaps,
-  defaultBasemap: mockBasemaps[0]
+  defaultBasemap: mockBasemaps[0],
 };
 
 describe('BasemapImageLinkPipe', () => {
@@ -31,9 +31,9 @@ describe('BasemapImageLinkPipe', () => {
         BasemapImageLinkPipe,
         {
           provide: ConfigService,
-          useValue: spy
-        }
-      ]
+          useValue: spy,
+        },
+      ],
     });
     pipe = TestBed.inject(BasemapImageLinkPipe);
   });

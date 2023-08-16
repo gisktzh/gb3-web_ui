@@ -13,7 +13,7 @@ export class EsriPointMeasurementStrategy extends AbstractEsriMeasurementStrateg
     mapView: __esri.MapView,
     pointSymbol: __esri.SimpleMarkerSymbol,
     labelSymbolization: __esri.TextSymbol,
-    completeCallbackHandler: () => void
+    completeCallbackHandler: () => void,
   ) {
     super(layer, mapView, completeCallbackHandler);
 

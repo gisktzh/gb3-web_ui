@@ -1,0 +1,28 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.data-catalogue-overview {
+  display: flex;
+  justify-content: center;
+
+  .data-catalogue-overview__content {
+    padding: 40px 24px;
+    max-width: ktzh-variables.$zh-layout-max-content-width;
+    width: 100%;
+
+    .data-catalogue-overview__content__active-filters {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .data-catalogue-overview__content__active-filters__result-size {
+        display: flex;
+        flex-shrink: 0;
+      }
+    }
+
+    .cdk-table {
+      display: flex;
+      flex-flow: column;
+    }
+  }
+}

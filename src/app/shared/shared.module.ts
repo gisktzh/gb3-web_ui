@@ -16,6 +16,17 @@ import {MainFooterComponent} from './components/footer/main-footer.component';
 import {ScrollbarWidthCalculationComponent} from './components/scrollbar-width-calculation/scrollbar-width-calculation.component';
 import {KeyValuePreserveOrderPipe} from './pipes/key-value-preserve-order.pipe';
 import {AppendMapConfigurationToUrlPipe} from './pipes/append-map-configuration-to-url.pipe';
+import {LayerTooltipPipe} from './pipes/layer-tooltip.pipe';
+import {DescriptiveHighlightedLinkComponent} from './components/descriptive-highlighted-link/descriptive-highlighted-link.component';
+import {HeroHeaderComponent} from './components/hero-header/hero-header.component';
+import {StartPageSectionComponent} from './components/start-page-section/start-page-section.component';
+import {ContactDetailsComponent} from './components/contact-details/contact-details.component';
+import {ContactDetailComponent} from './components/contact-details/contact-detail/contact-detail.component';
+import {WaitingPageComponent} from './components/waiting-page/waiting-page.component';
+import {SliderWrapperComponent} from './components/slider-wrapper/slider-wrapper.component';
+import {LinkListComponent} from './components/link-list/link-list.component';
+import {LinkListItemComponent} from './components/link-list/link-list-item/link-list-item.component';
+import {AccordionItemComponent} from './components/accordion-item/accordion-item.component';
 
 @NgModule({
   declarations: [
@@ -32,15 +43,26 @@ import {AppendMapConfigurationToUrlPipe} from './pipes/append-map-configuration-
     ScrollbarWidthCalculationComponent,
     KeyValuePreserveOrderPipe,
     AppendMapConfigurationToUrlPipe,
+    LayerTooltipPipe,
+    DescriptiveHighlightedLinkComponent,
+    HeroHeaderComponent,
+    StartPageSectionComponent,
+    ContactDetailsComponent,
+    ContactDetailComponent,
+    WaitingPageComponent,
+    SliderWrapperComponent,
+    LinkListComponent,
+    LinkListItemComponent,
+    AccordionItemComponent,
   ],
   imports: [MaterialModule, RouterModule, CommonModule, ResizableModule],
   exports: [
     MaterialModule,
+    ResizableModule,
     BasemapImageLinkPipe,
     NavbarComponent,
     LoadingAndProcessBarComponent,
     HighlightSearchQueryPipe,
-    ResizableModule,
     ResizeHandlerComponent,
     DragCursorDirective,
     MobileWarningComponent,
@@ -50,6 +72,15 @@ import {AppendMapConfigurationToUrlPipe} from './pipes/append-map-configuration-
     ScrollbarWidthCalculationComponent,
     KeyValuePreserveOrderPipe,
     AppendMapConfigurationToUrlPipe,
+    LayerTooltipPipe,
+    DescriptiveHighlightedLinkComponent,
+    HeroHeaderComponent,
+    StartPageSectionComponent,
+    ContactDetailsComponent,
+    WaitingPageComponent,
+    SliderWrapperComponent,
+    LinkListComponent,
+    AccordionItemComponent,
   ],
 })
 export class SharedModule {}

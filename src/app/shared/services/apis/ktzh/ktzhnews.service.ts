@@ -7,7 +7,7 @@ import {Observable} from 'rxjs';
 import {NewsService} from '../../../interfaces/news-service.interface';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class KTZHNewsService extends BaseApiService implements NewsService {
   private readonly ktzhWebsiteBasePath = this.configService.apiConfig.ktzhWebsite.baseUrl;
@@ -23,7 +23,7 @@ export class KTZHNewsService extends BaseApiService implements NewsService {
     return result.news.map((newsItem) => {
       return {
         ...newsItem,
-        link: `${this.ktzhWebsiteBasePath}${newsItem.link}`
+        link: `${this.ktzhWebsiteBasePath}${newsItem.link}`,
       };
     });
   }

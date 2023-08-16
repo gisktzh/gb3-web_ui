@@ -4,12 +4,12 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 > # Table of Contents
 >
-> 1.  [Installation](#installation)
-> 2.  [Development server](#development-server)
-> 3.  [Docker](#docker)
-> 4.  [Local Backend](#local-backend)
-> 5.  [Naming conventions](#naming-conventions)
-> 6.  [Code documentation](#code-documentation)
+> 1. [Installation](#installation)
+> 2. [Development server](#development-server)
+> 3. [Docker](#docker)
+> 4. [Local Backend](#local-backend)
+> 5. [Naming conventions](#naming-conventions)
+> 6. [Code documentation](#code-documentation)
 
 ## Installation
 
@@ -73,9 +73,32 @@ docker build --no-cache --build-arg TARGET_ENVIRONMENT={target_environment} -t g
     GB2 backend infrastructure.
   - `uat`: production deployment for KTZH UAT environment
   - `production`: production deployment for KTZH production (internet & intranet) environment
+- **APP_VERSION**: see below (optional)
+- **APP_RELEASE**: see below (optional)
 
 The `target_environment` is used to create environment specific build outputs so as to not divulge sensitive information
 such as internal domains. This is mainly reflected in the runtime configuration mechanism described below.
+
+#### Overriding app version and release number
+
+During build, the Dockerfile will run `npm run update-version`. Per default, it tries to extract the last git commit
+hash as app version number and the last tag as release number. This _only_ works if the build command is run within the
+context of a repository-checkout; if it fails, it will display `UNKNOWN_VERSION`.
+
+If you're building the image outside of a repository context (i.e. within a pipeline), you can specify the version and
+release number explicitly using the following build-args:
+
+- `APP_VERSION`: The version number, usually the last git commit hash in `--short` form
+- `APP_RELEASE`: The release number, usually in the form of "Release-xx"
+
+An example command would look like this:
+
+```
+docker build --no-cache --build-arg APP_VERSION=MyCustomAppVersion --build-arg APP_RELEASE=MyCustomRelease -t gb3-frontend:latest .
+```
+
+Irrespective of how the versions are extracted, they overwrite the `/src/version.ts` file, which is in turn exposed via
+Angular's environment configs.
 
 ### Run the image
 
@@ -128,6 +151,9 @@ match. This is because there are times when you _might_ want to deviate from the
 > 4. [Runtime configurations](#runtime-configurations)
 > 5. [(S)CSS structure](#scss-structure)
 > 6. [Custom icons](#custom-icons)
+> 7. [Transformation from GB2 backend API to GB3 interfaces](#transformation-from-gb2-backend-api-to-gb3-interfaces)
+> 8. [Error handling](#error-handling)
+> 9. [Application Initialization based on share link](#application-initialization-based-on-share-link)
 
 ### The `ActiveMapItem` class
 
@@ -225,7 +251,7 @@ on(
         mapItem.visible = visible;
       }
     });
-  })
+  }),
 );
 ```
 
@@ -298,13 +324,17 @@ Basically there are three important elements to keep track of:
 
 #### Global functions / variables / mixins / overrides
 
-Each component is responsible for its own styling. However, to prevent too much code duplications we have some global helper files in our `\styles` folder:
+Each component is responsible for its own styling. However, to prevent too much code duplications we have some global
+helper files in our `\styles` folder:
 
 - **functions/...** contains some helper functions to calculate e.g. the RGBA value of a hex value.
-- **mixins/...** contains mixin files divided into categories used to style specific sections of the application. These are the styles that can be shared between different components.
+- **mixins/...** contains mixin files divided into categories used to style specific sections of the application. These
+  are the styles that can be shared between different components.
 - **overrides/...** contains a couple of style files used to globally override certain elements. Use with caution.
-- **variables/\_ktzh-design-variables.scss** contains all important variables used within the GB3 application. Most notable the color palettes that are used everywhere. Try to avoid hard-coded color values inside some local SCSS file.
-- **variables/\_z-index-variables.scss** contains all z-indices ordered by the highest value first. This is used to keep track of which element should be on top of which element in one place.
+- **variables/\_ktzh-design-variables.scss** contains all important variables used within the GB3 application. Most
+  notable the color palettes that are used everywhere. Try to avoid hard-coded color values inside some local SCSS file.
+- **variables/\_z-index-variables.scss** contains all z-indices ordered by the highest value first. This is used to keep
+  track of which element should be on top of which element in one place.
 
 To use those global styles within a local SCSS file use the following syntax (or part of it):
 
@@ -337,3 +367,120 @@ relative or absolute) and the service adds the icons. Use them as follows:
 In order to have the SVG adjust itself to the color (e.g. disabled state), replace all `fill="color"` occurrences in the
 SVG which should be assigned the font color with `fill="currentColor"`. In some cases, the color might also be
 within `stroke` or other attributes.
+
+### Transformation from GB2 backend API to GB3 interfaces
+
+To separate the GB2 API interfaces from the internal ones we use transformation methods inside the corresponding
+GB3-services. Usually it's used to adjust some minor issues like naming (`gb2_url` => `gb2Url`).
+There are a few exceptions where more logic is used to transform values:
+
+#### Topics endpoint
+
+There are many mayor changes during the transformation of the `topics.json` from the GB2 API.
+First of all the naming is different:
+
+| GB2 API interface name | GB3 interface name |      Example      |
+| :--------------------: | :----------------: | :---------------: |
+|        category        |       topic        | _Luft und Klima_  |
+|         topic          |        map         | _Lichtemissionen_ |
+|         layer          |       layer        |   _August 2018_   |
+
+Another noticeable change is the order of layers. WMS 1.3 describes the order as follows:
+
+> A WMS shall render the requested layers by drawing the leftmost in the list bottommost,
+> the next one over that, and so on.
+
+Meaning that the layer with the lowest index has the lowest visibility. However, in GB3 the order is inverted
+to that as the item with the lowest index has the highest visibility. Therefore, the order of the GB2 API layers
+get inverted to tackle that problem.
+
+### Error handling
+
+The global error handler is located in the `error-handling` module. All errors are caught by Angular and delegated to
+this handler which then handles the errors according to their type. Additionally, while in develop mode, the errors are
+logged to the console.
+
+The application itself defines errors that extend the native `Error` object, which allows for easier
+handling and runtime error checks. These abstract errors are defined within `app/shared/errors/abstract.errors.ts`. The
+abstract base class of all custom errors is `Gb3RuntimeError`. It defines an (optional) property `originalError`
+of `unknown` type which can be used to wrap any caught error. The error handler will then check whether this property is
+set and log the original message as well.
+
+All errors should extend from the following abstract classes, extending `Gb3RuntimeError`. They have different behaviour
+in the error handler:
+
+- `FatalError`: This error will raise an error that prevents the current screen from being used by redirecting to our
+  fatal error page.
+- `RecoverableError`: This error will pop an error notification, but will not prevent the app from being used.
+- `SilentError`: This error will do nothing, except (in dev mode) log itself to the console. Useful for errors that
+  should not be communicated to the user.
+
+Of course, all other errors that might be thrown in the code and that are not caught (e.g.
+simple `throw new Error('Fail!')`) will be handled as well; and currently, they are treated as `FatalError` because we
+cannot reliably determin whether an error is critical or not.
+
+#### Implementing custom error classes
+
+Implementing a custom error class is as simple as extending from one of the mentioned base classes. In most cases, you
+should add a `public override message: string = 'Your Error Message'` to the class, and you can, of course, add custom
+logic.
+
+If no `constructor` is specified, the constructor of `Gb3RuntimeError` is taken that can be supplied (optionally) with
+the actually thrown error.
+
+#### Handling errors
+
+In general, throwing an error is straight-forward: Just `throw` it.
+
+In practice, there are situations where this is not as simple: In situations where we have an API call within an effect
+and also use a `loadingState`, we cannot directly use `catchError` in the service API call's pipe chain, because this
+would only show the error message without updating the loading state. For these cases, you should add a
+dedicated `setError` action which sets the loading state through the reducer, and then have another effect that listens
+to this action and then raises the appropriate error. In order to also have the originally thrown error, the
+helper `errorProps()` can be used as `ActionProp` so you can pass along the original error for usage within the effect.
+For examples of this, see e.g. the `LegendEffect`.
+
+**Importantly**, if you throw exceptions within the `constructor` of a service, make sure to inject the `ErrorHandler`
+interface and throw it explicitly using the `handleError` method. Otherwise, depending on the order of Angular's DI, the
+error handler might not yet be registered and throw the exception outside of the Angular error handler.
+
+### Application Initialization based on share link
+
+Loading and initializing of the application based on a previously shared link ID is completely done within
+the `share-link.state`.
+There is the whole `initializeApplication` and `validation` part where the application gets initialized.
+This part is basically a big state machine used to control the initialization flow. It's taking care of all potential
+side effects like
+invalid share link item contents or topics that are not getting loaded.
+
+The basic flow based on actions and effects goes like this:
+
+```
+                                     ┌─────────────────────────────────────────────────┐
+                                     │ ShareLinkActions.initializeApplicationBasedOnId │
+                                     └───────┬─────────────┬─────────────────┬─────────┘
+initializeApplicationByLoadingShareLinkItem$ │             │                 │ initializeApplicationByLoadingTopics$
+                             ┌───────────────▼───────────┐ │ ┌───────────────▼──────────────────────┐
+                             │ ShareLinkActions.loadItem │ │ │ LayerCatalogActions.loadLayerCatalog │
+                             └───────────────┬───────────┘ │ └───────────────┬──────────────────────┘
+                                             └───────────► │◄────────────────┘
+               initializeApplicationByVerifyingSharedItem$ │
+                                          ┌────────────────▼──────────────┐
+                                          │ ShareLinkActions.validateItem │
+                                          └────────────────┬──────────────┘
+                                    validateShareLinkItem$ │
+                                       ┌───────────────────▼─────────────────┐
+                                       │ ShareLinkActions.completeValidation │
+                                       └──────┬────────────┬──────────┬──────┘
+                 setMapConfigAfterValidation$ │            │          │ setActiveMapItemsAfterValidation$
+                  ┌───────────────────────────▼──────────┐ │ ┌────────▼──────────────────────────────────────┐
+                  │ MapConfigActions.setInitialMapConfig │ │ │ ActiveMapItemActions.initializeActiveMapItems │
+                  └──────────────────────────────────────┘ │ └────────┬──────────────────────────────────────┘
+                                                           │ ◄────────┘
+                                   completeInitialization$ │
+                                 ┌─────────────────────────▼──────────────────────────┐
+                                 │ ShareLinkActions.completeApplicationInitialization │
+                                 └────────────────────────────────────────────────────┘
+```
+
+Note that error actions/effects are not visible on this diagram

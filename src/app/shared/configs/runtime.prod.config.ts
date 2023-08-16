@@ -8,78 +8,78 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
     hostMatch: 'geo.ktzh.ch',
     apiBasePaths: {
       gb2Api: {
-        baseUrl: 'https://web.maps.zh.ch/v3'
+        baseUrl: 'https://web.maps.zh.ch/v3',
       },
       gb2StaticFiles: {
-        baseUrl: 'https://web.maps.zh.ch'
+        baseUrl: 'https://web.maps.zh.ch',
       },
       gb2WmsCapabilities: {
-        baseUrl: 'https://web.maps.zh.ch/wms'
+        baseUrl: 'https://web.maps.zh.ch/wms',
       },
       gb2Wms: {
-        baseUrl: 'https://web.wms.zh.ch'
+        baseUrl: 'https://web.wms.zh.ch',
       },
       geoLion: {
-        baseUrl: 'https://geolion.ktzh.ch'
+        baseUrl: 'https://geolion.ktzh.ch',
       },
       searchApi: {
-        baseUrl: 'https://gb3-search-api.icycliff-4b8f6c95.switzerlandnorth.azurecontainerapps.io'
+        baseUrl: 'https://gb3-search-api.icycliff-4b8f6c95.switzerlandnorth.azurecontainerapps.io',
       },
       ktzhWebsite: {
         baseUrl: 'https://www.zh.ch',
-        useMockData: false
+        useMockData: false,
       },
       gravCms: {
         baseUrl: 'https://gb3-grav-cms.icycliff-4b8f6c95.switzerlandnorth.azurecontainerapps.io',
-        useMockData: false
+        useMockData: false,
       },
       twitterWidget: {
-        baseUrl: 'https://platform.twitter.com/widgets.js'
-      }
+        baseUrl: 'https://platform.twitter.com/widgets.js',
+      },
     },
     authSettings: {
       clientId: 'gb3',
-      issuer: 'https://web.maps.zh.ch/'
+      issuer: 'https://web.maps.zh.ch/',
     },
-    overrides: {}
+    overrides: {},
   },
   {
     hostMatch: 'geo.zh.ch',
     apiBasePaths: {
       gb2Api: {
-        baseUrl: 'https://maps.zh.ch/v3'
+        baseUrl: 'https://maps.zh.ch/v3',
       },
       gb2StaticFiles: {
-        baseUrl: 'https://maps.zh.ch'
+        baseUrl: 'https://maps.zh.ch',
       },
       gb2WmsCapabilities: {
-        baseUrl: 'https://maps.zh.ch/wms'
+        baseUrl: 'https://maps.zh.ch/wms',
       },
       gb2Wms: {
-        baseUrl: 'https://wms.zh.ch'
+        baseUrl: 'https://wms.zh.ch',
       },
       geoLion: {
-        baseUrl: 'https://geolion.zh.ch'
+        baseUrl: 'https://geolion.zh.ch',
       },
       searchApi: {
-        baseUrl: 'https://gb3-search-api.icycliff-4b8f6c95.switzerlandnorth.azurecontainerapps.io'
+        baseUrl: 'https://gb3-search-api.icycliff-4b8f6c95.switzerlandnorth.azurecontainerapps.io',
       },
       ktzhWebsite: {
         baseUrl: 'https://www.zh.ch',
-        useMockData: false
+        useMockData: false,
       },
       gravCms: {
         baseUrl: 'https://gb3-grav-cms.icycliff-4b8f6c95.switzerlandnorth.azurecontainerapps.io',
-        useMockData: false
+        useMockData: false,
       },
       twitterWidget: {
-        baseUrl: 'https://platform.twitter.com/widgets.js'
-      }
+        baseUrl: 'https://platform.twitter.com/widgets.js',
+      },
     },
     authSettings: {
       clientId: 'gb3',
-      issuer: 'https://maps.zh.ch/'
+      issuer: 'https://maps.zh.ch/',
     },
-    overrides: {}
-  }
+    overrides: {},
+  },
 ];

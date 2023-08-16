@@ -41,7 +41,7 @@ function authConfigFactory(configService: ConfigService): AuthConfig {
   providers: [
     {provide: AuthConfig, useFactory: authConfigFactory, deps: [ConfigService]},
     {provide: OAuthModuleConfig, useFactory: oAuthConfigFactory, deps: [ConfigService]},
-    {provide: OAuthStorage, useFactory: storageFactory}
-  ]
+    {provide: OAuthStorage, useFactory: storageFactory},
+  ],
 })
 export class AuthModule {}

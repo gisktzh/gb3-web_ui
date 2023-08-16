@@ -1,9 +1,10 @@
 import {createActionGroup, emptyProps, props} from '@ngrx/store';
 import {ActiveMapItem} from '../../../map/models/active-map-item.model';
-import {LoadingState} from '../../../shared/types/loading-state';
-import {ViewProcessState} from '../../../shared/types/view-process-state';
+import {LoadingState} from '../../../shared/types/loading-state.type';
+import {ViewProcessState} from '../../../shared/types/view-process-state.type';
 import {TimeExtent} from '../../../map/interfaces/time-extent.interface';
 import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
+import {FavouriteBaseConfig} from '../../../shared/interfaces/favourite.interface';
 
 export const ActiveMapItemActions = createActionGroup({
   source: 'ActiveMapItem',
@@ -31,8 +32,15 @@ export const ActiveMapItemActions = createActionGroup({
       attributeFilterParameter: string;
       activeMapItem: Gb2WmsActiveMapItem;
     }>(),
-    'Add Favourite': props<{favourite: ActiveMapItem[]}>(),
+    'Add Favourite': props<{activeMapItems: ActiveMapItem[]; baseConfig: FavouriteBaseConfig}>(),
     'Add Initial Map Items': props<{initialMapItems: ActiveMapItem[]}>(),
-    'Mark All Active Map Item Notice As Read': emptyProps()
-  }
+    'Mark All Active Map Item Notice As Read': emptyProps(),
+    /**
+     * This action does not have an effect to add items to the map in contrast to the other 'add' actions.
+     * It can be used to prepare a pre-filled list of active map items to show **before** routing to the map tab
+     * This is the same behaviour as changing tabs and then coming back to the 'maps' tab while still having some
+     * previously loaded items.
+     */
+    'Initialize Active Map Items': props<{activeMapItems: ActiveMapItem[]}>(),
+  },
 });

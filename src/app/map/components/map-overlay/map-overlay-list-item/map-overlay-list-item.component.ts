@@ -1,10 +1,10 @@
 import {Component, Input} from '@angular/core';
-import {ToggleButtonPosition} from '../../../../shared/types/toggle-button-position';
+import {ToggleButtonPosition} from '../../../types/toggle-button-position.type';
 
 @Component({
   selector: 'map-overlay-list-item',
   templateUrl: './map-overlay-list-item.component.html',
-  styleUrls: ['./map-overlay-list-item.component.scss']
+  styleUrls: ['./map-overlay-list-item.component.scss'],
 })
 export class MapOverlayListItemComponent {
   @Input() public overlayTitle: string = '';
