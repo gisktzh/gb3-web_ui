@@ -133,7 +133,7 @@ export class EsriMapService implements MapService, OnDestroy {
     }
   }
 
-  public init(isInteractive: boolean = true): void {
+  public init(): void {
     this.store
       .select(selectMapConfigState)
       .pipe(
@@ -145,7 +145,7 @@ export class EsriMapService implements MapService, OnDestroy {
           const {scale, srsId, activeBasemapId} = config;
           const map = this.createMap(activeBasemapId);
           this.setMapView(map, scale, x, y, srsId, minScale, maxScale);
-          this.attachMapViewListeners(isInteractive);
+          this.attachMapViewListeners();
           this.addBasemapSubscription();
           this.initDrawingLayers();
           activeMapItems.forEach((mapItem, position) => {
@@ -189,7 +189,8 @@ export class EsriMapService implements MapService, OnDestroy {
             visible: layer.visible,
           } as __esri.WMSSublayerProperties;
         })
-        .reverse(), // reverse the order of the sublayers because the order in the GB3 interfaces (Topic, ActiveMapItem) is inverted to the order of the WMS specifications
+        .reverse(), // reverse the order of the sublayers because the order in the GB3 interfaces (Topic, ActiveMapItem) is inverted to the
+      // order of the WMS specifications
     });
     if (mapItem.settings.timeSliderExtent) {
       // apply initial time slider settings
@@ -367,7 +368,8 @@ export class EsriMapService implements MapService, OnDestroy {
 
   public async startDrawPrintPreview(extentWidth: number, extentHeight: number, rotation: number): Promise<void> {
     // listen to any map center changes and redraw the print preview area to keep it in the center of the map
-    // the old print preview handle gets removed automatically using a subscription that listens to the value changes and removes old handlers
+    // the old print preview handle gets removed automatically using a subscription that listens to the value changes and removes old
+    // handlers
     this.printPreviewHandle$.next(
       esriReactiveUtils.watch(
         () => [this.mapView.center.x, this.mapView.center.y],
@@ -529,7 +531,8 @@ export class EsriMapService implements MapService, OnDestroy {
               visible: true,
             } as __esri.WMSSublayerProperties),
         )
-        .reverse(), // reverse the order of the sublayers because the order in the GB3 interfaces (Topic, ActiveMapItem) is inverted to the order of the WMS specifications
+        .reverse(), // reverse the order of the sublayers because the order in the GB3 interfaces (Topic, ActiveMapItem) is inverted to the
+      // order of the WMS specifications
     );
     esriLayer.sublayers = esriSublayers;
   }
@@ -639,22 +642,20 @@ export class EsriMapService implements MapService, OnDestroy {
     });
   }
 
-  private attachMapViewListeners(isInteractive: boolean) {
+  private attachMapViewListeners() {
     esriReactiveUtils.when(
       () => this.mapView.stationary,
       () => this.updateMapConfig(),
     );
 
-    if (isInteractive) {
-      esriReactiveUtils.on(
-        () => this.mapView,
-        'click',
-        (event: __esri.ViewClickEvent) => {
-          const {x, y} = this.transformationService.transform(event.mapPoint);
-          this.dispatchFeatureInfoRequest(x, y);
-        },
-      );
-    }
+    esriReactiveUtils.on(
+      () => this.mapView,
+      'click',
+      (event: __esri.ViewClickEvent) => {
+        const {x, y} = this.transformationService.transform(event.mapPoint);
+        this.dispatchFeatureInfoRequest(x, y);
+      },
+    );
 
     esriReactiveUtils
       .whenOnce(() => this.mapView.ready)

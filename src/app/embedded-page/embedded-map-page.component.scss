@@ -16,12 +16,16 @@
     padding: 0 18px;
   }
 
-  .embedded-map-page__legend-overlay {
+  .embedded-map-page__overlay {
     position: absolute;
     top: 0;
     left: 0;
     height: 100%;
-    width: 50%;
+
+    &--right {
+      left: unset;
+      right: 0;
+    }
   }
 
   .embedded-map-page__minified-header {

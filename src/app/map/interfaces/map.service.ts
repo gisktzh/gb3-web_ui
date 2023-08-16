@@ -10,9 +10,8 @@ import {ToolService} from './tool.service';
 export interface MapService extends AddToMapVisitor {
   /**
    * Initializes the map by creating the initial background map and with a given extent
-   * @param isInteractive A value indicating whether the map should be interactive e.g. by clicking on it to create a feature request.
    */
-  init(isInteractive?: boolean): void;
+  init(): void;
 
   /** Assigns the map to an element on the HTML */
   assignMapElement(container: HTMLDivElement): void;
@@ -86,7 +85,8 @@ export interface MapService extends AddToMapVisitor {
   getToolService(): ToolService;
 
   /**
-   * Starts drawing the print preview area on the current center of the map with the given extent width and height as well as a rotation (clockwise)
+   * Starts drawing the print preview area on the current center of the map with the given extent width and height as well as a rotation
+   * (clockwise)
    */
   startDrawPrintPreview(extentWidth: number, extentHeight: number, rotation: number): Promise<void>;
 

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {LoadingState} from '../../../shared/types/loading-state.type';
@@ -15,6 +15,8 @@ import {MapConfigActions} from '../../../state/map/actions/map-config.actions';
   styleUrls: ['./feature-info-overlay.component.scss'],
 })
 export class FeatureInfoOverlayComponent implements OnInit, OnDestroy {
+  /** A value indicating whether interactive elements (like buttons) should be shown. [Default: true] */
+  @Input() public showInteractiveElements: boolean = true;
   @Output() public printFeatureInfoEvent = new EventEmitter<void>();
 
   public isVisible: boolean = false;
