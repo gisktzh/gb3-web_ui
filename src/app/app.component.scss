@@ -1,29 +1,24 @@
 @use 'mixins/helpers.mixin' as mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'variables/z-index-variables' as z-index-variables;
 
-$navbar-height: 72px;
+.navbar {
+  top: 0;
+  position: sticky;
+  width: 100%;
+  display: block;
+  height: ktzh-variables.$navbar-height;
+  overflow: hidden;
+  @include mixins.hide-on-small-screens;
+  z-index: z-index-variables.$navbar;
+}
 
-.main {
+.headless-page {
   height: 100vh;
+}
 
-  .navbar {
-    display: block;
-    height: $navbar-height;
-    overflow: hidden;
-    @include mixins.hide-on-small-screens;
-  }
-
-  .app-wrapper {
-    height: calc(100vh - #{$navbar-height}); // subtracts height of navbar
-    overflow-y: auto;
-
-    &--headless {
-      height: 100vh;
-    }
-  }
-
-  .scrollbar-width-calculation {
-    position: fixed;
-    top: 0;
-    left: 0;
-  }
+.scrollbar-width-calculation {
+  position: fixed;
+  top: 0;
+  left: 0;
 }
