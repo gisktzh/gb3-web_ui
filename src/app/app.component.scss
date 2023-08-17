@@ -13,10 +13,8 @@
   z-index: z-index-variables.$navbar;
 }
 
-.app-wrapper {
-  &--headless {
-    height: 100vh;
-  }
+.headless-page {
+  height: 100vh;
 }
 
 .scrollbar-width-calculation {
