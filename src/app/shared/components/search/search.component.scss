@@ -35,6 +35,13 @@
       flex-grow: 1;
     }
 
+    .search__bar__divider {
+      right: 45px;
+      height: 20px;
+      border-width: 1px;
+      border-color: ktzh-variables.$zh-black100;
+    }
+
     .search__bar__close-button {
       @include mat-mixins.mat-icon-button-override-icon-size(24px);
     }

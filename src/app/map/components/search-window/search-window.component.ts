@@ -6,10 +6,13 @@ import {Store} from '@ngrx/store';
 import {Map} from '../../../shared/interfaces/topic.interface';
 import {selectMaps} from '../../../state/map/selectors/maps.selector';
 import {map} from 'rxjs/operators';
-import {DEFAULT_SEARCHES, MAP_SEARCH} from '../../../shared/constants/search.constants';
 import {SearchIndex} from '../../../shared/services/apis/search/interfaces/search-index.interface';
 import {selectAvailableSpecialSearchIndexes} from '../../../state/map/selectors/available-search-index.selector';
 import {selectMapUiState} from '../../../state/map/reducers/map-ui.reducer';
+import {ConfigService} from '../../../shared/services/config.service';
+import {SearchIndexType} from '../../../shared/configs/search-index.config';
+
+const SEARCH_INDEX_TYPES: SearchIndexType[] = ['addresses', 'places'];
 
 @Component({
   selector: 'search-window',
@@ -21,7 +24,7 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   public specialSearchResults: SearchResultMatch[] = [];
   public filteredMaps: Map[] = [];
   public searchTerms: string[] = [];
-  public availableSearchIndexes: SearchIndex[] = DEFAULT_SEARCHES.concat(MAP_SEARCH);
+  public availableSearchIndexes: SearchIndex[] = this.configService.filterSearchIndexes(SEARCH_INDEX_TYPES);
   public isFilterMenuOpen = false;
 
   private originalMaps: Map[] = [];
@@ -32,8 +35,9 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('filterInput') private readonly input!: ElementRef;
 
   constructor(
-    private searchService: SearchService,
+    private readonly searchService: SearchService,
     private readonly store: Store,
+    private readonly configService: ConfigService,
   ) {}
 
   public ngOnInit() {
@@ -85,16 +89,16 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
       .filter((index) => index.active)
       .forEach((index) => {
         switch (index.indexType) {
-          case 'default': {
-            defaultIndexes.push(index);
-            break;
-          }
-          case 'special': {
+          // case 'addressesAndPlaces': {
+          //   defaultIndexes.push(index);
+          //   break;
+          // }
+          case 'activeMapItems': {
             specialIndexes.push(index);
             break;
           }
-          case 'map': {
-            mapSearchActive = true;
+          default: {
+            defaultIndexes.push(index);
             break;
           }
         }
@@ -102,7 +106,10 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
     if (defaultIndexes.length > 0) {
       this.subscriptions.add(
         this.searchService
-          .searchIndexes(term, defaultIndexes)
+          .searchIndexes(
+            term,
+            defaultIndexes.map((i) => i.indexType),
+          )
           .pipe(
             first(),
             tap((searchResults: SearchResultMatch[]) => {
@@ -117,7 +124,10 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
     if (specialIndexes.length > 0) {
       this.subscriptions.add(
         this.searchService
-          .searchIndexes(term, specialIndexes)
+          .searchIndexes(
+            term,
+            specialIndexes.map((i) => i.indexType),
+          )
           .pipe(
             first(),
             tap((searchResults: SearchResultMatch[]) => {
@@ -162,7 +172,7 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
       this.availableSpecialSearchIndexes$
         .pipe(
           tap((value) => {
-            this.availableSearchIndexes = [...DEFAULT_SEARCHES, ...value, MAP_SEARCH];
+            this.availableSearchIndexes = [...this.availableSearchIndexes, ...value];
           }),
         )
         .subscribe(),

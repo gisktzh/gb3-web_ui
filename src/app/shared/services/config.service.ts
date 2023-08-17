@@ -12,6 +12,10 @@ import {HostNameResolutionMismatch} from '../errors/app.errors';
 import {EmbeddedMapConstants} from '../constants/embedded-map.constants';
 import {dataCatalogueFilterConfig} from '../configs/filter.config';
 import {DataCatalogueFilterConfiguration} from '../interfaces/data-catalogue-filter.interface';
+import {SearchIndex} from './apis/search/interfaces/search-index.interface';
+import {searchIndexConfig, SearchIndexType} from '../configs/search-index.config';
+import {SearchConfig} from '../interfaces/search-config.interface';
+import {searchConfig} from '../configs/search.config';
 
 @Injectable({
   providedIn: 'root',
@@ -49,6 +53,12 @@ export class ConfigService {
       dataCatalogue: dataCatalogueFilterConfig,
     };
   }
+  public get searchConfig(): SearchConfig {
+    return searchConfig;
+  }
+  public get searchIndexConfig(): SearchIndex[] {
+    return searchIndexConfig;
+  }
 
   constructor(@Inject(DOCUMENT) private readonly document: Document) {
     const runtimeConfig = this.findRuntimeConfig();
@@ -59,6 +69,14 @@ export class ConfigService {
     this.apiConfig = runtimeConfig.apiBasePaths;
     this.overridesConfig = runtimeConfig.overrides;
     this.authConfig = runtimeConfig.authSettings;
+  }
+
+  /**
+   * Filters the search indexes from the config using the given search index types.
+   * @param searchIndexTypes Only search indexes with this type will be returned
+   */
+  public filterSearchIndexes(searchIndexTypes: SearchIndexType[]): SearchIndex[] {
+    return this.searchIndexConfig.filter((searchIndex) => searchIndexTypes.includes(searchIndex.indexType));
   }
 
   /**

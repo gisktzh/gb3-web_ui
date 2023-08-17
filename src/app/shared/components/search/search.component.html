@@ -2,9 +2,15 @@
   <div class="search__bar" [ngClass]="{'search__bar--active': searchInput.value.length > 0}">
     <mat-icon class="search__bar__icon" svgIcon="ktzh_search"></mat-icon>
     <input #searchInput class="search__bar__input" [placeholder]="placeholderText" type="text" />
+    <ng-container *ngIf="showFilterButton && mode === 'compact'">
+      <button mat-icon-button (click)="openFilter()">
+        <mat-icon>filter_list </mat-icon>
+      </button>
+      <mat-divider *ngIf="searchInput.value.length > 0" [vertical]="true" class="search__bar__divider"></mat-divider>
+    </ng-container>
     <button mat-icon-button (click)="clearInput()" class="search__bar__close-button" *ngIf="searchInput.value.length > 0">
       <mat-icon>close</mat-icon>
     </button>
   </div>
-  <button mat-flat-button *ngIf="showFilterButton" (click)="openFilter()" [disabled]="searchInput.value.length === 0">Filter</button>
+  <button mat-button *ngIf="showFilterButton && mode === 'normal'" (click)="openFilter()">Filter</button>
 </div>

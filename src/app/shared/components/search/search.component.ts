@@ -1,6 +1,7 @@
 import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, ViewChild} from '@angular/core';
 import {debounceTime, distinctUntilChanged, fromEvent, Observable, Subscription, tap} from 'rxjs';
 import {map} from 'rxjs/operators';
+import {SearchMode} from '../../types/search-mode.type';
 
 @Component({
   selector: 'search',
@@ -10,6 +11,7 @@ import {map} from 'rxjs/operators';
 export class SearchComponent implements AfterViewInit, OnDestroy {
   @Input() public placeholderText!: string;
   @Input() public showFilterButton: boolean = true;
+  @Input() public mode: SearchMode = 'normal';
 
   @Output() public readonly changeSearchTermEvent = new EventEmitter<string>();
   @Output() public readonly clearSearchTermEvent = new EventEmitter<void>();
@@ -38,7 +40,7 @@ export class SearchComponent implements AfterViewInit, OnDestroy {
   private searchInputHandler(): Observable<string> {
     return fromEvent<KeyboardEvent>(this.inputRef.nativeElement, 'keyup').pipe(
       debounceTime(300),
-      map((event) => (<HTMLInputElement>event.target).value),
+      map((event) => (<HTMLInputElement>event.target).value.trim()),
       distinctUntilChanged(),
       tap((value) => {
         // TODO WES remove

@@ -5,6 +5,7 @@ import {BaseApiService} from '../../abstract-api.service';
 import {map} from 'rxjs/operators';
 import {SearchResult} from '../interfaces/search-result.interface';
 import {SearchIndex} from '../interfaces/search-index.interface';
+import {SearchIndexType} from '../../../../configs/search-index.config';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +13,8 @@ import {SearchIndex} from '../interfaces/search-index.interface';
 export class SearchService extends BaseApiService {
   protected apiBaseUrl = this.configService.apiConfig.searchApi.baseUrl;
 
-  public searchIndexes(term: string, indexes: SearchIndex[]): Observable<SearchResultMatch[]> {
+  public searchIndexes(term: string, indexTypes: SearchIndexType[]): Observable<SearchResultMatch[]> {
+    const indexes = this.configService.filterSearchIndexes(indexTypes);
     const searchIndexNames = indexes.map((index) => index.indexName).toString();
     return this.getElasticsearch(searchIndexNames, term).pipe(
       map((response: SearchResult[]) => this.combineSearchResults(response, indexes)),
@@ -24,6 +26,9 @@ export class SearchService extends BaseApiService {
     searchResponse.forEach((searchResult) => {
       searchResult.matches.forEach((match) => {
         match.indexName = this.getIndexTitle(searchResult.index, indexes);
+        if (match.indexName) {
+          match.indexType = this.configService.searchIndexConfig.find((index) => index.indexName === match.indexName)?.indexType;
+        }
         match.geometry = {...match.geometry, srs: 4326}; // elastic search always delivers pure GeoJSON with 4326 coordinates
       });
       combinedResults.push(...searchResult.matches);

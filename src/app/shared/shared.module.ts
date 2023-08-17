@@ -28,6 +28,8 @@ import {LinkListComponent} from './components/link-list/link-list.component';
 import {LinkListItemComponent} from './components/link-list/link-list-item/link-list-item.component';
 import {AccordionItemComponent} from './components/accordion-item/accordion-item.component';
 import {SearchComponent} from './components/search/search.component';
+import {SearchFilterDialogComponent} from './components/search-filter-dialog/search-filter-dialog.component';
+import {SearchResultsComponent} from './components/search-results/search-results.component';
 
 @NgModule({
   declarations: [
@@ -56,6 +58,8 @@ import {SearchComponent} from './components/search/search.component';
     LinkListItemComponent,
     AccordionItemComponent,
     SearchComponent,
+    SearchFilterDialogComponent,
+    SearchResultsComponent,
   ],
   imports: [MaterialModule, RouterModule, CommonModule, ResizableModule],
   exports: [
@@ -84,6 +88,7 @@ import {SearchComponent} from './components/search/search.component';
     LinkListComponent,
     AccordionItemComponent,
     SearchComponent,
+    SearchFilterDialogComponent,
   ],
 })
 export class SharedModule {}

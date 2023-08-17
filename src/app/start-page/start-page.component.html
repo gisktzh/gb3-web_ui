@@ -7,7 +7,7 @@
 
 <search
   placeholderText="Suche nach Karten, Kartendaten, Geodaten und Geodiensten"
-  [showFilterButton]="false"
+  [showFilterButton]="true"
   (changeSearchTermEvent)="searchForTerm($event)"
   (clearSearchTermEvent)="clearSearchTerm()"
   (openFilterEvent)="openFilterMenu()"
@@ -15,14 +15,21 @@
 ></search>
 
 <div class="results">
-  <p>SearchService</p>
-  <loading-and-process-bar [loadingState]="searchState.searchServiceLoadingState"></loading-and-process-bar>
-  <ul *ngFor="let result of searchState.searchServiceResults">
-    <li>{{ result.displayString }} - {{ result.score }}</li>
+  <p><b>Results</b></p>
+  <ul *ngFor="let result of searchResults">
+    <li>{{ result.type }}</li>
   </ul>
-  <p>FilteredMaps</p>
-  <loading-and-process-bar [loadingState]="searchState.filteredMapsLoadingState"></loading-and-process-bar>
-  <p>Number of maps: {{ searchState.filteredMaps.length }}</p>
+
+  <!--  <p><b>SearchService</b></p>-->
+  <!--  <loading-and-process-bar [loadingState]="searchState.searchServiceLoadingState"></loading-and-process-bar>-->
+  <!--  <ul *ngFor="let result of searchState.searchServiceResults">-->
+  <!--    <li>{{ result.displayString }} - {{ result.score }}</li>-->
+  <!--  </ul>-->
+  <!--  <p><b>FilteredMaps</b></p>-->
+  <!--  <loading-and-process-bar [loadingState]="searchState.filteredMapsLoadingState"></loading-and-process-bar>-->
+  <!--  <ul *ngFor="let map of searchState.filteredMaps">-->
+  <!--    <li>{{ map.title }}</li>-->
+  <!--  </ul>-->
 </div>
 
 <start-page-section [hideBottomPadding]="true">
