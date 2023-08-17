@@ -28,11 +28,11 @@ export class SearchComponent implements AfterViewInit, OnDestroy {
 
   public clearInput() {
     this.inputRef.nativeElement.value = '';
-    this.clearSearchTermEvent.next();
+    this.clearSearchTermEvent.emit();
   }
 
   public openFilter() {
-    this.openFilterEvent.next();
+    this.openFilterEvent.emit();
   }
 
   private searchInputHandler(): Observable<string> {
@@ -43,8 +43,7 @@ export class SearchComponent implements AfterViewInit, OnDestroy {
       tap((value) => {
         // TODO WES remove
         console.log(value);
-        //
-        this.changeSearchTermEvent.next(value);
+        this.changeSearchTermEvent.emit(value);
       }),
     );
   }

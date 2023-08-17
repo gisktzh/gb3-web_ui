@@ -17,10 +17,10 @@ export class BaseMapDataItemComponent {
   public gb2Url: string | null = null;
   public mapConfigState?: MapConfigState;
 
-  @Output() public addEvent = new EventEmitter<void>();
+  @Output() public readonly addEvent = new EventEmitter<void>();
 
-  public addLayerEvent = new EventEmitter<MapLayer>();
-  public deleteEvent = new EventEmitter<void>();
+  public readonly addLayerEvent = new EventEmitter<MapLayer>();
+  public readonly deleteEvent = new EventEmitter<void>();
   public showExpandButton: boolean = true;
 
   public showDeleteButton: boolean = false;

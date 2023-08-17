@@ -15,7 +15,7 @@ export class MapDataItemFavouriteComponent extends BaseMapDataItemComponent {
   @Input() public override loadingState: LoadingState = 'undefined';
   @Input() public override invalid?: boolean;
 
-  @Output() public override deleteEvent = new EventEmitter<void>();
+  @Output() public override readonly deleteEvent = new EventEmitter<void>();
 
   public override showExpandButton = false;
   public override showDeleteButton = true;

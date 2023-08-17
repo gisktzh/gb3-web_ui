@@ -16,7 +16,7 @@ export class MapDataItemMapComponent extends BaseMapDataItemComponent implements
   @Input() public override imageUrl!: string;
   @Input() public override gb2Url: string | null = null;
 
-  @Output() public override addLayerEvent = new EventEmitter<MapLayer>();
+  @Output() public override readonly addLayerEvent = new EventEmitter<MapLayer>();
 
   public override loadingState: LoadingState = 'loaded';
 
