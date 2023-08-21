@@ -5,26 +5,12 @@ export const searchConfig: SearchConfig = {
     searchOptions: {
       faq: true,
       maps: true,
-      // TODO WES remove 'addresses'; add other metadata thingies
-      searchIndexTypes: ['addresses'],
+      searchIndexTypes: ['metadata-maps', 'metadata-datasets', 'metadata-services', 'metadata-products'],
     },
-    resultGroups: [
-      {
-        label: 'Karten',
-        types: ['maps'],
-      },
-      {
-        label: 'Datenkatalog',
-        types: ['metadata-maps', 'metadata-datasets', 'metadata-services', 'metadata-products'],
-      },
-      {
-        label: 'Support',
-        types: ['faqs'],
-      },
-    ],
     filterGroups: [
       {
         label: 'Kategorie',
+        useDynamicActiveMapItemsFilter: false,
         filters: [
           {label: 'Karten', isActive: false, type: 'maps'},
           {label: 'Metadaten: Karten', isActive: false, type: 'metadata-maps'},
@@ -42,20 +28,17 @@ export const searchConfig: SearchConfig = {
       maps: true,
       searchIndexTypes: ['addresses', 'places', 'activeMapItems'],
     },
-    resultGroups: [
+    filterGroups: [
       {
-        label: 'Orte / Adressen',
-        types: ['addresses', 'places'],
+        label: 'Kategorie',
+        useDynamicActiveMapItemsFilter: false,
+        filters: [
+          {label: 'Adressen', isActive: false, type: 'addresses'},
+          {label: 'Orte', isActive: false, type: 'places'},
+          {label: 'Karten', isActive: false, type: 'maps'},
+        ],
       },
-      {
-        label: 'Objekte',
-        types: ['activeMapItems'],
-      },
-      {
-        label: 'Karten',
-        types: ['maps'],
-      },
+      {label: 'Aktive Karten', useDynamicActiveMapItemsFilter: true, filters: []},
     ],
-    filterGroups: [{label: 'Kategorie', filters: []}],
   },
 };

@@ -22,4 +22,28 @@ export const searchIndexConfig: SearchIndex[] = [
     active: true,
     indexType: 'places',
   },
+  {
+    indexName: 'meta-gb2karten',
+    displayString: 'Karten',
+    active: true,
+    indexType: 'metadata-maps',
+  },
+  {
+    indexName: 'meta-product',
+    displayString: 'Produkte',
+    active: true,
+    indexType: 'metadata-products',
+  },
+  {
+    indexName: 'meta-geodatensatz',
+    displayString: 'Geodatensatz',
+    active: true,
+    indexType: 'metadata-datasets',
+  },
+  {
+    indexName: 'meta-service',
+    displayString: 'Geodienste',
+    active: true,
+    indexType: 'metadata-services',
+  },
 ];

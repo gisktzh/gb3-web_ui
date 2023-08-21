@@ -7,9 +7,12 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  width: 100%;
   height: inherit;
   padding: 17px;
+
+  &--compact {
+    padding: 6px;
+  }
 
   .search__bar {
     display: flex;
@@ -21,7 +24,7 @@
     border-radius: ktzh-variables.$zh-border-radius;
     flex-grow: 1;
 
-    &--active {
+    &:focus-within {
       border-color: ktzh-variables.$zh-active-blue;
     }
 

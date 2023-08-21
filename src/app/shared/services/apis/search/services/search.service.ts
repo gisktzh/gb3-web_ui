@@ -1,11 +1,10 @@
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
-import {SearchResultMatch} from '../interfaces/search-result-match.interface';
+import {SearchApiResultMatch} from '../interfaces/search-api-result-match.interface';
 import {BaseApiService} from '../../abstract-api.service';
 import {map} from 'rxjs/operators';
-import {SearchResult} from '../interfaces/search-result.interface';
+import {SearchApiResult} from '../interfaces/search-api-result.interface';
 import {SearchIndex} from '../interfaces/search-index.interface';
-import {SearchIndexType} from '../../../../configs/search-index.config';
 
 @Injectable({
   providedIn: 'root',
@@ -13,16 +12,15 @@ import {SearchIndexType} from '../../../../configs/search-index.config';
 export class SearchService extends BaseApiService {
   protected apiBaseUrl = this.configService.apiConfig.searchApi.baseUrl;
 
-  public searchIndexes(term: string, indexTypes: SearchIndexType[]): Observable<SearchResultMatch[]> {
-    const indexes = this.configService.filterSearchIndexes(indexTypes);
-    const searchIndexNames = indexes.map((index) => index.indexName).toString();
+  public searchIndexes(term: string, searchIndexex: SearchIndex[]): Observable<SearchApiResultMatch[]> {
+    const searchIndexNames = searchIndexex.map((index) => index.indexName).toString();
     return this.getElasticsearch(searchIndexNames, term).pipe(
-      map((response: SearchResult[]) => this.combineSearchResults(response, indexes)),
+      map((response: SearchApiResult[]) => this.combineSearchResults(response, searchIndexex)),
     );
   }
 
-  private combineSearchResults(searchResponse: SearchResult[], indexes: SearchIndex[]): SearchResultMatch[] {
-    const combinedResults: SearchResultMatch[] = [];
+  private combineSearchResults(searchResponse: SearchApiResult[], indexes: SearchIndex[]): SearchApiResultMatch[] {
+    const combinedResults: SearchApiResultMatch[] = [];
     searchResponse.forEach((searchResult) => {
       searchResult.matches.forEach((match) => {
         match.indexName = this.getIndexTitle(searchResult.index, indexes);
@@ -45,7 +43,7 @@ export class SearchService extends BaseApiService {
     return indexName;
   }
 
-  private getElasticsearch(indexes: string, term: string): Observable<SearchResult[]> {
+  private getElasticsearch(indexes: string, term: string): Observable<SearchApiResult[]> {
     const params = [
       {
         key: 'indexes',
@@ -57,7 +55,7 @@ export class SearchService extends BaseApiService {
       },
     ];
     const requestUrl = this.createFullEndpointUrl('search', params);
-    return this.get<SearchResult[]>(requestUrl);
+    return this.get<SearchApiResult[]>(requestUrl);
   }
 
   private createFullEndpointUrl(endpoint: string, parameters: {key: string; value: string}[] = []): string {

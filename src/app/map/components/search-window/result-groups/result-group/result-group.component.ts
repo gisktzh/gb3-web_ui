@@ -1,5 +1,5 @@
 import {Component, Inject, Input, OnDestroy, OnInit} from '@angular/core';
-import {SearchResultMatch} from '../../../../../shared/services/apis/search/interfaces/search-result-match.interface';
+import {SearchApiResultMatch} from '../../../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
 import {Map} from '../../../../../shared/interfaces/topic.interface';
 import {Store} from '@ngrx/store';
 import {MAP_SERVICE} from '../../../../../app.module';
@@ -10,7 +10,6 @@ import {ActiveMapItemFactory} from '../../../../../shared/factories/active-map-i
 import {selectMapConfigState} from '../../../../../state/map/reducers/map-config.reducer';
 import {Subscription, tap} from 'rxjs';
 import {MapConfigState} from '../../../../../state/map/states/map-config.state';
-import {SearchIndexType} from '../../../../../shared/configs/search-index.config';
 
 const DEFAULT_ZOOM_SCALE = 1000;
 
@@ -20,9 +19,8 @@ const DEFAULT_ZOOM_SCALE = 1000;
   styleUrls: ['./result-group.component.scss'],
 })
 export class ResultGroupComponent implements OnInit, OnDestroy {
-  @Input() public searchResults: SearchResultMatch[] = [];
+  @Input() public searchResults: SearchApiResultMatch[] = [];
   @Input() public filteredMaps: Map[] = [];
-  @Input() public type: SearchIndexType = 'addresses';
   @Input() public header: string = '';
   @Input() public searchTerms: string[] = [];
 
@@ -51,7 +49,7 @@ export class ResultGroupComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  public zoomToResult(searchResult: SearchResultMatch) {
+  public zoomToResult(searchResult: SearchApiResultMatch) {
     // only zoom to result if the geometry is available in the index
     if (searchResult.geometry) {
       const point = searchResult.geometry;

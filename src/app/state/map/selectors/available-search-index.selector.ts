@@ -4,7 +4,7 @@ import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item
 import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
 import {selectItems} from '../reducers/active-map-item.reducer';
 
-export const selectAvailableSpecialSearchIndexes = createSelector(selectItems, (activeMapItems) => {
+export const selectAvailableSpecialSearchIndexes = createSelector(selectItems, (activeMapItems): SearchIndex[] => {
   const availableIndexes: SearchIndex[] = [];
 
   activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).forEach((mapItem) => {

@@ -8,6 +8,10 @@
   margin-left: 5px;
   height: 100%;
 
+  .result-window__loading-bar {
+    background-color: ktzh-variables.$zh-background-color;
+  }
+
   .result-window__group {
     padding: 5px;
     max-height: 33%;

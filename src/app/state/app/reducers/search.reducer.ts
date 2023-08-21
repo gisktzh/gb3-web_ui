@@ -7,10 +7,10 @@ export const searchFeatureKey = 'search';
 
 export const initialState: SearchState = {
   term: '',
-  searchServiceLoadingState: 'undefined',
-  searchServiceResults: [],
-  filteredMapsLoadingState: 'undefined',
-  filteredMaps: [],
+  searchApiLoadingState: 'undefined',
+  searchApiResultMatches: [],
+  mapMatchesLoadingState: 'undefined',
+  mapMatches: [],
   filterGroups: [],
 };
 
@@ -19,19 +19,26 @@ export const searchFeature = createFeature({
   reducer: createReducer(
     initialState,
     on(SearchActions.searchForTerm, (state, {term}): SearchState => {
-      return {...state, term, searchServiceLoadingState: 'loading', filteredMapsLoadingState: 'loading'};
+      return {
+        ...state,
+        term,
+        searchApiResultMatches: initialState.searchApiResultMatches,
+        searchApiLoadingState: 'loading',
+        mapMatches: initialState.mapMatches,
+        mapMatchesLoadingState: 'loading',
+      };
     }),
-    on(SearchActions.setSearchServiceError, (state): SearchState => {
-      return {...state, searchServiceLoadingState: 'error', searchServiceResults: initialState.searchServiceResults};
+    on(SearchActions.setSearchApiError, (state): SearchState => {
+      return {...state, searchApiLoadingState: 'error', searchApiResultMatches: initialState.searchApiResultMatches};
     }),
-    on(SearchActions.setSearchServiceResults, (state, {results}): SearchState => {
-      return {...state, searchServiceLoadingState: 'loaded', searchServiceResults: results};
+    on(SearchActions.setSearchApiResults, (state, {results}): SearchState => {
+      return {...state, searchApiLoadingState: 'loaded', searchApiResultMatches: results};
     }),
-    on(SearchActions.setFilteredMapsError, (state): SearchState => {
-      return {...state, filteredMapsLoadingState: 'error', filteredMaps: initialState.filteredMaps};
+    on(SearchActions.setMapMatchesError, (state): SearchState => {
+      return {...state, mapMatchesLoadingState: 'error', mapMatches: initialState.mapMatches};
     }),
-    on(SearchActions.setFilteredMapsResults, (state, {filteredMaps}): SearchState => {
-      return {...state, filteredMapsLoadingState: 'loaded', filteredMaps};
+    on(SearchActions.setMapMatchesResults, (state, {mapMatches}): SearchState => {
+      return {...state, mapMatchesLoadingState: 'loaded', mapMatches};
     }),
     on(SearchActions.clearSearch, (): SearchState => {
       return {...initialState};
@@ -39,6 +46,27 @@ export const searchFeature = createFeature({
     on(SearchActions.setFilterGroups, (state, {filterGroups}): SearchState => {
       return {...state, filterGroups};
     }),
+    on(
+      SearchActions.setActiveMapItemsFilterGroup,
+      produce((draft, {searchIndexes}) => {
+        draft.filterGroups.forEach((filterGroup) => {
+          if (filterGroup.useDynamicActiveMapItemsFilter) {
+            filterGroup.filters = searchIndexes.map((searchIndex) => {
+              const existingFilter = filterGroup.filters.find(
+                (filter) => filter.label === searchIndex.displayString && filter.type === searchIndex.indexType,
+              );
+              return existingFilter
+                ? existingFilter
+                : {
+                    label: searchIndex.displayString,
+                    isActive: false,
+                    type: searchIndex.indexType,
+                  };
+            });
+          }
+        });
+      }),
+    ),
     on(
       SearchActions.setFilterValue,
       produce((draft, {groupLabel, filterLabel, isActive}) => {
@@ -62,5 +90,13 @@ export const searchFeature = createFeature({
   ),
 });
 
-export const {name, reducer, selectTerm, selectSearchState, selectSearchServiceResults, selectFilteredMaps, selectFilterGroups} =
-  searchFeature;
+export const {
+  name,
+  reducer,
+  selectTerm,
+  selectSearchState,
+  selectSearchApiLoadingState,
+  selectSearchApiResultMatches,
+  selectMapMatches,
+  selectFilterGroups,
+} = searchFeature;

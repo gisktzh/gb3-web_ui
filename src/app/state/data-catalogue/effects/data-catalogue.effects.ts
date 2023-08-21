@@ -17,9 +17,12 @@ export class DataCatalogueEffects {
       ofType(DataCatalogueActions.loadCatalogue),
       concatLatestFrom(() => [this.store.select(selectLoadingState)]),
       filter(([_, loadingState]) => loadingState !== 'loaded'), // only dispatch once per app load, else serve from cache
-      switchMap(() => this.gb3MetadataService.loadFullList()),
-      map((items) => DataCatalogueActions.setCatalogue({items})),
-      catchError((error: unknown) => of(DataCatalogueActions.setError({error}))),
+      switchMap(() =>
+        this.gb3MetadataService.loadFullList().pipe(
+          map((items) => DataCatalogueActions.setCatalogue({items})),
+          catchError((error: unknown) => of(DataCatalogueActions.setError({error}))),
+        ),
+      ),
     );
   });
 

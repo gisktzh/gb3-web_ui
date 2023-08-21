@@ -1,9 +1,8 @@
-// TODO WES rename to filtergroup
-
 import {SearchType} from '../types/search.type';
 
 export interface SearchFilterGroup {
   label: string;
+  useDynamicActiveMapItemsFilter: boolean;
   filters: SearchFilter[];
 }
 
