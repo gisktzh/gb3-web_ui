@@ -50,7 +50,6 @@ import {ShareLinkDialogComponent} from './components/share-link-dialog/share-lin
 import {MeasurementToolsComponent} from './components/map-tools/measurement-tools/measurement-tools.component';
 import {DrawingToolsComponent} from './components/map-tools/drawing-tools/drawing-tools.component';
 import {AbstractToolsComponent} from './components/map-tools/abstract-tools/abstract-tools.component';
-import {Gb2ExitButtonComponent} from './components/gb2-exit-button/gb2-exit-button.component';
 import {ZoomControlsComponent} from './components/map-controls/zoom-controls/zoom-controls.component';
 
 @NgModule({
@@ -102,7 +101,6 @@ import {ZoomControlsComponent} from './components/map-controls/zoom-controls/zoo
     MeasurementToolsComponent,
     DrawingToolsComponent,
     AbstractToolsComponent,
-    Gb2ExitButtonComponent,
     ZoomControlsComponent,
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule],

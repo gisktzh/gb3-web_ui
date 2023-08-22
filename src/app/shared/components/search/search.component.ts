@@ -11,8 +11,12 @@ import {SearchMode} from '../../types/search-mode.type';
 export class SearchComponent implements AfterViewInit, OnDestroy {
   @Input() public placeholderText!: string;
   @Input() public showFilterButton: boolean = true;
+  @Input() public showClearButton: boolean = true;
+  @Input() public clearButtonLabel?: string;
   @Input() public mode: SearchMode = 'normal';
+  @Input() public focusOnInit: boolean = false;
 
+  @Output() public readonly focus = new EventEmitter<void>();
   @Output() public readonly changeSearchTermEvent = new EventEmitter<string>();
   @Output() public readonly clearSearchTermEvent = new EventEmitter<void>();
   @Output() public readonly openFilterEvent = new EventEmitter<void>();
@@ -22,6 +26,9 @@ export class SearchComponent implements AfterViewInit, OnDestroy {
 
   public ngAfterViewInit() {
     this.subscriptions.add(this.searchInputHandler().subscribe());
+    if (this.focusOnInit) {
+      this.inputRef.nativeElement.focus();
+    }
   }
 
   public ngOnDestroy() {
@@ -43,8 +50,6 @@ export class SearchComponent implements AfterViewInit, OnDestroy {
       map((event) => (<HTMLInputElement>event.target).value.trim()),
       distinctUntilChanged(),
       tap((value) => {
-        // TODO WES remove
-        console.log(value);
         this.changeSearchTermEvent.emit(value);
       }),
     );

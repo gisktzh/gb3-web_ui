@@ -6,7 +6,6 @@ import {selectItems} from '../reducers/active-map-item.reducer';
 
 export const selectAvailableSpecialSearchIndexes = createSelector(selectItems, (activeMapItems): SearchIndex[] => {
   const availableIndexes: SearchIndex[] = [];
-
   activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).forEach((mapItem) => {
     mapItem.settings.searchConfigurations?.forEach((searchConfig) => {
       const notInOutputYet = !availableIndexes.map((index) => index.indexName).includes(searchConfig.index);

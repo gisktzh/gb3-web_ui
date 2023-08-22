@@ -4,11 +4,12 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
 .search {
+  height: 100%;
   display: flex;
   align-items: center;
   gap: 8px;
-  height: inherit;
   padding: 17px;
+  box-sizing: border-box;
 
   &--compact {
     padding: 6px;
@@ -45,8 +46,13 @@
       border-color: ktzh-variables.$zh-black100;
     }
 
-    .search__bar__close-button {
+    .search__bar__close-icon-button {
       @include mat-mixins.mat-icon-button-override-icon-size(24px);
+    }
+
+    .search__bar__close-button {
+      @include mat-mixins.mat-button--align-icon-right;
+      @include mat-mixins.mat-icon-override-size(24px);
     }
   }
 }

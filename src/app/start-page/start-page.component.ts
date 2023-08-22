@@ -8,11 +8,8 @@ import {SearchActions} from '../state/app/actions/search.actions';
 import {initialState, selectSearchState} from '../state/app/reducers/search.reducer';
 import {SearchState} from '../state/app/states/search.state';
 import {ConfigService} from '../shared/services/config.service';
-import {PanelClass} from '../shared/enums/panel-class.enum';
-import {MatDialog} from '@angular/material/dialog';
-import {SearchFilterDialogComponent} from '../shared/components/search-filter-dialog/search-filter-dialog.component';
-
-const FILTER_DIALOG_WIDTH_IN_PX = 956;
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {StartPageSearchOverlayComponent} from './components/start-page-search-overlay/start-page-search-overlay.component';
 
 @Component({
   selector: 'start-page',
@@ -27,6 +24,7 @@ export class StartPageComponent implements OnInit, OnDestroy {
   public usefulLinksGroups: LinksGroup[] = [];
   public searchState: SearchState = initialState;
 
+  private searchOverlayRef?: MatDialogRef<StartPageSearchOverlayComponent>;
   private readonly searchConfig = this.configService.searchConfig.startPage;
   private readonly usefulLinksGroups$: Observable<LinksGroup[]> = this.store.select(selectLinks);
   private readonly searchState$ = this.store.select(selectSearchState);
@@ -44,6 +42,7 @@ export class StartPageComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
+    this.searchOverlayRef?.close();
     this.subscriptions.unsubscribe();
     this.store.dispatch(SearchActions.clearSearch());
   }
@@ -53,19 +52,22 @@ export class StartPageComponent implements OnInit, OnDestroy {
     this.subscriptions.add(this.searchState$.pipe(tap((searchState) => (this.searchState = searchState))).subscribe());
   }
 
-  public searchForTerm(term: string) {
-    this.store.dispatch(SearchActions.searchForTerm({term, options: this.searchConfig.searchOptions}));
-  }
-
-  public clearSearchTerm() {
-    this.store.dispatch(SearchActions.clearSearch());
-  }
-
-  public openFilterMenu() {
-    this.dialogService.open<SearchFilterDialogComponent>(SearchFilterDialogComponent, {
-      panelClass: PanelClass.ApiWrapperDialog,
+  public openSearchOverlay() {
+    this.searchOverlayRef = this.dialogService.open<StartPageSearchOverlayComponent>(StartPageSearchOverlayComponent, {
       restoreFocus: false,
-      width: `${FILTER_DIALOG_WIDTH_IN_PX}px`,
+      width: '100vw',
+      height: '100vh',
+      maxWidth: '100vw',
     });
+    this.subscriptions.add(
+      this.searchOverlayRef
+        .afterClosed()
+        .pipe(
+          tap(() => {
+            this.store.dispatch(SearchActions.clearSearch());
+          }),
+        )
+        .subscribe(),
+    );
   }
 }

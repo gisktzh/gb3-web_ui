@@ -22,11 +22,10 @@ export class SearchService extends BaseApiService {
   private combineSearchResults(searchResponse: SearchApiResult[], indexes: SearchIndex[]): SearchApiResultMatch[] {
     const combinedResults: SearchApiResultMatch[] = [];
     searchResponse.forEach((searchResult) => {
+      const indexType = indexes.find((index) => index.indexName === searchResult.index)?.indexType;
       searchResult.matches.forEach((match) => {
         match.indexName = this.getIndexTitle(searchResult.index, indexes);
-        if (match.indexName) {
-          match.indexType = this.configService.searchIndexConfig.find((index) => index.indexName === match.indexName)?.indexType;
-        }
+        match.indexType = indexType;
         match.geometry = {...match.geometry, srs: 4326}; // elastic search always delivers pure GeoJSON with 4326 coordinates
       });
       combinedResults.push(...searchResult.matches);

@@ -3,6 +3,7 @@ import {selectFilterGroups, selectMapMatches, selectSearchApiResultMatches} from
 import {SearchApiResultMatch} from '../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
 import {Map} from '../../../shared/interfaces/topic.interface';
 import {selectAvailableSpecialSearchIndexes} from '../../map/selectors/available-search-index.selector';
+import {SearchType} from '../../../shared/types/search.type';
 
 export const selectFilteredSearchApiResultMatches = createSelector(
   selectSearchApiResultMatches,
@@ -10,17 +11,17 @@ export const selectFilteredSearchApiResultMatches = createSelector(
   selectAvailableSpecialSearchIndexes,
   (searchApiResultMatches, filterGroups, availableSpecialSearchIndexes): SearchApiResultMatch[] => {
     const filters = filterGroups.flatMap((filterGroup) => filterGroup.filters);
-    if (filters.every((filter) => !filter.isActive)) {
-      // no filter is active means all results are shown (all filters active === no filter active)
-      return searchApiResultMatches;
-    }
+    // no filter is active means all results are shown (all filters active === no filter active)
+    const noFilterActive = filters.every((filter) => !filter.isActive);
 
-    const activeSearchFilterIndexes = filters.filter((filter) => filter.isActive).map((filter) => filter.type);
+    const activeSearchFilterIndexes: Set<SearchType> = new Set(
+      filters.filter((filter) => noFilterActive || filter.isActive).map((filter) => filter.type),
+    );
     return searchApiResultMatches.filter((resultMatch) => {
       switch (resultMatch.indexType) {
         case 'activeMapItems':
           const indexConfig = availableSpecialSearchIndexes.find(
-            (specialIndex) => resultMatch.indexName && specialIndex.indexName.toLowerCase() === resultMatch.indexName.toLowerCase(),
+            (specialIndex) => resultMatch.indexName && specialIndex.displayString.toLowerCase() === resultMatch.indexName.toLowerCase(),
           );
           return (
             indexConfig &&
@@ -28,11 +29,11 @@ export const selectFilteredSearchApiResultMatches = createSelector(
               (filter) =>
                 filter.type === 'activeMapItems' &&
                 filter.label.toLowerCase() === indexConfig.displayString.toLowerCase() &&
-                filter.isActive,
+                (noFilterActive || filter.isActive),
             )
           );
         default:
-          return resultMatch.indexType && activeSearchFilterIndexes.includes(resultMatch.indexType);
+          return resultMatch.indexType && activeSearchFilterIndexes.has(resultMatch.indexType);
       }
     });
   },

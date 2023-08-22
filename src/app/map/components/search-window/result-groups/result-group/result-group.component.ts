@@ -11,8 +11,6 @@ import {selectMapConfigState} from '../../../../../state/map/reducers/map-config
 import {Subscription, tap} from 'rxjs';
 import {MapConfigState} from '../../../../../state/map/states/map-config.state';
 
-const DEFAULT_ZOOM_SCALE = 1000;
-
 @Component({
   selector: 'result-group',
   templateUrl: './result-group.component.html',
@@ -34,15 +32,7 @@ export class ResultGroupComponent implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit() {
-    this.subscriptions.add(
-      this.mapConfigState$
-        .pipe(
-          tap((mapConfigState) => {
-            this.mapConfigState = mapConfigState;
-          }),
-        )
-        .subscribe(),
-    );
+    this.subscriptions.add(this.mapConfigState$.pipe(tap((mapConfigState) => (this.mapConfigState = mapConfigState))).subscribe());
   }
 
   public ngOnDestroy() {
@@ -52,8 +42,7 @@ export class ResultGroupComponent implements OnInit, OnDestroy {
   public zoomToResult(searchResult: SearchApiResultMatch) {
     // only zoom to result if the geometry is available in the index
     if (searchResult.geometry) {
-      const point = searchResult.geometry;
-      this.mapService.zoomToPoint(point, DEFAULT_ZOOM_SCALE);
+      this.mapService.zoomToExtent(searchResult.geometry);
     }
   }
 

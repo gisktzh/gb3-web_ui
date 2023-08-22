@@ -328,12 +328,11 @@ export class EsriMapService implements MapService, OnDestroy {
 
   public zoomToExtent(geometry: GeometryWithSrs, expandFactor: number = 1, duration?: number): Promise<never> {
     const esriGeometry = this.geoJSONMapperService.fromGeoJSONToEsri(geometry);
-    const center = esriGeometry.extent.clone().expand(expandFactor);
 
     if (esriGeometry instanceof EsriPoint) {
       return this.mapView.goTo(
         {
-          center: center,
+          center: esriGeometry,
           scale: DEFAULT_POINT_ZOOM_EXTENT_SCALE,
         },
         {duration},
@@ -342,7 +341,7 @@ export class EsriMapService implements MapService, OnDestroy {
 
     return this.mapView.goTo(
       {
-        center: center,
+        center: esriGeometry.extent.clone().expand(expandFactor),
       },
       {duration},
     ) as never;

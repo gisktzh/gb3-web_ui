@@ -1,48 +1,38 @@
-<start-page-section [background]="'primary'">
-  <hero-header
-    heroText="Geoinformationen sind verlässliche, raumbezogene Daten und Karten. Sie dienen als wichtige Grundlage für vielfältige Aufgaben und Entscheide und stehen über verschiedene Portale zur Einsicht und Nutzung bereit."
-    heroTitle="Übersicht"
-  ></hero-header>
-</start-page-section>
+<div class="start-page">
+  <start-page-section [background]="'primary'">
+    <hero-header
+      heroText="Geoinformationen sind verlässliche, raumbezogene Daten und Karten. Sie dienen als wichtige Grundlage für vielfältige Aufgaben und Entscheide und stehen über verschiedene Portale zur Einsicht und Nutzung bereit."
+      heroTitle="Übersicht"
+    ></hero-header>
+  </start-page-section>
 
-<search
-  placeholderText="Suche nach Karten, Kartendaten, Geodaten und Geodiensten"
-  [showFilterButton]="true"
-  (changeSearchTermEvent)="searchForTerm($event)"
-  (clearSearchTermEvent)="clearSearchTerm()"
-  (openFilterEvent)="openFilterMenu()"
-  class="blub"
-></search>
+  <div class="start-page__search">
+    <search
+      class="start-page__search__bar"
+      placeholderText="Suche nach Karten, Kartendaten, Geodaten und Geodiensten"
+      [showFilterButton]="false"
+      [showClearButton]="false"
+      (focus)="openSearchOverlay()"
+    ></search>
+  </div>
 
-<div class="results">
-  <p><b>SearchService</b></p>
-  <loading-and-process-bar [loadingState]="searchState.searchApiLoadingState"></loading-and-process-bar>
-  <ul *ngFor="let result of searchState.searchApiResultMatches">
-    <li>{{ result.displayString }} - {{ result.score }}</li>
-  </ul>
-  <p><b>FilteredMaps</b></p>
-  <loading-and-process-bar [loadingState]="searchState.mapMatchesLoadingState"></loading-and-process-bar>
-  <ul *ngFor="let map of searchState.mapMatches">
-    <li>{{ map.title }}</li>
-  </ul>
+  <start-page-section [hideBottomPadding]="true">
+    <gis-browser-teaser></gis-browser-teaser>
+  </start-page-section>
+
+  <start-page-section sectionTitle="Häufig verwendet">
+    <frequently-used-items></frequently-used-items>
+  </start-page-section>
+
+  <start-page-section [background]="'accent'" [titleLink]="this.externalNewsFeedLink" sectionTitle="News">
+    <news-feed></news-feed>
+  </start-page-section>
+
+  <start-page-section [hideBottomPadding]="true" sectionTitle="Entdecken">
+    <discover-maps></discover-maps>
+  </start-page-section>
+
+  <start-page-section sectionTitle="Weiterführende Informationen">
+    <link-list [linksGroups]="usefulLinksGroups"></link-list>
+  </start-page-section>
 </div>
-
-<start-page-section [hideBottomPadding]="true">
-  <gis-browser-teaser></gis-browser-teaser>
-</start-page-section>
-
-<start-page-section sectionTitle="Häufig verwendet">
-  <frequently-used-items></frequently-used-items>
-</start-page-section>
-
-<start-page-section [background]="'accent'" [titleLink]="this.externalNewsFeedLink" sectionTitle="News">
-  <news-feed></news-feed>
-</start-page-section>
-
-<start-page-section [hideBottomPadding]="true" sectionTitle="Entdecken">
-  <discover-maps></discover-maps>
-</start-page-section>
-
-<start-page-section sectionTitle="Weiterführende Informationen">
-  <link-list [linksGroups]="usefulLinksGroups"></link-list>
-</start-page-section>

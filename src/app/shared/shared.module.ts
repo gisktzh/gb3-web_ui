@@ -29,6 +29,7 @@ import {LinkListItemComponent} from './components/link-list/link-list-item/link-
 import {AccordionItemComponent} from './components/accordion-item/accordion-item.component';
 import {SearchComponent} from './components/search/search.component';
 import {SearchFilterDialogComponent} from './components/search-filter-dialog/search-filter-dialog.component';
+import {Gb2ExitButtonComponent} from './components/gb2-exit-button/gb2-exit-button.component';
 
 @NgModule({
   declarations: [
@@ -58,6 +59,7 @@ import {SearchFilterDialogComponent} from './components/search-filter-dialog/sea
     AccordionItemComponent,
     SearchComponent,
     SearchFilterDialogComponent,
+    Gb2ExitButtonComponent,
   ],
   imports: [MaterialModule, RouterModule, CommonModule, ResizableModule],
   exports: [
@@ -87,6 +89,7 @@ import {SearchFilterDialogComponent} from './components/search-filter-dialog/sea
     AccordionItemComponent,
     SearchComponent,
     SearchFilterDialogComponent,
+    Gb2ExitButtonComponent,
   ],
 })
 export class SharedModule {}

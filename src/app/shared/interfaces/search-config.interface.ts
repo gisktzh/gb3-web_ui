@@ -6,7 +6,7 @@ export interface SearchConfig {
   mapPage: SearchDetailConfig;
 }
 
-interface SearchDetailConfig {
+export interface SearchDetailConfig {
   searchOptions: SearchOptions;
   filterGroups: SearchFilterGroup[];
 }

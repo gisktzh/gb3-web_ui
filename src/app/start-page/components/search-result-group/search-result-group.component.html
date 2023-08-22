@@ -1,0 +1,49 @@
+<div class="search-result-group">
+  <h2 class="search-result-group__header">{{ header }}</h2>
+  <!-- TODO METADATA -->
+  <!--  <div class="search-result-group__container">-->
+  <!--    <mat-card-->
+  <!--      *ngFor="let result of filteredSearchResults"-->
+  <!--      class="search-result-group__container__element search-result-group__container__element&#45;&#45;interactive"-->
+  <!--    >-->
+  <!--      <mat-card-header *ngIf="result.indexType === 'activeMapItems'" class="search-result-group__container__element__header">{{-->
+  <!--        result.indexName-->
+  <!--      }}</mat-card-header>-->
+  <!--      <mat-card-content-->
+  <!--        class="search-result-group__container__element__content"-->
+  <!--        [innerHTML]="result.displayString | highlightSearchQuery: this.searchTerms"-->
+  <!--      ></mat-card-content>-->
+  <!--      <mat-divider></mat-divider>-->
+  <!--    </mat-card>-->
+  <!--  </div>-->
+  <!-- TODO: FAQ -->
+  <!-- TOPIC MAPS -->
+  <div class="search-result-group__container">
+    <mat-card *ngFor="let map of filteredMaps" class="search-result-group__container__element">
+      <mat-card-content class="search-result-group__container__element__map-content">
+        <gb2-exit-button
+          *ngIf="map.gb2Url; else openMap"
+          [url]="map.gb2Url | appendMapConfigurationToUrl: mapConfigState"
+        ></gb2-exit-button>
+        <ng-template #openMap>
+          <a
+            [queryParams]="{initialMapIds: map.id}"
+            [routerLink]="'/' + mainPageEnum.Maps"
+            color="primary"
+            data-test-id="open-active-map"
+            mat-icon-button
+          >
+            <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
+          </a>
+        </ng-template>
+        <img [alt]="map.title" [src]="map.icon" class="search-result-group__container__element__map-content__image" />
+        <p
+          [innerHTML]="map.title | highlightSearchQuery: this.searchTerms"
+          class="search-result-group__container__element__map-content__title"
+          matTooltip="{{ map.title }}"
+        ></p>
+      </mat-card-content>
+      <mat-divider></mat-divider>
+    </mat-card>
+  </div>
+</div>
