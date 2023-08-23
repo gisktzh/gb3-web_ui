@@ -2,7 +2,10 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {selectSearchApiLoadingState, selectTerm} from '../../../../state/app/reducers/search.reducer';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
-import {selectFilteredMaps, selectFilteredSearchApiResultMatches} from '../../../../state/app/selectors/search-results.selector';
+import {
+  selectFilteredLayerCatalogMaps,
+  selectFilteredSearchApiResultMatches,
+} from '../../../../state/app/selectors/search-results.selector';
 import {GeometrySearchApiResultMatch} from '../../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
 import {Map} from '../../../../shared/interfaces/topic.interface';
 import {LoadingState} from '../../../../shared/types/loading-state.type';
@@ -21,7 +24,7 @@ export class ResultGroupsComponent implements OnInit, OnDestroy {
 
   private readonly searchTerm$ = this.store.select(selectTerm);
   private readonly filteredSearchApiResultMatches$ = this.store.select(selectFilteredSearchApiResultMatches);
-  private readonly filteredMaps$ = this.store.select(selectFilteredMaps);
+  private readonly filteredMaps$ = this.store.select(selectFilteredLayerCatalogMaps);
   private readonly searchApiLoadingState$ = this.store.select(selectSearchApiLoadingState);
   private readonly subscriptions: Subscription = new Subscription();
 

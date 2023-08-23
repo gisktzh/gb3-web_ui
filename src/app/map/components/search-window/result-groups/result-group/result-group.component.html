@@ -1,6 +1,10 @@
 <h2 class="result-group__header">{{ header }}</h2>
 <div class="result-group__container">
-  <mat-card *ngFor="let result of searchResults" (click)="zoomToResult(result)" class="result-group__container__element">
+  <mat-card
+    *ngFor="let result of searchResults"
+    (click)="zoomToResult(result)"
+    class="result-group__container__element search-result-group__container__element--interactive"
+  >
     <mat-card-header *ngIf="result.indexType === 'activeMapItems'" class="result-group__container__element__header">{{
       result.indexName
     }}</mat-card-header>

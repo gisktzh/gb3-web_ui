@@ -1,5 +1,5 @@
 import {createSelector} from '@ngrx/store';
-import {selectFilterGroups, selectMapMatches, selectSearchApiResultMatches, selectTerm} from '../reducers/search.reducer';
+import {selectFilterGroups, selectSearchApiResultMatches, selectTerm} from '../reducers/search.reducer';
 import {
   MetadataSearchApiResultMatch,
   SearchApiResultMatch,
@@ -12,6 +12,7 @@ import {SearchIndexType} from '../../../shared/configs/search-index.config';
 import {OverviewMetadataItem} from '../../../shared/models/overview-metadata-item.model';
 import {selectFaq} from '../../support/reducers/support-content.reducer';
 import {FaqItem} from '../../../shared/interfaces/faq.interface';
+import {selectMaps} from '../../map/selectors/maps.selector';
 
 export const selectFilteredSearchApiResultMatches = createSelector(
   selectSearchApiResultMatches,
@@ -41,18 +42,34 @@ export const selectFilteredSearchApiResultMatches = createSelector(
             )
           );
         default:
-          return resultMatch.indexType && activeSearchFilterIndexes.has(resultMatch.indexType);
+          return noFilterActive || activeSearchFilterIndexes.has(resultMatch.indexType);
       }
     });
   },
 );
 
-export const selectFilteredMaps = createSelector(selectMapMatches, selectFilterGroups, (mapMatches, filterGroups): Map[] => {
-  const filters = filterGroups.flatMap((filterGroup) => filterGroup.filters);
-  const isNoFilterActive = filters.every((filter) => !filter.isActive); // no filter active means all results are shown (all filters active === no filter active)
-  const isMapFilterActive = isNoFilterActive || (filters.find((filter) => filter.type === 'maps')?.isActive ?? false);
-  return isMapFilterActive ? mapMatches : [];
-});
+export const selectFilteredLayerCatalogMaps = createSelector(
+  selectTerm,
+  selectMaps,
+  selectFilterGroups,
+  (searchTerm, maps, filterGroups): Map[] => {
+    const filters = filterGroups.flatMap((filterGroup) => filterGroup.filters);
+    const isNoFilterActive = filters.every((filter) => !filter.isActive); // no filter active means all results are shown (all filters active === no filter active)
+    const isMapFilterActive = isNoFilterActive || (filters.find((filter) => filter.type === 'maps')?.isActive ?? false);
+    const lowerCasedFilterString = searchTerm.toLowerCase();
+    if (!isMapFilterActive || lowerCasedFilterString === '') {
+      return [];
+    }
+
+    return maps.filter((map) => {
+      // Return true if the map title OR one of the keywords includes the filter string
+      return (
+        map.title.toLowerCase().includes(lowerCasedFilterString) ||
+        map.keywords.map((keyword) => keyword.toLowerCase()).includes(lowerCasedFilterString)
+      );
+    });
+  },
+);
 
 export const selectFilteredMetadataItems = createSelector(
   selectFilteredSearchApiResultMatches,
@@ -68,7 +85,20 @@ export const selectFilteredMetadataItems = createSelector(
       .map((filteredMatch) => filteredMatch as MetadataSearchApiResultMatch);
 
     filteredMetadataMatches.forEach((match) => {
-      const metadataItem = metadataItems.find((item) => item.guid === +match.id);
+      const metadataItem = metadataItems
+        .filter((item) => {
+          switch (match.indexType) {
+            case 'metadata-maps':
+              return item.type === 'Karte';
+            case 'metadata-products':
+              return item.type === 'Produkt';
+            case 'metadata-datasets':
+              return item.type === 'Geodatensatz';
+            case 'metadata-services':
+              return item.type === 'Geoservice';
+          }
+        })
+        .find((item) => item.guid === +match.id);
       if (metadataItem) {
         filteredMetadataItems.push(metadataItem);
       }

@@ -35,15 +35,7 @@ export class SearchResultGroupComponent implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit() {
-    this.subscriptions.add(
-      this.mapConfigState$
-        .pipe(
-          tap((mapConfigState) => {
-            this.mapConfigState = mapConfigState;
-          }),
-        )
-        .subscribe(),
-    );
+    this.subscriptions.add(this.mapConfigState$.pipe(tap((mapConfigState) => (this.mapConfigState = mapConfigState))).subscribe());
   }
 
   public ngOnDestroy() {

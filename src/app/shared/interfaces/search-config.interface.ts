@@ -4,6 +4,7 @@ import {SearchFilterGroup} from './search-filter-group.interface';
 export interface SearchConfig {
   startPage: SearchDetailConfig;
   mapPage: SearchDetailConfig;
+  dataCatalogPage: SearchDetailConfig;
 }
 
 export interface SearchDetailConfig {

@@ -11,7 +11,7 @@ import {FaqItem} from '../../../shared/interfaces/faq.interface';
 import {selectSearchApiLoadingState, selectTerm} from '../../../state/app/reducers/search.reducer';
 import {
   selectFilteredFaqItems,
-  selectFilteredMaps,
+  selectFilteredLayerCatalogMaps,
   selectFilteredMetadataItems,
 } from '../../../state/app/selectors/search-results.selector';
 import {Subscription, tap} from 'rxjs';
@@ -39,7 +39,7 @@ export class StartPageSearchOverlayComponent implements OnInit, OnDestroy {
   private readonly searchConfig = this.configService.searchConfig.startPage;
   private readonly searchTerm$ = this.store.select(selectTerm);
   private readonly filteredMetadataItems$ = this.store.select(selectFilteredMetadataItems);
-  private readonly filteredMaps$ = this.store.select(selectFilteredMaps);
+  private readonly filteredMaps$ = this.store.select(selectFilteredLayerCatalogMaps);
   private readonly searchApiLoadingState$ = this.store.select(selectSearchApiLoadingState);
   private readonly layerCatalogLoadingState$ = this.store.select(selectLayerCatalogLoadingState);
   private readonly dataCatalogLoadingState$ = this.store.select(selectDataCatalogLoadingState);

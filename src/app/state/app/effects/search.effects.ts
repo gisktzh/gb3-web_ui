@@ -2,12 +2,10 @@ import {Injectable} from '@angular/core';
 import {Actions, concatLatestFrom, createEffect, ofType} from '@ngrx/effects';
 import {combineLatestWith, distinctUntilChanged, filter, of, switchMap, takeWhile, tap} from 'rxjs';
 import {SearchActions} from '../actions/search.actions';
-import {SearchApiResultMatch} from '../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
 import {SearchService} from '../../../shared/services/apis/search/services/search.service';
 import {Store} from '@ngrx/store';
 import {catchError, map} from 'rxjs/operators';
 import {SearchResultsCouldNotBeLoaded} from '../../../shared/errors/search.errors';
-import {selectFilteredLayerCatalogMaps} from '../selectors/filtered-layer-catalog-maps.selector';
 import {selectLoadingState as selectLayerCatalogLoadingState} from '../../map/reducers/layer-catalog.reducer';
 import {LayerCatalogActions} from '../../map/actions/layer-catalog.actions';
 import {selectAvailableSpecialSearchIndexes} from '../../map/selectors/available-search-index.selector';
@@ -37,66 +35,7 @@ export class SearchEffects {
         }
         return this.searchService.searchIndexes(termAndOptions.term, searchIndexes).pipe(
           map((results) => SearchActions.setSearchApiResults({results})),
-          // TODO WES remove
-          catchError(() => {
-            const mockResults: SearchApiResultMatch[] = [
-              {
-                score: 1,
-                displayString: 'test-addresses',
-                geometry: {srs: 4326, type: 'Point', coordinates: []},
-                indexName: 'fme-addresses',
-                indexType: 'addresses',
-              },
-              {
-                score: 2,
-                displayString: 'test-places',
-                geometry: {srs: 4326, type: 'Point', coordinates: []},
-                indexName: 'fme-places',
-                indexType: 'places',
-              },
-              {
-                score: 3,
-                displayString: 'test-activeMapItems1',
-                geometry: {srs: 4326, type: 'Point', coordinates: []},
-                indexName: 'KbS',
-                indexType: 'activeMapItems',
-              },
-              {
-                score: 4,
-                displayString: 'test-activeMapItems2',
-                geometry: {srs: 4326, type: 'Point', coordinates: []},
-                indexName: 'Gvz',
-                indexType: 'activeMapItems',
-              },
-              {
-                score: 5,
-                id: '5',
-                indexName: 'fme-meta-products',
-                indexType: 'metadata-products',
-              },
-              {
-                score: 6,
-                id: '6',
-                indexName: 'fme-meta-datasets',
-                indexType: 'metadata-datasets',
-              },
-              {
-                score: 7,
-                id: '7',
-                indexName: 'fme-meta-datasets',
-                indexType: 'metadata-services',
-              },
-              {
-                score: 8,
-                id: '8',
-                indexName: 'fme-meta-datasets',
-                indexType: 'metadata-maps',
-              },
-            ];
-            return of(SearchActions.setSearchApiResults({results: mockResults}));
-          }),
-          // TODO WES enable
-          // catchError((error: unknown) => of(SearchActions.setSearchApiError({error}))),
+          catchError((error: unknown) => of(SearchActions.setSearchApiError({error}))),
         );
       }),
     );
@@ -123,34 +62,6 @@ export class SearchEffects {
       map(() => LayerCatalogActions.loadLayerCatalog()),
     );
   });
-
-  public searchResultsFromLayerCatalogue$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(SearchActions.searchForTerm),
-      filter((value) => value.options.maps),
-      combineLatestWith(this.store.select(selectLayerCatalogLoadingState)),
-      filter(([_, layerCatalogLoadingState]) => layerCatalogLoadingState === 'loaded' || layerCatalogLoadingState === 'error'),
-      concatLatestFrom(() => this.store.select(selectFilteredLayerCatalogMaps)),
-      map(([[_, layerCatalogLoadingState], mapMatches]) => {
-        if (layerCatalogLoadingState === 'error') {
-          return SearchActions.setMapMatchesError({});
-        }
-        return SearchActions.setMapMatchesResults({mapMatches});
-      }),
-    );
-  });
-
-  public throwLayerCatalogueError$ = createEffect(
-    () => {
-      return this.actions$.pipe(
-        ofType(SearchActions.setMapMatchesError),
-        tap(({error}) => {
-          throw new SearchResultsCouldNotBeLoaded(error);
-        }),
-      );
-    },
-    {dispatch: false},
-  );
 
   public setActiveMapItemsFilters$ = createEffect(() => {
     return this.actions$.pipe(

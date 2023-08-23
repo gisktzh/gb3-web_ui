@@ -9,8 +9,6 @@ export const initialState: SearchState = {
   term: '',
   searchApiLoadingState: 'undefined',
   searchApiResultMatches: [],
-  mapMatchesLoadingState: 'undefined',
-  mapMatches: [],
   filterGroups: [],
 };
 
@@ -24,8 +22,6 @@ export const searchFeature = createFeature({
         term,
         searchApiResultMatches: initialState.searchApiResultMatches,
         searchApiLoadingState: 'loading',
-        mapMatches: initialState.mapMatches,
-        mapMatchesLoadingState: 'loading',
       };
     }),
     on(SearchActions.setSearchApiError, (state): SearchState => {
@@ -33,12 +29,6 @@ export const searchFeature = createFeature({
     }),
     on(SearchActions.setSearchApiResults, (state, {results}): SearchState => {
       return {...state, searchApiLoadingState: 'loaded', searchApiResultMatches: results};
-    }),
-    on(SearchActions.setMapMatchesError, (state): SearchState => {
-      return {...state, mapMatchesLoadingState: 'error', mapMatches: initialState.mapMatches};
-    }),
-    on(SearchActions.setMapMatchesResults, (state, {mapMatches}): SearchState => {
-      return {...state, mapMatchesLoadingState: 'loaded', mapMatches};
     }),
     on(SearchActions.clearSearch, (): SearchState => {
       return {...initialState};
@@ -55,13 +45,13 @@ export const searchFeature = createFeature({
               const existingFilter = filterGroup.filters.find(
                 (filter) => filter.label === searchIndex.displayString && filter.type === searchIndex.indexType,
               );
-              return existingFilter
-                ? existingFilter
-                : {
-                    label: searchIndex.displayString,
-                    isActive: false,
-                    type: searchIndex.indexType,
-                  };
+              return (
+                existingFilter ?? {
+                  label: searchIndex.displayString,
+                  isActive: false,
+                  type: searchIndex.indexType,
+                }
+              );
             });
           }
         });
@@ -90,13 +80,5 @@ export const searchFeature = createFeature({
   ),
 });
 
-export const {
-  name,
-  reducer,
-  selectTerm,
-  selectSearchState,
-  selectSearchApiLoadingState,
-  selectSearchApiResultMatches,
-  selectMapMatches,
-  selectFilterGroups,
-} = searchFeature;
+export const {name, reducer, selectTerm, selectSearchState, selectSearchApiLoadingState, selectSearchApiResultMatches, selectFilterGroups} =
+  searchFeature;

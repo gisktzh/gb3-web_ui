@@ -41,4 +41,14 @@ export const searchConfig: SearchConfig = {
       {label: 'Aktive Karten', useDynamicActiveMapItemsFilter: true, filters: []},
     ],
   },
+  dataCatalogPage: {
+    searchOptions: {
+      faq: false,
+      maps: false,
+      searchIndexTypes: ['metadata-maps', 'metadata-datasets', 'metadata-services', 'metadata-products'],
+    },
+    filterGroups: [
+      // filters in the data catalog are handled differently
+    ],
+  },
 };

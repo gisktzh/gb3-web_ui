@@ -42,6 +42,7 @@
 
           .search-result-group__container__element__content__description__title {
             @include mixins.single-line-text;
+            font-weight: bold;
           }
 
           .search-result-group__container__element__content__description__properties {

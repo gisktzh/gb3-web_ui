@@ -31,16 +31,7 @@ export class MapDataItemMapComponent extends BaseMapDataItemComponent implements
     // only add subscription if the item is a gb2-only item
     if (this.gb2Url) {
       this.showExpandButton = false;
-
-      this.subscriptions.add(
-        this.mapConfigState$
-          .pipe(
-            tap((mapConfigState) => {
-              this.mapConfigState = mapConfigState;
-            }),
-          )
-          .subscribe(),
-      );
+      this.subscriptions.add(this.mapConfigState$.pipe(tap((mapConfigState) => (this.mapConfigState = mapConfigState))).subscribe());
     }
   }
 

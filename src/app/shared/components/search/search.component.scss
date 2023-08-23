@@ -60,8 +60,12 @@
     }
   }
 
-  .search__filter-button--active {
-    color: ktzh-variables.$zh-active-blue;
+  .search__filter-button {
+    background-color: ktzh-variables.$zh-black20;
+
+    &--active {
+      color: ktzh-variables.$zh-active-blue;
+    }
   }
 }
 

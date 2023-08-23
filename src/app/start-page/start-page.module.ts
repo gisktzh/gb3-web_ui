@@ -11,7 +11,6 @@ import {StartPagePlaceholderComponent} from './components/start-page-placeholder
 import {GisBrowserTeaserComponent} from './components/gis-browser-teaser/gis-browser-teaser.component';
 import {FrequentlyUsedItemsComponent} from './components/frequently-used-items/frequently-used-items.component';
 import {StartPageSearchOverlayComponent} from './components/start-page-search-overlay/start-page-search-overlay.component';
-import {MapModule} from '../map/map.module';
 import {SearchResultGroupComponent} from './components/search-result-group/search-result-group.component';
 
 @NgModule({
@@ -27,7 +26,6 @@ import {SearchResultGroupComponent} from './components/search-result-group/searc
     StartPageSearchOverlayComponent,
     SearchResultGroupComponent,
   ],
-  imports: [CommonModule, SharedModule, StartPageRoutingModule, MapModule],
-  exports: [],
+  imports: [CommonModule, SharedModule, StartPageRoutingModule],
 })
 export class StartPageModule {}

@@ -52,6 +52,7 @@ export class LayerCatalogEffects {
         const initialMapItems = availableMaps
           .filter((availableMap) => initialMaps.includes(availableMap.id))
           .map((availableMap) => ActiveMapItemFactory.createGb2WmsMapItem(availableMap));
+        // TODO this leads to errors if the map is not initialized
         return ActiveMapItemActions.addInitialMapItems({initialMapItems});
       }),
     );

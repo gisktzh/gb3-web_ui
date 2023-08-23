@@ -5,10 +5,7 @@
     <mat-card *ngFor="let metadataItem of filteredMetadataItems" class="search-result-group__container__element">
       <mat-card-content class="search-result-group__container__element__content">
         <div class="search-result-group__container__element__content__description">
-          <p
-            class="search-result-group__container__element__content__description__title"
-            [innerHTML]="metadataItem.name | highlightSearchQuery: this.searchTerms"
-          ></p>
+          <p class="search-result-group__container__element__content__description__title">{{ metadataItem.name }}</p>
           <div class="search-result-group__container__element__content__description__properties">
             <p>
               <span class="search-result-group__container__element__content__description__properties__title">Typ: </span>
@@ -16,7 +13,7 @@
             </p>
             <p>
               <span class="search-result-group__container__element__content__description__properties__title">Beschreibung: </span>
-              <span [innerHTML]="metadataItem.description | highlightSearchQuery: this.searchTerms"></span>
+              {{ metadataItem.description }}
             </p>
           </div>
         </div>
@@ -32,11 +29,7 @@
     <mat-card *ngFor="let map of filteredMaps" class="search-result-group__container__element">
       <mat-card-content class="search-result-group__container__element__map-content">
         <img [alt]="map.title" [src]="map.icon" class="search-result-group__container__element__map-content__image" />
-        <p
-          [innerHTML]="map.title | highlightSearchQuery: this.searchTerms"
-          class="search-result-group__container__element__map-content__title"
-          matTooltip="{{ map.title }}"
-        ></p>
+        <p class="search-result-group__container__element__map-content__title" matTooltip="{{ map.title }}">{{ map.title }}</p>
         <gb2-exit-button
           *ngIf="map.gb2Url; else openMap"
           [url]="map.gb2Url | appendMapConfigurationToUrl: mapConfigState"
@@ -61,10 +54,7 @@
     <mat-card *ngFor="let item of filteredFaqItems" class="search-result-group__container__element">
       <mat-card-content class="search-result-group__container__element__content">
         <div class="search-result-group__container__element__content__description">
-          <p
-            class="search-result-group__container__element__content__description__title"
-            [innerHTML]="item.question | highlightSearchQuery: this.searchTerms"
-          ></p>
+          <p class="search-result-group__container__element__content__description__title">{{ item.question }}</p>
           <div class="search-result-group__container__element__content__description__properties">
             <p>
               <span class="search-result-group__container__element__content__description__properties__title">Typ: </span>
@@ -72,7 +62,7 @@
             </p>
             <p>
               <span class="search-result-group__container__element__content__description__properties__title">Antwort: </span>
-              <span [innerHTML]="item.answer | highlightSearchQuery: this.searchTerms"></span>
+              {{ item.answer }}
             </p>
           </div>
         </div>

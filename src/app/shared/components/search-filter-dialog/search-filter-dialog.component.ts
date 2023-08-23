@@ -12,7 +12,7 @@ import {SearchFilter, SearchFilterGroup} from '../../interfaces/search-filter-gr
   styleUrls: ['./search-filter-dialog.component.scss'],
 })
 export class SearchFilterDialogComponent implements OnInit, OnDestroy {
-  public filterGroups: SearchFilterGroup[] = [];
+  public nonEmptyFilterGroups: SearchFilterGroup[] = [];
 
   private readonly filterGroups$ = this.store.select(selectFilterGroups);
   private readonly subscriptions: Subscription = new Subscription();
@@ -51,6 +51,10 @@ export class SearchFilterDialogComponent implements OnInit, OnDestroy {
   }
 
   private initSubscriptions() {
-    this.subscriptions.add(this.filterGroups$.pipe(tap((filterGroups) => (this.filterGroups = filterGroups))).subscribe());
+    this.subscriptions.add(
+      this.filterGroups$
+        .pipe(tap((filterGroups) => (this.nonEmptyFilterGroups = filterGroups.filter((group) => group.filters.length > 0))))
+        .subscribe(),
+    );
   }
 }
