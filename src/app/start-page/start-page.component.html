@@ -1,26 +1,38 @@
-<start-page-section [background]="'primary'">
-  <hero-header
-    heroText="Geoinformationen sind verlässliche, raumbezogene Daten und Karten. Sie dienen als wichtige Grundlage für vielfältige Aufgaben und Entscheide und stehen über verschiedene Portale zur Einsicht und Nutzung bereit."
-    heroTitle="Übersicht"
-  ></hero-header>
-</start-page-section>
+<div class="start-page">
+  <start-page-section [background]="'primary'">
+    <hero-header
+      heroText="Geoinformationen sind verlässliche, raumbezogene Daten und Karten. Sie dienen als wichtige Grundlage für vielfältige Aufgaben und Entscheide und stehen über verschiedene Portale zur Einsicht und Nutzung bereit."
+      heroTitle="Übersicht"
+    ></hero-header>
+  </start-page-section>
 
-<start-page-section [hideBottomPadding]="true">
-  <gis-browser-teaser></gis-browser-teaser>
-</start-page-section>
+  <div class="start-page__search">
+    <search
+      class="start-page__search__bar"
+      placeholderText="Suche nach Karten, Kartendaten, Geodaten und Geodiensten"
+      [showFilterButton]="false"
+      [showClearButton]="false"
+      (focus)="openSearchOverlay()"
+    ></search>
+  </div>
 
-<start-page-section sectionTitle="Häufig verwendet">
-  <frequently-used-items></frequently-used-items>
-</start-page-section>
+  <start-page-section [hideBottomPadding]="true">
+    <gis-browser-teaser></gis-browser-teaser>
+  </start-page-section>
 
-<start-page-section [background]="'accent'" [titleLink]="this.externalNewsFeedLink" sectionTitle="News">
-  <news-feed></news-feed>
-</start-page-section>
+  <start-page-section sectionTitle="Häufig verwendet">
+    <frequently-used-items></frequently-used-items>
+  </start-page-section>
 
-<start-page-section [hideBottomPadding]="true" sectionTitle="Entdecken">
-  <discover-maps></discover-maps>
-</start-page-section>
+  <start-page-section [background]="'accent'" [titleLink]="this.externalNewsFeedLink" sectionTitle="News">
+    <news-feed></news-feed>
+  </start-page-section>
 
-<start-page-section sectionTitle="Weiterführende Informationen">
-  <link-list [linksGroups]="usefulLinksGroups"></link-list>
-</start-page-section>
+  <start-page-section [hideBottomPadding]="true" sectionTitle="Entdecken">
+    <discover-maps></discover-maps>
+  </start-page-section>
+
+  <start-page-section sectionTitle="Weiterführende Informationen">
+    <link-list [linksGroups]="usefulLinksGroups"></link-list>
+  </start-page-section>
+</div>

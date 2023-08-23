@@ -1,0 +1,25 @@
+<h1 mat-dialog-title>Filter</h1>
+<div mat-dialog-content class="search-filter-dialog-content">
+  <cdk-accordion>
+    <accordion-item
+      *ngFor="let filterGroup of nonEmptyFilterGroups; trackBy: trackByFilterGroupLabel"
+      [header]="filterGroup.label"
+      variant="dark"
+    >
+      <div class="search-filter-dialog-content__wrapper">
+        <mat-checkbox
+          class="search-filter-dialog-content__wrapper__checkbox"
+          (change)="toggleFilter(filterGroup.label, filter.label, !filter.isActive)"
+          *ngFor="let filter of filterGroup.filters; trackBy: trackByFilterLabel"
+          [checked]="filter.isActive"
+        >
+          {{ filter.label }}
+        </mat-checkbox>
+      </div>
+    </accordion-item>
+  </cdk-accordion>
+</div>
+<div mat-dialog-actions>
+  <button (click)="resetFilters()" mat-button>Zurücksetzen</button>
+  <button (click)="close()" mat-button>Schliessen</button>
+</div>

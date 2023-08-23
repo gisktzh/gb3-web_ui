@@ -44,7 +44,7 @@
       }
     }
 
-    &:hover {
+    &:hover.search-result-group__container__element--interactive {
       cursor: pointer;
       background-color: ktzh-variables.$zh-background-color;
     }

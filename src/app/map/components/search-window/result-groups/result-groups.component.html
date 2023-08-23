@@ -1,16 +1,15 @@
 <div class="result-window">
+  <loading-and-process-bar class="result-window__loading-bar" [loadingState]="searchApiLoadingState"></loading-and-process-bar>
   <result-group
-    *ngIf="searchResults.length > 0"
-    [searchResults]="searchResults"
-    [type]="'default'"
+    *ngIf="filteredAddressesAndPlacesMatches.length > 0"
+    [searchResults]="filteredAddressesAndPlacesMatches"
     [header]="'Orte / Adressen'"
     [searchTerms]="searchTerms"
     class="result-window__group"
   ></result-group>
   <result-group
-    *ngIf="specialSearchResults.length > 0"
-    [searchResults]="specialSearchResults"
-    [type]="'special'"
+    *ngIf="filteredActiveMapMatches.length > 0"
+    [searchResults]="filteredActiveMapMatches"
     [header]="'Objekte'"
     [searchTerms]="searchTerms"
     class="result-window__group"
@@ -18,7 +17,6 @@
   <result-group
     *ngIf="filteredMaps.length > 0"
     [filteredMaps]="filteredMaps"
-    [type]="'map'"
     [header]="'Karten'"
     [searchTerms]="searchTerms"
     class="result-window__group"

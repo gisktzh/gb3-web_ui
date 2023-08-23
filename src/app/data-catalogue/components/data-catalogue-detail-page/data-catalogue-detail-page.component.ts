@@ -9,5 +9,6 @@ import {BaseMetadataInformation} from '../../interfaces/base-metadata-informatio
 })
 export class DataCatalogueDetailPageComponent {
   @Input() public baseMetadataInformation!: BaseMetadataInformation;
-  public readonly mainPageEnum = MainPage;
+
+  protected readonly mainPageEnum = MainPage;
 }

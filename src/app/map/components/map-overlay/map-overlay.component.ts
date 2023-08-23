@@ -13,8 +13,8 @@ export class MapOverlayComponent {
   @Input() public isVisible: boolean = false;
   @Input() public overlayTitle: string = '';
   @Input() public location: ResizeHandlerLocation = 'left';
-  @Output() public closeEvent = new EventEmitter<void>();
-  @Output() public printButtonEvent = new EventEmitter<void>();
+  @Output() public readonly closeEvent = new EventEmitter<void>();
+  @Output() public readonly printButtonEvent = new EventEmitter<void>();
   public resizeableStyle: StyleExpression = {};
 
   public onClose() {

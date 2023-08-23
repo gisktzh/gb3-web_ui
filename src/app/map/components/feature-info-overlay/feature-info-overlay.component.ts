@@ -17,7 +17,7 @@ import {MapConfigActions} from '../../../state/map/actions/map-config.actions';
 export class FeatureInfoOverlayComponent implements OnInit, OnDestroy {
   /** A value indicating whether interactive elements (like buttons) should be shown. [Default: true] */
   @Input() public showInteractiveElements: boolean = true;
-  @Output() public printFeatureInfoEvent = new EventEmitter<void>();
+  @Output() public readonly printFeatureInfoEvent = new EventEmitter<void>();
 
   public isVisible: boolean = false;
   public featureInfoData: FeatureInfoResultDisplay[] = [];

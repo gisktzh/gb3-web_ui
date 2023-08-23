@@ -1,0 +1,39 @@
+<div class="start-page-search-overlay">
+  <div class="start-page-search-overlay__search">
+    <search
+      class="start-page-search-overlay__search__bar"
+      placeholderText="Suche nach Karten, Kartendaten, Geodaten und Geodiensten"
+      [showFilterButton]="true"
+      [showClearButton]="true"
+      clearButtonLabel="Schliessen"
+      [alwaysEnableClearButton]="true"
+      [focusOnInit]="true"
+      (changeSearchTermEvent)="searchForTerm($event)"
+      (clearSearchTermEvent)="close()"
+      (openFilterEvent)="openFilterMenu()"
+    ></search>
+  </div>
+
+  <div class="start-page-search-overlay__results">
+    <search-result-group
+      class="start-page-search-overlay__results__group"
+      header="Karten"
+      [filteredMaps]="filteredMaps"
+      [searchTerms]="searchTerms"
+    ></search-result-group>
+    <loading-and-process-bar [loadingState]="layerCatalogLoadingState"></loading-and-process-bar>
+    <search-result-group
+      class="start-page-search-overlay__results__group"
+      header="Datenkatalog"
+      [filteredMetadataItems]="filteredMetadataItems"
+      [searchTerms]="searchTerms"
+    ></search-result-group>
+    <loading-and-process-bar [loadingState]="combinedSearchAndDataCatalogLoadingState"></loading-and-process-bar>
+    <search-result-group
+      class="start-page-search-overlay__results__group"
+      header="Support"
+      [filteredFaqItems]="filteredFaqItems"
+      [searchTerms]="searchTerms"
+    ></search-result-group>
+  </div>
+</div>

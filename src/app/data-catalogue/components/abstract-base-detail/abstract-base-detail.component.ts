@@ -24,9 +24,9 @@ export abstract class AbstractBaseDetailComponent<T extends DetailMetadata> impl
   public abstract informationElements: DataDisplayElement[];
   public loadingState: LoadingState = 'loading';
   public readonly apiBaseUrl: string;
-  public readonly mainPageEnum = MainPage;
-  public readonly dataCataloguePageEnum = DataCataloguePage;
 
+  protected readonly mainPageEnum = MainPage;
+  protected readonly dataCataloguePageEnum = DataCataloguePage;
   protected readonly subscriptions: Subscription = new Subscription();
 
   protected constructor(

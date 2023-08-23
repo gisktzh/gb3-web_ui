@@ -10,7 +10,7 @@ export class MapDataItemMapLayerComponent {
   @Input() public layer!: MapLayer;
   @Input() public filterString: string = '';
 
-  @Output() public addLayerEvent = new EventEmitter<void>();
+  @Output() public readonly addLayerEvent = new EventEmitter<void>();
 
   public addItemLayer() {
     this.addLayerEvent.emit();

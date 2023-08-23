@@ -1,7 +1,13 @@
 <h2 class="result-group__header">{{ header }}</h2>
-<div *ngIf="type !== 'map'" class="result-group__container">
-  <mat-card *ngFor="let result of searchResults" (click)="zoomToResult(result)" class="result-group__container__element">
-    <mat-card-header *ngIf="type === 'special'" class="result-group__container__element__header">{{ result.indexName }}</mat-card-header>
+<div class="result-group__container">
+  <mat-card
+    *ngFor="let result of searchResults"
+    (click)="zoomToResult(result)"
+    class="result-group__container__element search-result-group__container__element--interactive"
+  >
+    <mat-card-header *ngIf="result.indexType === 'activeMapItems'" class="result-group__container__element__header">{{
+      result.indexName
+    }}</mat-card-header>
     <mat-card-content
       class="result-group__container__element__content"
       [innerHTML]="result.displayString | highlightSearchQuery: this.searchTerms"
@@ -9,7 +15,7 @@
     <mat-divider></mat-divider>
   </mat-card>
 </div>
-<div *ngIf="type === 'map'" class="result-group__container">
+<div class="result-group__container">
   <mat-card *ngFor="let map of filteredMaps" class="result-group__container__element">
     <mat-card-content class="result-group__container__element__map-content">
       <gb2-exit-button *ngIf="map.gb2Url; else addToMap" [url]="map.gb2Url | appendMapConfigurationToUrl: mapConfigState"></gb2-exit-button>

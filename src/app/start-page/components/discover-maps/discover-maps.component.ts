@@ -18,10 +18,11 @@ const NUMBER_OF_ENTRIES = 2;
   styleUrls: ['./discover-maps.component.scss'],
 })
 export class DiscoverMapsComponent implements OnInit, HasLoadingState, OnDestroy {
-  public readonly mainPageEnum = MainPage;
-
   public loadingState: LoadingState = 'loading';
   public discoverMapsItems: DiscoverMapsItem[] = [];
+
+  protected readonly mainPageEnum = MainPage;
+
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(@Inject(GRAV_CMS_SERVICE) private readonly gravCmsService: GravCmsService) {}

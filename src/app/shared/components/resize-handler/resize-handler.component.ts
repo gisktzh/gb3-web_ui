@@ -20,7 +20,7 @@ const MAX_DIMENSION_PERCENTAGE = 0.9;
 })
 export class ResizeHandlerComponent {
   @Input() public location!: ResizeHandlerLocation;
-  @Output() public resizeEvent = new EventEmitter<StyleExpression>();
+  @Output() public readonly resizeEvent = new EventEmitter<StyleExpression>();
   public resizeableStyle: StyleExpression = {};
   public isResizeActive: boolean = false;
 
