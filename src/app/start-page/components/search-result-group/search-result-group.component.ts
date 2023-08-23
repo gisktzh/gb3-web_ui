@@ -6,9 +6,10 @@ import {MapService} from '../../../map/interfaces/map.service';
 import {selectMapConfigState} from '../../../state/map/reducers/map-config.reducer';
 import {Subscription, tap} from 'rxjs';
 import {MapConfigState} from '../../../state/map/states/map-config.state';
-import {FaqCollection} from '../../../shared/interfaces/faq.interface';
 import {MainPage} from '../../../shared/enums/main-page.enum';
 import {OverviewMetadataItem} from '../../../shared/models/overview-metadata-item.model';
+import {FaqItem} from '../../../shared/interfaces/faq.interface';
+import {SupportPage} from '../../../shared/enums/support-page.enum';
 
 @Component({
   selector: 'search-result-group',
@@ -19,11 +20,12 @@ export class SearchResultGroupComponent implements OnInit, OnDestroy {
   @Input() public header: string = '';
   @Input() public filteredMetadataItems: OverviewMetadataItem[] = [];
   @Input() public filteredMaps: Map[] = [];
-  @Input() public filteredFaqEntries: FaqCollection[] = [];
+  @Input() public filteredFaqItems: FaqItem[] = [];
   @Input() public searchTerms: string[] = [];
 
   public mapConfigState?: MapConfigState;
   protected readonly mainPageEnum = MainPage;
+  protected readonly supportPageEnum = SupportPage;
   private readonly mapConfigState$ = this.store.select(selectMapConfigState);
   private readonly subscriptions: Subscription = new Subscription();
 

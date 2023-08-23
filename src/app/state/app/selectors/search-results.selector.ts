@@ -1,5 +1,5 @@
 import {createSelector} from '@ngrx/store';
-import {selectFilterGroups, selectMapMatches, selectSearchApiResultMatches} from '../reducers/search.reducer';
+import {selectFilterGroups, selectMapMatches, selectSearchApiResultMatches, selectTerm} from '../reducers/search.reducer';
 import {
   MetadataSearchApiResultMatch,
   SearchApiResultMatch,
@@ -10,6 +10,8 @@ import {SearchType} from '../../../shared/types/search.type';
 import {selectItems} from '../../data-catalogue/reducers/data-catalogue.reducer';
 import {SearchIndexType} from '../../../shared/configs/search-index.config';
 import {OverviewMetadataItem} from '../../../shared/models/overview-metadata-item.model';
+import {selectFaq} from '../../support/reducers/support-content.reducer';
+import {FaqItem} from '../../../shared/interfaces/faq.interface';
 
 export const selectFilteredSearchApiResultMatches = createSelector(
   selectSearchApiResultMatches,
@@ -72,5 +74,29 @@ export const selectFilteredMetadataItems = createSelector(
       }
     });
     return filteredMetadataItems;
+  },
+);
+
+export const selectFilteredFaqItems = createSelector(
+  selectTerm,
+  selectFaq,
+  selectFilterGroups,
+  (searchTerm, faqCollections, filterGroups): FaqItem[] => {
+    const filters = filterGroups.flatMap((filterGroup) => filterGroup.filters);
+    const isNoFilterActive = filters.every((filter) => !filter.isActive); // no filter active means all results are shown (all filters active === no filter active)
+    const isFaqFilterActive = isNoFilterActive || (filters.find((filter) => filter.type === 'faqs')?.isActive ?? false);
+    const lowerCasedFilterString = searchTerm.toLowerCase();
+    if (!isFaqFilterActive || lowerCasedFilterString === '') {
+      return [];
+    }
+
+    return faqCollections
+      .flatMap((faqCollection) => faqCollection.items)
+      .filter((faqItem) => {
+        // Return true if the map title OR one of the keywords includes the filter string
+        return (
+          faqItem.question.toLowerCase().includes(lowerCasedFilterString) || faqItem.answer.toLowerCase().includes(lowerCasedFilterString)
+        );
+      });
   },
 );

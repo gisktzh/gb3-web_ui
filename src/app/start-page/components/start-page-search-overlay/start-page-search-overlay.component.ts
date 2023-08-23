@@ -7,9 +7,13 @@ import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {ConfigService} from '../../../shared/services/config.service';
 import {Map} from '../../../shared/interfaces/topic.interface';
 import {LoadingState} from '../../../shared/types/loading-state.type';
-import {FaqCollection} from '../../../shared/interfaces/faq.interface';
+import {FaqItem} from '../../../shared/interfaces/faq.interface';
 import {selectSearchApiLoadingState, selectTerm} from '../../../state/app/reducers/search.reducer';
-import {selectFilteredMaps, selectFilteredMetadataItems} from '../../../state/app/selectors/search-results.selector';
+import {
+  selectFilteredFaqItems,
+  selectFilteredMaps,
+  selectFilteredMetadataItems,
+} from '../../../state/app/selectors/search-results.selector';
 import {Subscription, tap} from 'rxjs';
 import {selectLoadingState as selectLayerCatalogLoadingState} from '../../../state/map/reducers/layer-catalog.reducer';
 import {OverviewMetadataItem} from '../../../shared/models/overview-metadata-item.model';
@@ -26,7 +30,7 @@ export class StartPageSearchOverlayComponent implements OnInit, OnDestroy {
   public searchTerms: string[] = [];
   public filteredMetadataItems: OverviewMetadataItem[] = [];
   public filteredMaps: Map[] = [];
-  public filteredFaqEntries: FaqCollection[] = [];
+  public filteredFaqItems: FaqItem[] = [];
   public combinedSearchAndDataCatalogLoadingState: LoadingState = 'undefined';
   public layerCatalogLoadingState: LoadingState = 'undefined';
   public searchApiLoadingState: LoadingState = 'undefined';
@@ -39,6 +43,7 @@ export class StartPageSearchOverlayComponent implements OnInit, OnDestroy {
   private readonly searchApiLoadingState$ = this.store.select(selectSearchApiLoadingState);
   private readonly layerCatalogLoadingState$ = this.store.select(selectLayerCatalogLoadingState);
   private readonly dataCatalogLoadingState$ = this.store.select(selectDataCatalogLoadingState);
+  private readonly filteredFaqItems$ = this.store.select(selectFilteredFaqItems);
   private readonly subscriptions: Subscription = new Subscription();
   constructor(
     private readonly store: Store,
@@ -102,6 +107,7 @@ export class StartPageSearchOverlayComponent implements OnInit, OnDestroy {
         )
         .subscribe(),
     );
+    this.subscriptions.add(this.filteredFaqItems$.pipe(tap((filteredFaqItems) => (this.filteredFaqItems = filteredFaqItems))).subscribe());
   }
 
   private updateCombinedSearchAndDataCatalogLoadingState() {

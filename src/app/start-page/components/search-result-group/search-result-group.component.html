@@ -3,19 +3,19 @@
   <!-- METADATA -->
   <div class="search-result-group__container">
     <mat-card *ngFor="let metadataItem of filteredMetadataItems" class="search-result-group__container__element">
-      <mat-card-content class="search-result-group__container__element__metadata-content">
-        <div class="search-result-group__container__element__metadata-content__description">
+      <mat-card-content class="search-result-group__container__element__content">
+        <div class="search-result-group__container__element__content__description">
           <p
-            class="search-result-group__container__element__metadata-content__description__title"
+            class="search-result-group__container__element__content__description__title"
             [innerHTML]="metadataItem.name | highlightSearchQuery: this.searchTerms"
           ></p>
-          <div class="search-result-group__container__element__metadata-content__description__properties">
+          <div class="search-result-group__container__element__content__description__properties">
             <p>
-              <span class="search-result-group__container__element__metadata-content__description__properties__title">Typ: </span>
+              <span class="search-result-group__container__element__content__description__properties__title">Typ: </span>
               {{ metadataItem.type }}
             </p>
             <p>
-              <span class="search-result-group__container__element__metadata-content__description__properties__title">Beschreibung: </span>
+              <span class="search-result-group__container__element__content__description__properties__title">Beschreibung: </span>
               <span [innerHTML]="metadataItem.description | highlightSearchQuery: this.searchTerms"></span>
             </p>
           </div>
@@ -27,7 +27,6 @@
       <mat-divider></mat-divider>
     </mat-card>
   </div>
-  <!-- TODO: FAQ -->
   <!-- TOPIC MAPS -->
   <div class="search-result-group__container">
     <mat-card *ngFor="let map of filteredMaps" class="search-result-group__container__element">
@@ -53,6 +52,33 @@
             <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
           </a>
         </ng-template>
+      </mat-card-content>
+      <mat-divider></mat-divider>
+    </mat-card>
+  </div>
+  <!-- FAQ -->
+  <div class="search-result-group__container">
+    <mat-card *ngFor="let item of filteredFaqItems" class="search-result-group__container__element">
+      <mat-card-content class="search-result-group__container__element__content">
+        <div class="search-result-group__container__element__content__description">
+          <p
+            class="search-result-group__container__element__content__description__title"
+            [innerHTML]="item.question | highlightSearchQuery: this.searchTerms"
+          ></p>
+          <div class="search-result-group__container__element__content__description__properties">
+            <p>
+              <span class="search-result-group__container__element__content__description__properties__title">Typ: </span>
+              FAQ
+            </p>
+            <p>
+              <span class="search-result-group__container__element__content__description__properties__title">Antwort: </span>
+              <span [innerHTML]="item.answer | highlightSearchQuery: this.searchTerms"></span>
+            </p>
+          </div>
+        </div>
+        <a [routerLink]="['/', mainPageEnum.Support, supportPageEnum.Faq]" color="primary" data-test-id="open-faq" mat-icon-button>
+          <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
+        </a>
       </mat-card-content>
       <mat-divider></mat-divider>
     </mat-card>

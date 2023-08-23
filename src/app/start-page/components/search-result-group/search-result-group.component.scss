@@ -31,28 +31,24 @@
       }
 
       .search-result-group__container__element__content {
-        padding: 5px;
-      }
-
-      .search-result-group__container__element__metadata-content {
         display: flex;
         justify-content: space-between;
         padding: 5px;
 
-        .search-result-group__container__element__metadata-content__description {
+        .search-result-group__container__element__content__description {
           display: flex;
           flex-direction: column;
           overflow: hidden;
 
-          .search-result-group__container__element__metadata-content__description__title {
+          .search-result-group__container__element__content__description__title {
             @include mixins.single-line-text;
           }
 
-          .search-result-group__container__element__metadata-content__description__properties {
+          .search-result-group__container__element__content__description__properties {
             display: flex;
             gap: 12px;
 
-            .search-result-group__container__element__metadata-content__description__properties__title {
+            .search-result-group__container__element__content__description__properties__title {
               color: ktzh-variables.$zh-black60;
             }
 
