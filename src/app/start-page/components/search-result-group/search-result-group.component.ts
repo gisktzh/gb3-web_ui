@@ -1,5 +1,4 @@
 import {Component, Inject, Input, OnDestroy, OnInit} from '@angular/core';
-import {SearchApiResultMatch} from '../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
 import {Map} from '../../../shared/interfaces/topic.interface';
 import {Store} from '@ngrx/store';
 import {MAP_SERVICE} from '../../../app.module';
@@ -9,6 +8,7 @@ import {Subscription, tap} from 'rxjs';
 import {MapConfigState} from '../../../state/map/states/map-config.state';
 import {FaqCollection} from '../../../shared/interfaces/faq.interface';
 import {MainPage} from '../../../shared/enums/main-page.enum';
+import {OverviewMetadataItem} from '../../../shared/models/overview-metadata-item.model';
 
 @Component({
   selector: 'search-result-group',
@@ -17,7 +17,7 @@ import {MainPage} from '../../../shared/enums/main-page.enum';
 })
 export class SearchResultGroupComponent implements OnInit, OnDestroy {
   @Input() public header: string = '';
-  @Input() public filteredSearchResults: SearchApiResultMatch[] = [];
+  @Input() public filteredMetadataItems: OverviewMetadataItem[] = [];
   @Input() public filteredMaps: Map[] = [];
   @Input() public filteredFaqEntries: FaqCollection[] = [];
   @Input() public searchTerms: string[] = [];

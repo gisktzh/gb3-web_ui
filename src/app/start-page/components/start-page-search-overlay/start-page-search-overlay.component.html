@@ -25,10 +25,10 @@
     <search-result-group
       class="start-page-search-overlay__results__group"
       header="Datenkatalog"
-      [filteredSearchResults]="filteredMetadataMatches"
+      [filteredMetadataItems]="filteredMetadataItems"
       [searchTerms]="searchTerms"
     ></search-result-group>
-    <loading-and-process-bar [loadingState]="searchApiLoadingState"></loading-and-process-bar>
+    <loading-and-process-bar [loadingState]="combinedSearchAndDataCatalogLoadingState"></loading-and-process-bar>
     <search-result-group
       class="start-page-search-overlay__results__group"
       header="Support"

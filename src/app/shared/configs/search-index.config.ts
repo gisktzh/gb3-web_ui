@@ -7,7 +7,8 @@ export type SearchIndexType =
   | 'metadata-maps'
   | 'metadata-products'
   | 'metadata-datasets'
-  | 'metadata-services';
+  | 'metadata-services'
+  | 'unknown';
 
 export const searchIndexConfig: SearchIndex[] = [
   {

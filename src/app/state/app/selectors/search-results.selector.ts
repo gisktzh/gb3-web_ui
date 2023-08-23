@@ -1,9 +1,15 @@
 import {createSelector} from '@ngrx/store';
 import {selectFilterGroups, selectMapMatches, selectSearchApiResultMatches} from '../reducers/search.reducer';
-import {SearchApiResultMatch} from '../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
+import {
+  MetadataSearchApiResultMatch,
+  SearchApiResultMatch,
+} from '../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
 import {Map} from '../../../shared/interfaces/topic.interface';
 import {selectAvailableSpecialSearchIndexes} from '../../map/selectors/available-search-index.selector';
 import {SearchType} from '../../../shared/types/search.type';
+import {selectItems} from '../../data-catalogue/reducers/data-catalogue.reducer';
+import {SearchIndexType} from '../../../shared/configs/search-index.config';
+import {OverviewMetadataItem} from '../../../shared/models/overview-metadata-item.model';
 
 export const selectFilteredSearchApiResultMatches = createSelector(
   selectSearchApiResultMatches,
@@ -45,3 +51,26 @@ export const selectFilteredMaps = createSelector(selectMapMatches, selectFilterG
   const isMapFilterActive = isNoFilterActive || (filters.find((filter) => filter.type === 'maps')?.isActive ?? false);
   return isMapFilterActive ? mapMatches : [];
 });
+
+export const selectFilteredMetadataItems = createSelector(
+  selectFilteredSearchApiResultMatches,
+  selectItems,
+  (filteredSearchApiResultMatches, metadataItems): OverviewMetadataItem[] => {
+    const filteredMetadataItems: OverviewMetadataItem[] = [];
+    const filteredMetadataMatches: MetadataSearchApiResultMatch[] = filteredSearchApiResultMatches
+      .filter((filteredMatch) =>
+        (['metadata-products', 'metadata-datasets', 'metadata-services', 'metadata-maps'] as SearchIndexType[]).includes(
+          filteredMatch.indexType,
+        ),
+      )
+      .map((filteredMatch) => filteredMatch as MetadataSearchApiResultMatch);
+
+    filteredMetadataMatches.forEach((match) => {
+      const metadataItem = metadataItems.find((item) => item.guid === +match.id);
+      if (metadataItem) {
+        filteredMetadataItems.push(metadataItem);
+      }
+    });
+    return filteredMetadataItems;
+  },
+);

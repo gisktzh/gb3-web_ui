@@ -3,7 +3,7 @@ import {selectSearchApiLoadingState, selectTerm} from '../../../../state/app/red
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {selectFilteredMaps, selectFilteredSearchApiResultMatches} from '../../../../state/app/selectors/search-results.selector';
-import {SearchApiResultMatch} from '../../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
+import {GeometrySearchApiResultMatch} from '../../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
 import {Map} from '../../../../shared/interfaces/topic.interface';
 import {LoadingState} from '../../../../shared/types/loading-state.type';
 
@@ -14,8 +14,8 @@ import {LoadingState} from '../../../../shared/types/loading-state.type';
 })
 export class ResultGroupsComponent implements OnInit, OnDestroy {
   public searchTerms: string[] = [];
-  public filteredAddressesAndPlacesMatches: SearchApiResultMatch[] = [];
-  public filteredActiveMapMatches: SearchApiResultMatch[] = [];
+  public filteredAddressesAndPlacesMatches: GeometrySearchApiResultMatch[] = [];
+  public filteredActiveMapMatches: GeometrySearchApiResultMatch[] = [];
   public filteredMaps: Map[] = [];
   public searchApiLoadingState: LoadingState = 'undefined';
 
@@ -42,8 +42,8 @@ export class ResultGroupsComponent implements OnInit, OnDestroy {
       this.filteredSearchApiResultMatches$
         .pipe(
           tap((filteredSearchApiResultMatches) => {
-            const filteredAddressesAndPlacesMatches: SearchApiResultMatch[] = [];
-            const filteredActiveMapMatches: SearchApiResultMatch[] = [];
+            const filteredAddressesAndPlacesMatches: GeometrySearchApiResultMatch[] = [];
+            const filteredActiveMapMatches: GeometrySearchApiResultMatch[] = [];
             filteredSearchApiResultMatches.forEach((resultMatch) => {
               if (resultMatch.indexType) {
                 switch (resultMatch.indexType) {

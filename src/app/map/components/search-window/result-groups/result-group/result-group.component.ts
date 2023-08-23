@@ -1,5 +1,5 @@
 import {Component, Inject, Input, OnDestroy, OnInit} from '@angular/core';
-import {SearchApiResultMatch} from '../../../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
+import {GeometrySearchApiResultMatch} from '../../../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
 import {Map} from '../../../../../shared/interfaces/topic.interface';
 import {Store} from '@ngrx/store';
 import {MAP_SERVICE} from '../../../../../app.module';
@@ -17,7 +17,7 @@ import {MapConfigState} from '../../../../../state/map/states/map-config.state';
   styleUrls: ['./result-group.component.scss'],
 })
 export class ResultGroupComponent implements OnInit, OnDestroy {
-  @Input() public searchResults: SearchApiResultMatch[] = [];
+  @Input() public searchResults: GeometrySearchApiResultMatch[] = [];
   @Input() public filteredMaps: Map[] = [];
   @Input() public header: string = '';
   @Input() public searchTerms: string[] = [];
@@ -39,7 +39,7 @@ export class ResultGroupComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  public zoomToResult(searchResult: SearchApiResultMatch) {
+  public zoomToResult(searchResult: GeometrySearchApiResultMatch) {
     // only zoom to result if the geometry is available in the index
     if (searchResult.geometry) {
       this.mapService.zoomToExtent(searchResult.geometry);

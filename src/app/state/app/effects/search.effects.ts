@@ -8,10 +8,13 @@ import {Store} from '@ngrx/store';
 import {catchError, map} from 'rxjs/operators';
 import {SearchResultsCouldNotBeLoaded} from '../../../shared/errors/search.errors';
 import {selectFilteredLayerCatalogMaps} from '../selectors/filtered-layer-catalog-maps.selector';
-import {selectLoadingState} from '../../map/reducers/layer-catalog.reducer';
+import {selectLoadingState as selectLayerCatalogLoadingState} from '../../map/reducers/layer-catalog.reducer';
 import {LayerCatalogActions} from '../../map/actions/layer-catalog.actions';
 import {selectAvailableSpecialSearchIndexes} from '../../map/selectors/available-search-index.selector';
 import {ConfigService} from '../../../shared/services/config.service';
+import {selectLoadingState as selectDataCatalogueLoadingState} from '../../data-catalogue/reducers/data-catalogue.reducer';
+import {DataCatalogueActions} from '../../data-catalogue/actions/data-catalogue.actions';
+import {SearchIndexType} from '../../../shared/configs/search-index.config';
 
 @Injectable()
 export class SearchEffects {
@@ -67,29 +70,25 @@ export class SearchEffects {
               },
               {
                 score: 5,
-                displayString: 'test-metadata-products',
-                geometry: {srs: 4326, type: 'Point', coordinates: []},
+                id: '5',
                 indexName: 'fme-meta-products',
                 indexType: 'metadata-products',
               },
               {
                 score: 6,
-                displayString: 'test-metadata-datasets',
-                geometry: {srs: 4326, type: 'Point', coordinates: []},
+                id: '6',
                 indexName: 'fme-meta-datasets',
                 indexType: 'metadata-datasets',
               },
               {
                 score: 7,
-                displayString: 'test-metadata-services',
-                geometry: {srs: 4326, type: 'Point', coordinates: []},
+                id: '7',
                 indexName: 'fme-meta-datasets',
                 indexType: 'metadata-services',
               },
               {
                 score: 8,
-                displayString: 'test-metadata-maps',
-                geometry: {srs: 4326, type: 'Point', coordinates: []},
+                id: '8',
                 indexName: 'fme-meta-datasets',
                 indexType: 'metadata-maps',
               },
@@ -102,20 +101,6 @@ export class SearchEffects {
       }),
     );
   });
-
-  // public searchAfterActiveMapItemsChange$ = createEffect(() => {
-  //   return this.actions$.pipe(
-  //     ofType(SearchActions.searchForTerm),
-  //     filter((termAndOptions) => termAndOptions.options.searchIndexTypes.some((indexType) => indexType === 'activeMapItems')),
-  //     combineLatestWith(this.store.select(selectAvailableSpecialSearchIndexes)),
-  //     takeWhile(([termAndOptions, _]) => termAndOptions.options.searchIndexTypes.some((indexType) => indexType === 'activeMapItems')),
-  //     distinctUntilChanged(),
-  //     skip(1),
-  //     map(([_, availableSpecialSearchIndexes]) =>
-  //       SearchActions.searchForTerm(termAndOptions),
-  //     ),
-  //   );
-  // });
 
   public throwSearchApiError$ = createEffect(
     () => {
@@ -133,7 +118,7 @@ export class SearchEffects {
     return this.actions$.pipe(
       ofType(SearchActions.searchForTerm),
       filter((value) => value.options.maps),
-      concatLatestFrom(() => this.store.select(selectLoadingState)),
+      concatLatestFrom(() => this.store.select(selectLayerCatalogLoadingState)),
       filter(([_, layerCatalogLoadingState]) => layerCatalogLoadingState === 'undefined'),
       map(() => LayerCatalogActions.loadLayerCatalog()),
     );
@@ -143,7 +128,7 @@ export class SearchEffects {
     return this.actions$.pipe(
       ofType(SearchActions.searchForTerm),
       filter((value) => value.options.maps),
-      combineLatestWith(this.store.select(selectLoadingState)),
+      combineLatestWith(this.store.select(selectLayerCatalogLoadingState)),
       filter(([_, layerCatalogLoadingState]) => layerCatalogLoadingState === 'loaded' || layerCatalogLoadingState === 'error'),
       concatLatestFrom(() => this.store.select(selectFilteredLayerCatalogMaps)),
       map(([[_, layerCatalogLoadingState], mapMatches]) => {
@@ -177,6 +162,20 @@ export class SearchEffects {
       map(([_, availableSpecialSearchIndexes]) =>
         SearchActions.setActiveMapItemsFilterGroup({searchIndexes: availableSpecialSearchIndexes}),
       ),
+    );
+  });
+
+  public loadMetadataProductsForSearch = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(SearchActions.searchForTerm),
+      filter((value) =>
+        value.options.searchIndexTypes.some((indexType) =>
+          (['metadata-products', 'metadata-datasets', 'metadata-services', 'metadata-maps'] as SearchIndexType[]).includes(indexType),
+        ),
+      ),
+      concatLatestFrom(() => this.store.select(selectDataCatalogueLoadingState)),
+      filter(([_, dataCatalogueLoadingState]) => dataCatalogueLoadingState === 'undefined'),
+      map(() => DataCatalogueActions.loadCatalogue()),
     );
   });
 

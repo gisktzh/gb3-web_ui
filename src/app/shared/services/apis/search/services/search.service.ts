@@ -22,11 +22,23 @@ export class SearchService extends BaseApiService {
   private combineSearchResults(searchResponse: SearchApiResult[], indexes: SearchIndex[]): SearchApiResultMatch[] {
     const combinedResults: SearchApiResultMatch[] = [];
     searchResponse.forEach((searchResult) => {
-      const indexType = indexes.find((index) => index.indexName === searchResult.index)?.indexType;
+      const indexType = indexes.find((index) => index.indexName === searchResult.index)?.indexType ?? 'unknown';
       searchResult.matches.forEach((match) => {
         match.indexName = this.getIndexTitle(searchResult.index, indexes);
         match.indexType = indexType;
-        match.geometry = {...match.geometry, srs: 4326}; // elastic search always delivers pure GeoJSON with 4326 coordinates
+        switch (match.indexType) {
+          case 'addresses':
+          case 'places':
+          case 'activeMapItems':
+            match.geometry = {...match.geometry, srs: 4326}; // elastic search always delivers pure GeoJSON with 4326 coordinates
+            break;
+          case 'metadata-maps':
+          case 'metadata-products':
+          case 'metadata-datasets':
+          case 'metadata-services':
+          case 'unknown':
+            break;
+        }
       });
       combinedResults.push(...searchResult.matches);
     });
