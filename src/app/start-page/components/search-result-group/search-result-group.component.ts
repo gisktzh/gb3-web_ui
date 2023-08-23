@@ -4,8 +4,6 @@ import {Map} from '../../../shared/interfaces/topic.interface';
 import {Store} from '@ngrx/store';
 import {MAP_SERVICE} from '../../../app.module';
 import {MapService} from '../../../map/interfaces/map.service';
-import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
-import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 import {selectMapConfigState} from '../../../state/map/reducers/map-config.reducer';
 import {Subscription, tap} from 'rxjs';
 import {MapConfigState} from '../../../state/map/states/map-config.state';
@@ -48,17 +46,5 @@ export class SearchResultGroupComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
-  }
-
-  public zoomToResult(searchResult: SearchApiResultMatch) {
-    // only zoom to result if the geometry is available in the index
-    if (searchResult.geometry) {
-      this.mapService.zoomToExtent(searchResult.geometry);
-    }
-  }
-
-  public addActiveMap(activeMap: Map) {
-    const activeMapItem = ActiveMapItemFactory.createGb2WmsMapItem(activeMap);
-    this.store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem, position: 0}));
   }
 }

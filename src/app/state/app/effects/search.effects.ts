@@ -19,7 +19,14 @@ export class SearchEffects {
     return this.actions$.pipe(
       ofType(SearchActions.searchForTerm),
       filter((termAndOptions) => termAndOptions.options.searchIndexTypes.length > 0),
-      concatLatestFrom(() => this.store.select(selectAvailableSpecialSearchIndexes)),
+      combineLatestWith(
+        this.store
+          .select(selectAvailableSpecialSearchIndexes)
+          // simplified 'distinctUntilChanged' due to the fact that it is not possible to add and remove active map items with new search indexes at the same time;
+          // therefore, comparing the amount of previous and current search indexes suffices to distinct between new indexes
+          .pipe(distinctUntilChanged((previous, current) => previous.length === current.length)),
+      ),
+      takeWhile(([termAndOptions, _]) => termAndOptions.options.searchIndexTypes.length > 0),
       switchMap(([termAndOptions, activeMapIndexes]) => {
         const searchIndexes = this.configService.filterSearchIndexes(termAndOptions.options.searchIndexTypes);
         if (termAndOptions.options.searchIndexTypes.includes('activeMapItems')) {
@@ -95,6 +102,20 @@ export class SearchEffects {
       }),
     );
   });
+
+  // public searchAfterActiveMapItemsChange$ = createEffect(() => {
+  //   return this.actions$.pipe(
+  //     ofType(SearchActions.searchForTerm),
+  //     filter((termAndOptions) => termAndOptions.options.searchIndexTypes.some((indexType) => indexType === 'activeMapItems')),
+  //     combineLatestWith(this.store.select(selectAvailableSpecialSearchIndexes)),
+  //     takeWhile(([termAndOptions, _]) => termAndOptions.options.searchIndexTypes.some((indexType) => indexType === 'activeMapItems')),
+  //     distinctUntilChanged(),
+  //     skip(1),
+  //     map(([_, availableSpecialSearchIndexes]) =>
+  //       SearchActions.searchForTerm(termAndOptions),
+  //     ),
+  //   );
+  // });
 
   public throwSearchApiError$ = createEffect(
     () => {

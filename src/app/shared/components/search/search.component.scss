@@ -39,6 +39,10 @@
       flex-grow: 1;
     }
 
+    .search__bar__filter-button--active {
+      @include mat-mixins.mat-icon-button-override-unthemed-color(ktzh-variables.$zh-background-color, ktzh-variables.$zh-active-blue);
+    }
+
     .search__bar__divider {
       right: 45px;
       height: 20px;
@@ -54,6 +58,10 @@
       @include mat-mixins.mat-button--align-icon-right;
       @include mat-mixins.mat-icon-override-size(24px);
     }
+  }
+
+  .search__filter-button--active {
+    color: ktzh-variables.$zh-active-blue;
   }
 }
 
