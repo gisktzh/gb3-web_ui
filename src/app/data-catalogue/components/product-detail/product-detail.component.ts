@@ -50,7 +50,7 @@ export class ProductDetailComponent extends AbstractBaseDetailComponent<ProductM
 
   private extractInformationElements(productMetadata: ProductMetadata): DataDisplayElement[] {
     return [
-      {title: 'GIS-ZH Nr.', value: productMetadata.uuid.toString(), type: 'text'},
+      {title: 'GIS-ZH Nr.', value: productMetadata.gisZHNr.toString(), type: 'text'},
       {title: 'Bezeichnung', value: productMetadata.name, type: 'text'},
       {title: 'Beschreibung', value: productMetadata.description, type: 'text'},
     ];

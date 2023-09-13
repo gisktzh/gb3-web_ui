@@ -155,6 +155,7 @@ export class Gb3MetadataService extends Gb3ApiService {
       name: dataset.name,
       maps: dataset.maps.map(({uuid, name, topic}) => ({uuid, name, topic})),
       uuid: dataset.uuid,
+      gisZHNr: dataset.giszhnr,
       keywords: dataset.keywords,
       products: dataset.products.map(({name, uuid}) => ({name, uuid})),
       shortDescription: dataset.kurzbeschreibung,
@@ -190,6 +191,7 @@ export class Gb3MetadataService extends Gb3ApiService {
     return {
       topic: mapData.topic,
       uuid: mapData.uuid,
+      gisZHNr: mapData.gb2_id,
       name: mapData.name,
       description: mapData.beschreibung,
       imageUrl: mapData.image_url,
@@ -203,6 +205,7 @@ export class Gb3MetadataService extends Gb3ApiService {
   private transformServicesDetailToServiceMetadata(service: Service): ServiceMetadata {
     return {
       uuid: service.uuid,
+      gisZHNr: service.gdsernummer,
       name: service.name,
       url: service.url,
       version: service.version,
@@ -220,6 +223,7 @@ export class Gb3MetadataService extends Gb3ApiService {
   private transformProductDetailToProductMetadata(product: Product): ProductMetadata {
     return {
       uuid: product.uuid,
+      gisZHNr: product.gdpnummer,
       name: product.name,
       contact: {
         metadata: this.extractContactDetails(product.kontakt.metadaten),

@@ -55,7 +55,7 @@ export class MapDetailComponent extends AbstractBaseDetailComponent<MapMetadata>
 
   private extractInformationElements(mapMetadata: MapMetadata): DataDisplayElement[] {
     return [
-      {title: 'GIS-ZH Nr.', value: mapMetadata.uuid.toString(), type: 'text'},
+      {title: 'GIS-ZH Nr.', value: mapMetadata.gisZHNr.toString(), type: 'text'},
       {title: 'Bezeichnung', value: mapMetadata.name, type: 'text'},
       {title: 'Beschreibung', value: mapMetadata.description, type: 'text'},
     ];

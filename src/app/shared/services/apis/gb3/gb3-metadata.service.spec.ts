@@ -48,6 +48,7 @@ const mockServiceDetailResponse = {
   service: {
     url: 'https://www.example.com/service',
     uuid: '1337',
+    gdsernummer: 12,
     datasets: [
       {name: 'data-1', uuid: '1', kurzbeschreibung: 'Lorem ipsum dolor'},
       {name: 'data-2', uuid: '2', kurzbeschreibung: 'Lorem ipsum dolor'},
@@ -67,6 +68,7 @@ const mockServiceDetailResponse = {
 const mockMapDetailResponse = {
   map: {
     uuid: '131',
+    gb2_id: 12,
     datasets: [
       {name: 'data-1', uuid: '1', kurzbeschreibung: 'Lorem ipsum dolor'},
       {name: 'data-2', uuid: '2', kurzbeschreibung: 'Lorem ipsum dolor'},
@@ -82,6 +84,7 @@ const mockMapDetailResponse = {
 const mockProductDetailResponse = {
   product: {
     uuid: '131',
+    gdpnummer: 12,
     datasets: [
       {name: 'data-1', uuid: '1', kurzbeschreibung: 'Lorem ipsum dolor'},
       {name: 'data-2', uuid: '2', kurzbeschreibung: 'Lorem ipsum dolor'},
@@ -96,6 +99,7 @@ const mockProductDetailResponse = {
 const mockDatasetDetailResponse = {
   dataset: {
     uuid: '131',
+    gisZHNr: 12,
     beschreibung: 'Lorem ipsum dolor',
     image_url: 'https://www.example.com/picture.png',
     kontakt: {
@@ -178,6 +182,7 @@ describe('Gb3MetadataService', () => {
         url: mockServiceDetailResponse.service.url,
         imageUrl: mockServiceDetailResponse.service.image_url,
         uuid: mockServiceDetailResponse.service.uuid,
+        gisZHNr: mockServiceDetailResponse.service.gdsernummer,
         name: mockServiceDetailResponse.service.name,
         access: mockServiceDetailResponse.service.zugang,
         serviceType: mockServiceDetailResponse.service.servicetyp,
@@ -220,6 +225,7 @@ describe('Gb3MetadataService', () => {
         topic: mockMapDetailResponse.map.topic,
         imageUrl: mockMapDetailResponse.map.image_url,
         uuid: mockMapDetailResponse.map.uuid,
+        gisZHNr: mockMapDetailResponse.map.gb2_id,
         name: mockMapDetailResponse.map.name,
         description: mockMapDetailResponse.map.beschreibung,
         contact: {
@@ -259,6 +265,7 @@ describe('Gb3MetadataService', () => {
       const expected: ProductMetadata = {
         imageUrl: mockProductDetailResponse.product.image_url,
         uuid: mockProductDetailResponse.product.uuid,
+        gisZHNr: mockProductDetailResponse.product.gdpnummer,
         name: mockProductDetailResponse.product.name,
         description: mockProductDetailResponse.product.beschreibung,
         contact: {
@@ -314,6 +321,7 @@ describe('Gb3MetadataService', () => {
         shortDescription: mockDatasetDetailResponse.dataset.kurzbeschreibung,
         imageUrl: mockDatasetDetailResponse.dataset.image_url,
         uuid: mockDatasetDetailResponse.dataset.uuid,
+        gisZHNr: mockDatasetDetailResponse.dataset.giszhnr,
         name: mockDatasetDetailResponse.dataset.name,
         description: mockDatasetDetailResponse.dataset.beschreibung,
         contact: {

@@ -52,7 +52,7 @@ export class ServiceDetailComponent extends AbstractBaseDetailComponent<ServiceM
 
   private extractInformationElements(serviceMetadata: ServiceMetadata): DataDisplayElement[] {
     return [
-      {title: 'GIS-ZH Nr.', value: serviceMetadata.uuid.toString(), type: 'text'},
+      {title: 'GIS-ZH Nr.', value: serviceMetadata.gisZHNr.toString(), type: 'text'},
       {title: 'Geodienst', value: serviceMetadata.serviceType, type: 'text'},
       {title: 'Bezeichnung', value: serviceMetadata.name, type: 'text'},
       {title: 'Beschreibung', value: serviceMetadata.description, type: 'text'},

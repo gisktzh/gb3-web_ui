@@ -18,6 +18,7 @@ export interface DepartmentalContact {
 
 export interface DatasetMetadata {
   uuid: string;
+  gisZHNr: number;
   name: string;
   shortDescription: string;
   description: string;
@@ -69,6 +70,7 @@ export interface LinkedDataset {
 
 export interface MapMetadata {
   uuid: string;
+  gisZHNr: number;
   topic: string;
   name: string;
   description: string;
@@ -82,6 +84,7 @@ export interface MapMetadata {
 
 export interface ServiceMetadata {
   uuid: string;
+  gisZHNr: number;
   serviceType: string;
   name: string;
   description: string;
@@ -98,6 +101,7 @@ export interface ServiceMetadata {
 
 export interface ProductMetadata {
   uuid: string;
+  gisZHNr: number;
   name: string;
   description: string;
   imageUrl: string | null;
