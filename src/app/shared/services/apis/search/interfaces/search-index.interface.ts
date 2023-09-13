@@ -1,4 +1,4 @@
-import {SearchIndexType} from '../../../../types/search-index.type';
+import {SearchIndexType} from '../../../../configs/search-index.config';
 
 export interface SearchIndex {
   displayString: string;

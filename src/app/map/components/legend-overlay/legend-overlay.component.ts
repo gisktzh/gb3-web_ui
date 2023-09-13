@@ -15,7 +15,7 @@ import {selectLegendItemsForDisplay} from '../../../state/map/selectors/legend-r
 export class LegendOverlayComponent implements OnInit, OnDestroy {
   /** A value indicating whether interactive elements (like buttons) should be shown. [Default: true] */
   @Input() public showInteractiveElements: boolean = true;
-  @Output() public printLegendEvent = new EventEmitter<void>();
+  @Output() public readonly printLegendEvent = new EventEmitter<void>();
 
   public isVisible = false;
   public legendItems: LegendDisplay[] = [];

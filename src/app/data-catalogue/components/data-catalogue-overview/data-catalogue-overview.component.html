@@ -4,6 +4,15 @@
     heroTitle="Datenkatalog"
   ></hero-header>
 </start-page-section>
+<div class="data-catalogue-overview__search">
+  <search
+    class="data-catalogue-overview__search__bar"
+    placeholderText="Geodatensätze, GIS-Browserkarten und Geodienste Filtern"
+    (changeSearchTermEvent)="searchForTerm($event)"
+    (clearSearchTermEvent)="clearSearchTerm()"
+    (openFilterEvent)="openFilterWindow()"
+  ></search>
+</div>
 <div class="data-catalogue-overview">
   <div class="data-catalogue-overview__content">
     <loading-and-process-bar [loadingState]="loadingState"></loading-and-process-bar>
@@ -20,10 +29,6 @@
             </button>
           </mat-chip-row>
         </div>
-      </div>
-      <!-- TODO: this button will be styled and located properly within the search bar when that's done -->
-      <div style="display: flex; justify-content: end">
-        <button (click)="openFilterWindow()" color="accent" mat-flat-button>Filter</button>
       </div>
       <cdk-table [dataSource]="dataCatalogueItems">
         <ng-container cdkColumnDef="data">

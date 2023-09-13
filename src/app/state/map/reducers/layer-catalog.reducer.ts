@@ -37,4 +37,4 @@ export const layerCatalogFeature = createFeature({
   ),
 });
 
-export const {name, reducer, selectFilterString, selectItems, selectLoadingState} = layerCatalogFeature;
+export const {name, reducer, selectLayerCatalogState, selectFilterString, selectItems, selectLoadingState} = layerCatalogFeature;

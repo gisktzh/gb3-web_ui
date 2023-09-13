@@ -47,7 +47,7 @@
     "@ngrx/store-devtools": "^16.0.1",
     "@types/geojson": "^7946.0.10",
     "@types/node": "^18.13.0",
-    "@types/twitter-for-web": "^0.0.2",
+    "@types/twitter-for-web": "^0.0.3",
     "angular-oauth2-oidc": "^15.0.1",
     "angular-resizable-element": "^7.0.2",
     "dayjs": "^1.11.7",
@@ -76,7 +76,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "lint-staged": "^13.2.3",
+    "lint-staged": "^14.0.0",
     "prettier": "^3.0.0",
     "puppeteer": "^21.0.0",
     "typescript": "~4.9.5"

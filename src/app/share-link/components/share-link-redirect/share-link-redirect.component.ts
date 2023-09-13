@@ -14,8 +14,9 @@ import {RouteParamConstants} from '../../../shared/constants/route-param.constan
   styleUrls: ['./share-link-redirect.component.scss'],
 })
 export class ShareLinkRedirectComponent implements OnInit {
-  public readonly mainPageEnum = MainPage;
   public id: string | null = null;
+
+  protected readonly mainPageEnum = MainPage;
 
   private readonly subscriptions: Subscription = new Subscription();
   private readonly applicationInitializationLoadingState$ = this.store.select(selectApplicationInitializationLoadingState);

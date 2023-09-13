@@ -13,6 +13,9 @@ import {MatDialog} from '@angular/material/dialog';
 import {DataCatalogueFilterDialogComponent} from '../data-catalogue-filter-dialog/data-catalogue-filter-dialog.component';
 import {ActiveDataCatalogueFilter} from '../../../shared/interfaces/data-catalogue-filter.interface';
 import {selectActiveFilterValues} from '../../../state/data-catalogue/selectors/active-filter-values.selector';
+import {SearchActions} from '../../../state/app/actions/search.actions';
+import {ConfigService} from '../../../shared/services/config.service';
+import {selectFilteredMetadataItems} from '../../../state/app/selectors/search-results.selector';
 
 const FILTER_DIALOG_WIDTH_IN_PX = 956;
 
@@ -48,15 +51,18 @@ export class DataCatalogueOverviewComponent implements OnInit, OnDestroy, AfterV
   public loadingState: LoadingState = 'undefined';
   public dataCatalogueItems: MatTableDataSource<OverviewMetadataItem> = new MatTableDataSource<OverviewMetadataItem>([]);
   public activeFilters: ActiveDataCatalogueFilter[] = [];
+  private readonly searchConfig = this.configService.searchConfig.dataCatalogPage;
   private readonly activeFilters$: Observable<ActiveDataCatalogueFilter[]> = this.store.select(selectActiveFilterValues);
   private readonly dataCatalogueItems$: Observable<OverviewMetadataItem[]> = this.store.select(selectDataCatalogueItems);
   private readonly dataCatalogueLoadingState$: Observable<LoadingState> = this.store.select(selectLoadingState);
+  private readonly filteredMetadataItems$ = this.store.select(selectFilteredMetadataItems);
   private readonly subscriptions: Subscription = new Subscription();
   @ViewChild(MatPaginator) private paginator!: MatPaginator;
 
   constructor(
     private readonly store: Store,
     private readonly dialogService: MatDialog,
+    private readonly configService: ConfigService,
   ) {
     this.store.dispatch(DataCatalogueActions.loadCatalogue());
   }
@@ -84,6 +90,14 @@ export class DataCatalogueOverviewComponent implements OnInit, OnDestroy, AfterV
     this.subscriptions.unsubscribe();
   }
 
+  public searchForTerm(term: string) {
+    this.store.dispatch(SearchActions.searchForTerm({term, options: this.searchConfig.searchOptions}));
+  }
+
+  public clearSearchTerm() {
+    this.store.dispatch(SearchActions.clearSearch());
+  }
+
   public openFilterWindow() {
     this.dialogService.open<DataCatalogueFilterDialogComponent>(DataCatalogueFilterDialogComponent, {
       panelClass: PanelClass.ApiWrapperDialog,
@@ -98,15 +112,18 @@ export class DataCatalogueOverviewComponent implements OnInit, OnDestroy, AfterV
 
   private initSubscriptions() {
     this.subscriptions.add(this.dataCatalogueLoadingState$.pipe(tap((loadingState) => (this.loadingState = loadingState))).subscribe());
+    this.subscriptions.add(this.dataCatalogueItems$.pipe(tap((items) => (this.dataCatalogueItems.data = items))).subscribe());
+    this.subscriptions.add(this.activeFilters$.pipe(tap((activeFilters) => (this.activeFilters = activeFilters))).subscribe());
     this.subscriptions.add(
-      this.dataCatalogueItems$
+      this.filteredMetadataItems$
         .pipe(
           tap((items) => {
-            this.dataCatalogueItems.data = items;
+            // TODO either here or preferably directly inside some selector: use the results from the search API to further filter the meta data results.
+            //      this can be done either by using this 'filteredMetadataItems' selector or using the raw results from the search API selector 'selectFilteredSearchApiResultMatches'
+            console.log(`${items.length} filtered metadata item IDs: ${items.map((i) => i.guid).join(', ')}`);
           }),
         )
         .subscribe(),
     );
-    this.subscriptions.add(this.activeFilters$.pipe(tap((activeFilters) => (this.activeFilters = activeFilters))).subscribe());
   }
 }

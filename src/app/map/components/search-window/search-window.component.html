@@ -1,45 +1,14 @@
 <div class="search-window">
   <div class="search-window__searchbar">
-    <span class="search-window__searchbar__input-icon">
-      <mat-icon svgIcon="ktzh_search"></mat-icon>
-    </span>
-    <input #filterInput class="search-window__searchbar__input" placeholder="Suchen nach Adressen, Orten, Karten und mehr..." />
-    <mat-icon
-      #filterOverlayTrigger="cdkOverlayOrigin"
-      (click)="toggleFilterMenu()"
-      [ngClass]="{'search-window__searchbar__filter-icon--selected': isFilterMenuOpen}"
-      cdkOverlayOrigin
-      class="search-window__searchbar__filter-icon"
-      >filter_list
-    </mat-icon>
-    <mat-divider [vertical]="true" class="search-window__searchbar__divider"></mat-divider>
-    <mat-icon (click)="clearInput()" class="search-window__searchbar__close-icon">close</mat-icon>
-
-    <ng-template [cdkConnectedOverlayOpen]="isFilterMenuOpen" [cdkConnectedOverlayOrigin]="filterOverlayTrigger" cdkConnectedOverlay>
-      <div class="search-window__filter-menu">
-        <mat-icon (click)="closeFilterMenu()" class="search-window__filter-menu__filter-close-icon">close</mat-icon>
-        <div class="search-window__filter-menu__filter-content">
-          <h2 class="search-window__filter-menu__filter-content__filter-header">Suche filtern nach</h2>
-          <div *ngFor="let index of availableSearchIndexes" class="search-window__filter-menu__filter-content__filter-entry">
-            <mat-checkbox
-              (change)="search(filterInput.value)"
-              [(ngModel)]="index.active"
-              [checked]="index.active"
-              [ngClass]="{'search-window__filter-menu__filter-content__filter-entry__filter-checkbox--unchecked': !index.active}"
-              class="search-window__filter-menu__filter-content__filter-entry__filter-checkbox"
-              >{{ index.displayString }}</mat-checkbox
-            >
-          </div>
-        </div>
-      </div>
-    </ng-template>
+    <search
+      mode="compact"
+      placeholderText="Suchen nach Adressen, Orten, Karten und mehr..."
+      (changeSearchTermEvent)="searchForTerm($event)"
+      (clearSearchTermEvent)="clearSearchTerm()"
+      (openFilterEvent)="openFilterMenu()"
+    ></search>
   </div>
   <div class="search-window__results_container">
-    <result-groups
-      [filteredMaps]="filteredMaps"
-      [searchResults]="searchResults"
-      [searchTerms]="searchTerms"
-      [specialSearchResults]="specialSearchResults"
-    ></result-groups>
+    <result-groups></result-groups>
   </div>
 </div>

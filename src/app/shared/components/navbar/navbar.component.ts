@@ -13,12 +13,13 @@ import {selectScrollbarWidth} from '../../../state/app/reducers/app-layout.reduc
   styleUrls: ['./navbar.component.scss'],
 })
 export class NavbarComponent implements OnInit, OnDestroy {
-  public readonly mainPageEnum = MainPage;
-
   @Input() public isSimplifiedPage: boolean = false;
+
   public isAuthenticated: boolean = false;
   public userName?: string;
   public scrollbarWidth: number = 0;
+
+  protected readonly mainPageEnum = MainPage;
 
   private readonly subscriptions = new Subscription();
   private readonly userName$ = this.store.select(selectUserName);

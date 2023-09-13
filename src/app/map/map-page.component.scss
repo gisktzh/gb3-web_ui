@@ -3,7 +3,7 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
 .map-container {
-  height: 100%;
+  height: calc(100vh - #{ktzh-variables.$navbar-height}); // subtracts height of navbar
   position: relative;
   $all-map-items-container-width: 450px;
   $minimal-bottom-height: ktzh-variables.$esri-attribution-widget-height;

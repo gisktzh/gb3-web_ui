@@ -1,0 +1,20 @@
+@use 'mixins/helpers.mixin' as mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.start-page {
+  $search-height: 106px;
+
+  .start-page__search {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: calc(0px - $search-height / 2);
+
+    .start-page__search__bar {
+      @include mixins.map-element-box-shadow;
+      width: ktzh-variables.$zh-layout-max-content-width;
+      height: $search-height;
+      background-color: ktzh-variables.$zh-background-color;
+    }
+  }
+}

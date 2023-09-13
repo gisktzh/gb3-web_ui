@@ -16,7 +16,7 @@ export class MapDataItemMapComponent extends BaseMapDataItemComponent implements
   @Input() public override imageUrl!: string;
   @Input() public override gb2Url: string | null = null;
 
-  @Output() public override addLayerEvent = new EventEmitter<MapLayer>();
+  @Output() public override readonly addLayerEvent = new EventEmitter<MapLayer>();
 
   public override loadingState: LoadingState = 'loaded';
 
@@ -31,16 +31,7 @@ export class MapDataItemMapComponent extends BaseMapDataItemComponent implements
     // only add subscription if the item is a gb2-only item
     if (this.gb2Url) {
       this.showExpandButton = false;
-
-      this.subscriptions.add(
-        this.mapConfigState$
-          .pipe(
-            tap((mapConfigState) => {
-              this.mapConfigState = mapConfigState;
-            }),
-          )
-          .subscribe(),
-      );
+      this.subscriptions.add(this.mapConfigState$.pipe(tap((mapConfigState) => (this.mapConfigState = mapConfigState))).subscribe());
     }
   }
 

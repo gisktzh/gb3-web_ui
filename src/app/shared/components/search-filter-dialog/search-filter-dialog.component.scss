@@ -1,0 +1,19 @@
+@use 'functions/helper.function' as functions;
+@use 'mixins/material.mixin' as mat-mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+:host ::ng-deep .search-filter-dialog-content__wrapper__checkbox {
+  @include mat-mixins.mat-checkbox-override-accent-color(
+    functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent),
+    functions.get-contrast-color-from-palette(ktzh-variables.$zh-secondary-accent)
+  );
+}
+
+.search-filter-dialog-content {
+  padding: 20px 24px 20px 24px;
+
+  .search-filter-dialog-content__wrapper {
+    display: flex;
+    flex-flow: column;
+  }
+}

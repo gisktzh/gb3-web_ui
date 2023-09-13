@@ -1,0 +1,43 @@
+<div class="search" [ngClass]="{'search--compact': mode === 'compact'}">
+  <div class="search__bar">
+    <mat-icon class="search__bar__icon" svgIcon="ktzh_search"></mat-icon>
+    <input #searchInput class="search__bar__input" [placeholder]="placeholderText" type="text" (focus)="focus.emit()" />
+    <ng-container *ngIf="showFilterButton && mode === 'compact'">
+      <button mat-icon-button (click)="openFilter()" [ngClass]="{'search__bar__filter-button--active': isAnyFilterActive}">
+        <mat-icon svgIcon="ktzh_filter"></mat-icon>
+      </button>
+      <mat-divider *ngIf="showClearButton" [vertical]="true" class="search__bar__divider"></mat-divider>
+    </ng-container>
+    <ng-container *ngIf="showClearButton">
+      <button
+        *ngIf="clearButtonLabel; else noClearLabel"
+        mat-button
+        (click)="clearInput()"
+        class="search__bar__close-button"
+        [disabled]="!alwaysEnableClearButton && searchInput.value.length === 0"
+      >
+        {{ clearButtonLabel }}
+        <mat-icon>close</mat-icon>
+      </button>
+      <ng-template #noClearLabel>
+        <button
+          mat-icon-button
+          (click)="clearInput()"
+          class="search__bar__close-icon-button"
+          [disabled]="!alwaysEnableClearButton && searchInput.value.length === 0"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      </ng-template>
+    </ng-container>
+  </div>
+  <button
+    class="search__filter-button"
+    mat-button
+    *ngIf="showFilterButton && mode === 'normal'"
+    (click)="openFilter()"
+    [ngClass]="{'search__filter-button--active': isAnyFilterActive}"
+  >
+    Filter
+  </button>
+</div>

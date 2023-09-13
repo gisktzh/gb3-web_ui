@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
-import {SearchResultMatch} from '../interfaces/search-result-match.interface';
+import {SearchApiResultMatch} from '../interfaces/search-api-result-match.interface';
 import {BaseApiService} from '../../abstract-api.service';
 import {map} from 'rxjs/operators';
-import {SearchResult} from '../interfaces/search-result.interface';
+import {SearchApiResult} from '../interfaces/search-api-result.interface';
 import {SearchIndex} from '../interfaces/search-index.interface';
 
 @Injectable({
@@ -12,19 +12,33 @@ import {SearchIndex} from '../interfaces/search-index.interface';
 export class SearchService extends BaseApiService {
   protected apiBaseUrl = this.configService.apiConfig.searchApi.baseUrl;
 
-  public searchIndexes(term: string, indexes: SearchIndex[]): Observable<SearchResultMatch[]> {
-    const searchIndexNames = indexes.map((index) => index.indexName).toString();
+  public searchIndexes(term: string, searchIndexex: SearchIndex[]): Observable<SearchApiResultMatch[]> {
+    const searchIndexNames = searchIndexex.map((index) => index.indexName).toString();
     return this.getElasticsearch(searchIndexNames, term).pipe(
-      map((response: SearchResult[]) => this.combineSearchResults(response, indexes)),
+      map((response: SearchApiResult[]) => this.combineSearchResults(response, searchIndexex)),
     );
   }
 
-  private combineSearchResults(searchResponse: SearchResult[], indexes: SearchIndex[]): SearchResultMatch[] {
-    const combinedResults: SearchResultMatch[] = [];
+  private combineSearchResults(searchResponse: SearchApiResult[], indexes: SearchIndex[]): SearchApiResultMatch[] {
+    const combinedResults: SearchApiResultMatch[] = [];
     searchResponse.forEach((searchResult) => {
+      const indexType = indexes.find((index) => index.indexName === searchResult.index)?.indexType ?? 'unknown';
       searchResult.matches.forEach((match) => {
         match.indexName = this.getIndexTitle(searchResult.index, indexes);
-        match.geometry = {...match.geometry, srs: 4326}; // elastic search always delivers pure GeoJSON with 4326 coordinates
+        match.indexType = indexType;
+        switch (match.indexType) {
+          case 'addresses':
+          case 'places':
+          case 'activeMapItems':
+            match.geometry = {...match.geometry, srs: 4326}; // elastic search always delivers pure GeoJSON with 4326 coordinates
+            break;
+          case 'metadata-maps':
+          case 'metadata-products':
+          case 'metadata-datasets':
+          case 'metadata-services':
+          case 'unknown':
+            break;
+        }
       });
       combinedResults.push(...searchResult.matches);
     });
@@ -40,7 +54,7 @@ export class SearchService extends BaseApiService {
     return indexName;
   }
 
-  private getElasticsearch(indexes: string, term: string): Observable<SearchResult[]> {
+  private getElasticsearch(indexes: string, term: string): Observable<SearchApiResult[]> {
     const params = [
       {
         key: 'indexes',
@@ -52,7 +66,7 @@ export class SearchService extends BaseApiService {
       },
     ];
     const requestUrl = this.createFullEndpointUrl('search', params);
-    return this.get<SearchResult[]>(requestUrl);
+    return this.get<SearchApiResult[]>(requestUrl);
   }
 
   private createFullEndpointUrl(endpoint: string, parameters: {key: string; value: string}[] = []): string {
