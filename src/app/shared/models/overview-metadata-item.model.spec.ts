@@ -7,7 +7,7 @@ import {
 import {DataCataloguePage} from '../enums/data-catalogue-page.enum';
 import {MainPage} from '../enums/main-page.enum';
 
-const TEST_GUID = 1337;
+const TEST_GUID = '1337';
 
 function expectUrlForType(dataCataloguePage: DataCataloguePage): string {
   return `/${MainPage.Data}/${dataCataloguePage}/${TEST_GUID}`;

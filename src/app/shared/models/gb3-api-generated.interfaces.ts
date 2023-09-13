@@ -55,8 +55,10 @@ export interface General {
 }
 
 export interface Product {
-  /** Product ID */
-  guid: number;
+  /** Product UUID */
+  uuid: string;
+  /** Product GDP-Nummer */
+  gdpnummer: number;
   /** Name des Geodatenprodukts */
   name: string;
   /** Beschreibung */
@@ -97,12 +99,16 @@ export interface Product {
     };
   };
   datasets: {
-    /** Dataset ID */
-    guid: number;
+    /** Dataset UUID */
+    uuid: string;
+    /** Dataset GIS-ZH-Nummer */
+    giszhnr: number;
     /** Name des Geodatensatzes */
     name: string;
     /** Kurzbeschreibung des Geodatensatzes */
     kurzbeschreibung: string;
+    /** Link auf Geodatashop bei NOGD-Daten */
+    url_shop: string | null;
   }[];
 }
 
@@ -115,8 +121,10 @@ export interface MetadataProducts {
 }
 
 export interface Map {
-  /** Map ID */
-  guid: number;
+  /** Map UUID */
+  uuid: string;
+  /** Map GB2-Nummer */
+  gb2_id: number;
   /** Topic name */
   topic: string;
   /** Kartenname */
@@ -159,12 +167,16 @@ export interface Map {
     };
   };
   datasets: {
-    /** Dataset ID */
-    guid: number;
+    /** Dataset UUID */
+    uuid: string;
+    /** Dataset GIS-ZH-Nummer */
+    giszhnr: number;
     /** Name des Geodatensatzes */
     name: string;
     /** Kurzbeschreibung des Geodatensatzes */
     kurzbeschreibung: string;
+    /** Link auf Geodatashop bei NOGD-Daten */
+    url_shop: string | null;
   }[];
 }
 
@@ -177,8 +189,10 @@ export interface MetadataMaps {
 }
 
 export interface Dataset {
-  /** Dataset ID */
-  guid: number;
+  /** UUID */
+  uuid: string;
+  /** Dataset GIS-ZH-Nummer */
+  giszhnr: number;
   /** Name des Geodatensatzes */
   name: string;
   /** Kurzbeschreibung */
@@ -203,6 +217,8 @@ export interface Dataset {
   pdf_name: string | null;
   /** Link auf PDF */
   pdf_url: string | null;
+  /** Link auf Geodatashop bei NOGD-Daten */
+  url_shop: string | null;
   kontakt: {
     /** Kontakt: Verantwortlich für Geodaten */
     geodaten: {
@@ -268,16 +284,18 @@ export interface Dataset {
     };
   };
   maps: {
-    /** Map ID */
-    guid: number;
+    /** Map UUID */
+    uuid: string;
+    /** Map GB2-ID */
+    gb2_id: number;
     /** Topic name */
     topic: string;
     /** Kartenname */
     name: string;
   }[];
   layers: {
-    /** Layer ID */
-    guid: string;
+    /** Layer GIS-ZH-Nummer */
+    giszhnr: string;
     /** Layername */
     name: string;
     /** Beschreibung des Layers */
@@ -288,16 +306,20 @@ export interface Dataset {
     datenbezugart: string;
   }[];
   services: {
-    /** Service ID */
-    guid: number;
+    /** Service UUID */
+    uuid: string;
+    /** Geodaten-Service-Nummer */
+    gdsernummer: number;
     /** Servicetyp, z.B. WMS, WFS */
     servicetyp: string;
     /** Servicename */
     name: string;
   }[];
   products: {
-    /** Product ID */
-    guid: number;
+    /** Product UUID */
+    uuid: string;
+    /** Geodatenprodukt-Nummer */
+    gdpnummer: number;
     /** Produktname */
     name: string;
   }[];
@@ -576,8 +598,10 @@ export interface Feature {
 }
 
 export interface Service {
-  /** Service ID */
-  guid: number;
+  /** Service UUID */
+  uuid: string;
+  /** Service GDSer-Nummer */
+  gdsernummer: number;
   /** Servicetyp, z.B. WMS, WFS */
   servicetyp: string;
   /** Name des Geodienstes */
@@ -626,12 +650,16 @@ export interface Service {
     };
   };
   datasets: {
-    /** Dataset ID */
-    guid: number;
+    /** Dataset UUID */
+    uuid: string;
+    /** Dataset GIS-ZH-Nummer */
+    giszhnr: number;
     /** Name des Geodatensatzes */
     name: string;
     /** Kurzbeschreibung des Geodatensatzes */
     kurzbeschreibung: string;
+    /** Link auf Geodatashop bei NOGD-Daten */
+    url_shop: string | null;
   }[];
 }
 
@@ -991,6 +1019,8 @@ export interface MetadataGeoshopProductsListData {
   geoshop_products: {
     /** Geoshop product ID */
     giszhnr: number;
+    /** Link auf Geodatashop bei NOGD-Daten */
+    url_shop: string | null;
   }[];
 }
 

@@ -17,7 +17,7 @@ export interface DepartmentalContact {
 }
 
 export interface DatasetMetadata {
-  guid: number;
+  uuid: string;
   name: string;
   shortDescription: string;
   description: string;
@@ -37,12 +37,13 @@ export interface DatasetMetadata {
     metadata: DepartmentalContact;
   };
   maps: {
-    guid: number;
+    uuid: string;
     topic: string;
     name: string;
   }[];
   layers: {
-    guid: string;
+    /** GISZH-Nummer */
+    id: string;
     name: string;
     description: string;
     metadataVisibility: string;
@@ -50,24 +51,24 @@ export interface DatasetMetadata {
     dataProcurementType: string;
   }[];
   services: {
-    guid: number;
+    uuid: string;
     serviceType: string;
     name: string;
   }[];
   products: {
-    guid: number;
+    uuid: string;
     name: string;
   }[];
 }
 
 export interface LinkedDataset {
-  guid: number;
+  uuid: string;
   name: string;
   shortDescription: string;
 }
 
 export interface MapMetadata {
-  guid: number;
+  uuid: string;
   topic: string;
   name: string;
   description: string;
@@ -80,7 +81,7 @@ export interface MapMetadata {
 }
 
 export interface ServiceMetadata {
-  guid: number;
+  uuid: string;
   serviceType: string;
   name: string;
   description: string;
@@ -96,7 +97,7 @@ export interface ServiceMetadata {
 }
 
 export interface ProductMetadata {
-  guid: number;
+  uuid: string;
   name: string;
   description: string;
   imageUrl: string | null;

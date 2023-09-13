@@ -1,5 +1,5 @@
 export interface MetadataLink {
   name: string;
-  guid: number;
+  uuid: string;
   shortDescription: string;
 }
