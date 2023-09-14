@@ -16,19 +16,22 @@ export interface DepartmentalContact {
   url: string;
 }
 
-export interface DatasetMetadata {
+export interface BaseMetadataInterface {
   uuid: string;
   gisZHNr: number;
   name: string;
-  shortDescription: string;
   description: string;
+  imageUrl: string | null;
+}
+
+export interface DatasetMetadata extends BaseMetadataInterface {
+  shortDescription: string;
   topics: string | null;
   keywords: string | null;
   dataBasis: string | null;
   remarks: string | null;
   outputFormat: string;
   usageRestrictions: string;
-  imageUrl: string | null;
   pdfName: string | null;
   pdfUrl: string | null;
   contact: {
@@ -68,13 +71,8 @@ export interface LinkedDataset {
   shortDescription: string;
 }
 
-export interface MapMetadata {
-  uuid: string;
-  gisZHNr: number;
+export interface MapMetadata extends BaseMetadataInterface {
   topic: string;
-  name: string;
-  description: string;
-  imageUrl: string | null;
   contact: {
     /** Responsible for geodata */
     geodata: DepartmentalContact;
@@ -82,16 +80,11 @@ export interface MapMetadata {
   datasets: LinkedDataset[];
 }
 
-export interface ServiceMetadata {
-  uuid: string;
-  gisZHNr: number;
+export interface ServiceMetadata extends BaseMetadataInterface {
   serviceType: string;
-  name: string;
-  description: string;
   url: string;
   version: string;
   access: string;
-  imageUrl: string | null;
   contact: {
     /** Kontakt: Zuständig für Geometadaten */
     metadata: DepartmentalContact;
@@ -99,12 +92,7 @@ export interface ServiceMetadata {
   datasets: LinkedDataset[];
 }
 
-export interface ProductMetadata {
-  uuid: string;
-  gisZHNr: number;
-  name: string;
-  description: string;
-  imageUrl: string | null;
+export interface ProductMetadata extends BaseMetadataInterface {
   contact: {
     /** Kontakt: Zuständig für Geometadaten */
     metadata: DepartmentalContact;
