@@ -23,14 +23,14 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
         baseUrl: 'https://geolion.ktzh.ch',
       },
       searchApi: {
-        baseUrl: 'https://gb3-search-api.icycliff-4b8f6c95.switzerlandnorth.azurecontainerapps.io',
+        baseUrl: 'https://geo.ktzh.ch/geosearch',
       },
       ktzhWebsite: {
         baseUrl: 'https://www.zh.ch',
         useMockData: false,
       },
       gravCms: {
-        baseUrl: 'https://gb3-grav-cms.icycliff-4b8f6c95.switzerlandnorth.azurecontainerapps.io',
+        baseUrl: 'https://geo.ktzh.ch/cms',
         useMockData: false,
       },
       twitterWidget: {
@@ -62,14 +62,14 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
         baseUrl: 'https://geolion.zh.ch',
       },
       searchApi: {
-        baseUrl: 'https://gb3-search-api.icycliff-4b8f6c95.switzerlandnorth.azurecontainerapps.io',
+        baseUrl: 'https://geo.zh.ch/geosearch',
       },
       ktzhWebsite: {
         baseUrl: 'https://www.zh.ch',
         useMockData: false,
       },
       gravCms: {
-        baseUrl: 'https://gb3-grav-cms.icycliff-4b8f6c95.switzerlandnorth.azurecontainerapps.io',
+        baseUrl: 'https://geo.zh.ch/cms',
         useMockData: false,
       },
       twitterWidget: {
