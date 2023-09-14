@@ -10,6 +10,7 @@ export const MapUiActions = createActionGroup({
     'Show Map Side Drawer Content': props<{mapSideDrawerContent: Exclude<MapSideDrawerContent, 'none'>}>(),
     'Hide Map Side Drawer Content': emptyProps(),
     'Show Legend': emptyProps(),
+    'Hide Legend': emptyProps(),
     'Show Share Link Dialog': emptyProps(),
     'Show Create Favourite Dialog': emptyProps(),
     'Show Delete Favourite Dialog': props<{favouriteToDelete: Favourite}>(),
