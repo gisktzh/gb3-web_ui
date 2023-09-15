@@ -24,6 +24,10 @@ export class AppComponent implements OnInit, OnDestroy {
   @ViewChild('content') private readonly contentContainer?: ElementRef;
 
   public showWarning: boolean = false;
+  public reduceNavbar: boolean = false;
+  private mobile: string = '(max-width: 1023px)';
+  private smallTablet: string = '(min-width: 1024px) and (max-width: 1199px)';
+
   /**
    * Flag which can be used to completely hide header and footer, e.g. on an iframe page
    */
@@ -69,10 +73,17 @@ export class AppComponent implements OnInit, OnDestroy {
   private initSubscriptions() {
     this.subscriptions.add(
       this.breakpointObserver
-        .observe([Breakpoints.Small, Breakpoints.XSmall])
+        .observe([this.mobile, this.smallTablet])
         .pipe(
           tap((result) => {
-            this.showWarning = result.matches;
+            if (this.breakpointObserver.isMatched(this.smallTablet)) {
+              console.log('intermediate');
+              this.showWarning = !result.matches;
+              this.reduceNavbar = result.matches;
+            } else {
+              this.showWarning = result.matches;
+              this.reduceNavbar = result.matches;
+            }
           }),
         )
         .subscribe(),

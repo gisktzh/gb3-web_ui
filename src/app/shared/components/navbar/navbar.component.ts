@@ -14,6 +14,7 @@ import {selectScrollbarWidth} from '../../../state/app/reducers/app-layout.reduc
 })
 export class NavbarComponent implements OnInit, OnDestroy {
   @Input() public isSimplifiedPage: boolean = false;
+  @Input() public reduceNavbar: boolean = false;
 
   public isAuthenticated: boolean = false;
   public userName?: string;
