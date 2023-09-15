@@ -54,8 +54,8 @@ describe('DataCatalogue Reducer', () => {
     it('sets the catalogue items and the loadingstate', () => {
       const {initialState} = fromReducer;
       const mockItems = [
-        new MapOverviewMetadataItem(1, 'test1', 'testtest1', 'testDep'),
-        new DatasetOverviewMetadataItem(2, 'test2', 'testtest2', 'testDep', 'testOut'),
+        new MapOverviewMetadataItem('1', 'test1', 'testtest1', 'testDep'),
+        new DatasetOverviewMetadataItem('2', 'test2', 'testtest2', 'testDep', 'testOut'),
       ];
       const action = DataCatalogueActions.setCatalogue({items: mockItems});
 

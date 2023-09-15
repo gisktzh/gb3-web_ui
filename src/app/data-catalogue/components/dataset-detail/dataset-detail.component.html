@@ -35,7 +35,7 @@
           <mat-icon [svgIcon]="'ktzh_arrow_right'"></mat-icon>
           Im GIS-Browser öffnen
         </a>
-        <a [routerLink]="['/', mainPageEnum.Data, dataCataloguePageEnum.Maps, map.guid]" class="linked-data-button" mat-button>
+        <a [routerLink]="['/', mainPageEnum.Data, dataCataloguePageEnum.Maps, map.uuid]" class="linked-data-button" mat-button>
           <mat-icon [svgIcon]="'ktzh_arrow_right'"></mat-icon>
           Zu Metadaten springen
         </a>
@@ -46,7 +46,7 @@
   <data-catalogue-detail-page-section *ngIf="linkedData.services.length > 0">
     <data-display-section [sectionTitle]="'Geodienste mit diesem Datensatz'">
       <descriptive-highlighted-link *ngFor="let service of linkedData.services" [title]="service.name">
-        <a [routerLink]="['/', mainPageEnum.Data, dataCataloguePageEnum.Services, service.guid]" mat-icon-button>
+        <a [routerLink]="['/', mainPageEnum.Data, dataCataloguePageEnum.Services, service.uuid]" mat-icon-button>
           <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
         </a>
       </descriptive-highlighted-link>
@@ -56,7 +56,7 @@
   <data-catalogue-detail-page-section *ngIf="linkedData.products.length > 0">
     <data-display-section [sectionTitle]="'Produkte mit diesem Datensatz'">
       <descriptive-highlighted-link *ngFor="let product of linkedData.products" [title]="product.name">
-        <a [routerLink]="['/', mainPageEnum.Data, dataCataloguePageEnum.Products, product.guid]" mat-icon-button>
+        <a [routerLink]="['/', mainPageEnum.Data, dataCataloguePageEnum.Products, product.uuid]" mat-icon-button>
           <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
         </a>
       </descriptive-highlighted-link>
