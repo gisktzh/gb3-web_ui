@@ -16,7 +16,7 @@ export interface DepartmentalContact {
   url: string;
 }
 
-export interface BaseMetadataInterface {
+interface BaseMetadataInterface {
   uuid: string;
   gisZHNr: number;
   name: string;
