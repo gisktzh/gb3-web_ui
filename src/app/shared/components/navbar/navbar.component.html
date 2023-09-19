@@ -29,7 +29,7 @@
   <mat-divider class="navbar__divider" vertical></mat-divider>
   <a (click)="this.startLogin()" *ngIf="!this.isAuthenticated; else userProfile" class="navbar__item" mat-button>Login</a>
   <ng-template #userProfile>
-    <a [matMenuTriggerFor]="userMenu" class="navbar__item" *ngIf="this.screenSize === 'regular'; else reducedNavbar" mat-button>
+    <a [matMenuTriggerFor]="userMenu" class="navbar__item" *ngIf="screenMode === 'regular'; else reducedNavbar" mat-button>
       <mat-icon svgIcon="ktzh_user"></mat-icon>
       {{ this.userName }}
     </a>

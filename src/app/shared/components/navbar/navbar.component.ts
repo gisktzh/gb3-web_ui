@@ -5,8 +5,7 @@ import {Store} from '@ngrx/store';
 import {AuthStatusActions} from '../../../state/auth/actions/auth-status.actions';
 import {selectUserName} from '../../../state/auth/reducers/auth-status.reducer';
 import {MainPage} from '../../enums/main-page.enum';
-import {selectScrollbarWidth} from '../../../state/app/reducers/app-layout.reducer';
-import {ScreenSize} from '../../types/screen-size.type';
+import {selectScreenMode, selectScrollbarWidth} from '../../../state/app/reducers/app-layout.reducer';
 
 @Component({
   selector: 'navbar',
@@ -15,17 +14,18 @@ import {ScreenSize} from '../../types/screen-size.type';
 })
 export class NavbarComponent implements OnInit, OnDestroy {
   @Input() public isSimplifiedPage: boolean = false;
-  @Input() public screenSize: ScreenSize = 'undefined';
 
   public isAuthenticated: boolean = false;
   public userName?: string;
   public scrollbarWidth: number = 0;
+  public screenMode: string = 'regular';
 
   protected readonly mainPageEnum = MainPage;
 
   private readonly subscriptions = new Subscription();
   private readonly userName$ = this.store.select(selectUserName);
   private readonly scrollbarWidth$ = this.store.select(selectScrollbarWidth);
+  private readonly screenMode$ = this.store.select(selectScreenMode);
 
   constructor(
     private readonly authService: AuthService,
@@ -51,6 +51,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   private initSubscriptions() {
     this.subscriptions.add(this.authService.isAuthenticated$.pipe(tap((value) => (this.isAuthenticated = value))).subscribe());
     this.subscriptions.add(this.userName$.pipe(tap((userName) => (this.userName = userName))).subscribe());
+    this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
     this.subscriptions.add(
       this.scrollbarWidth$
         .pipe(

@@ -15,6 +15,7 @@ import {Store} from '@ngrx/store';
 import {selectScrollbarWidth} from './state/app/reducers/app-layout.reducer';
 import {IconsService} from './shared/services/icons.service';
 import {ScreenSize} from './shared/types/screen-size.type';
+import {AppLayoutActions} from './state/app/actions/app-layout.actions';
 
 @Component({
   selector: 'app-root',
@@ -86,6 +87,7 @@ export class AppComponent implements OnInit, OnDestroy {
             } else {
               this.screenSize = 'regular';
             }
+            this.store.dispatch(AppLayoutActions.setScreenMode({screenMode: this.screenSize}));
           }),
         )
         .subscribe(),
