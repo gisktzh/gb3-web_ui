@@ -3,18 +3,25 @@
 @use 'mixins/helpers.mixin' as mixins;
 @use 'mixins/material.mixin' as mat-mixins;
 @use 'variables/z-index-variables' as z-index-variables;
+@use 'variables/map-layout-variables' as map-layout-variables;
 
 .search-window {
   .search-window__searchbar {
     @include mixins.map-element-box-shadow;
-    width: 783px;
+    width: map-layout-variables.$search-window-width;
     background-color: ktzh-variables.$zh-background-color;
     pointer-events: all;
   }
 
-  @media (max-width: calc(450px + 24px + 125px + 24px + 783px)) {
+  @media (max-width: calc(map-layout-variables.$map-overlay-width + map-layout-variables.$element-margin + map-layout-variables.$legend-button-width + map-layout-variables.$element-margin + map-layout-variables.$search-window-width)) {
     .search-window__searchbar {
-      width: calc(100vw - (450px + 24px + 125px + 24px));
+      width: calc(
+        100vw -
+          (
+            map-layout-variables.$map-overlay-width + map-layout-variables.$element-margin + map-layout-variables.$legend-button-width +
+              map-layout-variables.$element-margin
+          )
+      );
     }
   }
 
@@ -22,13 +29,19 @@
     position: absolute;
     top: 64px;
     bottom: 0;
-    width: 716px;
+    width: map-layout-variables.$search-window-width;
     z-index: z-index-variables.$search-window-results;
   }
 
-  @media (max-width: calc(450px + 24px + 125px + 24px + 783px)) {
+  @media (max-width: calc(map-layout-variables.$map-overlay-width + map-layout-variables.$element-margin + map-layout-variables.$legend-button-width + map-layout-variables.$element-margin + map-layout-variables.$search-window-width)) {
     .search-window__results_container {
-      width: calc(100vw - (450px + 24px + 125px + 24px) - (783px - 716px));
+      width: calc(
+        100vw -
+          (
+            map-layout-variables.$map-overlay-width + map-layout-variables.$element-margin + map-layout-variables.$legend-button-width +
+              map-layout-variables.$element-margin
+          ) - (map-layout-variables.$search-window-width - map-layout-variables.$search-results-width)
+      );
     }
   }
 }

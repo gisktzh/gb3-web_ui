@@ -2,6 +2,7 @@
 @use 'mixins/helpers.mixin' as mixins;
 @use 'mixins/material.mixin' as mat-mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'variables/map-layout-variables' as map-layout-variables;
 
 :host ::ng-deep .attribute-filter__content__checkbox {
   @include mat-mixins.mat-checkbox-override-accent-color(
@@ -16,7 +17,7 @@
 
 .attribute-filter {
   max-height: inherit;
-  width: 450px;
+  width: map-layout-variables.$map-overlay-width;
 
   .no-box-shadow {
     @include mixins.no-box-shadow;
