@@ -25,4 +25,10 @@
     width: 716px;
     z-index: z-index-variables.$search-window-results;
   }
+
+  @media (max-width: calc(450px + 24px + 125px + 24px + 783px)) {
+    .search-window__results_container {
+      width: calc(100vw - (450px + 24px + 125px + 24px) - (783px - 716px));
+    }
+  }
 }
