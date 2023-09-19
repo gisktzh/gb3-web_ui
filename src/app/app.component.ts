@@ -14,6 +14,7 @@ import {UrlUtils} from './shared/utils/url.utils';
 import {Store} from '@ngrx/store';
 import {selectScrollbarWidth} from './state/app/reducers/app-layout.reducer';
 import {IconsService} from './shared/services/icons.service';
+import {ScreenSize} from './shared/types/screen-size.type';
 
 @Component({
   selector: 'app-root',
@@ -24,9 +25,11 @@ export class AppComponent implements OnInit, OnDestroy {
   @ViewChild('content') private readonly contentContainer?: ElementRef;
 
   public showWarning: boolean = false;
-  public reduceNavbar: boolean = false;
   private mobile: string = '(max-width: 1023px)';
   private smallTablet: string = '(min-width: 1024px) and (max-width: 1199px)';
+  private regular: string = '(min-width: 1200px)';
+
+  public screenSize: ScreenSize = 'regular';
 
   /**
    * Flag which can be used to completely hide header and footer, e.g. on an iframe page
@@ -73,16 +76,15 @@ export class AppComponent implements OnInit, OnDestroy {
   private initSubscriptions() {
     this.subscriptions.add(
       this.breakpointObserver
-        .observe([this.mobile, this.smallTablet])
+        .observe([this.mobile, this.smallTablet, this.regular])
         .pipe(
-          tap((result) => {
-            if (this.breakpointObserver.isMatched(this.smallTablet)) {
-              console.log('intermediate');
-              this.showWarning = !result.matches;
-              this.reduceNavbar = result.matches;
+          tap(() => {
+            if (this.breakpointObserver.isMatched(this.mobile)) {
+              this.screenSize = 'mobile';
+            } else if (this.breakpointObserver.isMatched(this.smallTablet)) {
+              this.screenSize = 'smallTablet';
             } else {
-              this.showWarning = result.matches;
-              this.reduceNavbar = result.matches;
+              this.screenSize = 'regular';
             }
           }),
         )

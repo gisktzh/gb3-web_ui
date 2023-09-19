@@ -6,6 +6,7 @@ import {AuthStatusActions} from '../../../state/auth/actions/auth-status.actions
 import {selectUserName} from '../../../state/auth/reducers/auth-status.reducer';
 import {MainPage} from '../../enums/main-page.enum';
 import {selectScrollbarWidth} from '../../../state/app/reducers/app-layout.reducer';
+import {ScreenSize} from '../../types/screen-size.type';
 
 @Component({
   selector: 'navbar',
@@ -14,7 +15,7 @@ import {selectScrollbarWidth} from '../../../state/app/reducers/app-layout.reduc
 })
 export class NavbarComponent implements OnInit, OnDestroy {
   @Input() public isSimplifiedPage: boolean = false;
-  @Input() public reduceNavbar: boolean = false;
+  @Input() public screenSize: ScreenSize = 'undefined';
 
   public isAuthenticated: boolean = false;
   public userName?: string;

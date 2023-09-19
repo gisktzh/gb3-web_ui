@@ -29,14 +29,14 @@
   <mat-divider class="navbar__divider" vertical></mat-divider>
   <a (click)="this.startLogin()" *ngIf="!this.isAuthenticated; else userProfile" class="navbar__item" mat-button>Login</a>
   <ng-template #userProfile>
-    <a [matMenuTriggerFor]="userMenu" class="navbar__item" *ngIf="!this.reduceNavbar; else reducedNavbar" mat-button>
+    <a [matMenuTriggerFor]="userMenu" class="navbar__item" *ngIf="this.screenSize === 'regular'; else reducedNavbar" mat-button>
       <mat-icon svgIcon="ktzh_user"></mat-icon>
       {{ this.userName }}
     </a>
     <ng-template #reducedNavbar>
-      <a [matMenuTriggerFor]="userMenu" class="navbar__item" mat-button #t="matMenuTrigger">
+      <a [matMenuTriggerFor]="userMenu" class="navbar__item" mat-button #trigger="matMenuTrigger">
         <mat-icon svgIcon="ktzh_user"></mat-icon>
-        <mat-icon [fontIcon]="t.menuOpen ? 'arrow_drop_up' : 'arrow_drop_down'"></mat-icon>
+        <mat-icon [fontIcon]="trigger.menuOpen ? 'arrow_drop_up' : 'arrow_drop_down'"></mat-icon>
       </a>
     </ng-template>
     <mat-menu #userMenu="matMenu">
