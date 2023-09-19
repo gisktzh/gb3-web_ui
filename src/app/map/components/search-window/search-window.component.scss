@@ -12,6 +12,12 @@
     pointer-events: all;
   }
 
+  @media (max-width: calc(450px + 24px + 125px + 24px + 783px)) {
+    .search-window__searchbar {
+      width: calc(100vw - (450px + 24px + 125px + 24px));
+    }
+  }
+
   .search-window__results_container {
     position: absolute;
     top: 64px;
