@@ -23,7 +23,7 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
         baseUrl: 'https://www.geolion.zh.ch',
       },
       searchApi: {
-        baseUrl: 'https://gb3-search-api.icycliff-4b8f6c95.switzerlandnorth.azurecontainerapps.io',
+        baseUrl: 'https://geo.zh.ch/geosearch',
       },
       ktzhWebsite: {
         baseUrl: 'https://www.zh.ch',
