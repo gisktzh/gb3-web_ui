@@ -30,6 +30,7 @@ import {AccordionItemComponent} from './components/accordion-item/accordion-item
 import {SearchComponent} from './components/search/search.component';
 import {SearchFilterDialogComponent} from './components/search-filter-dialog/search-filter-dialog.component';
 import {Gb2ExitButtonComponent} from './components/gb2-exit-button/gb2-exit-button.component';
+import {NavbarMobileComponent} from './components/navbar-mobile/navbar-mobile.component';
 
 @NgModule({
   declarations: [
@@ -60,6 +61,7 @@ import {Gb2ExitButtonComponent} from './components/gb2-exit-button/gb2-exit-butt
     SearchComponent,
     SearchFilterDialogComponent,
     Gb2ExitButtonComponent,
+    NavbarMobileComponent,
   ],
   imports: [MaterialModule, RouterModule, CommonModule, ResizableModule],
   exports: [
@@ -90,6 +92,7 @@ import {Gb2ExitButtonComponent} from './components/gb2-exit-button/gb2-exit-butt
     SearchComponent,
     SearchFilterDialogComponent,
     Gb2ExitButtonComponent,
+    NavbarMobileComponent,
   ],
 })
 export class SharedModule {}

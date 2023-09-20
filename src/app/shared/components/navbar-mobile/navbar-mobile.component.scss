@@ -1,0 +1,19 @@
+@use 'mixins/helpers.mixin' as mixins;
+@use 'mixins/material.mixin' as material-mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'variables/map-layout-variables' as map-layout-variables;
+@use 'variables/z-index-variables' as z-index-variables;
+
+.map-container__legend-button {
+  @include mixins.map-element-box-shadow;
+  @include material-mixins.mat-icon-custom-svg-size(16px);
+
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  height: 60px;
+  width: 60px;
+  padding: 4px;
+  background-color: ktzh-variables.$zh-background-color;
+  z-index: z-index-variables.$navbar;
+}
