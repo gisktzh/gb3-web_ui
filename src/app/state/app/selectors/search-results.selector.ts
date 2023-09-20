@@ -22,27 +22,37 @@ export const selectFilteredSearchApiResultMatches = createSelector(
     const filters = filterGroups.flatMap((filterGroup) => filterGroup.filters);
     // no filter is active means all results are shown (all filters active === no filter active)
     const noFilterActive = filters.every((filter) => !filter.isActive);
+    if (noFilterActive) {
+      // simply return all matches if no filter is active
+      return searchApiResultMatches;
+    }
 
     const activeSearchFilterIndexes: Set<SearchType> = new Set(
       filters.filter((filter) => noFilterActive || filter.isActive).map((filter) => filter.type),
     );
+
     return searchApiResultMatches.filter((resultMatch) => {
       switch (resultMatch.indexType) {
         case 'activeMapItems':
-          const indexConfig = availableSpecialSearchIndexes.find(
-            (specialIndex) => resultMatch.indexName && specialIndex.displayString.toLowerCase() === resultMatch.indexName.toLowerCase(),
+          // the filters for this index type are created dynamically depending on the current active map items
+          // first: find the search index config based on the index name (side-note: the 'indexName' in the search result
+          //        is actually its label)
+          const specialSearchIndex = availableSpecialSearchIndexes.find(
+            (searchIndex) =>
+              resultMatch.indexName && searchIndex.label && searchIndex.label.toLowerCase() === resultMatch.indexName.toLowerCase(),
           );
+          // secondly: now find the corresponding filter and use its 'isActive' value
           return (
-            indexConfig &&
+            specialSearchIndex &&
             filters.some(
               (filter) =>
                 filter.type === 'activeMapItems' &&
-                filter.label.toLowerCase() === indexConfig.displayString.toLowerCase() &&
-                (noFilterActive || filter.isActive),
+                filter.label.toLowerCase() === specialSearchIndex.label.toLowerCase() &&
+                filter.isActive,
             )
           );
         default:
-          return noFilterActive || activeSearchFilterIndexes.has(resultMatch.indexType);
+          return activeSearchFilterIndexes.has(resultMatch.indexType);
       }
     });
   },
