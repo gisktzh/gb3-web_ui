@@ -1,6 +1,6 @@
 <main class="main">
   <mobile-warning *ngIf="screenSize === 'mobile' && !isHeadlessPage"></mobile-warning>
-  <navbar *ngIf="!isHeadlessPage" class="navbar" [isSimplifiedPage]="isSimplifiedPage"></navbar>
+  <navbar *ngIf="!isHeadlessPage && screenSize !== 'mobile'" class="navbar" [isSimplifiedPage]="isSimplifiedPage"></navbar>
   <article [ngClass]="{'headless-page': isHeadlessPage}">
     <router-outlet></router-outlet>
     <main-footer *ngIf="!isSimplifiedPage && !isHeadlessPage"></main-footer>
