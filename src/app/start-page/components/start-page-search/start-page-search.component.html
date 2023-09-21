@@ -1,0 +1,48 @@
+<div class="start-page-search">
+  <div class="start-page-search__search">
+    <search
+      class="start-page-search__search__bar"
+      placeholderText="Suche nach Karten, Kartendaten, Geodaten und Geodiensten"
+      [showFilterButton]="true"
+      [showClearButton]="true"
+      (changeSearchTermEvent)="searchForTerm($event)"
+      (clearSearchTermEvent)="clearSearchTerm()"
+      (openFilterEvent)="openFilterMenu()"
+    ></search>
+  </div>
+
+  <div class="start-page-search__filter-chips">
+    <mat-chip-row
+      *ngFor="let activeFilterValue of activeSearchFilterValues"
+      (removed)="deactivateFilter(activeFilterValue.groupLabel, activeFilterValue.filterLabel)"
+    >
+      {{ activeFilterValue.filterLabel }}
+      <button matChipRemove>
+        <mat-icon>cancel</mat-icon>
+      </button>
+    </mat-chip-row>
+  </div>
+
+  <div class="start-page-search__results" *ngIf="searchTerms.length > 0">
+    <start-page-search-result-group
+      class="start-page-search__results__group"
+      header="Karten"
+      [filteredMaps]="filteredMaps"
+      [searchTerms]="searchTerms"
+    ></start-page-search-result-group>
+    <loading-and-process-bar [loadingState]="layerCatalogLoadingState"></loading-and-process-bar>
+    <start-page-search-result-group
+      class="start-page-search__results__group"
+      header="Datenkatalog"
+      [filteredMetadataItems]="filteredMetadataItems"
+      [searchTerms]="searchTerms"
+    ></start-page-search-result-group>
+    <loading-and-process-bar [loadingState]="combinedSearchAndDataCatalogLoadingState"></loading-and-process-bar>
+    <start-page-search-result-group
+      class="start-page-search__results__group"
+      header="Support"
+      [filteredFaqItems]="filteredFaqItems"
+      [searchTerms]="searchTerms"
+    ></start-page-search-result-group>
+  </div>
+</div>

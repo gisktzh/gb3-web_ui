@@ -1,9 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {SearchActions} from '../../../state/app/actions/search.actions';
-import {SearchFilterDialogComponent} from '../../../shared/components/search-filter-dialog/search-filter-dialog.component';
-import {PanelClass} from '../../../shared/enums/panel-class.enum';
 import {Store} from '@ngrx/store';
-import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {ConfigService} from '../../../shared/services/config.service';
 import {Map} from '../../../shared/interfaces/topic.interface';
 import {LoadingState} from '../../../shared/types/loading-state.type';
@@ -18,15 +15,19 @@ import {Subscription, tap} from 'rxjs';
 import {selectLoadingState as selectLayerCatalogLoadingState} from '../../../state/map/reducers/layer-catalog.reducer';
 import {OverviewMetadataItem} from '../../../shared/models/overview-metadata-item.model';
 import {selectLoadingState as selectDataCatalogLoadingState} from '../../../state/data-catalogue/reducers/data-catalogue.reducer';
+import {SearchFilterDialogComponent} from '../../../shared/components/search-filter-dialog/search-filter-dialog.component';
+import {PanelClass} from '../../../shared/enums/panel-class.enum';
+import {MatDialog} from '@angular/material/dialog';
+import {selectActiveSearchFilterValues} from '../../../state/data-catalogue/selectors/active-search-filters.selector';
 
 const FILTER_DIALOG_WIDTH_IN_PX = 956;
 
 @Component({
-  selector: 'start-page-search-overlay',
-  templateUrl: './start-page-search-overlay.component.html',
-  styleUrls: ['./start-page-search-overlay.component.scss'],
+  selector: 'start-page-search',
+  templateUrl: './start-page-search.component.html',
+  styleUrls: ['./start-page-search.component.scss'],
 })
-export class StartPageSearchOverlayComponent implements OnInit, OnDestroy {
+export class StartPageSearch implements OnInit, OnDestroy {
   public searchTerms: string[] = [];
   public filteredMetadataItems: OverviewMetadataItem[] = [];
   public filteredMaps: Map[] = [];
@@ -35,9 +36,11 @@ export class StartPageSearchOverlayComponent implements OnInit, OnDestroy {
   public layerCatalogLoadingState: LoadingState = 'undefined';
   public searchApiLoadingState: LoadingState = 'undefined';
   public dataCatalogLoadingState: LoadingState = 'undefined';
+  public activeSearchFilterValues: {groupLabel: string; filterLabel: string}[] = [];
 
   private readonly searchConfig = this.configService.searchConfig.startPage;
   private readonly searchTerm$ = this.store.select(selectTerm);
+  private readonly activeSearchFilterValues$ = this.store.select(selectActiveSearchFilterValues);
   private readonly filteredMetadataItems$ = this.store.select(selectFilteredMetadataItems);
   private readonly filteredMaps$ = this.store.select(selectFilteredLayerCatalogMaps);
   private readonly searchApiLoadingState$ = this.store.select(selectSearchApiLoadingState);
@@ -49,7 +52,6 @@ export class StartPageSearchOverlayComponent implements OnInit, OnDestroy {
     private readonly store: Store,
     private readonly configService: ConfigService,
     private readonly dialogService: MatDialog,
-    private readonly dialogRef: MatDialogRef<StartPageSearchOverlayComponent>,
   ) {}
 
   public ngOnDestroy() {
@@ -64,8 +66,12 @@ export class StartPageSearchOverlayComponent implements OnInit, OnDestroy {
     this.store.dispatch(SearchActions.searchForTerm({term, options: this.searchConfig.searchOptions}));
   }
 
-  public close() {
-    this.dialogRef.close();
+  public clearSearchTerm() {
+    this.store.dispatch(SearchActions.clearSearch());
+  }
+
+  public deactivateFilter(groupLabel: string, filterLabel: string) {
+    this.store.dispatch(SearchActions.setFilterValue({groupLabel, filterLabel, isActive: false}));
   }
 
   public openFilterMenu() {
@@ -77,7 +83,19 @@ export class StartPageSearchOverlayComponent implements OnInit, OnDestroy {
   }
 
   private initSubscriptions() {
-    this.subscriptions.add(this.searchTerm$.pipe(tap((searchTerm) => (this.searchTerms = searchTerm.split(' ')))).subscribe());
+    this.subscriptions.add(
+      this.searchTerm$
+        .pipe(
+          tap((searchTerm) => {
+            if (searchTerm === '') {
+              this.searchTerms = [];
+            } else {
+              this.searchTerms = searchTerm.split(' ');
+            }
+          }),
+        )
+        .subscribe(),
+    );
     this.subscriptions.add(this.filteredMaps$.pipe(tap((filteredMaps) => (this.filteredMaps = filteredMaps))).subscribe());
     this.subscriptions.add(
       this.filteredMetadataItems$.pipe(tap((filteredMetadataItems) => (this.filteredMetadataItems = filteredMetadataItems))).subscribe(),
@@ -108,6 +126,11 @@ export class StartPageSearchOverlayComponent implements OnInit, OnDestroy {
         .subscribe(),
     );
     this.subscriptions.add(this.filteredFaqItems$.pipe(tap((filteredFaqItems) => (this.filteredFaqItems = filteredFaqItems))).subscribe());
+    this.subscriptions.add(
+      this.activeSearchFilterValues$
+        .pipe(tap((activeSearchFilterValues) => (this.activeSearchFilterValues = activeSearchFilterValues)))
+        .subscribe(),
+    );
   }
 
   private updateCombinedSearchAndDataCatalogLoadingState() {

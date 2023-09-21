@@ -12,11 +12,11 @@ import {FaqItem} from '../../../shared/interfaces/faq.interface';
 import {SupportPage} from '../../../shared/enums/support-page.enum';
 
 @Component({
-  selector: 'search-result-group',
-  templateUrl: './search-result-group.component.html',
-  styleUrls: ['./search-result-group.component.scss'],
+  selector: 'start-page-search-result-group',
+  templateUrl: './start-page-search-result-group.component.html',
+  styleUrls: ['./start-page-search-result-group.component.scss'],
 })
-export class SearchResultGroupComponent implements OnInit, OnDestroy {
+export class StartPageSearchResultGroup implements OnInit, OnDestroy {
   @Input() public header: string = '';
   @Input() public filteredMetadataItems: OverviewMetadataItem[] = [];
   @Input() public filteredMaps: Map[] = [];

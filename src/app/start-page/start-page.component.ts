@@ -9,7 +9,7 @@ import {initialState, selectSearchState} from '../state/app/reducers/search.redu
 import {SearchState} from '../state/app/states/search.state';
 import {ConfigService} from '../shared/services/config.service';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
-import {StartPageSearchOverlayComponent} from './components/start-page-search-overlay/start-page-search-overlay.component';
+import {StartPageSearch} from './components/start-page-search/start-page-search.component';
 
 @Component({
   selector: 'start-page',
@@ -24,7 +24,7 @@ export class StartPageComponent implements OnInit, OnDestroy {
   public usefulLinksGroups: LinksGroup[] = [];
   public searchState: SearchState = initialState;
 
-  private searchOverlayRef?: MatDialogRef<StartPageSearchOverlayComponent>;
+  private searchOverlayRef?: MatDialogRef<StartPageSearch>;
   private readonly searchConfig = this.configService.searchConfig.startPage;
   private readonly usefulLinksGroups$: Observable<LinksGroup[]> = this.store.select(selectLinks);
   private readonly searchState$ = this.store.select(selectSearchState);
@@ -53,7 +53,7 @@ export class StartPageComponent implements OnInit, OnDestroy {
   }
 
   public openSearchOverlay() {
-    this.searchOverlayRef = this.dialogService.open<StartPageSearchOverlayComponent>(StartPageSearchOverlayComponent, {
+    this.searchOverlayRef = this.dialogService.open<StartPageSearch>(StartPageSearch, {
       restoreFocus: false,
       width: '100vw',
       height: '100vh',

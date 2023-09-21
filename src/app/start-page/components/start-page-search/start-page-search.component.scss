@@ -1,25 +1,27 @@
+@use 'mixins/helpers.mixin' as mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
-.start-page-search-overlay {
+.start-page-search {
   height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
 
-  .start-page-search-overlay__search {
+  .start-page-search__search {
+    @include mixins.map-element-box-shadow;
     display: flex;
     justify-content: center;
     align-items: center;
     width: ktzh-variables.$zh-layout-max-content-width;
 
-    .start-page-search-overlay__search__bar {
+    .start-page-search__search__bar {
       width: ktzh-variables.$zh-layout-max-content-width;
       height: 106px;
       background-color: ktzh-variables.$zh-background-color;
     }
   }
 
-  .start-page-search-overlay__results {
+  .start-page-search__results {
     display: flex;
     flex-direction: column;
     margin-left: 5px;
@@ -27,7 +29,7 @@
     width: ktzh-variables.$zh-layout-max-content-width;
     height: 100%;
 
-    .start-page-search-overlay__results__group {
+    .start-page-search__results__group {
       padding: 5px;
       max-height: 33.33%;
       box-sizing: border-box;

@@ -9,8 +9,8 @@ import {DiscoverMapsComponent} from './components/discover-maps/discover-maps.co
 import {ContentLoadingStateComponent} from './components/content-loading-state/content-loading-state.component';
 import {GisBrowserTeaserComponent} from './components/gis-browser-teaser/gis-browser-teaser.component';
 import {FrequentlyUsedItemsComponent} from './components/frequently-used-items/frequently-used-items.component';
-import {StartPageSearchOverlayComponent} from './components/start-page-search-overlay/start-page-search-overlay.component';
-import {SearchResultGroupComponent} from './components/search-result-group/search-result-group.component';
+import {StartPageSearch} from './components/start-page-search/start-page-search.component';
+import {StartPageSearchResultGroup} from './components/start-page-search-result-group/start-page-search-result-group.component';
 
 @NgModule({
   declarations: [
@@ -21,8 +21,8 @@ import {SearchResultGroupComponent} from './components/search-result-group/searc
     ContentLoadingStateComponent,
     GisBrowserTeaserComponent,
     FrequentlyUsedItemsComponent,
-    StartPageSearchOverlayComponent,
-    SearchResultGroupComponent,
+    StartPageSearch,
+    StartPageSearchResultGroup,
   ],
   imports: [CommonModule, SharedModule, StartPageRoutingModule],
 })
