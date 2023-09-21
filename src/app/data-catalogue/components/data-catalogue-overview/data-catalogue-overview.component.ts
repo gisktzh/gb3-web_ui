@@ -120,7 +120,7 @@ export class DataCatalogueOverviewComponent implements OnInit, OnDestroy, AfterV
           tap((items) => {
             // TODO either here or preferably directly inside some selector: use the results from the search API to further filter the meta data results.
             //      this can be done either by using this 'filteredMetadataItems' selector or using the raw results from the search API selector 'selectFilteredSearchApiResultMatches'
-            console.log(`${items.length} filtered metadata item IDs: ${items.map((i) => i.guid).join(', ')}`);
+            console.log(`${items.length} filtered metadata item IDs: ${items.map((i) => i.uuid).join(', ')}`);
           }),
         )
         .subscribe(),

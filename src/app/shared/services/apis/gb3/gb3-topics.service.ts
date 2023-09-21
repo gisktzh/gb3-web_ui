@@ -2,8 +2,6 @@ import {Injectable} from '@angular/core';
 import {Gb3ApiService} from './gb3-api.service';
 import {TopicsFeatureInfoDetailData, TopicsLegendDetailData, TopicsListData} from '../../../models/gb3-api-generated.interfaces';
 import {Geometry} from 'geojson';
-import {QueryLayer} from '../../../interfaces/query-layer.interface';
-import {QueryLegend} from '../../../interfaces/query-legend.interface';
 import {LegendResponse} from '../../../interfaces/legend.interface';
 import {
   FilterConfiguration,
@@ -21,6 +19,7 @@ import {DataCataloguePage} from '../../../enums/data-catalogue-page.enum';
 import {MainPage} from '../../../enums/main-page.enum';
 
 import {InvalidTimeSliderConfiguration} from '../../../errors/map.errors';
+import {QueryTopic} from '../../../interfaces/query-topic.interface';
 
 const FEATURE_INFO_SRS: SupportedSrs = 2056;
 
@@ -38,26 +37,23 @@ export class Gb3TopicsService extends Gb3ApiService {
     return topicsListData.pipe(map((data) => this.transformTopicsListDataToTopicsResponse(data)));
   }
 
-  public loadLegends(queryLegends: QueryLegend[]): Observable<LegendResponse[]> {
-    const requestUrls = queryLegends.map((queryLegend) => this.createLegendUrl(queryLegend));
+  public loadLegends(queryTopics: QueryTopic[]): Observable<LegendResponse[]> {
+    const requestUrls = queryTopics.map((queryLegend) => this.createLegendUrl(queryLegend));
     return forkJoin(requestUrls.map((requestUrl) => this.get<TopicsLegendDetailData>(requestUrl))).pipe(
       map((data) => this.mapTopicsLegendDetailDataToLegendResponse(data)),
     );
   }
 
-  public loadFeatureInfos(x: number, y: number, queryLayers: QueryLayer[]): Observable<FeatureInfoResponse[]> {
-    const requestUrls = queryLayers.map(({topic, layersToQuery}) => this.createFeatureInfoUrl(topic, x, y, layersToQuery));
+  public loadFeatureInfos(x: number, y: number, queryTopics: QueryTopic[]): Observable<FeatureInfoResponse[]> {
+    const requestUrls = queryTopics.map(({topic, layersToQuery}) => this.createFeatureInfoUrl(topic, x, y, layersToQuery));
     return forkJoin(requestUrls.map((requestUrl) => this.get<TopicsFeatureInfoDetailData>(requestUrl))).pipe(
       map((data) => this.mapTopicsFeatureInfoDetailDataToFeatureInfoResponse(data)),
     );
   }
 
-  private createLegendUrl(queryLegend: QueryLegend): string {
-    const url = new URL(`${this.getFullEndpointUrl()}/${queryLegend.topic}/legend`);
-
-    if (queryLegend.layer) {
-      url.searchParams.set('layer', queryLegend.layer);
-    }
+  private createLegendUrl(queryTopic: QueryTopic): string {
+    const url = new URL(`${this.getFullEndpointUrl()}/${queryTopic.topic}/legend`);
+    url.searchParams.set('layer', queryTopic.layersToQuery);
 
     return url.toString();
   }

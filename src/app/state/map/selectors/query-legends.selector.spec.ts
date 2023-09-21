@@ -1,9 +1,9 @@
 import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
-import {Map, MapLayer} from '../../../shared/interfaces/topic.interface';
+import {Map} from '../../../shared/interfaces/topic.interface';
 import {DrawingActiveMapItem} from '../../../map/models/implementations/drawing.model';
 import {ActiveMapItem} from '../../../map/models/active-map-item.model';
 import {selectQueryLegends} from './query-legends.selector';
-import {QueryLegend} from '../../../shared/interfaces/query-legend.interface';
+import {QueryTopic} from '../../../shared/interfaces/query-topic.interface';
 
 describe('selectQueryLegends', () => {
   let basicMockState: Gb2WmsActiveMapItem[];
@@ -28,46 +28,51 @@ describe('selectQueryLegends', () => {
       } as Map),
     ];
   });
-  it('returns all visible topics with undefined as layername for non-singles', () => {
+  it('returns all visible topic IDs with all visible and queryable sublayer IDs (joined with ,) as QueryTopic list', () => {
     const actual = selectQueryLegends.projector(basicMockState);
 
-    const expected: QueryLegend[] = [
-      {topic: basicMockState[0].id, layer: undefined},
-      {topic: basicMockState[1].id, layer: undefined},
+    const expected: QueryTopic[] = [
+      {topic: basicMockState[0].id, layersToQuery: basicMockState[0].settings.layers.map((l) => l.layer).join(',')},
+      {topic: basicMockState[1].id, layersToQuery: basicMockState[1].settings.layers.map((l) => l.layer).join(',')},
     ];
     expect(actual).toEqual(expected);
   });
 
-  it('returns all visible topics with layerId if singlelayer', () => {
-    const layerId = 'test-single';
-    const mapId = 'map-with-singles';
-    const singleLayerItem = new Gb2WmsActiveMapItem(
-      {id: mapId} as Map,
-      {layer: layerId, title: 'ALL THE SINGLE LAYERS; ALL THE SINGLE LAYERS /o/'} as MapLayer,
-    );
-
-    const actual = selectQueryLegends.projector([singleLayerItem]);
-
-    const expected: QueryLegend[] = [{topic: mapId, layer: layerId}];
-    expect(actual).toEqual(expected);
-  });
-
-  it('does not return an invisible element', () => {
+  it('does not return an invisible topic regardless of sublayer state', () => {
     basicMockState[0].visible = false;
 
     const actual = selectQueryLegends.projector(basicMockState);
 
-    const expected: QueryLegend[] = [{topic: basicMockState[1].id, layer: undefined}];
+    const expected: QueryTopic[] = [
+      {
+        topic: basicMockState[1].id,
+        layersToQuery: basicMockState[1].settings.layers.map((l) => l.layer).join(','),
+      },
+    ];
     expect(actual).toEqual(expected);
   });
 
-  it('returns an empty string if no layers are active', () => {
-    basicMockState[0].visible = false;
-    basicMockState[1].visible = false;
+  it('does not return an invisible sublayer', () => {
+    basicMockState[0].settings.layers[0].visible = false;
 
     const actual = selectQueryLegends.projector(basicMockState);
 
-    const expected: QueryLegend[] = [];
+    const expected: QueryTopic[] = [
+      {topic: basicMockState[0].id, layersToQuery: basicMockState[0].settings.layers[1].layer},
+      {topic: basicMockState[1].id, layersToQuery: basicMockState[1].settings.layers.map((l) => l.layer).join(',')},
+    ];
+    expect(actual).toEqual(expected);
+  });
+
+  it('does not return a topic if all sublayers are invisible', () => {
+    basicMockState[0].settings.layers[0].visible = false;
+    basicMockState[0].settings.layers[1].visible = false;
+
+    const actual = selectQueryLegends.projector(basicMockState);
+
+    const expected: QueryTopic[] = [
+      {topic: basicMockState[1].id, layersToQuery: basicMockState[1].settings.layers.map((l) => l.layer).join(',')},
+    ];
     expect(actual).toEqual(expected);
   });
 
@@ -77,9 +82,9 @@ describe('selectQueryLegends', () => {
 
     const actual = selectQueryLegends.projector(basicMockState);
 
-    const expected: QueryLegend[] = [
-      {topic: basicMockState[0].id, layer: undefined},
-      {topic: basicMockState[1].id, layer: undefined},
+    const expected: QueryTopic[] = [
+      {topic: basicMockState[0].id, layersToQuery: basicMockState[0].settings.layers.map((l) => l.layer).join(',')},
+      {topic: basicMockState[1].id, layersToQuery: basicMockState[1].settings.layers.map((l) => l.layer).join(',')},
     ];
 
     expect(actual.length).toEqual(2);

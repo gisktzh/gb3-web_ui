@@ -56,7 +56,7 @@ describe('DataCatalogueEffects', () => {
 
   describe('requestDataCatalogueItems$', () => {
     it('dispatches DataCatalogueActions.setCatalogue() with the service response on success', (done: DoneFn) => {
-      const expected = [new MapOverviewMetadataItem(1337, 'Test', 'Testbeschreibung', 'Testamt')];
+      const expected = [new MapOverviewMetadataItem('1337', 'Test', 'Testbeschreibung', 'Testamt')];
       spyOn(gb3MetadataService, 'loadFullList').and.callFake(() => {
         return of(expected);
       });
@@ -95,7 +95,7 @@ describe('DataCatalogueEffects', () => {
 
   describe('initializeDataCatalogueFilters$', () => {
     it('extracts the configured filter values', (done: DoneFn) => {
-      const mockItems = [new MapOverviewMetadataItem(1337, 'Test', 'Testbeschreibung', 'Testamt')];
+      const mockItems = [new MapOverviewMetadataItem('1337', 'Test', 'Testbeschreibung', 'Testamt')];
       const mockConfig: DataCatalogueFilterConfiguration[] = [
         {key: 'description', label: 'Description'},
         {key: 'responsibleDepartment', label: 'Verantwortlich'},
@@ -118,7 +118,7 @@ describe('DataCatalogueEffects', () => {
     });
 
     it('does not add a non-existing property if no values are present', (done: DoneFn) => {
-      const mockItems = [new MapOverviewMetadataItem(1337, 'Test', 'Testbeschreibung', 'Testamt')];
+      const mockItems = [new MapOverviewMetadataItem('1337', 'Test', 'Testbeschreibung', 'Testamt')];
       const mockConfig: DataCatalogueFilterConfiguration[] = [{key: 'outputFormat', label: 'Exists only on DatasetDetails :)'}];
       spyOnProperty(configService, 'filterConfig', 'get').and.returnValue({
         dataCatalogue: mockConfig,
@@ -136,9 +136,9 @@ describe('DataCatalogueEffects', () => {
 
     it('extracts unique values once', (done: DoneFn) => {
       const mockItems = [
-        new MapOverviewMetadataItem(1337, 'Test A', 'Testbeschreibung', 'Testamt'),
-        new MapOverviewMetadataItem(1337, 'Test B', 'Testbeschreibung', 'Testamt'),
-        new MapOverviewMetadataItem(1337, 'Test B', 'Testbeschreibung', 'Testamt mit anderem Beschrieb'),
+        new MapOverviewMetadataItem('1337', 'Test A', 'Testbeschreibung', 'Testamt'),
+        new MapOverviewMetadataItem('1337', 'Test B', 'Testbeschreibung', 'Testamt'),
+        new MapOverviewMetadataItem('1337', 'Test B', 'Testbeschreibung', 'Testamt mit anderem Beschrieb'),
       ];
       const mockConfig: DataCatalogueFilterConfiguration[] = [
         {key: 'name', label: 'Name'},

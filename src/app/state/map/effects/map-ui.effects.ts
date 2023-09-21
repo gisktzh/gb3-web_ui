@@ -68,6 +68,15 @@ export class MapUiEffects {
     );
   });
 
+  public hideLegend$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapUiActions.hideLegend),
+      map(() => {
+        return LegendActions.hideLegend();
+      }),
+    );
+  });
+
   public openShareLinkDialogAndCreateShareLink$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapUiActions.showShareLinkDialog),
