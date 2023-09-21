@@ -66,3 +66,14 @@ a.navbar__item {
     font-family: ktzh-variables.$zh-font-family-bold;
   }
 }
+
+.icon-display {
+  transform: scale(1.2);
+}
+
+.arrow-icon {
+  order: 2;
+  padding-left: 8px;
+  margin-right: 0px;
+  transform: scale(1.2);
+}
