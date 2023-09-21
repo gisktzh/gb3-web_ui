@@ -41,18 +41,13 @@ export class LayerCatalogEffects {
   public handleInitialMapLoad = createEffect(() => {
     return this.actions$.pipe(
       ofType(LayerCatalogActions.setLayerCatalog),
-      // switch to maps only so we don't have to loop through the whole catalog
-      switchMap(() => {
-        return this.store.select(selectMaps);
-      }),
-      // add the current mapconfiguration
-      concatLatestFrom(() => [this.store.select(selectMapConfigState)]),
+      // get latest maps only (so we don't have to loop through the whole catalog), add the current mapconfiguration
+      concatLatestFrom(() => [this.store.select(selectMaps), this.store.select(selectMapConfigState)]),
       // create an array of ActiveMapItems for each id in the initialMaps configuration that has a matching map in the layer catalog
-      map(([availableMaps, {initialMaps}]) => {
+      map(([_, availableMaps, {initialMaps}]) => {
         const initialMapItems = availableMaps
           .filter((availableMap) => initialMaps.includes(availableMap.id))
           .map((availableMap) => ActiveMapItemFactory.createGb2WmsMapItem(availableMap));
-        // TODO this leads to errors if the map is not initialized
         return ActiveMapItemActions.addInitialMapItems({initialMapItems});
       }),
     );

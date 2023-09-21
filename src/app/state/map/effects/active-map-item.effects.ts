@@ -12,6 +12,7 @@ import {map} from 'rxjs/operators';
 import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
 import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
 import {PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
+import {selectIsMapServiceInitialized} from '../reducers/map-config.reducer';
 
 @Injectable()
 export class ActiveMapItemEffects {
@@ -194,12 +195,18 @@ export class ActiveMapItemEffects {
   public dispatchInitialMapItemsAddEffect$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ActiveMapItemActions.addInitialMapItems),
-      tap(({initialMapItems}) => {
-        initialMapItems.forEach((initialMapItem) => {
-          initialMapItem.addToMap(this.mapService, 0);
-        });
+      // check if the map service is initialized
+      concatLatestFrom(() => [this.store.select(selectIsMapServiceInitialized)]),
+      map(([{initialMapItems}, isMapServiceInitialized]) => {
+        if (isMapServiceInitialized) {
+          // only add the map items to the map if the map service is initialized;
+          // otherwise this happens automatically during initialization
+          initialMapItems.forEach((initialMapItem) => {
+            initialMapItem.addToMap(this.mapService, 0);
+          });
+        }
+        return MapConfigActions.clearInitialMapsConfig();
       }),
-      map(() => MapConfigActions.clearInitialMapsConfig()),
     );
   });
 

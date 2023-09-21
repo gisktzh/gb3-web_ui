@@ -5,6 +5,7 @@ import {PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.in
 export const MapConfigActions = createActionGroup({
   source: 'Map Config',
   events: {
+    'Mark Map Service As Initialized': emptyProps(),
     'Set Initial Map Config': props<{
       x: number | undefined;
       y: number | undefined;

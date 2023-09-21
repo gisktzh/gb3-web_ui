@@ -151,6 +151,7 @@ export class EsriMapService implements MapService, OnDestroy {
           activeMapItems.forEach((mapItem, position) => {
             mapItem.addToMap(this, position);
           });
+          this.store.dispatch(MapConfigActions.markMapServiceAsInitialized());
         }),
       )
       .subscribe();
