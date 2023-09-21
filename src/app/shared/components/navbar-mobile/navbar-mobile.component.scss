@@ -3,6 +3,7 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 @use 'variables/map-layout-variables' as map-layout-variables;
 @use 'variables/z-index-variables' as z-index-variables;
+@use 'functions/helper.function' as functions;
 
 :host ::ng-deep {
   .navbar-mobile__button {
@@ -17,4 +18,51 @@
   left: 16px;
   background-color: ktzh-variables.$zh-background-color;
   z-index: z-index-variables.$navbar;
+}
+
+.map-overlay {
+  height: 100vh;
+  border-radius: 0;
+  padding-top: 0;
+  z-index: z-index-variables.$map-overlay;
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
+  color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+
+  &.map-overlay--right {
+    left: unset;
+    right: 0;
+  }
+
+  .map-overlay__header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+
+    .map-overlay__header__title {
+      flex-grow: 1;
+      margin-bottom: 0;
+    }
+  }
+
+  .map-overlay__content {
+    flex: 1;
+    overflow: hidden scroll;
+  }
+}
+
+a.navbar__item {
+  font-family: ktzh-variables.$zh-font-family;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 24px;
+  padding-bottom: 24px;
+  color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+  font-size: 18px;
+
+  &.navbar__item--active {
+    font-family: ktzh-variables.$zh-font-family-bold;
+  }
 }
