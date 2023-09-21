@@ -1,6 +1,6 @@
 import {Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {DocumentService} from './shared/services/document.service';
-import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
+import {BreakpointObserver} from '@angular/cdk/layout';
 import {filter, Subscription, take, tap} from 'rxjs';
 import {PageNotificationService} from './shared/services/page-notification.service';
 import {MatSnackBar, MatSnackBarRef} from '@angular/material/snack-bar';
