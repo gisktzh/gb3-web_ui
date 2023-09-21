@@ -9,7 +9,7 @@
   z-index: z-index-variables.$map-overlay;
   display: flex;
   flex-direction: column;
-  width: calc(map-layout-variables.$map-overlay-width + #{ktzh-variables.$map-overlay-width-adjustment});
+  width: calc(#{map-layout-variables.$map-overlay-width} + #{map-layout-variables.$map-overlay-width-adjustment});
 
   &.map-overlay--right {
     left: unset;
