@@ -4,6 +4,7 @@ import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
 import {Subscription, tap} from 'rxjs';
 import {selectToolMenuVisibility} from '../../../state/map/reducers/map-ui.reducer';
 import {ToolMenuVisibility} from '../../../shared/types/tool-menu-visibility.type';
+import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 
 @Component({
   selector: 'map-tools',
@@ -12,7 +13,10 @@ import {ToolMenuVisibility} from '../../../shared/types/tool-menu-visibility.typ
 })
 export class MapToolsComponent implements OnInit, OnDestroy {
   public toolMenuVisibility: ToolMenuVisibility | undefined = undefined;
+  public screenMode: string = 'regular';
+
   private readonly toolMenuVisibility$ = this.store.select(selectToolMenuVisibility);
+  private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(private readonly store: Store) {}
@@ -42,5 +46,6 @@ export class MapToolsComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.toolMenuVisibility$.pipe(tap((toolMenuVisibility) => (this.toolMenuVisibility = toolMenuVisibility))).subscribe(),
     );
+    this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
   }
 }

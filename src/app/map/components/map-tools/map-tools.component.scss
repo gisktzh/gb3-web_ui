@@ -28,3 +28,38 @@
     }
   }
 }
+
+.map-tools-mobile {
+  display: flex;
+  gap: 6px;
+  flex-direction: row-reverse;
+  align-items: flex-end;
+
+  .map-tools__list-mobile {
+    @include mixins.map-element-box-shadow;
+    width: 44px;
+    padding: 2px;
+    display: flex;
+    background-color: ktzh-variables.$zh-background-color;
+
+    .map-tools__divider {
+      height: 50%;
+      align-self: center;
+    }
+  }
+}
+
+.map-tools__list-mobile2 {
+  @include mixins.map-element-box-shadow;
+  width: 44px;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  background-color: ktzh-variables.$zh-background-color;
+
+  .map-tools__divider2 {
+    width: 50%;
+    align-self: center;
+  }
+}

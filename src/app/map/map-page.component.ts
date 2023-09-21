@@ -10,6 +10,7 @@ import {MapUiState} from '../state/map/states/map-ui.state';
 import {MapUiActions} from '../state/map/actions/map-ui.actions';
 import {MapSideDrawerContent} from '../shared/types/map-side-drawer-content.type';
 import {selectQueryLegends} from '../state/map/selectors/query-legends.selector';
+import {selectScreenMode} from '../state/app/reducers/app-layout.reducer';
 import {selectLoadingState} from '../state/map/reducers/legend.reducer';
 import {LoadingState} from '../shared/types/loading-state.type';
 
@@ -26,9 +27,11 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
   public mapUiState?: MapUiState;
   public loadingState?: LoadingState;
   public mapSideDrawerContent: MapSideDrawerContent = 'none';
+  public screenMode: string = 'mobile';
 
   private readonly queryLegends$ = this.store.select(selectQueryLegends);
   private readonly mapUiState$ = this.store.select(selectMapUiState);
+  private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly laodingState$ = this.store.select(selectLoadingState);
   private readonly subscriptions: Subscription = new Subscription();
 
@@ -87,6 +90,16 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
           tap((mapUiState) => {
             this.mapUiState = mapUiState;
             this.mapSideDrawerContent = mapUiState.mapSideDrawerContent;
+          }),
+        )
+        .subscribe(),
+    );
+    this.subscriptions.add(
+      this.screenMode$
+        .pipe(
+          tap((screenMode) => {
+            this.screenMode = screenMode;
+            console.log(this.screenMode);
           }),
         )
         .subscribe(),

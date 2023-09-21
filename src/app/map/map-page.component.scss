@@ -111,10 +111,31 @@
     pointer-events: none;
   }
 
+  .map-container__search-window-mobile {
+    position: absolute;
+    bottom: 12px;
+    width: 100vw;
+    pointer-events: none;
+  }
+
   .map-container__map-tools {
     position: absolute;
     top: 120px;
     right: 12px;
+  }
+
+  .map-container__map-tools-mobile {
+    position: absolute;
+    top: 12px;
+    right: 150px;
+  }
+
+  .map-container__all-map-items-container-mobile {
+    position: absolute;
+    bottom: 100px;
+    right: 12px;
+    width: 60px;
+    height: 60px;
   }
 }
 

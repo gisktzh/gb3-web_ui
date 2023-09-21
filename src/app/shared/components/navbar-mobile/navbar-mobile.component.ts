@@ -5,7 +5,11 @@ import {Store} from '@ngrx/store';
 import {AuthStatusActions} from '../../../state/auth/actions/auth-status.actions';
 import {selectUserName} from '../../../state/auth/reducers/auth-status.reducer';
 import {MainPage} from '../../enums/main-page.enum';
-import {selectScreenMode, selectScrollbarWidth} from '../../../state/app/reducers/app-layout.reducer';
+import {selectScreenMode} from '../../../state/app/reducers/app-layout.reducer';
+import {MatBottomSheet, MatBottomSheetModule, MatBottomSheetRef} from '@angular/material/bottom-sheet';
+import {MatButtonModule} from '@angular/material/button';
+import {BottomSheetComponent} from '../bottom-sheet/bottom-sheet.component';
+
 @Component({
   selector: 'navbar-mobile',
   templateUrl: './navbar-mobile.component.html',
@@ -26,6 +30,7 @@ export class NavbarMobileComponent {
   constructor(
     private readonly authService: AuthService,
     private readonly store: Store,
+    private _bottomSheet: MatBottomSheet,
   ) {}
 
   public ngOnInit() {
@@ -52,5 +57,10 @@ export class NavbarMobileComponent {
 
   toggleMenu() {
     this.isVisible = !this.isVisible;
+  }
+
+  openButtomSheet() {
+    console.log('sheet');
+    this._bottomSheet.open(BottomSheetComponent);
   }
 }

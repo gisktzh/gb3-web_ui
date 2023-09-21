@@ -21,13 +21,14 @@
 }
 
 .map-overlay {
-  height: 100vh;
+  position: absolute;
+  height: 100%;
   border-radius: 0;
   padding-top: 0;
   z-index: z-index-variables.$map-overlay;
   display: flex;
   flex-direction: column;
-  width: 100vw;
+  width: 100%;
   background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
   color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
 
