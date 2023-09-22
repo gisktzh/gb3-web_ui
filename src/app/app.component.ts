@@ -12,10 +12,11 @@ import {map} from 'rxjs/operators';
 import {MainPage} from './shared/enums/main-page.enum';
 import {UrlUtils} from './shared/utils/url.utils';
 import {Store} from '@ngrx/store';
-import {selectScrollbarWidth} from './state/app/reducers/app-layout.reducer';
+import {selectScreenMode, selectScrollbarWidth} from './state/app/reducers/app-layout.reducer';
 import {IconsService} from './shared/services/icons.service';
-import {ScreenSize} from './shared/types/screen-size.type';
+import {ScreenMode} from './shared/types/screen-size.type';
 import {AppLayoutActions} from './state/app/actions/app-layout.actions';
+import {Breakpoints} from './shared/enums/breakpoints.enum';
 
 @Component({
   selector: 'app-root',
@@ -23,14 +24,8 @@ import {AppLayoutActions} from './state/app/actions/app-layout.actions';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit, OnDestroy {
-  @ViewChild('content') private readonly contentContainer?: ElementRef;
-
   public showWarning: boolean = false;
-  private mobile: string = '(max-width: 1023px)';
-  private smallTablet: string = '(min-width: 1024px) and (max-width: 1199px)';
-  private regular: string = '(min-width: 1200px)';
-
-  public screenSize: ScreenSize = 'regular';
+  public screenMode: ScreenMode = 'regular';
 
   /**
    * Flag which can be used to completely hide header and footer, e.g. on an iframe page
@@ -45,6 +40,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private readonly useSimplifiedPageOn: MainPage[] = [MainPage.Maps];
   private readonly useHeadlessPageOn: MainPage[] = [MainPage.Embedded];
   private readonly subscriptions: Subscription = new Subscription();
+  private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly scrollbarWidth$ = this.store.select(selectScrollbarWidth);
 
   constructor(
@@ -77,17 +73,18 @@ export class AppComponent implements OnInit, OnDestroy {
   private initSubscriptions() {
     this.subscriptions.add(
       this.breakpointObserver
-        .observe([this.mobile, this.smallTablet, this.regular])
+        .observe([Breakpoints.mobile, Breakpoints.smallTablet, Breakpoints.regular])
         .pipe(
           tap(() => {
-            if (this.breakpointObserver.isMatched(this.mobile)) {
-              this.screenSize = 'mobile';
-            } else if (this.breakpointObserver.isMatched(this.smallTablet)) {
-              this.screenSize = 'smallTablet';
+            let screenMode: ScreenMode;
+            if (this.breakpointObserver.isMatched(Breakpoints.mobile)) {
+              screenMode = 'mobile';
+            } else if (this.breakpointObserver.isMatched(Breakpoints.smallTablet)) {
+              screenMode = 'smallTablet';
             } else {
-              this.screenSize = 'regular';
+              screenMode = 'regular';
             }
-            this.store.dispatch(AppLayoutActions.setScreenMode({screenMode: this.screenSize}));
+            this.store.dispatch(AppLayoutActions.setScreenMode({screenMode: screenMode}));
           }),
         )
         .subscribe(),
@@ -134,6 +131,7 @@ export class AppComponent implements OnInit, OnDestroy {
         )
         .subscribe(),
     );
+    this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
   }
 
   private closePageNotificationSnackBar() {

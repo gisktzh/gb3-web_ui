@@ -1,1 +1,1 @@
-export type ScreenSize = 'undefined' | 'regular' | 'smallTablet' | 'mobile';
+export type ScreenMode = 'regular' | 'smallTablet' | 'mobile';
