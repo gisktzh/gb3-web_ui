@@ -7,6 +7,7 @@ import {produce} from 'immer';
 export const mapConfigFeatureKey = 'mapConfig';
 
 export const initialState: MapConfigState = {
+  isMapServiceInitialized: false,
   center: defaultMapConfig.center,
   scale: defaultMapConfig.scale,
   srsId: defaultMapConfig.srsId,
@@ -22,6 +23,9 @@ export const mapConfigFeature = createFeature({
   name: mapConfigFeatureKey,
   reducer: createReducer(
     initialState,
+    on(MapConfigActions.markMapServiceAsInitialized, (state): MapConfigState => {
+      return {...state, isMapServiceInitialized: true};
+    }),
     on(MapConfigActions.setInitialMapConfig, (state, {x, y, scale, basemapId, initialMaps}): MapConfigState => {
       const initialExtent = {
         center: {
@@ -83,6 +87,7 @@ export const mapConfigFeature = createFeature({
 export const {
   name,
   reducer,
+  selectIsMapServiceInitialized,
   selectMapConfigState,
   selectCenter,
   selectScale,

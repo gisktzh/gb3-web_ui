@@ -12,7 +12,7 @@ export const selectAvailableSpecialSearchIndexes = createSelector(selectItems, (
       if (notInOutputYet) {
         availableIndexes.push({
           indexName: searchConfig.index,
-          displayString: searchConfig.title,
+          label: searchConfig.title,
           active: true,
           indexType: 'activeMapItems',
         });

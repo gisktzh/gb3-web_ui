@@ -43,11 +43,11 @@ export const searchFeature = createFeature({
           if (filterGroup.useDynamicActiveMapItemsFilter) {
             filterGroup.filters = searchIndexes.map((searchIndex) => {
               const existingFilter = filterGroup.filters.find(
-                (filter) => filter.label === searchIndex.displayString && filter.type === searchIndex.indexType,
+                (filter) => filter.label === searchIndex.label && filter.type === searchIndex.indexType,
               );
               return (
                 existingFilter ?? {
-                  label: searchIndex.displayString,
+                  label: searchIndex.label,
                   isActive: false,
                   type: searchIndex.indexType,
                 }

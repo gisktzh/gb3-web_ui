@@ -7,6 +7,7 @@ describe('selectFavouriteBaseConfig', () => {
   let basicMockState: MapConfigState;
   beforeEach(() => {
     basicMockState = {
+      isMapServiceInitialized: false,
       center: {x: 42, y: 1337},
       activeBasemapId: 'testBaseMapId',
       scale: 9001,
