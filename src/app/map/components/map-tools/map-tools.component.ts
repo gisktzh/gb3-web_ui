@@ -37,6 +37,10 @@ export class MapToolsComponent implements OnInit, OnDestroy {
     this.store.dispatch(MapUiActions.showShareLinkDialog());
   }
 
+  public showShareLinkBottomSheet() {
+    this.store.dispatch(MapUiActions.showBottomSheetOverlay());
+  }
+
   public toggleToolMenu(toolToToggle: ToolMenuVisibility) {
     const tool: ToolMenuVisibility | undefined = this.toolMenuVisibility === toolToToggle ? undefined : toolToToggle;
     this.store.dispatch(MapUiActions.toggleToolMenu({tool: tool}));

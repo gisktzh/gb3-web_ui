@@ -10,6 +10,7 @@ export const initialState: MapUiState = {
   hideToggleUiElementsButton: false,
   hideZoomButtons: false,
   toolMenuVisibility: undefined,
+  bottoSheetOverlayVisibility: false,
 };
 
 export const mapUiFeature = createFeature({
@@ -43,7 +44,13 @@ export const mapUiFeature = createFeature({
         mapSideDrawerContent: 'none',
       };
     }),
+    on(MapUiActions.showBottomSheetOverlay, (state): MapUiState => {
+      return {
+        ...state,
+        bottoSheetOverlayVisibility: true,
+      };
+    }),
   ),
 });
 
-export const {name, reducer, selectMapUiState, selectToolMenuVisibility} = mapUiFeature;
+export const {name, reducer, selectMapUiState, selectToolMenuVisibility, selectBottoSheetOverlayVisibility} = mapUiFeature;

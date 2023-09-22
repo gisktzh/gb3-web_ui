@@ -7,4 +7,5 @@ export interface MapUiState {
   hideToggleUiElementsButton: boolean;
   hideZoomButtons: boolean;
   toolMenuVisibility: ToolMenuVisibility | undefined;
+  bottoSheetOverlayVisibility: boolean;
 }

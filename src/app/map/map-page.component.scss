@@ -103,6 +103,14 @@
     height: 100%;
   }
 
+  .map-container__bottom-sheet-overlay {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 50%;
+    width: 100%;
+  }
+
   .map-container__search-window {
     position: absolute;
     top: 12px;

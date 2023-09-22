@@ -51,6 +51,7 @@ import {MeasurementToolsComponent} from './components/map-tools/measurement-tool
 import {DrawingToolsComponent} from './components/map-tools/drawing-tools/drawing-tools.component';
 import {AbstractToolsComponent} from './components/map-tools/abstract-tools/abstract-tools.component';
 import {ZoomControlsComponent} from './components/map-controls/zoom-controls/zoom-controls.component';
+import {BottomSheetOverlayComponent} from './components/bottom-sheet-overlay/bottom-sheet-overlay.component';
 
 @NgModule({
   declarations: [
@@ -102,6 +103,7 @@ import {ZoomControlsComponent} from './components/map-controls/zoom-controls/zoo
     DrawingToolsComponent,
     AbstractToolsComponent,
     ZoomControlsComponent,
+    BottomSheetOverlayComponent,
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule],
   exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent],

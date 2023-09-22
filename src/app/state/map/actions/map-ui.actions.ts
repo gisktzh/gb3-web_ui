@@ -16,5 +16,6 @@ export const MapUiActions = createActionGroup({
     'Show Delete Favourite Dialog': props<{favouriteToDelete: Favourite}>(),
     'Show Map Notices Dialog': emptyProps(),
     'Toggle Tool Menu': props<{tool?: ToolMenuVisibility}>(),
+    'Show Bottom Sheet Overlay': emptyProps(),
   },
 });
