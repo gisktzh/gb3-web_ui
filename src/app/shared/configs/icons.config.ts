@@ -95,7 +95,7 @@ const actionIconsConfig = [
     path: 'assets/icons/actions/filter.svg',
   },
   {
-    id: 'ktzh_map-management',
+    id: 'ktzh_map_management',
     path: 'assets/icons/actions/map-management.svg',
   },
 ];
@@ -141,7 +141,7 @@ const symbolIconsConfig = [
     path: 'assets/icons/symbols/ktzh_canton.svg',
   },
   {
-    id: 'ktzh_background-map-mobile',
+    id: 'ktzh_background_map_mobile',
     path: 'assets/icons/symbols/background-map-mobile.svg',
   },
 ];
