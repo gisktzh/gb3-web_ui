@@ -18,6 +18,8 @@ import {ScreenMode} from './shared/types/screen-size.type';
 import {AppLayoutActions} from './state/app/actions/app-layout.actions';
 import {Breakpoints} from './shared/enums/breakpoints.enum';
 import {environment} from 'src/environments/environment';
+import {selectMapUiState} from './state/map/reducers/map-ui.reducer';
+import {MapUiState} from './state/map/states/map-ui.state';
 
 @Component({
   selector: 'app-root',
@@ -27,6 +29,7 @@ import {environment} from 'src/environments/environment';
 export class AppComponent implements OnInit, OnDestroy {
   public showWarning: boolean = false;
   public screenMode: ScreenMode = 'regular';
+  public mapUiState?: MapUiState;
 
   /**
    * Flag which can be used to completely hide header and footer, e.g. on an iframe page
@@ -43,6 +46,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private readonly subscriptions: Subscription = new Subscription();
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly scrollbarWidth$ = this.store.select(selectScrollbarWidth);
+  private readonly mapUiState$ = this.store.select(selectMapUiState);
 
   constructor(
     private readonly documentService: DocumentService,
@@ -87,6 +91,16 @@ export class AppComponent implements OnInit, OnDestroy {
               screenMode = 'regular';
             }
             this.store.dispatch(AppLayoutActions.setScreenMode({screenMode: screenMode}));
+          }),
+        )
+        .subscribe(),
+    );
+
+    this.subscriptions.add(
+      this.mapUiState$
+        .pipe(
+          tap((mapUiState) => {
+            this.mapUiState = mapUiState;
           }),
         )
         .subscribe(),

@@ -1,4 +1,4 @@
-<mat-drawer-container class="map-container">
+<mat-drawer-container class="map-container" [ngClass]="{'map-container--mobile': screenMode === 'mobile'}">
   <mat-drawer
     mode="side"
     position="end"
@@ -61,21 +61,27 @@
     (printFeatureInfoEvent)="showPrint('featureInfo')"
   ></feature-info-overlay>
   <search-window
-    [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
-    [ngClass]="screenMode === 'mobile' ? 'map-container__search-window-mobile' : 'map-container__search-window'"
+    class="map-container__search-window"
+    [ngClass]="{
+      'map-container__map-element--hidden': mapUiState?.hideUiElements,
+      'map-container__search-window--mobile': screenMode === 'mobile'
+    }"
   ></search-window>
   <map-tools
-    [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
-    [ngClass]="screenMode === 'mobile' ? 'map-container__map-tools-mobile' : 'map-container__map-tools'"
+    [ngClass]="{
+      'map-container__map-element--hidden': mapUiState?.hideUiElements,
+      'map-container__map-tools--mobile': screenMode === 'mobile'
+    }"
+    class="map-container__map-tools"
   ></map-tools>
   <button
     *ngIf="screenMode === 'mobile'"
     mat-flat-button
     (click)="toggleLegend()"
-    class="map-container__all-map-items-container-mobile"
+    class="map-container__all-map-items-container--mobile"
     [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
   >
-    <mat-icon svgIcon="ktzh_legend"></mat-icon>
+    <mat-icon svgIcon="ktzh_map_management"></mat-icon>
   </button>
   <bottom-sheet-overlay class="map-container__bottom-sheet-overlay"></bottom-sheet-overlay>
 </mat-drawer-container>

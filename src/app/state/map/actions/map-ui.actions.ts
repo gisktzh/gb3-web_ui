@@ -17,5 +17,6 @@ export const MapUiActions = createActionGroup({
     'Show Map Notices Dialog': emptyProps(),
     'Toggle Tool Menu': props<{tool?: ToolMenuVisibility}>(),
     'Show Bottom Sheet Overlay': emptyProps(),
+    'Hide Bottom Sheet Overlay': emptyProps(),
   },
 });

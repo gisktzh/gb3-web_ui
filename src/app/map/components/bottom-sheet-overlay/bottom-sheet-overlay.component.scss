@@ -1,0 +1,25 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'variables/z-index-variables' as z-index-variables;
+@use 'variables/map-layout-variables' as map-layout-variables;
+
+.bottom-sheet-overlay {
+  height: 50vh;
+  width: 100vw;
+  z-index: z-index-variables.$map-overlay;
+
+  .bottom-sheet-overlay__header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+
+    .bottom-sheet-overlay__header__title {
+      flex-grow: 1;
+      margin-bottom: 0;
+    }
+  }
+
+  .bottom-sheet-overlay__content {
+    flex: 1;
+    overflow: hidden scroll;
+  }
+}

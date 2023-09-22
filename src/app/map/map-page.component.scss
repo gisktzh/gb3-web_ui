@@ -8,6 +8,10 @@
   position: relative;
   $minimal-bottom-height: map-layout-variables.$esri-attribution-widget-height;
 
+  &--mobile {
+    height: 100vh;
+  }
+
   .map-container__map-element--hidden {
     display: none !important;
   }
@@ -117,28 +121,25 @@
     right: 12px;
     bottom: 85px;
     pointer-events: none;
-  }
 
-  .map-container__search-window-mobile {
-    position: absolute;
-    bottom: 12px;
-    width: 100vw;
-    pointer-events: none;
+    &--mobile {
+      bottom: 12px + $minimal-bottom-height;
+      top: auto;
+      left: 12px;
+    }
   }
 
   .map-container__map-tools {
     position: absolute;
     top: 120px;
     right: 12px;
+
+    &--mobile {
+      top: 12px;
+    }
   }
 
-  .map-container__map-tools-mobile {
-    position: absolute;
-    top: 12px;
-    right: 150px;
-  }
-
-  .map-container__all-map-items-container-mobile {
+  .map-container__all-map-items-container--mobile {
     position: absolute;
     bottom: 100px;
     right: 12px;

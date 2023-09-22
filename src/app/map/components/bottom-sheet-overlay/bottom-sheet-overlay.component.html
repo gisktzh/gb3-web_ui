@@ -1,5 +1,12 @@
-<map-overlay [isVisible]="bottomSheetOverlay" overlayTitle="Bottom Sheet" location="right">
-  <ng-container>
-    <p>text</p>
-  </ng-container>
-</map-overlay>
+<mat-card *ngIf="bottomSheetOverlay" class="bottom-sheet-overlay">
+  <mat-card-header class="bottom-sheet-overlay__header">
+    <h1 class="bottom-sheet-overlay__header__title">{{ overlayTitle }}</h1>
+    <button (click)="onClose()" mat-icon-button class="bottom-sheet-overlay__header__button">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-card-header>
+  <mat-card-content class="bottom-sheet-overlay__content">
+    <ng-content></ng-content>
+  </mat-card-content>
+  <resize-handler></resize-handler>
+</mat-card>

@@ -48,6 +48,14 @@ export const mapUiFeature = createFeature({
       return {
         ...state,
         bottoSheetOverlayVisibility: true,
+        hideUiElements: true,
+      };
+    }),
+    on(MapUiActions.hideBottomSheetOverlay, (state): MapUiState => {
+      return {
+        ...state,
+        bottoSheetOverlayVisibility: false,
+        hideUiElements: false,
       };
     }),
   ),
