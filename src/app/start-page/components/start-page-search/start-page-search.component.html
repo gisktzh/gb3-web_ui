@@ -11,38 +11,46 @@
     ></search>
   </div>
 
-  <div class="start-page-search__filter-chips">
-    <mat-chip-row
-      *ngFor="let activeFilterValue of activeSearchFilterValues"
-      (removed)="deactivateFilter(activeFilterValue.groupLabel, activeFilterValue.filterLabel)"
-    >
-      {{ activeFilterValue.filterLabel }}
-      <button matChipRemove>
-        <mat-icon>cancel</mat-icon>
-      </button>
-    </mat-chip-row>
-  </div>
-
   <div class="start-page-search__results" *ngIf="searchTerms.length > 0">
-    <start-page-search-result-group
-      class="start-page-search__results__group"
-      header="Karten"
-      [filteredMaps]="filteredMaps"
-      [searchTerms]="searchTerms"
-    ></start-page-search-result-group>
-    <loading-and-process-bar [loadingState]="layerCatalogLoadingState"></loading-and-process-bar>
-    <start-page-search-result-group
-      class="start-page-search__results__group"
-      header="Datenkatalog"
-      [filteredMetadataItems]="filteredMetadataItems"
-      [searchTerms]="searchTerms"
-    ></start-page-search-result-group>
-    <loading-and-process-bar [loadingState]="combinedSearchAndDataCatalogLoadingState"></loading-and-process-bar>
-    <start-page-search-result-group
-      class="start-page-search__results__group"
-      header="Support"
-      [filteredFaqItems]="filteredFaqItems"
-      [searchTerms]="searchTerms"
-    ></start-page-search-result-group>
+    <div>
+      <mat-chip-row
+        *ngFor="let activeFilterValue of activeSearchFilterValues"
+        (removed)="deactivateFilter(activeFilterValue.groupLabel, activeFilterValue.filterLabel)"
+      >
+        {{ activeFilterValue.filterLabel }}
+        <button matChipRemove>
+          <mat-icon>cancel</mat-icon>
+        </button>
+      </mat-chip-row>
+    </div>
+
+    <div class="start-page-search__results__groups">
+      <start-page-search-result-group
+        class="start-page-search__results__groups__group"
+        header="Karten"
+        [filteredMaps]="filteredMaps"
+        [searchTerms]="searchTerms"
+      ></start-page-search-result-group>
+      <loading-and-process-bar
+        class="start-page-search__results__loading-bar"
+        [loadingState]="layerCatalogLoadingState"
+      ></loading-and-process-bar>
+      <start-page-search-result-group
+        class="start-page-search__results__groups__group"
+        header="Datenkatalog"
+        [filteredMetadataItems]="filteredMetadataItems"
+        [searchTerms]="searchTerms"
+      ></start-page-search-result-group>
+      <loading-and-process-bar
+        class="start-page-search__results__loading-bar"
+        [loadingState]="combinedSearchAndDataCatalogLoadingState"
+      ></loading-and-process-bar>
+      <start-page-search-result-group
+        class="start-page-search__results__groups__group"
+        header="Support"
+        [filteredFaqItems]="filteredFaqItems"
+        [searchTerms]="searchTerms"
+      ></start-page-search-result-group>
+    </div>
   </div>
 </div>

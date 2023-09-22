@@ -56,9 +56,11 @@ export class StartPageSearch implements OnInit, OnDestroy {
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
+    this.store.dispatch(SearchActions.resetSearchAndFilters());
   }
 
   public ngOnInit() {
+    this.store.dispatch(SearchActions.setFilterGroups({filterGroups: this.searchConfig.filterGroups}));
     this.initSubscriptions();
   }
 
@@ -67,7 +69,7 @@ export class StartPageSearch implements OnInit, OnDestroy {
   }
 
   public clearSearchTerm() {
-    this.store.dispatch(SearchActions.clearSearch());
+    this.store.dispatch(SearchActions.clearSearchTerm());
   }
 
   public deactivateFilter(groupLabel: string, filterLabel: string) {

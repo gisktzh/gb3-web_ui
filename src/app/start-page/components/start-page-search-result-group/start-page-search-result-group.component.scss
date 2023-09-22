@@ -4,7 +4,6 @@
 .search-result-group {
   display: flex;
   flex-direction: column;
-  height: 100%;
 
   .search-result-group__header {
     padding: 4px;
@@ -14,7 +13,8 @@
   }
 
   .search-result-group__container {
-    overflow-y: scroll;
+    overflow-y: auto;
+    max-height: 210px;
 
     .search-result-group__container__element {
       box-shadow: none;
@@ -33,7 +33,8 @@
       .search-result-group__container__element__content {
         display: flex;
         justify-content: space-between;
-        padding: 5px;
+        padding: 12px 0 11px 0;
+        height: 46px;
 
         .search-result-group__container__element__content__description {
           display: flex;
@@ -67,7 +68,8 @@
 
       .search-result-group__container__element__map-content {
         display: flex;
-        padding: 5px;
+        padding: 12px 0 11px 0;
+        height: 46px;
         overflow: hidden;
 
         .search-result-group__container__element__map-content__image {

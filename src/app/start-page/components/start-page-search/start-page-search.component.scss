@@ -24,15 +24,22 @@
   .start-page-search__results {
     display: flex;
     flex-direction: column;
-    margin-left: 5px;
-    overflow-y: hidden;
-    width: ktzh-variables.$zh-layout-max-content-width;
-    height: 100%;
+    padding-top: 40px;
+    gap: 12px;
 
-    .start-page-search__results__group {
-      padding: 5px;
-      max-height: 33.33%;
-      box-sizing: border-box;
+    .start-page-search__results__groups {
+      display: flex;
+      flex-direction: column;
+      width: ktzh-variables.$zh-layout-max-content-width;
+
+      .start-page-search__results__groups__group {
+        padding: 5px;
+        box-sizing: border-box;
+      }
+
+      .start-page-search__results__loading-bar {
+        padding: 0px 5px;
+      }
     }
   }
 }
