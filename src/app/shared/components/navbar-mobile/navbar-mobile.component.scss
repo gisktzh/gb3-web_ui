@@ -4,7 +4,7 @@
 @use 'variables/map-layout-variables' as map-layout-variables;
 @use 'variables/z-index-variables' as z-index-variables;
 
-.map-container__legend-button {
+.navbar-mobile {
   @include mixins.map-element-box-shadow;
   @include material-mixins.mat-icon-custom-svg-size(16px);
 
