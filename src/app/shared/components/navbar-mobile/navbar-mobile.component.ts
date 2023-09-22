@@ -6,6 +6,7 @@ import {AuthStatusActions} from '../../../state/auth/actions/auth-status.actions
 import {selectUserName} from '../../../state/auth/reducers/auth-status.reducer';
 import {MainPage} from '../../enums/main-page.enum';
 import {selectScreenMode} from '../../../state/app/reducers/app-layout.reducer';
+import {ScreenMode} from '../../types/screen-size.type';
 
 @Component({
   selector: 'navbar-mobile',
@@ -16,7 +17,7 @@ export class NavbarMobileComponent {
   public isVisible: boolean = false;
   public isAuthenticated: boolean = false;
   public userName?: string;
-  public screenMode: string = 'mobile';
+  public screenMode: ScreenMode = 'mobile';
 
   protected readonly mainPageEnum = MainPage;
 

@@ -14,7 +14,7 @@
     <a (click)="this.startLogin()" *ngIf="!this.isAuthenticated; else userProfile" class="navbar__item" mat-button>Login</a>
     <ng-template #userProfile>
       <a [matMenuTriggerFor]="userMenu" class="navbar__item" mat-button #trigger="matMenuTrigger">
-        <mat-icon svgIcon="ktzh_user" class="icon-display"></mat-icon>
+        <mat-icon svgIcon="ktzh_user"></mat-icon>
         <span>{{ this.userName }}</span>
         <mat-icon [fontIcon]="trigger.menuOpen ? 'arrow_drop_up' : 'arrow_drop_down'" class="arrow-icon"></mat-icon>
       </a>

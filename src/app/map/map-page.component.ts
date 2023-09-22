@@ -13,6 +13,7 @@ import {selectQueryLegends} from '../state/map/selectors/query-legends.selector'
 import {selectScreenMode} from '../state/app/reducers/app-layout.reducer';
 import {selectLoadingState} from '../state/map/reducers/legend.reducer';
 import {LoadingState} from '../shared/types/loading-state.type';
+import {ScreenMode} from '../shared/types/screen-size.type';
 
 @Component({
   selector: 'map-page',
@@ -27,7 +28,7 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
   public mapUiState?: MapUiState;
   public loadingState?: LoadingState;
   public mapSideDrawerContent: MapSideDrawerContent = 'none';
-  public screenMode: string = 'mobile';
+  public screenMode: ScreenMode = 'mobile';
 
   private readonly queryLegends$ = this.store.select(selectQueryLegends);
   private readonly mapUiState$ = this.store.select(selectMapUiState);
@@ -99,7 +100,6 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
         .pipe(
           tap((screenMode) => {
             this.screenMode = screenMode;
-            console.log(this.screenMode);
           }),
         )
         .subscribe(),

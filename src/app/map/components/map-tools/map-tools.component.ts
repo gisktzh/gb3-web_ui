@@ -5,6 +5,7 @@ import {Subscription, tap} from 'rxjs';
 import {selectToolMenuVisibility} from '../../../state/map/reducers/map-ui.reducer';
 import {ToolMenuVisibility} from '../../../shared/types/tool-menu-visibility.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
+import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 
 @Component({
   selector: 'map-tools',
@@ -13,7 +14,7 @@ import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 })
 export class MapToolsComponent implements OnInit, OnDestroy {
   public toolMenuVisibility: ToolMenuVisibility | undefined = undefined;
-  public screenMode: string = 'regular';
+  public screenMode: ScreenMode = 'regular';
 
   private readonly toolMenuVisibility$ = this.store.select(selectToolMenuVisibility);
   private readonly screenMode$ = this.store.select(selectScreenMode);
@@ -40,6 +41,12 @@ export class MapToolsComponent implements OnInit, OnDestroy {
   public showShareLinkBottomSheet() {
     this.store.dispatch(MapUiActions.showBottomSheetOverlay());
   }
+
+  public toggleLegend() {}
+
+  public locateClient() {}
+
+  public goToInitialExtent() {}
 
   public toggleToolMenu(toolToToggle: ToolMenuVisibility) {
     const tool: ToolMenuVisibility | undefined = this.toolMenuVisibility === toolToToggle ? undefined : toolToToggle;
