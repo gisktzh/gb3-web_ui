@@ -195,7 +195,6 @@ export class ActiveMapItemEffects {
   public dispatchInitialMapItemsAddEffect$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ActiveMapItemActions.addInitialMapItems),
-      // check if the map service is initialized
       concatLatestFrom(() => [this.store.select(selectIsMapServiceInitialized)]),
       map(([{initialMapItems}, isMapServiceInitialized]) => {
         if (isMapServiceInitialized) {

@@ -30,8 +30,8 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
         useMockData: false,
       },
       gravCms: {
-        baseUrl: 'https://gb3-grav-cms.icycliff-4b8f6c95.switzerlandnorth.azurecontainerapps.io',
-        useMockData: true,
+        baseUrl: 'https://geo.zh.ch/cms',
+        useMockData: false,
       },
       twitterWidget: {
         baseUrl: 'https://platform.twitter.com/widgets.js',
@@ -69,8 +69,8 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
         useMockData: false,
       },
       gravCms: {
-        baseUrl: 'https://gb3-grav-cms.icycliff-4b8f6c95.switzerlandnorth.azurecontainerapps.io',
-        useMockData: true,
+        baseUrl: 'https://geo.zh.ch/cms',
+        useMockData: false,
       },
       twitterWidget: {
         baseUrl: 'https://platform.twitter.com/widgets.js',

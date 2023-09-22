@@ -152,7 +152,7 @@ describe('selectDataCatalogueItems', () => {
           new MapOverviewMetadataItem('1', 'Test Match', 'Test-1', 'Test-2'), // should not match
           new MapOverviewMetadataItem('2', 'Test in 2', 'Test-2', 'Test-2'), // should not match
           new MapOverviewMetadataItem('4', 'Test wird nicht matchen', 'Test-2', 'Test-1'), // should not match
-          new ProductOverviewMetadataItem('1', 'Test Match', 'Test-2', 'Test-3'), // should not match
+          new ProductOverviewMetadataItem('1', 'Test Match', 'Test-2', 'Test-3'), // should match
         ];
         const filter: ActiveDataCatalogueFilterGroup[] = [
           {key: 'responsibleDepartment', values: ['Test-1', 'Test-3']},
