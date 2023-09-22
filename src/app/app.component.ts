@@ -17,6 +17,7 @@ import {IconsService} from './shared/services/icons.service';
 import {ScreenMode} from './shared/types/screen-size.type';
 import {AppLayoutActions} from './state/app/actions/app-layout.actions';
 import {Breakpoints} from './shared/enums/breakpoints.enum';
+import {environment} from 'src/environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -79,6 +80,7 @@ export class AppComponent implements OnInit, OnDestroy {
             let screenMode: ScreenMode;
             if (this.breakpointObserver.isMatched(Breakpoints.mobile)) {
               screenMode = 'mobile';
+              this.showWarning = environment.production;
             } else if (this.breakpointObserver.isMatched(Breakpoints.smallTablet)) {
               screenMode = 'smallTablet';
             } else {
