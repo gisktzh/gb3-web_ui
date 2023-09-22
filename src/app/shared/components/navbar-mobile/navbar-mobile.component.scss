@@ -6,7 +6,7 @@
 
 .navbar-mobile {
   @include mixins.map-element-box-shadow;
-  @include material-mixins.mat-icon-custom-svg-size(16px);
+  @include material-mixins.mat-icon-custom-svg-size(22px);
 
   position: absolute;
   top: 16px;
@@ -14,6 +14,12 @@
   height: 60px;
   width: 60px;
   padding: 4px;
+  border-radius: 3px;
   background-color: ktzh-variables.$zh-background-color;
   z-index: z-index-variables.$navbar;
+
+  .icon {
+    margin-left: 0px;
+    margin-right: 0px;
+  }
 }
