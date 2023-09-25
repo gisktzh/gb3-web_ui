@@ -1,0 +1,21 @@
+<div *ngFor="let metadataItem of filteredMetadataItems">
+  <div class="search-result-entry-data-catalog">
+    <div class="search-result-entry-data-catalog__description">
+      <p class="search-result-entry-data-catalog__description__title">{{ metadataItem.name }}</p>
+      <div class="search-result-entry-data-catalog__description__properties">
+        <p>
+          <span class="search-result-entry-data-catalog__description__properties__title">Typ: </span>
+          {{ metadataItem.type }}
+        </p>
+        <p>
+          <span class="search-result-entry-data-catalog__description__properties__title">Beschreibung: </span>
+          {{ metadataItem.description }}
+        </p>
+      </div>
+    </div>
+    <a [routerLink]="metadataItem.relativeUrl" color="primary" data-test-id="open-metadata-item" mat-icon-button>
+      <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
+    </a>
+  </div>
+  <mat-divider></mat-divider>
+</div>

@@ -10,7 +10,10 @@ import {ContentLoadingStateComponent} from './components/content-loading-state/c
 import {GisBrowserTeaserComponent} from './components/gis-browser-teaser/gis-browser-teaser.component';
 import {FrequentlyUsedItemsComponent} from './components/frequently-used-items/frequently-used-items.component';
 import {StartPageSearch} from './components/start-page-search/start-page-search.component';
-import {StartPageSearchResultGroup} from './components/start-page-search-result-group/start-page-search-result-group.component';
+import {SearchResultGroupComponent} from './components/start-page-search/search-result-group/search-result-group.component';
+import {SearchResultEntryMapComponent} from './components/start-page-search/search-result-entry-map/search-result-entry-map.component';
+import {SearchResultEntryDataCatalogComponent} from './components/start-page-search/search-result-entry-data-catalog/search-result-entry-data-catalog.component';
+import {SearchResultEntrySupportComponent} from './components/start-page-search/search-result-entry-support/search-result-entry-support.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +25,10 @@ import {StartPageSearchResultGroup} from './components/start-page-search-result-
     GisBrowserTeaserComponent,
     FrequentlyUsedItemsComponent,
     StartPageSearch,
-    StartPageSearchResultGroup,
+    SearchResultGroupComponent,
+    SearchResultEntryMapComponent,
+    SearchResultEntryDataCatalogComponent,
+    SearchResultEntrySupportComponent,
   ],
   imports: [CommonModule, SharedModule, StartPageRoutingModule],
 })

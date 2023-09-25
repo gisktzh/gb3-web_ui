@@ -31,14 +31,10 @@
       display: flex;
       flex-direction: column;
       width: ktzh-variables.$zh-layout-max-content-width;
+      gap: 32px;
 
       .start-page-search__results__groups__group {
-        padding: 5px;
         box-sizing: border-box;
-      }
-
-      .start-page-search__results__loading-bar {
-        padding: 0px 5px;
       }
     }
   }
