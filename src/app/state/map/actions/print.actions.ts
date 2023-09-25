@@ -6,13 +6,13 @@ export const PrintActions = createActionGroup({
   source: 'Print',
   events: {
     'Load Print Capabilities': emptyProps(),
-    'Set Print Capabilities': props<{info: PrintCapabilities}>(),
+    'Set Print Capabilities': props<{capabilities: PrintCapabilities}>(),
+    'Set Print Capabilities Error': errorProps(),
     'Request Print Creation': props<{creation: PrintCreation}>(),
     'Set Print Creation Response': props<{creationResponse: PrintCreationResponse}>(),
+    'Set Print Creation Error': errorProps(),
     'Clear Print Creation': emptyProps(),
     'Show Print Preview': props<{width: number; height: number; scale: number; rotation: number}>(),
     'Remove Print Preview': emptyProps(),
-    'Set Print Request Error': errorProps(),
-    'Set Print Capabilities Error': errorProps(),
   },
 });

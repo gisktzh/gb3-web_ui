@@ -21,10 +21,13 @@ export const printFeature = createFeature({
       if (state.capabilities) {
         return state;
       }
-      return {...state, capabilitiesLoadingState: 'loading'};
+      return {...initialState, capabilitiesLoadingState: 'loading'};
     }),
-    on(PrintActions.setPrintCapabilities, (state, {info}): PrintState => {
-      return {...state, capabilities: info, capabilitiesLoadingState: 'loaded'};
+    on(PrintActions.setPrintCapabilities, (state, {capabilities}): PrintState => {
+      return {...state, capabilities, capabilitiesLoadingState: 'loaded'};
+    }),
+    on(PrintActions.setPrintCapabilitiesError, (state): PrintState => {
+      return {...initialState, capabilitiesLoadingState: 'error'};
     }),
     on(PrintActions.requestPrintCreation, (state, {creation}): PrintState => {
       return {...state, creation, creationLoadingState: 'loading'};
@@ -32,11 +35,8 @@ export const printFeature = createFeature({
     on(PrintActions.setPrintCreationResponse, (state, {creationResponse}): PrintState => {
       return {...state, creationResponse, creationLoadingState: 'loaded'};
     }),
-    on(PrintActions.setPrintRequestError, (state): PrintState => {
-      return {...state, creationLoadingState: 'error'};
-    }),
-    on(PrintActions.setPrintCapabilitiesError, (state): PrintState => {
-      return {...state, capabilitiesLoadingState: 'error'};
+    on(PrintActions.setPrintCreationError, (state): PrintState => {
+      return {...state, creationLoadingState: 'error', creationResponse: initialState.creationResponse};
     }),
     on(PrintActions.clearPrintCreation, (state): PrintState => {
       return {

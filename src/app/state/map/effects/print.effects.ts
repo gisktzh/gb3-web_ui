@@ -1,6 +1,6 @@
 import {Inject, Injectable} from '@angular/core';
-import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {of, switchMap, tap} from 'rxjs';
+import {Actions, concatLatestFrom, createEffect, ofType} from '@ngrx/effects';
+import {filter, of, switchMap, tap} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
 import {PrintActions} from '../actions/print.actions';
 import {Gb3PrintService} from '../../../shared/services/apis/gb3/gb3-print.service';
@@ -8,16 +8,20 @@ import {DOCUMENT} from '@angular/common';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {PrintUtils} from '../../../shared/utils/print.utils';
 import {PrintInfoCouldNotBeLoaded, PrintRequestCouldNotBeHandled} from '../../../shared/errors/print.errors';
+import {Store} from '@ngrx/store';
+import {selectCapabilities} from '../reducers/print.reducer';
 
 @Injectable()
 export class PrintEffects {
   public setPrintInfoAfterSuccessfullyLoading$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(PrintActions.loadPrintCapabilities),
+      concatLatestFrom(() => [this.store.select(selectCapabilities)]),
+      filter(([_, capabilities]) => capabilities === undefined),
       switchMap(() =>
         this.printService.loadPrintCapabilities().pipe(
           map((printInfo) => {
-            return PrintActions.setPrintCapabilities({info: printInfo});
+            return PrintActions.setPrintCapabilities({capabilities: printInfo});
           }),
           catchError((error: unknown) => of(PrintActions.setPrintCapabilitiesError({error}))),
         ),
@@ -33,7 +37,7 @@ export class PrintEffects {
           map((printCreationResponse) => {
             return PrintActions.setPrintCreationResponse({creationResponse: printCreationResponse});
           }),
-          catchError((error: unknown) => of(PrintActions.setPrintRequestError({error}))),
+          catchError((error: unknown) => of(PrintActions.setPrintCreationError({error}))),
         ),
       ),
     );
@@ -42,7 +46,7 @@ export class PrintEffects {
   public throwPrintRequestError$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(PrintActions.setPrintRequestError),
+        ofType(PrintActions.setPrintCreationError),
         tap(({error}) => {
           throw new PrintRequestCouldNotBeHandled(error);
         }),
@@ -103,5 +107,6 @@ export class PrintEffects {
     private readonly printService: Gb3PrintService,
     @Inject(DOCUMENT) private readonly document: Document,
     private readonly mapDrawingService: MapDrawingService,
+    private readonly store: Store,
   ) {}
 }

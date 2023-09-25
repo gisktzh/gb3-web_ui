@@ -10,7 +10,6 @@ import {PrintCapabilitiesListData, PrintCreateData, PrintNew} from '../../../mod
 })
 export class Gb3PrintService extends Gb3ApiService {
   protected readonly endpoint = 'print';
-  private readonly postHeaders = {accept: 'application/json'};
 
   public loadPrintCapabilities(): Observable<PrintCapabilities> {
     const printCapabilitiesData = this.get<PrintCapabilitiesListData>(this.createCapabilitiesUrl());
@@ -19,7 +18,7 @@ export class Gb3PrintService extends Gb3ApiService {
 
   public createPrintJob(printCreation: PrintCreation): Observable<PrintCreationResponse> {
     const createCreatePayload: PrintNew = this.mapPrintCreationToCreateCreatePayload(printCreation);
-    return this.post<PrintNew, PrintCreateData>(this.createCreateUrl(), createCreatePayload, this.postHeaders).pipe(
+    return this.post<PrintNew, PrintCreateData>(this.createCreateUrl(), createCreatePayload).pipe(
       map((response) => {
         return {reportUrl: response.report_url};
       }),
