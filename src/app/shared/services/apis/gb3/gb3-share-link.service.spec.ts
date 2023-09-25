@@ -6,7 +6,7 @@ import {HttpClient} from '@angular/common/http';
 import {of} from 'rxjs';
 import {ShareLinkItem} from '../../../interfaces/share-link.interface';
 
-describe('Gb3ShareLinkServiceService', () => {
+describe('Gb3ShareLinkService', () => {
   let service: Gb3ShareLinkService;
   const shareLinkItemIdMock = 'mock-id';
   const serverDataMock: SharedFavorite = {

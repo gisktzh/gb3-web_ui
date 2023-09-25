@@ -47,5 +47,4 @@ export const printConfig: PrintConfig = {
       value: 500000,
     },
   ],
-  kartensetReportName: 'Kartenset',
 };

@@ -221,7 +221,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
       this.formGroup.controls.reportOrientation.enable({emitEvent});
     }
 
-    // TODO: remove the following line as soon as the legends gets printed (GB3-440)
+    // TODO (GB3-440) - remove the following line as soon as the legends gets printed
     this.formGroup.controls.showLegend.disable({emitEvent});
   }
 
@@ -286,7 +286,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
         .forEach((activeMapItem) => {
           switch (activeMapItem.settings.type) {
             case 'drawing':
-              // TODO: Print drawings (GB3-604, GB3-606)
+              // TODO (GB3-604, GB3-606) - implement print drawings
               console.warn('Printing drawings is not implemented yet.');
               break;
             case 'gb2Wms':
