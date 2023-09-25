@@ -16,6 +16,8 @@ import {SearchIndex} from './apis/search/interfaces/search-index.interface';
 import {searchIndexConfig, SearchIndexType} from '../configs/search-index.config';
 import {SearchConfig} from '../interfaces/search-config.interface';
 import {searchConfig} from '../configs/search.config';
+import {PrintConfig} from '../interfaces/print-config.interface';
+import {printConfig} from '../configs/print.config';
 
 @Injectable({
   providedIn: 'root',
@@ -58,6 +60,10 @@ export class ConfigService {
   }
   public get searchIndexConfig(): SearchIndex[] {
     return searchIndexConfig;
+  }
+
+  public get printConfig(): PrintConfig {
+    return printConfig;
   }
 
   constructor(@Inject(DOCUMENT) private readonly document: Document) {

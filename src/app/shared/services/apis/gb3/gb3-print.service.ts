@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
 import {Gb3ApiService} from './gb3-api.service';
-import {CreateCreateData, InfoJsonListData, PrintNew} from '../../../models/gb3-api-generated.interfaces';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {PrintCreation, PrintCreationResponse, PrintInfo, PrintOrientation} from '../../../interfaces/print.interface';
+import {PrintCapabilities, PrintCreation, PrintCreationResponse, ReportOrientation} from '../../../interfaces/print.interface';
+import {PrintCapabilitiesListData, PrintCreateData, PrintNew} from '../../../models/gb3-api-generated.interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -12,119 +12,106 @@ export class Gb3PrintService extends Gb3ApiService {
   protected readonly endpoint = 'print';
   private readonly postHeaders = {accept: 'application/json'};
 
-  public loadPrintInfo(): Observable<PrintInfo> {
-    const printInfoData = this.get<InfoJsonListData>(this.createInfoUrl());
-    return printInfoData.pipe(map((data) => this.mapInfoJsonListDataToPrintInfo(data)));
+  public loadPrintCapabilities(): Observable<PrintCapabilities> {
+    const printCapabilitiesData = this.get<PrintCapabilitiesListData>(this.createCapabilitiesUrl());
+    return printCapabilitiesData.pipe(map((data) => this.mapPrintCapabilitiesListDataToPrintCapabilities(data)));
   }
 
   public createPrintJob(printCreation: PrintCreation): Observable<PrintCreationResponse> {
     const createCreatePayload: PrintNew = this.mapPrintCreationToCreateCreatePayload(printCreation);
-    return this.post<PrintNew, CreateCreateData>(this.createCreateUrl(), createCreatePayload, this.postHeaders).pipe(
+    return this.post<PrintNew, PrintCreateData>(this.createCreateUrl(), createCreatePayload, this.postHeaders).pipe(
       map((response) => {
-        return {...response};
+        return {reportUrl: response.report_url};
       }),
     );
   }
 
-  protected override getFullEndpointUrl(): string {
-    // TODO Remove this override method as soon as the API gets fixed
-    return `${this.configService.apiConfig.gb2StaticFiles.baseUrl}/${this.endpoint}`;
-  }
-
-  private createInfoUrl(): string {
-    return `${this.getFullEndpointUrl()}/info.json`;
+  private createCapabilitiesUrl(): string {
+    return `${this.getFullEndpointUrl()}/capabilities`;
   }
 
   private createCreateUrl(): string {
-    return `${this.getFullEndpointUrl()}/create`;
+    return `${this.getFullEndpointUrl()}`;
   }
 
-  private mapInfoJsonListDataToPrintInfo(data: InfoJsonListData): PrintInfo {
+  private mapPrintCapabilitiesListDataToPrintCapabilities(data: PrintCapabilitiesListData): PrintCapabilities {
+    const printData = data.print;
     return {
-      ...data,
-      outputFormats: data.outputFormats ?? [],
-      scales: data.scales ?? [],
-      dpis: data.dpis ?? [],
-      layouts: data.layouts
-        ? data.layouts.map((layout) => {
-            const {size, orientation} = this.transformLayoutNameToSizeAndOrientation(layout.name);
-            return {
-              name: layout.name,
-              map: layout.map,
-              rotation: layout.rotation,
-              size: size,
-              orientation: orientation,
-            };
-          })
-        : [],
+      dpis: printData.dpis,
+      formats: printData.formats,
+      reports: printData.reports.map((report) => {
+        const {layout, orientation} = this.transformReportNameToLayoutAndOrientation(report.name);
+        return {
+          map: report.map,
+          layout: layout,
+          orientation: orientation,
+        };
+      }),
     };
   }
 
   private mapPrintCreationToCreateCreatePayload(printCreation: PrintCreation): PrintNew {
     return {
-      dpi: printCreation.dpi,
-      layout: this.transformSizeAndOrientationToLayoutName(printCreation.layoutSize, printCreation.layoutOrientation),
-      srs: printCreation.srs,
-      outputFormat: printCreation.outputFormat,
-      units: printCreation.units,
-      pages: printCreation.pages.map((page) => {
-        return {
-          center: page.center,
-          scale: page.scale,
-          extent: page.extent,
-          rotation: page.rotation,
-          topic: page.topic,
-          header_img: page.headerImg,
-          topic_title: page.topicTitle,
-          user_comment: page.userComment,
-          user_title: page.userTitle,
-          withlegend: page.withLegend ? 1 : 0,
-        };
-      }),
-      layers: printCreation.layers.map((layer) => {
-        return {
-          layers: layer.layers,
-          type: layer.type,
-          baseURL: layer.baseURL,
-          format: layer.format,
-          opacity: layer.opacity,
-          singleTile: layer.singleTile,
-          styles: layer.styles,
-          customParams: layer.customParams
-            ? {
-                format: layer.customParams.format,
-                dpi: layer.customParams.dpi,
-                TRANSPARENT: layer.customParams.transparent,
-              }
-            : null,
-        };
-      }),
+      report: this.transformSizeAndOrientationToLayoutName(printCreation.reportLayout, printCreation.reportOrientation),
+      format: printCreation.format,
+      map: {
+        dpi: printCreation.map.dpi,
+        rotation: printCreation.map.rotation,
+        center: printCreation.map.center,
+        scale: printCreation.map.scale,
+        layers: printCreation.map.mapItems.map((mapItem) => {
+          switch (mapItem.type) {
+            case 'Vector':
+              return {
+                type: 'Vector',
+                geojson: mapItem.geojson,
+                styles: mapItem.styles,
+              };
+            case 'WMS':
+              return {
+                type: 'WMS',
+                url: mapItem.url,
+                layers: mapItem.layers,
+                custom_params: mapItem.customParams,
+                opacity: mapItem.opacity,
+                map_title: mapItem.mapTitle,
+                background: mapItem.background,
+              };
+          }
+        }),
+      },
+      attributes: {
+        report_title: printCreation.attributes.reportTitle,
+        show_legend: printCreation.attributes.showLegend,
+        user_comment: printCreation.attributes.userComment,
+        user_title: printCreation.attributes.userTitle,
+      },
     };
   }
 
   /**
    * Transforms the given layout string (e.g. `A4 hoch`) into size (`A4`) and orientation (`hoch`)
    */
-  private transformLayoutNameToSizeAndOrientation(name: string): {size: string; orientation: PrintOrientation | undefined} {
-    const layout: {size: string; orientation: PrintOrientation | undefined} = {size: name, orientation: undefined};
+  private transformReportNameToLayoutAndOrientation(name: string): {layout: string; orientation: ReportOrientation | undefined} {
+    const report: {layout: string; orientation: ReportOrientation | undefined} = {layout: name, orientation: undefined};
     const splitName = name.split(' ');
     if (splitName.length === 2) {
       const size = splitName[0];
-      let orientation: PrintOrientation | undefined;
-      switch (splitName[1] as PrintOrientation) {
+      let orientation: ReportOrientation | undefined;
+      switch (splitName[1] as ReportOrientation) {
         case 'hoch':
         case 'quer':
-          orientation = splitName[1] as PrintOrientation;
+          orientation = splitName[1] as ReportOrientation;
       }
       if (size && orientation) {
-        layout.size = size;
-        layout.orientation = orientation;
+        report.layout = size;
+        report.orientation = orientation;
       }
     }
-    return layout;
+    return report;
   }
 
-  private transformSizeAndOrientationToLayoutName(size: string, orientation: PrintOrientation | undefined): string {
+  private transformSizeAndOrientationToLayoutName(size: string, orientation: ReportOrientation | undefined): string {
     if (!orientation) {
       return size;
     }

@@ -13,13 +13,13 @@ import {PrintInfoCouldNotBeLoaded, PrintRequestCouldNotBeHandled} from '../../..
 export class PrintEffects {
   public setPrintInfoAfterSuccessfullyLoading$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(PrintActions.loadPrintInfo),
+      ofType(PrintActions.loadPrintCapabilities),
       switchMap(() =>
-        this.printService.loadPrintInfo().pipe(
+        this.printService.loadPrintCapabilities().pipe(
           map((printInfo) => {
-            return PrintActions.setPrintInfo({info: printInfo});
+            return PrintActions.setPrintCapabilities({info: printInfo});
           }),
-          catchError((error: unknown) => of(PrintActions.setPrintInfoError({error}))),
+          catchError((error: unknown) => of(PrintActions.setPrintCapabilitiesError({error}))),
         ),
       ),
     );
@@ -39,7 +39,7 @@ export class PrintEffects {
     );
   });
 
-  public setPrintRequestError$ = createEffect(
+  public throwPrintRequestError$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(PrintActions.setPrintRequestError),
@@ -51,10 +51,10 @@ export class PrintEffects {
     {dispatch: false},
   );
 
-  public setPrintInfoError$ = createEffect(
+  public throwPrintCapabilitiesError$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(PrintActions.setPrintInfoError),
+        ofType(PrintActions.setPrintCapabilitiesError),
         tap(({error}) => {
           throw new PrintInfoCouldNotBeLoaded(error);
         }),
@@ -67,7 +67,7 @@ export class PrintEffects {
     return this.actions$.pipe(
       ofType(PrintActions.setPrintCreationResponse),
       map((value) => {
-        this.document.defaultView?.window.open(value.creationResponse.getURL, '_blank');
+        this.document.defaultView!.window.open(value.creationResponse.reportUrl, '_blank');
         return PrintActions.clearPrintCreation();
       }),
     );
