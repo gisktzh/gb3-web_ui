@@ -47,18 +47,18 @@ export class PrintEffects {
       switchMap((value) =>
         this.printService.createPrintJob(value.creation).pipe(
           map((printCreationResponse) => {
-            return PrintActions.setPrintCreationResponse({creationResponse: printCreationResponse});
+            return PrintActions.setPrintRequestResponse({creationResponse: printCreationResponse});
           }),
-          catchError((error: unknown) => of(PrintActions.setPrintCreationError({error}))),
+          catchError((error: unknown) => of(PrintActions.setPrintRequestError({error}))),
         ),
       ),
     );
   });
 
-  public throwPrintCreationError$ = createEffect(
+  public throwPrintRequestError$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(PrintActions.setPrintCreationError),
+        ofType(PrintActions.setPrintRequestError),
         tap(({error}) => {
           throw new PrintRequestCouldNotBeHandled(error);
         }),
@@ -69,10 +69,10 @@ export class PrintEffects {
 
   public openPrintDocumentInNewTab$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(PrintActions.setPrintCreationResponse),
+      ofType(PrintActions.setPrintRequestResponse),
       map((value) => {
         this.document.defaultView!.window.open(value.creationResponse.reportUrl, '_blank');
-        return PrintActions.clearPrintCreation();
+        return PrintActions.clearPrintRequest();
       }),
     );
   });

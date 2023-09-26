@@ -30,8 +30,8 @@
           <mat-form-field class="print-dialog__content__form__element" hideRequiredMarker>
             <mat-label>Massstab</mat-label>
             <mat-select formControlName="scale">
-              <mat-option *ngFor="let scale of scales" [value]="scale.value">
-                {{ scale.name }}
+              <mat-option *ngFor="let scale of scales" [value]="scale">
+                {{ '1:' + scale }}
               </mat-option>
             </mat-select>
           </mat-form-field>

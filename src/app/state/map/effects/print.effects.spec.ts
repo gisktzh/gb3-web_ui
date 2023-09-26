@@ -168,7 +168,7 @@ describe('PrintEffects', () => {
   });
 
   describe('setPrintCreationAfterSuccessfullyLoading$', () => {
-    it('dispatches PrintActions.setPrintCreationResponse() with the service response on success', (done: DoneFn) => {
+    it('dispatches PrintActions.setPrintRequestResponse() with the service response on success', (done: DoneFn) => {
       const expectedCreation = creationMock;
       const expectedCreationResponse = creationResponseMock;
       const gb3PrintServiceSpy = spyOn(gb3PrintService, 'createPrintJob').and.returnValue(of(expectedCreationResponse));
@@ -176,12 +176,12 @@ describe('PrintEffects', () => {
       actions$ = of(PrintActions.requestPrintCreation({creation: expectedCreation}));
       effects.requestPrintCreation$.subscribe((action) => {
         expect(gb3PrintServiceSpy).toHaveBeenCalledOnceWith(expectedCreation);
-        expect(action).toEqual(PrintActions.setPrintCreationResponse({creationResponse: expectedCreationResponse}));
+        expect(action).toEqual(PrintActions.setPrintRequestResponse({creationResponse: expectedCreationResponse}));
         done();
       });
     });
 
-    it('dispatches PrintActions.setPrintCreationError() with the error on failure', (done: DoneFn) => {
+    it('dispatches PrintActions.setPrintRequestError() with the error on failure', (done: DoneFn) => {
       const expectedCreation = creationMock;
       const expectedError = new Error('oh no! butterfingers');
       const gb3PrintServiceSpy = spyOn(gb3PrintService, 'createPrintJob').and.returnValue(throwError(() => expectedError));
@@ -189,18 +189,18 @@ describe('PrintEffects', () => {
       actions$ = of(PrintActions.requestPrintCreation({creation: expectedCreation}));
       effects.requestPrintCreation$.subscribe((action) => {
         expect(gb3PrintServiceSpy).toHaveBeenCalledOnceWith(expectedCreation);
-        expect(action).toEqual(PrintActions.setPrintCreationError({error: expectedError}));
+        expect(action).toEqual(PrintActions.setPrintRequestError({error: expectedError}));
         done();
       });
     });
   });
 
-  describe('throwPrintCreationError$', () => {
+  describe('throwPrintRequestError$', () => {
     it('throws a PrintRequestCouldNotBeHandled error', (done: DoneFn) => {
       const expectedOriginalError = new Error('oh no! butterfingers');
 
-      actions$ = of(PrintActions.setPrintCreationError({error: expectedOriginalError}));
-      effects.throwPrintCreationError$
+      actions$ = of(PrintActions.setPrintRequestError({error: expectedOriginalError}));
+      effects.throwPrintRequestError$
         .pipe(
           catchError((error) => {
             const expectedError = new PrintRequestCouldNotBeHandled(expectedOriginalError);
@@ -214,14 +214,14 @@ describe('PrintEffects', () => {
   });
 
   describe('openPrintDocumentInNewTab$', () => {
-    it('opens a print document in a new tab and dispatches a clearPrintCreation action', (done: DoneFn) => {
+    it('opens a print document in a new tab and dispatches a clearPrintRequest action', (done: DoneFn) => {
       const expectedCreationResponse = creationResponseMock;
       const documentWindowOpenSpy = spyOn(document.defaultView!.window, 'open').and.returnValue(null);
 
-      actions$ = of(PrintActions.setPrintCreationResponse({creationResponse: expectedCreationResponse}));
+      actions$ = of(PrintActions.setPrintRequestResponse({creationResponse: expectedCreationResponse}));
       effects.openPrintDocumentInNewTab$.subscribe((action) => {
         expect(documentWindowOpenSpy).toHaveBeenCalledOnceWith(expectedCreationResponse.reportUrl, '_blank');
-        expect(action).toEqual(PrintActions.clearPrintCreation());
+        expect(action).toEqual(PrintActions.clearPrintRequest());
         done();
       });
     });

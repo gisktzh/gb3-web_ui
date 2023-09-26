@@ -81,30 +81,27 @@ describe('print reducer', () => {
   });
 
   describe('loadPrintCapabilities', () => {
-    describe('if there are no capabilities loaded yet', () => {
-      it('sets the print capabilities loading state to `loading` and resets rest of the state', () => {
-        existingState.capabilities = undefined;
-        const action = PrintActions.loadPrintCapabilities();
-        const state = reducer(existingState, action);
+    it('sets the print capabilities loading state to `loading` and resets rest of the state if there are no capabilities loaded yet', () => {
+      existingState.capabilities = undefined;
+      const action = PrintActions.loadPrintCapabilities();
+      const state = reducer(existingState, action);
 
-        expect(state.capabilities).toBe(initialState.capabilities);
-        expect(state.capabilitiesLoadingState).toBe('loading');
-        expect(state.creation).toBe(initialState.creation);
-        expect(state.creationLoadingState).toBe(initialState.creationLoadingState);
-        expect(state.creationResponse).toBe(initialState.creationResponse);
-      });
+      expect(state.capabilities).toBe(initialState.capabilities);
+      expect(state.capabilitiesLoadingState).toBe('loading');
+      expect(state.creation).toBe(initialState.creation);
+      expect(state.creationLoadingState).toBe(initialState.creationLoadingState);
+      expect(state.creationResponse).toBe(initialState.creationResponse);
     });
-    describe('if there are already capabilities loaded', () => {
-      it('changes nothing', () => {
-        const action = PrintActions.loadPrintCapabilities();
-        const state = reducer(existingState, action);
 
-        expect(state.capabilities).toBe(existingState.capabilities);
-        expect(state.capabilitiesLoadingState).toBe(existingState.capabilitiesLoadingState);
-        expect(state.creation).toBe(existingState.creation);
-        expect(state.creationLoadingState).toBe(existingState.creationLoadingState);
-        expect(state.creationResponse).toBe(existingState.creationResponse);
-      });
+    it('changes nothing if there are already capabilities loaded', () => {
+      const action = PrintActions.loadPrintCapabilities();
+      const state = reducer(existingState, action);
+
+      expect(state.capabilities).toBe(existingState.capabilities);
+      expect(state.capabilitiesLoadingState).toBe(existingState.capabilitiesLoadingState);
+      expect(state.creation).toBe(existingState.creation);
+      expect(state.creationLoadingState).toBe(existingState.creationLoadingState);
+      expect(state.creationResponse).toBe(existingState.creationResponse);
     });
   });
 
@@ -150,11 +147,11 @@ describe('print reducer', () => {
     });
   });
 
-  describe('setPrintCreationResponse', () => {
+  describe('setPrintRequestResponse', () => {
     it('sets the print creation loading state to `loaded` on success and sets the creation response', () => {
       existingState.creationLoadingState = 'loading';
       existingState.creationResponse = undefined;
-      const action = PrintActions.setPrintCreationResponse({creationResponse: creationResponseMock});
+      const action = PrintActions.setPrintRequestResponse({creationResponse: creationResponseMock});
       const state = reducer(existingState, action);
 
       expect(state.capabilities).toBe(existingState.capabilities);
@@ -165,9 +162,9 @@ describe('print reducer', () => {
     });
   });
 
-  describe('setPrintCreationError', () => {
+  describe('setPrintRequestError', () => {
     it('sets the print creation loading state to `error` on failure and resets creation response', () => {
-      const action = PrintActions.setPrintCreationError({error: errorMock});
+      const action = PrintActions.setPrintRequestError({error: errorMock});
       const state = reducer(existingState, action);
 
       expect(state.capabilities).toBe(existingState.capabilities);
@@ -178,9 +175,9 @@ describe('print reducer', () => {
     });
   });
 
-  describe('clearPrintCreation', () => {
-    it('clears the print creating by resetting creation, its loading state and the response to initial state', () => {
-      const action = PrintActions.clearPrintCreation();
+  describe('clearPrintRequest', () => {
+    it('clears the print request by resetting the creation object, its loading state and the response to initial state', () => {
+      const action = PrintActions.clearPrintRequest();
       const state = reducer(existingState, action);
 
       expect(state.capabilities).toBe(existingState.capabilities);

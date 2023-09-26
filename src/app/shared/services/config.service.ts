@@ -89,7 +89,6 @@ export class ConfigService {
    * Extracts the hostname from Document.location, also removing any port mappings.
    *
    * Then, tries to find a matching runtime configuration or returns undefined.
-   * @private
    */
   private findRuntimeConfig(): RuntimeConfig | undefined {
     const hostName = this.document.location.host.split(':')[0];

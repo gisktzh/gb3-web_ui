@@ -32,13 +32,13 @@ export const printFeature = createFeature({
     on(PrintActions.requestPrintCreation, (state, {creation}): PrintState => {
       return {...state, creation, creationLoadingState: 'loading'};
     }),
-    on(PrintActions.setPrintCreationResponse, (state, {creationResponse}): PrintState => {
+    on(PrintActions.setPrintRequestResponse, (state, {creationResponse}): PrintState => {
       return {...state, creationResponse, creationLoadingState: 'loaded'};
     }),
-    on(PrintActions.setPrintCreationError, (state): PrintState => {
+    on(PrintActions.setPrintRequestError, (state): PrintState => {
       return {...state, creationLoadingState: 'error', creationResponse: initialState.creationResponse};
     }),
-    on(PrintActions.clearPrintCreation, (state): PrintState => {
+    on(PrintActions.clearPrintRequest, (state): PrintState => {
       return {
         ...state,
         creation: initialState.creation,

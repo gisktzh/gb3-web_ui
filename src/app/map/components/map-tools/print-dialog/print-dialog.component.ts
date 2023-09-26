@@ -14,7 +14,6 @@ import {BasemapConfigService} from '../../../services/basemap-config.service';
 import {MapUiActions} from '../../../../state/map/actions/map-ui.actions';
 import {map} from 'rxjs/operators';
 import {ConfigService} from '../../../../shared/services/config.service';
-import {PrintScale} from '../../../../shared/interfaces/print-config.interface';
 
 interface PrintForm {
   title: FormControl<string | null>;
@@ -52,7 +51,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
   public mapConfigState?: MapConfigState;
   public activeMapItems?: ActiveMapItem[];
   public uniqueReportLayouts: string[] = [];
-  public readonly scales: PrintScale[] = this.configService.printConfig.scales;
+  public readonly scales: number[] = this.configService.printConfig.scales;
 
   private readonly isFormInitialized: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private readonly subscriptions: Subscription = new Subscription();
@@ -227,11 +226,9 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
 
   private initializeDefaultFormValues(printCapabilities: PrintCapabilities | undefined, currentScale: number) {
     const defaultReport = printCapabilities?.reports[0];
-    const defaultScale = this.configService.printConfig.scales
-      .map((scale) => scale.value)
-      .reduce(function (prev, curr) {
-        return Math.abs(curr - currentScale) < Math.abs(prev - currentScale) ? curr : prev;
-      });
+    const defaultScale = this.configService.printConfig.scales.reduce(function (prev, curr) {
+      return Math.abs(curr - currentScale) < Math.abs(prev - currentScale) ? curr : prev;
+    });
     this.formGroup.setValue({
       title: '',
       comment: null,
