@@ -103,7 +103,7 @@ export const selectFilteredMetadataItems = createSelector(
               return item.type === 'Geoservice';
           }
         })
-        .find((item) => item.uuid === match.id.toString()); // TODO: Fix API return values
+        .find((item) => item.uuid === match.uuid);
       if (metadataItem) {
         filteredMetadataItems.push(metadataItem);
       }
