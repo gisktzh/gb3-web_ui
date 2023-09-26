@@ -46,8 +46,8 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
   });
 
   public printCapabilities?: PrintCapabilities;
-  public printCapabilitiesLoadingState: LoadingState = 'undefined';
-  public printCreationLoadingState: LoadingState = 'undefined';
+  public printCapabilitiesLoadingState: LoadingState;
+  public printCreationLoadingState: LoadingState;
   public mapConfigState?: MapConfigState;
   public activeMapItems?: ActiveMapItem[];
   public uniqueReportLayouts: string[] = [];

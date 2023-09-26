@@ -30,8 +30,8 @@ export abstract class ActiveMapItem implements HasLoadingState, HasVisibility, H
   public readonly [immerable] = true;
   public visible: boolean;
   public opacity: number;
-  public loadingState: LoadingState = 'undefined';
-  public viewProcessState: ViewProcessState = 'undefined';
+  public loadingState: LoadingState = undefined;
+  public viewProcessState: ViewProcessState;
 
   protected constructor(visible?: boolean, opacity?: number) {
     this.visible = visible ?? true;

@@ -7,7 +7,7 @@ export const favouriteListFeatureKey = 'favouriteList';
 
 export const initialState: FavouriteListState = {
   favourites: [],
-  loadingState: 'undefined',
+  loadingState: undefined,
 };
 
 export const favouriteListeFeature = createFeature({

@@ -32,10 +32,10 @@ export class StartPageSearch implements OnInit, OnDestroy {
   public filteredMetadataItems: OverviewMetadataItem[] = [];
   public filteredMaps: Map[] = [];
   public filteredFaqItems: FaqItem[] = [];
-  public combinedSearchAndDataCatalogLoadingState: LoadingState = 'undefined';
-  public layerCatalogLoadingState: LoadingState = 'undefined';
-  public searchApiLoadingState: LoadingState = 'undefined';
-  public dataCatalogLoadingState: LoadingState = 'undefined';
+  public combinedSearchAndDataCatalogLoadingState: LoadingState = undefined;
+  public layerCatalogLoadingState: LoadingState = undefined;
+  public searchApiLoadingState: LoadingState = undefined;
+  public dataCatalogLoadingState: LoadingState = undefined;
   public activeSearchFilterValues: {groupLabel: string; filterLabel: string}[] = [];
 
   private readonly searchConfig = this.configService.searchConfig.startPage;
@@ -143,7 +143,7 @@ export class StartPageSearch implements OnInit, OnDestroy {
     } else if (this.dataCatalogLoadingState === 'loading' || this.searchApiLoadingState === 'loading') {
       this.combinedSearchAndDataCatalogLoadingState = 'loading';
     } else {
-      this.combinedSearchAndDataCatalogLoadingState = 'undefined';
+      this.combinedSearchAndDataCatalogLoadingState = undefined;
     }
   }
 }

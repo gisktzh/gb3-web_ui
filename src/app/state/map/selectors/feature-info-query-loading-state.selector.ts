@@ -27,6 +27,6 @@ export const selectFeatureInfoQueryLoadingState = createSelector<Record<string, 
       return 'loaded';
     }
 
-    return 'undefined';
+    return undefined;
   },
 );

@@ -730,11 +730,11 @@ export class EsriMapService implements MapService, OnDestroy {
 
   private transformLoadStatusToLoadingState(loadStatus: EsriLoadStatus | undefined): LoadingState {
     if (loadStatus === undefined) {
-      return 'undefined';
+      return undefined;
     }
     switch (loadStatus) {
       case 'not-loaded':
-        return 'undefined';
+        return undefined;
       case 'failed':
         return 'error';
       case 'loading':
@@ -746,7 +746,7 @@ export class EsriMapService implements MapService, OnDestroy {
 
   private transformUpdatingToViewProcessState(updating: boolean | undefined): ViewProcessState {
     if (updating === undefined) {
-      return 'undefined';
+      return undefined;
     }
     return updating ? 'updating' : 'completed';
   }

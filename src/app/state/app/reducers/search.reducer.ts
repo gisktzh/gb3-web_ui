@@ -7,7 +7,7 @@ export const searchFeatureKey = 'search';
 
 export const initialState: SearchState = {
   term: '',
-  searchApiLoadingState: 'undefined',
+  searchApiLoadingState: undefined,
   searchApiResultMatches: [],
   filterGroups: [],
 };
