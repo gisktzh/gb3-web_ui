@@ -44,7 +44,7 @@ export class MapUiEffects {
       map((value) => {
         switch (value.mapSideDrawerContent) {
           case 'print':
-            return PrintActions.loadPrintInfo();
+            return PrintActions.loadPrintCapabilities();
         }
       }),
     );

@@ -15,9 +15,9 @@
         <mat-label>Kommentar</mat-label>
         <textarea matInput formControlName="comment"></textarea>
       </mat-form-field>
-      <ng-container *ngIf="printInfo">
+      <ng-container *ngIf="printCapabilities">
         <mat-divider class="print-dialog__content__form__divider"></mat-divider>
-        <mat-radio-group formControlName="layoutOrientation">
+        <mat-radio-group formControlName="reportOrientation">
           <mat-radio-button value="hoch">Hochformat</mat-radio-button>
           <mat-radio-button value="quer">Querformat</mat-radio-button>
         </mat-radio-group>
@@ -30,46 +30,42 @@
           <mat-form-field class="print-dialog__content__form__element" hideRequiredMarker>
             <mat-label>Massstab</mat-label>
             <mat-select formControlName="scale">
-              <mat-option *ngFor="let scale of printInfo.scales" [value]="scale.value">
-                {{ scale.name }}
+              <mat-option *ngFor="let scale of scales" [value]="scale">
+                {{ '1:' + scale }}
               </mat-option>
             </mat-select>
           </mat-form-field>
           <mat-form-field class="print-dialog__content__form__element" hideRequiredMarker>
             <mat-label>Auflösung</mat-label>
             <mat-select formControlName="dpi">
-              <mat-option *ngFor="let dpi of printInfo.dpis" [value]="dpi.value">
-                {{ dpi.name }}
+              <mat-option *ngFor="let dpi of printCapabilities.dpis" [value]="dpi">
+                {{ dpi }}
               </mat-option>
             </mat-select>
           </mat-form-field>
           <mat-form-field class="print-dialog__content__form__element" hideRequiredMarker>
             <mat-label>Layout</mat-label>
-            <mat-select formControlName="layoutSize">
-              <mat-option *ngFor="let layoutSize of uniqueLayoutSizes" [value]="layoutSize">
-                {{ layoutSize }}
+            <mat-select formControlName="reportLayout">
+              <mat-option *ngFor="let reportLayout of uniqueReportLayouts" [value]="reportLayout">
+                {{ reportLayout }}
               </mat-option>
             </mat-select>
           </mat-form-field>
           <mat-form-field class="print-dialog__content__form__element" hideRequiredMarker>
             <mat-label>Format</mat-label>
-            <mat-select formControlName="outputFormat">
-              <mat-option *ngFor="let outputFormat of printInfo.outputFormats" [value]="outputFormat.name">
-                {{ outputFormat.name }}
+            <mat-select formControlName="format">
+              <mat-option *ngFor="let format of printCapabilities.formats" [value]="format">
+                {{ format }}
               </mat-option>
             </mat-select>
           </mat-form-field>
         </div>
         <mat-divider class="print-dialog__content__form__divider"></mat-divider>
         <mat-checkbox formControlName="showLegend" class="print-dialog__content__form__element">Legende</mat-checkbox>
-        <mat-divider class="print-dialog__content__form__divider"></mat-divider>
-        <mat-checkbox formControlName="printActiveMapsSeparately" class="print-dialog__content__form__element"
-          >Aktive Karten separat drucken</mat-checkbox
-        >
       </ng-container>
     </form>
     <loading-and-process-bar [loadingState]="printCreationLoadingState"></loading-and-process-bar>
-    <loading-and-process-bar [loadingState]="printInfoLoadingState"></loading-and-process-bar>
+    <loading-and-process-bar [loadingState]="printCapabilitiesLoadingState"></loading-and-process-bar>
   </div>
   <div class="print-dialog__footer">
     <button class="print-dialog__footer__button" (click)="close()" [disabled]="printCreationLoadingState === 'loading'" mat-button>

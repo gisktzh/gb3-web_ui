@@ -16,6 +16,8 @@ import {SearchIndex} from './apis/search/interfaces/search-index.interface';
 import {searchIndexConfig, SearchIndexType} from '../configs/search-index.config';
 import {SearchConfig} from '../interfaces/search-config.interface';
 import {searchConfig} from '../configs/search.config';
+import {PrintConfig} from '../interfaces/print-config.interface';
+import {printConfig} from '../configs/print.config';
 
 @Injectable({
   providedIn: 'root',
@@ -60,6 +62,10 @@ export class ConfigService {
     return searchIndexConfig;
   }
 
+  public get printConfig(): PrintConfig {
+    return printConfig;
+  }
+
   constructor(@Inject(DOCUMENT) private readonly document: Document) {
     const runtimeConfig = this.findRuntimeConfig();
     if (!runtimeConfig) {
@@ -83,7 +89,6 @@ export class ConfigService {
    * Extracts the hostname from Document.location, also removing any port mappings.
    *
    * Then, tries to find a matching runtime configuration or returns undefined.
-   * @private
    */
   private findRuntimeConfig(): RuntimeConfig | undefined {
     const hostName = this.document.location.host.split(':')[0];

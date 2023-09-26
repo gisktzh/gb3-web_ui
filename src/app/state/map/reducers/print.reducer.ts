@@ -5,8 +5,8 @@ import {PrintActions} from '../actions/print.actions';
 export const printFeatureKey = 'print';
 
 export const initialState: PrintState = {
-  info: undefined,
-  infoLoadingState: 'undefined',
+  capabilities: undefined,
+  capabilitiesLoadingState: 'undefined',
   creation: undefined,
   creationLoadingState: 'undefined',
   creationResponse: undefined,
@@ -16,29 +16,29 @@ export const printFeature = createFeature({
   name: printFeatureKey,
   reducer: createReducer(
     initialState,
-    on(PrintActions.loadPrintInfo, (state): PrintState => {
+    on(PrintActions.loadPrintCapabilities, (state): PrintState => {
       // If we already have infos, we do not reset the state
-      if (state.info) {
+      if (state.capabilities) {
         return state;
       }
-      return {...state, infoLoadingState: 'loading'};
+      return {...initialState, capabilitiesLoadingState: 'loading'};
     }),
-    on(PrintActions.setPrintInfo, (state, {info}): PrintState => {
-      return {...state, info, infoLoadingState: 'loaded'};
+    on(PrintActions.setPrintCapabilities, (state, {capabilities}): PrintState => {
+      return {...state, capabilities, capabilitiesLoadingState: 'loaded'};
+    }),
+    on(PrintActions.setPrintCapabilitiesError, (state): PrintState => {
+      return {...initialState, capabilitiesLoadingState: 'error'};
     }),
     on(PrintActions.requestPrintCreation, (state, {creation}): PrintState => {
       return {...state, creation, creationLoadingState: 'loading'};
     }),
-    on(PrintActions.setPrintCreationResponse, (state, {creationResponse}): PrintState => {
+    on(PrintActions.setPrintRequestResponse, (state, {creationResponse}): PrintState => {
       return {...state, creationResponse, creationLoadingState: 'loaded'};
     }),
     on(PrintActions.setPrintRequestError, (state): PrintState => {
-      return {...state, creationLoadingState: 'error'};
+      return {...state, creationLoadingState: 'error', creationResponse: initialState.creationResponse};
     }),
-    on(PrintActions.setPrintInfoError, (state): PrintState => {
-      return {...state, infoLoadingState: 'error'};
-    }),
-    on(PrintActions.clearPrintCreation, (state): PrintState => {
+    on(PrintActions.clearPrintRequest, (state): PrintState => {
       return {
         ...state,
         creation: initialState.creation,
@@ -49,4 +49,5 @@ export const printFeature = createFeature({
   ),
 });
 
-export const {name, reducer, selectInfo, selectInfoLoadingState, selectCreationLoadingState, selectCreationResponse} = printFeature;
+export const {name, reducer, selectCapabilities, selectCapabilitiesLoadingState, selectCreationLoadingState, selectCreationResponse} =
+  printFeature;
