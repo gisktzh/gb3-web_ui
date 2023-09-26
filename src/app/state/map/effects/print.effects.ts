@@ -13,7 +13,7 @@ import {selectCapabilities} from '../reducers/print.reducer';
 
 @Injectable()
 export class PrintEffects {
-  public setPrintInfoAfterSuccessfullyLoading$ = createEffect(() => {
+  public loadPrintCapabilities$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(PrintActions.loadPrintCapabilities),
       concatLatestFrom(() => [this.store.select(selectCapabilities)]),
@@ -29,7 +29,19 @@ export class PrintEffects {
     );
   });
 
-  public setPrintCreationAfterSuccessfullyLoading$ = createEffect(() => {
+  public throwPrintCapabilitiesError$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(PrintActions.setPrintCapabilitiesError),
+        tap(({error}) => {
+          throw new PrintInfoCouldNotBeLoaded(error);
+        }),
+      );
+    },
+    {dispatch: false},
+  );
+
+  public requestPrintCreation$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(PrintActions.requestPrintCreation),
       switchMap((value) =>
@@ -43,24 +55,12 @@ export class PrintEffects {
     );
   });
 
-  public throwPrintRequestError$ = createEffect(
+  public throwPrintCreationError$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(PrintActions.setPrintCreationError),
         tap(({error}) => {
           throw new PrintRequestCouldNotBeHandled(error);
-        }),
-      );
-    },
-    {dispatch: false},
-  );
-
-  public throwPrintCapabilitiesError$ = createEffect(
-    () => {
-      return this.actions$.pipe(
-        ofType(PrintActions.setPrintCapabilitiesError),
-        tap(({error}) => {
-          throw new PrintInfoCouldNotBeLoaded(error);
         }),
       );
     },
@@ -77,7 +77,7 @@ export class PrintEffects {
     );
   });
 
-  public startDrawPrintPreview = createEffect(
+  public startDrawPrintPreview$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(PrintActions.showPrintPreview),
@@ -90,7 +90,7 @@ export class PrintEffects {
     {dispatch: false},
   );
 
-  public removePrintPreview = createEffect(
+  public removePrintPreview$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(PrintActions.removePrintPreview),
