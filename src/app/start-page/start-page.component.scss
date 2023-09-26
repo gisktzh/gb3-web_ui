@@ -9,12 +9,5 @@ $search-height: 106px;
     justify-content: center;
     align-items: center;
     margin-top: calc(0px - $search-height / 2);
-
-    .start-page__search__bar {
-      @include mixins.map-element-box-shadow;
-      width: ktzh-variables.$zh-layout-max-content-width;
-      height: $search-height;
-      background-color: ktzh-variables.$zh-background-color;
-    }
   }
 }

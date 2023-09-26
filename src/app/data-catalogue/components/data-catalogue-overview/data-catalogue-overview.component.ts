@@ -86,6 +86,7 @@ export class DataCatalogueOverviewComponent implements OnInit, OnDestroy, AfterV
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
+    this.store.dispatch(SearchActions.resetSearchAndFilters());
   }
 
   public searchForTerm(term: string) {
@@ -93,7 +94,7 @@ export class DataCatalogueOverviewComponent implements OnInit, OnDestroy, AfterV
   }
 
   public clearSearchTerm() {
-    this.store.dispatch(SearchActions.clearSearch());
+    this.store.dispatch(SearchActions.clearSearchTerm());
   }
 
   public openFilterWindow() {

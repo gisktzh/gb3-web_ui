@@ -36,7 +36,7 @@ export class SearchWindowComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
-    this.store.dispatch(SearchActions.clearSearch());
+    this.store.dispatch(SearchActions.resetSearchAndFilters());
   }
 
   private initSubscriptions() {
@@ -48,7 +48,7 @@ export class SearchWindowComponent implements OnInit, OnDestroy {
   }
 
   public clearSearchTerm() {
-    this.store.dispatch(SearchActions.clearSearch());
+    this.store.dispatch(SearchActions.clearSearchTerm());
   }
 
   public openFilterMenu() {

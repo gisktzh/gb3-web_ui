@@ -30,8 +30,13 @@ export const searchFeature = createFeature({
     on(SearchActions.setSearchApiResults, (state, {results}): SearchState => {
       return {...state, searchApiLoadingState: 'loaded', searchApiResultMatches: results};
     }),
-    on(SearchActions.clearSearch, (): SearchState => {
-      return {...initialState};
+    on(SearchActions.clearSearchTerm, (state): SearchState => {
+      return {
+        ...state,
+        term: initialState.term,
+        searchApiLoadingState: initialState.searchApiLoadingState,
+        searchApiResultMatches: initialState.searchApiResultMatches,
+      };
     }),
     on(SearchActions.setFilterGroups, (state, {filterGroups}): SearchState => {
       return {...state, filterGroups};
@@ -77,6 +82,9 @@ export const searchFeature = createFeature({
         draft.filterGroups.flatMap((filterGroup) => filterGroup.filters).forEach((filter) => (filter.isActive = false));
       }),
     ),
+    on(SearchActions.resetSearchAndFilters, (): SearchState => {
+      return {...initialState};
+    }),
   ),
 });
 

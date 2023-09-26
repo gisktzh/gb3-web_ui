@@ -1,0 +1,17 @@
+<mat-expansion-panel
+  class="search-result-group"
+  [expanded]="!loadingState || loadingState === 'loaded'"
+  [hideToggle]="true"
+  #searchResultGroupExpansionPanel
+>
+  <mat-expansion-panel-header class="search-result-group__header">
+    <div class="search-result-group__header__inner">
+      <h2 class="search-result-group__header__inner__text">{{ header }}</h2>
+      <mat-icon [fontIcon]="searchResultGroupExpansionPanel.expanded ? 'arrow_drop_down' : 'arrow_right'"></mat-icon>
+    </div>
+    <loading-and-process-bar *ngIf="loadingState" [loadingState]="loadingState"></loading-and-process-bar>
+  </mat-expansion-panel-header>
+  <div class="search-result-group__content">
+    <ng-content></ng-content>
+  </div>
+</mat-expansion-panel>

@@ -7,13 +7,7 @@
   </start-page-section>
 
   <div class="start-page__search">
-    <search
-      class="start-page__search__bar"
-      placeholderText="Suche nach Karten, Kartendaten, Geodaten und Geodiensten"
-      [showFilterButton]="false"
-      [showClearButton]="false"
-      (focus)="openSearchOverlay()"
-    ></search>
+    <start-page-search></start-page-search>
   </div>
 
   <start-page-section [hideBottomPadding]="true">
