@@ -1,4 +1,4 @@
-import {Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {DocumentService} from './shared/services/document.service';
 import {BreakpointObserver} from '@angular/cdk/layout';
 import {filter, Subscription, take, tap} from 'rxjs';
