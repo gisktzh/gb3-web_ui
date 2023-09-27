@@ -32,7 +32,14 @@
     >
       <mat-icon svgIcon="ktzh_drawing_menu"></mat-icon>
     </button>
-    <button *ngIf="screenMode === 'mobile'" (click)="toggleLegend()" class="map-tools__button" data-test-id="map-legend" mat-icon-button>
+    <button
+      *ngIf="screenMode === 'mobile'"
+      (click)="toggleLegend()"
+      class="map-tools__button"
+      data-test-id="map-legend"
+      mat-icon-button
+      [disabled]="numberOfQueryLegends === 0"
+    >
       <mat-icon svgIcon="ktzh_legend_mobile"></mat-icon>
     </button>
     <mat-divider class="map-tools__divider" [vertical]="screenMode === 'mobile'"></mat-divider>

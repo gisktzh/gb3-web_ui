@@ -1,4 +1,5 @@
 <map-overlay
+  *ngIf="screenMode !== 'mobile'"
   (closeEvent)="close()"
   (printButtonEvent)="print()"
   [isPrintButtonEnabled]="showInteractiveElements && loadingState === 'loaded'"
@@ -15,3 +16,23 @@
     ></legend-item>
   </ng-container>
 </map-overlay>
+
+<bottom-sheet-overlay
+  *ngIf="screenMode === 'mobile'"
+  (closeEvent)="close()"
+  (printButtonEvent)="print()"
+  [isPrintButtonEnabled]="showInteractiveElements && loadingState === 'loaded'"
+  [showPrintButton]="showInteractiveElements"
+  [isVisible]="isVisible"
+  overlayTitle="Legende"
+  class="bottom-sheet"
+>
+  <loading-and-process-bar [loadingState]="loadingState"></loading-and-process-bar>
+  <ng-container *ngIf="loadingState === 'loaded'">
+    <legend-item
+      *ngFor="let legendItem of legendItems; trackBy: trackById"
+      [legendItem]="legendItem"
+      [showInteractiveElements]="showInteractiveElements"
+    ></legend-item>
+  </ng-container>
+</bottom-sheet-overlay>

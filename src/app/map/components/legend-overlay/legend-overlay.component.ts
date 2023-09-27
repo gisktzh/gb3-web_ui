@@ -6,6 +6,8 @@ import {LegendActions} from '../../../state/map/actions/legend.actions';
 import {LoadingState} from '../../../shared/types/loading-state.type';
 import {LegendDisplay} from '../../../shared/interfaces/legend.interface';
 import {selectLegendItemsForDisplay} from '../../../state/map/selectors/legend-result-display.selector';
+import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
+import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 
 @Component({
   selector: 'legend-overlay',
@@ -20,9 +22,11 @@ export class LegendOverlayComponent implements OnInit, OnDestroy {
   public isVisible = false;
   public legendItems: LegendDisplay[] = [];
   public loadingState: LoadingState = 'undefined';
+  public screenMode: ScreenMode = 'mobile';
 
   private readonly loadingState$ = this.store.select(selectLoadingState);
   private readonly legendItems$ = this.store.select(selectLegendItemsForDisplay);
+  private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly subscriptions = new Subscription();
 
   constructor(private readonly store: Store) {}
@@ -64,6 +68,15 @@ export class LegendOverlayComponent implements OnInit, OnDestroy {
         .pipe(
           tap((value) => {
             this.legendItems = value;
+          }),
+        )
+        .subscribe(),
+    );
+    this.subscriptions.add(
+      this.screenMode$
+        .pipe(
+          tap((screenMode) => {
+            this.screenMode = screenMode;
           }),
         )
         .subscribe(),

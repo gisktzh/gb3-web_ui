@@ -11,7 +11,6 @@ export const initialState: MapUiState = {
   hideToggleUiElementsButton: false,
   hideZoomButtons: false,
   toolMenuVisibility: undefined,
-  bottoSheetOverlayVisibility: false,
   bottomSheetHeight: BottomSheetHeight.medium,
 };
 
@@ -46,23 +45,13 @@ export const mapUiFeature = createFeature({
         mapSideDrawerContent: 'none',
       };
     }),
-    on(MapUiActions.showBottomSheetOverlay, (state, {bottomSheetHeight}): MapUiState => {
+    on(MapUiActions.setBottomSheetHeight, (state, {bottomSheetHeight}): MapUiState => {
       return {
         ...state,
-        bottoSheetOverlayVisibility: true,
-        hideUiElements: true,
         bottomSheetHeight: bottomSheetHeight,
-      };
-    }),
-    on(MapUiActions.hideBottomSheetOverlay, (state): MapUiState => {
-      return {
-        ...state,
-        bottoSheetOverlayVisibility: false,
-        hideUiElements: false,
       };
     }),
   ),
 });
 
-export const {name, reducer, selectMapUiState, selectToolMenuVisibility, selectBottoSheetOverlayVisibility, selectBottomSheetHeight} =
-  mapUiFeature;
+export const {name, reducer, selectMapUiState, selectToolMenuVisibility, selectBottomSheetHeight} = mapUiFeature;
