@@ -1,1 +1,1 @@
-export type ResizeHandlerLocation = 'left' | 'right';
+export type ResizeHandlerLocation = 'left' | 'right' | 'top';

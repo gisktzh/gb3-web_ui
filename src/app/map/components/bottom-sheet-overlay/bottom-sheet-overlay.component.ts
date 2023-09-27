@@ -3,6 +3,8 @@ import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {selectBottoSheetOverlayVisibility} from 'src/app/state/map/reducers/map-ui.reducer';
 import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
+import {ResizeHandlerLocation} from '../../../shared/types/resize-handler-location.type';
+import {StyleExpression} from '../../../shared/types/style-expression.type';
 
 @Component({
   selector: 'bottom-sheet-overlay',
@@ -11,6 +13,8 @@ import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
 })
 export class BottomSheetOverlayComponent implements OnInit {
   @Input() public overlayTitle: string = '';
+  @Input() public location: ResizeHandlerLocation = 'top';
+  public resizeableStyle: StyleExpression = {};
   //@Output() public readonly closeEvent = new EventEmitter<void>();
 
   public bottomSheetOverlay: boolean = false;
@@ -25,8 +29,16 @@ export class BottomSheetOverlayComponent implements OnInit {
   }
 
   public onClose() {
+    this.resizeableStyle = {};
     this.store.dispatch(MapUiActions.hideBottomSheetOverlay());
   }
+
+  public resizeOverlay(newStyle: StyleExpression) {
+    console.log(newStyle);
+
+    this.resizeableStyle = newStyle;
+  }
+
   public initSubscriptions() {
     this.subscriptions.add(
       this.bottomSheetOverlay$.pipe(tap((overlayVisibilty) => (this.bottomSheetOverlay = overlayVisibilty))).subscribe(),

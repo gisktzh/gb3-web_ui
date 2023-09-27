@@ -5,6 +5,8 @@
 .bottom-sheet-overlay {
   height: 50vh;
   width: 100vw;
+  bottom: 0px;
+  pointer-events: all;
   z-index: z-index-variables.$map-overlay;
 
   .bottom-sheet-overlay__header {
