@@ -20,7 +20,7 @@ export class BottomSheetOverlayComponent implements OnInit {
   @Input() public isVisible: boolean = false;
 
   public resizeableStyle: StyleExpression = {};
-  //@Output() public readonly closeEvent = new EventEmitter<void>();
+  @Output() public readonly closeEvent = new EventEmitter<void>();
 
   public bottomSheetHeight: BottomSheetHeight = BottomSheetHeight.medium;
 
@@ -35,7 +35,7 @@ export class BottomSheetOverlayComponent implements OnInit {
 
   public onClose() {
     this.resizeableStyle = {};
-    this.store.dispatch(LegendActions.hideLegend());
+    this.closeEvent.emit();
   }
 
   public resizeOverlay(newStyle: StyleExpression) {

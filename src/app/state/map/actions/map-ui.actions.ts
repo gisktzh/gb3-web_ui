@@ -18,5 +18,7 @@ export const MapUiActions = createActionGroup({
     'Show Map Notices Dialog': emptyProps(),
     'Toggle Tool Menu': props<{tool?: ToolMenuVisibility}>(),
     'Set Bottom Sheet Height': props<{bottomSheetHeight: BottomSheetHeight}>(),
+    'Show Basemap Selector Mobile': emptyProps(),
+    'Hide Basemap Selector Mobile': emptyProps(),
   },
 });

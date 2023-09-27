@@ -9,4 +9,5 @@ export interface MapUiState {
   hideZoomButtons: boolean;
   toolMenuVisibility: ToolMenuVisibility | undefined;
   bottomSheetHeight: BottomSheetHeight;
+  showBasemapSelector: boolean;
 }

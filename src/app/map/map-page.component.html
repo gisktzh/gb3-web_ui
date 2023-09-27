@@ -77,7 +77,7 @@
     <button
       *ngIf="screenMode === 'mobile'"
       mat-icon-button
-      (click)="toggleLegend()"
+      (click)="toggleSelection()"
       color="accent"
       class="map-management__button"
       [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
@@ -85,7 +85,7 @@
       <mat-icon svgIcon="ktzh_map_management"></mat-icon>
     </button>
   </div>
-  <bottom-sheet-overlay class="map-container__bottom-sheet-overlay" *ngIf="screenMode === 'mobile'"></bottom-sheet-overlay>
+  <basemap-selector-mobile></basemap-selector-mobile>
 </mat-drawer-container>
 <print-overlay></print-overlay>
 <onboarding-guide [introductionImage]="onboardingGuideImage"></onboarding-guide>

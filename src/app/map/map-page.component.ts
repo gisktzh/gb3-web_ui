@@ -14,6 +14,7 @@ import {selectScreenMode} from '../state/app/reducers/app-layout.reducer';
 import {selectLoadingState} from '../state/map/reducers/legend.reducer';
 import {LoadingState} from '../shared/types/loading-state.type';
 import {ScreenMode} from '../shared/types/screen-size.type';
+import {BottomSheetHeight} from '../shared/enums/bottom-sheet-heights.enum';
 
 @Component({
   selector: 'map-page',
@@ -64,6 +65,11 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
     } else {
       this.store.dispatch(MapUiActions.showLegend());
     }
+  }
+
+  public toggleSelection() {
+    this.store.dispatch(MapUiActions.showBasemapSelectorMobile());
+    this.store.dispatch(MapUiActions.setBottomSheetHeight({bottomSheetHeight: BottomSheetHeight.small}));
   }
 
   public setIsMapDataCatalogueMinimized(isMinimized: boolean) {
