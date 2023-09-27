@@ -14,8 +14,8 @@
 .navbar-mobile {
   @include mixins.map-element-box-shadow;
   position: absolute;
-  top: 16px;
-  left: 16px;
+  top: 12px;
+  left: 12px;
   background-color: ktzh-variables.$zh-background-color;
   z-index: z-index-variables.$navbar;
 }

@@ -143,8 +143,13 @@
     position: absolute;
     bottom: 100px;
     right: 12px;
-    width: 60px;
-    height: 60px;
+    background-color: ktzh-variables.$zh-background-color;
+  }
+}
+
+:host ::ng-deep {
+  .map-management__button {
+    @include mixins.tool-button;
   }
 }
 

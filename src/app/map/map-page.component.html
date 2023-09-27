@@ -74,15 +74,18 @@
     }"
     class="map-container__map-tools"
   ></map-tools>
-  <button
-    *ngIf="screenMode === 'mobile'"
-    mat-flat-button
-    (click)="toggleLegend()"
-    class="map-container__all-map-items-container--mobile"
-    [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
-  >
-    <mat-icon svgIcon="ktzh_map_management"></mat-icon>
-  </button>
+  <div class="map-container__all-map-items-container--mobile">
+    <button
+      *ngIf="screenMode === 'mobile'"
+      mat-icon-button
+      (click)="toggleLegend()"
+      color="accent"
+      class="map-management__button"
+      [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
+    >
+      <mat-icon svgIcon="ktzh_map_management"></mat-icon>
+    </button>
+  </div>
   <bottom-sheet-overlay class="map-container__bottom-sheet-overlay"></bottom-sheet-overlay>
 </mat-drawer-container>
 <print-overlay></print-overlay>
