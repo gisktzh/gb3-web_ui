@@ -1,6 +1,7 @@
 import {createFeature, createReducer, on} from '@ngrx/store';
 import {MapUiState} from '../states/map-ui.state';
 import {MapUiActions} from '../actions/map-ui.actions';
+import {BottomSheetHeight} from 'src/app/shared/enums/bottom-sheet-heights.enum';
 
 export const mapUiFeatureKey = 'mapUi';
 
@@ -11,6 +12,7 @@ export const initialState: MapUiState = {
   hideZoomButtons: false,
   toolMenuVisibility: undefined,
   bottoSheetOverlayVisibility: false,
+  bottomSheetHeight: BottomSheetHeight.medium,
 };
 
 export const mapUiFeature = createFeature({
@@ -44,11 +46,12 @@ export const mapUiFeature = createFeature({
         mapSideDrawerContent: 'none',
       };
     }),
-    on(MapUiActions.showBottomSheetOverlay, (state): MapUiState => {
+    on(MapUiActions.showBottomSheetOverlay, (state, {bottomSheetHeight}): MapUiState => {
       return {
         ...state,
         bottoSheetOverlayVisibility: true,
         hideUiElements: true,
+        bottomSheetHeight: bottomSheetHeight,
       };
     }),
     on(MapUiActions.hideBottomSheetOverlay, (state): MapUiState => {
@@ -61,4 +64,5 @@ export const mapUiFeature = createFeature({
   ),
 });
 
-export const {name, reducer, selectMapUiState, selectToolMenuVisibility, selectBottoSheetOverlayVisibility} = mapUiFeature;
+export const {name, reducer, selectMapUiState, selectToolMenuVisibility, selectBottoSheetOverlayVisibility, selectBottomSheetHeight} =
+  mapUiFeature;

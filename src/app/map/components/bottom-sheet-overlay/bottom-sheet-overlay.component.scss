@@ -3,11 +3,22 @@
 @use 'variables/map-layout-variables' as map-layout-variables;
 
 .bottom-sheet-overlay {
-  height: 50vh;
   width: 100vw;
   bottom: 0px;
   pointer-events: all;
   z-index: z-index-variables.$map-overlay;
+
+  &--small {
+    height: 30vh;
+  }
+
+  &--medium {
+    height: 60vh;
+  }
+
+  &--large {
+    height: 90vh;
+  }
 
   .bottom-sheet-overlay__header {
     display: flex;

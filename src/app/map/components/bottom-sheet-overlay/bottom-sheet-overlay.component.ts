@@ -1,10 +1,11 @@
 import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
-import {selectBottoSheetOverlayVisibility} from 'src/app/state/map/reducers/map-ui.reducer';
+import {selectBottoSheetOverlayVisibility, selectBottomSheetHeight} from 'src/app/state/map/reducers/map-ui.reducer';
 import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
 import {ResizeHandlerLocation} from '../../../shared/types/resize-handler-location.type';
 import {StyleExpression} from '../../../shared/types/style-expression.type';
+import {BottomSheetHeight} from 'src/app/shared/enums/bottom-sheet-heights.enum';
 
 @Component({
   selector: 'bottom-sheet-overlay',
@@ -18,8 +19,11 @@ export class BottomSheetOverlayComponent implements OnInit {
   //@Output() public readonly closeEvent = new EventEmitter<void>();
 
   public bottomSheetOverlay: boolean = false;
+  public bottomSheetHeight: BottomSheetHeight = BottomSheetHeight.medium;
 
   private readonly bottomSheetOverlay$ = this.store.select(selectBottoSheetOverlayVisibility);
+  private readonly bottomSheetHeight$ = this.store.select(selectBottomSheetHeight);
+
   private readonly subscriptions = new Subscription();
 
   constructor(private readonly store: Store) {}
@@ -42,6 +46,9 @@ export class BottomSheetOverlayComponent implements OnInit {
   public initSubscriptions() {
     this.subscriptions.add(
       this.bottomSheetOverlay$.pipe(tap((overlayVisibilty) => (this.bottomSheetOverlay = overlayVisibilty))).subscribe(),
+    );
+    this.subscriptions.add(
+      this.bottomSheetHeight$.pipe(tap((bottomSheetHeight) => (this.bottomSheetHeight = bottomSheetHeight))).subscribe(),
     );
   }
 }

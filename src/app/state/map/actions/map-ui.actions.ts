@@ -2,6 +2,7 @@ import {createActionGroup, emptyProps, props} from '@ngrx/store';
 import {MapSideDrawerContent} from '../../../shared/types/map-side-drawer-content.type';
 import {Favourite} from '../../../shared/interfaces/favourite.interface';
 import {ToolMenuVisibility} from '../../../shared/types/tool-menu-visibility.type';
+import {BottomSheetHeight} from 'src/app/shared/enums/bottom-sheet-heights.enum';
 
 export const MapUiActions = createActionGroup({
   source: 'MapUi',
@@ -16,7 +17,7 @@ export const MapUiActions = createActionGroup({
     'Show Delete Favourite Dialog': props<{favouriteToDelete: Favourite}>(),
     'Show Map Notices Dialog': emptyProps(),
     'Toggle Tool Menu': props<{tool?: ToolMenuVisibility}>(),
-    'Show Bottom Sheet Overlay': emptyProps(),
+    'Show Bottom Sheet Overlay': props<{bottomSheetHeight: BottomSheetHeight}>(),
     'Hide Bottom Sheet Overlay': emptyProps(),
   },
 });

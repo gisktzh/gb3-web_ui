@@ -6,6 +6,7 @@ import {selectToolMenuVisibility} from '../../../state/map/reducers/map-ui.reduc
 import {ToolMenuVisibility} from '../../../shared/types/tool-menu-visibility.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
+import {BottomSheetHeight} from 'src/app/shared/enums/bottom-sheet-heights.enum';
 
 @Component({
   selector: 'map-tools',
@@ -39,7 +40,7 @@ export class MapToolsComponent implements OnInit, OnDestroy {
   }
 
   public showShareLinkBottomSheet() {
-    this.store.dispatch(MapUiActions.showBottomSheetOverlay());
+    this.store.dispatch(MapUiActions.showBottomSheetOverlay({bottomSheetHeight: BottomSheetHeight.small}));
   }
 
   public toggleLegend() {}

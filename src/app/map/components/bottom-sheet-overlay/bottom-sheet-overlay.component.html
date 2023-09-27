@@ -1,4 +1,13 @@
-<mat-card *ngIf="bottomSheetOverlay" class="bottom-sheet-overlay" [style]="this.resizeableStyle">
+<mat-card
+  *ngIf="bottomSheetOverlay"
+  class="bottom-sheet-overlay"
+  [style]="this.resizeableStyle"
+  [ngClass]="{
+    'bottom-sheet-overlay--small': bottomSheetHeight === 30,
+    'bottom-sheet-overlay--medium': bottomSheetHeight === 60,
+    'bottom-sheet-overlay--large': bottomSheetHeight === 90
+  }"
+>
   <mat-card-header class="bottom-sheet-overlay__header">
     <h1 class="bottom-sheet-overlay__header__title">{{ overlayTitle }}</h1>
     <button (click)="onClose()" mat-icon-button class="bottom-sheet-overlay__header__button">
