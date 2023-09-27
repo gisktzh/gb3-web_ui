@@ -1,7 +1,7 @@
 import {Inject, Injectable} from '@angular/core';
 import {Actions, concatLatestFrom, createEffect, ofType} from '@ngrx/effects';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
-import {tap} from 'rxjs';
+import {filter, tap} from 'rxjs';
 import {MAP_SERVICE} from '../../../app.module';
 import {MapService} from '../../../map/interfaces/map.service';
 import {selectItems} from '../reducers/active-map-item.reducer';
@@ -15,6 +15,9 @@ import {PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.in
 import {selectIsMapServiceInitialized} from '../reducers/map-config.reducer';
 import {MapUiActions} from '../actions/map-ui.actions';
 import {FeatureInfoActions} from '../actions/feature-info.actions';
+import {selectActiveTool} from '../reducers/tool.reducer';
+import {UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
+import {ToolActions} from '../actions/tool.actions';
 
 @Injectable()
 export class ActiveMapItemEffects {
@@ -53,6 +56,43 @@ export class ActiveMapItemEffects {
     },
     {dispatch: false},
   );
+
+  public cancelToolAfterRemovingAllCorrespondingMapItems$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ActiveMapItemActions.removeActiveMapItem, ActiveMapItemActions.removeAllActiveMapItems),
+      concatLatestFrom(() => [this.store.select(selectItems), this.store.select(selectActiveTool)]),
+      filter(([action, activeMapItems, activeTool]) => {
+        if (activeTool === undefined) {
+          return false;
+        }
+        switch (action.type) {
+          case '[ActiveMapItem] Remove Active Map Item':
+            let activeUserDrawingLayer: UserDrawingLayer;
+            switch (activeTool) {
+              case 'measure-line':
+              case 'measure-point':
+              case 'measure-area':
+                activeUserDrawingLayer = UserDrawingLayer.Measurements;
+                break;
+              case 'draw-point':
+              case 'draw-line':
+              case 'draw-polygon':
+              case 'draw-rectangle':
+              case 'draw-circle':
+                activeUserDrawingLayer = UserDrawingLayer.Drawings;
+                break;
+            }
+            // is there still a drawing item for the current active tool? if not => cancel tool
+            return !activeMapItems.some(
+              (item) => item.settings.type === 'drawing' && item.settings.userDrawingLayer === activeUserDrawingLayer,
+            );
+          case '[ActiveMapItem] Remove All Active Map Items':
+            return true;
+        }
+      }),
+      map(() => ToolActions.cancelTool()),
+    );
+  });
 
   public hideLegendAfterRemovingAllMapItems$ = createEffect(() => {
     return this.actions$.pipe(
