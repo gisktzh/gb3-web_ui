@@ -83,7 +83,7 @@ export class EsriToolService implements ToolService, OnDestroy {
    * @private
    */
   private initializeTool(layerIdentifier: UserDrawingLayer, strategySetter: (layer: GraphicsLayer) => void) {
-    const fullLayerIdentifier = this.configService.mapConfig.internalLayerPrefix + layerIdentifier;
+    const fullLayerIdentifier = this.configService.mapConfig.drawingLayerPrefix + layerIdentifier;
     const drawingLayer = this.esriMapViewService.findEsriLayer(fullLayerIdentifier);
 
     if (!drawingLayer) {
@@ -99,7 +99,7 @@ export class EsriToolService implements ToolService, OnDestroy {
           this.startDrawing();
         });
 
-      const drawingLayerAdd = ActiveMapItemFactory.createDrawingMapItem(layerIdentifier, this.configService.mapConfig.internalLayerPrefix);
+      const drawingLayerAdd = ActiveMapItemFactory.createDrawingMapItem(layerIdentifier, this.configService.mapConfig.drawingLayerPrefix);
       this.store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem: drawingLayerAdd, position: 0}));
     } else {
       this.forceVisibility(fullLayerIdentifier);

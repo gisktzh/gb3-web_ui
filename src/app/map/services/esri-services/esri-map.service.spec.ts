@@ -7,7 +7,7 @@ import {EsriMapMock} from '../../../testing/map-testing/esri-map.mock';
 import {AuthModule} from '../../../auth/auth.module';
 import {AuthService} from '../../../auth/auth.service';
 import {Subject} from 'rxjs';
-import {InternalDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
+import {InternalDrawingLayer, UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {MapConstants} from '../../../shared/constants/map.constants';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
@@ -54,6 +54,13 @@ const internalLayerPrefix = MapConstants.INTERNAL_LAYER_PREFIX;
 const internalLayers = Object.values(InternalDrawingLayer).map((drawingLayer) => {
   return new GraphicsLayer({
     id: `${internalLayerPrefix}${drawingLayer}`,
+  });
+});
+
+const drawingLayerPrefix = MapConstants.DRAWING_LAYER_PREFIX;
+const drawingLayers = Object.values(UserDrawingLayer).map((drawingLayer) => {
+  return new GraphicsLayer({
+    id: `${drawingLayerPrefix}${drawingLayer}`,
   });
 });
 
@@ -161,7 +168,7 @@ describe('EsriMapService', () => {
     });
   });
 
-  it('should remove all existing items without fixed layers', () => {
+  it('should remove all existing items without internal layers - those must be cleared instead', () => {
     const {activeMapItem: mapItem1} = createActiveMapItemMock('mapOne');
     const {activeMapItem: mapItem2} = createActiveMapItemMock('mapTwo');
     const {activeMapItem: mapItem3} = createActiveMapItemMock('mapThree');
@@ -170,13 +177,23 @@ describe('EsriMapService', () => {
     service.addGb2WmsLayer(mapItem2, 1);
     service.addGb2WmsLayer(mapItem3, 2);
 
-    expect(mapMock.layers.length).toBe(getExpectedNumberOfLayersWithInternalLayers(3));
+    const userDrawingLayers = drawingLayers;
+    mapMock.layers.addMany(userDrawingLayers);
+
+    expect(mapMock.layers.length).toBe(getExpectedNumberOfLayersWithInternalLayers(3 + userDrawingLayers.length));
+
+    const internalLayerSpies = internalLayers.map((internalLayer) =>
+      spyOn(internalLayer as __esri.GraphicsLayer, 'removeAll').and.callThrough(),
+    );
 
     service.removeAllMapItems();
 
     expect(mapMock.layers.length).toBe(getExpectedNumberOfLayersWithInternalLayers(0));
-    internalLayers.forEach((fixedLayer) => {
-      expect(mapMock.layers.some((l) => l.id === fixedLayer.id)).toBeTrue();
+    internalLayers.forEach((internalLayer) => {
+      expect(mapMock.layers.some((l) => l.id === internalLayer.id)).toBeTrue();
+    });
+    internalLayerSpies.forEach((internalLayerSpy) => {
+      expect(internalLayerSpy).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -240,5 +257,23 @@ describe('EsriMapService', () => {
     expect(wmsLayer.sublayers.getItemAt(0).id).toBe(2);
     expect(wmsLayer.sublayers.getItemAt(1).id).toBe(0);
     expect(wmsLayer.sublayers.getItemAt(2).id).toBe(1);
+  });
+
+  describe('clearInternalDrawingLayer', () => {
+    it('clear all geometries from an internal layers', () => {
+      const internalLayerPrefix = MapConstants.INTERNAL_LAYER_PREFIX;
+      for (const internalDrawingLayerKey in InternalDrawingLayer) {
+        const internalDrawingLayer: InternalDrawingLayer =
+          InternalDrawingLayer[internalDrawingLayerKey as keyof typeof InternalDrawingLayer];
+        const internalLayer = internalLayers.find((layer) => layer.id === `${internalLayerPrefix}${internalDrawingLayer}`);
+
+        expect(internalLayer).toBeDefined();
+
+        const internalLayerSpy = spyOn(internalLayer as __esri.GraphicsLayer, 'removeAll').and.callThrough();
+        service.clearInternalDrawingLayer(internalDrawingLayer);
+
+        expect(internalLayerSpy).toHaveBeenCalledTimes(1);
+      }
+    });
   });
 });

@@ -68,7 +68,6 @@ export class EsriMapService implements MapService, OnDestroy {
   private readonly activeBasemapId$ = this.store.select(selectActiveBasemapId);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
   private readonly wmsImageFormatMimeType = this.configService.gb2Config.wmsFormatMimeType;
-  private readonly internalLayerPrefix = this.configService.mapConfig.internalLayerPrefix;
 
   constructor(
     private readonly store: Store,
@@ -216,9 +215,17 @@ export class EsriMapService implements MapService, OnDestroy {
   }
 
   public removeAllMapItems() {
-    const nonFixedLayers = this.mapView.map.layers.filter((layer) => !layer.id.startsWith(this.internalLayerPrefix));
+    // remove all non-internal layers
+    const nonInternalLayers = this.mapView.map.layers.filter(
+      (layer) => !layer.id.startsWith(this.configService.mapConfig.internalLayerPrefix),
+    );
+    this.mapView.map.removeMany(nonInternalLayers.toArray());
 
-    this.mapView.map.removeMany(nonFixedLayers.toArray());
+    // clear all remaining layers
+    const internalLayers = this.mapView.map.layers;
+    internalLayers.forEach((internalLayer) => {
+      (internalLayer as __esri.GraphicsLayer).removeAll();
+    });
   }
 
   public assignMapElement(container: HTMLDivElement) {
@@ -354,9 +361,8 @@ export class EsriMapService implements MapService, OnDestroy {
     this.addEsriGeometryToDrawingLayer(esriGeometry, symbolization, drawingLayer);
   }
 
-  public clearDrawingLayer(drawingLayer: InternalDrawingLayer) {
+  public clearInternalDrawingLayer(drawingLayer: InternalDrawingLayer) {
     const layer = this.esriMapViewService.findEsriLayer(this.createDrawingLayerId(drawingLayer));
-
     if (layer) {
       (layer as __esri.GraphicsLayer).removeAll();
     }
@@ -387,7 +393,7 @@ export class EsriMapService implements MapService, OnDestroy {
 
   public stopDrawPrintPreview() {
     this.printPreviewHandle$.next(null);
-    this.clearDrawingLayer(InternalDrawingLayer.PrintPreview);
+    this.clearInternalDrawingLayer(InternalDrawingLayer.PrintPreview);
   }
 
   public ngOnDestroy() {
@@ -416,7 +422,7 @@ export class EsriMapService implements MapService, OnDestroy {
     // negate the rotation as the geometry engine rotates counter-clockwise by default
     const rotatedEsriGeometry = geometryEngine.rotate(esriGeometry, -rotation);
 
-    this.clearDrawingLayer(InternalDrawingLayer.PrintPreview);
+    this.clearInternalDrawingLayer(InternalDrawingLayer.PrintPreview);
     this.addEsriGeometryToDrawingLayer(rotatedEsriGeometry, symbolization, InternalDrawingLayer.PrintPreview);
     return printPreviewArea;
   }
@@ -434,15 +440,19 @@ export class EsriMapService implements MapService, OnDestroy {
   private initDrawingLayers() {
     Object.values(InternalDrawingLayer).forEach((drawingLayer) => {
       const graphicsLayer = new EsriGraphicsLayer({
-        id: this.createDrawingLayerId(drawingLayer),
+        id: this.createInternalLayerId(drawingLayer),
       });
 
       this.mapView.map.add(graphicsLayer);
     });
   }
 
+  private createInternalLayerId(drawingLayer: InternalDrawingLayer): string {
+    return `${this.configService.mapConfig.internalLayerPrefix}${drawingLayer}`;
+  }
+
   private createDrawingLayerId(drawingLayer: InternalDrawingLayer): string {
-    return `${this.internalLayerPrefix}${drawingLayer}`;
+    return `${this.configService.mapConfig.drawingLayerPrefix}${drawingLayer}`;
   }
 
   /**
