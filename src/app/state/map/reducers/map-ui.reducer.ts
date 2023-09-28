@@ -13,6 +13,7 @@ export const initialState: MapUiState = {
   toolMenuVisibility: undefined,
   bottomSheetHeight: BottomSheetHeight.medium,
   showBasemapSelector: false,
+  showMapManagementMobile: false,
 };
 
 export const mapUiFeature = createFeature({
@@ -64,7 +65,27 @@ export const mapUiFeature = createFeature({
         showBasemapSelector: false,
       };
     }),
+    on(MapUiActions.showMapManagementMobile, (state): MapUiState => {
+      return {
+        ...state,
+        showMapManagementMobile: true,
+      };
+    }),
+    on(MapUiActions.hideMapManagementMobile, (state): MapUiState => {
+      return {
+        ...state,
+        showMapManagementMobile: false,
+      };
+    }),
   ),
 });
 
-export const {name, reducer, selectMapUiState, selectToolMenuVisibility, selectBottomSheetHeight, selectShowBasemapSelector} = mapUiFeature;
+export const {
+  name,
+  reducer,
+  selectMapUiState,
+  selectToolMenuVisibility,
+  selectBottomSheetHeight,
+  selectShowBasemapSelector,
+  selectShowMapManagementMobile,
+} = mapUiFeature;

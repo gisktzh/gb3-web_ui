@@ -77,7 +77,7 @@
     <button
       *ngIf="screenMode === 'mobile'"
       mat-icon-button
-      (click)="toggleSelection()"
+      (click)="showMapManagement()"
       color="accent"
       class="map-management__button"
       [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
@@ -86,6 +86,7 @@
     </button>
   </div>
   <basemap-selector-mobile></basemap-selector-mobile>
+  <all-map-items-mobile></all-map-items-mobile>
 </mat-drawer-container>
 <print-overlay></print-overlay>
 <onboarding-guide [introductionImage]="onboardingGuideImage"></onboarding-guide>

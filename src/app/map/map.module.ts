@@ -53,6 +53,7 @@ import {AbstractToolsComponent} from './components/map-tools/abstract-tools/abst
 import {ZoomControlsComponent} from './components/map-controls/zoom-controls/zoom-controls.component';
 import {BottomSheetOverlayComponent} from './components/bottom-sheet-overlay/bottom-sheet-overlay.component';
 import {BasemapSelectorMobileComponent} from './components/map-controls/basemap-selector-mobile/basemap-selector-mobile.component';
+import {AllMapItemsMobileComponent} from './components/all-map-items-mobile/all-map-items-mobile.component';
 
 @NgModule({
   declarations: [
@@ -106,6 +107,7 @@ import {BasemapSelectorMobileComponent} from './components/map-controls/basemap-
     ZoomControlsComponent,
     BottomSheetOverlayComponent,
     BasemapSelectorMobileComponent,
+    AllMapItemsMobileComponent,
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule],
   exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent],

@@ -20,5 +20,7 @@ export const MapUiActions = createActionGroup({
     'Set Bottom Sheet Height': props<{bottomSheetHeight: BottomSheetHeight}>(),
     'Show Basemap Selector Mobile': emptyProps(),
     'Hide Basemap Selector Mobile': emptyProps(),
+    'show Map Management Mobile': emptyProps(),
+    'hide Map Management Mobile': emptyProps(),
   },
 });
