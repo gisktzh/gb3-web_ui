@@ -5,6 +5,8 @@ import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {Subscription, tap} from 'rxjs';
 import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
+import {ActiveMapItem} from '../../models/active-map-item.model';
+import {selectItems} from '../../../state/map/reducers/active-map-item.reducer';
 
 @Component({
   selector: 'all-map-items-mobile',
@@ -14,10 +16,14 @@ import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
 export class AllMapItemsMobileComponent implements OnInit, OnDestroy {
   public isVisible: boolean = false;
   public screenMode: ScreenMode = 'mobile';
+  public activeMapItems: ActiveMapItem[] = [];
+  public numberOfNotices: number = 0;
+  public numberOfUnreadNotices: number = 0;
 
   private readonly subscriptions: Subscription = new Subscription();
   private readonly showMapManagementMobile$ = this.store.select(selectShowMapManagementMobile);
   private readonly screenMode$ = this.store.select(selectScreenMode);
+  private readonly activeMapItems$ = this.store.select(selectItems);
 
   constructor(private readonly store: Store) {}
 
@@ -49,6 +55,16 @@ export class AllMapItemsMobileComponent implements OnInit, OnDestroy {
         .pipe(
           tap((showMapManagementMobile) => {
             this.isVisible = showMapManagementMobile;
+          }),
+        )
+        .subscribe(),
+    );
+
+    this.subscriptions.add(
+      this.activeMapItems$
+        .pipe(
+          tap((currentActiveMapItems) => {
+            this.activeMapItems = currentActiveMapItems;
           }),
         )
         .subscribe(),

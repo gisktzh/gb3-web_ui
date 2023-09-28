@@ -1,11 +1,16 @@
 <bottom-sheet-overlay *ngIf="screenMode === 'mobile'" (closeEvent)="close()" [isVisible]="isVisible" class="bottom-sheet">
-  <mat-tab-group>
+  <mat-tab-group backgroundColor="primary" [selectedIndex]="activeMapItems.length === 0 ? 1 : 0">
     <mat-tab #tab1>
       <ng-template mat-tab-label>
         <mat-icon svgIcon="ktzh_map_management"></mat-icon>
         Aktive Karten
+        <!-- TODO: The behavior below causes the tab to change whenever I select my first map or if I delete all maps. A quick fix would be to have the default start tap as map catalogue -->
+        <span
+          class="active-map-items__header__badge"
+          [ngClass]="{'active-map-items__header__badge--hidden': activeMapItems.length === 0}"
+          [matBadge]="this.activeMapItems.length"
+        ></span>
       </ng-template>
-      <mat-divider></mat-divider>
       <active-map-items></active-map-items>
     </mat-tab>
     <mat-tab #tab2>
@@ -13,7 +18,6 @@
         <mat-icon svgIcon="ktzh_map_management"></mat-icon>
         Kartenkatalog
       </ng-template>
-      <mat-divider></mat-divider>
       <map-data-catalogue></map-data-catalogue>
     </mat-tab>
   </mat-tab-group>
