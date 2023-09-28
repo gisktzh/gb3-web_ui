@@ -82,6 +82,9 @@
     height: 48px;
     width: map-layout-variables.$legend-button-width;
     background-color: ktzh-variables.$zh-background-color;
+    // TODO: temporary hack to prevent the search bar from colliding with this button if the screen size is too small;
+    // this can be removed as soon as the breakpoints are properly implemented
+    z-index: 0;
   }
 
   .map-container__map-attribute-filter {

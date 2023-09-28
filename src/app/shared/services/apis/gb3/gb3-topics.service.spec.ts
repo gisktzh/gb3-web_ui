@@ -6,7 +6,7 @@ import {HttpClient} from '@angular/common/http';
 import {of} from 'rxjs';
 import {ConfigService} from '../../config.service';
 
-describe('Gb3TopicsServiceService', () => {
+describe('Gb3TopicsService', () => {
   let service: Gb3TopicsService;
 
   beforeEach(() => {

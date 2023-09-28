@@ -1,6 +1,6 @@
 import {Inject, Injectable} from '@angular/core';
-import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {of, switchMap, tap} from 'rxjs';
+import {Actions, concatLatestFrom, createEffect, ofType} from '@ngrx/effects';
+import {filter, of, switchMap, tap} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
 import {PrintActions} from '../actions/print.actions';
 import {Gb3PrintService} from '../../../shared/services/apis/gb3/gb3-print.service';
@@ -8,30 +8,46 @@ import {DOCUMENT} from '@angular/common';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {PrintUtils} from '../../../shared/utils/print.utils';
 import {PrintInfoCouldNotBeLoaded, PrintRequestCouldNotBeHandled} from '../../../shared/errors/print.errors';
+import {Store} from '@ngrx/store';
+import {selectCapabilities} from '../reducers/print.reducer';
 
 @Injectable()
 export class PrintEffects {
-  public setPrintInfoAfterSuccessfullyLoading$ = createEffect(() => {
+  public loadPrintCapabilities$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(PrintActions.loadPrintInfo),
+      ofType(PrintActions.loadPrintCapabilities),
+      concatLatestFrom(() => [this.store.select(selectCapabilities)]),
+      filter(([_, capabilities]) => capabilities === undefined),
       switchMap(() =>
-        this.printService.loadPrintInfo().pipe(
+        this.printService.loadPrintCapabilities().pipe(
           map((printInfo) => {
-            return PrintActions.setPrintInfo({info: printInfo});
+            return PrintActions.setPrintCapabilities({capabilities: printInfo});
           }),
-          catchError((error: unknown) => of(PrintActions.setPrintInfoError({error}))),
+          catchError((error: unknown) => of(PrintActions.setPrintCapabilitiesError({error}))),
         ),
       ),
     );
   });
 
-  public setPrintCreationAfterSuccessfullyLoading$ = createEffect(() => {
+  public throwPrintCapabilitiesError$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(PrintActions.setPrintCapabilitiesError),
+        tap(({error}) => {
+          throw new PrintInfoCouldNotBeLoaded(error);
+        }),
+      );
+    },
+    {dispatch: false},
+  );
+
+  public requestPrintCreation$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(PrintActions.requestPrintCreation),
       switchMap((value) =>
         this.printService.createPrintJob(value.creation).pipe(
           map((printCreationResponse) => {
-            return PrintActions.setPrintCreationResponse({creationResponse: printCreationResponse});
+            return PrintActions.setPrintRequestResponse({creationResponse: printCreationResponse});
           }),
           catchError((error: unknown) => of(PrintActions.setPrintRequestError({error}))),
         ),
@@ -39,7 +55,7 @@ export class PrintEffects {
     );
   });
 
-  public setPrintRequestError$ = createEffect(
+  public throwPrintRequestError$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(PrintActions.setPrintRequestError),
@@ -51,29 +67,17 @@ export class PrintEffects {
     {dispatch: false},
   );
 
-  public setPrintInfoError$ = createEffect(
-    () => {
-      return this.actions$.pipe(
-        ofType(PrintActions.setPrintInfoError),
-        tap(({error}) => {
-          throw new PrintInfoCouldNotBeLoaded(error);
-        }),
-      );
-    },
-    {dispatch: false},
-  );
-
   public openPrintDocumentInNewTab$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(PrintActions.setPrintCreationResponse),
+      ofType(PrintActions.setPrintRequestResponse),
       map((value) => {
-        this.document.defaultView?.window.open(value.creationResponse.getURL, '_blank');
-        return PrintActions.clearPrintCreation();
+        this.document.defaultView!.window.open(value.creationResponse.reportUrl, '_blank');
+        return PrintActions.clearPrintRequest();
       }),
     );
   });
 
-  public startDrawPrintPreview = createEffect(
+  public startDrawPrintPreview$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(PrintActions.showPrintPreview),
@@ -86,7 +90,7 @@ export class PrintEffects {
     {dispatch: false},
   );
 
-  public removePrintPreview = createEffect(
+  public removePrintPreview$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(PrintActions.removePrintPreview),
@@ -103,5 +107,6 @@ export class PrintEffects {
     private readonly printService: Gb3PrintService,
     @Inject(DOCUMENT) private readonly document: Document,
     private readonly mapDrawingService: MapDrawingService,
+    private readonly store: Store,
   ) {}
 }

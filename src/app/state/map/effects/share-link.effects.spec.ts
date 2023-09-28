@@ -171,7 +171,7 @@ describe('ShareLinkEffects', () => {
   });
 
   describe('createShareLinkRequest$', () => {
-    it('dispatches ShareLinkActions.createItem() with the service response on success', (done: DoneFn) => {
+    it('dispatches ShareLinkActions.setItemId() with the service response on success', (done: DoneFn) => {
       const expectedItem = shareLinkItemMock;
       const expectedId = 'abcd-efgh-ijkl-mnop';
       const gb3ShareLinkServiceSpy = spyOn(gb3ShareLinkService, 'createShareLink').and.returnValue(of(expectedId));
@@ -184,7 +184,7 @@ describe('ShareLinkEffects', () => {
       });
     });
 
-    it('dispatches ShareLinkActions.createItem() with the error on failure', (done: DoneFn) => {
+    it('dispatches ShareLinkActions.setCreationError() with the error on failure', (done: DoneFn) => {
       const expectedItem = shareLinkItemMock;
       const expectedError = new Error('oh no! butterfingers');
       const gb3ShareLinkServiceSpy = spyOn(gb3ShareLinkService, 'createShareLink').and.returnValue(throwError(() => expectedError));

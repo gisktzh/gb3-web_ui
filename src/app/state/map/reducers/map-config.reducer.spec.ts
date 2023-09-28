@@ -1,6 +1,7 @@
 import {initialState as defaultMapConfigState, reducer} from './map-config.reducer';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {MapConfigState} from '../states/map-config.state';
+import {MapConstants} from '../../../shared/constants/map.constants';
 
 describe('MapConfig Reducer', () => {
   describe('setMapExtent', () => {
@@ -15,8 +16,13 @@ describe('MapConfig Reducer', () => {
     };
 
     describe('zoomedIn calculation', () => {
-      describe('should be true for values around calculatedMaxScale', () => {
-        [{value: 100.9}, {value: 100.0}, {value: 99.9}, {value: 98.9}, {value: 0}, {value: -1}].forEach(({value}) => {
+      describe('should be true for values around (possibly rounded) or below MAXIMUM_MAP_SCALE', () => {
+        [
+          {value: MapConstants.MAXIMUM_MAP_SCALE + 0.1},
+          {value: MapConstants.MAXIMUM_MAP_SCALE + 0.4},
+          {value: MapConstants.MAXIMUM_MAP_SCALE - 0.1},
+          {value: MapConstants.MAXIMUM_MAP_SCALE},
+        ].forEach(({value}) => {
           it(`maxZoomedIn is true for scale === ${value}`, () => {
             const actionFloored = MapConfigActions.setMapExtent({scale: value, x: 2400000, y: 1200000});
 
@@ -26,8 +32,8 @@ describe('MapConfig Reducer', () => {
           });
         });
       });
-      describe('should be false for values above calculatedMaxScale', () => {
-        [{value: 101.0}, {value: 101.9}, {value: 101}, {value: 10000}].forEach(({value}) => {
+      describe('should be false for values above (possibly rounded) MAXIMUM_MAP_SCALE', () => {
+        [{value: MapConstants.MAXIMUM_MAP_SCALE + 0.5}, {value: MapConstants.MAXIMUM_MAP_SCALE + 5}].forEach(({value}) => {
           it(`maxZoomedIn is false for scale === ${value}`, () => {
             const actionFloored = MapConfigActions.setMapExtent({scale: value, x: 2400000, y: 1200000});
 

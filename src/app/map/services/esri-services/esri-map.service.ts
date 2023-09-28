@@ -143,14 +143,15 @@ export class EsriMapService implements MapService, OnDestroy {
           const {x, y} = config.center;
           const {minScale, maxScale} = config.scaleSettings;
           const {scale, srsId, activeBasemapId} = config;
-          const map = this.createMap(activeBasemapId);
-          this.setMapView(map, scale, x, y, srsId, minScale, maxScale);
+          const mapInstance = this.createMap(activeBasemapId);
+          this.setMapView(mapInstance, scale, x, y, srsId, minScale, maxScale);
           this.attachMapViewListeners();
           this.addBasemapSubscription();
           this.initDrawingLayers();
           activeMapItems.forEach((mapItem, position) => {
             mapItem.addToMap(this, position);
           });
+          this.store.dispatch(MapConfigActions.markMapServiceAsInitialized());
         }),
       )
       .subscribe();
@@ -620,10 +621,10 @@ export class EsriMapService implements MapService, OnDestroy {
     });
   }
 
-  private setMapView(map: __esri.Map, scale: number, x: number, y: number, srsId: number, minScale: number, maxScale: number) {
+  private setMapView(mapInstance: __esri.Map, scale: number, x: number, y: number, srsId: number, minScale: number, maxScale: number) {
     const spatialReference = new EsriSpatialReference({wkid: srsId});
     this.mapView = new EsriMapView({
-      map: map,
+      map: mapInstance,
       ui: {
         components: ['attribution'],
       },
@@ -635,6 +636,16 @@ export class EsriMapService implements MapService, OnDestroy {
         minScale: minScale,
         maxScale: maxScale,
         lods: EsriTileInfo.create({
+          /**
+           * This number seems to be required for Esri to generate enough ZoomLevels to also include 1:1. Setting it to anything below 32
+           * will lead to an inversion of levels, only allowing for zooming from 1:1500000 to 1:VERYLARGENUMBER.
+           *
+           * See https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-TileInfo.html#create
+           *
+           * Note that increasing this number will not add anything more; the minimum scale will still be calculated at an approximation of
+           * MAPCONSTANTS.minScale.
+           */
+          numLODs: 32,
           spatialReference,
         }).lods,
       },

@@ -1,0 +1,49 @@
+<div class="start-page-search">
+  <div class="start-page-search__search">
+    <search
+      class="start-page-search__search__bar"
+      placeholderText="Suche nach Karten, Kartendaten, Geodaten und Geodiensten"
+      [showFilterButton]="true"
+      [showClearButton]="true"
+      (changeSearchTermEvent)="searchForTerm($event)"
+      (clearSearchTermEvent)="clearSearchTerm()"
+      (openFilterEvent)="openFilterMenu()"
+    ></search>
+  </div>
+
+  <div class="start-page-search__results" *ngIf="searchTerms.length > 0">
+    <div>
+      <mat-chip-row
+        *ngFor="let activeFilterValue of activeSearchFilterValues"
+        (removed)="deactivateFilter(activeFilterValue.groupLabel, activeFilterValue.filterLabel)"
+      >
+        {{ activeFilterValue.filterLabel }}
+        <button matChipRemove>
+          <mat-icon>cancel</mat-icon>
+        </button>
+      </mat-chip-row>
+    </div>
+
+    <mat-accordion class="start-page-search__results__groups" displayMode="flat" multi="true">
+      <search-result-group
+        *ngIf="filteredMaps.length > 0 || layerCatalogLoadingState === 'loading' || layerCatalogLoadingState === 'error'"
+        class="start-page-search__results__groups__group"
+        header="Karten"
+        [loadingState]="layerCatalogLoadingState"
+      >
+        <search-result-entry-map [filteredMaps]="filteredMaps"></search-result-entry-map>
+      </search-result-group>
+      <search-result-group
+        *ngIf="filteredMetadataItems.length > 0 || dataCatalogLoadingState === 'loading' || dataCatalogLoadingState === 'error'"
+        class="start-page-search__results__groups__group"
+        header="Datenkatalog"
+        [loadingState]="dataCatalogLoadingState"
+      >
+        <search-result-entry-data-catalog [filteredMetadataItems]="filteredMetadataItems"></search-result-entry-data-catalog>
+      </search-result-group>
+      <search-result-group *ngIf="filteredFaqItems.length > 0" class="start-page-search__results__groups__group" header="Support">
+        <search-result-entry-support [filteredFaqItems]="filteredFaqItems"></search-result-entry-support>
+      </search-result-group>
+    </mat-accordion>
+  </div>
+</div>

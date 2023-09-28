@@ -1,9 +1,9 @@
-import {PrintCreation, PrintCreationResponse, PrintInfo} from '../../../shared/interfaces/print.interface';
+import {PrintCapabilities, PrintCreation, PrintCreationResponse} from '../../../shared/interfaces/print.interface';
 import {LoadingState} from '../../../shared/types/loading-state.type';
 
 export interface PrintState {
-  info: PrintInfo | undefined;
-  infoLoadingState: LoadingState;
+  capabilities: PrintCapabilities | undefined;
+  capabilitiesLoadingState: LoadingState;
   creation: PrintCreation | undefined;
   creationLoadingState: LoadingState;
   creationResponse: PrintCreationResponse | undefined;

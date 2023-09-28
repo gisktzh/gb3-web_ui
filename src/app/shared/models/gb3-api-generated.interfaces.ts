@@ -796,213 +796,161 @@ export interface Topics {
   }[];
 }
 
-export interface Print {
-  /** print job creation endpoint URL */
-  createURL: string;
-  outputFormats: {
-    /** output format name */
-    name: string;
-  }[];
-  /** available scales */
-  scales: {
-    /** scale name */
-    name: string;
-    /** scale denominator */
-    value: number;
-  }[];
-  /** available dpis */
-  dpis: {
-    /** dpi name */
-    name: string;
-    /** dpi value */
-    value: number;
-  }[];
-  /** available layouts */
-  layouts: {
-    /** layout name */
-    name:
-      | 'A4 hoch'
-      | 'A4 quer'
-      | 'A3 hoch'
-      | 'A3 quer'
-      | 'A2 hoch'
-      | 'A2 quer'
-      | 'A1 hoch'
-      | 'A1 quer'
-      | 'A0 hoch'
-      | 'A0 quer'
-      | 'FomesBeitragsabrechnung'
-      | 'Strassenlaerm'
-      | 'Baustellen_SR'
-      | 'Baustellen_UB'
-      | 'Baustellen_ZH'
-      | 'Baustellen_SR_edit'
-      | 'Baustellen_UB_edit'
-      | 'Baustellen_ZH_edit'
-      | 'Forstfeuer'
-      | 'Fluglaerm'
-      | 'Schadenmeldeformular'
-      | 'Naturgefahren'
-      | 'Kartenset'
-      | 'Wanderwege';
-    map: {
-      /** map width in pixels */
-      width: number;
-      /** map height in pixels */
-      height: number;
-    };
-    /** rotation allowed */
-    rotation: boolean;
-  }[];
+export interface PrintCapabilities {
+  print: {
+    /** Available output formats */
+    formats: string[];
+    /** Available DPI settings */
+    dpis: number[];
+    /** Available print templates */
+    reports: {
+      /** Report name */
+      name: string;
+      map: {
+        /** Width of map element in px @ 72dpi */
+        width: number;
+        /** Height of map element in px @ 72dpi */
+        height: number;
+      };
+    }[];
+  };
 }
 
 export interface PrintNew {
   /**
-   * units
-   * @example "m"
-   */
-  units: string;
-  /**
-   * srs
-   * @example "EPSG:2056"
-   */
-  srs: string;
-  /**
-   * layout
+   * Report name
    * @example "A4 hoch"
    */
-  layout: string;
+  report: string;
   /**
-   * dpi
-   * @example 300
-   */
-  dpi: number;
-  /**
-   * outputFormat
+   * Output format
    * @example "pdf"
    */
-  outputFormat: string;
-  /**
-   * layers for use in WMS GetMap request
-   * @minItems 1
-   */
-  layers: {
+  format: string;
+  attributes: {
     /**
-     * base WMS URL
-     * @example "http://127.0.0.1:3000/wms/BASISKARTEZH"
+     * Report title
+     * @example "Landeskarten, Übersichtsplan"
      */
-    baseURL: string;
+    report_title?: string;
     /**
-     * opacity
-     * @example 1
+     * User title
+     * @example "User title"
      */
-    opacity: number;
+    user_title?: string;
     /**
-     * singleTile
-     * @example true
+     * User comment
+     * @example "User comment"
      */
-    singleTile: boolean;
+    user_comment?: string;
     /**
-     * type
-     * @example "WMS"
+     * Show legend (default: false)
+     * @example false
      */
-    type: string;
+    show_legend?: boolean;
+  };
+  map: {
     /**
-     * requested WMS layers
-     * @minItems 1
-     * @example ["wald","seen"]
-     */
-    layers: string[];
-    /**
-     * format
-     * @example "image/png; mode=8bit"
-     */
-    format: string;
-    /** styles */
-    styles: string[];
-    /** custom parameters */
-    customParams: {
-      /**
-       * TRANSPARENT
-       * @example true
-       */
-      TRANSPARENT: boolean;
-      /**
-       * dpi
-       * @example 96
-       */
-      dpi: number;
-      /**
-       * format
-       * @example "image/png; mode=8bit"
-       */
-      format: string;
-    } | null;
-  }[];
-  /** pages */
-  pages?: {
-    /**
-     * center lat/lon in srs units
+     * Map center
      * @maxItems 2
      * @minItems 2
-     * @example [2692500,1252500]
+     * @example [2683465,1248055]
      */
     center: number[];
     /**
-     * scale denominator
-     * @example 5000
+     * Map scale
+     * @example 25000
      */
     scale: number;
     /**
-     * rotation in degrees
+     * Map rotation
      * @example 0
      */
-    rotation: number;
+    rotation?: number;
     /**
-     * extent in srs units
-     * @maxItems 4
-     * @minItems 4
-     * @example [2663148,1215246,2721851,1289753]
+     * DPI
+     * @example 300
      */
-    extent: number[];
-    /**
-     * user title
-     * @example "My title"
-     */
-    user_title: string;
-    /**
-     * user comment
-     * @example "My comment"
-     */
-    user_comment: string;
-    /**
-     * header image URL
-     * @example "http://127.0.0.1/images/LogoGIS.jpg"
-     */
-    header_img: string;
-    /**
-     * GB topic title
-     * @example "Landeskarten, Übersichtsplan"
-     */
-    topic_title: string;
-    /**
-     * GB topic name
-     * @example "BASISKARTEZH"
-     */
-    topic: string;
-    /**
-     * printout with legend included
-     * @example 0
-     */
-    withlegend: number;
-  }[];
-}
-
-export type InfoJsonListData = Print;
-
-export interface CreateCreateData {
-  /** print document retrieval endpoint URL */
-  getURL: string;
+    dpi: number;
+    /** Map layers ordered from bottom to top */
+    layers: (
+      | {
+          /** WMS layer type */
+          type: 'WMS';
+          /**
+           * WMS URL
+           * @example "https://maps.zh.ch/wms/BASISKARTEZH"
+           */
+          url: string;
+          /**
+           * WMS layer names
+           * @example ["wald","seen","gemeindegrenzen"]
+           */
+          layers: string[];
+          /**
+           * Custom WMS params
+           * @example {"format":"image/png; mode=8bit","transparent":true}
+           */
+          custom_params?: object;
+          /**
+           * Layer opacity
+           * @min 0
+           * @max 1
+           * @example 1
+           */
+          opacity?: number;
+          /** Map title (for Kartenset only) */
+          map_title?: string;
+          /**
+           * Mark as background layer (for Kartenset only) (default: false)
+           * @example false
+           */
+          background?: boolean;
+        }
+      | {
+          /** Vector layer type */
+          type: 'Vector';
+          /**
+           * GeoJSON FeatureCollection
+           * @example {"type":"FeatureCollection","features":[{"type":"Feature","properties":{"style":"a"},"geometry":{"type":"Point","coordinates":[2683465,1248055]}}]}
+           */
+          geojson: {
+            /** GeoJSON FeatureCollection */
+            type: 'FeatureCollection';
+            features: {
+              /** GeoJSON Feature */
+              type: 'Feature';
+              properties: {
+                /**
+                 * Reference to style ID in 'styles'
+                 * @example "a"
+                 */
+                style: string;
+                /**
+                 * Text to display if using text marker style
+                 * @example "Label text"
+                 */
+                text?: string;
+              };
+              geometry: {
+                /** GeoJSON geometry type */
+                type: 'Point' | 'LineString' | 'Polygon' | 'MultiPoint' | 'MultiLineString' | 'MultiPolygon';
+                /** Coordinates of geometry vertices */
+                coordinates: number[];
+              };
+            }[];
+          };
+          /**
+           * Style definitions for features. NOTE: keys are style IDs referenced in feature 'style' property
+           * @example {"a":{"pointRadius":15,"fillColor":"#ee3333","fillOpacity":0,"strokeColor":"#ee3333","strokeWidth":3}}
+           */
+          styles: {
+            /** Style definition based on OpenLayers 2 Symbolizer */
+            a?: object;
+          };
+        }
+    )[];
+  };
 }
 
 export type TopicsFeatureInfoDetailData = Feature;
@@ -1028,6 +976,8 @@ export type MetadataMapsListData = MetadataMaps;
 
 export type MetadataMapsDetailData = MetadataMap;
 
+export type MetadataMapsDetail2Data = MetadataMap;
+
 export type MetadataProductsListData = MetadataProducts;
 
 export type MetadataProductsDetailData = MetadataProduct;
@@ -1038,15 +988,24 @@ export type MetadataServicesDetailData = MetadataService;
 
 export type UserFavoritesListData = PersonalFavorite[];
 
-export type UserFavoritesCreateData = any;
+export type UserFavoritesCreateData = PersonalFavorite;
 
 export type UserFavoritesDetailData = PersonalFavorite;
 
 export type UserFavoritesDeleteData = any;
 
+export type PrintCapabilitiesListData = PrintCapabilities;
+
+export interface PrintCreateData {
+  /** Link to report file */
+  report_url: string;
+}
+
+export type PrintDetailData = any;
+
 export type FavoritesListData = SharedFavorite[];
 
-export type FavoritesCreateData = any;
+export type FavoritesCreateData = SharedFavorite;
 
 export type FavoritesDetailData = SharedFavorite;
 

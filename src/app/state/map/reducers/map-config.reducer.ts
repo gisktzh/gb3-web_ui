@@ -3,10 +3,12 @@ import {MapConfigActions} from '../actions/map-config.actions';
 import {defaultMapConfig} from '../../../shared/configs/map.config';
 import {MapConfigState} from '../states/map-config.state';
 import {produce} from 'immer';
+import {MapConstants} from '../../../shared/constants/map.constants';
 
 export const mapConfigFeatureKey = 'mapConfig';
 
 export const initialState: MapConfigState = {
+  isMapServiceInitialized: false,
   center: defaultMapConfig.center,
   scale: defaultMapConfig.scale,
   srsId: defaultMapConfig.srsId,
@@ -22,6 +24,9 @@ export const mapConfigFeature = createFeature({
   name: mapConfigFeatureKey,
   reducer: createReducer(
     initialState,
+    on(MapConfigActions.markMapServiceAsInitialized, (state): MapConfigState => {
+      return {...state, isMapServiceInitialized: true};
+    }),
     on(MapConfigActions.setInitialMapConfig, (state, {x, y, scale, basemapId, initialMaps}): MapConfigState => {
       const initialExtent = {
         center: {
@@ -36,12 +41,20 @@ export const mapConfigFeature = createFeature({
     }),
     on(MapConfigActions.setMapExtent, (state, {x, y, scale}): MapConfigState => {
       /**
-       * maxZoomedOut: scale is smaller or equal to the calculated max, floored.
+       * Now this is a somewhat tricky case and is a result of Esri's rather complex handling of scale levels and LODs. Simply put:
+       *
+       * maxZoomedOut: scale is smaller or equal to the defined MAXIMUM_MAP_SCALE, rounded.
        * maxZoomedIn: scale is larger than or equal to the calculated min, ceiled.
        *
-       * Flooring/ceiling accounts for rounding and precision differences in the actual scale vs the calculated ones.
+       * Rounding/ceiling accounts for rounding and precision differences in the actual scale vs the calculated ones.
+       *
+       * Note that for the max scale, we compare to our fixed scale setting in our configuration because we _allow_ for those zoom
+       * levels. This is a sideeffect of setting LODs to 32 (or higher) in our MapView constraints, because it essentially adds "fake"
+       * LODs which allow for a zoom up to 1:1. For the min scale, however, we compare it to the calculated minScale, because Esri will
+       * _not_ allow zooming out further than its calculated scale, essentially rendering our fixed minScale setting an approximation. This
+       * is still true, even if setting 32 LODs.
        */
-      const isMaxZoomedIn = Math.floor(scale) <= state.scaleSettings.calculatedMaxScale;
+      const isMaxZoomedIn = Math.round(scale) <= MapConstants.MAXIMUM_MAP_SCALE;
       const isMaxZoomedOut = Math.ceil(scale) >= state.scaleSettings.calculatedMinScale;
       return {...state, center: {x, y}, scale, isMaxZoomedIn, isMaxZoomedOut};
     }),
@@ -83,6 +96,7 @@ export const mapConfigFeature = createFeature({
 export const {
   name,
   reducer,
+  selectIsMapServiceInitialized,
   selectMapConfigState,
   selectCenter,
   selectScale,
