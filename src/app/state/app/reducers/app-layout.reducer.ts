@@ -6,6 +6,7 @@ export const appLayoutFeatureKey = 'appLayout';
 
 export const initialState: AppLayoutState = {
   scrollbarWidth: undefined,
+  screenMode: 'regular',
 };
 
 export const appLayoutFeature = createFeature({
@@ -20,7 +21,10 @@ export const appLayoutFeature = createFeature({
       }
       return {...state, scrollbarWidth: scrollbarWidth};
     }),
+    on(AppLayoutActions.setScreenMode, (state, {screenMode}): AppLayoutState => {
+      return {...state, screenMode: screenMode};
+    }),
   ),
 });
 
-export const {name, reducer, selectAppLayoutState, selectScrollbarWidth} = appLayoutFeature;
+export const {name, reducer, selectAppLayoutState, selectScrollbarWidth, selectScreenMode} = appLayoutFeature;

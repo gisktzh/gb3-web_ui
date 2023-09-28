@@ -1,11 +1,11 @@
 <map-overlay
+  (closeEvent)="close()"
+  (printButtonEvent)="print()"
   [isPrintButtonEnabled]="showInteractiveElements && loadingState === 'loaded' && featureInfoData.length > 0"
   [showPrintButton]="showInteractiveElements"
-  (closeEvent)="close()"
   [isVisible]="isVisible"
-  location="right"
   overlayTitle="Info"
-  (printButtonEvent)="print()"
+  location="right"
 >
   <loading-and-process-bar [loadingState]="loadingState"></loading-and-process-bar>
   <ng-container *ngIf="loadingState === 'loaded'">

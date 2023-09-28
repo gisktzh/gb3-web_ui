@@ -55,8 +55,8 @@
   ></map-attribute-filter>
   <feature-info-overlay
     class="map-container__feature-info-overlay"
-    (printFeatureInfoEvent)="showPrint('featureInfo')"
     [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
+    (printFeatureInfoEvent)="showPrint('featureInfo')"
   ></feature-info-overlay>
   <search-window
     class="map-container__search-window"

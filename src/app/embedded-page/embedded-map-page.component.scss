@@ -1,11 +1,12 @@
 @use 'mixins/helpers.mixin' as mixins;
 @use 'mixins/material.mixin' as material-mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'variables/map-layout-variables' as map-layout-variables;
 
 .embedded-map-page {
   height: 100%;
   position: relative;
-  $minimal-bottom-height: ktzh-variables.$esri-attribution-widget-height;
+  $minimal-bottom-height: map-layout-variables.$esri-attribution-widget-height;
 
   .embedded-map-page__legend-button {
     @include mixins.map-element-box-shadow;
