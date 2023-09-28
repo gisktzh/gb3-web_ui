@@ -5,7 +5,7 @@
 @use 'variables/z-index-variables' as z-index-variables;
 
 :host ::ng-deep {
-  .map-tools__button {
+  .navbar-mobile__button {
     @include mixins.tool-button;
   }
 }

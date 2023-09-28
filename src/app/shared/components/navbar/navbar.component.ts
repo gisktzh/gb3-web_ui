@@ -6,6 +6,7 @@ import {AuthStatusActions} from '../../../state/auth/actions/auth-status.actions
 import {selectUserName} from '../../../state/auth/reducers/auth-status.reducer';
 import {MainPage} from '../../enums/main-page.enum';
 import {selectScreenMode, selectScrollbarWidth} from '../../../state/app/reducers/app-layout.reducer';
+import {ScreenMode} from '../../types/screen-size.type';
 
 @Component({
   selector: 'navbar',
@@ -18,7 +19,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   public isAuthenticated: boolean = false;
   public userName?: string;
   public scrollbarWidth: number = 0;
-  public screenMode: string = 'regular';
+  public screenMode: ScreenMode = 'regular';
 
   protected readonly mainPageEnum = MainPage;
 
