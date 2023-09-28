@@ -4,6 +4,7 @@ import {Map} from '../../../shared/interfaces/topic.interface';
 import {DrawingActiveMapItem} from '../../../map/models/implementations/drawing.model';
 import {ActiveMapItem} from '../../../map/models/active-map-item.model';
 import {QueryTopic} from '../../../shared/interfaces/query-topic.interface';
+import {UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 
 describe('selectQueryLayers', () => {
   let basicMockState: Gb2WmsActiveMapItem[];
@@ -101,7 +102,7 @@ describe('selectQueryLayers', () => {
   });
 
   it('does not return layers other than Gb2WmsActiveMapItem', () => {
-    const drawingLayer = new DrawingActiveMapItem('', '');
+    const drawingLayer = new DrawingActiveMapItem('', '', UserDrawingLayer.Measurements);
     (basicMockState as ActiveMapItem[]).push(drawingLayer);
 
     const actual = selectQueryLayers.projector(basicMockState);

@@ -57,10 +57,10 @@ const internalLayers = Object.values(InternalDrawingLayer).map((drawingLayer) =>
   });
 });
 
-const drawingLayerPrefix = MapConstants.DRAWING_LAYER_PREFIX;
-const drawingLayers = Object.values(UserDrawingLayer).map((drawingLayer) => {
+const userDrawingLayerPrefix = MapConstants.USER_DRAWING_LAYER_PREFIX;
+const userDrawingLayers = Object.values(UserDrawingLayer).map((drawingLayer) => {
   return new GraphicsLayer({
-    id: `${drawingLayerPrefix}${drawingLayer}`,
+    id: `${userDrawingLayerPrefix}${drawingLayer}`,
   });
 });
 
@@ -177,14 +177,10 @@ describe('EsriMapService', () => {
     service.addGb2WmsLayer(mapItem2, 1);
     service.addGb2WmsLayer(mapItem3, 2);
 
-    const userDrawingLayers = drawingLayers;
     mapMock.layers.addMany(userDrawingLayers);
+    const internalLayerSpies = internalLayers.map((internalLayer) => spyOn(internalLayer, 'removeAll').and.callThrough());
 
     expect(mapMock.layers.length).toBe(getExpectedNumberOfLayersWithInternalLayers(3 + userDrawingLayers.length));
-
-    const internalLayerSpies = internalLayers.map((internalLayer) =>
-      spyOn(internalLayer as __esri.GraphicsLayer, 'removeAll').and.callThrough(),
-    );
 
     service.removeAllMapItems();
 

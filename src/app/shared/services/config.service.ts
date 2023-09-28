@@ -33,7 +33,7 @@ export class ConfigService {
   };
   public readonly mapConfig = {
     internalLayerPrefix: MapConstants.INTERNAL_LAYER_PREFIX,
-    drawingLayerPrefix: MapConstants.DRAWING_LAYER_PREFIX,
+    userDrawingLayerPrefix: MapConstants.USER_DRAWING_LAYER_PREFIX,
     locateMeZoom: MapConstants.LOCATE_ME_ZOOM,
     defaultMapConfig: defaultMapConfig,
     mapScaleConfig: {

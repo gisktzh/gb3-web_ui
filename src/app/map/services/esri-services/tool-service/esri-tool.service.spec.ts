@@ -53,19 +53,19 @@ describe('EsriToolService', () => {
   });
 
   describe('Visibility Handling', () => {
-    let internalLayerId: string;
+    let userDrawingLayerId: string;
     beforeEach(() => {
-      internalLayerId = MapConstants.INTERNAL_LAYER_PREFIX + UserDrawingLayer.Measurements;
+      userDrawingLayerId = MapConstants.USER_DRAWING_LAYER_PREFIX + UserDrawingLayer.Measurements;
     });
 
     it('forces visibility if layer is present by dispatching an action', () => {
       // add the graphic layer to the view to avoid the initialization
       mapViewService.mapView.map.layers.add(
         new GraphicsLayer({
-          id: internalLayerId,
+          id: userDrawingLayerId,
         }),
       );
-      store.overrideSelector(selectDrawingLayers, [{id: internalLayerId} as DrawingActiveMapItem]);
+      store.overrideSelector(selectDrawingLayers, [{id: userDrawingLayerId} as DrawingActiveMapItem]);
       store.refreshState();
 
       service.initializeMeasurement('measure-point');
@@ -75,7 +75,7 @@ describe('EsriToolService', () => {
           take(1),
           tap((lastAction) => {
             const expected = {
-              activeMapItem: {id: internalLayerId},
+              activeMapItem: {id: userDrawingLayerId},
               type: ActiveMapItemActions.forceFullVisibility.type,
             };
             expect(lastAction).toEqual(expected);
@@ -91,7 +91,10 @@ describe('EsriToolService', () => {
           take(1),
           tap((lastAction) => {
             const expected = {
-              activeMapItem: ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Measurements, MapConstants.INTERNAL_LAYER_PREFIX),
+              activeMapItem: ActiveMapItemFactory.createDrawingMapItem(
+                UserDrawingLayer.Measurements,
+                MapConstants.USER_DRAWING_LAYER_PREFIX,
+              ),
               position: 0,
               type: ActiveMapItemActions.addActiveMapItem.type,
             };
@@ -106,10 +109,10 @@ describe('EsriToolService', () => {
       const spy = spyOn(mapViewService.mapView, 'addHandles');
       mapViewService.mapView.map.layers.add(
         new GraphicsLayer({
-          id: internalLayerId,
+          id: userDrawingLayerId,
         }),
       );
-      store.overrideSelector(selectDrawingLayers, [{id: internalLayerId} as DrawingActiveMapItem]);
+      store.overrideSelector(selectDrawingLayers, [{id: userDrawingLayerId} as DrawingActiveMapItem]);
       store.refreshState();
 
       service.initializeMeasurement('measure-point');
@@ -122,14 +125,14 @@ describe('EsriToolService', () => {
 
   describe('Strategy Handling', () => {
     beforeEach(() => {
-      const internalLayerId = MapConstants.INTERNAL_LAYER_PREFIX + UserDrawingLayer.Measurements;
+      const userDrawingLayerId = MapConstants.USER_DRAWING_LAYER_PREFIX + UserDrawingLayer.Measurements;
       // add the graphic layer to the view to avoid the initialization
       mapViewService.mapView.map.layers.add(
         new GraphicsLayer({
-          id: internalLayerId,
+          id: userDrawingLayerId,
         }),
       );
-      store.overrideSelector(selectDrawingLayers, [{id: internalLayerId} as DrawingActiveMapItem]);
+      store.overrideSelector(selectDrawingLayers, [{id: userDrawingLayerId} as DrawingActiveMapItem]);
       store.refreshState();
     });
     it(`sets the correct strategy for point measurement`, () => {

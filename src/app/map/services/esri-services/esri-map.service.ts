@@ -48,6 +48,7 @@ import {EsriToolService} from './tool-service/esri-tool.service';
 import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
 import {PrintUtils} from '../../../shared/utils/print.utils';
 import {map} from 'rxjs/operators';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
 const DEFAULT_PRINT_PREVIEW_ANIMATION_DURATION_IN_MS = 500;
@@ -221,10 +222,12 @@ export class EsriMapService implements MapService, OnDestroy {
     );
     this.mapView.map.removeMany(nonInternalLayers.toArray());
 
-    // clear all remaining layers
-    const internalLayers = this.mapView.map.layers;
+    // clear all internal graphic layers
+    const internalLayers = this.mapView.map.layers.filter(
+      (layer) => layer.id.startsWith(this.configService.mapConfig.internalLayerPrefix) && layer instanceof GraphicsLayer,
+    );
     internalLayers.forEach((internalLayer) => {
-      (internalLayer as __esri.GraphicsLayer).removeAll();
+      (internalLayer as GraphicsLayer).removeAll();
     });
   }
 
@@ -361,8 +364,8 @@ export class EsriMapService implements MapService, OnDestroy {
     this.addEsriGeometryToDrawingLayer(esriGeometry, symbolization, drawingLayer);
   }
 
-  public clearInternalDrawingLayer(drawingLayer: InternalDrawingLayer) {
-    const layer = this.esriMapViewService.findEsriLayer(this.createDrawingLayerId(drawingLayer));
+  public clearInternalDrawingLayer(internalDrawingLayer: InternalDrawingLayer) {
+    const layer = this.esriMapViewService.findEsriLayer(this.createInternalLayerId(internalDrawingLayer));
     if (layer) {
       (layer as __esri.GraphicsLayer).removeAll();
     }
@@ -403,10 +406,10 @@ export class EsriMapService implements MapService, OnDestroy {
   private addEsriGeometryToDrawingLayer(
     esriGeometry: __esri.Geometry,
     esriSymbolization: __esri.Symbol,
-    drawingLayer: InternalDrawingLayer,
+    internalDrawingLayer: InternalDrawingLayer,
   ) {
     const graphicItem = new EsriGraphic({geometry: esriGeometry, symbol: esriSymbolization});
-    const targetLayer = this.esriMapViewService.findEsriLayer(this.createDrawingLayerId(drawingLayer));
+    const targetLayer = this.esriMapViewService.findEsriLayer(this.createInternalLayerId(internalDrawingLayer));
     if (targetLayer) {
       (targetLayer as __esri.GraphicsLayer).add(graphicItem);
     }
@@ -447,12 +450,8 @@ export class EsriMapService implements MapService, OnDestroy {
     });
   }
 
-  private createInternalLayerId(drawingLayer: InternalDrawingLayer): string {
-    return `${this.configService.mapConfig.internalLayerPrefix}${drawingLayer}`;
-  }
-
-  private createDrawingLayerId(drawingLayer: InternalDrawingLayer): string {
-    return `${this.configService.mapConfig.drawingLayerPrefix}${drawingLayer}`;
+  private createInternalLayerId(internalDrawingLayer: InternalDrawingLayer): string {
+    return `${this.configService.mapConfig.internalLayerPrefix}${internalDrawingLayer}`;
   }
 
   /**
