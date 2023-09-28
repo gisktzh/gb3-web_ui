@@ -48,7 +48,7 @@ export class MapToolsComponent implements OnInit, OnDestroy {
   }
 
   public showShareLinkBottomSheet() {
-    this.store.dispatch(MapUiActions.showBottomSheetOverlay());
+    //his.store.dispatch(MapUiActions.showBottomSheetOverlay());
   }
 
   public toggleLegend() {
@@ -68,7 +68,6 @@ export class MapToolsComponent implements OnInit, OnDestroy {
     this.store.dispatch(MapUiActions.showBasemapSelectorMobile());
     this.store.dispatch(MapUiActions.setBottomSheetHeight({bottomSheetHeight: BottomSheetHeight.small}));
   }
-
 
   public toggleToolMenu(toolToToggle: ToolMenuVisibility) {
     const tool: ToolMenuVisibility | undefined = this.toolMenuVisibility === toolToToggle ? undefined : toolToToggle;
