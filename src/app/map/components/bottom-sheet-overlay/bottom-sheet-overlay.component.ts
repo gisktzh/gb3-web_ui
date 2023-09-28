@@ -39,8 +39,6 @@ export class BottomSheetOverlayComponent implements OnInit {
   }
 
   public resizeOverlay(newStyle: StyleExpression) {
-    console.log(newStyle);
-
     this.resizeableStyle = newStyle;
   }
 
