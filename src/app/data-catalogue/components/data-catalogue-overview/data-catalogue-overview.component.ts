@@ -47,7 +47,7 @@ class DataCataloguePaginatorIntl implements MatPaginatorIntl {
   providers: [{provide: MatPaginatorIntl, useClass: DataCataloguePaginatorIntl}],
 })
 export class DataCatalogueOverviewComponent implements OnInit, OnDestroy, AfterViewInit {
-  public loadingState: LoadingState = 'undefined';
+  public loadingState: LoadingState;
   public dataCatalogueItems: MatTableDataSource<OverviewMetadataItem> = new MatTableDataSource<OverviewMetadataItem>([]);
   public activeFilters: ActiveDataCatalogueFilter[] = [];
   private readonly searchConfig = this.configService.searchConfig.dataCatalogPage;

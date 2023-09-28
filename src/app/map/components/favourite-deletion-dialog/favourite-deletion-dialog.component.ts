@@ -17,7 +17,7 @@ import {FavouriteCouldNotBeRemoved} from '../../../shared/errors/favourite.error
   styleUrls: ['./favourite-deletion-dialog.component.scss'],
 })
 export class FavouriteDeletionDialogComponent implements HasSavingState, OnDestroy {
-  public savingState: LoadingState = 'undefined';
+  public savingState: LoadingState;
   public favourite: Favourite;
   private readonly subscriptions: Subscription = new Subscription();
 

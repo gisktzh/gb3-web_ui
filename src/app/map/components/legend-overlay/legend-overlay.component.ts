@@ -19,7 +19,7 @@ export class LegendOverlayComponent implements OnInit, OnDestroy {
 
   public isVisible = false;
   public legendItems: LegendDisplay[] = [];
-  public loadingState: LoadingState = 'undefined';
+  public loadingState: LoadingState;
 
   private readonly loadingState$ = this.store.select(selectLoadingState);
   private readonly legendItems$ = this.store.select(selectLegendItemsForDisplay);
@@ -71,6 +71,6 @@ export class LegendOverlayComponent implements OnInit, OnDestroy {
   }
 
   private updateVisibility(loadingState: LoadingState) {
-    this.isVisible = loadingState !== 'undefined';
+    this.isVisible = loadingState !== undefined;
   }
 }

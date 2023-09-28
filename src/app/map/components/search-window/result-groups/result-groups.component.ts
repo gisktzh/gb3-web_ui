@@ -20,7 +20,7 @@ export class ResultGroupsComponent implements OnInit, OnDestroy {
   public filteredAddressesAndPlacesMatches: GeometrySearchApiResultMatch[] = [];
   public filteredActiveMapMatches: GeometrySearchApiResultMatch[] = [];
   public filteredMaps: Map[] = [];
-  public searchApiLoadingState: LoadingState = 'undefined';
+  public searchApiLoadingState: LoadingState;
 
   private readonly searchTerm$ = this.store.select(selectTerm);
   private readonly filteredSearchApiResultMatches$ = this.store.select(selectFilteredSearchApiResultMatches);

@@ -8,5 +8,7 @@ export const selectFilteredFavouriteList = createSelector(selectFilterString, se
     return favourites;
   }
 
+  favourites.forEach((f) => console.log(f.title));
+
   return favourites.filter((favourite) => favourite.title.toLowerCase().includes(lowerCasedFilterString));
 });

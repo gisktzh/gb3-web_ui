@@ -58,7 +58,7 @@ export class SearchEffects {
       ofType(SearchActions.searchForTerm),
       filter((value) => value.options.maps),
       concatLatestFrom(() => this.store.select(selectLayerCatalogLoadingState)),
-      filter(([_, layerCatalogLoadingState]) => layerCatalogLoadingState === 'undefined'),
+      filter(([_, layerCatalogLoadingState]) => layerCatalogLoadingState === undefined),
       map(() => LayerCatalogActions.loadLayerCatalog()),
     );
   });
@@ -85,7 +85,7 @@ export class SearchEffects {
         ),
       ),
       concatLatestFrom(() => this.store.select(selectDataCatalogueLoadingState)),
-      filter(([_, dataCatalogueLoadingState]) => dataCatalogueLoadingState === 'undefined'),
+      filter(([_, dataCatalogueLoadingState]) => dataCatalogueLoadingState === undefined),
       map(() => DataCatalogueActions.loadCatalogue()),
     );
   });

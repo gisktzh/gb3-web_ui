@@ -6,9 +6,9 @@ export const printFeatureKey = 'print';
 
 export const initialState: PrintState = {
   capabilities: undefined,
-  capabilitiesLoadingState: 'undefined',
+  capabilitiesLoadingState: undefined,
   creation: undefined,
-  creationLoadingState: 'undefined',
+  creationLoadingState: undefined,
   creationResponse: undefined,
 };
 
@@ -26,7 +26,7 @@ export const printFeature = createFeature({
     on(PrintActions.setPrintCapabilities, (state, {capabilities}): PrintState => {
       return {...state, capabilities, capabilitiesLoadingState: 'loaded'};
     }),
-    on(PrintActions.setPrintCapabilitiesError, (state): PrintState => {
+    on(PrintActions.setPrintCapabilitiesError, (): PrintState => {
       return {...initialState, capabilitiesLoadingState: 'error'};
     }),
     on(PrintActions.requestPrintCreation, (state, {creation}): PrintState => {
@@ -43,7 +43,7 @@ export const printFeature = createFeature({
         ...state,
         creation: initialState.creation,
         creationResponse: initialState.creationResponse,
-        creationLoadingState: 'undefined',
+        creationLoadingState: undefined,
       };
     }),
   ),

@@ -12,7 +12,7 @@ const FAVOURITE_ERROR_TOOLTIP =
   styleUrls: ['./base-map-data-item.component.scss'],
 })
 export class MapDataItemFavouriteComponent extends BaseMapDataItemComponent {
-  @Input() public override loadingState: LoadingState = 'undefined';
+  @Input() public override loadingState: LoadingState;
   @Input() public override invalid?: boolean;
 
   @Output() public override readonly deleteEvent = new EventEmitter<void>();

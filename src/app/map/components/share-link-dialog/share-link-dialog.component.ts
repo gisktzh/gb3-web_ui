@@ -18,7 +18,7 @@ import {ConfigService} from '../../../shared/services/config.service';
 export class ShareLinkDialogComponent implements OnInit, OnDestroy, HasSavingState {
   public shareLinkUrl?: string;
   public iframeCode?: string;
-  public savingState: LoadingState = 'undefined';
+  public savingState: LoadingState;
 
   private readonly subscriptions: Subscription = new Subscription();
   private readonly shareLinkId$ = this.store.select(selectId);

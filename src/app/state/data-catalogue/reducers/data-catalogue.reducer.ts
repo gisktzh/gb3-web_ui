@@ -8,7 +8,7 @@ export const dataCatalogueFeatureKey = 'dataCatalogue';
 export const initialState: DataCatalogueState = {
   items: [],
   filters: [],
-  loadingState: 'undefined',
+  loadingState: undefined,
 };
 
 export const dataCatalogueFeature = createFeature({

@@ -6,7 +6,7 @@ import {PageNotificationAdapter} from '../adapters/page-notification.adapter';
 export const pageNotificationFeatureKey = 'pageNotification';
 
 export const initialState: PageNotificationState = PageNotificationAdapter.getInitialState({
-  loadingState: 'undefined',
+  loadingState: undefined,
 });
 
 export const pageNotificationFeature = createFeature({

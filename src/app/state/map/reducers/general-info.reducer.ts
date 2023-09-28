@@ -5,7 +5,7 @@ import {GeneralInfoActions} from '../actions/general-info.actions';
 export const generalInfoFeatureKey = 'generalInfo';
 
 export const initialState: GeneralInfoState = {
-  loadingState: 'undefined',
+  loadingState: undefined,
   data: undefined,
 };
 
