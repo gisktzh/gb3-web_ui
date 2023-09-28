@@ -66,12 +66,12 @@ describe('HighlightSearchQueryPipe', () => {
     });
 
     it('highlights special characters from the search query', () => {
-      const textItem = 'abcde (fghi)';
-      const searchQuery = '(';
+      const textItem = 'abcde 🤔 (fghi)';
+      const searchQuery = '🤔 (';
 
       const result = pipe.transform(textItem, searchQuery);
 
-      const expected = 'abcde <b>(</b>fghi)';
+      const expected = 'abcde <b>🤔 (</b>fghi)';
       expect(result).toEqual(expected);
     });
   });
@@ -127,13 +127,13 @@ describe('HighlightSearchQueryPipe', () => {
     });
 
     it('highlights special characters from the search query', () => {
-      const textItem = 'AbC . * + ? $ ^ } { ) ( | ] [ \\ Def';
-      const searchQuery = ['.', '*', '+', '?', '$', '^', '}', '{', ')', '(', '|', ']', '[', '\\'];
+      const textItem = 'AbC . * + ? $ ^ } { ) ( | ] [ \\ Def \0 👌 hIj';
+      const searchQuery = ['.', '*', '+', '?', '$', '^', '}', '{', ')', '(', '|', ']', '[', '\\', '\0', '👌'];
 
       const result = pipe.transform(textItem, searchQuery);
 
       const expected =
-        'AbC <b>.</b> <b>*</b> <b>+</b> <b>?</b> <b>$</b> <b>^</b> <b>}</b> <b>{</b> <b>)</b> <b>(</b> <b>|</b> <b>]</b> <b>[</b> <b>\\</b> Def';
+        'AbC <b>.</b> <b>*</b> <b>+</b> <b>?</b> <b>$</b> <b>^</b> <b>}</b> <b>{</b> <b>)</b> <b>(</b> <b>|</b> <b>]</b> <b>[</b> <b>\\</b> Def <b>\0</b> <b>👌</b> hIj';
       expect(result).toEqual(expected);
     });
   });
