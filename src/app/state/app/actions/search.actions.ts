@@ -11,10 +11,11 @@ export const SearchActions = createActionGroup({
     'Search For Term': props<{term: string; options: SearchOptions}>(),
     'Set Search Api Error': errorProps(),
     'Set Search Api Results': props<{results: SearchApiResultMatch[]}>(),
-    'Clear Search': emptyProps(),
+    'Clear Search Term': emptyProps(),
     'Set Filter Groups': props<{filterGroups: SearchFilterGroup[]}>(),
     'Set Active Map Items Filter Group': props<{searchIndexes: SearchIndex[]}>(),
     'Set Filter Value': props<{groupLabel: string; filterLabel: string; isActive: boolean}>(),
     'Reset Filters': emptyProps(),
+    'Reset Search and Filters': emptyProps(),
   },
 });

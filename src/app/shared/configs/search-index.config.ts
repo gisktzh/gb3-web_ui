@@ -13,37 +13,37 @@ export type SearchIndexType =
 export const searchIndexConfig: SearchIndex[] = [
   {
     indexName: 'fme-addresses',
-    displayString: 'Adressen',
+    label: 'Adressen',
     active: true,
     indexType: 'addresses',
   },
   {
     indexName: 'fme-places',
-    displayString: 'Orte',
+    label: 'Orte',
     active: true,
     indexType: 'places',
   },
   {
     indexName: 'meta_gb2karten',
-    displayString: 'Karten',
+    label: 'Karten',
     active: true,
     indexType: 'metadata-maps',
   },
   {
     indexName: 'meta_product',
-    displayString: 'Produkte',
+    label: 'Produkte',
     active: true,
     indexType: 'metadata-products',
   },
   {
     indexName: 'meta_geodatensatz',
-    displayString: 'Geodatensatz',
+    label: 'Geodatensatz',
     active: true,
     indexType: 'metadata-datasets',
   },
   {
     indexName: 'meta_service',
-    displayString: 'Geodienste',
+    label: 'Geodienste',
     active: true,
     indexType: 'metadata-services',
   },

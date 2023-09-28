@@ -47,10 +47,11 @@ const mockContact = {
 const mockServiceDetailResponse = {
   service: {
     url: 'https://www.example.com/service',
-    guid: 1337,
+    uuid: '1337',
+    gdsernummer: 12,
     datasets: [
-      {name: 'data-1', guid: 1, kurzbeschreibung: 'Lorem ipsum dolor'},
-      {name: 'data-2', guid: 2, kurzbeschreibung: 'Lorem ipsum dolor'},
+      {name: 'data-1', uuid: '1', kurzbeschreibung: 'Lorem ipsum dolor'},
+      {name: 'data-2', uuid: '2', kurzbeschreibung: 'Lorem ipsum dolor'},
     ],
     name: 'test-service',
     beschreibung: 'Lorem ipsum dolor',
@@ -66,10 +67,11 @@ const mockServiceDetailResponse = {
 
 const mockMapDetailResponse = {
   map: {
-    guid: 131,
+    uuid: '131',
+    gb2_id: 12,
     datasets: [
-      {name: 'data-1', guid: 1, kurzbeschreibung: 'Lorem ipsum dolor'},
-      {name: 'data-2', guid: 2, kurzbeschreibung: 'Lorem ipsum dolor'},
+      {name: 'data-1', uuid: '1', kurzbeschreibung: 'Lorem ipsum dolor'},
+      {name: 'data-2', uuid: '2', kurzbeschreibung: 'Lorem ipsum dolor'},
     ],
     beschreibung: 'Lorem ipsum dolor',
     image_url: 'https://www.example.com/picture.png',
@@ -81,10 +83,11 @@ const mockMapDetailResponse = {
 
 const mockProductDetailResponse = {
   product: {
-    guid: 131,
+    uuid: '131',
+    gdpnummer: 12,
     datasets: [
-      {name: 'data-1', guid: 1, kurzbeschreibung: 'Lorem ipsum dolor'},
-      {name: 'data-2', guid: 2, kurzbeschreibung: 'Lorem ipsum dolor'},
+      {name: 'data-1', uuid: '1', kurzbeschreibung: 'Lorem ipsum dolor'},
+      {name: 'data-2', uuid: '2', kurzbeschreibung: 'Lorem ipsum dolor'},
     ],
     beschreibung: 'Lorem ipsum dolor',
     image_url: 'https://www.example.com/picture.png',
@@ -95,7 +98,8 @@ const mockProductDetailResponse = {
 
 const mockDatasetDetailResponse = {
   dataset: {
-    guid: 131,
+    uuid: '131',
+    gisZHNr: 12,
     beschreibung: 'Lorem ipsum dolor',
     image_url: 'https://www.example.com/picture.png',
     kontakt: {
@@ -104,7 +108,7 @@ const mockDatasetDetailResponse = {
     },
     name: 'Testmap',
     layers: [],
-    maps: [{name: 'test', guid: 123, topic: 'TopicTest'}],
+    maps: [{name: 'test', uuid: '123', topic: 'TopicTest', gb2_id: 1}],
     products: [],
     services: [],
     kurzbeschreibung: 'Lorem Ipsum',
@@ -116,6 +120,8 @@ const mockDatasetDetailResponse = {
     datengrundlage: null,
     pdf_name: null,
     pdf_url: null,
+    giszhnr: 5,
+    url_shop: null,
   },
 } as MetadataDatasetsDetailData;
 
@@ -175,7 +181,8 @@ describe('Gb3MetadataService', () => {
         version: mockServiceDetailResponse.service.version,
         url: mockServiceDetailResponse.service.url,
         imageUrl: mockServiceDetailResponse.service.image_url,
-        guid: mockServiceDetailResponse.service.guid,
+        uuid: mockServiceDetailResponse.service.uuid,
+        gisZHNr: mockServiceDetailResponse.service.gdsernummer,
         name: mockServiceDetailResponse.service.name,
         access: mockServiceDetailResponse.service.zugang,
         serviceType: mockServiceDetailResponse.service.servicetyp,
@@ -183,8 +190,8 @@ describe('Gb3MetadataService', () => {
         contact: {
           metadata: expectedMockDepartmentalContact,
         },
-        datasets: mockServiceDetailResponse.service.datasets.map(({name, guid, kurzbeschreibung}) => ({
-          guid,
+        datasets: mockServiceDetailResponse.service.datasets.map(({name, uuid, kurzbeschreibung}) => ({
+          uuid,
           name,
           shortDescription: kurzbeschreibung,
         })),
@@ -217,14 +224,15 @@ describe('Gb3MetadataService', () => {
       const expected: MapMetadata = {
         topic: mockMapDetailResponse.map.topic,
         imageUrl: mockMapDetailResponse.map.image_url,
-        guid: mockMapDetailResponse.map.guid,
+        uuid: mockMapDetailResponse.map.uuid,
+        gisZHNr: mockMapDetailResponse.map.gb2_id,
         name: mockMapDetailResponse.map.name,
         description: mockMapDetailResponse.map.beschreibung,
         contact: {
           geodata: expectedMockDepartmentalContact,
         },
-        datasets: mockMapDetailResponse.map.datasets.map(({name, guid, kurzbeschreibung}) => ({
-          guid,
+        datasets: mockMapDetailResponse.map.datasets.map(({name, uuid, kurzbeschreibung}) => ({
+          uuid,
           name,
           shortDescription: kurzbeschreibung,
         })),
@@ -256,14 +264,15 @@ describe('Gb3MetadataService', () => {
 
       const expected: ProductMetadata = {
         imageUrl: mockProductDetailResponse.product.image_url,
-        guid: mockProductDetailResponse.product.guid,
+        uuid: mockProductDetailResponse.product.uuid,
+        gisZHNr: mockProductDetailResponse.product.gdpnummer,
         name: mockProductDetailResponse.product.name,
         description: mockProductDetailResponse.product.beschreibung,
         contact: {
           metadata: expectedMockDepartmentalContact,
         },
-        datasets: mockProductDetailResponse.product.datasets.map(({name, guid, kurzbeschreibung}) => ({
-          guid,
+        datasets: mockProductDetailResponse.product.datasets.map(({name, uuid, kurzbeschreibung}) => ({
+          uuid,
           name,
           shortDescription: kurzbeschreibung,
         })),
@@ -297,7 +306,7 @@ describe('Gb3MetadataService', () => {
         keywords: mockDatasetDetailResponse.dataset.keywords,
         topics: mockDatasetDetailResponse.dataset.themen,
         layers: mockDatasetDetailResponse.dataset.layers.map((layer) => ({
-          guid: layer.guid,
+          id: layer.giszhnr,
           name: layer.name,
           dataProcurementType: layer.datenbezugart,
           description: layer.beschreibung,
@@ -311,16 +320,17 @@ describe('Gb3MetadataService', () => {
         usageRestrictions: mockDatasetDetailResponse.dataset.anwendungeinschraenkung,
         shortDescription: mockDatasetDetailResponse.dataset.kurzbeschreibung,
         imageUrl: mockDatasetDetailResponse.dataset.image_url,
-        guid: mockDatasetDetailResponse.dataset.guid,
+        uuid: mockDatasetDetailResponse.dataset.uuid,
+        gisZHNr: mockDatasetDetailResponse.dataset.giszhnr,
         name: mockDatasetDetailResponse.dataset.name,
         description: mockDatasetDetailResponse.dataset.beschreibung,
         contact: {
           metadata: expectedMockDepartmentalContact,
           geodata: expectedMockDepartmentalContact,
         },
-        maps: mockDatasetDetailResponse.dataset.maps.map(({name, guid, topic}) => ({name, guid, topic})),
-        products: mockDatasetDetailResponse.dataset.products.map(({name, guid}) => ({name, guid})),
-        services: mockDatasetDetailResponse.dataset.services.map(({name, guid, servicetyp}) => ({name, guid, serviceType: servicetyp})),
+        maps: mockDatasetDetailResponse.dataset.maps.map(({name, uuid, topic}) => ({name, uuid, topic})),
+        products: mockDatasetDetailResponse.dataset.products.map(({name, uuid}) => ({name, uuid})),
+        services: mockDatasetDetailResponse.dataset.services.map(({name, uuid, servicetyp}) => ({name, uuid, serviceType: servicetyp})),
       };
 
       service.loadDatasetDetail(testId).subscribe((result) => {
@@ -340,25 +350,25 @@ describe('Gb3MetadataService', () => {
         .subscribe((result) => {
           const expected: OverviewMetadataItem[] = [
             new ServiceOverviewMetadataItem(
-              mockServiceDetailResponse.service.guid,
+              mockServiceDetailResponse.service.uuid,
               mockServiceDetailResponse.service.name,
               mockServiceDetailResponse.service.beschreibung,
               mockServiceDetailResponse.service.kontakt.metadaten.amt,
             ),
             new MapOverviewMetadataItem(
-              mockMapDetailResponse.map.guid,
+              mockMapDetailResponse.map.uuid,
               mockMapDetailResponse.map.name,
               mockMapDetailResponse.map.beschreibung,
               mockMapDetailResponse.map.kontakt.geodaten.amt,
             ),
             new ProductOverviewMetadataItem(
-              mockProductDetailResponse.product.guid,
+              mockProductDetailResponse.product.uuid,
               mockProductDetailResponse.product.name,
               mockProductDetailResponse.product.beschreibung,
               mockProductDetailResponse.product.kontakt.metadaten.amt,
             ),
             new DatasetOverviewMetadataItem(
-              mockDatasetDetailResponse.dataset.guid,
+              mockDatasetDetailResponse.dataset.uuid,
               mockDatasetDetailResponse.dataset.name,
               mockDatasetDetailResponse.dataset.beschreibung,
               mockDatasetDetailResponse.dataset.kontakt.metadaten.amt,

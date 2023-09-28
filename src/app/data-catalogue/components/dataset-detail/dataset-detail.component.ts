@@ -77,7 +77,7 @@ export class DatasetDetailComponent extends AbstractBaseDetailComponent<DatasetM
 
   private extractInformationElements(datasetMetadata: DatasetMetadata): DataDisplayElement[] {
     return [
-      {title: 'GIS-ZH Nr.', value: datasetMetadata.guid.toString(), type: 'text'},
+      {title: 'GIS-ZH Nr.', value: datasetMetadata.gisZHNr.toString(), type: 'text'},
       {title: 'Bezeichnung', value: datasetMetadata.name, type: 'text'},
       {title: 'Kurzbeschreibung', value: datasetMetadata.shortDescription, type: 'text'},
       {title: 'Beschreibung', value: datasetMetadata.description, type: 'text'},

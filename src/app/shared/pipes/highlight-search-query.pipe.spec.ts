@@ -64,6 +64,16 @@ describe('HighlightSearchQueryPipe', () => {
       const expected = '<b>a Text consisting of this findable part</b>, and more';
       expect(result).toEqual(expected);
     });
+
+    it('highlights special characters from the search query', () => {
+      const textItem = 'abcde 🤔 (fghi)';
+      const searchQuery = '🤔 (';
+
+      const result = pipe.transform(textItem, searchQuery);
+
+      const expected = 'abcde <b>🤔 (</b>fghi)';
+      expect(result).toEqual(expected);
+    });
   });
 
   describe('multiple search queries', () => {
@@ -104,6 +114,27 @@ describe('HighlightSearchQueryPipe', () => {
       const result = pipe.transform(textItem, searchQuery);
 
       expect(result).toEqual(textItem);
+    });
+
+    it('ignores case', () => {
+      const textItem = 'A a Aa B b Bb C c Cc';
+      const searchQuery = ['A', 'b'];
+
+      const result = pipe.transform(textItem, searchQuery);
+
+      const expected = '<b>A</b> <b>a</b> <b>A</b><b>a</b> <b>B</b> <b>b</b> <b>B</b><b>b</b> C c Cc';
+      expect(result).toEqual(expected);
+    });
+
+    it('highlights special characters from the search query', () => {
+      const textItem = 'AbC . * + ? $ ^ } { ) ( | ] [ \\ Def \0 👌 hIj';
+      const searchQuery = ['.', '*', '+', '?', '$', '^', '}', '{', ')', '(', '|', ']', '[', '\\', '\0', '👌'];
+
+      const result = pipe.transform(textItem, searchQuery);
+
+      const expected =
+        'AbC <b>.</b> <b>*</b> <b>+</b> <b>?</b> <b>$</b> <b>^</b> <b>}</b> <b>{</b> <b>)</b> <b>(</b> <b>|</b> <b>]</b> <b>[</b> <b>\\</b> Def <b>\0</b> <b>👌</b> hIj';
+      expect(result).toEqual(expected);
     });
   });
 });

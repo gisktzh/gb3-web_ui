@@ -2,9 +2,9 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {SearchApiResultMatch} from '../interfaces/search-api-result-match.interface';
 import {BaseApiService} from '../../abstract-api.service';
-import {map} from 'rxjs/operators';
 import {SearchApiResult} from '../interfaces/search-api-result.interface';
 import {SearchIndex} from '../interfaces/search-index.interface';
+import {map} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -12,10 +12,10 @@ import {SearchIndex} from '../interfaces/search-index.interface';
 export class SearchService extends BaseApiService {
   protected apiBaseUrl = this.configService.apiConfig.searchApi.baseUrl;
 
-  public searchIndexes(term: string, searchIndexex: SearchIndex[]): Observable<SearchApiResultMatch[]> {
-    const searchIndexNames = searchIndexex.map((index) => index.indexName).toString();
+  public searchIndexes(term: string, searchIndexes: SearchIndex[]): Observable<SearchApiResultMatch[]> {
+    const searchIndexNames = searchIndexes.map((index) => index.indexName).toString();
     return this.getElasticsearch(searchIndexNames, term).pipe(
-      map((response: SearchApiResult[]) => this.combineSearchResults(response, searchIndexex)),
+      map((response: SearchApiResult[]) => this.combineSearchResults(response, searchIndexes)),
     );
   }
 
@@ -49,7 +49,7 @@ export class SearchService extends BaseApiService {
   private getIndexTitle(indexName: string, indexes: SearchIndex[]): string {
     const fromIndex = indexes.find((index) => index.indexName === indexName);
     if (fromIndex) {
-      return fromIndex.displayString;
+      return fromIndex.label;
     }
     return indexName;
   }

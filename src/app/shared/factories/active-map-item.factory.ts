@@ -21,6 +21,6 @@ export class ActiveMapItemFactory {
     }
 
     const fullLayerIdentifier = prefix + id;
-    return new DrawingActiveMapItem(title, fullLayerIdentifier, visible, opacity);
+    return new DrawingActiveMapItem(title, fullLayerIdentifier, id, visible, opacity);
   }
 }

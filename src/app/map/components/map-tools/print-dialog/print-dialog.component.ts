@@ -3,8 +3,8 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {LoadingState} from '../../../../shared/types/loading-state.type';
 import {Store} from '@ngrx/store';
 import {BehaviorSubject, combineLatestWith, distinctUntilChanged, filter, Subscription, take, tap} from 'rxjs';
-import {selectCreationLoadingState, selectInfo, selectInfoLoadingState} from '../../../../state/map/reducers/print.reducer';
-import {PrintCreation, PrintCreationLayer, PrintInfo, PrintOrientation} from '../../../../shared/interfaces/print.interface';
+import {selectCapabilities, selectCapabilitiesLoadingState, selectCreationLoadingState} from '../../../../state/map/reducers/print.reducer';
+import {PrintCapabilities, PrintCreation, PrintMapItem, ReportOrientation} from '../../../../shared/interfaces/print.interface';
 import {PrintActions} from '../../../../state/map/actions/print.actions';
 import {MapConfigState} from '../../../../state/map/states/map-config.state';
 import {selectMapConfigState} from '../../../../state/map/reducers/map-config.reducer';
@@ -18,14 +18,13 @@ import {ConfigService} from '../../../../shared/services/config.service';
 interface PrintForm {
   title: FormControl<string | null>;
   comment: FormControl<string | null>;
-  layoutSize: FormControl<string | null>;
-  layoutOrientation: FormControl<PrintOrientation | null>;
+  reportLayout: FormControl<string | null>;
+  reportOrientation: FormControl<ReportOrientation | null>;
   dpi: FormControl<number | null>;
   rotation: FormControl<number | null>;
   scale: FormControl<number | null>;
-  outputFormat: FormControl<string | null>;
+  format: FormControl<string | null>;
   showLegend: FormControl<boolean | null>;
-  printActiveMapsSeparately: FormControl<boolean | null>;
 }
 
 @Component({
@@ -37,22 +36,22 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
   public readonly formGroup: FormGroup<PrintForm> = new FormGroup({
     title: new FormControl(),
     comment: new FormControl(),
-    layoutSize: new FormControl('', [Validators.required]),
-    layoutOrientation: new FormControl(),
+    reportLayout: new FormControl('', [Validators.required]),
+    reportOrientation: new FormControl(),
     dpi: new FormControl(0, [Validators.required]),
     rotation: new FormControl(0, [Validators.min(-90), Validators.max(90)]),
     scale: new FormControl(0, [Validators.required]),
-    outputFormat: new FormControl('', [Validators.required]),
+    format: new FormControl('', [Validators.required]),
     showLegend: new FormControl(false, [Validators.required]),
-    printActiveMapsSeparately: new FormControl(false, [Validators.required]),
   });
 
-  public printInfo?: PrintInfo;
-  public printInfoLoadingState: LoadingState = 'undefined';
+  public printCapabilities?: PrintCapabilities;
+  public printCapabilitiesLoadingState: LoadingState = 'undefined';
   public printCreationLoadingState: LoadingState = 'undefined';
   public mapConfigState?: MapConfigState;
   public activeMapItems?: ActiveMapItem[];
-  public uniqueLayoutSizes: string[] = [];
+  public uniqueReportLayouts: string[] = [];
+  public readonly scales: number[] = this.configService.printConfig.scales;
 
   private readonly isFormInitialized: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private readonly subscriptions: Subscription = new Subscription();
@@ -62,7 +61,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     private readonly basemapConfigService: BasemapConfigService,
     private readonly configService: ConfigService,
   ) {
-    // disable the form until the print info from the print API returns; otherwise the form is not complete.
+    // disable the form until the print capabilities from the print API returns; otherwise the form is not complete.
     this.formGroup.disable();
   }
 
@@ -100,20 +99,20 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
           }),
           // for the print preview we only use some properties and only if they've changed
           map(([value, _]) => ({
-            layoutSize: value.layoutSize,
-            layoutOrientation: value.layoutOrientation,
+            reportLayout: value.reportLayout,
+            reportOrientation: value.reportOrientation,
             scale: value.scale,
             rotation: value.rotation,
           })),
           distinctUntilChanged(
             (previous, current) =>
-              previous.layoutSize === current.layoutSize &&
-              previous.layoutOrientation === current.layoutOrientation &&
+              previous.reportLayout === current.reportLayout &&
+              previous.reportOrientation === current.reportOrientation &&
               previous.scale === current.scale &&
               previous.rotation === current.rotation,
           ),
           tap((value) => {
-            this.updatePrintPreview(value.layoutSize, value.layoutOrientation, value.scale, value.rotation);
+            this.updatePrintPreview(value.reportLayout, value.reportOrientation, value.scale, value.rotation);
           }),
         )
         .subscribe(),
@@ -122,14 +121,14 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     // initialize the form (once)
     this.subscriptions.add(
       this.store
-        .select(selectInfo)
+        .select(selectCapabilities)
         .pipe(
           combineLatestWith(this.store.select(selectMapConfigState)),
-          filter(([printInfo, _]) => printInfo !== undefined),
+          filter(([printCapabilities, _]) => printCapabilities !== undefined),
           take(1),
-          tap(([printInfo, mapConfigState]) => {
-            this.printInfo = printInfo;
-            this.initializeDefaultFormValues(printInfo, mapConfigState.scale);
+          tap(([printCapabilities, mapConfigState]) => {
+            this.printCapabilities = printCapabilities;
+            this.initializeDefaultFormValues(printCapabilities, mapConfigState.scale);
           }),
         )
         .subscribe(),
@@ -137,10 +136,10 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
 
     this.subscriptions.add(
       this.store
-        .select(selectInfoLoadingState)
+        .select(selectCapabilitiesLoadingState)
         .pipe(
-          tap((printInfoLoadingState) => {
-            this.printInfoLoadingState = printInfoLoadingState;
+          tap((printCapabilitiesLoadingState) => {
+            this.printCapabilitiesLoadingState = printCapabilitiesLoadingState;
             this.updateFormGroupState();
           }),
         )
@@ -162,45 +161,45 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.store
         .select(selectMapConfigState)
-        .pipe(
-          tap((mapConfigState) => {
-            this.mapConfigState = mapConfigState;
-          }),
-        )
+        .pipe(tap((mapConfigState) => (this.mapConfigState = mapConfigState)))
         .subscribe(),
     );
 
     this.subscriptions.add(
       this.store
         .select(selectItems)
-        .pipe(
-          tap((activeMapItems) => {
-            this.activeMapItems = activeMapItems;
-          }),
-        )
+        .pipe(tap((activeMapItems) => (this.activeMapItems = activeMapItems)))
         .subscribe(),
     );
   }
 
   private updatePrintPreview(
-    layoutSize: string | null | undefined,
-    layoutOrientation: string | null | undefined,
+    reportLayout: string | null | undefined,
+    reportOrientation: string | null | undefined,
     scale: number | null | undefined,
     rotation: number | null | undefined,
   ) {
-    const currentLayout = this.printInfo?.layouts.find((layout) => layout.size === layoutSize && layout.orientation === layoutOrientation);
-    this.store.dispatch(
-      PrintActions.showPrintPreview({
-        scale: scale ?? 0,
-        height: currentLayout?.map.height ?? 0,
-        width: currentLayout?.map.width ?? 0,
-        rotation: rotation ?? 0,
-      }),
+    let currentReport = this.printCapabilities?.reports.find(
+      (report) => report.layout === reportLayout && report.orientation === reportOrientation,
     );
+    if (!currentReport) {
+      // find the current report by only using the layout because some reports don't have an orientation (e.g. 'kartenset')
+      currentReport = this.printCapabilities?.reports.find((report) => report.layout === reportLayout);
+    }
+    if (currentReport && scale) {
+      this.store.dispatch(
+        PrintActions.showPrintPreview({
+          scale: scale,
+          height: currentReport.map.height,
+          width: currentReport.map.width,
+          rotation: rotation ?? 0,
+        }),
+      );
+    }
   }
 
   private updateFormGroupState() {
-    if (!this.isFormInitialized || this.printInfoLoadingState !== 'loaded' || this.printCreationLoadingState === 'loading') {
+    if (!this.isFormInitialized || this.printCapabilitiesLoadingState !== 'loaded' || this.printCreationLoadingState === 'loading') {
       this.formGroup.disable();
     } else {
       this.formGroup.enable();
@@ -214,43 +213,34 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     }
 
     const formGroupValue = this.formGroup.value;
-    const currentLayout = this.printInfo?.layouts.find((layout) => layout.size === formGroupValue.layoutSize);
-    if (!currentLayout?.rotation) {
-      this.formGroup.controls.rotation.disable({emitEvent});
+    const currentReport = this.printCapabilities?.reports.find((report) => report.layout === formGroupValue.reportLayout);
+    if (!currentReport?.orientation) {
+      this.formGroup.controls.reportOrientation.disable({emitEvent});
     } else {
-      this.formGroup.controls.rotation.enable({emitEvent});
-    }
-    if (!currentLayout?.orientation) {
-      this.formGroup.controls.layoutOrientation.disable({emitEvent});
-    } else {
-      this.formGroup.controls.layoutOrientation.enable({emitEvent});
+      this.formGroup.controls.reportOrientation.enable({emitEvent});
     }
 
-    // TODO: remove the following two as soon as the legends gets printed or the active map items can be printed separately
+    // TODO (GB3-440) - remove the following line as soon as the legends gets printed
     this.formGroup.controls.showLegend.disable({emitEvent});
-    this.formGroup.controls.printActiveMapsSeparately.disable({emitEvent});
   }
 
-  private initializeDefaultFormValues(printInfo: PrintInfo | undefined, currentScale: number) {
-    const defaultLayout = printInfo?.layouts[0];
-    const defaultScale = printInfo?.scales
-      .map((scale) => scale.value)
-      .reduce(function (prev, curr) {
-        return Math.abs(curr - currentScale) < Math.abs(prev - currentScale) ? curr : prev;
-      });
+  private initializeDefaultFormValues(printCapabilities: PrintCapabilities | undefined, currentScale: number) {
+    const defaultReport = printCapabilities?.reports[0];
+    const defaultScale = this.configService.printConfig.scales.reduce(function (prev, curr) {
+      return Math.abs(curr - currentScale) < Math.abs(prev - currentScale) ? curr : prev;
+    });
     this.formGroup.setValue({
       title: '',
       comment: null,
-      layoutSize: defaultLayout?.size ?? '',
-      layoutOrientation: defaultLayout?.orientation ?? null,
-      dpi: printInfo?.dpis[0]?.value ?? 0,
+      reportLayout: defaultReport?.layout ?? '',
+      reportOrientation: defaultReport?.orientation ?? null,
+      dpi: printCapabilities?.dpis[0] ?? 0,
       rotation: null,
       scale: defaultScale ?? 0,
-      outputFormat: printInfo?.outputFormats[0]?.name ?? '',
+      format: printCapabilities?.formats[0] ?? '',
       showLegend: false,
-      printActiveMapsSeparately: false,
     });
-    this.uniqueLayoutSizes = printInfo ? [...new Set(printInfo.layouts.map((layout) => layout.size))] : [];
+    this.uniqueReportLayouts = printCapabilities ? [...new Set(printCapabilities.reports.map((report) => report.layout))] : [];
     this.updateFormGroupControlsState(true);
     this.isFormInitialized.next(true);
   }
@@ -258,38 +248,33 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
   private createPrintCreation(): PrintCreation {
     const value = this.formGroup.value;
     return {
-      units: 'm', // TODO: where does this unit come from and for what is it used for?
-      dpi: value.dpi ?? 0,
-      layoutSize: value.layoutSize ?? '',
-      layoutOrientation: value.layoutOrientation ?? undefined,
-      outputFormat: value.outputFormat ?? '',
-      srs: `EPSG:${this.configService.mapConfig.defaultMapConfig.srsId}`,
-      layers: this.createPrintCreationLayers(),
-      pages: [
-        {
-          scale: value.scale ?? 0,
-          withLegend: value.showLegend ?? false,
-          userTitle: value.title ?? '',
-          userComment: value.comment ?? '',
-          topicTitle: this.activeMapItems
-            ? this.activeMapItems
-                .filter((activeMapItem) => activeMapItem.visible)
-                .map((activeMapItem) => activeMapItem.title)
-                .join(', ')
-            : '',
-          headerImg: 'http://127.0.0.1/images/LogoGIS.jpg', // TODO: what?
-          center: [this.mapConfigState?.center.x ?? 0, this.mapConfigState?.center.y ?? 0],
-          extent: [], // this seems to be optional
-          rotation: value.rotation ?? 0,
-          topic: '', // TODO: what is this property used for?
-        },
-      ],
+      format: value.format ?? '',
+      reportLayout: value.reportLayout ?? '',
+      reportOrientation: value.reportOrientation ?? undefined,
+      attributes: {
+        reportTitle: this.activeMapItems
+          ? this.activeMapItems
+              .filter((activeMapItem) => activeMapItem.visible)
+              .map((activeMapItem) => activeMapItem.title)
+              .join(', ')
+          : '',
+        userTitle: value.title ?? '',
+        userComment: value.comment ?? '',
+        showLegend: value.showLegend ?? false,
+      },
+      map: {
+        scale: value.scale ?? 0,
+        dpi: value.dpi ?? 0,
+        center: [this.mapConfigState?.center.x ?? 0, this.mapConfigState?.center.y ?? 0],
+        rotation: value.rotation ?? 0,
+        mapItems: this.createPrintCreationMapItems(),
+      },
     };
   }
 
-  private createPrintCreationLayers(): PrintCreationLayer[] {
+  private createPrintCreationMapItems(): PrintMapItem[] {
     // order matters: the lowest index has the highest visibility
-    const layers: PrintCreationLayer[] = [];
+    const mapItems: PrintMapItem[] = [];
 
     // add all active map items
     if (this.activeMapItems) {
@@ -298,23 +283,20 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
         .forEach((activeMapItem) => {
           switch (activeMapItem.settings.type) {
             case 'drawing':
-              // TODO: Print drawings
+              // TODO (GB3-604, GB3-606) - implement print drawings
               console.warn('Printing drawings is not implemented yet.');
               break;
             case 'gb2Wms':
-              layers.push({
+              mapItems.push({
                 layers: activeMapItem.settings.layers.filter((layer) => layer.visible).map((layer) => layer.layer),
                 type: 'WMS',
                 opacity: activeMapItem.opacity,
+                url: activeMapItem.settings.url,
+                mapTitle: activeMapItem.title,
                 customParams: {
-                  dpi: this.configService.mapConfig.defaultMapConfig.srsId, // TODO: where does this come from and what is it used for?
-                  transparent: true, // TODO: where does this come from and what is it used for?
                   format: this.configService.gb2Config.wmsFormatMimeType,
+                  transparent: true, // always true
                 },
-                format: this.configService.gb2Config.wmsFormatMimeType,
-                styles: [''], // TODO: what?
-                singleTile: true, // TODO: what?
-                baseURL: activeMapItem.settings.url,
               });
               break;
           }
@@ -330,25 +312,19 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
           // a blank basemap does not have to be printed
           break;
         case 'wms':
-          layers.push({
+          mapItems.push({
             layers: activeBasemap.layers.map((layer) => layer.name),
             type: 'WMS',
             opacity: 1,
-            customParams: {
-              dpi: this.configService.mapConfig.defaultMapConfig.srsId, // TODO: where does this come from and what is it used for?
-              transparent: true, // TODO: where does this come from and what is it used for?
-              format: this.configService.gb2Config.wmsFormatMimeType,
-            },
-            format: this.configService.gb2Config.wmsFormatMimeType,
-            styles: [''], // TODO: what?
-            singleTile: true, // TODO: what?
-            baseURL: activeBasemap.url,
+            url: activeBasemap.url,
+            mapTitle: activeBasemap.title,
+            background: true,
           });
           break;
       }
     }
 
     // reverse the order as the print API uses an inverse positioning to draw them (lowest index has lowest visibility)
-    return layers.map((layer, index, array) => array[array.length - 1 - index]);
+    return mapItems.reverse();
   }
 }

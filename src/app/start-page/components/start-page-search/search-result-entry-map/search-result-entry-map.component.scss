@@ -1,0 +1,24 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'mixins/helpers.mixin' as mixins;
+
+.search-result-entry-map {
+  display: flex;
+  padding: 12px 0 11px 0;
+  height: 46px;
+  overflow: hidden;
+
+  .search-result-entry-map__image {
+    height: 32px;
+    width: 32px;
+    align-self: center;
+    margin-right: 8px;
+    border-radius: 4px;
+  }
+
+  .search-result-entry-map__title {
+    @include mixins.single-line-text;
+    margin-right: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+}

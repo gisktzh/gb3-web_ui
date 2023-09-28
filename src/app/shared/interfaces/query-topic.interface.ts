@@ -1,4 +1,4 @@
-export interface QueryLayer {
+export interface QueryTopic {
   topic: string;
   /**
    * Comma-separated list of layernames to be queried

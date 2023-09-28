@@ -76,7 +76,7 @@ export class Gb3MetadataService extends Gb3ApiService {
       map((result) =>
         result.datasets.map((dataset) => {
           const {
-            guid,
+            uuid: guid,
             description,
             name,
             contact: {
@@ -97,7 +97,7 @@ export class Gb3MetadataService extends Gb3ApiService {
       map((result) =>
         result.products.map((product) => {
           const {
-            guid,
+            uuid: guid,
             description,
             name,
             contact: {
@@ -117,7 +117,7 @@ export class Gb3MetadataService extends Gb3ApiService {
       map((result) =>
         result.maps.map((mapMetadata) => {
           const {
-            guid,
+            uuid: guid,
             description,
             name,
             contact: {
@@ -137,7 +137,7 @@ export class Gb3MetadataService extends Gb3ApiService {
       map((result) =>
         result.services.map((service) => {
           const {
-            guid,
+            uuid: guid,
             description,
             name,
             contact: {
@@ -153,10 +153,11 @@ export class Gb3MetadataService extends Gb3ApiService {
   private transformDatasetsDetailDataToDatasetMetadata(dataset: Dataset): DatasetMetadata {
     return {
       name: dataset.name,
-      maps: dataset.maps.map(({guid, name, topic}) => ({guid, name, topic})),
-      guid: dataset.guid,
+      maps: dataset.maps.map(({uuid, name, topic}) => ({uuid, name, topic})),
+      uuid: dataset.uuid,
+      gisZHNr: dataset.giszhnr,
       keywords: dataset.keywords,
-      products: dataset.products.map(({name, guid}) => ({name, guid})),
+      products: dataset.products.map(({name, uuid}) => ({name, uuid})),
       shortDescription: dataset.kurzbeschreibung,
       description: dataset.beschreibung,
       remarks: dataset.bemerkungen,
@@ -175,12 +176,12 @@ export class Gb3MetadataService extends Gb3ApiService {
         dataProcurementType: layer.datenbezugart,
         metadataVisibility: layer.metadaten_sichtbarkeit,
         description: layer.beschreibung,
-        guid: layer.guid,
+        id: layer.giszhnr,
         name: layer.name,
       })),
       services: dataset.services.map((service) => ({
         serviceType: service.servicetyp,
-        guid: service.guid,
+        uuid: service.uuid,
         name: service.name,
       })),
     };
@@ -189,7 +190,8 @@ export class Gb3MetadataService extends Gb3ApiService {
   private transformMapsDetailToMapMetadata(mapData: Map): MapMetadata {
     return {
       topic: mapData.topic,
-      guid: mapData.guid,
+      uuid: mapData.uuid,
+      gisZHNr: mapData.gb2_id,
       name: mapData.name,
       description: mapData.beschreibung,
       imageUrl: mapData.image_url,
@@ -202,7 +204,8 @@ export class Gb3MetadataService extends Gb3ApiService {
 
   private transformServicesDetailToServiceMetadata(service: Service): ServiceMetadata {
     return {
-      guid: service.guid,
+      uuid: service.uuid,
+      gisZHNr: service.gdsernummer,
       name: service.name,
       url: service.url,
       version: service.version,
@@ -219,7 +222,8 @@ export class Gb3MetadataService extends Gb3ApiService {
 
   private transformProductDetailToProductMetadata(product: Product): ProductMetadata {
     return {
-      guid: product.guid,
+      uuid: product.uuid,
+      gisZHNr: product.gdpnummer,
       name: product.name,
       contact: {
         metadata: this.extractContactDetails(product.kontakt.metadaten),
@@ -244,7 +248,7 @@ export class Gb3MetadataService extends Gb3ApiService {
   >(dataset: T): LinkedDataset {
     return {
       shortDescription: dataset.kurzbeschreibung,
-      guid: dataset.guid,
+      uuid: dataset.uuid,
       name: dataset.name,
     };
   }

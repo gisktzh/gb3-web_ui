@@ -14,6 +14,10 @@ export class EsriMapMock implements Partial<Map> {
     this.layers.add(layer, index);
   }
 
+  public addMany(layers: Layer[]) {
+    this.layers.addMany(layers);
+  }
+
   public remove(layer: Layer): Layer {
     this.layers.remove(layer);
     return layer;

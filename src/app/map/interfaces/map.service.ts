@@ -78,8 +78,8 @@ export interface MapService extends AddToMapVisitor {
   /** Adds a geometry to a DrawingLayer */
   addGeometryToDrawingLayer(geometry: GeometryWithSrs, drawingLayer: InternalDrawingLayer): void;
 
-  /** Clears all geometries from a DrawingLayer */
-  clearDrawingLayer(drawingLayer: InternalDrawingLayer): void;
+  /** Clears all geometries from an internal DrawingLayer */
+  clearInternalDrawingLayer(drawingLayer: InternalDrawingLayer): void;
 
   /** Returns the toolservice that is used for the given MapService implementation. */
   getToolService(): ToolService;

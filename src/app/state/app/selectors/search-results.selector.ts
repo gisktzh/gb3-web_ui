@@ -22,29 +22,34 @@ export const selectFilteredSearchApiResultMatches = createSelector(
     const filters = filterGroups.flatMap((filterGroup) => filterGroup.filters);
     // no filter is active means all results are shown (all filters active === no filter active)
     const noFilterActive = filters.every((filter) => !filter.isActive);
+    const activeSearchFilterIndexes: Set<SearchType> = new Set(filters.filter((filter) => filter.isActive).map((filter) => filter.type));
 
-    const activeSearchFilterIndexes: Set<SearchType> = new Set(
-      filters.filter((filter) => noFilterActive || filter.isActive).map((filter) => filter.type),
-    );
-    return searchApiResultMatches.filter((resultMatch) => {
-      switch (resultMatch.indexType) {
-        case 'activeMapItems':
-          const indexConfig = availableSpecialSearchIndexes.find(
-            (specialIndex) => resultMatch.indexName && specialIndex.displayString.toLowerCase() === resultMatch.indexName.toLowerCase(),
-          );
-          return (
-            indexConfig &&
-            filters.some(
-              (filter) =>
-                filter.type === 'activeMapItems' &&
-                filter.label.toLowerCase() === indexConfig.displayString.toLowerCase() &&
-                (noFilterActive || filter.isActive),
-            )
-          );
-        default:
-          return noFilterActive || activeSearchFilterIndexes.has(resultMatch.indexType);
-      }
-    });
+    return noFilterActive
+      ? searchApiResultMatches // simply return all matches if no filter is active
+      : searchApiResultMatches.filter((resultMatch) => {
+          switch (resultMatch.indexType) {
+            case 'activeMapItems':
+              // the filters for this index type are created dynamically depending on the current active map items
+              // first: find the search index config based on the index name (side-note: the 'indexName' in the search result
+              //        is actually its label)
+              const specialSearchIndex = availableSpecialSearchIndexes.find(
+                (searchIndex) =>
+                  resultMatch.indexName && searchIndex.label && searchIndex.label.toLowerCase() === resultMatch.indexName.toLowerCase(),
+              );
+              // secondly: now find the corresponding filter and use its 'isActive' value
+              return (
+                specialSearchIndex &&
+                filters.some(
+                  (filter) =>
+                    filter.type === 'activeMapItems' &&
+                    filter.label.toLowerCase() === specialSearchIndex.label.toLowerCase() &&
+                    filter.isActive,
+                )
+              );
+            default:
+              return activeSearchFilterIndexes.has(resultMatch.indexType);
+          }
+        });
   },
 );
 
@@ -98,7 +103,7 @@ export const selectFilteredMetadataItems = createSelector(
               return item.type === 'Geoservice';
           }
         })
-        .find((item) => item.guid === +match.id);
+        .find((item) => item.uuid === match.id.toString()); // TODO: Fix API return values
       if (metadataItem) {
         filteredMetadataItems.push(metadataItem);
       }

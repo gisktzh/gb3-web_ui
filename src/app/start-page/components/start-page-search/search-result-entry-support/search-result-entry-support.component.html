@@ -1,0 +1,21 @@
+<div *ngFor="let item of filteredFaqItems">
+  <div class="search-result-entry-support">
+    <div class="search-result-entry-support__description">
+      <p class="search-result-entry-support__description__title">{{ item.question }}</p>
+      <div class="search-result-entry-support__description__properties">
+        <p>
+          <span class="search-result-entry-support__description__properties__title">Typ: </span>
+          FAQ
+        </p>
+        <p>
+          <span class="search-result-entry-support__description__properties__title">Antwort: </span>
+          {{ item.answer }}
+        </p>
+      </div>
+    </div>
+    <a [routerLink]="['/', mainPageEnum.Support, supportPageEnum.Faq]" color="primary" data-test-id="open-faq" mat-icon-button>
+      <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
+    </a>
+  </div>
+  <mat-divider></mat-divider>
+</div>

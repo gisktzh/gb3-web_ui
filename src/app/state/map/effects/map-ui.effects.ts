@@ -44,7 +44,7 @@ export class MapUiEffects {
       map((value) => {
         switch (value.mapSideDrawerContent) {
           case 'print':
-            return PrintActions.loadPrintInfo();
+            return PrintActions.loadPrintCapabilities();
         }
       }),
     );
@@ -64,6 +64,15 @@ export class MapUiEffects {
       ofType(MapUiActions.showLegend),
       map(() => {
         return LegendActions.loadLegend();
+      }),
+    );
+  });
+
+  public hideLegend$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapUiActions.hideLegend),
+      map(() => {
+        return LegendActions.hideLegend();
       }),
     );
   });
@@ -135,7 +144,7 @@ export class MapUiEffects {
     );
   });
 
-  public cancelToolAfterHidingUiElements = createEffect(() => {
+  public cancelToolAfterHidingUiElements$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapUiActions.changeUiElementsVisibility),
       concatLatestFrom(() => this.store.select(selectActiveTool)),

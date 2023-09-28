@@ -24,7 +24,7 @@
     top: 0;
     left: 0;
     height: 100%;
-    width: 450px;
+    width: calc(450px + #{ktzh-variables.$map-overlay-width-adjustment});
   }
 
   .map-container__all-map-items-container {
@@ -83,6 +83,9 @@
     height: 48px;
     width: 125px;
     background-color: ktzh-variables.$zh-background-color;
+    // TODO: temporary hack to prevent the search bar from colliding with this button if the screen size is too small;
+    // this can be removed as soon as the breakpoints are properly implemented
+    z-index: 0;
   }
 
   .map-container__map-attribute-filter {
