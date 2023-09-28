@@ -144,7 +144,7 @@ export class MapUiEffects {
     );
   });
 
-  public cancelToolAfterHidingUiElements = createEffect(() => {
+  public cancelToolAfterHidingUiElements$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapUiActions.changeUiElementsVisibility),
       concatLatestFrom(() => this.store.select(selectActiveTool)),

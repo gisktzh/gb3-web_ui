@@ -11,7 +11,7 @@ import {ToolService} from '../../map/interfaces/tool.service';
 export class MapServiceStub implements MapService {
   addGeometryToDrawingLayer(geometry: GeometryWithSrs, drawingLayer: InternalDrawingLayer): void {}
 
-  clearDrawingLayer(drawingLayer: InternalDrawingLayer): void {}
+  clearInternalDrawingLayer(drawingLayer: InternalDrawingLayer): void {}
 
   addDrawingLayer(mapItem: DrawingActiveMapItem, position: number) {}
 
