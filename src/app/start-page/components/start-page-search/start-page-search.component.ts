@@ -27,15 +27,15 @@ const FILTER_DIALOG_WIDTH_IN_PX = 956;
   templateUrl: './start-page-search.component.html',
   styleUrls: ['./start-page-search.component.scss'],
 })
-export class StartPageSearch implements OnInit, OnDestroy {
+export class StartPageSearchComponent implements OnInit, OnDestroy {
   public searchTerms: string[] = [];
   public filteredMetadataItems: OverviewMetadataItem[] = [];
   public filteredMaps: Map[] = [];
   public filteredFaqItems: FaqItem[] = [];
-  public combinedSearchAndDataCatalogLoadingState: LoadingState = undefined;
-  public layerCatalogLoadingState: LoadingState = undefined;
-  public searchApiLoadingState: LoadingState = undefined;
-  public dataCatalogLoadingState: LoadingState = undefined;
+  public combinedSearchAndDataCatalogLoadingState: LoadingState;
+  public layerCatalogLoadingState: LoadingState;
+  public searchApiLoadingState: LoadingState;
+  public dataCatalogLoadingState: LoadingState;
   public activeSearchFilterValues: {groupLabel: string; filterLabel: string}[] = [];
 
   private readonly searchConfig = this.configService.searchConfig.startPage;
