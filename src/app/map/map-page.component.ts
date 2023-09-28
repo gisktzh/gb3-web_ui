@@ -67,10 +67,7 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
     }
   }
 
-  public toggleSelection() {
-    this.store.dispatch(MapUiActions.showBasemapSelectorMobile());
-    this.store.dispatch(MapUiActions.setBottomSheetHeight({bottomSheetHeight: BottomSheetHeight.small}));
-  }
+  public toggleSelection() {}
 
   public setIsMapDataCatalogueMinimized(isMinimized: boolean) {
     this.isMapDataCatalogueMinimized = isMinimized;

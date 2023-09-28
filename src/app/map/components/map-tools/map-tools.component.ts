@@ -64,7 +64,10 @@ export class MapToolsComponent implements OnInit, OnDestroy {
     this.store.dispatch(GeolocationActions.startLocationRequest());
   }
 
-  public goToInitialExtent() {}
+  public toggleSelection() {
+    this.store.dispatch(MapUiActions.showBasemapSelectorMobile());
+    this.store.dispatch(MapUiActions.setBottomSheetHeight({bottomSheetHeight: BottomSheetHeight.small}));
+  }
 
   public toggleToolMenu(toolToToggle: ToolMenuVisibility) {
     const tool: ToolMenuVisibility | undefined = this.toolMenuVisibility === toolToToggle ? undefined : toolToToggle;
