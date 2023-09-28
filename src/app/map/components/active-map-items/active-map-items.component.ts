@@ -9,6 +9,8 @@ import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.re
 import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
 import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
 import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
+import {ScreenMode} from 'src/app/shared/types/screen-size.type';
+import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 
 const FAVOURITE_HELPER_MESSAGES = {
   noMapsAdded: 'Fügen Sie mindestens 1 Karte hinzu, um einen Favoriten anzulegen.',
@@ -26,10 +28,12 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
   public isMinimized = false;
   public numberOfNotices: number = 0;
   public numberOfUnreadNotices: number = 0;
+  public screenMode: ScreenMode = 'regular';
   public readonly favouriteHelperMessages = FAVOURITE_HELPER_MESSAGES;
 
   private readonly activeMapItems$ = this.store.select(selectItems);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
+  private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(private readonly store: Store) {}
@@ -85,6 +89,16 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
         .pipe(
           tap((isAuthenticated) => {
             this.isAuthenticated = isAuthenticated;
+          }),
+        )
+        .subscribe(),
+    );
+
+    this.subscriptions.add(
+      this.screenMode$
+        .pipe(
+          tap((screenMode) => {
+            this.screenMode = screenMode;
           }),
         )
         .subscribe(),

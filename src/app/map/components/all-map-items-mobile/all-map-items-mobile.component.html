@@ -1,16 +1,20 @@
 <bottom-sheet-overlay *ngIf="screenMode === 'mobile'" (closeEvent)="close()" [isVisible]="isVisible" class="bottom-sheet">
   <mat-tab-group>
-    <mat-tab #tab1 [ngClass]="{'active-tab': tab1.isActive}">
+    <mat-tab #tab1>
       <ng-template mat-tab-label>
         <mat-icon svgIcon="ktzh_map_management"></mat-icon>
         Aktive Karten
       </ng-template>
+      <mat-divider></mat-divider>
+      <active-map-items></active-map-items>
     </mat-tab>
-    <mat-tab [ngClass]="{'active-tab': tab2.isActive}" #tab2>
+    <mat-tab #tab2>
       <ng-template mat-tab-label>
         <mat-icon svgIcon="ktzh_map_management"></mat-icon>
         Kartenkatalog
       </ng-template>
+      <mat-divider></mat-divider>
+      <map-data-catalogue></map-data-catalogue>
     </mat-tab>
   </mat-tab-group>
 </bottom-sheet-overlay>

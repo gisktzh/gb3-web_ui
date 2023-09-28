@@ -1,5 +1,9 @@
 <mat-card appearance="raised" class="active-map-items">
-  <mat-card-header class="active-map-items__header" [ngClass]="{'active-map-items__header--minimized': isMinimized}">
+  <mat-card-header
+    *ngIf="screenMode !== 'mobile'"
+    class="active-map-items__header"
+    [ngClass]="{'active-map-items__header--minimized': isMinimized}"
+  >
     <h2 class="active-map-items__header__title">Aktive Karten</h2>
     <span
       class="active-map-items__header__badge"
