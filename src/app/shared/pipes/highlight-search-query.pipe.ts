@@ -24,10 +24,18 @@ export class HighlightSearchQueryPipe implements PipeTransform {
    */
   private getRegularExpression(searchQuery: string | string[]): RegExp {
     if (typeof searchQuery === 'string') {
-      return new RegExp(searchQuery.toLowerCase());
+      return new RegExp(this.escapeRegExp(searchQuery).toLowerCase());
     }
 
-    const multipleSearchQueries = searchQuery.join('|');
+    const multipleSearchQueries = searchQuery.map((query) => this.escapeRegExp(query).toLowerCase()).join('|');
     return new RegExp(`(${multipleSearchQueries})`);
+  }
+
+  /**
+   * Escapes all regex specific special characters
+   * Copied from Stack-Overflow: https://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex
+   */
+  private escapeRegExp(regExp: string): string {
+    return regExp.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
   }
 }
