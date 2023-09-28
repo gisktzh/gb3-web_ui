@@ -352,17 +352,17 @@ describe('search-result selector', () => {
       {indexType: 'places', score: 1, displayString: 'one', geometry: {srs: 2056, type: 'Point', coordinates: [0, 0]}},
       {indexType: 'addresses', score: 2, displayString: 'two', geometry: {srs: 2056, type: 'Point', coordinates: [0, 0]}},
       {indexType: 'unknown', score: 3},
-      {indexType: 'metadata-maps', score: 4, id: '1'},
-      {indexType: 'metadata-products', score: 5, id: '100'},
-      {indexType: 'metadata-datasets', score: 6, id: '4'},
+      {indexType: 'metadata-maps', score: 4, uuid: '1234-rofl-yolo-swag'},
+      {indexType: 'metadata-products', score: 5, uuid: '9876-5432-1one-four'},
+      {indexType: 'metadata-datasets', score: 6, uuid: 'aaaa-bbbb-cccc-dddd'},
     ];
 
     const itemsMock: OverviewMetadataItem[] = [
-      new MapOverviewMetadataItem('1', 'one', 'desc', 'dep'), // should match
-      new MapOverviewMetadataItem('2', 'two', 'desc', 'dep'), // should not match
-      new ProductOverviewMetadataItem('3', 'three', 'desc', 'dep'), // should not match
-      new DatasetOverviewMetadataItem('4', 'four', 'desc', 'dep', 'format'), // should match
-      new ServiceOverviewMetadataItem('5', 'five', 'desc', 'dep'), // should not match
+      new MapOverviewMetadataItem('1234-rofl-yolo-swag', 'one', 'desc', 'dep'), // should match
+      new MapOverviewMetadataItem('nope-nope-nope-nope', 'two', 'desc', 'dep'), // should not match
+      new ProductOverviewMetadataItem('nope-rofl-yolo-swag', 'three', 'desc', 'dep'), // should not match
+      new DatasetOverviewMetadataItem('aaaa-bbbb-cccc-dddd', 'four', 'desc', 'dep', 'format'), // should match
+      new ServiceOverviewMetadataItem('nada-bbbb-cccc-dddd', 'five', 'desc', 'dep'), // should not match
     ];
 
     it('returns an empty list if no items and filtered values are available', () => {

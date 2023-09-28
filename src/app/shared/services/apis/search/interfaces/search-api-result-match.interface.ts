@@ -17,7 +17,7 @@ export interface GeometrySearchApiResultMatch extends AbstractSearchApiResultMat
 
 export interface MetadataSearchApiResultMatch extends AbstractSearchApiResultMatch {
   indexType: 'metadata-maps' | 'metadata-products' | 'metadata-datasets' | 'metadata-services';
-  id: string;
+  uuid: string;
 }
 
 export interface UnknownSearchApiResultMatch extends AbstractSearchApiResultMatch {
