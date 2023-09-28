@@ -9,7 +9,11 @@
       <h2 class="search-result-group__header__inner__text">{{ header }}</h2>
       <mat-icon [fontIcon]="searchResultGroupExpansionPanel.expanded ? 'arrow_drop_down' : 'arrow_right'"></mat-icon>
     </div>
-    <loading-and-process-bar *ngIf="loadingState" [loadingState]="loadingState"></loading-and-process-bar>
+    <loading-and-process-bar
+      class="search-result-group__header__loading-bar"
+      *ngIf="loadingState"
+      [loadingState]="loadingState"
+    ></loading-and-process-bar>
   </mat-expansion-panel-header>
   <div class="search-result-group__content">
     <ng-content></ng-content>
