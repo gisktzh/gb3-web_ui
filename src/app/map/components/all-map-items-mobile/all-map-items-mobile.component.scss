@@ -1,10 +1,87 @@
 @use 'functions/helper.function' as functions;
 @use 'mixins/material.mixin' as mat-mixins;
+@use 'mixins/helpers.mixin' as mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
+
+:host ::ng-deep {
+  .map-management-mobile__header__tools__buttons__action--notices {
+    .mat-badge-content.mat-badge-active {
+      top: 6px;
+      right: 10px;
+      font-size: 0;
+      width: 8px;
+      height: 8px;
+    }
+
+    @include mat-mixins.mat-badge-override-color(ktzh-variables.$zh-red, ktzh-variables.$zh-white);
+  }
+
+  .map-management-mobile__header__tools__buttons__action {
+    @include mat-mixins.mat-icon-custom-svg-size(18px);
+    padding: 5px;
+  }
+}
 
 .bottom-sheet {
   position: absolute;
   bottom: 0px;
+}
+
+.map-management-mobile__header__tools {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  padding-top: 10px;
+  width: 100vw;
+  left: 0px;
+
+  .map-management-mobile__header__tools__filter {
+    @include mixins.map-element-box-shadow;
+    display: flex;
+    width: 90vw;
+
+    .map-management-mobile__header__tools__filter__input {
+      width: 100%;
+      height: 40px;
+      padding: 0 5px 0 45px;
+      border: 3px solid grey;
+      outline: none;
+      display: block;
+      font-family: ktzh-variables.$zh-font-family;
+    }
+
+    .map-management-mobile__header__tools__filter__input:focus {
+      border: 3px solid ktzh-variables.$zh-cyan;
+
+      & + .map-data-catalogue__content__filter__input-icon {
+        color: black;
+      }
+    }
+
+    .map-management-mobile__header__tools__filter__input-icon {
+      margin: 14px 5px 5px 16px;
+      position: absolute;
+      color: grey;
+      display: flex;
+      align-items: center;
+
+      @include mat-mixins.mat-icon-custom-svg-size(18px);
+    }
+  }
+
+  .map-management-mobile__header__tools__buttons {
+    @include mixins.map-element-box-shadow;
+    display: flex;
+    justify-content: center;
+    background-color: ktzh-variables.$zh-background-color;
+    z-index: 1;
+
+    .map-management-mobile__header__tools__buttons__divider {
+      height: 12px;
+      align-self: center;
+      color: ktzh-variables.$zh-black40;
+    }
+  }
 }
 
 .map-management-mobile__header__badge {
@@ -63,40 +140,5 @@
 
   &--inverted {
     border-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
-  }
-}
-
-.map-data-catalogue__content__filter {
-  position: absolute;
-  display: flex;
-  padding-top: 10px;
-  width: 95vw;
-
-  .map-data-catalogue__content__filter__input {
-    width: 100%;
-    height: 40px;
-    padding: 0 5px 0 45px;
-    border: 3px solid grey;
-    outline: none;
-    display: block;
-    font-family: ktzh-variables.$zh-font-family;
-  }
-
-  .map-data-catalogue__content__filter__input:focus {
-    border: 3px solid ktzh-variables.$zh-cyan;
-
-    & + .map-data-catalogue__content__filter__input-icon {
-      color: black;
-    }
-  }
-
-  .map-data-catalogue__content__filter__input-icon {
-    margin: 14px 5px 5px 16px;
-    position: absolute;
-    color: grey;
-    display: flex;
-    align-items: center;
-
-    @include mat-mixins.mat-icon-custom-svg-size(18px);
   }
 }

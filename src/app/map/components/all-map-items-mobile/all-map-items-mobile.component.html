@@ -25,11 +25,58 @@
         Kartenkatalog
       </button>
     </div>
-    <div *ngIf="activeTab === 'mapsCatalogue'" class="map-data-catalogue__content__filter">
-      <input #filterInput class="map-data-catalogue__content__filter__input" placeholder="Karten und Layer filtern" type="text" />
-      <span class="map-data-catalogue__content__filter__input-icon">
-        <mat-icon svgIcon="ktzh_search"></mat-icon>
-      </span>
+    <div class="map-management-mobile__header__tools">
+      <div *ngIf="activeTab === 'mapsCatalogue'" class="map-management-mobile__header__tools__filter">
+        <input
+          #filterInput
+          class="map-management-mobile__header__tools__filter__input"
+          placeholder="Karten und Layer filtern"
+          type="text"
+        />
+        <span class="map-management-mobile__header__tools__filter__input-icon">
+          <mat-icon svgIcon="ktzh_search"></mat-icon>
+        </span>
+      </div>
+      <div *ngIf="activeTab === 'activeMaps'" class="map-management-mobile__header__tools__buttons">
+        <button
+          class="map-management-mobile__header__tools__buttons__action map-management-mobile__header__tools__buttons__action--notices"
+          (click)="showMapNotices()"
+          [disabled]="numberOfNotices === 0"
+          [matBadge]="numberOfUnreadNotices"
+          [matBadgeHidden]="numberOfUnreadNotices === 0"
+          mat-icon-button
+        >
+          <mat-icon svgIcon="ktzh_notification"></mat-icon>
+        </button>
+        <mat-divider class="map-management-mobile__header__tools__buttons__divider" [vertical]="true"></mat-divider>
+        <button
+          (click)="removeAllActiveMapItems()"
+          [disabled]="activeMapItems.length === 0"
+          mat-icon-button
+          class="map-management-mobile__header__tools__buttons__action"
+        >
+          <mat-icon svgIcon="ktzh_delete"></mat-icon>
+        </button>
+        <mat-divider class="map-management-mobile__header__tools__buttons__divider" [vertical]="true"></mat-divider>
+        <span
+          #tooltip="matTooltip"
+          [matTooltipDisabled]="this.isAuthenticated && this.activeMapItems.length > 0"
+          [matTooltip]="
+            this.isAuthenticated && this.activeMapItems.length === 0
+              ? this.favouriteHelperMessages.noMapsAdded
+              : this.favouriteHelperMessages.notAuthenticated
+          "
+        >
+          <button
+            (click)="showFavouriteDialog()"
+            [disabled]="activeMapItems.length === 0 || !this.isAuthenticated"
+            mat-icon-button
+            class="map-management-mobile__header__tools__buttons__action"
+          >
+            <mat-icon svgIcon="ktzh_star"></mat-icon>
+          </button>
+        </span>
+      </div>
     </div>
   </div>
   <div class="map-management-mobile__content" [ngSwitch]="activeTab" body>

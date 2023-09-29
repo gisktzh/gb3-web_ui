@@ -24,6 +24,10 @@
 .active-map-items {
   width: 100%;
 
+  &--hide-shadow {
+    box-shadow: none;
+  }
+
   .active-map-items__header {
     display: flex;
     align-items: center;
@@ -109,18 +113,5 @@
         @include mat-mixins.cdk-drag-handle-nested;
       }
     }
-  }
-}
-
-.active-map-items-mobile__header__buttons {
-  height: inherit;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: 8px;
-
-  .active-map-items-mobile__header__buttons__divider {
-    height: 12px;
-    border-right-color: ktzh-variables.$zh-black40;
   }
 }

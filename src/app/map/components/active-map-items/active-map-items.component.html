@@ -1,4 +1,4 @@
-<mat-card appearance="raised" class="active-map-items">
+<mat-card appearance="raised" class="active-map-items" [ngClass]="{'active-map-items--hide-shadow': screenMode === 'mobile'}">
   <mat-card-header
     *ngIf="screenMode !== 'mobile'"
     class="active-map-items__header"
@@ -55,46 +55,6 @@
       </button>
     </div>
   </mat-card-header>
-  <div *ngIf="screenMode === 'mobile'" class="active-map-items-mobile__header__buttons">
-    <button
-      class="active-map-items__header__buttons__action active-map-items__header__buttons__action--notices"
-      (click)="showMapNotices()"
-      [disabled]="numberOfNotices === 0"
-      [matBadge]="numberOfUnreadNotices"
-      [matBadgeHidden]="numberOfUnreadNotices === 0"
-      mat-icon-button
-    >
-      <mat-icon svgIcon="ktzh_notification"></mat-icon>
-    </button>
-    <mat-divider class="active-map-items-mobile__header__buttons__divider" [vertical]="true"></mat-divider>
-    <button
-      (click)="removeAllActiveMapItems()"
-      [disabled]="activeMapItems.length === 0"
-      mat-icon-button
-      class="active-map-items__header__buttons__action"
-    >
-      <mat-icon svgIcon="ktzh_delete"></mat-icon>
-    </button>
-    <mat-divider class="active-map-items-mobile__header__buttons__divider" [vertical]="true"></mat-divider>
-    <span
-      #tooltip="matTooltip"
-      [matTooltipDisabled]="this.isAuthenticated && this.activeMapItems.length > 0"
-      [matTooltip]="
-        this.isAuthenticated && this.activeMapItems.length === 0
-          ? this.favouriteHelperMessages.noMapsAdded
-          : this.favouriteHelperMessages.notAuthenticated
-      "
-    >
-      <button
-        (click)="showFavouriteDialog()"
-        [disabled]="activeMapItems.length === 0 || !this.isAuthenticated"
-        mat-icon-button
-        class="active-map-items__header__buttons__action"
-      >
-        <mat-icon svgIcon="ktzh_star"></mat-icon>
-      </button>
-    </span>
-  </div>
   <mat-accordion
     (cdkDropListDropped)="dropMapItem($event)"
     cdkDropList

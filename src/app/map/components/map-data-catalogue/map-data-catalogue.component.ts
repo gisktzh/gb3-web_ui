@@ -73,7 +73,9 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   public ngAfterViewInit() {
-    this.subscriptions.add(this.filterInputHandler().subscribe());
+    if (this.screenMode !== 'mobile') {
+      this.subscriptions.add(this.filterInputHandler().subscribe());
+    }
   }
 
   /**
