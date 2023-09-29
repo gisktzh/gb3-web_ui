@@ -29,6 +29,6 @@ export class ActiveMapItemHeaderComponent {
   }
 
   public removeActiveMapItem(activeMapItem: ActiveMapItem) {
-    this.store.dispatch(ActiveMapItemActions.removeActiveMapItem(activeMapItem));
+    this.store.dispatch(ActiveMapItemActions.removeActiveMapItem({activeMapItem}));
   }
 }

@@ -25,7 +25,7 @@ export const activeMapItemFeature = createFeature({
       newActiveMapItems.splice(position, 0, activeMapItem);
       return {...state, items: newActiveMapItems};
     }),
-    on(ActiveMapItemActions.removeActiveMapItem, (state, activeMapItem): ActiveMapItemState => {
+    on(ActiveMapItemActions.removeActiveMapItem, (state, {activeMapItem}): ActiveMapItemState => {
       const remainingActiveMapItems = state.items.filter((mapItem) => mapItem.id !== activeMapItem.id);
       return {...state, items: [...remainingActiveMapItems]};
     }),

@@ -2,7 +2,6 @@ import {TestBed} from '@angular/core/testing';
 
 import {EsriMapService} from './esri-map.service';
 import {provideMockStore} from '@ngrx/store/testing';
-import {Map, MapLayer} from '../../../shared/interfaces/topic.interface';
 import {EsriMapMock} from '../../../testing/map-testing/esri-map.mock';
 import {AuthModule} from '../../../auth/auth.module';
 import {AuthService} from '../../../auth/auth.service';
@@ -10,20 +9,10 @@ import {Subject} from 'rxjs';
 import {InternalDrawingLayer, UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {MapConstants} from '../../../shared/constants/map.constants';
-import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
 import {EsriMapViewService} from './esri-map-view.service';
 import {EsriToolService} from './tool-service/esri-tool.service';
-
-function createActiveMapItemMock(id: string, numberOfLayers = 0): {id: string; activeMapItem: Gb2WmsActiveMapItem} {
-  const mapMock = {id: id, title: id, layers: []} as Partial<Map>;
-  for (let layerNumber = 0; layerNumber < numberOfLayers; layerNumber++) {
-    const uniqueLayerName = `layer${layerNumber}_${id}`;
-    const layerMock = {layer: uniqueLayerName, title: uniqueLayerName, id: layerNumber, visible: true} as Partial<MapLayer>;
-    mapMock.layers?.push(<MapLayer>layerMock);
-  }
-  return {id: id, activeMapItem: ActiveMapItemFactory.createGb2WmsMapItem(<Map>mapMock)};
-}
+import {createDrawingMapItemMock, createGb2WmsMapItemMock} from '../../../testing/map-testing/active-map-item-test.utils';
 
 function compareMapItemToEsriLayer(expectedMapItem: Gb2WmsActiveMapItem, actualEsriLayer: __esri.Layer) {
   expect(actualEsriLayer.id).toBe(expectedMapItem.id);
@@ -54,13 +43,6 @@ const internalLayerPrefix = MapConstants.INTERNAL_LAYER_PREFIX;
 const internalLayers = Object.values(InternalDrawingLayer).map((drawingLayer) => {
   return new GraphicsLayer({
     id: `${internalLayerPrefix}${drawingLayer}`,
-  });
-});
-
-const userDrawingLayerPrefix = MapConstants.USER_DRAWING_LAYER_PREFIX;
-const userDrawingLayers = Object.values(UserDrawingLayer).map((drawingLayer) => {
-  return new GraphicsLayer({
-    id: `${userDrawingLayerPrefix}${drawingLayer}`,
   });
 });
 
@@ -110,12 +92,12 @@ describe('EsriMapService', () => {
   });
 
   it('should add new items to the desired position', () => {
-    const {id: topic1Id, activeMapItem: mapItem1} = createActiveMapItemMock('mapOne');
+    const {id: topic1Id, activeMapItem: mapItem1} = createGb2WmsMapItemMock('mapOne');
     mapItem1.opacity = 0.5;
     mapItem1.visible = false;
-    const {id: topic2Id, activeMapItem: mapItem2} = createActiveMapItemMock('mapTwo', 2);
+    const {id: topic2Id, activeMapItem: mapItem2} = createGb2WmsMapItemMock('mapTwo', 2);
     mapItem2.settings.layers[0].visible = false;
-    const {id: topic3Id, activeMapItem: mapItem3} = createActiveMapItemMock('mapThree');
+    const {id: topic3Id, activeMapItem: mapItem3} = createGb2WmsMapItemMock('mapThree');
 
     expect(mapMock.layers.length).toBe(getExpectedNumberOfLayersWithInternalLayers(0));
 
@@ -148,9 +130,9 @@ describe('EsriMapService', () => {
   });
 
   it('should remove an existing item', () => {
-    const {id: topic1Id, activeMapItem: mapItem1} = createActiveMapItemMock('mapOne');
-    const {id: topic2Id, activeMapItem: mapItem2} = createActiveMapItemMock('mapTwo');
-    const {id: topic3Id, activeMapItem: mapItem3} = createActiveMapItemMock('mapThree');
+    const {id: topic1Id, activeMapItem: mapItem1} = createGb2WmsMapItemMock('mapOne');
+    const {id: topic2Id, activeMapItem: mapItem2} = createGb2WmsMapItemMock('mapTwo');
+    const {id: topic3Id, activeMapItem: mapItem3} = createGb2WmsMapItemMock('mapThree');
     service.addGb2WmsLayer(mapItem1, 0);
     service.addGb2WmsLayer(mapItem2, 1);
     service.addGb2WmsLayer(mapItem3, 2);
@@ -169,18 +151,19 @@ describe('EsriMapService', () => {
   });
 
   it('should remove all existing items without internal layers - those must be cleared instead', () => {
-    const {activeMapItem: mapItem1} = createActiveMapItemMock('mapOne');
-    const {activeMapItem: mapItem2} = createActiveMapItemMock('mapTwo');
-    const {activeMapItem: mapItem3} = createActiveMapItemMock('mapThree');
+    const {activeMapItem: mapItem1} = createGb2WmsMapItemMock('mapOne');
+    const {activeMapItem: mapItem2} = createGb2WmsMapItemMock('mapTwo');
+    const {activeMapItem: mapItem3} = createGb2WmsMapItemMock('mapThree');
 
     service.addGb2WmsLayer(mapItem1, 0);
     service.addGb2WmsLayer(mapItem2, 1);
     service.addGb2WmsLayer(mapItem3, 2);
 
-    mapMock.layers.addMany(userDrawingLayers);
+    const userDrawingLayerIds = Object.values(UserDrawingLayer).map((drawingLayer) => createDrawingMapItemMock(drawingLayer).id);
+    mapMock.layers.addMany(userDrawingLayerIds.map((id) => new GraphicsLayer({id})));
     const internalLayerSpies = internalLayers.map((internalLayer) => spyOn(internalLayer, 'removeAll').and.callThrough());
 
-    expect(mapMock.layers.length).toBe(getExpectedNumberOfLayersWithInternalLayers(3 + userDrawingLayers.length));
+    expect(mapMock.layers.length).toBe(getExpectedNumberOfLayersWithInternalLayers(3 + userDrawingLayerIds.length));
 
     service.removeAllMapItems();
 
@@ -194,9 +177,9 @@ describe('EsriMapService', () => {
   });
 
   it('should reorder existing items to the desired position', () => {
-    const {id: topic1Id, activeMapItem: mapItem1} = createActiveMapItemMock('mapOne');
-    const {id: topic2Id, activeMapItem: mapItem2} = createActiveMapItemMock('mapTwo');
-    const {id: topic3Id, activeMapItem: mapItem3} = createActiveMapItemMock('mapThree');
+    const {id: topic1Id, activeMapItem: mapItem1} = createGb2WmsMapItemMock('mapOne');
+    const {id: topic2Id, activeMapItem: mapItem2} = createGb2WmsMapItemMock('mapTwo');
+    const {id: topic3Id, activeMapItem: mapItem3} = createGb2WmsMapItemMock('mapThree');
 
     service.addGb2WmsLayer(mapItem1, 0);
     service.addGb2WmsLayer(mapItem2, 1);
@@ -227,7 +210,7 @@ describe('EsriMapService', () => {
   });
 
   it('should reorder sublayers from existing items to the desired position', () => {
-    const {activeMapItem: mapItem} = createActiveMapItemMock('topic', 3);
+    const {activeMapItem: mapItem} = createGb2WmsMapItemMock('topic', 3);
 
     service.addGb2WmsLayer(mapItem, 0);
     const wmsLayer = mapMock.layers.getItemAt(0) as __esri.WMSLayer;
