@@ -9,6 +9,7 @@ import {MapAttributeFiltersItemActions} from '../../../../state/map/actions/map-
 import {NumberUtils} from '../../../../shared/utils/number.utils';
 import {isActiveMapItemOfType} from '../../../../shared/type-guards/active-map-item-type.type-guard';
 import {Gb2WmsActiveMapItem} from '../../../models/implementations/gb2-wms.model';
+import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
 
 @Component({
   selector: 'active-map-item-settings',
@@ -61,6 +62,7 @@ export class ActiveMapItemSettingsComponent implements OnInit, OnDestroy {
 
   public showMapAttributeFilters() {
     this.store.dispatch(MapAttributeFiltersItemActions.setMapAttributeFiltersItemId(this.activeMapItem));
+    this.store.dispatch(MapUiActions.hideMapManagementMobile());
   }
 
   private convertTransparencyToString(value?: number): string {

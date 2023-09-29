@@ -1,4 +1,4 @@
-<ng-container *ngIf="mapAttributeFiltersItem">
+<ng-container *ngIf="mapAttributeFiltersItem && this.screenMode !== 'mobile'">
   <mat-card appearance="raised" class="attribute-filter no-box-shadow">
     <mat-card-header>
       <div class="attribute-filter__header">
@@ -35,3 +35,37 @@
     </div>
   </mat-card>
 </ng-container>
+
+<bottom-sheet-overlay
+  *ngIf="mapAttributeFiltersItem && this.screenMode === 'mobile'"
+  (closeEvent)="close()"
+  [isVisible]="mapAttributeFiltersItem !== undefined"
+  class="bottom-sheet"
+  [overlayTitle]="'Attributfilter: ' + mapAttributeFiltersItem.title"
+>
+  <mat-card appearance="raised" class="attribute-filter no-box-shadow" body>
+    <div class="attribute-filter__content">
+      <mat-card
+        class="no-box-shadow"
+        appearance="raised"
+        *ngFor="let filterConfiguration of mapAttributeFiltersItem.settings.filterConfigurations"
+      >
+        <mat-card-header>
+          <mat-card-title>{{ filterConfiguration.name }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p class="attribute-filter__content__text" *ngIf="filterConfiguration.description">{{ filterConfiguration.description }}</p>
+        </mat-card-content>
+        <ng-container *ngFor="let filterValue of filterConfiguration.filterValues">
+          <mat-checkbox
+            class="attribute-filter__content__checkbox"
+            [ngClass]="{'attribute-filter__content__checkbox--unchecked': filterValue.isActive}"
+            [checked]="!filterValue.isActive"
+            (change)="updateFilter(filterConfiguration.parameter, filterValue.name, $event.checked)"
+            >{{ filterValue.name }}</mat-checkbox
+          >
+        </ng-container>
+      </mat-card>
+    </div>
+  </mat-card>
+</bottom-sheet-overlay>

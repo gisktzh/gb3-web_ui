@@ -52,7 +52,10 @@
   </button>
   <map-attribute-filter
     class="map-container__map-attribute-filter"
-    [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
+    [ngClass]="{
+      'map-container__map-element--hidden': mapUiState?.hideUiElements,
+      'map-container__map-attribute-filter--regular-screen': screenMode !== 'mobile'
+    }"
   ></map-attribute-filter>
   <feature-info-overlay
     class="map-container__feature-info-overlay"

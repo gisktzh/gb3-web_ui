@@ -8,6 +8,8 @@ import {selectItems} from '../../../state/map/reducers/active-map-item.reducer';
 import {selectId} from '../../../state/map/reducers/map-attribute-filters-item.reducer';
 import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
 import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
+import {ScreenMode} from 'src/app/shared/types/screen-size.type';
+import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 
 @Component({
   selector: 'map-attribute-filter',
@@ -16,10 +18,12 @@ import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
 })
 export class MapAttributeFilterComponent implements OnInit, OnDestroy {
   public mapAttributeFiltersItem: Gb2WmsActiveMapItem | undefined;
+  public screenMode: ScreenMode = 'regular';
 
   private readonly subscriptions: Subscription = new Subscription();
   private readonly mapAttributeFiltersItem$ = this.store.select(selectId);
   private readonly activeMapItems$ = this.store.select(selectItems);
+  private readonly screenMode$ = this.store.select(selectScreenMode);
 
   constructor(private readonly store: Store) {}
 
@@ -79,6 +83,16 @@ export class MapAttributeFilterComponent implements OnInit, OnDestroy {
           tap((activeMapItems) => {
             const gb2WmsMapItems = activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem));
             this.handleMapAttributeFiltersItemChange(this.mapAttributeFiltersItem?.id, gb2WmsMapItems);
+          }),
+        )
+        .subscribe(),
+    );
+
+    this.subscriptions.add(
+      this.screenMode$
+        .pipe(
+          tap((screenMode) => {
+            this.screenMode = screenMode;
           }),
         )
         .subscribe(),
