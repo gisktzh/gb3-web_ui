@@ -23,16 +23,34 @@
   .bottom-sheet-overlay__header {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     margin-bottom: 12px;
+
+    &__map-management {
+      background-color: ktzh-variables.$zh-darkblue;
+    }
 
     .bottom-sheet-overlay__header__title {
       flex-grow: 1;
       margin-bottom: 0;
+    }
+
+    &__button {
+      color: ktzh-variables.$zh-white;
     }
   }
 
   .bottom-sheet-overlay__content {
     flex: 1;
     overflow: hidden scroll;
+  }
+
+  .break {
+    flex-basis: 100%;
+    height: 0;
+  }
+
+  .item {
+    width: 100%;
   }
 }

@@ -24,46 +24,45 @@
   }
 }
 
-.active-map-item__tabs {
-  .active-map-item__tabs__header {
-    padding: 16px;
+.active-map-item__tabs__header {
+  padding-bottom: 32px;
+  background-color: ktzh-variables.$zh-darkblue;
 
-    .active-map-item__tabs__header__buttons {
-      display: flex;
+  .active-map-item__tabs__header__buttons {
+    display: flex;
 
-      border-width: 3px;
-      border-style: solid;
-      border-color: functions.get-color-from-palette(ktzh-variables.$zh-primary, 900);
-      border-radius: ktzh-variables.$zh-border-radius;
+    border-width: 3px;
+    border-style: solid;
+    border-color: functions.get-color-from-palette(ktzh-variables.$zh-primary, 900);
+    border-radius: ktzh-variables.$zh-border-radius;
 
-      .active-map-item__tabs__header__buttons__button {
-        width: 100%;
-        color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
-        background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
+    .active-map-item__tabs__header__buttons__button {
+      width: 100%;
+      color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+      background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
 
-        &--selected {
-          background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary, 900);
-        }
+      &--selected {
+        background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary, 900);
+      }
 
-        &:disabled {
-          color: ktzh-variables.$zh-black40;
-        }
+      &:disabled {
+        color: ktzh-variables.$zh-black40;
       }
     }
   }
+}
 
-  .active-map-item__tabs__content {
-    padding: 24px;
-    color: ktzh-variables.$zh-foreground-color;
-    background-color: ktzh-variables.$zh-background-color;
-    border-color: ktzh-variables.$zh-background-color;
-    border-radius: 1px !important;
-    border-width: 0 2px 2px 2px;
-    border-style: solid;
-    box-sizing: border-box;
+.active-map-item__tabs__content {
+  padding: 24px;
+  color: ktzh-variables.$zh-foreground-color;
+  background-color: ktzh-variables.$zh-background-color;
+  border-color: ktzh-variables.$zh-background-color;
+  border-radius: 1px !important;
+  border-width: 0 2px 2px 2px;
+  border-style: solid;
+  box-sizing: border-box;
 
-    &--inverted {
-      border-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
-    }
+  &--inverted {
+    border-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
   }
 }

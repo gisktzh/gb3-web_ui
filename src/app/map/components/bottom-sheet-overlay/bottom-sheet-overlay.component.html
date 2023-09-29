@@ -8,14 +8,18 @@
     'bottom-sheet-overlay--large': bottomSheetHeight === 90
   }"
 >
-  <mat-card-header class="bottom-sheet-overlay__header">
+  <mat-card-header class="bottom-sheet-overlay__header" [ngClass]="{'bottom-sheet-overlay__header__map-management': isBlue}">
     <h1 class="bottom-sheet-overlay__header__title">{{ overlayTitle }}</h1>
-    <button (click)="onClose()" mat-icon-button class="bottom-sheet-overlay__header__button">
+    <button (click)="onClose()" mat-icon-button [ngClass]="{'bottom-sheet-overlay__header__button': isBlue}">
       <mat-icon>close</mat-icon>
     </button>
+    <div class="break"></div>
+    <div class="item">
+      <ng-content select="[header]"></ng-content>
+    </div>
   </mat-card-header>
   <mat-card-content class="bottom-sheet-overlay__content">
-    <ng-content></ng-content>
+    <ng-content select="[body]"></ng-content>
   </mat-card-content>
   <resize-handler (resizeEvent)="this.resizeOverlay($event)" [location]="this.location"></resize-handler>
 </mat-card>

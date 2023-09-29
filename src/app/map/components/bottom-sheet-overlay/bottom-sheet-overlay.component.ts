@@ -18,6 +18,7 @@ export class BottomSheetOverlayComponent implements OnInit {
   @Input() public overlayTitle: string = '';
   @Input() public location: ResizeHandlerLocation = 'top';
   @Input() public isVisible: boolean = false;
+  @Input() public isBlue: boolean = false;
 
   public resizeableStyle: StyleExpression = {};
   @Output() public readonly closeEvent = new EventEmitter<void>();
