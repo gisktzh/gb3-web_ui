@@ -92,12 +92,12 @@ describe('EsriMapService', () => {
   });
 
   it('should add new items to the desired position', () => {
-    const {id: topic1Id, activeMapItem: mapItem1} = createGb2WmsMapItemMock('mapOne');
+    const mapItem1 = createGb2WmsMapItemMock('mapOne');
     mapItem1.opacity = 0.5;
     mapItem1.visible = false;
-    const {id: topic2Id, activeMapItem: mapItem2} = createGb2WmsMapItemMock('mapTwo', 2);
+    const mapItem2 = createGb2WmsMapItemMock('mapTwo', 2);
     mapItem2.settings.layers[0].visible = false;
-    const {id: topic3Id, activeMapItem: mapItem3} = createGb2WmsMapItemMock('mapThree');
+    const mapItem3 = createGb2WmsMapItemMock('mapThree');
 
     expect(mapMock.layers.length).toBe(getExpectedNumberOfLayersWithInternalLayers(0));
 
@@ -118,9 +118,9 @@ describe('EsriMapService', () => {
 
     expect(mapMock.layers.length).toBe(getExpectedNumberOfLayersWithInternalLayers(3));
     // index <> position; position 0 should be the highest index for Esri.
-    expect(mapMock.layers.getItemAt(0).id).toBe(topic1Id);
-    expect(mapMock.layers.getItemAt(1).id).toBe(topic2Id);
-    expect(mapMock.layers.getItemAt(2).id).toBe(topic3Id);
+    expect(mapMock.layers.getItemAt(0).id).toBe(mapItem1.id);
+    expect(mapMock.layers.getItemAt(1).id).toBe(mapItem2.id);
+    expect(mapMock.layers.getItemAt(2).id).toBe(mapItem3.id);
     internalLayers.forEach((fixedLayer, idx) => {
       // assert that fixed layers are not changed
       // note: internal layers are at the end of all layers
@@ -130,30 +130,30 @@ describe('EsriMapService', () => {
   });
 
   it('should remove an existing item', () => {
-    const {id: topic1Id, activeMapItem: mapItem1} = createGb2WmsMapItemMock('mapOne');
-    const {id: topic2Id, activeMapItem: mapItem2} = createGb2WmsMapItemMock('mapTwo');
-    const {id: topic3Id, activeMapItem: mapItem3} = createGb2WmsMapItemMock('mapThree');
+    const mapItem1 = createGb2WmsMapItemMock('mapOne');
+    const mapItem2 = createGb2WmsMapItemMock('mapTwo');
+    const mapItem3 = createGb2WmsMapItemMock('mapThree');
     service.addGb2WmsLayer(mapItem1, 0);
     service.addGb2WmsLayer(mapItem2, 1);
     service.addGb2WmsLayer(mapItem3, 2);
 
     expect(mapMock.layers.length).toBe(getExpectedNumberOfLayersWithInternalLayers(3));
 
-    service.removeMapItem(topic2Id);
+    service.removeMapItem(mapItem2.id);
 
     expect(mapMock.layers.length).toBe(getExpectedNumberOfLayersWithInternalLayers(2));
-    expect(mapMock.layers.some((l) => l.id === topic1Id)).toBeTrue();
-    expect(mapMock.layers.some((l) => l.id === topic2Id)).toBeFalse();
-    expect(mapMock.layers.some((l) => l.id === topic3Id)).toBeTrue();
+    expect(mapMock.layers.some((l) => l.id === mapItem1.id)).toBeTrue();
+    expect(mapMock.layers.some((l) => l.id === mapItem2.id)).toBeFalse();
+    expect(mapMock.layers.some((l) => l.id === mapItem3.id)).toBeTrue();
     internalLayers.forEach((fixedLayer) => {
       expect(mapMock.layers.some((l) => l.id === fixedLayer.id)).toBeTrue();
     });
   });
 
   it('should remove all existing items without internal layers - those must be cleared instead', () => {
-    const {activeMapItem: mapItem1} = createGb2WmsMapItemMock('mapOne');
-    const {activeMapItem: mapItem2} = createGb2WmsMapItemMock('mapTwo');
-    const {activeMapItem: mapItem3} = createGb2WmsMapItemMock('mapThree');
+    const mapItem1 = createGb2WmsMapItemMock('mapOne');
+    const mapItem2 = createGb2WmsMapItemMock('mapTwo');
+    const mapItem3 = createGb2WmsMapItemMock('mapThree');
 
     service.addGb2WmsLayer(mapItem1, 0);
     service.addGb2WmsLayer(mapItem2, 1);
@@ -177,9 +177,9 @@ describe('EsriMapService', () => {
   });
 
   it('should reorder existing items to the desired position', () => {
-    const {id: topic1Id, activeMapItem: mapItem1} = createGb2WmsMapItemMock('mapOne');
-    const {id: topic2Id, activeMapItem: mapItem2} = createGb2WmsMapItemMock('mapTwo');
-    const {id: topic3Id, activeMapItem: mapItem3} = createGb2WmsMapItemMock('mapThree');
+    const mapItem1 = createGb2WmsMapItemMock('mapOne');
+    const mapItem2 = createGb2WmsMapItemMock('mapTwo');
+    const mapItem3 = createGb2WmsMapItemMock('mapThree');
 
     service.addGb2WmsLayer(mapItem1, 0);
     service.addGb2WmsLayer(mapItem2, 1);
@@ -190,17 +190,17 @@ describe('EsriMapService', () => {
     // order: mapItem2, mapItem1, mapItem3 (no change)
 
     // index <> position; position 0 should be the highest index for Esri.
-    expect(mapMock.layers.getItemAt(0).id).toBe(topic3Id);
-    expect(mapMock.layers.getItemAt(1).id).toBe(topic2Id);
-    expect(mapMock.layers.getItemAt(2).id).toBe(topic1Id);
+    expect(mapMock.layers.getItemAt(0).id).toBe(mapItem3.id);
+    expect(mapMock.layers.getItemAt(1).id).toBe(mapItem2.id);
+    expect(mapMock.layers.getItemAt(2).id).toBe(mapItem1.id);
 
     service.reorderMapItem(0, 1);
     // order: mapItem2, mapItem1, mapItem3
 
     // index <> position; position 0 should be the highest index for Esri.
-    expect(mapMock.layers.getItemAt(0).id).toBe(topic3Id);
-    expect(mapMock.layers.getItemAt(1).id).toBe(topic1Id);
-    expect(mapMock.layers.getItemAt(2).id).toBe(topic2Id);
+    expect(mapMock.layers.getItemAt(0).id).toBe(mapItem3.id);
+    expect(mapMock.layers.getItemAt(1).id).toBe(mapItem1.id);
+    expect(mapMock.layers.getItemAt(2).id).toBe(mapItem2.id);
     internalLayers.forEach((fixedLayer, idx) => {
       // assert that fixed layers are not changed
       // note: internal layers are at the end of all layers
@@ -210,7 +210,7 @@ describe('EsriMapService', () => {
   });
 
   it('should reorder sublayers from existing items to the desired position', () => {
-    const {activeMapItem: mapItem} = createGb2WmsMapItemMock('topic', 3);
+    const mapItem = createGb2WmsMapItemMock('topic', 3);
 
     service.addGb2WmsLayer(mapItem, 0);
     const wmsLayer = mapMock.layers.getItemAt(0) as __esri.WMSLayer;

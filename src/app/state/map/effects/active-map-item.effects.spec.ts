@@ -63,7 +63,7 @@ describe('ActiveMapItemEffects', () => {
 
   describe('addMapItem$', () => {
     it('add the given map item using the map service, no further action dispatch', (done: DoneFn) => {
-      const expectedActiveMapItem = createGb2WmsMapItemMock('mapMock').activeMapItem;
+      const expectedActiveMapItem = createGb2WmsMapItemMock('mapMock');
       const expectedPosition = 1337;
       const activeMapItemSpy = spyOn(expectedActiveMapItem, 'addToMap').and.callThrough();
 
@@ -79,7 +79,8 @@ describe('ActiveMapItemEffects', () => {
 
   describe('removeMapItem$', () => {
     it('remove the given map item using the map service, no further action dispatch', (done: DoneFn) => {
-      const {id: expectedId, activeMapItem} = createGb2WmsMapItemMock('mapMock');
+      const expectedId = 'mapMock';
+      const activeMapItem = createGb2WmsMapItemMock(expectedId);
       const mapServiceSpy = spyOn(mapService, 'removeMapItem').and.callThrough();
 
       const expectedAction = ActiveMapItemActions.removeActiveMapItem({activeMapItem});
@@ -109,9 +110,9 @@ describe('ActiveMapItemEffects', () => {
   describe('cancelToolAfterRemovingAllCorrespondingMapItems$', () => {
     it('dispatches ToolActions.cancelTool() if removeAllActiveMapItems action is executed', (done: DoneFn) => {
       const activeMapItems: ActiveMapItem[] = [
-        createDrawingMapItemMock(UserDrawingLayer.Measurements).activeMapItem,
-        createDrawingMapItemMock(UserDrawingLayer.Drawings).activeMapItem,
-        createGb2WmsMapItemMock('mapMock').activeMapItem,
+        createDrawingMapItemMock(UserDrawingLayer.Measurements),
+        createDrawingMapItemMock(UserDrawingLayer.Drawings),
+        createGb2WmsMapItemMock('mapMock'),
       ];
       store.overrideSelector(selectItems, activeMapItems);
       store.overrideSelector(selectActiveTool, 'measure-area');
@@ -125,14 +126,11 @@ describe('ActiveMapItemEffects', () => {
 
     it('dispatches ToolActions.cancelTool() if removeActiveMapItem action is executed and there are no more items of that type', (done: DoneFn) => {
       // note that the measurement item is not in the state
-      const activeMapItems: ActiveMapItem[] = [
-        createDrawingMapItemMock(UserDrawingLayer.Drawings).activeMapItem,
-        createGb2WmsMapItemMock('mapMock').activeMapItem,
-      ];
+      const activeMapItems: ActiveMapItem[] = [createDrawingMapItemMock(UserDrawingLayer.Drawings), createGb2WmsMapItemMock('mapMock')];
       store.overrideSelector(selectItems, activeMapItems);
       store.overrideSelector(selectActiveTool, 'measure-area');
 
-      const measurementActiveMapItem = createDrawingMapItemMock(UserDrawingLayer.Measurements).activeMapItem;
+      const measurementActiveMapItem = createDrawingMapItemMock(UserDrawingLayer.Measurements);
       actions$ = of(ActiveMapItemActions.removeActiveMapItem({activeMapItem: measurementActiveMapItem}));
       effects.cancelToolAfterRemovingAllCorrespondingMapItems$.subscribe((action) => {
         expect(action).toEqual(ToolActions.cancelTool());
@@ -142,9 +140,9 @@ describe('ActiveMapItemEffects', () => {
 
     it('dispatches nothing if removeActiveMapItem action is executed and there are more items of that type', fakeAsync(async () => {
       const activeMapItems: ActiveMapItem[] = [
-        createDrawingMapItemMock(UserDrawingLayer.Measurements).activeMapItem,
-        createDrawingMapItemMock(UserDrawingLayer.Drawings).activeMapItem,
-        createGb2WmsMapItemMock('mapMock').activeMapItem,
+        createDrawingMapItemMock(UserDrawingLayer.Measurements),
+        createDrawingMapItemMock(UserDrawingLayer.Drawings),
+        createGb2WmsMapItemMock('mapMock'),
       ];
       store.overrideSelector(selectItems, activeMapItems);
       store.overrideSelector(selectActiveTool, 'measure-area');
@@ -180,7 +178,7 @@ describe('ActiveMapItemEffects', () => {
 
   describe('moveToTop$', () => {
     it('moves the given map item to the top using the map service, no further action dispatch', (done: DoneFn) => {
-      const {activeMapItem: expectedActiveMapItem} = createGb2WmsMapItemMock('mapMock');
+      const expectedActiveMapItem = createGb2WmsMapItemMock('mapMock');
       const mapServiceSpy = spyOn(mapService, 'moveLayerToTop').and.callThrough();
 
       const expectedAction = ActiveMapItemActions.moveToTop({activeMapItem: expectedActiveMapItem});
@@ -195,7 +193,7 @@ describe('ActiveMapItemEffects', () => {
 
   describe('forceFullVisibility$', () => {
     it('dispatches ActiveMapItemActions.moveToTop() and calls the map service twice', (done: DoneFn) => {
-      const {activeMapItem: expectedActiveMapItem} = createGb2WmsMapItemMock('mapMock');
+      const expectedActiveMapItem = createGb2WmsMapItemMock('mapMock');
       const mapServiceOpacitySpy = spyOn(mapService, 'setOpacity').and.callThrough();
       const mapServiceVisibilitySpy = spyOn(mapService, 'setVisibility').and.callThrough();
       const expectedOpacity = 1;
@@ -214,7 +212,7 @@ describe('ActiveMapItemEffects', () => {
   describe('setOpacity$', () => {
     it('sets the opacity of the given map item using the map service, no further action dispatch', (done: DoneFn) => {
       const expectedOpacity = 0.1234;
-      const {activeMapItem: expectedActiveMapItem} = createGb2WmsMapItemMock('mapMock');
+      const expectedActiveMapItem = createGb2WmsMapItemMock('mapMock');
       const mapServiceSpy = spyOn(mapService, 'setOpacity').and.callThrough();
 
       const expectedAction = ActiveMapItemActions.setOpacity({opacity: expectedOpacity, activeMapItem: expectedActiveMapItem});
@@ -230,7 +228,7 @@ describe('ActiveMapItemEffects', () => {
   describe('setItemVisibility$', () => {
     it('sets the visibility of the given map item using the map service, no further action dispatch', (done: DoneFn) => {
       const expectedVisibility = false;
-      const {activeMapItem: expectedActiveMapItem} = createGb2WmsMapItemMock('mapMock');
+      const expectedActiveMapItem = createGb2WmsMapItemMock('mapMock');
       const mapServiceSpy = spyOn(mapService, 'setVisibility').and.callThrough();
 
       const expectedAction = ActiveMapItemActions.setVisibility({visible: expectedVisibility, activeMapItem: expectedActiveMapItem});
@@ -246,7 +244,7 @@ describe('ActiveMapItemEffects', () => {
   describe('setSublayerVisibility$', () => {
     it('sets the visibility of the given map item layer using the map service, no further action dispatch', (done: DoneFn) => {
       const expectedVisibility = false;
-      const {activeMapItem: expectedActiveMapItem} = createGb2WmsMapItemMock('mapMock', 1);
+      const expectedActiveMapItem = createGb2WmsMapItemMock('mapMock', 1);
       const expectedLayerId = expectedActiveMapItem.settings.layers[0].id;
       const mapServiceSpy = spyOn(mapService, 'setSublayerVisibility').and.callThrough();
 
@@ -287,7 +285,7 @@ describe('ActiveMapItemEffects', () => {
     it('reorders the given map item layer using the map service, no further action dispatch', (done: DoneFn) => {
       const expectedPreviousPosition = 123;
       const expectedCurrentPosition = 456;
-      const {activeMapItem: expectedActiveMapItem} = createGb2WmsMapItemMock('mapMock');
+      const expectedActiveMapItem = createGb2WmsMapItemMock('mapMock');
       const mapServiceSpy = spyOn(mapService, 'reorderSublayer').and.callThrough();
 
       const expectedAction = ActiveMapItemActions.reorderSublayer({
@@ -307,7 +305,7 @@ describe('ActiveMapItemEffects', () => {
   describe('setTimeSliderExtent$', () => {
     it('sets the time extent using the map service, no further action dispatch', (done: DoneFn) => {
       const expectedTimeExtent: TimeExtent = {start: new Date(666), end: new Date(1337)};
-      const {activeMapItem: expectedActiveMapItem} = createGb2WmsMapItemMock('mapMock');
+      const expectedActiveMapItem = createGb2WmsMapItemMock('mapMock');
       const mapServiceSpy = spyOn(mapService, 'setTimeSliderExtent').and.callThrough();
 
       const expectedAction = ActiveMapItemActions.setTimeSliderExtent({
@@ -353,9 +351,9 @@ describe('ActiveMapItemEffects', () => {
     it('transforms the filters using the topics service and then sets it on the active map using the map service, no further action dispatch', (done: DoneFn) => {
       const expectedActiveMapItem = ActiveMapItemFactory.createGb2WmsMapItem(<Map>mapMock);
       const activeMapItems: ActiveMapItem[] = [
-        createDrawingMapItemMock(UserDrawingLayer.Measurements).activeMapItem,
-        createDrawingMapItemMock(UserDrawingLayer.Drawings).activeMapItem,
-        createGb2WmsMapItemMock('otherMapItemMock').activeMapItem,
+        createDrawingMapItemMock(UserDrawingLayer.Measurements),
+        createDrawingMapItemMock(UserDrawingLayer.Drawings),
+        createGb2WmsMapItemMock('otherMapItemMock'),
         expectedActiveMapItem,
       ];
       store.overrideSelector(selectItems, activeMapItems);
@@ -382,8 +380,8 @@ describe('ActiveMapItemEffects', () => {
   describe('addFavourite$', () => {
     it('dispatches MapConfigActions.setBasemap() after adding all favourite map items using the map service', (done: DoneFn) => {
       const expectedFavouriteActiveMapItems: ActiveMapItem[] = [
-        createGb2WmsMapItemMock('favouriteOne').activeMapItem,
-        createGb2WmsMapItemMock('favouriteTwo').activeMapItem,
+        createGb2WmsMapItemMock('favouriteOne'),
+        createGb2WmsMapItemMock('favouriteTwo'),
       ];
       const expectedCenter: PointWithSrs = {
         type: 'Point',
@@ -424,8 +422,8 @@ describe('ActiveMapItemEffects', () => {
     it('dispatches MapConfigActions.clearInitialMapsConfig() after adding all initial map items using the map service (if it is initialized)', (done: DoneFn) => {
       store.overrideSelector(selectIsMapServiceInitialized, true);
       const expectedInitialActiveMapItems: ActiveMapItem[] = [
-        createGb2WmsMapItemMock('initialItemOne').activeMapItem,
-        createGb2WmsMapItemMock('initialItemTwo').activeMapItem,
+        createGb2WmsMapItemMock('initialItemOne'),
+        createGb2WmsMapItemMock('initialItemTwo'),
       ];
       const activeMapItemSpies: {spy: jasmine.Spy; expectedPosition: number}[] = expectedInitialActiveMapItems.map((item, index) => ({
         spy: spyOn(item, 'addToMap').and.callThrough(),
@@ -445,8 +443,8 @@ describe('ActiveMapItemEffects', () => {
     it('dispatches MapConfigActions.clearInitialMapsConfig() and nothing else (if the map service is not yet initialized)', (done: DoneFn) => {
       store.overrideSelector(selectIsMapServiceInitialized, false);
       const expectedInitialActiveMapItems: ActiveMapItem[] = [
-        createGb2WmsMapItemMock('initialItemOne').activeMapItem,
-        createGb2WmsMapItemMock('initialItemTwo').activeMapItem,
+        createGb2WmsMapItemMock('initialItemOne'),
+        createGb2WmsMapItemMock('initialItemTwo'),
       ];
       const activeMapItemSpies: {spy: jasmine.Spy; expectedPosition: number}[] = expectedInitialActiveMapItems.map((item, index) => ({
         spy: spyOn(item, 'addToMap').and.callThrough(),
