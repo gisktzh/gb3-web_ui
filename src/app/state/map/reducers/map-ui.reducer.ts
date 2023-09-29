@@ -57,24 +57,40 @@ export const mapUiFeature = createFeature({
       return {
         ...state,
         showBasemapSelector: true,
+        hideUiElements: true,
       };
     }),
     on(MapUiActions.hideBasemapSelectorMobile, (state): MapUiState => {
       return {
         ...state,
         showBasemapSelector: false,
+        hideUiElements: false,
       };
     }),
     on(MapUiActions.showMapManagementMobile, (state): MapUiState => {
       return {
         ...state,
         showMapManagementMobile: true,
+        hideUiElements: true,
       };
     }),
     on(MapUiActions.hideMapManagementMobile, (state): MapUiState => {
       return {
         ...state,
         showMapManagementMobile: false,
+        hideUiElements: false,
+      };
+    }),
+    on(MapUiActions.hideUiElements, (state): MapUiState => {
+      return {
+        ...state,
+        hideUiElements: true,
+      };
+    }),
+    on(MapUiActions.hideLegend, (state): MapUiState => {
+      return {
+        ...state,
+        hideUiElements: false,
       };
     }),
   ),

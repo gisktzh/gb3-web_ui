@@ -1,24 +1,28 @@
 <bottom-sheet-overlay *ngIf="screenMode === 'mobile'" (closeEvent)="close()" [isVisible]="isVisible" class="bottom-sheet">
-  <mat-tab-group backgroundColor="primary" [selectedIndex]="activeMapItems.length === 0 ? 1 : 0">
-    <mat-tab #tab1>
-      <ng-template mat-tab-label>
-        <mat-icon svgIcon="ktzh_map_management"></mat-icon>
-        Aktive Karten
-        <!-- TODO: The behavior below causes the tab to change whenever I select my first map or if I delete all maps. A quick fix would be to have the default start tap as map catalogue -->
-        <span
-          class="active-map-items__header__badge"
-          [ngClass]="{'active-map-items__header__badge--hidden': activeMapItems.length === 0}"
-          [matBadge]="this.activeMapItems.length"
-        ></span>
-      </ng-template>
-      <active-map-items></active-map-items>
-    </mat-tab>
-    <mat-tab #tab2>
-      <ng-template mat-tab-label>
-        <mat-icon svgIcon="ktzh_map_management"></mat-icon>
-        Kartenkatalog
-      </ng-template>
-      <map-data-catalogue></map-data-catalogue>
-    </mat-tab>
-  </mat-tab-group>
+  <div class="active-map-item__tabs">
+    <div class="active-map-item__tabs__header">
+      <div class="active-map-item__tabs__header__buttons">
+        <button
+          [ngClass]="{'active-map-item__tabs__header__buttons__button--selected': activeTab === 'activeMaps'}"
+          class="active-map-item__tabs__header__buttons__button"
+          mat-flat-button
+          (click)="changeTabs('activeMaps')"
+        >
+          Aktive Karten
+        </button>
+        <button
+          [ngClass]="{'active-map-item__tabs__header__buttons__button--selected': activeTab === 'mapsCatalogue'}"
+          class="active-map-item__tabs__header__buttons__button"
+          mat-flat-button
+          (click)="changeTabs('mapsCatalogue')"
+        >
+          Kartenkatalog
+        </button>
+      </div>
+    </div>
+    <div class="active-map-item__tabs__content" [ngSwitch]="activeTab">
+      <active-map-items *ngSwitchCase="'activeMaps'"></active-map-items>
+      <map-data-catalogue *ngSwitchCase="'mapsCatalogue'"></map-data-catalogue>
+    </div>
+  </div>
 </bottom-sheet-overlay>

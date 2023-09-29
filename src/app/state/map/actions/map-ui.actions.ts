@@ -22,5 +22,6 @@ export const MapUiActions = createActionGroup({
     'Hide Basemap Selector Mobile': emptyProps(),
     'show Map Management Mobile': emptyProps(),
     'hide Map Management Mobile': emptyProps(),
+    'hide Ui Elements': emptyProps(),
   },
 });

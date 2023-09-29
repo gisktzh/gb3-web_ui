@@ -8,6 +8,7 @@ import {LegendDisplay} from '../../../shared/interfaces/legend.interface';
 import {selectLegendItemsForDisplay} from '../../../state/map/selectors/legend-result-display.selector';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
+import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
 
 @Component({
   selector: 'legend-overlay',
@@ -40,7 +41,7 @@ export class LegendOverlayComponent implements OnInit, OnDestroy {
   }
 
   public close() {
-    this.store.dispatch(LegendActions.hideLegend());
+    this.store.dispatch(MapUiActions.hideLegend());
   }
 
   public print() {

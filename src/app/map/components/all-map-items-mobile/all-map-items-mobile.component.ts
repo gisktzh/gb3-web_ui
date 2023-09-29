@@ -8,6 +8,8 @@ import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
 import {ActiveMapItem} from '../../models/active-map-item.model';
 import {selectItems} from '../../../state/map/reducers/active-map-item.reducer';
 
+type TabType = 'activeMaps' | 'mapsCatalogue';
+
 @Component({
   selector: 'all-map-items-mobile',
   templateUrl: './all-map-items-mobile.component.html',
@@ -19,6 +21,7 @@ export class AllMapItemsMobileComponent implements OnInit, OnDestroy {
   public activeMapItems: ActiveMapItem[] = [];
   public numberOfNotices: number = 0;
   public numberOfUnreadNotices: number = 0;
+  public activeTab: TabType = 'mapsCatalogue';
 
   private readonly subscriptions: Subscription = new Subscription();
   private readonly showMapManagementMobile$ = this.store.select(selectShowMapManagementMobile);
@@ -37,6 +40,10 @@ export class AllMapItemsMobileComponent implements OnInit, OnDestroy {
 
   public close() {
     this.store.dispatch(MapUiActions.hideMapManagementMobile());
+  }
+
+  public changeTabs(tab: TabType) {
+    this.activeTab = tab;
   }
 
   private initSubscriptions() {

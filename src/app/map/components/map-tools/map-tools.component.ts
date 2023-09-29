@@ -56,6 +56,7 @@ export class MapToolsComponent implements OnInit, OnDestroy {
       this.store.dispatch(MapUiActions.hideLegend());
     } else {
       this.store.dispatch(MapUiActions.showLegend());
+      this.store.dispatch(MapUiActions.hideUiElements());
       this.store.dispatch(MapUiActions.setBottomSheetHeight({bottomSheetHeight: BottomSheetHeight.large}));
     }
   }
