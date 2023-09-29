@@ -53,7 +53,6 @@
 }
 
 .map-management-mobile__content {
-  padding: 24px;
   color: ktzh-variables.$zh-foreground-color;
   background-color: ktzh-variables.$zh-background-color;
   border-color: ktzh-variables.$zh-background-color;
@@ -64,5 +63,40 @@
 
   &--inverted {
     border-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
+  }
+}
+
+.map-data-catalogue__content__filter {
+  position: absolute;
+  display: flex;
+  padding-top: 10px;
+  width: 95vw;
+
+  .map-data-catalogue__content__filter__input {
+    width: 100%;
+    height: 40px;
+    padding: 0 5px 0 45px;
+    border: 3px solid grey;
+    outline: none;
+    display: block;
+    font-family: ktzh-variables.$zh-font-family;
+  }
+
+  .map-data-catalogue__content__filter__input:focus {
+    border: 3px solid ktzh-variables.$zh-cyan;
+
+    & + .map-data-catalogue__content__filter__input-icon {
+      color: black;
+    }
+  }
+
+  .map-data-catalogue__content__filter__input-icon {
+    margin: 14px 5px 5px 16px;
+    position: absolute;
+    color: grey;
+    display: flex;
+    align-items: center;
+
+    @include mat-mixins.mat-icon-custom-svg-size(18px);
   }
 }

@@ -24,7 +24,7 @@
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    margin-bottom: 12px;
+    margin-bottom: 25px;
 
     &__map-management {
       background-color: ktzh-variables.$zh-darkblue;
@@ -43,6 +43,7 @@
   .bottom-sheet-overlay__content {
     flex: 1;
     overflow: hidden scroll;
+    padding: 0px;
   }
 
   .break {

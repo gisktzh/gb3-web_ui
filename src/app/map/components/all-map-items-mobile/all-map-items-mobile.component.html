@@ -25,6 +25,12 @@
         Kartenkatalog
       </button>
     </div>
+    <div *ngIf="activeTab === 'mapsCatalogue'" class="map-data-catalogue__content__filter">
+      <input #filterInput class="map-data-catalogue__content__filter__input" placeholder="Karten und Layer filtern" type="text" />
+      <span class="map-data-catalogue__content__filter__input-icon">
+        <mat-icon svgIcon="ktzh_search"></mat-icon>
+      </span>
+    </div>
   </div>
   <div class="map-management-mobile__content" [ngSwitch]="activeTab" body>
     <active-map-items *ngSwitchCase="'activeMaps'"></active-map-items>

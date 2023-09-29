@@ -27,7 +27,7 @@
   overlayTitle="Legende"
   class="bottom-sheet"
 >
-  <div body>
+  <div body class="legend-container">
     <loading-and-process-bar [loadingState]="loadingState"></loading-and-process-bar>
     <ng-container *ngIf="loadingState === 'loaded'">
       <legend-item
