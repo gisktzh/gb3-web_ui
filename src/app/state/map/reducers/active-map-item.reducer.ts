@@ -25,7 +25,7 @@ export const activeMapItemFeature = createFeature({
       newActiveMapItems.splice(position, 0, activeMapItem);
       return {...state, items: newActiveMapItems};
     }),
-    on(ActiveMapItemActions.removeActiveMapItem, (state, activeMapItem): ActiveMapItemState => {
+    on(ActiveMapItemActions.removeActiveMapItem, (state, {activeMapItem}): ActiveMapItemState => {
       const remainingActiveMapItems = state.items.filter((mapItem) => mapItem.id !== activeMapItem.id);
       return {...state, items: [...remainingActiveMapItems]};
     }),
@@ -36,8 +36,10 @@ export const activeMapItemFeature = createFeature({
       ActiveMapItemActions.moveToTop,
       produce((draft, {activeMapItem}) => {
         const index = draft.items.findIndex((item) => item.id === activeMapItem.id);
-        const entry = draft.items.splice(index, 1);
-        draft.items.unshift(...entry);
+        if (index > 0) {
+          const entry = draft.items.splice(index, 1);
+          draft.items.unshift(...entry);
+        }
       }),
     ),
     on(
