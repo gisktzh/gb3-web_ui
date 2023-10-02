@@ -21,6 +21,16 @@
       <mat-icon svgIcon="ktzh_drawing_menu"></mat-icon>
     </button>
     <mat-divider class="map-tools__divider"></mat-divider>
+    <button
+      (click)="toggleToolMenu('data-download')"
+      [ngClass]="{'map-tools__button--active': toolMenuVisibility === 'data-download'}"
+      class="map-tools__button"
+      color="accent"
+      data-test-id="map-data-download"
+      mat-icon-button
+    >
+      <mat-icon svgIcon="ktzh_download"></mat-icon>
+    </button>
     <button (click)="showPrintDialog()" class="map-tools__button" data-test-id="map-print" mat-icon-button>
       <mat-icon svgIcon="ktzh_print"></mat-icon>
     </button>
@@ -32,5 +42,6 @@
   <div class="map-tools__list" *ngIf="toolMenuVisibility !== undefined">
     <measurement-tools *ngIf="toolMenuVisibility === 'measurement'"></measurement-tools>
     <drawing-tools *ngIf="toolMenuVisibility === 'drawing'"></drawing-tools>
+    <data-download-selection-tools *ngIf="toolMenuVisibility === 'data-download'"></data-download-selection-tools>
   </div>
 </div>

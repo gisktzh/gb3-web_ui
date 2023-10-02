@@ -32,6 +32,7 @@ export class MapUiEffects {
       map((value) => {
         switch (value.mapSideDrawerContent) {
           case 'print':
+          case 'data-download':
             return MapUiActions.changeUiElementsVisibility({hideAllUiElements: true, hideUiToggleButton: true});
         }
       }),
@@ -44,6 +45,7 @@ export class MapUiEffects {
       map((value) => {
         switch (value.mapSideDrawerContent) {
           case 'print':
+          case 'data-download': // TODO WES: remove this case
             return PrintActions.loadPrintCapabilities();
         }
       }),

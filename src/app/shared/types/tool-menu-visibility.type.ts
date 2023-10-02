@@ -1,1 +1,1 @@
-export type ToolMenuVisibility = 'measurement' | 'drawing';
+export type ToolMenuVisibility = 'measurement' | 'drawing' | 'data-download';

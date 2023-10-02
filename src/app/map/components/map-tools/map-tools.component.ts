@@ -12,6 +12,7 @@ import {ToolMenuVisibility} from '../../../shared/types/tool-menu-visibility.typ
 })
 export class MapToolsComponent implements OnInit, OnDestroy {
   public toolMenuVisibility: ToolMenuVisibility | undefined = undefined;
+  public isDataDownloadMenuVisible: boolean = false;
   private readonly toolMenuVisibility$ = this.store.select(selectToolMenuVisibility);
   private readonly subscriptions: Subscription = new Subscription();
 
