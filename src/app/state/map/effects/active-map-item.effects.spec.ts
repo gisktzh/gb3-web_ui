@@ -62,7 +62,7 @@ describe('ActiveMapItemEffects', () => {
   });
 
   describe('addMapItem$', () => {
-    it('add the given map item using the map service, no further action dispatch', (done: DoneFn) => {
+    it('adds the given map item using the map service, no further action dispatch', (done: DoneFn) => {
       const expectedActiveMapItem = createGb2WmsMapItemMock('mapMock');
       const expectedPosition = 1337;
       const activeMapItemSpy = spyOn(expectedActiveMapItem, 'addToMap').and.callThrough();
@@ -78,7 +78,7 @@ describe('ActiveMapItemEffects', () => {
   });
 
   describe('removeMapItem$', () => {
-    it('remove the given map item using the map service, no further action dispatch', (done: DoneFn) => {
+    it('removes the given map item using the map service, no further action dispatch', (done: DoneFn) => {
       const expectedId = 'mapMock';
       const activeMapItem = createGb2WmsMapItemMock(expectedId);
       const mapServiceSpy = spyOn(mapService, 'removeMapItem').and.callThrough();
@@ -94,7 +94,7 @@ describe('ActiveMapItemEffects', () => {
   });
 
   describe('removeAllMapItems$', () => {
-    it('remove all map items using the map service, no further action dispatch', (done: DoneFn) => {
+    it('removes all map items using the map service, no further action dispatch', (done: DoneFn) => {
       const mapServiceSpy = spyOn(mapService, 'removeAllMapItems').and.callThrough();
 
       const expectedAction = ActiveMapItemActions.removeAllActiveMapItems();

@@ -3,7 +3,6 @@ import {ActiveMapItem} from '../../../models/active-map-item.model';
 import {MatExpansionPanel} from '@angular/material/expansion';
 import {ActiveMapItemActions} from '../../../../state/map/actions/active-map-item.actions';
 import {Store} from '@ngrx/store';
-import {Router} from '@angular/router';
 import {MainPage} from '../../../../shared/enums/main-page.enum';
 import {DataCataloguePage} from '../../../../shared/enums/data-catalogue-page.enum';
 
@@ -19,10 +18,7 @@ export class ActiveMapItemHeaderComponent {
   protected readonly mainPageEnum = MainPage;
   protected readonly dataCataloguePageEnum = DataCataloguePage;
 
-  constructor(
-    private readonly store: Store,
-    private readonly router: Router,
-  ) {}
+  constructor(private readonly store: Store) {}
 
   public toggleMapItemVisibility(activeMapItem: ActiveMapItem) {
     this.store.dispatch(ActiveMapItemActions.setVisibility({visible: !activeMapItem.visible, activeMapItem}));
