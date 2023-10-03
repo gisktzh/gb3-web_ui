@@ -1,8 +1,10 @@
-import {Component, OnInit, Input, Output, EventEmitter, OnDestroy} from '@angular/core';
+import {Component, Input, OnInit, OnDestroy, Output, EventEmitter} from '@angular/core';
+import {StyleExpression} from 'src/app/shared/types/style-expression.type';
+import {BottomSheetHeight} from 'src/app/shared/enums/bottom-sheet-heights.enum';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {selectBottomSheetHeight} from 'src/app/state/map/reducers/map-ui.reducer';
-import {BottomSheetHeight} from 'src/app/shared/enums/bottom-sheet-heights.enum';
+import {ResizeHandlerLocation} from 'src/app/shared/types/resize-handler-location.type';
 
 @Component({
   selector: 'bottom-sheet-item',
@@ -10,14 +12,19 @@ import {BottomSheetHeight} from 'src/app/shared/enums/bottom-sheet-heights.enum'
   styleUrls: ['./bottom-sheet-item.component.scss'],
 })
 export class BottomSheetItemComponent implements OnInit, OnDestroy {
-  constructor(private readonly store: Store) {}
-
   @Input() public overlayTitle: string = '';
-  @Input() public isVisible: boolean = false;
-  @Input() public isBlue: boolean = false;
   @Output() public readonly closeEvent = new EventEmitter<void>();
 
+  public resizeableStyle: StyleExpression = {};
+  public bottomSheetHeight: BottomSheetHeight = BottomSheetHeight.medium;
+  public location: ResizeHandlerLocation = 'top';
+  public isBlue: boolean = false;
+
+  private readonly bottomSheetHeight$ = this.store.select(selectBottomSheetHeight);
+
   private readonly subscriptions = new Subscription();
+
+  constructor(private readonly store: Store) {}
 
   public ngOnInit(): void {
     this.initSubscriptions();
@@ -27,9 +34,18 @@ export class BottomSheetItemComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  public onClose() {
+  public close() {
+    this.resizeableStyle = {};
     this.closeEvent.emit();
   }
 
-  public initSubscriptions() {}
+  public resizeOverlay(newStyle: StyleExpression) {
+    this.resizeableStyle = newStyle;
+  }
+
+  public initSubscriptions() {
+    this.subscriptions.add(
+      this.bottomSheetHeight$.pipe(tap((bottomSheetHeight) => (this.bottomSheetHeight = bottomSheetHeight))).subscribe(),
+    );
+  }
 }

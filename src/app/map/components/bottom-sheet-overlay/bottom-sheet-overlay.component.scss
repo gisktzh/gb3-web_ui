@@ -3,55 +3,60 @@
 @use 'variables/map-layout-variables' as map-layout-variables;
 
 .bottom-sheet-overlay {
-  width: 100vw;
+  position: absolute;
   bottom: 0px;
-  pointer-events: all;
-  z-index: z-index-variables.$map-overlay;
 
-  &--small {
-    height: 30vh;
-  }
+  .bottom-sheet-overlay__card {
+    width: 100vw;
+    bottom: 0px;
+    pointer-events: all;
+    z-index: z-index-variables.$map-overlay;
 
-  &--medium {
-    height: 60vh;
-  }
-
-  &--large {
-    height: 90vh;
-  }
-
-  .bottom-sheet-overlay__header {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    margin-bottom: 25px;
-
-    &__map-management {
-      background-color: ktzh-variables.$zh-darkblue;
+    &--small {
+      height: 30vh;
     }
 
-    .bottom-sheet-overlay__header__title {
-      flex-grow: 1;
-      margin-bottom: 0;
+    &--medium {
+      height: 60vh;
     }
 
-    &__button {
-      color: ktzh-variables.$zh-white;
+    &--large {
+      height: 90vh;
     }
-  }
 
-  .bottom-sheet-overlay__content {
-    flex: 1;
-    overflow: hidden scroll;
-    padding: 0px;
-  }
+    .bottom-sheet-overlay__header {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 25px;
 
-  .break {
-    flex-basis: 100%;
-    height: 0;
-  }
+      &__map-management {
+        background-color: ktzh-variables.$zh-darkblue;
+      }
 
-  .item {
-    width: 100%;
+      .bottom-sheet-overlay__header__title {
+        flex-grow: 1;
+        margin-bottom: 0;
+      }
+
+      &__button {
+        color: ktzh-variables.$zh-white;
+      }
+    }
+
+    .bottom-sheet-overlay__content {
+      flex: 1;
+      overflow: hidden scroll;
+      padding: 0px;
+    }
+
+    .break {
+      flex-basis: 100%;
+      height: 0;
+    }
+
+    .item {
+      width: 100%;
+    }
   }
 }

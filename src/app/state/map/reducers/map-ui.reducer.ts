@@ -73,35 +73,59 @@ export const mapUiFeature = createFeature({
     on(MapUiActions.showBasemapSelectorMobile, (state): MapUiState => {
       return {
         ...state,
-        showBasemapSelector: true,
-        hideUiElements: true,
+        //showBasemapSelector: true,
+        bottomSheetContent: 'basemap',
+        //hideUiElements: true,
       };
     }),
     on(MapUiActions.hideBasemapSelectorMobile, (state): MapUiState => {
       return {
         ...state,
-        showBasemapSelector: false,
+        //showBasemapSelector: false,
+        bottomSheetContent: 'none',
         hideUiElements: false,
       };
     }),
     on(MapUiActions.showMapManagementMobile, (state): MapUiState => {
       return {
         ...state,
-        showMapManagementMobile: true,
+        //showMapManagementMobile: true,
+        bottomSheetContent: 'map-management',
         hideUiElements: true,
       };
     }),
     on(MapUiActions.hideMapManagementMobile, (state): MapUiState => {
       return {
         ...state,
-        showMapManagementMobile: false,
+        //showMapManagementMobile: false,
+        bottomSheetContent: 'none',
         hideUiElements: false,
       };
     }),
     on(MapUiActions.hideUiElements, (state): MapUiState => {
       return {
         ...state,
+        //hideUiElements: true, // TODO: Differentiate between mobile and desktop
+      };
+    }),
+    on(MapUiActions.showUiElements, (state): MapUiState => {
+      return {
+        ...state,
+        hideUiElements: false,
+      };
+    }),
+    on(MapUiActions.showBottomSheet, (state, {bottomSheetContent}): MapUiState => {
+      return {
+        ...state,
+        bottomSheetContent: bottomSheetContent,
         hideUiElements: true,
+      };
+    }),
+    on(MapUiActions.hideBottomSheet, (state): MapUiState => {
+      return {
+        ...state,
+        bottomSheetContent: 'none',
+        hideUiElements: false,
       };
     }),
   ),
@@ -117,4 +141,5 @@ export const {
   selectBottomSheetHeight,
   selectShowBasemapSelector,
   selectShowMapManagementMobile,
+  selectBottomSheetContent,
 } = mapUiFeature;

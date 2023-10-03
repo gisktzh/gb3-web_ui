@@ -1,36 +1,28 @@
-<bottom-sheet-overlay
-  *ngIf="screenMode === 'mobile'"
-  (closeEvent)="close()"
-  [isVisible]="isVisible"
-  overlayTitle="Hintergrundkarte"
-  class="bottom-sheet"
->
-  <div class="basemap-selector" body>
-    <div class="basemap-selector__map-choice">
-      <button
-        mat-flat-button
-        *ngFor="let availableBasemap of availableBasemaps"
-        (click)="switchBasemap(availableBasemap.id)"
-        class="basemap-selector__map-choice__item"
-        [ngClass]="{'basemap-selector__map-choice__item--active': availableBasemap.id === activeBasemap?.id}"
-      >
-        <ng-container [ngSwitch]="availableBasemap.type">
-          <img
-            *ngSwitchCase="'wms'"
-            [alt]="availableBasemap.title"
-            [src]="availableBasemap.id | basemapImageLink"
-            class="basemap-selector__map-choice__item__image"
-          />
-          <span
-            *ngSwitchCase="'blank'"
-            class="basemap-selector__map-choice__item__image basemap-selector__map-choice__item__image--blank"
-          ></span>
-        </ng-container>
+<div class="basemap-selector">
+  <div class="basemap-selector__map-choice">
+    <button
+      mat-flat-button
+      *ngFor="let availableBasemap of availableBasemaps"
+      (click)="switchBasemap(availableBasemap.id)"
+      class="basemap-selector__map-choice__item"
+      [ngClass]="{'basemap-selector__map-choice__item--active': availableBasemap.id === activeBasemap?.id}"
+    >
+      <ng-container [ngSwitch]="availableBasemap.type">
+        <img
+          *ngSwitchCase="'wms'"
+          [alt]="availableBasemap.title"
+          [src]="availableBasemap.id | basemapImageLink"
+          class="basemap-selector__map-choice__item__image"
+        />
+        <span
+          *ngSwitchCase="'blank'"
+          class="basemap-selector__map-choice__item__image basemap-selector__map-choice__item__image--blank"
+        ></span>
+      </ng-container>
 
-        <span class="basemap-selector__map-choice__item__title">
-          {{ availableBasemap.title }}
-        </span>
-      </button>
-    </div>
+      <span class="basemap-selector__map-choice__item__title">
+        {{ availableBasemap.title }}
+      </span>
+    </button>
   </div>
-</bottom-sheet-overlay>
+</div>

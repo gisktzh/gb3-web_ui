@@ -1,0 +1,57 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'variables/z-index-variables' as z-index-variables;
+@use 'variables/map-layout-variables' as map-layout-variables;
+
+.bottom-sheet-overlay__card {
+  width: 100vw;
+  bottom: 0px;
+  pointer-events: all;
+  z-index: z-index-variables.$map-overlay;
+
+  &--small {
+    height: 30vh;
+  }
+
+  &--medium {
+    height: 60vh;
+  }
+
+  &--large {
+    height: 90vh;
+  }
+
+  .bottom-sheet-overlay__header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 25px;
+
+    &__map-management {
+      background-color: ktzh-variables.$zh-darkblue;
+    }
+
+    .bottom-sheet-overlay__header__title {
+      flex-grow: 1;
+      margin-bottom: 0;
+    }
+
+    &__button {
+      color: ktzh-variables.$zh-white;
+    }
+  }
+
+  .bottom-sheet-overlay__content {
+    flex: 1;
+    overflow: hidden scroll;
+    padding: 0px;
+  }
+
+  .break {
+    flex-basis: 100%;
+    height: 0;
+  }
+
+  .item {
+    width: 100%;
+  }
+}

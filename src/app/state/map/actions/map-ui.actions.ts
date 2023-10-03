@@ -3,6 +3,7 @@ import {MapSideDrawerContent} from '../../../shared/types/map-side-drawer-conten
 import {Favourite} from '../../../shared/interfaces/favourite.interface';
 import {ToolMenuVisibility} from '../../../shared/types/tool-menu-visibility.type';
 import {BottomSheetHeight} from 'src/app/shared/enums/bottom-sheet-heights.enum';
+import {BottomSheetContent} from 'src/app/shared/types/bottom-sheet-content.type';
 
 export const MapUiActions = createActionGroup({
   source: 'MapUi',
@@ -23,5 +24,8 @@ export const MapUiActions = createActionGroup({
     'show Map Management Mobile': emptyProps(),
     'hide Map Management Mobile': emptyProps(),
     'hide Ui Elements': emptyProps(),
+    'Show Ui Elements': emptyProps(),
+    'Show Bottom Sheet': props<{bottomSheetContent: Exclude<BottomSheetContent, 'none'>}>(),
+    'Hide Bottom Sheet': emptyProps(),
   },
 });

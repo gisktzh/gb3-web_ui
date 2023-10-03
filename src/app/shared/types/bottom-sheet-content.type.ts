@@ -1,1 +1,1 @@
-export type BottomSheetContent = 'none' | 'legend' | 'feature-info';
+export type BottomSheetContent = 'feature-info' | 'legend' | 'basemap' | 'map-attributes' | 'none' | 'share-link' | 'map-management';

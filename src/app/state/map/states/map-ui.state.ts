@@ -1,7 +1,7 @@
 import {BottomSheetHeight} from 'src/app/shared/enums/bottom-sheet-heights.enum';
 import {MapSideDrawerContent} from '../../../shared/types/map-side-drawer-content.type';
 import {ToolMenuVisibility} from '../../../shared/types/tool-menu-visibility.type';
-import {BottomSheetContent} from '../../../shared/types/bottom-sheet-content.type';
+import {BottomSheetContent} from 'src/app/shared/types/bottom-sheet-content.type';
 
 export interface MapUiState {
   mapSideDrawerContent: MapSideDrawerContent;
