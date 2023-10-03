@@ -2,13 +2,13 @@ import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angula
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {selectLoadingState} from '../../../state/map/reducers/legend.reducer';
-import {LegendActions} from '../../../state/map/actions/legend.actions';
 import {LoadingState} from '../../../shared/types/loading-state.type';
 import {LegendDisplay} from '../../../shared/interfaces/legend.interface';
 import {selectLegendItemsForDisplay} from '../../../state/map/selectors/legend-result-display.selector';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
+import {selectIsLegendOverlayVisible} from '../../../state/map/reducers/map-ui.reducer';
 
 @Component({
   selector: 'legend-overlay',
@@ -25,6 +25,7 @@ export class LegendOverlayComponent implements OnInit, OnDestroy {
   public loadingState: LoadingState = 'undefined';
   public screenMode: ScreenMode = 'mobile';
 
+  private readonly isLegendOverlayVisible$ = this.store.select(selectIsLegendOverlayVisible);
   private readonly loadingState$ = this.store.select(selectLoadingState);
   private readonly legendItems$ = this.store.select(selectLegendItemsForDisplay);
   private readonly screenMode$ = this.store.select(selectScreenMode);
@@ -41,7 +42,7 @@ export class LegendOverlayComponent implements OnInit, OnDestroy {
   }
 
   public close() {
-    this.store.dispatch(MapUiActions.hideLegend());
+    this.store.dispatch(MapUiActions.setLegendOverlayVisibility({isVisible: false}));
   }
 
   public print() {
@@ -53,38 +54,9 @@ export class LegendOverlayComponent implements OnInit, OnDestroy {
   }
 
   private initSubscriptions() {
-    this.subscriptions.add(
-      this.loadingState$
-        .pipe(
-          tap((value) => {
-            this.loadingState = value;
-            this.updateVisibility(value);
-          }),
-        )
-        .subscribe(),
-    );
-
-    this.subscriptions.add(
-      this.legendItems$
-        .pipe(
-          tap((value) => {
-            this.legendItems = value;
-          }),
-        )
-        .subscribe(),
-    );
-    this.subscriptions.add(
-      this.screenMode$
-        .pipe(
-          tap((screenMode) => {
-            this.screenMode = screenMode;
-          }),
-        )
-        .subscribe(),
-    );
-  }
-
-  private updateVisibility(loadingState: LoadingState) {
-    this.isVisible = loadingState !== 'undefined';
+    this.subscriptions.add(this.loadingState$.pipe(tap((value) => (this.loadingState = value))).subscribe());
+    this.subscriptions.add(this.legendItems$.pipe(tap((value) => (this.legendItems = value))).subscribe());
+    this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
+    this.subscriptions.add(this.isLegendOverlayVisible$.pipe(tap((isVisible) => (this.isVisible = isVisible))).subscribe());
   }
 }

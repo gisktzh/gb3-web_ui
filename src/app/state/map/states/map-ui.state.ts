@@ -4,6 +4,8 @@ import {ToolMenuVisibility} from '../../../shared/types/tool-menu-visibility.typ
 
 export interface MapUiState {
   mapSideDrawerContent: MapSideDrawerContent;
+  isLegendOverlayVisible: boolean;
+  isFeatureInfoOverlayVisible: boolean;
   hideUiElements: boolean;
   hideToggleUiElementsButton: boolean;
   hideZoomButtons: boolean;

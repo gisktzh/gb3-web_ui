@@ -97,7 +97,7 @@ export class ActiveMapItemEffects {
   public hideLegendAfterRemovingAllMapItems$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ActiveMapItemActions.removeAllActiveMapItems),
-      map(() => MapUiActions.hideLegend()),
+      map(() => MapUiActions.setLegendOverlayVisibility({isVisible: false})),
     );
   });
 

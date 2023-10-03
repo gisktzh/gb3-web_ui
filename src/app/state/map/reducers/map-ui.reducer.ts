@@ -7,6 +7,8 @@ export const mapUiFeatureKey = 'mapUi';
 
 export const initialState: MapUiState = {
   mapSideDrawerContent: 'none',
+  isLegendOverlayVisible: false,
+  isFeatureInfoOverlayVisible: false,
   hideUiElements: false,
   hideToggleUiElementsButton: false,
   hideZoomButtons: false,
@@ -24,6 +26,18 @@ export const mapUiFeature = createFeature({
       return {
         ...state,
         toolMenuVisibility: tool,
+      };
+    }),
+    on(MapUiActions.setLegendOverlayVisibility, (state, {isVisible}): MapUiState => {
+      return {
+        ...state,
+        isLegendOverlayVisible: isVisible,
+      };
+    }),
+    on(MapUiActions.setFeatureInfoVisibility, (state, {isVisible}): MapUiState => {
+      return {
+        ...state,
+        isFeatureInfoOverlayVisible: isVisible,
       };
     }),
     on(MapUiActions.changeUiElementsVisibility, (state, {hideAllUiElements, hideUiToggleButton}): MapUiState => {
@@ -87,12 +101,6 @@ export const mapUiFeature = createFeature({
         hideUiElements: true,
       };
     }),
-    on(MapUiActions.hideLegend, (state): MapUiState => {
-      return {
-        ...state,
-        hideUiElements: false,
-      };
-    }),
   ),
 });
 
@@ -101,6 +109,8 @@ export const {
   reducer,
   selectMapUiState,
   selectToolMenuVisibility,
+  selectIsLegendOverlayVisible,
+  selectIsFeatureInfoOverlayVisible,
   selectBottomSheetHeight,
   selectShowBasemapSelector,
   selectShowMapManagementMobile,
