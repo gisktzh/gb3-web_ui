@@ -18,7 +18,7 @@ export abstract class AbstractEsriMeasurementStrategy<T extends Polygon | Polyli
   public start(): void {
     this.sketchViewModel.create(this.tool, {mode: 'click'});
     this.sketchViewModel.on('create', ({state, graphic}) => {
-      let label: Graphic;
+      let labelConfiguration: {label: Graphic; labelText: string};
       let graphicIdentifier: string;
       switch (state) {
         case 'active':
@@ -27,9 +27,9 @@ export abstract class AbstractEsriMeasurementStrategy<T extends Polygon | Polyli
           break; // currently, these events do not trigger any action
         case 'complete':
           graphicIdentifier = this.setAndGetIdentifierOnGraphic(graphic);
-          label = this.createLabelForGeometry(graphic.geometry as T, graphicIdentifier);
-          this.layer.add(label);
-          this.completeDrawingCallbackHandler(graphic); // todo: add label graphic
+          labelConfiguration = this.createLabelForGeometry(graphic.geometry as T, graphicIdentifier);
+          this.layer.add(labelConfiguration.label);
+          this.completeDrawingCallbackHandler(graphic, labelConfiguration.labelText);
           break;
       }
     });
@@ -43,7 +43,7 @@ export abstract class AbstractEsriMeasurementStrategy<T extends Polygon | Polyli
    */
   protected abstract createLabelConfigurationForGeometry(geometry: T): LabelConfiguration;
 
-  private createLabelForGeometry(geometry: T, graphicIdentifier: string): Graphic {
+  private createLabelForGeometry(geometry: T, graphicIdentifier: string): {label: Graphic; labelText: string} {
     const {location, symbolization} = this.createLabelConfigurationForGeometry(geometry);
     const label = new Graphic({
       geometry: location,
@@ -53,6 +53,6 @@ export abstract class AbstractEsriMeasurementStrategy<T extends Polygon | Polyli
     this.setIdentifierOnGraphic(label, graphicIdentifier);
     this.setLabelTextAttributeOnGraphic(label, symbolization.text);
 
-    return label;
+    return {label, labelText: symbolization.text};
   }
 }

@@ -30,6 +30,7 @@ import SpatialReference from '@arcgis/core/geometry/SpatialReference';
 import {Feature} from 'geojson';
 import Graphic from '@arcgis/core/Graphic';
 import {arcgisToGeoJSON} from '@terraformer/arcgis';
+import {InternalDrawingRepresentation} from '../../../../shared/interfaces/internal-drawing-representation.interface';
 
 const HANDLE_GROUP_KEY = 'EsriToolService';
 
@@ -82,8 +83,8 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
     this.initializeTool(UserDrawingLayer.Measurements, (layer) => this.setMeasurementStrategy(measurementTool, layer));
   }
 
-  public complete(graphic: Graphic) {
-    const elementJson = this.convertToGeoJson(graphic);
+  public complete(graphic: Graphic, labelText?: string) {
+    const elementJson = this.convertToGeoJson(graphic, labelText);
     this.endDrawing(elementJson);
   }
 
@@ -132,7 +133,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
     this.toolStrategy.start();
   }
 
-  private convertToGeoJson(graphic: Graphic): Feature {
+  private convertToGeoJson(graphic: Graphic, labelText?: string): InternalDrawingRepresentation {
     const transformedGeometry = this.transformationService.transformTo(graphic.geometry, new SpatialReference({wkid: 4326}));
 
     return {
@@ -142,6 +143,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
         style: this.esriSymbolizationService.extractGb3SymbolizationFromSymbol(graphic.symbol),
         ...graphic.attributes,
       },
+      labelText,
     };
   }
 
@@ -189,18 +191,30 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
 
     switch (measurementType) {
       case 'measure-area':
-        this.toolStrategy = new EsriAreaMeasurementStrategy(layer, this.esriMapViewService.mapView, areaStyle, labelStyle, (geometry) =>
-          this.complete(geometry),
+        this.toolStrategy = new EsriAreaMeasurementStrategy(
+          layer,
+          this.esriMapViewService.mapView,
+          areaStyle,
+          labelStyle,
+          (geometry, labelText) => this.complete(geometry, labelText),
         );
         break;
       case 'measure-line':
-        this.toolStrategy = new EsriLineMeasurementStrategy(layer, this.esriMapViewService.mapView, lineStyle, labelStyle, (geometry) =>
-          this.complete(geometry),
+        this.toolStrategy = new EsriLineMeasurementStrategy(
+          layer,
+          this.esriMapViewService.mapView,
+          lineStyle,
+          labelStyle,
+          (geometry, labelText) => this.complete(geometry, labelText),
         );
         break;
       case 'measure-point':
-        this.toolStrategy = new EsriPointMeasurementStrategy(layer, this.esriMapViewService.mapView, pointStyle, labelStyle, (geometry) =>
-          this.complete(geometry),
+        this.toolStrategy = new EsriPointMeasurementStrategy(
+          layer,
+          this.esriMapViewService.mapView,
+          pointStyle,
+          labelStyle,
+          (geometry, labelText) => this.complete(geometry, labelText),
         );
     }
   }
