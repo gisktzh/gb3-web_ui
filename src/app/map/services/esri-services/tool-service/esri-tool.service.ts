@@ -25,12 +25,11 @@ import {EsriPointDrawingStrategy} from './strategies/drawing/esri-point-drawing.
 import {EsriLineDrawingStrategy} from './strategies/drawing/esri-line-drawing.strategy';
 import {EsriPolygonDrawingStrategy} from './strategies/drawing/esri-polygon-drawing.strategy';
 import {DrawingCallbackHandler} from './interfaces/drawing-callback-handler.interface';
-import {TransformationService} from '../transformation.service';
-import SpatialReference from '@arcgis/core/geometry/SpatialReference';
 import Graphic from '@arcgis/core/Graphic';
-import {arcgisToGeoJSON} from '@terraformer/arcgis';
 import {InternalDrawingRepresentation} from '../../../../shared/interfaces/internal-drawing-representation.interface';
 import {DrawingActions} from '../../../../state/map/actions/drawing.actions';
+import {silentArcgisToGeoJSON} from '../../../../shared/utils/esri-transformer-wrapper.utils';
+import {UnsupportedGeometryType} from '../errors/esri.errors';
 
 const HANDLE_GROUP_KEY = 'EsriToolService';
 
@@ -62,7 +61,6 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
     private readonly store: Store,
     private readonly esriSymbolizationService: EsriSymbolizationService,
     private readonly configService: ConfigService,
-    private readonly transformationService: TransformationService,
   ) {
     this.initSubscriptions();
   }
@@ -135,11 +133,20 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
   }
 
   private convertToGeoJson(graphic: Graphic, labelText?: string): InternalDrawingRepresentation {
-    const transformedGeometry = this.transformationService.transformTo(graphic.geometry, new SpatialReference({wkid: 4326}));
+    const geoJsonFeature = silentArcgisToGeoJSON(graphic.geometry);
+
+    if (
+      geoJsonFeature.type !== 'Point' &&
+      geoJsonFeature.type !== 'LineString' &&
+      geoJsonFeature.type !== 'Polygon' &&
+      geoJsonFeature.type !== 'MultiPoint'
+    ) {
+      throw new UnsupportedGeometryType(geoJsonFeature.type);
+    }
 
     return {
       type: 'Feature',
-      geometry: {...arcgisToGeoJSON(transformedGeometry)},
+      geometry: {...geoJsonFeature},
       properties: {
         style: this.esriSymbolizationService.extractGb3SymbolizationFromSymbol(graphic.symbol),
         ...graphic.attributes,
