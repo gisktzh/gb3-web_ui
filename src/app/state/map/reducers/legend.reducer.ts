@@ -20,7 +20,7 @@ export const legendFeature = createFeature({
       const legendItems = legends.map((legend) => legend.legend);
       return {...state, loadingState: 'loaded', items: legendItems};
     }),
-    on(LegendActions.hideLegend, (): LegendState => {
+    on(LegendActions.clearLegend, (): LegendState => {
       return {...initialState};
     }),
     on(LegendActions.setError, (): LegendState => {

@@ -12,6 +12,7 @@ import {MapConfigActions} from '../actions/map-config.actions';
 import {ConfigService} from '../../../shared/services/config.service';
 
 import {FeatureInfoCouldNotBeLoaded} from '../../../shared/errors/map.errors';
+import {MapUiActions} from '../actions/map-ui.actions';
 
 @Injectable()
 export class FeatureInfoEffects {
@@ -26,6 +27,13 @@ export class FeatureInfoEffects {
     return this.actions$.pipe(
       ofType(MapConfigActions.handleMapClick),
       map(({x, y}) => FeatureInfoActions.sendRequest({x, y})),
+    );
+  });
+
+  public openFeatureInfoOverlayOnRequest$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(FeatureInfoActions.sendRequest),
+      map(() => MapUiActions.setFeatureInfoVisibility({isVisible: true})),
     );
   });
 

@@ -7,6 +7,8 @@ export const mapUiFeatureKey = 'mapUi';
 
 export const initialState: MapUiState = {
   mapSideDrawerContent: 'none',
+  isLegendOverlayVisible: false,
+  isFeatureInfoOverlayVisible: false,
   hideUiElements: false,
   hideToggleUiElementsButton: false,
   hideZoomButtons: false,
@@ -14,6 +16,7 @@ export const initialState: MapUiState = {
   bottomSheetHeight: BottomSheetHeight.medium,
   showBasemapSelector: false,
   showMapManagementMobile: false,
+  bottomSheetContent: 'none',
 };
 
 export const mapUiFeature = createFeature({
@@ -24,6 +27,20 @@ export const mapUiFeature = createFeature({
       return {
         ...state,
         toolMenuVisibility: tool,
+      };
+    }),
+    on(MapUiActions.setLegendOverlayVisibility, (state, {isVisible}): MapUiState => {
+      return {
+        ...state,
+        isLegendOverlayVisible: isVisible,
+        bottomSheetContent: isVisible ? 'legend' : 'none',
+      };
+    }),
+    on(MapUiActions.setFeatureInfoVisibility, (state, {isVisible}): MapUiState => {
+      return {
+        ...state,
+        isFeatureInfoOverlayVisible: isVisible,
+        bottomSheetContent: isVisible ? 'feature-info' : 'none',
       };
     }),
     on(MapUiActions.changeUiElementsVisibility, (state, {hideAllUiElements, hideUiToggleButton}): MapUiState => {
@@ -87,12 +104,6 @@ export const mapUiFeature = createFeature({
         hideUiElements: true,
       };
     }),
-    on(MapUiActions.hideLegend, (state): MapUiState => {
-      return {
-        ...state,
-        hideUiElements: false,
-      };
-    }),
   ),
 });
 
@@ -101,6 +112,8 @@ export const {
   reducer,
   selectMapUiState,
   selectToolMenuVisibility,
+  selectIsLegendOverlayVisible,
+  selectIsFeatureInfoOverlayVisible,
   selectBottomSheetHeight,
   selectShowBasemapSelector,
   selectShowMapManagementMobile,

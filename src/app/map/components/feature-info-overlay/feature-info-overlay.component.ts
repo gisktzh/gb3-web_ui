@@ -7,7 +7,8 @@ import {selectFeatureInfosForDisplay} from '../../../state/map/selectors/feature
 import {selectFeatureInfoQueryLoadingState} from '../../../state/map/selectors/feature-info-query-loading-state.selector';
 import {selectGeneralInfoState} from '../../../state/map/reducers/general-info.reducer';
 import {GeneralInfoResponse} from '../../../shared/interfaces/general-info.interface';
-import {MapConfigActions} from '../../../state/map/actions/map-config.actions';
+import {selectIsFeatureInfoOverlayVisible} from '../../../state/map/reducers/map-ui.reducer';
+import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
 
 @Component({
   selector: 'feature-info-overlay',
@@ -24,6 +25,7 @@ export class FeatureInfoOverlayComponent implements OnInit, OnDestroy {
   public generalInfoData?: GeneralInfoResponse;
   public loadingState: LoadingState = 'undefined';
 
+  private readonly isFeatureInfoOverlayVisible$ = this.store.select(selectIsFeatureInfoOverlayVisible);
   private readonly loadingState$ = this.store.select(selectFeatureInfoQueryLoadingState);
   private readonly featureInfoData$ = this.store.select(selectFeatureInfosForDisplay);
   private readonly generalInfoData$ = this.store.select(selectGeneralInfoState);
@@ -40,7 +42,7 @@ export class FeatureInfoOverlayComponent implements OnInit, OnDestroy {
   }
 
   public close() {
-    this.store.dispatch(MapConfigActions.clearFeatureInfoContent());
+    this.store.dispatch(MapUiActions.setFeatureInfoVisibility({isVisible: false}));
   }
 
   public print() {
@@ -52,37 +54,9 @@ export class FeatureInfoOverlayComponent implements OnInit, OnDestroy {
   }
 
   private initSubscriptions() {
-    this.subscriptions.add(
-      this.loadingState$
-        .pipe(
-          tap((value) => {
-            this.loadingState = value;
-            this.updateVisibility(value);
-          }),
-        )
-        .subscribe(),
-    );
-    this.subscriptions.add(
-      this.featureInfoData$
-        .pipe(
-          tap((value) => {
-            this.featureInfoData = value;
-          }),
-        )
-        .subscribe(),
-    );
-    this.subscriptions.add(
-      this.generalInfoData$
-        .pipe(
-          tap((value) => {
-            this.generalInfoData = value.data;
-          }),
-        )
-        .subscribe(),
-    );
-  }
-
-  private updateVisibility(loadingState: LoadingState) {
-    this.isVisible = loadingState !== 'undefined';
+    this.subscriptions.add(this.loadingState$.pipe(tap((value) => (this.loadingState = value))).subscribe());
+    this.subscriptions.add(this.featureInfoData$.pipe(tap((value) => (this.featureInfoData = value))).subscribe());
+    this.subscriptions.add(this.generalInfoData$.pipe(tap((value) => (this.generalInfoData = value.data))).subscribe());
+    this.subscriptions.add(this.isFeatureInfoOverlayVisible$.pipe(tap((isVisible) => (this.isVisible = isVisible))).subscribe());
   }
 }

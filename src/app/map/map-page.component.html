@@ -42,7 +42,7 @@
   <button
     *ngIf="screenMode !== 'mobile'"
     mat-flat-button
-    (click)="toggleLegend()"
+    (click)="showLegend()"
     [disabled]="numberOfQueryLegends === 0"
     class="map-container__legend-button"
     [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
