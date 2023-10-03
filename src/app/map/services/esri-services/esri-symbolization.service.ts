@@ -98,6 +98,7 @@ export class EsriSymbolizationService {
 
   // eslint-disable-next-line @typescript-eslint/ban-types
   public extractGb3SymbolizationFromSymbol(symbol: Symbol): FavouriteGb3DrawingStyle {
+    // todo: GB3-604/GB3-608, styling
     switch (symbol.type) {
       case 'simple-marker':
         return {
