@@ -16,6 +16,7 @@ export const initialState: MapUiState = {
   bottomSheetHeight: BottomSheetHeight.medium,
   showBasemapSelector: false,
   showMapManagementMobile: false,
+  bottomSheetContent: 'none',
 };
 
 export const mapUiFeature = createFeature({
@@ -32,12 +33,14 @@ export const mapUiFeature = createFeature({
       return {
         ...state,
         isLegendOverlayVisible: isVisible,
+        bottomSheetContent: isVisible ? 'legend' : 'none',
       };
     }),
     on(MapUiActions.setFeatureInfoVisibility, (state, {isVisible}): MapUiState => {
       return {
         ...state,
         isFeatureInfoOverlayVisible: isVisible,
+        bottomSheetContent: isVisible ? 'feature-info' : 'none',
       };
     }),
     on(MapUiActions.changeUiElementsVisibility, (state, {hideAllUiElements, hideUiToggleButton}): MapUiState => {
