@@ -27,10 +27,10 @@ import {EsriPolygonDrawingStrategy} from './strategies/drawing/esri-polygon-draw
 import {DrawingCallbackHandler} from './interfaces/drawing-callback-handler.interface';
 import {TransformationService} from '../transformation.service';
 import SpatialReference from '@arcgis/core/geometry/SpatialReference';
-import {Feature} from 'geojson';
 import Graphic from '@arcgis/core/Graphic';
 import {arcgisToGeoJSON} from '@terraformer/arcgis';
 import {InternalDrawingRepresentation} from '../../../../shared/interfaces/internal-drawing-representation.interface';
+import {DrawingActions} from '../../../../state/map/actions/drawing.actions';
 
 const HANDLE_GROUP_KEY = 'EsriToolService';
 
@@ -84,8 +84,9 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
   }
 
   public complete(graphic: Graphic, labelText?: string) {
-    const elementJson = this.convertToGeoJson(graphic, labelText);
-    this.endDrawing(elementJson);
+    const internalDrawingRepresentation = this.convertToGeoJson(graphic, labelText);
+    this.store.dispatch(DrawingActions.addDrawing({drawing: internalDrawingRepresentation}));
+    this.endDrawing();
   }
 
   /**
@@ -143,13 +144,14 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
         style: this.esriSymbolizationService.extractGb3SymbolizationFromSymbol(graphic.symbol),
         ...graphic.attributes,
       },
+      source: this.toolStrategy.internalLayerType,
       labelText,
     };
   }
 
-  private endDrawing(feature?: Feature) {
+  private endDrawing() {
     this.esriMapViewService.mapView.removeHandles(HANDLE_GROUP_KEY);
-    this.store.dispatch(ToolActions.deactivateTool({feature}));
+    this.store.dispatch(ToolActions.deactivateTool());
   }
 
   /**

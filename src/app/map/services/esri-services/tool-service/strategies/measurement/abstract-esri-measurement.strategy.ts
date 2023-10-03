@@ -7,10 +7,13 @@ import Point from '@arcgis/core/geometry/Point';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import {AbstractEsriDrawableToolStrategy} from '../abstract-esri-drawable-tool.strategy';
 import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
+import {UserDrawingLayer} from '../../../../../../shared/enums/drawing-layer.enum';
 
 export type LabelConfiguration = {location: Point; symbolization: TextSymbol};
 
 export abstract class AbstractEsriMeasurementStrategy<T extends Polygon | Polyline | Point> extends AbstractEsriDrawableToolStrategy {
+  public readonly internalLayerType: UserDrawingLayer = UserDrawingLayer.Measurements;
+
   protected constructor(layer: GraphicsLayer, mapView: MapView, completeDrawingCallbackHandler: DrawingCallbackHandler['complete']) {
     super(layer, mapView, completeDrawingCallbackHandler);
   }

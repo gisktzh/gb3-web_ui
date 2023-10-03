@@ -6,6 +6,7 @@ import {EsriToolStrategy} from '../interfaces/strategy.interface';
 import {DrawingCallbackHandler} from '../interfaces/drawing-callback-handler.interface';
 import Graphic from '@arcgis/core/Graphic';
 import {v4 as uuidv4} from 'uuid';
+import {UserDrawingLayer} from '../../../../../shared/enums/drawing-layer.enum';
 
 export type SupportedEsriTool = Extract<EsriSketchTool, 'polygon' | 'polyline' | 'point' | 'rectangle' | 'circle'>;
 
@@ -20,6 +21,7 @@ export abstract class AbstractEsriDrawableToolStrategy implements EsriToolStrate
    */
   protected readonly completeDrawingCallbackHandler: DrawingCallbackHandler['complete'];
   protected abstract readonly tool: SupportedEsriTool;
+  public abstract readonly internalLayerType: UserDrawingLayer;
 
   protected constructor(layer: GraphicsLayer, mapView: MapView, completeDrawingCallbackHandler: DrawingCallbackHandler['complete']) {
     // todo: check whether new SketchViewModels are okay; otherwise -> singleton and reuse the model.
