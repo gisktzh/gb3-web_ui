@@ -6,7 +6,7 @@
     [showInteractiveElements]="false"
     class="embedded-map-page__overlay embedded-map-page__overlay--right"
   ></feature-info-overlay>
-  <button mat-flat-button (click)="toggleLegend()" [disabled]="numberOfQueryLegends === 0" class="embedded-map-page__legend-button">
+  <button mat-flat-button (click)="showLegend()" [disabled]="numberOfQueryLegends === 0" class="embedded-map-page__legend-button">
     <mat-icon svgIcon="ktzh_legend"></mat-icon>
     Legende
   </button>

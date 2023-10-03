@@ -59,12 +59,8 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
     this.mapConfigUrlService.activatePrintMode(printType);
   }
 
-  public toggleLegend() {
-    if (this.loadingState === 'loaded') {
-      this.store.dispatch(MapUiActions.hideLegend());
-    } else {
-      this.store.dispatch(MapUiActions.showLegend());
-    }
+  public showLegend() {
+    this.store.dispatch(MapUiActions.setLegendOverlayVisibility({isVisible: true}));
   }
 
   public showMapManagement() {
