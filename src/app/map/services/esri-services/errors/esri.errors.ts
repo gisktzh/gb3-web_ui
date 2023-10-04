@@ -8,6 +8,14 @@ export class UnsupportedGeometryType extends RecoverableError {
   }
 }
 
+export class UnsupportedSymbolizationType extends RecoverableError {
+  public override message = `Nicht unterstützter Symbolisierungstyp (${this.symbolizationType})`;
+
+  constructor(private readonly symbolizationType: string) {
+    super();
+  }
+}
+
 export class MapViewNotInitialized extends FatalError {
   public override message = 'Es ist ein technischer Fehler während dem Initialisieren der Karte aufgetreten.';
 }

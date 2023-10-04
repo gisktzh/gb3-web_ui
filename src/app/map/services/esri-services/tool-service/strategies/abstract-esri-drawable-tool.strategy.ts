@@ -3,20 +3,27 @@ import MapView from '@arcgis/core/views/MapView';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {EsriSketchTool} from '../../esri.module';
 import {EsriToolStrategy} from '../interfaces/strategy.interface';
+import {DrawingCallbackHandler} from '../interfaces/drawing-callback-handler.interface';
+import Graphic from '@arcgis/core/Graphic';
+import {v4 as uuidv4} from 'uuid';
+import {UserDrawingLayer} from '../../../../../shared/enums/drawing-layer.enum';
 
 export type SupportedEsriTool = Extract<EsriSketchTool, 'polygon' | 'polyline' | 'point' | 'rectangle' | 'circle'>;
 
 export abstract class AbstractEsriDrawableToolStrategy implements EsriToolStrategy {
+  private readonly identifierFieldName = '__id';
+  private readonly labelTextFieldName = '__labelText';
   protected readonly sketchViewModel: SketchViewModel;
   protected readonly layer: GraphicsLayer;
   /**
    * Called when the SketchViewModel emits a 'complete' event.
    * @protected
    */
-  protected readonly completeCallbackHandler: () => void;
+  protected readonly completeDrawingCallbackHandler: DrawingCallbackHandler['complete'];
   protected abstract readonly tool: SupportedEsriTool;
+  public abstract readonly internalLayerType: UserDrawingLayer;
 
-  protected constructor(layer: GraphicsLayer, mapView: MapView, completeCallbackHandler: () => void) {
+  protected constructor(layer: GraphicsLayer, mapView: MapView, completeDrawingCallbackHandler: DrawingCallbackHandler['complete']) {
     // todo: check whether new SketchViewModels are okay; otherwise -> singleton and reuse the model.
     this.sketchViewModel = new SketchViewModel({
       view: mapView,
@@ -27,7 +34,7 @@ export abstract class AbstractEsriDrawableToolStrategy implements EsriToolStrate
     });
 
     this.layer = layer;
-    this.completeCallbackHandler = completeCallbackHandler;
+    this.completeDrawingCallbackHandler = completeDrawingCallbackHandler;
   }
 
   public cancel(): void {
@@ -35,4 +42,19 @@ export abstract class AbstractEsriDrawableToolStrategy implements EsriToolStrate
   }
 
   public abstract start(): void;
+
+  protected setAndGetIdentifierOnGraphic(graphic: Graphic): string {
+    const identifier = uuidv4();
+    this.setIdentifierOnGraphic(graphic, identifier);
+
+    return identifier;
+  }
+
+  protected setIdentifierOnGraphic(graphic: Graphic, graphicIdentifier?: string): void {
+    graphic.setAttribute(this.identifierFieldName, graphicIdentifier ?? uuidv4());
+  }
+
+  protected setLabelTextAttributeOnGraphic(graphic: Graphic, text: string) {
+    graphic.setAttribute(this.labelTextFieldName, text);
+  }
 }

@@ -677,7 +677,7 @@ export class EsriMapService implements MapService, OnDestroy {
     );
 
     esriReactiveUtils
-      .whenOnce(() => this.mapView.ready)
+      .whenOnce(() => this.mapView.ready && this.transformationService.projectionLoaded)
       .then(() => {
         /* eslint-disable @typescript-eslint/no-non-null-assertion */ // at this point, we know the values are ready
         const {effectiveMaxScale, effectiveMinScale, effectiveMaxZoom, effectiveMinZoom} = this.mapView.constraints;

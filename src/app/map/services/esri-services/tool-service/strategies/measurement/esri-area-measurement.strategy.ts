@@ -7,6 +7,7 @@ import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import MapView from '@arcgis/core/views/MapView';
 import {SupportedEsriTool} from '../abstract-esri-drawable-tool.strategy';
+import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
 
 const M2_TO_KM2_CONVERSION_THRESHOLD = 100_000;
 
@@ -19,15 +20,15 @@ export class EsriAreaMeasurementStrategy extends AbstractEsriMeasurementStrategy
     mapView: MapView,
     polygonSymbol: SimpleFillSymbol,
     labelSymbolization: TextSymbol,
-    completeCallbackHandler: () => void,
+    completeDrawingCallbackHandler: DrawingCallbackHandler['complete'],
   ) {
-    super(layer, mapView, completeCallbackHandler);
+    super(layer, mapView, completeDrawingCallbackHandler);
 
     this.sketchViewModel.polygonSymbol = polygonSymbol;
     this.labelSymbolization = labelSymbolization;
   }
 
-  protected override createLabelForGeometry(geometry: Polygon): LabelConfiguration {
+  protected override createLabelConfigurationForGeometry(geometry: Polygon): LabelConfiguration {
     this.labelSymbolization.text = this.getRoundedPolygonAreaString(geometry);
 
     return {location: geometry.centroid, symbolization: this.labelSymbolization};
