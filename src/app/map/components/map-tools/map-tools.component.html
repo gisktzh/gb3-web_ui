@@ -11,13 +11,7 @@
     >
       <mat-icon svgIcon="ktzh_measure_menu"></mat-icon>
     </button>
-    <button
-      *ngIf="screenMode === 'mobile'"
-      (click)="showShareLinkBottomSheet()"
-      class="map-tools__button"
-      data-test-id="map-share"
-      mat-icon-button
-    >
+    <button *ngIf="screenMode === 'mobile'" (click)="showShareLink()" class="map-tools__button" data-test-id="map-share" mat-icon-button>
       <mat-icon svgIcon="ktzh_share"></mat-icon>
     </button>
     <mat-divider class="map-tools__divider" [vertical]="screenMode === 'mobile'"></mat-divider>
@@ -50,13 +44,7 @@
       <mat-icon svgIcon="ktzh_locate_me"></mat-icon>
     </button>
     <mat-divider class="map-tools__divider" [vertical]="screenMode === 'mobile'"></mat-divider>
-    <button
-      *ngIf="screenMode !== 'mobile'"
-      (click)="showShareLinkDialog()"
-      class="map-tools__button"
-      data-test-id="map-share"
-      mat-icon-button
-    >
+    <button *ngIf="screenMode !== 'mobile'" (click)="showShareLink()" class="map-tools__button" data-test-id="map-share" mat-icon-button>
       <mat-icon svgIcon="ktzh_share"></mat-icon>
     </button>
     <button

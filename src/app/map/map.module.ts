@@ -57,6 +57,7 @@ import {BottomSheetItemComponent} from './components/bottom-sheet-overlay/bottom
 import {LegendsItemComponent} from './components/legend-overlay/legends-item/legends-item.component';
 import {MapManagementHeaderComponent} from './components/map-management-mobile/map-management-header/map-management-header.component';
 import {FeatureInfosItemComponent} from './components/feature-info-overlay/feature-infos-item/feature-infos-item.component';
+import {ShareLinkContentComponent} from './components/share-link-dialog/share-link-content/share-link-content.component';
 
 @NgModule({
   declarations: [
@@ -114,6 +115,7 @@ import {FeatureInfosItemComponent} from './components/feature-info-overlay/featu
     LegendsItemComponent,
     MapManagementHeaderComponent,
     FeatureInfosItemComponent,
+    ShareLinkContentComponent,
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule],
   exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent],

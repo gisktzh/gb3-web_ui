@@ -1,0 +1,15 @@
+@use 'mixins/helpers.mixin' as mixins;
+@use 'mixins/material.mixin' as mat-mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+:host ::ng-deep .share-link__content {
+  @include mat-mixins.mat-text-field-override-background;
+}
+
+.share-link__content {
+  width: 657px;
+
+  &--mobile {
+    width: 90vw;
+  }
+}

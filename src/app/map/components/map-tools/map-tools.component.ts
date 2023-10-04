@@ -43,12 +43,8 @@ export class MapToolsComponent implements OnInit, OnDestroy {
     this.store.dispatch(MapUiActions.showMapSideDrawerContent({mapSideDrawerContent: 'print'}));
   }
 
-  public showShareLinkDialog() {
+  public showShareLink() {
     this.store.dispatch(MapUiActions.showShareLinkDialog());
-  }
-
-  public showShareLinkBottomSheet() {
-    //his.store.dispatch(MapUiActions.showBottomSheetOverlay());
   }
 
   public showLegend() {
