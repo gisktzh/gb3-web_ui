@@ -1,12 +1,4 @@
-<mat-card
-  class="bottom-sheet-overlay__card"
-  [style]="this.resizeableStyle"
-  [ngClass]="{
-    'bottom-sheet-overlay__card--small': bottomSheetHeight === 30,
-    'bottom-sheet-overlay__card--medium': bottomSheetHeight === 60,
-    'bottom-sheet-overlay__card--large': bottomSheetHeight === 90
-  }"
->
+<mat-card class="bottom-sheet-overlay__card" [style]="this.resizeableStyle" [ngClass]="'bottom-sheet-overlay__card--' + bottomSheetHeight">
   <mat-card-header class="bottom-sheet-overlay__header" [ngClass]="{'bottom-sheet-overlay__header__map-management': isBlue}">
     <h1 class="bottom-sheet-overlay__header__title">{{ overlayTitle }}</h1>
     <button (click)="close()" mat-icon-button [ngClass]="{'bottom-sheet-overlay__header__button': isBlue}">

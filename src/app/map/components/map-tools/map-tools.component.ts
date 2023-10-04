@@ -8,7 +8,6 @@ import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {selectLoadingState} from 'src/app/state/map/reducers/legend.reducer';
 import {LoadingState} from 'src/app/shared/types/loading-state.type';
-import {BottomSheetHeight} from 'src/app/shared/enums/bottom-sheet-heights.enum';
 import {selectQueryLegends} from 'src/app/state/map/selectors/query-legends.selector';
 import {GeolocationActions} from 'src/app/state/map/actions/geolocation.actions';
 
@@ -49,9 +48,6 @@ export class MapToolsComponent implements OnInit, OnDestroy {
 
   public showLegend() {
     this.store.dispatch(MapUiActions.setLegendOverlayVisibility({isVisible: true}));
-    if (this.loadingState !== 'loaded') {
-      this.store.dispatch(MapUiActions.setBottomSheetHeight({bottomSheetHeight: BottomSheetHeight.large}));
-    }
   }
 
   public locateClient() {
@@ -60,7 +56,6 @@ export class MapToolsComponent implements OnInit, OnDestroy {
 
   public toggleSelection() {
     this.store.dispatch(MapUiActions.showBottomSheet({bottomSheetContent: 'basemap'}));
-    this.store.dispatch(MapUiActions.setBottomSheetHeight({bottomSheetHeight: BottomSheetHeight.small}));
   }
 
   public toggleToolMenu(toolToToggle: ToolMenuVisibility) {

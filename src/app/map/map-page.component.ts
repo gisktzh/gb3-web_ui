@@ -14,7 +14,6 @@ import {selectScreenMode} from '../state/app/reducers/app-layout.reducer';
 import {selectLoadingState} from '../state/map/reducers/legend.reducer';
 import {LoadingState} from '../shared/types/loading-state.type';
 import {ScreenMode} from '../shared/types/screen-size.type';
-import {BottomSheetHeight} from '../shared/enums/bottom-sheet-heights.enum';
 
 @Component({
   selector: 'map-page',
@@ -65,7 +64,6 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
 
   public showMapManagement() {
     this.store.dispatch(MapUiActions.showBottomSheet({bottomSheetContent: 'map-management'}));
-    this.store.dispatch(MapUiActions.setBottomSheetHeight({bottomSheetHeight: BottomSheetHeight.medium}));
   }
 
   public setIsMapDataCatalogueMinimized(isMinimized: boolean) {
