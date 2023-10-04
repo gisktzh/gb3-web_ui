@@ -3,6 +3,7 @@ export enum InternalDrawingLayer {
   FeatureQueryLocation = 'feature_query_location',
   LocatePosition = 'locate_position',
   PrintPreview = 'print_preview',
+  Selection = 'selection',
 }
 
 export enum UserDrawingLayer {

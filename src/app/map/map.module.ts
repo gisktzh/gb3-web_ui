@@ -52,6 +52,7 @@ import {DrawingToolsComponent} from './components/map-tools/drawing-tools/drawin
 import {AbstractToolsComponent} from './components/map-tools/abstract-tools/abstract-tools.component';
 import {ZoomControlsComponent} from './components/map-controls/zoom-controls/zoom-controls.component';
 import {DataDownloadSelectionToolsComponent} from './components/map-tools/data-download-selection-tools/data-download-selection-tools.component';
+import {DataDownloadDialogComponent} from './components/data-download/data-download-dialog/data-download-dialog.component';
 
 @NgModule({
   declarations: [
@@ -104,6 +105,7 @@ import {DataDownloadSelectionToolsComponent} from './components/map-tools/data-d
     AbstractToolsComponent,
     ZoomControlsComponent,
     DataDownloadSelectionToolsComponent,
+    DataDownloadDialogComponent,
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule],
   exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent],

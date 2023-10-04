@@ -286,4 +286,38 @@ export const layerSymbolizations: LayerSymbolizations = {
       },
     },
   },
+  [InternalDrawingLayer.Selection]: {
+    text: defaultSymbolization.text,
+    point: {
+      type: 'simple',
+      size: 12,
+      color: {
+        r: 255,
+        g: 255,
+        b: 0,
+        a: 0.6,
+      },
+      outline: defaultOutline,
+    },
+    line: {
+      width: 5,
+      color: {
+        r: 255,
+        g: 255,
+        b: 0,
+        a: 0.6,
+      },
+    },
+    polygon: {
+      fill: {
+        color: {
+          r: 255,
+          g: 255,
+          b: 0,
+          a: 0.6,
+        },
+      },
+      outline: defaultOutline,
+    },
+  },
 };

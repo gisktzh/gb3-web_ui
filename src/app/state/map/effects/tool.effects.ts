@@ -9,7 +9,7 @@ import {MapService} from '../../../map/interfaces/map.service';
 @Injectable()
 export class ToolEffects {
   private readonly toolService: ToolService;
-  public dispatchToolActivation = createEffect(
+  public initializeTool$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(ToolActions.activateTool),
@@ -27,13 +27,21 @@ export class ToolEffects {
             case 'draw-circle':
               this.toolService.initializeDrawing(tool);
               break;
+            case 'select-circle':
+            case 'select-polygon':
+            case 'select-rectangle':
+            case 'select-section':
+            case 'select-canton':
+            case 'select-municipality':
+              this.toolService.initializeDataDownloadSelection(tool);
+              break;
           }
         }),
       );
     },
     {dispatch: false},
   );
-  public dispatchToolCancellation = createEffect(
+  public cancelOrDeactivateTool$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(ToolActions.cancelTool, ToolActions.deactivateTool),
