@@ -164,12 +164,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
   private convertToGeoJson(graphic: Graphic, labelText?: string): InternalDrawingRepresentation {
     const geoJsonFeature = silentArcgisToGeoJSON(graphic.geometry);
 
-    if (
-      geoJsonFeature.type !== 'Point' &&
-      geoJsonFeature.type !== 'LineString' &&
-      geoJsonFeature.type !== 'Polygon' &&
-      geoJsonFeature.type !== 'MultiPoint'
-    ) {
+    if (geoJsonFeature.type === 'MultiLineString' || geoJsonFeature.type === 'GeometryCollection') {
       throw new UnsupportedGeometryType(geoJsonFeature.type);
     }
 

@@ -1,4 +1,4 @@
-import {LineString, MultiPoint, Point, Polygon} from 'geojson';
+import {LineString, MultiPoint, MultiPolygon, Point, Polygon} from 'geojson';
 
 export interface PrintCapabilities {
   /** Available output formats */
@@ -153,7 +153,7 @@ interface PrintMapVector extends AbstractPrintMapItem {
          */
         text?: string;
       };
-      geometry: Point | LineString | Polygon | MultiPoint;
+      geometry: Point | LineString | Polygon | MultiPoint | MultiPolygon;
     }[];
   };
   /**
