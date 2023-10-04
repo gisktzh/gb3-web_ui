@@ -8,6 +8,8 @@ import {BottomSheetHeight} from 'src/app/shared/enums/bottom-sheet-heights.enum'
 import {BottomSheetContent} from 'src/app/shared/types/bottom-sheet-content.type';
 import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
 
+type TabType = 'activeMaps' | 'mapsCatalogue';
+
 @Component({
   selector: 'bottom-sheet-overlay',
   templateUrl: './bottom-sheet-overlay.component.html',
@@ -20,6 +22,7 @@ export class BottomSheetOverlayComponent implements OnInit, OnDestroy {
   @Input() public location: ResizeHandlerLocation = 'top';
   @Input() public isVisible: boolean = false;
   @Input() public isBlue: boolean = false;
+  public activeTab: TabType = 'mapsCatalogue';
 
   public bottomSheetContent: BottomSheetContent = 'none';
   public resizeableStyle: StyleExpression = {};
@@ -47,6 +50,10 @@ export class BottomSheetOverlayComponent implements OnInit, OnDestroy {
 
   public resizeOverlay(newStyle: StyleExpression) {
     this.resizeableStyle = newStyle;
+  }
+
+  public switchTab(newTab: TabType) {
+    this.activeTab = newTab;
   }
 
   public initSubscriptions() {

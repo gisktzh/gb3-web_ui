@@ -70,38 +70,6 @@ export const mapUiFeature = createFeature({
         bottomSheetHeight: bottomSheetHeight,
       };
     }),
-    on(MapUiActions.showBasemapSelectorMobile, (state): MapUiState => {
-      return {
-        ...state,
-        //showBasemapSelector: true,
-        bottomSheetContent: 'basemap',
-        //hideUiElements: true,
-      };
-    }),
-    on(MapUiActions.hideBasemapSelectorMobile, (state): MapUiState => {
-      return {
-        ...state,
-        //showBasemapSelector: false,
-        bottomSheetContent: 'none',
-        hideUiElements: false,
-      };
-    }),
-    on(MapUiActions.showMapManagementMobile, (state): MapUiState => {
-      return {
-        ...state,
-        //showMapManagementMobile: true,
-        bottomSheetContent: 'map-management',
-        hideUiElements: true,
-      };
-    }),
-    on(MapUiActions.hideMapManagementMobile, (state): MapUiState => {
-      return {
-        ...state,
-        //showMapManagementMobile: false,
-        bottomSheetContent: 'none',
-        hideUiElements: false,
-      };
-    }),
     on(MapUiActions.hideUiElements, (state): MapUiState => {
       return {
         ...state,

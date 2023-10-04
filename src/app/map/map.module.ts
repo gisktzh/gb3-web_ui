@@ -53,9 +53,9 @@ import {AbstractToolsComponent} from './components/map-tools/abstract-tools/abst
 import {ZoomControlsComponent} from './components/map-controls/zoom-controls/zoom-controls.component';
 import {BottomSheetOverlayComponent} from './components/bottom-sheet-overlay/bottom-sheet-overlay.component';
 import {BasemapSelectorMobileComponent} from './components/map-controls/basemap-selector-mobile/basemap-selector-mobile.component';
-import {AllMapItemsMobileComponent} from './components/all-map-items-mobile/all-map-items-mobile.component';
 import {BottomSheetItemComponent} from './components/bottom-sheet-overlay/bottom-sheet-item/bottom-sheet-item.component';
 import {LegendsItemComponent} from './components/legend-overlay/legends-item/legends-item.component';
+import {MapManagementHeaderComponent} from './components/map-management-mobile/map-management-header/map-management-header.component';
 
 @NgModule({
   declarations: [
@@ -109,9 +109,9 @@ import {LegendsItemComponent} from './components/legend-overlay/legends-item/leg
     ZoomControlsComponent,
     BottomSheetOverlayComponent,
     BasemapSelectorMobileComponent,
-    AllMapItemsMobileComponent,
     BottomSheetItemComponent,
     LegendsItemComponent,
+    MapManagementHeaderComponent,
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule],
   exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent],

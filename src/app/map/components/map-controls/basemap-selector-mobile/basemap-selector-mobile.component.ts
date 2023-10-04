@@ -44,7 +44,7 @@ export class BasemapSelectorMobileComponent implements OnInit, OnDestroy {
   }
 
   public close() {
-    this.store.dispatch(MapUiActions.hideBasemapSelectorMobile());
+    this.store.dispatch(MapUiActions.hideBottomSheet());
   }
 
   public switchBasemap(toId: string) {

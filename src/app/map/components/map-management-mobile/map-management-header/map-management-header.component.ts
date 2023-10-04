@@ -1,14 +1,13 @@
-import {Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit} from '@angular/core';
+import {Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit, Output, EventEmitter} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {selectShowMapManagementMobile} from 'src/app/state/map/reducers/map-ui.reducer';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
-import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
-import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
-import {ActiveMapItem} from '../../models/active-map-item.model';
-import {selectItems} from '../../../state/map/reducers/active-map-item.reducer';
+import {ActiveMapItem} from 'src/app/map/models/active-map-item.model';
+import {LayerCatalogActions} from 'src/app/state/map/actions/layer-catalog.actions';
 import {debounceTime, distinctUntilChanged, fromEvent, Observable, Subscription, tap, map} from 'rxjs';
-import {LayerCatalogActions} from '../../../state/map/actions/layer-catalog.actions';
 import {selectIsAuthenticated} from 'src/app/state/auth/reducers/auth-status.reducer';
+import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
+import {selectItems} from 'src/app/state/map/reducers/active-map-item.reducer';
+import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
 import {ActiveMapItemActions} from 'src/app/state/map/actions/active-map-item.actions';
 
 type TabType = 'activeMaps' | 'mapsCatalogue';
@@ -19,12 +18,11 @@ const FAVOURITE_HELPER_MESSAGES = {
 };
 
 @Component({
-  selector: 'all-map-items-mobile',
-  templateUrl: './all-map-items-mobile.component.html',
-  styleUrls: ['./all-map-items-mobile.component.scss'],
+  selector: 'map-management-header',
+  templateUrl: './map-management-header.component.html',
+  styleUrls: ['./map-management-header.component.scss'],
 })
-export class AllMapItemsMobileComponent implements OnInit, OnDestroy, AfterViewInit {
-  public isVisible: boolean = false;
+export class MapManagementHeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   public screenMode: ScreenMode = 'mobile';
   public activeMapItems: ActiveMapItem[] = [];
   public numberOfNotices: number = 0;
@@ -32,9 +30,9 @@ export class AllMapItemsMobileComponent implements OnInit, OnDestroy, AfterViewI
   public activeTab: TabType = 'mapsCatalogue';
   public isAuthenticated: boolean = false;
   public readonly favouriteHelperMessages = FAVOURITE_HELPER_MESSAGES;
+  @Output() public readonly changeActiveTabEvent = new EventEmitter<TabType>();
 
   private readonly subscriptions: Subscription = new Subscription();
-  private readonly showMapManagementMobile$ = this.store.select(selectShowMapManagementMobile);
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly activeMapItems$ = this.store.select(selectItems);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
@@ -59,11 +57,12 @@ export class AllMapItemsMobileComponent implements OnInit, OnDestroy, AfterViewI
   }
 
   public close() {
-    this.store.dispatch(MapUiActions.hideMapManagementMobile());
+    this.store.dispatch(MapUiActions.hideBottomSheet());
   }
 
   public changeTabs(tab: TabType) {
     this.activeTab = tab;
+    this.changeActiveTabEvent.emit(this.activeTab);
   }
 
   public removeAllActiveMapItems() {
@@ -97,16 +96,6 @@ export class AllMapItemsMobileComponent implements OnInit, OnDestroy, AfterViewI
         .pipe(
           tap((screenMode) => {
             this.screenMode = screenMode;
-          }),
-        )
-        .subscribe(),
-    );
-
-    this.subscriptions.add(
-      this.showMapManagementMobile$
-        .pipe(
-          tap((showMapManagementMobile) => {
-            this.isVisible = showMapManagementMobile;
           }),
         )
         .subscribe(),

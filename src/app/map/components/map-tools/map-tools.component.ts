@@ -65,7 +65,7 @@ export class MapToolsComponent implements OnInit, OnDestroy {
   }
 
   public toggleSelection() {
-    this.store.dispatch(MapUiActions.showBasemapSelectorMobile());
+    this.store.dispatch(MapUiActions.showBottomSheet({bottomSheetContent: 'basemap'}));
     this.store.dispatch(MapUiActions.setBottomSheetHeight({bottomSheetHeight: BottomSheetHeight.small}));
   }
 

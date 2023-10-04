@@ -64,7 +64,7 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   public showMapManagement() {
-    this.store.dispatch(MapUiActions.showMapManagementMobile());
+    this.store.dispatch(MapUiActions.showBottomSheet({bottomSheetContent: 'map-management'}));
     this.store.dispatch(MapUiActions.setBottomSheetHeight({bottomSheetHeight: BottomSheetHeight.medium}));
   }
 

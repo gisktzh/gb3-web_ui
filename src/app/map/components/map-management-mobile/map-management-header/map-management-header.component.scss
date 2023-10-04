@@ -22,11 +22,6 @@
   }
 }
 
-.bottom-sheet {
-  position: absolute;
-  bottom: 0px;
-}
-
 .map-management-mobile__header__tools {
   position: absolute;
   display: flex;
@@ -126,19 +121,5 @@
         color: ktzh-variables.$zh-black40;
       }
     }
-  }
-}
-
-.map-management-mobile__content {
-  color: ktzh-variables.$zh-foreground-color;
-  background-color: ktzh-variables.$zh-background-color;
-  border-color: ktzh-variables.$zh-background-color;
-  border-radius: 1px !important;
-  border-width: 0 2px 2px 2px;
-  border-style: solid;
-  box-sizing: border-box;
-
-  &--inverted {
-    border-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
   }
 }
