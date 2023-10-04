@@ -62,7 +62,6 @@ export class ActiveMapItemSettingsComponent implements OnInit, OnDestroy {
 
   public showMapAttributeFilters() {
     this.store.dispatch(MapAttributeFiltersItemActions.setMapAttributeFiltersItemId(this.activeMapItem));
-    this.store.dispatch(MapUiActions.hideBottomSheet());
   }
 
   private convertTransparencyToString(value?: number): string {

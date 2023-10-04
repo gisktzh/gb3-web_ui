@@ -53,6 +53,8 @@ import {DataCatalogueState} from './data-catalogue/states/data-catalogue.state';
 import {DataCatalogueEffects} from './data-catalogue/effects/data-catalogue.effects';
 import {SearchState} from './app/states/search.state';
 import {SearchEffects} from './app/effects/search.effects';
+import {AppLayoutEffects} from './app/effects/app-layout.effects';
+import {MapAttributeFiltersItemEffects} from './map/effects/map-attribute-filters-item.effects';
 
 export interface State {
   mapConfig: MapConfigState;
@@ -115,6 +117,8 @@ export const effects = [
   ToolEffects,
   DataCatalogueEffects,
   SearchEffects,
+  AppLayoutEffects,
+  MapAttributeFiltersItemEffects,
 ];
 
 export const metaReducers: MetaReducer<State>[] = [];

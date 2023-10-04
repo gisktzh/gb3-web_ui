@@ -54,8 +54,6 @@ export class MapToolsComponent implements OnInit, OnDestroy {
   public showLegend() {
     this.store.dispatch(MapUiActions.setLegendOverlayVisibility({isVisible: true}));
     if (this.loadingState !== 'loaded') {
-      // TODO: is this necessary? or should this be handled within an effect based on the 'ScreenMode'?
-      this.store.dispatch(MapUiActions.hideUiElements());
       this.store.dispatch(MapUiActions.setBottomSheetHeight({bottomSheetHeight: BottomSheetHeight.large}));
     }
   }

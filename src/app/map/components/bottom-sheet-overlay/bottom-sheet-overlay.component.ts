@@ -22,12 +22,11 @@ export class BottomSheetOverlayComponent implements OnInit, OnDestroy {
   @Input() public location: ResizeHandlerLocation = 'top';
   @Input() public isVisible: boolean = false;
   @Input() public isBlue: boolean = false;
-  public activeTab: TabType = 'mapsCatalogue';
-
-  public bottomSheetContent: BottomSheetContent = 'none';
-  public resizeableStyle: StyleExpression = {};
   @Output() public readonly closeEvent = new EventEmitter<void>();
 
+  public activeTab: TabType = 'mapsCatalogue';
+  public bottomSheetContent: BottomSheetContent = 'none';
+  public resizeableStyle: StyleExpression = {};
   public bottomSheetHeight: BottomSheetHeight = BottomSheetHeight.medium;
 
   private readonly bottomSheetHeight$ = this.store.select(selectBottomSheetHeight);

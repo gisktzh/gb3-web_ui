@@ -12,7 +12,5 @@ export interface MapUiState {
   hideZoomButtons: boolean;
   toolMenuVisibility: ToolMenuVisibility | undefined;
   bottomSheetHeight: BottomSheetHeight;
-  showBasemapSelector: boolean;
-  showMapManagementMobile: boolean;
   bottomSheetContent: BottomSheetContent;
 }

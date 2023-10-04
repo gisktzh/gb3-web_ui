@@ -14,8 +14,6 @@ export const initialState: MapUiState = {
   hideZoomButtons: false,
   toolMenuVisibility: undefined,
   bottomSheetHeight: BottomSheetHeight.medium,
-  showBasemapSelector: false,
-  showMapManagementMobile: false,
   bottomSheetContent: 'none',
 };
 
@@ -73,16 +71,19 @@ export const mapUiFeature = createFeature({
     on(MapUiActions.hideUiElements, (state): MapUiState => {
       return {
         ...state,
-        //hideUiElements: true, // TODO: Differentiate between mobile and desktop
+        hideUiElements: true,
       };
     }),
     on(MapUiActions.showUiElements, (state): MapUiState => {
       return {
         ...state,
         hideUiElements: false,
+        isLegendOverlayVisible: false, // TODO: do we really want this here?
+        isFeatureInfoOverlayVisible: false,
       };
     }),
     on(MapUiActions.showBottomSheet, (state, {bottomSheetContent}): MapUiState => {
+      console.log(bottomSheetContent);
       return {
         ...state,
         bottomSheetContent: bottomSheetContent,
@@ -96,6 +97,9 @@ export const mapUiFeature = createFeature({
         hideUiElements: false,
       };
     }),
+    on(MapUiActions.hideAllWidgets, (state): MapUiState => {
+      return {...initialState};
+    }),
   ),
 });
 
@@ -107,7 +111,5 @@ export const {
   selectIsLegendOverlayVisible,
   selectIsFeatureInfoOverlayVisible,
   selectBottomSheetHeight,
-  selectShowBasemapSelector,
-  selectShowMapManagementMobile,
   selectBottomSheetContent,
 } = mapUiFeature;

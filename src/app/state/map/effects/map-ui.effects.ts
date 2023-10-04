@@ -20,6 +20,7 @@ import {ToolActions} from '../actions/tool.actions';
 import {PrintActions} from '../actions/print.actions';
 import {selectActiveTool} from '../reducers/tool.reducer';
 import {MapConfigActions} from '../actions/map-config.actions';
+import {selectScreenMode} from '../../app/reducers/app-layout.reducer';
 
 const CREATE_FAVOURITE_DIALOG_MAX_WIDTH = 500;
 const DELETE_FAVOURITE_DIALOG_MAX_WIDTH = 500;
@@ -76,8 +77,9 @@ export class MapUiEffects {
   public showOrHideMapUiElements$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapUiActions.setLegendOverlayVisibility),
-      map(({isVisible}) => {
-        if (isVisible) {
+      concatLatestFrom(() => this.store.select(selectScreenMode)),
+      map(([isVisible, screenMode]) => {
+        if (screenMode === 'mobile') {
           return MapUiActions.hideUiElements();
         } else {
           return MapUiActions.showUiElements();

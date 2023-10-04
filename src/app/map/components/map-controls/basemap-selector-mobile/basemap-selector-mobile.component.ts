@@ -6,7 +6,6 @@ import {Basemap} from '../../../../shared/interfaces/basemap.interface';
 import {MapConfigActions} from '../../../../state/map/actions/map-config.actions';
 import {BasemapConfigService} from '../../../services/basemap-config.service';
 import {DocumentService} from '../../../../shared/services/document.service';
-import {selectShowBasemapSelector} from 'src/app/state/map/reducers/map-ui.reducer';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
@@ -24,7 +23,6 @@ export class BasemapSelectorMobileComponent implements OnInit, OnDestroy {
 
   private readonly subscriptions: Subscription = new Subscription();
   private readonly activeBasemapId$ = this.store.select(selectActiveBasemapId);
-  private readonly showBasemapSelector$ = this.store.select(selectShowBasemapSelector);
   private readonly screenMode$ = this.store.select(selectScreenMode);
 
   constructor(
@@ -67,16 +65,6 @@ export class BasemapSelectorMobileComponent implements OnInit, OnDestroy {
         .pipe(
           tap((screenMode) => {
             this.screenMode = screenMode;
-          }),
-        )
-        .subscribe(),
-    );
-
-    this.subscriptions.add(
-      this.showBasemapSelector$
-        .pipe(
-          tap((showBasemapSelector) => {
-            this.isVisible = showBasemapSelector;
           }),
         )
         .subscribe(),

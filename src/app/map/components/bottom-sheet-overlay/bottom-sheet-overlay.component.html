@@ -9,8 +9,8 @@
     <bottom-sheet-item *ngSwitchCase="'feature-info'" overlayTitle="Hintergrundkarte">
       <basemap-selector-mobile></basemap-selector-mobile>
     </bottom-sheet-item>
-    <bottom-sheet-item *ngSwitchCase="'map-attributes'" overlayTitle="Hintergrundkarte">
-      <basemap-selector-mobile></basemap-selector-mobile>
+    <bottom-sheet-item *ngSwitchCase="'map-attributes'" [overlayTitle]="'Attributfilter'">
+      <map-attribute-filter body></map-attribute-filter>
     </bottom-sheet-item>
     <bottom-sheet-item *ngSwitchCase="'map-management'" [isBlue]="true">
       <map-management-header (changeActiveTabEvent)="switchTab($event)" header></map-management-header>

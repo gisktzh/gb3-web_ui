@@ -23,5 +23,6 @@ export const MapUiActions = createActionGroup({
     'Show Ui Elements': emptyProps(),
     'Show Bottom Sheet': props<{bottomSheetContent: Exclude<BottomSheetContent, 'none'>}>(),
     'Hide Bottom Sheet': emptyProps(),
+    'Hide All Widgets': emptyProps(),
   },
 });
