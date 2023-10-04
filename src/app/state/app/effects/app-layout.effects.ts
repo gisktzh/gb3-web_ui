@@ -9,13 +9,8 @@ export class AppLayoutEffects {
   public manageScreenModeChange$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(AppLayoutActions.setScreenMode),
-      //filter(({screenMode}) => screenMode !== 'smallTablet'),
-      map(({screenMode}) => {
-        if (screenMode === 'mobile') {
-          return MapUiActions.hideAllWidgets();
-        } else {
-          return MapUiActions.showUiElements();
-        }
+      map(() => {
+        return MapUiActions.resetMapUiState();
       }),
     );
   });

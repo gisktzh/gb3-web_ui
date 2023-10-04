@@ -74,20 +74,6 @@ export class MapUiEffects {
     );
   });
 
-  public showOrHideMapUiElements$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(MapUiActions.setLegendOverlayVisibility),
-      concatLatestFrom(() => this.store.select(selectScreenMode)),
-      map(([isVisible, screenMode]) => {
-        if (screenMode === 'mobile') {
-          return MapUiActions.hideUiElements();
-        } else {
-          return MapUiActions.showUiElements();
-        }
-      }),
-    );
-  });
-
   public clearFeatureInfo$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapUiActions.setFeatureInfoVisibility),

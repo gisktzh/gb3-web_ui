@@ -78,8 +78,6 @@ export const mapUiFeature = createFeature({
       return {
         ...state,
         hideUiElements: false,
-        isLegendOverlayVisible: false, // TODO: do we really want this here?
-        isFeatureInfoOverlayVisible: false,
       };
     }),
     on(MapUiActions.showBottomSheet, (state, {bottomSheetContent}): MapUiState => {
@@ -97,7 +95,7 @@ export const mapUiFeature = createFeature({
         hideUiElements: false,
       };
     }),
-    on(MapUiActions.hideAllWidgets, (state): MapUiState => {
+    on(MapUiActions.resetMapUiState, (state): MapUiState => {
       return {...initialState};
     }),
   ),
