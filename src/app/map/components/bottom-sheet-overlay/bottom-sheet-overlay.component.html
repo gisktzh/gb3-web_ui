@@ -6,8 +6,8 @@
     <bottom-sheet-item *ngSwitchCase="'legend'" overlayTitle="Legende">
       <legends-item body></legends-item>
     </bottom-sheet-item>
-    <bottom-sheet-item *ngSwitchCase="'feature-info'" overlayTitle="Hintergrundkarte">
-      <basemap-selector-mobile></basemap-selector-mobile>
+    <bottom-sheet-item *ngSwitchCase="'feature-info'" overlayTitle="Info">
+      <feature-infos-item body></feature-infos-item>
     </bottom-sheet-item>
     <bottom-sheet-item *ngSwitchCase="'map-attributes'" [overlayTitle]="'Attributfilter'">
       <map-attribute-filter body></map-attribute-filter>

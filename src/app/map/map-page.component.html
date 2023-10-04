@@ -58,6 +58,7 @@
     }"
   ></map-attribute-filter>
   <feature-info-overlay
+    *ngIf="screenMode !== 'mobile'"
     class="map-container__feature-info-overlay"
     [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
     (printFeatureInfoEvent)="showPrint('featureInfo')"
