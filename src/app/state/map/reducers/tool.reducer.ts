@@ -12,7 +12,7 @@ export const toolFeature = createFeature({
   name: toolFeatureKey,
   reducer: createReducer(
     initialState,
-    on(ToolActions.deactivateTool, (_): ToolState => {
+    on(ToolActions.deactivateTool, (): ToolState => {
       return {...initialState};
     }),
     on(ToolActions.cancelTool, (): ToolState => {

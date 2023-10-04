@@ -9,7 +9,7 @@ import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import Color from '@arcgis/core/Color';
 import MarkerSymbol from '@arcgis/core/symbols/MarkerSymbol';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
-import {UnsupportedGeometryType} from './errors/esri.errors';
+import {UnsupportedGeometryType, UnsupportedSymbolizationType} from './errors/esri.errors';
 import Symbol from '@arcgis/core/symbols/Symbol';
 import {FavouriteGb3DrawingStyle} from '../../../shared/interfaces/favourite.interface';
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
@@ -127,7 +127,7 @@ export class EsriSymbolizationService {
           type: 'polygon',
         };
       default:
-        throw new Error('Not implemented'); // todo error
+        throw new UnsupportedSymbolizationType(symbol.type);
     }
   }
 

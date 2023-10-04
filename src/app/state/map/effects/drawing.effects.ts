@@ -21,7 +21,7 @@ export class DrawingEffects {
   public clearAllDrawingLayers$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ActiveMapItemActions.removeAllActiveMapItems),
-      map((_) => DrawingActions.clearDrawings()),
+      map(() => DrawingActions.clearDrawings()),
     );
   });
 

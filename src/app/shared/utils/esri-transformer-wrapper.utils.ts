@@ -19,15 +19,14 @@ const WARNING_TO_IGNORE_STARTS_WITH = 'Object converted in non-standard crs';
  */
 export const silentArcgisToGeoJSON: typeof arcgisToGeoJSON = (arcgis, idAttribute) => {
   let transformedGeometry: GeometryObject;
-
   const originalConsoleWarn: (...data: unknown[]) => void = console.warn;
-  console.warn = (...data: unknown[]) => {
-    if (data.length > 0 && !(typeof data[0] === 'string' && data[0].startsWith(WARNING_TO_IGNORE_STARTS_WITH))) {
-      originalConsoleWarn(...data);
-    }
-  };
 
   try {
+    console.warn = (...data: unknown[]) => {
+      if (data.length > 0 && !(typeof data[0] === 'string' && data[0].startsWith(WARNING_TO_IGNORE_STARTS_WITH))) {
+        originalConsoleWarn(...data);
+      }
+    };
     transformedGeometry = arcgisToGeoJSON(arcgis, idAttribute);
   } finally {
     console.warn = originalConsoleWarn;
