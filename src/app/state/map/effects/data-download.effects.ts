@@ -8,12 +8,20 @@ import {MapService} from '../../../map/interfaces/map.service';
 import {tap} from 'rxjs';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
 
+const DEFAULT_SELECTION_ZOOM_ANIMATION_DURATION_IN_MS = 500;
+const DEFAULT_SELECTION_ZOOM_EXPAND_FACTOR = 1.5;
+
 @Injectable()
 export class DataDownloadEffects {
   public openDataDownloadDrawerAfterCompletingSelection$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(DataDownloadActions.setSelection),
       map(({selection}) => {
+        this.mapService.zoomToExtent(
+          selection.drawingRepresentation.geometry,
+          DEFAULT_SELECTION_ZOOM_EXPAND_FACTOR,
+          DEFAULT_SELECTION_ZOOM_ANIMATION_DURATION_IN_MS,
+        );
         return MapUiActions.showMapSideDrawerContent({mapSideDrawerContent: 'data-download'});
       }),
     );

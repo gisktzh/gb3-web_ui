@@ -170,7 +170,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
 
     return {
       type: 'Feature',
-      geometry: {...geoJsonFeature},
+      geometry: {...geoJsonFeature, srs: this.configService.mapConfig.defaultMapConfig.srsId},
       properties: {
         style: this.esriSymbolizationService.extractGb3SymbolizationFromSymbol(graphic.symbol),
         ...graphic.attributes,
@@ -304,7 +304,8 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
     const completeDrawingCallbackHandler: DrawingCallbackHandler['complete'] = (graphic: Graphic, labelText?: string) => {
       const internalDrawingRepresentation = this.convertToGeoJson(graphic, labelText);
       const selection: DataDownloadSelection = {
-        geometry: internalDrawingRepresentation,
+        drawingRepresentation: internalDrawingRepresentation,
+        type: selectionType,
       };
       this.store.dispatch(DataDownloadActions.setSelection({selection}));
     };
