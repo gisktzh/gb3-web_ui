@@ -14,7 +14,7 @@ import {selectGeneralInfoState} from '../../../../state/map/reducers/general-inf
   styleUrls: ['./feature-infos-item.component.scss'],
 })
 export class FeatureInfosItemComponent implements OnInit, OnDestroy {
-  public loadingState: LoadingState = 'undefined';
+  public loadingState: LoadingState = undefined;
   public featureInfoData: FeatureInfoResultDisplay[] = [];
   public generalInfoData?: GeneralInfoResponse;
 

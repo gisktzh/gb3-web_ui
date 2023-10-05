@@ -15,7 +15,7 @@ export class LegendsItemComponent implements OnInit, OnDestroy {
   @Input() public showInteractiveElements: boolean = true;
 
   public legendItems: LegendDisplay[] = [];
-  public loadingState: LoadingState = 'undefined';
+  public loadingState: LoadingState = undefined;
 
   private readonly loadingState$ = this.store.select(selectLoadingState);
   private readonly legendItems$ = this.store.select(selectLegendItemsForDisplay);

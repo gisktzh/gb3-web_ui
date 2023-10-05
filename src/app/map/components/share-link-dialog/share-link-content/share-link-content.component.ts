@@ -18,7 +18,7 @@ import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 })
 export class ShareLinkContentComponent implements OnInit, OnDestroy, HasSavingState {
   public shareLinkUrl?: string;
-  public savingState: LoadingState = 'undefined';
+  public savingState: LoadingState = undefined;
   public iframeCode?: string;
   public screenMode: ScreenMode = 'regular';
 
