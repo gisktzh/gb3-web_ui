@@ -6,25 +6,33 @@ import Polyline from '@arcgis/core/geometry/Polyline';
 import Point from '@arcgis/core/geometry/Point';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import {AbstractEsriDrawableToolStrategy} from '../abstract-esri-drawable-tool.strategy';
+import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
+import {UserDrawingLayer} from '../../../../../../shared/enums/drawing-layer.enum';
 
 export type LabelConfiguration = {location: Point; symbolization: TextSymbol};
 
 export abstract class AbstractEsriMeasurementStrategy<T extends Polygon | Polyline | Point> extends AbstractEsriDrawableToolStrategy {
-  protected constructor(layer: GraphicsLayer, mapView: MapView, completeCallbackHandler: () => void) {
-    super(layer, mapView, completeCallbackHandler);
+  public readonly internalLayerType: UserDrawingLayer = UserDrawingLayer.Measurements;
+
+  protected constructor(layer: GraphicsLayer, mapView: MapView, completeDrawingCallbackHandler: DrawingCallbackHandler['complete']) {
+    super(layer, mapView, completeDrawingCallbackHandler);
   }
 
   public start(): void {
     this.sketchViewModel.create(this.tool, {mode: 'click'});
-    this.sketchViewModel.on('create', (event) => {
-      switch (event.state) {
+    this.sketchViewModel.on('create', ({state, graphic}) => {
+      let labelConfiguration: {label: Graphic; labelText: string};
+      let graphicIdentifier: string;
+      switch (state) {
         case 'active':
         case 'start':
         case 'cancel':
           break; // currently, these events do not trigger any action
         case 'complete':
-          this.persistSketchToLayer(event.graphic.geometry as T);
-          this.completeCallbackHandler();
+          graphicIdentifier = this.setAndGetIdentifierOnGraphic(graphic);
+          labelConfiguration = this.createLabelForGeometry(graphic.geometry as T, graphicIdentifier);
+          this.layer.add(labelConfiguration.label);
+          this.completeDrawingCallbackHandler(graphic, labelConfiguration.labelText);
           break;
       }
     });
@@ -36,14 +44,18 @@ export abstract class AbstractEsriMeasurementStrategy<T extends Polygon | Polyli
    * @param geometry
    * @protected
    */
-  protected abstract createLabelForGeometry(geometry: T): LabelConfiguration;
+  protected abstract createLabelConfigurationForGeometry(geometry: T): LabelConfiguration;
 
-  private persistSketchToLayer(geometry: T) {
-    const {location, symbolization} = this.createLabelForGeometry(geometry);
+  private createLabelForGeometry(geometry: T, graphicIdentifier: string): {label: Graphic; labelText: string} {
+    const {location, symbolization} = this.createLabelConfigurationForGeometry(geometry);
     const label = new Graphic({
       geometry: location,
       symbol: symbolization,
     });
-    this.layer.addMany([label]);
+
+    this.setIdentifierOnGraphic(label, graphicIdentifier);
+    this.setLabelTextAttributeOnGraphic(label, symbolization.text);
+
+    return {label, labelText: symbolization.text};
   }
 }

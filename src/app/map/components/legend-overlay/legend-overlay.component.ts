@@ -22,7 +22,7 @@ export class LegendOverlayComponent implements OnInit, OnDestroy {
 
   public isVisible = false;
   public legendItems: LegendDisplay[] = [];
-  public loadingState: LoadingState = 'undefined';
+  public loadingState: LoadingState;
   public screenMode: ScreenMode = 'mobile';
 
   private readonly isLegendOverlayVisible$ = this.store.select(selectIsLegendOverlayVisible);

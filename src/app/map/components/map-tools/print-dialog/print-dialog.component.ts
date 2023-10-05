@@ -14,6 +14,9 @@ import {BasemapConfigService} from '../../../services/basemap-config.service';
 import {MapUiActions} from '../../../../state/map/actions/map-ui.actions';
 import {map} from 'rxjs/operators';
 import {ConfigService} from '../../../../shared/services/config.service';
+import {UserDrawingLayer} from '../../../../shared/enums/drawing-layer.enum';
+import {InternalDrawingRepresentation} from '../../../../shared/interfaces/internal-drawing-representation.interface';
+import {selectDrawings} from '../../../../state/map/reducers/drawing.reducer';
 
 interface PrintForm {
   title: FormControl<string | null>;
@@ -46,8 +49,8 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
   });
 
   public printCapabilities?: PrintCapabilities;
-  public printCapabilitiesLoadingState: LoadingState = 'undefined';
-  public printCreationLoadingState: LoadingState = 'undefined';
+  public printCapabilitiesLoadingState: LoadingState;
+  public printCreationLoadingState: LoadingState;
   public mapConfigState?: MapConfigState;
   public activeMapItems?: ActiveMapItem[];
   public uniqueReportLayouts: string[] = [];
@@ -55,6 +58,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
 
   private readonly isFormInitialized: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private readonly subscriptions: Subscription = new Subscription();
+  private drawings: InternalDrawingRepresentation[] = [];
 
   constructor(
     private readonly store: Store,
@@ -171,6 +175,13 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
         .pipe(tap((activeMapItems) => (this.activeMapItems = activeMapItems)))
         .subscribe(),
     );
+
+    this.subscriptions.add(
+      this.store
+        .select(selectDrawings)
+        .pipe(tap((drawings) => (this.drawings = drawings)))
+        .subscribe(),
+    );
   }
 
   private updatePrintPreview(
@@ -283,8 +294,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
         .forEach((activeMapItem) => {
           switch (activeMapItem.settings.type) {
             case 'drawing':
-              // TODO (GB3-604, GB3-606) - implement print drawings
-              console.warn('Printing drawings is not implemented yet.');
+              mapItems.push(this.printDrawingLayer(activeMapItem.settings.userDrawingLayer));
               break;
             case 'gb2Wms':
               mapItems.push({
@@ -326,5 +336,40 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
 
     // reverse the order as the print API uses an inverse positioning to draw them (lowest index has lowest visibility)
     return mapItems.reverse();
+  }
+
+  //todo: GB3-604/GB3-606 (requires mapping of properties)
+  private printDrawingLayer(source: UserDrawingLayer): PrintMapItem {
+    const drawingsToDraw = this.drawings.filter((d) => d.source === source);
+
+    return {
+      type: 'Vector',
+      geojson: {
+        type: 'FeatureCollection',
+        features: drawingsToDraw.map((d) => ({
+          type: d.type,
+          geometry: d.geometry,
+          properties: {style: 'DEFAULTSTYLE', labelText: d.labelText ?? ''},
+        })),
+      },
+      styles: {
+        DEFAULTSTYLE: {
+          pointRadius: 3,
+          fillColor: '#ff0000',
+          fillOpacity: 0.4,
+          strokeColor: '#ff0000',
+          strokeWidth: 2,
+          label: '[labelText]',
+          fontSize: '8px',
+          fontColor: '#ff0000',
+          fontFamily: 'Arial,Helvetica,sans-serif',
+          fontWeight: 'normal',
+          labelOutlineColor: '#ffffff',
+          labelOutlineWidth: 2,
+          labelAlign: 'ct',
+          labelYOffset: 15,
+        },
+      },
+    };
   }
 }

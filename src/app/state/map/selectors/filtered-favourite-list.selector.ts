@@ -7,6 +7,5 @@ export const selectFilteredFavouriteList = createSelector(selectFilterString, se
   if (lowerCasedFilterString === '') {
     return favourites;
   }
-
   return favourites.filter((favourite) => favourite.title.toLowerCase().includes(lowerCasedFilterString));
 });

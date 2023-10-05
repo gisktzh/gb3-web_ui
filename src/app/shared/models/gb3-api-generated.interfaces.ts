@@ -597,6 +597,137 @@ export interface Feature {
   };
 }
 
+export interface GeometryCrs {
+  /**
+   * GeoJSON crs type
+   * @example "name"
+   */
+  type: 'name';
+  properties: {
+    /**
+     * GeoJSON crs name
+     * @example "EPSG:2056"
+     */
+    name: string;
+  };
+}
+
+/** GeoJSON geometry object */
+export interface Geometry {
+  /**
+   * Type of GeoJSON geometry object
+   * @example "Polygon"
+   */
+  type: 'Polygon' | 'Point' | 'LineString' | 'MultiPoint';
+  crs?: GeometryCrs;
+  /**
+   * coordinates for GeoJSON geometry object
+   * @example [[[2681730,1247976],[2680217,1249161],[2680809,1250249],[2681937,1249504],[2681730,1247976]],[[2680836,1249355],[2681554,1249477],[2681327,1248867],[2680836,1249355]]]
+   */
+  coordinates: (number | number[] | number[][])[];
+}
+
+export interface GeojsonFeature {
+  /** GeoJSON Feature */
+  type: 'Feature';
+  properties: {
+    /**
+     * Reference to style ID in 'styles'
+     * @example "a"
+     */
+    style: string;
+    /**
+     * Text to display if using text marker style
+     * @example "Label text"
+     */
+    text?: string;
+  };
+  /** GeoJSON geometry object */
+  geometry: Geometry;
+}
+
+/**
+ * GeoJSON FeatureCollection
+ * @example {"type":"FeatureCollection","features":[{"type":"Feature","properties":{"style":"a"},"geometry":{"type":"Point","coordinates":[2683465,1248055]}}]}
+ */
+export interface GeojsonFeatureCollection {
+  /** GeoJSON FeatureCollection */
+  type: 'FeatureCollection';
+  features: GeojsonFeature[];
+}
+
+/**
+ * Style definitions for features. NOTE: keys are style IDs referenced in feature 'style' property
+ * @example {"a":{"pointRadius":15,"fillColor":"#ee3333","fillOpacity":0,"strokeColor":"#ee3333","strokeWidth":3}}
+ */
+export type VectorLayerStyles = {
+  /** Style definition based on OpenLayers 2 Symbolizer. NOTE: Style properties are optional. */
+  a?: {
+    /** Fill color of the drawing */
+    fillColor?: string;
+    /** Fill opacity of the drawing */
+    fillOpacity?: number;
+    /** Rotation of the drawing */
+    rotation?: string;
+    /** External graphic of the drawing */
+    externalGraphic?: string | null;
+    /** Graphic name of the drawing */
+    graphicName?: string;
+    /** Graphic opacity of the drawing */
+    graphicOpacity?: number | null;
+    /** Point radius of the drawing */
+    pointRadius?: number;
+    /** Stroke color of the drawing */
+    strokeColor?: string;
+    /** Stroke opacity of the drawing */
+    strokeOpacity?: number;
+    /** Stroke width of the drawing */
+    strokeWidth?: number;
+    /** Stroke linecap of the drawing */
+    strokeLinecap?: string;
+    /** Stroke linejoin of the drawing */
+    strokeLinejoin?: string;
+    /** Stroke dashstyle of the drawing */
+    strokeDashstyle?: string;
+    /** Font color of the drawing */
+    fontColor?: string;
+    /** Font family of the drawing */
+    fontFamily?: string;
+    /** Font size of the drawing */
+    fontSize?: string;
+    /** Font style of the drawing */
+    fontStyle?: string;
+    /** Font weight of the drawing */
+    fontWeight?: string;
+    /** Halo color of the drawing */
+    haloColor?: string;
+    /** Halo opacity of the drawing */
+    haloOpacity?: string;
+    /** Halo radius of the drawing */
+    haloRadius?: string;
+    /** Label of the drawing */
+    label?: string;
+    /** Label align of the drawing */
+    labelAlign?: string;
+    /** Label rotation of the drawing */
+    labelRotation?: string;
+    /** Label X offset of the drawing */
+    labelXOffset?: string;
+    /** Label Y offset of the drawing */
+    labelYOffset?: string;
+  };
+};
+
+/** Vector layer */
+export interface VectorLayer {
+  /** Vector layer type */
+  type: 'Vector';
+  /** GeoJSON FeatureCollection */
+  geojson: GeojsonFeatureCollection;
+  /** Style definitions for features. NOTE: keys are style IDs referenced in feature 'style' property */
+  styles: VectorLayerStyles;
+}
+
 export interface Service {
   /** Service UUID */
   uuid: string;
@@ -907,50 +1038,37 @@ export interface PrintNew {
            */
           background?: boolean;
         }
-      | {
-          /** Vector layer type */
-          type: 'Vector';
-          /**
-           * GeoJSON FeatureCollection
-           * @example {"type":"FeatureCollection","features":[{"type":"Feature","properties":{"style":"a"},"geometry":{"type":"Point","coordinates":[2683465,1248055]}}]}
-           */
-          geojson: {
-            /** GeoJSON FeatureCollection */
-            type: 'FeatureCollection';
-            features: {
-              /** GeoJSON Feature */
-              type: 'Feature';
-              properties: {
-                /**
-                 * Reference to style ID in 'styles'
-                 * @example "a"
-                 */
-                style: string;
-                /**
-                 * Text to display if using text marker style
-                 * @example "Label text"
-                 */
-                text?: string;
-              };
-              geometry: {
-                /** GeoJSON geometry type */
-                type: 'Point' | 'LineString' | 'Polygon' | 'MultiPoint' | 'MultiLineString' | 'MultiPolygon';
-                /** Coordinates of geometry vertices */
-                coordinates: number[];
-              };
-            }[];
-          };
-          /**
-           * Style definitions for features. NOTE: keys are style IDs referenced in feature 'style' property
-           * @example {"a":{"pointRadius":15,"fillColor":"#ee3333","fillOpacity":0,"strokeColor":"#ee3333","strokeWidth":3}}
-           */
-          styles: {
-            /** Style definition based on OpenLayers 2 Symbolizer */
-            a?: object;
-          };
-        }
+      | VectorLayer
     )[];
   };
+}
+
+export interface PrintFeatureInfoNew {
+  /** List of query topics */
+  query_topics: {
+    /**
+     * Topic name
+     * @example "BASISKARTEZH"
+     */
+    topic: string;
+    /**
+     * Query layers
+     * @example ["gemeindegrenzen","adressen","haltestellen"]
+     */
+    layers: string[];
+  }[];
+  /**
+   * Query bounding box as minx, miny, maxx, maxy coords (default in EPSG:2056)
+   * @maxItems 4
+   * @minItems 4
+   * @example [2683470,1247913,2683480,1247923]
+   */
+  bbox: number[];
+  /**
+   * SRID for query bbox (default: 2056)
+   * @example 2056
+   */
+  srid?: number;
 }
 
 export type TopicsFeatureInfoDetailData = Feature;

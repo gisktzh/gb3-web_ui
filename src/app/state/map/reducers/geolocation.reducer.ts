@@ -11,7 +11,7 @@ const GEOLOCATION_ERRORS = new Map<number, string>([
 export const geolocationFeatureConfigKey = 'geolocation';
 
 export const initialState: GeolocationState = {
-  loadingState: 'undefined',
+  loadingState: undefined,
   errorReason: undefined,
   currentGpsLocation: undefined,
 };

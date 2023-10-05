@@ -677,7 +677,7 @@ export class EsriMapService implements MapService, OnDestroy {
     );
 
     esriReactiveUtils
-      .whenOnce(() => this.mapView.ready)
+      .whenOnce(() => this.mapView.ready && this.transformationService.projectionLoaded)
       .then(() => {
         /* eslint-disable @typescript-eslint/no-non-null-assertion */ // at this point, we know the values are ready
         const {effectiveMaxScale, effectiveMinScale, effectiveMaxZoom, effectiveMinZoom} = this.mapView.constraints;
@@ -739,11 +739,11 @@ export class EsriMapService implements MapService, OnDestroy {
 
   private transformLoadStatusToLoadingState(loadStatus: EsriLoadStatus | undefined): LoadingState {
     if (loadStatus === undefined) {
-      return 'undefined';
+      return undefined;
     }
     switch (loadStatus) {
       case 'not-loaded':
-        return 'undefined';
+        return undefined;
       case 'failed':
         return 'error';
       case 'loading':
@@ -755,7 +755,7 @@ export class EsriMapService implements MapService, OnDestroy {
 
   private transformUpdatingToViewProcessState(updating: boolean | undefined): ViewProcessState {
     if (updating === undefined) {
-      return 'undefined';
+      return undefined;
     }
     return updating ? 'updating' : 'completed';
   }

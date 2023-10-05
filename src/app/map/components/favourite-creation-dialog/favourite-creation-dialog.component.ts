@@ -20,7 +20,7 @@ const FAVOURITE_NAME_CONSTRAINTS: ValidatorFn[] = [Validators.minLength(1), Vali
 })
 export class FavouriteCreationDialogComponent implements OnInit, OnDestroy, HasSavingState {
   public nameFormControl!: FormControl<string | null>;
-  public savingState: LoadingState = 'undefined';
+  public savingState: LoadingState;
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(

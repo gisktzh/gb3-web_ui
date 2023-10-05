@@ -21,7 +21,7 @@ import {selectLoadingState as selectFeatureInfoLoadingState} from '../state/map/
 export class EmbeddedMapPageComponent implements OnInit, OnDestroy {
   public numberOfQueryLegends: number = 0;
   public id: string | null = null;
-  public initializeApplicationLoadingState: LoadingState = 'undefined';
+  public initializeApplicationLoadingState: LoadingState;
   public isEmbedded: boolean = false;
   public showLegendOverlay: boolean = false;
   public showFeatureInfoOverlay: boolean = false;

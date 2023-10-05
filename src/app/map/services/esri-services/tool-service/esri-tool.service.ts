@@ -24,6 +24,12 @@ import {ConfigService} from '../../../../shared/services/config.service';
 import {EsriPointDrawingStrategy} from './strategies/drawing/esri-point-drawing.strategy';
 import {EsriLineDrawingStrategy} from './strategies/drawing/esri-line-drawing.strategy';
 import {EsriPolygonDrawingStrategy} from './strategies/drawing/esri-polygon-drawing.strategy';
+import {DrawingCallbackHandler} from './interfaces/drawing-callback-handler.interface';
+import Graphic from '@arcgis/core/Graphic';
+import {InternalDrawingRepresentation} from '../../../../shared/interfaces/internal-drawing-representation.interface';
+import {DrawingActions} from '../../../../state/map/actions/drawing.actions';
+import {silentArcgisToGeoJSON} from '../../../../shared/utils/esri-transformer-wrapper.utils';
+import {UnsupportedGeometryType} from '../errors/esri.errors';
 
 const HANDLE_GROUP_KEY = 'EsriToolService';
 
@@ -44,7 +50,7 @@ const HANDLE_GROUP_KEY = 'EsriToolService';
 @Injectable({
   providedIn: 'root',
 })
-export class EsriToolService implements ToolService, OnDestroy {
+export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackHandler {
   private toolStrategy: EsriToolStrategy = new EsriDefaultStrategy();
   private drawingLayers: DrawingActiveMapItem[] = [];
   private readonly drawingLayers$ = this.store.select(selectDrawingLayers);
@@ -73,6 +79,12 @@ export class EsriToolService implements ToolService, OnDestroy {
 
   public initializeMeasurement(measurementTool: MeasurementTool): void {
     this.initializeTool(UserDrawingLayer.Measurements, (layer) => this.setMeasurementStrategy(measurementTool, layer));
+  }
+
+  public complete(graphic: Graphic, labelText?: string) {
+    const internalDrawingRepresentation = this.convertToGeoJson(graphic, labelText);
+    this.store.dispatch(DrawingActions.addDrawing({drawing: internalDrawingRepresentation}));
+    this.endDrawing();
   }
 
   /**
@@ -120,6 +132,30 @@ export class EsriToolService implements ToolService, OnDestroy {
     this.toolStrategy.start();
   }
 
+  private convertToGeoJson(graphic: Graphic, labelText?: string): InternalDrawingRepresentation {
+    const geoJsonFeature = silentArcgisToGeoJSON(graphic.geometry);
+
+    if (
+      geoJsonFeature.type !== 'Point' &&
+      geoJsonFeature.type !== 'LineString' &&
+      geoJsonFeature.type !== 'Polygon' &&
+      geoJsonFeature.type !== 'MultiPoint'
+    ) {
+      throw new UnsupportedGeometryType(geoJsonFeature.type);
+    }
+
+    return {
+      type: 'Feature',
+      geometry: {...geoJsonFeature},
+      properties: {
+        style: this.esriSymbolizationService.extractGb3SymbolizationFromSymbol(graphic.symbol),
+        ...graphic.attributes,
+      },
+      source: this.toolStrategy.internalLayerType,
+      labelText,
+    };
+  }
+
   private endDrawing() {
     this.esriMapViewService.mapView.removeHandles(HANDLE_GROUP_KEY);
     this.store.dispatch(ToolActions.deactivateTool());
@@ -164,18 +200,30 @@ export class EsriToolService implements ToolService, OnDestroy {
 
     switch (measurementType) {
       case 'measure-area':
-        this.toolStrategy = new EsriAreaMeasurementStrategy(layer, this.esriMapViewService.mapView, areaStyle, labelStyle, () =>
-          this.endDrawing(),
+        this.toolStrategy = new EsriAreaMeasurementStrategy(
+          layer,
+          this.esriMapViewService.mapView,
+          areaStyle,
+          labelStyle,
+          (geometry, labelText) => this.complete(geometry, labelText),
         );
         break;
       case 'measure-line':
-        this.toolStrategy = new EsriLineMeasurementStrategy(layer, this.esriMapViewService.mapView, lineStyle, labelStyle, () =>
-          this.endDrawing(),
+        this.toolStrategy = new EsriLineMeasurementStrategy(
+          layer,
+          this.esriMapViewService.mapView,
+          lineStyle,
+          labelStyle,
+          (geometry, labelText) => this.complete(geometry, labelText),
         );
         break;
       case 'measure-point':
-        this.toolStrategy = new EsriPointMeasurementStrategy(layer, this.esriMapViewService.mapView, pointStyle, labelStyle, () =>
-          this.endDrawing(),
+        this.toolStrategy = new EsriPointMeasurementStrategy(
+          layer,
+          this.esriMapViewService.mapView,
+          pointStyle,
+          labelStyle,
+          (geometry, labelText) => this.complete(geometry, labelText),
         );
     }
   }
@@ -187,17 +235,21 @@ export class EsriToolService implements ToolService, OnDestroy {
 
     switch (drawingType) {
       case 'draw-point':
-        this.toolStrategy = new EsriPointDrawingStrategy(layer, this.esriMapViewService.mapView, pointStyle, () => this.endDrawing());
+        this.toolStrategy = new EsriPointDrawingStrategy(layer, this.esriMapViewService.mapView, pointStyle, (geometry) =>
+          this.complete(geometry),
+        );
         break;
       case 'draw-line':
-        this.toolStrategy = new EsriLineDrawingStrategy(layer, this.esriMapViewService.mapView, lineStyle, () => this.endDrawing());
+        this.toolStrategy = new EsriLineDrawingStrategy(layer, this.esriMapViewService.mapView, lineStyle, (geometry) =>
+          this.complete(geometry),
+        );
         break;
       case 'draw-polygon':
         this.toolStrategy = new EsriPolygonDrawingStrategy(
           layer,
           this.esriMapViewService.mapView,
           areaStyle,
-          () => this.endDrawing(),
+          (geometry) => this.complete(geometry),
           'polygon',
         );
         break;
@@ -206,7 +258,7 @@ export class EsriToolService implements ToolService, OnDestroy {
           layer,
           this.esriMapViewService.mapView,
           areaStyle,
-          () => this.endDrawing(),
+          (geometry) => this.complete(geometry),
           'rectangle',
         );
         break;
@@ -215,7 +267,7 @@ export class EsriToolService implements ToolService, OnDestroy {
           layer,
           this.esriMapViewService.mapView,
           areaStyle,
-          () => this.endDrawing(),
+          (geometry) => this.complete(geometry),
           'circle',
         );
         break;

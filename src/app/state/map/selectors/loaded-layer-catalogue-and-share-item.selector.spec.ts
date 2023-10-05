@@ -28,7 +28,7 @@ describe('selectLoadedLayerCatalogueAndShareItem', () => {
   });
 
   it('returns the current topics and the share link item if both have the state `loaded`; returns `undefined` otherwise', () => {
-    const allLoadingStates: LoadingState[] = ['undefined', 'error', 'loading', 'loaded'];
+    const allLoadingStates: LoadingState[] = [undefined, 'error', 'loading', 'loaded'];
     allLoadingStates.forEach((topicsLoadingState) => {
       allLoadingStates.forEach((shareLinkLoadingState) => {
         const actual = selectLoadedLayerCatalogueAndShareItem.projector(

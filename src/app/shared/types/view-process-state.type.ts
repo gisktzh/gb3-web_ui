@@ -1,1 +1,1 @@
-export type ViewProcessState = 'undefined' | 'updating' | 'completed';
+export type ViewProcessState = undefined | 'updating' | 'completed';

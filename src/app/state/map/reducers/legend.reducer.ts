@@ -6,7 +6,7 @@ export const legendFeatureKey = 'legend';
 
 export const initialState: LegendState = {
   items: [],
-  loadingState: 'undefined',
+  loadingState: undefined,
 };
 
 export const legendFeature = createFeature({

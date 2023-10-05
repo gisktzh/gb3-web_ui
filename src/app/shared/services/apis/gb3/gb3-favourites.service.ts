@@ -54,7 +54,7 @@ export class Gb3FavouritesService extends Gb3ApiService {
           y: data.north,
         },
       },
-    }));
+    })) as unknown as FavouritesResponse; // todo: typecasts once API is fixed
   }
 
   private mapCreateFavouriteToCreatePersonalFavoritePayload({baseConfig, ...payload}: CreateFavourite): PersonalFavoriteNew {
@@ -64,6 +64,6 @@ export class Gb3FavouritesService extends Gb3ApiService {
       north: baseConfig.center.y,
       scaledenom: baseConfig.scale,
       basemap: baseConfig.basemap,
-    };
+    } as unknown as PersonalFavoriteNew; // todo: typecasts once API is fixed
   }
 }

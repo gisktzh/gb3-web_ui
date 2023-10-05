@@ -12,7 +12,7 @@ import {selectSavingState} from '../../../state/map/reducers/share-link.reducer'
   styleUrls: ['./share-link-dialog.component.scss'],
 })
 export class ShareLinkDialogComponent implements OnInit, OnDestroy, HasSavingState {
-  public savingState: LoadingState = 'undefined';
+  public savingState: LoadingState = undefined;
 
   private readonly subscriptions: Subscription = new Subscription();
   private readonly savingState$ = this.store.select(selectSavingState);

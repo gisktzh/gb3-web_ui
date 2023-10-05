@@ -7,9 +7,9 @@ export const shareLinkFeatureKey = 'shareLink';
 export const initialState: ShareLinkState = {
   item: undefined,
   id: undefined,
-  loadingState: 'undefined',
-  savingState: 'undefined',
-  applicationInitializationLoadingState: 'undefined',
+  loadingState: undefined,
+  savingState: undefined,
+  applicationInitializationLoadingState: undefined,
 };
 
 export const shareLinkFeature = createFeature({
