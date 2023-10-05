@@ -8,7 +8,6 @@
       data-test-id="map-ruler"
       mat-icon-button
       matTooltip="Messen"
-      [matTooltipPosition]="'left'"
     >
       <mat-icon svgIcon="ktzh_measure_menu"></mat-icon>
     </button>
@@ -20,30 +19,15 @@
       data-test-id="map-drawing"
       mat-icon-button
       matTooltip="Zeichnen"
-      [matTooltipPosition]="'left'"
     >
       <mat-icon svgIcon="ktzh_drawing_menu"></mat-icon>
     </button>
     <mat-divider class="map-tools__divider"></mat-divider>
-    <button
-      (click)="showPrintDialog()"
-      class="map-tools__button"
-      data-test-id="map-print"
-      mat-icon-button
-      matTooltip="Drucken"
-      [matTooltipPosition]="'left'"
-    >
+    <button (click)="showPrintDialog()" class="map-tools__button" data-test-id="map-print" mat-icon-button matTooltip="Drucken">
       <mat-icon svgIcon="ktzh_print"></mat-icon>
     </button>
     <mat-divider class="map-tools__divider"></mat-divider>
-    <button
-      (click)="showShareLinkDialog()"
-      class="map-tools__button"
-      data-test-id="map-share"
-      mat-icon-button
-      matTooltip="Teilen"
-      [matTooltipPosition]="'left'"
-    >
+    <button (click)="showShareLinkDialog()" class="map-tools__button" data-test-id="map-share" mat-icon-button matTooltip="Teilen">
       <mat-icon svgIcon="ktzh_share"></mat-icon>
     </button>
   </div>

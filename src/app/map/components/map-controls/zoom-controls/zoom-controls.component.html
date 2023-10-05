@@ -12,7 +12,6 @@
           ? this.geolocationState.errorReason || 'Ein Fehler ist aufgetreten'
           : 'Deinen Standort anzeigen'
       "
-      [matTooltipPosition]="'left'"
       [disabled]="this.geolocationState.loadingState === 'loading'"
       [ngClass]="{'zoom-controls--hidden': mapUiState?.hideUiElements}"
     >
@@ -32,7 +31,6 @@
       class="zoom-controls__button"
       data-test-id="map-home"
       matTooltip="Ganze Karte anzeigen"
-      [matTooltipPosition]="'left'"
     >
       <mat-icon svgIcon="ktzh_home_extent"></mat-icon>
     </button>
@@ -44,7 +42,6 @@
       class="zoom-controls__button"
       data-test-id="map-add"
       matTooltip="Vergrössern"
-      [matTooltipPosition]="'left'"
     >
       <mat-icon svgIcon="ktzh_add"></mat-icon>
     </button>
@@ -56,7 +53,6 @@
       class="zoom-controls__button"
       data-test-id="map-remove"
       matTooltip="Verkleinern"
-      [matTooltipPosition]="'left'"
     >
       <mat-icon svgIcon="ktzh_remove"></mat-icon>
     </button>

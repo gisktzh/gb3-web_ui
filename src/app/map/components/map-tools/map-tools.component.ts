@@ -4,11 +4,14 @@ import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
 import {Subscription, tap} from 'rxjs';
 import {selectToolMenuVisibility} from '../../../state/map/reducers/map-ui.reducer';
 import {ToolMenuVisibility} from '../../../shared/types/tool-menu-visibility.type';
+import {MAT_TOOLTIP_DEFAULT_OPTIONS} from '@angular/material/tooltip';
+import {toolTipMapToolsAndControls} from 'src/app/shared/configs/tooltip-map-toolsand-controls.config';
 
 @Component({
   selector: 'map-tools',
   templateUrl: './map-tools.component.html',
   styleUrls: ['./map-tools.component.scss'],
+  providers: [{provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useValue: toolTipMapToolsAndControls}],
 })
 export class MapToolsComponent implements OnInit, OnDestroy {
   public toolMenuVisibility: ToolMenuVisibility | undefined = undefined;

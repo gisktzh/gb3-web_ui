@@ -9,11 +9,14 @@ import {Subscription, tap} from 'rxjs';
 import {selectIsMaxZoomedIn, selectIsMaxZoomedOut} from '../../../../state/map/reducers/map-config.reducer';
 import {selectMapUiState} from '../../../../state/map/reducers/map-ui.reducer';
 import {GeolocationActions} from '../../../../state/map/actions/geolocation.actions';
+import {MAT_TOOLTIP_DEFAULT_OPTIONS} from '@angular/material/tooltip';
+import {toolTipMapToolsAndControls} from 'src/app/shared/configs/tooltip-map-toolsand-controls.config';
 
 @Component({
   selector: 'zoom-controls',
   templateUrl: './zoom-controls.component.html',
   styleUrls: ['./zoom-controls.component.scss'],
+  providers: [{provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useValue: toolTipMapToolsAndControls}],
 })
 export class ZoomControlsComponent {
   @Input() public showLocateMeButton!: boolean;
