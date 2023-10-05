@@ -73,7 +73,6 @@ export const mapUiFeature = createFeature({
       };
     }),
     on(MapUiActions.showBottomSheet, (state, {bottomSheetContent}): MapUiState => {
-      console.log(bottomSheetContent);
       return {
         ...state,
         bottomSheetContent: bottomSheetContent,
