@@ -11,8 +11,9 @@ import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
 import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
 
 const FAVOURITE_HELPER_MESSAGES = {
-  noMapsAdded: 'Fügen Sie mindestens 1 Karte hinzu, um einen Favoriten anzulegen.',
-  notAuthenticated: 'Loggen Sie sich ein, um Favoriten hinzuzufügen.',
+  noMapsAdded: 'Um eine Favoriten anzulegen, muss mindestens eine Karte hinzugefügt werden.',
+  notAuthenticated: 'Um aktive Karten als Favorit speichern zu können, muss man angemeldet sein.',
+  authenticatedAndMapsAdded: 'Aktive Karten als Favorit speichern',
 };
 
 @Component({

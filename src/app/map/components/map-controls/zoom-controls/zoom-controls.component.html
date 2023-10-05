@@ -1,14 +1,18 @@
 <div class="zoom-controls">
   <ng-container *ngIf="showLocateMeButton">
+    <!-- TODO: Tooltip weiterhin mit Fehler oder immer Standard? -->
     <button
       mat-icon-button
       (click)="this.locateClient()"
       color="accent"
       class="zoom-controls__button"
       data-test-id="map-locate-me"
-      #tooltip="matTooltip"
-      [matTooltip]="this.geolocationState.errorReason ?? ''"
-      [matTooltipDisabled]="this.geolocationState.loadingState !== 'error'"
+      [matTooltip]="
+        this.geolocationState.loadingState === 'error'
+          ? this.geolocationState.errorReason || 'Ein Fehler ist aufgetreten'
+          : 'Deinen Standort anzeigen'
+      "
+      [matTooltipPosition]="'left'"
       [disabled]="this.geolocationState.loadingState === 'loading'"
       [ngClass]="{'zoom-controls--hidden': mapUiState?.hideUiElements}"
     >
@@ -21,7 +25,15 @@
     ></mat-divider>
   </ng-container>
   <div [ngClass]="{'zoom-controls--hidden': mapUiState?.hideZoomButtons}">
-    <button mat-icon-button (click)="this.goToInitialExtent()" color="accent" class="zoom-controls__button" data-test-id="map-home">
+    <button
+      mat-icon-button
+      (click)="this.goToInitialExtent()"
+      color="accent"
+      class="zoom-controls__button"
+      data-test-id="map-home"
+      matTooltip="Ganze Karte anzeigen"
+      [matTooltipPosition]="'left'"
+    >
       <mat-icon svgIcon="ktzh_home_extent"></mat-icon>
     </button>
     <button
@@ -31,6 +43,8 @@
       [disabled]="this.isMaxZoomedIn"
       class="zoom-controls__button"
       data-test-id="map-add"
+      matTooltip="Vergrössern"
+      [matTooltipPosition]="'left'"
     >
       <mat-icon svgIcon="ktzh_add"></mat-icon>
     </button>
@@ -41,6 +55,8 @@
       [disabled]="this.isMaxZoomedOut"
       class="zoom-controls__button"
       data-test-id="map-remove"
+      matTooltip="Verkleinern"
+      [matTooltipPosition]="'left'"
     >
       <mat-icon svgIcon="ktzh_remove"></mat-icon>
     </button>

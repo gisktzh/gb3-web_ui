@@ -5,6 +5,8 @@
     class="drawing-tools__button"
     color="accent"
     mat-icon-button
+    matTooltip="Punkt"
+    [matTooltipPosition]="'left'"
   >
     <mat-icon svgIcon="ktzh_drawing_symbol_point"></mat-icon>
   </button>
@@ -14,6 +16,8 @@
     class="drawing-tools__button"
     color="accent"
     mat-icon-button
+    matTooltip="Linie"
+    [matTooltipPosition]="'left'"
   >
     <mat-icon svgIcon="ktzh_drawing_symbol_line"></mat-icon>
   </button>
@@ -23,6 +27,8 @@
     class="drawing-tools__button"
     color="accent"
     mat-icon-button
+    matTooltip="Polygon"
+    [matTooltipPosition]="'left'"
   >
     <mat-icon svgIcon="ktzh_drawing_symbol_polygon"></mat-icon>
   </button>
@@ -32,6 +38,8 @@
     class="drawing-tools__button"
     color="accent"
     mat-icon-button
+    matTooltip="Rechteck"
+    [matTooltipPosition]="'left'"
   >
     <mat-icon svgIcon="ktzh_drawing_symbol_rectangle"></mat-icon>
   </button>
@@ -41,17 +49,19 @@
     class="drawing-tools__button"
     color="accent"
     mat-icon-button
+    matTooltip="Kreis"
+    [matTooltipPosition]="'left'"
   >
     <mat-icon svgIcon="ktzh_drawing_symbol_circle"></mat-icon>
   </button>
-  <button class="drawing-tools__button" color="accent" disabled mat-icon-button>
+  <button class="drawing-tools__button" color="accent" disabled mat-icon-button matTooltip="Text" [matTooltipPosition]="'left'">
     <mat-icon svgIcon="ktzh_drawing_symbol_text"></mat-icon>
   </button>
   <mat-divider class="drawing-tools__divider"></mat-divider>
-  <button class="drawing-tools__button" color="accent" disabled mat-icon-button>
+  <button class="drawing-tools__button" color="accent" disabled mat-icon-button matTooltip="Hochladen" [matTooltipPosition]="'left'">
     <mat-icon svgIcon="ktzh_upload"></mat-icon>
   </button>
-  <button class="drawing-tools__button" color="accent" disabled mat-icon-button>
+  <button class="drawing-tools__button" color="accent" disabled mat-icon-button matTooltip="Herunterladen" [matTooltipPosition]="'left'">
     <mat-icon svgIcon="ktzh_download"></mat-icon>
   </button>
 </div>

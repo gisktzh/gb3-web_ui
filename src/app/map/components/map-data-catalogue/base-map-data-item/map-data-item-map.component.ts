@@ -5,11 +5,14 @@ import {LoadingState} from '../../../../shared/types/loading-state.type';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {selectMapConfigState} from '../../../../state/map/reducers/map-config.reducer';
+import {MAT_TOOLTIP_DEFAULT_OPTIONS} from '@angular/material/tooltip';
+import {toolTipLongDelay} from 'src/app/shared/configs/tooltip-long-delay.config';
 
 @Component({
   selector: 'map-data-item-map',
   templateUrl: './base-map-data-item.component.html',
   styleUrls: ['./base-map-data-item.component.scss'],
+  providers: [{provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useValue: toolTipLongDelay}],
 })
 export class MapDataItemMapComponent extends BaseMapDataItemComponent implements OnInit, OnDestroy {
   @Input() public override layers: MapLayer[] = [];
