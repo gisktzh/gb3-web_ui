@@ -10,13 +10,14 @@ import {selectIsMaxZoomedIn, selectIsMaxZoomedOut} from '../../../../state/map/r
 import {selectMapUiState} from '../../../../state/map/reducers/map-ui.reducer';
 import {GeolocationActions} from '../../../../state/map/actions/geolocation.actions';
 import {MAT_TOOLTIP_DEFAULT_OPTIONS} from '@angular/material/tooltip';
-import {toolTipMapToolsAndControls} from 'src/app/shared/configs/tooltip-map-toolsand-controls.config';
+import {ConfigService} from 'src/app/shared/services/config.service';
+import {toolTipFactoryMapToolsAndControls} from 'src/app/shared/configs/tooltip.config';
 
 @Component({
   selector: 'zoom-controls',
   templateUrl: './zoom-controls.component.html',
   styleUrls: ['./zoom-controls.component.scss'],
-  providers: [{provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useValue: toolTipMapToolsAndControls}],
+  providers: [{provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useFactory: toolTipFactoryMapToolsAndControls, deps: [ConfigService]}],
 })
 export class ZoomControlsComponent {
   @Input() public showLocateMeButton!: boolean;

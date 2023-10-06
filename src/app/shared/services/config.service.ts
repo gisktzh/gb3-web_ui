@@ -7,7 +7,6 @@ import {defaultRuntimeConfig} from '../configs/runtime.config';
 import {ApiConfig, AuthSettings, OverrideSettings, RuntimeConfig} from '../interfaces/runtime-config.interface';
 import {Gb2Constants} from '../constants/gb2.constants';
 import {layerSymbolizations} from '../configs/symbolization.config';
-
 import {HostNameResolutionMismatch} from '../errors/app.errors';
 import {EmbeddedMapConstants} from '../constants/embedded-map.constants';
 import {dataCatalogueFilterConfig} from '../configs/filter.config';
@@ -18,6 +17,7 @@ import {SearchConfig} from '../interfaces/search-config.interface';
 import {searchConfig} from '../configs/search.config';
 import {PrintConfig} from '../interfaces/print-config.interface';
 import {printConfig} from '../configs/print.config';
+import {toolTipLongDelay, toolTipMapToolsAndControls} from '../configs/tooltip.config';
 
 @Injectable({
   providedIn: 'root',
@@ -49,6 +49,11 @@ export class ConfigService {
     width: EmbeddedMapConstants.DEFAULT_WIDTH,
     height: EmbeddedMapConstants.DEFAULT_HEIGHT,
     borderSize: EmbeddedMapConstants.DEFAULT_BORDER_SIZE,
+  };
+
+  public readonly tooltipConfig = {
+    longDelay: toolTipLongDelay,
+    mapToolsAndControls: toolTipMapToolsAndControls,
   };
 
   public get filterConfig(): {dataCatalogue: DataCatalogueFilterConfiguration[]} {
