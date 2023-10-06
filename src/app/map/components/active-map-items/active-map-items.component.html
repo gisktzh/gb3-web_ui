@@ -31,16 +31,7 @@
         <mat-icon svgIcon="ktzh_delete"></mat-icon>
       </button>
       <mat-divider class="active-map-items__header__buttons__divider" [vertical]="true"></mat-divider>
-      <span
-        [matTooltip]="
-          !this.isAuthenticated
-            ? this.favouriteHelperMessages.notAuthenticated
-            : this.activeMapItems.length === 0
-            ? this.favouriteHelperMessages.noMapsAdded
-            : this.favouriteHelperMessages.authenticatedAndMapsAdded
-        "
-        [matTooltipPosition]="'below'"
-      >
+      <span [matTooltip]="toolTipsFavourite" [matTooltipPosition]="'below'">
         <button
           (click)="showFavouriteDialog()"
           [disabled]="activeMapItems.length === 0 || !this.isAuthenticated"

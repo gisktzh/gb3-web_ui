@@ -28,6 +28,7 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
   public numberOfNotices: number = 0;
   public numberOfUnreadNotices: number = 0;
   public readonly favouriteHelperMessages = FAVOURITE_HELPER_MESSAGES;
+  public toolTipsFavourite: string = FAVOURITE_HELPER_MESSAGES.notAuthenticated;
 
   private readonly activeMapItems$ = this.store.select(selectItems);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
@@ -77,6 +78,7 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
             this.activeMapItems = currentActiveMapItems;
             const gb2ActiveMapItems = currentActiveMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem));
             this.updateNumberOfNotices(gb2ActiveMapItems);
+            this.updateFavouritesMessage();
           }),
         )
         .subscribe(),
@@ -86,6 +88,7 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
         .pipe(
           tap((isAuthenticated) => {
             this.isAuthenticated = isAuthenticated;
+            this.updateFavouritesMessage();
           }),
         )
         .subscribe(),
@@ -96,5 +99,15 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
     const activeMapItemsWithNotices = currentActiveMapItems.filter((activeMapItem) => activeMapItem.settings.notice);
     this.numberOfNotices = activeMapItemsWithNotices.length;
     this.numberOfUnreadNotices = activeMapItemsWithNotices.filter((activeMapItem) => !activeMapItem.settings.isNoticeMarkedAsRead).length;
+  }
+
+  public updateFavouritesMessage(): void {
+    if (!this.isAuthenticated) {
+      this.toolTipsFavourite = this.favouriteHelperMessages.notAuthenticated;
+    } else if (this.activeMapItems.length === 0) {
+      this.toolTipsFavourite = this.favouriteHelperMessages.noMapsAdded;
+    } else {
+      this.toolTipsFavourite = this.favouriteHelperMessages.authenticatedAndMapsAdded;
+    }
   }
 }
