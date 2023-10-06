@@ -34,15 +34,19 @@ interface AbstractOrder {
   products: OrderProduct[];
 }
 
+export type Coordsys = 'LV95' | 'LV03';
+
 interface DirectOrder extends AbstractOrder {
   perimeter_type: 'DIRECT';
   pdir_polygon: OrderPdirPolygon;
-  pdir_coordsys: 'LV95' | 'LV03';
+  pdir_coordsys: Coordsys;
 }
+
+export type LayerName = 'COMMUNE' | 'PARCEL';
 
 interface IndirectOrder extends AbstractOrder {
   perimeter_type: 'INDIRECT';
-  pindir_layer_name: 'COMMUNE' | 'PARCEL';
+  pindir_layer_name: LayerName;
   pindir_ident: string[];
 }
 
@@ -70,13 +74,12 @@ export interface OrderStatus {
   internal_id: number;
   order: Order;
   order_id: string;
-  status:
-    | 'SUBMITTED'
-    | 'QUEUED'
-    | 'WORKING: Processing'
-    | 'WORKING: Data transfer started'
-    | 'SUCCESS: Data  transfer succeeded'
-    | 'FAILURE: Output dataset exceeded maximum size, not delivered'
-    | 'FAILURE: Data transfer failed';
+  /**
+   * From the documentation:
+   * For programmatic interpretation of the status codes, use the following rule: if a colon exists, extract the
+   * substring before the colon, otherwise the whole string. The extracted string is to be considered as a
+   * value of an enumeration set.
+   */
+  status: string;
   submitted: string;
 }
