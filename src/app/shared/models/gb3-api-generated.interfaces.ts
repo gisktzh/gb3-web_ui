@@ -535,6 +535,10 @@ export interface Legend {
   legend: {
     /** Topic name */
     topic: string;
+    /** Geolion ID of topic */
+    geolion_gdd: number | null;
+    /** UUID from geommetadatabase */
+    geolion_karten_uuid: string | null;
     layers: {
       /** Layer name */
       layer: string;
@@ -549,7 +553,9 @@ export interface Legend {
       /** Layer attribution */
       attribution?: string;
       /** Geolion ID of layer */
-      geolion?: number;
+      geolion_gds: number | null;
+      /** UUID from geommetadatabase */
+      geolion_geodatensatz_uuid: string | null;
     }[];
   };
 }
@@ -563,11 +569,19 @@ export interface Feature {
     results: {
       /** Topic name */
       topic: string;
+      /** Geolion ID of topic */
+      geolion_gdd: number | null;
+      /** UUID from geommetadatabase */
+      geolion_karten_uuid: string | null;
       layers: {
         /** Layer name */
         layer: string;
         /** Layer title */
         title: string;
+        /** Geolion ID of layer */
+        geolion_gds: number | null;
+        /** UUID from geommetadatabase */
+        geolion_geodatensatz_uuid: string | null;
         features: {
           /** Feature ID */
           fid: number;
@@ -818,7 +832,9 @@ export interface Topics {
       /** Organisation title */
       organisation: string | null;
       /** Geolion ID of topic */
-      guid: number | null;
+      geolion_gdd: number | null;
+      /** UUID from geommetadatabase */
+      geolion_karten_uuid: string | null;
       /** Keywords */
       keywords: string[];
       /** Topic-specific notice for end-users */
@@ -897,7 +913,9 @@ export interface Topics {
         /** Layer ID */
         id: number;
         /** Geolion ID of layer */
-        guid: number | null;
+        geolion_gds: number | null;
+        /** UUID from geommetadatabase */
+        geolion_geodatensatz_uuid: string | null;
         /** Layer name */
         layer: string;
         /** Layer group title if set */

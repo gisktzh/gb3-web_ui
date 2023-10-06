@@ -30,6 +30,7 @@ export class Gb3TopicsService extends Gb3ApiService {
   protected readonly endpoint = 'topics';
   private readonly staticFilesUrl = this.configService.apiConfig.gb2StaticFiles.baseUrl;
   private readonly dataTabUrl = `/${MainPage.Data}/${DataCataloguePage.Datasets}`;
+  private readonly MapTabUrl = `/${MainPage.Data}/${DataCataloguePage.Maps}`;
 
   public loadTopics(): Observable<TopicsResponse> {
     const requestUrl = this.createTopicsUrl();
@@ -86,11 +87,11 @@ export class Gb3TopicsService extends Gb3ApiService {
       return {
         legend: {
           ...legend,
-          metaDataLink: undefined, // Currently, a topic does not have any meta data link; this is all on its layers.
+          metaDataLink: this.createMapTabLink(legend.geolion_karten_uuid),
           layers: legend.layers.map((layer) => {
             return {
               ...layer,
-              metaDataLink: layer.geolion ? this.createDataTabLink(layer.geolion) : undefined,
+              metaDataLink: layer.geolion_gds ? this.createDataTabLink(layer.geolion_geodatensatz_uuid) : undefined, // Currently, the API returns null for the uuid.
               layerClasses: layer.layer_classes?.map((layerClass) => {
                 return {
                   ...layerClass,
@@ -103,8 +104,12 @@ export class Gb3TopicsService extends Gb3ApiService {
     });
   }
 
-  private createDataTabLink(id: number): string {
-    return `${this.dataTabUrl}/${id}`;
+  private createMapTabLink(uuid: string | null): string {
+    return `${this.MapTabUrl}/${uuid}`;
+  }
+
+  private createDataTabLink(uuid: string | null): string {
+    return `${this.dataTabUrl}/${uuid}`;
   }
 
   private createTopicsUrl(): string {
@@ -123,6 +128,7 @@ export class Gb3TopicsService extends Gb3ApiService {
             return {
               ...topic,
               id: topic.topic,
+              uuid: topic.geolion_karten_uuid,
               printTitle: topic.print_title,
               gb2Url: topic.gb2_url,
               icon: this.createAbsoluteIconUrl(topic.icon),
@@ -133,6 +139,7 @@ export class Gb3TopicsService extends Gb3ApiService {
                 .map((layer) => {
                   return {
                     ...layer,
+                    uuid: layer.geolion_geodatensatz_uuid,
                     groupTitle: layer.group_title,
                     minScale: layer.min_scale,
                     maxScale: layer.max_scale,
@@ -254,9 +261,11 @@ export class Gb3TopicsService extends Gb3ApiService {
           ...featureInfo,
           results: {
             topic: featureInfo.results.topic,
+            metaDataLink: this.createMapTabLink(featureInfo.results.geolion_karten_uuid),
             layers: featureInfo.results.layers.map((layer) => {
               return {
                 ...layer,
+                metaDataLink: this.createMapTabLink(layer.geolion_geodatensatz_uuid),
                 features: layer.features.map((feature) => {
                   return {
                     ...feature,

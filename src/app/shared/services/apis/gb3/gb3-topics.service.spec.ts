@@ -32,7 +32,8 @@ describe('Gb3TopicsService', () => {
               print_title: 'Gebäudealter',
               icon: '/images/custom/themekl-statgebalterzh.gif',
               organisation: 'Statistisches Amt',
-              guid: null,
+              geolion_karten_uuid: '246fe226-ead7-4f91-b735-d294994913e0',
+              geolion_gdd: null,
               keywords: ['Gebäudealter', 'stat', 'obs', 'fap', 'denkk', 'fsla'],
               notice: null,
               timesliderConfiguration: {
@@ -76,7 +77,8 @@ describe('Gb3TopicsService', () => {
               layers: [
                 {
                   id: 132494,
-                  guid: null,
+                  geolion_gds: null,
+                  geolion_geodatensatz_uuid: null,
                   layer: 'geb-alter_wohnen',
                   group_title: 'Gebäudealter - Polygone',
                   title: 'Baujahr',
@@ -89,7 +91,8 @@ describe('Gb3TopicsService', () => {
                 },
                 {
                   id: 132495,
-                  guid: null,
+                  geolion_geodatensatz_uuid: null,
+                  geolion_gds: null,
                   layer: 'geb-alter_grau',
                   group_title: 'Gebäudealter - Polygone',
                   title: 'Baujahr',
@@ -102,7 +105,8 @@ describe('Gb3TopicsService', () => {
                 },
                 {
                   id: 132496,
-                  guid: null,
+                  geolion_geodatensatz_uuid: null,
+                  geolion_gds: null,
                   layer: 'geb-alter_2',
                   group_title: 'Gebäudealter',
                   title: 'Gebäude mit Baujahr x und älter',
@@ -154,7 +158,6 @@ describe('Gb3TopicsService', () => {
           expect(responseMap).toBeDefined();
           if (responseMap) {
             expect(responseMap.title).toBe(expectedMap.title);
-            expect(responseMap.guid).toBe(expectedMap.guid);
             expect(responseMap.gb2Url).toBe(expectedMap.gb2_url);
             expect(responseMap.filterConfigurations?.length).toBe(expectedMap.filterConfigurations.length);
             expect(responseMap.keywords.length).toBe(expectedMap.keywords.length);

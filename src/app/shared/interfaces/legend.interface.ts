@@ -1,5 +1,5 @@
 interface HasMetaDataLink {
-  metaDataLink?: string;
+  metaDataLink?: string | null;
 }
 
 interface LayerClass {
@@ -32,5 +32,5 @@ export interface LegendDisplay extends HasMetaDataLink {
   icon?: string;
   layers: LegendLayer[];
   isSingleLayer: boolean;
-  metaDataLink?: string;
+  metaDataLink?: string | null;
 }
