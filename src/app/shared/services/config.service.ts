@@ -18,6 +18,8 @@ import {SearchConfig} from '../interfaces/search-config.interface';
 import {searchConfig} from '../configs/search.config';
 import {PrintConfig} from '../interfaces/print-config.interface';
 import {printConfig} from '../configs/print.config';
+import {MapAnimationConfig} from '../interfaces/map-animation-config.interface';
+import {mapAnimationConfig} from '../configs/map-animation.config';
 
 @Injectable({
   providedIn: 'root',
@@ -65,6 +67,10 @@ export class ConfigService {
 
   public get printConfig(): PrintConfig {
     return printConfig;
+  }
+
+  public get mapAnimationConfig(): MapAnimationConfig {
+    return mapAnimationConfig;
   }
 
   constructor(@Inject(DOCUMENT) private readonly document: Document) {

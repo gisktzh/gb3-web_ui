@@ -7,9 +7,7 @@ import {MAP_SERVICE} from '../../../app.module';
 import {MapService} from '../../../map/interfaces/map.service';
 import {tap} from 'rxjs';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
-
-const DEFAULT_SELECTION_ZOOM_ANIMATION_DURATION_IN_MS = 500;
-const DEFAULT_SELECTION_ZOOM_EXPAND_FACTOR = 1.5;
+import {ConfigService} from '../../../shared/services/config.service';
 
 @Injectable()
 export class DataDownloadEffects {
@@ -19,8 +17,8 @@ export class DataDownloadEffects {
       map(({selection}) => {
         this.mapService.zoomToExtent(
           selection.drawingRepresentation.geometry,
-          DEFAULT_SELECTION_ZOOM_EXPAND_FACTOR,
-          DEFAULT_SELECTION_ZOOM_ANIMATION_DURATION_IN_MS,
+          this.configService.mapAnimationConfig.zoom.expandFactor,
+          this.configService.mapAnimationConfig.zoom.duration,
         );
         return MapUiActions.showMapSideDrawerContent({mapSideDrawerContent: 'data-download'});
       }),
@@ -50,5 +48,6 @@ export class DataDownloadEffects {
     private readonly actions$: Actions,
     private readonly mapDrawingService: MapDrawingService,
     @Inject(MAP_SERVICE) private readonly mapService: MapService,
+    private readonly configService: ConfigService,
   ) {}
 }
