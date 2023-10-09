@@ -21,6 +21,7 @@ import {PrintActions} from '../actions/print.actions';
 import {selectActiveTool} from '../reducers/tool.reducer';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {selectScreenMode} from '../../app/reducers/app-layout.reducer';
+import {DataDownloadActions} from '../actions/data-download.actions';
 
 const CREATE_FAVOURITE_DIALOG_MAX_WIDTH = 500;
 const DELETE_FAVOURITE_DIALOG_MAX_WIDTH = 500;
@@ -47,8 +48,9 @@ export class MapUiEffects {
       map((value) => {
         switch (value.mapSideDrawerContent) {
           case 'print':
-          case 'data-download': // TODO GB3-650 - use this effect to load geostore data
             return PrintActions.loadPrintCapabilities();
+          case 'data-download':
+            return DataDownloadActions.loadProducts();
         }
       }),
     );
@@ -175,6 +177,14 @@ export class MapUiEffects {
       concatLatestFrom(() => this.store.select(selectActiveTool)),
       filter(([{hideAllUiElements}, activeTool]) => hideAllUiElements && activeTool !== undefined),
       map(() => ToolActions.cancelTool()),
+    );
+  });
+
+  public loadDataDownloadProducts$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapUiActions.toggleToolMenu),
+      filter((action) => action.tool === 'data-download'),
+      map(() => DataDownloadActions.loadProducts()),
     );
   });
 

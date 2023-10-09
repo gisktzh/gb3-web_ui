@@ -27,7 +27,7 @@ export class GeoshopApiService extends BaseApiService {
 
   public sendOrder(order: Order): Observable<OrderResponse> {
     const orderData = this.mapOrderToApiOrder(order);
-    return this.post<ApiOrder, ApiOrderResponse>(this.getFullEndpointUrl('order')).pipe(
+    return this.post<ApiOrder, ApiOrderResponse>(this.getFullEndpointUrl('order'), orderData).pipe(
       map((data) => this.mapApiOrderResponseToOrderResponse(data)),
     );
   }
