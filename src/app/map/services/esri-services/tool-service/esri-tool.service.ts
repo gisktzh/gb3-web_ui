@@ -86,7 +86,9 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
   }
 
   public initializeDataDownloadSelection(selectionTool: DataDownloadSelectionTool) {
-    this.initializeInternalDrawingTool(InternalDrawingLayer.Selection, (layer) => this.setSelectionStrategy(selectionTool, layer));
+    this.initializeInternalDrawingTool(InternalDrawingLayer.Selection, (layer) =>
+      this.setDataDownloadSelectionStrategy(selectionTool, layer),
+    );
   }
 
   public complete(graphic: Graphic, labelText?: string) {
@@ -298,7 +300,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
     }
   }
 
-  private setSelectionStrategy(selectionType: DataDownloadSelectionTool, layer: GraphicsLayer) {
+  private setDataDownloadSelectionStrategy(selectionType: DataDownloadSelectionTool, layer: GraphicsLayer) {
     const areaStyle = this.esriSymbolizationService.createPolygonSymbolization(InternalDrawingLayer.Selection);
 
     const completeDrawingCallbackHandler: DrawingCallbackHandler['complete'] = (graphic: Graphic, labelText?: string) => {
@@ -310,7 +312,6 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
       this.store.dispatch(DataDownloadActions.setSelection({selection}));
     };
 
-    layer.removeAll();
     switch (selectionType) {
       case 'select-circle':
         this.toolStrategy = new EsriPolygonSelectionStrategy(

@@ -19,6 +19,7 @@ export class EsriPolygonSelectionStrategy extends AbstractEsriSelectionStrategy 
   ) {
     super(layer, mapView, completeDrawingCallbackHandler);
 
+    layer.removeAll();
     this.sketchViewModel.polygonSymbol = polygonSymbol;
     this.tool = polygonType;
   }

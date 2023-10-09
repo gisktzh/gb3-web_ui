@@ -14,10 +14,13 @@ export abstract class AbstractEsriSelectionStrategy extends AbstractEsriDrawable
     this.sketchViewModel.create(this.tool, {mode: 'click'});
     this.sketchViewModel.on('create', ({state, graphic}) => {
       switch (state) {
-        case 'active':
-        case 'start':
         case 'cancel':
-          break; // currently, these events do not trigger any action
+        case 'active':
+          break; // currently, this events do not trigger any action
+        case 'start':
+          // remove all old selections before starting a new one
+          this.layer.removeAll();
+          break;
         case 'complete':
           this.setIdentifierOnGraphic(graphic);
           this.completeDrawingCallbackHandler(graphic);

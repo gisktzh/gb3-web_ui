@@ -1,9 +1,10 @@
-import {Feature, LineString, MultiPoint, MultiPolygon, Point, Polygon} from 'geojson';
+import {Feature} from 'geojson';
 import {DrawingLayer} from '../enums/drawing-layer.enum';
 import {HasSrs} from './geojson-types-with-srs.interface';
+import {SupportedGeometry} from '../types/SupportedGeometry.type';
 
 export interface InternalDrawingRepresentation extends Feature {
   labelText?: string;
   source: DrawingLayer;
-  geometry: (Point | LineString | Polygon | MultiPoint | MultiPolygon) & HasSrs;
+  geometry: SupportedGeometry & HasSrs;
 }
