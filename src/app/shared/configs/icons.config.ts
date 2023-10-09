@@ -172,10 +172,26 @@ const drawingSymbolIconsConfig = [
     path: 'assets/icons/drawing-symbols/circle.svg',
   },
 ];
+
+const selectingSymbolIconsConfig = [
+  {
+    id: 'ktzh_select_section',
+    path: 'assets/icons/tools/select-section.svg',
+  },
+  {
+    id: 'ktzh_select_canton',
+    path: 'assets/icons/tools/select-canton.svg',
+  },
+  {
+    id: 'ktzh_select_municipality',
+    path: 'assets/icons/tools/select-municipality.svg',
+  },
+];
 export const iconsConfig = [
   ...toolIconsConfig,
   ...controlIconsConfig,
   ...actionIconsConfig,
   ...symbolIconsConfig,
   ...drawingSymbolIconsConfig,
+  ...selectingSymbolIconsConfig,
 ];

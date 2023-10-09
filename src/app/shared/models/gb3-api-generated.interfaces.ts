@@ -618,13 +618,13 @@ export interface Geometry {
    * Type of GeoJSON geometry object
    * @example "Polygon"
    */
-  type: 'Polygon' | 'Point' | 'LineString' | 'MultiPoint';
+  type: 'Polygon' | 'Point' | 'LineString' | 'MultiPoint' | 'MultiPolygon';
   crs?: GeometryCrs;
   /**
    * coordinates for GeoJSON geometry object
    * @example [[[2681730,1247976],[2680217,1249161],[2680809,1250249],[2681937,1249504],[2681730,1247976]],[[2680836,1249355],[2681554,1249477],[2681327,1248867],[2680836,1249355]]]
    */
-  coordinates: (number | number[] | number[][])[];
+  coordinates: (number | number[] | number[][] | number[][][])[];
 }
 
 export interface GeojsonFeature {

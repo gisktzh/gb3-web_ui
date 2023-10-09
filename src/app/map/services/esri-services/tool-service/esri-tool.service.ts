@@ -12,7 +12,7 @@ import {EsriDefaultStrategy} from './strategies/measurement/esri-default.strateg
 import {EsriLineMeasurementStrategy} from './strategies/measurement/esri-line-measurement.strategy';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {EsriSymbolizationService} from '../esri-symbolization.service';
-import {UserDrawingLayer} from '../../../../shared/enums/drawing-layer.enum';
+import {InternalDrawingLayer, UserDrawingLayer} from '../../../../shared/enums/drawing-layer.enum';
 import {DrawingActiveMapItem} from '../../../models/implementations/drawing.model';
 import {EsriAreaMeasurementStrategy} from './strategies/measurement/esri-area-measurement.strategy';
 import {EsriPointMeasurementStrategy} from './strategies/measurement/esri-point-measurement.strategy';
@@ -30,6 +30,10 @@ import {InternalDrawingRepresentation} from '../../../../shared/interfaces/inter
 import {DrawingActions} from '../../../../state/map/actions/drawing.actions';
 import {silentArcgisToGeoJSON} from '../../../../shared/utils/esri-transformer-wrapper.utils';
 import {UnsupportedGeometryType} from '../errors/esri.errors';
+import {DataDownloadSelectionTool} from '../../../../shared/types/data-download-selection-tool.type';
+import {DataDownloadActions} from '../../../../state/map/actions/data-download.actions';
+import {DataDownloadSelection} from '../../../../shared/interfaces/data-download-selection.interface';
+import {EsriPolygonSelectionStrategy} from './strategies/selection/esri-polygon-selection.strategy';
 
 const HANDLE_GROUP_KEY = 'EsriToolService';
 
@@ -74,11 +78,15 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
   }
 
   public initializeDrawing(drawingTool: DrawingTool) {
-    this.initializeTool(UserDrawingLayer.Drawings, (layer) => this.setDrawingStrategy(drawingTool, layer));
+    this.initializeUserDrawingTool(UserDrawingLayer.Drawings, (layer) => this.setDrawingStrategy(drawingTool, layer));
   }
 
-  public initializeMeasurement(measurementTool: MeasurementTool): void {
-    this.initializeTool(UserDrawingLayer.Measurements, (layer) => this.setMeasurementStrategy(measurementTool, layer));
+  public initializeMeasurement(measurementTool: MeasurementTool) {
+    this.initializeUserDrawingTool(UserDrawingLayer.Measurements, (layer) => this.setMeasurementStrategy(measurementTool, layer));
+  }
+
+  public initializeDataDownloadSelection(selectionTool: DataDownloadSelectionTool) {
+    this.initializeInternalDrawingTool(InternalDrawingLayer.Selection, (layer) => this.setSelectionStrategy(selectionTool, layer));
   }
 
   public complete(graphic: Graphic, labelText?: string) {
@@ -88,13 +96,36 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
   }
 
   /**
-   * Initializes a given tool by handling the addition and/or visibility setting ot the drawing layer and uses the supplied setter
+   * Initializes a given tool by setting the given strategy and starting to draw.
+   * @param layer The (Esri) layer that will be used for the drawing part.
+   * @param strategySetter A setter function that takes a given layer and sets a strategy for the given tool.
+   */
+  private initializeTool(layer: GraphicsLayer, strategySetter: (layer: GraphicsLayer) => void) {
+    strategySetter(layer);
+    this.startDrawing();
+  }
+
+  /**
+   * Initializes a given internal drawing tool by handling the addition and/or visibility setting ot the drawing layer and uses the supplied setter
    * function to set the correct toolStrategy.
    * @param layerIdentifier Layer name within the map that should be used as identifier
    * @param strategySetter A setter function that takes a given layer and sets a strategy for the given tool.
-   * @private
    */
-  private initializeTool(layerIdentifier: UserDrawingLayer, strategySetter: (layer: GraphicsLayer) => void) {
+  private initializeInternalDrawingTool(layerIdentifier: InternalDrawingLayer, strategySetter: (layer: GraphicsLayer) => void) {
+    const fullLayerIdentifier = `${this.configService.mapConfig.internalLayerPrefix}${layerIdentifier}`;
+    const drawingLayer = this.esriMapViewService.findEsriLayer(fullLayerIdentifier);
+    if (drawingLayer) {
+      this.initializeTool(drawingLayer as GraphicsLayer, strategySetter);
+    }
+  }
+
+  /**
+   * Initializes a given user drawing tool by handling the addition and/or visibility setting ot the drawing layer and uses the supplied setter
+   * function to set the correct toolStrategy.
+   * @param layerIdentifier Layer name within the map that should be used as identifier
+   * @param strategySetter A setter function that takes a given layer and sets a strategy for the given tool.
+   */
+  private initializeUserDrawingTool(layerIdentifier: UserDrawingLayer, strategySetter: (layer: GraphicsLayer) => void) {
     const fullLayerIdentifier = this.configService.mapConfig.userDrawingLayerPrefix + layerIdentifier;
     const drawingLayer = this.esriMapViewService.findEsriLayer(fullLayerIdentifier);
 
@@ -107,8 +138,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
       reactiveUtils
         .once(() => this.esriMapViewService.findEsriLayer(fullLayerIdentifier))
         .then((layer) => {
-          strategySetter(layer as GraphicsLayer);
-          this.startDrawing();
+          this.initializeTool(layer! as GraphicsLayer, strategySetter);
         });
 
       const drawingLayerAdd = ActiveMapItemFactory.createDrawingMapItem(
@@ -118,8 +148,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
       this.store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem: drawingLayerAdd, position: 0}));
     } else {
       this.forceVisibility(fullLayerIdentifier);
-      strategySetter(drawingLayer as GraphicsLayer);
-      this.startDrawing();
+      this.initializeTool(drawingLayer as GraphicsLayer, strategySetter);
     }
   }
 
@@ -135,18 +164,13 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
   private convertToGeoJson(graphic: Graphic, labelText?: string): InternalDrawingRepresentation {
     const geoJsonFeature = silentArcgisToGeoJSON(graphic.geometry);
 
-    if (
-      geoJsonFeature.type !== 'Point' &&
-      geoJsonFeature.type !== 'LineString' &&
-      geoJsonFeature.type !== 'Polygon' &&
-      geoJsonFeature.type !== 'MultiPoint'
-    ) {
+    if (geoJsonFeature.type === 'MultiLineString' || geoJsonFeature.type === 'GeometryCollection') {
       throw new UnsupportedGeometryType(geoJsonFeature.type);
     }
 
     return {
       type: 'Feature',
-      geometry: {...geoJsonFeature},
+      geometry: {...geoJsonFeature, srs: this.configService.mapConfig.defaultMapConfig.srsId},
       properties: {
         style: this.esriSymbolizationService.extractGb3SymbolizationFromSymbol(graphic.symbol),
         ...graphic.attributes,
@@ -271,6 +295,54 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
           'circle',
         );
         break;
+    }
+  }
+
+  private setSelectionStrategy(selectionType: DataDownloadSelectionTool, layer: GraphicsLayer) {
+    const areaStyle = this.esriSymbolizationService.createPolygonSymbolization(InternalDrawingLayer.Selection);
+
+    const completeDrawingCallbackHandler: DrawingCallbackHandler['complete'] = (graphic: Graphic, labelText?: string) => {
+      const internalDrawingRepresentation = this.convertToGeoJson(graphic, labelText);
+      const selection: DataDownloadSelection = {
+        drawingRepresentation: internalDrawingRepresentation,
+        type: selectionType,
+      };
+      this.store.dispatch(DataDownloadActions.setSelection({selection}));
+    };
+
+    layer.removeAll();
+    switch (selectionType) {
+      case 'select-circle':
+        this.toolStrategy = new EsriPolygonSelectionStrategy(
+          layer,
+          this.esriMapViewService.mapView,
+          areaStyle,
+          (geometry) => completeDrawingCallbackHandler(geometry),
+          'circle',
+        );
+        break;
+      case 'select-polygon':
+        this.toolStrategy = new EsriPolygonSelectionStrategy(
+          layer,
+          this.esriMapViewService.mapView,
+          areaStyle,
+          (geometry) => completeDrawingCallbackHandler(geometry),
+          'polygon',
+        );
+        break;
+      case 'select-rectangle':
+        this.toolStrategy = new EsriPolygonSelectionStrategy(
+          layer,
+          this.esriMapViewService.mapView,
+          areaStyle,
+          (geometry) => completeDrawingCallbackHandler(geometry),
+          'rectangle',
+        );
+        break;
+      case 'select-section':
+      case 'select-canton':
+      case 'select-municipality':
+        throw new Error('not implemented'); // TODO: implement
     }
   }
 }
