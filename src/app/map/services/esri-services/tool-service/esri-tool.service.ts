@@ -34,6 +34,7 @@ import {DataDownloadSelectionTool} from '../../../../shared/types/data-download-
 import {DataDownloadOrderActions} from '../../../../state/map/actions/data-download-order.actions';
 import {DataDownloadSelection} from '../../../../shared/interfaces/data-download-selection.interface';
 import {EsriPolygonSelectionStrategy} from './strategies/selection/esri-polygon-selection.strategy';
+import {AbstractEsriDrawableToolStrategy} from './strategies/abstract-esri-drawable-tool.strategy';
 import {EsriMunicipalitySelectionStrategy} from './strategies/selection/esri-municipality-selection.strategy';
 import {MatDialog} from '@angular/material/dialog';
 import {EsriCantonSelectionStrategy} from './strategies/selection/esri-canton-selection.strategy';
@@ -114,8 +115,8 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
   }
 
   /**
-   * Initializes a given internal drawing tool by handling the addition and/or visibility setting ot the drawing layer and uses the supplied setter
-   * function to set the correct toolStrategy.
+   * Initializes a given internal drawing tool by handling the addition and/or visibility setting ot the drawing layer and uses the
+   * supplied setter function to set the correct toolStrategy.
    * @param layerIdentifier Layer name within the map that should be used as identifier
    * @param strategySetter A setter function that takes a given layer and sets a strategy for the given tool.
    */
@@ -128,8 +129,8 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
   }
 
   /**
-   * Initializes a given user drawing tool by handling the addition and/or visibility setting ot the drawing layer and uses the supplied setter
-   * function to set the correct toolStrategy.
+   * Initializes a given user drawing tool by handling the addition and/or visibility setting ot the drawing layer and uses the supplied
+   * setter function to set the correct toolStrategy.
    * @param layerIdentifier Layer name within the map that should be used as identifier
    * @param strategySetter A setter function that takes a given layer and sets a strategy for the given tool.
    */
@@ -181,7 +182,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
       geometry: {...geoJsonFeature, srs: this.configService.mapConfig.defaultMapConfig.srsId},
       properties: {
         style: this.esriSymbolizationService.extractGb3SymbolizationFromSymbol(graphic.symbol),
-        ...graphic.attributes,
+        [AbstractEsriDrawableToolStrategy.identifierFieldName]: graphic.attributes[AbstractEsriDrawableToolStrategy.identifierFieldName],
       },
       source: this.toolStrategy.internalLayerType,
       labelText,

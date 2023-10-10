@@ -333,100 +333,32 @@ export interface MetadataDatasets {
   datasets: Dataset[];
 }
 
-export type FavoriteDrawings = {
-  /** Type of GeoJSON object */
-  type: string;
-  /** GeoJSON geometry object */
-  geometry: {
-    /** Type of GeoJSON geometry object */
-    type: string;
-    /** coordinates for drawings */
-    coordinates: (number | number[])[];
-  };
-  /** GeoJSON properties object */
-  properties: {
-    style: {
-      /** Fill color of the drawing */
-      fillColor: string | null;
-      /** Fill opacity of the drawing */
-      fillOpacity: number | null;
-      /** Rotation of the drawing */
-      rotation: string | null;
-      /** External graphic of the drawing */
-      externalGraphic: string | null;
-      /** Graphic name of the drawing */
-      graphicName: string | null;
-      /** Graphic opacity of the drawing */
-      graphicOpacity: number | null;
-      /** Point radius of the drawing */
-      pointRadius: number | null;
-      /** Stroke color of the drawing */
-      strokeColor: string | null;
-      /** Stroke opacity of the drawing */
-      strokeOpacity: number | null;
-      /** Stroke width of the drawing */
-      strokeWidth: number | null;
-      /** Stroke linecap of the drawing */
-      strokeLinecap: string | null;
-      /** Stroke linejoin of the drawing */
-      strokeLinejoin: string | null;
-      /** Stroke dashstyle of the drawing */
-      strokeDashstyle: string | null;
-      /** Font color of the drawing */
-      fontColor: string | null;
-      /** Font family of the drawing */
-      fontFamily: string | null;
-      /** Font size of the drawing */
-      fontSize: string | null;
-      /** Font style of the drawing */
-      fontStyle: string | null;
-      /** Font weight of the drawing */
-      fontWeight: string | null;
-      /** Halo color of the drawing */
-      haloColor: string | null;
-      /** Halo opacity of the drawing */
-      haloOpacity: string | null;
-      /** Halo radius of the drawing */
-      haloRadius: string | null;
-      /** Label of the drawing */
-      label: string | null;
-      /** Label align of the drawing */
-      labelAlign: string | null;
-      /** Label rotation of the drawing */
-      labelRotation: string | null;
-      /** Label X offset of the drawing */
-      labelXOffset: string | null;
-      /** Label Y offset of the drawing */
-      labelYOffset: string | null;
-    };
-  };
-}[];
+export type FavoriteDrawings = VectorLayer;
 
-export type FavoriteMeasurements = {
-  /** Type of GeoJSON object */
-  type: string;
-  /** GeoJSON geometry object */
-  geometry: {
-    /** Type of GeoJSON geometry object */
-    type: string;
-    /** coordinates for measurements */
-    coordinates: (number | number[])[];
-  };
-  /** properties of measurements */
-  properties: {
-    /** label for measurements */
-    label: {
-      /** text for label */
-      text: string;
-      /** coordinates for label */
-      coordinates: (number | number[])[];
-    };
-  };
-}[];
+export type FavoriteMeasurements = VectorLayer;
 
 export type FavoriteContent = {
   /** ID of the map */
   id: string;
+  /** ID of the map */
+  mapId: string;
+  /** Visibility of the map */
+  visible: boolean;
+  /** Opacity of the map */
+  opacity: number;
+  /** Single layer of the map */
+  isSingleLayer: boolean;
+  layers: {
+    /** ID of the layer */
+    id: number;
+    /** Layer of the map */
+    layer: string;
+    /** Visibility of the layer */
+    visible: boolean;
+  }[];
+}[];
+
+export type FavoriteContentNew = {
   /** ID of the map */
   mapId: string;
   /** Visibility of the map */
@@ -474,15 +406,27 @@ export interface SharedFavorite {
 }
 
 export interface SharedFavoriteNew {
-  /** LV95 East coordinate of the favorite */
+  /**
+   * LV95 East coordinate of the favorite
+   * @example 2600100
+   */
   east: number;
-  /** LV95 North coordinate of the favorite */
+  /**
+   * LV95 North coordinate of the favorite
+   * @example 1100100
+   */
   north: number;
-  /** Scale denominator of the favorite */
+  /**
+   * Scale denominator of the favorite
+   * @example 1100
+   */
   scaledenom: number;
-  /** Basemap of the favorite */
+  /**
+   * Basemap of the favorite
+   * @example "basemap1"
+   */
   basemap: string;
-  content: FavoriteContent;
+  content: FavoriteContentNew;
   drawings: FavoriteDrawings;
   measurements: FavoriteMeasurements;
 }
@@ -518,15 +462,24 @@ export interface PersonalFavorite {
 export interface PersonalFavoriteNew {
   /** Title of the favorite */
   title: string;
-  /** LV95 East coordinate of the favorite */
+  /**
+   * LV95 East coordinate of the favorite
+   * @example 2600100
+   */
   east: number;
-  /** LV95 North coordinate of the favorite */
+  /**
+   * LV95 North coordinate of the favorite
+   * @example 1100100
+   */
   north: number;
-  /** Scale denominator of the favorite */
+  /**
+   * Scale denominator of the favorite
+   * @example 1100
+   */
   scaledenom: number;
   /** Basemap of the favorite */
   basemap: string;
-  content: FavoriteContent;
+  content: FavoriteContentNew;
   drawings: FavoriteDrawings;
   measurements: FavoriteMeasurements;
 }

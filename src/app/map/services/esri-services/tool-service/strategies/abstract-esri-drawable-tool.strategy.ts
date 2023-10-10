@@ -11,7 +11,7 @@ import {DrawingLayer} from '../../../../../shared/enums/drawing-layer.enum';
 export type SupportedEsriTool = Extract<EsriSketchTool, 'polygon' | 'polyline' | 'point' | 'rectangle' | 'circle'>;
 
 export abstract class AbstractEsriDrawableToolStrategy implements EsriToolStrategy {
-  private readonly identifierFieldName = '__id';
+  public static readonly identifierFieldName = '__id';
   private readonly labelTextFieldName = '__labelText';
   protected readonly sketchViewModel: SketchViewModel;
   protected readonly layer: GraphicsLayer;
@@ -51,7 +51,7 @@ export abstract class AbstractEsriDrawableToolStrategy implements EsriToolStrate
   }
 
   protected setIdentifierOnGraphic(graphic: Graphic, graphicIdentifier?: string): void {
-    graphic.setAttribute(this.identifierFieldName, graphicIdentifier ?? uuidv4());
+    graphic.setAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName, graphicIdentifier ?? uuidv4());
   }
 
   protected setLabelTextAttributeOnGraphic(graphic: Graphic, text: string) {

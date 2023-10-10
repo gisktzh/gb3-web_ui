@@ -14,18 +14,22 @@ import {FavoritesDetailData} from '../../shared/models/gb3-api-generated.interfa
 import {selectMaps} from '../../state/map/selectors/maps.selector';
 import {selectFavouriteBaseConfig} from '../../state/map/selectors/favourite-base-config.selector';
 import {FavouriteIsInvalid} from '../../shared/errors/favourite.errors';
+import {UserDrawingVectorLayers} from '../../shared/interfaces/user-drawing-vector-layers.interface';
+import {selectUserDrawingsVectorLayers} from '../../state/map/selectors/user-drawings-vector-layers.selector';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FavouritesService implements OnDestroy {
   private activeMapItemConfigurations: ActiveMapItemConfiguration[] = [];
+  private availableMaps: Map[] = [];
+  private favouriteBaseConfig!: FavouriteBaseConfig;
+  private userDrawingsVectorLayers!: UserDrawingVectorLayers;
   private readonly activeMapItemConfigurations$ = this.store.select(selectActiveMapItemConfigurations);
   private readonly availableMaps$ = this.store.select(selectMaps);
-  private availableMaps: Map[] = [];
   private readonly favouriteBaseConfig$ = this.store.select(selectFavouriteBaseConfig);
-  private favouriteBaseConfig!: FavouriteBaseConfig;
   private readonly subscriptions: Subscription = new Subscription();
+  private readonly userDrawingsVectorLayers$ = this.store.select(selectUserDrawingsVectorLayers);
 
   constructor(
     private readonly store: Store,
@@ -39,8 +43,7 @@ export class FavouritesService implements OnDestroy {
       title,
       content: this.activeMapItemConfigurations,
       baseConfig: this.favouriteBaseConfig,
-      drawings: [],
-      measurements: [],
+      ...this.userDrawingsVectorLayers,
     });
   }
 
@@ -116,5 +119,10 @@ export class FavouritesService implements OnDestroy {
         .subscribe(),
     );
     this.subscriptions.add(this.favouriteBaseConfig$.pipe(tap((mapConfig) => (this.favouriteBaseConfig = mapConfig))).subscribe());
+    this.subscriptions.add(
+      this.userDrawingsVectorLayers$
+        .pipe(tap((userDrawingsVectorLayers) => (this.userDrawingsVectorLayers = userDrawingsVectorLayers)))
+        .subscribe(),
+    );
   }
 }

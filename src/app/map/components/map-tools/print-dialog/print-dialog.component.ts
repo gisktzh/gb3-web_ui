@@ -17,6 +17,7 @@ import {ConfigService} from '../../../../shared/services/config.service';
 import {UserDrawingLayer} from '../../../../shared/enums/drawing-layer.enum';
 import {InternalDrawingRepresentation} from '../../../../shared/interfaces/internal-drawing-representation.interface';
 import {selectDrawings} from '../../../../state/map/reducers/drawing.reducer';
+import {SymbolizationToGb3ConverterUtils} from '../../../../shared/utils/symbolization-to-gb3-converter.utils';
 
 interface PrintForm {
   title: FormControl<string | null>;
@@ -338,38 +339,9 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     return mapItems.reverse();
   }
 
-  //todo: GB3-604/GB3-606 (requires mapping of properties)
   private printDrawingLayer(source: UserDrawingLayer): PrintMapItem {
     const drawingsToDraw = this.drawings.filter((d) => d.source === source);
 
-    return {
-      type: 'Vector',
-      geojson: {
-        type: 'FeatureCollection',
-        features: drawingsToDraw.map((d) => ({
-          type: d.type,
-          geometry: d.geometry,
-          properties: {style: 'DEFAULTSTYLE', labelText: d.labelText ?? ''},
-        })),
-      },
-      styles: {
-        DEFAULTSTYLE: {
-          pointRadius: 3,
-          fillColor: '#ff0000',
-          fillOpacity: 0.4,
-          strokeColor: '#ff0000',
-          strokeWidth: 2,
-          label: '[labelText]',
-          fontSize: '8px',
-          fontColor: '#ff0000',
-          fontFamily: 'Arial,Helvetica,sans-serif',
-          fontWeight: 'normal',
-          labelOutlineColor: '#ffffff',
-          labelOutlineWidth: 2,
-          labelAlign: 'ct',
-          labelYOffset: 15,
-        },
-      },
-    };
+    return SymbolizationToGb3ConverterUtils.convert(drawingsToDraw);
   }
 }
