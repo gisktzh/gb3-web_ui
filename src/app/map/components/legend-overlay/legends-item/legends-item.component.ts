@@ -1,10 +1,10 @@
-import {Component, OnDestroy, OnInit, Input} from '@angular/core';
-import {Subscription, tap} from 'rxjs';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
+import {Subscription, tap} from 'rxjs';
 import {LegendDisplay} from 'src/app/shared/interfaces/legend.interface';
 import {LoadingState} from 'src/app/shared/types/loading-state.type';
-import {selectLegendItemsForDisplay} from 'src/app/state/map/selectors/legend-result-display.selector';
 import {selectLoadingState} from 'src/app/state/map/reducers/legend.reducer';
+import {selectLegendItemsForDisplay} from 'src/app/state/map/selectors/legend-result-display.selector';
 
 @Component({
   selector: 'legends-item',

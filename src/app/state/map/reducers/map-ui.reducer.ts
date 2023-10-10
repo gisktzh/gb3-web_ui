@@ -1,6 +1,6 @@
 import {createFeature, createReducer, on} from '@ngrx/store';
-import {MapUiState} from '../states/map-ui.state';
 import {MapUiActions} from '../actions/map-ui.actions';
+import {MapUiState} from '../states/map-ui.state';
 
 export const mapUiFeatureKey = 'mapUi';
 

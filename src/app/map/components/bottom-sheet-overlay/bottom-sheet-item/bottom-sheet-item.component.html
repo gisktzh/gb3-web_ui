@@ -1,16 +1,15 @@
-<mat-card class="bottom-sheet-overlay__card" [style]="this.resizeableStyle" [ngClass]="'bottom-sheet-overlay__card--' + bottomSheetHeight">
-  <mat-card-header class="bottom-sheet-overlay__header" [ngClass]="{'bottom-sheet-overlay__header__map-management': isBlue}">
-    <h1 class="bottom-sheet-overlay__header__title">{{ overlayTitle }}</h1>
-    <button (click)="close()" mat-icon-button [ngClass]="{'bottom-sheet-overlay__header__button': isBlue}">
+<mat-card class="bottom-sheet-item" [style]="resizeableStyle" [ngClass]="'bottom-sheet-item--' + bottomSheetHeight">
+  <mat-card-header class="bottom-sheet-item__header" [ngClass]="{'bottom-sheet-item__header--primary-color': usePrimaryColor}">
+    <h1 *ngIf="overlayTitle" class="bottom-sheet-item__header__title">{{ overlayTitle }}</h1>
+    <button (click)="close()" mat-icon-button [ngClass]="{'bottom-sheet-item__header__button--primary--color': usePrimaryColor}">
       <mat-icon>close</mat-icon>
     </button>
-    <div class="break"></div>
-    <div class="item">
+    <div class="bottom-sheet-item__header__content">
       <ng-content select="[header]"></ng-content>
     </div>
   </mat-card-header>
-  <mat-card-content class="bottom-sheet-overlay__content">
+  <mat-card-content class="bottom-sheet-item__content">
     <ng-content select="[body]"></ng-content>
   </mat-card-content>
-  <resize-handler (resizeEvent)="this.resizeOverlay($event)" [location]="this.location"></resize-handler>
+  <resize-handler (resizeEvent)="resizeOverlay($event)" [location]="location"></resize-handler>
 </mat-card>

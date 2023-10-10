@@ -14,7 +14,7 @@
   <map-controls class="map-container__map-controls" *ngIf="screenMode !== 'mobile'"></map-controls>
   <legend-overlay
     class="map-container__legend-overlay"
-    [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements && screenMode !== 'mobile'}"
+    [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
     (printLegendEvent)="showPrint('legend')"
   ></legend-overlay>
   <div class="map-container__all-map-items-container" *ngIf="screenMode !== 'mobile'">

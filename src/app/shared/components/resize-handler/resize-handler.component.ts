@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {ResizeHandlerLocation} from '../../types/resize-handler-location.type';
 import {ResizeEvent} from 'angular-resizable-element';
+import {ResizeHandlerLocation} from '../../types/resize-handler-location.type';
 import {StyleExpression} from '../../types/style-expression.type';
 
 /**
@@ -50,17 +50,20 @@ export class ResizeHandlerComponent {
   }
 
   public onResizeEnd(event: ResizeEvent): void {
-    if (this.location === 'top') {
-      this.resizeableStyle = {
-        position: 'fixed',
-        height: `${event.rectangle.height}px`,
-      };
-    } else {
-      this.resizeableStyle = {
-        width: `${event.rectangle.width}px`,
-      };
+    switch (this.location) {
+      case 'left':
+      case 'right':
+        this.resizeableStyle = {
+          width: `${event.rectangle.width}px`,
+        };
+        break;
+      case 'top':
+        this.resizeableStyle = {
+          position: 'fixed',
+          height: `${event.rectangle.height}px`,
+        };
+        break;
     }
-
     this.resizeEvent.emit(this.resizeableStyle);
     this.isResizeActive = false;
   }

@@ -1,12 +1,12 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import {Subscription, tap} from 'rxjs';
-import {LoadingState} from '../../../../shared/types/loading-state.type';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
+import {Subscription, tap} from 'rxjs';
 import {selectFeatureInfoQueryLoadingState} from 'src/app/state/map/selectors/feature-info-query-loading-state.selector';
-import {selectFeatureInfosForDisplay} from '../../../../state/map/selectors/feature-info-result-display.selector';
 import {FeatureInfoResultDisplay} from '../../../../shared/interfaces/feature-info.interface';
 import {GeneralInfoResponse} from '../../../../shared/interfaces/general-info.interface';
-import {selectGeneralInfoState} from '../../../../state/map/reducers/general-info.reducer';
+import {LoadingState} from '../../../../shared/types/loading-state.type';
+import {selectData} from '../../../../state/map/reducers/general-info.reducer';
+import {selectFeatureInfosForDisplay} from '../../../../state/map/selectors/feature-info-result-display.selector';
 
 @Component({
   selector: 'feature-infos-item',
@@ -20,7 +20,7 @@ export class FeatureInfosItemComponent implements OnInit, OnDestroy {
 
   private readonly loadingState$ = this.store.select(selectFeatureInfoQueryLoadingState);
   private readonly featureInfoData$ = this.store.select(selectFeatureInfosForDisplay);
-  private readonly generalInfoData$ = this.store.select(selectGeneralInfoState);
+  private readonly generalInfoData$ = this.store.select(selectData);
   private readonly subscriptions = new Subscription();
 
   constructor(private readonly store: Store) {}
@@ -40,6 +40,6 @@ export class FeatureInfosItemComponent implements OnInit, OnDestroy {
   private initSubscriptions() {
     this.subscriptions.add(this.loadingState$.pipe(tap((value) => (this.loadingState = value))).subscribe());
     this.subscriptions.add(this.featureInfoData$.pipe(tap((value) => (this.featureInfoData = value))).subscribe());
-    this.subscriptions.add(this.generalInfoData$.pipe(tap((value) => (this.generalInfoData = value.data))).subscribe());
+    this.subscriptions.add(this.generalInfoData$.pipe(tap((value) => (this.generalInfoData = value))).subscribe());
   }
 }

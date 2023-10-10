@@ -1,5 +1,5 @@
 <div *ngIf="bottomSheetContent !== 'none'" class="bottom-sheet-overlay">
-  <div [ngSwitch]="bottomSheetContent">
+  <ng-container [ngSwitch]="bottomSheetContent">
     <bottom-sheet-item *ngSwitchCase="'basemap'" overlayTitle="Hintergrundkarte" bottomSheetHeight="small">
       <basemap-selector-mobile body></basemap-selector-mobile>
     </bottom-sheet-item>
@@ -9,18 +9,18 @@
     <bottom-sheet-item *ngSwitchCase="'feature-info'" overlayTitle="Info" bottomSheetHeight="large">
       <feature-infos-item body></feature-infos-item>
     </bottom-sheet-item>
-    <bottom-sheet-item *ngSwitchCase="'map-attributes'" [overlayTitle]="'Attributfilter'" bottomSheetHeight="medium">
+    <bottom-sheet-item *ngSwitchCase="'map-attributes'" overlayTitle="Attributfilter" bottomSheetHeight="medium">
       <map-attribute-filter body></map-attribute-filter>
     </bottom-sheet-item>
-    <bottom-sheet-item *ngSwitchCase="'share-link'" [overlayTitle]="'Teilen'" bottomSheetHeight="small">
+    <bottom-sheet-item *ngSwitchCase="'share-link'" overlayTitle="Teilen" bottomSheetHeight="small">
       <share-link-content body></share-link-content>
     </bottom-sheet-item>
-    <bottom-sheet-item *ngSwitchCase="'map-management'" [isBlue]="true" bottomSheetHeight="medium">
+    <bottom-sheet-item *ngSwitchCase="'map-management'" [usePrimaryColor]="true" bottomSheetHeight="medium">
       <map-management-header (changeActiveTabEvent)="switchTab($event)" header></map-management-header>
-      <div class="map-management-mobile__content" [ngSwitch]="activeTab" body>
+      <div class="bottom-sheet-overlay__map-management-content" [ngSwitch]="activeTab" body>
         <active-map-items *ngSwitchCase="'activeMaps'"></active-map-items>
         <map-data-catalogue *ngSwitchCase="'mapsCatalogue'"></map-data-catalogue>
       </div>
     </bottom-sheet-item>
-  </div>
+  </ng-container>
 </div>

@@ -1,9 +1,9 @@
-import {Component, OnInit, Input, OnDestroy} from '@angular/core';
-import {Subscription, tap} from 'rxjs';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {selectBottomSheetContent} from 'src/app/state/map/reducers/map-ui.reducer';
+import {Subscription, tap} from 'rxjs';
 import {BottomSheetContent} from 'src/app/shared/types/bottom-sheet-content.type';
 import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
+import {selectBottomSheetContent} from 'src/app/state/map/reducers/map-ui.reducer';
 
 type TabType = 'activeMaps' | 'mapsCatalogue';
 
@@ -37,7 +37,7 @@ export class BottomSheetOverlayComponent implements OnInit, OnDestroy {
     this.activeTab = newTab;
   }
 
-  public initSubscriptions() {
+  private initSubscriptions() {
     this.subscriptions.add(
       this.bottomSheetContent$.pipe(tap((bottomSheetContent) => (this.bottomSheetContent = bottomSheetContent))).subscribe(),
     );

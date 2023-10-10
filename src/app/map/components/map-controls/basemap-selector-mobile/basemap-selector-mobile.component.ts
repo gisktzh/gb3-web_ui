@@ -1,14 +1,14 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Subscription, tap} from 'rxjs';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {selectActiveBasemapId} from '../../../../state/map/reducers/map-config.reducer';
-import {Basemap} from '../../../../shared/interfaces/basemap.interface';
-import {MapConfigActions} from '../../../../state/map/actions/map-config.actions';
-import {BasemapConfigService} from '../../../services/basemap-config.service';
-import {DocumentService} from '../../../../shared/services/document.service';
+import {Subscription, tap} from 'rxjs';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
+import {Basemap} from '../../../../shared/interfaces/basemap.interface';
+import {DocumentService} from '../../../../shared/services/document.service';
+import {MapConfigActions} from '../../../../state/map/actions/map-config.actions';
+import {selectActiveBasemapId} from '../../../../state/map/reducers/map-config.reducer';
+import {BasemapConfigService} from '../../../services/basemap-config.service';
 
 @Component({
   selector: 'basemap-selector-mobile',

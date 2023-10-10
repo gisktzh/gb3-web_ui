@@ -1,10 +1,9 @@
-import {Component, Input, OnInit, OnDestroy, Output, EventEmitter} from '@angular/core';
-import {StyleExpression} from 'src/app/shared/types/style-expression.type';
-import {Subscription, tap} from 'rxjs';
+import {Component, Input} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {ResizeHandlerLocation} from 'src/app/shared/types/resize-handler-location.type';
-import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
 import {BottomSheetHeight} from 'src/app/shared/types/bottom-sheet-height.type';
+import {ResizeHandlerLocation} from 'src/app/shared/types/resize-handler-location.type';
+import {StyleExpression} from 'src/app/shared/types/style-expression.type';
+import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
 
 @Component({
   selector: 'bottom-sheet-item',
@@ -12,14 +11,12 @@ import {BottomSheetHeight} from 'src/app/shared/types/bottom-sheet-height.type';
   styleUrls: ['./bottom-sheet-item.component.scss'],
 })
 export class BottomSheetItemComponent {
-  @Input() public overlayTitle: string = '';
-  @Input() public isBlue: boolean = false;
+  @Input() public overlayTitle?: string = '';
+  @Input() public usePrimaryColor: boolean = false;
   @Input() public bottomSheetHeight: BottomSheetHeight = 'small';
 
-  public resizeableStyle: StyleExpression = {};
-  public location: ResizeHandlerLocation = 'top';
-
-  private readonly subscriptions = new Subscription();
+  protected resizeableStyle: StyleExpression = {};
+  protected location: ResizeHandlerLocation = 'top';
 
   constructor(private readonly store: Store) {}
 
@@ -28,7 +25,7 @@ export class BottomSheetItemComponent {
     this.resizeableStyle = {};
   }
 
-  public resizeOverlay(newStyle: StyleExpression) {
+  protected resizeOverlay(newStyle: StyleExpression) {
     this.resizeableStyle = newStyle;
   }
 }

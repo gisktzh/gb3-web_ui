@@ -5,10 +5,10 @@
 .bottom-sheet-overlay {
   position: absolute;
   bottom: 0px;
-}
 
-.map-management-mobile__content {
-  border-color: ktzh-variables.$zh-background-color;
-  border-width: 0 2px 2px 2px;
-  border-style: solid;
+  .bottom-sheet-overlay__map-management-content {
+    border-color: ktzh-variables.$zh-background-color;
+    border-width: 0 2px 2px 2px;
+    border-style: solid;
+  }
 }

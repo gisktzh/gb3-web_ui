@@ -1,15 +1,14 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {ActiveMapItem} from '../../../models/active-map-item.model';
-import {filter, map, Subscription, tap} from 'rxjs';
-import {selectItems} from '../../../../state/map/reducers/active-map-item.reducer';
 import {Store} from '@ngrx/store';
-import {ActiveMapItemActions} from '../../../../state/map/actions/active-map-item.actions';
-import {TimeExtent} from '../../../interfaces/time-extent.interface';
-import {MapAttributeFiltersItemActions} from '../../../../state/map/actions/map-attribute-filters-item.actions';
-import {NumberUtils} from '../../../../shared/utils/number.utils';
+import {Subscription, filter, map, tap} from 'rxjs';
 import {isActiveMapItemOfType} from '../../../../shared/type-guards/active-map-item-type.type-guard';
+import {NumberUtils} from '../../../../shared/utils/number.utils';
+import {ActiveMapItemActions} from '../../../../state/map/actions/active-map-item.actions';
+import {MapAttributeFiltersItemActions} from '../../../../state/map/actions/map-attribute-filters-item.actions';
+import {selectItems} from '../../../../state/map/reducers/active-map-item.reducer';
+import {TimeExtent} from '../../../interfaces/time-extent.interface';
+import {ActiveMapItem} from '../../../models/active-map-item.model';
 import {Gb2WmsActiveMapItem} from '../../../models/implementations/gb2-wms.model';
-import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
 
 @Component({
   selector: 'active-map-item-settings',

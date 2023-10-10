@@ -1,24 +1,22 @@
-<ng-container content>
-  <mat-form-field appearance="fill" class="share-link__content" [ngClass]="{'share-link__content--mobile': screenMode === 'mobile'}">
-    <mat-label>Link auf aktive Karten</mat-label>
-    <input [value]="shareLinkUrl ?? 'Generiere Link...'" matInput readonly [disabled]="savingState !== 'loaded'" />
-    <button matSuffix mat-icon-button aria-label="Copy" [cdkCopyToClipboard]="shareLinkUrl ?? ''" [disabled]="savingState !== 'loaded'">
+<mat-form-field appearance="fill" class="share-link-content" [ngClass]="{'share-link-content--mobile': screenMode === 'mobile'}">
+  <mat-label>Link auf aktive Karten</mat-label>
+  <input [value]="shareLinkUrl ?? 'Generiere Link...'" matInput readonly [disabled]="savingState !== 'loaded'" />
+  <button matSuffix mat-icon-button aria-label="Copy" [cdkCopyToClipboard]="shareLinkUrl ?? ''" [disabled]="savingState !== 'loaded'">
+    <mat-icon>content_copy</mat-icon>
+  </button>
+</mat-form-field>
+<map-overlay-list-item
+  *ngIf="screenMode !== 'mobile'"
+  [disabled]="savingState !== 'loaded'"
+  [overlayTitle]="'Aktive Karten einbetten'"
+  [toggleButtonPosition]="'end'"
+  [removeContentIndent]="true"
+>
+  <mat-form-field appearance="fill" class="share-link-content">
+    <mat-label>iframe Link</mat-label>
+    <input [value]="iframeCode ?? 'Generiere iframe Code zum einbetten...'" matInput readonly />
+    <button matSuffix mat-icon-button aria-label="Copy" [cdkCopyToClipboard]="iframeCode ?? ''" [disabled]="savingState !== 'loaded'">
       <mat-icon>content_copy</mat-icon>
     </button>
   </mat-form-field>
-  <map-overlay-list-item
-    *ngIf="screenMode !== 'mobile'"
-    [disabled]="savingState !== 'loaded'"
-    [overlayTitle]="'Aktive Karten einbetten'"
-    [toggleButtonPosition]="'end'"
-    [removeContentIndent]="true"
-  >
-    <mat-form-field appearance="fill" class="share-link__content">
-      <mat-label>iframe Link</mat-label>
-      <input [value]="iframeCode ?? 'Generiere iframe Code zum einbetten...'" matInput readonly />
-      <button matSuffix mat-icon-button aria-label="Copy" [cdkCopyToClipboard]="iframeCode ?? ''" [disabled]="savingState !== 'loaded'">
-        <mat-icon>content_copy</mat-icon>
-      </button>
-    </mat-form-field>
-  </map-overlay-list-item>
-</ng-container>
+</map-overlay-list-item>

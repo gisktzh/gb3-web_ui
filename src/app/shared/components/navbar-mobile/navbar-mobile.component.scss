@@ -20,7 +20,7 @@
   z-index: z-index-variables.$navbar;
 }
 
-.map-overlay {
+.navbar-mobile__overlay {
   position: absolute;
   height: 100%;
   border-radius: 0;
@@ -32,23 +32,23 @@
   background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
   color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
 
-  &.map-overlay--right {
+  &.navbar-mobile__overlay--right {
     left: unset;
     right: 0;
   }
 
-  .map-overlay__header {
+  .navbar-mobile__overlay__header {
     display: flex;
     align-items: center;
     margin-bottom: 12px;
 
-    .map-overlay__header__title {
+    .navbar-mobile__overlay__header__title {
       flex-grow: 1;
       margin-bottom: 0;
     }
   }
 
-  .map-overlay__content {
+  .navbar-mobile__overlay__content {
     flex: 1;
     overflow: hidden scroll;
   }

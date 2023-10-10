@@ -1,16 +1,16 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CdkDrag, CdkDragDrop} from '@angular/cdk/drag-drop';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
-import {selectItems} from '../../../state/map/reducers/active-map-item.reducer';
 import {Subscription, tap} from 'rxjs';
-import {ActiveMapItem} from '../../models/active-map-item.model';
-import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.reducer';
-import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
-import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
-import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
+import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
+import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.reducer';
+import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
+import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
+import {selectItems} from '../../../state/map/reducers/active-map-item.reducer';
+import {ActiveMapItem} from '../../models/active-map-item.model';
+import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
 
 const FAVOURITE_HELPER_MESSAGES = {
   noMapsAdded: 'Fügen Sie mindestens 1 Karte hinzu, um einen Favoriten anzulegen.',
@@ -93,7 +93,6 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
         )
         .subscribe(),
     );
-
     this.subscriptions.add(
       this.screenMode$
         .pipe(

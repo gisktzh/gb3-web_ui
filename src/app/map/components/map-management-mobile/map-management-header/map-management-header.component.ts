@@ -1,14 +1,14 @@
-import {Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit, Output, EventEmitter} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {ScreenMode} from 'src/app/shared/types/screen-size.type';
+import {Observable, Subscription, debounceTime, distinctUntilChanged, fromEvent, map, tap} from 'rxjs';
 import {ActiveMapItem} from 'src/app/map/models/active-map-item.model';
-import {LayerCatalogActions} from 'src/app/state/map/actions/layer-catalog.actions';
-import {debounceTime, distinctUntilChanged, fromEvent, Observable, Subscription, tap, map} from 'rxjs';
-import {selectIsAuthenticated} from 'src/app/state/auth/reducers/auth-status.reducer';
+import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
-import {selectItems} from 'src/app/state/map/reducers/active-map-item.reducer';
-import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
+import {selectIsAuthenticated} from 'src/app/state/auth/reducers/auth-status.reducer';
 import {ActiveMapItemActions} from 'src/app/state/map/actions/active-map-item.actions';
+import {LayerCatalogActions} from 'src/app/state/map/actions/layer-catalog.actions';
+import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
+import {selectItems} from 'src/app/state/map/reducers/active-map-item.reducer';
 
 type TabType = 'activeMaps' | 'mapsCatalogue';
 
@@ -51,9 +51,7 @@ export class MapManagementHeaderComponent implements OnInit, OnDestroy, AfterVie
   }
 
   public ngAfterViewInit() {
-    if (this.screenMode === 'mobile') {
-      this.subscriptions.add(this.filterInputHandler().subscribe());
-    }
+    this.subscriptions.add(this.filterInputHandler().subscribe());
   }
 
   public close() {

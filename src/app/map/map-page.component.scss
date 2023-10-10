@@ -3,6 +3,12 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 @use 'variables/map-layout-variables' as map-layout-variables;
 
+:host ::ng-deep {
+  .map-management__button {
+    @include mixins.tool-button;
+  }
+}
+
 .map-container {
   height: calc(100vh - #{map-layout-variables.$navbar-height}); // subtracts height of navbar
   position: relative;
@@ -148,12 +154,6 @@
     bottom: 100px;
     right: 12px;
     background-color: ktzh-variables.$zh-background-color;
-  }
-}
-
-:host ::ng-deep {
-  .map-management__button {
-    @include mixins.tool-button;
   }
 }
 
