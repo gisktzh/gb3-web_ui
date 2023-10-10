@@ -1,7 +1,10 @@
 import {Injectable} from '@angular/core';
-import {Gb3ApiService} from './gb3-api.service';
-import {TopicsFeatureInfoDetailData, TopicsLegendDetailData, TopicsListData} from '../../../models/gb3-api-generated.interfaces';
 import {Geometry} from 'geojson';
+import {Observable, forkJoin} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {DataCataloguePage} from '../../../enums/data-catalogue-page.enum';
+import {MainPage} from '../../../enums/main-page.enum';
+import {FeatureInfoResponse} from '../../../interfaces/feature-info.interface';
 import {LegendResponse} from '../../../interfaces/legend.interface';
 import {
   FilterConfiguration,
@@ -11,12 +14,9 @@ import {
   TimeSliderSourceType,
   TopicsResponse,
 } from '../../../interfaces/topic.interface';
-import {FeatureInfoResponse} from '../../../interfaces/feature-info.interface';
-import {forkJoin, Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {TopicsFeatureInfoDetailData, TopicsLegendDetailData, TopicsListData} from '../../../models/gb3-api-generated.interfaces';
 import {SupportedSrs} from '../../../types/supported-srs.type';
-import {DataCataloguePage} from '../../../enums/data-catalogue-page.enum';
-import {MainPage} from '../../../enums/main-page.enum';
+import {Gb3ApiService} from './gb3-api.service';
 
 import {InvalidTimeSliderConfiguration} from '../../../errors/map.errors';
 import {QueryTopic} from '../../../interfaces/query-topic.interface';
@@ -29,7 +29,8 @@ const FEATURE_INFO_SRS: SupportedSrs = 2056;
 export class Gb3TopicsService extends Gb3ApiService {
   protected readonly endpoint = 'topics';
   private readonly staticFilesUrl = this.configService.apiConfig.gb2StaticFiles.baseUrl;
-  private readonly dataTabUrl = `/${MainPage.Data}/${DataCataloguePage.Datasets}`;
+  private readonly dataDatasetTabUrl = `/${MainPage.Data}/${DataCataloguePage.Datasets}`;
+  private readonly dataMapTabUrl = `/${MainPage.Data}/${DataCataloguePage.Maps}`;
 
   public loadTopics(): Observable<TopicsResponse> {
     const requestUrl = this.createTopicsUrl();
@@ -86,11 +87,11 @@ export class Gb3TopicsService extends Gb3ApiService {
       return {
         legend: {
           ...legend,
-          metaDataLink: undefined, // Currently, a topic does not have any meta data link; this is all on its layers.
+          metaDataLink: legend.geolion_karten_uuid ? this.createMapTabLink(legend.geolion_karten_uuid) : undefined,
           layers: legend.layers.map((layer) => {
             return {
               ...layer,
-              metaDataLink: layer.geolion ? this.createDataTabLink(layer.geolion) : undefined,
+              metaDataLink: layer.geolion_geodatensatz_uuid ? this.createDatasetTabLink(layer.geolion_geodatensatz_uuid) : undefined,
               layerClasses: layer.layer_classes?.map((layerClass) => {
                 return {
                   ...layerClass,
@@ -103,8 +104,12 @@ export class Gb3TopicsService extends Gb3ApiService {
     });
   }
 
-  private createDataTabLink(id: number): string {
-    return `${this.dataTabUrl}/${id}`;
+  private createMapTabLink(uuid: string): string {
+    return `${this.dataMapTabUrl}/${uuid}`;
+  }
+
+  private createDatasetTabLink(uuid: string): string {
+    return `${this.dataDatasetTabUrl}/${uuid}`;
   }
 
   private createTopicsUrl(): string {
@@ -123,6 +128,7 @@ export class Gb3TopicsService extends Gb3ApiService {
             return {
               ...topic,
               id: topic.topic,
+              uuid: topic.geolion_karten_uuid,
               printTitle: topic.print_title,
               gb2Url: topic.gb2_url,
               icon: this.createAbsoluteIconUrl(topic.icon),
@@ -133,6 +139,7 @@ export class Gb3TopicsService extends Gb3ApiService {
                 .map((layer) => {
                   return {
                     ...layer,
+                    uuid: layer.geolion_geodatensatz_uuid,
                     groupTitle: layer.group_title,
                     minScale: layer.min_scale,
                     maxScale: layer.max_scale,
@@ -254,9 +261,13 @@ export class Gb3TopicsService extends Gb3ApiService {
           ...featureInfo,
           results: {
             topic: featureInfo.results.topic,
+            metaDataLink: featureInfo.results.geolion_karten_uuid
+              ? this.createMapTabLink(featureInfo.results.geolion_karten_uuid)
+              : undefined,
             layers: featureInfo.results.layers.map((layer) => {
               return {
                 ...layer,
+                metaDataLink: layer.geolion_geodatensatz_uuid ? this.createDatasetTabLink(layer.geolion_geodatensatz_uuid) : undefined,
                 features: layer.features.map((feature) => {
                   return {
                     ...feature,

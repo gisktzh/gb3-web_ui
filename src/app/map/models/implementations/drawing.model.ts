@@ -18,7 +18,7 @@ export class DrawingActiveMapItem extends ActiveMapItem {
   public readonly mapImageUrl = null;
   public readonly title: string;
   public readonly isSingleLayer: boolean = true;
-  public readonly geometadataId = null;
+  public readonly geometadataUuid = null;
 
   constructor(title: string, id: string, userDrawingLayer: UserDrawingLayer, visible?: boolean, opacity?: number) {
     super(visible, opacity);

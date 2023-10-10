@@ -41,10 +41,10 @@
       class="active-map-item-header__title-container__options"
       [ngClass]="{'active-map-item-header__title-container__options--inverted': activeMapItemExpansionPanel.expanded}"
     >
-      <ng-container *ngIf="activeMapItem.geometadataId">
+      <ng-container *ngIf="activeMapItem.geometadataUuid">
         <a
           class="active-map-item-header__button"
-          [routerLink]="['/', mainPageEnum.Data, dataCataloguePageEnum.Maps, activeMapItem.geometadataId]"
+          [routerLink]="['/', mainPageEnum.Data, dataCataloguePageEnum.Maps, activeMapItem.geometadataUuid]"
           mat-icon-button
           data-test-id="info"
         >

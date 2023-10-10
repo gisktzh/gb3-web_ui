@@ -12,14 +12,14 @@ export interface Map {
   id: string;
   /** Map title */
   title: string;
+  /** UUID from geommetadatabase */
+  uuid: string | null;
   /** Map title for printing */
   printTitle: string;
   /** Path to topic image */
   icon: string;
   /** Organisation title */
   organisation: string | null;
-  /** Unique dataset identifier for geometadata */
-  guid: number | null;
   gb2Url: string | null;
   /** Keywords */
   keywords: string[];
@@ -47,6 +47,8 @@ export interface MapLayer extends HasVisibility, HasHidingState {
   id: number;
   /** Layer name */
   layer: string;
+  /** UUID from geommetadatabase */
+  uuid: string | null;
   /** Layer group title if set */
   groupTitle: string | null;
   /** Layer title */
