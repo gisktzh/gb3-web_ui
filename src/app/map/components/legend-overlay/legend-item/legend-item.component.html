@@ -3,7 +3,7 @@
     <map-overlay-list-item
       *ngIf="!legendItem.isSingleLayer; else legendContent"
       [forceExpanded]="true"
-      [metaDataLink]="showInteractiveElements ? layer.metaDataLink : null"
+      [metaDataLink]="layer.metaDataLink"
       [overlayTitle]="layer.title"
     >
       <mat-icon class="legend-item-icon" header-icon>layers</mat-icon>

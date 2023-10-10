@@ -1,4 +1,5 @@
 import {GeometryWithSrs} from './geojson-types-with-srs.interface';
+import {HasMetaDataLink} from './metaDataLink.interface';
 
 interface FeatureInfoResultFeatureField {
   label: string;
@@ -12,17 +13,15 @@ interface FeatureInfoResultFeature {
   geometry: GeometryWithSrs;
 }
 
-export interface FeatureInfoResultLayer {
+export interface FeatureInfoResultLayer extends HasMetaDataLink {
   layer: string;
   title: string;
   features: FeatureInfoResultFeature[];
-  metaDataLink?: string | null;
 }
 
-export interface FeatureInfoResult {
+export interface FeatureInfoResult extends HasMetaDataLink {
   topic: string;
   layers: FeatureInfoResultLayer[];
-  metaDataLink?: string | null;
 }
 
 interface FeatureInfoWrapper {
@@ -35,11 +34,10 @@ export interface FeatureInfoResponse {
   featureInfo: FeatureInfoWrapper;
 }
 
-export interface FeatureInfoResultDisplay {
+export interface FeatureInfoResultDisplay extends HasMetaDataLink {
   id: string;
   title: string;
   layers: FeatureInfoResultLayer[];
   icon?: string;
   isSingleLayer: boolean;
-  metaDataLink?: string | null;
 }

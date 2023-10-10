@@ -1,10 +1,10 @@
-import {TestBed} from '@angular/core/testing';
-import {Gb3TopicsService} from './gb3-topics.service';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {TopicsListData} from '../../../models/gb3-api-generated.interfaces';
 import {HttpClient} from '@angular/common/http';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {TestBed} from '@angular/core/testing';
 import {of} from 'rxjs';
+import {TopicsListData} from '../../../models/gb3-api-generated.interfaces';
 import {ConfigService} from '../../config.service';
+import {Gb3TopicsService} from './gb3-topics.service';
 
 describe('Gb3TopicsService', () => {
   let service: Gb3TopicsService;
@@ -169,6 +169,7 @@ describe('Gb3TopicsService', () => {
             expect(responseMap.searchConfigurations?.length).toBe(expectedMap.searchConfigurations?.length);
             expect(responseMap.timeSliderConfiguration?.name).toBe(expectedMap.timesliderConfiguration.name);
             expect(responseMap.wmsUrl).toBe(expectedMap.wms_url);
+            expect(responseMap.uuid).toBe(expectedMap.geolion_karten_uuid);
 
             // test layer order (which must be inverted)
             expectedMap.layers.forEach((expectedLayer, index) => {
@@ -178,6 +179,7 @@ describe('Gb3TopicsService', () => {
               expect(responseLayer.layer).toBe(expectedLayer.layer);
               expect(responseLayer.title).toBe(expectedLayer.title);
               expect(responseLayer.visible).toBe(expectedLayer.initially_visible);
+              expect(responseLayer.uuid).toBe(expectedLayer.geolion_geodatensatz_uuid);
             });
           }
         });
