@@ -1,5 +1,5 @@
-<div class="basemap-selector">
-  <div class="basemap-selector__map-choice">
+<div [ngClass]="{'basemap-selector': screenMode === 'mobile'}">
+  <div class="basemap-selector__map-choice" [ngClass]="{'basemap-selector__map-choice--desktop': screenMode !== 'mobile'}">
     <button
       mat-flat-button
       *ngFor="let availableBasemap of availableBasemaps"

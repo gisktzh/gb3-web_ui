@@ -27,7 +27,7 @@ import {LegendOverlayComponent} from './components/legend-overlay/legend-overlay
 import {LegendComponent} from './components/legend-overlay/legend/legend.component';
 import {MapAttributeFilterComponent} from './components/map-attribute-filter/map-attribute-filter.component';
 import {MapContainerComponent} from './components/map-container/map-container.component';
-import {BasemapSelectorMobileComponent} from './components/map-controls/basemap-selector-mobile/basemap-selector-mobile.component';
+import {BasemapSelectionListComponent} from './components/map-controls/basemap-selector/basemap-selection-list/basemap-selection-list.component';
 import {BasemapSelectorComponent} from './components/map-controls/basemap-selector/basemap-selector.component';
 import {CoordinateScaleInputsComponent} from './components/map-controls/coordinate-scale-inputs/coordinate-scale-inputs.component';
 import {DataInputComponent} from './components/map-controls/data-input/data-input.component';
@@ -58,7 +58,6 @@ import {ShareLinkDialogComponent} from './components/share-link-dialog/share-lin
 import {TimeSliderComponent} from './components/time-slider/time-slider.component';
 import {MapPageComponent} from './map-page.component';
 import {MapRoutingModule} from './map-routing.module';
-import {BasemapSelectionListComponent} from './components/map-controls/basemap-selector/basemap-selection-list/basemap-selection-list.component';
 
 @NgModule({
   declarations: [
@@ -111,7 +110,6 @@ import {BasemapSelectionListComponent} from './components/map-controls/basemap-s
     AbstractToolsComponent,
     ZoomControlsComponent,
     BottomSheetOverlayComponent,
-    BasemapSelectorMobileComponent,
     BottomSheetItemComponent,
     LegendComponent,
     MapManagementHeaderComponent,
