@@ -3,11 +3,6 @@ import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
-import {GeolocationActions} from 'src/app/state/map/actions/geolocation.actions';
-import {selectQueryLegends} from 'src/app/state/map/selectors/query-legends.selector';
-import {ToolMenuVisibility} from '../../../shared/types/tool-menu-visibility.type';
-import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
-import {selectToolMenuVisibility} from '../../../state/map/reducers/map-ui.reducer';
 
 @Component({
   selector: 'map-tools',
@@ -15,13 +10,8 @@ import {selectToolMenuVisibility} from '../../../state/map/reducers/map-ui.reduc
   styleUrls: ['./map-tools.component.scss'],
 })
 export class MapToolsComponent implements OnInit, OnDestroy {
-  public toolMenuVisibility: ToolMenuVisibility | undefined = undefined;
   public screenMode: ScreenMode = 'regular';
 
-  public numberOfQueryLegends: number = 0;
-
-  private readonly queryLegends$ = this.store.select(selectQueryLegends);
-  private readonly toolMenuVisibility$ = this.store.select(selectToolMenuVisibility);
   private readonly screenMode$ = this.store.select(selectScreenMode);
 
   private readonly subscriptions: Subscription = new Subscription();
@@ -36,44 +26,7 @@ export class MapToolsComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  public showPrintDialog() {
-    this.store.dispatch(MapUiActions.showMapSideDrawerContent({mapSideDrawerContent: 'print'}));
-  }
-
-  public showShareLink() {
-    this.store.dispatch(MapUiActions.showShareLinkDialog());
-  }
-
-  public showLegend() {
-    this.store.dispatch(MapUiActions.setLegendOverlayVisibility({isVisible: true}));
-  }
-
-  public locateClient() {
-    this.store.dispatch(GeolocationActions.startLocationRequest());
-  }
-
-  public toggleBasemapSelection() {
-    this.store.dispatch(MapUiActions.showBottomSheet({bottomSheetContent: 'basemap'}));
-  }
-
-  public toggleToolMenu(toolToToggle: ToolMenuVisibility) {
-    const tool: ToolMenuVisibility | undefined = this.toolMenuVisibility === toolToToggle ? undefined : toolToToggle;
-    this.store.dispatch(MapUiActions.toggleToolMenu({tool: tool}));
-  }
-
   private initSubscriptions() {
-    this.subscriptions.add(
-      this.toolMenuVisibility$.pipe(tap((toolMenuVisibility) => (this.toolMenuVisibility = toolMenuVisibility))).subscribe(),
-    );
     this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
-    this.subscriptions.add(
-      this.queryLegends$
-        .pipe(
-          tap((currentActiveMapItems) => {
-            this.numberOfQueryLegends = currentActiveMapItems.length;
-          }),
-        )
-        .subscribe(),
-    );
   }
 }

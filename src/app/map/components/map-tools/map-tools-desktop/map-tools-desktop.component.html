@@ -1,0 +1,37 @@
+<div class="map-tools">
+  <div class="map-tools-list">
+    <button
+      (click)="toggleToolMenu('measurement')"
+      [ngClass]="{'map-tools__button--active': toolMenuVisibility === 'measurement'}"
+      class="map-tools__button"
+      color="accent"
+      data-test-id="map-ruler"
+      mat-icon-button
+    >
+      <mat-icon svgIcon="ktzh_measure_menu"></mat-icon>
+    </button>
+    <mat-divider class="map-tools-list__divider"></mat-divider>
+    <button
+      (click)="toggleToolMenu('drawing')"
+      [ngClass]="{'map-tools__button--active': toolMenuVisibility === 'drawing'}"
+      class="map-tools__button"
+      color="accent"
+      data-test-id="map-drawing"
+      mat-icon-button
+    >
+      <mat-icon svgIcon="ktzh_drawing_menu"></mat-icon>
+    </button>
+    <mat-divider class="map-tools-list__divider"></mat-divider>
+    <button (click)="showPrintDialog()" class="map-tools__button" data-test-id="map-print" mat-icon-button>
+      <mat-icon svgIcon="ktzh_print"></mat-icon>
+    </button>
+    <mat-divider class="map-tools-list__divider"></mat-divider>
+    <button (click)="showShareLink()" class="map-tools__button" data-test-id="map-share" mat-icon-button>
+      <mat-icon svgIcon="ktzh_share"></mat-icon>
+    </button>
+  </div>
+  <div class="map-tools-list" *ngIf="toolMenuVisibility !== undefined">
+    <measurement-tools *ngIf="toolMenuVisibility === 'measurement'"></measurement-tools>
+    <drawing-tools *ngIf="toolMenuVisibility === 'drawing'"></drawing-tools>
+  </div>
+</div>

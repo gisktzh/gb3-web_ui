@@ -1,0 +1,23 @@
+<div class="map-tools-list-mobile">
+  <button (click)="showShareLink()" class="map-tools__button" data-test-id="map-share" mat-icon-button>
+    <mat-icon svgIcon="ktzh_share"></mat-icon>
+  </button>
+  <mat-divider class="map-tools-list__divider" vertical></mat-divider>
+  <button
+    (click)="showLegend()"
+    class="map-tools__button"
+    data-test-id="map-legend"
+    mat-icon-button
+    [disabled]="numberOfQueryLegends === 0"
+  >
+    <mat-icon svgIcon="ktzh_legend_mobile"></mat-icon>
+  </button>
+  <mat-divider class="map-tools-list__divider" vertical></mat-divider>
+  <button (click)="locateClient()" class="map-tools__button" data-test-id="map-locate-me" mat-icon-button>
+    <mat-icon svgIcon="ktzh_locate_me"></mat-icon>
+  </button>
+  <mat-divider class="map-tools-list__divider" vertical></mat-divider>
+  <button (click)="toggleBasemapSelection()" class="map-tools__button" data-test-id="map-background-map-mobile" mat-icon-button>
+    <mat-icon svgIcon="ktzh_background_map_mobile"></mat-icon>
+  </button>
+</div>
