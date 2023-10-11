@@ -29,6 +29,7 @@ import {ActiveMapItemConfiguration} from '../../../shared/interfaces/active-map-
 import {ActiveMapItem} from '../../../map/models/active-map-item.model';
 import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
 import {ErrorHandler} from '@angular/core';
+import {Gb3VectorLayer} from '../../../shared/interfaces/gb3-vector-layer.interface';
 
 function createActiveMapItemsFromConfigs(activeMapItemConfigurations: ActiveMapItemConfiguration[]): ActiveMapItem[] {
   return activeMapItemConfigurations.map(
@@ -98,8 +99,8 @@ describe('ShareLinkEffects', () => {
         isSingleLayer: false,
       },
     ],
-    drawings: [],
-    measurements: [],
+    drawings: {} as Gb3VectorLayer,
+    measurements: {} as Gb3VectorLayer,
   };
 
   beforeEach(() => {

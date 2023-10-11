@@ -18,7 +18,7 @@ export class SymbolizationToGb3ConverterUtils {
         features: features.map((feature) => ({
           type: feature.type,
           geometry: feature.geometry,
-          properties: {style: 'REDLINING', labelText: feature.labelText ?? ''},
+          properties: {style: 'REDLINING', text: feature.labelText ?? ''},
         })),
       },
       styles: {
@@ -28,7 +28,7 @@ export class SymbolizationToGb3ConverterUtils {
           fillOpacity: 0.4,
           strokeColor: '#ff0000',
           strokeWidth: 2,
-          label: '[labelText]',
+          label: '[text]',
           fontSize: '8px',
           fontColor: '#ff0000',
           fontFamily: 'Arial,Helvetica,sans-serif',

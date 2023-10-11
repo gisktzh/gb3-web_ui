@@ -83,7 +83,7 @@ export class Gb3ShareLinkService extends Gb3ApiService {
       scale: sharedFavorite.scaledenom,
       content: sharedFavorite.content,
       drawings: this.mapVectorLayerToGb3VectorLayer(sharedFavorite.drawings),
-      measurements: this.mapVectorLayerToGb3VectorLayer(sharedFavorite.drawings),
+      measurements: this.mapVectorLayerToGb3VectorLayer(sharedFavorite.measurements),
     };
   }
 
