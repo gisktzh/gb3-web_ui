@@ -49,6 +49,7 @@ export const selectFeatureInfosForDisplay = createSelector<
         layers: featureInfo.layers,
         icon: undefined,
         isSingleLayer: true,
+        metaDataLink: featureInfo.metaDataLink,
       };
     } else {
       featureInfoResultDisplay = {
@@ -57,6 +58,7 @@ export const selectFeatureInfosForDisplay = createSelector<
         layers: featureInfo.layers,
         icon: topic.icon,
         isSingleLayer: false,
+        metaDataLink: featureInfo.metaDataLink,
       };
     }
 

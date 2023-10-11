@@ -1,6 +1,6 @@
 import {FatalError, RecoverableError} from '../../../../shared/errors/abstract.errors';
 
-export class UnsupportedGeometryType extends RecoverableError {
+export class UnsupportedGeometryType extends FatalError {
   public override message = `Nicht unterstützter Geometrietyp (${this.geometryType})`;
 
   constructor(private readonly geometryType: string) {

@@ -54,6 +54,10 @@ export class MapDrawingService implements OnDestroy {
     this.mapService.stopDrawPrintPreview();
   }
 
+  public clearDataDownloadSelection() {
+    this.mapService.clearInternalDrawingLayer(InternalDrawingLayer.Selection);
+  }
+
   private initSubscriptions() {
     // todo: when adding the redlining, this might be refactored away as an effect.
     this.subscriptions.add(

@@ -1,6 +1,4 @@
-interface HasMetaDataLink {
-  metaDataLink?: string;
-}
+import {HasMetaDataLink} from './metaDataLink.interface';
 
 interface LayerClass {
   label: string;
@@ -32,5 +30,4 @@ export interface LegendDisplay extends HasMetaDataLink {
   icon?: string;
   layers: LegendLayer[];
   isSingleLayer: boolean;
-  metaDataLink?: string;
 }
