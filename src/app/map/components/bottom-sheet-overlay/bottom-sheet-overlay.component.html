@@ -1,7 +1,7 @@
 <div *ngIf="bottomSheetContent !== 'none'" class="bottom-sheet-overlay">
   <ng-container [ngSwitch]="bottomSheetContent">
     <bottom-sheet-item *ngSwitchCase="'basemap'" overlayTitle="Hintergrundkarte" bottomSheetHeight="small">
-      <basemap-selector-mobile body></basemap-selector-mobile>
+      <basemap-selection-list body></basemap-selection-list>
     </bottom-sheet-item>
     <bottom-sheet-item *ngSwitchCase="'legend'" overlayTitle="Legende" bottomSheetHeight="large">
       <legend body [showInteractiveElements]="showInteractiveElements"></legend>
