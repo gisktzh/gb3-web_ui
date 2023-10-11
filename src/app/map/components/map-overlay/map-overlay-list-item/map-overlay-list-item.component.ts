@@ -1,8 +1,8 @@
 import {Component, Input} from '@angular/core';
-import {ToggleButtonPosition} from '../../../types/toggle-button-position.type';
 import {MAT_TOOLTIP_DEFAULT_OPTIONS} from '@angular/material/tooltip';
+import {toolTipFactoryLongDelay} from 'src/app/shared/factories/tooltip-long-delay.factory';
 import {ConfigService} from 'src/app/shared/services/config.service';
-import {toolTipFactoryLongDelay} from 'src/app/shared/configs/tooltip.config';
+import {ToggleButtonPosition} from '../../../types/toggle-button-position.type';
 
 @Component({
   selector: 'map-overlay-list-item',

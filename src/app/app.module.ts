@@ -1,61 +1,35 @@
+import {registerLocaleData} from '@angular/common';
+import {HttpClientModule} from '@angular/common/http';
+import localeDeCH from '@angular/common/locales/de-CH';
 import {ErrorHandler, InjectionToken, LOCALE_ID, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-
-import {AppComponent} from './app.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {StoreModule} from '@ngrx/store';
-import {effects, metaReducers, reducers} from './state';
-import {AppRoutingModule} from './app-routing.module';
-import {HttpClientModule} from '@angular/common/http';
-import {SharedModule} from './shared/shared.module';
-import {EffectsModule} from '@ngrx/effects';
-import {EsriMapService} from './map/services/esri-services/esri-map.service';
-import {MapService} from './map/interfaces/map.service';
-import {KTZHNewsServiceMock} from './shared/services/apis/ktzh/ktzhnews.service.mock';
-import {NewsService} from './shared/interfaces/news-service.interface';
-import {AuthModule} from './auth/auth.module';
-import {GravCmsService} from './shared/services/apis/grav-cms/grav-cms.service';
-import {GravCmsServiceMock} from './shared/services/apis/grav-cms/grav-cms.service.mock';
-import {ConfigService} from './shared/services/config.service';
-import {KTZHNewsService} from './shared/services/apis/ktzh/ktzhnews.service';
-import {registerLocaleData} from '@angular/common';
-import localeDeCH from '@angular/common/locales/de-CH';
-import {ErrorHandlingModule} from './error-handling/error-handling.module';
-import {UrlUtils} from './shared/utils/url.utils';
 import {Router} from '@angular/router';
-import {MainPage} from './shared/enums/main-page.enum';
+import {EffectsModule} from '@ngrx/effects';
+import {StoreModule} from '@ngrx/store';
+import {AppRoutingModule} from './app-routing.module';
+import {AppComponent} from './app.component';
+import {AuthModule} from './auth/auth.module';
 import {EmbeddedErrorHandlerService} from './embedded-page/services/embedded-error-handler.service';
 import {ErrorHandlerService} from './error-handling/error-handler.service';
+import {ErrorHandlingModule} from './error-handling/error-handling.module';
+import {MapService} from './map/interfaces/map.service';
+import {EsriMapService} from './map/services/esri-services/esri-map.service';
+import {errorHandlerServiceFactory} from './shared/factories/errorHandlerService.factory';
+import {gravCmsFactory} from './shared/factories/gravCms.factory';
+import {newsFactory} from './shared/factories/news.factory';
+import {NewsService} from './shared/interfaces/news-service.interface';
+import {GravCmsService} from './shared/services/apis/grav-cms/grav-cms.service';
+import {GravCmsServiceMock} from './shared/services/apis/grav-cms/grav-cms.service.mock';
+import {KTZHNewsService} from './shared/services/apis/ktzh/ktzhnews.service';
+import {KTZHNewsServiceMock} from './shared/services/apis/ktzh/ktzhnews.service.mock';
+import {ConfigService} from './shared/services/config.service';
+import {SharedModule} from './shared/shared.module';
+import {effects, metaReducers, reducers} from './state';
 
 // necessary for the locale 'de-CH' to work
 // see https://stackoverflow.com/questions/46419026/missing-locale-data-for-the-locale-xxx-with-angular
 registerLocaleData(localeDeCH);
-
-function newsFactory<T>(service: T, mockService: T, configService: ConfigService): T {
-  return serviceFactory(service, mockService, configService.apiConfig.ktzhWebsite.useMockData);
-}
-
-function gravCmsFactory<T>(service: T, mockService: T, configService: ConfigService): T {
-  return serviceFactory(service, mockService, configService.apiConfig.gravCms.useMockData);
-}
-
-function serviceFactory<T>(service: T, mockService: T, useMockService: boolean = false): T {
-  return useMockService ? mockService : service;
-}
-
-function errorHandlerServiceFactory(
-  router: Router,
-  errorHandlerService: ErrorHandlerService,
-  embeddedErrorHandlerService: EmbeddedErrorHandlerService,
-) {
-  const urlTree = router.parseUrl(window.location.pathname);
-  const mainPage = UrlUtils.extractMainPage(urlTree);
-  if (mainPage === MainPage.Embedded) {
-    return embeddedErrorHandlerService;
-  } else {
-    return errorHandlerService;
-  }
-}
 
 export const MAP_SERVICE = new InjectionToken<MapService>('MapService');
 export const NEWS_SERVICE = new InjectionToken<NewsService>('NewsService');

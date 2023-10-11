@@ -1,17 +1,17 @@
 import {Component, Input} from '@angular/core';
-import {MapConfigActions} from '../../../../state/map/actions/map-config.actions';
-import {ZoomType} from '../../../../shared/types/zoom.type';
+import {MAT_TOOLTIP_DEFAULT_OPTIONS} from '@angular/material/tooltip';
 import {Store} from '@ngrx/store';
-import {GeolocationState} from '../../../../state/map/states/geolocation.state';
-import {initialState as initialGeolocationState, selectGeolocationState} from '../../../../state/map/reducers/geolocation.reducer';
-import {MapUiState} from '../../../../state/map/states/map-ui.state';
 import {Subscription, tap} from 'rxjs';
+import {toolTipFactoryMapToolsAndControls} from 'src/app/shared/factories/tooltip-map-tools-and-controls.factory';
+import {ConfigService} from 'src/app/shared/services/config.service';
+import {ZoomType} from '../../../../shared/types/zoom.type';
+import {GeolocationActions} from '../../../../state/map/actions/geolocation.actions';
+import {MapConfigActions} from '../../../../state/map/actions/map-config.actions';
+import {initialState as initialGeolocationState, selectGeolocationState} from '../../../../state/map/reducers/geolocation.reducer';
 import {selectIsMaxZoomedIn, selectIsMaxZoomedOut} from '../../../../state/map/reducers/map-config.reducer';
 import {selectMapUiState} from '../../../../state/map/reducers/map-ui.reducer';
-import {GeolocationActions} from '../../../../state/map/actions/geolocation.actions';
-import {MAT_TOOLTIP_DEFAULT_OPTIONS} from '@angular/material/tooltip';
-import {ConfigService} from 'src/app/shared/services/config.service';
-import {toolTipFactoryMapToolsAndControls} from 'src/app/shared/configs/tooltip.config';
+import {GeolocationState} from '../../../../state/map/states/geolocation.state';
+import {MapUiState} from '../../../../state/map/states/map-ui.state';
 
 @Component({
   selector: 'zoom-controls',

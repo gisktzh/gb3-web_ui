@@ -1,5 +1,4 @@
 import {MatTooltipDefaultOptions} from '@angular/material/tooltip';
-import {ConfigService} from '../services/config.service';
 
 export const toolTipLongDelay: MatTooltipDefaultOptions = {
   showDelay: 1000,
@@ -14,11 +13,3 @@ export const toolTipMapToolsAndControls: MatTooltipDefaultOptions = {
   touchendHideDelay: 1500,
   position: 'left',
 };
-
-export function toolTipFactoryLongDelay(configService: ConfigService): MatTooltipDefaultOptions {
-  return configService.tooltipConfig.longDelay;
-}
-
-export function toolTipFactoryMapToolsAndControls(configService: ConfigService): MatTooltipDefaultOptions {
-  return configService.tooltipConfig.mapToolsAndControls;
-}
