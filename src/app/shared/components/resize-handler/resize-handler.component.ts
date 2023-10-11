@@ -31,22 +31,24 @@ export class ResizeHandlerComponent {
 
   public validate(event: ResizeEvent): boolean {
     const maxResizeWidth = window.innerWidth * MAX_DIMENSION_PERCENTAGE;
-    return !!(
-      event.rectangle.width &&
-      event.rectangle.height &&
-      event.rectangle.width > MIN_DIMENSIONS_WIDTH__PX &&
-      event.rectangle.width < maxResizeWidth
-    );
-  }
-
-  public validateTop(event: ResizeEvent): boolean {
     const maxResizeHeight = window.innerHeight * MAX_DIMENSION_PERCENTAGE;
-    return !!(
-      event.rectangle.width &&
-      event.rectangle.height &&
-      event.rectangle.height > MIN_DIMENSIONS_HEIGHT__PX &&
-      event.rectangle.height < maxResizeHeight
-    );
+    switch (this.location) {
+      case 'left':
+      case 'right':
+        return !!(
+          event.rectangle.width &&
+          event.rectangle.height &&
+          event.rectangle.width > MIN_DIMENSIONS_WIDTH__PX &&
+          event.rectangle.width < maxResizeWidth
+        );
+      case 'top':
+        return !!(
+          event.rectangle.width &&
+          event.rectangle.height &&
+          event.rectangle.height > MIN_DIMENSIONS_HEIGHT__PX &&
+          event.rectangle.height < maxResizeHeight
+        );
+    }
   }
 
   public onResizeEnd(event: ResizeEvent): void {

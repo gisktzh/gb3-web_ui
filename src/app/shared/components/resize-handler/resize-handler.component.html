@@ -3,7 +3,7 @@
   (resizeEnd)="this.onResizeEnd($event)"
   [enableGhostResize]="true"
   [ghostElementPositioning]="'absolute'"
-  [validateResize]="this.location === 'top' ? this.validateTop : this.validate"
+  [validateResize]="this.validate.bind(this)"
   class="resize-container"
   mwlResizable
 >
