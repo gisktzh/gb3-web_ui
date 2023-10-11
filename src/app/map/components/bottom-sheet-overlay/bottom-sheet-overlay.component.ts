@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {BottomSheetContent} from 'src/app/shared/types/bottom-sheet-content.type';
@@ -13,6 +13,7 @@ type TabType = 'activeMaps' | 'mapsCatalogue';
   styleUrls: ['./bottom-sheet-overlay.component.scss'],
 })
 export class BottomSheetOverlayComponent implements OnInit, OnDestroy {
+  @Input() public showInteractiveElements: boolean = true;
   public activeTab: TabType = 'mapsCatalogue';
   public bottomSheetContent: BottomSheetContent = 'none';
 

@@ -9,11 +9,11 @@ import {selectData} from '../../../../state/map/reducers/general-info.reducer';
 import {selectFeatureInfosForDisplay} from '../../../../state/map/selectors/feature-info-result-display.selector';
 
 @Component({
-  selector: 'feature-infos-item',
-  templateUrl: './feature-infos-item.component.html',
-  styleUrls: ['./feature-infos-item.component.scss'],
+  selector: 'feature-info',
+  templateUrl: './feature-info.component.html',
+  styleUrls: ['./feature-info.component.scss'],
 })
-export class FeatureInfosItemComponent implements OnInit, OnDestroy {
+export class FeatureInfoComponent implements OnInit, OnDestroy {
   public loadingState: LoadingState = undefined;
   public featureInfoData: FeatureInfoResultDisplay[] = [];
   public generalInfoData?: GeneralInfoResponse;

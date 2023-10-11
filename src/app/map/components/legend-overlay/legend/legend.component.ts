@@ -7,11 +7,11 @@ import {selectLoadingState} from 'src/app/state/map/reducers/legend.reducer';
 import {selectLegendItemsForDisplay} from 'src/app/state/map/selectors/legend-result-display.selector';
 
 @Component({
-  selector: 'legends-item',
-  templateUrl: './legends-item.component.html',
-  styleUrls: ['./legends-item.component.scss'],
+  selector: 'legend',
+  templateUrl: './legend.component.html',
+  styleUrls: ['./legend.component.scss'],
 })
-export class LegendsItemComponent implements OnInit, OnDestroy {
+export class LegendComponent implements OnInit, OnDestroy {
   @Input() public showInteractiveElements: boolean = true;
 
   public legendItems: LegendDisplay[] = [];

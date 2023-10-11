@@ -4,10 +4,10 @@
       <basemap-selector-mobile body></basemap-selector-mobile>
     </bottom-sheet-item>
     <bottom-sheet-item *ngSwitchCase="'legend'" overlayTitle="Legende" bottomSheetHeight="large">
-      <legends-item body></legends-item>
+      <legend body [showInteractiveElements]="showInteractiveElements"></legend>
     </bottom-sheet-item>
     <bottom-sheet-item *ngSwitchCase="'feature-info'" overlayTitle="Info" bottomSheetHeight="large">
-      <feature-infos-item body></feature-infos-item>
+      <feature-info body></feature-info>
     </bottom-sheet-item>
     <bottom-sheet-item *ngSwitchCase="'map-attributes'" overlayTitle="Attributfilter" bottomSheetHeight="medium">
       <map-attribute-filter body></map-attribute-filter>
