@@ -5,7 +5,7 @@ import {FeatureInfoState} from '../states/feature-info.state';
 export const featureInfoFeatureKey = 'featureInfo';
 
 export const initialState: FeatureInfoState = {
-  loadingState: 'undefined',
+  loadingState: undefined,
   data: [],
   highlightedFeature: undefined,
   pinnedFeatureId: undefined,

@@ -1,0 +1,17 @@
+@use 'mixins/helpers.mixin' as mixins;
+
+:host ::ng-deep {
+  .data-download-selection-tools__button {
+    @include mixins.tool-button;
+  }
+}
+
+.data-download-selection-tools {
+  display: flex;
+  flex-direction: column;
+
+  .data-download-selection-tools__divider {
+    width: 50%;
+    align-self: center;
+  }
+}

@@ -9,7 +9,10 @@ import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import Color from '@arcgis/core/Color';
 import MarkerSymbol from '@arcgis/core/symbols/MarkerSymbol';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
-import {UnsupportedGeometryType} from './errors/esri.errors';
+import {UnsupportedGeometryType, UnsupportedSymbolizationType} from './errors/esri.errors';
+import Symbol from '@arcgis/core/symbols/Symbol';
+import {FavouriteGb3DrawingStyle} from '../../../shared/interfaces/favourite.interface';
+import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
 
 @Injectable({
   providedIn: 'root',
@@ -91,6 +94,41 @@ export class EsriSymbolizationService {
         color: this.createEsriColor(polygonSymbology.outline.color),
       },
     });
+  }
+
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  public extractGb3SymbolizationFromSymbol(symbol: Symbol): FavouriteGb3DrawingStyle {
+    // todo: GB3-604/GB3-608, styling
+    switch (symbol.type) {
+      case 'simple-marker':
+        return {
+          pointRadius: (symbol as SimpleMarkerSymbol).size.toString(),
+          fillColor: symbol.color.toHex(),
+          fillOpacity: symbol.color.a,
+          strokeWidth: (symbol as SimpleMarkerSymbol).outline.width,
+          strokeOpacity: (symbol as SimpleMarkerSymbol).outline.color.a,
+          strokeColor: (symbol as SimpleMarkerSymbol).outline.color.toHex(),
+          type: 'point',
+        };
+      case 'simple-line':
+        return {
+          strokeColor: symbol.color.toHex(),
+          strokeOpacity: symbol.color.a,
+          strokeWidth: (symbol as SimpleLineSymbol).width,
+          type: 'line',
+        };
+      case 'simple-fill':
+        return {
+          fillColor: symbol.color.toHex(),
+          fillOpacity: symbol.color.a,
+          strokeWidth: (symbol as SimpleFillSymbol).outline.width,
+          strokeOpacity: (symbol as SimpleFillSymbol).outline.color.a,
+          strokeColor: (symbol as SimpleFillSymbol).outline.color.toHex(),
+          type: 'polygon',
+        };
+      default:
+        throw new UnsupportedSymbolizationType(symbol.type);
+    }
   }
 
   private createEsriColor(color: SymbolizationColor): Color {

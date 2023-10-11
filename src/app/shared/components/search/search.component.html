@@ -3,7 +3,12 @@
     <mat-icon class="search__bar__icon" svgIcon="ktzh_search"></mat-icon>
     <input #searchInput class="search__bar__input" [placeholder]="placeholderText" type="text" (focus)="focus.emit()" />
     <ng-container *ngIf="showFilterButton && mode === 'compact'">
-      <button mat-icon-button (click)="openFilter()" [ngClass]="{'search__bar__filter-button--active': isAnyFilterActive}">
+      <button
+        mat-icon-button
+        (click)="openFilter()"
+        [ngClass]="{'search__bar__filter-button--active': isAnyFilterActive}"
+        matTooltip="Suchresultate verfeinern"
+      >
         <mat-icon svgIcon="ktzh_filter"></mat-icon>
       </button>
       <mat-divider *ngIf="showClearButton" [vertical]="true" class="search__bar__divider"></mat-divider>

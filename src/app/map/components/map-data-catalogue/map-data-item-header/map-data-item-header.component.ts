@@ -10,6 +10,6 @@ export class MapDataItemHeaderComponent {
   @Input() public title!: string;
   @Input() public filterString: string = '';
   @Input() public isExpanded: boolean = true;
-  @Input() public loadingState: LoadingState = 'undefined';
+  @Input() public loadingState: LoadingState;
   @Input() public numberOfItems: number = 0;
 }

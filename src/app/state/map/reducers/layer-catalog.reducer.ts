@@ -6,7 +6,7 @@ export const layerCatalogFeatureKey = 'layerCatalog';
 
 export const initialState: LayerCatalogState = {
   items: [],
-  loadingState: 'undefined',
+  loadingState: undefined,
   filterString: '',
 };
 

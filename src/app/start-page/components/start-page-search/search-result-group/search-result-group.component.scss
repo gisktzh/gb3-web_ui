@@ -34,6 +34,10 @@
         margin: 0;
       }
     }
+
+    .search-result-group__header__loading-bar {
+      @include mixins.position-element-at-bottom-with-full-width;
+    }
   }
 
   .search-result-group__content {

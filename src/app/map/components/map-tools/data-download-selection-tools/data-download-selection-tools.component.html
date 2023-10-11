@@ -1,0 +1,57 @@
+<div class="data-download-selection-tools">
+  <button
+    (click)="this.toggleCircleSelecting()"
+    [ngClass]="{'data-download-selection-tools__button--active': activeTool === 'select-circle'}"
+    class="data-download-selection-tools__button"
+    color="accent"
+    mat-icon-button
+  >
+    <mat-icon svgIcon="ktzh_drawing_symbol_circle"></mat-icon>
+  </button>
+  <button
+    (click)="this.togglePolygonSelecting()"
+    [ngClass]="{'data-download-selection-tools__button--active': activeTool === 'select-polygon'}"
+    class="data-download-selection-tools__button"
+    color="accent"
+    mat-icon-button
+  >
+    <mat-icon svgIcon="ktzh_drawing_symbol_polygon"></mat-icon>
+  </button>
+  <button
+    (click)="this.toggleRectangleSelecting()"
+    [ngClass]="{'data-download-selection-tools__button--active': activeTool === 'select-rectangle'}"
+    class="data-download-selection-tools__button"
+    color="accent"
+    mat-icon-button
+  >
+    <mat-icon svgIcon="ktzh_drawing_symbol_rectangle"></mat-icon>
+  </button>
+  <mat-divider class="data-download-selection-tools__divider"></mat-divider>
+  <button
+    (click)="this.toggleSectionSelecting()"
+    [ngClass]="{'data-download-selection-tools__button--active': activeTool === 'select-section'}"
+    class="data-download-selection-tools__button"
+    color="accent"
+    mat-icon-button
+  >
+    <mat-icon svgIcon="ktzh_select_section"></mat-icon>
+  </button>
+  <button
+    (click)="this.toggleCantonSelecting()"
+    [ngClass]="{'data-download-selection-tools__button--active': activeTool === 'select-canton'}"
+    class="data-download-selection-tools__button"
+    color="accent"
+    mat-icon-button
+  >
+    <mat-icon svgIcon="ktzh_select_canton"></mat-icon>
+  </button>
+  <button
+    (click)="this.toggleMunicipalitySelecting()"
+    [ngClass]="{'data-download-selection-tools__button--active': activeTool === 'select-municipality'}"
+    class="data-download-selection-tools__button"
+    color="accent"
+    mat-icon-button
+  >
+    <mat-icon svgIcon="ktzh_select_municipality"></mat-icon>
+  </button>
+</div>

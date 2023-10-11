@@ -1,15 +1,19 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import {BaseMapDataItemComponent} from './base-map-data-item.component';
+import {MAT_TOOLTIP_DEFAULT_OPTIONS} from '@angular/material/tooltip';
+import {Store} from '@ngrx/store';
+import {Subscription, tap} from 'rxjs';
+import {toolTipFactoryLongDelay} from 'src/app/shared/factories/tooltip-long-delay.factory';
+import {ConfigService} from 'src/app/shared/services/config.service';
 import {MapLayer} from '../../../../shared/interfaces/topic.interface';
 import {LoadingState} from '../../../../shared/types/loading-state.type';
-import {Subscription, tap} from 'rxjs';
-import {Store} from '@ngrx/store';
 import {selectMapConfigState} from '../../../../state/map/reducers/map-config.reducer';
+import {BaseMapDataItemComponent} from './base-map-data-item.component';
 
 @Component({
   selector: 'map-data-item-map',
   templateUrl: './base-map-data-item.component.html',
   styleUrls: ['./base-map-data-item.component.scss'],
+  providers: [{provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useFactory: toolTipFactoryLongDelay, deps: [ConfigService]}],
 })
 export class MapDataItemMapComponent extends BaseMapDataItemComponent implements OnInit, OnDestroy {
   @Input() public override layers: MapLayer[] = [];
@@ -23,7 +27,10 @@ export class MapDataItemMapComponent extends BaseMapDataItemComponent implements
   private readonly mapConfigState$ = this.store.select(selectMapConfigState);
   private readonly subscriptions: Subscription = new Subscription();
 
-  constructor(private readonly store: Store) {
+  constructor(
+    private readonly store: Store,
+    private configService: ConfigService,
+  ) {
     super();
   }
 

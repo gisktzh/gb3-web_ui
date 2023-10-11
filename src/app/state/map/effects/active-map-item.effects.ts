@@ -18,6 +18,8 @@ import {FeatureInfoActions} from '../actions/feature-info.actions';
 import {selectActiveTool} from '../reducers/tool.reducer';
 import {UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {ToolActions} from '../actions/tool.actions';
+import {ConfigService} from '../../../shared/services/config.service';
+import {ToolType} from '../../../shared/types/tool.type';
 
 @Injectable()
 export class ActiveMapItemEffects {
@@ -38,7 +40,7 @@ export class ActiveMapItemEffects {
       return this.actions$.pipe(
         ofType(ActiveMapItemActions.removeActiveMapItem),
         tap((action) => {
-          this.mapService.removeMapItem(action.id);
+          this.mapService.removeMapItem(action.activeMapItem.id);
         }),
       );
     },
@@ -49,7 +51,7 @@ export class ActiveMapItemEffects {
     () => {
       return this.actions$.pipe(
         ofType(ActiveMapItemActions.removeAllActiveMapItems),
-        tap((action) => {
+        tap(() => {
           this.mapService.removeAllMapItems();
         }),
       );
@@ -65,10 +67,11 @@ export class ActiveMapItemEffects {
         if (activeTool === undefined) {
           return false;
         }
+        const definedActiveTool: ToolType = activeTool;
         switch (action.type) {
           case '[ActiveMapItem] Remove Active Map Item':
             let activeUserDrawingLayer: UserDrawingLayer;
-            switch (activeTool) {
+            switch (definedActiveTool) {
               case 'measure-line':
               case 'measure-point':
               case 'measure-area':
@@ -81,6 +84,14 @@ export class ActiveMapItemEffects {
               case 'draw-circle':
                 activeUserDrawingLayer = UserDrawingLayer.Drawings;
                 break;
+              case 'select-circle':
+              case 'select-polygon':
+              case 'select-rectangle':
+              case 'select-section':
+              case 'select-canton':
+              case 'select-municipality':
+                // selection tools are used on an internal layer
+                return false;
             }
             // is there still a drawing item for the current active tool? if not => cancel tool
             return !activeMapItems.some(
@@ -240,7 +251,7 @@ export class ActiveMapItemEffects {
             fav.addToMap(this.mapService, idx);
           });
 
-          const center: PointWithSrs = {type: 'Point', srs: 2056, coordinates: [x, y]};
+          const center: PointWithSrs = {type: 'Point', srs: this.configService.mapConfig.defaultMapConfig.srsId, coordinates: [x, y]};
           this.mapService.zoomToPoint(center, scale);
         },
       ),
@@ -256,8 +267,8 @@ export class ActiveMapItemEffects {
         if (isMapServiceInitialized) {
           // only add the map items to the map if the map service is initialized;
           // otherwise this happens automatically during initialization
-          initialMapItems.forEach((initialMapItem) => {
-            initialMapItem.addToMap(this.mapService, 0);
+          initialMapItems.forEach((initialMapItem, index) => {
+            initialMapItem.addToMap(this.mapService, index);
           });
         }
         return MapConfigActions.clearInitialMapsConfig();
@@ -270,5 +281,6 @@ export class ActiveMapItemEffects {
     @Inject(MAP_SERVICE) private readonly mapService: MapService,
     private readonly gb3TopicsService: Gb3TopicsService,
     private readonly store: Store,
+    private readonly configService: ConfigService,
   ) {}
 }

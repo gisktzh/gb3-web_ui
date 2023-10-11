@@ -56,21 +56,21 @@ describe('selectFeatureInfoQueryLoadingState', () => {
     });
 
     it('returns undefined if both are undefined (initial state)', () => {
-      featureInfoLoadingStateMock = 'undefined';
-      generalInfoLoadingStateMock = 'undefined';
+      featureInfoLoadingStateMock = undefined;
+      generalInfoLoadingStateMock = undefined;
 
       const actual = selectFeatureInfoQueryLoadingState.projector(featureInfoLoadingStateMock, generalInfoLoadingStateMock);
 
-      expect(actual).toEqual('undefined');
+      expect(actual).toEqual(undefined);
     });
 
     it('returns undefined if either one is undefined and one is loaded (hypothetical state)', () => {
-      featureInfoLoadingStateMock = 'undefined';
+      featureInfoLoadingStateMock = undefined;
       generalInfoLoadingStateMock = 'loaded';
 
       const actual = selectFeatureInfoQueryLoadingState.projector(featureInfoLoadingStateMock, generalInfoLoadingStateMock);
 
-      expect(actual).toEqual('undefined');
+      expect(actual).toEqual(undefined);
     });
   });
 });

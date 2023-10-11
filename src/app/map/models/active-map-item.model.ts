@@ -25,13 +25,13 @@ export abstract class ActiveMapItem implements HasLoadingState, HasVisibility, H
   public abstract readonly mapImageUrl: string | null;
   public abstract readonly settings: ActiveMapItemSettings;
   public abstract readonly isSingleLayer: boolean;
-  public abstract readonly geometadataId: number | null;
+  public abstract readonly geometadataUuid: string | null;
 
   public readonly [immerable] = true;
   public visible: boolean;
   public opacity: number;
-  public loadingState: LoadingState = 'undefined';
-  public viewProcessState: ViewProcessState = 'undefined';
+  public loadingState: LoadingState;
+  public viewProcessState: ViewProcessState;
 
   protected constructor(visible?: boolean, opacity?: number) {
     this.visible = visible ?? true;

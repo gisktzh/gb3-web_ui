@@ -22,7 +22,7 @@ export class FeatureInfoOverlayComponent implements OnInit, OnDestroy {
   public isVisible: boolean = false;
   public featureInfoData: FeatureInfoResultDisplay[] = [];
   public generalInfoData?: GeneralInfoResponse;
-  public loadingState: LoadingState = 'undefined';
+  public loadingState: LoadingState;
 
   private readonly loadingState$ = this.store.select(selectFeatureInfoQueryLoadingState);
   private readonly featureInfoData$ = this.store.select(selectFeatureInfosForDisplay);
@@ -83,6 +83,6 @@ export class FeatureInfoOverlayComponent implements OnInit, OnDestroy {
   }
 
   private updateVisibility(loadingState: LoadingState) {
-    this.isVisible = loadingState !== 'undefined';
+    this.isVisible = loadingState !== undefined;
   }
 }

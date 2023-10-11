@@ -4,8 +4,8 @@
 .result-window {
   display: flex;
   flex-direction: column;
+  margin-left: 6px;
   width: 100%;
-  margin-left: 5px;
   height: 100%;
 
   .result-window__loading-bar {

@@ -1,13 +1,13 @@
 <map-overlay
-  (closeEvent)="this.close()"
+  (closeEvent)="close()"
+  (printButtonEvent)="print()"
   [isPrintButtonEnabled]="showInteractiveElements && loadingState === 'loaded'"
   [showPrintButton]="showInteractiveElements"
-  (printButtonEvent)="this.print()"
-  [isVisible]="this.isVisible"
+  [isVisible]="isVisible"
   overlayTitle="Legende"
 >
-  <loading-and-process-bar [loadingState]="this.loadingState"></loading-and-process-bar>
-  <ng-container *ngIf="this.loadingState === 'loaded'">
+  <loading-and-process-bar [loadingState]="loadingState"></loading-and-process-bar>
+  <ng-container *ngIf="loadingState === 'loaded'">
     <legend-item
       *ngFor="let legendItem of legendItems; trackBy: trackById"
       [legendItem]="legendItem"

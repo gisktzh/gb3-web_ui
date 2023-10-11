@@ -8,6 +8,6 @@ import {ViewProcessState} from '../../types/view-process-state.type';
   styleUrls: ['./loading-and-process-bar.component.scss'],
 })
 export class LoadingAndProcessBarComponent {
-  @Input() public loadingState: LoadingState = 'undefined';
-  @Input() public viewProcessState: ViewProcessState = 'undefined';
+  @Input() public loadingState: LoadingState;
+  @Input() public viewProcessState: ViewProcessState;
 }

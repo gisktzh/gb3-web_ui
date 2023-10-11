@@ -1,5 +1,6 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 @use 'variables/z-index-variables' as z-index-variables;
+@use 'variables/map-layout-variables' as map-layout-variables;
 
 .map-overlay {
   height: 100%;
@@ -8,7 +9,7 @@
   z-index: z-index-variables.$map-overlay;
   display: flex;
   flex-direction: column;
-  width: calc(450px + #{ktzh-variables.$map-overlay-width-adjustment});
+  width: calc(#{map-layout-variables.$map-overlay-width} + #{map-layout-variables.$map-overlay-width-adjustment});
 
   &.map-overlay--right {
     left: unset;

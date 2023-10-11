@@ -7,6 +7,7 @@
       color="accent"
       data-test-id="map-ruler"
       mat-icon-button
+      matTooltip="Messen"
     >
       <mat-icon svgIcon="ktzh_measure_menu"></mat-icon>
     </button>
@@ -17,20 +18,33 @@
       color="accent"
       data-test-id="map-drawing"
       mat-icon-button
+      matTooltip="Zeichnen"
     >
       <mat-icon svgIcon="ktzh_drawing_menu"></mat-icon>
     </button>
     <mat-divider class="map-tools__divider"></mat-divider>
-    <button (click)="showPrintDialog()" class="map-tools__button" data-test-id="map-print" mat-icon-button>
+    <button
+      (click)="toggleToolMenu('data-download')"
+      [ngClass]="{'map-tools__button--active': toolMenuVisibility === 'data-download'}"
+      class="map-tools__button"
+      color="accent"
+      data-test-id="map-data-download"
+      mat-icon-button
+      [disabled]="true"
+    >
+      <mat-icon svgIcon="ktzh_download"></mat-icon>
+    </button>
+    <button (click)="showPrintDialog()" class="map-tools__button" data-test-id="map-print" mat-icon-button matTooltip="Drucken">
       <mat-icon svgIcon="ktzh_print"></mat-icon>
     </button>
     <mat-divider class="map-tools__divider"></mat-divider>
-    <button (click)="showShareLinkDialog()" class="map-tools__button" data-test-id="map-share" mat-icon-button>
+    <button (click)="showShareLinkDialog()" class="map-tools__button" data-test-id="map-share" mat-icon-button matTooltip="Teilen">
       <mat-icon svgIcon="ktzh_share"></mat-icon>
     </button>
   </div>
   <div class="map-tools__list" *ngIf="toolMenuVisibility !== undefined">
     <measurement-tools *ngIf="toolMenuVisibility === 'measurement'"></measurement-tools>
     <drawing-tools *ngIf="toolMenuVisibility === 'drawing'"></drawing-tools>
+    <data-download-selection-tools *ngIf="toolMenuVisibility === 'data-download'"></data-download-selection-tools>
   </div>
 </div>

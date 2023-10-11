@@ -1,13 +1,14 @@
 @use 'mixins/helpers.mixin' as mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 @use 'variables/z-index-variables' as z-index-variables;
+@use 'variables/map-layout-variables' as map-layout-variables;
 
 .navbar {
   top: 0;
   position: sticky;
   width: 100%;
   display: block;
-  height: ktzh-variables.$navbar-height;
+  height: map-layout-variables.$navbar-height;
   overflow: hidden;
   @include mixins.hide-on-small-screens;
   z-index: z-index-variables.$navbar;

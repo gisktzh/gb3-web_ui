@@ -20,7 +20,7 @@ describe('DataCatalogue Reducer', () => {
     });
 
     it('returns an empty items array if loading state is undefined and items are present', () => {
-      const existingState: DataCatalogueState = {loadingState: 'undefined', items: [{} as OverviewMetadataItem], filters: []};
+      const existingState: DataCatalogueState = {loadingState: undefined, items: [{} as OverviewMetadataItem], filters: []};
       const action = DataCatalogueActions.loadCatalogue();
 
       const state = fromReducer.reducer(existingState, action);

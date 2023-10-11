@@ -51,8 +51,6 @@ import {map} from 'rxjs/operators';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
-const DEFAULT_PRINT_PREVIEW_ANIMATION_DURATION_IN_MS = 500;
-const DEFAULT_PRINT_PREVIEW_EXPAND_FACTOR = 1.5;
 
 @Injectable({
   providedIn: 'root',
@@ -391,7 +389,11 @@ export class EsriMapService implements MapService, OnDestroy {
 
     // draw the new geometry once as it is entirely possible that the map center didn't change yet and then zoom to the geometry.
     const geometryWithSrs: PolygonWithSrs = this.handlePrintPreview(this.mapView.center, extentWidth, extentHeight, rotation);
-    await this.zoomToExtent(geometryWithSrs, DEFAULT_PRINT_PREVIEW_EXPAND_FACTOR, DEFAULT_PRINT_PREVIEW_ANIMATION_DURATION_IN_MS);
+    await this.zoomToExtent(
+      geometryWithSrs,
+      this.configService.mapAnimationConfig.zoom.expandFactor,
+      this.configService.mapAnimationConfig.zoom.duration,
+    );
   }
 
   public stopDrawPrintPreview() {
@@ -677,7 +679,7 @@ export class EsriMapService implements MapService, OnDestroy {
     );
 
     esriReactiveUtils
-      .whenOnce(() => this.mapView.ready)
+      .whenOnce(() => this.mapView.ready && this.transformationService.projectionLoaded)
       .then(() => {
         /* eslint-disable @typescript-eslint/no-non-null-assertion */ // at this point, we know the values are ready
         const {effectiveMaxScale, effectiveMinScale, effectiveMaxZoom, effectiveMinZoom} = this.mapView.constraints;
@@ -739,11 +741,11 @@ export class EsriMapService implements MapService, OnDestroy {
 
   private transformLoadStatusToLoadingState(loadStatus: EsriLoadStatus | undefined): LoadingState {
     if (loadStatus === undefined) {
-      return 'undefined';
+      return undefined;
     }
     switch (loadStatus) {
       case 'not-loaded':
-        return 'undefined';
+        return undefined;
       case 'failed':
         return 'error';
       case 'loading':
@@ -755,7 +757,7 @@ export class EsriMapService implements MapService, OnDestroy {
 
   private transformUpdatingToViewProcessState(updating: boolean | undefined): ViewProcessState {
     if (updating === undefined) {
-      return 'undefined';
+      return undefined;
     }
     return updating ? 'updating' : 'completed';
   }

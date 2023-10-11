@@ -44,6 +44,10 @@ const controlIconsConfig = [
     id: 'ktzh_locate_me',
     path: 'assets/icons/controls/locate-me.svg',
   },
+  {
+    id: 'ktzh_menu_mobile',
+    path: 'assets/icons/controls/menu-mobile.svg',
+  },
 ];
 
 /**
@@ -67,6 +71,10 @@ const actionIconsConfig = [
     path: 'assets/icons/actions/legend.svg',
   },
   {
+    id: 'ktzh_legend_mobile',
+    path: 'assets/icons/actions/legend-mobile.svg',
+  },
+  {
     id: 'ktzh_search',
     path: 'assets/icons/actions/search.svg',
   },
@@ -85,6 +93,10 @@ const actionIconsConfig = [
   {
     id: 'ktzh_filter',
     path: 'assets/icons/actions/filter.svg',
+  },
+  {
+    id: 'ktzh_map_management',
+    path: 'assets/icons/actions/map-management.svg',
   },
 ];
 
@@ -128,6 +140,10 @@ const symbolIconsConfig = [
     id: 'ktzh_logo',
     path: 'assets/icons/symbols/ktzh_canton.svg',
   },
+  {
+    id: 'ktzh_background_map_mobile',
+    path: 'assets/icons/symbols/background-map-mobile.svg',
+  },
 ];
 
 const drawingSymbolIconsConfig = [
@@ -156,10 +172,26 @@ const drawingSymbolIconsConfig = [
     path: 'assets/icons/drawing-symbols/circle.svg',
   },
 ];
+
+const selectingSymbolIconsConfig = [
+  {
+    id: 'ktzh_select_section',
+    path: 'assets/icons/tools/select-section.svg',
+  },
+  {
+    id: 'ktzh_select_canton',
+    path: 'assets/icons/tools/select-canton.svg',
+  },
+  {
+    id: 'ktzh_select_municipality',
+    path: 'assets/icons/tools/select-municipality.svg',
+  },
+];
 export const iconsConfig = [
   ...toolIconsConfig,
   ...controlIconsConfig,
   ...actionIconsConfig,
   ...symbolIconsConfig,
   ...drawingSymbolIconsConfig,
+  ...selectingSymbolIconsConfig,
 ];

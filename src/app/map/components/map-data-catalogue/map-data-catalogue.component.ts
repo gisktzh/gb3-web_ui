@@ -35,8 +35,8 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
   @Output() public readonly changeIsMinimizedEvent = new EventEmitter<boolean>();
 
   public topics: Topic[] = [];
-  public catalogueLoadingState: LoadingState = 'undefined';
-  public favouritesLoadingState: LoadingState = 'undefined';
+  public catalogueLoadingState: LoadingState;
+  public favouritesLoadingState: LoadingState;
   public filterString: string = '';
   public filteredFavourites: Favourite[] = [];
   public isAuthenticated: boolean = false;

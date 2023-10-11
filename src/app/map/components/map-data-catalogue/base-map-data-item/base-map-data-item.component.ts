@@ -24,7 +24,7 @@ export class BaseMapDataItemComponent {
   public showExpandButton: boolean = true;
 
   public showDeleteButton: boolean = false;
-  public loadingState: LoadingState = 'undefined';
+  public loadingState: LoadingState;
   public invalid?: boolean;
   public errorTooltip: string = '';
 

@@ -14,6 +14,8 @@
         [matBadge]="numberOfUnreadNotices"
         [matBadgeHidden]="numberOfUnreadNotices === 0"
         mat-icon-button
+        matTooltip="Kartenhinweise zu den aktiven Karten"
+        [matTooltipPosition]="'below'"
       >
         <mat-icon svgIcon="ktzh_notification"></mat-icon>
       </button>
@@ -23,19 +25,13 @@
         [disabled]="activeMapItems.length === 0"
         mat-icon-button
         class="active-map-items__header__buttons__action"
+        matTooltip="Alle aktiven Karten entfernen"
+        [matTooltipPosition]="'below'"
       >
         <mat-icon svgIcon="ktzh_delete"></mat-icon>
       </button>
       <mat-divider class="active-map-items__header__buttons__divider" [vertical]="true"></mat-divider>
-      <span
-        #tooltip="matTooltip"
-        [matTooltipDisabled]="this.isAuthenticated && this.activeMapItems.length > 0"
-        [matTooltip]="
-          this.isAuthenticated && this.activeMapItems.length === 0
-            ? this.favouriteHelperMessages.noMapsAdded
-            : this.favouriteHelperMessages.notAuthenticated
-        "
-      >
+      <span [matTooltip]="toolTipsFavourite" [matTooltipPosition]="'below'">
         <button
           (click)="showFavouriteDialog()"
           [disabled]="activeMapItems.length === 0 || !this.isAuthenticated"
