@@ -73,3 +73,9 @@
     </div>
   </div>
 </div>
+<div class="map-management-mobile-content">
+  <div [ngSwitch]="activeTab" body>
+    <active-map-items *ngSwitchCase="'activeMaps'"></active-map-items>
+    <map-data-catalogue *ngSwitchCase="'mapsCatalogue'"></map-data-catalogue>
+  </div>
+</div>

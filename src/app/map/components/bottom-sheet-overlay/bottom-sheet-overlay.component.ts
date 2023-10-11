@@ -5,8 +5,6 @@ import {BottomSheetContent} from 'src/app/shared/types/bottom-sheet-content.type
 import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
 import {selectBottomSheetContent} from 'src/app/state/map/reducers/map-ui.reducer';
 
-type TabType = 'activeMaps' | 'mapsCatalogue';
-
 @Component({
   selector: 'bottom-sheet-overlay',
   templateUrl: './bottom-sheet-overlay.component.html',
@@ -14,7 +12,6 @@ type TabType = 'activeMaps' | 'mapsCatalogue';
 })
 export class BottomSheetOverlayComponent implements OnInit, OnDestroy {
   @Input() public showInteractiveElements: boolean = true;
-  public activeTab: TabType = 'mapsCatalogue';
   public bottomSheetContent: BottomSheetContent = 'none';
 
   private readonly bottomSheetContent$ = this.store.select(selectBottomSheetContent);
@@ -32,10 +29,6 @@ export class BottomSheetOverlayComponent implements OnInit, OnDestroy {
 
   public close() {
     this.store.dispatch(MapUiActions.hideBottomSheet());
-  }
-
-  public switchTab(newTab: TabType) {
-    this.activeTab = newTab;
   }
 
   private initSubscriptions() {

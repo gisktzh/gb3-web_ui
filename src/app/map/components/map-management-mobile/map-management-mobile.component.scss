@@ -97,16 +97,20 @@
 }
 
 .map-management-mobile__header {
-  padding-bottom: 32px;
+  padding-bottom: 35px;
   background-color: ktzh-variables.$zh-darkblue;
+  width: 100vw;
+  left: 0px;
+  position: absolute;
+  z-index: 100;
 
   .map-management-mobile__header__buttons {
     display: flex;
-
     border-width: 3px;
     border-style: solid;
     border-color: functions.get-color-from-palette(ktzh-variables.$zh-primary, 900);
     border-radius: ktzh-variables.$zh-border-radius;
+    margin: 0 16px;
 
     .map-management-mobile__header__buttons__button {
       width: 100%;
@@ -122,4 +126,8 @@
       }
     }
   }
+}
+
+.map-management-mobile-content {
+  margin-top: 100px;
 }

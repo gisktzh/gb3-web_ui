@@ -26,7 +26,6 @@
     justify-content: flex-end;
     align-items: center;
     flex-wrap: wrap;
-    margin-bottom: 25px;
 
     &--primary-color {
       background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);

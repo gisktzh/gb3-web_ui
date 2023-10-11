@@ -39,12 +39,14 @@ import {MapDataItemMapComponent} from './components/map-data-catalogue/base-map-
 import {MapDataCatalogueComponent} from './components/map-data-catalogue/map-data-catalogue.component';
 import {MapDataItemHeaderComponent} from './components/map-data-catalogue/map-data-item-header/map-data-item-header.component';
 import {MapDataItemMapLayerComponent} from './components/map-data-catalogue/map-data-item-map-layer/map-data-item-map-layer.component';
-import {MapManagementHeaderComponent} from './components/map-management-mobile/map-management-header/map-management-header.component';
+import {MapManagementMobileComponent} from './components/map-management-mobile/map-management-mobile.component';
 import {MapNoticeDialogComponent} from './components/map-notice-dialog/map-notice-dialog.component';
 import {MapOverlayListItemComponent} from './components/map-overlay/map-overlay-list-item/map-overlay-list-item.component';
 import {MapOverlayComponent} from './components/map-overlay/map-overlay.component';
 import {AbstractToolsComponent} from './components/map-tools/abstract-tools/abstract-tools.component';
 import {DrawingToolsComponent} from './components/map-tools/drawing-tools/drawing-tools.component';
+import {MapToolsDesktopComponent} from './components/map-tools/map-tools-desktop/map-tools-desktop.component';
+import {MapToolsMobileComponent} from './components/map-tools/map-tools-mobile/map-tools-mobile.component';
 import {MapToolsComponent} from './components/map-tools/map-tools.component';
 import {MeasurementToolsComponent} from './components/map-tools/measurement-tools/measurement-tools.component';
 import {PrintDialogComponent} from './components/map-tools/print-dialog/print-dialog.component';
@@ -58,8 +60,6 @@ import {ShareLinkDialogComponent} from './components/share-link-dialog/share-lin
 import {TimeSliderComponent} from './components/time-slider/time-slider.component';
 import {MapPageComponent} from './map-page.component';
 import {MapRoutingModule} from './map-routing.module';
-import {MapToolsDesktopComponent} from './components/map-tools/map-tools-desktop/map-tools-desktop.component';
-import {MapToolsMobileComponent} from './components/map-tools/map-tools-mobile/map-tools-mobile.component';
 
 @NgModule({
   declarations: [
@@ -114,7 +114,7 @@ import {MapToolsMobileComponent} from './components/map-tools/map-tools-mobile/m
     BottomSheetOverlayComponent,
     BottomSheetItemComponent,
     LegendComponent,
-    MapManagementHeaderComponent,
+    MapManagementMobileComponent,
     FeatureInfoComponent,
     ShareLinkContentComponent,
     BasemapSelectionListComponent,

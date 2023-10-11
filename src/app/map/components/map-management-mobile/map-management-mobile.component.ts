@@ -1,9 +1,7 @@
-import {AfterViewInit, Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Observable, Subscription, debounceTime, distinctUntilChanged, fromEvent, map, tap} from 'rxjs';
 import {ActiveMapItem} from 'src/app/map/models/active-map-item.model';
-import {ScreenMode} from 'src/app/shared/types/screen-size.type';
-import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {selectIsAuthenticated} from 'src/app/state/auth/reducers/auth-status.reducer';
 import {ActiveMapItemActions} from 'src/app/state/map/actions/active-map-item.actions';
 import {LayerCatalogActions} from 'src/app/state/map/actions/layer-catalog.actions';
@@ -18,22 +16,19 @@ const FAVOURITE_HELPER_MESSAGES = {
 };
 
 @Component({
-  selector: 'map-management-header',
-  templateUrl: './map-management-header.component.html',
-  styleUrls: ['./map-management-header.component.scss'],
+  selector: 'map-management-mobile',
+  templateUrl: './map-management-mobile.component.html',
+  styleUrls: ['./map-management-mobile.component.scss'],
 })
-export class MapManagementHeaderComponent implements OnInit, OnDestroy, AfterViewInit {
-  public screenMode: ScreenMode = 'mobile';
+export class MapManagementMobileComponent implements OnInit, OnDestroy, AfterViewInit {
   public activeMapItems: ActiveMapItem[] = [];
   public numberOfNotices: number = 0;
   public numberOfUnreadNotices: number = 0;
   public activeTab: TabType = 'mapsCatalogue';
   public isAuthenticated: boolean = false;
   public readonly favouriteHelperMessages = FAVOURITE_HELPER_MESSAGES;
-  @Output() public readonly changeActiveTabEvent = new EventEmitter<TabType>();
 
   private readonly subscriptions: Subscription = new Subscription();
-  private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly activeMapItems$ = this.store.select(selectItems);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
   @ViewChild('filterInput') private readonly input!: ElementRef;
@@ -60,7 +55,6 @@ export class MapManagementHeaderComponent implements OnInit, OnDestroy, AfterVie
 
   public changeTabs(tab: TabType) {
     this.activeTab = tab;
-    this.changeActiveTabEvent.emit(this.activeTab);
   }
 
   public removeAllActiveMapItems() {
@@ -89,16 +83,6 @@ export class MapManagementHeaderComponent implements OnInit, OnDestroy, AfterVie
   }
 
   private initSubscriptions() {
-    this.subscriptions.add(
-      this.screenMode$
-        .pipe(
-          tap((screenMode) => {
-            this.screenMode = screenMode;
-          }),
-        )
-        .subscribe(),
-    );
-
     this.subscriptions.add(
       this.activeMapItems$
         .pipe(

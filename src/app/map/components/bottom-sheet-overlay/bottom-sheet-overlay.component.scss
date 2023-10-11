@@ -1,14 +1,4 @@
-@use 'variables/ktzh-design-variables' as ktzh-variables;
-@use 'variables/z-index-variables' as z-index-variables;
-@use 'variables/map-layout-variables' as map-layout-variables;
-
 .bottom-sheet-overlay {
   position: absolute;
   bottom: 0px;
-
-  .bottom-sheet-overlay__map-management-content {
-    border-color: ktzh-variables.$zh-background-color;
-    border-width: 0 2px 2px 2px;
-    border-style: solid;
-  }
 }

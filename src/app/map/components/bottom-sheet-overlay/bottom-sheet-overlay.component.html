@@ -16,11 +16,7 @@
       <share-link-content body></share-link-content>
     </bottom-sheet-item>
     <bottom-sheet-item *ngSwitchCase="'map-management'" [usePrimaryColor]="true" bottomSheetHeight="medium">
-      <map-management-header (changeActiveTabEvent)="switchTab($event)" header></map-management-header>
-      <div class="bottom-sheet-overlay__map-management-content" [ngSwitch]="activeTab" body>
-        <active-map-items *ngSwitchCase="'activeMaps'"></active-map-items>
-        <map-data-catalogue *ngSwitchCase="'mapsCatalogue'"></map-data-catalogue>
-      </div>
+      <map-management-mobile body></map-management-mobile>
     </bottom-sheet-item>
   </ng-container>
 </div>
