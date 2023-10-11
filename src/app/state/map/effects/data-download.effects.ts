@@ -12,6 +12,7 @@ import {Store} from '@ngrx/store';
 import {selectProducts} from '../reducers/data-download.reducer';
 import {GeoshopApiService} from '../../../shared/services/apis/geoshop/services/geoshop-api.service';
 import {ProductsCouldNotBeLoaded} from '../../../shared/errors/data-download.errors';
+import {ToolActions} from '../actions/tool.actions';
 
 @Injectable()
 export class DataDownloadEffects {
@@ -25,6 +26,15 @@ export class DataDownloadEffects {
           this.configService.mapAnimationConfig.zoom.duration,
         );
         return MapUiActions.showMapSideDrawerContent({mapSideDrawerContent: 'data-download'});
+      }),
+    );
+  });
+
+  public deactivateToolAfterClearingSelection$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(DataDownloadActions.clearSelection),
+      map(() => {
+        return ToolActions.deactivateTool();
       }),
     );
   });

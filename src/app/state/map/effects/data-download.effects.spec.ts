@@ -19,6 +19,8 @@ import {DataDownloadSelection} from '../../../shared/interfaces/data-download-se
 import {ConfigService} from '../../../shared/services/config.service';
 import {MapUiActions} from '../actions/map-ui.actions';
 import {InternalDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
+import {ToolActions} from '../actions/tool.actions';
+import {MapDrawingService} from '../../../map/services/map-drawing.service';
 
 describe('DataDownloadEffects', () => {
   const productsMock: Products = {
@@ -81,6 +83,28 @@ describe('DataDownloadEffects', () => {
     ],
   };
 
+  const selectionMock: DataDownloadSelection = {
+    type: 'select-polygon',
+    drawingRepresentation: {
+      id: 'id',
+      type: 'Feature',
+      source: InternalDrawingLayer.Selection,
+      properties: {},
+      geometry: {
+        type: 'Polygon',
+        srs: 2056,
+        coordinates: [
+          [
+            [9, -23],
+            [9, -17],
+            [11, -17],
+            [11, -23],
+          ],
+        ],
+      },
+    },
+  };
+
   let actions$: Observable<Action>;
   let store: MockStore;
   let effects: DataDownloadEffects;
@@ -112,28 +136,7 @@ describe('DataDownloadEffects', () => {
 
   describe('openDataDownloadDrawerAfterCompletingSelection$', () => {
     it('zooms to the geometry extend using the map service and dispatches MapUiActions.showMapSideDrawerContent()', (done: DoneFn) => {
-      // @ts-ignore
-      const expectedSelection: DataDownloadSelection = {
-        type: 'select-polygon',
-        drawingRepresentation: {
-          id: 'id',
-          type: 'Feature',
-          source: InternalDrawingLayer.Selection,
-          properties: {},
-          geometry: {
-            type: 'Polygon',
-            srs: 2056,
-            coordinates: [
-              [
-                [9, -23],
-                [9, -17],
-                [11, -17],
-                [11, -23],
-              ],
-            ],
-          },
-        },
-      };
+      const expectedSelection = selectionMock;
       const configService = TestBed.inject(ConfigService);
       const mapService = TestBed.inject(MAP_SERVICE);
       const mapServiceSpy = spyOn(mapService, 'zoomToExtent').and.callThrough();
@@ -151,6 +154,16 @@ describe('DataDownloadEffects', () => {
     });
   });
 
+  describe('deactivateToolAfterClearingSelection$', () => {
+    it('dispatches ToolActions.deactivateTool()', (done: DoneFn) => {
+      actions$ = of(DataDownloadActions.clearSelection());
+      effects.deactivateToolAfterClearingSelection$.subscribe((action) => {
+        expect(action).toEqual(ToolActions.deactivateTool());
+        done();
+      });
+    });
+  });
+
   describe('clearSelectionAfterClosingDataDownloadDrawer$', () => {
     it('dispatches DataDownloadActions.clearSelection()', (done: DoneFn) => {
       actions$ = of(MapUiActions.hideMapSideDrawerContent());
@@ -162,10 +175,15 @@ describe('DataDownloadEffects', () => {
   });
 
   describe('clearGeometryFromMap$', () => {
-    it('dispatches DataDownloadActions.clearSelection()', (done: DoneFn) => {
-      actions$ = of(MapUiActions.hideMapSideDrawerContent());
+    it('removes the selection graphics using the map service, no further action dispatch', (done: DoneFn) => {
+      const mapDrawingService = TestBed.inject(MapDrawingService);
+      const mapDrawingServiceSpy = spyOn(mapDrawingService, 'clearDataDownloadSelection').and.callThrough();
+
+      const expectedAction = DataDownloadActions.clearSelection();
+      actions$ = of(expectedAction);
       effects.clearGeometryFromMap$.subscribe((action) => {
-        expect(action).toEqual(DataDownloadActions.clearSelection());
+        expect(mapDrawingServiceSpy).toHaveBeenCalledTimes(1);
+        expect(action).toEqual(expectedAction);
         done();
       });
     });

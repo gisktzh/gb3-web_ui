@@ -34,6 +34,10 @@ import {DataDownloadSelectionTool} from '../../../../shared/types/data-download-
 import {DataDownloadActions} from '../../../../state/map/actions/data-download.actions';
 import {DataDownloadSelection} from '../../../../shared/interfaces/data-download-selection.interface';
 import {EsriPolygonSelectionStrategy} from './strategies/selection/esri-polygon-selection.strategy';
+import {EsriMunicipalitySelectionStrategy} from './strategies/selection/esri-municipality-selection.strategy';
+import {MatDialog} from '@angular/material/dialog';
+import {EsriCantonSelectionStrategy} from './strategies/selection/esri-canton-selection.strategy';
+import {EsriScreenExtentSelectionStrategy} from './strategies/selection/esri-screen-extent-selection.strategy';
 
 const HANDLE_GROUP_KEY = 'EsriToolService';
 
@@ -65,6 +69,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
     private readonly store: Store,
     private readonly esriSymbolizationService: EsriSymbolizationService,
     private readonly configService: ConfigService,
+    private readonly dialogService: MatDialog,
   ) {
     this.initSubscriptions();
   }
@@ -306,8 +311,8 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
     const completeDrawingCallbackHandler: DrawingCallbackHandler['complete'] = (graphic: Graphic, labelText?: string) => {
       const internalDrawingRepresentation = this.convertToGeoJson(graphic, labelText);
       const selection: DataDownloadSelection = {
+        type: selectionType as Exclude<DataDownloadSelectionTool, 'select-municipality'>,
         drawingRepresentation: internalDrawingRepresentation,
-        type: selectionType,
       };
       this.store.dispatch(DataDownloadActions.setSelection({selection}));
     };
@@ -341,9 +346,14 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
         );
         break;
       case 'select-section':
+        this.toolStrategy = new EsriScreenExtentSelectionStrategy(layer, areaStyle, this.store, this.esriMapViewService.mapView.extent);
+        break;
       case 'select-canton':
+        this.toolStrategy = new EsriCantonSelectionStrategy(layer, areaStyle, this.store);
+        break;
       case 'select-municipality':
-        throw new Error('not implemented'); // TODO: implement
+        this.toolStrategy = new EsriMunicipalitySelectionStrategy(layer, areaStyle, this.store, this.dialogService);
+        break;
     }
   }
 }

@@ -660,6 +660,7 @@ export class EsriMapService implements MapService, OnDestroy {
           spatialReference,
         }).lods,
       },
+      spatialReference: spatialReference,
     });
   }
 

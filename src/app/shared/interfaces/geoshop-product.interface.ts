@@ -18,7 +18,7 @@ interface Product {
   formats: number[];
 }
 
-interface Municipality {
+export interface Municipality {
   id: string;
   name: string;
 }

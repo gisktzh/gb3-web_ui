@@ -18,7 +18,6 @@ import {FavouriteDeletionDialogComponent} from '../../../map/components/favourit
 import {Favourite} from '../../../shared/interfaces/favourite.interface';
 import {ToolActions} from '../actions/tool.actions';
 import {PrintActions} from '../actions/print.actions';
-import {selectActiveTool} from '../reducers/tool.reducer';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {selectScreenMode} from '../../app/reducers/app-layout.reducer';
 import {DataDownloadActions} from '../actions/data-download.actions';
@@ -53,6 +52,21 @@ export class MapUiEffects {
             return DataDownloadActions.loadProducts();
         }
       }),
+    );
+  });
+
+  public cancelToolsDependingOnShownSideDrawer$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapUiActions.showMapSideDrawerContent),
+      filter((value) => {
+        switch (value.mapSideDrawerContent) {
+          case 'print':
+            return true;
+          case 'data-download':
+            return false;
+        }
+      }),
+      map(() => ToolActions.cancelTool()),
     );
   });
 
@@ -168,15 +182,6 @@ export class MapUiEffects {
       map(() => {
         return ActiveMapItemActions.markAllActiveMapItemNoticeAsRead();
       }),
-    );
-  });
-
-  public cancelToolAfterHidingUiElements$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(MapUiActions.changeUiElementsVisibility),
-      concatLatestFrom(() => this.store.select(selectActiveTool)),
-      filter(([{hideAllUiElements}, activeTool]) => hideAllUiElements && activeTool !== undefined),
-      map(() => ToolActions.cancelTool()),
     );
   });
 

@@ -2,12 +2,12 @@ import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import MapView from '@arcgis/core/views/MapView';
 import {SupportedEsriTool} from '../abstract-esri-drawable-tool.strategy';
-import {AbstractEsriSelectionStrategy} from './abstract-esri-selection.strategy';
+import {AbstractEsriDrawableSelectionStrategy} from './abstract-esri-drawable-selection.strategy';
 import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
 
 type PolygonType = Extract<SupportedEsriTool, 'circle' | 'polygon' | 'rectangle'>;
 
-export class EsriPolygonSelectionStrategy extends AbstractEsriSelectionStrategy {
+export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableSelectionStrategy {
   protected readonly tool: SupportedEsriTool = 'polygon';
 
   constructor(
