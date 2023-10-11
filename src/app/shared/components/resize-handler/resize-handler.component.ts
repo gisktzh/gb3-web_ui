@@ -1,5 +1,9 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Store} from '@ngrx/store';
 import {ResizeEvent} from 'angular-resizable-element';
+import {Subscription, tap} from 'rxjs';
+import {selectBottomSheetContent} from 'src/app/state/map/reducers/map-ui.reducer';
+import {BottomSheetContent} from '../../types/bottom-sheet-content.type';
 import {ResizeHandlerLocation} from '../../types/resize-handler-location.type';
 import {StyleExpression} from '../../types/style-expression.type';
 
@@ -19,11 +23,25 @@ const MAX_DIMENSION_PERCENTAGE = 0.9;
   templateUrl: './resize-handler.component.html',
   styleUrls: ['./resize-handler.component.scss'],
 })
-export class ResizeHandlerComponent {
+export class ResizeHandlerComponent implements OnInit, OnDestroy {
   @Input() public location!: ResizeHandlerLocation;
   @Output() public readonly resizeEvent = new EventEmitter<StyleExpression>();
   public resizeableStyle: StyleExpression = {};
   public isResizeActive: boolean = false;
+  public bottomSheetContent: BottomSheetContent = 'none';
+
+  private readonly bottomSheetContent$ = this.store.select(selectBottomSheetContent);
+  private readonly subscriptions = new Subscription();
+
+  constructor(private readonly store: Store) {}
+
+  public ngOnInit() {
+    this.initSubscriptions();
+  }
+
+  public ngOnDestroy() {
+    this.subscriptions.unsubscribe();
+  }
 
   public onResizeStart() {
     this.isResizeActive = true;
@@ -68,5 +86,11 @@ export class ResizeHandlerComponent {
     }
     this.resizeEvent.emit(this.resizeableStyle);
     this.isResizeActive = false;
+  }
+
+  public initSubscriptions() {
+    this.subscriptions.add(
+      this.bottomSheetContent$.pipe(tap((bottomSheetContent) => (this.bottomSheetContent = bottomSheetContent))).subscribe(),
+    );
   }
 }
