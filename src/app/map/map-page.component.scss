@@ -102,12 +102,9 @@
     max-height: 30vh;
     overflow-y: hidden;
     z-index: 400;
-
-    &--regular-screen {
-      position: absolute;
-      top: 132px; // starting at the first 'active map item' position
-      left: calc(24px + map-layout-variables.$map-overlay-width);
-    }
+    position: absolute;
+    top: 132px; // starting at the first 'active map item' position
+    left: calc(24px + map-layout-variables.$map-overlay-width);
   }
 
   .map-container__feature-info-overlay {
