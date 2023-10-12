@@ -9,6 +9,7 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 > 3. [Local Backend](#local-backend)
 > 4. [Naming conventions](#naming-conventions)
 > 5. [Code documentation](#code-documentation)
+> 6. [Git conventions](#git-conventions)
 
 ## Development server
 
@@ -485,7 +486,7 @@ Note that error actions/effects are not visible on this diagram
 
 Usually there are two ways to add new NPM packages. Either calling
 
-- `npm install <package> --save` (_save_ is not strictly necessary) \
+- `npm install <package> --save` \
   To install the package and add it to the `package.json` (and `package-lock.json`) in the section **dependencies**.
 - `npm install <package> --save-dev` \
   To install the package and add it to the `package.json` (and `package-lock.json`) in the section **devDependencies**.
@@ -501,3 +502,27 @@ To test if a new package has to be added to the **dependencies** or the **devDep
 npm ci --ignore-scripts --omit=dev
 npm run build-production
 ```
+
+## Git conventions
+
+### Branching strategy
+
+Our repository is mainly using the standard [Git flow branching model](https://nvie.com/posts/a-successful-git-branching-model/).
+
+<img src="https://nvie.com/img/git-model@2x.png" alt="Git flow branching model" width="400"/>
+
+There are the following branches:
+
+- **main** \
+  The production branch. Every commit has to be stable and tested as it is used as released code. Therefore, every commit that was released is marked by a tag `release-XXX` where `XXX` is the release number. It's entirely possible to have multiple release tags on the same commit if this repository wasn't updated since the last releases.
+- **develop** \
+  The main development branch. Every commit has to be stable as it will be deployed automatically to the [dev-environment server](https://dev.geo.zh.ch/).
+- **feature/\*** , **bugfix/\*** \
+  Individual feature/bugfix branches. They don't have to be stable as they are connected to one person working on it. They are based on the develop branch and finally get merged into that branch again. \
+  ℹ See also naming conventions for branch naming and commit message format: [Branchname and commit message](#branchname-and-commit-message)
+- **hotfix/\*** \
+  This is reserved to fix bugs that occur in a productive environment and need to be fixed ASAP. They're based on the main branch (and not the develop) because it is entirely possible that there are already new features on the develop branch that should not be released. As soon as this branch is finished it needs to be merged back to main (via PR). After that it's very important to create a second PR to merge this branch into the develop branch as well.
+
+### Naming conventions
+
+> **See [Branchname and commit message](#branchname-and-commit-message)**
