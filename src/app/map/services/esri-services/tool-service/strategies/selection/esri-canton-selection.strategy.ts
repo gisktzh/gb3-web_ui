@@ -1,34 +1,21 @@
 import {InternalDrawingLayer} from '../../../../../../shared/enums/drawing-layer.enum';
-import {DataDownloadActions} from '../../../../../../state/map/actions/data-download.actions';
 import {DataDownloadSelection} from '../../../../../../shared/interfaces/data-download-selection.interface';
 import {InternalDrawingRepresentation} from '../../../../../../shared/interfaces/internal-drawing-representation.interface';
 import {AbstractEsriSelectionStrategy} from './abstract-esri-selection.strategy';
-import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
-import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
-import {Store} from '@ngrx/store';
 import Graphic from '@arcgis/core/Graphic';
 import Polygon from '@arcgis/core/geometry/Polygon';
+import {Observable, of} from 'rxjs';
 
 export class EsriCantonSelectionStrategy extends AbstractEsriSelectionStrategy {
-  constructor(layer: GraphicsLayer, polygonSymbol: SimpleFillSymbol, store: Store) {
-    super(layer, polygonSymbol, store);
-  }
-
-  public start(): void {
-    const drawingRepresentation = this.createDrawingRepresentation();
-    this.drawRepresentationOnMap(drawingRepresentation);
-    this.dispatchSetSelection(drawingRepresentation);
-  }
-
-  private dispatchSetSelection(drawingRepresentation: InternalDrawingRepresentation) {
+  protected createSelection(): Observable<DataDownloadSelection | undefined> {
     const selection: DataDownloadSelection = {
       type: 'select-canton',
-      drawingRepresentation: drawingRepresentation,
+      drawingRepresentation: this.createDrawingRepresentation(),
     };
-    this.store.dispatch(DataDownloadActions.setSelection({selection}));
+    return of(selection);
   }
 
-  private drawRepresentationOnMap(drawingRepresentation: InternalDrawingRepresentation) {
+  protected drawSelection(selection: DataDownloadSelection): void {
     // TODO GB3-815 - Draw the canton as soon as the geometries are available and replace the following code
     const fakeCantonGeometry = new Polygon({
       rings: [

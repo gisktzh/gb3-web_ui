@@ -24,7 +24,7 @@ export class DataDownloadSelectMunicipalityDialogComponent implements OnInit, On
   private readonly productsLoadingState$ = this.store.select(selectProductsLoadingState);
 
   constructor(
-    private readonly dialogRef: MatDialogRef<DataDownloadSelectMunicipalityDialogComponent, Municipality>,
+    private readonly dialogRef: MatDialogRef<DataDownloadSelectMunicipalityDialogComponent, Municipality | undefined>,
     private readonly store: Store,
   ) {}
 

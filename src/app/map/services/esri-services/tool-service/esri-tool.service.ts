@@ -38,6 +38,7 @@ import {EsriMunicipalitySelectionStrategy} from './strategies/selection/esri-mun
 import {MatDialog} from '@angular/material/dialog';
 import {EsriCantonSelectionStrategy} from './strategies/selection/esri-canton-selection.strategy';
 import {EsriScreenExtentSelectionStrategy} from './strategies/selection/esri-screen-extent-selection.strategy';
+import {SelectionCallbackHandler} from './interfaces/selection-callback-handler.interface';
 
 const HANDLE_GROUP_KEY = 'EsriToolService';
 
@@ -317,6 +318,15 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
       this.store.dispatch(DataDownloadActions.setSelection({selection}));
     };
 
+    const completeSelectionCallbackHandler: SelectionCallbackHandler = {
+      complete: (selection: DataDownloadSelection) => {
+        this.store.dispatch(DataDownloadActions.setSelection({selection}));
+      },
+      abort: () => {
+        this.store.dispatch(ToolActions.cancelTool());
+      },
+    };
+
     switch (selectionType) {
       case 'select-circle':
         this.toolStrategy = new EsriPolygonSelectionStrategy(
@@ -346,13 +356,18 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
         );
         break;
       case 'select-section':
-        this.toolStrategy = new EsriScreenExtentSelectionStrategy(layer, areaStyle, this.store, this.esriMapViewService.mapView.extent);
+        this.toolStrategy = new EsriScreenExtentSelectionStrategy(
+          layer,
+          areaStyle,
+          completeSelectionCallbackHandler,
+          this.esriMapViewService.mapView.extent,
+        );
         break;
       case 'select-canton':
-        this.toolStrategy = new EsriCantonSelectionStrategy(layer, areaStyle, this.store);
+        this.toolStrategy = new EsriCantonSelectionStrategy(layer, areaStyle, completeSelectionCallbackHandler);
         break;
       case 'select-municipality':
-        this.toolStrategy = new EsriMunicipalitySelectionStrategy(layer, areaStyle, this.store, this.dialogService);
+        this.toolStrategy = new EsriMunicipalitySelectionStrategy(layer, areaStyle, completeSelectionCallbackHandler, this.dialogService);
         break;
     }
   }

@@ -1,64 +1,53 @@
-import {InternalDrawingLayer} from '../../../../../../shared/enums/drawing-layer.enum';
-import {Store} from '@ngrx/store';
 import {DataDownloadSelectMunicipalityDialogComponent} from '../../../../../components/data-download-select-municipality-dialog/data-download-select-municipality-dialog.component';
 import {PanelClass} from '../../../../../../shared/enums/panel-class.enum';
 import {MatDialog} from '@angular/material/dialog';
-import {tap} from 'rxjs';
-import {DataDownloadActions} from '../../../../../../state/map/actions/data-download.actions';
+import {Observable} from 'rxjs';
 import {DataDownloadSelection} from '../../../../../../shared/interfaces/data-download-selection.interface';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
-import {InternalDrawingRepresentation} from '../../../../../../shared/interfaces/internal-drawing-representation.interface';
 import {AbstractEsriSelectionStrategy} from './abstract-esri-selection.strategy';
-import {ToolActions} from '../../../../../../state/map/actions/tool.actions';
 import Polygon from '@arcgis/core/geometry/Polygon';
 import Graphic from '@arcgis/core/Graphic';
 import {Municipality} from '../../../../../../shared/interfaces/geoshop-product.interface';
+import {map} from 'rxjs/operators';
+import {SelectionCallbackHandler} from '../../interfaces/selection-callback-handler.interface';
+import {InternalDrawingRepresentation} from '../../../../../../shared/interfaces/internal-drawing-representation.interface';
+import {InternalDrawingLayer} from '../../../../../../shared/enums/drawing-layer.enum';
 
 export class EsriMunicipalitySelectionStrategy extends AbstractEsriSelectionStrategy {
   constructor(
     layer: GraphicsLayer,
     polygonSymbol: SimpleFillSymbol,
-    store: Store,
+    selectionCallbackHandler: SelectionCallbackHandler,
     private readonly dialogService: MatDialog,
   ) {
-    super(layer, polygonSymbol, store);
+    super(layer, polygonSymbol, selectionCallbackHandler);
   }
 
-  public start(): void {
-    const dialog = this.dialogService.open<DataDownloadSelectMunicipalityDialogComponent, void, Municipality>(
+  protected createSelection(): Observable<DataDownloadSelection | undefined> {
+    const dialog = this.dialogService.open<DataDownloadSelectMunicipalityDialogComponent, void, Municipality | undefined>(
       DataDownloadSelectMunicipalityDialogComponent,
       {
         panelClass: PanelClass.ApiWrapperDialog,
         restoreFocus: false,
       },
     );
-    dialog
-      .afterClosed()
-      .pipe(
-        tap((municipality) => {
-          if (municipality) {
-            const drawingRepresentation = this.createDrawingRepresentation(municipality);
-            this.drawMunicipalityOnMap(municipality, drawingRepresentation);
-            this.dispatchSetSelection(municipality, drawingRepresentation);
-          } else {
-            this.store.dispatch(ToolActions.cancelTool());
-          }
-        }),
-      )
-      .subscribe();
+    return dialog.afterClosed().pipe(
+      map((municipality) => {
+        if (municipality) {
+          const drawingRepresentation = this.createDrawingRepresentation(municipality);
+          return {
+            type: 'select-municipality',
+            drawingRepresentation: drawingRepresentation,
+            municipality,
+          };
+        }
+        return undefined;
+      }),
+    );
   }
 
-  private dispatchSetSelection(municipality: Municipality, drawingRepresentation: InternalDrawingRepresentation) {
-    const selection: DataDownloadSelection = {
-      type: 'select-municipality',
-      drawingRepresentation: drawingRepresentation,
-      municipality,
-    };
-    this.store.dispatch(DataDownloadActions.setSelection({selection}));
-  }
-
-  private drawMunicipalityOnMap(municipality: Municipality, drawingRepresentation: InternalDrawingRepresentation) {
+  protected drawSelection(selection: DataDownloadSelection): void {
     // TODO GB3-815 - Draw the municipality as soon as the geometries are available and replace the following code
     const fakeMunicipalityGeometry = new Polygon({
       rings: [

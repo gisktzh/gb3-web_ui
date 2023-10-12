@@ -1,6 +1,4 @@
 import {InternalDrawingLayer} from '../../../../../../shared/enums/drawing-layer.enum';
-import {Store} from '@ngrx/store';
-import {DataDownloadActions} from '../../../../../../state/map/actions/data-download.actions';
 import {DataDownloadSelection} from '../../../../../../shared/interfaces/data-download-selection.interface';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
@@ -8,34 +6,31 @@ import {InternalDrawingRepresentation} from '../../../../../../shared/interfaces
 import Extent from '@arcgis/core/geometry/Extent';
 import Graphic from '@arcgis/core/Graphic';
 import {AbstractEsriSelectionStrategy} from './abstract-esri-selection.strategy';
+import {Observable, of} from 'rxjs';
+import {SelectionCallbackHandler} from '../../interfaces/selection-callback-handler.interface';
 
 export class EsriScreenExtentSelectionStrategy extends AbstractEsriSelectionStrategy {
   constructor(
     layer: GraphicsLayer,
     polygonSymbol: SimpleFillSymbol,
-    store: Store,
+    selectionCallbackHandler: SelectionCallbackHandler,
     private readonly screenExtent: Extent,
   ) {
-    super(layer, polygonSymbol, store);
+    super(layer, polygonSymbol, selectionCallbackHandler);
   }
 
-  public start(): void {
-    this.drawRepresentationOnMap();
-    this.dispatchSetSelection();
-  }
-
-  private drawRepresentationOnMap() {
-    const graphic = new Graphic({geometry: this.screenExtent, symbol: this.polygonSymbol});
-    this.layer.add(graphic);
-  }
-
-  private dispatchSetSelection() {
+  protected createSelection(): Observable<DataDownloadSelection | undefined> {
     const drawingRepresentation = this.createDrawingRepresentation();
     const selection: DataDownloadSelection = {
       type: 'select-section',
       drawingRepresentation: drawingRepresentation,
     };
-    this.store.dispatch(DataDownloadActions.setSelection({selection}));
+    return of(selection);
+  }
+
+  protected drawSelection(selection: DataDownloadSelection): void {
+    const graphic = new Graphic({geometry: this.screenExtent, symbol: this.polygonSymbol});
+    this.layer.add(graphic);
   }
 
   private createDrawingRepresentation(): InternalDrawingRepresentation {
