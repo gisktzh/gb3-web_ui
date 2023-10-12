@@ -33,6 +33,7 @@ import {BasemapSelectorComponent} from './components/map-controls/basemap-select
 import {CoordinateScaleInputsComponent} from './components/map-controls/coordinate-scale-inputs/coordinate-scale-inputs.component';
 import {DataInputComponent} from './components/map-controls/data-input/data-input.component';
 import {MapControlsComponent} from './components/map-controls/map-controls.component';
+import {UiToggleComponent} from './components/map-controls/ui-toggle/ui-toggle.component';
 import {ZoomControlsComponent} from './components/map-controls/zoom-controls/zoom-controls.component';
 import {BaseMapDataItemComponent} from './components/map-data-catalogue/base-map-data-item/base-map-data-item.component';
 import {MapDataItemFavouriteComponent} from './components/map-data-catalogue/base-map-data-item/map-data-item-favourite.component';
@@ -124,6 +125,7 @@ import {MapRoutingModule} from './map-routing.module';
     BasemapSelectionListComponent,
     MapToolsDesktopComponent,
     MapToolsMobileComponent,
+    UiToggleComponent,
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule],
   exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent],

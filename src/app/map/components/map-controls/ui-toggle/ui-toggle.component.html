@@ -1,0 +1,11 @@
+<div class="ui-toggle">
+  <button
+    mat-icon-button
+    (click)="hideUiElements()"
+    class="ui-toggle__button"
+    data-test-id="ui-toggle"
+    [matTooltip]="checked ? 'Ui-Elemente anzeigen' : 'Ui-Elemente verbergen'"
+  >
+    <mat-slide-toggle [checked]="checked" hideIcon color="primary"></mat-slide-toggle>
+  </button>
+</div>

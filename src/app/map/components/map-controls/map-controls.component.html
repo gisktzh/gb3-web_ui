@@ -16,5 +16,8 @@
       ></coordinate-scale-inputs>
     </div>
   </div>
-  <zoom-controls class="map-controls__zoom-controls" [showLocateMeButton]="true"></zoom-controls>
+  <div class="map-controls__buttons">
+    <zoom-controls class="map-controls__buttons__button-group" [showLocateMeButton]="true"></zoom-controls>
+    <ui-toggle *ngIf="screenMode !== 'mobile'" class="map-controls__buttons__button-group"></ui-toggle>
+  </div>
 </div>

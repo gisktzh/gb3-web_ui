@@ -46,7 +46,13 @@
     }
   }
 
-  .map-controls__zoom-controls {
-    @include mixins.map-element-box-shadow;
+  .map-controls__buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    .map-controls__buttons_button__group {
+      @include mixins.map-element-box-shadow;
+    }
   }
 }
