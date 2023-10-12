@@ -12,6 +12,7 @@ import {ActiveMapItemsComponent} from './components/active-map-items/active-map-
 import {ApiDialogWrapperComponent} from './components/api-dialog-wrapper/api-dialog-wrapper.component';
 import {BottomSheetItemComponent} from './components/bottom-sheet-overlay/bottom-sheet-item/bottom-sheet-item.component';
 import {BottomSheetOverlayComponent} from './components/bottom-sheet-overlay/bottom-sheet-overlay.component';
+import {DataDownloadDialogComponent} from './components/data-download/data-download-dialog/data-download-dialog.component';
 import {FavouriteCreationDialogComponent} from './components/favourite-creation-dialog/favourite-creation-dialog.component';
 import {FavouriteDeletionDialogComponent} from './components/favourite-deletion-dialog/favourite-deletion-dialog.component';
 import {FeatureInfoContentComponent} from './components/feature-info-overlay/feature-info-content/feature-info-content.component';
@@ -44,6 +45,7 @@ import {MapNoticeDialogComponent} from './components/map-notice-dialog/map-notic
 import {MapOverlayListItemComponent} from './components/map-overlay/map-overlay-list-item/map-overlay-list-item.component';
 import {MapOverlayComponent} from './components/map-overlay/map-overlay.component';
 import {AbstractToolsComponent} from './components/map-tools/abstract-tools/abstract-tools.component';
+import {DataDownloadSelectionToolsComponent} from './components/map-tools/data-download-selection-tools/data-download-selection-tools.component';
 import {DrawingToolsComponent} from './components/map-tools/drawing-tools/drawing-tools.component';
 import {MapToolsDesktopComponent} from './components/map-tools/map-tools-desktop/map-tools-desktop.component';
 import {MapToolsMobileComponent} from './components/map-tools/map-tools-mobile/map-tools-mobile.component';
@@ -111,6 +113,8 @@ import {MapRoutingModule} from './map-routing.module';
     DrawingToolsComponent,
     AbstractToolsComponent,
     ZoomControlsComponent,
+    DataDownloadSelectionToolsComponent,
+    DataDownloadDialogComponent,
     BottomSheetOverlayComponent,
     BottomSheetItemComponent,
     LegendComponent,

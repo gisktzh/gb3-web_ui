@@ -7,6 +7,7 @@
     [ngSwitch]="mapSideDrawerContent"
   >
     <print-dialog *ngSwitchCase="'print'"></print-dialog>
+    <data-download-dialog *ngSwitchCase="'data-download'"></data-download-dialog>
   </mat-drawer>
 
   <map-container></map-container>

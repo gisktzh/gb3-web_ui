@@ -63,7 +63,7 @@
   "devDependencies": {
     "@ngrx/eslint-plugin": "^16.0.1",
     "@ngrx/schematics": "^16.0.1",
-    "@types/jasmine": "~4.3.0",
+    "@types/jasmine": "~5.1.0",
     "@types/terraformer__arcgis": "^2.0.2",
     "@types/uuid": "^9.0.4",
     "@typescript-eslint/eslint-plugin": "^6.0.0",

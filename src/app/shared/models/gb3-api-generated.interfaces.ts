@@ -535,6 +535,10 @@ export interface Legend {
   legend: {
     /** Topic name */
     topic: string;
+    /** Geolion ID of topic */
+    geolion_gdd: number | null;
+    /** UUID from geommetadatabase */
+    geolion_karten_uuid: string | null;
     layers: {
       /** Layer name */
       layer: string;
@@ -549,7 +553,9 @@ export interface Legend {
       /** Layer attribution */
       attribution?: string;
       /** Geolion ID of layer */
-      geolion?: number;
+      geolion_gds: number | null;
+      /** UUID from geommetadatabase */
+      geolion_geodatensatz_uuid: string | null;
     }[];
   };
 }
@@ -563,11 +569,19 @@ export interface Feature {
     results: {
       /** Topic name */
       topic: string;
+      /** Geolion ID of topic */
+      geolion_gdd: number | null;
+      /** UUID from geommetadatabase */
+      geolion_karten_uuid: string | null;
       layers: {
         /** Layer name */
         layer: string;
         /** Layer title */
         title: string;
+        /** Geolion ID of layer */
+        geolion_gds: number | null;
+        /** UUID from geommetadatabase */
+        geolion_geodatensatz_uuid: string | null;
         features: {
           /** Feature ID */
           fid: number;
@@ -618,13 +632,13 @@ export interface Geometry {
    * Type of GeoJSON geometry object
    * @example "Polygon"
    */
-  type: 'Polygon' | 'Point' | 'LineString' | 'MultiPoint';
+  type: 'Polygon' | 'Point' | 'LineString' | 'MultiPoint' | 'MultiPolygon';
   crs?: GeometryCrs;
   /**
    * coordinates for GeoJSON geometry object
    * @example [[[2681730,1247976],[2680217,1249161],[2680809,1250249],[2681937,1249504],[2681730,1247976]],[[2680836,1249355],[2681554,1249477],[2681327,1248867],[2680836,1249355]]]
    */
-  coordinates: (number | number[] | number[][])[];
+  coordinates: (number | number[] | number[][] | number[][][])[];
 }
 
 export interface GeojsonFeature {
@@ -818,7 +832,9 @@ export interface Topics {
       /** Organisation title */
       organisation: string | null;
       /** Geolion ID of topic */
-      guid: number | null;
+      geolion_gdd: number | null;
+      /** UUID from geommetadatabase */
+      geolion_karten_uuid: string | null;
       /** Keywords */
       keywords: string[];
       /** Topic-specific notice for end-users */
@@ -897,7 +913,9 @@ export interface Topics {
         /** Layer ID */
         id: number;
         /** Geolion ID of layer */
-        guid: number | null;
+        geolion_gds: number | null;
+        /** UUID from geommetadatabase */
+        geolion_geodatensatz_uuid: string | null;
         /** Layer name */
         layer: string;
         /** Layer group title if set */

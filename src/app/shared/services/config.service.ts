@@ -1,23 +1,25 @@
+import {DOCUMENT} from '@angular/common';
 import {Inject, Injectable} from '@angular/core';
 import {defaultBasemap, defaultBasemaps} from '../configs/base-map.config';
-import {defaultMapConfig} from '../configs/map.config';
-import {MapConstants} from '../constants/map.constants';
-import {DOCUMENT} from '@angular/common';
-import {defaultRuntimeConfig} from '../configs/runtime.config';
-import {ApiConfig, AuthSettings, OverrideSettings, RuntimeConfig} from '../interfaces/runtime-config.interface';
-import {Gb2Constants} from '../constants/gb2.constants';
-import {layerSymbolizations} from '../configs/symbolization.config';
-
-import {HostNameResolutionMismatch} from '../errors/app.errors';
-import {EmbeddedMapConstants} from '../constants/embedded-map.constants';
 import {dataCatalogueFilterConfig} from '../configs/filter.config';
-import {DataCatalogueFilterConfiguration} from '../interfaces/data-catalogue-filter.interface';
-import {SearchIndex} from './apis/search/interfaces/search-index.interface';
-import {searchIndexConfig, SearchIndexType} from '../configs/search-index.config';
-import {SearchConfig} from '../interfaces/search-config.interface';
-import {searchConfig} from '../configs/search.config';
-import {PrintConfig} from '../interfaces/print-config.interface';
+import {mapAnimationConfig} from '../configs/map-animation.config';
+import {defaultMapConfig} from '../configs/map.config';
 import {printConfig} from '../configs/print.config';
+import {defaultRuntimeConfig} from '../configs/runtime.config';
+import {SearchIndexType, searchIndexConfig} from '../configs/search-index.config';
+import {searchConfig} from '../configs/search.config';
+import {layerSymbolizations} from '../configs/symbolization.config';
+import {toolTipLongDelay, toolTipMapToolsAndControls} from '../configs/tooltip.config';
+import {EmbeddedMapConstants} from '../constants/embedded-map.constants';
+import {Gb2Constants} from '../constants/gb2.constants';
+import {MapConstants} from '../constants/map.constants';
+import {HostNameResolutionMismatch} from '../errors/app.errors';
+import {DataCatalogueFilterConfiguration} from '../interfaces/data-catalogue-filter.interface';
+import {MapAnimationConfig} from '../interfaces/map-animation-config.interface';
+import {PrintConfig} from '../interfaces/print-config.interface';
+import {ApiConfig, AuthSettings, OverrideSettings, RuntimeConfig} from '../interfaces/runtime-config.interface';
+import {SearchConfig} from '../interfaces/search-config.interface';
+import {SearchIndex} from './apis/search/interfaces/search-index.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -51,6 +53,11 @@ export class ConfigService {
     borderSize: EmbeddedMapConstants.DEFAULT_BORDER_SIZE,
   };
 
+  public readonly tooltipConfig = {
+    longDelay: toolTipLongDelay,
+    mapToolsAndControls: toolTipMapToolsAndControls,
+  };
+
   public get filterConfig(): {dataCatalogue: DataCatalogueFilterConfiguration[]} {
     return {
       dataCatalogue: dataCatalogueFilterConfig,
@@ -65,6 +72,10 @@ export class ConfigService {
 
   public get printConfig(): PrintConfig {
     return printConfig;
+  }
+
+  public get mapAnimationConfig(): MapAnimationConfig {
+    return mapAnimationConfig;
   }
 
   constructor(@Inject(DOCUMENT) private readonly document: Document) {

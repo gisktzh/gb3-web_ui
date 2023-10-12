@@ -34,6 +34,7 @@ export class MapUiEffects {
       map((value) => {
         switch (value.mapSideDrawerContent) {
           case 'print':
+          case 'data-download':
             return MapUiActions.changeUiElementsVisibility({hideAllUiElements: true, hideUiToggleButton: true});
         }
       }),
@@ -46,6 +47,7 @@ export class MapUiEffects {
       map((value) => {
         switch (value.mapSideDrawerContent) {
           case 'print':
+          case 'data-download': // TODO GB3-650 - use this effect to load geostore data
             return PrintActions.loadPrintCapabilities();
         }
       }),

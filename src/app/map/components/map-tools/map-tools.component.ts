@@ -1,6 +1,9 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
+import {MAT_TOOLTIP_DEFAULT_OPTIONS} from '@angular/material/tooltip';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
+import {toolTipFactoryMapToolsAndControls} from 'src/app/shared/factories/tooltip-map-tools-and-controls.factory';
+import {ConfigService} from 'src/app/shared/services/config.service';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 
@@ -8,6 +11,7 @@ import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
   selector: 'map-tools',
   templateUrl: './map-tools.component.html',
   styleUrls: ['./map-tools.component.scss'],
+  providers: [{provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useFactory: toolTipFactoryMapToolsAndControls, deps: [ConfigService]}],
 })
 export class MapToolsComponent implements OnInit, OnDestroy {
   public screenMode: ScreenMode = 'regular';

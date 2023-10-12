@@ -11,6 +11,7 @@ import {PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.in
 import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
 import {ConfigService} from '../../../shared/services/config.service';
 import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
+import {ToolType} from '../../../shared/types/tool.type';
 import {selectScreenMode} from '../../app/reducers/app-layout.reducer';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {FeatureInfoActions} from '../actions/feature-info.actions';
@@ -67,10 +68,11 @@ export class ActiveMapItemEffects {
         if (activeTool === undefined) {
           return false;
         }
+        const definedActiveTool: ToolType = activeTool;
         switch (action.type) {
           case '[ActiveMapItem] Remove Active Map Item':
             let activeUserDrawingLayer: UserDrawingLayer;
-            switch (activeTool) {
+            switch (definedActiveTool) {
               case 'measure-line':
               case 'measure-point':
               case 'measure-area':
@@ -83,6 +85,14 @@ export class ActiveMapItemEffects {
               case 'draw-circle':
                 activeUserDrawingLayer = UserDrawingLayer.Drawings;
                 break;
+              case 'select-circle':
+              case 'select-polygon':
+              case 'select-rectangle':
+              case 'select-section':
+              case 'select-canton':
+              case 'select-municipality':
+                // selection tools are used on an internal layer
+                return false;
             }
             // is there still a drawing item for the current active tool? if not => cancel tool
             return !activeMapItems.some(

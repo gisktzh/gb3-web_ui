@@ -51,8 +51,6 @@ import {map} from 'rxjs/operators';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
-const DEFAULT_PRINT_PREVIEW_ANIMATION_DURATION_IN_MS = 500;
-const DEFAULT_PRINT_PREVIEW_EXPAND_FACTOR = 1.5;
 
 @Injectable({
   providedIn: 'root',
@@ -391,7 +389,11 @@ export class EsriMapService implements MapService, OnDestroy {
 
     // draw the new geometry once as it is entirely possible that the map center didn't change yet and then zoom to the geometry.
     const geometryWithSrs: PolygonWithSrs = this.handlePrintPreview(this.mapView.center, extentWidth, extentHeight, rotation);
-    await this.zoomToExtent(geometryWithSrs, DEFAULT_PRINT_PREVIEW_EXPAND_FACTOR, DEFAULT_PRINT_PREVIEW_ANIMATION_DURATION_IN_MS);
+    await this.zoomToExtent(
+      geometryWithSrs,
+      this.configService.mapAnimationConfig.zoom.expandFactor,
+      this.configService.mapAnimationConfig.zoom.duration,
+    );
   }
 
   public stopDrawPrintPreview() {
