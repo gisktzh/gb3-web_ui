@@ -1,0 +1,9 @@
+steps:
+  - task: Docker@2
+    displayName: Build
+    inputs:
+      command: build
+      repository: 'gb3-frontend'
+      dockerfile: '**/Dockerfile'
+      arguments: '--build-arg TARGET_ENVIRONMENT=production'
+      tags: 'latest'
