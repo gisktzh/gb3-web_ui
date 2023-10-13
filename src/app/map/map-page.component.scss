@@ -15,7 +15,9 @@
   $minimal-bottom-height: map-layout-variables.$esri-attribution-widget-height;
 
   &--mobile {
-    height: 100vh;
+    position: absolute;
+    height: 100%;
+    width: 100%;
   }
 
   .map-container__map-element--hidden {
