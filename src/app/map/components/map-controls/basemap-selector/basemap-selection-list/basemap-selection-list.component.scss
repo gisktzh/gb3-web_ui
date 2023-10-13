@@ -1,0 +1,64 @@
+@use 'functions/helper.function' as functions;
+@use 'mixins/helpers.mixin' as mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'variables/z-index-variables' as z-index-variables;
+
+:host ::ng-deep .basemap-selection-list__item.mdc-button .mdc-button__label {
+  height: 100%;
+}
+
+.basemap-selection-list {
+  padding: 7px;
+  margin-right: 10px;
+  height: 100px;
+  background-color: ktzh-variables.$zh-white;
+  border-radius: ktzh-variables.$zh-border-radius;
+  pointer-events: all;
+
+  &--desktop {
+    @include mixins.map-element-box-shadow;
+  }
+
+  &--mobile {
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .basemap-selection-list__item {
+    height: 100%;
+    width: 106px;
+    padding: 5px;
+
+    .basemap-selection-list__item__image {
+      display: block;
+      height: 48px;
+      width: 96px;
+      object-fit: cover;
+
+      &--blank {
+        border: 1px solid ktzh-variables.$zh-black100;
+        box-sizing: border-box;
+      }
+    }
+
+    .basemap-selection-list__item__title {
+      @include mixins.multiline-ellipsis(2);
+      width: 96px;
+      font-family: ktzh-variables.$zh-font-family;
+      font-size: 12px;
+      text-align: left;
+    }
+
+    &--active {
+      .basemap-selection-list__item__image {
+        border: 4px solid functions.get-color-from-palette(ktzh-variables.$zh-primary);
+        box-sizing: border-box;
+      }
+
+      .basemap-selection-list__item__title {
+        font-family: ktzh-variables.$zh-font-family-bold;
+        color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
+      }
+    }
+  }
+}

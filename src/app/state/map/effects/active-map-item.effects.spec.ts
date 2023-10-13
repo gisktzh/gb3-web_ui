@@ -160,7 +160,7 @@ describe('ActiveMapItemEffects', () => {
     it('dispatches MapUiActions.hideLegend() if removeAllActiveMapItems action is executed', (done: DoneFn) => {
       actions$ = of(ActiveMapItemActions.removeAllActiveMapItems());
       effects.hideLegendAfterRemovingAllMapItems$.subscribe((action) => {
-        expect(action).toEqual(MapUiActions.hideLegend());
+        expect(action).toEqual(MapUiActions.setLegendOverlayVisibility({isVisible: false}));
         done();
       });
     });

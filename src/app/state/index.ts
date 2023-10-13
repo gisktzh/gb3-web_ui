@@ -4,6 +4,7 @@ import {reducer as legendReducer} from './map/reducers/legend.reducer';
 import {reducer as featureInfoReducer} from './map/reducers/feature-info.reducer';
 import {reducer as layerCatalogReducer} from './map/reducers/layer-catalog.reducer';
 import {reducer as activeMapItemReducer} from './map/reducers/active-map-item.reducer';
+import {reducer as dataDownloadReducer} from './map/reducers/data-download.reducer';
 import {reducer as authStatusReducer} from './auth/reducers/auth-status.reducer';
 import {reducer as favouriteListReducer} from './map/reducers/favourite-list.reducer';
 import {reducer as supportContentReducer} from './support/reducers/support-content.reducer';
@@ -19,7 +20,6 @@ import {reducer as shareLinkReducer} from './map/reducers/share-link.reducer';
 import {reducer as dataCatalogueReducer} from './data-catalogue/reducers/data-catalogue.reducer';
 import {reducer as searchReducer} from './app/reducers/search.reducer';
 import {reducer as drawingReducer} from './map/reducers/drawing.reducer';
-import {reducer as dataDownloadReducer} from './map/reducers/data-download.reducer';
 import {ActiveMapItemState} from './map/states/active-map-item.state';
 import {FavouriteListState} from './map/states/favourite-list.state';
 import {FeatureInfoState} from './map/states/feature-info.state';
@@ -33,11 +33,13 @@ import {PageNotificationState} from './app/states/page-notification.state';
 import {GeolocationState} from './map/states/geolocation.state';
 import {GeneralInfoState} from './map/states/general-info.state';
 import {AppLayoutState} from './app/states/app-layout.state';
+import {DataDownloadState} from './map/states/data-download.state';
 import {PrintState} from './map/states/print.state';
 import {MapUiState} from './map/states/map-ui.state';
 import {ToolState} from './map/states/tool.state';
 import {ShareLinkState} from './map/states/share-link.state';
 import {ActiveMapItemEffects} from './map/effects/active-map-item.effects';
+import {DataDownloadEffects} from './map/effects/data-download.effects';
 import {FeatureInfoEffects} from './map/effects/feature-info.effects';
 import {LayerCatalogEffects} from './map/effects/layer-catalog.effects';
 import {LegendEffects} from './map/effects/legend.effects';
@@ -57,8 +59,8 @@ import {SearchState} from './app/states/search.state';
 import {SearchEffects} from './app/effects/search.effects';
 import {DrawingState} from './map/states/drawing.state';
 import {DrawingEffects} from './map/effects/drawing.effects';
-import {DataDownloadState} from './map/states/data-download.state';
-import {DataDownloadEffects} from './map/effects/data-download.effects';
+import {AppLayoutEffects} from './app/effects/app-layout.effects';
+import {MapAttributeFiltersItemEffects} from './map/effects/map-attribute-filters-item.effects';
 
 export interface State {
   mapConfig: MapConfigState;
@@ -127,6 +129,8 @@ export const effects = [
   SearchEffects,
   DrawingEffects,
   DataDownloadEffects,
+  AppLayoutEffects,
+  MapAttributeFiltersItemEffects,
 ];
 
 export const metaReducers: MetaReducer<State>[] = [];

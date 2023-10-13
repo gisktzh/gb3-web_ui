@@ -1,23 +1,25 @@
-import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
-import {DocumentService} from './shared/services/document.service';
 import {BreakpointObserver} from '@angular/cdk/layout';
-import {filter, Subscription, take, tap} from 'rxjs';
-import {PageNotificationService} from './shared/services/page-notification.service';
+import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {MatSnackBar, MatSnackBarRef} from '@angular/material/snack-bar';
-import {PageNotificationComponent} from './shared/components/page-notification/page-notification.component';
-import {PageNotification} from './shared/interfaces/page-notification.interface';
-import {PanelClass} from './shared/enums/panel-class.enum';
 import {NavigationEnd, Router} from '@angular/router';
-import {map} from 'rxjs/operators';
-import {MainPage} from './shared/enums/main-page.enum';
-import {UrlUtils} from './shared/utils/url.utils';
 import {Store} from '@ngrx/store';
-import {selectScreenMode, selectScrollbarWidth} from './state/app/reducers/app-layout.reducer';
-import {IconsService} from './shared/services/icons.service';
-import {ScreenMode} from './shared/types/screen-size.type';
-import {AppLayoutActions} from './state/app/actions/app-layout.actions';
-import {Breakpoints} from './shared/enums/breakpoints.enum';
+import {Subscription, filter, take, tap} from 'rxjs';
+import {map} from 'rxjs/operators';
 import {environment} from 'src/environments/environment';
+import {PageNotificationComponent} from './shared/components/page-notification/page-notification.component';
+import {Breakpoints} from './shared/enums/breakpoints.enum';
+import {MainPage} from './shared/enums/main-page.enum';
+import {PanelClass} from './shared/enums/panel-class.enum';
+import {PageNotification} from './shared/interfaces/page-notification.interface';
+import {DocumentService} from './shared/services/document.service';
+import {IconsService} from './shared/services/icons.service';
+import {PageNotificationService} from './shared/services/page-notification.service';
+import {ScreenMode} from './shared/types/screen-size.type';
+import {UrlUtils} from './shared/utils/url.utils';
+import {AppLayoutActions} from './state/app/actions/app-layout.actions';
+import {selectScreenMode, selectScrollbarWidth} from './state/app/reducers/app-layout.reducer';
+import {selectMapUiState} from './state/map/reducers/map-ui.reducer';
+import {MapUiState} from './state/map/states/map-ui.state';
 
 @Component({
   selector: 'app-root',
@@ -27,6 +29,7 @@ import {environment} from 'src/environments/environment';
 export class AppComponent implements OnInit, OnDestroy {
   public showWarning: boolean = false;
   public screenMode: ScreenMode = 'regular';
+  public mapUiState?: MapUiState;
 
   /**
    * Flag which can be used to completely hide header and footer, e.g. on an iframe page
@@ -43,6 +46,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private readonly subscriptions: Subscription = new Subscription();
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly scrollbarWidth$ = this.store.select(selectScrollbarWidth);
+  private readonly mapUiState$ = this.store.select(selectMapUiState);
 
   constructor(
     private readonly documentService: DocumentService,
@@ -87,6 +91,16 @@ export class AppComponent implements OnInit, OnDestroy {
               screenMode = 'regular';
             }
             this.store.dispatch(AppLayoutActions.setScreenMode({screenMode: screenMode}));
+          }),
+        )
+        .subscribe(),
+    );
+
+    this.subscriptions.add(
+      this.mapUiState$
+        .pipe(
+          tap((mapUiState) => {
+            this.mapUiState = mapUiState;
           }),
         )
         .subscribe(),

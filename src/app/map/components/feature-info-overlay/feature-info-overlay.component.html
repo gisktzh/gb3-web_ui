@@ -7,11 +7,5 @@
   overlayTitle="Info"
   location="right"
 >
-  <loading-and-process-bar [loadingState]="loadingState"></loading-and-process-bar>
-  <ng-container *ngIf="loadingState === 'loaded'">
-    <feature-info-general-information *ngIf="generalInfoData" [generalInfoData]="generalInfoData"></feature-info-general-information>
-    <mat-divider *ngIf="generalInfoData" class="divider"></mat-divider>
-    <feature-info-item *ngFor="let featureInfo of featureInfoData; trackBy: trackById" [featureInfo]="featureInfo"></feature-info-item>
-    <i *ngIf="featureInfoData.length === 0">Keine kartenspezifischen Treffer!</i>
-  </ng-container>
+  <feature-info></feature-info>
 </map-overlay>

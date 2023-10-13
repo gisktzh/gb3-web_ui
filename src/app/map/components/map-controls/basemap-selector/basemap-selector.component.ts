@@ -1,11 +1,10 @@
 import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
-import {selectActiveBasemapId} from '../../../../state/map/reducers/map-config.reducer';
+import {Subscription, tap} from 'rxjs';
 import {Basemap} from '../../../../shared/interfaces/basemap.interface';
-import {MapConfigActions} from '../../../../state/map/actions/map-config.actions';
-import {BasemapConfigService} from '../../../services/basemap-config.service';
 import {DocumentService} from '../../../../shared/services/document.service';
+import {selectActiveBasemapId} from '../../../../state/map/reducers/map-config.reducer';
+import {BasemapConfigService} from '../../../services/basemap-config.service';
 
 @Component({
   selector: 'basemap-selector',
@@ -53,11 +52,6 @@ export class BasemapSelectorComponent implements OnInit, OnDestroy, AfterViewIni
 
   public toggleSelection() {
     this.isSelectionOpen = !this.isSelectionOpen;
-  }
-
-  public switchBasemap(toId: string) {
-    this.store.dispatch(MapConfigActions.setBasemap({activeBasemapId: toId}));
-    this.toggleSelection();
   }
 
   private initSubscriptions() {

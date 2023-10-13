@@ -18,8 +18,9 @@ import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.re
 import {FavouritesService} from '../../services/favourites.service';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
-
+import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {MapCouldNotBeFound} from '../../../shared/errors/map.errors';
+import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 
 /**
  * Defines the upper limit (inclusive) of filtered results which trigger an automatic open of the associated expansion panel.
@@ -42,6 +43,7 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
   public isAuthenticated: boolean = false;
   public autoOpenThreshold: number = AUTO_OPEN_THRESHOLD;
   public isMinimized = false;
+  public screenMode: ScreenMode = 'regular';
 
   private originalMaps: Map[] = [];
   private readonly filterString$ = this.store.select(selectFilterString);
@@ -51,6 +53,7 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
   private readonly topics$ = this.store.select(selectFilteredLayerCatalog);
   private readonly originalMaps$ = this.store.select(selectMaps);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
+  private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly subscriptions = new Subscription();
   @ViewChild('filterInput') private readonly input!: ElementRef;
 
@@ -70,7 +73,9 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   public ngAfterViewInit() {
-    this.subscriptions.add(this.filterInputHandler().subscribe());
+    if (this.screenMode !== 'mobile') {
+      this.subscriptions.add(this.filterInputHandler().subscribe());
+    }
   }
 
   /**
@@ -187,6 +192,16 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
         .pipe(
           tap((value) => {
             this.originalMaps = value;
+          }),
+        )
+        .subscribe(),
+    );
+
+    this.subscriptions.add(
+      this.screenMode$
+        .pipe(
+          tap((screenMode) => {
+            this.screenMode = screenMode;
           }),
         )
         .subscribe(),

@@ -1,25 +1,26 @@
 import {Inject, Injectable} from '@angular/core';
 import {Actions, concatLatestFrom, createEffect, ofType} from '@ngrx/effects';
-import {ActiveMapItemActions} from '../actions/active-map-item.actions';
+import {Store} from '@ngrx/store';
 import {filter, tap} from 'rxjs';
+import {map} from 'rxjs/operators';
 import {MAP_SERVICE} from '../../../app.module';
 import {MapService} from '../../../map/interfaces/map.service';
-import {selectItems} from '../reducers/active-map-item.reducer';
-import {Store} from '@ngrx/store';
-import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
-import {MapConfigActions} from '../actions/map-config.actions';
-import {map} from 'rxjs/operators';
-import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
 import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
-import {PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
-import {selectIsMapServiceInitialized} from '../reducers/map-config.reducer';
-import {MapUiActions} from '../actions/map-ui.actions';
-import {FeatureInfoActions} from '../actions/feature-info.actions';
-import {selectActiveTool} from '../reducers/tool.reducer';
 import {UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
-import {ToolActions} from '../actions/tool.actions';
+import {PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
+import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
 import {ConfigService} from '../../../shared/services/config.service';
+import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
 import {ToolType} from '../../../shared/types/tool.type';
+import {selectScreenMode} from '../../app/reducers/app-layout.reducer';
+import {ActiveMapItemActions} from '../actions/active-map-item.actions';
+import {FeatureInfoActions} from '../actions/feature-info.actions';
+import {MapConfigActions} from '../actions/map-config.actions';
+import {MapUiActions} from '../actions/map-ui.actions';
+import {ToolActions} from '../actions/tool.actions';
+import {selectItems} from '../reducers/active-map-item.reducer';
+import {selectIsMapServiceInitialized} from '../reducers/map-config.reducer';
+import {selectActiveTool} from '../reducers/tool.reducer';
 
 @Injectable()
 export class ActiveMapItemEffects {
@@ -108,7 +109,9 @@ export class ActiveMapItemEffects {
   public hideLegendAfterRemovingAllMapItems$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ActiveMapItemActions.removeAllActiveMapItems),
-      map(() => MapUiActions.hideLegend()),
+      concatLatestFrom(() => this.store.select(selectScreenMode)),
+      filter(([_, screenMode]) => screenMode !== 'mobile'),
+      map(() => MapUiActions.setLegendOverlayVisibility({isVisible: false})),
     );
   });
 

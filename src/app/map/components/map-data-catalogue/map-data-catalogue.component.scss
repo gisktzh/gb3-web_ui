@@ -10,6 +10,10 @@
 .map-data-catalogue {
   width: 100%;
 
+  &--hide-shadow {
+    box-shadow: none;
+  }
+
   .map-data-catalogue__header {
     display: flex;
     align-items: center;

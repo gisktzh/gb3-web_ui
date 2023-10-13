@@ -55,8 +55,8 @@ export class EmbeddedMapPageComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  public toggleLegend() {
-    this.store.dispatch(MapUiActions.showLegend());
+  public showLegend() {
+    this.store.dispatch(MapUiActions.setLegendOverlayVisibility({isVisible: true}));
   }
 
   private initSubscriptions() {
