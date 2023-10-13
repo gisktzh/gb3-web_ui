@@ -4,16 +4,12 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 > # Table of Contents
 >
-> 1. [Installation](#installation)
-> 2. [Development server](#development-server)
-> 3. [Docker](#docker)
-> 4. [Local Backend](#local-backend)
-> 5. [Naming conventions](#naming-conventions)
-> 6. [Code documentation](#code-documentation)
-
-## Installation
-
-- Husky
+> 1. [Development server](#development-server)
+> 2. [Docker](#docker)
+> 3. [Local Backend](#local-backend)
+> 4. [Naming conventions](#naming-conventions)
+> 5. [Code documentation](#code-documentation)
+> 6. [Git conventions](#git-conventions)
 
 ## Development server
 
@@ -154,6 +150,7 @@ match. This is because there are times when you _might_ want to deviate from the
 > 7. [Transformation from GB2 backend API to GB3 interfaces](#transformation-from-gb2-backend-api-to-gb3-interfaces)
 > 8. [Error handling](#error-handling)
 > 9. [Application Initialization based on share link](#application-initialization-based-on-share-link)
+> 10. [Adding new NPM packages](#adding-new-npm-packages)
 
 ### The `ActiveMapItem` class
 
@@ -484,3 +481,48 @@ initializeApplicationByLoadingShareLinkItem$ │             │                
 ```
 
 Note that error actions/effects are not visible on this diagram
+
+### Adding new NPM packages
+
+Usually there are two ways to add new NPM packages. Either calling
+
+- `npm install <package> --save` \
+  To install the package and add it to the `package.json` (and `package-lock.json`) in the section **dependencies**.
+- `npm install <package> --save-dev` \
+  To install the package and add it to the `package.json` (and `package-lock.json`) in the section **devDependencies**.
+
+The later (`devDependencies`) is usually reserved for all dependencies that are not necessary to run the code in a productive environment (e.g. a unit test framework like `Jasmine`). And usually also stuff like `@angular/compiler` or `@types/...`.
+However, this code gets build inside a docker container using the command `npm ci --ignore-scripts --omit=dev`. `--omit=dev` ignores all packages in the **devDependencies** section. Afterward, a build is triggered. This build of course needs build tools like `@angular/compiler` which are not available if they're not located inside the **dependencies** section.
+
+This has the consequence that a lot of packages are located within the **dependencies** section that would usually be in the **devDepencies** section.
+
+To test if a new package has to be added to the **dependencies** or the **devDependencies** section it's easy to test by running the following commands:
+
+```shell
+npm ci --ignore-scripts --omit=dev
+npm run build-production
+```
+
+## Git conventions
+
+### Branching strategy
+
+Our repository is mainly using the standard [Git flow branching model](https://nvie.com/posts/a-successful-git-branching-model/).
+
+<img src="https://nvie.com/img/git-model@2x.png" alt="Git flow branching model" width="400"/>
+
+There are the following branches:
+
+- **main** \
+  The production branch. Every commit has to be stable and tested as it is used as released code. Therefore, every commit that was released is marked by a tag `release-XXX` where `XXX` is the release number. It's entirely possible to have multiple release tags on the same commit if this repository wasn't updated since the last releases.
+- **develop** \
+  The main development branch. Every commit has to be stable as it will be deployed automatically to the [dev-environment server](https://dev.geo.zh.ch/).
+- **feature/\*** , **bugfix/\*** \
+  Individual feature/bugfix branches. They don't have to be stable as they are connected to one person working on it. They are based on the develop branch and finally get merged into that branch again. \
+  ℹ See also naming conventions for branch naming and commit message format: [Branchname and commit message](#branchname-and-commit-message)
+- **hotfix/\*** \
+  This is reserved to fix bugs that occur in a productive environment and need to be fixed ASAP. They're based on the main branch (and not the develop) because it is entirely possible that there are already new features on the develop branch that should not be released. As soon as this branch is finished it needs to be merged back to main (via PR). After that it's very important to create a second PR to merge this branch into the develop branch as well.
+
+### Naming conventions
+
+> **See [Branchname and commit message](#branchname-and-commit-message)**
