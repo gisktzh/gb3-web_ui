@@ -11,6 +11,7 @@
     width: map-layout-variables.$search-window-width;
     background-color: ktzh-variables.$zh-background-color;
     pointer-events: all;
+    overflow: hidden;
   }
 
   @media (max-width: calc(map-layout-variables.$map-overlay-width + map-layout-variables.$element-margin + map-layout-variables.$legend-button-width + map-layout-variables.$element-margin + map-layout-variables.$search-window-width)) {
