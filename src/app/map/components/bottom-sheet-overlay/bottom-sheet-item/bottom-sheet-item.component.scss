@@ -26,14 +26,29 @@
     justify-content: flex-end;
     align-items: center;
     flex-wrap: wrap;
+    padding: 0 16px 0;
 
     &--primary-color {
       background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
     }
 
-    .bottom-sheet-item__header__title {
-      flex-grow: 1;
-      margin-bottom: 0;
+    .bottom-sheet-item__header__container {
+      width: 100vw;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+
+      .bottom-sheet-item__header__container__title {
+        flex-grow: 1;
+        margin-bottom: 0;
+        align-self: flex-start;
+        font-size: 24px;
+      }
+
+      .bottom-sheet-item__header__container__hr {
+        width: 100%;
+        margin: 24px 0;
+      }
     }
 
     .bottom-sheet-item__header__content {

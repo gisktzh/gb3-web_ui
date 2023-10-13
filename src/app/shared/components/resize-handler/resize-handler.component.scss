@@ -54,7 +54,7 @@ $handle-no-hover: $handle-indicator-width double ktzh-variables.$zh-black40;
 
     .resize-handle--top-indicator {
       height: 0px;
-      margin-top: 12px;
+      margin-top: 18px;
       border: $handle-indicator-height solid functions.get-contrast-color-from-palette(ktzh-variables.$zh-accent, 25);
       border-radius: 4px;
       width: 37px;
