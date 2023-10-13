@@ -37,6 +37,10 @@
       border: none;
       outline: none;
       flex-grow: 1;
+
+      &:focus-within {
+        font-size: 16px;
+      }
     }
 
     .search__bar__filter-button--active {

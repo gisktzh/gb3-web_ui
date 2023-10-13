@@ -91,6 +91,10 @@
         outline: none;
         display: block;
         font-family: ktzh-variables.$zh-font-family;
+
+        &:focus-within {
+          font-size: 16px;
+        }
       }
 
       .map-management-mobile-header__tools__filter__input:focus {
