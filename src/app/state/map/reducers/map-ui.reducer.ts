@@ -60,18 +60,6 @@ export const mapUiFeature = createFeature({
         mapSideDrawerContent: 'none',
       };
     }),
-    on(MapUiActions.hideUiElements, (state): MapUiState => {
-      return {
-        ...state,
-        hideUiElements: true,
-      };
-    }),
-    on(MapUiActions.showUiElements, (state): MapUiState => {
-      return {
-        ...state,
-        hideUiElements: false,
-      };
-    }),
     on(MapUiActions.showBottomSheet, (state, {bottomSheetContent}): MapUiState => {
       return {
         ...state,

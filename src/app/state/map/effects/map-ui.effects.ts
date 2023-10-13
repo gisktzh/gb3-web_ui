@@ -82,7 +82,7 @@ export class MapUiEffects {
       concatLatestFrom(() => this.store.select(selectScreenMode)),
       filter(([_, screenMode]) => screenMode === 'mobile'),
       map(() => {
-        return MapUiActions.hideUiElements();
+        return MapUiActions.changeUiElementsVisibility({hideAllUiElements: true, hideUiToggleButton: false});
       }),
     );
   });
