@@ -50,10 +50,5 @@ export class NavbarMobileComponent {
 
   toggleMenu() {
     this.isVisible = !this.isVisible;
-    if (this.isVisible) {
-      this.renderer.addClass(document.body, 'no-scroll');
-    } else {
-      this.renderer.removeClass(document.body, 'no-scroll');
-    }
   }
 }
