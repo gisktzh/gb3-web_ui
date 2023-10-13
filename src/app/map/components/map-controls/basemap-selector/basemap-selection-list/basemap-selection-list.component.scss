@@ -3,16 +3,11 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 @use 'variables/z-index-variables' as z-index-variables;
 
-:host ::ng-deep .basemap-selector__map-choice__item.mdc-button .mdc-button__label {
+:host ::ng-deep .basemap-selection-list__item.mdc-button .mdc-button__label {
   height: 100%;
 }
 
-.basemap-selector {
-  overflow-x: auto;
-  white-space: nowrap;
-}
-
-.basemap-selector__map-choice {
+.basemap-selection-list {
   padding: 7px;
   margin-right: 10px;
   height: 100px;
@@ -24,12 +19,17 @@
     @include mixins.map-element-box-shadow;
   }
 
-  .basemap-selector__map-choice__item {
+  &--mobile {
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .basemap-selection-list__item {
     height: 100%;
     width: 106px;
     padding: 5px;
 
-    .basemap-selector__map-choice__item__image {
+    .basemap-selection-list__item__image {
       display: block;
       height: 48px;
       width: 96px;
@@ -41,7 +41,7 @@
       }
     }
 
-    .basemap-selector__map-choice__item__title {
+    .basemap-selection-list__item__title {
       @include mixins.multiline-ellipsis(2);
       width: 96px;
       font-family: ktzh-variables.$zh-font-family;
@@ -50,12 +50,12 @@
     }
 
     &--active {
-      .basemap-selector__map-choice__item__image {
+      .basemap-selection-list__item__image {
         border: 4px solid functions.get-color-from-palette(ktzh-variables.$zh-primary);
         box-sizing: border-box;
       }
 
-      .basemap-selector__map-choice__item__title {
+      .basemap-selection-list__item__title {
         font-family: ktzh-variables.$zh-font-family-bold;
         color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
       }

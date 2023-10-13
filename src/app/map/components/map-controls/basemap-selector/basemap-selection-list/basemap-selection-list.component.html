@@ -1,28 +1,26 @@
-<div [ngClass]="{'basemap-selector': screenMode === 'mobile'}">
-  <div class="basemap-selector__map-choice" [ngClass]="{'basemap-selector__map-choice--desktop': screenMode !== 'mobile'}">
-    <button
-      mat-flat-button
-      *ngFor="let availableBasemap of availableBasemaps"
-      (click)="switchBasemap(availableBasemap.id)"
-      class="basemap-selector__map-choice__item"
-      [ngClass]="{'basemap-selector__map-choice__item--active': availableBasemap.id === activeBasemap?.id}"
-    >
-      <ng-container [ngSwitch]="availableBasemap.type">
-        <img
-          *ngSwitchCase="'wms'"
-          [alt]="availableBasemap.title"
-          [src]="availableBasemap.id | basemapImageLink"
-          class="basemap-selector__map-choice__item__image"
-        />
-        <span
-          *ngSwitchCase="'blank'"
-          class="basemap-selector__map-choice__item__image basemap-selector__map-choice__item__image--blank"
-        ></span>
-      </ng-container>
+<div
+  class="basemap-selection-list"
+  [ngClass]="{'basemap-selection-list--mobile': screenMode === 'mobile', 'basemap-selection-list--desktop': screenMode !== 'mobile'}"
+>
+  <button
+    mat-flat-button
+    *ngFor="let availableBasemap of availableBasemaps"
+    (click)="switchBasemap(availableBasemap.id)"
+    class="basemap-selection-list__item"
+    [ngClass]="{'basemap-selection-list__item--active': availableBasemap.id === activeBasemap?.id}"
+  >
+    <ng-container [ngSwitch]="availableBasemap.type">
+      <img
+        *ngSwitchCase="'wms'"
+        [alt]="availableBasemap.title"
+        [src]="availableBasemap.id | basemapImageLink"
+        class="basemap-selection-list__item__image"
+      />
+      <span *ngSwitchCase="'blank'" class="basemap-selection-list__item__image basemap-selection-list__item__image--blank"></span>
+    </ng-container>
 
-      <span class="basemap-selector__map-choice__item__title">
-        {{ availableBasemap.title }}
-      </span>
-    </button>
-  </div>
+    <span class="basemap-selection-list__item__title">
+      {{ availableBasemap.title }}
+    </span>
+  </button>
 </div>

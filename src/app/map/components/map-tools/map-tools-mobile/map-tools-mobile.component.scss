@@ -2,12 +2,12 @@
 @use 'mixins/helpers.mixin' as mixins;
 
 :host ::ng-deep {
-  .map-tools__button {
+  .map-tools-mobile__button {
     @include mixins.tool-button;
   }
 }
 
-.map-tools-list-mobile {
+.map-tools-mobile {
   @include mixins.map-element-box-shadow;
   width: auto;
   padding: 2px;
@@ -17,7 +17,7 @@
   background-color: ktzh-variables.$zh-background-color;
   height: 44px;
 
-  .map-tools-list__divider {
+  .map-tools-mobile__divider {
     height: 50%;
     width: auto;
   }

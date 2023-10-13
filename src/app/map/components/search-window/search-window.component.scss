@@ -11,10 +11,6 @@
     width: map-layout-variables.$search-window-width;
     background-color: ktzh-variables.$zh-background-color;
     pointer-events: all;
-
-    .search-window__searchbar-mobile {
-      width: auto;
-    }
   }
 
   @media (max-width: calc(map-layout-variables.$map-overlay-width + map-layout-variables.$element-margin + map-layout-variables.$legend-button-width + map-layout-variables.$element-margin + map-layout-variables.$search-window-width)) {
@@ -49,8 +45,6 @@
               map-layout-variables.$element-margin
           ) - (map-layout-variables.$search-window-width - map-layout-variables.$search-results-width)
       );
-      // max-height: 60vh;
-      // overflow-y: scroll;
     }
   }
 

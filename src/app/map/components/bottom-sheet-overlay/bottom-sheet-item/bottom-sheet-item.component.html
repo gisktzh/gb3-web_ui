@@ -11,5 +11,5 @@
   <mat-card-content class="bottom-sheet-item__content">
     <ng-content select="[body]"></ng-content>
   </mat-card-content>
-  <resize-handler (resizeEvent)="resizeOverlay($event)" [location]="location"></resize-handler>
+  <resize-handler (resizeEvent)="resizeOverlay($event)" [location]="location" [usePrimaryColor]="usePrimaryColor"></resize-handler>
 </mat-card>

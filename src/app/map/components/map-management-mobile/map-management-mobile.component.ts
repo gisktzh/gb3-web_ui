@@ -2,17 +2,20 @@ import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from
 import {Store} from '@ngrx/store';
 import {Observable, Subscription, debounceTime, distinctUntilChanged, fromEvent, map, tap} from 'rxjs';
 import {ActiveMapItem} from 'src/app/map/models/active-map-item.model';
+import {isActiveMapItemOfType} from 'src/app/shared/type-guards/active-map-item-type.type-guard';
 import {selectIsAuthenticated} from 'src/app/state/auth/reducers/auth-status.reducer';
 import {ActiveMapItemActions} from 'src/app/state/map/actions/active-map-item.actions';
 import {LayerCatalogActions} from 'src/app/state/map/actions/layer-catalog.actions';
 import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
 import {selectItems} from 'src/app/state/map/reducers/active-map-item.reducer';
+import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
 
 type TabType = 'activeMaps' | 'mapsCatalogue';
 
 const FAVOURITE_HELPER_MESSAGES = {
-  noMapsAdded: 'Fügen Sie mindestens 1 Karte hinzu, um einen Favoriten anzulegen.',
-  notAuthenticated: 'Loggen Sie sich ein, um Favoriten hinzuzufügen.',
+  noMapsAdded: 'Um einen Favoriten anzulegen, muss mindestens eine Karte hinzugefügt werden.',
+  notAuthenticated: 'Um aktive Karten als Favorit speichern zu können, muss man angemeldet sein.',
+  authenticatedAndMapsAdded: 'Aktive Karten als Favorit speichern',
 };
 
 @Component({
@@ -82,12 +85,20 @@ export class MapManagementMobileComponent implements OnInit, OnDestroy, AfterVie
     this.store.dispatch(LayerCatalogActions.setFilterString({filterString}));
   }
 
+  private updateNumberOfNotices(currentActiveMapItems: Gb2WmsActiveMapItem[]) {
+    const activeMapItemsWithNotices = currentActiveMapItems.filter((activeMapItem) => activeMapItem.settings.notice);
+    this.numberOfNotices = activeMapItemsWithNotices.length;
+    this.numberOfUnreadNotices = activeMapItemsWithNotices.filter((activeMapItem) => !activeMapItem.settings.isNoticeMarkedAsRead).length;
+  }
+
   private initSubscriptions() {
     this.subscriptions.add(
       this.activeMapItems$
         .pipe(
           tap((currentActiveMapItems) => {
             this.activeMapItems = currentActiveMapItems;
+            const gb2ActiveMapItems = currentActiveMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem));
+            this.updateNumberOfNotices(gb2ActiveMapItems);
           }),
         )
         .subscribe(),
