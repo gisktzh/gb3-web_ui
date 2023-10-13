@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, Renderer2} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {AuthService} from '../../../auth/auth.service';
@@ -24,6 +24,7 @@ export class NavbarMobileComponent {
   constructor(
     private readonly authService: AuthService,
     private readonly store: Store,
+    private renderer: Renderer2,
   ) {}
 
   public ngOnInit() {
@@ -49,5 +50,10 @@ export class NavbarMobileComponent {
 
   toggleMenu() {
     this.isVisible = !this.isVisible;
+    if (this.isVisible) {
+      this.renderer.addClass(document.body, 'no-scroll');
+    } else {
+      this.renderer.removeClass(document.body, 'no-scroll');
+    }
   }
 }
