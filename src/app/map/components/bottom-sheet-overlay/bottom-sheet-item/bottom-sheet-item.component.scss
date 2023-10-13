@@ -10,11 +10,11 @@
   z-index: z-index-variables.$map-overlay;
 
   &--small {
-    height: 30vh;
+    height: 200px;
   }
 
   &--medium {
-    height: 60vh;
+    height: max(60vh, 300px);
   }
 
   &--large {
