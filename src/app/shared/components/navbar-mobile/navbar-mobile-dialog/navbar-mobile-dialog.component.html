@@ -1,0 +1,53 @@
+<mat-card class="navbar-mobile__dialog">
+  <mat-card-header class="navbar-mobile__dialog__header">
+    <button (click)="close()" mat-icon-button>
+      <mat-icon>close</mat-icon>
+    </button>
+    <h1 class="navbar-mobile__dialog__header__title">Menu</h1>
+
+    <a (click)="this.startLogin()" *ngIf="!this.isAuthenticated; else userProfile" class="navbar__item" mat-button>Login</a>
+    <ng-template #userProfile>
+      <a [matMenuTriggerFor]="userMenu" class="navbar__item" mat-button #trigger="matMenuTrigger">
+        <mat-icon svgIcon="ktzh_user"></mat-icon>
+        <span>{{ this.userName }}</span>
+        <mat-icon [fontIcon]="trigger.menuOpen ? 'arrow_drop_up' : 'arrow_drop_down'" class="arrow-icon"></mat-icon>
+      </a>
+      <mat-menu #userMenu="matMenu">
+        <button (click)="this.logout()" mat-menu-item>
+          <mat-icon>logout</mat-icon>
+          <span>Logout</span>
+        </button>
+      </mat-menu>
+    </ng-template>
+  </mat-card-header>
+  <mat-card-content class="navbar-mobile__dialog__content">
+    <ng-content></ng-content>
+    <a
+      [queryParams]="{}"
+      [routerLinkActiveOptions]="{exact: true}"
+      class="navbar__item"
+      mat-button
+      [routerLink]="[mainPageEnum.Start]"
+      routerLinkActive="navbar__item--active"
+      (click)="close()"
+      >Übersicht</a
+    >
+    <hr />
+    <a class="navbar__item" mat-button [routerLink]="[mainPageEnum.Maps]" routerLinkActive="navbar__item--active" (click)="close()"
+      >GIS-Browser</a
+    >
+    <hr />
+    <a class="navbar__item" mat-button [routerLink]="[mainPageEnum.Data]" routerLinkActive="navbar__item--active" (click)="close()"
+      >Datenkatalog</a
+    >
+    <hr />
+    <a class="navbar__item" mat-button [routerLink]="[mainPageEnum.Support]" routerLinkActive="navbar__item--active" (click)="close()"
+      >Hilfe & Support</a
+    >
+    <hr />
+    <a class="navbar__item" href="https://geodatenshop.zh.ch" mat-button target="_blank" rel="noopener noreferrer" (click)="close()"
+      >Geodatenshop</a
+    >
+    <hr />
+  </mat-card-content>
+</mat-card>
