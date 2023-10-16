@@ -18,7 +18,7 @@ class EsriPolygonSelectionStrategyWrapper extends EsriPolygonSelectionStrategy {
  * As such, we only test for the labels, which are also our custom logic and should be tested. This is why we e.g. assert for a length
  * of 0 on the graphics layer, even though in reality, it should be 2 (when Esri properly adds the graphic).
  */
-describe('EsriPolygonDrawingStrategy', () => {
+describe('EsriPolygonSelectionStrategy', () => {
   let mapView: MapView;
   let layer: GraphicsLayer;
   let fillSymbol: SimpleFillSymbol;
@@ -45,6 +45,19 @@ describe('EsriPolygonDrawingStrategy', () => {
       strategy.start();
       strategy.svm.emit('create', {state: 'cancel', graphic: new Graphic()});
 
+      expect(callbackSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('start', () => {
+    it('removes all existing layers on start', () => {
+      const callbackSpy = spyOn(callbackHandler, 'handle');
+      const strategy = new EsriPolygonSelectionStrategyWrapper(layer, mapView, fillSymbol, () => callbackHandler.handle(), 'polygon');
+      const layerRemoveAllSpy = spyOn(layer, 'removeAll');
+
+      strategy.start();
+      strategy.svm.emit('create', {state: 'start'});
+      expect(layerRemoveAllSpy).toHaveBeenCalledTimes(1);
       expect(callbackSpy).not.toHaveBeenCalled();
     });
   });

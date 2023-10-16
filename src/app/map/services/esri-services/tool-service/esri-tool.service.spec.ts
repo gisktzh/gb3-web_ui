@@ -14,6 +14,7 @@ import {take, tap} from 'rxjs';
 import {ActiveMapItemActions} from '../../../../state/map/actions/active-map-item.actions';
 import {ActiveMapItemFactory} from '../../../../shared/factories/active-map-item.factory';
 import {MapConstants} from '../../../../shared/constants/map.constants';
+import {MatDialogModule} from '@angular/material/dialog';
 
 describe('EsriToolService', () => {
   let service: EsriToolService;
@@ -23,6 +24,7 @@ describe('EsriToolService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
+      imports: [MatDialogModule],
       providers: [
         provideMockStore({selectors: [{selector: selectDrawingLayers, value: []}]}),
         {

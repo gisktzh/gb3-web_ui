@@ -31,9 +31,14 @@ import {DrawingActions} from '../../../../state/map/actions/drawing.actions';
 import {silentArcgisToGeoJSON} from '../../../../shared/utils/esri-transformer-wrapper.utils';
 import {UnsupportedGeometryType} from '../errors/esri.errors';
 import {DataDownloadSelectionTool} from '../../../../shared/types/data-download-selection-tool.type';
-import {DataDownloadActions} from '../../../../state/map/actions/data-download.actions';
+import {DataDownloadOrderActions} from '../../../../state/map/actions/data-download-order.actions';
 import {DataDownloadSelection} from '../../../../shared/interfaces/data-download-selection.interface';
 import {EsriPolygonSelectionStrategy} from './strategies/selection/esri-polygon-selection.strategy';
+import {EsriMunicipalitySelectionStrategy} from './strategies/selection/esri-municipality-selection.strategy';
+import {MatDialog} from '@angular/material/dialog';
+import {EsriCantonSelectionStrategy} from './strategies/selection/esri-canton-selection.strategy';
+import {EsriScreenExtentSelectionStrategy} from './strategies/selection/esri-screen-extent-selection.strategy';
+import {SelectionCallbackHandler} from './interfaces/selection-callback-handler.interface';
 
 const HANDLE_GROUP_KEY = 'EsriToolService';
 
@@ -65,6 +70,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
     private readonly store: Store,
     private readonly esriSymbolizationService: EsriSymbolizationService,
     private readonly configService: ConfigService,
+    private readonly dialogService: MatDialog,
   ) {
     this.initSubscriptions();
   }
@@ -306,10 +312,19 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
     const completeDrawingCallbackHandler: DrawingCallbackHandler['complete'] = (graphic: Graphic, labelText?: string) => {
       const internalDrawingRepresentation = this.convertToGeoJson(graphic, labelText);
       const selection: DataDownloadSelection = {
+        type: selectionType as Exclude<DataDownloadSelectionTool, 'select-municipality'>,
         drawingRepresentation: internalDrawingRepresentation,
-        type: selectionType,
       };
-      this.store.dispatch(DataDownloadActions.setSelection({selection}));
+      this.store.dispatch(DataDownloadOrderActions.setSelection({selection}));
+    };
+
+    const completeSelectionCallbackHandler: SelectionCallbackHandler = {
+      complete: (selection: DataDownloadSelection) => {
+        this.store.dispatch(DataDownloadOrderActions.setSelection({selection}));
+      },
+      abort: () => {
+        this.store.dispatch(ToolActions.cancelTool());
+      },
     };
 
     switch (selectionType) {
@@ -341,9 +356,19 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
         );
         break;
       case 'select-section':
+        this.toolStrategy = new EsriScreenExtentSelectionStrategy(
+          layer,
+          areaStyle,
+          completeSelectionCallbackHandler,
+          this.esriMapViewService.mapView.extent,
+        );
+        break;
       case 'select-canton':
+        this.toolStrategy = new EsriCantonSelectionStrategy(layer, areaStyle, completeSelectionCallbackHandler);
+        break;
       case 'select-municipality':
-        throw new Error('not implemented'); // TODO: implement
+        this.toolStrategy = new EsriMunicipalitySelectionStrategy(layer, areaStyle, completeSelectionCallbackHandler, this.dialogService);
+        break;
     }
   }
 }
