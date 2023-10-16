@@ -46,12 +46,12 @@
     }
   }
 
-  .map-controls__buttons {
+  .map-controls__button {
     display: flex;
     flex-direction: column;
     gap: 12px;
 
-    .map-controls__buttons_button__group {
+    .map-controls__button__group {
       @include mixins.map-element-box-shadow;
     }
   }

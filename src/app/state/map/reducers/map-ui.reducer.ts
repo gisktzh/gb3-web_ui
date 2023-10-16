@@ -88,4 +88,6 @@ export const {
   selectIsLegendOverlayVisible,
   selectIsFeatureInfoOverlayVisible,
   selectBottomSheetContent,
+  selectHideUiElements,
+  selectHideToggleUiElementsButton,
 } = mapUiFeature;

@@ -5,18 +5,7 @@
   .ui-toggle__button {
     @include mat-mixins.mat-icon-button-override-border-radius(ktzh-variables.$zh-border-radius);
     @include mat-mixins.mat-icon-custom-svg-size(20px);
-  }
-}
-
-.ui-toggle {
-  width: 48px;
-  display: flex;
-  flex-direction: column;
-  background-color: ktzh-variables.$zh-background-color;
-  pointer-events: all;
-  gap: 12px;
-
-  .ui-toggle__button {
+    background-color: ktzh-variables.$zh-background-color;
     display: flex;
     justify-content: center;
     align-items: center;
