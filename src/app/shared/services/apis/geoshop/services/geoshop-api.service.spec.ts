@@ -95,7 +95,7 @@ describe('GeoshopApiService', () => {
       spyOn(httpClient, 'get').and.returnValue(of(mockData));
       service.loadProducts().subscribe((products) => {
         expect(products).toBeDefined();
-        expect(products.timestamp).toBe(mockData.timestamp);
+        expect(products.timestampDateString).toBe(mockData.timestamp);
         expect(products.products).toEqual(jasmine.arrayWithExactContents(mockData.products));
         expect(products.formats).toEqual(jasmine.arrayWithExactContents(mockData.formats));
         expect(products.municipalities).toEqual(jasmine.arrayWithExactContents(mockData.communes));
@@ -160,7 +160,7 @@ describe('GeoshopApiService', () => {
 
       service.sendOrder(directOrderMock).subscribe((response) => {
         expect(response.orderId).toBe(apiOrderResponseMock.order_id);
-        expect(response.timestamp).toBe(apiOrderResponseMock.timestamp);
+        expect(response.timestampDateString).toBe(apiOrderResponseMock.timestamp);
         expect(response.statusUrl).toBe(apiOrderResponseMock.status_url);
         expect(response.downloadUrl).toBe(apiOrderResponseMock.download_url);
         expect(postCallSpy).toHaveBeenCalledOnceWith(`${configService.apiConfig.geoshopApi.baseUrl}/order`, expectedDirectApiOrder, {
@@ -193,7 +193,7 @@ describe('GeoshopApiService', () => {
 
       service.sendOrder(indirectOrderMock).subscribe((response) => {
         expect(response.orderId).toBe(apiOrderResponseMock.order_id);
-        expect(response.timestamp).toBe(apiOrderResponseMock.timestamp);
+        expect(response.timestampDateString).toBe(apiOrderResponseMock.timestamp);
         expect(response.statusUrl).toBe(apiOrderResponseMock.status_url);
         expect(response.downloadUrl).toBe(apiOrderResponseMock.download_url);
         expect(postCallSpy).toHaveBeenCalledOnceWith(`${configService.apiConfig.geoshopApi.baseUrl}/order`, expectedIndirectApiOrder, {
@@ -227,8 +227,8 @@ describe('GeoshopApiService', () => {
           type: 'working',
           message: 'in process',
         },
-        submitted: 'February 21, 2005',
-        finished: '',
+        submittedDateString: 'February 21, 2005',
+        finishedDateString: '',
         internalId: 42,
       };
       const httpClient = TestBed.inject(HttpClient);

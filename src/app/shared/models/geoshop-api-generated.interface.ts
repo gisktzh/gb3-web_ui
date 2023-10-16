@@ -28,9 +28,11 @@ interface ProductsCommune {
   name: string;
 }
 
+type PerimeterType = 'DIRECT' | 'INDIRECT';
+
 interface AbstractOrder {
   email: string;
-  perimeter_type: 'DIRECT' | 'INDIRECT';
+  perimeter_type: PerimeterType;
   products: OrderProduct[];
 }
 
@@ -74,12 +76,6 @@ export interface OrderStatus {
   internal_id: number;
   order: Order;
   order_id: string;
-  /**
-   * From the documentation:
-   * For programmatic interpretation of the status codes, use the following rule: if a colon exists, extract the
-   * substring before the colon, otherwise the whole string. The extracted string is to be considered as a
-   * value of an enumeration set.
-   */
   status: string;
   submitted: string;
 }

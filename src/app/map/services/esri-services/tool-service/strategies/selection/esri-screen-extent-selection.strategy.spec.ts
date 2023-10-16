@@ -23,7 +23,7 @@ describe('EsriScreenExtentSelectionStrategy', () => {
   });
 
   describe('cancellation', () => {
-    it('does clear the layer and not dispatching anything', () => {
+    it('does clear the layer and does not dispatch anything', () => {
       const extent = new Extent();
       const completeCallbackHandlerSpy = spyOn(callbackHandler, 'complete');
       const strategy = new EsriScreenExtentSelectionStrategy(layer, fillSymbol, callbackHandler, extent);

@@ -3,7 +3,7 @@ import {LoadingState} from '../../../shared/types/loading-state.type';
 import {BehaviorSubject, Subscription, tap} from 'rxjs';
 import {MatDialogRef} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
-import {selectProducts, selectProductsLoadingState} from '../../../state/map/reducers/data-download.reducer';
+import {selectLoadingState, selectProducts} from '../../../state/map/reducers/data-download-product.reducer';
 import {Municipality} from '../../../shared/interfaces/geoshop-product.interface';
 import {FormControl, Validators} from '@angular/forms';
 
@@ -16,12 +16,12 @@ export class DataDownloadSelectMunicipalityDialogComponent implements OnInit, On
   @ViewChild('municipalityInput') input?: ElementRef<HTMLInputElement>;
   public readonly filteredMunicipalities = new BehaviorSubject<Municipality[]>([]);
   public municipalities: Municipality[] | undefined;
-  public productsLoadingState: LoadingState;
+  public loadingState: LoadingState;
   public municipalityFormControl: FormControl<Municipality | null> = new FormControl({value: null, disabled: true}, [Validators.required]);
 
   private readonly subscriptions: Subscription = new Subscription();
   private readonly products$ = this.store.select(selectProducts);
-  private readonly productsLoadingState$ = this.store.select(selectProductsLoadingState);
+  private readonly loadingState$ = this.store.select(selectLoadingState);
 
   constructor(
     private readonly dialogRef: MatDialogRef<DataDownloadSelectMunicipalityDialogComponent, Municipality | undefined>,
@@ -48,11 +48,11 @@ export class DataDownloadSelectMunicipalityDialogComponent implements OnInit, On
         .subscribe(),
     );
     this.subscriptions.add(
-      this.productsLoadingState$
+      this.loadingState$
         .pipe(
-          tap((productsLoadingState) => {
-            this.productsLoadingState = productsLoadingState;
-            if (productsLoadingState === 'loaded') {
+          tap((loadingState) => {
+            this.loadingState = loadingState;
+            if (loadingState === 'loaded') {
               this.municipalityFormControl.enable();
             }
           }),
@@ -79,12 +79,11 @@ export class DataDownloadSelectMunicipalityDialogComponent implements OnInit, On
   }
 
   public updateFilteredMunicipalities() {
-    const filterValue = this.input?.nativeElement.value?.toLowerCase();
     if (this.municipalities) {
+      const filterValue = this.input?.nativeElement.value?.toLowerCase();
       if (filterValue && filterValue !== '') {
-        const lowerCaseFilterValue = filterValue.toLowerCase();
         this.filteredMunicipalities.next(
-          this.municipalities.filter((municipality) => municipality.name.toLowerCase().includes(lowerCaseFilterValue)),
+          this.municipalities.filter((municipality) => municipality.name.toLowerCase().includes(filterValue)),
         );
       } else {
         this.filteredMunicipalities.next(this.municipalities);
@@ -94,7 +93,7 @@ export class DataDownloadSelectMunicipalityDialogComponent implements OnInit, On
     }
   }
 
-  public municipalityDisplayFn(municipality: Municipality | null): string {
+  public getMunicipalityName(municipality: Municipality | null): string {
     return municipality?.name ?? '';
   }
 }

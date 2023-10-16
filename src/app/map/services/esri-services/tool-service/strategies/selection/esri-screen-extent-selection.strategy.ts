@@ -29,6 +29,7 @@ export class EsriScreenExtentSelectionStrategy extends AbstractEsriSelectionStra
   }
 
   protected drawSelection(selection: DataDownloadSelection): void {
+    // TODO use the selection instead of creating a new graphic from scratch.
     const graphic = new Graphic({geometry: this.screenExtent, symbol: this.polygonSymbol});
     this.layer.add(graphic);
   }

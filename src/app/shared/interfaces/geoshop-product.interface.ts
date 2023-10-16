@@ -1,5 +1,5 @@
 export interface Products {
-  timestamp: string;
+  timestampDateString: string;
   formats: ProductFormat[];
   products: Product[];
   municipalities: Municipality[];

@@ -33,5 +33,5 @@ export interface OrderResponse {
   downloadUrl: string;
   orderId: string;
   statusUrl: string;
-  timestamp: string;
+  timestampDateString: string;
 }

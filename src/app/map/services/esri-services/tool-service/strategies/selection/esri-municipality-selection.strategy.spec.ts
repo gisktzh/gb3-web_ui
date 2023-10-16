@@ -32,7 +32,7 @@ describe('EsriMunicipalitySelectionStrategy', () => {
   });
 
   describe('cancellation', () => {
-    it('does clear the layer and not dispatching anything', () => {
+    it('does clear the layer and does not dispatch anything', () => {
       const completeCallbackHandlerSpy = spyOn(callbackHandler, 'complete');
       const dialogSpy = spyOn(dialog, 'open');
       const strategy = new EsriMunicipalitySelectionStrategy(layer, fillSymbol, callbackHandler, dialog);
@@ -67,7 +67,7 @@ describe('EsriMunicipalitySelectionStrategy', () => {
       expect(abortCallbackHandlerSpy).not.toHaveBeenCalled();
     }));
 
-    it('cancel the dialog without result', fakeAsync(async () => {
+    it('cancels the dialog without result', fakeAsync(async () => {
       const completeCallbackHandlerSpy = spyOn(callbackHandler, 'complete');
       const abortCallbackHandlerSpy = spyOn(callbackHandler, 'abort');
       const dialogSpy = spyOn(dialog, 'open').and.callThrough();

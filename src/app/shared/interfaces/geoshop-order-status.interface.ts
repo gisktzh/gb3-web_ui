@@ -5,12 +5,14 @@ export const orderStatusKeys = ['submitted', 'queued', 'working', 'success', 'fa
 export type OrderStatusType = (typeof orderStatusKeys)[number];
 
 export interface OrderStatus {
-  finished: string;
+  finishedDateString: string;
   internalId: number;
   orderId: string;
-  status: {
-    type: OrderStatusType;
-    message?: string;
-  };
-  submitted: string;
+  status: OrderStatusContent;
+  submittedDateString: string;
+}
+
+export interface OrderStatusContent {
+  type: OrderStatusType;
+  message?: string;
 }

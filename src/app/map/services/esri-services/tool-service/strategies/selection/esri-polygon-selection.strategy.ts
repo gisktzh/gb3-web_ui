@@ -16,7 +16,7 @@ export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrate
       switch (state) {
         case 'cancel':
         case 'active':
-          break; // currently, this events do not trigger any action
+          break; // currently, these events do not trigger any action
         case 'start':
           // remove all old selections before starting a new one
           this.layer.removeAll();

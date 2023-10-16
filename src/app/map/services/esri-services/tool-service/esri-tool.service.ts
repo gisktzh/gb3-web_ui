@@ -31,7 +31,7 @@ import {DrawingActions} from '../../../../state/map/actions/drawing.actions';
 import {silentArcgisToGeoJSON} from '../../../../shared/utils/esri-transformer-wrapper.utils';
 import {UnsupportedGeometryType} from '../errors/esri.errors';
 import {DataDownloadSelectionTool} from '../../../../shared/types/data-download-selection-tool.type';
-import {DataDownloadActions} from '../../../../state/map/actions/data-download.actions';
+import {DataDownloadOrderActions} from '../../../../state/map/actions/data-download-order.actions';
 import {DataDownloadSelection} from '../../../../shared/interfaces/data-download-selection.interface';
 import {EsriPolygonSelectionStrategy} from './strategies/selection/esri-polygon-selection.strategy';
 import {EsriMunicipalitySelectionStrategy} from './strategies/selection/esri-municipality-selection.strategy';
@@ -315,12 +315,12 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
         type: selectionType as Exclude<DataDownloadSelectionTool, 'select-municipality'>,
         drawingRepresentation: internalDrawingRepresentation,
       };
-      this.store.dispatch(DataDownloadActions.setSelection({selection}));
+      this.store.dispatch(DataDownloadOrderActions.setSelection({selection}));
     };
 
     const completeSelectionCallbackHandler: SelectionCallbackHandler = {
       complete: (selection: DataDownloadSelection) => {
-        this.store.dispatch(DataDownloadActions.setSelection({selection}));
+        this.store.dispatch(DataDownloadOrderActions.setSelection({selection}));
       },
       abort: () => {
         this.store.dispatch(ToolActions.cancelTool());

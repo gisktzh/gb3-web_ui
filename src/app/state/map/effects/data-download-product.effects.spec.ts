@@ -10,21 +10,15 @@ import {ErrorHandler} from '@angular/core';
 import {MAP_SERVICE} from '../../../app.module';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
 import {GeoshopApiService} from '../../../shared/services/apis/geoshop/services/geoshop-api.service';
-import {DataDownloadEffects} from './data-download.effects';
-import {DataDownloadActions} from '../actions/data-download.actions';
+import {DataDownloadProductEffects} from './data-download-product.effects';
+import {DataDownloadProductActions} from '../actions/data-download-product.actions';
 import {Products} from '../../../shared/interfaces/geoshop-product.interface';
-import {selectProducts} from '../reducers/data-download.reducer';
+import {selectProducts} from '../reducers/data-download-product.reducer';
 import {ProductsCouldNotBeLoaded} from '../../../shared/errors/data-download.errors';
-import {DataDownloadSelection} from '../../../shared/interfaces/data-download-selection.interface';
-import {ConfigService} from '../../../shared/services/config.service';
-import {MapUiActions} from '../actions/map-ui.actions';
-import {InternalDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
-import {ToolActions} from '../actions/tool.actions';
-import {MapDrawingService} from '../../../map/services/map-drawing.service';
 
-describe('DataDownloadEffects', () => {
+describe('DataDownloadProductEffects', () => {
   const productsMock: Products = {
-    timestamp: '2023-10-09T11:50:02',
+    timestampDateString: '2023-10-09T11:50:02',
     formats: [
       {
         id: 1,
@@ -83,31 +77,9 @@ describe('DataDownloadEffects', () => {
     ],
   };
 
-  const selectionMock: DataDownloadSelection = {
-    type: 'select-polygon',
-    drawingRepresentation: {
-      id: 'id',
-      type: 'Feature',
-      source: InternalDrawingLayer.Selection,
-      properties: {},
-      geometry: {
-        type: 'Polygon',
-        srs: 2056,
-        coordinates: [
-          [
-            [9, -23],
-            [9, -17],
-            [11, -17],
-            [11, -23],
-          ],
-        ],
-      },
-    },
-  };
-
   let actions$: Observable<Action>;
   let store: MockStore;
-  let effects: DataDownloadEffects;
+  let effects: DataDownloadProductEffects;
   let geoshopApiService: GeoshopApiService;
   let errorHandlerMock: jasmine.SpyObj<ErrorHandler>;
 
@@ -118,14 +90,14 @@ describe('DataDownloadEffects', () => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterTestingModule],
       providers: [
-        DataDownloadEffects,
+        DataDownloadProductEffects,
         provideMockActions(() => actions$),
         provideMockStore(),
         {provide: ErrorHandler, useValue: errorHandlerMock},
         {provide: MAP_SERVICE, useClass: MapServiceStub},
       ],
     });
-    effects = TestBed.inject(DataDownloadEffects);
+    effects = TestBed.inject(DataDownloadProductEffects);
     geoshopApiService = TestBed.inject(GeoshopApiService);
     store = TestBed.inject(MockStore);
   });
@@ -134,70 +106,15 @@ describe('DataDownloadEffects', () => {
     store.resetSelectors();
   });
 
-  describe('openDataDownloadDrawerAfterCompletingSelection$', () => {
-    it('zooms to the geometry extend using the map service and dispatches MapUiActions.showMapSideDrawerContent()', (done: DoneFn) => {
-      const expectedSelection = selectionMock;
-      const configService = TestBed.inject(ConfigService);
-      const mapService = TestBed.inject(MAP_SERVICE);
-      const mapServiceSpy = spyOn(mapService, 'zoomToExtent').and.callThrough();
-
-      actions$ = of(DataDownloadActions.setSelection({selection: expectedSelection}));
-      effects.openDataDownloadDrawerAfterCompletingSelection$.subscribe((action) => {
-        expect(mapServiceSpy).toHaveBeenCalledOnceWith(
-          expectedSelection.drawingRepresentation.geometry,
-          configService.mapAnimationConfig.zoom.expandFactor,
-          configService.mapAnimationConfig.zoom.duration,
-        );
-        expect(action).toEqual(MapUiActions.showMapSideDrawerContent({mapSideDrawerContent: 'data-download'}));
-        done();
-      });
-    });
-  });
-
-  describe('deactivateToolAfterClearingSelection$', () => {
-    it('dispatches ToolActions.deactivateTool()', (done: DoneFn) => {
-      actions$ = of(DataDownloadActions.clearSelection());
-      effects.deactivateToolAfterClearingSelection$.subscribe((action) => {
-        expect(action).toEqual(ToolActions.deactivateTool());
-        done();
-      });
-    });
-  });
-
-  describe('clearSelectionAfterClosingDataDownloadDrawer$', () => {
-    it('dispatches DataDownloadActions.clearSelection()', (done: DoneFn) => {
-      actions$ = of(MapUiActions.hideMapSideDrawerContent());
-      effects.clearSelectionAfterClosingDataDownloadDrawer$.subscribe((action) => {
-        expect(action).toEqual(DataDownloadActions.clearSelection());
-        done();
-      });
-    });
-  });
-
-  describe('clearGeometryFromMap$', () => {
-    it('removes the selection graphics using the map service, no further action dispatch', (done: DoneFn) => {
-      const mapDrawingService = TestBed.inject(MapDrawingService);
-      const mapDrawingServiceSpy = spyOn(mapDrawingService, 'clearDataDownloadSelection').and.callThrough();
-
-      const expectedAction = DataDownloadActions.clearSelection();
-      actions$ = of(expectedAction);
-      effects.clearGeometryFromMap$.subscribe((action) => {
-        expect(mapDrawingServiceSpy).toHaveBeenCalledTimes(1);
-        expect(action).toEqual(expectedAction);
-        done();
-      });
-    });
-  });
-
   describe('loadProducts$', () => {
     it('dispatches DataDownloadActions.setProducts() with the service response on success', (done: DoneFn) => {
       const expectedProducts = productsMock;
       const geoshopApiServiceSpy = spyOn(geoshopApiService, 'loadProducts').and.returnValue(of(expectedProducts));
 
-      actions$ = of(DataDownloadActions.loadProducts());
+      actions$ = of(DataDownloadProductActions.loadProducts());
       effects.loadProducts$.subscribe((action) => {
         expect(geoshopApiServiceSpy).toHaveBeenCalledTimes(1);
-        expect(action).toEqual(DataDownloadActions.setProducts({products: expectedProducts}));
+        expect(action).toEqual(DataDownloadProductActions.setProducts({products: expectedProducts}));
         done();
       });
     });
@@ -206,10 +123,10 @@ describe('DataDownloadEffects', () => {
       const expectedError = new Error('My cabbages!!!');
       const geoshopApiServiceSpy = spyOn(geoshopApiService, 'loadProducts').and.returnValue(throwError(() => expectedError));
 
-      actions$ = of(DataDownloadActions.loadProducts());
+      actions$ = of(DataDownloadProductActions.loadProducts());
       effects.loadProducts$.subscribe((action) => {
         expect(geoshopApiServiceSpy).toHaveBeenCalledTimes(1);
-        expect(action).toEqual(DataDownloadActions.setProductsError({error: expectedError}));
+        expect(action).toEqual(DataDownloadProductActions.setProductsError({error: expectedError}));
         done();
       });
     });
@@ -219,7 +136,7 @@ describe('DataDownloadEffects', () => {
       store.overrideSelector(selectProducts, expectedProducts);
       const geoshopApiServiceSpy = spyOn(geoshopApiService, 'loadProducts').and.returnValue(
         of({
-          timestamp: 'nope',
+          timestampDateString: 'nope',
           formats: [
             {
               id: 3,
@@ -244,7 +161,7 @@ describe('DataDownloadEffects', () => {
         }),
       );
 
-      actions$ = of(DataDownloadActions.loadProducts());
+      actions$ = of(DataDownloadProductActions.loadProducts());
       effects.loadProducts$.subscribe();
       tick();
 
@@ -260,7 +177,7 @@ describe('DataDownloadEffects', () => {
     it('throws a ProdcutsCouldNotBeLoaded error', (done: DoneFn) => {
       const expectedOriginalError = new Error('My cabbages!!!');
 
-      actions$ = of(DataDownloadActions.setProductsError({error: expectedOriginalError}));
+      actions$ = of(DataDownloadProductActions.setProductsError({error: expectedOriginalError}));
       effects.throwProductsError$
         .pipe(
           catchError((error) => {
