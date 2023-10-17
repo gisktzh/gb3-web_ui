@@ -13,6 +13,12 @@ import {
 } from '../../../../models/geoshop-api-generated.interface';
 import {DirectOrder, IndirectOrder, Order, OrderResponse} from '../../../../interfaces/geoshop-order.interface';
 import {OrderStatus, OrderStatusContent, orderStatusKeys, OrderStatusType} from '../../../../interfaces/geoshop-order-status.interface';
+import {
+  DataDownloadSelection,
+  GeometryDataDownloadSelection,
+  MunicipalityDataDownloadSelection,
+} from '../../../../interfaces/data-download-selection.interface';
+import {Polygon} from 'geojson';
 
 @Injectable({
   providedIn: 'root',
@@ -34,6 +40,39 @@ export class GeoshopApiService extends BaseApiService {
 
   public checkOrderStatus(orderId: string): Observable<OrderStatus> {
     return this.get<ApiOrderStatus>(this.getFullOrderUrl('orders', orderId)).pipe(map((status) => this.mapApiOrderStatusToStatus(status)));
+  }
+
+  public createOrderFromSelection(selection: DataDownloadSelection): Order {
+    switch (selection.type) {
+      case 'select-circle':
+      case 'select-polygon':
+      case 'select-rectangle':
+      case 'select-section':
+      case 'select-canton':
+        return this.createDirectOrderFromSelection(selection);
+      case 'select-municipality':
+        return this.createIndirectOrderFromSelection(selection);
+    }
+  }
+
+  private createDirectOrderFromSelection(selection: GeometryDataDownloadSelection): Order {
+    return {
+      perimeterType: 'direct',
+      products: [],
+      email: '',
+      srs: 'lv95', // TODO WES Maybe fix
+      geometry: selection.drawingRepresentation.geometry as Polygon, // TODO WES FIX
+    };
+  }
+
+  private createIndirectOrderFromSelection(selection: MunicipalityDataDownloadSelection): Order {
+    return {
+      perimeterType: 'indirect',
+      products: [],
+      email: '',
+      identifiers: [selection.municipality.id],
+      layerName: 'commune',
+    };
   }
 
   private getFullEndpointUrl(endpoint: string): string {
@@ -85,7 +124,7 @@ export class GeoshopApiService extends BaseApiService {
         break;
     }
     return {
-      email: order.email,
+      email: order.email ?? '',
       products: order.products.map((product) => ({
         product_id: product.id,
         format_id: product.formatId,
@@ -107,7 +146,7 @@ export class GeoshopApiService extends BaseApiService {
         break;
     }
     return {
-      email: order.email,
+      email: order.email ?? '',
       products: order.products.map((product) => ({
         product_id: product.id,
         format_id: product.formatId,

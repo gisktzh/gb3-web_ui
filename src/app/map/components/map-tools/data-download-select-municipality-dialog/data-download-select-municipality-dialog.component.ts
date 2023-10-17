@@ -1,10 +1,10 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {LoadingState} from '../../../shared/types/loading-state.type';
+import {LoadingState} from '../../../../shared/types/loading-state.type';
 import {BehaviorSubject, Subscription, tap} from 'rxjs';
 import {MatDialogRef} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
-import {selectLoadingState, selectProducts} from '../../../state/map/reducers/data-download-product.reducer';
-import {Municipality} from '../../../shared/interfaces/geoshop-product.interface';
+import {selectLoadingState, selectProducts} from '../../../../state/map/reducers/data-download-product.reducer';
+import {Municipality} from '../../../../shared/interfaces/geoshop-product.interface';
 import {FormControl, Validators} from '@angular/forms';
 
 @Component({

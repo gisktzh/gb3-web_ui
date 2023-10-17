@@ -1,4 +1,4 @@
-import {DataDownloadSelectMunicipalityDialogComponent} from '../../../../../components/data-download-select-municipality-dialog/data-download-select-municipality-dialog.component';
+import {DataDownloadSelectMunicipalityDialogComponent} from '../../../../../components/map-tools/data-download-select-municipality-dialog/data-download-select-municipality-dialog.component';
 import {PanelClass} from '../../../../../../shared/enums/panel-class.enum';
 import {MatDialog} from '@angular/material/dialog';
 import {Observable} from 'rxjs';

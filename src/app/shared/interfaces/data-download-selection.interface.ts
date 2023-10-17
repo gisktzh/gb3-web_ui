@@ -7,11 +7,11 @@ interface AbstractDataDownloadSelection {
   drawingRepresentation: UnstyledInternalDrawingRepresentation;
 }
 
-interface GeometryDataDownloadSelection extends AbstractDataDownloadSelection {
+export interface GeometryDataDownloadSelection extends AbstractDataDownloadSelection {
   type: Exclude<DataDownloadSelectionTool, 'select-municipality'>;
 }
 
-interface MunicipalityDataDownloadSelection extends AbstractDataDownloadSelection {
+export interface MunicipalityDataDownloadSelection extends AbstractDataDownloadSelection {
   type: 'select-municipality';
   municipality: Municipality;
 }

@@ -1,11 +1,11 @@
 import {Polygon} from 'geojson';
 
 type OrderPerimeter = 'direct' | 'indirect';
-type OrderSrs = 'lv95' | 'lv03';
+export type OrderSrs = 'lv95' | 'lv03';
 type IndirectOrderLayerType = 'commune' | 'parcel';
 
 interface AbstractOrder {
-  email: string;
+  email?: string;
   perimeterType: OrderPerimeter;
   products: Product[];
 }
@@ -24,7 +24,7 @@ export interface IndirectOrder extends AbstractOrder {
 
 export type Order = DirectOrder | IndirectOrder;
 
-interface Product {
+export interface Product {
   id: number;
   formatId: number;
 }

@@ -119,7 +119,7 @@ describe('GeoshopApiService', () => {
     };
     const indirectOrderMock: Order = {
       perimeterType: 'indirect',
-      email: 'indirect email',
+      email: undefined,
       layerName: 'commune',
       identifiers: ['0001', '0002'],
       products: [
@@ -173,7 +173,7 @@ describe('GeoshopApiService', () => {
     it('should transform and send (indirect) order jobs', (done: DoneFn) => {
       const expectedIndirectApiOrder: ApiOrder = {
         perimeter_type: 'INDIRECT',
-        email: 'indirect email',
+        email: '',
         pindir_ident: ['0001', '0002'],
         pindir_layer_name: 'COMMUNE',
         products: [
