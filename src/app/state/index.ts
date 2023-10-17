@@ -4,7 +4,8 @@ import {reducer as legendReducer} from './map/reducers/legend.reducer';
 import {reducer as featureInfoReducer} from './map/reducers/feature-info.reducer';
 import {reducer as layerCatalogReducer} from './map/reducers/layer-catalog.reducer';
 import {reducer as activeMapItemReducer} from './map/reducers/active-map-item.reducer';
-import {reducer as dataDownloadReducer} from './map/reducers/data-download.reducer';
+import {reducer as dataDownloadOrderReducer} from './map/reducers/data-download-order.reducer';
+import {reducer as dataDownloadProductReducer} from './map/reducers/data-download-product.reducer';
 import {reducer as authStatusReducer} from './auth/reducers/auth-status.reducer';
 import {reducer as favouriteListReducer} from './map/reducers/favourite-list.reducer';
 import {reducer as supportContentReducer} from './support/reducers/support-content.reducer';
@@ -33,13 +34,15 @@ import {PageNotificationState} from './app/states/page-notification.state';
 import {GeolocationState} from './map/states/geolocation.state';
 import {GeneralInfoState} from './map/states/general-info.state';
 import {AppLayoutState} from './app/states/app-layout.state';
-import {DataDownloadState} from './map/states/data-download.state';
+import {DataDownloadOrderState} from './map/states/data-download-order.state';
+import {DataDownloadProductState} from './map/states/data-download-product.state';
 import {PrintState} from './map/states/print.state';
 import {MapUiState} from './map/states/map-ui.state';
 import {ToolState} from './map/states/tool.state';
 import {ShareLinkState} from './map/states/share-link.state';
 import {ActiveMapItemEffects} from './map/effects/active-map-item.effects';
-import {DataDownloadEffects} from './map/effects/data-download.effects';
+import {DataDownloadOrderEffects} from './map/effects/data-download-order.effects';
+import {DataDownloadProductEffects} from './map/effects/data-download-product.effects';
 import {FeatureInfoEffects} from './map/effects/feature-info.effects';
 import {LayerCatalogEffects} from './map/effects/layer-catalog.effects';
 import {LegendEffects} from './map/effects/legend.effects';
@@ -83,7 +86,8 @@ export interface State {
   dataCatalogue: DataCatalogueState;
   search: SearchState;
   drawing: DrawingState;
-  dataDownload: DataDownloadState;
+  dataDownloadOrder: DataDownloadOrderState;
+  dataDownloadProduct: DataDownloadProductState;
 }
 
 export const reducers: ActionReducerMap<State> = {
@@ -107,7 +111,8 @@ export const reducers: ActionReducerMap<State> = {
   dataCatalogue: dataCatalogueReducer,
   search: searchReducer,
   drawing: drawingReducer,
-  dataDownload: dataDownloadReducer,
+  dataDownloadOrder: dataDownloadOrderReducer,
+  dataDownloadProduct: dataDownloadProductReducer,
 };
 
 export const effects = [
@@ -128,7 +133,8 @@ export const effects = [
   DataCatalogueEffects,
   SearchEffects,
   DrawingEffects,
-  DataDownloadEffects,
+  DataDownloadOrderEffects,
+  DataDownloadProductEffects,
   AppLayoutEffects,
   MapAttributeFiltersItemEffects,
 ];

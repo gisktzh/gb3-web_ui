@@ -12,6 +12,7 @@ import {ActiveMapItemsComponent} from './components/active-map-items/active-map-
 import {ApiDialogWrapperComponent} from './components/api-dialog-wrapper/api-dialog-wrapper.component';
 import {BottomSheetItemComponent} from './components/bottom-sheet-overlay/bottom-sheet-item/bottom-sheet-item.component';
 import {BottomSheetOverlayComponent} from './components/bottom-sheet-overlay/bottom-sheet-overlay.component';
+import {DataDownloadSelectMunicipalityDialogComponent} from './components/data-download-select-municipality-dialog/data-download-select-municipality-dialog.component';
 import {DataDownloadDialogComponent} from './components/data-download/data-download-dialog/data-download-dialog.component';
 import {FavouriteCreationDialogComponent} from './components/favourite-creation-dialog/favourite-creation-dialog.component';
 import {FavouriteDeletionDialogComponent} from './components/favourite-deletion-dialog/favourite-deletion-dialog.component';
@@ -125,6 +126,7 @@ import {MapRoutingModule} from './map-routing.module';
     BasemapSelectionListComponent,
     MapToolsDesktopComponent,
     MapToolsMobileComponent,
+    DataDownloadSelectMunicipalityDialogComponent,
     UiToggleComponent,
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule],

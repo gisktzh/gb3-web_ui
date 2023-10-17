@@ -558,7 +558,7 @@ export class EsriMapService implements MapService, OnDestroy {
         .pipe(
           tap(() => {
             const newInterceptor = this.getWmsOverrideInterceptor(this.authService.getAccessToken());
-            esriConfig.request.interceptors = []; // todo: pop existing as soon as we add more interceptors
+            esriConfig.request.interceptors = []; // pop existing as soon as we add more interceptors
             esriConfig.request.interceptors.push(newInterceptor);
           }),
         )
@@ -660,6 +660,7 @@ export class EsriMapService implements MapService, OnDestroy {
           spatialReference,
         }).lods,
       },
+      spatialReference: spatialReference,
     });
   }
 

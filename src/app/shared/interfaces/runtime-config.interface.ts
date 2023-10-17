@@ -23,6 +23,7 @@ export interface ApiConfig {
   ktzhWebsite: MockedApiBaseUrlConfig;
   gravCms: MockedApiBaseUrlConfig;
   twitterWidget: ApiBaseUrlConfig;
+  geoshopApi: ApiBaseUrlConfig;
 }
 
 export interface OverrideSettings {

@@ -36,6 +36,9 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       twitterWidget: {
         baseUrl: 'https://platform.twitter.com/widgets.js',
       },
+      geoshopApi: {
+        baseUrl: 'https://geoservices.zh.ch/geoshopapi/v1',
+      },
     },
     authSettings: {
       clientId: 'gb3',
