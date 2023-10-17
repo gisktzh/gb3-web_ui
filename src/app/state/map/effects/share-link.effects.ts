@@ -21,14 +21,23 @@ import {selectLoadedLayerCatalogueAndShareItem} from '../selectors/loaded-layer-
 import {selectItems} from '../reducers/active-map-item.reducer';
 import {Gb3RuntimeError} from '../../../shared/errors/abstract.errors';
 import {AuthService} from '../../../auth/auth.service';
+import {UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
+import {DrawingActiveMapItem} from '../../../map/models/implementations/drawing.model';
+import {SymbolizationToGb3ConverterUtils} from '../../../shared/utils/symbolization-to-gb3-converter.utils';
+import {MapConstants} from '../../../shared/constants/map.constants';
+import {Gb3StyledInternalDrawingRepresentation} from '../../../shared/interfaces/internal-drawing-representation.interface';
+import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
+import {DrawingActions} from '../actions/drawing.actions';
+import {selectDrawings} from '../reducers/drawing.reducer';
 
 /**
- * This class contains a bunch of effects. Most of them are straightforward: do something asynchronous and return a new action afterward or go to an error state.
+ * This class contains a bunch of effects. Most of them are straightforward: do something asynchronous and return a new action afterward or
+ * go to an error state.
  *
  * Initialize application based on a given ID
- *   However, there is the whole `initializeApplication` and `validation` part where this application gets initialized based on a previously shared link ID.
- *   The whole section is basically a big state machine.
- *   In the README.md is a more detailed explanation of the basic logic flow (see 'Application Initialization based on share link')
+ * However, there is the whole `initializeApplication` and `validation` part where this application gets initialized based on a
+ * previously shared link ID. The whole section is basically a big state machine. In the README.md is a more detailed explanation of the
+ * basic logic flow (see 'Application Initialization based on share link')
  */
 @Injectable()
 export class ShareLinkEffects {
@@ -105,7 +114,8 @@ export class ShareLinkEffects {
   public initializeApplicationByVerifyingSharedItem$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ShareLinkActions.initializeApplicationBasedOnId),
-      // we can't use `concatLatestFrom` here because the selector will return undefined values until all internal values are successfully loaded
+      // we can't use `concatLatestFrom` here because the selector will return undefined values until all internal values are successfully
+      // loaded
       combineLatestWith(this.store.select(selectLoadedLayerCatalogueAndShareItem)),
       filter(([_, value]) => value !== undefined),
       take(1),
@@ -126,7 +136,7 @@ export class ShareLinkEffects {
         }
 
         // validate scale
-        let scale = value.item.scale;
+        const scale = value.item.scale;
         const maxScale = this.configService.mapConfig.mapScaleConfig.maxScale;
         const minScale = this.configService.mapConfig.mapScaleConfig.minScale;
         if (scale > minScale || scale < maxScale) {
@@ -139,8 +149,36 @@ export class ShareLinkEffects {
         // validate active map items => validated within the favourite service
         const activeMapItems = this.favouritesService.getActiveMapItemsForFavourite(value.item.content);
 
+        // extract drawing layers that are needed for the given favourite (i.e. they contain features)
+        const drawingLayers: DrawingActiveMapItem[] = [];
+        const drawingsToAdd: Gb3StyledInternalDrawingRepresentation[] = [];
+        if (value.item.drawings.geojson.features.length > 0) {
+          drawingLayers.push(ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, MapConstants.USER_DRAWING_LAYER_PREFIX));
+          const drawings = SymbolizationToGb3ConverterUtils.convertExternalToInternalRepresentation(
+            value.item.drawings,
+            UserDrawingLayer.Drawings,
+          );
+          drawingsToAdd.push(...drawings);
+        }
+        if (value.item.measurements.geojson.features.length > 0) {
+          drawingLayers.push(
+            ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Measurements, MapConstants.USER_DRAWING_LAYER_PREFIX),
+          );
+          const drawings = SymbolizationToGb3ConverterUtils.convertExternalToInternalRepresentation(
+            value.item.measurements,
+            UserDrawingLayer.Measurements,
+          );
+          drawingsToAdd.push(...drawings);
+        }
+
         // complete validation
-        return ShareLinkActions.completeValidation({activeMapItems, scale, basemapId, ...center});
+        return ShareLinkActions.completeValidation({
+          activeMapItems: [...drawingLayers, ...activeMapItems], // make sure drawings layers are added at the top
+          scale,
+          basemapId,
+          drawings: drawingsToAdd,
+          ...center,
+        });
       }),
       catchError((error: unknown) => of(ShareLinkActions.setValidationError({error}))),
     );
@@ -187,12 +225,24 @@ export class ShareLinkEffects {
     );
   });
 
+  public setInitialDrawingsAfterValidation$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ShareLinkActions.completeValidation),
+      map((value) => {
+        return DrawingActions.addDrawings({drawings: value.drawings});
+      }),
+    );
+  });
+
   public completeInitialization$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ShareLinkActions.completeValidation),
-      combineLatestWith(this.store.select(selectItems)),
-      // ensure that the active map items have been set before continuing
-      filter(([value, activeMapItems]) => value.activeMapItems.length === activeMapItems.length),
+      combineLatestWith(this.store.select(selectItems), this.store.select(selectDrawings)),
+      // ensure that the active map items and initial drawings have been set before continuing
+      filter(
+        ([value, activeMapItems, drawings]) =>
+          value.activeMapItems.length === activeMapItems.length && value.drawings.length === drawings.length,
+      ),
       take(1),
       map(() => {
         return ShareLinkActions.completeApplicationInitialization();

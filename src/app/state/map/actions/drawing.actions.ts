@@ -6,6 +6,7 @@ export const DrawingActions = createActionGroup({
   source: 'Drawing',
   events: {
     'Add Drawing': props<{drawing: Gb3StyledInternalDrawingRepresentation}>(),
+    'Add Drawings': props<{drawings: Gb3StyledInternalDrawingRepresentation[]}>(),
     'Clear Drawings': emptyProps(),
     'Clear Drawing Layer': props<{layer: UserDrawingLayer}>(),
   },

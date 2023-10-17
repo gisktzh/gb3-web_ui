@@ -40,6 +40,13 @@ import {MatDialog} from '@angular/material/dialog';
 import {EsriCantonSelectionStrategy} from './strategies/selection/esri-canton-selection.strategy';
 import {EsriScreenExtentSelectionStrategy} from './strategies/selection/esri-screen-extent-selection.strategy';
 import {SelectionCallbackHandler} from './interfaces/selection-callback-handler.interface';
+import {GeometryWithSrs} from '../../../../shared/interfaces/geojson-types-with-srs.interface';
+import Geometry from '@arcgis/core/geometry/Geometry';
+import {geojsonToArcGIS} from '@terraformer/arcgis';
+import Point from '@arcgis/core/geometry/Point';
+import Multipoint from '@arcgis/core/geometry/Multipoint';
+import Polyline from '@arcgis/core/geometry/Polyline';
+import Polygon from '@arcgis/core/geometry/Polygon';
 
 const HANDLE_GROUP_KEY = 'EsriToolService';
 
@@ -102,6 +109,22 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
     const internalDrawingRepresentation = this.convertToGeoJson(graphic, labelText);
     this.store.dispatch(DrawingActions.addDrawing({drawing: internalDrawingRepresentation}));
     this.endDrawing();
+  }
+
+  public addExistingDrawingsToLayer(drawingsToAdd: Gb3StyledInternalDrawingRepresentation[], layerIdentifier: UserDrawingLayer) {
+    const fullLayerIdentifier = this.configService.mapConfig.userDrawingLayerPrefix + layerIdentifier;
+    const drawingLayer = this.esriMapViewService.findEsriLayer(fullLayerIdentifier);
+
+    if (drawingLayer) {
+      drawingsToAdd.forEach((drawing) => {
+        const symbolization = this.esriSymbolizationService.createSymbolizationForDrawingLayer(drawing.geometry, layerIdentifier);
+        const geometry = this.convertGeoJsonToArcGIS(drawing.geometry);
+        const graphic = new Graphic({geometry: geometry, symbol: symbolization});
+        (drawingLayer as GraphicsLayer).add(graphic);
+      });
+    } else {
+      console.log('todo: if not initialized?');
+    }
   }
 
   /**
@@ -370,6 +393,30 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
       case 'select-municipality':
         this.toolStrategy = new EsriMunicipalitySelectionStrategy(layer, areaStyle, completeSelectionCallbackHandler, this.dialogService);
         break;
+    }
+  }
+
+  /**
+   * Terraformer.geojsonToArcGIS() does return a Geometry instance, yet it misses the type property. This will then fail if injected
+   * directly into a new Graphic() object, since it cannot be autocast when missing the type. This Method here extracts the ArcGIS JSON
+   * format and returns a properly typed object, while also setting the correct SRS.
+   * @param geometry The geoJSON geometry that needs to be transformed
+   */
+  private convertGeoJsonToArcGIS(geometry: GeometryWithSrs): Geometry {
+    const arcGisJsonRepresentation = geojsonToArcGIS(geometry);
+    switch (geometry.type) {
+      case 'Point':
+        return new Point({...arcGisJsonRepresentation, spatialReference: {wkid: geometry.srs}});
+      case 'MultiPoint':
+        return new Multipoint({...arcGisJsonRepresentation, spatialReference: {wkid: geometry.srs}});
+      case 'LineString':
+      case 'MultiLineString':
+        return new Polyline({...arcGisJsonRepresentation, spatialReference: {wkid: geometry.srs}});
+      case 'Polygon':
+      case 'MultiPolygon':
+        return new Polygon({...arcGisJsonRepresentation, spatialReference: {wkid: geometry.srs}});
+      case 'GeometryCollection':
+        throw new UnsupportedGeometryType(geometry.type);
     }
   }
 }

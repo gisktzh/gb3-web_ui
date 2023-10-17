@@ -1,5 +1,6 @@
 import {Gb3StyledInternalDrawingRepresentation} from '../interfaces/internal-drawing-representation.interface';
 import {Gb3VectorLayer} from '../interfaces/gb3-vector-layer.interface';
+import {UserDrawingLayer} from '../enums/drawing-layer.enum';
 
 export class SymbolizationToGb3ConverterUtils {
   /**
@@ -10,7 +11,7 @@ export class SymbolizationToGb3ConverterUtils {
    * todo GB3-629: implement logic for feature style
    * @param features
    */
-  public static convert(features: Gb3StyledInternalDrawingRepresentation[]): Gb3VectorLayer {
+  public static convertInternalToExternalRepresentation(features: Gb3StyledInternalDrawingRepresentation[]): Gb3VectorLayer {
     return {
       type: 'Vector',
       geojson: {
@@ -40,5 +41,32 @@ export class SymbolizationToGb3ConverterUtils {
         },
       },
     };
+  }
+
+  public static convertExternalToInternalRepresentation(
+    gb3VectorLayer: Gb3VectorLayer,
+    source: UserDrawingLayer,
+  ): Gb3StyledInternalDrawingRepresentation[] {
+    // todo: style extraction dependent on style
+    return gb3VectorLayer.geojson.features.map((feature) => ({
+      type: 'Feature',
+      properties: {
+        __id: 'todo',
+        style: {
+          type: 'point',
+          fillColor: '#ff0000',
+          fillOpacity: 0.4,
+          strokeColor: '#ff0000',
+          strokeWidth: 2,
+          pointRadius: '3px',
+          strokeOpacity: 1,
+        },
+      },
+      geometry: {
+        ...feature.geometry,
+        srs: 2056,
+      },
+      source: source,
+    }));
   }
 }

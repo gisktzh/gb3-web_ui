@@ -22,7 +22,7 @@ describe('SymbolizationToGb3ConverterUtils', () => {
       },
     ];
 
-    const actual = SymbolizationToGb3ConverterUtils.convert(drawingsMock);
+    const actual = SymbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(drawingsMock);
 
     expect(actual.geojson.features.length).toEqual(2);
     expect(actual.geojson.features[0].properties.text).toEqual(drawingsMock[0].labelText);
