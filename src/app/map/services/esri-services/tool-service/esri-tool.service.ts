@@ -26,7 +26,7 @@ import {EsriLineDrawingStrategy} from './strategies/drawing/esri-line-drawing.st
 import {EsriPolygonDrawingStrategy} from './strategies/drawing/esri-polygon-drawing.strategy';
 import {DrawingCallbackHandler} from './interfaces/drawing-callback-handler.interface';
 import Graphic from '@arcgis/core/Graphic';
-import {InternalDrawingRepresentation} from '../../../../shared/interfaces/internal-drawing-representation.interface';
+import {Gb3StyledInternalDrawingRepresentation} from '../../../../shared/interfaces/internal-drawing-representation.interface';
 import {DrawingActions} from '../../../../state/map/actions/drawing.actions';
 import {silentArcgisToGeoJSON} from '../../../../shared/utils/esri-transformer-wrapper.utils';
 import {UnsupportedGeometryType} from '../errors/esri.errors';
@@ -170,7 +170,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
     this.toolStrategy.start();
   }
 
-  private convertToGeoJson(graphic: Graphic, labelText?: string): InternalDrawingRepresentation {
+  private convertToGeoJson(graphic: Graphic, labelText?: string): Gb3StyledInternalDrawingRepresentation {
     const geoJsonFeature = silentArcgisToGeoJSON(graphic.geometry);
 
     if (geoJsonFeature.type === 'MultiLineString' || geoJsonFeature.type === 'GeometryCollection') {

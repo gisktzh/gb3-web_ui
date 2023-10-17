@@ -2,7 +2,7 @@ import {InternalDrawingLayer} from '../../../../../../shared/enums/drawing-layer
 import {DataDownloadSelection} from '../../../../../../shared/interfaces/data-download-selection.interface';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
-import {InternalDrawingRepresentation} from '../../../../../../shared/interfaces/internal-drawing-representation.interface';
+import {UnstyledInternalDrawingRepresentation} from '../../../../../../shared/interfaces/internal-drawing-representation.interface';
 import Extent from '@arcgis/core/geometry/Extent';
 import Graphic from '@arcgis/core/Graphic';
 import {AbstractEsriSelectionStrategy} from './abstract-esri-selection.strategy';
@@ -34,7 +34,7 @@ export class EsriScreenExtentSelectionStrategy extends AbstractEsriSelectionStra
     this.layer.add(graphic);
   }
 
-  private createDrawingRepresentation(): InternalDrawingRepresentation {
+  private createDrawingRepresentation(): UnstyledInternalDrawingRepresentation {
     return {
       type: 'Feature',
       properties: {},

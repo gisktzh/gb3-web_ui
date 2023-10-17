@@ -15,7 +15,7 @@ import {MapUiActions} from '../../../../state/map/actions/map-ui.actions';
 import {map} from 'rxjs/operators';
 import {ConfigService} from '../../../../shared/services/config.service';
 import {UserDrawingLayer} from '../../../../shared/enums/drawing-layer.enum';
-import {InternalDrawingRepresentation} from '../../../../shared/interfaces/internal-drawing-representation.interface';
+import {Gb3StyledInternalDrawingRepresentation} from '../../../../shared/interfaces/internal-drawing-representation.interface';
 import {selectDrawings} from '../../../../state/map/reducers/drawing.reducer';
 import {SymbolizationToGb3ConverterUtils} from '../../../../shared/utils/symbolization-to-gb3-converter.utils';
 
@@ -59,7 +59,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
 
   private readonly isFormInitialized: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private readonly subscriptions: Subscription = new Subscription();
-  private drawings: InternalDrawingRepresentation[] = [];
+  private drawings: Gb3StyledInternalDrawingRepresentation[] = [];
 
   constructor(
     private readonly store: Store,

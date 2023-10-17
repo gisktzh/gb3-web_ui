@@ -1,4 +1,4 @@
-import {InternalDrawingRepresentation} from '../interfaces/internal-drawing-representation.interface';
+import {Gb3StyledInternalDrawingRepresentation} from '../interfaces/internal-drawing-representation.interface';
 import {Gb3VectorLayer} from '../interfaces/gb3-vector-layer.interface';
 
 export class SymbolizationToGb3ConverterUtils {
@@ -10,7 +10,7 @@ export class SymbolizationToGb3ConverterUtils {
    * todo GB3-629: implement logic for feature style
    * @param features
    */
-  public static convert(features: InternalDrawingRepresentation[]): Gb3VectorLayer {
+  public static convert(features: Gb3StyledInternalDrawingRepresentation[]): Gb3VectorLayer {
     return {
       type: 'Vector',
       geojson: {

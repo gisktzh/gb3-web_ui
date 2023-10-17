@@ -1,11 +1,11 @@
-import {InternalDrawingRepresentation} from '../interfaces/internal-drawing-representation.interface';
+import {Gb3StyledInternalDrawingRepresentation} from '../interfaces/internal-drawing-representation.interface';
 import {UserDrawingLayer} from '../enums/drawing-layer.enum';
 import {FavouriteGb3DrawingStyle} from '../interfaces/favourite.interface';
 import {SymbolizationToGb3ConverterUtils} from './symbolization-to-gb3-converter.utils';
 
 describe('SymbolizationToGb3ConverterUtils', () => {
   it('maps all features into the geojson features array and returns a Gb3VectorLayer', () => {
-    const drawingsMock: InternalDrawingRepresentation[] = [
+    const drawingsMock: Gb3StyledInternalDrawingRepresentation[] = [
       {
         type: 'Feature',
         geometry: {type: 'Point', srs: 2056, coordinates: []},
