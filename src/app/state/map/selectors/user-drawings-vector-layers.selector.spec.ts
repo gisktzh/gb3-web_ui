@@ -10,7 +10,7 @@ describe('selectUserDrawingsVectorLayers', () => {
       {id: 'b', source: UserDrawingLayer.Measurements} as Gb3StyledInternalDrawingRepresentation,
     ];
     const visibleLayersMock: UserDrawingLayer[] = [UserDrawingLayer.Measurements, UserDrawingLayer.Drawings];
-    const utilsMock = spyOn(SymbolizationToGb3ConverterUtils, 'convert');
+    const utilsMock = spyOn(SymbolizationToGb3ConverterUtils, 'convertInternalToExternalRepresentation');
 
     selectUserDrawingsVectorLayers.projector(drawingsMock, visibleLayersMock);
 

@@ -373,7 +373,7 @@ describe('ActiveMapItem Reducer', () => {
         center: {x: 1336, y: 9000},
         basemap: "It's-A-Me, Zelda!",
       };
-      const action = ActiveMapItemActions.addFavourite({activeMapItems: favouriteActiveMapItems, baseConfig});
+      const action = ActiveMapItemActions.addFavourite({activeMapItems: favouriteActiveMapItems, baseConfig, drawingsToAdd: []});
       const state = reducer(existingState, action);
 
       expect(state.items.length).toBe(existingState.items.length + 1);

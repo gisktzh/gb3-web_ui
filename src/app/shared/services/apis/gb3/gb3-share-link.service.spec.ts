@@ -7,7 +7,8 @@ import {of} from 'rxjs';
 import {ShareLinkItem} from '../../../interfaces/share-link.interface';
 import {Gb3VectorLayer} from '../../../interfaces/gb3-vector-layer.interface';
 
-const mockedVectorLayer = {geojson: {features: []}} as unknown as Gb3VectorLayer; //todo: add tests for vector layer
+// todo: add tests for vector layers
+const mockedVectorLayer = {type: undefined, styles: undefined, geojson: {type: undefined, features: []}} as unknown as Gb3VectorLayer;
 describe('Gb3ShareLinkService', () => {
   let service: Gb3ShareLinkService;
   const shareLinkItemIdMock = 'mock-id';
