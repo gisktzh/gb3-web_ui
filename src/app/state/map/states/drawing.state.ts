@@ -1,5 +1,5 @@
-import {InternalDrawingRepresentation} from '../../../shared/interfaces/internal-drawing-representation.interface';
+import {Gb3StyledInternalDrawingRepresentation} from '../../../shared/interfaces/internal-drawing-representation.interface';
 
 export interface DrawingState {
-  drawings: InternalDrawingRepresentation[];
+  drawings: Gb3StyledInternalDrawingRepresentation[];
 }

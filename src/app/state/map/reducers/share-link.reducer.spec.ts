@@ -2,6 +2,7 @@ import {initialState, reducer} from './share-link.reducer';
 import {ShareLinkActions} from '../actions/share-link.actions';
 import {ShareLinkState} from '../states/share-link.state';
 import {ShareLinkItem} from '../../../shared/interfaces/share-link.interface';
+import {Gb3VectorLayer} from '../../../shared/interfaces/gb3-vector-layer.interface';
 
 describe('shareLink Reducer', () => {
   const shareLinkItemMock: ShareLinkItem = {
@@ -9,11 +10,11 @@ describe('shareLink Reducer', () => {
     center: {x: 2675158, y: 1259964},
     scale: 18000,
     content: [],
-    drawings: [],
-    measurements: [],
+    drawings: {} as Gb3VectorLayer,
+    measurements: {} as Gb3VectorLayer,
   };
 
-  const shareLinkItemIdMock: string = 'mock-id';
+  const shareLinkItemIdMock = 'mock-id';
   const errorMock: Error = new Error('oh no! anyway...');
   let existingState: ShareLinkState;
 

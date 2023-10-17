@@ -1,6 +1,6 @@
 import {InternalDrawingLayer} from '../../../../../../shared/enums/drawing-layer.enum';
 import {DataDownloadSelection} from '../../../../../../shared/interfaces/data-download-selection.interface';
-import {InternalDrawingRepresentation} from '../../../../../../shared/interfaces/internal-drawing-representation.interface';
+import {UnstyledInternalDrawingRepresentation} from '../../../../../../shared/interfaces/internal-drawing-representation.interface';
 import {AbstractEsriSelectionStrategy} from './abstract-esri-selection.strategy';
 import Graphic from '@arcgis/core/Graphic';
 import Polygon from '@arcgis/core/geometry/Polygon';
@@ -32,8 +32,9 @@ export class EsriCantonSelectionStrategy extends AbstractEsriSelectionStrategy {
     this.layer.add(graphic);
   }
 
-  private createDrawingRepresentation(): InternalDrawingRepresentation {
-    // TODO GB3-815 - Get the exact drawing representation for the canton as soon as the geometries are available and replace the following code
+  private createDrawingRepresentation(): UnstyledInternalDrawingRepresentation {
+    // TODO GB3-815 - Get the exact drawing representation for the canton as soon as the geometries are available and replace the following
+    // code
     return {
       type: 'Feature',
       properties: {},

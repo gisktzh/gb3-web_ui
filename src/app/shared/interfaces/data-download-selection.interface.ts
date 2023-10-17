@@ -1,10 +1,10 @@
-import {InternalDrawingRepresentation} from './internal-drawing-representation.interface';
+import {UnstyledInternalDrawingRepresentation} from './internal-drawing-representation.interface';
 import {DataDownloadSelectionTool} from '../types/data-download-selection-tool.type';
 import {Municipality} from './geoshop-product.interface';
 
 interface AbstractDataDownloadSelection {
   type: DataDownloadSelectionTool;
-  drawingRepresentation: InternalDrawingRepresentation;
+  drawingRepresentation: UnstyledInternalDrawingRepresentation;
 }
 
 interface GeometryDataDownloadSelection extends AbstractDataDownloadSelection {

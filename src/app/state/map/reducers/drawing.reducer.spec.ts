@@ -1,7 +1,7 @@
 import {initialState as defaultInitialState, reducer} from './drawing.reducer';
 import {DrawingActions} from '../actions/drawing.actions';
 import {DrawingState} from '../states/drawing.state';
-import {InternalDrawingRepresentation} from '../../../shared/interfaces/internal-drawing-representation.interface';
+import {Gb3StyledInternalDrawingRepresentation} from '../../../shared/interfaces/internal-drawing-representation.interface';
 import {UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 
 describe('Drawing Reducer', () => {
@@ -18,7 +18,10 @@ describe('Drawing Reducer', () => {
   describe('clearDrawings', () => {
     it('removes all layers', () => {
       const currentState: DrawingState = {
-        drawings: ['mockDrawing1' as unknown as InternalDrawingRepresentation, 'mockDrawing2' as unknown as InternalDrawingRepresentation],
+        drawings: [
+          'mockDrawing1' as unknown as Gb3StyledInternalDrawingRepresentation,
+          'mockDrawing2' as unknown as Gb3StyledInternalDrawingRepresentation,
+        ],
       };
       const action = DrawingActions.clearDrawings();
 
@@ -31,10 +34,13 @@ describe('Drawing Reducer', () => {
   describe('addDrawing', () => {
     it('adds a drawing to the end of the current drawings', () => {
       const currentState: DrawingState = {
-        drawings: ['mockDrawing1' as unknown as InternalDrawingRepresentation, 'mockDrawing2' as unknown as InternalDrawingRepresentation],
+        drawings: [
+          'mockDrawing1' as unknown as Gb3StyledInternalDrawingRepresentation,
+          'mockDrawing2' as unknown as Gb3StyledInternalDrawingRepresentation,
+        ],
       };
 
-      const newDrawing: InternalDrawingRepresentation = 'mockNewDrawing' as unknown as InternalDrawingRepresentation;
+      const newDrawing: Gb3StyledInternalDrawingRepresentation = 'mockNewDrawing' as unknown as Gb3StyledInternalDrawingRepresentation;
       const action = DrawingActions.addDrawing({drawing: newDrawing});
 
       const result = reducer(currentState, action);
@@ -50,10 +56,10 @@ describe('Drawing Reducer', () => {
     beforeEach(() => {
       currentState = {
         drawings: [
-          {source: UserDrawingLayer.Drawings, id: 'drawingLayer1'} as InternalDrawingRepresentation,
-          {source: UserDrawingLayer.Drawings, id: 'drawingLayer2'} as InternalDrawingRepresentation,
-          {source: UserDrawingLayer.Measurements, id: 'measurementLayer1'} as InternalDrawingRepresentation,
-          {source: UserDrawingLayer.Measurements, id: 'measurementLayer2'} as InternalDrawingRepresentation,
+          {source: UserDrawingLayer.Drawings, id: 'drawingLayer1'} as Gb3StyledInternalDrawingRepresentation,
+          {source: UserDrawingLayer.Drawings, id: 'drawingLayer2'} as Gb3StyledInternalDrawingRepresentation,
+          {source: UserDrawingLayer.Measurements, id: 'measurementLayer1'} as Gb3StyledInternalDrawingRepresentation,
+          {source: UserDrawingLayer.Measurements, id: 'measurementLayer2'} as Gb3StyledInternalDrawingRepresentation,
         ],
       };
     });

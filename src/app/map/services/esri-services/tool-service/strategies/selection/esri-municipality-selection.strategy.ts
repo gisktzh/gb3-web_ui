@@ -11,7 +11,7 @@ import Graphic from '@arcgis/core/Graphic';
 import {Municipality} from '../../../../../../shared/interfaces/geoshop-product.interface';
 import {map} from 'rxjs/operators';
 import {SelectionCallbackHandler} from '../../interfaces/selection-callback-handler.interface';
-import {InternalDrawingRepresentation} from '../../../../../../shared/interfaces/internal-drawing-representation.interface';
+import {UnstyledInternalDrawingRepresentation} from '../../../../../../shared/interfaces/internal-drawing-representation.interface';
 import {InternalDrawingLayer} from '../../../../../../shared/enums/drawing-layer.enum';
 
 export class EsriMunicipalitySelectionStrategy extends AbstractEsriSelectionStrategy {
@@ -64,8 +64,9 @@ export class EsriMunicipalitySelectionStrategy extends AbstractEsriSelectionStra
     this.layer.add(graphic);
   }
 
-  private createDrawingRepresentation(municipality: Municipality): InternalDrawingRepresentation {
-    // TODO GB3-815 - Get the drawing representation for the municipality as soon as the geometries are available and replace the following code
+  private createDrawingRepresentation(municipality: Municipality): UnstyledInternalDrawingRepresentation {
+    // TODO GB3-815 - Get the drawing representation for the municipality as soon as the geometries are available and replace the following
+    // code
     return {
       type: 'Feature',
       properties: {},
