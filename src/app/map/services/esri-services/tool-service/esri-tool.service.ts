@@ -120,10 +120,34 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
         const symbolization = this.esriSymbolizationService.createSymbolizationForDrawingLayer(drawing.geometry, layerIdentifier);
         const geometry = this.convertGeoJsonToArcGIS(drawing.geometry);
         const graphic = new Graphic({geometry: geometry, symbol: symbolization});
+
+        // todo: extract method; use addMany()
         (drawingLayer as GraphicsLayer).add(graphic);
+
+        if (drawing.source === UserDrawingLayer.Measurements && drawing.labelText) {
+          let labelPosition: Point;
+
+          switch (graphic.geometry.type) {
+            case 'point':
+              labelPosition = EsriPointMeasurementStrategy.getLabelPosition(geometry as Point);
+              break;
+            case 'polyline':
+              labelPosition = EsriLineMeasurementStrategy.getLabelPosition(geometry as Polyline);
+              break;
+            case 'polygon':
+              labelPosition = EsriAreaMeasurementStrategy.getLabelPosition(geometry as Polygon);
+              break;
+            default:
+              throw new UnsupportedGeometryType(graphic.geometry.type); // todo: custom error
+          }
+          const labelSymbolization = this.esriSymbolizationService.createTextSymbolization(UserDrawingLayer.Measurements);
+          labelSymbolization.text = drawing.labelText;
+          const labelgraphic = new Graphic({geometry: labelPosition, symbol: labelSymbolization});
+          (drawingLayer as GraphicsLayer).add(labelgraphic);
+        }
       });
     } else {
-      console.log('todo: if not initialized?');
+      console.log('todo: if not initialized?'); // todo: what do we do if not initialized?
     }
   }
 

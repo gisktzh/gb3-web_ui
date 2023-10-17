@@ -5,6 +5,7 @@ import {NumberUtils} from '../../../../../../shared/utils/number.utils';
 import {AbstractEsriMeasurementStrategy, LabelConfiguration} from './abstract-esri-measurement.strategy';
 import {SupportedEsriTool} from '../abstract-esri-drawable-tool.strategy';
 import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
+import Point from '@arcgis/core/geometry/Point';
 
 const M_TO_KM_CONVERSION_THRESHOLD = 10_000;
 
@@ -25,9 +26,13 @@ export class EsriLineMeasurementStrategy extends AbstractEsriMeasurementStrategy
     this.labelSymbolization = labelSymbolization;
   }
 
+  public static getLabelPosition(geometry: Polyline): Point {
+    return geometry.getPoint(0, geometry.paths[0].length - 1);
+  }
+
   protected override createLabelConfigurationForGeometry(geometry: Polyline): LabelConfiguration {
     this.labelSymbolization.text = this.getRoundedPolylineLengthString(geometry);
-    const lastVertex = geometry.getPoint(0, geometry.paths[0].length - 1);
+    const lastVertex = EsriLineMeasurementStrategy.getLabelPosition(geometry);
 
     return {location: lastVertex, symbolization: this.labelSymbolization};
   }

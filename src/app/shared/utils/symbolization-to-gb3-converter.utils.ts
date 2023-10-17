@@ -1,6 +1,7 @@
 import {Gb3StyledInternalDrawingRepresentation} from '../interfaces/internal-drawing-representation.interface';
 import {Gb3VectorLayer} from '../interfaces/gb3-vector-layer.interface';
 import {UserDrawingLayer} from '../enums/drawing-layer.enum';
+import {v4 as uuidv4} from 'uuid';
 
 export class SymbolizationToGb3ConverterUtils {
   /**
@@ -51,7 +52,7 @@ export class SymbolizationToGb3ConverterUtils {
     return gb3VectorLayer.geojson.features.map((feature) => ({
       type: 'Feature',
       properties: {
-        __id: 'todo',
+        __id: uuidv4(),
         style: {
           type: 'point',
           fillColor: '#ff0000',
@@ -67,6 +68,7 @@ export class SymbolizationToGb3ConverterUtils {
         srs: 2056,
       },
       source: source,
+      labelText: feature.properties.text, // todo: why is this empty?
     }));
   }
 }
