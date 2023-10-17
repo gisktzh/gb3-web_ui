@@ -5,7 +5,7 @@
 
 :host ::ng-deep {
   .map-management__button {
-    @include mixins.tool-button;
+    @include mixins.tool-button-mobile;
   }
 }
 

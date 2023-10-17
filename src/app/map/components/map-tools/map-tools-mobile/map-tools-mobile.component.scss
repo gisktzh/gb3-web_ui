@@ -3,22 +3,18 @@
 
 :host ::ng-deep {
   .map-tools-mobile__button {
-    @include mixins.tool-button;
+    @include mixins.tool-button-mobile;
   }
 }
 
 .map-tools-mobile {
   @include mixins.map-element-box-shadow;
-  width: auto;
-  padding: 2px;
   display: flex;
   align-items: center;
   flex-direction: row;
   background-color: ktzh-variables.$zh-background-color;
-  height: 44px;
 
   .map-tools-mobile__divider {
-    height: 50%;
-    width: auto;
+    height: 30px;
   }
 }

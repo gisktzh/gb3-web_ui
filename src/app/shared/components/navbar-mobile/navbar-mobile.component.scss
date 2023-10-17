@@ -7,7 +7,7 @@
 
 :host ::ng-deep {
   .navbar-mobile__button {
-    @include mixins.tool-button;
+    @include mixins.tool-button-mobile;
   }
 }
 
