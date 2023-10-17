@@ -3,13 +3,13 @@
 
 .mdc-switch:enabled {
   .mdc-switch__track::after {
-    background: functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent, 300) !important;
+    background: functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent, 100) !important;
   }
 }
 
 .mdc-switch.mdc-switch--selected:enabled {
   .mdc-switch__handle::after {
-    background: functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent, 900) !important;
+    background: functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent, 500) !important;
   }
 }
 
