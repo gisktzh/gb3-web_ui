@@ -21,12 +21,6 @@ import {selectLoadedLayerCatalogueAndShareItem} from '../selectors/loaded-layer-
 import {selectItems} from '../reducers/active-map-item.reducer';
 import {Gb3RuntimeError} from '../../../shared/errors/abstract.errors';
 import {AuthService} from '../../../auth/auth.service';
-import {UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
-import {DrawingActiveMapItem} from '../../../map/models/implementations/drawing.model';
-import {SymbolizationToGb3ConverterUtils} from '../../../shared/utils/symbolization-to-gb3-converter.utils';
-import {MapConstants} from '../../../shared/constants/map.constants';
-import {Gb3StyledInternalDrawingRepresentation} from '../../../shared/interfaces/internal-drawing-representation.interface';
-import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 import {DrawingActions} from '../actions/drawing.actions';
 import {selectDrawings} from '../reducers/drawing.reducer';
 
@@ -128,54 +122,31 @@ export class ShareLinkEffects {
   public validateShareLinkItem$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ShareLinkActions.validateItem),
-      map((value) => {
+      map(({item: {content, drawings, basemapId, scale, center, measurements}}) => {
         // validate basemap
-        const basemapId = this.basemapConfigService.checkBasemapIdOrGetDefault(value.item.basemapId);
-        if (basemapId !== value.item.basemapId) {
-          throw new ShareLinkPropertyCouldNotBeValidated(`Basemap ist ungültig: '${value.item.basemapId}'`);
+        const basemapIdOrDefault = this.basemapConfigService.checkBasemapIdOrGetDefault(basemapId);
+        if (basemapIdOrDefault !== basemapId) {
+          throw new ShareLinkPropertyCouldNotBeValidated(`Basemap ist ungültig: '${basemapId}'`);
         }
 
         // validate scale
-        const scale = value.item.scale;
         const maxScale = this.configService.mapConfig.mapScaleConfig.maxScale;
         const minScale = this.configService.mapConfig.mapScaleConfig.minScale;
         if (scale > minScale || scale < maxScale) {
-          throw new ShareLinkPropertyCouldNotBeValidated(`Massstab ist ungültig: '${value.item.scale}'`);
+          throw new ShareLinkPropertyCouldNotBeValidated(`Massstab ist ungültig: '${scale}'`);
         }
-
-        // validate center => all values are allowed
-        const center = {x: value.item.center.x, y: value.item.center.y};
 
         // validate active map items => validated within the favourite service
-        const activeMapItems = this.favouritesService.getActiveMapItemsForFavourite(value.item.content);
+        const activeMapItems = this.favouritesService.getActiveMapItemsForFavourite(content);
 
         // extract drawing layers that are needed for the given favourite (i.e. they contain features)
-        const drawingLayers: DrawingActiveMapItem[] = [];
-        const drawingsToAdd: Gb3StyledInternalDrawingRepresentation[] = [];
-        if (value.item.drawings.geojson.features.length > 0) {
-          drawingLayers.push(ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, MapConstants.USER_DRAWING_LAYER_PREFIX));
-          const drawings = SymbolizationToGb3ConverterUtils.convertExternalToInternalRepresentation(
-            value.item.drawings,
-            UserDrawingLayer.Drawings,
-          );
-          drawingsToAdd.push(...drawings);
-        }
-        if (value.item.measurements.geojson.features.length > 0) {
-          drawingLayers.push(
-            ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Measurements, MapConstants.USER_DRAWING_LAYER_PREFIX),
-          );
-          const drawings = SymbolizationToGb3ConverterUtils.convertExternalToInternalRepresentation(
-            value.item.measurements,
-            UserDrawingLayer.Measurements,
-          );
-          drawingsToAdd.push(...drawings);
-        }
+        const {drawingsToAdd, drawingActiveMapItems} = this.favouritesService.getDrawingsForFavourite(drawings, measurements);
 
         // complete validation
         return ShareLinkActions.completeValidation({
-          activeMapItems: [...drawingLayers, ...activeMapItems], // make sure drawings layers are added at the top
+          activeMapItems: [...drawingActiveMapItems, ...activeMapItems], // make sure drawings layers are added at the top
           scale,
-          basemapId,
+          basemapId: basemapIdOrDefault,
           drawings: drawingsToAdd,
           ...center,
         });

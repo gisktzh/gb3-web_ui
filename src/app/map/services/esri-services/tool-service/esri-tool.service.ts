@@ -12,7 +12,7 @@ import {EsriDefaultStrategy} from './strategies/measurement/esri-default.strateg
 import {EsriLineMeasurementStrategy} from './strategies/measurement/esri-line-measurement.strategy';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {EsriSymbolizationService} from '../esri-symbolization.service';
-import {InternalDrawingLayer, UserDrawingLayer} from '../../../../shared/enums/drawing-layer.enum';
+import {DrawingLayer, InternalDrawingLayer, UserDrawingLayer} from '../../../../shared/enums/drawing-layer.enum';
 import {DrawingActiveMapItem} from '../../../models/implementations/drawing.model';
 import {EsriAreaMeasurementStrategy} from './strategies/measurement/esri-area-measurement.strategy';
 import {EsriPointMeasurementStrategy} from './strategies/measurement/esri-point-measurement.strategy';
@@ -29,7 +29,7 @@ import Graphic from '@arcgis/core/Graphic';
 import {Gb3StyledInternalDrawingRepresentation} from '../../../../shared/interfaces/internal-drawing-representation.interface';
 import {DrawingActions} from '../../../../state/map/actions/drawing.actions';
 import {silentArcgisToGeoJSON} from '../../../../shared/utils/esri-transformer-wrapper.utils';
-import {UnsupportedGeometryType} from '../errors/esri.errors';
+import {DrawingLayerNotInitialized, UnsupportedGeometryType} from '../errors/esri.errors';
 import {DataDownloadSelectionTool} from '../../../../shared/types/data-download-selection-tool.type';
 import {DataDownloadOrderActions} from '../../../../state/map/actions/data-download-order.actions';
 import {DataDownloadSelection} from '../../../../shared/interfaces/data-download-selection.interface';
@@ -116,38 +116,10 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
     const drawingLayer = this.esriMapViewService.findEsriLayer(fullLayerIdentifier);
 
     if (drawingLayer) {
-      drawingsToAdd.forEach((drawing) => {
-        const symbolization = this.esriSymbolizationService.createSymbolizationForDrawingLayer(drawing.geometry, layerIdentifier);
-        const geometry = this.convertGeoJsonToArcGIS(drawing.geometry);
-        const graphic = new Graphic({geometry: geometry, symbol: symbolization});
-
-        // todo: extract method; use addMany()
-        (drawingLayer as GraphicsLayer).add(graphic);
-
-        if (drawing.source === UserDrawingLayer.Measurements && drawing.labelText) {
-          let labelPosition: Point;
-
-          switch (graphic.geometry.type) {
-            case 'point':
-              labelPosition = EsriPointMeasurementStrategy.getLabelPosition(geometry as Point);
-              break;
-            case 'polyline':
-              labelPosition = EsriLineMeasurementStrategy.getLabelPosition(geometry as Polyline);
-              break;
-            case 'polygon':
-              labelPosition = EsriAreaMeasurementStrategy.getLabelPosition(geometry as Polygon);
-              break;
-            default:
-              throw new UnsupportedGeometryType(graphic.geometry.type); // todo: custom error
-          }
-          const labelSymbolization = this.esriSymbolizationService.createTextSymbolization(UserDrawingLayer.Measurements);
-          labelSymbolization.text = drawing.labelText;
-          const labelgraphic = new Graphic({geometry: labelPosition, symbol: labelSymbolization});
-          (drawingLayer as GraphicsLayer).add(labelgraphic);
-        }
-      });
+      const graphics = drawingsToAdd.flatMap((drawing) => this.createGraphicsForDrawing(drawing, layerIdentifier));
+      (drawingLayer as GraphicsLayer).addMany(graphics);
     } else {
-      console.log('todo: if not initialized?'); // todo: what do we do if not initialized?
+      throw new DrawingLayerNotInitialized();
     }
   }
 
@@ -442,5 +414,37 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
       case 'GeometryCollection':
         throw new UnsupportedGeometryType(geometry.type);
     }
+  }
+
+  private createGraphicsForDrawing(drawing: Gb3StyledInternalDrawingRepresentation, layerIdentifier: DrawingLayer) {
+    const symbolization = this.esriSymbolizationService.createSymbolizationForDrawingLayer(drawing.geometry, layerIdentifier);
+    const graphics: Graphic[] = [];
+
+    const geometry = this.convertGeoJsonToArcGIS(drawing.geometry);
+    const graphic = new Graphic({geometry: geometry, symbol: symbolization});
+    graphics.push(graphic);
+
+    if (drawing.source === UserDrawingLayer.Measurements && drawing.labelText) {
+      let labelPosition: Point;
+
+      switch (graphic.geometry.type) {
+        case 'point':
+          labelPosition = EsriPointMeasurementStrategy.getLabelPosition(geometry as Point);
+          break;
+        case 'polyline':
+          labelPosition = EsriLineMeasurementStrategy.getLabelPosition(geometry as Polyline);
+          break;
+        case 'polygon':
+          labelPosition = EsriAreaMeasurementStrategy.getLabelPosition(geometry as Polygon);
+          break;
+        default:
+          throw new UnsupportedGeometryType(graphic.geometry.type); // todo: custom error
+      }
+      const labelSymbolization = this.esriSymbolizationService.createTextSymbolization(UserDrawingLayer.Measurements);
+      labelSymbolization.text = drawing.labelText;
+      graphics.push(new Graphic({geometry: labelPosition, symbol: labelSymbolization}));
+    }
+
+    return graphics;
   }
 }

@@ -20,7 +20,7 @@ export class SymbolizationToGb3ConverterUtils {
         features: features.map((feature) => ({
           type: feature.type,
           geometry: feature.geometry,
-          properties: {style: 'REDLINING', text: feature.labelText ?? ''},
+          properties: {style: 'REDLINING', text: feature.labelText},
         })),
       },
       styles: {
@@ -48,7 +48,6 @@ export class SymbolizationToGb3ConverterUtils {
     gb3VectorLayer: Gb3VectorLayer,
     source: UserDrawingLayer,
   ): Gb3StyledInternalDrawingRepresentation[] {
-    // todo: style extraction dependent on style
     return gb3VectorLayer.geojson.features.map((feature) => ({
       type: 'Feature',
       properties: {
@@ -68,7 +67,7 @@ export class SymbolizationToGb3ConverterUtils {
         srs: 2056,
       },
       source: source,
-      labelText: feature.properties.text, // todo: why is this empty?
+      labelText: feature.properties.text,
     }));
   }
 }

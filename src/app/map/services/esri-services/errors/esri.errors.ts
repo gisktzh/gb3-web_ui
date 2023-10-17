@@ -19,3 +19,7 @@ export class UnsupportedSymbolizationType extends RecoverableError {
 export class MapViewNotInitialized extends FatalError {
   public override message = 'Es ist ein technischer Fehler während dem Initialisieren der Karte aufgetreten.';
 }
+
+export class DrawingLayerNotInitialized extends RecoverableError {
+  public override message = 'Es ist ein technischer Fehler beim Hinzufügen der Grafiken aufgetreten.';
+}
