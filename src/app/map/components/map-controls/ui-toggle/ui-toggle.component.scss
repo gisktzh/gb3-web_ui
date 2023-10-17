@@ -5,9 +5,12 @@
   .ui-toggle__button {
     @include mat-mixins.mat-icon-button-override-border-radius(ktzh-variables.$zh-border-radius);
     @include mat-mixins.mat-icon-custom-svg-size(20px);
-    background-color: ktzh-variables.$zh-background-color;
-    display: flex;
-    justify-content: center;
-    align-items: center;
   }
+}
+
+.ui-toggle__button {
+  background-color: ktzh-variables.$zh-background-color;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
