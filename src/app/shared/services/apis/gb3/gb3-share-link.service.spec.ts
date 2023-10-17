@@ -69,6 +69,7 @@ describe('Gb3ShareLinkService', () => {
     basemap: 'basemap3',
     content: [
       {
+        id: 'FnsAPFloraMainZH',
         mapId: 'FnsAPFloraMainZH',
         visible: true,
         opacity: 1,
@@ -112,8 +113,7 @@ describe('Gb3ShareLinkService', () => {
   });
 
   describe('createShareLink', () => {
-    // todo GB3-817: Fix this test as soon as the interface allows the content.id again
-    xit('should send the data and transform it correctly', (done: DoneFn) => {
+    it('should send the data and transform it correctly', (done: DoneFn) => {
       const httpClient = TestBed.inject(HttpClient);
       const postCallSpy = spyOn(httpClient, 'post').and.returnValue(of({id: shareLinkItemIdMock}));
       service.createShareLink(shareLinkItemMock).subscribe((shareLinkItemId) => {

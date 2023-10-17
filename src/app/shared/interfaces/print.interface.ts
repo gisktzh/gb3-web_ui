@@ -1,4 +1,5 @@
 import {Gb3VectorLayer} from './gb3-vector-layer.interface';
+import {AbstractGb3Layer} from './abstract-gb3-layer.interface';
 
 export interface PrintCapabilities {
   /** Available output formats */
@@ -90,7 +91,7 @@ interface PrintMap {
 
 export type PrintMapItem = PrintMapWms | Gb3VectorLayer;
 
-interface PrintMapWms {
+interface PrintMapWms extends AbstractGb3Layer {
   /** WMS layer type */
   type: 'WMS';
   /**

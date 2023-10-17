@@ -7,7 +7,3 @@ export interface ShareLinkItem extends UserDrawingVectorLayers {
   basemapId: string;
   content: ActiveMapItemConfiguration[];
 }
-
-export interface ShareLinkResponse {
-  shareLinkId: string;
-}

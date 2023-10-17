@@ -360,6 +360,8 @@ export type FavoriteContent = {
 
 export type FavoriteContentNew = {
   /** ID of the map */
+  id: string;
+  /** ID of the map */
   mapId: string;
   /** Visibility of the map */
   visible: boolean;

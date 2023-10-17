@@ -1,4 +1,5 @@
 import {SupportedGeometry} from '../types/SupportedGeometry.type';
+import {AbstractGb3Layer} from './abstract-gb3-layer.interface';
 
 export interface Gb3GeoJsonFeature {
   type: 'Feature';
@@ -17,7 +18,7 @@ export interface Gb3GeoJsonFeature {
   geometry: SupportedGeometry;
 }
 
-export interface Gb3VectorLayer {
+export interface Gb3VectorLayer extends AbstractGb3Layer {
   /** Vector layer type */
   type: 'Vector';
   /**

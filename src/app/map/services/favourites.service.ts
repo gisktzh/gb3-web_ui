@@ -1,9 +1,9 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Gb3FavouritesService} from '../../shared/services/apis/gb3/gb3-favourites.service';
-import {Observable, Subscription, tap} from 'rxjs';
+import {combineLatestWith, Observable, Subscription, switchMap, take, tap} from 'rxjs';
 import {ActiveMapItem} from '../models/active-map-item.model';
-import {Favourite, FavouriteBaseConfig, FavouritesResponse} from '../../shared/interfaces/favourite.interface';
+import {Favourite, FavouritesResponse} from '../../shared/interfaces/favourite.interface';
 import {Map} from '../../shared/interfaces/topic.interface';
 import {produce} from 'immer';
 import {ActiveMapItemFactory} from '../../shared/factories/active-map-item.factory';
@@ -14,7 +14,6 @@ import {FavoritesDetailData} from '../../shared/models/gb3-api-generated.interfa
 import {selectMaps} from '../../state/map/selectors/maps.selector';
 import {selectFavouriteBaseConfig} from '../../state/map/selectors/favourite-base-config.selector';
 import {FavouriteIsInvalid} from '../../shared/errors/favourite.errors';
-import {UserDrawingVectorLayers} from '../../shared/interfaces/user-drawing-vector-layers.interface';
 import {selectUserDrawingsVectorLayers} from '../../state/map/selectors/user-drawings-vector-layers.selector';
 
 @Injectable({
@@ -23,8 +22,6 @@ import {selectUserDrawingsVectorLayers} from '../../state/map/selectors/user-dra
 export class FavouritesService implements OnDestroy {
   private activeMapItemConfigurations: ActiveMapItemConfiguration[] = [];
   private availableMaps: Map[] = [];
-  private favouriteBaseConfig!: FavouriteBaseConfig;
-  private userDrawingsVectorLayers!: UserDrawingVectorLayers;
   private readonly activeMapItemConfigurations$ = this.store.select(selectActiveMapItemConfigurations);
   private readonly availableMaps$ = this.store.select(selectMaps);
   private readonly favouriteBaseConfig$ = this.store.select(selectFavouriteBaseConfig);
@@ -39,12 +36,18 @@ export class FavouritesService implements OnDestroy {
   }
 
   public createFavourite(title: string): Observable<FavoritesDetailData> {
-    return this.gb3FavouritesService.createFavourite({
-      title,
-      content: this.activeMapItemConfigurations,
-      baseConfig: this.favouriteBaseConfig,
-      ...this.userDrawingsVectorLayers,
-    });
+    return this.userDrawingsVectorLayers$.pipe(
+      combineLatestWith(this.favouriteBaseConfig$.pipe(take(1))),
+      switchMap(([{measurements, drawings}, baseConfig]) => {
+        return this.gb3FavouritesService.createFavourite({
+          title,
+          content: this.activeMapItemConfigurations,
+          baseConfig,
+          measurements,
+          drawings,
+        });
+      }),
+    );
   }
 
   public ngOnDestroy() {
@@ -118,11 +121,7 @@ export class FavouritesService implements OnDestroy {
         .pipe(tap((activeMapItemConfigurations) => (this.activeMapItemConfigurations = activeMapItemConfigurations)))
         .subscribe(),
     );
-    this.subscriptions.add(this.favouriteBaseConfig$.pipe(tap((mapConfig) => (this.favouriteBaseConfig = mapConfig))).subscribe());
-    this.subscriptions.add(
-      this.userDrawingsVectorLayers$
-        .pipe(tap((userDrawingsVectorLayers) => (this.userDrawingsVectorLayers = userDrawingsVectorLayers)))
-        .subscribe(),
-    );
+    this.subscriptions.add(this.favouriteBaseConfig$.subscribe());
+    this.subscriptions.add(this.userDrawingsVectorLayers$.subscribe());
   }
 }
