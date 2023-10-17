@@ -1,31 +1,32 @@
 @use 'functions/helper.function' as functions;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
-.mdc-switch:enabled {
-  .mdc-switch__track::after {
-    background: functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent, 500) !important;
+.mat-mdc-slide-toggle.mat-primary {
+  .mdc-switch.mdc-switch--selected:enabled,
+  .mdc-switch.mdc-switch--selected:enabled:focus,
+  .mdc-switch.mdc-switch--selected:enabled:hover:not(:focus):not(:active) {
+    .mdc-switch__track::after {
+      background: functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent, 500);
+    }
+
+    .mdc-switch__handle::after {
+      border-color: functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent, 500);
+      background: none;
+      border-width: 2px;
+    }
   }
-}
 
-.mdc-switch.mdc-switch--selected:enabled .mdc-switch__handle::after,
-.mdc-switch.mdc-switch--unselected:enabled .mdc-switch__handle::after {
-  border-width: 2px;
-  background: none !important;
-}
+  .mdc-switch.mdc-switch--unselected:enabled,
+  .mdc-switch.mdc-switch--unselected:enabled:focus,
+  .mdc-switch.mdc-switch--unselected:enabled:hover:not(:focus):not(:active) {
+    .mdc-switch__handle::after {
+      border-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 100);
+      background: none;
+      border-width: 2px;
+    }
+  }
 
-.mdc-switch.mdc-switch--selected:enabled .mdc-switch__handle:hover::after,
-.mdc-switch.mdc-switch--unselected:enabled .mdc-switch__handle:hover::after {
-  border-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, A700) !important;
-}
-
-.mdc-switch.mdc-switch--selected:enabled .mdc-switch__handle::after {
-  border-color: functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent, 500) !important;
-}
-
-.mdc-switch.mdc-switch--unselected:enabled .mdc-switch__handle::after {
-  border-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 100) !important;
-}
-
-.mdc-label {
-  padding-left: 0px !important;
+  .mdc-label {
+    padding-left: 0px;
+  }
 }
