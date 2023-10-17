@@ -15,7 +15,7 @@
 
 .mdc-switch.mdc-switch--selected:enabled .mdc-switch__handle:hover::after,
 .mdc-switch.mdc-switch--unselected:enabled .mdc-switch__handle:hover::after {
-  border-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 400) !important;
+  border-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 300) !important;
 }
 
 .mdc-switch.mdc-switch--selected:enabled .mdc-switch__handle::after {
