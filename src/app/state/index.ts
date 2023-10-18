@@ -64,6 +64,7 @@ import {DrawingState} from './map/states/drawing.state';
 import {DrawingEffects} from './map/effects/drawing.effects';
 import {AppLayoutEffects} from './app/effects/app-layout.effects';
 import {MapAttributeFiltersItemEffects} from './map/effects/map-attribute-filters-item.effects';
+import {routerReducer, RouterState} from '@ngrx/router-store';
 
 export interface State {
   mapConfig: MapConfigState;
@@ -88,6 +89,7 @@ export interface State {
   drawing: DrawingState;
   dataDownloadOrder: DataDownloadOrderState;
   dataDownloadProduct: DataDownloadProductState;
+  router: RouterState;
 }
 
 export const reducers: ActionReducerMap<State> = {
@@ -113,6 +115,7 @@ export const reducers: ActionReducerMap<State> = {
   drawing: drawingReducer,
   dataDownloadOrder: dataDownloadOrderReducer,
   dataDownloadProduct: dataDownloadProductReducer,
+  router: routerReducer,
 };
 
 export const effects = [
