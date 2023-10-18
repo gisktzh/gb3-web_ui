@@ -9,4 +9,5 @@ import {FeatureInfoResultDisplay} from '../../../../shared/interfaces/feature-in
 export class FeatureInfoItemComponent {
   @Input() public featureInfo!: FeatureInfoResultDisplay;
   @Input() public isPrintable: boolean = false;
+  @Input() public showInteractiveElements: boolean = true;
 }
