@@ -6,7 +6,7 @@ import {mapAnimationConfig} from '../configs/map-animation.config';
 import {defaultMapConfig} from '../configs/map.config';
 import {printConfig} from '../configs/print.config';
 import {defaultRuntimeConfig} from '../configs/runtime.config';
-import {SearchIndexType, searchIndexConfig} from '../configs/search-index.config';
+import {searchIndexConfig, SearchIndexType} from '../configs/search-index.config';
 import {searchConfig} from '../configs/search.config';
 import {layerSymbolizations} from '../configs/symbolization.config';
 import {toolTipLongDelay, toolTipMapToolsAndControls} from '../configs/tooltip.config';
@@ -20,6 +20,8 @@ import {PrintConfig} from '../interfaces/print-config.interface';
 import {ApiConfig, AuthSettings, OverrideSettings, RuntimeConfig} from '../interfaces/runtime-config.interface';
 import {SearchConfig} from '../interfaces/search-config.interface';
 import {SearchIndex} from './apis/search/interfaces/search-index.interface';
+import {urlConfig} from '../configs/url.config';
+import {UrlConfig} from '../interfaces/url-config.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -76,6 +78,10 @@ export class ConfigService {
 
   public get mapAnimationConfig(): MapAnimationConfig {
     return mapAnimationConfig;
+  }
+
+  public get urlConfig(): UrlConfig {
+    return urlConfig;
   }
 
   constructor(@Inject(DOCUMENT) private readonly document: Document) {

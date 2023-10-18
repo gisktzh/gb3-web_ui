@@ -21,6 +21,7 @@ import {reducer as shareLinkReducer} from './map/reducers/share-link.reducer';
 import {reducer as dataCatalogueReducer} from './data-catalogue/reducers/data-catalogue.reducer';
 import {reducer as searchReducer} from './app/reducers/search.reducer';
 import {reducer as drawingReducer} from './map/reducers/drawing.reducer';
+import {reducer as urlReducer} from './app/reducers/url.reducer';
 import {ActiveMapItemState} from './map/states/active-map-item.state';
 import {FavouriteListState} from './map/states/favourite-list.state';
 import {FeatureInfoState} from './map/states/feature-info.state';
@@ -46,7 +47,7 @@ import {DataDownloadProductEffects} from './map/effects/data-download-product.ef
 import {FeatureInfoEffects} from './map/effects/feature-info.effects';
 import {LayerCatalogEffects} from './map/effects/layer-catalog.effects';
 import {LegendEffects} from './map/effects/legend.effects';
-import {MapConfigEffects} from './map/effects/map-config-effects.service';
+import {MapConfigEffects} from './map/effects/map-config.effects';
 import {AuthStatusEffects} from './auth/effects/auth-status.effects';
 import {FavouriteListEffects} from './map/effects/favourite-list.effects';
 import {PageNotificationEffects} from './app/effects/page-notification.effects';
@@ -65,6 +66,8 @@ import {DrawingEffects} from './map/effects/drawing.effects';
 import {AppLayoutEffects} from './app/effects/app-layout.effects';
 import {MapAttributeFiltersItemEffects} from './map/effects/map-attribute-filters-item.effects';
 import {routerReducer, RouterState} from '@ngrx/router-store';
+import {UrlState} from './app/states/url.state';
+import {UrlEffects} from './app/effects/url.effects';
 
 export interface State {
   mapConfig: MapConfigState;
@@ -90,6 +93,7 @@ export interface State {
   dataDownloadOrder: DataDownloadOrderState;
   dataDownloadProduct: DataDownloadProductState;
   router: RouterState;
+  url: UrlState;
 }
 
 export const reducers: ActionReducerMap<State> = {
@@ -116,6 +120,7 @@ export const reducers: ActionReducerMap<State> = {
   dataDownloadOrder: dataDownloadOrderReducer,
   dataDownloadProduct: dataDownloadProductReducer,
   router: routerReducer,
+  url: urlReducer,
 };
 
 export const effects = [
@@ -140,6 +145,7 @@ export const effects = [
   DataDownloadProductEffects,
   AppLayoutEffects,
   MapAttributeFiltersItemEffects,
+  UrlEffects,
 ];
 
 export const metaReducers: MetaReducer<State>[] = [];
