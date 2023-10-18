@@ -1,7 +1,13 @@
 <mat-expansion-panel class="result-group" expanded="true" #searchResultGroupExpansionPanel [hideToggle]="true">
   <mat-expansion-panel-header class="result-group__header">
     <div class="result-group__header__inner">
+      <span
+        class="result-group__header__inner__badge"
+        [ngClass]="{'result-group__header__inner__badge--hidden': this.filteredMaps.length === 0 && searchResults.length === 0}"
+        [matBadge]="filteredMaps.length || searchResults.length"
+      ></span>
       <h2 class="result-group__header__inner__text">{{ header }}</h2>
+
       <mat-icon [fontIcon]="searchResultGroupExpansionPanel.expanded ? 'arrow_drop_down' : 'arrow_right'"></mat-icon>
     </div>
   </mat-expansion-panel-header>
