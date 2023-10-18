@@ -6,13 +6,14 @@
       mat-flat-button
       (click)="changeTabs('activeMaps')"
     >
-      <mat-icon svgIcon="ktzh_map_management"></mat-icon>
-      Aktive Karten
-      <span
-        class="map-management-mobile-header__badge"
-        [ngClass]="{'map-management-mobile-header__badge--hidden': activeMapItems.length === 0}"
-        [matBadge]="activeMapItems.length"
-      ></span>
+      <div class="map-management-mobile-header__buttons__button__inner">
+        <span> Aktive Karten </span>
+        <span
+          class="map-management-mobile-header__badge"
+          [ngClass]="{'map-management-mobile-header__badge--hidden': activeMapItems.length === 0}"
+          [matBadge]="activeMapItems.length"
+        ></span>
+      </div>
     </button>
     <button
       [ngClass]="{'map-management-mobile-header__buttons__button--selected': activeTab === 'mapsCatalogue'}"
@@ -20,7 +21,6 @@
       mat-flat-button
       (click)="changeTabs('mapsCatalogue')"
     >
-      <mat-icon svgIcon="ktzh_map_catalogue"></mat-icon>
       Kartenkatalog
     </button>
   </div>

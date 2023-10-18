@@ -51,8 +51,16 @@
         color: ktzh-variables.$zh-black40;
       }
 
+      .map-management-mobile-header__buttons__button__inner {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+      }
+
       .map-management-mobile-header__badge {
         margin-right: auto;
+        margin-left: 12px;
         margin-bottom: 0;
         height: 24px;
         width: 24px;
@@ -64,7 +72,8 @@
 
         &--hidden {
           // `display: none` would not work as the element needs to be present
-          visibility: hidden;
+          //visibility: hidden;
+          display: none;
         }
       }
     }
