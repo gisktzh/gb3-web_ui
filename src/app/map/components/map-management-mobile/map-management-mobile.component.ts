@@ -29,6 +29,7 @@ export class MapManagementMobileComponent implements OnInit, OnDestroy, AfterVie
   public numberOfUnreadNotices: number = 0;
   public activeTab: TabType = 'mapsCatalogue';
   public isAuthenticated: boolean = false;
+  public isSearching: boolean = false;
   public readonly favouriteHelperMessages = FAVOURITE_HELPER_MESSAGES;
 
   private readonly subscriptions: Subscription = new Subscription();
@@ -46,6 +47,7 @@ export class MapManagementMobileComponent implements OnInit, OnDestroy, AfterVie
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
+    this.store.dispatch(LayerCatalogActions.clearLayerCatalog());
   }
 
   public ngAfterViewInit() {
@@ -89,6 +91,16 @@ export class MapManagementMobileComponent implements OnInit, OnDestroy, AfterVie
     const activeMapItemsWithNotices = currentActiveMapItems.filter((activeMapItem) => activeMapItem.settings.notice);
     this.numberOfNotices = activeMapItemsWithNotices.length;
     this.numberOfUnreadNotices = activeMapItemsWithNotices.filter((activeMapItem) => !activeMapItem.settings.isNoticeMarkedAsRead).length;
+  }
+
+  public toggleIsSearching() {
+    this.isSearching = !this.isSearching;
+    this.store.dispatch(LayerCatalogActions.toggleIsSearching({isSearching: this.isSearching}));
+  }
+
+  public clearInput() {
+    this.input.nativeElement.value = '';
+    this.store.dispatch(LayerCatalogActions.setFilterString({filterString: ''}));
   }
 
   private initSubscriptions() {

@@ -123,6 +123,15 @@
 
         @include mat-mixins.mat-icon-custom-svg-size(18px);
       }
+
+      .map-management-mobile-header__tools__filter__input-close-button {
+        position: absolute;
+        right: 20px;
+        margin: 6px 5px 5px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
     }
 
     .map-management-mobile-header__tools__buttons {
@@ -143,4 +152,8 @@
 
 .map-management-mobile-content {
   margin-top: 100px;
+
+  &--searching {
+    margin-top: 58px;
+  }
 }

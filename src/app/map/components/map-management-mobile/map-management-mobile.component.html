@@ -1,5 +1,5 @@
 <div class="map-management-mobile-header">
-  <div class="map-management-mobile-header__buttons">
+  <div class="map-management-mobile-header__buttons" *ngIf="!isSearching">
     <button
       [ngClass]="{'map-management-mobile-header__buttons__button--selected': activeTab === 'activeMaps'}"
       class="map-management-mobile-header__buttons__button"
@@ -26,10 +26,20 @@
   </div>
   <div class="map-management-mobile-header__tools">
     <div *ngIf="activeTab === 'mapsCatalogue'" class="map-management-mobile-header__tools__filter">
-      <input #filterInput class="map-management-mobile-header__tools__filter__input" placeholder="Karten und Layer filtern" type="text" />
+      <input
+        #filterInput
+        class="map-management-mobile-header__tools__filter__input"
+        placeholder="Karten und Layer filtern"
+        type="text"
+        (focus)="toggleIsSearching()"
+        (blur)="toggleIsSearching()"
+      />
       <span class="map-management-mobile-header__tools__filter__input-icon">
         <mat-icon svgIcon="ktzh_search"></mat-icon>
       </span>
+      <button mat-button (click)="clearInput()" class="map-management-mobile-header__tools__filter__input-close-button">
+        <mat-icon>cancel</mat-icon>
+      </button>
     </div>
     <div *ngIf="activeTab === 'activeMaps'" class="map-management-mobile-header__tools__buttons">
       <button
@@ -73,7 +83,7 @@
     </div>
   </div>
 </div>
-<div class="map-management-mobile-content">
+<div class="map-management-mobile-content" [ngClass]="{'map-management-mobile-content--searching': isSearching}">
   <div [ngSwitch]="activeTab" body>
     <active-map-items *ngSwitchCase="'activeMaps'"></active-map-items>
     <map-data-catalogue *ngSwitchCase="'mapsCatalogue'"></map-data-catalogue>
