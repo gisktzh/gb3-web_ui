@@ -14,6 +14,7 @@ export class BottomSheetItemComponent {
   @Input() public overlayTitle?: string = '';
   @Input() public usePrimaryColor: boolean = false;
   @Input() public bottomSheetHeight: BottomSheetHeight = 'small';
+  @Input() showHeader: boolean = true;
 
   protected resizeableStyle: StyleExpression = {};
   protected location: ResizeHandlerLocation = 'top';

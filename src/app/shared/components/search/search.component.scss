@@ -4,10 +4,7 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
 .search {
-  height: 100%;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  height: 64px;
   padding: 17px;
   box-sizing: border-box;
 
