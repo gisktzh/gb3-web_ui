@@ -48,12 +48,4 @@
       );
     }
   }
-
-  .search-window__results-mobile {
-    @include mixins.map-element-box-shadow;
-    background-color: ktzh-variables.$zh-background-color;
-    pointer-events: all;
-    max-height: 60vh;
-    overflow-y: scroll;
-  }
 }

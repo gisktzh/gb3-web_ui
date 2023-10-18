@@ -1,6 +1,10 @@
 <div class="result-window">
   <loading-and-process-bar class="result-window__loading-bar" [loadingState]="searchApiLoadingState"></loading-and-process-bar>
-  <mat-accordion class="result-window__content" multi="true">
+  <mat-accordion
+    class="result-window__content"
+    [multi]="showMultiplePanels"
+    [ngClass]="{'result-window__content--mobile': screenMode === 'mobile'}"
+  >
     <result-group
       *ngIf="filteredAddressesAndPlacesMatches.length > 0"
       [searchResults]="filteredAddressesAndPlacesMatches"

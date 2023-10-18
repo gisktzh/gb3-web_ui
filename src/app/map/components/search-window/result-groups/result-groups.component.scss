@@ -15,6 +15,12 @@
   .result-window__content {
     height: 100%;
 
+    &--mobile {
+      position: absolute;
+      left: 0;
+      width: 100vw;
+    }
+
     .result-window__content__group {
       background-color: ktzh-variables.$zh-background-color;
       pointer-events: all;

@@ -1,14 +1,15 @@
-<div class="search-window">
-  <div class="search-window__searchbar" [ngClass]="{'search-window__searchbar-mobile': screenMode === 'mobile'}">
+<div class="search-window-mobile">
+  <div class="search-window-mobile__searchbar">
     <search
       mode="compact"
       placeholderText="Suchen nach Adressen, Orten, Karten und mehr..."
+      [focusOnInit]="focusOnInit"
       (changeSearchTermEvent)="searchForTerm($event)"
       (clearSearchTermEvent)="clearSearchTerm()"
       (openFilterEvent)="openFilterMenu()"
     ></search>
   </div>
-  <div class="search-window__results-container">
-    <result-groups></result-groups>
+  <div class="search-window-mobile__results-container">
+    <result-groups [showMultiplePanels]="false"></result-groups>
   </div>
 </div>
