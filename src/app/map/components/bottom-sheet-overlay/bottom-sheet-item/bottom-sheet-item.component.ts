@@ -49,7 +49,7 @@ export class BottomSheetItemComponent implements OnInit, OnDestroy {
         .pipe(
           tap((isSearching: boolean) => {
             if (isSearching) {
-              this.bottomSheetHeight = 'large';
+              //this.bottomSheetHeight = 'large';
             }
           }),
         )
