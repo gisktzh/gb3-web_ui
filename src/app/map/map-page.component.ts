@@ -33,7 +33,7 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
   private readonly queryLegends$ = this.store.select(selectQueryLegends);
   private readonly mapUiState$ = this.store.select(selectMapUiState);
   private readonly screenMode$ = this.store.select(selectScreenMode);
-  private readonly laodingState$ = this.store.select(selectLoadingState);
+  private readonly loadingState$ = this.store.select(selectLoadingState);
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(
@@ -105,7 +105,7 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
         .subscribe(),
     );
     this.subscriptions.add(
-      this.laodingState$
+      this.loadingState$
         .pipe(
           tap((loadingState) => {
             this.loadingState = loadingState;
