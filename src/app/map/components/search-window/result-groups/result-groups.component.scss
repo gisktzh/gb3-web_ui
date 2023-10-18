@@ -12,13 +12,12 @@
     background-color: ktzh-variables.$zh-background-color;
   }
 
-  .result-window__group {
-    padding: 5px;
-    max-height: 33%;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    background-color: ktzh-variables.$zh-background-color;
-    pointer-events: all;
+  .result-window__content {
+    height: 100%;
+
+    .result-window__content__group {
+      background-color: ktzh-variables.$zh-background-color;
+      pointer-events: all;
+    }
   }
 }

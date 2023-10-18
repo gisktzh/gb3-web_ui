@@ -1,36 +1,46 @@
-<h2 class="result-group__header">{{ header }}</h2>
-<div class="result-group__container">
-  <mat-card
-    *ngFor="let result of searchResults"
-    (click)="zoomToResult(result)"
-    class="result-group__container__element search-result-group__container__element--interactive"
-  >
-    <mat-card-header *ngIf="result.indexType === 'activeMapItems'" class="result-group__container__element__header">{{
-      result.indexName
-    }}</mat-card-header>
-    <mat-card-content
-      class="result-group__container__element__content"
-      [innerHTML]="result.displayString | highlightSearchQuery: this.searchTerms"
-    ></mat-card-content>
-    <mat-divider></mat-divider>
-  </mat-card>
-</div>
-<div class="result-group__container">
-  <mat-card *ngFor="let map of filteredMaps" class="result-group__container__element">
-    <mat-card-content class="result-group__container__element__map-content">
-      <gb2-exit-button *ngIf="map.gb2Url; else addToMap" [url]="map.gb2Url | appendMapConfigurationToUrl: mapConfigState"></gb2-exit-button>
-      <ng-template #addToMap>
-        <button (click)="addActiveMap(map)" color="primary" data-test-id="add-active-map" mat-icon-button>
-          <mat-icon>add</mat-icon>
-        </button>
-      </ng-template>
-      <img [alt]="map.title" [src]="map.icon" class="result-group__container__element__map-content__image" />
-      <p
-        [innerHTML]="map.title | highlightSearchQuery: this.searchTerms"
-        class="result-group__container__element__map-content__title"
-        matTooltip="{{ map.title }}"
-      ></p>
-    </mat-card-content>
-    <mat-divider></mat-divider>
-  </mat-card>
-</div>
+<mat-expansion-panel class="result-group" expanded="true" #searchResultGroupExpansionPanel [hideToggle]="true">
+  <mat-expansion-panel-header class="result-group__header">
+    <div class="result-group__header__inner">
+      <h2 class="result-group__header__inner__text">{{ header }}</h2>
+      <mat-icon [fontIcon]="searchResultGroupExpansionPanel.expanded ? 'arrow_drop_down' : 'arrow_right'"></mat-icon>
+    </div>
+  </mat-expansion-panel-header>
+  <div class="result-group__container">
+    <mat-card
+      *ngFor="let result of searchResults"
+      (click)="zoomToResult(result)"
+      class="result-group__container__element search-result-group__container__element--interactive"
+    >
+      <mat-card-header *ngIf="result.indexType === 'activeMapItems'" class="result-group__container__element__header">{{
+        result.indexName
+      }}</mat-card-header>
+      <mat-card-content
+        class="result-group__container__element__content"
+        [innerHTML]="result.displayString | highlightSearchQuery: this.searchTerms"
+      ></mat-card-content>
+      <mat-divider></mat-divider>
+    </mat-card>
+  </div>
+  <div class="result-group__container">
+    <mat-card *ngFor="let map of filteredMaps" class="result-group__container__element">
+      <mat-card-content class="result-group__container__element__map-content">
+        <gb2-exit-button
+          *ngIf="map.gb2Url; else addToMap"
+          [url]="map.gb2Url | appendMapConfigurationToUrl: mapConfigState"
+        ></gb2-exit-button>
+        <ng-template #addToMap>
+          <button (click)="addActiveMap(map)" color="primary" data-test-id="add-active-map" mat-icon-button>
+            <mat-icon>add</mat-icon>
+          </button>
+        </ng-template>
+        <img [alt]="map.title" [src]="map.icon" class="result-group__container__element__map-content__image" />
+        <p
+          [innerHTML]="map.title | highlightSearchQuery: this.searchTerms"
+          class="result-group__container__element__map-content__title"
+          matTooltip="{{ map.title }}"
+        ></p>
+      </mat-card-content>
+      <mat-divider></mat-divider>
+    </mat-card>
+  </div>
+</mat-expansion-panel>

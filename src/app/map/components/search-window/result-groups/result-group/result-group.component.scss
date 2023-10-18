@@ -1,52 +1,71 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 @use 'mixins/helpers.mixin' as mixins;
 
-.result-group__header {
-  padding: 4px;
+.result-group {
   margin: 0;
-  background-color: ktzh-variables.$zh-black20;
-  font-size: 15px;
-}
+  padding: 12px 12px 0 12px;
 
-.result-group__container {
-  overflow-y: scroll;
+  .result-group__header {
+    padding-left: 0;
+    margin-bottom: 12px;
+    background-color: ktzh-variables.$zh-black20;
+    height: 36px;
 
-  .result-group__container__element {
-    box-shadow: none;
-    font-size: 14px;
-
-    .result-group__container__element__header {
-      font-weight: bold;
-      padding: 5px 5px 0 5px;
-    }
-
-    .result-group__container__element__content {
-      padding: 5px;
-    }
-
-    .result-group__container__element__map-content {
+    .result-group__header__inner {
+      width: 100%;
       display: flex;
-      padding: 5px;
+      justify-content: space-between;
+      align-items: center;
 
-      .result-group__container__element__map-content__image {
-        height: 32px;
-        width: 32px;
-        align-self: center;
-        margin-right: 8px;
-        border-radius: 4px;
-      }
-
-      .result-group__container__element__map-content__title {
-        @include mixins.single-line-text;
-        margin-right: auto;
-        margin-top: auto;
-        margin-bottom: auto;
+      .result-group__header__inner__text {
+        font-size: 16px;
+        padding: 0 12px;
+        margin: 0;
       }
     }
+  }
 
-    &:hover.search-result-group__container__element--interactive {
-      cursor: pointer;
-      background-color: ktzh-variables.$zh-background-color;
+  .result-group__container {
+    overflow-y: auto;
+    max-height: 180px;
+
+    .result-group__container__element {
+      box-shadow: none;
+      font-size: 14px;
+
+      .result-group__container__element__header {
+        font-weight: bold;
+        padding: 5px 5px 0 5px;
+      }
+
+      .result-group__container__element__content {
+        padding: 5px;
+      }
+
+      .result-group__container__element__map-content {
+        display: flex;
+        padding: 5px;
+
+        .result-group__container__element__map-content__image {
+          height: 32px;
+          width: 32px;
+          align-self: center;
+          margin-right: 8px;
+          border-radius: 4px;
+        }
+
+        .result-group__container__element__map-content__title {
+          @include mixins.single-line-text;
+          margin-right: auto;
+          margin-top: auto;
+          margin-bottom: auto;
+        }
+      }
+
+      &:hover.search-result-group__container__element--interactive {
+        cursor: pointer;
+        background-color: ktzh-variables.$zh-background-color;
+      }
     }
   }
 }
