@@ -27,6 +27,8 @@
     align-items: center;
     flex-wrap: wrap;
     padding: 0 16px 0;
+    border-top-right-radius: ktzh-variables.$zh-border-radius;
+    border-top-left-radius: ktzh-variables.$zh-border-radius;
 
     &--primary-color {
       background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);

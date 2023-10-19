@@ -17,8 +17,7 @@
   }
 
   .map-management-mobile-header__tools__buttons__action {
-    @include mat-mixins.mat-icon-custom-svg-size(18px);
-    padding: 5px;
+    @include mixins.tool-button-mobile;
   }
 }
 
@@ -37,6 +36,7 @@
     border-color: functions.get-color-from-palette(ktzh-variables.$zh-primary, 900);
     border-radius: ktzh-variables.$zh-border-radius;
     margin: 0 16px;
+    border-radius: ktzh-variables.$zh-border-radius;
 
     .map-management-mobile-header__buttons__button {
       width: 100%;
@@ -100,6 +100,7 @@
         outline: none;
         display: block;
         font-family: ktzh-variables.$zh-font-family;
+        border-radius: ktzh-variables.$zh-border-radius;
 
         &:focus-within {
           font-size: 16px;
@@ -140,6 +141,7 @@
       justify-content: center;
       background-color: ktzh-variables.$zh-background-color;
       z-index: 1;
+      border-radius: ktzh-variables.$zh-border-radius;
 
       .map-management-mobile-header__tools__buttons__divider {
         height: 12px;

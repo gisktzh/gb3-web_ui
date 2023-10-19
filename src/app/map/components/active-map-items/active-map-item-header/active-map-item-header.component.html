@@ -39,7 +39,10 @@
     </p>
     <div
       class="active-map-item-header__title-container__options"
-      [ngClass]="{'active-map-item-header__title-container__options--inverted': activeMapItemExpansionPanel.expanded}"
+      [ngClass]="{
+        'active-map-item-header__title-container__options--inverted': activeMapItemExpansionPanel.expanded,
+        'active-map-item-header__title-container__options--mobile': screenMode === 'mobile'
+      }"
     >
       <ng-container *ngIf="activeMapItem.geometadataUuid">
         <a
