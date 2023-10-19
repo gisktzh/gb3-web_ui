@@ -12,7 +12,7 @@ const MIN_DIMENSIONS_HEIGHT__PX = 200;
 /**
  * Maximum width and height of resize windows in percentage; cannot be resized above that.
  */
-const MAX_DIMENSION_PERCENTAGE = 0.9;
+const MAX_DIMENSION_PERCENTAGE = 0.85;
 
 @Component({
   selector: 'resize-handler',
