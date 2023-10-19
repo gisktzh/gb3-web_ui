@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {selectFeatureInfoQueryLoadingState} from 'src/app/state/map/selectors/feature-info-query-loading-state.selector';
@@ -14,6 +14,8 @@ import {selectFeatureInfosForDisplay} from '../../../../state/map/selectors/feat
   styleUrls: ['./feature-info.component.scss'],
 })
 export class FeatureInfoComponent implements OnInit, OnDestroy {
+  @Input() public showInteractiveElements: boolean = true;
+
   public loadingState: LoadingState = undefined;
   public featureInfoData: FeatureInfoResultDisplay[] = [];
   public generalInfoData?: GeneralInfoResponse;
