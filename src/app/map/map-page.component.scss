@@ -144,6 +144,8 @@
     right: 12px;
 
     &--mobile {
+      left: 12px;
+      right: unset;
       top: 12px;
     }
   }

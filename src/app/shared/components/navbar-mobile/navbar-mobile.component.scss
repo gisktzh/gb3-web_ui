@@ -15,7 +15,7 @@
   @include mixins.map-element-box-shadow;
   position: absolute;
   top: 12px;
-  left: 12px;
+  right: 12px;
   background-color: ktzh-variables.$zh-background-color;
   z-index: z-index-variables.$navbar;
 }
