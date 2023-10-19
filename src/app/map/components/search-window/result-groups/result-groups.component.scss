@@ -15,9 +15,6 @@ $header-height: 112px;
   }
 
   .result-window__content {
-    display: flex;
-    flex-direction: column;
-
     &--mobile {
       position: absolute;
       left: 0;
@@ -27,7 +24,6 @@ $header-height: 112px;
     }
 
     .result-window__content__group {
-      background-color: ktzh-variables.$zh-background-color;
       pointer-events: all;
     }
   }
