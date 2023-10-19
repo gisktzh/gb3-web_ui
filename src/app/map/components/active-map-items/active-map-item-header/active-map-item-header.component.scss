@@ -132,6 +132,10 @@
       justify-self: center;
       grid-column: 1;
       grid-row: 1;
+
+      &--disabled {
+        color: ktzh-variables.$zh-black40;
+      }
     }
   }
 }

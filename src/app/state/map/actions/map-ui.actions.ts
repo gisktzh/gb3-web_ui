@@ -20,5 +20,7 @@ export const MapUiActions = createActionGroup({
     'Show Bottom Sheet': props<{bottomSheetContent: Exclude<BottomSheetContent, 'none'>}>(),
     'Hide Bottom Sheet': emptyProps(),
     'Reset Map Ui State': emptyProps(),
+    'Disable Active Map Item Drag And Drop': emptyProps(),
+    'Enable Active Map Item Drag And Drop': emptyProps(),
   },
 });
