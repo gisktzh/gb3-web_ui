@@ -47,7 +47,6 @@ export class MapManagementMobileComponent implements OnInit, OnDestroy, AfterVie
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
-    this.store.dispatch(LayerCatalogActions.clearLayerCatalog());
   }
 
   public ngAfterViewInit() {

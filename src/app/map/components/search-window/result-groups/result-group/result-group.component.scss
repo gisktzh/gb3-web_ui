@@ -3,6 +3,10 @@
 @use 'mixins/material.mixin' as mat-mixins;
 @use 'functions/helper.function' as functions;
 
+:host ::ng-deep .map-data-catalogue__content__items__item {
+  @include mat-mixins.mat-expansion-panel-remove-content-indent;
+}
+
 .result-group {
   @include mixins.no-box-shadow;
   margin: 0;

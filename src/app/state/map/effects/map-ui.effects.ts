@@ -21,6 +21,7 @@ import {PrintActions} from '../actions/print.actions';
 import {selectActiveTool} from '../reducers/tool.reducer';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {selectScreenMode} from '../../app/reducers/app-layout.reducer';
+import {SearchActions} from '../../app/actions/search.actions';
 
 const CREATE_FAVOURITE_DIALOG_MAX_WIDTH = 500;
 const DELETE_FAVOURITE_DIALOG_MAX_WIDTH = 500;
@@ -175,6 +176,14 @@ export class MapUiEffects {
       concatLatestFrom(() => this.store.select(selectActiveTool)),
       filter(([{hideAllUiElements}, activeTool]) => hideAllUiElements && activeTool !== undefined),
       map(() => ToolActions.cancelTool()),
+    );
+  });
+  public clearSearchTermAfterClosingBottomSheet$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapUiActions.hideBottomSheet),
+      map(() => {
+        return SearchActions.clearSearchTerm();
+      }),
     );
   });
 
