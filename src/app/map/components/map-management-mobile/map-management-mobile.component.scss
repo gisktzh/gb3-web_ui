@@ -42,6 +42,7 @@
       width: 100%;
       color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
       background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
+      height: 48px;
 
       &--selected {
         background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary, 900);
@@ -153,7 +154,7 @@
 }
 
 .map-management-mobile-content {
-  margin-top: 100px;
+  margin-top: 112px;
 
   &--searching {
     margin-top: 58px;

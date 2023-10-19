@@ -47,6 +47,7 @@ export class MapManagementMobileComponent implements OnInit, OnDestroy, AfterVie
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
+    this.clearInput();
   }
 
   public ngAfterViewInit() {
@@ -59,6 +60,7 @@ export class MapManagementMobileComponent implements OnInit, OnDestroy, AfterVie
 
   public changeTabs(tab: TabType) {
     this.activeTab = tab;
+    this.clearInput();
   }
 
   public removeAllActiveMapItems() {
