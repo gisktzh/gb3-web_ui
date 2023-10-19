@@ -10,7 +10,7 @@
       [showFilterButton]="screenMode !== 'mobile'"
     ></search>
   </div>
-  <div class="search-window__results-container">
+  <div class="search-window__results-container" *ngIf="screenMode !== 'mobile'">
     <result-groups></result-groups>
   </div>
 </div>
