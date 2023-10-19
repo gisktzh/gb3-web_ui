@@ -11,7 +11,7 @@
       <mat-icon [fontIcon]="searchResultGroupExpansionPanel.expanded ? 'arrow_drop_down' : 'arrow_right'"></mat-icon>
     </div>
   </mat-expansion-panel-header>
-  <div class="result-group__container">
+  <div class="result-group__container" [ngClass]="{'result-group__container--mobile': screenMode === 'mobile'}">
     <mat-card
       *ngFor="let result of searchResults"
       (click)="zoomToResult(result)"
@@ -27,7 +27,7 @@
       <mat-divider></mat-divider>
     </mat-card>
   </div>
-  <div class="result-group__container">
+  <div class="result-group__container" [ngClass]="{'result-group__container--mobile': screenMode === 'mobile'}">
     <mat-card *ngFor="let map of filteredMaps" class="result-group__container__element">
       <mat-card-content class="result-group__container__element__map-content">
         <gb2-exit-button

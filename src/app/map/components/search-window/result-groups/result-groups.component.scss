@@ -15,6 +15,9 @@ $header-height: 112px;
   }
 
   .result-window__content {
+    display: flex;
+    flex-direction: column;
+
     &--mobile {
       position: absolute;
       left: 0;
