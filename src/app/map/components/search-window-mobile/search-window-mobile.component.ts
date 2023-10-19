@@ -5,9 +5,7 @@ import {Subscription, tap} from 'rxjs';
 import {SearchFilterDialogComponent} from 'src/app/shared/components/search-filter-dialog/search-filter-dialog.component';
 import {PanelClass} from 'src/app/shared/enums/panel-class.enum';
 import {ConfigService} from 'src/app/shared/services/config.service';
-import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {SearchActions} from 'src/app/state/app/actions/search.actions';
-import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {initialState, selectSearchState} from 'src/app/state/app/reducers/search.reducer';
 import {SearchState} from 'src/app/state/app/states/search.state';
 
@@ -21,11 +19,9 @@ const FILTER_DIALOG_WIDTH_IN_PX = 90;
 export class SearchWindowMobileComponent implements OnInit, OnDestroy {
   @Input() focusOnInit: boolean = true;
   public searchState: SearchState = initialState;
-  public screenMode: ScreenMode = 'mobile';
 
   private readonly searchConfig = this.configService.searchConfig.mapPage;
   private readonly searchState$ = this.store.select(selectSearchState);
-  private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(
@@ -62,6 +58,5 @@ export class SearchWindowMobileComponent implements OnInit, OnDestroy {
 
   private initSubscriptions() {
     this.subscriptions.add(this.searchState$.pipe(tap((searchState) => (this.searchState = searchState))).subscribe());
-    this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
   }
 }

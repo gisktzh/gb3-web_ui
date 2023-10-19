@@ -88,6 +88,17 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
         )
         .subscribe(),
     );
-    this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
+    this.subscriptions.add(
+      this.screenMode$
+        .pipe(
+          tap((screenMode) => {
+            this.screenMode = screenMode;
+            if (this.inputRef) {
+              this.clearInput();
+            }
+          }),
+        )
+        .subscribe(),
+    );
   }
 }
