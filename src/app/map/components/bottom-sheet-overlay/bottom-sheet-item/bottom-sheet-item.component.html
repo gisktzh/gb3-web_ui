@@ -1,4 +1,8 @@
-<mat-card class="bottom-sheet-item" [style]="resizeableStyle" [ngClass]="'bottom-sheet-item--' + bottomSheetHeight">
+<mat-card
+  class="bottom-sheet-item"
+  [style]="resizeableStyle"
+  [ngClass]="isSearching ? 'bottom-sheet-item--large' : 'bottom-sheet-item--' + bottomSheetHeight"
+>
   <mat-card-header class="bottom-sheet-item__header" [ngClass]="{'bottom-sheet-item__header--primary-color': usePrimaryColor}">
     <div class="bottom-sheet-item__header__container">
       <button (click)="close()" mat-icon-button [ngClass]="{'bottom-sheet-item__header__button--primary--color': usePrimaryColor}">

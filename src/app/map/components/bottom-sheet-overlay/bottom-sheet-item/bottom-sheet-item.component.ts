@@ -17,7 +17,9 @@ export class BottomSheetItemComponent implements OnInit, OnDestroy {
   @Input() public usePrimaryColor: boolean = false;
   @Input() public bottomSheetHeight: BottomSheetHeight = 'small';
   @Input() showHeader: boolean = true;
+  public isSearching: boolean = false;
 
+  private readonly isSearching$ = this.store.select(selectIsSearching);
   private readonly updateBottomSheetHeight$ = this.store.select(selectIsSearching);
   private readonly subscriptions: Subscription = new Subscription();
 
@@ -55,5 +57,6 @@ export class BottomSheetItemComponent implements OnInit, OnDestroy {
         )
         .subscribe(),
     );
+    this.subscriptions.add(this.isSearching$.pipe(tap((isSearching) => (this.isSearching = isSearching))).subscribe());
   }
 }

@@ -1,10 +1,5 @@
 <mat-card class="navbar-mobile__dialog">
   <mat-card-header class="navbar-mobile__dialog__header">
-    <button (click)="close()" mat-icon-button>
-      <mat-icon>close</mat-icon>
-    </button>
-    <h1 class="navbar-mobile__dialog__header__title">Menu</h1>
-
     <a (click)="this.startLogin()" *ngIf="!this.isAuthenticated; else userProfile" class="navbar__item" mat-button>Login</a>
     <ng-template #userProfile>
       <a [matMenuTriggerFor]="userMenu" class="navbar__item" mat-button #trigger="matMenuTrigger">
@@ -19,6 +14,10 @@
         </button>
       </mat-menu>
     </ng-template>
+    <button (click)="close()" mat-icon-button>
+      <mat-icon>close</mat-icon>
+    </button>
+    <h1 class="navbar-mobile__dialog__header__title">Menu</h1>
   </mat-card-header>
   <mat-card-content class="navbar-mobile__dialog__content">
     <ng-content></ng-content>

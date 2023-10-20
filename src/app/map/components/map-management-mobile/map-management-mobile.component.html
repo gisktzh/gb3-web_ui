@@ -25,14 +25,16 @@
     </button>
   </div>
   <div class="map-management-mobile-header__tools">
-    <div *ngIf="activeTab === 'mapsCatalogue'" class="map-management-mobile-header__tools__filter">
+    <div
+      class="map-management-mobile-header__tools__filter"
+      [ngClass]="{'map-management-mobile-header__tools__filter--hidden': activeTab !== 'mapsCatalogue'}"
+    >
       <input
         #filterInput
         class="map-management-mobile-header__tools__filter__input"
         placeholder="Karten und Layer filtern"
         type="text"
-        (focus)="toggleIsSearching()"
-        (blur)="toggleIsSearching()"
+        (focus)="setIsSearching()"
       />
       <span class="map-management-mobile-header__tools__filter__input-icon">
         <mat-icon svgIcon="ktzh_search"></mat-icon>
@@ -41,7 +43,10 @@
         <mat-icon>cancel</mat-icon>
       </button>
     </div>
-    <div *ngIf="activeTab === 'activeMaps'" class="map-management-mobile-header__tools__buttons">
+    <div
+      class="map-management-mobile-header__tools__buttons"
+      [ngClass]="{'map-management-mobile-header__tools__buttons--hidden': activeTab !== 'activeMaps'}"
+    >
       <button
         class="map-management-mobile-header__tools__buttons__action map-management-mobile-header__tools__buttons__action--notices"
         (click)="showMapNotices()"

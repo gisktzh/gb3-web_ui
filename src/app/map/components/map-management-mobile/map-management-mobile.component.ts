@@ -60,7 +60,6 @@ export class MapManagementMobileComponent implements OnInit, OnDestroy, AfterVie
 
   public changeTabs(tab: TabType) {
     this.activeTab = tab;
-    this.clearInput();
   }
 
   public removeAllActiveMapItems() {
@@ -94,14 +93,15 @@ export class MapManagementMobileComponent implements OnInit, OnDestroy, AfterVie
     this.numberOfUnreadNotices = activeMapItemsWithNotices.filter((activeMapItem) => !activeMapItem.settings.isNoticeMarkedAsRead).length;
   }
 
-  public toggleIsSearching() {
-    this.isSearching = !this.isSearching;
-    this.store.dispatch(LayerCatalogActions.toggleIsSearching({isSearching: this.isSearching}));
-  }
-
   public clearInput() {
     this.input.nativeElement.value = '';
     this.store.dispatch(LayerCatalogActions.setFilterString({filterString: ''}));
+    this.setIsSearching(false);
+  }
+
+  public setIsSearching(isSearching: boolean = true) {
+    this.isSearching = isSearching;
+    this.store.dispatch(LayerCatalogActions.toggleIsSearching({isSearching: this.isSearching}));
   }
 
   private initSubscriptions() {

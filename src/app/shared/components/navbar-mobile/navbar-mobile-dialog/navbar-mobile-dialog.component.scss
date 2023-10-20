@@ -25,9 +25,9 @@
     padding: 16px 6px 0;
 
     .navbar-mobile__dialog__header__title {
-      flex-grow: 1;
       margin-bottom: 0;
       font-size: 18px;
+      padding-right: 10px;
     }
   }
 
@@ -46,6 +46,8 @@ a.navbar__item {
   padding-bottom: 24px;
   color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
   font-size: 18px;
+  flex-grow: 1;
+  justify-content: flex-start;
 
   &.navbar__item--active {
     font-family: ktzh-variables.$zh-font-family-bold;
