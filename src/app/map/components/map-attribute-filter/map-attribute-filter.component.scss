@@ -15,14 +15,14 @@
   }
 }
 
+.no-box-shadow {
+  @include mixins.no-box-shadow;
+  border-radius: ktzh-variables.$zh-border-radius;
+}
+
 .attribute-filter {
   max-height: inherit;
   width: map-layout-variables.$map-overlay-width;
-
-  .no-box-shadow {
-    @include mixins.no-box-shadow;
-    border-radius: ktzh-variables.$zh-border-radius;
-  }
 
   .attribute-filter__header {
     width: 100%;
