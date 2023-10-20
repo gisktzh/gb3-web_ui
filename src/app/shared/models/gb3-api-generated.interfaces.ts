@@ -841,8 +841,8 @@ export interface Topics {
         filterValues: {
           /** name of the filter that is displayed in the UI */
           name: string;
-          /** a list of strings containing the values to be filtered */
-          values: string[];
+          /** a list containing the values to be filtered */
+          values: (string | number)[];
         }[];
       }[];
       /** Search Settings */

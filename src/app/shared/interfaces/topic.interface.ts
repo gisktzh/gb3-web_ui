@@ -128,9 +128,14 @@ export interface SearchConfiguration {
 
 export interface FilterValue extends HasActiveState {
   name: string;
-  values: string[];
+  values: (string | number)[];
 }
 
 export interface TopicsResponse {
   topics: Topic[];
+}
+
+export interface WmsFilterValue {
+  name: string;
+  value: string;
 }

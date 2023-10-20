@@ -1,18 +1,21 @@
 import {Injectable} from '@angular/core';
 import {Geometry} from 'geojson';
-import {Observable, forkJoin} from 'rxjs';
+import {forkJoin, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {DataCataloguePage} from '../../../enums/data-catalogue-page.enum';
 import {MainPage} from '../../../enums/main-page.enum';
-import {FeatureInfoResponse} from '../../../interfaces/feature-info.interface';
+import {FeatureInfoResponse, FeatureInfoResultFeatureField} from '../../../interfaces/feature-info.interface';
 import {LegendResponse} from '../../../interfaces/legend.interface';
 import {
   FilterConfiguration,
+  FilterValue,
   Map,
+  MapLayer,
   TimeSliderLayerSource,
   TimeSliderParameterSource,
   TimeSliderSourceType,
   TopicsResponse,
+  WmsFilterValue,
 } from '../../../interfaces/topic.interface';
 import {TopicsFeatureInfoDetailData, TopicsLegendDetailData, TopicsListData} from '../../../models/gb3-api-generated.interfaces';
 import {SupportedSrs} from '../../../types/supported-srs.type';
@@ -22,6 +25,8 @@ import {InvalidTimeSliderConfiguration} from '../../../errors/map.errors';
 import {QueryTopic} from '../../../interfaces/query-topic.interface';
 
 const FEATURE_INFO_SRS: SupportedSrs = 2056;
+const INACTIVE_STRING_FILTER_VALUE = '';
+const INACTIVE_NUMBER_FILTER_VALUE = -1;
 
 @Injectable({
   providedIn: 'root',
@@ -52,30 +57,33 @@ export class Gb3TopicsService extends Gb3ApiService {
     );
   }
 
-  private createLegendUrl(queryTopic: QueryTopic): string {
-    const url = new URL(`${this.getFullEndpointUrl()}/${queryTopic.topic}/legend`);
-    url.searchParams.set('layer', queryTopic.layersToQuery);
-
-    return url.toString();
-  }
-
   /**
    * Transforms the given filter configurations to URL parameters (name, value)
    */
-  public transformFilterConfigurationToParameters(filterConfigurations: FilterConfiguration[]): {name: string; value: string}[] {
+  public transformFilterConfigurationToParameters(filterConfigurations: FilterConfiguration[]): WmsFilterValue[] {
     const attributeFilterParameters: {name: string; value: string}[] = [];
     filterConfigurations.forEach((filterConfiguration) => {
       const parameterValue = filterConfiguration.filterValues
         .map((filterValue) => {
-          // all filter values must be sent in the correct order; the active filtered ones as an empty string
-          const values: string[] = filterValue.isActive ? filterValue.values.map(() => '') : filterValue.values;
-          // all filter values (empty or not) must be enclosed by single quotation marks and separated by commas
-          return values.map((v) => `'${v}'`).join(',');
+          // all filter values must be sent in the correct order; the active filtered ones as an empty string / or -1
+          const fvValues: (string | number)[] = filterValue.isActive
+            ? filterValue.values.map((fvValue) =>
+                typeof fvValue === 'string' ? INACTIVE_STRING_FILTER_VALUE : INACTIVE_NUMBER_FILTER_VALUE,
+              )
+            : filterValue.values;
+          // all filter values of type string (empty or not) must be enclosed by single quotation marks and separated by commas
+          return fvValues.map((fvValue) => (typeof fvValue === 'string' ? `'${fvValue}'` : fvValue)).join(',');
         })
         .join(',');
       attributeFilterParameters.push({name: filterConfiguration.parameter, value: parameterValue});
     });
     return attributeFilterParameters;
+  }
+
+  private createLegendUrl(queryTopic: QueryTopic): string {
+    const url = new URL(`${this.getFullEndpointUrl()}/${queryTopic.topic}/legend`);
+    url.searchParams.set('layer', queryTopic.layersToQuery);
+    return url.toString();
   }
 
   /**
@@ -123,10 +131,9 @@ export class Gb3TopicsService extends Gb3ApiService {
     const topicsResponse: TopicsResponse = {
       topics: topicsListData.categories.map((category) => {
         return {
-          ...category,
+          title: category.title,
           maps: category.topics.map((topic) => {
             return {
-              ...topic,
               id: topic.topic,
               uuid: topic.geolion_karten_uuid,
               printTitle: topic.print_title,
@@ -134,27 +141,42 @@ export class Gb3TopicsService extends Gb3ApiService {
               icon: this.createAbsoluteIconUrl(topic.icon),
               wmsUrl: topic.wms_url,
               minScale: topic.min_scale,
+              organisation: topic.organisation,
+              notice: topic.notice,
+              title: topic.title,
+              keywords: topic.keywords,
               permissionMissing: topic.permission_missing,
               layers: topic.layers
-                .map((layer) => {
-                  return {
-                    ...layer,
-                    uuid: layer.geolion_geodatensatz_uuid,
-                    groupTitle: layer.group_title,
-                    minScale: layer.min_scale,
-                    maxScale: layer.max_scale,
-                    wmsSort: layer.wms_sort,
-                    tocSort: layer.toc_sort,
-                    initiallyVisible: layer.initially_visible,
-                    permissionMissing: layer.permission_missing,
-                    visible: layer.initially_visible,
-                    isHidden: false,
-                  };
-                })
+                .map(
+                  (layer) =>
+                    ({
+                      id: layer.id,
+                      layer: layer.layer,
+                      title: layer.title,
+                      queryable: layer.queryable,
+                      uuid: layer.geolion_geodatensatz_uuid,
+                      groupTitle: layer.group_title,
+                      minScale: layer.min_scale,
+                      maxScale: layer.max_scale,
+                      wmsSort: layer.wms_sort,
+                      tocSort: layer.toc_sort,
+                      initiallyVisible: layer.initially_visible,
+                      permissionMissing: layer.permission_missing,
+                      visible: layer.initially_visible,
+                      isHidden: false,
+                    }) as MapLayer,
+                )
                 .reverse(), // reverse the order of the layers because the order in the GB3 interfaces (Topic, ActiveMapItem) is inverted to the order of the WMS specifications
               timeSliderConfiguration: topic.timesliderConfiguration
                 ? {
-                    ...topic.timesliderConfiguration,
+                    name: topic.timesliderConfiguration.name,
+                    alwaysMaxRange: topic.timesliderConfiguration.alwaysMaxRange,
+                    dateFormat: topic.timesliderConfiguration.dateFormat,
+                    description: topic.timesliderConfiguration.description,
+                    maximumDate: topic.timesliderConfiguration.maximumDate,
+                    minimumDate: topic.timesliderConfiguration.minimumDate,
+                    minimalRange: topic.timesliderConfiguration.minimalRange,
+                    range: topic.timesliderConfiguration.range,
                     sourceType: topic.timesliderConfiguration.sourceType as TimeSliderSourceType,
                     source: this.transformTimeSliderConfigurationSource(
                       topic.timesliderConfiguration.source,
@@ -164,13 +186,17 @@ export class Gb3TopicsService extends Gb3ApiService {
                 : undefined,
               filterConfigurations: topic.filterConfigurations?.map((filterConfiguration) => {
                 return {
-                  ...filterConfiguration,
-                  filterValues: filterConfiguration.filterValues.map((filterValue) => {
-                    return {
-                      ...filterValue,
-                      isActive: false,
-                    };
-                  }),
+                  name: filterConfiguration.name,
+                  description: filterConfiguration.description,
+                  parameter: filterConfiguration.parameter,
+                  filterValues: filterConfiguration.filterValues.map(
+                    (filterValue) =>
+                      ({
+                        isActive: false,
+                        values: filterValue.values,
+                        name: filterValue.name,
+                      }) as FilterValue,
+                  ),
                 };
               }),
               searchConfigurations: topic.searchConfigurations ?? undefined,
@@ -258,7 +284,8 @@ export class Gb3TopicsService extends Gb3ApiService {
 
       return {
         featureInfo: {
-          ...featureInfo,
+          x: featureInfo.x,
+          y: featureInfo.y,
           results: {
             topic: featureInfo.results.topic,
             metaDataLink: featureInfo.results.geolion_karten_uuid
@@ -266,15 +293,18 @@ export class Gb3TopicsService extends Gb3ApiService {
               : undefined,
             layers: featureInfo.results.layers.map((layer) => {
               return {
-                ...layer,
+                title: layer.title,
+                layer: layer.layer,
                 metaDataLink: layer.geolion_geodatensatz_uuid ? this.createDatasetTabLink(layer.geolion_geodatensatz_uuid) : undefined,
                 features: layer.features.map((feature) => {
                   return {
-                    ...feature,
+                    fid: feature.fid,
+                    bbox: feature.bbox,
                     fields: feature.fields.map((field) => {
                       return {
-                        ...field,
-                      };
+                        label: field.label,
+                        value: field.value,
+                      } as FeatureInfoResultFeatureField;
                     }),
                     // The cast is required because the API typing delivers "type: string" which is not narrow enough
                     geometry: {...(feature.geometry as Geometry), srs: FEATURE_INFO_SRS},

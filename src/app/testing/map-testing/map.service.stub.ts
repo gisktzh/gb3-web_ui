@@ -7,6 +7,7 @@ import {InternalDrawingLayer} from 'src/app/shared/enums/drawing-layer.enum';
 import {Gb2WmsActiveMapItem} from '../../map/models/implementations/gb2-wms.model';
 import {DrawingActiveMapItem} from '../../map/models/implementations/drawing.model';
 import {ToolService} from '../../map/interfaces/tool.service';
+import {WmsFilterValue} from '../../shared/interfaces/topic.interface';
 
 export class MapServiceStub implements MapService {
   addGeometryToDrawingLayer(geometry: GeometryWithSrs, drawingLayer: InternalDrawingLayer): void {}
@@ -45,7 +46,7 @@ export class MapServiceStub implements MapService {
 
   public setTimeSliderExtent(timeSliderExtent: TimeExtent, mapItem: Gb2WmsActiveMapItem): void {}
 
-  public setAttributeFilters(attributeFilterParameters: {name: string; value: string}[], mapItem: Gb2WmsActiveMapItem): void {}
+  public setAttributeFilters(attributeFilterParameters: WmsFilterValue[], mapItem: Gb2WmsActiveMapItem): void {}
 
   public zoomToPoint(point: PointWithSrs, number: number): void {}
 

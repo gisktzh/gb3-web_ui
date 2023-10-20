@@ -35,7 +35,12 @@ import {
   EsriWMSLayer,
   EsriWMSSublayer,
 } from './esri.module';
-import {TimeSliderConfiguration, TimeSliderLayerSource, TimeSliderParameterSource} from '../../../shared/interfaces/topic.interface';
+import {
+  TimeSliderConfiguration,
+  TimeSliderLayerSource,
+  TimeSliderParameterSource,
+  WmsFilterValue,
+} from '../../../shared/interfaces/topic.interface';
 import {TimeExtent} from '../../interfaces/time-extent.interface';
 import {MapConfigState} from '../../../state/map/states/map-config.state';
 import {GeometryWithSrs, PointWithSrs, PolygonWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
@@ -289,7 +294,7 @@ export class EsriMapService implements MapService, OnDestroy {
     }
   }
 
-  public setAttributeFilters(attributeFilterParameters: {name: string; value: string}[], mapItem: Gb2WmsActiveMapItem) {
+  public setAttributeFilters(attributeFilterParameters: WmsFilterValue[], mapItem: Gb2WmsActiveMapItem) {
     const esriLayer = this.esriMapViewService.findEsriLayer(mapItem.id);
     if (esriLayer && esriLayer instanceof EsriWMSLayer) {
       const customLayerParameters: {[index: string]: string} = esriLayer.customLayerParameters ?? {};

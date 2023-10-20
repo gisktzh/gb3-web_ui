@@ -5,6 +5,7 @@ import {of} from 'rxjs';
 import {TopicsListData} from '../../../models/gb3-api-generated.interfaces';
 import {ConfigService} from '../../config.service';
 import {Gb3TopicsService} from './gb3-topics.service';
+import {FilterConfiguration} from '../../../interfaces/topic.interface';
 
 describe('Gb3TopicsService', () => {
   let service: Gb3TopicsService;
@@ -20,7 +21,7 @@ describe('Gb3TopicsService', () => {
     expect(service).toBeTruthy();
   });
 
-  describe('load topics', () => {
+  describe('loadTopics', () => {
     const mockData: TopicsListData = {
       categories: [
         {
@@ -125,16 +126,6 @@ describe('Gb3TopicsService', () => {
       ],
     };
 
-    it('should receive the data and transform it without error', (done: DoneFn) => {
-      const httpClient = TestBed.inject(HttpClient);
-      spyOn(httpClient, 'get').and.returnValue(of(mockData));
-      service.loadTopics().subscribe((topicsResponse) => {
-        expect(topicsResponse).toBeDefined();
-        expect(topicsResponse.topics.length).toBe(mockData.categories.flatMap((category) => category.topics).length);
-        done();
-      });
-    });
-
     it('should receive the data and transform it correctly', (done: DoneFn) => {
       const configService = TestBed.inject(ConfigService);
       const httpClient = TestBed.inject(HttpClient);
@@ -184,6 +175,152 @@ describe('Gb3TopicsService', () => {
           }
         });
         done();
+      });
+    });
+  });
+
+  describe('transformFilterConfigurationToParameters', () => {
+    const stringBasedFilterConfigurationsMock: FilterConfiguration[] = [
+      {
+        name: 'GVZ Schätzungen und Schäden',
+        parameter: 'FILTER_REGIO',
+        description: 'Region',
+        filterValues: [
+          {
+            isActive: false,
+            name: 'Region 1 und 3',
+            values: ['Region 1', 'Region 3'],
+          },
+          {
+            isActive: true,
+            name: 'Region 2',
+            values: ['Region 2'],
+          },
+          {
+            isActive: false,
+            name: 'Region 4',
+            values: ['Region 4'],
+          },
+          {
+            isActive: true,
+            name: 'Region 5 und 6',
+            values: ['Region 5', 'Region 6'],
+          },
+        ],
+      },
+      {
+        name: 'GVZ Schätzungen und Schäden',
+        parameter: 'FILTER_TYP',
+        description: 'Grundstück/Gebäude',
+        filterValues: [
+          {
+            isActive: false,
+            name: 'Einzelschätzung',
+            values: ['Schätzungsbegehren'],
+          },
+          {
+            isActive: false,
+            name: 'Revisionsschätzung',
+            values: ['Revisionsschätzung'],
+          },
+        ],
+      },
+    ];
+
+    const numberBasedFilterConfigurationsMock: FilterConfiguration[] = [
+      {
+        name: 'GVZ Schätzungen und Schäden',
+        parameter: 'FILTER_STATUS',
+        description: 'Zugeteilt',
+        filterValues: [
+          {
+            isActive: false,
+            name: 'Ja',
+            values: [1],
+          },
+          {
+            isActive: false,
+            name: 'Nein',
+            values: [0],
+          },
+        ],
+      },
+      {
+        name: 'GVZ Gigaparser',
+        parameter: 'PARSER_MAXIMUM',
+        description: 'Parsing it all',
+        filterValues: [
+          {
+            isActive: false,
+            name: 'Blazing',
+            values: [420],
+          },
+          {
+            isActive: false,
+            name: 'No scope',
+            values: [360, 720],
+          },
+        ],
+      },
+    ];
+
+    it('should transform string based filter values correctly', () => {
+      const wmsFilterValues = service.transformFilterConfigurationToParameters(stringBasedFilterConfigurationsMock);
+      expect(wmsFilterValues.length).toBe(stringBasedFilterConfigurationsMock.length);
+      stringBasedFilterConfigurationsMock.forEach((expectedFilterConfiguration) => {
+        const actualWmsFilterValue = wmsFilterValues.find((value) => value.name === expectedFilterConfiguration.parameter);
+        expect(actualWmsFilterValue).toBeDefined();
+        expectedFilterConfiguration.filterValues.flatMap((expectedFilterValue) => {
+          if (expectedFilterValue.isActive) {
+            expectedFilterValue.values.forEach((expectedValue) => {
+              expect(actualWmsFilterValue!.value).not.toContain(expectedValue.toString());
+            });
+          } else {
+            expectedFilterValue.values.forEach((expectedValue) => {
+              expect(actualWmsFilterValue!.value).toContain(`'${expectedValue}'`);
+            });
+          }
+        });
+
+        const expectedNumberOfAllFilterValues = expectedFilterConfiguration.filterValues.flatMap(
+          (filterValue) => filterValue.values,
+        ).length;
+        const expectedNumberOfActiveFilterValues = expectedFilterConfiguration.filterValues
+          .filter((filterValue) => filterValue.isActive)
+          .flatMap((filterValue) => filterValue.values).length;
+        const actualWmsFilterValueValues = actualWmsFilterValue!.value.split(',');
+        expect(actualWmsFilterValueValues.length).toBe(expectedNumberOfAllFilterValues);
+        expect(actualWmsFilterValueValues.filter((value) => value === `''`).length).toBe(expectedNumberOfActiveFilterValues);
+      });
+    });
+
+    it('should transform number based filter values correctly', () => {
+      const wmsFilterValues = service.transformFilterConfigurationToParameters(numberBasedFilterConfigurationsMock);
+      expect(wmsFilterValues.length).toBe(numberBasedFilterConfigurationsMock.length);
+      numberBasedFilterConfigurationsMock.forEach((expectedFilterConfiguration) => {
+        const actualWmsFilterValue = wmsFilterValues.find((value) => value.name === expectedFilterConfiguration.parameter);
+        expect(actualWmsFilterValue).toBeDefined();
+        expectedFilterConfiguration.filterValues.flatMap((expectedFilterValue) => {
+          if (expectedFilterValue.isActive) {
+            expectedFilterValue.values.forEach((expectedValue) => {
+              expect(actualWmsFilterValue!.value).not.toContain(expectedValue.toString());
+            });
+          } else {
+            expectedFilterValue.values.forEach((expectedValue) => {
+              expect(actualWmsFilterValue!.value).toContain(`${expectedValue}`);
+            });
+          }
+        });
+
+        const expectedNumberOfAllFilterValues = expectedFilterConfiguration.filterValues.flatMap(
+          (filterValue) => filterValue.values,
+        ).length;
+        const expectedNumberOfActiveFilterValues = expectedFilterConfiguration.filterValues
+          .filter((filterValue) => filterValue.isActive)
+          .flatMap((filterValue) => filterValue.values).length;
+        const actualWmsFilterValueValues = actualWmsFilterValue!.value.split(',');
+        expect(actualWmsFilterValueValues.length).toBe(expectedNumberOfAllFilterValues);
+        expect(actualWmsFilterValueValues.filter((value) => value === `-1`).length).toBe(expectedNumberOfActiveFilterValues);
       });
     });
   });
