@@ -6,6 +6,7 @@ import {ActiveMapItem} from '../../../map/models/active-map-item.model';
 import {selectData} from '../reducers/feature-info.reducer';
 import {FeatureInfoResult, FeatureInfoResultDisplay} from '../../../shared/interfaces/feature-info.interface';
 import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
+import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
 
 export const selectFeatureInfosForDisplay = createSelector<
   Record<string, any>,
@@ -27,6 +28,14 @@ export const selectFeatureInfosForDisplay = createSelector<
       return;
     }
 
+    // Also abort if the featureInfo isn't part of the active map items anymore
+    const activeMapItem = activeMapItems
+      .filter(isActiveMapItemOfType(Gb2WmsActiveMapItem))
+      .find((item) => item.settings.mapId === featureInfo.topic);
+    if (!activeMapItem) {
+      return;
+    }
+
     /*
       Currently, we cannot simply find out if we have a single layer featureinfo request. If only one layer is in the results, we need to
       check whether an activeMapItem exists as a single layer with this layer - otherwise, it's a topic with just one layer and this needs
@@ -40,7 +49,6 @@ export const selectFeatureInfosForDisplay = createSelector<
       isSingleLayer = activeMapItems.some((a) => a.isSingleLayer && a.id === singleLayerId);
     }
 
-    // todo: we do not set a metaDataLink because that is currently not returned from the API.
     let featureInfoResultDisplay: FeatureInfoResultDisplay;
     if (isSingleLayer) {
       featureInfoResultDisplay = {
