@@ -1,15 +1,15 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {MatDialog} from '@angular/material/dialog';
-import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
-import {ScreenMode} from 'src/app/shared/types/screen-size.type';
-import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
-import {SearchFilterDialogComponent} from '../../../shared/components/search-filter-dialog/search-filter-dialog.component';
-import {PanelClass} from '../../../shared/enums/panel-class.enum';
+import {Store} from '@ngrx/store';
 import {ConfigService} from '../../../shared/services/config.service';
 import {SearchActions} from '../../../state/app/actions/search.actions';
+import {SearchFilterDialogComponent} from '../../../shared/components/search-filter-dialog/search-filter-dialog.component';
+import {PanelClass} from '../../../shared/enums/panel-class.enum';
+import {MatDialog} from '@angular/material/dialog';
 import {initialState, selectSearchState} from '../../../state/app/reducers/search.reducer';
 import {SearchState} from '../../../state/app/states/search.state';
+import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
+import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 
 const FILTER_DIALOG_WIDTH_IN_PX = 956;
 
@@ -40,6 +40,7 @@ export class SearchWindowComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
+    this.store.dispatch(SearchActions.resetSearchAndFilters());
   }
 
   private initSubscriptions() {
