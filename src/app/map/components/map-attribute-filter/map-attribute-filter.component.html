@@ -10,7 +10,7 @@
         </button>
       </div>
     </mat-card-header>
-    <div class="attribute-filter__content">
+    <div class="attribute-filter__content" [ngClass]="{'attribute-filter__content--mobile': screenMode === 'mobile'}">
       <mat-card
         class="no-box-shadow"
         appearance="raised"

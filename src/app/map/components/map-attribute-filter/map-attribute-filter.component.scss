@@ -44,6 +44,10 @@
   .attribute-filter__content {
     overflow-y: scroll;
 
+    &--mobile {
+      overflow-y: unset;
+    }
+
     .attribute-filter__content__text {
       padding: 1em 0;
     }
