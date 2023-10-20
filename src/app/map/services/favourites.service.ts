@@ -1,7 +1,7 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Gb3FavouritesService} from '../../shared/services/apis/gb3/gb3-favourites.service';
-import {combineLatestWith, Observable, Subscription, switchMap, take, tap} from 'rxjs';
+import {Observable, Subscription, switchMap, tap, withLatestFrom} from 'rxjs';
 import {ActiveMapItem} from '../models/active-map-item.model';
 import {Favourite, FavouritesResponse} from '../../shared/interfaces/favourite.interface';
 import {Map} from '../../shared/interfaces/topic.interface';
@@ -37,7 +37,7 @@ export class FavouritesService implements OnDestroy {
 
   public createFavourite(title: string): Observable<FavoritesDetailData> {
     return this.userDrawingsVectorLayers$.pipe(
-      combineLatestWith(this.favouriteBaseConfig$.pipe(take(1))),
+      withLatestFrom(this.favouriteBaseConfig$),
       switchMap(([{measurements, drawings}, baseConfig]) => {
         return this.gb3FavouritesService.createFavourite({
           title,

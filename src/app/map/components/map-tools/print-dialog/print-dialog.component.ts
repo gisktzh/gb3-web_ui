@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {LoadingState} from '../../../../shared/types/loading-state.type';
 import {Store} from '@ngrx/store';
-import {BehaviorSubject, combineLatestWith, distinctUntilChanged, filter, Subscription, take, tap} from 'rxjs';
+import {BehaviorSubject, combineLatestWith, distinctUntilChanged, filter, Subscription, tap, withLatestFrom} from 'rxjs';
 import {selectCapabilities, selectCapabilitiesLoadingState, selectCreationLoadingState} from '../../../../state/map/reducers/print.reducer';
 import {PrintCapabilities, PrintCreation, PrintMapItem, ReportOrientation} from '../../../../shared/interfaces/print.interface';
 import {PrintActions} from '../../../../state/map/actions/print.actions';
@@ -128,9 +128,8 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
       this.store
         .select(selectCapabilities)
         .pipe(
-          combineLatestWith(this.store.select(selectMapConfigState)),
-          filter(([printCapabilities, _]) => printCapabilities !== undefined),
-          take(1),
+          filter((printCapabilities) => printCapabilities !== undefined),
+          withLatestFrom(this.store.select(selectMapConfigState)),
           tap(([printCapabilities, mapConfigState]) => {
             this.printCapabilities = printCapabilities;
             this.initializeDefaultFormValues(printCapabilities, mapConfigState.scale);
