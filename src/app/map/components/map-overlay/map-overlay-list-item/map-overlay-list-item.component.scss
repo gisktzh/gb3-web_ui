@@ -21,6 +21,10 @@
     min-height: 38px;
     max-height: 38px;
 
+    &--no-background {
+      background-color: unset;
+    }
+
     .list-item__header__content {
       display: flex;
       flex-direction: row;
