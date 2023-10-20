@@ -6,6 +6,7 @@ import {ResizeHandlerLocation} from 'src/app/shared/types/resize-handler-locatio
 import {StyleExpression} from 'src/app/shared/types/style-expression.type';
 import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
 import {selectIsSearching} from 'src/app/state/map/reducers/layer-catalog.reducer';
+import {selectTitle} from 'src/app/state/map/reducers/map-attribute-filters-item.reducer';
 
 @Component({
   selector: 'bottom-sheet-item',
@@ -18,9 +19,10 @@ export class BottomSheetItemComponent implements OnInit, OnDestroy {
   @Input() public bottomSheetHeight: BottomSheetHeight = 'small';
   @Input() showHeader: boolean = true;
   public isSearching: boolean = false;
+  public mapAttributeFiltersItemTitle: string = '';
 
   private readonly isSearching$ = this.store.select(selectIsSearching);
-  private readonly updateBottomSheetHeight$ = this.store.select(selectIsSearching);
+  private readonly mapAttributeFiltersItemTitle$ = this.store.select(selectTitle);
   private readonly subscriptions: Subscription = new Subscription();
 
   protected resizeableStyle: StyleExpression = {};
@@ -47,14 +49,8 @@ export class BottomSheetItemComponent implements OnInit, OnDestroy {
 
   private initSubscriptions() {
     this.subscriptions.add(
-      this.updateBottomSheetHeight$
-        .pipe(
-          tap((isSearching: boolean) => {
-            if (isSearching) {
-              //this.bottomSheetHeight = 'large';
-            }
-          }),
-        )
+      this.mapAttributeFiltersItemTitle$
+        .pipe(tap((mapAttributeFiltersItemTitle) => (this.mapAttributeFiltersItemTitle = mapAttributeFiltersItemTitle)))
         .subscribe(),
     );
     this.subscriptions.add(this.isSearching$.pipe(tap((isSearching) => (this.isSearching = isSearching))).subscribe());

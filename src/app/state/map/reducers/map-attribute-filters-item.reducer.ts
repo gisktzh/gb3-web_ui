@@ -6,6 +6,7 @@ export const mapAttributeFiltersItemFeatureKey = 'mapAttributeFiltersItem';
 
 export const initialState: MapAttributeFiltersItemState = {
   id: undefined,
+  title: '',
 };
 
 export const mapAttributeFiltersItemFeature = createFeature({
@@ -18,7 +19,10 @@ export const mapAttributeFiltersItemFeature = createFeature({
     on(MapAttributeFiltersItemActions.clearMapAttributeFiltersItemId, (): MapAttributeFiltersItemState => {
       return {...initialState};
     }),
+    on(MapAttributeFiltersItemActions.setMapAttributeFiltersItemTitle, (state, {title}): MapAttributeFiltersItemState => {
+      return {...state, title: title};
+    }),
   ),
 });
 
-export const {name, reducer, selectMapAttributeFiltersItemState, selectId} = mapAttributeFiltersItemFeature;
+export const {name, reducer, selectMapAttributeFiltersItemState, selectId, selectTitle} = mapAttributeFiltersItemFeature;

@@ -8,7 +8,9 @@
       <button (click)="close()" mat-icon-button [ngClass]="{'bottom-sheet-item__header__button--primary--color': usePrimaryColor}">
         <mat-icon>close</mat-icon>
       </button>
-      <h1 *ngIf="overlayTitle" class="bottom-sheet-item__header__container__title">{{ overlayTitle }}</h1>
+      <h1 *ngIf="overlayTitle" class="bottom-sheet-item__header__container__title">
+        {{ overlayTitle }}: {{ mapAttributeFiltersItemTitle }}
+      </h1>
       <hr *ngIf="showHeader" class="bottom-sheet-item__header__container__hr" />
     </div>
 
