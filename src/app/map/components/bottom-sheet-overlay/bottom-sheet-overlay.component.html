@@ -1,6 +1,6 @@
 <div *ngIf="bottomSheetContent !== 'none'" class="bottom-sheet-overlay">
   <ng-container [ngSwitch]="bottomSheetContent">
-    <bottom-sheet-item *ngSwitchCase="'basemap'" overlayTitle="Hintergrundkarte" bottomSheetHeight="small">
+    <bottom-sheet-item *ngSwitchCase="'basemap'" overlayTitle="Hintergrund" bottomSheetHeight="small">
       <basemap-selection-list body></basemap-selection-list>
     </bottom-sheet-item>
     <bottom-sheet-item *ngSwitchCase="'legend'" overlayTitle="Legende" bottomSheetHeight="large">
@@ -9,7 +9,7 @@
     <bottom-sheet-item *ngSwitchCase="'feature-info'" overlayTitle="Info" bottomSheetHeight="large">
       <feature-info body></feature-info>
     </bottom-sheet-item>
-    <bottom-sheet-item *ngSwitchCase="'map-attributes'" overlayTitle="Attributfilter" bottomSheetHeight="medium">
+    <bottom-sheet-item *ngSwitchCase="'map-attributes'" overlayTitle="Attributfilter:" bottomSheetHeight="medium">
       <map-attribute-filter body></map-attribute-filter>
     </bottom-sheet-item>
     <bottom-sheet-item *ngSwitchCase="'share-link'" overlayTitle="Teilen" bottomSheetHeight="small">
