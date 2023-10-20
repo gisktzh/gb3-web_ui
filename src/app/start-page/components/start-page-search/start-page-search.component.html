@@ -2,9 +2,11 @@
   <div class="start-page-search__search">
     <search
       class="start-page-search__search__bar"
+      [ngClass]="{'start-page-search__search__bar--mobile': screenMode === 'mobile'}"
       placeholderText="Suche nach Karten, Kartendaten, Geodaten und Geodiensten"
       [showFilterButton]="true"
       [showClearButton]="true"
+      [mode]="screenMode === 'mobile' ? 'compact' : 'normal'"
       (changeSearchTermEvent)="searchForTerm($event)"
       (clearSearchTermEvent)="clearSearchTerm()"
       (openFilterEvent)="openFilterMenu()"

@@ -18,6 +18,10 @@
       width: ktzh-variables.$zh-layout-max-content-width;
       height: 106px;
       background-color: ktzh-variables.$zh-background-color;
+
+      &--mobile {
+        width: unset;
+      }
     }
   }
 

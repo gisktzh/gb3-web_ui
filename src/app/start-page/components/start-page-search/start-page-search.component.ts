@@ -1,24 +1,26 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {SearchActions} from '../../../state/app/actions/search.actions';
+import {MatDialog} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
-import {ConfigService} from '../../../shared/services/config.service';
-import {Map} from '../../../shared/interfaces/topic.interface';
-import {LoadingState} from '../../../shared/types/loading-state.type';
+import {Subscription, tap} from 'rxjs';
+import {ScreenMode} from 'src/app/shared/types/screen-size.type';
+import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
+import {SearchFilterDialogComponent} from '../../../shared/components/search-filter-dialog/search-filter-dialog.component';
+import {PanelClass} from '../../../shared/enums/panel-class.enum';
 import {FaqItem} from '../../../shared/interfaces/faq.interface';
+import {Map} from '../../../shared/interfaces/topic.interface';
+import {OverviewMetadataItem} from '../../../shared/models/overview-metadata-item.model';
+import {ConfigService} from '../../../shared/services/config.service';
+import {LoadingState} from '../../../shared/types/loading-state.type';
+import {SearchActions} from '../../../state/app/actions/search.actions';
 import {selectSearchApiLoadingState, selectTerm} from '../../../state/app/reducers/search.reducer';
 import {
   selectFilteredFaqItems,
   selectFilteredLayerCatalogMaps,
   selectFilteredMetadataItems,
 } from '../../../state/app/selectors/search-results.selector';
-import {Subscription, tap} from 'rxjs';
-import {selectLoadingState as selectLayerCatalogLoadingState} from '../../../state/map/reducers/layer-catalog.reducer';
-import {OverviewMetadataItem} from '../../../shared/models/overview-metadata-item.model';
 import {selectLoadingState as selectDataCatalogLoadingState} from '../../../state/data-catalogue/reducers/data-catalogue.reducer';
-import {SearchFilterDialogComponent} from '../../../shared/components/search-filter-dialog/search-filter-dialog.component';
-import {PanelClass} from '../../../shared/enums/panel-class.enum';
-import {MatDialog} from '@angular/material/dialog';
 import {selectActiveSearchFilterValues} from '../../../state/data-catalogue/selectors/active-search-filters.selector';
+import {selectLoadingState as selectLayerCatalogLoadingState} from '../../../state/map/reducers/layer-catalog.reducer';
 
 const FILTER_DIALOG_WIDTH_IN_PX = 956;
 
@@ -37,8 +39,10 @@ export class StartPageSearchComponent implements OnInit, OnDestroy {
   public searchApiLoadingState: LoadingState;
   public dataCatalogLoadingState: LoadingState;
   public activeSearchFilterValues: {groupLabel: string; filterLabel: string}[] = [];
+  public screenMode: ScreenMode = 'regular';
 
   private readonly searchConfig = this.configService.searchConfig.startPage;
+  private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly searchTerm$ = this.store.select(selectTerm);
   private readonly activeSearchFilterValues$ = this.store.select(selectActiveSearchFilterValues);
   private readonly filteredMetadataItems$ = this.store.select(selectFilteredMetadataItems);
@@ -98,6 +102,7 @@ export class StartPageSearchComponent implements OnInit, OnDestroy {
         )
         .subscribe(),
     );
+    this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
     this.subscriptions.add(this.filteredMaps$.pipe(tap((filteredMaps) => (this.filteredMaps = filteredMaps))).subscribe());
     this.subscriptions.add(
       this.filteredMetadataItems$.pipe(tap((filteredMetadataItems) => (this.filteredMetadataItems = filteredMetadataItems))).subscribe(),

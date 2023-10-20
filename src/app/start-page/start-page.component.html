@@ -1,12 +1,9 @@
 <div class="start-page">
   <start-page-section [background]="'primary'">
-    <hero-header
-      heroText="Geoinformationen sind verlässliche, raumbezogene Daten und Karten. Sie dienen als wichtige Grundlage für vielfältige Aufgaben und Entscheide und stehen über verschiedene Portale zur Einsicht und Nutzung bereit."
-      heroTitle="Übersicht"
-    ></hero-header>
+    <hero-header [heroText]="screenMode === 'mobile' ? '' : heroText" heroTitle="Übersicht"></hero-header>
   </start-page-section>
 
-  <div class="start-page__search">
+  <div class="start-page__search" [ngClass]="{'start-page__search--mobile': screenMode === 'mobile'}">
     <start-page-search></start-page-search>
   </div>
 
