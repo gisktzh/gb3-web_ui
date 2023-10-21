@@ -49,7 +49,7 @@
     "@types/geojson": "^7946.0.10",
     "@types/node": "^18.13.0",
     "@types/terraformer__arcgis": "^2.0.2",
-    "@types/twitter-for-web": "^0.0.3",
+    "@types/twitter-for-web": "^0.0.4",
     "@types/uuid": "^9.0.4",
     "angular-oauth2-oidc": "^15.0.1",
     "angular-resizable-element": "^7.0.2",
