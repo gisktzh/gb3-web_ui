@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {UrlActions} from '../actions/url.actions';
-import {Store} from '@ngrx/store';
 import {map} from 'rxjs/operators';
 import {routerCancelAction, routerNavigatedAction} from '@ngrx/router-store';
 import {Router} from '@angular/router';
@@ -18,9 +17,9 @@ export class UrlEffects {
         const urlSegments = UrlUtils.extractUrlSegments(urlTree);
         const firstUrlSegmentPath = UrlUtils.extractFirstUrlSegmentPath(urlSegments);
         const mainPage = UrlUtils.transformStringToMainPage(firstUrlSegmentPath);
-        const isSimplifiedPage = mainPage !== undefined && this.configService.urlConfig.useSimplifiedPageOn.includes(mainPage);
+        const isSimplifiedPage = mainPage !== undefined && this.configService.pageConfig.useSimplifiedPageOn.includes(mainPage);
         const segmentPaths: string[] = urlSegments.map((segment) => segment.path);
-        const isHeadlessPage = this.configService.urlConfig.useHeadlessPageOn.some((headlessPagePaths) =>
+        const isHeadlessPage = this.configService.pageConfig.useHeadlessPageOn.some((headlessPagePaths) =>
           UrlUtils.containsSegmentPaths([headlessPagePaths], segmentPaths),
         );
 
@@ -31,7 +30,6 @@ export class UrlEffects {
 
   constructor(
     private readonly actions$: Actions,
-    private readonly store: Store,
     private readonly router: Router,
     private readonly configService: ConfigService,
   ) {}

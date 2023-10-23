@@ -1,6 +1,6 @@
 import {MainPage} from '../enums/main-page.enum';
 
-export interface UrlConfig {
+export interface PageConfig {
   useSimplifiedPageOn: MainPage[];
   useHeadlessPageOn: MainPage[];
 }

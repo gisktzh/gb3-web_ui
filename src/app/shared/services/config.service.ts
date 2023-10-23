@@ -20,8 +20,8 @@ import {PrintConfig} from '../interfaces/print-config.interface';
 import {ApiConfig, AuthSettings, OverrideSettings, RuntimeConfig} from '../interfaces/runtime-config.interface';
 import {SearchConfig} from '../interfaces/search-config.interface';
 import {SearchIndex} from './apis/search/interfaces/search-index.interface';
-import {urlConfig} from '../configs/url.config';
-import {UrlConfig} from '../interfaces/url-config.interface';
+import {pageConfig} from '../configs/page.config';
+import {PageConfig} from '../interfaces/page-config.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -80,8 +80,8 @@ export class ConfigService {
     return mapAnimationConfig;
   }
 
-  public get urlConfig(): UrlConfig {
-    return urlConfig;
+  public get pageConfig(): PageConfig {
+    return pageConfig;
   }
 
   constructor(@Inject(DOCUMENT) private readonly document: Document) {

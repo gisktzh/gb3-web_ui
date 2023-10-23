@@ -1,7 +1,7 @@
-import {UrlConfig} from '../interfaces/url-config.interface';
+import {PageConfig} from '../interfaces/page-config.interface';
 import {MainPage} from '../enums/main-page.enum';
 
-export const urlConfig: UrlConfig = {
+export const pageConfig: PageConfig = {
   useSimplifiedPageOn: [MainPage.Maps],
   useHeadlessPageOn: [MainPage.Embedded],
 };
