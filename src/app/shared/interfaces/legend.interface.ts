@@ -1,6 +1,6 @@
 import {HasMetaDataLink} from './metaDataLink.interface';
 
-interface LayerClass {
+export interface LayerClass {
   label: string;
   image: string;
 }

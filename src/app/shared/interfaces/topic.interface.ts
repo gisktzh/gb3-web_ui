@@ -105,7 +105,7 @@ export interface TimeSliderLayerSource {
   layers: TimeSliderLayer[];
 }
 
-interface TimeSliderLayer {
+export interface TimeSliderLayer {
   /** for sourceType 'layer': unique name of the layer */
   layerName: string;
   /** for sourceType 'layer': the date associated with this layer (formatted according to the 'dateFormat' parameter) */
@@ -128,9 +128,14 @@ export interface SearchConfiguration {
 
 export interface FilterValue extends HasActiveState {
   name: string;
-  values: string[];
+  values: (string | number)[];
 }
 
 export interface TopicsResponse {
   topics: Topic[];
+}
+
+export interface WmsFilterValue {
+  name: string;
+  value: string;
 }
