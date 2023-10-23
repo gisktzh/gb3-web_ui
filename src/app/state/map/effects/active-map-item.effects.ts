@@ -279,11 +279,8 @@ export class ActiveMapItemEffects {
           }
         });
 
-        return {drawingLayersToOverride, drawingsToAdd};
+        return DrawingActions.overwriteDrawingLayersWithDrawings({layersToOverride: drawingLayersToOverride, drawingsToAdd});
       }),
-      map(({drawingLayersToOverride, drawingsToAdd}) =>
-        DrawingActions.overwriteDrawingLayersWithDrawings({layersToOverride: drawingLayersToOverride, drawingsToAdd}),
-      ),
     );
   });
 

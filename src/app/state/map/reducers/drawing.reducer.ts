@@ -19,12 +19,9 @@ export const drawingFeature = createFeature({
         draft.drawings.push(drawing);
       }),
     ),
-    on(
-      DrawingActions.addDrawings,
-      produce((draft, {drawings}) => {
-        draft.drawings.push(...drawings);
-      }),
-    ),
+    on(DrawingActions.addDrawings, (state, {drawings}): DrawingState => {
+      return {...state, drawings: [...state.drawings, ...drawings]};
+    }),
     on(DrawingActions.clearDrawings, (): DrawingState => {
       return {...initialState};
     }),

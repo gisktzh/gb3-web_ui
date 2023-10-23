@@ -29,7 +29,7 @@ import Graphic from '@arcgis/core/Graphic';
 import {Gb3StyledInternalDrawingRepresentation} from '../../../../shared/interfaces/internal-drawing-representation.interface';
 import {DrawingActions} from '../../../../state/map/actions/drawing.actions';
 import {silentArcgisToGeoJSON} from '../../../../shared/utils/esri-transformer-wrapper.utils';
-import {DrawingLayerNotInitialized, UnsupportedGeometryType} from '../errors/esri.errors';
+import {DrawingLayerNotInitialized, UnsupportedGeometryType, UnsupportedLabelType} from '../errors/esri.errors';
 import {DataDownloadSelectionTool} from '../../../../shared/types/data-download-selection-tool.type';
 import {DataDownloadOrderActions} from '../../../../state/map/actions/data-download-order.actions';
 import {DataDownloadSelection} from '../../../../shared/interfaces/data-download-selection.interface';
@@ -438,7 +438,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
           labelPosition = EsriAreaMeasurementStrategy.getLabelPosition(geometry as Polygon);
           break;
         default:
-          throw new UnsupportedGeometryType(graphic.geometry.type); // todo: custom error
+          throw new UnsupportedLabelType(graphic.geometry.type);
       }
       const labelSymbolization = this.esriSymbolizationService.createTextSymbolization(UserDrawingLayer.Measurements);
       labelSymbolization.text = drawing.labelText;
