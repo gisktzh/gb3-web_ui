@@ -105,7 +105,7 @@ export interface TimeSliderLayerSource {
   layers: TimeSliderLayer[];
 }
 
-interface TimeSliderLayer {
+export interface TimeSliderLayer {
   /** for sourceType 'layer': unique name of the layer */
   layerName: string;
   /** for sourceType 'layer': the date associated with this layer (formatted according to the 'dateFormat' parameter) */

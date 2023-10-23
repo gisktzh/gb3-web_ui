@@ -5,7 +5,7 @@ import {of} from 'rxjs';
 import {TopicsListData} from '../../../models/gb3-api-generated.interfaces';
 import {ConfigService} from '../../config.service';
 import {Gb3TopicsService} from './gb3-topics.service';
-import {FilterConfiguration} from '../../../interfaces/topic.interface';
+import {FilterConfiguration, WmsFilterValue} from '../../../interfaces/topic.interface';
 
 describe('Gb3TopicsService', () => {
   let service: Gb3TopicsService;
@@ -251,77 +251,47 @@ describe('Gb3TopicsService', () => {
         description: 'Parsing it all',
         filterValues: [
           {
-            isActive: false,
+            isActive: true,
             name: 'Blazing',
             values: [420],
+          },
+          {
+            isActive: true,
+            name: 'answer',
+            values: [42],
           },
           {
             isActive: false,
             name: 'No scope',
             values: [360, 720],
           },
+          {
+            isActive: true,
+            name: 'Powerlevel',
+            values: [9001, 9002],
+          },
         ],
       },
     ];
 
     it('should transform string based filter values correctly', () => {
-      const wmsFilterValues = service.transformFilterConfigurationToParameters(stringBasedFilterConfigurationsMock);
-      expect(wmsFilterValues.length).toBe(stringBasedFilterConfigurationsMock.length);
-      stringBasedFilterConfigurationsMock.forEach((expectedFilterConfiguration) => {
-        const actualWmsFilterValue = wmsFilterValues.find((value) => value.name === expectedFilterConfiguration.parameter);
-        expect(actualWmsFilterValue).toBeDefined();
-        expectedFilterConfiguration.filterValues.flatMap((expectedFilterValue) => {
-          if (expectedFilterValue.isActive) {
-            expectedFilterValue.values.forEach((expectedValue) => {
-              expect(actualWmsFilterValue!.value).not.toContain(expectedValue.toString());
-            });
-          } else {
-            expectedFilterValue.values.forEach((expectedValue) => {
-              expect(actualWmsFilterValue!.value).toContain(`'${expectedValue}'`);
-            });
-          }
-        });
+      const expectedFilterValues: WmsFilterValue[] = [
+        {name: 'FILTER_REGIO', value: `'Region 1','Region 3','','Region 4','',''`},
+        {name: 'FILTER_TYP', value: `'Schätzungsbegehren','Revisionsschätzung'`},
+      ];
+      const actualFilterValues = service.transformFilterConfigurationToParameters(stringBasedFilterConfigurationsMock);
 
-        const expectedNumberOfAllFilterValues = expectedFilterConfiguration.filterValues.flatMap(
-          (filterValue) => filterValue.values,
-        ).length;
-        const expectedNumberOfActiveFilterValues = expectedFilterConfiguration.filterValues
-          .filter((filterValue) => filterValue.isActive)
-          .flatMap((filterValue) => filterValue.values).length;
-        const actualWmsFilterValueValues = actualWmsFilterValue!.value.split(',');
-        expect(actualWmsFilterValueValues.length).toBe(expectedNumberOfAllFilterValues);
-        expect(actualWmsFilterValueValues.filter((value) => value === `''`).length).toBe(expectedNumberOfActiveFilterValues);
-      });
+      expect(actualFilterValues).toEqual(expectedFilterValues);
     });
 
     it('should transform number based filter values correctly', () => {
-      const wmsFilterValues = service.transformFilterConfigurationToParameters(numberBasedFilterConfigurationsMock);
-      expect(wmsFilterValues.length).toBe(numberBasedFilterConfigurationsMock.length);
-      numberBasedFilterConfigurationsMock.forEach((expectedFilterConfiguration) => {
-        const actualWmsFilterValue = wmsFilterValues.find((value) => value.name === expectedFilterConfiguration.parameter);
-        expect(actualWmsFilterValue).toBeDefined();
-        expectedFilterConfiguration.filterValues.flatMap((expectedFilterValue) => {
-          if (expectedFilterValue.isActive) {
-            expectedFilterValue.values.forEach((expectedValue) => {
-              expect(actualWmsFilterValue!.value).not.toContain(expectedValue.toString());
-            });
-          } else {
-            expectedFilterValue.values.forEach((expectedValue) => {
-              expect(actualWmsFilterValue!.value).toContain(`${expectedValue}`);
-            });
-          }
-        });
+      const expectedFilterValues: WmsFilterValue[] = [
+        {name: 'FILTER_STATUS', value: `1,0`},
+        {name: 'PARSER_MAXIMUM', value: `-1,-1,360,720,-1,-1`},
+      ];
+      const actualFilterValues = service.transformFilterConfigurationToParameters(numberBasedFilterConfigurationsMock);
 
-        const expectedNumberOfAllFilterValues = expectedFilterConfiguration.filterValues.flatMap(
-          (filterValue) => filterValue.values,
-        ).length;
-        const expectedNumberOfActiveFilterValues = expectedFilterConfiguration.filterValues
-          .filter((filterValue) => filterValue.isActive)
-          .flatMap((filterValue) => filterValue.values).length;
-        const actualWmsFilterValueValues = actualWmsFilterValue!.value.split(',');
-        expect(actualWmsFilterValueValues.length).toBe(expectedNumberOfAllFilterValues);
-        expect(actualWmsFilterValueValues.filter((value) => value === `-1`).length).toBe(expectedNumberOfActiveFilterValues);
-      });
+      expect(actualFilterValues).toEqual(expectedFilterValues);
     });
   });
 });

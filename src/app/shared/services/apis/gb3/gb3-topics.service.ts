@@ -5,12 +5,13 @@ import {map} from 'rxjs/operators';
 import {DataCataloguePage} from '../../../enums/data-catalogue-page.enum';
 import {MainPage} from '../../../enums/main-page.enum';
 import {FeatureInfoResponse, FeatureInfoResultFeatureField} from '../../../interfaces/feature-info.interface';
-import {LegendResponse} from '../../../interfaces/legend.interface';
+import {Layer, LayerClass, LegendResponse} from '../../../interfaces/legend.interface';
 import {
   FilterConfiguration,
   FilterValue,
   Map,
   MapLayer,
+  TimeSliderLayer,
   TimeSliderLayerSource,
   TimeSliderParameterSource,
   TimeSliderSourceType,
@@ -66,13 +67,13 @@ export class Gb3TopicsService extends Gb3ApiService {
       const parameterValue = filterConfiguration.filterValues
         .map((filterValue) => {
           // all filter values must be sent in the correct order; the active filtered ones as an empty string / or -1
-          const fvValues: (string | number)[] = filterValue.isActive
-            ? filterValue.values.map((fvValue) =>
-                typeof fvValue === 'string' ? INACTIVE_STRING_FILTER_VALUE : INACTIVE_NUMBER_FILTER_VALUE,
+          const filterValueValues: (string | number)[] = filterValue.isActive
+            ? filterValue.values.map((filterValueValue) =>
+                typeof filterValueValue === 'string' ? INACTIVE_STRING_FILTER_VALUE : INACTIVE_NUMBER_FILTER_VALUE,
               )
             : filterValue.values;
           // all filter values of type string (empty or not) must be enclosed by single quotation marks and separated by commas
-          return fvValues.map((fvValue) => (typeof fvValue === 'string' ? `'${fvValue}'` : fvValue)).join(',');
+          return filterValueValues.map((fvValue) => (typeof fvValue === 'string' ? `'${fvValue}'` : fvValue)).join(',');
         })
         .join(',');
       attributeFilterParameters.push({name: filterConfiguration.parameter, value: parameterValue});
@@ -90,19 +91,23 @@ export class Gb3TopicsService extends Gb3ApiService {
    * Maps the generic TopicsLegendDetailData type from the API endpoint to the internal interface LegendResponse
    */
   private mapTopicsLegendDetailDataToLegendResponse(topicsLegendDetailData: TopicsLegendDetailData[]): LegendResponse[] {
-    return topicsLegendDetailData.map((data) => {
+    return topicsLegendDetailData.map((data): LegendResponse => {
       const {legend} = data;
       return {
         legend: {
-          ...legend,
+          topic: legend.topic,
           metaDataLink: legend.geolion_karten_uuid ? this.createMapTabLink(legend.geolion_karten_uuid) : undefined,
-          layers: legend.layers.map((layer) => {
+          layers: legend.layers.map((layer): Layer => {
             return {
-              ...layer,
+              layer: layer.layer,
+              title: layer.title,
+              geolion: layer.geolion_gds ?? undefined,
+              attribution: layer.attribution,
               metaDataLink: layer.geolion_geodatensatz_uuid ? this.createDatasetTabLink(layer.geolion_geodatensatz_uuid) : undefined,
-              layerClasses: layer.layer_classes?.map((layerClass) => {
+              layerClasses: layer.layer_classes?.map((layerClass): LayerClass => {
                 return {
-                  ...layerClass,
+                  label: layerClass.label,
+                  image: layerClass.image,
                 };
               }),
             };
@@ -148,23 +153,22 @@ export class Gb3TopicsService extends Gb3ApiService {
               permissionMissing: topic.permission_missing,
               layers: topic.layers
                 .map(
-                  (layer) =>
-                    ({
-                      id: layer.id,
-                      layer: layer.layer,
-                      title: layer.title,
-                      queryable: layer.queryable,
-                      uuid: layer.geolion_geodatensatz_uuid,
-                      groupTitle: layer.group_title,
-                      minScale: layer.min_scale,
-                      maxScale: layer.max_scale,
-                      wmsSort: layer.wms_sort,
-                      tocSort: layer.toc_sort,
-                      initiallyVisible: layer.initially_visible,
-                      permissionMissing: layer.permission_missing,
-                      visible: layer.initially_visible,
-                      isHidden: false,
-                    }) as MapLayer,
+                  (layer): MapLayer => ({
+                    id: layer.id,
+                    layer: layer.layer,
+                    title: layer.title,
+                    queryable: layer.queryable,
+                    uuid: layer.geolion_geodatensatz_uuid,
+                    groupTitle: layer.group_title,
+                    minScale: layer.min_scale,
+                    maxScale: layer.max_scale,
+                    wmsSort: layer.wms_sort,
+                    tocSort: layer.toc_sort,
+                    initiallyVisible: layer.initially_visible,
+                    permissionMissing: layer.permission_missing,
+                    visible: layer.initially_visible,
+                    isHidden: false,
+                  }),
                 )
                 .reverse(), // reverse the order of the layers because the order in the GB3 interfaces (Topic, ActiveMapItem) is inverted to the order of the WMS specifications
               timeSliderConfiguration: topic.timesliderConfiguration
@@ -184,18 +188,17 @@ export class Gb3TopicsService extends Gb3ApiService {
                     ),
                   }
                 : undefined,
-              filterConfigurations: topic.filterConfigurations?.map((filterConfiguration) => {
+              filterConfigurations: topic.filterConfigurations?.map((filterConfiguration): FilterConfiguration => {
                 return {
                   name: filterConfiguration.name,
                   description: filterConfiguration.description,
                   parameter: filterConfiguration.parameter,
                   filterValues: filterConfiguration.filterValues.map(
-                    (filterValue) =>
-                      ({
-                        isActive: false,
-                        values: filterValue.values,
-                        name: filterValue.name,
-                      }) as FilterValue,
+                    (filterValue): FilterValue => ({
+                      isActive: false,
+                      values: filterValue.values,
+                      name: filterValue.name,
+                    }),
                   ),
                 };
               }),
@@ -237,7 +240,7 @@ export class Gb3TopicsService extends Gb3ApiService {
           throw new InvalidTimeSliderConfiguration('Missing attributes inside the layer configuration.');
         }
         return {
-          layers: source.layers.map((layer) => {
+          layers: source.layers.map((layer): TimeSliderLayer => {
             return {
               layerName: layer.layerName,
               date: layer.date,
@@ -279,7 +282,7 @@ export class Gb3TopicsService extends Gb3ApiService {
   private mapTopicsFeatureInfoDetailDataToFeatureInfoResponse(
     topicsFeatureInfoDetailData: TopicsFeatureInfoDetailData[],
   ): FeatureInfoResponse[] {
-    return topicsFeatureInfoDetailData.map((data) => {
+    return topicsFeatureInfoDetailData.map((data): FeatureInfoResponse => {
       const {feature_info: featureInfo} = data;
 
       return {
