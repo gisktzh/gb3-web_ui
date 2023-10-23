@@ -8,8 +8,18 @@ import {Gb2WmsActiveMapItem} from '../../map/models/implementations/gb2-wms.mode
 import {DrawingActiveMapItem} from '../../map/models/implementations/drawing.model';
 import {ToolService} from '../../map/interfaces/tool.service';
 import {WmsFilterValue} from '../../shared/interfaces/topic.interface';
+import {DataDownloadSelectionTool} from '../../shared/types/data-download-selection-tool.type';
+import {DrawingTool} from '../../shared/types/drawing-tool.type';
+import {MeasurementTool} from '../../shared/types/measurement-tool.type';
 
 export class MapServiceStub implements MapService {
+  private toolService: ToolService = {
+    initializeDataDownloadSelection(selectionTool: DataDownloadSelectionTool) {},
+    initializeDrawing(drawingTool: DrawingTool) {},
+    initializeMeasurement(measurementTool: MeasurementTool) {},
+    cancelTool() {},
+  };
+
   addGeometryToDrawingLayer(geometry: GeometryWithSrs, drawingLayer: InternalDrawingLayer): void {}
 
   clearInternalDrawingLayer(drawingLayer: InternalDrawingLayer): void {}
@@ -57,7 +67,7 @@ export class MapServiceStub implements MapService {
   public moveLayerToTop(mapItem: ActiveMapItem) {}
 
   public getToolService(): ToolService {
-    return {} as ToolService;
+    return this.toolService;
   }
 
   public async startDrawPrintPreview(extentWidth: number, extentHeight: number, rotation: number) {}

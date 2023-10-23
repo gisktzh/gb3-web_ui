@@ -5,10 +5,13 @@ import {ToolActions} from '../actions/tool.actions';
 import {ToolService} from '../../../map/interfaces/tool.service';
 import {MAP_SERVICE} from '../../../app.module';
 import {MapService} from '../../../map/interfaces/map.service';
+import {map} from 'rxjs/operators';
+import {MapUiActions} from '../actions/map-ui.actions';
 
 @Injectable()
 export class ToolEffects {
   private readonly toolService: ToolService;
+
   public initializeTool$ = createEffect(
     () => {
       return this.actions$.pipe(
@@ -41,6 +44,14 @@ export class ToolEffects {
     },
     {dispatch: false},
   );
+
+  public disableDragAndDropOnActiveTool$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ToolActions.activateTool),
+      map(() => MapUiActions.disableActiveMapItemDragAndDrop()),
+    );
+  });
+
   public cancelOrDeactivateTool$ = createEffect(
     () => {
       return this.actions$.pipe(
@@ -50,6 +61,13 @@ export class ToolEffects {
     },
     {dispatch: false},
   );
+
+  public enableDragAndDropOnDeactivatedTool$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ToolActions.cancelTool, ToolActions.deactivateTool),
+      map(() => MapUiActions.enableActiveMapItemDragAndDrop()),
+    );
+  });
 
   constructor(
     private readonly actions$: Actions,
