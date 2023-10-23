@@ -26,6 +26,7 @@ import {KTZHNewsServiceMock} from './shared/services/apis/ktzh/ktzhnews.service.
 import {ConfigService} from './shared/services/config.service';
 import {SharedModule} from './shared/shared.module';
 import {effects, metaReducers, reducers} from './state';
+import {StoreRouterConnectingModule} from '@ngrx/router-store';
 
 // necessary for the locale 'de-CH' to work
 // see https://stackoverflow.com/questions/46419026/missing-locale-data-for-the-locale-xxx-with-angular
@@ -47,6 +48,7 @@ export const GRAV_CMS_SERVICE = new InjectionToken<GravCmsService>('GravCmsServi
     EffectsModule.forRoot(effects),
     AuthModule,
     ErrorHandlingModule,
+    StoreRouterConnectingModule.forRoot(),
   ],
   providers: [
     {provide: ErrorHandler, deps: [Router, ErrorHandlerService, EmbeddedErrorHandlerService], useFactory: errorHandlerServiceFactory},

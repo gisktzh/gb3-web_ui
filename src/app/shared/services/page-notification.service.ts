@@ -1,12 +1,11 @@
 import {Injectable, OnDestroy} from '@angular/core';
-import {NavigationEnd, Router} from '@angular/router';
-import {BehaviorSubject, filter, Subscription, tap} from 'rxjs';
+import {BehaviorSubject, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {MainPage} from '../enums/main-page.enum';
 import {PageNotificationActions} from '../../state/app/actions/page-notification.actions';
 import {PageNotification} from '../interfaces/page-notification.interface';
 import {selectAllUnreadPageNotifications} from '../../state/app/selectors/page-notification.selector';
-import {UrlUtils} from '../utils/url.utils';
+import {selectMainPage} from '../../state/app/reducers/url.reducer';
 
 @Injectable({
   providedIn: 'root',
@@ -14,16 +13,14 @@ import {UrlUtils} from '../utils/url.utils';
 export class PageNotificationService implements OnDestroy {
   public readonly currentPageNotifications$ = new BehaviorSubject<PageNotification[]>([]);
 
+  private mainPage: MainPage | undefined;
+  private pageNotifications: PageNotification[] = [];
+
+  private readonly mainPage$ = this.store.select(selectMainPage);
   private readonly pageNotifications$ = this.store.select(selectAllUnreadPageNotifications);
   private readonly subscriptions: Subscription = new Subscription();
 
-  private currentMainPageOrUndefined?: MainPage;
-  private pageNotifications: PageNotification[] = [];
-
-  constructor(
-    private readonly router: Router,
-    private readonly store: Store,
-  ) {
+  constructor(private readonly store: Store) {
     this.store.dispatch(PageNotificationActions.loadPageNotifications());
     this.initSubscriptions();
   }
@@ -33,36 +30,32 @@ export class PageNotificationService implements OnDestroy {
   }
 
   private initSubscriptions() {
-    // TODO: this can be replaced with NGRX Router
     this.subscriptions.add(
-      this.router.events
+      this.mainPage$
         .pipe(
-          filter((event): event is NavigationEnd => event instanceof NavigationEnd),
-          tap((event) => {
-            const urlTree = this.router.parseUrl(event.url);
-            this.currentMainPageOrUndefined = UrlUtils.extractMainPage(urlTree);
-            this.refreshCurrentPageNotifications(this.currentMainPageOrUndefined, this.pageNotifications);
+          tap((mainPage) => {
+            this.mainPage = mainPage;
+            this.refreshCurrentPageNotifications();
           }),
         )
         .subscribe(),
     );
-
     this.subscriptions.add(
       this.pageNotifications$
         .pipe(
           tap((pageNotifications) => {
             this.pageNotifications = pageNotifications;
-            this.refreshCurrentPageNotifications(this.currentMainPageOrUndefined, this.pageNotifications);
+            this.refreshCurrentPageNotifications();
           }),
         )
         .subscribe(),
     );
   }
 
-  private refreshCurrentPageNotifications(currentMainPage: MainPage | undefined, pageNotifications: PageNotification[]) {
+  private refreshCurrentPageNotifications() {
     let currentPageNotifications: PageNotification[] = [];
-    if (currentMainPage !== undefined && pageNotifications.length > 0) {
-      currentPageNotifications = pageNotifications.filter((pageNotification) => pageNotification.pages.includes(currentMainPage));
+    if (this.mainPage !== undefined && this.pageNotifications.length > 0) {
+      currentPageNotifications = this.pageNotifications.filter((pageNotification) => pageNotification.pages.includes(this.mainPage!));
     }
     this.currentPageNotifications$.next(currentPageNotifications);
   }

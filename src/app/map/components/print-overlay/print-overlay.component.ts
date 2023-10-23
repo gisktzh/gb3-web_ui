@@ -52,7 +52,6 @@ export class PrintOverlayComponent implements OnInit, OnDestroy {
               this.printType = 'legend';
             } else {
               this.printType = undefined;
-              this.closePrint();
             }
           }),
         )
