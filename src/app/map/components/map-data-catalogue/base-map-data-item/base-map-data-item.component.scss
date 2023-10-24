@@ -74,7 +74,7 @@
         @include mat-mixins.mat-icon-button-override-icon-size(18px);
 
         &:disabled {
-          @include mat-mixins.mat-icon-button-override-unthemed-color(ktzh-variables.$zh-black40, inherit);
+          @include mat-mixins.mat-icon-button-override-unthemed-color(ktzh-variables.$zh-disabled-foreground-color, inherit);
         }
       }
     }
@@ -87,7 +87,7 @@
       width: 100%;
 
       &--disabled {
-        color: ktzh-variables.$zh-black40;
+        color: ktzh-variables.$zh-disabled-foreground-color;
       }
     }
 

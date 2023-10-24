@@ -16,9 +16,6 @@ export class BaseMapDataItemComponent {
    */
   public gb2Url: string | null = null;
   public mapConfigState?: MapConfigState;
-  /**
-   * This flag can be used in inheriting components to programmatically disable the addItem button.
-   */
   public isAddItemDisabled: boolean = false;
 
   @Output() public readonly addEvent = new EventEmitter<void>();
