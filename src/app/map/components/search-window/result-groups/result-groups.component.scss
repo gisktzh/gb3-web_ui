@@ -1,8 +1,6 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 @use 'mixins/helpers.mixin' as mixins;
 
-$header-height: 112px;
-
 .result-window {
   display: flex;
   flex-direction: column;
@@ -19,7 +17,7 @@ $header-height: 112px;
       position: absolute;
       left: 0;
       width: 100vw;
-      max-height: calc(100% - $header-height);
+      max-height: calc(100% - 112px);
       overflow: scroll;
     }
 

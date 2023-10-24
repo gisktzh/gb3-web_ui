@@ -17,7 +17,6 @@
 
 .no-box-shadow {
   @include mixins.no-box-shadow;
-  border-radius: ktzh-variables.$zh-border-radius;
 }
 
 .attribute-filter {
