@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
+import {PanelClass} from '../../enums/panel-class.enum';
 import {NavbarMobileDialogComponent} from './navbar-mobile-dialog/navbar-mobile-dialog.component';
 
 @Component({
@@ -16,6 +17,7 @@ export class NavbarMobileComponent {
       maxHeight: '100vh',
       height: '100%',
       width: '100%',
+      panelClass: PanelClass.ApiWrapperDialog,
     });
   }
 }
