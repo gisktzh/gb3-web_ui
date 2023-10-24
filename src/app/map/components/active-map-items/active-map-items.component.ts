@@ -11,7 +11,7 @@ import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
 import {selectItems} from '../../../state/map/reducers/active-map-item.reducer';
 import {ActiveMapItem} from '../../models/active-map-item.model';
 import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
-import {selectIsActiveMapItemDragAndDropDisabled} from '../../../state/map/reducers/map-ui.reducer';
+import {selectActiveTool} from '../../../state/map/reducers/tool.reducer';
 
 const FAVOURITE_HELPER_MESSAGES = {
   noMapsAdded: 'Um einen Favoriten anzulegen, muss mindestens eine Karte hinzugefügt werden.',
@@ -38,7 +38,7 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
   private readonly activeMapItems$ = this.store.select(selectItems);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
   private readonly screenMode$ = this.store.select(selectScreenMode);
-  private readonly isActiveMapItemDragAndDropDisabled$ = this.store.select(selectIsActiveMapItemDragAndDropDisabled);
+  private readonly activeTool$ = this.store.select(selectActiveTool);
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(private readonly store: Store) {}
@@ -102,9 +102,7 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
     );
     this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
     this.subscriptions.add(
-      this.isActiveMapItemDragAndDropDisabled$
-        .pipe(tap((isActiveMapItemDragAndDropDisabled) => (this.isActiveMapItemDragAndDropDisabled = isActiveMapItemDragAndDropDisabled)))
-        .subscribe(),
+      this.activeTool$.pipe(tap((activeTool) => (this.isActiveMapItemDragAndDropDisabled = !!activeTool))).subscribe(),
     );
   }
 
