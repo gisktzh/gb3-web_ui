@@ -13,8 +13,15 @@
     <mat-icon svgIcon="ktzh_legend_mobile"></mat-icon>
   </button>
   <mat-divider class="map-tools-mobile__divider" vertical></mat-divider>
-  <button (click)="locateClient()" class="map-tools-mobile__button" data-test-id="map-locate-me" mat-icon-button>
+  <button
+    (click)="locateClient()"
+    class="map-tools-mobile__button"
+    data-test-id="map-locate-me"
+    mat-icon-button
+    [disabled]="this.geolocationState.loadingState === 'loading'"
+  >
     <mat-icon svgIcon="ktzh_locate_me"></mat-icon>
+    <loading-and-process-bar [loadingState]="this.geolocationState.loadingState"></loading-and-process-bar>
   </button>
   <mat-divider class="map-tools-mobile__divider" vertical></mat-divider>
   <button (click)="toggleBasemapSelection()" class="map-tools-mobile__button" data-test-id="map-background-map-mobile" mat-icon-button>
