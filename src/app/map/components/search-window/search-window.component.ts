@@ -10,6 +10,7 @@ import {initialState, selectSearchState} from '../../../state/app/reducers/searc
 import {SearchState} from '../../../state/app/states/search.state';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
+import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
 
 const FILTER_DIALOG_WIDTH_IN_PX = 956;
 
@@ -62,5 +63,11 @@ export class SearchWindowComponent implements OnInit, OnDestroy {
       restoreFocus: false,
       width: `${FILTER_DIALOG_WIDTH_IN_PX}px`,
     });
+  }
+
+  public openBottomSheet() {
+    if (this.screenMode === 'mobile') {
+      this.store.dispatch(MapUiActions.showBottomSheet({bottomSheetContent: 'search'}));
+    }
   }
 }

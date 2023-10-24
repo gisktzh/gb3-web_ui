@@ -3,7 +3,6 @@ import {Store} from '@ngrx/store';
 import {Observable, Subscription, debounceTime, distinctUntilChanged, fromEvent, tap} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
-import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
 import {selectFilterGroups} from '../../../state/app/reducers/search.reducer';
 import {ScreenMode} from '../../types/screen-size.type';
 import {SearchMode} from '../../types/search-mode.type';
@@ -59,12 +58,6 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public openFilter() {
     this.openFilterEvent.emit();
-  }
-
-  public openBottomSheet() {
-    if (this.screenMode === 'mobile') {
-      this.store.dispatch(MapUiActions.showBottomSheet({bottomSheetContent: 'search'}));
-    }
   }
 
   private searchInputHandler(): Observable<string> {
