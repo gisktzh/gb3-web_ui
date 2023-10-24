@@ -1,17 +1,21 @@
 <mat-card
   class="bottom-sheet-item"
   [style]="resizeableStyle"
-  [ngClass]="isSearching ? 'bottom-sheet-item--large' : 'bottom-sheet-item--' + bottomSheetHeight"
+  [ngClass]="isFiltering ? 'bottom-sheet-item--large' : 'bottom-sheet-item--' + bottomSheetHeight"
 >
   <mat-card-header class="bottom-sheet-item__header" [ngClass]="{'bottom-sheet-item__header--primary-color': usePrimaryColor}">
     <div class="bottom-sheet-item__header__container">
-      <button (click)="close()" mat-icon-button [ngClass]="{'bottom-sheet-item__header__button--primary--color': usePrimaryColor}">
+      <button
+        (click)="close()"
+        mat-icon-button
+        [ngClass]="{'bottom-sheet-item__header__container__button--primary--color': usePrimaryColor}"
+      >
         <mat-icon>close</mat-icon>
       </button>
-      <h1 *ngIf="overlayTitle" class="bottom-sheet-item__header__container__title">
-        {{ overlayTitle }} {{ mapAttributeFiltersItemTitle }}
-      </h1>
-      <hr *ngIf="showHeader" class="bottom-sheet-item__header__container__hr" />
+      <ng-container *ngIf="showHeader">
+        <h1 class="bottom-sheet-item__header__container__title">{{ overlayTitle }} {{ mapAttributeFiltersItemTitle }}</h1>
+        <hr class="bottom-sheet-item__header__container__hr" />
+      </ng-container>
     </div>
 
     <div class="bottom-sheet-item__header__content">

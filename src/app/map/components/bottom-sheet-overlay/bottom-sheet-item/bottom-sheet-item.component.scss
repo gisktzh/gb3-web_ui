@@ -40,6 +40,10 @@
       flex-direction: column;
       align-items: flex-end;
 
+      &__button--primary--color {
+        color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+      }
+
       .bottom-sheet-item__header__container__title {
         flex-grow: 1;
         margin-bottom: 0;
@@ -55,10 +59,6 @@
 
     .bottom-sheet-item__header__content {
       width: 100%;
-    }
-
-    &__button--primary--color {
-      color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
     }
   }
 
