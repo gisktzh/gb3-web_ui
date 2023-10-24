@@ -36,7 +36,6 @@
     border-color: functions.get-color-from-palette(ktzh-variables.$zh-primary, 900);
     border-radius: ktzh-variables.$zh-border-radius;
     margin: 0 16px;
-    border-radius: ktzh-variables.$zh-border-radius;
 
     .map-management-mobile-header__buttons__button {
       width: 100%;
@@ -72,8 +71,6 @@
         );
 
         &--hidden {
-          // `display: none` would not work as the element needs to be present
-          //visibility: hidden;
           display: none;
         }
       }
@@ -164,7 +161,7 @@
 .map-management-mobile-content {
   margin-top: 112px;
 
-  &--searching {
+  &--filtering {
     margin-top: 58px;
   }
 }

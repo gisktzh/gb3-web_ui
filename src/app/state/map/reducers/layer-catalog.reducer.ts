@@ -8,7 +8,7 @@ export const initialState: LayerCatalogState = {
   items: [],
   loadingState: undefined,
   filterString: '',
-  isSearching: false,
+  isFiltering: false,
 };
 
 export const layerCatalogFeature = createFeature({
@@ -35,11 +35,11 @@ export const layerCatalogFeature = createFeature({
     on(LayerCatalogActions.setFilterString, (state, {filterString}): LayerCatalogState => {
       return {...state, filterString};
     }),
-    on(LayerCatalogActions.toggleIsSearching, (state, {isSearching}): LayerCatalogState => {
-      return {...state, isSearching};
+    on(LayerCatalogActions.setIsFiltering, (state, {isFiltering}): LayerCatalogState => {
+      return {...state, isFiltering};
     }),
   ),
 });
 
-export const {name, reducer, selectLayerCatalogState, selectFilterString, selectItems, selectLoadingState, selectIsSearching} =
+export const {name, reducer, selectLayerCatalogState, selectFilterString, selectItems, selectLoadingState, selectIsFiltering} =
   layerCatalogFeature;
