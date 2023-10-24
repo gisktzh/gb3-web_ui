@@ -13,7 +13,6 @@ import {ToolService} from '../../../map/interfaces/tool.service';
 import {MeasurementTool} from '../../../shared/types/measurement-tool.type';
 import {DrawingTool} from '../../../shared/types/drawing-tool.type';
 import {DataDownloadSelectionTool} from '../../../shared/types/data-download-selection-tool.type';
-import {MapUiActions} from '../actions/map-ui.actions';
 
 describe('ToolEffects', () => {
   let actions$: Observable<Action>;
@@ -93,16 +92,6 @@ describe('ToolEffects', () => {
     }));
   });
 
-  describe('disableDragAndDropOnActiveTool$', () => {
-    it('dispatches MapUiActions.disableActiveMapItemDragAndDrop() if any tool was activated', (done: DoneFn) => {
-      actions$ = of(ToolActions.activateTool({tool: 'select-canton'}));
-      effects.disableDragAndDropOnActiveTool$.subscribe((action) => {
-        expect(action).toEqual(MapUiActions.disableActiveMapItemDragAndDrop());
-        done();
-      });
-    });
-  });
-
   describe('cancelOrDeactivateTool$', () => {
     it('cancels the tool service after deactivating the active tool; dispatches no further actions', (done: DoneFn) => {
       const toolServiceSpy = spyOn(toolService, 'cancelTool').and.callThrough();
@@ -122,24 +111,6 @@ describe('ToolEffects', () => {
       effects.cancelOrDeactivateTool$.subscribe((action) => {
         expect(toolServiceSpy).toHaveBeenCalledOnceWith();
         expect(action).toEqual(expectedAction);
-        done();
-      });
-    });
-  });
-
-  describe('enableDragAndDropOnDeactivatedTool$', () => {
-    it('dispatches MapUiActions.enableActiveMapItemDragAndDrop() if any tool was deactivated', (done: DoneFn) => {
-      actions$ = of(ToolActions.deactivateTool());
-      effects.enableDragAndDropOnDeactivatedTool$.subscribe((action) => {
-        expect(action).toEqual(MapUiActions.enableActiveMapItemDragAndDrop());
-        done();
-      });
-    });
-
-    it('dispatches MapUiActions.enableActiveMapItemDragAndDrop() if any tool was cancelled', (done: DoneFn) => {
-      actions$ = of(ToolActions.cancelTool());
-      effects.enableDragAndDropOnDeactivatedTool$.subscribe((action) => {
-        expect(action).toEqual(MapUiActions.enableActiveMapItemDragAndDrop());
         done();
       });
     });

@@ -3,6 +3,34 @@ import {Gb3VectorLayer} from '../interfaces/gb3-vector-layer.interface';
 import {UserDrawingLayer} from '../enums/drawing-layer.enum';
 import {v4 as uuidv4} from 'uuid';
 
+export const REDLINING_STYLE_IDENTIFIER = 'REDLINING';
+export const REDLINING_STYLE_WITH_LABEL_IDENTIFIER = 'REDLINING_WITH_LABEL';
+
+const REDLINING_STYLE = {
+  [REDLINING_STYLE_IDENTIFIER]: {
+    pointRadius: 3,
+    fillColor: '#ff0000',
+    fillOpacity: 0.4,
+    strokeColor: '#ff0000',
+    strokeWidth: 2,
+  },
+};
+
+const REDLINING_STYLE_WITH_LABEL = {
+  [REDLINING_STYLE_WITH_LABEL_IDENTIFIER]: {
+    ...REDLINING_STYLE[REDLINING_STYLE_IDENTIFIER],
+    label: '[text]',
+    fontSize: '8px',
+    fontColor: '#ff0000',
+    fontFamily: 'Arial,Helvetica,sans-serif',
+    fontWeight: 'normal',
+    labelOutlineColor: '#ffffff',
+    labelOutlineWidth: 2,
+    labelAlign: 'ct',
+    labelYOffset: 15,
+  },
+};
+
 export class SymbolizationToGb3ConverterUtils {
   /**
    * Converts a list of internal drawings to a GB3VectorLayer representation. Currently, this only supports a redlining style for all
@@ -20,26 +48,15 @@ export class SymbolizationToGb3ConverterUtils {
         features: features.map((feature) => ({
           type: feature.type,
           geometry: feature.geometry,
-          properties: {style: 'REDLINING', text: feature.labelText},
+          properties: {
+            style: feature.labelText ? REDLINING_STYLE_WITH_LABEL_IDENTIFIER : REDLINING_STYLE_IDENTIFIER,
+            text: feature.labelText ? feature.labelText : '', // todo GB3-863: PrintAPI currently requires this property to be set
+          },
         })),
       },
       styles: {
-        REDLINING: {
-          pointRadius: 3,
-          fillColor: '#ff0000',
-          fillOpacity: 0.4,
-          strokeColor: '#ff0000',
-          strokeWidth: 2,
-          label: '[text]',
-          fontSize: '8px',
-          fontColor: '#ff0000',
-          fontFamily: 'Arial,Helvetica,sans-serif',
-          fontWeight: 'normal',
-          labelOutlineColor: '#ffffff',
-          labelOutlineWidth: 2,
-          labelAlign: 'ct',
-          labelYOffset: 15,
-        },
+        ...REDLINING_STYLE,
+        ...REDLINING_STYLE_WITH_LABEL,
       },
     };
   }
