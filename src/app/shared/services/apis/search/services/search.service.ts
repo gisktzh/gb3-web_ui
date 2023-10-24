@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {SearchApiResultMatch} from '../interfaces/search-api-result-match.interface';
 import {BaseApiService} from '../../abstract-api.service';
 import {SearchApiResult} from '../interfaces/search-api-result.interface';
@@ -55,6 +55,10 @@ export class SearchService extends BaseApiService {
   }
 
   private getElasticsearch(indexes: string, term: string): Observable<SearchApiResult[]> {
+    if (term.trim() === '') {
+      return of([]);
+    }
+
     const params = [
       {
         key: 'indexes',
