@@ -21,14 +21,17 @@ import {selectLoadedLayerCatalogueAndShareItem} from '../selectors/loaded-layer-
 import {selectItems} from '../reducers/active-map-item.reducer';
 import {Gb3RuntimeError} from '../../../shared/errors/abstract.errors';
 import {AuthService} from '../../../auth/auth.service';
+import {DrawingActions} from '../actions/drawing.actions';
+import {selectDrawings} from '../reducers/drawing.reducer';
 
 /**
- * This class contains a bunch of effects. Most of them are straightforward: do something asynchronous and return a new action afterward or go to an error state.
+ * This class contains a bunch of effects. Most of them are straightforward: do something asynchronous and return a new action afterward or
+ * go to an error state.
  *
  * Initialize application based on a given ID
- *   However, there is the whole `initializeApplication` and `validation` part where this application gets initialized based on a previously shared link ID.
- *   The whole section is basically a big state machine.
- *   In the README.md is a more detailed explanation of the basic logic flow (see 'Application Initialization based on share link')
+ * However, there is the whole `initializeApplication` and `validation` part where this application gets initialized based on a
+ * previously shared link ID. The whole section is basically a big state machine. In the README.md is a more detailed explanation of the
+ * basic logic flow (see 'Application Initialization based on share link')
  */
 @Injectable()
 export class ShareLinkEffects {
@@ -105,7 +108,8 @@ export class ShareLinkEffects {
   public initializeApplicationByVerifyingSharedItem$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ShareLinkActions.initializeApplicationBasedOnId),
-      // we can't use `concatLatestFrom` here because the selector will return undefined values until all internal values are successfully loaded
+      // we can't use `concatLatestFrom` here because the selector will return undefined values until all internal values are successfully
+      // loaded
       combineLatestWith(this.store.select(selectLoadedLayerCatalogueAndShareItem)),
       filter(([_, value]) => value !== undefined),
       take(1),
@@ -118,29 +122,34 @@ export class ShareLinkEffects {
   public validateShareLinkItem$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ShareLinkActions.validateItem),
-      map((value) => {
+      map(({item: {content, drawings, basemapId, scale, center, measurements}}) => {
         // validate basemap
-        const basemapId = this.basemapConfigService.checkBasemapIdOrGetDefault(value.item.basemapId);
-        if (basemapId !== value.item.basemapId) {
-          throw new ShareLinkPropertyCouldNotBeValidated(`Basemap ist ungültig: '${value.item.basemapId}'`);
+        const basemapIdOrDefault = this.basemapConfigService.checkBasemapIdOrGetDefault(basemapId);
+        if (basemapIdOrDefault !== basemapId) {
+          throw new ShareLinkPropertyCouldNotBeValidated(`Basemap ist ungültig: '${basemapId}'`);
         }
 
         // validate scale
-        let scale = value.item.scale;
         const maxScale = this.configService.mapConfig.mapScaleConfig.maxScale;
         const minScale = this.configService.mapConfig.mapScaleConfig.minScale;
         if (scale > minScale || scale < maxScale) {
-          throw new ShareLinkPropertyCouldNotBeValidated(`Massstab ist ungültig: '${value.item.scale}'`);
+          throw new ShareLinkPropertyCouldNotBeValidated(`Massstab ist ungültig: '${scale}'`);
         }
 
-        // validate center => all values are allowed
-        const center = {x: value.item.center.x, y: value.item.center.y};
-
         // validate active map items => validated within the favourite service
-        const activeMapItems = this.favouritesService.getActiveMapItemsForFavourite(value.item.content);
+        const activeMapItems = this.favouritesService.getActiveMapItemsForFavourite(content);
+
+        // extract drawing layers that are needed for the given favourite (i.e. they contain features)
+        const {drawingsToAdd, drawingActiveMapItems} = this.favouritesService.getDrawingsForFavourite(drawings, measurements);
 
         // complete validation
-        return ShareLinkActions.completeValidation({activeMapItems, scale, basemapId, ...center});
+        return ShareLinkActions.completeValidation({
+          activeMapItems: [...drawingActiveMapItems, ...activeMapItems], // make sure drawings layers are added at the top
+          scale,
+          basemapId: basemapIdOrDefault,
+          drawings: drawingsToAdd,
+          ...center,
+        });
       }),
       catchError((error: unknown) => of(ShareLinkActions.setValidationError({error}))),
     );
@@ -187,12 +196,24 @@ export class ShareLinkEffects {
     );
   });
 
+  public setInitialDrawingsAfterValidation$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ShareLinkActions.completeValidation),
+      map((value) => {
+        return DrawingActions.addDrawings({drawings: value.drawings});
+      }),
+    );
+  });
+
   public completeInitialization$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ShareLinkActions.completeValidation),
-      combineLatestWith(this.store.select(selectItems)),
-      // ensure that the active map items have been set before continuing
-      filter(([value, activeMapItems]) => value.activeMapItems.length === activeMapItems.length),
+      combineLatestWith(this.store.select(selectItems), this.store.select(selectDrawings)),
+      // ensure that the active map items and initial drawings have been set before continuing
+      filter(
+        ([value, activeMapItems, drawings]) =>
+          value.activeMapItems.length === activeMapItems.length && value.drawings.length === drawings.length,
+      ),
       take(1),
       map(() => {
         return ShareLinkActions.completeApplicationInitialization();

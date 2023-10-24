@@ -28,6 +28,7 @@ import {FavouriteBaseConfig} from '../../../shared/interfaces/favourite.interfac
 import {PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {MapConstants} from '../../../shared/constants/map.constants';
 import {selectIsMapServiceInitialized} from '../reducers/map-config.reducer';
+import {DrawingActions} from '../actions/drawing.actions';
 
 describe('ActiveMapItemEffects', () => {
   let actions$: Observable<Action>;
@@ -398,10 +399,13 @@ describe('ActiveMapItemEffects', () => {
         expectedPosition: index,
       }));
       const mapServiceRemoveMapItemSpy = spyOn(mapService, 'removeMapItem').and.callThrough();
-      const mapServiceZoomToPointSpy = spyOn(mapService, 'zoomToPoint').and.callThrough();
 
       actions$ = of(
-        ActiveMapItemActions.addFavourite({activeMapItems: expectedFavouriteActiveMapItems, baseConfig: expectedFavouriteBaseConfig}),
+        ActiveMapItemActions.addFavourite({
+          activeMapItems: expectedFavouriteActiveMapItems,
+          baseConfig: expectedFavouriteBaseConfig,
+          drawingsToAdd: [],
+        }),
       );
       effects.addFavourite$.subscribe((action) => {
         activeMapItemSpies.forEach((itemSpy) => {
@@ -411,8 +415,7 @@ describe('ActiveMapItemEffects', () => {
         expectedFavouriteActiveMapItems.forEach((item) => {
           expect(mapServiceRemoveMapItemSpy).toHaveBeenCalledWith(item.id);
         });
-        expect(mapServiceZoomToPointSpy).toHaveBeenCalledOnceWith(expectedCenter, expectedFavouriteBaseConfig.scale);
-        expect(action).toEqual(MapConfigActions.setBasemap({activeBasemapId: expectedFavouriteBaseConfig.basemap}));
+        expect(action).toEqual(DrawingActions.overwriteDrawingLayersWithDrawings({layersToOverride: [], drawingsToAdd: []}));
         done();
       });
     });

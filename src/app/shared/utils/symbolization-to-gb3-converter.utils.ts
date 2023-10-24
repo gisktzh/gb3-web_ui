@@ -1,5 +1,35 @@
 import {Gb3StyledInternalDrawingRepresentation} from '../interfaces/internal-drawing-representation.interface';
 import {Gb3VectorLayer} from '../interfaces/gb3-vector-layer.interface';
+import {UserDrawingLayer} from '../enums/drawing-layer.enum';
+import {v4 as uuidv4} from 'uuid';
+
+export const REDLINING_STYLE_IDENTIFIER = 'REDLINING';
+export const REDLINING_STYLE_WITH_LABEL_IDENTIFIER = 'REDLINING_WITH_LABEL';
+
+const REDLINING_STYLE = {
+  [REDLINING_STYLE_IDENTIFIER]: {
+    pointRadius: 3,
+    fillColor: '#ff0000',
+    fillOpacity: 0.4,
+    strokeColor: '#ff0000',
+    strokeWidth: 2,
+  },
+};
+
+const REDLINING_STYLE_WITH_LABEL = {
+  [REDLINING_STYLE_WITH_LABEL_IDENTIFIER]: {
+    ...REDLINING_STYLE[REDLINING_STYLE_IDENTIFIER],
+    label: '[text]',
+    fontSize: '8px',
+    fontColor: '#ff0000',
+    fontFamily: 'Arial,Helvetica,sans-serif',
+    fontWeight: 'normal',
+    labelOutlineColor: '#ffffff',
+    labelOutlineWidth: 2,
+    labelAlign: 'ct',
+    labelYOffset: 15,
+  },
+};
 
 export class SymbolizationToGb3ConverterUtils {
   /**
@@ -10,7 +40,7 @@ export class SymbolizationToGb3ConverterUtils {
    * todo GB3-629: implement logic for feature style
    * @param features
    */
-  public static convert(features: Gb3StyledInternalDrawingRepresentation[]): Gb3VectorLayer {
+  public static convertInternalToExternalRepresentation(features: Gb3StyledInternalDrawingRepresentation[]): Gb3VectorLayer {
     return {
       type: 'Vector',
       geojson: {
@@ -18,27 +48,43 @@ export class SymbolizationToGb3ConverterUtils {
         features: features.map((feature) => ({
           type: feature.type,
           geometry: feature.geometry,
-          properties: {style: 'REDLINING', text: feature.labelText ?? ''},
+          properties: {
+            style: feature.labelText ? REDLINING_STYLE_WITH_LABEL_IDENTIFIER : REDLINING_STYLE_IDENTIFIER,
+            text: feature.labelText ? feature.labelText : '', // todo GB3-863: PrintAPI currently requires this property to be set
+          },
         })),
       },
       styles: {
-        REDLINING: {
-          pointRadius: 3,
+        ...REDLINING_STYLE,
+        ...REDLINING_STYLE_WITH_LABEL,
+      },
+    };
+  }
+
+  public static convertExternalToInternalRepresentation(
+    gb3VectorLayer: Gb3VectorLayer,
+    source: UserDrawingLayer,
+  ): Gb3StyledInternalDrawingRepresentation[] {
+    return gb3VectorLayer.geojson.features.map((feature) => ({
+      type: 'Feature',
+      properties: {
+        __id: uuidv4(),
+        style: {
+          type: 'point',
           fillColor: '#ff0000',
           fillOpacity: 0.4,
           strokeColor: '#ff0000',
           strokeWidth: 2,
-          label: '[text]',
-          fontSize: '8px',
-          fontColor: '#ff0000',
-          fontFamily: 'Arial,Helvetica,sans-serif',
-          fontWeight: 'normal',
-          labelOutlineColor: '#ffffff',
-          labelOutlineWidth: 2,
-          labelAlign: 'ct',
-          labelYOffset: 15,
+          pointRadius: '3px',
+          strokeOpacity: 1,
         },
       },
-    };
+      geometry: {
+        ...feature.geometry,
+        srs: 2056,
+      },
+      source: source,
+      labelText: feature.properties.text,
+    }));
   }
 }

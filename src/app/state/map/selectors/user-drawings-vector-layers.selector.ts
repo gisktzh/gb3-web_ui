@@ -15,8 +15,8 @@ export const selectUserDrawingsVectorLayers: MemoizedSelector<Record<string, any
     );
 
     return {
-      drawings: SymbolizationToGb3ConverterUtils.convert(drawingsToDraw),
-      measurements: SymbolizationToGb3ConverterUtils.convert(measurementsToDraw),
+      drawings: SymbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(drawingsToDraw),
+      measurements: SymbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(measurementsToDraw),
     };
   },
 );

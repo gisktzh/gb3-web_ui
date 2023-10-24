@@ -68,9 +68,10 @@ export class Gb3ShareLinkService extends Gb3ApiService {
     const castFeatures = drawings.geojson.features.map((feature) => this.castGeojsonFeatureToGb3GeoJsonFeature(feature));
 
     return {
-      ...drawings,
+      type: drawings.type,
+      styles: drawings.styles,
       geojson: {
-        ...drawings.geojson,
+        type: drawings.geojson.type,
         features: castFeatures,
       },
     };

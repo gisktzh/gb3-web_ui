@@ -13,7 +13,6 @@ export const initialState: MapUiState = {
   hideZoomButtons: false,
   toolMenuVisibility: undefined,
   bottomSheetContent: 'none',
-  isActiveMapItemDragAndDropDisabled: false,
 };
 
 export const mapUiFeature = createFeature({
@@ -78,12 +77,6 @@ export const mapUiFeature = createFeature({
     on(MapUiActions.resetMapUiState, (): MapUiState => {
       return {...initialState};
     }),
-    on(MapUiActions.enableActiveMapItemDragAndDrop, (state): MapUiState => {
-      return {...state, isActiveMapItemDragAndDropDisabled: false};
-    }),
-    on(MapUiActions.disableActiveMapItemDragAndDrop, (state): MapUiState => {
-      return {...state, isActiveMapItemDragAndDropDisabled: true};
-    }),
   ),
 });
 
@@ -97,5 +90,4 @@ export const {
   selectBottomSheetContent,
   selectHideUiElements,
   selectHideToggleUiElementsButton,
-  selectIsActiveMapItemDragAndDropDisabled,
 } = mapUiFeature;

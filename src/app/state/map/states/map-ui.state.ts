@@ -11,5 +11,4 @@ export interface MapUiState {
   hideZoomButtons: boolean;
   toolMenuVisibility: ToolMenuVisibility | undefined;
   bottomSheetContent: BottomSheetContent;
-  isActiveMapItemDragAndDropDisabled: boolean;
 }

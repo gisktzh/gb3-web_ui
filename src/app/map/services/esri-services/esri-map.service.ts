@@ -54,6 +54,7 @@ import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
 import {PrintUtils} from '../../../shared/utils/print.utils';
 import {map} from 'rxjs/operators';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import {selectDrawings} from '../../../state/map/reducers/drawing.reducer';
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
 
@@ -141,8 +142,8 @@ export class EsriMapService implements MapService, OnDestroy {
       .select(selectMapConfigState)
       .pipe(
         first(),
-        withLatestFrom(this.store.select(selectItems)),
-        tap(([config, activeMapItems]) => {
+        withLatestFrom(this.store.select(selectItems), this.store.select(selectDrawings)),
+        tap(([config, activeMapItems, drawings]) => {
           const {x, y} = config.center;
           const {minScale, maxScale} = config.scaleSettings;
           const {scale, srsId, activeBasemapId} = config;
@@ -153,6 +154,11 @@ export class EsriMapService implements MapService, OnDestroy {
           this.initDrawingLayers();
           activeMapItems.forEach((mapItem, position) => {
             mapItem.addToMap(this, position);
+
+            if (mapItem instanceof DrawingActiveMapItem) {
+              const drawingsToAdd = drawings.filter((drawing) => drawing.source === mapItem.settings.userDrawingLayer);
+              this.esriToolService.addExistingDrawingsToLayer(drawingsToAdd, mapItem.settings.userDrawingLayer);
+            }
           });
           this.store.dispatch(MapConfigActions.markMapServiceAsInitialized());
         }),

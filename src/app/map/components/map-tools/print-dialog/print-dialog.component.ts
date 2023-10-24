@@ -341,6 +341,6 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
   private printDrawingLayer(source: UserDrawingLayer): PrintMapItem {
     const drawingsToDraw = this.drawings.filter((d) => d.source === source);
 
-    return SymbolizationToGb3ConverterUtils.convert(drawingsToDraw);
+    return SymbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(drawingsToDraw);
   }
 }

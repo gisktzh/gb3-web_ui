@@ -15,6 +15,12 @@ import {selectMaps} from '../../state/map/selectors/maps.selector';
 import {selectFavouriteBaseConfig} from '../../state/map/selectors/favourite-base-config.selector';
 import {FavouriteIsInvalid} from '../../shared/errors/favourite.errors';
 import {selectUserDrawingsVectorLayers} from '../../state/map/selectors/user-drawings-vector-layers.selector';
+import {Gb3VectorLayer} from '../../shared/interfaces/gb3-vector-layer.interface';
+import {UserDrawingLayer} from '../../shared/enums/drawing-layer.enum';
+import {MapConstants} from '../../shared/constants/map.constants';
+import {SymbolizationToGb3ConverterUtils} from '../../shared/utils/symbolization-to-gb3-converter.utils';
+import {DrawingActiveMapItem} from '../models/implementations/drawing.model';
+import {Gb3StyledInternalDrawingRepresentation} from '../../shared/interfaces/internal-drawing-representation.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -112,6 +118,44 @@ export class FavouritesService implements OnDestroy {
 
   public deleteFavourite(favourite: Favourite): Observable<void> {
     return this.gb3FavouritesService.deleteFavourite(favourite);
+  }
+
+  /**
+   * Gets the drawing layer configuration for a given favourite by extracting the required ActiveMapItems as well as all the geometries
+   * to add.
+   * @param drawings
+   * @param measurements
+   */
+  public getDrawingsForFavourite(
+    drawings: Gb3VectorLayer,
+    measurements: Gb3VectorLayer,
+  ): {
+    drawingsToAdd: Gb3StyledInternalDrawingRepresentation[];
+    drawingActiveMapItems: DrawingActiveMapItem[];
+  } {
+    const drawingActiveMapItems: DrawingActiveMapItem[] = [];
+    const drawingsToAdd: Gb3StyledInternalDrawingRepresentation[] = [];
+
+    if (measurements.geojson.features.length > 0) {
+      drawingActiveMapItems.push(
+        ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Measurements, MapConstants.USER_DRAWING_LAYER_PREFIX),
+      );
+      drawingsToAdd.push(
+        ...SymbolizationToGb3ConverterUtils.convertExternalToInternalRepresentation(measurements, UserDrawingLayer.Measurements),
+      );
+    }
+
+    if (drawings.geojson.features.length > 0) {
+      drawingActiveMapItems.push(
+        ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, MapConstants.USER_DRAWING_LAYER_PREFIX),
+      );
+      drawingsToAdd.push(...SymbolizationToGb3ConverterUtils.convertExternalToInternalRepresentation(drawings, UserDrawingLayer.Drawings));
+    }
+
+    return {
+      drawingActiveMapItems,
+      drawingsToAdd,
+    };
   }
 
   private initSubscriptions() {
