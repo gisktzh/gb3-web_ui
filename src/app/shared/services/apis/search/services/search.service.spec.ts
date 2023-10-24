@@ -242,4 +242,15 @@ describe('SearchService', () => {
       done();
     });
   });
+
+  it('should return an empty result array and not send any search requests for empty search terms', (done: DoneFn) => {
+    const configService = TestBed.inject(ConfigService);
+    const httpTestingController = TestBed.inject(HttpTestingController);
+    const searchTerm = ' ';
+    service.searchIndexes(searchTerm, searchIndexes).subscribe((searchApiResultMatches) => {
+      httpTestingController.expectNone((req: HttpRequest<any>) => req.url.includes(`${configService.apiConfig.searchApi.baseUrl}/search`));
+      expect(searchApiResultMatches).toEqual([]);
+      done();
+    });
+  });
 });
