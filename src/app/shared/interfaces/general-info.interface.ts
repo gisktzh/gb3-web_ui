@@ -33,6 +33,9 @@ interface Parcel {
     /** PDF URL */
     pdfUrl: string;
   };
+  ownershipInformation: {
+    url: string;
+  };
 }
 
 export interface GeneralInfoResponse {

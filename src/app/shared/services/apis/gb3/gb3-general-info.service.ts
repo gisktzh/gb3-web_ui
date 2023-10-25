@@ -4,6 +4,7 @@ import {GeneralInfoListData} from '../../../models/gb3-api-generated.interfaces'
 import {Observable} from 'rxjs';
 import {GeneralInfoResponse} from '../../../interfaces/general-info.interface';
 import {map} from 'rxjs/operators';
+import {ExternalUrlConstants} from '../../../constants/external-url.constants';
 
 @Injectable({
   providedIn: 'root',
@@ -36,14 +37,25 @@ export class Gb3GeneralInfoService extends Gb3ApiService {
       },
       parcel: generalInfo.parcel
         ? {
-            ...generalInfo.parcel,
+            bfsnr: generalInfo.parcel.bfsnr,
             egrisEgrid: generalInfo.parcel.egris_egrid,
             municipalityName: generalInfo.parcel.municipality_name,
             oerebExtract: {
               pdfUrl: generalInfo.parcel.oereb_extract.pdf_url,
             },
+            ownershipInformation: {
+              url: this.createOwnershipInformationUrl(generalInfo.parcel.egris_egrid, generalInfo.parcel.bfsnr),
+            },
           }
         : undefined,
     };
+  }
+
+  private createOwnershipInformationUrl(egrid: string, bfsNr: number): string {
+    const url = new URL(ExternalUrlConstants.OWNERSHIP_INFORMATION_BASE_URL);
+    url.searchParams.append('egrid', egrid);
+    url.searchParams.append('bfsNr', bfsNr.toString());
+
+    return url.toString();
   }
 }

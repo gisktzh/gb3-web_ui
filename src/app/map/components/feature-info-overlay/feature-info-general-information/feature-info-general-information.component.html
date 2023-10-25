@@ -5,18 +5,32 @@
   <b>DTM:</b> {{ generalInfoData.locationInformation.heightDtm | number: '1.0-2' }} m / <b>DOM:</b>
   {{ generalInfoData.locationInformation.heightDom | number: '1.0-2' }} m
 </div>
-<a
-  *ngIf="generalInfoData.parcel"
-  [href]="generalInfoData.parcel.oerebExtract.pdfUrl"
-  mat-button
-  mat-flat-button
-  target="_blank"
-  class="parcel-button"
-  rel="noopener noreferrer"
->
-  <mat-icon>download</mat-icon>
-  ÖREB-Auszug
-</a>
+<div class="external-links">
+  <a
+    *ngIf="generalInfoData.parcel"
+    [href]="generalInfoData.parcel.oerebExtract.pdfUrl"
+    class="external-links__button"
+    mat-button
+    mat-flat-button
+    rel="noopener noreferrer"
+    target="_blank"
+  >
+    <mat-icon>download</mat-icon>
+    <span class="external-links__button__label">ÖREB-Auszug</span>
+  </a>
+  <a
+    *ngIf="generalInfoData.parcel"
+    [href]="generalInfoData.parcel.ownershipInformation.url"
+    class="external-links__button"
+    mat-button
+    mat-flat-button
+    rel="noopener noreferrer"
+    target="_blank"
+  >
+    <mat-icon class="external-links__button__icon">download</mat-icon>
+    <span class="external-links__button__label">Eigentümerabfrage</span>
+  </a>
+</div>
 <div class="additional-general-information">
   <map-overlay-list-item overlayTitle="Weitere Standortinformationen">
     <div class="additional-general-information__content">
