@@ -6,8 +6,8 @@
 :host ::ng-deep {
   .map-management-mobile-header__tools__buttons__action--notices {
     .mat-badge-content.mat-badge-active {
-      top: 6px;
-      right: 10px;
+      top: 12px;
+      right: 16px;
       font-size: 0;
       width: 8px;
       height: 8px;
@@ -129,7 +129,7 @@
 
       .map-management-mobile-header__tools__filter__input-close-button {
         position: absolute;
-        right: 20px;
+        right: 0px;
         margin: 6px 5px 5px 0;
         display: flex;
         align-items: center;
