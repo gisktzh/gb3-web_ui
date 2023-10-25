@@ -13,12 +13,16 @@
   }
 
   .result-window__content {
+    background-color: ktzh-variables.$zh-white;
+    padding: 12px 18px;
+
     &--mobile {
       position: absolute;
       left: 0;
       width: 100vw;
       max-height: calc(100% - 112px);
       overflow: scroll;
+      padding: 0;
     }
 
     .result-window__content__group {

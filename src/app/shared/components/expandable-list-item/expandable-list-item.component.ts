@@ -14,7 +14,6 @@ export class ExpandableListItemComponent {
   @Input() public filterString: string = '';
   @Input() public filteredMapsLength: number = 0;
   @Input() public searchResultsLength: number = 0;
-  @Input() public type: string = '';
   @Input() public disabled: boolean = false;
   @Input() public loadingState: LoadingState = undefined;
   @Input() public numberOfItems: number = 0;
