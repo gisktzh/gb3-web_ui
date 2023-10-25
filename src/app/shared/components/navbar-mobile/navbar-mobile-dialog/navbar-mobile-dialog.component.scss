@@ -25,9 +25,10 @@
     padding: 16px 6px 0;
 
     .navbar-mobile__dialog__header__title {
-      margin-bottom: 0;
+      @include material-mixins.mat-icon-custom-svg-size(18px);
+      background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
+      color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
       font-size: 18px;
-      padding-right: 10px;
     }
   }
 
