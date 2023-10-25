@@ -7,11 +7,18 @@
   &.mat-expansion-panel {
     @include mixins.no-box-shadow;
   }
+  &.mat-expansion-panel-spacing {
+    margin: 0;
+  }
   @include mat-mixins.mat-expansion-panel-remove-content-indent;
 }
 
 .expandable-list-item {
   padding: 6px 0;
+
+  &--search {
+    padding: 12px 12px 0 12px;
+  }
 
   .expandable-list-item__header {
     height: auto;

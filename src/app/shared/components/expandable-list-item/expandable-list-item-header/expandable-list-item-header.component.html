@@ -5,7 +5,8 @@
   <span
     class="expandable-list-item-header__badge"
     [matBadge]="numberOfItems"
-    *ngIf="this.filterString && this.loadingState !== 'loading'"
+    *ngIf="(filterString && loadingState !== 'loading') || hasResults"
+    [ngClass]="{'result-group__header__inner__badge--hidden': numberOfItems === 0}"
   ></span>
   <p class="expandable-list-item-header__title" [title]="title">
     {{ title }}

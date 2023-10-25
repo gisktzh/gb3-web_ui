@@ -8,10 +8,6 @@
 }
 
 .result-group {
-  @include mixins.no-box-shadow;
-  margin: 0;
-  padding: 12px 12px 0 12px;
-
   .result-group__header {
     padding: 0;
     margin-bottom: 12px;

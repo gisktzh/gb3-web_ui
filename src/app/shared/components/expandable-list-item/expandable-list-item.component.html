@@ -1,10 +1,17 @@
-<mat-expansion-panel #topicExpansionPanel [expanded]="expanded" class="expandable-list-item" hideToggle="true">
+<mat-expansion-panel
+  #topicExpansionPanel
+  [expanded]="expanded"
+  class="expandable-list-item"
+  [ngClass]="'expandable-list-item--' + type"
+  hideToggle="true"
+>
   <!-- 'Topic' header -->
   <mat-expansion-panel-header class="expandable-list-item__header">
     <expandable-list-item-header
       [filterString]="filterString"
-      [isExpanded]="topicExpansionPanel.expanded"
-      [numberOfItems]="topic.maps.length"
+      [hasResults]="filteredMaps.length > 0 || searchResults.length > 0"
+      [isExpanded]="expanded"
+      [numberOfItems]="topic.maps.length || filteredMaps.length || searchResults.length"
       [title]="header"
       class="expandable-list-item__header__item"
     ></expandable-list-item-header>
