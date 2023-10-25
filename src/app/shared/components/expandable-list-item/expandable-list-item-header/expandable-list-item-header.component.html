@@ -1,0 +1,15 @@
+<div
+  class="expandable-list-item-header"
+  [attr.data-test-id]="isExpanded ? 'hide-catalogue-items-of-the-map' : 'show-catalogue-items-of-the-map'"
+>
+  <span
+    class="expandable-list-item-header__badge"
+    [matBadge]="numberOfItems"
+    *ngIf="this.filterString && this.loadingState !== 'loading'"
+  ></span>
+  <p class="expandable-list-item-header__title" [title]="title">
+    {{ title }}
+  </p>
+  <mat-icon class="expandable-list-item-header__expand-icon" [fontIcon]="isExpanded ? 'arrow_drop_up' : 'arrow_drop_down'"></mat-icon>
+  <loading-and-process-bar [loadingState]="this.loadingState" class="expandable-list-item-header__loader"></loading-and-process-bar>
+</div>

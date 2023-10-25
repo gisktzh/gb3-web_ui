@@ -65,42 +65,30 @@
 
       <!-- Topics -->
       <ng-container *ngFor="let topic of topics; trackBy: trackByTopicTitle">
-        <mat-expansion-panel
-          #topicExpansionPanel
+        <expandable-list-item
+          [topic]="topic"
+          [header]="topic.title"
+          [filterString]="filterString"
           [expanded]="!!filterString && topic.maps.length <= autoOpenThreshold"
-          class="map-data-catalogue__content__items__item"
-          hideToggle="true"
         >
-          <!-- 'Topic' header -->
-          <mat-expansion-panel-header class="map-data-catalogue__content__items__item__header">
-            <map-data-item-header
-              [filterString]="filterString"
-              [isExpanded]="topicExpansionPanel.expanded"
-              [numberOfItems]="topic.maps.length"
-              [title]="topic.title"
-              class="map-data-catalogue__content__items__item__header__item"
-            ></map-data-item-header>
-          </mat-expansion-panel-header>
-
           <!-- 'Topic' content -->
-          <ng-template matExpansionPanelContent>
-            <div class="map-data-catalogue__content__items__item__content">
-              <ng-container *ngFor="let map of topic.maps; trackBy: trackByMapId; let isLastMap = last">
-                <map-data-item-map
-                  (addEvent)="addActiveMap(map)"
-                  (addLayerEvent)="addActiveLayer(map, $event)"
-                  [filterString]="filterString"
-                  [imageUrl]="map.icon"
-                  [layers]="map.layers"
-                  [title]="map.title"
-                  [gb2Url]="map.gb2Url"
-                  class="map-data-catalogue__content__items__item__content__item"
-                ></map-data-item-map>
-                <mat-divider *ngIf="!isLastMap"></mat-divider>
-              </ng-container>
-            </div>
-          </ng-template>
-        </mat-expansion-panel>
+
+          <div class="map-data-catalogue__content__items__item__content">
+            <ng-container *ngFor="let map of topic.maps; trackBy: trackByMapId; let isLastMap = last">
+              <map-data-item-map
+                (addEvent)="addActiveMap(map)"
+                (addLayerEvent)="addActiveLayer(map, $event)"
+                [filterString]="filterString"
+                [imageUrl]="map.icon"
+                [layers]="map.layers"
+                [title]="map.title"
+                [gb2Url]="map.gb2Url"
+                class="map-data-catalogue__content__items__item__content__item"
+              ></map-data-item-map>
+              <mat-divider *ngIf="!isLastMap"></mat-divider>
+            </ng-container>
+          </div>
+        </expandable-list-item>
       </ng-container>
     </mat-accordion>
 
