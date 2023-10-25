@@ -6,7 +6,7 @@ import {ResizeHandlerLocation} from 'src/app/shared/types/resize-handler-locatio
 import {StyleExpression} from 'src/app/shared/types/style-expression.type';
 import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
 import {selectIsFiltering} from 'src/app/state/map/reducers/layer-catalog.reducer';
-import {selectTitle} from 'src/app/state/map/reducers/map-attribute-filters-item.reducer';
+import {selectMapAttributeFiltersItem} from 'src/app/state/map/selectors/map-attribute-filters-item.selector';
 
 @Component({
   selector: 'bottom-sheet-item',
@@ -19,10 +19,10 @@ export class BottomSheetItemComponent implements OnInit, OnDestroy {
   @Input() public bottomSheetHeight: BottomSheetHeight = 'small';
   @Input() public showHeader: boolean = true;
   public isFiltering: boolean = false;
-  public mapAttributeFiltersItemTitle: string = '';
+  public mapAttributeFiltersItemTitle: string | undefined;
 
   private readonly isFiltering$ = this.store.select(selectIsFiltering);
-  private readonly mapAttributeFiltersItemTitle$ = this.store.select(selectTitle);
+  private readonly mapAttributeFiltersItem$ = this.store.select(selectMapAttributeFiltersItem);
   private readonly subscriptions: Subscription = new Subscription();
 
   protected resizeableStyle: StyleExpression = {};
@@ -49,8 +49,8 @@ export class BottomSheetItemComponent implements OnInit, OnDestroy {
 
   private initSubscriptions() {
     this.subscriptions.add(
-      this.mapAttributeFiltersItemTitle$
-        .pipe(tap((mapAttributeFiltersItemTitle) => (this.mapAttributeFiltersItemTitle = mapAttributeFiltersItemTitle)))
+      this.mapAttributeFiltersItem$
+        .pipe(tap((mapAttributeFiltersItem) => (this.mapAttributeFiltersItemTitle = mapAttributeFiltersItem?.title)))
         .subscribe(),
     );
     this.subscriptions.add(this.isFiltering$.pipe(tap((isFiltering) => (this.isFiltering = isFiltering))).subscribe());

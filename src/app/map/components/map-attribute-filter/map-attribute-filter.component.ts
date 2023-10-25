@@ -59,8 +59,6 @@ export class MapAttributeFilterComponent implements OnInit, OnDestroy {
       if (mapAttributeFiltersItem === undefined) {
         // the map attribute filters item ID is still set but the corresponding item is not active anymore => close this component
         this.close();
-      } else {
-        this.store.dispatch(MapAttributeFiltersItemActions.setMapAttributeFiltersItemTitle({title: mapAttributeFiltersItem.title}));
       }
     }
     this.mapAttributeFiltersItem = mapAttributeFiltersItem;

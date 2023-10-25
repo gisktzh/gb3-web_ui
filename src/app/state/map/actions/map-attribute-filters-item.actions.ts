@@ -5,6 +5,5 @@ export const MapAttributeFiltersItemActions = createActionGroup({
   events: {
     'Set Map Attribute Filters Item Id': props<{id: string}>(),
     'Clear Map Attribute Filters Item Id': emptyProps(),
-    'Set Map Attribute Filters Item Title': props<{title: string}>(),
   },
 });
