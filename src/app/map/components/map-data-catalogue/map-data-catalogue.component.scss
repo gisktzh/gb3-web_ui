@@ -94,26 +94,11 @@
         display: none;
       }
 
-      .map-data-catalogue__content__items__item {
-        @include mixins.no-box-shadow;
-        padding: 6px 0;
+      .map-data-catalogue__content__items__item__content {
+        padding-top: 6px;
 
-        .map-data-catalogue__content__items__item__header {
-          height: auto;
-          padding: 0;
-
-          .map-data-catalogue__content__items__item__header__item {
-            height: 36px;
-            width: 100%;
-          }
-        }
-
-        .map-data-catalogue__content__items__item__content {
-          padding-top: 6px;
-
-          .map-data-catalogue__content__items__item__content__item {
-            width: 100%;
-          }
+        .map-data-catalogue__content__items__item__content__item {
+          width: 100%;
         }
       }
     }

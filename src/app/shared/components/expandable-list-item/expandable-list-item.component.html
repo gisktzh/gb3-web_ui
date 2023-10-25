@@ -3,16 +3,18 @@
   [expanded]="expanded"
   class="expandable-list-item"
   [ngClass]="'expandable-list-item--' + type"
+  [disabled]="disabled"
   hideToggle="true"
 >
   <!-- 'Topic' header -->
   <mat-expansion-panel-header class="expandable-list-item__header">
     <expandable-list-item-header
       [filterString]="filterString"
-      [hasResults]="filteredMaps.length > 0 || searchResults.length > 0"
+      [hasResults]="filteredMapsLength > 0 || searchResultsLength > 0"
       [isExpanded]="expanded"
-      [numberOfItems]="topic.maps.length || filteredMaps.length || searchResults.length"
+      [numberOfItems]="topic.maps.length || filteredMapsLength || searchResultsLength || numberOfItems"
       [title]="header"
+      [loadingState]="loadingState"
       class="expandable-list-item__header__item"
     ></expandable-list-item-header>
   </mat-expansion-panel-header>

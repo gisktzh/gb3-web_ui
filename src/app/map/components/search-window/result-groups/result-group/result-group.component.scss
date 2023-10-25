@@ -8,44 +8,6 @@
 }
 
 .result-group {
-  .result-group__header {
-    padding: 0;
-    margin-bottom: 12px;
-    height: 36px;
-
-    .result-group__header__inner {
-      width: 100%;
-      height: 36px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: ktzh-variables.$zh-light-grey;
-
-      .result-group__header__inner__badge {
-        height: 24px;
-        width: 24px;
-        margin-left: 12px;
-        @include mat-mixins.mat-badge-inherit-size;
-        @include mat-mixins.mat-badge-override-color(
-          functions.get-color-from-palette(ktzh-variables.$zh-primary),
-          functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary)
-        );
-
-        &--hidden {
-          // `display: none` would not work as the element needs to be present
-          visibility: hidden;
-        }
-      }
-
-      .result-group__header__inner__text {
-        font-size: 16px;
-        padding: 0 12px;
-        margin: 0;
-        flex: 1;
-      }
-    }
-  }
-
   .result-group__container {
     overflow-y: auto;
     max-height: 20vh;

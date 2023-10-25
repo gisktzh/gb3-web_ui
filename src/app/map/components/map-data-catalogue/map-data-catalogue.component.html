@@ -28,26 +28,14 @@
     >
       <!-- Favourites -->
       <ng-container *ngIf="isAuthenticated">
-        <mat-expansion-panel
-          #favouriteExpansionPanel
+        <expandable-list-item
           *ngIf="!(!!filterString && filteredFavourites.length === 0)"
-          [expanded]="!!filterString && filteredFavourites.length <= autoOpenThreshold"
-          class="map-data-catalogue__content__items__item"
-          hideToggle="true"
+          [header]="'Favoriten'"
+          [filterString]="filterString"
+          [loadingState]="favouritesLoadingState"
+          [numberOfItems]="filteredFavourites.length"
           [disabled]="favouritesLoadingState === 'loading' || favouritesLoadingState === 'error'"
         >
-          <!-- 'Favourite' header -->
-          <mat-expansion-panel-header class="map-data-catalogue__content__items__item__header">
-            <map-data-item-header
-              [filterString]="filterString"
-              [isExpanded]="favouriteExpansionPanel.expanded"
-              [loadingState]="favouritesLoadingState"
-              [numberOfItems]="filteredFavourites.length"
-              [title]="'Favoriten'"
-              class="map-data-catalogue__content__items__item__header__item"
-            ></map-data-item-header>
-          </mat-expansion-panel-header>
-
           <!-- 'Favourite' content -->
           <p *ngIf="filteredFavourites.length === 0"><em>Noch keine Favoriten hinzugefügt.</em></p>
           <ng-container *ngFor="let favourite of filteredFavourites">
@@ -60,7 +48,7 @@
               [title]="favourite.title"
             ></map-data-item-favourite>
           </ng-container>
-        </mat-expansion-panel>
+        </expandable-list-item>
       </ng-container>
 
       <!-- Topics -->
@@ -70,6 +58,7 @@
           [header]="topic.title"
           [filterString]="filterString"
           [expanded]="!!filterString && topic.maps.length <= autoOpenThreshold"
+          [loadingState]="catalogueLoadingState"
         >
           <!-- 'Topic' content -->
 

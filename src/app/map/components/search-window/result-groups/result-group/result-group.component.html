@@ -2,8 +2,8 @@
   [expanded]="screenMode !== 'mobile'"
   [header]="header"
   class="result-group"
-  [filteredMaps]="filteredMaps"
-  [searchResults]="searchResults"
+  [filteredMapsLength]="filteredMaps.length"
+  [searchResultsLength]="searchResults.length"
   [type]="'search'"
 >
   <div class="result-group__container" [ngClass]="{'result-group__container--mobile': screenMode === 'mobile'}">
