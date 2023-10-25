@@ -4,7 +4,10 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
 .search {
-  height: 64px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   padding: 17px;
   box-sizing: border-box;
 
@@ -31,11 +34,13 @@
     }
 
     .search__bar__input {
+      @include mixins.multiline-ellipsis(1);
       border: none;
       outline: none;
       flex-grow: 1;
 
-      &:focus-within {
+      &--mobile:focus-within {
+        // This is necessary because mobile screens will zoom in for fonts that are <16px
         font-size: 16px;
       }
     }

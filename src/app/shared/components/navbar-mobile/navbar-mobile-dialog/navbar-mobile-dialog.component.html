@@ -20,7 +20,7 @@
     </button>
   </mat-card-header>
   <mat-card-content class="navbar-mobile__dialog__content">
-    <ng-content></ng-content>
+    <hr />
     <a
       [queryParams]="{}"
       [routerLinkActiveOptions]="{exact: true}"
@@ -44,8 +44,8 @@
       >Hilfe & Support</a
     >
     <hr />
-    <a class="navbar__item" href="https://geodatenshop.zh.ch" mat-button target="_blank" rel="noopener noreferrer" (click)="close()"
-      >Geodatenshop</a
+    <a class="navbar__item" href="https://geodatenshop.zh.ch" mat-button target="_blank" rel="noopener noreferrer" (click)="close()">
+      <mat-icon>launch</mat-icon>Geodatenshop</a
     >
     <hr />
   </mat-card-content>
