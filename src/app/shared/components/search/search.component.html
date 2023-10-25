@@ -1,4 +1,4 @@
-<div class="search" [ngClass]="{'search--compact': mode === 'compact'}">
+<div class="search" [ngClass]="'search--' + mode">
   <div class="search__bar">
     <mat-icon class="search__bar__icon" svgIcon="ktzh_search"></mat-icon>
     <input
@@ -9,7 +9,7 @@
       type="text"
       (focus)="focus.emit()"
     />
-    <ng-container *ngIf="showFilterButton && mode === 'compact'">
+    <ng-container *ngIf="showFilterButton && (mode === 'compact' || mode === 'mobile')">
       <button
         mat-icon-button
         (click)="openFilter()"

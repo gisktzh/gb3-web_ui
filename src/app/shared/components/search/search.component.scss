@@ -15,6 +15,10 @@
     padding: 6px;
   }
 
+  &--mobile {
+    padding: 0;
+  }
+
   .search__bar {
     display: flex;
     align-items: center;

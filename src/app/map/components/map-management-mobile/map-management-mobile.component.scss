@@ -35,7 +35,7 @@
     border-style: solid;
     border-color: functions.get-color-from-palette(ktzh-variables.$zh-primary, 900);
     border-radius: ktzh-variables.$zh-border-radius;
-    margin: 0 16px;
+    margin: 0 9px;
 
     .map-management-mobile-header__buttons__button {
       width: 100%;
@@ -88,7 +88,7 @@
     .map-management-mobile-header__tools__filter {
       @include mixins.map-element-box-shadow;
       display: flex;
-      width: 90vw;
+      width: calc(100vw - 24px);
 
       &--hidden {
         display: none;
