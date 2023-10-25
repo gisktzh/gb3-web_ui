@@ -2,14 +2,12 @@ import {Injectable} from '@angular/core';
 import {BaseApiService} from '../../abstract-api.service';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {Products} from '../../../../interfaces/geoshop-product.interface';
 import {
   Coordsys as ApiCoordsys,
   LayerName as ApiLayerName,
   Order as ApiOrder,
   OrderResponse as ApiOrderResponse,
   OrderStatus as ApiOrderStatus,
-  Products as ApiProducts,
 } from '../../../../models/geoshop-api-generated.interface';
 import {DirectOrder, IndirectOrder, Order, OrderResponse} from '../../../../interfaces/geoshop-order.interface';
 import {OrderStatus, OrderStatusContent, orderStatusKeys, OrderStatusType} from '../../../../interfaces/geoshop-order-status.interface';
@@ -25,11 +23,6 @@ import {Polygon} from 'geojson';
 })
 export class GeoshopApiService extends BaseApiService {
   protected apiBaseUrl = this.configService.apiConfig.geoshopApi.baseUrl;
-
-  public loadProducts(): Observable<Products> {
-    const productsData = this.get<ApiProducts>(this.getFullEndpointUrl('products'));
-    return productsData.pipe(map((data) => this.mapApiProductsToProducts(data)));
-  }
 
   public sendOrder(order: Order): Observable<OrderResponse> {
     const orderData = this.mapOrderToApiOrder(order);
@@ -81,27 +74,6 @@ export class GeoshopApiService extends BaseApiService {
 
   private getFullOrderUrl(endpoint: string, orderId: string): string {
     return `${this.getFullEndpointUrl(endpoint)}/${orderId}`;
-  }
-
-  private mapApiProductsToProducts(data: ApiProducts): Products {
-    return {
-      timestampDateString: data.timestamp,
-      products: data.products.map((product) => ({
-        id: product.id,
-        name: product.name,
-        type: product.type,
-        description: product.description,
-        formats: product.formats,
-      })),
-      formats: data.formats.map((format) => ({
-        id: format.id,
-        name: format.name,
-      })),
-      municipalities: data.communes.map((commune) => ({
-        id: commune.id,
-        name: commune.name,
-      })),
-    };
   }
 
   private mapOrderToApiOrder(order: Order): ApiOrder {

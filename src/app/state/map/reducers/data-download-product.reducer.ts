@@ -14,10 +14,6 @@ export const dataDownloadProductFeature = createFeature({
   reducer: createReducer(
     initialState,
     on(DataDownloadProductActions.loadProducts, (state): DataDownloadProductState => {
-      // If we already have products, we do not load them again
-      if (state.products) {
-        return state;
-      }
       return {...initialState, loadingState: 'loading'};
     }),
     on(DataDownloadProductActions.setProducts, (state, {products}): DataDownloadProductState => {

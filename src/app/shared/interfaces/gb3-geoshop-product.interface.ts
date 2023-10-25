@@ -36,10 +36,12 @@ export interface Product {
   /** Product URL for non-OGD products */
   nonOgdProductUrl: string | null;
   /** Available Product formats */
-  formats: {
-    /** Format ID */
-    id: number;
-    /** Format description */
-    description: string;
-  }[];
+  formats: ProductFormat[];
+}
+
+export interface ProductFormat {
+  /** Format ID */
+  id: number;
+  /** Format description */
+  description: string;
 }

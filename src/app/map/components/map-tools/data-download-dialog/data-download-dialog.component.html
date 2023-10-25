@@ -1,7 +1,7 @@
 <div class="data-download-dialog">
   <div class="data-download-dialog__header">
     <h1 class="data-download-dialog__header__title">Datenbezug</h1>
-    <button mat-icon-button (click)="close()" [disabled]="savingState === 'loading'">
+    <button mat-icon-button (click)="cancel()" [disabled]="savingState === 'loading'">
       <mat-icon>close</mat-icon>
     </button>
   </div>
@@ -10,7 +10,7 @@
     <loading-and-process-bar [loadingState]="savingState"></loading-and-process-bar>
   </div>
   <div class="data-download-dialog__footer">
-    <button class="data-download-dialog__footer__button" (click)="close()" [disabled]="savingState === 'loading'" mat-button>
+    <button class="data-download-dialog__footer__button" (click)="cancel()" [disabled]="savingState === 'loading'" mat-button>
       Abbrechen
     </button>
     <button

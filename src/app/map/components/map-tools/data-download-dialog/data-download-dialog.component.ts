@@ -31,7 +31,7 @@ export class DataDownloadDialogComponent implements OnInit, OnDestroy {
 
   public download() {}
 
-  public close() {
+  public cancel() {
     this.store.dispatch(MapUiActions.hideMapSideDrawerContent());
   }
 
