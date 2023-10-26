@@ -4,7 +4,6 @@ import {GeneralInfoListData} from '../../../models/gb3-api-generated.interfaces'
 import {Observable} from 'rxjs';
 import {GeneralInfoResponse} from '../../../interfaces/general-info.interface';
 import {map} from 'rxjs/operators';
-import {ExternalUrlConstants} from '../../../constants/external-url.constants';
 
 @Injectable({
   providedIn: 'root',
@@ -52,7 +51,7 @@ export class Gb3GeneralInfoService extends Gb3ApiService {
   }
 
   private createOwnershipInformationUrl(egrid: string, bfsNr: number): string {
-    const url = new URL(ExternalUrlConstants.OWNERSHIP_INFORMATION_BASE_URL);
+    const url = new URL(this.configService.apiConfig.ownershipInformationApi.baseUrl);
     url.searchParams.append('egrid', egrid);
     url.searchParams.append('bfsNr', bfsNr.toString());
 

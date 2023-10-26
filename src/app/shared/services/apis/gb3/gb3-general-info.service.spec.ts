@@ -8,7 +8,6 @@ import {ConfigService} from '../../config.service';
 import {Gb3GeneralInfoService} from './gb3-general-info.service';
 import {GeneralInfoResponse} from '../../../interfaces/general-info.interface';
 import {GeneralInfoListData} from '../../../models/gb3-api-generated.interfaces';
-import {ExternalUrlConstants} from '../../../constants/external-url.constants';
 
 const mockResponse: GeneralInfoListData = {
   general_info: {
@@ -78,7 +77,7 @@ describe('Gb3GeneralInfoService', () => {
       parcel: {
         bfsnr: mockResponse.general_info.parcel!.bfsnr,
         ownershipInformation: {
-          url: `${ExternalUrlConstants.OWNERSHIP_INFORMATION_BASE_URL}?egrid=${mockResponse.general_info.parcel!.egris_egrid}&bfsNr=${
+          url: `${configService.apiConfig.ownershipInformationApi.baseUrl}?egrid=${mockResponse.general_info.parcel!.egris_egrid}&bfsNr=${
             mockResponse.general_info.parcel!.bfsnr
           }`,
         },
