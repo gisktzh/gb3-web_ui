@@ -23,7 +23,7 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
         baseUrl: 'https://testgeolion.kt.ktzh.ch',
       },
       searchApi: {
-        baseUrl: 'https://staging.geo.ktzh.ch/geosearch',
+        baseUrl: 'https://testmaps.kt.ktzh.ch/v3',
       },
       ktzhWebsite: {
         baseUrl: 'https://www.zh.ch',
