@@ -1,4 +1,4 @@
-import {PRIMARY_OUTLET, UrlSegment, UrlSegmentGroup, UrlTree} from '@angular/router';
+import {Params, PRIMARY_OUTLET, UrlSegment, UrlSegmentGroup, UrlTree} from '@angular/router';
 import {MainPage} from '../enums/main-page.enum';
 
 export class UrlUtils {
@@ -62,6 +62,16 @@ export class UrlUtils {
   public static containsSegmentPaths(mainSegmentPaths: string[], otherSegmentPaths: string[]): boolean {
     return (
       mainSegmentPaths.length <= otherSegmentPaths.length && mainSegmentPaths.every((path, index) => path === otherSegmentPaths[index])
+    );
+  }
+
+  /**
+   * Returns a value indicating whether the two parameter values are equal; this works only for primitives types
+   */
+  public static areParamsEqual(firstParams: Params, secondParams: Params): boolean {
+    return (
+      Object.keys(firstParams).length === Object.keys(secondParams).length &&
+      Object.keys(firstParams).every((key) => firstParams[key] === secondParams[key])
     );
   }
 }
