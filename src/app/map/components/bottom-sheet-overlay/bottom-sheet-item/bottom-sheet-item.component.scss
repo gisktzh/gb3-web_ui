@@ -10,7 +10,7 @@
   z-index: z-index-variables.$map-overlay;
 
   &--small {
-    height: 200px;
+    height: 220px;
   }
 
   &--medium {
@@ -55,10 +55,6 @@
         width: 100%;
         margin: 16px 0;
       }
-    }
-
-    .bottom-sheet-item__header__content {
-      width: 100%;
     }
   }
 

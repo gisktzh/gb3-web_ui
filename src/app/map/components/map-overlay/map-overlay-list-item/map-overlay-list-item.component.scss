@@ -5,6 +5,12 @@
 :host ::ng-deep .list-item {
   &.mat-expansion-panel {
     @include mixins.no-box-shadow;
+
+    @media (hover: none) {
+      .mat-expansion-panel-header:not([aria-disabled='true']):hover {
+        background-color: ktzh-variables.$zh-light-grey;
+      }
+    }
   }
 
   &--no-content-indent {
