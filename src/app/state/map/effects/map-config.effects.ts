@@ -1,13 +1,17 @@
 import {Inject, Injectable} from '@angular/core';
-import {Actions, createEffect, ofType} from '@ngrx/effects';
+import {Actions, concatLatestFrom, createEffect, ofType} from '@ngrx/effects';
 import {tap} from 'rxjs';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {MapService} from '../../../map/interfaces/map.service';
 import {MAP_SERVICE} from '../../../app.module';
+import {selectMapConfigParams} from '../selectors/map-config-params.selector';
+import {map} from 'rxjs/operators';
+import {UrlActions} from '../../app/actions/url.actions';
+import {Store} from '@ngrx/store';
 
 @Injectable()
 export class MapConfigEffects {
-  public dispatchManualScaleSetting$ = createEffect(
+  public setScaleOnMap$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(MapConfigActions.setScale),
@@ -17,7 +21,7 @@ export class MapConfigEffects {
     {dispatch: false},
   );
 
-  public dispatchResetScale$ = createEffect(
+  public resetExtentOnMap$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(MapConfigActions.resetExtent),
@@ -29,7 +33,7 @@ export class MapConfigEffects {
     {dispatch: false},
   );
 
-  public dispatchZoomChange$ = createEffect(
+  public changeZoomOnMap$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(MapConfigActions.changeZoom),
@@ -41,7 +45,7 @@ export class MapConfigEffects {
     {dispatch: false},
   );
 
-  public dispatchMapCenterChange$ = createEffect(
+  public setCenterOnMap$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(MapConfigActions.setMapCenter),
@@ -53,8 +57,17 @@ export class MapConfigEffects {
     {dispatch: false},
   );
 
+  public updateMapPageQueryParams$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapConfigActions.setMapCenter, MapConfigActions.setScale, MapConfigActions.setBasemap, MapConfigActions.setMapExtent),
+      concatLatestFrom(() => this.store.select(selectMapConfigParams)),
+      map(([_, params]) => UrlActions.setMapPageParams({params})),
+    );
+  });
+
   constructor(
     private readonly actions$: Actions,
     @Inject(MAP_SERVICE) private readonly mapService: MapService,
+    private readonly store: Store,
   ) {}
 }

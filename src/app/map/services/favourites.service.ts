@@ -1,9 +1,9 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Gb3FavouritesService} from '../../shared/services/apis/gb3/gb3-favourites.service';
-import {Observable, Subscription, tap} from 'rxjs';
+import {Observable, Subscription, switchMap, tap, withLatestFrom} from 'rxjs';
 import {ActiveMapItem} from '../models/active-map-item.model';
-import {Favourite, FavouriteBaseConfig, FavouritesResponse} from '../../shared/interfaces/favourite.interface';
+import {Favourite, FavouritesResponse} from '../../shared/interfaces/favourite.interface';
 import {Map} from '../../shared/interfaces/topic.interface';
 import {produce} from 'immer';
 import {ActiveMapItemFactory} from '../../shared/factories/active-map-item.factory';
@@ -14,18 +14,25 @@ import {FavoritesDetailData} from '../../shared/models/gb3-api-generated.interfa
 import {selectMaps} from '../../state/map/selectors/maps.selector';
 import {selectFavouriteBaseConfig} from '../../state/map/selectors/favourite-base-config.selector';
 import {FavouriteIsInvalid} from '../../shared/errors/favourite.errors';
+import {selectUserDrawingsVectorLayers} from '../../state/map/selectors/user-drawings-vector-layers.selector';
+import {Gb3VectorLayer} from '../../shared/interfaces/gb3-vector-layer.interface';
+import {UserDrawingLayer} from '../../shared/enums/drawing-layer.enum';
+import {MapConstants} from '../../shared/constants/map.constants';
+import {SymbolizationToGb3ConverterUtils} from '../../shared/utils/symbolization-to-gb3-converter.utils';
+import {DrawingActiveMapItem} from '../models/implementations/drawing.model';
+import {Gb3StyledInternalDrawingRepresentation} from '../../shared/interfaces/internal-drawing-representation.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FavouritesService implements OnDestroy {
   private activeMapItemConfigurations: ActiveMapItemConfiguration[] = [];
+  private availableMaps: Map[] = [];
   private readonly activeMapItemConfigurations$ = this.store.select(selectActiveMapItemConfigurations);
   private readonly availableMaps$ = this.store.select(selectMaps);
-  private availableMaps: Map[] = [];
   private readonly favouriteBaseConfig$ = this.store.select(selectFavouriteBaseConfig);
-  private favouriteBaseConfig!: FavouriteBaseConfig;
   private readonly subscriptions: Subscription = new Subscription();
+  private readonly userDrawingsVectorLayers$ = this.store.select(selectUserDrawingsVectorLayers);
 
   constructor(
     private readonly store: Store,
@@ -35,13 +42,18 @@ export class FavouritesService implements OnDestroy {
   }
 
   public createFavourite(title: string): Observable<FavoritesDetailData> {
-    return this.gb3FavouritesService.createFavourite({
-      title,
-      content: this.activeMapItemConfigurations,
-      baseConfig: this.favouriteBaseConfig,
-      drawings: [],
-      measurements: [],
-    });
+    return this.userDrawingsVectorLayers$.pipe(
+      withLatestFrom(this.favouriteBaseConfig$),
+      switchMap(([{measurements, drawings}, baseConfig]) => {
+        return this.gb3FavouritesService.createFavourite({
+          title,
+          content: this.activeMapItemConfigurations,
+          baseConfig,
+          measurements,
+          drawings,
+        });
+      }),
+    );
   }
 
   public ngOnDestroy() {
@@ -108,6 +120,44 @@ export class FavouritesService implements OnDestroy {
     return this.gb3FavouritesService.deleteFavourite(favourite);
   }
 
+  /**
+   * Gets the drawing layer configuration for a given favourite by extracting the required ActiveMapItems as well as all the geometries
+   * to add.
+   * @param drawings
+   * @param measurements
+   */
+  public getDrawingsForFavourite(
+    drawings: Gb3VectorLayer,
+    measurements: Gb3VectorLayer,
+  ): {
+    drawingsToAdd: Gb3StyledInternalDrawingRepresentation[];
+    drawingActiveMapItems: DrawingActiveMapItem[];
+  } {
+    const drawingActiveMapItems: DrawingActiveMapItem[] = [];
+    const drawingsToAdd: Gb3StyledInternalDrawingRepresentation[] = [];
+
+    if (measurements.geojson.features.length > 0) {
+      drawingActiveMapItems.push(
+        ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Measurements, MapConstants.USER_DRAWING_LAYER_PREFIX),
+      );
+      drawingsToAdd.push(
+        ...SymbolizationToGb3ConverterUtils.convertExternalToInternalRepresentation(measurements, UserDrawingLayer.Measurements),
+      );
+    }
+
+    if (drawings.geojson.features.length > 0) {
+      drawingActiveMapItems.push(
+        ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, MapConstants.USER_DRAWING_LAYER_PREFIX),
+      );
+      drawingsToAdd.push(...SymbolizationToGb3ConverterUtils.convertExternalToInternalRepresentation(drawings, UserDrawingLayer.Drawings));
+    }
+
+    return {
+      drawingActiveMapItems,
+      drawingsToAdd,
+    };
+  }
+
   private initSubscriptions() {
     this.subscriptions.add(this.availableMaps$.pipe(tap((value) => (this.availableMaps = value))).subscribe());
     this.subscriptions.add(
@@ -115,6 +165,7 @@ export class FavouritesService implements OnDestroy {
         .pipe(tap((activeMapItemConfigurations) => (this.activeMapItemConfigurations = activeMapItemConfigurations)))
         .subscribe(),
     );
-    this.subscriptions.add(this.favouriteBaseConfig$.pipe(tap((mapConfig) => (this.favouriteBaseConfig = mapConfig))).subscribe());
+    this.subscriptions.add(this.favouriteBaseConfig$.subscribe());
+    this.subscriptions.add(this.userDrawingsVectorLayers$.subscribe());
   }
 }

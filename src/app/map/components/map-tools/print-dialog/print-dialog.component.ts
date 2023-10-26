@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {LoadingState} from '../../../../shared/types/loading-state.type';
 import {Store} from '@ngrx/store';
-import {BehaviorSubject, combineLatestWith, distinctUntilChanged, filter, Subscription, take, tap} from 'rxjs';
+import {BehaviorSubject, combineLatestWith, distinctUntilChanged, filter, Subscription, tap, withLatestFrom} from 'rxjs';
 import {selectCapabilities, selectCapabilitiesLoadingState, selectCreationLoadingState} from '../../../../state/map/reducers/print.reducer';
 import {PrintCapabilities, PrintCreation, PrintMapItem, ReportOrientation} from '../../../../shared/interfaces/print.interface';
 import {PrintActions} from '../../../../state/map/actions/print.actions';
@@ -15,8 +15,9 @@ import {MapUiActions} from '../../../../state/map/actions/map-ui.actions';
 import {map} from 'rxjs/operators';
 import {ConfigService} from '../../../../shared/services/config.service';
 import {UserDrawingLayer} from '../../../../shared/enums/drawing-layer.enum';
-import {InternalDrawingRepresentation} from '../../../../shared/interfaces/internal-drawing-representation.interface';
+import {Gb3StyledInternalDrawingRepresentation} from '../../../../shared/interfaces/internal-drawing-representation.interface';
 import {selectDrawings} from '../../../../state/map/reducers/drawing.reducer';
+import {SymbolizationToGb3ConverterUtils} from '../../../../shared/utils/symbolization-to-gb3-converter.utils';
 
 interface PrintForm {
   title: FormControl<string | null>;
@@ -58,7 +59,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
 
   private readonly isFormInitialized: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private readonly subscriptions: Subscription = new Subscription();
-  private drawings: InternalDrawingRepresentation[] = [];
+  private drawings: Gb3StyledInternalDrawingRepresentation[] = [];
 
   constructor(
     private readonly store: Store,
@@ -127,9 +128,8 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
       this.store
         .select(selectCapabilities)
         .pipe(
-          combineLatestWith(this.store.select(selectMapConfigState)),
-          filter(([printCapabilities, _]) => printCapabilities !== undefined),
-          take(1),
+          filter((printCapabilities) => printCapabilities !== undefined),
+          withLatestFrom(this.store.select(selectMapConfigState)),
           tap(([printCapabilities, mapConfigState]) => {
             this.printCapabilities = printCapabilities;
             this.initializeDefaultFormValues(printCapabilities, mapConfigState.scale);
@@ -338,38 +338,9 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     return mapItems.reverse();
   }
 
-  //todo: GB3-604/GB3-606 (requires mapping of properties)
   private printDrawingLayer(source: UserDrawingLayer): PrintMapItem {
     const drawingsToDraw = this.drawings.filter((d) => d.source === source);
 
-    return {
-      type: 'Vector',
-      geojson: {
-        type: 'FeatureCollection',
-        features: drawingsToDraw.map((d) => ({
-          type: d.type,
-          geometry: d.geometry,
-          properties: {style: 'DEFAULTSTYLE', labelText: d.labelText ?? ''},
-        })),
-      },
-      styles: {
-        DEFAULTSTYLE: {
-          pointRadius: 3,
-          fillColor: '#ff0000',
-          fillOpacity: 0.4,
-          strokeColor: '#ff0000',
-          strokeWidth: 2,
-          label: '[labelText]',
-          fontSize: '8px',
-          fontColor: '#ff0000',
-          fontFamily: 'Arial,Helvetica,sans-serif',
-          fontWeight: 'normal',
-          labelOutlineColor: '#ffffff',
-          labelOutlineWidth: 2,
-          labelAlign: 'ct',
-          labelYOffset: 15,
-        },
-      },
-    };
+    return SymbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(drawingsToDraw);
   }
 }

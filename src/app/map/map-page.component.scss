@@ -3,10 +3,20 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 @use 'variables/map-layout-variables' as map-layout-variables;
 
+:host ::ng-deep {
+  .map-management__button {
+    @include mixins.tool-button;
+  }
+}
+
 .map-container {
   height: calc(100vh - #{map-layout-variables.$navbar-height}); // subtracts height of navbar
   position: relative;
   $minimal-bottom-height: map-layout-variables.$esri-attribution-widget-height;
+
+  &--mobile {
+    height: 100vh;
+  }
 
   .map-container__map-element--hidden {
     display: none !important;
@@ -89,11 +99,12 @@
 
   .map-container__map-attribute-filter {
     @include mixins.map-element-box-shadow;
+    max-height: 30vh;
+    overflow-y: hidden;
+    z-index: 400;
     position: absolute;
     top: 132px; // starting at the first 'active map item' position
     left: calc(24px + map-layout-variables.$map-overlay-width);
-    max-height: 30vh;
-    overflow-y: hidden;
   }
 
   .map-container__feature-info-overlay {
@@ -103,18 +114,43 @@
     height: 100%;
   }
 
+  .map-container__bottom-sheet-overlay {
+    pointer-events: none;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+  }
+
   .map-container__search-window {
     position: absolute;
     top: 12px;
     right: 12px;
     bottom: 85px;
     pointer-events: none;
+
+    &--mobile {
+      bottom: 12px + $minimal-bottom-height;
+      top: auto;
+      left: 12px;
+    }
   }
 
   .map-container__map-tools {
     position: absolute;
     top: 120px;
     right: 12px;
+
+    &--mobile {
+      top: 12px;
+    }
+  }
+
+  .map-container__all-map-items-container--mobile {
+    position: absolute;
+    bottom: 100px;
+    right: 12px;
+    background-color: ktzh-variables.$zh-background-color;
   }
 }
 

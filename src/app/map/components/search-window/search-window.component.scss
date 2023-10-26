@@ -11,6 +11,7 @@
     width: map-layout-variables.$search-window-width;
     background-color: ktzh-variables.$zh-background-color;
     pointer-events: all;
+    overflow: hidden;
   }
 
   @media (max-width: calc(map-layout-variables.$map-overlay-width + map-layout-variables.$element-margin + map-layout-variables.$legend-button-width + map-layout-variables.$element-margin + map-layout-variables.$search-window-width)) {
@@ -23,9 +24,12 @@
           )
       );
     }
+    .search-window__searchbar-mobile {
+      width: auto;
+    }
   }
 
-  .search-window__results_container {
+  .search-window__results-container {
     position: absolute;
     top: 64px;
     bottom: 0;
@@ -34,7 +38,7 @@
   }
 
   @media (max-width: calc(map-layout-variables.$map-overlay-width + map-layout-variables.$element-margin + map-layout-variables.$legend-button-width + map-layout-variables.$element-margin + map-layout-variables.$search-window-width)) {
-    .search-window__results_container {
+    .search-window__results-container {
       width: calc(
         100vw -
           (
@@ -43,5 +47,13 @@
           ) - (map-layout-variables.$search-window-width - map-layout-variables.$search-results-width)
       );
     }
+  }
+
+  .search-window__results-mobile {
+    @include mixins.map-element-box-shadow;
+    background-color: ktzh-variables.$zh-background-color;
+    pointer-events: all;
+    max-height: 60vh;
+    overflow-y: scroll;
   }
 }

@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {EsriColor, EsriPictureMarkerSymbol, EsriSimpleFillSymbol, EsriSimpleLineSymbol, EsriSimpleMarkerSymbol} from './esri.module';
 import {ConfigService} from '../../../shared/services/config.service';
-import {DrawingLayer, InternalDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
+import {DrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {GeometryWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {LayerSymbolizations, SymbolizationColor} from '../../../shared/interfaces/symbolization.interface';
 import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
@@ -22,7 +22,7 @@ export class EsriSymbolizationService {
 
   constructor(private readonly configService: ConfigService) {}
 
-  public createSymbolizationForDrawingLayer(geometry: GeometryWithSrs, drawingLayer: InternalDrawingLayer): __esri.Symbol {
+  public createSymbolizationForDrawingLayer(geometry: GeometryWithSrs, drawingLayer: DrawingLayer): __esri.Symbol {
     switch (geometry.type) {
       case 'Point':
       case 'MultiPoint':

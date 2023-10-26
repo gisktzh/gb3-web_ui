@@ -23,7 +23,7 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
         baseUrl: 'https://www.geolion.zh.ch',
       },
       searchApi: {
-        baseUrl: 'https://geo.zh.ch/geosearch',
+        baseUrl: 'http://localhost:4200/v3',
       },
       ktzhWebsite: {
         baseUrl: 'https://www.zh.ch',
@@ -35,6 +35,9 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       },
       twitterWidget: {
         baseUrl: 'https://platform.twitter.com/widgets.js',
+      },
+      geoshopApi: {
+        baseUrl: 'https://geoservices.zh.ch/geoshopapi/v1',
       },
     },
     authSettings: {

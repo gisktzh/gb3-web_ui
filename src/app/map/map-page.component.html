@@ -1,4 +1,4 @@
-<mat-drawer-container class="map-container">
+<mat-drawer-container class="map-container" [ngClass]="{'map-container--mobile': screenMode === 'mobile'}">
   <mat-drawer
     mode="side"
     position="end"
@@ -12,13 +12,13 @@
 
   <map-container></map-container>
 
-  <map-controls class="map-container__map-controls"></map-controls>
+  <map-controls class="map-container__map-controls" *ngIf="screenMode !== 'mobile'"></map-controls>
   <legend-overlay
     class="map-container__legend-overlay"
     [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
     (printLegendEvent)="showPrint('legend')"
   ></legend-overlay>
-  <div class="map-container__all-map-items-container">
+  <div class="map-container__all-map-items-container" *ngIf="screenMode !== 'mobile'">
     <div class="map-container__all-map-items-container__inner-container">
       <active-map-items
         class="map-container__all-map-items-container__inner-container__active-map-items"
@@ -41,8 +41,9 @@
     </div>
   </div>
   <button
+    *ngIf="screenMode !== 'mobile'"
     mat-flat-button
-    (click)="toggleLegend()"
+    (click)="showLegend()"
     [disabled]="numberOfQueryLegends === 0"
     class="map-container__legend-button"
     [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
@@ -55,15 +56,38 @@
     [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
   ></map-attribute-filter>
   <feature-info-overlay
+    *ngIf="screenMode !== 'mobile'"
     class="map-container__feature-info-overlay"
     [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
     (printFeatureInfoEvent)="showPrint('featureInfo')"
   ></feature-info-overlay>
   <search-window
     class="map-container__search-window"
-    [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
+    [ngClass]="{
+      'map-container__map-element--hidden': mapUiState?.hideUiElements,
+      'map-container__search-window--mobile': screenMode === 'mobile'
+    }"
   ></search-window>
-  <map-tools class="map-container__map-tools" [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"></map-tools>
+  <map-tools
+    [ngClass]="{
+      'map-container__map-element--hidden': mapUiState?.hideUiElements,
+      'map-container__map-tools--mobile': screenMode === 'mobile'
+    }"
+    class="map-container__map-tools"
+  ></map-tools>
+  <div class="map-container__all-map-items-container--mobile">
+    <button
+      *ngIf="screenMode === 'mobile'"
+      mat-icon-button
+      (click)="showMapManagement()"
+      color="accent"
+      class="map-management__button"
+      [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
+    >
+      <mat-icon svgIcon="ktzh_map_management"></mat-icon>
+    </button>
+  </div>
+  <bottom-sheet-overlay *ngIf="screenMode === 'mobile'"></bottom-sheet-overlay>
 </mat-drawer-container>
 <print-overlay></print-overlay>
 <onboarding-guide [introductionImage]="onboardingGuideImage"></onboarding-guide>

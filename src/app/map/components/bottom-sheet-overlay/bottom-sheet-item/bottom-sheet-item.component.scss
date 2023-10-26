@@ -1,0 +1,52 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'variables/z-index-variables' as z-index-variables;
+@use 'variables/map-layout-variables' as map-layout-variables;
+@use 'functions/helper.function' as functions;
+
+.bottom-sheet-item {
+  width: 100vw;
+  bottom: 0px;
+  pointer-events: all;
+  z-index: z-index-variables.$map-overlay;
+
+  &--small {
+    height: 30vh;
+  }
+
+  &--medium {
+    height: 60vh;
+  }
+
+  &--large {
+    height: 90vh;
+  }
+
+  .bottom-sheet-item__header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
+
+    &--primary-color {
+      background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
+    }
+
+    .bottom-sheet-item__header__title {
+      flex-grow: 1;
+      margin-bottom: 0;
+    }
+
+    .bottom-sheet-item__header__content {
+      width: 100%;
+    }
+
+    &__button--primary--color {
+      color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+    }
+  }
+
+  .bottom-sheet-item__content {
+    flex: 1;
+    overflow: hidden scroll;
+  }
+}

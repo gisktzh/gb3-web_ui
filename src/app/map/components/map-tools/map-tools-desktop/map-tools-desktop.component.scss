@@ -1,0 +1,30 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'mixins/helpers.mixin' as mixins;
+
+:host ::ng-deep {
+  .map-tools-desktop__button {
+    @include mixins.tool-button;
+  }
+}
+
+.map-tools-desktop {
+  display: flex;
+  gap: 6px;
+  flex-direction: row-reverse;
+  align-items: flex-start;
+
+  .map-tools-desktop-list {
+    @include mixins.map-element-box-shadow;
+    width: 44px;
+    padding: 2px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    background-color: ktzh-variables.$zh-background-color;
+
+    .map-tools-desktop-list__divider {
+      width: 50%;
+      align-self: center;
+    }
+  }
+}

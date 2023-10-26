@@ -1,23 +1,23 @@
-import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
-import {DocumentService} from './shared/services/document.service';
 import {BreakpointObserver} from '@angular/cdk/layout';
-import {filter, Subscription, take, tap} from 'rxjs';
-import {PageNotificationService} from './shared/services/page-notification.service';
+import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {MatSnackBar, MatSnackBarRef} from '@angular/material/snack-bar';
-import {PageNotificationComponent} from './shared/components/page-notification/page-notification.component';
-import {PageNotification} from './shared/interfaces/page-notification.interface';
-import {PanelClass} from './shared/enums/panel-class.enum';
-import {NavigationEnd, Router} from '@angular/router';
-import {map} from 'rxjs/operators';
-import {MainPage} from './shared/enums/main-page.enum';
-import {UrlUtils} from './shared/utils/url.utils';
+import {Router} from '@angular/router';
 import {Store} from '@ngrx/store';
-import {selectScreenMode, selectScrollbarWidth} from './state/app/reducers/app-layout.reducer';
+import {filter, Subscription, take, tap} from 'rxjs';
+import {environment} from 'src/environments/environment';
+import {PageNotificationComponent} from './shared/components/page-notification/page-notification.component';
+import {Breakpoints} from './shared/enums/breakpoints.enum';
+import {PanelClass} from './shared/enums/panel-class.enum';
+import {PageNotification} from './shared/interfaces/page-notification.interface';
+import {DocumentService} from './shared/services/document.service';
 import {IconsService} from './shared/services/icons.service';
+import {PageNotificationService} from './shared/services/page-notification.service';
 import {ScreenMode} from './shared/types/screen-size.type';
 import {AppLayoutActions} from './state/app/actions/app-layout.actions';
-import {Breakpoints} from './shared/enums/breakpoints.enum';
-import {environment} from 'src/environments/environment';
+import {selectScreenMode, selectScrollbarWidth} from './state/app/reducers/app-layout.reducer';
+import {selectMapUiState} from './state/map/reducers/map-ui.reducer';
+import {MapUiState} from './state/map/states/map-ui.state';
+import {selectUrlState} from './state/app/reducers/url.reducer';
 
 @Component({
   selector: 'app-root',
@@ -27,22 +27,16 @@ import {environment} from 'src/environments/environment';
 export class AppComponent implements OnInit, OnDestroy {
   public showWarning: boolean = false;
   public screenMode: ScreenMode = 'regular';
-
-  /**
-   * Flag which can be used to completely hide header and footer, e.g. on an iframe page
-   */
+  public mapUiState?: MapUiState;
   public isHeadlessPage: boolean = false;
-  /**
-   * Flag which can be used to toggle simplified layouts, e.g. no ZH Lion in the header.
-   */
   public isSimplifiedPage: boolean = false;
   public scrollbarWidth?: number;
   private snackBarRef?: MatSnackBarRef<PageNotificationComponent>;
-  private readonly useSimplifiedPageOn: MainPage[] = [MainPage.Maps];
-  private readonly useHeadlessPageOn: MainPage[] = [MainPage.Embedded];
-  private readonly subscriptions: Subscription = new Subscription();
+  private readonly urlState$ = this.store.select(selectUrlState);
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly scrollbarWidth$ = this.store.select(selectScrollbarWidth);
+  private readonly mapUiState$ = this.store.select(selectMapUiState);
+  private readonly subscriptions: Subscription = new Subscription();
 
   constructor(
     private readonly documentService: DocumentService,
@@ -57,8 +51,6 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit() {
-    // initialize some values based on the current URL before the first routing happens
-    this.handleNavigationChanges(window.location.pathname);
     this.initSubscriptions();
   }
 
@@ -72,6 +64,16 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   private initSubscriptions() {
+    this.subscriptions.add(
+      this.urlState$
+        .pipe(
+          tap(({isSimplifiedPage, isHeadlessPage}) => {
+            this.isSimplifiedPage = isSimplifiedPage;
+            this.isHeadlessPage = isHeadlessPage;
+          }),
+        )
+        .subscribe(),
+    );
     this.subscriptions.add(
       this.breakpointObserver
         .observe([Breakpoints.mobile, Breakpoints.smallTablet, Breakpoints.regular])
@@ -91,19 +93,7 @@ export class AppComponent implements OnInit, OnDestroy {
         )
         .subscribe(),
     );
-
-    this.subscriptions.add(
-      this.router.events
-        .pipe(
-          filter((evt) => evt instanceof NavigationEnd),
-          map((evt) => evt as NavigationEnd),
-          tap((evt) => {
-            this.handleNavigationChanges(evt.url);
-          }),
-        )
-        .subscribe(),
-    );
-
+    this.subscriptions.add(this.mapUiState$.pipe(tap((mapUiState) => (this.mapUiState = mapUiState))).subscribe());
     this.subscriptions.add(
       this.pageNotificationService.currentPageNotifications$
         .pipe(
@@ -119,7 +109,6 @@ export class AppComponent implements OnInit, OnDestroy {
         )
         .subscribe(),
     );
-
     this.subscriptions.add(
       this.scrollbarWidth$
         .pipe(
@@ -148,17 +137,5 @@ export class AppComponent implements OnInit, OnDestroy {
       verticalPosition: 'bottom',
       panelClass: PanelClass.PageNotificationSnackbar,
     });
-  }
-
-  private handleNavigationChanges(url: string) {
-    const urlTree = this.router.parseUrl(url);
-    const urlSegments = UrlUtils.extractUrlSegments(urlTree);
-    const firstUrlSegmentPath = UrlUtils.extractFirstUrlSegmentPath(urlSegments);
-    const mainPage = UrlUtils.transformStringToMainPage(firstUrlSegmentPath);
-    this.isSimplifiedPage = mainPage !== undefined && this.useSimplifiedPageOn.includes(mainPage);
-    const segmentPaths: string[] = urlSegments.map((segment) => segment.path);
-    this.isHeadlessPage = this.useHeadlessPageOn.some((headlessPagePaths) =>
-      UrlUtils.containsSegmentPaths([headlessPagePaths], segmentPaths),
-    );
   }
 }

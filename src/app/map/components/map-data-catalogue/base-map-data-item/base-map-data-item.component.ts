@@ -16,6 +16,7 @@ export class BaseMapDataItemComponent {
    */
   public gb2Url: string | null = null;
   public mapConfigState?: MapConfigState;
+  public isAddItemDisabled: boolean = false;
 
   @Output() public readonly addEvent = new EventEmitter<void>();
 

@@ -22,10 +22,14 @@ export class EsriPointMeasurementStrategy extends AbstractEsriMeasurementStrateg
     this.labelSymbolization = labelSymbolization;
   }
 
+  public static getLabelPosition(geometry: Point): Point {
+    return geometry;
+  }
+
   protected override createLabelConfigurationForGeometry(geometry: Point): LabelConfiguration {
     this.labelSymbolization.text = this.getCoordinateString(geometry);
 
-    return {location: geometry, symbolization: this.labelSymbolization};
+    return {location: EsriPointMeasurementStrategy.getLabelPosition(geometry), symbolization: this.labelSymbolization};
   }
 
   private getCoordinateString(geometry: __esri.Point) {

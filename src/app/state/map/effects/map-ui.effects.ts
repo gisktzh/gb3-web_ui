@@ -18,7 +18,10 @@ import {FavouriteDeletionDialogComponent} from '../../../map/components/favourit
 import {Favourite} from '../../../shared/interfaces/favourite.interface';
 import {ToolActions} from '../actions/tool.actions';
 import {PrintActions} from '../actions/print.actions';
+import {MapConfigActions} from '../actions/map-config.actions';
+import {selectScreenMode} from '../../app/reducers/app-layout.reducer';
 import {selectActiveTool} from '../reducers/tool.reducer';
+import {DataDownloadProductActions} from '../actions/data-download-product.actions';
 
 const CREATE_FAVOURITE_DIALOG_MAX_WIDTH = 500;
 const DELETE_FAVOURITE_DIALOG_MAX_WIDTH = 500;
@@ -45,10 +48,31 @@ export class MapUiEffects {
       map((value) => {
         switch (value.mapSideDrawerContent) {
           case 'print':
-          case 'data-download': // TODO GB3-650 - use this effect to load geostore data
             return PrintActions.loadPrintCapabilities();
+          case 'data-download':
+            return DataDownloadProductActions.loadProducts();
         }
       }),
+    );
+  });
+
+  public cancelToolsDependingOnShownSideDrawer$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapUiActions.showMapSideDrawerContent),
+      concatLatestFrom(() => this.store.select(selectActiveTool)),
+      filter(([action, activeTool]) => {
+        if (!activeTool) {
+          return false;
+        }
+        switch (action.mapSideDrawerContent) {
+          case 'print':
+            return true;
+          case 'data-download':
+            // this side drawer is actively using a (selection) tool - so no cancellation necessary in this case
+            return false;
+        }
+      }),
+      map(() => ToolActions.cancelTool()),
     );
   });
 
@@ -61,20 +85,36 @@ export class MapUiEffects {
     );
   });
 
-  public loadLegend$ = createEffect(() => {
+  public loadOrClearLegend$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(MapUiActions.showLegend),
-      map(() => {
-        return LegendActions.loadLegend();
+      ofType(MapUiActions.setLegendOverlayVisibility),
+      map(({isVisible}) => {
+        if (isVisible) {
+          return LegendActions.loadLegend();
+        } else {
+          return LegendActions.clearLegend();
+        }
       }),
     );
   });
 
-  public hideLegend$ = createEffect(() => {
+  public showOrHideMapUiElements$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(MapUiActions.hideLegend),
+      ofType(MapUiActions.setLegendOverlayVisibility),
+      concatLatestFrom(() => this.store.select(selectScreenMode)),
+      filter(([_, screenMode]) => screenMode === 'mobile'),
       map(() => {
-        return LegendActions.hideLegend();
+        return MapUiActions.changeUiElementsVisibility({hideAllUiElements: true, hideUiToggleButton: false});
+      }),
+    );
+  });
+
+  public clearFeatureInfo$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapUiActions.setFeatureInfoVisibility),
+      filter(({isVisible}) => !isVisible),
+      map(({isVisible}) => {
+        return MapConfigActions.clearFeatureInfoContent();
       }),
     );
   });
@@ -82,12 +122,17 @@ export class MapUiEffects {
   public openShareLinkDialogAndCreateShareLink$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapUiActions.showShareLinkDialog),
-      tap(() =>
-        this.dialogService.open(ShareLinkDialogComponent, {
-          panelClass: PanelClass.ApiWrapperDialog,
-          restoreFocus: false,
-        }),
-      ),
+      concatLatestFrom(() => this.store.select(selectScreenMode)),
+      tap(([__, screenMode]) => {
+        if (screenMode === 'mobile') {
+          return this.store.dispatch(MapUiActions.showBottomSheet({bottomSheetContent: 'share-link'}));
+        } else {
+          this.dialogService.open(ShareLinkDialogComponent, {
+            panelClass: PanelClass.ApiWrapperDialog,
+            restoreFocus: false,
+          });
+        }
+      }),
       concatLatestFrom(() => this.store.select(selectCurrentShareLinkItem)),
       map(([_, shareLinkItem]) => {
         return ShareLinkActions.createItem({item: shareLinkItem});
@@ -146,12 +191,11 @@ export class MapUiEffects {
     );
   });
 
-  public cancelToolAfterHidingUiElements$ = createEffect(() => {
+  public loadDataDownloadProducts$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(MapUiActions.changeUiElementsVisibility),
-      concatLatestFrom(() => this.store.select(selectActiveTool)),
-      filter(([{hideAllUiElements}, activeTool]) => hideAllUiElements && activeTool !== undefined),
-      map(() => ToolActions.cancelTool()),
+      ofType(MapUiActions.toggleToolMenu),
+      filter((action) => action.tool === 'data-download'),
+      map(() => DataDownloadProductActions.loadProducts()),
     );
   });
 

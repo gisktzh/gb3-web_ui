@@ -10,8 +10,10 @@ import {MapUiState} from '../state/map/states/map-ui.state';
 import {MapUiActions} from '../state/map/actions/map-ui.actions';
 import {MapSideDrawerContent} from '../shared/types/map-side-drawer-content.type';
 import {selectQueryLegends} from '../state/map/selectors/query-legends.selector';
+import {selectScreenMode} from '../state/app/reducers/app-layout.reducer';
 import {selectLoadingState} from '../state/map/reducers/legend.reducer';
 import {LoadingState} from '../shared/types/loading-state.type';
+import {ScreenMode} from '../shared/types/screen-size.type';
 
 @Component({
   selector: 'map-page',
@@ -26,10 +28,12 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
   public mapUiState?: MapUiState;
   public loadingState?: LoadingState;
   public mapSideDrawerContent: MapSideDrawerContent = 'none';
+  public screenMode: ScreenMode = 'mobile';
 
   private readonly queryLegends$ = this.store.select(selectQueryLegends);
   private readonly mapUiState$ = this.store.select(selectMapUiState);
-  private readonly laodingState$ = this.store.select(selectLoadingState);
+  private readonly screenMode$ = this.store.select(selectScreenMode);
+  private readonly loadingState$ = this.store.select(selectLoadingState);
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(
@@ -54,12 +58,12 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
     this.mapConfigUrlService.activatePrintMode(printType);
   }
 
-  public toggleLegend() {
-    if (this.loadingState === 'loaded') {
-      this.store.dispatch(MapUiActions.hideLegend());
-    } else {
-      this.store.dispatch(MapUiActions.showLegend());
-    }
+  public showLegend() {
+    this.store.dispatch(MapUiActions.setLegendOverlayVisibility({isVisible: true}));
+  }
+
+  public showMapManagement() {
+    this.store.dispatch(MapUiActions.showBottomSheet({bottomSheetContent: 'map-management'}));
   }
 
   public setIsMapDataCatalogueMinimized(isMinimized: boolean) {
@@ -92,7 +96,16 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
         .subscribe(),
     );
     this.subscriptions.add(
-      this.laodingState$
+      this.screenMode$
+        .pipe(
+          tap((screenMode) => {
+            this.screenMode = screenMode;
+          }),
+        )
+        .subscribe(),
+    );
+    this.subscriptions.add(
+      this.loadingState$
         .pipe(
           tap((loadingState) => {
             this.loadingState = loadingState;

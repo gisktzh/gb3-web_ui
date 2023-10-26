@@ -94,7 +94,7 @@
       padding-left: 1em;
 
       &--inactive {
-        color: ktzh-variables.$zh-black40;
+        color: ktzh-variables.$zh-disabled-foreground-color;
       }
 
       &--inverted.active-map-item-header__title-container__title--inactive {
@@ -132,6 +132,10 @@
       justify-self: center;
       grid-column: 1;
       grid-row: 1;
+
+      &--disabled {
+        color: ktzh-variables.$zh-disabled-foreground-color;
+      }
     }
   }
 }

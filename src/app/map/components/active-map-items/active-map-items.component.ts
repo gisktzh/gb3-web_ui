@@ -1,14 +1,17 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CdkDrag, CdkDragDrop} from '@angular/cdk/drag-drop';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
-import {selectItems} from '../../../state/map/reducers/active-map-item.reducer';
 import {Subscription, tap} from 'rxjs';
-import {ActiveMapItem} from '../../models/active-map-item.model';
-import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.reducer';
+import {ScreenMode} from 'src/app/shared/types/screen-size.type';
+import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
-import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
+import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.reducer';
+import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
 import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
+import {selectItems} from '../../../state/map/reducers/active-map-item.reducer';
+import {ActiveMapItem} from '../../models/active-map-item.model';
+import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
+import {selectActiveTool} from '../../../state/map/reducers/tool.reducer';
 
 const FAVOURITE_HELPER_MESSAGES = {
   noMapsAdded: 'Um einen Favoriten anzulegen, muss mindestens eine Karte hinzugefügt werden.',
@@ -27,11 +30,15 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
   public isMinimized = false;
   public numberOfNotices: number = 0;
   public numberOfUnreadNotices: number = 0;
-  public readonly favouriteHelperMessages = FAVOURITE_HELPER_MESSAGES;
+  public screenMode: ScreenMode = 'regular';
   public toolTipsFavourite: string = FAVOURITE_HELPER_MESSAGES.notAuthenticated;
+  public isActiveMapItemDragAndDropDisabled: boolean = false;
+  public readonly favouriteHelperMessages = FAVOURITE_HELPER_MESSAGES;
 
   private readonly activeMapItems$ = this.store.select(selectItems);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
+  private readonly screenMode$ = this.store.select(selectScreenMode);
+  private readonly activeTool$ = this.store.select(selectActiveTool);
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(private readonly store: Store) {}
@@ -92,6 +99,10 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
           }),
         )
         .subscribe(),
+    );
+    this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
+    this.subscriptions.add(
+      this.activeTool$.pipe(tap((activeTool) => (this.isActiveMapItemDragAndDropDisabled = !!activeTool))).subscribe(),
     );
   }
 

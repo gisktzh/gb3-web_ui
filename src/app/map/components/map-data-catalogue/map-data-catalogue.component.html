@@ -1,12 +1,16 @@
-<mat-card appearance="raised" class="map-data-catalogue">
-  <mat-card-header [ngClass]="{'map-data-catalogue__header--minimized': isMinimized}" class="map-data-catalogue__header">
+<mat-card appearance="raised" class="map-data-catalogue" [ngClass]="{'map-data-catalogue--hide-shadow': screenMode === 'mobile'}">
+  <mat-card-header
+    *ngIf="screenMode !== 'mobile'"
+    [ngClass]="{'map-data-catalogue__header--minimized': isMinimized}"
+    class="map-data-catalogue__header"
+  >
     <h2 class="map-data-catalogue__header__title">Kartenkatalog</h2>
     <button (click)="toggleMinimizeMapDataCatalogue()" mat-icon-button>
       <mat-icon [fontIcon]="isMinimized ? 'arrow_drop_down' : 'arrow_drop_up'"></mat-icon>
     </button>
   </mat-card-header>
   <div [ngClass]="{'map-data-catalogue__content--hidden': isMinimized}" class="map-data-catalogue__content">
-    <div class="map-data-catalogue__content__filter">
+    <div *ngIf="screenMode !== 'mobile'" class="map-data-catalogue__content__filter">
       <input #filterInput class="map-data-catalogue__content__filter__input" placeholder="Karten und Layer filtern" type="text" />
       <span class="map-data-catalogue__content__filter__input-icon">
         <mat-icon svgIcon="ktzh_search"></mat-icon>

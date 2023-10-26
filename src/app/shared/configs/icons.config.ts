@@ -98,6 +98,10 @@ const actionIconsConfig = [
     id: 'ktzh_map_management',
     path: 'assets/icons/actions/map-management.svg',
   },
+  {
+    id: 'ktzh_map_catalogue',
+    path: 'assets/icons/actions/map-catalogue.svg',
+  },
 ];
 
 /**

@@ -29,6 +29,12 @@ import {ActiveMapItemConfiguration} from '../../../shared/interfaces/active-map-
 import {ActiveMapItem} from '../../../map/models/active-map-item.model';
 import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
 import {ErrorHandler} from '@angular/core';
+import {Gb3VectorLayer} from '../../../shared/interfaces/gb3-vector-layer.interface';
+import {selectDrawings} from '../reducers/drawing.reducer';
+import {DrawingActions} from '../actions/drawing.actions';
+import {Gb3StyledInternalDrawingRepresentation} from '../../../shared/interfaces/internal-drawing-representation.interface';
+import {UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
+import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 
 function createActiveMapItemsFromConfigs(activeMapItemConfigurations: ActiveMapItemConfiguration[]): ActiveMapItem[] {
   return activeMapItemConfigurations.map(
@@ -98,14 +104,26 @@ describe('ShareLinkEffects', () => {
         isSingleLayer: false,
       },
     ],
-    drawings: [],
-    measurements: [],
+    drawings: {
+      type: 'Vector',
+      geojson: {
+        type: 'FeatureCollection',
+        features: [{type: 'Feature', geometry: {type: 'Point', coordinates: [0, 1]}, properties: {text: 'drawing', style: ''}}],
+      },
+    } as Gb3VectorLayer,
+    measurements: {
+      type: 'Vector',
+      geojson: {
+        type: 'FeatureCollection',
+        features: [{type: 'Feature', geometry: {type: 'Point', coordinates: [0, 1]}, properties: {text: 'measurement', style: ''}}],
+      },
+    } as Gb3VectorLayer,
   };
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
     authServiceMock = jasmine.createSpyObj<AuthService>([], {isAuthenticated$: of(false)});
-    favouriteServiceMock = jasmine.createSpyObj<FavouritesService>(['getActiveMapItemsForFavourite']);
+    favouriteServiceMock = jasmine.createSpyObj<FavouritesService>(['getActiveMapItemsForFavourite', 'getDrawingsForFavourite']);
     errorHandlerMock = jasmine.createSpyObj<ErrorHandler>(['handleError']);
 
     TestBed.configureTestingModule({
@@ -159,7 +177,7 @@ describe('ShareLinkEffects', () => {
       actions$ = of(ShareLinkActions.setLoadingError({error: expectedOriginalError}));
       effects.throwLoadingError$
         .pipe(
-          catchError((error) => {
+          catchError((error: unknown) => {
             const expectedError = new ShareLinkCouldNotBeLoaded(expectedOriginalError);
             expect(error).toEqual(expectedError);
             done();
@@ -205,7 +223,7 @@ describe('ShareLinkEffects', () => {
       actions$ = of(ShareLinkActions.setCreationError({error: expectedOriginalError}));
       effects.throwCreationError$
         .pipe(
-          catchError((error) => {
+          catchError((error: unknown) => {
             const expectedError = new ShareLinkItemCouldNotBeCreated(expectedOriginalError);
             expect(error).toEqual(expectedError);
             done();
@@ -227,6 +245,10 @@ describe('ShareLinkEffects', () => {
       basemapId: shareLinkItemMock.basemapId,
       x: shareLinkItemMock.center.x,
       y: shareLinkItemMock.center.y,
+      drawings: [
+        {id: 'mockDrawing1', source: UserDrawingLayer.Drawings, geometry: {type: 'Point', srs: 2056, coordinates: [0, 0]}},
+        {id: 'mockDrawing2', source: UserDrawingLayer.Measurements, geometry: {type: 'Point', srs: 2056, coordinates: [0, 0]}},
+      ] as Gb3StyledInternalDrawingRepresentation[],
     };
 
     describe('Action: initializeApplicationBasedOnId', () => {
@@ -272,15 +294,52 @@ describe('ShareLinkEffects', () => {
           );
         });
 
-        it('dispatches ShareLinkActions.completeValidation() with the service response on success', (done: DoneFn) => {
+        it('dispatches ShareLinkActions.completeValidation() with the service response on success with no drawings', (done: DoneFn) => {
           actions$ = of(ShareLinkActions.validateItem({item: expectedItem, topics: expectedTopics}));
+          favouriteServiceMock.getDrawingsForFavourite.and.returnValue({
+            drawingsToAdd: [],
+            drawingActiveMapItems: [],
+          });
+
+          const expected = {...expectedValidationObject, drawings: []};
 
           effects.validateShareLinkItem$.subscribe((action) => {
             expect(favouriteServiceMock.getActiveMapItemsForFavourite).toHaveBeenCalledOnceWith(expectedItem.content);
-            expect(action).toEqual(ShareLinkActions.completeValidation(expectedValidationObject));
+            expect(favouriteServiceMock.getDrawingsForFavourite).toHaveBeenCalledOnceWith(expectedItem.drawings, expectedItem.measurements);
+            expect(action).toEqual(ShareLinkActions.completeValidation(expected));
             done();
           });
         });
+
+        it(
+          'dispatches ShareLinkActions.completeValidation() with the service response on success with drawings added on top of the' +
+            ' active map items',
+          (done: DoneFn) => {
+            actions$ = of(ShareLinkActions.validateItem({item: expectedItem, topics: expectedTopics}));
+            const drawingActiveMapItems = expectedValidationObject.drawings.map((d) =>
+              ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, d.source),
+            );
+            favouriteServiceMock.getDrawingsForFavourite.and.returnValue({
+              drawingsToAdd: expectedValidationObject.drawings,
+              drawingActiveMapItems: drawingActiveMapItems,
+            });
+
+            const expected = {
+              ...expectedValidationObject,
+              activeMapItems: [...drawingActiveMapItems, ...expectedValidationObject.activeMapItems],
+            };
+
+            effects.validateShareLinkItem$.subscribe((action) => {
+              expect(favouriteServiceMock.getActiveMapItemsForFavourite).toHaveBeenCalledOnceWith(expectedItem.content);
+              expect(favouriteServiceMock.getDrawingsForFavourite).toHaveBeenCalledOnceWith(
+                expectedItem.drawings,
+                expectedItem.measurements,
+              );
+              expect(action).toEqual(ShareLinkActions.completeValidation(expected));
+              done();
+            });
+          },
+        );
 
         it('dispatches ShareLinkActions.setValidationError() with the error on basemap validation failure', (done: DoneFn) => {
           const faultyItem: ShareLinkItem = {
@@ -392,9 +451,23 @@ describe('ShareLinkEffects', () => {
         });
       });
 
+      describe('setInitialDrawingsAfterValidation$', () => {
+        it('dispatches DrawingActions.addDrawings() with the correct drawings', (done: DoneFn) => {
+          const drawings = {
+            drawings: expectedValidationObject.drawings,
+          };
+
+          effects.setInitialDrawingsAfterValidation$.subscribe((action) => {
+            expect(action).toEqual(DrawingActions.addDrawings(drawings));
+            done();
+          });
+        });
+      });
+
       describe('completeInitialization$', () => {
-        it('dispatches ShareLinkActions.completeApplicationInitialization() after the ActiveMapItems have been set', (done: DoneFn) => {
+        it('dispatches ShareLinkActions.completeApplicationInitialization() after the ActiveMapItems and drawings have been set', (done: DoneFn) => {
           store.overrideSelector(selectItems, expectedValidationObject.activeMapItems);
+          store.overrideSelector(selectDrawings, expectedValidationObject.drawings);
 
           effects.completeInitialization$.subscribe((action) => {
             expect(action).toEqual(ShareLinkActions.completeApplicationInitialization());

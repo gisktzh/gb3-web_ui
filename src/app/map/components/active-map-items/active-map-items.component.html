@@ -1,5 +1,9 @@
-<mat-card appearance="raised" class="active-map-items">
-  <mat-card-header class="active-map-items__header" [ngClass]="{'active-map-items__header--minimized': isMinimized}">
+<mat-card appearance="raised" class="active-map-items" [ngClass]="{'active-map-items--hide-shadow': screenMode === 'mobile'}">
+  <mat-card-header
+    *ngIf="screenMode !== 'mobile'"
+    class="active-map-items__header"
+    [ngClass]="{'active-map-items__header--minimized': isMinimized}"
+  >
     <h2 class="active-map-items__header__title">Aktive Karten</h2>
     <span
       class="active-map-items__header__badge"
@@ -65,6 +69,7 @@
       [activeMapItem]="activeMapItem"
       [isFirstActiveMapItem]="isFirstActiveMapItem"
       [isLastActiveMapItem]="isLastActiveMapItem"
+      [isDragAndDropDisabled]="isActiveMapItemDragAndDropDisabled"
       cdkDrag
       dragCursor
       class="active-map-items__content__item"
@@ -73,7 +78,12 @@
         <!-- The CDK drag handle is not detected within a child component; therefore, it's necessary to pass it down using ng-content
                More information: https://stackoverflow.com/questions/54773383/cdkdraghandle-doesnt-work-inside-child-component
           -->
-        <div class="active-map-items__content__item__drag-handle" cdkDragHandle></div>
+        <div
+          class="active-map-items__content__item__drag-handle"
+          cdkDragHandle
+          [cdkDragHandleDisabled]="isActiveMapItemDragAndDropDisabled"
+          [ngClass]="{'active-map-items__content__item__drag-handle--disabled': isActiveMapItemDragAndDropDisabled}"
+        ></div>
       </ng-container>
       <div class="active-map-items__content__item--drag-placeholder" *cdkDragPlaceholder></div>
     </active-map-item>

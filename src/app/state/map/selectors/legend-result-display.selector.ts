@@ -6,6 +6,7 @@ import {Map} from '../../../shared/interfaces/topic.interface';
 import {selectItems as selectActiveMapItems} from '../reducers/active-map-item.reducer';
 import {ActiveMapItem} from '../../../map/models/active-map-item.model';
 import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
+import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
 
 export const selectLegendItemsForDisplay = createSelector<Record<string, any>, Legend[], Map[], ActiveMapItem[], LegendDisplay[]>(
   selectLegendItems,
@@ -17,6 +18,14 @@ export const selectLegendItemsForDisplay = createSelector<Record<string, any>, L
       // Abort if the legend endpoint returns a non-matchable topic ID
       const topic = maps.find((map) => map.id === legendItem.topic);
       if (!topic) {
+        return;
+      }
+
+      // Also abort if the featureInfo isn't part of the active map items anymore
+      const activeMapItem = activeMapItems
+        .filter(isActiveMapItemOfType(Gb2WmsActiveMapItem))
+        .find((item) => item.settings.mapId === legendItem.topic);
+      if (!activeMapItem) {
         return;
       }
 

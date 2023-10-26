@@ -1,6 +1,6 @@
 import {ActiveMapItemConfiguration} from './active-map-item-configuration.interface';
 import {MapConfigState} from '../../state/map/states/map-config.state';
-import {Feature, LineString, Point, Polygon} from 'geojson';
+import {UserDrawingVectorLayers} from './user-drawing-vector-layers.interface';
 
 export type FavouriteBaseConfig = Pick<MapConfigState, 'center' | 'scale'> & {basemap: string};
 
@@ -36,20 +36,11 @@ export interface FavouriteGb3PolygonStyle extends FavouriteDrawingType {
 
 export type FavouriteGb3DrawingStyle = FavouriteGb3PointStyle | FavouriteGb3LineStringStyle | FavouriteGb3PolygonStyle;
 
-type FavouriteStyleProperty<T extends FavouriteGb3DrawingStyle> = {style: T};
-type FavouritePointFeature = Feature<Point, FavouriteStyleProperty<FavouriteGb3PointStyle>>;
-type FavouritePolygonFeature = Feature<Polygon, FavouriteStyleProperty<FavouriteGb3PolygonStyle>>;
-type FavouriteLineStringFeature = Feature<LineString, FavouriteStyleProperty<FavouriteGb3LineStringStyle>>;
-
-type FavouriteDrawingFeature = FavouritePointFeature | FavouritePolygonFeature | FavouriteLineStringFeature;
-
-export interface Favourite {
+export interface Favourite extends UserDrawingVectorLayers {
   id: string;
   title: string;
   content: ActiveMapItemConfiguration[];
   baseConfig: FavouriteBaseConfig;
-  drawings: FavouriteDrawingFeature[]; // todo: finalize interface once API is ready
-  measurements: any[]; // todo: finalize interface once API is ready
   /**
    * Declares whether a favourite is invalid because e.g. its components do no longer exist.
    */

@@ -14,6 +14,7 @@ import {DataCataloguePage} from '../../../../shared/enums/data-catalogue-page.en
 export class ActiveMapItemHeaderComponent {
   @Input() public activeMapItem!: ActiveMapItem;
   @Input() public activeMapItemExpansionPanel!: MatExpansionPanel;
+  @Input() public isDragAndDropDisabled: boolean = false;
 
   protected readonly mainPageEnum = MainPage;
   protected readonly dataCataloguePageEnum = DataCataloguePage;

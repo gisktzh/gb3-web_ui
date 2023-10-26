@@ -24,6 +24,10 @@
 .active-map-items {
   width: 100%;
 
+  &--hide-shadow {
+    box-shadow: none;
+  }
+
   .active-map-items__header {
     display: flex;
     align-items: center;

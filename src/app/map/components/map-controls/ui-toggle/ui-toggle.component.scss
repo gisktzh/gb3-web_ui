@@ -1,0 +1,16 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'mixins/material.mixin' as mat-mixins;
+
+:host ::ng-deep {
+  .ui-toggle {
+    @include mat-mixins.mat-icon-button-override-border-radius(ktzh-variables.$zh-border-radius);
+    @include mat-mixins.mat-icon-custom-svg-size(20px);
+  }
+}
+
+.ui-toggle {
+  background-color: ktzh-variables.$zh-background-color;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

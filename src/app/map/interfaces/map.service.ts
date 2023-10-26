@@ -6,6 +6,7 @@ import {InternalDrawingLayer} from '../../shared/enums/drawing-layer.enum';
 import {AddToMapVisitor} from './add-to-map.visitor';
 import {Gb2WmsActiveMapItem} from '../models/implementations/gb2-wms.model';
 import {ToolService} from './tool.service';
+import {WmsFilterValue} from '../../shared/interfaces/topic.interface';
 
 export interface MapService extends AddToMapVisitor {
   /**
@@ -50,10 +51,7 @@ export interface MapService extends AddToMapVisitor {
   setTimeSliderExtent(timeExtent: TimeExtent, mapItem: Gb2WmsActiveMapItem): void;
 
   /** Sets the attribute filters for an existing item on the map */
-  setAttributeFilters(
-    attributeFilterParameters: {name: string; value: string}[],
-    mapItem: Gb2WmsActiveMapItem, // todo: make gb2 specific
-  ): void;
+  setAttributeFilters(attributeFilterParameters: WmsFilterValue[], mapItem: Gb2WmsActiveMapItem): void;
 
   /** Reorders a map item using its old index (previous) and the new index (current); 0 is the topmost item - the most visible one */
   reorderMapItem(previousPosition: number, currentPosition: number): void;

@@ -12,6 +12,7 @@ export class ActiveMapItemComponent implements OnInit {
   @Input() public activeMapItem!: ActiveMapItem;
   @Input() public isFirstActiveMapItem: boolean = false;
   @Input() public isLastActiveMapItem: boolean = false;
+  @Input() public isDragAndDropDisabled: boolean = false;
 
   public activeTab: TabType = 'layers';
 
