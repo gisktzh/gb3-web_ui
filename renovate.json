@@ -10,12 +10,12 @@
     {
       "matchManagers": ["npm"],
       "matchPackageNames": ["@types/node"],
-      "allowedVersions": "<18"
+      "allowedVersions": "<20"
     },
     {
       "matchManagers": ["dockerfile"],
       "matchPackageNames": ["node"],
-      "allowedVersions": "<18"
+      "allowedVersions": "<20"
     },
     {
       "matchManagers": ["npm"],
