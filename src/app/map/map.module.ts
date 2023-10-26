@@ -12,6 +12,7 @@ import {ActiveMapItemsComponent} from './components/active-map-items/active-map-
 import {ApiDialogWrapperComponent} from './components/api-dialog-wrapper/api-dialog-wrapper.component';
 import {BottomSheetItemComponent} from './components/bottom-sheet-overlay/bottom-sheet-item/bottom-sheet-item.component';
 import {BottomSheetOverlayComponent} from './components/bottom-sheet-overlay/bottom-sheet-overlay.component';
+import {DataDownloadSelectMunicipalityDialogComponent} from './components/data-download-select-municipality-dialog/data-download-select-municipality-dialog.component';
 import {DataDownloadDialogComponent} from './components/data-download/data-download-dialog/data-download-dialog.component';
 import {FavouriteCreationDialogComponent} from './components/favourite-creation-dialog/favourite-creation-dialog.component';
 import {FavouriteDeletionDialogComponent} from './components/favourite-deletion-dialog/favourite-deletion-dialog.component';
@@ -33,6 +34,7 @@ import {BasemapSelectorComponent} from './components/map-controls/basemap-select
 import {CoordinateScaleInputsComponent} from './components/map-controls/coordinate-scale-inputs/coordinate-scale-inputs.component';
 import {DataInputComponent} from './components/map-controls/data-input/data-input.component';
 import {MapControlsComponent} from './components/map-controls/map-controls.component';
+import {UiToggleComponent} from './components/map-controls/ui-toggle/ui-toggle.component';
 import {ZoomControlsComponent} from './components/map-controls/zoom-controls/zoom-controls.component';
 import {BaseMapDataItemComponent} from './components/map-data-catalogue/base-map-data-item/base-map-data-item.component';
 import {MapDataItemFavouriteComponent} from './components/map-data-catalogue/base-map-data-item/map-data-item-favourite.component';
@@ -123,6 +125,8 @@ import {MapRoutingModule} from './map-routing.module';
     BasemapSelectionListComponent,
     MapToolsDesktopComponent,
     MapToolsMobileComponent,
+    DataDownloadSelectMunicipalityDialogComponent,
+    UiToggleComponent,
     SearchWindowMobileComponent,
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule],

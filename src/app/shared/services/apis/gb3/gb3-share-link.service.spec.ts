@@ -5,7 +5,10 @@ import {SharedFavorite, SharedFavoriteNew} from '../../../models/gb3-api-generat
 import {HttpClient} from '@angular/common/http';
 import {of} from 'rxjs';
 import {ShareLinkItem} from '../../../interfaces/share-link.interface';
+import {Gb3VectorLayer} from '../../../interfaces/gb3-vector-layer.interface';
 
+// todo: add tests for vector layers
+const mockedVectorLayer = {type: undefined, styles: undefined, geojson: {type: undefined, features: []}} as unknown as Gb3VectorLayer;
 describe('Gb3ShareLinkService', () => {
   let service: Gb3ShareLinkService;
   const shareLinkItemIdMock = 'mock-id';
@@ -34,69 +37,8 @@ describe('Gb3ShareLinkService', () => {
         ],
       },
     ],
-    drawings: [
-      {
-        type: 'Feature',
-        geometry: {
-          type: 'Polygon',
-          coordinates: [
-            [2600000, 1100000],
-            [2600000, 1100001],
-            [2600001, 1100001],
-            [2600001, 1100000],
-            [2600000, 1100000],
-          ],
-        },
-        properties: {
-          style: {
-            fillColor: '#FF0000',
-            fillOpacity: 0,
-            rotation: '30',
-            externalGraphic: 'identify_marker.png',
-            graphicName: 'circle',
-            graphicOpacity: 0.4,
-            pointRadius: 5,
-            strokeColor: '#FFA829',
-            strokeOpacity: 1,
-            strokeWidth: 5,
-            strokeLinecap: 'round',
-            strokeLinejoin: 'round',
-            strokeDashstyle: 'dot',
-            fontColor: '#000000',
-            fontFamily: 'sans-serif',
-            fontSize: '12px',
-            fontStyle: 'normal',
-            fontWeight: 'bold',
-            haloColor: '#123456',
-            haloOpacity: '0.7',
-            haloRadius: '3.0',
-            label: '${name}',
-            labelAlign: 'cm',
-            labelRotation: '45',
-            labelXOffset: '-25.0',
-            labelYOffset: '-35.0',
-          },
-        },
-      },
-    ],
-    measurements: [
-      {
-        type: 'Feature',
-        geometry: {
-          type: 'LineString',
-          coordinates: [
-            [2600000, 1100000],
-            [2600000, 1100001],
-          ],
-        },
-        properties: {
-          label: {
-            text: '1m',
-            coordinates: [2400000, 1150000],
-          },
-        },
-      },
-    ],
+    drawings: mockedVectorLayer,
+    measurements: mockedVectorLayer,
   };
   const shareLinkItemMock: ShareLinkItem = {
     center: {x: 2600003, y: 1100003},
@@ -118,69 +60,8 @@ describe('Gb3ShareLinkService', () => {
         ],
       },
     ],
-    drawings: [
-      {
-        type: 'Feature',
-        geometry: {
-          type: 'Polygon',
-          coordinates: [
-            [2600000, 1100000],
-            [2600000, 1100001],
-            [2600001, 1100001],
-            [2600001, 1100000],
-            [2600000, 1100000],
-          ],
-        },
-        properties: {
-          style: {
-            fillColor: '#FF0000',
-            fillOpacity: 0,
-            rotation: '30',
-            externalGraphic: 'identify_marker.png',
-            graphicName: 'circle',
-            graphicOpacity: 0.4,
-            pointRadius: 5,
-            strokeColor: '#FFA829',
-            strokeOpacity: 1,
-            strokeWidth: 5,
-            strokeLinecap: 'round',
-            strokeLinejoin: 'round',
-            strokeDashstyle: 'dot',
-            fontColor: '#000000',
-            fontFamily: 'sans-serif',
-            fontSize: '12px',
-            fontStyle: 'normal',
-            fontWeight: 'bold',
-            haloColor: '#123456',
-            haloOpacity: '0.7',
-            haloRadius: '3.0',
-            label: '${name}',
-            labelAlign: 'cm',
-            labelRotation: '45',
-            labelXOffset: '-25.0',
-            labelYOffset: '-35.0',
-          },
-        },
-      },
-    ],
-    measurements: [
-      {
-        type: 'Feature',
-        geometry: {
-          type: 'LineString',
-          coordinates: [
-            [2600000, 1100000],
-            [2600000, 1100001],
-          ],
-        },
-        properties: {
-          label: {
-            text: '1m',
-            coordinates: [2400000, 1150000],
-          },
-        },
-      },
-    ],
+    drawings: mockedVectorLayer,
+    measurements: mockedVectorLayer,
   };
   const shareLinkItemAsDataMock: SharedFavoriteNew = {
     east: 2600003,
@@ -203,69 +84,8 @@ describe('Gb3ShareLinkService', () => {
         ],
       },
     ],
-    drawings: [
-      {
-        type: 'Feature',
-        geometry: {
-          type: 'Polygon',
-          coordinates: [
-            [2600000, 1100000],
-            [2600000, 1100001],
-            [2600001, 1100001],
-            [2600001, 1100000],
-            [2600000, 1100000],
-          ],
-        },
-        properties: {
-          style: {
-            fillColor: '#FF0000',
-            fillOpacity: 0,
-            rotation: '30',
-            externalGraphic: 'identify_marker.png',
-            graphicName: 'circle',
-            graphicOpacity: 0.4,
-            pointRadius: 5,
-            strokeColor: '#FFA829',
-            strokeOpacity: 1,
-            strokeWidth: 5,
-            strokeLinecap: 'round',
-            strokeLinejoin: 'round',
-            strokeDashstyle: 'dot',
-            fontColor: '#000000',
-            fontFamily: 'sans-serif',
-            fontSize: '12px',
-            fontStyle: 'normal',
-            fontWeight: 'bold',
-            haloColor: '#123456',
-            haloOpacity: '0.7',
-            haloRadius: '3.0',
-            label: '${name}',
-            labelAlign: 'cm',
-            labelRotation: '45',
-            labelXOffset: '-25.0',
-            labelYOffset: '-35.0',
-          },
-        },
-      },
-    ],
-    measurements: [
-      {
-        type: 'Feature',
-        geometry: {
-          type: 'LineString',
-          coordinates: [
-            [2600000, 1100000],
-            [2600000, 1100001],
-          ],
-        },
-        properties: {
-          label: {
-            text: '1m',
-            coordinates: [2400000, 1150000],
-          },
-        },
-      },
-    ],
+    drawings: mockedVectorLayer,
+    measurements: mockedVectorLayer,
   };
 
   beforeEach(() => {

@@ -1,6 +1,9 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {BaseMapDataItemComponent} from './base-map-data-item.component';
 import {LoadingState} from '../../../../shared/types/loading-state.type';
+import {Store} from '@ngrx/store';
+import {Subscription, tap} from 'rxjs';
+import {selectActiveTool} from '../../../../state/map/reducers/tool.reducer';
 
 const FAVOURITE_ERROR_TOOLTIP =
   'Der Favorit kann nicht angezeigt werden. Dies kann verschiedene Gründe haben - z.B. existiert eine (' +
@@ -11,7 +14,7 @@ const FAVOURITE_ERROR_TOOLTIP =
   templateUrl: './base-map-data-item.component.html',
   styleUrls: ['./base-map-data-item.component.scss'],
 })
-export class MapDataItemFavouriteComponent extends BaseMapDataItemComponent {
+export class MapDataItemFavouriteComponent extends BaseMapDataItemComponent implements OnInit, OnDestroy {
   @Input() public override loadingState: LoadingState;
   @Input() public override invalid?: boolean;
 
@@ -20,4 +23,19 @@ export class MapDataItemFavouriteComponent extends BaseMapDataItemComponent {
   public override showExpandButton = false;
   public override showDeleteButton = true;
   public override errorTooltip: string = FAVOURITE_ERROR_TOOLTIP;
+  public override isAddItemDisabled: boolean = false;
+  private readonly subscriptions: Subscription = new Subscription();
+  private readonly activeTool$ = this.store.select(selectActiveTool);
+
+  constructor(private readonly store: Store) {
+    super();
+  }
+
+  public ngOnInit() {
+    this.subscriptions.add(this.activeTool$.pipe(tap((activeTool) => (this.isAddItemDisabled = !!activeTool))).subscribe());
+  }
+
+  public ngOnDestroy() {
+    this.subscriptions.unsubscribe();
+  }
 }

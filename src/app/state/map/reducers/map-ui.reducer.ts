@@ -60,18 +60,6 @@ export const mapUiFeature = createFeature({
         mapSideDrawerContent: 'none',
       };
     }),
-    on(MapUiActions.hideUiElements, (state): MapUiState => {
-      return {
-        ...state,
-        hideUiElements: true,
-      };
-    }),
-    on(MapUiActions.showUiElements, (state): MapUiState => {
-      return {
-        ...state,
-        hideUiElements: false,
-      };
-    }),
     on(MapUiActions.showBottomSheet, (state, {bottomSheetContent}): MapUiState => {
       return {
         ...state,
@@ -86,7 +74,7 @@ export const mapUiFeature = createFeature({
         hideUiElements: false,
       };
     }),
-    on(MapUiActions.resetMapUiState, (state): MapUiState => {
+    on(MapUiActions.resetMapUiState, (): MapUiState => {
       return {...initialState};
     }),
   ),
@@ -100,4 +88,6 @@ export const {
   selectIsLegendOverlayVisible,
   selectIsFeatureInfoOverlayVisible,
   selectBottomSheetContent,
+  selectHideUiElements,
+  selectHideToggleUiElementsButton,
 } = mapUiFeature;

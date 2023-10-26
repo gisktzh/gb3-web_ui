@@ -71,6 +71,11 @@
   </div>
   <div class="active-map-item-header__drag-handle">
     <ng-content select="[activeMapItemDragHandle]"></ng-content>
-    <mat-icon class="active-map-item-header__drag-handle__icon" cdkDragHandle>drag_indicator</mat-icon>
+    <mat-icon
+      class="active-map-item-header__drag-handle__icon"
+      [ngClass]="{'active-map-item-header__drag-handle__icon--disabled': isDragAndDropDisabled}"
+      cdkDragHandle
+      >drag_indicator</mat-icon
+    >
   </div>
 </div>

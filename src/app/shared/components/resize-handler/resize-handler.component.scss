@@ -8,7 +8,7 @@ $handle-indicator-width: 3px;
 $handle-indicator-height: 3px;
 
 $handle-hover: $handle-width solid ktzh-variables.$zh-black100;
-$handle-no-hover: $handle-indicator-width double ktzh-variables.$zh-black40;
+$handle-no-hover: $handle-indicator-width double ktzh-variables.$zh-disabled-foreground-color;
 
 :host,
 .resize-container {

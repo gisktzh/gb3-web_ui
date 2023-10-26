@@ -35,7 +35,12 @@ import {
   EsriWMSLayer,
   EsriWMSSublayer,
 } from './esri.module';
-import {TimeSliderConfiguration, TimeSliderLayerSource, TimeSliderParameterSource} from '../../../shared/interfaces/topic.interface';
+import {
+  TimeSliderConfiguration,
+  TimeSliderLayerSource,
+  TimeSliderParameterSource,
+  WmsFilterValue,
+} from '../../../shared/interfaces/topic.interface';
 import {TimeExtent} from '../../interfaces/time-extent.interface';
 import {MapConfigState} from '../../../state/map/states/map-config.state';
 import {GeometryWithSrs, PointWithSrs, PolygonWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
@@ -49,6 +54,7 @@ import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
 import {PrintUtils} from '../../../shared/utils/print.utils';
 import {map} from 'rxjs/operators';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import {selectDrawings} from '../../../state/map/reducers/drawing.reducer';
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
 
@@ -136,8 +142,8 @@ export class EsriMapService implements MapService, OnDestroy {
       .select(selectMapConfigState)
       .pipe(
         first(),
-        withLatestFrom(this.store.select(selectItems)),
-        tap(([config, activeMapItems]) => {
+        withLatestFrom(this.store.select(selectItems), this.store.select(selectDrawings)),
+        tap(([config, activeMapItems, drawings]) => {
           const {x, y} = config.center;
           const {minScale, maxScale} = config.scaleSettings;
           const {scale, srsId, activeBasemapId} = config;
@@ -148,6 +154,11 @@ export class EsriMapService implements MapService, OnDestroy {
           this.initDrawingLayers();
           activeMapItems.forEach((mapItem, position) => {
             mapItem.addToMap(this, position);
+
+            if (mapItem instanceof DrawingActiveMapItem) {
+              const drawingsToAdd = drawings.filter((drawing) => drawing.source === mapItem.settings.userDrawingLayer);
+              this.esriToolService.addExistingDrawingsToLayer(drawingsToAdd, mapItem.settings.userDrawingLayer);
+            }
           });
           this.store.dispatch(MapConfigActions.markMapServiceAsInitialized());
         }),
@@ -289,7 +300,7 @@ export class EsriMapService implements MapService, OnDestroy {
     }
   }
 
-  public setAttributeFilters(attributeFilterParameters: {name: string; value: string}[], mapItem: Gb2WmsActiveMapItem) {
+  public setAttributeFilters(attributeFilterParameters: WmsFilterValue[], mapItem: Gb2WmsActiveMapItem) {
     const esriLayer = this.esriMapViewService.findEsriLayer(mapItem.id);
     if (esriLayer && esriLayer instanceof EsriWMSLayer) {
       const customLayerParameters: {[index: string]: string} = esriLayer.customLayerParameters ?? {};
@@ -558,7 +569,7 @@ export class EsriMapService implements MapService, OnDestroy {
         .pipe(
           tap(() => {
             const newInterceptor = this.getWmsOverrideInterceptor(this.authService.getAccessToken());
-            esriConfig.request.interceptors = []; // todo: pop existing as soon as we add more interceptors
+            esriConfig.request.interceptors = []; // pop existing as soon as we add more interceptors
             esriConfig.request.interceptors.push(newInterceptor);
           }),
         )
@@ -660,6 +671,7 @@ export class EsriMapService implements MapService, OnDestroy {
           spatialReference,
         }).lods,
       },
+      spatialReference: spatialReference,
     });
   }
 

@@ -9,6 +9,7 @@ import {MapService} from '../../../map/interfaces/map.service';
 @Injectable()
 export class ToolEffects {
   private readonly toolService: ToolService;
+
   public initializeTool$ = createEffect(
     () => {
       return this.actions$.pipe(
@@ -41,6 +42,7 @@ export class ToolEffects {
     },
     {dispatch: false},
   );
+
   public cancelOrDeactivateTool$ = createEffect(
     () => {
       return this.actions$.pipe(

@@ -13,6 +13,7 @@ import {Favourite} from '../../../shared/interfaces/favourite.interface';
 import {SearchActions} from '../../app/actions/search.actions';
 import {selectScreenMode} from '../../app/reducers/app-layout.reducer';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
+import {DataDownloadProductActions} from '../actions/data-download-product.actions';
 import {LegendActions} from '../actions/legend.actions';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {MapUiActions} from '../actions/map-ui.actions';
@@ -48,10 +49,31 @@ export class MapUiEffects {
       map((value) => {
         switch (value.mapSideDrawerContent) {
           case 'print':
-          case 'data-download': // TODO GB3-650 - use this effect to load geostore data
             return PrintActions.loadPrintCapabilities();
+          case 'data-download':
+            return DataDownloadProductActions.loadProducts();
         }
       }),
+    );
+  });
+
+  public cancelToolsDependingOnShownSideDrawer$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapUiActions.showMapSideDrawerContent),
+      concatLatestFrom(() => this.store.select(selectActiveTool)),
+      filter(([action, activeTool]) => {
+        if (!activeTool) {
+          return false;
+        }
+        switch (action.mapSideDrawerContent) {
+          case 'print':
+            return true;
+          case 'data-download':
+            // this side drawer is actively using a (selection) tool - so no cancellation necessary in this case
+            return false;
+        }
+      }),
+      map(() => ToolActions.cancelTool()),
     );
   });
 
@@ -83,7 +105,7 @@ export class MapUiEffects {
       concatLatestFrom(() => this.store.select(selectScreenMode)),
       filter(([_, screenMode]) => screenMode === 'mobile'),
       map(() => {
-        return MapUiActions.hideUiElements();
+        return MapUiActions.changeUiElementsVisibility({hideAllUiElements: true, hideUiToggleButton: false});
       }),
     );
   });
@@ -170,14 +192,14 @@ export class MapUiEffects {
     );
   });
 
-  public cancelToolAfterHidingUiElements$ = createEffect(() => {
+  public loadDataDownloadProducts$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(MapUiActions.changeUiElementsVisibility),
-      concatLatestFrom(() => this.store.select(selectActiveTool)),
-      filter(([{hideAllUiElements}, activeTool]) => hideAllUiElements && activeTool !== undefined),
-      map(() => ToolActions.cancelTool()),
+      ofType(MapUiActions.toggleToolMenu),
+      filter((action) => action.tool === 'data-download'),
+      map(() => DataDownloadProductActions.loadProducts()),
     );
   });
+
   public clearSearchTermAfterClosingBottomSheet$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapUiActions.hideBottomSheet),
@@ -186,7 +208,14 @@ export class MapUiEffects {
       }),
     );
   });
-
+  public cancelToolAfterHidingUiElements$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapUiActions.changeUiElementsVisibility),
+      concatLatestFrom(() => this.store.select(selectActiveTool)),
+      filter(([{hideAllUiElements}, activeTool]) => hideAllUiElements && activeTool !== undefined),
+      map(() => ToolActions.cancelTool()),
+    );
+  });
   constructor(
     private readonly actions$: Actions,
     private readonly store: Store,

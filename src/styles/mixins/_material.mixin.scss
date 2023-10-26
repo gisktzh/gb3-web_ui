@@ -24,6 +24,10 @@
   grid-column: 1;
   grid-row: 1;
   cursor: grab;
+
+  &--disabled {
+    cursor: default;
+  }
 }
 
 /**

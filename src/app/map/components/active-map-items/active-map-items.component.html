@@ -69,6 +69,7 @@
       [activeMapItem]="activeMapItem"
       [isFirstActiveMapItem]="isFirstActiveMapItem"
       [isLastActiveMapItem]="isLastActiveMapItem"
+      [isDragAndDropDisabled]="isActiveMapItemDragAndDropDisabled"
       cdkDrag
       dragCursor
       class="active-map-items__content__item"
@@ -78,7 +79,12 @@
         <!-- The CDK drag handle is not detected within a child component; therefore, it's necessary to pass it down using ng-content
                More information: https://stackoverflow.com/questions/54773383/cdkdraghandle-doesnt-work-inside-child-component
           -->
-        <div class="active-map-items__content__item__drag-handle" cdkDragHandle></div>
+        <div
+          class="active-map-items__content__item__drag-handle"
+          cdkDragHandle
+          [cdkDragHandleDisabled]="isActiveMapItemDragAndDropDisabled"
+          [ngClass]="{'active-map-items__content__item__drag-handle--disabled': isActiveMapItemDragAndDropDisabled}"
+        ></div>
       </ng-container>
       <div class="active-map-items__content__item--drag-placeholder" *cdkDragPlaceholder></div>
     </active-map-item>

@@ -17,6 +17,7 @@ import {ActiveMapItem} from '../../../models/active-map-item.model';
 export class ActiveMapItemHeaderComponent implements OnInit, OnDestroy {
   @Input() public activeMapItem!: ActiveMapItem;
   @Input() public activeMapItemExpansionPanel!: MatExpansionPanel;
+  @Input() public isDragAndDropDisabled: boolean = false;
   public screenMode: ScreenMode = 'regular';
 
   private readonly screenMode$ = this.store.select(selectScreenMode);

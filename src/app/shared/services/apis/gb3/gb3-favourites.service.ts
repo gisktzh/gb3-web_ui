@@ -26,7 +26,6 @@ export class Gb3FavouritesService extends Gb3ApiService {
     return favouritesListData.pipe(
       map((data) => {
         data.sort((a, b) => {
-          //todo: maybe this can be cast automatically if the backend is properly set?
           const current = new Date(a.updated_at);
           const next = new Date(b.updated_at);
 

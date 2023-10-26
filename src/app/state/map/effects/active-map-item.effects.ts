@@ -21,6 +21,8 @@ import {ToolActions} from '../actions/tool.actions';
 import {selectItems} from '../reducers/active-map-item.reducer';
 import {selectIsMapServiceInitialized} from '../reducers/map-config.reducer';
 import {selectActiveTool} from '../reducers/tool.reducer';
+import {DrawingActiveMapItem} from '../../../map/models/implementations/drawing.model';
+import {DrawingActions} from '../actions/drawing.actions';
 
 @Injectable()
 export class ActiveMapItemEffects {
@@ -238,27 +240,47 @@ export class ActiveMapItemEffects {
     {dispatch: false},
   );
 
+  public zoomToAddedFavourite$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(ActiveMapItemActions.addFavourite),
+        tap(
+          ({
+            baseConfig: {
+              scale,
+              center: {x, y},
+            },
+          }) => {
+            const center: PointWithSrs = {type: 'Point', srs: this.configService.mapConfig.defaultMapConfig.srsId, coordinates: [x, y]};
+            this.mapService.zoomToPoint(center, scale);
+          },
+        ),
+      );
+    },
+    {dispatch: false},
+  );
+
   public addFavourite$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ActiveMapItemActions.addFavourite),
-      tap(
-        ({
-          activeMapItems,
-          baseConfig: {
-            scale,
-            center: {x, y},
-          },
-        }) => {
-          activeMapItems.forEach((fav, idx) => {
-            this.mapService.removeMapItem(fav.id);
-            fav.addToMap(this.mapService, idx);
-          });
+      map(({activeMapItems, drawingsToAdd}) => {
+        const drawingLayersToOverride: UserDrawingLayer[] = [];
+        activeMapItems.forEach((activeMapItem, idx) => {
+          this.mapService.removeMapItem(activeMapItem.id);
+          activeMapItem.addToMap(this.mapService, idx);
 
-          const center: PointWithSrs = {type: 'Point', srs: this.configService.mapConfig.defaultMapConfig.srsId, coordinates: [x, y]};
-          this.mapService.zoomToPoint(center, scale);
-        },
-      ),
-      map(({baseConfig}) => MapConfigActions.setBasemap({activeBasemapId: baseConfig.basemap})),
+          if (activeMapItem instanceof DrawingActiveMapItem) {
+            this.mapService.getToolService().addExistingDrawingsToLayer(
+              drawingsToAdd.filter((drawing) => drawing.source === activeMapItem.settings.userDrawingLayer),
+              activeMapItem.settings.userDrawingLayer,
+            );
+
+            drawingLayersToOverride.push(activeMapItem.settings.userDrawingLayer);
+          }
+        });
+
+        return DrawingActions.overwriteDrawingLayersWithDrawings({layersToOverride: drawingLayersToOverride, drawingsToAdd});
+      }),
     );
   });
 

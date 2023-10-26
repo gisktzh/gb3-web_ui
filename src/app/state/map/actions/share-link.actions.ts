@@ -3,6 +3,7 @@ import {ShareLinkItem} from '../../../shared/interfaces/share-link.interface';
 import {Topic} from '../../../shared/interfaces/topic.interface';
 import {ActiveMapItem} from '../../../map/models/active-map-item.model';
 import {errorProps} from '../../../shared/utils/error-props.utils';
+import {Gb3StyledInternalDrawingRepresentation} from '../../../shared/interfaces/internal-drawing-representation.interface';
 
 export const ShareLinkActions = createActionGroup({
   source: 'ShareLink',
@@ -20,6 +21,7 @@ export const ShareLinkActions = createActionGroup({
     'Complete Validation': props<{
       activeMapItems: ActiveMapItem[];
       basemapId: string;
+      drawings: Gb3StyledInternalDrawingRepresentation[];
       x: number;
       y: number;
       scale: number;

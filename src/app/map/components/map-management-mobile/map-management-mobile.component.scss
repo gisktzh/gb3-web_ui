@@ -48,7 +48,7 @@
       }
 
       &:disabled {
-        color: ktzh-variables.$zh-black40;
+        color: ktzh-variables.$zh-disabled-foreground-color;
       }
 
       .map-management-mobile-header__buttons__button__inner {
@@ -152,7 +152,7 @@
       .map-management-mobile-header__tools__buttons__divider {
         height: 12px;
         align-self: center;
-        color: ktzh-variables.$zh-black40;
+        color: ktzh-variables.$zh-disabled-foreground-color;
       }
     }
   }

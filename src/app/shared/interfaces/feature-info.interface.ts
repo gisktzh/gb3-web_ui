@@ -1,7 +1,7 @@
 import {GeometryWithSrs} from './geojson-types-with-srs.interface';
 import {HasMetaDataLink} from './metaDataLink.interface';
 
-interface FeatureInfoResultFeatureField {
+export interface FeatureInfoResultFeatureField {
   label: string;
   value: string | number | null;
 }

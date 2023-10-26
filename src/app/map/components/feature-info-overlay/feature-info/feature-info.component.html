@@ -2,6 +2,10 @@
 <ng-container *ngIf="loadingState === 'loaded'">
   <feature-info-general-information *ngIf="generalInfoData" [generalInfoData]="generalInfoData"></feature-info-general-information>
   <mat-divider *ngIf="generalInfoData"></mat-divider>
-  <feature-info-item *ngFor="let featureInfo of featureInfoData; trackBy: trackById" [featureInfo]="featureInfo"></feature-info-item>
+  <feature-info-item
+    *ngFor="let featureInfo of featureInfoData; trackBy: trackById"
+    [featureInfo]="featureInfo"
+    [showInteractiveElements]="showInteractiveElements"
+  ></feature-info-item>
   <i *ngIf="featureInfoData.length === 0">Keine kartenspezifischen Treffer!</i>
 </ng-container>
