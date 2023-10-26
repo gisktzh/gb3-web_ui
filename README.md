@@ -19,7 +19,7 @@ We strive to use the most recent LTS version. Whenever an update is due, make su
 - `Dockerfile`
 - `.azure-pipelines/templates/variables.yaml`
 - `.nvmrc`
-- `package.json`, update the `@typed/node` package to the matching version
+- `package.json`, update the `@typed/node` package to the matching version; run `npm install` afterwards to freshly generate the `package-lock.json`
 - `renovate.json` update both `"matchManagers": ["dockerfile"]` and `"matchManagers": ["npm"]` to the matching version
 
 You should point it towards the latest minor update (e.g. 20.x), such that we can control potentially larger updates.
