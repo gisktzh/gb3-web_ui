@@ -15,6 +15,7 @@ import {SearchResultEntryMapComponent} from './components/start-page-search/sear
 import {SearchResultEntryDataCatalogComponent} from './components/start-page-search/search-result-entry-data-catalog/search-result-entry-data-catalog.component';
 import {SearchResultEntrySupportComponent} from './components/start-page-search/search-result-entry-support/search-result-entry-support.component';
 import {SearchResultGroupsComponent} from './components/start-page-search/search-result-groups/search-result-groups.component';
+import {StartPageSearchMobileComponent} from './components/start-page-search/start-page-search-mobile/start-page-search-mobile.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import {SearchResultGroupsComponent} from './components/start-page-search/search
     SearchResultEntryDataCatalogComponent,
     SearchResultEntrySupportComponent,
     SearchResultGroupsComponent,
+    StartPageSearchMobileComponent,
   ],
   imports: [CommonModule, SharedModule, StartPageRoutingModule],
 })
