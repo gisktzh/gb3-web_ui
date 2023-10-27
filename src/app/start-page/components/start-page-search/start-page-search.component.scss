@@ -30,16 +30,5 @@
     flex-direction: column;
     padding-top: 40px;
     gap: 12px;
-
-    .start-page-search__results__groups {
-      display: flex;
-      flex-direction: column;
-      width: ktzh-variables.$zh-layout-max-content-width;
-      gap: 32px;
-
-      .start-page-search__results__groups__group {
-        box-sizing: border-box;
-      }
-    }
   }
 }
