@@ -59,8 +59,8 @@ import {SearchWindowMobileComponent} from './components/search-window-mobile/sea
 import {ResultGroupComponent} from './components/search-window/result-groups/result-group/result-group.component';
 import {ResultGroupsComponent} from './components/search-window/result-groups/result-groups.component';
 import {SearchWindowComponent} from './components/search-window/search-window.component';
-import {ShareLinkContentComponent} from './components/share-link-dialog/share-link-content/share-link-content.component';
 import {ShareLinkDialogComponent} from './components/share-link-dialog/share-link-dialog.component';
+import {ShareLinkMobileComponent} from './components/share-link-mobile/share-link-mobile.component';
 import {TimeSliderComponent} from './components/time-slider/time-slider.component';
 import {MapPageComponent} from './map-page.component';
 import {MapRoutingModule} from './map-routing.module';
@@ -121,13 +121,13 @@ import {MapRoutingModule} from './map-routing.module';
     LegendComponent,
     MapManagementMobileComponent,
     FeatureInfoComponent,
-    ShareLinkContentComponent,
     BasemapSelectionListComponent,
     MapToolsDesktopComponent,
     MapToolsMobileComponent,
     DataDownloadSelectMunicipalityDialogComponent,
     UiToggleComponent,
     SearchWindowMobileComponent,
+    ShareLinkMobileComponent,
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule],
   exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent],
