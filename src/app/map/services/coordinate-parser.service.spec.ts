@@ -12,7 +12,7 @@ describe('CoordinateParserService', () => {
   });
 
   describe('separators', () => {
-    [',', ';', '/'].forEach((separator) => {
+    [' ', '          ', ',', ';', '/', '   / '].forEach((separator) => {
       it(`returns coordinates with "${separator}" as separator`, () => {
         const testString = `123${separator}456`;
 
@@ -23,7 +23,7 @@ describe('CoordinateParserService', () => {
       });
     });
 
-    [' ', '//', '.', '_', ':', '\\'].forEach((separator) => {
+    ['//', '.', '_', ':', '\\'].forEach((separator) => {
       it(`returns undefined with "${separator}" as separator`, () => {
         const testString = `123${separator}456`;
 
@@ -34,8 +34,8 @@ describe('CoordinateParserService', () => {
     });
   });
 
-  describe('input sanitization', () => {
-    it('removes all whitespaces and returns coordinates', () => {
+  describe('whitespace handling', () => {
+    it('removes all whitespaces and returns coordinates if more than one whitespace separation exists', () => {
       const testString = ' 1 2 3 , 4 5 6 ';
 
       const result = service.parse(testString);
@@ -44,6 +44,16 @@ describe('CoordinateParserService', () => {
       expect(result).toEqual(expected);
     });
 
+    it('returns undefined if whitespaces and separator and one number exists', () => {
+      const testString = '123    /';
+
+      const result = service.parse(testString);
+
+      expect(result).toEqual(undefined);
+    });
+  });
+
+  describe('input sanitization', () => {
     it('removes inverted commas (and lookalikes) from input values', () => {
       const testString = "1'2`3’4´56 / 12´345`6";
 
