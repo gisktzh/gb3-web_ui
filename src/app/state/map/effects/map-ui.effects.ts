@@ -51,7 +51,7 @@ export class MapUiEffects {
           case 'print':
             return PrintActions.loadPrintCapabilities();
           case 'data-download':
-            return DataDownloadProductActions.loadProducts();
+            return DataDownloadProductActions.loadRelevantProductsIds();
         }
       }),
     );
@@ -196,7 +196,7 @@ export class MapUiEffects {
     return this.actions$.pipe(
       ofType(MapUiActions.toggleToolMenu),
       filter((action) => action.tool === 'data-download'),
-      map(() => DataDownloadProductActions.loadProducts()),
+      map(() => DataDownloadProductActions.loadProductsList()),
     );
   });
 

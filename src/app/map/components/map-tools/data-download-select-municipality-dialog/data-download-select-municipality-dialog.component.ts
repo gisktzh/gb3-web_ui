@@ -3,9 +3,9 @@ import {LoadingState} from '../../../../shared/types/loading-state.type';
 import {BehaviorSubject, Subscription, tap} from 'rxjs';
 import {MatDialogRef} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
-import {selectLoadingState, selectProducts} from '../../../../state/map/reducers/data-download-product.reducer';
-import {Municipality} from '../../../../shared/interfaces/geoshop-product.interface';
 import {FormControl, Validators} from '@angular/forms';
+import {Municipality} from '../../../../shared/interfaces/gb3-geoshop-product.interface';
+import {selectMunicipalities, selectMunicipalitiesLoadingState} from '../../../../state/map/reducers/data-download-region.reducer';
 
 @Component({
   selector: 'data-download-select-municipality-dialog',
@@ -20,8 +20,8 @@ export class DataDownloadSelectMunicipalityDialogComponent implements OnInit, On
   public municipalityFormControl: FormControl<Municipality | null> = new FormControl({value: null, disabled: true}, [Validators.required]);
 
   private readonly subscriptions: Subscription = new Subscription();
-  private readonly products$ = this.store.select(selectProducts);
-  private readonly loadingState$ = this.store.select(selectLoadingState);
+  private readonly municipalities$ = this.store.select(selectMunicipalities);
+  private readonly loadingState$ = this.store.select(selectMunicipalitiesLoadingState);
 
   constructor(
     private readonly dialogRef: MatDialogRef<DataDownloadSelectMunicipalityDialogComponent, Municipality | undefined>,
@@ -38,10 +38,10 @@ export class DataDownloadSelectMunicipalityDialogComponent implements OnInit, On
 
   public initSubscriptions() {
     this.subscriptions.add(
-      this.products$
+      this.municipalities$
         .pipe(
-          tap((products) => {
-            this.municipalities = products?.municipalities;
+          tap((municipalities) => {
+            this.municipalities = municipalities;
             this.updateFilteredMunicipalities();
           }),
         )

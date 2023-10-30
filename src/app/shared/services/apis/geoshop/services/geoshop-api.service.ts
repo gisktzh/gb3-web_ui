@@ -63,7 +63,7 @@ export class GeoshopApiService extends BaseApiService {
       perimeterType: 'indirect',
       products: [],
       email: '',
-      identifiers: [selection.municipality.id],
+      identifiers: [selection.municipality.bfsNo.toString()],
       layerName: 'commune',
     };
   }

@@ -4,7 +4,10 @@ export interface ProductsList {
   /** Timestamp of product list in ISO8601 format */
   timestamp: string;
   products: Product[];
-  municipalities: Municipality[];
+}
+
+export interface HasBoundingBox {
+  boundingBox: SupportedGeometry;
 }
 
 export interface Municipality {
@@ -12,31 +15,30 @@ export interface Municipality {
   bfsNo: number;
   /** Municipality name */
   name: string;
-  /** GeoJSON geometry object */
-  boundingbox: SupportedGeometry;
 }
+
+export type CantonWithGeometry = HasBoundingBox;
+export type MunicipalityWithGeometry = Municipality & HasBoundingBox;
 
 export interface Product {
   /** Product ID */
   id: string;
   /** Product GISZHNR */
-  giszhnr: number;
-  /** Product name */
-  name: string;
-  /** Product type */
-  type: 'Vektor' | 'Raster';
-  /** Product keywords as comma-separated list */
-  keywords: string | null;
-  /** Product themes as comma-separated list */
-  themes: string | null;
-  /** Product description */
-  description: string;
+  gisZHNr: number;
   /** Product OGD flag */
   ogd: boolean;
-  /** Product URL for non-OGD products */
-  nonOgdProductUrl: string | null;
+  /** Product name */
+  name: string;
+  /** Product keywords */
+  keywords: string[];
+  /** Product themes */
+  themes: string[];
   /** Available Product formats */
   formats: ProductFormat[];
+  /** Geolion Geodatensatz UUID foreign key */
+  geolionGeodatensatzUuid?: string;
+  /** Product URL for non-OGD products */
+  nonOgdProductUrl?: string;
 }
 
 export interface ProductFormat {

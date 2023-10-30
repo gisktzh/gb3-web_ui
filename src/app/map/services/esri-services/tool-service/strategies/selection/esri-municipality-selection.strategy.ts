@@ -8,11 +8,11 @@ import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import {AbstractEsriSelectionStrategy} from './abstract-esri-selection.strategy';
 import Polygon from '@arcgis/core/geometry/Polygon';
 import Graphic from '@arcgis/core/Graphic';
-import {Municipality} from '../../../../../../shared/interfaces/geoshop-product.interface';
 import {map} from 'rxjs/operators';
 import {SelectionCallbackHandler} from '../../interfaces/selection-callback-handler.interface';
 import {UnstyledInternalDrawingRepresentation} from '../../../../../../shared/interfaces/internal-drawing-representation.interface';
 import {InternalDrawingLayer} from '../../../../../../shared/enums/drawing-layer.enum';
+import {Municipality} from '../../../../../../shared/interfaces/gb3-geoshop-product.interface';
 
 export class EsriMunicipalitySelectionStrategy extends AbstractEsriSelectionStrategy {
   constructor(

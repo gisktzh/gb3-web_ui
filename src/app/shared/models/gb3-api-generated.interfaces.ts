@@ -9,6 +9,10 @@
  * ---------------------------------------------------------------
  */
 
+export interface Canton {
+  boundingbox: Geometry;
+}
+
 export interface Feature {
   feature_info: {
     query_position: QueryCoordinates;
@@ -152,6 +156,18 @@ export interface MetadataService {
 
 export interface MetadataServices {
   services: Service[];
+}
+
+/** List of municipalities */
+export type MunicipalitiesList = MunicipalityItem[];
+
+export interface Municipality {
+  /** Municipality BFS number */
+  bfs_no: number;
+  /** Municipality name */
+  name: string;
+  /** GeoJSON geometry object */
+  boundingbox: Geometry;
 }
 
 export interface PersonalFavorite {
@@ -381,9 +397,10 @@ export interface ProductsList {
   /** Timestamp of product list in ISO8601 format */
   timestamp: string;
   products: ProductItem[];
-  relevant_products: ProductItem[];
-  municipalities: MunicipalityItem[];
 }
+
+/** List of relevant products' IDs */
+export type RelevantProductsList = string[];
 
 export type SearchResultsList = {
   index: string;
@@ -869,8 +886,6 @@ export interface MunicipalityItem {
   bfs_no: number;
   /** Municipality name */
   name: string;
-  /** GeoJSON geometry object */
-  boundingbox: Geometry;
 }
 
 export interface Product {
@@ -932,48 +947,20 @@ export interface Product {
 }
 
 export interface ProductItem {
+  /** Geolion Geodatensatz UUID foreign key */
+  geolion_geodatensatz_uuid: string | null;
   /** Product ID */
   id: string;
   /** Product GISZHNR */
   giszhnr: number;
-  /** Product AKS type */
-  akstype: string | null;
-  /** Product category - 1 is OGD, 2 is NOGD */
-  category: number;
-  /** Product key */
-  key: string | null;
-  /** Product name */
-  name: string;
-  /** Product type */
-  type: 'Vektor' | 'Raster';
-  /** Product gesetzklasse */
-  gesetzklasse: string;
-  /** Product geoshopverfahren */
-  geoshopverfahren: string;
-  /** Product keywords as comma-separated list */
-  keywords: string | null;
-  /** Product themes as comma-separated list */
-  themes: string | null;
-  /** Product description */
-  description: string;
-  /** Product service URL */
-  service_url: string | null;
   /** Product OGD flag */
   ogd: boolean;
-  /** Product URL for non-OGD products */
-  url: string | null;
-  dataowner: {
-    /** Product dataowner name */
-    name: string;
-    /** Product dataowner phone */
-    phone: string;
-    /** Product dataowner email */
-    email: string;
-    /** Product dataowner amt */
-    amt: string;
-    /** Product dataowner fachstelle */
-    fachstelle: string | null;
-  };
+  /** Product name */
+  name: string;
+  /** Product keywords */
+  keywords: string[] | null;
+  /** Product themes */
+  themes: string[] | null;
   /** Available Product formats */
   formats: {
     /** Format ID */
@@ -988,6 +975,8 @@ export interface ProductItem {
     /** Fixed size flag */
     is_fixed_size: boolean | null;
   }[];
+  /** Product URL for non-OGD products */
+  url: string | null;
 }
 
 export interface QueryCoordinates {
@@ -1144,6 +1133,8 @@ export type VectorLayerStyles = {
   };
 };
 
+export type CantonListData = Canton;
+
 export type TopicsFeatureInfoDetailData = Feature;
 
 export type GeneralInfoListData = General;
@@ -1177,6 +1168,10 @@ export type MetadataServicesListData = MetadataServices;
 
 export type MetadataServicesDetailData = MetadataService;
 
+export type MunicipalitiesListData = MunicipalitiesList;
+
+export type MunicipalitiesDetailData = Municipality;
+
 export type UserFavoritesListData = PersonalFavorite[];
 
 export type UserFavoritesCreateData = PersonalFavorite;
@@ -1203,6 +1198,8 @@ export interface PrintLegendCreateData {
 }
 
 export type PrintDetailData = any;
+
+export type ProductsRelevantListData = RelevantProductsList;
 
 export type ProductsListData = ProductsList;
 
