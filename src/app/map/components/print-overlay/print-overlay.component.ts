@@ -3,7 +3,7 @@ import {MapConfigUrlService} from '../../services/map-config-url.service';
 import {ActivatedRoute} from '@angular/router';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
-import {PrintType} from '../../types/print.type';
+import {OverlayType} from '../../../shared/types/overlay.type';
 import {LegendDisplay} from '../../../shared/interfaces/legend.interface';
 import {FeatureInfoResultDisplay} from '../../../shared/interfaces/feature-info.interface';
 import {selectLegendItemsForDisplay} from '../../../state/map/selectors/legend-result-display.selector';
@@ -15,7 +15,7 @@ import {selectFeatureInfosForDisplay} from '../../../state/map/selectors/feature
   styleUrls: ['./print-overlay.component.scss'],
 })
 export class PrintOverlayComponent implements OnInit, OnDestroy {
-  public printType: PrintType | undefined = undefined;
+  public printType: OverlayType | undefined = undefined;
   public legendItems: LegendDisplay[] = [];
   public featureInfoData: FeatureInfoResultDisplay[] = [];
   private readonly legendItems$ = this.store.select(selectLegendItemsForDisplay);

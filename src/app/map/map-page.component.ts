@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import {MapConfigUrlService} from './services/map-config-url.service';
-import {PrintType} from './types/print.type';
+import {OverlayType} from '../shared/types/overlay.type';
 import {OnboardingGuideService} from '../onboarding-guide/services/onboarding-guide.service';
 import {mapOnboardingGuideConfig} from '../onboarding-guide/data/map-onboarding-guide.config';
 import {Store} from '@ngrx/store';
@@ -54,7 +54,7 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
     this.onboardingGuideService.autoStart();
   }
 
-  public showPrint(printType: PrintType) {
+  public showPrint(printType: OverlayType) {
     this.mapConfigUrlService.activatePrintMode(printType);
   }
 

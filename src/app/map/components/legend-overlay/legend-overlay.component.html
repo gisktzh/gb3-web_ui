@@ -3,6 +3,7 @@
   (closeEvent)="close()"
   (printButtonEvent)="print()"
   [isPrintButtonEnabled]="showInteractiveElements && loadingState === 'loaded'"
+  [printLoadingState]="printLoadingState"
   [showPrintButton]="showInteractiveElements"
   [isVisible]="isVisible"
   overlayTitle="Legende"
