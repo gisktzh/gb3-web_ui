@@ -6,9 +6,21 @@ import {PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.inter
 })
 export class CoordinateParserService {
   public parse(value: string): PointWithSrs | undefined {
-    const isolatedString = value.replace(/ /g, '');
+    const sanitizedString = this.sanitizeInput(value);
 
-    return this.isValidCoordinatePair(isolatedString);
+    return this.isValidCoordinatePair(sanitizedString);
+  }
+
+  /**
+   * Performs a basic sanitization of the input. It replaces
+   * * all whitespaces
+   * * all inverted commas (and lookalikes, i.e. '`’´)
+   * with an empty string. This allows for various number format inputs as well as separators.
+   * @param value
+   * @private
+   */
+  private sanitizeInput(value: string): string {
+    return value.replace(/['`’´ ]/g, '');
   }
 
   private isValidCoordinatePair(value: string): PointWithSrs | undefined {

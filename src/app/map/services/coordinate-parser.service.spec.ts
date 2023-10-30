@@ -44,6 +44,15 @@ describe('CoordinateParserService', () => {
       expect(result).toEqual(expected);
     });
 
+    it('removes inverted commas (and lookalikes) from input values', () => {
+      const testString = "1'2`3’4´56 / 12´345`6";
+
+      const result = service.parse(testString);
+
+      const expected: PointWithSrs = {type: 'Point', coordinates: [123456, 123456], srs: 2056};
+      expect(result).toEqual(expected);
+    });
+
     it('returns undefined if only one number is present', () => {
       const testString = '456,';
 
