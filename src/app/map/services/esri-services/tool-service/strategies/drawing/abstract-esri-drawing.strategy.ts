@@ -26,8 +26,8 @@ export abstract class AbstractEsriDrawingStrategy extends AbstractEsriDrawableTo
     });
   }
 
-  protected handleComplete(graphic: Graphic) {
+  protected handleComplete(graphic: Graphic, labelText?: string) {
     this.setIdentifierOnGraphic(graphic);
-    this.completeDrawingCallbackHandler(graphic);
+    this.completeDrawingCallbackHandler(graphic, labelText);
   }
 }

@@ -22,10 +22,16 @@ export class EsriSymbolizationService {
 
   constructor(private readonly configService: ConfigService) {}
 
-  public createSymbolizationForDrawingLayer(geometry: GeometryWithSrs, drawingLayer: DrawingLayer): __esri.Symbol {
+  public createSymbolizationForDrawingLayer(geometry: GeometryWithSrs, drawingLayer: DrawingLayer, label?: string): __esri.Symbol {
     switch (geometry.type) {
       case 'Point':
       case 'MultiPoint':
+        // this is only required for drawings since labels for measurements will be regenerated afterwards
+        if (drawingLayer === 'drawings' && label) {
+          const textSymbol = this.createTextSymbolization(drawingLayer);
+          textSymbol.text = label;
+          return textSymbol;
+        }
         return this.createPointSymbolization(drawingLayer);
       case 'LineString':
       case 'MultiLineString':

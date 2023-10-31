@@ -330,7 +330,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
           layer,
           this.esriMapViewService.mapView,
           textStyle,
-          (geometry) => this.complete(geometry),
+          (geometry, labelText) => this.complete(geometry, labelText),
           this.dialogService,
         );
         break;
@@ -428,7 +428,11 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
   }
 
   private createGraphicsForDrawing(drawing: Gb3StyledInternalDrawingRepresentation, layerIdentifier: DrawingLayer) {
-    const symbolization = this.esriSymbolizationService.createSymbolizationForDrawingLayer(drawing.geometry, layerIdentifier);
+    const symbolization = this.esriSymbolizationService.createSymbolizationForDrawingLayer(
+      drawing.geometry,
+      layerIdentifier,
+      drawing.labelText,
+    );
     const graphics: Graphic[] = [];
 
     const geometry = this.convertGeoJsonToArcGIS(drawing.geometry);
