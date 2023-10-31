@@ -18,6 +18,11 @@ $column-gap: 8px;
   & .hero-header__title {
     margin-bottom: 0;
     word-wrap: break-word;
+    font-size: 72px;
+
+    &--mobile {
+      font-size: 32px;
+    }
   }
 
   & .hero-header__intro-paragraph {
