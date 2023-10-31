@@ -3,6 +3,7 @@ import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {AbstractEsriDrawableToolStrategy} from '../abstract-esri-drawable-tool.strategy';
 import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
 import {UserDrawingLayer} from '../../../../../../shared/enums/drawing-layer.enum';
+import Graphic from '@arcgis/core/Graphic';
 
 export abstract class AbstractEsriDrawingStrategy extends AbstractEsriDrawableToolStrategy {
   public readonly internalLayerType: UserDrawingLayer = UserDrawingLayer.Drawings;
@@ -19,10 +20,14 @@ export abstract class AbstractEsriDrawingStrategy extends AbstractEsriDrawableTo
         case 'cancel':
           break; // currently, these events do not trigger any action
         case 'complete':
-          this.setIdentifierOnGraphic(graphic);
-          this.completeDrawingCallbackHandler(graphic);
+          this.handleComplete(graphic);
           break;
       }
     });
+  }
+
+  protected handleComplete(graphic: Graphic) {
+    this.setIdentifierOnGraphic(graphic);
+    this.completeDrawingCallbackHandler(graphic);
   }
 }

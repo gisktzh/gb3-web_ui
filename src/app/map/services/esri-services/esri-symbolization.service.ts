@@ -126,6 +126,10 @@ export class EsriSymbolizationService {
           strokeColor: (symbol as SimpleFillSymbol).outline.color.toHex(),
           type: 'polygon',
         };
+      case 'text':
+        return {
+          type: 'text',
+        };
       default:
         throw new UnsupportedSymbolizationType(symbol.type);
     }
