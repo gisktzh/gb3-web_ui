@@ -32,6 +32,7 @@
         <expandable-list-item
           *ngIf="!(!!filterString && filteredFavourites.length === 0)"
           [header]="'Favoriten'"
+          [expanded]="!!filterString && filteredFavourites.length <= autoOpenThreshold"
           [filterString]="filterString"
           [loadingState]="favouritesLoadingState"
           [numberOfItems]="filteredFavourites.length"
