@@ -1,5 +1,5 @@
 <div class="map-management-mobile-header">
-  <div class="map-management-mobile-header__buttons" *ngIf="!isFiltering">
+  <div class="map-management-mobile-header__buttons" *ngIf="filterString === undefined">
     <button
       [ngClass]="{'map-management-mobile-header__buttons__button--selected': activeTab === 'activeMaps'}"
       class="map-management-mobile-header__buttons__button"
@@ -34,7 +34,7 @@
         class="map-management-mobile-header__tools__filter__input"
         placeholder="Karten und Layer filtern"
         type="text"
-        (focus)="setIsFiltering(true)"
+        (focus)="startFiltering()"
       />
       <span class="map-management-mobile-header__tools__filter__input-icon">
         <mat-icon svgIcon="ktzh_search"></mat-icon>
@@ -88,7 +88,7 @@
     </div>
   </div>
 </div>
-<div class="map-management-mobile-content" [ngClass]="{'map-management-mobile-content--filtering': isFiltering}">
+<div class="map-management-mobile-content" [ngClass]="{'map-management-mobile-content--filtering': filterString !== undefined}">
   <div [ngSwitch]="activeTab" body>
     <active-map-items *ngSwitchCase="'activeMaps'"></active-map-items>
     <map-data-catalogue *ngSwitchCase="'mapsCatalogue'"></map-data-catalogue>

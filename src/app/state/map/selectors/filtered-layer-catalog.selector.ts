@@ -3,8 +3,8 @@ import {selectFilterString, selectItems} from '../reducers/layer-catalog.reducer
 import {produce} from 'immer';
 
 export const selectFilteredLayerCatalog = createSelector(selectFilterString, selectItems, (filterString, layerCatalog) => {
-  const lowerCasedFilterString = filterString.toLowerCase();
-  if (lowerCasedFilterString === '') {
+  const lowerCasedFilterString = filterString?.toLowerCase();
+  if (lowerCasedFilterString === '' || lowerCasedFilterString === undefined) {
     return layerCatalog;
   }
 

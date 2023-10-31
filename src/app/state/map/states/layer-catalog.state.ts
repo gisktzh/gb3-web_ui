@@ -3,6 +3,5 @@ import {Topic} from '../../../shared/interfaces/topic.interface';
 
 export interface LayerCatalogState extends HasLoadingState {
   items: Topic[];
-  filterString: string;
-  isFiltering: boolean;
+  filterString: string | undefined;
 }
