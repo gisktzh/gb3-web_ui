@@ -5,7 +5,7 @@ import {BottomSheetHeight} from 'src/app/shared/types/bottom-sheet-height.type';
 import {ResizeHandlerLocation} from 'src/app/shared/types/resize-handler-location.type';
 import {StyleExpression} from 'src/app/shared/types/style-expression.type';
 import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
-import {selectIsFiltering} from 'src/app/state/map/reducers/layer-catalog.reducer';
+import {selectFilterString} from 'src/app/state/map/reducers/layer-catalog.reducer';
 import {selectMapAttributeFiltersItem} from 'src/app/state/map/selectors/map-attribute-filters-item.selector';
 
 @Component({
@@ -18,10 +18,10 @@ export class BottomSheetItemComponent implements OnInit, OnDestroy {
   @Input() public usePrimaryColor: boolean = false;
   @Input() public bottomSheetHeight: BottomSheetHeight = 'small';
   @Input() public showHeader: boolean = true;
-  public isFiltering: boolean = false;
+  public filterString: string | undefined = undefined;
   public mapAttributeFiltersItemTitle: string | undefined;
 
-  private readonly isFiltering$ = this.store.select(selectIsFiltering);
+  private readonly filterString$ = this.store.select(selectFilterString);
   private readonly mapAttributeFiltersItem$ = this.store.select(selectMapAttributeFiltersItem);
   private readonly subscriptions: Subscription = new Subscription();
 
@@ -53,6 +53,6 @@ export class BottomSheetItemComponent implements OnInit, OnDestroy {
         .pipe(tap((mapAttributeFiltersItem) => (this.mapAttributeFiltersItemTitle = mapAttributeFiltersItem?.title)))
         .subscribe(),
     );
-    this.subscriptions.add(this.isFiltering$.pipe(tap((isFiltering) => (this.isFiltering = isFiltering))).subscribe());
+    this.subscriptions.add(this.filterString$.pipe(tap((filterString) => (this.filterString = filterString))).subscribe());
   }
 }

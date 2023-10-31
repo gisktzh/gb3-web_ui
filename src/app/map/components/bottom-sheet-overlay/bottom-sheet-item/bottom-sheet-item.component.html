@@ -1,7 +1,7 @@
 <mat-card
   class="bottom-sheet-item"
   [style]="resizeableStyle"
-  [ngClass]="isFiltering ? 'bottom-sheet-item--large' : 'bottom-sheet-item--' + bottomSheetHeight"
+  [ngClass]="filterString !== undefined ? 'bottom-sheet-item--large' : 'bottom-sheet-item--' + bottomSheetHeight"
 >
   <mat-card-header class="bottom-sheet-item__header" [ngClass]="{'bottom-sheet-item__header--primary-color': usePrimaryColor}">
     <div class="bottom-sheet-item__header__container">

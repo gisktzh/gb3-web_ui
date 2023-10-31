@@ -8,7 +8,7 @@ import {ActiveMapItemActions} from 'src/app/state/map/actions/active-map-item.ac
 import {LayerCatalogActions} from 'src/app/state/map/actions/layer-catalog.actions';
 import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
 import {selectItems} from 'src/app/state/map/reducers/active-map-item.reducer';
-import {selectIsFiltering} from 'src/app/state/map/reducers/layer-catalog.reducer';
+import {selectFilterString} from 'src/app/state/map/reducers/layer-catalog.reducer';
 import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
 
 type TabType = 'activeMaps' | 'mapsCatalogue';
@@ -30,13 +30,13 @@ export class MapManagementMobileComponent implements OnInit, OnDestroy, AfterVie
   public numberOfUnreadNotices: number = 0;
   public activeTab: TabType = 'mapsCatalogue';
   public isAuthenticated: boolean = false;
-  public isFiltering: boolean = false;
+  public filterString: string | undefined = undefined;
   public readonly favouriteHelperMessages = FAVOURITE_HELPER_MESSAGES;
 
   private readonly subscriptions: Subscription = new Subscription();
   private readonly activeMapItems$ = this.store.select(selectItems);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
-  private readonly isFiltering$ = this.store.select(selectIsFiltering);
+  private readonly filterString$ = this.store.select(selectFilterString);
   @ViewChild('filterInput') private readonly input!: ElementRef;
 
   constructor(private readonly store: Store) {
@@ -97,12 +97,11 @@ export class MapManagementMobileComponent implements OnInit, OnDestroy, AfterVie
 
   public clearInput() {
     this.input.nativeElement.value = '';
-    this.store.dispatch(LayerCatalogActions.setFilterString({filterString: ''}));
-    this.setIsFiltering(false);
+    this.store.dispatch(LayerCatalogActions.setFilterString({filterString: undefined}));
   }
 
-  public setIsFiltering(isFiltering: boolean) {
-    this.store.dispatch(LayerCatalogActions.setIsFiltering({isFiltering}));
+  public startFiltering() {
+    this.store.dispatch(LayerCatalogActions.setFilterString({filterString: ''}));
   }
 
   private initSubscriptions() {
@@ -126,6 +125,6 @@ export class MapManagementMobileComponent implements OnInit, OnDestroy, AfterVie
         )
         .subscribe(),
     );
-    this.subscriptions.add(this.isFiltering$.pipe(tap((isFiltering) => (this.isFiltering = isFiltering))).subscribe());
+    this.subscriptions.add(this.filterString$.pipe(tap((filterString) => (this.filterString = filterString))).subscribe());
   }
 }
