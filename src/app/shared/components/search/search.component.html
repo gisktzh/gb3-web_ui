@@ -7,7 +7,7 @@
       [ngClass]="{'search__bar__input--mobile': screenMode === 'mobile'}"
       [placeholder]="placeholderText"
       type="text"
-      (focus)="focus.emit()"
+      (focus)="focusEvent.emit()"
     />
     <ng-container *ngIf="showFilterButton && (mode === 'compact' || mode === 'mobile')">
       <button
