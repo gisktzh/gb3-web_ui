@@ -1,5 +1,4 @@
 import {Component, Input} from '@angular/core';
-import {Topic} from '../../interfaces/topic.interface';
 import {LoadingState} from '../../types/loading-state.type';
 
 @Component({
@@ -8,13 +7,11 @@ import {LoadingState} from '../../types/loading-state.type';
   styleUrls: ['./expandable-list-item.component.scss'],
 })
 export class ExpandableListItemComponent {
-  @Input() public topic: Topic = {title: '', maps: []};
   @Input() public expanded: boolean = false;
   @Input() public header: string = '';
   @Input() public filterString: string = '';
-  @Input() public filteredMapsLength: number = 0;
-  @Input() public searchResultsLength: number = 0;
   @Input() public disabled: boolean = false;
   @Input() public loadingState: LoadingState = undefined;
   @Input() public numberOfItems: number = 0;
+  @Input() public isFilter: boolean = false;
 }

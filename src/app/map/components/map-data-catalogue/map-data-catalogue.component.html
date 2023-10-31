@@ -36,6 +36,7 @@
           [loadingState]="favouritesLoadingState"
           [numberOfItems]="filteredFavourites.length"
           [disabled]="favouritesLoadingState === 'loading' || favouritesLoadingState === 'error'"
+          [isFilter]="true"
         >
           <!-- 'Favourite' content -->
           <p *ngIf="filteredFavourites.length === 0"><em>Noch keine Favoriten hinzugefügt.</em></p>
@@ -55,11 +56,12 @@
       <!-- Topics -->
       <ng-container *ngFor="let topic of topics; trackBy: trackByTopicTitle">
         <expandable-list-item
-          [topic]="topic"
+          [numberOfItems]="topic.maps.length"
           [header]="topic.title"
           [filterString]="filterString"
           [expanded]="!!filterString && topic.maps.length <= autoOpenThreshold"
           [loadingState]="catalogueLoadingState"
+          [isFilter]="true"
         >
           <!-- 'Topic' content -->
 
