@@ -13,7 +13,7 @@ import {NavbarMobileDialogComponent} from './navbar-mobile-dialog/navbar-mobile-
 })
 export class NavbarMobileComponent implements OnInit, OnDestroy {
   private readonly subscriptions: Subscription = new Subscription();
-  public currentMainPage: string = '';
+  public currentMainPage: string = MainPage.Maps;
   protected readonly mainPageEnum = MainPage;
 
   constructor(
@@ -29,7 +29,6 @@ export class NavbarMobileComponent implements OnInit, OnDestroy {
             if (event instanceof NavigationEnd) {
               const url = event.url;
               this.currentMainPage = url.split('?')[0].split('/')[1];
-              console.log(this.currentMainPage);
             }
           }),
         )
