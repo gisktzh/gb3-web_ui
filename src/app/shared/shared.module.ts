@@ -14,7 +14,6 @@ import {HeroHeaderComponent} from './components/hero-header/hero-header.componen
 import {LinkListItemComponent} from './components/link-list/link-list-item/link-list-item.component';
 import {LinkListComponent} from './components/link-list/link-list.component';
 import {LoadingAndProcessBarComponent} from './components/loading-and-process-bar/loading-and-process-bar.component';
-import {MobileWarningComponent} from './components/mobile-warning/mobile-warning.component';
 import {NavbarMobileDialogComponent} from './components/navbar-mobile/navbar-mobile-dialog/navbar-mobile-dialog.component';
 import {NavbarMobileComponent} from './components/navbar-mobile/navbar-mobile.component';
 import {NavbarComponent} from './components/navbar/navbar.component';
@@ -43,7 +42,6 @@ import {LayerTooltipPipe} from './pipes/layer-tooltip.pipe';
     HighlightSearchQueryPipe,
     ResizeHandlerComponent,
     DragCursorDirective,
-    MobileWarningComponent,
     FormatContentPipe,
     PageNotificationComponent,
     MainFooterComponent,
@@ -79,7 +77,6 @@ import {LayerTooltipPipe} from './pipes/layer-tooltip.pipe';
     HighlightSearchQueryPipe,
     ResizeHandlerComponent,
     DragCursorDirective,
-    MobileWarningComponent,
     FormatContentPipe,
     PageNotificationComponent,
     MainFooterComponent,
