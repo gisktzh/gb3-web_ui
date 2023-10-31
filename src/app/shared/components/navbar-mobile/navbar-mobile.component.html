@@ -1,4 +1,4 @@
-<div class="navbar-mobile" *ngIf="currentMainPage === mainPageEnum.Maps; else standard">
+<div class="navbar-mobile" *ngIf="isSimplifiedPage; else standard">
   <button (click)="showMenu()" class="navbar-mobile__button" mat-icon-button>
     <mat-icon svgIcon="ktzh_menu_mobile"></mat-icon>
   </button>

@@ -1,8 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
-import {NavigationEnd, Router} from '@angular/router';
+import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
-import {MainPage} from '../../enums/main-page.enum';
+import {selectUrlState} from 'src/app/state/app/reducers/url.reducer';
 import {PanelClass} from '../../enums/panel-class.enum';
 import {NavbarMobileDialogComponent} from './navbar-mobile-dialog/navbar-mobile-dialog.component';
 
@@ -12,24 +12,22 @@ import {NavbarMobileDialogComponent} from './navbar-mobile-dialog/navbar-mobile-
   styleUrls: ['./navbar-mobile.component.scss'],
 })
 export class NavbarMobileComponent implements OnInit, OnDestroy {
+  public isSimplifiedPage: boolean = false;
+
+  private readonly urlState$ = this.store.select(selectUrlState);
   private readonly subscriptions: Subscription = new Subscription();
-  public currentMainPage: string = MainPage.Maps;
-  protected readonly mainPageEnum = MainPage;
 
   constructor(
     public dialog: MatDialog,
-    private readonly router: Router,
+    private readonly store: Store,
   ) {}
 
   public ngOnInit() {
     this.subscriptions.add(
-      this.router.events
+      this.urlState$
         .pipe(
-          tap((event) => {
-            if (event instanceof NavigationEnd) {
-              const url = event.url;
-              this.currentMainPage = url.split('?')[0].split('/')[1];
-            }
+          tap(({isSimplifiedPage}) => {
+            this.isSimplifiedPage = isSimplifiedPage;
           }),
         )
         .subscribe(),
