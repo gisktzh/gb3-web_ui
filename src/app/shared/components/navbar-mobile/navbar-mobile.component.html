@@ -1,5 +1,24 @@
-<div class="navbar-mobile">
-  <button (click)="showMenu()" class="navbar-mobile__button" color="accent" mat-icon-button>
+<div class="navbar-mobile" *ngIf="currentMainPage === mainPageEnum.Maps; else standard">
+  <button (click)="showMenu()" class="navbar-mobile__button" mat-icon-button>
     <mat-icon svgIcon="ktzh_menu_mobile"></mat-icon>
   </button>
 </div>
+
+<ng-template #standard>
+  <mat-toolbar class="navbar" color="primary">
+    <span class="navbar__item"> GIS-Browser </span>
+    <span class="navbar__spacer"></span>
+    <a class="navbar__item" mat-button (click)="showMenu()">
+      Menu
+      <mat-icon svgIcon="ktzh_menu_mobile" iconPositionEnd>launch</mat-icon>
+    </a>
+    <div class="navbar__underline-container">
+      <div class="navbar__underline-container__content-container">
+        <span></span>
+        <span class="navbar__underline"></span>
+        <span class="navbar__underline"></span>
+      </div>
+      <span class="navbar__underline" [ngStyle]="{width: '10px'}"></span>
+    </div>
+  </mat-toolbar>
+</ng-template>

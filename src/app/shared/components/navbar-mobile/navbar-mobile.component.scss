@@ -9,6 +9,9 @@
   .navbar-mobile__button {
     @include mixins.tool-button-mobile;
   }
+  .navbar-mobile__button2 {
+    @include mixins.tool-button-mobile;
+  }
 }
 
 .navbar-mobile {
@@ -18,4 +21,35 @@
   right: 12px;
   background-color: ktzh-variables.$zh-background-color;
   z-index: z-index-variables.$navbar;
+}
+
+.navbar {
+  position: absolute;
+  display: flex;
+  justify-content: space-between;
+
+  .navbar__spacer {
+    flex: 1 1 auto;
+  }
+}
+
+.navbar__underline-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+
+  .navbar__underline-container__content-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto 55vw auto;
+  }
+
+  .navbar__underline {
+    width: 100%;
+    border-top: 2px solid ktzh-variables.$zh-white;
+  }
 }
