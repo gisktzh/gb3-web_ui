@@ -6,6 +6,10 @@
   width: ktzh-variables.$zh-layout-max-content-width;
   gap: 32px;
 
+  &--mobile {
+    width: calc(100vw - 24px);
+  }
+
   .start-page-search__results__groups__group {
     box-sizing: border-box;
   }

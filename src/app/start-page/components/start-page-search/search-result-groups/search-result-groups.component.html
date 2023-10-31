@@ -1,4 +1,9 @@
-<mat-accordion class="start-page-search__results__groups" displayMode="flat" multi="true">
+<mat-accordion
+  class="start-page-search__results__groups"
+  displayMode="flat"
+  multi="true"
+  [ngClass]="{'start-page-search__results__groups--mobile': screenMode === 'mobile'}"
+>
   <search-result-group
     *ngIf="filteredMaps.length > 0 || layerCatalogLoadingState === 'loading' || layerCatalogLoadingState === 'error'"
     class="start-page-search__results__groups__group"

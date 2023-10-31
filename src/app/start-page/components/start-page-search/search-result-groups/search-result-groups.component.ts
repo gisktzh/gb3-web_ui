@@ -5,7 +5,9 @@ import {FaqItem} from 'src/app/shared/interfaces/faq.interface';
 import {OverviewMetadataItem} from 'src/app/shared/models/overview-metadata-item.model';
 import {ConfigService} from 'src/app/shared/services/config.service';
 import {LoadingState} from 'src/app/shared/types/loading-state.type';
+import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {SearchActions} from 'src/app/state/app/actions/search.actions';
+import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {selectSearchApiLoadingState} from 'src/app/state/app/reducers/search.reducer';
 import {Map} from '../../../../shared/interfaces/topic.interface';
 import {
@@ -29,6 +31,7 @@ export class SearchResultGroupsComponent implements OnInit, OnDestroy {
   public dataCatalogLoadingState: LoadingState;
   public combinedSearchAndDataCatalogLoadingState: LoadingState;
   public searchApiLoadingState: LoadingState;
+  public screenMode: ScreenMode = 'regular';
 
   private readonly searchConfig = this.configService.searchConfig.startPage;
   private readonly searchApiLoadingState$ = this.store.select(selectSearchApiLoadingState);
@@ -37,6 +40,7 @@ export class SearchResultGroupsComponent implements OnInit, OnDestroy {
   private readonly filteredFaqItems$ = this.store.select(selectFilteredFaqItems);
   private readonly filteredMetadataItems$ = this.store.select(selectFilteredMetadataItems);
   private readonly filteredMaps$ = this.store.select(selectFilteredLayerCatalogMaps);
+  private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(
@@ -76,6 +80,7 @@ export class SearchResultGroupsComponent implements OnInit, OnDestroy {
         .subscribe(),
     );
     this.subscriptions.add(this.filteredFaqItems$.pipe(tap((filteredFaqItems) => (this.filteredFaqItems = filteredFaqItems))).subscribe());
+    this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
   }
 
   private updateCombinedSearchAndDataCatalogLoadingState() {

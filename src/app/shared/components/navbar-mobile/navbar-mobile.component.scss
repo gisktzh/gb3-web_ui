@@ -24,9 +24,16 @@
 }
 
 .navbar {
-  position: absolute;
+  position: fixed;
   display: flex;
   justify-content: space-between;
+  padding: 0 12px;
+  z-index: z-index-variables.$navbar;
+
+  .navbar-item {
+    font-size: 16px;
+    font-weight: 400;
+  }
 
   .navbar__spacer {
     flex: 1 1 auto;
