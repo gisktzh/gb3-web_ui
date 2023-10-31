@@ -7,7 +7,7 @@
       (changeSearchTermEvent)="searchForTerm($event)"
       (clearSearchTermEvent)="clearSearchTerm()"
       (openFilterEvent)="openFilterMenu()"
-      (focus)="openBottomSheet()"
+      (focusEvent)="handleFocus()"
       [showClearButton]="screenMode !== 'mobile'"
       [showFilterButton]="screenMode !== 'mobile'"
     ></search>

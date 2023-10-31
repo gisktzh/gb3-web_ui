@@ -65,7 +65,7 @@ export class SearchWindowComponent implements OnInit, OnDestroy {
     });
   }
 
-  public openBottomSheet() {
+  public handleFocus() {
     if (this.screenMode === 'mobile') {
       this.store.dispatch(MapUiActions.showBottomSheet({bottomSheetContent: 'search'}));
     }
