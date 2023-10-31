@@ -28,6 +28,7 @@
     border: 2px solid ktzh-variables.$zh-black40;
     border-radius: ktzh-variables.$zh-border-radius;
     flex-grow: 1;
+    overflow: hidden;
 
     &:focus-within {
       border-color: ktzh-variables.$zh-active-blue;
