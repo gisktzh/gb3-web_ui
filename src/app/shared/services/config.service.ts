@@ -9,7 +9,7 @@ import {defaultRuntimeConfig} from '../configs/runtime.config';
 import {searchIndexConfig, SearchIndexType} from '../configs/search-index.config';
 import {searchConfig} from '../configs/search.config';
 import {layerSymbolizations} from '../configs/symbolization.config';
-import {toolTipLongDelay, toolTipMapToolsAndControls} from '../configs/tooltip.config';
+import {toolTipMapToolsAndControls} from '../configs/tooltip.config';
 import {EmbeddedMapConstants} from '../constants/embedded-map.constants';
 import {Gb2Constants} from '../constants/gb2.constants';
 import {MapConstants} from '../constants/map.constants';
@@ -56,7 +56,6 @@ export class ConfigService {
   };
 
   public readonly tooltipConfig = {
-    longDelay: toolTipLongDelay,
     mapToolsAndControls: toolTipMapToolsAndControls,
   };
 

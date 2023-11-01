@@ -23,7 +23,9 @@
     <ng-container *ngFor="let tableRow of this.tableRows | keyValuePreserveOrder">
       <tr class="feature-info-content__table__row">
         <th class="feature-info-content__table__row__column feature-info-content__table__row__column--header" scope="col">
-          {{ tableRow.key }}
+          <span class="feature-info-content__table__row__column--attribute" [matTooltip]="tableRow.key" showTooltipIfTruncated>{{
+            tableRow.key
+          }}</span>
         </th>
         <td
           (mouseenter)="this.onFeatureHoverStart(cellValue.fid)"
