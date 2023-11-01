@@ -15,6 +15,10 @@ import {ActiveMapItemActions} from '../../../../state/map/actions/active-map-ite
 import {ActiveMapItemFactory} from '../../../../shared/factories/active-map-item.factory';
 import {MapConstants} from '../../../../shared/constants/map.constants';
 import {MatDialogModule} from '@angular/material/dialog';
+import {EsriPointDrawingStrategy} from './strategies/drawing/esri-point-drawing.strategy';
+import {EsriLineDrawingStrategy} from './strategies/drawing/esri-line-drawing.strategy';
+import {EsriPolygonDrawingStrategy} from './strategies/drawing/esri-polygon-drawing.strategy';
+import {EsriTextDrawingStrategy} from './strategies/drawing/esri-text-drawing.strategy';
 
 describe('EsriToolService', () => {
   let service: EsriToolService;
@@ -126,31 +130,77 @@ describe('EsriToolService', () => {
   });
 
   describe('Strategy Handling', () => {
-    beforeEach(() => {
-      const userDrawingLayerId = MapConstants.USER_DRAWING_LAYER_PREFIX + UserDrawingLayer.Measurements;
-      // add the graphic layer to the view to avoid the initialization
-      mapViewService.mapView.map.layers.add(
-        new GraphicsLayer({
-          id: userDrawingLayerId,
-        }),
-      );
-      store.overrideSelector(selectDrawingLayers, [{id: userDrawingLayerId} as DrawingActiveMapItem]);
-      store.refreshState();
+    describe('Measurement', () => {
+      beforeEach(() => {
+        const userDrawingLayerId = MapConstants.USER_DRAWING_LAYER_PREFIX + UserDrawingLayer.Measurements;
+        // add the graphic layer to the view to avoid the initialization
+        mapViewService.mapView.map.layers.add(
+          new GraphicsLayer({
+            id: userDrawingLayerId,
+          }),
+        );
+        store.overrideSelector(selectDrawingLayers, [{id: userDrawingLayerId} as DrawingActiveMapItem]);
+        store.refreshState();
+      });
+      it(`sets the correct strategy for point measurement`, () => {
+        const pointSpy = spyOn(EsriPointMeasurementStrategy.prototype, 'start');
+        service.initializeMeasurement('measure-point');
+        expect(pointSpy).toHaveBeenCalled();
+      });
+      it(`sets the correct strategy for line measurement`, () => {
+        const lineSpy = spyOn(EsriLineMeasurementStrategy.prototype, 'start');
+        service.initializeMeasurement('measure-line');
+        expect(lineSpy).toHaveBeenCalled();
+      });
+      it(`sets the correct strategy for area measurement`, () => {
+        const polygonSpy = spyOn(EsriAreaMeasurementStrategy.prototype, 'start');
+        service.initializeMeasurement('measure-area');
+        expect(polygonSpy).toHaveBeenCalled();
+      });
     });
-    it(`sets the correct strategy for point measurement`, () => {
-      const pointSpy = spyOn(EsriPointMeasurementStrategy.prototype, 'start');
-      service.initializeMeasurement('measure-point');
-      expect(pointSpy).toHaveBeenCalled();
-    });
-    it(`sets the correct strategy for line measurement`, () => {
-      const lineSpy = spyOn(EsriLineMeasurementStrategy.prototype, 'start');
-      service.initializeMeasurement('measure-line');
-      expect(lineSpy).toHaveBeenCalled();
-    });
-    it(`sets the correct strategy for area measurement`, () => {
-      const polygonSpy = spyOn(EsriAreaMeasurementStrategy.prototype, 'start');
-      service.initializeMeasurement('measure-area');
-      expect(polygonSpy).toHaveBeenCalled();
+
+    describe('Drawing', () => {
+      beforeEach(() => {
+        const userDrawingLayerId = MapConstants.USER_DRAWING_LAYER_PREFIX + UserDrawingLayer.Drawings;
+        // add the graphic layer to the view to avoid the initialization
+        mapViewService.mapView.map.layers.add(
+          new GraphicsLayer({
+            id: userDrawingLayerId,
+          }),
+        );
+        store.overrideSelector(selectDrawingLayers, [{id: userDrawingLayerId} as DrawingActiveMapItem]);
+        store.refreshState();
+      });
+      it(`sets the correct strategy for point drawing`, () => {
+        const pointSpy = spyOn(EsriPointDrawingStrategy.prototype, 'start');
+        service.initializeDrawing('draw-point');
+        expect(pointSpy).toHaveBeenCalled();
+      });
+      it(`sets the correct strategy for line drawing`, () => {
+        const lineSpy = spyOn(EsriLineDrawingStrategy.prototype, 'start');
+        service.initializeDrawing('draw-line');
+        expect(lineSpy).toHaveBeenCalled();
+      });
+      it(`sets the correct strategy for polygon drawing`, () => {
+        const polygonSpy = spyOn(EsriPolygonDrawingStrategy.prototype, 'start');
+        service.initializeDrawing('draw-polygon');
+        expect(polygonSpy).toHaveBeenCalled();
+      });
+      it(`sets the correct strategy for text drawing`, () => {
+        const polygonSpy = spyOn(EsriTextDrawingStrategy.prototype, 'start');
+        service.initializeDrawing('draw-text');
+        expect(polygonSpy).toHaveBeenCalled();
+      });
+      it(`sets the correct strategy for text drawing`, () => {
+        const polygonSpy = spyOn(EsriPolygonDrawingStrategy.prototype, 'start');
+        service.initializeDrawing('draw-rectangle');
+        expect(polygonSpy).toHaveBeenCalled();
+      });
+      it(`sets the correct strategy for circle drawing`, () => {
+        const polygonSpy = spyOn(EsriPolygonDrawingStrategy.prototype, 'start');
+        service.initializeDrawing('draw-circle');
+        expect(polygonSpy).toHaveBeenCalled();
+      });
     });
   });
 });
