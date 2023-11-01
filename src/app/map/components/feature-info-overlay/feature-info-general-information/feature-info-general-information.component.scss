@@ -43,7 +43,7 @@ span {
   }
 
   .general-information__additional-content {
-    padding-top: 16px;
+    padding-left: 47px;
 
     .general-information__additional-content__crs,
     .general-information__additional-content__links,
@@ -70,7 +70,6 @@ span {
   display: flex;
   gap: 8px;
   flex-direction: row;
-  flex-wrap: wrap;
   row-gap: 0;
 
   .external-links__button {
