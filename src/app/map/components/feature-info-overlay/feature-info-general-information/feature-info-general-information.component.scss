@@ -30,7 +30,7 @@ span {
     padding: 0 12px;
     background-color: ktzh-variables.$zh-white;
     min-height: 38px;
-    max-height: 38px;
+    height: auto;
 
     .general-information__header__toggle {
       min-width: 24px;
