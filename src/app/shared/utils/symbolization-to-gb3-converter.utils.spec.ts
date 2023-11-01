@@ -1,6 +1,5 @@
-import {Gb3StyledInternalDrawingRepresentation} from '../interfaces/internal-drawing-representation.interface';
+import {Gb3StyledInternalDrawingRepresentation, Gb3StyleRepresentation} from '../interfaces/internal-drawing-representation.interface';
 import {UserDrawingLayer} from '../enums/drawing-layer.enum';
-import {FavouriteGb3DrawingStyle} from '../interfaces/favourite.interface';
 import {
   REDLINING_STYLE_IDENTIFIER,
   REDLINING_STYLE_WITH_LABEL_IDENTIFIER,
@@ -19,14 +18,14 @@ describe('SymbolizationToGb3ConverterUtils', () => {
           geometry: {type: 'Point', srs: 2056, coordinates: []},
           source: UserDrawingLayer.Drawings,
           labelText: 'A',
-          properties: {__id: 'a', style: {} as FavouriteGb3DrawingStyle},
+          properties: {__id: 'a', style: {} as Gb3StyleRepresentation},
         },
         {
           type: 'Feature',
           geometry: {type: 'Point', srs: 2056, coordinates: []},
           source: UserDrawingLayer.Drawings,
           labelText: 'B',
-          properties: {__id: 'b', style: {} as FavouriteGb3DrawingStyle},
+          properties: {__id: 'b', style: {} as Gb3StyleRepresentation},
         },
       ];
 
@@ -44,7 +43,7 @@ describe('SymbolizationToGb3ConverterUtils', () => {
           type: 'Feature',
           geometry: {type: 'Point', srs: 2056, coordinates: []},
           source: UserDrawingLayer.Drawings,
-          properties: {__id: 'a', style: {} as FavouriteGb3DrawingStyle},
+          properties: {__id: 'a', style: {} as Gb3StyleRepresentation},
         },
       ];
 
@@ -59,14 +58,14 @@ describe('SymbolizationToGb3ConverterUtils', () => {
           type: 'Feature',
           geometry: {type: 'Point', srs: 2056, coordinates: []},
           source: UserDrawingLayer.Drawings,
-          properties: {__id: 'a', style: {} as FavouriteGb3DrawingStyle},
+          properties: {__id: 'a', style: {} as Gb3StyleRepresentation},
         },
         {
           type: 'Feature',
           geometry: {type: 'Point', srs: 2056, coordinates: []},
           source: UserDrawingLayer.Drawings,
           labelText: 'B',
-          properties: {__id: 'b', style: {} as FavouriteGb3DrawingStyle},
+          properties: {__id: 'b', style: {} as Gb3StyleRepresentation},
         },
       ];
 

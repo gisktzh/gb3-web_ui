@@ -455,8 +455,10 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
         default:
           throw new UnsupportedLabelType(graphic.geometry.type);
       }
-      const labelSymbolization = this.esriSymbolizationService.createTextSymbolization(UserDrawingLayer.Measurements);
-      labelSymbolization.text = drawing.labelText;
+      const labelSymbolization = this.esriSymbolizationService.createTextSymbolizationWithText(
+        UserDrawingLayer.Measurements,
+        drawing.labelText,
+      );
       graphics.push(new Graphic({geometry: labelPosition, symbol: labelSymbolization}));
     }
 
