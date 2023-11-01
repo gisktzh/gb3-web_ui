@@ -1,7 +1,7 @@
 <loading-and-process-bar [loadingState]="loadingState"></loading-and-process-bar>
 <ng-container *ngIf="loadingState === 'loaded'">
   <feature-info-general-information *ngIf="generalInfoData" [generalInfoData]="generalInfoData"></feature-info-general-information>
-  <mat-divider *ngIf="generalInfoData"></mat-divider>
+  <mat-divider *ngIf="generalInfoData" class="feature-info__divider"></mat-divider>
   <feature-info-item
     *ngFor="let featureInfo of featureInfoData; trackBy: trackById"
     [featureInfo]="featureInfo"
