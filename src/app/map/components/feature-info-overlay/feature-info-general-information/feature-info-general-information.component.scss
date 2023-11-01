@@ -1,9 +1,69 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 @use 'functions/helper.function' as functions;
 @use 'mixins/helpers.mixin' as mixins;
+@use 'mixins/material.mixin' as mat-mixins;
+
+:host ::ng-deep .general-information {
+  &.mat-expansion-panel {
+    @include mixins.no-box-shadow;
+  }
+
+  &--no-content-indent {
+    @include mat-mixins.mat-expansion-panel-remove-content-indent;
+  }
+}
+
+/// todo: maybe add font-family to global CSS styles for all bold tags - needs more checks though
+b {
+  font-family: ktzh-variables.$zh-font-family-bold;
+}
+
+mat-panel-description,
+span {
+  display: block;
+}
 
 .general-information {
-  margin-bottom: 8px;
+  margin-bottom: 12px;
+
+  .general-information__header {
+    padding: 0 12px;
+    background-color: ktzh-variables.$zh-white;
+    min-height: 38px;
+    max-height: 38px;
+
+    .general-information__header__toggle {
+      min-width: 24px;
+      max-width: 24px;
+      order: 0;
+    }
+    .general-information__header__title {
+      margin-left: 12px;
+    }
+  }
+
+  .general-information__additional-content {
+    padding-top: 16px;
+
+    .general-information__additional-content__crs,
+    .general-information__additional-content__links,
+    .general-information__additional-content__list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .general-information__additional-content__links__ref {
+      text-decoration: none;
+      color: ktzh-variables.$zh-active-blue;
+      display: inline-flex;
+      height: 0;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
 }
 
 .external-links {
@@ -28,36 +88,4 @@
       word-break: break-all;
     }
   }
-}
-
-.additional-general-information {
-  margin-top: 8px;
-
-  .additional-general-information__content {
-    padding-top: 16px;
-
-    .additional-general-information__content__crs,
-    .additional-general-information__content__links,
-    .additional-general-information__content__list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .additional-general-information__content__links__ref {
-      text-decoration: none;
-      color: ktzh-variables.$zh-active-blue;
-      display: inline-flex;
-      height: 0;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-  }
-}
-
-/// todo: maybe add font-family to global CSS styles for all bold tags - needs more checks though
-b {
-  font-family: ktzh-variables.$zh-font-family-bold;
 }

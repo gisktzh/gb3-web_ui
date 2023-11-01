@@ -1,10 +1,46 @@
-<div class="general-information">
-  <b>Koordinaten:</b> {{ generalInfoData.locationInformation.spatialReference.coordinates[0] | number: '1.0-10' }} /
-  {{ generalInfoData.locationInformation.spatialReference.coordinates[1] | number: '1.0-10' }}
-  <br />
-  <b>DTM:</b> {{ generalInfoData.locationInformation.heightDtm | number: '1.0-2' }} m / <b>DOM:</b>
-  {{ generalInfoData.locationInformation.heightDom | number: '1.0-2' }} m
-</div>
+<mat-expansion-panel hideToggle #expansionPanel class="general-information general-information--no-content-indent">
+  <mat-expansion-panel-header class="general-information__header">
+    <mat-panel-title>
+      <mat-icon
+        [fontIcon]="expansionPanel.expanded ? 'arrow_drop_down' : 'arrow_right'"
+        class="general-information__header__toggle"
+      ></mat-icon>
+      <div class="general-information__header__title">
+        <span>
+          <b>Koordinaten:</b> {{ generalInfoData.locationInformation.spatialReference.coordinates[0] | number: '1.0-10' }} /
+          {{ generalInfoData.locationInformation.spatialReference.coordinates[1] | number: '1.0-10' }}
+        </span>
+        <span>
+          <b>DTM:</b> {{ generalInfoData.locationInformation.heightDtm | number: '1.0-2' }} m / <b>DOM:</b>
+          {{ generalInfoData.locationInformation.heightDom | number: '1.0-2' }} m
+        </span>
+      </div>
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+  <div class="general-information__additional-content">
+    <ul class="general-information__additional-content__list">
+      <li *ngFor="let aCrs of generalInfoData.alternativeSpatialReferences" class="general-information__additional-content__crs">
+        <b>{{ aCrs.name }}:</b> {{ aCrs.coordinates[0] | number: '1.0-10' }} / {{ aCrs.coordinates[1] | number: '1.0-10' }}
+      </li>
+    </ul>
+    <b>Weitere Kartendienste:</b>
+    <ul class="general-information__additional-content__list">
+      <li *ngFor="let extMap of generalInfoData.externalMaps" class="general-information__additional-content__links">
+        <a
+          [href]="extMap.url"
+          [title]="extMap.name"
+          class="general-information__additional-content__links__ref"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span>{{ extMap.name }}</span
+          ><span><mat-icon [inline]="true">north_east</mat-icon></span></a
+        >
+      </li>
+    </ul>
+  </div>
+</mat-expansion-panel>
+
 <div class="external-links">
   <a
     *ngIf="generalInfoData.parcel"
@@ -28,30 +64,4 @@
     <mat-icon class="external-links__button__icon">download</mat-icon>
     <span class="external-links__button__label">Eigentümerabfrage</span>
   </a>
-</div>
-<div class="additional-general-information">
-  <map-overlay-list-item overlayTitle="Weitere Standortinformationen">
-    <div class="additional-general-information__content">
-      <ul class="additional-general-information__content__list">
-        <li *ngFor="let aCrs of generalInfoData.alternativeSpatialReferences" class="additional-general-information__content__crs">
-          <b>{{ aCrs.name }}:</b> {{ aCrs.coordinates[0] | number: '1.0-10' }} / {{ aCrs.coordinates[1] | number: '1.0-10' }}
-        </li>
-      </ul>
-      <b>Weitere Kartendienste:</b>
-      <ul class="additional-general-information__content__list">
-        <li *ngFor="let extMap of generalInfoData.externalMaps" class="additional-general-information__content__links">
-          <a
-            [href]="extMap.url"
-            [title]="extMap.name"
-            class="additional-general-information__content__links__ref"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <span>{{ extMap.name }}</span
-            ><span><mat-icon [inline]="true">north_east</mat-icon></span></a
-          >
-        </li>
-      </ul>
-    </div>
-  </map-overlay-list-item>
 </div>
