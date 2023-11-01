@@ -1,13 +1,10 @@
 import {Gb3StyledInternalDrawingRepresentation, Gb3StyleRepresentation} from '../interfaces/internal-drawing-representation.interface';
 import {UserDrawingLayer} from '../enums/drawing-layer.enum';
-import {
-  REDLINING_STYLE_IDENTIFIER,
-  REDLINING_STYLE_WITH_LABEL_IDENTIFIER,
-  SymbolizationToGb3ConverterUtils,
-} from './symbolization-to-gb3-converter.utils';
+import {SymbolizationToGb3ConverterUtils} from './symbolization-to-gb3-converter.utils';
 import {Gb3VectorLayer} from '../interfaces/gb3-vector-layer.interface';
 import {MapConstants} from '../constants/map.constants';
 import {validate as validateUUID} from 'uuid';
+import {RedliningIdentifier} from '../enums/redlining-identifier.enum';
 
 describe('SymbolizationToGb3ConverterUtils', () => {
   describe('convertInternalToExternalRepresentation', () => {
@@ -67,12 +64,20 @@ describe('SymbolizationToGb3ConverterUtils', () => {
           labelText: 'B',
           properties: {__id: 'b', style: {} as Gb3StyleRepresentation},
         },
+        {
+          type: 'Feature',
+          geometry: {type: 'Point', srs: 2056, coordinates: []},
+          source: UserDrawingLayer.Drawings,
+          labelText: 'C',
+          properties: {__id: 'b', style: {type: 'text'} as Gb3StyleRepresentation},
+        },
       ];
 
       const actual = SymbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(drawingsMock);
 
-      expect(actual.geojson.features[0].properties.style).toEqual(REDLINING_STYLE_IDENTIFIER);
-      expect(actual.geojson.features[1].properties.style).toEqual(REDLINING_STYLE_WITH_LABEL_IDENTIFIER);
+      expect(actual.geojson.features[0].properties.style).toEqual(RedliningIdentifier.GeometryOnly);
+      expect(actual.geojson.features[1].properties.style).toEqual(RedliningIdentifier.GeometryWithLabel);
+      expect(actual.geojson.features[2].properties.style).toEqual(RedliningIdentifier.LabelOnly);
     });
   });
 
@@ -91,7 +96,7 @@ describe('SymbolizationToGb3ConverterUtils', () => {
                 coordinates: [0, 1337],
               },
               properties: {
-                style: REDLINING_STYLE_IDENTIFIER,
+                style: RedliningIdentifier.GeometryOnly,
                 text: mockText,
               },
             },

@@ -21,8 +21,18 @@ describe('selectUserDrawingsVectorLayers', () => {
 
   it('correctly assigns drawings to their layer', () => {
     const drawingsMock: Gb3StyledInternalDrawingRepresentation[] = [
-      {id: 'a', labelText: 'a', source: UserDrawingLayer.Drawings} as Gb3StyledInternalDrawingRepresentation,
-      {id: 'b', labelText: 'b', source: UserDrawingLayer.Measurements} as Gb3StyledInternalDrawingRepresentation,
+      {
+        id: 'a',
+        labelText: 'a',
+        source: UserDrawingLayer.Drawings,
+        properties: {style: {type: 'point'}},
+      } as Gb3StyledInternalDrawingRepresentation,
+      {
+        id: 'b',
+        labelText: 'b',
+        source: UserDrawingLayer.Measurements,
+        properties: {style: {type: 'point'}},
+      } as Gb3StyledInternalDrawingRepresentation,
     ];
     const visibleLayersMock: UserDrawingLayer[] = [UserDrawingLayer.Measurements, UserDrawingLayer.Drawings];
 
@@ -34,8 +44,18 @@ describe('selectUserDrawingsVectorLayers', () => {
 
   it("does not add invisible layers' features", () => {
     const drawingsMock: Gb3StyledInternalDrawingRepresentation[] = [
-      {id: 'a', labelText: 'a', source: UserDrawingLayer.Drawings} as Gb3StyledInternalDrawingRepresentation,
-      {id: 'b', labelText: 'b', source: UserDrawingLayer.Measurements} as Gb3StyledInternalDrawingRepresentation,
+      {
+        id: 'a',
+        labelText: 'a',
+        source: UserDrawingLayer.Drawings,
+        properties: {style: {type: 'point'}},
+      } as Gb3StyledInternalDrawingRepresentation,
+      {
+        id: 'b',
+        labelText: 'b',
+        source: UserDrawingLayer.Measurements,
+        properties: {style: {type: 'point'}},
+      } as Gb3StyledInternalDrawingRepresentation,
     ];
     const visibleLayersMock: UserDrawingLayer[] = [UserDrawingLayer.Drawings];
 
