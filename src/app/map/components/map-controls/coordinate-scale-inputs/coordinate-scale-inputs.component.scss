@@ -22,6 +22,14 @@
   & .coordinate-scale-inputs__coordinate {
     width: 130px;
   }
+
+  & .coordinate-scale-inputs__rotation {
+    height: 34px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 34px;
+  }
 }
 
 /**
