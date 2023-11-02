@@ -3,15 +3,20 @@
 @use 'variables/z-index-variables' as z-index-variables;
 
 :host ::ng-deep .feature-info-content__table__row__column__wrapper {
-  .mat-mdc-radio-button .mdc-radio {
-    padding: 0;
-
-    .mdc-radio__native-control {
-      width: auto;
+  .mat-mdc-radio-button {
+    .mdc-form-field {
+      font-size: 12px;
     }
+    .mdc-radio {
+      padding: 0;
 
-    .mat-mdc-radio-touch-target {
-      width: auto;
+      .mdc-radio__native-control {
+        width: auto;
+      }
+
+      .mat-mdc-radio-touch-target {
+        width: auto;
+      }
     }
   }
 }
@@ -38,7 +43,7 @@ $fixed-border: inset calc(-1 * $border-size) 0 0 0 ktzh-variables.$zh-black100;
     width: 100%;
     text-align: left;
     border-collapse: collapse;
-    font-size: small;
+    font-size: 14px;
 
     & .feature-info-content__table__row {
       vertical-align: top;
@@ -63,10 +68,12 @@ $fixed-border: inset calc(-1 * $border-size) 0 0 0 ktzh-variables.$zh-black100;
 
         &--attribute {
           @include mixins.multiline-ellipsis(1);
-          font-family: ktzh-variables.$zh-font-family-bold;
         }
 
         &--header {
+          font-size: 12px;
+          font-family: ktzh-variables.$zh-font-family-bold;
+
           // make the left-most column headers sticky and add a right border
           &:nth-of-type(1) {
             max-width: 130px;
@@ -74,6 +81,7 @@ $fixed-border: inset calc(-1 * $border-size) 0 0 0 ktzh-variables.$zh-black100;
             width: 130px;
             position: sticky;
             left: 0;
+            color: ktzh-variables.$zh-black60;
           }
 
           &:nth-of-type(1)::after {

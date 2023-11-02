@@ -75,6 +75,7 @@ span {
   .external-links__button {
     display: flex;
     background-color: functions.convert-hex-to-rgba(ktzh-variables.$zh-black100, 0.1);
+    color: ktzh-variables.$zh-black60;
 
     .external-links__button__icon {
       flex: 0 0 auto;
