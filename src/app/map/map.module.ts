@@ -64,6 +64,7 @@ import {ShareLinkDialogComponent} from './components/share-link-dialog/share-lin
 import {TimeSliderComponent} from './components/time-slider/time-slider.component';
 import {MapPageComponent} from './map-page.component';
 import {MapRoutingModule} from './map-routing.module';
+import {MapRotationButtonComponent} from './components/map-controls/map-rotation-button/map-rotation-button.component';
 
 @NgModule({
   declarations: [
@@ -128,6 +129,7 @@ import {MapRoutingModule} from './map-routing.module';
     MapToolsMobileComponent,
     DataDownloadSelectMunicipalityDialogComponent,
     UiToggleComponent,
+    MapRotationButtonComponent,
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule],
   exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent],

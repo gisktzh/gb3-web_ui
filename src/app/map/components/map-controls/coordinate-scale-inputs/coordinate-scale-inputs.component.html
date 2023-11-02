@@ -1,9 +1,5 @@
 <div class="coordinate-scale-inputs">
-  <div class="coordinate-scale-inputs__rotation">
-    <button (click)="resetRotation()" mat-icon-button>
-      <mat-icon [style.transform]="'rotate(' + (rotation - 45) + 'deg)'">explore</mat-icon>
-    </button>
-  </div>
+  <map-rotation-button></map-rotation-button>
   <div class="coordinate-scale-inputs__coordinate">
     <data-input>
       <input (change)="this.setMapCenter($event)" [value]="this.mapCenter" class="coordinate-scale-inputs__input" type="text" />
