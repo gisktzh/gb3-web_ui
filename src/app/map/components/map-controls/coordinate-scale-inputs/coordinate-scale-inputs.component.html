@@ -16,4 +16,9 @@
       />
     </data-input>
   </div>
+  <div>
+    <button (click)="resetRotation()" mat-icon-button>
+      <mat-icon [style.transform]="'rotate(' + (rotation - 45) + 'deg)'">explore</mat-icon>
+    </button>
+  </div>
 </div>

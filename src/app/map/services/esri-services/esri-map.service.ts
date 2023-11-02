@@ -2,7 +2,7 @@ import {Injectable, OnDestroy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {MapConfigActions} from '../../../state/map/actions/map-config.actions';
 import {TransformationService} from './transformation.service';
-import {selectActiveBasemapId, selectMapConfigState} from '../../../state/map/reducers/map-config.reducer';
+import {selectActiveBasemapId, selectMapConfigState, selectRotation} from '../../../state/map/reducers/map-config.reducer';
 import {BehaviorSubject, first, pairwise, skip, Subscription, tap, withLatestFrom} from 'rxjs';
 import {GeoJSONMapperService} from './geo-json-mapper.service';
 import * as dayjs from 'dayjs';
@@ -52,7 +52,7 @@ import {DrawingActiveMapItem} from '../../models/implementations/drawing.model';
 import {EsriToolService} from './tool-service/esri-tool.service';
 import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
 import {PrintUtils} from '../../../shared/utils/print.utils';
-import {map} from 'rxjs/operators';
+import {filter, map} from 'rxjs/operators';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {selectDrawings} from '../../../state/map/reducers/drawing.reducer';
 
@@ -71,6 +71,7 @@ export class EsriMapService implements MapService, OnDestroy {
   private readonly numberOfDrawingLayers = Object.keys(InternalDrawingLayer).length;
   private readonly subscriptions: Subscription = new Subscription();
   private readonly activeBasemapId$ = this.store.select(selectActiveBasemapId);
+  private readonly rotation$ = this.store.select(selectRotation);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
   private readonly wmsImageFormatMimeType = this.configService.gb2Config.wmsFormatMimeType;
 
@@ -151,6 +152,7 @@ export class EsriMapService implements MapService, OnDestroy {
           this.setMapView(mapInstance, scale, x, y, srsId, minScale, maxScale);
           this.attachMapViewListeners();
           this.addBasemapSubscription();
+          this.addRotationSubsciption();
           this.initDrawingLayers();
           activeMapItems.forEach((mapItem, position) => {
             mapItem.addToMap(this, position);
@@ -612,6 +614,19 @@ export class EsriMapService implements MapService, OnDestroy {
     );
   }
 
+  private addRotationSubsciption() {
+    this.subscriptions.add(
+      this.rotation$
+        .pipe(
+          filter((rotation) => rotation === 0),
+          tap((rotation) => {
+            this.setRotationAngle(rotation);
+          }),
+        )
+        .subscribe(),
+    );
+  }
+
   private createMap(initialBasemapId: string): __esri.Map {
     return new EsriMap({
       basemap: new EsriBasemap({
@@ -653,7 +668,6 @@ export class EsriMapService implements MapService, OnDestroy {
       scale: scale,
       center: new EsriPoint({x, y, spatialReference}),
       constraints: {
-        rotationEnabled: false,
         snapToZoom: false,
         minScale: minScale,
         maxScale: maxScale,
@@ -687,6 +701,13 @@ export class EsriMapService implements MapService, OnDestroy {
       (event: __esri.ViewClickEvent) => {
         const {x, y} = this.transformationService.transform(event.mapPoint);
         this.dispatchFeatureInfoRequest(x, y);
+      },
+    );
+
+    esriReactiveUtils.watch(
+      () => this.mapView.rotation,
+      (rotation) => {
+        this.dispatchRotationEvent(rotation);
       },
     );
 
@@ -778,6 +799,10 @@ export class EsriMapService implements MapService, OnDestroy {
     this.store.dispatch(MapConfigActions.handleMapClick({x, y}));
   }
 
+  private dispatchRotationEvent(rotation: number) {
+    this.store.dispatch(MapConfigActions.handleMapRotation({rotation}));
+  }
+
   private updateMapConfig() {
     const {center, scale} = this.mapView;
     const {x, y} = this.transformationService.transform(center);
@@ -788,6 +813,10 @@ export class EsriMapService implements MapService, OnDestroy {
     this.mapView.map.basemap.baseLayers.map((baseLayer) => {
       baseLayer.visible = basemapId === baseLayer.id;
     });
+  }
+
+  public setRotationAngle(rotation: number) {
+    this.mapView.rotation = rotation;
   }
 
   private getWmsOverrideInterceptor(accessToken?: string): __esri.RequestInterceptor {
