@@ -30,5 +30,9 @@
     flex-direction: column;
     padding-top: 40px;
     gap: 12px;
+
+    &--mobile {
+      padding-top: 0;
+    }
   }
 }
