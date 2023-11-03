@@ -87,7 +87,10 @@
       <mat-icon svgIcon="ktzh_map_management"></mat-icon>
     </button>
   </div>
-  <div *ngIf="rotation !== 0" class="map-container__all-map-items-container--mobile map-container__all-map-items-container--mobile--left">
+  <div
+    *ngIf="rotation !== 0 && screenMode === 'mobile'"
+    class="map-container__all-map-items-container--mobile map-container__all-map-items-container--mobile--left"
+  >
     <map-rotation-button></map-rotation-button>
   </div>
   <bottom-sheet-overlay *ngIf="screenMode === 'mobile'"></bottom-sheet-overlay>
