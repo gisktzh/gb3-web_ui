@@ -6,12 +6,13 @@ import {Store} from '@ngrx/store';
 import {filter, Subscription, take, tap} from 'rxjs';
 import {environment} from 'src/environments/environment';
 import {PageNotificationComponent} from './shared/components/page-notification/page-notification.component';
-import {Breakpoints} from './shared/enums/breakpoints.enum';
+import {BreakpointsWidth, BreakpointsHeight} from './shared/enums/breakpoints.enum';
 import {PanelClass} from './shared/enums/panel-class.enum';
 import {PageNotification} from './shared/interfaces/page-notification.interface';
 import {DocumentService} from './shared/services/document.service';
 import {IconsService} from './shared/services/icons.service';
 import {PageNotificationService} from './shared/services/page-notification.service';
+import {ScreenHeight} from './shared/types/screen-height-type';
 import {ScreenMode} from './shared/types/screen-size.type';
 import {AppLayoutActions} from './state/app/actions/app-layout.actions';
 import {selectScreenMode, selectScrollbarWidth} from './state/app/reducers/app-layout.reducer';
@@ -27,6 +28,7 @@ import {selectUrlState} from './state/app/reducers/url.reducer';
 export class AppComponent implements OnInit, OnDestroy {
   public showWarning: boolean = false;
   public screenMode: ScreenMode = 'regular';
+  public screenHeight: ScreenHeight = 'regular';
   public mapUiState?: MapUiState;
   public isHeadlessPage: boolean = false;
   public isSimplifiedPage: boolean = false;
@@ -76,19 +78,29 @@ export class AppComponent implements OnInit, OnDestroy {
     );
     this.subscriptions.add(
       this.breakpointObserver
-        .observe([Breakpoints.mobile, Breakpoints.smallTablet, Breakpoints.regular])
+        .observe([
+          BreakpointsWidth.mobile,
+          BreakpointsWidth.smallTablet,
+          BreakpointsWidth.regular,
+          BreakpointsHeight.regular,
+          BreakpointsHeight.small,
+        ])
         .pipe(
           tap(() => {
             let screenMode: ScreenMode;
-            if (this.breakpointObserver.isMatched(Breakpoints.mobile)) {
+            let screenHeight: ScreenHeight = 'regular';
+            if (this.breakpointObserver.isMatched(BreakpointsWidth.mobile)) {
               screenMode = 'mobile';
               this.showWarning = environment.production;
-            } else if (this.breakpointObserver.isMatched(Breakpoints.smallTablet)) {
+            } else if (this.breakpointObserver.isMatched(BreakpointsWidth.smallTablet)) {
               screenMode = 'smallTablet';
             } else {
               screenMode = 'regular';
             }
-            this.store.dispatch(AppLayoutActions.setScreenMode({screenMode: screenMode}));
+            if (this.breakpointObserver.isMatched(BreakpointsHeight.small)) {
+              screenHeight = 'small';
+            }
+            this.store.dispatch(AppLayoutActions.setScreenMode({screenMode, screenHeight}));
           }),
         )
         .subscribe(),
