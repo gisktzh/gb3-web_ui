@@ -15,7 +15,7 @@
       [loadingState]="loadingState"
     ></loading-and-process-bar>
   </mat-expansion-panel-header>
-  <div class="search-result-group__content">
+  <div class="search-result-group__content" [ngClass]="{'search-result-group__content--mobile': screenMode === 'mobile'}">
     <ng-content></ng-content>
   </div>
 </mat-expansion-panel>

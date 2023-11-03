@@ -43,5 +43,9 @@
   .search-result-group__content {
     overflow-y: auto;
     max-height: 210px;
+
+    &--mobile {
+      max-height: none;
+    }
   }
 }
