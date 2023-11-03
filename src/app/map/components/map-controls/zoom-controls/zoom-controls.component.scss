@@ -24,4 +24,10 @@
     width: 50%;
     align-self: center;
   }
+
+  @media (max-height: 790px) {
+    .zoom-controls__small-screen {
+      display: none;
+    }
+  }
 }
