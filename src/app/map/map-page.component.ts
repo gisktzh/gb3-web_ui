@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {Subscription, tap} from 'rxjs';
+import {Subscription, delayWhen, interval, tap} from 'rxjs';
 import {mapOnboardingGuideConfig} from '../onboarding-guide/data/map-onboarding-guide.config';
 import {OnboardingGuideService} from '../onboarding-guide/services/onboarding-guide.service';
 import {LoadingState} from '../shared/types/loading-state.type';
@@ -78,7 +78,14 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   private initSubscriptions() {
-    this.subscriptions.add(this.rotation$.pipe(tap((rotation) => (this.rotation = rotation))).subscribe());
+    this.subscriptions.add(
+      this.rotation$
+        .pipe(
+          delayWhen((rotation) => (rotation === 0 ? interval(2000) : interval(0))),
+          tap((rotation) => (this.rotation = rotation)),
+        )
+        .subscribe(),
+    );
     this.subscriptions.add(
       this.queryLegends$
         .pipe(
