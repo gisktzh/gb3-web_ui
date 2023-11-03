@@ -3,7 +3,7 @@ import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {MatSnackBar, MatSnackBarRef} from '@angular/material/snack-bar';
 import {Router} from '@angular/router';
 import {Store} from '@ngrx/store';
-import {filter, Subscription, take, tap} from 'rxjs';
+import {Subscription, filter, take, tap} from 'rxjs';
 import {environment} from 'src/environments/environment';
 import {PageNotificationComponent} from './shared/components/page-notification/page-notification.component';
 import {Breakpoints} from './shared/enums/breakpoints.enum';
@@ -15,9 +15,9 @@ import {PageNotificationService} from './shared/services/page-notification.servi
 import {ScreenMode} from './shared/types/screen-size.type';
 import {AppLayoutActions} from './state/app/actions/app-layout.actions';
 import {selectScreenMode, selectScrollbarWidth} from './state/app/reducers/app-layout.reducer';
+import {selectUrlState} from './state/app/reducers/url.reducer';
 import {selectMapUiState} from './state/map/reducers/map-ui.reducer';
 import {MapUiState} from './state/map/states/map-ui.state';
-import {selectUrlState} from './state/app/reducers/url.reducer';
 
 @Component({
   selector: 'app-root',
@@ -82,7 +82,7 @@ export class AppComponent implements OnInit, OnDestroy {
             let screenMode: ScreenMode;
             if (this.breakpointObserver.isMatched(Breakpoints.mobile)) {
               screenMode = 'mobile';
-              this.showWarning = environment.production;
+              this.showWarning = environment.production && false; //Todo: remove
             } else if (this.breakpointObserver.isMatched(Breakpoints.smallTablet)) {
               screenMode = 'smallTablet';
             } else {
