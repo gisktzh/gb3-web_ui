@@ -1,4 +1,4 @@
-<div class="map-rotation-button">
+<div class="map-rotation-button" [ngClass]="{'map-rotation-button--mobile': screenMode === 'mobile'}">
   <button (click)="resetRotation()" mat-icon-button>
     <mat-icon [style.transform]="'rotate(' + (rotation - 45) + 'deg)'">explore</mat-icon>
   </button>

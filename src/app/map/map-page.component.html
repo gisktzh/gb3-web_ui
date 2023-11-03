@@ -75,7 +75,7 @@
     }"
     class="map-container__map-tools"
   ></map-tools>
-  <div class="map-container__all-map-items-container--mobile">
+  <div class="map-container__all-map-items-container--mobile map-container__all-map-items-container--mobile--right">
     <button
       *ngIf="screenMode === 'mobile'"
       mat-icon-button
@@ -86,6 +86,9 @@
     >
       <mat-icon svgIcon="ktzh_map_management"></mat-icon>
     </button>
+  </div>
+  <div class="map-container__all-map-items-container--mobile map-container__all-map-items-container--mobile--left">
+    <map-rotation-button></map-rotation-button>
   </div>
   <bottom-sheet-overlay *ngIf="screenMode === 'mobile'"></bottom-sheet-overlay>
 </mat-drawer-container>

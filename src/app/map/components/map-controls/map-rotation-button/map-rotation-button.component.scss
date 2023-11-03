@@ -1,6 +1,18 @@
+@use 'mixins/helpers.mixin' as mixins;
+
 .map-rotation-button {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 34px;
+
+  &--mobile {
+    @include mixins.tool-button;
+    padding: 0;
+
+    .mat-icon {
+      height: 24px;
+      width: 24px;
+    }
+  }
 }
