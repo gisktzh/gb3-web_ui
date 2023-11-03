@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Observable, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
-import {selectCenter, selectRotation, selectScale} from '../../../../state/map/reducers/map-config.reducer';
+import {selectCenter, selectScale} from '../../../../state/map/reducers/map-config.reducer';
 import {MapConfigActions} from '../../../../state/map/actions/map-config.actions';
 import {ConfigService} from '../../../../shared/services/config.service';
 import {CoordinateParserService} from '../../../services/coordinate-parser.service';
@@ -15,11 +15,9 @@ import {NumberUtils} from '../../../../shared/utils/number.utils';
 export class CoordinateScaleInputsComponent implements OnInit, OnDestroy {
   public scale: number = 0;
   public mapCenter: string = '';
-  public rotation: number = 0;
   public readonly maxScale = this.configService.mapConfig.mapScaleConfig.maxScale;
   public readonly minScale = this.configService.mapConfig.mapScaleConfig.minScale;
   private readonly subscriptions: Subscription = new Subscription();
-  private readonly rotation$: Observable<number> = this.store.select(selectRotation);
   private readonly scaleState$: Observable<number> = this.store.select(selectScale);
   private readonly centerState$: Observable<{x: number; y: number}> = this.store.select(selectCenter);
 
@@ -53,13 +51,8 @@ export class CoordinateScaleInputsComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  public resetRotation() {
-    this.store.dispatch(MapConfigActions.setRotation({rotation: 0}));
-  }
-
   private initSubscriptions() {
     this.subscriptions.add(this.scaleState$.pipe(tap((value) => (this.scale = NumberUtils.roundToDecimals(value)))).subscribe());
-    this.subscriptions.add(this.rotation$.pipe(tap((rotation) => (this.rotation = rotation))).subscribe());
     this.subscriptions.add(
       this.centerState$
         .pipe(
