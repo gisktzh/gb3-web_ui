@@ -1,45 +1,4 @@
-@use 'variables/ktzh-design-variables' as ktzh-variables;
-@use 'mixins/material.mixin' as mat-mixins;
-@use 'mixins/helpers.mixin' as mixins;
-
-:host ::ng-deep .search-result-group {
-  @include mat-mixins.mat-expansion-panel-remove-content-indent;
-
-  &.mat-expansion-panel {
-    @include mixins.no-box-shadow;
-  }
-}
-
 .search-result-group {
-  display: flex;
-  flex-direction: column;
-
-  .search-result-group__header {
-    padding: 0;
-    margin-bottom: 12px;
-    height: 36px;
-
-    .search-result-group__header__inner {
-      height: 36px;
-      width: 100%;
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      background-color: ktzh-variables.$zh-light-grey;
-      align-items: center;
-
-      .search-result-group__header__inner__text {
-        font-size: 16px;
-        padding: 0 12px;
-        margin: 0;
-      }
-    }
-
-    .search-result-group__header__loading-bar {
-      @include mixins.position-element-at-bottom-with-full-width;
-    }
-  }
-
   .search-result-group__content {
     overflow-y: auto;
     max-height: 210px;

@@ -13,6 +13,7 @@ import {LoadingState} from '../../../../shared/types/loading-state.type';
 export class SearchResultGroupComponent implements OnInit, OnDestroy {
   @Input() public header: string = '';
   @Input() public loadingState?: LoadingState;
+  @Input() public numberOfItems: number = 0;
   public screenMode: ScreenMode = 'regular';
 
   private readonly screenMode$ = this.store.select(selectScreenMode);
