@@ -1,19 +1,20 @@
 import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
-import {MapConfigUrlService} from './services/map-config-url.service';
-import {PrintType} from './types/print.type';
-import {OnboardingGuideService} from '../onboarding-guide/services/onboarding-guide.service';
-import {mapOnboardingGuideConfig} from '../onboarding-guide/data/map-onboarding-guide.config';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
-import {selectMapUiState} from '../state/map/reducers/map-ui.reducer';
-import {MapUiState} from '../state/map/states/map-ui.state';
-import {MapUiActions} from '../state/map/actions/map-ui.actions';
-import {MapSideDrawerContent} from '../shared/types/map-side-drawer-content.type';
-import {selectQueryLegends} from '../state/map/selectors/query-legends.selector';
-import {selectScreenMode} from '../state/app/reducers/app-layout.reducer';
-import {selectLoadingState} from '../state/map/reducers/legend.reducer';
+import {mapOnboardingGuideConfig} from '../onboarding-guide/data/map-onboarding-guide.config';
+import {OnboardingGuideService} from '../onboarding-guide/services/onboarding-guide.service';
 import {LoadingState} from '../shared/types/loading-state.type';
+import {MapSideDrawerContent} from '../shared/types/map-side-drawer-content.type';
 import {ScreenMode} from '../shared/types/screen-size.type';
+import {selectScreenMode} from '../state/app/reducers/app-layout.reducer';
+import {MapUiActions} from '../state/map/actions/map-ui.actions';
+import {selectLoadingState} from '../state/map/reducers/legend.reducer';
+import {selectRotation} from '../state/map/reducers/map-config.reducer';
+import {selectMapUiState} from '../state/map/reducers/map-ui.reducer';
+import {selectQueryLegends} from '../state/map/selectors/query-legends.selector';
+import {MapUiState} from '../state/map/states/map-ui.state';
+import {MapConfigUrlService} from './services/map-config-url.service';
+import {PrintType} from './types/print.type';
 
 @Component({
   selector: 'map-page',
@@ -29,11 +30,13 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
   public loadingState?: LoadingState;
   public mapSideDrawerContent: MapSideDrawerContent = 'none';
   public screenMode: ScreenMode = 'mobile';
+  public rotation: number = 0;
 
   private readonly queryLegends$ = this.store.select(selectQueryLegends);
   private readonly mapUiState$ = this.store.select(selectMapUiState);
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly loadingState$ = this.store.select(selectLoadingState);
+  private readonly rotation$ = this.store.select(selectRotation);
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(
@@ -75,6 +78,7 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   private initSubscriptions() {
+    this.subscriptions.add(this.rotation$.pipe(tap((rotation) => (this.rotation = rotation))).subscribe());
     this.subscriptions.add(
       this.queryLegends$
         .pipe(
