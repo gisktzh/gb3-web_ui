@@ -20,7 +20,8 @@ export const selectFilteredLayerCatalog = createSelector(selectFilterString, sel
         return (
           map.layers.length > 0 ||
           map.title.toLowerCase().includes(lowerCasedFilterString) ||
-          map.keywords.map((keyword) => keyword.toLowerCase()).includes(lowerCasedFilterString)
+          map.keywords.map((keyword) => keyword.toLowerCase()).includes(lowerCasedFilterString) ||
+          map.id.toLowerCase().includes(lowerCasedFilterString)
         );
       });
     });
