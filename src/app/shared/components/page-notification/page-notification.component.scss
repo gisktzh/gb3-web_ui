@@ -37,7 +37,11 @@
     }
 
     .page-notification-label__text-container__text {
-      @include mixins.multiline-ellipsis(6);
+      @include mixins.multiline-ellipsis(2);
+
+      &--mobile {
+        @include mixins.multiline-ellipsis(6);
+      }
     }
   }
 

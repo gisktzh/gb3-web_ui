@@ -34,6 +34,9 @@ export const layerCatalogFeature = createFeature({
     on(LayerCatalogActions.setFilterString, (state, {filterString}): LayerCatalogState => {
       return {...state, filterString};
     }),
+    on(LayerCatalogActions.clearFilterString, (state): LayerCatalogState => {
+      return {...state, filterString: undefined};
+    }),
   ),
 });
 

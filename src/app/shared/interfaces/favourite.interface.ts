@@ -4,38 +4,6 @@ import {UserDrawingVectorLayers} from './user-drawing-vector-layers.interface';
 
 export type FavouriteBaseConfig = Pick<MapConfigState, 'center' | 'scale'> & {basemap: string};
 
-interface FavouriteDrawingType {
-  type: 'point' | 'line' | 'polygon';
-}
-
-export interface FavouriteGb3LineStringStyle extends FavouriteDrawingType {
-  strokeColor: string;
-  strokeOpacity: number;
-  strokeWidth: number;
-  type: 'line';
-}
-
-export interface FavouriteGb3PointStyle extends FavouriteDrawingType {
-  fillColor: string;
-  fillOpacity: number;
-  pointRadius: string;
-  strokeColor: string;
-  strokeWidth: number;
-  strokeOpacity: number;
-  type: 'point';
-}
-
-export interface FavouriteGb3PolygonStyle extends FavouriteDrawingType {
-  fillColor: string;
-  fillOpacity: number;
-  strokeColor: string;
-  strokeWidth: number;
-  strokeOpacity: number;
-  type: 'polygon';
-}
-
-export type FavouriteGb3DrawingStyle = FavouriteGb3PointStyle | FavouriteGb3LineStringStyle | FavouriteGb3PolygonStyle;
-
 export interface Favourite extends UserDrawingVectorLayers {
   id: string;
   title: string;

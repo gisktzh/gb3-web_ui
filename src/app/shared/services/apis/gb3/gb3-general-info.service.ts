@@ -36,14 +36,25 @@ export class Gb3GeneralInfoService extends Gb3ApiService {
       },
       parcel: generalInfo.parcel
         ? {
-            ...generalInfo.parcel,
+            bfsnr: generalInfo.parcel.bfsnr,
             egrisEgrid: generalInfo.parcel.egris_egrid,
             municipalityName: generalInfo.parcel.municipality_name,
             oerebExtract: {
               pdfUrl: generalInfo.parcel.oereb_extract.pdf_url,
             },
+            ownershipInformation: {
+              url: this.createOwnershipInformationUrl(generalInfo.parcel.egris_egrid, generalInfo.parcel.bfsnr),
+            },
           }
         : undefined,
     };
+  }
+
+  private createOwnershipInformationUrl(egrid: string, bfsNr: number): string {
+    const url = new URL(this.configService.apiConfig.ownershipInformationApi.baseUrl);
+    url.searchParams.append('egrid', egrid);
+    url.searchParams.append('bfsNr', bfsNr.toString());
+
+    return url.toString();
   }
 }

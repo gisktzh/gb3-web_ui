@@ -61,6 +61,7 @@ import {ResultGroupsComponent} from './components/search-window/result-groups/re
 import {SearchWindowComponent} from './components/search-window/search-window.component';
 import {ShareLinkDialogComponent} from './components/share-link-dialog/share-link-dialog.component';
 import {ShareLinkMobileComponent} from './components/share-link-mobile/share-link-mobile.component';
+import {TextDrawingToolInputComponent} from './components/text-drawing-tool-input/text-drawing-tool-input.component';
 import {TimeSliderComponent} from './components/time-slider/time-slider.component';
 import {MapPageComponent} from './map-page.component';
 import {MapRoutingModule} from './map-routing.module';
@@ -126,6 +127,7 @@ import {MapRoutingModule} from './map-routing.module';
     MapToolsMobileComponent,
     DataDownloadSelectMunicipalityDialogComponent,
     UiToggleComponent,
+    TextDrawingToolInputComponent,
     SearchWindowMobileComponent,
     ShareLinkMobileComponent,
   ],

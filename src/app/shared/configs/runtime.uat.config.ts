@@ -23,7 +23,7 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
         baseUrl: 'https://uatgeolion.kt.ktzh.ch',
       },
       searchApi: {
-        baseUrl: 'https://uat.geo.ktzh.ch/geosearch',
+        baseUrl: 'https://uatmaps.kt.ktzh.ch/v3',
       },
       ktzhWebsite: {
         baseUrl: 'https://www.zh.ch',
@@ -38,6 +38,9 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       },
       geoshopApi: {
         baseUrl: 'https://geoservices.zh.ch/geoshopapi/v1',
+      },
+      ownershipInformationApi: {
+        baseUrl: 'https://portal.objektwesen.zh.ch/aks/detail',
       },
     },
     authSettings: {

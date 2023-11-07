@@ -1,0 +1,13 @@
+<h1 mat-dialog-title>Text-Eingabe</h1>
+<div mat-dialog-content>
+  <mat-form-field appearance="fill" class="text-drawing-tool-input__content">
+    <mat-label>Text</mat-label>
+    <input [formControl]="textFormControl" [maxLength]="maxLength" id="name" matInput />
+    <mat-error *ngIf="textFormControl.invalid && (textFormControl.dirty || textFormControl.touched)"
+      >Geben Sie einen gültigen, nicht leeren Text (<= 50 Zeichen) ein.
+    </mat-error>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button [disabled]="!textFormControl.valid" mat-button [matDialogClose]="textFormControl.value">Hinzufügen</button>
+</div>
