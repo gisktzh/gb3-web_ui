@@ -50,7 +50,6 @@ export class SearchResultGroupsComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
-    this.store.dispatch(SearchActions.resetSearchAndFilters());
   }
 
   public ngOnInit() {
