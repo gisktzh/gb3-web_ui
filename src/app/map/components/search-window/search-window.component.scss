@@ -24,8 +24,13 @@
           )
       );
     }
-    .search-window__searchbar-mobile {
+    .search-window__searchbar--mobile {
       width: auto;
+      height: 64px;
+
+      &__box {
+        height: 100%;
+      }
     }
   }
 
@@ -47,13 +52,5 @@
           ) - (map-layout-variables.$search-window-width - map-layout-variables.$search-results-width)
       );
     }
-  }
-
-  .search-window__results-mobile {
-    @include mixins.map-element-box-shadow;
-    background-color: ktzh-variables.$zh-background-color;
-    pointer-events: all;
-    max-height: 60vh;
-    overflow-y: scroll;
   }
 }

@@ -1,18 +1,19 @@
 <div class="map-management-mobile-header">
-  <div class="map-management-mobile-header__buttons">
+  <div class="map-management-mobile-header__buttons" *ngIf="filterString === undefined">
     <button
       [ngClass]="{'map-management-mobile-header__buttons__button--selected': activeTab === 'activeMaps'}"
       class="map-management-mobile-header__buttons__button"
       mat-flat-button
       (click)="changeTabs('activeMaps')"
     >
-      <mat-icon svgIcon="ktzh_map_management"></mat-icon>
-      Aktive Karten
-      <span
-        class="map-management-mobile-header__badge"
-        [ngClass]="{'map-management-mobile-header__badge--hidden': activeMapItems.length === 0}"
-        [matBadge]="activeMapItems.length"
-      ></span>
+      <div class="map-management-mobile-header__buttons__button__inner">
+        <span> Aktive Karten </span>
+        <span
+          class="map-management-mobile-header__badge"
+          [ngClass]="{'map-management-mobile-header__badge--hidden': activeMapItems.length === 0}"
+          [matBadge]="activeMapItems.length"
+        ></span>
+      </div>
     </button>
     <button
       [ngClass]="{'map-management-mobile-header__buttons__button--selected': activeTab === 'mapsCatalogue'}"
@@ -20,18 +21,32 @@
       mat-flat-button
       (click)="changeTabs('mapsCatalogue')"
     >
-      <mat-icon svgIcon="ktzh_map_catalogue"></mat-icon>
       Kartenkatalog
     </button>
   </div>
   <div class="map-management-mobile-header__tools">
-    <div *ngIf="activeTab === 'mapsCatalogue'" class="map-management-mobile-header__tools__filter">
-      <input #filterInput class="map-management-mobile-header__tools__filter__input" placeholder="Karten und Layer filtern" type="text" />
+    <div
+      class="map-management-mobile-header__tools__filter"
+      [ngClass]="{'map-management-mobile-header__tools__filter--hidden': activeTab !== 'mapsCatalogue'}"
+    >
+      <input
+        #filterInput
+        class="map-management-mobile-header__tools__filter__input"
+        placeholder="Karten und Layer filtern"
+        type="text"
+        (focus)="startFiltering()"
+      />
       <span class="map-management-mobile-header__tools__filter__input-icon">
         <mat-icon svgIcon="ktzh_search"></mat-icon>
       </span>
+      <button mat-button (click)="clearInput()" class="map-management-mobile-header__tools__filter__input-close-button">
+        <mat-icon>cancel</mat-icon>
+      </button>
     </div>
-    <div *ngIf="activeTab === 'activeMaps'" class="map-management-mobile-header__tools__buttons">
+    <div
+      class="map-management-mobile-header__tools__buttons"
+      [ngClass]="{'map-management-mobile-header__tools__buttons--hidden': activeTab !== 'activeMaps'}"
+    >
       <button
         class="map-management-mobile-header__tools__buttons__action map-management-mobile-header__tools__buttons__action--notices"
         (click)="showMapNotices()"
@@ -73,7 +88,7 @@
     </div>
   </div>
 </div>
-<div class="map-management-mobile-content">
+<div class="map-management-mobile-content" [ngClass]="{'map-management-mobile-content--filtering': filterString !== undefined}">
   <div [ngSwitch]="activeTab" body>
     <active-map-items *ngSwitchCase="'activeMaps'"></active-map-items>
     <map-data-catalogue *ngSwitchCase="'mapsCatalogue'"></map-data-catalogue>

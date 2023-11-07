@@ -40,7 +40,6 @@ import {BaseMapDataItemComponent} from './components/map-data-catalogue/base-map
 import {MapDataItemFavouriteComponent} from './components/map-data-catalogue/base-map-data-item/map-data-item-favourite.component';
 import {MapDataItemMapComponent} from './components/map-data-catalogue/base-map-data-item/map-data-item-map.component';
 import {MapDataCatalogueComponent} from './components/map-data-catalogue/map-data-catalogue.component';
-import {MapDataItemHeaderComponent} from './components/map-data-catalogue/map-data-item-header/map-data-item-header.component';
 import {MapDataItemMapLayerComponent} from './components/map-data-catalogue/map-data-item-map-layer/map-data-item-map-layer.component';
 import {MapManagementMobileComponent} from './components/map-management-mobile/map-management-mobile.component';
 import {MapNoticeDialogComponent} from './components/map-notice-dialog/map-notice-dialog.component';
@@ -56,15 +55,16 @@ import {MeasurementToolsComponent} from './components/map-tools/measurement-tool
 import {PrintDialogComponent} from './components/map-tools/print-dialog/print-dialog.component';
 import {PrintDispatcherComponent} from './components/print-overlay/print-dispatcher/print-dispatcher.component';
 import {PrintOverlayComponent} from './components/print-overlay/print-overlay.component';
+import {SearchWindowMobileComponent} from './components/search-window-mobile/search-window-mobile.component';
 import {ResultGroupComponent} from './components/search-window/result-groups/result-group/result-group.component';
 import {ResultGroupsComponent} from './components/search-window/result-groups/result-groups.component';
 import {SearchWindowComponent} from './components/search-window/search-window.component';
-import {ShareLinkContentComponent} from './components/share-link-dialog/share-link-content/share-link-content.component';
 import {ShareLinkDialogComponent} from './components/share-link-dialog/share-link-dialog.component';
+import {ShareLinkMobileComponent} from './components/share-link-mobile/share-link-mobile.component';
+import {TextDrawingToolInputComponent} from './components/text-drawing-tool-input/text-drawing-tool-input.component';
 import {TimeSliderComponent} from './components/time-slider/time-slider.component';
 import {MapPageComponent} from './map-page.component';
 import {MapRoutingModule} from './map-routing.module';
-import {TextDrawingToolInputComponent} from './components/text-drawing-tool-input/text-drawing-tool-input.component';
 
 @NgModule({
   declarations: [
@@ -105,7 +105,6 @@ import {TextDrawingToolInputComponent} from './components/text-drawing-tool-inpu
     MapDataItemMapComponent,
     MapDataItemFavouriteComponent,
     MapDataItemMapLayerComponent,
-    MapDataItemHeaderComponent,
     DataInputComponent,
     MapNoticeDialogComponent,
     FeatureInfoGeneralInformationComponent,
@@ -123,13 +122,14 @@ import {TextDrawingToolInputComponent} from './components/text-drawing-tool-inpu
     LegendComponent,
     MapManagementMobileComponent,
     FeatureInfoComponent,
-    ShareLinkContentComponent,
     BasemapSelectionListComponent,
     MapToolsDesktopComponent,
     MapToolsMobileComponent,
     DataDownloadSelectMunicipalityDialogComponent,
     UiToggleComponent,
     TextDrawingToolInputComponent,
+    SearchWindowMobileComponent,
+    ShareLinkMobileComponent,
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule],
   exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent],

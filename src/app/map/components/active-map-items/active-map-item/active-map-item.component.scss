@@ -91,6 +91,10 @@
   z-index: z-index-variables.$active-map-item-connection-line;
   border-right: ktzh-variables.$zh-black20 solid 2px;
 
+  &--mobile {
+    left: 66px;
+  }
+
   &.active-map-item__connection-line-top {
     top: 0;
   }

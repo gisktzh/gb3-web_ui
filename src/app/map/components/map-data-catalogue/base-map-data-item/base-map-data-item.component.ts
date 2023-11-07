@@ -10,7 +10,7 @@ import {MapConfigState} from '../../../../state/map/states/map-config.state';
 })
 export class BaseMapDataItemComponent {
   @Input() public title!: string;
-  @Input() public filterString: string = '';
+  @Input() public filterString: string | undefined = undefined;
   /**
    * URL to gb2, if the given mapitem is not yet gb3-capable.
    */

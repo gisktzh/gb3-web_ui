@@ -5,6 +5,12 @@
 :host ::ng-deep .list-item {
   &.mat-expansion-panel {
     @include mixins.no-box-shadow;
+
+    @media (hover: none) {
+      .mat-expansion-panel-header:not([aria-disabled='true']):hover {
+        background-color: ktzh-variables.$zh-light-grey;
+      }
+    }
   }
 
   &--no-content-indent {
@@ -16,10 +22,14 @@
   margin-bottom: 24px;
 
   .list-item__header {
-    padding: 0 12px;
+    padding: 0;
     background-color: ktzh-variables.$zh-light-grey;
     min-height: 38px;
     max-height: 38px;
+
+    &--no-background {
+      background-color: unset;
+    }
 
     .list-item__header__content {
       display: flex;

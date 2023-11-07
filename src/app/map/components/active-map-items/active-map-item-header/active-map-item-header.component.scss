@@ -119,6 +119,10 @@
         display: flex;
         background: linear-gradient(90deg, transparent 0%, functions.get-color-from-palette(ktzh-variables.$zh-primary) 37.5%);
       }
+
+      &--mobile {
+        display: flex;
+      }
     }
   }
 

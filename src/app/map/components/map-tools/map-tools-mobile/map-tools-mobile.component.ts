@@ -3,7 +3,9 @@ import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {GeolocationActions} from 'src/app/state/map/actions/geolocation.actions';
 import {selectQueryLegends} from 'src/app/state/map/selectors/query-legends.selector';
+import {GeolocationState} from 'src/app/state/map/states/geolocation.state';
 import {MapUiActions} from '../../../../state/map/actions/map-ui.actions';
+import {initialState as initialGeolocationState, selectGeolocationState} from '../../../../state/map/reducers/geolocation.reducer';
 
 @Component({
   selector: 'map-tools-mobile',
@@ -12,9 +14,10 @@ import {MapUiActions} from '../../../../state/map/actions/map-ui.actions';
 })
 export class MapToolsMobileComponent {
   public numberOfQueryLegends: number = 0;
+  public geolocationState: GeolocationState = initialGeolocationState;
 
   private readonly queryLegends$ = this.store.select(selectQueryLegends);
-
+  private readonly geolocationState$ = this.store.select(selectGeolocationState);
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(private readonly store: Store) {}
@@ -53,5 +56,6 @@ export class MapToolsMobileComponent {
         )
         .subscribe(),
     );
+    this.subscriptions.add(this.geolocationState$.pipe(tap((value) => (this.geolocationState = value))).subscribe());
   }
 }
