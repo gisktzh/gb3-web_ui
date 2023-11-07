@@ -1,8 +1,33 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 @use 'functions/helper.function' as functions;
+@use 'mixins/helpers.mixin' as mixins;
 
 .general-information {
   margin-bottom: 8px;
+}
+
+.external-links {
+  display: flex;
+  gap: 8px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  row-gap: 0;
+
+  .external-links__button {
+    margin: 8px 0;
+    display: flex;
+    background-color: functions.convert-hex-to-rgba(ktzh-variables.$zh-black100, 0.1);
+
+    .external-links__button__icon {
+      flex: 0 0 auto;
+    }
+
+    .external-links__button__label {
+      flex: 1;
+      @include mixins.multiline-ellipsis(1);
+      word-break: break-all;
+    }
+  }
 }
 
 .additional-general-information {
@@ -32,10 +57,6 @@
   }
 }
 
-.parcel-button {
-  margin: 8px 0;
-  background-color: functions.convert-hex-to-rgba(ktzh-variables.$zh-black100, 0.1);
-}
 /// todo: maybe add font-family to global CSS styles for all bold tags - needs more checks though
 b {
   font-family: ktzh-variables.$zh-font-family-bold;

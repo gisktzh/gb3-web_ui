@@ -24,6 +24,7 @@ export interface ApiConfig {
   gravCms: MockedApiBaseUrlConfig;
   twitterWidget: ApiBaseUrlConfig;
   geoshopApi: ApiBaseUrlConfig;
+  ownershipInformationApi: ApiBaseUrlConfig;
 }
 
 export interface OverrideSettings {

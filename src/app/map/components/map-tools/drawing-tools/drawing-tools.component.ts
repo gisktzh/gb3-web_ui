@@ -26,4 +26,8 @@ export class DrawingToolsComponent extends AbstractToolsComponent {
   public toggleCircleDrawing() {
     this.toggleTool('draw-circle');
   }
+
+  public toggleTextDrawing() {
+    this.toggleTool('draw-text');
+  }
 }
