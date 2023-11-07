@@ -97,7 +97,7 @@ export class MapManagementMobileComponent implements OnInit, OnDestroy, AfterVie
 
   public clearInput() {
     this.input.nativeElement.value = '';
-    this.store.dispatch(LayerCatalogActions.setFilterString({filterString: undefined}));
+    this.store.dispatch(LayerCatalogActions.clearFilterString());
   }
 
   public startFiltering() {
