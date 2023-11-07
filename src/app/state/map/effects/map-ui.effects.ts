@@ -52,7 +52,7 @@ export class MapUiEffects {
           case 'print':
             return PrintActions.loadPrintCapabilities();
           case 'data-download':
-            return DataDownloadProductActions.loadRelevantProductsIds();
+            return DataDownloadProductActions.loadProductsAndRelevantProducts();
         }
       }),
     );

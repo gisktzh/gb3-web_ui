@@ -13,6 +13,20 @@ import {selectProductsList} from '../reducers/data-download-product.reducer';
 
 @Injectable()
 export class DataDownloadProductEffects {
+  public loadAllProducts$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(DataDownloadProductActions.loadProductsAndRelevantProducts),
+      map(() => DataDownloadProductActions.loadProductsList()),
+    );
+  });
+
+  public loadAllRelevantProducts$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(DataDownloadProductActions.loadProductsAndRelevantProducts),
+      map(() => DataDownloadProductActions.loadRelevantProductsIds()),
+    );
+  });
+
   public loadProductsList$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(DataDownloadProductActions.loadProductsList),

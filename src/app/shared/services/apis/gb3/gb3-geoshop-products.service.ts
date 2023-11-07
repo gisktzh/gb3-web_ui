@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Gb3ApiService} from './gb3-api.service';
-import {Observable} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {ProductsListData, ProductsRelevantListData} from '../../../models/gb3-api-generated.interfaces';
 import {map} from 'rxjs/operators';
 import {Product, ProductFormat, ProductsList} from '../../../interfaces/gb3-geoshop-product.interface';
@@ -17,12 +17,15 @@ export class Gb3GeoshopProductsService extends Gb3ApiService {
   }
 
   public loadRelevanteProducts(guids: string[]): Observable<string[]> {
-    const productsRelevantListData = this.get<ProductsRelevantListData>(this.createUrlForTopics(guids));
+    if (guids.length === 0) {
+      return of([]);
+    }
+    const productsRelevantListData = this.get<ProductsRelevantListData>(this.createUrlForRelevantProducts(guids));
     return productsRelevantListData.pipe(map((data) => data.products));
   }
 
-  private createUrlForTopics(guids: string[]): string {
-    const url = new URL(this.getFullEndpointUrl());
+  private createUrlForRelevantProducts(guids: string[]): string {
+    const url = new URL(`${this.getFullEndpointUrl()}/relevant`);
     url.searchParams.append('topics', guids.join(','));
     return url.toString();
   }

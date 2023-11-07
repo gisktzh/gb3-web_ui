@@ -5,6 +5,7 @@ import {ProductsList} from '../../../shared/interfaces/gb3-geoshop-product.inter
 export const DataDownloadProductActions = createActionGroup({
   source: 'DataDownloadProduct',
   events: {
+    'Load Products And Relevant Products': emptyProps(),
     'Load Products List': emptyProps(),
     'Set Products List': props<{productsList: ProductsList}>(),
     'Set Products List Error': errorProps(),
