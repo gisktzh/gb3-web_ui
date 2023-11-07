@@ -13,5 +13,4 @@ export class ExpandableListItemComponent {
   @Input() public disabled: boolean = false;
   @Input() public loadingState: LoadingState = undefined;
   @Input() public numberOfItems: number = 0;
-  @Input() public isFilter: boolean = false;
 }
