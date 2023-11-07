@@ -7,7 +7,7 @@ import {ScreenMode} from '../shared/types/screen-size.type';
 import {selectScreenMode} from '../state/app/reducers/app-layout.reducer';
 import {selectLinks} from '../state/support/reducers/support-content.reducer';
 
-const HERO_Text =
+const START_PAGE_SUMMARY =
   'Geoinformationen sind verlässliche, raumbezogene Daten und Karten. Sie dienen als wichtige Grundlage für vielfältige Aufgaben und Entscheide und stehen über verschiedene Portale zur Einsicht und Nutzung bereit.';
 
 @Component({
@@ -16,7 +16,7 @@ const HERO_Text =
   styleUrls: ['./start-page.component.scss'],
 })
 export class StartPageComponent implements OnInit, OnDestroy {
-  public heroText = HERO_Text;
+  public heroText = START_PAGE_SUMMARY;
   public readonly externalNewsFeedLink: TitleLink = {
     url: 'https://www.zh.ch/de/news-uebersicht.html?organisation=organisationen%253Akanton-zuerich%252Fbaudirektion%252Famt-fuer-raumentwicklung&topic=themen%253Aplanen-bauen%252Fgeoinformation',
     displayTitle: 'Mehr Beiträge',

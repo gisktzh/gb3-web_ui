@@ -79,6 +79,16 @@ export class SearchResultGroupsComponent implements OnInit, OnDestroy {
         )
         .subscribe(),
     );
+    this.subscriptions.add(
+      this.searchApiLoadingState$
+        .pipe(
+          tap((searchApiLoadingState) => {
+            this.searchApiLoadingState = searchApiLoadingState;
+            this.updateCombinedSearchAndDataCatalogLoadingState();
+          }),
+        )
+        .subscribe(),
+    );
     this.subscriptions.add(this.filteredFaqItems$.pipe(tap((filteredFaqItems) => (this.filteredFaqItems = filteredFaqItems))).subscribe());
     this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
   }

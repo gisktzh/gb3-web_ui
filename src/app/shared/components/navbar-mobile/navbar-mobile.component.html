@@ -1,25 +1,25 @@
-<div class="navbar-mobile" *ngIf="isSimplifiedPage; else standard">
-  <button (click)="showMenu()" class="navbar-mobile__button" mat-icon-button>
-    <mat-icon svgIcon="ktzh_menu_mobile"></mat-icon>
+<mat-toolbar *ngIf="!isSimplifiedPage; else simplifiedPage" class="navbar-mobile" color="primary">
+  <span class="navbar-mobile__item"> GIS-Browser </span>
+  <span class="navbar-mobile__spacer"></span>
+  <button class="navbar-mobile__item" mat-button (click)="showMenu()">
+    <span class="navbar-mobile__item__text">Menu</span>
+
+    <mat-icon svgIcon="ktzh_menu_mobile" iconPositionEnd>launch</mat-icon>
   </button>
-</div>
-
-<ng-template #standard>
-  <mat-toolbar class="navbar" color="primary">
-    <span class="navbar__item"> GIS-Browser </span>
-    <span class="navbar__spacer"></span>
-    <button class="navbar__item" mat-button (click)="showMenu()">
-      <span class="navbar__item__text">Menu</span>
-
-      <mat-icon svgIcon="ktzh_menu_mobile" iconPositionEnd>launch</mat-icon>
-    </button>
-    <div class="navbar__underline-container">
-      <div class="navbar__underline-container__content-container">
-        <span></span>
-        <span class="navbar__underline"></span>
-        <span class="navbar__underline"></span>
-      </div>
-      <span class="navbar__underline" [ngStyle]="{width: '10px'}"></span>
+  <div class="navbar-mobile__underline-container">
+    <div class="navbar-mobile__underline-container__content-container">
+      <span></span>
+      <span class="navbar-mobile__underline"></span>
+      <span class="navbar-mobile__underline"></span>
     </div>
-  </mat-toolbar>
+    <span class="navbar-mobile__underline" [ngStyle]="{width: '10px'}"></span>
+  </div>
+</mat-toolbar>
+
+<ng-template #simplifiedPage>
+  <div class="navbar-mobile-simplified">
+    <button (click)="showMenu()" class="navbar-mobile-simplified__button" mat-icon-button>
+      <mat-icon svgIcon="ktzh_menu_mobile"></mat-icon>
+    </button>
+  </div>
 </ng-template>
