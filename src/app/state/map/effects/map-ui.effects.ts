@@ -14,6 +14,7 @@ import {SearchActions} from '../../app/actions/search.actions';
 import {selectScreenMode} from '../../app/reducers/app-layout.reducer';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {DataDownloadProductActions} from '../actions/data-download-product.actions';
+import {DataDownloadRegionActions} from '../actions/data-download-region.actions';
 import {LegendActions} from '../actions/legend.actions';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {MapUiActions} from '../actions/map-ui.actions';
@@ -192,11 +193,19 @@ export class MapUiEffects {
     );
   });
 
-  public loadDataDownloadProducts$ = createEffect(() => {
+  public loadDataDownloadCanton$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapUiActions.toggleToolMenu),
       filter((action) => action.tool === 'data-download'),
-      map(() => DataDownloadProductActions.loadProductsList()),
+      map(() => DataDownloadRegionActions.loadCanton()),
+    );
+  });
+
+  public loadDataDownloadMunicipalities$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapUiActions.toggleToolMenu),
+      filter((action) => action.tool === 'data-download'),
+      map(() => DataDownloadRegionActions.loadMunicipalities()),
     );
   });
 

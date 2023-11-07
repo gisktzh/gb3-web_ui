@@ -4,7 +4,6 @@ import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import {UnstyledInternalDrawingRepresentation} from '../../../../../../shared/interfaces/internal-drawing-representation.interface';
 import Extent from '@arcgis/core/geometry/Extent';
-import Graphic from '@arcgis/core/Graphic';
 import {AbstractEsriSelectionStrategy} from './abstract-esri-selection.strategy';
 import {Observable, of} from 'rxjs';
 import {SelectionCallbackHandler} from '../../interfaces/selection-callback-handler.interface';
@@ -26,12 +25,6 @@ export class EsriScreenExtentSelectionStrategy extends AbstractEsriSelectionStra
       drawingRepresentation: drawingRepresentation,
     };
     return of(selection);
-  }
-
-  protected drawSelection(selection: DataDownloadSelection): void {
-    // TODO use the selection instead of creating a new graphic from scratch.
-    const graphic = new Graphic({geometry: this.screenExtent, symbol: this.polygonSymbol});
-    this.layer.add(graphic);
   }
 
   private createDrawingRepresentation(): UnstyledInternalDrawingRepresentation {

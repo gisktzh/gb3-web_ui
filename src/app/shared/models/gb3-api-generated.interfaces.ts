@@ -10,6 +10,7 @@
  */
 
 export interface Canton {
+  /** GeoJSON geometry object */
   boundingbox: Geometry;
 }
 
@@ -158,16 +159,30 @@ export interface MetadataServices {
   services: Service[];
 }
 
-/** List of municipalities */
-export type MunicipalitiesList = MunicipalityItem[];
+export interface MunicipalitiesList {
+  /**
+   * Timestamp of the data
+   * @example "2020-01-01T00:00:00+00:00"
+   */
+  timestamp: string | null;
+  /** List of municipalities */
+  municipalities: MunicipalityItem[];
+}
 
 export interface Municipality {
-  /** Municipality BFS number */
-  bfs_no: number;
-  /** Municipality name */
-  name: string;
-  /** GeoJSON geometry object */
-  boundingbox: Geometry;
+  /**
+   * Timestamp of the data
+   * @example "2020-01-01T00:00:00+00:00"
+   */
+  timestamp: string | null;
+  municipality: {
+    /** Municipality BFS number */
+    bfs_no: number;
+    /** Municipality name */
+    name: string;
+    /** GeoJSON geometry object */
+    boundingbox: Geometry;
+  };
 }
 
 export interface PersonalFavorite {
@@ -399,8 +414,12 @@ export interface ProductsList {
   products: ProductItem[];
 }
 
-/** List of relevant products' IDs */
-export type RelevantProductsList = string[];
+export interface RelevantProductsList {
+  /** Timestamp of product list in ISO8601 format */
+  timestamp: string | null;
+  /** List of relevant products' IDs */
+  products: string[];
+}
 
 export type SearchResultsList = {
   index: string;

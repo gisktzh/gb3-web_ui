@@ -18,7 +18,7 @@ export class Gb3GeoshopProductsService extends Gb3ApiService {
 
   public loadRelevanteProducts(guids: string[]): Observable<string[]> {
     const productsRelevantListData = this.get<ProductsRelevantListData>(this.createUrlForTopics(guids));
-    return productsRelevantListData;
+    return productsRelevantListData.pipe(map((data) => data.products));
   }
 
   private createUrlForTopics(guids: string[]): string {

@@ -7,11 +7,7 @@ import {DataDownloadRegionActions} from '../actions/data-download-region.actions
 import {selectCanton, selectMunicipalities} from '../reducers/data-download-region.reducer';
 import {Gb3GeoshopCantonService} from '../../../shared/services/apis/gb3/gb3-geoshop-canton.service';
 import {Gb3GeoshopMunicipalitiesService} from '../../../shared/services/apis/gb3/gb3-geoshop-municipalities.service';
-import {
-  CantonCouldNotBeLoaded,
-  CurrentMunicipalityCouldNotBeLoaded,
-  MunicipalitiesCouldNotBeLoaded,
-} from '../../../shared/errors/data-download.errors';
+import {CantonCouldNotBeLoaded, MunicipalitiesCouldNotBeLoaded} from '../../../shared/errors/data-download.errors';
 
 @Injectable()
 export class DataDownloadRegionEffects {
@@ -47,7 +43,7 @@ export class DataDownloadRegionEffects {
     return this.actions$.pipe(
       ofType(DataDownloadRegionActions.loadMunicipalities),
       concatLatestFrom(() => [this.store.select(selectMunicipalities)]),
-      filter(([_, municipalities]) => municipalities === undefined),
+      filter(([_, municipalities]) => municipalities.length === 0),
       switchMap(() =>
         this.geoshopMunicipalitiesService.loadMunicipalities().pipe(
           map((municipalities) => {
@@ -65,32 +61,6 @@ export class DataDownloadRegionEffects {
         ofType(DataDownloadRegionActions.setMunicipalitiesError),
         tap(({error}) => {
           throw new MunicipalitiesCouldNotBeLoaded(error);
-        }),
-      );
-    },
-    {dispatch: false},
-  );
-
-  public loadCurrentMunicipality$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(DataDownloadRegionActions.loadCurrentMunicipality),
-      switchMap(({bfsNo}) =>
-        this.geoshopMunicipalitiesService.loadMunicipalityWithGeometry(bfsNo).pipe(
-          map((municipality) => {
-            return DataDownloadRegionActions.setCurrentMunicipality({municipality});
-          }),
-          catchError((error: unknown) => of(DataDownloadRegionActions.setCurrentMunicipalityError({error}))),
-        ),
-      ),
-    );
-  });
-
-  public throwCurrentMunicipalityError$ = createEffect(
-    () => {
-      return this.actions$.pipe(
-        ofType(DataDownloadRegionActions.setCurrentMunicipalityError),
-        tap(({error}) => {
-          throw new CurrentMunicipalityCouldNotBeLoaded(error);
         }),
       );
     },

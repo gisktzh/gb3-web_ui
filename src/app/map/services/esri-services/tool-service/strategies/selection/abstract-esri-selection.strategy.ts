@@ -5,6 +5,10 @@ import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import {SelectionCallbackHandler} from '../../interfaces/selection-callback-handler.interface';
 import {DataDownloadSelection} from '../../../../../../shared/interfaces/data-download-selection.interface';
 import {Observable, tap} from 'rxjs';
+import Polygon from '@arcgis/core/geometry/Polygon';
+import Graphic from '@arcgis/core/Graphic';
+import {geojsonToArcGIS} from '@terraformer/arcgis';
+import {UnstyledInternalDrawingRepresentation} from '../../../../../../shared/interfaces/internal-drawing-representation.interface';
 
 export abstract class AbstractEsriSelectionStrategy implements EsriToolStrategy {
   public readonly internalLayerType: InternalDrawingLayer = InternalDrawingLayer.Selection;
@@ -22,7 +26,7 @@ export abstract class AbstractEsriSelectionStrategy implements EsriToolStrategy 
       .pipe(
         tap((selection) => {
           if (selection) {
-            this.drawSelection(selection);
+            this.drawSelection(selection.drawingRepresentation);
             this.selectionCallbackHandler.complete(selection);
           } else {
             this.selectionCallbackHandler.abort();
@@ -37,5 +41,11 @@ export abstract class AbstractEsriSelectionStrategy implements EsriToolStrategy 
   }
 
   protected abstract createSelection(): Observable<DataDownloadSelection | undefined>;
-  protected abstract drawSelection(selection: DataDownloadSelection): void;
+
+  private drawSelection(drawingRepresentation: UnstyledInternalDrawingRepresentation) {
+    const arcGisJsonRepresentation = geojsonToArcGIS(drawingRepresentation.geometry);
+    const geometry = new Polygon({...arcGisJsonRepresentation, spatialReference: {wkid: drawingRepresentation.geometry.srs}});
+    const graphic = new Graphic({geometry, symbol: this.polygonSymbol});
+    this.layer.add(graphic);
+  }
 }

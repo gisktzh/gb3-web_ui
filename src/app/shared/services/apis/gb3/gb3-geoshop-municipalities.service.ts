@@ -27,7 +27,7 @@ export class Gb3GeoshopMunicipalitiesService extends Gb3ApiService {
   }
 
   private mapMunicipalitiesListDataToMunicipalities(data: MunicipalitiesListData): Municipality[] {
-    return data.map(
+    return data.municipalities.map(
       (municipality): Municipality => ({
         bfsNo: municipality.bfs_no,
         name: municipality.name,
@@ -37,9 +37,9 @@ export class Gb3GeoshopMunicipalitiesService extends Gb3ApiService {
 
   private mapMunicipalitiesDetailDataToMunicipality(data: MunicipalitiesDetailData): MunicipalityWithGeometry {
     return {
-      bfsNo: data.bfs_no,
-      name: data.name,
-      boundingBox: ApiGeojsonGeometryToGb3ConverterUtils.convert(data.boundingbox),
+      bfsNo: data.municipality.bfs_no,
+      name: data.municipality.name,
+      boundingBox: ApiGeojsonGeometryToGb3ConverterUtils.convert(data.municipality.boundingbox),
     };
   }
 }

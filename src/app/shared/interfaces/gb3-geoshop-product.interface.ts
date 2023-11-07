@@ -7,6 +7,7 @@ export interface ProductsList {
 }
 
 export interface HasBoundingBox {
+  /** GeoJSON geometry object */
   boundingBox: SupportedGeometry;
 }
 

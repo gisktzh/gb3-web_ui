@@ -9,8 +9,6 @@ export const initialState: DataDownloadRegionState = {
   cantonLoadingState: undefined,
   municipalities: [],
   municipalitiesLoadingState: undefined,
-  currentMunicipality: undefined,
-  currentMunicipalityLoadingState: undefined,
 };
 
 export const dataDownloadRegionFeature = createFeature({
@@ -30,7 +28,7 @@ export const dataDownloadRegionFeature = createFeature({
       return {...state, canton: initialState.canton, cantonLoadingState: 'error'};
     }),
     on(DataDownloadRegionActions.loadMunicipalities, (state): DataDownloadRegionState => {
-      if (state.municipalities) {
+      if (state.municipalities.length > 0) {
         return state;
       }
       return {...state, municipalities: initialState.municipalities, municipalitiesLoadingState: 'loading'};
@@ -40,22 +38,6 @@ export const dataDownloadRegionFeature = createFeature({
     }),
     on(DataDownloadRegionActions.setMunicipalitiesError, (state): DataDownloadRegionState => {
       return {...state, municipalities: initialState.municipalities, municipalitiesLoadingState: 'error'};
-    }),
-    on(DataDownloadRegionActions.loadCurrentMunicipality, (state): DataDownloadRegionState => {
-      return {...state, currentMunicipality: initialState.currentMunicipality, currentMunicipalityLoadingState: 'loading'};
-    }),
-    on(DataDownloadRegionActions.setCurrentMunicipality, (state, {municipality}): DataDownloadRegionState => {
-      return {...state, currentMunicipality: municipality, currentMunicipalityLoadingState: 'loaded'};
-    }),
-    on(DataDownloadRegionActions.setCurrentMunicipalityError, (state): DataDownloadRegionState => {
-      return {...state, currentMunicipality: initialState.currentMunicipality, currentMunicipalityLoadingState: 'error'};
-    }),
-    on(DataDownloadRegionActions.clearCurrentMunicipality, (state): DataDownloadRegionState => {
-      return {
-        ...state,
-        currentMunicipality: initialState.currentMunicipality,
-        currentMunicipalityLoadingState: initialState.currentMunicipalityLoadingState,
-      };
     }),
   ),
 });
@@ -68,6 +50,4 @@ export const {
   selectCantonLoadingState,
   selectMunicipalities,
   selectMunicipalitiesLoadingState,
-  selectCurrentMunicipality,
-  selectCurrentMunicipalityLoadingState,
 } = dataDownloadRegionFeature;
