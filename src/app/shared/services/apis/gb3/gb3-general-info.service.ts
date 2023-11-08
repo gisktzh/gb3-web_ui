@@ -5,7 +5,6 @@ import {Observable} from 'rxjs';
 import {GeneralInfoResponse} from '../../../interfaces/general-info.interface';
 import {map} from 'rxjs/operators';
 import {Gb3QueryCoordinatesToPointConverterUtils} from '../../../utils/gb3-query-coordinates-to-point-converter.utils';
-import {UnsupportedSrs} from '../../../errors/unsupported-srs.errors';
 
 @Injectable({
   providedIn: 'root',
@@ -28,17 +27,13 @@ export class Gb3GeneralInfoService extends Gb3ApiService {
 
   private mapGeneralInfoListDataToGeneralInfoResponse(generalInfoListData: GeneralInfoListData): GeneralInfoResponse {
     const generalInfo = generalInfoListData.general_info;
-    const queryPosition = Gb3QueryCoordinatesToPointConverterUtils.convertQueryCoordinatesToPointWithSrs(generalInfo.query_position);
-    if (!queryPosition) {
-      throw new UnsupportedSrs(generalInfo.query_position.srid);
-    }
     return {
       alternativeSpatialReferences: generalInfo.spatial_references,
       externalMaps: generalInfo.external_maps,
       locationInformation: {
         heightDom: generalInfo.height_dom,
         heightDtm: generalInfo.height_dtm,
-        queryPosition: queryPosition,
+        queryPosition: Gb3QueryCoordinatesToPointConverterUtils.convertQueryCoordinatesToPointWithSrs(generalInfo.query_position),
       },
       parcel: generalInfo.parcel
         ? {
