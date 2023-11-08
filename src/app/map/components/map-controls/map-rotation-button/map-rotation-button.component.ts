@@ -1,10 +1,9 @@
-import {Component} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {MapConfigActions} from 'src/app/state/map/actions/map-config.actions';
-import {selectRotation} from '../../../../state/map/reducers/map-config.reducer';
 
 @Component({
   selector: 'map-rotation-button',
@@ -12,11 +11,20 @@ import {selectRotation} from '../../../../state/map/reducers/map-config.reducer'
   styleUrls: ['./map-rotation-button.component.scss'],
 })
 export class MapRotationButtonComponent {
-  public rotationAdjusted: string = '';
+  @Input()
+  get rotation(): number {
+    return this._rotation;
+  }
+  set rotation(rotation: number) {
+    this._rotation = rotation;
+    this.formattedRotation = `${rotation - 45}deg`; // This is only needed as long as we are using the Material 'explore' Icon, as it is rotated by 45°
+  }
+  private _rotation: number = 0;
+
+  public formattedRotation: string = '';
   public screenMode: ScreenMode = 'regular';
 
   private readonly subscriptions: Subscription = new Subscription();
-  private readonly rotation$ = this.store.select(selectRotation);
   private readonly screenMode$ = this.store.select(selectScreenMode);
 
   constructor(private readonly store: Store) {}
@@ -34,15 +42,6 @@ export class MapRotationButtonComponent {
   }
 
   private initSubscriptions() {
-    this.subscriptions.add(
-      this.rotation$
-        .pipe(
-          tap((rotation) => {
-            this.rotationAdjusted = `${rotation - 45}deg`; // This is only needed as long as we are using the Material 'explore' Icon, as it is rotated by 45°
-          }),
-        )
-        .subscribe(),
-    );
     this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
   }
 }
