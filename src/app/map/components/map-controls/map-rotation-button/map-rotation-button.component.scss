@@ -1,4 +1,13 @@
 @use 'mixins/helpers.mixin' as mixins;
+@use 'mixins/material.mixin' as mat-mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+:host ::ng-deep {
+  .map-rotation-button--button {
+    @include mat-mixins.mat-icon-button-override-border-radius(ktzh-variables.$zh-border-radius);
+    @include mat-mixins.mat-icon-custom-svg-size(24px);
+  }
+}
 
 .map-rotation-button {
   display: flex;
@@ -8,10 +17,5 @@
   &--mobile {
     @include mixins.tool-button;
     padding: 0;
-
-    .mat-icon {
-      height: 24px;
-      width: 24px;
-    }
   }
 }
