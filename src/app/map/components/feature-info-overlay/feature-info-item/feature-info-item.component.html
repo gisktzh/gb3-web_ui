@@ -11,6 +11,7 @@
       [disabled]="layer.features.length === 0"
       [overlayTitle]="layer.title"
       [metaDataLink]="layer.metaDataLink"
+      [hasBackgroundColor]="false"
     >
       <mat-icon class="feature-info-item-icon" header-icon>layers</mat-icon>
       <ng-container *ngTemplateOutlet="featureInfoContent"></ng-container>

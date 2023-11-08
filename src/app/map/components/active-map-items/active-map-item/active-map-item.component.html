@@ -1,6 +1,7 @@
 <!-- small connection line between elements - this is the top element -->
 <span
   class="active-map-item__connection-line active-map-item__connection-line-top"
+  [ngClass]="{'active-map-item__connection-line--mobile': screenMode === 'mobile'}"
   *ngIf="!isFirstActiveMapItem && !activeMapItemExpansionPanel.expanded"
 ></span>
 <mat-expansion-panel
@@ -59,4 +60,8 @@
   </ng-template>
 </mat-expansion-panel>
 <!-- small connection line between elements - this is the bottom element -->
-<span class="active-map-item__connection-line active-map-item__connection-line-bottom" *ngIf="!isLastActiveMapItem"></span>
+<span
+  class="active-map-item__connection-line active-map-item__connection-line-bottom"
+  *ngIf="!isLastActiveMapItem"
+  [ngClass]="{'active-map-item__connection-line--mobile': screenMode === 'mobile'}"
+></span>

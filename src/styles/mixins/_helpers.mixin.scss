@@ -78,3 +78,15 @@
     color: helper-functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
   }
 }
+
+@mixin tool-button-mobile {
+  @include mat-mixins.mat-icon-button-override-border-radius(ktzh-variables.$zh-border-radius);
+  @include mat-mixins.mat-icon-custom-svg-size(18px);
+  width: 60px;
+  height: 60px;
+
+  &--active {
+    background-color: helper-functions.get-color-from-palette(ktzh-variables.$zh-primary);
+    color: helper-functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
+  }
+}

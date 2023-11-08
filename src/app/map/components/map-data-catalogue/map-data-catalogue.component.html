@@ -20,7 +20,8 @@
     <mat-accordion
       *ngIf="catalogueLoadingState === 'loaded'"
       [ngClass]="{
-        'map-data-catalogue__content__items--hidden': filterString && topics.length === 0 && filteredFavourites.length === 0
+        'map-data-catalogue__content__items--hidden': filterString && topics.length === 0 && filteredFavourites.length === 0,
+        'map-data-catalogue__content__items--mobile': screenMode === 'mobile'
       }"
       class="map-data-catalogue__content__items"
       displayMode="flat"
@@ -28,26 +29,16 @@
     >
       <!-- Favourites -->
       <ng-container *ngIf="isAuthenticated">
-        <mat-expansion-panel
-          #favouriteExpansionPanel
+        <expandable-list-item
           *ngIf="!(!!filterString && filteredFavourites.length === 0)"
+          [header]="'Favoriten'"
           [expanded]="!!filterString && filteredFavourites.length <= autoOpenThreshold"
-          class="map-data-catalogue__content__items__item"
-          hideToggle="true"
+          [filterString]="filterString"
+          [loadingState]="favouritesLoadingState"
+          [numberOfItems]="filteredFavourites.length"
           [disabled]="favouritesLoadingState === 'loading' || favouritesLoadingState === 'error'"
+          [showBadge]="!!filterString && favouritesLoadingState !== 'loading'"
         >
-          <!-- 'Favourite' header -->
-          <mat-expansion-panel-header class="map-data-catalogue__content__items__item__header">
-            <map-data-item-header
-              [filterString]="filterString"
-              [isExpanded]="favouriteExpansionPanel.expanded"
-              [loadingState]="favouritesLoadingState"
-              [numberOfItems]="filteredFavourites.length"
-              [title]="'Favoriten'"
-              class="map-data-catalogue__content__items__item__header__item"
-            ></map-data-item-header>
-          </mat-expansion-panel-header>
-
           <!-- 'Favourite' content -->
           <p *ngIf="filteredFavourites.length === 0"><em>Noch keine Favoriten hinzugefügt.</em></p>
           <ng-container *ngFor="let favourite of filteredFavourites">
@@ -60,47 +51,37 @@
               [title]="favourite.title"
             ></map-data-item-favourite>
           </ng-container>
-        </mat-expansion-panel>
+        </expandable-list-item>
       </ng-container>
 
       <!-- Topics -->
       <ng-container *ngFor="let topic of topics; trackBy: trackByTopicTitle">
-        <mat-expansion-panel
-          #topicExpansionPanel
+        <expandable-list-item
+          [numberOfItems]="topic.maps.length"
+          [header]="topic.title"
+          [filterString]="filterString"
           [expanded]="!!filterString && topic.maps.length <= autoOpenThreshold"
-          class="map-data-catalogue__content__items__item"
-          hideToggle="true"
+          [loadingState]="catalogueLoadingState"
+          [showBadge]="!!filterString"
         >
-          <!-- 'Topic' header -->
-          <mat-expansion-panel-header class="map-data-catalogue__content__items__item__header">
-            <map-data-item-header
-              [filterString]="filterString"
-              [isExpanded]="topicExpansionPanel.expanded"
-              [numberOfItems]="topic.maps.length"
-              [title]="topic.title"
-              class="map-data-catalogue__content__items__item__header__item"
-            ></map-data-item-header>
-          </mat-expansion-panel-header>
-
           <!-- 'Topic' content -->
-          <ng-template matExpansionPanelContent>
-            <div class="map-data-catalogue__content__items__item__content">
-              <ng-container *ngFor="let map of topic.maps; trackBy: trackByMapId; let isLastMap = last">
-                <map-data-item-map
-                  (addEvent)="addActiveMap(map)"
-                  (addLayerEvent)="addActiveLayer(map, $event)"
-                  [filterString]="filterString"
-                  [imageUrl]="map.icon"
-                  [layers]="map.layers"
-                  [title]="map.title"
-                  [gb2Url]="map.gb2Url"
-                  class="map-data-catalogue__content__items__item__content__item"
-                ></map-data-item-map>
-                <mat-divider *ngIf="!isLastMap"></mat-divider>
-              </ng-container>
-            </div>
-          </ng-template>
-        </mat-expansion-panel>
+
+          <div class="map-data-catalogue__content__items__item__content">
+            <ng-container *ngFor="let map of topic.maps; trackBy: trackByMapId; let isLastMap = last">
+              <map-data-item-map
+                (addEvent)="addActiveMap(map)"
+                (addLayerEvent)="addActiveLayer(map, $event)"
+                [filterString]="filterString"
+                [imageUrl]="map.icon"
+                [layers]="map.layers"
+                [title]="map.title"
+                [gb2Url]="map.gb2Url"
+                class="map-data-catalogue__content__items__item__content__item"
+              ></map-data-item-map>
+              <mat-divider *ngIf="!isLastMap"></mat-divider>
+            </ng-container>
+          </div>
+        </expandable-list-item>
       </ng-container>
     </mat-accordion>
 

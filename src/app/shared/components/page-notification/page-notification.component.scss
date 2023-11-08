@@ -11,7 +11,7 @@
   display: flex;
   align-items: center;
   color: ktzh-variables.$zh-white;
-  height: 80px;
+  height: 100%;
 
   .page-notification-label__icon {
     height: 36px;
@@ -29,8 +29,19 @@
       font-family: ktzh-variables.$zh-font-family-bold;
     }
 
+    @media (max-width: 560px) {
+      .page-notification-label__text-container__title {
+        white-space: normal;
+        font-family: ktzh-variables.$zh-font-family-bold;
+      }
+    }
+
     .page-notification-label__text-container__text {
       @include mixins.multiline-ellipsis(2);
+
+      &--mobile {
+        @include mixins.multiline-ellipsis(6);
+      }
     }
   }
 

@@ -109,6 +109,10 @@
         @include mat-mixins.cdk-drag-placeholder(68px);
       }
 
+      &--mobile {
+        padding: 0;
+      }
+
       .active-map-items__content__item__drag-handle {
         @include mat-mixins.cdk-drag-handle-nested;
       }

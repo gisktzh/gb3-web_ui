@@ -5,7 +5,7 @@
 
 :host ::ng-deep {
   .map-management__button {
-    @include mixins.tool-button;
+    @include mixins.tool-button-mobile;
   }
 }
 
@@ -15,7 +15,9 @@
   $minimal-bottom-height: map-layout-variables.$esri-attribution-widget-height;
 
   &--mobile {
-    height: 100vh;
+    position: absolute;
+    height: 100%;
+    width: 100%;
   }
 
   .map-container__map-element--hidden {
@@ -142,6 +144,8 @@
     right: 12px;
 
     &--mobile {
+      left: 12px;
+      right: unset;
       top: 12px;
     }
   }

@@ -1,8 +1,15 @@
-<div class="search" [ngClass]="{'search--compact': mode === 'compact'}">
+<div class="search" [ngClass]="'search--' + mode">
   <div class="search__bar">
     <mat-icon class="search__bar__icon" svgIcon="ktzh_search"></mat-icon>
-    <input #searchInput class="search__bar__input" [placeholder]="placeholderText" type="text" (focus)="focus.emit()" />
-    <ng-container *ngIf="showFilterButton && mode === 'compact'">
+    <input
+      #searchInput
+      class="search__bar__input"
+      [ngClass]="{'search__bar__input--mobile': screenMode === 'mobile'}"
+      [placeholder]="placeholderText"
+      type="text"
+      (focus)="focusEvent.emit()"
+    />
+    <ng-container *ngIf="showFilterButton && (mode === 'compact' || mode === 'mobile')">
       <button
         mat-icon-button
         (click)="openFilter()"
@@ -31,7 +38,8 @@
           class="search__bar__close-icon-button"
           [disabled]="!alwaysEnableClearButton && searchInput.value.length === 0"
         >
-          <mat-icon>close</mat-icon>
+          <mat-icon *ngIf="screenMode === 'mobile'; else close">cancel</mat-icon>
+          <ng-template #close><mat-icon>close</mat-icon></ng-template>
         </button>
       </ng-template>
     </ng-container>

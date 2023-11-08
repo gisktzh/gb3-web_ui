@@ -4,8 +4,8 @@ import {Pipe, PipeTransform} from '@angular/core';
   name: 'highlightSearchQuery',
 })
 export class HighlightSearchQueryPipe implements PipeTransform {
-  public transform(textItem: string, searchQuery: string | string[]): string {
-    if (searchQuery === '' || searchQuery.length === 0) {
+  public transform(textItem: string, searchQuery: string | string[] | undefined): string {
+    if (searchQuery === undefined || searchQuery === '' || searchQuery.length === 0) {
       return textItem;
     }
 

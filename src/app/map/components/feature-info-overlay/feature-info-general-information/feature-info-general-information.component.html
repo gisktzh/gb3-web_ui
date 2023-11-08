@@ -1,6 +1,6 @@
 <div class="general-information">
-  <b>Koordinaten:</b> {{ generalInfoData.locationInformation.spatialReference.coordinates[0] | number: '1.0-10' }} /
-  {{ generalInfoData.locationInformation.spatialReference.coordinates[1] | number: '1.0-10' }}
+  <b>Koordinaten:</b> {{ generalInfoData.locationInformation.queryPosition.coordinates[0] | number: '1.0-10' }} /
+  {{ generalInfoData.locationInformation.queryPosition.coordinates[1] | number: '1.0-10' }}
   <br />
   <b>DTM:</b> {{ generalInfoData.locationInformation.heightDtm | number: '1.0-2' }} m / <b>DOM:</b>
   {{ generalInfoData.locationInformation.heightDom | number: '1.0-2' }} m

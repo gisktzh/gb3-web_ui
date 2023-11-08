@@ -38,7 +38,7 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
   public topics: Topic[] = [];
   public catalogueLoadingState: LoadingState;
   public favouritesLoadingState: LoadingState;
-  public filterString: string = '';
+  public filterString: string | undefined = undefined;
   public filteredFavourites: Favourite[] = [];
   public isAuthenticated: boolean = false;
   public autoOpenThreshold: number = AUTO_OPEN_THRESHOLD;
