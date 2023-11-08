@@ -1,5 +1,8 @@
-import {Component} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
+import {Store} from '@ngrx/store';
+import {Subscription, tap} from 'rxjs';
+import {selectUrlState} from 'src/app/state/app/reducers/url.reducer';
 import {PanelClass} from '../../enums/panel-class.enum';
 import {NavbarMobileDialogComponent} from './navbar-mobile-dialog/navbar-mobile-dialog.component';
 
@@ -8,8 +11,32 @@ import {NavbarMobileDialogComponent} from './navbar-mobile-dialog/navbar-mobile-
   templateUrl: './navbar-mobile.component.html',
   styleUrls: ['./navbar-mobile.component.scss'],
 })
-export class NavbarMobileComponent {
-  constructor(public dialog: MatDialog) {}
+export class NavbarMobileComponent implements OnInit, OnDestroy {
+  public isSimplifiedPage: boolean = false;
+
+  private readonly urlState$ = this.store.select(selectUrlState);
+  private readonly subscriptions: Subscription = new Subscription();
+
+  constructor(
+    public dialog: MatDialog,
+    private readonly store: Store,
+  ) {}
+
+  public ngOnInit() {
+    this.subscriptions.add(
+      this.urlState$
+        .pipe(
+          tap(({isSimplifiedPage}) => {
+            this.isSimplifiedPage = isSimplifiedPage;
+          }),
+        )
+        .subscribe(),
+    );
+  }
+
+  public ngOnDestroy() {
+    this.subscriptions.unsubscribe();
+  }
 
   showMenu() {
     this.dialog.open(NavbarMobileDialogComponent, {

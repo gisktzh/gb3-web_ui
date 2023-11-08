@@ -6,6 +6,7 @@ import {AccordionItemComponent} from './components/accordion-item/accordion-item
 import {ContactDetailComponent} from './components/contact-details/contact-detail/contact-detail.component';
 import {ContactDetailsComponent} from './components/contact-details/contact-details.component';
 import {DescriptiveHighlightedLinkComponent} from './components/descriptive-highlighted-link/descriptive-highlighted-link.component';
+import {ExpandableListItemHeaderComponent} from './components/expandable-list-item/expandable-list-item-header/expandable-list-item-header.component';
 import {ExpandableListItemComponent} from './components/expandable-list-item/expandable-list-item.component';
 import {MainFooterComponent} from './components/footer/main-footer.component';
 import {Gb2ExitButtonComponent} from './components/gb2-exit-button/gb2-exit-button.component';
@@ -13,7 +14,6 @@ import {HeroHeaderComponent} from './components/hero-header/hero-header.componen
 import {LinkListItemComponent} from './components/link-list/link-list-item/link-list-item.component';
 import {LinkListComponent} from './components/link-list/link-list.component';
 import {LoadingAndProcessBarComponent} from './components/loading-and-process-bar/loading-and-process-bar.component';
-import {MobileWarningComponent} from './components/mobile-warning/mobile-warning.component';
 import {NavbarMobileDialogComponent} from './components/navbar-mobile/navbar-mobile-dialog/navbar-mobile-dialog.component';
 import {NavbarMobileComponent} from './components/navbar-mobile/navbar-mobile.component';
 import {NavbarComponent} from './components/navbar/navbar.component';
@@ -33,7 +33,6 @@ import {FormatContentPipe} from './pipes/format-content.pipe';
 import {HighlightSearchQueryPipe} from './pipes/highlight-search-query.pipe';
 import {KeyValuePreserveOrderPipe} from './pipes/key-value-preserve-order.pipe';
 import {LayerTooltipPipe} from './pipes/layer-tooltip.pipe';
-import {ExpandableListItemHeaderComponent} from './components/expandable-list-item/expandable-list-item-header/expandable-list-item-header.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +42,6 @@ import {ExpandableListItemHeaderComponent} from './components/expandable-list-it
     HighlightSearchQueryPipe,
     ResizeHandlerComponent,
     DragCursorDirective,
-    MobileWarningComponent,
     FormatContentPipe,
     PageNotificationComponent,
     MainFooterComponent,
@@ -79,7 +77,6 @@ import {ExpandableListItemHeaderComponent} from './components/expandable-list-it
     HighlightSearchQueryPipe,
     ResizeHandlerComponent,
     DragCursorDirective,
-    MobileWarningComponent,
     FormatContentPipe,
     PageNotificationComponent,
     MainFooterComponent,

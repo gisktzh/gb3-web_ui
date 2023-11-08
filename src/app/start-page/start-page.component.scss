@@ -2,12 +2,17 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
 $search-height: 106px;
+$search-height-compact: 64px;
 
 .start-page {
   .start-page__search {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: calc(0px - $search-height / 2);
+    margin-top: calc(0px - 106px / 2);
+
+    &--mobile {
+      margin-top: calc(0px - 64px / 2);
+    }
   }
 }

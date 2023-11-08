@@ -4,7 +4,6 @@ import {MatSnackBar, MatSnackBarRef} from '@angular/material/snack-bar';
 import {Router} from '@angular/router';
 import {Store} from '@ngrx/store';
 import {Subscription, filter, take, tap} from 'rxjs';
-import {environment} from 'src/environments/environment';
 import {PageNotificationComponent} from './shared/components/page-notification/page-notification.component';
 import {Breakpoints} from './shared/enums/breakpoints.enum';
 import {PanelClass} from './shared/enums/panel-class.enum';
@@ -25,7 +24,6 @@ import {MapUiState} from './state/map/states/map-ui.state';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit, OnDestroy {
-  public showWarning: boolean = false;
   public screenMode: ScreenMode = 'regular';
   public mapUiState?: MapUiState;
   public isHeadlessPage: boolean = false;
@@ -82,7 +80,6 @@ export class AppComponent implements OnInit, OnDestroy {
             let screenMode: ScreenMode;
             if (this.breakpointObserver.isMatched(Breakpoints.mobile)) {
               screenMode = 'mobile';
-              this.showWarning = environment.production;
             } else if (this.breakpointObserver.isMatched(Breakpoints.smallTablet)) {
               screenMode = 'smallTablet';
             } else {

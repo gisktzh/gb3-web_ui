@@ -8,8 +8,11 @@
     Aktuell gibt es keine häufig verwendete Karten oder Daten.
   </p>
   <ng-container *ngFor="let frequentlyUsedItem of frequentlyUsedItems">
-    <div class="frequently-used-items__item">
-      <div class="frequently-used-items__item__image-container">
+    <div class="frequently-used-items__item" [ngClass]="{'frequently-used-items__item--mobile': screenMode === 'mobile'}">
+      <div
+        class="frequently-used-items__item__image-container"
+        [ngClass]="{'frequently-used-items__item__image-container--mobile': screenMode === 'mobile'}"
+      >
         <img
           *ngIf="frequentlyUsedItem.image !== undefined"
           [src]="frequentlyUsedItem.image.url"
@@ -17,7 +20,10 @@
           class="frequently-used-items__item__image-container__image"
         />
       </div>
-      <div class="frequently-used-items__item__text-container">
+      <div
+        class="frequently-used-items__item__text-container"
+        [ngClass]="{'frequently-used-items__item__text-container--mobile': screenMode === 'mobile'}"
+      >
         <h1>{{ frequentlyUsedItem.title }}</h1>
         <p class="frequently-used-items__item__text-container__text">{{ frequentlyUsedItem.description }}</p>
         <a
