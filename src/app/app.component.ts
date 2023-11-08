@@ -87,15 +87,13 @@ export class AppComponent implements OnInit, OnDestroy {
         ])
         .pipe(
           tap(() => {
-            let screenMode: ScreenMode;
+            let screenMode: ScreenMode = 'regular';
             let screenHeight: ScreenHeight = 'regular';
             if (this.breakpointObserver.isMatched(BreakpointsWidth.mobile)) {
               screenMode = 'mobile';
               this.showWarning = environment.production;
             } else if (this.breakpointObserver.isMatched(BreakpointsWidth.smallTablet)) {
               screenMode = 'smallTablet';
-            } else {
-              screenMode = 'regular';
             }
             if (this.breakpointObserver.isMatched(BreakpointsHeight.small)) {
               screenHeight = 'small';

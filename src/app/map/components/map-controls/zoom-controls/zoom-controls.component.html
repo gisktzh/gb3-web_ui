@@ -19,10 +19,10 @@
     </button>
     <mat-divider
       class="zoom-controls__divider"
-      [ngClass]="{'zoom-controls--hidden': mapUiState?.hideUiElements || mapUiState?.hideZoomButtons}"
+      [ngClass]="{'zoom-controls--hidden': mapUiState?.hideZoomButtons || screenHeight === 'small'}"
     ></mat-divider>
   </ng-container>
-  <div [ngClass]="{'zoom-controls--hidden': mapUiState?.hideZoomButtons}" class="zoom-controls__small-screen">
+  <div [ngClass]="{'zoom-controls--hidden': mapUiState?.hideZoomButtons || screenHeight === 'small'}">
     <button
       mat-icon-button
       (click)="this.goToInitialExtent()"
