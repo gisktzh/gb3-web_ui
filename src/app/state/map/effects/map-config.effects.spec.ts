@@ -1,19 +1,20 @@
-import {provideMockActions} from '@ngrx/effects/testing';
-import {TestBed} from '@angular/core/testing';
-import {Observable, of} from 'rxjs';
-import {Action} from '@ngrx/store';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {MockStore, provideMockStore} from '@ngrx/store/testing';
+import {TestBed} from '@angular/core/testing';
 import {RouterTestingModule} from '@angular/router/testing';
+import {provideMockActions} from '@ngrx/effects/testing';
+import {Action} from '@ngrx/store';
+import {MockStore, provideMockStore} from '@ngrx/store/testing';
+import {Observable, of} from 'rxjs';
 import {MAP_SERVICE} from '../../../app.module';
-import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
 import {MapService} from '../../../map/interfaces/map.service';
-import {MapConfigActions} from '../actions/map-config.actions';
-import {MapConfigEffects} from './map-config.effects';
-import {ZoomType} from '../../../shared/types/zoom.type';
 import {PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
+import {ZoomType} from '../../../shared/types/zoom.type';
+import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
 import {UrlActions} from '../../app/actions/url.actions';
+import {MapConfigActions} from '../actions/map-config.actions';
+import {selectRotation} from '../reducers/map-config.reducer';
 import {selectMapConfigParams} from '../selectors/map-config-params.selector';
+import {MapConfigEffects} from './map-config.effects';
 
 describe('MapConfigEffects', () => {
   let actions$: Observable<Action>;
@@ -109,6 +110,19 @@ describe('MapConfigEffects', () => {
       actions$ = of(MapConfigActions.setMapExtent({x: expectedParams.x, y: expectedParams.y, scale: expectedParams.scale}));
       effects.updateMapPageQueryParams$.subscribe((action) => {
         expect(action).toEqual(UrlActions.setMapPageParams({params: expectedParams}));
+        done();
+      });
+    });
+  });
+
+  describe('updateMapRotation$', () => {
+    it('dispatches MapConfigActions.setRotation() if the rotation is changed', (done: DoneFn) => {
+      const expectedRotation = 42;
+      store.overrideSelector(selectRotation, expectedRotation);
+
+      actions$ = of(MapConfigActions.handleMapRotation({rotation: expectedRotation}));
+      effects.updateMapRotation$.subscribe((action) => {
+        expect(action).toEqual(MapConfigActions.setRotation({rotation: expectedRotation}));
         done();
       });
     });
