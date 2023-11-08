@@ -1,6 +1,6 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
-.search__results__groups {
+.search-result-groups {
   display: flex;
   flex-direction: column;
   width: ktzh-variables.$zh-layout-max-content-width;
@@ -11,7 +11,7 @@
     gap: 6px;
   }
 
-  .search__results__groups__group {
+  .search-result-groups__group {
     box-sizing: border-box;
   }
 }

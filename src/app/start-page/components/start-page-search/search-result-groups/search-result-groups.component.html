@@ -1,12 +1,12 @@
 <mat-accordion
-  class="search__results__groups"
+  class="search-result-groups"
   displayMode="flat"
   multi="true"
-  [ngClass]="{'search__results__groups--mobile': screenMode === 'mobile'}"
+  [ngClass]="{'search-result-groups--mobile': screenMode === 'mobile'}"
 >
   <search-result-group
     *ngIf="filteredMaps.length > 0 || layerCatalogLoadingState === 'loading' || layerCatalogLoadingState === 'error'"
-    class="search__results__groups__group"
+    class="search-result-groups__group"
     header="Karten"
     [loadingState]="layerCatalogLoadingState"
     [numberOfItems]="filteredMaps.length"
@@ -14,19 +14,22 @@
     <search-result-entry-map [filteredMaps]="filteredMaps"></search-result-entry-map>
   </search-result-group>
   <search-result-group
-    *ngIf="filteredMetadataItems.length > 0 || dataCatalogLoadingState === 'loading' || dataCatalogLoadingState === 'error'"
-    class="search__results__groups__group"
+    *ngIf="
+      filteredMetadataItems.length > 0 ||
+      combinedSearchAndDataCatalogLoadingState === 'loading' ||
+      combinedSearchAndDataCatalogLoadingState === 'error'
+    "
+    class="search-result-groups__group"
     header="Datenkatalog"
-    [loadingState]="dataCatalogLoadingState"
+    [loadingState]="combinedSearchAndDataCatalogLoadingState"
     [numberOfItems]="filteredMetadataItems.length"
   >
     <search-result-entry-data-catalog [filteredMetadataItems]="filteredMetadataItems"></search-result-entry-data-catalog>
   </search-result-group>
   <search-result-group
     *ngIf="filteredFaqItems.length > 0"
-    class="search__results__groups__group"
+    class="search-result-groups__group"
     header="Support"
-    [loadingState]="combinedSearchAndDataCatalogLoadingState"
     [numberOfItems]="filteredFaqItems.length"
   >
     <search-result-entry-support [filteredFaqItems]="filteredFaqItems"></search-result-entry-support>
