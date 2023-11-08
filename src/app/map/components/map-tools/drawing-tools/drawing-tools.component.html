@@ -49,7 +49,14 @@
   >
     <mat-icon svgIcon="ktzh_drawing_symbol_circle"></mat-icon>
   </button>
-  <button class="drawing-tools__button" color="accent" disabled mat-icon-button matTooltip="Text">
+  <button
+    (click)="this.toggleTextDrawing()"
+    [ngClass]="{'drawing-tools__button--active': activeTool === 'draw-text'}"
+    class="drawing-tools__button"
+    color="accent"
+    mat-icon-button
+    matTooltip="Text: In Karte klicken um Position zu wählen, anschliessend Text eingeben."
+  >
     <mat-icon svgIcon="ktzh_drawing_symbol_text"></mat-icon>
   </button>
   <mat-divider class="drawing-tools__divider"></mat-divider>

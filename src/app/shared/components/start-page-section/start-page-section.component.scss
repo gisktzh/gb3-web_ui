@@ -15,6 +15,10 @@
     padding-bottom: 0;
   }
 
+  &--mobile {
+    padding: 24px 12px;
+  }
+
   & .section__content-container__title-line:before {
     background: ktzh-variables.$zh-black100;
   }
@@ -48,6 +52,11 @@
         margin-left: 200px;
         margin-bottom: 19px;
       }
+
+      &--mobile:before {
+        margin-left: 0px;
+        margin-top: 12px;
+      }
     }
 
     & .section__content-container__title-wrapper {
@@ -56,6 +65,11 @@
       justify-content: space-between;
       margin-left: 200px;
       margin-bottom: 40px;
+
+      &--mobile {
+        margin-left: 0px;
+        margin-bottom: 24px;
+      }
 
       .section__content-container__title-wrapper__title {
         margin-bottom: 0;

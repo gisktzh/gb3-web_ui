@@ -3,10 +3,9 @@ import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {MatSnackBar, MatSnackBarRef} from '@angular/material/snack-bar';
 import {Router} from '@angular/router';
 import {Store} from '@ngrx/store';
-import {filter, Subscription, take, tap} from 'rxjs';
-import {environment} from 'src/environments/environment';
+import {Subscription, filter, take, tap} from 'rxjs';
 import {PageNotificationComponent} from './shared/components/page-notification/page-notification.component';
-import {BreakpointsWidth, BreakpointsHeight} from './shared/enums/breakpoints.enum';
+import {BreakpointsHeight, BreakpointsWidth} from './shared/enums/breakpoints.enum';
 import {PanelClass} from './shared/enums/panel-class.enum';
 import {PageNotification} from './shared/interfaces/page-notification.interface';
 import {DocumentService} from './shared/services/document.service';
@@ -16,9 +15,9 @@ import {ScreenHeight} from './shared/types/screen-height-type';
 import {ScreenMode} from './shared/types/screen-size.type';
 import {AppLayoutActions} from './state/app/actions/app-layout.actions';
 import {selectScreenMode, selectScrollbarWidth} from './state/app/reducers/app-layout.reducer';
+import {selectUrlState} from './state/app/reducers/url.reducer';
 import {selectMapUiState} from './state/map/reducers/map-ui.reducer';
 import {MapUiState} from './state/map/states/map-ui.state';
-import {selectUrlState} from './state/app/reducers/url.reducer';
 
 @Component({
   selector: 'app-root',
@@ -26,7 +25,6 @@ import {selectUrlState} from './state/app/reducers/url.reducer';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit, OnDestroy {
-  public showWarning: boolean = false;
   public screenMode: ScreenMode = 'regular';
   public screenHeight: ScreenHeight = 'regular';
   public mapUiState?: MapUiState;
@@ -91,7 +89,6 @@ export class AppComponent implements OnInit, OnDestroy {
             let screenHeight: ScreenHeight = 'regular';
             if (this.breakpointObserver.isMatched(BreakpointsWidth.mobile)) {
               screenMode = 'mobile';
-              this.showWarning = environment.production;
             } else if (this.breakpointObserver.isMatched(BreakpointsWidth.smallTablet)) {
               screenMode = 'smallTablet';
             }

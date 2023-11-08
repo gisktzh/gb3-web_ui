@@ -1,0 +1,17 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.search-result-groups {
+  display: flex;
+  flex-direction: column;
+  width: ktzh-variables.$zh-layout-max-content-width;
+  gap: 32px;
+
+  &--mobile {
+    width: calc(100vw - 24px);
+    gap: 6px;
+  }
+
+  .search-result-groups__group {
+    box-sizing: border-box;
+  }
+}

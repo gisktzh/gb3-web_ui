@@ -26,6 +26,7 @@ export class ToolEffects {
             case 'draw-polygon':
             case 'draw-rectangle':
             case 'draw-circle':
+            case 'draw-text':
               this.toolService.initializeDrawing(tool);
               break;
             case 'select-circle':

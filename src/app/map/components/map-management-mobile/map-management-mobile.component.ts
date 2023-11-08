@@ -8,6 +8,7 @@ import {ActiveMapItemActions} from 'src/app/state/map/actions/active-map-item.ac
 import {LayerCatalogActions} from 'src/app/state/map/actions/layer-catalog.actions';
 import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
 import {selectItems} from 'src/app/state/map/reducers/active-map-item.reducer';
+import {selectFilterString} from 'src/app/state/map/reducers/layer-catalog.reducer';
 import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
 
 type TabType = 'activeMaps' | 'mapsCatalogue';
@@ -29,11 +30,13 @@ export class MapManagementMobileComponent implements OnInit, OnDestroy, AfterVie
   public numberOfUnreadNotices: number = 0;
   public activeTab: TabType = 'mapsCatalogue';
   public isAuthenticated: boolean = false;
+  public filterString: string | undefined = undefined;
   public readonly favouriteHelperMessages = FAVOURITE_HELPER_MESSAGES;
 
   private readonly subscriptions: Subscription = new Subscription();
   private readonly activeMapItems$ = this.store.select(selectItems);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
+  private readonly filterString$ = this.store.select(selectFilterString);
   @ViewChild('filterInput') private readonly input!: ElementRef;
 
   constructor(private readonly store: Store) {
@@ -46,6 +49,7 @@ export class MapManagementMobileComponent implements OnInit, OnDestroy, AfterVie
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
+    this.clearInput();
   }
 
   public ngAfterViewInit() {
@@ -91,6 +95,15 @@ export class MapManagementMobileComponent implements OnInit, OnDestroy, AfterVie
     this.numberOfUnreadNotices = activeMapItemsWithNotices.filter((activeMapItem) => !activeMapItem.settings.isNoticeMarkedAsRead).length;
   }
 
+  public clearInput() {
+    this.input.nativeElement.value = '';
+    this.store.dispatch(LayerCatalogActions.clearFilterString());
+  }
+
+  public startFiltering() {
+    this.store.dispatch(LayerCatalogActions.setFilterString({filterString: ''}));
+  }
+
   private initSubscriptions() {
     this.subscriptions.add(
       this.activeMapItems$
@@ -112,5 +125,6 @@ export class MapManagementMobileComponent implements OnInit, OnDestroy, AfterVie
         )
         .subscribe(),
     );
+    this.subscriptions.add(this.filterString$.pipe(tap((filterString) => (this.filterString = filterString))).subscribe());
   }
 }

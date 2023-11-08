@@ -1,14 +1,16 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {selectSearchApiLoadingState, selectTerm} from '../../../../state/app/reducers/search.reducer';
-import {Subscription, tap} from 'rxjs';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
+import {Subscription, tap} from 'rxjs';
+import {ScreenMode} from 'src/app/shared/types/screen-size.type';
+import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
+import {Map} from '../../../../shared/interfaces/topic.interface';
+import {GeometrySearchApiResultMatch} from '../../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
+import {LoadingState} from '../../../../shared/types/loading-state.type';
+import {selectSearchApiLoadingState, selectTerm} from '../../../../state/app/reducers/search.reducer';
 import {
   selectFilteredLayerCatalogMaps,
   selectFilteredSearchApiResultMatches,
 } from '../../../../state/app/selectors/search-results.selector';
-import {GeometrySearchApiResultMatch} from '../../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
-import {Map} from '../../../../shared/interfaces/topic.interface';
-import {LoadingState} from '../../../../shared/types/loading-state.type';
 
 @Component({
   selector: 'result-groups',
@@ -16,16 +18,19 @@ import {LoadingState} from '../../../../shared/types/loading-state.type';
   styleUrls: ['./result-groups.component.scss'],
 })
 export class ResultGroupsComponent implements OnInit, OnDestroy {
+  @Input() showMultiplePanels: boolean = true;
   public searchTerms: string[] = [];
   public filteredAddressesAndPlacesMatches: GeometrySearchApiResultMatch[] = [];
   public filteredActiveMapMatches: GeometrySearchApiResultMatch[] = [];
   public filteredMaps: Map[] = [];
   public searchApiLoadingState: LoadingState;
+  public screenMode: ScreenMode = 'regular';
 
   private readonly searchTerm$ = this.store.select(selectTerm);
   private readonly filteredSearchApiResultMatches$ = this.store.select(selectFilteredSearchApiResultMatches);
   private readonly filteredMaps$ = this.store.select(selectFilteredLayerCatalogMaps);
   private readonly searchApiLoadingState$ = this.store.select(selectSearchApiLoadingState);
+  private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(private readonly store: Store) {}
@@ -75,5 +80,6 @@ export class ResultGroupsComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.searchApiLoadingState$.pipe(tap((searchApiLoadingState) => (this.searchApiLoadingState = searchApiLoadingState))).subscribe(),
     );
+    this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
   }
 }

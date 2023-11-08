@@ -1,6 +1,6 @@
 <div *ngIf="bottomSheetContent !== 'none'" class="bottom-sheet-overlay">
   <ng-container [ngSwitch]="bottomSheetContent">
-    <bottom-sheet-item *ngSwitchCase="'basemap'" overlayTitle="Hintergrundkarte" bottomSheetHeight="small">
+    <bottom-sheet-item *ngSwitchCase="'basemap'" overlayTitle="Hintergrund" bottomSheetHeight="small">
       <basemap-selection-list body></basemap-selection-list>
     </bottom-sheet-item>
     <bottom-sheet-item *ngSwitchCase="'legend'" overlayTitle="Legende" bottomSheetHeight="large">
@@ -9,14 +9,17 @@
     <bottom-sheet-item *ngSwitchCase="'feature-info'" overlayTitle="Info" bottomSheetHeight="large">
       <feature-info body></feature-info>
     </bottom-sheet-item>
-    <bottom-sheet-item *ngSwitchCase="'map-attributes'" overlayTitle="Attributfilter" bottomSheetHeight="medium">
+    <bottom-sheet-item *ngSwitchCase="'map-attributes'" overlayTitle="Attributfilter:" bottomSheetHeight="medium">
       <map-attribute-filter body></map-attribute-filter>
     </bottom-sheet-item>
     <bottom-sheet-item *ngSwitchCase="'share-link'" overlayTitle="Teilen" bottomSheetHeight="small">
-      <share-link-content body></share-link-content>
+      <share-link-mobile body></share-link-mobile>
     </bottom-sheet-item>
-    <bottom-sheet-item *ngSwitchCase="'map-management'" [usePrimaryColor]="true" bottomSheetHeight="medium">
+    <bottom-sheet-item *ngSwitchCase="'map-management'" [usePrimaryColor]="true" bottomSheetHeight="medium" [showHeader]="false">
       <map-management-mobile body></map-management-mobile>
+    </bottom-sheet-item>
+    <bottom-sheet-item *ngSwitchCase="'search'" bottomSheetHeight="large" [showHeader]="false">
+      <search-window-mobile body [focusOnInit]="true"></search-window-mobile>
     </bottom-sheet-item>
   </ng-container>
 </div>

@@ -1,3 +1,5 @@
+import {PointWithSrs} from './geojson-types-with-srs.interface';
+
 interface AlternativeSpatialReference {
   coordinates: number[];
   crs: string;
@@ -10,14 +12,7 @@ interface ExternalMap {
 }
 
 interface LocationInformation {
-  spatialReference: {
-    /** Coordinates */
-    coordinates: number[];
-    /** CRS */
-    crs: string;
-    /** Spatial Reference Name */
-    name: string;
-  };
+  queryPosition: PointWithSrs;
   heightDom: number;
   heightDtm: number;
 }

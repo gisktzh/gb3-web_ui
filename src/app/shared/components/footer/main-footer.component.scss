@@ -2,12 +2,11 @@
 @use 'functions/helper.function' as functions;
 
 .main-footer {
-  width: 100%;
   background-color: functions.convert-hex-to-rgba(functions.get-color-from-palette(ktzh-variables.$zh-accent, 900), 0.8);
   color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-accent, 900);
   display: flex;
   justify-content: center;
-  padding: 56px 0;
+  padding: 56px 12px;
 
   .main-footer__content {
     display: flex;

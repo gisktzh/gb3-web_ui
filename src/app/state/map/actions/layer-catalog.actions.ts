@@ -9,5 +9,6 @@ export const LayerCatalogActions = createActionGroup({
     'Add Layer Catalog Item': props<{item: Topic}>(),
     'Clear Layer Catalog': emptyProps(),
     'Set Filter String': props<{filterString: string}>(),
+    'Clear Filter String': emptyProps(),
   },
 });

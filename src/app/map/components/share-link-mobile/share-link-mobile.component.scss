@@ -1,0 +1,39 @@
+@use 'mixins/material.mixin' as mat-mixins;
+@use 'mixins/helpers.mixin' as mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.share-link-mobile {
+  display: flex;
+  border: 2px solid ktzh-variables.$zh-black40;
+  align-items: center;
+  margin-top: 12px;
+  height: 72px;
+
+  .share-link-mobile__input {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    padding-left: 12px;
+    gap: 6px;
+
+    .share-link-mobile__input__title {
+      font-size: 12px;
+      font-weight: 900;
+      color: ktzh-variables.$zh-black100;
+    }
+
+    .share-link-mobile__input__text {
+      @include mixins.multiline-ellipsis(1);
+      border: none;
+      font-size: 16px;
+      padding: 0;
+    }
+  }
+}
+
+.share-link-mobile__loading-bar {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100vw;
+}

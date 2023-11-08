@@ -12,12 +12,17 @@ $column-gap: 8px;
   column-gap: $column-gap;
 
   & .hero-header__image {
-    width: $left-offset;
+    width: max(71px, $left-offset);
   }
 
   & .hero-header__title {
     margin-bottom: 0;
     word-wrap: break-word;
+    font-size: 72px;
+
+    &--mobile {
+      font-size: 32px;
+    }
   }
 
   & .hero-header__intro-paragraph {

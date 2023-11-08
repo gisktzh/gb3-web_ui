@@ -1,27 +1,28 @@
 import {Injectable} from '@angular/core';
+import {MatDialog} from '@angular/material/dialog';
 import {Actions, concatLatestFrom, createEffect, ofType} from '@ngrx/effects';
-import {map} from 'rxjs/operators';
-import {MapUiActions} from '../actions/map-ui.actions';
-import {LegendActions} from '../actions/legend.actions';
-import {ShareLinkActions} from '../actions/share-link.actions';
-import {selectCurrentShareLinkItem} from '../selectors/current-share-link-item.selector';
 import {Store} from '@ngrx/store';
 import {filter, tap} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {FavouriteCreationDialogComponent} from '../../../map/components/favourite-creation-dialog/favourite-creation-dialog.component';
+import {FavouriteDeletionDialogComponent} from '../../../map/components/favourite-deletion-dialog/favourite-deletion-dialog.component';
+import {MapNoticeDialogComponent} from '../../../map/components/map-notice-dialog/map-notice-dialog.component';
 import {ShareLinkDialogComponent} from '../../../map/components/share-link-dialog/share-link-dialog.component';
 import {PanelClass} from '../../../shared/enums/panel-class.enum';
-import {MatDialog} from '@angular/material/dialog';
-import {FavouriteCreationDialogComponent} from '../../../map/components/favourite-creation-dialog/favourite-creation-dialog.component';
-import {MapNoticeDialogComponent} from '../../../map/components/map-notice-dialog/map-notice-dialog.component';
-import {ActiveMapItemActions} from '../actions/active-map-item.actions';
-import {selectGb2WmsActiveMapItemsWithMapNotices} from '../selectors/active-map-items.selector';
-import {FavouriteDeletionDialogComponent} from '../../../map/components/favourite-deletion-dialog/favourite-deletion-dialog.component';
 import {Favourite} from '../../../shared/interfaces/favourite.interface';
-import {ToolActions} from '../actions/tool.actions';
-import {PrintActions} from '../actions/print.actions';
-import {MapConfigActions} from '../actions/map-config.actions';
+import {SearchActions} from '../../app/actions/search.actions';
 import {selectScreenMode} from '../../app/reducers/app-layout.reducer';
-import {selectActiveTool} from '../reducers/tool.reducer';
+import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {DataDownloadProductActions} from '../actions/data-download-product.actions';
+import {LegendActions} from '../actions/legend.actions';
+import {MapConfigActions} from '../actions/map-config.actions';
+import {MapUiActions} from '../actions/map-ui.actions';
+import {PrintActions} from '../actions/print.actions';
+import {ShareLinkActions} from '../actions/share-link.actions';
+import {ToolActions} from '../actions/tool.actions';
+import {selectActiveTool} from '../reducers/tool.reducer';
+import {selectGb2WmsActiveMapItemsWithMapNotices} from '../selectors/active-map-items.selector';
+import {selectCurrentShareLinkItem} from '../selectors/current-share-link-item.selector';
 
 const CREATE_FAVOURITE_DIALOG_MAX_WIDTH = 500;
 const DELETE_FAVOURITE_DIALOG_MAX_WIDTH = 500;
@@ -100,7 +101,7 @@ export class MapUiEffects {
 
   public showOrHideMapUiElements$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(MapUiActions.setLegendOverlayVisibility),
+      ofType(MapUiActions.setLegendOverlayVisibility, MapUiActions.setFeatureInfoVisibility),
       concatLatestFrom(() => this.store.select(selectScreenMode)),
       filter(([_, screenMode]) => screenMode === 'mobile'),
       map(() => {
@@ -199,6 +200,22 @@ export class MapUiEffects {
     );
   });
 
+  public clearSearchTermAfterClosingBottomSheet$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapUiActions.hideBottomSheet),
+      map(() => {
+        return SearchActions.clearSearchTerm();
+      }),
+    );
+  });
+  public cancelToolAfterHidingUiElements$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapUiActions.changeUiElementsVisibility),
+      concatLatestFrom(() => this.store.select(selectActiveTool)),
+      filter(([{hideAllUiElements}, activeTool]) => hideAllUiElements && activeTool !== undefined),
+      map(() => ToolActions.cancelTool()),
+    );
+  });
   constructor(
     private readonly actions$: Actions,
     private readonly store: Store,

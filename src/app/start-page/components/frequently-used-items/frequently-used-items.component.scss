@@ -11,10 +11,22 @@
     flex-direction: row;
     padding: 24px 0;
 
+    &--mobile {
+      flex-direction: column;
+      padding: 12px 0 0 0;
+    }
+
     .frequently-used-items__item__image-container {
       width: 268px;
       max-height: 151px;
       min-width: 268px;
+
+      &--mobile {
+        width: 100%;
+        max-height: unset;
+        max-width: 600px;
+        min-width: unset;
+      }
 
       .frequently-used-items__item__image-container__image {
         width: 100%;
@@ -28,6 +40,10 @@
       flex-direction: column;
       padding-left: 24px;
       width: 100%;
+
+      &--mobile {
+        padding-left: 0;
+      }
 
       .frequently-used-items__item__text-container__text {
         @include mixins.multiline-ellipsis(3);

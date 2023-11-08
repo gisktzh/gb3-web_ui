@@ -2,7 +2,11 @@
   <mat-icon class="page-notification-label__icon" [svgIcon]="this.icon"></mat-icon>
   <div class="page-notification-label__text-container">
     <span class="page-notification-label__text-container__title">{{ data.title }}</span>
-    <span class="page-notification-label__text-container__text">{{ data.description }}</span>
+    <span
+      class="page-notification-label__text-container__text"
+      [ngClass]="{'page-notification-label__text-container__text--mobile': screenMode === 'mobile'}"
+      >{{ data.description }}</span
+    >
   </div>
 </div>
 <div matSnackBarActions class="page-notification-actions" [ngClass]="'page-notification-actions--' + data.severity">
