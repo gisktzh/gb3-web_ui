@@ -16,7 +16,6 @@ export class ShowTooltipIfTruncatedDirective {
   @HostListener('mouseenter', ['$event'])
   setTooltipState(): void {
     const element = this.elementRef.nativeElement;
-    console.log(element.scrollWidth <= element.clientWidth);
     this.matTooltip.disabled = element.scrollWidth <= element.clientWidth && element.scrollHeight <= element.clientHeight;
   }
 }
