@@ -1,4 +1,10 @@
-<expandable-list-item [header]="header" [expanded]="screenMode !== 'mobile'" [numberOfItems]="numberOfItems" class="search-result-group">
+<expandable-list-item
+  [header]="header"
+  [expanded]="screenMode !== 'mobile'"
+  [numberOfItems]="numberOfItems"
+  [loadingState]="loadingState"
+  calsse="search-result-group"
+>
   <div class="search-result-group__content" [ngClass]="{'search-result-group__content--mobile': screenMode === 'mobile'}">
     <ng-content></ng-content>
   </div>
