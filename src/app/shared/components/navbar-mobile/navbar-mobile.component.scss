@@ -46,14 +46,11 @@
   bottom: 0;
   left: 0;
   width: 100vw;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
 
   .navbar-mobile__underline-container__content-container {
     width: 100%;
     display: grid;
-    grid-template-columns: 12px 55vw auto;
+    grid-template-columns: 12px auto 12px;
   }
 
   .navbar-mobile__underline {
