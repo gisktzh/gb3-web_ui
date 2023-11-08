@@ -1,12 +1,21 @@
-<div class="support-page">
+<start-page-section [background]="'primary'">
+  <hero-header
+    heroText="Herzlich Willkommen im neuen GIS-Browser! Wir verstehen, dass die Verwendung eines neuen Tools manchmal überwältigend sein kann, aber keine Sorge, wir sind hier, um Ihnen zu helfen. Unser Ziel ist es, Ihnen eine nahtlose und benutzerfreundliche Erfahrung zu bieten, damit Sie schnell und einfach auf die gewünschten Informationen zugreifen können. In diesem Hilfe- und Support-Bereich finden Sie alle Informationen, die Sie benötigen, um den neuen Kartenviewer zu nutzen."
+    heroTitle="Hilfe & Support"
+  >
+  </hero-header>
+</start-page-section>
+
+<start-page-section sectionTitle="FAQ">
+  <faq></faq>
+</start-page-section>
+
+<start-page-section sectionTitle="Supportanfrage"> <contact></contact> </start-page-section>
+
+<start-page-section sectionTitle="Weiterführende Informationen"> <useful-links></useful-links> </start-page-section>
+
+<!-- <div class="support-page">
   <div class="support-page__content">
-    <h1>Hilfe & Support</h1>
-    <p>
-      Herzlich Willkommen im neuen GIS-Browser! Wir verstehen, dass die Verwendung eines neuen Tools manchmal überwältigend sein kann, aber
-      keine Sorge, wir sind hier, um Ihnen zu helfen. Unser Ziel ist es, Ihnen eine nahtlose und benutzerfreundliche Erfahrung zu bieten,
-      damit Sie schnell und einfach auf die gewünschten Informationen zugreifen können. In diesem Hilfe- und Support-Bereich finden Sie alle
-      Informationen, die Sie benötigen, um den neuen Kartenviewer zu nutzen.
-    </p>
     <nav mat-tab-nav-bar [tabPanel]="tabPanel">
       <a
         [routerLink]="supportPageEnum.Faq"
@@ -37,4 +46,4 @@
       <router-outlet></router-outlet>
     </mat-tab-nav-panel>
   </div>
-</div>
+</div> -->
