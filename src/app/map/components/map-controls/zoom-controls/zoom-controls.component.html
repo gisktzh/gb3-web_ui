@@ -19,7 +19,7 @@
     </button>
     <mat-divider
       class="zoom-controls__divider"
-      [ngClass]="{'zoom-controls--hidden': mapUiState?.hideZoomButtons || screenHeight === 'small'}"
+      [ngClass]="{'zoom-controls--hidden': mapUiState?.hideZoomButtons || mapUiState?.hideUiElements || screenHeight === 'small'}"
     ></mat-divider>
   </ng-container>
   <div [ngClass]="{'zoom-controls--hidden': mapUiState?.hideZoomButtons || screenHeight === 'small'}">

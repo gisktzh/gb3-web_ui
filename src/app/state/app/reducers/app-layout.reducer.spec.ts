@@ -2,7 +2,7 @@ import {AppLayoutActions} from '../actions/app-layout.actions';
 import {AppLayoutState} from '../states/app-layout.state';
 import {initialState, reducer} from './app-layout.reducer';
 
-describe('search Reducer', () => {
+describe('AppLayout Reducer', () => {
   let existingState: AppLayoutState;
 
   beforeEach(() => {
@@ -29,28 +29,30 @@ describe('search Reducer', () => {
       const action = AppLayoutActions.setScreenMode({screenMode, screenHeight});
       const state = reducer(existingState, action);
 
-      expect(state.screenMode).toEqual(screenMode);
-      expect(state.screenHeight).toEqual(screenHeight);
+      expect(state.screenMode).toBe(screenMode);
+      expect(state.screenHeight).toBe(screenHeight);
+      expect(state.scrollbarWidth).toBe(existingState.scrollbarWidth);
     });
   });
 
-  describe('setScrollbarwidth initial', () => {
+  describe('setScrollbarwidth', () => {
     it('sets the scrollbarWidth on the first time it is called', () => {
       const scrollbarWidth = 14;
       const action = AppLayoutActions.setScrollbarWidth({scrollbarWidth});
       const state = reducer(existingState, action);
 
-      expect(state.scrollbarWidth).toEqual(scrollbarWidth);
+      expect(state.scrollbarWidth).toBe(scrollbarWidth);
+      expect(state.screenMode).toBe(existingState.screenMode);
+      expect(state.screenHeight).toBe(existingState.screenHeight);
     });
-  });
-
-  describe('setScrollbarwidth any other', () => {
     it('does not set the scrollbarWidth after it has been set', () => {
       const scrollbarWidth = 16;
       const action = AppLayoutActions.setScrollbarWidth({scrollbarWidth});
       const state = reducer({...existingState, scrollbarWidth: 14}, action);
 
-      expect(state.scrollbarWidth).toEqual(14);
+      expect(state.scrollbarWidth).toBe(14);
+      expect(state.screenMode).toBe(existingState.screenMode);
+      expect(state.screenHeight).toBe(existingState.screenHeight);
     });
   });
 });
