@@ -82,7 +82,7 @@ export class AppComponent implements OnInit, OnDestroy {
             let screenMode: ScreenMode;
             if (this.breakpointObserver.isMatched(Breakpoints.mobile)) {
               screenMode = 'mobile';
-              this.showWarning = environment.production && false; // TODO change back
+              this.showWarning = environment.production;
             } else if (this.breakpointObserver.isMatched(Breakpoints.smallTablet)) {
               screenMode = 'smallTablet';
             } else {
