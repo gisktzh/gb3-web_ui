@@ -49,6 +49,7 @@
   .map-controls__buttons {
     display: flex;
     flex-direction: column;
+    justify-content: flex-end;
     gap: 12px;
 
     .map-controls__buttons__group {

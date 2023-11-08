@@ -5,12 +5,13 @@ import {Router} from '@angular/router';
 import {Store} from '@ngrx/store';
 import {Subscription, filter, take, tap} from 'rxjs';
 import {PageNotificationComponent} from './shared/components/page-notification/page-notification.component';
-import {Breakpoints} from './shared/enums/breakpoints.enum';
+import {BreakpointsHeight, BreakpointsWidth} from './shared/enums/breakpoints.enum';
 import {PanelClass} from './shared/enums/panel-class.enum';
 import {PageNotification} from './shared/interfaces/page-notification.interface';
 import {DocumentService} from './shared/services/document.service';
 import {IconsService} from './shared/services/icons.service';
 import {PageNotificationService} from './shared/services/page-notification.service';
+import {ScreenHeight} from './shared/types/screen-height-type';
 import {ScreenMode} from './shared/types/screen-size.type';
 import {AppLayoutActions} from './state/app/actions/app-layout.actions';
 import {selectScreenMode, selectScrollbarWidth} from './state/app/reducers/app-layout.reducer';
@@ -25,6 +26,7 @@ import {MapUiState} from './state/map/states/map-ui.state';
 })
 export class AppComponent implements OnInit, OnDestroy {
   public screenMode: ScreenMode = 'regular';
+  public screenHeight: ScreenHeight = 'regular';
   public mapUiState?: MapUiState;
   public isHeadlessPage: boolean = false;
   public isSimplifiedPage: boolean = false;
@@ -74,18 +76,26 @@ export class AppComponent implements OnInit, OnDestroy {
     );
     this.subscriptions.add(
       this.breakpointObserver
-        .observe([Breakpoints.mobile, Breakpoints.smallTablet, Breakpoints.regular])
+        .observe([
+          BreakpointsWidth.mobile,
+          BreakpointsWidth.smallTablet,
+          BreakpointsWidth.regular,
+          BreakpointsHeight.regular,
+          BreakpointsHeight.small,
+        ])
         .pipe(
           tap(() => {
-            let screenMode: ScreenMode;
-            if (this.breakpointObserver.isMatched(Breakpoints.mobile)) {
+            let screenMode: ScreenMode = 'regular';
+            let screenHeight: ScreenHeight = 'regular';
+            if (this.breakpointObserver.isMatched(BreakpointsWidth.mobile)) {
               screenMode = 'mobile';
-            } else if (this.breakpointObserver.isMatched(Breakpoints.smallTablet)) {
+            } else if (this.breakpointObserver.isMatched(BreakpointsWidth.smallTablet)) {
               screenMode = 'smallTablet';
-            } else {
-              screenMode = 'regular';
             }
-            this.store.dispatch(AppLayoutActions.setScreenMode({screenMode: screenMode}));
+            if (this.breakpointObserver.isMatched(BreakpointsHeight.small)) {
+              screenHeight = 'small';
+            }
+            this.store.dispatch(AppLayoutActions.setScreenMode({screenMode, screenHeight}));
           }),
         )
         .subscribe(),
