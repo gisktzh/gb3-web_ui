@@ -12,7 +12,7 @@ import {selectRotation} from '../../../../state/map/reducers/map-config.reducer'
   styleUrls: ['./map-rotation-button.component.scss'],
 })
 export class MapRotationButtonComponent {
-  public rotation: number = 0;
+  public rotationAdjusted: string = '';
   public screenMode: ScreenMode = 'regular';
 
   private readonly subscriptions: Subscription = new Subscription();
@@ -34,7 +34,15 @@ export class MapRotationButtonComponent {
   }
 
   private initSubscriptions() {
-    this.subscriptions.add(this.rotation$.pipe(tap((rotation) => (this.rotation = rotation))).subscribe());
+    this.subscriptions.add(
+      this.rotation$
+        .pipe(
+          tap((rotation) => {
+            this.rotationAdjusted = `${rotation - 45}deg`; // This is only needed as long as we are using the Material 'explore' Icon, as it is rotated by 45°
+          }),
+        )
+        .subscribe(),
+    );
     this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
   }
 }

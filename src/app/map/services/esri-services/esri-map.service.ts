@@ -152,7 +152,7 @@ export class EsriMapService implements MapService, OnDestroy {
           this.setMapView(mapInstance, scale, x, y, srsId, minScale, maxScale);
           this.attachMapViewListeners();
           this.addBasemapSubscription();
-          this.addRotationSubsciption();
+          this.rotationReset();
           this.initDrawingLayers();
           activeMapItems.forEach((mapItem, position) => {
             mapItem.addToMap(this, position);
@@ -614,7 +614,7 @@ export class EsriMapService implements MapService, OnDestroy {
     );
   }
 
-  private addRotationSubsciption() {
+  private rotationReset() {
     this.subscriptions.add(
       this.rotation$
         .pipe(
