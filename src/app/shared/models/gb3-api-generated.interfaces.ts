@@ -11,17 +11,22 @@
 
 export interface Feature {
   feature_info: {
-    /** LV95 East coordinate of center of query bbox */
-    east: number;
-    /** LV95 North coordinate of center of query bbox */
-    north: number;
+    query_position: QueryCoordinates;
     results: {
       /** Topic name */
       topic: string;
       /** Geolion ID of topic */
       geolion_gdd: number | null;
-      /** UUID from geommetadatabase */
+      /** UUID from geometadatabase */
       geolion_karten_uuid: string | null;
+      topic_info: {
+        /** Topic info title */
+        title: string;
+        features: {
+          /** Topic info feature fields */
+          fields: InfoFeatureField[];
+        }[];
+      }[];
       layers: {
         /** Layer name */
         layer: string;
@@ -29,18 +34,13 @@ export interface Feature {
         title: string;
         /** Geolion ID of layer */
         geolion_gds: number | null;
-        /** UUID from geommetadatabase */
+        /** UUID from geometadatabase */
         geolion_geodatensatz_uuid: string | null;
         features: {
           /** Feature ID */
           fid: number;
           /** Feature fields */
-          fields: {
-            /** Field label */
-            label: string;
-            /** Field value (string, numeric or null) */
-            value: string | number | null;
-          }[];
+          fields: InfoFeatureField[];
           /**
            * Bounding box of this feature
            * @maxItems 4
@@ -57,20 +57,13 @@ export interface Feature {
 
 export interface General {
   general_info: {
-    spatial_reference: {
-      /** Coordinates */
-      coordinates: number[];
-      /** CRS */
-      crs: string;
-      /** Spatial Reference Name */
-      name: string;
-    };
+    query_position: QueryCoordinates;
     /** Height above sea level (Digitales Oberflächenmodell) */
     height_dom: number;
     /** Height above sea level (Digitales Terrainmodell) */
     height_dtm: number;
     /** Alternative spatial references */
-    alternative_spatial_references: {
+    spatial_references: {
       /** Coordinates */
       coordinates: number[];
       /** CRS */
@@ -234,9 +227,9 @@ export interface PrintCapabilities {
   };
 }
 
-export interface PrintFeatureInfoNew {
+export type PrintFeatureInfoNew = {
   /** List of query topics */
-  query_topics: {
+  query_topics?: {
     /**
      * Topic name
      * @example "BASISKARTEZH"
@@ -249,18 +242,28 @@ export interface PrintFeatureInfoNew {
     layers: string[];
   }[];
   /**
+   * X coordinate of query
+   * @example 2683475
+   */
+  x?: number;
+  /**
+   * Y coordinate of query
+   * @example 1247918
+   */
+  y?: number;
+  /**
    * Query bounding box as minx, miny, maxx, maxy coords (default in EPSG:2056)
    * @maxItems 4
    * @minItems 4
    * @example [2683470,1247913,2683480,1247923]
    */
-  bbox: number[];
+  bbox?: number[];
   /**
    * SRID for query bbox (default: 2056)
    * @example 2056
    */
   srid?: number;
-}
+};
 
 export interface PrintLegendNew {
   /** List of legend topics */
@@ -791,6 +794,14 @@ export interface GeometryCrs {
   };
 }
 
+/** Feature field */
+export interface InfoFeatureField {
+  /** Field label */
+  label: string;
+  /** Field value (string, numeric or null) */
+  value: string | number | null;
+}
+
 export interface Map {
   /** Map UUID */
   uuid: string;
@@ -977,6 +988,15 @@ export interface ProductItem {
     /** Fixed size flag */
     is_fixed_size: boolean | null;
   }[];
+}
+
+export interface QueryCoordinates {
+  /** LV95 X coordinate of center of query bbox */
+  x: number;
+  /** LV95 Y coordinate of center of query bbox */
+  y: number;
+  /** SRID of x/y point */
+  srid: number;
 }
 
 export interface SearchMatch {
