@@ -8,6 +8,7 @@ import {ConfigService} from '../../config.service';
 import {Gb3GeneralInfoService} from './gb3-general-info.service';
 import {GeneralInfoResponse} from '../../../interfaces/general-info.interface';
 import {GeneralInfoListData} from '../../../models/gb3-api-generated.interfaces';
+import {SupportedSrs} from '../../../types/supported-srs.type';
 
 const mockResponse: GeneralInfoListData = {
   general_info: {
@@ -20,12 +21,12 @@ const mockResponse: GeneralInfoListData = {
       },
     },
     height_dtm: 1337,
-    alternative_spatial_references: [{name: 'awesome-crs', crs: 'XYZ:123', coordinates: [-50, 150]}],
+    spatial_references: [{name: 'awesome-crs', crs: 'XYZ:123', coordinates: [-50, 150]}],
     height_dom: 555555,
-    spatial_reference: {
-      name: 'my-awesome-crs',
-      crs: 'ABC:999',
-      coordinates: [11, 12],
+    query_position: {
+      srid: 2056,
+      x: 11,
+      y: 12,
     },
     external_maps: [
       {
@@ -96,17 +97,17 @@ describe('Gb3GeneralInfoService', () => {
       locationInformation: {
         heightDom: mockResponse.general_info.height_dom,
         heightDtm: mockResponse.general_info.height_dtm,
-        spatialReference: {
-          name: mockResponse.general_info.spatial_reference.name,
-          crs: mockResponse.general_info.spatial_reference.crs,
-          coordinates: mockResponse.general_info.spatial_reference.coordinates,
+        queryPosition: {
+          type: 'Point',
+          srs: mockResponse.general_info.query_position.srid as SupportedSrs,
+          coordinates: [mockResponse.general_info.query_position.x, mockResponse.general_info.query_position.y],
         },
       },
       alternativeSpatialReferences: [
         {
-          name: mockResponse.general_info.alternative_spatial_references[0].name,
-          crs: mockResponse.general_info.alternative_spatial_references[0].crs,
-          coordinates: mockResponse.general_info.alternative_spatial_references[0].coordinates,
+          name: mockResponse.general_info.spatial_references[0].name,
+          crs: mockResponse.general_info.spatial_references[0].crs,
+          coordinates: mockResponse.general_info.spatial_references[0].coordinates,
         },
       ],
     };
@@ -135,17 +136,17 @@ describe('Gb3GeneralInfoService', () => {
       locationInformation: {
         heightDom: mockResponse.general_info.height_dom,
         heightDtm: mockResponse.general_info.height_dtm,
-        spatialReference: {
-          name: mockResponse.general_info.spatial_reference.name,
-          crs: mockResponse.general_info.spatial_reference.crs,
-          coordinates: mockResponse.general_info.spatial_reference.coordinates,
+        queryPosition: {
+          type: 'Point',
+          srs: mockResponse.general_info.query_position.srid as SupportedSrs,
+          coordinates: [mockResponse.general_info.query_position.x, mockResponse.general_info.query_position.y],
         },
       },
       alternativeSpatialReferences: [
         {
-          name: mockResponse.general_info.alternative_spatial_references[0].name,
-          crs: mockResponse.general_info.alternative_spatial_references[0].crs,
-          coordinates: mockResponse.general_info.alternative_spatial_references[0].coordinates,
+          name: mockResponse.general_info.spatial_references[0].name,
+          crs: mockResponse.general_info.spatial_references[0].crs,
+          coordinates: mockResponse.general_info.spatial_references[0].coordinates,
         },
       ],
     };
