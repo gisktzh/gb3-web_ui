@@ -34,6 +34,7 @@ import {BasemapSelectorComponent} from './components/map-controls/basemap-select
 import {CoordinateScaleInputsComponent} from './components/map-controls/coordinate-scale-inputs/coordinate-scale-inputs.component';
 import {DataInputComponent} from './components/map-controls/data-input/data-input.component';
 import {MapControlsComponent} from './components/map-controls/map-controls.component';
+import {MapRotationButtonComponent} from './components/map-controls/map-rotation-button/map-rotation-button.component';
 import {UiToggleComponent} from './components/map-controls/ui-toggle/ui-toggle.component';
 import {ZoomControlsComponent} from './components/map-controls/zoom-controls/zoom-controls.component';
 import {BaseMapDataItemComponent} from './components/map-data-catalogue/base-map-data-item/base-map-data-item.component';
@@ -65,6 +66,7 @@ import {TextDrawingToolInputComponent} from './components/text-drawing-tool-inpu
 import {TimeSliderComponent} from './components/time-slider/time-slider.component';
 import {MapPageComponent} from './map-page.component';
 import {MapRoutingModule} from './map-routing.module';
+import {MapRotationPipe} from './pipes/map-rotation.pipe';
 
 @NgModule({
   declarations: [
@@ -130,6 +132,8 @@ import {MapRoutingModule} from './map-routing.module';
     TextDrawingToolInputComponent,
     SearchWindowMobileComponent,
     ShareLinkMobileComponent,
+    MapRotationButtonComponent,
+    MapRotationPipe,
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule],
   exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent],

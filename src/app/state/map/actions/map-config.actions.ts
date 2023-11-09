@@ -17,11 +17,13 @@ export const MapConfigActions = createActionGroup({
     'Set Map Center': props<{center: PointWithSrs}>(),
     'Set Ready': props<{calculatedMinScale: number; calculatedMaxScale: number}>(),
     'Set Scale': props<{scale: number}>(),
+    'Set Rotation': props<{rotation: number}>(),
     'Reset Extent': emptyProps(),
     'Change Zoom': props<{zoomType: ZoomType}>(),
     'Set Basemap': props<{activeBasemapId: string}>(),
     'Clear Initial Maps Config': emptyProps(),
     'Handle Map Click': props<{x: number; y: number}>(), // meta action which effects can hook into that need to deal with map clicks
+    'Handle Map Rotation': props<{rotation: number}>(), // meta action which effects can hook into that need to deal with changes of the map rotation
     'Clear Feature Info Content': emptyProps(), // meta action which effects can hook into that need to clear the feature info
   },
 });

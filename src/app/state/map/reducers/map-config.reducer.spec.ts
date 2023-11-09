@@ -1,7 +1,7 @@
-import {initialState as defaultMapConfigState, reducer} from './map-config.reducer';
+import {MapConstants} from '../../../shared/constants/map.constants';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {MapConfigState} from '../states/map-config.state';
-import {MapConstants} from '../../../shared/constants/map.constants';
+import {initialState as defaultMapConfigState, initialState, reducer} from './map-config.reducer';
 
 describe('MapConfig Reducer', () => {
   describe('setMapExtent', () => {
@@ -68,6 +68,15 @@ describe('MapConfig Reducer', () => {
           });
         });
       });
+    });
+  });
+  describe('setRotation', () => {
+    it('sets the map rotation to the incoming value', () => {
+      const expectedRotation = 42;
+      const actionFloored = MapConfigActions.setRotation({rotation: expectedRotation});
+      const state = reducer(initialState, actionFloored);
+
+      expect(state.rotation).toEqual(expectedRotation);
     });
   });
 });
