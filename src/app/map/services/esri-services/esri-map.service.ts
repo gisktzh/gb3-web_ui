@@ -1,24 +1,40 @@
 import {Injectable, OnDestroy} from '@angular/core';
+import esriConfig from '@arcgis/core/config';
+import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {Store} from '@ngrx/store';
-import {MapConfigActions} from '../../../state/map/actions/map-config.actions';
-import {TransformationService} from './transformation.service';
-import {selectActiveBasemapId, selectMapConfigState, selectRotation} from '../../../state/map/reducers/map-config.reducer';
-import {BehaviorSubject, first, pairwise, skip, Subscription, tap, withLatestFrom} from 'rxjs';
-import {GeoJSONMapperService} from './geo-json-mapper.service';
 import * as dayjs from 'dayjs';
-import {MapService} from '../../interfaces/map.service';
-import {ActiveMapItem} from '../../models/active-map-item.model';
-import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
+import {BehaviorSubject, Subscription, first, pairwise, skip, tap, withLatestFrom} from 'rxjs';
+import {filter, map} from 'rxjs/operators';
+import {AuthService} from '../../../auth/auth.service';
+import {InternalDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
+import {GeometryWithSrs, PointWithSrs, PolygonWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
+import {
+  TimeSliderConfiguration,
+  TimeSliderLayerSource,
+  TimeSliderParameterSource,
+  WmsFilterValue,
+} from '../../../shared/interfaces/topic.interface';
+import {ConfigService} from '../../../shared/services/config.service';
 import {LoadingState} from '../../../shared/types/loading-state.type';
 import {ViewProcessState} from '../../../shared/types/view-process-state.type';
 import {ZoomType} from '../../../shared/types/zoom.type';
-import {BasemapConfigService} from '../basemap-config.service';
-import {ConfigService} from '../../../shared/services/config.service';
-import {selectItems} from '../../../state/map/reducers/active-map-item.reducer';
-import esriConfig from '@arcgis/core/config';
-import wmsAuthAndUrlOverrideInterceptorFactory from './interceptors/override-wms-url.interceptor';
+import {PrintUtils} from '../../../shared/utils/print.utils';
 import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.reducer';
-import {AuthService} from '../../../auth/auth.service';
+import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
+import {MapConfigActions} from '../../../state/map/actions/map-config.actions';
+import {selectItems} from '../../../state/map/reducers/active-map-item.reducer';
+import {selectDrawings} from '../../../state/map/reducers/drawing.reducer';
+import {selectActiveBasemapId, selectMapConfigState, selectRotation} from '../../../state/map/reducers/map-config.reducer';
+import {MapConfigState} from '../../../state/map/states/map-config.state';
+import {MapService} from '../../interfaces/map.service';
+import {TimeExtent} from '../../interfaces/time-extent.interface';
+import {ActiveMapItem} from '../../models/active-map-item.model';
+import {DrawingActiveMapItem} from '../../models/implementations/drawing.model';
+import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
+import {BasemapConfigService} from '../basemap-config.service';
+import {EsriMapViewService} from './esri-map-view.service';
+import {EsriSymbolizationService} from './esri-symbolization.service';
 import {
   EsriBasemap,
   EsriFeatureLayer,
@@ -28,33 +44,17 @@ import {
   EsriMap,
   EsriMapView,
   EsriPoint,
-  esriReactiveUtils,
   EsriScaleBar,
   EsriSpatialReference,
   EsriTileInfo,
   EsriWMSLayer,
   EsriWMSSublayer,
+  esriReactiveUtils,
 } from './esri.module';
-import {
-  TimeSliderConfiguration,
-  TimeSliderLayerSource,
-  TimeSliderParameterSource,
-  WmsFilterValue,
-} from '../../../shared/interfaces/topic.interface';
-import {TimeExtent} from '../../interfaces/time-extent.interface';
-import {MapConfigState} from '../../../state/map/states/map-config.state';
-import {GeometryWithSrs, PointWithSrs, PolygonWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
-import {InternalDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
-import {EsriSymbolizationService} from './esri-symbolization.service';
-import {EsriMapViewService} from './esri-map-view.service';
-import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
-import {DrawingActiveMapItem} from '../../models/implementations/drawing.model';
+import {GeoJSONMapperService} from './geo-json-mapper.service';
+import wmsAuthAndUrlOverrideInterceptorFactory from './interceptors/override-wms-url.interceptor';
 import {EsriToolService} from './tool-service/esri-tool.service';
-import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
-import {PrintUtils} from '../../../shared/utils/print.utils';
-import {filter, map} from 'rxjs/operators';
-import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
-import {selectDrawings} from '../../../state/map/reducers/drawing.reducer';
+import {TransformationService} from './transformation.service';
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
 
@@ -248,10 +248,9 @@ export class EsriMapService implements MapService, OnDestroy {
 
   public assignScaleBarElement(container: HTMLDivElement) {
     if (this.scaleBar) {
-      this.scaleBar.container = container;
-    } else {
-      this.scaleBar = new EsriScaleBar({view: this.mapView, container: container, unit: 'metric'});
+      this.scaleBar.destroy();
     }
+    this.scaleBar = new EsriScaleBar({view: this.mapView, container: container, unit: 'metric'});
   }
 
   public setOpacity(opacity: number, mapItem: ActiveMapItem): void {
