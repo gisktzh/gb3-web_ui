@@ -95,6 +95,7 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
       highlightButton.checked = false;
     } else {
       this.highlightFeatureOnMapIfExists(fid, true, true);
+      highlightButton.checked = true;
     }
   }
 

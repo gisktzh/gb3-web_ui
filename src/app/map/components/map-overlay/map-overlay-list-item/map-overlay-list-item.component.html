@@ -14,7 +14,9 @@
         class="list-item__header__content__toggle"
       ></mat-icon>
       <ng-content select="[header-icon]"></ng-content>
-      <p [title]="overlayTitle" class="list-item__header__content__title" [matTooltip]="overlayTitle">{{ overlayTitle }}</p>
+      <p [title]="overlayTitle" class="list-item__header__content__title" [matTooltip]="overlayTitle" showTooltipIfTruncated>
+        {{ overlayTitle }}
+      </p>
       <a
         (click)="$event.stopPropagation()"
         *ngIf="metaDataLink"

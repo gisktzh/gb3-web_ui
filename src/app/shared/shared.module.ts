@@ -26,6 +26,7 @@ import {SliderWrapperComponent} from './components/slider-wrapper/slider-wrapper
 import {StartPageSectionComponent} from './components/start-page-section/start-page-section.component';
 import {WaitingPageComponent} from './components/waiting-page/waiting-page.component';
 import {DragCursorDirective} from './directives/drag-cursor.directive';
+import {ShowTooltipIfTruncatedDirective} from './directives/show-tooltip-if-truncated.directive';
 import {MaterialModule} from './external/material.module';
 import {AppendMapConfigurationToUrlPipe} from './pipes/append-map-configuration-to-url.pipe';
 import {BasemapImageLinkPipe} from './pipes/background-map-image-link.pipe';
@@ -66,6 +67,7 @@ import {LayerTooltipPipe} from './pipes/layer-tooltip.pipe';
     NavbarMobileDialogComponent,
     ExpandableListItemComponent,
     ExpandableListItemHeaderComponent,
+    ShowTooltipIfTruncatedDirective,
   ],
   imports: [MaterialModule, RouterModule, CommonModule, ResizableModule],
   exports: [
@@ -97,6 +99,7 @@ import {LayerTooltipPipe} from './pipes/layer-tooltip.pipe';
     Gb2ExitButtonComponent,
     NavbarMobileComponent,
     ExpandableListItemComponent,
+    ShowTooltipIfTruncatedDirective,
   ],
 })
 export class SharedModule {}
