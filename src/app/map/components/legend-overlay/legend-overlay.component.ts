@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
@@ -18,7 +18,6 @@ import {selectLegendPrintState} from '../../../state/map/reducers/overlay-print.
 export class LegendOverlayComponent implements OnInit, OnDestroy {
   /** A value indicating whether interactive elements (like buttons) should be shown. [Default: true] */
   @Input() public showInteractiveElements: boolean = true;
-  @Output() public readonly printLegendEvent = new EventEmitter<void>();
 
   public isVisible = false;
   public loadingState: LoadingState;

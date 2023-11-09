@@ -53,8 +53,6 @@ import {MapToolsMobileComponent} from './components/map-tools/map-tools-mobile/m
 import {MapToolsComponent} from './components/map-tools/map-tools.component';
 import {MeasurementToolsComponent} from './components/map-tools/measurement-tools/measurement-tools.component';
 import {PrintDialogComponent} from './components/map-tools/print-dialog/print-dialog.component';
-import {PrintDispatcherComponent} from './components/print-overlay/print-dispatcher/print-dispatcher.component';
-import {PrintOverlayComponent} from './components/print-overlay/print-overlay.component';
 import {SearchWindowMobileComponent} from './components/search-window-mobile/search-window-mobile.component';
 import {ResultGroupComponent} from './components/search-window/result-groups/result-group/result-group.component';
 import {ResultGroupsComponent} from './components/search-window/result-groups/result-groups.component';
@@ -79,8 +77,6 @@ import {MapRoutingModule} from './map-routing.module';
     MapDataCatalogueComponent,
     MapOverlayListItemComponent,
     FeatureInfoItemComponent,
-    PrintOverlayComponent,
-    PrintDispatcherComponent,
     CoordinateScaleInputsComponent,
     MapControlsComponent,
     BasemapSelectorComponent,

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {FeatureInfoResultDisplay} from '../../../shared/interfaces/feature-info.interface';
@@ -18,7 +18,6 @@ import {OverlayPrintActions} from '../../../state/map/actions/overlay-print-acti
 export class FeatureInfoOverlayComponent implements OnInit, OnDestroy {
   /** A value indicating whether interactive elements (like buttons) should be shown. [Default: true] */
   @Input() public showInteractiveElements: boolean = true;
-  @Output() public readonly printFeatureInfoEvent = new EventEmitter<void>();
 
   public isVisible: boolean = false;
   public featureInfoData: FeatureInfoResultDisplay[] = [];

@@ -1,6 +1,4 @@
 import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
-import {MapConfigUrlService} from './services/map-config-url.service';
-import {OverlayType} from '../shared/types/overlay.type';
 import {OnboardingGuideService} from '../onboarding-guide/services/onboarding-guide.service';
 import {mapOnboardingGuideConfig} from '../onboarding-guide/data/map-onboarding-guide.config';
 import {Store} from '@ngrx/store';
@@ -19,7 +17,6 @@ import {ScreenMode} from '../shared/types/screen-size.type';
   selector: 'map-page',
   templateUrl: './map-page.component.html',
   styleUrls: ['./map-page.component.scss'],
-  providers: [MapConfigUrlService],
 })
 export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
   public readonly onboardingGuideImage = mapOnboardingGuideConfig.introductionImage;
@@ -38,7 +35,6 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
 
   constructor(
     private readonly onboardingGuideService: OnboardingGuideService,
-    private readonly mapConfigUrlService: MapConfigUrlService,
     private readonly store: Store,
   ) {}
 
@@ -52,10 +48,6 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
 
   public ngAfterViewInit() {
     this.onboardingGuideService.autoStart();
-  }
-
-  public showPrint(printType: OverlayType) {
-    this.mapConfigUrlService.activatePrintMode(printType);
   }
 
   public showLegend() {
