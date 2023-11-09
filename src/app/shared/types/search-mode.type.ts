@@ -1,1 +1,1 @@
-export type SearchMode = 'normal' | 'compact';
+export type SearchMode = 'normal' | 'compact' | 'mobile';

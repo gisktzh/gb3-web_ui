@@ -47,6 +47,7 @@ import Point from '@arcgis/core/geometry/Point';
 import Multipoint from '@arcgis/core/geometry/Multipoint';
 import Polyline from '@arcgis/core/geometry/Polyline';
 import Polygon from '@arcgis/core/geometry/Polygon';
+import {EsriTextDrawingStrategy} from './strategies/drawing/esri-text-drawing.strategy';
 
 const HANDLE_GROUP_KEY = 'EsriToolService';
 
@@ -282,6 +283,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
 
   private setDrawingStrategy(drawingType: DrawingTool, layer: GraphicsLayer) {
     const pointStyle = this.esriSymbolizationService.createPointSymbolization(UserDrawingLayer.Drawings) as SimpleMarkerSymbol;
+    const textStyle = this.esriSymbolizationService.createTextSymbolization(UserDrawingLayer.Drawings);
     const lineStyle = this.esriSymbolizationService.createLineSymbolization(UserDrawingLayer.Drawings);
     const areaStyle = this.esriSymbolizationService.createPolygonSymbolization(UserDrawingLayer.Drawings);
 
@@ -321,6 +323,15 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
           areaStyle,
           (geometry) => this.complete(geometry),
           'circle',
+        );
+        break;
+      case 'draw-text':
+        this.toolStrategy = new EsriTextDrawingStrategy(
+          layer,
+          this.esriMapViewService.mapView,
+          textStyle,
+          (geometry, labelText) => this.complete(geometry, labelText),
+          this.dialogService,
         );
         break;
     }
@@ -417,7 +428,11 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
   }
 
   private createGraphicsForDrawing(drawing: Gb3StyledInternalDrawingRepresentation, layerIdentifier: DrawingLayer) {
-    const symbolization = this.esriSymbolizationService.createSymbolizationForDrawingLayer(drawing.geometry, layerIdentifier);
+    const symbolization = this.esriSymbolizationService.createSymbolizationForDrawingLayer(
+      drawing.geometry,
+      layerIdentifier,
+      drawing.labelText,
+    );
     const graphics: Graphic[] = [];
 
     const geometry = this.convertGeoJsonToArcGIS(drawing.geometry);
@@ -440,8 +455,10 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
         default:
           throw new UnsupportedLabelType(graphic.geometry.type);
       }
-      const labelSymbolization = this.esriSymbolizationService.createTextSymbolization(UserDrawingLayer.Measurements);
-      labelSymbolization.text = drawing.labelText;
+      const labelSymbolization = this.esriSymbolizationService.createTextSymbolizationWithText(
+        UserDrawingLayer.Measurements,
+        drawing.labelText,
+      );
       graphics.push(new Graphic({geometry: labelPosition, symbol: labelSymbolization}));
     }
 

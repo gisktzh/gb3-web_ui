@@ -4,6 +4,7 @@ import {GeneralInfoListData} from '../../../models/gb3-api-generated.interfaces'
 import {Observable} from 'rxjs';
 import {GeneralInfoResponse} from '../../../interfaces/general-info.interface';
 import {map} from 'rxjs/operators';
+import {Gb3QueryCoordinatesToPointConverterUtils} from '../../../utils/gb3-query-coordinates-to-point-converter.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -27,23 +28,34 @@ export class Gb3GeneralInfoService extends Gb3ApiService {
   private mapGeneralInfoListDataToGeneralInfoResponse(generalInfoListData: GeneralInfoListData): GeneralInfoResponse {
     const generalInfo = generalInfoListData.general_info;
     return {
-      alternativeSpatialReferences: generalInfo.alternative_spatial_references,
+      alternativeSpatialReferences: generalInfo.spatial_references,
       externalMaps: generalInfo.external_maps,
       locationInformation: {
         heightDom: generalInfo.height_dom,
         heightDtm: generalInfo.height_dtm,
-        spatialReference: generalInfo.spatial_reference,
+        queryPosition: Gb3QueryCoordinatesToPointConverterUtils.convertQueryCoordinatesToPointWithSrs(generalInfo.query_position),
       },
       parcel: generalInfo.parcel
         ? {
-            ...generalInfo.parcel,
+            bfsnr: generalInfo.parcel.bfsnr,
             egrisEgrid: generalInfo.parcel.egris_egrid,
             municipalityName: generalInfo.parcel.municipality_name,
             oerebExtract: {
               pdfUrl: generalInfo.parcel.oereb_extract.pdf_url,
             },
+            ownershipInformation: {
+              url: this.createOwnershipInformationUrl(generalInfo.parcel.egris_egrid, generalInfo.parcel.bfsnr),
+            },
           }
         : undefined,
     };
+  }
+
+  private createOwnershipInformationUrl(egrid: string, bfsNr: number): string {
+    const url = new URL(this.configService.apiConfig.ownershipInformationApi.baseUrl);
+    url.searchParams.append('egrid', egrid);
+    url.searchParams.append('bfsNr', bfsNr.toString());
+
+    return url.toString();
   }
 }

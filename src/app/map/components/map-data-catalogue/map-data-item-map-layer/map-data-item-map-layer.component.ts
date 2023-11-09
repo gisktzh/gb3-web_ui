@@ -8,7 +8,7 @@ import {MapLayer} from '../../../../shared/interfaces/topic.interface';
 })
 export class MapDataItemMapLayerComponent {
   @Input() public layer!: MapLayer;
-  @Input() public filterString: string = '';
+  @Input() public filterString: string | undefined = undefined;
 
   @Output() public readonly addLayerEvent = new EventEmitter<void>();
 

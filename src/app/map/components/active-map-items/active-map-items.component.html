@@ -73,6 +73,7 @@
       cdkDrag
       dragCursor
       class="active-map-items__content__item"
+      [ngClass]="{'active-map-items__content__item--mobile': screenMode === 'mobile'}"
     >
       <ng-container activeMapItemDragHandle>
         <!-- The CDK drag handle is not detected within a child component; therefore, it's necessary to pass it down using ng-content

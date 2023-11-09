@@ -1,58 +1,24 @@
-<div class="navbar-mobile">
-  <button (click)="toggleMenu()" class="navbar-mobile__button" color="accent" mat-icon-button>
-    <mat-icon svgIcon="ktzh_menu_mobile"></mat-icon>
+<mat-toolbar *ngIf="!isSimplifiedPage; else simplifiedPage" class="navbar-mobile" color="primary">
+  <span class="navbar-mobile__item"> GIS-Browser </span>
+  <span class="navbar-mobile__spacer"></span>
+  <button class="navbar-mobile__item" mat-button (click)="showMenu()">
+    <span class="navbar-mobile__item__text">Menu</span>
+
+    <mat-icon svgIcon="ktzh_menu_mobile" iconPositionEnd>launch</mat-icon>
   </button>
-</div>
+  <div class="navbar-mobile__underline-container">
+    <div class="navbar-mobile__underline-container__content-container">
+      <span></span>
+      <span class="navbar-mobile__underline"></span>
+      <span class="navbar-mobile__underline"></span>
+    </div>
+  </div>
+</mat-toolbar>
 
-<mat-card *ngIf="isVisible" appearance="outlined" class="navbar-mobile__overlay">
-  <mat-card-header class="navbar-mobile__overlay__header">
-    <button (click)="toggleMenu()" mat-icon-button>
-      <mat-icon>close</mat-icon>
+<ng-template #simplifiedPage>
+  <div class="navbar-mobile-simplified">
+    <button (click)="showMenu()" class="navbar-mobile-simplified__button" mat-icon-button>
+      <mat-icon svgIcon="ktzh_menu_mobile"></mat-icon>
     </button>
-    <h1 class="navbar-mobile__overlay__header__title">Menu</h1>
-
-    <a (click)="this.startLogin()" *ngIf="!this.isAuthenticated; else userProfile" class="navbar__item" mat-button>Login</a>
-    <ng-template #userProfile>
-      <a [matMenuTriggerFor]="userMenu" class="navbar__item" mat-button #trigger="matMenuTrigger">
-        <mat-icon svgIcon="ktzh_user"></mat-icon>
-        <span>{{ this.userName }}</span>
-        <mat-icon [fontIcon]="trigger.menuOpen ? 'arrow_drop_up' : 'arrow_drop_down'" class="arrow-icon"></mat-icon>
-      </a>
-      <mat-menu #userMenu="matMenu">
-        <button (click)="this.logout()" mat-menu-item>
-          <mat-icon>logout</mat-icon>
-          <span>Logout</span>
-        </button>
-      </mat-menu>
-    </ng-template>
-  </mat-card-header>
-  <mat-card-content class="navbar-mobile__overlay__content">
-    <ng-content></ng-content>
-    <a
-      [queryParams]="{}"
-      [routerLinkActiveOptions]="{exact: true}"
-      class="navbar__item"
-      mat-button
-      [routerLink]="[mainPageEnum.Start]"
-      routerLinkActive="navbar__item--active"
-      (click)="toggleMenu()"
-      >Übersicht</a
-    >
-    <hr />
-    <a class="navbar__item" mat-button [routerLink]="[mainPageEnum.Maps]" routerLinkActive="navbar__item--active" (click)="toggleMenu()"
-      >GIS-Browser</a
-    >
-    <hr />
-    <a class="navbar__item" mat-button [routerLink]="[mainPageEnum.Data]" routerLinkActive="navbar__item--active" (click)="toggleMenu()"
-      >Datenkatalog</a
-    >
-    <hr />
-    <a class="navbar__item" mat-button [routerLink]="[mainPageEnum.Support]" routerLinkActive="navbar__item--active" (click)="toggleMenu()"
-      >Hilfe & Support</a
-    >
-    <hr />
-    <a class="navbar__item" href="https://geodatenshop.zh.ch" mat-button target="_blank" rel="noopener noreferrer" (click)="toggleMenu()"
-      >Geodatenshop</a
-    >
-  </mat-card-content>
-</mat-card>
+  </div>
+</ng-template>

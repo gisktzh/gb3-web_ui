@@ -6,7 +6,7 @@
   class="list-item"
   hideToggle
 >
-  <mat-expansion-panel-header class="list-item__header">
+  <mat-expansion-panel-header class="list-item__header" [ngClass]="{'list-item__header--no-background': !hasBackgroundColor}">
     <div class="list-item__header__content">
       <mat-icon
         [fontIcon]="expansionPanel.expanded ? 'arrow_drop_down' : 'arrow_right'"
@@ -14,7 +14,9 @@
         class="list-item__header__content__toggle"
       ></mat-icon>
       <ng-content select="[header-icon]"></ng-content>
-      <p [title]="overlayTitle" class="list-item__header__content__title" [matTooltip]="overlayTitle">{{ overlayTitle }}</p>
+      <p [title]="overlayTitle" class="list-item__header__content__title" [matTooltip]="overlayTitle" showTooltipIfTruncated>
+        {{ overlayTitle }}
+      </p>
       <a
         (click)="$event.stopPropagation()"
         *ngIf="metaDataLink"

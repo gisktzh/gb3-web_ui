@@ -1,13 +1,11 @@
-import {Gb3StyledInternalDrawingRepresentation} from '../interfaces/internal-drawing-representation.interface';
+import {Gb3StyledInternalDrawingRepresentation, Gb3StyleRepresentation} from '../interfaces/internal-drawing-representation.interface';
 import {Gb3VectorLayer} from '../interfaces/gb3-vector-layer.interface';
 import {UserDrawingLayer} from '../enums/drawing-layer.enum';
 import {v4 as uuidv4} from 'uuid';
-
-export const REDLINING_STYLE_IDENTIFIER = 'REDLINING';
-export const REDLINING_STYLE_WITH_LABEL_IDENTIFIER = 'REDLINING_WITH_LABEL';
+import {RedliningIdentifier} from '../enums/redlining-identifier.enum';
 
 const REDLINING_STYLE = {
-  [REDLINING_STYLE_IDENTIFIER]: {
+  [RedliningIdentifier.GeometryOnly]: {
     pointRadius: 3,
     fillColor: '#ff0000',
     fillOpacity: 0.4,
@@ -16,9 +14,8 @@ const REDLINING_STYLE = {
   },
 };
 
-const REDLINING_STYLE_WITH_LABEL = {
-  [REDLINING_STYLE_WITH_LABEL_IDENTIFIER]: {
-    ...REDLINING_STYLE[REDLINING_STYLE_IDENTIFIER],
+const REDLINING_STYLE_LABEL = {
+  [RedliningIdentifier.LabelOnly]: {
     label: '[text]',
     fontSize: '8px',
     fontColor: '#ff0000',
@@ -28,6 +25,13 @@ const REDLINING_STYLE_WITH_LABEL = {
     labelOutlineWidth: 2,
     labelAlign: 'ct',
     labelYOffset: 15,
+  },
+};
+
+const REDLINING_STYLE_GEOMETRY_WITH_LABEL = {
+  [RedliningIdentifier.GeometryWithLabel]: {
+    ...REDLINING_STYLE[RedliningIdentifier.GeometryOnly],
+    ...REDLINING_STYLE_LABEL[RedliningIdentifier.LabelOnly],
   },
 };
 
@@ -49,14 +53,17 @@ export class SymbolizationToGb3ConverterUtils {
           type: feature.type,
           geometry: feature.geometry,
           properties: {
-            style: feature.labelText ? REDLINING_STYLE_WITH_LABEL_IDENTIFIER : REDLINING_STYLE_IDENTIFIER,
+            style: feature.labelText
+              ? SymbolizationToGb3ConverterUtils.getLabelStyle(feature.properties.style)
+              : RedliningIdentifier.GeometryOnly,
             text: feature.labelText ? feature.labelText : '', // todo GB3-863: PrintAPI currently requires this property to be set
           },
         })),
       },
       styles: {
         ...REDLINING_STYLE,
-        ...REDLINING_STYLE_WITH_LABEL,
+        ...REDLINING_STYLE_GEOMETRY_WITH_LABEL,
+        ...REDLINING_STYLE_LABEL,
       },
     };
   }
@@ -86,5 +93,13 @@ export class SymbolizationToGb3ConverterUtils {
       source: source,
       labelText: feature.properties.text,
     }));
+  }
+
+  private static getLabelStyle(type: Gb3StyleRepresentation): RedliningIdentifier {
+    if (type.type === 'text') {
+      return RedliningIdentifier.LabelOnly;
+    }
+
+    return RedliningIdentifier.GeometryWithLabel;
   }
 }

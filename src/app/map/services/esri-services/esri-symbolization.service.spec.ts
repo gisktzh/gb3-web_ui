@@ -3,7 +3,7 @@ import {TestBed} from '@angular/core/testing';
 import {EsriSymbolizationService} from './esri-symbolization.service';
 import {MinimalGeometriesUtils} from '../../../testing/map-testing/minimal-geometries.utils';
 import {SupportedSrs} from '../../../shared/types/supported-srs.type';
-import {InternalDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
+import {InternalDrawingLayer, UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
@@ -17,6 +17,7 @@ import {
   SimplePointSymbolization,
 } from '../../../shared/interfaces/symbolization.interface';
 import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol';
+import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 
 const SRS: SupportedSrs = 2056;
 const mockIconUrl = '/path/to/icon.svg';
@@ -61,6 +62,28 @@ const minimalTestSet = [
 
 // we only mock some of the values; because we mainly need to test different colors and point types.
 const mockSymbolizations: LayerSymbolizations = {
+  [UserDrawingLayer.Drawings]: {
+    text: {
+      color: {
+        r: 255,
+        g: 255,
+        b: 0,
+        a: 0.6,
+      },
+      outline: {
+        width: 1232,
+        color: {
+          r: 22,
+          g: 12,
+          b: 99,
+          a: 0.11,
+        },
+      },
+      xOffset: 5,
+      yOffset: 1,
+      size: 9001,
+    },
+  },
   [InternalDrawingLayer.LocatePosition]: {
     point: {
       type: 'picture',
@@ -153,6 +176,19 @@ describe('EsriSymbolizationService', () => {
   });
 
   describe('point symbol types', () => {
+    it('returns a text symbol for features which are a Drawing and have a label, setting the supplied text', () => {
+      const point = MinimalGeometriesUtils.getMinimalPoint(SRS);
+      const testLayer = UserDrawingLayer.Drawings;
+      const label = 'Legolas & Elrond';
+
+      const result = service.createSymbolizationForDrawingLayer(point, testLayer, 'Legolas & Elrond') as TextSymbol;
+
+      const expected = mockSymbolizations[testLayer].text;
+      expect(result.text).toEqual(label);
+      expect(result.color.toRgba()).toEqual([expected.color.r, expected.color.g, expected.color.b, expected.color.a]);
+      expect(result.haloSize).toEqual(expected.outline.width);
+    });
+
     it("returns a simple point symbol for type 'simple'", () => {
       const point = MinimalGeometriesUtils.getMinimalPoint(SRS);
       const testLayer = InternalDrawingLayer.FeatureHighlight;

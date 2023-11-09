@@ -39,6 +39,9 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       geoshopApi: {
         baseUrl: 'https://geoservices.zh.ch/geoshopapi/v1',
       },
+      ownershipInformationApi: {
+        baseUrl: 'https://portal.objektwesen.zh.ch/aks/detail',
+      },
     },
     authSettings: {
       clientId: 'gb3',
@@ -80,6 +83,9 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       },
       geoshopApi: {
         baseUrl: 'https://geoservices.zh.ch/geoshopapi/v1',
+      },
+      ownershipInformationApi: {
+        baseUrl: 'https://portal.objektwesen.zh.ch/aks/detail',
       },
     },
     authSettings: {

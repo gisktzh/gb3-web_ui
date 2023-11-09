@@ -15,6 +15,10 @@
     padding: 6px;
   }
 
+  &--mobile {
+    padding: 0;
+  }
+
   .search__bar {
     display: flex;
     align-items: center;
@@ -24,6 +28,7 @@
     border: 2px solid ktzh-variables.$zh-black40;
     border-radius: ktzh-variables.$zh-border-radius;
     flex-grow: 1;
+    overflow: hidden;
 
     &:focus-within {
       border-color: ktzh-variables.$zh-active-blue;
@@ -34,9 +39,15 @@
     }
 
     .search__bar__input {
+      @include mixins.multiline-ellipsis(1);
       border: none;
       outline: none;
       flex-grow: 1;
+
+      &--mobile:focus-within {
+        // This is necessary because mobile screens will zoom in for fonts that are <16px
+        font-size: 16px;
+      }
     }
 
     .search__bar__filter-button--active {
