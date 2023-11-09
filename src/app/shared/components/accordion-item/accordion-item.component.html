@@ -8,7 +8,11 @@
   tabindex="0"
 >
   <div class="accordion-item__content" [ngClass]="{'accordion-item__content--dark': variant === 'dark'}">
-    <div (click)="accordionItem.toggle()" class="accordion-item__content__header mat-h2">
+    <div
+      (click)="accordionItem.toggle()"
+      class="accordion-item__content__header mat-h2"
+      [ngClass]="{'accordion-item__content--opened': accordionItem.expanded}"
+    >
       <span>{{ header }}</span>
       <span class="accordion-item__content__header__icon-wrapper">
         <mat-icon [svgIcon]="accordionItem.expanded ? 'ktzh_remove' : 'ktzh_add'"></mat-icon>
