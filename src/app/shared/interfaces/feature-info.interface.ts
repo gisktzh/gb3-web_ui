@@ -24,9 +24,12 @@ export interface FeatureInfoResult extends HasMetaDataLink {
   layers: FeatureInfoResultLayer[];
 }
 
-interface FeatureInfoWrapper {
+export interface FeatureInfoQueryLocation {
   x: number;
   y: number;
+}
+
+interface FeatureInfoWrapper extends FeatureInfoQueryLocation {
   results: FeatureInfoResult;
 }
 

@@ -8,20 +8,37 @@ import {PrintRequestCouldNotBeHandled} from '../../../shared/errors/print.errors
 import {Store} from '@ngrx/store';
 import {OverlayPrintActions} from '../actions/overlay-print-actions';
 import {selectPrintLegendItems} from '../selectors/print-legend-items.selector';
+import {selectPrintFeatureInfoItems} from '../selectors/print-feature-info-items.selector';
 
 @Injectable()
 export class OverlayPrintEffects {
-  public requestPrint$ = createEffect(() => {
+  public requestLegendPrint$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(OverlayPrintActions.print),
       filter((v) => v.overlay === 'legend'),
       concatLatestFrom(() => this.store.select(selectPrintLegendItems)),
-      switchMap(([_, items]) =>
+      switchMap(([{overlay}, items]) =>
         this.printService.printLegend(items).pipe(
           map((printCreationResponse) => {
-            return OverlayPrintActions.setPrintRequestResponse({overlay: 'legend', creationResponse: printCreationResponse});
+            return OverlayPrintActions.setPrintRequestResponse({overlay: overlay, creationResponse: printCreationResponse});
           }),
-          catchError((error: unknown) => of(OverlayPrintActions.setPrintRequestError({overlay: 'legend', error}))),
+          catchError((error: unknown) => of(OverlayPrintActions.setPrintRequestError({overlay: overlay, error}))),
+        ),
+      ),
+    );
+  });
+
+  public requestFeatureInfoPrint$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(OverlayPrintActions.print),
+      filter((v) => v.overlay === 'featureInfo'),
+      concatLatestFrom(() => this.store.select(selectPrintFeatureInfoItems)),
+      switchMap(([{overlay}, {x, y, items}]) =>
+        this.printService.printFeatureInfo(items, x, y).pipe(
+          map((printCreationResponse) => {
+            return OverlayPrintActions.setPrintRequestResponse({overlay, creationResponse: printCreationResponse});
+          }),
+          catchError((error: unknown) => of(OverlayPrintActions.setPrintRequestError({overlay, error}))),
         ),
       ),
     );

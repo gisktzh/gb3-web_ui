@@ -7,6 +7,8 @@ import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
 import {selectIsFeatureInfoOverlayVisible} from '../../../state/map/reducers/map-ui.reducer';
 import {selectFeatureInfoQueryLoadingState} from '../../../state/map/selectors/feature-info-query-loading-state.selector';
 import {selectFeatureInfosForDisplay} from '../../../state/map/selectors/feature-info-result-display.selector';
+import {selectFeatureInfoPrintState} from '../../../state/map/reducers/overlay-print.reducer';
+import {OverlayPrintActions} from '../../../state/map/actions/overlay-print-actions';
 
 @Component({
   selector: 'feature-info-overlay',
@@ -21,10 +23,12 @@ export class FeatureInfoOverlayComponent implements OnInit, OnDestroy {
   public isVisible: boolean = false;
   public featureInfoData: FeatureInfoResultDisplay[] = [];
   public loadingState: LoadingState;
+  public printLoadingState: LoadingState;
 
   private readonly isFeatureInfoOverlayVisible$ = this.store.select(selectIsFeatureInfoOverlayVisible);
   private readonly loadingState$ = this.store.select(selectFeatureInfoQueryLoadingState);
   private readonly featureInfoData$ = this.store.select(selectFeatureInfosForDisplay);
+  private readonly printLoadingState$ = this.store.select(selectFeatureInfoPrintState);
   private readonly subscriptions = new Subscription();
 
   constructor(private readonly store: Store) {}
@@ -42,12 +46,13 @@ export class FeatureInfoOverlayComponent implements OnInit, OnDestroy {
   }
 
   public print() {
-    this.printFeatureInfoEvent.emit();
+    this.store.dispatch(OverlayPrintActions.print({overlay: 'featureInfo'}));
   }
 
   private initSubscriptions() {
     this.subscriptions.add(this.loadingState$.pipe(tap((value) => (this.loadingState = value))).subscribe());
     this.subscriptions.add(this.featureInfoData$.pipe(tap((value) => (this.featureInfoData = value))).subscribe());
     this.subscriptions.add(this.isFeatureInfoOverlayVisible$.pipe(tap((isVisible) => (this.isVisible = isVisible))).subscribe());
+    this.subscriptions.add(this.printLoadingState$.pipe(tap((loadingState) => (this.printLoadingState = loadingState))).subscribe());
   }
 }

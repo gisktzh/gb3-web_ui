@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/naming-convention */
+
 import {TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {PrintCapabilitiesListData, PrintCreateData, PrintNew} from '../../../models/gb3-api-generated.interfaces';
@@ -6,15 +8,21 @@ import {of} from 'rxjs';
 import {Gb3PrintService} from './gb3-print.service';
 import {PrintCreation} from '../../../interfaces/print.interface';
 import {ConfigService} from '../../config.service';
+import {PrintableOverlayItem} from '../../../interfaces/overlay-print.interface';
+import {FeatureInfoQueryLocation} from '../../../interfaces/feature-info.interface';
 
 describe('Gb3PrintService', () => {
   let service: Gb3PrintService;
+  let httpClient: HttpClient;
+  let configService: ConfigService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
     });
     service = TestBed.inject(Gb3PrintService);
+    httpClient = TestBed.inject(HttpClient);
+    configService = TestBed.inject(ConfigService);
   });
 
   it('should be created', () => {
@@ -109,7 +117,6 @@ describe('Gb3PrintService', () => {
     };
 
     it('should receive the data and transform it', (done: DoneFn) => {
-      const httpClient = TestBed.inject(HttpClient);
       spyOn(httpClient, 'get').and.returnValue(of(mockData));
       service.loadPrintCapabilities().subscribe((capabilities) => {
         expect(capabilities).toBeDefined();
@@ -244,8 +251,6 @@ describe('Gb3PrintService', () => {
     const printResponseMock: PrintCreateData = {report_url: 'result url mock'};
 
     it('should transform and send print jobs', (done: DoneFn) => {
-      const configService = TestBed.inject(ConfigService);
-      const httpClient = TestBed.inject(HttpClient);
       const postCallSpy = spyOn(httpClient, 'post').and.returnValue(of(printResponseMock));
 
       service.createPrintJob(printCreationMock).subscribe((response) => {
@@ -253,6 +258,51 @@ describe('Gb3PrintService', () => {
         expect(postCallSpy).toHaveBeenCalledOnceWith(`${configService.apiConfig.gb2Api.baseUrl}/print`, transformedPrintCreationMock, {
           headers: undefined,
         });
+        done();
+      });
+    });
+  });
+
+  describe('printLegend', () => {
+    it('sends the printLegend request correctly', (done: DoneFn) => {
+      const mockResponse: PrintCreateData = {report_url: 'https://www.example.com'};
+      const postCallSpy = spyOn(httpClient, 'post').and.returnValue(of(mockResponse));
+      const items: PrintableOverlayItem[] = [{topic: 'Legolas', layers: ['Has a mighty bow', 'And surfs on a shield']}];
+
+      service.printLegend(items).subscribe((response) => {
+        expect(response.reportUrl).toBe(mockResponse.report_url);
+        expect(postCallSpy).toHaveBeenCalledOnceWith(
+          `${configService.apiConfig.gb2Api.baseUrl}/print/legend`,
+          {legend_topics: items},
+          {
+            headers: undefined,
+          },
+        );
+        done();
+      });
+    });
+  });
+
+  describe('printFeatureInfo', () => {
+    it('sends the printFeatureInfo request correctly', (done: DoneFn) => {
+      const mockResponse: PrintCreateData = {report_url: 'https://www.example.com'};
+      const postCallSpy = spyOn(httpClient, 'post').and.returnValue(of(mockResponse));
+      const mockQueryLocation: FeatureInfoQueryLocation = {x: 1337, y: 9001};
+      const items: PrintableOverlayItem[] = [{topic: 'Legolas', layers: ['Has a mighty bow', 'And surfs on a shield']}];
+
+      service.printFeatureInfo(items, mockQueryLocation.x, mockQueryLocation.y).subscribe((response) => {
+        expect(response.reportUrl).toBe(mockResponse.report_url);
+        expect(postCallSpy).toHaveBeenCalledOnceWith(
+          `${configService.apiConfig.gb2Api.baseUrl}/print/feature_info`,
+          {
+            query_topics: items,
+            x: mockQueryLocation.x,
+            y: mockQueryLocation.y,
+          },
+          {
+            headers: undefined,
+          },
+        );
         done();
       });
     });

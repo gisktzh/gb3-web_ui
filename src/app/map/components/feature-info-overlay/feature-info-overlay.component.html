@@ -2,6 +2,7 @@
   (closeEvent)="close()"
   (printButtonEvent)="print()"
   [isPrintButtonEnabled]="showInteractiveElements && loadingState === 'loaded' && featureInfoData.length > 0"
+  [printLoadingState]="printLoadingState"
   [showPrintButton]="showInteractiveElements"
   [isVisible]="isVisible"
   overlayTitle="Info"
