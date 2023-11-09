@@ -1,4 +1,5 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'mixins/helpers.mixin' as mixins;
 
 .accordion-item {
   .accordion-item__content {
@@ -32,6 +33,10 @@
 
       .accordion-item__content__header__icon-wrapper {
         display: flex;
+      }
+
+      .accordion-item__content__header__text {
+        @include mixins.multiline-ellipsis(1);
       }
     }
 
