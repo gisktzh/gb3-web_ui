@@ -3,13 +3,13 @@
     <tr class="feature-info-content__table__row">
       <th class="feature-info-content__table__row__column feature-info-content__table__row__column--header" scope="col"></th>
       <th
-        (mouseenter)="this.onFeatureHoverStart(tableHeader.fid)"
-        (mouseleave)="this.onFeatureHoverEnd(tableHeader.fid)"
-        (click)="this.toggleHighlightForFeature(tableHeader.fid, highlightButton)"
-        *ngFor="let tableHeader of this.tableHeaders"
+        (mouseenter)="onFeatureHoverStart(tableHeader.fid)"
+        (mouseleave)="onFeatureHoverEnd(tableHeader.fid)"
+        (click)="toggleHighlightForFeature(tableHeader.fid, highlightButton)"
+        *ngFor="let tableHeader of tableHeaders"
         [featureId]="tableHeader.fid"
-        [layerId]="this.layer.layer"
-        [topicId]="this.topicId"
+        [layerId]="layer.layer"
+        [topicId]="topicId"
         class="feature-info-content__table__row__column feature-info-content__table__row__column--header"
         scope="col"
         tableColumnIdentifier
@@ -20,7 +20,7 @@
         </div>
       </th>
     </tr>
-    <ng-container *ngFor="let tableRow of this.tableRows | keyValuePreserveOrder">
+    <ng-container *ngFor="let tableRow of tableRows | keyValuePreserveOrder">
       <tr class="feature-info-content__table__row">
         <th class="feature-info-content__table__row__column feature-info-content__table__row__column--header" scope="col">
           <span class="feature-info-content__table__row__column--attribute" [matTooltip]="tableRow.key" showTooltipIfTruncated>{{
@@ -28,12 +28,12 @@
           }}</span>
         </th>
         <td
-          (mouseenter)="this.onFeatureHoverStart(cellValue.fid)"
-          (mouseleave)="this.onFeatureHoverEnd(cellValue.fid)"
+          (mouseenter)="onFeatureHoverStart(cellValue.fid)"
+          (mouseleave)="onFeatureHoverEnd(cellValue.fid)"
           *ngFor="let cellValue of tableRow.value"
           [featureId]="cellValue.fid"
-          [layerId]="this.layer.layer"
-          [topicId]="this.topicId"
+          [layerId]="layer.layer"
+          [topicId]="topicId"
           class="feature-info-content__table__row__column"
           tableColumnIdentifier
         >
