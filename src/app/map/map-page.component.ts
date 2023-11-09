@@ -4,7 +4,7 @@ import {PrintType} from './types/print.type';
 import {OnboardingGuideService} from '../onboarding-guide/services/onboarding-guide.service';
 import {mapOnboardingGuideConfig} from '../onboarding-guide/data/map-onboarding-guide.config';
 import {Store} from '@ngrx/store';
-import {Subscription, tap} from 'rxjs';
+import {Subscription, delayWhen, interval, tap} from 'rxjs';
 import {selectMapUiState} from '../state/map/reducers/map-ui.reducer';
 import {MapUiState} from '../state/map/states/map-ui.state';
 import {MapUiActions} from '../state/map/actions/map-ui.actions';
@@ -14,6 +14,7 @@ import {selectScreenMode} from '../state/app/reducers/app-layout.reducer';
 import {selectLoadingState} from '../state/map/reducers/legend.reducer';
 import {LoadingState} from '../shared/types/loading-state.type';
 import {ScreenMode} from '../shared/types/screen-size.type';
+import {selectRotation} from '../state/map/reducers/map-config.reducer';
 
 @Component({
   selector: 'map-page',
@@ -29,11 +30,13 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
   public loadingState?: LoadingState;
   public mapSideDrawerContent: MapSideDrawerContent = 'none';
   public screenMode: ScreenMode = 'mobile';
+  public rotation: number = 0;
 
   private readonly queryLegends$ = this.store.select(selectQueryLegends);
   private readonly mapUiState$ = this.store.select(selectMapUiState);
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly loadingState$ = this.store.select(selectLoadingState);
+  private readonly rotation$ = this.store.select(selectRotation);
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(
@@ -75,6 +78,14 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   private initSubscriptions() {
+    this.subscriptions.add(
+      this.rotation$
+        .pipe(
+          delayWhen((rotation) => (rotation === 0 ? interval(2000) : interval(0))),
+          tap((rotation) => (this.rotation = rotation)),
+        )
+        .subscribe(),
+    );
     this.subscriptions.add(
       this.queryLegends$
         .pipe(

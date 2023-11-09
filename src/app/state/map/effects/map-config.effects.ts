@@ -65,6 +65,13 @@ export class MapConfigEffects {
     );
   });
 
+  public updateMapRotation$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapConfigActions.handleMapRotation),
+      map((rotation) => MapConfigActions.setRotation(rotation)),
+    );
+  });
+
   constructor(
     private readonly actions$: Actions,
     @Inject(MAP_SERVICE) private readonly mapService: MapService,

@@ -10,6 +10,7 @@ export const mapConfigFeatureKey = 'mapConfig';
 export const initialState: MapConfigState = {
   isMapServiceInitialized: false,
   center: defaultMapConfig.center,
+  rotation: defaultMapConfig.rotation,
   scale: defaultMapConfig.scale,
   srsId: defaultMapConfig.srsId,
   ready: defaultMapConfig.ready,
@@ -90,6 +91,9 @@ export const mapConfigFeature = createFeature({
     on(MapConfigActions.clearInitialMapsConfig, (state): MapConfigState => {
       return {...state, initialMaps: []};
     }),
+    on(MapConfigActions.setRotation, (state, {rotation}): MapConfigState => {
+      return {...state, rotation: rotation};
+    }),
   ),
 });
 
@@ -105,4 +109,5 @@ export const {
   selectIsMaxZoomedIn,
   selectIsMaxZoomedOut,
   selectActiveBasemapId,
+  selectRotation,
 } = mapConfigFeature;

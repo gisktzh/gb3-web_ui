@@ -153,8 +153,15 @@
   .map-container__all-map-items-container--mobile {
     position: absolute;
     bottom: 100px;
-    right: 12px;
     background-color: ktzh-variables.$zh-background-color;
+
+    &--right {
+      right: 12px;
+    }
+
+    &--left {
+      left: 12px;
+    }
   }
 }
 
