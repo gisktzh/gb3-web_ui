@@ -11,16 +11,7 @@ import {MapConfigActions} from 'src/app/state/map/actions/map-config.actions';
   styleUrls: ['./map-rotation-button.component.scss'],
 })
 export class MapRotationButtonComponent {
-  @Input()
-  get rotation(): number {
-    return this._rotation;
-  }
-  set rotation(rotation: number) {
-    this._rotation = rotation;
-    this.formattedRotation = `${rotation - 45}deg`; // This is only needed as long as we are using the Material 'explore' Icon, as it is rotated by 45°
-  }
-  private _rotation: number = 0;
-
+  @Input() public rotation: number = 0;
   public formattedRotation: string = '';
   public screenMode: ScreenMode = 'regular';
 

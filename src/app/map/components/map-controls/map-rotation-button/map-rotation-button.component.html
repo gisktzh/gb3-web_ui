@@ -1,5 +1,5 @@
 <div class="map-rotation-button" [ngClass]="{'map-rotation-button--mobile': screenMode === 'mobile'}">
   <button (click)="resetRotation()" mat-icon-button class="map-rotation-button--button">
-    <mat-icon [style.transform]="'rotate(' + formattedRotation + ')'">explore</mat-icon>
+    <mat-icon [style.transform]="rotation | mapRotation">explore</mat-icon>
   </button>
 </div>

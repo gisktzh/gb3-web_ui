@@ -66,6 +66,7 @@ import {TextDrawingToolInputComponent} from './components/text-drawing-tool-inpu
 import {TimeSliderComponent} from './components/time-slider/time-slider.component';
 import {MapPageComponent} from './map-page.component';
 import {MapRoutingModule} from './map-routing.module';
+import {MapRotationPipe} from './pipes/map-rotation.pipe';
 
 @NgModule({
   declarations: [
@@ -132,6 +133,7 @@ import {MapRoutingModule} from './map-routing.module';
     SearchWindowMobileComponent,
     ShareLinkMobileComponent,
     MapRotationButtonComponent,
+    MapRotationPipe,
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule],
   exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent],
