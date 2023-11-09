@@ -245,11 +245,7 @@ export class EsriMapService implements MapService, OnDestroy {
   }
 
   public assignScaleBarElement(container: HTMLDivElement) {
-    if (this.scaleBar) {
-      this.scaleBar.container = container;
-    } else {
-      this.scaleBar = new EsriScaleBar({view: this.mapView, container: container, unit: 'metric'});
-    }
+    this.scaleBar = new EsriScaleBar({view: this.mapView, container: container, unit: 'metric'});
   }
 
   public setOpacity(opacity: number, mapItem: ActiveMapItem): void {
