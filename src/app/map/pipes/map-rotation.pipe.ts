@@ -4,7 +4,7 @@ import {Pipe, PipeTransform} from '@angular/core';
   name: 'mapRotation',
 })
 export class MapRotationPipe implements PipeTransform {
-  transform(rotation: number): string {
+  public transform(rotation: number): string {
     return `rotate(${rotation - 45}deg)`;
   }
 }
