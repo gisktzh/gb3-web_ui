@@ -144,6 +144,11 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
     );
   }
 
+  public clearInput() {
+    this.input.nativeElement.value = '';
+    this.store.dispatch(LayerCatalogActions.clearFilterString());
+  }
+
   private addActiveItem(activeMapItem: ActiveMapItem) {
     // add new map items on top (position 0)
     this.store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem, position: 0}));
