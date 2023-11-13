@@ -1,77 +1,7 @@
 {
-  "extends": ["config:base"],
-  "ignoreDeps": ["typescript", "zone.js"],
+  "extends": ["local>Renovate_Bot/renovate-presets:node", "local>Renovate_Bot/renovate-presets:npm"],
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "assignees": ["lukas.merz@ebp.ch", "sebastian.wendland@ebp.ch"],
   "reviewers": ["lukas.merz@ebp.ch", "sebastian.wendland@ebp.ch"],
-  "platformAutomerge": true,
-  "azureAutoApprove": false,
-  "packageRules": [
-    {
-      "matchManagers": ["npm"],
-      "matchPackageNames": ["@types/node"],
-      "allowedVersions": "<20"
-    },
-    {
-      "matchManagers": ["dockerfile"],
-      "matchPackageNames": ["node"],
-      "allowedVersions": "<20"
-    },
-    {
-      "matchManagers": ["npm"],
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest", "lockFileMaintenance", "bump"],
-      "automerge": true
-    },
-    {
-      "matchManagers": ["npm"],
-      "matchUpdateTypes": ["major", "minor", "patch"],
-      "groupName": "karma",
-      "matchPackagePrefixes": ["karma"]
-    },
-    {
-      "matchManagers": ["npm"],
-      "groupName": "angular",
-      "matchPackagePrefixes": [
-        "@angular/",
-        "@angular-devkit/",
-        "@angular-eslint/",
-        "@schematics/angular",
-        "angular-oauth2-oidc",
-        "@ngrx/",
-        "typescript"
-      ]
-    },
-    {
-      "matchManagers": ["npm"],
-      "groupName": "arcgis",
-      "matchPackagePrefixes": ["@arcgis/"],
-      "automerge": false
-    },
-    {
-      "matchManagers": ["npm"],
-      "groupName": "jasmine",
-      "matchPackagePrefixes": ["jasmine", "@types/jasmine"]
-    },
-    {
-      "matchManagers": ["npm"],
-      "matchPackageNames": ["prettier"],
-      "postUpgradeTasks": {
-        "commands": [
-          "cd $(find . -maxdepth 2 -name package.json -printf '%h\n' | head -1) && npm ci --ignore-scripts && npm run format; rm -rf node_modules"
-        ],
-        "fileFilters": ["**/**"]
-      }
-    },
-    {
-      "matchManagers": ["npm"],
-      "matchUpdateTypes": ["major", "minor", "patch"],
-      "matchPackageNames": ["@angular/cli", "@angular/cdk"],
-      "postUpgradeTasks": {
-        "commands": [
-          "cd $(find . -maxdepth 2 -name package.json -printf '%h\n' | head -1) && npm ci --ignore-scripts && npx ng update {{{depName}}} --from={{{currentVersion}}} --to={{{newVersion}}} --migrate-only --allow-dirty --force && npm run format; rm -rf node_modules"
-        ],
-        "fileFilters": ["**/**"]
-      }
-    }
-  ]
+  "packageRules": []
 }
