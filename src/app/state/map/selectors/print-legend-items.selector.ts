@@ -6,6 +6,6 @@ import {PrintableOverlayItem} from '../../../shared/interfaces/overlay-print.int
 export const selectPrintLegendItems = createSelector<Record<string, any>, LegendDisplay[], PrintableOverlayItem[]>(
   selectLegendItemsForDisplay,
   (legendItems) => {
-    return legendItems.map((legendItem) => ({topic: legendItem.id, layers: legendItem.layers.map((layer) => layer.layer)}));
+    return legendItems.map((legendItem) => ({topic: legendItem.topicId, layers: legendItem.layers.map((layer) => layer.layer)}));
   },
 );

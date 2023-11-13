@@ -6,11 +6,11 @@ describe('selectPrintLegendItems', () => {
   it('returns the print configuration for a given state', () => {
     const mockFeatureInfos: FeatureInfoResultDisplay[] = [
       {
-        id: 'Rivendell',
+        topicId: 'Rivendell',
         layers: [{layer: 'Bruchtal'} as FeatureInfoResultLayer, {layer: 'Imladris'} as FeatureInfoResultLayer],
       } as FeatureInfoResultDisplay,
       {
-        id: 'Isengard',
+        topicId: 'Isengard',
         layers: [
           {layer: 'Beautiful fortress in Nan Curunir'} as FeatureInfoResultLayer,
           {layer: 'Inhabited by a very nice Wizard'} as FeatureInfoResultLayer,
@@ -18,8 +18,8 @@ describe('selectPrintLegendItems', () => {
       } as FeatureInfoResultDisplay,
     ];
     const expected: PrintableOverlayItem[] = [
-      {topic: mockFeatureInfos[0].id, layers: [mockFeatureInfos[0].layers[0].layer, mockFeatureInfos[0].layers[1].layer]},
-      {topic: mockFeatureInfos[1].id, layers: [mockFeatureInfos[1].layers[0].layer, mockFeatureInfos[1].layers[1].layer]},
+      {topic: mockFeatureInfos[0].topicId, layers: [mockFeatureInfos[0].layers[0].layer, mockFeatureInfos[0].layers[1].layer]},
+      {topic: mockFeatureInfos[1].topicId, layers: [mockFeatureInfos[1].layers[0].layer, mockFeatureInfos[1].layers[1].layer]},
     ];
 
     const actual = selectPrintLegendItems.projector(mockFeatureInfos);

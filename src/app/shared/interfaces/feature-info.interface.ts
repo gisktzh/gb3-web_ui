@@ -43,4 +43,5 @@ export interface FeatureInfoResultDisplay extends HasMetaDataLink {
   layers: FeatureInfoResultLayer[];
   icon?: string;
   isSingleLayer: boolean;
+  topicId: string;
 }

@@ -44,6 +44,7 @@ export const selectLegendItemsForDisplay = createSelector<Record<string, any>, L
       if (isSingleLayer) {
         legendDisplay = {
           id: Gb2WmsActiveMapItem.createSingleLayerId(topic.id, legendItem.layers[0].layer),
+          topicId: topic.id,
           title: legendItem.layers[0].title,
           layers: legendItem.layers,
           icon: undefined,
@@ -53,6 +54,7 @@ export const selectLegendItemsForDisplay = createSelector<Record<string, any>, L
       } else {
         legendDisplay = {
           id: topic.id,
+          topicId: topic.id,
           title: topic.title,
           layers: legendItem.layers,
           icon: topic.icon,

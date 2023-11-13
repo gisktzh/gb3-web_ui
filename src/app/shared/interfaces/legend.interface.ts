@@ -30,4 +30,5 @@ export interface LegendDisplay extends HasMetaDataLink {
   icon?: string;
   layers: LegendLayer[];
   isSingleLayer: boolean;
+  topicId: string;
 }
