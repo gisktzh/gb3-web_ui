@@ -14,15 +14,15 @@ import {selectPrintFeatureInfoItems} from '../selectors/print-feature-info-items
 export class OverlayPrintEffects {
   public requestLegendPrint$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(OverlayPrintActions.print),
-      filter((v) => v.overlay === 'legend'),
+      ofType(OverlayPrintActions.sendPrintRequest),
+      filter((action) => action.overlay === 'legend'),
       concatLatestFrom(() => this.store.select(selectPrintLegendItems)),
       switchMap(([{overlay}, items]) =>
         this.printService.printLegend(items).pipe(
           map((printCreationResponse) => {
-            return OverlayPrintActions.setPrintRequestResponse({overlay: overlay, creationResponse: printCreationResponse});
+            return OverlayPrintActions.setPrintRequestResponse({overlay, creationResponse: printCreationResponse});
           }),
-          catchError((error: unknown) => of(OverlayPrintActions.setPrintRequestError({overlay: overlay, error}))),
+          catchError((error: unknown) => of(OverlayPrintActions.setPrintRequestError({overlay, error}))),
         ),
       ),
     );
@@ -30,8 +30,8 @@ export class OverlayPrintEffects {
 
   public requestFeatureInfoPrint$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(OverlayPrintActions.print),
-      filter((v) => v.overlay === 'featureInfo'),
+      ofType(OverlayPrintActions.sendPrintRequest),
+      filter((initialState) => initialState.overlay === 'featureInfo'),
       concatLatestFrom(() => this.store.select(selectPrintFeatureInfoItems)),
       switchMap(([{overlay}, {x, y, items}]) =>
         this.printService.printFeatureInfo(items, x, y).pipe(

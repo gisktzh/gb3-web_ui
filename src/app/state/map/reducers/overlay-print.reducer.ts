@@ -13,7 +13,7 @@ export const overlayPrintFeature = createFeature({
   name: overlayPrintFeatureKey,
   reducer: createReducer(
     initialState,
-    on(OverlayPrintActions.print, (state, {overlay}): OverlayPrintState => {
+    on(OverlayPrintActions.sendPrintRequest, (state, {overlay}): OverlayPrintState => {
       switch (overlay) {
         case 'legend':
           return {...state, legendPrintState: 'loading'};

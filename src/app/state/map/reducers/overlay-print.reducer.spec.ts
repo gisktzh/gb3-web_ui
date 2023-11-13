@@ -14,7 +14,7 @@ describe('OverlayPrint Reducer', () => {
 
   describe('print', () => {
     it('sets the legendPrintState when printing a legend', () => {
-      const action = OverlayPrintActions.print({overlay: 'legend'});
+      const action = OverlayPrintActions.sendPrintRequest({overlay: 'legend'});
 
       const result = reducer(initialState, action);
 
@@ -23,7 +23,7 @@ describe('OverlayPrint Reducer', () => {
     });
 
     it('sets the featureInfoPrintState when printing a feature info', () => {
-      const action = OverlayPrintActions.print({overlay: 'featureInfo'});
+      const action = OverlayPrintActions.sendPrintRequest({overlay: 'featureInfo'});
 
       const result = reducer(initialState, action);
 

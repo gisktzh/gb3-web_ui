@@ -45,7 +45,7 @@ export class LegendOverlayComponent implements OnInit, OnDestroy {
   }
 
   public print() {
-    this.store.dispatch(OverlayPrintActions.print({overlay: 'legend'}));
+    this.store.dispatch(OverlayPrintActions.sendPrintRequest({overlay: 'legend'}));
   }
 
   private initSubscriptions() {

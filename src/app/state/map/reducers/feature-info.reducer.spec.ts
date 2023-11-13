@@ -39,6 +39,10 @@ describe('FeatureInfo Reducer', () => {
       const result = reducer(initialState, action);
 
       expect(result.loadingState).toEqual('error');
+      expect(result.highlightedFeature).toEqual(initialState.highlightedFeature);
+      expect(result.pinnedFeatureId).toEqual(initialState.pinnedFeatureId);
+      expect(result.data).toEqual(initialState.data);
+      expect(result.queryLocation).toEqual(initialState.queryLocation);
     });
   });
 
@@ -55,8 +59,11 @@ describe('FeatureInfo Reducer', () => {
 
       const result = reducer(mockCurrentState, action);
 
-      expect(result.highlightedFeature).toEqual(undefined);
-      expect(result.pinnedFeatureId).toEqual(undefined);
+      expect(result.highlightedFeature).toEqual(initialState.highlightedFeature);
+      expect(result.pinnedFeatureId).toEqual(initialState.pinnedFeatureId);
+      expect(result.loadingState).toEqual(mockCurrentState.loadingState);
+      expect(result.data).toEqual(mockCurrentState.data);
+      expect(result.queryLocation).toEqual(mockCurrentState.queryLocation);
     });
   });
 
@@ -77,6 +84,9 @@ describe('FeatureInfo Reducer', () => {
 
       expect(result.highlightedFeature).toEqual(newHighlightedFeature);
       expect(result.pinnedFeatureId).toEqual(newHighlightedFeatureId);
+      expect(result.loadingState).toEqual(mockCurrentState.loadingState);
+      expect(result.data).toEqual(mockCurrentState.data);
+      expect(result.queryLocation).toEqual(mockCurrentState.queryLocation);
     });
   });
 

@@ -45,7 +45,7 @@ export class FeatureInfoOverlayComponent implements OnInit, OnDestroy {
   }
 
   public print() {
-    this.store.dispatch(OverlayPrintActions.print({overlay: 'featureInfo'}));
+    this.store.dispatch(OverlayPrintActions.sendPrintRequest({overlay: 'featureInfo'}));
   }
 
   private initSubscriptions() {
