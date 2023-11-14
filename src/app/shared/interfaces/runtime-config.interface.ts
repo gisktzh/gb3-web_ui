@@ -25,6 +25,7 @@ export interface ApiConfig {
   twitterWidget: ApiBaseUrlConfig;
   geoshopApi: ApiBaseUrlConfig;
   ownershipInformationApi: ApiBaseUrlConfig;
+  swisstopoRestApi: ApiBaseUrlConfig;
 }
 
 export interface OverrideSettings {
