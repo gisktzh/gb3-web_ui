@@ -5,6 +5,7 @@ import {FeatureInfoState} from '../states/feature-info.state';
 export const featureInfoFeatureKey = 'featureInfo';
 
 export const initialState: FeatureInfoState = {
+  queryLocation: {},
   loadingState: undefined,
   data: [],
   highlightedFeature: undefined,
@@ -15,8 +16,8 @@ export const featureInfoFeature = createFeature({
   name: featureInfoFeatureKey,
   reducer: createReducer(
     initialState,
-    on(FeatureInfoActions.sendRequest, (): FeatureInfoState => {
-      return {...initialState, loadingState: 'loading'};
+    on(FeatureInfoActions.sendRequest, (_, {x, y}): FeatureInfoState => {
+      return {...initialState, queryLocation: {x, y}, loadingState: 'loading'};
     }),
     on(FeatureInfoActions.clearContent, (): FeatureInfoState => {
       return {...initialState};
@@ -37,5 +38,13 @@ export const featureInfoFeature = createFeature({
   ),
 });
 
-export const {name, reducer, selectFeatureInfoState, selectLoadingState, selectData, selectHighlightedFeature, selectPinnedFeatureId} =
-  featureInfoFeature;
+export const {
+  name,
+  reducer,
+  selectFeatureInfoState,
+  selectQueryLocation,
+  selectLoadingState,
+  selectData,
+  selectHighlightedFeature,
+  selectPinnedFeatureId,
+} = featureInfoFeature;
