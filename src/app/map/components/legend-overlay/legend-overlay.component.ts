@@ -9,6 +9,8 @@ import {selectLoadingState} from '../../../state/map/reducers/legend.reducer';
 import {selectIsLegendOverlayVisible} from '../../../state/map/reducers/map-ui.reducer';
 import {OverlayPrintActions} from '../../../state/map/actions/overlay-print-actions';
 import {selectLegendPrintState} from '../../../state/map/reducers/overlay-print.reducer';
+import {selectLegendItemsForDisplay} from '../../../state/map/selectors/legend-result-display.selector';
+import {LegendDisplay} from '../../../shared/interfaces/legend.interface';
 
 @Component({
   selector: 'legend-overlay',
@@ -23,11 +25,13 @@ export class LegendOverlayComponent implements OnInit, OnDestroy {
   public loadingState: LoadingState;
   public printLoadingState: LoadingState;
   public screenMode: ScreenMode = 'mobile';
+  public legendItems: LegendDisplay[] = [];
 
   private readonly isLegendOverlayVisible$ = this.store.select(selectIsLegendOverlayVisible);
   private readonly loadingState$ = this.store.select(selectLoadingState);
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly printLoadingState$ = this.store.select(selectLegendPrintState);
+  private readonly legendItems$ = this.store.select(selectLegendItemsForDisplay);
   private readonly subscriptions = new Subscription();
 
   constructor(private readonly store: Store) {}
@@ -53,5 +57,6 @@ export class LegendOverlayComponent implements OnInit, OnDestroy {
     this.subscriptions.add(this.printLoadingState$.pipe(tap((value) => (this.printLoadingState = value))).subscribe());
     this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
     this.subscriptions.add(this.isLegendOverlayVisible$.pipe(tap((isVisible) => (this.isVisible = isVisible))).subscribe());
+    this.subscriptions.add(this.legendItems$.pipe(tap((items) => (this.legendItems = items))).subscribe());
   }
 }
