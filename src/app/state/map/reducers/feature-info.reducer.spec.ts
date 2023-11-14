@@ -117,7 +117,7 @@ describe('FeatureInfo Reducer', () => {
   describe('sendRequest', () => {
     it('resets the current state to initial state, sets the location and loadingstate', () => {
       const location: FeatureInfoQueryLocation = {x: 1337, y: 42};
-      const action = FeatureInfoActions.sendRequest({x: location.x, y: location.y});
+      const action = FeatureInfoActions.sendRequest({x: location.x!, y: location.y!});
       const mockCurrentState: FeatureInfoState = {
         queryLocation: {y: 0, x: 5555},
         loadingState: 'loaded',

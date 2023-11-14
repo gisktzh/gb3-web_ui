@@ -65,7 +65,7 @@ describe('OverlayPrintEffects', () => {
     });
 
     it('does nothing if print request is for feature info', fakeAsync(async () => {
-      actions$ = of(OverlayPrintActions.setPrintRequestError({overlay: 'featureInfo'}));
+      actions$ = of(OverlayPrintActions.sendPrintRequest({overlay: 'featureInfo'}));
       effects.requestLegendPrint$.subscribe();
       tick();
 
@@ -114,7 +114,25 @@ describe('OverlayPrintEffects', () => {
     });
 
     it('does nothing if print request is for legend', fakeAsync(async () => {
-      actions$ = of(OverlayPrintActions.setPrintRequestError({overlay: 'legend'}));
+      actions$ = of(OverlayPrintActions.sendPrintRequest({overlay: 'legend'}));
+      effects.requestFeatureInfoPrint$.subscribe();
+      tick();
+
+      expect(gb3PrintServiceSpy).toHaveBeenCalledTimes(0);
+    }));
+
+    it('does nothing if x is undefined', fakeAsync(async () => {
+      store.overrideSelector(selectPrintFeatureInfoItems, {items: [], y: 5});
+      actions$ = of(OverlayPrintActions.sendPrintRequest({overlay: 'featureInfo'}));
+      effects.requestFeatureInfoPrint$.subscribe();
+      tick();
+
+      expect(gb3PrintServiceSpy).toHaveBeenCalledTimes(0);
+    }));
+
+    it('does nothing if y is undefined', fakeAsync(async () => {
+      store.overrideSelector(selectPrintFeatureInfoItems, {items: [], x: 5});
+      actions$ = of(OverlayPrintActions.sendPrintRequest({overlay: 'featureInfo'}));
       effects.requestFeatureInfoPrint$.subscribe();
       tick();
 

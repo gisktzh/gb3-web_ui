@@ -30,5 +30,8 @@ export interface LegendDisplay extends HasMetaDataLink {
   icon?: string;
   layers: LegendLayer[];
   isSingleLayer: boolean;
-  topicId: string;
+  /**
+   * The Topic ID in the API - used for printing as id might also be our internal single layer id.
+   */
+  mapId: string;
 }

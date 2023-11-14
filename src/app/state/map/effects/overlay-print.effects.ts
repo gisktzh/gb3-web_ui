@@ -31,10 +31,11 @@ export class OverlayPrintEffects {
   public requestFeatureInfoPrint$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(OverlayPrintActions.sendPrintRequest),
-      filter((initialState) => initialState.overlay === 'featureInfo'),
+      filter((action) => action.overlay === 'featureInfo'),
       concatLatestFrom(() => this.store.select(selectPrintFeatureInfoItems)),
+      filter(([_, {x, y}]) => x !== undefined && y !== undefined),
       switchMap(([{overlay}, {x, y, items}]) =>
-        this.printService.printFeatureInfo(items, x, y).pipe(
+        this.printService.printFeatureInfo(items, x!, y!).pipe(
           map((printCreationResponse) => {
             return OverlayPrintActions.setPrintRequestResponse({overlay, creationResponse: printCreationResponse});
           }),

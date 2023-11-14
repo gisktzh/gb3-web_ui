@@ -5,10 +5,7 @@ import {FeatureInfoState} from '../states/feature-info.state';
 export const featureInfoFeatureKey = 'featureInfo';
 
 export const initialState: FeatureInfoState = {
-  queryLocation: {
-    x: -1,
-    y: -1,
-  },
+  queryLocation: {},
   loadingState: undefined,
   data: [],
   highlightedFeature: undefined,

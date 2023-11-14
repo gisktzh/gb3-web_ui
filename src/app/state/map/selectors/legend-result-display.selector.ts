@@ -1,18 +1,16 @@
 import {createSelector} from '@ngrx/store';
 import {selectItems as selectLegendItems} from '../reducers/legend.reducer';
 import {selectMaps} from './maps.selector';
-import {Legend, LegendDisplay} from '../../../shared/interfaces/legend.interface';
-import {Map} from '../../../shared/interfaces/topic.interface';
+import {LegendDisplay} from '../../../shared/interfaces/legend.interface';
 import {selectItems as selectActiveMapItems} from '../reducers/active-map-item.reducer';
-import {ActiveMapItem} from '../../../map/models/active-map-item.model';
 import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
 import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
 
-export const selectLegendItemsForDisplay = createSelector<Record<string, any>, Legend[], Map[], ActiveMapItem[], LegendDisplay[]>(
+export const selectLegendItemsForDisplay = createSelector(
   selectLegendItems,
   selectMaps,
   selectActiveMapItems,
-  (legendItems, maps, activeMapItems) => {
+  (legendItems, maps, activeMapItems): LegendDisplay[] => {
     const legendDisplays: LegendDisplay[] = [];
     legendItems.forEach((legendItem) => {
       // Abort if the legend endpoint returns a non-matchable topic ID
@@ -44,7 +42,7 @@ export const selectLegendItemsForDisplay = createSelector<Record<string, any>, L
       if (isSingleLayer) {
         legendDisplay = {
           id: Gb2WmsActiveMapItem.createSingleLayerId(topic.id, legendItem.layers[0].layer),
-          topicId: topic.id,
+          mapId: topic.id,
           title: legendItem.layers[0].title,
           layers: legendItem.layers,
           icon: undefined,
@@ -54,7 +52,7 @@ export const selectLegendItemsForDisplay = createSelector<Record<string, any>, L
       } else {
         legendDisplay = {
           id: topic.id,
-          topicId: topic.id,
+          mapId: topic.id,
           title: topic.title,
           layers: legendItem.layers,
           icon: topic.icon,

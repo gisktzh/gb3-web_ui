@@ -290,7 +290,7 @@ describe('Gb3PrintService', () => {
       const mockQueryLocation: FeatureInfoQueryLocation = {x: 1337, y: 9001};
       const items: PrintableOverlayItem[] = [{topic: 'Legolas', layers: ['Has a mighty bow', 'And surfs on a shield']}];
 
-      service.printFeatureInfo(items, mockQueryLocation.x, mockQueryLocation.y).subscribe((response) => {
+      service.printFeatureInfo(items, mockQueryLocation.x!, mockQueryLocation.y!).subscribe((response) => {
         expect(response.reportUrl).toBe(mockResponse.report_url);
         expect(postCallSpy).toHaveBeenCalledOnceWith(
           `${configService.apiConfig.gb2Api.baseUrl}/print/feature_info`,

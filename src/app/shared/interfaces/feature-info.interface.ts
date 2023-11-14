@@ -25,8 +25,8 @@ export interface FeatureInfoResult extends HasMetaDataLink {
 }
 
 export interface FeatureInfoQueryLocation {
-  x: number;
-  y: number;
+  x?: number;
+  y?: number;
 }
 
 interface FeatureInfoWrapper extends FeatureInfoQueryLocation {
@@ -43,5 +43,8 @@ export interface FeatureInfoResultDisplay extends HasMetaDataLink {
   layers: FeatureInfoResultLayer[];
   icon?: string;
   isSingleLayer: boolean;
-  topicId: string;
+  /**
+   * The Topic ID in the API - used for printing as id might also be our internal single layer id.
+   */
+  mapId: string;
 }
