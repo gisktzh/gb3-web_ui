@@ -43,7 +43,7 @@ export class EsriMunicipalitySelectionStrategy extends AbstractEsriSelectionStra
               const dataDownloadSelection: DataDownloadSelection = {
                 type: 'select-municipality',
                 drawingRepresentation: drawingRepresentation,
-                municipality: municipality!,
+                municipality: municipality,
               };
               return dataDownloadSelection;
             }),

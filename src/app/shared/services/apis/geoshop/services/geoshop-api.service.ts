@@ -53,8 +53,8 @@ export class GeoshopApiService extends BaseApiService {
       perimeterType: 'direct',
       products: [],
       email: '',
-      srs: 'lv95', // TODO WES Maybe fix
-      geometry: selection.drawingRepresentation.geometry as Polygon, // TODO WES FIX
+      srs: 'lv95', // TODO GB3-651: Don't use a fixed SRS
+      geometry: selection.drawingRepresentation.geometry as Polygon, // TODO GB3-651: Don't simply cast it to polygon - find a better solution
     };
   }
 
