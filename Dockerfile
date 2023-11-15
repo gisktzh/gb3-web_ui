@@ -1,4 +1,4 @@
-FROM node:20.8-alpine AS build-app
+FROM node:18.15-alpine AS build-app
 
 # Provide overrides for APP_VERSION and APP_RELEASE as build-args and expose them as ENV variables for the update-version.js script
 ARG APP_VERSION
@@ -14,6 +14,8 @@ COPY . .
 ENV NODE_ENV=production
 # increase the available memory size to prevent the 'Reached heap limit Allocation failed - JavaScript heap out of memory' error
 ENV NODE_OPTIONS=--max_old_space_size=4096
+
+RUN npm --version
 
 # Install git and run our update-version command (which requires git as process)
 RUN apk --no-cache add git
