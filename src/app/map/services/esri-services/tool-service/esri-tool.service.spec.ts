@@ -19,6 +19,7 @@ import {EsriPointDrawingStrategy} from './strategies/drawing/esri-point-drawing.
 import {EsriLineDrawingStrategy} from './strategies/drawing/esri-line-drawing.strategy';
 import {EsriPolygonDrawingStrategy} from './strategies/drawing/esri-polygon-drawing.strategy';
 import {EsriTextDrawingStrategy} from './strategies/drawing/esri-text-drawing.strategy';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
 
 describe('EsriToolService', () => {
   let service: EsriToolService;
@@ -28,7 +29,7 @@ describe('EsriToolService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [MatDialogModule],
+      imports: [MatDialogModule, HttpClientTestingModule],
       providers: [
         provideMockStore({selectors: [{selector: selectDrawingLayers, value: []}]}),
         {

@@ -2,15 +2,6 @@
 @use 'functions/helper.function' as functions;
 @use 'mixins/material.mixin' as mat-mixins;
 
-:host ::ng-deep .data-download-dialog__content__form__element {
-  @include mat-mixins.mat-text-field-override-background;
-
-  .mat-mdc-form-field-subscript-wrapper {
-    height: 0;
-  }
-}
-
-// TODO WES cleanup - copied from print-dialog
 .data-download-dialog {
   width: 50vw;
   height: 100%;
@@ -38,22 +29,6 @@
     overflow-y: auto;
     padding-right: 12px;
     margin-bottom: 16px;
-
-    .data-download-dialog__content__form {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-
-      .data-download-dialog__content__form__divider {
-        margin: 16px 0;
-      }
-
-      .data-download-dialog__content__form__format-section {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 16px;
-      }
-    }
   }
 
   .data-download-dialog__footer {

@@ -51,8 +51,8 @@ export class DataDownloadDialogComponent implements OnInit, OnDestroy {
       this.dataDownloadProductState$
         .pipe(
           tap((dataDownloadProductState) => {
-            this.products = dataDownloadProductState.productsList?.products ?? [];
-            this.productsLoadingState = dataDownloadProductState.productsListLoadingState;
+            this.products = dataDownloadProductState.products;
+            this.productsLoadingState = dataDownloadProductState.productsLoadingState;
             this.relevantProductsLoadingState = dataDownloadProductState.relevantProductIdsLoadingState;
           }),
         )

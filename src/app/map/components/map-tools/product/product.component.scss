@@ -1,0 +1,35 @@
+@use 'functions/helper.function' as functions;
+@use 'mixins/material.mixin' as mat-mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+:host ::ng-deep .product__checkbox {
+  @include mat-mixins.mat-checkbox-override-accent-color(
+    functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent),
+    functions.get-contrast-color-from-palette(ktzh-variables.$zh-secondary-accent)
+  );
+}
+
+.product {
+  display: flex;
+  flex-direction: row;
+  padding: 12px 16px;
+
+  .product__checkbox {
+    padding-right: 4px;
+  }
+
+  .product__description {
+    display: flex;
+    flex-direction: column;
+
+    .product__description__header {
+      font-family: ktzh-variables.$zh-font-family-bold;
+      margin: 0;
+    }
+
+    .product__description__content__title {
+      color: ktzh-variables.$zh-black60;
+      padding-right: 4px;
+    }
+  }
+}

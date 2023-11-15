@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import {TestBed} from '@angular/core/testing';
 
 import {GeoshopApiService} from './geoshop-api.service';
@@ -6,7 +7,6 @@ import {
   Order as ApiOrder,
   OrderResponse as ApiOrderResponse,
   OrderStatus as ApiOrderStatus,
-  Products as ApiProducts,
 } from '../../../../models/geoshop-api-generated.interface';
 import {HttpClient} from '@angular/common/http';
 import {of} from 'rxjs';
@@ -27,81 +27,6 @@ describe('GeoshopApiService', () => {
 
   it('should be created', () => {
     expect(service).toBeTruthy();
-  });
-
-  describe('loadProducts', () => {
-    const mockData: ApiProducts = {
-      timestamp: '2023-10-09T11:50:02',
-      formats: [
-        {
-          id: 1,
-          name: 'Water (.nas)',
-        },
-        {
-          id: 2,
-          name: 'Earth (.erd)',
-        },
-        {
-          id: 3,
-          name: 'Fire (.hot)',
-        },
-        {
-          id: 4,
-          name: 'Air (.air)',
-        },
-      ],
-      products: [
-        {
-          id: 112,
-          name: 'Aang',
-          description: 'Avatar',
-          type: 'Vektor',
-          formats: [1, 2, 3, 4],
-        },
-        {
-          id: 14,
-          name: 'Katara',
-          description: 'Waterbender',
-          type: 'Raster',
-          formats: [1],
-        },
-      ],
-      communes: [
-        {
-          id: '0001',
-          name: 'Kyoshi Island',
-        },
-        {
-          id: '0002',
-          name: 'Omashu',
-        },
-        {
-          id: '0003',
-          name: 'Ba Sing Se',
-        },
-        {
-          id: '0004',
-          name: 'Southern Air Temple',
-        },
-        {
-          id: '0005',
-          name: 'Northern Water Tribe',
-        },
-      ],
-    };
-
-    it('should receive the data and transform it', (done: DoneFn) => {
-      const httpClient = TestBed.inject(HttpClient);
-      spyOn(httpClient, 'get').and.returnValue(of(mockData));
-      service.loadProducts().subscribe((products) => {
-        expect(products).toBeDefined();
-        expect(products.timestampDateString).toBe(mockData.timestamp);
-        expect(products.products).toEqual(jasmine.arrayWithExactContents(mockData.products));
-        expect(products.formats).toEqual(jasmine.arrayWithExactContents(mockData.formats));
-        expect(products.municipalities).toEqual(jasmine.arrayWithExactContents(mockData.communes));
-        done();
-      });
-    });
   });
 
   describe('sendOrder', () => {

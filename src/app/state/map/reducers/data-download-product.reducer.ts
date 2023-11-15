@@ -5,8 +5,8 @@ import {DataDownloadProductActions} from '../actions/data-download-product.actio
 export const dataDownloadProductFeatureKey = 'dataDownloadProduct';
 
 export const initialState: DataDownloadProductState = {
-  productsList: undefined,
-  productsListLoadingState: undefined,
+  products: [],
+  productsLoadingState: undefined,
   relevantProductIds: [],
   relevantProductIdsLoadingState: undefined,
 };
@@ -15,17 +15,17 @@ export const dataDownloadProductFeature = createFeature({
   name: dataDownloadProductFeatureKey,
   reducer: createReducer(
     initialState,
-    on(DataDownloadProductActions.loadProductsList, (state): DataDownloadProductState => {
-      if (state.productsList) {
+    on(DataDownloadProductActions.loadProducts, (state): DataDownloadProductState => {
+      if (state.products.length > 0) {
         return state;
       }
-      return {...initialState, productsListLoadingState: 'loading'};
+      return {...initialState, productsLoadingState: 'loading'};
     }),
-    on(DataDownloadProductActions.setProductsList, (state, {productsList}): DataDownloadProductState => {
-      return {...state, productsList, productsListLoadingState: 'loaded'};
+    on(DataDownloadProductActions.setProducts, (state, {products}): DataDownloadProductState => {
+      return {...state, products, productsLoadingState: 'loaded'};
     }),
-    on(DataDownloadProductActions.setProductsListError, (): DataDownloadProductState => {
-      return {...initialState, productsListLoadingState: 'error'};
+    on(DataDownloadProductActions.setProductsError, (): DataDownloadProductState => {
+      return {...initialState, productsLoadingState: 'error'};
     }),
     on(DataDownloadProductActions.loadRelevantProductsIds, (state): DataDownloadProductState => {
       return {...state, relevantProductIds: initialState.relevantProductIds, relevantProductIdsLoadingState: 'loading'};
@@ -43,8 +43,8 @@ export const {
   name,
   reducer,
   selectDataDownloadProductState,
-  selectProductsList,
-  selectProductsListLoadingState,
+  selectProducts,
+  selectProductsLoadingState,
   selectRelevantProductIds,
   selectRelevantProductIdsLoadingState,
 } = dataDownloadProductFeature;

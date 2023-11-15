@@ -9,14 +9,14 @@ import {Gb3GeoshopProductsService} from '../../../shared/services/apis/gb3/gb3-g
 import {selectItems} from '../reducers/active-map-item.reducer';
 import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
 import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
-import {selectProductsList} from '../reducers/data-download-product.reducer';
+import {selectProducts} from '../reducers/data-download-product.reducer';
 
 @Injectable()
 export class DataDownloadProductEffects {
   public loadAllProducts$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(DataDownloadProductActions.loadProductsAndRelevantProducts),
-      map(() => DataDownloadProductActions.loadProductsList()),
+      map(() => DataDownloadProductActions.loadProducts()),
     );
   });
 
@@ -27,26 +27,26 @@ export class DataDownloadProductEffects {
     );
   });
 
-  public loadProductsList$ = createEffect(() => {
+  public loadProducts$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(DataDownloadProductActions.loadProductsList),
-      concatLatestFrom(() => [this.store.select(selectProductsList)]),
-      filter(([_, productsList]) => productsList === undefined),
+      ofType(DataDownloadProductActions.loadProducts),
+      concatLatestFrom(() => [this.store.select(selectProducts)]),
+      filter(([_, products]) => products.length === 0),
       switchMap(() =>
         this.geoshopProductsService.loadProductList().pipe(
           map((productsList) => {
-            return DataDownloadProductActions.setProductsList({productsList});
+            return DataDownloadProductActions.setProducts({products: productsList.products});
           }),
-          catchError((error: unknown) => of(DataDownloadProductActions.setProductsListError({error}))),
+          catchError((error: unknown) => of(DataDownloadProductActions.setProductsError({error}))),
         ),
       ),
     );
   });
 
-  public throwProductsListError$ = createEffect(
+  public throwProductsError$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(DataDownloadProductActions.setProductsListError),
+        ofType(DataDownloadProductActions.setProductsError),
         tap(({error}) => {
           throw new ProductsCouldNotBeLoaded(error);
         }),
