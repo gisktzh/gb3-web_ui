@@ -24,6 +24,7 @@ import {ToolActions} from '../actions/tool.actions';
 import {selectActiveTool} from '../reducers/tool.reducer';
 import {selectGb2WmsActiveMapItemsWithMapNotices} from '../selectors/active-map-items.selector';
 import {selectCurrentShareLinkItem} from '../selectors/current-share-link-item.selector';
+import {ElevationProfileActions} from '../actions/elevation-profile.actions';
 
 const CREATE_FAVOURITE_DIALOG_MAX_WIDTH = 500;
 const DELETE_FAVOURITE_DIALOG_MAX_WIDTH = 500;
@@ -95,6 +96,20 @@ export class MapUiEffects {
           return LegendActions.loadLegend();
         } else {
           return LegendActions.clearLegend();
+        }
+      }),
+    );
+  });
+
+  public loadOrClearElevationProfile$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapUiActions.setElevationProfileOverlayVisibility),
+      map(({isVisible}) => {
+        if (isVisible) {
+          return ElevationProfileActions.loadProfile();
+        } else {
+          // todo LME: add clear
+          return ElevationProfileActions.loadProfile();
         }
       }),
     );

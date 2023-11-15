@@ -4,6 +4,7 @@ import {Subscription, tap} from 'rxjs';
 import {ToolType} from '../../../../shared/types/tool.type';
 import {selectActiveTool} from '../../../../state/map/reducers/tool.reducer';
 import {Store} from '@ngrx/store';
+import {MapUiActions} from '../../../../state/map/actions/map-ui.actions';
 
 @Component({
   template: '',
@@ -27,6 +28,10 @@ export class AbstractToolsComponent implements OnInit, OnDestroy {
     if (this.activeTool === tool) {
       this.store.dispatch(ToolActions.deactivateTool());
     } else {
+      // todo LME: remove, temporary fix
+      if (tool === 'measure-elevation-profile') {
+        this.store.dispatch(MapUiActions.setElevationProfileOverlayVisibility({isVisible: true}));
+      }
       this.store.dispatch(ToolActions.activateTool({tool}));
     }
   }

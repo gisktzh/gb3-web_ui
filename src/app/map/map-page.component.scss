@@ -90,7 +90,7 @@
 
     position: absolute;
     top: 12px;
-    left: calc(24px + map-layout-variables.$map-overlay-width);
+    left: calc(24px + #{map-layout-variables.$map-overlay-width});
     height: 48px;
     width: map-layout-variables.$legend-button-width;
     background-color: ktzh-variables.$zh-background-color;
@@ -106,10 +106,17 @@
     z-index: 400;
     position: absolute;
     top: 132px; // starting at the first 'active map item' position
-    left: calc(24px + map-layout-variables.$map-overlay-width);
+    left: calc(24px + #{map-layout-variables.$map-overlay-width});
   }
 
   .map-container__feature-info-overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+  }
+
+  .map-container__elevation-profile-overlay {
     position: absolute;
     top: 0;
     right: 0;

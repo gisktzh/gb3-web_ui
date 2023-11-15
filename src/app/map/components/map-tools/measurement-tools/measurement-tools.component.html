@@ -29,4 +29,15 @@
   >
     <mat-icon svgIcon="ktzh_drawing_symbol_polygon"></mat-icon>
   </button>
+  <!-- todo LME: add tooltip -->
+  <button
+    (click)="this.toggleElevationProfileMeasurement()"
+    [ngClass]="{'measurement-tools__button--active': activeTool === 'measure-elevation-profile'}"
+    class="measurement-tools__button"
+    color="accent"
+    mat-icon-button
+    matTooltip="Lorem ipsum"
+  >
+    <mat-icon svgIcon="ktzh_drawing_symbol_elevation"></mat-icon>
+  </button>
 </div>

@@ -67,6 +67,7 @@ import {MapRotationPipe} from './pipes/map-rotation.pipe';
 import {DataDownloadSelectMunicipalityDialogComponent} from './components/map-tools/data-download-select-municipality-dialog/data-download-select-municipality-dialog.component';
 import {ProductComponent} from './components/map-tools/product/product.component';
 import {DataDownloadFilterDialogComponent} from './components/map-tools/data-download-filter-dialog/data-download-filter-dialog.component';
+import {ElevationProfileOverlayComponent} from './components/elevation-profile-overlay/elevation-profile-overlay.component';
 
 @NgModule({
   declarations: [
@@ -134,6 +135,7 @@ import {DataDownloadFilterDialogComponent} from './components/map-tools/data-dow
     DataDownloadSelectMunicipalityDialogComponent,
     ProductComponent,
     DataDownloadFilterDialogComponent,
+    ElevationProfileOverlayComponent,
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule],
   exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent],

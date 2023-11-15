@@ -10,6 +10,7 @@ export const MapUiActions = createActionGroup({
     'Change Ui Elements Visibility': props<{hideAllUiElements: boolean; hideUiToggleButton: boolean}>(),
     'Show Map Side Drawer Content': props<{mapSideDrawerContent: Exclude<MapSideDrawerContent, 'none'>}>(),
     'Hide Map Side Drawer Content': emptyProps(),
+    'Set Elevation Profile Overlay Visibility': props<{isVisible: boolean}>(),
     'Set Legend Overlay Visibility': props<{isVisible: boolean}>(),
     'Set Feature Info Visibility': props<{isVisible: boolean}>(),
     'Show Share Link Dialog': emptyProps(),

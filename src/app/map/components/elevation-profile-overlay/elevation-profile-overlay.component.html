@@ -1,0 +1,7 @@
+<map-overlay (closeEvent)="close()" [isVisible]="isVisible" [showPrintButton]="false" location="right" overlayTitle="Höhenprofil">
+  <loading-and-process-bar [loadingState]="loadingState"></loading-and-process-bar>
+  <div *ngIf="loadingState === 'loaded'">
+    <h2>Data</h2>
+    {{ elevationProfileData | json }}
+  </div>
+</map-overlay>
