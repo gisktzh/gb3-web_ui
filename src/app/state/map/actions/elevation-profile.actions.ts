@@ -1,10 +1,10 @@
 import {createActionGroup, emptyProps, props} from '@ngrx/store';
+import {ElevationProfileData} from '../../../shared/interfaces/elevation-profile.interface';
 
 export const ElevationProfileActions = createActionGroup({
   source: 'ElevationProfile',
   events: {
     'Load Profile': emptyProps(),
-    // todo LME: add typehint
-    'Update Content': props<{data: any}>(),
+    'Update Content': props<{data: ElevationProfileData}>(),
   },
 });

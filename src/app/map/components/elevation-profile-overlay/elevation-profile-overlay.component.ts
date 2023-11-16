@@ -5,6 +5,7 @@ import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
 import {selectData, selectLoadingState} from '../../../state/map/reducers/elevation-profile.reducer';
+import {ElevationProfileData} from '../../../shared/interfaces/elevation-profile.interface';
 
 @Component({
   selector: 'elevation-profile-overlay',
@@ -16,7 +17,7 @@ export class ElevationProfileOverlayComponent implements OnInit, OnDestroy {
   @Input() public showInteractiveElements: boolean = true;
 
   public isVisible: boolean = false;
-  public elevationProfileData: any;
+  public elevationProfileData?: ElevationProfileData;
   public loadingState: LoadingState;
 
   private readonly isElevationProfileOverlayVisible$ = this.store.select(selectIsElevationProfileOverlayVisible);

@@ -68,6 +68,8 @@ import {DataDownloadSelectMunicipalityDialogComponent} from './components/map-to
 import {ProductComponent} from './components/map-tools/product/product.component';
 import {DataDownloadFilterDialogComponent} from './components/map-tools/data-download-filter-dialog/data-download-filter-dialog.component';
 import {ElevationProfileOverlayComponent} from './components/elevation-profile-overlay/elevation-profile-overlay.component';
+import {NgChartsModule} from 'ng2-charts';
+import {ElevationProfileChartComponent} from './components/elevation-profile-overlay/elevation-profile-chart/elevation-profile-chart.component';
 
 @NgModule({
   declarations: [
@@ -136,8 +138,9 @@ import {ElevationProfileOverlayComponent} from './components/elevation-profile-o
     ProductComponent,
     DataDownloadFilterDialogComponent,
     ElevationProfileOverlayComponent,
+    ElevationProfileChartComponent,
   ],
-  imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule, NgChartsModule],
   exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent],
 })
 export class MapModule {}
