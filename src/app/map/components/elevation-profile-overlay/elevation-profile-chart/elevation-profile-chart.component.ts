@@ -21,7 +21,7 @@ export class ElevationProfileChartComponent implements OnInit {
 
   public ngOnInit() {
     if (this.elevationProfileData && this.elevationProfileData.dataPoints.length > 1) {
-      this.updateData(this.elevationProfileData.dataPoints, this.elevationProfileData.maxDistance);
+      this.updateData(this.elevationProfileData.dataPoints, this.elevationProfileData.statistics.linearDistance);
     }
   }
 
