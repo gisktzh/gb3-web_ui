@@ -25,13 +25,39 @@ export const dataDownloadOrderFeature = createFeature({
     on(DataDownloadOrderActions.setOrder, (state, {order}): DataDownloadOrderState => {
       return {...state, order};
     }),
+    on(
+      DataDownloadOrderActions.updateProductsInOrder,
+      produce((draft, {productId, formatIds}) => {
+        if (draft.order) {
+          // remove all products with the same ID and then add the new formats afterwards
+          draft.order.products = draft.order.products.filter((orderProduct) => orderProduct.id !== productId);
+          formatIds.forEach((formatId) => draft.order!.products.push({id: productId, formatId}));
+        }
+      }),
+    ),
+    on(
+      DataDownloadOrderActions.removeProductsWithSameIdInOrder,
+      produce((draft, {productId}) => {
+        if (draft.order) {
+          draft.order.products = draft.order.products.filter((orderProduct) => orderProduct.id !== productId);
+        }
+      }),
+    ),
+    on(
+      DataDownloadOrderActions.setEmailInOrder,
+      produce((draft, {email}) => {
+        if (draft.order) {
+          draft.order.email = email;
+        }
+      }),
+    ),
     on(DataDownloadOrderActions.sendOrder, (state): DataDownloadOrderState => {
       return {...state, savingState: 'loading'};
     }),
-    on(DataDownloadOrderActions.setOrderResponse, (state): DataDownloadOrderState => {
+    on(DataDownloadOrderActions.setSendOrderResponse, (state): DataDownloadOrderState => {
       return {...state, savingState: 'loaded'};
     }),
-    on(DataDownloadOrderActions.setOrderError, (state): DataDownloadOrderState => {
+    on(DataDownloadOrderActions.setSendOrderError, (state): DataDownloadOrderState => {
       return {...state, savingState: 'error'};
     }),
     on(

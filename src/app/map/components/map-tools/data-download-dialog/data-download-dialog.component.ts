@@ -17,7 +17,9 @@ import {MatDialog} from '@angular/material/dialog';
 import {DataDownloadFilterDialogComponent} from '../data-download-filter-dialog/data-download-filter-dialog.component';
 import {PanelClass} from '../../../../shared/enums/panel-class.enum';
 import {selectDataDownloadProducts} from '../../../../state/map/selectors/data-download-products.selector';
+import {DataDownloadEmailDialogComponent} from '../data-download-email-dialog/data-download-email-dialog.component';
 
+const EMAIL_DIALOG_WIDTH_IN_PX = 956;
 @Component({
   selector: 'data-download-dialog',
   templateUrl: './data-download-dialog.component.html',
@@ -52,6 +54,10 @@ export class DataDownloadDialogComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
+  public trackByProductId(index: number, item: Product) {
+    return item.id;
+  }
+
   public setFilterTerm(term: string) {
     this.store.dispatch(DataDownloadProductActions.setFilterTerm({term}));
   }
@@ -71,7 +77,13 @@ export class DataDownloadDialogComponent implements OnInit, OnDestroy {
     this.store.dispatch(DataDownloadProductActions.toggleFilter({category, value}));
   }
 
-  public download() {}
+  public openDownloadDialog() {
+    this.dialogService.open<DataDownloadEmailDialogComponent>(DataDownloadEmailDialogComponent, {
+      panelClass: PanelClass.ApiWrapperDialog,
+      restoreFocus: false,
+      width: `${EMAIL_DIALOG_WIDTH_IN_PX}px`,
+    });
+  }
 
   public cancel() {
     this.store.dispatch(MapUiActions.hideMapSideDrawerContent());

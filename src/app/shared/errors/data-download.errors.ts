@@ -20,7 +20,7 @@ export class MunicipalitiesCouldNotBeLoaded extends RecoverableError {
   public override name = 'MunicipalitiesCouldNotBeLoaded';
 }
 
-export class CurrentMunicipalityCouldNotBeLoaded extends RecoverableError {
-  public override message = 'Die detaillierten Gemeindeinformationen des Geodatenshops konnten nicht geladen werden.';
-  public override name = 'CurrentMunicipalityCouldNotBeLoaded';
+export class OrderCouldNotBeSent extends RecoverableError {
+  public override message = 'Beim Erstellen einer Bestellung ist etwas schief gelaufen.';
+  public override name = 'OrderCouldNotBeSent';
 }

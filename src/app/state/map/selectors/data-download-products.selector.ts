@@ -1,5 +1,5 @@
 import {createSelector} from '@ngrx/store';
-import {selectFilterTerm, selectProducts} from '../reducers/data-download-product.reducer';
+import {selectFilterTerm, selectProducts, selectRelevantProductIds} from '../reducers/data-download-product.reducer';
 import {selectActiveDataDownloadFiltersPerCategory} from './active-data-download-filters-per-category.selector';
 import {Product} from '../../../shared/interfaces/gb3-geoshop-product.interface';
 import {ProductAvailability} from '../../../shared/enums/product-availability.enum';
@@ -8,13 +8,15 @@ export const selectDataDownloadProducts = createSelector(
   selectProducts,
   selectActiveDataDownloadFiltersPerCategory,
   selectFilterTerm,
-  (products, activeFilters, filterTerm): Product[] => {
+  selectRelevantProductIds,
+  (products, activeFilters, filterTerm, relevantProductIds): Product[] => {
     if (activeFilters.length === 0 && filterTerm === '') {
       return products;
     }
 
     const lowerCaseFilterTerm = filterTerm?.toLowerCase();
     return products
+      .filter((product) => !relevantProductIds.includes(product.id))
       .filter((product) => {
         return activeFilters.every((activeFilter) => {
           switch (activeFilter.category) {

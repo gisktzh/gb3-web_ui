@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {Observable, Subscription, debounceTime, distinctUntilChanged, fromEvent, tap} from 'rxjs';
+import {debounceTime, distinctUntilChanged, fromEvent, Observable, Subscription, tap} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {selectFilterGroups} from '../../../state/app/reducers/search.reducer';
@@ -20,6 +20,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() public clearButtonLabel?: string;
   @Input() public mode: SearchMode = 'normal';
   @Input() public focusOnInit: boolean = false;
+  @Input() public disabled: boolean = false;
 
   @Output() public readonly focusEvent = new EventEmitter<void>();
   @Output() public readonly changeSearchTermEvent = new EventEmitter<string>();

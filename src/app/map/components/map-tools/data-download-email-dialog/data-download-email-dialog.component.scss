@@ -1,0 +1,29 @@
+@use 'functions/helper.function' as functions;
+@use 'mixins/helpers.mixin' as mixins;
+@use 'mixins/material.mixin' as mat-mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+:host ::ng-deep .data-download-email-dialog {
+  .data-download-email-dialog__checkbox {
+    @include mat-mixins.mat-checkbox-override-accent-color(
+      functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent),
+      functions.get-contrast-color-from-palette(ktzh-variables.$zh-secondary-accent)
+    );
+  }
+
+  .data-download-email-dialog__form.mat-mdc-form-field .mat-mdc-text-field-wrapper {
+    border-radius: ktzh-variables.$zh-border-radius;
+    background-color: ktzh-variables.$zh-background-color;
+  }
+}
+
+.data-download-email-dialog {
+  width: 657px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  .data-download-email-dialog__form--hidden {
+    display: none;
+  }
+}

@@ -1,5 +1,6 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 @use 'functions/helper.function' as functions;
+@use 'mixins/helpers.mixin' as mixins;
 @use 'mixins/material.mixin' as mat-mixins;
 
 .data-download-dialog {
@@ -26,9 +27,18 @@
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
+    overflow-y: hidden;
     padding-right: 12px;
     margin-bottom: 16px;
+    height: 100%;
+
+    .data-download-dialog__content__search__bar {
+      @include mixins.map-element-box-shadow;
+    }
+
+    .data-download-dialog__content__products {
+      overflow-y: scroll;
+    }
   }
 
   .data-download-dialog__footer {

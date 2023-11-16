@@ -1,10 +1,28 @@
 <div class="product">
-  <mat-checkbox class="product__checkbox"></mat-checkbox>
+  <mat-checkbox
+    #productCheckbox
+    class="product__checkbox"
+    (change)="updateOrderProductWithThisId($event.checked)"
+    [disabled]="disabled"
+  ></mat-checkbox>
   <div class="product__description">
-    <p class="product__description__header">{{ product.name }}</p>
-    <p>
+    <p class="product__description__header" [matTooltip]="product.name" showTooltipIfTruncated>{{ product.name }}</p>
+    <p class="product__description__content">
       <span class="product__description__content__title">Verfügbarkeit:</span>
       <span>{{ product.ogd ? 'Frei (OGD)' : 'Eingeschränkt (NOGD)' }}</span>
     </p>
   </div>
+  <mat-form-field class="product__select" *ngIf="productCheckbox.checked" subscriptSizing="dynamic">
+    <mat-label>Dateiformate</mat-label>
+    <mat-select
+      [formControl]="formatsFormControl"
+      placeholder="Bitte auswählen"
+      [multiple]="true"
+      (selectionChange)="updateOrderProducts($event.value)"
+    >
+      <mat-option *ngFor="let format of product.formats" [value]="format">
+        {{ format.description }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
 </div>
