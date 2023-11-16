@@ -10,6 +10,7 @@
     (changeSearchTermEvent)="searchForTerm($event)"
     (clearSearchTermEvent)="clearSearchTerm()"
     (openFilterEvent)="openFilterWindow()"
+    [isAnyFilterActive]="activeFilters.length > 0"
   ></search>
 </div>
 <div class="data-catalogue-overview">

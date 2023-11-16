@@ -3,7 +3,6 @@ import {Store} from '@ngrx/store';
 import {debounceTime, distinctUntilChanged, fromEvent, Observable, Subscription, tap} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
-import {selectFilterGroups} from '../../../state/app/reducers/search.reducer';
 import {ScreenMode} from '../../types/screen-size.type';
 import {SearchMode} from '../../types/search-mode.type';
 
@@ -21,21 +20,20 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() public mode: SearchMode = 'normal';
   @Input() public focusOnInit: boolean = false;
   @Input() public disabled: boolean = false;
+  @Input() public isAnyFilterActive: boolean = false;
 
   @Output() public readonly focusEvent = new EventEmitter<void>();
   @Output() public readonly changeSearchTermEvent = new EventEmitter<string>();
   @Output() public readonly clearSearchTermEvent = new EventEmitter<void>();
   @Output() public readonly openFilterEvent = new EventEmitter<void>();
 
-  public isAnyFilterActive: boolean = false;
   public screenMode: ScreenMode = 'regular';
 
   @ViewChild('searchInput') private readonly inputRef!: ElementRef;
-  private readonly filterGroups$ = this.store.select(selectFilterGroups);
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly subscriptions: Subscription = new Subscription();
 
-  public constructor(private readonly store: Store) {}
+  constructor(private readonly store: Store) {}
 
   public ngOnInit() {
     this.initSubscriptions();
@@ -73,15 +71,6 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public initSubscriptions() {
-    this.subscriptions.add(
-      this.filterGroups$
-        .pipe(
-          tap(
-            (filterGroups) => (this.isAnyFilterActive = filterGroups.flatMap((group) => group.filters).some((filter) => filter.isActive)),
-          ),
-        )
-        .subscribe(),
-    );
     this.subscriptions.add(
       this.screenMode$
         .pipe(

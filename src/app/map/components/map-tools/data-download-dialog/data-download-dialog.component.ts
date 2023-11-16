@@ -12,12 +12,13 @@ import {
 import {Product} from '../../../../shared/interfaces/gb3-geoshop-product.interface';
 import {selectRelevantProducts} from '../../../../state/map/selectors/data-download-relevant-products.selector';
 import {DataDownloadProductActions} from '../../../../state/map/actions/data-download-product.actions';
-import {DataDownloadFilterCategory} from '../../../../shared/interfaces/data-download-filter.interface';
+import {ActiveDataDownloadFilterGroup, DataDownloadFilterCategory} from '../../../../shared/interfaces/data-download-filter.interface';
 import {MatDialog} from '@angular/material/dialog';
 import {DataDownloadFilterDialogComponent} from '../data-download-filter-dialog/data-download-filter-dialog.component';
 import {PanelClass} from '../../../../shared/enums/panel-class.enum';
 import {selectDataDownloadProducts} from '../../../../state/map/selectors/data-download-products.selector';
 import {DataDownloadEmailDialogComponent} from '../data-download-email-dialog/data-download-email-dialog.component';
+import {selectActiveDataDownloadFiltersPerCategory} from '../../../../state/map/selectors/active-data-download-filters-per-category.selector';
 
 @Component({
   selector: 'data-download-dialog',
@@ -31,6 +32,7 @@ export class DataDownloadDialogComponent implements OnInit, OnDestroy {
   public relevantProductsLoadingState: LoadingState;
   public filteredProducts: Product[] = [];
   public productsLoadingState: LoadingState;
+  public activeDataDownloadFiltersPerCategory: ActiveDataDownloadFilterGroup[] = [];
 
   private readonly order$ = this.store.select(selectOrder);
   private readonly savingState$ = this.store.select(selectSavingState);
@@ -38,6 +40,7 @@ export class DataDownloadDialogComponent implements OnInit, OnDestroy {
   private readonly relevantProductsLoadingState$ = this.store.select(selectRelevantProductIdsLoadingState);
   private readonly filteredProducts$ = this.store.select(selectDataDownloadProducts);
   private readonly productsLoadingState$ = this.store.select(selectProductsLoadingState);
+  private readonly activeDataDownloadFiltersPerCategory$ = this.store.select(selectActiveDataDownloadFiltersPerCategory);
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(
@@ -96,5 +99,8 @@ export class DataDownloadDialogComponent implements OnInit, OnDestroy {
     );
     this.subscriptions.add(this.filteredProducts$.pipe(tap((filteredProducts) => (this.filteredProducts = filteredProducts))).subscribe());
     this.subscriptions.add(this.productsLoadingState$.pipe(tap((loadingState) => (this.productsLoadingState = loadingState))).subscribe());
+    this.subscriptions.add(
+      this.activeDataDownloadFiltersPerCategory$.pipe(tap((value) => (this.activeDataDownloadFiltersPerCategory = value))).subscribe(),
+    );
   }
 }

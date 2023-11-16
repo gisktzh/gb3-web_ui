@@ -2,7 +2,8 @@
   <mat-checkbox
     class="product__checkbox"
     [ngClass]="{'product__checkbox--hidden': !product.ogd}"
-    (change)="setIsProductSelected($event.checked)"
+    [(ngModel)]="isProductSelected"
+    (change)="updateOrderProducts()"
     [disabled]="disabled || !product.ogd"
   ></mat-checkbox>
   <div class="product__description">
@@ -18,7 +19,7 @@
       [formControl]="formatsFormControl"
       placeholder="Bitte auswählen"
       [multiple]="true"
-      (selectionChange)="updateOrderProducts($event.value)"
+      (selectionChange)="updateOrderProducts()"
     >
       <mat-option *ngFor="let format of product.formats" [value]="format">
         {{ format.description }}

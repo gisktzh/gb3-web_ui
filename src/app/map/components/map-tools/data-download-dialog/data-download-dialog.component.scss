@@ -32,12 +32,12 @@
     margin-bottom: 16px;
     height: 100%;
 
-    .data-download-dialog__content__search__bar {
-      @include mixins.map-element-box-shadow;
-    }
-
     .data-download-dialog__content__products {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
       overflow-y: scroll;
+      padding-right: 12px;
     }
   }
 
