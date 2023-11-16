@@ -26,6 +26,10 @@
 
   .product__checkbox {
     padding-right: 4px;
+
+    &--hidden {
+      visibility: hidden;
+    }
   }
 
   .product__description {

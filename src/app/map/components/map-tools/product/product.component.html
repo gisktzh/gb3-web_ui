@@ -1,9 +1,9 @@
 <div class="product">
   <mat-checkbox
-    #productCheckbox
     class="product__checkbox"
-    (change)="updateOrderProductWithThisId($event.checked)"
-    [disabled]="disabled"
+    [ngClass]="{'product__checkbox--hidden': !product.ogd}"
+    (change)="setIsProductSelected($event.checked)"
+    [disabled]="disabled || !product.ogd"
   ></mat-checkbox>
   <div class="product__description">
     <p class="product__description__header" [matTooltip]="product.name" showTooltipIfTruncated>{{ product.name }}</p>
@@ -12,7 +12,7 @@
       <span>{{ product.ogd ? 'Frei (OGD)' : 'Eingeschränkt (NOGD)' }}</span>
     </p>
   </div>
-  <mat-form-field class="product__select" *ngIf="productCheckbox.checked" subscriptSizing="dynamic">
+  <mat-form-field *ngIf="product.ogd && isProductSelected" class="product__select" subscriptSizing="dynamic">
     <mat-label>Dateiformate</mat-label>
     <mat-select
       [formControl]="formatsFormControl"
@@ -25,4 +25,12 @@
       </mat-option>
     </mat-select>
   </mat-form-field>
+  <external-link-button
+    *ngIf="!product.ogd && product.nonOgdProductUrl"
+    [color]="'accent'"
+    [highlighted]="true"
+    [size]="'small'"
+    [url]="product.nonOgdProductUrl"
+    toolTip="Geodatenshop öffnen."
+  ></external-link-button>
 </div>

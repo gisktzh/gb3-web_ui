@@ -11,6 +11,7 @@ import {DataDownloadOrderActions} from '../../../../state/map/actions/data-downl
 })
 export class ProductComponent {
   @Input() public product!: Product;
+  public isProductSelected: boolean = false;
 
   public readonly formatsFormControl: FormControl<ProductFormat[] | null> = new FormControl(null, []);
 
@@ -31,25 +32,21 @@ export class ProductComponent {
 
   constructor(private readonly store: Store) {}
 
-  public updateOrderProductWithThisId(checked: boolean) {
-    if (!checked) {
-      this.store.dispatch(DataDownloadOrderActions.removeProductsWithSameIdInOrder({productId: this.product.gisZHNr}));
-    } else if (this.formatsFormControl.value) {
-      this.store.dispatch(
-        DataDownloadOrderActions.updateProductsInOrder({
-          productId: this.product.gisZHNr,
-          formatIds: this.formatsFormControl.value.map((productFormat) => productFormat.id),
-        }),
-      );
-    }
+  public setIsProductSelected(isProductSelected: boolean) {
+    this.isProductSelected = isProductSelected;
+    this.updateOrderProducts(this.formatsFormControl.value ?? []);
   }
 
   public updateOrderProducts(productFormats: ProductFormat[]) {
-    this.store.dispatch(
-      DataDownloadOrderActions.updateProductsInOrder({
-        productId: this.product.gisZHNr,
-        formatIds: productFormats.map((productFormat) => productFormat.id),
-      }),
-    );
+    if (this.isProductSelected) {
+      this.store.dispatch(
+        DataDownloadOrderActions.updateProductsInOrder({
+          productId: this.product.gisZHNr,
+          formatIds: productFormats.map((productFormat) => productFormat.id),
+        }),
+      );
+    } else {
+      this.store.dispatch(DataDownloadOrderActions.removeProductsWithSameIdInOrder({productId: this.product.gisZHNr}));
+    }
   }
 }
