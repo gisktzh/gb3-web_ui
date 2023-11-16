@@ -224,14 +224,7 @@ export class MapUiEffects {
       map(() => SearchActions.clearSearchTerm()),
     );
   });
-  public cancelToolAfterHidingUiElements$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(MapUiActions.changeUiElementsVisibility),
-      concatLatestFrom(() => this.store.select(selectActiveTool)),
-      filter(([{hideAllUiElements}, activeTool]) => hideAllUiElements && activeTool !== undefined),
-      map(() => ToolActions.cancelTool()),
-    );
-  });
+
 
   constructor(
     private readonly actions$: Actions,
