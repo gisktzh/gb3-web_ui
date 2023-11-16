@@ -126,6 +126,17 @@ export class DataDownloadOrderEffects {
     );
   });
 
+  public showEmailConfirmationDialogAfterSendingAnOrderSuccessfully$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(DataDownloadOrderActions.setSendOrderResponse),
+      concatLatestFrom(() => [this.store.select(selectOrder)]),
+      filter(([_, order]) => !!order?.email),
+      map(() => {
+        return MapUiActions.showDataDownloadEmailConfirmationDialog();
+      }),
+    );
+  });
+
   constructor(
     private readonly actions$: Actions,
     private readonly mapDrawingService: MapDrawingService,

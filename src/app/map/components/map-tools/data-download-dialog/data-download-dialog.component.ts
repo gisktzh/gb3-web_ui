@@ -19,7 +19,6 @@ import {PanelClass} from '../../../../shared/enums/panel-class.enum';
 import {selectDataDownloadProducts} from '../../../../state/map/selectors/data-download-products.selector';
 import {DataDownloadEmailDialogComponent} from '../data-download-email-dialog/data-download-email-dialog.component';
 
-const EMAIL_DIALOG_WIDTH_IN_PX = 956;
 @Component({
   selector: 'data-download-dialog',
   templateUrl: './data-download-dialog.component.html',
@@ -81,7 +80,6 @@ export class DataDownloadDialogComponent implements OnInit, OnDestroy {
     this.dialogService.open<DataDownloadEmailDialogComponent>(DataDownloadEmailDialogComponent, {
       panelClass: PanelClass.ApiWrapperDialog,
       restoreFocus: false,
-      width: `${EMAIL_DIALOG_WIDTH_IN_PX}px`,
     });
   }
 

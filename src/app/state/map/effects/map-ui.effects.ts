@@ -27,6 +27,7 @@ import {selectCurrentShareLinkItem} from '../selectors/current-share-link-item.s
 import {ElevationProfileActions} from '../actions/elevation-profile.actions';
 import {UrlActions} from '../../app/actions/url.actions';
 import {selectUrlState} from '../../app/reducers/url.reducer';
+import {DataDownloadEmailConfirmationDialogComponent} from '../../../map/components/map-tools/data-download-email-confirmation-dialog/data-download-email-confirmation-dialog.component';
 
 const CREATE_FAVOURITE_DIALOG_MAX_WIDTH = 500;
 const DELETE_FAVOURITE_DIALOG_MAX_WIDTH = 500;
@@ -225,6 +226,20 @@ export class MapUiEffects {
     );
   });
 
+  public openDataDownloadEmailConfirmationDialo$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(MapUiActions.showDataDownloadEmailConfirmationDialog),
+        tap(() =>
+          this.dialogService.open<DataDownloadEmailConfirmationDialogComponent>(DataDownloadEmailConfirmationDialogComponent, {
+            panelClass: PanelClass.ApiWrapperDialog,
+            restoreFocus: false,
+          }),
+        ),
+      );
+    },
+    {dispatch: false},
+  );
 
   constructor(
     private readonly actions$: Actions,

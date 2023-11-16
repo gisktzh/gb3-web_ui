@@ -1,0 +1,22 @@
+@use 'mixins/material.mixin' as mat-mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.data-download-email-confirmation-dialog {
+  width: 768px;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+
+  .data-download-email-confirmation-dialog__check-mark {
+    @include mat-mixins.mat-icon-override-size(36px);
+    width: 102px;
+    height: 102px;
+    border-radius: 71px;
+    color: ktzh-variables.$zh-cyan;
+    background: ktzh-variables.$zh-light-grey;
+    align-self: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}

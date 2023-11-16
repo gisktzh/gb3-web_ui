@@ -72,6 +72,7 @@ import {ElevationProfileOverlayComponent} from './components/elevation-profile-o
 import {NgChartsModule} from 'ng2-charts';
 import {ElevationProfileChartComponent} from './components/elevation-profile-overlay/elevation-profile-chart/elevation-profile-chart.component';
 import {ElevationProfileStatisticsComponent} from './components/elevation-profile-overlay/elevation-profile-statistics/elevation-profile-statistics.component';
+import {DataDownloadEmailConfirmationDialogComponent} from './components/map-tools/data-download-email-confirmation-dialog/data-download-email-confirmation-dialog.component';
 
 @NgModule({
   declarations: [
@@ -143,6 +144,7 @@ import {ElevationProfileStatisticsComponent} from './components/elevation-profil
     ElevationProfileOverlayComponent,
     ElevationProfileChartComponent,
     ElevationProfileStatisticsComponent,
+    DataDownloadEmailConfirmationDialogComponent,
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule, NgChartsModule],
   exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent],
