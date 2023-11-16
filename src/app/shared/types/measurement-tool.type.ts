@@ -1,1 +1,2 @@
-export type MeasurementTool = 'measure-line' | 'measure-point' | 'measure-area' | 'measure-elevation-profile';
+export type ElevationProfileMeasurementTool = 'measure-elevation-profile';
+export type MeasurementTool = 'measure-line' | 'measure-point' | 'measure-area' | ElevationProfileMeasurementTool;

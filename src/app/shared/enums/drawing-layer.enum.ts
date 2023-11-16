@@ -4,6 +4,7 @@ export enum InternalDrawingLayer {
   LocatePosition = 'locate_position',
   PrintPreview = 'print_preview',
   Selection = 'selection',
+  ElevationProfile = 'elevation_profile',
 }
 
 export enum UserDrawingLayer {

@@ -18,7 +18,7 @@ import {EsriAreaMeasurementStrategy} from './strategies/measurement/esri-area-me
 import {EsriPointMeasurementStrategy} from './strategies/measurement/esri-point-measurement.strategy';
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
 import {ToolActions} from '../../../../state/map/actions/tool.actions';
-import {MeasurementTool} from '../../../../shared/types/measurement-tool.type';
+import {ElevationProfileMeasurementTool, MeasurementTool} from '../../../../shared/types/measurement-tool.type';
 import {DrawingTool} from '../../../../shared/types/drawing-tool.type';
 import {ConfigService} from '../../../../shared/services/config.service';
 import {EsriPointDrawingStrategy} from './strategies/drawing/esri-point-drawing.strategy';
@@ -103,6 +103,12 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
 
   public initializeMeasurement(measurementTool: MeasurementTool) {
     this.initializeUserDrawingTool(UserDrawingLayer.Measurements, (layer) => this.setMeasurementStrategy(measurementTool, layer));
+  }
+
+  public initializeElevationProfileMeasurement(measurementTool: ElevationProfileMeasurementTool) {
+    this.initializeInternalDrawingTool(InternalDrawingLayer.ElevationProfile, (layer) =>
+      this.setMeasurementStrategy(measurementTool, layer),
+    );
   }
 
   public initializeDataDownloadSelection(selectionTool: DataDownloadSelectionTool) {
