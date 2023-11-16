@@ -101,16 +101,11 @@ export class MapUiEffects {
     );
   });
 
-  public loadOrClearElevationProfile$ = createEffect(() => {
+  public showElevationProfileOverlay$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(MapUiActions.setElevationProfileOverlayVisibility),
-      map(({isVisible}) => {
-        if (isVisible) {
-          return ElevationProfileActions.loadProfile();
-        } else {
-          // todo LME: add clear
-          return ElevationProfileActions.loadProfile();
-        }
+      ofType(ElevationProfileActions.loadProfile),
+      map(() => {
+        return MapUiActions.setElevationProfileOverlayVisibility({isVisible: true});
       }),
     );
   });

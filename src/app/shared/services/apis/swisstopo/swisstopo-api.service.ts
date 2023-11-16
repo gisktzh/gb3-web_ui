@@ -4,6 +4,7 @@ import {ElevationProfileResponse, ElevationProfileSearchParams} from '../../../m
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {ElevationProfileData} from '../../../interfaces/elevation-profile.interface';
+import {Geometry} from 'geojson';
 
 @Injectable({
   providedIn: 'root',
@@ -11,16 +12,9 @@ import {ElevationProfileData} from '../../../interfaces/elevation-profile.interf
 export class SwisstopoApiService extends BaseApiService {
   protected apiBaseUrl: string = this.configService.apiConfig.swisstopoRestApi.baseUrl;
 
-  public loadElevationProfile(): Observable<ElevationProfileData> {
+  public loadElevationProfile(geometry: Geometry): Observable<ElevationProfileData> {
     const payload: ElevationProfileSearchParams = {
-      geom: JSON.stringify({
-        type: 'LineString',
-        coordinates: [
-          [2550050, 1206550],
-          [2556950, 1204150],
-          [2561050, 1207950],
-        ],
-      }),
+      geom: JSON.stringify(geometry),
       sr: '2056',
     };
 

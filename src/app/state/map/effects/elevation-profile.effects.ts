@@ -2,36 +2,32 @@ import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {of, switchMap, tap} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
-import {GeneralInfoActions} from '../actions/general-info.actions';
-
-import {GeneralInfoCouldNotBeLoaded} from '../../../shared/errors/map.errors';
 import {ElevationProfileActions} from '../actions/elevation-profile.actions';
 import {SwisstopoApiService} from '../../../shared/services/apis/swisstopo/swisstopo-api.service';
+import {ElevationProfileCouldNotBeLoaded} from '../../../shared/errors/elevation-profile.errors';
 
 @Injectable()
 export class ElevationProfileEffects {
   public requestElevationProfile$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ElevationProfileActions.loadProfile),
-      switchMap(() =>
-        this.swisstopoApiService.loadElevationProfile().pipe(
+      switchMap(({geometry}) =>
+        this.swisstopoApiService.loadElevationProfile(geometry).pipe(
           map((elevationProfile) => {
             return ElevationProfileActions.updateContent({data: elevationProfile});
           }),
-          // todo LME: error handling
-          catchError((error: unknown) => of(GeneralInfoActions.setError({error}))),
+          catchError((error: unknown) => of(ElevationProfileActions.setError({error}))),
         ),
       ),
     );
   });
 
-  // todo LME: errorhandling
-  public setGeneralInfoError$ = createEffect(
+  public setElevationProfileError$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(GeneralInfoActions.setError),
+        ofType(ElevationProfileActions.setError),
         tap(({error}) => {
-          throw new GeneralInfoCouldNotBeLoaded(error);
+          throw new ElevationProfileCouldNotBeLoaded(error);
         }),
       );
     },

@@ -50,6 +50,8 @@ import Polygon from '@arcgis/core/geometry/Polygon';
 import {EsriTextDrawingStrategy} from './strategies/drawing/esri-text-drawing.strategy';
 import {Gb3GeoshopMunicipalitiesService} from '../../../../shared/services/apis/gb3/gb3-geoshop-municipalities.service';
 import {selectCanton} from '../../../../state/map/reducers/data-download-region.reducer';
+import {EsriElevationProfileDrawingStrategy} from './strategies/drawing/esri-elevation-profile-drawing.strategy';
+import {ElevationProfileActions} from '../../../../state/map/actions/elevation-profile.actions';
 
 const HANDLE_GROUP_KEY = 'EsriToolService';
 
@@ -281,6 +283,13 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
           labelStyle,
           (geometry, labelText) => this.complete(geometry, labelText),
         );
+        break;
+      case 'measure-elevation-profile':
+        this.toolStrategy = new EsriElevationProfileDrawingStrategy(layer, this.esriMapViewService.mapView, lineStyle, (geometry) => {
+          this.store.dispatch(ElevationProfileActions.loadProfile({geometry: silentArcgisToGeoJSON(geometry.geometry)}));
+          this.endDrawing();
+        });
+        break;
     }
   }
 
