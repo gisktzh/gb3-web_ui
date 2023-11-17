@@ -10,7 +10,7 @@ import {environment} from '../../../../environments/environment';
 })
 export class MainFooterComponent {
   public readonly dataProtectionLink = [MainPage.Privacy];
-  public readonly usageNotesLink = [MainPage.Support, SupportPage.Faq];
+  public readonly usageNotesLink = [MainPage.TermsOfUse];
   public readonly appVersion: string = environment.appVersion;
   public readonly appRelease: string = environment.appRelease;
 }
