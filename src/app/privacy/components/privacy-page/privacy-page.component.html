@@ -1,1 +1,6 @@
-<p>privacy-page works!</p>
+<div class="privacy-page">
+  <start-page-section [background]="'primary'" [pageTitle]="true">
+    <hero-header [heroText]="screenMode === 'mobile' ? '' : heroText" heroTitle="Datenschutz"></hero-header>
+  </start-page-section>
+  <start-page-section><privacy-content></privacy-content> </start-page-section>
+</div>
