@@ -11,7 +11,7 @@
     <div
       (click)="accordionItem.toggle()"
       class="accordion-item__content__header mat-h2"
-      [ngClass]="{'accordion-item__content--opened': accordionItem.expanded}"
+      [ngClass]="{'accordion-item__content__header--opened': accordionItem.expanded}"
     >
       <span [ngClass]="{'accordion-item__content__header__text': screenMode === 'mobile' && !accordionItem.expanded}">{{ header }}</span>
       <span class="accordion-item__content__header__icon-wrapper">

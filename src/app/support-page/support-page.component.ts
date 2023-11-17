@@ -1,7 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
-import {SupportPage} from '../shared/enums/support-page.enum';
 import {ScreenMode} from '../shared/types/screen-size.type';
 import {selectScreenMode} from '../state/app/reducers/app-layout.reducer';
 
@@ -14,7 +13,6 @@ const SUPPORT_PAGE_SUMMARY =
   styleUrls: ['./support-page.component.scss'],
 })
 export class SupportPageComponent implements OnInit, OnDestroy {
-  protected readonly supportPageEnum = SupportPage;
   public heroText = SUPPORT_PAGE_SUMMARY;
   public screenMode: ScreenMode = 'regular';
 

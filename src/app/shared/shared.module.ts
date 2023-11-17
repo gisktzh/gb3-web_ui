@@ -91,6 +91,7 @@ import {LayerTooltipPipe} from './pipes/layer-tooltip.pipe';
     WaitingPageComponent,
     SliderWrapperComponent,
     LinkListComponent,
+    LinkListItemComponent,
     AccordionItemComponent,
     SearchComponent,
     SearchFilterDialogComponent,

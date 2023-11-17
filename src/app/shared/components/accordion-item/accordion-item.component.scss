@@ -17,10 +17,6 @@
     &--dark {
       border-color: ktzh-variables.$zh-black20;
       color: ktzh-variables.$zh-black60;
-
-      .accordion-item__content--opened {
-        color: ktzh-variables.$zh-black100;
-      }
     }
 
     .accordion-item__content__header {
@@ -31,12 +27,16 @@
       cursor: pointer;
       font-size: 18px;
 
+      &--opened {
+        color: ktzh-variables.$zh-black100;
+      }
+
       .accordion-item__content__header__icon-wrapper {
         display: flex;
       }
 
       .accordion-item__content__header__text {
-        @include mixins.multiline-ellipsis(1);
+        // @include mixins.multiline-ellipsis(1);
       }
     }
 
