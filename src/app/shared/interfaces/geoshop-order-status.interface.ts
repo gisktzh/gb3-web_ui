@@ -8,7 +8,11 @@ export type OrderStatusType = (typeof orderStatusKeys)[number];
 
 export interface OrderStatusJob extends HasLoadingState {
   id: string;
+  title: string;
   status?: OrderStatus;
+  consecutiveErrorsCount: number;
+  /** a value indicating whether the order is completed (either successfully or failed) */
+  isCompleted: boolean;
 }
 
 export interface OrderStatus {

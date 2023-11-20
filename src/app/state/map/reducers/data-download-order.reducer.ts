@@ -62,14 +62,17 @@ export const dataDownloadOrderFeature = createFeature({
     }),
     on(
       DataDownloadOrderActions.requestOrderStatus,
-      produce((draft, {orderId}) => {
+      produce((draft, {orderId, orderTitle}) => {
         const existingStatusJob = draft.statusJobs.find((statusJob) => statusJob.id === orderId);
         if (existingStatusJob) {
           existingStatusJob.loadingState = 'loading';
         } else {
           draft.statusJobs.push({
             id: orderId,
+            title: orderTitle,
             loadingState: 'loading',
+            consecutiveErrorsCount: 0,
+            isCompleted: false,
           });
         }
       }),
@@ -81,12 +84,7 @@ export const dataDownloadOrderFeature = createFeature({
         if (existingStatusJob) {
           existingStatusJob.loadingState = 'loaded';
           existingStatusJob.status = orderStatus;
-        } else {
-          draft.statusJobs.push({
-            id: orderStatus.orderId,
-            loadingState: 'loading',
-            status: orderStatus,
-          });
+          existingStatusJob.consecutiveErrorsCount = 0;
         }
       }),
     ),
@@ -96,11 +94,16 @@ export const dataDownloadOrderFeature = createFeature({
         const existingStatusJob = draft.statusJobs.find((statusJob) => statusJob.id === orderId);
         if (existingStatusJob) {
           existingStatusJob.loadingState = 'error';
-        } else {
-          draft.statusJobs.push({
-            id: orderId,
-            loadingState: 'error',
-          });
+          existingStatusJob.consecutiveErrorsCount += 1;
+        }
+      }),
+    ),
+    on(
+      DataDownloadOrderActions.completeOrderStatus,
+      produce((draft, {orderId}) => {
+        const existingStatusJob = draft.statusJobs.find((statusJob) => statusJob.id === orderId);
+        if (existingStatusJob) {
+          existingStatusJob.isCompleted = true;
         }
       }),
     ),

@@ -97,6 +97,7 @@
     <map-rotation-button [rotation]="rotation"></map-rotation-button>
   </div>
   <bottom-sheet-overlay *ngIf="screenMode === 'mobile'"></bottom-sheet-overlay>
+  <data-download-status-queue class="map-container__data-download-status-queue"></data-download-status-queue>
 </mat-drawer-container>
 <onboarding-guide [introductionImage]="onboardingGuideImage"></onboarding-guide>
 <center-anchor anchorName="map.start.tour"></center-anchor>

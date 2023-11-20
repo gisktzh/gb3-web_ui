@@ -41,7 +41,6 @@ export class DataDownloadEmailDialogComponent {
     if (this.isEmailActive && this.emailFormControl.valid && this.emailFormControl.value?.trim() !== '') {
       email = this.emailFormControl.value?.trim();
     }
-    console.log(`email: ${email}`);
     this.store.dispatch(DataDownloadOrderActions.setEmailInOrder({email}));
   }
 }
