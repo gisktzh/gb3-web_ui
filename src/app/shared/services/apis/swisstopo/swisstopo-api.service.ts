@@ -9,7 +9,7 @@ import {Geometry} from 'geojson';
 /**
  * Defines which of the available elevation model data we're using.
  */
-const ELEVATION_MODEL: keyof ElevationProfileAltitude = 'COMB';
+export const ELEVATION_MODEL: keyof ElevationProfileAltitude = 'COMB';
 
 @Injectable({
   providedIn: 'root',

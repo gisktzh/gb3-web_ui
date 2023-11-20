@@ -18,7 +18,7 @@ import {EsriAreaMeasurementStrategy} from './strategies/measurement/esri-area-me
 import {EsriPointMeasurementStrategy} from './strategies/measurement/esri-point-measurement.strategy';
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
 import {ToolActions} from '../../../../state/map/actions/tool.actions';
-import {ElevationProfileMeasurementTool, MeasurementTool} from '../../../../shared/types/measurement-tool.type';
+import {MeasurementTool} from '../../../../shared/types/measurement-tool.type';
 import {DrawingTool} from '../../../../shared/types/drawing-tool.type';
 import {ConfigService} from '../../../../shared/services/config.service';
 import {EsriPointDrawingStrategy} from './strategies/drawing/esri-point-drawing.strategy';
@@ -50,7 +50,7 @@ import Polygon from '@arcgis/core/geometry/Polygon';
 import {EsriTextDrawingStrategy} from './strategies/drawing/esri-text-drawing.strategy';
 import {Gb3GeoshopMunicipalitiesService} from '../../../../shared/services/apis/gb3/gb3-geoshop-municipalities.service';
 import {selectCanton} from '../../../../state/map/reducers/data-download-region.reducer';
-import {EsriElevationProfileDrawingStrategy} from './strategies/drawing/esri-elevation-profile-drawing.strategy';
+import {EsriElevationProfileMeasurementStrategy} from './strategies/measurement/esri-elevation-profile-measurement.strategy';
 import {ElevationProfileActions} from '../../../../state/map/actions/elevation-profile.actions';
 
 const HANDLE_GROUP_KEY = 'EsriToolService';
@@ -105,9 +105,9 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
     this.initializeUserDrawingTool(UserDrawingLayer.Measurements, (layer) => this.setMeasurementStrategy(measurementTool, layer));
   }
 
-  public initializeElevationProfileMeasurement(measurementTool: ElevationProfileMeasurementTool) {
+  public initializeElevationProfileMeasurement() {
     this.initializeInternalDrawingTool(InternalDrawingLayer.ElevationProfile, (layer) =>
-      this.setMeasurementStrategy(measurementTool, layer),
+      this.setMeasurementStrategy('measure-elevation-profile', layer),
     );
   }
 
@@ -291,7 +291,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
         );
         break;
       case 'measure-elevation-profile':
-        this.toolStrategy = new EsriElevationProfileDrawingStrategy(layer, this.esriMapViewService.mapView, lineStyle, (geometry) => {
+        this.toolStrategy = new EsriElevationProfileMeasurementStrategy(layer, this.esriMapViewService.mapView, lineStyle, (geometry) => {
           this.store.dispatch(ElevationProfileActions.loadProfile({geometry: silentArcgisToGeoJSON(geometry.geometry)}));
           this.endDrawing();
         });

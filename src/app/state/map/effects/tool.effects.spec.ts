@@ -54,6 +54,19 @@ describe('ToolEffects', () => {
       });
     }));
 
+    it('initializes the elevation profile measurement tool using the tool service; dispatches no further actions', fakeAsync(() => {
+      const tool: MeasurementTool = 'measure-elevation-profile';
+      const toolServiceSpy = spyOn(toolService, 'initializeElevationProfileMeasurement').and.callThrough();
+      toolServiceSpy.calls.reset();
+      const expectedAction = ToolActions.activateTool({tool: tool});
+      actions$ = of(expectedAction);
+      effects.initializeTool$.subscribe((action) => {
+        expect(toolServiceSpy).toHaveBeenCalledTimes(1);
+        expect(action).toEqual(expectedAction);
+      });
+      flush();
+    }));
+
     it('initializes the drawing tool using the tool service; dispatches no further actions', fakeAsync(() => {
       const expectedTools: DrawingTool[] = ['draw-circle', 'draw-polygon', 'draw-line', 'draw-point', 'draw-rectangle'];
       const toolServiceSpy = spyOn(toolService, 'initializeDrawing').and.callThrough();

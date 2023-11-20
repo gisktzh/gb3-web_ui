@@ -6,7 +6,7 @@ import {EsriMapMock} from '../../../../testing/map-testing/esri-map.mock';
 import {EsriMapViewService} from '../esri-map-view.service';
 import {EsriPointMeasurementStrategy} from './strategies/measurement/esri-point-measurement.strategy';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
-import {UserDrawingLayer} from '../../../../shared/enums/drawing-layer.enum';
+import {InternalDrawingLayer, UserDrawingLayer} from '../../../../shared/enums/drawing-layer.enum';
 import {DrawingActiveMapItem} from '../../../models/implementations/drawing.model';
 import {EsriLineMeasurementStrategy} from './strategies/measurement/esri-line-measurement.strategy';
 import {EsriAreaMeasurementStrategy} from './strategies/measurement/esri-area-measurement.strategy';
@@ -20,6 +20,7 @@ import {EsriLineDrawingStrategy} from './strategies/drawing/esri-line-drawing.st
 import {EsriPolygonDrawingStrategy} from './strategies/drawing/esri-polygon-drawing.strategy';
 import {EsriTextDrawingStrategy} from './strategies/drawing/esri-text-drawing.strategy';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {EsriElevationProfileMeasurementStrategy} from './strategies/measurement/esri-elevation-profile-measurement.strategy';
 
 describe('EsriToolService', () => {
   let service: EsriToolService;
@@ -201,6 +202,23 @@ describe('EsriToolService', () => {
         const polygonSpy = spyOn(EsriPolygonDrawingStrategy.prototype, 'start');
         service.initializeDrawing('draw-circle');
         expect(polygonSpy).toHaveBeenCalled();
+      });
+    });
+
+    describe('ElevationProfile', () => {
+      beforeEach(() => {
+        const elevationProfileLayerId = MapConstants.INTERNAL_LAYER_PREFIX + InternalDrawingLayer.ElevationProfile;
+        // add the graphic layer to the view to avoid the initialization
+        mapViewService.mapView.map.layers.add(
+          new GraphicsLayer({
+            id: elevationProfileLayerId,
+          }),
+        );
+      });
+      it(`sets the correct strategy for elevation profile measurement`, () => {
+        const elevationSpy = spyOn(EsriElevationProfileMeasurementStrategy.prototype, 'start');
+        service.initializeElevationProfileMeasurement();
+        expect(elevationSpy).toHaveBeenCalled();
       });
     });
   });

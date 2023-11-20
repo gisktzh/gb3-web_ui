@@ -49,7 +49,6 @@ export const mapUiFeature = createFeature({
     on(MapUiActions.changeUiElementsVisibility, (state, {hideAllUiElements, hideUiToggleButton}): MapUiState => {
       return {
         ...state, // todo: what needs to be done here for toolmenu?
-        mapSideDrawerContent: state.mapSideDrawerContent,
         hideUiElements: hideAllUiElements,
         hideToggleUiElementsButton: hideUiToggleButton,
         hideZoomButtons: hideAllUiElements,

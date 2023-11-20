@@ -21,13 +21,13 @@ export const ELEVATION_PROFILE_CHARTJS_OPTIONS: ElevationProfileChartJsOptions =
   scales: {
     x: {
       grid: {
-        drawOnChartArea: false,
+        drawOnChartArea: true,
       },
       type: 'linear',
     },
     y: {
       grid: {
-        drawOnChartArea: false,
+        drawOnChartArea: true,
       },
       beginAtZero: true,
     },

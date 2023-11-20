@@ -13,31 +13,27 @@ import {MapUiActions} from '../actions/map-ui.actions';
 
 @Injectable()
 export class ElevationProfileEffects {
-  public clearExistingElevationProfilesOnNew$ = createEffect(
-    () => {
-      return this.actions$.pipe(
-        ofType(ToolActions.activateTool),
-        filter(({tool}) => tool === 'measure-elevation-profile'),
-        tap(() => {
-          this.mapService.clearInternalDrawingLayer(InternalDrawingLayer.ElevationProfile);
-        }),
-      );
-    },
-    {dispatch: false},
-  );
+  public clearExistingElevationProfilesOnNew$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ToolActions.activateTool),
+      filter(({tool}) => tool === 'measure-elevation-profile'),
+      tap(() => {
+        this.mapService.clearInternalDrawingLayer(InternalDrawingLayer.ElevationProfile);
+      }),
+      map(() => ElevationProfileActions.clearProfile()),
+    );
+  });
 
-  public clearExistingElevationProfilesOnClose$ = createEffect(
-    () => {
-      return this.actions$.pipe(
-        ofType(MapUiActions.setElevationProfileOverlayVisibility),
-        filter(({isVisible}) => !isVisible),
-        tap(() => {
-          this.mapService.clearInternalDrawingLayer(InternalDrawingLayer.ElevationProfile);
-        }),
-      );
-    },
-    {dispatch: false},
-  );
+  public clearExistingElevationProfileOnClose$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapUiActions.setElevationProfileOverlayVisibility),
+      filter(({isVisible}) => !isVisible),
+      tap(() => {
+        this.mapService.clearInternalDrawingLayer(InternalDrawingLayer.ElevationProfile);
+      }),
+      map(() => ElevationProfileActions.clearProfile()),
+    );
+  });
 
   public requestElevationProfile$ = createEffect(() => {
     return this.actions$.pipe(

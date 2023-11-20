@@ -1,11 +1,4 @@
-<map-overlay
-  (closeEvent)="close()"
-  [isVisible]="isVisible"
-  [showPrintButton]="false"
-  class="elevation-profile-overlay"
-  location="right"
-  overlayTitle="Höhenprofil"
->
+<map-overlay (closeEvent)="close()" [isVisible]="isVisible" [showPrintButton]="false" location="right" overlayTitle="Höhenprofil">
   <loading-and-process-bar [loadingState]="loadingState"></loading-and-process-bar>
   <div *ngIf="loadingState === 'loaded'">
     <elevation-profile-chart [elevationProfileData]="elevationProfileData"></elevation-profile-chart>

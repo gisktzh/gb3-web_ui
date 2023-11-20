@@ -22,7 +22,7 @@ export class ToolEffects {
               this.toolService.initializeMeasurement(tool);
               break;
             case 'measure-elevation-profile':
-              this.toolService.initializeElevationProfileMeasurement(tool);
+              this.toolService.initializeElevationProfileMeasurement();
               break;
             case 'draw-point':
             case 'draw-line':
