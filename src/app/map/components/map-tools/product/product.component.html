@@ -16,6 +16,7 @@
   <mat-form-field *ngIf="product.ogd && isProductSelected" class="product__select" subscriptSizing="dynamic">
     <mat-label>Dateiformate</mat-label>
     <mat-select
+      #formatsSelect
       [formControl]="formatsFormControl"
       placeholder="Bitte auswählen"
       [multiple]="true"

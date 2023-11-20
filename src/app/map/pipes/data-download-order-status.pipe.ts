@@ -17,7 +17,7 @@ export class DataDownloadOrderStatusPipe implements PipeTransform {
       case 'working':
         return 'Die Bestellung wird bearbeitet';
       case 'success':
-        return 'Die Bestellung ist erfolgreich fertig gestellt';
+        return 'Die Bestellung ist bereit';
       case 'failure':
         if (orderStatusJob.status.status.message) {
           return `Fehler: '${orderStatusJob.status.status.message}'`;

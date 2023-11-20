@@ -17,7 +17,7 @@ export const dataDownloadOrderFeature = createFeature({
   reducer: createReducer(
     initialState,
     on(DataDownloadOrderActions.setSelection, (state, {selection}): DataDownloadOrderState => {
-      return {...state, selection};
+      return {...initialState, selection, statusJobs: state.statusJobs};
     }),
     on(DataDownloadOrderActions.clearSelection, (state): DataDownloadOrderState => {
       return {...initialState, statusJobs: state.statusJobs};

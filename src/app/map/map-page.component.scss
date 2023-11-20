@@ -170,6 +170,7 @@
   }
 
   .map-container__data-download-status-queue {
+    @include mixins.map-element-box-shadow;
     z-index: z-index-variables.$data-download-order-queue;
     position: absolute;
     bottom: 0;

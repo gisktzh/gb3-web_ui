@@ -1,9 +1,10 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {Product, ProductFormat} from '../../../../shared/interfaces/gb3-geoshop-product.interface';
 import {FormControl} from '@angular/forms';
 import {Store} from '@ngrx/store';
 import {DataDownloadOrderActions} from '../../../../state/map/actions/data-download-order.actions';
 import {Order} from '../../../../shared/interfaces/geoshop-order.interface';
+import {MatSelect} from '@angular/material/select';
 
 @Component({
   selector: 'product',
@@ -18,7 +19,14 @@ export class ProductComponent implements OnInit {
 
   private _disabled: boolean = false;
 
-  @Input() public set disabled(value: boolean) {
+  constructor(private readonly store: Store) {}
+
+  public get disabled(): boolean {
+    return this._disabled;
+  }
+
+  @Input()
+  public set disabled(value: boolean) {
     this._disabled = value;
     if (value) {
       this.formatsFormControl.disable();
@@ -27,11 +35,13 @@ export class ProductComponent implements OnInit {
     }
   }
 
-  public get disabled(): boolean {
-    return this._disabled;
+  @ViewChild('formatsSelect')
+  private set matSelectRef(value: MatSelect | undefined) {
+    // this is a workaround to open mat-select as soon as it's visible. The timeout is necessary to prevent an error (NG0100:
+    // ExpressionChangedAfterItHasBeenCheckedError) as the value usually gets updated so fast that the UI update cycle is not yet fully
+    // completed.
+    setTimeout(() => value?.open());
   }
-
-  constructor(private readonly store: Store) {}
 
   public ngOnInit() {
     this.initializeProductFromOrder();

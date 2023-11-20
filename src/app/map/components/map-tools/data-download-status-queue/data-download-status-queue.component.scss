@@ -76,14 +76,11 @@
           @include mixins.single-line-text();
           font-size: small;
           margin-bottom: 0;
+          margin-right: auto;
 
           &--error {
             color: functions.get-color-from-palette(ktzh-variables.$zh-warn);
           }
-        }
-
-        .data-download-status-queue__content__status-job__status__link {
-          @include mixins.single-line-text();
         }
       }
     }

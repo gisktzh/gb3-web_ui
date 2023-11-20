@@ -7,7 +7,9 @@
   </mat-card-header>
   <div [ngClass]="{'data-download-status-queue__content--hidden': isMinimized}" class="data-download-status-queue__content">
     <div class="data-download-status-queue__content__status-job" *ngFor="let statusJob of statusJobs; trackBy: trackById">
-      <p class="data-download-status-queue__content__status-job__title">{{ statusJob.title }}</p>
+      <p class="data-download-status-queue__content__status-job__title" [matTooltip]="statusJob.title" showTooltipIfTruncated>
+        {{ statusJob.title }}
+      </p>
       <div class="data-download-status-queue__content__status-job__status">
         <div class="data-download-status-queue__content__status-job__status__icon">
           <mat-spinner
@@ -20,7 +22,6 @@
           <mat-icon *ngIf="statusJob.status?.status?.type === 'failure'" color="warn">error</mat-icon>
         </div>
         <p
-          *ngIf="statusJob.status?.status?.type !== 'success'"
           class="data-download-status-queue__content__status-job__status__text"
           [matTooltip]="statusJob | dataDownloadOrderStatus"
           showTooltipIfTruncated
@@ -30,21 +31,25 @@
         </p>
         <a
           *ngIf="statusJob.status && statusJob.status.status.type === 'success'"
-          class="data-download-status-queue__content__status-job__status__link"
+          class="data-download-status-queue__content__status-job__status__icon"
           [href]="statusJob.status.orderId | dataDownloadOrderDownloadUrl"
-          [title]="statusJob.title"
+          [title]="'Download: ' + statusJob.title"
           rel="noopener noreferrer"
           target="_blank"
           (click)="downloadOrder(statusJob.status.orderId)"
-          >{{ statusJob.status.orderId | dataDownloadOrderDownloadUrl }}</a
+          mat-icon-button
         >
-        <mat-icon
+          <mat-icon svgIcon="ktzh_download"></mat-icon>
+        </a>
+        <button
           *ngIf="statusJob.status && statusJob.status.status.type === 'failure'"
           class="data-download-status-queue__content__status-job__status__icon"
           (click)="removeFailedOrder(statusJob.status.orderId)"
           matTooltip="Entfernen"
-          >delete</mat-icon
+          mat-icon-button
         >
+          <mat-icon>delete</mat-icon>
+        </button>
       </div>
     </div>
   </div>

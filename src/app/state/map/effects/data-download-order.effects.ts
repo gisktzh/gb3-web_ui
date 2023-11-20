@@ -13,7 +13,12 @@ import {ToolActions} from '../actions/tool.actions';
 import {selectActiveTool} from '../reducers/tool.reducer';
 import {GeoshopApiService} from '../../../shared/services/apis/geoshop/services/geoshop-api.service';
 import {selectOrder, selectSelection, selectStatusJobs} from '../reducers/data-download-order.reducer';
-import {OrderCouldNotBeSent, OrderSelectionIsInvalid, OrderStatusCouldNotBeSent} from '../../../shared/errors/data-download.errors';
+import {
+  OrderCouldNotBeSent,
+  OrderSelectionIsInvalid,
+  OrderStatusCouldNotBeSent,
+  OrderUnsupportedGeometry,
+} from '../../../shared/errors/data-download.errors';
 import {selectMapSideDrawerContent} from '../reducers/map-ui.reducer';
 import {selectProducts} from '../reducers/data-download-product.reducer';
 
@@ -23,10 +28,13 @@ export class DataDownloadOrderEffects {
     return this.actions$.pipe(
       ofType(DataDownloadOrderActions.setSelection),
       map(({selection}) => {
-        const order = this.geoshopApiService.createOrderFromSelection(selection);
-        return DataDownloadOrderActions.setOrder({order});
+        try {
+          const order = this.geoshopApiService.createOrderFromSelection(selection);
+          return DataDownloadOrderActions.setOrder({order});
+        } catch (error: unknown) {
+          return DataDownloadOrderActions.setSelectionError({error});
+        }
       }),
-      catchError((error: unknown) => of(DataDownloadOrderActions.setSelectionError({error}))),
     );
   });
 
@@ -35,12 +43,22 @@ export class DataDownloadOrderEffects {
       return this.actions$.pipe(
         ofType(DataDownloadOrderActions.setSelectionError),
         tap(({error}) => {
+          if (error instanceof OrderUnsupportedGeometry) {
+            throw error;
+          }
           throw new OrderSelectionIsInvalid(error);
         }),
       );
     },
     {dispatch: false},
   );
+
+  public clearSelectionAfterError$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(DataDownloadOrderActions.setSelectionError),
+      map(() => DataDownloadOrderActions.clearSelection()),
+    );
+  });
 
   public zoomToSelection$ = createEffect(
     () => {
@@ -73,7 +91,7 @@ export class DataDownloadOrderEffects {
 
   public deactivateToolAfterClearingSelection$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(DataDownloadOrderActions.clearSelection, DataDownloadOrderActions.setSelectionError),
+      ofType(DataDownloadOrderActions.clearSelection),
       concatLatestFrom(() => this.store.select(selectActiveTool)),
       filter(([_, activeTool]) => activeTool !== undefined),
       map(() => {
@@ -92,7 +110,7 @@ export class DataDownloadOrderEffects {
   public clearGeometryFromMap$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(DataDownloadOrderActions.clearSelection, DataDownloadOrderActions.setSelectionError),
+        ofType(DataDownloadOrderActions.clearSelection),
         tap(() => {
           this.mapDrawingService.clearDataDownloadSelection();
         }),
