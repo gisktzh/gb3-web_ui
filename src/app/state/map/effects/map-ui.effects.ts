@@ -25,6 +25,9 @@ import {selectActiveTool} from '../reducers/tool.reducer';
 import {selectGb2WmsActiveMapItemsWithMapNotices} from '../selectors/active-map-items.selector';
 import {selectCurrentShareLinkItem} from '../selectors/current-share-link-item.selector';
 import {ElevationProfileActions} from '../actions/elevation-profile.actions';
+import {Router} from '@angular/router';
+import {UrlActions} from '../../app/actions/url.actions';
+import {selectUrlState} from '../../app/reducers/url.reducer';
 
 const CREATE_FAVOURITE_DIALOG_MAX_WIDTH = 500;
 const DELETE_FAVOURITE_DIALOG_MAX_WIDTH = 500;
@@ -82,9 +85,7 @@ export class MapUiEffects {
   public showUiElementsAfterClosingSideDrawer$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapUiActions.hideMapSideDrawerContent),
-      map(() => {
-        return MapUiActions.changeUiElementsVisibility({hideAllUiElements: false, hideUiToggleButton: false});
-      }),
+      map(() => MapUiActions.changeUiElementsVisibility({hideAllUiElements: false, hideUiToggleButton: false})),
     );
   });
 
@@ -104,9 +105,16 @@ export class MapUiEffects {
   public showElevationProfileOverlay$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ElevationProfileActions.loadProfile),
-      map(() => {
-        return MapUiActions.setElevationProfileOverlayVisibility({isVisible: true});
-      }),
+      map(() => MapUiActions.setElevationProfileOverlayVisibility({isVisible: true})),
+    );
+  });
+
+  public hideElevationProfileOverlayOnNavigate = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(UrlActions.setPage),
+      concatLatestFrom(() => this.store.select(selectUrlState)),
+      filter(([_, urlState]) => urlState.mainPage !== 'maps' && urlState.previousPage === 'maps'),
+      map(() => MapUiActions.setElevationProfileOverlayVisibility({isVisible: false})),
     );
   });
 
@@ -115,9 +123,7 @@ export class MapUiEffects {
       ofType(MapUiActions.setLegendOverlayVisibility, MapUiActions.setFeatureInfoVisibility),
       concatLatestFrom(() => this.store.select(selectScreenMode)),
       filter(([_, screenMode]) => screenMode === 'mobile'),
-      map(() => {
-        return MapUiActions.changeUiElementsVisibility({hideAllUiElements: true, hideUiToggleButton: false});
-      }),
+      map(() => MapUiActions.changeUiElementsVisibility({hideAllUiElements: true, hideUiToggleButton: false})),
     );
   });
 
@@ -125,9 +131,7 @@ export class MapUiEffects {
     return this.actions$.pipe(
       ofType(MapUiActions.setFeatureInfoVisibility),
       filter(({isVisible}) => !isVisible),
-      map(({isVisible}) => {
-        return MapConfigActions.clearFeatureInfoContent();
-      }),
+      map(() => MapConfigActions.clearFeatureInfoContent()),
     );
   });
 
@@ -137,6 +141,7 @@ export class MapUiEffects {
       concatLatestFrom(() => this.store.select(selectScreenMode)),
       tap(([__, screenMode]) => {
         if (screenMode === 'mobile') {
+          // todo: this is a no-no and should be fixed - IDE actually shows this
           return this.store.dispatch(MapUiActions.showBottomSheet({bottomSheetContent: 'share-link'}));
         } else {
           this.dialogService.open(ShareLinkDialogComponent, {
@@ -146,9 +151,7 @@ export class MapUiEffects {
         }
       }),
       concatLatestFrom(() => this.store.select(selectCurrentShareLinkItem)),
-      map(([_, shareLinkItem]) => {
-        return ShareLinkActions.createItem({item: shareLinkItem});
-      }),
+      map(([_, shareLinkItem]) => ShareLinkActions.createItem({item: shareLinkItem})),
     );
   });
 
@@ -197,9 +200,7 @@ export class MapUiEffects {
           maxWidth: MAP_NOTICES_DIALOG_MAX_WIDTH,
         }),
       ),
-      map(() => {
-        return ActiveMapItemActions.markAllActiveMapItemNoticeAsRead();
-      }),
+      map(() => ActiveMapItemActions.markAllActiveMapItemNoticeAsRead()),
     );
   });
 
@@ -222,9 +223,7 @@ export class MapUiEffects {
   public clearSearchTermAfterClosingBottomSheet$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapUiActions.hideBottomSheet),
-      map(() => {
-        return SearchActions.clearSearchTerm();
-      }),
+      map(() => SearchActions.clearSearchTerm()),
     );
   });
   public cancelToolAfterHidingUiElements$ = createEffect(() => {
@@ -235,9 +234,11 @@ export class MapUiEffects {
       map(() => ToolActions.cancelTool()),
     );
   });
+
   constructor(
     private readonly actions$: Actions,
     private readonly store: Store,
     private readonly dialogService: MatDialog,
+    private readonly router: Router,
   ) {}
 }
