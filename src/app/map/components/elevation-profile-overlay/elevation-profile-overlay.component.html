@@ -7,24 +7,11 @@
   overlayTitle="Höhenprofil"
 >
   <loading-and-process-bar [loadingState]="loadingState"></loading-and-process-bar>
-  <div *ngIf="loadingState === 'loaded'" class="elevation-profile-overlay__content">
+  <div *ngIf="loadingState === 'loaded'">
     <elevation-profile-chart [elevationProfileData]="elevationProfileData"></elevation-profile-chart>
-    <div *ngIf="elevationProfileData" class="elevation-profile-overlay__content__statistics">
-      <span class="elevation-profile-overlay__content__statistics__item">
-        <b>Höchster Punkt:</b><span>{{ elevationProfileData.statistics.highestPoint | number: '1.1' }}m</span>
-      </span>
-      <span class="elevation-profile-overlay__content__statistics__item">
-        <b>Tiefster Punkt:</b><span>{{ elevationProfileData.statistics.lowestPoint | number: '1.1' }}m</span>
-      </span>
-      <span class="elevation-profile-overlay__content__statistics__item">
-        <b>Luftlinie:</b><span>{{ elevationProfileData.statistics.linearDistance | number: '1.1' }}m</span>
-      </span>
-      <span class="elevation-profile-overlay__content__statistics__item">
-        <b>Wegstrecke:</b><span>{{ elevationProfileData.statistics.groundDistance | number: '1.1' }}m</span>
-      </span>
-      <span class="elevation-profile-overlay__content__statistics__item">
-        <b>Höhendifferenz Start - Ende:</b><span>{{ elevationProfileData.statistics.elevationDifference | number: '1.1' }} m</span>
-      </span>
-    </div>
+    <elevation-profile-statistics
+      *ngIf="elevationProfileData"
+      [statistics]="elevationProfileData.statistics"
+    ></elevation-profile-statistics>
   </div>
 </map-overlay>

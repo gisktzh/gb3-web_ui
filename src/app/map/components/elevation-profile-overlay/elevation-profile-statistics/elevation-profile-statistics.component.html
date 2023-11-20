@@ -1,0 +1,17 @@
+<div class="elevation-profile-statistics">
+  <span class="elevation-profile-statistics__item">
+    <b>Höchster Punkt:</b><span>{{ statistics.highestPoint | number: '1.1-1' }}m</span>
+  </span>
+  <span class="elevation-profile-statistics__item">
+    <b>Tiefster Punkt:</b><span>{{ statistics.lowestPoint | number: '1.1-1' }}m</span>
+  </span>
+  <span class="elevation-profile-statistics__item">
+    <b>Luftlinie:</b><span>{{ statistics.linearDistance | number: '1.1-1' }}m</span>
+  </span>
+  <span class="elevation-profile-statistics__item">
+    <b>Wegstrecke:</b><span>{{ statistics.groundDistance | number: '1.1-1' }}m</span>
+  </span>
+  <span class="elevation-profile-statistics__item">
+    <b>Höhendifferenz Start - Ende:</b><span>{{ statistics.elevationDifference | number: '1.1-1' }}m</span>
+  </span>
+</div>
