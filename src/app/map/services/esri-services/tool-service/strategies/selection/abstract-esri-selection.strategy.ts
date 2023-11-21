@@ -13,11 +13,15 @@ import {UnstyledInternalDrawingRepresentation} from '../../../../../../shared/in
 export abstract class AbstractEsriSelectionStrategy implements EsriToolStrategy {
   public readonly internalLayerType: InternalDrawingLayer = InternalDrawingLayer.Selection;
 
-  constructor(
-    protected readonly layer: GraphicsLayer,
-    protected readonly polygonSymbol: SimpleFillSymbol,
-    protected readonly selectionCallbackHandler: SelectionCallbackHandler,
-  ) {}
+  protected readonly layer: GraphicsLayer;
+  protected readonly polygonSymbol: SimpleFillSymbol;
+  protected readonly selectionCallbackHandler: SelectionCallbackHandler;
+
+  constructor(layer: GraphicsLayer, polygonSymbol: SimpleFillSymbol, selectionCallbackHandler: SelectionCallbackHandler) {
+    this.layer = layer;
+    this.polygonSymbol = polygonSymbol;
+    this.selectionCallbackHandler = selectionCallbackHandler;
+  }
 
   public start() {
     // remove all old selections before starting a new one
@@ -36,7 +40,7 @@ export abstract class AbstractEsriSelectionStrategy implements EsriToolStrategy 
       .subscribe();
   }
 
-  public cancel(): void {
+  public cancel() {
     this.layer.removeAll();
   }
 

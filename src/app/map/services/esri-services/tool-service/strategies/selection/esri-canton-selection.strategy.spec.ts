@@ -32,7 +32,7 @@ describe('EsriCantonSelectionStrategy', () => {
   describe('cancellation', () => {
     it('does clear the layer and does not dispatch anything', () => {
       const completeCallbackHandlerSpy = spyOn(callbackHandler, 'complete');
-      const strategy = new EsriCantonSelectionStrategy(layer, fillSymbol, callbackHandler, configService, cantonWithGeometry$);
+      const strategy = new EsriCantonSelectionStrategy(layer, fillSymbol, callbackHandler, cantonWithGeometry$, configService);
       const layerRemoveAllSpy = spyOn(layer, 'removeAll');
 
       strategy.cancel();
@@ -45,7 +45,7 @@ describe('EsriCantonSelectionStrategy', () => {
     it('dispatches a new selection', fakeAsync(() => {
       const completeCallbackHandlerSpy = spyOn(callbackHandler, 'complete');
       cantonWithGeometry$ = of({boundingBox: MinimalGeometriesUtils.getMinimalPolygon(2056)});
-      const strategy = new EsriCantonSelectionStrategy(layer, fillSymbol, callbackHandler, configService, cantonWithGeometry$);
+      const strategy = new EsriCantonSelectionStrategy(layer, fillSymbol, callbackHandler, cantonWithGeometry$, configService);
 
       strategy.start();
       tick();

@@ -1,14 +1,9 @@
-import {SupportedGeometry} from '../types/SupportedGeometry.type';
+import {HasBoundingBox} from './has-bounding-box.interface';
 
 export interface ProductsList {
   /** Timestamp of product list in ISO8601 format */
   timestamp: string;
   products: Product[];
-}
-
-export interface HasBoundingBox {
-  /** GeoJSON geometry object */
-  boundingBox: SupportedGeometry;
 }
 
 export interface Municipality {

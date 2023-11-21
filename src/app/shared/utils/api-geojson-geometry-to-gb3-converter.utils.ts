@@ -10,30 +10,30 @@ export class ApiGeojsonGeometryToGb3ConverterUtils {
    * @param geometry The geometry to be converted
    */
   public static convert(geometry: Geometry): SupportedGeometry {
-    let castedGeometry: SupportedGeometry;
+    let castGeometry: SupportedGeometry;
     switch (geometry.type) {
       case 'Polygon': {
-        castedGeometry = geometry as Polygon;
+        castGeometry = geometry as Polygon;
         break;
       }
       case 'Point': {
-        castedGeometry = geometry as Point;
+        castGeometry = geometry as Point;
         break;
       }
       case 'LineString': {
-        castedGeometry = geometry as LineString;
+        castGeometry = geometry as LineString;
         break;
       }
       case 'MultiPoint': {
-        castedGeometry = geometry as Polygon;
+        castGeometry = geometry as Polygon;
         break;
       }
       case 'MultiPolygon': {
-        castedGeometry = geometry as MultiPolygon;
+        castGeometry = geometry as MultiPolygon;
         break;
       }
     }
 
-    return castedGeometry;
+    return castGeometry;
   }
 }

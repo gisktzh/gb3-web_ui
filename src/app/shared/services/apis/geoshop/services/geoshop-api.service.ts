@@ -35,6 +35,12 @@ export class GeoshopApiService extends BaseApiService {
     return this.get<ApiOrderStatus>(this.getFullOrderUrl('orders', orderId)).pipe(map((status) => this.mapApiOrderStatusToStatus(status)));
   }
 
+  /**
+   * This method is used to create an order depending on the given selection type.
+   * - Indirect orders are using unique identifiers to select the area(s) to order from.
+   * - Direct orders are using a geometry to do the same.
+   * The canton is a special case - it is a direct order because there is no identifier available.
+   */
   public createOrderFromSelection(selection: DataDownloadSelection): Order {
     switch (selection.type) {
       case 'select-circle':

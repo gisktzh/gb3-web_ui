@@ -9,13 +9,16 @@ import {Observable, of} from 'rxjs';
 import {SelectionCallbackHandler} from '../../interfaces/selection-callback-handler.interface';
 
 export class EsriScreenExtentSelectionStrategy extends AbstractEsriSelectionStrategy {
+  private readonly screenExtent;
+
   constructor(
     layer: GraphicsLayer,
     polygonSymbol: SimpleFillSymbol,
     selectionCallbackHandler: SelectionCallbackHandler,
-    private readonly screenExtent: Extent,
+    screenExtent: Extent,
   ) {
     super(layer, polygonSymbol, selectionCallbackHandler);
+    this.screenExtent = screenExtent;
   }
 
   protected createSelection(): Observable<DataDownloadSelection | undefined> {

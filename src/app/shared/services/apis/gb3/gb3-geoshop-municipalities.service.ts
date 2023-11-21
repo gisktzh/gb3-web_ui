@@ -27,12 +27,10 @@ export class Gb3GeoshopMunicipalitiesService extends Gb3ApiService {
   }
 
   private mapMunicipalitiesListDataToMunicipalities(data: MunicipalitiesListData): Municipality[] {
-    return data.municipalities.map(
-      (municipality): Municipality => ({
-        bfsNo: municipality.bfs_no,
-        name: municipality.name,
-      }),
-    );
+    return data.municipalities.map((municipality) => ({
+      bfsNo: municipality.bfs_no,
+      name: municipality.name,
+    }));
   }
 
   private mapMunicipalitiesDetailDataToMunicipality(data: MunicipalitiesDetailData): MunicipalityWithGeometry {

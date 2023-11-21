@@ -36,8 +36,8 @@ export class Gb3ShareLinkService extends Gb3ApiService {
    * @param inFeature The feature to be transformed
    */
   private castGeojsonFeatureToGb3GeoJsonFeature(inFeature: GeojsonFeature): Gb3GeoJsonFeature {
-    const castedGeometry = ApiGeojsonGeometryToGb3ConverterUtils.convert(inFeature.geometry);
-    return {...inFeature, geometry: castedGeometry};
+    const castGeometry = ApiGeojsonGeometryToGb3ConverterUtils.convert(inFeature.geometry);
+    return {...inFeature, geometry: castGeometry};
   }
 
   private mapVectorLayerToGb3VectorLayer(drawings: VectorLayer): Gb3VectorLayer {

@@ -402,8 +402,8 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
           layer,
           areaStyle,
           completeSelectionCallbackHandler,
-          this.configService,
           this.store.select(selectCanton),
+          this.configService,
         );
         break;
       case 'select-municipality':

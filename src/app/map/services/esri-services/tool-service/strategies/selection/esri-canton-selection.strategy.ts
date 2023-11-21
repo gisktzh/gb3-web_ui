@@ -12,14 +12,16 @@ import {SupportedGeometry} from '../../../../../../shared/types/SupportedGeometr
 import {ConfigService} from '../../../../../../shared/services/config.service';
 
 export class EsriCantonSelectionStrategy extends AbstractEsriSelectionStrategy {
+  private readonly cantonWithGeometry$;
   constructor(
     layer: GraphicsLayer,
     polygonSymbol: SimpleFillSymbol,
     selectionCallbackHandler: SelectionCallbackHandler,
+    cantonWithGeometry$: Observable<CantonWithGeometry | undefined>,
     private readonly configService: ConfigService,
-    private readonly cantonWithGeometry$: Observable<CantonWithGeometry | undefined>,
   ) {
     super(layer, polygonSymbol, selectionCallbackHandler);
+    this.cantonWithGeometry$ = cantonWithGeometry$;
   }
 
   protected createSelection(): Observable<DataDownloadSelection | undefined> {
