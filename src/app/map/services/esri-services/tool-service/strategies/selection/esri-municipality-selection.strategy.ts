@@ -1,18 +1,18 @@
-import {DataDownloadSelectMunicipalityDialogComponent} from '../../../../../components/data-download-select-municipality-dialog/data-download-select-municipality-dialog.component';
+import {DataDownloadSelectMunicipalityDialogComponent} from '../../../../../components/map-tools/data-download-select-municipality-dialog/data-download-select-municipality-dialog.component';
 import {PanelClass} from '../../../../../../shared/enums/panel-class.enum';
 import {MatDialog} from '@angular/material/dialog';
-import {Observable} from 'rxjs';
+import {Observable, of, switchMap} from 'rxjs';
 import {DataDownloadSelection} from '../../../../../../shared/interfaces/data-download-selection.interface';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import {AbstractEsriSelectionStrategy} from './abstract-esri-selection.strategy';
-import Polygon from '@arcgis/core/geometry/Polygon';
-import Graphic from '@arcgis/core/Graphic';
-import {Municipality} from '../../../../../../shared/interfaces/geoshop-product.interface';
-import {map} from 'rxjs/operators';
 import {SelectionCallbackHandler} from '../../interfaces/selection-callback-handler.interface';
 import {UnstyledInternalDrawingRepresentation} from '../../../../../../shared/interfaces/internal-drawing-representation.interface';
 import {InternalDrawingLayer} from '../../../../../../shared/enums/drawing-layer.enum';
+import {Municipality, MunicipalityWithGeometry} from '../../../../../../shared/interfaces/gb3-geoshop-product.interface';
+import {Gb3GeoshopMunicipalitiesService} from '../../../../../../shared/services/apis/gb3/gb3-geoshop-municipalities.service';
+import {map} from 'rxjs/operators';
+import {ConfigService} from '../../../../../../shared/services/config.service';
 
 export class EsriMunicipalitySelectionStrategy extends AbstractEsriSelectionStrategy {
   constructor(
@@ -20,6 +20,8 @@ export class EsriMunicipalitySelectionStrategy extends AbstractEsriSelectionStra
     polygonSymbol: SimpleFillSymbol,
     selectionCallbackHandler: SelectionCallbackHandler,
     private readonly dialogService: MatDialog,
+    private readonly configService: ConfigService,
+    private readonly geoshopMunicipalitiesService: Gb3GeoshopMunicipalitiesService,
   ) {
     super(layer, polygonSymbol, selectionCallbackHandler);
   }
@@ -33,56 +35,32 @@ export class EsriMunicipalitySelectionStrategy extends AbstractEsriSelectionStra
       },
     );
     return dialog.afterClosed().pipe(
-      map((municipality) => {
+      switchMap((municipality) => {
         if (municipality) {
-          const drawingRepresentation = this.createDrawingRepresentation(municipality);
-          return {
-            type: 'select-municipality',
-            drawingRepresentation: drawingRepresentation,
-            municipality,
-          };
+          return this.geoshopMunicipalitiesService.loadMunicipalityWithGeometry(municipality.bfsNo).pipe(
+            map((municipalityWithGeometry) => {
+              const drawingRepresentation = this.createDrawingRepresentation(municipalityWithGeometry);
+              const dataDownloadSelection: DataDownloadSelection = {
+                type: 'select-municipality',
+                drawingRepresentation: drawingRepresentation,
+                municipality: municipality,
+              };
+              return dataDownloadSelection;
+            }),
+          );
+        } else {
+          return of(undefined);
         }
-        return undefined;
       }),
     );
   }
 
-  protected drawSelection(selection: DataDownloadSelection): void {
-    // TODO GB3-815 - Draw the municipality as soon as the geometries are available and replace the following code
-    const fakeMunicipalityGeometry = new Polygon({
-      rings: [
-        [
-          [2676063.8520612405, 1241655.4830327919],
-          [2676063.8520612405, 1254321.1722244308],
-          [2689731.086018642, 1254321.1722244308],
-          [2689731.086018642, 1241655.4830327919],
-        ],
-      ],
-      spatialReference: {wkid: 2056},
-    });
-    const graphic = new Graphic({geometry: fakeMunicipalityGeometry, symbol: this.polygonSymbol});
-    this.layer.add(graphic);
-  }
-
-  private createDrawingRepresentation(municipality: Municipality): UnstyledInternalDrawingRepresentation {
-    // TODO GB3-815 - Get the drawing representation for the municipality as soon as the geometries are available and replace the following
-    // code
+  private createDrawingRepresentation(municipalityWithGeometry: MunicipalityWithGeometry): UnstyledInternalDrawingRepresentation {
     return {
       type: 'Feature',
       properties: {},
       source: InternalDrawingLayer.Selection,
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [2676063.8520612405, 1241655.4830327919],
-            [2676063.8520612405, 1254321.1722244308],
-            [2689731.086018642, 1254321.1722244308],
-            [2689731.086018642, 1241655.4830327919],
-          ],
-        ],
-        srs: 2056,
-      },
+      geometry: {...municipalityWithGeometry.boundingBox, srs: this.configService.mapConfig.defaultMapConfig.srsId},
     };
   }
 }

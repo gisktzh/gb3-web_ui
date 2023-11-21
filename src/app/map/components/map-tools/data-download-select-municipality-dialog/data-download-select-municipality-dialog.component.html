@@ -1,4 +1,4 @@
-<api-dialog-wrapper title="Daten beziehen">
+<api-dialog-wrapper title="Daten beziehen" [savingState]="loadingState">
   <ng-container content>
     <div class="data-download-select-municipality-dialog">
       <mat-form-field class="data-download-select-municipality-dialog__content" appearance="fill" *ngIf="municipalities">
@@ -21,7 +21,6 @@
         </mat-autocomplete>
       </mat-form-field>
     </div>
-    <loading-and-process-bar [loadingState]="loadingState"></loading-and-process-bar>
   </ng-container>
   <ng-container actions>
     <button (click)="cancel()" mat-button>Abbrechen</button>

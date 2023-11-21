@@ -2,55 +2,49 @@ import {InternalDrawingLayer} from '../../../../../../shared/enums/drawing-layer
 import {DataDownloadSelection} from '../../../../../../shared/interfaces/data-download-selection.interface';
 import {UnstyledInternalDrawingRepresentation} from '../../../../../../shared/interfaces/internal-drawing-representation.interface';
 import {AbstractEsriSelectionStrategy} from './abstract-esri-selection.strategy';
-import Graphic from '@arcgis/core/Graphic';
-import Polygon from '@arcgis/core/geometry/Polygon';
-import {Observable, of} from 'rxjs';
+import {Observable} from 'rxjs';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
+import {SelectionCallbackHandler} from '../../interfaces/selection-callback-handler.interface';
+import {map} from 'rxjs/operators';
+import {CantonWithGeometry} from '../../../../../../shared/interfaces/gb3-geoshop-product.interface';
+import {SupportedGeometry} from '../../../../../../shared/types/SupportedGeometry.type';
+import {ConfigService} from '../../../../../../shared/services/config.service';
 
 export class EsriCantonSelectionStrategy extends AbstractEsriSelectionStrategy {
+  private readonly cantonWithGeometry$;
+  constructor(
+    layer: GraphicsLayer,
+    polygonSymbol: SimpleFillSymbol,
+    selectionCallbackHandler: SelectionCallbackHandler,
+    cantonWithGeometry$: Observable<CantonWithGeometry | undefined>,
+    private readonly configService: ConfigService,
+  ) {
+    super(layer, polygonSymbol, selectionCallbackHandler);
+    this.cantonWithGeometry$ = cantonWithGeometry$;
+  }
+
   protected createSelection(): Observable<DataDownloadSelection | undefined> {
-    const selection: DataDownloadSelection = {
-      type: 'select-canton',
-      drawingRepresentation: this.createDrawingRepresentation(),
-    };
-    return of(selection);
+    return this.cantonWithGeometry$.pipe(
+      map((cantonWithGeometry) => {
+        if (!cantonWithGeometry) {
+          return undefined;
+        }
+        const selection: DataDownloadSelection = {
+          type: 'select-canton',
+          drawingRepresentation: this.createDrawingRepresentation(cantonWithGeometry.boundingBox),
+        };
+        return selection;
+      }),
+    );
   }
 
-  protected drawSelection(selection: DataDownloadSelection): void {
-    // TODO GB3-815 - Draw the canton as soon as the geometries are available and replace the following code
-    const fakeCantonGeometry = new Polygon({
-      rings: [
-        [
-          [2668968.6843831833, 1223858.2322834625],
-          [2668968.6843831833, 1283351.7034120716],
-          [2717123.999343813, 1283351.7034120716],
-          [2717123.999343813, 1223858.2322834625],
-        ],
-      ],
-      spatialReference: {wkid: 2056},
-    });
-    const graphic = new Graphic({geometry: fakeCantonGeometry, symbol: this.polygonSymbol});
-    this.layer.add(graphic);
-  }
-
-  private createDrawingRepresentation(): UnstyledInternalDrawingRepresentation {
-    // TODO GB3-815 - Get the exact drawing representation for the canton as soon as the geometries are available and replace the following
-    // code
+  private createDrawingRepresentation(geometry: SupportedGeometry): UnstyledInternalDrawingRepresentation {
     return {
       type: 'Feature',
       properties: {},
       source: InternalDrawingLayer.Selection,
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [2668968.6843831833, 1223858.2322834625],
-            [2668968.6843831833, 1283351.7034120716],
-            [2717123.999343813, 1283351.7034120716],
-            [2717123.999343813, 1223858.2322834625],
-          ],
-        ],
-        srs: 2056,
-      },
+      geometry: {...geometry, srs: this.configService.mapConfig.defaultMapConfig.srsId},
     };
   }
 }

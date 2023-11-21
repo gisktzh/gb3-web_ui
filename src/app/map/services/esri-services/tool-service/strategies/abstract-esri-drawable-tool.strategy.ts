@@ -38,7 +38,7 @@ export abstract class AbstractEsriDrawableToolStrategy implements EsriToolStrate
     this.completeDrawingCallbackHandler = completeDrawingCallbackHandler;
   }
 
-  public cancel(): void {
+  public cancel() {
     this.sketchViewModel.cancel();
   }
 

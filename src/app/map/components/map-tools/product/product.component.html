@@ -1,0 +1,10 @@
+<div class="product">
+  <mat-checkbox class="product__checkbox"></mat-checkbox>
+  <div class="product__description">
+    <p class="product__description__header">{{ product.name }}</p>
+    <p>
+      <span class="product__description__content__title">Verfügbarkeit:</span>
+      <span>{{ product.ogd ? 'Frei (OGD)' : 'Eingeschränkt (NOGD)' }}</span>
+    </p>
+  </div>
+</div>

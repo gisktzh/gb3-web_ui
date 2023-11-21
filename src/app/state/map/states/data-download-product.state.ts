@@ -1,6 +1,9 @@
-import {Products} from '../../../shared/interfaces/geoshop-product.interface';
-import {HasLoadingState} from '../../../shared/interfaces/has-loading-state.interface';
+import {Product} from '../../../shared/interfaces/gb3-geoshop-product.interface';
+import {LoadingState} from '../../../shared/types/loading-state.type';
 
-export interface DataDownloadProductState extends HasLoadingState {
-  products: Products | undefined;
+export interface DataDownloadProductState {
+  products: Product[];
+  productsLoadingState: LoadingState;
+  relevantProductIds: string[];
+  relevantProductIdsLoadingState: LoadingState;
 }

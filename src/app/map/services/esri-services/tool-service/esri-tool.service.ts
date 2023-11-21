@@ -48,6 +48,8 @@ import Multipoint from '@arcgis/core/geometry/Multipoint';
 import Polyline from '@arcgis/core/geometry/Polyline';
 import Polygon from '@arcgis/core/geometry/Polygon';
 import {EsriTextDrawingStrategy} from './strategies/drawing/esri-text-drawing.strategy';
+import {Gb3GeoshopMunicipalitiesService} from '../../../../shared/services/apis/gb3/gb3-geoshop-municipalities.service';
+import {selectCanton} from '../../../../state/map/reducers/data-download-region.reducer';
 
 const HANDLE_GROUP_KEY = 'EsriToolService';
 
@@ -80,6 +82,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
     private readonly esriSymbolizationService: EsriSymbolizationService,
     private readonly configService: ConfigService,
     private readonly dialogService: MatDialog,
+    private readonly geoshopMunicipalitiesService: Gb3GeoshopMunicipalitiesService,
   ) {
     this.initSubscriptions();
   }
@@ -395,10 +398,23 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
         );
         break;
       case 'select-canton':
-        this.toolStrategy = new EsriCantonSelectionStrategy(layer, areaStyle, completeSelectionCallbackHandler);
+        this.toolStrategy = new EsriCantonSelectionStrategy(
+          layer,
+          areaStyle,
+          completeSelectionCallbackHandler,
+          this.store.select(selectCanton),
+          this.configService,
+        );
         break;
       case 'select-municipality':
-        this.toolStrategy = new EsriMunicipalitySelectionStrategy(layer, areaStyle, completeSelectionCallbackHandler, this.dialogService);
+        this.toolStrategy = new EsriMunicipalitySelectionStrategy(
+          layer,
+          areaStyle,
+          completeSelectionCallbackHandler,
+          this.dialogService,
+          this.configService,
+          this.geoshopMunicipalitiesService,
+        );
         break;
     }
   }
