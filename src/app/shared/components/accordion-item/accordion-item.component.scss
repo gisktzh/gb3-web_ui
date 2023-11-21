@@ -1,4 +1,5 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'mixins/helpers.mixin' as mixins;
 
 .accordion-item {
   .accordion-item__content {
@@ -15,6 +16,7 @@
 
     &--dark {
       border-color: ktzh-variables.$zh-black20;
+      color: ktzh-variables.$zh-black60;
     }
 
     .accordion-item__content__header {
@@ -23,9 +25,18 @@
       align-items: center;
       justify-content: space-between;
       cursor: pointer;
+      font-size: 18px;
+
+      &--opened {
+        color: ktzh-variables.$zh-black100;
+      }
 
       .accordion-item__content__header__icon-wrapper {
         display: flex;
+      }
+
+      .accordion-item__content__header__text {
+        @include mixins.multiline-ellipsis(1);
       }
     }
 
