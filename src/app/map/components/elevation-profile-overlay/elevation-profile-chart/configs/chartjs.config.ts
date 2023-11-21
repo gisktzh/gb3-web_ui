@@ -20,12 +20,14 @@ export const ELEVATION_PROFILE_CHARTJS_OPTIONS: ElevationProfileChartJsOptions =
   },
   scales: {
     x: {
+      title: {text: 'Distanz [m]', display: true},
       grid: {
         drawOnChartArea: true,
       },
       type: 'linear',
     },
     y: {
+      title: {text: 'Höhe über Meer [m]', display: true},
       grid: {
         drawOnChartArea: true,
       },

@@ -1,10 +1,24 @@
-<map-overlay (closeEvent)="close()" [isVisible]="isVisible" [showPrintButton]="false" location="right" overlayTitle="Höhenprofil">
+<map-overlay
+  (closeEvent)="close()"
+  [isVisible]="isVisible"
+  [showPrintButton]="false"
+  class="elevation-profile-overlay"
+  location="right"
+  overlayTitle="Höhenprofil"
+>
   <loading-and-process-bar [loadingState]="loadingState"></loading-and-process-bar>
-  <div *ngIf="loadingState === 'loaded'">
+  <div *ngIf="loadingState === 'loaded'" class="elevation-profile-overlay__content">
     <elevation-profile-chart [elevationProfileData]="elevationProfileData"></elevation-profile-chart>
     <elevation-profile-statistics
       *ngIf="elevationProfileData"
       [statistics]="elevationProfileData.statistics"
     ></elevation-profile-statistics>
+    <mat-divider></mat-divider>
+    <div class="elevation-profile-overlay__content__credits">
+      <span>Datenquelle:</span>
+      <a href="https://api3.geo.admin.ch/services/sdiservices.html#profile" rel="noreferrer noopener" target="_blank">GeoAdmin API</a>
+      <span>|</span>
+      <a href="https://www.geo.admin.ch/" rel="noreferrer noopener" target="_blank">Bundesamt für Landestopografie swisstopo</a>
+    </div>
   </div>
 </map-overlay>
