@@ -89,6 +89,16 @@ export class DataDownloadProductEffects {
     {dispatch: false},
   );
 
+  public initializeDataDownloadFilters$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(DataDownloadProductActions.setProducts),
+      map(({products}) => {
+        const dataDownloadFilters = this.geoshopProductsService.extractProductFilterValues(products);
+        return DataDownloadProductActions.setFilters({dataDownloadFilters});
+      }),
+    );
+  });
+
   constructor(
     private readonly actions$: Actions,
     private readonly store: Store,

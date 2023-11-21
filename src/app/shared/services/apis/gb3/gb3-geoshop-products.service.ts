@@ -4,6 +4,8 @@ import {Observable, of} from 'rxjs';
 import {ProductsListData, ProductsRelevantListData} from '../../../models/gb3-api-generated.interfaces';
 import {map} from 'rxjs/operators';
 import {Product, ProductFormat, ProductsList} from '../../../interfaces/gb3-geoshop-product.interface';
+import {DataDownloadFilter} from '../../../interfaces/data-download-filter.interface';
+import {ProductAvailability} from '../../../enums/product-availability.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -22,6 +24,43 @@ export class Gb3GeoshopProductsService extends Gb3ApiService {
     }
     const productsRelevantListData = this.get<ProductsRelevantListData>(this.createUrlForRelevantProducts(guids));
     return productsRelevantListData.pipe(map((data) => data.products));
+  }
+
+  public extractProductFilterValues(products: Product[]): DataDownloadFilter[] {
+    const uniqueValues: Map<Pick<DataDownloadFilter, 'category' | 'label'>, Set<string>> = new Map();
+
+    products.forEach((product) => {
+      this.configService.filterConfig.dataDownload.forEach((dataDownloadFilter) => {
+        let values: string[];
+        switch (dataDownloadFilter.category) {
+          case 'availability':
+            // special case: it's either ogd or nogd
+            values = Object.values(ProductAvailability);
+            break;
+          case 'format':
+            values = product.formats.map((format) => format.description);
+            break;
+          case 'theme':
+            values = product.themes;
+            break;
+        }
+        if (!uniqueValues.has(dataDownloadFilter)) {
+          uniqueValues.set(dataDownloadFilter, new Set());
+        }
+        const valueSet = uniqueValues.get(dataDownloadFilter)!;
+        values.forEach((value) => valueSet.add(value));
+      });
+    });
+
+    const dataDownloadFilters: DataDownloadFilter[] = [];
+    uniqueValues.forEach((uniqueValue, category) =>
+      dataDownloadFilters.push({
+        category: category.category,
+        label: category.label,
+        filterValues: Array.from(uniqueValue).map((uniqueFilterValue) => ({value: uniqueFilterValue, isActive: false})),
+      }),
+    );
+    return dataDownloadFilters;
   }
 
   private createUrlForRelevantProducts(guids: string[]): string {

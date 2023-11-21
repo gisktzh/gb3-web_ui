@@ -6,6 +6,15 @@
     </button>
   </div>
   <div class="data-download-dialog__content" *ngIf="order">
+    <div>
+      <search
+        class="data-download-dialog__content__search__bar TODO"
+        placeholderText="Nach Geodaten filtern"
+        (changeSearchTermEvent)="setFilterTerm($event)"
+        (clearSearchTermEvent)="clearFilterTerm()"
+        (openFilterEvent)="openFilterWindow()"
+      ></search>
+    </div>
     <loading-and-process-bar [loadingState]="savingState"></loading-and-process-bar>
 
     <h2>Relevante Produkte</h2>
@@ -16,7 +25,8 @@
 
     <h2>Alle Produkte</h2>
     <div *ngIf="productsLoadingState === 'loaded'">
-      <product *ngFor="let product of products" [product]="product"></product>
+      <product *ngFor="let product of filteredProducts" [product]="product"></product>
+      <p *ngIf="filteredProducts.length === 0" class="mat-body-2">Keine Resultate zu diesem Filter.</p>
     </div>
     <loading-and-process-bar [loadingState]="productsLoadingState"></loading-and-process-bar>
   </div>

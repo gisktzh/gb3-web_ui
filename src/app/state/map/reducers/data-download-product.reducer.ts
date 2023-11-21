@@ -1,6 +1,7 @@
 import {createFeature, createReducer, on} from '@ngrx/store';
 import {DataDownloadProductState} from '../states/data-download-product.state';
 import {DataDownloadProductActions} from '../actions/data-download-product.actions';
+import {produce} from 'immer';
 
 export const dataDownloadProductFeatureKey = 'dataDownloadProduct';
 
@@ -9,6 +10,8 @@ export const initialState: DataDownloadProductState = {
   productsLoadingState: undefined,
   relevantProductIds: [],
   relevantProductIdsLoadingState: undefined,
+  filterTerm: undefined,
+  filters: [],
 };
 
 export const dataDownloadProductFeature = createFeature({
@@ -36,6 +39,39 @@ export const dataDownloadProductFeature = createFeature({
     on(DataDownloadProductActions.setRelevantProductsIdsError, (state): DataDownloadProductState => {
       return {...state, relevantProductIds: initialState.relevantProductIds, relevantProductIdsLoadingState: 'error'};
     }),
+    on(DataDownloadProductActions.setFilterTerm, (state, {term}): DataDownloadProductState => {
+      return {...state, filterTerm: term};
+    }),
+    on(DataDownloadProductActions.clearFilterTerm, (state): DataDownloadProductState => {
+      return {...state, filterTerm: initialState.filterTerm};
+    }),
+    on(DataDownloadProductActions.setFilters, (state, {dataDownloadFilters}): DataDownloadProductState => {
+      return {...state, filters: dataDownloadFilters};
+    }),
+    on(
+      DataDownloadProductActions.resetFilters,
+      produce((draft) => {
+        draft.filters.forEach((filter) => filter.filterValues.forEach((f) => (f.isActive = false)));
+      }),
+    ),
+    on(
+      DataDownloadProductActions.toggleFilter,
+      produce((draft, {category, value}) => {
+        draft.filters
+          .find((filter) => filter.category === category)!
+          .filterValues.filter((filterValue) => filterValue.value === value)
+          .forEach((filterValue) => {
+            filterValue.isActive = !filterValue.isActive;
+          });
+      }),
+    ),
+    on(
+      DataDownloadProductActions.resetFiltersAndTerm,
+      produce((draft) => {
+        draft.filters.forEach((filter) => filter.filterValues.forEach((f) => (f.isActive = false)));
+        draft.filterTerm = initialState.filterTerm;
+      }),
+    ),
   ),
 });
 
@@ -47,4 +83,6 @@ export const {
   selectProductsLoadingState,
   selectRelevantProductIds,
   selectRelevantProductIdsLoadingState,
+  selectFilters,
+  selectFilterTerm,
 } = dataDownloadProductFeature;
