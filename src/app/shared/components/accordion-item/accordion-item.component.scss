@@ -36,7 +36,7 @@
       }
 
       .accordion-item__content__header__text {
-        // @include mixins.multiline-ellipsis(1);
+        @include mixins.multiline-ellipsis(1);
       }
     }
 
