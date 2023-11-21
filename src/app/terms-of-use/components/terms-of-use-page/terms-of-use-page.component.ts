@@ -5,7 +5,7 @@ import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 
 const TERMS_OF_USE_SUMMARY =
-  'Geoinformationen sind verlässliche, raumbezogene Daten und Karten. Sie dienen als wichtige Grundlage für vielfältige Aufgaben und Entscheide und stehen über verschiedene Portale zur Einsicht und Nutzung bereit.';
+  'Diese Nutzungshinweise gelten für die Website zh.ch und deren direkte Unterseiten, ausser, es wird für eine konkrete Seite bzw. für ein konkretes Angebot ausdrücklich etwas Abweichendes bekannt gegeben.';
 
 @Component({
   selector: 'terms-of-use-page',
