@@ -22,6 +22,7 @@ export interface FeatureInfoResultLayer extends HasMetaDataLink {
 export interface FeatureInfoResult extends HasMetaDataLink {
   topic: string;
   layers: FeatureInfoResultLayer[];
+  isSingleLayer: boolean;
 }
 
 interface FeatureInfoWrapper {

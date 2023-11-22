@@ -42,15 +42,8 @@ export const selectFeatureInfosForDisplay = createSelector<
       to be handled as a default layer itself.
       */
 
-    // todo: There is a bug if a topic with only 1 layer AND this layer is also added as single layer - this will return true for all.
-    let isSingleLayer = false;
-    if (featureInfo.layers.length === 1) {
-      const singleLayerId = Gb2WmsActiveMapItem.createSingleLayerId(topic.id, featureInfo.layers[0].layer);
-      isSingleLayer = activeMapItems.some((a) => a.isSingleLayer && a.id === singleLayerId);
-    }
-
     let featureInfoResultDisplay: FeatureInfoResultDisplay;
-    if (isSingleLayer) {
+    if (featureInfo.isSingleLayer) {
       featureInfoResultDisplay = {
         id: Gb2WmsActiveMapItem.createSingleLayerId(topic.id, featureInfo.layers[0].layer),
         title: featureInfo.layers[0].title,

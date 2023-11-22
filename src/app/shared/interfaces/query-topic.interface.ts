@@ -4,4 +4,5 @@ export interface QueryTopic {
    * Comma-separated list of layernames to be queried
    */
   layersToQuery: string;
+  isSingleLayer: boolean;
 }

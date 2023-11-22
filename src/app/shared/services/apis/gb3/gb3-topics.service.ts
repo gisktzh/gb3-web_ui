@@ -52,10 +52,12 @@ export class Gb3TopicsService extends Gb3ApiService {
   }
 
   public loadFeatureInfos(x: number, y: number, queryTopics: QueryTopic[]): Observable<FeatureInfoResponse[]> {
-    const requestUrls = queryTopics.map(({topic, layersToQuery}) => this.createFeatureInfoUrl(topic, x, y, layersToQuery));
-    return forkJoin(requestUrls.map((requestUrl) => this.get<TopicsFeatureInfoDetailData>(requestUrl))).pipe(
-      map((data) => this.mapTopicsFeatureInfoDetailDataToFeatureInfoResponse(data)),
+    const featureInfoRequests = queryTopics.map((queryTopic) =>
+      this.get<TopicsFeatureInfoDetailData>(this.createFeatureInfoUrl(queryTopic.topic, x, y, queryTopic.layersToQuery)).pipe(
+        map((data) => this.mapTopicsFeatureInfoDetailDataToFeatureInfoResponse(data, queryTopic.isSingleLayer)),
+      ),
     );
+    return forkJoin(featureInfoRequests);
   }
 
   /**
@@ -280,44 +282,44 @@ export class Gb3TopicsService extends Gb3ApiService {
    * Maps the generic TopicsFeatureInfoDetailData type from the API endpoint to the internal interface FeatureInfoResponse
    */
   private mapTopicsFeatureInfoDetailDataToFeatureInfoResponse(
-    topicsFeatureInfoDetailData: TopicsFeatureInfoDetailData[],
-  ): FeatureInfoResponse[] {
-    return topicsFeatureInfoDetailData.map((data): FeatureInfoResponse => {
-      const {feature_info: featureInfo} = data;
+    topicsFeatureInfoDetailData: TopicsFeatureInfoDetailData,
+    isSingleLayer: boolean,
+  ): FeatureInfoResponse {
+    const {feature_info: featureInfo} = topicsFeatureInfoDetailData;
 
-      return {
-        featureInfo: {
-          x: featureInfo.query_position.x,
-          y: featureInfo.query_position.y,
-          results: {
-            topic: featureInfo.results.topic,
-            metaDataLink: featureInfo.results.geolion_karten_uuid
-              ? this.createMapTabLink(featureInfo.results.geolion_karten_uuid)
-              : undefined,
-            layers: featureInfo.results.layers.map((layer) => {
-              return {
-                title: layer.title,
-                layer: layer.layer,
-                metaDataLink: layer.geolion_geodatensatz_uuid ? this.createDatasetTabLink(layer.geolion_geodatensatz_uuid) : undefined,
-                features: layer.features.map((feature) => {
-                  return {
-                    fid: feature.fid,
-                    bbox: feature.bbox,
-                    fields: feature.fields.map((field) => {
-                      return {
-                        label: field.label,
-                        value: field.value,
-                      } as FeatureInfoResultFeatureField;
-                    }),
-                    // The cast is required because the API typing delivers "type: string" which is not narrow enough
-                    geometry: {...(feature.geometry as Geometry), srs: FEATURE_INFO_SRS},
-                  };
-                }),
-              };
-            }),
-          },
+    return {
+      featureInfo: {
+        x: featureInfo.query_position.x,
+        y: featureInfo.query_position.y,
+        results: {
+          isSingleLayer: isSingleLayer,
+          topic: featureInfo.results.topic,
+          metaDataLink: featureInfo.results.geolion_karten_uuid
+            ? this.createMapTabLink(featureInfo.results.geolion_karten_uuid)
+            : undefined,
+          layers: featureInfo.results.layers.map((layer) => {
+            return {
+              title: layer.title,
+              layer: layer.layer,
+              metaDataLink: layer.geolion_geodatensatz_uuid ? this.createDatasetTabLink(layer.geolion_geodatensatz_uuid) : undefined,
+              features: layer.features.map((feature) => {
+                return {
+                  fid: feature.fid,
+                  bbox: feature.bbox,
+                  fields: feature.fields.map((field) => {
+                    return {
+                      label: field.label,
+                      value: field.value,
+                    } as FeatureInfoResultFeatureField;
+                  }),
+                  // The cast is required because the API typing delivers "type: string" which is not narrow enough
+                  geometry: {...(feature.geometry as Geometry), srs: FEATURE_INFO_SRS},
+                };
+              }),
+            };
+          }),
         },
-      };
-    });
+      },
+    };
   }
 }
