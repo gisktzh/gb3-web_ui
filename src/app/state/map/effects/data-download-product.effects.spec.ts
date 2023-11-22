@@ -177,7 +177,7 @@ describe('DataDownloadProductEffects', () => {
       effects.loadProducts$.subscribe();
       tick();
 
-      expect(geoshopProductsServiceSpy).toHaveBeenCalledTimes(0);
+      expect(geoshopProductsServiceSpy).not.toHaveBeenCalled();
       store.select(selectProducts).subscribe((capabilities) => {
         expect(capabilities).toEqual(expectedProducts);
       });
@@ -186,7 +186,7 @@ describe('DataDownloadProductEffects', () => {
   });
 
   describe('throwProductsError$', () => {
-    it('throws a ProdcutsCouldNotBeLoaded error', (done: DoneFn) => {
+    it('throws a ProductsCouldNotBeLoaded error', (done: DoneFn) => {
       const expectedOriginalError = new Error('My cabbages!!!');
 
       actions$ = of(DataDownloadProductActions.setProductsError({error: expectedOriginalError}));

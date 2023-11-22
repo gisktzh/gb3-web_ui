@@ -1,6 +1,6 @@
 import {Inject, Injectable} from '@angular/core';
 import {Actions, concatLatestFrom, createEffect, ofType} from '@ngrx/effects';
-import {catchError, map, mergeMap} from 'rxjs/operators';
+import {catchError, delay, map, mergeMap} from 'rxjs/operators';
 import {DataDownloadOrderActions} from '../actions/data-download-order.actions';
 import {MapUiActions} from '../actions/map-ui.actions';
 import {MAP_SERVICE} from '../../../app.module';
@@ -23,6 +23,8 @@ import {
 import {selectMapSideDrawerContent} from '../reducers/map-ui.reducer';
 import {selectProducts} from '../reducers/data-download-product.reducer';
 import {HttpErrorResponse} from '@angular/common/http';
+
+const ZOOM_DELAY_IN_MS = 200;
 
 @Injectable()
 export class DataDownloadOrderEffects {
@@ -68,6 +70,8 @@ export class DataDownloadOrderEffects {
         ofType(MapUiActions.showMapSideDrawerContent),
         filter(({mapSideDrawerContent}) => mapSideDrawerContent === 'data-download'),
         concatLatestFrom(() => this.store.select(selectSelection)),
+        // this delay is used to wait for the map side drawer to be fully open before starting to zoom
+        delay(ZOOM_DELAY_IN_MS),
         tap(([_, selection]) => {
           if (selection) {
             this.mapService.zoomToExtent(
@@ -217,9 +221,6 @@ export class DataDownloadOrderEffects {
                 statusJob.status?.status.type !== 'failure' &&
                 !statusJob.isAborted &&
                 !statusJob.isCancelled);
-            console.log(
-              `continuePollingStatusJob: ${continuePollingStatusJob}, consecutive errors: ${statusJob?.consecutiveErrorsCount}, is aborted: ${statusJob?.isAborted}`,
-            );
             return continuePollingStatusJob;
           }),
           switchMap(() =>
