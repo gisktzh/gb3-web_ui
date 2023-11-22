@@ -1,5 +1,6 @@
 import {GeometryWithSrs} from './geojson-types-with-srs.interface';
 import {HasMetaDataLink} from './metaDataLink.interface';
+import {SingleLayer} from './single-layer.interface';
 
 export interface FeatureInfoResultFeatureField {
   label: string;
@@ -19,10 +20,9 @@ export interface FeatureInfoResultLayer extends HasMetaDataLink {
   features: FeatureInfoResultFeature[];
 }
 
-export interface FeatureInfoResult extends HasMetaDataLink {
+export interface FeatureInfoResult extends HasMetaDataLink, SingleLayer {
   topic: string;
   layers: FeatureInfoResultLayer[];
-  isSingleLayer: boolean;
 }
 
 export interface FeatureInfoQueryLocation {
