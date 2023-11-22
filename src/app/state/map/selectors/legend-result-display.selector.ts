@@ -27,19 +27,8 @@ export const selectLegendItemsForDisplay = createSelector(
         return;
       }
 
-      /*
-      Currently, we cannot simply find out if we have a single layer legend request. If only one item is in the legendItem, we need to
-      check whether an activeMapItem exists as a single layer with this layer - otherwise, it's a topic with just one layer and this needs
-      to be handled as a default layer itself.
-      */
-      let isSingleLayer = false;
-      if (legendItem.layers.length === 1) {
-        const singleLayerId = Gb2WmsActiveMapItem.createSingleLayerId(topic.id, legendItem.layers[0].layer);
-        isSingleLayer = activeMapItems.some((a) => a.isSingleLayer && a.id === singleLayerId);
-      }
-
       let legendDisplay: LegendDisplay;
-      if (isSingleLayer) {
+      if (legendItem.isSingleLayer) {
         legendDisplay = {
           id: Gb2WmsActiveMapItem.createSingleLayerId(topic.id, legendItem.layers[0].layer),
           mapId: topic.id,

@@ -45,10 +45,12 @@ export class Gb3TopicsService extends Gb3ApiService {
   }
 
   public loadLegends(queryTopics: QueryTopic[]): Observable<LegendResponse[]> {
-    const requestUrls = queryTopics.map((queryLegend) => this.createLegendUrl(queryLegend));
-    return forkJoin(requestUrls.map((requestUrl) => this.get<TopicsLegendDetailData>(requestUrl))).pipe(
-      map((data) => this.mapTopicsLegendDetailDataToLegendResponse(data)),
+    const legendRequests = queryTopics.map((queryTopic) =>
+      this.get<TopicsLegendDetailData>(this.createLegendUrl(queryTopic)).pipe(
+        map((data) => this.mapTopicsLegendDetailDataToLegendResponse(data, queryTopic.isSingleLayer)),
+      ),
     );
+    return forkJoin(legendRequests);
   }
 
   public loadFeatureInfos(x: number, y: number, queryTopics: QueryTopic[]): Observable<FeatureInfoResponse[]> {
@@ -92,31 +94,34 @@ export class Gb3TopicsService extends Gb3ApiService {
   /**
    * Maps the generic TopicsLegendDetailData type from the API endpoint to the internal interface LegendResponse
    */
-  private mapTopicsLegendDetailDataToLegendResponse(topicsLegendDetailData: TopicsLegendDetailData[]): LegendResponse[] {
-    return topicsLegendDetailData.map((data): LegendResponse => {
-      const {legend} = data;
-      return {
-        legend: {
-          topic: legend.topic,
-          metaDataLink: legend.geolion_karten_uuid ? this.createMapTabLink(legend.geolion_karten_uuid) : undefined,
-          layers: legend.layers.map((layer): Layer => {
-            return {
-              layer: layer.layer,
-              title: layer.title,
-              geolion: layer.geolion_gds ?? undefined,
-              attribution: layer.attribution,
-              metaDataLink: layer.geolion_geodatensatz_uuid ? this.createDatasetTabLink(layer.geolion_geodatensatz_uuid) : undefined,
-              layerClasses: layer.layer_classes?.map((layerClass): LayerClass => {
-                return {
-                  label: layerClass.label,
-                  image: layerClass.image,
-                };
-              }),
-            };
-          }),
-        },
-      };
-    });
+  private mapTopicsLegendDetailDataToLegendResponse(
+    topicsLegendDetailData: TopicsLegendDetailData,
+    isSingleLayer: boolean,
+  ): LegendResponse {
+    const {legend} = topicsLegendDetailData;
+
+    return {
+      legend: {
+        topic: legend.topic,
+        isSingleLayer: isSingleLayer,
+        metaDataLink: legend.geolion_karten_uuid ? this.createMapTabLink(legend.geolion_karten_uuid) : undefined,
+        layers: legend.layers.map((layer): Layer => {
+          return {
+            layer: layer.layer,
+            title: layer.title,
+            geolion: layer.geolion_gds ?? undefined,
+            attribution: layer.attribution,
+            metaDataLink: layer.geolion_geodatensatz_uuid ? this.createDatasetTabLink(layer.geolion_geodatensatz_uuid) : undefined,
+            layerClasses: layer.layer_classes?.map((layerClass): LayerClass => {
+              return {
+                label: layerClass.label,
+                image: layerClass.image,
+              };
+            }),
+          };
+        }),
+      },
+    };
   }
 
   private createMapTabLink(uuid: string): string {

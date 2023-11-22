@@ -1,4 +1,5 @@
 import {HasMetaDataLink} from './metaDataLink.interface';
+import {SingleLayer} from './single-layer.interface';
 
 export interface LayerClass {
   label: string;
@@ -13,7 +14,7 @@ export interface Layer extends HasMetaDataLink {
   attribution?: string;
 }
 
-export interface Legend extends HasMetaDataLink {
+export interface Legend extends HasMetaDataLink, SingleLayer {
   topic: string;
   layers: Layer[];
 }
@@ -24,12 +25,11 @@ export interface LegendResponse {
 
 export interface LegendLayer extends Omit<Layer, 'geolion' | 'attribution'>, HasMetaDataLink {}
 
-export interface LegendDisplay extends HasMetaDataLink {
+export interface LegendDisplay extends HasMetaDataLink, SingleLayer {
   id: string;
   title: string;
   icon?: string;
   layers: LegendLayer[];
-  isSingleLayer: boolean;
   /**
    * The Topic ID in the API - used for printing as id might also be our internal single layer id.
    */
