@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {LayerCatalogActions} from '../../../../state/map/actions/layer-catalog.actions';
@@ -11,7 +11,7 @@ import {selectDataDownloadIncompleteOrderStatusJobs} from '../../../../state/map
   templateUrl: './data-download-status-queue.component.html',
   styleUrls: ['./data-download-status-queue.component.scss'],
 })
-export class DataDownloadStatusQueueComponent {
+export class DataDownloadStatusQueueComponent implements OnInit, OnDestroy {
   public isMinimized = false;
   public statusJobs: OrderStatusJob[] = [];
 

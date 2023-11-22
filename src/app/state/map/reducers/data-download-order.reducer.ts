@@ -73,6 +73,8 @@ export const dataDownloadOrderFeature = createFeature({
             loadingState: 'loading',
             consecutiveErrorsCount: 0,
             isCompleted: false,
+            isAborted: false,
+            isCancelled: false,
           });
         }
       }),
@@ -104,6 +106,24 @@ export const dataDownloadOrderFeature = createFeature({
         const existingStatusJob = draft.statusJobs.find((statusJob) => statusJob.id === orderId);
         if (existingStatusJob) {
           existingStatusJob.isCompleted = true;
+        }
+      }),
+    ),
+    on(
+      DataDownloadOrderActions.abortOrderStatus,
+      produce((draft, {orderId}) => {
+        const existingStatusJob = draft.statusJobs.find((statusJob) => statusJob.id === orderId);
+        if (existingStatusJob) {
+          existingStatusJob.isAborted = true;
+        }
+      }),
+    ),
+    on(
+      DataDownloadOrderActions.cancelOrderStatus,
+      produce((draft, {orderId}) => {
+        const existingStatusJob = draft.statusJobs.find((statusJob) => statusJob.id === orderId);
+        if (existingStatusJob) {
+          existingStatusJob.isCancelled = true;
         }
       }),
     ),

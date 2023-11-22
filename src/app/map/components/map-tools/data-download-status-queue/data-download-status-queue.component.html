@@ -13,38 +13,47 @@
       <div class="data-download-status-queue__content__status-job__status">
         <div class="data-download-status-queue__content__status-job__status__icon">
           <mat-spinner
-            *ngIf="statusJob.status?.status?.type !== 'failure' && statusJob.status?.status?.type !== 'success'"
+            *ngIf="
+              statusJob.status?.status?.type !== 'failure' &&
+              statusJob.status?.status?.type !== 'success' &&
+              !statusJob.isAborted &&
+              !statusJob.isCancelled
+            "
             mode="indeterminate"
             color="primary"
             diameter="16"
           ></mat-spinner>
           <mat-icon *ngIf="statusJob.status?.status?.type === 'success'" color="primary">check_circle</mat-icon>
-          <mat-icon *ngIf="statusJob.status?.status?.type === 'failure'" color="warn">error</mat-icon>
+          <mat-icon *ngIf="statusJob.status?.status?.type === 'failure' || statusJob.isAborted" color="warn">error</mat-icon>
+          <mat-icon *ngIf="statusJob.isCancelled">warning</mat-icon>
         </div>
         <p
           class="data-download-status-queue__content__status-job__status__text"
           [matTooltip]="statusJob | dataDownloadOrderStatus"
           showTooltipIfTruncated
-          [ngClass]="{'data-download-status-queue__content__status-job__status__text--error': statusJob.status?.status?.type === 'failure'}"
+          [ngClass]="{
+            'data-download-status-queue__content__status-job__status__text--error':
+              statusJob.status?.status?.type === 'failure' || statusJob.isAborted
+          }"
         >
           {{ statusJob | dataDownloadOrderStatus }}
         </p>
         <a
-          *ngIf="statusJob.status && statusJob.status.status.type === 'success'"
+          *ngIf="statusJob.status?.status?.type === 'success'"
           class="data-download-status-queue__content__status-job__status__icon"
-          [href]="statusJob.status.orderId | dataDownloadOrderDownloadUrl"
+          [href]="statusJob.id | dataDownloadOrderDownloadUrl"
           [title]="'Download: ' + statusJob.title"
           rel="noopener noreferrer"
           target="_blank"
-          (click)="downloadOrder(statusJob.status.orderId)"
+          (click)="downloadOrder(statusJob.id)"
           mat-icon-button
         >
           <mat-icon svgIcon="ktzh_download"></mat-icon>
         </a>
         <button
-          *ngIf="statusJob.status && statusJob.status.status.type === 'failure'"
+          *ngIf="statusJob.status?.status?.type === 'failure' || statusJob.isAborted"
           class="data-download-status-queue__content__status-job__status__icon"
-          (click)="removeFailedOrder(statusJob.status.orderId)"
+          (click)="removeFailedOrder(statusJob.id)"
           matTooltip="Entfernen"
           mat-icon-button
         >

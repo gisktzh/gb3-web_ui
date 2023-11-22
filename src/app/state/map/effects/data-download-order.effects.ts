@@ -17,10 +17,12 @@ import {
   OrderCouldNotBeSent,
   OrderSelectionIsInvalid,
   OrderStatusCouldNotBeSent,
+  OrderStatusWasAborted,
   OrderUnsupportedGeometry,
 } from '../../../shared/errors/data-download.errors';
 import {selectMapSideDrawerContent} from '../reducers/map-ui.reducer';
 import {selectProducts} from '../reducers/data-download-product.reducer';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Injectable()
 export class DataDownloadOrderEffects {
@@ -141,7 +143,11 @@ export class DataDownloadOrderEffects {
       return this.actions$.pipe(
         ofType(DataDownloadOrderActions.setSendOrderError),
         tap(({error}) => {
-          throw new OrderCouldNotBeSent(error);
+          let message = undefined;
+          if (error instanceof HttpErrorResponse && !!error.statusText) {
+            message = error.statusText;
+          }
+          throw new OrderCouldNotBeSent(error, message);
         }),
       );
     },
@@ -203,12 +209,17 @@ export class DataDownloadOrderEffects {
             const statusJob = statusJobs.find((activeStatusJob) => activeStatusJob.id === orderId);
             // Status job termination criteria:
             //  - a status job finishes either with status type 'success' or 'failure'
-            //  - circuit breaker: too many failed request in a row will cancel the job
+            //  - the user cancels the status job manually
+            //  - circuit breaker: too many failed request in a row will abort the job
             const continuePollingStatusJob =
               !statusJob ||
-              (statusJob.consecutiveErrorsCount < this.configService.dataDownloadConfig.maximumNumberOfConsecutiveStatusJobErrors &&
-                statusJob.status?.status.type !== 'success' &&
-                statusJob.status?.status.type !== 'failure');
+              (statusJob.status?.status.type !== 'success' &&
+                statusJob.status?.status.type !== 'failure' &&
+                !statusJob.isAborted &&
+                !statusJob.isCancelled);
+            console.log(
+              `continuePollingStatusJob: ${continuePollingStatusJob}, consecutive errors: ${statusJob?.consecutiveErrorsCount}, is aborted: ${statusJob?.isAborted}`,
+            );
             return continuePollingStatusJob;
           }),
           switchMap(() =>
@@ -223,6 +234,32 @@ export class DataDownloadOrderEffects {
       ),
     );
   });
+
+  public abortOrderStatusAfterTooManyConsecutiveErrors$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(DataDownloadOrderActions.setOrderStatusError),
+      concatLatestFrom(() => this.store.select(selectStatusJobs)),
+      map(([{error, orderId}, statusJobs]) => ({error, statusJob: statusJobs.find((activeStatusJob) => activeStatusJob.id === orderId)})),
+      filter(
+        ({error, statusJob}) =>
+          !!statusJob &&
+          statusJob.consecutiveErrorsCount >= this.configService.dataDownloadConfig.maximumNumberOfConsecutiveStatusJobErrors,
+      ),
+      map(({error, statusJob}) => DataDownloadOrderActions.abortOrderStatus({error, orderId: statusJob!.id})),
+    );
+  });
+
+  public throwOrderStatusRefreshAbortError$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(DataDownloadOrderActions.abortOrderStatus),
+        tap(({error}) => {
+          throw new OrderStatusWasAborted(error);
+        }),
+      );
+    },
+    {dispatch: false},
+  );
 
   constructor(
     private readonly actions$: Actions,
