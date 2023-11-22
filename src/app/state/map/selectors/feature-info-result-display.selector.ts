@@ -51,6 +51,7 @@ export const selectFeatureInfosForDisplay = createSelector<
         icon: undefined,
         isSingleLayer: true,
         metaDataLink: featureInfo.metaDataLink,
+        mapId: topic.id,
       };
     } else {
       featureInfoResultDisplay = {
@@ -60,6 +61,7 @@ export const selectFeatureInfosForDisplay = createSelector<
         icon: topic.icon,
         isSingleLayer: false,
         metaDataLink: featureInfo.metaDataLink,
+        mapId: topic.id,
       };
     }
 
