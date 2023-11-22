@@ -1,3 +1,3 @@
-export interface SingleLayer {
+export interface IsSingleLayer {
   isSingleLayer: boolean;
 }

@@ -1,5 +1,5 @@
 import {HasMetaDataLink} from './metaDataLink.interface';
-import {SingleLayer} from './single-layer.interface';
+import {IsSingleLayer} from './single-layer.interface';
 
 export interface LayerClass {
   label: string;
@@ -14,7 +14,7 @@ export interface Layer extends HasMetaDataLink {
   attribution?: string;
 }
 
-export interface Legend extends HasMetaDataLink, SingleLayer {
+export interface Legend extends HasMetaDataLink, IsSingleLayer {
   topic: string;
   layers: Layer[];
 }
@@ -25,7 +25,7 @@ export interface LegendResponse {
 
 export interface LegendLayer extends Omit<Layer, 'geolion' | 'attribution'>, HasMetaDataLink {}
 
-export interface LegendDisplay extends HasMetaDataLink, SingleLayer {
+export interface LegendDisplay extends HasMetaDataLink, IsSingleLayer {
   id: string;
   title: string;
   icon?: string;
