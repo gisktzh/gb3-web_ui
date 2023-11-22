@@ -1,5 +1,5 @@
 import {provideMockActions} from '@ngrx/effects/testing';
-import {fakeAsync, TestBed, tick} from '@angular/core/testing';
+import {fakeAsync, flush, TestBed} from '@angular/core/testing';
 import {EMPTY, Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
@@ -11,10 +11,14 @@ import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
 import {DataDownloadProductEffects} from './data-download-product.effects';
 import {DataDownloadProductActions} from '../actions/data-download-product.actions';
 import {selectProducts} from '../reducers/data-download-product.reducer';
-import {ProductsCouldNotBeLoaded} from '../../../shared/errors/data-download.errors';
-import {Municipality, Product, ProductsList} from '../../../shared/interfaces/gb3-geoshop-product.interface';
+import {ProductsCouldNotBeLoaded, RelevantProductsCouldNotBeLoaded} from '../../../shared/errors/data-download.errors';
+import {Product, ProductsList} from '../../../shared/interfaces/gb3-geoshop-product.interface';
 import {Gb3GeoshopProductsService} from '../../../shared/services/apis/gb3/gb3-geoshop-products.service';
 import {MapUiActions} from '../actions/map-ui.actions';
+import {selectItems} from '../reducers/active-map-item.reducer';
+import {ActiveMapItem} from '../../../map/models/active-map-item.model';
+import {createGb2WmsMapItemMock, createUuidFromId} from '../../../testing/map-testing/active-map-item-test.utils';
+import {DataDownloadFilter} from '../../../shared/interfaces/data-download-filter.interface';
 
 describe('DataDownloadProductEffects', () => {
   const productsMock: Product[] = [
@@ -69,30 +73,6 @@ describe('DataDownloadProductEffects', () => {
     products: productsMock,
   };
 
-  // TODO GB3-651: Use on later unit tests or remove
-  const municipalitiesMock: Municipality[] = [
-    {
-      bfsNo: 1,
-      name: 'Kyoshi Island',
-    },
-    {
-      bfsNo: 2,
-      name: 'Omashu',
-    },
-    {
-      bfsNo: 3,
-      name: 'Ba Sing Se',
-    },
-    {
-      bfsNo: 4,
-      name: 'Southern Air Temple',
-    },
-    {
-      bfsNo: 5,
-      name: 'Northern Water Tribe',
-    },
-  ];
-
   let actions$: Observable<Action>;
   let store: MockStore;
   let effects: DataDownloadProductEffects;
@@ -119,36 +99,64 @@ describe('DataDownloadProductEffects', () => {
     store.resetSelectors();
   });
 
+  describe('loadAllProducts$', () => {
+    it('dispatches DataDownloadProductActions.loadProducts() after loading products and relevant products', (done: DoneFn) => {
+      const expectedAction = DataDownloadProductActions.loadProducts();
+
+      actions$ = of(DataDownloadProductActions.loadProductsAndRelevantProducts());
+      effects.loadAllProducts$.subscribe((action) => {
+        expect(action).toEqual(expectedAction);
+        done();
+      });
+    });
+  });
+
+  describe('loadAllRelevantProducts$', () => {
+    it('dispatches DataDownloadProductActions.loadRelevantProductsIds() after loading products and relevant products', (done: DoneFn) => {
+      const expectedAction = DataDownloadProductActions.loadRelevantProductsIds();
+
+      actions$ = of(DataDownloadProductActions.loadProductsAndRelevantProducts());
+      effects.loadAllRelevantProducts$.subscribe((action) => {
+        expect(action).toEqual(expectedAction);
+        done();
+      });
+    });
+  });
+
   describe('loadProducts$', () => {
     it('dispatches DataDownloadActions.setProducts() with the service response on success', (done: DoneFn) => {
-      const expectedProducts = productsListMock.products;
+      const products = productsListMock.products;
       store.overrideSelector(selectProducts, []);
       const geoshopProductsServiceSpy = spyOn(geoshopProductsService, 'loadProductList').and.returnValue(of(productsListMock));
 
+      const expectedAction = DataDownloadProductActions.setProducts({products});
+
       actions$ = of(DataDownloadProductActions.loadProducts());
       effects.loadProducts$.subscribe((action) => {
-        expect(geoshopProductsServiceSpy).toHaveBeenCalledTimes(1);
-        expect(action).toEqual(DataDownloadProductActions.setProducts({products: expectedProducts}));
+        expect(geoshopProductsServiceSpy).toHaveBeenCalledOnceWith();
+        expect(action).toEqual(expectedAction);
         done();
       });
     });
 
     it('dispatches DataDownloadActions.setProductsError() with the error on failure', (done: DoneFn) => {
-      const expectedError = new Error('My cabbages!!!');
+      const error = new Error('My cabbages!!!');
       store.overrideSelector(selectProducts, []);
-      const geoshopProductsServiceSpy = spyOn(geoshopProductsService, 'loadProductList').and.returnValue(throwError(() => expectedError));
+      const geoshopProductsServiceSpy = spyOn(geoshopProductsService, 'loadProductList').and.returnValue(throwError(() => error));
+
+      const expectedAction = DataDownloadProductActions.setProductsError({error});
 
       actions$ = of(DataDownloadProductActions.loadProducts());
       effects.loadProducts$.subscribe((action) => {
-        expect(geoshopProductsServiceSpy).toHaveBeenCalledTimes(1);
-        expect(action).toEqual(DataDownloadProductActions.setProductsError({error: expectedError}));
+        expect(geoshopProductsServiceSpy).toHaveBeenCalledOnceWith();
+        expect(action).toEqual(expectedAction);
         done();
       });
     });
 
     it('dispatches nothing if the products are already in the store', fakeAsync(async () => {
-      const expectedProducts = productsMock;
-      store.overrideSelector(selectProducts, expectedProducts);
+      const products = productsMock;
+      store.overrideSelector(selectProducts, products);
       const geoshopProductsServiceSpy = spyOn(geoshopProductsService, 'loadProductList').and.returnValue(
         of({
           timestamp: 'nope',
@@ -175,25 +183,26 @@ describe('DataDownloadProductEffects', () => {
 
       actions$ = of(DataDownloadProductActions.loadProducts());
       effects.loadProducts$.subscribe();
-      tick();
+      flush();
 
       expect(geoshopProductsServiceSpy).not.toHaveBeenCalled();
-      store.select(selectProducts).subscribe((capabilities) => {
-        expect(capabilities).toEqual(expectedProducts);
+      store.select(selectProducts).subscribe((stateProducts) => {
+        expect(stateProducts).toEqual(products);
       });
-      tick();
+      flush();
     }));
   });
 
   describe('throwProductsError$', () => {
-    it('throws a ProductsCouldNotBeLoaded error', (done: DoneFn) => {
-      const expectedOriginalError = new Error('My cabbages!!!');
+    it('throws a ProductsCouldNotBeLoaded error after setting a products error', (done: DoneFn) => {
+      const originalError = new Error('My cabbages!!!');
 
-      actions$ = of(DataDownloadProductActions.setProductsError({error: expectedOriginalError}));
+      const expectedError = new ProductsCouldNotBeLoaded(originalError);
+
+      actions$ = of(DataDownloadProductActions.setProductsError({error: originalError}));
       effects.throwProductsError$
         .pipe(
           catchError((error) => {
-            const expectedError = new ProductsCouldNotBeLoaded(expectedOriginalError);
             expect(error).toEqual(expectedError);
             done();
             return EMPTY;
@@ -210,6 +219,82 @@ describe('DataDownloadProductEffects', () => {
       actions$ = of(MapUiActions.hideMapSideDrawerContent());
       effects.resetFiltersAndTermAfterClosingSideDrawer$.subscribe((action) => {
         expect(action).toEqual(expected);
+        done();
+      });
+    });
+  });
+
+  describe('loadRelevantProductsIds$', () => {
+    const activeMapItems: ActiveMapItem[] = [
+      createGb2WmsMapItemMock('id1'),
+      createGb2WmsMapItemMock('id2'),
+      createGb2WmsMapItemMock('id3'),
+    ];
+
+    it('dispatches DataDownloadProductActions.loadRelevantProductsIds() with the service response on success', (done: DoneFn) => {
+      store.overrideSelector(selectItems, activeMapItems);
+      const productIds = ['prodId1'];
+      const geoshopProductsServiceSpy = spyOn(geoshopProductsService, 'loadRelevanteProducts').and.returnValue(of(productIds));
+
+      const expectedGuids = activeMapItems.map((item) => createUuidFromId(item.id));
+      const expectedAction = DataDownloadProductActions.setRelevantProductsIds({productIds});
+
+      actions$ = of(DataDownloadProductActions.loadRelevantProductsIds());
+      effects.loadRelevantProductsIds$.subscribe((action) => {
+        expect(geoshopProductsServiceSpy).toHaveBeenCalledOnceWith(expectedGuids);
+        expect(action).toEqual(expectedAction);
+        done();
+      });
+    });
+
+    it('dispatches DataDownloadProductActions.setRelevantProductsIdsError() with the error on failure', (done: DoneFn) => {
+      store.overrideSelector(selectItems, activeMapItems);
+      const error = new Error('My cabbages!!!');
+      const geoshopProductsServiceSpy = spyOn(geoshopProductsService, 'loadRelevanteProducts').and.returnValue(throwError(() => error));
+
+      const expectedGuids = activeMapItems.map((item) => createUuidFromId(item.id));
+      const expectedAction = DataDownloadProductActions.setRelevantProductsIdsError({error});
+
+      actions$ = of(DataDownloadProductActions.loadRelevantProductsIds());
+      effects.loadRelevantProductsIds$.subscribe((action) => {
+        expect(geoshopProductsServiceSpy).toHaveBeenCalledOnceWith(expectedGuids);
+        expect(action).toEqual(expectedAction);
+        done();
+      });
+    });
+  });
+
+  describe('throwRelevantProductsIdsError$', () => {
+    it('throws a RelevantProductsCouldNotBeLoaded error after setting a relevant products ids error', (done: DoneFn) => {
+      const originalError = new Error('My cabbages!!!');
+
+      const expectedError = new RelevantProductsCouldNotBeLoaded(originalError);
+
+      actions$ = of(DataDownloadProductActions.setRelevantProductsIdsError({error: originalError}));
+      effects.throwRelevantProductsIdsError$
+        .pipe(
+          catchError((error) => {
+            expect(error).toEqual(expectedError);
+            done();
+            return EMPTY;
+          }),
+        )
+        .subscribe();
+    });
+  });
+
+  describe('initializeDataDownloadFilters$', () => {
+    it('dispatches DataDownloadProductActions.setFilters() after setting products', (done: DoneFn) => {
+      const products = productsMock;
+      const dataDownloadFilters: DataDownloadFilter[] = [{category: 'theme', filterValues: [], label: 'label'}];
+      const geoshopProductsServiceSpy = spyOn(geoshopProductsService, 'extractProductFilterValues').and.returnValue(dataDownloadFilters);
+
+      const expectedAction = DataDownloadProductActions.setFilters({dataDownloadFilters});
+
+      actions$ = of(DataDownloadProductActions.setProducts({products}));
+      effects.initializeDataDownloadFilters$.subscribe((action) => {
+        expect(geoshopProductsServiceSpy).toHaveBeenCalledOnceWith(products);
+        expect(action).toEqual(expectedAction);
         done();
       });
     });
