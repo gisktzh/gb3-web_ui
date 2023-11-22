@@ -88,7 +88,7 @@ describe('GeoshopApiService', () => {
         expect(response.timestampDateString).toBe(apiOrderResponseMock.timestamp);
         expect(response.statusUrl).toBe(apiOrderResponseMock.status_url);
         expect(response.downloadUrl).toBe(apiOrderResponseMock.download_url);
-        expect(postCallSpy).toHaveBeenCalledOnceWith(`${configService.apiConfig.geoshopApi.baseUrl}/order`, expectedDirectApiOrder, {
+        expect(postCallSpy).toHaveBeenCalledOnceWith(`${configService.apiConfig.geoshopApi.baseUrl}/orders`, expectedDirectApiOrder, {
           headers: undefined,
         });
         done();
@@ -121,7 +121,7 @@ describe('GeoshopApiService', () => {
         expect(response.timestampDateString).toBe(apiOrderResponseMock.timestamp);
         expect(response.statusUrl).toBe(apiOrderResponseMock.status_url);
         expect(response.downloadUrl).toBe(apiOrderResponseMock.download_url);
-        expect(postCallSpy).toHaveBeenCalledOnceWith(`${configService.apiConfig.geoshopApi.baseUrl}/order`, expectedIndirectApiOrder, {
+        expect(postCallSpy).toHaveBeenCalledOnceWith(`${configService.apiConfig.geoshopApi.baseUrl}/orders`, expectedIndirectApiOrder, {
           headers: undefined,
         });
         done();

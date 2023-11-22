@@ -30,6 +30,7 @@ describe('data download order reducer', () => {
   const statusJobsMock: OrderStatusJob[] = [
     {
       id: '1',
+      title: 'fire nation',
       loadingState: 'loaded',
       status: {
         orderId: 'fire nation attacks',
@@ -40,9 +41,14 @@ describe('data download order reducer', () => {
         finishedDateString: 'no',
         internalId: 1337,
       },
+      consecutiveErrorsCount: 0,
+      isCompleted: false,
+      isAborted: false,
+      isCancelled: false,
     },
     {
       id: '2',
+      title: 'balance',
       loadingState: 'loading',
       status: {
         orderId: 'balance restored',
@@ -54,9 +60,14 @@ describe('data download order reducer', () => {
         finishedDateString: '',
         internalId: 42,
       },
+      consecutiveErrorsCount: 0,
+      isCompleted: false,
+      isAborted: false,
+      isCancelled: false,
     },
     {
       id: '3',
+      title: 'sokka',
       loadingState: 'error',
       status: {
         orderId: 'sokka is not hungry',
@@ -67,6 +78,10 @@ describe('data download order reducer', () => {
         finishedDateString: 'never',
         internalId: 42_1337,
       },
+      consecutiveErrorsCount: 0,
+      isCompleted: false,
+      isAborted: false,
+      isCancelled: false,
     },
   ];
 
@@ -132,33 +147,10 @@ describe('data download order reducer', () => {
   });
 
   describe('setOrderStatusResponse', () => {
-    it('adds the order status to the list if no other status with the ID exists', () => {
-      const orderStatus: OrderStatus = {
-        orderId: 'selling cabbages',
-        status: {
-          type: 'failure',
-          message: 'my cabbages!11!!',
-        },
-        submittedDateString: 'February 21, 2005',
-        finishedDateString: 'July 19, 2008',
-        internalId: 666,
-      };
-      const action = DataDownloadOrderActions.setOrderStatusResponse({orderStatus});
-      const state = reducer(existingState, action);
-
-      const expectedOrderStatus: OrderStatusJob = {
-        id: orderStatus.orderId,
-        loadingState: 'loading',
-        status: orderStatus,
-      };
-
-      expect(state.selection).toBe(existingState.selection);
-      expect(state.statusJobs).toEqual([...existingState.statusJobs, expectedOrderStatus]);
-    });
-
     it('replaces the existing order status in the list if there is a status with the same ID', () => {
+      const existingStatusJob = existingState.statusJobs[1];
       const orderStatus: OrderStatus = {
-        orderId: existingState.statusJobs[1].id,
+        orderId: existingStatusJob.id,
         status: {
           type: 'failure',
           message: 'my cabbages!11!!',
@@ -172,8 +164,13 @@ describe('data download order reducer', () => {
 
       const expectedOrderStatusJob: OrderStatusJob = {
         id: orderStatus.orderId,
+        title: existingStatusJob.title,
         loadingState: 'loaded',
         status: orderStatus,
+        consecutiveErrorsCount: existingStatusJob.consecutiveErrorsCount,
+        isCompleted: existingStatusJob.isCompleted,
+        isAborted: existingStatusJob.isAborted,
+        isCancelled: existingStatusJob.isCancelled,
       };
       const expectedOrderStatusJobs: OrderStatusJob[] = [existingState.statusJobs[0], expectedOrderStatusJob, existingState.statusJobs[2]];
 
