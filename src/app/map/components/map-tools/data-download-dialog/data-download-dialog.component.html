@@ -1,0 +1,37 @@
+<div class="data-download-dialog">
+  <div class="data-download-dialog__header">
+    <h1 class="data-download-dialog__header__title">Datenbezug</h1>
+    <button mat-icon-button (click)="cancel()" [disabled]="savingState === 'loading'">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div class="data-download-dialog__content" *ngIf="order">
+    <loading-and-process-bar [loadingState]="savingState"></loading-and-process-bar>
+
+    <h2>Relevante Produkte</h2>
+    <div *ngIf="relevantProductsLoadingState === 'loaded'">
+      <product *ngFor="let relevantProduct of relevantProducts" [product]="relevantProduct"></product>
+    </div>
+    <loading-and-process-bar [loadingState]="relevantProductsLoadingState"></loading-and-process-bar>
+
+    <h2>Alle Produkte</h2>
+    <div *ngIf="productsLoadingState === 'loaded'">
+      <product *ngFor="let product of products" [product]="product"></product>
+    </div>
+    <loading-and-process-bar [loadingState]="productsLoadingState"></loading-and-process-bar>
+  </div>
+  <div class="data-download-dialog__footer">
+    <button class="data-download-dialog__footer__button" (click)="cancel()" [disabled]="savingState === 'loading'" mat-button>
+      Abbrechen
+    </button>
+    <button
+      class="data-download-dialog__footer__button"
+      (click)="download()"
+      color="accent"
+      [disabled]="savingState === 'loading' || !order || order.products.length === 0"
+      mat-button
+    >
+      Download
+    </button>
+  </div>
+</div>

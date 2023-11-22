@@ -1,5 +1,5 @@
 {
-  "name": "gb3-poc",
+  "name": "gb3-frontend",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -50,7 +50,7 @@
     "@types/geojson": "^7946.0.10",
     "@types/node": "^20.8",
     "@types/terraformer__arcgis": "^2.0.2",
-    "@types/twitter-for-web": "^0.0.4",
+    "@types/twitter-for-web": "^0.0.5",
     "@types/uuid": "^9.0.4",
     "angular-oauth2-oidc": "^15.0.1",
     "angular-resizable-element": "^7.0.2",

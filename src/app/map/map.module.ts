@@ -12,8 +12,7 @@ import {ActiveMapItemsComponent} from './components/active-map-items/active-map-
 import {ApiDialogWrapperComponent} from './components/api-dialog-wrapper/api-dialog-wrapper.component';
 import {BottomSheetItemComponent} from './components/bottom-sheet-overlay/bottom-sheet-item/bottom-sheet-item.component';
 import {BottomSheetOverlayComponent} from './components/bottom-sheet-overlay/bottom-sheet-overlay.component';
-import {DataDownloadSelectMunicipalityDialogComponent} from './components/data-download-select-municipality-dialog/data-download-select-municipality-dialog.component';
-import {DataDownloadDialogComponent} from './components/data-download/data-download-dialog/data-download-dialog.component';
+import {DataDownloadDialogComponent} from './components/map-tools/data-download-dialog/data-download-dialog.component';
 import {FavouriteCreationDialogComponent} from './components/favourite-creation-dialog/favourite-creation-dialog.component';
 import {FavouriteDeletionDialogComponent} from './components/favourite-deletion-dialog/favourite-deletion-dialog.component';
 import {FeatureInfoContentComponent} from './components/feature-info-overlay/feature-info-content/feature-info-content.component';
@@ -54,8 +53,6 @@ import {MapToolsMobileComponent} from './components/map-tools/map-tools-mobile/m
 import {MapToolsComponent} from './components/map-tools/map-tools.component';
 import {MeasurementToolsComponent} from './components/map-tools/measurement-tools/measurement-tools.component';
 import {PrintDialogComponent} from './components/map-tools/print-dialog/print-dialog.component';
-import {PrintDispatcherComponent} from './components/print-overlay/print-dispatcher/print-dispatcher.component';
-import {PrintOverlayComponent} from './components/print-overlay/print-overlay.component';
 import {SearchWindowMobileComponent} from './components/search-window-mobile/search-window-mobile.component';
 import {ResultGroupComponent} from './components/search-window/result-groups/result-group/result-group.component';
 import {ResultGroupsComponent} from './components/search-window/result-groups/result-groups.component';
@@ -67,6 +64,8 @@ import {TimeSliderComponent} from './components/time-slider/time-slider.componen
 import {MapPageComponent} from './map-page.component';
 import {MapRoutingModule} from './map-routing.module';
 import {MapRotationPipe} from './pipes/map-rotation.pipe';
+import {DataDownloadSelectMunicipalityDialogComponent} from './components/map-tools/data-download-select-municipality-dialog/data-download-select-municipality-dialog.component';
+import {ProductComponent} from './components/map-tools/product/product.component';
 
 @NgModule({
   declarations: [
@@ -81,8 +80,6 @@ import {MapRotationPipe} from './pipes/map-rotation.pipe';
     MapDataCatalogueComponent,
     MapOverlayListItemComponent,
     FeatureInfoItemComponent,
-    PrintOverlayComponent,
-    PrintDispatcherComponent,
     CoordinateScaleInputsComponent,
     MapControlsComponent,
     BasemapSelectorComponent,
@@ -127,13 +124,14 @@ import {MapRotationPipe} from './pipes/map-rotation.pipe';
     BasemapSelectionListComponent,
     MapToolsDesktopComponent,
     MapToolsMobileComponent,
-    DataDownloadSelectMunicipalityDialogComponent,
     UiToggleComponent,
     TextDrawingToolInputComponent,
     SearchWindowMobileComponent,
     ShareLinkMobileComponent,
     MapRotationButtonComponent,
     MapRotationPipe,
+    DataDownloadSelectMunicipalityDialogComponent,
+    ProductComponent,
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule],
   exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent],

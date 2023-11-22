@@ -2,7 +2,7 @@
 @use 'mixins/helpers.mixin' as mixins;
 
 :host ::ng-deep {
-  .map-tools-desktop__button {
+  .map-tools-desktop__list__button {
     @include mixins.tool-button;
   }
 }
@@ -13,7 +13,7 @@
   flex-direction: row-reverse;
   align-items: flex-start;
 
-  .map-tools-desktop-list {
+  .map-tools-desktop__list {
     @include mixins.map-element-box-shadow;
     width: 44px;
     padding: 2px;
@@ -22,7 +22,7 @@
     flex-direction: column;
     background-color: ktzh-variables.$zh-background-color;
 
-    .map-tools-desktop-list__divider {
+    .map-tools-desktop__list__divider {
       width: 50%;
       align-self: center;
     }
