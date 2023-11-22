@@ -1,6 +1,5 @@
 import {Component} from '@angular/core';
 import {MainPage} from '../../enums/main-page.enum';
-import {SupportPage} from '../../enums/support-page.enum';
 import {environment} from '../../../../environments/environment';
 
 @Component({
