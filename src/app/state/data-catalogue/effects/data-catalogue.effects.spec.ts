@@ -102,6 +102,7 @@ describe('DataCatalogueEffects', () => {
       ];
       spyOnProperty(configService, 'filterConfig', 'get').and.returnValue({
         dataCatalogue: mockConfig,
+        dataDownload: [],
       });
 
       actions$ = of(DataCatalogueActions.setCatalogue({items: mockItems}));
@@ -122,6 +123,7 @@ describe('DataCatalogueEffects', () => {
       const mockConfig: DataCatalogueFilterConfiguration[] = [{key: 'outputFormat', label: 'Exists only on DatasetDetails :)'}];
       spyOnProperty(configService, 'filterConfig', 'get').and.returnValue({
         dataCatalogue: mockConfig,
+        dataDownload: [],
       });
 
       actions$ = of(DataCatalogueActions.setCatalogue({items: mockItems}));
@@ -146,6 +148,7 @@ describe('DataCatalogueEffects', () => {
       ];
       spyOnProperty(configService, 'filterConfig', 'get').and.returnValue({
         dataCatalogue: mockConfig,
+        dataDownload: [],
       });
 
       actions$ = of(DataCatalogueActions.setCatalogue({items: mockItems}));
