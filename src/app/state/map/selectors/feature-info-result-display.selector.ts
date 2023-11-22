@@ -10,7 +10,7 @@ export const selectFeatureInfosForDisplay = createSelector(
   selectData,
   selectMaps,
   selectItems,
-  (featureInfoResult, maps, activeMapItems) => {
+  (featureInfoResult, maps, activeMapItems): FeatureInfoResultDisplay[] => {
     const featureInfoResultDisplays: FeatureInfoResultDisplay[] = [];
     featureInfoResult.forEach((featureInfo) => {
       // Abort if a featureinfo returned no hits for any of its layers.
