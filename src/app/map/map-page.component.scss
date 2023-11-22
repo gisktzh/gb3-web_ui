@@ -150,6 +150,10 @@
     }
   }
 
+  .map-container__bottom-sheet-overlay--hidden {
+    display: none;
+  }
+
   .map-container__all-map-items-container--mobile {
     position: absolute;
     bottom: 100px;
