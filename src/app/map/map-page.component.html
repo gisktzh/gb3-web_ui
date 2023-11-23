@@ -16,7 +16,6 @@
   <legend-overlay
     class="map-container__legend-overlay"
     [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
-    (printLegendEvent)="showPrint('legend')"
   ></legend-overlay>
   <div class="map-container__all-map-items-container" *ngIf="screenMode !== 'mobile'">
     <div class="map-container__all-map-items-container__inner-container">
@@ -59,7 +58,6 @@
     *ngIf="screenMode !== 'mobile'"
     class="map-container__feature-info-overlay"
     [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
-    (printFeatureInfoEvent)="showPrint('featureInfo')"
   ></feature-info-overlay>
   <search-window
     class="map-container__search-window"
@@ -75,7 +73,7 @@
     }"
     class="map-container__map-tools"
   ></map-tools>
-  <div class="map-container__all-map-items-container--mobile">
+  <div class="map-container__all-map-items-container--mobile map-container__all-map-items-container--mobile--right">
     <button
       *ngIf="screenMode === 'mobile'"
       mat-icon-button
@@ -87,9 +85,14 @@
       <mat-icon svgIcon="ktzh_map_management"></mat-icon>
     </button>
   </div>
+  <div
+    *ngIf="rotation !== 0 && screenMode === 'mobile'"
+    class="map-container__all-map-items-container--mobile map-container__all-map-items-container--mobile--left"
+  >
+    <map-rotation-button [rotation]="rotation"></map-rotation-button>
+  </div>
   <bottom-sheet-overlay *ngIf="screenMode === 'mobile'"></bottom-sheet-overlay>
 </mat-drawer-container>
-<print-overlay></print-overlay>
 <onboarding-guide [introductionImage]="onboardingGuideImage"></onboarding-guide>
 <center-anchor anchorName="map.start.tour"></center-anchor>
 <center-anchor anchorName="map.feature.info"></center-anchor>

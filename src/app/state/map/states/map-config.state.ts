@@ -4,6 +4,7 @@ export interface MapConfigState {
   isMapServiceInitialized: boolean;
   center: {x: number; y: number};
   scale: number;
+  rotation: number;
   srsId: SupportedSrs;
   ready: boolean;
   scaleSettings: {minScale: number; maxScale: number; calculatedMinScale: number; calculatedMaxScale: number};

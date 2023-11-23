@@ -11,8 +11,8 @@ import MarkerSymbol from '@arcgis/core/symbols/MarkerSymbol';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import {UnsupportedGeometryType, UnsupportedSymbolizationType} from './errors/esri.errors';
 import Symbol from '@arcgis/core/symbols/Symbol';
-import {FavouriteGb3DrawingStyle} from '../../../shared/interfaces/favourite.interface';
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
+import {Gb3StyleRepresentation} from '../../../shared/interfaces/internal-drawing-representation.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -22,10 +22,14 @@ export class EsriSymbolizationService {
 
   constructor(private readonly configService: ConfigService) {}
 
-  public createSymbolizationForDrawingLayer(geometry: GeometryWithSrs, drawingLayer: DrawingLayer): __esri.Symbol {
+  public createSymbolizationForDrawingLayer(geometry: GeometryWithSrs, drawingLayer: DrawingLayer, label?: string): __esri.Symbol {
     switch (geometry.type) {
       case 'Point':
       case 'MultiPoint':
+        // this is only required for drawings since labels for measurements will be regenerated afterwards
+        if (drawingLayer === 'drawings' && label) {
+          return this.createTextSymbolizationWithText(drawingLayer, label);
+        }
         return this.createPointSymbolization(drawingLayer);
       case 'LineString':
       case 'MultiLineString':
@@ -37,6 +41,18 @@ export class EsriSymbolizationService {
         throw new UnsupportedGeometryType(geometry.type);
       }
     }
+  }
+
+  /**
+   * Creates a TextSymbol and sets its property to the supplied text.
+   * @param drawingLayer
+   * @param text
+   */
+  public createTextSymbolizationWithText(drawingLayer: DrawingLayer, text: string): TextSymbol {
+    const textSymbology = this.createTextSymbolization(drawingLayer);
+    textSymbology.text = text;
+
+    return textSymbology;
   }
 
   public createTextSymbolization(drawingLayer: DrawingLayer): TextSymbol {
@@ -97,7 +113,7 @@ export class EsriSymbolizationService {
   }
 
   // eslint-disable-next-line @typescript-eslint/ban-types
-  public extractGb3SymbolizationFromSymbol(symbol: Symbol): FavouriteGb3DrawingStyle {
+  public extractGb3SymbolizationFromSymbol(symbol: Symbol): Gb3StyleRepresentation {
     // todo: GB3-604/GB3-608, styling
     switch (symbol.type) {
       case 'simple-marker':
@@ -125,6 +141,10 @@ export class EsriSymbolizationService {
           strokeOpacity: (symbol as SimpleFillSymbol).outline.color.a,
           strokeColor: (symbol as SimpleFillSymbol).outline.color.toHex(),
           type: 'polygon',
+        };
+      case 'text':
+        return {
+          type: 'text',
         };
       default:
         throw new UnsupportedSymbolizationType(symbol.type);

@@ -13,7 +13,11 @@
     ></search>
   </div>
 
-  <div class="start-page-search__results" *ngIf="searchTerms.length > 0">
+  <div
+    class="start-page-search__results"
+    *ngIf="searchTerms.length > 0"
+    [ngClass]="{'start-page-search__results--mobile': screenMode === 'mobile'}"
+  >
     <div>
       <mat-chip-row
         *ngFor="let activeFilterValue of activeSearchFilterValues"

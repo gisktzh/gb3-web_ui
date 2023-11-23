@@ -37,7 +37,7 @@
           [loadingState]="favouritesLoadingState"
           [numberOfItems]="filteredFavourites.length"
           [disabled]="favouritesLoadingState === 'loading' || favouritesLoadingState === 'error'"
-          [isFilter]="true"
+          [showBadge]="!!filterString && favouritesLoadingState !== 'loading'"
         >
           <!-- 'Favourite' content -->
           <p *ngIf="filteredFavourites.length === 0"><em>Noch keine Favoriten hinzugefügt.</em></p>
@@ -62,7 +62,7 @@
           [filterString]="filterString"
           [expanded]="!!filterString && topic.maps.length <= autoOpenThreshold"
           [loadingState]="catalogueLoadingState"
-          [isFilter]="true"
+          [showBadge]="!!filterString"
         >
           <!-- 'Topic' content -->
 

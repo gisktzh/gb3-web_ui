@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "gb3-poc": {
+    "gb3-frontend": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -192,13 +192,13 @@
           },
           "configurations": {
             "production": {
-              "browserTarget": "gb3-poc:build:production"
+              "browserTarget": "gb3-frontend:build:production"
             },
             "development": {
-              "browserTarget": "gb3-poc:build:development"
+              "browserTarget": "gb3-frontend:build:development"
             },
             "development-local-gb2": {
-              "browserTarget": "gb3-poc:build:development-local-gb2"
+              "browserTarget": "gb3-frontend:build:development-local-gb2"
             }
           },
           "defaultConfiguration": "development"
@@ -206,7 +206,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "gb3-poc:build"
+            "browserTarget": "gb3-frontend:build"
           }
         },
         "test": {

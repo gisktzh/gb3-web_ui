@@ -4,12 +4,29 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 > # Table of Contents
 >
-> 1. [Development server](#development-server)
-> 2. [Docker](#docker)
-> 3. [Local Backend](#local-backend)
-> 4. [Naming conventions](#naming-conventions)
-> 5. [Code documentation](#code-documentation)
-> 6. [Git conventions](#git-conventions)
+> 1. [Node version](#node-version)
+> 2. [Development server](#development-server)
+> 3. [Docker](#docker)
+> 4. [Local Backend](#local-backend)
+> 5. [Naming conventions](#naming-conventions)
+> 6. [Code documentation](#code-documentation)
+> 7. [Git conventions](#git-conventions)
+
+## Node version
+
+We strive to use the most recent LTS version. Whenever an update is due, make sure you adjust the following:
+
+- `Dockerfile`
+- `.azure-pipelines/templates/variables.yaml` (**Warning!** There are cases where the pipeline does not yet have the
+  newest node version; in that case, leave it as before and ignore the pipeline warnings)
+- `.nvmrc`
+- `package.json`, update the `@typed/node` package to the matching version; run `npm install` afterwards to freshly generate the `package-lock.json`
+- `renovate.json` update both `"matchManagers": ["dockerfile"]` and `"matchManagers": ["npm"]` to the matching version
+
+You should point it towards the latest minor update (e.g. 20.x), such that we can control potentially larger updates.
+
+If you're using [nvm](https://github.com/nvm-sh/nvm) on a Unix-based environment, you can conveniently use `nvm use` in
+the root directory and it will automatically set the node version to the correct one.
 
 ## Development server
 

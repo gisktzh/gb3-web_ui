@@ -6,86 +6,99 @@ import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {RouterTestingModule} from '@angular/router/testing';
 import {catchError} from 'rxjs/operators';
-import {ErrorHandler} from '@angular/core';
 import {MAP_SERVICE} from '../../../app.module';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
-import {GeoshopApiService} from '../../../shared/services/apis/geoshop/services/geoshop-api.service';
 import {DataDownloadProductEffects} from './data-download-product.effects';
 import {DataDownloadProductActions} from '../actions/data-download-product.actions';
-import {Products} from '../../../shared/interfaces/geoshop-product.interface';
 import {selectProducts} from '../reducers/data-download-product.reducer';
 import {ProductsCouldNotBeLoaded} from '../../../shared/errors/data-download.errors';
+import {Municipality, Product, ProductsList} from '../../../shared/interfaces/gb3-geoshop-product.interface';
+import {Gb3GeoshopProductsService} from '../../../shared/services/apis/gb3/gb3-geoshop-products.service';
 
 describe('DataDownloadProductEffects', () => {
-  const productsMock: Products = {
-    timestampDateString: '2023-10-09T11:50:02',
-    formats: [
-      {
-        id: 1,
-        name: 'Water (.nas)',
-      },
-      {
-        id: 2,
-        name: 'Earth (.erd)',
-      },
-      {
-        id: 3,
-        name: 'Fire (.hot)',
-      },
-      {
-        id: 4,
-        name: 'Air (.air)',
-      },
-    ],
-    products: [
-      {
-        id: 112,
-        name: 'Aang',
-        description: 'Avatar',
-        type: 'Vektor',
-        formats: [1, 2, 3, 4],
-      },
-      {
-        id: 14,
-        name: 'Katara',
-        description: 'Waterbender',
-        type: 'Raster',
-        formats: [1],
-      },
-    ],
-    municipalities: [
-      {
-        id: '0001',
-        name: 'Kyoshi Island',
-      },
-      {
-        id: '0002',
-        name: 'Omashu',
-      },
-      {
-        id: '0003',
-        name: 'Ba Sing Se',
-      },
-      {
-        id: '0004',
-        name: 'Southern Air Temple',
-      },
-      {
-        id: '0005',
-        name: 'Northern Water Tribe',
-      },
-    ],
+  const productsMock: Product[] = [
+    {
+      id: '112',
+      ogd: true,
+      themes: ['Elements', 'Bender'],
+      gisZHNr: 1337,
+      keywords: ['Avatar', 'Master of four elements', 'Airbender'],
+      nonOgdProductUrl: undefined,
+      geolionGeodatensatzUuid: 'abcd-efgh-ijkl-mnop',
+      name: 'Aang',
+      formats: [
+        {
+          id: 1,
+          description: 'Water (.nas)',
+        },
+        {
+          id: 2,
+          description: 'Earth (.erd)',
+        },
+        {
+          id: 3,
+          description: 'Fire (.hot)',
+        },
+        {
+          id: 4,
+          description: 'Air (.air)',
+        },
+      ],
+    },
+    {
+      id: '14',
+      ogd: false,
+      themes: ['Elements', 'Bender'],
+      gisZHNr: 1337,
+      keywords: ['Waterbender'],
+      nonOgdProductUrl: 'www.example.com',
+      geolionGeodatensatzUuid: 'abcd-efgh-ijkl-mnop',
+      name: 'Katara',
+      formats: [
+        {
+          id: 1,
+          description: 'Water (.nas)',
+        },
+      ],
+    },
+  ];
+
+  const productsListMock: ProductsList = {
+    timestamp: '01.01.1970-13:37',
+    products: productsMock,
   };
+
+  // TODO GB3-651: Use on later unit tests or remove
+  const municipalitiesMock: Municipality[] = [
+    {
+      bfsNo: 1,
+      name: 'Kyoshi Island',
+    },
+    {
+      bfsNo: 2,
+      name: 'Omashu',
+    },
+    {
+      bfsNo: 3,
+      name: 'Ba Sing Se',
+    },
+    {
+      bfsNo: 4,
+      name: 'Southern Air Temple',
+    },
+    {
+      bfsNo: 5,
+      name: 'Northern Water Tribe',
+    },
+  ];
 
   let actions$: Observable<Action>;
   let store: MockStore;
   let effects: DataDownloadProductEffects;
-  let geoshopApiService: GeoshopApiService;
-  let errorHandlerMock: jasmine.SpyObj<ErrorHandler>;
+  let geoshopProductsService: Gb3GeoshopProductsService;
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
-    errorHandlerMock = jasmine.createSpyObj<ErrorHandler>(['handleError']);
 
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterTestingModule],
@@ -93,12 +106,11 @@ describe('DataDownloadProductEffects', () => {
         DataDownloadProductEffects,
         provideMockActions(() => actions$),
         provideMockStore(),
-        {provide: ErrorHandler, useValue: errorHandlerMock},
         {provide: MAP_SERVICE, useClass: MapServiceStub},
       ],
     });
     effects = TestBed.inject(DataDownloadProductEffects);
-    geoshopApiService = TestBed.inject(GeoshopApiService);
+    geoshopProductsService = TestBed.inject(Gb3GeoshopProductsService);
     store = TestBed.inject(MockStore);
   });
 
@@ -108,12 +120,13 @@ describe('DataDownloadProductEffects', () => {
 
   describe('loadProducts$', () => {
     it('dispatches DataDownloadActions.setProducts() with the service response on success', (done: DoneFn) => {
-      const expectedProducts = productsMock;
-      const geoshopApiServiceSpy = spyOn(geoshopApiService, 'loadProducts').and.returnValue(of(expectedProducts));
+      const expectedProducts = productsListMock.products;
+      store.overrideSelector(selectProducts, []);
+      const geoshopProductsServiceSpy = spyOn(geoshopProductsService, 'loadProductList').and.returnValue(of(productsListMock));
 
       actions$ = of(DataDownloadProductActions.loadProducts());
       effects.loadProducts$.subscribe((action) => {
-        expect(geoshopApiServiceSpy).toHaveBeenCalledTimes(1);
+        expect(geoshopProductsServiceSpy).toHaveBeenCalledTimes(1);
         expect(action).toEqual(DataDownloadProductActions.setProducts({products: expectedProducts}));
         done();
       });
@@ -121,11 +134,12 @@ describe('DataDownloadProductEffects', () => {
 
     it('dispatches DataDownloadActions.setProductsError() with the error on failure', (done: DoneFn) => {
       const expectedError = new Error('My cabbages!!!');
-      const geoshopApiServiceSpy = spyOn(geoshopApiService, 'loadProducts').and.returnValue(throwError(() => expectedError));
+      store.overrideSelector(selectProducts, []);
+      const geoshopProductsServiceSpy = spyOn(geoshopProductsService, 'loadProductList').and.returnValue(throwError(() => expectedError));
 
       actions$ = of(DataDownloadProductActions.loadProducts());
       effects.loadProducts$.subscribe((action) => {
-        expect(geoshopApiServiceSpy).toHaveBeenCalledTimes(1);
+        expect(geoshopProductsServiceSpy).toHaveBeenCalledTimes(1);
         expect(action).toEqual(DataDownloadProductActions.setProductsError({error: expectedError}));
         done();
       });
@@ -134,28 +148,25 @@ describe('DataDownloadProductEffects', () => {
     it('dispatches nothing if the products are already in the store', fakeAsync(async () => {
       const expectedProducts = productsMock;
       store.overrideSelector(selectProducts, expectedProducts);
-      const geoshopApiServiceSpy = spyOn(geoshopApiService, 'loadProducts').and.returnValue(
+      const geoshopProductsServiceSpy = spyOn(geoshopProductsService, 'loadProductList').and.returnValue(
         of({
-          timestampDateString: 'nope',
-          formats: [
-            {
-              id: 3,
-              name: 'Only Fire (.hot)',
-            },
-          ],
+          timestamp: 'nope',
           products: [
             {
-              id: 16,
+              id: '16',
+              ogd: false,
+              themes: ['Elements', 'Bender', 'Honor'],
+              gisZHNr: 1337,
+              keywords: ['Firebender', 'Prince'],
+              nonOgdProductUrl: 'www.example.com',
+              geolionGeodatensatzUuid: 'abcd-efgh-ijkl-mnop',
               name: 'Zuko',
-              description: 'Prince',
-              type: 'Vektor',
-              formats: [3],
-            },
-          ],
-          municipalities: [
-            {
-              id: '0006',
-              name: 'Fire Nation Capital',
+              formats: [
+                {
+                  id: 3,
+                  description: 'Only Fire (.hot)',
+                },
+              ],
             },
           ],
         }),
@@ -165,7 +176,7 @@ describe('DataDownloadProductEffects', () => {
       effects.loadProducts$.subscribe();
       tick();
 
-      expect(geoshopApiServiceSpy).toHaveBeenCalledTimes(0);
+      expect(geoshopProductsServiceSpy).toHaveBeenCalledTimes(0);
       store.select(selectProducts).subscribe((capabilities) => {
         expect(capabilities).toEqual(expectedProducts);
       });

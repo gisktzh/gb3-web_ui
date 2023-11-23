@@ -7,7 +7,9 @@ export const dataDownloadOrderFeatureKey = 'dataDownloadOrder';
 
 export const initialState: DataDownloadOrderState = {
   selection: undefined,
-  orderStatuses: [],
+  order: undefined,
+  savingState: undefined,
+  statusJobs: [],
 };
 
 export const dataDownloadOrderFeature = createFeature({
@@ -18,21 +20,66 @@ export const dataDownloadOrderFeature = createFeature({
       return {...state, selection};
     }),
     on(DataDownloadOrderActions.clearSelection, (state): DataDownloadOrderState => {
-      return {...state, selection: initialState.selection};
+      return {...initialState, statusJobs: state.statusJobs};
+    }),
+    on(DataDownloadOrderActions.setOrder, (state, {order}): DataDownloadOrderState => {
+      return {...state, order};
+    }),
+    on(DataDownloadOrderActions.sendOrder, (state): DataDownloadOrderState => {
+      return {...state, savingState: 'loading'};
+    }),
+    on(DataDownloadOrderActions.setOrderResponse, (state): DataDownloadOrderState => {
+      return {...state, savingState: 'loaded'};
+    }),
+    on(DataDownloadOrderActions.setOrderError, (state): DataDownloadOrderState => {
+      return {...state, savingState: 'error'};
     }),
     on(
-      DataDownloadOrderActions.setOrderStatus,
-      produce((draft, {orderStatus}) => {
-        const existingStatusIndex = draft.orderStatuses.findIndex((status) => status.orderId === orderStatus.orderId);
-        if (existingStatusIndex < 0) {
-          // status doesn't exist yet
-          draft.orderStatuses.push(orderStatus);
+      DataDownloadOrderActions.requestOrderStatus,
+      produce((draft, {orderId}) => {
+        const existingStatusJob = draft.statusJobs.find((statusJob) => statusJob.id === orderId);
+        if (existingStatusJob) {
+          existingStatusJob.loadingState = 'loading';
         } else {
-          draft.orderStatuses[existingStatusIndex] = orderStatus;
+          draft.statusJobs.push({
+            id: orderId,
+            loadingState: 'loading',
+          });
+        }
+      }),
+    ),
+    on(
+      DataDownloadOrderActions.setOrderStatusResponse,
+      produce((draft, {orderStatus}) => {
+        const existingStatusJob = draft.statusJobs.find((statusJob) => statusJob.id === orderStatus.orderId);
+        if (existingStatusJob) {
+          existingStatusJob.loadingState = 'loaded';
+          existingStatusJob.status = orderStatus;
+        } else {
+          draft.statusJobs.push({
+            id: orderStatus.orderId,
+            loadingState: 'loading',
+            status: orderStatus,
+          });
+        }
+      }),
+    ),
+    on(
+      DataDownloadOrderActions.setOrderStatusError,
+      produce((draft, {orderId}) => {
+        const existingStatusJob = draft.statusJobs.find((statusJob) => statusJob.id === orderId);
+        if (existingStatusJob) {
+          existingStatusJob.loadingState = 'error';
+        } else {
+          draft.statusJobs.push({
+            id: orderId,
+            loadingState: 'error',
+          });
         }
       }),
     ),
   ),
 });
 
-export const {name, reducer, selectDataDownloadOrderState, selectSelection, selectOrderStatuses} = dataDownloadOrderFeature;
+export const {name, reducer, selectDataDownloadOrderState, selectSelection, selectOrder, selectSavingState, selectStatusJobs} =
+  dataDownloadOrderFeature;

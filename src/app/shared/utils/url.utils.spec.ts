@@ -1,7 +1,7 @@
 import {TestBed} from '@angular/core/testing';
 import {UrlUtils} from './url.utils';
 import {RouterTestingModule} from '@angular/router/testing';
-import {Router, UrlSegment} from '@angular/router';
+import {Params, Router, UrlSegment} from '@angular/router';
 import {MainPage} from '../enums/main-page.enum';
 
 function createSegmentsFromUrl(router: Router, url: string): UrlSegment[] {
@@ -88,5 +88,57 @@ describe('UrlUtils', () => {
     expect(UrlUtils.containsSegmentPaths(['path01'], ['path02'])).toBeFalse();
     expect(UrlUtils.containsSegmentPaths(['path01', 'path02'], ['path01'])).toBeFalse();
     expect(UrlUtils.containsSegmentPaths(['path02', 'path01'], ['path01', 'path02'])).toBeFalse();
+  });
+
+  describe('areParamsEqual', () => {
+    it('should compare two param objects with the same content and return true', () => {
+      const paramsOne: Params = {
+        x: '1234',
+        y: 5678,
+        scale: true,
+        basemap: undefined,
+      };
+      const paramsTwo: Params = {
+        scale: true,
+        y: 5678,
+        basemap: undefined,
+        x: '1234',
+      };
+
+      expect(UrlUtils.areParamsEqual(paramsOne, paramsTwo)).toBeTrue();
+    });
+
+    it('should compare two param objects with the different content length and return false', () => {
+      const paramsOne: Params = {
+        x: '1234',
+        y: 5678,
+        scale: true,
+        basemap: undefined,
+      };
+      const paramsTwo: Params = {
+        x: '1234',
+        y: 5678,
+        scale: true,
+      };
+
+      expect(UrlUtils.areParamsEqual(paramsOne, paramsTwo)).toBeFalse();
+    });
+
+    it('should compare two param objects with the different content and return false', () => {
+      const paramsOne: Params = {
+        x: '1234',
+        y: 5678,
+        scale: true,
+        basemap: undefined,
+      };
+      const paramsTwo: Params = {
+        x: '1234',
+        y: 56789,
+        scale: true,
+        basemap: 'undefined',
+      };
+
+      expect(UrlUtils.areParamsEqual(paramsOne, paramsTwo)).toBeFalse();
+    });
   });
 });

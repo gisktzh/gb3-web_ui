@@ -3,7 +3,16 @@ import {Gb3ApiService} from './gb3-api.service';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {PrintCapabilities, PrintCreation, PrintCreationResponse, ReportOrientation} from '../../../interfaces/print.interface';
-import {PrintCapabilitiesListData, PrintCreateData, PrintNew} from '../../../models/gb3-api-generated.interfaces';
+import {
+  PrintCapabilitiesListData,
+  PrintCreateData,
+  PrintFeatureInfoCreateData,
+  PrintFeatureInfoNew,
+  PrintLegendCreateData,
+  PrintLegendNew,
+  PrintNew,
+} from '../../../models/gb3-api-generated.interfaces';
+import {PrintableOverlayItem} from '../../../interfaces/overlay-print.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -23,6 +32,36 @@ export class Gb3PrintService extends Gb3ApiService {
         return {reportUrl: response.report_url};
       }),
     );
+  }
+
+  public printLegend(items: PrintableOverlayItem[]): Observable<PrintCreationResponse> {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    return this.post<PrintLegendNew, PrintLegendCreateData>(this.createPrintLegendUrl(), {legend_topics: items}).pipe(
+      map((response) => {
+        return {reportUrl: response.report_url};
+      }),
+    );
+  }
+
+  public printFeatureInfo(items: PrintableOverlayItem[], x: number, y: number): Observable<PrintCreationResponse> {
+    return this.post<PrintFeatureInfoNew, PrintFeatureInfoCreateData>(this.createFeatureInfoPrintUrl(), {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      query_topics: items,
+      x,
+      y,
+    }).pipe(
+      map((response) => {
+        return {reportUrl: response.report_url};
+      }),
+    );
+  }
+
+  private createPrintLegendUrl(): string {
+    return `${this.getFullEndpointUrl()}/legend`;
+  }
+
+  private createFeatureInfoPrintUrl(): string {
+    return `${this.getFullEndpointUrl()}/feature_info`;
   }
 
   private createCapabilitiesUrl(): string {

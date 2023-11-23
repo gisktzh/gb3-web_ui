@@ -6,15 +6,12 @@
 @use 'functions/helper.function' as functions;
 
 :host ::ng-deep {
-  .navbar-mobile__button {
-    @include mixins.tool-button-mobile;
-  }
-  .navbar-mobile__button2 {
+  .navbar-mobile-simplified__button {
     @include mixins.tool-button-mobile;
   }
 }
 
-.navbar-mobile {
+.navbar-mobile-simplified {
   @include mixins.map-element-box-shadow;
   position: absolute;
   top: 12px;
@@ -23,43 +20,40 @@
   z-index: z-index-variables.$navbar;
 }
 
-.navbar {
+.navbar-mobile {
   position: fixed;
   display: flex;
   justify-content: space-between;
   padding: 0 12px;
   z-index: z-index-variables.$navbar;
 
-  .navbar__item {
+  .navbar-mobile__item {
     font-size: 16px;
     font-weight: 400;
 
-    .navbar__item__text {
+    .navbar-mobile__item__text {
       font-family: ktzh-variables.$zh-font-family;
     }
   }
 
-  .navbar__spacer {
+  .navbar-mobile__spacer {
     flex: 1 1 auto;
   }
 }
 
-.navbar__underline-container {
+.navbar-mobile__underline-container {
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100vw;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
 
-  .navbar__underline-container__content-container {
+  .navbar-mobile__underline-container__content-container {
     width: 100%;
     display: grid;
-    grid-template-columns: auto 55vw auto;
+    grid-template-columns: 12px auto 12px;
   }
 
-  .navbar__underline {
+  .navbar-mobile__underline {
     width: 100%;
     border-top: 2px solid ktzh-variables.$zh-white;
   }

@@ -19,7 +19,7 @@ export class AppLayoutEffects {
     return this.actions$.pipe(
       ofType(AppLayoutActions.setScreenMode),
       map(() => {
-        return LayerCatalogActions.setFilterString({filterString: undefined});
+        return LayerCatalogActions.clearFilterString();
       }),
     );
   });

@@ -3,7 +3,7 @@ import {DataDownloadOrderState} from '../states/data-download-order.state';
 import {DataDownloadOrderActions} from '../actions/data-download-order.actions';
 import {DataDownloadSelection} from '../../../shared/interfaces/data-download-selection.interface';
 import {InternalDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
-import {OrderStatus} from '../../../shared/interfaces/geoshop-order-status.interface';
+import {OrderStatus, OrderStatusJob} from '../../../shared/interfaces/geoshop-order-status.interface';
 
 describe('data download order reducer', () => {
   const selectionMock: DataDownloadSelection = {
@@ -27,34 +27,46 @@ describe('data download order reducer', () => {
       },
     },
   };
-  const orderStatusesMock: OrderStatus[] = [
+  const statusJobsMock: OrderStatusJob[] = [
     {
-      orderId: 'fire nation attacks',
+      id: '1',
+      loadingState: 'loaded',
       status: {
-        type: 'success',
+        orderId: 'fire nation attacks',
+        status: {
+          type: 'success',
+        },
+        submittedDateString: 'yes',
+        finishedDateString: 'no',
+        internalId: 1337,
       },
-      submittedDateString: 'yes',
-      finishedDateString: 'no',
-      internalId: 1337,
     },
     {
-      orderId: 'balance restored',
+      id: '2',
+      loadingState: 'loading',
       status: {
-        type: 'working',
-        message: 'in process',
+        orderId: 'balance restored',
+        status: {
+          type: 'working',
+          message: 'in process',
+        },
+        submittedDateString: 'February 21, 2005',
+        finishedDateString: '',
+        internalId: 42,
       },
-      submittedDateString: 'February 21, 2005',
-      finishedDateString: '',
-      internalId: 42,
     },
     {
-      orderId: 'sokka is hungry',
+      id: '3',
+      loadingState: 'error',
       status: {
-        type: 'submitted',
+        orderId: 'sokka is not hungry',
+        status: {
+          type: 'failure',
+        },
+        submittedDateString: 'always',
+        finishedDateString: 'never',
+        internalId: 42_1337,
       },
-      submittedDateString: 'always',
-      finishedDateString: 'never',
-      internalId: 42_1337,
     },
   ];
 
@@ -63,7 +75,9 @@ describe('data download order reducer', () => {
   beforeEach(() => {
     existingState = {
       selection: selectionMock,
-      orderStatuses: orderStatusesMock,
+      order: undefined,
+      savingState: 'loaded',
+      statusJobs: statusJobsMock,
     };
   });
 
@@ -103,7 +117,7 @@ describe('data download order reducer', () => {
       const state = reducer(existingState, action);
 
       expect(state.selection).toBe(expectedSelection);
-      expect(state.orderStatuses).toEqual(existingState.orderStatuses);
+      expect(state.statusJobs).toEqual(existingState.statusJobs);
     });
   });
 
@@ -113,13 +127,13 @@ describe('data download order reducer', () => {
       const state = reducer(existingState, action);
 
       expect(state.selection).toBeUndefined();
-      expect(state.orderStatuses).toEqual(existingState.orderStatuses);
+      expect(state.statusJobs).toEqual(existingState.statusJobs);
     });
   });
 
-  describe('setOrderStatus', () => {
+  describe('setOrderStatusResponse', () => {
     it('adds the order status to the list if no other status with the ID exists', () => {
-      const expectedOrderStatus: OrderStatus = {
+      const orderStatus: OrderStatus = {
         orderId: 'selling cabbages',
         status: {
           type: 'failure',
@@ -129,16 +143,22 @@ describe('data download order reducer', () => {
         finishedDateString: 'July 19, 2008',
         internalId: 666,
       };
-      const action = DataDownloadOrderActions.setOrderStatus({orderStatus: expectedOrderStatus});
+      const action = DataDownloadOrderActions.setOrderStatusResponse({orderStatus});
       const state = reducer(existingState, action);
 
+      const expectedOrderStatus: OrderStatusJob = {
+        id: orderStatus.orderId,
+        loadingState: 'loading',
+        status: orderStatus,
+      };
+
       expect(state.selection).toBe(existingState.selection);
-      expect(state.orderStatuses).toEqual([...existingState.orderStatuses, expectedOrderStatus]);
+      expect(state.statusJobs).toEqual([...existingState.statusJobs, expectedOrderStatus]);
     });
 
     it('replaces the existing order status in the list if there is a status with the same ID', () => {
-      const expectedOrderStatus: OrderStatus = {
-        orderId: existingState.orderStatuses[1].orderId,
+      const orderStatus: OrderStatus = {
+        orderId: existingState.statusJobs[1].id,
         status: {
           type: 'failure',
           message: 'my cabbages!11!!',
@@ -147,11 +167,18 @@ describe('data download order reducer', () => {
         finishedDateString: 'July 19, 2008',
         internalId: 666,
       };
-      const action = DataDownloadOrderActions.setOrderStatus({orderStatus: expectedOrderStatus});
+      const action = DataDownloadOrderActions.setOrderStatusResponse({orderStatus});
       const state = reducer(existingState, action);
 
+      const expectedOrderStatusJob: OrderStatusJob = {
+        id: orderStatus.orderId,
+        loadingState: 'loaded',
+        status: orderStatus,
+      };
+      const expectedOrderStatusJobs: OrderStatusJob[] = [existingState.statusJobs[0], expectedOrderStatusJob, existingState.statusJobs[2]];
+
       expect(state.selection).toBe(existingState.selection);
-      expect(state.orderStatuses).toEqual([existingState.orderStatuses[0], expectedOrderStatus, existingState.orderStatuses[2]]);
+      expect(state.statusJobs).toEqual(expectedOrderStatusJobs);
     });
   });
 });

@@ -29,6 +29,10 @@
 
     &--no-background {
       background-color: unset;
+
+      &:hover {
+        background-color: transparent !important;
+      }
     }
 
     .list-item__header__content {

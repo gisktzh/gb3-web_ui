@@ -9,10 +9,10 @@ $search-height-compact: 64px;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: calc(0px - $search-height / 2);
+    margin-top: calc(0px - 106px / 2);
 
     &--mobile {
-      margin-top: calc(0px - $search-height-compact / 2);
+      margin-top: calc(0px - 64px / 2);
     }
   }
 }

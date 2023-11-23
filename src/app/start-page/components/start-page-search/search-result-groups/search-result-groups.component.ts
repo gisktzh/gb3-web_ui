@@ -3,10 +3,8 @@ import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {FaqItem} from 'src/app/shared/interfaces/faq.interface';
 import {OverviewMetadataItem} from 'src/app/shared/models/overview-metadata-item.model';
-import {ConfigService} from 'src/app/shared/services/config.service';
 import {LoadingState} from 'src/app/shared/types/loading-state.type';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
-import {SearchActions} from 'src/app/state/app/actions/search.actions';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {selectSearchApiLoadingState} from 'src/app/state/app/reducers/search.reducer';
 import {Map} from '../../../../shared/interfaces/topic.interface';
@@ -33,7 +31,6 @@ export class SearchResultGroupsComponent implements OnInit, OnDestroy {
   public searchApiLoadingState: LoadingState;
   public screenMode: ScreenMode = 'regular';
 
-  private readonly searchConfig = this.configService.searchConfig.startPage;
   private readonly searchApiLoadingState$ = this.store.select(selectSearchApiLoadingState);
   private readonly layerCatalogLoadingState$ = this.store.select(selectLayerCatalogLoadingState);
   private readonly dataCatalogLoadingState$ = this.store.select(selectDataCatalogLoadingState);
@@ -43,18 +40,13 @@ export class SearchResultGroupsComponent implements OnInit, OnDestroy {
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly subscriptions: Subscription = new Subscription();
 
-  constructor(
-    private readonly store: Store,
-    private readonly configService: ConfigService,
-  ) {}
+  constructor(private readonly store: Store) {}
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
-    this.store.dispatch(SearchActions.resetSearchAndFilters());
   }
 
   public ngOnInit() {
-    this.store.dispatch(SearchActions.setFilterGroups({filterGroups: this.searchConfig.filterGroups}));
     this.initSubscriptions();
   }
 
@@ -74,6 +66,16 @@ export class SearchResultGroupsComponent implements OnInit, OnDestroy {
         .pipe(
           tap((dataCatalogLoadingState) => {
             this.dataCatalogLoadingState = dataCatalogLoadingState;
+            this.updateCombinedSearchAndDataCatalogLoadingState();
+          }),
+        )
+        .subscribe(),
+    );
+    this.subscriptions.add(
+      this.searchApiLoadingState$
+        .pipe(
+          tap((searchApiLoadingState) => {
+            this.searchApiLoadingState = searchApiLoadingState;
             this.updateCombinedSearchAndDataCatalogLoadingState();
           }),
         )

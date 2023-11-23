@@ -14,11 +14,10 @@
   <mat-card-content class="map-overlay__content">
     <ng-content></ng-content>
   </mat-card-content>
-
   <button
-    *ngIf="showPrintButton"
-    [disabled]="!isPrintButtonEnabled"
     (click)="this.onPrintButtonClick()"
+    *ngIf="showPrintButton"
+    [disabled]="!isPrintButtonEnabled || printLoadingState === 'loading'"
     class="map-overlay__print-button"
     color="accent"
     mat-raised-button
@@ -26,6 +25,7 @@
     <mat-icon>print</mat-icon>
     {{ this.overlayTitle }} drucken
   </button>
+  <loading-and-process-bar [loadingState]="printLoadingState"></loading-and-process-bar>
 
   <resize-handler (resizeEvent)="this.resizeOverlay($event)" [location]="this.location"></resize-handler>
 </mat-card>

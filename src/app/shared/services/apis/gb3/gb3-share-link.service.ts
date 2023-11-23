@@ -5,8 +5,7 @@ import {map} from 'rxjs/operators';
 import {Observable} from 'rxjs';
 import {GeojsonFeature, SharedFavorite, SharedFavoriteNew, VectorLayer} from '../../../models/gb3-api-generated.interfaces';
 import {Gb3GeoJsonFeature, Gb3VectorLayer} from '../../../interfaces/gb3-vector-layer.interface';
-import {SupportedGeometry} from '../../../types/SupportedGeometry.type';
-import {LineString, MultiPolygon, Point, Polygon} from 'geojson';
+import {ApiGeojsonGeometryToGb3ConverterUtils} from '../../../utils/api-geojson-geometry-to-gb3-converter.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -37,31 +36,8 @@ export class Gb3ShareLinkService extends Gb3ApiService {
    * @param inFeature The feature to be transformed
    */
   private castGeojsonFeatureToGb3GeoJsonFeature(inFeature: GeojsonFeature): Gb3GeoJsonFeature {
-    let castedGeometry: SupportedGeometry;
-    switch (inFeature.geometry.type) {
-      case 'Polygon': {
-        castedGeometry = inFeature.geometry as Polygon;
-        break;
-      }
-      case 'Point': {
-        castedGeometry = inFeature.geometry as Point;
-        break;
-      }
-      case 'LineString': {
-        castedGeometry = inFeature.geometry as LineString;
-        break;
-      }
-      case 'MultiPoint': {
-        castedGeometry = inFeature.geometry as Polygon;
-        break;
-      }
-      case 'MultiPolygon': {
-        castedGeometry = inFeature.geometry as MultiPolygon;
-        break;
-      }
-    }
-
-    return {...inFeature, geometry: castedGeometry};
+    const castGeometry = ApiGeojsonGeometryToGb3ConverterUtils.convert(inFeature.geometry);
+    return {...inFeature, geometry: castGeometry};
   }
 
   private mapVectorLayerToGb3VectorLayer(drawings: VectorLayer): Gb3VectorLayer {

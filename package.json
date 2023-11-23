@@ -1,5 +1,5 @@
 {
-  "name": "gb3-poc",
+  "name": "gb3-frontend",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -21,7 +21,7 @@
   },
   "private": true,
   "engines": {
-    "node": "18.x"
+    "node": "20.x"
   },
   "dependencies": {
     "@angular-devkit/build-angular": "^16.1.0",
@@ -40,7 +40,7 @@
     "@angular/platform-browser": "^16.1.2",
     "@angular/platform-browser-dynamic": "^16.1.2",
     "@angular/router": "^16.1.2",
-    "@arcgis/core": "~4.27.0",
+    "@arcgis/core": "~4.28.0",
     "@ngrx/effects": "^16.0.1",
     "@ngrx/entity": "^16.0.1",
     "@ngrx/router-store": "^16.3.0",
@@ -48,9 +48,9 @@
     "@ngrx/store-devtools": "^16.0.1",
     "@terraformer/arcgis": "^2.1.2",
     "@types/geojson": "^7946.0.10",
-    "@types/node": "^18.13.0",
+    "@types/node": "^20.8",
     "@types/terraformer__arcgis": "^2.0.2",
-    "@types/twitter-for-web": "^0.0.4",
+    "@types/twitter-for-web": "^0.0.5",
     "@types/uuid": "^9.0.4",
     "angular-oauth2-oidc": "^15.0.1",
     "angular-resizable-element": "^7.0.2",
@@ -71,7 +71,6 @@
     "@typescript-eslint/parser": "^6.0.0",
     "eslint": "^8.39.0",
     "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-import": "^2.29.0",
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-rxjs": "^5.0.2",
     "eslint-plugin-rxjs-angular": "^2.0.0",

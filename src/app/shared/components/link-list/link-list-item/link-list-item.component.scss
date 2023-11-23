@@ -29,6 +29,10 @@
       &:hover {
         color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 900);
       }
+
+      .link-list-item__item__link__icon {
+        min-width: 24px;
+      }
     }
   }
 }

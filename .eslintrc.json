@@ -16,7 +16,7 @@
         "plugin:rxjs/recommended",
         "prettier"
       ],
-      "plugins": ["rxjs", "rxjs-angular", "import"],
+      "plugins": ["rxjs", "rxjs-angular"],
       "rules": {
         "rxjs-angular/prefer-composition": "error",
         "@typescript-eslint/ban-ts-comment": [

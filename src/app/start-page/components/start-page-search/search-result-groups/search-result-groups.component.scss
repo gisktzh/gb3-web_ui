@@ -1,6 +1,6 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
-.start-page-search__results__groups {
+.search-result-groups {
   display: flex;
   flex-direction: column;
   width: ktzh-variables.$zh-layout-max-content-width;
@@ -8,9 +8,10 @@
 
   &--mobile {
     width: calc(100vw - 24px);
+    gap: 6px;
   }
 
-  .start-page-search__results__groups__group {
+  .search-result-groups__group {
     box-sizing: border-box;
   }
 }

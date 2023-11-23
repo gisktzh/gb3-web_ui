@@ -17,10 +17,16 @@
       width: ktzh-variables.$zh-layout-max-content-width;
       height: 106px;
       background-color: ktzh-variables.$zh-background-color;
+    }
 
-      &--mobile {
-        width: calc(100vw - 24px);
-        height: 60px;
+    @media (max-width: calc(ktzh-variables.$zh-layout-max-content-width + 48px)) {
+      .start-page-search__search__bar {
+        width: calc(100vw - 62px);
+
+        &--mobile {
+          width: calc(100vw - 24px);
+          height: 60px;
+        }
       }
     }
   }
@@ -30,5 +36,9 @@
     flex-direction: column;
     padding-top: 40px;
     gap: 12px;
+
+    &--mobile {
+      padding-top: 12px;
+    }
   }
 }

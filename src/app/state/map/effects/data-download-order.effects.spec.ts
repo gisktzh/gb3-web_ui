@@ -16,6 +16,9 @@ import {InternalDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {ToolActions} from '../actions/tool.actions';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {selectActiveTool} from '../reducers/tool.reducer';
+import {Order} from '../../../shared/interfaces/geoshop-order.interface';
+import {MinimalGeometriesUtils} from '../../../testing/map-testing/minimal-geometries.utils';
+import {selectSelection} from '../reducers/data-download-order.reducer';
 
 describe('DataDownloadOrderEffects', () => {
   const selectionMock: DataDownloadSelection = {
@@ -38,6 +41,19 @@ describe('DataDownloadOrderEffects', () => {
         ],
       },
     },
+  };
+
+  const orderMock: Order = {
+    perimeterType: 'direct',
+    email: 'direct email',
+    srs: 'lv95',
+    geometry: MinimalGeometriesUtils.getMinimalPolygon(2056),
+    products: [
+      {
+        id: 1337,
+        formatId: 666,
+      },
+    ],
   };
 
   let actions$: Observable<Action>;
@@ -64,20 +80,32 @@ describe('DataDownloadOrderEffects', () => {
     store.resetSelectors();
   });
 
-  describe('openDataDownloadDrawerAfterCompletingSelection$', () => {
-    it('zooms to the geometry extent using the map service and dispatches MapUiActions.showMapSideDrawerContent()', (done: DoneFn) => {
+  describe('zoomToSelection$', () => {
+    it('zooms to the geometry extent using the map service, no further action dispatch', (done: DoneFn) => {
       const expectedSelection = selectionMock;
       const configService = TestBed.inject(ConfigService);
       const mapService = TestBed.inject(MAP_SERVICE);
       const mapServiceSpy = spyOn(mapService, 'zoomToExtent').and.callThrough();
+      store.overrideSelector(selectSelection, expectedSelection);
 
-      actions$ = of(DataDownloadOrderActions.setSelection({selection: expectedSelection}));
-      effects.openDataDownloadDrawerAfterCompletingSelection$.subscribe((action) => {
+      const expectedAction = MapUiActions.showMapSideDrawerContent({mapSideDrawerContent: 'data-download'});
+      actions$ = of(expectedAction);
+      effects.zoomToSelection$.subscribe(([action, _]) => {
         expect(mapServiceSpy).toHaveBeenCalledOnceWith(
           expectedSelection.drawingRepresentation.geometry,
           configService.mapAnimationConfig.zoom.expandFactor,
           configService.mapAnimationConfig.zoom.duration,
         );
+        expect(action).toEqual(expectedAction);
+        done();
+      });
+    });
+  });
+
+  describe('openDataDownloadDrawerAfterSettingOrder$', () => {
+    it('dispatches MapUiActions.showMapSideDrawerContent()', (done: DoneFn) => {
+      actions$ = of(DataDownloadOrderActions.setOrder({order: orderMock}));
+      effects.openDataDownloadDrawerAfterSettingOrder$.subscribe((action) => {
         expect(action).toEqual(MapUiActions.showMapSideDrawerContent({mapSideDrawerContent: 'data-download'}));
         done();
       });

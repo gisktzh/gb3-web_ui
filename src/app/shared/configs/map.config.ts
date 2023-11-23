@@ -10,6 +10,7 @@ export const defaultMapConfig: MapConfigState = {
     y: 1248390.0,
   },
   scale: 320_000,
+  rotation: 0,
   ready: false,
   scaleSettings: {
     minScale: MapConstants.MINIMUM_MAP_SCALE,

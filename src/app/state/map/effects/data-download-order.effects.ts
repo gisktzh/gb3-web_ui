@@ -11,18 +11,45 @@ import {ConfigService} from '../../../shared/services/config.service';
 import {Store} from '@ngrx/store';
 import {ToolActions} from '../actions/tool.actions';
 import {selectActiveTool} from '../reducers/tool.reducer';
+import {GeoshopApiService} from '../../../shared/services/apis/geoshop/services/geoshop-api.service';
+import {selectSelection} from '../reducers/data-download-order.reducer';
 
 @Injectable()
 export class DataDownloadOrderEffects {
-  public openDataDownloadDrawerAfterCompletingSelection$ = createEffect(() => {
+  public createOrderFromSelection$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(DataDownloadOrderActions.setSelection),
       map(({selection}) => {
-        this.mapService.zoomToExtent(
-          selection.drawingRepresentation.geometry,
-          this.configService.mapAnimationConfig.zoom.expandFactor,
-          this.configService.mapAnimationConfig.zoom.duration,
-        );
+        const order = this.geoshopApiService.createOrderFromSelection(selection);
+        return DataDownloadOrderActions.setOrder({order});
+      }),
+    );
+  });
+
+  public zoomToSelection$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(MapUiActions.showMapSideDrawerContent),
+        filter(({mapSideDrawerContent}) => mapSideDrawerContent === 'data-download'),
+        concatLatestFrom(() => this.store.select(selectSelection)),
+        tap(([_, selection]) => {
+          if (selection) {
+            this.mapService.zoomToExtent(
+              selection.drawingRepresentation.geometry,
+              this.configService.mapAnimationConfig.zoom.expandFactor,
+              this.configService.mapAnimationConfig.zoom.duration,
+            );
+          }
+        }),
+      );
+    },
+    {dispatch: false},
+  );
+
+  public openDataDownloadDrawerAfterSettingOrder$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(DataDownloadOrderActions.setOrder),
+      map(() => {
         return MapUiActions.showMapSideDrawerContent({mapSideDrawerContent: 'data-download'});
       }),
     );
@@ -64,5 +91,6 @@ export class DataDownloadOrderEffects {
     @Inject(MAP_SERVICE) private readonly mapService: MapService,
     private readonly configService: ConfigService,
     private readonly store: Store,
+    private readonly geoshopApiService: GeoshopApiService,
   ) {}
 }

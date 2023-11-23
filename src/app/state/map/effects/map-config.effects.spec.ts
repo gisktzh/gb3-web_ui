@@ -1,36 +1,29 @@
-import {provideMockActions} from '@ngrx/effects/testing';
-import {TestBed} from '@angular/core/testing';
-import {Observable, of} from 'rxjs';
-import {Action} from '@ngrx/store';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {MockStore, provideMockStore} from '@ngrx/store/testing';
+import {TestBed} from '@angular/core/testing';
 import {RouterTestingModule} from '@angular/router/testing';
-import {ErrorHandler} from '@angular/core';
+import {provideMockActions} from '@ngrx/effects/testing';
+import {Action} from '@ngrx/store';
+import {MockStore, provideMockStore} from '@ngrx/store/testing';
+import {Observable, of} from 'rxjs';
 import {MAP_SERVICE} from '../../../app.module';
-import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
 import {MapService} from '../../../map/interfaces/map.service';
-import {MapConfigActions} from '../actions/map-config.actions';
-import {MapConfigEffects} from './map-config.effects';
-import {ZoomType} from '../../../shared/types/zoom.type';
 import {PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
-import {routerNavigatedAction} from '@ngrx/router-store';
-import {ActivatedRouteSnapshot, NavigationEnd, Params, Router} from '@angular/router';
-import {BasemapConfigService} from '../../../map/services/basemap-config.service';
-import {selectQueryParams} from '../../app/selectors/router.selector';
-import {selectMainPage} from '../../app/reducers/url.reducer';
-import {MainPage} from '../../../shared/enums/main-page.enum';
+import {ZoomType} from '../../../shared/types/zoom.type';
+import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
+import {UrlActions} from '../../app/actions/url.actions';
+import {MapConfigActions} from '../actions/map-config.actions';
+import {selectRotation} from '../reducers/map-config.reducer';
 import {selectMapConfigParams} from '../selectors/map-config-params.selector';
+import {MapConfigEffects} from './map-config.effects';
 
 describe('MapConfigEffects', () => {
   let actions$: Observable<Action>;
   let store: MockStore;
   let effects: MapConfigEffects;
   let mapService: MapService;
-  let errorHandlerMock: jasmine.SpyObj<ErrorHandler>;
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
-    errorHandlerMock = jasmine.createSpyObj<ErrorHandler>(['handleError']);
 
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterTestingModule],
@@ -38,7 +31,6 @@ describe('MapConfigEffects', () => {
         MapConfigEffects,
         provideMockActions(() => actions$),
         provideMockStore(),
-        {provide: ErrorHandler, useValue: errorHandlerMock},
         {provide: MAP_SERVICE, useClass: MapServiceStub},
       ],
     });
@@ -110,73 +102,27 @@ describe('MapConfigEffects', () => {
     });
   });
 
-  describe('getInitialMapConfigFromUrl$', () => {
-    it('dispatches MapConfigActions.setInitialMapConfig() if routerNavigatedAction is triggered', (done: DoneFn) => {
+  describe('updateMapPageQueryParams$', () => {
+    it('dispatches UrlActions.setMapPageParams() if either the center, scale, extent or basemap is changed', (done: DoneFn) => {
       const expectedParams = {x: 123, y: 456, scale: 789, basemap: 'Dust II', initialMapIds: 'one,two'};
-      const basemapConfigService = TestBed.inject(BasemapConfigService);
-      spyOn(basemapConfigService, 'checkBasemapIdOrGetDefault').and.returnValue(expectedParams.basemap);
+      store.overrideSelector(selectMapConfigParams, expectedParams);
 
-      actions$ = of(
-        routerNavigatedAction({
-          payload: {
-            routerState: {url: '', root: {queryParams: expectedParams as Params} as ActivatedRouteSnapshot},
-            event: {} as NavigationEnd,
-          },
-        }),
-      );
-      effects.getInitialMapConfigFromUrl$.subscribe((action) => {
-        expect(action).toEqual(
-          MapConfigActions.setInitialMapConfig({
-            scale: expectedParams.scale,
-            initialMaps: expectedParams.initialMapIds.split(','),
-            x: expectedParams.x,
-            y: expectedParams.y,
-            basemapId: expectedParams.basemap,
-          }),
-        );
+      actions$ = of(MapConfigActions.setMapExtent({x: expectedParams.x, y: expectedParams.y, scale: expectedParams.scale}));
+      effects.updateMapPageQueryParams$.subscribe((action) => {
+        expect(action).toEqual(UrlActions.setMapPageParams({params: expectedParams}));
         done();
       });
     });
   });
 
-  describe('removeTemporaryParametersFromUrl$', () => {
-    it('removes all temporary URL parameters, no further action dispatch', (done: DoneFn) => {
-      const expectedParams = {x: 1, y: 2, initialMapIds: null};
-      const router = TestBed.inject(Router);
-      const routerSpy = spyOn(router, 'navigate').and.callThrough();
-      const mockParams = {x: 1, y: 2, initialMapIds: 'one,two'} as Params;
-      store.overrideSelector(selectQueryParams, mockParams);
+  describe('updateMapRotation$', () => {
+    it('dispatches MapConfigActions.setRotation() if the rotation is changed', (done: DoneFn) => {
+      const expectedRotation = 42;
+      store.overrideSelector(selectRotation, expectedRotation);
 
-      actions$ = of(
-        MapConfigActions.setInitialMapConfig({
-          x: 1,
-          y: 2,
-          initialMaps: ['one', 'two'],
-          scale: 3,
-          basemapId: 'test',
-        }),
-      );
-      effects.removeTemporaryParametersFromUrl$.subscribe(() => {
-        expect(routerSpy).toHaveBeenCalledOnceWith([], jasmine.objectContaining({queryParams: expectedParams}));
-        done();
-      });
-    });
-  });
-
-  describe('updateQueryParams$', () => {
-    it('updates the query parameter, no further action dispatch', (done: DoneFn) => {
-      const expectedScale = 5;
-      const router = TestBed.inject(Router);
-      const routerSpy = spyOn(router, 'navigate').and.callThrough();
-      store.overrideSelector(selectMainPage, MainPage.Maps);
-      store.overrideSelector(selectMapConfigParams, {x: 1, y: 2, scale: expectedScale, basemap: 'test'});
-
-      actions$ = of(MapConfigActions.setScale({scale: expectedScale}));
-      effects.updateQueryParams$.subscribe(() => {
-        expect(routerSpy).toHaveBeenCalledOnceWith(
-          [],
-          jasmine.objectContaining({queryParams: {x: 1, y: 2, scale: expectedScale, basemap: 'test'}}),
-        );
+      actions$ = of(MapConfigActions.handleMapRotation({rotation: expectedRotation}));
+      effects.updateMapRotation$.subscribe((action) => {
+        expect(action).toEqual(MapConfigActions.setRotation({rotation: expectedRotation}));
         done();
       });
     });

@@ -5,12 +5,10 @@
   <span
     class="expandable-list-item-header__badge"
     [matBadge]="numberOfItems"
-    *ngIf="(filterString && loadingState !== 'loading') || !isFilter"
+    *ngIf="showBadge"
     [ngClass]="{'result-group__header__inner__badge--hidden': numberOfItems === 0}"
   ></span>
-  <p class="expandable-list-item-header__title" [title]="title">
-    {{ title }}
-  </p>
+  <p class="expandable-list-item-header__title" [title]="title">{{ title }}</p>
   <mat-icon class="expandable-list-item-header__expand-icon" [fontIcon]="isExpanded ? 'arrow_drop_up' : 'arrow_drop_down'"></mat-icon>
   <loading-and-process-bar [loadingState]="this.loadingState" class="expandable-list-item-header__loader"></loading-and-process-bar>
 </div>

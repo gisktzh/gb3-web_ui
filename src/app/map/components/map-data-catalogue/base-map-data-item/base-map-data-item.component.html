@@ -53,6 +53,7 @@
       [ngClass]="{'base-map-data-item__header__title--disabled': invalid}"
       class="base-map-data-item__header__title"
       matTooltip="{{ title }}"
+      showTooltipIfTruncated
     ></p>
     <gb2-exit-button
       *ngIf="gb2Url"
