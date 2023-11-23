@@ -376,6 +376,7 @@ describe('DataDownloadOrderEffects', () => {
       };
       const orderTitle = 'grand moff';
       store.overrideSelector(selectProducts, []);
+      store.overrideSelector(selectStatusJobs, []);
       const geoshopApiServiceSpy = spyOn(geoshopApiService, 'createOrderTitle').and.returnValue(orderTitle);
 
       const expectedAction = DataDownloadOrderActions.requestOrderStatus({orderId: orderResponse.orderId, orderTitle});

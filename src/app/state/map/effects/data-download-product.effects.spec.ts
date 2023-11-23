@@ -112,8 +112,8 @@ describe('DataDownloadProductEffects', () => {
   });
 
   describe('loadAllRelevantProducts$', () => {
-    it('dispatches DataDownloadProductActions.loadRelevantProductsIds() after loading products and relevant products', (done: DoneFn) => {
-      const expectedAction = DataDownloadProductActions.loadRelevantProductsIds();
+    it('dispatches DataDownloadProductActions.loadRelevantProductIds() after loading products and relevant products', (done: DoneFn) => {
+      const expectedAction = DataDownloadProductActions.loadRelevantProductIds();
 
       actions$ = of(DataDownloadProductActions.loadProductsAndRelevantProducts());
       effects.loadAllRelevantProducts$.subscribe((action) => {
@@ -224,39 +224,39 @@ describe('DataDownloadProductEffects', () => {
     });
   });
 
-  describe('loadRelevantProductsIds$', () => {
+  describe('loadRelevantProductIds$', () => {
     const activeMapItems: ActiveMapItem[] = [
       createGb2WmsMapItemMock('id1'),
       createGb2WmsMapItemMock('id2'),
       createGb2WmsMapItemMock('id3'),
     ];
 
-    it('dispatches DataDownloadProductActions.loadRelevantProductsIds() with the service response on success', (done: DoneFn) => {
+    it('dispatches DataDownloadProductActions.loadRelevantProductIds() with the service response on success', (done: DoneFn) => {
       store.overrideSelector(selectItems, activeMapItems);
       const productIds = ['prodId1'];
       const geoshopProductsServiceSpy = spyOn(geoshopProductsService, 'loadRelevanteProducts').and.returnValue(of(productIds));
 
       const expectedGuids = activeMapItems.map((item) => createUuidFromId(item.id));
-      const expectedAction = DataDownloadProductActions.setRelevantProductsIds({productIds});
+      const expectedAction = DataDownloadProductActions.setRelevantProductIds({relevantProductIds: productIds});
 
-      actions$ = of(DataDownloadProductActions.loadRelevantProductsIds());
-      effects.loadRelevantProductsIds$.subscribe((action) => {
+      actions$ = of(DataDownloadProductActions.loadRelevantProductIds());
+      effects.loadRelevantProductIds$.subscribe((action) => {
         expect(geoshopProductsServiceSpy).toHaveBeenCalledOnceWith(expectedGuids);
         expect(action).toEqual(expectedAction);
         done();
       });
     });
 
-    it('dispatches DataDownloadProductActions.setRelevantProductsIdsError() with the error on failure', (done: DoneFn) => {
+    it('dispatches DataDownloadProductActions.setRelevantProductIdsError() with the error on failure', (done: DoneFn) => {
       store.overrideSelector(selectItems, activeMapItems);
       const error = new Error('My cabbages!!!');
       const geoshopProductsServiceSpy = spyOn(geoshopProductsService, 'loadRelevanteProducts').and.returnValue(throwError(() => error));
 
       const expectedGuids = activeMapItems.map((item) => createUuidFromId(item.id));
-      const expectedAction = DataDownloadProductActions.setRelevantProductsIdsError({error});
+      const expectedAction = DataDownloadProductActions.setRelevantProductIdsError({error});
 
-      actions$ = of(DataDownloadProductActions.loadRelevantProductsIds());
-      effects.loadRelevantProductsIds$.subscribe((action) => {
+      actions$ = of(DataDownloadProductActions.loadRelevantProductIds());
+      effects.loadRelevantProductIds$.subscribe((action) => {
         expect(geoshopProductsServiceSpy).toHaveBeenCalledOnceWith(expectedGuids);
         expect(action).toEqual(expectedAction);
         done();
@@ -264,14 +264,14 @@ describe('DataDownloadProductEffects', () => {
     });
   });
 
-  describe('throwRelevantProductsIdsError$', () => {
+  describe('throwRelevantProductIdsError$', () => {
     it('throws a RelevantProductsCouldNotBeLoaded error after setting a relevant products ids error', (done: DoneFn) => {
       const originalError = new Error('My cabbages!!!');
 
       const expectedError = new RelevantProductsCouldNotBeLoaded(originalError);
 
-      actions$ = of(DataDownloadProductActions.setRelevantProductsIdsError({error: originalError}));
-      effects.throwRelevantProductsIdsError$
+      actions$ = of(DataDownloadProductActions.setRelevantProductIdsError({error: originalError}));
+      effects.throwRelevantProductIdsError$
         .pipe(
           catchError((error) => {
             expect(error).toEqual(expectedError);
@@ -289,7 +289,7 @@ describe('DataDownloadProductEffects', () => {
       const dataDownloadFilters: DataDownloadFilter[] = [{category: 'theme', filterValues: [], label: 'label'}];
       const geoshopProductsServiceSpy = spyOn(geoshopProductsService, 'extractProductFilterValues').and.returnValue(dataDownloadFilters);
 
-      const expectedAction = DataDownloadProductActions.setFilters({dataDownloadFilters});
+      const expectedAction = DataDownloadProductActions.setFilters({filters: dataDownloadFilters});
 
       actions$ = of(DataDownloadProductActions.setProducts({products}));
       effects.initializeDataDownloadFilters$.subscribe((action) => {

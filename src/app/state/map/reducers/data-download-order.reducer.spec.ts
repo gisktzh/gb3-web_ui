@@ -110,7 +110,7 @@ describe('data download order reducer', () => {
   });
 
   describe('setSelection', () => {
-    it('sets the selection, keeps the status jobs and resets everything else', () => {
+    it('sets the selection, keeps the status jobs; resets everything else', () => {
       const expectedSelection: DataDownloadSelection = {
         type: 'select-circle',
         drawingRepresentation: {
@@ -132,7 +132,7 @@ describe('data download order reducer', () => {
   });
 
   describe('clearSelection', () => {
-    it('keeps the status jobs and resets everything else', () => {
+    it('keeps the status jobs; resets everything else', () => {
       const action = DataDownloadOrderActions.clearSelection();
       const state = reducer(existingState, action);
 
@@ -173,7 +173,7 @@ describe('data download order reducer', () => {
   });
 
   describe('updateProductsInOrder', () => {
-    it('updates the current order by replacing existing products and keeps everything else', () => {
+    it('updates the current order by replacing existing products; keeps everything else', () => {
       const productId = existingState.order!.products[0].id;
       const formatIds = [1, 2, 2];
 
@@ -194,7 +194,7 @@ describe('data download order reducer', () => {
   });
 
   describe('removeProductsWithSameIdInOrder', () => {
-    it('updates the current order by replacing existing products and keeps everything else', () => {
+    it('updates the current order by replacing existing products; keeps everything else', () => {
       const productId = existingState.order!.products[0].id;
 
       const expectedProducts: Product[] = [];
@@ -214,7 +214,7 @@ describe('data download order reducer', () => {
   });
 
   describe('setEmailInOrder', () => {
-    it('updates the current order by replacing existing products and keeps everything else', () => {
+    it('updates the current order by replacing existing products; keeps everything else', () => {
       const email = 'new email';
       const expectedOrder: Order = {
         ...existingStateOrder,
@@ -232,7 +232,7 @@ describe('data download order reducer', () => {
   });
 
   describe('sendOrder', () => {
-    it('sets the saving state to loading and keeps everything else', () => {
+    it('sets the saving state to loading; keeps everything else', () => {
       const action = DataDownloadOrderActions.sendOrder();
       const state = reducer(existingState, action);
 
@@ -244,7 +244,7 @@ describe('data download order reducer', () => {
   });
 
   describe('setSendOrderResponse', () => {
-    it('sets the saving state to loaded and keeps everything else', () => {
+    it('sets the saving state to loaded; keeps everything else', () => {
       const orderResponse: OrderResponse = {
         orderId: 'first order',
         downloadUrl: 'something',
@@ -264,7 +264,7 @@ describe('data download order reducer', () => {
   });
 
   describe('setSendOrderError', () => {
-    it('sets the saving state to error and keeps everything else', () => {
+    it('sets the saving state to error; keeps everything else', () => {
       const action = DataDownloadOrderActions.setSendOrderError({error: errorMock});
       const state = reducer(existingState, action);
 

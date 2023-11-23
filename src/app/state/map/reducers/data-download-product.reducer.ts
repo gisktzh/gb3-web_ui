@@ -25,18 +25,18 @@ export const dataDownloadProductFeature = createFeature({
       return {...initialState, productsLoadingState: 'loading'};
     }),
     on(DataDownloadProductActions.setProducts, (state, {products}): DataDownloadProductState => {
-      return {...state, products, productsLoadingState: 'loaded'};
+      return {...initialState, products, productsLoadingState: 'loaded'};
     }),
     on(DataDownloadProductActions.setProductsError, (): DataDownloadProductState => {
       return {...initialState, productsLoadingState: 'error'};
     }),
-    on(DataDownloadProductActions.loadRelevantProductsIds, (state): DataDownloadProductState => {
+    on(DataDownloadProductActions.loadRelevantProductIds, (state): DataDownloadProductState => {
       return {...state, relevantProductIds: initialState.relevantProductIds, relevantProductIdsLoadingState: 'loading'};
     }),
-    on(DataDownloadProductActions.setRelevantProductsIds, (state, {productIds}): DataDownloadProductState => {
-      return {...state, relevantProductIds: productIds, relevantProductIdsLoadingState: 'loaded'};
+    on(DataDownloadProductActions.setRelevantProductIds, (state, {relevantProductIds}): DataDownloadProductState => {
+      return {...state, relevantProductIds, relevantProductIdsLoadingState: 'loaded'};
     }),
-    on(DataDownloadProductActions.setRelevantProductsIdsError, (state): DataDownloadProductState => {
+    on(DataDownloadProductActions.setRelevantProductIdsError, (state): DataDownloadProductState => {
       return {...state, relevantProductIds: initialState.relevantProductIds, relevantProductIdsLoadingState: 'error'};
     }),
     on(DataDownloadProductActions.setFilterTerm, (state, {term}): DataDownloadProductState => {
@@ -45,8 +45,8 @@ export const dataDownloadProductFeature = createFeature({
     on(DataDownloadProductActions.clearFilterTerm, (state): DataDownloadProductState => {
       return {...state, filterTerm: initialState.filterTerm};
     }),
-    on(DataDownloadProductActions.setFilters, (state, {dataDownloadFilters}): DataDownloadProductState => {
-      return {...state, filters: dataDownloadFilters};
+    on(DataDownloadProductActions.setFilters, (state, {filters}): DataDownloadProductState => {
+      return {...state, filters};
     }),
     on(
       DataDownloadProductActions.resetFilters,
