@@ -124,17 +124,23 @@ export class MapUiEffects {
   public openShareLinkDialogAndCreateShareLink$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapUiActions.showShareLinkDialog),
-      concatLatestFrom(() => this.store.select(selectScreenMode)),
-      tap(([__, screenMode]) => {
-        if (screenMode === 'mobile') {
-          return this.store.dispatch(MapUiActions.showBottomSheet({bottomSheetContent: 'share-link'}));
-        } else {
-          this.dialogService.open(ShareLinkDialogComponent, {
-            panelClass: PanelClass.ApiWrapperDialog,
-            restoreFocus: false,
-          });
-        }
+      tap(() => {
+        this.dialogService.open(ShareLinkDialogComponent, {
+          panelClass: PanelClass.ApiWrapperDialog,
+          restoreFocus: false,
+        });
       }),
+      concatLatestFrom(() => this.store.select(selectCurrentShareLinkItem)),
+      map(([_, shareLinkItem]) => {
+        return ShareLinkActions.createItem({item: shareLinkItem});
+      }),
+    );
+  });
+
+  public createShareLinkWhenBottomSheetOpened$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapUiActions.showBottomSheet),
+      filter(({bottomSheetContent}) => bottomSheetContent === 'share-link'),
       concatLatestFrom(() => this.store.select(selectCurrentShareLinkItem)),
       map(([_, shareLinkItem]) => {
         return ShareLinkActions.createItem({item: shareLinkItem});
@@ -225,6 +231,7 @@ export class MapUiEffects {
       map(() => ToolActions.cancelTool()),
     );
   });
+
   constructor(
     private readonly actions$: Actions,
     private readonly store: Store,
