@@ -131,9 +131,7 @@ export class MapUiEffects {
         });
       }),
       concatLatestFrom(() => this.store.select(selectCurrentShareLinkItem)),
-      map(([_, shareLinkItem]) => {
-        return ShareLinkActions.createItem({item: shareLinkItem});
-      }),
+      map(([_, shareLinkItem]) => ShareLinkActions.createItem({item: shareLinkItem})),
     );
   });
 
@@ -142,9 +140,7 @@ export class MapUiEffects {
       ofType(MapUiActions.showBottomSheet),
       filter(({bottomSheetContent}) => bottomSheetContent === 'share-link'),
       concatLatestFrom(() => this.store.select(selectCurrentShareLinkItem)),
-      map(([_, shareLinkItem]) => {
-        return ShareLinkActions.createItem({item: shareLinkItem});
-      }),
+      map(([_, shareLinkItem]) => ShareLinkActions.createItem({item: shareLinkItem})),
     );
   });
 
