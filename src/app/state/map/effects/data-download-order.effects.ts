@@ -228,7 +228,16 @@ export class DataDownloadOrderEffects {
               map((orderStatus) => {
                 return DataDownloadOrderActions.setOrderStatusResponse({orderStatus});
               }),
-              catchError((error: unknown) => of(DataDownloadOrderActions.setOrderStatusError({error, orderId}))),
+              catchError((error: unknown) =>
+                of(
+                  DataDownloadOrderActions.setOrderStatusError({
+                    error,
+                    orderId,
+                    maximumNumberOfConsecutiveStatusJobErrors:
+                      this.configService.dataDownloadConfig.maximumNumberOfConsecutiveStatusJobErrors,
+                  }),
+                ),
+              ),
             ),
           ),
         ),
@@ -236,25 +245,13 @@ export class DataDownloadOrderEffects {
     );
   });
 
-  public abortOrderStatusAfterTooManyConsecutiveErrors$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(DataDownloadOrderActions.setOrderStatusError),
-      concatLatestFrom(() => this.store.select(selectStatusJobs)),
-      map(([{error, orderId}, statusJobs]) => ({error, statusJob: statusJobs.find((activeStatusJob) => activeStatusJob.id === orderId)})),
-      filter(
-        ({error, statusJob}) =>
-          !!statusJob &&
-          statusJob.consecutiveErrorsCount >= this.configService.dataDownloadConfig.maximumNumberOfConsecutiveStatusJobErrors,
-      ),
-      map(({error, statusJob}) => DataDownloadOrderActions.abortOrderStatus({error, orderId: statusJob!.id})),
-    );
-  });
-
   public throwOrderStatusRefreshAbortError$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(DataDownloadOrderActions.abortOrderStatus),
-        tap(({error}) => {
+        ofType(DataDownloadOrderActions.setOrderStatusError),
+        concatLatestFrom(() => this.store.select(selectStatusJobs)),
+        filter(([{orderId}, statusJobs]) => statusJobs.find((activeStatusJob) => activeStatusJob.id === orderId)?.isAborted === true),
+        tap(([{error}, _]) => {
           throw new OrderStatusWasAborted(error);
         }),
       );

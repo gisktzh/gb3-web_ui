@@ -392,10 +392,17 @@ describe('DataDownloadOrderEffects', () => {
   describe('throwOrderStatusError$', () => {
     it('throws a OrderStatusCouldNotBeSent error after setting an order status error', (done: DoneFn) => {
       const originalError = new Error('nooooooooooooo!!!');
+      store.overrideSelector(selectStatusJobs, []);
 
       const expectedError = new OrderStatusCouldNotBeSent(originalError);
 
-      actions$ = of(DataDownloadOrderActions.setOrderStatusError({error: originalError, orderId: 'stormtrooper'}));
+      actions$ = of(
+        DataDownloadOrderActions.setOrderStatusError({
+          error: originalError,
+          orderId: 'stormtrooper',
+          maximumNumberOfConsecutiveStatusJobErrors: 3,
+        }),
+      );
       effects.throwOrderStatusError$
         .pipe(
           catchError((error) => {
@@ -458,7 +465,7 @@ describe('DataDownloadOrderEffects', () => {
       const error = new Error('nooooooooooooo!!!');
       const geoshopApiServiceSpy = spyOn(geoshopApiService, 'checkOrderStatus').and.returnValue(throwError(() => error));
 
-      const expectedAction = DataDownloadOrderActions.setOrderStatusError({error, orderId});
+      const expectedAction = DataDownloadOrderActions.setOrderStatusError({error, orderId, maximumNumberOfConsecutiveStatusJobErrors: 1});
 
       actions$ = of(DataDownloadOrderActions.requestOrderStatus({orderTitle, orderId}));
       effects.periodicallyCheckOrderStatus$.subscribe((action) => {
@@ -541,7 +548,7 @@ describe('DataDownloadOrderEffects', () => {
     }));
   });
 
-  describe('abortOrderStatusAfterTooManyConsecutiveErrors$', () => {
+  describe('throwOrderStatusRefreshAbortError$', () => {
     const orderTitle = 'stormtrooper';
     const orderId = 'ST-1337';
     const orderStatus: OrderStatus = {
@@ -563,56 +570,18 @@ describe('DataDownloadOrderEffects', () => {
       consecutiveErrorsCount: 0,
       status: orderStatus,
     };
-    const dataDownloadConfig: DataDownloadConfig = {
-      defaultOrderSrs: 'lv95',
-      initialPollingDelay: 0,
-      maximumNumberOfConsecutiveStatusJobErrors: 3,
-      pollingInterval: 1000,
-    };
 
-    it('dispatches DataDownloadOrderActions.abortOrderStatus() after setting an order status error multiple times in a row', (done: DoneFn) => {
+    it('throws a OrderStatusWasAborted error after setting an order status error where isAborted is true', (done: DoneFn) => {
       const error = new Error('nooooooooooooo!!!');
-      const orderStatusJobWithTooManyConsecutiveErrors: OrderStatusJob = {
+      const abortedOrderStatusJob: OrderStatusJob = {
         ...orderStatusJob,
-        consecutiveErrorsCount: dataDownloadConfig.maximumNumberOfConsecutiveStatusJobErrors,
+        isAborted: true,
       };
-      store.overrideSelector(selectStatusJobs, [orderStatusJobWithTooManyConsecutiveErrors]);
-      spyOnProperty(configService, 'dataDownloadConfig', 'get').and.returnValue(dataDownloadConfig);
+      store.overrideSelector(selectStatusJobs, [abortedOrderStatusJob]);
 
-      const expectedAction = DataDownloadOrderActions.abortOrderStatus({error, orderId});
+      const expectedError = new OrderStatusWasAborted(error);
 
-      actions$ = of(DataDownloadOrderActions.setOrderStatusError({error, orderId}));
-      effects.abortOrderStatusAfterTooManyConsecutiveErrors$.subscribe((action) => {
-        expect(action).toEqual(expectedAction);
-        done();
-      });
-    });
-
-    it('dispatches nothing if the order does not have too many consecutive errors', fakeAsync(() => {
-      const error = new Error('nooooooooooooo!!!');
-      const orderStatusJobWithTooManyConsecutiveErrors: OrderStatusJob = {
-        ...orderStatusJob,
-        consecutiveErrorsCount: dataDownloadConfig.maximumNumberOfConsecutiveStatusJobErrors - 1,
-      };
-      store.overrideSelector(selectStatusJobs, [orderStatusJobWithTooManyConsecutiveErrors]);
-      spyOnProperty(configService, 'dataDownloadConfig', 'get').and.returnValue(dataDownloadConfig);
-
-      let newAction;
-      actions$ = of(DataDownloadOrderActions.setOrderStatusError({error, orderId}));
-      effects.abortOrderStatusAfterTooManyConsecutiveErrors$.subscribe((action) => (newAction = action));
-      tick();
-
-      expect(newAction).toBeUndefined();
-    }));
-  });
-
-  describe('throwOrderStatusRefreshAbortError$', () => {
-    it('throws a OrderStatusWasAborted error', (done: DoneFn) => {
-      const originalError = new Error('nooooooooooooo!!!');
-
-      const expectedError = new OrderStatusWasAborted(originalError);
-
-      actions$ = of(DataDownloadOrderActions.abortOrderStatus({error: originalError, orderId: 'stormtrooper'}));
+      actions$ = of(DataDownloadOrderActions.setOrderStatusError({error, orderId, maximumNumberOfConsecutiveStatusJobErrors: 3}));
       effects.throwOrderStatusRefreshAbortError$
         .pipe(
           catchError((error) => {
@@ -623,5 +592,21 @@ describe('DataDownloadOrderEffects', () => {
         )
         .subscribe();
     });
+
+    it('dispatches nothing if the order is not aborted', fakeAsync(() => {
+      const error = new Error('nooooooooooooo!!!');
+      const notAbortedOrderStatusJob: OrderStatusJob = {
+        ...orderStatusJob,
+        isAborted: false,
+      };
+      store.overrideSelector(selectStatusJobs, [notAbortedOrderStatusJob]);
+
+      let newAction;
+      actions$ = of(DataDownloadOrderActions.setOrderStatusError({error, orderId, maximumNumberOfConsecutiveStatusJobErrors: 3}));
+      effects.throwOrderStatusRefreshAbortError$.subscribe((action) => (newAction = action));
+      tick();
+
+      expect(newAction).toBeUndefined();
+    }));
   });
 });

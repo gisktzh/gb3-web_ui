@@ -92,11 +92,12 @@ export const dataDownloadOrderFeature = createFeature({
     ),
     on(
       DataDownloadOrderActions.setOrderStatusError,
-      produce((draft, {orderId}) => {
+      produce((draft, {orderId, maximumNumberOfConsecutiveStatusJobErrors}) => {
         const existingStatusJob = draft.statusJobs.find((statusJob) => statusJob.id === orderId);
         if (existingStatusJob) {
           existingStatusJob.loadingState = 'error';
           existingStatusJob.consecutiveErrorsCount += 1;
+          existingStatusJob.isAborted = existingStatusJob.consecutiveErrorsCount >= maximumNumberOfConsecutiveStatusJobErrors;
         }
       }),
     ),
@@ -106,15 +107,6 @@ export const dataDownloadOrderFeature = createFeature({
         const existingStatusJob = draft.statusJobs.find((statusJob) => statusJob.id === orderId);
         if (existingStatusJob) {
           existingStatusJob.isCompleted = true;
-        }
-      }),
-    ),
-    on(
-      DataDownloadOrderActions.abortOrderStatus,
-      produce((draft, {orderId}) => {
-        const existingStatusJob = draft.statusJobs.find((statusJob) => statusJob.id === orderId);
-        if (existingStatusJob) {
-          existingStatusJob.isAborted = true;
         }
       }),
     ),

@@ -22,9 +22,8 @@ export const DataDownloadOrderActions = createActionGroup({
 
     'Request Order Status': props<{orderId: string; orderTitle: string}>(),
     'Set Order Status Response': props<{orderStatus: OrderStatus}>(),
-    'Set Order Status Error': props<{error?: unknown; orderId: string}>(),
+    'Set Order Status Error': props<{error?: unknown; orderId: string; maximumNumberOfConsecutiveStatusJobErrors: number}>(),
     'Complete Order Status': props<{orderId: string}>(),
-    'Abort Order Status': props<{error?: unknown; orderId: string}>(),
     'Cancel Order Status': props<{orderId: string}>(),
   },
 });
