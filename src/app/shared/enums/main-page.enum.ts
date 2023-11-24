@@ -3,6 +3,8 @@ export enum MainPage {
   Maps = 'maps',
   Data = 'data',
   Support = 'support',
+  Privacy = 'privacy',
+  TermsOfUse = 'terms-of-use',
   Auth = 'auth',
   ShareLink = 's',
   Embedded = 'e',

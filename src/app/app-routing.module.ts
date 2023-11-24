@@ -13,6 +13,8 @@ const routes: Routes = [
       {path: MainPage.Maps, loadChildren: () => import('./map/map.module').then((m) => m.MapModule)},
       {path: MainPage.Data, loadChildren: () => import('./data-catalogue/data-catalogue.module').then((m) => m.DataCatalogueModule)},
       {path: MainPage.Support, loadChildren: () => import('./support-page/support-page.module').then((m) => m.SupportPageModule)},
+      {path: MainPage.Privacy, loadChildren: () => import('./privacy/privacy.module').then((m) => m.PrivacyModule)},
+      {path: MainPage.TermsOfUse, loadChildren: () => import('./terms-of-use/terms-of-use.module').then((m) => m.TermsOfUseModule)},
       {path: MainPage.Start, loadChildren: () => import('./start-page/start-page.module').then((m) => m.StartPageModule)},
       {
         path: MainPage.ShareLink,
