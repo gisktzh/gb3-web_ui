@@ -48,37 +48,8 @@
     }
 
     .map-data-catalogue__content__filter {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding-left: 12px;
-      border: 3px solid ktzh-variables.$zh-black40;
-      border-radius: ktzh-variables.$zh-border-radius;
-      margin: 24px 36px 18px 24px;
-      height: 40px;
-
-      &:focus-within {
-        border-color: ktzh-variables.$zh-active-blue;
-
-        .map-data-catalogue__content__filter__icon {
-          color: black;
-        }
-      }
-
-      .map-data-catalogue__content__filter__icon {
-        height: 18px;
-      }
-
-      .map-data-catalogue__content__filter__input {
-        @include mixins.multiline-ellipsis(1);
-        border: none;
-        outline: none;
-        flex-grow: 1;
-      }
-
-      .map-data-catalogue__content__filter__close-icon-button {
-        @include mat-mixins.mat-icon-button-override-icon-size(24px);
-      }
+      margin: 18px 30px 12px 18px;
+      height: 52px;
     }
 
     .map-data-catalogue__content__items {

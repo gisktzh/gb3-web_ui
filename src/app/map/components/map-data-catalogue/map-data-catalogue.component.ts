@@ -1,15 +1,14 @@
-import {AfterViewInit, Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectLoadingState as selectFavouritesLoadingState} from '../../../state/map/reducers/favourite-list.reducer';
 import {selectFilterString, selectLoadingState as selectCatalogueLoadingState} from '../../../state/map/reducers/layer-catalog.reducer';
 import {LayerCatalogActions} from '../../../state/map/actions/layer-catalog.actions';
-import {debounceTime, distinctUntilChanged, fromEvent, Observable, Subscription, tap} from 'rxjs';
+import {distinctUntilChanged, Subscription, tap} from 'rxjs';
 import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
 import {LoadingState} from '../../../shared/types/loading-state.type';
 import {ActiveMapItem} from '../../models/active-map-item.model';
 import {Map, MapLayer, Topic} from '../../../shared/interfaces/topic.interface';
 import {selectFilteredLayerCatalog} from '../../../state/map/selectors/filtered-layer-catalog.selector';
-import {map} from 'rxjs/operators';
 import {selectMaps} from '../../../state/map/selectors/maps.selector';
 import {selectFilteredFavouriteList} from '../../../state/map/selectors/filtered-favourite-list.selector';
 import {Favourite} from '../../../shared/interfaces/favourite.interface';
@@ -32,7 +31,7 @@ const AUTO_OPEN_THRESHOLD = 3;
   templateUrl: './map-data-catalogue.component.html',
   styleUrls: ['./map-data-catalogue.component.scss'],
 })
-export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewInit {
+export class MapDataCatalogueComponent implements OnInit, OnDestroy {
   @Output() public readonly changeIsMinimizedEvent = new EventEmitter<boolean>();
 
   public topics: Topic[] = [];
@@ -70,12 +69,6 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
-  }
-
-  public ngAfterViewInit() {
-    if (this.screenMode !== 'mobile') {
-      this.subscriptions.add(this.filterInputHandler().subscribe());
-    }
   }
 
   /**
@@ -135,17 +128,11 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
     this.changeIsMinimizedEvent.emit(this.isMinimized);
   }
 
-  private filterInputHandler(): Observable<string> {
-    return fromEvent<KeyboardEvent>(this.input.nativeElement, 'keyup').pipe(
-      debounceTime(300),
-      map((event) => (<HTMLInputElement>event.target).value),
-      distinctUntilChanged(),
-      tap((event) => this.filterCatalog(event)),
-    );
+  public filterCatalog(filterString: string) {
+    this.store.dispatch(LayerCatalogActions.setFilterString({filterString}));
   }
 
   public clearInput() {
-    this.input.nativeElement.value = '';
     this.store.dispatch(LayerCatalogActions.clearFilterString());
   }
 
@@ -232,9 +219,5 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy, AfterViewIn
     );
 
     this.subscriptions.add(this.filteredFavourites$.pipe(tap((favourites) => (this.filteredFavourites = favourites))).subscribe());
-  }
-
-  private filterCatalog(filterString: string) {
-    this.store.dispatch(LayerCatalogActions.setFilterString({filterString}));
   }
 }
