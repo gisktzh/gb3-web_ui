@@ -1,4 +1,4 @@
-import {Inject, Injectable} from '@angular/core';
+import {ErrorHandler, Inject, Injectable} from '@angular/core';
 import {Actions, concatLatestFrom, createEffect, ofType} from '@ngrx/effects';
 import {catchError, delay, map, mergeMap} from 'rxjs/operators';
 import {DataDownloadOrderActions} from '../actions/data-download-order.actions';
@@ -42,15 +42,16 @@ export class DataDownloadOrderEffects {
     );
   });
 
-  public throwSelectionError$ = createEffect(
+  public handleSelectionError$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(DataDownloadOrderActions.setSelectionError),
         tap(({error}) => {
           if (error instanceof OrderUnsupportedGeometry) {
-            throw error;
+            this.errorHandler.handleError(error);
+          } else {
+            this.errorHandler.handleError(new OrderSelectionIsInvalid(error));
           }
-          throw new OrderSelectionIsInvalid(error);
         }),
       );
     },
@@ -142,7 +143,7 @@ export class DataDownloadOrderEffects {
     );
   });
 
-  public throwSendOrderError$ = createEffect(
+  public handleSendOrderError$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(DataDownloadOrderActions.setSendOrderError),
@@ -151,7 +152,7 @@ export class DataDownloadOrderEffects {
           if (error instanceof HttpErrorResponse && !!error.statusText) {
             message = error.statusText;
           }
-          throw new OrderCouldNotBeSent(error, message);
+          this.errorHandler.handleError(new OrderCouldNotBeSent(error, message));
         }),
       );
     },
@@ -191,12 +192,12 @@ export class DataDownloadOrderEffects {
     );
   });
 
-  public throwOrderStatusError$ = createEffect(
+  public handleOrderStatusError$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(DataDownloadOrderActions.setOrderStatusError),
         tap(({error}) => {
-          throw new OrderStatusCouldNotBeSent(error);
+          this.errorHandler.handleError(new OrderStatusCouldNotBeSent(error));
         }),
       );
     },
@@ -245,14 +246,14 @@ export class DataDownloadOrderEffects {
     );
   });
 
-  public throwOrderStatusRefreshAbortError$ = createEffect(
+  public handleOrderStatusRefreshAbortError$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(DataDownloadOrderActions.setOrderStatusError),
         concatLatestFrom(() => this.store.select(selectStatusJobs)),
         filter(([{orderId}, statusJobs]) => statusJobs.find((activeStatusJob) => activeStatusJob.id === orderId)?.isAborted === true),
         tap(([{error}, _]) => {
-          throw new OrderStatusWasAborted(error);
+          this.errorHandler.handleError(new OrderStatusWasAborted(error));
         }),
       );
     },
@@ -266,5 +267,6 @@ export class DataDownloadOrderEffects {
     private readonly configService: ConfigService,
     private readonly store: Store,
     private readonly geoshopApiService: GeoshopApiService,
+    private readonly errorHandler: ErrorHandler,
   ) {}
 }

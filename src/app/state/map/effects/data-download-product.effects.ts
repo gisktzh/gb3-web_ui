@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {ErrorHandler, Injectable} from '@angular/core';
 import {Actions, concatLatestFrom, createEffect, ofType} from '@ngrx/effects';
 import {catchError, map} from 'rxjs/operators';
 import {filter, of, switchMap, tap} from 'rxjs';
@@ -44,12 +44,12 @@ export class DataDownloadProductEffects {
     );
   });
 
-  public throwProductsError$ = createEffect(
+  public handleProductsError$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(DataDownloadProductActions.setProductsError),
         tap(({error}) => {
-          throw new ProductsCouldNotBeLoaded(error);
+          this.errorHandler.handleError(new ProductsCouldNotBeLoaded(error));
         }),
       );
     },
@@ -78,12 +78,12 @@ export class DataDownloadProductEffects {
     );
   });
 
-  public throwRelevantProductIdsError$ = createEffect(
+  public handleRelevantProductIdsError$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(DataDownloadProductActions.setRelevantProductIdsError),
         tap(({error}) => {
-          throw new RelevantProductsCouldNotBeLoaded(error);
+          this.errorHandler.handleError(new RelevantProductsCouldNotBeLoaded(error));
         }),
       );
     },
@@ -113,5 +113,6 @@ export class DataDownloadProductEffects {
     private readonly actions$: Actions,
     private readonly store: Store,
     private readonly geoshopProductsService: Gb3GeoshopProductsService,
+    private readonly errorHandler: ErrorHandler,
   ) {}
 }

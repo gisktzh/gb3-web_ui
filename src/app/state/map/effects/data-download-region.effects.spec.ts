@@ -1,11 +1,10 @@
 import {provideMockActions} from '@ngrx/effects/testing';
 import {fakeAsync, flush, TestBed} from '@angular/core/testing';
-import {EMPTY, Observable, of, throwError} from 'rxjs';
+import {Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {RouterTestingModule} from '@angular/router/testing';
-import {catchError} from 'rxjs/operators';
 import {MAP_SERVICE} from '../../../app.module';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
 import {CantonCouldNotBeLoaded, MunicipalitiesCouldNotBeLoaded} from '../../../shared/errors/data-download.errors';
@@ -16,6 +15,7 @@ import {Gb3GeoshopMunicipalitiesService} from '../../../shared/services/apis/gb3
 import {DataDownloadRegionActions} from '../actions/data-download-region.actions';
 import {MinimalGeometriesUtils} from '../../../testing/map-testing/minimal-geometries.utils';
 import {selectCanton, selectMunicipalities} from '../reducers/data-download-region.reducer';
+import {ErrorHandler} from '@angular/core';
 
 describe('DataDownloadRegionEffects', () => {
   const errorMock = new Error('oh no! anyway...');
@@ -25,6 +25,7 @@ describe('DataDownloadRegionEffects', () => {
   let effects: DataDownloadRegionEffects;
   let geoshopCantonService: Gb3GeoshopCantonService;
   let geoshopMunicipalitiesService: Gb3GeoshopMunicipalitiesService;
+  let errorHandler: ErrorHandler;
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
@@ -42,6 +43,7 @@ describe('DataDownloadRegionEffects', () => {
     geoshopCantonService = TestBed.inject(Gb3GeoshopCantonService);
     geoshopMunicipalitiesService = TestBed.inject(Gb3GeoshopMunicipalitiesService);
     store = TestBed.inject(MockStore);
+    errorHandler = TestBed.inject(ErrorHandler);
   });
 
   afterEach(() => {
@@ -94,22 +96,18 @@ describe('DataDownloadRegionEffects', () => {
     }));
   });
 
-  describe('throwCantonError$', () => {
-    it('throws a CantonCouldNotBeLoaded error after setting a canton error', (done: DoneFn) => {
+  describe('handleCantonError$', () => {
+    it('handles a CantonCouldNotBeLoaded error after setting a canton error', (done: DoneFn) => {
+      const errorHandlerSpy = spyOn(errorHandler, 'handleError').and.stub();
       const error = errorMock;
 
       const expectedError = new CantonCouldNotBeLoaded(error);
 
       actions$ = of(DataDownloadRegionActions.setCantonError({error}));
-      effects.throwCantonError$
-        .pipe(
-          catchError((error) => {
-            expect(error).toEqual(expectedError);
-            done();
-            return EMPTY;
-          }),
-        )
-        .subscribe();
+      effects.handleCantonError$.subscribe(() => {
+        expect(errorHandlerSpy).toHaveBeenCalledOnceWith(expectedError);
+        done();
+      });
     });
   });
 
@@ -161,22 +159,18 @@ describe('DataDownloadRegionEffects', () => {
     }));
   });
 
-  describe('throwMunicipalitiesError$', () => {
-    it('throws a MunicipalitiesCouldNotBeLoaded error after setting a municipalities error', (done: DoneFn) => {
+  describe('handleMunicipalitiesError$', () => {
+    it('handles a MunicipalitiesCouldNotBeLoaded error after setting a municipalities error', (done: DoneFn) => {
+      const errorHandlerSpy = spyOn(errorHandler, 'handleError').and.stub();
       const error = new Error('oh no! anyway...');
 
       const expectedError = new MunicipalitiesCouldNotBeLoaded(error);
 
       actions$ = of(DataDownloadRegionActions.setMunicipalitiesError({error}));
-      effects.throwMunicipalitiesError$
-        .pipe(
-          catchError((error) => {
-            expect(error).toEqual(expectedError);
-            done();
-            return EMPTY;
-          }),
-        )
-        .subscribe();
+      effects.handleMunicipalitiesError$.subscribe(() => {
+        expect(errorHandlerSpy).toHaveBeenCalledOnceWith(expectedError);
+        done();
+      });
     });
   });
 });

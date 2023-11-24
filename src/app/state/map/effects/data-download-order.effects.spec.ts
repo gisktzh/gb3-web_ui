@@ -1,6 +1,6 @@
 import {provideMockActions} from '@ngrx/effects/testing';
-import {fakeAsync, flush, TestBed, tick} from '@angular/core/testing';
-import {EMPTY, Observable, of, throwError} from 'rxjs';
+import {discardPeriodicTasks, fakeAsync, flush, TestBed, tick} from '@angular/core/testing';
+import {Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
@@ -28,12 +28,12 @@ import {
   OrderStatusWasAborted,
   OrderUnsupportedGeometry,
 } from '../../../shared/errors/data-download.errors';
-import {catchError} from 'rxjs/operators';
 import {HttpErrorResponse} from '@angular/common/http';
 import {selectMapSideDrawerContent} from '../reducers/map-ui.reducer';
 import {selectProducts} from '../reducers/data-download-product.reducer';
 import {OrderStatus, OrderStatusJob} from '../../../shared/interfaces/geoshop-order-status.interface';
 import {DataDownloadConfig} from '../../../shared/interfaces/data-download-config.interface';
+import {ErrorHandler} from '@angular/core';
 
 describe('DataDownloadOrderEffects', () => {
   const polygonSelectionMock: DataDownloadSelection = {
@@ -65,6 +65,7 @@ describe('DataDownloadOrderEffects', () => {
   let effects: DataDownloadOrderEffects;
   let geoshopApiService: GeoshopApiService;
   let configService: ConfigService;
+  let errorHandler: ErrorHandler;
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
@@ -82,6 +83,7 @@ describe('DataDownloadOrderEffects', () => {
     store = TestBed.inject(MockStore);
     geoshopApiService = TestBed.inject(GeoshopApiService);
     configService = TestBed.inject(ConfigService);
+    errorHandler = TestBed.inject(ErrorHandler);
   });
 
   afterEach(() => {
@@ -134,37 +136,29 @@ describe('DataDownloadOrderEffects', () => {
     });
   });
 
-  describe('throwSelectionError$', () => {
-    it('throws a OrderSelectionIsInvalid error in case of an original generic error', (done: DoneFn) => {
+  describe('handleSelectionError$', () => {
+    it('handles a OrderSelectionIsInvalid error in case of an original generic error', (done: DoneFn) => {
+      const errorHandlerSpy = spyOn(errorHandler, 'handleError').and.stub();
       const expectedOriginalError = new Error('oh no! anyway...');
 
       const expectedError = new OrderSelectionIsInvalid(expectedOriginalError);
 
       actions$ = of(DataDownloadOrderActions.setSelectionError({error: expectedOriginalError}));
-      effects.throwSelectionError$
-        .pipe(
-          catchError((error) => {
-            expect(error).toEqual(expectedError);
-            done();
-            return EMPTY;
-          }),
-        )
-        .subscribe();
+      effects.handleSelectionError$.subscribe(() => {
+        expect(errorHandlerSpy).toHaveBeenCalledOnceWith(expectedError);
+        done();
+      });
     });
 
-    it('throws an OrderUnsupportedGeometry error in case of original OrderUnsupportedGeometry', (done: DoneFn) => {
+    it('handles an OrderUnsupportedGeometry error in case of original OrderUnsupportedGeometry', (done: DoneFn) => {
+      const errorHandlerSpy = spyOn(errorHandler, 'handleError').and.stub();
       const expectedError = new OrderUnsupportedGeometry();
 
       actions$ = of(DataDownloadOrderActions.setSelectionError({error: expectedError}));
-      effects.throwSelectionError$
-        .pipe(
-          catchError((error) => {
-            expect(error).toEqual(expectedError);
-            done();
-            return EMPTY;
-          }),
-        )
-        .subscribe();
+      effects.handleSelectionError$.subscribe(() => {
+        expect(errorHandlerSpy).toHaveBeenCalledOnceWith(expectedError);
+        done();
+      });
     });
   });
 
@@ -315,23 +309,19 @@ describe('DataDownloadOrderEffects', () => {
     }));
   });
 
-  describe('throwSendOrderError$', () => {
-    it('throws a OrderCouldNotBeSent error after setting a send order error', (done: DoneFn) => {
+  describe('handleSendOrderError$', () => {
+    it('handles a OrderCouldNotBeSent error after setting a send order error', (done: DoneFn) => {
+      const errorHandlerSpy = spyOn(errorHandler, 'handleError').and.stub();
       const originalErrorText = 'that is no moon';
       const originalError = new HttpErrorResponse({statusText: originalErrorText});
 
       const expectedError = new OrderCouldNotBeSent(originalError, originalErrorText);
 
       actions$ = of(DataDownloadOrderActions.setSendOrderError({error: originalError}));
-      effects.throwSendOrderError$
-        .pipe(
-          catchError((error) => {
-            expect(error).toEqual(expectedError);
-            done();
-            return EMPTY;
-          }),
-        )
-        .subscribe();
+      effects.handleSendOrderError$.subscribe(() => {
+        expect(errorHandlerSpy).toHaveBeenCalledOnceWith(expectedError);
+        done();
+      });
     });
   });
 
@@ -389,8 +379,9 @@ describe('DataDownloadOrderEffects', () => {
     });
   });
 
-  describe('throwOrderStatusError$', () => {
-    it('throws a OrderStatusCouldNotBeSent error after setting an order status error', (done: DoneFn) => {
+  describe('handleOrderStatusError$', () => {
+    it('handles a OrderStatusCouldNotBeSent error after setting an order status error', (done: DoneFn) => {
+      const errorHandlerSpy = spyOn(errorHandler, 'handleError').and.stub();
       const originalError = new Error('nooooooooooooo!!!');
       store.overrideSelector(selectStatusJobs, []);
 
@@ -403,15 +394,10 @@ describe('DataDownloadOrderEffects', () => {
           maximumNumberOfConsecutiveStatusJobErrors: 3,
         }),
       );
-      effects.throwOrderStatusError$
-        .pipe(
-          catchError((error) => {
-            expect(error).toEqual(expectedError);
-            done();
-            return EMPTY;
-          }),
-        )
-        .subscribe();
+      effects.handleOrderStatusError$.subscribe(() => {
+        expect(errorHandlerSpy).toHaveBeenCalledOnceWith(expectedError);
+        done();
+      });
     });
   });
 
@@ -491,6 +477,7 @@ describe('DataDownloadOrderEffects', () => {
 
       expect(geoshopApiServiceSpy).not.toHaveBeenCalled();
       expect(newAction).toBeUndefined();
+      discardPeriodicTasks();
     }));
 
     it('dispatches nothing if the status job has the status type failure', fakeAsync(() => {
@@ -509,6 +496,7 @@ describe('DataDownloadOrderEffects', () => {
 
       expect(geoshopApiServiceSpy).not.toHaveBeenCalled();
       expect(newAction).toBeUndefined();
+      discardPeriodicTasks();
     }));
 
     it('dispatches nothing if the status job was aborted', fakeAsync(() => {
@@ -527,6 +515,7 @@ describe('DataDownloadOrderEffects', () => {
 
       expect(geoshopApiServiceSpy).not.toHaveBeenCalled();
       expect(newAction).toBeUndefined();
+      discardPeriodicTasks();
     }));
 
     it('dispatches nothing if the status job was cancelled', fakeAsync(() => {
@@ -545,10 +534,11 @@ describe('DataDownloadOrderEffects', () => {
 
       expect(geoshopApiServiceSpy).not.toHaveBeenCalled();
       expect(newAction).toBeUndefined();
+      discardPeriodicTasks();
     }));
   });
 
-  describe('throwOrderStatusRefreshAbortError$', () => {
+  describe('handleOrderStatusRefreshAbortError$', () => {
     const orderTitle = 'stormtrooper';
     const orderId = 'ST-1337';
     const orderStatus: OrderStatus = {
@@ -571,7 +561,8 @@ describe('DataDownloadOrderEffects', () => {
       status: orderStatus,
     };
 
-    it('throws a OrderStatusWasAborted error after setting an order status error where isAborted is true', (done: DoneFn) => {
+    it('handles a OrderStatusWasAborted error after setting an order status error where isAborted is true', (done: DoneFn) => {
+      const errorHandlerSpy = spyOn(errorHandler, 'handleError').and.stub();
       const error = new Error('nooooooooooooo!!!');
       const abortedOrderStatusJob: OrderStatusJob = {
         ...orderStatusJob,
@@ -582,18 +573,14 @@ describe('DataDownloadOrderEffects', () => {
       const expectedError = new OrderStatusWasAborted(error);
 
       actions$ = of(DataDownloadOrderActions.setOrderStatusError({error, orderId, maximumNumberOfConsecutiveStatusJobErrors: 3}));
-      effects.throwOrderStatusRefreshAbortError$
-        .pipe(
-          catchError((error) => {
-            expect(error).toEqual(expectedError);
-            done();
-            return EMPTY;
-          }),
-        )
-        .subscribe();
+      effects.handleOrderStatusRefreshAbortError$.subscribe(() => {
+        expect(errorHandlerSpy).toHaveBeenCalledOnceWith(expectedError);
+        done();
+      });
     });
 
     it('dispatches nothing if the order is not aborted', fakeAsync(() => {
+      const errorHandlerSpy = spyOn(errorHandler, 'handleError').and.stub();
       const error = new Error('nooooooooooooo!!!');
       const notAbortedOrderStatusJob: OrderStatusJob = {
         ...orderStatusJob,
@@ -603,10 +590,11 @@ describe('DataDownloadOrderEffects', () => {
 
       let newAction;
       actions$ = of(DataDownloadOrderActions.setOrderStatusError({error, orderId, maximumNumberOfConsecutiveStatusJobErrors: 3}));
-      effects.throwOrderStatusRefreshAbortError$.subscribe((action) => (newAction = action));
+      effects.handleOrderStatusRefreshAbortError$.subscribe((action) => (newAction = action));
       tick();
 
       expect(newAction).toBeUndefined();
+      expect(errorHandlerSpy).not.toHaveBeenCalled();
     }));
   });
 });

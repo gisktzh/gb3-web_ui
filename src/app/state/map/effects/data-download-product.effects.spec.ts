@@ -1,11 +1,10 @@
 import {provideMockActions} from '@ngrx/effects/testing';
 import {fakeAsync, flush, TestBed} from '@angular/core/testing';
-import {EMPTY, Observable, of, throwError} from 'rxjs';
+import {Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {RouterTestingModule} from '@angular/router/testing';
-import {catchError} from 'rxjs/operators';
 import {MAP_SERVICE} from '../../../app.module';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
 import {DataDownloadProductEffects} from './data-download-product.effects';
@@ -19,6 +18,7 @@ import {selectItems} from '../reducers/active-map-item.reducer';
 import {ActiveMapItem} from '../../../map/models/active-map-item.model';
 import {createGb2WmsMapItemMock, createUuidFromId} from '../../../testing/map-testing/active-map-item-test.utils';
 import {DataDownloadFilter} from '../../../shared/interfaces/data-download-filter.interface';
+import {ErrorHandler} from '@angular/core';
 
 describe('DataDownloadProductEffects', () => {
   const productsMock: Product[] = [
@@ -77,6 +77,7 @@ describe('DataDownloadProductEffects', () => {
   let store: MockStore;
   let effects: DataDownloadProductEffects;
   let geoshopProductsService: Gb3GeoshopProductsService;
+  let errorHandler: ErrorHandler;
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
@@ -93,6 +94,7 @@ describe('DataDownloadProductEffects', () => {
     effects = TestBed.inject(DataDownloadProductEffects);
     geoshopProductsService = TestBed.inject(Gb3GeoshopProductsService);
     store = TestBed.inject(MockStore);
+    errorHandler = TestBed.inject(ErrorHandler);
   });
 
   afterEach(() => {
@@ -169,22 +171,18 @@ describe('DataDownloadProductEffects', () => {
     }));
   });
 
-  describe('throwProductsError$', () => {
-    it('throws a ProductsCouldNotBeLoaded error after setting a products error', (done: DoneFn) => {
+  describe('handleProductsError$', () => {
+    it('handles a ProductsCouldNotBeLoaded error after setting a products error', (done: DoneFn) => {
+      const errorHandlerSpy = spyOn(errorHandler, 'handleError').and.stub();
       const error = new Error('My cabbages!!!');
 
       const expectedError = new ProductsCouldNotBeLoaded(error);
 
       actions$ = of(DataDownloadProductActions.setProductsError({error}));
-      effects.throwProductsError$
-        .pipe(
-          catchError((error) => {
-            expect(error).toEqual(expectedError);
-            done();
-            return EMPTY;
-          }),
-        )
-        .subscribe();
+      effects.handleProductsError$.subscribe(() => {
+        expect(errorHandlerSpy).toHaveBeenCalledOnceWith(expectedError);
+        done();
+      });
     });
   });
 
@@ -240,22 +238,18 @@ describe('DataDownloadProductEffects', () => {
     });
   });
 
-  describe('throwRelevantProductIdsError$', () => {
-    it('throws a RelevantProductsCouldNotBeLoaded error after setting a relevant products ids error', (done: DoneFn) => {
+  describe('handleRelevantProductIdsError$', () => {
+    it('handles a RelevantProductsCouldNotBeLoaded error after setting a relevant products ids error', (done: DoneFn) => {
+      const errorHandlerSpy = spyOn(errorHandler, 'handleError').and.stub();
       const error = new Error('My cabbages!!!');
 
       const expectedError = new RelevantProductsCouldNotBeLoaded(error);
 
       actions$ = of(DataDownloadProductActions.setRelevantProductIdsError({error}));
-      effects.throwRelevantProductIdsError$
-        .pipe(
-          catchError((error) => {
-            expect(error).toEqual(expectedError);
-            done();
-            return EMPTY;
-          }),
-        )
-        .subscribe();
+      effects.handleRelevantProductIdsError$.subscribe(() => {
+        expect(errorHandlerSpy).toHaveBeenCalledOnceWith(expectedError);
+        done();
+      });
     });
   });
 
