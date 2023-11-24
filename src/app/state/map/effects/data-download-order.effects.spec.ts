@@ -95,7 +95,6 @@ describe('DataDownloadOrderEffects', () => {
 
       const expectedOrder: Order = {
         perimeterType: 'direct',
-        email: undefined,
         srs: 'lv95',
         geometry: selection.drawingRepresentation.geometry as Polygon,
         products: [],

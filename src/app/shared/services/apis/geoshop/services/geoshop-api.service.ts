@@ -77,7 +77,6 @@ export class GeoshopApiService extends BaseApiService {
     return {
       perimeterType: 'direct',
       products: [],
-      email: undefined,
       srs: this.configService.dataDownloadConfig.defaultOrderSrs,
       geometry: selection.drawingRepresentation.geometry,
     };
@@ -87,7 +86,6 @@ export class GeoshopApiService extends BaseApiService {
     return {
       perimeterType: 'indirect',
       products: [],
-      email: undefined,
       identifiers: [selection.municipality.bfsNo.toString()],
       layerName: 'commune',
     };
