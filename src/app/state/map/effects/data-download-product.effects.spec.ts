@@ -157,49 +157,25 @@ describe('DataDownloadProductEffects', () => {
     it('dispatches nothing if the products are already in the store', fakeAsync(async () => {
       const products = productsMock;
       store.overrideSelector(selectProducts, products);
-      const geoshopProductsServiceSpy = spyOn(geoshopProductsService, 'loadProductList').and.returnValue(
-        of({
-          timestamp: 'nope',
-          products: [
-            {
-              id: '16',
-              ogd: false,
-              themes: ['Elements', 'Bender', 'Honor'],
-              gisZHNr: 1337,
-              keywords: ['Firebender', 'Prince'],
-              nonOgdProductUrl: 'www.example.com',
-              geolionGeodatensatzUuid: 'abcd-efgh-ijkl-mnop',
-              name: 'Zuko',
-              formats: [
-                {
-                  id: 3,
-                  description: 'Only Fire (.hot)',
-                },
-              ],
-            },
-          ],
-        }),
-      );
+      const geoshopProductsServiceSpy = spyOn(geoshopProductsService, 'loadProductList').and.callThrough();
 
+      let newAction;
       actions$ = of(DataDownloadProductActions.loadProducts());
-      effects.loadProducts$.subscribe();
+      effects.loadProducts$.subscribe((action) => (newAction = action));
       flush();
 
       expect(geoshopProductsServiceSpy).not.toHaveBeenCalled();
-      store.select(selectProducts).subscribe((stateProducts) => {
-        expect(stateProducts).toEqual(products);
-      });
-      flush();
+      expect(newAction).toBeUndefined();
     }));
   });
 
   describe('throwProductsError$', () => {
     it('throws a ProductsCouldNotBeLoaded error after setting a products error', (done: DoneFn) => {
-      const originalError = new Error('My cabbages!!!');
+      const error = new Error('My cabbages!!!');
 
-      const expectedError = new ProductsCouldNotBeLoaded(originalError);
+      const expectedError = new ProductsCouldNotBeLoaded(error);
 
-      actions$ = of(DataDownloadProductActions.setProductsError({error: originalError}));
+      actions$ = of(DataDownloadProductActions.setProductsError({error}));
       effects.throwProductsError$
         .pipe(
           catchError((error) => {
@@ -266,11 +242,11 @@ describe('DataDownloadProductEffects', () => {
 
   describe('throwRelevantProductIdsError$', () => {
     it('throws a RelevantProductsCouldNotBeLoaded error after setting a relevant products ids error', (done: DoneFn) => {
-      const originalError = new Error('My cabbages!!!');
+      const error = new Error('My cabbages!!!');
 
-      const expectedError = new RelevantProductsCouldNotBeLoaded(originalError);
+      const expectedError = new RelevantProductsCouldNotBeLoaded(error);
 
-      actions$ = of(DataDownloadProductActions.setRelevantProductIdsError({error: originalError}));
+      actions$ = of(DataDownloadProductActions.setRelevantProductIdsError({error}));
       effects.throwRelevantProductIdsError$
         .pipe(
           catchError((error) => {
