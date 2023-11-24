@@ -7,9 +7,11 @@
   &.mat-expansion-panel {
     @include mixins.no-box-shadow;
   }
+
   &.mat-expansion-panel-spacing {
     margin: 0;
   }
+
   @include mat-mixins.mat-expansion-panel-remove-content-indent;
 }
 
@@ -19,6 +21,10 @@
   .expandable-list-item__header {
     height: auto;
     padding: 0;
+
+    &:focus {
+      border: solid 1px ktzh-variables.$zh-black60;
+    }
 
     .expandable-list-item__header__item {
       height: 36px;

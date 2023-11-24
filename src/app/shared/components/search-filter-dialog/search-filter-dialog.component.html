@@ -12,6 +12,7 @@
           (change)="toggleFilter(filterGroup.label, filter.label, !filter.isActive)"
           *ngFor="let filter of filterGroup.filters; trackBy: trackByFilterLabel"
           [checked]="filter.isActive"
+          (keydown.space)="$event.stopPropagation()"
         >
           {{ filter.label }}
         </mat-checkbox>

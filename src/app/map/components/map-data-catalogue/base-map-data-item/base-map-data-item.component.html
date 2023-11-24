@@ -41,6 +41,7 @@
         (click)="addItem()"
         *ngIf="!gb2Url"
         [disabled]="invalid === true || isAddItemDisabled"
+        (keydown.space)="$event.stopPropagation()"
         class="base-map-data-item__header__image-container__button"
         data-test-id="add-active-map"
         mat-icon-button

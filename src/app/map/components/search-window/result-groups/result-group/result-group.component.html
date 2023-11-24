@@ -9,7 +9,9 @@
     <mat-card
       *ngFor="let result of searchResults"
       (click)="zoomToResult(result)"
+      (keydown.space)="zoomToResult(result)"
       class="result-group__container__element search-result-group__container__element--interactive"
+      tabindex="0"
     >
       <mat-card-header *ngIf="result.indexType === 'activeMapItems'" class="result-group__container__element__header">{{
         result.indexName
