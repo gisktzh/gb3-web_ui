@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
@@ -12,9 +12,8 @@ const TERMS_OF_USE_SUMMARY =
   templateUrl: './terms-of-use-page.component.html',
   styleUrls: ['./terms-of-use-page.component.scss'],
 })
-export class TermsOfUsePageComponent {
+export class TermsOfUsePageComponent implements OnInit, OnDestroy {
   public heroText = TERMS_OF_USE_SUMMARY;
-
   public screenMode: ScreenMode = 'regular';
 
   private readonly screenMode$ = this.store.select(selectScreenMode);

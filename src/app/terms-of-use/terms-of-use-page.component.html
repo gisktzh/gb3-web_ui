@@ -1,9 +1,11 @@
-<div class="privacy-page">
+<div>
   <start-page-section [background]="'primary'" [pageTitle]="true">
     <hero-header [heroText]="screenMode === 'mobile' ? '' : heroText" heroTitle="Nutzungshinweise"></hero-header>
   </start-page-section>
-  <start-page-section sectionTitle="Nutzungsregeln"> <usage-rules></usage-rules></start-page-section>
+  <start-page-section sectionTitle="Nutzungsregeln">
+    <usage-rules></usage-rules>
+  </start-page-section>
   <start-page-section sectionTitle="Nutzungsbestimmungen für Geodaten und Karten">
-    <terms-of-use-geodata-and-maps></terms-of-use-geodata-and-maps
-  ></start-page-section>
+    <terms-of-use-geodata-and-maps></terms-of-use-geodata-and-maps>
+  </start-page-section>
 </div>
