@@ -20,7 +20,7 @@ import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 
 const FILTER_DIALOG_WIDTH_IN_PX = 956;
 const GEO_DATA_CATALOGUE_SUMMARY =
-  'Der Datenkatalog listet Geodaten auf und lässt sich nach verschiedenen Kriterien sortieren. Die Geodaten bestehen aus Geodatensätzen, Geodiensten und GIS-Browser Karten sowie den eigentlichen Geometadaten.';
+  'Der Geoatenkatalog listet Geodaten auf und lässt sich nach verschiedenen Kriterien sortieren. Die Geodaten bestehen aus Geodatensätzen, Geodiensten und GIS-Browser Karten sowie den eigentlichen Geometadaten.';
 
 @Injectable()
 class DataCataloguePaginatorIntl implements MatPaginatorIntl {
