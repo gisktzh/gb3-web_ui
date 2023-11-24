@@ -15,8 +15,12 @@ import {ActiveDataCatalogueFilter} from '../../../shared/interfaces/data-catalog
 import {selectActiveFilterValues} from '../../../state/data-catalogue/selectors/active-filter-values.selector';
 import {SearchActions} from '../../../state/app/actions/search.actions';
 import {ConfigService} from '../../../shared/services/config.service';
+import {ScreenMode} from 'src/app/shared/types/screen-size.type';
+import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 
 const FILTER_DIALOG_WIDTH_IN_PX = 956;
+const GEO_DATA_CATALOGUE_SUMMARY =
+  'Der Geoatenkatalog listet Geodaten auf und lässt sich nach verschiedenen Kriterien sortieren. Die Geodaten bestehen aus Geodatensätzen, Geodiensten und GIS-Browser Karten sowie den eigentlichen Geometadaten.';
 
 @Injectable()
 class DataCataloguePaginatorIntl implements MatPaginatorIntl {
@@ -50,6 +54,10 @@ export class DataCatalogueOverviewComponent implements OnInit, OnDestroy, AfterV
   public loadingState: LoadingState;
   public dataCatalogueItems: MatTableDataSource<OverviewMetadataItem> = new MatTableDataSource<OverviewMetadataItem>([]);
   public activeFilters: ActiveDataCatalogueFilter[] = [];
+  public screenMode: ScreenMode = 'regular';
+  public heroText = GEO_DATA_CATALOGUE_SUMMARY;
+
+  private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly searchConfig = this.configService.searchConfig.dataCatalogPage;
   private readonly activeFilters$: Observable<ActiveDataCatalogueFilter[]> = this.store.select(selectActiveFilterValues);
   private readonly dataCatalogueItems$: Observable<OverviewMetadataItem[]> = this.store.select(selectDataCatalogueItems);
@@ -113,5 +121,6 @@ export class DataCatalogueOverviewComponent implements OnInit, OnDestroy, AfterV
     this.subscriptions.add(this.dataCatalogueLoadingState$.pipe(tap((loadingState) => (this.loadingState = loadingState))).subscribe());
     this.subscriptions.add(this.dataCatalogueItems$.pipe(tap((items) => (this.dataCatalogueItems.data = items))).subscribe());
     this.subscriptions.add(this.activeFilters$.pipe(tap((activeFilters) => (this.activeFilters = activeFilters))).subscribe());
+    this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
   }
 }
