@@ -8,7 +8,7 @@ export class FilterProductsUtils {
     activeFilters: ActiveDataDownloadFilterGroup[],
     filterTerm: string | undefined,
   ): Product[] {
-    if (activeFilters.length === 0 && filterTerm === '') {
+    if (activeFilters.length === 0 && (filterTerm === undefined || filterTerm === '')) {
       return products;
     }
 
@@ -16,6 +16,10 @@ export class FilterProductsUtils {
     return products
       .filter((product) => {
         return activeFilters.every((activeFilter) => {
+          if (activeFilter.values.length === 0) {
+            // no filter active is equivalent to every filter active => no filtering
+            return true;
+          }
           switch (activeFilter.category) {
             case 'availability':
               return product.ogd
