@@ -110,7 +110,7 @@
       }
 
       .map-management-mobile-header__tools__filter__input:focus {
-        border: 3px solid ktzh-variables.$zh-cyan;
+        border: 3px solid ktzh-variables.$zh-active-blue;
 
         & + .map-data-catalogue__content__filter__input-icon {
           color: black;
