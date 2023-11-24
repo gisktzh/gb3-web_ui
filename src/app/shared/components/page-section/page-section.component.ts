@@ -8,12 +8,13 @@ export interface TitleLink {
   url: string;
   displayTitle: string;
 }
+
 @Component({
-  selector: 'start-page-section',
-  templateUrl: './start-page-section.component.html',
-  styleUrls: ['./start-page-section.component.scss'],
+  selector: 'page-section',
+  templateUrl: './page-section.component.html',
+  styleUrls: ['./page-section.component.scss'],
 })
-export class StartPageSectionComponent implements OnInit, OnDestroy {
+export class PageSectionComponent implements OnInit, OnDestroy {
   @Input() public background?: 'primary' | 'accent';
   @Input() public sectionTitle?: string;
   @Input() public titleLink?: TitleLink;
