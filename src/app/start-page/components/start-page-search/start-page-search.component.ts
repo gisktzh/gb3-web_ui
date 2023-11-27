@@ -11,8 +11,6 @@ import {SearchActions} from '../../../state/app/actions/search.actions';
 import {selectTerm} from '../../../state/app/reducers/search.reducer';
 import {selectActiveSearchFilterValues} from '../../../state/data-catalogue/selectors/active-search-filters.selector';
 
-const FILTER_DIALOG_WIDTH_IN_PX = 956;
-
 @Component({
   selector: 'start-page-search',
   templateUrl: './start-page-search.component.html',
@@ -61,7 +59,6 @@ export class StartPageSearchComponent implements OnInit, OnDestroy {
     this.dialogService.open<SearchFilterDialogComponent>(SearchFilterDialogComponent, {
       panelClass: PanelClass.ApiWrapperDialog,
       restoreFocus: false,
-      width: `${FILTER_DIALOG_WIDTH_IN_PX}px`,
     });
   }
 

@@ -51,7 +51,7 @@ export const dataDownloadProductFeature = createFeature({
     on(
       DataDownloadProductActions.resetFilters,
       produce((draft) => {
-        draft.filters.forEach((filter) => filter.filterValues.forEach((f) => (f.isActive = false)));
+        draft.filters.forEach((filter) => filter.filterValues.forEach((filterValue) => (filterValue.isActive = false)));
       }),
     ),
     on(
@@ -68,7 +68,7 @@ export const dataDownloadProductFeature = createFeature({
     on(
       DataDownloadProductActions.resetFiltersAndTerm,
       produce((draft) => {
-        draft.filters.forEach((filter) => filter.filterValues.forEach((f) => (f.isActive = false)));
+        draft.filters.forEach((filter) => filter.filterValues.forEach((filterValue) => (filterValue.isActive = false)));
         draft.filterTerm = initialState.filterTerm;
       }),
     ),

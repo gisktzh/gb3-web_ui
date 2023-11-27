@@ -12,8 +12,6 @@ import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
 
-const FILTER_DIALOG_WIDTH_IN_PX = 956;
-
 @Component({
   selector: 'search-window',
   templateUrl: './search-window.component.html',
@@ -61,7 +59,6 @@ export class SearchWindowComponent implements OnInit, OnDestroy {
     this.dialogService.open<SearchFilterDialogComponent>(SearchFilterDialogComponent, {
       panelClass: PanelClass.ApiWrapperDialog,
       restoreFocus: false,
-      width: `${FILTER_DIALOG_WIDTH_IN_PX}px`,
     });
   }
 

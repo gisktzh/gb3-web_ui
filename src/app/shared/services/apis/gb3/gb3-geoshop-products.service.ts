@@ -30,7 +30,7 @@ export class Gb3GeoshopProductsService extends Gb3ApiService {
     const uniqueValues: Map<Pick<DataDownloadFilter, 'category' | 'label'>, Set<string>> = new Map();
 
     products.forEach((product) => {
-      this.configService.filterConfig.dataDownload.forEach((dataDownloadFilter) => {
+      this.configService.filterConfigs.dataDownload.forEach((dataDownloadFilter) => {
         let values: string[];
         switch (dataDownloadFilter.category) {
           case 'availability':

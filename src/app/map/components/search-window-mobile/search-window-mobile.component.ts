@@ -9,8 +9,6 @@ import {SearchActions} from 'src/app/state/app/actions/search.actions';
 import {initialState, selectSearchState} from 'src/app/state/app/reducers/search.reducer';
 import {SearchState} from 'src/app/state/app/states/search.state';
 
-const FILTER_DIALOG_WIDTH_IN_PX = 90;
-
 @Component({
   selector: 'search-window-mobile',
   templateUrl: './search-window-mobile.component.html',
@@ -51,7 +49,6 @@ export class SearchWindowMobileComponent implements OnInit, OnDestroy {
     this.dialogService.open<SearchFilterDialogComponent>(SearchFilterDialogComponent, {
       panelClass: PanelClass.ApiWrapperDialog,
       restoreFocus: false,
-      width: `${FILTER_DIALOG_WIDTH_IN_PX}vw`,
     });
   }
 

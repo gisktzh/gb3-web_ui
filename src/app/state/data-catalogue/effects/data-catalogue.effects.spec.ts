@@ -57,9 +57,7 @@ describe('DataCatalogueEffects', () => {
   describe('requestDataCatalogueItems$', () => {
     it('dispatches DataCatalogueActions.setCatalogue() with the service response on success', (done: DoneFn) => {
       const expected = [new MapOverviewMetadataItem('1337', 'Test', 'Testbeschreibung', 'Testamt')];
-      spyOn(gb3MetadataService, 'loadFullList').and.callFake(() => {
-        return of(expected);
-      });
+      spyOn(gb3MetadataService, 'loadFullList').and.returnValue(of(expected));
       actions$ = of(DataCatalogueActions.loadCatalogue());
 
       effects.requestDataCatalogueItems$.subscribe((action) => {
@@ -100,7 +98,7 @@ describe('DataCatalogueEffects', () => {
         {key: 'description', label: 'Description'},
         {key: 'responsibleDepartment', label: 'Verantwortlich'},
       ];
-      spyOnProperty(configService, 'filterConfig', 'get').and.returnValue({
+      spyOnProperty(configService, 'filterConfigs', 'get').and.returnValue({
         dataCatalogue: mockConfig,
         dataDownload: [],
       });
@@ -121,7 +119,7 @@ describe('DataCatalogueEffects', () => {
     it('does not add a non-existing property if no values are present', (done: DoneFn) => {
       const mockItems = [new MapOverviewMetadataItem('1337', 'Test', 'Testbeschreibung', 'Testamt')];
       const mockConfig: DataCatalogueFilterConfiguration[] = [{key: 'outputFormat', label: 'Exists only on DatasetDetails :)'}];
-      spyOnProperty(configService, 'filterConfig', 'get').and.returnValue({
+      spyOnProperty(configService, 'filterConfigs', 'get').and.returnValue({
         dataCatalogue: mockConfig,
         dataDownload: [],
       });
@@ -146,7 +144,7 @@ describe('DataCatalogueEffects', () => {
         {key: 'name', label: 'Name'},
         {key: 'responsibleDepartment', label: 'Amt'},
       ];
-      spyOnProperty(configService, 'filterConfig', 'get').and.returnValue({
+      spyOnProperty(configService, 'filterConfigs', 'get').and.returnValue({
         dataCatalogue: mockConfig,
         dataDownload: [],
       });

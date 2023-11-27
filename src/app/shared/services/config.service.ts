@@ -21,7 +21,7 @@ import {SearchConfig} from '../interfaces/search-config.interface';
 import {SearchIndex} from './apis/search/interfaces/search-index.interface';
 import {pageConfig} from '../configs/page.config';
 import {PageConfig} from '../interfaces/page-config.interface';
-import {FilterConfig} from '../interfaces/filter-config.interface';
+import {FilterConfigs} from '../interfaces/filter-config.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -59,7 +59,7 @@ export class ConfigService {
     mapToolsAndControls: toolTipMapToolsAndControls,
   };
 
-  public get filterConfig(): FilterConfig {
+  public get filterConfigs(): FilterConfigs {
     return {
       dataCatalogue: dataCatalogueFilterConfig,
       dataDownload: dataDownloadFilterConfig,

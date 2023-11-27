@@ -10,6 +10,7 @@ import {selectItems} from '../reducers/active-map-item.reducer';
 import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
 import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
 import {selectProducts} from '../reducers/data-download-product.reducer';
+import {MapUiActions} from '../actions/map-ui.actions';
 
 @Injectable()
 export class DataDownloadProductEffects {
@@ -95,6 +96,15 @@ export class DataDownloadProductEffects {
       map(({products}) => {
         const dataDownloadFilters = this.geoshopProductsService.extractProductFilterValues(products);
         return DataDownloadProductActions.setFilters({dataDownloadFilters});
+      }),
+    );
+  });
+
+  public resetFiltersAndTermAfterClosingSideDrawer$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapUiActions.hideMapSideDrawerContent),
+      map(() => {
+        return DataDownloadProductActions.resetFiltersAndTerm();
       }),
     );
   });
