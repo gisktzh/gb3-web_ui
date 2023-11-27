@@ -11,7 +11,7 @@ import {DataDownloadProductEffects} from './data-download-product.effects';
 import {DataDownloadProductActions} from '../actions/data-download-product.actions';
 import {selectProducts} from '../reducers/data-download-product.reducer';
 import {ProductsCouldNotBeLoaded, RelevantProductsCouldNotBeLoaded} from '../../../shared/errors/data-download.errors';
-import {Product, ProductsList} from '../../../shared/interfaces/gb3-geoshop-product.interface';
+import {Product} from '../../../shared/interfaces/gb3-geoshop-product.interface';
 import {Gb3GeoshopProductsService} from '../../../shared/services/apis/gb3/gb3-geoshop-products.service';
 import {MapUiActions} from '../actions/map-ui.actions';
 import {selectItems} from '../reducers/active-map-item.reducer';
@@ -68,11 +68,6 @@ describe('DataDownloadProductEffects', () => {
     },
   ];
 
-  const productsListMock: ProductsList = {
-    timestamp: '01.01.1970-13:37',
-    products: productsMock,
-  };
-
   let actions$: Observable<Action>;
   let store: MockStore;
   let effects: DataDownloadProductEffects;
@@ -127,9 +122,9 @@ describe('DataDownloadProductEffects', () => {
 
   describe('loadProducts$', () => {
     it('dispatches DataDownloadActions.setProducts() with the service response on success', (done: DoneFn) => {
-      const products = productsListMock.products;
+      const products = productsMock;
       store.overrideSelector(selectProducts, []);
-      const geoshopProductsServiceSpy = spyOn(geoshopProductsService, 'loadProductList').and.returnValue(of(productsListMock));
+      const geoshopProductsServiceSpy = spyOn(geoshopProductsService, 'loadProducts').and.returnValue(of(products));
 
       const expectedAction = DataDownloadProductActions.setProducts({products});
 
@@ -144,7 +139,7 @@ describe('DataDownloadProductEffects', () => {
     it('dispatches DataDownloadActions.setProductsError() with the error on failure', (done: DoneFn) => {
       const error = new Error('My cabbages!!!');
       store.overrideSelector(selectProducts, []);
-      const geoshopProductsServiceSpy = spyOn(geoshopProductsService, 'loadProductList').and.returnValue(throwError(() => error));
+      const geoshopProductsServiceSpy = spyOn(geoshopProductsService, 'loadProducts').and.returnValue(throwError(() => error));
 
       const expectedAction = DataDownloadProductActions.setProductsError({error});
 
@@ -159,7 +154,7 @@ describe('DataDownloadProductEffects', () => {
     it('dispatches nothing if the products are already in the store', fakeAsync(async () => {
       const products = productsMock;
       store.overrideSelector(selectProducts, products);
-      const geoshopProductsServiceSpy = spyOn(geoshopProductsService, 'loadProductList').and.callThrough();
+      const geoshopProductsServiceSpy = spyOn(geoshopProductsService, 'loadProducts').and.callThrough();
 
       let newAction;
       actions$ = of(DataDownloadProductActions.loadProducts());

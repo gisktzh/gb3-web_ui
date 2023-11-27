@@ -1,6 +1,6 @@
 import {provideMockActions} from '@ngrx/effects/testing';
 import {discardPeriodicTasks, fakeAsync, flush, TestBed, tick} from '@angular/core/testing';
-import {Observable, of, throwError} from 'rxjs';
+import {Observable, of, Subscription, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
@@ -430,36 +430,44 @@ describe('DataDownloadOrderEffects', () => {
       pollingInterval: 1000,
     };
 
-    it('dispatches DataDownloadOrderActions.setOrderStatusResponse() at least once without an error after requesting an order status', (done: DoneFn) => {
+    it('dispatches DataDownloadOrderActions.setOrderStatusResponse() at least once without an error after requesting an order status', fakeAsync(() => {
       store.overrideSelector(selectStatusJobs, []);
       spyOnProperty(configService, 'dataDownloadConfig', 'get').and.returnValue(dataDownloadConfig);
       const geoshopApiServiceSpy = spyOn(geoshopApiService, 'checkOrderStatus').and.returnValue(of(orderStatus));
+      const subscription = new Subscription();
 
       const expectedAction = DataDownloadOrderActions.setOrderStatusResponse({orderStatus});
 
+      let newAction: Action | undefined;
       actions$ = of(DataDownloadOrderActions.requestOrderStatus({orderTitle, orderId}));
-      effects.periodicallyCheckOrderStatus$.subscribe((action) => {
-        expect(geoshopApiServiceSpy).toHaveBeenCalledOnceWith(orderId);
-        expect(action).toEqual(expectedAction);
-        done();
-      });
-    });
+      subscription.add(effects.periodicallyCheckOrderStatus$.subscribe((action) => (newAction = action)));
+      tick();
 
-    it('dispatches DataDownloadOrderActions.setOrderStatusError() at least once with an error after requesting an order status', (done: DoneFn) => {
+      expect(geoshopApiServiceSpy).toHaveBeenCalledOnceWith(orderId);
+      expect(newAction).toBeDefined();
+      expect(newAction).toEqual(expectedAction);
+      subscription.unsubscribe();
+    }));
+
+    it('dispatches DataDownloadOrderActions.setOrderStatusError() at least once with an error after requesting an order status', fakeAsync(() => {
       store.overrideSelector(selectStatusJobs, []);
       spyOnProperty(configService, 'dataDownloadConfig', 'get').and.returnValue(dataDownloadConfig);
       const error = new Error('nooooooooooooo!!!');
       const geoshopApiServiceSpy = spyOn(geoshopApiService, 'checkOrderStatus').and.returnValue(throwError(() => error));
+      const subscription = new Subscription();
 
       const expectedAction = DataDownloadOrderActions.setOrderStatusError({error, orderId, maximumNumberOfConsecutiveStatusJobErrors: 1});
 
+      let newAction: Action | undefined;
       actions$ = of(DataDownloadOrderActions.requestOrderStatus({orderTitle, orderId}));
-      effects.periodicallyCheckOrderStatus$.subscribe((action) => {
-        expect(geoshopApiServiceSpy).toHaveBeenCalledOnceWith(orderId);
-        expect(action).toEqual(expectedAction);
-        done();
-      });
-    });
+      subscription.add(effects.periodicallyCheckOrderStatus$.subscribe((action) => (newAction = action)));
+      tick();
+
+      expect(geoshopApiServiceSpy).toHaveBeenCalledOnceWith(orderId);
+      expect(newAction).toBeDefined();
+      expect(newAction).toEqual(expectedAction);
+      subscription.unsubscribe();
+    }));
 
     it('dispatches nothing if the status job has the status type success', fakeAsync(() => {
       const orderStatusJobWithStatusSuccess: OrderStatusJob = {

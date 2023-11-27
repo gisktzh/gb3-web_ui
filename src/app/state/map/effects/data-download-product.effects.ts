@@ -34,9 +34,9 @@ export class DataDownloadProductEffects {
       concatLatestFrom(() => [this.store.select(selectProducts)]),
       filter(([_, products]) => products.length === 0),
       switchMap(() =>
-        this.geoshopProductsService.loadProductList().pipe(
-          map((productsList) => {
-            return DataDownloadProductActions.setProducts({products: productsList.products});
+        this.geoshopProductsService.loadProducts().pipe(
+          map((products) => {
+            return DataDownloadProductActions.setProducts({products});
           }),
           catchError((error: unknown) => of(DataDownloadProductActions.setProductsError({error}))),
         ),

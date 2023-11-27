@@ -3,7 +3,7 @@ import {Gb3ApiService} from './gb3-api.service';
 import {Observable, of} from 'rxjs';
 import {ProductsListData, ProductsRelevantListData} from '../../../models/gb3-api-generated.interfaces';
 import {map} from 'rxjs/operators';
-import {Product, ProductFormat, ProductsList} from '../../../interfaces/gb3-geoshop-product.interface';
+import {Product, ProductFormat} from '../../../interfaces/gb3-geoshop-product.interface';
 import {DataDownloadFilter} from '../../../interfaces/data-download-filter.interface';
 import {ProductAvailability} from '../../../enums/product-availability.enum';
 
@@ -13,9 +13,9 @@ import {ProductAvailability} from '../../../enums/product-availability.enum';
 export class Gb3GeoshopProductsService extends Gb3ApiService {
   protected readonly endpoint = 'products';
 
-  public loadProductList(): Observable<ProductsList> {
+  public loadProducts(): Observable<Product[]> {
     const productsListData = this.get<ProductsListData>(this.getFullEndpointUrl());
-    return productsListData.pipe(map((data) => this.mapProductsListDataToProductsList(data)));
+    return productsListData.pipe(map((data) => this.mapProductsListDataToProducts(data)));
   }
 
   public loadRelevanteProducts(guids: string[]): Observable<string[]> {
@@ -69,22 +69,19 @@ export class Gb3GeoshopProductsService extends Gb3ApiService {
     return url.toString();
   }
 
-  private mapProductsListDataToProductsList(data: ProductsListData): ProductsList {
-    return {
-      timestamp: data.timestamp,
-      products: data.products.map(
-        (product): Product => ({
-          id: product.id,
-          name: product.name,
-          gisZHNr: product.giszhnr,
-          ogd: product.ogd,
-          nonOgdProductUrl: product.url ?? undefined,
-          themes: product.themes ?? [],
-          keywords: product.keywords ?? [],
-          geolionGeodatensatzUuid: product.geolion_geodatensatz_uuid ?? undefined,
-          formats: product.formats.map((format): ProductFormat => ({id: format.id, description: format.description})),
-        }),
-      ),
-    };
+  private mapProductsListDataToProducts(data: ProductsListData): Product[] {
+    return data.products.map(
+      (product): Product => ({
+        id: product.id,
+        name: product.name,
+        gisZHNr: product.giszhnr,
+        ogd: product.ogd,
+        nonOgdProductUrl: product.url ?? undefined,
+        themes: product.themes ?? [],
+        keywords: product.keywords ?? [],
+        geolionGeodatensatzUuid: product.geolion_geodatensatz_uuid ?? undefined,
+        formats: product.formats.map((format): ProductFormat => ({id: format.id, description: format.description})),
+      }),
+    );
   }
 }
