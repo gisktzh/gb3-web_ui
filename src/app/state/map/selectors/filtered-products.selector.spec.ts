@@ -1,7 +1,7 @@
-import {selectDataDownloadProducts} from './data-download-products.selector';
+import {selectFilteredProducts} from './filtered-products.selector';
 import {Product} from '../../../shared/interfaces/gb3-geoshop-product.interface';
 
-describe('selectDataDownloadProducts', () => {
+describe('selectFilteredProducts', () => {
   // this test ignores the filter capabilities from `FilterProductsUtils.filterProducts()` as it is already tested in another unit test
   it('returns all products that are not in the relevant product ids list', () => {
     const selectProductsMock: Product[] = [
@@ -14,7 +14,7 @@ describe('selectDataDownloadProducts', () => {
     ];
     const selectRelevantProductIdsMock: string[] = ['1', '3'];
 
-    const actual = selectDataDownloadProducts.projector(selectProductsMock, [], undefined, selectRelevantProductIdsMock);
+    const actual = selectFilteredProducts.projector(selectProductsMock, [], undefined, selectRelevantProductIdsMock);
     const expected: Product[] = [selectProductsMock[0], selectProductsMock[2], selectProductsMock[4], selectProductsMock[5]];
 
     expect(actual).toEqual(expected);

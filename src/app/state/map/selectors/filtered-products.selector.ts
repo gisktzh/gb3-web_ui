@@ -4,7 +4,7 @@ import {selectActiveDataDownloadFiltersPerCategory} from './active-data-download
 import {Product} from '../../../shared/interfaces/gb3-geoshop-product.interface';
 import {FilterProductsUtils} from '../../../map/utils/filter-products.utils';
 
-export const selectDataDownloadProducts = createSelector(
+export const selectFilteredProducts = createSelector(
   selectProducts,
   selectActiveDataDownloadFiltersPerCategory,
   selectFilterTerm,

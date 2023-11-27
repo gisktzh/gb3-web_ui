@@ -1,7 +1,7 @@
 import {Product} from '../../../shared/interfaces/gb3-geoshop-product.interface';
-import {selectRelevantProducts} from './data-download-relevant-products.selector';
+import {selectFilteredRelevantProducts} from './filtered-relevant-products.selector';
 
-describe('selectRelevantProducts', () => {
+describe('selectFilteredRelevantProducts', () => {
   // this test ignores the filter capabilities from `FilterProductsUtils.filterProducts()` as it is already tested in another unit test
   it('returns all existing products that have the same ID as the relevant products', () => {
     const selectProductsMock: Product[] = [
@@ -14,7 +14,7 @@ describe('selectRelevantProducts', () => {
     ];
     const selectRelevantProductIdsMock: string[] = ['1', '3', '7'];
 
-    const actual = selectRelevantProducts.projector(selectProductsMock, selectRelevantProductIdsMock, [], undefined);
+    const actual = selectFilteredRelevantProducts.projector(selectProductsMock, selectRelevantProductIdsMock, [], undefined);
     const expected: Product[] = [selectProductsMock[1], selectProductsMock[3]];
 
     expect(actual).toEqual(expected);

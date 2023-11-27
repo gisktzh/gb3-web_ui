@@ -1,7 +1,7 @@
-import {selectDataDownloadIncompleteOrderStatusJobs} from './data-download-incomplete-order-status-jobs.selector';
+import {selectIncompleteOrderStatusJobs} from './incomplete-order-status-jobs.selector';
 import {OrderStatusJob} from '../../../shared/interfaces/geoshop-order-status.interface';
 
-describe('selectDataDownloadIncompleteOrderStatusJobs', () => {
+describe('selectIncompleteOrderStatusJobs', () => {
   it('returns only order status jobs that are not completed', () => {
     const selectStatusJobsMock: OrderStatusJob[] = [
       {
@@ -42,7 +42,7 @@ describe('selectDataDownloadIncompleteOrderStatusJobs', () => {
       },
     ];
 
-    const actual = selectDataDownloadIncompleteOrderStatusJobs.projector(selectStatusJobsMock);
+    const actual = selectIncompleteOrderStatusJobs.projector(selectStatusJobsMock);
     const expected: OrderStatusJob[] = [selectStatusJobsMock[0], selectStatusJobsMock[2]];
 
     expect(actual).toEqual(expected);

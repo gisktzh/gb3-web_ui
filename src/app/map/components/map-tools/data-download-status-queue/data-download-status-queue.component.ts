@@ -4,7 +4,7 @@ import {Store} from '@ngrx/store';
 import {LayerCatalogActions} from '../../../../state/map/actions/layer-catalog.actions';
 import {OrderStatusJob} from '../../../../shared/interfaces/geoshop-order-status.interface';
 import {DataDownloadOrderActions} from '../../../../state/map/actions/data-download-order.actions';
-import {selectDataDownloadIncompleteOrderStatusJobs} from '../../../../state/map/selectors/data-download-incomplete-order-status-jobs.selector';
+import {selectIncompleteOrderStatusJobs} from '../../../../state/map/selectors/incomplete-order-status-jobs.selector';
 
 @Component({
   selector: 'data-download-status-queue',
@@ -15,7 +15,7 @@ export class DataDownloadStatusQueueComponent implements OnInit, OnDestroy {
   public isMinimized = false;
   public statusJobs: OrderStatusJob[] = [];
 
-  private readonly statusJobs$ = this.store.select(selectDataDownloadIncompleteOrderStatusJobs);
+  private readonly statusJobs$ = this.store.select(selectIncompleteOrderStatusJobs);
   private readonly subscriptions = new Subscription();
 
   constructor(private readonly store: Store) {
