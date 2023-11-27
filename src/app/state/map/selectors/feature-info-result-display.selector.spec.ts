@@ -48,7 +48,7 @@ describe('selectFeatureInfosForDisplay', () => {
     expect(actual).toEqual([]);
   });
 
-  it('returns a singleLayer', () => {
+  it('returns a FeatureInfoResultDisplay as singleLayer', () => {
     mockData[0].isSingleLayer = true;
     const actual = selectFeatureInfosForDisplay.projector(mockData, mockMaps, mockItems);
     const expected: FeatureInfoResultDisplay[] = [
@@ -65,7 +65,7 @@ describe('selectFeatureInfosForDisplay', () => {
     expect(actual).toEqual(expected);
   });
 
-  it('returns a topic', () => {
+  it('returns a FeatureInfoResultDisplay as topic', () => {
     const actual = selectFeatureInfosForDisplay.projector(mockData, mockMaps, mockItems);
     const expected: FeatureInfoResultDisplay[] = [
       {
