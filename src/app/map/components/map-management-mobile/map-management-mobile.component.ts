@@ -1,6 +1,6 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {Observable, Subscription, debounceTime, distinctUntilChanged, fromEvent, map, tap} from 'rxjs';
+import {Subscription, tap} from 'rxjs';
 import {ActiveMapItem} from 'src/app/map/models/active-map-item.model';
 import {isActiveMapItemOfType} from 'src/app/shared/type-guards/active-map-item-type.type-guard';
 import {selectIsAuthenticated} from 'src/app/state/auth/reducers/auth-status.reducer';
@@ -24,7 +24,7 @@ const FAVOURITE_HELPER_MESSAGES = {
   templateUrl: './map-management-mobile.component.html',
   styleUrls: ['./map-management-mobile.component.scss'],
 })
-export class MapManagementMobileComponent implements OnInit, OnDestroy, AfterViewInit {
+export class MapManagementMobileComponent implements OnInit, OnDestroy {
   public activeMapItems: ActiveMapItem[] = [];
   public numberOfNotices: number = 0;
   public numberOfUnreadNotices: number = 0;
@@ -37,7 +37,6 @@ export class MapManagementMobileComponent implements OnInit, OnDestroy, AfterVie
   private readonly activeMapItems$ = this.store.select(selectItems);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
   private readonly filterString$ = this.store.select(selectFilterString);
-  @ViewChild('filterInput') private readonly input!: ElementRef;
 
   constructor(private readonly store: Store) {
     this.store.dispatch(LayerCatalogActions.loadLayerCatalog());
@@ -50,10 +49,6 @@ export class MapManagementMobileComponent implements OnInit, OnDestroy, AfterVie
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
     this.clearInput();
-  }
-
-  public ngAfterViewInit() {
-    this.subscriptions.add(this.filterInputHandler().subscribe());
   }
 
   public close() {
@@ -76,16 +71,7 @@ export class MapManagementMobileComponent implements OnInit, OnDestroy, AfterVie
     this.store.dispatch(MapUiActions.showMapNoticesDialog());
   }
 
-  private filterInputHandler(): Observable<string> {
-    return fromEvent<KeyboardEvent>(this.input.nativeElement, 'keyup').pipe(
-      debounceTime(300),
-      map((event) => (<HTMLInputElement>event.target).value),
-      distinctUntilChanged(),
-      tap((event) => this.filterCatalog(event)),
-    );
-  }
-
-  private filterCatalog(filterString: string) {
+  public filterCatalog(filterString: string) {
     this.store.dispatch(LayerCatalogActions.setFilterString({filterString}));
   }
 
@@ -96,7 +82,6 @@ export class MapManagementMobileComponent implements OnInit, OnDestroy, AfterVie
   }
 
   public clearInput() {
-    this.input.nativeElement.value = '';
     this.store.dispatch(LayerCatalogActions.clearFilterString());
   }
 
