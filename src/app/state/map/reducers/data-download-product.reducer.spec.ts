@@ -84,6 +84,8 @@ describe('data download order reducer', () => {
       productsLoadingState: 'loaded',
       relevantProductIds: ['112'],
       relevantProductIdsLoadingState: 'loaded',
+      filterTerm: undefined,
+      filters: [],
     };
   });
 

@@ -16,4 +16,6 @@ describe('Gb3GeoshopProductsService', () => {
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
+
+  // TODO GB3-651: Add unit test for filter extraction
 });

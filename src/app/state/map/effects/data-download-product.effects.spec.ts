@@ -14,6 +14,7 @@ import {selectProducts} from '../reducers/data-download-product.reducer';
 import {ProductsCouldNotBeLoaded} from '../../../shared/errors/data-download.errors';
 import {Municipality, Product, ProductsList} from '../../../shared/interfaces/gb3-geoshop-product.interface';
 import {Gb3GeoshopProductsService} from '../../../shared/services/apis/gb3/gb3-geoshop-products.service';
+import {MapUiActions} from '../actions/map-ui.actions';
 
 describe('DataDownloadProductEffects', () => {
   const productsMock: Product[] = [
@@ -199,6 +200,18 @@ describe('DataDownloadProductEffects', () => {
           }),
         )
         .subscribe();
+    });
+  });
+
+  describe('resetFiltersAndTermAfterClosingSideDrawer$', () => {
+    it('dispatches DataDownloadProductActions.resetFiltersAndTerm() after closing the side drawer', (done: DoneFn) => {
+      const expected = DataDownloadProductActions.resetFiltersAndTerm();
+
+      actions$ = of(MapUiActions.hideMapSideDrawerContent());
+      effects.resetFiltersAndTermAfterClosingSideDrawer$.subscribe((action) => {
+        expect(action).toEqual(expected);
+        done();
+      });
     });
   });
 });

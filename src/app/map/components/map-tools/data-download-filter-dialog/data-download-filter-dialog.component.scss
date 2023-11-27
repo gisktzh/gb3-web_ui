@@ -2,18 +2,18 @@
 @use 'mixins/material.mixin' as mat-mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
-:host ::ng-deep .filter-dialog-content__wrapper__checkbox {
+:host ::ng-deep .data-download-filter-dialog__wrapper__checkbox {
   @include mat-mixins.mat-checkbox-override-accent-color(
     functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent),
     functions.get-contrast-color-from-palette(ktzh-variables.$zh-secondary-accent)
   );
 }
 
-.filter-dialog-content {
+.data-download-filter-dialog {
   width: 956px;
   padding: 20px 24px;
 
-  .filter-dialog-content__wrapper {
+  .data-download-filter-dialog__wrapper {
     display: flex;
     flex-flow: column;
   }

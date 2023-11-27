@@ -33,7 +33,7 @@ export class DataCatalogueEffects {
         const uniqueValues: Map<Pick<DataCatalogueFilter, 'key' | 'label'>, Set<string>> = new Map();
 
         items.forEach((item) => {
-          this.configService.filterConfig.dataCatalogue.forEach((dataCatalogueFilter) => {
+          this.configService.filterConfigs.dataCatalogue.forEach((dataCatalogueFilter) => {
             if (dataCatalogueFilter.key in item) {
               const value: string = (item as any)[dataCatalogueFilter.key]; //typecast is safe here -> we _know_ the property exists here
               if (!uniqueValues.has(dataCatalogueFilter)) {

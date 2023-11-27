@@ -16,6 +16,7 @@ import {MAP_SERVICE} from '../../../app.module';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
 import {selectCapabilities} from '../reducers/print.reducer';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
+import {MapUiActions} from '../actions/map-ui.actions';
 
 describe('PrintEffects', () => {
   const capabilitiesMock: PrintCapabilities = {
@@ -249,6 +250,18 @@ describe('PrintEffects', () => {
       actions$ = of(PrintActions.removePrintPreview());
       effects.removePrintPreview$.subscribe(() => {
         expect(mapDrawingServiceSpy).toHaveBeenCalledTimes(1);
+        done();
+      });
+    });
+  });
+
+  describe('removePrintPreviewAfterClosingSideDrawer$', () => {
+    it('dispatches PrintActions.setPrintRequestError() after closing the side drawer', (done: DoneFn) => {
+      const expected = PrintActions.removePrintPreview();
+
+      actions$ = of(MapUiActions.hideMapSideDrawerContent());
+      effects.removePrintPreviewAfterClosingSideDrawer$.subscribe((action) => {
+        expect(action).toEqual(expected);
         done();
       });
     });
