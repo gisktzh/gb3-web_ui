@@ -1,70 +1,42 @@
-import {Gb3StyledInternalDrawingRepresentation, Gb3StyleRepresentation} from '../interfaces/internal-drawing-representation.interface';
-import {Gb3VectorLayer} from '../interfaces/gb3-vector-layer.interface';
+import {Gb3StyledInternalDrawingRepresentation} from '../interfaces/internal-drawing-representation.interface';
+import {Gb3GeoJsonFeature, Gb3VectorLayer, Gb3VectorLayerStyle} from '../interfaces/gb3-vector-layer.interface';
 import {UserDrawingLayer} from '../enums/drawing-layer.enum';
 import {v4 as uuidv4} from 'uuid';
-import {RedliningIdentifier} from '../enums/redlining-identifier.enum';
-
-const REDLINING_STYLE = {
-  [RedliningIdentifier.GeometryOnly]: {
-    pointRadius: 3,
-    fillColor: '#ff0000',
-    fillOpacity: 0.4,
-    strokeColor: '#ff0000',
-    strokeWidth: 2,
-  },
-};
-
-const REDLINING_STYLE_LABEL = {
-  [RedliningIdentifier.LabelOnly]: {
-    label: '[text]',
-    fontSize: '8px',
-    fontColor: '#ff0000',
-    fontFamily: 'Arial,Helvetica,sans-serif',
-    fontWeight: 'normal',
-    labelOutlineColor: '#ffffff',
-    labelOutlineWidth: 2,
-    labelAlign: 'ct',
-    labelYOffset: 15,
-  },
-};
-
-const REDLINING_STYLE_GEOMETRY_WITH_LABEL = {
-  [RedliningIdentifier.GeometryWithLabel]: {
-    ...REDLINING_STYLE[RedliningIdentifier.GeometryOnly],
-    ...REDLINING_STYLE_LABEL[RedliningIdentifier.LabelOnly],
-  },
-};
+import {MapConstants} from '../constants/map.constants';
 
 export class SymbolizationToGb3ConverterUtils {
   /**
-   * Converts a list of internal drawings to a GB3VectorLayer representation. Currently, this only supports a redlining style for all
-   * features. As part of GB3-629, the style extraction logic will need to use the features' style property to extract the feature
-   * style. It will also need a proper mapping onto the ID attribute of the feature.
-   *
-   * todo GB3-629: implement logic for feature style
+   * Converts a list of internal drawings to a GB3VectorLayer representation.
    * @param features
    */
   public static convertInternalToExternalRepresentation(features: Gb3StyledInternalDrawingRepresentation[]): Gb3VectorLayer {
+    const gb3GeoJsonFeatures: Gb3GeoJsonFeature[] = [];
+    const allStyles: Gb3VectorLayerStyle = {};
+    features.forEach((feature) => {
+      const uuid = uuidv4();
+      const style = feature.properties.style;
+
+      const gb3GeoJsonFeature: Gb3GeoJsonFeature = {
+        type: feature.type,
+        geometry: feature.geometry,
+        properties: {
+          id: feature.properties[MapConstants.DRAWING_IDENTIFIER],
+          belongsTo: feature.properties[MapConstants.BELONGS_TO_IDENTIFIER],
+          style: uuid,
+          text: feature.labelText,
+        },
+      };
+
+      gb3GeoJsonFeatures.push(gb3GeoJsonFeature);
+      allStyles[uuid] = style;
+    });
     return {
       type: 'Vector',
       geojson: {
         type: 'FeatureCollection',
-        features: features.map((feature) => ({
-          type: feature.type,
-          geometry: feature.geometry,
-          properties: {
-            style: feature.labelText
-              ? SymbolizationToGb3ConverterUtils.getLabelStyle(feature.properties.style)
-              : RedliningIdentifier.GeometryOnly,
-            text: feature.labelText ? feature.labelText : '', // todo GB3-863: PrintAPI currently requires this property to be set
-          },
-        })),
+        features: gb3GeoJsonFeatures,
       },
-      styles: {
-        ...REDLINING_STYLE,
-        ...REDLINING_STYLE_GEOMETRY_WITH_LABEL,
-        ...REDLINING_STYLE_LABEL,
-      },
+      styles: allStyles,
     };
   }
 
@@ -75,16 +47,9 @@ export class SymbolizationToGb3ConverterUtils {
     return gb3VectorLayer.geojson.features.map((feature) => ({
       type: 'Feature',
       properties: {
-        __id: uuidv4(),
-        style: {
-          type: 'point',
-          fillColor: '#ff0000',
-          fillOpacity: 0.4,
-          strokeColor: '#ff0000',
-          strokeWidth: 2,
-          pointRadius: '3px',
-          strokeOpacity: 1,
-        },
+        [MapConstants.DRAWING_IDENTIFIER]: feature.properties.id,
+        [MapConstants.BELONGS_TO_IDENTIFIER]: feature.properties.belongsTo,
+        style: gb3VectorLayer.styles[feature.properties.style],
       },
       geometry: {
         ...feature.geometry,
@@ -93,13 +58,5 @@ export class SymbolizationToGb3ConverterUtils {
       source: source,
       labelText: feature.properties.text,
     }));
-  }
-
-  private static getLabelStyle(type: Gb3StyleRepresentation): RedliningIdentifier {
-    if (type.type === 'text') {
-      return RedliningIdentifier.LabelOnly;
-    }
-
-    return RedliningIdentifier.GeometryWithLabel;
   }
 }

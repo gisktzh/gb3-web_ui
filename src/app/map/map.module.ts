@@ -76,6 +76,7 @@ import {DataDownloadEmailConfirmationDialogComponent} from './components/map-too
 import {DataDownloadStatusQueueComponent} from './components/map-tools/data-download-status-queue/data-download-status-queue.component';
 import {DataDownloadOrderStatusPipe} from './pipes/data-download-order-status.pipe';
 import {DataDownloadOrderDownloadUrlPipe} from './pipes/data-download-order-download-url.pipe';
+import {DrawingSettingsComponent} from './components/map-tools/drawing-settings/drawing-settings.component';
 
 @NgModule({
   declarations: [
@@ -151,6 +152,7 @@ import {DataDownloadOrderDownloadUrlPipe} from './pipes/data-download-order-down
     DataDownloadStatusQueueComponent,
     DataDownloadOrderStatusPipe,
     DataDownloadOrderDownloadUrlPipe,
+    DrawingSettingsComponent,
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule, NgChartsModule],
   exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent],

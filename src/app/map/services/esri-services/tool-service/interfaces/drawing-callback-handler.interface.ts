@@ -1,5 +1,6 @@
 import Graphic from '@arcgis/core/Graphic';
 
 export interface DrawingCallbackHandler {
-  complete: (feature: Graphic, labelText?: string) => void;
+  completeDrawing: (feature: Graphic, labelText?: string) => void;
+  completeMeasurement: (feature: Graphic, labelPoint: Graphic, labelText: string) => void;
 }

@@ -11,23 +11,23 @@ export class DataDownloadSelectionToolsComponent extends AbstractToolsComponent 
     this.toggleTool('select-circle');
   }
 
-  togglePolygonSelecting() {
+  public togglePolygonSelecting() {
     this.toggleTool('select-polygon');
   }
 
-  toggleRectangleSelecting() {
+  public toggleRectangleSelecting() {
     this.toggleTool('select-rectangle');
   }
 
-  toggleSectionSelecting() {
+  public toggleSectionSelecting() {
     this.toggleTool('select-section');
   }
 
-  toggleCantonSelecting() {
+  public toggleCantonSelecting() {
     this.toggleTool('select-canton');
   }
 
-  toggleMunicipalitySelecting() {
+  public toggleMunicipalitySelecting() {
     this.toggleTool('select-municipality');
   }
 }

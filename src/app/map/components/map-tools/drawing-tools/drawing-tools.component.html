@@ -1,4 +1,8 @@
 <div class="drawing-tools">
+  <button (click)="this.openSettingsDialog()" class="drawing-tools__button" color="accent" mat-icon-button matTooltip="Einstellungen">
+    <mat-icon svgIcon="ktzh_settings"></mat-icon>
+  </button>
+  <mat-divider class="drawing-tools__divider"></mat-divider>
   <button
     (click)="this.togglePointDrawing()"
     [ngClass]="{'drawing-tools__button--active': activeTool === 'draw-point'}"

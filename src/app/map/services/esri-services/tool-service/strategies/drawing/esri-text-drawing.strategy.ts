@@ -7,7 +7,7 @@ import {PanelClass} from '../../../../../../shared/enums/panel-class.enum';
 import {tap} from 'rxjs';
 import {TextDrawingToolInputComponent} from '../../../../../components/text-drawing-tool-input/text-drawing-tool-input.component';
 
-export class EsriTextDrawingStrategy extends AbstractEsriDrawingStrategy {
+export class EsriTextDrawingStrategy extends AbstractEsriDrawingStrategy<DrawingCallbackHandler['completeDrawing']> {
   protected readonly tool: SupportedEsriTool = 'point';
   private readonly dialogService: MatDialog;
 
@@ -15,7 +15,7 @@ export class EsriTextDrawingStrategy extends AbstractEsriDrawingStrategy {
     layer: __esri.GraphicsLayer,
     mapView: __esri.MapView,
     textSymbol: __esri.TextSymbol,
-    completeDrawingCallbackHandler: DrawingCallbackHandler['complete'],
+    completeDrawingCallbackHandler: DrawingCallbackHandler['completeDrawing'],
     dialogService: MatDialog,
   ) {
     super(layer, mapView, completeDrawingCallbackHandler);

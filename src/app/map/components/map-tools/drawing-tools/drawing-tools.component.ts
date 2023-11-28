@@ -1,5 +1,7 @@
 import {Component} from '@angular/core';
 import {AbstractToolsComponent} from '../abstract-tools/abstract-tools.component';
+import {DrawingSettingsComponent} from '../drawing-settings/drawing-settings.component';
+import {PanelClass} from '../../../../shared/enums/panel-class.enum';
 
 @Component({
   selector: 'drawing-tools',
@@ -29,5 +31,12 @@ export class DrawingToolsComponent extends AbstractToolsComponent {
 
   public toggleTextDrawing() {
     this.toggleTool('draw-text');
+  }
+
+  public openSettingsDialog() {
+    this.dialogService.open(DrawingSettingsComponent, {
+      panelClass: PanelClass.ApiWrapperDialog,
+      restoreFocus: false,
+    });
   }
 }

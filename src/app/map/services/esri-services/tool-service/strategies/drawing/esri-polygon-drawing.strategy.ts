@@ -7,14 +7,14 @@ import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.
 
 type PolygonType = Extract<SupportedEsriTool, 'circle' | 'polygon' | 'rectangle'>;
 
-export class EsriPolygonDrawingStrategy extends AbstractEsriDrawingStrategy {
+export class EsriPolygonDrawingStrategy extends AbstractEsriDrawingStrategy<DrawingCallbackHandler['completeDrawing']> {
   protected readonly tool: SupportedEsriTool = 'polygon';
 
   constructor(
     layer: GraphicsLayer,
     mapView: MapView,
     polygonSymbol: SimpleFillSymbol,
-    completeDrawingCallbackHandler: DrawingCallbackHandler['complete'],
+    completeDrawingCallbackHandler: DrawingCallbackHandler['completeDrawing'],
     polygonType: PolygonType,
   ) {
     super(layer, mapView, completeDrawingCallbackHandler);

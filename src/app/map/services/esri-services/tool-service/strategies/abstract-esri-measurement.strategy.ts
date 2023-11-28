@@ -11,10 +11,13 @@ import {UserDrawingLayer} from '../../../../../shared/enums/drawing-layer.enum';
 
 export type LabelConfiguration = {location: Point; symbolization: TextSymbol};
 
-export abstract class AbstractEsriMeasurementStrategy<T extends Polygon | Polyline | Point> extends AbstractEsriDrawableToolStrategy {
+export abstract class AbstractEsriMeasurementStrategy<
+  T extends Polygon | Polyline | Point,
+  T1 extends DrawingCallbackHandler['completeMeasurement'],
+> extends AbstractEsriDrawableToolStrategy<T1> {
   public readonly internalLayerType: UserDrawingLayer = UserDrawingLayer.Measurements;
 
-  protected constructor(layer: GraphicsLayer, mapView: MapView, completeDrawingCallbackHandler: DrawingCallbackHandler['complete']) {
+  protected constructor(layer: GraphicsLayer, mapView: MapView, completeDrawingCallbackHandler: T1) {
     super(layer, mapView, completeDrawingCallbackHandler);
   }
 
@@ -32,7 +35,7 @@ export abstract class AbstractEsriMeasurementStrategy<T extends Polygon | Polyli
           graphicIdentifier = this.setAndGetIdentifierOnGraphic(graphic);
           labelConfiguration = this.createLabelForGeometry(graphic.geometry as T, graphicIdentifier);
           this.layer.add(labelConfiguration.label);
-          this.completeDrawingCallbackHandler(graphic, labelConfiguration.labelText);
+          this.completeDrawingCallbackHandler(graphic, labelConfiguration.label, labelConfiguration.labelText);
           break;
       }
     });
@@ -46,15 +49,16 @@ export abstract class AbstractEsriMeasurementStrategy<T extends Polygon | Polyli
    */
   protected abstract createLabelConfigurationForGeometry(geometry: T): LabelConfiguration;
 
-  private createLabelForGeometry(geometry: T, graphicIdentifier: string): {label: Graphic; labelText: string} {
+  private createLabelForGeometry(geometry: T, belongsToGraphic: string): {label: Graphic; labelText: string} {
     const {location, symbolization} = this.createLabelConfigurationForGeometry(geometry);
     const label = new Graphic({
       geometry: location,
       symbol: symbolization,
     });
 
-    this.setIdentifierOnGraphic(label, graphicIdentifier);
+    this.setIdentifierOnGraphic(label);
     this.setLabelTextAttributeOnGraphic(label, symbolization.text);
+    this.setBelongsToAttributeOnGraphic(label, belongsToGraphic);
 
     return {label, labelText: symbolization.text};
   }
