@@ -87,7 +87,7 @@
     .map-management-mobile-header__tools__filter {
       @include mixins.map-element-box-shadow;
       width: calc(100vw - 24px);
-      background-color: ktzh-variables.$zh-white;
+      background-color: ktzh-variables.$zh-background-color;
       height: 46px;
 
       &--hidden {
