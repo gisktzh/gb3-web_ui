@@ -10,13 +10,15 @@ import {
   selectRelevantProductIdsLoadingState,
 } from '../../../../state/map/reducers/data-download-product.reducer';
 import {Product} from '../../../../shared/interfaces/gb3-geoshop-product.interface';
-import {selectRelevantProducts} from '../../../../state/map/selectors/data-download-relevant-products.selector';
+import {selectFilteredRelevantProducts} from '../../../../state/map/selectors/filtered-relevant-products.selector';
 import {DataDownloadProductActions} from '../../../../state/map/actions/data-download-product.actions';
-import {DataDownloadFilterCategory} from '../../../../shared/interfaces/data-download-filter.interface';
+import {ActiveDataDownloadFilterGroup, DataDownloadFilterCategory} from '../../../../shared/interfaces/data-download-filter.interface';
 import {MatDialog} from '@angular/material/dialog';
 import {DataDownloadFilterDialogComponent} from '../data-download-filter-dialog/data-download-filter-dialog.component';
 import {PanelClass} from '../../../../shared/enums/panel-class.enum';
-import {selectDataDownloadProducts} from '../../../../state/map/selectors/data-download-products.selector';
+import {selectFilteredProducts} from '../../../../state/map/selectors/filtered-products.selector';
+import {DataDownloadEmailDialogComponent} from '../data-download-email-dialog/data-download-email-dialog.component';
+import {selectActiveDataDownloadFiltersPerCategory} from '../../../../state/map/selectors/active-data-download-filters-per-category.selector';
 
 @Component({
   selector: 'data-download-dialog',
@@ -30,13 +32,15 @@ export class DataDownloadDialogComponent implements OnInit, OnDestroy {
   public relevantProductsLoadingState: LoadingState;
   public filteredProducts: Product[] = [];
   public productsLoadingState: LoadingState;
+  public activeDataDownloadFiltersPerCategory: ActiveDataDownloadFilterGroup[] = [];
 
   private readonly order$ = this.store.select(selectOrder);
   private readonly savingState$ = this.store.select(selectSavingState);
-  private readonly relevantProducts$ = this.store.select(selectRelevantProducts);
+  private readonly relevantProducts$ = this.store.select(selectFilteredRelevantProducts);
   private readonly relevantProductsLoadingState$ = this.store.select(selectRelevantProductIdsLoadingState);
-  private readonly filteredProducts$ = this.store.select(selectDataDownloadProducts);
+  private readonly filteredProducts$ = this.store.select(selectFilteredProducts);
   private readonly productsLoadingState$ = this.store.select(selectProductsLoadingState);
+  private readonly activeDataDownloadFiltersPerCategory$ = this.store.select(selectActiveDataDownloadFiltersPerCategory);
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(
@@ -50,6 +54,10 @@ export class DataDownloadDialogComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
+  }
+
+  public trackByProductId(index: number, item: Product) {
+    return item.id;
   }
 
   public setFilterTerm(term: string) {
@@ -71,7 +79,12 @@ export class DataDownloadDialogComponent implements OnInit, OnDestroy {
     this.store.dispatch(DataDownloadProductActions.toggleFilter({category, value}));
   }
 
-  public download() {}
+  public openDownloadDialog() {
+    this.dialogService.open<DataDownloadEmailDialogComponent>(DataDownloadEmailDialogComponent, {
+      panelClass: PanelClass.ApiWrapperDialog,
+      restoreFocus: false,
+    });
+  }
 
   public cancel() {
     this.store.dispatch(MapUiActions.hideMapSideDrawerContent());
@@ -86,5 +99,8 @@ export class DataDownloadDialogComponent implements OnInit, OnDestroy {
     );
     this.subscriptions.add(this.filteredProducts$.pipe(tap((filteredProducts) => (this.filteredProducts = filteredProducts))).subscribe());
     this.subscriptions.add(this.productsLoadingState$.pipe(tap((loadingState) => (this.productsLoadingState = loadingState))).subscribe());
+    this.subscriptions.add(
+      this.activeDataDownloadFiltersPerCategory$.pipe(tap((value) => (this.activeDataDownloadFiltersPerCategory = value))).subscribe(),
+    );
   }
 }

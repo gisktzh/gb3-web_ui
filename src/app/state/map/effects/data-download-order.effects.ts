@@ -1,18 +1,30 @@
-import {Inject, Injectable} from '@angular/core';
+import {ErrorHandler, Inject, Injectable} from '@angular/core';
 import {Actions, concatLatestFrom, createEffect, ofType} from '@ngrx/effects';
-import {map} from 'rxjs/operators';
+import {catchError, delay, map, mergeMap} from 'rxjs/operators';
 import {DataDownloadOrderActions} from '../actions/data-download-order.actions';
 import {MapUiActions} from '../actions/map-ui.actions';
 import {MAP_SERVICE} from '../../../app.module';
 import {MapService} from '../../../map/interfaces/map.service';
-import {filter, tap} from 'rxjs';
+import {filter, of, switchMap, takeWhile, tap, timer} from 'rxjs';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {ConfigService} from '../../../shared/services/config.service';
 import {Store} from '@ngrx/store';
 import {ToolActions} from '../actions/tool.actions';
 import {selectActiveTool} from '../reducers/tool.reducer';
 import {GeoshopApiService} from '../../../shared/services/apis/geoshop/services/geoshop-api.service';
-import {selectSelection} from '../reducers/data-download-order.reducer';
+import {selectOrder, selectSelection, selectStatusJobs} from '../reducers/data-download-order.reducer';
+import {
+  OrderCouldNotBeSent,
+  OrderSelectionIsInvalid,
+  OrderStatusCouldNotBeSent,
+  OrderStatusWasAborted,
+  OrderUnsupportedGeometry,
+} from '../../../shared/errors/data-download.errors';
+import {selectMapSideDrawerContent} from '../reducers/map-ui.reducer';
+import {selectProducts} from '../reducers/data-download-product.reducer';
+import {HttpErrorResponse} from '@angular/common/http';
+
+const ZOOM_DELAY_IN_MS = 200;
 
 @Injectable()
 export class DataDownloadOrderEffects {
@@ -20,9 +32,36 @@ export class DataDownloadOrderEffects {
     return this.actions$.pipe(
       ofType(DataDownloadOrderActions.setSelection),
       map(({selection}) => {
-        const order = this.geoshopApiService.createOrderFromSelection(selection);
-        return DataDownloadOrderActions.setOrder({order});
+        try {
+          const order = this.geoshopApiService.createOrderFromSelection(selection);
+          return DataDownloadOrderActions.setOrder({order});
+        } catch (error: unknown) {
+          return DataDownloadOrderActions.setSelectionError({error});
+        }
       }),
+    );
+  });
+
+  public handleSelectionError$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(DataDownloadOrderActions.setSelectionError),
+        tap(({error}) => {
+          if (error instanceof OrderUnsupportedGeometry) {
+            this.errorHandler.handleError(error);
+          } else {
+            this.errorHandler.handleError(new OrderSelectionIsInvalid(error));
+          }
+        }),
+      );
+    },
+    {dispatch: false},
+  );
+
+  public clearSelectionAfterError$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(DataDownloadOrderActions.setSelectionError),
+      map(() => DataDownloadOrderActions.clearSelection()),
     );
   });
 
@@ -32,6 +71,8 @@ export class DataDownloadOrderEffects {
         ofType(MapUiActions.showMapSideDrawerContent),
         filter(({mapSideDrawerContent}) => mapSideDrawerContent === 'data-download'),
         concatLatestFrom(() => this.store.select(selectSelection)),
+        // this delay is used to wait for the map side drawer to be fully open before starting to zoom
+        delay(ZOOM_DELAY_IN_MS),
         tap(([_, selection]) => {
           if (selection) {
             this.mapService.zoomToExtent(
@@ -85,6 +126,140 @@ export class DataDownloadOrderEffects {
     {dispatch: false},
   );
 
+  public sendOrder$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(DataDownloadOrderActions.sendOrder),
+      concatLatestFrom(() => [this.store.select(selectOrder)]),
+      filter(([_, order]) => order !== undefined),
+      map(([_, order]) => order!),
+      switchMap((order) =>
+        this.geoshopApiService.sendOrder(order).pipe(
+          map((orderResponse) => {
+            return DataDownloadOrderActions.setSendOrderResponse({order, orderResponse});
+          }),
+          catchError((error: unknown) => of(DataDownloadOrderActions.setSendOrderError({error}))),
+        ),
+      ),
+    );
+  });
+
+  public handleSendOrderError$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(DataDownloadOrderActions.setSendOrderError),
+        tap(({error}) => {
+          let message = undefined;
+          if (error instanceof HttpErrorResponse && !!error.statusText) {
+            message = error.statusText;
+          }
+          this.errorHandler.handleError(new OrderCouldNotBeSent(error, message));
+        }),
+      );
+    },
+    {dispatch: false},
+  );
+
+  public closeDataDownloadDrawerAfterSendingAnOrderSuccessfully$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(DataDownloadOrderActions.setSendOrderResponse),
+      concatLatestFrom(() => [this.store.select(selectMapSideDrawerContent)]),
+      filter(([_, mapSideDrawerContent]) => mapSideDrawerContent === 'data-download'),
+      map(() => {
+        return MapUiActions.hideMapSideDrawerContent();
+      }),
+    );
+  });
+
+  public showEmailConfirmationDialogAfterSendingAnOrderWithEmailSuccessfully$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(DataDownloadOrderActions.setSendOrderResponse),
+      filter(({order}) => !!order.email),
+      map(() => {
+        return MapUiActions.showDataDownloadEmailConfirmationDialog();
+      }),
+    );
+  });
+
+  public requestOrderStatusAfterSendingAnOrderWithoutEmailSuccessfully$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(DataDownloadOrderActions.setSendOrderResponse),
+      filter(({order}) => !order.email),
+      concatLatestFrom(() => this.store.select(selectProducts)),
+      map(([{order, orderResponse}, products]) => {
+        const orderTitle = this.geoshopApiService.createOrderTitle(order, products);
+        return DataDownloadOrderActions.requestOrderStatus({orderId: orderResponse.orderId, orderTitle});
+      }),
+    );
+  });
+
+  public handleOrderStatusError$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(DataDownloadOrderActions.setOrderStatusError),
+        tap(({error}) => {
+          this.errorHandler.handleError(new OrderStatusCouldNotBeSent(error));
+        }),
+      );
+    },
+    {dispatch: false},
+  );
+
+  public periodicallyCheckOrderStatus$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(DataDownloadOrderActions.requestOrderStatus),
+      mergeMap(({orderId}) =>
+        timer(this.configService.dataDownloadConfig.initialPollingDelay, this.configService.dataDownloadConfig.pollingInterval).pipe(
+          concatLatestFrom(() => [this.store.select(selectStatusJobs)]),
+          takeWhile(([_, statusJobs]) => {
+            const statusJob = statusJobs.find((activeStatusJob) => activeStatusJob.id === orderId);
+            // Status job termination criteria:
+            //  - a status job finishes either with status type 'success' or 'failure'
+            //  - the user cancels the status job manually
+            //  - circuit breaker: too many failed request in a row will abort the job
+            const continuePollingStatusJob =
+              !statusJob ||
+              (statusJob.status?.status.type !== 'success' &&
+                statusJob.status?.status.type !== 'failure' &&
+                !statusJob.isAborted &&
+                !statusJob.isCancelled);
+            return continuePollingStatusJob;
+          }),
+          switchMap(() =>
+            this.geoshopApiService.checkOrderStatus(orderId).pipe(
+              map((orderStatus) => {
+                return DataDownloadOrderActions.setOrderStatusResponse({orderStatus});
+              }),
+              catchError((error: unknown) =>
+                of(
+                  DataDownloadOrderActions.setOrderStatusError({
+                    error,
+                    orderId,
+                    maximumNumberOfConsecutiveStatusJobErrors:
+                      this.configService.dataDownloadConfig.maximumNumberOfConsecutiveStatusJobErrors,
+                  }),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  });
+
+  public handleOrderStatusRefreshAbortError$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(DataDownloadOrderActions.setOrderStatusError),
+        concatLatestFrom(() => this.store.select(selectStatusJobs)),
+        filter(([{orderId}, statusJobs]) => statusJobs.find((activeStatusJob) => activeStatusJob.id === orderId)?.isAborted === true),
+        tap(([{error}, _]) => {
+          this.errorHandler.handleError(new OrderStatusWasAborted(error));
+        }),
+      );
+    },
+    {dispatch: false},
+  );
+
   constructor(
     private readonly actions$: Actions,
     private readonly mapDrawingService: MapDrawingService,
@@ -92,5 +267,6 @@ export class DataDownloadOrderEffects {
     private readonly configService: ConfigService,
     private readonly store: Store,
     private readonly geoshopApiService: GeoshopApiService,
+    private readonly errorHandler: ErrorHandler,
   ) {}
 }

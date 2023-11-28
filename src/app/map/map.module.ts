@@ -67,10 +67,15 @@ import {MapRotationPipe} from './pipes/map-rotation.pipe';
 import {DataDownloadSelectMunicipalityDialogComponent} from './components/map-tools/data-download-select-municipality-dialog/data-download-select-municipality-dialog.component';
 import {ProductComponent} from './components/map-tools/product/product.component';
 import {DataDownloadFilterDialogComponent} from './components/map-tools/data-download-filter-dialog/data-download-filter-dialog.component';
+import {DataDownloadEmailDialogComponent} from './components/map-tools/data-download-email-dialog/data-download-email-dialog.component';
 import {ElevationProfileOverlayComponent} from './components/elevation-profile-overlay/elevation-profile-overlay.component';
 import {NgChartsModule} from 'ng2-charts';
 import {ElevationProfileChartComponent} from './components/elevation-profile-overlay/elevation-profile-chart/elevation-profile-chart.component';
 import {ElevationProfileStatisticsComponent} from './components/elevation-profile-overlay/elevation-profile-statistics/elevation-profile-statistics.component';
+import {DataDownloadEmailConfirmationDialogComponent} from './components/map-tools/data-download-email-confirmation-dialog/data-download-email-confirmation-dialog.component';
+import {DataDownloadStatusQueueComponent} from './components/map-tools/data-download-status-queue/data-download-status-queue.component';
+import {DataDownloadOrderStatusPipe} from './pipes/data-download-order-status.pipe';
+import {DataDownloadOrderDownloadUrlPipe} from './pipes/data-download-order-download-url.pipe';
 
 @NgModule({
   declarations: [
@@ -138,9 +143,14 @@ import {ElevationProfileStatisticsComponent} from './components/elevation-profil
     DataDownloadSelectMunicipalityDialogComponent,
     ProductComponent,
     DataDownloadFilterDialogComponent,
+    DataDownloadEmailDialogComponent,
     ElevationProfileOverlayComponent,
     ElevationProfileChartComponent,
     ElevationProfileStatisticsComponent,
+    DataDownloadEmailConfirmationDialogComponent,
+    DataDownloadStatusQueueComponent,
+    DataDownloadOrderStatusPipe,
+    DataDownloadOrderDownloadUrlPipe,
   ],
   imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule, NgChartsModule],
   exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent],

@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {ErrorHandler, Injectable} from '@angular/core';
 import {Actions, concatLatestFrom, createEffect, ofType} from '@ngrx/effects';
 import {catchError, map} from 'rxjs/operators';
 import {filter, of, switchMap, tap} from 'rxjs';
@@ -27,12 +27,12 @@ export class DataDownloadRegionEffects {
     );
   });
 
-  public throwCantonError$ = createEffect(
+  public handleCantonError$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(DataDownloadRegionActions.setCantonError),
         tap(({error}) => {
-          throw new CantonCouldNotBeLoaded(error);
+          this.errorHandler.handleError(new CantonCouldNotBeLoaded(error));
         }),
       );
     },
@@ -55,12 +55,12 @@ export class DataDownloadRegionEffects {
     );
   });
 
-  public throwMunicipalitiesError$ = createEffect(
+  public handleMunicipalitiesError$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(DataDownloadRegionActions.setMunicipalitiesError),
         tap(({error}) => {
-          throw new MunicipalitiesCouldNotBeLoaded(error);
+          this.errorHandler.handleError(new MunicipalitiesCouldNotBeLoaded(error));
         }),
       );
     },
@@ -72,5 +72,6 @@ export class DataDownloadRegionEffects {
     private readonly store: Store,
     private readonly geoshopMunicipalitiesService: Gb3GeoshopMunicipalitiesService,
     private readonly geoshopCantonService: Gb3GeoshopCantonService,
+    private readonly errorHandler: ErrorHandler,
   ) {}
 }

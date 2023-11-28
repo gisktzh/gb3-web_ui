@@ -97,4 +97,5 @@ export const {
   selectBottomSheetContent,
   selectHideUiElements,
   selectHideToggleUiElementsButton,
+  selectMapSideDrawerContent,
 } = mapUiFeature;

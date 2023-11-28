@@ -9,7 +9,7 @@ import {DescriptiveHighlightedLinkComponent} from './components/descriptive-high
 import {ExpandableListItemHeaderComponent} from './components/expandable-list-item/expandable-list-item-header/expandable-list-item-header.component';
 import {ExpandableListItemComponent} from './components/expandable-list-item/expandable-list-item.component';
 import {MainFooterComponent} from './components/footer/main-footer.component';
-import {Gb2ExitButtonComponent} from './components/gb2-exit-button/gb2-exit-button.component';
+import {ExternalLinkButtonComponent} from './components/external-link-button/external-link-button.component';
 import {HeroHeaderComponent} from './components/hero-header/hero-header.component';
 import {LinkListItemComponent} from './components/link-list/link-list-item/link-list-item.component';
 import {LinkListComponent} from './components/link-list/link-list.component';
@@ -62,7 +62,7 @@ import {LayerTooltipPipe} from './pipes/layer-tooltip.pipe';
     AccordionItemComponent,
     SearchComponent,
     SearchFilterDialogComponent,
-    Gb2ExitButtonComponent,
+    ExternalLinkButtonComponent,
     NavbarMobileComponent,
     NavbarMobileDialogComponent,
     ExpandableListItemComponent,
@@ -97,7 +97,7 @@ import {LayerTooltipPipe} from './pipes/layer-tooltip.pipe';
     AccordionItemComponent,
     SearchComponent,
     SearchFilterDialogComponent,
-    Gb2ExitButtonComponent,
+    ExternalLinkButtonComponent,
     NavbarMobileComponent,
     ExpandableListItemComponent,
     ShowTooltipIfTruncatedDirective,

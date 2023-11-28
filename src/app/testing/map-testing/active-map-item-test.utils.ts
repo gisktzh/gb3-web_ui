@@ -11,13 +11,17 @@ export function createGb2WmsMapItemMock(
   visible: boolean = true,
   opacity: number = 1,
 ): Gb2WmsActiveMapItem {
-  const mapMock = {id: id, title: id, layers: []} as Partial<Map>;
+  const mapMock = {id: id, title: id, layers: [], uuid: createUuidFromId(id)} as Partial<Map>;
   for (let layerNumber = 0; layerNumber < numberOfLayers; layerNumber++) {
     const uniqueLayerName = `layer${layerNumber}_${id}`;
     const layerMock = {layer: uniqueLayerName, title: uniqueLayerName, id: layerNumber} as Partial<MapLayer>;
     mapMock.layers?.push(<MapLayer>layerMock);
   }
   return ActiveMapItemFactory.createGb2WmsMapItem(<Map>mapMock, undefined, visible, opacity);
+}
+
+export function createUuidFromId(id: string): string {
+  return `uuid_${id}`;
 }
 
 export function createDrawingMapItemMock(id: UserDrawingLayer, visible: boolean = true, opacity: number = 1): DrawingActiveMapItem {

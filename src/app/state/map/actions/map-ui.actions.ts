@@ -21,5 +21,6 @@ export const MapUiActions = createActionGroup({
     'Show Bottom Sheet': props<{bottomSheetContent: Exclude<BottomSheetContent, 'none'>}>(),
     'Hide Bottom Sheet': emptyProps(),
     'Reset Map Ui State': emptyProps(),
+    'Show Data Download Email Confirmation Dialog': emptyProps(),
   },
 });

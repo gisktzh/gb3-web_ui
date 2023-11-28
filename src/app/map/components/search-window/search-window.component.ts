@@ -11,6 +11,7 @@ import {SearchState} from '../../../state/app/states/search.state';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
+import {selectIsAnySearchFilterActiveSelector} from '../../../state/app/selectors/is-any-search-filter-active.selector';
 
 @Component({
   selector: 'search-window',
@@ -20,10 +21,12 @@ import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
 export class SearchWindowComponent implements OnInit, OnDestroy {
   public searchState: SearchState = initialState;
   public screenMode: ScreenMode = 'regular';
+  public isAnySearchFilterActive: boolean = false;
 
   private readonly searchConfig = this.configService.searchConfig.mapPage;
   private readonly searchState$ = this.store.select(selectSearchState);
   private readonly screenMode$ = this.store.select(selectScreenMode);
+  private readonly isAnySearchFilterActive$ = this.store.select(selectIsAnySearchFilterActiveSelector);
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(
@@ -45,6 +48,7 @@ export class SearchWindowComponent implements OnInit, OnDestroy {
   private initSubscriptions() {
     this.subscriptions.add(this.searchState$.pipe(tap((searchState) => (this.searchState = searchState))).subscribe());
     this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
+    this.subscriptions.add(this.isAnySearchFilterActive$.pipe(tap((value) => (this.isAnySearchFilterActive = value))).subscribe());
   }
 
   public searchForTerm(term: string) {

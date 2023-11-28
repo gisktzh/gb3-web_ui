@@ -22,6 +22,8 @@ import {SearchIndex} from './apis/search/interfaces/search-index.interface';
 import {pageConfig} from '../configs/page.config';
 import {PageConfig} from '../interfaces/page-config.interface';
 import {FilterConfigs} from '../interfaces/filter-config.interface';
+import {DataDownloadConfig} from '../interfaces/data-download-config.interface';
+import {dataDownloadConfig} from '../configs/data-download.config';
 
 @Injectable({
   providedIn: 'root',
@@ -82,6 +84,10 @@ export class ConfigService {
 
   public get pageConfig(): PageConfig {
     return pageConfig;
+  }
+
+  public get dataDownloadConfig(): DataDownloadConfig {
+    return dataDownloadConfig;
   }
 
   constructor(@Inject(DOCUMENT) private readonly document: Document) {

@@ -17,7 +17,7 @@ export const dataDownloadOrderFeature = createFeature({
   reducer: createReducer(
     initialState,
     on(DataDownloadOrderActions.setSelection, (state, {selection}): DataDownloadOrderState => {
-      return {...state, selection};
+      return {...initialState, selection, statusJobs: state.statusJobs};
     }),
     on(DataDownloadOrderActions.clearSelection, (state): DataDownloadOrderState => {
       return {...initialState, statusJobs: state.statusJobs};
@@ -25,25 +25,56 @@ export const dataDownloadOrderFeature = createFeature({
     on(DataDownloadOrderActions.setOrder, (state, {order}): DataDownloadOrderState => {
       return {...state, order};
     }),
+    on(
+      DataDownloadOrderActions.updateProductsInOrder,
+      produce((draft, {productId, formatIds}) => {
+        if (draft.order) {
+          // remove all products with the same ID and then add the new formats afterwards
+          draft.order.products = draft.order.products.filter((orderProduct) => orderProduct.id !== productId);
+          formatIds.forEach((formatId) => draft.order!.products.push({id: productId, formatId}));
+        }
+      }),
+    ),
+    on(
+      DataDownloadOrderActions.removeProductsWithSameIdInOrder,
+      produce((draft, {productId}) => {
+        if (draft.order) {
+          draft.order.products = draft.order.products.filter((orderProduct) => orderProduct.id !== productId);
+        }
+      }),
+    ),
+    on(
+      DataDownloadOrderActions.setEmailInOrder,
+      produce((draft, {email}) => {
+        if (draft.order) {
+          draft.order.email = email;
+        }
+      }),
+    ),
     on(DataDownloadOrderActions.sendOrder, (state): DataDownloadOrderState => {
       return {...state, savingState: 'loading'};
     }),
-    on(DataDownloadOrderActions.setOrderResponse, (state): DataDownloadOrderState => {
+    on(DataDownloadOrderActions.setSendOrderResponse, (state): DataDownloadOrderState => {
       return {...state, savingState: 'loaded'};
     }),
-    on(DataDownloadOrderActions.setOrderError, (state): DataDownloadOrderState => {
+    on(DataDownloadOrderActions.setSendOrderError, (state): DataDownloadOrderState => {
       return {...state, savingState: 'error'};
     }),
     on(
       DataDownloadOrderActions.requestOrderStatus,
-      produce((draft, {orderId}) => {
+      produce((draft, {orderId, orderTitle}) => {
         const existingStatusJob = draft.statusJobs.find((statusJob) => statusJob.id === orderId);
         if (existingStatusJob) {
           existingStatusJob.loadingState = 'loading';
         } else {
           draft.statusJobs.push({
             id: orderId,
+            title: orderTitle,
             loadingState: 'loading',
+            consecutiveErrorsCount: 0,
+            isCompleted: false,
+            isAborted: false,
+            isCancelled: false,
           });
         }
       }),
@@ -55,26 +86,36 @@ export const dataDownloadOrderFeature = createFeature({
         if (existingStatusJob) {
           existingStatusJob.loadingState = 'loaded';
           existingStatusJob.status = orderStatus;
-        } else {
-          draft.statusJobs.push({
-            id: orderStatus.orderId,
-            loadingState: 'loading',
-            status: orderStatus,
-          });
+          existingStatusJob.consecutiveErrorsCount = 0;
         }
       }),
     ),
     on(
       DataDownloadOrderActions.setOrderStatusError,
-      produce((draft, {orderId}) => {
+      produce((draft, {orderId, maximumNumberOfConsecutiveStatusJobErrors}) => {
         const existingStatusJob = draft.statusJobs.find((statusJob) => statusJob.id === orderId);
         if (existingStatusJob) {
           existingStatusJob.loadingState = 'error';
-        } else {
-          draft.statusJobs.push({
-            id: orderId,
-            loadingState: 'error',
-          });
+          existingStatusJob.consecutiveErrorsCount += 1;
+          existingStatusJob.isAborted = existingStatusJob.consecutiveErrorsCount >= maximumNumberOfConsecutiveStatusJobErrors;
+        }
+      }),
+    ),
+    on(
+      DataDownloadOrderActions.completeOrderStatus,
+      produce((draft, {orderId}) => {
+        const existingStatusJob = draft.statusJobs.find((statusJob) => statusJob.id === orderId);
+        if (existingStatusJob) {
+          existingStatusJob.isCompleted = true;
+        }
+      }),
+    ),
+    on(
+      DataDownloadOrderActions.cancelOrderStatus,
+      produce((draft, {orderId}) => {
+        const existingStatusJob = draft.statusJobs.find((statusJob) => statusJob.id === orderId);
+        if (existingStatusJob) {
+          existingStatusJob.isCancelled = true;
         }
       }),
     ),

@@ -1,0 +1,13 @@
+<a
+  [href]="url"
+  class="external-link-button"
+  [ngClass]="{'external-link-button--small': size === 'small', 'external-link-button--highlighted': highlighted}"
+  [color]="color === 'primary' ? 'primary' : 'accent'"
+  mat-icon-button
+  [matTooltip]="toolTip ?? ''"
+  [matTooltipShowDelay]="0"
+  rel="noopener noreferrer"
+  target="_blank"
+>
+  <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
+</a>
