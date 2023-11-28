@@ -16,10 +16,10 @@ export const elevationProfileFeature = createFeature({
     on(ElevationProfileActions.loadProfile, (): ElevationProfileState => {
       return {...initialState, loadingState: 'loading'};
     }),
-    on(ElevationProfileActions.updateContent, (_, {data}): ElevationProfileState => {
+    on(ElevationProfileActions.setProfile, (_, {data}): ElevationProfileState => {
       return {...initialState, data, loadingState: 'loaded'};
     }),
-    on(ElevationProfileActions.setError, (): ElevationProfileState => {
+    on(ElevationProfileActions.setProfileError, (): ElevationProfileState => {
       return {...initialState, loadingState: 'error'};
     }),
     on(ElevationProfileActions.clearProfile, (): ElevationProfileState => {

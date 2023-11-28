@@ -40,7 +40,7 @@ describe('ToolEffects', () => {
 
   describe('initializeTool$', () => {
     it('initializes the measurement tool using the tool service; dispatches no further actions', fakeAsync(() => {
-      const expectedTools: MeasurementTool[] = ['measure-area', 'measure-point', 'measure-line'];
+      const expectedTools: Exclude<MeasurementTool, 'measure-elevation-profile'>[] = ['measure-area', 'measure-point', 'measure-line'];
       const toolServiceSpy = spyOn(toolService, 'initializeMeasurement').and.callThrough();
       expectedTools.forEach((expectedTool) => {
         toolServiceSpy.calls.reset();

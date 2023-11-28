@@ -5,7 +5,7 @@ import {Gb3StyledInternalDrawingRepresentation} from '../../shared/interfaces/in
 import {UserDrawingLayer} from '../../shared/enums/drawing-layer.enum';
 
 export interface ToolService {
-  initializeMeasurement(measurementTool: MeasurementTool): void;
+  initializeMeasurement(measurementTool: Exclude<MeasurementTool, 'measure-elevation-profile'>): void;
 
   initializeElevationProfileMeasurement(): void;
 

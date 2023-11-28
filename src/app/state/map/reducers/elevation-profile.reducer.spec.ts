@@ -33,7 +33,7 @@ describe('ElevationProfile Reducer', () => {
 
   describe('updateContent', () => {
     it('sets the loading state and returned data', () => {
-      const action = ElevationProfileActions.updateContent({data: mockData});
+      const action = ElevationProfileActions.setProfile({data: mockData});
 
       const result = reducer(initialState, action);
 
@@ -44,7 +44,7 @@ describe('ElevationProfile Reducer', () => {
 
   describe('setError', () => {
     it('sets the loading state and returned data', () => {
-      const action = ElevationProfileActions.setError({});
+      const action = ElevationProfileActions.setProfileError({});
 
       const result = reducer(initialState, action);
 

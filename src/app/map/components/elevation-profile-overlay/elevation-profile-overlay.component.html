@@ -7,7 +7,7 @@
   overlayTitle="Höhenprofil"
 >
   <loading-and-process-bar [loadingState]="loadingState"></loading-and-process-bar>
-  <div *ngIf="loadingState === 'loaded'" class="elevation-profile-overlay__content">
+  <div *ngIf="loadingState === 'loaded' && elevationProfileData" class="elevation-profile-overlay__content">
     <elevation-profile-chart [elevationProfileData]="elevationProfileData"></elevation-profile-chart>
     <elevation-profile-statistics
       *ngIf="elevationProfileData"

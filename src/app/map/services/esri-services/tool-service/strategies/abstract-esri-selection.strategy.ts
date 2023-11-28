@@ -1,14 +1,14 @@
-import {EsriToolStrategy} from '../../interfaces/strategy.interface';
-import {InternalDrawingLayer} from '../../../../../../shared/enums/drawing-layer.enum';
+import {EsriToolStrategy} from '../interfaces/strategy.interface';
+import {InternalDrawingLayer} from '../../../../../shared/enums/drawing-layer.enum';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
-import {SelectionCallbackHandler} from '../../interfaces/selection-callback-handler.interface';
-import {DataDownloadSelection} from '../../../../../../shared/interfaces/data-download-selection.interface';
+import {SelectionCallbackHandler} from '../interfaces/selection-callback-handler.interface';
+import {DataDownloadSelection} from '../../../../../shared/interfaces/data-download-selection.interface';
 import {Observable, tap} from 'rxjs';
 import Polygon from '@arcgis/core/geometry/Polygon';
 import Graphic from '@arcgis/core/Graphic';
 import {geojsonToArcGIS} from '@terraformer/arcgis';
-import {UnstyledInternalDrawingRepresentation} from '../../../../../../shared/interfaces/internal-drawing-representation.interface';
+import {UnstyledInternalDrawingRepresentation} from '../../../../../shared/interfaces/internal-drawing-representation.interface';
 
 export abstract class AbstractEsriSelectionStrategy implements EsriToolStrategy {
   public readonly internalLayerType: InternalDrawingLayer = InternalDrawingLayer.Selection;

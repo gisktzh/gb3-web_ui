@@ -5,9 +5,9 @@ import Graphic from '@arcgis/core/Graphic';
 import Polyline from '@arcgis/core/geometry/Polyline';
 import Point from '@arcgis/core/geometry/Point';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
-import {AbstractEsriDrawableToolStrategy} from '../abstract-esri-drawable-tool.strategy';
-import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
-import {UserDrawingLayer} from '../../../../../../shared/enums/drawing-layer.enum';
+import {AbstractEsriDrawableToolStrategy} from './abstract-esri-drawable-tool.strategy';
+import {DrawingCallbackHandler} from '../interfaces/drawing-callback-handler.interface';
+import {UserDrawingLayer} from '../../../../../shared/enums/drawing-layer.enum';
 
 export type LabelConfiguration = {location: Point; symbolization: TextSymbol};
 

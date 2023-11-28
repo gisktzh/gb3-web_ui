@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {LoadingState} from '../../../shared/types/loading-state.type';
 import {selectIsElevationProfileOverlayVisible} from '../../../state/map/reducers/map-ui.reducer';
 import {Subscription, tap} from 'rxjs';
@@ -13,9 +13,6 @@ import {ElevationProfileData} from '../../../shared/interfaces/elevation-profile
   styleUrls: ['./elevation-profile-overlay.component.scss'],
 })
 export class ElevationProfileOverlayComponent implements OnInit, OnDestroy {
-  /** A value indicating whether interactive elements (like buttons) should be shown. [Default: true] */
-  @Input() public showInteractiveElements: boolean = true;
-
   public isVisible: boolean = false;
   public elevationProfileData?: ElevationProfileData;
   public loadingState: LoadingState;

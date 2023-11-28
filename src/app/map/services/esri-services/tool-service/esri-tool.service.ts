@@ -101,7 +101,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
     this.initializeUserDrawingTool(UserDrawingLayer.Drawings, (layer) => this.setDrawingStrategy(drawingTool, layer));
   }
 
-  public initializeMeasurement(measurementTool: MeasurementTool) {
+  public initializeMeasurement(measurementTool: Exclude<MeasurementTool, 'measure-elevation-profile'>) {
     this.initializeUserDrawingTool(UserDrawingLayer.Measurements, (layer) => this.setMeasurementStrategy(measurementTool, layer));
   }
 

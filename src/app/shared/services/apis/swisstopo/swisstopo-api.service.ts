@@ -1,6 +1,10 @@
 import {Injectable} from '@angular/core';
 import {BaseApiService} from '../abstract-api.service';
-import {ElevationProfileAltitude, ElevationProfileResponse, ElevationProfileSearchParams} from '../../../models/swisstopo-api.interface';
+import {
+  ElevationProfileAltitude,
+  ElevationProfileResponse,
+  ElevationProfileSearchParams,
+} from '../../../models/swisstopo-api-generated.interface';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {ElevationProfileData} from '../../../interfaces/elevation-profile.interface';

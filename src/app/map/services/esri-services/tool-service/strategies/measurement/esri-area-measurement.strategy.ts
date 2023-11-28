@@ -1,7 +1,7 @@
 import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import {NumberUtils} from '../../../../../../shared/utils/number.utils';
-import {AbstractEsriMeasurementStrategy, LabelConfiguration} from './abstract-esri-measurement.strategy';
+import {AbstractEsriMeasurementStrategy, LabelConfiguration} from '../abstract-esri-measurement.strategy';
 import Polygon from '@arcgis/core/geometry/Polygon';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';

@@ -16,6 +16,7 @@ import {ElevationProfileData} from '../../../shared/interfaces/elevation-profile
 import {MinimalGeometriesUtils} from '../../../testing/map-testing/minimal-geometries.utils';
 import {catchError} from 'rxjs/operators';
 import {ElevationProfileCouldNotBeLoaded} from '../../../shared/errors/elevation-profile.errors';
+import {TypedAction} from '@ngrx/store/src/models';
 
 describe('ElevationProfileEffects', () => {
   let actions$: Observable<Action>;
@@ -44,22 +45,18 @@ describe('ElevationProfileEffects', () => {
 
   describe('clearExistingElevationProfilesOnNew$', () => {
     it('does nothing for other tools', fakeAsync(async () => {
-      mapServiceSpy = spyOn(mapService, 'clearInternalDrawingLayer');
       actions$ = of(ToolActions.activateTool({tool: 'measure-line'}));
 
       effects.clearExistingElevationProfilesOnNew$.subscribe();
       tick();
 
-      expect(mapServiceSpy).not.toHaveBeenCalled();
       actions$.subscribe((action) => expect(action).toEqual(ToolActions.activateTool({tool: 'measure-line'})));
     }));
 
-    it('clears internal layers and dispatches ElevationProfileActions.clearProfile', (done: DoneFn) => {
-      mapServiceSpy = spyOn(mapService, 'clearInternalDrawingLayer');
+    it('dispatches ElevationProfileActions.clearProfile', (done: DoneFn) => {
       actions$ = of(ToolActions.activateTool({tool: 'measure-elevation-profile'}));
 
       effects.clearExistingElevationProfilesOnNew$.subscribe((action) => {
-        expect(mapServiceSpy).toHaveBeenCalledOnceWith(InternalDrawingLayer.ElevationProfile);
         expect(action).toEqual(ElevationProfileActions.clearProfile());
         done();
       });
@@ -68,22 +65,18 @@ describe('ElevationProfileEffects', () => {
 
   describe('clearExistingElevationProfileOnClose$', () => {
     it('does nothing if elevation profile is being set to visible', fakeAsync(async () => {
-      mapServiceSpy = spyOn(mapService, 'clearInternalDrawingLayer');
       actions$ = of(MapUiActions.setElevationProfileOverlayVisibility({isVisible: true}));
 
       effects.clearExistingElevationProfileOnClose$.subscribe();
       tick();
 
-      expect(mapServiceSpy).not.toHaveBeenCalled();
       actions$.subscribe((action) => expect(action).toEqual(MapUiActions.setElevationProfileOverlayVisibility({isVisible: true})));
     }));
 
-    it('clears internal layers and dispatches ElevationProfileActions.clearProfile if is set to invisible', (done: DoneFn) => {
-      mapServiceSpy = spyOn(mapService, 'clearInternalDrawingLayer');
+    it('dispatches ElevationProfileActions.clearProfile if is set to invisible', (done: DoneFn) => {
       actions$ = of(MapUiActions.setElevationProfileOverlayVisibility({isVisible: false}));
 
       effects.clearExistingElevationProfileOnClose$.subscribe((action) => {
-        expect(mapServiceSpy).toHaveBeenCalledOnceWith(InternalDrawingLayer.ElevationProfile);
         expect(action).toEqual(ElevationProfileActions.clearProfile());
         done();
       });
@@ -102,7 +95,7 @@ describe('ElevationProfileEffects', () => {
 
       effects.requestElevationProfile$.subscribe((action) => {
         expect(swisstopoApiServiceSpy).toHaveBeenCalledOnceWith(mockGeometry);
-        expect(action).toEqual(ElevationProfileActions.updateContent({data: mockData}));
+        expect(action).toEqual(ElevationProfileActions.setProfile({data: mockData}));
         done();
       });
     });
@@ -115,7 +108,7 @@ describe('ElevationProfileEffects', () => {
 
       effects.requestElevationProfile$.subscribe((action) => {
         expect(swisstopoApiServiceSpy).toHaveBeenCalledOnceWith(mockGeometry);
-        expect(action).toEqual(ElevationProfileActions.setError({error: expectedError}));
+        expect(action).toEqual(ElevationProfileActions.setProfileError({error: expectedError}));
         done();
       });
     });
@@ -125,7 +118,7 @@ describe('ElevationProfileEffects', () => {
     it('throws a ElevationProfileCouldNotBeLoaded error', (done: DoneFn) => {
       const expectedOriginalError = new Error('oh no! butterfingers');
 
-      actions$ = of(ElevationProfileActions.setError({error: expectedOriginalError}));
+      actions$ = of(ElevationProfileActions.setProfileError({error: expectedOriginalError}));
       effects.setElevationProfileError$
         .pipe(
           catchError((error) => {
@@ -137,5 +130,19 @@ describe('ElevationProfileEffects', () => {
         )
         .subscribe();
     });
+  });
+
+  describe('resetProfileDrawing$', () => {
+    it('clears the drawing layer, does not dispatch', fakeAsync(async () => {
+      mapServiceSpy = spyOn(mapService, 'clearInternalDrawingLayer');
+
+      let actualAction: TypedAction<any> | undefined;
+      actions$ = of(ElevationProfileActions.clearProfile());
+      effects.resetProfileDrawing$.subscribe((action) => (actualAction = action));
+      tick();
+
+      expect(mapServiceSpy).toHaveBeenCalledOnceWith(InternalDrawingLayer.ElevationProfile);
+      expect(actualAction).toEqual(ElevationProfileActions.clearProfile());
+    }));
   });
 });

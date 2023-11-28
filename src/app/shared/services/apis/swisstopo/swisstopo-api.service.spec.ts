@@ -4,7 +4,7 @@ import {ELEVATION_MODEL, SwisstopoApiService} from './swisstopo-api.service';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {HttpClient} from '@angular/common/http';
 import {of} from 'rxjs';
-import {ElevationProfileResponse} from '../../../models/swisstopo-api.interface';
+import {ElevationProfileResponse} from '../../../models/swisstopo-api-generated.interface';
 import {LineString} from 'geojson';
 import {MinimalGeometriesUtils} from '../../../../testing/map-testing/minimal-geometries.utils';
 import {ElevationProfileDataPoint, ElevationProfileStatistics} from '../../../interfaces/elevation-profile.interface';

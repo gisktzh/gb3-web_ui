@@ -13,13 +13,20 @@ import {MapUiActions} from '../actions/map-ui.actions';
 
 @Injectable()
 export class ElevationProfileEffects {
+  public resetProfileDrawing$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(ElevationProfileActions.clearProfile),
+        tap(() => this.mapService.clearInternalDrawingLayer(InternalDrawingLayer.ElevationProfile)),
+      );
+    },
+    {dispatch: false},
+  );
+
   public clearExistingElevationProfilesOnNew$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ToolActions.activateTool),
       filter(({tool}) => tool === 'measure-elevation-profile'),
-      tap(() => {
-        this.mapService.clearInternalDrawingLayer(InternalDrawingLayer.ElevationProfile);
-      }),
       map(() => ElevationProfileActions.clearProfile()),
     );
   });
@@ -28,9 +35,6 @@ export class ElevationProfileEffects {
     return this.actions$.pipe(
       ofType(MapUiActions.setElevationProfileOverlayVisibility),
       filter(({isVisible}) => !isVisible),
-      tap(() => {
-        this.mapService.clearInternalDrawingLayer(InternalDrawingLayer.ElevationProfile);
-      }),
       map(() => ElevationProfileActions.clearProfile()),
     );
   });
@@ -41,9 +45,9 @@ export class ElevationProfileEffects {
       switchMap(({geometry}) =>
         this.swisstopoApiService.loadElevationProfile(geometry).pipe(
           map((elevationProfile) => {
-            return ElevationProfileActions.updateContent({data: elevationProfile});
+            return ElevationProfileActions.setProfile({data: elevationProfile});
           }),
-          catchError((error: unknown) => of(ElevationProfileActions.setError({error}))),
+          catchError((error: unknown) => of(ElevationProfileActions.setProfileError({error}))),
         ),
       ),
     );
@@ -52,7 +56,7 @@ export class ElevationProfileEffects {
   public setElevationProfileError$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(ElevationProfileActions.setError),
+        ofType(ElevationProfileActions.setProfileError),
         tap(({error}) => {
           throw new ElevationProfileCouldNotBeLoaded(error);
         }),

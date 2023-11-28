@@ -7,8 +7,8 @@ export const ElevationProfileActions = createActionGroup({
   source: 'ElevationProfile',
   events: {
     'Load Profile': props<{geometry: Geometry}>(),
-    'Update Content': props<{data: ElevationProfileData}>(),
-    'Set Error': errorProps(),
+    'Set Profile': props<{data: ElevationProfileData}>(),
+    'Set Profile Error': errorProps(),
     'Clear Profile': emptyProps(),
   },
 });

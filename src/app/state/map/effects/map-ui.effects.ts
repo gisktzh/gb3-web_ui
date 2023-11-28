@@ -25,7 +25,6 @@ import {selectActiveTool} from '../reducers/tool.reducer';
 import {selectGb2WmsActiveMapItemsWithMapNotices} from '../selectors/active-map-items.selector';
 import {selectCurrentShareLinkItem} from '../selectors/current-share-link-item.selector';
 import {ElevationProfileActions} from '../actions/elevation-profile.actions';
-import {Router} from '@angular/router';
 import {UrlActions} from '../../app/actions/url.actions';
 import {selectUrlState} from '../../app/reducers/url.reducer';
 
@@ -141,7 +140,6 @@ export class MapUiEffects {
       concatLatestFrom(() => this.store.select(selectScreenMode)),
       tap(([__, screenMode]) => {
         if (screenMode === 'mobile') {
-          // todo: this is a no-no and should be fixed - IDE actually shows this
           return this.store.dispatch(MapUiActions.showBottomSheet({bottomSheetContent: 'share-link'}));
         } else {
           this.dialogService.open(ShareLinkDialogComponent, {
@@ -239,6 +237,5 @@ export class MapUiEffects {
     private readonly actions$: Actions,
     private readonly store: Store,
     private readonly dialogService: MatDialog,
-    private readonly router: Router,
   ) {}
 }
