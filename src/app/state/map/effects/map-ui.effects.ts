@@ -14,6 +14,7 @@ import {SearchActions} from '../../app/actions/search.actions';
 import {selectScreenMode} from '../../app/reducers/app-layout.reducer';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {DataDownloadProductActions} from '../actions/data-download-product.actions';
+import {DataDownloadRegionActions} from '../actions/data-download-region.actions';
 import {LegendActions} from '../actions/legend.actions';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {MapUiActions} from '../actions/map-ui.actions';
@@ -23,6 +24,10 @@ import {ToolActions} from '../actions/tool.actions';
 import {selectActiveTool} from '../reducers/tool.reducer';
 import {selectGb2WmsActiveMapItemsWithMapNotices} from '../selectors/active-map-items.selector';
 import {selectCurrentShareLinkItem} from '../selectors/current-share-link-item.selector';
+import {ElevationProfileActions} from '../actions/elevation-profile.actions';
+import {UrlActions} from '../../app/actions/url.actions';
+import {selectUrlState} from '../../app/reducers/url.reducer';
+import {DataDownloadEmailConfirmationDialogComponent} from '../../../map/components/map-tools/data-download-email-confirmation-dialog/data-download-email-confirmation-dialog.component';
 
 const CREATE_FAVOURITE_DIALOG_MAX_WIDTH = 500;
 const DELETE_FAVOURITE_DIALOG_MAX_WIDTH = 500;
@@ -51,7 +56,7 @@ export class MapUiEffects {
           case 'print':
             return PrintActions.loadPrintCapabilities();
           case 'data-download':
-            return DataDownloadProductActions.loadProducts();
+            return DataDownloadProductActions.loadProductsAndRelevantProducts();
         }
       }),
     );
@@ -80,9 +85,7 @@ export class MapUiEffects {
   public showUiElementsAfterClosingSideDrawer$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapUiActions.hideMapSideDrawerContent),
-      map(() => {
-        return MapUiActions.changeUiElementsVisibility({hideAllUiElements: false, hideUiToggleButton: false});
-      }),
+      map(() => MapUiActions.changeUiElementsVisibility({hideAllUiElements: false, hideUiToggleButton: false})),
     );
   });
 
@@ -99,14 +102,28 @@ export class MapUiEffects {
     );
   });
 
+  public showElevationProfileOverlay$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ElevationProfileActions.loadProfile),
+      map(() => MapUiActions.setElevationProfileOverlayVisibility({isVisible: true})),
+    );
+  });
+
+  public hideElevationProfileOverlayOnNavigate = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(UrlActions.setPage),
+      concatLatestFrom(() => this.store.select(selectUrlState)),
+      filter(([_, urlState]) => urlState.mainPage !== 'maps' && urlState.previousPage === 'maps'),
+      map(() => MapUiActions.setElevationProfileOverlayVisibility({isVisible: false})),
+    );
+  });
+
   public showOrHideMapUiElements$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapUiActions.setLegendOverlayVisibility, MapUiActions.setFeatureInfoVisibility),
       concatLatestFrom(() => this.store.select(selectScreenMode)),
       filter(([_, screenMode]) => screenMode === 'mobile'),
-      map(() => {
-        return MapUiActions.changeUiElementsVisibility({hideAllUiElements: true, hideUiToggleButton: false});
-      }),
+      map(() => MapUiActions.changeUiElementsVisibility({hideAllUiElements: true, hideUiToggleButton: false})),
     );
   });
 
@@ -114,9 +131,7 @@ export class MapUiEffects {
     return this.actions$.pipe(
       ofType(MapUiActions.setFeatureInfoVisibility),
       filter(({isVisible}) => !isVisible),
-      map(({isVisible}) => {
-        return MapConfigActions.clearFeatureInfoContent();
-      }),
+      map(() => MapConfigActions.clearFeatureInfoContent()),
     );
   });
 
@@ -135,9 +150,7 @@ export class MapUiEffects {
         }
       }),
       concatLatestFrom(() => this.store.select(selectCurrentShareLinkItem)),
-      map(([_, shareLinkItem]) => {
-        return ShareLinkActions.createItem({item: shareLinkItem});
-      }),
+      map(([_, shareLinkItem]) => ShareLinkActions.createItem({item: shareLinkItem})),
     );
   });
 
@@ -186,36 +199,48 @@ export class MapUiEffects {
           maxWidth: MAP_NOTICES_DIALOG_MAX_WIDTH,
         }),
       ),
-      map(() => {
-        return ActiveMapItemActions.markAllActiveMapItemNoticeAsRead();
-      }),
+      map(() => ActiveMapItemActions.markAllActiveMapItemNoticeAsRead()),
     );
   });
 
-  public loadDataDownloadProducts$ = createEffect(() => {
+  public loadDataDownloadCanton$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapUiActions.toggleToolMenu),
       filter((action) => action.tool === 'data-download'),
-      map(() => DataDownloadProductActions.loadProducts()),
+      map(() => DataDownloadRegionActions.loadCanton()),
+    );
+  });
+
+  public loadDataDownloadMunicipalities$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapUiActions.toggleToolMenu),
+      filter((action) => action.tool === 'data-download'),
+      map(() => DataDownloadRegionActions.loadMunicipalities()),
     );
   });
 
   public clearSearchTermAfterClosingBottomSheet$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapUiActions.hideBottomSheet),
-      map(() => {
-        return SearchActions.clearSearchTerm();
-      }),
+      map(() => SearchActions.clearSearchTerm()),
     );
   });
-  public cancelToolAfterHidingUiElements$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(MapUiActions.changeUiElementsVisibility),
-      concatLatestFrom(() => this.store.select(selectActiveTool)),
-      filter(([{hideAllUiElements}, activeTool]) => hideAllUiElements && activeTool !== undefined),
-      map(() => ToolActions.cancelTool()),
-    );
-  });
+
+  public openDataDownloadEmailConfirmationDialo$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(MapUiActions.showDataDownloadEmailConfirmationDialog),
+        tap(() =>
+          this.dialogService.open<DataDownloadEmailConfirmationDialogComponent>(DataDownloadEmailConfirmationDialogComponent, {
+            panelClass: PanelClass.ApiWrapperDialog,
+            restoreFocus: false,
+          }),
+        ),
+      );
+    },
+    {dispatch: false},
+  );
+
   constructor(
     private readonly actions$: Actions,
     private readonly store: Store,

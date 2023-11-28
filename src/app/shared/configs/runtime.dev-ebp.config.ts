@@ -42,6 +42,9 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       ownershipInformationApi: {
         baseUrl: 'https://portal.objektwesen.zh.ch/aks/detail',
       },
+      swisstopoRestApi: {
+        baseUrl: 'https://api3.geo.admin.ch/rest/services',
+      },
     },
     authSettings: {
       clientId: 'gb3',
@@ -68,7 +71,7 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
         baseUrl: 'https://geolion.zh.ch',
       },
       searchApi: {
-        baseUrl: 'https://geo.zh.ch/geosearch',
+        baseUrl: 'https://maps.zh.ch/v3',
       },
       ktzhWebsite: {
         baseUrl: 'https://www.zh.ch',
@@ -86,6 +89,9 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       },
       ownershipInformationApi: {
         baseUrl: 'https://portal.objektwesen.zh.ch/aks/detail',
+      },
+      swisstopoRestApi: {
+        baseUrl: 'https://api3.geo.admin.ch/rest/services',
       },
     },
     authSettings: {

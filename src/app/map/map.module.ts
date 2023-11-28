@@ -12,8 +12,7 @@ import {ActiveMapItemsComponent} from './components/active-map-items/active-map-
 import {ApiDialogWrapperComponent} from './components/api-dialog-wrapper/api-dialog-wrapper.component';
 import {BottomSheetItemComponent} from './components/bottom-sheet-overlay/bottom-sheet-item/bottom-sheet-item.component';
 import {BottomSheetOverlayComponent} from './components/bottom-sheet-overlay/bottom-sheet-overlay.component';
-import {DataDownloadSelectMunicipalityDialogComponent} from './components/data-download-select-municipality-dialog/data-download-select-municipality-dialog.component';
-import {DataDownloadDialogComponent} from './components/data-download/data-download-dialog/data-download-dialog.component';
+import {DataDownloadDialogComponent} from './components/map-tools/data-download-dialog/data-download-dialog.component';
 import {FavouriteCreationDialogComponent} from './components/favourite-creation-dialog/favourite-creation-dialog.component';
 import {FavouriteDeletionDialogComponent} from './components/favourite-deletion-dialog/favourite-deletion-dialog.component';
 import {FeatureInfoContentComponent} from './components/feature-info-overlay/feature-info-content/feature-info-content.component';
@@ -34,6 +33,7 @@ import {BasemapSelectorComponent} from './components/map-controls/basemap-select
 import {CoordinateScaleInputsComponent} from './components/map-controls/coordinate-scale-inputs/coordinate-scale-inputs.component';
 import {DataInputComponent} from './components/map-controls/data-input/data-input.component';
 import {MapControlsComponent} from './components/map-controls/map-controls.component';
+import {MapRotationButtonComponent} from './components/map-controls/map-rotation-button/map-rotation-button.component';
 import {UiToggleComponent} from './components/map-controls/ui-toggle/ui-toggle.component';
 import {ZoomControlsComponent} from './components/map-controls/zoom-controls/zoom-controls.component';
 import {BaseMapDataItemComponent} from './components/map-data-catalogue/base-map-data-item/base-map-data-item.component';
@@ -53,8 +53,6 @@ import {MapToolsMobileComponent} from './components/map-tools/map-tools-mobile/m
 import {MapToolsComponent} from './components/map-tools/map-tools.component';
 import {MeasurementToolsComponent} from './components/map-tools/measurement-tools/measurement-tools.component';
 import {PrintDialogComponent} from './components/map-tools/print-dialog/print-dialog.component';
-import {PrintDispatcherComponent} from './components/print-overlay/print-dispatcher/print-dispatcher.component';
-import {PrintOverlayComponent} from './components/print-overlay/print-overlay.component';
 import {SearchWindowMobileComponent} from './components/search-window-mobile/search-window-mobile.component';
 import {ResultGroupComponent} from './components/search-window/result-groups/result-group/result-group.component';
 import {ResultGroupsComponent} from './components/search-window/result-groups/result-groups.component';
@@ -65,6 +63,19 @@ import {TextDrawingToolInputComponent} from './components/text-drawing-tool-inpu
 import {TimeSliderComponent} from './components/time-slider/time-slider.component';
 import {MapPageComponent} from './map-page.component';
 import {MapRoutingModule} from './map-routing.module';
+import {MapRotationPipe} from './pipes/map-rotation.pipe';
+import {DataDownloadSelectMunicipalityDialogComponent} from './components/map-tools/data-download-select-municipality-dialog/data-download-select-municipality-dialog.component';
+import {ProductComponent} from './components/map-tools/product/product.component';
+import {DataDownloadFilterDialogComponent} from './components/map-tools/data-download-filter-dialog/data-download-filter-dialog.component';
+import {DataDownloadEmailDialogComponent} from './components/map-tools/data-download-email-dialog/data-download-email-dialog.component';
+import {ElevationProfileOverlayComponent} from './components/elevation-profile-overlay/elevation-profile-overlay.component';
+import {NgChartsModule} from 'ng2-charts';
+import {ElevationProfileChartComponent} from './components/elevation-profile-overlay/elevation-profile-chart/elevation-profile-chart.component';
+import {ElevationProfileStatisticsComponent} from './components/elevation-profile-overlay/elevation-profile-statistics/elevation-profile-statistics.component';
+import {DataDownloadEmailConfirmationDialogComponent} from './components/map-tools/data-download-email-confirmation-dialog/data-download-email-confirmation-dialog.component';
+import {DataDownloadStatusQueueComponent} from './components/map-tools/data-download-status-queue/data-download-status-queue.component';
+import {DataDownloadOrderStatusPipe} from './pipes/data-download-order-status.pipe';
+import {DataDownloadOrderDownloadUrlPipe} from './pipes/data-download-order-download-url.pipe';
 
 @NgModule({
   declarations: [
@@ -79,8 +90,6 @@ import {MapRoutingModule} from './map-routing.module';
     MapDataCatalogueComponent,
     MapOverlayListItemComponent,
     FeatureInfoItemComponent,
-    PrintOverlayComponent,
-    PrintDispatcherComponent,
     CoordinateScaleInputsComponent,
     MapControlsComponent,
     BasemapSelectorComponent,
@@ -125,13 +134,25 @@ import {MapRoutingModule} from './map-routing.module';
     BasemapSelectionListComponent,
     MapToolsDesktopComponent,
     MapToolsMobileComponent,
-    DataDownloadSelectMunicipalityDialogComponent,
     UiToggleComponent,
     TextDrawingToolInputComponent,
     SearchWindowMobileComponent,
     ShareLinkMobileComponent,
+    MapRotationButtonComponent,
+    MapRotationPipe,
+    DataDownloadSelectMunicipalityDialogComponent,
+    ProductComponent,
+    DataDownloadFilterDialogComponent,
+    DataDownloadEmailDialogComponent,
+    ElevationProfileOverlayComponent,
+    ElevationProfileChartComponent,
+    ElevationProfileStatisticsComponent,
+    DataDownloadEmailConfirmationDialogComponent,
+    DataDownloadStatusQueueComponent,
+    DataDownloadOrderStatusPipe,
+    DataDownloadOrderDownloadUrlPipe,
   ],
-  imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule, NgChartsModule],
   exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent],
 })
 export class MapModule {}

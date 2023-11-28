@@ -10,6 +10,7 @@ import {PrintUtils} from '../../../shared/utils/print.utils';
 import {PrintInfoCouldNotBeLoaded, PrintRequestCouldNotBeHandled} from '../../../shared/errors/print.errors';
 import {Store} from '@ngrx/store';
 import {selectCapabilities} from '../reducers/print.reducer';
+import {MapUiActions} from '../actions/map-ui.actions';
 
 @Injectable()
 export class PrintEffects {
@@ -101,6 +102,15 @@ export class PrintEffects {
     },
     {dispatch: false},
   );
+
+  public removePrintPreviewAfterClosingSideDrawer$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapUiActions.hideMapSideDrawerContent),
+      map(() => {
+        return PrintActions.removePrintPreview();
+      }),
+    );
+  });
 
   constructor(
     private readonly actions$: Actions,

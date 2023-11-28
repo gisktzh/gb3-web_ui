@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 /**
  * Generated once using https://transform.tools/json-to-typescript and the official documentation PDF https://www.zh.ch/content/dam/zhweb/bilder-dokumente/themen/planen-bauen/geoinformation/geodaten/geodatenshop/rest_schnittstelle_ogd_interface.pdf
  * and heavily enriched with type information from the documentation.

@@ -1,18 +1,24 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import {Injectable} from '@angular/core';
 import {BaseApiService} from '../../abstract-api.service';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {Products} from '../../../../interfaces/geoshop-product.interface';
 import {
   Coordsys as ApiCoordsys,
   LayerName as ApiLayerName,
   Order as ApiOrder,
   OrderResponse as ApiOrderResponse,
   OrderStatus as ApiOrderStatus,
-  Products as ApiProducts,
 } from '../../../../models/geoshop-api-generated.interface';
 import {DirectOrder, IndirectOrder, Order, OrderResponse} from '../../../../interfaces/geoshop-order.interface';
 import {OrderStatus, OrderStatusContent, orderStatusKeys, OrderStatusType} from '../../../../interfaces/geoshop-order-status.interface';
+import {
+  DataDownloadSelection,
+  GeometryDataDownloadSelection,
+  MunicipalityDataDownloadSelection,
+} from '../../../../interfaces/data-download-selection.interface';
+import {Product} from '../../../../interfaces/gb3-geoshop-product.interface';
+import {OrderUnsupportedGeometry} from '../../../../errors/data-download.errors';
 
 @Injectable({
   providedIn: 'root',
@@ -20,14 +26,9 @@ import {OrderStatus, OrderStatusContent, orderStatusKeys, OrderStatusType} from 
 export class GeoshopApiService extends BaseApiService {
   protected apiBaseUrl = this.configService.apiConfig.geoshopApi.baseUrl;
 
-  public loadProducts(): Observable<Products> {
-    const productsData = this.get<ApiProducts>(this.getFullEndpointUrl('products'));
-    return productsData.pipe(map((data) => this.mapApiProductsToProducts(data)));
-  }
-
   public sendOrder(order: Order): Observable<OrderResponse> {
     const orderData = this.mapOrderToApiOrder(order);
-    return this.post<ApiOrder, ApiOrderResponse>(this.getFullEndpointUrl('order'), orderData).pipe(
+    return this.post<ApiOrder, ApiOrderResponse>(this.getFullEndpointUrl('orders'), orderData).pipe(
       map((data) => this.mapApiOrderResponseToOrderResponse(data)),
     );
   }
@@ -36,33 +37,66 @@ export class GeoshopApiService extends BaseApiService {
     return this.get<ApiOrderStatus>(this.getFullOrderUrl('orders', orderId)).pipe(map((status) => this.mapApiOrderStatusToStatus(status)));
   }
 
+  /**
+   * This method is used to create an order depending on the given selection type.
+   * - Indirect orders are using unique identifiers to select the area(s) to order from.
+   * - Direct orders are using a geometry to do the same.
+   * The canton is a special case - it is a direct order because there is no identifier available.
+   */
+  public createOrderFromSelection(selection: DataDownloadSelection): Order {
+    switch (selection.type) {
+      case 'select-circle':
+      case 'select-polygon':
+      case 'select-rectangle':
+      case 'select-section':
+      case 'select-canton':
+        return this.createDirectOrderFromSelection(selection);
+      case 'select-municipality':
+        return this.createIndirectOrderFromSelection(selection);
+    }
+  }
+
+  public createOrderTitle(order: Order, products: Product[]): string {
+    const uniqueProducts = new Set(
+      order.products
+        .map((orderProduct) => products.find((product) => product.gisZHNr === orderProduct.id)?.name)
+        .filter((productName): productName is string => !!productName),
+    );
+    return Array.from(uniqueProducts).join(',');
+  }
+
+  public createOrderDownloadUrl(orderId: string): string {
+    return `${this.getFullOrderUrl('orders', orderId)}/download`;
+  }
+
+  private createDirectOrderFromSelection(selection: GeometryDataDownloadSelection): Order {
+    if (selection.drawingRepresentation.geometry.srs !== 2056 || selection.drawingRepresentation.geometry.type !== 'Polygon') {
+      throw new OrderUnsupportedGeometry();
+    }
+
+    return {
+      perimeterType: 'direct',
+      products: [],
+      srs: this.configService.dataDownloadConfig.defaultOrderSrs,
+      geometry: selection.drawingRepresentation.geometry,
+    };
+  }
+
+  private createIndirectOrderFromSelection(selection: MunicipalityDataDownloadSelection): Order {
+    return {
+      perimeterType: 'indirect',
+      products: [],
+      identifiers: [selection.municipality.bfsNo.toString()],
+      layerName: 'commune',
+    };
+  }
+
   private getFullEndpointUrl(endpoint: string): string {
     return `${this.apiBaseUrl}/${endpoint}`;
   }
 
   private getFullOrderUrl(endpoint: string, orderId: string): string {
     return `${this.getFullEndpointUrl(endpoint)}/${orderId}`;
-  }
-
-  private mapApiProductsToProducts(data: ApiProducts): Products {
-    return {
-      timestampDateString: data.timestamp,
-      products: data.products.map((product) => ({
-        id: product.id,
-        name: product.name,
-        type: product.type,
-        description: product.description,
-        formats: product.formats,
-      })),
-      formats: data.formats.map((format) => ({
-        id: format.id,
-        name: format.name,
-      })),
-      municipalities: data.communes.map((commune) => ({
-        id: commune.id,
-        name: commune.name,
-      })),
-    };
   }
 
   private mapOrderToApiOrder(order: Order): ApiOrder {
@@ -85,7 +119,7 @@ export class GeoshopApiService extends BaseApiService {
         break;
     }
     return {
-      email: order.email,
+      email: order.email ?? '',
       products: order.products.map((product) => ({
         product_id: product.id,
         format_id: product.formatId,
@@ -107,7 +141,7 @@ export class GeoshopApiService extends BaseApiService {
         break;
     }
     return {
-      email: order.email,
+      email: order.email ?? '',
       products: order.products.map((product) => ({
         product_id: product.id,
         format_id: product.formatId,
@@ -147,7 +181,7 @@ export class GeoshopApiService extends BaseApiService {
    */
   private parseStatus(apiStatus: string): OrderStatusContent {
     const splitStatus = apiStatus.split(':');
-    const statusString = splitStatus[0].trim();
+    const statusString = splitStatus[0].trim().toLowerCase();
     const message = splitStatus.length === 2 ? splitStatus[1].trim() : undefined;
     const type: OrderStatusType = orderStatusKeys.find((statusKey) => statusKey === statusString) ?? 'unknown';
     return {type, message};

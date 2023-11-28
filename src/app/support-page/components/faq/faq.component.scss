@@ -1,3 +1,17 @@
-.faq__content {
-  padding-bottom: 20px;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.faq {
+  padding-bottom: 48px;
+
+  .faq__header {
+    font-size: 24px;
+    font-weight: 900;
+    margin: 0;
+    padding: 18px 0 20px 0;
+  }
+
+  .faq__content {
+    font-size: 18px;
+    color: ktzh-variables.$zh-black60;
+  }
 }

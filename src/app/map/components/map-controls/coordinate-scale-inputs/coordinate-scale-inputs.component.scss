@@ -3,12 +3,14 @@
 .coordinate-scale-inputs {
   display: flex;
   flex-direction: row-reverse;
+  align-items: center;
   background-color: ktzh-variables.$zh-white;
   column-gap: 3px;
-  padding: 3px;
+  padding: 3px 0 3px 3px;
+  height: 42px;
 
   & .coordinate-scale-inputs__scale {
-    width: 75px;
+    width: 80px;
   }
 
   & .coordinate-scale-inputs__input {
@@ -21,7 +23,7 @@
   }
 
   & .coordinate-scale-inputs__coordinate {
-    width: 130px;
+    width: 135px;
   }
 }
 

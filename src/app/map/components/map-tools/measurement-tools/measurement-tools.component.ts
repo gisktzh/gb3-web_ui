@@ -18,4 +18,8 @@ export class MeasurementToolsComponent extends AbstractToolsComponent {
   public toggleAreaMeasurement() {
     this.toggleTool('measure-area');
   }
+
+  public toggleElevationProfileMeasurement() {
+    this.toggleTool('measure-elevation-profile');
+  }
 }

@@ -1,0 +1,55 @@
+<div class="data-download-dialog">
+  <div class="data-download-dialog__header">
+    <h1 class="data-download-dialog__header__title">Datenbezug</h1>
+    <button mat-icon-button (click)="cancel()" [disabled]="savingState === 'loading'">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div class="data-download-dialog__content" *ngIf="order">
+    <search
+      class="data-download-dialog__content__search"
+      placeholderText="Nach Geodaten filtern"
+      (changeSearchTermEvent)="setFilterTerm($event)"
+      (clearSearchTermEvent)="clearFilterTerm()"
+      (openFilterEvent)="openFilterWindow()"
+      [disabled]="savingState === 'loading'"
+      [isAnyFilterActive]="activeDataDownloadFiltersPerCategory.length > 0"
+    ></search>
+
+    <div class="data-download-dialog__content__products">
+      <expandable-list-item
+        header="Geodaten zu den Aktiven Karten"
+        [expanded]="true"
+        [loadingState]="relevantProductsLoadingState"
+        [noPadding]="true"
+      >
+        <ng-container *ngFor="let relevantProduct of relevantProducts; trackBy: trackByProductId">
+          <product [product]="relevantProduct" [order]="order" [disabled]="savingState === 'loading'"></product>
+          <mat-divider></mat-divider>
+        </ng-container>
+      </expandable-list-item>
+      <expandable-list-item header="Restliche Geodaten" [expanded]="true" [loadingState]="productsLoadingState" [noPadding]="true">
+        <ng-container *ngFor="let product of filteredProducts; trackBy: trackByProductId">
+          <product [product]="product" [order]="order" [disabled]="savingState === 'loading'"></product>
+          <mat-divider></mat-divider>
+        </ng-container>
+        <p *ngIf="filteredProducts.length === 0" class="mat-body-2">Keine Resultate zu diesem Filter.</p>
+      </expandable-list-item>
+    </div>
+    <loading-and-process-bar [loadingState]="savingState"></loading-and-process-bar>
+  </div>
+  <div class="data-download-dialog__footer">
+    <button class="data-download-dialog__footer__button" (click)="cancel()" [disabled]="savingState === 'loading'" mat-button>
+      Abbrechen
+    </button>
+    <button
+      class="data-download-dialog__footer__button"
+      (click)="openDownloadDialog()"
+      color="accent"
+      [disabled]="savingState === 'loading' || !order || order.products.length === 0"
+      mat-button
+    >
+      Download
+    </button>
+  </div>
+</div>

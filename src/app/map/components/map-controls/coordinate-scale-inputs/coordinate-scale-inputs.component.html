@@ -1,4 +1,5 @@
 <div class="coordinate-scale-inputs">
+  <map-rotation-button [rotation]="rotation"></map-rotation-button>
   <div class="coordinate-scale-inputs__coordinate">
     <data-input>
       <input (change)="this.setMapCenter($event)" [value]="this.mapCenter" class="coordinate-scale-inputs__input" type="text" />

@@ -2,6 +2,7 @@
 @use 'mixins/material.mixin' as material-mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 @use 'variables/map-layout-variables' as map-layout-variables;
+@use 'variables/z-index-variables' as z-index-variables;
 
 :host ::ng-deep {
   .map-management__button {
@@ -90,26 +91,30 @@
 
     position: absolute;
     top: 12px;
-    left: calc(24px + map-layout-variables.$map-overlay-width);
+    left: calc(24px + #{map-layout-variables.$map-overlay-width});
     height: 48px;
     width: map-layout-variables.$legend-button-width;
     background-color: ktzh-variables.$zh-background-color;
-    // TODO: temporary hack to prevent the search bar from colliding with this button if the screen size is too small;
-    // this can be removed as soon as the breakpoints are properly implemented
-    z-index: 0;
   }
 
   .map-container__map-attribute-filter {
     @include mixins.map-element-box-shadow;
     max-height: 30vh;
     overflow-y: hidden;
-    z-index: 400;
+    z-index: z-index-variables.$map-attribute-filter;
     position: absolute;
     top: 132px; // starting at the first 'active map item' position
-    left: calc(24px + map-layout-variables.$map-overlay-width);
+    left: calc(24px + #{map-layout-variables.$map-overlay-width});
   }
 
   .map-container__feature-info-overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+  }
+
+  .map-container__elevation-profile-overlay {
     position: absolute;
     top: 0;
     right: 0;
@@ -153,8 +158,24 @@
   .map-container__all-map-items-container--mobile {
     position: absolute;
     bottom: 100px;
-    right: 12px;
     background-color: ktzh-variables.$zh-background-color;
+
+    &--right {
+      right: 12px;
+    }
+
+    &--left {
+      left: 12px;
+    }
+  }
+
+  .map-container__data-download-status-queue {
+    @include mixins.map-element-box-shadow;
+    z-index: z-index-variables.$data-download-order-queue;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, 0);
   }
 }
 

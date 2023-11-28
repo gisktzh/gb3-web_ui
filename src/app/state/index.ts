@@ -22,6 +22,9 @@ import {reducer as dataCatalogueReducer} from './data-catalogue/reducers/data-ca
 import {reducer as searchReducer} from './app/reducers/search.reducer';
 import {reducer as drawingReducer} from './map/reducers/drawing.reducer';
 import {reducer as urlReducer} from './app/reducers/url.reducer';
+import {reducer as overlayPrintReducer} from './map/reducers/overlay-print.reducer';
+import {reducer as dataDownloadRegionReducer} from './map/reducers/data-download-region.reducer';
+import {reducer as elevationProfileReducer} from './map/reducers/elevation-profile.reducer';
 import {ActiveMapItemState} from './map/states/active-map-item.state';
 import {FavouriteListState} from './map/states/favourite-list.state';
 import {FeatureInfoState} from './map/states/feature-info.state';
@@ -68,6 +71,12 @@ import {MapAttributeFiltersItemEffects} from './map/effects/map-attribute-filter
 import {routerReducer, RouterState} from '@ngrx/router-store';
 import {UrlState} from './app/states/url.state';
 import {UrlEffects} from './app/effects/url.effects';
+import {OverlayPrintState} from './map/states/overlay-print.state';
+import {OverlayPrintEffects} from './map/effects/overlay-print.effects';
+import {DataDownloadRegionState} from './map/states/data-download-region.state';
+import {DataDownloadRegionEffects} from './map/effects/data-download-region.effects';
+import {ElevationProfileState} from './map/states/elevation-profile.state';
+import {ElevationProfileEffects} from './map/effects/elevation-profile.effects';
 
 export interface State {
   mapConfig: MapConfigState;
@@ -94,6 +103,9 @@ export interface State {
   dataDownloadProduct: DataDownloadProductState;
   router: RouterState;
   url: UrlState;
+  overlayPrint: OverlayPrintState;
+  dataDownloadRegion: DataDownloadRegionState;
+  elevationProfile: ElevationProfileState;
 }
 
 export const reducers: ActionReducerMap<State> = {
@@ -121,6 +133,9 @@ export const reducers: ActionReducerMap<State> = {
   dataDownloadProduct: dataDownloadProductReducer,
   router: routerReducer,
   url: urlReducer,
+  overlayPrint: overlayPrintReducer,
+  dataDownloadRegion: dataDownloadRegionReducer,
+  elevationProfile: elevationProfileReducer,
 };
 
 export const effects = [
@@ -146,6 +161,9 @@ export const effects = [
   AppLayoutEffects,
   MapAttributeFiltersItemEffects,
   UrlEffects,
+  OverlayPrintEffects,
+  DataDownloadRegionEffects,
+  ElevationProfileEffects,
 ];
 
 export const metaReducers: MetaReducer<State>[] = [];

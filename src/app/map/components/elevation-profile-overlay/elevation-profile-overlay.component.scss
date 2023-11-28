@@ -1,0 +1,22 @@
+.elevation-profile-overlay {
+  .elevation-profile-overlay__content {
+    display: flex;
+    flex-direction: column;
+    row-gap: 8px;
+
+    .elevation-profile-overlay__content__credits {
+      display: flex;
+      column-gap: 4px;
+      font-size: xx-small;
+
+      a {
+        text-decoration: none;
+        color: inherit;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}

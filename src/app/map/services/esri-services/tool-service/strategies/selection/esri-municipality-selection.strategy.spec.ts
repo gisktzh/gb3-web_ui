@@ -5,10 +5,14 @@ import {EsriMunicipalitySelectionStrategy} from './esri-municipality-selection.s
 import {fakeAsync, flush, TestBed} from '@angular/core/testing';
 import {MatDialog, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
 import {of} from 'rxjs';
-import {DataDownloadSelectMunicipalityDialogComponent} from '../../../../../components/data-download-select-municipality-dialog/data-download-select-municipality-dialog.component';
-import {Municipality} from '../../../../../../shared/interfaces/geoshop-product.interface';
 import {SelectionCallbackHandler} from '../../interfaces/selection-callback-handler.interface';
 import {provideMockStore} from '@ngrx/store/testing';
+import {ConfigService} from '../../../../../../shared/services/config.service';
+import {Gb3GeoshopMunicipalitiesService} from '../../../../../../shared/services/apis/gb3/gb3-geoshop-municipalities.service';
+import {Municipality} from '../../../../../../shared/interfaces/gb3-geoshop-product.interface';
+import {DataDownloadSelectMunicipalityDialogComponent} from '../../../../../components/map-tools/data-download-select-municipality-dialog/data-download-select-municipality-dialog.component';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {MinimalGeometriesUtils} from '../../../../../../testing/map-testing/minimal-geometries.utils';
 
 describe('EsriMunicipalitySelectionStrategy', () => {
   let layer: GraphicsLayer;
@@ -18,10 +22,12 @@ describe('EsriMunicipalitySelectionStrategy', () => {
     abort: () => {},
   };
   let dialog: MatDialog;
+  let configService: ConfigService;
+  let geoshopMunicipalitiesService: Gb3GeoshopMunicipalitiesService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [MatDialogModule],
+      imports: [MatDialogModule, HttpClientTestingModule],
       providers: [provideMockStore({})],
     });
     layer = new GraphicsLayer({
@@ -29,13 +35,22 @@ describe('EsriMunicipalitySelectionStrategy', () => {
     });
     fillSymbol = new SimpleFillSymbol();
     dialog = TestBed.inject(MatDialog);
+    configService = TestBed.inject(ConfigService);
+    geoshopMunicipalitiesService = TestBed.inject(Gb3GeoshopMunicipalitiesService);
   });
 
   describe('cancellation', () => {
     it('does clear the layer and does not dispatch anything', () => {
       const completeCallbackHandlerSpy = spyOn(callbackHandler, 'complete');
       const dialogSpy = spyOn(dialog, 'open');
-      const strategy = new EsriMunicipalitySelectionStrategy(layer, fillSymbol, callbackHandler, dialog);
+      const strategy = new EsriMunicipalitySelectionStrategy(
+        layer,
+        fillSymbol,
+        callbackHandler,
+        dialog,
+        configService,
+        geoshopMunicipalitiesService,
+      );
       const layerRemoveAllSpy = spyOn(layer, 'removeAll');
 
       strategy.cancel();
@@ -47,14 +62,27 @@ describe('EsriMunicipalitySelectionStrategy', () => {
 
   describe('start', () => {
     it('dispatches a new selection', fakeAsync(async () => {
-      const expectedMunicipality: Municipality = {id: 'Loot', name: 'McGrabber'};
+      const expectedMunicipality: Municipality = {bfsNo: 1337, name: 'McGrabber'};
       const completeCallbackHandlerSpy = spyOn(callbackHandler, 'complete');
       const abortCallbackHandlerSpy = spyOn(callbackHandler, 'abort');
       const layerAddSpy = spyOn(layer, 'add');
       const dialogSpy = spyOn(dialog, 'open').and.returnValue({
         afterClosed: () => of(expectedMunicipality),
       } as MatDialogRef<typeof DataDownloadSelectMunicipalityDialogComponent, Municipality>);
-      const strategy = new EsriMunicipalitySelectionStrategy(layer, fillSymbol, callbackHandler, dialog);
+      const geoshopMunicipalitiesServiceSpy = spyOn(geoshopMunicipalitiesService, 'loadMunicipalityWithGeometry').and.returnValue(
+        of({
+          ...expectedMunicipality,
+          boundingBox: MinimalGeometriesUtils.getMinimalPolygon(2056),
+        }),
+      );
+      const strategy = new EsriMunicipalitySelectionStrategy(
+        layer,
+        fillSymbol,
+        callbackHandler,
+        dialog,
+        configService,
+        geoshopMunicipalitiesService,
+      );
 
       strategy.start();
       flush();
@@ -64,6 +92,7 @@ describe('EsriMunicipalitySelectionStrategy', () => {
       expect(completeCallbackHandlerSpy).toHaveBeenCalledWith(
         jasmine.objectContaining({type: 'select-municipality', municipality: expectedMunicipality}),
       );
+      expect(geoshopMunicipalitiesServiceSpy).toHaveBeenCalledWith(expectedMunicipality.bfsNo);
       expect(abortCallbackHandlerSpy).not.toHaveBeenCalled();
     }));
 
@@ -72,7 +101,14 @@ describe('EsriMunicipalitySelectionStrategy', () => {
       const abortCallbackHandlerSpy = spyOn(callbackHandler, 'abort');
       const dialogSpy = spyOn(dialog, 'open').and.callThrough();
       const layerAddSpy = spyOn(layer, 'add');
-      const strategy = new EsriMunicipalitySelectionStrategy(layer, fillSymbol, callbackHandler, dialog);
+      const strategy = new EsriMunicipalitySelectionStrategy(
+        layer,
+        fillSymbol,
+        callbackHandler,
+        dialog,
+        configService,
+        geoshopMunicipalitiesService,
+      );
       const layerRemoveAllSpy = spyOn(layer, 'removeAll');
 
       strategy.start();

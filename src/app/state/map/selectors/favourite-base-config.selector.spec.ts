@@ -1,5 +1,5 @@
-import {selectFavouriteBaseConfig} from './favourite-base-config.selector';
 import {MapConfigState} from '../states/map-config.state';
+import {selectFavouriteBaseConfig} from './favourite-base-config.selector';
 
 import {FavouriteBaseConfig} from '../../../shared/interfaces/favourite.interface';
 
@@ -11,6 +11,7 @@ describe('selectFavouriteBaseConfig', () => {
       center: {x: 42, y: 1337},
       activeBasemapId: 'testBaseMapId',
       scale: 9001,
+      rotation: 0,
       initialMaps: [],
       isMaxZoomedIn: true,
       isMaxZoomedOut: false,

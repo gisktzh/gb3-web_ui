@@ -1,6 +1,12 @@
-import {Products} from '../../../shared/interfaces/geoshop-product.interface';
-import {HasLoadingState} from '../../../shared/interfaces/has-loading-state.interface';
+import {Product} from '../../../shared/interfaces/gb3-geoshop-product.interface';
+import {LoadingState} from '../../../shared/types/loading-state.type';
+import {DataDownloadFilter} from '../../../shared/interfaces/data-download-filter.interface';
 
-export interface DataDownloadProductState extends HasLoadingState {
-  products: Products | undefined;
+export interface DataDownloadProductState {
+  products: Product[];
+  productsLoadingState: LoadingState;
+  relevantProductIds: string[];
+  relevantProductIdsLoadingState: LoadingState;
+  filterTerm: string | undefined;
+  filters: DataDownloadFilter[];
 }

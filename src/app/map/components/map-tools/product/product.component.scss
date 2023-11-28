@@ -1,0 +1,64 @@
+@use 'functions/helper.function' as functions;
+@use 'mixins/helpers.mixin' as mixins;
+@use 'mixins/material.mixin' as mat-mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+:host ::ng-deep .product {
+  .product__checkbox {
+    @include mat-mixins.mat-checkbox-override-accent-color(
+      functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent),
+      functions.get-contrast-color-from-palette(ktzh-variables.$zh-secondary-accent)
+    );
+  }
+
+  .product__select.mat-mdc-form-field .mat-mdc-text-field-wrapper {
+    border-radius: ktzh-variables.$zh-border-radius;
+    background-color: ktzh-variables.$zh-background-color;
+  }
+}
+
+.product {
+  height: 52px;
+  display: flex;
+  flex-direction: row;
+  padding: 12px 16px;
+  align-items: center;
+
+  .product__checkbox {
+    padding-right: 4px;
+
+    &--hidden {
+      visibility: hidden;
+    }
+  }
+
+  .product__description {
+    display: flex;
+    flex-direction: column;
+    margin-right: auto;
+
+    .product__description__header {
+      font-family: ktzh-variables.$zh-font-family-bold;
+      margin-bottom: 0;
+      @include mixins.multiline-ellipsis(1);
+    }
+
+    .product__description__content {
+      margin-bottom: 0;
+
+      .product__description__content__title {
+        color: ktzh-variables.$zh-black60;
+        padding-right: 4px;
+      }
+    }
+  }
+
+  .product__select {
+    min-width: 272px;
+
+    &.mat-mdc-form-field .mat-mdc-text-field-wrapper {
+      border-radius: 50% !important;
+      background: deeppink !important;
+    }
+  }
+}
