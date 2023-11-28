@@ -10,12 +10,15 @@
     </button>
   </mat-card-header>
   <div [ngClass]="{'map-data-catalogue__content--hidden': isMinimized}" class="map-data-catalogue__content">
-    <div *ngIf="screenMode !== 'mobile'" class="map-data-catalogue__content__filter">
-      <input #filterInput class="map-data-catalogue__content__filter__input" placeholder="Karten und Layer filtern" type="text" />
-      <span class="map-data-catalogue__content__filter__input-icon">
-        <mat-icon svgIcon="ktzh_search"></mat-icon>
-      </span>
-    </div>
+    <search
+      *ngIf="screenMode !== 'mobile'"
+      class="map-data-catalogue__content__filter"
+      (changeSearchTermEvent)="filterCatalog($event)"
+      (clearSearchTermEvent)="clearInput()"
+      [mode]="'compact'"
+      [showFilterButton]="false"
+      placeholderText="Karten und Layer filtern"
+    ></search>
     <loading-and-process-bar [loadingState]="catalogueLoadingState"></loading-and-process-bar>
     <mat-accordion
       *ngIf="catalogueLoadingState === 'loaded'"

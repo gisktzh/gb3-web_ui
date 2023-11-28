@@ -25,24 +25,17 @@
     </button>
   </div>
   <div class="map-management-mobile-header__tools">
-    <div
+    <search
       class="map-management-mobile-header__tools__filter"
       [ngClass]="{'map-management-mobile-header__tools__filter--hidden': activeTab !== 'mapsCatalogue'}"
-    >
-      <input
-        #filterInput
-        class="map-management-mobile-header__tools__filter__input"
-        placeholder="Karten und Layer filtern"
-        type="text"
-        (focus)="startFiltering()"
-      />
-      <span class="map-management-mobile-header__tools__filter__input-icon">
-        <mat-icon svgIcon="ktzh_search"></mat-icon>
-      </span>
-      <button mat-button (click)="clearInput()" class="map-management-mobile-header__tools__filter__input-close-button">
-        <mat-icon>cancel</mat-icon>
-      </button>
-    </div>
+      [mode]="'mobile'"
+      [showFilterButton]="false"
+      [alwaysEnableClearButton]="true"
+      placeholderText="Karten und Layer filtern"
+      (focusEvent)="startFiltering()"
+      (changeSearchTermEvent)="filterCatalog($event)"
+      (clearSearchTermEvent)="clearInput()"
+    ></search>
     <div
       class="map-management-mobile-header__tools__buttons"
       [ngClass]="{'map-management-mobile-header__tools__buttons--hidden': activeTab !== 'activeMaps'}"
