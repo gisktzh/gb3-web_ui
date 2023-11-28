@@ -5,7 +5,7 @@ import {Observable, of, switchMap} from 'rxjs';
 import {DataDownloadSelection} from '../../../../../../shared/interfaces/data-download-selection.interface';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
-import {AbstractEsriSelectionStrategy} from './abstract-esri-selection.strategy';
+import {AbstractEsriSelectionStrategy} from '../abstract-esri-selection.strategy';
 import {SelectionCallbackHandler} from '../../interfaces/selection-callback-handler.interface';
 import {UnstyledInternalDrawingRepresentation} from '../../../../../../shared/interfaces/internal-drawing-representation.interface';
 import {InternalDrawingLayer} from '../../../../../../shared/enums/drawing-layer.enum';

@@ -29,4 +29,14 @@
   >
     <mat-icon svgIcon="ktzh_drawing_symbol_polygon"></mat-icon>
   </button>
+  <button
+    (click)="this.toggleElevationProfileMeasurement()"
+    [ngClass]="{'measurement-tools__button--active': activeTool === 'measure-elevation-profile'}"
+    class="measurement-tools__button"
+    color="accent"
+    mat-icon-button
+    matTooltip="Höhenprofil: Mit Doppelklick beenden, um das Profil zu laden."
+  >
+    <mat-icon svgIcon="ktzh_drawing_symbol_elevation"></mat-icon>
+  </button>
 </div>

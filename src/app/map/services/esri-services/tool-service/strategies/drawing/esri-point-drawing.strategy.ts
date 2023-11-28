@@ -1,5 +1,5 @@
 import {SupportedEsriTool} from '../abstract-esri-drawable-tool.strategy';
-import {AbstractEsriDrawingStrategy} from './abstract-esri-drawing.strategy';
+import {AbstractEsriDrawingStrategy} from '../abstract-esri-drawing.strategy';
 import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
 
 export class EsriPointDrawingStrategy extends AbstractEsriDrawingStrategy {

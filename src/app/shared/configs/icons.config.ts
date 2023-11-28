@@ -171,6 +171,10 @@ const drawingSymbolIconsConfig = [
     id: 'ktzh_drawing_symbol_circle',
     path: 'assets/icons/drawing-symbols/circle.svg',
   },
+  {
+    id: 'ktzh_drawing_symbol_elevation',
+    path: 'assets/icons/drawing-symbols/elevation.svg',
+  },
 ];
 
 const selectingSymbolIconsConfig = [

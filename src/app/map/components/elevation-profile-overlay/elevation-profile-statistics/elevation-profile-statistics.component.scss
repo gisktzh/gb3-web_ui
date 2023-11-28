@@ -1,0 +1,11 @@
+.elevation-profile-statistics {
+  display: flex;
+  flex-flow: column;
+  row-gap: 8px;
+
+  .elevation-profile-statistics__item {
+    display: flex;
+    flex-flow: row;
+    gap: 8px;
+  }
+}

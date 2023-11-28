@@ -6,6 +6,7 @@ export const urlFeatureKey = 'url';
 
 export const initialState: UrlState = {
   mainPage: undefined,
+  previousPage: undefined,
   isHeadlessPage: false,
   isSimplifiedPage: false,
 };
@@ -15,7 +16,7 @@ export const urlFeature = createFeature({
   reducer: createReducer(
     initialState,
     on(UrlActions.setPage, (state, {mainPage, isHeadlessPage, isSimplifiedPage}): UrlState => {
-      return {...state, mainPage, isHeadlessPage, isSimplifiedPage};
+      return {...state, previousPage: state.mainPage, mainPage, isHeadlessPage, isSimplifiedPage};
     }),
   ),
 });
