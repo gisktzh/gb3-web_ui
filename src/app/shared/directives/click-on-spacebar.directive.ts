@@ -1,14 +1,15 @@
-import {Directive, HostListener} from '@angular/core';
-import {MatIconAnchor} from '@angular/material/button';
+import {Directive, ElementRef, HostListener} from '@angular/core';
 
 @Directive({
   selector: '[clickOnSpaceBar]',
 })
 export class ClickOnSpaceBarDirective {
-  constructor(private elementRef: MatIconAnchor) {}
+  constructor(private elementRef: ElementRef) {}
 
   @HostListener('keydown.space', ['$event'])
-  public clickOnSpaceBar(): void {
-    this.elementRef._elementRef.nativeElement.click();
+  public clickOnSpaceBar(event: KeyboardEvent): void {
+    console.log('In directive');
+    event.preventDefault();
+    this.elementRef.nativeElement.click();
   }
 }
