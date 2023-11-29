@@ -18,6 +18,10 @@
 .expandable-list-item {
   padding: 6px 0;
 
+  &--no-padding {
+    padding: 0;
+  }
+
   .expandable-list-item__header {
     height: auto;
     padding: 0;

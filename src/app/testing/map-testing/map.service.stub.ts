@@ -20,6 +20,7 @@ export class MapServiceStub implements MapService {
     initializeMeasurement(measurementTool: MeasurementTool) {},
     addExistingDrawingsToLayer(drawingsToAdd: Gb3StyledInternalDrawingRepresentation[], layerIdentifier: UserDrawingLayer) {},
     cancelTool() {},
+    initializeElevationProfileMeasurement() {},
   };
 
   addGeometryToDrawingLayer(geometry: GeometryWithSrs, drawingLayer: InternalDrawingLayer): void {}

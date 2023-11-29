@@ -1,12 +1,13 @@
 /* z-indices
 ========================== */
 $navbar: 400; // should always stay on top, only adjust if you know what you're doing
-$print-overlay: 200;
 $map-overlay: 100;
+$map-attribute-filter: 2;
 $basemap-selector: 2;
 $active-map-item-connection-line: 1;
 $feature-info-content-table-header: 1;
 $search-window-results: 3;
 $cdk-drag-handle: 1;
 $collapsing-flexbox-list-item-hover: 1;
+$data-download-order-queue: 1;
 $scrollbar-width-calculation-container: 0;

@@ -8,6 +8,7 @@
       [placeholder]="placeholderText"
       type="text"
       (focus)="focusEvent.emit()"
+      [disabled]="disabled"
     />
     <ng-container *ngIf="showFilterButton && (mode === 'compact' || mode === 'mobile')">
       <button
@@ -15,6 +16,7 @@
         (click)="openFilter()"
         [ngClass]="{'search__bar__filter-button--active': isAnyFilterActive}"
         matTooltip="Suchresultate verfeinern"
+        [disabled]="disabled"
       >
         <mat-icon svgIcon="ktzh_filter"></mat-icon>
       </button>
@@ -26,7 +28,7 @@
         mat-button
         (click)="clearInput()"
         class="search__bar__close-button"
-        [disabled]="!alwaysEnableClearButton && searchInput.value.length === 0"
+        [disabled]="(!alwaysEnableClearButton && searchInput.value.length === 0) || disabled"
       >
         {{ clearButtonLabel }}
         <mat-icon>close</mat-icon>
@@ -36,7 +38,7 @@
           mat-icon-button
           (click)="clearInput()"
           class="search__bar__close-icon-button"
-          [disabled]="!alwaysEnableClearButton && searchInput.value.length === 0"
+          [disabled]="(!alwaysEnableClearButton && searchInput.value.length === 0) || disabled"
         >
           <mat-icon *ngIf="screenMode === 'mobile'; else close">cancel</mat-icon>
           <ng-template #close><mat-icon>close</mat-icon></ng-template>
@@ -50,6 +52,7 @@
     *ngIf="showFilterButton && mode === 'normal'"
     (click)="openFilter()"
     [ngClass]="{'search__filter-button--active': isAnyFilterActive}"
+    [disabled]="disabled"
   >
     Filter
   </button>

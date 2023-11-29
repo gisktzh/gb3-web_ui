@@ -1,4 +1,11 @@
-<mat-expansion-panel #itemExpansionPanel [expanded]="expanded" class="expandable-list-item" [disabled]="disabled" hideToggle="true">
+<mat-expansion-panel
+  #itemExpansionPanel
+  [expanded]="expanded"
+  class="expandable-list-item"
+  [disabled]="disabled"
+  hideToggle="true"
+  [ngClass]="{'expandable-list-item--no-padding': noPadding}"
+>
   <mat-expansion-panel-header class="expandable-list-item__header">
     <expandable-list-item-header
       [filterString]="filterString"

@@ -1,0 +1,21 @@
+<h1 mat-dialog-title>Filter</h1>
+<div mat-dialog-content class="data-download-filter-dialog">
+  <cdk-accordion>
+    <accordion-item *ngFor="let filter of dataDownloadFilters; trackBy: trackByFilterLabel" [header]="filter.label" variant="dark">
+      <div class="data-download-filter-dialog__wrapper">
+        <mat-checkbox
+          class="data-download-filter-dialog__wrapper__checkbox"
+          (change)="toggleFilter(filter.category, filterValue.value)"
+          *ngFor="let filterValue of filter.filterValues"
+          [checked]="filterValue.isActive"
+        >
+          {{ filterValue.value }}
+        </mat-checkbox>
+      </div>
+    </accordion-item>
+  </cdk-accordion>
+</div>
+<div mat-dialog-actions>
+  <button (click)="resetFilters()" mat-button>Zurücksetzen</button>
+  <button (click)="close()" mat-button>Schliessen</button>
+</div>

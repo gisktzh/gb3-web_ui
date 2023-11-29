@@ -3,10 +3,6 @@
 @use 'mixins/material.mixin' as mat-mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
-:host ::ng-deep .map-data-catalogue__content__items__item {
-  @include mat-mixins.mat-expansion-panel-remove-content-indent;
-}
-
 .map-data-catalogue {
   width: 100%;
 
@@ -52,36 +48,8 @@
     }
 
     .map-data-catalogue__content__filter {
-      display: flex;
-      padding: 24px 24px 18px 24px;
-
-      .map-data-catalogue__content__filter__input {
-        width: 100%;
-        height: 40px;
-        padding: 0 5px 0 45px;
-        border: 3px solid grey;
-        outline: none;
-        display: block;
-        font-family: ktzh-variables.$zh-font-family;
-      }
-
-      .map-data-catalogue__content__filter__input:focus {
-        border: 3px solid ktzh-variables.$zh-cyan;
-
-        & + .map-data-catalogue__content__filter__input-icon {
-          color: black;
-        }
-      }
-
-      .map-data-catalogue__content__filter__input-icon {
-        margin: 14px 5px 5px 16px;
-        position: absolute;
-        color: grey;
-        display: flex;
-        align-items: center;
-
-        @include mat-mixins.mat-icon-custom-svg-size(18px);
-      }
+      margin: 18px 30px 12px 18px;
+      height: 52px;
     }
 
     .map-data-catalogue__content__items {

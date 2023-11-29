@@ -83,57 +83,15 @@
     justify-content: center;
     padding-top: 10px;
     width: 100vw;
-    left: 0px;
 
     .map-management-mobile-header__tools__filter {
       @include mixins.map-element-box-shadow;
-      display: flex;
       width: calc(100vw - 24px);
+      background-color: ktzh-variables.$zh-background-color;
+      height: 46px;
 
       &--hidden {
         display: none;
-      }
-
-      .map-management-mobile-header__tools__filter__input {
-        width: 100%;
-        height: 40px;
-        padding: 0 5px 0 45px;
-        border: 3px solid grey;
-        outline: none;
-        display: block;
-        font-family: ktzh-variables.$zh-font-family;
-        border-radius: ktzh-variables.$zh-border-radius;
-
-        &:focus-within {
-          font-size: 16px;
-        }
-      }
-
-      .map-management-mobile-header__tools__filter__input:focus {
-        border: 3px solid ktzh-variables.$zh-cyan;
-
-        & + .map-data-catalogue__content__filter__input-icon {
-          color: black;
-        }
-      }
-
-      .map-management-mobile-header__tools__filter__input-icon {
-        margin: 14px 5px 5px 16px;
-        position: absolute;
-        color: grey;
-        display: flex;
-        align-items: center;
-
-        @include mat-mixins.mat-icon-custom-svg-size(18px);
-      }
-
-      .map-management-mobile-header__tools__filter__input-close-button {
-        position: absolute;
-        right: 0px;
-        margin: 6px 5px 5px 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
       }
     }
 

@@ -1,7 +1,7 @@
 import {DOCUMENT} from '@angular/common';
 import {Inject, Injectable} from '@angular/core';
 import {defaultBasemap, defaultBasemaps} from '../configs/base-map.config';
-import {dataCatalogueFilterConfig} from '../configs/filter.config';
+import {dataCatalogueFilterConfig, dataDownloadFilterConfig} from '../configs/filter.config';
 import {mapAnimationConfig} from '../configs/map-animation.config';
 import {defaultMapConfig} from '../configs/map.config';
 import {printConfig} from '../configs/print.config';
@@ -14,7 +14,6 @@ import {EmbeddedMapConstants} from '../constants/embedded-map.constants';
 import {Gb2Constants} from '../constants/gb2.constants';
 import {MapConstants} from '../constants/map.constants';
 import {HostNameResolutionMismatch} from '../errors/app.errors';
-import {DataCatalogueFilterConfiguration} from '../interfaces/data-catalogue-filter.interface';
 import {MapAnimationConfig} from '../interfaces/map-animation-config.interface';
 import {PrintConfig} from '../interfaces/print-config.interface';
 import {ApiConfig, AuthSettings, OverrideSettings, RuntimeConfig} from '../interfaces/runtime-config.interface';
@@ -22,6 +21,9 @@ import {SearchConfig} from '../interfaces/search-config.interface';
 import {SearchIndex} from './apis/search/interfaces/search-index.interface';
 import {pageConfig} from '../configs/page.config';
 import {PageConfig} from '../interfaces/page-config.interface';
+import {FilterConfigs} from '../interfaces/filter-config.interface';
+import {DataDownloadConfig} from '../interfaces/data-download-config.interface';
+import {dataDownloadConfig} from '../configs/data-download.config';
 
 @Injectable({
   providedIn: 'root',
@@ -59,9 +61,10 @@ export class ConfigService {
     mapToolsAndControls: toolTipMapToolsAndControls,
   };
 
-  public get filterConfig(): {dataCatalogue: DataCatalogueFilterConfiguration[]} {
+  public get filterConfigs(): FilterConfigs {
     return {
       dataCatalogue: dataCatalogueFilterConfig,
+      dataDownload: dataDownloadFilterConfig,
     };
   }
   public get searchConfig(): SearchConfig {
@@ -81,6 +84,10 @@ export class ConfigService {
 
   public get pageConfig(): PageConfig {
     return pageConfig;
+  }
+
+  public get dataDownloadConfig(): DataDownloadConfig {
+    return dataDownloadConfig;
   }
 
   constructor(@Inject(DOCUMENT) private readonly document: Document) {

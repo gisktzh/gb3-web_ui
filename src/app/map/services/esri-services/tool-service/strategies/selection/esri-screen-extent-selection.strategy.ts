@@ -4,7 +4,7 @@ import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import {UnstyledInternalDrawingRepresentation} from '../../../../../../shared/interfaces/internal-drawing-representation.interface';
 import Extent from '@arcgis/core/geometry/Extent';
-import {AbstractEsriSelectionStrategy} from './abstract-esri-selection.strategy';
+import {AbstractEsriSelectionStrategy} from '../abstract-esri-selection.strategy';
 import {Observable, of} from 'rxjs';
 import {SelectionCallbackHandler} from '../../interfaces/selection-callback-handler.interface';
 
