@@ -13,7 +13,13 @@
         </p>
       </div>
     </div>
-    <a [routerLink]="['/', mainPageEnum.Support, supportPageEnum.Faq]" color="primary" data-test-id="open-faq" mat-icon-button>
+    <a
+      [routerLink]="['/', mainPageEnum.Support, supportPageEnum.Faq]"
+      color="primary"
+      data-test-id="open-faq"
+      mat-icon-button
+      clickOnSpaceBar
+    >
       <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
     </a>
   </div>

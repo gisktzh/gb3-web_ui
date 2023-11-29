@@ -9,7 +9,6 @@
     ></external-link-button>
     <ng-template #openMap>
       <a
-        #link
         [queryParams]="{initialMapIds: map.id}"
         [routerLink]="['/', mainPageEnum.Maps]"
         clickOnSpaceBar
