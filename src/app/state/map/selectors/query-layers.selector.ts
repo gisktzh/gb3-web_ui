@@ -24,6 +24,7 @@ export const selectQueryLayers = createSelector(selectItems, selectScale, (activ
       return {
         topic: mapItem.settings.mapId,
         layersToQuery: layersToQuery.join(','),
+        isSingleLayer: mapItem.isSingleLayer,
       };
     });
 
