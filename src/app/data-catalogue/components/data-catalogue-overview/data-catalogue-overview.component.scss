@@ -2,6 +2,7 @@
 @use 'mixins/helpers.mixin' as mixins;
 
 $search-height: 106px;
+$search-height-compact: 64px;
 
 .data-catalogue-overview__search {
   display: flex;
@@ -9,11 +10,20 @@ $search-height: 106px;
   align-items: center;
   margin-top: calc(0px - $search-height / 2);
 
+  &--mobile {
+    margin-top: calc(0px - $search-height-compact / 2);
+  }
+
   .data-catalogue-overview__search__bar {
     @include mixins.map-element-box-shadow;
     width: ktzh-variables.$zh-layout-max-content-width;
     height: $search-height;
     background-color: ktzh-variables.$zh-background-color;
+
+    &--mobile {
+      height: $search-height-compact;
+      width: calc(100vw - 24px);
+    }
   }
 }
 

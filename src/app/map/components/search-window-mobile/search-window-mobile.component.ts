@@ -8,8 +8,7 @@ import {ConfigService} from 'src/app/shared/services/config.service';
 import {SearchActions} from 'src/app/state/app/actions/search.actions';
 import {initialState, selectSearchState} from 'src/app/state/app/reducers/search.reducer';
 import {SearchState} from 'src/app/state/app/states/search.state';
-
-const FILTER_DIALOG_WIDTH_IN_PX = 90;
+import {selectIsAnySearchFilterActiveSelector} from '../../../state/app/selectors/is-any-search-filter-active.selector';
 
 @Component({
   selector: 'search-window-mobile',
@@ -19,9 +18,11 @@ const FILTER_DIALOG_WIDTH_IN_PX = 90;
 export class SearchWindowMobileComponent implements OnInit, OnDestroy {
   @Input() focusOnInit: boolean = true;
   public searchState: SearchState = initialState;
+  public isAnySearchFilterActive: boolean = false;
 
   private readonly searchConfig = this.configService.searchConfig.mapPage;
   private readonly searchState$ = this.store.select(selectSearchState);
+  private readonly isAnySearchFilterActive$ = this.store.select(selectIsAnySearchFilterActiveSelector);
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(
@@ -51,11 +52,11 @@ export class SearchWindowMobileComponent implements OnInit, OnDestroy {
     this.dialogService.open<SearchFilterDialogComponent>(SearchFilterDialogComponent, {
       panelClass: PanelClass.ApiWrapperDialog,
       restoreFocus: false,
-      width: `${FILTER_DIALOG_WIDTH_IN_PX}vw`,
     });
   }
 
   private initSubscriptions() {
     this.subscriptions.add(this.searchState$.pipe(tap((searchState) => (this.searchState = searchState))).subscribe());
+    this.subscriptions.add(this.isAnySearchFilterActive$.pipe(tap((value) => (this.isAnySearchFilterActive = value))).subscribe());
   }
 }

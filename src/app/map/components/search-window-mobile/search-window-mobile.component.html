@@ -7,6 +7,7 @@
       (changeSearchTermEvent)="searchForTerm($event)"
       (clearSearchTermEvent)="clearSearchTerm()"
       (openFilterEvent)="openFilterMenu()"
+      [isAnyFilterActive]="isAnySearchFilterActive"
     ></search>
   </div>
   <div class="search-window-mobile__results-container">

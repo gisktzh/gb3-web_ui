@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import {Injectable} from '@angular/core';
 import {BaseApiService} from '../../abstract-api.service';
 import {Observable} from 'rxjs';
@@ -16,7 +17,8 @@ import {
   GeometryDataDownloadSelection,
   MunicipalityDataDownloadSelection,
 } from '../../../../interfaces/data-download-selection.interface';
-import {Polygon} from 'geojson';
+import {Product} from '../../../../interfaces/gb3-geoshop-product.interface';
+import {OrderUnsupportedGeometry} from '../../../../errors/data-download.errors';
 
 @Injectable({
   providedIn: 'root',
@@ -26,7 +28,7 @@ export class GeoshopApiService extends BaseApiService {
 
   public sendOrder(order: Order): Observable<OrderResponse> {
     const orderData = this.mapOrderToApiOrder(order);
-    return this.post<ApiOrder, ApiOrderResponse>(this.getFullEndpointUrl('order'), orderData).pipe(
+    return this.post<ApiOrder, ApiOrderResponse>(this.getFullEndpointUrl('orders'), orderData).pipe(
       map((data) => this.mapApiOrderResponseToOrderResponse(data)),
     );
   }
@@ -54,13 +56,29 @@ export class GeoshopApiService extends BaseApiService {
     }
   }
 
+  public createOrderTitle(order: Order, products: Product[]): string {
+    const uniqueProducts = new Set(
+      order.products
+        .map((orderProduct) => products.find((product) => product.gisZHNr === orderProduct.id)?.name)
+        .filter((productName): productName is string => !!productName),
+    );
+    return Array.from(uniqueProducts).join(',');
+  }
+
+  public createOrderDownloadUrl(orderId: string): string {
+    return `${this.getFullOrderUrl('orders', orderId)}/download`;
+  }
+
   private createDirectOrderFromSelection(selection: GeometryDataDownloadSelection): Order {
+    if (selection.drawingRepresentation.geometry.srs !== 2056 || selection.drawingRepresentation.geometry.type !== 'Polygon') {
+      throw new OrderUnsupportedGeometry();
+    }
+
     return {
       perimeterType: 'direct',
       products: [],
-      email: '',
-      srs: 'lv95', // TODO GB3-651: Don't use a fixed SRS
-      geometry: selection.drawingRepresentation.geometry as Polygon, // TODO GB3-651: Don't simply cast it to polygon - find a better solution
+      srs: this.configService.dataDownloadConfig.defaultOrderSrs,
+      geometry: selection.drawingRepresentation.geometry,
     };
   }
 
@@ -68,7 +86,6 @@ export class GeoshopApiService extends BaseApiService {
     return {
       perimeterType: 'indirect',
       products: [],
-      email: '',
       identifiers: [selection.municipality.bfsNo.toString()],
       layerName: 'commune',
     };
@@ -164,7 +181,7 @@ export class GeoshopApiService extends BaseApiService {
    */
   private parseStatus(apiStatus: string): OrderStatusContent {
     const splitStatus = apiStatus.split(':');
-    const statusString = splitStatus[0].trim();
+    const statusString = splitStatus[0].trim().toLowerCase();
     const message = splitStatus.length === 2 ? splitStatus[1].trim() : undefined;
     const type: OrderStatusType = orderStatusKeys.find((statusKey) => statusKey === statusString) ?? 'unknown';
     return {type, message};

@@ -5,6 +5,8 @@ import {selectFilterGroups} from '../../../state/app/reducers/search.reducer';
 import {SearchActions} from '../../../state/app/actions/search.actions';
 import {MatDialogRef} from '@angular/material/dialog';
 import {SearchFilter, SearchFilterGroup} from '../../interfaces/search-filter-group.interface';
+import {selectScreenMode} from '../../../state/app/reducers/app-layout.reducer';
+import {ScreenMode} from '../../types/screen-size.type';
 
 @Component({
   selector: 'search-filter-dialog',
@@ -13,8 +15,10 @@ import {SearchFilter, SearchFilterGroup} from '../../interfaces/search-filter-gr
 })
 export class SearchFilterDialogComponent implements OnInit, OnDestroy {
   public nonEmptyFilterGroups: SearchFilterGroup[] = [];
+  public screenMode: ScreenMode = 'regular';
 
   private readonly filterGroups$ = this.store.select(selectFilterGroups);
+  private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly subscriptions: Subscription = new Subscription();
 
   public constructor(
@@ -56,5 +60,6 @@ export class SearchFilterDialogComponent implements OnInit, OnDestroy {
         .pipe(tap((filterGroups) => (this.nonEmptyFilterGroups = filterGroups.filter((group) => group.filters.length > 0))))
         .subscribe(),
     );
+    this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
   }
 }

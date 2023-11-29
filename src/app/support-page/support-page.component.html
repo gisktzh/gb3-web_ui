@@ -1,6 +1,12 @@
-<start-page-section [background]="'primary'" [pageTitle]="true">
-  <hero-header [heroText]="screenMode === 'mobile' ? '' : heroText" heroTitle="Hilfe & Support"> </hero-header>
-</start-page-section>
-<start-page-section sectionTitle="FAQ"><faq></faq></start-page-section>
-<start-page-section sectionTitle="Supportanfrage"> <contact></contact> </start-page-section>
-<start-page-section sectionTitle="Weiterführende Informationen"> <useful-links></useful-links> </start-page-section>
+<page-section [background]="'primary'" [pageTitle]="true">
+  <hero-header [heroText]="screenMode === 'mobile' ? '' : heroText" heroTitle="Hilfe & Support"></hero-header>
+</page-section>
+<page-section sectionTitle="FAQ">
+  <faq></faq>
+</page-section>
+<page-section sectionTitle="Supportanfrage">
+  <contact></contact>
+</page-section>
+<page-section sectionTitle="Weiterführende Informationen">
+  <useful-links></useful-links>
+</page-section>

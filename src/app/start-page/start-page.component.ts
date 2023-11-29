@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Observable, Subscription, tap} from 'rxjs';
-import {TitleLink} from '../shared/components/start-page-section/start-page-section.component';
+import {TitleLink} from '../shared/components/page-section/page-section.component';
 import {LinksGroup} from '../shared/interfaces/links-group.interface';
 import {ScreenMode} from '../shared/types/screen-size.type';
 import {selectScreenMode} from '../state/app/reducers/app-layout.reducer';

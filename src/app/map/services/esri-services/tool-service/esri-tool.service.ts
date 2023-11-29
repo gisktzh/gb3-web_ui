@@ -50,6 +50,8 @@ import Polygon from '@arcgis/core/geometry/Polygon';
 import {EsriTextDrawingStrategy} from './strategies/drawing/esri-text-drawing.strategy';
 import {Gb3GeoshopMunicipalitiesService} from '../../../../shared/services/apis/gb3/gb3-geoshop-municipalities.service';
 import {selectCanton} from '../../../../state/map/reducers/data-download-region.reducer';
+import {EsriElevationProfileMeasurementStrategy} from './strategies/measurement/esri-elevation-profile-measurement.strategy';
+import {ElevationProfileActions} from '../../../../state/map/actions/elevation-profile.actions';
 
 const HANDLE_GROUP_KEY = 'EsriToolService';
 
@@ -99,8 +101,14 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
     this.initializeUserDrawingTool(UserDrawingLayer.Drawings, (layer) => this.setDrawingStrategy(drawingTool, layer));
   }
 
-  public initializeMeasurement(measurementTool: MeasurementTool) {
+  public initializeMeasurement(measurementTool: Exclude<MeasurementTool, 'measure-elevation-profile'>) {
     this.initializeUserDrawingTool(UserDrawingLayer.Measurements, (layer) => this.setMeasurementStrategy(measurementTool, layer));
+  }
+
+  public initializeElevationProfileMeasurement() {
+    this.initializeInternalDrawingTool(InternalDrawingLayer.ElevationProfile, (layer) =>
+      this.setMeasurementStrategy('measure-elevation-profile', layer),
+    );
   }
 
   public initializeDataDownloadSelection(selectionTool: DataDownloadSelectionTool) {
@@ -281,6 +289,13 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
           labelStyle,
           (geometry, labelText) => this.complete(geometry, labelText),
         );
+        break;
+      case 'measure-elevation-profile':
+        this.toolStrategy = new EsriElevationProfileMeasurementStrategy(layer, this.esriMapViewService.mapView, lineStyle, (geometry) => {
+          this.store.dispatch(ElevationProfileActions.loadProfile({geometry: silentArcgisToGeoJSON(geometry.geometry)}));
+          this.endDrawing();
+        });
+        break;
     }
   }
 

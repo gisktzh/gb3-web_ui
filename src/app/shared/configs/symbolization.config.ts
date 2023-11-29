@@ -67,6 +67,7 @@ const defaultSymbolization: SymbolizationStyle = {
 };
 
 export const layerSymbolizations: LayerSymbolizations = {
+  [InternalDrawingLayer.ElevationProfile]: defaultSymbolization,
   [InternalDrawingLayer.LocatePosition]: {
     text: defaultSymbolization.text,
     point: {

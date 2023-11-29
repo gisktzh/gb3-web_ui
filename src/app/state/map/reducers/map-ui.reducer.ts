@@ -8,6 +8,7 @@ export const initialState: MapUiState = {
   mapSideDrawerContent: 'none',
   isLegendOverlayVisible: false,
   isFeatureInfoOverlayVisible: false,
+  isElevationProfileOverlayVisible: false,
   hideUiElements: false,
   hideToggleUiElementsButton: false,
   hideZoomButtons: false,
@@ -23,6 +24,12 @@ export const mapUiFeature = createFeature({
       return {
         ...state,
         toolMenuVisibility: tool,
+      };
+    }),
+    on(MapUiActions.setElevationProfileOverlayVisibility, (state, {isVisible}): MapUiState => {
+      return {
+        ...state,
+        isElevationProfileOverlayVisible: isVisible,
       };
     }),
     on(MapUiActions.setLegendOverlayVisibility, (state, {isVisible}): MapUiState => {
@@ -42,7 +49,6 @@ export const mapUiFeature = createFeature({
     on(MapUiActions.changeUiElementsVisibility, (state, {hideAllUiElements, hideUiToggleButton}): MapUiState => {
       return {
         ...state, // todo: what needs to be done here for toolmenu?
-        mapSideDrawerContent: state.mapSideDrawerContent,
         hideUiElements: hideAllUiElements,
         hideToggleUiElementsButton: hideUiToggleButton,
         hideZoomButtons: hideAllUiElements,
@@ -85,9 +91,11 @@ export const {
   reducer,
   selectMapUiState,
   selectToolMenuVisibility,
+  selectIsElevationProfileOverlayVisible,
   selectIsLegendOverlayVisible,
   selectIsFeatureInfoOverlayVisible,
   selectBottomSheetContent,
   selectHideUiElements,
   selectHideToggleUiElementsButton,
+  selectMapSideDrawerContent,
 } = mapUiFeature;

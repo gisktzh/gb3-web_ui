@@ -1,5 +1,5 @@
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
-import {AbstractEsriMeasurementStrategy, LabelConfiguration} from './abstract-esri-measurement.strategy';
+import {AbstractEsriMeasurementStrategy, LabelConfiguration} from '../abstract-esri-measurement.strategy';
 import Point from '@arcgis/core/geometry/Point';
 import {NumberUtils} from '../../../../../../shared/utils/number.utils';
 import {SupportedEsriTool} from '../abstract-esri-drawable-tool.strategy';

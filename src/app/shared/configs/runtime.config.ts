@@ -42,6 +42,9 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       ownershipInformationApi: {
         baseUrl: 'https://portal.objektwesen.zh.ch/aks/detail',
       },
+      swisstopoRestApi: {
+        baseUrl: 'https://api3.geo.admin.ch/rest/services',
+      },
     },
     authSettings: {
       clientId: 'gb3',

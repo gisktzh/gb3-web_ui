@@ -21,6 +21,9 @@ export class ToolEffects {
             case 'measure-area':
               this.toolService.initializeMeasurement(tool);
               break;
+            case 'measure-elevation-profile':
+              this.toolService.initializeElevationProfileMeasurement();
+              break;
             case 'draw-point':
             case 'draw-line':
             case 'draw-polygon':

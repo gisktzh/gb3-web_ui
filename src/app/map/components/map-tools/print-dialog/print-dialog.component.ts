@@ -72,7 +72,6 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
-    this.store.dispatch(PrintActions.removePrintPreview());
   }
 
   public ngOnInit() {

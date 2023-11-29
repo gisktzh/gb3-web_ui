@@ -9,7 +9,7 @@ import {DescriptiveHighlightedLinkComponent} from './components/descriptive-high
 import {ExpandableListItemHeaderComponent} from './components/expandable-list-item/expandable-list-item-header/expandable-list-item-header.component';
 import {ExpandableListItemComponent} from './components/expandable-list-item/expandable-list-item.component';
 import {MainFooterComponent} from './components/footer/main-footer.component';
-import {Gb2ExitButtonComponent} from './components/gb2-exit-button/gb2-exit-button.component';
+import {ExternalLinkButtonComponent} from './components/external-link-button/external-link-button.component';
 import {HeroHeaderComponent} from './components/hero-header/hero-header.component';
 import {LinkListItemComponent} from './components/link-list/link-list-item/link-list-item.component';
 import {LinkListComponent} from './components/link-list/link-list.component';
@@ -23,7 +23,7 @@ import {ScrollbarWidthCalculationComponent} from './components/scrollbar-width-c
 import {SearchFilterDialogComponent} from './components/search-filter-dialog/search-filter-dialog.component';
 import {SearchComponent} from './components/search/search.component';
 import {SliderWrapperComponent} from './components/slider-wrapper/slider-wrapper.component';
-import {StartPageSectionComponent} from './components/start-page-section/start-page-section.component';
+import {PageSectionComponent} from './components/page-section/page-section.component';
 import {WaitingPageComponent} from './components/waiting-page/waiting-page.component';
 import {DragCursorDirective} from './directives/drag-cursor.directive';
 import {ShowTooltipIfTruncatedDirective} from './directives/show-tooltip-if-truncated.directive';
@@ -52,7 +52,7 @@ import {LayerTooltipPipe} from './pipes/layer-tooltip.pipe';
     LayerTooltipPipe,
     DescriptiveHighlightedLinkComponent,
     HeroHeaderComponent,
-    StartPageSectionComponent,
+    PageSectionComponent,
     ContactDetailsComponent,
     ContactDetailComponent,
     WaitingPageComponent,
@@ -62,7 +62,7 @@ import {LayerTooltipPipe} from './pipes/layer-tooltip.pipe';
     AccordionItemComponent,
     SearchComponent,
     SearchFilterDialogComponent,
-    Gb2ExitButtonComponent,
+    ExternalLinkButtonComponent,
     NavbarMobileComponent,
     NavbarMobileDialogComponent,
     ExpandableListItemComponent,
@@ -88,7 +88,7 @@ import {LayerTooltipPipe} from './pipes/layer-tooltip.pipe';
     LayerTooltipPipe,
     DescriptiveHighlightedLinkComponent,
     HeroHeaderComponent,
-    StartPageSectionComponent,
+    PageSectionComponent,
     ContactDetailsComponent,
     WaitingPageComponent,
     SliderWrapperComponent,
@@ -97,7 +97,7 @@ import {LayerTooltipPipe} from './pipes/layer-tooltip.pipe';
     AccordionItemComponent,
     SearchComponent,
     SearchFilterDialogComponent,
-    Gb2ExitButtonComponent,
+    ExternalLinkButtonComponent,
     NavbarMobileComponent,
     ExpandableListItemComponent,
     ShowTooltipIfTruncatedDirective,
