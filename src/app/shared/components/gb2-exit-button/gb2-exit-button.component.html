@@ -1,4 +1,5 @@
 <a
+  #link
   [href]="url"
   class="gb2-exit-button"
   [ngClass]="{'gb2-exit-button--small': size === 'small', 'gb2-exit-button--highlighted': highlighted}"
@@ -8,6 +9,7 @@
   [matTooltipShowDelay]="0"
   rel="noopener noreferrer"
   target="_blank"
+  (keydown.space)="clickOnSpaceBar(link)"
 >
   <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
 </a>

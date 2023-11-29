@@ -1,4 +1,5 @@
 import {Component, Input} from '@angular/core';
+import {MatIconAnchor} from '@angular/material/button';
 
 @Component({
   selector: 'gb2-exit-button',
@@ -10,4 +11,8 @@ export class Gb2ExitButtonComponent {
   @Input() public size: 'small' | 'regular' = 'regular';
   @Input() public highlighted: boolean = false;
   @Input() public color: 'primary' | 'accent' = 'primary';
+
+  public clickOnSpaceBar(link: MatIconAnchor) {
+    link._elementRef.nativeElement.click();
+  }
 }

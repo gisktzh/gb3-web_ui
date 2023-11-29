@@ -5,6 +5,7 @@ import {MapConfigState} from '../../../../state/map/states/map-config.state';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {selectMapConfigState} from '../../../../state/map/reducers/map-config.reducer';
+import {MatIconAnchor} from '@angular/material/button';
 
 @Component({
   selector: 'search-result-entry-map',
@@ -27,5 +28,9 @@ export class SearchResultEntryMapComponent {
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
+  }
+
+  public clickOnSpaceBar(link: MatIconAnchor) {
+    link._elementRef.nativeElement.click();
   }
 }
