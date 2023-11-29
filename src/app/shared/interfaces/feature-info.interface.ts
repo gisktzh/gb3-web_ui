@@ -38,12 +38,11 @@ export interface FeatureInfoResponse {
   featureInfo: FeatureInfoWrapper;
 }
 
-export interface FeatureInfoResultDisplay extends HasMetaDataLink {
+export interface FeatureInfoResultDisplay extends HasMetaDataLink, IsSingleLayer {
   id: string;
   title: string;
   layers: FeatureInfoResultLayer[];
   icon?: string;
-  isSingleLayer: boolean;
   /**
    * The Topic ID in the API - used for printing as id might also be our internal single layer id.
    */

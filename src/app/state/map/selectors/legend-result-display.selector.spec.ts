@@ -26,14 +26,14 @@ describe('selectLegendItemsForDisplay', () => {
   it('aborts if the legend endpoint returns a non-matchable topic ID', () => {
     mockData[0].topic = 'something else';
     const actual = selectLegendItemsForDisplay.projector(mockData, mockMaps, mockItems);
-    expect(actual).toEqual([]);
+    expect(actual).toHaveSize(0);
   });
 
   it("aborts if the legend isn't part of the active map items anymore", () => {
     mockData[0].topic = 'same thing';
     mockMaps[0].id = 'same thing';
     const actual = selectLegendItemsForDisplay.projector(mockData, mockMaps, mockItems);
-    expect(actual).toEqual([]);
+    expect(actual).toHaveSize(0);
   });
 
   it('returns a LegendDisplay as singleLayer', () => {

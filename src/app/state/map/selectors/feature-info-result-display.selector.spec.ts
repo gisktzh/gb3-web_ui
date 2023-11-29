@@ -32,20 +32,20 @@ describe('selectFeatureInfosForDisplay', () => {
   it('aborts if a featureinfo returned no hits for any of its layers.', () => {
     mockData[0].layers = [];
     const actual = selectFeatureInfosForDisplay.projector(mockData, mockMaps, mockItems);
-    expect(actual).toEqual([]);
+    expect(actual).toHaveSize(0);
   });
 
   it('aborts if the featureInfo endpoint returns a non-matchable topic ID', () => {
     mockData[0].topic = 'something else';
     const actual = selectFeatureInfosForDisplay.projector(mockData, mockMaps, mockItems);
-    expect(actual).toEqual([]);
+    expect(actual).toHaveSize(0);
   });
 
   it("aborts if the featureInfo isn't part of the active map items anymore", () => {
     mockData[0].topic = 'same thing';
     mockMaps[0].id = 'same thing';
     const actual = selectFeatureInfosForDisplay.projector(mockData, mockMaps, mockItems);
-    expect(actual).toEqual([]);
+    expect(actual).toHaveSize(0);
   });
 
   it('returns a FeatureInfoResultDisplay as singleLayer', () => {
