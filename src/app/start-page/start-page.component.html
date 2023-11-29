@@ -1,29 +1,29 @@
 <div class="start-page">
-  <start-page-section [background]="'primary'" [pageTitle]="true">
+  <page-section [background]="'primary'" [pageTitle]="true">
     <hero-header [heroText]="screenMode === 'mobile' ? '' : heroText" heroTitle="Übersicht"></hero-header>
-  </start-page-section>
+  </page-section>
 
   <div class="start-page__search" [ngClass]="{'start-page__search--mobile': screenMode === 'mobile'}">
     <start-page-search></start-page-search>
   </div>
 
-  <start-page-section [hideBottomPadding]="true">
+  <page-section [hideBottomPadding]="true">
     <gis-browser-teaser></gis-browser-teaser>
-  </start-page-section>
+  </page-section>
 
-  <start-page-section sectionTitle="Häufig verwendet">
+  <page-section sectionTitle="Häufig verwendet">
     <frequently-used-items></frequently-used-items>
-  </start-page-section>
+  </page-section>
 
-  <start-page-section [background]="'accent'" [titleLink]="this.externalNewsFeedLink" sectionTitle="News">
+  <page-section [background]="'accent'" [titleLink]="this.externalNewsFeedLink" sectionTitle="News">
     <news-feed></news-feed>
-  </start-page-section>
+  </page-section>
 
-  <start-page-section [hideBottomPadding]="true" sectionTitle="Entdecken">
+  <page-section [hideBottomPadding]="true" sectionTitle="Entdecken">
     <discover-maps></discover-maps>
-  </start-page-section>
+  </page-section>
 
-  <start-page-section sectionTitle="Weiterführende Informationen">
+  <page-section sectionTitle="Weiterführende Informationen">
     <link-list [linksGroups]="usefulLinksGroups"></link-list>
-  </start-page-section>
+  </page-section>
 </div>
