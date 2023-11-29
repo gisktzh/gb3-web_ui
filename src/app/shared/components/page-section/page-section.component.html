@@ -1,28 +1,28 @@
 <section
+  class="page-section"
   [ngClass]="[
-    this.background ? 'section__' + this.background : '',
-    this.hideBottomPadding ? 'section--no-padding-bottom' : '',
-    this.screenMode === 'mobile' && !pageTitle ? 'section--mobile' : ''
+    this.background ? 'page-section__' + this.background : '',
+    this.hideBottomPadding ? 'page-section--no-padding-bottom' : '',
+    this.screenMode === 'mobile' && !pageTitle ? 'page-section--mobile' : ''
   ]"
-  class="section"
 >
-  <div class="section__content-container">
+  <div class="page-section__content-container">
     <span
       *ngIf="this.sectionTitle"
-      class="section__content-container__title-line"
-      [ngClass]="{'section__content-container__title-line--mobile': screenMode === 'mobile'}"
+      class="page-section__content-container__title-line"
+      [ngClass]="{'page-section__content-container__title-line--mobile': screenMode === 'mobile'}"
     ></span>
     <div
-      class="section__content-container__title-wrapper"
-      [ngClass]="{'section__content-container__title-wrapper--mobile': screenMode === 'mobile'}"
+      class="page-section__content-container__title-wrapper"
+      [ngClass]="{'page-section__content-container__title-wrapper--mobile': screenMode === 'mobile'}"
     >
-      <h1 class="section__content-container__title-wrapper__title mat-headline-4">{{ this.sectionTitle }}</h1>
+      <h1 class="page-section__content-container__title-wrapper__title mat-headline-4">{{ this.sectionTitle }}</h1>
       <a
         *ngIf="this.titleLink"
         [href]="this.titleLink.url"
         [title]="this.titleLink.displayTitle"
         rel="noopener noreferrer"
-        class="section__content-container__title-wrapper__link"
+        class="page-section__content-container__title-wrapper__link"
         mat-button
         target="_blank"
       >
@@ -30,7 +30,7 @@
         <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
       </a>
     </div>
-    <div class="section__content-container__content">
+    <div class="page-section__content-container__content">
       <ng-content></ng-content>
     </div>
   </div>
