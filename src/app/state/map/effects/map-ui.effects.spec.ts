@@ -45,8 +45,7 @@ describe('MapUiEffects', () => {
 
   describe('openShareLinkDialog$', () => {
     it('opens the ShareLinkDialog, no further action dispatch', () => {
-      const action = MapUiActions.showShareLinkDialog();
-      actions$ = of(action);
+      actions$ = of(MapUiActions.showShareLinkDialog());
 
       effects.openShareLinkDialog$.subscribe(() => {
         expect(dialogService.open).toHaveBeenCalledWith(ShareLinkDialogComponent, {
@@ -61,11 +60,11 @@ describe('MapUiEffects', () => {
     it('dispatches ShareLinkActions.createItem() if the action was of type [MapUi] Show Share Link Dialog', (done: DoneFn) => {
       store.overrideSelector(selectCurrentShareLinkItem, shareLinkItem);
 
-      const action = MapUiActions.showShareLinkDialog();
-      actions$ = of(action);
+      const expectedAction = ShareLinkActions.createItem({item: shareLinkItem});
+      actions$ = of(MapUiActions.showShareLinkDialog());
 
-      effects.createShareLink$.subscribe((expectedAction) => {
-        expect(expectedAction).toEqual(ShareLinkActions.createItem({item: shareLinkItem}));
+      effects.createShareLink$.subscribe((action) => {
+        expect(action).toEqual(expectedAction);
         done();
       });
     });
@@ -73,10 +72,10 @@ describe('MapUiEffects', () => {
     it('dispatches ShareLinkActions.createItem() if the action was of type [MapUi] Show Bottom Sheet and the bottomSheetContent is share-link', (done: DoneFn) => {
       store.overrideSelector(selectCurrentShareLinkItem, shareLinkItem);
 
-      const expectedAction = MapUiActions.showBottomSheet({bottomSheetContent: 'share-link'});
-      actions$ = of(expectedAction);
+      const expectedAction = ShareLinkActions.createItem({item: shareLinkItem});
+      actions$ = of(MapUiActions.showBottomSheet({bottomSheetContent: 'share-link'}));
       effects.createShareLink$.subscribe((action) => {
-        expect(action).toEqual(ShareLinkActions.createItem({item: shareLinkItem}));
+        expect(action).toEqual(expectedAction);
         done();
       });
     });
