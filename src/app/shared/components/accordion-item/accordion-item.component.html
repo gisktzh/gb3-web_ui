@@ -6,6 +6,7 @@
   class="accordion-item"
   role="button"
   tabindex="0"
+  (keydown.space)="accordionItem.toggle()"
 >
   <div class="accordion-item__content" [ngClass]="{'accordion-item__content--dark': variant === 'dark'}">
     <div

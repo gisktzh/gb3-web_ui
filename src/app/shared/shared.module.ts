@@ -34,6 +34,7 @@ import {FormatContentPipe} from './pipes/format-content.pipe';
 import {HighlightSearchQueryPipe} from './pipes/highlight-search-query.pipe';
 import {KeyValuePreserveOrderPipe} from './pipes/key-value-preserve-order.pipe';
 import {LayerTooltipPipe} from './pipes/layer-tooltip.pipe';
+import {ClickOnSpaceBarDirective} from './directives/click-on-spacebar.directive';
 
 @NgModule({
   declarations: [
@@ -68,6 +69,7 @@ import {LayerTooltipPipe} from './pipes/layer-tooltip.pipe';
     ExpandableListItemComponent,
     ExpandableListItemHeaderComponent,
     ShowTooltipIfTruncatedDirective,
+    ClickOnSpaceBarDirective,
   ],
   imports: [MaterialModule, RouterModule, CommonModule, ResizableModule],
   exports: [
@@ -101,6 +103,7 @@ import {LayerTooltipPipe} from './pipes/layer-tooltip.pipe';
     NavbarMobileComponent,
     ExpandableListItemComponent,
     ShowTooltipIfTruncatedDirective,
+    ClickOnSpaceBarDirective,
   ],
 })
 export class SharedModule {}
