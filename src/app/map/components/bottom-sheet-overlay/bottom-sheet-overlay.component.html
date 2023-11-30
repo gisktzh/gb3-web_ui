@@ -1,38 +1,21 @@
 <div class="bottom-sheet-overlay">
-  <bottom-sheet-item
-    [ngClass]="{'bottom-sheet-overlay--hidden': bottomSheetContent !== 'basemap'}"
-    overlayTitle="Hintergrund"
-    bottomSheetHeight="small"
-  >
+  <bottom-sheet-item *ngIf="bottomSheetContent === 'basemap'" overlayTitle="Hintergrund" bottomSheetHeight="small">
     <basemap-selection-list body></basemap-selection-list>
   </bottom-sheet-item>
-  <bottom-sheet-item
-    [ngClass]="{'bottom-sheet-overlay--hidden': bottomSheetContent !== 'legend'}"
-    overlayTitle="Legende"
-    bottomSheetHeight="large"
-  >
+  <bottom-sheet-item *ngIf="bottomSheetContent === 'legend'" overlayTitle="Legende" bottomSheetHeight="large">
     <legend body [showInteractiveElements]="showInteractiveElements"></legend>
   </bottom-sheet-item>
-  <bottom-sheet-item
-    [ngClass]="{'bottom-sheet-overlay--hidden': bottomSheetContent !== 'feature-info'}"
-    overlayTitle="Info"
-    bottomSheetHeight="large"
-  >
+  <bottom-sheet-item *ngIf="bottomSheetContent === 'feature-info'" overlayTitle="Info" bottomSheetHeight="large">
     <feature-info body></feature-info>
   </bottom-sheet-item>
-  <bottom-sheet-item
-    [ngClass]="{'bottom-sheet-overlay--hidden': bottomSheetContent !== 'map-attributes'}"
-    overlayTitle="Attributfilter:"
-    bottomSheetHeight="medium"
-  >
+  <bottom-sheet-item *ngIf="bottomSheetContent === 'map-attributes'" overlayTitle="Attributfilter:" bottomSheetHeight="medium">
     <map-attribute-filter body></map-attribute-filter>
   </bottom-sheet-item>
-  <bottom-sheet-item
-    [ngClass]="{'bottom-sheet-overlay--hidden': bottomSheetContent !== 'share-link'}"
-    overlayTitle="Teilen"
-    bottomSheetHeight="small"
-  >
+  <bottom-sheet-item *ngIf="bottomSheetContent === 'share-link'" overlayTitle="Teilen" bottomSheetHeight="small">
     <share-link-mobile body></share-link-mobile>
+  </bottom-sheet-item>
+  <bottom-sheet-item *ngIf="bottomSheetContent === 'search'" bottomSheetHeight="large" [showHeader]="false">
+    <search-window-mobile body [focusOnInit]="true"></search-window-mobile>
   </bottom-sheet-item>
   <bottom-sheet-item
     [ngClass]="{'bottom-sheet-overlay--hidden': bottomSheetContent !== 'map-management'}"
@@ -41,12 +24,5 @@
     [showHeader]="false"
   >
     <map-management-mobile body></map-management-mobile>
-  </bottom-sheet-item>
-  <bottom-sheet-item
-    [ngClass]="{'bottom-sheet-overlay--hidden': bottomSheetContent !== 'search'}"
-    bottomSheetHeight="large"
-    [showHeader]="false"
-  >
-    <search-window-mobile body [focusOnInit]="true"></search-window-mobile>
   </bottom-sheet-item>
 </div>
