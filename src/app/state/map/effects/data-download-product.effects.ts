@@ -49,6 +49,7 @@ export class DataDownloadProductEffects {
       return this.actions$.pipe(
         ofType(DataDownloadProductActions.setProductsError),
         tap(({error}) => {
+          // TODO GB3-914: Replace with `throwError` again after implementing a effect error handler
           this.errorHandler.handleError(new ProductsCouldNotBeLoaded(error));
         }),
       );
@@ -83,6 +84,7 @@ export class DataDownloadProductEffects {
       return this.actions$.pipe(
         ofType(DataDownloadProductActions.setRelevantProductIdsError),
         tap(({error}) => {
+          // TODO GB3-914: Replace with `throwError` again after implementing a effect error handler
           this.errorHandler.handleError(new RelevantProductsCouldNotBeLoaded(error));
         }),
       );

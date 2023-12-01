@@ -89,6 +89,14 @@ export class MapUiEffects {
     );
   });
 
+  public closeSideDrawerAfterSwitchingPage$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(UrlActions.setPage),
+      filter(({mainPage}) => mainPage !== 'maps'),
+      map(() => MapUiActions.hideMapSideDrawerContent()),
+    );
+  });
+
   public loadOrClearLegend$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapUiActions.setLegendOverlayVisibility),
@@ -239,7 +247,7 @@ export class MapUiEffects {
     );
   });
 
-  public openDataDownloadEmailConfirmationDialo$ = createEffect(
+  public openDataDownloadEmailConfirmationDialog$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(MapUiActions.showDataDownloadEmailConfirmationDialog),

@@ -80,7 +80,8 @@ export class DataDownloadDialogComponent implements OnInit, OnDestroy {
   }
 
   public openDownloadDialog() {
-    this.dialogService.open<DataDownloadEmailDialogComponent>(DataDownloadEmailDialogComponent, {
+    this.dialogService.open<DataDownloadEmailDialogComponent, {orderEmail: string | undefined}>(DataDownloadEmailDialogComponent, {
+      data: {orderEmail: this.order?.email},
       panelClass: PanelClass.ApiWrapperDialog,
       restoreFocus: false,
     });

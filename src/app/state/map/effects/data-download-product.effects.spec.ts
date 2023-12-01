@@ -16,7 +16,7 @@ import {Gb3GeoshopProductsService} from '../../../shared/services/apis/gb3/gb3-g
 import {MapUiActions} from '../actions/map-ui.actions';
 import {selectItems} from '../reducers/active-map-item.reducer';
 import {ActiveMapItem} from '../../../map/models/active-map-item.model';
-import {createGb2WmsMapItemMock, createUuidFromId} from '../../../testing/map-testing/active-map-item-test.utils';
+import {createGb2WmsMapItemMock} from '../../../testing/map-testing/active-map-item-test.utils';
 import {DataDownloadFilter} from '../../../shared/interfaces/data-download-filter.interface';
 import {ErrorHandler} from '@angular/core';
 
@@ -205,7 +205,7 @@ describe('DataDownloadProductEffects', () => {
       const productIds = ['prodId1'];
       const geoshopProductsServiceSpy = spyOn(geoshopProductsService, 'loadRelevanteProducts').and.returnValue(of(productIds));
 
-      const expectedGuids = activeMapItems.map((item) => createUuidFromId(item.id));
+      const expectedGuids = activeMapItems.map((item) => item.geometadataUuid!);
       const expectedAction = DataDownloadProductActions.setRelevantProductIds({relevantProductIds: productIds});
 
       actions$ = of(DataDownloadProductActions.loadRelevantProductIds());
@@ -221,7 +221,7 @@ describe('DataDownloadProductEffects', () => {
       const error = new Error('My cabbages!!!');
       const geoshopProductsServiceSpy = spyOn(geoshopProductsService, 'loadRelevanteProducts').and.returnValue(throwError(() => error));
 
-      const expectedGuids = activeMapItems.map((item) => createUuidFromId(item.id));
+      const expectedGuids = activeMapItems.map((item) => item.geometadataUuid!);
       const expectedAction = DataDownloadProductActions.setRelevantProductIdsError({error});
 
       actions$ = of(DataDownloadProductActions.loadRelevantProductIds());
