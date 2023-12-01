@@ -78,6 +78,7 @@ import {DataDownloadRegionState} from './map/states/data-download-region.state';
 import {DataDownloadRegionEffects} from './map/effects/data-download-region.effects';
 import {ElevationProfileState} from './map/states/elevation-profile.state';
 import {ElevationProfileEffects} from './map/effects/elevation-profile.effects';
+import {DataDownloadOrderStatusJobEffects} from './map/effects/data-download-order-status-job.effects';
 import {DrawingStyleState} from './map/states/drawing-style.state';
 
 export interface State {
@@ -161,6 +162,7 @@ export const effects = [
   SearchEffects,
   DrawingEffects,
   DataDownloadOrderEffects,
+  DataDownloadOrderStatusJobEffects,
   DataDownloadProductEffects,
   AppLayoutEffects,
   MapAttributeFiltersItemEffects,
