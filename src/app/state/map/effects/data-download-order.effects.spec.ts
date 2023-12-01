@@ -172,11 +172,12 @@ describe('DataDownloadOrderEffects', () => {
       const mapService = TestBed.inject(MAP_SERVICE);
       const mapServiceSpy = spyOn(mapService, 'zoomToExtent').and.callThrough();
       store.overrideSelector(selectSelection, selection);
+      store.overrideSelector(selectMapSideDrawerContent, 'data-download');
 
-      const expectedAction = MapUiActions.showMapSideDrawerContent({mapSideDrawerContent: 'data-download'});
+      const expectedAction = MapUiActions.mapSideDrawerIsFullyOpen();
 
       actions$ = of(expectedAction);
-      effects.zoomToSelection$.subscribe(([action, _]) => {
+      effects.zoomToSelection$.subscribe(([[action, _], __]) => {
         expect(mapServiceSpy).toHaveBeenCalledOnceWith(
           selection.drawingRepresentation.geometry,
           configService.mapAnimationConfig.zoom.expandFactor,

@@ -117,4 +117,8 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
         .subscribe(),
     );
   }
+
+  public mapSideDrawerFullyOpened() {
+    this.store.dispatch(MapUiActions.mapSideDrawerIsFullyOpen());
+  }
 }

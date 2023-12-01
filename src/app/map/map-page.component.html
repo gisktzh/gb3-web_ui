@@ -5,6 +5,7 @@
     [opened]="mapSideDrawerContent !== 'none'"
     (closedStart)="closeSideDrawer()"
     [ngSwitch]="mapSideDrawerContent"
+    (opened)="mapSideDrawerFullyOpened()"
   >
     <print-dialog *ngSwitchCase="'print'"></print-dialog>
     <data-download-dialog *ngSwitchCase="'data-download'"></data-download-dialog>

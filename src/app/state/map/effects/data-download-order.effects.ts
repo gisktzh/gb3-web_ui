@@ -1,6 +1,6 @@
 import {ErrorHandler, Inject, Injectable} from '@angular/core';
 import {Actions, concatLatestFrom, createEffect, ofType} from '@ngrx/effects';
-import {catchError, delay, map} from 'rxjs/operators';
+import {catchError, map} from 'rxjs/operators';
 import {DataDownloadOrderActions} from '../actions/data-download-order.actions';
 import {MapUiActions} from '../actions/map-ui.actions';
 import {MAP_SERVICE} from '../../../app.module';
@@ -18,8 +18,6 @@ import {selectMapSideDrawerContent} from '../reducers/map-ui.reducer';
 import {selectProducts} from '../reducers/data-download-product.reducer';
 import {HttpErrorResponse} from '@angular/common/http';
 import {Order} from '../../../shared/interfaces/geoshop-order.interface';
-
-const ZOOM_DELAY_IN_MS = 200;
 
 @Injectable()
 export class DataDownloadOrderEffects {
@@ -64,11 +62,10 @@ export class DataDownloadOrderEffects {
   public zoomToSelection$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(MapUiActions.showMapSideDrawerContent),
-        filter(({mapSideDrawerContent}) => mapSideDrawerContent === 'data-download'),
+        ofType(MapUiActions.mapSideDrawerIsFullyOpen),
+        concatLatestFrom(() => this.store.select(selectMapSideDrawerContent)),
+        filter(([_, mapSideDrawerContent]) => mapSideDrawerContent === 'data-download'),
         concatLatestFrom(() => this.store.select(selectSelection)),
-        // this delay is used to wait for the map side drawer to be fully open before starting to zoom
-        delay(ZOOM_DELAY_IN_MS),
         tap(([_, selection]) => {
           if (selection) {
             this.mapService.zoomToExtent(
