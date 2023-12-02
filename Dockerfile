@@ -1,4 +1,4 @@
-FROM node:18.18-alpine AS build-app
+FROM node:18.19-alpine AS build-app
 
 # Provide overrides for APP_VERSION and APP_RELEASE as build-args and expose them as ENV variables for the update-version.js script
 ARG APP_VERSION
