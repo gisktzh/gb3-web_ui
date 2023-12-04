@@ -13,5 +13,5 @@
   <input (change)="changeWidth($event)" id="width" max="10" min="1" type="range" value="50" /> Width
 </div>
 <div mat-dialog-actions>
-  <button mat-button>Schliessen</button>
+  <button (click)="close()" mat-button>Schliessen</button>
 </div>

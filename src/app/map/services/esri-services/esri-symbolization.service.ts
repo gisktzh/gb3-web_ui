@@ -24,7 +24,7 @@ import {ColorUtils} from '../../../shared/utils/color.utils';
 })
 export class EsriSymbolizationService {
   private layerSymbolizations: LayerSymbolizations = this.configService.layerSymbolizations;
-  private drawingStyleSettings?: DrawingStyleState = undefined;
+  private drawingStyleSettings?: DrawingStyleState;
 
   constructor(
     private readonly configService: ConfigService,
@@ -32,7 +32,7 @@ export class EsriSymbolizationService {
   ) {
     this.store
       .select(selectDrawingStyleState)
-      .pipe(tap((v) => (this.drawingStyleSettings = v)))
+      .pipe(tap((drawingStyleState) => (this.drawingStyleSettings = drawingStyleState)))
       .subscribe();
   }
 
@@ -42,15 +42,15 @@ export class EsriSymbolizationService {
       case 'MultiPoint':
         // this is only required for drawings since labels for measurements will be regenerated afterwards
         if (drawingLayer === 'drawings' && label) {
-          return this.createTextSymbolizationWithText(drawingLayer, label);
+          return this.createTextSymbolizationWithText(drawingLayer, label, false);
         }
-        return this.createPointSymbolization(drawingLayer);
+        return this.createPointSymbolization(drawingLayer, false);
       case 'LineString':
       case 'MultiLineString':
-        return this.createLineSymbolization(drawingLayer);
+        return this.createLineSymbolization(drawingLayer, false);
       case 'Polygon':
       case 'MultiPolygon':
-        return this.createPolygonSymbolization(drawingLayer);
+        return this.createPolygonSymbolization(drawingLayer, false);
       case 'GeometryCollection': {
         throw new UnsupportedGeometryType(geometry.type);
       }
@@ -61,15 +61,16 @@ export class EsriSymbolizationService {
    * Creates a TextSymbol and sets its property to the supplied text.
    * @param drawingLayer
    * @param text
+   * @param isCustomizable Defines whether the symbolization should take the user-defined drawing settings or default redlining only
    */
-  public createTextSymbolizationWithText(drawingLayer: DrawingLayer, text: string, isCustomizable: boolean = false): TextSymbol {
+  public createTextSymbolizationWithText(drawingLayer: DrawingLayer, text: string, isCustomizable: boolean): TextSymbol {
     const textSymbology = this.createTextSymbolization(drawingLayer, isCustomizable);
     textSymbology.text = text;
 
     return textSymbology;
   }
 
-  public createTextSymbolization(drawingLayer: DrawingLayer, isCustomizable: boolean = false): TextSymbol {
+  public createTextSymbolization(drawingLayer: DrawingLayer, isCustomizable: boolean): TextSymbol {
     const textSymbology = this.layerSymbolizations[drawingLayer].text;
     return new TextSymbol({
       font: {
@@ -83,7 +84,7 @@ export class EsriSymbolizationService {
     });
   }
 
-  public createPointSymbolization(drawingLayer: DrawingLayer, isCustomizable: boolean = false): MarkerSymbol {
+  public createPointSymbolization(drawingLayer: DrawingLayer, isCustomizable: boolean): MarkerSymbol {
     const pointSymbology = this.layerSymbolizations[drawingLayer].point;
     switch (pointSymbology.type) {
       case 'simple':
@@ -107,7 +108,7 @@ export class EsriSymbolizationService {
     }
   }
 
-  public createLineSymbolization(drawingLayer: DrawingLayer, isCustomizable: boolean = false): SimpleLineSymbol {
+  public createLineSymbolization(drawingLayer: DrawingLayer, isCustomizable: boolean): SimpleLineSymbol {
     const lineSymbology = this.layerSymbolizations[drawingLayer].line;
     return new EsriSimpleLineSymbol({
       color: this.createEsriColor(this.getCustomizedStyleSettingOrDefault(isCustomizable, 'lineColor', lineSymbology.color)),
@@ -115,7 +116,7 @@ export class EsriSymbolizationService {
     });
   }
 
-  public createPolygonSymbolization(drawingLayer: DrawingLayer, isCustomizable: boolean = false): SimpleFillSymbol {
+  public createPolygonSymbolization(drawingLayer: DrawingLayer, isCustomizable: boolean): SimpleFillSymbol {
     const polygonSymbology = this.layerSymbolizations[drawingLayer].polygon;
     return new EsriSimpleFillSymbol({
       color: this.createEsriColor(this.getCustomizedStyleSettingOrDefault(isCustomizable, 'fillColor', polygonSymbology.fill.color)),

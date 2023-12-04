@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {AbstractToolsComponent} from '../abstract-tools/abstract-tools.component';
-import {DrawingSettingsComponent} from '../drawing-settings/drawing-settings.component';
+import {DrawingSettingsDialogComponent} from '../drawing-settings-dialog/drawing-settings-dialog.component';
 import {PanelClass} from '../../../../shared/enums/panel-class.enum';
 
 @Component({
@@ -34,7 +34,7 @@ export class DrawingToolsComponent extends AbstractToolsComponent {
   }
 
   public openSettingsDialog() {
-    this.dialogService.open(DrawingSettingsComponent, {
+    this.dialogService.open(DrawingSettingsDialogComponent, {
       panelClass: PanelClass.ApiWrapperDialog,
       restoreFocus: false,
     });

@@ -23,7 +23,7 @@ export class MapServiceStub implements MapService {
     initializeElevationProfileMeasurement() {},
   };
 
-  addGeometryToDrawingLayer(geometry: GeometryWithSrs, drawingLayer: InternalDrawingLayer): void {}
+  addGeometryToInternalDrawingLayer(geometry: GeometryWithSrs, drawingLayer: InternalDrawingLayer): void {}
 
   clearInternalDrawingLayer(drawingLayer: InternalDrawingLayer): void {}
 

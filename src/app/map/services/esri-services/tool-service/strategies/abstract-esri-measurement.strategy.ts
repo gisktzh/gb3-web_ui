@@ -12,12 +12,12 @@ import {UserDrawingLayer} from '../../../../../shared/enums/drawing-layer.enum';
 export type LabelConfiguration = {location: Point; symbolization: TextSymbol};
 
 export abstract class AbstractEsriMeasurementStrategy<
-  T extends Polygon | Polyline | Point,
-  T1 extends DrawingCallbackHandler['completeMeasurement'],
-> extends AbstractEsriDrawableToolStrategy<T1> {
+  TGeometry extends Polygon | Polyline | Point,
+  TDrawingCallbackHandler extends DrawingCallbackHandler['completeMeasurement'],
+> extends AbstractEsriDrawableToolStrategy<TDrawingCallbackHandler> {
   public readonly internalLayerType: UserDrawingLayer = UserDrawingLayer.Measurements;
 
-  protected constructor(layer: GraphicsLayer, mapView: MapView, completeDrawingCallbackHandler: T1) {
+  protected constructor(layer: GraphicsLayer, mapView: MapView, completeDrawingCallbackHandler: TDrawingCallbackHandler) {
     super(layer, mapView, completeDrawingCallbackHandler);
   }
 
@@ -33,7 +33,7 @@ export abstract class AbstractEsriMeasurementStrategy<
           break; // currently, these events do not trigger any action
         case 'complete':
           graphicIdentifier = this.setAndGetIdentifierOnGraphic(graphic);
-          labelConfiguration = this.createLabelForGeometry(graphic.geometry as T, graphicIdentifier);
+          labelConfiguration = this.createLabelForGeometry(graphic.geometry as TGeometry, graphicIdentifier);
           this.layer.add(labelConfiguration.label);
           this.completeDrawingCallbackHandler(graphic, labelConfiguration.label, labelConfiguration.labelText);
           break;
@@ -47,9 +47,9 @@ export abstract class AbstractEsriMeasurementStrategy<
    * @param geometry
    * @protected
    */
-  protected abstract createLabelConfigurationForGeometry(geometry: T): LabelConfiguration;
+  protected abstract createLabelConfigurationForGeometry(geometry: TGeometry): LabelConfiguration;
 
-  private createLabelForGeometry(geometry: T, belongsToGraphic: string): {label: Graphic; labelText: string} {
+  private createLabelForGeometry(geometry: TGeometry, belongsToGraphic: string): {label: Graphic; labelText: string} {
     const {location, symbolization} = this.createLabelConfigurationForGeometry(geometry);
     const label = new Graphic({
       geometry: location,

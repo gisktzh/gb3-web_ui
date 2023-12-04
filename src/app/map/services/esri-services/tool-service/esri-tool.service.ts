@@ -266,10 +266,10 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
 
   private setMeasurementStrategy(measurementType: MeasurementTool, layer: GraphicsLayer) {
     // because we currently do not have pictures symbols, the pointStyle is cast to SimpleMarkerSymbol.
-    const pointStyle = this.esriSymbolizationService.createPointSymbolization(UserDrawingLayer.Measurements) as SimpleMarkerSymbol;
-    const lineStyle = this.esriSymbolizationService.createLineSymbolization(UserDrawingLayer.Measurements);
-    const areaStyle = this.esriSymbolizationService.createPolygonSymbolization(UserDrawingLayer.Measurements);
-    const labelStyle = this.esriSymbolizationService.createTextSymbolization(UserDrawingLayer.Measurements);
+    const pointStyle = this.esriSymbolizationService.createPointSymbolization(UserDrawingLayer.Measurements, false) as SimpleMarkerSymbol;
+    const lineStyle = this.esriSymbolizationService.createLineSymbolization(UserDrawingLayer.Measurements, false);
+    const areaStyle = this.esriSymbolizationService.createPolygonSymbolization(UserDrawingLayer.Measurements, false);
+    const labelStyle = this.esriSymbolizationService.createTextSymbolization(UserDrawingLayer.Measurements, false);
 
     switch (measurementType) {
       case 'measure-area':
@@ -365,7 +365,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
   }
 
   private setDataDownloadSelectionStrategy(selectionType: DataDownloadSelectionTool, layer: GraphicsLayer) {
-    const areaStyle = this.esriSymbolizationService.createPolygonSymbolization(InternalDrawingLayer.Selection);
+    const areaStyle = this.esriSymbolizationService.createPolygonSymbolization(InternalDrawingLayer.Selection, false);
 
     // todo WES: these should be refactored and added to `DrawingCallbackHandler` as well; and they can then be used in our Strategies'
     //  generics.

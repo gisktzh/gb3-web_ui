@@ -7,7 +7,6 @@ import {MapConstants} from '../constants/map.constants';
 export class SymbolizationToGb3ConverterUtils {
   /**
    * Converts a list of internal drawings to a GB3VectorLayer representation.
-   * @param features
    */
   public static convertInternalToExternalRepresentation(features: Gb3StyledInternalDrawingRepresentation[]): Gb3VectorLayer {
     const gb3GeoJsonFeatures: Gb3GeoJsonFeature[] = [];

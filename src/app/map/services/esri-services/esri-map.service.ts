@@ -4,7 +4,7 @@ import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {Store} from '@ngrx/store';
 import * as dayjs from 'dayjs';
-import {BehaviorSubject, Subscription, first, pairwise, skip, tap, withLatestFrom} from 'rxjs';
+import {BehaviorSubject, first, pairwise, skip, Subscription, tap, withLatestFrom} from 'rxjs';
 import {filter, map} from 'rxjs/operators';
 import {AuthService} from '../../../auth/auth.service';
 import {InternalDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
@@ -44,12 +44,12 @@ import {
   EsriMap,
   EsriMapView,
   EsriPoint,
+  esriReactiveUtils,
   EsriScaleBar,
   EsriSpatialReference,
   EsriTileInfo,
   EsriWMSLayer,
   EsriWMSSublayer,
-  esriReactiveUtils,
 } from './esri.module';
 import {GeoJSONMapperService} from './geo-json-mapper.service';
 import wmsAuthAndUrlOverrideInterceptorFactory from './interceptors/override-wms-url.interceptor';
@@ -368,7 +368,7 @@ export class EsriMapService implements MapService, OnDestroy {
     ) as never;
   }
 
-  public addGeometryToDrawingLayer(geometry: GeometryWithSrs, drawingLayer: InternalDrawingLayer) {
+  public addGeometryToInternalDrawingLayer(geometry: GeometryWithSrs, drawingLayer: InternalDrawingLayer) {
     const symbolization = this.esriSymbolizationService.createSymbolizationForDrawingLayer(geometry, drawingLayer);
     const esriGeometry = this.geoJSONMapperService.fromGeoJSONToEsri(geometry);
     this.addEsriGeometryToDrawingLayer(esriGeometry, symbolization, drawingLayer);

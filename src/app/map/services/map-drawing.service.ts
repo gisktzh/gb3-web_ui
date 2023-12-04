@@ -30,7 +30,7 @@ export class MapDrawingService implements OnDestroy {
   }
 
   public drawFeatureInfoHighlight(geometry: GeometryWithSrs) {
-    this.mapService.addGeometryToDrawingLayer(geometry, InternalDrawingLayer.FeatureHighlight);
+    this.mapService.addGeometryToInternalDrawingLayer(geometry, InternalDrawingLayer.FeatureHighlight);
   }
 
   public clearFeatureInfoHighlight() {
@@ -39,7 +39,7 @@ export class MapDrawingService implements OnDestroy {
 
   public drawFeatureQueryLocation(geometry: GeometryWithSrs) {
     this.clearFeatureQueryLocation();
-    this.mapService.addGeometryToDrawingLayer(geometry, InternalDrawingLayer.FeatureQueryLocation);
+    this.mapService.addGeometryToInternalDrawingLayer(geometry, InternalDrawingLayer.FeatureQueryLocation);
   }
 
   public clearFeatureQueryLocation() {
@@ -76,7 +76,7 @@ export class MapDrawingService implements OnDestroy {
   private handleGpsLocation(location: PointWithSrs | undefined): Promise<never> | void {
     this.mapService.clearInternalDrawingLayer(InternalDrawingLayer.LocatePosition);
     if (location) {
-      this.mapService.addGeometryToDrawingLayer(location, InternalDrawingLayer.LocatePosition);
+      this.mapService.addGeometryToInternalDrawingLayer(location, InternalDrawingLayer.LocatePosition);
       return this.mapService.zoomToPoint(location, this.configService.mapConfig.locateMeZoom);
     }
   }
