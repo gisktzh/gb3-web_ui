@@ -18,6 +18,7 @@ import {
 } from '../../../shared/interfaces/symbolization.interface';
 import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
+import {provideMockStore} from '@ngrx/store/testing';
 
 const SRS: SupportedSrs = 2056;
 const mockIconUrl = '/path/to/icon.svg';
@@ -154,7 +155,7 @@ describe('EsriSymbolizationService', () => {
     let configService = new ConfigService(document);
     configService = Object.assign(configService, {layerSymbolizations: mockSymbolizations});
     TestBed.configureTestingModule({
-      providers: [EsriSymbolizationService, {provide: ConfigService, useValue: configService}],
+      providers: [EsriSymbolizationService, {provide: ConfigService, useValue: configService}, provideMockStore()],
     });
     service = TestBed.get(EsriSymbolizationService);
   });
