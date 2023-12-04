@@ -150,14 +150,18 @@ export class MapUiEffects {
     {dispatch: false},
   );
 
-  public createShareLink$ = createEffect(() => {
+  public createShareLinkAfterBottomSheetOpen$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(MapUiActions.showBottomSheet, MapUiActions.showShareLinkDialog),
-      filter(
-        (action) =>
-          (action.type === '[MapUi] Show Bottom Sheet' && action.bottomSheetContent === 'share-link') ||
-          action.type === '[MapUi] Show Share Link Dialog',
-      ),
+      ofType(MapUiActions.showBottomSheet),
+      filter(({bottomSheetContent}) => bottomSheetContent === 'share-link'),
+      concatLatestFrom(() => this.store.select(selectCurrentShareLinkItem)),
+      map(([_, shareLinkItem]) => ShareLinkActions.createItem({item: shareLinkItem})),
+    );
+  });
+
+  public createShareLinkAfterDialogOpen$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapUiActions.showShareLinkDialog),
       concatLatestFrom(() => this.store.select(selectCurrentShareLinkItem)),
       map(([_, shareLinkItem]) => ShareLinkActions.createItem({item: shareLinkItem})),
     );

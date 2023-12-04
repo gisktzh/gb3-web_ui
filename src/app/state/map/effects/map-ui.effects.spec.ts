@@ -56,35 +56,38 @@ describe('MapUiEffects', () => {
     });
   });
 
-  describe('createShareLink$', () => {
-    it('dispatches ShareLinkActions.createItem() if the action was of type [MapUi] Show Share Link Dialog', (done: DoneFn) => {
+  describe('createShareLinkAfterDialogOpen$', () => {
+    it('dispatches ShareLinkActions.createItem()', (done: DoneFn) => {
       store.overrideSelector(selectCurrentShareLinkItem, shareLinkItem);
 
       const expectedAction = ShareLinkActions.createItem({item: shareLinkItem});
       actions$ = of(MapUiActions.showShareLinkDialog());
 
-      effects.createShareLink$.subscribe((action) => {
+      effects.createShareLinkAfterDialogOpen$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
         done();
       });
     });
+  });
 
-    it('dispatches ShareLinkActions.createItem() if the action was of type [MapUi] Show Bottom Sheet and the bottomSheetContent is share-link', (done: DoneFn) => {
+  describe('createShareLinkAfterBottomSheetOpen$', () => {
+    it('dispatches ShareLinkActions.createItem() if the bottomSheetContent is share-link', (done: DoneFn) => {
       store.overrideSelector(selectCurrentShareLinkItem, shareLinkItem);
-
       const expectedAction = ShareLinkActions.createItem({item: shareLinkItem});
+
       actions$ = of(MapUiActions.showBottomSheet({bottomSheetContent: 'share-link'}));
-      effects.createShareLink$.subscribe((action) => {
+      effects.createShareLinkAfterBottomSheetOpen$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
         done();
       });
     });
 
-    it('does not dispatch ShareLinkActions.createItem() if the action was of type [MapUi] Show Bottom Sheet but the bottomSheetContent is not share-link', fakeAsync(() => {
+    it('does not dispatch ShareLinkActions.createItem() if the bottomSheetContent is not share-link', fakeAsync(() => {
       store.overrideSelector(selectCurrentShareLinkItem, shareLinkItem);
       let actualAction;
+
       actions$ = of(MapUiActions.showBottomSheet({bottomSheetContent: 'basemap'}));
-      effects.createShareLink$.subscribe((action) => (actualAction = action));
+      effects.createShareLinkAfterBottomSheetOpen$.subscribe((action) => (actualAction = action));
       tick();
 
       expect(actualAction).toBeUndefined();
