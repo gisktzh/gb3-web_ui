@@ -192,13 +192,13 @@
           },
           "configurations": {
             "production": {
-              "browserTarget": "gb3-frontend:build:production"
+              "buildTarget": "gb3-frontend:build:production"
             },
             "development": {
-              "browserTarget": "gb3-frontend:build:development"
+              "buildTarget": "gb3-frontend:build:development"
             },
             "development-local-gb2": {
-              "browserTarget": "gb3-frontend:build:development-local-gb2"
+              "buildTarget": "gb3-frontend:build:development-local-gb2"
             }
           },
           "defaultConfiguration": "development"
@@ -206,7 +206,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "gb3-frontend:build"
+            "buildTarget": "gb3-frontend:build"
           }
         },
         "test": {
