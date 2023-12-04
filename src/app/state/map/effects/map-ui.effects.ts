@@ -135,20 +135,33 @@ export class MapUiEffects {
     );
   });
 
-  public openShareLinkDialogAndCreateShareLink$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(MapUiActions.showShareLinkDialog),
-      concatLatestFrom(() => this.store.select(selectScreenMode)),
-      tap(([__, screenMode]) => {
-        if (screenMode === 'mobile') {
-          return this.store.dispatch(MapUiActions.showBottomSheet({bottomSheetContent: 'share-link'}));
-        } else {
+  public openShareLinkDialog$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(MapUiActions.showShareLinkDialog),
+        tap(() => {
           this.dialogService.open(ShareLinkDialogComponent, {
             panelClass: PanelClass.ApiWrapperDialog,
             restoreFocus: false,
           });
-        }
-      }),
+        }),
+      );
+    },
+    {dispatch: false},
+  );
+
+  public createShareLinkAfterBottomSheetOpen$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapUiActions.showBottomSheet),
+      filter(({bottomSheetContent}) => bottomSheetContent === 'share-link'),
+      concatLatestFrom(() => this.store.select(selectCurrentShareLinkItem)),
+      map(([_, shareLinkItem]) => ShareLinkActions.createItem({item: shareLinkItem})),
+    );
+  });
+
+  public createShareLinkAfterDialogOpen$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapUiActions.showShareLinkDialog),
       concatLatestFrom(() => this.store.select(selectCurrentShareLinkItem)),
       map(([_, shareLinkItem]) => ShareLinkActions.createItem({item: shareLinkItem})),
     );

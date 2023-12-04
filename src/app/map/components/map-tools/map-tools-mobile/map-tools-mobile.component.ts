@@ -31,7 +31,7 @@ export class MapToolsMobileComponent {
   }
 
   public showShareLink() {
-    this.store.dispatch(MapUiActions.showShareLinkDialog());
+    this.store.dispatch(MapUiActions.showBottomSheet({bottomSheetContent: 'share-link'}));
   }
 
   public showLegend() {
