@@ -43,7 +43,7 @@ export class ProductComponent implements OnInit, OnDestroy {
 
   public toggleProduct() {
     if (this.isProductSelected) {
-      this.tryOpenFormatSelect();
+      this.openFormatSelect();
     }
     this.updateOrderProducts();
   }
@@ -62,7 +62,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     }
   }
 
-  private tryOpenFormatSelect() {
+  private openFormatSelect() {
     // This is a workaround to open mat-select as soon as it's rendered within the DOM after clicking on the checkbox
     // because it is using a `*ngIf`
     setTimeout(() => this.matSelectRef?.open());
