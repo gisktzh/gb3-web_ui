@@ -98,6 +98,7 @@
   </div>
   <bottom-sheet-overlay *ngIf="screenMode === 'mobile'"></bottom-sheet-overlay>
   <data-download-status-queue
+    *ngIf="screenMode !== 'mobile'"
     class="map-container__data-download-status-queue"
     [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
   ></data-download-status-queue>

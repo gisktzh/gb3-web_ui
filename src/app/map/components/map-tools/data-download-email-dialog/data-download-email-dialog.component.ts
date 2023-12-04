@@ -1,6 +1,6 @@
-import {Component} from '@angular/core';
+import {Component, Inject} from '@angular/core';
 import {FormControl, Validators} from '@angular/forms';
-import {MatDialogRef} from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
 import {DataDownloadOrderActions} from '../../../../state/map/actions/data-download-order.actions';
 
@@ -16,24 +16,26 @@ export class DataDownloadEmailDialogComponent {
   constructor(
     private readonly dialogRef: MatDialogRef<DataDownloadEmailDialogComponent>,
     private readonly store: Store,
-  ) {}
+    @Inject(MAT_DIALOG_DATA) private readonly data: {orderEmail: string | undefined},
+  ) {
+    if (data.orderEmail) {
+      this.emailFormControl.setValue(data.orderEmail);
+      this.isEmailActive = true;
+    }
+  }
 
   public cancel() {
     this.close();
   }
 
   public download() {
+    this.updateEmail();
     this.store.dispatch(DataDownloadOrderActions.sendOrder());
     this.close();
   }
 
   private close() {
     this.dialogRef.close();
-  }
-
-  public setIsEmailActive(isEmailActive: boolean) {
-    this.isEmailActive = isEmailActive;
-    this.updateEmail();
   }
 
   public updateEmail() {

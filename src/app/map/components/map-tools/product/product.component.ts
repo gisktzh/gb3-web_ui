@@ -1,50 +1,51 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Product, ProductFormat} from '../../../../shared/interfaces/gb3-geoshop-product.interface';
 import {FormControl} from '@angular/forms';
 import {Store} from '@ngrx/store';
 import {DataDownloadOrderActions} from '../../../../state/map/actions/data-download-order.actions';
 import {Order} from '../../../../shared/interfaces/geoshop-order.interface';
 import {MatSelect} from '@angular/material/select';
+import {BehaviorSubject, Subscription, tap} from 'rxjs';
 
 @Component({
   selector: 'product',
   templateUrl: './product.component.html',
   styleUrls: ['./product.component.scss'],
 })
-export class ProductComponent implements OnInit {
+export class ProductComponent implements OnInit, OnDestroy {
   @Input() public product!: Product;
   @Input() public order!: Order;
   public isProductSelected: boolean = false;
   public readonly formatsFormControl: FormControl<ProductFormat[] | null> = new FormControl(null, []);
 
-  private _disabled: boolean = false;
+  protected readonly disabled$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  @ViewChild('formatsSelect') private matSelectRef?: MatSelect;
+  private readonly subscription = new Subscription();
 
   constructor(private readonly store: Store) {}
 
-  public get disabled(): boolean {
-    return this._disabled;
-  }
-
   @Input()
   public set disabled(value: boolean) {
-    this._disabled = value;
-    if (value) {
-      this.formatsFormControl.disable();
-    } else {
-      this.formatsFormControl.enable();
-    }
-  }
-
-  @ViewChild('formatsSelect')
-  private set matSelectRef(value: MatSelect | undefined) {
-    // this is a workaround to open mat-select as soon as it's visible. The timeout is necessary to prevent an error (NG0100:
-    // ExpressionChangedAfterItHasBeenCheckedError) as the value usually gets updated so fast that the UI update cycle is not yet fully
-    // completed.
-    setTimeout(() => value?.open());
+    // Angular forms can't be disabled within the HTML template (there is a warning poping up as soon as [disabled] exists on a form element).
+    // Therefore, this behaviour subject is used to expose the value to the HTML as well as to be able to subscribe to value changes from within this component
+    // to apply it to the form control programmatically.
+    this.disabled$.next(value);
   }
 
   public ngOnInit() {
+    this.initializeSubscriptions();
     this.initializeProductFromOrder();
+  }
+
+  public ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
+  public toggleProduct() {
+    if (this.isProductSelected) {
+      this.openFormatSelect();
+    }
+    this.updateOrderProducts();
   }
 
   public updateOrderProducts() {
@@ -59,6 +60,28 @@ export class ProductComponent implements OnInit {
     } else {
       this.store.dispatch(DataDownloadOrderActions.removeProductsWithSameIdInOrder({productId: this.product.gisZHNr}));
     }
+  }
+
+  private openFormatSelect() {
+    // This is a workaround to open mat-select as soon as it's rendered within the DOM after clicking on the checkbox
+    // because it is using a `*ngIf`
+    setTimeout(() => this.matSelectRef?.open());
+  }
+
+  private initializeSubscriptions() {
+    this.subscription.add(
+      this.disabled$
+        .pipe(
+          tap((isDisabled) => {
+            if (isDisabled) {
+              this.formatsFormControl.disable();
+            } else {
+              this.formatsFormControl.enable();
+            }
+          }),
+        )
+        .subscribe(),
+    );
   }
 
   private initializeProductFromOrder() {

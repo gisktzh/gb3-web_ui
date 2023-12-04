@@ -23,6 +23,7 @@ import {
 import {selectMapSideDrawerContent} from '../reducers/map-ui.reducer';
 import {selectProducts} from '../reducers/data-download-product.reducer';
 import {HttpErrorResponse} from '@angular/common/http';
+import {Order} from '../../../shared/interfaces/geoshop-order.interface';
 
 const ZOOM_DELAY_IN_MS = 200;
 
@@ -47,6 +48,7 @@ export class DataDownloadOrderEffects {
       return this.actions$.pipe(
         ofType(DataDownloadOrderActions.setSelectionError),
         tap(({error}) => {
+          // TODO GB3-914: Replace with `throwError` again after implementing a effect error handler
           if (error instanceof OrderUnsupportedGeometry) {
             this.errorHandler.handleError(error);
           } else {
@@ -130,8 +132,8 @@ export class DataDownloadOrderEffects {
     return this.actions$.pipe(
       ofType(DataDownloadOrderActions.sendOrder),
       concatLatestFrom(() => [this.store.select(selectOrder)]),
-      filter(([_, order]) => order !== undefined),
-      map(([_, order]) => order!),
+      map(([_, order]) => order),
+      filter((order): order is Order => order !== undefined),
       switchMap((order) =>
         this.geoshopApiService.sendOrder(order).pipe(
           map((orderResponse) => {
@@ -152,6 +154,7 @@ export class DataDownloadOrderEffects {
           if (error instanceof HttpErrorResponse && !!error.statusText) {
             message = error.statusText;
           }
+          // TODO GB3-914: Replace with `throwError` again after implementing a effect error handler
           this.errorHandler.handleError(new OrderCouldNotBeSent(error, message));
         }),
       );
@@ -197,6 +200,7 @@ export class DataDownloadOrderEffects {
       return this.actions$.pipe(
         ofType(DataDownloadOrderActions.setOrderStatusError),
         tap(({error}) => {
+          // TODO GB3-914: Replace with `throwError` again after implementing a effect error handler
           this.errorHandler.handleError(new OrderStatusCouldNotBeSent(error));
         }),
       );
@@ -253,6 +257,7 @@ export class DataDownloadOrderEffects {
         concatLatestFrom(() => this.store.select(selectStatusJobs)),
         filter(([{orderId}, statusJobs]) => statusJobs.find((activeStatusJob) => activeStatusJob.id === orderId)?.isAborted === true),
         tap(([{error}, _]) => {
+          // TODO GB3-914: Replace with `throwError` again after implementing a effect error handler
           this.errorHandler.handleError(new OrderStatusWasAborted(error));
         }),
       );

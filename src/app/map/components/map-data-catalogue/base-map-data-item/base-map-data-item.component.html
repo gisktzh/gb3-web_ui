@@ -56,14 +56,13 @@
       matTooltip="{{ title }}"
       showTooltipIfTruncated
     ></p>
-    <external-link-button
+    <gb2-exit-button
       *ngIf="gb2Url"
       [color]="'accent'"
       [highlighted]="true"
       [size]="'small'"
       [url]="gb2Url | appendMapConfigurationToUrl: mapConfigState"
-      toolTip="Diese Karte ist noch nicht im neuen GIS-Browser verfügbar. Öffnen Sie die Karte im alten GIS-Browser mit diesem Link."
-    ></external-link-button>
+    ></gb2-exit-button>
     <button (click)="deleteItem()" *ngIf="showDeleteButton" mat-icon-button>
       <mat-icon>delete</mat-icon>
     </button>

@@ -24,7 +24,7 @@ export const dataDownloadProductFeature = createFeature({
       }
       return {...initialState, productsLoadingState: 'loading'};
     }),
-    on(DataDownloadProductActions.setProducts, (state, {products}): DataDownloadProductState => {
+    on(DataDownloadProductActions.setProducts, (_, {products}): DataDownloadProductState => {
       return {...initialState, products, productsLoadingState: 'loaded'};
     }),
     on(DataDownloadProductActions.setProductsError, (): DataDownloadProductState => {

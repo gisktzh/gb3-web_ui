@@ -33,7 +33,9 @@
           <product [product]="product" [order]="order" [disabled]="savingState === 'loading'"></product>
           <mat-divider></mat-divider>
         </ng-container>
-        <p *ngIf="filteredProducts.length === 0" class="mat-body-2">Keine Resultate zu diesem Filter.</p>
+        <p *ngIf="activeDataDownloadFiltersPerCategory.length > 0 && filteredProducts.length === 0" class="mat-body-2">
+          Keine Resultate zu diesem Filter.
+        </p>
       </expandable-list-item>
     </div>
     <loading-and-process-bar [loadingState]="savingState"></loading-and-process-bar>
