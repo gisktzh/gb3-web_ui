@@ -18,6 +18,7 @@ import {selectMapSideDrawerContent} from '../reducers/map-ui.reducer';
 import {selectProducts} from '../reducers/data-download-product.reducer';
 import {HttpErrorResponse} from '@angular/common/http';
 import {Order} from '../../../shared/interfaces/geoshop-order.interface';
+import {DataDownloadOrderStatusJobActions} from '../actions/data-download-order-status-job.actions';
 
 @Injectable()
 export class DataDownloadOrderEffects {
@@ -181,7 +182,7 @@ export class DataDownloadOrderEffects {
       concatLatestFrom(() => this.store.select(selectProducts)),
       map(([{order, orderResponse}, products]) => {
         const orderTitle = this.geoshopApiService.createOrderTitle(order, products);
-        return DataDownloadOrderActions.requestOrderStatus({orderId: orderResponse.orderId, orderTitle});
+        return DataDownloadOrderStatusJobActions.requestOrderStatus({orderId: orderResponse.orderId, orderTitle});
       }),
     );
   });

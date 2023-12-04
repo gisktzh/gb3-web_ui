@@ -1,19 +1,19 @@
 import {ErrorHandler, Injectable} from '@angular/core';
 import {Actions, concatLatestFrom, createEffect, ofType} from '@ngrx/effects';
 import {catchError, map, mergeMap} from 'rxjs/operators';
-import {DataDownloadOrderActions} from '../actions/data-download-order.actions';
 import {filter, of, switchMap, takeWhile, tap, timer} from 'rxjs';
 import {ConfigService} from '../../../shared/services/config.service';
 import {Store} from '@ngrx/store';
 import {GeoshopApiService} from '../../../shared/services/apis/geoshop/services/geoshop-api.service';
-import {selectStatusJobs} from '../reducers/data-download-order.reducer';
 import {OrderStatusCouldNotBeSent, OrderStatusWasAborted} from '../../../shared/errors/data-download.errors';
+import {DataDownloadOrderStatusJobActions} from '../actions/data-download-order-status-job.actions';
+import {selectStatusJobs} from '../reducers/data-download-order-status-job.reducer';
 
 @Injectable()
 export class DataDownloadOrderStatusJobEffects {
   public periodicallyCheckOrderStatus$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(DataDownloadOrderActions.requestOrderStatus),
+      ofType(DataDownloadOrderStatusJobActions.requestOrderStatus),
       mergeMap(({orderId}) =>
         timer(this.configService.dataDownloadConfig.initialPollingDelay, this.configService.dataDownloadConfig.pollingInterval).pipe(
           concatLatestFrom(() => [this.store.select(selectStatusJobs)]),
@@ -34,11 +34,11 @@ export class DataDownloadOrderStatusJobEffects {
           switchMap(() =>
             this.geoshopApiService.checkOrderStatus(orderId).pipe(
               map((orderStatus) => {
-                return DataDownloadOrderActions.setOrderStatusResponse({orderStatus});
+                return DataDownloadOrderStatusJobActions.setOrderStatusResponse({orderStatus});
               }),
               catchError((error: unknown) =>
                 of(
-                  DataDownloadOrderActions.setOrderStatusError({
+                  DataDownloadOrderStatusJobActions.setOrderStatusError({
                     error,
                     orderId,
                     maximumNumberOfConsecutiveStatusJobErrors:
@@ -56,7 +56,7 @@ export class DataDownloadOrderStatusJobEffects {
   public handleOrderStatusError$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(DataDownloadOrderActions.setOrderStatusError),
+        ofType(DataDownloadOrderStatusJobActions.setOrderStatusError),
         tap(({error}) => {
           // TODO GB3-914: Replace with `throwError` again after implementing a effect error handler
           this.errorHandler.handleError(new OrderStatusCouldNotBeSent(error));
@@ -69,7 +69,7 @@ export class DataDownloadOrderStatusJobEffects {
   public handleOrderStatusRefreshAbortError$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(DataDownloadOrderActions.setOrderStatusError),
+        ofType(DataDownloadOrderStatusJobActions.setOrderStatusError),
         concatLatestFrom(() => this.store.select(selectStatusJobs)),
         filter(([{orderId}, statusJobs]) => statusJobs.find((activeStatusJob) => activeStatusJob.id === orderId)?.isAborted === true),
         tap(([{error}, _]) => {

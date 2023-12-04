@@ -18,7 +18,7 @@ import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {selectActiveTool} from '../reducers/tool.reducer';
 import {Order, OrderResponse} from '../../../shared/interfaces/geoshop-order.interface';
 import {MinimalGeometriesUtils} from '../../../testing/map-testing/minimal-geometries.utils';
-import {selectOrder, selectSelection, selectStatusJobs} from '../reducers/data-download-order.reducer';
+import {selectOrder, selectSelection} from '../reducers/data-download-order.reducer';
 import {GeoshopApiService} from '../../../shared/services/apis/geoshop/services/geoshop-api.service';
 import {Polygon} from 'geojson';
 import {OrderCouldNotBeSent, OrderSelectionIsInvalid, OrderUnsupportedGeometry} from '../../../shared/errors/data-download.errors';
@@ -26,6 +26,8 @@ import {HttpErrorResponse} from '@angular/common/http';
 import {selectMapSideDrawerContent} from '../reducers/map-ui.reducer';
 import {selectProducts} from '../reducers/data-download-product.reducer';
 import {ErrorHandler} from '@angular/core';
+import {DataDownloadOrderStatusJobActions} from '../actions/data-download-order-status-job.actions';
+import {selectStatusJobs} from '../reducers/data-download-order-status-job.reducer';
 
 describe('DataDownloadOrderEffects', () => {
   const polygonSelectionMock: DataDownloadSelection = {
@@ -345,7 +347,7 @@ describe('DataDownloadOrderEffects', () => {
   });
 
   describe('requestOrderStatusAfterSendingAnOrderWithoutEmailSuccessfully$', () => {
-    it('dispatches DataDownloadActions.requestOrderStatus() after setting a send order response', (done: DoneFn) => {
+    it('dispatches DataDownloadOrderStatusJobActions.requestOrderStatus() after setting a send order response', (done: DoneFn) => {
       const order = {
         ...orderMock,
         email: undefined,
@@ -361,7 +363,7 @@ describe('DataDownloadOrderEffects', () => {
       store.overrideSelector(selectStatusJobs, []);
       const geoshopApiServiceSpy = spyOn(geoshopApiService, 'createOrderTitle').and.returnValue(orderTitle);
 
-      const expectedAction = DataDownloadOrderActions.requestOrderStatus({orderId: orderResponse.orderId, orderTitle});
+      const expectedAction = DataDownloadOrderStatusJobActions.requestOrderStatus({orderId: orderResponse.orderId, orderTitle});
 
       actions$ = of(DataDownloadOrderActions.setSendOrderResponse({order, orderResponse}));
       effects.requestOrderStatusAfterSendingAnOrderWithoutEmailSuccessfully$.subscribe((action) => {

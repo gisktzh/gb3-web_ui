@@ -7,15 +7,15 @@ import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {RouterTestingModule} from '@angular/router/testing';
 import {MAP_SERVICE} from '../../../app.module';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
-import {DataDownloadOrderActions} from '../actions/data-download-order.actions';
 import {ConfigService} from '../../../shared/services/config.service';
-import {selectStatusJobs} from '../reducers/data-download-order.reducer';
 import {GeoshopApiService} from '../../../shared/services/apis/geoshop/services/geoshop-api.service';
 import {OrderStatusCouldNotBeSent, OrderStatusWasAborted} from '../../../shared/errors/data-download.errors';
 import {OrderStatus, OrderStatusJob} from '../../../shared/interfaces/geoshop-order-status.interface';
 import {DataDownloadConfig} from '../../../shared/interfaces/data-download-config.interface';
 import {ErrorHandler} from '@angular/core';
 import {DataDownloadOrderStatusJobEffects} from './data-download-order-status-job.effects';
+import {selectStatusJobs} from '../reducers/data-download-order-status-job.reducer';
+import {DataDownloadOrderStatusJobActions} from '../actions/data-download-order-status-job.actions';
 
 describe('DataDownloadOrderStatusJobEffects', () => {
   let actions$: Observable<Action>;
@@ -77,16 +77,16 @@ describe('DataDownloadOrderStatusJobEffects', () => {
       pollingInterval: 1000,
     };
 
-    it('dispatches DataDownloadOrderActions.setOrderStatusResponse() at least once without an error after requesting an order status', fakeAsync(() => {
+    it('dispatches DataDownloadOrderStatusJobActions.setOrderStatusResponse() at least once without an error after requesting an order status', fakeAsync(() => {
       store.overrideSelector(selectStatusJobs, []);
       spyOnProperty(configService, 'dataDownloadConfig', 'get').and.returnValue(dataDownloadConfig);
       const geoshopApiServiceSpy = spyOn(geoshopApiService, 'checkOrderStatus').and.returnValue(of(orderStatus));
       const subscription = new Subscription();
 
-      const expectedAction = DataDownloadOrderActions.setOrderStatusResponse({orderStatus});
+      const expectedAction = DataDownloadOrderStatusJobActions.setOrderStatusResponse({orderStatus});
 
       let newAction: Action | undefined;
-      actions$ = of(DataDownloadOrderActions.requestOrderStatus({orderTitle, orderId}));
+      actions$ = of(DataDownloadOrderStatusJobActions.requestOrderStatus({orderTitle, orderId}));
       subscription.add(effects.periodicallyCheckOrderStatus$.subscribe((action) => (newAction = action)));
       tick();
 
@@ -96,17 +96,21 @@ describe('DataDownloadOrderStatusJobEffects', () => {
       subscription.unsubscribe();
     }));
 
-    it('dispatches DataDownloadOrderActions.setOrderStatusError() at least once with an error after requesting an order status', fakeAsync(() => {
+    it('dispatches DataDownloadOrderStatusJobActions.setOrderStatusError() at least once with an error after requesting an order status', fakeAsync(() => {
       store.overrideSelector(selectStatusJobs, []);
       spyOnProperty(configService, 'dataDownloadConfig', 'get').and.returnValue(dataDownloadConfig);
       const error = new Error('nooooooooooooo!!!');
       const geoshopApiServiceSpy = spyOn(geoshopApiService, 'checkOrderStatus').and.returnValue(throwError(() => error));
       const subscription = new Subscription();
 
-      const expectedAction = DataDownloadOrderActions.setOrderStatusError({error, orderId, maximumNumberOfConsecutiveStatusJobErrors: 1});
+      const expectedAction = DataDownloadOrderStatusJobActions.setOrderStatusError({
+        error,
+        orderId,
+        maximumNumberOfConsecutiveStatusJobErrors: 1,
+      });
 
       let newAction: Action | undefined;
-      actions$ = of(DataDownloadOrderActions.requestOrderStatus({orderTitle, orderId}));
+      actions$ = of(DataDownloadOrderStatusJobActions.requestOrderStatus({orderTitle, orderId}));
       subscription.add(effects.periodicallyCheckOrderStatus$.subscribe((action) => (newAction = action)));
       tick();
 
@@ -126,7 +130,7 @@ describe('DataDownloadOrderStatusJobEffects', () => {
       const geoshopApiServiceSpy = spyOn(geoshopApiService, 'checkOrderStatus').and.callThrough();
 
       let newAction;
-      actions$ = of(DataDownloadOrderActions.requestOrderStatus({orderTitle, orderId}));
+      actions$ = of(DataDownloadOrderStatusJobActions.requestOrderStatus({orderTitle, orderId}));
       effects.periodicallyCheckOrderStatus$.subscribe((action) => (newAction = action));
       tick();
 
@@ -145,7 +149,7 @@ describe('DataDownloadOrderStatusJobEffects', () => {
       const geoshopApiServiceSpy = spyOn(geoshopApiService, 'checkOrderStatus').and.callThrough();
 
       let newAction;
-      actions$ = of(DataDownloadOrderActions.requestOrderStatus({orderTitle, orderId}));
+      actions$ = of(DataDownloadOrderStatusJobActions.requestOrderStatus({orderTitle, orderId}));
       effects.periodicallyCheckOrderStatus$.subscribe((action) => (newAction = action));
       tick();
 
@@ -164,7 +168,7 @@ describe('DataDownloadOrderStatusJobEffects', () => {
       const geoshopApiServiceSpy = spyOn(geoshopApiService, 'checkOrderStatus').and.callThrough();
 
       let newAction;
-      actions$ = of(DataDownloadOrderActions.requestOrderStatus({orderTitle, orderId}));
+      actions$ = of(DataDownloadOrderStatusJobActions.requestOrderStatus({orderTitle, orderId}));
       effects.periodicallyCheckOrderStatus$.subscribe((action) => (newAction = action));
       tick();
 
@@ -183,7 +187,7 @@ describe('DataDownloadOrderStatusJobEffects', () => {
       const geoshopApiServiceSpy = spyOn(geoshopApiService, 'checkOrderStatus').and.callThrough();
 
       let newAction;
-      actions$ = of(DataDownloadOrderActions.requestOrderStatus({orderTitle, orderId}));
+      actions$ = of(DataDownloadOrderStatusJobActions.requestOrderStatus({orderTitle, orderId}));
       effects.periodicallyCheckOrderStatus$.subscribe((action) => (newAction = action));
       tick();
 
@@ -202,7 +206,7 @@ describe('DataDownloadOrderStatusJobEffects', () => {
       const expectedError = new OrderStatusCouldNotBeSent(originalError);
 
       actions$ = of(
-        DataDownloadOrderActions.setOrderStatusError({
+        DataDownloadOrderStatusJobActions.setOrderStatusError({
           error: originalError,
           orderId: 'stormtrooper',
           maximumNumberOfConsecutiveStatusJobErrors: 3,
@@ -249,7 +253,7 @@ describe('DataDownloadOrderStatusJobEffects', () => {
 
       const expectedError = new OrderStatusWasAborted(error);
 
-      actions$ = of(DataDownloadOrderActions.setOrderStatusError({error, orderId, maximumNumberOfConsecutiveStatusJobErrors: 3}));
+      actions$ = of(DataDownloadOrderStatusJobActions.setOrderStatusError({error, orderId, maximumNumberOfConsecutiveStatusJobErrors: 3}));
       effects.handleOrderStatusRefreshAbortError$.subscribe(() => {
         expect(errorHandlerSpy).toHaveBeenCalledOnceWith(expectedError);
         done();
@@ -266,7 +270,7 @@ describe('DataDownloadOrderStatusJobEffects', () => {
       store.overrideSelector(selectStatusJobs, [notAbortedOrderStatusJob]);
 
       let newAction;
-      actions$ = of(DataDownloadOrderActions.setOrderStatusError({error, orderId, maximumNumberOfConsecutiveStatusJobErrors: 3}));
+      actions$ = of(DataDownloadOrderStatusJobActions.setOrderStatusError({error, orderId, maximumNumberOfConsecutiveStatusJobErrors: 3}));
       effects.handleOrderStatusRefreshAbortError$.subscribe((action) => (newAction = action));
       tick();
 
