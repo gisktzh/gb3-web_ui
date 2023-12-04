@@ -3,6 +3,7 @@ import {DrawingLayer} from '../enums/drawing-layer.enum';
 import {HasSrs} from './geojson-types-with-srs.interface';
 import {SupportedGeometry} from '../types/SupportedGeometry.type';
 import {AbstractEsriDrawableToolStrategy} from '../../map/services/esri-services/tool-service/strategies/abstract-esri-drawable-tool.strategy';
+import {MapfishPrintStyleProperties} from '../models/mapfish-print-style-properties.interface';
 
 interface InternalDrawingRepresentation<T = Record<never, never>> extends Feature<SupportedGeometry, T> {
   labelText?: string;
@@ -19,31 +20,17 @@ interface InternalDrawingType {
   type: 'point' | 'line' | 'polygon' | 'text';
 }
 
-interface LineStyleConfiguration {
-  strokeColor: string;
-  strokeOpacity: number;
-  strokeWidth: number;
-}
+interface LineStyleConfiguration extends Pick<MapfishPrintStyleProperties, 'strokeColor' | 'strokeOpacity' | 'strokeWidth'> {}
 
-interface AreaStyleConfiguration extends LineStyleConfiguration {
-  fillColor: string;
-  fillOpacity: number;
-}
+interface AreaStyleConfiguration extends LineStyleConfiguration, Pick<MapfishPrintStyleProperties, 'fillColor' | 'fillOpacity'> {}
 
-interface PointStyleConfiguration {
-  pointRadius: number;
-}
+interface PointStyleConfiguration extends Pick<MapfishPrintStyleProperties, 'pointRadius'> {}
 
-interface TextStyleConfiguration {
-  label: string;
-  fontSize: string;
-  fontColor: string;
-  fontFamily: string;
-  labelOutlineColor: string;
-  labelOutlineWidth: number;
-  labelYOffset: number;
-  labelAlign: string;
-}
+interface TextStyleConfiguration
+  extends Pick<
+    MapfishPrintStyleProperties,
+    'label' | 'fontSize' | 'fontColor' | 'fontFamily' | 'labelYOffset' | 'labelAlign' | 'haloColor' | 'haloRadius'
+  > {}
 
 export interface Gb3LineStringStyle extends InternalDrawingType, LineStyleConfiguration {
   type: 'line';

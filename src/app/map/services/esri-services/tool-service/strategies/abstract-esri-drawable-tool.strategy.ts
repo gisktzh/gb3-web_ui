@@ -26,7 +26,6 @@ export abstract class AbstractEsriDrawableToolStrategy<
    */
   protected readonly completeDrawingCallbackHandler: T;
   protected abstract readonly tool: SupportedEsriTool;
-  private readonly labelTextFieldName = MapConstants.DRAWING_LABEL_IDENTIFIER;
 
   protected constructor(layer: GraphicsLayer, mapView: MapView, completeDrawingCallbackHandler: T) {
     // todo: check whether new SketchViewModels are okay; otherwise -> singleton and reuse the model.
@@ -60,7 +59,7 @@ export abstract class AbstractEsriDrawableToolStrategy<
   }
 
   protected setLabelTextAttributeOnGraphic(graphic: Graphic, text: string) {
-    graphic.setAttribute(this.labelTextFieldName, text);
+    graphic.setAttribute(MapConstants.DRAWING_LABEL_IDENTIFIER, text);
   }
 
   protected setBelongsToAttributeOnGraphic(graphic: __esri.Graphic, belongsToGraphicUuid: string) {

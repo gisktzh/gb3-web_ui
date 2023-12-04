@@ -158,12 +158,12 @@ export class EsriSymbolizationService {
         };
       case 'text':
         return {
-          labelOutlineColor: (symbol as TextSymbol).haloColor.toHex(),
+          haloColor: (symbol as TextSymbol).haloColor.toHex(),
           fontColor: symbol.color.toHex(),
           fontFamily: (symbol as TextSymbol).font.family,
           fontSize: (symbol as TextSymbol).font.size.toString(),
-          labelOutlineWidth: (symbol as TextSymbol).haloSize,
-          labelYOffset: (symbol as TextSymbol).yoffset, // todo: actual offset is rather x2.1
+          haloRadius: (symbol as TextSymbol).haloSize.toString(),
+          labelYOffset: (symbol as TextSymbol).yoffset.toString(), // todo: actual offset is rather x2.1
           labelAlign: 'ct', // todo: type?
           label: '[text]', // todo: type?
           type: 'text',
@@ -183,8 +183,8 @@ export class EsriSymbolizationService {
             size: style.fontSize,
           },
           color: this.convertHexToEsriColor(style.fontColor),
-          haloColor: this.convertHexToEsriColor(style.labelOutlineColor),
-          haloSize: style.labelOutlineWidth,
+          haloColor: this.convertHexToEsriColor(style.haloColor),
+          haloSize: style.haloRadius,
           yoffset: style.labelYOffset,
         });
       }
