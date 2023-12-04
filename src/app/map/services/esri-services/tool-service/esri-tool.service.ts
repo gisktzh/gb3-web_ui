@@ -367,7 +367,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
   private setDataDownloadSelectionStrategy(selectionType: DataDownloadSelectionTool, layer: GraphicsLayer) {
     const areaStyle = this.esriSymbolizationService.createPolygonSymbolization(InternalDrawingLayer.Selection, false);
 
-    // todo WES: these should be refactored and added to `DrawingCallbackHandler` as well; and they can then be used in our Strategies'
+    // todo GB3-826: these should be refactored and added to `DrawingCallbackHandler` as well; and they can then be used in our Strategies'
     //  generics.
     const completeDrawingCallbackHandler: DrawingCallbackHandler['completeDrawing'] = (graphic: Graphic, labelText?: string) => {
       const internalDrawingRepresentation = this.convertToGeoJson(graphic, labelText);

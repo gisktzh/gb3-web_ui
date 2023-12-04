@@ -3,7 +3,7 @@ import {DrawingLayer} from '../enums/drawing-layer.enum';
 import {HasSrs} from './geojson-types-with-srs.interface';
 import {SupportedGeometry} from '../types/SupportedGeometry.type';
 import {AbstractEsriDrawableToolStrategy} from '../../map/services/esri-services/tool-service/strategies/abstract-esri-drawable-tool.strategy';
-import {MapfishPrintStyleProperties} from '../models/mapfish-print-style-properties.interface';
+import {MapfishPrintStyleProperties} from '../models/mapfish-print-style-properties-generated.interface';
 
 interface InternalDrawingRepresentation<T = Record<never, never>> extends Feature<SupportedGeometry, T> {
   labelText?: string;

@@ -163,9 +163,9 @@ export class EsriSymbolizationService {
           fontFamily: (symbol as TextSymbol).font.family,
           fontSize: (symbol as TextSymbol).font.size.toString(),
           haloRadius: (symbol as TextSymbol).haloSize.toString(),
-          labelYOffset: (symbol as TextSymbol).yoffset.toString(), // todo: actual offset is rather x2.1
-          labelAlign: 'ct', // todo: type?
-          label: '[text]', // todo: type?
+          labelYOffset: (symbol as TextSymbol).yoffset.toString(), // todo GB3-826: actual offset is rather x2.1
+          labelAlign: 'ct', // todo GB3-826: move this to a constant?
+          label: '[text]', // todo GB3-826: move this to a constant? note: it should also match the property in the interface
           type: 'text',
         };
       default:
@@ -189,9 +189,8 @@ export class EsriSymbolizationService {
         });
       }
       case 'point': {
-        console.log(style);
         return new EsriSimpleMarkerSymbol({
-          color: this.convertHexToEsriColor(style.fillColor),
+          color: this.convertHexToEsriColor(style.fillColor, style.fillOpacity),
           size: style.pointRadius,
           outline: {
             color: this.convertHexToEsriColor(style.strokeColor),
@@ -200,13 +199,13 @@ export class EsriSymbolizationService {
       }
       case 'line': {
         return new EsriSimpleLineSymbol({
-          color: this.convertHexToEsriColor(style.strokeColor),
+          color: this.convertHexToEsriColor(style.strokeColor, style.strokeOpacity),
           width: style.strokeWidth,
         });
       }
       case 'polygon': {
         return new EsriSimpleFillSymbol({
-          color: this.convertHexToEsriColor(style.fillColor, style.fillOpacity), // todo: extract default alpha value
+          color: this.convertHexToEsriColor(style.fillColor, style.fillOpacity), // todo GB3-826: extract default alpha value
           outline: {
             width: style.strokeWidth,
             color: this.convertHexToEsriColor(style.strokeColor),

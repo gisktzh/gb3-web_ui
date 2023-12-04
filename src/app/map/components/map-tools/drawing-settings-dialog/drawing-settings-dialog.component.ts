@@ -10,8 +10,8 @@ import {MatDialogRef} from '@angular/material/dialog';
   styleUrls: ['./drawing-settings-dialog.component.scss'],
 })
 export class DrawingSettingsDialogComponent {
-  // todo: inital settings and two-way bindings
-  // todo: typehints for event variables below
+  // todo GB3-826: inital settings and two-way bindings
+  // todo GB3-826: typehints for event variables below
 
   constructor(
     private readonly store: Store,
@@ -19,7 +19,7 @@ export class DrawingSettingsDialogComponent {
   ) {}
 
   public changeFill(event: any) {
-    const color = ColorUtils.convertHexToSymbolizationColor(event.target.value, 0.6); // todo: default style extraction
+    const color = ColorUtils.convertHexToSymbolizationColor(event.target.value, 0.6); // todo GB3-826: default style extraction
     this.store.dispatch(DrawingStyleActions.setFillColor({color}));
   }
 
