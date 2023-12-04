@@ -82,8 +82,8 @@
   </div>
 </div>
 <div class="map-management-mobile-content" [ngClass]="{'map-management-mobile-content--filtering': filterString !== undefined}">
-  <div [ngSwitch]="activeTab" body>
-    <active-map-items *ngSwitchCase="'activeMaps'"></active-map-items>
-    <map-data-catalogue *ngSwitchCase="'mapsCatalogue'"></map-data-catalogue>
+  <div body>
+    <active-map-items [ngClass]="{'map-management-mobile-content--hidden': activeTab !== 'activeMaps'}"></active-map-items>
+    <map-data-catalogue [ngClass]="{'map-management-mobile-content--hidden': activeTab !== 'mapsCatalogue'}"></map-data-catalogue>
   </div>
 </div>

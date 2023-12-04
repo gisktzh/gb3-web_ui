@@ -119,6 +119,10 @@
 .map-management-mobile-content {
   margin-top: 112px;
 
+  &--hidden {
+    display: none;
+  }
+
   &--filtering {
     margin-top: 58px;
   }
