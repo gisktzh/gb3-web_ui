@@ -5,6 +5,14 @@ export interface Gb3GeoJsonFeature {
   type: 'Feature';
   properties: {
     /**
+     * UUID of the given feature
+     */
+    id: string;
+    /**
+     * UUID if the feature has a belongsTo relationship with another feature, e.g. the label of a measurement.
+     */
+    belongsTo?: string;
+    /**
      * Reference to style ID in 'styles'
      * @example "a"
      */
@@ -16,6 +24,11 @@ export interface Gb3GeoJsonFeature {
     text?: string;
   };
   geometry: SupportedGeometry;
+}
+
+export interface Gb3VectorLayerStyle {
+  /** Style definition based on OpenLayers 2 Symbolizer */
+  [key: string]: any;
 }
 
 export interface Gb3VectorLayer extends AbstractGb3Layer {
@@ -34,7 +47,5 @@ export interface Gb3VectorLayer extends AbstractGb3Layer {
    * Style definitions for features. NOTE: keys are style IDs referenced in feature 'style' property
    * @example {"a":{"pointRadius":15,"fillColor":"#ee3333","fillOpacity":0,"strokeColor":"#ee3333","strokeWidth":3}}
    */
-  styles: {
-    /** Style definition based on OpenLayers 2 Symbolizer */
-  };
+  styles: Gb3VectorLayerStyle;
 }

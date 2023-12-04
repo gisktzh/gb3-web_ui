@@ -12,7 +12,7 @@ import Point from '@arcgis/core/geometry/Point';
 
 const M2_TO_KM2_CONVERSION_THRESHOLD = 100_000;
 
-export class EsriAreaMeasurementStrategy extends AbstractEsriMeasurementStrategy<Polygon> {
+export class EsriAreaMeasurementStrategy extends AbstractEsriMeasurementStrategy<Polygon, DrawingCallbackHandler['completeMeasurement']> {
   protected readonly tool: SupportedEsriTool = 'polygon';
   private readonly labelSymbolization: TextSymbol;
 
@@ -21,7 +21,7 @@ export class EsriAreaMeasurementStrategy extends AbstractEsriMeasurementStrategy
     mapView: MapView,
     polygonSymbol: SimpleFillSymbol,
     labelSymbolization: TextSymbol,
-    completeDrawingCallbackHandler: DrawingCallbackHandler['complete'],
+    completeDrawingCallbackHandler: DrawingCallbackHandler['completeMeasurement'],
   ) {
     super(layer, mapView, completeDrawingCallbackHandler);
 
@@ -29,14 +29,14 @@ export class EsriAreaMeasurementStrategy extends AbstractEsriMeasurementStrategy
     this.labelSymbolization = labelSymbolization;
   }
 
-  public static getLabelPosition(geometry: Polygon): Point {
-    return geometry.centroid;
-  }
-
   protected override createLabelConfigurationForGeometry(geometry: Polygon): LabelConfiguration {
     this.labelSymbolization.text = this.getRoundedPolygonAreaString(geometry);
 
-    return {location: EsriAreaMeasurementStrategy.getLabelPosition(geometry), symbolization: this.labelSymbolization};
+    return {location: this.getLabelPosition(geometry), symbolization: this.labelSymbolization};
+  }
+
+  private getLabelPosition(geometry: Polygon): Point {
+    return geometry.centroid;
   }
 
   /**

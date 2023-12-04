@@ -144,6 +144,10 @@ const symbolIconsConfig = [
     id: 'ktzh_background_map_mobile',
     path: 'assets/icons/symbols/background-map-mobile.svg',
   },
+  {
+    id: 'ktzh_settings',
+    path: 'assets/icons/symbols/settings.svg',
+  },
 ];
 
 const drawingSymbolIconsConfig = [

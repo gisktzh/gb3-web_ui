@@ -12,7 +12,7 @@ import {EsriDefaultStrategy} from './strategies/measurement/esri-default.strateg
 import {EsriLineMeasurementStrategy} from './strategies/measurement/esri-line-measurement.strategy';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {EsriSymbolizationService} from '../esri-symbolization.service';
-import {DrawingLayer, InternalDrawingLayer, UserDrawingLayer} from '../../../../shared/enums/drawing-layer.enum';
+import {InternalDrawingLayer, UserDrawingLayer} from '../../../../shared/enums/drawing-layer.enum';
 import {DrawingActiveMapItem} from '../../../models/implementations/drawing.model';
 import {EsriAreaMeasurementStrategy} from './strategies/measurement/esri-area-measurement.strategy';
 import {EsriPointMeasurementStrategy} from './strategies/measurement/esri-point-measurement.strategy';
@@ -29,7 +29,7 @@ import Graphic from '@arcgis/core/Graphic';
 import {Gb3StyledInternalDrawingRepresentation} from '../../../../shared/interfaces/internal-drawing-representation.interface';
 import {DrawingActions} from '../../../../state/map/actions/drawing.actions';
 import {silentArcgisToGeoJSON} from '../../../../shared/utils/esri-transformer-wrapper.utils';
-import {DrawingLayerNotInitialized, UnsupportedGeometryType, UnsupportedLabelType} from '../errors/esri.errors';
+import {DrawingLayerNotInitialized, UnsupportedGeometryType} from '../errors/esri.errors';
 import {DataDownloadSelectionTool} from '../../../../shared/types/data-download-selection-tool.type';
 import {DataDownloadOrderActions} from '../../../../state/map/actions/data-download-order.actions';
 import {DataDownloadSelection} from '../../../../shared/interfaces/data-download-selection.interface';
@@ -117,9 +117,17 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
     );
   }
 
-  public complete(graphic: Graphic, labelText?: string) {
+  public completeDrawing(graphic: Graphic, labelText?: string) {
     const internalDrawingRepresentation = this.convertToGeoJson(graphic, labelText);
     this.store.dispatch(DrawingActions.addDrawing({drawing: internalDrawingRepresentation}));
+    this.endDrawing();
+  }
+  public completeMeasurement(graphic: Graphic, labelPoint: Graphic, labelText: string) {
+    const internalDrawingRepresentation = this.convertToGeoJson(graphic);
+    const internalDrawingRepresentationLabel = this.convertToGeoJson(labelPoint, labelText);
+
+    // note: order is important as the features are drawn in the order of the array, starting at the bottom
+    this.store.dispatch(DrawingActions.addDrawings({drawings: [internalDrawingRepresentation, internalDrawingRepresentationLabel]}));
     this.endDrawing();
   }
 
@@ -128,7 +136,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
     const drawingLayer = this.esriMapViewService.findEsriLayer(fullLayerIdentifier);
 
     if (drawingLayer) {
-      const graphics = drawingsToAdd.flatMap((drawing) => this.createGraphicsForDrawing(drawing, layerIdentifier));
+      const graphics = drawingsToAdd.flatMap((drawing) => this.createGraphicsForDrawing(drawing));
       (drawingLayer as GraphicsLayer).addMany(graphics);
     } else {
       throw new DrawingLayerNotInitialized();
@@ -214,6 +222,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
       properties: {
         style: this.esriSymbolizationService.extractGb3SymbolizationFromSymbol(graphic.symbol),
         [AbstractEsriDrawableToolStrategy.identifierFieldName]: graphic.attributes[AbstractEsriDrawableToolStrategy.identifierFieldName],
+        [AbstractEsriDrawableToolStrategy.belongsToFieldName]: graphic.attributes[AbstractEsriDrawableToolStrategy.belongsToFieldName],
       },
       source: this.toolStrategy.internalLayerType,
       labelText,
@@ -257,10 +266,10 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
 
   private setMeasurementStrategy(measurementType: MeasurementTool, layer: GraphicsLayer) {
     // because we currently do not have pictures symbols, the pointStyle is cast to SimpleMarkerSymbol.
-    const pointStyle = this.esriSymbolizationService.createPointSymbolization(UserDrawingLayer.Measurements) as SimpleMarkerSymbol;
-    const lineStyle = this.esriSymbolizationService.createLineSymbolization(UserDrawingLayer.Measurements);
-    const areaStyle = this.esriSymbolizationService.createPolygonSymbolization(UserDrawingLayer.Measurements);
-    const labelStyle = this.esriSymbolizationService.createTextSymbolization(UserDrawingLayer.Measurements);
+    const pointStyle = this.esriSymbolizationService.createPointSymbolization(UserDrawingLayer.Measurements, false) as SimpleMarkerSymbol;
+    const lineStyle = this.esriSymbolizationService.createLineSymbolization(UserDrawingLayer.Measurements, false);
+    const areaStyle = this.esriSymbolizationService.createPolygonSymbolization(UserDrawingLayer.Measurements, false);
+    const labelStyle = this.esriSymbolizationService.createTextSymbolization(UserDrawingLayer.Measurements, false);
 
     switch (measurementType) {
       case 'measure-area':
@@ -269,7 +278,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
           this.esriMapViewService.mapView,
           areaStyle,
           labelStyle,
-          (geometry, labelText) => this.complete(geometry, labelText),
+          (geometry, label, labelText) => this.completeMeasurement(geometry, label, labelText),
         );
         break;
       case 'measure-line':
@@ -278,7 +287,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
           this.esriMapViewService.mapView,
           lineStyle,
           labelStyle,
-          (geometry, labelText) => this.complete(geometry, labelText),
+          (geometry, label, labelText) => this.completeMeasurement(geometry, label, labelText),
         );
         break;
       case 'measure-point':
@@ -287,7 +296,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
           this.esriMapViewService.mapView,
           pointStyle,
           labelStyle,
-          (geometry, labelText) => this.complete(geometry, labelText),
+          (geometry, label, labelText) => this.completeMeasurement(geometry, label, labelText),
         );
         break;
       case 'measure-elevation-profile':
@@ -300,20 +309,20 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
   }
 
   private setDrawingStrategy(drawingType: DrawingTool, layer: GraphicsLayer) {
-    const pointStyle = this.esriSymbolizationService.createPointSymbolization(UserDrawingLayer.Drawings) as SimpleMarkerSymbol;
-    const textStyle = this.esriSymbolizationService.createTextSymbolization(UserDrawingLayer.Drawings);
-    const lineStyle = this.esriSymbolizationService.createLineSymbolization(UserDrawingLayer.Drawings);
-    const areaStyle = this.esriSymbolizationService.createPolygonSymbolization(UserDrawingLayer.Drawings);
+    const pointStyle = this.esriSymbolizationService.createPointSymbolization(UserDrawingLayer.Drawings, true) as SimpleMarkerSymbol;
+    const textStyle = this.esriSymbolizationService.createTextSymbolization(UserDrawingLayer.Drawings, true);
+    const lineStyle = this.esriSymbolizationService.createLineSymbolization(UserDrawingLayer.Drawings, true);
+    const areaStyle = this.esriSymbolizationService.createPolygonSymbolization(UserDrawingLayer.Drawings, true);
 
     switch (drawingType) {
       case 'draw-point':
         this.toolStrategy = new EsriPointDrawingStrategy(layer, this.esriMapViewService.mapView, pointStyle, (geometry) =>
-          this.complete(geometry),
+          this.completeDrawing(geometry),
         );
         break;
       case 'draw-line':
         this.toolStrategy = new EsriLineDrawingStrategy(layer, this.esriMapViewService.mapView, lineStyle, (geometry) =>
-          this.complete(geometry),
+          this.completeDrawing(geometry),
         );
         break;
       case 'draw-polygon':
@@ -321,7 +330,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
           layer,
           this.esriMapViewService.mapView,
           areaStyle,
-          (geometry) => this.complete(geometry),
+          (geometry) => this.completeDrawing(geometry),
           'polygon',
         );
         break;
@@ -330,7 +339,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
           layer,
           this.esriMapViewService.mapView,
           areaStyle,
-          (geometry) => this.complete(geometry),
+          (geometry) => this.completeDrawing(geometry),
           'rectangle',
         );
         break;
@@ -339,7 +348,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
           layer,
           this.esriMapViewService.mapView,
           areaStyle,
-          (geometry) => this.complete(geometry),
+          (geometry) => this.completeDrawing(geometry),
           'circle',
         );
         break;
@@ -348,7 +357,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
           layer,
           this.esriMapViewService.mapView,
           textStyle,
-          (geometry, labelText) => this.complete(geometry, labelText),
+          (geometry, labelText) => this.completeDrawing(geometry, labelText),
           this.dialogService,
         );
         break;
@@ -356,9 +365,11 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
   }
 
   private setDataDownloadSelectionStrategy(selectionType: DataDownloadSelectionTool, layer: GraphicsLayer) {
-    const areaStyle = this.esriSymbolizationService.createPolygonSymbolization(InternalDrawingLayer.Selection);
+    const areaStyle = this.esriSymbolizationService.createPolygonSymbolization(InternalDrawingLayer.Selection, false);
 
-    const completeDrawingCallbackHandler: DrawingCallbackHandler['complete'] = (graphic: Graphic, labelText?: string) => {
+    // todo GB3-826: these should be refactored and added to `DrawingCallbackHandler` as well; and they can then be used in our Strategies'
+    //  generics.
+    const completeDrawingCallbackHandler: DrawingCallbackHandler['completeDrawing'] = (graphic: Graphic, labelText?: string) => {
       const internalDrawingRepresentation = this.convertToGeoJson(graphic, labelText);
       const selection: DataDownloadSelection = {
         type: selectionType as Exclude<DataDownloadSelectionTool, 'select-municipality'>,
@@ -458,40 +469,14 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
     }
   }
 
-  private createGraphicsForDrawing(drawing: Gb3StyledInternalDrawingRepresentation, layerIdentifier: DrawingLayer) {
-    const symbolization = this.esriSymbolizationService.createSymbolizationForDrawingLayer(
-      drawing.geometry,
-      layerIdentifier,
-      drawing.labelText,
-    );
+  private createGraphicsForDrawing(drawing: Gb3StyledInternalDrawingRepresentation) {
+    const symbolization = this.esriSymbolizationService.extractSymbolFromGb3Representation(drawing.properties.style, drawing.labelText);
+
     const graphics: Graphic[] = [];
 
     const geometry = this.convertGeoJsonToArcGIS(drawing.geometry);
     const graphic = new Graphic({geometry: geometry, symbol: symbolization});
     graphics.push(graphic);
-
-    if (drawing.source === UserDrawingLayer.Measurements && drawing.labelText) {
-      let labelPosition: Point;
-
-      switch (graphic.geometry.type) {
-        case 'point':
-          labelPosition = EsriPointMeasurementStrategy.getLabelPosition(geometry as Point);
-          break;
-        case 'polyline':
-          labelPosition = EsriLineMeasurementStrategy.getLabelPosition(geometry as Polyline);
-          break;
-        case 'polygon':
-          labelPosition = EsriAreaMeasurementStrategy.getLabelPosition(geometry as Polygon);
-          break;
-        default:
-          throw new UnsupportedLabelType(graphic.geometry.type);
-      }
-      const labelSymbolization = this.esriSymbolizationService.createTextSymbolizationWithText(
-        UserDrawingLayer.Measurements,
-        drawing.labelText,
-      );
-      graphics.push(new Graphic({geometry: labelPosition, symbol: labelSymbolization}));
-    }
 
     return graphics;
   }
