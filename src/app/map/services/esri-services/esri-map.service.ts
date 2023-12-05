@@ -3,7 +3,7 @@ import esriConfig from '@arcgis/core/config';
 import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {Store} from '@ngrx/store';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import {BehaviorSubject, first, pairwise, skip, Subscription, tap, withLatestFrom} from 'rxjs';
 import {filter, map} from 'rxjs/operators';
 import {AuthService} from '../../../auth/auth.service';

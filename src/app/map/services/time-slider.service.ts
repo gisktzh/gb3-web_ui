@@ -1,8 +1,7 @@
 import {Injectable} from '@angular/core';
 import {TimeSliderConfiguration, TimeSliderLayerSource} from '../../shared/interfaces/topic.interface';
-import * as dayjs from 'dayjs';
-import * as duration from 'dayjs/plugin/duration';
-import {Duration} from 'dayjs/plugin/duration';
+import dayjs from 'dayjs';
+import duration, {Duration} from 'dayjs/plugin/duration';
 import {TimeExtentUtils} from '../../shared/utils/time-extent.utils';
 import {TimeExtent} from '../interfaces/time-extent.interface';
 

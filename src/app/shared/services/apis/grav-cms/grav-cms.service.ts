@@ -5,7 +5,7 @@ import {DiscoverMapsItem} from '../../../interfaces/discover-maps-item.interface
 import {map} from 'rxjs/operators';
 import {DiscoverMapsRoot, FrequentlyUsedRoot, MapInfosRoot, PageInfosRoot, Pages} from '../../../models/grav-cms-generated.interfaces';
 import {PageNotification, PageNotificationSeverity} from '../../../interfaces/page-notification.interface';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import {MapInfoNotification} from '../../../interfaces/map-info-notification.interface';
 import {MainPage} from '../../../enums/main-page.enum';
 import {FrequentlyUsedItem} from '../../../interfaces/frequently-used-item.interface';

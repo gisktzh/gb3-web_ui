@@ -1,6 +1,5 @@
 import {Duration} from 'dayjs/plugin/duration';
-import * as dayjs from 'dayjs';
-import {ManipulateType} from 'dayjs';
+import dayjs, {ManipulateType} from 'dayjs';
 import {TimeSliderConfiguration} from '../interfaces/topic.interface';
 import {TimeExtent} from '../../map/interfaces/time-extent.interface';
 
@@ -22,11 +21,13 @@ export class TimeExtentUtils {
    * Extracts the unit from the given duration or <undefined> if it contains values with multiple units.
    *
    * @remarks
-   * It does return a unit ('years'/'months'/...) only if the given duration contains values of this unit and nothing else; <undefined> otherwise.
+   * It does return a unit ('years'/'months'/...) only if the given duration contains values of this unit and nothing else; <undefined>
+   *   otherwise.
    *
    * @example
    * 'P3Y' is a duration of 3 years. The duration only contains years and therefore this method returns 'years'
-   * 'P1Y6M' is a duration of 1 year and 6 months. It contains years (1) and months (6) which is a mix of two units. The return value will be <undefined>.
+   * 'P1Y6M' is a duration of 1 year and 6 months. It contains years (1) and months (6) which is a mix of two units. The return value will
+   *   be <undefined>.
    * */
   public static extractUniqueUnitFromDuration(duration: Duration): ManipulateType | undefined {
     if (duration.years() === duration.asYears()) return 'years';
@@ -43,11 +44,13 @@ export class TimeExtentUtils {
    * Extracts a unit from the given date format (ISO8601) if it contains exactly one or <undefined> if it contains multiple units.
    *
    * @remarks
-   * It does return a unit ('years'/'months'/...) only if the given duration contains values of this unit and nothing else; <undefined> otherwise.
+   * It does return a unit ('years'/'months'/...) only if the given duration contains values of this unit and nothing else; <undefined>
+   *   otherwise.
    *
    * @example
    * 'YYYY' is a date format containing only years; The unique unit is years and therefore this method returns 'years'
-   * 'H:m s.SSS' is a date format containing hours, minutes, seconds and milliseconds; there are multiple units therefore this method returns 'undefined'
+   * 'H:m s.SSS' is a date format containing hours, minutes, seconds and milliseconds; there are multiple units therefore this method
+   *   returns 'undefined'
    * */
   public static extractUniqueUnitFromDateFormat(dateFormat: string): ManipulateType | undefined {
     if (dateFormat.replace(/S/g, '').trim() === '') return 'milliseconds';
@@ -64,8 +67,10 @@ export class TimeExtentUtils {
    * Extracts the smallest unit from the given date format (ISO8601) or <undefined> if nothing matches.
    *
    * @example
-   * 'YYYY-MM' is a date format containing years and months; The smallest unit is months (months < years) and therefore this method returns 'months'
-   * 'H:m s.SSS' is a date format containing hours, minutes, seconds and milliseconds; The smallest unit is milliseconds and therefore this method returns 'milliseconds'
+   * 'YYYY-MM' is a date format containing years and months; The smallest unit is months (months < years) and therefore this method returns
+   *   'months'
+   * 'H:m s.SSS' is a date format containing hours, minutes, seconds and milliseconds; The smallest unit is milliseconds and therefore this
+   *   method returns 'milliseconds'
    * */
   public static extractSmallestUnitFromDateFormat(dateFormat: string): ManipulateType | undefined {
     if (dateFormat.includes('SSS')) return 'milliseconds';
@@ -88,7 +93,8 @@ export class TimeExtentUtils {
    *
    * @example
    * addDuration(01.01.2000, duration(1, 'years')) === 01.01.2001
-   * while the default way using `dayjs.add` would lead to an error: dayjs(01.01.2000).add(duration(1, 'years')) === 01.01.2000 + 365 days === 31.12.2000
+   * while the default way using `dayjs.add` would lead to an error: dayjs(01.01.2000).add(duration(1, 'years')) === 01.01.2000 + 365 days
+   *   === 31.12.2000
    * */
   public static addDuration(date: Date, duration: Duration): Date {
     const unit = TimeExtentUtils.extractUniqueUnitFromDuration(duration);
@@ -109,7 +115,8 @@ export class TimeExtentUtils {
    *
    * @example
    * subtractDuration(01.01.2001, duration(1, 'years')) === 01.01.2000
-   * while the default way using `dayjs.subtract` would lead to an error: dayjs(01.01.2001).subtract(duration(1, 'years')) === 01.01.2001 - 365 days === 02.01.2000
+   * while the default way using `dayjs.subtract` would lead to an error: dayjs(01.01.2001).subtract(duration(1, 'years')) === 01.01.2001 -
+   *   365 days === 02.01.2000
    * */
   public static subtractDuration(date: Date, duration: Duration): Date {
     const unit = TimeExtentUtils.extractUniqueUnitFromDuration(duration);
