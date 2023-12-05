@@ -92,7 +92,8 @@ export class MapUiEffects {
   public closeSideDrawerAfterSwitchingPage$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(UrlActions.setPage),
-      filter(({mainPage}) => mainPage !== 'maps'),
+      concatLatestFrom(() => this.store.select(selectUrlState)),
+      filter(([_, urlState]) => urlState.mainPage !== 'maps' && urlState.previousPage === 'maps'),
       map(() => MapUiActions.hideMapSideDrawerContent()),
     );
   });
