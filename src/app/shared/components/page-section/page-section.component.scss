@@ -3,7 +3,7 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 @use 'mixins/material.mixin' as mat-mixins;
 
-.section {
+.page-section {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
@@ -19,31 +19,31 @@
     padding: 24px 12px;
   }
 
-  & .section__content-container__title-line:before {
+  & .page-section__content-container__title-line:before {
     background: ktzh-variables.$zh-black100;
   }
 
-  &.section__primary {
+  &.page-section__primary {
     background-color: functions.get-color-from-palette(ktzh-variables.$zh-primary);
     color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary);
 
-    & .section__content-container__title-line:before {
+    & .page-section__content-container__title-line:before {
       background: ktzh-variables.$zh-white;
     }
   }
 
-  &.section__accent {
+  &.page-section__accent {
     background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 5);
     color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-accent, 5);
   }
 
-  & .section__content-container {
+  & .page-section__content-container {
     display: flex;
     flex-flow: row wrap;
     max-width: ktzh-variables.$zh-layout-max-content-width;
     width: 100%;
 
-    & .section__content-container__title-line {
+    & .page-section__content-container__title-line {
       &:before {
         content: ' ';
         display: block;
@@ -59,7 +59,7 @@
       }
     }
 
-    & .section__content-container__title-wrapper {
+    & .page-section__content-container__title-wrapper {
       display: flex;
       width: 100%;
       justify-content: space-between;
@@ -71,16 +71,16 @@
         margin-bottom: 24px;
       }
 
-      .section__content-container__title-wrapper__title {
+      .page-section__content-container__title-wrapper__title {
         margin-bottom: 0;
       }
 
-      & .section__content-container__title-wrapper__link {
+      & .page-section__content-container__title-wrapper__link {
         @include mat-mixins.mat-button-ktzh-link;
       }
     }
 
-    & .section__content-container__content {
+    & .page-section__content-container__content {
       width: 100%;
     }
   }

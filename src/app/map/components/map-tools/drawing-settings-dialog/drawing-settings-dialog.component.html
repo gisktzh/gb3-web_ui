@@ -1,0 +1,17 @@
+<h1 mat-dialog-title>Text-Eingabe</h1>
+<div mat-dialog-content>
+  <div>
+    <input (change)="changeFill($event)" id="fill" name="fill" type="color" value="#FF0000" />
+    <label for="fill">Fill</label>
+  </div>
+  <hr />
+  <div>
+    <input (change)="changeLine($event)" id="line" name="line" type="color" value="#FF0000" />
+    <label for="line">Line</label>
+  </div>
+  <hr />
+  <input (change)="changeWidth($event)" id="width" max="10" min="1" type="range" value="50" /> Width
+</div>
+<div mat-dialog-actions>
+  <button (click)="close()" mat-button>Schliessen</button>
+</div>

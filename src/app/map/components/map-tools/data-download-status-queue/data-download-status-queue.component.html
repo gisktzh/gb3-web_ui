@@ -2,45 +2,49 @@
   <mat-card-header [ngClass]="{'data-download-status-queue__header--minimized': isMinimized}" class="data-download-status-queue__header">
     <h2 class="data-download-status-queue__header__title">Download Warteschlage</h2>
     <button (click)="toggleIsMinimized()" mat-icon-button>
-      <mat-icon [fontIcon]="isMinimized ? 'arrow_drop_down' : 'arrow_drop_up'"></mat-icon>
+      <mat-icon [fontIcon]="isMinimized ? 'arrow_drop_up' : 'arrow_drop_down'"></mat-icon>
     </button>
   </mat-card-header>
   <div [ngClass]="{'data-download-status-queue__content--hidden': isMinimized}" class="data-download-status-queue__content">
     <div class="data-download-status-queue__content__status-job" *ngFor="let statusJob of statusJobs; trackBy: trackById">
-      <p class="data-download-status-queue__content__status-job__title" [matTooltip]="statusJob.title" showTooltipIfTruncated>
-        {{ statusJob.title }}
-      </p>
-      <div class="data-download-status-queue__content__status-job__status">
-        <div class="data-download-status-queue__content__status-job__status__icon">
-          <mat-spinner
-            *ngIf="
-              statusJob.status?.status?.type !== 'failure' &&
-              statusJob.status?.status?.type !== 'success' &&
-              !statusJob.isAborted &&
-              !statusJob.isCancelled
-            "
-            mode="indeterminate"
-            color="primary"
-            diameter="16"
-          ></mat-spinner>
-          <mat-icon *ngIf="statusJob.status?.status?.type === 'success'" color="primary">check_circle</mat-icon>
-          <mat-icon *ngIf="statusJob.status?.status?.type === 'failure' || statusJob.isAborted" color="warn">error</mat-icon>
-          <mat-icon *ngIf="statusJob.isCancelled">warning</mat-icon>
-        </div>
-        <p
-          class="data-download-status-queue__content__status-job__status__text"
-          [matTooltip]="statusJob | dataDownloadOrderStatus"
-          showTooltipIfTruncated
-          [ngClass]="{
-            'data-download-status-queue__content__status-job__status__text--error':
-              statusJob.status?.status?.type === 'failure' || statusJob.isAborted
-          }"
-        >
-          {{ statusJob | dataDownloadOrderStatus }}
+      <div class="data-download-status-queue__content__status-job__info">
+        <p class="data-download-status-queue__content__status-job__info__title" [matTooltip]="statusJob.title" showTooltipIfTruncated>
+          {{ statusJob.title }}
         </p>
+        <div class="data-download-status-queue__content__status-job__info__status">
+          <div class="data-download-status-queue__content__status-job__info__status__icon">
+            <mat-spinner
+              *ngIf="
+                statusJob.status?.status?.type !== 'failure' &&
+                statusJob.status?.status?.type !== 'success' &&
+                !statusJob.isAborted &&
+                !statusJob.isCancelled
+              "
+              mode="indeterminate"
+              color="primary"
+              diameter="20"
+            ></mat-spinner>
+            <mat-icon *ngIf="statusJob.status?.status?.type === 'success'" color="primary">check_circle</mat-icon>
+            <mat-icon *ngIf="statusJob.status?.status?.type === 'failure' || statusJob.isAborted" color="warn">error</mat-icon>
+            <mat-icon *ngIf="statusJob.isCancelled">warning</mat-icon>
+          </div>
+          <p
+            class="data-download-status-queue__content__status-job__info__status__text"
+            [matTooltip]="statusJob | dataDownloadOrderStatus"
+            showTooltipIfTruncated
+            [ngClass]="{
+              'data-download-status-queue__content__status-job__info__status__text--error':
+                statusJob.status?.status?.type === 'failure' || statusJob.isAborted
+            }"
+          >
+            {{ statusJob | dataDownloadOrderStatus }}
+          </p>
+        </div>
+      </div>
+      <div class="data-download-status-queue__content__action">
         <a
           *ngIf="statusJob.status?.status?.type === 'success'"
-          class="data-download-status-queue__content__status-job__status__icon"
+          class="data-download-status-queue__content__status-job__action__button"
           [href]="statusJob.id | dataDownloadOrderDownloadUrl"
           [title]="'Download: ' + statusJob.title"
           rel="noopener noreferrer"
@@ -52,7 +56,7 @@
         </a>
         <button
           *ngIf="statusJob.status?.status?.type === 'failure' || statusJob.isAborted"
-          class="data-download-status-queue__content__status-job__status__icon"
+          class="data-download-status-queue__content__status-job__action__button"
           (click)="removeFailedOrder(statusJob.id)"
           matTooltip="Entfernen"
           mat-icon-button

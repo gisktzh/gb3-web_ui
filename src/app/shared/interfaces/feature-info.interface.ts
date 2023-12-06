@@ -1,5 +1,6 @@
 import {GeometryWithSrs} from './geojson-types-with-srs.interface';
 import {HasMetaDataLink} from './metaDataLink.interface';
+import {IsSingleLayer} from './single-layer.interface';
 
 export interface FeatureInfoResultFeatureField {
   label: string;
@@ -19,7 +20,7 @@ export interface FeatureInfoResultLayer extends HasMetaDataLink {
   features: FeatureInfoResultFeature[];
 }
 
-export interface FeatureInfoResult extends HasMetaDataLink {
+export interface FeatureInfoResult extends HasMetaDataLink, IsSingleLayer {
   topic: string;
   layers: FeatureInfoResultLayer[];
 }
@@ -37,12 +38,11 @@ export interface FeatureInfoResponse {
   featureInfo: FeatureInfoWrapper;
 }
 
-export interface FeatureInfoResultDisplay extends HasMetaDataLink {
+export interface FeatureInfoResultDisplay extends HasMetaDataLink, IsSingleLayer {
   id: string;
   title: string;
   layers: FeatureInfoResultLayer[];
   icon?: string;
-  isSingleLayer: boolean;
   /**
    * The Topic ID in the API - used for printing as id might also be our internal single layer id.
    */

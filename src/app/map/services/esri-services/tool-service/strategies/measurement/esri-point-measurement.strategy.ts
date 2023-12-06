@@ -5,7 +5,7 @@ import {NumberUtils} from '../../../../../../shared/utils/number.utils';
 import {SupportedEsriTool} from '../abstract-esri-drawable-tool.strategy';
 import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
 
-export class EsriPointMeasurementStrategy extends AbstractEsriMeasurementStrategy<Point> {
+export class EsriPointMeasurementStrategy extends AbstractEsriMeasurementStrategy<Point, DrawingCallbackHandler['completeMeasurement']> {
   protected readonly tool: SupportedEsriTool = 'point';
   private readonly labelSymbolization: TextSymbol;
 
@@ -14,7 +14,7 @@ export class EsriPointMeasurementStrategy extends AbstractEsriMeasurementStrateg
     mapView: __esri.MapView,
     pointSymbol: __esri.SimpleMarkerSymbol,
     labelSymbolization: __esri.TextSymbol,
-    completeDrawingCallbackHandler: DrawingCallbackHandler['complete'],
+    completeDrawingCallbackHandler: DrawingCallbackHandler['completeMeasurement'],
   ) {
     super(layer, mapView, completeDrawingCallbackHandler);
 
@@ -22,14 +22,14 @@ export class EsriPointMeasurementStrategy extends AbstractEsriMeasurementStrateg
     this.labelSymbolization = labelSymbolization;
   }
 
-  public static getLabelPosition(geometry: Point): Point {
-    return geometry;
-  }
-
   protected override createLabelConfigurationForGeometry(geometry: Point): LabelConfiguration {
     this.labelSymbolization.text = this.getCoordinateString(geometry);
 
-    return {location: EsriPointMeasurementStrategy.getLabelPosition(geometry), symbolization: this.labelSymbolization};
+    return {location: this.getLabelPosition(geometry), symbolization: this.labelSymbolization};
+  }
+
+  private getLabelPosition(geometry: Point): Point {
+    return geometry;
   }
 
   private getCoordinateString(geometry: __esri.Point) {

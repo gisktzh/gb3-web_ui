@@ -32,6 +32,7 @@ export class DataDownloadRegionEffects {
       return this.actions$.pipe(
         ofType(DataDownloadRegionActions.setCantonError),
         tap(({error}) => {
+          // TODO GB3-914: Replace with `throwError` again after implementing a effect error handler
           this.errorHandler.handleError(new CantonCouldNotBeLoaded(error));
         }),
       );
@@ -60,6 +61,7 @@ export class DataDownloadRegionEffects {
       return this.actions$.pipe(
         ofType(DataDownloadRegionActions.setMunicipalitiesError),
         tap(({error}) => {
+          // TODO GB3-914: Replace with `throwError` again after implementing a effect error handler
           this.errorHandler.handleError(new MunicipalitiesCouldNotBeLoaded(error));
         }),
       );

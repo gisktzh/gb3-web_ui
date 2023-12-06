@@ -1,6 +1,6 @@
 import {provideMockActions} from '@ngrx/effects/testing';
-import {discardPeriodicTasks, fakeAsync, flush, TestBed, tick} from '@angular/core/testing';
-import {Observable, of, Subscription, throwError} from 'rxjs';
+import {fakeAsync, flush, TestBed, tick} from '@angular/core/testing';
+import {Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
@@ -18,22 +18,16 @@ import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {selectActiveTool} from '../reducers/tool.reducer';
 import {Order, OrderResponse} from '../../../shared/interfaces/geoshop-order.interface';
 import {MinimalGeometriesUtils} from '../../../testing/map-testing/minimal-geometries.utils';
-import {selectOrder, selectSelection, selectStatusJobs} from '../reducers/data-download-order.reducer';
+import {selectOrder, selectSelection} from '../reducers/data-download-order.reducer';
 import {GeoshopApiService} from '../../../shared/services/apis/geoshop/services/geoshop-api.service';
 import {Polygon} from 'geojson';
-import {
-  OrderCouldNotBeSent,
-  OrderSelectionIsInvalid,
-  OrderStatusCouldNotBeSent,
-  OrderStatusWasAborted,
-  OrderUnsupportedGeometry,
-} from '../../../shared/errors/data-download.errors';
+import {OrderCouldNotBeSent, OrderSelectionIsInvalid, OrderUnsupportedGeometry} from '../../../shared/errors/data-download.errors';
 import {HttpErrorResponse} from '@angular/common/http';
 import {selectMapSideDrawerContent} from '../reducers/map-ui.reducer';
 import {selectProducts} from '../reducers/data-download-product.reducer';
-import {OrderStatus, OrderStatusJob} from '../../../shared/interfaces/geoshop-order-status.interface';
-import {DataDownloadConfig} from '../../../shared/interfaces/data-download-config.interface';
 import {ErrorHandler} from '@angular/core';
+import {DataDownloadOrderStatusJobActions} from '../actions/data-download-order-status-job.actions';
+import {selectStatusJobs} from '../reducers/data-download-order-status-job.reducer';
 
 describe('DataDownloadOrderEffects', () => {
   const polygonSelectionMock: DataDownloadSelection = {
@@ -180,11 +174,12 @@ describe('DataDownloadOrderEffects', () => {
       const mapService = TestBed.inject(MAP_SERVICE);
       const mapServiceSpy = spyOn(mapService, 'zoomToExtent').and.callThrough();
       store.overrideSelector(selectSelection, selection);
+      store.overrideSelector(selectMapSideDrawerContent, 'data-download');
 
-      const expectedAction = MapUiActions.showMapSideDrawerContent({mapSideDrawerContent: 'data-download'});
+      const expectedAction = MapUiActions.notifyMapSideDrawerAfterOpen();
 
       actions$ = of(expectedAction);
-      effects.zoomToSelection$.subscribe(([action, _]) => {
+      effects.zoomToSelection$.subscribe(([[action, _], __]) => {
         expect(mapServiceSpy).toHaveBeenCalledOnceWith(
           selection.drawingRepresentation.geometry,
           configService.mapAnimationConfig.zoom.expandFactor,
@@ -352,7 +347,7 @@ describe('DataDownloadOrderEffects', () => {
   });
 
   describe('requestOrderStatusAfterSendingAnOrderWithoutEmailSuccessfully$', () => {
-    it('dispatches DataDownloadActions.requestOrderStatus() after setting a send order response', (done: DoneFn) => {
+    it('dispatches DataDownloadOrderStatusJobActions.requestOrderStatus() after setting a send order response', (done: DoneFn) => {
       const order = {
         ...orderMock,
         email: undefined,
@@ -368,7 +363,7 @@ describe('DataDownloadOrderEffects', () => {
       store.overrideSelector(selectStatusJobs, []);
       const geoshopApiServiceSpy = spyOn(geoshopApiService, 'createOrderTitle').and.returnValue(orderTitle);
 
-      const expectedAction = DataDownloadOrderActions.requestOrderStatus({orderId: orderResponse.orderId, orderTitle});
+      const expectedAction = DataDownloadOrderStatusJobActions.requestOrderStatus({orderId: orderResponse.orderId, orderTitle});
 
       actions$ = of(DataDownloadOrderActions.setSendOrderResponse({order, orderResponse}));
       effects.requestOrderStatusAfterSendingAnOrderWithoutEmailSuccessfully$.subscribe((action) => {
@@ -377,232 +372,5 @@ describe('DataDownloadOrderEffects', () => {
         done();
       });
     });
-  });
-
-  describe('handleOrderStatusError$', () => {
-    it('handles a OrderStatusCouldNotBeSent error after setting an order status error', (done: DoneFn) => {
-      const errorHandlerSpy = spyOn(errorHandler, 'handleError').and.stub();
-      const originalError = new Error('nooooooooooooo!!!');
-      store.overrideSelector(selectStatusJobs, []);
-
-      const expectedError = new OrderStatusCouldNotBeSent(originalError);
-
-      actions$ = of(
-        DataDownloadOrderActions.setOrderStatusError({
-          error: originalError,
-          orderId: 'stormtrooper',
-          maximumNumberOfConsecutiveStatusJobErrors: 3,
-        }),
-      );
-      effects.handleOrderStatusError$.subscribe(() => {
-        expect(errorHandlerSpy).toHaveBeenCalledOnceWith(expectedError);
-        done();
-      });
-    });
-  });
-
-  describe('periodicallyCheckOrderStatus$', () => {
-    const orderTitle = 'stormtrooper';
-    const orderId = 'ST-1337';
-    const orderStatus: OrderStatus = {
-      orderId,
-      internalId: 123,
-      submittedDateString: 'may the force',
-      finishedDateString: 'be with you',
-      status: {
-        type: 'working',
-      },
-    };
-    const orderStatusJob: OrderStatusJob = {
-      id: orderId,
-      title: orderTitle,
-      loadingState: 'loaded',
-      isCancelled: false,
-      isAborted: false,
-      isCompleted: false,
-      consecutiveErrorsCount: 0,
-      status: orderStatus,
-    };
-    const dataDownloadConfig: DataDownloadConfig = {
-      defaultOrderSrs: 'lv95',
-      initialPollingDelay: 0,
-      maximumNumberOfConsecutiveStatusJobErrors: 1,
-      pollingInterval: 1000,
-    };
-
-    it('dispatches DataDownloadOrderActions.setOrderStatusResponse() at least once without an error after requesting an order status', fakeAsync(() => {
-      store.overrideSelector(selectStatusJobs, []);
-      spyOnProperty(configService, 'dataDownloadConfig', 'get').and.returnValue(dataDownloadConfig);
-      const geoshopApiServiceSpy = spyOn(geoshopApiService, 'checkOrderStatus').and.returnValue(of(orderStatus));
-      const subscription = new Subscription();
-
-      const expectedAction = DataDownloadOrderActions.setOrderStatusResponse({orderStatus});
-
-      let newAction: Action | undefined;
-      actions$ = of(DataDownloadOrderActions.requestOrderStatus({orderTitle, orderId}));
-      subscription.add(effects.periodicallyCheckOrderStatus$.subscribe((action) => (newAction = action)));
-      tick();
-
-      expect(geoshopApiServiceSpy).toHaveBeenCalledOnceWith(orderId);
-      expect(newAction).toBeDefined();
-      expect(newAction).toEqual(expectedAction);
-      subscription.unsubscribe();
-    }));
-
-    it('dispatches DataDownloadOrderActions.setOrderStatusError() at least once with an error after requesting an order status', fakeAsync(() => {
-      store.overrideSelector(selectStatusJobs, []);
-      spyOnProperty(configService, 'dataDownloadConfig', 'get').and.returnValue(dataDownloadConfig);
-      const error = new Error('nooooooooooooo!!!');
-      const geoshopApiServiceSpy = spyOn(geoshopApiService, 'checkOrderStatus').and.returnValue(throwError(() => error));
-      const subscription = new Subscription();
-
-      const expectedAction = DataDownloadOrderActions.setOrderStatusError({error, orderId, maximumNumberOfConsecutiveStatusJobErrors: 1});
-
-      let newAction: Action | undefined;
-      actions$ = of(DataDownloadOrderActions.requestOrderStatus({orderTitle, orderId}));
-      subscription.add(effects.periodicallyCheckOrderStatus$.subscribe((action) => (newAction = action)));
-      tick();
-
-      expect(geoshopApiServiceSpy).toHaveBeenCalledOnceWith(orderId);
-      expect(newAction).toBeDefined();
-      expect(newAction).toEqual(expectedAction);
-      subscription.unsubscribe();
-    }));
-
-    it('dispatches nothing if the status job has the status type success', fakeAsync(() => {
-      const orderStatusJobWithStatusSuccess: OrderStatusJob = {
-        ...orderStatusJob,
-        status: {...orderStatus, status: {type: 'success'}},
-      };
-      store.overrideSelector(selectStatusJobs, [orderStatusJobWithStatusSuccess]);
-      spyOnProperty(configService, 'dataDownloadConfig', 'get').and.returnValue(dataDownloadConfig);
-      const geoshopApiServiceSpy = spyOn(geoshopApiService, 'checkOrderStatus').and.callThrough();
-
-      let newAction;
-      actions$ = of(DataDownloadOrderActions.requestOrderStatus({orderTitle, orderId}));
-      effects.periodicallyCheckOrderStatus$.subscribe((action) => (newAction = action));
-      tick();
-
-      expect(geoshopApiServiceSpy).not.toHaveBeenCalled();
-      expect(newAction).toBeUndefined();
-      discardPeriodicTasks();
-    }));
-
-    it('dispatches nothing if the status job has the status type failure', fakeAsync(() => {
-      const orderStatusJobWithStatusFailure: OrderStatusJob = {
-        ...orderStatusJob,
-        status: {...orderStatus, status: {type: 'failure'}},
-      };
-      store.overrideSelector(selectStatusJobs, [orderStatusJobWithStatusFailure]);
-      spyOnProperty(configService, 'dataDownloadConfig', 'get').and.returnValue(dataDownloadConfig);
-      const geoshopApiServiceSpy = spyOn(geoshopApiService, 'checkOrderStatus').and.callThrough();
-
-      let newAction;
-      actions$ = of(DataDownloadOrderActions.requestOrderStatus({orderTitle, orderId}));
-      effects.periodicallyCheckOrderStatus$.subscribe((action) => (newAction = action));
-      tick();
-
-      expect(geoshopApiServiceSpy).not.toHaveBeenCalled();
-      expect(newAction).toBeUndefined();
-      discardPeriodicTasks();
-    }));
-
-    it('dispatches nothing if the status job was aborted', fakeAsync(() => {
-      const abortedOrderStatusJob: OrderStatusJob = {
-        ...orderStatusJob,
-        isAborted: true,
-      };
-      store.overrideSelector(selectStatusJobs, [abortedOrderStatusJob]);
-      spyOnProperty(configService, 'dataDownloadConfig', 'get').and.returnValue(dataDownloadConfig);
-      const geoshopApiServiceSpy = spyOn(geoshopApiService, 'checkOrderStatus').and.callThrough();
-
-      let newAction;
-      actions$ = of(DataDownloadOrderActions.requestOrderStatus({orderTitle, orderId}));
-      effects.periodicallyCheckOrderStatus$.subscribe((action) => (newAction = action));
-      tick();
-
-      expect(geoshopApiServiceSpy).not.toHaveBeenCalled();
-      expect(newAction).toBeUndefined();
-      discardPeriodicTasks();
-    }));
-
-    it('dispatches nothing if the status job was cancelled', fakeAsync(() => {
-      const cancelledOrderStatusJob: OrderStatusJob = {
-        ...orderStatusJob,
-        isCancelled: true,
-      };
-      store.overrideSelector(selectStatusJobs, [cancelledOrderStatusJob]);
-      spyOnProperty(configService, 'dataDownloadConfig', 'get').and.returnValue(dataDownloadConfig);
-      const geoshopApiServiceSpy = spyOn(geoshopApiService, 'checkOrderStatus').and.callThrough();
-
-      let newAction;
-      actions$ = of(DataDownloadOrderActions.requestOrderStatus({orderTitle, orderId}));
-      effects.periodicallyCheckOrderStatus$.subscribe((action) => (newAction = action));
-      tick();
-
-      expect(geoshopApiServiceSpy).not.toHaveBeenCalled();
-      expect(newAction).toBeUndefined();
-      discardPeriodicTasks();
-    }));
-  });
-
-  describe('handleOrderStatusRefreshAbortError$', () => {
-    const orderTitle = 'stormtrooper';
-    const orderId = 'ST-1337';
-    const orderStatus: OrderStatus = {
-      orderId,
-      internalId: 123,
-      submittedDateString: 'may the force',
-      finishedDateString: 'be with you',
-      status: {
-        type: 'working',
-      },
-    };
-    const orderStatusJob: OrderStatusJob = {
-      id: orderId,
-      title: orderTitle,
-      loadingState: 'loaded',
-      isCancelled: false,
-      isAborted: false,
-      isCompleted: false,
-      consecutiveErrorsCount: 0,
-      status: orderStatus,
-    };
-
-    it('handles a OrderStatusWasAborted error after setting an order status error where isAborted is true', (done: DoneFn) => {
-      const errorHandlerSpy = spyOn(errorHandler, 'handleError').and.stub();
-      const error = new Error('nooooooooooooo!!!');
-      const abortedOrderStatusJob: OrderStatusJob = {
-        ...orderStatusJob,
-        isAborted: true,
-      };
-      store.overrideSelector(selectStatusJobs, [abortedOrderStatusJob]);
-
-      const expectedError = new OrderStatusWasAborted(error);
-
-      actions$ = of(DataDownloadOrderActions.setOrderStatusError({error, orderId, maximumNumberOfConsecutiveStatusJobErrors: 3}));
-      effects.handleOrderStatusRefreshAbortError$.subscribe(() => {
-        expect(errorHandlerSpy).toHaveBeenCalledOnceWith(expectedError);
-        done();
-      });
-    });
-
-    it('dispatches nothing if the order is not aborted', fakeAsync(() => {
-      const errorHandlerSpy = spyOn(errorHandler, 'handleError').and.stub();
-      const error = new Error('nooooooooooooo!!!');
-      const notAbortedOrderStatusJob: OrderStatusJob = {
-        ...orderStatusJob,
-        isAborted: false,
-      };
-      store.overrideSelector(selectStatusJobs, [notAbortedOrderStatusJob]);
-
-      let newAction;
-      actions$ = of(DataDownloadOrderActions.setOrderStatusError({error, orderId, maximumNumberOfConsecutiveStatusJobErrors: 3}));
-      effects.handleOrderStatusRefreshAbortError$.subscribe((action) => (newAction = action));
-      tick();
-
-      expect(newAction).toBeUndefined();
-      expect(errorHandlerSpy).not.toHaveBeenCalled();
-    }));
   });
 });

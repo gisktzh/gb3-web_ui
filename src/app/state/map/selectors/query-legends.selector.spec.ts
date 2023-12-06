@@ -33,8 +33,8 @@ describe('selectQueryLegends', () => {
     const actual = selectQueryLegends.projector(basicMockState);
 
     const expected: QueryTopic[] = [
-      {topic: basicMockState[0].id, layersToQuery: basicMockState[0].settings.layers.map((l) => l.layer).join(',')},
-      {topic: basicMockState[1].id, layersToQuery: basicMockState[1].settings.layers.map((l) => l.layer).join(',')},
+      {topic: basicMockState[0].id, layersToQuery: basicMockState[0].settings.layers.map((l) => l.layer).join(','), isSingleLayer: false},
+      {topic: basicMockState[1].id, layersToQuery: basicMockState[1].settings.layers.map((l) => l.layer).join(','), isSingleLayer: false},
     ];
     expect(actual).toEqual(expected);
   });
@@ -48,6 +48,7 @@ describe('selectQueryLegends', () => {
       {
         topic: basicMockState[1].id,
         layersToQuery: basicMockState[1].settings.layers.map((l) => l.layer).join(','),
+        isSingleLayer: false,
       },
     ];
     expect(actual).toEqual(expected);
@@ -59,8 +60,8 @@ describe('selectQueryLegends', () => {
     const actual = selectQueryLegends.projector(basicMockState);
 
     const expected: QueryTopic[] = [
-      {topic: basicMockState[0].id, layersToQuery: basicMockState[0].settings.layers[1].layer},
-      {topic: basicMockState[1].id, layersToQuery: basicMockState[1].settings.layers.map((l) => l.layer).join(',')},
+      {topic: basicMockState[0].id, layersToQuery: basicMockState[0].settings.layers[1].layer, isSingleLayer: false},
+      {topic: basicMockState[1].id, layersToQuery: basicMockState[1].settings.layers.map((l) => l.layer).join(','), isSingleLayer: false},
     ];
     expect(actual).toEqual(expected);
   });
@@ -72,7 +73,7 @@ describe('selectQueryLegends', () => {
     const actual = selectQueryLegends.projector(basicMockState);
 
     const expected: QueryTopic[] = [
-      {topic: basicMockState[1].id, layersToQuery: basicMockState[1].settings.layers.map((l) => l.layer).join(',')},
+      {topic: basicMockState[1].id, layersToQuery: basicMockState[1].settings.layers.map((l) => l.layer).join(','), isSingleLayer: false},
     ];
     expect(actual).toEqual(expected);
   });
@@ -84,8 +85,8 @@ describe('selectQueryLegends', () => {
     const actual = selectQueryLegends.projector(basicMockState);
 
     const expected: QueryTopic[] = [
-      {topic: basicMockState[0].id, layersToQuery: basicMockState[0].settings.layers.map((l) => l.layer).join(',')},
-      {topic: basicMockState[1].id, layersToQuery: basicMockState[1].settings.layers.map((l) => l.layer).join(',')},
+      {topic: basicMockState[0].id, layersToQuery: basicMockState[0].settings.layers.map((l) => l.layer).join(','), isSingleLayer: false},
+      {topic: basicMockState[1].id, layersToQuery: basicMockState[1].settings.layers.map((l) => l.layer).join(','), isSingleLayer: false},
     ];
 
     expect(actual.length).toEqual(2);

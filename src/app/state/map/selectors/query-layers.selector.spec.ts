@@ -35,8 +35,16 @@ describe('selectQueryLayers', () => {
     const actual = selectQueryLayers.projector(mockActiveMapItems, mockScale);
 
     const expected: QueryTopic[] = [
-      {topic: mockActiveMapItems[0].id, layersToQuery: mockActiveMapItems[0].settings.layers.map((l) => l.layer).join(',')},
-      {topic: mockActiveMapItems[1].id, layersToQuery: mockActiveMapItems[1].settings.layers.map((l) => l.layer).join(',')},
+      {
+        topic: mockActiveMapItems[0].id,
+        layersToQuery: mockActiveMapItems[0].settings.layers.map((l) => l.layer).join(','),
+        isSingleLayer: false,
+      },
+      {
+        topic: mockActiveMapItems[1].id,
+        layersToQuery: mockActiveMapItems[1].settings.layers.map((l) => l.layer).join(','),
+        isSingleLayer: false,
+      },
     ];
     expect(actual).toEqual(expected);
   });
@@ -50,6 +58,7 @@ describe('selectQueryLayers', () => {
       {
         topic: mockActiveMapItems[1].id,
         layersToQuery: mockActiveMapItems[1].settings.layers.map((l) => l.layer).join(','),
+        isSingleLayer: false,
       },
     ];
     expect(actual).toEqual(expected);
@@ -61,8 +70,12 @@ describe('selectQueryLayers', () => {
     const actual = selectQueryLayers.projector(mockActiveMapItems, mockScale);
 
     const expected: QueryTopic[] = [
-      {topic: mockActiveMapItems[0].id, layersToQuery: mockActiveMapItems[0].settings.layers[1].layer},
-      {topic: mockActiveMapItems[1].id, layersToQuery: mockActiveMapItems[1].settings.layers.map((l) => l.layer).join(',')},
+      {topic: mockActiveMapItems[0].id, layersToQuery: mockActiveMapItems[0].settings.layers[1].layer, isSingleLayer: false},
+      {
+        topic: mockActiveMapItems[1].id,
+        layersToQuery: mockActiveMapItems[1].settings.layers.map((l) => l.layer).join(','),
+        isSingleLayer: false,
+      },
     ];
     expect(actual).toEqual(expected);
   });
@@ -73,8 +86,12 @@ describe('selectQueryLayers', () => {
     const actual = selectQueryLayers.projector(mockActiveMapItems, mockScale);
 
     const expected: QueryTopic[] = [
-      {topic: mockActiveMapItems[0].id, layersToQuery: mockActiveMapItems[0].settings.layers[1].layer},
-      {topic: mockActiveMapItems[1].id, layersToQuery: mockActiveMapItems[1].settings.layers.map((l) => l.layer).join(',')},
+      {topic: mockActiveMapItems[0].id, layersToQuery: mockActiveMapItems[0].settings.layers[1].layer, isSingleLayer: false},
+      {
+        topic: mockActiveMapItems[1].id,
+        layersToQuery: mockActiveMapItems[1].settings.layers.map((l) => l.layer).join(','),
+        isSingleLayer: false,
+      },
     ];
     expect(actual).toEqual(expected);
   });
@@ -86,7 +103,11 @@ describe('selectQueryLayers', () => {
     const actual = selectQueryLayers.projector(mockActiveMapItems, mockScale);
 
     const expected: QueryTopic[] = [
-      {topic: mockActiveMapItems[1].id, layersToQuery: mockActiveMapItems[1].settings.layers.map((l) => l.layer).join(',')},
+      {
+        topic: mockActiveMapItems[1].id,
+        layersToQuery: mockActiveMapItems[1].settings.layers.map((l) => l.layer).join(','),
+        isSingleLayer: false,
+      },
     ];
     expect(actual).toEqual(expected);
   });
@@ -98,7 +119,11 @@ describe('selectQueryLayers', () => {
     const actual = selectQueryLayers.projector(mockActiveMapItems, mockScale);
 
     const expected: QueryTopic[] = [
-      {topic: mockActiveMapItems[1].id, layersToQuery: mockActiveMapItems[1].settings.layers.map((l) => l.layer).join(',')},
+      {
+        topic: mockActiveMapItems[1].id,
+        layersToQuery: mockActiveMapItems[1].settings.layers.map((l) => l.layer).join(','),
+        isSingleLayer: false,
+      },
     ];
     expect(actual).toEqual(expected);
   });
@@ -110,8 +135,16 @@ describe('selectQueryLayers', () => {
     const actual = selectQueryLayers.projector(mockActiveMapItems, mockScale);
 
     const expected: QueryTopic[] = [
-      {topic: mockActiveMapItems[0].id, layersToQuery: mockActiveMapItems[0].settings.layers.map((l) => l.layer).join(',')},
-      {topic: mockActiveMapItems[1].id, layersToQuery: mockActiveMapItems[1].settings.layers.map((l) => l.layer).join(',')},
+      {
+        topic: mockActiveMapItems[0].id,
+        layersToQuery: mockActiveMapItems[0].settings.layers.map((l) => l.layer).join(','),
+        isSingleLayer: false,
+      },
+      {
+        topic: mockActiveMapItems[1].id,
+        layersToQuery: mockActiveMapItems[1].settings.layers.map((l) => l.layer).join(','),
+        isSingleLayer: false,
+      },
     ];
 
     expect(actual.length).toEqual(2);
@@ -124,8 +157,12 @@ describe('selectQueryLayers', () => {
     const actual = selectQueryLayers.projector(mockActiveMapItems, mockScale);
 
     const expected: QueryTopic[] = [
-      {topic: mockActiveMapItems[0].id, layersToQuery: mockActiveMapItems[0].settings.layers[0].layer},
-      {topic: mockActiveMapItems[1].id, layersToQuery: mockActiveMapItems[1].settings.layers.map((l) => l.layer).join(',')},
+      {topic: mockActiveMapItems[0].id, layersToQuery: mockActiveMapItems[0].settings.layers[0].layer, isSingleLayer: false},
+      {
+        topic: mockActiveMapItems[1].id,
+        layersToQuery: mockActiveMapItems[1].settings.layers.map((l) => l.layer).join(','),
+        isSingleLayer: false,
+      },
     ];
     expect(actual).toEqual(expected);
   });
@@ -136,8 +173,12 @@ describe('selectQueryLayers', () => {
     const actual = selectQueryLayers.projector(mockActiveMapItems, mockScale);
 
     const expected: QueryTopic[] = [
-      {topic: mockActiveMapItems[0].id, layersToQuery: mockActiveMapItems[0].settings.layers[1].layer},
-      {topic: mockActiveMapItems[1].id, layersToQuery: mockActiveMapItems[1].settings.layers.map((l) => l.layer).join(',')},
+      {topic: mockActiveMapItems[0].id, layersToQuery: mockActiveMapItems[0].settings.layers[1].layer, isSingleLayer: false},
+      {
+        topic: mockActiveMapItems[1].id,
+        layersToQuery: mockActiveMapItems[1].settings.layers.map((l) => l.layer).join(','),
+        isSingleLayer: false,
+      },
     ];
     expect(actual).toEqual(expected);
   });
@@ -148,7 +189,11 @@ describe('selectQueryLayers', () => {
     const actual = selectQueryLayers.projector(mockActiveMapItems, mockScale);
 
     const expected: QueryTopic[] = [
-      {topic: mockActiveMapItems[1].id, layersToQuery: mockActiveMapItems[1].settings.layers.map((l) => l.layer).join(',')},
+      {
+        topic: mockActiveMapItems[1].id,
+        layersToQuery: mockActiveMapItems[1].settings.layers.map((l) => l.layer).join(','),
+        isSingleLayer: false,
+      },
     ];
     expect(actual).toEqual(expected);
   });
@@ -159,7 +204,11 @@ describe('selectQueryLayers', () => {
     const actual = selectQueryLayers.projector(mockActiveMapItems, mockScale);
 
     const expected: QueryTopic[] = [
-      {topic: mockActiveMapItems[1].id, layersToQuery: mockActiveMapItems[1].settings.layers.map((l) => l.layer).join(',')},
+      {
+        topic: mockActiveMapItems[1].id,
+        layersToQuery: mockActiveMapItems[1].settings.layers.map((l) => l.layer).join(','),
+        isSingleLayer: false,
+      },
     ];
     expect(actual).toEqual(expected);
   });

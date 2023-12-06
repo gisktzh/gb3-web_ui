@@ -776,6 +776,14 @@ export interface GeojsonFeature {
   type: 'Feature';
   properties: {
     /**
+     * UUID of the given feature
+     */
+    id: string; // todo: specify API interface to expect these properties
+    /**
+     * UUID if the feature has a belongsTo relationship with another feature, e.g. the label of a measurement.
+     */
+    belongsTo?: string; // todo: specify API interface to expect these properties
+    /**
      * Reference to style ID in 'styles'
      * @example "a"
      */

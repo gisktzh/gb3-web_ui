@@ -8,14 +8,6 @@ export class UnsupportedGeometryType extends FatalError {
   }
 }
 
-export class UnsupportedLabelType extends FatalError {
-  public override message = `Nicht unterstützter Labeltyp mit Geometrie ${this.geometryType}`;
-
-  constructor(private readonly geometryType: string) {
-    super();
-  }
-}
-
 export class UnsupportedSymbolizationType extends RecoverableError {
   public override message = `Nicht unterstützter Symbolisierungstyp (${this.symbolizationType})`;
 

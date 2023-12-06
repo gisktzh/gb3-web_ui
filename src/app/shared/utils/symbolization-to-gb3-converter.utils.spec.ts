@@ -2,9 +2,6 @@ import {Gb3StyledInternalDrawingRepresentation, Gb3StyleRepresentation} from '..
 import {UserDrawingLayer} from '../enums/drawing-layer.enum';
 import {SymbolizationToGb3ConverterUtils} from './symbolization-to-gb3-converter.utils';
 import {Gb3VectorLayer} from '../interfaces/gb3-vector-layer.interface';
-import {MapConstants} from '../constants/map.constants';
-import {validate as validateUUID} from 'uuid';
-import {RedliningIdentifier} from '../enums/redlining-identifier.enum';
 
 describe('SymbolizationToGb3ConverterUtils', () => {
   describe('convertInternalToExternalRepresentation', () => {
@@ -32,53 +29,6 @@ describe('SymbolizationToGb3ConverterUtils', () => {
       expect(actual.geojson.features[0].properties.text).toEqual(drawingsMock[0].labelText);
       expect(actual.geojson.features[1].properties.text).toEqual(drawingsMock[1].labelText);
     });
-
-    it('adds an empty text property if no label is present', () => {
-      // todo GB3-863: PrintAPI workaround
-      const drawingsMock: Gb3StyledInternalDrawingRepresentation[] = [
-        {
-          type: 'Feature',
-          geometry: {type: 'Point', srs: 2056, coordinates: []},
-          source: UserDrawingLayer.Drawings,
-          properties: {__id: 'a', style: {} as Gb3StyleRepresentation},
-        },
-      ];
-
-      const actual = SymbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(drawingsMock);
-
-      expect(actual.geojson.features[0].properties.text).toEqual('');
-    });
-
-    it('selects the correct label style for labels and non-labels', () => {
-      const drawingsMock: Gb3StyledInternalDrawingRepresentation[] = [
-        {
-          type: 'Feature',
-          geometry: {type: 'Point', srs: 2056, coordinates: []},
-          source: UserDrawingLayer.Drawings,
-          properties: {__id: 'a', style: {} as Gb3StyleRepresentation},
-        },
-        {
-          type: 'Feature',
-          geometry: {type: 'Point', srs: 2056, coordinates: []},
-          source: UserDrawingLayer.Drawings,
-          labelText: 'B',
-          properties: {__id: 'b', style: {} as Gb3StyleRepresentation},
-        },
-        {
-          type: 'Feature',
-          geometry: {type: 'Point', srs: 2056, coordinates: []},
-          source: UserDrawingLayer.Drawings,
-          labelText: 'C',
-          properties: {__id: 'b', style: {type: 'text'} as Gb3StyleRepresentation},
-        },
-      ];
-
-      const actual = SymbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(drawingsMock);
-
-      expect(actual.geojson.features[0].properties.style).toEqual(RedliningIdentifier.GeometryOnly);
-      expect(actual.geojson.features[1].properties.style).toEqual(RedliningIdentifier.GeometryWithLabel);
-      expect(actual.geojson.features[2].properties.style).toEqual(RedliningIdentifier.LabelOnly);
-    });
   });
 
   describe('convertExternalToInternalRepresentation', () => {
@@ -96,13 +46,21 @@ describe('SymbolizationToGb3ConverterUtils', () => {
                 coordinates: [0, 1337],
               },
               properties: {
-                style: RedliningIdentifier.GeometryOnly,
+                style: 'a',
                 text: mockText,
+                id: 'xyz',
               },
             },
           ],
         },
-        styles: {},
+        styles: {
+          a: {
+            property: 'a',
+          },
+          b: {
+            property: 'b',
+          },
+        },
       };
       const mockedSource: UserDrawingLayer = UserDrawingLayer.Drawings;
 
@@ -112,7 +70,6 @@ describe('SymbolizationToGb3ConverterUtils', () => {
       expect(actual[0].geometry.type).toEqual('Point');
       expect(actual[0].geometry.srs).toEqual(2056);
       expect(actual[0].source).toEqual(mockedSource);
-      expect(validateUUID(actual[0].properties[MapConstants.DRAWING_IDENTIFIER])).toEqual(true);
     });
   });
 });

@@ -3,8 +3,8 @@ import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {LayerCatalogActions} from '../../../../state/map/actions/layer-catalog.actions';
 import {OrderStatusJob} from '../../../../shared/interfaces/geoshop-order-status.interface';
-import {DataDownloadOrderActions} from '../../../../state/map/actions/data-download-order.actions';
 import {selectIncompleteOrderStatusJobs} from '../../../../state/map/selectors/incomplete-order-status-jobs.selector';
+import {DataDownloadOrderStatusJobActions} from '../../../../state/map/actions/data-download-order-status-job.actions';
 
 @Component({
   selector: 'data-download-status-queue',
@@ -47,7 +47,7 @@ export class DataDownloadStatusQueueComponent implements OnInit, OnDestroy {
   }
 
   private removeOrder(orderId: string) {
-    this.store.dispatch(DataDownloadOrderActions.completeOrderStatus({orderId}));
+    this.store.dispatch(DataDownloadOrderStatusJobActions.completeOrderStatus({orderId}));
   }
 
   private initSubscriptions() {

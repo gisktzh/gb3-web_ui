@@ -3,5 +3,20 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "assignees": ["lukas.merz@ebp.ch", "sebastian.wendland@ebp.ch"],
   "reviewers": ["lukas.merz@ebp.ch", "sebastian.wendland@ebp.ch"],
-  "packageRules": []
+  "packageRules": [
+    {
+      "matchManagers": ["npm"],
+      "matchPackageNames": ["prettier"],
+      "description": "Automatically re-formats all files in the project using the new prettier version",
+      "postUpgradeTasks": {
+        "commands": [
+          "cd $(find . -maxdepth 2 -name package.json -printf '%h\n' | head -1)",
+          "npm ci --ignore-scripts",
+          "npm run format-all",
+          "rm -rf node_modules"
+        ],
+        "fileFilters": ["**/*"]
+      }
+    }
+  ]
 }

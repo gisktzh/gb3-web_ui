@@ -11,20 +11,23 @@ import {MapConstants} from '../../../../../shared/constants/map.constants';
 
 export type SupportedEsriTool = Extract<EsriSketchTool, 'polygon' | 'polyline' | 'point' | 'rectangle' | 'circle'>;
 
-export abstract class AbstractEsriDrawableToolStrategy implements EsriToolStrategy {
+export abstract class AbstractEsriDrawableToolStrategy<
+  T extends DrawingCallbackHandler['completeDrawing'] | DrawingCallbackHandler['completeMeasurement'],
+> implements EsriToolStrategy
+{
   public static readonly identifierFieldName = MapConstants.DRAWING_IDENTIFIER;
-  private readonly labelTextFieldName = MapConstants.DRAWING_LABEL_IDENTIFIER;
+  public static readonly belongsToFieldName = MapConstants.BELONGS_TO_IDENTIFIER;
+  public abstract readonly internalLayerType: DrawingLayer;
   protected readonly sketchViewModel: SketchViewModel;
   protected readonly layer: GraphicsLayer;
   /**
    * Called when the SketchViewModel emits a 'complete' event.
    * @protected
    */
-  protected readonly completeDrawingCallbackHandler: DrawingCallbackHandler['complete'];
+  protected readonly completeDrawingCallbackHandler: T;
   protected abstract readonly tool: SupportedEsriTool;
-  public abstract readonly internalLayerType: DrawingLayer;
 
-  protected constructor(layer: GraphicsLayer, mapView: MapView, completeDrawingCallbackHandler: DrawingCallbackHandler['complete']) {
+  protected constructor(layer: GraphicsLayer, mapView: MapView, completeDrawingCallbackHandler: T) {
     // todo: check whether new SketchViewModels are okay; otherwise -> singleton and reuse the model.
     this.sketchViewModel = new SketchViewModel({
       view: mapView,
@@ -56,6 +59,10 @@ export abstract class AbstractEsriDrawableToolStrategy implements EsriToolStrate
   }
 
   protected setLabelTextAttributeOnGraphic(graphic: Graphic, text: string) {
-    graphic.setAttribute(this.labelTextFieldName, text);
+    graphic.setAttribute(MapConstants.DRAWING_LABEL_IDENTIFIER, text);
+  }
+
+  protected setBelongsToAttributeOnGraphic(graphic: __esri.Graphic, belongsToGraphicUuid: string) {
+    graphic.setAttribute(AbstractEsriDrawableToolStrategy.belongsToFieldName, belongsToGraphicUuid);
   }
 }

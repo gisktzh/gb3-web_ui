@@ -107,6 +107,7 @@
 
       &--drag-placeholder {
         @include mat-mixins.cdk-drag-placeholder(68px);
+        flex: none;
       }
 
       &--mobile {

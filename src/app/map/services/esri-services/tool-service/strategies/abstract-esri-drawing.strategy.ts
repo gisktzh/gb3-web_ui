@@ -5,10 +5,12 @@ import {DrawingCallbackHandler} from '../interfaces/drawing-callback-handler.int
 import {UserDrawingLayer} from '../../../../../shared/enums/drawing-layer.enum';
 import Graphic from '@arcgis/core/Graphic';
 
-export abstract class AbstractEsriDrawingStrategy extends AbstractEsriDrawableToolStrategy {
+export abstract class AbstractEsriDrawingStrategy<
+  T extends DrawingCallbackHandler['completeDrawing'],
+> extends AbstractEsriDrawableToolStrategy<T> {
   public readonly internalLayerType: UserDrawingLayer = UserDrawingLayer.Drawings;
 
-  protected constructor(layer: GraphicsLayer, mapView: MapView, completeCallbackHandler: DrawingCallbackHandler['complete']) {
+  protected constructor(layer: GraphicsLayer, mapView: MapView, completeCallbackHandler: T) {
     super(layer, mapView, completeCallbackHandler);
   }
 

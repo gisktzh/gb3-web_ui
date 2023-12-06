@@ -2,15 +2,12 @@
   <div class="search-result-entry-map">
     <img [alt]="map.title" [src]="map.icon" class="search-result-entry-map__image" />
     <p class="search-result-entry-map__title" matTooltip="{{ map.title }}">{{ map.title }}</p>
-    <external-link-button
-      *ngIf="map.gb2Url; else openMap"
-      [url]="map.gb2Url | appendMapConfigurationToUrl: mapConfigState"
-      toolTip="Diese Karte ist noch nicht im neuen GIS-Browser verfügbar. Öffnen Sie die Karte im alten GIS-Browser mit diesem Link."
-    ></external-link-button>
+    <gb2-exit-button *ngIf="map.gb2Url; else openMap" [url]="map.gb2Url | appendMapConfigurationToUrl: mapConfigState"></gb2-exit-button>
     <ng-template #openMap>
       <a
         [queryParams]="{initialMapIds: map.id}"
         [routerLink]="['/', mainPageEnum.Maps]"
+        clickOnSpaceBar
         color="primary"
         data-test-id="open-active-map"
         mat-icon-button

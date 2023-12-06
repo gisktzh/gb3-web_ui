@@ -21,7 +21,7 @@ describe('FeatureInfo Reducer', () => {
       const mockCurrentState: FeatureInfoState = {
         queryLocation: {y: 0, x: 5555},
         loadingState: 'loading',
-        data: [{topic: 'Gimli, the best dwarf', layers: []}],
+        data: [{topic: 'Gimli, the best dwarf', layers: [], isSingleLayer: false}],
         pinnedFeatureId: 'Moria best cave',
         highlightedFeature: {type: 'Point', srs: 2056, coordinates: [1, 2]},
       };
@@ -52,7 +52,7 @@ describe('FeatureInfo Reducer', () => {
       const mockCurrentState: FeatureInfoState = {
         queryLocation: {y: 0, x: 5555},
         loadingState: 'loading',
-        data: [{topic: 'Gimli, the best dwarf', layers: []}],
+        data: [{topic: 'Gimli, the best dwarf', layers: [], isSingleLayer: false}],
         pinnedFeatureId: 'Moria best cave',
         highlightedFeature: {type: 'Point', srs: 2056, coordinates: [1, 2]},
       };
@@ -75,7 +75,7 @@ describe('FeatureInfo Reducer', () => {
       const mockCurrentState: FeatureInfoState = {
         queryLocation: {y: 0, x: 5555},
         loadingState: 'loading',
-        data: [{topic: 'Gimli, the best dwarf', layers: []}],
+        data: [{topic: 'Gimli, the best dwarf', layers: [], isSingleLayer: false}],
         pinnedFeatureId: 'Moria best cave',
         highlightedFeature: {type: 'Point', srs: 2056, coordinates: [1, 2]},
       };
@@ -97,7 +97,12 @@ describe('FeatureInfo Reducer', () => {
           featureInfo: {
             x: 1,
             y: 2,
-            results: {topic: 'Topic1', layers: [{layer: 'test', title: 'title', features: [], metaDataLink: 'url2'}], metaDataLink: 'url'},
+            results: {
+              topic: 'Topic1',
+              layers: [{layer: 'test', title: 'title', features: [], metaDataLink: 'url2'}],
+              metaDataLink: 'url',
+              isSingleLayer: false,
+            },
           },
         },
       ];
@@ -121,7 +126,7 @@ describe('FeatureInfo Reducer', () => {
       const mockCurrentState: FeatureInfoState = {
         queryLocation: {y: 0, x: 5555},
         loadingState: 'loaded',
-        data: [{topic: 'Gimli, the best dwarf', layers: []}],
+        data: [{topic: 'Gimli, the best dwarf', layers: [], isSingleLayer: false}],
         pinnedFeatureId: 'Moria best cave',
         highlightedFeature: {type: 'Point', srs: 2056, coordinates: [1, 2]},
       };

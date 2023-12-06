@@ -5,6 +5,7 @@ import {reducer as featureInfoReducer} from './map/reducers/feature-info.reducer
 import {reducer as layerCatalogReducer} from './map/reducers/layer-catalog.reducer';
 import {reducer as activeMapItemReducer} from './map/reducers/active-map-item.reducer';
 import {reducer as dataDownloadOrderReducer} from './map/reducers/data-download-order.reducer';
+import {reducer as dataDownloadOrderStatusJobReducer} from './map/reducers/data-download-order-status-job.reducer';
 import {reducer as dataDownloadProductReducer} from './map/reducers/data-download-product.reducer';
 import {reducer as authStatusReducer} from './auth/reducers/auth-status.reducer';
 import {reducer as favouriteListReducer} from './map/reducers/favourite-list.reducer';
@@ -25,6 +26,7 @@ import {reducer as urlReducer} from './app/reducers/url.reducer';
 import {reducer as overlayPrintReducer} from './map/reducers/overlay-print.reducer';
 import {reducer as dataDownloadRegionReducer} from './map/reducers/data-download-region.reducer';
 import {reducer as elevationProfileReducer} from './map/reducers/elevation-profile.reducer';
+import {reducer as drawingStyleReducer} from './map/reducers/drawing-style.reducer';
 import {ActiveMapItemState} from './map/states/active-map-item.state';
 import {FavouriteListState} from './map/states/favourite-list.state';
 import {FeatureInfoState} from './map/states/feature-info.state';
@@ -77,6 +79,9 @@ import {DataDownloadRegionState} from './map/states/data-download-region.state';
 import {DataDownloadRegionEffects} from './map/effects/data-download-region.effects';
 import {ElevationProfileState} from './map/states/elevation-profile.state';
 import {ElevationProfileEffects} from './map/effects/elevation-profile.effects';
+import {DrawingStyleState} from './map/states/drawing-style.state';
+import {DataDownloadOrderStatusJobEffects} from './map/effects/data-download-order-status-job.effects';
+import {DataDownloadOrderStatusJobState} from './map/states/data-download-order-status-job.state';
 
 export interface State {
   mapConfig: MapConfigState;
@@ -100,12 +105,14 @@ export interface State {
   search: SearchState;
   drawing: DrawingState;
   dataDownloadOrder: DataDownloadOrderState;
+  dataDownloadOrderStatusJob: DataDownloadOrderStatusJobState;
   dataDownloadProduct: DataDownloadProductState;
   router: RouterState;
   url: UrlState;
   overlayPrint: OverlayPrintState;
   dataDownloadRegion: DataDownloadRegionState;
   elevationProfile: ElevationProfileState;
+  drawingStyle: DrawingStyleState;
 }
 
 export const reducers: ActionReducerMap<State> = {
@@ -130,12 +137,14 @@ export const reducers: ActionReducerMap<State> = {
   search: searchReducer,
   drawing: drawingReducer,
   dataDownloadOrder: dataDownloadOrderReducer,
+  dataDownloadOrderStatusJob: dataDownloadOrderStatusJobReducer,
   dataDownloadProduct: dataDownloadProductReducer,
   router: routerReducer,
   url: urlReducer,
   overlayPrint: overlayPrintReducer,
   dataDownloadRegion: dataDownloadRegionReducer,
   elevationProfile: elevationProfileReducer,
+  drawingStyle: drawingStyleReducer,
 };
 
 export const effects = [
@@ -157,6 +166,7 @@ export const effects = [
   SearchEffects,
   DrawingEffects,
   DataDownloadOrderEffects,
+  DataDownloadOrderStatusJobEffects,
   DataDownloadProductEffects,
   AppLayoutEffects,
   MapAttributeFiltersItemEffects,

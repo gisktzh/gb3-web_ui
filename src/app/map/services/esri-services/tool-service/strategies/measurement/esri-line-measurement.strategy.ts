@@ -9,7 +9,7 @@ import Point from '@arcgis/core/geometry/Point';
 
 const M_TO_KM_CONVERSION_THRESHOLD = 10_000;
 
-export class EsriLineMeasurementStrategy extends AbstractEsriMeasurementStrategy<Polyline> {
+export class EsriLineMeasurementStrategy extends AbstractEsriMeasurementStrategy<Polyline, DrawingCallbackHandler['completeMeasurement']> {
   protected readonly tool: SupportedEsriTool = 'polyline';
   private readonly labelSymbolization: TextSymbol;
 
@@ -18,7 +18,7 @@ export class EsriLineMeasurementStrategy extends AbstractEsriMeasurementStrategy
     mapView: __esri.MapView,
     polylineSymbol: __esri.SimpleLineSymbol,
     labelSymbolization: __esri.TextSymbol,
-    completeDrawingCallbackHandler: DrawingCallbackHandler['complete'],
+    completeDrawingCallbackHandler: DrawingCallbackHandler['completeMeasurement'],
   ) {
     super(layer, mapView, completeDrawingCallbackHandler);
 
@@ -26,15 +26,15 @@ export class EsriLineMeasurementStrategy extends AbstractEsriMeasurementStrategy
     this.labelSymbolization = labelSymbolization;
   }
 
-  public static getLabelPosition(geometry: Polyline): Point {
-    return geometry.getPoint(0, geometry.paths[0].length - 1);
-  }
-
   protected override createLabelConfigurationForGeometry(geometry: Polyline): LabelConfiguration {
     this.labelSymbolization.text = this.getRoundedPolylineLengthString(geometry);
-    const lastVertex = EsriLineMeasurementStrategy.getLabelPosition(geometry);
+    const lastVertex = this.getLabelPosition(geometry);
 
     return {location: lastVertex, symbolization: this.labelSymbolization};
+  }
+
+  private getLabelPosition(geometry: Polyline): Point {
+    return geometry.getPoint(0, geometry.paths[0].length - 1);
   }
 
   private getRoundedPolylineLengthString(polyline: Polyline): string {

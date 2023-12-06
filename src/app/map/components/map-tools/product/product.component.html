@@ -3,8 +3,8 @@
     class="product__checkbox"
     [ngClass]="{'product__checkbox--hidden': !product.ogd}"
     [(ngModel)]="isProductSelected"
-    (change)="updateOrderProducts()"
-    [disabled]="disabled || !product.ogd"
+    (change)="toggleProduct()"
+    [disabled]="(disabled$ | async) || !product.ogd"
   ></mat-checkbox>
   <div class="product__description">
     <p class="product__description__header" [matTooltip]="product.name" showTooltipIfTruncated>{{ product.name }}</p>
@@ -33,6 +33,6 @@
     [highlighted]="true"
     [size]="'small'"
     [url]="product.nonOgdProductUrl"
-    toolTip="Geodatenshop öffnen."
+    toolTip="Geodatenshop öffnen"
   ></external-link-button>
 </div>

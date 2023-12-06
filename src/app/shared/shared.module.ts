@@ -23,7 +23,7 @@ import {ScrollbarWidthCalculationComponent} from './components/scrollbar-width-c
 import {SearchFilterDialogComponent} from './components/search-filter-dialog/search-filter-dialog.component';
 import {SearchComponent} from './components/search/search.component';
 import {SliderWrapperComponent} from './components/slider-wrapper/slider-wrapper.component';
-import {StartPageSectionComponent} from './components/start-page-section/start-page-section.component';
+import {PageSectionComponent} from './components/page-section/page-section.component';
 import {WaitingPageComponent} from './components/waiting-page/waiting-page.component';
 import {DragCursorDirective} from './directives/drag-cursor.directive';
 import {ShowTooltipIfTruncatedDirective} from './directives/show-tooltip-if-truncated.directive';
@@ -34,6 +34,8 @@ import {FormatContentPipe} from './pipes/format-content.pipe';
 import {HighlightSearchQueryPipe} from './pipes/highlight-search-query.pipe';
 import {KeyValuePreserveOrderPipe} from './pipes/key-value-preserve-order.pipe';
 import {LayerTooltipPipe} from './pipes/layer-tooltip.pipe';
+import {ClickOnSpaceBarDirective} from './directives/click-on-spacebar.directive';
+import {Gb2ExitButtonComponent} from './components/external-link-button/gb2-exit-button.component';
 
 @NgModule({
   declarations: [
@@ -52,7 +54,7 @@ import {LayerTooltipPipe} from './pipes/layer-tooltip.pipe';
     LayerTooltipPipe,
     DescriptiveHighlightedLinkComponent,
     HeroHeaderComponent,
-    StartPageSectionComponent,
+    PageSectionComponent,
     ContactDetailsComponent,
     ContactDetailComponent,
     WaitingPageComponent,
@@ -68,6 +70,8 @@ import {LayerTooltipPipe} from './pipes/layer-tooltip.pipe';
     ExpandableListItemComponent,
     ExpandableListItemHeaderComponent,
     ShowTooltipIfTruncatedDirective,
+    ClickOnSpaceBarDirective,
+    Gb2ExitButtonComponent,
   ],
   imports: [MaterialModule, RouterModule, CommonModule, ResizableModule],
   exports: [
@@ -88,7 +92,7 @@ import {LayerTooltipPipe} from './pipes/layer-tooltip.pipe';
     LayerTooltipPipe,
     DescriptiveHighlightedLinkComponent,
     HeroHeaderComponent,
-    StartPageSectionComponent,
+    PageSectionComponent,
     ContactDetailsComponent,
     WaitingPageComponent,
     SliderWrapperComponent,
@@ -101,6 +105,8 @@ import {LayerTooltipPipe} from './pipes/layer-tooltip.pipe';
     NavbarMobileComponent,
     ExpandableListItemComponent,
     ShowTooltipIfTruncatedDirective,
+    ClickOnSpaceBarDirective,
+    Gb2ExitButtonComponent,
   ],
 })
 export class SharedModule {}

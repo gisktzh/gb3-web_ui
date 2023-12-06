@@ -7,7 +7,7 @@ import {InternalDrawingLayer} from '../../../../../../shared/enums/drawing-layer
 
 type PolygonType = Extract<SupportedEsriTool, 'circle' | 'polygon' | 'rectangle'>;
 
-export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrategy {
+export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrategy<DrawingCallbackHandler['completeDrawing']> {
   public readonly internalLayerType: InternalDrawingLayer = InternalDrawingLayer.Selection;
 
   public start(): void {
@@ -34,7 +34,7 @@ export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrate
     layer: GraphicsLayer,
     mapView: MapView,
     polygonSymbol: SimpleFillSymbol,
-    completeDrawingCallbackHandler: DrawingCallbackHandler['complete'],
+    completeDrawingCallbackHandler: DrawingCallbackHandler['completeDrawing'],
     polygonType: PolygonType,
   ) {
     super(layer, mapView, completeDrawingCallbackHandler);

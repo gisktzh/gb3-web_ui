@@ -4,6 +4,7 @@ import {Subscription, tap} from 'rxjs';
 import {ToolType} from '../../../../shared/types/tool.type';
 import {selectActiveTool} from '../../../../state/map/reducers/tool.reducer';
 import {Store} from '@ngrx/store';
+import {MatDialog} from '@angular/material/dialog';
 
 @Component({
   template: '',
@@ -13,7 +14,10 @@ export class AbstractToolsComponent implements OnInit, OnDestroy {
   private readonly activeTool$ = this.store.select(selectActiveTool);
   private readonly subscriptions: Subscription = new Subscription();
 
-  constructor(private readonly store: Store) {}
+  constructor(
+    private readonly store: Store,
+    protected readonly dialogService: MatDialog,
+  ) {}
 
   public ngOnInit() {
     this.initSubscriptions();
