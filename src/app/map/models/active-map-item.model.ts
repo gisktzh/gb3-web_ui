@@ -5,20 +5,20 @@ import {HasViewProcessState} from '../interfaces/has-view-process-state.interfac
 import {ViewProcessState} from '../../shared/types/view-process-state.type';
 import {IsImmerable} from '../interfaces/immerable.interface';
 import {immerable} from 'immer';
-
 import {AddToMapVisitor} from '../interfaces/add-to-map.visitor';
 import {Gb2WmsSettings} from './implementations/gb2-wms.model';
 import {DrawingLayerSettings} from './implementations/drawing.model';
 import {IsSingleLayer} from '../../shared/interfaces/single-layer.interface';
+import {ExternalServiceSettings} from './external-service.model';
 
-type ActiveMapItemSettingsType = 'gb2Wms' | 'drawing';
+type ActiveMapItemSettingsType = 'gb2Wms' | 'drawing' | 'externalService';
 
 export abstract class AbstractActiveMapItemSettings implements IsImmerable {
   public readonly [immerable] = true;
   public abstract readonly type: ActiveMapItemSettingsType;
 }
 
-export type ActiveMapItemSettings = Gb2WmsSettings | DrawingLayerSettings;
+export type ActiveMapItemSettings = Gb2WmsSettings | DrawingLayerSettings | ExternalServiceSettings;
 
 export abstract class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewProcessState, IsImmerable, IsSingleLayer {
   public abstract readonly id: string;

@@ -4,7 +4,7 @@
     <ng-container *ngFor="let activeMapItemWithNotice of activeMapItemsWithNotices">
       <div class="map-notice">
         <img
-          *ngIf="!activeMapItemWithNotice.isSingleLayer"
+          *ngIf="!activeMapItemWithNotice.isSingleLayer && activeMapItemWithNotice.mapImageUrl"
           class="map-notice__image"
           [alt]="activeMapItemWithNotice.title"
           [src]="activeMapItemWithNotice.mapImageUrl"

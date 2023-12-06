@@ -45,8 +45,25 @@
       <mat-icon svgIcon="ktzh_print"></mat-icon>
     </button>
     <mat-divider class="map-tools-desktop__list__divider"></mat-divider>
-    <button (click)="showShareLink()" class="map-tools-desktop__list__button" data-test-id="map-share" mat-icon-button matTooltip="Teilen">
+    <button
+      (click)="showShareLinkDialog()"
+      class="map-tools-desktop__list__button"
+      data-test-id="map-share"
+      mat-icon-button
+      matTooltip="Teilen"
+    >
       <mat-icon svgIcon="ktzh_share"></mat-icon>
+    </button>
+    <mat-divider class="map-tools-desktop__list__divider"></mat-divider>
+    <button
+      (click)="showMapImportDialog()"
+      class="map-tools-desktop__list__button"
+      data-test-id="map-import"
+      mat-icon-button
+      matTooltip="Kartendienst importieren"
+    >
+      <mat-icon svgIcon="ktzh_map_management"></mat-icon
+      ><!-- TODO GB3-861: this is a placeholder icon -->
     </button>
   </div>
   <div class="map-tools-desktop__list" *ngIf="toolMenuVisibility !== undefined">
