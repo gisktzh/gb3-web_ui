@@ -5,6 +5,7 @@ import {reducer as featureInfoReducer} from './map/reducers/feature-info.reducer
 import {reducer as layerCatalogReducer} from './map/reducers/layer-catalog.reducer';
 import {reducer as activeMapItemReducer} from './map/reducers/active-map-item.reducer';
 import {reducer as dataDownloadOrderReducer} from './map/reducers/data-download-order.reducer';
+import {reducer as dataDownloadOrderStatusJobReducer} from './map/reducers/data-download-order-status-job.reducer';
 import {reducer as dataDownloadProductReducer} from './map/reducers/data-download-product.reducer';
 import {reducer as authStatusReducer} from './auth/reducers/auth-status.reducer';
 import {reducer as favouriteListReducer} from './map/reducers/favourite-list.reducer';
@@ -79,6 +80,8 @@ import {DataDownloadRegionEffects} from './map/effects/data-download-region.effe
 import {ElevationProfileState} from './map/states/elevation-profile.state';
 import {ElevationProfileEffects} from './map/effects/elevation-profile.effects';
 import {DrawingStyleState} from './map/states/drawing-style.state';
+import {DataDownloadOrderStatusJobEffects} from './map/effects/data-download-order-status-job.effects';
+import {DataDownloadOrderStatusJobState} from './map/states/data-download-order-status-job.state';
 
 export interface State {
   mapConfig: MapConfigState;
@@ -102,6 +105,7 @@ export interface State {
   search: SearchState;
   drawing: DrawingState;
   dataDownloadOrder: DataDownloadOrderState;
+  dataDownloadOrderStatusJob: DataDownloadOrderStatusJobState;
   dataDownloadProduct: DataDownloadProductState;
   router: RouterState;
   url: UrlState;
@@ -133,6 +137,7 @@ export const reducers: ActionReducerMap<State> = {
   search: searchReducer,
   drawing: drawingReducer,
   dataDownloadOrder: dataDownloadOrderReducer,
+  dataDownloadOrderStatusJob: dataDownloadOrderStatusJobReducer,
   dataDownloadProduct: dataDownloadProductReducer,
   router: routerReducer,
   url: urlReducer,
@@ -161,6 +166,7 @@ export const effects = [
   SearchEffects,
   DrawingEffects,
   DataDownloadOrderEffects,
+  DataDownloadOrderStatusJobEffects,
   DataDownloadProductEffects,
   AppLayoutEffects,
   MapAttributeFiltersItemEffects,
