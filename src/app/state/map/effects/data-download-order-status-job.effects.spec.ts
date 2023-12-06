@@ -99,7 +99,7 @@ describe('DataDownloadOrderStatusJobEffects', () => {
     it('dispatches DataDownloadOrderStatusJobActions.setOrderStatusError() at least once with an error after requesting an order status', fakeAsync(() => {
       store.overrideSelector(selectStatusJobs, []);
       spyOnProperty(configService, 'dataDownloadConfig', 'get').and.returnValue(dataDownloadConfig);
-      const error = new Error('nooooooooooooo!!!');
+      const error = new Error('noooooooooooooo!!!');
       const geoshopApiServiceSpy = spyOn(geoshopApiService, 'checkOrderStatus').and.returnValue(throwError(() => error));
       const subscription = new Subscription();
 
@@ -200,7 +200,7 @@ describe('DataDownloadOrderStatusJobEffects', () => {
   describe('handleOrderStatusError$', () => {
     it('handles a OrderStatusCouldNotBeSent error after setting an order status error', (done: DoneFn) => {
       const errorHandlerSpy = spyOn(errorHandler, 'handleError').and.stub();
-      const originalError = new Error('nooooooooooooo!!!');
+      const originalError = new Error('noooooooooooooo!!!');
       store.overrideSelector(selectStatusJobs, []);
 
       const expectedError = new OrderStatusCouldNotBeSent(originalError);
@@ -244,7 +244,7 @@ describe('DataDownloadOrderStatusJobEffects', () => {
 
     it('handles a OrderStatusWasAborted error after setting an order status error where isAborted is true', (done: DoneFn) => {
       const errorHandlerSpy = spyOn(errorHandler, 'handleError').and.stub();
-      const error = new Error('nooooooooooooo!!!');
+      const error = new Error('noooooooooooooo!!!');
       const abortedOrderStatusJob: OrderStatusJob = {
         ...orderStatusJob,
         isAborted: true,
@@ -262,7 +262,7 @@ describe('DataDownloadOrderStatusJobEffects', () => {
 
     it('dispatches nothing if the order is not aborted', fakeAsync(() => {
       const errorHandlerSpy = spyOn(errorHandler, 'handleError').and.stub();
-      const error = new Error('nooooooooooooo!!!');
+      const error = new Error('noooooooooooooo!!!');
       const notAbortedOrderStatusJob: OrderStatusJob = {
         ...orderStatusJob,
         isAborted: false,

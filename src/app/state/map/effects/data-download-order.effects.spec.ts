@@ -176,7 +176,7 @@ describe('DataDownloadOrderEffects', () => {
       store.overrideSelector(selectSelection, selection);
       store.overrideSelector(selectMapSideDrawerContent, 'data-download');
 
-      const expectedAction = MapUiActions.mapSideDrawerIsFullyOpen();
+      const expectedAction = MapUiActions.notifyMapSideDrawerAfterOpen();
 
       actions$ = of(expectedAction);
       effects.zoomToSelection$.subscribe(([[action, _], __]) => {

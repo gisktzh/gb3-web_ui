@@ -63,7 +63,7 @@ export class DataDownloadOrderEffects {
   public zoomToSelection$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(MapUiActions.mapSideDrawerIsFullyOpen),
+        ofType(MapUiActions.notifyMapSideDrawerAfterOpen),
         concatLatestFrom(() => this.store.select(selectMapSideDrawerContent)),
         filter(([_, mapSideDrawerContent]) => mapSideDrawerContent === 'data-download'),
         concatLatestFrom(() => this.store.select(selectSelection)),
