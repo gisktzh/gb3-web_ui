@@ -5,7 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "start-local-gb2": "ng serve --configuration=development-local-gb2",
-    "build-local": "ng build --configuration=development-local-gb2",
+    "build-local": "ng build --configuration=development",
     "build-local-gb2": "ng build --configuration=development-local-gb2",
     "build-dev-ebp": "node ./update-version.js && ng build --configuration=production-dev-ebp",
     "build-uat": "ng build --configuration=production-uat",
