@@ -1,8 +1,8 @@
 import {Gb3StyledInternalDrawingRepresentation} from '../interfaces/internal-drawing-representation.interface';
 import {Gb3GeoJsonFeature, Gb3VectorLayer, Gb3VectorLayerStyle} from '../interfaces/gb3-vector-layer.interface';
 import {UserDrawingLayer} from '../enums/drawing-layer.enum';
-import {v4 as uuidv4} from 'uuid';
 import {MapConstants} from '../constants/map.constants';
+import {UuidUtils} from './uuid.utils';
 
 export class SymbolizationToGb3ConverterUtils {
   /**
@@ -12,7 +12,7 @@ export class SymbolizationToGb3ConverterUtils {
     const gb3GeoJsonFeatures: Gb3GeoJsonFeature[] = [];
     const allStyles: Gb3VectorLayerStyle = {};
     features.forEach((feature) => {
-      const uuid = uuidv4();
+      const uuid = UuidUtils.createUuid();
       const style = feature.properties.style;
 
       const gb3GeoJsonFeature: Gb3GeoJsonFeature = {

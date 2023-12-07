@@ -1,8 +1,8 @@
 import {AbstractActiveMapItemSettings, ActiveMapItem} from './active-map-item.model';
-import {v4 as uuidv4} from 'uuid';
 import {MapServiceType} from '../types/map-service.type';
 import {ExternalWmsServiceSettings} from './implementations/external-wms.model';
 import {ExternalKmlServiceSettings} from './implementations/external-kml.model';
+import {UuidUtils} from '../../shared/utils/uuid.utils';
 
 export abstract class AbstractExternalServiceSettings extends AbstractActiveMapItemSettings {
   public readonly type = 'externalService';
@@ -27,7 +27,7 @@ export abstract class ExternalServiceActiveMapItem extends ActiveMapItem {
 
   constructor(title: string, visible?: boolean, opacity?: number) {
     super(visible, opacity);
-    this.id = uuidv4();
+    this.id = UuidUtils.createUuid();
     this.title = title;
   }
 }
