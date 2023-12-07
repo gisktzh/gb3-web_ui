@@ -1,5 +1,5 @@
 import {Inject, Injectable} from '@angular/core';
-import {Actions, createEffect, ofType} from '@ngrx/effects';
+import {Actions, concatLatestFrom, createEffect, ofType} from '@ngrx/effects';
 import {filter, of, switchMap, tap} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
 import {ElevationProfileActions} from '../actions/elevation-profile.actions';
@@ -10,6 +10,8 @@ import {MapService} from '../../../map/interfaces/map.service';
 import {InternalDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {ToolActions} from '../actions/tool.actions';
 import {MapUiActions} from '../actions/map-ui.actions';
+import {selectData} from '../reducers/elevation-profile.reducer';
+import {Store} from '@ngrx/store';
 
 @Injectable()
 export class ElevationProfileEffects {
@@ -42,8 +44,9 @@ export class ElevationProfileEffects {
   public clearExistingElevationProfileOnMapUiReset$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapUiActions.resetMapUiState),
+      concatLatestFrom(() => this.store.select(selectData)),
+      filter(([_, data]) => !!data),
       map(() => {
-        console.log('here');
         return ElevationProfileActions.clearProfile();
       }),
     );
@@ -78,6 +81,7 @@ export class ElevationProfileEffects {
   constructor(
     private readonly actions$: Actions,
     private readonly swisstopoApiService: SwisstopoApiService,
+    private readonly store: Store,
     @Inject(MAP_SERVICE) private readonly mapService: MapService,
   ) {}
 }
