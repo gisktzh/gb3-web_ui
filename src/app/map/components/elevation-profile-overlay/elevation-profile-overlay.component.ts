@@ -16,6 +16,7 @@ export class ElevationProfileOverlayComponent implements OnInit, OnDestroy {
   public isVisible: boolean = false;
   public elevationProfileData?: ElevationProfileData;
   public loadingState: LoadingState;
+  public downloadUrl: string = '';
 
   private readonly isElevationProfileOverlayVisible$ = this.store.select(selectIsElevationProfileOverlayVisible);
   private readonly loadingState$ = this.store.select(selectLoadingState);
@@ -36,9 +37,24 @@ export class ElevationProfileOverlayComponent implements OnInit, OnDestroy {
     this.store.dispatch(MapUiActions.setElevationProfileOverlayVisibility({isVisible: false}));
   }
 
+  private createDownLoadLink(elevationProfileData: ElevationProfileData | undefined) {
+    if (elevationProfileData) {
+      this.downloadUrl = `${elevationProfileData.csvRequest.url}?${elevationProfileData.csvRequest.params.toString()}`;
+    }
+  }
+
   private initSubscriptions() {
     this.subscriptions.add(this.loadingState$.pipe(tap((value) => (this.loadingState = value))).subscribe());
-    this.subscriptions.add(this.elevationProfileData$.pipe(tap((value) => (this.elevationProfileData = value))).subscribe());
+    this.subscriptions.add(
+      this.elevationProfileData$
+        .pipe(
+          tap((value) => {
+            this.elevationProfileData = value;
+            this.createDownLoadLink(value);
+          }),
+        )
+        .subscribe(),
+    );
     this.subscriptions.add(this.isElevationProfileOverlayVisible$.pipe(tap((isVisible) => (this.isVisible = isVisible))).subscribe());
   }
 }

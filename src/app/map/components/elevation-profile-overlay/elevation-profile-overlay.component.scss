@@ -4,6 +4,15 @@
     flex-direction: column;
     row-gap: 8px;
 
+    .elevation-profile-overlay__content__download {
+      display: flex;
+      justify-content: space-around;
+
+      .elevation-profile-overlay__content__download__button {
+        font-size: small;
+      }
+    }
+
     .elevation-profile-overlay__content__credits {
       display: flex;
       column-gap: 4px;
