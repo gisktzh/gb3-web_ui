@@ -10,6 +10,7 @@ import {Gb2WmsSettings} from './implementations/gb2-wms.model';
 import {DrawingLayerSettings} from './implementations/drawing.model';
 import {IsSingleLayer} from '../../shared/interfaces/single-layer.interface';
 import {ExternalServiceSettings} from './external-service.model';
+import {HasOpacity} from '../interfaces/has-opacity.interface';
 
 type ActiveMapItemSettingsType = 'gb2Wms' | 'drawing' | 'externalService';
 
@@ -20,7 +21,7 @@ export abstract class AbstractActiveMapItemSettings implements IsImmerable {
 
 export type ActiveMapItemSettings = Gb2WmsSettings | DrawingLayerSettings | ExternalServiceSettings;
 
-export abstract class ActiveMapItem implements HasLoadingState, HasVisibility, HasViewProcessState, IsImmerable, IsSingleLayer {
+export abstract class ActiveMapItem implements HasLoadingState, HasOpacity, HasVisibility, HasViewProcessState, IsImmerable, IsSingleLayer {
   public abstract readonly id: string;
   public abstract readonly title: string;
   public abstract readonly mapImageUrl: string | null;

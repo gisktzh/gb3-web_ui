@@ -23,10 +23,13 @@ export class EsriMapLoaderService implements MapLoaderService {
     }
   }
 
+  private loadService<T extends __esri.Layer>(layer: T): Observable<T> {
+    return from(layer.load());
+  }
+
   private loadExternalWmsService(url: string): Observable<ExternalWmsActiveMapItem> {
-    const wmsLayer = new EsriWMSLayer({url});
-    return from(wmsLayer.load()).pipe(
-      map(() => {
+    return this.loadService(new EsriWMSLayer({url})).pipe(
+      map((wmsLayer) => {
         const subLayers: ExternalLayer<number>[] = wmsLayer.sublayers
           .map(
             (wmsSubLayer): ExternalLayer<number> => ({
@@ -37,16 +40,15 @@ export class EsriMapLoaderService implements MapLoaderService {
             }),
           )
           .toArray()
-          .slice(0, 3); // TODO no slice
+          .slice(0, 3); // TODO GB3-348: remove this hack - no slice needed
         return ActiveMapItemFactory.createExternalWmsMapItem(wmsLayer.url, wmsLayer.title, subLayers);
       }),
     );
   }
 
   private loadExternalKmlService(url: string): Observable<ExternalKmlActiveMapItem> {
-    const kmlLayer = new EsriKMLLayer({url});
-    return from(kmlLayer.load()).pipe(
-      map(() => {
+    return this.loadService(new EsriKMLLayer({url})).pipe(
+      map((kmlLayer) => {
         const subLayers: ExternalLayer<number>[] = kmlLayer.sublayers
           .map((kmlSubLayer): ExternalLayer<number> => ({id: kmlSubLayer.id, title: kmlSubLayer.title, visible: kmlSubLayer.visible}))
           .toArray();

@@ -21,8 +21,8 @@ export abstract class ExternalServiceActiveMapItem extends ActiveMapItem {
   public abstract override readonly settings: ExternalServiceSettings;
   public readonly id: string;
   public readonly title: string;
-  public readonly mapImageUrl = null; // TODO WES maybe we can extract this
-  public readonly isSingleLayer = true; // it has layers but they won't be visible
+  public readonly mapImageUrl = null;
+  public readonly isSingleLayer = true; // it most likely will have layers but they won't be visible by design
   public readonly geometadataUuid = null;
 
   constructor(title: string, visible?: boolean, opacity?: number) {

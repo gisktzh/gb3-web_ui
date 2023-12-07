@@ -52,7 +52,7 @@ export class MapImportDialogComponent {
           this.mapLoaderService.loadExternalService(value, this.firstStepFormGroup.value.mapType!).pipe(
             tap((externalServiceActiveMapItem) => (this.externalServiceActiveMapItem = externalServiceActiveMapItem)),
             catchError((error) => {
-              // TODO: error handling
+              // TODO GB3-348: error handling
               console.warn(error);
               return EMPTY;
             }),

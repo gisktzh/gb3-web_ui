@@ -222,7 +222,7 @@ export class EsriMapService implements MapService, OnDestroy {
     this.mapView.map.add(esriLayer, index);
   }
 
-  // TODO: Try to minimize code duplication
+  // TODO GB3-348: Try to minimize code duplication
   public addExternalWmsLayer(mapItem: ExternalWmsActiveMapItem, position: number) {
     if (this.esriMapViewService.findEsriLayer(mapItem.id)) {
       return;
