@@ -83,11 +83,23 @@ describe('ElevationProfileEffects', () => {
     });
   });
 
+  describe('clearExistingElevationProfileOnMapUiReset$', () => {
+    it('dispatches ElevationProfileActions.clearProfile if mapUi is reset', (done: DoneFn) => {
+      actions$ = of(MapUiActions.resetMapUiState());
+
+      effects.clearExistingElevationProfileOnMapUiReset$.subscribe((action) => {
+        expect(action).toEqual(ElevationProfileActions.clearProfile());
+        done();
+      });
+    });
+  });
+
   describe('requestElevationProfile$', () => {
     it('calls the swisstopo API and returns the data', (done: DoneFn) => {
       const mockData: ElevationProfileData = {
         dataPoints: [{altitude: 1, distance: 250}],
         statistics: {groundDistance: 666, linearDistance: 42, elevationDifference: 1337, lowestPoint: 9000, highestPoint: 9001},
+        csvRequest: {url: '', params: new URLSearchParams()},
       };
       const mockGeometry = MinimalGeometriesUtils.getMinimalLineString(2056);
       swisstopoApiServiceSpy = spyOn(swisstopoApiService, 'loadElevationProfile').and.returnValue(of(mockData));

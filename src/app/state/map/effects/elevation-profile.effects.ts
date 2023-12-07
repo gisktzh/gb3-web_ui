@@ -39,6 +39,16 @@ export class ElevationProfileEffects {
     );
   });
 
+  public clearExistingElevationProfileOnMapUiReset$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapUiActions.resetMapUiState),
+      map(() => {
+        console.log('here');
+        return ElevationProfileActions.clearProfile();
+      }),
+    );
+  });
+
   public requestElevationProfile$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ElevationProfileActions.loadProfile),
