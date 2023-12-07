@@ -27,7 +27,7 @@ RUN npm run build-$TARGET_ENVIRONMENT
 FROM nginx:1.25-alpine AS server
 COPY ./.docker/nginx.conf /etc/nginx/conf.d/configfile.template
 
-COPY --from=build-app /app/dist /usr/share/nginx/html
+COPY --from=build-app /app/dist/browser /usr/share/nginx/html
 
 ENV PORT 8080
 EXPOSE 8080

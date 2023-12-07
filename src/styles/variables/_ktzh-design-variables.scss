@@ -233,21 +233,59 @@ $zh-secondary-accent: mat.define-palette($zh-active-blue-palette);
 $zh-font-family: Inter, Arial, Helvetica, sans-serif;
 $zh-font-family-bold: 'Inter Black', Arial, Helvetica, sans-serif;
 // For usage, refer to: https://material.angular.io/guide/typography
-$zh-typography-headline-override: mat.define-typography-level(
-  $font-size: 'inherit',
-  $line-height: 1,
-  $font-weight: 'inherit',
-  $font-family: $zh-font-family-bold,
-  $letter-spacing: 'inherit',
+/// see: https://m2.material.io/design/typography/the-type-system.html#type-scale
+$material-default-sizes: (
+  font-size: (
+    headline-6: 20px,
+    headline-5: 24px,
+    headline-4: 34px,
+    headline-3: 48px,
+    headline-2: 60px,
+    headline-1: 96px,
+  ),
+  line-height: (
+    headline-6: 1,
+    headline-5: 1,
+    headline-4: 1,
+    headline-3: 1,
+    headline-2: 1,
+    headline-1: 1,
+  ),
+  font-weight: (
+    headline-6: 500,
+    headline-5: 400,
+    headline-4: 400,
+    headline-3: 400,
+    headline-2: 400,
+    headline-1: 400,
+  ),
+  letter-spacing: (
+    headline-6: 0.25px,
+    headline-5: normal,
+    headline-4: 0.25px,
+    headline-3: normal,
+    headline-2: normal,
+    headline-1: normal,
+  ),
 );
+
+@function get-typography-override($headline) {
+  @return mat.define-typography-level(
+    $font-size: map-get(map-get($material-default-sizes, font-size), $headline),
+    $line-height: map-get(map-get($material-default-sizes, line-height), $headline),
+    $font-weight: map-get(map-get($material-default-sizes, font-weight), $headline),
+    $letter-spacing: map-get(map-get($material-default-sizes, letter-spacing), $headline),
+    $font-family: $zh-font-family-bold
+  );
+}
 
 $zh-typography-config: mat.define-typography-config(
   // define headline overrides
-  $headline-6: $zh-typography-headline-override,
-  $headline-5: $zh-typography-headline-override,
-  $headline-4: $zh-typography-headline-override,
-  $headline-3: $zh-typography-headline-override,
-  $headline-2: $zh-typography-headline-override,
-  $headline-1: $zh-typography-headline-override,
+  $headline-6: get-typography-override(headline-6),
+  $headline-5: get-typography-override(headline-5),
+  $headline-4: get-typography-override(headline-4),
+  $headline-3: get-typography-override(headline-3),
+  $headline-2: get-typography-override(headline-2),
+  $headline-1: get-typography-override(headline-1),
   $font-family: $zh-font-family // Define default family, used in non-headlines and e.g. buttons
 );
