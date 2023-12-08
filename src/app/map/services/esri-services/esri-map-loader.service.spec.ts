@@ -8,12 +8,9 @@ import Collection from '@arcgis/core/core/Collection';
 import {ExternalLayer} from '../../../shared/interfaces/external-layer.interface';
 import {UuidUtils} from '../../../shared/utils/uuid.utils';
 import {ExternalKmlActiveMapItem} from '../../models/implementations/external-kml.model';
-import Spy = jasmine.Spy;
 
 describe('EsriMapLoaderService', () => {
   let service: EsriMapLoaderService;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let serviceLoadSpy: Spy<any>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -45,7 +42,7 @@ describe('EsriMapLoaderService', () => {
         visible: false,
       };
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      serviceLoadSpy = spyOn<any>(service, 'loadService').and.returnValue(
+      spyOn<any>(service, 'loadService').and.returnValue(
         of({
           url,
           title,
@@ -86,7 +83,7 @@ describe('EsriMapLoaderService', () => {
         visible: false,
       };
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      serviceLoadSpy = spyOn<any>(service, 'loadService').and.returnValue(
+      spyOn<any>(service, 'loadService').and.returnValue(
         of({
           url,
           title,
