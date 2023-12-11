@@ -2,13 +2,14 @@ import {Injectable} from '@angular/core';
 import {MapServiceType} from '../../types/map-service.type';
 import {from, Observable} from 'rxjs';
 import {ExternalServiceActiveMapItem} from '../../models/external-service.model';
-import {EsriKMLLayer, EsriWMSLayer} from './esri.module';
-import {map} from 'rxjs/operators';
+import {EsriError, EsriKMLLayer, EsriWMSLayer} from './esri.module';
+import {catchError, map} from 'rxjs/operators';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 import {MapLoaderService} from '../../interfaces/map-loader.service';
 import {ExternalLayer} from '../../../shared/interfaces/external-layer.interface';
 import {ExternalWmsActiveMapItem} from '../../models/implementations/external-wms.model';
 import {ExternalKmlActiveMapItem} from '../../models/implementations/external-kml.model';
+import {LayerCouldNotBeLoaded} from './errors/esri.errors';
 
 @Injectable({
   providedIn: 'root',
@@ -24,7 +25,15 @@ export class EsriMapLoaderService implements MapLoaderService {
   }
 
   private loadService<T extends __esri.Layer>(layer: T): Observable<T> {
-    return from(layer.load());
+    return from(layer.load()).pipe(
+      catchError((error: unknown) => {
+        let message;
+        if (error instanceof EsriError) {
+          message = error.message;
+        }
+        throw new LayerCouldNotBeLoaded(message);
+      }),
+    );
   }
 
   private loadExternalWmsService(url: string): Observable<ExternalWmsActiveMapItem> {

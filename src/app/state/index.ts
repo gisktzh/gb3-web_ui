@@ -27,6 +27,7 @@ import {reducer as overlayPrintReducer} from './map/reducers/overlay-print.reduc
 import {reducer as dataDownloadRegionReducer} from './map/reducers/data-download-region.reducer';
 import {reducer as elevationProfileReducer} from './map/reducers/elevation-profile.reducer';
 import {reducer as drawingStyleReducer} from './map/reducers/drawing-style.reducer';
+import {reducer as mapImportReducer} from './map/reducers/map-import.reducer';
 import {ActiveMapItemState} from './map/states/active-map-item.state';
 import {FavouriteListState} from './map/states/favourite-list.state';
 import {FeatureInfoState} from './map/states/feature-info.state';
@@ -82,6 +83,8 @@ import {ElevationProfileEffects} from './map/effects/elevation-profile.effects';
 import {DrawingStyleState} from './map/states/drawing-style.state';
 import {DataDownloadOrderStatusJobEffects} from './map/effects/data-download-order-status-job.effects';
 import {DataDownloadOrderStatusJobState} from './map/states/data-download-order-status-job.state';
+import {MapImportState} from './map/states/map-import.state';
+import {MapImportEffects} from './map/effects/map-import.effects';
 
 export interface State {
   mapConfig: MapConfigState;
@@ -113,6 +116,7 @@ export interface State {
   dataDownloadRegion: DataDownloadRegionState;
   elevationProfile: ElevationProfileState;
   drawingStyle: DrawingStyleState;
+  mapImport: MapImportState;
 }
 
 export const reducers: ActionReducerMap<State> = {
@@ -145,6 +149,7 @@ export const reducers: ActionReducerMap<State> = {
   dataDownloadRegion: dataDownloadRegionReducer,
   elevationProfile: elevationProfileReducer,
   drawingStyle: drawingStyleReducer,
+  mapImport: mapImportReducer,
 };
 
 export const effects = [
@@ -174,6 +179,7 @@ export const effects = [
   OverlayPrintEffects,
   DataDownloadRegionEffects,
   ElevationProfileEffects,
+  MapImportEffects,
 ];
 
 export const metaReducers: MetaReducer<State>[] = [];

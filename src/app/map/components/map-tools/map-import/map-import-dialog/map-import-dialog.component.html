@@ -1,34 +1,18 @@
 <api-dialog-wrapper title="Kartendienst importieren">
   <ng-container content>
     <div class="map-import-dialog__content">
-      <mat-stepper linear #stepper labelPosition="bottom">
-        <mat-step label="Kartendienst laden" [stepControl]="firstStepFormGroup">
-          <form [formGroup]="firstStepFormGroup" class="map-import-dialog__content__first-step-form">
-            <mat-form-field>
-              <mat-label>Kartendienst oder Geodatenformat</mat-label>
-              <mat-select formControlName="mapType">
-                <mat-option value="wms">WMS</mat-option>
-                <mat-option value="kml">KML</mat-option>
-              </mat-select>
-            </mat-form-field>
-            <mat-form-field>
-              <mat-label>URL</mat-label>
-              <input matInput placeholder="Bitte URL zum Kartendienst eingeben" formControlName="url" />
-            </mat-form-field>
-          </form>
+      <mat-stepper linear #stepper labelPosition="bottom" class="map-import-dialog__content__stepper">
+        <mat-step label="Kartendienst laden" [completed]="!!temporaryExternalMapItem">
+          <map-import-service-and-url></map-import-service-and-url>
         </mat-step>
-        <mat-step label="Layer auswählen">
-          <ul *ngIf="externalServiceActiveMapItem" class="map-import-dialog__content__second-step">
-            <li *ngFor="let layer of externalServiceActiveMapItem.settings.layers">{{ layer.title }}</li>
-          </ul>
+        <mat-step label="Layer auswählen" [completed]="!!externalServiceActiveMapItem">
+          <map-import-layer-list
+            *ngIf="temporaryExternalMapItem"
+            [temporaryExternalMapItem]="temporaryExternalMapItem"
+          ></map-import-layer-list>
         </mat-step>
-        <mat-step label="Anzeigenamen festlegen">
-          <form [formGroup]="thirdStepFormGroup" class="map-import-dialog__content__first-step-form">
-            <mat-form-field>
-              <mat-label>Anzeigenamen</mat-label>
-              <input matInput placeholder="Bitte einen Namen eingeben" formControlName="name" />
-            </mat-form-field>
-          </form>
+        <mat-step label="Anzeigenamen festlegen" [completed]="!!externalServiceActiveMapItem?.title">
+          <map-import-display-name></map-import-display-name>
         </mat-step>
       </mat-stepper>
     </div>
@@ -39,12 +23,12 @@
       mat-button
       *ngIf="stepper.selectedIndex < 2; else finishWizard"
       (click)="stepper.next()"
-      [disabled]="!firstStepFormGroup.valid && stepper.selectedIndex === 0"
+      [disabled]="stepper.selected?.completed !== true"
     >
       Weiter
     </button>
     <ng-template #finishWizard>
-      <button mat-button (click)="finish()" [disabled]="!thirdStepFormGroup.valid">Hinzufügen</button>
+      <button mat-button (click)="finish()" [disabled]="stepper.selected?.completed !== true">Hinzufügen</button>
     </ng-template>
   </ng-container>
 </api-dialog-wrapper>

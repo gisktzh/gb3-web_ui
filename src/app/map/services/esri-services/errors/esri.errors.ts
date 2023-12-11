@@ -23,3 +23,16 @@ export class MapViewNotInitialized extends FatalError {
 export class DrawingLayerNotInitialized extends RecoverableError {
   public override message = 'Es ist ein technischer Fehler beim Hinzufügen der Grafiken aufgetreten.';
 }
+
+export class LayerCouldNotBeLoaded extends RecoverableError {
+  public override name = 'LayerCouldNotBeLoaded';
+
+  constructor(reason?: string) {
+    super();
+    let message = 'Es ist ein technischer Fehler beim Laden eines Dienstes aufgetreten.';
+    if (reason) {
+      message += `\nDetails: '${reason}'`;
+    }
+    this.message = message;
+  }
+}
