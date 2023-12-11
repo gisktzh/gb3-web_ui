@@ -10,5 +10,6 @@ export const ElevationProfileActions = createActionGroup({
     'Set Profile': props<{data: ElevationProfileData}>(),
     'Set Profile Error': errorProps(),
     'Clear Profile': emptyProps(),
+    'Create Image Download Link': props<{downloadLink: string}>(),
   },
 });

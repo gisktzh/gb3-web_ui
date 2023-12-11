@@ -7,6 +7,7 @@ export const elevationProfileFeatureKey = 'elevationProfile';
 export const initialState: ElevationProfileState = {
   loadingState: undefined,
   data: undefined,
+  downloadLink: '',
 };
 
 export const elevationProfileFeature = createFeature({
@@ -25,7 +26,10 @@ export const elevationProfileFeature = createFeature({
     on(ElevationProfileActions.clearProfile, (): ElevationProfileState => {
       return {...initialState};
     }),
+    on(ElevationProfileActions.createImageDownloadLink, (state, {downloadLink}): ElevationProfileState => {
+      return {...state, downloadLink};
+    }),
   ),
 });
 
-export const {name, reducer, selectElevationProfileState, selectLoadingState, selectData} = elevationProfileFeature;
+export const {name, reducer, selectElevationProfileState, selectLoadingState, selectData, selectDownloadLink} = elevationProfileFeature;

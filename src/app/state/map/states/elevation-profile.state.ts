@@ -3,4 +3,5 @@ import {ElevationProfileData} from '../../../shared/interfaces/elevation-profile
 
 export interface ElevationProfileState extends HasLoadingState {
   data: ElevationProfileData | undefined;
+  downloadLink: string;
 }

@@ -15,14 +15,26 @@
     ></elevation-profile-statistics>
     <div class="elevation-profile-overlay__content__download">
       <a
-        [href]="downloadUrl"
+        [href]="downloadCsvUrl"
         mat-raised-button
         class="elevation-profile-overlay__content__download__button"
-        [disabled]="!downloadUrl"
+        [disabled]="!downloadCsvUrl"
         color="accent"
       >
         <mat-icon>download</mat-icon>
-        <span>Download Höhenprofil</span></a
+        <span>Download CSV</span></a
+      >
+      <a
+        [href]="downloadPngUrl"
+        mat-raised-button
+        class="elevation-profile-overlay__content__download__button"
+        *ngIf="downloadPngUrl"
+        color="accent"
+        (click)="test()"
+        #pngAnchor
+      >
+        <mat-icon>download</mat-icon>
+        <span>Download PNG</span></a
       >
     </div>
     <mat-divider></mat-divider>
