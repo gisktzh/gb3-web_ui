@@ -6,14 +6,14 @@ ARG APP_RELEASE
 ENV APP_VERSION=$APP_VERSION
 ENV APP_RELEASE=$APP_RELEASE
 
-ARG TARGET_ENVIRONMENT=local
+ARG TARGET_ENVIRONMENT=production
 
 WORKDIR /app
 COPY . .
 
 ENV NODE_ENV=production
 # increase the available memory size to prevent the 'Reached heap limit Allocation failed - JavaScript heap out of memory' error
-ENV NODE_OPTIONS=--max_old_space_size=4096
+ENV NODE_OPTIONS="--max_old_space_size=4096"
 
 RUN npm --version
 
