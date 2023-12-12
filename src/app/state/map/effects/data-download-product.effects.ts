@@ -44,13 +44,12 @@ export class DataDownloadProductEffects {
     );
   });
 
-  public handleProductsError$ = createEffect(
+  public throwProductsError$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(DataDownloadProductActions.setProductsError),
         tap(({error}) => {
-          // TODO GB3-914: Replace with `throwError` again after implementing a effect error handler
-          this.errorHandler.handleError(new ProductsCouldNotBeLoaded(error));
+          throw new ProductsCouldNotBeLoaded(error);
         }),
       );
     },
@@ -79,13 +78,12 @@ export class DataDownloadProductEffects {
     );
   });
 
-  public handleRelevantProductIdsError$ = createEffect(
+  public throwRelevantProductIdsError$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(DataDownloadProductActions.setRelevantProductIdsError),
         tap(({error}) => {
-          // TODO GB3-914: Replace with `throwError` again after implementing a effect error handler
-          this.errorHandler.handleError(new RelevantProductsCouldNotBeLoaded(error));
+          throw new RelevantProductsCouldNotBeLoaded(error);
         }),
       );
     },

@@ -53,28 +53,26 @@ export class DataDownloadOrderStatusJobEffects {
     );
   });
 
-  public handleOrderStatusError$ = createEffect(
+  public throwOrderStatusError$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(DataDownloadOrderStatusJobActions.setOrderStatusError),
         tap(({error}) => {
-          // TODO GB3-914: Replace with `throwError` again after implementing a effect error handler
-          this.errorHandler.handleError(new OrderStatusCouldNotBeSent(error));
+          throw new OrderStatusCouldNotBeSent(error);
         }),
       );
     },
     {dispatch: false},
   );
 
-  public handleOrderStatusRefreshAbortError$ = createEffect(
+  public throwOrderStatusRefreshAbortError$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(DataDownloadOrderStatusJobActions.setOrderStatusError),
         concatLatestFrom(() => this.store.select(selectStatusJobs)),
         filter(([{orderId}, statusJobs]) => statusJobs.find((activeStatusJob) => activeStatusJob.id === orderId)?.isAborted === true),
         tap(([{error}, _]) => {
-          // TODO GB3-914: Replace with `throwError` again after implementing a effect error handler
-          this.errorHandler.handleError(new OrderStatusWasAborted(error));
+          throw new OrderStatusWasAborted(error);
         }),
       );
     },

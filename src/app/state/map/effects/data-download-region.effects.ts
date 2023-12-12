@@ -27,13 +27,12 @@ export class DataDownloadRegionEffects {
     );
   });
 
-  public handleCantonError$ = createEffect(
+  public throwCantonError$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(DataDownloadRegionActions.setCantonError),
         tap(({error}) => {
-          // TODO GB3-914: Replace with `throwError` again after implementing a effect error handler
-          this.errorHandler.handleError(new CantonCouldNotBeLoaded(error));
+          throw new CantonCouldNotBeLoaded(error);
         }),
       );
     },
@@ -56,13 +55,12 @@ export class DataDownloadRegionEffects {
     );
   });
 
-  public handleMunicipalitiesError$ = createEffect(
+  public throwMunicipalitiesError$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(DataDownloadRegionActions.setMunicipalitiesError),
         tap(({error}) => {
-          // TODO GB3-914: Replace with `throwError` again after implementing a effect error handler
-          this.errorHandler.handleError(new MunicipalitiesCouldNotBeLoaded(error));
+          throw new MunicipalitiesCouldNotBeLoaded(error);
         }),
       );
     },

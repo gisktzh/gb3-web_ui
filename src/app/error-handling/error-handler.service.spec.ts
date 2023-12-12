@@ -58,7 +58,7 @@ describe('ErrorHandlerService', () => {
   });
 
   it('handles RecoverableErrors correctly', () => {
-    const testErrorMessage = 'error message';
+    const testErrorMessage = 'error message1';
     const testError = new TestRecoverableError(testErrorMessage);
 
     service.handleError(testError);
@@ -75,7 +75,7 @@ describe('ErrorHandlerService', () => {
   });
 
   it('handles FatalErrors correctly', () => {
-    const testErrorMessage = 'error message';
+    const testErrorMessage = 'error message2';
     const testError = new TestFatalError(testErrorMessage);
 
     service.handleError(testError);
@@ -88,7 +88,7 @@ describe('ErrorHandlerService', () => {
   });
 
   it('handles non Gb3RuntimeErrors correctly', () => {
-    const testErrorMessage = 'error message';
+    const testErrorMessage = 'error message3';
     const testError = new Error(testErrorMessage);
 
     service.handleError(testError);

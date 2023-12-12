@@ -1,6 +1,6 @@
 import {provideMockActions} from '@ngrx/effects/testing';
 import {discardPeriodicTasks, fakeAsync, TestBed, tick} from '@angular/core/testing';
-import {Observable, of, Subscription, throwError} from 'rxjs';
+import {EMPTY, Observable, of, Subscription, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
@@ -16,6 +16,7 @@ import {ErrorHandler} from '@angular/core';
 import {DataDownloadOrderStatusJobEffects} from './data-download-order-status-job.effects';
 import {selectStatusJobs} from '../reducers/data-download-order-status-job.reducer';
 import {DataDownloadOrderStatusJobActions} from '../actions/data-download-order-status-job.actions';
+import {catchError} from 'rxjs/operators';
 
 describe('DataDownloadOrderStatusJobEffects', () => {
   let actions$: Observable<Action>;
@@ -23,10 +24,11 @@ describe('DataDownloadOrderStatusJobEffects', () => {
   let effects: DataDownloadOrderStatusJobEffects;
   let geoshopApiService: GeoshopApiService;
   let configService: ConfigService;
-  let errorHandler: ErrorHandler;
+  let errorHandlerMock: jasmine.SpyObj<ErrorHandler>;
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
+    errorHandlerMock = jasmine.createSpyObj<ErrorHandler>(['handleError']);
 
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterTestingModule],
@@ -34,6 +36,7 @@ describe('DataDownloadOrderStatusJobEffects', () => {
         DataDownloadOrderStatusJobEffects,
         provideMockActions(() => actions$),
         provideMockStore(),
+        {provide: ErrorHandler, useValue: errorHandlerMock},
         {provide: MAP_SERVICE, useClass: MapServiceStub},
       ],
     });
@@ -41,7 +44,6 @@ describe('DataDownloadOrderStatusJobEffects', () => {
     store = TestBed.inject(MockStore);
     geoshopApiService = TestBed.inject(GeoshopApiService);
     configService = TestBed.inject(ConfigService);
-    errorHandler = TestBed.inject(ErrorHandler);
   });
 
   afterEach(() => {
@@ -197,9 +199,8 @@ describe('DataDownloadOrderStatusJobEffects', () => {
     }));
   });
 
-  describe('handleOrderStatusError$', () => {
-    it('handles a OrderStatusCouldNotBeSent error after setting an order status error', (done: DoneFn) => {
-      const errorHandlerSpy = spyOn(errorHandler, 'handleError').and.stub();
+  describe('throwOrderStatusError$', () => {
+    it('throws a OrderStatusCouldNotBeSent error after setting an order status error', (done: DoneFn) => {
       const originalError = new Error('noooooooooooooo!!!');
       store.overrideSelector(selectStatusJobs, []);
 
@@ -212,14 +213,19 @@ describe('DataDownloadOrderStatusJobEffects', () => {
           maximumNumberOfConsecutiveStatusJobErrors: 3,
         }),
       );
-      effects.handleOrderStatusError$.subscribe(() => {
-        expect(errorHandlerSpy).toHaveBeenCalledOnceWith(expectedError);
-        done();
-      });
+      effects.throwOrderStatusError$
+        .pipe(
+          catchError((error: unknown) => {
+            expect(error).toEqual(expectedError);
+            done();
+            return EMPTY;
+          }),
+        )
+        .subscribe();
     });
   });
 
-  describe('handleOrderStatusRefreshAbortError$', () => {
+  describe('throwOrderStatusRefreshAbortError$', () => {
     const orderTitle = 'stormtrooper';
     const orderId = 'ST-1337';
     const orderStatus: OrderStatus = {
@@ -242,26 +248,35 @@ describe('DataDownloadOrderStatusJobEffects', () => {
       status: orderStatus,
     };
 
-    it('handles a OrderStatusWasAborted error after setting an order status error where isAborted is true', (done: DoneFn) => {
-      const errorHandlerSpy = spyOn(errorHandler, 'handleError').and.stub();
-      const error = new Error('noooooooooooooo!!!');
+    it('throws a OrderStatusWasAborted error after setting an order status error where isAborted is true', (done: DoneFn) => {
+      const originalError = new Error('noooooooooooooo!!!');
       const abortedOrderStatusJob: OrderStatusJob = {
         ...orderStatusJob,
         isAborted: true,
       };
       store.overrideSelector(selectStatusJobs, [abortedOrderStatusJob]);
 
-      const expectedError = new OrderStatusWasAborted(error);
+      const expectedError = new OrderStatusWasAborted(originalError);
 
-      actions$ = of(DataDownloadOrderStatusJobActions.setOrderStatusError({error, orderId, maximumNumberOfConsecutiveStatusJobErrors: 3}));
-      effects.handleOrderStatusRefreshAbortError$.subscribe(() => {
-        expect(errorHandlerSpy).toHaveBeenCalledOnceWith(expectedError);
-        done();
-      });
+      actions$ = of(
+        DataDownloadOrderStatusJobActions.setOrderStatusError({
+          error: originalError,
+          orderId,
+          maximumNumberOfConsecutiveStatusJobErrors: 3,
+        }),
+      );
+      effects.throwOrderStatusRefreshAbortError$
+        .pipe(
+          catchError((error: unknown) => {
+            expect(error).toEqual(expectedError);
+            done();
+            return EMPTY;
+          }),
+        )
+        .subscribe();
     });
 
     it('dispatches nothing if the order is not aborted', fakeAsync(() => {
-      const errorHandlerSpy = spyOn(errorHandler, 'handleError').and.stub();
       const error = new Error('noooooooooooooo!!!');
       const notAbortedOrderStatusJob: OrderStatusJob = {
         ...orderStatusJob,
@@ -271,11 +286,10 @@ describe('DataDownloadOrderStatusJobEffects', () => {
 
       let newAction;
       actions$ = of(DataDownloadOrderStatusJobActions.setOrderStatusError({error, orderId, maximumNumberOfConsecutiveStatusJobErrors: 3}));
-      effects.handleOrderStatusRefreshAbortError$.subscribe((action) => (newAction = action));
+      effects.throwOrderStatusRefreshAbortError$.subscribe((action) => (newAction = action));
       tick();
 
       expect(newAction).toBeUndefined();
-      expect(errorHandlerSpy).not.toHaveBeenCalled();
     }));
   });
 });
