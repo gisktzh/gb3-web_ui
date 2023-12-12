@@ -2,7 +2,7 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {SupportPageComponent} from './support-page.component';
 import {FaqComponent} from './components/faq/faq.component';
-import {UsefulLinksComponent} from './components/useful-links/useful-links.component';
+import {UsefulInformationComponent} from './components/useful-information/useful-information.component';
 import {ContactComponent} from './components/contact/contact.component';
 
 const routes: Routes = [
@@ -15,8 +15,8 @@ const routes: Routes = [
         component: FaqComponent,
       },
       {
-        path: 'useful-links',
-        component: UsefulLinksComponent,
+        path: 'useful-information',
+        component: UsefulInformationComponent,
       },
       {
         path: 'contact',
