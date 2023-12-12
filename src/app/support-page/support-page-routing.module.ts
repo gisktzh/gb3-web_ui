@@ -1,11 +1,33 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {SupportPageComponent} from './support-page.component';
+import {FaqComponent} from './components/faq/faq.component';
+import {UsefulInformationComponent} from './components/useful-information/useful-information.component';
+import {ContactComponent} from './components/contact/contact.component';
 
 const routes: Routes = [
   {
     path: '',
     component: SupportPageComponent,
+    children: [
+      {
+        path: 'faq',
+        component: FaqComponent,
+      },
+      {
+        path: 'useful-information',
+        component: UsefulInformationComponent,
+      },
+      {
+        path: 'contact',
+        component: ContactComponent,
+      },
+      {
+        pathMatch: 'full',
+        path: '',
+        redirectTo: 'faq',
+      },
+    ],
   },
 ];
 
