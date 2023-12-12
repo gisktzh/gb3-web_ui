@@ -6,6 +6,7 @@ import {Store} from '@ngrx/store';
 import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
 import {selectData, selectLoadingState} from '../../../state/map/reducers/elevation-profile.reducer';
 import {ElevationProfileData} from '../../../shared/interfaces/elevation-profile.interface';
+import {SwisstopoApiService} from '../../../shared/services/apis/swisstopo/swisstopo-api.service';
 
 @Component({
   selector: 'elevation-profile-overlay',
@@ -16,14 +17,17 @@ export class ElevationProfileOverlayComponent implements OnInit, OnDestroy {
   public isVisible: boolean = false;
   public elevationProfileData?: ElevationProfileData;
   public loadingState: LoadingState;
-  public downloadUrl: string = '';
+  public downloadUrl?: string;
 
   private readonly isElevationProfileOverlayVisible$ = this.store.select(selectIsElevationProfileOverlayVisible);
   private readonly loadingState$ = this.store.select(selectLoadingState);
   private readonly elevationProfileData$ = this.store.select(selectData);
   private readonly subscriptions = new Subscription();
 
-  constructor(private readonly store: Store) {}
+  constructor(
+    private readonly store: Store,
+    private readonly swisstopoApiService: SwisstopoApiService,
+  ) {}
 
   public ngOnInit(): void {
     this.initSubscriptions();
@@ -38,9 +42,7 @@ export class ElevationProfileOverlayComponent implements OnInit, OnDestroy {
   }
 
   private createDownLoadLink(elevationProfileData: ElevationProfileData | undefined) {
-    if (elevationProfileData) {
-      this.downloadUrl = `${elevationProfileData.csvRequest.url}?${elevationProfileData.csvRequest.params.toString()}`;
-    }
+    this.downloadUrl = this.swisstopoApiService.createDownloadLinkUrl(elevationProfileData);
   }
 
   private initSubscriptions() {

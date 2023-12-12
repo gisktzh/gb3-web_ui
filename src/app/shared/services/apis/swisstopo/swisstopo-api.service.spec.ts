@@ -7,7 +7,7 @@ import {of} from 'rxjs';
 import {ElevationProfileResponse} from '../../../models/swisstopo-api-generated.interface';
 import {LineString} from 'geojson';
 import {MinimalGeometriesUtils} from '../../../../testing/map-testing/minimal-geometries.utils';
-import {ElevationProfileDataPoint, ElevationProfileStatistics} from '../../../interfaces/elevation-profile.interface';
+import {ElevationProfileData, ElevationProfileDataPoint, ElevationProfileStatistics} from '../../../interfaces/elevation-profile.interface';
 
 describe('SwisstopoApiService', () => {
   let service: SwisstopoApiService;
@@ -60,6 +60,36 @@ describe('SwisstopoApiService', () => {
         expect(elevationProfileData.statistics).toEqual(expectedStatistics);
         done();
       });
+    });
+  });
+  describe('createDownloadLinkUrl', () => {
+    it('creates the URL correctly', () => {
+      const data: ElevationProfileData = {
+        dataPoints: [],
+        statistics: {
+          highestPoint: 13,
+          lowestPoint: -14,
+          elevationDifference: -25,
+          linearDistance: 30,
+          groundDistance: 10.04987562112089 + 10.04987562112089 + 28.792360097775937,
+        },
+        csvRequest: {
+          url: 'some/url',
+          params: new URLSearchParams({geom: '1234', sr: '2056'}),
+        },
+      };
+
+      const expected = 'some/url?geom=1234&sr=2056';
+      const actual = service.createDownloadLinkUrl(data);
+      expect(actual).toBeDefined();
+      expect(expected).toEqual(actual as string);
+    });
+
+    it('creates returns undefined if input is undefined', () => {
+      const data = undefined;
+
+      const actual = service.createDownloadLinkUrl(data);
+      expect(actual).toBeUndefined();
     });
   });
 });
