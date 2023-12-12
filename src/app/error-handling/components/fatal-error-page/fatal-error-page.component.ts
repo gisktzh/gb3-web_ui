@@ -26,6 +26,10 @@ export class FatalErrorPageComponent implements OnInit, OnDestroy {
     );
   }
 
+  public forceRefresh() {
+    window.location.href = '/';
+  }
+
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
   }

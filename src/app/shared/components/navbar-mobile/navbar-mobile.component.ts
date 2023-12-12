@@ -38,7 +38,7 @@ export class NavbarMobileComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  showMenu() {
+  public showMenu() {
     this.dialog.open(NavbarMobileDialogComponent, {
       maxWidth: '100vw',
       maxHeight: '100vh',
