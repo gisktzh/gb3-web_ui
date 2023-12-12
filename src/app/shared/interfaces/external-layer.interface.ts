@@ -1,7 +1,20 @@
 import {HasVisibility} from '../../map/interfaces/has-visibility.interface';
+import {MapServiceType} from '../../map/types/map-service.type';
+import {ExternalLayerId} from '../types/external-layer-id.type';
 
-export interface ExternalLayer<T extends string | number> extends HasVisibility {
+interface AbstractExternalLayer<T extends ExternalLayerId> extends HasVisibility {
+  type: MapServiceType;
   id: T;
   title: string;
-  name?: string;
 }
+
+export interface ExternalWmsLayer extends AbstractExternalLayer<number> {
+  type: 'wms';
+  name: string;
+}
+
+export interface ExternalKmlLayer extends AbstractExternalLayer<number> {
+  type: 'kml';
+}
+
+export type ExternalLayer = ExternalWmsLayer | ExternalKmlLayer;

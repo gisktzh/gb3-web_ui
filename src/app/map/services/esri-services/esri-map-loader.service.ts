@@ -6,7 +6,7 @@ import {EsriError, EsriKMLLayer, EsriWMSLayer} from './esri.module';
 import {catchError, map} from 'rxjs/operators';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 import {MapLoaderService} from '../../interfaces/map-loader.service';
-import {ExternalLayer} from '../../../shared/interfaces/external-layer.interface';
+import {ExternalKmlLayer, ExternalWmsLayer} from '../../../shared/interfaces/external-layer.interface';
 import {ExternalWmsActiveMapItem} from '../../models/implementations/external-wms.model';
 import {ExternalKmlActiveMapItem} from '../../models/implementations/external-kml.model';
 import {LayerCouldNotBeLoaded} from './errors/esri.errors';
@@ -39,17 +39,17 @@ export class EsriMapLoaderService implements MapLoaderService {
   private loadExternalWmsService(url: string): Observable<ExternalWmsActiveMapItem> {
     return this.loadService(new EsriWMSLayer({url})).pipe(
       map((wmsLayer) => {
-        const subLayers: ExternalLayer<number>[] = wmsLayer.sublayers
+        const subLayers: ExternalWmsLayer[] = wmsLayer.sublayers
           .map(
-            (wmsSubLayer): ExternalLayer<number> => ({
+            (wmsSubLayer): ExternalWmsLayer => ({
+              type: 'wms',
               id: wmsSubLayer.id,
               name: wmsSubLayer.name,
               title: wmsSubLayer.title,
               visible: wmsSubLayer.visible,
             }),
           )
-          .toArray()
-          .slice(0, 3); // TODO GB3-348: remove this hack - no slice needed
+          .toArray();
         return ActiveMapItemFactory.createExternalWmsMapItem(wmsLayer.url, wmsLayer.title, subLayers);
       }),
     );
@@ -58,8 +58,10 @@ export class EsriMapLoaderService implements MapLoaderService {
   private loadExternalKmlService(url: string): Observable<ExternalKmlActiveMapItem> {
     return this.loadService(new EsriKMLLayer({url})).pipe(
       map((kmlLayer) => {
-        const subLayers: ExternalLayer<number>[] = kmlLayer.sublayers
-          .map((kmlSubLayer): ExternalLayer<number> => ({id: kmlSubLayer.id, title: kmlSubLayer.title, visible: kmlSubLayer.visible}))
+        const subLayers: ExternalKmlLayer[] = kmlLayer.sublayers
+          .map(
+            (kmlSubLayer): ExternalKmlLayer => ({type: 'kml', id: kmlSubLayer.id, title: kmlSubLayer.title, visible: kmlSubLayer.visible}),
+          )
           .toArray();
         return ActiveMapItemFactory.createExternalKmlMapItem(kmlLayer.url, kmlLayer.title, subLayers);
       }),

@@ -280,6 +280,7 @@ export class EsriMapService implements MapService, OnDestroy {
         .reverse(), // reverse the order of the sublayers because the order in the GB3 interfaces (Topic, ActiveMapItem) is inverted to the
       // order of the WMS specifications
     });
+
     this.attachLayerListeners(esriLayer);
     /**
      * `position` is the map/layer position from the state/GUI: lowest position <=> highest visibility

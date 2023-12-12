@@ -18,9 +18,9 @@ export abstract class AbstractExternalServiceSettings extends AbstractActiveMapI
 export type ExternalServiceSettings = ExternalWmsServiceSettings | ExternalKmlServiceSettings;
 
 export abstract class ExternalServiceActiveMapItem extends ActiveMapItem {
-  public title: string;
   public abstract override readonly settings: ExternalServiceSettings;
   public readonly id: string;
+  public readonly title: string;
   public readonly mapImageUrl = null;
   public readonly isSingleLayer = true; // it most likely will have layers but they won't be visible by design
   public readonly geometadataUuid = null;

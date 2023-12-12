@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MapServiceType} from '../../../../types/map-service.type';
 import {Store} from '@ngrx/store';
@@ -6,7 +6,7 @@ import {debounceTime, filter, Subscription, tap} from 'rxjs';
 import {NgForOf, NgIf} from '@angular/common';
 import {SharedModule} from '../../../../../shared/shared.module';
 import {MapImportActions} from '../../../../../state/map/actions/map-import.actions';
-import {selectLoadingState} from '../../../../../state/map/reducers/map-import.reducer';
+import {selectExternalMapItem, selectLoadingState} from '../../../../../state/map/reducers/map-import.reducer';
 import {LoadingState} from '../../../../../shared/types/loading-state.type';
 
 interface ServiceFormGroup {
@@ -22,6 +22,8 @@ interface ServiceFormGroup {
   styleUrl: './map-import-service-and-url.component.scss',
 })
 export class MapImportServiceAndUrlComponent implements OnInit, OnDestroy {
+  @Output() public readonly loadingStateEvent = new EventEmitter<LoadingState>();
+
   public readonly serviceFormGroup = this.formBuilder.group<ServiceFormGroup>({
     serviceType: this.formBuilder.control(null, [Validators.required]),
     url: this.formBuilder.control({value: null, disabled: true}, [Validators.required]),
@@ -29,6 +31,7 @@ export class MapImportServiceAndUrlComponent implements OnInit, OnDestroy {
   public loadingState: LoadingState;
 
   private readonly loadingState$ = this.store.select(selectLoadingState);
+  private readonly externalMapItem$ = this.store.select(selectExternalMapItem);
   private readonly subscriptions = new Subscription();
 
   constructor(
@@ -50,7 +53,7 @@ export class MapImportServiceAndUrlComponent implements OnInit, OnDestroy {
         .pipe(
           filter((serviceType): serviceType is MapServiceType => !!serviceType),
           tap(() => {
-            this.serviceFormGroup.controls.url.setValue(null);
+            this.store.dispatch(MapImportActions.clearExternalMapItemAndSelection());
             this.serviceFormGroup.controls.url.enable();
           }),
         )
@@ -60,13 +63,32 @@ export class MapImportServiceAndUrlComponent implements OnInit, OnDestroy {
       this.serviceFormGroup.valueChanges
         .pipe(
           debounceTime(300),
-          filter(({url, serviceType}) => !!url && !!serviceType),
-          tap(({url, serviceType}) =>
-            this.store.dispatch(MapImportActions.loadTemporaryExternalMap({url: url!, serviceType: serviceType!})),
-          ),
+          filter(({url, serviceType}) => !!url && serviceType !== null),
+          tap(({url, serviceType}) => this.store.dispatch(MapImportActions.loadExternalMapItem({url: url!, serviceType: serviceType!}))),
         )
         .subscribe(),
     );
-    this.subscriptions.add(this.loadingState$.pipe(tap((loadingState) => (this.loadingState = loadingState))).subscribe());
+    this.subscriptions.add(this.loadingState$.pipe(tap((loadingState) => this.handleLoadingState(loadingState))).subscribe());
+    this.subscriptions.add(
+      this.externalMapItem$
+        .pipe(
+          tap((externalMapItem) => {
+            if (!externalMapItem) {
+              this.serviceFormGroup.controls.url.setValue(null);
+            }
+          }),
+        )
+        .subscribe(),
+    );
+  }
+
+  private handleLoadingState(loadingState: LoadingState) {
+    this.loadingState = loadingState;
+    this.loadingStateEvent.emit(loadingState);
+    if (loadingState === 'error') {
+      this.serviceFormGroup.controls.url.setErrors({incorrect: true});
+    } else {
+      this.serviceFormGroup.controls.url.setErrors(null);
+    }
   }
 }

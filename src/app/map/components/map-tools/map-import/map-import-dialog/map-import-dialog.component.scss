@@ -1,9 +1,27 @@
 :host ::ng-deep .map-import-dialog__content__stepper {
-  &.mat-stepper-horizontal .mat-horizontal-stepper-wrapper .mat-horizontal-content-container {
-    padding: 24px 0 0 0;
+  &.mat-stepper-horizontal {
+    .mat-horizontal-stepper-wrapper {
+      height: 100%;
+      .mat-horizontal-content-container {
+        padding: 24px 0 0 0;
+        .mat-horizontal-stepper-content:not(.mat-horizontal-stepper-content-inactive) {
+          height: 100%;
+        }
+      }
+    }
   }
 }
 
 .map-import-dialog__content {
   width: 657px;
+  height: 558px; // todo better value
+  overflow: hidden;
+
+  .map-import-dialog__content__stepper {
+    height: 100%;
+
+    .height {
+      height: 100%;
+    }
+  }
 }

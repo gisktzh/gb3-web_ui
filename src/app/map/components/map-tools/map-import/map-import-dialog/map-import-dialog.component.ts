@@ -3,7 +3,11 @@ import {MatDialogRef} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
 import {ExternalServiceActiveMapItem} from '../../../../models/external-service.model';
 import {Subscription, tap} from 'rxjs';
-import {selectTemporaryExternalMapItem} from '../../../../../state/map/reducers/map-import.reducer';
+import {selectExternalMapItem, selectLayerSelections, selectTitle} from '../../../../../state/map/reducers/map-import.reducer';
+import {LoadingState} from '../../../../../shared/types/loading-state.type';
+import {ExternalLayerSelection} from '../../../../../shared/interfaces/external-layer-selection.interface';
+import {selectIsAnyLayerSelected} from '../../../../../state/map/selectors/map-import-layer-selection.selector';
+import {MapImportActions} from '../../../../../state/map/actions/map-import.actions';
 
 @Component({
   selector: 'map-import-dialog',
@@ -11,10 +15,16 @@ import {selectTemporaryExternalMapItem} from '../../../../../state/map/reducers/
   styleUrl: './map-import-dialog.component.scss',
 })
 export class MapImportDialogComponent implements OnInit, OnDestroy {
-  public temporaryExternalMapItem?: ExternalServiceActiveMapItem;
-  public externalServiceActiveMapItem?: ExternalServiceActiveMapItem;
+  public loadingState: LoadingState;
+  public externalMapItem?: ExternalServiceActiveMapItem;
+  public layerSelections: ExternalLayerSelection[] | undefined = undefined;
+  public isAnyLayerSelected = false;
+  public title: string | undefined = undefined;
 
-  private readonly temporaryExternalMapItem$ = this.store.select(selectTemporaryExternalMapItem);
+  private readonly externalMapItem$ = this.store.select(selectExternalMapItem);
+  private readonly layerSelections$ = this.store.select(selectLayerSelections);
+  private readonly isAnyLayerSelected$ = this.store.select(selectIsAnyLayerSelected);
+  private readonly title$ = this.store.select(selectTitle);
   private readonly subscriptions = new Subscription();
 
   constructor(
@@ -35,27 +45,7 @@ export class MapImportDialogComponent implements OnInit, OnDestroy {
   }
 
   public finish() {
-    // if (this.externalServiceActiveMapItem) {
-    //   const title = this.thirdStepFormGroup.value.name ?? this.externalServiceActiveMapItem.title;
-    //   let activeMapItem: ExternalServiceActiveMapItem;
-    //   switch (this.externalServiceActiveMapItem.settings.mapServiceType) {
-    //     case 'wms':
-    //       activeMapItem = ActiveMapItemFactory.createExternalWmsMapItem(
-    //         this.externalServiceActiveMapItem.settings.url,
-    //         title,
-    //         this.externalServiceActiveMapItem.settings.layers,
-    //       );
-    //       break;
-    //     case 'kml':
-    //       activeMapItem = ActiveMapItemFactory.createExternalKmlMapItem(
-    //         this.externalServiceActiveMapItem.settings.url,
-    //         title,
-    //         this.externalServiceActiveMapItem.settings.layers,
-    //       );
-    //       break;
-    //   }
-    //   this.store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem, position: 0}));
-    // }
+    this.store.dispatch(MapImportActions.addExternalMapItem());
     this.close();
   }
 
@@ -64,10 +54,11 @@ export class MapImportDialogComponent implements OnInit, OnDestroy {
   }
 
   private initSubscriptions() {
+    this.subscriptions.add(this.externalMapItem$.pipe(tap((externalMapItem) => (this.externalMapItem = externalMapItem))).subscribe());
+    this.subscriptions.add(this.layerSelections$.pipe(tap((layerSelections) => (this.layerSelections = layerSelections))).subscribe());
     this.subscriptions.add(
-      this.temporaryExternalMapItem$
-        .pipe(tap((temporaryExternalMapItem) => (this.temporaryExternalMapItem = temporaryExternalMapItem)))
-        .subscribe(),
+      this.isAnyLayerSelected$.pipe(tap((isAnyLayerSelected) => (this.isAnyLayerSelected = isAnyLayerSelected))).subscribe(),
     );
+    this.subscriptions.add(this.title$.pipe(tap((title) => (this.title = title))).subscribe());
   }
 }
