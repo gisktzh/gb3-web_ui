@@ -23,5 +23,6 @@ export const MapUiActions = createActionGroup({
     'Hide Bottom Sheet': emptyProps(),
     'Reset Map Ui State': emptyProps(),
     'Show Data Download Email Confirmation Dialog': emptyProps(),
+    'Show Map Import Dialog': emptyProps(),
   },
 });

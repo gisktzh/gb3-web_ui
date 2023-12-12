@@ -1,0 +1,14 @@
+.map-import-dialog__content {
+  width: 657px;
+
+  .map-import-dialog__content__first-step-form {
+    width: 100%;
+    display: flex;
+    flex-flow: column;
+  }
+
+  .map-import-dialog__content__second-step {
+    overflow-y: scroll;
+    height: 400px;
+  }
+}

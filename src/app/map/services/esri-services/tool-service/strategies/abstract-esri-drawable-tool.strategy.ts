@@ -5,9 +5,9 @@ import {EsriSketchTool} from '../../esri.module';
 import {EsriToolStrategy} from '../interfaces/strategy.interface';
 import {DrawingCallbackHandler} from '../interfaces/drawing-callback-handler.interface';
 import Graphic from '@arcgis/core/Graphic';
-import {v4 as uuidv4} from 'uuid';
 import {DrawingLayer} from '../../../../../shared/enums/drawing-layer.enum';
 import {MapConstants} from '../../../../../shared/constants/map.constants';
+import {UuidUtils} from '../../../../../shared/utils/uuid.utils';
 
 export type SupportedEsriTool = Extract<EsriSketchTool, 'polygon' | 'polyline' | 'point' | 'rectangle' | 'circle'>;
 
@@ -48,14 +48,14 @@ export abstract class AbstractEsriDrawableToolStrategy<
   public abstract start(): void;
 
   protected setAndGetIdentifierOnGraphic(graphic: Graphic): string {
-    const identifier = uuidv4();
+    const identifier = UuidUtils.createUuid();
     this.setIdentifierOnGraphic(graphic, identifier);
 
     return identifier;
   }
 
   protected setIdentifierOnGraphic(graphic: Graphic, graphicIdentifier?: string): void {
-    graphic.setAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName, graphicIdentifier ?? uuidv4());
+    graphic.setAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName, graphicIdentifier ?? UuidUtils.createUuid());
   }
 
   protected setLabelTextAttributeOnGraphic(graphic: Graphic, text: string) {
