@@ -18,7 +18,6 @@ export class ElevationProfileOverlayComponent implements OnInit, OnDestroy {
   public elevationProfileData?: ElevationProfileData;
   public loadingState: LoadingState;
   public downloadCsvUrl?: string;
-  public downloadPngUrl: string = '';
 
   private readonly isElevationProfileOverlayVisible$ = this.store.select(selectIsElevationProfileOverlayVisible);
   private readonly loadingState$ = this.store.select(selectLoadingState);
