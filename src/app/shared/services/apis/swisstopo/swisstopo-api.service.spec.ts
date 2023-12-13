@@ -81,8 +81,7 @@ describe('SwisstopoApiService', () => {
 
       const expected = 'some/url?geom=1234&sr=2056';
       const actual = service.createDownloadLinkUrl(data);
-      expect(actual).toBeDefined();
-      expect(expected).toEqual(actual as string);
+      expect(actual).toEqual(expected);
     });
 
     it('creates returns undefined if input is undefined', () => {

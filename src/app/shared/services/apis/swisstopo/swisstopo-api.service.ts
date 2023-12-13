@@ -35,6 +35,13 @@ export class SwisstopoApiService extends BaseApiService {
     }).pipe(map((value) => this.mapElevationProfileResponseToElevationProfileData(value, params)));
   }
 
+  public createDownloadLinkUrl(elevationProfileData: ElevationProfileData | undefined): string | undefined {
+    if (elevationProfileData === undefined) {
+      return undefined;
+    }
+    return `${elevationProfileData.csvRequest.url}?${elevationProfileData.csvRequest.params.toString()}`;
+  }
+
   private mapElevationProfileResponseToElevationProfileData(
     response: ElevationProfileResponse[],
     params: URLSearchParams,
@@ -78,25 +85,18 @@ export class SwisstopoApiService extends BaseApiService {
     );
   }
 
-  private calculateSlopeDistance(currentPoint: ElevationProfileResponse, previousPoint: ElevationProfileResponse) {
+  private calculateSlopeDistance(currentPoint: ElevationProfileResponse, previousPoint: ElevationProfileResponse): number {
     const elevationDelta = currentPoint.alts[ELEVATION_MODEL] - previousPoint.alts[ELEVATION_MODEL];
     const distanceDelta = currentPoint.dist - previousPoint.dist;
 
     return Math.sqrt(Math.pow(elevationDelta, 2) + Math.pow(distanceDelta, 2));
   }
 
-  private calculateElevationDifference(currentPoint: ElevationProfileResponse, previousPoint: ElevationProfileResponse) {
+  private calculateElevationDifference(currentPoint: ElevationProfileResponse, previousPoint: ElevationProfileResponse): number {
     return currentPoint.alts[ELEVATION_MODEL] - previousPoint.alts[ELEVATION_MODEL];
   }
 
   private createElevationProfileUrl(format: SupportedProfileFormat): string {
     return `${this.apiBaseUrl}/profile.${format}`;
-  }
-
-  public createDownloadLinkUrl(elevationProfileData: ElevationProfileData | undefined) {
-    if (elevationProfileData === undefined) {
-      return undefined;
-    }
-    return `${elevationProfileData.csvRequest.url}?${elevationProfileData.csvRequest.params.toString()}`;
   }
 }
