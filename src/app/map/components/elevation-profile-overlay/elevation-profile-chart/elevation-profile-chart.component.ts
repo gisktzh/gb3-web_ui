@@ -34,8 +34,10 @@ export class ElevationProfileChartComponent implements OnInit, AfterViewInit {
   }
 
   public ngAfterViewInit() {
-    const downloadLink: string = this.elevationChart.nativeElement.toDataURL();
-    this.store.dispatch(ElevationProfileActions.createImageDownloadLink({downloadLink}));
+    setTimeout(() => {
+      const downloadLink: string = this.elevationChart.nativeElement.toDataURL('image/png');
+      this.store.dispatch(ElevationProfileActions.createImageDownloadLink({downloadLink}));
+    }, 100);
   }
 
   private updateData(elevationProfileData: ElevationProfileDataPoint[], maxDistance: number) {

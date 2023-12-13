@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import {LoadingState} from '../../../shared/types/loading-state.type';
 import {selectIsElevationProfileOverlayVisible} from '../../../state/map/reducers/map-ui.reducer';
 import {Subscription, tap} from 'rxjs';
@@ -19,7 +19,6 @@ export class ElevationProfileOverlayComponent implements OnInit, OnDestroy, Afte
   public loadingState: LoadingState;
   public downloadCsvUrl?: string;
   public downloadPngUrl: string = '';
-  @ViewChild('pngAnchor') private pngAnchor!: HTMLAnchorElement;
 
   private readonly isElevationProfileOverlayVisible$ = this.store.select(selectIsElevationProfileOverlayVisible);
   private readonly loadingState$ = this.store.select(selectLoadingState);
@@ -52,10 +51,13 @@ export class ElevationProfileOverlayComponent implements OnInit, OnDestroy, Afte
     this.downloadCsvUrl = this.swisstopoApiService.createDownloadLinkUrl(elevationProfileData);
   }
 
-  public test() {
-    this.pngAnchor.href = this.downloadPngUrl;
-    this.pngAnchor.download = 'elevationProfile.png';
-    console.log(this.downloadPngUrl);
+  public downloadPng() {
+    const downloadLinkAnchor: HTMLAnchorElement = document.createElement('a');
+    downloadLinkAnchor.href = this.downloadPngUrl;
+    downloadLinkAnchor.download = 'elevation.png';
+    document.body.appendChild(downloadLinkAnchor);
+    downloadLinkAnchor.click();
+    document.body.removeChild(downloadLinkAnchor);
   }
 
   private initSubscriptions() {

@@ -25,13 +25,11 @@
         <span>Download CSV</span></a
       >
       <a
-        [href]="downloadPngUrl"
         mat-raised-button
         class="elevation-profile-overlay__content__download__button"
         *ngIf="downloadPngUrl"
         color="accent"
-        (click)="test()"
-        #pngAnchor
+        (click)="downloadPng()"
       >
         <mat-icon>download</mat-icon>
         <span>Download PNG</span></a
