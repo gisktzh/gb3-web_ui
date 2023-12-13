@@ -2,21 +2,21 @@
   <h1 class="mat-headline-4 support-page-navigation__header">Themen</h1>
   <div class="support-page-navigation__buttons">
     <a
-      routerLink="faq"
+      [routerLink]="[supportPage.Faq]"
       mat-button
       routerLinkActive="support-page-navigation__buttons__button--active"
       class="support-page-navigation__buttons__button"
       >FAQ</a
     >
     <a
-      routerLink="contact"
+      [routerLink]="[supportPage.Contact]"
       mat-button
       routerLinkActive="support-page-navigation__buttons__button--active"
       class="support-page-navigation__buttons__button"
       >Supportanfrage</a
     >
     <a
-      routerLink="useful-information"
+      [routerLink]="[supportPage.UsefulInformation]"
       mat-button
       routerLinkActive="support-page-navigation__buttons__button--active"
       class="support-page-navigation__buttons__button"
