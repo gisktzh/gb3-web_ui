@@ -35,8 +35,12 @@ export class MapToolsDesktopComponent implements OnInit, OnDestroy {
     this.store.dispatch(MapUiActions.showMapSideDrawerContent({mapSideDrawerContent: 'print'}));
   }
 
-  public showShareLink() {
+  public showShareLinkDialog() {
     this.store.dispatch(MapUiActions.showShareLinkDialog());
+  }
+
+  public showMapImportDialog() {
+    this.store.dispatch(MapUiActions.showMapImportDialog());
   }
 
   private initSubscriptions() {

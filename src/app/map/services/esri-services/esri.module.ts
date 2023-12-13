@@ -23,6 +23,9 @@ import Geometry from '@arcgis/core/geometry/Geometry';
 import Multipoint from '@arcgis/core/geometry/Multipoint';
 import Polygon from '@arcgis/core/geometry/Polygon';
 import Polyline from '@arcgis/core/geometry/Polyline';
+import WMTSLayer from '@arcgis/core/layers/WMTSLayer';
+import WMTSSublayer from '@arcgis/core/layers/support/WMTSSublayer';
+import KMLLayer from '@arcgis/core/layers/KMLLayer';
 
 /** Esri classes/modules */
 export const EsriMap = Map;
@@ -50,6 +53,9 @@ export const EsriGeometry = Geometry;
 export const EsriMultiPoint = Multipoint;
 export const EsriPolygon = Polygon;
 export const EsriPolyline = Polyline;
+export const EsriWMTSLayer = WMTSLayer;
+export const EsriWMTSSubLayer = WMTSSublayer;
+export const EsriKMLLayer = KMLLayer;
 
 /** Esri internal union types */
 export type EsriLoadStatus = 'not-loaded' | 'loading' | 'failed' | 'loaded';

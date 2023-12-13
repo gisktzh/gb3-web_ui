@@ -5,11 +5,11 @@ import {LinksGroup} from '../../../shared/interfaces/links-group.interface';
 import {selectLinks} from '../../../state/support/reducers/support-content.reducer';
 
 @Component({
-  selector: 'useful-links',
-  templateUrl: './useful-links.component.html',
-  styleUrls: ['./useful-links.component.scss'],
+  selector: 'useful-information',
+  templateUrl: './useful-information.component.html',
+  styleUrls: ['./useful-information.component.scss'],
 })
-export class UsefulLinksComponent implements OnInit, OnDestroy {
+export class UsefulInformationComponent implements OnInit, OnDestroy {
   public usefulLinksGroups: LinksGroup[] = [];
   private readonly usefulLinksGroups$: Observable<LinksGroup[]> = this.store.select(selectLinks);
   private readonly subscriptions: Subscription = new Subscription();

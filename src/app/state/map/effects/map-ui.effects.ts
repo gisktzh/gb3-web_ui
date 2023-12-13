@@ -28,6 +28,7 @@ import {ElevationProfileActions} from '../actions/elevation-profile.actions';
 import {UrlActions} from '../../app/actions/url.actions';
 import {selectUrlState} from '../../app/reducers/url.reducer';
 import {DataDownloadEmailConfirmationDialogComponent} from '../../../map/components/map-tools/data-download-email-confirmation-dialog/data-download-email-confirmation-dialog.component';
+import {MapImportDialogComponent} from '../../../map/components/map-tools/map-import/map-import-dialog/map-import-dialog.component';
 
 const CREATE_FAVOURITE_DIALOG_MAX_WIDTH = 500;
 const DELETE_FAVOURITE_DIALOG_MAX_WIDTH = 500;
@@ -256,6 +257,22 @@ export class MapUiEffects {
           this.dialogService.open<DataDownloadEmailConfirmationDialogComponent>(DataDownloadEmailConfirmationDialogComponent, {
             panelClass: PanelClass.ApiWrapperDialog,
             restoreFocus: false,
+          }),
+        ),
+      );
+    },
+    {dispatch: false},
+  );
+
+  public openMapImportDialog$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(MapUiActions.showMapImportDialog),
+        tap(() =>
+          this.dialogService.open<MapImportDialogComponent>(MapImportDialogComponent, {
+            panelClass: PanelClass.ApiWrapperDialog,
+            restoreFocus: false,
+            disableClose: true,
           }),
         ),
       );

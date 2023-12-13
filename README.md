@@ -78,14 +78,14 @@ docker build --no-cache --build-arg TARGET_ENVIRONMENT={target_environment} -t g
 - **gb3-frontend** is the name of the image
 - **latest** is the tag used to mark the version of this image
 - **target_environment** is the target build environment, which is one of the following:
-  - `local`: Default if this variable is missing; localhost development
+  - `local`: localhost development
   - `local-gb2`: localhost development with locally deployed GB2 backend
   - `dev-ebp`: production deployment for EBP environment
   - `staging`: production deployment for KTZH staging environment
   - `staging-using-productive-gb2-backend`: production deployment for KTZH staging environment which uses the productive
     GB2 backend infrastructure.
   - `uat`: production deployment for KTZH UAT environment
-  - `production`: production deployment for KTZH production (internet & intranet) environment
+  - `production`: default if this variable is missing; production deployment for KTZH production (internet & intranet) environment
 - **APP_VERSION**: see below (optional)
 - **APP_RELEASE**: see below (optional)
 

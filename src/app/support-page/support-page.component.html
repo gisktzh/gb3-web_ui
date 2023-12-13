@@ -1,12 +1,14 @@
 <page-section [background]="'primary'" [pageTitle]="true">
   <hero-header [heroText]="screenMode === 'mobile' ? '' : heroText" heroTitle="Hilfe & Support"></hero-header>
 </page-section>
-<page-section sectionTitle="FAQ">
-  <faq></faq>
+
+<page-section [hideBottomPadding]="true">
+  <support-page-navigation></support-page-navigation>
 </page-section>
-<page-section sectionTitle="Supportanfrage">
-  <contact></contact>
+
+<page-section>
+  <router-outlet></router-outlet>
 </page-section>
 <page-section sectionTitle="Weiterführende Informationen">
-  <useful-links></useful-links>
+  <useful-information></useful-information>
 </page-section>
