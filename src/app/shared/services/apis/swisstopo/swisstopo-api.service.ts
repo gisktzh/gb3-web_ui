@@ -15,6 +15,8 @@ import {Geometry} from 'geojson';
  */
 export const ELEVATION_MODEL: keyof ElevationProfileAltitude = 'COMB';
 
+type SupportedProfileFormat = 'csv' | 'json';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -70,7 +72,7 @@ export class SwisstopoApiService extends BaseApiService {
         },
         csvRequest: {
           url: this.createElevationProfileUrl('csv'),
-          params: params,
+          params,
         },
       },
     );
@@ -87,7 +89,14 @@ export class SwisstopoApiService extends BaseApiService {
     return currentPoint.alts[ELEVATION_MODEL] - previousPoint.alts[ELEVATION_MODEL];
   }
 
-  private createElevationProfileUrl(format: string): string {
+  private createElevationProfileUrl(format: SupportedProfileFormat): string {
     return `${this.apiBaseUrl}/profile.${format}`;
+  }
+
+  public createDownloadLinkUrl(elevationProfileData: ElevationProfileData | undefined) {
+    if (elevationProfileData === undefined) {
+      return undefined;
+    }
+    return `${elevationProfileData.csvRequest.url}?${elevationProfileData.csvRequest.params.toString()}`;
   }
 }
