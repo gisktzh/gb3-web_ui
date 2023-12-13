@@ -40,11 +40,11 @@ export class MapImportLayerListComponent implements OnInit, OnDestroy {
   }
 
   public toggleSelectAllLayers(isSelected: boolean) {
-    this.store.dispatch(MapImportActions.setAllSelectedLayers({isSelected}));
+    this.store.dispatch(MapImportActions.selectAllLayers({isSelected}));
   }
 
   public toggleSelection(layerId: ExternalLayerId) {
-    this.store.dispatch(MapImportActions.toggleSelectedLayer({layerId}));
+    this.store.dispatch(MapImportActions.toggleLayerSelection({layerId}));
   }
 
   private initSubscriptions() {

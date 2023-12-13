@@ -1,9 +1,9 @@
-import {HasLoadingState} from '../../../shared/interfaces/has-loading-state.interface';
-import {ExternalServiceActiveMapItem} from '../../../map/models/external-service.model';
 import {ExternalLayerSelection} from '../../../shared/interfaces/external-layer-selection.interface';
+import {MapServiceType} from '../../../map/types/map-service.type';
 
-export interface MapImportState extends HasLoadingState {
-  externalMapItem: ExternalServiceActiveMapItem | undefined;
+export interface MapImportState {
+  serviceType: MapServiceType | undefined;
+  url: string | undefined;
   layerSelections: ExternalLayerSelection[] | undefined;
   title: string | undefined;
 }

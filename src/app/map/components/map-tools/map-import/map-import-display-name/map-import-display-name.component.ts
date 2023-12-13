@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidatorFn, Validators} from '@angular/forms';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {Store} from '@ngrx/store';
@@ -11,6 +11,8 @@ interface DisplayNameFormGroup {
   name: FormControl<string | null>;
 }
 
+const NAME_CONSTRAINTS: ValidatorFn[] = [Validators.minLength(1), Validators.required, Validators.pattern(/\S/)];
+
 @Component({
   selector: 'map-import-display-name',
   standalone: true,
@@ -20,7 +22,7 @@ interface DisplayNameFormGroup {
 })
 export class MapImportDisplayNameComponent implements OnInit, OnDestroy {
   public readonly displayNameFormGroup: FormGroup<DisplayNameFormGroup> = this.formBuilder.group<DisplayNameFormGroup>({
-    name: this.formBuilder.control(null, [Validators.required]),
+    name: this.formBuilder.control(null, NAME_CONSTRAINTS),
   });
 
   private readonly title$ = this.store.select(selectTitle);
@@ -43,23 +45,12 @@ export class MapImportDisplayNameComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.displayNameFormGroup.controls.name.valueChanges
         .pipe(
+          filter(() => this.displayNameFormGroup.valid),
           filter((name): name is string => name !== null),
-          tap((name) => {
-            this.store.dispatch(MapImportActions.setTitle({title: name}));
-          }),
+          tap((name) => this.store.dispatch(MapImportActions.setTitle({title: name}))),
         )
         .subscribe(),
     );
-    this.subscriptions.add(
-      this.title$
-        .pipe(
-          tap((title) => {
-            if (!title) {
-              this.displayNameFormGroup.reset();
-            }
-          }),
-        )
-        .subscribe(),
-    );
+    this.subscriptions.add(this.title$.pipe(tap((title) => this.displayNameFormGroup.controls.name.setValue(title ?? null))).subscribe());
   }
 }

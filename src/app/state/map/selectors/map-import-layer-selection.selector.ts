@@ -1,12 +1,12 @@
 import {createSelector} from '@ngrx/store';
 import {selectLayerSelections} from '../reducers/map-import.reducer';
-import {ExternalLayerId} from '../../../shared/types/external-layer-id.type';
+import {ExternalLayer} from '../../../shared/interfaces/external-layer.interface';
 
-export const selectAllSelectedLayerIds = createSelector(selectLayerSelections, (layerSelections): ExternalLayerId[] => {
+export const selectAllSelectedLayer = createSelector(selectLayerSelections, (layerSelections): ExternalLayer[] => {
   if (!layerSelections) {
     return [];
   }
-  return layerSelections.filter((layerSelection) => layerSelection.isSelected).map((layerSelection) => layerSelection.layer.id);
+  return layerSelections.filter((layerSelection) => layerSelection.isSelected).map((layerSelection) => layerSelection.layer);
 });
 
 export const selectIsAnyLayerSelected = createSelector(selectLayerSelections, (layerSelections): boolean => {

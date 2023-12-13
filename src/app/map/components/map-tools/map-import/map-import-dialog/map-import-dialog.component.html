@@ -1,9 +1,9 @@
-<api-dialog-wrapper title="Kartendienst importieren" [savingState]="loadingState" errorText="">
+<api-dialog-wrapper title="Kartendienst importieren" [savingState]="externalServiceLoadingState" errorText="" [showCloseButton]="true">
   <ng-container content>
     <div class="map-import-dialog__content">
       <mat-stepper linear #stepper labelPosition="bottom" class="map-import-dialog__content__stepper">
-        <mat-step label="Kartendienst laden" [completed]="!!externalMapItem">
-          <map-import-service-and-url (loadingStateEvent)="loadingState = $event"></map-import-service-and-url>
+        <mat-step label="Kartendienst laden" [completed]="externalServiceLoadingState === 'loaded'">
+          <map-import-service-and-url></map-import-service-and-url>
         </mat-step>
         <mat-step label="Layer auswählen" [completed]="isAnyLayerSelected">
           <map-import-layer-list></map-import-layer-list>
@@ -16,16 +16,10 @@
   </ng-container>
   <ng-container actions>
     <button mat-button (click)="cancel()">Abbrechen</button>
-    <button
-      mat-button
-      *ngIf="stepper.selectedIndex < 2; else finishWizard"
-      (click)="stepper.next()"
-      [disabled]="stepper.selected?.completed !== true"
-    >
-      Weiter
-    </button>
-    <ng-template #finishWizard>
+    @if (stepper.selectedIndex < 2) {
+      <button mat-button (click)="stepper.next()" [disabled]="stepper.selected?.completed !== true">Weiter</button>
+    } @else {
       <button mat-button (click)="finish()" [disabled]="stepper.selected?.completed !== true">Hinzufügen</button>
-    </ng-template>
+    }
   </ng-container>
 </api-dialog-wrapper>

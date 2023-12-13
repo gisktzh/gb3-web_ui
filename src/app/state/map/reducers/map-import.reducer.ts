@@ -7,8 +7,8 @@ import {ExternalLayerSelection} from '../../../shared/interfaces/external-layer-
 export const mapImportFeatureKey = 'mapImport';
 
 export const initialState: MapImportState = {
-  loadingState: undefined,
-  externalMapItem: undefined,
+  serviceType: undefined,
+  url: undefined,
   layerSelections: undefined,
   title: undefined,
 };
@@ -17,27 +17,24 @@ export const mapImportFeature = createFeature({
   name: mapImportFeatureKey,
   reducer: createReducer(
     initialState,
-    on(MapImportActions.loadExternalMapItem, (): MapImportState => {
-      return {...initialState, loadingState: 'loading'};
+    on(MapImportActions.setServiceType, (_, {serviceType}): MapImportState => {
+      return {...initialState, serviceType};
     }),
-    on(MapImportActions.setExternalMapItem, (_, {externalMapItem}): MapImportState => {
-      return {...initialState, loadingState: 'loaded', externalMapItem};
-    }),
-    on(MapImportActions.setExternalMapItemError, (): MapImportState => {
-      return {...initialState, loadingState: 'error'};
+    on(MapImportActions.setUrl, (state, {url}): MapImportState => {
+      return {...initialState, serviceType: state.serviceType, url};
     }),
     on(MapImportActions.setLayerSelections, (state, {layers}): MapImportState => {
       const layerSelections: ExternalLayerSelection[] = layers.map((layer) => ({layer, isSelected: false}));
       return {...state, layerSelections};
     }),
     on(
-      MapImportActions.setAllSelectedLayers,
+      MapImportActions.selectAllLayers,
       produce((draft, {isSelected}) => {
         draft.layerSelections?.forEach((selection) => (selection.isSelected = isSelected));
       }),
     ),
     on(
-      MapImportActions.toggleSelectedLayer,
+      MapImportActions.toggleLayerSelection,
       produce((draft, {layerId}) => {
         draft.layerSelections?.forEach((selection) => {
           if (selection.layer.id === layerId) {
@@ -49,11 +46,10 @@ export const mapImportFeature = createFeature({
     on(MapImportActions.setTitle, (state, {title}): MapImportState => {
       return {...state, title};
     }),
-    on(MapImportActions.clearExternalMapItemAndSelection, (): MapImportState => {
+    on(MapImportActions.clearAll, (): MapImportState => {
       return initialState;
     }),
   ),
 });
 
-export const {name, reducer, selectMapImportState, selectLoadingState, selectExternalMapItem, selectLayerSelections, selectTitle} =
-  mapImportFeature;
+export const {name, reducer, selectMapImportState, selectServiceType, selectUrl, selectLayerSelections, selectTitle} = mapImportFeature;

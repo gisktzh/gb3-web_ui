@@ -151,6 +151,14 @@
       }
     }
 
+    .mdc-checkbox__native-control:not([disabled]):indeterminate ~ .mdc-checkbox__background {
+      background-color: $background-color !important;
+
+      .mdc-checkbox__mixedmark {
+        border-color: $foreground-color;
+      }
+    }
+
     .mdc-checkbox__ripple {
       background: $background-color !important;
     }

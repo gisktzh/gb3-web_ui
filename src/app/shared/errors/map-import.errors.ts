@@ -12,3 +12,8 @@ export class ExternalServiceCouldNotBeLoaded extends RecoverableError {
     }
   }
 }
+
+export class ExternalServiceHasNoLayers extends RecoverableError {
+  public override message = 'Der angegeben Dienst konnte nicht korrekt geladen werden.';
+  public override name = 'ExternalServiceHasNoLayers';
+}

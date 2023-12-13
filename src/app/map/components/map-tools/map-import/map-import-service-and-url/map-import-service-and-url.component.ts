@@ -1,13 +1,14 @@
-import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MapServiceType} from '../../../../types/map-service.type';
 import {Store} from '@ngrx/store';
-import {debounceTime, filter, Subscription, tap} from 'rxjs';
+import {debounceTime, distinctUntilChanged, filter, Subscription, tap} from 'rxjs';
 import {NgForOf, NgIf} from '@angular/common';
 import {SharedModule} from '../../../../../shared/shared.module';
 import {MapImportActions} from '../../../../../state/map/actions/map-import.actions';
-import {selectExternalMapItem, selectLoadingState} from '../../../../../state/map/reducers/map-import.reducer';
 import {LoadingState} from '../../../../../shared/types/loading-state.type';
+import {selectLoadingState} from '../../../../../state/map/reducers/external-map-item.reducer';
+import {selectServiceType, selectUrl} from '../../../../../state/map/reducers/map-import.reducer';
 
 interface ServiceFormGroup {
   serviceType: FormControl<MapServiceType | null>;
@@ -22,8 +23,6 @@ interface ServiceFormGroup {
   styleUrl: './map-import-service-and-url.component.scss',
 })
 export class MapImportServiceAndUrlComponent implements OnInit, OnDestroy {
-  @Output() public readonly loadingStateEvent = new EventEmitter<LoadingState>();
-
   public readonly serviceFormGroup = this.formBuilder.group<ServiceFormGroup>({
     serviceType: this.formBuilder.control(null, [Validators.required]),
     url: this.formBuilder.control({value: null, disabled: true}, [Validators.required]),
@@ -31,7 +30,8 @@ export class MapImportServiceAndUrlComponent implements OnInit, OnDestroy {
   public loadingState: LoadingState;
 
   private readonly loadingState$ = this.store.select(selectLoadingState);
-  private readonly externalMapItem$ = this.store.select(selectExternalMapItem);
+  private readonly serviceType$ = this.store.select(selectServiceType);
+  private readonly url$ = this.store.select(selectUrl);
   private readonly subscriptions = new Subscription();
 
   constructor(
@@ -52,39 +52,36 @@ export class MapImportServiceAndUrlComponent implements OnInit, OnDestroy {
       this.serviceFormGroup.controls.serviceType.valueChanges
         .pipe(
           filter((serviceType): serviceType is MapServiceType => !!serviceType),
-          tap(() => {
-            this.store.dispatch(MapImportActions.clearExternalMapItemAndSelection());
-            this.serviceFormGroup.controls.url.enable();
-          }),
+          tap((serviceType) => this.store.dispatch(MapImportActions.setServiceType({serviceType}))),
         )
         .subscribe(),
     );
     this.subscriptions.add(
-      this.serviceFormGroup.valueChanges
+      this.serviceFormGroup.controls.url.valueChanges
         .pipe(
           debounceTime(300),
-          filter(({url, serviceType}) => !!url && serviceType !== null),
-          tap(({url, serviceType}) => this.store.dispatch(MapImportActions.loadExternalMapItem({url: url!, serviceType: serviceType!}))),
+          distinctUntilChanged(),
+          filter((url): url is string => !!url),
+          tap((url) => this.store.dispatch(MapImportActions.setUrl({url}))),
         )
         .subscribe(),
     );
+    this.subscriptions.add(this.serviceType$.pipe(tap((serviceType) => this.handleServiceTypeChange(serviceType))).subscribe());
+    this.subscriptions.add(this.url$.pipe(tap((url) => this.serviceFormGroup.controls.url.setValue(url ?? null))).subscribe());
     this.subscriptions.add(this.loadingState$.pipe(tap((loadingState) => this.handleLoadingState(loadingState))).subscribe());
-    this.subscriptions.add(
-      this.externalMapItem$
-        .pipe(
-          tap((externalMapItem) => {
-            if (!externalMapItem) {
-              this.serviceFormGroup.controls.url.setValue(null);
-            }
-          }),
-        )
-        .subscribe(),
-    );
+  }
+
+  private handleServiceTypeChange(serviceType: MapServiceType | undefined) {
+    this.serviceFormGroup.controls.serviceType.setValue(serviceType ?? null);
+    if (serviceType) {
+      this.serviceFormGroup.controls.url.enable();
+    } else {
+      this.serviceFormGroup.controls.url.disable();
+    }
   }
 
   private handleLoadingState(loadingState: LoadingState) {
     this.loadingState = loadingState;
-    this.loadingStateEvent.emit(loadingState);
     if (loadingState === 'error') {
       this.serviceFormGroup.controls.url.setErrors({incorrect: true});
     } else {

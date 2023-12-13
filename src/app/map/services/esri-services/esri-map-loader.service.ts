@@ -10,6 +10,7 @@ import {ExternalKmlLayer, ExternalWmsLayer} from '../../../shared/interfaces/ext
 import {ExternalWmsActiveMapItem} from '../../models/implementations/external-wms.model';
 import {ExternalKmlActiveMapItem} from '../../models/implementations/external-kml.model';
 import {LayerCouldNotBeLoaded} from './errors/esri.errors';
+import {ExternalServiceHasNoLayers} from '../../../shared/errors/map-import.errors';
 
 @Injectable({
   providedIn: 'root',
@@ -50,6 +51,9 @@ export class EsriMapLoaderService implements MapLoaderService {
             }),
           )
           .toArray();
+        if (subLayers.length === 0) {
+          throw new ExternalServiceHasNoLayers();
+        }
         return ActiveMapItemFactory.createExternalWmsMapItem(wmsLayer.url, wmsLayer.title, subLayers);
       }),
     );
@@ -63,6 +67,9 @@ export class EsriMapLoaderService implements MapLoaderService {
             (kmlSubLayer): ExternalKmlLayer => ({type: 'kml', id: kmlSubLayer.id, title: kmlSubLayer.title, visible: kmlSubLayer.visible}),
           )
           .toArray();
+        if (subLayers.length === 0) {
+          throw new ExternalServiceHasNoLayers();
+        }
         return ActiveMapItemFactory.createExternalKmlMapItem(kmlLayer.url, kmlLayer.title, subLayers);
       }),
     );
