@@ -1,17 +1,40 @@
-<h1 mat-dialog-title>Text-Eingabe</h1>
-<div mat-dialog-content>
-  <div>
-    <input (change)="changeFill($event)" id="fill" name="fill" type="color" value="#FF0000" />
-    <label for="fill">Fill</label>
+<div class="drawing-settings-dialog">
+  <h1 mat-dialog-title>Einstellungen</h1>
+  <div mat-dialog-content class="drawing-settings-dialog__content">
+    <div class="drawing-settings-dialog__content__option">
+      <slider-wrapper
+        title="Strichstärke"
+        [value]="lineWidth + 'px'"
+        [overwriteFooter]="true"
+        class="drawing-settings-dialog__content__option__width"
+      >
+        <ng-container content>
+          <mat-slider [min]="1" [max]="12" [step]="1" color="primary" class="drawing-settings-dialog__content__option__width__slider">
+            <input matSliderThumb [(ngModel)]="lineWidth" />
+          </mat-slider>
+        </ng-container>
+        <ng-container footer>
+          <div class="drawing-settings-dialog__content__option__width__footer">
+            <span class="drawing-settings-dialog__content__option__width__footer--min"></span>
+            <span class="drawing-settings-dialog__content__option__width__footer--max"></span>
+          </div>
+        </ng-container>
+      </slider-wrapper>
+      <!--      <input (change)="changeWidth($event)" id="width" max="10" min="1" type="range" value="50"/>-->
+    </div>
+
+    <div class="drawing-settings-dialog__content__option">
+      <label for="line" class="drawing-settings-dialog__content__option__label">Text- und Strichfarbe</label>
+      <input class="drawing-settings-dialog__content__option__color-picker" id="line" name="line" type="color" [(ngModel)]="lineColor" />
+    </div>
+
+    <div class="drawing-settings-dialog__content__option">
+      <label for="fill" class="drawing-settings-dialog__content__option__label">Füllfarbe</label>
+      <input class="drawing-settings-dialog__content__option__color-picker" id="fill" name="fill" type="color" [(ngModel)]="fillColor" />
+    </div>
   </div>
-  <hr />
-  <div>
-    <input (change)="changeLine($event)" id="line" name="line" type="color" value="#FF0000" />
-    <label for="line">Line</label>
+  <div mat-dialog-actions>
+    <button (click)="cancel()" mat-button>Abbrechen</button>
+    <button (click)="saveSettings()" color="accent" mat-button>Ok</button>
   </div>
-  <hr />
-  <input (change)="changeWidth($event)" id="width" max="10" min="1" type="range" value="50" /> Width
-</div>
-<div mat-dialog-actions>
-  <button (click)="close()" mat-button>Schliessen</button>
 </div>

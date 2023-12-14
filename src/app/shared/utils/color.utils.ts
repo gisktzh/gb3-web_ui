@@ -9,4 +9,9 @@ export class ColorUtils {
 
     return {r, g, b, a};
   }
+
+  public static convertSymbolizatioColorToHex(color: SymbolizationColor | undefined) {
+    if (!color) return '#FF0000';
+    return `#${color.r.toString(16).padStart(2, '0')}${color.g.toString(16).padStart(2, '0')}${color.b.toString(16).padStart(2, '0')}`;
+  }
 }

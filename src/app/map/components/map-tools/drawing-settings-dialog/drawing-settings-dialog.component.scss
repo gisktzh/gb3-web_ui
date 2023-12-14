@@ -1,0 +1,79 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'functions/helper.function' as functions;
+@use 'mixins/helpers.mixin' as mixins;
+
+.drawing-settings-dialog {
+  .drawing-settings-dialog__content {
+    .drawing-settings-dialog__content__option {
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 24px;
+
+      .drawing-settings-dialog__content__option__label {
+        padding-bottom: 12px;
+      }
+
+      .drawing-settings-dialog__content__option__color-picker {
+        border: none;
+        height: 30px;
+        width: 70px;
+        padding: 0;
+        background: none;
+      }
+
+      .drawing-settings-dialog__content__option__width {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+        .drawing-settings-dialog__content__option__width__slider {
+          width: 100%;
+          margin: 0;
+        }
+
+        .drawing-settings-dialog__content__option__width__footer {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+
+          &--min:before {
+            background: functions.get-color-from-palette(ktzh-variables.$zh-black100-palette, A700);
+            content: ' ';
+            display: block;
+            height: 1px;
+            width: 44px;
+          }
+
+          &--max:before {
+            background: functions.get-color-from-palette(ktzh-variables.$zh-black100-palette, A700);
+            content: ' ';
+            display: block;
+            height: 10px;
+            width: 44px;
+          }
+        }
+      }
+
+      .drawing-settings-dialog__option__width {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+        .drawing-settings-dialog__option__width__number-display {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 44px;
+          height: 30px;
+          color: ktzh-variables.$zh-background-color;
+          background: ktzh-variables.$zh-active-blue;
+
+          .drawing-settings-dialog__option__width__number-display__label {
+            font-size: 12px;
+            font-weight: 900;
+          }
+        }
+      }
+    }
+  }
+}

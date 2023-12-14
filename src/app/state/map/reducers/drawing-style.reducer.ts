@@ -21,7 +21,7 @@ export const drawingStyleFeature = createFeature({
       return {...state, lineColor: color};
     }),
     on(DrawingStyleActions.setLineWidth, (state, {width}): DrawingStyleState => {
-      return {...state, lineWidth: `${width}px`};
+      return {...state, lineWidth: `${width}`};
     }),
   ),
 });
