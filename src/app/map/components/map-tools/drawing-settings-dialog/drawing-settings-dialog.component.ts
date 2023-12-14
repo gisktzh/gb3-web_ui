@@ -5,6 +5,7 @@ import {Store} from '@ngrx/store';
 import {MatDialogRef} from '@angular/material/dialog';
 import {selectDrawingStyleState} from '../../../../state/map/reducers/drawing-style.reducer';
 import {first, Subscription, tap} from 'rxjs';
+import {defaultFillColor, defaultLineColor, defaultLineWidth} from '../../../../shared/configs/drawing.config';
 
 @Component({
   selector: 'drawing-settings-dialog',
@@ -15,11 +16,11 @@ export class DrawingSettingsDialogComponent implements OnInit, OnDestroy {
   // todo GB3-826: inital settings and two-way bindings
   // todo GB3-826: typehints for event variables below
 
-  public fillColor: string = '#FF0000';
-  public lineColor: string = '#FF0000';
-  public lineWidth: string = '2';
+  public fillColor: string = ColorUtils.convertSymbolizatioColorToHex(defaultFillColor);
+  public lineColor: string = ColorUtils.convertSymbolizatioColorToHex(defaultLineColor);
+  public lineWidth: number = defaultLineWidth;
   private readonly drawingStyleState$ = this.store.select(selectDrawingStyleState);
-  private readonly subcriptions: Subscription = new Subscription();
+  private readonly subscriptions: Subscription = new Subscription();
 
   constructor(
     private readonly store: Store,
@@ -32,7 +33,7 @@ export class DrawingSettingsDialogComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
-    this.subcriptions.unsubscribe();
+    this.subscriptions.unsubscribe();
   }
 
   public changeFill(newColor: string) {
@@ -47,9 +48,9 @@ export class DrawingSettingsDialogComponent implements OnInit, OnDestroy {
     this.store.dispatch(DrawingStyleActions.setLineColor({color}));
   }
 
-  public changeWidth(width: string) {
+  public changeWidth(width: number) {
     console.log('methode', width);
-    this.store.dispatch(DrawingStyleActions.setLineWidth({width: parseInt(this.lineWidth)}));
+    this.store.dispatch(DrawingStyleActions.setLineWidth({width}));
   }
 
   public cancel() {
@@ -64,7 +65,7 @@ export class DrawingSettingsDialogComponent implements OnInit, OnDestroy {
   }
 
   private initSubscriptions() {
-    this.subcriptions.add(
+    this.subscriptions.add(
       this.drawingStyleState$
         .pipe(
           first(),
@@ -72,7 +73,7 @@ export class DrawingSettingsDialogComponent implements OnInit, OnDestroy {
             console.log(drawingStyleState.fillColor);
             this.fillColor = ColorUtils.convertSymbolizatioColorToHex(drawingStyleState.fillColor);
             this.lineColor = ColorUtils.convertSymbolizatioColorToHex(drawingStyleState.lineColor);
-            this.lineWidth = drawingStyleState.lineWidth || this.lineWidth;
+            this.lineWidth = drawingStyleState.lineWidth;
           }),
         )
         .subscribe(),

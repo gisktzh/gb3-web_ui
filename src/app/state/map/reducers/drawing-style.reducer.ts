@@ -1,13 +1,14 @@
 import {createFeature, createReducer, on} from '@ngrx/store';
 import {DrawingStyleState} from '../states/drawing-style.state';
 import {DrawingStyleActions} from '../actions/drawing-style.actions';
+import {defaultFillColor, defaultLineColor, defaultLineWidth} from '../../../shared/configs/drawing.config';
 
 export const drawingStyleFeatureConfigKey = 'drawingStyle';
 
 export const initialState: DrawingStyleState = {
-  lineColor: undefined,
-  fillColor: undefined,
-  lineWidth: undefined,
+  lineColor: defaultLineColor,
+  fillColor: defaultFillColor,
+  lineWidth: defaultLineWidth,
 };
 
 export const drawingStyleFeature = createFeature({
@@ -21,7 +22,7 @@ export const drawingStyleFeature = createFeature({
       return {...state, lineColor: color};
     }),
     on(DrawingStyleActions.setLineWidth, (state, {width}): DrawingStyleState => {
-      return {...state, lineWidth: `${width}`};
+      return {...state, lineWidth: width};
     }),
   ),
 });
