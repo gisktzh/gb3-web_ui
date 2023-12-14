@@ -12,7 +12,6 @@ import {GeoshopApiService} from '../../../shared/services/apis/geoshop/services/
 import {OrderStatusCouldNotBeSent, OrderStatusWasAborted} from '../../../shared/errors/data-download.errors';
 import {OrderStatus, OrderStatusJob} from '../../../shared/interfaces/geoshop-order-status.interface';
 import {DataDownloadConfig} from '../../../shared/interfaces/data-download-config.interface';
-import {ErrorHandler} from '@angular/core';
 import {DataDownloadOrderStatusJobEffects} from './data-download-order-status-job.effects';
 import {selectStatusJobs} from '../reducers/data-download-order-status-job.reducer';
 import {DataDownloadOrderStatusJobActions} from '../actions/data-download-order-status-job.actions';
@@ -24,11 +23,9 @@ describe('DataDownloadOrderStatusJobEffects', () => {
   let effects: DataDownloadOrderStatusJobEffects;
   let geoshopApiService: GeoshopApiService;
   let configService: ConfigService;
-  let errorHandlerMock: jasmine.SpyObj<ErrorHandler>;
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
-    errorHandlerMock = jasmine.createSpyObj<ErrorHandler>(['handleError']);
 
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterTestingModule],
@@ -36,7 +33,6 @@ describe('DataDownloadOrderStatusJobEffects', () => {
         DataDownloadOrderStatusJobEffects,
         provideMockActions(() => actions$),
         provideMockStore(),
-        {provide: ErrorHandler, useValue: errorHandlerMock},
         {provide: MAP_SERVICE, useClass: MapServiceStub},
       ],
     });

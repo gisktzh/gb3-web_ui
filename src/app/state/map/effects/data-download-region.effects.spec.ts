@@ -15,7 +15,6 @@ import {Gb3GeoshopMunicipalitiesService} from '../../../shared/services/apis/gb3
 import {DataDownloadRegionActions} from '../actions/data-download-region.actions';
 import {MinimalGeometriesUtils} from '../../../testing/map-testing/minimal-geometries.utils';
 import {selectCanton, selectMunicipalities} from '../reducers/data-download-region.reducer';
-import {ErrorHandler} from '@angular/core';
 import {catchError} from 'rxjs/operators';
 
 describe('DataDownloadRegionEffects', () => {
@@ -26,7 +25,6 @@ describe('DataDownloadRegionEffects', () => {
   let effects: DataDownloadRegionEffects;
   let geoshopCantonService: Gb3GeoshopCantonService;
   let geoshopMunicipalitiesService: Gb3GeoshopMunicipalitiesService;
-  let errorHandlerMock: jasmine.SpyObj<ErrorHandler>;
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
@@ -37,7 +35,6 @@ describe('DataDownloadRegionEffects', () => {
         DataDownloadRegionEffects,
         provideMockActions(() => actions$),
         provideMockStore(),
-        {provide: ErrorHandler, useValue: errorHandlerMock},
         {provide: MAP_SERVICE, useClass: MapServiceStub},
       ],
     });

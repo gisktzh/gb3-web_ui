@@ -25,7 +25,6 @@ import {OrderCouldNotBeSent, OrderSelectionIsInvalid, OrderUnsupportedGeometry} 
 import {HttpErrorResponse} from '@angular/common/http';
 import {selectMapSideDrawerContent} from '../reducers/map-ui.reducer';
 import {selectProducts} from '../reducers/data-download-product.reducer';
-import {ErrorHandler} from '@angular/core';
 import {DataDownloadOrderStatusJobActions} from '../actions/data-download-order-status-job.actions';
 import {selectStatusJobs} from '../reducers/data-download-order-status-job.reducer';
 import {catchError} from 'rxjs/operators';
@@ -60,11 +59,9 @@ describe('DataDownloadOrderEffects', () => {
   let effects: DataDownloadOrderEffects;
   let geoshopApiService: GeoshopApiService;
   let configService: ConfigService;
-  let errorHandlerMock: jasmine.SpyObj<ErrorHandler>;
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
-    errorHandlerMock = jasmine.createSpyObj<ErrorHandler>(['handleError']);
 
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterTestingModule],
@@ -72,7 +69,6 @@ describe('DataDownloadOrderEffects', () => {
         DataDownloadOrderEffects,
         provideMockActions(() => actions$),
         provideMockStore(),
-        {provide: ErrorHandler, useValue: errorHandlerMock},
         {provide: MAP_SERVICE, useClass: MapServiceStub},
       ],
     });
