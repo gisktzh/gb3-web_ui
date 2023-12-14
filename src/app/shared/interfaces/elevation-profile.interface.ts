@@ -16,7 +16,13 @@ export interface ElevationProfileStatistics {
   highestPoint: number;
 }
 
+export interface ElevationProfileRequest {
+  url: string;
+  params: URLSearchParams;
+}
+
 export interface ElevationProfileData {
   dataPoints: ElevationProfileDataPoint[];
   statistics: ElevationProfileStatistics;
+  csvRequest: ElevationProfileRequest;
 }
