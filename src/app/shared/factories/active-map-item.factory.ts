@@ -31,10 +31,11 @@ export class ActiveMapItemFactory {
     url: string,
     title: string,
     layers: ExternalWmsLayer[],
+    imageFormat: string | undefined,
     visible?: boolean,
     opacity?: number,
   ): ExternalWmsActiveMapItem {
-    return new ExternalWmsActiveMapItem(url, title, layers, visible, opacity);
+    return new ExternalWmsActiveMapItem(url, title, layers, imageFormat, visible, opacity);
   }
 
   public static createExternalKmlMapItem(

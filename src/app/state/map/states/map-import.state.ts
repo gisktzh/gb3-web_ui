@@ -6,4 +6,5 @@ export interface MapImportState {
   url: string | undefined;
   layerSelections: ExternalLayerSelection[] | undefined;
   title: string | undefined;
+  imageFormat: string | undefined;
 }

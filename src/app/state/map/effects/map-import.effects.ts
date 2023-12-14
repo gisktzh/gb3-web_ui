@@ -6,8 +6,10 @@ import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {Store} from '@ngrx/store';
 import {selectMapImportState, selectServiceType} from '../reducers/map-import.reducer';
 import {ExternalMapItemActions} from '../actions/external-map-item.actions';
-import {ExternalMapItemWithFilteredLayersUtils} from '../../../map/utils/external-map-item-with-filtered-layers.utils';
 import {selectAllSelectedLayer} from '../selectors/map-import-layer-selection.selector';
+import {ExternalServiceActiveMapItem} from '../../../map/models/external-service.model';
+import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
+import {ExternalKmlLayer, ExternalWmsLayer} from '../../../shared/interfaces/external-layer.interface';
 
 @Injectable()
 export class MapImportEffects {
@@ -22,6 +24,13 @@ export class MapImportEffects {
   public clearExternalMapItemLoadingStateAfterChangingServiceType$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapImportActions.setServiceType),
+      map(() => ExternalMapItemActions.clearLoadingState()),
+    );
+  });
+
+  public clearExternalMapItemLoadingStateAfterClearingAll$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapImportActions.clearAll),
       map(() => ExternalMapItemActions.clearLoadingState()),
     );
   });
@@ -41,13 +50,25 @@ export class MapImportEffects {
       concatLatestFrom(() => [this.store.select(selectMapImportState), this.store.select(selectAllSelectedLayer)]),
       filter(([_, mapImportState, __]) => !!mapImportState.serviceType && !!mapImportState.url && !!mapImportState.title),
       map(([_, mapImportState, layers]) => {
-        const externalMapItem = ExternalMapItemWithFilteredLayersUtils.createExternalMapItemWithFilteredLayers(
-          mapImportState.serviceType!,
-          mapImportState.url!,
-          mapImportState.title!,
-          layers,
-        );
-        return ExternalMapItemActions.addItemToMap({externalMapItem});
+        let externalMapItem: ExternalServiceActiveMapItem;
+        switch (mapImportState.serviceType!) {
+          case 'wms':
+            externalMapItem = ActiveMapItemFactory.createExternalWmsMapItem(
+              mapImportState.url!,
+              mapImportState.title!,
+              layers.filter((layer): layer is ExternalWmsLayer => !!layer),
+              mapImportState.imageFormat,
+            );
+            break;
+          case 'kml':
+            externalMapItem = ActiveMapItemFactory.createExternalKmlMapItem(
+              mapImportState.url!,
+              mapImportState.title!,
+              layers.filter((layer): layer is ExternalKmlLayer => !!layer),
+            );
+            break;
+        }
+        return ActiveMapItemActions.addActiveMapItem({activeMapItem: externalMapItem, position: 0});
       }),
     );
   });

@@ -8,7 +8,7 @@ export const MapImportActions = createActionGroup({
   events: {
     'Set Service Type': props<{serviceType: MapServiceType}>(),
     'Set Url': props<{url: string}>(),
-    'Set Layer Selections': props<{layers: ExternalLayer[]}>(),
+    'Set Layers And Image Format': props<{layers: ExternalLayer[]; imageFormat?: string}>(),
     'Select All Layers': props<{isSelected: boolean}>(),
     'Toggle Layer Selection': props<{layerId: ExternalLayerId}>(),
     'Set Title': props<{title: string}>(),

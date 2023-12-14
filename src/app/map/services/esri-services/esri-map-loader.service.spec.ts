@@ -43,11 +43,13 @@ describe('EsriMapLoaderService', () => {
         title: 'test layer id two',
         visible: false,
       };
+      const imageFormat = 'image/png';
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       spyOn<any>(service, 'loadService').and.returnValue(
         of({
           url,
           title,
+          imageFormat,
           sublayers: new Collection<__esri.WMSSublayer>([
             {
               id: externalLayerOne.id,
@@ -65,7 +67,7 @@ describe('EsriMapLoaderService', () => {
         } as Partial<__esri.WMSLayer>),
       );
 
-      const expected = new ExternalWmsActiveMapItem(url, title, [externalLayerOne, externalLayerTwo]);
+      const expected = new ExternalWmsActiveMapItem(url, title, [externalLayerOne, externalLayerTwo], imageFormat);
 
       service.loadExternalService(url, 'wms').subscribe((actual) => {
         expect(actual).toEqual(expected);

@@ -9,7 +9,6 @@ export const ExternalMapItemActions = createActionGroup({
     'Load Item': props<{serviceType: MapServiceType; url: string}>(),
     'Set Item': props<{externalMapItem: ExternalServiceActiveMapItem}>(),
     'Set Item Error': errorProps(),
-    'Add Item To Map': props<{externalMapItem: ExternalServiceActiveMapItem}>(),
     'Clear Loading State': emptyProps(),
   },
 });

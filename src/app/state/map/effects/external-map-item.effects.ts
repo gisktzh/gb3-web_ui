@@ -6,7 +6,6 @@ import {of, switchMap, tap} from 'rxjs';
 import {MapImportActions} from '../actions/map-import.actions';
 import {MapLoaderService} from '../../../map/interfaces/map-loader.service';
 import {ExternalServiceCouldNotBeLoaded} from '../../../shared/errors/map-import.errors';
-import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {ExternalMapItemActions} from '../actions/external-map-item.actions';
 
 @Injectable()
@@ -25,14 +24,18 @@ export class ExternalMapItemEffects {
     );
   });
 
-  public setLayerSelectionsFromExternalMapItem$ = createEffect(() => {
+  public setLayersAndImageFormatFromExternalMapItem$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ExternalMapItemActions.setItem),
       map(({externalMapItem}) => {
         switch (externalMapItem.settings.mapServiceType) {
           case 'wms':
+            return MapImportActions.setLayersAndImageFormat({
+              layers: externalMapItem.settings.layers,
+              imageFormat: externalMapItem.settings.imageFormat,
+            });
           case 'kml':
-            return MapImportActions.setLayerSelections({layers: externalMapItem.settings.layers});
+            return MapImportActions.setLayersAndImageFormat({layers: externalMapItem.settings.layers});
         }
       }),
     );
@@ -49,15 +52,6 @@ export class ExternalMapItemEffects {
     },
     {dispatch: false},
   );
-
-  public addExternalMapItemToMap$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(ExternalMapItemActions.addItemToMap),
-      map(({externalMapItem}) => {
-        return ActiveMapItemActions.addActiveMapItem({activeMapItem: externalMapItem, position: 0});
-      }),
-    );
-  });
 
   constructor(
     private readonly actions$: Actions,

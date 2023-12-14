@@ -11,6 +11,7 @@ export const initialState: MapImportState = {
   url: undefined,
   layerSelections: undefined,
   title: undefined,
+  imageFormat: undefined,
 };
 
 export const mapImportFeature = createFeature({
@@ -23,9 +24,9 @@ export const mapImportFeature = createFeature({
     on(MapImportActions.setUrl, (state, {url}): MapImportState => {
       return {...initialState, serviceType: state.serviceType, url};
     }),
-    on(MapImportActions.setLayerSelections, (state, {layers}): MapImportState => {
+    on(MapImportActions.setLayersAndImageFormat, (state, {layers, imageFormat}): MapImportState => {
       const layerSelections: ExternalLayerSelection[] = layers.map((layer) => ({layer, isSelected: false}));
-      return {...state, layerSelections};
+      return {...state, layerSelections, imageFormat};
     }),
     on(
       MapImportActions.selectAllLayers,

@@ -58,6 +58,7 @@ import {EsriToolService} from './tool-service/esri-tool.service';
 import {TransformationService} from './transformation.service';
 import {ExternalWmsActiveMapItem} from '../../models/implementations/external-wms.model';
 import {ExternalKmlActiveMapItem} from '../../models/implementations/external-kml.model';
+import {ExternalWmsLayer} from '../../../shared/interfaces/external-layer.interface';
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
 
@@ -184,91 +185,44 @@ export class EsriMapService implements MapService, OnDestroy {
   }
 
   public addGb2WmsLayer(mapItem: Gb2WmsActiveMapItem, position: number) {
-    if (this.esriMapViewService.findEsriLayer(mapItem.id)) {
-      return;
-    }
-
-    const esriLayer: __esri.Layer = new EsriWMSLayer({
-      id: mapItem.id,
-      title: mapItem.title,
-      url: mapItem.settings.url,
-      visible: mapItem.visible,
-      opacity: mapItem.opacity,
-      imageFormat: this.wmsImageFormatMimeType,
-      sublayers: mapItem.settings.layers
-        .map((layer): __esri.WMSSublayerProperties => {
-          return {
-            id: layer.id,
-            name: layer.layer,
-            title: layer.title,
-            visible: layer.visible,
-          };
-        })
-        .reverse(), // reverse the order of the sublayers because the order in the GB3 interfaces (Topic, ActiveMapItem) is inverted to the
-      // order of the WMS specifications
-    });
+    const esriLayer = this.createWmsLayer(
+      mapItem.id,
+      mapItem.title,
+      mapItem.settings.url,
+      mapItem.visible,
+      mapItem.opacity,
+      mapItem.settings.layers.map(
+        (layer): ExternalWmsLayer => ({type: 'wms', id: layer.id, name: layer.layer, title: layer.title, visible: layer.visible}),
+      ),
+      this.wmsImageFormatMimeType,
+    );
     if (mapItem.settings.timeSliderExtent) {
       // apply initial time slider settings
       this.setEsriTimeSliderExtent(mapItem.settings.timeSliderExtent, mapItem, esriLayer);
     }
-    this.attachLayerListeners(esriLayer);
-    /**
-     * `position` is the map/layer position from the state/GUI: lowest position <=> highest visibility
-     * `index` is the position inside the Esri layer array. It's inverse to the position from the state/GUI: the lowest index <=> lowest
-     * visibility Additionally, there is a number of default layers that must always keep the highest visibility (e.g. highlight layer)
-     * independent from the state/GUI layers.
-     */
-    const index = this.getIndexForPosition(position);
-    this.mapView.map.add(esriLayer, index);
+    this.addLayer(esriLayer, position);
   }
 
-  // TODO GB3-348: Try to minimize code duplication
   public addExternalWmsLayer(mapItem: ExternalWmsActiveMapItem, position: number) {
-    if (this.esriMapViewService.findEsriLayer(mapItem.id)) {
-      return;
-    }
-
-    const esriLayer: __esri.Layer = new EsriWMSLayer({
-      id: mapItem.id,
-      title: mapItem.title,
-      url: mapItem.settings.url,
-      visible: mapItem.visible,
-      opacity: mapItem.opacity,
-      sublayers: mapItem.settings.layers
-        .map((layer): __esri.WMSSublayerProperties => {
-          return {
-            id: layer.id,
-            name: layer.name,
-            title: layer.title,
-            visible: layer.visible,
-          };
-        })
-        .reverse(), // reverse the order of the sublayers because the order in the GB3 interfaces (Topic, ActiveMapItem) is inverted to the
-      // order of the WMS specifications
-    });
-    this.attachLayerListeners(esriLayer);
-    /**
-     * `position` is the map/layer position from the state/GUI: lowest position <=> highest visibility
-     * `index` is the position inside the Esri layer array. It's inverse to the position from the state/GUI: the lowest index <=> lowest
-     * visibility Additionally, there is a number of default layers that must always keep the highest visibility (e.g. highlight layer)
-     * independent from the state/GUI layers.
-     */
-    const index = this.getIndexForPosition(position);
-    this.mapView.map.add(esriLayer, index);
+    const esriLayer = this.createWmsLayer(
+      mapItem.id,
+      mapItem.title,
+      mapItem.settings.url,
+      mapItem.visible,
+      mapItem.opacity,
+      mapItem.settings.layers,
+      mapItem.settings.imageFormat,
+    );
+    this.addLayer(esriLayer, position);
   }
 
   public addExternalKmlLayer(mapItem: ExternalKmlActiveMapItem, position: number) {
-    if (this.esriMapViewService.findEsriLayer(mapItem.id)) {
-      return;
-    }
-
     const esriLayer: __esri.Layer = new EsriKMLLayer({
       id: mapItem.id,
       title: mapItem.title,
       url: mapItem.settings.url,
       visible: mapItem.visible,
       opacity: mapItem.opacity,
-      // spatialReference: {wkid: 2056},
       sublayers: mapItem.settings.layers
         .map((layer): __esri.KMLSublayerProperties => {
           return {
@@ -278,18 +232,9 @@ export class EsriMapService implements MapService, OnDestroy {
           };
         })
         .reverse(), // reverse the order of the sublayers because the order in the GB3 interfaces (Topic, ActiveMapItem) is inverted to the
-      // order of the WMS specifications
+      // order of the KML specifications
     });
-
-    this.attachLayerListeners(esriLayer);
-    /**
-     * `position` is the map/layer position from the state/GUI: lowest position <=> highest visibility
-     * `index` is the position inside the Esri layer array. It's inverse to the position from the state/GUI: the lowest index <=> lowest
-     * visibility Additionally, there is a number of default layers that must always keep the highest visibility (e.g. highlight layer)
-     * independent from the state/GUI layers.
-     */
-    const index = this.getIndexForPosition(position);
-    this.mapView.map.add(esriLayer, index);
+    this.addLayer(esriLayer, position);
   }
 
   public removeMapItem(id: string) {
@@ -488,6 +433,53 @@ export class EsriMapService implements MapService, OnDestroy {
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
+  }
+
+  private createWmsLayer(
+    id: string,
+    title: string,
+    url: string,
+    visible: boolean,
+    opacity: number,
+    layers: ExternalWmsLayer[],
+    imageFormat: string | undefined,
+  ): __esri.WMSLayer {
+    const esriLayer = new EsriWMSLayer({
+      id: id,
+      title: title,
+      url: url,
+      visible: visible,
+      opacity: opacity,
+      imageFormat: imageFormat,
+      featureInfoUrl: undefined,
+      sublayers: layers
+        .map((layer): __esri.WMSSublayerProperties => {
+          return {
+            id: layer.id,
+            name: layer.name,
+            title: layer.title,
+            visible: layer.visible,
+          };
+        })
+        .reverse(), // reverse the order of the sublayers because the order in the GB3 interfaces (Topic, ActiveMapItem) is inverted to the
+      // order of the WMS specifications
+    });
+    return esriLayer;
+  }
+
+  private addLayer(esriLayer: __esri.Layer, position: number) {
+    if (this.esriMapViewService.findEsriLayer(esriLayer.id)) {
+      return;
+    }
+    this.attachLayerListeners(esriLayer);
+    /**
+     * `position` is the map/layer position from the state/GUI: lowest position <=> highest visibility
+     * `index` is the position inside the Esri layer array. It's inverse to the position from the state/GUI: the lowest index <=> lowest
+     * visibility Additionally, there is a number of default layers that must always keep the highest visibility (e.g. highlight layer)
+     * independent from the state/GUI layers.
+     */
+    const index = this.getIndexForPosition(position);
+    this.mapView.map.add(esriLayer, index);
   }
 
   private addEsriGeometryToDrawingLayer(

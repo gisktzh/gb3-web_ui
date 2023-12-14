@@ -54,7 +54,7 @@ export class EsriMapLoaderService implements MapLoaderService {
         if (subLayers.length === 0) {
           throw new ExternalServiceHasNoLayers();
         }
-        return ActiveMapItemFactory.createExternalWmsMapItem(wmsLayer.url, wmsLayer.title, subLayers);
+        return ActiveMapItemFactory.createExternalWmsMapItem(wmsLayer.url, wmsLayer.title, subLayers, wmsLayer.imageFormat);
       }),
     );
   }
