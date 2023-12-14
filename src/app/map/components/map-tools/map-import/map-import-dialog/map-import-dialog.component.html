@@ -1,4 +1,4 @@
-<api-dialog-wrapper title="Kartendienst importieren" [savingState]="externalServiceLoadingState" errorText="" [showCloseButton]="true">
+<api-dialog-wrapper title="Kartendienst importieren" [savingState]="externalServiceLoadingState" errorText="" (closeEvent)="cancel()">
   <ng-container content>
     <div class="map-import-dialog__content">
       <mat-stepper linear #stepper labelPosition="bottom" class="map-import-dialog__content__stepper">

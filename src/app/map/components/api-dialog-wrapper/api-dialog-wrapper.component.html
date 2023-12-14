@@ -1,7 +1,7 @@
 <div class="api-dialog-wrapper">
   <div class="api-dialog-wrapper__header">
-    <h1 mat-dialog-title>{{ title }}</h1>
-    <button (click)="close()" mat-icon-button *ngIf="showCloseButton">
+    <h1 mat-dialog-title class="api-dialog-wrapper__header__title">{{ title }}</h1>
+    <button (click)="close()" mat-icon-button class="api-dialog-wrapper__header__button" *ngIf="showCloseButton">
       <mat-icon>close</mat-icon>
     </button>
   </div>

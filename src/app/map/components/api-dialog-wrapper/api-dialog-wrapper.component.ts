@@ -1,7 +1,6 @@
-import {Component, Input} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {HasSavingState} from '../../../shared/interfaces/has-saving-state.interface';
 import {LoadingState} from '../../../shared/types/loading-state.type';
-import {MatDialogRef} from '@angular/material/dialog';
 
 @Component({
   selector: 'api-dialog-wrapper',
@@ -12,11 +11,11 @@ export class ApiDialogWrapperComponent implements HasSavingState {
   @Input() public title: string = '';
   @Input() public savingState: LoadingState;
   @Input() public errorText?: string = 'Beim Speichern ist etwas schief gelaufen.';
-  @Input() public showCloseButton: boolean = false;
+  @Input() public showCloseButton: boolean = true;
 
-  constructor(private readonly dialogRef: MatDialogRef<ApiDialogWrapperComponent>) {}
+  @Output() public readonly closeEvent = new EventEmitter<void>();
 
   public close() {
-    this.dialogRef.close();
+    this.closeEvent.emit();
   }
 }

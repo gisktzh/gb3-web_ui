@@ -9,6 +9,7 @@
   <mat-form-field>
     <mat-label>URL</mat-label>
     <input matInput placeholder="Bitte URL zum Kartendienst eingeben" formControlName="url" />
+    <mat-icon *ngIf="loadingState === 'loaded'" color="primary" matSuffix>check</mat-icon>
     <mat-icon *ngIf="loadingState === 'error'" color="warn" matSuffix>error</mat-icon>
     @if (loadingState === 'error') {
       <mat-error class="mat-caption">Fehler beim Laden</mat-error>
