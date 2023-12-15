@@ -17,5 +17,6 @@ jobs:
     steps:
       - template: 'templates/git-checkout-code.yml'
       - template: 'templates/unit-tests.yml'
+      - template: 'templates/publish-coverage.yml'
       - template: 'templates/sonar-cloud-analysis.yml'
       - template: 'templates/deploy-static-web-app.yml'
