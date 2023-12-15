@@ -1,4 +1,4 @@
-import {RecoverableError} from './abstract.errors';
+import {Gb3RuntimeError, RecoverableError} from './abstract.errors';
 
 export class ShareLinkCouldNotBeLoaded extends RecoverableError {
   public override message = 'Der Inhalt des geteilten Links konnten nicht geladen werden.';
@@ -23,8 +23,13 @@ export class ShareLinkCouldNotBeValidated extends RecoverableError {
   public override message = 'Beim Laden Inhalt des geteilten Links ist etwas schief gelaufen.';
   public override name = 'ShareLinkCouldNotBeValidated';
 
-  constructor(reason: string, isAuthenticated: boolean, originalError?: unknown) {
+  constructor(isAuthenticated: boolean, originalError?: unknown) {
     super(originalError);
+    let reason = 'Unbekannter Fehler';
+    if (originalError && originalError instanceof Gb3RuntimeError && originalError.message) {
+      reason = originalError.message;
+    }
+
     let message = `Ungültiger Inhalt im geteilten Link: ${reason}`;
     if (!isAuthenticated) {
       message += '\nMöglicherweise hilft es, wenn Sie sich einloggen.';
