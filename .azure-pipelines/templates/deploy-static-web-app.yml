@@ -1,0 +1,14 @@
+steps:
+  - task: AzureStaticWebApp@0
+    inputs:
+      azure_static_web_apps_api_token: $(AZURE_STATIC_WEB_APPS_API_TOKEN_CALM_PLANT_0ECBEC603)
+      ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
+      # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
+      app_location: '/' # App source code path
+      api_location: '' # Api source code path - optional
+      app_build_command: 'npm run build-dev-ebp'
+      output_location: 'dist/browser' # Built app content directory - optional
+      ###### End of Repository/Build Configurations ######
+    env:
+      APP_RELEASE: 'EBP Dev Release'
+      APP_VERSION: $(Build.SourceVersion)
