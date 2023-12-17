@@ -53,7 +53,7 @@
     "@types/terraformer__arcgis": "^2.0.2",
     "@types/twitter-for-web": "^0.0.5",
     "@types/uuid": "^9.0.4",
-    "angular-oauth2-oidc": "^15.0.1",
+    "angular-oauth2-oidc": "^17.0.0",
     "angular-resizable-element": "^7.0.2",
     "chart.js": "^4.4.0",
     "dayjs": "^1.11.7",
