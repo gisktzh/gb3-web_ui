@@ -255,9 +255,13 @@ describe('Gb3PrintService', () => {
 
       service.createPrintJob(printCreationMock).subscribe((response) => {
         expect(response.reportUrl).toBe(printResponseMock.report_url);
-        expect(postCallSpy).toHaveBeenCalledOnceWith(`${configService.apiConfig.gb2Api.baseUrl}/print`, transformedPrintCreationMock, {
-          headers: undefined,
-        });
+        expect(postCallSpy).toHaveBeenCalledOnceWith(
+          `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/print`,
+          transformedPrintCreationMock,
+          {
+            headers: undefined,
+          },
+        );
         done();
       });
     });
@@ -272,7 +276,7 @@ describe('Gb3PrintService', () => {
       service.printLegend(items).subscribe((response) => {
         expect(response.reportUrl).toBe(mockResponse.report_url);
         expect(postCallSpy).toHaveBeenCalledOnceWith(
-          `${configService.apiConfig.gb2Api.baseUrl}/print/legend`,
+          `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/print/legend`,
           {legend_topics: items},
           {
             headers: undefined,
@@ -293,7 +297,7 @@ describe('Gb3PrintService', () => {
       service.printFeatureInfo(items, mockQueryLocation.x!, mockQueryLocation.y!).subscribe((response) => {
         expect(response.reportUrl).toBe(mockResponse.report_url);
         expect(postCallSpy).toHaveBeenCalledOnceWith(
-          `${configService.apiConfig.gb2Api.baseUrl}/print/feature_info`,
+          `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/print/feature_info`,
           {
             query_topics: items,
             x: mockQueryLocation.x,

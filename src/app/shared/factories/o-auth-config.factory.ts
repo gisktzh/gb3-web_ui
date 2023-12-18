@@ -8,7 +8,7 @@ import {ConfigService} from '../services/config.service';
  */
 export function oAuthConfigFactory(configService: ConfigService): OAuthModuleConfig {
   const config = oAuthConfig;
-  config.resourceServer.allowedUrls = [configService.apiConfig.gb2Api.baseUrl];
+  config.resourceServer.allowedUrls = [`${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}`];
 
   return config;
 }

@@ -57,7 +57,9 @@ describe('Gb3GeoshopCantonService', () => {
       };
 
       service.loadCanton().subscribe((actual) => {
-        expect(getCallSpy).toHaveBeenCalledOnceWith(`${configService.apiConfig.gb2Api.baseUrl}/canton`);
+        expect(getCallSpy).toHaveBeenCalledOnceWith(
+          `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/canton`,
+        );
         expect(actual).toEqual(expected);
         done();
       });

@@ -63,7 +63,7 @@ describe('Gb3GeneralInfoService', () => {
   it('creates correct url', (done: DoneFn) => {
     spyOn(httpClient, 'get').and.returnValue(of(mockResponse));
 
-    const expected = `${configService.apiConfig.gb2Api.baseUrl}/general_info?x=${mockCoord.x}&y=${mockCoord.y}`;
+    const expected = `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/general_info?x=${mockCoord.x}&y=${mockCoord.y}`;
 
     service.loadGeneralInfo(mockCoord.x, mockCoord.y).subscribe(() => {
       expect(httpClient.get).toHaveBeenCalledOnceWith(expected);
