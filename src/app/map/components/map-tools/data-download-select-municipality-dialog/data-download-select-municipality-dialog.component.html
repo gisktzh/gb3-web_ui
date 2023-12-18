@@ -1,4 +1,4 @@
-<api-dialog-wrapper title="Daten beziehen" [savingState]="loadingState">
+<api-dialog-wrapper title="Daten beziehen" [savingState]="loadingState" (closeEvent)="cancel()">
   <ng-container content>
     <div class="data-download-select-municipality-dialog">
       <mat-form-field class="data-download-select-municipality-dialog__content" appearance="fill" *ngIf="municipalities">

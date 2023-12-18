@@ -45,6 +45,7 @@ export class NavbarMobileComponent implements OnInit, OnDestroy {
       height: '100%',
       width: '100%',
       panelClass: PanelClass.ApiWrapperDialog,
+      autoFocus: false,
     });
   }
 }

@@ -153,6 +153,7 @@ export class MapUiEffects {
           this.dialogService.open(ShareLinkDialogComponent, {
             panelClass: PanelClass.ApiWrapperDialog,
             restoreFocus: false,
+            autoFocus: false,
           });
         }),
       );
@@ -186,6 +187,7 @@ export class MapUiEffects {
             panelClass: PanelClass.ApiWrapperDialog,
             restoreFocus: false,
             maxWidth: CREATE_FAVOURITE_DIALOG_MAX_WIDTH,
+            autoFocus: false,
           }),
         ),
       );
@@ -203,6 +205,7 @@ export class MapUiEffects {
             panelClass: PanelClass.ApiWrapperDialog,
             restoreFocus: false,
             maxWidth: DELETE_FAVOURITE_DIALOG_MAX_WIDTH,
+            autoFocus: false,
           }),
         ),
       );
@@ -220,6 +223,7 @@ export class MapUiEffects {
           restoreFocus: false,
           data: gb2WmsActiveMapItemsWithMapNotices,
           maxWidth: MAP_NOTICES_DIALOG_MAX_WIDTH,
+          autoFocus: false,
         }),
       ),
       map(() => ActiveMapItemActions.markAllActiveMapItemNoticeAsRead()),
@@ -257,6 +261,7 @@ export class MapUiEffects {
           this.dialogService.open<DataDownloadEmailConfirmationDialogComponent>(DataDownloadEmailConfirmationDialogComponent, {
             panelClass: PanelClass.ApiWrapperDialog,
             restoreFocus: false,
+            autoFocus: false,
           }),
         ),
       );
@@ -273,6 +278,7 @@ export class MapUiEffects {
             panelClass: PanelClass.ApiWrapperDialog,
             restoreFocus: false,
             disableClose: true,
+            autoFocus: false,
           }),
         ),
       );

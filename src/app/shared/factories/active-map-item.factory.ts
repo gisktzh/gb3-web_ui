@@ -3,7 +3,7 @@ import {Map, MapLayer} from '../interfaces/topic.interface';
 import {Gb2WmsActiveMapItem} from '../../map/models/implementations/gb2-wms.model';
 import {DrawingActiveMapItem} from '../../map/models/implementations/drawing.model';
 import {UserDrawingLayer} from '../enums/drawing-layer.enum';
-import {ExternalLayer} from '../interfaces/external-layer.interface';
+import {ExternalKmlLayer, ExternalWmsLayer} from '../interfaces/external-layer.interface';
 import {ExternalWmsActiveMapItem} from '../../map/models/implementations/external-wms.model';
 import {ExternalKmlActiveMapItem} from '../../map/models/implementations/external-kml.model';
 
@@ -30,17 +30,18 @@ export class ActiveMapItemFactory {
   public static createExternalWmsMapItem(
     url: string,
     title: string,
-    layers: ExternalLayer<number>[],
+    layers: ExternalWmsLayer[],
+    imageFormat: string | undefined,
     visible?: boolean,
     opacity?: number,
   ): ExternalWmsActiveMapItem {
-    return new ExternalWmsActiveMapItem(url, title, layers, visible, opacity);
+    return new ExternalWmsActiveMapItem(url, title, layers, imageFormat, visible, opacity);
   }
 
   public static createExternalKmlMapItem(
     url: string,
     title: string,
-    layers: ExternalLayer<number>[],
+    layers: ExternalKmlLayer[],
     visible?: boolean,
     opacity?: number,
   ): ExternalKmlActiveMapItem {

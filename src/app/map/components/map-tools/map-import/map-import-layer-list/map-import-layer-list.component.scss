@@ -1,0 +1,25 @@
+@use 'functions/helper.function' as functions;
+@use 'mixins/material.mixin' as mat-mixins;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+:host ::ng-deep .map-import-layer-list__checkbox {
+  @include mat-mixins.mat-checkbox-override-accent-color(
+    functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent),
+    functions.get-contrast-color-from-palette(ktzh-variables.$zh-secondary-accent)
+  );
+}
+
+.map-import-layer-list {
+  display: flex;
+  flex-flow: column;
+  gap: 24px;
+  height: 100%;
+
+  .map-import-layer-list__layers {
+    display: flex;
+    flex-flow: column;
+    overflow-y: scroll;
+    border-radius: ktzh-variables.$zh-border-radius;
+    border: 2px solid ktzh-variables.$zh-border-color;
+  }
+}

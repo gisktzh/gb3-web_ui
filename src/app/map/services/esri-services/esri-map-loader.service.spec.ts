@@ -5,7 +5,7 @@ import {EsriMapService} from './esri-map.service';
 import {MAP_SERVICE} from '../../../app.module';
 import {of} from 'rxjs';
 import Collection from '@arcgis/core/core/Collection';
-import {ExternalLayer} from '../../../shared/interfaces/external-layer.interface';
+import {ExternalKmlLayer, ExternalWmsLayer} from '../../../shared/interfaces/external-layer.interface';
 import {UuidUtils} from '../../../shared/utils/uuid.utils';
 import {ExternalKmlActiveMapItem} from '../../models/implementations/external-kml.model';
 
@@ -29,23 +29,27 @@ describe('EsriMapLoaderService', () => {
     const title = 'test title';
 
     it('it should load a WMS service and return a ExternalWmsActiveMapItem', (done) => {
-      const externalLayerOne: ExternalLayer<number> = {
+      const externalLayerOne: ExternalWmsLayer = {
+        type: 'wms',
         id: 1337,
         name: 'test layer id one',
         title: 'test layer id one',
         visible: true,
       };
-      const externalLayerTwo: ExternalLayer<number> = {
+      const externalLayerTwo: ExternalWmsLayer = {
+        type: 'wms',
         id: 9001,
         name: 'test layer id two',
         title: 'test layer id two',
         visible: false,
       };
+      const imageFormat = 'image/png';
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       spyOn<any>(service, 'loadService').and.returnValue(
         of({
           url,
           title,
+          imageFormat,
           sublayers: new Collection<__esri.WMSSublayer>([
             {
               id: externalLayerOne.id,
@@ -63,7 +67,7 @@ describe('EsriMapLoaderService', () => {
         } as Partial<__esri.WMSLayer>),
       );
 
-      const expected = new ExternalWmsActiveMapItem(url, title, [externalLayerOne, externalLayerTwo]);
+      const expected = new ExternalWmsActiveMapItem(url, title, [externalLayerOne, externalLayerTwo], imageFormat);
 
       service.loadExternalService(url, 'wms').subscribe((actual) => {
         expect(actual).toEqual(expected);
@@ -72,12 +76,14 @@ describe('EsriMapLoaderService', () => {
     });
 
     it('it should load a KML service and return a ExternalKmlActiveMapItem', (done) => {
-      const externalLayerOne: ExternalLayer<number> = {
+      const externalLayerOne: ExternalKmlLayer = {
+        type: 'kml',
         id: 1337,
         title: 'test layer id one',
         visible: true,
       };
-      const externalLayerTwo: ExternalLayer<number> = {
+      const externalLayerTwo: ExternalKmlLayer = {
+        type: 'kml',
         id: 9001,
         title: 'test layer id two',
         visible: false,

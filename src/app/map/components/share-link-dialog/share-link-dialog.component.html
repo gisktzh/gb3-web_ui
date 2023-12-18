@@ -1,4 +1,4 @@
-<api-dialog-wrapper [savingState]="savingState" title="Teilen" errorText="Fehler beim Laden der Links!">
+<api-dialog-wrapper [savingState]="savingState" title="Teilen" errorText="Fehler beim Laden der Links!" (closeEvent)="close()">
   <ng-container content>
     <mat-form-field appearance="fill" class="share-link-dialog__content">
       <mat-label>Link auf aktive Karten</mat-label>

@@ -1,12 +1,12 @@
 import {AddToMapVisitor} from '../../interfaces/add-to-map.visitor';
 import {AbstractExternalServiceSettings, ExternalServiceActiveMapItem} from '../external-service.model';
-import {ExternalLayer} from '../../../shared/interfaces/external-layer.interface';
+import {ExternalKmlLayer} from '../../../shared/interfaces/external-layer.interface';
 
 export class ExternalKmlServiceSettings extends AbstractExternalServiceSettings {
   public readonly mapServiceType = 'kml';
-  public readonly layers: ExternalLayer<number>[];
+  public readonly layers: ExternalKmlLayer[];
 
-  constructor(url: string, layers: ExternalLayer<number>[]) {
+  constructor(url: string, layers: ExternalKmlLayer[]) {
     super(url);
     this.layers = layers;
   }
@@ -15,7 +15,7 @@ export class ExternalKmlServiceSettings extends AbstractExternalServiceSettings 
 export class ExternalKmlActiveMapItem extends ExternalServiceActiveMapItem {
   public readonly settings: ExternalKmlServiceSettings;
 
-  constructor(url: string, title: string, layers: ExternalLayer<number>[], visible?: boolean, opacity?: number) {
+  constructor(url: string, title: string, layers: ExternalKmlLayer[], visible?: boolean, opacity?: number) {
     super(title, visible, opacity);
     this.settings = new ExternalKmlServiceSettings(url, layers);
   }

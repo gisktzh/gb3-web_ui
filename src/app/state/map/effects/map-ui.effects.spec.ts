@@ -51,6 +51,7 @@ describe('MapUiEffects', () => {
         expect(dialogService.open).toHaveBeenCalledWith(ShareLinkDialogComponent, {
           panelClass: 'api-wrapper-dialog',
           restoreFocus: false,
+          autoFocus: false,
         });
       });
     });
