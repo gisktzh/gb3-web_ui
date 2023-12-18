@@ -37,6 +37,7 @@ export class DrawingToolsComponent extends AbstractToolsComponent {
     this.dialogService.open(DrawingSettingsDialogComponent, {
       panelClass: PanelClass.ApiWrapperDialog,
       restoreFocus: false,
+      autoFocus: false,
     });
   }
 }

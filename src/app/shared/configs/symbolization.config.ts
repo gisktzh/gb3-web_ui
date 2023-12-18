@@ -1,16 +1,6 @@
 import {InternalDrawingLayer, UserDrawingLayer} from '../enums/drawing-layer.enum';
 import {LayerSymbolizations, SymbolizationStyle} from '../interfaces/symbolization.interface';
-import {defaultFillColor, defaultLineColor, defaultLineWidth} from './drawing.config';
-
-const defaultOutline = {
-  width: 1,
-  color: {
-    r: 0,
-    g: 0,
-    b: 0,
-    a: 1.0,
-  },
-};
+import {defaultFillColor, defaultLineColor, defaultLineWidth, defaultOutline} from './drawing.config';
 
 const defaultSymbolization: SymbolizationStyle = {
   text: {
@@ -152,12 +142,7 @@ export const layerSymbolizations: LayerSymbolizations = {
   },
   [UserDrawingLayer.Measurements]: {
     text: {
-      color: {
-        r: 255,
-        g: 0,
-        b: 0,
-        a: 1.0,
-      },
+      color: defaultLineColor,
       outline: {
         color: {
           r: 255,
@@ -174,12 +159,7 @@ export const layerSymbolizations: LayerSymbolizations = {
     point: {
       type: 'simple',
       size: 5,
-      color: {
-        r: 255,
-        g: 0,
-        b: 0,
-        a: 1.0,
-      },
+      color: defaultLineColor,
       outline: {
         width: 1,
         color: {
@@ -191,42 +171,22 @@ export const layerSymbolizations: LayerSymbolizations = {
       },
     },
     line: {
-      width: 2,
-      color: {
-        r: 255,
-        g: 0,
-        b: 0,
-        a: 1.0,
-      },
+      width: defaultLineWidth,
+      color: defaultLineColor,
     },
     polygon: {
       fill: {
-        color: {
-          r: 255,
-          g: 0,
-          b: 0,
-          a: 0.3,
-        },
+        color: defaultFillColor,
       },
       outline: {
-        width: 2,
-        color: {
-          r: 255,
-          g: 0,
-          b: 0,
-          a: 1.0,
-        },
+        width: defaultLineWidth,
+        color: defaultLineColor,
       },
     },
   },
   [UserDrawingLayer.Drawings]: {
     text: {
-      color: {
-        r: 255,
-        g: 0,
-        b: 0,
-        a: 1.0,
-      },
+      color: defaultLineColor,
       outline: {
         color: {
           r: 255,

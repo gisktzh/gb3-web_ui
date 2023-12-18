@@ -15,3 +15,13 @@ export const defaultFillColor: SymbolizationColor = {
 };
 
 export const defaultLineWidth = 2;
+
+export const defaultOutline = {
+  width: 1,
+  color: {
+    r: 0,
+    g: 0,
+    b: 0,
+    a: 1.0,
+  },
+};

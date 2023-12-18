@@ -13,9 +13,6 @@ import {defaultFillColor, defaultLineColor, defaultLineWidth} from '../../../../
   styleUrls: ['./drawing-settings-dialog.component.scss'],
 })
 export class DrawingSettingsDialogComponent implements OnInit, OnDestroy {
-  // todo GB3-826: inital settings and two-way bindings
-  // todo GB3-826: typehints for event variables below
-
   public fillColor: string = ColorUtils.convertSymbolizatioColorToHex(defaultFillColor);
   public lineColor: string = ColorUtils.convertSymbolizatioColorToHex(defaultLineColor);
   public lineWidth: number = defaultLineWidth;
@@ -37,8 +34,7 @@ export class DrawingSettingsDialogComponent implements OnInit, OnDestroy {
   }
 
   public changeFill(newColor: string) {
-    const color = ColorUtils.convertHexToSymbolizationColor(newColor, 0.6); // todo GB3-826: default style extraction
-    console.log(color);
+    const color = ColorUtils.convertHexToSymbolizationColor(newColor, defaultFillColor.a);
     this.store.dispatch(DrawingStyleActions.setFillColor({color}));
   }
 
@@ -49,7 +45,6 @@ export class DrawingSettingsDialogComponent implements OnInit, OnDestroy {
   }
 
   public changeWidth(width: number) {
-    console.log('methode', width);
     this.store.dispatch(DrawingStyleActions.setLineWidth({width}));
   }
 
@@ -70,7 +65,6 @@ export class DrawingSettingsDialogComponent implements OnInit, OnDestroy {
         .pipe(
           first(),
           tap((drawingStyleState) => {
-            console.log(drawingStyleState.fillColor);
             this.fillColor = ColorUtils.convertSymbolizatioColorToHex(drawingStyleState.fillColor);
             this.lineColor = ColorUtils.convertSymbolizatioColorToHex(drawingStyleState.lineColor);
             this.lineWidth = drawingStyleState.lineWidth;
