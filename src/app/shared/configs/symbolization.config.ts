@@ -1,5 +1,6 @@
 import {InternalDrawingLayer, UserDrawingLayer} from '../enums/drawing-layer.enum';
 import {LayerSymbolizations, SymbolizationStyle} from '../interfaces/symbolization.interface';
+import {defaultFillColor, defaultLineColor, defaultLineWidth} from './drawing.config';
 
 const defaultOutline = {
   width: 1,
@@ -242,48 +243,23 @@ export const layerSymbolizations: LayerSymbolizations = {
     point: {
       type: 'simple', // note: if this is changed, adjust the typecast in EsriToolService!
       size: 5,
-      color: {
-        r: 255,
-        g: 0,
-        b: 0,
-        a: 1.0,
-      },
+      color: defaultLineColor,
       outline: {
         width: 1,
-        color: {
-          r: 255,
-          g: 255,
-          b: 255,
-          a: 1.0,
-        },
+        color: defaultLineColor,
       },
     },
     line: {
-      width: 2,
-      color: {
-        r: 255,
-        g: 0,
-        b: 0,
-        a: 1.0,
-      },
+      width: defaultLineWidth,
+      color: defaultLineColor,
     },
     polygon: {
       fill: {
-        color: {
-          r: 255,
-          g: 0,
-          b: 0,
-          a: 0.3,
-        },
+        color: defaultFillColor,
       },
       outline: {
-        width: 2,
-        color: {
-          r: 255,
-          g: 0,
-          b: 0,
-          a: 1.0,
-        },
+        width: defaultLineWidth,
+        color: defaultLineColor,
       },
     },
   },
