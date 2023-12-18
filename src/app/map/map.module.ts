@@ -81,6 +81,8 @@ import {MapImportDialogComponent} from './components/map-tools/map-import/map-im
 import {MapImportServiceAndUrlComponent} from './components/map-tools/map-import/map-import-service-and-url/map-import-service-and-url.component';
 import {MapImportLayerListComponent} from './components/map-tools/map-import/map-import-layer-list/map-import-layer-list.component';
 import {MapImportDisplayNameComponent} from './components/map-tools/map-import/map-import-display-name/map-import-display-name.component';
+import {TimeExtentToStringPipe} from './pipes/time-extent-to-string.pipe';
+import {DateToStringPipe} from './pipes/date-to-string.pipe';
 
 @NgModule({
   declarations: [
@@ -170,6 +172,8 @@ import {MapImportDisplayNameComponent} from './components/map-tools/map-import/m
     MapImportServiceAndUrlComponent,
     MapImportLayerListComponent,
     MapImportDisplayNameComponent,
+    TimeExtentToStringPipe,
+    DateToStringPipe,
   ],
   exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent],
 })
