@@ -299,7 +299,7 @@ describe('ActiveMapItemEffects', () => {
     });
   });
 
-  describe('setTimeSliderExtent$', () => {
+  describe('setTimeSliderExtentOnMap$', () => {
     it('sets the time extent using the map service, no further action dispatch', (done: DoneFn) => {
       const expectedTimeExtent: TimeExtent = {start: new Date(666), end: new Date(1337)};
       const expectedActiveMapItem = createGb2WmsMapItemMock('mapMock');
@@ -310,7 +310,7 @@ describe('ActiveMapItemEffects', () => {
         timeExtent: expectedTimeExtent,
       });
       actions$ = of(expectedAction);
-      effects.setTimeSliderExtent$.subscribe((action) => {
+      effects.setTimeSliderExtentOnMap$.subscribe((action) => {
         expect(mapServiceSpy).toHaveBeenCalledOnceWith(expectedTimeExtent, expectedActiveMapItem);
         expect(action).toEqual(expectedAction);
         done();

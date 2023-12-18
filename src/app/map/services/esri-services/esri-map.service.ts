@@ -59,6 +59,7 @@ import {TransformationService} from './transformation.service';
 import {ExternalWmsActiveMapItem} from '../../models/implementations/external-wms.model';
 import {ExternalKmlActiveMapItem} from '../../models/implementations/external-kml.model';
 import {ExternalWmsLayer} from '../../../shared/interfaces/external-layer.interface';
+import {ActiveTimeSliderLayersUtils} from '../../utils/active-time-slider-layers.utils';
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
 
@@ -596,19 +597,14 @@ export class EsriMapService implements MapService, OnDestroy {
     const timeSliderConfig = mapItem.settings.timeSliderConfiguration;
     const timeSliderLayerSource = timeSliderConfig.source as TimeSliderLayerSource;
     const timeSliderLayerNames = timeSliderLayerSource.layers.map((l) => l.layerName);
-    const timeSliderLayerNamesToShow = timeSliderLayerSource.layers
-      .filter((l) => {
-        const date = dayjs(l.date, timeSliderConfig.dateFormat).toDate();
-        return date >= timeSliderExtent.start && date < timeSliderExtent.end;
-      })
-      .map((l) => l.layerName);
-    // get the layer configs of all time slider specific layers that are  also within the current time extent
-    const layers = mapItem.settings.layers.filter((l) => timeSliderLayerNamesToShow.includes(l.layer));
+    const visibleLayers = mapItem.settings.layers.filter(
+      (layer) => ActiveTimeSliderLayersUtils.isLayerVisible(layer, mapItem.settings.timeSliderConfiguration, timeSliderExtent) === true,
+    );
     // include all layers that are not specified in the time slider config
     const esriSublayers = esriLayer.sublayers.filter((sl) => !timeSliderLayerNames.includes(sl.name));
     // now add all layers that are in the time slider config and within the current time extent
     esriSublayers.addMany(
-      layers
+      visibleLayers
         .map(
           (layer) =>
             new EsriWMSSublayer({

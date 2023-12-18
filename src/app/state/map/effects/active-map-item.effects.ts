@@ -207,7 +207,7 @@ export class ActiveMapItemEffects {
     {dispatch: false},
   );
 
-  public setTimeSliderExtent$ = createEffect(
+  public setTimeSliderExtentOnMap$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(ActiveMapItemActions.setTimeSliderExtent),
