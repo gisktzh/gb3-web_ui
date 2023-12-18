@@ -1,4 +1,4 @@
-import {ErrorHandler, Inject, Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {Actions, concatLatestFrom, createEffect, ofType} from '@ngrx/effects';
 import {catchError, map} from 'rxjs/operators';
 import {DataDownloadOrderActions} from '../actions/data-download-order.actions';
@@ -192,6 +192,5 @@ export class DataDownloadOrderEffects {
     private readonly configService: ConfigService,
     private readonly store: Store,
     private readonly geoshopApiService: GeoshopApiService,
-    private readonly errorHandler: ErrorHandler,
   ) {}
 }

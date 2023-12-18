@@ -18,7 +18,6 @@ import {selectItems} from '../reducers/active-map-item.reducer';
 import {ActiveMapItem} from '../../../map/models/active-map-item.model';
 import {createGb2WmsMapItemMock} from '../../../testing/map-testing/active-map-item-test.utils';
 import {DataDownloadFilter} from '../../../shared/interfaces/data-download-filter.interface';
-import {ErrorHandler} from '@angular/core';
 import {catchError} from 'rxjs/operators';
 
 describe('DataDownloadProductEffects', () => {
@@ -73,7 +72,6 @@ describe('DataDownloadProductEffects', () => {
   let store: MockStore;
   let effects: DataDownloadProductEffects;
   let geoshopProductsService: Gb3GeoshopProductsService;
-  let errorHandlerMock: jasmine.SpyObj<ErrorHandler>;
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
@@ -84,7 +82,6 @@ describe('DataDownloadProductEffects', () => {
         DataDownloadProductEffects,
         provideMockActions(() => actions$),
         provideMockStore(),
-        {provide: ErrorHandler, useValue: errorHandlerMock},
         {provide: MAP_SERVICE, useClass: MapServiceStub},
       ],
     });
