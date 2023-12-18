@@ -1,4 +1,4 @@
-import {ErrorHandler, Injectable} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Actions, concatLatestFrom, createEffect, ofType} from '@ngrx/effects';
 import {catchError, map} from 'rxjs/operators';
 import {filter, of, switchMap, tap} from 'rxjs';
@@ -72,6 +72,5 @@ export class DataDownloadRegionEffects {
     private readonly store: Store,
     private readonly geoshopMunicipalitiesService: Gb3GeoshopMunicipalitiesService,
     private readonly geoshopCantonService: Gb3GeoshopCantonService,
-    private readonly errorHandler: ErrorHandler,
   ) {}
 }

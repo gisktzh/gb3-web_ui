@@ -4,6 +4,7 @@ import {MainPage} from './shared/enums/main-page.enum';
 import {NotFoundErrorPageComponent} from './error-handling/components/not-found-error-page/not-found-error-page.component';
 import {FatalErrorPageComponent} from './error-handling/components/fatal-error-page/fatal-error-page.component';
 import {authLoadingGuard} from './shared/guards/auth-loading-guard.guard';
+import {fatalErrorMapGuard} from './embedded-page/guards/fatal-error-page.guard';
 
 const routes: Routes = [
   {
@@ -25,7 +26,8 @@ const routes: Routes = [
         path: MainPage.Embedded,
         loadChildren: () => import('./embedded-page/embedded-map-page.module').then((m) => m.EmbeddedMapPageModule),
       },
-      {path: MainPage.Error, component: FatalErrorPageComponent},
+
+      {path: MainPage.Error, component: FatalErrorPageComponent, canDeactivate: [fatalErrorMapGuard]},
       {path: MainPage.NotFound, component: NotFoundErrorPageComponent},
       {path: '**', component: NotFoundErrorPageComponent},
     ],
