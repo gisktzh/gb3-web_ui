@@ -4,6 +4,7 @@ import {SupportPageComponent} from './support-page.component';
 import {FaqComponent} from './components/faq/faq.component';
 import {UsefulInformationComponent} from './components/useful-information/useful-information.component';
 import {ContactComponent} from './components/contact/contact.component';
+import {SupportPage} from '../shared/enums/support-page.enum';
 
 const routes: Routes = [
   {
@@ -11,21 +12,21 @@ const routes: Routes = [
     component: SupportPageComponent,
     children: [
       {
-        path: 'faq',
+        path: SupportPage.Faq,
         component: FaqComponent,
       },
       {
-        path: 'useful-information',
+        path: SupportPage.UsefulInformation,
         component: UsefulInformationComponent,
       },
       {
-        path: 'contact',
+        path: SupportPage.Contact,
         component: ContactComponent,
       },
       {
         pathMatch: 'full',
         path: '',
-        redirectTo: 'faq',
+        redirectTo: SupportPage.Faq,
       },
     ],
   },
