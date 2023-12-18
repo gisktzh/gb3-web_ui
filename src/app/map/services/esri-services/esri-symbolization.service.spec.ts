@@ -9,13 +9,7 @@ import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import {GeometryCollectionWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {ConfigService} from '../../../shared/services/config.service';
-import {
-  LayerSymbolizations,
-  LineSymbolization,
-  PicturePointSymbolization,
-  PolygonSymbolization,
-  SimplePointSymbolization,
-} from '../../../shared/interfaces/symbolization.interface';
+import {LayerSymbolizations, PicturePointSymbolization, SimplePointSymbolization} from '../../../shared/interfaces/symbolization.interface';
 import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import {provideMockStore} from '@ngrx/store/testing';
@@ -168,7 +162,7 @@ describe('EsriSymbolizationService', () => {
     TestBed.configureTestingModule({
       providers: [EsriSymbolizationService, {provide: ConfigService, useValue: configService}, provideMockStore()],
     });
-    service = TestBed.get(EsriSymbolizationService);
+    service = TestBed.inject(EsriSymbolizationService);
   });
 
   describe('geometry-dependent symbolization', () => {
@@ -243,7 +237,7 @@ describe('EsriSymbolizationService', () => {
 
       const result = service.createSymbolizationForDrawingLayer(point, testLayer) as SimpleLineSymbol;
 
-      const expected = mockSymbolizations[testLayer].line as LineSymbolization;
+      const expected = mockSymbolizations[testLayer].line;
       expect(result.style).toEqual('solid');
       expect(result.width).toEqual(expected.width);
       expect(result.color.toRgba()).toEqual([expected.color.r, expected.color.g, expected.color.b, expected.color.a]);
@@ -257,7 +251,7 @@ describe('EsriSymbolizationService', () => {
 
       const result = service.createSymbolizationForDrawingLayer(point, testLayer) as SimpleFillSymbol;
 
-      const expected = mockSymbolizations[testLayer].polygon as PolygonSymbolization;
+      const expected = mockSymbolizations[testLayer].polygon;
       expect(result.style).toEqual('solid');
       expect(result.color.toRgba()).toEqual([expected.fill.color.r, expected.fill.color.g, expected.fill.color.b, expected.fill.color.a]);
       expect(result.outline.color.toRgba()).toEqual([

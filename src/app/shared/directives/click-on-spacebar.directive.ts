@@ -8,7 +8,6 @@ export class ClickOnSpaceBarDirective {
 
   @HostListener('keydown.space', ['$event'])
   public clickOnSpaceBar(event: KeyboardEvent): void {
-    console.log('In directive');
     event.preventDefault();
     this.elementRef.nativeElement.click();
   }
