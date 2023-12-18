@@ -103,12 +103,9 @@ describe('selectAreAllLayersSelected', () => {
 
 describe('selectAreSomeButNotAllLayersSelected', () => {
   it('returns `true` if at least on layer is selected but not all', () => {
-    const layerSelections: ExternalLayerSelection[] = [
-      {layer: {type: 'kml', id: 1, title: 'one', visible: true}, isSelected: true},
-      {layer: {type: 'kml', id: 2, title: 'two', visible: false}, isSelected: false},
-      {layer: {type: 'kml', id: 3, title: 'three', visible: false}, isSelected: false},
-    ];
-    const actual = selectAreSomeButNotAllLayersSelected.projector(layerSelections);
+    const areAllLayersSelected = false;
+    const isAnyLayerSelected = true;
+    const actual = selectAreSomeButNotAllLayersSelected.projector(areAllLayersSelected, isAnyLayerSelected);
 
     const expected = true;
 
@@ -116,12 +113,9 @@ describe('selectAreSomeButNotAllLayersSelected', () => {
   });
 
   it('returns `false` if all layers are selected', () => {
-    const layerSelections: ExternalLayerSelection[] = [
-      {layer: {type: 'kml', id: 1, title: 'one', visible: true}, isSelected: true},
-      {layer: {type: 'kml', id: 2, title: 'two', visible: false}, isSelected: true},
-      {layer: {type: 'kml', id: 3, title: 'three', visible: false}, isSelected: true},
-    ];
-    const actual = selectAreSomeButNotAllLayersSelected.projector(layerSelections);
+    const areAllLayersSelected = true;
+    const isAnyLayerSelected = true;
+    const actual = selectAreSomeButNotAllLayersSelected.projector(areAllLayersSelected, isAnyLayerSelected);
 
     const expected = false;
 
@@ -129,20 +123,9 @@ describe('selectAreSomeButNotAllLayersSelected', () => {
   });
 
   it('returns `false` if no layer is selected', () => {
-    const layerSelections: ExternalLayerSelection[] = [
-      {layer: {type: 'kml', id: 1, title: 'one', visible: true}, isSelected: false},
-      {layer: {type: 'kml', id: 2, title: 'two', visible: false}, isSelected: false},
-      {layer: {type: 'kml', id: 3, title: 'three', visible: false}, isSelected: false},
-    ];
-    const actual = selectAreSomeButNotAllLayersSelected.projector(layerSelections);
-
-    const expected = false;
-
-    expect(actual).toBe(expected);
-  });
-
-  it('returns `false` if the layer selection is undefined', () => {
-    const actual = selectAreSomeButNotAllLayersSelected.projector(undefined);
+    const areAllLayersSelected = false;
+    const isAnyLayerSelected = false;
+    const actual = selectAreSomeButNotAllLayersSelected.projector(areAllLayersSelected, isAnyLayerSelected);
 
     const expected = false;
 
