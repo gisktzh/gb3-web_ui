@@ -1,4 +1,4 @@
-import {ErrorHandler, Injectable} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Actions, concatLatestFrom, createEffect, ofType} from '@ngrx/effects';
 import {catchError, map, mergeMap} from 'rxjs/operators';
 import {filter, of, switchMap, takeWhile, tap, timer} from 'rxjs';
@@ -53,28 +53,26 @@ export class DataDownloadOrderStatusJobEffects {
     );
   });
 
-  public handleOrderStatusError$ = createEffect(
+  public throwOrderStatusError$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(DataDownloadOrderStatusJobActions.setOrderStatusError),
         tap(({error}) => {
-          // TODO GB3-914: Replace with `throwError` again after implementing a effect error handler
-          this.errorHandler.handleError(new OrderStatusCouldNotBeSent(error));
+          throw new OrderStatusCouldNotBeSent(error);
         }),
       );
     },
     {dispatch: false},
   );
 
-  public handleOrderStatusRefreshAbortError$ = createEffect(
+  public throwOrderStatusRefreshAbortError$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(DataDownloadOrderStatusJobActions.setOrderStatusError),
         concatLatestFrom(() => this.store.select(selectStatusJobs)),
         filter(([{orderId}, statusJobs]) => statusJobs.find((activeStatusJob) => activeStatusJob.id === orderId)?.isAborted === true),
         tap(([{error}, _]) => {
-          // TODO GB3-914: Replace with `throwError` again after implementing a effect error handler
-          this.errorHandler.handleError(new OrderStatusWasAborted(error));
+          throw new OrderStatusWasAborted(error);
         }),
       );
     },
@@ -86,6 +84,5 @@ export class DataDownloadOrderStatusJobEffects {
     private readonly configService: ConfigService,
     private readonly store: Store,
     private readonly geoshopApiService: GeoshopApiService,
-    private readonly errorHandler: ErrorHandler,
   ) {}
 }

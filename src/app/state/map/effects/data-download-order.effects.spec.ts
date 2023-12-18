@@ -1,6 +1,6 @@
 import {provideMockActions} from '@ngrx/effects/testing';
 import {fakeAsync, flush, TestBed, tick} from '@angular/core/testing';
-import {Observable, of, throwError} from 'rxjs';
+import {EMPTY, Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
@@ -25,9 +25,9 @@ import {OrderCouldNotBeSent, OrderSelectionIsInvalid, OrderUnsupportedGeometry} 
 import {HttpErrorResponse} from '@angular/common/http';
 import {selectMapSideDrawerContent} from '../reducers/map-ui.reducer';
 import {selectProducts} from '../reducers/data-download-product.reducer';
-import {ErrorHandler} from '@angular/core';
 import {DataDownloadOrderStatusJobActions} from '../actions/data-download-order-status-job.actions';
 import {selectStatusJobs} from '../reducers/data-download-order-status-job.reducer';
+import {catchError} from 'rxjs/operators';
 
 describe('DataDownloadOrderEffects', () => {
   const polygonSelectionMock: DataDownloadSelection = {
@@ -59,7 +59,6 @@ describe('DataDownloadOrderEffects', () => {
   let effects: DataDownloadOrderEffects;
   let geoshopApiService: GeoshopApiService;
   let configService: ConfigService;
-  let errorHandler: ErrorHandler;
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
@@ -77,7 +76,6 @@ describe('DataDownloadOrderEffects', () => {
     store = TestBed.inject(MockStore);
     geoshopApiService = TestBed.inject(GeoshopApiService);
     configService = TestBed.inject(ConfigService);
-    errorHandler = TestBed.inject(ErrorHandler);
   });
 
   afterEach(() => {
@@ -130,29 +128,36 @@ describe('DataDownloadOrderEffects', () => {
     });
   });
 
-  describe('handleSelectionError$', () => {
-    it('handles a OrderSelectionIsInvalid error in case of an original generic error', (done: DoneFn) => {
-      const errorHandlerSpy = spyOn(errorHandler, 'handleError').and.stub();
+  describe('throwSelectionError$', () => {
+    it('throws a OrderSelectionIsInvalid error in case of an original generic error', (done: DoneFn) => {
       const expectedOriginalError = new Error('oh no! anyway...');
-
       const expectedError = new OrderSelectionIsInvalid(expectedOriginalError);
 
       actions$ = of(DataDownloadOrderActions.setSelectionError({error: expectedOriginalError}));
-      effects.handleSelectionError$.subscribe(() => {
-        expect(errorHandlerSpy).toHaveBeenCalledOnceWith(expectedError);
-        done();
-      });
+      effects.throwSelectionError$
+        .pipe(
+          catchError((error: unknown) => {
+            expect(error).toEqual(expectedError);
+            done();
+            return EMPTY;
+          }),
+        )
+        .subscribe();
     });
 
-    it('handles an OrderUnsupportedGeometry error in case of original OrderUnsupportedGeometry', (done: DoneFn) => {
-      const errorHandlerSpy = spyOn(errorHandler, 'handleError').and.stub();
+    it('throws an OrderUnsupportedGeometry error in case of original OrderUnsupportedGeometry', (done: DoneFn) => {
       const expectedError = new OrderUnsupportedGeometry();
 
       actions$ = of(DataDownloadOrderActions.setSelectionError({error: expectedError}));
-      effects.handleSelectionError$.subscribe(() => {
-        expect(errorHandlerSpy).toHaveBeenCalledOnceWith(expectedError);
-        done();
-      });
+      effects.throwSelectionError$
+        .pipe(
+          catchError((error: unknown) => {
+            expect(error).toEqual(expectedError);
+            done();
+            return EMPTY;
+          }),
+        )
+        .subscribe();
     });
   });
 
@@ -304,19 +309,23 @@ describe('DataDownloadOrderEffects', () => {
     }));
   });
 
-  describe('handleSendOrderError$', () => {
-    it('handles a OrderCouldNotBeSent error after setting a send order error', (done: DoneFn) => {
-      const errorHandlerSpy = spyOn(errorHandler, 'handleError').and.stub();
+  describe('throwSendOrderError$', () => {
+    it('throws a OrderCouldNotBeSent error after setting a send order error', (done: DoneFn) => {
       const originalErrorText = 'that is no moon';
       const originalError = new HttpErrorResponse({statusText: originalErrorText});
 
       const expectedError = new OrderCouldNotBeSent(originalError, originalErrorText);
 
       actions$ = of(DataDownloadOrderActions.setSendOrderError({error: originalError}));
-      effects.handleSendOrderError$.subscribe(() => {
-        expect(errorHandlerSpy).toHaveBeenCalledOnceWith(expectedError);
-        done();
-      });
+      effects.throwSendOrderError$
+        .pipe(
+          catchError((error: unknown) => {
+            expect(error).toEqual(expectedError);
+            done();
+            return EMPTY;
+          }),
+        )
+        .subscribe();
     });
   });
 

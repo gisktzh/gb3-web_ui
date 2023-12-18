@@ -1,4 +1,4 @@
-import {ErrorHandler, Inject, Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {Actions, concatLatestFrom, createEffect, ofType} from '@ngrx/effects';
 import {catchError, map} from 'rxjs/operators';
 import {DataDownloadOrderActions} from '../actions/data-download-order.actions';
@@ -36,16 +36,15 @@ export class DataDownloadOrderEffects {
     );
   });
 
-  public handleSelectionError$ = createEffect(
+  public throwSelectionError$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(DataDownloadOrderActions.setSelectionError),
         tap(({error}) => {
-          // TODO GB3-914: Replace with `throwError` again after implementing a effect error handler
           if (error instanceof OrderUnsupportedGeometry) {
-            this.errorHandler.handleError(error);
+            throw error;
           } else {
-            this.errorHandler.handleError(new OrderSelectionIsInvalid(error));
+            throw new OrderSelectionIsInvalid(error);
           }
         }),
       );
@@ -137,7 +136,7 @@ export class DataDownloadOrderEffects {
     );
   });
 
-  public handleSendOrderError$ = createEffect(
+  public throwSendOrderError$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(DataDownloadOrderActions.setSendOrderError),
@@ -146,8 +145,7 @@ export class DataDownloadOrderEffects {
           if (error instanceof HttpErrorResponse && !!error.statusText) {
             message = error.statusText;
           }
-          // TODO GB3-914: Replace with `throwError` again after implementing a effect error handler
-          this.errorHandler.handleError(new OrderCouldNotBeSent(error, message));
+          throw new OrderCouldNotBeSent(error, message);
         }),
       );
     },
@@ -194,6 +192,5 @@ export class DataDownloadOrderEffects {
     private readonly configService: ConfigService,
     private readonly store: Store,
     private readonly geoshopApiService: GeoshopApiService,
-    private readonly errorHandler: ErrorHandler,
   ) {}
 }
