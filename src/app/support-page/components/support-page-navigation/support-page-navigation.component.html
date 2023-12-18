@@ -1,17 +1,25 @@
 <div class="support-page-navigation">
   <h1 class="mat-headline-4 support-page-navigation__header">Themen</h1>
   <div class="support-page-navigation__buttons">
-    <a routerLink="faq" mat-button routerLinkActive="support-page-navigation__button--active" class="support-page-navigation__button"
+    <a
+      [routerLink]="[supportPageEnum.Faq]"
+      mat-button
+      routerLinkActive="support-page-navigation__buttons__button--active"
+      class="support-page-navigation__buttons__button"
       >FAQ</a
     >
-    <a routerLink="contact" mat-button routerLinkActive="support-page-navigation__button--active" class="support-page-navigation__button"
+    <a
+      [routerLink]="[supportPageEnum.Contact]"
+      mat-button
+      routerLinkActive="support-page-navigation__buttons__button--active"
+      class="support-page-navigation__buttons__button"
       >Supportanfrage</a
     >
     <a
-      routerLink="useful-information"
+      [routerLink]="[supportPageEnum.UsefulInformation]"
       mat-button
-      routerLinkActive="support-page-navigation__button--active"
-      class="support-page-navigation__button"
+      routerLinkActive="support-page-navigation__buttons__button--active"
+      class="support-page-navigation__buttons__button"
       >Hilfreiche Informationen</a
     >
   </div>

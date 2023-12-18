@@ -1,5 +1,5 @@
 export enum SupportPage {
   Faq = 'faq',
-  UsefulLinks = 'useful-links',
+  UsefulInformation = 'useful-information',
   Contact = 'contact',
 }
