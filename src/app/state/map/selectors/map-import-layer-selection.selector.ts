@@ -23,12 +23,10 @@ export const selectAreAllLayersSelected = createSelector(selectLayerSelections, 
   return layerSelections.every((layerSelection) => layerSelection.isSelected);
 });
 
-export const selectAreSomeButNotAllLayersSelected = createSelector(selectLayerSelections, (layerSelections): boolean => {
-  if (!layerSelections) {
-    return false;
-  }
-  return (
-    layerSelections.some((layerSelection) => layerSelection.isSelected) &&
-    layerSelections.some((layerSelection) => !layerSelection.isSelected)
-  );
-});
+export const selectAreSomeButNotAllLayersSelected = createSelector(
+  selectAreAllLayersSelected,
+  selectIsAnyLayerSelected,
+  (areAllLayersSelected, isAnyLayerSelected): boolean => {
+    return !areAllLayersSelected && isAnyLayerSelected;
+  },
+);

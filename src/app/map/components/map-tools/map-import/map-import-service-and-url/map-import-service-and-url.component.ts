@@ -3,7 +3,7 @@ import {FormBuilder, FormControl, ReactiveFormsModule, Validators} from '@angula
 import {MapServiceType} from '../../../../types/map-service.type';
 import {Store} from '@ngrx/store';
 import {debounceTime, distinctUntilChanged, filter, Subscription, tap} from 'rxjs';
-import {NgForOf, NgIf} from '@angular/common';
+import {NgIf} from '@angular/common';
 import {SharedModule} from '../../../../../shared/shared.module';
 import {MapImportActions} from '../../../../../state/map/actions/map-import.actions';
 import {LoadingState} from '../../../../../shared/types/loading-state.type';
@@ -18,7 +18,7 @@ interface ServiceFormGroup {
 @Component({
   selector: 'map-import-service-and-url',
   standalone: true,
-  imports: [NgForOf, NgIf, SharedModule, ReactiveFormsModule],
+  imports: [NgIf, SharedModule, ReactiveFormsModule],
   templateUrl: './map-import-service-and-url.component.html',
   styleUrl: './map-import-service-and-url.component.scss',
 })

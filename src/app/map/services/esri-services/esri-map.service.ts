@@ -451,7 +451,6 @@ export class EsriMapService implements MapService, OnDestroy {
       visible: visible,
       opacity: opacity,
       imageFormat: imageFormat,
-      featureInfoUrl: undefined,
       sublayers: layers
         .map((layer): __esri.WMSSublayerProperties => {
           return {
@@ -750,6 +749,7 @@ export class EsriMapService implements MapService, OnDestroy {
         }).lods,
       },
       spatialReference: spatialReference,
+      popupEnabled: false,
     });
   }
 
