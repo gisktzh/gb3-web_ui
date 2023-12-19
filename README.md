@@ -305,6 +305,17 @@ build file replacements.
 The configurations are found in `src/app/shared/configs/runtime.config.ts` and configured via their environment
 replacement files.
 
+#### API config types
+
+Within the runtime configurations there are API configurations used to configure any endpoint URLs. There are currently three types of API runtime configurations:
+
+- `ApiBaseUrlConfig` \
+  The most basic one. Only contains one property: the `baseUrl`.
+- `MockedApiBaseUrlConfig` \
+  A relict from older times where the APIs weren't as stable and we regularly needed mock data. This is a child class from `ApiBaseUrlConfig` and has one more flag `useMockData` to indicate whether to use mock data instead of the real service.
+- `VersionedApiBaseUrlConfig` \
+  Some of the backend APIs have changing versions to separate breaking changes. This child class from `ApiBaseUrlConfig` contains a property `version` where this comes into play. Each environment can use its own versioned API endpoints.
+
 #### Available URL configurations
 
 | Stagename |      Subdomain      |        Verwendung        |     GB2 Backend     |    WMS Backend     |        Geolion         |                 Bemerkung                  |
