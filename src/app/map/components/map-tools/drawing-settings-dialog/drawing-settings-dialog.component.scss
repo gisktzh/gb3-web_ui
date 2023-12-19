@@ -40,7 +40,7 @@
             background: functions.get-color-from-palette(ktzh-variables.$zh-black100-palette, A700);
             content: ' ';
             display: block;
-            height: 1px;
+            height: 1pt;
             width: 44px;
           }
 
@@ -48,7 +48,7 @@
             background: functions.get-color-from-palette(ktzh-variables.$zh-black100-palette, A700);
             content: ' ';
             display: block;
-            height: 10px;
+            height: 12pt;
             width: 44px;
           }
         }
