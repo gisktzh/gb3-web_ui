@@ -165,7 +165,7 @@ describe('Gb3MetadataService', () => {
       const testId = 'my-test-id';
       spyOn(httpClient, 'get').and.returnValue(of(mockServiceDetailResponse));
 
-      const expected = `${configService.apiConfig.gb2Api.baseUrl}/metadata/services/${testId}`;
+      const expected = `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/metadata/services/${testId}`;
 
       service.loadServiceDetail(testId).subscribe(() => {
         expect(httpClient.get).toHaveBeenCalledOnceWith(expected);
@@ -209,7 +209,7 @@ describe('Gb3MetadataService', () => {
       const testId = 'my-test-id';
       spyOn(httpClient, 'get').and.returnValue(of(mockMapDetailResponse));
 
-      const expected = `${configService.apiConfig.gb2Api.baseUrl}/metadata/maps/${testId}`;
+      const expected = `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/metadata/maps/${testId}`;
 
       service.loadMapDetail(testId).subscribe(() => {
         expect(httpClient.get).toHaveBeenCalledOnceWith(expected);
@@ -250,7 +250,7 @@ describe('Gb3MetadataService', () => {
       const testId = 'my-test-id';
       spyOn(httpClient, 'get').and.returnValue(of(mockProductDetailResponse));
 
-      const expected = `${configService.apiConfig.gb2Api.baseUrl}/metadata/products/${testId}`;
+      const expected = `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/metadata/products/${testId}`;
 
       service.loadProductDetail(testId).subscribe(() => {
         expect(httpClient.get).toHaveBeenCalledOnceWith(expected);
@@ -290,7 +290,7 @@ describe('Gb3MetadataService', () => {
       const testId = 'my-test-id';
       spyOn(httpClient, 'get').and.returnValue(of(mockDatasetDetailResponse));
 
-      const expected = `${configService.apiConfig.gb2Api.baseUrl}/metadata/datasets/${testId}`;
+      const expected = `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/metadata/datasets/${testId}`;
 
       service.loadDatasetDetail(testId).subscribe(() => {
         expect(httpClient.get).toHaveBeenCalledOnceWith(expected);
@@ -380,13 +380,21 @@ describe('Gb3MetadataService', () => {
           done();
         });
 
-      const datasetsRequest = httpTestingController.expectOne(`${configService.apiConfig.gb2Api.baseUrl}/metadata/datasets`);
+      const datasetsRequest = httpTestingController.expectOne(
+        `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/metadata/datasets`,
+      );
       datasetsRequest.flush({datasets: [mockDatasetDetailResponse.dataset]});
-      const mapsRequest = httpTestingController.expectOne(`${configService.apiConfig.gb2Api.baseUrl}/metadata/maps`);
+      const mapsRequest = httpTestingController.expectOne(
+        `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/metadata/maps`,
+      );
       mapsRequest.flush({maps: [mockMapDetailResponse.map]});
-      const productsRequest = httpTestingController.expectOne(`${configService.apiConfig.gb2Api.baseUrl}/metadata/products`);
+      const productsRequest = httpTestingController.expectOne(
+        `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/metadata/products`,
+      );
       productsRequest.flush({products: [mockProductDetailResponse.product]});
-      const servicesRequest = httpTestingController.expectOne(`${configService.apiConfig.gb2Api.baseUrl}/metadata/services`);
+      const servicesRequest = httpTestingController.expectOne(
+        `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/metadata/services`,
+      );
       servicesRequest.flush({services: [mockServiceDetailResponse.service]});
     });
   });

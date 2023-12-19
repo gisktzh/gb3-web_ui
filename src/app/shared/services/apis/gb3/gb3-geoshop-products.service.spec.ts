@@ -182,7 +182,9 @@ describe('Gb3GeoshopProductsService', () => {
       ];
 
       service.loadProducts().subscribe((actual) => {
-        expect(getCallSpy).toHaveBeenCalledOnceWith(`${configService.apiConfig.gb2Api.baseUrl}/products`);
+        expect(getCallSpy).toHaveBeenCalledOnceWith(
+          `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/products`,
+        );
         expect(actual).toEqual(expected);
         done();
       });

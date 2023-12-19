@@ -8,7 +8,8 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
     hostMatch: 'staging.geo.ktzh.ch',
     apiBasePaths: {
       gb2Api: {
-        baseUrl: 'https://testmaps.kt.ktzh.ch/v3',
+        baseUrl: 'https://testmaps.kt.ktzh.ch/gb3',
+        version: 'v0',
       },
       gb2StaticFiles: {
         baseUrl: 'https://testmaps.kt.ktzh.ch',
@@ -23,7 +24,8 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
         baseUrl: 'https://testgeolion.kt.ktzh.ch',
       },
       searchApi: {
-        baseUrl: 'https://testmaps.kt.ktzh.ch/v3',
+        baseUrl: 'https://testmaps.kt.ktzh.ch/gb3',
+        version: 'v0',
       },
       ktzhWebsite: {
         baseUrl: 'https://www.zh.ch',
