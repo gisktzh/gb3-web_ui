@@ -53,27 +53,6 @@
           }
         }
       }
-
-      .drawing-settings-dialog__option__width {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-
-        .drawing-settings-dialog__option__width__number-display {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 44px;
-          height: 30px;
-          color: ktzh-variables.$zh-background-color;
-          background: ktzh-variables.$zh-active-blue;
-
-          .drawing-settings-dialog__option__width__number-display__label {
-            font-size: 12px;
-            font-weight: 900;
-          }
-        }
-      }
     }
   }
 }
