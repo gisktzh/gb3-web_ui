@@ -32,21 +32,6 @@ export class DrawingSettingsDialogComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  public changeFill(newColor: string) {
-    const color = ColorUtils.convertHexToSymbolizationColor(newColor, defaultFillColor.a);
-    this.store.dispatch(DrawingStyleActions.setFillColor({color}));
-  }
-
-  public changeLine(newColor: string) {
-    const color = ColorUtils.convertHexToSymbolizationColor(newColor);
-
-    this.store.dispatch(DrawingStyleActions.setLineColor({color}));
-  }
-
-  public changeWidth(width: number) {
-    this.store.dispatch(DrawingStyleActions.setLineWidth({width}));
-  }
-
   public cancel() {
     this.dialogRef.close();
   }
@@ -56,6 +41,20 @@ export class DrawingSettingsDialogComponent implements OnInit, OnDestroy {
     this.changeLine(this.lineColor);
     this.changeWidth(this.lineWidth);
     this.dialogRef.close();
+  }
+
+  private changeFill(newColor: string) {
+    const color = ColorUtils.convertHexToSymbolizationColor(newColor, defaultFillColor.a);
+    this.store.dispatch(DrawingStyleActions.setFillColor({color}));
+  }
+
+  private changeLine(newColor: string) {
+    const color = ColorUtils.convertHexToSymbolizationColor(newColor);
+    this.store.dispatch(DrawingStyleActions.setLineColor({color}));
+  }
+
+  private changeWidth(width: number) {
+    this.store.dispatch(DrawingStyleActions.setLineWidth({width}));
   }
 
   private initSubscriptions() {
