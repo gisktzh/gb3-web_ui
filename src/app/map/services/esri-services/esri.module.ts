@@ -26,6 +26,7 @@ import Polyline from '@arcgis/core/geometry/Polyline';
 import WMTSLayer from '@arcgis/core/layers/WMTSLayer';
 import WMTSSublayer from '@arcgis/core/layers/support/WMTSSublayer';
 import KMLLayer from '@arcgis/core/layers/KMLLayer';
+import Error from '@arcgis/core/core/Error';
 
 /** Esri classes/modules */
 export const EsriMap = Map;
@@ -56,6 +57,7 @@ export const EsriPolyline = Polyline;
 export const EsriWMTSLayer = WMTSLayer;
 export const EsriWMTSSubLayer = WMTSSublayer;
 export const EsriKMLLayer = KMLLayer;
+export const EsriError = Error;
 
 /** Esri internal union types */
 export type EsriLoadStatus = 'not-loaded' | 'loading' | 'failed' | 'loaded';

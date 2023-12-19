@@ -5,7 +5,6 @@ import {Action} from '@ngrx/store';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {RouterTestingModule} from '@angular/router/testing';
-import {ErrorHandler} from '@angular/core';
 import {MAP_SERVICE} from '../../../app.module';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
 import {ActiveMapItemEffects} from './active-map-item.effects';
@@ -36,11 +35,9 @@ describe('ActiveMapItemEffects', () => {
   let effects: ActiveMapItemEffects;
   let gb3TopicsService: Gb3TopicsService;
   let mapService: MapService;
-  let errorHandlerMock: jasmine.SpyObj<ErrorHandler>;
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
-    errorHandlerMock = jasmine.createSpyObj<ErrorHandler>(['handleError']);
 
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterTestingModule],
@@ -48,7 +45,6 @@ describe('ActiveMapItemEffects', () => {
         ActiveMapItemEffects,
         provideMockActions(() => actions$),
         provideMockStore(),
-        {provide: ErrorHandler, useValue: errorHandlerMock},
         {provide: MAP_SERVICE, useClass: MapServiceStub},
       ],
     });

@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MatDialogRef} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
@@ -12,7 +12,7 @@ import {AuthStatusActions} from '../../../../state/auth/actions/auth-status.acti
   templateUrl: './navbar-mobile-dialog.component.html',
   styleUrls: ['./navbar-mobile-dialog.component.scss'],
 })
-export class NavbarMobileDialogComponent {
+export class NavbarMobileDialogComponent implements OnInit, OnDestroy {
   protected readonly mainPageEnum = MainPage;
   public isAuthenticated: boolean = false;
   public userName?: string;

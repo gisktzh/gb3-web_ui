@@ -2,13 +2,15 @@ import {Injectable} from '@angular/core';
 import {MapServiceType} from '../../types/map-service.type';
 import {from, Observable} from 'rxjs';
 import {ExternalServiceActiveMapItem} from '../../models/external-service.model';
-import {EsriKMLLayer, EsriWMSLayer} from './esri.module';
-import {map} from 'rxjs/operators';
+import {EsriError, EsriKMLLayer, EsriWMSLayer} from './esri.module';
+import {catchError, map} from 'rxjs/operators';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 import {MapLoaderService} from '../../interfaces/map-loader.service';
-import {ExternalLayer} from '../../../shared/interfaces/external-layer.interface';
+import {ExternalKmlLayer, ExternalWmsLayer} from '../../../shared/interfaces/external-layer.interface';
 import {ExternalWmsActiveMapItem} from '../../models/implementations/external-wms.model';
 import {ExternalKmlActiveMapItem} from '../../models/implementations/external-kml.model';
+import {LayerCouldNotBeLoaded} from './errors/esri.errors';
+import {ExternalServiceHasNoLayers} from '../../../shared/errors/map-import.errors';
 
 @Injectable({
   providedIn: 'root',
@@ -24,24 +26,35 @@ export class EsriMapLoaderService implements MapLoaderService {
   }
 
   private loadService<T extends __esri.Layer>(layer: T): Observable<T> {
-    return from(layer.load());
+    return from(layer.load()).pipe(
+      catchError((error: unknown) => {
+        let message;
+        if (error instanceof EsriError) {
+          message = error.message;
+        }
+        throw new LayerCouldNotBeLoaded(message);
+      }),
+    );
   }
 
   private loadExternalWmsService(url: string): Observable<ExternalWmsActiveMapItem> {
     return this.loadService(new EsriWMSLayer({url})).pipe(
       map((wmsLayer) => {
-        const subLayers: ExternalLayer<number>[] = wmsLayer.sublayers
+        const subLayers: ExternalWmsLayer[] = wmsLayer.sublayers
           .map(
-            (wmsSubLayer): ExternalLayer<number> => ({
+            (wmsSubLayer): ExternalWmsLayer => ({
+              type: 'wms',
               id: wmsSubLayer.id,
               name: wmsSubLayer.name,
               title: wmsSubLayer.title,
               visible: wmsSubLayer.visible,
             }),
           )
-          .toArray()
-          .slice(0, 3); // TODO GB3-348: remove this hack - no slice needed
-        return ActiveMapItemFactory.createExternalWmsMapItem(wmsLayer.url, wmsLayer.title, subLayers);
+          .toArray();
+        if (subLayers.length === 0) {
+          throw new ExternalServiceHasNoLayers();
+        }
+        return ActiveMapItemFactory.createExternalWmsMapItem(wmsLayer.url, wmsLayer.title, subLayers, wmsLayer.imageFormat);
       }),
     );
   }
@@ -49,9 +62,14 @@ export class EsriMapLoaderService implements MapLoaderService {
   private loadExternalKmlService(url: string): Observable<ExternalKmlActiveMapItem> {
     return this.loadService(new EsriKMLLayer({url})).pipe(
       map((kmlLayer) => {
-        const subLayers: ExternalLayer<number>[] = kmlLayer.sublayers
-          .map((kmlSubLayer): ExternalLayer<number> => ({id: kmlSubLayer.id, title: kmlSubLayer.title, visible: kmlSubLayer.visible}))
+        const subLayers: ExternalKmlLayer[] = kmlLayer.sublayers
+          .map(
+            (kmlSubLayer): ExternalKmlLayer => ({type: 'kml', id: kmlSubLayer.id, title: kmlSubLayer.title, visible: kmlSubLayer.visible}),
+          )
           .toArray();
+        if (subLayers.length === 0) {
+          throw new ExternalServiceHasNoLayers();
+        }
         return ActiveMapItemFactory.createExternalKmlMapItem(kmlLayer.url, kmlLayer.title, subLayers);
       }),
     );

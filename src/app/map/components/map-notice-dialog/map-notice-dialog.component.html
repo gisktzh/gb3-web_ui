@@ -1,4 +1,4 @@
-<api-dialog-wrapper title="Kartenhinweise">
+<api-dialog-wrapper title="Kartenhinweise" (closeEvent)="close()">
   <ng-container content>
     <mat-divider></mat-divider>
     <ng-container *ngFor="let activeMapItemWithNotice of activeMapItemsWithNotices">

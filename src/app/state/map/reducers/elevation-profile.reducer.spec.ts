@@ -8,6 +8,7 @@ describe('ElevationProfile Reducer', () => {
   const mockData: ElevationProfileData = {
     dataPoints: [{altitude: 1, distance: 250}],
     statistics: {groundDistance: 666, linearDistance: 42, elevationDifference: 1337, lowestPoint: 9000, highestPoint: 9001},
+    csvRequest: {url: '', params: new URLSearchParams()},
   };
 
   describe('an unknown action', () => {

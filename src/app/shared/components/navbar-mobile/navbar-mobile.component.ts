@@ -38,13 +38,14 @@ export class NavbarMobileComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  showMenu() {
+  public showMenu() {
     this.dialog.open(NavbarMobileDialogComponent, {
       maxWidth: '100vw',
       maxHeight: '100vh',
       height: '100%',
       width: '100%',
       panelClass: PanelClass.ApiWrapperDialog,
+      autoFocus: false,
     });
   }
 }
