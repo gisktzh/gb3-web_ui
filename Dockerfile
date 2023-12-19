@@ -25,7 +25,9 @@ RUN npm ci --ignore-scripts --omit=dev
 RUN npm run build-$TARGET_ENVIRONMENT
 
 FROM nginx:1.25-alpine AS server
-COPY ./.docker/nginx.conf /etc/nginx/conf.d/configfile.template
+COPY ./.docker/configfile.conf /etc/nginx/conf.d/configfile.template
+COPY ./.docker/nginx.conf /etc/nginx/nginx.conf
+
 
 COPY --from=build-app /app/dist/browser /usr/share/nginx/html
 
