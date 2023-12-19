@@ -26,7 +26,6 @@ export class DrawingSettingsDialogComponent implements OnInit, OnDestroy {
 
   public ngOnInit() {
     this.initSubscriptions();
-    console.log(this.lineWidth);
   }
 
   public ngOnDestroy() {
