@@ -1,17 +1,15 @@
-<api-dialog-wrapper [savingState]="this.savingState" title="Aktive Karten als Favorit speichern">
+<api-dialog-wrapper [savingState]="savingState" title="Aktive Karten als Favorit speichern" (closeEvent)="abort()">
   <ng-container content>
     <mat-form-field appearance="fill" class="favourite-dialog__form">
       <mat-label>Name des Favoriten</mat-label>
-      <input [formControl]="this.nameFormControl" id="name" matInput />
-      <mat-error *ngIf="this.nameFormControl.invalid && (this.nameFormControl.dirty || this.nameFormControl.touched)">
+      <input [formControl]="nameFormControl" id="name" matInput />
+      <mat-error *ngIf="nameFormControl.invalid && (nameFormControl.dirty || nameFormControl.touched)">
         Geben Sie einen gültigen, nicht leeren Namen ein.
       </mat-error>
     </mat-form-field>
   </ng-container>
   <ng-container actions>
-    <button (click)="this.abort()" [disabled]="this.savingState === 'loading'" mat-button>Abbrechen</button>
-    <button (click)="this.save()" [disabled]="this.nameFormControl.status !== 'VALID' || this.savingState === 'loading'" mat-button>
-      Speichern
-    </button>
+    <button (click)="abort()" [disabled]="savingState === 'loading'" mat-button>Abbrechen</button>
+    <button (click)="save()" [disabled]="nameFormControl.status !== 'VALID' || savingState === 'loading'" mat-button>Speichern</button>
   </ng-container>
 </api-dialog-wrapper>

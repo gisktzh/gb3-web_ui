@@ -5,7 +5,7 @@ import {Injectable} from '@angular/core';
   providedIn: 'root',
 })
 export abstract class Gb3ApiService extends BaseApiService {
-  protected readonly apiBaseUrl = this.configService.apiConfig.gb2Api.baseUrl;
+  protected readonly apiBaseUrl = `${this.configService.apiConfig.gb2Api.baseUrl}/${this.configService.apiConfig.gb2Api.version}`;
   protected abstract endpoint: string;
 
   protected getFullEndpointUrl(): string {

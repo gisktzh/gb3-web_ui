@@ -17,6 +17,8 @@ import {MinimalGeometriesUtils} from '../../../testing/map-testing/minimal-geome
 import {catchError} from 'rxjs/operators';
 import {ElevationProfileCouldNotBeLoaded} from '../../../shared/errors/elevation-profile.errors';
 import {TypedAction} from '@ngrx/store/src/models';
+import {selectData} from '../reducers/elevation-profile.reducer';
+import {MockStore, provideMockStore} from '@ngrx/store/testing';
 
 describe('ElevationProfileEffects', () => {
   let actions$: Observable<Action>;
@@ -25,6 +27,7 @@ describe('ElevationProfileEffects', () => {
   let mapServiceSpy: jasmine.Spy;
   let swisstopoApiService: SwisstopoApiService;
   let swisstopoApiServiceSpy: jasmine.Spy;
+  let store: MockStore;
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
@@ -35,12 +38,18 @@ describe('ElevationProfileEffects', () => {
         ElevationProfileEffects,
         SwisstopoApiService,
         provideMockActions(() => actions$),
+        provideMockStore(),
         {provide: MAP_SERVICE, useClass: MapServiceStub},
       ],
     });
     effects = TestBed.inject(ElevationProfileEffects);
+    store = TestBed.inject(MockStore);
     mapService = TestBed.inject(MAP_SERVICE);
     swisstopoApiService = TestBed.inject(SwisstopoApiService);
+  });
+
+  afterEach(() => {
+    store.resetSelectors();
   });
 
   describe('clearExistingElevationProfilesOnNew$', () => {
@@ -83,11 +92,38 @@ describe('ElevationProfileEffects', () => {
     });
   });
 
+  describe('clearExistingElevationProfileOnMapUiReset$', () => {
+    it('dispatches ElevationProfileActions.clearProfile if mapUi is reset and elevationProfileData is not undefined', (done: DoneFn) => {
+      store.overrideSelector(selectData, {
+        dataPoints: [{altitude: 1, distance: 250}],
+        statistics: {groundDistance: 666, linearDistance: 42, elevationDifference: 1337, lowestPoint: 9000, highestPoint: 9001},
+        csvRequest: {url: '', params: new URLSearchParams()},
+      });
+      actions$ = of(MapUiActions.resetMapUiState());
+
+      effects.clearExistingElevationProfileOnMapUiReset$.subscribe((action) => {
+        expect(action).toEqual(ElevationProfileActions.clearProfile());
+        done();
+      });
+    });
+
+    it('does nothing if elevationProfileData is undefined', fakeAsync(async () => {
+      store.overrideSelector(selectData, undefined);
+      actions$ = of(MapUiActions.resetMapUiState());
+
+      effects.clearExistingElevationProfileOnMapUiReset$.subscribe();
+      tick();
+
+      actions$.subscribe((action) => expect(action).toEqual(MapUiActions.resetMapUiState()));
+    }));
+  });
+
   describe('requestElevationProfile$', () => {
     it('calls the swisstopo API and returns the data', (done: DoneFn) => {
       const mockData: ElevationProfileData = {
         dataPoints: [{altitude: 1, distance: 250}],
         statistics: {groundDistance: 666, linearDistance: 42, elevationDifference: 1337, lowestPoint: 9000, highestPoint: 9001},
+        csvRequest: {url: '', params: new URLSearchParams()},
       };
       const mockGeometry = MinimalGeometriesUtils.getMinimalLineString(2056);
       swisstopoApiServiceSpy = spyOn(swisstopoApiService, 'loadElevationProfile').and.returnValue(of(mockData));

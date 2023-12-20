@@ -40,7 +40,7 @@ use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
 ### Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+Run `ng build` to build the project. The build artifacts will be stored in the `dist/browser/` directory.
 
 ### Running unit tests
 
@@ -78,14 +78,14 @@ docker build --no-cache --build-arg TARGET_ENVIRONMENT={target_environment} -t g
 - **gb3-frontend** is the name of the image
 - **latest** is the tag used to mark the version of this image
 - **target_environment** is the target build environment, which is one of the following:
-  - `local`: Default if this variable is missing; localhost development
+  - `local`: localhost development
   - `local-gb2`: localhost development with locally deployed GB2 backend
   - `dev-ebp`: production deployment for EBP environment
   - `staging`: production deployment for KTZH staging environment
   - `staging-using-productive-gb2-backend`: production deployment for KTZH staging environment which uses the productive
     GB2 backend infrastructure.
   - `uat`: production deployment for KTZH UAT environment
-  - `production`: production deployment for KTZH production (internet & intranet) environment
+  - `production`: default if this variable is missing; production deployment for KTZH production (internet & intranet) environment
 - **APP_VERSION**: see below (optional)
 - **APP_RELEASE**: see below (optional)
 
@@ -304,6 +304,17 @@ build file replacements.
 
 The configurations are found in `src/app/shared/configs/runtime.config.ts` and configured via their environment
 replacement files.
+
+#### API config types
+
+Within the runtime configurations there are API configurations used to configure any endpoint URLs. There are currently three types of API runtime configurations:
+
+- `ApiBaseUrlConfig` \
+  The most basic one. Only contains one property: the `baseUrl`.
+- `MockedApiBaseUrlConfig` \
+  A relict from older times where the APIs weren't as stable and we regularly needed mock data. This is a child class from `ApiBaseUrlConfig` and has one more flag `useMockData` to indicate whether to use mock data instead of the real service.
+- `VersionedApiBaseUrlConfig` \
+  Some of the backend APIs have changing versions to separate breaking changes. This child class from `ApiBaseUrlConfig` contains a property `version` where this comes into play. Each environment can use its own versioned API endpoints.
 
 #### Available URL configurations
 

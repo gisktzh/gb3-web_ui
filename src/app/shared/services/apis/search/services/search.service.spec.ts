@@ -193,7 +193,7 @@ describe('SearchService', () => {
     service.searchIndexes(searchTerm, searchIndexes).subscribe();
 
     const {request} = httpTestingController.expectOne((req: HttpRequest<any>) =>
-      req.url.includes(`${configService.apiConfig.searchApi.baseUrl}/search`),
+      req.url.includes(`${configService.apiConfig.searchApi.baseUrl}/${configService.apiConfig.searchApi.version}/search`),
     );
     searchIndexes.forEach((index) => {
       expect(request.url.includes(index.indexName)).toBeTrue();
@@ -248,7 +248,9 @@ describe('SearchService', () => {
     const httpTestingController = TestBed.inject(HttpTestingController);
     const searchTerm = ' ';
     service.searchIndexes(searchTerm, searchIndexes).subscribe((searchApiResultMatches) => {
-      httpTestingController.expectNone((req: HttpRequest<any>) => req.url.includes(`${configService.apiConfig.searchApi.baseUrl}/search`));
+      httpTestingController.expectNone((req: HttpRequest<any>) =>
+        req.url.includes(`${configService.apiConfig.searchApi.baseUrl}/${configService.apiConfig.searchApi.version}/search`),
+      );
       expect(searchApiResultMatches).toEqual([]);
       done();
     });

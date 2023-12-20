@@ -32,6 +32,7 @@ export class EsriMunicipalitySelectionStrategy extends AbstractEsriSelectionStra
       {
         panelClass: PanelClass.ApiWrapperDialog,
         restoreFocus: false,
+        autoFocus: false,
       },
     );
     return dialog.afterClosed().pipe(

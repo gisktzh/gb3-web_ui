@@ -13,6 +13,18 @@
       *ngIf="elevationProfileData"
       [statistics]="elevationProfileData.statistics"
     ></elevation-profile-statistics>
+    <div class="elevation-profile-overlay__content__download">
+      <a
+        [href]="downloadCsvUrl"
+        mat-raised-button
+        class="elevation-profile-overlay__content__download__button"
+        [disabled]="!downloadCsvUrl"
+        color="accent"
+      >
+        <mat-icon>download</mat-icon>
+        <span>Download CSV</span></a
+      >
+    </div>
     <mat-divider></mat-divider>
     <div class="elevation-profile-overlay__content__credits">
       <span>Datenquelle:</span>

@@ -12,6 +12,8 @@ import {DataDownloadSelectionTool} from '../../shared/types/data-download-select
 import {DrawingTool} from '../../shared/types/drawing-tool.type';
 import {MeasurementTool} from '../../shared/types/measurement-tool.type';
 import {Gb3StyledInternalDrawingRepresentation} from '../../shared/interfaces/internal-drawing-representation.interface';
+import {ExternalWmsActiveMapItem} from '../../map/models/implementations/external-wms.model';
+import {ExternalKmlActiveMapItem} from '../../map/models/implementations/external-kml.model';
 
 export class MapServiceStub implements MapService {
   private toolService: ToolService = {
@@ -66,6 +68,10 @@ export class MapServiceStub implements MapService {
   public zoomToExtent(geometry: GeometryWithSrs, expandFactor?: number, duration?: number): void {}
 
   public addGb2WmsLayer(mapItem: Gb2WmsActiveMapItem, position: number): void {}
+
+  public addExternalWmsLayer(mapItem: ExternalWmsActiveMapItem, position: number) {}
+
+  public addExternalKmlLayer(mapItem: ExternalKmlActiveMapItem, position: number) {}
 
   public moveLayerToTop(mapItem: ActiveMapItem) {}
 

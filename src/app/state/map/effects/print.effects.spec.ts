@@ -6,7 +6,6 @@ import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {RouterTestingModule} from '@angular/router/testing';
 import {catchError} from 'rxjs/operators';
-import {ErrorHandler} from '@angular/core';
 import {PrintEffects} from './print.effects';
 import {Gb3PrintService} from '../../../shared/services/apis/gb3/gb3-print.service';
 import {PrintActions} from '../actions/print.actions';
@@ -77,21 +76,13 @@ describe('PrintEffects', () => {
   let store: MockStore;
   let effects: PrintEffects;
   let gb3PrintService: Gb3PrintService;
-  let errorHandlerMock: jasmine.SpyObj<ErrorHandler>;
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
-    errorHandlerMock = jasmine.createSpyObj<ErrorHandler>(['handleError']);
 
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterTestingModule],
-      providers: [
-        PrintEffects,
-        provideMockActions(() => actions$),
-        provideMockStore(),
-        {provide: ErrorHandler, useValue: errorHandlerMock},
-        {provide: MAP_SERVICE, useClass: MapServiceStub},
-      ],
+      providers: [PrintEffects, provideMockActions(() => actions$), provideMockStore(), {provide: MAP_SERVICE, useClass: MapServiceStub}],
     });
     effects = TestBed.inject(PrintEffects);
     gb3PrintService = TestBed.inject(Gb3PrintService);

@@ -21,7 +21,7 @@ export class SearchFilterDialogComponent implements OnInit, OnDestroy {
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly subscriptions: Subscription = new Subscription();
 
-  public constructor(
+  constructor(
     private readonly store: Store,
     private readonly dialogRef: MatDialogRef<SearchFilterDialogComponent>,
   ) {}

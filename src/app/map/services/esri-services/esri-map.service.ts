@@ -3,7 +3,7 @@ import esriConfig from '@arcgis/core/config';
 import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {Store} from '@ngrx/store';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import {BehaviorSubject, first, pairwise, skip, Subscription, tap, withLatestFrom} from 'rxjs';
 import {filter, map} from 'rxjs/operators';
 import {AuthService} from '../../../auth/auth.service';
@@ -40,6 +40,7 @@ import {
   EsriFeatureLayer,
   EsriGraphic,
   EsriGraphicsLayer,
+  EsriKMLLayer,
   EsriLoadStatus,
   EsriMap,
   EsriMapView,
@@ -55,6 +56,10 @@ import {GeoJSONMapperService} from './geo-json-mapper.service';
 import wmsAuthAndUrlOverrideInterceptorFactory from './interceptors/override-wms-url.interceptor';
 import {EsriToolService} from './tool-service/esri-tool.service';
 import {TransformationService} from './transformation.service';
+import {ExternalWmsActiveMapItem} from '../../models/implementations/external-wms.model';
+import {ExternalKmlActiveMapItem} from '../../models/implementations/external-kml.model';
+import {ExternalWmsLayer} from '../../../shared/interfaces/external-layer.interface';
+import {ActiveTimeSliderLayersUtils} from '../../utils/active-time-slider-layers.utils';
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
 
@@ -181,42 +186,56 @@ export class EsriMapService implements MapService, OnDestroy {
   }
 
   public addGb2WmsLayer(mapItem: Gb2WmsActiveMapItem, position: number) {
-    if (this.esriMapViewService.findEsriLayer(mapItem.id)) {
-      return;
+    const esriLayer = this.createWmsLayer(
+      mapItem.id,
+      mapItem.title,
+      mapItem.settings.url,
+      mapItem.visible,
+      mapItem.opacity,
+      mapItem.settings.layers.map(
+        (layer): ExternalWmsLayer => ({type: 'wms', id: layer.id, name: layer.layer, title: layer.title, visible: layer.visible}),
+      ),
+      this.wmsImageFormatMimeType,
+    );
+    if (mapItem.settings.timeSliderExtent) {
+      // apply initial time slider settings
+      this.setEsriTimeSliderExtent(mapItem.settings.timeSliderExtent, mapItem, esriLayer);
     }
+    this.addLayer(esriLayer, position);
+  }
 
-    const esriLayer: __esri.Layer = new EsriWMSLayer({
+  public addExternalWmsLayer(mapItem: ExternalWmsActiveMapItem, position: number) {
+    const esriLayer = this.createWmsLayer(
+      mapItem.id,
+      mapItem.title,
+      mapItem.settings.url,
+      mapItem.visible,
+      mapItem.opacity,
+      mapItem.settings.layers,
+      mapItem.settings.imageFormat,
+    );
+    this.addLayer(esriLayer, position);
+  }
+
+  public addExternalKmlLayer(mapItem: ExternalKmlActiveMapItem, position: number) {
+    const esriLayer: __esri.Layer = new EsriKMLLayer({
       id: mapItem.id,
       title: mapItem.title,
       url: mapItem.settings.url,
       visible: mapItem.visible,
       opacity: mapItem.opacity,
-      imageFormat: this.wmsImageFormatMimeType,
       sublayers: mapItem.settings.layers
-        .map((layer) => {
+        .map((layer): __esri.KMLSublayerProperties => {
           return {
             id: layer.id,
-            name: layer.layer,
             title: layer.title,
             visible: layer.visible,
-          } as __esri.WMSSublayerProperties;
+          };
         })
         .reverse(), // reverse the order of the sublayers because the order in the GB3 interfaces (Topic, ActiveMapItem) is inverted to the
-      // order of the WMS specifications
+      // order of the KML specifications
     });
-    if (mapItem.settings.timeSliderExtent) {
-      // apply initial time slider settings
-      this.setEsriTimeSliderExtent(mapItem.settings.timeSliderExtent, mapItem, esriLayer);
-    }
-    this.attachLayerListeners(esriLayer);
-    /**
-     * `position` is the map/layer position from the state/GUI: lowest position <=> highest visibility
-     * `index` is the position inside the Esri layer array. It's inverse to the position from the state/GUI: the lowest index <=> lowest
-     * visibility Additionally, there is a number of default layers that must always keep the highest visibility (e.g. highlight layer)
-     * independent from the state/GUI layers.
-     */
-    const index = this.getIndexForPosition(position);
-    this.mapView.map.add(esriLayer, index);
+    this.addLayer(esriLayer, position);
   }
 
   public removeMapItem(id: string) {
@@ -417,6 +436,52 @@ export class EsriMapService implements MapService, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
+  private createWmsLayer(
+    id: string,
+    title: string,
+    url: string,
+    visible: boolean,
+    opacity: number,
+    layers: ExternalWmsLayer[],
+    imageFormat: string | undefined,
+  ): __esri.WMSLayer {
+    const esriLayer = new EsriWMSLayer({
+      id: id,
+      title: title,
+      url: url,
+      visible: visible,
+      opacity: opacity,
+      imageFormat: imageFormat,
+      sublayers: layers
+        .map((layer): __esri.WMSSublayerProperties => {
+          return {
+            id: layer.id,
+            name: layer.name,
+            title: layer.title,
+            visible: layer.visible,
+          };
+        })
+        .reverse(), // reverse the order of the sublayers because the order in the GB3 interfaces (Topic, ActiveMapItem) is inverted to the
+      // order of the WMS specifications
+    });
+    return esriLayer;
+  }
+
+  private addLayer(esriLayer: __esri.Layer, position: number) {
+    if (this.esriMapViewService.findEsriLayer(esriLayer.id)) {
+      return;
+    }
+    this.attachLayerListeners(esriLayer);
+    /**
+     * `position` is the map/layer position from the state/GUI: lowest position <=> highest visibility
+     * `index` is the position inside the Esri layer array. It's inverse to the position from the state/GUI: the lowest index <=> lowest
+     * visibility Additionally, there is a number of default layers that must always keep the highest visibility (e.g. highlight layer)
+     * independent from the state/GUI layers.
+     */
+    const index = this.getIndexForPosition(position);
+    this.mapView.map.add(esriLayer, index);
+  }
+
   private addEsriGeometryToDrawingLayer(
     esriGeometry: __esri.Geometry,
     esriSymbolization: __esri.Symbol,
@@ -531,20 +596,15 @@ export class EsriMapService implements MapService, OnDestroy {
 
     const timeSliderConfig = mapItem.settings.timeSliderConfiguration;
     const timeSliderLayerSource = timeSliderConfig.source as TimeSliderLayerSource;
-    const timeSliderLayerNames = timeSliderLayerSource.layers.map((l) => l.layerName);
-    const timeSliderLayerNamesToShow = timeSliderLayerSource.layers
-      .filter((l) => {
-        const date = dayjs(l.date, timeSliderConfig.dateFormat).toDate();
-        return date >= timeSliderExtent.start && date < timeSliderExtent.end;
-      })
-      .map((l) => l.layerName);
-    // get the layer configs of all time slider specific layers that are  also within the current time extent
-    const layers = mapItem.settings.layers.filter((l) => timeSliderLayerNamesToShow.includes(l.layer));
+    const timeSliderLayerNames = timeSliderLayerSource.layers.map((layer) => layer.layerName);
+    const visibleTimeSliderLayers = mapItem.settings.layers.filter(
+      (layer) => ActiveTimeSliderLayersUtils.isLayerVisible(layer, mapItem.settings.timeSliderConfiguration, timeSliderExtent) === true,
+    );
     // include all layers that are not specified in the time slider config
-    const esriSublayers = esriLayer.sublayers.filter((sl) => !timeSliderLayerNames.includes(sl.name));
+    const esriSublayers = esriLayer.sublayers.filter((sublayer) => !timeSliderLayerNames.includes(sublayer.name));
     // now add all layers that are in the time slider config and within the current time extent
     esriSublayers.addMany(
-      layers
+      visibleTimeSliderLayers
         .map(
           (layer) =>
             new EsriWMSSublayer({
@@ -685,6 +745,7 @@ export class EsriMapService implements MapService, OnDestroy {
         }).lods,
       },
       spatialReference: spatialReference,
+      popupEnabled: false,
     });
   }
 

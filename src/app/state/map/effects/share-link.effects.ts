@@ -19,7 +19,6 @@ import {
 } from '../../../shared/errors/share-link.errors';
 import {selectLoadedLayerCatalogueAndShareItem} from '../selectors/loaded-layer-catalogue-and-share-item.selector';
 import {selectItems} from '../reducers/active-map-item.reducer';
-import {Gb3RuntimeError} from '../../../shared/errors/abstract.errors';
 import {AuthService} from '../../../auth/auth.service';
 import {DrawingActions} from '../actions/drawing.actions';
 import {selectDrawings} from '../reducers/drawing.reducer';
@@ -158,19 +157,24 @@ export class ShareLinkEffects {
   public handleValidationError$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ShareLinkActions.setValidationError),
-      concatLatestFrom(() => this.authService.isAuthenticated$),
-      switchMap(([{error}, isAuthenticated]) => {
-        const shareLinkCouldNotBeValidatedError =
-          error instanceof Gb3RuntimeError
-            ? new ShareLinkCouldNotBeValidated(error.message, isAuthenticated)
-            : new ShareLinkCouldNotBeValidated('Unbekannter Fehler', isAuthenticated, error);
-        return of(this.errorHandler.handleError(shareLinkCouldNotBeValidatedError)).pipe(map(() => shareLinkCouldNotBeValidatedError));
-      }),
-      map((error) => {
+      map(({error}) => {
         return ShareLinkActions.setInitializationError({error});
       }),
     );
   });
+
+  public throwInitializationError$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(ShareLinkActions.setInitializationError),
+        concatLatestFrom(() => this.authService.isAuthenticated$),
+        tap(([{error}, isAuthenticated]) => {
+          throw new ShareLinkCouldNotBeValidated(isAuthenticated, error);
+        }),
+      );
+    },
+    {dispatch: false},
+  );
 
   public setMapConfigAfterValidation$ = createEffect(() => {
     return this.actions$.pipe(

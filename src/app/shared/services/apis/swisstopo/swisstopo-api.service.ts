@@ -15,6 +15,8 @@ import {Geometry} from 'geojson';
  */
 export const ELEVATION_MODEL: keyof ElevationProfileAltitude = 'COMB';
 
+type SupportedProfileFormat = 'csv' | 'json';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -26,13 +28,24 @@ export class SwisstopoApiService extends BaseApiService {
       geom: JSON.stringify(geometry),
       sr: '2056',
     };
+    const params = new URLSearchParams(payload);
 
-    return this.post<URLSearchParams, ElevationProfileResponse[]>(this.createElevationProfileUrl(), new URLSearchParams(payload), {
+    return this.post<URLSearchParams, ElevationProfileResponse[]>(this.createElevationProfileUrl('json'), params, {
       'Content-Type': 'application/x-www-form-urlencoded',
-    }).pipe(map((value) => this.mapElevationProfileResponseToElevationProfileData(value)));
+    }).pipe(map((value) => this.mapElevationProfileResponseToElevationProfileData(value, params)));
   }
 
-  private mapElevationProfileResponseToElevationProfileData(response: ElevationProfileResponse[]): ElevationProfileData {
+  public createDownloadLinkUrl(elevationProfileData: ElevationProfileData | undefined): string | undefined {
+    if (elevationProfileData === undefined) {
+      return undefined;
+    }
+    return `${elevationProfileData.csvRequest.url}?${elevationProfileData.csvRequest.params.toString()}`;
+  }
+
+  private mapElevationProfileResponseToElevationProfileData(
+    response: ElevationProfileResponse[],
+    params: URLSearchParams,
+  ): ElevationProfileData {
     return response.reduce<ElevationProfileData>(
       (acc, currentPoint, idx, data) => {
         acc.statistics.linearDistance = currentPoint.dist;
@@ -64,22 +77,26 @@ export class SwisstopoApiService extends BaseApiService {
           linearDistance: 0,
           lowestPoint: 0,
         },
+        csvRequest: {
+          url: this.createElevationProfileUrl('csv'),
+          params,
+        },
       },
     );
   }
 
-  private calculateSlopeDistance(currentPoint: ElevationProfileResponse, previousPoint: ElevationProfileResponse) {
+  private calculateSlopeDistance(currentPoint: ElevationProfileResponse, previousPoint: ElevationProfileResponse): number {
     const elevationDelta = currentPoint.alts[ELEVATION_MODEL] - previousPoint.alts[ELEVATION_MODEL];
     const distanceDelta = currentPoint.dist - previousPoint.dist;
 
     return Math.sqrt(Math.pow(elevationDelta, 2) + Math.pow(distanceDelta, 2));
   }
 
-  private calculateElevationDifference(currentPoint: ElevationProfileResponse, previousPoint: ElevationProfileResponse) {
+  private calculateElevationDifference(currentPoint: ElevationProfileResponse, previousPoint: ElevationProfileResponse): number {
     return currentPoint.alts[ELEVATION_MODEL] - previousPoint.alts[ELEVATION_MODEL];
   }
 
-  private createElevationProfileUrl(): string {
-    return `${this.apiBaseUrl}/profile.json`;
+  private createElevationProfileUrl(format: SupportedProfileFormat): string {
+    return `${this.apiBaseUrl}/profile.${format}`;
   }
 }

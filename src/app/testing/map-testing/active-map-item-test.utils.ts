@@ -4,14 +4,14 @@ import {ActiveMapItemFactory} from '../../shared/factories/active-map-item.facto
 import {UserDrawingLayer} from '../../shared/enums/drawing-layer.enum';
 import {DrawingActiveMapItem} from '../../map/models/implementations/drawing.model';
 import {MapConstants} from '../../shared/constants/map.constants';
-import {v4 as uuidv4} from 'uuid';
+import {UuidUtils} from '../../shared/utils/uuid.utils';
 
 export function createGb2WmsMapItemMock(
   id: string,
   numberOfLayers: number = 0,
   visible: boolean = true,
   opacity: number = 1,
-  uuid: string = uuidv4(),
+  uuid: string = UuidUtils.createUuid(),
 ): Gb2WmsActiveMapItem {
   const mapMock = {id, title: id, layers: [], uuid} as Partial<Map>;
   for (let layerNumber = 0; layerNumber < numberOfLayers; layerNumber++) {

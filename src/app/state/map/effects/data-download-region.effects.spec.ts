@@ -1,6 +1,6 @@
 import {provideMockActions} from '@ngrx/effects/testing';
 import {fakeAsync, flush, TestBed} from '@angular/core/testing';
-import {Observable, of, throwError} from 'rxjs';
+import {EMPTY, Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
@@ -15,7 +15,7 @@ import {Gb3GeoshopMunicipalitiesService} from '../../../shared/services/apis/gb3
 import {DataDownloadRegionActions} from '../actions/data-download-region.actions';
 import {MinimalGeometriesUtils} from '../../../testing/map-testing/minimal-geometries.utils';
 import {selectCanton, selectMunicipalities} from '../reducers/data-download-region.reducer';
-import {ErrorHandler} from '@angular/core';
+import {catchError} from 'rxjs/operators';
 
 describe('DataDownloadRegionEffects', () => {
   const errorMock = new Error('oh no! anyway...');
@@ -25,7 +25,6 @@ describe('DataDownloadRegionEffects', () => {
   let effects: DataDownloadRegionEffects;
   let geoshopCantonService: Gb3GeoshopCantonService;
   let geoshopMunicipalitiesService: Gb3GeoshopMunicipalitiesService;
-  let errorHandler: ErrorHandler;
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
@@ -43,7 +42,6 @@ describe('DataDownloadRegionEffects', () => {
     geoshopCantonService = TestBed.inject(Gb3GeoshopCantonService);
     geoshopMunicipalitiesService = TestBed.inject(Gb3GeoshopMunicipalitiesService);
     store = TestBed.inject(MockStore);
-    errorHandler = TestBed.inject(ErrorHandler);
   });
 
   afterEach(() => {
@@ -96,18 +94,22 @@ describe('DataDownloadRegionEffects', () => {
     }));
   });
 
-  describe('handleCantonError$', () => {
-    it('handles a CantonCouldNotBeLoaded error after setting a canton error', (done: DoneFn) => {
-      const errorHandlerSpy = spyOn(errorHandler, 'handleError').and.stub();
+  describe('throwCantonError$', () => {
+    it('throws a CantonCouldNotBeLoaded error after setting a canton error', (done: DoneFn) => {
       const error = errorMock;
 
       const expectedError = new CantonCouldNotBeLoaded(error);
 
       actions$ = of(DataDownloadRegionActions.setCantonError({error}));
-      effects.handleCantonError$.subscribe(() => {
-        expect(errorHandlerSpy).toHaveBeenCalledOnceWith(expectedError);
-        done();
-      });
+      effects.throwCantonError$
+        .pipe(
+          catchError((e: unknown) => {
+            expect(e).toEqual(expectedError);
+            done();
+            return EMPTY;
+          }),
+        )
+        .subscribe();
     });
   });
 
@@ -159,18 +161,22 @@ describe('DataDownloadRegionEffects', () => {
     }));
   });
 
-  describe('handleMunicipalitiesError$', () => {
-    it('handles a MunicipalitiesCouldNotBeLoaded error after setting a municipalities error', (done: DoneFn) => {
-      const errorHandlerSpy = spyOn(errorHandler, 'handleError').and.stub();
+  describe('throwMunicipalitiesError$', () => {
+    it('throws a MunicipalitiesCouldNotBeLoaded error after setting a municipalities error', (done: DoneFn) => {
       const error = new Error('oh no! anyway...');
 
       const expectedError = new MunicipalitiesCouldNotBeLoaded(error);
 
       actions$ = of(DataDownloadRegionActions.setMunicipalitiesError({error}));
-      effects.handleMunicipalitiesError$.subscribe(() => {
-        expect(errorHandlerSpy).toHaveBeenCalledOnceWith(expectedError);
-        done();
-      });
+      effects.throwMunicipalitiesError$
+        .pipe(
+          catchError((e: unknown) => {
+            expect(e).toEqual(expectedError);
+            done();
+            return EMPTY;
+          }),
+        )
+        .subscribe();
     });
   });
 });

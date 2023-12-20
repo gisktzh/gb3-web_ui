@@ -2,12 +2,16 @@ interface ApiBaseUrlConfig {
   baseUrl: string;
 }
 
+interface VersionedApiBaseUrlConfig extends ApiBaseUrlConfig {
+  version: string;
+}
+
 interface MockedApiBaseUrlConfig extends ApiBaseUrlConfig {
   useMockData: boolean;
 }
 
 export interface ApiConfig {
-  gb2Api: ApiBaseUrlConfig;
+  gb2Api: VersionedApiBaseUrlConfig;
   gb2StaticFiles: ApiBaseUrlConfig;
   /** Since the GetCapabilities requests might be routed to another domain than the *actual* WMS (e.g.
    * https://maps.zh.ch/wms/MAPNAME?request=GetCapabilities), this URL is hardcoded as well to ensure the token is attached to all
@@ -19,7 +23,7 @@ export interface ApiConfig {
    */
   gb2Wms: ApiBaseUrlConfig;
   geoLion: ApiBaseUrlConfig;
-  searchApi: ApiBaseUrlConfig;
+  searchApi: VersionedApiBaseUrlConfig;
   ktzhWebsite: MockedApiBaseUrlConfig;
   gravCms: MockedApiBaseUrlConfig;
   twitterWidget: ApiBaseUrlConfig;

@@ -1,11 +1,10 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {TimeExtent} from '../../interfaces/time-extent.interface';
 import {TimeSliderConfiguration, TimeSliderLayerSource} from '../../../shared/interfaces/topic.interface';
-import * as dayjs from 'dayjs';
-import {ManipulateType} from 'dayjs';
+import dayjs, {ManipulateType} from 'dayjs';
 import {TimeSliderService} from '../../services/time-slider.service';
 import {TimeExtentUtils} from '../../../shared/utils/time-extent.utils';
-import * as duration from 'dayjs/plugin/duration';
+import duration from 'dayjs/plugin/duration';
 import {MatDatepicker} from '@angular/material/datepicker';
 
 dayjs.extend(duration);
@@ -34,55 +33,25 @@ export class TimeSliderComponent implements OnInit {
   // the second slider position is `undefined` in case that there is a fixed range
   public secondSliderPosition?: number;
 
-  public formattedTimeExtent: string = '';
-  public formattedEffectiveMinimumDate: string = '';
-  public formattedEffectiveMaximumDate: string = '';
+  public timeExtent!: TimeExtent;
+
+  public effectiveMinimumDateIndex!: number;
+  public effectiveMaximumDateIndex!: number;
+
+  // the time slider shows a simple current value (e.g. `2001` instead of `2001-2002`) if it has a range of exactly one of a single time unit (year, month, ...)
+  public hasSimpleCurrentValue: boolean = false;
 
   // date picker options
   public hasDatePicker: boolean = false;
   public datePickerStartView: DatePickerStartView = 'month';
   private datePickerUnit: DatePickerManipulationUnits = 'days';
 
-  // the time slider shows a simple current value (e.g. `2001` instead of `2001-2002`) if it has a range of exactly one of a single time unit (year, month, ...)
-  private hasSimpleCurrentValue: boolean = false;
-
-  private _timeExtent!: TimeExtent;
-  private _effectiveMinimumDateNumber!: number;
-  private _effectiveMaximumDateNumber!: number;
-
-  public get timeExtent(): TimeExtent {
-    return this._timeExtent;
-  }
-
-  private set timeExtent(value: TimeExtent) {
-    this._timeExtent = value;
-    this.formattedTimeExtent = this.convertTimeExtentToString(value, this.hasSimpleCurrentValue);
-  }
-
-  public get effectiveMinimumDateNumber(): number {
-    return this._effectiveMinimumDateNumber;
-  }
-
-  private set effectiveMinimumDateNumber(value: number) {
-    this._effectiveMinimumDateNumber = value;
-    this.formattedEffectiveMinimumDate = this.convertDateToString(this.availableDates[value]);
-  }
-
-  public get effectiveMaximumDateNumber(): number {
-    return this._effectiveMaximumDateNumber;
-  }
-
-  private set effectiveMaximumDateNumber(value: number) {
-    this._effectiveMaximumDateNumber = value;
-    this.formattedEffectiveMaximumDate = this.convertDateToString(this.availableDates[value]);
-  }
-
   constructor(private readonly timeSliderService: TimeSliderService) {}
 
   public ngOnInit() {
     this.availableDates = this.timeSliderService.createStops(this.timeSliderConfiguration);
-    this.effectiveMinimumDateNumber = 0;
-    this.effectiveMaximumDateNumber = this.availableDates.length - 1;
+    this.effectiveMinimumDateIndex = 0;
+    this.effectiveMaximumDateIndex = this.availableDates.length - 1;
     this.timeExtent = {start: this.initialTimeExtent.start, end: this.initialTimeExtent.end};
     this.firstSliderPosition = this.findPositionOfDate(this.timeExtent.start) ?? 0;
     this.secondSliderPosition = this.timeSliderConfiguration.range ? undefined : this.findPositionOfDate(this.timeExtent.end);
@@ -94,14 +63,6 @@ export class TimeSliderComponent implements OnInit {
       this.datePickerUnit = this.extractUniqueDatePickerUnitFromDateFormat(this.timeSliderConfiguration.dateFormat) ?? 'days';
       this.datePickerStartView = this.createDatePickerStartView(this.datePickerUnit);
     }
-  }
-
-  public refreshCurrentValue() {
-    const currentTimeExtent: TimeExtent = {
-      start: this.availableDates[this.firstSliderPosition],
-      end: this.secondSliderPosition ? this.availableDates[this.secondSliderPosition] : this.availableDates[this.firstSliderPosition],
-    };
-    this.formattedTimeExtent = this.convertTimeExtentToString(currentTimeExtent, this.hasSimpleCurrentValue);
   }
 
   /**
@@ -120,8 +81,8 @@ export class TimeSliderComponent implements OnInit {
       this.timeSliderConfiguration,
       newTimeExtent,
       hasStartDateChanged,
-      this.availableDates[this.effectiveMinimumDateNumber],
-      this.availableDates[this.effectiveMaximumDateNumber],
+      this.availableDates[this.effectiveMinimumDateIndex],
+      this.availableDates[this.effectiveMaximumDateIndex],
     );
 
     // correct the thumb that was modified with the calculated time extent if necessary (e.g. enforcing a minimal range)
@@ -143,13 +104,6 @@ export class TimeSliderComponent implements OnInit {
       this.timeExtent = newValidatedTimeExtent;
       this.changeTimeExtentEvent.emit(this.timeExtent);
     }
-
-    // set the current time extent even if there is no difference; it's still possible that a value was automatically corrected
-    this.formattedTimeExtent = this.convertTimeExtentToString(this.timeExtent, this.hasSimpleCurrentValue);
-  }
-
-  public convertDateToString(value?: Date): string {
-    return value ? dayjs(value).format(this.timeSliderConfiguration.dateFormat) : '';
   }
 
   public yearOrMonthSelected(
@@ -173,9 +127,9 @@ export class TimeSliderComponent implements OnInit {
     const position = this.findPositionOfDate(date);
     if (position !== undefined) {
       if (changedMinimumDate) {
-        this.effectiveMinimumDateNumber = position;
+        this.effectiveMinimumDateIndex = position;
       } else {
-        this.effectiveMaximumDateNumber = position;
+        this.effectiveMaximumDateIndex = position;
       }
       this.setValidTimeExtent(changedMinimumDate);
     }
@@ -243,12 +197,6 @@ export class TimeSliderComponent implements OnInit {
       (availableDate) => TimeExtentUtils.calculateDifferenceBetweenDates(availableDate, date) === 0,
     );
     return index === -1 ? undefined : index;
-  }
-
-  private convertTimeExtentToString(timeExtent: TimeExtent, hasSimpleCurrentValue: boolean): string {
-    return hasSimpleCurrentValue
-      ? this.convertDateToString(timeExtent.start)
-      : `${this.convertDateToString(timeExtent.start)} - ${this.convertDateToString(timeExtent.end)}`;
   }
 
   private createDatePickerStartView(datePickerUnit: DatePickerManipulationUnits): DatePickerStartView {

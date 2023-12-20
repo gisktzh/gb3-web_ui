@@ -18,12 +18,12 @@
       },
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
             "outputPath": "dist",
             "index": "src/index.html",
-            "main": "src/main.ts",
-            "polyfills": "src/polyfills.ts",
+            "browser": "src/main.ts",
+            "polyfills": ["src/polyfills.ts"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": ["src/favicon.ico", "src/assets"],
@@ -161,17 +161,13 @@
               "outputHashing": "all"
             },
             "development": {
-              "buildOptimizer": false,
               "optimization": false,
-              "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
             },
             "development-local-gb2": {
-              "buildOptimizer": false,
               "optimization": false,
-              "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true,
@@ -192,13 +188,13 @@
           },
           "configurations": {
             "production": {
-              "browserTarget": "gb3-frontend:build:production"
+              "buildTarget": "gb3-frontend:build:production"
             },
             "development": {
-              "browserTarget": "gb3-frontend:build:development"
+              "buildTarget": "gb3-frontend:build:development"
             },
             "development-local-gb2": {
-              "browserTarget": "gb3-frontend:build:development-local-gb2"
+              "buildTarget": "gb3-frontend:build:development-local-gb2"
             }
           },
           "defaultConfiguration": "development"
@@ -206,7 +202,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "gb3-frontend:build"
+            "buildTarget": "gb3-frontend:build"
           }
         },
         "test": {

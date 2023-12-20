@@ -8,7 +8,8 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
     hostMatch: 'geo.ktzh.ch',
     apiBasePaths: {
       gb2Api: {
-        baseUrl: 'https://web.maps.zh.ch/v3',
+        baseUrl: 'https://web.maps.zh.ch/gb3',
+        version: 'v0',
       },
       gb2StaticFiles: {
         baseUrl: 'https://web.maps.zh.ch',
@@ -23,7 +24,8 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
         baseUrl: 'https://geolion.ktzh.ch',
       },
       searchApi: {
-        baseUrl: 'https://web.maps.zh.ch/v3',
+        baseUrl: 'https://web.maps.zh.ch/gb3',
+        version: 'v0',
       },
       ktzhWebsite: {
         baseUrl: 'https://www.zh.ch',
@@ -56,7 +58,8 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
     hostMatch: 'geo.zh.ch',
     apiBasePaths: {
       gb2Api: {
-        baseUrl: 'https://maps.zh.ch/v3',
+        baseUrl: 'https://maps.zh.ch/gb3',
+        version: 'v0',
       },
       gb2StaticFiles: {
         baseUrl: 'https://maps.zh.ch',
@@ -71,7 +74,8 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
         baseUrl: 'https://geolion.zh.ch',
       },
       searchApi: {
-        baseUrl: 'https://maps.zh.ch/v3',
+        baseUrl: 'https://maps.zh.ch/gb3',
+        version: 'v0',
       },
       ktzhWebsite: {
         baseUrl: 'https://www.zh.ch',

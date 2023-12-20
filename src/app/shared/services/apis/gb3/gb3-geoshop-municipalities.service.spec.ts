@@ -69,7 +69,9 @@ describe('Gb3GeoshopMunicipalitiesService', () => {
       ];
 
       service.loadMunicipalities().subscribe((actual) => {
-        expect(getCallSpy).toHaveBeenCalledOnceWith(`${configService.apiConfig.gb2Api.baseUrl}/municipalities`);
+        expect(getCallSpy).toHaveBeenCalledOnceWith(
+          `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/municipalities`,
+        );
         expect(actual).toEqual(expected);
         done();
       });
@@ -119,7 +121,9 @@ describe('Gb3GeoshopMunicipalitiesService', () => {
       };
 
       service.loadMunicipalityWithGeometry(bfsNo).subscribe((actual) => {
-        expect(getCallSpy).toHaveBeenCalledOnceWith(`${configService.apiConfig.gb2Api.baseUrl}/municipalities/${bfsNo}`);
+        expect(getCallSpy).toHaveBeenCalledOnceWith(
+          `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/municipalities/${bfsNo}`,
+        );
         expect(actual).toEqual(expected);
         done();
       });

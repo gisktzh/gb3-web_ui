@@ -1,4 +1,20 @@
 .api-dialog-wrapper {
+  .api-dialog-wrapper__header {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+
+    .api-dialog-wrapper__header__title {
+      flex: 1;
+    }
+
+    .api-dialog-wrapper__header__button {
+      flex: none;
+      margin-right: 1em;
+    }
+  }
+
   .api-dialog-wrapper__content {
     width: 100%;
   }

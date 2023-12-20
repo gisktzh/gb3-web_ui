@@ -6,14 +6,14 @@ ARG APP_RELEASE
 ENV APP_VERSION=$APP_VERSION
 ENV APP_RELEASE=$APP_RELEASE
 
-ARG TARGET_ENVIRONMENT=local
+ARG TARGET_ENVIRONMENT=production
 
 WORKDIR /app
 COPY . .
 
 ENV NODE_ENV=production
 # increase the available memory size to prevent the 'Reached heap limit Allocation failed - JavaScript heap out of memory' error
-ENV NODE_OPTIONS=--max_old_space_size=4096
+ENV NODE_OPTIONS="--max_old_space_size=4096"
 
 RUN npm --version
 
@@ -25,9 +25,11 @@ RUN npm ci --ignore-scripts --omit=dev
 RUN npm run build-$TARGET_ENVIRONMENT
 
 FROM nginx:1.25-alpine AS server
-COPY ./.docker/nginx.conf /etc/nginx/conf.d/configfile.template
+COPY ./.docker/configfile.conf /etc/nginx/conf.d/configfile.template
+COPY ./.docker/nginx.conf /etc/nginx/nginx.conf
 
-COPY --from=build-app /app/dist /usr/share/nginx/html
+
+COPY --from=build-app /app/dist/browser /usr/share/nginx/html
 
 ENV PORT 8080
 EXPOSE 8080

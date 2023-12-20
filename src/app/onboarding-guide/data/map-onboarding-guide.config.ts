@@ -12,6 +12,7 @@ export const mapOnboardingGuideConfig: OnboardingGuideConfig = {
         'ihn wahlweise mit ESC oder durch den entsprechenden Button.',
       title: 'Willkommen auf dem GIS-Browser des Kanton Zürich',
       enableBackdrop: true,
+      showArrow: false,
     },
     {
       anchorId: 'map.catalogue',
@@ -36,12 +37,14 @@ export const mapOnboardingGuideConfig: OnboardingGuideConfig = {
       content: 'Klicken Sie auf Kartenobjekte und erhalten Sie Informationen dazu.',
       title: 'Info-Klick',
       enableBackdrop: false,
+      showArrow: false,
     },
     {
       anchorId: 'map.end.tour',
       content: 'Wir wünschen viel Vergnügen bei der Nutzung des GIS-Browsers!',
       title: 'Das wars!',
       enableBackdrop: false,
+      showArrow: false,
     },
   ],
 };

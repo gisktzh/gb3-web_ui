@@ -77,6 +77,12 @@ import {DataDownloadStatusQueueComponent} from './components/map-tools/data-down
 import {DataDownloadOrderStatusPipe} from './pipes/data-download-order-status.pipe';
 import {DataDownloadOrderDownloadUrlPipe} from './pipes/data-download-order-download-url.pipe';
 import {DrawingSettingsDialogComponent} from './components/map-tools/drawing-settings-dialog/drawing-settings-dialog.component';
+import {MapImportDialogComponent} from './components/map-tools/map-import/map-import-dialog/map-import-dialog.component';
+import {MapImportServiceAndUrlComponent} from './components/map-tools/map-import/map-import-service-and-url/map-import-service-and-url.component';
+import {MapImportLayerListComponent} from './components/map-tools/map-import/map-import-layer-list/map-import-layer-list.component';
+import {MapImportDisplayNameComponent} from './components/map-tools/map-import/map-import-display-name/map-import-display-name.component';
+import {TimeExtentToStringPipe} from './pipes/time-extent-to-string.pipe';
+import {DateToStringPipe} from './pipes/date-to-string.pipe';
 
 @NgModule({
   declarations: [
@@ -153,8 +159,22 @@ import {DrawingSettingsDialogComponent} from './components/map-tools/drawing-set
     DataDownloadOrderStatusPipe,
     DataDownloadOrderDownloadUrlPipe,
     DrawingSettingsDialogComponent,
+    MapImportDialogComponent,
   ],
-  imports: [CommonModule, SharedModule, MapRoutingModule, OnboardingGuideModule, FormsModule, ReactiveFormsModule, NgChartsModule],
+  imports: [
+    CommonModule,
+    SharedModule,
+    MapRoutingModule,
+    OnboardingGuideModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NgChartsModule,
+    MapImportServiceAndUrlComponent,
+    MapImportLayerListComponent,
+    MapImportDisplayNameComponent,
+    TimeExtentToStringPipe,
+    DateToStringPipe,
+  ],
   exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent],
 })
 export class MapModule {}

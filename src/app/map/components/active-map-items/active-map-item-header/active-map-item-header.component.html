@@ -9,7 +9,7 @@
   </button>
   <div class="active-map-item-header__image-container">
     <img
-      *ngIf="!activeMapItem.isSingleLayer"
+      *ngIf="!activeMapItem.isSingleLayer && activeMapItem.mapImageUrl"
       class="active-map-item-header__image-container__image"
       [ngClass]="{'active-map-item-header__image-container__image--inactive': !activeMapItem.visible}"
       [alt]="activeMapItem.title"
