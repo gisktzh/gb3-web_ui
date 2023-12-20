@@ -205,7 +205,7 @@ export class EsriSymbolizationService {
       }
       case 'polygon': {
         return new EsriSimpleFillSymbol({
-          color: this.convertHexToEsriColor(style.fillColor, style.fillOpacity), // todo GB3-826: extract default alpha value
+          color: this.convertHexToEsriColor(style.fillColor, style.fillOpacity),
           outline: {
             width: style.strokeWidth,
             color: this.convertHexToEsriColor(style.strokeColor),

@@ -13,13 +13,13 @@ export class ColorUtils {
     const r = parseInt(hex.slice(0, 2), 16);
     const g = parseInt(hex.slice(2, 4), 16);
     const b = parseInt(hex.slice(4, 6), 16);
-    a = a > 1.0 ? 1.0 : a;
+    const alpha = a > 1.0 ? 1.0 : a;
 
     if ([r, g, b].some((value) => Number.isNaN(value))) {
       throw new InvalidHexFormat();
     }
 
-    return {r, g, b, a};
+    return {r, g, b, a: alpha};
   }
 
   public static convertSymbolizationColorToHex(color: SymbolizationColor) {
