@@ -235,7 +235,6 @@ export class Gb3TopicsService extends Gb3ApiService {
       case 'parameter':
         if (!source.startRangeParameter || !source.endRangeParameter || !source.layerIdentifiers) {
           throw new InvalidTimeSliderConfiguration('Missing attributes inside the parameter configuration.');
-          // handling
         }
         return {
           startRangeParameter: source.startRangeParameter,
