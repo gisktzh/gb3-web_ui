@@ -7,7 +7,7 @@ describe('DrawingStyle Reducer', () => {
   const mockExistingState: DrawingStyleState = {
     lineColor: {r: 255, g: 123, b: 1, a: 0.2},
     fillColor: {r: 13, g: 3, b: 24, a: 0.4},
-    lineWidth: '20px',
+    lineWidth: 20,
   };
 
   describe('an unknown action', () => {
@@ -52,9 +52,8 @@ describe('DrawingStyle Reducer', () => {
       const action = DrawingStyleActions.setLineWidth({width: mockLineWidth});
 
       const result = reducer(mockExistingState, action);
-      const expected = `${mockLineWidth}px`;
 
-      expect(result.lineWidth).toEqual(expected);
+      expect(result.lineWidth).toEqual(mockLineWidth);
       expect(result.fillColor).toEqual(mockExistingState.fillColor);
       expect(result.lineColor).toEqual(mockExistingState.lineColor);
     });

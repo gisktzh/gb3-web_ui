@@ -13,8 +13,8 @@ import {defaultFillColor, defaultLineColor, defaultLineWidth} from '../../../../
   styleUrls: ['./drawing-settings-dialog.component.scss'],
 })
 export class DrawingSettingsDialogComponent implements OnInit, OnDestroy {
-  public fillColor: string = ColorUtils.convertSymbolizatioColorToHex(defaultFillColor);
-  public lineColor: string = ColorUtils.convertSymbolizatioColorToHex(defaultLineColor);
+  public fillColor: string = ColorUtils.convertSymbolizationColorToHex(defaultFillColor);
+  public lineColor: string = ColorUtils.convertSymbolizationColorToHex(defaultLineColor);
   public lineWidth: number = defaultLineWidth;
   private readonly drawingStyleState$ = this.store.select(selectDrawingStyleState);
   private readonly subscriptions: Subscription = new Subscription();
@@ -63,8 +63,8 @@ export class DrawingSettingsDialogComponent implements OnInit, OnDestroy {
         .pipe(
           first(),
           tap((drawingStyleState) => {
-            this.fillColor = ColorUtils.convertSymbolizatioColorToHex(drawingStyleState.fillColor);
-            this.lineColor = ColorUtils.convertSymbolizatioColorToHex(drawingStyleState.lineColor);
+            this.fillColor = ColorUtils.convertSymbolizationColorToHex(drawingStyleState.fillColor);
+            this.lineColor = ColorUtils.convertSymbolizationColorToHex(drawingStyleState.lineColor);
             this.lineWidth = drawingStyleState.lineWidth;
           }),
         )
