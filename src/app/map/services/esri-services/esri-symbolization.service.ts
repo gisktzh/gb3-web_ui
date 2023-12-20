@@ -164,7 +164,7 @@ export class EsriSymbolizationService {
           fontSize: (symbol as TextSymbol).font.size.toString(),
           haloRadius: (symbol as TextSymbol).haloSize.toString(),
           labelYOffset: (symbol as TextSymbol).yoffset.toString(), // todo GB3-826: actual offset is rather x2.1
-          labelAlign: 'ct', // todo GB3-826: move this to a constant?
+          labelAlign: 'cm', // todo GB3-826: move this to a constant?
           label: '[text]', // todo GB3-826: move this to a constant? note: it should also match the property in the interface
           type: 'text',
         };
