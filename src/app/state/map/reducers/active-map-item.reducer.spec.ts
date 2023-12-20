@@ -8,9 +8,16 @@ import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.m
 import {LoadingState} from '../../../shared/types/loading-state.type';
 import {ViewProcessState} from '../../../shared/types/view-process-state.type';
 import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
-import {FilterConfiguration, Map} from '../../../shared/interfaces/topic.interface';
+import {
+  FilterConfiguration,
+  Map,
+  MapLayer,
+  TimeSliderConfiguration,
+  TimeSliderLayerSource,
+} from '../../../shared/interfaces/topic.interface';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 import {FavouriteBaseConfig} from '../../../shared/interfaces/favourite.interface';
+import {TimeExtent} from '../../../map/interfaces/time-extent.interface';
 
 describe('ActiveMapItem Reducer', () => {
   const activeMapItemsMock: ActiveMapItem[] = [
@@ -308,6 +315,48 @@ describe('ActiveMapItem Reducer', () => {
       expect(actualLayers!.length).toBe(activeMapItem.settings.layers.length);
       expect(actualLayers).toEqual(jasmine.arrayWithExactContents(activeMapItem.settings.layers));
       expect(actualLayers![currentPosition]).toEqual(activeMapItem.settings.layers[previousPosition]);
+    });
+  });
+
+  describe('setTimeSliderExtent', () => {
+    it('sets the time extend and reevaluates all layer visibilities', () => {
+      const timeExtent: TimeExtent = {
+        start: new Date(2023, 0, 1),
+        end: new Date(2023, 11, 31),
+      };
+      const mapMock: Partial<Map> = {id: 'id'};
+      mapMock.layers = [
+        {layer: 'layer01', visible: false} as MapLayer,
+        {layer: 'layer02', visible: false} as MapLayer,
+        {layer: 'layer03', visible: false} as MapLayer,
+      ];
+      mapMock.timeSliderConfiguration = {
+        dateFormat: 'YYYY-MM-DD',
+        sourceType: 'layer',
+        source: {
+          layers: [
+            {layerName: 'layer01', date: '2022-06-30'},
+            {layerName: 'layer02', date: '2023-06-30'},
+            {layerName: 'layer03', date: '2024-06-30'},
+          ],
+        } as TimeSliderLayerSource,
+      } as TimeSliderConfiguration;
+      const activeMapItem = ActiveMapItemFactory.createGb2WmsMapItem(<Map>mapMock);
+      existingState.items = [activeMapItem];
+
+      const action = ActiveMapItemActions.setTimeSliderExtent({timeExtent, activeMapItem});
+      const state = reducer(existingState, action);
+
+      const expectedTimeExtent = timeExtent;
+      const expectedLayers: Partial<MapLayer>[] = [
+        {layer: 'layer01', visible: false},
+        {layer: 'layer02', visible: true},
+        {layer: 'layer03', visible: false},
+      ];
+
+      expect(state.items[0]).toBeInstanceOf(Gb2WmsActiveMapItem);
+      expect((<Gb2WmsActiveMapItem>state.items[0]).settings.timeSliderExtent).toEqual(expectedTimeExtent);
+      expect((<Gb2WmsActiveMapItem>state.items[0]).settings.layers).toEqual(<MapLayer[]>expectedLayers);
     });
   });
 

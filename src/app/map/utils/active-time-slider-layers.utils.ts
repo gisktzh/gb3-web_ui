@@ -3,6 +3,10 @@ import dayjs from 'dayjs';
 import {TimeExtent} from '../interfaces/time-extent.interface';
 
 export class ActiveTimeSliderLayersUtils {
+  /**
+   * Is the given layer visible? Returns `true` or `false` depending on the layer to be within the given time extent; or `undefined` if
+   * either the layer isn't part of a time slider configuration, the extent is undefined or the configuration source isn't of type `layer`.
+   */
   public static isLayerVisible(
     mapLayer: MapLayer,
     timeSliderConfiguration: TimeSliderConfiguration | undefined,

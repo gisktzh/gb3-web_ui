@@ -596,15 +596,15 @@ export class EsriMapService implements MapService, OnDestroy {
 
     const timeSliderConfig = mapItem.settings.timeSliderConfiguration;
     const timeSliderLayerSource = timeSliderConfig.source as TimeSliderLayerSource;
-    const timeSliderLayerNames = timeSliderLayerSource.layers.map((l) => l.layerName);
-    const visibleLayers = mapItem.settings.layers.filter(
+    const timeSliderLayerNames = timeSliderLayerSource.layers.map((layer) => layer.layerName);
+    const visibleTimeSliderLayers = mapItem.settings.layers.filter(
       (layer) => ActiveTimeSliderLayersUtils.isLayerVisible(layer, mapItem.settings.timeSliderConfiguration, timeSliderExtent) === true,
     );
     // include all layers that are not specified in the time slider config
-    const esriSublayers = esriLayer.sublayers.filter((sl) => !timeSliderLayerNames.includes(sl.name));
+    const esriSublayers = esriLayer.sublayers.filter((sublayer) => !timeSliderLayerNames.includes(sublayer.name));
     // now add all layers that are in the time slider config and within the current time extent
     esriSublayers.addMany(
-      visibleLayers
+      visibleTimeSliderLayers
         .map(
           (layer) =>
             new EsriWMSSublayer({
