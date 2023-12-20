@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {MapServiceType} from '../../types/map-service.type';
-import {from, Observable} from 'rxjs';
+import {from, Observable, throwError} from 'rxjs';
 import {ExternalServiceActiveMapItem} from '../../models/external-service.model';
 import {EsriError, EsriKMLLayer, EsriWMSLayer} from './esri.module';
 import {catchError, map} from 'rxjs/operators';
@@ -38,7 +38,14 @@ export class EsriMapLoaderService implements MapLoaderService {
   }
 
   private loadExternalWmsService(url: string): Observable<ExternalWmsActiveMapItem> {
-    return this.loadService(new EsriWMSLayer({url})).pipe(
+    let layer;
+    try {
+      layer = new EsriWMSLayer({url});
+    } catch (error: unknown) {
+      return throwError(() => new LayerCouldNotBeLoaded());
+    }
+
+    return this.loadService(layer).pipe(
       map((wmsLayer) => {
         const subLayers: ExternalWmsLayer[] = wmsLayer.sublayers
           .map(
@@ -60,7 +67,14 @@ export class EsriMapLoaderService implements MapLoaderService {
   }
 
   private loadExternalKmlService(url: string): Observable<ExternalKmlActiveMapItem> {
-    return this.loadService(new EsriKMLLayer({url})).pipe(
+    let layer;
+    try {
+      layer = new EsriKMLLayer({url});
+    } catch (error: unknown) {
+      return throwError(() => new LayerCouldNotBeLoaded());
+    }
+
+    return this.loadService(layer).pipe(
       map((kmlLayer) => {
         const subLayers: ExternalKmlLayer[] = kmlLayer.sublayers
           .map(
