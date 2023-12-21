@@ -58,6 +58,15 @@ export class MapDrawingService implements OnDestroy {
     this.mapService.clearInternalDrawingLayer(InternalDrawingLayer.Selection);
   }
 
+  public drawSearchResultHighlight(geometry: GeometryWithSrs) {
+    this.clearSearchResultHighlight();
+    this.mapService.addGeometryToInternalDrawingLayer(geometry, InternalDrawingLayer.SearchResultHighlight);
+  }
+
+  public clearSearchResultHighlight() {
+    this.mapService.clearInternalDrawingLayer(InternalDrawingLayer.SearchResultHighlight);
+  }
+
   private initSubscriptions() {
     // todo: when adding the redlining, this might be refactored away as an effect.
     this.subscriptions.add(

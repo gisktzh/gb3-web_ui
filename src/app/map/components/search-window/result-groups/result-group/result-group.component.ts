@@ -12,6 +12,7 @@ import {selectMapConfigState} from '../../../../../state/map/reducers/map-config
 import {MapConfigState} from '../../../../../state/map/states/map-config.state';
 import {MapService} from '../../../../interfaces/map.service';
 import {ActiveMapItem} from '../../../../models/active-map-item.model';
+import {MapDrawingService} from '../../../../services/map-drawing.service';
 
 @Component({
   selector: 'result-group',
@@ -34,6 +35,7 @@ export class ResultGroupComponent implements OnInit, OnDestroy {
   constructor(
     private readonly store: Store,
     @Inject(MAP_SERVICE) private readonly mapService: MapService,
+    private readonly mapDrawingService: MapDrawingService,
   ) {}
 
   public ngOnInit() {
@@ -42,12 +44,14 @@ export class ResultGroupComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
+    this.mapDrawingService.clearSearchResultHighlight();
   }
 
-  public zoomToResult(searchResult: GeometrySearchApiResultMatch) {
+  public highlightAndZoomToResult(searchResult: GeometrySearchApiResultMatch) {
     // only zoom to result if the geometry is available in the index
     if (searchResult.geometry) {
       this.mapService.zoomToExtent(searchResult.geometry);
+      this.mapDrawingService.drawSearchResultHighlight(searchResult.geometry);
     }
   }
 
