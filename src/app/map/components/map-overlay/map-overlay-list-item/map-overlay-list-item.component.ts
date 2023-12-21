@@ -14,4 +14,5 @@ export class MapOverlayListItemComponent {
   @Input() public toggleButtonPosition: ToggleButtonPosition = 'start';
   @Input() public removeContentIndent: boolean = false;
   @Input() public hasBackgroundColor: boolean = true;
+  @Input() public showInteractiveElements: boolean = true;
 }
