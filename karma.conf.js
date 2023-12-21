@@ -4,8 +4,6 @@ process.env.CHROME_BIN = require('puppeteer').executablePath();
 
 module.exports = function (config) {
   config.set({
-    browserNoActivityTimeout: 60000,
-    browserDisconnectTimeout: 60000,
     basePath: '',
     frameworks: ['jasmine', '@angular-devkit/build-angular'],
     plugins: [
@@ -13,7 +11,7 @@ module.exports = function (config) {
       require('karma-chrome-launcher'),
       require('karma-jasmine-html-reporter'),
       require('karma-coverage'),
-      require('@angular-devkit/build-angular/plugins/karma')
+      require('@angular-devkit/build-angular/plugins/karma'),
     ],
     client: {
       jasmine: {
@@ -22,23 +20,29 @@ module.exports = function (config) {
         // for example, you can disable the random execution with `random: false`
         // or set a specific seed with `seed: 4321`
       },
-      clearContext: false // leave Jasmine Spec Runner output visible in browser
+      clearContext: false, // leave Jasmine Spec Runner output visible in browser
     },
     jasmineHtmlReporter: {
-      suppressAll: true // removes the duplicated traces
+      suppressAll: true, // removes the duplicated traces
     },
     coverageReporter: {
       dir: require('path').join(__dirname, './coverage/gb3-frontend'),
       subdir: '.',
-      reporters: [{type: 'html'}, {type: 'text-summary'}, {type: 'lcov'}]
+      reporters: [{type: 'html'}, {type: 'text-summary'}, {type: 'lcov'}],
     },
     reporters: ['progress', 'kjhtml'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
+    browserDisconnectTimeout: 120000,
+    browserDisconnectTolerance: 6,
+    browserNoActivityTimeout: 120000,
+    captureTimeout: 120000,
+    browserSocketTimeout: 120000,
+    pingTimeout: 120000,
     browsers: ['ChromeHeadless'],
     singleRun: false,
-    restartOnFileChange: true
+    restartOnFileChange: true,
   });
 };
