@@ -1,18 +1,18 @@
 import {UnstyledInternalDrawingRepresentation} from './internal-drawing-representation.interface';
-import {DataDownloadSelectionTool} from '../types/data-download-selection-tool.type';
 import {Municipality} from './gb3-geoshop-product.interface';
+import {DataDownloadSelectionGeometry} from '../types/data-download-selection-geometry.type';
 
 interface AbstractDataDownloadSelection {
-  type: DataDownloadSelectionTool;
+  type: DataDownloadSelectionGeometry;
   drawingRepresentation: UnstyledInternalDrawingRepresentation;
 }
 
 export interface GeometryDataDownloadSelection extends AbstractDataDownloadSelection {
-  type: Exclude<DataDownloadSelectionTool, 'select-municipality'>;
+  type: Exclude<DataDownloadSelectionGeometry, 'municipality'>;
 }
 
 export interface MunicipalityDataDownloadSelection extends AbstractDataDownloadSelection {
-  type: 'select-municipality';
+  type: 'municipality';
   municipality: Municipality;
 }
 

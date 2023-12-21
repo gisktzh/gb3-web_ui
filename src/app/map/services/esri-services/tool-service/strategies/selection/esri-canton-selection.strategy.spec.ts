@@ -3,18 +3,19 @@ import {InternalDrawingLayer} from '../../../../../../shared/enums/drawing-layer
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import {EsriCantonSelectionStrategy} from './esri-canton-selection.strategy';
 import {fakeAsync, TestBed, tick} from '@angular/core/testing';
-import {SelectionCallbackHandler} from '../../interfaces/selection-callback-handler.interface';
 import {ConfigService} from '../../../../../../shared/services/config.service';
 import {Observable, of} from 'rxjs';
 import {CantonWithGeometry} from '../../../../../../shared/interfaces/gb3-geoshop-product.interface';
 import {MinimalGeometriesUtils} from '../../../../../../testing/map-testing/minimal-geometries.utils';
+import {DataDownloadSelection} from '../../../../../../shared/interfaces/data-download-selection.interface';
 
 describe('EsriCantonSelectionStrategy', () => {
   let layer: GraphicsLayer;
   let fillSymbol: SimpleFillSymbol;
-  const callbackHandler: SelectionCallbackHandler = {
-    complete: () => {},
-    abort: () => {},
+  const callbackHandler = {
+    handle: (selection: DataDownloadSelection | undefined) => {
+      return selection;
+    },
   };
   let configService: ConfigService;
   let cantonWithGeometry$: Observable<CantonWithGeometry | undefined>;
@@ -26,31 +27,43 @@ describe('EsriCantonSelectionStrategy', () => {
     });
     fillSymbol = new SimpleFillSymbol();
     configService = TestBed.inject(ConfigService);
-    cantonWithGeometry$ = of(undefined);
   });
 
   describe('cancellation', () => {
     it('does clear the layer and does not dispatch anything', () => {
-      const completeCallbackHandlerSpy = spyOn(callbackHandler, 'complete');
-      const strategy = new EsriCantonSelectionStrategy(layer, fillSymbol, callbackHandler, cantonWithGeometry$, configService);
+      const callbackSpy = spyOn(callbackHandler, 'handle');
+      cantonWithGeometry$ = of(undefined);
+      const strategy = new EsriCantonSelectionStrategy(
+        layer,
+        fillSymbol,
+        (selection) => callbackHandler.handle(selection),
+        cantonWithGeometry$,
+        configService,
+      );
       const layerRemoveAllSpy = spyOn(layer, 'removeAll');
 
       strategy.cancel();
       expect(layerRemoveAllSpy).toHaveBeenCalledTimes(1);
-      expect(completeCallbackHandlerSpy).not.toHaveBeenCalled();
+      expect(callbackSpy).not.toHaveBeenCalled();
     });
   });
 
   describe('completion', () => {
     it('dispatches a new selection', fakeAsync(() => {
-      const completeCallbackHandlerSpy = spyOn(callbackHandler, 'complete');
+      const callbackSpy = spyOn(callbackHandler, 'handle');
       cantonWithGeometry$ = of({boundingBox: MinimalGeometriesUtils.getMinimalPolygon(2056)});
-      const strategy = new EsriCantonSelectionStrategy(layer, fillSymbol, callbackHandler, cantonWithGeometry$, configService);
+      const strategy = new EsriCantonSelectionStrategy(
+        layer,
+        fillSymbol,
+        (selection) => callbackHandler.handle(selection),
+        cantonWithGeometry$,
+        configService,
+      );
 
       strategy.start();
       tick();
 
-      expect(completeCallbackHandlerSpy).toHaveBeenCalledWith(jasmine.objectContaining({type: 'select-canton'}));
+      expect(callbackSpy).toHaveBeenCalledWith(jasmine.objectContaining({type: 'canton'}));
     }));
   });
 });
