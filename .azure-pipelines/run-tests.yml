@@ -1,11 +1,11 @@
 trigger: none # only run in PRs which are handled by branch policies
 
 variables:
-  - template: 'templates/variables.yaml'
+  - template: 'templates/variables.yml'
 
 pool:
   vmImage: $(VM_IMAGE)
 
 steps:
-  - template: 'templates/git-checkout-code.yaml'
-  - template: 'templates/unit-tests.yaml'
+  - template: 'templates/git-checkout-code.yml'
+  - template: 'templates/unit-tests.yml'
