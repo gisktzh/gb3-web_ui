@@ -29,7 +29,7 @@
             "assets": ["src/favicon.ico", "src/assets"],
             "styles": ["./node_modules/@angular/material/prebuilt-themes/indigo-pink.css", "src/styles.scss"],
             "stylePreprocessorOptions": {
-              "includePaths": ["src/styles"]
+              "includePaths": ["src/styles", "node_modules/@material"]
             },
             "scripts": [],
             "allowedCommonJsDependencies": ["dayjs"]
