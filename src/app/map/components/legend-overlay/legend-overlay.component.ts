@@ -20,7 +20,6 @@ import {LegendDisplay} from '../../../shared/interfaces/legend.interface';
 export class LegendOverlayComponent implements OnInit, OnDestroy {
   /** A value indicating whether interactive elements (like buttons) should be shown. [Default: true] */
   @Input() public showInteractiveElements: boolean = true;
-  @Input() public isEmbedded: boolean = false;
 
   public isVisible = false;
   public loadingState: LoadingState;
