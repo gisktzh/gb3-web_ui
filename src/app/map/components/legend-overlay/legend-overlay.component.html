@@ -1,5 +1,4 @@
 <map-overlay
-  *ngIf="screenMode !== 'mobile'"
   (closeEvent)="close()"
   (printButtonEvent)="print()"
   [isPrintButtonEnabled]="showInteractiveElements && loadingState === 'loaded' && legendItems.length > 0"
