@@ -15,6 +15,7 @@ import {MainPage} from '../../../shared/enums/main-page.enum';
 import {Store} from '@ngrx/store';
 import {BasemapConfigService} from '../../../map/services/basemap-config.service';
 import {selectQueryParams} from '../selectors/router.selector';
+import {RouteParamConstants} from '../../../shared/constants/route-param.constants';
 
 @Injectable()
 export class UrlEffects {
@@ -36,6 +37,48 @@ export class UrlEffects {
       }),
     );
   });
+
+  public handleAppParameters$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(UrlActions.setPage),
+      map((action) => action.mainPage),
+      distinctUntilChanged(),
+      concatLatestFrom(() => [this.store.select(selectQueryParams)]),
+      map(([_, params]) => {
+        return UrlActions.setAppParams({params});
+      }),
+    );
+  });
+
+  public removeGlobalTemporaryParameters$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(UrlActions.setAppParams),
+        concatLatestFrom(() => [this.store.select(selectQueryParams)]),
+        map(([_, currentParams]) => {
+          let adjustedParams: Params | undefined = undefined;
+          if (Object.keys(currentParams).some((paramKey) => RouteParamConstants.GLOBAL_TEMPORARY_URL_PARAMS.includes(paramKey))) {
+            // remove temporary parameters
+            const paramsToRemove = RouteParamConstants.GLOBAL_TEMPORARY_URL_PARAMS.reduce((prev, curr) => ({...prev, [curr]: null}), {});
+            adjustedParams = {
+              ...paramsToRemove,
+            };
+          }
+          return adjustedParams;
+        }),
+        filter((adjustedParams): adjustedParams is Params => !!adjustedParams),
+        switchMap((adjustedParams) => {
+          return this.router.navigate([], {
+            relativeTo: this.route,
+            queryParams: adjustedParams,
+            queryParamsHandling: 'merge',
+            replaceUrl: true,
+          });
+        }),
+      );
+    },
+    {dispatch: false},
+  );
 
   public handleInitialMapPageParameters$ = createEffect(() => {
     return this.actions$.pipe(

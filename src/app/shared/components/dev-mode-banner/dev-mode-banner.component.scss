@@ -1,0 +1,14 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.dev-mode-banner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1em;
+  height: 100%;
+  background-color: ktzh-variables.$zh-green;
+
+  .dev-mode-banner__title {
+    margin-bottom: 0;
+  }
+}

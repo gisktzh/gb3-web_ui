@@ -3,7 +3,7 @@ import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {MatSnackBar, MatSnackBarRef} from '@angular/material/snack-bar';
 import {Router} from '@angular/router';
 import {Store} from '@ngrx/store';
-import {Subscription, filter, take, tap} from 'rxjs';
+import {filter, Subscription, take, tap} from 'rxjs';
 import {PageNotificationComponent} from './shared/components/page-notification/page-notification.component';
 import {BreakpointsHeight, BreakpointsWidth} from './shared/enums/breakpoints.enum';
 import {PanelClass} from './shared/enums/panel-class.enum';
@@ -18,6 +18,7 @@ import {selectScreenMode, selectScrollbarWidth} from './state/app/reducers/app-l
 import {selectUrlState} from './state/app/reducers/url.reducer';
 import {selectMapUiState} from './state/map/reducers/map-ui.reducer';
 import {MapUiState} from './state/map/states/map-ui.state';
+import {selectDevMode} from './state/app/reducers/app.reducer';
 
 @Component({
   selector: 'app-root',
@@ -26,16 +27,18 @@ import {MapUiState} from './state/map/states/map-ui.state';
 })
 export class AppComponent implements OnInit, OnDestroy {
   public screenMode: ScreenMode = 'regular';
-  public screenHeight: ScreenHeight = 'regular';
   public mapUiState?: MapUiState;
   public isHeadlessPage: boolean = false;
   public isSimplifiedPage: boolean = false;
   public scrollbarWidth?: number;
+  public isDevModeActive: boolean = false;
+
   private snackBarRef?: MatSnackBarRef<PageNotificationComponent>;
   private readonly urlState$ = this.store.select(selectUrlState);
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly scrollbarWidth$ = this.store.select(selectScrollbarWidth);
   private readonly mapUiState$ = this.store.select(selectMapUiState);
+  private readonly devMode$ = this.store.select(selectDevMode);
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(
@@ -130,6 +133,7 @@ export class AppComponent implements OnInit, OnDestroy {
         .subscribe(),
     );
     this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
+    this.subscriptions.add(this.devMode$.pipe(tap((devMode) => (this.isDevModeActive = devMode))).subscribe());
   }
 
   private closePageNotificationSnackBar() {

@@ -6,6 +6,7 @@ export const UrlActions = createActionGroup({
   source: 'Url',
   events: {
     'Set Page': props<{mainPage: MainPage | undefined; isHeadlessPage: boolean; isSimplifiedPage: boolean}>(),
+    'Set App Params': props<{params: Params}>(),
     'Set Map Page Params': props<{params: Params}>(),
   },
 });

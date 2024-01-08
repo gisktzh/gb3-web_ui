@@ -15,10 +15,18 @@
   position: relative;
   $minimal-bottom-height: map-layout-variables.$esri-attribution-widget-height;
 
+  &--dev-mode {
+    height: calc(100vh - #{map-layout-variables.$navbar-height} - #{map-layout-variables.$dev-mode-banner-height});
+  }
+
   &--mobile {
     position: absolute;
     height: 100%;
     width: 100%;
+
+    &.map-container--dev-mode {
+      height: calc(100% - #{map-layout-variables.$dev-mode-banner-height});
+    }
   }
 
   .map-container__map-element--hidden {
