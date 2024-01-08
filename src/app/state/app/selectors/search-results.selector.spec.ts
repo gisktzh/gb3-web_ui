@@ -204,6 +204,7 @@ describe('search-result selector', () => {
           minScale: null,
           layers: [],
           printTitle: '',
+          opacity: 1,
         },
         {
           // matching by title
@@ -219,6 +220,7 @@ describe('search-result selector', () => {
           minScale: null,
           layers: [],
           printTitle: '',
+          opacity: 1,
         },
         {
           // not matching
@@ -234,6 +236,7 @@ describe('search-result selector', () => {
           minScale: null,
           layers: [],
           printTitle: '',
+          opacity: 1,
         },
         {
           // matching by title and keywords
@@ -249,6 +252,7 @@ describe('search-result selector', () => {
           minScale: null,
           layers: [],
           printTitle: '',
+          opacity: 1,
         },
         {
           // partially matching by title
@@ -264,6 +268,7 @@ describe('search-result selector', () => {
           minScale: null,
           layers: [],
           printTitle: '',
+          opacity: 1,
         },
       ];
     }

@@ -1,13 +1,14 @@
 import {HasVisibility} from '../../map/interfaces/has-visibility.interface';
 import {HasHidingState} from './has-hiding-state.interface';
 import {HasActiveState} from './has-active-state.interface';
+import {HasOpacity} from '../../map/interfaces/has-opacity.interface';
 
 export interface Topic {
   title: string;
   maps: Map[];
 }
 
-export interface Map {
+export interface Map extends HasOpacity {
   /** Map identifier */
   id: string;
   /** Map title */

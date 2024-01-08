@@ -1,11 +1,15 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import {HttpClient} from '@angular/common/http';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {TestBed} from '@angular/core/testing';
 import {of} from 'rxjs';
-import {TopicsListData} from '../../../models/gb3-api-generated.interfaces';
+import {TopicsFeatureInfoDetailData, TopicsLegendDetailData, TopicsListData} from '../../../models/gb3-api-generated.interfaces';
 import {ConfigService} from '../../config.service';
 import {Gb3TopicsService} from './gb3-topics.service';
-import {FilterConfiguration, WmsFilterValue} from '../../../interfaces/topic.interface';
+import {FilterConfiguration, TopicsResponse, WmsFilterValue} from '../../../interfaces/topic.interface';
+import {LegendResponse} from '../../../interfaces/legend.interface';
+import {QueryTopic} from '../../../interfaces/query-topic.interface';
+import {FeatureInfoResponse} from '../../../interfaces/feature-info.interface';
 
 describe('Gb3TopicsService', () => {
   let service: Gb3TopicsService;
@@ -22,158 +26,790 @@ describe('Gb3TopicsService', () => {
   });
 
   describe('loadTopics', () => {
-    const mockData: TopicsListData = {
-      categories: [
-        {
-          title: 'Raumplanung, Zonenpläne',
-          topics: [
-            {
-              topic: 'StatGebAlterZH',
-              title: 'Gebäudealter',
-              print_title: 'Gebäudealter',
-              icon: '/images/custom/themekl-statgebalterzh.gif',
-              organisation: 'Statistisches Amt',
-              geolion_karten_uuid: '246fe226-ead7-4f91-b735-d294994913e0',
-              geolion_gdd: null,
-              keywords: ['Gebäudealter', 'stat', 'obs', 'fap', 'denkk', 'fsla'],
-              notice: null,
-              timesliderConfiguration: {
-                name: 'Aktueller Gebäudebestand nach Baujahr',
-                source: {
-                  layerIdentifiers: ['geb-alter_wohnen', 'geb-alter_grau', 'geb-alter_2'],
-                  endRangeParameter: 'FILTER_BIS',
-                  startRangeParameter: 'FILTER_VON',
+    it('should receive the data and transform it correctly', (done: DoneFn) => {
+      const configService = TestBed.inject(ConfigService);
+      const httpClient = TestBed.inject(HttpClient);
+      const data: TopicsListData = {
+        categories: [
+          {
+            title: 'Raumplanung, Zonenpläne',
+            topics: [
+              {
+                topic: 'StatGebAlterZH',
+                title: 'Gebäudealter',
+                print_title: 'Gebäudealter',
+                icon: '/images/custom/themekl-statgebalterzh.gif',
+                organisation: 'Statistisches Amt',
+                geolion_karten_uuid: '246fe226-ead7-4f91-b735-d294994913e0',
+                geolion_gdd: null,
+                keywords: ['Gebäudealter', 'stat', 'obs', 'fap', 'denkk', 'fsla'],
+                notice: null,
+                opacity: 0.1337,
+                timesliderConfiguration: {
+                  name: 'Aktueller Gebäudebestand nach Baujahr',
+                  source: {
+                    layerIdentifiers: ['geb-alter_wohnen', 'geb-alter_grau', 'geb-alter_2'],
+                    endRangeParameter: 'FILTER_BIS',
+                    startRangeParameter: 'FILTER_VON',
+                  },
+                  dateFormat: 'YYYY',
+                  sourceType: 'parameter',
+                  description: 'Gebäude bis 2020',
+                  maximumDate: '2020',
+                  minimumDate: '1850',
+                  minimalRange: 'P1Y',
+                  alwaysMaxRange: false,
                 },
-                dateFormat: 'YYYY',
-                sourceType: 'parameter',
-                description: 'Gebäude bis 2020',
-                maximumDate: '2020',
-                minimumDate: '1850',
-                minimalRange: 'P1Y',
-                alwaysMaxRange: false,
+                filterConfigurations: [
+                  {
+                    name: 'Anzeigeoptionen nach Hauptnutzung',
+                    parameter: 'FILTER_GEBART',
+                    filterValues: [
+                      {
+                        name: 'Wohnen',
+                        values: ['Gebäude Wohnen'],
+                      },
+                      {
+                        name: 'Gewerbe und Verwaltung',
+                        values: ['Gebäude Landwirtschaft', 'Gebäude Industrie', 'Gebäude Verwaltung'],
+                      },
+                      {
+                        name: 'Andere',
+                        values: ['Nebengebäude', 'Gebäude Handel', 'Gebäude Gastgewerbe', 'Gebäude Verkehrswesen', 'unbekannt'],
+                      },
+                    ],
+                  },
+                ],
+                searchConfigurations: null,
+                wms_url: 'https://maps.zh.ch/wms/StatGebAlterZH',
+                gb2_url: 'https://maps.zh.ch/?topic=StatGebAlterZH',
+                layers: [
+                  {
+                    id: 132494,
+                    geolion_gds: null,
+                    geolion_geodatensatz_uuid: null,
+                    layer: 'geb-alter_wohnen',
+                    group_title: 'Gebäudealter - Polygone',
+                    title: 'Baujahr',
+                    min_scale: 1,
+                    max_scale: 100000,
+                    wms_sort: 9,
+                    toc_sort: 900,
+                    initially_visible: true,
+                    queryable: true,
+                  },
+                  {
+                    id: 132495,
+                    geolion_geodatensatz_uuid: null,
+                    geolion_gds: null,
+                    layer: 'geb-alter_grau',
+                    group_title: 'Gebäudealter - Polygone',
+                    title: 'Baujahr',
+                    min_scale: 1,
+                    max_scale: 100000,
+                    wms_sort: 10,
+                    toc_sort: 1000,
+                    initially_visible: false,
+                    queryable: false,
+                  },
+                  {
+                    id: 132496,
+                    geolion_geodatensatz_uuid: null,
+                    geolion_gds: null,
+                    layer: 'geb-alter_2',
+                    group_title: 'Gebäudealter',
+                    title: 'Gebäude mit Baujahr x und älter',
+                    min_scale: 100001,
+                    max_scale: 15000001,
+                    wms_sort: 11,
+                    toc_sort: 1100,
+                    initially_visible: true,
+                    queryable: false,
+                  },
+                ],
+                min_scale: null,
               },
-              filterConfigurations: [
+            ],
+          },
+        ],
+      };
+      const httpGetSpy = spyOn(httpClient, 'get').and.returnValue(of(data));
+
+      const expectedUrl = `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/topics`;
+      const expected: TopicsResponse = {
+        topics: [
+          {
+            title: 'Raumplanung, Zonenpläne',
+            maps: [
+              {
+                id: 'StatGebAlterZH',
+                title: 'Gebäudealter',
+                printTitle: 'Gebäudealter',
+                icon: `${configService.apiConfig.gb2StaticFiles.baseUrl}/images/custom/themekl-statgebalterzh.gif`,
+                organisation: 'Statistisches Amt',
+                uuid: '246fe226-ead7-4f91-b735-d294994913e0',
+                keywords: ['Gebäudealter', 'stat', 'obs', 'fap', 'denkk', 'fsla'],
+                notice: null,
+                opacity: 0.1337,
+                timeSliderConfiguration: {
+                  name: 'Aktueller Gebäudebestand nach Baujahr',
+                  source: {
+                    layerIdentifiers: ['geb-alter_wohnen', 'geb-alter_grau', 'geb-alter_2'],
+                    endRangeParameter: 'FILTER_BIS',
+                    startRangeParameter: 'FILTER_VON',
+                  },
+                  dateFormat: 'YYYY',
+                  sourceType: 'parameter',
+                  description: 'Gebäude bis 2020',
+                  maximumDate: '2020',
+                  minimumDate: '1850',
+                  minimalRange: 'P1Y',
+                  alwaysMaxRange: false,
+                  range: undefined,
+                },
+                filterConfigurations: [
+                  {
+                    name: 'Anzeigeoptionen nach Hauptnutzung',
+                    parameter: 'FILTER_GEBART',
+                    filterValues: [
+                      {
+                        name: 'Wohnen',
+                        values: ['Gebäude Wohnen'],
+                        isActive: false,
+                      },
+                      {
+                        name: 'Gewerbe und Verwaltung',
+                        values: ['Gebäude Landwirtschaft', 'Gebäude Industrie', 'Gebäude Verwaltung'],
+                        isActive: false,
+                      },
+                      {
+                        name: 'Andere',
+                        values: ['Nebengebäude', 'Gebäude Handel', 'Gebäude Gastgewerbe', 'Gebäude Verkehrswesen', 'unbekannt'],
+                        isActive: false,
+                      },
+                    ],
+                    description: undefined,
+                  },
+                ],
+                searchConfigurations: undefined,
+                wmsUrl: 'https://maps.zh.ch/wms/StatGebAlterZH',
+                gb2Url: 'https://maps.zh.ch/?topic=StatGebAlterZH',
+                layers: [
+                  {
+                    id: 132496,
+                    uuid: null,
+                    layer: 'geb-alter_2',
+                    groupTitle: 'Gebäudealter',
+                    title: 'Gebäude mit Baujahr x und älter',
+                    minScale: 100001,
+                    maxScale: 15000001,
+                    wmsSort: 11,
+                    tocSort: 1100,
+                    visible: true,
+                    initiallyVisible: true,
+                    queryable: false,
+                    isHidden: false,
+                    permissionMissing: undefined,
+                  },
+                  {
+                    id: 132495,
+                    uuid: null,
+                    layer: 'geb-alter_grau',
+                    groupTitle: 'Gebäudealter - Polygone',
+                    title: 'Baujahr',
+                    minScale: 1,
+                    maxScale: 100000,
+                    wmsSort: 10,
+                    tocSort: 1000,
+                    visible: false,
+                    initiallyVisible: false,
+                    queryable: false,
+                    isHidden: false,
+                    permissionMissing: undefined,
+                  },
+                  {
+                    id: 132494,
+                    uuid: null,
+                    layer: 'geb-alter_wohnen',
+                    groupTitle: 'Gebäudealter - Polygone',
+                    title: 'Baujahr',
+                    minScale: 1,
+                    maxScale: 100000,
+                    wmsSort: 9,
+                    tocSort: 900,
+                    queryable: true,
+                    visible: true,
+                    initiallyVisible: true,
+                    isHidden: false,
+                    permissionMissing: undefined,
+                  },
+                ],
+                minScale: null,
+                permissionMissing: undefined,
+              },
+            ],
+          },
+        ],
+      };
+
+      service.loadTopics().subscribe((actual) => {
+        expect(httpGetSpy).toHaveBeenCalledOnceWith(expectedUrl);
+        expect(actual).toEqual(expected);
+        done();
+      });
+    });
+  });
+
+  describe('loadLegends', () => {
+    it('should receive the data and transform it correctly', (done: DoneFn) => {
+      const configService = TestBed.inject(ConfigService);
+      const httpClient = TestBed.inject(HttpClient);
+      const data: TopicsLegendDetailData = {
+        legend: {
+          topic: 'Lageklassen2003ZH',
+          geolion_gdd: null,
+          geolion_karten_uuid: 'aaaa-bbbb-cccc-dddd',
+          layers: [
+            {
+              layer: 'haltestellen',
+              title: 'Haltestellen',
+              geolion_gds: 140,
+              geolion_geodatensatz_uuid: null,
+            },
+            {
+              layer: 'lageklassen-2003-einzelobjekte',
+              title: 'Lageklassen 2003 (Einzelobjekte)',
+              geolion_gds: 147,
+              geolion_geodatensatz_uuid: '96d404bb-7b29-e291-42f5-1e42086ffa43',
+              layer_classes: [
                 {
-                  name: 'Anzeigeoptionen nach Hauptnutzung',
-                  parameter: 'FILTER_GEBART',
-                  filterValues: [
-                    {
-                      name: 'Wohnen',
-                      values: ['Gebäude Wohnen'],
+                  label: 'Lageklasse 1',
+                  image: '/images/custom/lageklassen2003zh/lageklassen-2003-einzelobjekte0.png',
+                },
+                {
+                  label: 'Lageklasse 2',
+                  image: '/images/custom/lageklassen2003zh/lageklassen-2003-einzelobjekte1.png',
+                },
+                {
+                  label: 'Lageklasse 3',
+                  image: '/images/custom/lageklassen2003zh/lageklassen-2003-einzelobjekte2.png',
+                },
+                {
+                  label: 'Lageklasse 4',
+                  image: '/images/custom/lageklassen2003zh/lageklassen-2003-einzelobjekte3.png',
+                },
+                {
+                  label: 'Lageklasse 5',
+                  image: '/images/custom/lageklassen2003zh/lageklassen-2003-einzelobjekte4.png',
+                },
+                {
+                  label: 'Lageklasse 6',
+                  image: '/images/custom/lageklassen2003zh/lageklassen-2003-einzelobjekte5.png',
+                },
+                {
+                  label: 'Lageklasse 7',
+                  image: '/images/custom/lageklassen2003zh/lageklassen-2003-einzelobjekte6.png',
+                },
+              ],
+            },
+            {
+              layer: 'lageklassen-2003-flaechen',
+              title: 'Lageklassen 2003 (Flächen)',
+              geolion_gds: 147,
+              geolion_geodatensatz_uuid: '96d404bb-7b29-e291-42f5-1e42086ffa43',
+              layer_classes: [
+                {
+                  label: 'Lageklasse 1',
+                  image: '/images/custom/lageklassen2003zh/lageklassen-2003-flaechen0.png',
+                },
+                {
+                  label: 'Lageklasse 2',
+                  image: '/images/custom/lageklassen2003zh/lageklassen-2003-flaechen1.png',
+                },
+                {
+                  label: 'Lageklasse 3',
+                  image: '/images/custom/lageklassen2003zh/lageklassen-2003-flaechen2.png',
+                },
+                {
+                  label: 'Lageklasse 4',
+                  image: '/images/custom/lageklassen2003zh/lageklassen-2003-flaechen3.png',
+                },
+                {
+                  label: 'Lageklasse 5',
+                  image: '/images/custom/lageklassen2003zh/lageklassen-2003-flaechen4.png',
+                },
+                {
+                  label: 'Lageklasse 6',
+                  image: '/images/custom/lageklassen2003zh/lageklassen-2003-flaechen5.png',
+                },
+                {
+                  label: 'Lageklasse 7',
+                  image: '/images/custom/lageklassen2003zh/lageklassen-2003-flaechen6.png',
+                },
+              ],
+            },
+          ],
+        },
+      };
+      const httpGetSpy = spyOn(httpClient, 'get').and.returnValue(of(data));
+      const queryTopics: QueryTopic[] = [
+        {
+          topic: 'Lageklassen2003ZH',
+          isSingleLayer: false,
+          layersToQuery: 'haltestellen,lageklassen-2003-einzelobjekte,lageklassen-2003-flaechen',
+        },
+      ];
+
+      const expectedUrl =
+        `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/` +
+        `topics/Lageklassen2003ZH/legend?layer=haltestellen%2Clageklassen-2003-einzelobjekte%2Clageklassen-2003-flaechen`;
+      const expected: LegendResponse[] = [
+        {
+          legend: {
+            topic: 'Lageklassen2003ZH',
+            isSingleLayer: false,
+            metaDataLink: '/data/maps/aaaa-bbbb-cccc-dddd',
+            layers: [
+              {
+                layer: 'haltestellen',
+                title: 'Haltestellen',
+                geolion: 140,
+                metaDataLink: undefined,
+                layerClasses: undefined,
+                attribution: undefined,
+              },
+              {
+                layer: 'lageklassen-2003-einzelobjekte',
+                title: 'Lageklassen 2003 (Einzelobjekte)',
+                geolion: 147,
+                metaDataLink: '/data/datasets/96d404bb-7b29-e291-42f5-1e42086ffa43',
+                layerClasses: [
+                  {
+                    label: 'Lageklasse 1',
+                    image: '/images/custom/lageklassen2003zh/lageklassen-2003-einzelobjekte0.png',
+                  },
+                  {
+                    label: 'Lageklasse 2',
+                    image: '/images/custom/lageklassen2003zh/lageklassen-2003-einzelobjekte1.png',
+                  },
+                  {
+                    label: 'Lageklasse 3',
+                    image: '/images/custom/lageklassen2003zh/lageklassen-2003-einzelobjekte2.png',
+                  },
+                  {
+                    label: 'Lageklasse 4',
+                    image: '/images/custom/lageklassen2003zh/lageklassen-2003-einzelobjekte3.png',
+                  },
+                  {
+                    label: 'Lageklasse 5',
+                    image: '/images/custom/lageklassen2003zh/lageklassen-2003-einzelobjekte4.png',
+                  },
+                  {
+                    label: 'Lageklasse 6',
+                    image: '/images/custom/lageklassen2003zh/lageklassen-2003-einzelobjekte5.png',
+                  },
+                  {
+                    label: 'Lageklasse 7',
+                    image: '/images/custom/lageklassen2003zh/lageklassen-2003-einzelobjekte6.png',
+                  },
+                ],
+                attribution: undefined,
+              },
+              {
+                layer: 'lageklassen-2003-flaechen',
+                title: 'Lageklassen 2003 (Flächen)',
+                geolion: 147,
+                metaDataLink: '/data/datasets/96d404bb-7b29-e291-42f5-1e42086ffa43',
+                layerClasses: [
+                  {
+                    label: 'Lageklasse 1',
+                    image: '/images/custom/lageklassen2003zh/lageklassen-2003-flaechen0.png',
+                  },
+                  {
+                    label: 'Lageklasse 2',
+                    image: '/images/custom/lageklassen2003zh/lageklassen-2003-flaechen1.png',
+                  },
+                  {
+                    label: 'Lageklasse 3',
+                    image: '/images/custom/lageklassen2003zh/lageklassen-2003-flaechen2.png',
+                  },
+                  {
+                    label: 'Lageklasse 4',
+                    image: '/images/custom/lageklassen2003zh/lageklassen-2003-flaechen3.png',
+                  },
+                  {
+                    label: 'Lageklasse 5',
+                    image: '/images/custom/lageklassen2003zh/lageklassen-2003-flaechen4.png',
+                  },
+                  {
+                    label: 'Lageklasse 6',
+                    image: '/images/custom/lageklassen2003zh/lageklassen-2003-flaechen5.png',
+                  },
+                  {
+                    label: 'Lageklasse 7',
+                    image: '/images/custom/lageklassen2003zh/lageklassen-2003-flaechen6.png',
+                  },
+                ],
+                attribution: undefined,
+              },
+            ],
+          },
+        },
+      ];
+
+      service.loadLegends(queryTopics).subscribe((actual) => {
+        expect(httpGetSpy).toHaveBeenCalledOnceWith(expectedUrl);
+        expect(actual).toEqual(expected);
+        done();
+      });
+    });
+  });
+
+  describe('loadFeatureInfos', () => {
+    it('should receive the data and transform it correctly', (done: DoneFn) => {
+      const configService = TestBed.inject(ConfigService);
+      const httpClient = TestBed.inject(HttpClient);
+      const data: TopicsFeatureInfoDetailData = {
+        feature_info: {
+          query_position: {
+            x: 2682707.901193953,
+            y: 1247901.6586536092,
+            srid: 2056,
+          },
+          results: {
+            topic: 'AVfarbigZH',
+            geolion_gdd: 263,
+            geolion_karten_uuid: '26d7c027-38f2-42cb-a17a-99f17a2e383e',
+            layers: [
+              {
+                layer: 'RESF-1',
+                title: 'Liegenschaften',
+                geolion_gds: 447,
+                geolion_geodatensatz_uuid: 'f1cb4419-8bab-ed44-ab87-d65b73da882c',
+                features: [
+                  {
+                    fid: 179992462,
+                    fields: [
+                      {
+                        label: 'BFSNr',
+                        value: 261,
+                      },
+                      {
+                        label: 'Nummer',
+                        value: 'AU5641',
+                      },
+                      {
+                        label: 'EGRIS_EGRID',
+                        value: 'CH327810999162',
+                      },
+                      {
+                        label: 'Vollständigkeit',
+                        value: 'Vollstaendig',
+                      },
+                      {
+                        label: 'Fläche [m\u0026sup2;]',
+                        value: 2874,
+                      },
+                    ],
+                    bbox: [2682671.789999999, 1247866.0890000015, 2682753.579, 1247937.0270000026],
+                    geometry: {
+                      type: 'MultiPolygon',
+                      crs: {
+                        type: 'name',
+                        properties: {
+                          name: 'EPSG:2056',
+                        },
+                      },
+                      coordinates: [
+                        [
+                          [
+                            [2682753.58, 1247894.45],
+                            [2682745.34, 1247885.4],
+                            [2682743.1, 1247887.41],
+                            [2682753.58, 1247894.45],
+                          ],
+                        ],
+                      ],
                     },
-                    {
-                      name: 'Gewerbe und Verwaltung',
-                      values: ['Gebäude Landwirtschaft', 'Gebäude Industrie', 'Gebäude Verwaltung'],
+                  },
+                ],
+              },
+              {
+                layer: 'LCSFC-1',
+                title: 'Bodenbedeckung farbig',
+                geolion_gds: 443,
+                geolion_geodatensatz_uuid: 'fb89c857-84d3-73a4-abbc-39415b21f8c9',
+                features: [
+                  {
+                    fid: 422973978,
+                    fields: [
+                      {
+                        label: 'BFSNr',
+                        value: 261,
+                      },
+                      {
+                        label: 'Qualität',
+                        value: 'AV93',
+                      },
+                      {
+                        label: 'Art',
+                        value: 'Gebäude Verwaltung',
+                      },
+                      {
+                        label: 'GWR_EGID',
+                        value: 302019364,
+                      },
+                      {
+                        label: 'GVZ Nr.',
+                        value: 'AU04950',
+                      },
+                      {
+                        label: 'Geometrie [m\u0026sup2;]',
+                        value: 2159.843540479304,
+                      },
+                    ],
+                    bbox: [2682674.557, 1247872.6230000034, 2682747.420000002, 1247933.7089999989],
+                    geometry: {
+                      type: 'MultiPolygon',
+                      crs: {
+                        type: 'name',
+                        properties: {
+                          name: 'EPSG:2056',
+                        },
+                      },
+                      coordinates: [
+                        [
+                          [
+                            [2682714.88, 1247921.79],
+                            [2682715.89, 1247922.88],
+                            [2682725.14, 1247914.48],
+                            [2682714.88, 1247921.79],
+                          ],
+                        ],
+                      ],
                     },
+                  },
+                ],
+              },
+              {
+                layer: 'MBSF-1',
+                title: 'Gemeindegrenzen',
+                geolion_gds: 0,
+                geolion_geodatensatz_uuid: null,
+                features: [
+                  {
+                    fid: 76900,
+                    fields: [
+                      {
+                        label: 'BFSNr',
+                        value: 261,
+                      },
+                      {
+                        label: 'Name',
+                        value: 'Zürich',
+                      },
+                      {
+                        label: 'Stand AV',
+                        value: '11.12.2023',
+                      },
+                    ],
+                    bbox: [2676224.6939999983, 1241584.1049999967, 2689665.811999999, 1254306.2330000028],
+                    geometry: {
+                      type: 'MultiPolygon',
+                      crs: {
+                        type: 'name',
+                        properties: {
+                          name: 'EPSG:2056',
+                        },
+                      },
+                      coordinates: [
+                        [
+                          [
+                            [2680344.89, 1254235.87],
+                            [2680364.91, 1254226.92],
+                            [2680381.62, 1254221.95],
+                            [2680344.89, 1254235.87],
+                          ],
+                        ],
+                      ],
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      };
+      const httpGetSpy = spyOn(httpClient, 'get').and.returnValue(of(data));
+      const x = 1337;
+      const y = 42.666;
+      const queryTopics: QueryTopic[] = [
+        {
+          topic: 'AVfarbigZH',
+          isSingleLayer: false,
+          layersToQuery: 'TBLI-1,MBSF-1,RESF-1,SOSFC-1,LCSFC-1',
+        },
+      ];
+
+      const expectedUrl =
+        `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/` +
+        `topics/AVfarbigZH/feature_info?bbox=1337%2C42.666%2C1337%2C42.666&queryLayers=TBLI-1%2CMBSF-1%2CRESF-1%2CSOSFC-1%2CLCSFC-1`;
+      const expected: FeatureInfoResponse[] = [
+        {
+          featureInfo: {
+            x: 2682707.901193953,
+            y: 1247901.6586536092,
+            results: {
+              isSingleLayer: false,
+              topic: 'AVfarbigZH',
+              metaDataLink: '/data/maps/26d7c027-38f2-42cb-a17a-99f17a2e383e',
+              layers: [
+                {
+                  layer: 'RESF-1',
+                  title: 'Liegenschaften',
+                  metaDataLink: '/data/datasets/f1cb4419-8bab-ed44-ab87-d65b73da882c',
+                  features: [
                     {
-                      name: 'Andere',
-                      values: ['Nebengebäude', 'Gebäude Handel', 'Gebäude Gastgewerbe', 'Gebäude Verkehrswesen', 'unbekannt'],
+                      fid: 179992462,
+                      fields: [
+                        {
+                          label: 'BFSNr',
+                          value: 261,
+                        },
+                        {
+                          label: 'Nummer',
+                          value: 'AU5641',
+                        },
+                        {
+                          label: 'EGRIS_EGRID',
+                          value: 'CH327810999162',
+                        },
+                        {
+                          label: 'Vollständigkeit',
+                          value: 'Vollstaendig',
+                        },
+                        {
+                          label: 'Fläche [m\u0026sup2;]',
+                          value: 2874,
+                        },
+                      ],
+                      bbox: [2682671.789999999, 1247866.0890000015, 2682753.579, 1247937.0270000026],
+                      geometry: {
+                        type: 'MultiPolygon',
+                        coordinates: [
+                          [
+                            [
+                              [2682753.58, 1247894.45],
+                              [2682745.34, 1247885.4],
+                              [2682743.1, 1247887.41],
+                              [2682753.58, 1247894.45],
+                            ],
+                          ],
+                        ],
+                        srs: 2056,
+                      },
+                    },
+                  ],
+                },
+                {
+                  layer: 'LCSFC-1',
+                  title: 'Bodenbedeckung farbig',
+                  metaDataLink: '/data/datasets/fb89c857-84d3-73a4-abbc-39415b21f8c9',
+                  features: [
+                    {
+                      fid: 422973978,
+                      fields: [
+                        {
+                          label: 'BFSNr',
+                          value: 261,
+                        },
+                        {
+                          label: 'Qualität',
+                          value: 'AV93',
+                        },
+                        {
+                          label: 'Art',
+                          value: 'Gebäude Verwaltung',
+                        },
+                        {
+                          label: 'GWR_EGID',
+                          value: 302019364,
+                        },
+                        {
+                          label: 'GVZ Nr.',
+                          value: 'AU04950',
+                        },
+                        {
+                          label: 'Geometrie [m\u0026sup2;]',
+                          value: 2159.843540479304,
+                        },
+                      ],
+                      bbox: [2682674.557, 1247872.6230000034, 2682747.420000002, 1247933.7089999989],
+                      geometry: {
+                        type: 'MultiPolygon',
+                        coordinates: [
+                          [
+                            [
+                              [2682714.88, 1247921.79],
+                              [2682715.89, 1247922.88],
+                              [2682725.14, 1247914.48],
+                              [2682714.88, 1247921.79],
+                            ],
+                          ],
+                        ],
+                        srs: 2056,
+                      },
+                    },
+                  ],
+                },
+                {
+                  layer: 'MBSF-1',
+                  title: 'Gemeindegrenzen',
+                  metaDataLink: undefined,
+                  features: [
+                    {
+                      fid: 76900,
+                      fields: [
+                        {
+                          label: 'BFSNr',
+                          value: 261,
+                        },
+                        {
+                          label: 'Name',
+                          value: 'Zürich',
+                        },
+                        {
+                          label: 'Stand AV',
+                          value: '11.12.2023',
+                        },
+                      ],
+                      bbox: [2676224.6939999983, 1241584.1049999967, 2689665.811999999, 1254306.2330000028],
+                      geometry: {
+                        type: 'MultiPolygon',
+                        coordinates: [
+                          [
+                            [
+                              [2680344.89, 1254235.87],
+                              [2680364.91, 1254226.92],
+                              [2680381.62, 1254221.95],
+                              [2680344.89, 1254235.87],
+                            ],
+                          ],
+                        ],
+                        srs: 2056,
+                      },
                     },
                   ],
                 },
               ],
-              searchConfigurations: null,
-              wms_url: 'https://maps.zh.ch/wms/StatGebAlterZH',
-              gb2_url: 'https://maps.zh.ch/?topic=StatGebAlterZH',
-              layers: [
-                {
-                  id: 132494,
-                  geolion_gds: null,
-                  geolion_geodatensatz_uuid: null,
-                  layer: 'geb-alter_wohnen',
-                  group_title: 'Gebäudealter - Polygone',
-                  title: 'Baujahr',
-                  min_scale: 1,
-                  max_scale: 100000,
-                  wms_sort: 9,
-                  toc_sort: 900,
-                  initially_visible: true,
-                  queryable: true,
-                },
-                {
-                  id: 132495,
-                  geolion_geodatensatz_uuid: null,
-                  geolion_gds: null,
-                  layer: 'geb-alter_grau',
-                  group_title: 'Gebäudealter - Polygone',
-                  title: 'Baujahr',
-                  min_scale: 1,
-                  max_scale: 100000,
-                  wms_sort: 10,
-                  toc_sort: 1000,
-                  initially_visible: false,
-                  queryable: false,
-                },
-                {
-                  id: 132496,
-                  geolion_geodatensatz_uuid: null,
-                  geolion_gds: null,
-                  layer: 'geb-alter_2',
-                  group_title: 'Gebäudealter',
-                  title: 'Gebäude mit Baujahr x und älter',
-                  min_scale: 100001,
-                  max_scale: 15000001,
-                  wms_sort: 11,
-                  toc_sort: 1100,
-                  initially_visible: true,
-                  queryable: false,
-                },
-              ],
-              min_scale: null,
             },
-          ],
+          },
         },
-      ],
-    };
+      ];
 
-    it('should receive the data and transform it correctly', (done: DoneFn) => {
-      const configService = TestBed.inject(ConfigService);
-      const httpClient = TestBed.inject(HttpClient);
-      spyOn(httpClient, 'get').and.returnValue(of(mockData));
-      service.loadTopics().subscribe((topicsResponse) => {
-        expect(topicsResponse).toBeDefined();
-        expect(topicsResponse.topics.length).toBe(1);
-
-        // =============================
-        // API category === GB3 topic
-        // API topic === GB3 map
-        // API layer === GB3 layer
-        // =============================
-
-        const expectedTopic = mockData.categories[0];
-        const responseTopic = topicsResponse.topics.find((topic) => topic.title === expectedTopic.title);
-        expect(responseTopic).toBeDefined();
-
-        expectedTopic.topics.forEach((expectedMap) => {
-          const responseMap = responseTopic?.maps.find((map) => map.id === expectedMap.topic);
-          expect(responseMap).toBeDefined();
-          if (responseMap) {
-            expect(responseMap.title).toBe(expectedMap.title);
-            expect(responseMap.gb2Url).toBe(expectedMap.gb2_url);
-            expect(responseMap.filterConfigurations?.length).toBe(expectedMap.filterConfigurations.length);
-            expect(responseMap.keywords.length).toBe(expectedMap.keywords.length);
-            expect(responseMap.icon).toBe(`${configService.apiConfig.gb2StaticFiles.baseUrl}${expectedMap.icon}`);
-            expect(responseMap.layers.length).toBe(expectedMap.layers.length);
-            expect(responseMap.minScale).toBe(expectedMap.min_scale);
-            expect(responseMap.notice).toBe(expectedMap.notice);
-            expect(responseMap.organisation).toBe(expectedMap.organisation);
-            expect(responseMap.searchConfigurations?.length).toBe(expectedMap.searchConfigurations?.length);
-            expect(responseMap.timeSliderConfiguration?.name).toBe(expectedMap.timesliderConfiguration.name);
-            expect(responseMap.wmsUrl).toBe(expectedMap.wms_url);
-            expect(responseMap.uuid).toBe(expectedMap.geolion_karten_uuid);
-
-            // test layer order (which must be inverted)
-            expectedMap.layers.forEach((expectedLayer, index) => {
-              const position = expectedMap.layers.length - 1 - index;
-              const responseLayer = responseMap.layers[position];
-              expect(responseLayer.id).toBe(expectedLayer.id);
-              expect(responseLayer.layer).toBe(expectedLayer.layer);
-              expect(responseLayer.title).toBe(expectedLayer.title);
-              expect(responseLayer.visible).toBe(expectedLayer.initially_visible);
-              expect(responseLayer.uuid).toBe(expectedLayer.geolion_geodatensatz_uuid);
-            });
-          }
-        });
+      service.loadFeatureInfos(x, y, queryTopics).subscribe((actual) => {
+        expect(httpGetSpy).toHaveBeenCalledOnceWith(expectedUrl);
+        expect(actual).toEqual(expected);
         done();
       });
     });

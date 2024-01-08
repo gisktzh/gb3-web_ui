@@ -1,5 +1,4 @@
 import {Injectable} from '@angular/core';
-import {Geometry} from 'geojson';
 import {forkJoin, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {DataCataloguePage} from '../../../enums/data-catalogue-page.enum';
@@ -19,13 +18,12 @@ import {
   WmsFilterValue,
 } from '../../../interfaces/topic.interface';
 import {TopicsFeatureInfoDetailData, TopicsLegendDetailData, TopicsListData} from '../../../models/gb3-api-generated.interfaces';
-import {SupportedSrs} from '../../../types/supported-srs.type';
 import {Gb3ApiService} from './gb3-api.service';
 
 import {InvalidTimeSliderConfiguration} from '../../../errors/map.errors';
 import {QueryTopic} from '../../../interfaces/query-topic.interface';
+import {ApiGeojsonGeometryToGb3ConverterUtils} from '../../../utils/api-geojson-geometry-to-gb3-converter.utils';
 
-const FEATURE_INFO_SRS: SupportedSrs = 2056;
 const INACTIVE_STRING_FILTER_VALUE = '';
 const INACTIVE_NUMBER_FILTER_VALUE = -1;
 
@@ -158,6 +156,7 @@ export class Gb3TopicsService extends Gb3ApiService {
               title: topic.title,
               keywords: topic.keywords,
               permissionMissing: topic.permission_missing,
+              opacity: topic.opacity,
               layers: topic.layers
                 .map(
                   (layer): MapLayer => ({
@@ -310,14 +309,16 @@ export class Gb3TopicsService extends Gb3ApiService {
                 return {
                   fid: feature.fid,
                   bbox: feature.bbox,
-                  fields: feature.fields.map((field) => {
+                  fields: feature.fields.map((field): FeatureInfoResultFeatureField => {
                     return {
                       label: field.label,
                       value: field.value,
-                    } as FeatureInfoResultFeatureField;
+                    };
                   }),
-                  // The cast is required because the API typing delivers "type: string" which is not narrow enough
-                  geometry: {...(feature.geometry as Geometry), srs: FEATURE_INFO_SRS},
+                  geometry: {
+                    ...ApiGeojsonGeometryToGb3ConverterUtils.convert(feature.geometry),
+                    srs: this.configService.mapConfig.defaultMapConfig.srsId,
+                  },
                 };
               }),
             };
