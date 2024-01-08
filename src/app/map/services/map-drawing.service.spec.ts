@@ -100,4 +100,27 @@ describe('MapDrawingService', () => {
       expect(mapServiceSpy).toHaveBeenCalledOnceWith(extentWidth, extentHeight, rotation);
     });
   });
+
+  describe('drawSearchResultHighlight', () => {
+    it('calls mapService.clearInternalDrawingLayer and mapService.addGeometryToInternalDrawingLayer with the geometry and correct layer', () => {
+      const mapServiceAddGeometrySpy = spyOn(mapService, 'addGeometryToInternalDrawingLayer').and.callThrough();
+      const mapServiceClearSpy = spyOn(mapService, 'clearInternalDrawingLayer').and.callThrough();
+      const mockGeometry = MinimalGeometriesUtils.getMinimalLineString(2056);
+
+      service.drawSearchResultHighlight(mockGeometry);
+
+      expect(mapServiceClearSpy).toHaveBeenCalledOnceWith(InternalDrawingLayer.SearchResultHighlight);
+      expect(mapServiceAddGeometrySpy).toHaveBeenCalledOnceWith(mockGeometry, InternalDrawingLayer.SearchResultHighlight);
+    });
+  });
+
+  describe('clearSearchResultHighlight', () => {
+    it('calls mapService.clearInternalDrawingLayer with the correct layer', () => {
+      const mapServiceSpy = spyOn(mapService, 'clearInternalDrawingLayer').and.callThrough();
+
+      service.clearSearchResultHighlight();
+
+      expect(mapServiceSpy).toHaveBeenCalledOnceWith(InternalDrawingLayer.SearchResultHighlight);
+    });
+  });
 });

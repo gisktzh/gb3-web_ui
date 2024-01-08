@@ -5,6 +5,7 @@ export enum InternalDrawingLayer {
   PrintPreview = 'print_preview',
   Selection = 'selection',
   ElevationProfile = 'elevation_profile',
+  SearchResultHighlight = 'search_result_highlight',
 }
 
 export enum UserDrawingLayer {
