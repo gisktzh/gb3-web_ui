@@ -7,7 +7,7 @@ export class ColorUtils {
   public static convertHexToSymbolizationColor(hex: string, a: number = 1.0): SymbolizationColor {
     hex = hex.startsWith('#') ? hex.slice(1) : hex;
 
-    while (hex.length !== HEX_FORMAT_LENGTH) {
+    while (hex.length < HEX_FORMAT_LENGTH) {
       hex = `0${hex}`;
     }
     const r = parseInt(hex.slice(0, 2), 16);

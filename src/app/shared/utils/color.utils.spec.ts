@@ -44,7 +44,7 @@ describe('ColorUtils', () => {
       expect(actual).toEqual(expected);
     });
     it('converts a Hex value to RGBA correctly when alpha is too large', () => {
-      const hexColor = '#6699';
+      const hexColor = '#006699';
       const alpha = 1.6;
 
       const actual = ColorUtils.convertHexToSymbolizationColor(hexColor, alpha);
@@ -56,19 +56,19 @@ describe('ColorUtils', () => {
       };
       expect(actual).toEqual(expected);
     });
-    // it('converts a Hex value to RGBA correctly when input is too long', () => {
-    //   const hexColor = '#00669999';
-    //   const alpha = 0.6;
-    //
-    //   const actual = ColorUtils.convertHexToSymbolizationColor(hexColor, alpha);
-    //   const expected: SymbolizationColor = {
-    //     r: 0,
-    //     g: 102,
-    //     b: 153,
-    //     a: alpha,
-    //   };
-    //   expect(actual).toEqual(expected);
-    // });
+    it('converts a Hex value to RGBA correctly when input is too long', () => {
+      const hexColor = '#00669999';
+      const alpha = 0.6;
+
+      const actual = ColorUtils.convertHexToSymbolizationColor(hexColor, alpha);
+      const expected: SymbolizationColor = {
+        r: 0,
+        g: 102,
+        b: 153,
+        a: alpha,
+      };
+      expect(actual).toEqual(expected);
+    });
     it('should throw an error for invalid Hex values', () => {
       const hexColor = '#QQ6699';
       expect(() => ColorUtils.convertHexToSymbolizationColor(hexColor)).toThrow(new InvalidHexFormat());
