@@ -1,6 +1,6 @@
 <div class="embedded-map-page" *ngIf="isEmbedded; else notEmbeddedError">
   <map-container *ngIf="initializeApplicationLoadingState === 'loaded'"></map-container>
-  <legend-overlay class="embedded-map-page__overlay" [showInteractiveElements]="false"></legend-overlay>
+  <legend-overlay class="embedded-map-page__overlay" [showInteractiveElements]="false" [isEmbedded]="isEmbedded"></legend-overlay>
   <feature-info-overlay
     *ngIf="showFeatureInfoOverlay"
     [showInteractiveElements]="false"

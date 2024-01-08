@@ -20,11 +20,12 @@ import {LegendDisplay} from '../../../shared/interfaces/legend.interface';
 export class LegendOverlayComponent implements OnInit, OnDestroy {
   /** A value indicating whether interactive elements (like buttons) should be shown. [Default: true] */
   @Input() public showInteractiveElements: boolean = true;
+  @Input() public isEmbedded: boolean = false;
 
   public isVisible = false;
   public loadingState: LoadingState;
   public printLoadingState: LoadingState;
-  public screenMode: ScreenMode = 'mobile';
+  public screenMode: ScreenMode = 'regular';
   public legendItems: LegendDisplay[] = [];
 
   private readonly isLegendOverlayVisible$ = this.store.select(selectIsLegendOverlayVisible);
@@ -55,7 +56,16 @@ export class LegendOverlayComponent implements OnInit, OnDestroy {
   private initSubscriptions() {
     this.subscriptions.add(this.loadingState$.pipe(tap((value) => (this.loadingState = value))).subscribe());
     this.subscriptions.add(this.printLoadingState$.pipe(tap((value) => (this.printLoadingState = value))).subscribe());
-    this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
+    this.subscriptions.add(
+      this.screenMode$
+        .pipe(
+          tap((screenMode) => {
+            console.log(screenMode);
+            this.screenMode = screenMode;
+          }),
+        )
+        .subscribe(),
+    );
     this.subscriptions.add(this.isLegendOverlayVisible$.pipe(tap((isVisible) => (this.isVisible = isVisible))).subscribe());
     this.subscriptions.add(this.legendItems$.pipe(tap((items) => (this.legendItems = items))).subscribe());
   }
