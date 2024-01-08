@@ -2,7 +2,6 @@
   <map-container *ngIf="initializeApplicationLoadingState === 'loaded'"></map-container>
   <legend-overlay class="embedded-map-page__overlay" [showInteractiveElements]="false" [isEmbedded]="isEmbedded"></legend-overlay>
   <feature-info-overlay
-    *ngIf="showFeatureInfoOverlay"
     [showInteractiveElements]="false"
     class="embedded-map-page__overlay embedded-map-page__overlay--right"
   ></feature-info-overlay>
