@@ -24,7 +24,7 @@ describe('external map item reducer', () => {
   });
 
   describe('loadItem', () => {
-    it('sets the loading state to `loading`; resets everything else', () => {
+    it('sets the loading state to `loading`', () => {
       const expectedLoadingState: LoadingState = 'loading';
 
       const action = ExternalMapItemActions.loadItem({url: 'some url', serviceType: 'wms'});
@@ -35,7 +35,7 @@ describe('external map item reducer', () => {
   });
 
   describe('setItem', () => {
-    it('sets the loading state to `loaded`; resets everything else', () => {
+    it('sets the loading state to `loaded`', () => {
       existingState.loadingState = 'loading';
       const expectedLoadingState: LoadingState = 'loaded';
 
@@ -47,7 +47,7 @@ describe('external map item reducer', () => {
   });
 
   describe('setItemError', () => {
-    it('sets the loading state to `error`; resets everything else', () => {
+    it('sets the loading state to `error`', () => {
       const expectedLoadingState: LoadingState = 'error';
 
       const action = ExternalMapItemActions.setItemError({error: new Error('some error')});
@@ -58,7 +58,7 @@ describe('external map item reducer', () => {
   });
 
   describe('clearLoadingState', () => {
-    it('resets everything', () => {
+    it('resets the loading state', () => {
       const action = ExternalMapItemActions.clearLoadingState();
       const state = reducer(existingState, action);
 

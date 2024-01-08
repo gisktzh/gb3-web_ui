@@ -46,7 +46,7 @@ describe('selectIsAnyLayerSelected', () => {
     expect(actual).toBe(expected);
   });
 
-  it('returns `false` if at no layer is selected', () => {
+  it('returns `false` if no layer is selected', () => {
     const layerSelections: ExternalLayerSelection[] = [
       {layer: {type: 'kml', id: 1, title: 'one', visible: true}, isSelected: false},
       {layer: {type: 'kml', id: 2, title: 'two', visible: false}, isSelected: false},
@@ -102,7 +102,7 @@ describe('selectAreAllLayersSelected', () => {
 });
 
 describe('selectAreSomeButNotAllLayersSelected', () => {
-  it('returns `true` if at least on layer is selected but not all', () => {
+  it('returns `true` if at least one layer is selected but not all', () => {
     const areAllLayersSelected = false;
     const isAnyLayerSelected = true;
     const actual = selectAreSomeButNotAllLayersSelected.projector(areAllLayersSelected, isAnyLayerSelected);
