@@ -7,10 +7,8 @@ import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import Polygon from '@arcgis/core/geometry/Polygon';
 import {EsriPolygonSelectionStrategy} from './esri-polygon-selection.strategy';
 import {DataDownloadSelection} from '../../../../../../shared/interfaces/data-download-selection.interface';
-import {EsriSymbolizationService} from '../../../esri-symbolization.service';
 import {TestBed} from '@angular/core/testing';
 import {provideMockStore} from '@ngrx/store/testing';
-import {Gb3PolygonStyle} from '../../../../../../shared/interfaces/internal-drawing-representation.interface';
 
 class EsriPolygonSelectionStrategyWrapper extends EsriPolygonSelectionStrategy {
   public get svm() {
@@ -33,15 +31,12 @@ describe('EsriPolygonSelectionStrategy', () => {
   let mapView: MapView;
   let layer: GraphicsLayer;
   let fillSymbol: SimpleFillSymbol;
-  let esriSymbolizationService: EsriSymbolizationService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [],
       providers: [provideMockStore({})],
     });
-    esriSymbolizationService = TestBed.inject(EsriSymbolizationService);
-    spyOn(esriSymbolizationService, 'extractGb3SymbolizationFromSymbol').and.returnValue({} as Gb3PolygonStyle);
     mapView = new MapView({map: new Map()});
     layer = new GraphicsLayer({
       id: InternalDrawingLayer.Selection,
@@ -60,7 +55,6 @@ describe('EsriPolygonSelectionStrategy', () => {
         (selection) => callbackHandler.handle(selection),
         'polygon',
         2056,
-        esriSymbolizationService,
       );
 
       strategy.start();
@@ -80,7 +74,6 @@ describe('EsriPolygonSelectionStrategy', () => {
         (selection) => callbackHandler.handle(selection),
         'polygon',
         2056,
-        esriSymbolizationService,
       );
       const layerRemoveAllSpy = spyOn(layer, 'removeAll');
 
@@ -101,9 +94,9 @@ describe('EsriPolygonSelectionStrategy', () => {
         (selection) => callbackHandler.handle(selection),
         'polygon',
         2056,
-        esriSymbolizationService,
       );
       const graphic = new Graphic({
+        symbol: fillSymbol,
         geometry: new Polygon({
           spatialReference: {wkid: 2056},
           rings: [
@@ -117,7 +110,7 @@ describe('EsriPolygonSelectionStrategy', () => {
       });
 
       strategy.start();
-      strategy.svm.emit('create', {state: 'complete', graphic: graphic});
+      strategy.svm.emit('create', {state: 'complete', graphic});
 
       expect(callbackSpy).toHaveBeenCalledOnceWith(jasmine.objectContaining({type: 'polygon'}));
     });
@@ -132,7 +125,6 @@ describe('EsriPolygonSelectionStrategy', () => {
         (selection) => callbackHandler.handle(selection),
         'rectangle',
         2056,
-        esriSymbolizationService,
       );
       const spy = spyOn(strategy.svm, 'create');
 
@@ -149,7 +141,6 @@ describe('EsriPolygonSelectionStrategy', () => {
         (selection) => callbackHandler.handle(selection),
         'circle',
         2056,
-        esriSymbolizationService,
       );
       const spy = spyOn(strategy.svm, 'create');
 
@@ -166,7 +157,6 @@ describe('EsriPolygonSelectionStrategy', () => {
         (selection) => callbackHandler.handle(selection),
         'polygon',
         2056,
-        esriSymbolizationService,
       );
       const spy = spyOn(strategy.svm, 'create');
 

@@ -1,29 +1,16 @@
 import Graphic from '@arcgis/core/Graphic';
 import {Gb3StyledInternalDrawingRepresentation} from '../../../../shared/interfaces/internal-drawing-representation.interface';
 import {InternalDrawingLayer, UserDrawingLayer} from '../../../../shared/enums/drawing-layer.enum';
-import {EsriSymbolizationService} from '../esri-symbolization.service';
 import Color from '@arcgis/core/Color';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import Polygon from '@arcgis/core/geometry/Polygon';
 import {MapConstants} from '../../../../shared/constants/map.constants';
-import {TestBed} from '@angular/core/testing';
-import {provideMockStore} from '@ngrx/store/testing';
 import {EsriGraphicToInternalDrawingRepresentationUtils} from './esri-graphic-to-internal-drawing-representation.utils';
 import {UnsupportedGeometryType} from '../errors/esri.errors';
 import Polyline from '@arcgis/core/geometry/Polyline';
 import SimpleFillSymbolProperties = __esri.SimpleFillSymbolProperties;
 
 describe('EsriGraphicToInternalDrawingRepresentationUtils', () => {
-  let esriSymbolizationService: EsriSymbolizationService;
-
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [],
-      providers: [provideMockStore({})],
-    });
-    esriSymbolizationService = TestBed.inject(EsriSymbolizationService);
-  });
-
   it('converts an esri graphic to the GB3 internal drawing representation', () => {
     const fillColorHex = '#abcdef';
     const strokeColorHex = '#080085';
@@ -52,13 +39,7 @@ describe('EsriGraphicToInternalDrawingRepresentationUtils', () => {
       symbol: mockSymbol,
     });
 
-    const actual = EsriGraphicToInternalDrawingRepresentationUtils.convert(
-      graphic,
-      labelText,
-      2056,
-      InternalDrawingLayer.Selection,
-      esriSymbolizationService,
-    );
+    const actual = EsriGraphicToInternalDrawingRepresentationUtils.convert(graphic, labelText, 2056, InternalDrawingLayer.Selection);
     const expected: Gb3StyledInternalDrawingRepresentation = {
       type: 'Feature',
       source: InternalDrawingLayer.Selection,
@@ -96,14 +77,8 @@ describe('EsriGraphicToInternalDrawingRepresentationUtils', () => {
     const graphic = new Graphic({
       geometry: new Polyline(),
     });
-    expect(() =>
-      EsriGraphicToInternalDrawingRepresentationUtils.convert(
-        graphic,
-        undefined,
-        2056,
-        UserDrawingLayer.Drawings,
-        esriSymbolizationService,
-      ),
-    ).toThrow(new UnsupportedGeometryType('MultiLineString'));
+    expect(() => EsriGraphicToInternalDrawingRepresentationUtils.convert(graphic, undefined, 2056, UserDrawingLayer.Drawings)).toThrow(
+      new UnsupportedGeometryType('MultiLineString'),
+    );
   });
 });

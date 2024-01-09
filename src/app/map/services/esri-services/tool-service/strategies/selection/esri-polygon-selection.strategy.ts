@@ -5,7 +5,6 @@ import {AbstractEsriDrawableToolStrategy, SupportedEsriTool} from '../abstract-e
 import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
 import {InternalDrawingLayer} from '../../../../../../shared/enums/drawing-layer.enum';
 import {DataDownloadSelection} from '../../../../../../shared/interfaces/data-download-selection.interface';
-import {EsriSymbolizationService} from '../../../esri-symbolization.service';
 import {EsriGraphicToInternalDrawingRepresentationUtils} from '../../../utils/esri-graphic-to-internal-drawing-representation.utils';
 import {SupportedSrs} from '../../../../../../shared/types/supported-srs.type';
 import Graphic from '@arcgis/core/Graphic';
@@ -16,7 +15,6 @@ export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrate
   public readonly internalLayerType: InternalDrawingLayer = InternalDrawingLayer.Selection;
   protected readonly tool: SupportedEsriTool = 'polygon';
   private readonly srs: SupportedSrs;
-  private readonly esriSymbolizationService: EsriSymbolizationService;
 
   public start(): void {
     this.sketchViewModel.create(this.tool, {mode: 'click'});
@@ -43,7 +41,6 @@ export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrate
       undefined,
       this.srs,
       this.internalLayerType,
-      this.esriSymbolizationService,
     );
     const selection: DataDownloadSelection = {
       type: 'polygon',
@@ -59,7 +56,6 @@ export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrate
     completeCallbackHandler: DrawingCallbackHandler['completeSelection'],
     polygonType: PolygonType,
     srs: SupportedSrs,
-    esriSymbolizationService: EsriSymbolizationService,
   ) {
     super(layer, mapView, completeCallbackHandler);
 
@@ -67,6 +63,5 @@ export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrate
     this.sketchViewModel.polygonSymbol = polygonSymbol;
     this.tool = polygonType;
     this.srs = srs;
-    this.esriSymbolizationService = esriSymbolizationService;
   }
 }

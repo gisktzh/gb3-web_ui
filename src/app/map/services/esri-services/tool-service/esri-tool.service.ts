@@ -29,7 +29,7 @@ import Graphic from '@arcgis/core/Graphic';
 import {Gb3StyledInternalDrawingRepresentation} from '../../../../shared/interfaces/internal-drawing-representation.interface';
 import {DrawingActions} from '../../../../state/map/actions/drawing.actions';
 import {silentArcgisToGeoJSON} from '../../../../shared/utils/esri-transformer-wrapper.utils';
-import {DrawingLayerNotInitialized, UnsupportedGeometryType} from '../errors/esri.errors';
+import {DrawingLayerNotInitialized} from '../errors/esri.errors';
 import {DataDownloadSelectionTool} from '../../../../shared/types/data-download-selection-tool.type';
 import {DataDownloadOrderActions} from '../../../../state/map/actions/data-download-order.actions';
 import {DataDownloadSelection} from '../../../../shared/interfaces/data-download-selection.interface';
@@ -38,19 +38,13 @@ import {EsriMunicipalitySelectionStrategy} from './strategies/selection/esri-mun
 import {MatDialog} from '@angular/material/dialog';
 import {EsriCantonSelectionStrategy} from './strategies/selection/esri-canton-selection.strategy';
 import {EsriScreenExtentSelectionStrategy} from './strategies/selection/esri-screen-extent-selection.strategy';
-import {GeometryWithSrs} from '../../../../shared/interfaces/geojson-types-with-srs.interface';
-import Geometry from '@arcgis/core/geometry/Geometry';
-import {geojsonToArcGIS} from '@terraformer/arcgis';
-import Point from '@arcgis/core/geometry/Point';
-import Multipoint from '@arcgis/core/geometry/Multipoint';
-import Polyline from '@arcgis/core/geometry/Polyline';
-import Polygon from '@arcgis/core/geometry/Polygon';
 import {EsriTextDrawingStrategy} from './strategies/drawing/esri-text-drawing.strategy';
 import {Gb3GeoshopMunicipalitiesService} from '../../../../shared/services/apis/gb3/gb3-geoshop-municipalities.service';
 import {selectCanton} from '../../../../state/map/reducers/data-download-region.reducer';
 import {EsriElevationProfileMeasurementStrategy} from './strategies/measurement/esri-elevation-profile-measurement.strategy';
 import {ElevationProfileActions} from '../../../../state/map/actions/elevation-profile.actions';
 import {EsriGraphicToInternalDrawingRepresentationUtils} from '../utils/esri-graphic-to-internal-drawing-representation.utils';
+import {InternalDrawingRepresentationToEsriGraphicUtils} from '../utils/internal-drawing-representation-to-esri-graphic.utils';
 
 const HANDLE_GROUP_KEY = 'EsriToolService';
 
@@ -122,7 +116,6 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
       labelText,
       this.configService.mapConfig.defaultMapConfig.srsId,
       UserDrawingLayer.Drawings,
-      this.esriSymbolizationService,
     );
     this.store.dispatch(DrawingActions.addDrawing({drawing: internalDrawingRepresentation}));
     this.endDrawing();
@@ -133,14 +126,12 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
       undefined,
       this.configService.mapConfig.defaultMapConfig.srsId,
       UserDrawingLayer.Measurements,
-      this.esriSymbolizationService,
     );
     const internalDrawingRepresentationLabel = EsriGraphicToInternalDrawingRepresentationUtils.convert(
       labelPoint,
       labelText,
       this.configService.mapConfig.defaultMapConfig.srsId,
       UserDrawingLayer.Measurements,
-      this.esriSymbolizationService,
     );
 
     // note: order is important as the features are drawn in the order of the array, starting at the bottom
@@ -162,7 +153,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
     const drawingLayer = this.esriMapViewService.findEsriLayer(fullLayerIdentifier);
 
     if (drawingLayer) {
-      const graphics = drawingsToAdd.flatMap((drawing) => this.createGraphicsForDrawing(drawing));
+      const graphics = drawingsToAdd.map((drawing) => InternalDrawingRepresentationToEsriGraphicUtils.convert(drawing));
       (drawingLayer as GraphicsLayer).addMany(graphics);
     } else {
       throw new DrawingLayerNotInitialized();
@@ -382,7 +373,6 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
           (selection) => this.completeSelection(selection),
           'circle',
           this.configService.mapConfig.defaultMapConfig.srsId,
-          this.esriSymbolizationService,
         );
         break;
       case 'select-polygon':
@@ -393,7 +383,6 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
           (selection) => this.completeSelection(selection),
           'polygon',
           this.configService.mapConfig.defaultMapConfig.srsId,
-          this.esriSymbolizationService,
         );
         break;
       case 'select-rectangle':
@@ -404,7 +393,6 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
           (selection) => this.completeSelection(selection),
           'rectangle',
           this.configService.mapConfig.defaultMapConfig.srsId,
-          this.esriSymbolizationService,
         );
         break;
       case 'select-section':
@@ -435,41 +423,5 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
         );
         break;
     }
-  }
-
-  /**
-   * Terraformer.geojsonToArcGIS() does return a Geometry instance, yet it misses the type property. This will then fail if injected
-   * directly into a new Graphic() object, since it cannot be autocast when missing the type. This Method here extracts the ArcGIS JSON
-   * format and returns a properly typed object, while also setting the correct SRS.
-   * @param geometry The geoJSON geometry that needs to be transformed
-   */
-  private convertGeoJsonToArcGIS(geometry: GeometryWithSrs): Geometry {
-    const arcGisJsonRepresentation = geojsonToArcGIS(geometry);
-    switch (geometry.type) {
-      case 'Point':
-        return new Point({...arcGisJsonRepresentation, spatialReference: {wkid: geometry.srs}});
-      case 'MultiPoint':
-        return new Multipoint({...arcGisJsonRepresentation, spatialReference: {wkid: geometry.srs}});
-      case 'LineString':
-      case 'MultiLineString':
-        return new Polyline({...arcGisJsonRepresentation, spatialReference: {wkid: geometry.srs}});
-      case 'Polygon':
-      case 'MultiPolygon':
-        return new Polygon({...arcGisJsonRepresentation, spatialReference: {wkid: geometry.srs}});
-      case 'GeometryCollection':
-        throw new UnsupportedGeometryType(geometry.type);
-    }
-  }
-
-  private createGraphicsForDrawing(drawing: Gb3StyledInternalDrawingRepresentation) {
-    const symbolization = this.esriSymbolizationService.extractSymbolFromGb3Representation(drawing.properties.style, drawing.labelText);
-
-    const graphics: Graphic[] = [];
-
-    const geometry = this.convertGeoJsonToArcGIS(drawing.geometry);
-    const graphic = new Graphic({geometry: geometry, symbol: symbolization});
-    graphics.push(graphic);
-
-    return graphics;
   }
 }
