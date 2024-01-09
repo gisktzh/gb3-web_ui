@@ -120,6 +120,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
     this.store.dispatch(DrawingActions.addDrawing({drawing: internalDrawingRepresentation}));
     this.endDrawing();
   }
+
   public completeMeasurement(graphic: Graphic, labelPoint: Graphic, labelText: string) {
     const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
       graphic,
