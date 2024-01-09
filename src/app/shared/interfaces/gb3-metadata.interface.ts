@@ -26,14 +26,14 @@ interface BaseMetadataInterface {
 
 export interface DatasetMetadata extends BaseMetadataInterface {
   shortDescription: string;
-  topics: string | null;
-  keywords: string | null;
+  topics: string[] | null;
+  keywords: string[] | null;
   dataBasis: string | null;
   remarks: string | null;
-  outputFormat: string;
-  usageRestrictions: string;
-  pdfName: string | null;
-  pdfUrl: string | null;
+  outputFormat: string[];
+  // usageRestrictions: string;
+  pdfName: string | undefined;
+  pdfUrl: string | undefined;
   contact: {
     /** Responsible for geodata */
     geodata: DepartmentalContact;

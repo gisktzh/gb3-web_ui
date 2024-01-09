@@ -1,6 +1,6 @@
 interface AbstractDataDisplayElement {
   title: string;
-  value: string | null;
+  value: string[] | string | null;
   type: 'text' | 'url' | 'email';
 }
 

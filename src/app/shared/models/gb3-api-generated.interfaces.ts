@@ -1,5 +1,6 @@
 /* eslint-disable */
 /* tslint:disable */
+
 /*
  * ---------------------------------------------------------------
  * ## THIS FILE WAS GENERATED VIA SWAGGER-TYPESCRIPT-API        ##
@@ -609,9 +610,49 @@ export interface Topics {
   }[];
 }
 
+/** Kontaktdaten */
+export interface Contact {
+  /** Amt */
+  amt: string;
+  /** Fachstelle */
+  fachstelle: string | null;
+  /** Sektion */
+  sektion: string | null;
+  /** Vorname */
+  vorname: string;
+  /** Nachname */
+  nachname: string;
+  /** Strassenname */
+  strassenname: string;
+  /** Hausnummer */
+  hausnummer: number;
+  /** Postfach */
+  postfach: string | null;
+  /** PLZ */
+  plz: number;
+  /** Ortschaft */
+  ortschaft: string;
+  /** Telephon */
+  telephon: string;
+  /** Telephon direkt */
+  telephon_direkt: string;
+  /** E-Mail */
+  email: LinkObject;
+  /** URL */
+  weburl: LinkObject;
+}
+
 export interface Dataset {
   /** UUID */
   uuid: string;
+  /** Link auf Bild */
+  image_url: string | null;
+  /** Verfügbarkeit OGD/NOGD */
+  ogd: boolean;
+  /** Kontakt: Verantwortlich für Geodaten */
+  kontakt_geodaten: Contact;
+  /** Kontakt: Zuständig für Geometadaten */
+  kontakt_metadaten: Contact;
   /** Dataset GIS-ZH-Nummer */
   giszhnr: number;
   /** Name des Geodatensatzes */
@@ -621,89 +662,49 @@ export interface Dataset {
   /** Beschreibung */
   beschreibung: string;
   /** eCH Geokategorien / Themen */
-  themen: string | null;
+  themen: string[];
   /** Schlüsselwörter */
-  keywords: string | null;
+  keywords: string[] | null;
+  /** Geodaten aktueller Stand (dd.mm.YYYY) */
+  datenstand: string | null;
+  /** Nachführungstyp */
+  nachfuehrungstyp: string | null;
+  /** Bearbeitungsstatus */
+  bearbeitungstatus: string | null;
+  /** Geographisches Gebiet / Ausdehnung */
+  geogausdehnung: string | null;
+  /** Erfassungsmassstab */
+  erfassungsmasstab: number | null;
+  /** Auflösung */
+  aufloesung: number | null;
+  /** Lagegenauigkeit */
+  lagegenauigkeit: number | null;
+  /** Geobasisdaten-Klasse */
+  gesetzklasse: string | null;
+  /** Link auf Geobasisdaten */
+  geobasisdaten: LinkObject | null;
+  /** Link auf Geodatashop bei NOGD-Daten */
+  url_shop: LinkObject | null;
+  /** Abgabeformate */
+  abgabeformate: string[];
+  /** Datenerfassung */
+  datenerfassung: string | null;
   /** Datengrundlage */
   datengrundlage: string | null;
+  /** Dokumentation (HTML) */
+  documentationhtml: LinkObject | null;
+  /** Link auf Dokumentation (PDF) */
+  pdf: LinkObject | null;
   /** Bemerkungen */
   bemerkungen: string | null;
-  /** Abgabeformat */
-  abgabeformat: string;
-  /** Anwendungeinschränkung */
-  anwendungeinschraenkung: string;
-  /** Link auf Bild */
-  image_url: string | null;
-  /** Name des PDFs */
-  pdf_name: string | null;
-  /** Link auf PDF */
-  pdf_url: string | null;
-  /** Link auf Geodatashop bei NOGD-Daten */
-  url_shop: string | null;
-  kontakt: {
-    /** Kontakt: Verantwortlich für Geodaten */
-    geodaten: {
-      /** Amt */
-      amt: string;
-      /** Fachstelle */
-      fachstelle: string | null;
-      /** Sektion */
-      sektion: string | null;
-      /** Vorname */
-      vorname: string;
-      /** Nachname */
-      nachname: string;
-      /** Strassenname */
-      strassenname: string;
-      /** Hausnummer */
-      hausnummer: number;
-      /** Postfach */
-      postfach: string | null;
-      /** PLZ */
-      plz: number;
-      /** Ortschaft */
-      ortschaft: string;
-      /** Telephon */
-      telephon: string;
-      /** Telephon direkt */
-      telephon_direkt: string;
-      /** E-Mail */
-      email: string;
-      /** URL */
-      weburl: string;
-    };
-    /** Kontakt: Zuständig für Geometadaten */
-    metadaten: {
-      /** Amt */
-      amt: string;
-      /** Fachstelle */
-      fachstelle: string | null;
-      /** Sektion */
-      sektion: string | null;
-      /** Vorname */
-      vorname: string;
-      /** Nachname */
-      nachname: string;
-      /** Strassenname */
-      strassenname: string;
-      /** Hausnummer */
-      hausnummer: number;
-      /** Postfach */
-      postfach: string | null;
-      /** PLZ */
-      plz: number;
-      /** Ortschaft */
-      ortschaft: string;
-      /** Telephon */
-      telephon: string;
-      /** Telephon direkt */
-      telephon_direkt: string;
-      /** E-Mail */
-      email: string;
-      /** URL */
-      weburl: string;
-    };
-  };
+  /** Link auf Geocat */
+  geocat: LinkObject | null;
+  /** Link auf OpendataSwiss */
+  opendataswiss: LinkObject | null;
+  /** Link auf ArcMap .mxd */
+  mxd: LinkObject | null;
+  /** Links auf ArcMap .lyr */
+  lyrs: LinkObject[];
   maps: {
     /** Map UUID */
     uuid: string;
@@ -715,16 +716,30 @@ export interface Dataset {
     name: string;
   }[];
   layers: {
-    /** Layer GIS-ZH-Nummer */
-    giszhnr: string;
     /** Layername */
     name: string;
+    /** Layer GIS-ZH-Nummer */
+    giszhnr: string;
     /** Beschreibung des Layers */
     beschreibung: string;
+    /** Geometrietyp */
+    geometrietyp: string;
+    /** Pfad\Filename */
+    pfadfilename: string | null;
     /** Metadaten Sichtbarkeit */
     metadaten_sichtbarkeit: string;
     /** Datenbezugart */
     datenbezugart: string;
+    attribute: {
+      /** Attributname */
+      name: string;
+      /** Attributtyp */
+      typ: string;
+      /** Einheit des Attributwerts */
+      einheit: string | null;
+      /** Beschreibung des Attributs */
+      beschreibung: string;
+    }[];
   }[];
   services: {
     /** Service UUID */
@@ -846,9 +861,31 @@ export interface InfoFeatureField {
   value: string | number | null;
 }
 
+/** A link MUST be represented as either: a string containing the link’s URL or a link object. */
+export type Link = LinkObject | string | null;
+
+export interface LinkObject {
+  /** A string whose value is a URI-reference https://datatracker.ietf.org/doc/html/rfc3986#section-4.1 pointing to the link’s target. */
+  href: string;
+  /** A string indicating the link’s relation type. The string MUST be a valid link relation type. */
+  rel?: string;
+  /** A link that leads to further information about this link. */
+  describedby?: LinkObject;
+  /** A string containing a human-readable description of the link. */
+  title?: string;
+  /** A string or an array of strings indicating the language(s) of the link’s target. An array of strings indicates that the link’s target is available in multiple languages. Each string MUST be a valid language tag https://datatracker.ietf.org/doc/html/rfc5646. */
+  hreflang?: string;
+  /** A meta object containing non-standard meta-information about the link. */
+  meta?: object;
+}
+
 export interface Map {
   /** Map UUID */
   uuid: string;
+  /** Link auf Bild */
+  image_url: string | null;
+  /** Kontakt: Verantwortlich für Geodaten */
+  kontakt_geodaten: Contact;
   /** Map GB2-Nummer */
   gb2_id: number;
   /** Topic name */
@@ -858,42 +895,9 @@ export interface Map {
   /** Beschreibung der Karte */
   beschreibung: string;
   /** Link auf GB2-Karte */
-  gb2_url: string | null;
-  /** Link auf Bild */
-  image_url: string | null;
-  kontakt: {
-    /** Kontakt: Verantwortlich für Geodaten */
-    geodaten: {
-      /** Amt */
-      amt: string;
-      /** Fachstelle */
-      fachstelle: string | null;
-      /** Sektion */
-      sektion: string | null;
-      /** Vorname */
-      vorname: string;
-      /** Nachname */
-      nachname: string;
-      /** Strassenname */
-      strassenname: string;
-      /** Hausnummer */
-      hausnummer: number;
-      /** Postfach */
-      postfach: string | null;
-      /** PLZ */
-      plz: number;
-      /** Ortschaft */
-      ortschaft: string;
-      /** Telephon */
-      telephon: string;
-      /** Telephon direkt */
-      telephon_direkt: string;
-      /** E-Mail */
-      email: string;
-      /** URL */
-      weburl: string;
-    };
-  };
+  gb2_url: LinkObject | null;
+  /** Links auf weiterführende Verweise */
+  verweise: LinkObject[];
   datasets: {
     /** Dataset UUID */
     uuid: string;
@@ -904,8 +908,19 @@ export interface Map {
     /** Kurzbeschreibung des Geodatensatzes */
     kurzbeschreibung: string;
     /** Link auf Geodatashop bei NOGD-Daten */
-    url_shop: string | null;
+    url_shop: LinkObject | null;
   }[];
+}
+
+export interface MetaSearchMatch {
+  /**
+   * UUID of the meta object
+   * @format uuid
+   * @pattern ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+   */
+  uuid: string;
+  /** Score of the match */
+  score: number;
 }
 
 export interface MunicipalityItem {
@@ -918,47 +933,16 @@ export interface MunicipalityItem {
 export interface Product {
   /** Product UUID */
   uuid: string;
+  /** Link auf Bild */
+  image_url: string | null;
+  /** Kontakt: Zuständig für Geometadaten */
+  kontakt_metadaten: Contact;
   /** Product GDP-Nummer */
   gdpnummer: number;
   /** Name des Geodatenprodukts */
   name: string;
   /** Beschreibung */
   beschreibung: string;
-  /** Link auf Bild */
-  image_url: string | null;
-  kontakt: {
-    /** Kontakt: Zuständig für Geometadaten */
-    metadaten: {
-      /** Amt */
-      amt: string;
-      /** Fachstelle */
-      fachstelle: string | null;
-      /** Sektion */
-      sektion: string | null;
-      /** Vorname */
-      vorname: string;
-      /** Nachname */
-      nachname: string;
-      /** Strassenname */
-      strassenname: string;
-      /** Hausnummer */
-      hausnummer: number;
-      /** Postfach */
-      postfach: string | null;
-      /** PLZ */
-      plz: number;
-      /** Ortschaft */
-      ortschaft: string;
-      /** Telephon */
-      telephon: string;
-      /** Telephon direkt */
-      telephon_direkt: string;
-      /** E-Mail */
-      email: string;
-      /** URL */
-      weburl: string;
-    };
-  };
   datasets: {
     /** Dataset UUID */
     uuid: string;
@@ -969,7 +953,7 @@ export interface Product {
     /** Kurzbeschreibung des Geodatensatzes */
     kurzbeschreibung: string;
     /** Link auf Geodatashop bei NOGD-Daten */
-    url_shop: string | null;
+    url_shop: LinkObject | null;
   }[];
 }
 
@@ -1025,6 +1009,10 @@ export interface SearchMatch {
 export interface Service {
   /** Service UUID */
   uuid: string;
+  /** Link auf Bild */
+  image_url: string | null;
+  /** Kontakt: Zuständig für Geometadaten */
+  kontakt_metadaten: Contact;
   /** Service GDSer-Nummer */
   gdsernummer: number;
   /** Servicetyp, z.B. WMS, WFS */
@@ -1034,46 +1022,15 @@ export interface Service {
   /** Beschreibung */
   beschreibung: string;
   /** URL */
-  url: string;
+  url: LinkObject;
   /** Version */
   version: string;
   /** Zugang */
   zugang: string;
-  /** Link auf Bild */
-  image_url: string | null;
-  kontakt: {
-    /** Kontakt: Zuständig für Geometadaten */
-    metadaten: {
-      /** Amt */
-      amt: string;
-      /** Fachstelle */
-      fachstelle: string | null;
-      /** Sektion */
-      sektion: string | null;
-      /** Vorname */
-      vorname: string;
-      /** Nachname */
-      nachname: string;
-      /** Strassenname */
-      strassenname: string;
-      /** Hausnummer */
-      hausnummer: number;
-      /** Postfach */
-      postfach: string | null;
-      /** PLZ */
-      plz: number;
-      /** Ortschaft */
-      ortschaft: string;
-      /** Telephon */
-      telephon: string;
-      /** Telephon direkt */
-      telephon_direkt: string;
-      /** E-Mail */
-      email: string;
-      /** URL */
-      weburl: string;
-    };
-  };
+  /** Link auf Geocat */
+  geocat: LinkObject | null;
+  /** Link auf OpendataSwiss */
+  opendataswiss: LinkObject | null;
   datasets: {
     /** Dataset UUID */
     uuid: string;
@@ -1084,7 +1041,7 @@ export interface Service {
     /** Kurzbeschreibung des Geodatensatzes */
     kurzbeschreibung: string;
     /** Link auf Geodatashop bei NOGD-Daten */
-    url_shop: string | null;
+    url_shop: LinkObject | null;
   }[];
 }
 

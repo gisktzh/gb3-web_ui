@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {Gb3ApiService} from './gb3-api.service';
 import {DataCataloguePage} from '../../../enums/data-catalogue-page.enum';
 import {
+  Contact,
   Dataset,
   Map,
   MetadataDatasetsDetailData,
@@ -163,14 +164,14 @@ export class Gb3MetadataService extends Gb3ApiService {
       remarks: dataset.bemerkungen,
       topics: dataset.themen,
       dataBasis: dataset.datengrundlage,
-      outputFormat: dataset.abgabeformat,
-      usageRestrictions: dataset.anwendungeinschraenkung,
-      pdfName: dataset.pdf_name,
-      pdfUrl: dataset.pdf_url,
+      outputFormat: dataset.abgabeformate,
+      // usageRestrictions: dataset.,
+      pdfName: dataset.pdf?.title,
+      pdfUrl: dataset.pdf?.href,
       imageUrl: dataset.image_url,
       contact: {
-        geodata: this.extractContactDetails(dataset.kontakt.geodaten),
-        metadata: this.extractContactDetails(dataset.kontakt.metadaten),
+        geodata: this.extractContactDetails(dataset.kontakt_geodaten),
+        metadata: this.extractContactDetails(dataset.kontakt_metadaten),
       },
       layers: dataset.layers.map((layer) => ({
         dataProcurementType: layer.datenbezugart,
@@ -197,7 +198,7 @@ export class Gb3MetadataService extends Gb3ApiService {
       imageUrl: mapData.image_url,
       datasets: mapData.datasets.map(this.extractDatasetDetail),
       contact: {
-        geodata: this.extractContactDetails(mapData.kontakt.geodaten),
+        geodata: this.extractContactDetails(mapData.kontakt_geodaten),
       },
     };
   }
@@ -207,11 +208,11 @@ export class Gb3MetadataService extends Gb3ApiService {
       uuid: service.uuid,
       gisZHNr: service.gdsernummer,
       name: service.name,
-      url: service.url,
+      url: service.url.href,
       version: service.version,
       access: service.zugang,
       contact: {
-        metadata: this.extractContactDetails(service.kontakt.metadaten),
+        metadata: this.extractContactDetails(service.kontakt_metadaten),
       },
       datasets: service.datasets.map(this.extractDatasetDetail),
       serviceType: service.servicetyp,
@@ -226,7 +227,7 @@ export class Gb3MetadataService extends Gb3ApiService {
       gisZHNr: product.gdpnummer,
       name: product.name,
       contact: {
-        metadata: this.extractContactDetails(product.kontakt.metadaten),
+        metadata: this.extractContactDetails(product.kontakt_metadaten),
       },
       description: product.beschreibung,
       imageUrl: product.image_url,
@@ -258,17 +259,15 @@ export class Gb3MetadataService extends Gb3ApiService {
    * the details are the same for all types, we can use one of the result types' (here: Dataset) contact information in a generic way to
    * typehint and create an ad-hoc schema for the contact.
    */
-  private extractContactDetails<K extends keyof MetadataDatasetsDetailData['dataset']['kontakt']>(
-    contact: MetadataDatasetsDetailData['dataset']['kontakt'][K],
-  ): DepartmentalContact {
+  private extractContactDetails(contact: Contact): DepartmentalContact {
     return {
       department: contact.amt,
       division: contact.fachstelle,
       section: contact.sektion,
-      url: contact.weburl,
+      url: contact.weburl.href,
       street: contact.strassenname,
       poBox: contact.postfach,
-      email: contact.email,
+      email: contact.email.href,
       zipCode: contact.plz,
       phone: contact.telephon,
       phoneDirect: contact.telephon_direkt,

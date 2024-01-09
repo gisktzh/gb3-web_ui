@@ -101,8 +101,8 @@ export class DatasetDetailComponent extends AbstractBaseDetailComponent<DatasetM
 
   private extractDataProcurementElements(datasetMetadata: DatasetMetadata): DataDisplayElement[] {
     return [
-      {title: 'Abgabeformat', value: datasetMetadata.outputFormat, type: 'text'},
-      {title: 'Nutzungseinschränkungen', value: datasetMetadata.usageRestrictions, type: 'text'},
+      {title: 'Abgabeformat', value: datasetMetadata.outputFormat, type: 'text'}, //TODO FIX these types
+      // {title: 'Nutzungseinschränkungen', value: null, type: 'text'},
     ];
   }
 }
