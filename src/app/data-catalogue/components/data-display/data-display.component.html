@@ -16,9 +16,16 @@
             element.value
           }}</a>
         </ng-container>
+        <ng-container *ngSwitchCase="'list'">
+          <!--          <span *ngFor="let item of element.value">{{item }};</span>-->
+          {{ element }}
+        </ng-container>
+        <ng-container *ngSwitchCase="'urlList'">
+          <!--           <a *ngFor="let linkObject of element.value " [href]="linkObject.href">{{linkObject.title}}</a>-->
+        </ng-container>
       </ng-container>
     </span>
   </div>
 </div>
 
-<ng-template #noResult> - </ng-template>
+<ng-template #noResult> -</ng-template>

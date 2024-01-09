@@ -11,7 +11,7 @@ export class DataExtractionUtils {
       {title: 'Adresse', value: `${contact.street} ${contact.houseNumber}, ${contact.zipCode} ${contact.village}`, type: 'text'},
       {title: 'Tel', value: contact.phone, type: 'text'},
       {title: 'Tel direkt', value: contact.phoneDirect, type: 'text'},
-      {title: 'E-Mail', value: contact.email, type: 'email'},
+      {title: 'E-Mail', value: contact.email.title ?? contact.email.href, type: 'email'},
       {title: 'www', value: contact.url, type: 'url'},
     ];
   }

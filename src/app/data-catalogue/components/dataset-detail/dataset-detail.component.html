@@ -23,8 +23,44 @@
   </data-catalogue-detail-page-section>
 
   <data-catalogue-detail-page-section>
+    <data-display-section [sectionTitle]="'Raumbezug'">
+      <data-display [elements]="geoSpatialElements"></data-display>
+    </data-display-section>
+  </data-catalogue-detail-page-section>
+
+  <data-catalogue-detail-page-section>
+    <data-display-section [sectionTitle]="'Nachführung'">
+      <data-display [elements]="updateElements"></data-display>
+    </data-display-section>
+  </data-catalogue-detail-page-section>
+
+  <data-catalogue-detail-page-section>
     <data-display-section [sectionTitle]="'Datenbezug'">
       <data-display [elements]="dataProcurement"></data-display>
+    </data-display-section>
+  </data-catalogue-detail-page-section>
+
+  <data-catalogue-detail-page-section>
+    <data-display-section [sectionTitle]="'Gesetzgebung'">
+      <data-display [elements]="legislationElements"></data-display>
+    </data-display-section>
+  </data-catalogue-detail-page-section>
+
+  <data-catalogue-detail-page-section>
+    <data-display-section [sectionTitle]="'Anbindungen'">
+      <data-display [elements]="externalLinksElements"></data-display>
+    </data-display-section>
+  </data-catalogue-detail-page-section>
+
+  <data-catalogue-detail-page-section>
+    <data-display-section [sectionTitle]="'ArcGIS-Dateien'">
+      <data-display [elements]="arcGISElements"></data-display>
+    </data-display-section>
+  </data-catalogue-detail-page-section>
+
+  <data-catalogue-detail-page-section>
+    <data-display-section [sectionTitle]="'Geodatenelemente'">
+      <!--      <dataset-element-detail *ngFor="let layer of datasetLayers" [layer]="layer"></dataset-element-detail>-->
     </data-display-section>
   </data-catalogue-detail-page-section>
 

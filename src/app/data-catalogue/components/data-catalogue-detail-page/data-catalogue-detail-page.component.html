@@ -4,12 +4,20 @@
       <mat-icon [svgIcon]="'ktzh_arrow_left'"></mat-icon>
       Zur Übersicht
     </a>
-    <h1 class="data-catalogue-detail-page__title mat-headline-4">{{ baseMetadataInformation.itemTitle }}</h1>
-    <p *ngIf="baseMetadataInformation.shortDescription" class="data-catalogue-detail-page__description mat-body">
-      {{ baseMetadataInformation.shortDescription }}
-    </p>
+    <div class="data-catalogue-detail-page__title">
+      @if (baseMetadataInformation.imageUrl) {
+        <img [src]="'https://maps.zh.ch' + baseMetadataInformation.imageUrl" class="data-catalogue-detail-page__title__image" />
+      }
+      <div>
+        <h1 class="data-catalogue-detail-page__title__text mat-headline-4">{{ baseMetadataInformation.itemTitle }}</h1>
+        <p *ngIf="baseMetadataInformation.shortDescription" class="data-catalogue-detail-page__description mat-body">
+          {{ baseMetadataInformation.shortDescription }}
+        </p>
+        <keyword-list [keywords]="baseMetadataInformation.keywords" listTitle="Kategorie"></keyword-list>
+      </div>
+    </div>
+
     <ng-content select="[topLink]"></ng-content>
-    <keyword-list [keywords]="baseMetadataInformation.keywords" listTitle="Schlagwörter"></keyword-list>
     <ng-content></ng-content>
   </div>
 </div>

@@ -50,14 +50,17 @@ export class MapDetailComponent extends AbstractBaseDetailComponent<MapMetadata>
       itemTitle: mapMetadata.name,
       topic: mapMetadata.topic,
       keywords: ['GIS-Browser Karte'], // todo: add OGD status once API delivers that
+      imageUrl: mapMetadata.imageUrl,
+      shortDescription: mapMetadata.description,
     };
   }
 
   private extractInformationElements(mapMetadata: MapMetadata): DataDisplayElement[] {
     return [
-      {title: 'GIS-ZH Nr.', value: mapMetadata.gisZHNr.toString(), type: 'text'},
-      {title: 'Bezeichnung', value: mapMetadata.name, type: 'text'},
-      {title: 'Beschreibung', value: mapMetadata.description, type: 'text'},
+      {title: 'Nr.', value: mapMetadata.gisZHNr.toString(), type: 'text'},
+      {title: 'Kartentyp', value: null, type: 'text'}, // TODO GB3-834: where is this value from?
+      {title: 'Internet', value: mapMetadata.gb2Url?.href ?? null, displayText: mapMetadata.gb2Url?.title, type: 'url'}, // TODO GB3-834: how to ditinguish between intra and internet?
+      {title: 'Weiterführende Verweise', value: mapMetadata.externalLinks, type: 'urlList'}, // TODO GB3-834: how to display these?
     ];
   }
 }

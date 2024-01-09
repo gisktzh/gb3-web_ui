@@ -47,6 +47,7 @@ export class ServiceDetailComponent extends AbstractBaseDetailComponent<ServiceM
     return {
       itemTitle: serviceMetadata.name,
       keywords: ['Geodienst'], // todo: add OGD status once API delivers that
+      shortDescription: serviceMetadata.description,
     };
   }
 
@@ -54,11 +55,9 @@ export class ServiceDetailComponent extends AbstractBaseDetailComponent<ServiceM
     return [
       {title: 'GIS-ZH Nr.', value: serviceMetadata.gisZHNr.toString(), type: 'text'},
       {title: 'Geodienst', value: serviceMetadata.serviceType, type: 'text'},
-      {title: 'Bezeichnung', value: serviceMetadata.name, type: 'text'},
-      {title: 'Beschreibung', value: serviceMetadata.description, type: 'text'},
-      {title: 'URL', value: serviceMetadata.url, type: 'url'},
       {title: 'GetCapabilities', value: this.createGetCapabilitiesLink(serviceMetadata.url, serviceMetadata.serviceType), type: 'url'},
       {title: 'Version', value: serviceMetadata.version, type: 'text'},
+      {title: 'Publikationsdatum', value: null, type: 'text'}, // TODO: GB3-834: Not delivered
       {title: 'Zugang', value: serviceMetadata.access, type: 'text'},
     ];
   }

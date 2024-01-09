@@ -27,6 +27,7 @@
         *ngFor="let linkedDataset of linkedDatasets"
         [description]="linkedDataset.shortDescription"
         [title]="linkedDataset.name"
+        [id]="linkedDataset.gisZHNr"
       >
         <a [routerLink]="['/', mainPageEnum.Data, dataCataloguePageEnum.Datasets, linkedDataset.uuid]" mat-icon-button>
           <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>

@@ -18,7 +18,16 @@
     }
 
     .data-catalogue-detail-page__title {
-      margin-bottom: 12px;
+      display: flex;
+      gap: 60px; // TODO GB3-834: use padding instead?
+
+      .data-catalogue-detail-page__title__image {
+        max-width: 368px;
+      }
+
+      .data-catalogue-detail-page__title__text {
+        margin-bottom: 12px;
+      }
     }
 
     .dataset-detail__description {
