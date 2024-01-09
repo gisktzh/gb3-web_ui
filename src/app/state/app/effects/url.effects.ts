@@ -38,11 +38,9 @@ export class UrlEffects {
     );
   });
 
-  public handleAppParameters$ = createEffect(() => {
+  public setAppParameters$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(UrlActions.setPage),
-      map((action) => action.mainPage),
-      distinctUntilChanged(),
       concatLatestFrom(() => [this.store.select(selectQueryParams)]),
       map(([_, params]) => {
         return UrlActions.setAppParams({params});
@@ -50,23 +48,19 @@ export class UrlEffects {
     );
   });
 
-  public removeGlobalTemporaryParameters$ = createEffect(
+  public removeTemporaryAppParameters$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(UrlActions.setAppParams),
-        concatLatestFrom(() => [this.store.select(selectQueryParams)]),
-        map(([_, currentParams]) => {
+        map(({params}) => {
           let adjustedParams: Params | undefined = undefined;
-          if (Object.keys(currentParams).some((paramKey) => RouteParamConstants.GLOBAL_TEMPORARY_URL_PARAMS.includes(paramKey))) {
-            // remove temporary parameters
-            const paramsToRemove = RouteParamConstants.GLOBAL_TEMPORARY_URL_PARAMS.reduce((prev, curr) => ({...prev, [curr]: null}), {});
-            adjustedParams = {
-              ...paramsToRemove,
-            };
+          if (Object.keys(params).some((paramKey) => RouteParamConstants.GLOBAL_TEMPORARY_URL_PARAMS.includes(paramKey))) {
+            // set temporary parameters to `null`
+            adjustedParams = RouteParamConstants.GLOBAL_TEMPORARY_URL_PARAMS.reduce((prev, curr) => ({...prev, [curr]: null}), {});
           }
           return adjustedParams;
         }),
-        filter((adjustedParams): adjustedParams is Params => !!adjustedParams),
+        filter((adjustedParams): adjustedParams is Params => !!adjustedParams && Object.keys(adjustedParams).length > 0),
         switchMap((adjustedParams) => {
           return this.router.navigate([], {
             relativeTo: this.route,
