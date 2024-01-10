@@ -1,7 +1,6 @@
 import {BreakpointObserver} from '@angular/cdk/layout';
 import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {MatSnackBar, MatSnackBarRef} from '@angular/material/snack-bar';
-import {Router} from '@angular/router';
 import {Store} from '@ngrx/store';
 import {filter, Subscription, take, tap} from 'rxjs';
 import {PageNotificationComponent} from './shared/components/page-notification/page-notification.component';
@@ -43,7 +42,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly documentService: DocumentService,
-    private readonly router: Router,
     private readonly breakpointObserver: BreakpointObserver,
     private readonly snackBar: MatSnackBar,
     private readonly pageNotificationService: PageNotificationService,
