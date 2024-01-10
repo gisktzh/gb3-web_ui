@@ -22,9 +22,13 @@
         }
         @case ('urlList') {
           @if (element.value?.length) {
-            @for (item of element.value; track item) {
-              <a [href]="item.href" target="_blank"> {{ item.title }}</a>
-            }
+            <ul class="data-display__item__value__list">
+              @for (item of element.value; track item) {
+                <li>
+                  <a [href]="item.href" target="_blank"> {{ item.title }}</a>
+                </li>
+              }
+            </ul>
           } @else {
             <span>-</span>
           }
