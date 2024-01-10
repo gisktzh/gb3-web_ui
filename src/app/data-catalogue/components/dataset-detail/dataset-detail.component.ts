@@ -74,7 +74,7 @@ export class DatasetDetailComponent extends AbstractBaseDetailComponent<DatasetM
     this.externalLinksElements = this.extractExternalLinkElements(datasetMetadata);
     this.arcGISElements = this.extractArcGISElements(datasetMetadata);
 
-    this.datasetLayers = this.extractLayers(datasetMetadata);
+    this.datasetLayers = datasetMetadata.layers;
     this.linkedData.maps = [...datasetMetadata.maps];
     this.linkedData.services = [...datasetMetadata.services];
     this.linkedData.products = [...datasetMetadata.products];
@@ -191,9 +191,5 @@ export class DatasetDetailComponent extends AbstractBaseDetailComponent<DatasetM
         type: 'urlList',
       },
     ];
-  }
-
-  private extractLayers(datasetMetadata: DatasetMetadata): DatasetLayer[] {
-    return datasetMetadata.layers;
   }
 }

@@ -1,7 +1,7 @@
-@if (layer) {
-  <h2>{{ layer.name }}</h2>
-  <!--<data-display [elements]="layerListData"></data-display>-->
-}
-<!--<ng-container *ngIf="layer">-->
-<!--  <data-display [elements]="layerListData"></data-display>-->
-<!--</ng-container>-->
+<h2>{{ layer.name }}</h2>
+<data-display [elements]="layerListData"></data-display>
+<cdk-accordion [multi]="true">
+  <accordion-item header="Attribute" variant="dark">
+    <dataset-element-table [attributes]="layer.attributes"></dataset-element-table>
+  </accordion-item>
+</cdk-accordion>
