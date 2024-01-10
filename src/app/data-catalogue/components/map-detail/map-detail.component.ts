@@ -23,6 +23,7 @@ export class MapDetailComponent extends AbstractBaseDetailComponent<MapMetadata>
   public informationElements: DataDisplayElement[] = [];
   public geodataContactElements: DataDisplayElement[] = [];
   public linkedDatasets: MetadataLink[] = [];
+  public gB2Url?: string;
 
   constructor(
     @Inject(ActivatedRoute) route: ActivatedRoute,
@@ -43,6 +44,7 @@ export class MapDetailComponent extends AbstractBaseDetailComponent<MapMetadata>
     this.informationElements = this.extractInformationElements(mapMetadata);
     this.geodataContactElements = DataExtractionUtils.extractContactElements(mapMetadata.contact.geodata);
     this.linkedDatasets = mapMetadata.datasets;
+    this.gB2Url = mapMetadata.gb2Url?.href;
   }
 
   private extractBaseMetadataInformation(mapMetadata: MapMetadata): BaseMetadataWithTopicInformation {
@@ -58,8 +60,8 @@ export class MapDetailComponent extends AbstractBaseDetailComponent<MapMetadata>
   private extractInformationElements(mapMetadata: MapMetadata): DataDisplayElement[] {
     return [
       {title: 'Nr.', value: mapMetadata.gisZHNr.toString(), type: 'text'},
-      {title: 'Kartentyp', value: null, type: 'text'}, // TODO GB3-834: where is this value from?
-      {title: 'Internet', value: mapMetadata.gb2Url?.href ?? null, displayText: mapMetadata.gb2Url?.title, type: 'url'}, // TODO GB3-834: how to ditinguish between intra and internet?
+      {title: 'Kartentyp', value: mapMetadata.gb2Url ? 'GB2' : null, type: 'text'}, // TODO GB3-834: where is this value from?
+      {title: 'Internet', value: mapMetadata.gb2Url?.href ?? null, displayText: mapMetadata.gb2Url?.href, type: 'url'}, // TODO GB3-834: how to ditinguish between intra and internet? Where should I create the absolute path?
       {title: 'Weiterführende Verweise', value: mapMetadata.externalLinks, type: 'urlList'}, // TODO GB3-834: how to display these?
     ];
   }

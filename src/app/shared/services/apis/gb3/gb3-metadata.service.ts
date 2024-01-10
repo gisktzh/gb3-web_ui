@@ -39,6 +39,7 @@ import {
 })
 export class Gb3MetadataService extends Gb3ApiService {
   protected endpoint: string = 'metadata';
+  private readonly staticFilesUrl = this.configService.apiConfig.gb2StaticFiles.baseUrl;
 
   public loadFullList(): Observable<OverviewMetadataItem[]> {
     return forkJoin([this.loadDatasets(), this.loadProducts(), this.loadMaps(), this.loadServices()]).pipe(
@@ -181,7 +182,7 @@ export class Gb3MetadataService extends Gb3ApiService {
       mxd: dataset.mxd ? {href: dataset.mxd.href, title: dataset.mxd.title} : null,
       lyr: dataset.lyrs,
       pdf: dataset.pdf ? {href: dataset.pdf.href, title: dataset.pdf.title} : null,
-      imageUrl: dataset.image_url,
+      imageUrl: dataset.image_url ? this.createAbsoluteUrl(dataset.image_url) : null,
       contact: {
         geodata: this.extractContactDetails(dataset.kontakt_geodaten),
         metadata: this.extractContactDetails(dataset.kontakt_metadaten),
@@ -216,9 +217,14 @@ export class Gb3MetadataService extends Gb3ApiService {
       gisZHNr: mapData.gb2_id,
       name: mapData.name,
       description: mapData.beschreibung,
-      imageUrl: mapData.image_url,
+      imageUrl: mapData.image_url ? this.createAbsoluteUrl(mapData.image_url) : null,
       externalLinks: mapData.verweise,
-      gb2Url: mapData.gb2_url,
+      gb2Url: mapData.gb2_url
+        ? {
+            href: this.createAbsoluteUrl(mapData.gb2_url.href),
+            title: mapData.gb2_url.title,
+          }
+        : null,
       datasets: mapData.datasets.map(this.extractDatasetDetail),
       contact: {
         geodata: this.extractContactDetails(mapData.kontakt_geodaten),
@@ -240,7 +246,7 @@ export class Gb3MetadataService extends Gb3ApiService {
       datasets: service.datasets.map(this.extractDatasetDetail),
       serviceType: service.servicetyp,
       description: service.beschreibung,
-      imageUrl: service.image_url,
+      imageUrl: service.image_url ? this.createAbsoluteUrl(service.image_url) : null,
     };
   }
 
@@ -253,7 +259,7 @@ export class Gb3MetadataService extends Gb3ApiService {
         metadata: this.extractContactDetails(product.kontakt_metadaten),
       },
       description: product.beschreibung,
-      imageUrl: product.image_url,
+      imageUrl: product.image_url ? this.createAbsoluteUrl(product.image_url) : null,
       datasets: product.datasets.map(this.extractDatasetDetail),
     };
   }
@@ -309,6 +315,11 @@ export class Gb3MetadataService extends Gb3ApiService {
       url.pathname += `/${id}`;
     }
 
+    return url.toString();
+  }
+
+  private createAbsoluteUrl(relativeImageUrl: string): string {
+    const url = new URL(`${this.staticFilesUrl}${relativeImageUrl}`);
     return url.toString();
   }
 }

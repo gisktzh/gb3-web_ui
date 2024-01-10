@@ -2,10 +2,14 @@
 
 <data-catalogue-detail-page *ngIf="baseMetadataInformation" [baseMetadataInformation]="baseMetadataInformation">
   <data-catalogue-detail-page-section>
-    <descriptive-highlighted-link [title]="'Karte auf GIS-Browser ansehen'" topLink>
-      <a [queryParams]="{initialMapIds: baseMetadataInformation.topic}" [routerLink]="'/' + mainPageEnum.Maps" mat-icon-button>
-        <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
-      </a>
+    <descriptive-highlighted-link [title]="'Karte im GIS-Browser öffnen'" topLink>
+      @if (gB2Url) {
+        <gb2-exit-button [url]="gB2Url"> </gb2-exit-button>
+      } @else {
+        <a [queryParams]="{initialMapIds: baseMetadataInformation.topic}" [routerLink]="'/' + mainPageEnum.Maps" mat-icon-button>
+          <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
+        </a>
+      }
     </descriptive-highlighted-link>
   </data-catalogue-detail-page-section>
 

@@ -2,8 +2,8 @@ import {LinkObject} from '../../shared/interfaces/link-object.interface';
 
 interface AbstractDataDisplayElement {
   title: string;
-  // value: string[] | string | null;
-  type: 'text' | 'url' | 'email' | 'list' | 'urlList';
+  value: string[] | string | LinkObject[] | null;
+  type: 'text' | 'url' | 'list' | 'urlList';
 }
 
 interface TextDataDisplayElement extends AbstractDataDisplayElement {
@@ -17,11 +17,6 @@ interface UrlDataDisplayElement extends AbstractDataDisplayElement {
   value: string | null;
 }
 
-interface EmailDataDisplayElement extends AbstractDataDisplayElement {
-  type: 'email';
-  value: string | null;
-}
-
 interface ListDataDisplayElement extends AbstractDataDisplayElement {
   type: 'list';
   value: string[] | null;
@@ -32,9 +27,4 @@ interface UrlListDataDisplayElement extends AbstractDataDisplayElement {
   value: LinkObject[] | null;
 }
 
-export type DataDisplayElement =
-  | EmailDataDisplayElement
-  | TextDataDisplayElement
-  | UrlDataDisplayElement
-  | ListDataDisplayElement
-  | UrlListDataDisplayElement;
+export type DataDisplayElement = TextDataDisplayElement | UrlDataDisplayElement | ListDataDisplayElement | UrlListDataDisplayElement;

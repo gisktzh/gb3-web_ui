@@ -6,7 +6,7 @@
     </a>
     <div class="data-catalogue-detail-page__title">
       @if (baseMetadataInformation.imageUrl) {
-        <img [src]="'https://maps.zh.ch' + baseMetadataInformation.imageUrl" class="data-catalogue-detail-page__title__image" />
+        <img [src]="baseMetadataInformation.imageUrl" class="data-catalogue-detail-page__title__image" />
       }
       <div>
         <h1 class="data-catalogue-detail-page__title__text mat-headline-4">{{ baseMetadataInformation.itemTitle }}</h1>

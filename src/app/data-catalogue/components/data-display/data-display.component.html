@@ -2,30 +2,34 @@
   <div *ngFor="let element of elements" class="data-display__item">
     <span class="data-display__item__title">{{ element.title }}</span>
     <span class="data-display__item__value">
-      <ng-container [ngSwitch]="element.type">
-        <ng-container *ngSwitchCase="'text'">
+      @switch (element.type) {
+        @case ('text') {
           <span [innerText]="element.value ?? '-'"></span>
-        </ng-container>
-        <ng-container *ngSwitchCase="'url'">
-          <a *ngIf="element.value; else noResult" href="{{ element.value }}" rel="noopener noreferrer" target="_blank">{{
-            element.type === 'url' && element.displayText !== undefined ? element.displayText : element.value
-          }}</a>
-        </ng-container>
-        <ng-container *ngSwitchCase="'email'">
-          <a *ngIf="element.value; else noResult" href="mailto:{{ element.value }}" rel="noopener noreferrer" target="_blank">{{
-            element.value
-          }}</a>
-        </ng-container>
-        <ng-container *ngSwitchCase="'list'">
-          <!--          <span *ngFor="let item of element.value">{{item }};</span>-->
-          {{ element }}
-        </ng-container>
-        <ng-container *ngSwitchCase="'urlList'">
-          <!--           <a *ngFor="let linkObject of element.value " [href]="linkObject.href">{{linkObject.title}}</a>-->
-        </ng-container>
-      </ng-container>
+        }
+        @case ('url') {
+          @if (element.value) {
+            <a href="{{ element.value }}" rel="noopener noreferrer" target="_blank">{{
+              element.type === 'url' && element.displayText !== undefined ? element.displayText : element.value
+            }}</a>
+          } @else {
+            <span>-</span>
+          }
+        }
+        @case ('list') {
+          @for (item of element.value; track item; let last = $last) {
+            <span>{{ item }}{{ !last ? '; ' : '' }}</span>
+          }
+        }
+        @case ('urlList') {
+          @if (element.value?.length) {
+            @for (item of element.value; track item) {
+              <a [href]="item.href" target="_blank"> {{ item.title }}</a>
+            }
+          } @else {
+            <span>-</span>
+          }
+        }
+      }
     </span>
   </div>
 </div>
-
-<ng-template #noResult> -</ng-template>
