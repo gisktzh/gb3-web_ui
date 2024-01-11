@@ -13,16 +13,16 @@ import {ConfigService} from '../../../../shared/services/config.service';
   styleUrls: ['./drawing-settings-dialog.component.scss'],
 })
 export class DrawingSettingsDialogComponent implements OnInit, OnDestroy {
-  public fillColor = ColorUtils.convertSymbolizationColorToHex(this.configServie.drawingConfig.defaultFillColor).hexColor;
-  public lineColor = ColorUtils.convertSymbolizationColorToHex(this.configServie.drawingConfig.defaultLineColor).hexColor;
-  public lineWidth = this.configServie.drawingConfig.defaultLineWidth;
+  public fillColor = ColorUtils.convertSymbolizationColorToHex(this.configService.drawingConfig.defaultFillColor).hexColor;
+  public lineColor = ColorUtils.convertSymbolizationColorToHex(this.configService.drawingConfig.defaultLineColor).hexColor;
+  public lineWidth = this.configService.drawingConfig.defaultLineWidth;
   private readonly drawingStyleState$ = this.store.select(selectDrawingStyleState);
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(
     private readonly store: Store,
     private readonly dialogRef: MatDialogRef<DrawingSettingsDialogComponent>,
-    private readonly configServie: ConfigService,
+    private readonly configService: ConfigService,
   ) {}
 
   public ngOnInit() {
@@ -38,7 +38,7 @@ export class DrawingSettingsDialogComponent implements OnInit, OnDestroy {
   }
 
   public saveSettings() {
-    const fillColor = ColorUtils.convertHexToSymbolizationColor(this.fillColor, this.configServie.drawingConfig.defaultFillColor.a);
+    const fillColor = ColorUtils.convertHexToSymbolizationColor(this.fillColor, this.configService.drawingConfig.defaultFillColor.a);
     const lineColor = ColorUtils.convertHexToSymbolizationColor(this.lineColor);
 
     this.store.dispatch(DrawingStyleActions.setDrawingStyles({fillColor, lineColor, lineWidth: this.lineWidth}));

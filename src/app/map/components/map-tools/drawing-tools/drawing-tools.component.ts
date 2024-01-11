@@ -3,7 +3,7 @@ import {AbstractToolsComponent} from '../abstract-tools/abstract-tools.component
 import {DrawingSettingsDialogComponent} from '../drawing-settings-dialog/drawing-settings-dialog.component';
 import {PanelClass} from '../../../../shared/enums/panel-class.enum';
 
-const DRAWING_SETTINGS_DIALOG_MAX_WIDTH = '420px';
+const DRAWING_SETTINGS_DIALOG_MAX_WIDTH = 420;
 
 @Component({
   selector: 'drawing-tools',

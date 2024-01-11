@@ -43,18 +43,18 @@ describe('ColorUtils', () => {
       };
       expect(actual).toEqual(expected);
     });
-    it('should throw an error for invalid alpha value', () => {
+    it('throws an error for invalid alpha value', () => {
       const hexColor = '#006699';
       const alpha = 1.6;
 
       expect(() => ColorUtils.convertHexToSymbolizationColor(hexColor, alpha)).toThrow(new InvalidHexFormat());
     });
-    it('should throw an error when input is too long', () => {
+    it('throws an error when input is too long', () => {
       const hexColor = '#00669999';
 
       expect(() => ColorUtils.convertHexToSymbolizationColor(hexColor)).toThrow(new InvalidHexFormat());
     });
-    it('should throw an error for invalid Hex values', () => {
+    it('throws an error for invalid Hex values', () => {
       const hexColor = '#QQ6699';
       expect(() => ColorUtils.convertHexToSymbolizationColor(hexColor)).toThrow(new InvalidHexFormat());
     });
@@ -68,7 +68,7 @@ describe('ColorUtils', () => {
 
       expect(actual).toEqual(expected);
     });
-    it('should throw an error if the rgb values are not valid', () => {
+    it('throws an error if the rgb values are not valid', () => {
       const rgba: SymbolizationColor = {r: 256, g: 102, b: 153, a: 0.6};
       expect(() => ColorUtils.convertSymbolizationColorToHex(rgba)).toThrow(new InvalidRGBFormat());
     });
