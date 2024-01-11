@@ -29,29 +29,22 @@ import Graphic from '@arcgis/core/Graphic';
 import {Gb3StyledInternalDrawingRepresentation} from '../../../../shared/interfaces/internal-drawing-representation.interface';
 import {DrawingActions} from '../../../../state/map/actions/drawing.actions';
 import {silentArcgisToGeoJSON} from '../../../../shared/utils/esri-transformer-wrapper.utils';
-import {DrawingLayerNotInitialized, UnsupportedGeometryType} from '../errors/esri.errors';
+import {DrawingLayerNotInitialized} from '../errors/esri.errors';
 import {DataDownloadSelectionTool} from '../../../../shared/types/data-download-selection-tool.type';
 import {DataDownloadOrderActions} from '../../../../state/map/actions/data-download-order.actions';
 import {DataDownloadSelection} from '../../../../shared/interfaces/data-download-selection.interface';
 import {EsriPolygonSelectionStrategy} from './strategies/selection/esri-polygon-selection.strategy';
-import {AbstractEsriDrawableToolStrategy} from './strategies/abstract-esri-drawable-tool.strategy';
 import {EsriMunicipalitySelectionStrategy} from './strategies/selection/esri-municipality-selection.strategy';
 import {MatDialog} from '@angular/material/dialog';
 import {EsriCantonSelectionStrategy} from './strategies/selection/esri-canton-selection.strategy';
 import {EsriScreenExtentSelectionStrategy} from './strategies/selection/esri-screen-extent-selection.strategy';
-import {SelectionCallbackHandler} from './interfaces/selection-callback-handler.interface';
-import {GeometryWithSrs} from '../../../../shared/interfaces/geojson-types-with-srs.interface';
-import Geometry from '@arcgis/core/geometry/Geometry';
-import {geojsonToArcGIS} from '@terraformer/arcgis';
-import Point from '@arcgis/core/geometry/Point';
-import Multipoint from '@arcgis/core/geometry/Multipoint';
-import Polyline from '@arcgis/core/geometry/Polyline';
-import Polygon from '@arcgis/core/geometry/Polygon';
 import {EsriTextDrawingStrategy} from './strategies/drawing/esri-text-drawing.strategy';
 import {Gb3GeoshopMunicipalitiesService} from '../../../../shared/services/apis/gb3/gb3-geoshop-municipalities.service';
 import {selectCanton} from '../../../../state/map/reducers/data-download-region.reducer';
 import {EsriElevationProfileMeasurementStrategy} from './strategies/measurement/esri-elevation-profile-measurement.strategy';
 import {ElevationProfileActions} from '../../../../state/map/actions/elevation-profile.actions';
+import {EsriGraphicToInternalDrawingRepresentationUtils} from '../utils/esri-graphic-to-internal-drawing-representation.utils';
+import {InternalDrawingRepresentationToEsriGraphicUtils} from '../utils/internal-drawing-representation-to-esri-graphic.utils';
 
 const HANDLE_GROUP_KEY = 'EsriToolService';
 
@@ -118,17 +111,42 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
   }
 
   public completeDrawing(graphic: Graphic, labelText?: string) {
-    const internalDrawingRepresentation = this.convertToGeoJson(graphic, labelText);
+    const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
+      graphic,
+      labelText,
+      this.configService.mapConfig.defaultMapConfig.srsId,
+      UserDrawingLayer.Drawings,
+    );
     this.store.dispatch(DrawingActions.addDrawing({drawing: internalDrawingRepresentation}));
     this.endDrawing();
   }
+
   public completeMeasurement(graphic: Graphic, labelPoint: Graphic, labelText: string) {
-    const internalDrawingRepresentation = this.convertToGeoJson(graphic);
-    const internalDrawingRepresentationLabel = this.convertToGeoJson(labelPoint, labelText);
+    const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
+      graphic,
+      undefined,
+      this.configService.mapConfig.defaultMapConfig.srsId,
+      UserDrawingLayer.Measurements,
+    );
+    const internalDrawingRepresentationLabel = EsriGraphicToInternalDrawingRepresentationUtils.convert(
+      labelPoint,
+      labelText,
+      this.configService.mapConfig.defaultMapConfig.srsId,
+      UserDrawingLayer.Measurements,
+    );
 
     // note: order is important as the features are drawn in the order of the array, starting at the bottom
     this.store.dispatch(DrawingActions.addDrawings({drawings: [internalDrawingRepresentation, internalDrawingRepresentationLabel]}));
     this.endDrawing();
+  }
+
+  public completeSelection(selection: DataDownloadSelection | undefined) {
+    if (selection) {
+      this.store.dispatch(DataDownloadOrderActions.setSelection({selection}));
+    } else {
+      this.store.dispatch(ToolActions.cancelTool());
+    }
+    this.esriMapViewService.mapView.removeHandles(HANDLE_GROUP_KEY);
   }
 
   public addExistingDrawingsToLayer(drawingsToAdd: Gb3StyledInternalDrawingRepresentation[], layerIdentifier: UserDrawingLayer) {
@@ -136,7 +154,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
     const drawingLayer = this.esriMapViewService.findEsriLayer(fullLayerIdentifier);
 
     if (drawingLayer) {
-      const graphics = drawingsToAdd.flatMap((drawing) => this.createGraphicsForDrawing(drawing));
+      const graphics = drawingsToAdd.map((drawing) => InternalDrawingRepresentationToEsriGraphicUtils.convert(drawing));
       (drawingLayer as GraphicsLayer).addMany(graphics);
     } else {
       throw new DrawingLayerNotInitialized();
@@ -207,26 +225,6 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
   private startDrawing() {
     this.registerEscapeEventHandler();
     this.toolStrategy.start();
-  }
-
-  private convertToGeoJson(graphic: Graphic, labelText?: string): Gb3StyledInternalDrawingRepresentation {
-    const geoJsonFeature = silentArcgisToGeoJSON(graphic.geometry);
-
-    if (geoJsonFeature.type === 'MultiLineString' || geoJsonFeature.type === 'GeometryCollection') {
-      throw new UnsupportedGeometryType(geoJsonFeature.type);
-    }
-
-    return {
-      type: 'Feature',
-      geometry: {...geoJsonFeature, srs: this.configService.mapConfig.defaultMapConfig.srsId},
-      properties: {
-        style: this.esriSymbolizationService.extractGb3SymbolizationFromSymbol(graphic.symbol),
-        [AbstractEsriDrawableToolStrategy.identifierFieldName]: graphic.attributes[AbstractEsriDrawableToolStrategy.identifierFieldName],
-        [AbstractEsriDrawableToolStrategy.belongsToFieldName]: graphic.attributes[AbstractEsriDrawableToolStrategy.belongsToFieldName],
-      },
-      source: this.toolStrategy.internalLayerType,
-      labelText,
-    };
   }
 
   private endDrawing() {
@@ -367,34 +365,15 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
   private setDataDownloadSelectionStrategy(selectionType: DataDownloadSelectionTool, layer: GraphicsLayer) {
     const areaStyle = this.esriSymbolizationService.createPolygonSymbolization(InternalDrawingLayer.Selection, false);
 
-    // todo GB3-826: these should be refactored and added to `DrawingCallbackHandler` as well; and they can then be used in our Strategies'
-    //  generics.
-    const completeDrawingCallbackHandler: DrawingCallbackHandler['completeDrawing'] = (graphic: Graphic, labelText?: string) => {
-      const internalDrawingRepresentation = this.convertToGeoJson(graphic, labelText);
-      const selection: DataDownloadSelection = {
-        type: selectionType as Exclude<DataDownloadSelectionTool, 'select-municipality'>,
-        drawingRepresentation: internalDrawingRepresentation,
-      };
-      this.store.dispatch(DataDownloadOrderActions.setSelection({selection}));
-    };
-
-    const completeSelectionCallbackHandler: SelectionCallbackHandler = {
-      complete: (selection: DataDownloadSelection) => {
-        this.store.dispatch(DataDownloadOrderActions.setSelection({selection}));
-      },
-      abort: () => {
-        this.store.dispatch(ToolActions.cancelTool());
-      },
-    };
-
     switch (selectionType) {
       case 'select-circle':
         this.toolStrategy = new EsriPolygonSelectionStrategy(
           layer,
           this.esriMapViewService.mapView,
           areaStyle,
-          (geometry) => completeDrawingCallbackHandler(geometry),
+          (selection) => this.completeSelection(selection),
           'circle',
+          this.configService.mapConfig.defaultMapConfig.srsId,
         );
         break;
       case 'select-polygon':
@@ -402,8 +381,9 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
           layer,
           this.esriMapViewService.mapView,
           areaStyle,
-          (geometry) => completeDrawingCallbackHandler(geometry),
+          (selection) => this.completeSelection(selection),
           'polygon',
+          this.configService.mapConfig.defaultMapConfig.srsId,
         );
         break;
       case 'select-rectangle':
@@ -411,15 +391,16 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
           layer,
           this.esriMapViewService.mapView,
           areaStyle,
-          (geometry) => completeDrawingCallbackHandler(geometry),
+          (selection) => this.completeSelection(selection),
           'rectangle',
+          this.configService.mapConfig.defaultMapConfig.srsId,
         );
         break;
       case 'select-section':
         this.toolStrategy = new EsriScreenExtentSelectionStrategy(
           layer,
           areaStyle,
-          completeSelectionCallbackHandler,
+          (selection) => this.completeSelection(selection),
           this.esriMapViewService.mapView.extent,
         );
         break;
@@ -427,7 +408,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
         this.toolStrategy = new EsriCantonSelectionStrategy(
           layer,
           areaStyle,
-          completeSelectionCallbackHandler,
+          (selection) => this.completeSelection(selection),
           this.store.select(selectCanton),
           this.configService,
         );
@@ -436,48 +417,12 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
         this.toolStrategy = new EsriMunicipalitySelectionStrategy(
           layer,
           areaStyle,
-          completeSelectionCallbackHandler,
+          (selection) => this.completeSelection(selection),
           this.dialogService,
           this.configService,
           this.geoshopMunicipalitiesService,
         );
         break;
     }
-  }
-
-  /**
-   * Terraformer.geojsonToArcGIS() does return a Geometry instance, yet it misses the type property. This will then fail if injected
-   * directly into a new Graphic() object, since it cannot be autocast when missing the type. This Method here extracts the ArcGIS JSON
-   * format and returns a properly typed object, while also setting the correct SRS.
-   * @param geometry The geoJSON geometry that needs to be transformed
-   */
-  private convertGeoJsonToArcGIS(geometry: GeometryWithSrs): Geometry {
-    const arcGisJsonRepresentation = geojsonToArcGIS(geometry);
-    switch (geometry.type) {
-      case 'Point':
-        return new Point({...arcGisJsonRepresentation, spatialReference: {wkid: geometry.srs}});
-      case 'MultiPoint':
-        return new Multipoint({...arcGisJsonRepresentation, spatialReference: {wkid: geometry.srs}});
-      case 'LineString':
-      case 'MultiLineString':
-        return new Polyline({...arcGisJsonRepresentation, spatialReference: {wkid: geometry.srs}});
-      case 'Polygon':
-      case 'MultiPolygon':
-        return new Polygon({...arcGisJsonRepresentation, spatialReference: {wkid: geometry.srs}});
-      case 'GeometryCollection':
-        throw new UnsupportedGeometryType(geometry.type);
-    }
-  }
-
-  private createGraphicsForDrawing(drawing: Gb3StyledInternalDrawingRepresentation) {
-    const symbolization = this.esriSymbolizationService.extractSymbolFromGb3Representation(drawing.properties.style, drawing.labelText);
-
-    const graphics: Graphic[] = [];
-
-    const geometry = this.convertGeoJsonToArcGIS(drawing.geometry);
-    const graphic = new Graphic({geometry: geometry, symbol: symbolization});
-    graphics.push(graphic);
-
-    return graphics;
   }
 }

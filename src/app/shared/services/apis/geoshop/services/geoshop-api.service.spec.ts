@@ -177,7 +177,7 @@ describe('GeoshopApiService', () => {
   describe('createOrderFromSelection', () => {
     it('creates an indirect order from a municipality selection', () => {
       const selection: DataDownloadSelection = {
-        type: 'select-municipality',
+        type: 'municipality',
         drawingRepresentation: {
           id: 'id',
           type: 'Feature',
@@ -198,11 +198,11 @@ describe('GeoshopApiService', () => {
       expect(actual).toEqual(expected);
     });
 
-    it('creates a direct order from a rectangle selection', () => {
+    it('creates a direct order from a polygon selection', () => {
       const configService = TestBed.inject(ConfigService);
       const geometry = MinimalGeometriesUtils.getMinimalPolygon(2056);
       const selection: DataDownloadSelection = {
-        type: 'select-rectangle',
+        type: 'polygon',
         drawingRepresentation: {
           id: 'id',
           type: 'Feature',
@@ -224,7 +224,7 @@ describe('GeoshopApiService', () => {
 
     it('throws an OrderUnsupportedGeometry error if the geometry is not of type polygon', () => {
       const selection: DataDownloadSelection = {
-        type: 'select-polygon',
+        type: 'polygon',
         drawingRepresentation: {
           id: 'id',
           type: 'Feature',
@@ -241,7 +241,7 @@ describe('GeoshopApiService', () => {
 
     it('throws an OrderUnsupportedGeometry error if the geometry is not in SRS 2056', () => {
       const selection: DataDownloadSelection = {
-        type: 'select-polygon',
+        type: 'polygon',
         drawingRepresentation: {
           id: 'id',
           type: 'Feature',
