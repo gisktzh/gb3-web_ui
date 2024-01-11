@@ -6,6 +6,9 @@ import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import {UnsupportedSymbolizationType} from '../errors/esri.errors';
 
+const CENTER_TOP_LABEL_ALIGNMENT = 'ct';
+const TEXT_LABEL = '[text]';
+
 export class EsriSymbolToStyleRepresentationUtils {
   // eslint-disable-next-line @typescript-eslint/ban-types
   public static convert(symbol: Symbol): Gb3StyleRepresentation {
@@ -43,9 +46,9 @@ export class EsriSymbolToStyleRepresentationUtils {
           fontFamily: (symbol as TextSymbol).font.family,
           fontSize: (symbol as TextSymbol).font.size.toString(),
           haloRadius: (symbol as TextSymbol).haloSize.toString(),
-          labelYOffset: (symbol as TextSymbol).yoffset.toString(), // todo GB3-826: actual offset is rather x2.1
-          labelAlign: 'ct', // todo GB3-826: move this to a constant?
-          label: '[text]', // todo GB3-826: move this to a constant? note: it should also match the property in the interface
+          labelYOffset: (symbol as TextSymbol).yoffset.toString(),
+          labelAlign: CENTER_TOP_LABEL_ALIGNMENT,
+          label: TEXT_LABEL,
           type: 'text',
         };
       default:

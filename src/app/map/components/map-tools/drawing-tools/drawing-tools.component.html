@@ -1,5 +1,12 @@
 <div class="drawing-tools">
-  <button (click)="this.openSettingsDialog()" class="drawing-tools__button" color="accent" mat-icon-button matTooltip="Einstellungen">
+  <button
+    (click)="this.openSettingsDialog()"
+    class="drawing-tools__button"
+    color="accent"
+    mat-icon-button
+    matTooltip="Einstellungen"
+    [disabled]="activeTool"
+  >
     <mat-icon svgIcon="ktzh_settings"></mat-icon>
   </button>
   <mat-divider class="drawing-tools__divider"></mat-divider>
