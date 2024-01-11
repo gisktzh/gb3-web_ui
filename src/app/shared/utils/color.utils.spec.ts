@@ -51,7 +51,6 @@ describe('ColorUtils', () => {
     });
     it('should throw an error when input is too long', () => {
       const hexColor = '#00669999';
-      const alpha = 0.6;
 
       expect(() => ColorUtils.convertHexToSymbolizationColor(hexColor)).toThrow(new InvalidHexFormat());
     });
