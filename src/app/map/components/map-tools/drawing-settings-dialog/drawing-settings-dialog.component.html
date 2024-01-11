@@ -15,20 +15,20 @@
           </ng-container>
           <ng-container footer>
             <div class="drawing-settings-dialog__content__option__width__footer">
-              <span class="drawing-settings-dialog__content__option__width__footer--min"></span>
-              <span class="drawing-settings-dialog__content__option__width__footer--max"></span>
+              <span class="drawing-settings-dialog__content__option__width__footer__min"></span>
+              <span class="drawing-settings-dialog__content__option__width__footer__max"></span>
             </div>
           </ng-container>
         </slider-wrapper>
       </div>
 
       <div class="drawing-settings-dialog__content__option">
-        <label for="line" class="drawing-settings-dialog__content__option__label">Text- und Strichfarbe</label>
-        <input class="drawing-settings-dialog__content__option__color-picker" id="line" name="line" type="color" [(ngModel)]="lineColor" />
+        <span class="drawing-settings-dialog__content__option__label">Text- und Strichfarbe</span>
+        <input class="drawing-settings-dialog__content__option__color-picker" type="color" [(ngModel)]="lineColor" />
       </div>
       <div class="drawing-settings-dialog__content__option">
-        <label for="fill" class="drawing-settings-dialog__content__option__label">Füllfarbe</label>
-        <input class="drawing-settings-dialog__content__option__color-picker" id="fill" name="fill" type="color" [(ngModel)]="fillColor" />
+        <span class="drawing-settings-dialog__content__option__label">Füllfarbe</span>
+        <input class="drawing-settings-dialog__content__option__color-picker" type="color" [(ngModel)]="fillColor" />
       </div>
     </div>
   </ng-container>

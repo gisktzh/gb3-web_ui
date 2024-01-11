@@ -13,9 +13,9 @@ import {defaultFillColor, defaultLineColor, defaultLineWidth} from '../../../../
   styleUrls: ['./drawing-settings-dialog.component.scss'],
 })
 export class DrawingSettingsDialogComponent implements OnInit, OnDestroy {
-  public fillColor: string = ColorUtils.convertSymbolizationColorToHex(defaultFillColor);
-  public lineColor: string = ColorUtils.convertSymbolizationColorToHex(defaultLineColor);
-  public lineWidth: number = defaultLineWidth;
+  public fillColor = ColorUtils.convertSymbolizationColorToHex(defaultFillColor).hexColor;
+  public lineColor = ColorUtils.convertSymbolizationColorToHex(defaultLineColor).hexColor;
+  public lineWidth = defaultLineWidth;
   private readonly drawingStyleState$ = this.store.select(selectDrawingStyleState);
   private readonly subscriptions: Subscription = new Subscription();
 
@@ -37,24 +37,11 @@ export class DrawingSettingsDialogComponent implements OnInit, OnDestroy {
   }
 
   public saveSettings() {
-    this.changeFill(this.fillColor);
-    this.changeLine(this.lineColor);
-    this.changeWidth(this.lineWidth);
+    const fillColor = ColorUtils.convertHexToSymbolizationColor(this.fillColor, defaultFillColor.a);
+    const lineColor = ColorUtils.convertHexToSymbolizationColor(this.lineColor);
+
+    this.store.dispatch(DrawingStyleActions.setDrawingStyles({fillColor, lineColor, lineWidth: this.lineWidth}));
     this.dialogRef.close();
-  }
-
-  private changeFill(newColor: string) {
-    const color = ColorUtils.convertHexToSymbolizationColor(newColor, defaultFillColor.a);
-    this.store.dispatch(DrawingStyleActions.setFillColor({color}));
-  }
-
-  private changeLine(newColor: string) {
-    const color = ColorUtils.convertHexToSymbolizationColor(newColor);
-    this.store.dispatch(DrawingStyleActions.setLineColor({color}));
-  }
-
-  private changeWidth(width: number) {
-    this.store.dispatch(DrawingStyleActions.setLineWidth({width}));
   }
 
   private initSubscriptions() {
@@ -63,8 +50,8 @@ export class DrawingSettingsDialogComponent implements OnInit, OnDestroy {
         .pipe(
           first(),
           tap((drawingStyleState) => {
-            this.fillColor = ColorUtils.convertSymbolizationColorToHex(drawingStyleState.fillColor);
-            this.lineColor = ColorUtils.convertSymbolizationColorToHex(drawingStyleState.lineColor);
+            this.fillColor = ColorUtils.convertSymbolizationColorToHex(drawingStyleState.fillColor).hexColor;
+            this.lineColor = ColorUtils.convertSymbolizationColorToHex(drawingStyleState.lineColor).hexColor;
             this.lineWidth = drawingStyleState.lineWidth;
           }),
         )
