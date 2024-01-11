@@ -5,7 +5,7 @@ import {Store} from '@ngrx/store';
 import {MatDialogRef} from '@angular/material/dialog';
 import {selectDrawingStyleState} from '../../../../state/map/reducers/drawing-style.reducer';
 import {first, Subscription, tap} from 'rxjs';
-import {defaultFillColor, defaultLineColor, defaultLineWidth} from '../../../../shared/configs/drawing.config';
+import {ConfigService} from '../../../../shared/services/config.service';
 
 @Component({
   selector: 'drawing-settings-dialog',
@@ -13,15 +13,16 @@ import {defaultFillColor, defaultLineColor, defaultLineWidth} from '../../../../
   styleUrls: ['./drawing-settings-dialog.component.scss'],
 })
 export class DrawingSettingsDialogComponent implements OnInit, OnDestroy {
-  public fillColor = ColorUtils.convertSymbolizationColorToHex(defaultFillColor).hexColor;
-  public lineColor = ColorUtils.convertSymbolizationColorToHex(defaultLineColor).hexColor;
-  public lineWidth = defaultLineWidth;
+  public fillColor = ColorUtils.convertSymbolizationColorToHex(this.configServie.drawingConfig.defaultFillColor).hexColor;
+  public lineColor = ColorUtils.convertSymbolizationColorToHex(this.configServie.drawingConfig.defaultLineColor).hexColor;
+  public lineWidth = this.configServie.drawingConfig.defaultLineWidth;
   private readonly drawingStyleState$ = this.store.select(selectDrawingStyleState);
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(
     private readonly store: Store,
     private readonly dialogRef: MatDialogRef<DrawingSettingsDialogComponent>,
+    private readonly configServie: ConfigService,
   ) {}
 
   public ngOnInit() {
@@ -37,7 +38,7 @@ export class DrawingSettingsDialogComponent implements OnInit, OnDestroy {
   }
 
   public saveSettings() {
-    const fillColor = ColorUtils.convertHexToSymbolizationColor(this.fillColor, defaultFillColor.a);
+    const fillColor = ColorUtils.convertHexToSymbolizationColor(this.fillColor, this.configServie.drawingConfig.defaultFillColor.a);
     const lineColor = ColorUtils.convertHexToSymbolizationColor(this.lineColor);
 
     this.store.dispatch(DrawingStyleActions.setDrawingStyles({fillColor, lineColor, lineWidth: this.lineWidth}));

@@ -3,6 +3,8 @@ import {AbstractToolsComponent} from '../abstract-tools/abstract-tools.component
 import {DrawingSettingsDialogComponent} from '../drawing-settings-dialog/drawing-settings-dialog.component';
 import {PanelClass} from '../../../../shared/enums/panel-class.enum';
 
+const DRAWING_SETTINGS_DIALOG_MAX_WIDTH = '420px';
+
 @Component({
   selector: 'drawing-tools',
   templateUrl: './drawing-tools.component.html',
@@ -38,6 +40,7 @@ export class DrawingToolsComponent extends AbstractToolsComponent {
       panelClass: PanelClass.ApiWrapperDialog,
       restoreFocus: false,
       autoFocus: false,
+      maxWidth: DRAWING_SETTINGS_DIALOG_MAX_WIDTH,
     });
   }
 }
