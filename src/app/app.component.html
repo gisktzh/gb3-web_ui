@@ -1,9 +1,10 @@
-<main class="main">
+<main class="app">
   <navbar-mobile *ngIf="screenMode === 'mobile' && !isHeadlessPage && !mapUiState?.hideUiElements"></navbar-mobile>
-  <navbar *ngIf="!isHeadlessPage && screenMode !== 'mobile'" class="navbar" [isSimplifiedPage]="isSimplifiedPage"></navbar>
-  <article [ngClass]="{'headless-page': isHeadlessPage}">
+  <navbar *ngIf="!isHeadlessPage && screenMode !== 'mobile'" class="app__navbar" [isSimplifiedPage]="isSimplifiedPage"></navbar>
+  <dev-mode-banner *ngIf="isDevModeActive" class="app__dev-mode-banner"></dev-mode-banner>
+  <article [ngClass]="{'app__headless-page': isHeadlessPage}">
     <router-outlet></router-outlet>
     <main-footer *ngIf="!isSimplifiedPage && !isHeadlessPage"></main-footer>
   </article>
-  <scrollbar-width-calculation class="scrollbar-width-calculation" *ngIf="scrollbarWidth === undefined"></scrollbar-width-calculation>
+  <scrollbar-width-calculation class="app__scrollbar-width-calculation" *ngIf="scrollbarWidth === undefined"></scrollbar-width-calculation>
 </main>

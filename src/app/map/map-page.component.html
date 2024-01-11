@@ -1,4 +1,7 @@
-<mat-drawer-container class="map-container" [ngClass]="{'map-container--mobile': screenMode === 'mobile'}">
+<mat-drawer-container
+  class="map-container"
+  [ngClass]="{'map-container--mobile': screenMode === 'mobile', 'map-container--dev-mode': isDevModeActive}"
+>
   <mat-drawer
     mode="side"
     position="end"
