@@ -229,14 +229,14 @@ describe('EsriToolService', () => {
         store.refreshState();
       });
       it(`sets the correct strategy for circle selection`, () => {
-        const pointSpy = spyOn(EsriPolygonSelectionStrategy.prototype, 'start');
+        const polygonSpy = spyOn(EsriPolygonSelectionStrategy.prototype, 'start');
         service.initializeDataDownloadSelection('select-circle');
-        expect(pointSpy).toHaveBeenCalled();
+        expect(polygonSpy).toHaveBeenCalled();
       });
       it(`sets the correct strategy for polygon selection`, () => {
-        const lineSpy = spyOn(EsriPolygonSelectionStrategy.prototype, 'start');
+        const polygonSpy = spyOn(EsriPolygonSelectionStrategy.prototype, 'start');
         service.initializeDataDownloadSelection('select-polygon');
-        expect(lineSpy).toHaveBeenCalled();
+        expect(polygonSpy).toHaveBeenCalled();
       });
       it(`sets the correct strategy for rectangle selection`, () => {
         const polygonSpy = spyOn(EsriPolygonSelectionStrategy.prototype, 'start');
@@ -244,19 +244,19 @@ describe('EsriToolService', () => {
         expect(polygonSpy).toHaveBeenCalled();
       });
       it(`sets the correct strategy for section selection`, () => {
-        const polygonSpy = spyOn(EsriScreenExtentSelectionStrategy.prototype, 'start');
+        const screenExtentSpy = spyOn(EsriScreenExtentSelectionStrategy.prototype, 'start');
         service.initializeDataDownloadSelection('select-section');
-        expect(polygonSpy).toHaveBeenCalled();
+        expect(screenExtentSpy).toHaveBeenCalled();
       });
       it(`sets the correct strategy for canton selection`, () => {
-        const polygonSpy = spyOn(EsriCantonSelectionStrategy.prototype, 'start');
+        const cantonSpy = spyOn(EsriCantonSelectionStrategy.prototype, 'start');
         service.initializeDataDownloadSelection('select-canton');
-        expect(polygonSpy).toHaveBeenCalled();
+        expect(cantonSpy).toHaveBeenCalled();
       });
       it(`sets the correct strategy for municipality selection`, () => {
-        const polygonSpy = spyOn(EsriMunicipalitySelectionStrategy.prototype, 'start');
+        const municipalitySpy = spyOn(EsriMunicipalitySelectionStrategy.prototype, 'start');
         service.initializeDataDownloadSelection('select-municipality');
-        expect(polygonSpy).toHaveBeenCalled();
+        expect(municipalitySpy).toHaveBeenCalled();
       });
     });
 
