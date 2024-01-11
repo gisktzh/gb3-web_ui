@@ -5,6 +5,7 @@ import {Subscription, tap} from 'rxjs';
 import {selectUrlState} from 'src/app/state/app/reducers/url.reducer';
 import {PanelClass} from '../../enums/panel-class.enum';
 import {NavbarMobileDialogComponent} from './navbar-mobile-dialog/navbar-mobile-dialog.component';
+import {selectDevMode} from '../../../state/app/reducers/app.reducer';
 
 @Component({
   selector: 'navbar-mobile',
@@ -13,8 +14,10 @@ import {NavbarMobileDialogComponent} from './navbar-mobile-dialog/navbar-mobile-
 })
 export class NavbarMobileComponent implements OnInit, OnDestroy {
   public isSimplifiedPage: boolean = false;
+  public isDevModeActive: boolean = false;
 
   private readonly urlState$ = this.store.select(selectUrlState);
+  private readonly devMode$ = this.store.select(selectDevMode);
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(
@@ -23,15 +26,7 @@ export class NavbarMobileComponent implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit() {
-    this.subscriptions.add(
-      this.urlState$
-        .pipe(
-          tap(({isSimplifiedPage}) => {
-            this.isSimplifiedPage = isSimplifiedPage;
-          }),
-        )
-        .subscribe(),
-    );
+    this.initSubscriptions();
   }
 
   public ngOnDestroy() {
@@ -47,5 +42,10 @@ export class NavbarMobileComponent implements OnInit, OnDestroy {
       panelClass: PanelClass.ApiWrapperDialog,
       autoFocus: false,
     });
+  }
+
+  private initSubscriptions() {
+    this.subscriptions.add(this.urlState$.pipe(tap(({isSimplifiedPage}) => (this.isSimplifiedPage = isSimplifiedPage))).subscribe());
+    this.subscriptions.add(this.devMode$.pipe(tap((devMode) => (this.isDevModeActive = devMode))).subscribe());
   }
 }
