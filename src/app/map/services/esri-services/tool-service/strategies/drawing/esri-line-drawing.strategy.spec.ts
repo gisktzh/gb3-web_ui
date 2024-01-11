@@ -49,7 +49,7 @@ describe('EsriLineDrawingStrategy', () => {
   });
 
   describe('completion', () => {
-    it('afires the callback handler on completion', () => {
+    it('fires the callback handler on completion', () => {
       const callbackSpy = spyOn(callbackHandler, 'handle');
       const strategy = new EsriLineDrawingStrategyWrapper(layer, mapView, lineSymbol, () => callbackHandler.handle());
       const graphic = new Graphic({
