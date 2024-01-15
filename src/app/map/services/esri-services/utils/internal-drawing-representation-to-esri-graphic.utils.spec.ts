@@ -123,7 +123,6 @@ describe('InternalDrawingRepresentationToEsriGraphicUtils', () => {
       }),
     });
 
-    console.log(actual.attributes);
     expect(actual.toJSON()).toEqual(expected.toJSON());
   });
 
