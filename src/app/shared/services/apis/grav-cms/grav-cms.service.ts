@@ -3,10 +3,9 @@ import {BaseApiService} from '../abstract-api.service';
 import {Observable} from 'rxjs';
 import {DiscoverMapsItem} from '../../../interfaces/discover-maps-item.interface';
 import {map} from 'rxjs/operators';
-import {DiscoverMapsRoot, FrequentlyUsedRoot, MapInfosRoot, PageInfosRoot, Pages} from '../../../models/grav-cms-generated.interfaces';
+import {DiscoverMapsRoot, FrequentlyUsedRoot, PageInfosRoot, Pages} from '../../../models/grav-cms-generated.interfaces';
 import {PageNotification, PageNotificationSeverity} from '../../../interfaces/page-notification.interface';
 import dayjs from 'dayjs';
-import {MapInfoNotification} from '../../../interfaces/map-info-notification.interface';
 import {MainPage} from '../../../enums/main-page.enum';
 import {FrequentlyUsedItem} from '../../../interfaces/frequently-used-item.interface';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
@@ -21,7 +20,6 @@ export class GravCmsService extends BaseApiService {
   protected apiBaseUrl: string = this.configService.apiConfig.gravCms.baseUrl;
   private readonly discoverMapsEndpoint: string = 'discovermaps.json';
   private readonly pageInfosEndpoint: string = 'pageinfos.json';
-  private readonly mapInfosEndpoint: string = 'mapinfos.json';
   private readonly frequentlyUsedItemsEndpoint: string = 'frequentlyused.json';
 
   public loadDiscoverMapsData(): Observable<DiscoverMapsItem[]> {
@@ -32,12 +30,6 @@ export class GravCmsService extends BaseApiService {
   public loadPageInfosData(): Observable<PageNotification[]> {
     const requestUrl = this.createFullEndpointUrl(this.pageInfosEndpoint);
     return this.get<PageInfosRoot>(requestUrl).pipe(map((response) => this.transformPageInfosData(response)));
-  }
-
-  // TODO can this be removed (including all connected types/interfaces)?
-  public loadMapInfosData(): Observable<MapInfoNotification[]> {
-    const requestUrl = this.createFullEndpointUrl(this.mapInfosEndpoint);
-    return this.get<MapInfosRoot>(requestUrl).pipe(map((response) => this.transformMapInfosData(response)));
   }
 
   public loadFrequentlyUsedData(): Observable<FrequentlyUsedItem[]> {
@@ -76,17 +68,6 @@ export class GravCmsService extends BaseApiService {
         toDate: dayjs(pageInfoData.to_date, DATE_FORMAT).toDate(),
         severity: pageInfoData.severity as PageNotificationSeverity,
         isMarkedAsRead: false,
-      };
-    });
-  }
-
-  protected transformMapInfosData(rootObject: MapInfosRoot): MapInfoNotification[] {
-    return rootObject['map-infos'].map((mapInfoData) => {
-      return {
-        ...mapInfoData,
-        id: mapInfoData.flex_id,
-        fromDate: dayjs(mapInfoData.from_date, DATE_FORMAT).toDate(),
-        toDate: dayjs(mapInfoData.to_date, DATE_FORMAT).toDate(),
       };
     });
   }
