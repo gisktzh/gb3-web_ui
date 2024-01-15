@@ -47,13 +47,6 @@ export class GravCmsService extends BaseApiService {
 
   protected transformDiscoverMapsData(rootObject: DiscoverMapsRoot): DiscoverMapsItem[] {
     return rootObject['discover-maps'].map((discoverMapData) => {
-      console.log(
-        `${discoverMapData.from_date} => ${dayjs(discoverMapData.from_date, DATE_FORMAT)} => ${dayjs(
-          discoverMapData.from_date,
-          DATE_FORMAT,
-        ).toDate()}`,
-      );
-      console.log(`${discoverMapData.from_date} => DD.MM.YYYY ${dayjs(discoverMapData.from_date, 'DD.MM.YYYY')}`);
       return {
         id: discoverMapData.flex_id,
         title: discoverMapData.title,
