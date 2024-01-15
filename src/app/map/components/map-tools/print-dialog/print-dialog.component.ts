@@ -98,9 +98,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
         .pipe(
           combineLatestWith(this.isFormInitialized),
           filter(([_, isFormInitialized]) => isFormInitialized),
-          tap(([value, _]) => {
-            this.updateFormGroupControlsState();
-          }),
+          tap(() => this.updateFormGroupControlsState()),
           // for the print preview we only use some properties and only if they've changed
           map(([value, _]) => ({
             reportLayout: value.reportLayout,
@@ -115,9 +113,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
               previous.scale === current.scale &&
               previous.rotation === current.rotation,
           ),
-          tap((value) => {
-            this.updatePrintPreview(value.reportLayout, value.reportOrientation, value.scale, value.rotation);
-          }),
+          tap((value) => this.updatePrintPreview(value.reportLayout, value.reportOrientation, value.scale, value.rotation)),
         )
         .subscribe(),
     );
@@ -229,9 +225,6 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     } else {
       this.formGroup.controls.reportOrientation.enable({emitEvent});
     }
-
-    // TODO (GB3-440) - remove the following line as soon as the legends gets printed
-    this.formGroup.controls.showLegend.disable({emitEvent});
   }
 
   private initializeDefaultFormValues(printCapabilities: PrintCapabilities | undefined, currentScale: number) {
@@ -307,6 +300,9 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
                   transparent: true, // always true
                 },
               });
+              break;
+            case 'externalService':
+              // we do not print external map services
               break;
           }
         });
