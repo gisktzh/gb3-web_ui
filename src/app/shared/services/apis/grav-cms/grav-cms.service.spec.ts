@@ -203,7 +203,7 @@ describe('GravCmsService', () => {
             size: 2361401,
             path: 'assets/uploads/frequentlyused/mdph1k0nyqstliu.png',
           },
-          created: new Date(2023, 8, 18, 11, 24, 31),
+          created: new Date(Date.UTC(2023, 8, 18, 9, 24, 31)),
         },
         {
           id: 'dc10938d401e622da75cbcfdcebf64d5',
@@ -218,7 +218,7 @@ describe('GravCmsService', () => {
             size: 506099,
             path: 'assets/uploads/frequentlyused/czef0j9wrdgbyni.png',
           },
-          created: new Date(2023, 8, 18, 11, 23, 2),
+          created: new Date(Date.UTC(2023, 8, 18, 9, 23, 2)),
         },
       ];
 
