@@ -1,4 +1,9 @@
-<mat-card appearance="raised" class="active-map-items" [ngClass]="{'active-map-items--hide-shadow': screenMode === 'mobile'}">
+<mat-card
+  appearance="raised"
+  class="active-map-items"
+  [ngClass]="{'active-map-items--hide-shadow': screenMode === 'mobile'}"
+  typedTourAnchor="map.active-maps"
+>
   <mat-card-header
     *ngIf="screenMode !== 'mobile'"
     class="active-map-items__header"

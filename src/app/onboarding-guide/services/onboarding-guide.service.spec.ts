@@ -7,12 +7,12 @@ const mockTour: OnboardingGuideConfig = {
   id: 'mock.tour',
   steps: [
     {
-      anchorId: 'map.start.tour',
+      anchorId: 'map.tour.start',
       content: 'Lorem Ipsum',
       title: 'Lorem',
     },
     {
-      anchorId: 'map.catalogue',
+      anchorId: 'map.search.filter',
       content: 'Lorem Ipsum 2',
       title: 'Lorem 2',
     },
