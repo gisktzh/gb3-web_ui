@@ -6,6 +6,7 @@ type MapOnboardingGuideAnchor =
   | 'map.tour.end'
   | 'map.search.input'
   | 'map.search.filter'
+  | 'map.available-maps'
   | 'map.active-maps'
   | 'map.tools'
   | 'map.navigation'

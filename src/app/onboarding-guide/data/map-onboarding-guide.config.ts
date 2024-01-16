@@ -33,6 +33,17 @@ export const mapOnboardingGuideConfig: OnboardingGuideConfig = {
       },
     },
     {
+      anchorId: 'map.available-maps',
+      content:
+        'Hier finden Sie Karten zu verschiedenen Themen. Wenn Sie auf „+“ klicken, werden Karteninhalte dargestellt und diese erscheinen unter „Aktive Karten“.',
+      title: 'Kartenkatalog',
+      enableBackdrop: true,
+      placement: {
+        xPosition: 'after',
+        horizontal: true,
+      },
+    },
+    {
       anchorId: 'map.active-maps',
       content:
         'Hier erscheinen alle dargestellten Karten. Sie können Inhalte ein- und ausblenden, Reihenfolgen ändern und Einstellungen am ' +
