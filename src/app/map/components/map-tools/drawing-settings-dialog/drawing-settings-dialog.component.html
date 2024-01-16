@@ -1,17 +1,41 @@
-<h1 mat-dialog-title>Text-Eingabe</h1>
-<div mat-dialog-content>
-  <div>
-    <input (change)="changeFill($event)" id="fill" name="fill" type="color" value="#FF0000" />
-    <label for="fill">Fill</label>
-  </div>
-  <hr />
-  <div>
-    <input (change)="changeLine($event)" id="line" name="line" type="color" value="#FF0000" />
-    <label for="line">Line</label>
-  </div>
-  <hr />
-  <input (change)="changeWidth($event)" id="width" max="10" min="1" type="range" value="50" /> Width
-</div>
-<div mat-dialog-actions>
-  <button (click)="close()" mat-button>Schliessen</button>
-</div>
+<api-dialog-wrapper title="Einstellungen" (closeEvent)="cancel()" class="drawing-settings-dialog">
+  <ng-container content>
+    <div class="drawing-settings-dialog__content">
+      <div class="drawing-settings-dialog__content__option">
+        <slider-wrapper
+          title="Strichstärke"
+          [value]="lineWidth"
+          [overwriteFooter]="true"
+          class="drawing-settings-dialog__content__option__width"
+        >
+          <ng-container content>
+            <mat-slider [min]="1" [max]="12" [step]="1" color="primary" class="drawing-settings-dialog__content__option__width__slider">
+              <input matSliderThumb [(ngModel)]="lineWidth" />
+            </mat-slider>
+          </ng-container>
+          <ng-container footer>
+            <div class="drawing-settings-dialog__content__option__width__footer">
+              <span class="drawing-settings-dialog__content__option__width__footer__min"></span>
+              <span class="drawing-settings-dialog__content__option__width__footer__max"></span>
+            </div>
+          </ng-container>
+        </slider-wrapper>
+      </div>
+
+      <div class="drawing-settings-dialog__content__option">
+        <span class="drawing-settings-dialog__content__option__label">Text- und Strichfarbe</span>
+        <input class="drawing-settings-dialog__content__option__color-picker" type="color" [(ngModel)]="lineColor" />
+      </div>
+      <div class="drawing-settings-dialog__content__option">
+        <span class="drawing-settings-dialog__content__option__label">Füllfarbe</span>
+        <input class="drawing-settings-dialog__content__option__color-picker" type="color" [(ngModel)]="fillColor" />
+      </div>
+    </div>
+  </ng-container>
+  <ng-container actions>
+    <div>
+      <button (click)="cancel()" mat-button>Abbrechen</button>
+      <button (click)="saveSettings()" color="accent" mat-button>Ok</button>
+    </div>
+  </ng-container>
+</api-dialog-wrapper>

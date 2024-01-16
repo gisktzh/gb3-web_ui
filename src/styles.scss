@@ -1,8 +1,8 @@
-@import '@arcgis/core/assets/esri/themes/light/main.css';
-@import 'material-icons/iconfont/filled'; /* we only import the filled icons to reduce bundle size */
-@import 'gb3-theme';
-@import 'overrides/esri-overrides';
-@import 'overrides/material-overrides';
+@use '@arcgis/core/assets/esri/themes/light/main.css';
+@use 'material-icons/iconfont/filled'; /* we only import the filled icons to reduce bundle size */
+@use 'gb3-theme';
+@use 'overrides/esri-overrides';
+@use 'overrides/material-overrides';
 
 body {
   margin: 0;

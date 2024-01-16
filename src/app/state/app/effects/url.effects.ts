@@ -15,6 +15,7 @@ import {MainPage} from '../../../shared/enums/main-page.enum';
 import {Store} from '@ngrx/store';
 import {BasemapConfigService} from '../../../map/services/basemap-config.service';
 import {selectQueryParams} from '../selectors/router.selector';
+import {RouteParamConstants} from '../../../shared/constants/route-param.constants';
 
 @Injectable()
 export class UrlEffects {
@@ -36,6 +37,42 @@ export class UrlEffects {
       }),
     );
   });
+
+  public setAppParameters$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(UrlActions.setPage),
+      concatLatestFrom(() => [this.store.select(selectQueryParams)]),
+      map(([_, params]) => {
+        return UrlActions.setAppParams({params});
+      }),
+    );
+  });
+
+  public removeTemporaryAppParameters$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(UrlActions.setAppParams),
+        map(({params}) => {
+          let adjustedParams: Params | undefined = undefined;
+          if (Object.keys(params).some((paramKey) => RouteParamConstants.GLOBAL_TEMPORARY_URL_PARAMS.includes(paramKey))) {
+            // set temporary parameters to `null`
+            adjustedParams = RouteParamConstants.GLOBAL_TEMPORARY_URL_PARAMS.reduce((prev, curr) => ({...prev, [curr]: null}), {});
+          }
+          return adjustedParams;
+        }),
+        filter((adjustedParams): adjustedParams is Params => !!adjustedParams && Object.keys(adjustedParams).length > 0),
+        switchMap((adjustedParams) => {
+          return this.router.navigate([], {
+            relativeTo: this.route,
+            queryParams: adjustedParams,
+            queryParamsHandling: 'merge',
+            replaceUrl: true,
+          });
+        }),
+      );
+    },
+    {dispatch: false},
+  );
 
   public handleInitialMapPageParameters$ = createEffect(() => {
     return this.actions$.pipe(

@@ -9,15 +9,11 @@ import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import Color from '@arcgis/core/Color';
 import MarkerSymbol from '@arcgis/core/symbols/MarkerSymbol';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
-import {UnsupportedGeometryType, UnsupportedSymbolizationType} from './errors/esri.errors';
-import Symbol from '@arcgis/core/symbols/Symbol';
-import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
-import {Gb3StyleRepresentation} from '../../../shared/interfaces/internal-drawing-representation.interface';
+import {UnsupportedGeometryType} from './errors/esri.errors';
 import {DrawingStyleState} from '../../../state/map/states/drawing-style.state';
 import {Store} from '@ngrx/store';
 import {selectDrawingStyleState} from '../../../state/map/reducers/drawing-style.reducer';
 import {tap} from 'rxjs';
-import {ColorUtils} from '../../../shared/utils/color.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -127,94 +123,6 @@ export class EsriSymbolizationService {
     });
   }
 
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  public extractGb3SymbolizationFromSymbol(symbol: Symbol): Gb3StyleRepresentation {
-    switch (symbol.type) {
-      case 'simple-marker':
-        return {
-          pointRadius: (symbol as SimpleMarkerSymbol).size,
-          fillColor: symbol.color.toHex(),
-          fillOpacity: symbol.color.a,
-          strokeWidth: (symbol as SimpleMarkerSymbol).outline.width,
-          strokeOpacity: (symbol as SimpleMarkerSymbol).outline.color.a,
-          strokeColor: (symbol as SimpleMarkerSymbol).outline.color.toHex(),
-          type: 'point',
-        };
-      case 'simple-line':
-        return {
-          strokeColor: symbol.color.toHex(),
-          strokeOpacity: symbol.color.a,
-          strokeWidth: (symbol as SimpleLineSymbol).width,
-          type: 'line',
-        };
-      case 'simple-fill':
-        return {
-          fillColor: symbol.color.toHex(),
-          fillOpacity: symbol.color.a,
-          strokeWidth: (symbol as SimpleFillSymbol).outline.width,
-          strokeOpacity: (symbol as SimpleFillSymbol).outline.color.a,
-          strokeColor: (symbol as SimpleFillSymbol).outline.color.toHex(),
-          type: 'polygon',
-        };
-      case 'text':
-        return {
-          haloColor: (symbol as TextSymbol).haloColor.toHex(),
-          fontColor: symbol.color.toHex(),
-          fontFamily: (symbol as TextSymbol).font.family,
-          fontSize: (symbol as TextSymbol).font.size.toString(),
-          haloRadius: (symbol as TextSymbol).haloSize.toString(),
-          labelYOffset: (symbol as TextSymbol).yoffset.toString(), // todo GB3-826: actual offset is rather x2.1
-          labelAlign: 'ct', // todo GB3-826: move this to a constant?
-          label: '[text]', // todo GB3-826: move this to a constant? note: it should also match the property in the interface
-          type: 'text',
-        };
-      default:
-        throw new UnsupportedSymbolizationType(symbol.type);
-    }
-  }
-
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  public extractSymbolFromGb3Representation(style: Gb3StyleRepresentation, labelText?: string): __esri.Symbol {
-    switch (style.type) {
-      case 'text': {
-        return new TextSymbol({
-          text: labelText,
-          font: {
-            size: style.fontSize,
-          },
-          color: this.convertHexToEsriColor(style.fontColor),
-          haloColor: this.convertHexToEsriColor(style.haloColor),
-          haloSize: style.haloRadius,
-          yoffset: style.labelYOffset,
-        });
-      }
-      case 'point': {
-        return new EsriSimpleMarkerSymbol({
-          color: this.convertHexToEsriColor(style.fillColor, style.fillOpacity),
-          size: style.pointRadius,
-          outline: {
-            color: this.convertHexToEsriColor(style.strokeColor),
-          },
-        });
-      }
-      case 'line': {
-        return new EsriSimpleLineSymbol({
-          color: this.convertHexToEsriColor(style.strokeColor, style.strokeOpacity),
-          width: style.strokeWidth,
-        });
-      }
-      case 'polygon': {
-        return new EsriSimpleFillSymbol({
-          color: this.convertHexToEsriColor(style.fillColor, style.fillOpacity), // todo GB3-826: extract default alpha value
-          outline: {
-            width: style.strokeWidth,
-            color: this.convertHexToEsriColor(style.strokeColor),
-          },
-        });
-      }
-    }
-  }
-
   private getCustomizedStyleSettingOrDefault<T>(isCustomizable: boolean, setting: keyof DrawingStyleState, defaultSetting: T): T {
     if (isCustomizable) {
       return (this.drawingStyleSettings?.[setting] as T) ?? defaultSetting;
@@ -225,9 +133,5 @@ export class EsriSymbolizationService {
 
   private createEsriColor(color: SymbolizationColor): Color {
     return new EsriColor(color);
-  }
-
-  private convertHexToEsriColor(hex: string, alpha?: number): Color {
-    return this.createEsriColor(ColorUtils.convertHexToSymbolizationColor(hex, alpha));
   }
 }

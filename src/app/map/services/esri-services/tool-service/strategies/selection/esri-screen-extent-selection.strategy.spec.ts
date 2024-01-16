@@ -4,15 +4,17 @@ import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import {EsriScreenExtentSelectionStrategy} from './esri-screen-extent-selection.strategy';
 import {TestBed} from '@angular/core/testing';
 import Extent from '@arcgis/core/geometry/Extent';
-import {SelectionCallbackHandler} from '../../interfaces/selection-callback-handler.interface';
+import {DataDownloadSelection} from '../../../../../../shared/interfaces/data-download-selection.interface';
 
 describe('EsriScreenExtentSelectionStrategy', () => {
+  const callbackHandler = {
+    handle: (selection: DataDownloadSelection | undefined) => {
+      return selection;
+    },
+  };
+
   let layer: GraphicsLayer;
   let fillSymbol: SimpleFillSymbol;
-  const callbackHandler: SelectionCallbackHandler = {
-    complete: () => {},
-    abort: () => {},
-  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
@@ -24,25 +26,25 @@ describe('EsriScreenExtentSelectionStrategy', () => {
 
   describe('cancellation', () => {
     it('does clear the layer and does not dispatch anything', () => {
+      const callbackSpy = spyOn(callbackHandler, 'handle');
       const extent = new Extent();
-      const completeCallbackHandlerSpy = spyOn(callbackHandler, 'complete');
-      const strategy = new EsriScreenExtentSelectionStrategy(layer, fillSymbol, callbackHandler, extent);
+      const strategy = new EsriScreenExtentSelectionStrategy(layer, fillSymbol, (selection) => callbackHandler.handle(selection), extent);
       const layerSpy = spyOn(layer, 'removeAll');
 
       strategy.cancel();
       expect(layerSpy).toHaveBeenCalledTimes(1);
-      expect(completeCallbackHandlerSpy).not.toHaveBeenCalled();
+      expect(callbackSpy).not.toHaveBeenCalled();
     });
   });
 
   describe('completion', () => {
     it('dispatches a new selection', () => {
+      const callbackSpy = spyOn(callbackHandler, 'handle');
       const extent = new Extent();
-      const completeCallbackHandlerSpy = spyOn(callbackHandler, 'complete');
-      const strategy = new EsriScreenExtentSelectionStrategy(layer, fillSymbol, callbackHandler, extent);
+      const strategy = new EsriScreenExtentSelectionStrategy(layer, fillSymbol, (selection) => callbackHandler.handle(selection), extent);
 
       strategy.start();
-      expect(completeCallbackHandlerSpy).toHaveBeenCalledWith(jasmine.objectContaining({type: 'select-section'}));
+      expect(callbackSpy).toHaveBeenCalledWith(jasmine.objectContaining({type: 'polygon'}));
     });
   });
 });

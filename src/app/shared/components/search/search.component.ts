@@ -1,17 +1,19 @@
-import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, ViewChild} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {debounceTime, distinctUntilChanged, fromEvent, Observable, Subscription, tap} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, fromEvent, Subject, Subscription, tap} from 'rxjs';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {ScreenMode} from '../../types/screen-size.type';
 import {SearchMode} from '../../types/search-mode.type';
+import {map} from 'rxjs/operators';
+
+const SEARCH_TERM_INPUT_DEBOUNCE_IN_MS = 300;
 
 @Component({
   selector: 'search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss'],
 })
-export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
+export class SearchComponent implements AfterViewInit, OnDestroy {
   @Input() public placeholderText!: string;
   @Input() public showFilterButton: boolean = true;
   @Input() public alwaysEnableClearButton: boolean = false;
@@ -29,18 +31,15 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public screenMode: ScreenMode = 'regular';
 
-  @ViewChild('searchInput') private readonly inputRef!: ElementRef;
+  @ViewChild('searchInput') private readonly inputRef!: ElementRef<HTMLInputElement>;
+  private readonly term = new Subject<string>();
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(private readonly store: Store) {}
 
-  public ngOnInit() {
-    this.initSubscriptions();
-  }
-
   public ngAfterViewInit() {
-    this.subscriptions.add(this.searchInputHandler().subscribe());
+    this.initSubscriptions();
     if (this.focusOnInit) {
       this.inputRef.nativeElement.focus();
     }
@@ -51,7 +50,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public clearInput() {
-    this.inputRef.nativeElement.value = '';
+    this.setTerm('');
     this.clearSearchTermEvent.emit();
   }
 
@@ -59,26 +58,44 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     this.openFilterEvent.emit();
   }
 
-  private searchInputHandler(): Observable<string> {
-    return fromEvent<KeyboardEvent>(this.inputRef.nativeElement, 'keyup').pipe(
-      debounceTime(300),
-      map((event) => (<HTMLInputElement>event.target).value.trim()),
-      distinctUntilChanged(),
-      tap((value) => {
-        this.changeSearchTermEvent.emit(value);
-      }),
-    );
+  private setTerm(term: string) {
+    this.term.next(term);
   }
 
-  public initSubscriptions() {
+  private initSubscriptions() {
     this.subscriptions.add(
       this.screenMode$
         .pipe(
           tap((screenMode) => {
             this.screenMode = screenMode;
-            if (this.inputRef) {
-              this.clearInput();
-            }
+            this.clearInput();
+          }),
+        )
+        .subscribe(),
+    );
+
+    this.subscriptions.add(
+      this.term
+        .pipe(
+          map((term) => {
+            this.inputRef.nativeElement.value = term;
+            return term.trim();
+          }),
+          distinctUntilChanged(),
+          tap((term) => {
+            this.changeSearchTermEvent.emit(term);
+          }),
+        )
+        .subscribe(),
+    );
+
+    this.subscriptions.add(
+      fromEvent<KeyboardEvent>(this.inputRef.nativeElement, 'keyup')
+        .pipe(
+          debounceTime(SEARCH_TERM_INPUT_DEBOUNCE_IN_MS),
+          tap((event) => {
+            const term = (<HTMLInputElement>event.target).value;
+            this.setTerm(term);
           }),
         )
         .subscribe(),

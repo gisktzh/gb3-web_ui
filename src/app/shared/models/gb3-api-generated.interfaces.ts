@@ -25,14 +25,6 @@ export interface Feature {
       geolion_gdd: number | null;
       /** UUID from geometadatabase */
       geolion_karten_uuid: string | null;
-      topic_info: {
-        /** Topic info title */
-        title: string;
-        features: {
-          /** Topic info feature fields */
-          fields: InfoFeatureField[];
-        }[];
-      }[];
       layers: {
         /** Layer name */
         layer: string;
@@ -574,6 +566,13 @@ export interface Topics {
        * @format uri
        */
       gb2_url: string | null;
+      /**
+       * Map opacity. Value 1.0 means no transparency, value 0.0 corresponds to full transparency.
+       * @format float
+       * @min 0
+       * @max 1
+       */
+      opacity: number;
       layers: {
         /** Layer ID */
         id: number;
@@ -768,7 +767,12 @@ export type FavoriteContent = {
   mapId: string;
   /** Visibility of the map */
   visible: boolean;
-  /** Opacity of the map */
+  /**
+   * Map opacity. Value 1.0 means no transparency, value 0.0 corresponds to full transparency.
+   * @format float
+   * @min 0
+   * @max 1
+   */
   opacity: number;
   /** Single layer of the map */
   isSingleLayer: boolean;

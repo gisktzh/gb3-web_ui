@@ -1,8 +1,8 @@
-@import 'material-overrides/api-wrapper-dialog';
-@import 'material-overrides/button';
-@import 'material-overrides/card';
-@import 'material-overrides/expansion-panel';
-@import 'material-overrides/page-notification-snackbar';
-@import 'material-overrides/slider';
-@import 'material-overrides/error-snackbar';
-@import 'material-overrides/slide-toggle';
+@use 'overrides/material-overrides/api-wrapper-dialog';
+@use 'overrides/material-overrides/button';
+@use 'overrides/material-overrides/card';
+@use 'overrides/material-overrides/expansion-panel';
+@use 'overrides/material-overrides/page-notification-snackbar';
+@use 'overrides/material-overrides/slider';
+@use 'overrides/material-overrides/error-snackbar';
+@use 'overrides/material-overrides/slide-toggle';

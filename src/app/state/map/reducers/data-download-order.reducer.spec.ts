@@ -8,7 +8,7 @@ import {Order, OrderResponse, Product} from '../../../shared/interfaces/geoshop-
 
 describe('data download order reducer', () => {
   const existingStateSelection: DataDownloadSelection = {
-    type: 'select-polygon',
+    type: 'polygon',
     drawingRepresentation: {
       id: 'id',
       type: 'Feature',
@@ -53,7 +53,7 @@ describe('data download order reducer', () => {
   describe('setSelection', () => {
     it('sets the selection; resets everything else', () => {
       const expectedSelection: DataDownloadSelection = {
-        type: 'select-circle',
+        type: 'canton',
         drawingRepresentation: {
           id: 'new id',
           type: 'Feature',

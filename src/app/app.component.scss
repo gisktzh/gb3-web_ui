@@ -3,23 +3,31 @@
 @use 'variables/z-index-variables' as z-index-variables;
 @use 'variables/map-layout-variables' as map-layout-variables;
 
-.navbar {
-  top: 0;
-  position: sticky;
-  width: 100%;
-  display: block;
-  height: map-layout-variables.$navbar-height;
-  overflow: hidden;
-  @include mixins.hide-on-small-screens;
-  z-index: z-index-variables.$navbar;
-}
+.app {
+  .app__navbar {
+    top: 0;
+    position: sticky;
+    width: 100%;
+    display: block;
+    height: map-layout-variables.$navbar-height;
+    overflow: hidden;
+    @include mixins.hide-on-small-screens;
+    z-index: z-index-variables.$navbar;
+  }
 
-.headless-page {
-  height: 100vh;
-}
+  .app__dev-mode-banner {
+    display: block;
+    height: map-layout-variables.$dev-mode-banner-height;
+    width: 100%;
+  }
 
-.scrollbar-width-calculation {
-  position: fixed;
-  top: 0;
-  left: 0;
+  .app__headless-page {
+    height: 100vh;
+  }
+
+  .app__scrollbar-width-calculation {
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
 }

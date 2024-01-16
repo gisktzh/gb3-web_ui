@@ -9,6 +9,9 @@ import {ExternalKmlActiveMapItem} from '../../map/models/implementations/externa
 
 export class ActiveMapItemFactory {
   public static createGb2WmsMapItem(map: Map, layer?: MapLayer, visible?: boolean, opacity?: number): Gb2WmsActiveMapItem {
+    if (opacity === undefined) {
+      opacity = map.opacity;
+    }
     return new Gb2WmsActiveMapItem(map, layer, visible, opacity);
   }
 

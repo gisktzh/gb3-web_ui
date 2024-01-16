@@ -31,7 +31,7 @@ import {catchError} from 'rxjs/operators';
 
 describe('DataDownloadOrderEffects', () => {
   const polygonSelectionMock: DataDownloadSelection = {
-    type: 'select-polygon',
+    type: 'polygon',
     drawingRepresentation: {
       id: 'id',
       type: 'Feature',
@@ -106,7 +106,7 @@ describe('DataDownloadOrderEffects', () => {
     it('does not create an order from an invalid selection and dispatches DataDownloadOrderActions.setSelectionError', (done: DoneFn) => {
       const geoshopApiServiceSpy = spyOn(geoshopApiService, 'createOrderFromSelection').and.callThrough();
       const invalidSelection: DataDownloadSelection = {
-        type: 'select-polygon',
+        type: 'polygon',
         drawingRepresentation: {
           id: 'id',
           type: 'Feature',

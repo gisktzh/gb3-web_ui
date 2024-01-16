@@ -16,7 +16,7 @@
 </mat-toolbar>
 
 <ng-template #simplifiedPage>
-  <div class="navbar-mobile-simplified">
+  <div class="navbar-mobile-simplified" [ngClass]="{'navbar-mobile-simplified--dev-mode': isDevModeActive}">
     <button (click)="showMenu()" class="navbar-mobile-simplified__button" mat-icon-button>
       <mat-icon svgIcon="ktzh_menu_mobile"></mat-icon>
     </button>

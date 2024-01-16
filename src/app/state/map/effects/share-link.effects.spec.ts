@@ -21,7 +21,7 @@ import {
 import {LayerCatalogActions} from '../actions/layer-catalog.actions';
 import {selectLoadedLayerCatalogueAndShareItem} from '../selectors/loaded-layer-catalogue-and-share-item.selector';
 import {Map, Topic} from '../../../shared/interfaces/topic.interface';
-import {spyPropertyGetter} from '../../../testing/testing.utils';
+import {spyOnPropertyGetter} from '../../../testing/testing.utils';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {selectItems} from '../reducers/active-map-item.reducer';
@@ -396,7 +396,7 @@ describe('ShareLinkEffects', () => {
       describe('throwInitializationError$', () => {
         it('throws a ShareLinkCouldNotBeValidated error with the login reminder and dispatches ShareLinkActions.setInitializationError() with the error on failure', (done: DoneFn) => {
           const isAuthenticated = true;
-          spyPropertyGetter(authServiceMock, 'isAuthenticated$').and.returnValue(of(isAuthenticated));
+          spyOnPropertyGetter(authServiceMock, 'isAuthenticated$').and.returnValue(of(isAuthenticated));
 
           const expectedError = new ShareLinkCouldNotBeValidated(isAuthenticated, expectedOriginalError);
 
@@ -416,7 +416,7 @@ describe('ShareLinkEffects', () => {
 
         it('throws a ShareLinkCouldNotBeValidated error without the login reminder and dispatches ShareLinkActions.setInitializationError() with the error on failure', (done: DoneFn) => {
           const isAuthenticated = false;
-          spyPropertyGetter(authServiceMock, 'isAuthenticated$').and.returnValue(of(isAuthenticated));
+          spyOnPropertyGetter(authServiceMock, 'isAuthenticated$').and.returnValue(of(isAuthenticated));
 
           const expectedError = new ShareLinkCouldNotBeValidated(isAuthenticated, expectedOriginalError);
 

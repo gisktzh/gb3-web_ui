@@ -17,7 +17,7 @@ function createAppVersion() {
   }
   try {
     console.log('Extracting git commit hash as app version...');
-    return cp.execSync('git rev-parse --short HEAD').toString().trim();
+    return cp.execSync('/usr/bin/git rev-parse --short HEAD').toString().trim();
   } catch (e) {
     console.warn('Could not extract hash, reason:\n' + e.message);
     console.warn('Returning default hash');
@@ -39,7 +39,7 @@ function createReleaseId() {
   }
   try {
     console.log('Extracting last tag as release...');
-    return cp.execSync('git describe --tags $(git rev-list --tags --max-count=1)').toString().trim();
+    return cp.execSync('/usr/bin/git describe --tags $(git rev-list --tags --max-count=1)').toString().trim();
   } catch (e) {
     console.log('No tag found, reason:\n' + e.message);
     return '';
