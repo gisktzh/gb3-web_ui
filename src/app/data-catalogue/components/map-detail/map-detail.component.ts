@@ -60,7 +60,7 @@ export class MapDetailComponent extends AbstractBaseDetailComponent<MapMetadata>
   private extractInformationElements(mapMetadata: MapMetadata): DataDisplayElement[] {
     return [
       {title: 'Nr.', value: mapMetadata.gisZHNr.toString(), type: 'text'},
-      {title: 'Kartentyp', value: mapMetadata.gb2Url ? 'GB2' : null, type: 'text'}, // TODO GB3-834: where is this value from?
+      {title: 'Kartentyp', value: mapMetadata.gb2Url ? 'GB2' : 'GB3', type: 'text'}, // TODO GB3-834: where is this value from?
       {title: 'Internet URL', value: mapMetadata.gb2Url?.href ?? null, displayText: mapMetadata.gb2Url?.href, type: 'url'}, // TODO GB3-834: how to distinguish between intra and internet? Where should I create the absolute path?
       {title: 'Weiterführende Verweise', value: mapMetadata.externalLinks, type: 'urlList'}, // TODO GB3-834: how to display these?
     ];
