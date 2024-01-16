@@ -2,7 +2,7 @@
 @use 'mixins/helpers.mixin' as mixins;
 
 $search-height: 106px;
-$search-height-compact: 64px;
+$search-height-compact: 60px;
 
 .data-catalogue-overview__search {
   display: flex;
@@ -20,9 +20,20 @@ $search-height-compact: 64px;
     height: $search-height;
     background-color: ktzh-variables.$zh-background-color;
 
-    &--mobile {
-      height: $search-height-compact;
-      width: calc(100vw - 24px);
+    //&--mobile {
+    //  height: $search-height-compact;
+    //  width: calc(100vw - 24px);
+    //}
+  }
+
+  @media (max-width: calc(ktzh-variables.$zh-layout-max-content-width + 48px)) {
+    .data-catalogue-overview__search__bar {
+      width: calc(100vw - 62px);
+
+      &--mobile {
+        width: calc(100vw - 24px);
+        height: 60px;
+      }
     }
   }
 }
@@ -32,7 +43,6 @@ $search-height-compact: 64px;
   justify-content: center;
 
   .data-catalogue-overview__content {
-    padding: 40px 24px;
     max-width: ktzh-variables.$zh-layout-max-content-width;
     width: 100%;
 

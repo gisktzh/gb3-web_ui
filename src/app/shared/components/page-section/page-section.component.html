@@ -7,29 +7,30 @@
   ]"
 >
   <div class="page-section__content-container">
-    <span
-      *ngIf="this.sectionTitle"
-      class="page-section__content-container__title-line"
-      [ngClass]="{'page-section__content-container__title-line--mobile': screenMode === 'mobile'}"
-    ></span>
-    <div
-      class="page-section__content-container__title-wrapper"
-      [ngClass]="{'page-section__content-container__title-wrapper--mobile': screenMode === 'mobile'}"
-    >
-      <h1 class="page-section__content-container__title-wrapper__title mat-headline-4">{{ this.sectionTitle }}</h1>
-      <a
-        *ngIf="this.titleLink"
-        [href]="this.titleLink.url"
-        [title]="this.titleLink.displayTitle"
-        rel="noopener noreferrer"
-        class="page-section__content-container__title-wrapper__link"
-        mat-button
-        target="_blank"
+    @if (sectionTitle) {
+      <span
+        class="page-section__content-container__title-line"
+        [ngClass]="{'page-section__content-container__title-line--mobile': screenMode === 'mobile'}"
+      ></span>
+      <div
+        class="page-section__content-container__title-wrapper"
+        [ngClass]="{'page-section__content-container__title-wrapper--mobile': screenMode === 'mobile'}"
       >
-        {{ this.titleLink.displayTitle }}
-        <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
-      </a>
-    </div>
+        <h1 class="page-section__content-container__title-wrapper__title mat-headline-4">{{ this.sectionTitle }}</h1>
+        <a
+          *ngIf="this.titleLink"
+          [href]="this.titleLink.url"
+          [title]="this.titleLink.displayTitle"
+          rel="noopener noreferrer"
+          class="page-section__content-container__title-wrapper__link"
+          mat-button
+          target="_blank"
+        >
+          {{ this.titleLink.displayTitle }}
+          <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
+        </a>
+      </div>
+    }
     <div class="page-section__content-container__content">
       <ng-content></ng-content>
     </div>
