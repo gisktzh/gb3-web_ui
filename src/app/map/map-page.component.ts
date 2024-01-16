@@ -47,7 +47,9 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   public ngAfterViewInit() {
-    this.onboardingGuideService.autoStart();
+    if (this.screenMode === 'regular') {
+      this.onboardingGuideService.autoStart();
+    }
   }
 
   public showLegend() {
