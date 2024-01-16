@@ -2,12 +2,15 @@
  * Anchors for the map onboarding guide.
  */
 type MapOnboardingGuideAnchor =
-  | 'map.start.tour'
-  | 'map.catalogue'
-  | 'map.active.map.items'
-  | 'map.basemap.selector'
-  | 'map.feature.info'
-  | 'map.end.tour';
+  | 'map.tour.start'
+  | 'map.tour.end'
+  | 'map.search.input'
+  | 'map.search.filter'
+  | 'map.active-maps'
+  | 'map.tools'
+  | 'map.navigation'
+  | 'map.background'
+  | 'map.info';
 
 /**
  * All TourAnchors that are in use throughout the app. Do not use string anchors or tourAnchor directly, but add new steps and their anchors

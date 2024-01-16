@@ -36,6 +36,7 @@ import {KeyValuePreserveOrderPipe} from './pipes/key-value-preserve-order.pipe';
 import {LayerTooltipPipe} from './pipes/layer-tooltip.pipe';
 import {ClickOnSpaceBarDirective} from './directives/click-on-spacebar.directive';
 import {Gb2ExitButtonComponent} from './components/external-link-button/gb2-exit-button.component';
+import {OnboardingGuideModule} from '../onboarding-guide/onboarding-guide.module';
 
 @NgModule({
   declarations: [
@@ -73,7 +74,7 @@ import {Gb2ExitButtonComponent} from './components/external-link-button/gb2-exit
     ClickOnSpaceBarDirective,
     Gb2ExitButtonComponent,
   ],
-  imports: [MaterialModule, RouterModule, CommonModule, ResizableModule],
+  imports: [MaterialModule, RouterModule, CommonModule, ResizableModule, OnboardingGuideModule],
   exports: [
     MaterialModule,
     ResizableModule,

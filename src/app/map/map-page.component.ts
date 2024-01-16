@@ -1,6 +1,5 @@
 import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import {OnboardingGuideService} from '../onboarding-guide/services/onboarding-guide.service';
-import {mapOnboardingGuideConfig} from '../onboarding-guide/data/map-onboarding-guide.config';
 import {Store} from '@ngrx/store';
 import {delayWhen, interval, Subscription, tap} from 'rxjs';
 import {selectMapUiState} from '../state/map/reducers/map-ui.reducer';
@@ -19,7 +18,6 @@ import {selectDevMode} from '../state/app/reducers/app.reducer';
   styleUrls: ['./map-page.component.scss'],
 })
 export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
-  public readonly onboardingGuideImage = mapOnboardingGuideConfig.introductionImage;
   public numberOfQueryLegends: number = 0;
   public isMapDataCatalogueMinimized: boolean = false;
   public mapUiState?: MapUiState;

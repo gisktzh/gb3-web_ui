@@ -7,13 +7,13 @@ import {OnboardingGuideAnchor} from '../types/onboarding-guide-anchor.type';
  */
 interface OnboardingStep extends IMdStepOption {
   anchorId: OnboardingGuideAnchor;
+  image?: string;
 }
 
 /**
- * Configuration object for an onboarding guide. Has a unique ID and a number of steps and an optional introduction image.
+ * Configuration object for an onboarding guide. Has a unique ID and a number of steps.
  */
 export interface OnboardingGuideConfig {
   id: string;
-  introductionImage?: string;
   steps: OnboardingStep[];
 }
