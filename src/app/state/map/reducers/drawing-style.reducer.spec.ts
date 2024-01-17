@@ -7,7 +7,7 @@ describe('DrawingStyle Reducer', () => {
   const mockExistingState: DrawingStyleState = {
     lineColor: {r: 255, g: 123, b: 1, a: 0.2},
     fillColor: {r: 13, g: 3, b: 24, a: 0.4},
-    lineWidth: '20px',
+    lineWidth: 20,
   };
 
   describe('an unknown action', () => {
@@ -20,43 +20,16 @@ describe('DrawingStyle Reducer', () => {
     });
   });
 
-  describe('setFillColor', () => {
-    it('sets the fill color and nothing else', () => {
+  describe('setDrawingStyles', () => {
+    it('sets the styles for all three properties', () => {
       const mockColor: SymbolizationColor = {r: 5, g: 6, b: 7, a: 0.1};
-      const action = DrawingStyleActions.setFillColor({color: mockColor});
+      const action = DrawingStyleActions.setDrawingStyles({fillColor: mockColor, lineColor: mockColor, lineWidth: 2});
 
       const result = reducer(mockExistingState, action);
 
       expect(result.fillColor).toEqual(mockColor);
-      expect(result.lineColor).toEqual(mockExistingState.lineColor);
-      expect(result.lineWidth).toEqual(mockExistingState.lineWidth);
-    });
-  });
-
-  describe('setLineColor', () => {
-    it('sets the line color and nothing else', () => {
-      const mockColor: SymbolizationColor = {r: 5, g: 6, b: 7, a: 0.1};
-      const action = DrawingStyleActions.setLineColor({color: mockColor});
-
-      const result = reducer(mockExistingState, action);
-
       expect(result.lineColor).toEqual(mockColor);
-      expect(result.fillColor).toEqual(mockExistingState.fillColor);
-      expect(result.lineWidth).toEqual(mockExistingState.lineWidth);
-    });
-  });
-
-  describe('setLineWidth', () => {
-    it('sets the line width with "px" postfix and nothing else', () => {
-      const mockLineWidth = 1337;
-      const action = DrawingStyleActions.setLineWidth({width: mockLineWidth});
-
-      const result = reducer(mockExistingState, action);
-      const expected = `${mockLineWidth}px`;
-
-      expect(result.lineWidth).toEqual(expected);
-      expect(result.fillColor).toEqual(mockExistingState.fillColor);
-      expect(result.lineColor).toEqual(mockExistingState.lineColor);
+      expect(result.lineWidth).toEqual(2);
     });
   });
 });

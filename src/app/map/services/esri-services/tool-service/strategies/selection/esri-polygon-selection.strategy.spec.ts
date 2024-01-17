@@ -6,6 +6,9 @@ import Graphic from '@arcgis/core/Graphic';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import Polygon from '@arcgis/core/geometry/Polygon';
 import {EsriPolygonSelectionStrategy} from './esri-polygon-selection.strategy';
+import {DataDownloadSelection} from '../../../../../../shared/interfaces/data-download-selection.interface';
+import {TestBed} from '@angular/core/testing';
+import {provideMockStore} from '@ngrx/store/testing';
 
 class EsriPolygonSelectionStrategyWrapper extends EsriPolygonSelectionStrategy {
   public get svm() {
@@ -19,16 +22,21 @@ class EsriPolygonSelectionStrategyWrapper extends EsriPolygonSelectionStrategy {
  * of 0 on the graphics layer, even though in reality, it should be 2 (when Esri properly adds the graphic).
  */
 describe('EsriPolygonSelectionStrategy', () => {
-  let mapView: MapView;
-  let layer: GraphicsLayer;
-  let fillSymbol: SimpleFillSymbol;
   const callbackHandler = {
-    handle: () => {
-      return undefined;
+    handle: (selection: DataDownloadSelection | undefined) => {
+      return selection;
     },
   };
 
+  let mapView: MapView;
+  let layer: GraphicsLayer;
+  let fillSymbol: SimpleFillSymbol;
+
   beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [],
+      providers: [provideMockStore({})],
+    });
     mapView = new MapView({map: new Map()});
     layer = new GraphicsLayer({
       id: InternalDrawingLayer.Selection,
@@ -40,7 +48,14 @@ describe('EsriPolygonSelectionStrategy', () => {
   describe('cancellation', () => {
     it('does not fire the callback handler on cancel', () => {
       const callbackSpy = spyOn(callbackHandler, 'handle');
-      const strategy = new EsriPolygonSelectionStrategyWrapper(layer, mapView, fillSymbol, () => callbackHandler.handle(), 'polygon');
+      const strategy = new EsriPolygonSelectionStrategyWrapper(
+        layer,
+        mapView,
+        fillSymbol,
+        (selection) => callbackHandler.handle(selection),
+        'polygon',
+        2056,
+      );
 
       strategy.start();
       strategy.svm.emit('create', {state: 'cancel', graphic: new Graphic()});
@@ -52,7 +67,14 @@ describe('EsriPolygonSelectionStrategy', () => {
   describe('start', () => {
     it('removes all existing layers on start', () => {
       const callbackSpy = spyOn(callbackHandler, 'handle');
-      const strategy = new EsriPolygonSelectionStrategyWrapper(layer, mapView, fillSymbol, () => callbackHandler.handle(), 'polygon');
+      const strategy = new EsriPolygonSelectionStrategyWrapper(
+        layer,
+        mapView,
+        fillSymbol,
+        (selection) => callbackHandler.handle(selection),
+        'polygon',
+        2056,
+      );
       const layerRemoveAllSpy = spyOn(layer, 'removeAll');
 
       strategy.start();
@@ -65,8 +87,16 @@ describe('EsriPolygonSelectionStrategy', () => {
   describe('completion', () => {
     it('fires the callback handler on completion', () => {
       const callbackSpy = spyOn(callbackHandler, 'handle');
-      const strategy = new EsriPolygonSelectionStrategyWrapper(layer, mapView, fillSymbol, () => callbackHandler.handle(), 'polygon');
+      const strategy = new EsriPolygonSelectionStrategyWrapper(
+        layer,
+        mapView,
+        fillSymbol,
+        (selection) => callbackHandler.handle(selection),
+        'polygon',
+        2056,
+      );
       const graphic = new Graphic({
+        symbol: fillSymbol,
         geometry: new Polygon({
           spatialReference: {wkid: 2056},
           rings: [
@@ -80,15 +110,22 @@ describe('EsriPolygonSelectionStrategy', () => {
       });
 
       strategy.start();
-      strategy.svm.emit('create', {state: 'complete', graphic: graphic});
+      strategy.svm.emit('create', {state: 'complete', graphic});
 
-      expect(callbackSpy).toHaveBeenCalled();
+      expect(callbackSpy).toHaveBeenCalledOnceWith(jasmine.objectContaining({type: 'polygon'}));
     });
   });
 
   describe('polygon type and mode', () => {
     it('sets polygon type to rectangle', () => {
-      const strategy = new EsriPolygonSelectionStrategyWrapper(layer, mapView, fillSymbol, () => callbackHandler.handle(), 'rectangle');
+      const strategy = new EsriPolygonSelectionStrategyWrapper(
+        layer,
+        mapView,
+        fillSymbol,
+        (selection) => callbackHandler.handle(selection),
+        'rectangle',
+        2056,
+      );
       const spy = spyOn(strategy.svm, 'create');
 
       strategy.start();
@@ -97,7 +134,14 @@ describe('EsriPolygonSelectionStrategy', () => {
     });
 
     it('sets polygon type to circle', () => {
-      const strategy = new EsriPolygonSelectionStrategyWrapper(layer, mapView, fillSymbol, () => callbackHandler.handle(), 'circle');
+      const strategy = new EsriPolygonSelectionStrategyWrapper(
+        layer,
+        mapView,
+        fillSymbol,
+        (selection) => callbackHandler.handle(selection),
+        'circle',
+        2056,
+      );
       const spy = spyOn(strategy.svm, 'create');
 
       strategy.start();
@@ -106,7 +150,14 @@ describe('EsriPolygonSelectionStrategy', () => {
     });
 
     it('sets polygon type to polygon', () => {
-      const strategy = new EsriPolygonSelectionStrategyWrapper(layer, mapView, fillSymbol, () => callbackHandler.handle(), 'polygon');
+      const strategy = new EsriPolygonSelectionStrategyWrapper(
+        layer,
+        mapView,
+        fillSymbol,
+        (selection) => callbackHandler.handle(selection),
+        'polygon',
+        2056,
+      );
       const spy = spyOn(strategy.svm, 'create');
 
       strategy.start();

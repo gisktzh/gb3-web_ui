@@ -1,0 +1,22 @@
+name: Deploy Web App
+
+variables:
+  - template: 'templates/variables.yml'
+
+trigger:
+  - develop
+
+jobs:
+  - job: build_and_deploy_job
+    displayName: Build and Deploy Job
+    condition: or(eq(variables['Build.Reason'], 'Manual'),or(eq(variables['Build.Reason'], 'PullRequest'),eq(variables['Build.Reason'], 'IndividualCI')))
+    pool:
+      vmImage: $(VM_IMAGE)
+    variables:
+      - group: Azure-Static-Web-Apps-calm-plant-0ecbec603-variable-group
+    steps:
+      - template: 'templates/git-checkout-code.yml'
+      - template: 'templates/unit-tests.yml'
+      - template: 'templates/publish-coverage.yml'
+      - template: 'templates/sonar-cloud-analysis.yml'
+      - template: 'templates/deploy-static-web-app.yml'

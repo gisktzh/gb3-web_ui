@@ -45,13 +45,10 @@ export class GeoshopApiService extends BaseApiService {
    */
   public createOrderFromSelection(selection: DataDownloadSelection): Order {
     switch (selection.type) {
-      case 'select-circle':
-      case 'select-polygon':
-      case 'select-rectangle':
-      case 'select-section':
-      case 'select-canton':
+      case 'polygon':
+      case 'canton':
         return this.createDirectOrderFromSelection(selection);
-      case 'select-municipality':
+      case 'municipality':
         return this.createIndirectOrderFromSelection(selection);
     }
   }

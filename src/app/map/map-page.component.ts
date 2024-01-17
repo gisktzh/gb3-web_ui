@@ -1,6 +1,5 @@
 import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import {OnboardingGuideService} from '../onboarding-guide/services/onboarding-guide.service';
-import {mapOnboardingGuideConfig} from '../onboarding-guide/data/map-onboarding-guide.config';
 import {Store} from '@ngrx/store';
 import {delayWhen, interval, Subscription, tap} from 'rxjs';
 import {selectMapUiState} from '../state/map/reducers/map-ui.reducer';
@@ -9,10 +8,9 @@ import {MapUiActions} from '../state/map/actions/map-ui.actions';
 import {MapSideDrawerContent} from '../shared/types/map-side-drawer-content.type';
 import {selectQueryLegends} from '../state/map/selectors/query-legends.selector';
 import {selectScreenMode} from '../state/app/reducers/app-layout.reducer';
-import {selectLoadingState} from '../state/map/reducers/legend.reducer';
-import {LoadingState} from '../shared/types/loading-state.type';
 import {ScreenMode} from '../shared/types/screen-size.type';
 import {selectRotation} from '../state/map/reducers/map-config.reducer';
+import {selectDevMode} from '../state/app/reducers/app.reducer';
 
 @Component({
   selector: 'map-page',
@@ -20,20 +18,19 @@ import {selectRotation} from '../state/map/reducers/map-config.reducer';
   styleUrls: ['./map-page.component.scss'],
 })
 export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
-  public readonly onboardingGuideImage = mapOnboardingGuideConfig.introductionImage;
   public numberOfQueryLegends: number = 0;
   public isMapDataCatalogueMinimized: boolean = false;
   public mapUiState?: MapUiState;
-  public loadingState?: LoadingState;
   public mapSideDrawerContent: MapSideDrawerContent = 'none';
   public screenMode: ScreenMode = 'mobile';
   public rotation: number = 0;
+  public isDevModeActive: boolean = false;
 
   private readonly queryLegends$ = this.store.select(selectQueryLegends);
   private readonly mapUiState$ = this.store.select(selectMapUiState);
   private readonly screenMode$ = this.store.select(selectScreenMode);
-  private readonly loadingState$ = this.store.select(selectLoadingState);
   private readonly rotation$ = this.store.select(selectRotation);
+  private readonly devMode$ = this.store.select(selectDevMode);
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(
@@ -50,7 +47,9 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   public ngAfterViewInit() {
-    this.onboardingGuideService.autoStart();
+    if (this.screenMode !== 'mobile') {
+      this.onboardingGuideService.autoStart();
+    }
   }
 
   public showLegend() {
@@ -79,13 +78,7 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
         .subscribe(),
     );
     this.subscriptions.add(
-      this.queryLegends$
-        .pipe(
-          tap((currentActiveMapItems) => {
-            this.numberOfQueryLegends = currentActiveMapItems.length;
-          }),
-        )
-        .subscribe(),
+      this.queryLegends$.pipe(tap((currentActiveMapItems) => (this.numberOfQueryLegends = currentActiveMapItems.length))).subscribe(),
     );
 
     this.subscriptions.add(
@@ -98,24 +91,8 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
         )
         .subscribe(),
     );
-    this.subscriptions.add(
-      this.screenMode$
-        .pipe(
-          tap((screenMode) => {
-            this.screenMode = screenMode;
-          }),
-        )
-        .subscribe(),
-    );
-    this.subscriptions.add(
-      this.loadingState$
-        .pipe(
-          tap((loadingState) => {
-            this.loadingState = loadingState;
-          }),
-        )
-        .subscribe(),
-    );
+    this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
+    this.subscriptions.add(this.devMode$.pipe(tap((devMode) => (this.isDevModeActive = devMode))).subscribe());
   }
 
   public mapSideDrawerFullyOpened() {

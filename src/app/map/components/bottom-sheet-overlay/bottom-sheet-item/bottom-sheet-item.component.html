@@ -18,7 +18,7 @@
       </ng-container>
     </div>
   </mat-card-header>
-  <mat-card-content class="bottom-sheet-item__content">
+  <mat-card-content class="bottom-sheet-item__content" cdkScrollable>
     <ng-content select="[body]"></ng-content>
   </mat-card-content>
   <resize-handler (resizeEvent)="resizeOverlay($event)" [location]="location" [usePrimaryColor]="usePrimaryColor"></resize-handler>

@@ -41,6 +41,8 @@ describe('ErrorHandlerService', () => {
     service = TestBed.inject(ErrorHandlerService);
     snackBarSpy = TestBed.inject(MatSnackBar) as jasmine.SpyObj<MatSnackBar>;
     routerSpy = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+    spyOn(console, 'warn').and.stub();
+    spyOn(console, 'error').and.stub();
   });
 
   it('should be created', () => {
@@ -101,10 +103,6 @@ describe('ErrorHandlerService', () => {
   });
 
   describe('logging', () => {
-    beforeEach(() => {
-      spyOn(console, 'warn');
-      spyOn(console, 'error');
-    });
     it('does not log if environment === production', () => {
       environment.production = true;
       const testError = new TestSilentError();

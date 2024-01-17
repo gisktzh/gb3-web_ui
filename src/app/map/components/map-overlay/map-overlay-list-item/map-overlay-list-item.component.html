@@ -19,7 +19,7 @@
       </p>
       <a
         (click)="$event.stopPropagation()"
-        *ngIf="metaDataLink"
+        *ngIf="metaDataLink && showInteractiveElements"
         class="list-item__header__content__info-link"
         [routerLink]="metaDataLink"
         title="Metadaten anzeigen"

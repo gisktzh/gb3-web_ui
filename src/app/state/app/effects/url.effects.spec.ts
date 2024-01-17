@@ -8,12 +8,13 @@ import {routerNavigatedAction} from '@ngrx/router-store';
 import {UrlEffects} from './url.effects';
 import {UrlActions} from '../actions/url.actions';
 import {MainPage} from '../../../shared/enums/main-page.enum';
-import {ActivatedRouteSnapshot, NavigationEnd, Router} from '@angular/router';
+import {ActivatedRouteSnapshot, NavigationEnd, Params, Router} from '@angular/router';
 import {BasemapConfigService} from '../../../map/services/basemap-config.service';
 import {selectQueryParams} from '../selectors/router.selector';
 import {selectMapConfigParams} from '../../map/selectors/map-config-params.selector';
 import {MapConfigActions} from '../../map/actions/map-config.actions';
 import {selectMainPage} from '../reducers/url.reducer';
+import {RouteParamConstants} from '../../../shared/constants/route-param.constants';
 
 describe('UrlEffects', () => {
   let actions$: Observable<Action>;
@@ -37,53 +38,107 @@ describe('UrlEffects', () => {
 
   describe('extractMainPageFromUrl$', () => {
     it('dispatches UrlActions.setPage() if the navigation ended (successfully or not)', (done: DoneFn) => {
-      const expectedMainPage = MainPage.Data;
+      const mainPage = MainPage.Data;
+
+      const expectedAction = UrlActions.setPage({isSimplifiedPage: false, isHeadlessPage: false, mainPage: MainPage.Data});
+
       actions$ = of(
         routerNavigatedAction({
           payload: {
-            routerState: {url: `/${expectedMainPage}`, root: {} as ActivatedRouteSnapshot},
+            routerState: {url: `/${mainPage}`, root: {} as ActivatedRouteSnapshot},
             event: {} as NavigationEnd,
           },
         }),
       );
       effects.extractMainPageFromUrl$.subscribe((action) => {
-        expect(action).toEqual(UrlActions.setPage({isSimplifiedPage: false, isHeadlessPage: false, mainPage: MainPage.Data}));
+        expect(action).toEqual(expectedAction);
         done();
       });
     });
   });
 
+  describe('setAppParameters$', () => {
+    it('dispatches UrlActions.setAppParams() after setting a page', (done: DoneFn) => {
+      const params = {x: 123, y: 456, scale: 789, basemap: 'Dust II', devMode: 'true'};
+      store.overrideSelector(selectQueryParams, params);
+
+      const expectedAction = UrlActions.setAppParams({params});
+
+      actions$ = of(UrlActions.setPage({mainPage: MainPage.Maps, isHeadlessPage: false, isSimplifiedPage: false}));
+      effects.setAppParameters$.subscribe((action) => {
+        expect(action).toEqual(expectedAction);
+        done();
+      });
+    });
+  });
+
+  describe('removeTemporaryAppParameters$', () => {
+    it('navigates to a new URL where all temporary parameters are set to `null`', (done: DoneFn) => {
+      const params = {scale: 789, [RouteParamConstants.GLOBAL_TEMPORARY_URL_PARAMS[0]]: 'temp', basemap: 'Dust II'};
+      const router = TestBed.inject(Router);
+      const routerSpy = spyOn(router, 'navigate').and.callThrough();
+
+      const expectedParams: Params = {[RouteParamConstants.GLOBAL_TEMPORARY_URL_PARAMS[0]]: null};
+
+      actions$ = of(UrlActions.setAppParams({params}));
+      effects.removeTemporaryAppParameters$.subscribe(() => {
+        expect(routerSpy).toHaveBeenCalledOnceWith(
+          [],
+          jasmine.objectContaining({
+            queryParams: expectedParams,
+            queryParamsHandling: 'merge',
+          }),
+        );
+        done();
+      });
+    });
+
+    it('does not navigate to a new URL if there are no temporary parameters', fakeAsync(() => {
+      const params = {scale: 789, basemap: 'Dust II'};
+      const router = TestBed.inject(Router);
+      const routerSpy = spyOn(router, 'navigate').and.callThrough();
+
+      actions$ = of(UrlActions.setAppParams({params}));
+      effects.removeTemporaryAppParameters$.subscribe();
+      flush();
+
+      expect(routerSpy).not.toHaveBeenCalled();
+    }));
+  });
+
   describe('handleInitialMapPageParameters$', () => {
     it('dispatches UrlActions.setMapPageParams() if current query params are not containing any map config parameters', (done: DoneFn) => {
-      const expectedParams = {x: 123, y: 456, scale: 789, basemap: 'Dust II', initialMapIds: 'one,two'};
+      const params = {x: 123, y: 456, scale: 789, basemap: 'Dust II', initialMapIds: 'one,two'};
       store.overrideSelector(selectQueryParams, {});
-      store.overrideSelector(selectMapConfigParams, expectedParams);
+      store.overrideSelector(selectMapConfigParams, params);
+
+      const expectedAction = UrlActions.setMapPageParams({params});
 
       actions$ = of(UrlActions.setPage({mainPage: MainPage.Maps, isHeadlessPage: false, isSimplifiedPage: false}));
       effects.handleInitialMapPageParameters$.subscribe((action) => {
-        expect(action).toEqual(UrlActions.setMapPageParams({params: expectedParams}));
+        expect(action).toEqual(expectedAction);
         done();
       });
     });
 
     it('dispatches MapConfigActions.setInitialMapConfig() if current query params are containing any map config parameters', (done: DoneFn) => {
-      const expectedParams = {x: 123, y: 456, scale: 789, basemap: 'Dust II', initialMapIds: 'one,two'};
+      const params = {x: 123, y: 456, scale: 789, basemap: 'Dust II', initialMapIds: 'one,two'};
       const basemapConfigService = TestBed.inject(BasemapConfigService);
-      spyOn(basemapConfigService, 'checkBasemapIdOrGetDefault').and.returnValue(expectedParams.basemap);
-      store.overrideSelector(selectQueryParams, expectedParams);
+      spyOn(basemapConfigService, 'checkBasemapIdOrGetDefault').and.returnValue(params.basemap);
+      store.overrideSelector(selectQueryParams, params);
       store.overrideSelector(selectMapConfigParams, {x: 1, y: 2, scale: 3, basemap: '4'});
+
+      const expectedAction = MapConfigActions.setInitialMapConfig({
+        scale: params.scale,
+        initialMaps: params.initialMapIds.split(','),
+        x: params.x,
+        y: params.y,
+        basemapId: params.basemap,
+      });
 
       actions$ = of(UrlActions.setPage({mainPage: MainPage.Maps, isHeadlessPage: false, isSimplifiedPage: false}));
       effects.handleInitialMapPageParameters$.subscribe((action) => {
-        expect(action).toEqual(
-          MapConfigActions.setInitialMapConfig({
-            scale: expectedParams.scale,
-            initialMaps: expectedParams.initialMapIds.split(','),
-            x: expectedParams.x,
-            y: expectedParams.y,
-            basemapId: expectedParams.basemap,
-          }),
-        );
+        expect(action).toEqual(expectedAction);
         done();
       });
     });
@@ -96,8 +151,9 @@ describe('UrlEffects', () => {
       store.overrideSelector(selectMainPage, MainPage.Maps);
       const params = {x: 123, y: 456, scale: 789, basemap: 'Dust II'};
       const existingParams = {x: 1, y: 2, scale: 3, basemap: '4'};
-      const expectedParams = params;
       store.overrideSelector(selectQueryParams, existingParams);
+
+      const expectedParams = params;
 
       actions$ = of(UrlActions.setMapPageParams({params}));
       effects.setMapPageParameters$.subscribe(() => {
@@ -112,8 +168,9 @@ describe('UrlEffects', () => {
       store.overrideSelector(selectMainPage, MainPage.Maps);
       const params = {x: 123, y: 456, scale: 789, basemap: 'Dust II'};
       const existingParams = {...params, initialMapIds: 'one,two'};
-      const expectedParams = {...params, initialMapIds: null};
       store.overrideSelector(selectQueryParams, existingParams);
+
+      const expectedParams = {...params, initialMapIds: null};
 
       actions$ = of(UrlActions.setMapPageParams({params}));
       effects.setMapPageParameters$.subscribe(() => {

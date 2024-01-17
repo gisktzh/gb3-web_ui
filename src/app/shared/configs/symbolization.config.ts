@@ -1,15 +1,6 @@
 import {InternalDrawingLayer, UserDrawingLayer} from '../enums/drawing-layer.enum';
 import {LayerSymbolizations, SymbolizationStyle} from '../interfaces/symbolization.interface';
-
-const defaultOutline = {
-  width: 1,
-  color: {
-    r: 0,
-    g: 0,
-    b: 0,
-    a: 1.0,
-  },
-};
+import {defaultFillColor, defaultLineColor, defaultLineWidth, defaultOutline} from './drawing.config';
 
 const defaultSymbolization: SymbolizationStyle = {
   text: {
@@ -151,12 +142,7 @@ export const layerSymbolizations: LayerSymbolizations = {
   },
   [UserDrawingLayer.Measurements]: {
     text: {
-      color: {
-        r: 255,
-        g: 0,
-        b: 0,
-        a: 1.0,
-      },
+      color: defaultLineColor,
       outline: {
         color: {
           r: 255,
@@ -173,12 +159,7 @@ export const layerSymbolizations: LayerSymbolizations = {
     point: {
       type: 'simple',
       size: 5,
-      color: {
-        r: 255,
-        g: 0,
-        b: 0,
-        a: 1.0,
-      },
+      color: defaultLineColor,
       outline: {
         width: 1,
         color: {
@@ -190,42 +171,22 @@ export const layerSymbolizations: LayerSymbolizations = {
       },
     },
     line: {
-      width: 2,
-      color: {
-        r: 255,
-        g: 0,
-        b: 0,
-        a: 1.0,
-      },
+      width: defaultLineWidth,
+      color: defaultLineColor,
     },
     polygon: {
       fill: {
-        color: {
-          r: 255,
-          g: 0,
-          b: 0,
-          a: 0.3,
-        },
+        color: defaultFillColor,
       },
       outline: {
-        width: 2,
-        color: {
-          r: 255,
-          g: 0,
-          b: 0,
-          a: 1.0,
-        },
+        width: defaultLineWidth,
+        color: defaultLineColor,
       },
     },
   },
   [UserDrawingLayer.Drawings]: {
     text: {
-      color: {
-        r: 255,
-        g: 0,
-        b: 0,
-        a: 1.0,
-      },
+      color: defaultLineColor,
       outline: {
         color: {
           r: 255,
@@ -242,48 +203,23 @@ export const layerSymbolizations: LayerSymbolizations = {
     point: {
       type: 'simple', // note: if this is changed, adjust the typecast in EsriToolService!
       size: 5,
-      color: {
-        r: 255,
-        g: 0,
-        b: 0,
-        a: 1.0,
-      },
+      color: defaultLineColor,
       outline: {
         width: 1,
-        color: {
-          r: 255,
-          g: 255,
-          b: 255,
-          a: 1.0,
-        },
+        color: defaultLineColor,
       },
     },
     line: {
-      width: 2,
-      color: {
-        r: 255,
-        g: 0,
-        b: 0,
-        a: 1.0,
-      },
+      width: defaultLineWidth,
+      color: defaultLineColor,
     },
     polygon: {
       fill: {
-        color: {
-          r: 255,
-          g: 0,
-          b: 0,
-          a: 0.3,
-        },
+        color: defaultFillColor,
       },
       outline: {
-        width: 2,
-        color: {
-          r: 255,
-          g: 0,
-          b: 0,
-          a: 1.0,
-        },
+        width: defaultLineWidth,
+        color: defaultLineColor,
       },
     },
   },
@@ -319,6 +255,56 @@ export const layerSymbolizations: LayerSymbolizations = {
         },
       },
       outline: defaultOutline,
+    },
+  },
+  [InternalDrawingLayer.SearchResultHighlight]: {
+    text: defaultSymbolization.text,
+    point: {
+      type: 'simple',
+      size: 22,
+      color: {
+        r: 255,
+        g: 0,
+        b: 0,
+        a: 0.5,
+      },
+      outline: {
+        width: 0,
+        color: {
+          r: 0,
+          g: 0,
+          b: 0,
+          a: 0,
+        },
+      },
+    },
+    line: {
+      width: 10,
+      color: {
+        r: 255,
+        g: 0,
+        b: 0,
+        a: 0.5,
+      },
+    },
+    polygon: {
+      fill: {
+        color: {
+          r: 255,
+          g: 0,
+          b: 0,
+          a: 0.5,
+        },
+      },
+      outline: {
+        width: 0,
+        color: {
+          r: 0,
+          g: 0,
+          b: 0,
+          a: 0,
+        },
+      },
     },
   },
 };

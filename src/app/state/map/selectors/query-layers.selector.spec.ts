@@ -7,13 +7,14 @@ import {QueryTopic} from '../../../shared/interfaces/query-topic.interface';
 import {UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 
 describe('selectQueryLayers', () => {
-  let mockActiveMapItems: Gb2WmsActiveMapItem[];
-  let mockScale: number = 0;
+  let mockItems: Gb2WmsActiveMapItem[];
+  let mockScale = 0;
+
   beforeEach(() => {
     /**
      * Basic mock state containing two map items with two sublayers each; and all are visible
      */
-    mockActiveMapItems = [
+    mockItems = [
       new Gb2WmsActiveMapItem({
         id: 'test-map1',
         layers: [
@@ -31,18 +32,19 @@ describe('selectQueryLayers', () => {
     ];
     mockScale = 1000;
   });
+
   it('returns all visible topic IDs with all visible and queryable sublayer IDs (joined with ,) as QueryTopic list', () => {
-    const actual = selectQueryLayers.projector(mockActiveMapItems, mockScale);
+    const actual = selectQueryLayers.projector(mockItems, mockScale, false);
 
     const expected: QueryTopic[] = [
       {
-        topic: mockActiveMapItems[0].id,
-        layersToQuery: mockActiveMapItems[0].settings.layers.map((l) => l.layer).join(','),
+        topic: mockItems[0].id,
+        layersToQuery: mockItems[0].settings.layers.map((l) => l.layer).join(','),
         isSingleLayer: false,
       },
       {
-        topic: mockActiveMapItems[1].id,
-        layersToQuery: mockActiveMapItems[1].settings.layers.map((l) => l.layer).join(','),
+        topic: mockItems[1].id,
+        layersToQuery: mockItems[1].settings.layers.map((l) => l.layer).join(','),
         isSingleLayer: false,
       },
     ];
@@ -50,14 +52,14 @@ describe('selectQueryLayers', () => {
   });
 
   it('does not return an invisible topic regardless of sublayer state', () => {
-    mockActiveMapItems[0].visible = false;
+    mockItems[0].visible = false;
 
-    const actual = selectQueryLayers.projector(mockActiveMapItems, mockScale);
+    const actual = selectQueryLayers.projector(mockItems, mockScale, false);
 
     const expected: QueryTopic[] = [
       {
-        topic: mockActiveMapItems[1].id,
-        layersToQuery: mockActiveMapItems[1].settings.layers.map((l) => l.layer).join(','),
+        topic: mockItems[1].id,
+        layersToQuery: mockItems[1].settings.layers.map((l) => l.layer).join(','),
         isSingleLayer: false,
       },
     ];
@@ -65,15 +67,15 @@ describe('selectQueryLayers', () => {
   });
 
   it('does not return an invisible sublayer', () => {
-    mockActiveMapItems[0].settings.layers[0].visible = false;
+    mockItems[0].settings.layers[0].visible = false;
 
-    const actual = selectQueryLayers.projector(mockActiveMapItems, mockScale);
+    const actual = selectQueryLayers.projector(mockItems, mockScale, false);
 
     const expected: QueryTopic[] = [
-      {topic: mockActiveMapItems[0].id, layersToQuery: mockActiveMapItems[0].settings.layers[1].layer, isSingleLayer: false},
+      {topic: mockItems[0].id, layersToQuery: mockItems[0].settings.layers[1].layer, isSingleLayer: false},
       {
-        topic: mockActiveMapItems[1].id,
-        layersToQuery: mockActiveMapItems[1].settings.layers.map((l) => l.layer).join(','),
+        topic: mockItems[1].id,
+        layersToQuery: mockItems[1].settings.layers.map((l) => l.layer).join(','),
         isSingleLayer: false,
       },
     ];
@@ -81,15 +83,15 @@ describe('selectQueryLayers', () => {
   });
 
   it('does not return an unqueryable sublayer', () => {
-    mockActiveMapItems[0].settings.layers[0].queryable = false;
+    mockItems[0].settings.layers[0].queryable = false;
 
-    const actual = selectQueryLayers.projector(mockActiveMapItems, mockScale);
+    const actual = selectQueryLayers.projector(mockItems, mockScale, false);
 
     const expected: QueryTopic[] = [
-      {topic: mockActiveMapItems[0].id, layersToQuery: mockActiveMapItems[0].settings.layers[1].layer, isSingleLayer: false},
+      {topic: mockItems[0].id, layersToQuery: mockItems[0].settings.layers[1].layer, isSingleLayer: false},
       {
-        topic: mockActiveMapItems[1].id,
-        layersToQuery: mockActiveMapItems[1].settings.layers.map((l) => l.layer).join(','),
+        topic: mockItems[1].id,
+        layersToQuery: mockItems[1].settings.layers.map((l) => l.layer).join(','),
         isSingleLayer: false,
       },
     ];
@@ -97,15 +99,15 @@ describe('selectQueryLayers', () => {
   });
 
   it('does not return a topic if all sublayers are unqueryable', () => {
-    mockActiveMapItems[0].settings.layers[0].queryable = false;
-    mockActiveMapItems[0].settings.layers[1].queryable = false;
+    mockItems[0].settings.layers[0].queryable = false;
+    mockItems[0].settings.layers[1].queryable = false;
 
-    const actual = selectQueryLayers.projector(mockActiveMapItems, mockScale);
+    const actual = selectQueryLayers.projector(mockItems, mockScale, false);
 
     const expected: QueryTopic[] = [
       {
-        topic: mockActiveMapItems[1].id,
-        layersToQuery: mockActiveMapItems[1].settings.layers.map((l) => l.layer).join(','),
+        topic: mockItems[1].id,
+        layersToQuery: mockItems[1].settings.layers.map((l) => l.layer).join(','),
         isSingleLayer: false,
       },
     ];
@@ -113,15 +115,15 @@ describe('selectQueryLayers', () => {
   });
 
   it('does not return a topic if all sublayers are invisible', () => {
-    mockActiveMapItems[0].settings.layers[0].visible = false;
-    mockActiveMapItems[0].settings.layers[1].visible = false;
+    mockItems[0].settings.layers[0].visible = false;
+    mockItems[0].settings.layers[1].visible = false;
 
-    const actual = selectQueryLayers.projector(mockActiveMapItems, mockScale);
+    const actual = selectQueryLayers.projector(mockItems, mockScale, false);
 
     const expected: QueryTopic[] = [
       {
-        topic: mockActiveMapItems[1].id,
-        layersToQuery: mockActiveMapItems[1].settings.layers.map((l) => l.layer).join(','),
+        topic: mockItems[1].id,
+        layersToQuery: mockItems[1].settings.layers.map((l) => l.layer).join(','),
         isSingleLayer: false,
       },
     ];
@@ -130,19 +132,19 @@ describe('selectQueryLayers', () => {
 
   it('does not return layers other than Gb2WmsActiveMapItem', () => {
     const drawingLayer = new DrawingActiveMapItem('', '', UserDrawingLayer.Measurements);
-    (mockActiveMapItems as ActiveMapItem[]).push(drawingLayer);
+    (mockItems as ActiveMapItem[]).push(drawingLayer);
 
-    const actual = selectQueryLayers.projector(mockActiveMapItems, mockScale);
+    const actual = selectQueryLayers.projector(mockItems, mockScale, false);
 
     const expected: QueryTopic[] = [
       {
-        topic: mockActiveMapItems[0].id,
-        layersToQuery: mockActiveMapItems[0].settings.layers.map((l) => l.layer).join(','),
+        topic: mockItems[0].id,
+        layersToQuery: mockItems[0].settings.layers.map((l) => l.layer).join(','),
         isSingleLayer: false,
       },
       {
-        topic: mockActiveMapItems[1].id,
-        layersToQuery: mockActiveMapItems[1].settings.layers.map((l) => l.layer).join(','),
+        topic: mockItems[1].id,
+        layersToQuery: mockItems[1].settings.layers.map((l) => l.layer).join(','),
         isSingleLayer: false,
       },
     ];
@@ -154,13 +156,13 @@ describe('selectQueryLayers', () => {
   it('does not return layers if the current scale is smaller than the minScale of the layer', () => {
     mockScale = 99;
 
-    const actual = selectQueryLayers.projector(mockActiveMapItems, mockScale);
+    const actual = selectQueryLayers.projector(mockItems, mockScale, false);
 
     const expected: QueryTopic[] = [
-      {topic: mockActiveMapItems[0].id, layersToQuery: mockActiveMapItems[0].settings.layers[0].layer, isSingleLayer: false},
+      {topic: mockItems[0].id, layersToQuery: mockItems[0].settings.layers[0].layer, isSingleLayer: false},
       {
-        topic: mockActiveMapItems[1].id,
-        layersToQuery: mockActiveMapItems[1].settings.layers.map((l) => l.layer).join(','),
+        topic: mockItems[1].id,
+        layersToQuery: mockItems[1].settings.layers.map((l) => l.layer).join(','),
         isSingleLayer: false,
       },
     ];
@@ -170,13 +172,13 @@ describe('selectQueryLayers', () => {
   it('does not return layers if the current scale is larger than the maxScale of the layer', () => {
     mockScale = 10001;
 
-    const actual = selectQueryLayers.projector(mockActiveMapItems, mockScale);
+    const actual = selectQueryLayers.projector(mockItems, mockScale, false);
 
     const expected: QueryTopic[] = [
-      {topic: mockActiveMapItems[0].id, layersToQuery: mockActiveMapItems[0].settings.layers[1].layer, isSingleLayer: false},
+      {topic: mockItems[0].id, layersToQuery: mockItems[0].settings.layers[1].layer, isSingleLayer: false},
       {
-        topic: mockActiveMapItems[1].id,
-        layersToQuery: mockActiveMapItems[1].settings.layers.map((l) => l.layer).join(','),
+        topic: mockItems[1].id,
+        layersToQuery: mockItems[1].settings.layers.map((l) => l.layer).join(','),
         isSingleLayer: false,
       },
     ];
@@ -186,12 +188,12 @@ describe('selectQueryLayers', () => {
   it('does not return a topic if all sublayers are not visible due to small scale', () => {
     mockScale = 49;
 
-    const actual = selectQueryLayers.projector(mockActiveMapItems, mockScale);
+    const actual = selectQueryLayers.projector(mockItems, mockScale, false);
 
     const expected: QueryTopic[] = [
       {
-        topic: mockActiveMapItems[1].id,
-        layersToQuery: mockActiveMapItems[1].settings.layers.map((l) => l.layer).join(','),
+        topic: mockItems[1].id,
+        layersToQuery: mockItems[1].settings.layers.map((l) => l.layer).join(','),
         isSingleLayer: false,
       },
     ];
@@ -201,12 +203,30 @@ describe('selectQueryLayers', () => {
   it('does not return a topic if all sublayers are not visible due to large scale', () => {
     mockScale = 11001;
 
-    const actual = selectQueryLayers.projector(mockActiveMapItems, mockScale);
+    const actual = selectQueryLayers.projector(mockItems, mockScale, false);
 
     const expected: QueryTopic[] = [
       {
-        topic: mockActiveMapItems[1].id,
-        layersToQuery: mockActiveMapItems[1].settings.layers.map((l) => l.layer).join(','),
+        topic: mockItems[1].id,
+        layersToQuery: mockItems[1].settings.layers.map((l) => l.layer).join(','),
+        isSingleLayer: false,
+      },
+    ];
+    expect(actual).toEqual(expected);
+  });
+
+  it('returns all layers and sublayers independent from the scale or visibility if the `devMode` is true', () => {
+    const actual = selectQueryLayers.projector(mockItems, mockScale, true);
+
+    const expected: QueryTopic[] = [
+      {
+        topic: mockItems[0].id,
+        layersToQuery: mockItems[0].settings.layers.map((l) => l.layer).join(','),
+        isSingleLayer: false,
+      },
+      {
+        topic: mockItems[1].id,
+        layersToQuery: mockItems[1].settings.layers.map((l) => l.layer).join(','),
         isSingleLayer: false,
       },
     ];

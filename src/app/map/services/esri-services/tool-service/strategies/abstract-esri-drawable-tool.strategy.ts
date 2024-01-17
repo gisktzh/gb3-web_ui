@@ -12,7 +12,10 @@ import {UuidUtils} from '../../../../../shared/utils/uuid.utils';
 export type SupportedEsriTool = Extract<EsriSketchTool, 'polygon' | 'polyline' | 'point' | 'rectangle' | 'circle'>;
 
 export abstract class AbstractEsriDrawableToolStrategy<
-  T extends DrawingCallbackHandler['completeDrawing'] | DrawingCallbackHandler['completeMeasurement'],
+  T extends
+    | DrawingCallbackHandler['completeDrawing']
+    | DrawingCallbackHandler['completeMeasurement']
+    | DrawingCallbackHandler['completeSelection'],
 > implements EsriToolStrategy
 {
   public static readonly identifierFieldName = MapConstants.DRAWING_IDENTIFIER;

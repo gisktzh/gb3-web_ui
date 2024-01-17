@@ -5,6 +5,9 @@ import {UserDrawingLayer} from '../../shared/enums/drawing-layer.enum';
 import {DrawingActiveMapItem} from '../../map/models/implementations/drawing.model';
 import {MapConstants} from '../../shared/constants/map.constants';
 import {UuidUtils} from '../../shared/utils/uuid.utils';
+import {ExternalKmlLayer, ExternalWmsLayer} from '../../shared/interfaces/external-layer.interface';
+import {ExternalWmsActiveMapItem} from '../../map/models/implementations/external-wms.model';
+import {ExternalKmlActiveMapItem} from '../../map/models/implementations/external-kml.model';
 
 export function createGb2WmsMapItemMock(
   id: string,
@@ -24,4 +27,25 @@ export function createGb2WmsMapItemMock(
 
 export function createDrawingMapItemMock(id: UserDrawingLayer, visible: boolean = true, opacity: number = 1): DrawingActiveMapItem {
   return ActiveMapItemFactory.createDrawingMapItem(id, MapConstants.USER_DRAWING_LAYER_PREFIX, visible, opacity);
+}
+
+export function createExternalWmsMapItemMock(
+  url: string,
+  title: string,
+  layers: ExternalWmsLayer[],
+  imageFormat?: string,
+  visible: boolean = true,
+  opacity: number = 1,
+): ExternalWmsActiveMapItem {
+  return ActiveMapItemFactory.createExternalWmsMapItem(url, title, layers, imageFormat, visible, opacity);
+}
+
+export function createExternalKmlMapItemMock(
+  url: string,
+  title: string,
+  layers: ExternalKmlLayer[],
+  visible: boolean = true,
+  opacity: number = 1,
+): ExternalKmlActiveMapItem {
+  return ActiveMapItemFactory.createExternalKmlMapItem(url, title, layers, visible, opacity);
 }

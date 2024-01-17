@@ -1,4 +1,7 @@
-<mat-drawer-container class="map-container" [ngClass]="{'map-container--mobile': screenMode === 'mobile'}">
+<mat-drawer-container
+  class="map-container"
+  [ngClass]="{'map-container--mobile': screenMode === 'mobile', 'map-container--dev-mode': isDevModeActive}"
+>
   <mat-drawer
     mode="side"
     position="end"
@@ -15,6 +18,7 @@
 
   <map-controls class="map-container__map-controls" *ngIf="screenMode !== 'mobile'"></map-controls>
   <legend-overlay
+    *ngIf="screenMode !== 'mobile'"
     class="map-container__legend-overlay"
     [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
   ></legend-overlay>
@@ -26,7 +30,6 @@
           'map-container__all-map-items-container__inner-container__active-map-items--maximized': isMapDataCatalogueMinimized,
           'map-container__map-element--hidden': mapUiState?.hideUiElements
         }"
-        typedTourAnchor="map.active.map.items"
       ></active-map-items>
       <span class="map-container__all-map-items-container__inner-container__divider"></span>
       <map-data-catalogue
@@ -35,7 +38,6 @@
           'map-container__all-map-items-container__inner-container__map-data-catalogue--minimized': isMapDataCatalogueMinimized,
           'map-container__map-element--hidden': mapUiState?.hideUiElements
         }"
-        typedTourAnchor="map.catalogue"
         (changeIsMinimizedEvent)="setIsMapDataCatalogueMinimized($event)"
       ></map-data-catalogue>
     </div>
@@ -104,7 +106,7 @@
     [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
   ></data-download-status-queue>
 </mat-drawer-container>
-<onboarding-guide [introductionImage]="onboardingGuideImage"></onboarding-guide>
-<center-anchor anchorName="map.start.tour"></center-anchor>
-<center-anchor anchorName="map.feature.info"></center-anchor>
-<center-anchor anchorName="map.end.tour"></center-anchor>
+<onboarding-guide></onboarding-guide>
+<center-anchor anchorName="map.tour.start"></center-anchor>
+<center-anchor anchorName="map.info"></center-anchor>
+<center-anchor anchorName="map.tour.end"></center-anchor>

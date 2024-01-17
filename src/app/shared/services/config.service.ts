@@ -24,6 +24,7 @@ import {PageConfig} from '../interfaces/page-config.interface';
 import {FilterConfigs} from '../interfaces/filter-config.interface';
 import {DataDownloadConfig} from '../interfaces/data-download-config.interface';
 import {dataDownloadConfig} from '../configs/data-download.config';
+import {defaultFillColor, defaultLineColor, defaultLineWidth, defaultOutline} from '../configs/drawing.config';
 
 @Injectable({
   providedIn: 'root',
@@ -61,15 +62,24 @@ export class ConfigService {
     mapToolsAndControls: toolTipMapToolsAndControls,
   };
 
+  public readonly drawingConfig = {
+    defaultLineColor: defaultLineColor,
+    defaultFillColor: defaultFillColor,
+    defaultLineWidth: defaultLineWidth,
+    defaultOutline: defaultOutline,
+  };
+
   public get filterConfigs(): FilterConfigs {
     return {
       dataCatalogue: dataCatalogueFilterConfig,
       dataDownload: dataDownloadFilterConfig,
     };
   }
+
   public get searchConfig(): SearchConfig {
     return searchConfig;
   }
+
   public get searchIndexConfig(): SearchIndex[] {
     return searchIndexConfig;
   }

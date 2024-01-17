@@ -5,22 +5,22 @@ import {AbstractEsriSelectionStrategy} from '../abstract-esri-selection.strategy
 import {Observable} from 'rxjs';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
-import {SelectionCallbackHandler} from '../../interfaces/selection-callback-handler.interface';
 import {map} from 'rxjs/operators';
 import {CantonWithGeometry} from '../../../../../../shared/interfaces/gb3-geoshop-product.interface';
 import {SupportedGeometry} from '../../../../../../shared/types/SupportedGeometry.type';
 import {ConfigService} from '../../../../../../shared/services/config.service';
+import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
 
-export class EsriCantonSelectionStrategy extends AbstractEsriSelectionStrategy {
+export class EsriCantonSelectionStrategy extends AbstractEsriSelectionStrategy<DrawingCallbackHandler['completeSelection']> {
   private readonly cantonWithGeometry$;
   constructor(
     layer: GraphicsLayer,
     polygonSymbol: SimpleFillSymbol,
-    selectionCallbackHandler: SelectionCallbackHandler,
+    completeCallbackHandler: DrawingCallbackHandler['completeSelection'],
     cantonWithGeometry$: Observable<CantonWithGeometry | undefined>,
     private readonly configService: ConfigService,
   ) {
-    super(layer, polygonSymbol, selectionCallbackHandler);
+    super(layer, polygonSymbol, completeCallbackHandler);
     this.cantonWithGeometry$ = cantonWithGeometry$;
   }
 
@@ -31,7 +31,7 @@ export class EsriCantonSelectionStrategy extends AbstractEsriSelectionStrategy {
           return undefined;
         }
         const selection: DataDownloadSelection = {
-          type: 'select-canton',
+          type: 'canton',
           drawingRepresentation: this.createDrawingRepresentation(cantonWithGeometry.boundingBox),
         };
         return selection;

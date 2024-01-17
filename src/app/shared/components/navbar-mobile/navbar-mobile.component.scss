@@ -18,6 +18,10 @@
   right: 12px;
   background-color: ktzh-variables.$zh-background-color;
   z-index: z-index-variables.$navbar;
+
+  &--dev-mode {
+    top: calc(12px + #{map-layout-variables.$dev-mode-banner-height});
+  }
 }
 
 .navbar-mobile {

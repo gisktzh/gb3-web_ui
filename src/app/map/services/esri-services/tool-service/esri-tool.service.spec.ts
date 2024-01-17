@@ -21,6 +21,19 @@ import {EsriPolygonDrawingStrategy} from './strategies/drawing/esri-polygon-draw
 import {EsriTextDrawingStrategy} from './strategies/drawing/esri-text-drawing.strategy';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {EsriElevationProfileMeasurementStrategy} from './strategies/measurement/esri-elevation-profile-measurement.strategy';
+import {EsriPolygonSelectionStrategy} from './strategies/selection/esri-polygon-selection.strategy';
+import {EsriScreenExtentSelectionStrategy} from './strategies/selection/esri-screen-extent-selection.strategy';
+import {EsriCantonSelectionStrategy} from './strategies/selection/esri-canton-selection.strategy';
+import {EsriMunicipalitySelectionStrategy} from './strategies/selection/esri-municipality-selection.strategy';
+import Graphic from '@arcgis/core/Graphic';
+import Polygon from '@arcgis/core/geometry/Polygon';
+import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
+import Color from '@arcgis/core/Color';
+import {DrawingActions} from '../../../../state/map/actions/drawing.actions';
+import {EsriGraphicToInternalDrawingRepresentationUtils} from '../utils/esri-graphic-to-internal-drawing-representation.utils';
+import {DataDownloadSelection} from '../../../../shared/interfaces/data-download-selection.interface';
+import {DataDownloadOrderActions} from '../../../../state/map/actions/data-download-order.actions';
+import {ToolActions} from '../../../../state/map/actions/tool.actions';
 
 describe('EsriToolService', () => {
   let service: EsriToolService;
@@ -111,7 +124,6 @@ describe('EsriToolService', () => {
         )
         .subscribe();
     });
-
     it('adds an Esri handle for this service group on drawing start', () => {
       // add the graphic layer to the view to avoid the initialization
       const spy = spyOn(mapViewService.mapView, 'addHandles');
@@ -131,7 +143,7 @@ describe('EsriToolService', () => {
     });
   });
 
-  describe('Strategy Handling', () => {
+  describe('Strategy Initialization', () => {
     describe('Measurement', () => {
       beforeEach(() => {
         const userDrawingLayerId = MapConstants.USER_DRAWING_LAYER_PREFIX + UserDrawingLayer.Measurements;
@@ -193,7 +205,7 @@ describe('EsriToolService', () => {
         service.initializeDrawing('draw-text');
         expect(polygonSpy).toHaveBeenCalled();
       });
-      it(`sets the correct strategy for text drawing`, () => {
+      it(`sets the correct strategy for rectangle drawing`, () => {
         const polygonSpy = spyOn(EsriPolygonDrawingStrategy.prototype, 'start');
         service.initializeDrawing('draw-rectangle');
         expect(polygonSpy).toHaveBeenCalled();
@@ -202,6 +214,49 @@ describe('EsriToolService', () => {
         const polygonSpy = spyOn(EsriPolygonDrawingStrategy.prototype, 'start');
         service.initializeDrawing('draw-circle');
         expect(polygonSpy).toHaveBeenCalled();
+      });
+    });
+
+    describe('DataDownloadSelection', () => {
+      beforeEach(() => {
+        const internalDrawingLayerId = MapConstants.INTERNAL_LAYER_PREFIX + InternalDrawingLayer.Selection;
+        // add the graphic layer to the view to avoid the initialization
+        mapViewService.mapView.map.layers.add(
+          new GraphicsLayer({
+            id: internalDrawingLayerId,
+          }),
+        );
+        store.refreshState();
+      });
+      it(`sets the correct strategy for circle selection`, () => {
+        const polygonSpy = spyOn(EsriPolygonSelectionStrategy.prototype, 'start');
+        service.initializeDataDownloadSelection('select-circle');
+        expect(polygonSpy).toHaveBeenCalled();
+      });
+      it(`sets the correct strategy for polygon selection`, () => {
+        const polygonSpy = spyOn(EsriPolygonSelectionStrategy.prototype, 'start');
+        service.initializeDataDownloadSelection('select-polygon');
+        expect(polygonSpy).toHaveBeenCalled();
+      });
+      it(`sets the correct strategy for rectangle selection`, () => {
+        const polygonSpy = spyOn(EsriPolygonSelectionStrategy.prototype, 'start');
+        service.initializeDataDownloadSelection('select-rectangle');
+        expect(polygonSpy).toHaveBeenCalled();
+      });
+      it(`sets the correct strategy for section selection`, () => {
+        const screenExtentSpy = spyOn(EsriScreenExtentSelectionStrategy.prototype, 'start');
+        service.initializeDataDownloadSelection('select-section');
+        expect(screenExtentSpy).toHaveBeenCalled();
+      });
+      it(`sets the correct strategy for canton selection`, () => {
+        const cantonSpy = spyOn(EsriCantonSelectionStrategy.prototype, 'start');
+        service.initializeDataDownloadSelection('select-canton');
+        expect(cantonSpy).toHaveBeenCalled();
+      });
+      it(`sets the correct strategy for municipality selection`, () => {
+        const municipalitySpy = spyOn(EsriMunicipalitySelectionStrategy.prototype, 'start');
+        service.initializeDataDownloadSelection('select-municipality');
+        expect(municipalitySpy).toHaveBeenCalled();
       });
     });
 
@@ -220,6 +275,128 @@ describe('EsriToolService', () => {
         service.initializeElevationProfileMeasurement();
         expect(elevationSpy).toHaveBeenCalled();
       });
+    });
+  });
+
+  describe('Strategy Completion', () => {
+    const graphicMock = new Graphic({
+      attributes: {
+        [MapConstants.DRAWING_IDENTIFIER]: 'id',
+      },
+      geometry: new Polygon({
+        spatialReference: {wkid: 2056},
+        rings: [
+          [
+            [0, 0],
+            [0, 69],
+            [42, 0],
+            [0, 0],
+          ],
+        ],
+      }),
+      symbol: new SimpleFillSymbol({
+        color: new Color(Color.fromHex('#abcdef')),
+        outline: {width: 42, color: new Color('#080085')},
+      }),
+    });
+
+    it('completes drawings by dispatching DrawingActions.addDrawing and calling endDrawing', () => {
+      const labelText = 'labelText';
+      const storeSpy = spyOn(store, 'dispatch').and.callThrough();
+      const endDrawingSpy = spyOn<any>(service, 'endDrawing').and.stub();
+      const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
+        graphicMock,
+        labelText,
+        2056,
+        UserDrawingLayer.Drawings,
+      );
+
+      const expectedAction = DrawingActions.addDrawing({drawing: internalDrawingRepresentation});
+
+      service.completeDrawing(graphicMock, labelText);
+
+      expect(storeSpy).toHaveBeenCalledOnceWith(expectedAction);
+      expect(endDrawingSpy).toHaveBeenCalledOnceWith();
+    });
+
+    it('completes measurements by dispatching DrawingActions.addDrawing and calling endDrawing', () => {
+      const labelText = 'labelText';
+      const labelPoint = new Graphic({
+        attributes: {
+          [MapConstants.DRAWING_IDENTIFIER]: 'idTwo',
+          [MapConstants.DRAWING_LABEL_IDENTIFIER]: 'id',
+        },
+        geometry: new Polygon({
+          spatialReference: {wkid: 4326},
+          rings: [
+            [
+              [0, 0],
+              [0, 69],
+              [42, 0],
+              [0, 0],
+            ],
+          ],
+        }),
+        symbol: new SimpleFillSymbol({
+          color: new Color(Color.fromHex('#abcdef')),
+          outline: {width: 42, color: new Color('#080085')},
+        }),
+      });
+      const storeSpy = spyOn(store, 'dispatch').and.callThrough();
+      const endDrawingSpy = spyOn<any>(service, 'endDrawing').and.stub();
+      const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
+        graphicMock,
+        undefined,
+        2056,
+        UserDrawingLayer.Measurements,
+      );
+      const internalDrawingRepresentationLabel = EsriGraphicToInternalDrawingRepresentationUtils.convert(
+        labelPoint,
+        labelText,
+        2056,
+        UserDrawingLayer.Measurements,
+      );
+
+      const expectedAction = DrawingActions.addDrawings({drawings: [internalDrawingRepresentation, internalDrawingRepresentationLabel]});
+
+      service.completeMeasurement(graphicMock, labelPoint, labelText);
+
+      expect(storeSpy).toHaveBeenCalledOnceWith(expectedAction);
+      expect(endDrawingSpy).toHaveBeenCalledOnceWith();
+    });
+
+    it('completes selections by dispatching DataDownloadOrderActions.setSelection if the selection is not `undefined`', () => {
+      const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
+        graphicMock,
+        undefined,
+        2056,
+        InternalDrawingLayer.Selection,
+      );
+      const selection: DataDownloadSelection = {
+        type: 'polygon',
+        drawingRepresentation: internalDrawingRepresentation,
+      };
+      const storeSpy = spyOn(store, 'dispatch').and.callThrough();
+      const removeHandlesSpy = spyOn(mapViewService.mapView, 'removeHandles').and.stub();
+
+      const expectedAction = DataDownloadOrderActions.setSelection({selection});
+
+      service.completeSelection(selection);
+
+      expect(storeSpy).toHaveBeenCalledOnceWith(expectedAction);
+      expect(removeHandlesSpy).toHaveBeenCalledOnceWith('EsriToolService');
+    });
+
+    it('completes selections by dispatching ToolActions.cancelTool if the selection is `undefined`', () => {
+      const storeSpy = spyOn(store, 'dispatch').and.callThrough();
+      const removeHandlesSpy = spyOn(mapViewService.mapView, 'removeHandles').and.stub();
+
+      const expectedAction = ToolActions.cancelTool();
+
+      service.completeSelection(undefined);
+
+      expect(storeSpy).toHaveBeenCalledOnceWith(expectedAction);
+      expect(removeHandlesSpy).toHaveBeenCalledOnceWith('EsriToolService');
     });
   });
 });

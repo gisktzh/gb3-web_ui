@@ -10,6 +10,11 @@ export interface SymbolizationColor {
   a: number;
 }
 
+export interface HexColor {
+  hexColor: string;
+  alpha: number;
+}
+
 interface HasColor {
   color: SymbolizationColor;
 }
