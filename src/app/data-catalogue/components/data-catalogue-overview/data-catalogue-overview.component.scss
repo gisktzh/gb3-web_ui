@@ -19,11 +19,6 @@ $search-height-compact: 60px;
     width: ktzh-variables.$zh-layout-max-content-width;
     height: $search-height;
     background-color: ktzh-variables.$zh-background-color;
-
-    //&--mobile {
-    //  height: $search-height-compact;
-    //  width: calc(100vw - 24px);
-    //}
   }
 
   @media (max-width: calc(ktzh-variables.$zh-layout-max-content-width + 48px)) {
@@ -50,6 +45,11 @@ $search-height-compact: 60px;
       display: flex;
       align-items: center;
       gap: 8px;
+
+      &--mobile {
+        flex-direction: column;
+        align-items: flex-start;
+      }
 
       .data-catalogue-overview__content__active-filters__result-size {
         display: flex;
