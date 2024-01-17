@@ -27,7 +27,7 @@ describe('OverviewMetadataItemModel', () => {
     expect(testItem.relativeUrl).toEqual(expectUrlForType(DataCataloguePage.Products));
   });
   it('creates the correct URL for DatasetOverviewMetadataItem', () => {
-    const testItem = new DatasetOverviewMetadataItem(TEST_GUID, '', '', '', '');
+    const testItem = new DatasetOverviewMetadataItem(TEST_GUID, '', '', '', ['']);
     expect(testItem.relativeUrl).toEqual(expectUrlForType(DataCataloguePage.Datasets));
   });
 });

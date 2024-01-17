@@ -366,7 +366,7 @@ describe('search-result selector', () => {
       new MapOverviewMetadataItem('1234-rofl-yolo-swag', 'one', 'desc', 'dep'), // should match
       new MapOverviewMetadataItem('nope-nope-nope-nope', 'two', 'desc', 'dep'), // should not match
       new ProductOverviewMetadataItem('nope-rofl-yolo-swag', 'three', 'desc', 'dep'), // should not match
-      new DatasetOverviewMetadataItem('aaaa-bbbb-cccc-dddd', 'four', 'desc', 'dep', 'format'), // should match
+      new DatasetOverviewMetadataItem('aaaa-bbbb-cccc-dddd', 'four', 'desc', 'dep', ['format']), // should match
       new ServiceOverviewMetadataItem('nada-bbbb-cccc-dddd', 'five', 'desc', 'dep'), // should not match
     ];
 

@@ -35,7 +35,7 @@ describe('DataExtractionUtils', () => {
       },
       {title: 'Tel', value: mockContact.phone, type: 'text'},
       {title: 'Tel direkt', value: mockContact.phoneDirect, type: 'text'},
-      {title: 'E-Mail', value: mockContact.email.href, type: 'url'},
+      {title: 'E-Mail', value: mockContact.email.href, type: 'url', displayText: undefined},
       {title: 'www', value: mockContact.url, type: 'url'},
     ];
     expect(result).toEqual(expected);
