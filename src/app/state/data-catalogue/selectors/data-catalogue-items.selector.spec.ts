@@ -106,7 +106,7 @@ describe('selectDataCatalogueItems', () => {
           new DatasetOverviewMetadataItem('2', 'TestTest', 'TestTest-2', 'TestTest-3', ['output']),
           new DatasetOverviewMetadataItem('3', 'TestTest3', 'TestTest-32', 'Test3Test-3', ['output3']),
         ];
-        const filter: ActiveDataCatalogueFilterGroup[] = [{key: 'outputFormat', values: ['output']}]; // TODO GB3-834: check this test: what happens since the outpuutformat changed from type string to string[]
+        const filter: ActiveDataCatalogueFilterGroup[] = [{key: 'outputFormat', values: ['output']}];
         const actual = selectDataCatalogueItems.projector(items, filter, '', []);
 
         expect(actual).toEqual([items[0]]);
@@ -117,7 +117,7 @@ describe('selectDataCatalogueItems', () => {
           new DatasetOverviewMetadataItem('2', 'TestTest', 'TestTest-2', 'TestTest-3', ['output']),
           new DatasetOverviewMetadataItem('3', 'TestTest3', 'TestTest-32', 'Test3Test-3', ['output3']),
         ];
-        const filter: ActiveDataCatalogueFilterGroup[] = [{key: 'outputFormat', values: ['output']}]; // TODO GB3-834: check this test: what happens since the outpuutformat changed from type string to string[]
+        const filter: ActiveDataCatalogueFilterGroup[] = [{key: 'outputFormat', values: ['output']}];
         const actual = selectDataCatalogueItems.projector(items, filter, '', []);
 
         expect(actual).toEqual([items[0]]);
