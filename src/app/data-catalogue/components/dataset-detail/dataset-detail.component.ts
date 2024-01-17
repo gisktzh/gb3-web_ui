@@ -9,6 +9,7 @@ import {MetadataLink} from '../../interfaces/metadata-link.interface';
 import {AbstractBaseDetailComponent} from '../abstract-base-detail/abstract-base-detail.component';
 import {DataExtractionUtils} from '../../utils/data-extraction.utils';
 import {DatasetLayer} from '../../../shared/interfaces/dataset-layer.interface';
+import {Store} from '@ngrx/store';
 
 /**
  We do not get a description in the case of the dataset...
@@ -53,8 +54,9 @@ export class DatasetDetailComponent extends AbstractBaseDetailComponent<DatasetM
     @Inject(ConfigService) configService: ConfigService,
     @Inject(Router) router: Router,
     @Inject(ErrorHandler) errorHandler: ErrorHandler,
+    @Inject(Store) store: Store,
   ) {
-    super(route, gb3MetadataService, configService, router, errorHandler);
+    super(route, gb3MetadataService, configService, router, errorHandler, store);
   }
 
   protected loadMetadata(id: string) {

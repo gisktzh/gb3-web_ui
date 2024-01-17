@@ -2,22 +2,27 @@
 
 .dataset-element-table {
   width: 100%;
-  text-align: left;
-  border-collapse: collapse;
-  font-size: 14px;
+  overflow: auto;
 
-  .dataset-element-table__row {
-    vertical-align: top;
+  .dataset-element-table__table {
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+    font-size: 14px;
 
-    &:nth-child(even) {
-      .dataset-element-table__row__column {
-        background-color: ktzh-variables.$zh-light-grey;
+    .dataset-element-table__table__row {
+      vertical-align: top;
+
+      &:nth-child(even) {
+        .dataset-element-table__table__row__column {
+          background-color: ktzh-variables.$zh-light-grey;
+        }
       }
-    }
 
-    .dataset-element-table__row__column {
-      background-color: ktzh-variables.$zh-white;
-      padding: 6px 8px;
+      .dataset-element-table__table__row__column {
+        background-color: ktzh-variables.$zh-white;
+        padding: 6px 8px;
+      }
     }
   }
 }

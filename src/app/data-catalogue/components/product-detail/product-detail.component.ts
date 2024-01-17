@@ -8,6 +8,7 @@ import {BaseMetadataInformation} from '../../interfaces/base-metadata-informatio
 import {AbstractBaseDetailComponent} from '../abstract-base-detail/abstract-base-detail.component';
 import {MetadataLink} from '../../interfaces/metadata-link.interface';
 import {DataExtractionUtils} from '../../utils/data-extraction.utils';
+import {Store} from '@ngrx/store';
 
 @Component({
   selector: 'product-detail',
@@ -26,8 +27,9 @@ export class ProductDetailComponent extends AbstractBaseDetailComponent<ProductM
     @Inject(ConfigService) configService: ConfigService,
     @Inject(Router) router: Router,
     @Inject(ErrorHandler) errorHandler: ErrorHandler,
+    @Inject(Store) store: Store,
   ) {
-    super(route, gb3MetadataService, configService, router, errorHandler);
+    super(route, gb3MetadataService, configService, router, errorHandler, store);
   }
 
   protected loadMetadata(id: string) {

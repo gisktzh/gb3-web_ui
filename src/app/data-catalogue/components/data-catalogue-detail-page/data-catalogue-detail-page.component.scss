@@ -7,7 +7,6 @@
   justify-content: center;
 
   .data-catalogue-detail-page__content {
-    padding: 40px 24px;
     max-width: ktzh-variables.$zh-layout-max-content-width;
     width: 100%;
 
@@ -15,11 +14,21 @@
       width: fit-content;
       margin-bottom: 60px;
       @include mat-mixins.mat-button-ktzh-link($align-item-right: false);
+
+      &--mobile {
+        margin-top: 50px;
+        margin-bottom: 18px;
+      }
     }
 
     .data-catalogue-detail-page__title {
       display: flex;
       gap: 60px;
+
+      &--mobile {
+        flex-direction: column;
+        gap: 24px;
+      }
 
       .data-catalogue-detail-page__title__image {
         max-width: 368px;

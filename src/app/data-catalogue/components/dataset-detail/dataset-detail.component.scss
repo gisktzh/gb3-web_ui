@@ -2,11 +2,22 @@
 @use 'functions/helper.function' as functions;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
-.linked-data-button {
-  @include mat-mixins.mat-button-ktzh-link();
-  background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent);
-  color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-accent);
-  font-family: ktzh-variables.$zh-font-family-bold;
-  font-size: smaller;
-  padding: 0 12px;
+.dataset-detail {
+  .dataset-detail__contact {
+    min-width: 300px;
+  }
+
+  .dataset-detail__linked-data-button {
+    @include mat-mixins.mat-button-ktzh-link();
+    background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent);
+    color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-accent);
+    font-family: ktzh-variables.$zh-font-family-bold;
+    font-size: smaller;
+    padding: 0 12px;
+  }
+
+  .dataset-detail__linked-data-link {
+    font-weight: bold;
+    color: ktzh-variables.$zh-blue;
+  }
 }

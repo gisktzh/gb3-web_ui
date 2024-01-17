@@ -1,11 +1,11 @@
 <loading-and-process-bar [loadingState]="loadingState"></loading-and-process-bar>
 
-<data-catalogue-detail-page *ngIf="baseMetadataInformation" [baseMetadataInformation]="baseMetadataInformation">
+<data-catalogue-detail-page *ngIf="baseMetadataInformation" [baseMetadataInformation]="baseMetadataInformation" class="dataset-detail">
   <data-catalogue-detail-page-section [hasTwoColumns]="true">
-    <data-display-section [sectionTitle]="'Verantwortlich für Geodaten'">
+    <data-display-section [sectionTitle]="'Verantwortlich für Geodaten'" class="dataset-detail__contact">
       <data-display [elements]="geodataContactElements"></data-display>
     </data-display-section>
-    <data-display-section [sectionTitle]="'Zuständig für Geometadaten'">
+    <data-display-section [sectionTitle]="'Zuständig für Geometadaten'" class="dataset-detail__contact">
       <data-display [elements]="metadataContactElements"></data-display>
     </data-display-section>
   </data-catalogue-detail-page-section>
@@ -66,35 +66,34 @@
 
   <data-catalogue-detail-page-section *ngIf="linkedData.maps.length > 0">
     <data-display-section [sectionTitle]="'Karten mit diesem Datensatz'">
-      <descriptive-highlighted-link *ngFor="let map of linkedData.maps" [title]="map.name">
-        <a [queryParams]="{initialMapIds: map.topic}" [routerLink]="['/', mainPageEnum.Maps]" class="linked-data-button" mat-button>
-          <mat-icon [svgIcon]="'ktzh_arrow_right'"></mat-icon>
-          Im GIS-Browser öffnen
-        </a>
-        <a [routerLink]="['/', mainPageEnum.Data, dataCataloguePageEnum.Maps, map.uuid]" class="linked-data-button" mat-button>
-          <mat-icon [svgIcon]="'ktzh_arrow_right'"></mat-icon>
-          Zu Metadaten springen
-        </a>
-      </descriptive-highlighted-link>
-    </data-display-section>
-  </data-catalogue-detail-page-section>
-
-  <data-catalogue-detail-page-section *ngIf="linkedData.services.length > 0">
-    <data-display-section [sectionTitle]="'Geodienste mit diesem Datensatz'">
-      <descriptive-highlighted-link *ngFor="let service of linkedData.services" [title]="service.name">
-        <a [routerLink]="['/', mainPageEnum.Data, dataCataloguePageEnum.Services, service.uuid]" mat-icon-button>
-          <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
-        </a>
-      </descriptive-highlighted-link>
-    </data-display-section>
-  </data-catalogue-detail-page-section>
-
-  <data-catalogue-detail-page-section *ngIf="linkedData.products.length > 0">
-    <data-display-section [sectionTitle]="'Produkte mit diesem Datensatz'">
-      <descriptive-highlighted-link *ngFor="let product of linkedData.products" [title]="product.name">
-        <a [routerLink]="['/', mainPageEnum.Data, dataCataloguePageEnum.Products, product.uuid]" mat-icon-button>
-          <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
-        </a>
+      <descriptive-highlighted-link *ngFor="let map of linkedData.maps" [title]="map.name" [isMobile]="screenMode === 'mobile'">
+        @if (screenMode === 'mobile') {
+          <a [queryParams]="{initialMapIds: map.topic}" [routerLink]="['/', mainPageEnum.Maps]" class="dataset-detail__linked-data-link">
+            Im GIS-Browser öffnen
+          </a>
+          <span>|</span>
+          <a [routerLink]="['/', mainPageEnum.Data, dataCataloguePageEnum.Maps, map.uuid]" class="dataset-detail__linked-data-link">
+            Zu Metadaten springen
+          </a>
+        } @else {
+          <a
+            [queryParams]="{initialMapIds: map.topic}"
+            [routerLink]="['/', mainPageEnum.Maps]"
+            class="dataset-detail__linked-data-button"
+            mat-button
+          >
+            <mat-icon [svgIcon]="'ktzh_arrow_right'"></mat-icon>
+            Im GIS-Browser öffnen
+          </a>
+          <a
+            [routerLink]="['/', mainPageEnum.Data, dataCataloguePageEnum.Maps, map.uuid]"
+            class="dataset-detail__linked-data-button"
+            mat-button
+          >
+            <mat-icon [svgIcon]="'ktzh_arrow_right'"></mat-icon>
+            Zu Metadaten springen
+          </a>
+        }
       </descriptive-highlighted-link>
     </data-display-section>
   </data-catalogue-detail-page-section>

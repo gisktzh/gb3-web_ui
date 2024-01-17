@@ -67,7 +67,7 @@ export class SearchComponent implements AfterViewInit, OnDestroy {
       this.screenMode$
         .pipe(
           tap((screenMode) => {
-            this.screenMode = screenMode;
+            // this.screenMode = screenMode;
             this.clearInput();
           }),
         )

@@ -23,6 +23,7 @@
       a {
         color: ktzh-variables.$zh-active-blue;
         text-decoration: none;
+        word-break: break-all;
       }
 
       .data-display__item__value__list {

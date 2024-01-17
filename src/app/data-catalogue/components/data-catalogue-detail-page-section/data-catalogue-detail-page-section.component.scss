@@ -5,7 +5,7 @@
   flex-flow: column;
 
   &--row {
-    flex-flow: row;
+    flex-flow: row wrap;
     display: flex;
   }
 }
