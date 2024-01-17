@@ -1,7 +1,0 @@
-<div *ngFor="let feature of this.layer.features; let i = index" class="feature-info-print-content">
-  <span class="feature-info-print-content__title">Resultat {{ i + 1 }}/{{ this.layer.features.length }}</span>
-  <mat-list class="feature-info-print-content__result-list" *ngFor="let field of feature.fields">
-    <span matListItemLine>{{ field.label }}</span>
-    <span matListItemTitle class="feature-info-print-content__result-list">{{ field.value }}</span>
-  </mat-list>
-</div>
