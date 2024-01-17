@@ -31,7 +31,7 @@ export const ELEVATION_PROFILE_CHARTJS_OPTIONS: ElevationProfileChartJsOptions =
       grid: {
         drawOnChartArea: true,
       },
-      beginAtZero: true,
+      beginAtZero: false,
     },
   },
 };
