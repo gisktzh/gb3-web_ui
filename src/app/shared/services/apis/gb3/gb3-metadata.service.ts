@@ -4,6 +4,7 @@ import {DataCataloguePage} from '../../../enums/data-catalogue-page.enum';
 import {
   Contact,
   Dataset,
+  LinkObject as Gb3LinkObject,
   Map,
   MetadataDatasetsDetailData,
   MetadataDatasetsListData,
@@ -324,7 +325,7 @@ export class Gb3MetadataService extends Gb3ApiService {
     return url.toString();
   }
 
-  private createLinkObject(gb3LinkObject: LinkObject): LinkObject {
+  private createLinkObject(gb3LinkObject: Gb3LinkObject): LinkObject {
     return {href: gb3LinkObject.href, title: gb3LinkObject.title};
   }
 }

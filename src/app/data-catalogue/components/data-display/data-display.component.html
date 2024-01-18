@@ -19,7 +19,7 @@
           }
         }
         @case ('urlList') {
-          @if (element.value?.length) {
+          @if (element.value && element.value?.length && element.value.length > 0) {
             <ul class="data-display__item__value__list">
               @for (item of element.value; track item) {
                 <li>

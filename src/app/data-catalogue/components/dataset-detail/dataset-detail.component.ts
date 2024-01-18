@@ -117,9 +117,9 @@ export class DatasetDetailComponent extends AbstractBaseDetailComponent<DatasetM
       {
         title: 'Link',
         value: {
-          href: datasetMetadata.ogd ? 'https://geodatenshop.zh.ch' : 'https://geodatenshop.zh.ch',
+          href: datasetMetadata.ogd ? 'https://www.bfs.admin.ch/bfsstatic/dam/assets/13267666/master' : 'https://geodatenshop.zh.ch',
           title: datasetMetadata.ogd ? 'OGD Anleitung PDF' : 'NOGD Geodatenshop',
-        }, // TODO GBS-834: OGD link not delivered, update once API delivers the value
+        },
         type: 'url',
       },
     ];
