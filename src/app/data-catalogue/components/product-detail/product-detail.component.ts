@@ -44,15 +44,12 @@ export class ProductDetailComponent extends AbstractBaseDetailComponent<ProductM
   private extractBaseMetadataInformation(productMetadata: ProductMetadata): BaseMetadataInformation {
     return {
       itemTitle: productMetadata.name,
-      keywords: ['Produkt'], // todo: add OGD status once API delivers that
+      category: 'Produkt',
+      shortDescription: productMetadata.description,
     };
   }
 
   private extractInformationElements(productMetadata: ProductMetadata): DataDisplayElement[] {
-    return [
-      {title: 'GIS-ZH Nr.', value: productMetadata.gisZHNr.toString(), type: 'text'},
-      {title: 'Bezeichnung', value: productMetadata.name, type: 'text'},
-      {title: 'Beschreibung', value: productMetadata.description, type: 'text'},
-    ];
+    return [{title: 'Nr.', value: productMetadata.gisZHNr.toString(), type: 'text'}];
   }
 }

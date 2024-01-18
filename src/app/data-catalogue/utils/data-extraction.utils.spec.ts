@@ -7,7 +7,7 @@ describe('DataExtractionUtils', () => {
   it('extracts the contact elements correctly', () => {
     const mockContact: DepartmentalContact = {
       department: 'Department of Tests',
-      email: 'example@example.com',
+      email: {href: 'example@example.com'},
       firstName: 'Leeroy',
       houseNumber: 1337,
       lastName: 'Jenkins',
@@ -35,8 +35,8 @@ describe('DataExtractionUtils', () => {
       },
       {title: 'Tel', value: mockContact.phone, type: 'text'},
       {title: 'Tel direkt', value: mockContact.phoneDirect, type: 'text'},
-      {title: 'E-Mail', value: mockContact.email, type: 'email'},
-      {title: 'www', value: mockContact.url, type: 'url'},
+      {title: 'E-Mail', value: mockContact.email, type: 'url'},
+      {title: 'www', value: {href: mockContact.url}, type: 'url'},
     ];
     expect(result).toEqual(expected);
   });

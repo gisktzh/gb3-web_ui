@@ -1,0 +1,7 @@
+<h3 class="dataset-element-detail">{{ layer.name }}</h3>
+<data-display [elements]="layerListData"></data-display>
+<cdk-accordion [multi]="true">
+  <accordion-item header="Attribute" variant="grey">
+    <dataset-element-table [attributes]="layer.attributes" [name]="layer.name"></dataset-element-table>
+  </accordion-item>
+</cdk-accordion>

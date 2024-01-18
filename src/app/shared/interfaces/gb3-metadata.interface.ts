@@ -1,3 +1,6 @@
+import {LinkObject} from './link-object.interface';
+import {DatasetLayer} from './dataset-layer.interface';
+
 export interface DepartmentalContact {
   department: string;
   /** Fachstelle */
@@ -12,7 +15,7 @@ export interface DepartmentalContact {
   village: string;
   phone: string;
   phoneDirect: string;
-  email: string;
+  email: LinkObject;
   url: string;
 }
 
@@ -26,14 +29,27 @@ interface BaseMetadataInterface {
 
 export interface DatasetMetadata extends BaseMetadataInterface {
   shortDescription: string;
-  topics: string | null;
-  keywords: string | null;
+  topics: string[] | null;
+  keywords: string[] | null;
   dataBasis: string | null;
+  dataCapture: string | null;
   remarks: string | null;
-  outputFormat: string;
-  usageRestrictions: string;
-  pdfName: string | null;
-  pdfUrl: string | null;
+  outputFormat: string[];
+  scale: number | null;
+  resolution: number | null;
+  positionAccuracy: number | null;
+  scope: string | null;
+  dataStatus: string | null;
+  updateType: string | null;
+  editingStatus: string | null;
+  ogd: boolean;
+  statuteClass: string | null;
+  geoBaseData: LinkObject | null;
+  geocat: LinkObject | null;
+  opendataSwiss: LinkObject | null;
+  mxd: LinkObject | null;
+  lyr: LinkObject[] | null;
+  pdf: LinkObject | null;
   contact: {
     /** Responsible for geodata */
     geodata: DepartmentalContact;
@@ -45,15 +61,7 @@ export interface DatasetMetadata extends BaseMetadataInterface {
     topic: string;
     name: string;
   }[];
-  layers: {
-    /** GISZH-Nummer */
-    id: string;
-    name: string;
-    description: string;
-    metadataVisibility: string;
-    /** Datenbezugart */
-    dataProcurementType: string;
-  }[];
+  layers: DatasetLayer[];
   services: {
     uuid: string;
     serviceType: string;
@@ -69,6 +77,7 @@ export interface LinkedDataset {
   uuid: string;
   name: string;
   shortDescription: string;
+  gisZHNr: number;
 }
 
 export interface MapMetadata extends BaseMetadataInterface {
@@ -78,6 +87,8 @@ export interface MapMetadata extends BaseMetadataInterface {
     geodata: DepartmentalContact;
   };
   datasets: LinkedDataset[];
+  externalLinks: LinkObject[];
+  gb2Url: LinkObject | null;
 }
 
 export interface ServiceMetadata extends BaseMetadataInterface {

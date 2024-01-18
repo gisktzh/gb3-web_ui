@@ -41,9 +41,9 @@ export class ServiceOverviewMetadataItem extends OverviewMetadataItem {
 }
 
 export class DatasetOverviewMetadataItem extends OverviewMetadataItem {
-  public readonly outputFormat: string;
+  public readonly outputFormat: string[];
 
-  constructor(uuid: string, name: string, description: string, responsibleDepartment: string, outputFormat: string) {
+  constructor(uuid: string, name: string, description: string, responsibleDepartment: string, outputFormat: string[]) {
     super(uuid, name, description, 'Geodatensatz', responsibleDepartment);
     this.outputFormat = outputFormat;
   }

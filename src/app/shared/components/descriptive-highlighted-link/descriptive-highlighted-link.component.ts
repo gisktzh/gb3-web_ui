@@ -8,4 +8,5 @@ import {Component, Input} from '@angular/core';
 export class DescriptiveHighlightedLinkComponent {
   @Input() public title!: string;
   @Input() public description?: string;
+  @Input() public id?: number;
 }

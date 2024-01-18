@@ -23,6 +23,7 @@ export class MapDetailComponent extends AbstractBaseDetailComponent<MapMetadata>
   public informationElements: DataDisplayElement[] = [];
   public geodataContactElements: DataDisplayElement[] = [];
   public linkedDatasets: MetadataLink[] = [];
+  public gB2Url?: string;
 
   constructor(
     @Inject(ActivatedRoute) route: ActivatedRoute,
@@ -43,21 +44,29 @@ export class MapDetailComponent extends AbstractBaseDetailComponent<MapMetadata>
     this.informationElements = this.extractInformationElements(mapMetadata);
     this.geodataContactElements = DataExtractionUtils.extractContactElements(mapMetadata.contact.geodata);
     this.linkedDatasets = mapMetadata.datasets;
+    this.gB2Url = mapMetadata.gb2Url?.href;
   }
 
   private extractBaseMetadataInformation(mapMetadata: MapMetadata): BaseMetadataWithTopicInformation {
     return {
       itemTitle: mapMetadata.name,
       topic: mapMetadata.topic,
-      keywords: ['GIS-Browser Karte'], // todo: add OGD status once API delivers that
+      category: 'GIS-Browser Karte',
+      imageUrl: mapMetadata.imageUrl,
+      shortDescription: mapMetadata.description,
     };
   }
 
   private extractInformationElements(mapMetadata: MapMetadata): DataDisplayElement[] {
     return [
-      {title: 'GIS-ZH Nr.', value: mapMetadata.gisZHNr.toString(), type: 'text'},
-      {title: 'Bezeichnung', value: mapMetadata.name, type: 'text'},
-      {title: 'Beschreibung', value: mapMetadata.description, type: 'text'},
+      {title: 'Nr.', value: mapMetadata.gisZHNr.toString(), type: 'text'},
+      {title: 'Kartentyp', value: mapMetadata.gb2Url ? 'GB2' : 'GB3', type: 'text'},
+      {
+        title: 'Internet URL',
+        value: mapMetadata.gb2Url ?? null,
+        type: 'url',
+      }, // TODO GB3-834: how to distinguish between intra and internet?
+      {title: 'Weiterführende Verweise', value: mapMetadata.externalLinks, type: 'urlList'},
     ];
   }
 }

@@ -1,11 +1,15 @@
 <loading-and-process-bar [loadingState]="loadingState"></loading-and-process-bar>
 
 <data-catalogue-detail-page *ngIf="baseMetadataInformation" [baseMetadataInformation]="baseMetadataInformation">
-  <data-catalogue-detail-page-section topLink>
-    <descriptive-highlighted-link [title]="'Karte auf GIS-Browser ansehen'" topLink>
-      <a [queryParams]="{initialMapIds: baseMetadataInformation.topic}" [routerLink]="'/' + mainPageEnum.Maps" mat-icon-button>
-        <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
-      </a>
+  <data-catalogue-detail-page-section>
+    <descriptive-highlighted-link [title]="'Karte im GIS-Browser öffnen'" topLink>
+      @if (gB2Url) {
+        <gb2-exit-button [url]="gB2Url"> </gb2-exit-button>
+      } @else {
+        <a [queryParams]="{initialMapIds: baseMetadataInformation.topic}" [routerLink]="'/' + mainPageEnum.Maps" mat-icon-button>
+          <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
+        </a>
+      }
     </descriptive-highlighted-link>
   </data-catalogue-detail-page-section>
 
@@ -22,11 +26,12 @@
   </data-catalogue-detail-page-section>
 
   <data-catalogue-detail-page-section *ngIf="linkedDatasets.length > 0">
-    <data-display-section [sectionTitle]="'Verwendete Geodatensätze'">
+    <data-display-section [sectionTitle]="'Verwendete Geodaten'">
       <descriptive-highlighted-link
         *ngFor="let linkedDataset of linkedDatasets"
         [description]="linkedDataset.shortDescription"
         [title]="linkedDataset.name"
+        [id]="linkedDataset.gisZHNr"
       >
         <a [routerLink]="['/', mainPageEnum.Data, dataCataloguePageEnum.Datasets, linkedDataset.uuid]" mat-icon-button>
           <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>

@@ -2,7 +2,9 @@ import {Injectable} from '@angular/core';
 import {Gb3ApiService} from './gb3-api.service';
 import {DataCataloguePage} from '../../../enums/data-catalogue-page.enum';
 import {
+  Contact,
   Dataset,
+  LinkObject as Gb3LinkObject,
   Map,
   MetadataDatasetsDetailData,
   MetadataDatasetsListData,
@@ -32,12 +34,14 @@ import {
   ProductOverviewMetadataItem,
   ServiceOverviewMetadataItem,
 } from '../../../models/overview-metadata-item.model';
+import {LinkObject} from '../../../interfaces/link-object.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class Gb3MetadataService extends Gb3ApiService {
   protected endpoint: string = 'metadata';
+  private readonly staticFilesUrl = this.configService.apiConfig.gb2StaticFiles.baseUrl;
 
   public loadFullList(): Observable<OverviewMetadataItem[]> {
     return forkJoin([this.loadDatasets(), this.loadProducts(), this.loadMaps(), this.loadServices()]).pipe(
@@ -157,20 +161,33 @@ export class Gb3MetadataService extends Gb3ApiService {
       uuid: dataset.uuid,
       gisZHNr: dataset.giszhnr,
       keywords: dataset.keywords,
+      ogd: dataset.ogd,
       products: dataset.products.map(({name, uuid}) => ({name, uuid})),
       shortDescription: dataset.kurzbeschreibung,
       description: dataset.beschreibung,
       remarks: dataset.bemerkungen,
       topics: dataset.themen,
       dataBasis: dataset.datengrundlage,
-      outputFormat: dataset.abgabeformat,
-      usageRestrictions: dataset.anwendungeinschraenkung,
-      pdfName: dataset.pdf_name,
-      pdfUrl: dataset.pdf_url,
-      imageUrl: dataset.image_url,
+      dataCapture: dataset.datenerfassung,
+      outputFormat: dataset.abgabeformate,
+      scale: dataset.erfassungsmasstab,
+      resolution: dataset.aufloesung,
+      positionAccuracy: dataset.lagegenauigkeit,
+      scope: dataset.geogausdehnung,
+      dataStatus: dataset.datenstand,
+      updateType: dataset.nachfuehrungstyp,
+      editingStatus: dataset.bearbeitungstatus,
+      statuteClass: dataset.gesetzklasse,
+      geoBaseData: dataset.geobasisdaten,
+      geocat: dataset.geocat ? this.createLinkObject(dataset.geocat) : null,
+      opendataSwiss: dataset.opendataswiss ? this.createLinkObject(dataset.opendataswiss) : null,
+      mxd: dataset.mxd ? this.createLinkObject(dataset.mxd) : null,
+      lyr: dataset.lyrs,
+      pdf: dataset.pdf ? {href: this.createAbsoluteUrl(dataset.pdf.href), title: dataset.pdf.title} : null,
+      imageUrl: dataset.image_url ? this.createAbsoluteUrl(dataset.image_url) : null,
       contact: {
-        geodata: this.extractContactDetails(dataset.kontakt.geodaten),
-        metadata: this.extractContactDetails(dataset.kontakt.metadaten),
+        geodata: this.extractContactDetails(dataset.kontakt_geodaten),
+        metadata: this.extractContactDetails(dataset.kontakt_metadaten),
       },
       layers: dataset.layers.map((layer) => ({
         dataProcurementType: layer.datenbezugart,
@@ -178,6 +195,14 @@ export class Gb3MetadataService extends Gb3ApiService {
         description: layer.beschreibung,
         id: layer.giszhnr,
         name: layer.name,
+        attributes: layer.attribute.map((attr) => ({
+          name: attr.name,
+          description: attr.beschreibung,
+          type: attr.typ,
+          unit: attr.einheit,
+        })),
+        path: layer.pfadfilename,
+        geometryType: layer.geometrietyp,
       })),
       services: dataset.services.map((service) => ({
         serviceType: service.servicetyp,
@@ -194,10 +219,17 @@ export class Gb3MetadataService extends Gb3ApiService {
       gisZHNr: mapData.gb2_id,
       name: mapData.name,
       description: mapData.beschreibung,
-      imageUrl: mapData.image_url,
+      imageUrl: mapData.image_url ? this.createAbsoluteUrl(mapData.image_url) : null,
+      externalLinks: mapData.verweise,
+      gb2Url: mapData.gb2_url
+        ? {
+            href: this.createAbsoluteUrl(mapData.gb2_url.href),
+            title: mapData.gb2_url.title,
+          }
+        : null,
       datasets: mapData.datasets.map(this.extractDatasetDetail),
       contact: {
-        geodata: this.extractContactDetails(mapData.kontakt.geodaten),
+        geodata: this.extractContactDetails(mapData.kontakt_geodaten),
       },
     };
   }
@@ -207,16 +239,16 @@ export class Gb3MetadataService extends Gb3ApiService {
       uuid: service.uuid,
       gisZHNr: service.gdsernummer,
       name: service.name,
-      url: service.url,
+      url: service.url.href,
       version: service.version,
       access: service.zugang,
       contact: {
-        metadata: this.extractContactDetails(service.kontakt.metadaten),
+        metadata: this.extractContactDetails(service.kontakt_metadaten),
       },
       datasets: service.datasets.map(this.extractDatasetDetail),
       serviceType: service.servicetyp,
       description: service.beschreibung,
-      imageUrl: service.image_url,
+      imageUrl: service.image_url ? this.createAbsoluteUrl(service.image_url) : null,
     };
   }
 
@@ -226,10 +258,10 @@ export class Gb3MetadataService extends Gb3ApiService {
       gisZHNr: product.gdpnummer,
       name: product.name,
       contact: {
-        metadata: this.extractContactDetails(product.kontakt.metadaten),
+        metadata: this.extractContactDetails(product.kontakt_metadaten),
       },
       description: product.beschreibung,
-      imageUrl: product.image_url,
+      imageUrl: product.image_url ? this.createAbsoluteUrl(product.image_url) : null,
       datasets: product.datasets.map(this.extractDatasetDetail),
     };
   }
@@ -250,6 +282,7 @@ export class Gb3MetadataService extends Gb3ApiService {
       shortDescription: dataset.kurzbeschreibung,
       uuid: dataset.uuid,
       name: dataset.name,
+      gisZHNr: dataset.giszhnr,
     };
   }
 
@@ -258,14 +291,12 @@ export class Gb3MetadataService extends Gb3ApiService {
    * the details are the same for all types, we can use one of the result types' (here: Dataset) contact information in a generic way to
    * typehint and create an ad-hoc schema for the contact.
    */
-  private extractContactDetails<K extends keyof MetadataDatasetsDetailData['dataset']['kontakt']>(
-    contact: MetadataDatasetsDetailData['dataset']['kontakt'][K],
-  ): DepartmentalContact {
+  private extractContactDetails(contact: Contact): DepartmentalContact {
     return {
       department: contact.amt,
       division: contact.fachstelle,
       section: contact.sektion,
-      url: contact.weburl,
+      url: contact.weburl.href,
       street: contact.strassenname,
       poBox: contact.postfach,
       email: contact.email,
@@ -287,5 +318,14 @@ export class Gb3MetadataService extends Gb3ApiService {
     }
 
     return url.toString();
+  }
+
+  private createAbsoluteUrl(relativeImageUrl: string): string {
+    const url = new URL(`${this.staticFilesUrl}${relativeImageUrl}`);
+    return url.toString();
+  }
+
+  private createLinkObject(gb3LinkObject: Gb3LinkObject): LinkObject {
+    return {href: gb3LinkObject.href, title: gb3LinkObject.title};
   }
 }

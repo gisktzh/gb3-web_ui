@@ -18,7 +18,35 @@
     }
 
     .data-catalogue-detail-page__title {
-      margin-bottom: 12px;
+      display: flex;
+      gap: 60px;
+
+      .data-catalogue-detail-page__title__image {
+        max-width: 368px;
+      }
+
+      .data-catalogue-detail-page__title__text {
+        margin-bottom: 12px;
+      }
+    }
+
+    .data-catalogue-detail-page__category {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+
+      .data-catalogue-detail-page__category__title {
+        font-size: 16px;
+      }
+
+      .data-catalogue-detail-page__category__content {
+        .data-catalogue-detail-page__category__content__pill {
+          background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 50);
+          color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-accent, 50);
+          padding: 6px 16px 6px 16px;
+          border-radius: 50px;
+        }
+      }
     }
 
     .dataset-detail__description {

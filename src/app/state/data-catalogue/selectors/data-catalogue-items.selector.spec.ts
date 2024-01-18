@@ -103,8 +103,8 @@ describe('selectDataCatalogueItems', () => {
 
       it('returns an item which has a given property and matches the filter value', () => {
         const items: OverviewMetadataItem[] = [
-          new DatasetOverviewMetadataItem('2', 'TestTest', 'TestTest-2', 'TestTest-3', 'output'),
-          new DatasetOverviewMetadataItem('3', 'TestTest3', 'TestTest-32', 'Test3Test-3', 'output3'),
+          new DatasetOverviewMetadataItem('2', 'TestTest', 'TestTest-2', 'TestTest-3', ['output']),
+          new DatasetOverviewMetadataItem('3', 'TestTest3', 'TestTest-32', 'Test3Test-3', ['output3']),
         ];
         const filter: ActiveDataCatalogueFilterGroup[] = [{key: 'outputFormat', values: ['output']}];
         const actual = selectDataCatalogueItems.projector(items, filter, '', []);
@@ -114,8 +114,8 @@ describe('selectDataCatalogueItems', () => {
 
       it('does return all matching items for all ', () => {
         const items: OverviewMetadataItem[] = [
-          new DatasetOverviewMetadataItem('2', 'TestTest', 'TestTest-2', 'TestTest-3', 'output'),
-          new DatasetOverviewMetadataItem('3', 'TestTest3', 'TestTest-32', 'Test3Test-3', 'output3'),
+          new DatasetOverviewMetadataItem('2', 'TestTest', 'TestTest-2', 'TestTest-3', ['output']),
+          new DatasetOverviewMetadataItem('3', 'TestTest3', 'TestTest-32', 'Test3Test-3', ['output3']),
         ];
         const filter: ActiveDataCatalogueFilterGroup[] = [{key: 'outputFormat', values: ['output']}];
         const actual = selectDataCatalogueItems.projector(items, filter, '', []);
