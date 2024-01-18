@@ -91,8 +91,8 @@ export class DatasetDetailComponent extends AbstractBaseDetailComponent<DatasetM
   private extractInformationElements(datasetMetadata: DatasetMetadata): DataDisplayElement[] {
     return [
       {title: 'GIS-ZH Nr.', value: datasetMetadata.gisZHNr.toString(), type: 'text'},
-      {title: 'eCH Geokategorien / Themen', value: datasetMetadata.topics, type: 'stringList'},
-      {title: 'Schlüsselwörter', value: datasetMetadata.keywords, type: 'stringList'},
+      {title: 'eCH Geokategorien / Themen', value: datasetMetadata.topics, type: 'textList'},
+      {title: 'Schlüsselwörter', value: datasetMetadata.keywords, type: 'textList'},
     ];
   }
 
@@ -103,8 +103,7 @@ export class DatasetDetailComponent extends AbstractBaseDetailComponent<DatasetM
       {title: 'Datengrundlage', value: datasetMetadata.dataBasis, type: 'text'},
       {
         title: 'Dokumentation (PDF)',
-        value: datasetMetadata.pdf?.href ? this.apiBaseUrl + datasetMetadata.pdf.href : null,
-        displayText: datasetMetadata.pdf?.title ?? undefined,
+        value: datasetMetadata.pdf ?? null,
         type: 'url',
       },
       {title: 'Bemerkungen', value: datasetMetadata.remarks, type: 'text'},
@@ -113,15 +112,16 @@ export class DatasetDetailComponent extends AbstractBaseDetailComponent<DatasetM
 
   private extractDataProcurementElements(datasetMetadata: DatasetMetadata): DataDisplayElement[] {
     return [
-      {title: 'Abgabeformat', value: datasetMetadata.outputFormat, type: 'stringList'},
+      {title: 'Abgabeformat', value: datasetMetadata.outputFormat, type: 'textList'},
       {title: 'Bezugsart', value: datasetMetadata.ogd ? 'OGD-Daten (kostenlos)' : 'NOGD-Daten (kostenpflichtig)', type: 'text'},
       {
         title: 'Link',
-        value: datasetMetadata.ogd ? 'fdsewf' : 'https://geodatenshop.zh.ch',
-        displayText: datasetMetadata.ogd ? 'OGD Anleitung PDF' : 'NOGD Geodatenshop',
+        value: {
+          href: datasetMetadata.ogd ? 'https://geodatenshop.zh.ch' : 'https://geodatenshop.zh.ch',
+          title: datasetMetadata.ogd ? 'OGD Anleitung PDF' : 'NOGD Geodatenshop',
+        }, // TODO GBS-834: OGD link not delivered, update once API delivers the value
         type: 'url',
-      }, // TODO GBS-834: get Link for OGD
-      // {title: 'Nutzungseinschränkungen', value: null, type: 'text'},
+      },
     ];
   }
 
@@ -153,8 +153,7 @@ export class DatasetDetailComponent extends AbstractBaseDetailComponent<DatasetM
       {title: 'Geobasisdaten Klasse', value: datasetMetadata.statuteClass, type: 'text'},
       {
         title: 'Geobasisdaten ID',
-        value: datasetMetadata.geoBaseData?.href ?? null,
-        displayText: datasetMetadata.geoBaseData?.title,
+        value: datasetMetadata.geoBaseData ?? null,
         type: 'url',
       },
     ];
@@ -164,14 +163,12 @@ export class DatasetDetailComponent extends AbstractBaseDetailComponent<DatasetM
     return [
       {
         title: 'Geocat',
-        value: datasetMetadata.geocat?.href ?? null,
-        displayText: datasetMetadata.geocat?.title,
+        value: datasetMetadata.geocat ?? null,
         type: 'url',
       },
       {
         title: 'OpendataSwiss',
-        value: datasetMetadata.opendataSwiss?.href ?? null,
-        displayText: datasetMetadata.opendataSwiss?.title,
+        value: datasetMetadata.opendataSwiss ?? null,
         type: 'url',
       },
     ];
@@ -181,8 +178,7 @@ export class DatasetDetailComponent extends AbstractBaseDetailComponent<DatasetM
     return [
       {
         title: 'ArcMap .mxd',
-        value: datasetMetadata.mxd?.href ?? null,
-        displayText: datasetMetadata.mxd?.title,
+        value: datasetMetadata.mxd ?? null,
         type: 'url',
       },
       {

@@ -8,14 +8,12 @@
         }
         @case ('url') {
           @if (element.value) {
-            <a href="{{ element.value }}" rel="noopener noreferrer" target="_blank">{{
-              element.type === 'url' && element.displayText !== undefined ? element.displayText : element.value
-            }}</a>
+            <a href="{{ element.value.href }}" rel="noopener noreferrer" target="_blank">{{ element.value.title ?? element.value.href }}</a>
           } @else {
             <span>-</span>
           }
         }
-        @case ('stringList') {
+        @case ('textList') {
           @for (item of element.value; track item; let last = $last) {
             <span>{{ item }}{{ !last ? '; ' : '' }}</span>
           }

@@ -55,7 +55,11 @@ export class ServiceDetailComponent extends AbstractBaseDetailComponent<ServiceM
     return [
       {title: 'GIS-ZH Nr.', value: serviceMetadata.gisZHNr.toString(), type: 'text'},
       {title: 'Geodienst', value: serviceMetadata.serviceType, type: 'text'},
-      {title: 'GetCapabilities', value: this.createGetCapabilitiesLink(serviceMetadata.url, serviceMetadata.serviceType), type: 'url'},
+      {
+        title: 'GetCapabilities',
+        value: {href: this.createGetCapabilitiesLink(serviceMetadata.url, serviceMetadata.serviceType)},
+        type: 'url',
+      },
       {title: 'Version', value: serviceMetadata.version, type: 'text'},
       {title: 'Publikationsdatum', value: null, type: 'text'}, // TODO: GB3-834: Not delivered
       {title: 'Zugang', value: serviceMetadata.access, type: 'text'},

@@ -182,7 +182,7 @@ export class Gb3MetadataService extends Gb3ApiService {
       opendataSwiss: dataset.opendataswiss ? this.createLinkObject(dataset.opendataswiss) : null,
       mxd: dataset.mxd ? this.createLinkObject(dataset.mxd) : null,
       lyr: dataset.lyrs,
-      pdf: dataset.pdf ? this.createLinkObject(dataset.pdf) : null,
+      pdf: dataset.pdf ? {href: this.createAbsoluteUrl(dataset.pdf.href), title: dataset.pdf.title} : null,
       imageUrl: dataset.image_url ? this.createAbsoluteUrl(dataset.image_url) : null,
       contact: {
         geodata: this.extractContactDetails(dataset.kontakt_geodaten),
