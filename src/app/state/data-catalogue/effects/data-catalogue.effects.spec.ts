@@ -8,7 +8,7 @@ import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {DataCatalogueActions} from '../actions/data-catalogue.actions';
 import {MetadataOverviewCouldNotBeLoaded} from '../../../shared/errors/data-catalogue.errors';
 import {Gb3MetadataService} from '../../../shared/services/apis/gb3/gb3-metadata.service';
-import {MapOverviewMetadataItem} from '../../../shared/models/overview-metadata-item.model';
+import {DatasetOverviewMetadataItem, MapOverviewMetadataItem} from '../../../shared/models/overview-metadata-item.model';
 import {selectLoadingState} from '../reducers/data-catalogue.reducer';
 import {ConfigService} from '../../../shared/services/config.service';
 import {DataCatalogueFilter, DataCatalogueFilterConfiguration} from '../../../shared/interfaces/data-catalogue-filter.interface';
@@ -93,10 +93,11 @@ describe('DataCatalogueEffects', () => {
 
   describe('initializeDataCatalogueFilters$', () => {
     it('extracts the configured filter values', (done: DoneFn) => {
-      const mockItems = [new MapOverviewMetadataItem('1337', 'Test', 'Testbeschreibung', 'Testamt')];
+      const mockItems = [new DatasetOverviewMetadataItem('1337', 'Test', 'Testbeschreibung', 'Testamt', ['csv', 'Shapefile'])];
       const mockConfig: DataCatalogueFilterConfiguration[] = [
         {key: 'description', label: 'Description'},
         {key: 'responsibleDepartment', label: 'Verantwortlich'},
+        {key: 'outputFormat', label: 'Dateiformate'},
       ];
       spyOnProperty(configService, 'filterConfigs', 'get').and.returnValue({
         dataCatalogue: mockConfig,
@@ -108,6 +109,14 @@ describe('DataCatalogueEffects', () => {
       const expected: DataCatalogueFilter[] = [
         {key: mockConfig[0].key, label: mockConfig[0].label, filterValues: [{value: mockItems[0].description, isActive: false}]},
         {key: mockConfig[1].key, label: mockConfig[1].label, filterValues: [{value: mockItems[0].responsibleDepartment, isActive: false}]},
+        {
+          key: mockConfig[2].key,
+          label: mockConfig[2].label,
+          filterValues: [
+            {value: mockItems[0].outputFormat[0], isActive: false},
+            {value: mockItems[0].outputFormat[1], isActive: false},
+          ],
+        },
       ];
 
       effects.initializeDataCatalogueFilters$.subscribe((action) => {
