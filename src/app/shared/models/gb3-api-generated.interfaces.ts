@@ -1,6 +1,5 @@
 /* eslint-disable */
 /* tslint:disable */
-
 /*
  * ---------------------------------------------------------------
  * ## THIS FILE WAS GENERATED VIA SWAGGER-TYPESCRIPT-API        ##
@@ -26,27 +25,27 @@ export interface Feature {
       /** UUID from geometadatabase */
       geolion_karten_uuid: string | null;
       layers: {
-        /** Layer name */
-        layer: string;
-        /** Layer title */
+        /** Layer name (layer info only) */
+        layer?: string;
+        /** Layer or topic info title */
         title: string;
-        /** Geolion ID of layer */
-        geolion_gds: number | null;
-        /** UUID from geometadatabase */
-        geolion_geodatensatz_uuid: string | null;
+        /** Geolion ID of layer (layer info only) */
+        geolion_gds?: number | null;
+        /** UUID from geometadatabase (layer info only) */
+        geolion_geodatensatz_uuid?: string | null;
         features: {
-          /** Feature ID */
-          fid: number;
+          /** Feature ID (layer info only) */
+          fid?: number;
           /** Feature fields */
           fields: InfoFeatureField[];
           /**
-           * Bounding box of this feature
+           * Bounding box of this feature (layer info only)
            * @maxItems 4
            * @minItems 4
            */
-          bbox: number[];
-          /** GeoJSON geometry object */
-          geometry: Geometry;
+          bbox?: number[];
+          /** Feature geometry (layer info only) */
+          geometry?: Geometry;
         }[];
       }[];
     };
@@ -858,12 +857,19 @@ export interface GeometryCrs {
 }
 
 /** Feature field */
-export interface InfoFeatureField {
-  /** Field label */
-  label: string;
-  /** Field value (string, numeric or null) */
-  value: string | number | null;
-}
+export type InfoFeatureField =
+  | {
+      /** Field label */
+      label: string;
+      /** Field value (string, numeric or null) */
+      value: string | number | null;
+    }
+  | {
+      /** Field label */
+      label: string;
+      /** Field link */
+      link: LinkObject;
+    };
 
 /** A link MUST be represented as either: a string containing the link’s URL or a link object. */
 export type Link = LinkObject | string | null;

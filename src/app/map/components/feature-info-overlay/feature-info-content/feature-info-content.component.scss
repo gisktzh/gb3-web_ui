@@ -7,6 +7,7 @@
     .mdc-form-field {
       font-size: 12px;
     }
+
     .mdc-radio {
       padding: 0;
 
@@ -47,6 +48,19 @@ $fixed-border: inset calc(-1 * $border-size) 0 0 0 ktzh-variables.$zh-black100;
 
     & .feature-info-content__table__row {
       vertical-align: top;
+
+      .feature-info-content__table__row__column {
+        .feature-info-content__table__row__column__link {
+          text-decoration: none;
+          color: ktzh-variables.$zh-active-blue;
+          display: inline-flex;
+          height: 0;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
 
       // alternate row color with grey for odd rows
       &:nth-child(odd) {
