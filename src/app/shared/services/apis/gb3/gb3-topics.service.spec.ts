@@ -510,6 +510,18 @@ describe('Gb3TopicsService', () => {
                         label: 'Fläche [m\u0026sup2;]',
                         value: 2874,
                       },
+                      {
+                        label: 'Value might be null',
+                        value: null,
+                      },
+                      {
+                        label: 'A LinkObject',
+                        link: {
+                          title: 'Amon Amarth',
+                          href: 'not just a LOTR location',
+                          hreflang: 'test',
+                        },
+                      },
                     ],
                     bbox: [2682671.789999999, 1247866.0890000015, 2682753.579, 1247937.0270000026],
                     geometry: {
@@ -674,7 +686,7 @@ describe('Gb3TopicsService', () => {
                       fields: [
                         {
                           label: 'BFSNr',
-                          value: 261,
+                          value: '261',
                         },
                         {
                           label: 'Nummer',
@@ -690,7 +702,18 @@ describe('Gb3TopicsService', () => {
                         },
                         {
                           label: 'Fläche [m\u0026sup2;]',
-                          value: 2874,
+                          value: '2874',
+                        },
+                        {
+                          label: 'Value might be null',
+                          value: null,
+                        },
+                        {
+                          label: 'A LinkObject',
+                          value: {
+                            title: 'Amon Amarth',
+                            href: 'not just a LOTR location',
+                          },
                         },
                       ],
                       bbox: [2682671.789999999, 1247866.0890000015, 2682753.579, 1247937.0270000026],
@@ -721,7 +744,7 @@ describe('Gb3TopicsService', () => {
                       fields: [
                         {
                           label: 'BFSNr',
-                          value: 261,
+                          value: '261',
                         },
                         {
                           label: 'Qualität',
@@ -733,7 +756,7 @@ describe('Gb3TopicsService', () => {
                         },
                         {
                           label: 'GWR_EGID',
-                          value: 302019364,
+                          value: '302019364',
                         },
                         {
                           label: 'GVZ Nr.',
@@ -741,7 +764,7 @@ describe('Gb3TopicsService', () => {
                         },
                         {
                           label: 'Geometrie [m\u0026sup2;]',
-                          value: 2159.843540479304,
+                          value: '2159.843540479304',
                         },
                       ],
                       bbox: [2682674.557, 1247872.6230000034, 2682747.420000002, 1247933.7089999989],
@@ -772,7 +795,7 @@ describe('Gb3TopicsService', () => {
                       fields: [
                         {
                           label: 'BFSNr',
-                          value: 261,
+                          value: '261',
                         },
                         {
                           label: 'Name',

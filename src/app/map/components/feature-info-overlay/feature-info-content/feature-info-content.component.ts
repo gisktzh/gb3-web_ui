@@ -46,7 +46,7 @@ interface TableHeader extends Omit<TableCellConfiguration, 'cellType'> {
  * A row consists of a key which represents the attribute value ("header" in the transposed table) and a set of TableCellConfiguration
  * objects.
  */
-type TableRows = Map<string, TableCellConfiguration[]>;
+type TableRows = Map<string, TableCell[]>;
 
 /**
  * Name of the css class which is used to designate a highlighted cell.
@@ -80,7 +80,7 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
   /**
    * The order of the TableCellConfiguration elements reflects the order of the tableHeaders elements.
    */
-  public readonly tableRows: TableRows = new Map<string, TableCellConfiguration[]>();
+  public readonly tableRows: TableRows = new Map<string, TableCell[]>();
   public readonly tableHeaders: TableHeader[] = [];
 
   private readonly featureGeometries: Map<number, GeometryWithSrs | null> = new Map();
@@ -135,6 +135,14 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
       this.removeHighlightClassFromCellsForFid(fid);
       this.store.dispatch(FeatureInfoActions.clearHighlight());
     }
+  }
+
+  /**
+   * Fixed compareFn for KeyValuePipe that always returns 0, essentially preserving the key order of the object. This
+   * is necessary because the KeyValuePipe orders the keys ascending: https://angular.io/api/common/KeyValuePipe#description
+   */
+  public preserveKeyValueOrder(): number {
+    return 0;
   }
 
   /**

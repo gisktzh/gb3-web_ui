@@ -309,12 +309,12 @@ export class Gb3TopicsService extends Gb3ApiService {
           layers: featureInfo.results.layers.map((layer) => {
             return {
               title: layer.title,
-              layer: layer.layer ?? '', // todo XXX: This will break raster info queries
+              layer: layer.layer ?? '', // todo GB3-1025: This will break raster info queries
               metaDataLink: layer.geolion_geodatensatz_uuid ? this.createDatasetTabLink(layer.geolion_geodatensatz_uuid) : undefined,
               features: layer.features.map((feature) => {
                 return {
-                  fid: feature.fid ?? -1, // todo XXX: This will break raster info queries
-                  bbox: feature.bbox ?? [], // todo XXX: This will break raster info queries
+                  fid: feature.fid ?? -1, // todo GB3-1025: This will break raster info queries
+                  bbox: feature.bbox ?? [], // todo GB3-1025: This will break raster info queries
                   fields: feature.fields.map((field): FeatureInfoResultFeatureField => {
                     return {
                       label: field.label,
@@ -322,7 +322,7 @@ export class Gb3TopicsService extends Gb3ApiService {
                     };
                   }),
                   geometry: {
-                    // todo XXX: This will break raster info queries
+                    // todo GB3-1025: This will break raster info queries
                     ...ApiGeojsonGeometryToGb3ConverterUtils.convert(feature.geometry ?? {type: 'Point', coordinates: []}),
                     srs: this.configService.mapConfig.defaultMapConfig.srsId,
                   },
