@@ -15,7 +15,7 @@
             <span>-</span>
           }
         }
-        @case ('list') {
+        @case ('stringList') {
           @for (item of element.value; track item; let last = $last) {
             <span>{{ item }}{{ !last ? '; ' : '' }}</span>
           }

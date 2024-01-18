@@ -34,6 +34,5 @@ import {DataDisplayComponent} from './components/data-display/data-display.compo
     DataCatalogueFilterDialogComponent,
   ],
   imports: [CommonModule, DataCatalogueRoutingModule, MaterialModule, SharedModule, DatasetElementDetailComponent, DataDisplayComponent],
-  exports: [],
 })
 export class DataCatalogueModule {}

@@ -14,14 +14,14 @@ export const selectDataCatalogueItems = createSelector(
       return items;
     }
 
-    // TODO: We cast to any because not all items have all the properties from DataCatalogueFilterConfiguration. To remove the cast, we would need to refactor
+    // We cast to any because not all items have all the properties from DataCatalogueFilterConfiguration. To remove the cast, we would need to refactor
     return (items as any[])
       .filter((item) => {
         return activeFilters.every(
           // typecast is safe here because we *know* the property exists, even though we don't know the actual type
           (activeFilter) => {
             if (item[activeFilter.key] instanceof Array) {
-              return activeFilter.key in item && item[activeFilter.key].some((filter: string) => activeFilter.values.includes(filter));
+              return activeFilter.key in item && item[activeFilter.key].some((value: string) => activeFilter.values.includes(value));
             } else {
               return activeFilter.key in item && activeFilter.values.includes(item[activeFilter.key]);
             }

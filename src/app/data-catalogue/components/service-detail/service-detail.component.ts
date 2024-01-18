@@ -46,7 +46,7 @@ export class ServiceDetailComponent extends AbstractBaseDetailComponent<ServiceM
   private extractBaseMetadataInformation(serviceMetadata: ServiceMetadata): BaseMetadataInformation {
     return {
       itemTitle: serviceMetadata.name,
-      keywords: ['Geodienst'], // todo: add OGD status once API delivers that
+      category: ['Geodienst'],
       shortDescription: serviceMetadata.description,
     };
   }

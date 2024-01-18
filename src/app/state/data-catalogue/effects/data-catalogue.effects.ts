@@ -32,18 +32,18 @@ export class DataCatalogueEffects {
       map(({items}) => {
         const uniqueValues: Map<Pick<DataCatalogueFilter, 'key' | 'label'>, Set<string>> = new Map();
 
-        // TODO: We cast to any because not all items have all the properties from DataCatalogueFilterConfiguration. To remove the cast, we would need to refactor
+        // We cast to any because not all items have all the properties from DataCatalogueFilterConfiguration. To remove the cast, we would need to refactor
         (items as any[]).forEach((item) => {
           this.configService.filterConfigs.dataCatalogue.forEach((dataCatalogueFilter) => {
             if (dataCatalogueFilter.key in item) {
-              let values: string[];
-              if (!(item[dataCatalogueFilter.key] instanceof Array)) {
-                values = [item[dataCatalogueFilter.key]]; // We treat all values as Arrays and unpack them laterto account for the arrays provided in the output format
-              } else {
-                values = item[dataCatalogueFilter.key];
-              }
               if (!uniqueValues.has(dataCatalogueFilter)) {
                 uniqueValues.set(dataCatalogueFilter, new Set());
+              }
+              let values: string[];
+              if (item[dataCatalogueFilter.key] instanceof Array) {
+                values = item[dataCatalogueFilter.key];
+              } else {
+                values = [item[dataCatalogueFilter.key]]; // We treat all values as Arrays and unpack them later to account for the arrays provided in the output format
               }
               values.forEach((value) => {
                 uniqueValues.get(dataCatalogueFilter)?.add(value);

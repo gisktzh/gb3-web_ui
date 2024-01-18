@@ -12,4 +12,5 @@ import {FormatLineBreaksPipe} from '../../../../shared/pipes/format-line-breaks.
 })
 export class DatasetElementTableComponent {
   @Input() public attributes: LayerAttributes[] = [];
+  @Input() public name!: string;
 }

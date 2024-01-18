@@ -33,6 +33,7 @@ import {
   ProductOverviewMetadataItem,
   ServiceOverviewMetadataItem,
 } from '../../../models/overview-metadata-item.model';
+import {LinkObject} from '../../../interfaces/link-object.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -177,11 +178,11 @@ export class Gb3MetadataService extends Gb3ApiService {
       editingStatus: dataset.bearbeitungstatus,
       statuteClass: dataset.gesetzklasse,
       geoBaseData: dataset.geobasisdaten,
-      geocat: dataset.geocat ? {href: dataset.geocat.href, title: dataset.geocat.title} : null,
-      opendataSwiss: dataset.opendataswiss ? {href: dataset.opendataswiss.href, title: dataset.opendataswiss.title} : null,
-      mxd: dataset.mxd ? {href: dataset.mxd.href, title: dataset.mxd.title} : null,
+      geocat: dataset.geocat ? this.createLinkObject(dataset.geocat) : null,
+      opendataSwiss: dataset.opendataswiss ? this.createLinkObject(dataset.opendataswiss) : null,
+      mxd: dataset.mxd ? this.createLinkObject(dataset.mxd) : null,
       lyr: dataset.lyrs,
-      pdf: dataset.pdf ? {href: dataset.pdf.href, title: dataset.pdf.title} : null,
+      pdf: dataset.pdf ? this.createLinkObject(dataset.pdf) : null,
       imageUrl: dataset.image_url ? this.createAbsoluteUrl(dataset.image_url) : null,
       contact: {
         geodata: this.extractContactDetails(dataset.kontakt_geodaten),
@@ -321,5 +322,9 @@ export class Gb3MetadataService extends Gb3ApiService {
   private createAbsoluteUrl(relativeImageUrl: string): string {
     const url = new URL(`${this.staticFilesUrl}${relativeImageUrl}`);
     return url.toString();
+  }
+
+  private createLinkObject(gb3LinkObject: LinkObject): LinkObject {
+    return {href: gb3LinkObject.href, title: gb3LinkObject.title};
   }
 }

@@ -51,7 +51,7 @@ export class MapDetailComponent extends AbstractBaseDetailComponent<MapMetadata>
     return {
       itemTitle: mapMetadata.name,
       topic: mapMetadata.topic,
-      keywords: ['GIS-Browser Karte'], // todo: add OGD status once API delivers that
+      category: ['GIS-Browser Karte'],
       imageUrl: mapMetadata.imageUrl,
       shortDescription: mapMetadata.description,
     };

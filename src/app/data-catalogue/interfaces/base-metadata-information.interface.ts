@@ -1,6 +1,6 @@
 export interface BaseMetadataInformation {
   itemTitle: string;
-  keywords: string[];
+  category: string[];
   shortDescription?: string;
   imageUrl?: string | null;
 }

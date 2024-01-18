@@ -6,14 +6,18 @@
     </a>
     <div class="data-catalogue-detail-page__title">
       @if (baseMetadataInformation.imageUrl) {
-        <img [src]="baseMetadataInformation.imageUrl" class="data-catalogue-detail-page__title__image" />
+        <img
+          [src]="baseMetadataInformation.imageUrl"
+          class="data-catalogue-detail-page__title__image"
+          alt="Beispielbild zur Karte {{ baseMetadataInformation.itemTitle }}"
+        />
       }
       <div>
         <h1 class="data-catalogue-detail-page__title__text mat-headline-4">{{ baseMetadataInformation.itemTitle }}</h1>
         @if (baseMetadataInformation.shortDescription) {
           <p class="data-catalogue-detail-page__description mat-body" [innerHTML]="baseMetadataInformation.shortDescription"></p>
         }
-        <keyword-list [keywords]="baseMetadataInformation.keywords" listTitle="Kategorie"></keyword-list>
+        <keyword-list [keywords]="baseMetadataInformation.category" listTitle="Kategorie"></keyword-list>
       </div>
     </div>
 

@@ -84,15 +84,15 @@ export class DatasetDetailComponent extends AbstractBaseDetailComponent<DatasetM
     return {
       itemTitle: datasetMetadata.name,
       shortDescription: datasetMetadata.description,
-      keywords: ['Geodatensatz'], // todo: add OGD status once API delivers that. Keywords here?
+      category: ['Geodatensatz'],
     };
   }
 
   private extractInformationElements(datasetMetadata: DatasetMetadata): DataDisplayElement[] {
     return [
       {title: 'GIS-ZH Nr.', value: datasetMetadata.gisZHNr.toString(), type: 'text'},
-      {title: 'eCH Geokategorien / Themen', value: datasetMetadata.topics, type: 'list'},
-      {title: 'Schlüsselwörter', value: datasetMetadata.keywords, type: 'list'},
+      {title: 'eCH Geokategorien / Themen', value: datasetMetadata.topics, type: 'stringList'},
+      {title: 'Schlüsselwörter', value: datasetMetadata.keywords, type: 'stringList'},
     ];
   }
 
@@ -113,7 +113,7 @@ export class DatasetDetailComponent extends AbstractBaseDetailComponent<DatasetM
 
   private extractDataProcurementElements(datasetMetadata: DatasetMetadata): DataDisplayElement[] {
     return [
-      {title: 'Abgabeformat', value: datasetMetadata.outputFormat, type: 'list'},
+      {title: 'Abgabeformat', value: datasetMetadata.outputFormat, type: 'stringList'},
       {title: 'Bezugsart', value: datasetMetadata.ogd ? 'OGD-Daten (kostenlos)' : 'NOGD-Daten (kostenpflichtig)', type: 'text'},
       {
         title: 'Link',

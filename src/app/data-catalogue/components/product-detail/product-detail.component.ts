@@ -44,7 +44,7 @@ export class ProductDetailComponent extends AbstractBaseDetailComponent<ProductM
   private extractBaseMetadataInformation(productMetadata: ProductMetadata): BaseMetadataInformation {
     return {
       itemTitle: productMetadata.name,
-      keywords: ['Produkt'], // todo: add OGD status once API delivers that
+      category: ['Produkt'],
       shortDescription: productMetadata.description,
     };
   }

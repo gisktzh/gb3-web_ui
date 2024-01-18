@@ -9,10 +9,6 @@
   .dataset-element-table__row {
     vertical-align: top;
 
-    .dataset-element-table__row__title {
-      font-weight: 900;
-    }
-
     &:nth-child(even) {
       .dataset-element-table__row__column {
         background-color: ktzh-variables.$zh-light-grey;
@@ -22,7 +18,6 @@
     .dataset-element-table__row__column {
       background-color: ktzh-variables.$zh-white;
       padding: 6px 8px;
-      //word-break: break-word;
     }
   }
 }
