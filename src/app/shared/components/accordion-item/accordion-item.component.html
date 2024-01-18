@@ -8,11 +8,14 @@
   tabindex="0"
   (keydown.space)="accordionItem.toggle()"
 >
-  <div class="accordion-item__content" [ngClass]="{'accordion-item__content--dark': variant === 'dark'}">
+  <div class="accordion-item__content" [ngClass]="'accordion-item__content--' + variant">
     <div
       (click)="accordionItem.toggle()"
       class="accordion-item__content__header mat-h2"
-      [ngClass]="{'accordion-item__content__header--opened': accordionItem.expanded}"
+      [ngClass]="{
+        'accordion-item__content__header--opened': accordionItem.expanded,
+        'accordion-item__content__header--grey': variant === 'grey'
+      }"
     >
       <span [ngClass]="{'accordion-item__content__header__text': screenMode === 'mobile' && !accordionItem.expanded}">{{ header }}</span>
       <span class="accordion-item__content__header__icon-wrapper">

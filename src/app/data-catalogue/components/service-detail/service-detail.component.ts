@@ -46,7 +46,7 @@ export class ServiceDetailComponent extends AbstractBaseDetailComponent<ServiceM
   private extractBaseMetadataInformation(serviceMetadata: ServiceMetadata): BaseMetadataInformation {
     return {
       itemTitle: serviceMetadata.name,
-      category: ['Geodienst'],
+      category: 'Geodienst',
       shortDescription: serviceMetadata.description,
     };
   }

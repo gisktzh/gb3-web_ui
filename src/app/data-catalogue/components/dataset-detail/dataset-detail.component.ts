@@ -84,7 +84,7 @@ export class DatasetDetailComponent extends AbstractBaseDetailComponent<DatasetM
     return {
       itemTitle: datasetMetadata.name,
       shortDescription: datasetMetadata.description,
-      category: ['Geodatensatz'],
+      category: 'Geodatensatz',
     };
   }
 

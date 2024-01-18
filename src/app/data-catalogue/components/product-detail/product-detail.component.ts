@@ -44,7 +44,7 @@ export class ProductDetailComponent extends AbstractBaseDetailComponent<ProductM
   private extractBaseMetadataInformation(productMetadata: ProductMetadata): BaseMetadataInformation {
     return {
       itemTitle: productMetadata.name,
-      category: ['Produkt'],
+      category: 'Produkt',
       shortDescription: productMetadata.description,
     };
   }

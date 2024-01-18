@@ -51,7 +51,7 @@ export class MapDetailComponent extends AbstractBaseDetailComponent<MapMetadata>
     return {
       itemTitle: mapMetadata.name,
       topic: mapMetadata.topic,
-      category: ['GIS-Browser Karte'],
+      category: 'GIS-Browser Karte',
       imageUrl: mapMetadata.imageUrl,
       shortDescription: mapMetadata.description,
     };
@@ -60,7 +60,7 @@ export class MapDetailComponent extends AbstractBaseDetailComponent<MapMetadata>
   private extractInformationElements(mapMetadata: MapMetadata): DataDisplayElement[] {
     return [
       {title: 'Nr.', value: mapMetadata.gisZHNr.toString(), type: 'text'},
-      {title: 'Kartentyp', value: mapMetadata.gb2Url ? 'GB2' : 'GB3', type: 'text'}, // TODO GB3-834: where is this value from?
+      {title: 'Kartentyp', value: mapMetadata.gb2Url ? 'GB2' : 'GB3', type: 'text'},
       {
         title: 'Internet URL',
         value: mapMetadata.gb2Url ?? null,

@@ -17,7 +17,12 @@
         @if (baseMetadataInformation.shortDescription) {
           <p class="data-catalogue-detail-page__description mat-body" [innerHTML]="baseMetadataInformation.shortDescription"></p>
         }
-        <keyword-list [keywords]="baseMetadataInformation.category" listTitle="Kategorie"></keyword-list>
+        <div class="data-catalogue-detail-page__category">
+          <b class="data-catalogue-detail-page__category__title">Kategorie</b>
+          <div class="data-catalogue-detail-page__category__content">
+            <span class="data-catalogue-detail-page__category__content__pill">{{ baseMetadataInformation.category }}</span>
+          </div>
+        </div>
       </div>
     </div>
 

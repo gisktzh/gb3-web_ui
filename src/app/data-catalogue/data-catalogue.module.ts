@@ -9,7 +9,6 @@ import {MapDetailComponent} from './components/map-detail/map-detail.component';
 import {MaterialModule} from '../shared/external/material.module';
 import {SharedModule} from '../shared/shared.module';
 import {ProductDetailComponent} from './components/product-detail/product-detail.component';
-import {KeywordListComponent} from './components/keyword-list/keyword-list.component';
 import {DataDisplaySectionComponent} from './components/data-display-section/data-display-section.component';
 import {DataCatalogueDetailPageComponent} from './components/data-catalogue-detail-page/data-catalogue-detail-page.component';
 import {DataCatalogueDetailPageSectionComponent} from './components/data-catalogue-detail-page-section/data-catalogue-detail-page-section.component';
@@ -26,7 +25,6 @@ import {DataDisplayComponent} from './components/data-display/data-display.compo
     DatasetDetailComponent,
     MapDetailComponent,
     ProductDetailComponent,
-    KeywordListComponent,
     DataDisplaySectionComponent,
     DataCatalogueDetailPageComponent,
     DataCatalogueDetailPageSectionComponent,
