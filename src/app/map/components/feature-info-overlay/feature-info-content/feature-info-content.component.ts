@@ -18,17 +18,17 @@ type CellType = 'text' | 'url';
  * Each TableCell has an fid (identifying the feature), a displayvalue and a type. These are then further narrowed down to handle string
  * and linkobject values.
  */
-interface TableCellConfiguration {
+interface AbstractTableCell {
   fid: number;
-  displayValue: string | LinkObject;
+  displayValue: string;
   cellType: CellType;
 }
 
-interface TextTableCell extends TableCellConfiguration {
+interface TextTableCell extends AbstractTableCell {
   cellType: 'text';
 }
 
-interface UrlTableCell extends TableCellConfiguration {
+interface UrlTableCell extends AbstractTableCell {
   cellType: 'url';
   url: string;
 }
@@ -36,14 +36,14 @@ interface UrlTableCell extends TableCellConfiguration {
 type TableCell = TextTableCell | UrlTableCell;
 
 /**
- * A TableHeader is a TableCellConfiguration with a displayValue that is string only.
+ * A TableHeader is a AbstractTableCell with a displayValue that is string only.
  */
-interface TableHeader extends Omit<TableCellConfiguration, 'cellType'> {
+interface TableHeader extends Omit<AbstractTableCell, 'cellType'> {
   displayValue: string;
 }
 
 /**
- * A row consists of a key which represents the attribute value ("header" in the transposed table) and a set of TableCellConfiguration
+ * A row consists of a key which represents the attribute value ("header" in the transposed table) and a set of AbstractTableCell
  * objects.
  */
 type TableRows = Map<string, TableCell[]>;
@@ -78,7 +78,7 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
   public readonly staticFilesBaseUrl: string;
 
   /**
-   * The order of the TableCellConfiguration elements reflects the order of the tableHeaders elements.
+   * The order of the TableCell elements reflects the order of the TableHeader elements.
    */
   public readonly tableRows: TableRows = new Map<string, TableCell[]>();
   public readonly tableHeaders: TableHeader[] = [];
