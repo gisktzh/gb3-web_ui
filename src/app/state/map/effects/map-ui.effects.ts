@@ -116,7 +116,8 @@ export class MapUiEffects {
   public closeAttributeFilterWhenOpeningLegend$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapUiActions.setLegendOverlayVisibility),
-      filter(({isVisible}) => isVisible),
+      concatLatestFrom(() => this.store.select(selectScreenMode)),
+      filter(([{isVisible}, screenMode]) => isVisible && screenMode !== 'mobile'),
       map(() => {
         return MapUiActions.setAttributeFilterVisibility({isVisible: false});
       }),
