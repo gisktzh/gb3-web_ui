@@ -1,9 +1,6 @@
 @use 'mixins/helpers.mixin' as mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
-$search-height: 106px;
-$search-height-compact: 64px;
-
 .start-page {
   .start-page__search {
     display: flex;

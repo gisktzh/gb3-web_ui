@@ -27,7 +27,7 @@ $search-height-compact: 60px;
 
       &--mobile {
         width: calc(100vw - 24px);
-        height: 60px;
+        height: $search-height-compact;
       }
     }
   }
