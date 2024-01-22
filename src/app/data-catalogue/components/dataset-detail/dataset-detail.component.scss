@@ -3,10 +3,6 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
 .dataset-detail {
-  .dataset-detail__contact {
-    min-width: 300px;
-  }
-
   .dataset-detail__linked-data-button {
     @include mat-mixins.mat-button-ktzh-link();
     background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent);
@@ -18,6 +14,8 @@
 
   .dataset-detail__linked-data-link {
     font-weight: bold;
-    color: ktzh-variables.$zh-blue;
+    font-size: 12px;
+    font-family: ktzh-variables.$zh-font-family-bold;
+    color: functions.get-color-from-palette(ktzh-variables.$zh-blue-palette, 500);
   }
 }

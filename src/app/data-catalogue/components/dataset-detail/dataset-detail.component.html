@@ -1,11 +1,11 @@
 <loading-and-process-bar [loadingState]="loadingState"></loading-and-process-bar>
 
 <data-catalogue-detail-page *ngIf="baseMetadataInformation" [baseMetadataInformation]="baseMetadataInformation" class="dataset-detail">
-  <data-catalogue-detail-page-section [hasTwoColumns]="true">
-    <data-display-section [sectionTitle]="'Verantwortlich für Geodaten'" class="dataset-detail__contact">
+  <data-catalogue-detail-page-section [hasTwoColumns]="screenMode !== 'mobile'">
+    <data-display-section [sectionTitle]="'Verantwortlich für Geodaten'">
       <data-display [elements]="geodataContactElements"></data-display>
     </data-display-section>
-    <data-display-section [sectionTitle]="'Zuständig für Geometadaten'" class="dataset-detail__contact">
+    <data-display-section [sectionTitle]="'Zuständig für Geometadaten'">
       <data-display [elements]="metadataContactElements"></data-display>
     </data-display-section>
   </data-catalogue-detail-page-section>
@@ -66,7 +66,7 @@
 
   <data-catalogue-detail-page-section *ngIf="linkedData.maps.length > 0">
     <data-display-section [sectionTitle]="'Karten mit diesem Datensatz'">
-      <descriptive-highlighted-link *ngFor="let map of linkedData.maps" [title]="map.name" [isMobile]="screenMode === 'mobile'">
+      <descriptive-highlighted-link *ngFor="let map of linkedData.maps" [title]="map.name" [multiLine]="screenMode === 'mobile'">
         @if (screenMode === 'mobile') {
           <a [queryParams]="{initialMapIds: map.topic}" [routerLink]="['/', mainPageEnum.Maps]" class="dataset-detail__linked-data-link">
             Im GIS-Browser öffnen

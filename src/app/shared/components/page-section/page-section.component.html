@@ -7,7 +7,7 @@
   ]"
 >
   <div class="page-section__content-container">
-    @if (sectionTitle) {
+    <ng-container *ngIf="sectionTitle">
       <span
         class="page-section__content-container__title-line"
         [ngClass]="{'page-section__content-container__title-line--mobile': screenMode === 'mobile'}"
@@ -30,7 +30,7 @@
           <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
         </a>
       </div>
-    }
+    </ng-container>
     <div class="page-section__content-container__content">
       <ng-content></ng-content>
     </div>
