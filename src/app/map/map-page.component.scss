@@ -47,6 +47,13 @@
     height: 100%;
   }
 
+  .map-container__attribute-filter-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+  }
+
   .map-container__all-map-items-container {
     @include mixins.hide-on-small-screens;
 

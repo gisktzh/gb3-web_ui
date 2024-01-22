@@ -1,15 +1,5 @@
 <ng-container *ngIf="mapAttributeFiltersItem">
   <mat-card appearance="raised" class="attribute-filter no-box-shadow" [ngClass]="{'attribute-filter--mobile': screenMode === 'mobile'}">
-    <mat-card-header *ngIf="screenMode !== 'mobile'">
-      <div class="attribute-filter__header">
-        <h3 class="attribute-filter__header__title" [matTooltip]="mapAttributeFiltersItem.title">
-          Attributfilter: {{ mapAttributeFiltersItem.title }}
-        </h3>
-        <button mat-icon-button (click)="close()">
-          <mat-icon>close</mat-icon>
-        </button>
-      </div>
-    </mat-card-header>
     <div class="attribute-filter__content" [ngClass]="{'attribute-filter__content--mobile': screenMode === 'mobile'}">
       <mat-card
         class="no-box-shadow"
@@ -28,8 +18,8 @@
             [ngClass]="{'attribute-filter__content__checkbox--unchecked': filterValue.isActive}"
             [checked]="!filterValue.isActive"
             (change)="updateFilter(filterConfiguration.parameter, filterValue.name, $event.checked)"
-            >{{ filterValue.name }}</mat-checkbox
-          >
+            >{{ filterValue.name }}
+          </mat-checkbox>
         </ng-container>
       </mat-card>
     </div>

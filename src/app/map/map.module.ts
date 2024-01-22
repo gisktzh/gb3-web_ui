@@ -83,6 +83,7 @@ import {MapImportLayerListComponent} from './components/map-tools/map-import/map
 import {MapImportDisplayNameComponent} from './components/map-tools/map-import/map-import-display-name/map-import-display-name.component';
 import {TimeExtentToStringPipe} from './pipes/time-extent-to-string.pipe';
 import {DateToStringPipe} from './pipes/date-to-string.pipe';
+import {MapAttributeFilterOverlayComponent} from './components/map-attribute-filter-overlay/map-attribute-filter-overlay.component';
 
 @NgModule({
   declarations: [
@@ -93,14 +94,12 @@ import {DateToStringPipe} from './pipes/date-to-string.pipe';
     LegendOverlayComponent,
     LegendItemComponent,
     FeatureInfoOverlayComponent,
-    MapOverlayComponent,
     MapDataCatalogueComponent,
     MapOverlayListItemComponent,
     FeatureInfoItemComponent,
     CoordinateScaleInputsComponent,
     MapControlsComponent,
     BasemapSelectorComponent,
-    MapAttributeFilterComponent,
     SearchWindowComponent,
     FavouriteCreationDialogComponent,
     ApiDialogWrapperComponent,
@@ -174,7 +173,10 @@ import {DateToStringPipe} from './pipes/date-to-string.pipe';
     MapImportDisplayNameComponent,
     TimeExtentToStringPipe,
     DateToStringPipe,
+    MapOverlayComponent,
+    MapAttributeFilterComponent,
+    MapAttributeFilterOverlayComponent,
   ],
-  exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent],
+  exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent, MapOverlayComponent],
 })
 export class MapModule {}

@@ -27,19 +27,6 @@
     width: 100%;
   }
 
-  .attribute-filter__header {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    .attribute-filter__header__title {
-      @include mixins.single-line-text;
-      font-weight: bold;
-      margin: 0;
-    }
-  }
-
   .attribute-filter__content {
     overflow-y: scroll;
 

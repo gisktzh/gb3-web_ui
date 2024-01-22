@@ -10,11 +10,15 @@ import {MapAttributeFiltersItemActions} from '../../../state/map/actions/map-att
 import {selectItems} from '../../../state/map/reducers/active-map-item.reducer';
 import {selectId} from '../../../state/map/reducers/map-attribute-filters-item.reducer';
 import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
+import {SharedModule} from '../../../shared/shared.module';
+import {CommonModule} from '@angular/common';
 
 @Component({
   selector: 'map-attribute-filter',
+  standalone: true,
   templateUrl: './map-attribute-filter.component.html',
   styleUrls: ['./map-attribute-filter.component.scss'],
+  imports: [SharedModule, CommonModule],
 })
 export class MapAttributeFilterComponent implements OnInit, OnDestroy {
   public mapAttributeFiltersItem: Gb2WmsActiveMapItem | undefined;

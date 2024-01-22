@@ -1,6 +1,6 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {Subscription, filter, map, tap} from 'rxjs';
+import {filter, map, Subscription, tap} from 'rxjs';
 import {isActiveMapItemOfType} from '../../../../shared/type-guards/active-map-item-type.type-guard';
 import {NumberUtils} from '../../../../shared/utils/number.utils';
 import {ActiveMapItemActions} from '../../../../state/map/actions/active-map-item.actions';
