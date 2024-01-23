@@ -17,12 +17,18 @@ import {
   TopicsResponse,
   WmsFilterValue,
 } from '../../../interfaces/topic.interface';
-import {TopicsFeatureInfoDetailData, TopicsLegendDetailData, TopicsListData} from '../../../models/gb3-api-generated.interfaces';
+import {
+  InfoFeatureField,
+  TopicsFeatureInfoDetailData,
+  TopicsLegendDetailData,
+  TopicsListData,
+} from '../../../models/gb3-api-generated.interfaces';
 import {Gb3ApiService} from './gb3-api.service';
 
 import {InvalidTimeSliderConfiguration} from '../../../errors/map.errors';
 import {QueryTopic} from '../../../interfaces/query-topic.interface';
 import {ApiGeojsonGeometryToGb3ConverterUtils} from '../../../utils/api-geojson-geometry-to-gb3-converter.utils';
+import {LinkObject} from '../../../interfaces/link-object.interface';
 
 const INACTIVE_STRING_FILTER_VALUE = '';
 const INACTIVE_NUMBER_FILTER_VALUE = -1;
@@ -303,20 +309,21 @@ export class Gb3TopicsService extends Gb3ApiService {
           layers: featureInfo.results.layers.map((layer) => {
             return {
               title: layer.title,
-              layer: layer.layer,
+              layer: layer.layer ?? '', // todo GB3-1025: This will break raster info queries
               metaDataLink: layer.geolion_geodatensatz_uuid ? this.createDatasetTabLink(layer.geolion_geodatensatz_uuid) : undefined,
               features: layer.features.map((feature) => {
                 return {
-                  fid: feature.fid,
-                  bbox: feature.bbox,
+                  fid: feature.fid ?? -1, // todo GB3-1025: This will break raster info queries
+                  bbox: feature.bbox ?? [], // todo GB3-1025: This will break raster info queries
                   fields: feature.fields.map((field): FeatureInfoResultFeatureField => {
                     return {
                       label: field.label,
-                      value: field.value,
+                      value: this.createFeatureInfoFieldValue(field),
                     };
                   }),
                   geometry: {
-                    ...ApiGeojsonGeometryToGb3ConverterUtils.convert(feature.geometry),
+                    // todo GB3-1025: This will break raster info queries
+                    ...ApiGeojsonGeometryToGb3ConverterUtils.convert(feature.geometry ?? {type: 'Point', coordinates: []}),
                     srs: this.configService.mapConfig.defaultMapConfig.srsId,
                   },
                 };
@@ -326,5 +333,16 @@ export class Gb3TopicsService extends Gb3ApiService {
         },
       },
     };
+  }
+
+  private createFeatureInfoFieldValue(field: InfoFeatureField): string | LinkObject | null {
+    if ('link' in field) {
+      return {
+        title: field.link.title,
+        href: field.link.href,
+      };
+    }
+
+    return field.value?.toString() ?? null;
   }
 }

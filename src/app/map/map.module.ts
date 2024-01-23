@@ -20,7 +20,6 @@ import {TableColumnIdentifierDirective} from './components/feature-info-overlay/
 import {FeatureInfoGeneralInformationComponent} from './components/feature-info-overlay/feature-info-general-information/feature-info-general-information.component';
 import {FeatureInfoItemComponent} from './components/feature-info-overlay/feature-info-item/feature-info-item.component';
 import {FeatureInfoOverlayComponent} from './components/feature-info-overlay/feature-info-overlay.component';
-import {FeatureInfoPrintContentComponent} from './components/feature-info-overlay/feature-info-print-content/feature-info-print-content.component';
 import {FeatureInfoComponent} from './components/feature-info-overlay/feature-info/feature-info.component';
 import {LegendContentComponent} from './components/legend-overlay/legend-content/legend-content.component';
 import {LegendItemComponent} from './components/legend-overlay/legend-item/legend-item.component';
@@ -115,7 +114,6 @@ import {DateToStringPipe} from './pipes/date-to-string.pipe';
     ActiveMapItemLayersComponent,
     ActiveMapItemLayerComponent,
     FeatureInfoContentComponent,
-    FeatureInfoPrintContentComponent,
     TableColumnIdentifierDirective,
     BaseMapDataItemComponent,
     MapDataItemMapComponent,

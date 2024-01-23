@@ -10,17 +10,41 @@ import {TableColumnIdentifierDirective} from './table-column-identifier.directiv
 import {GeometryWithSrs} from '../../../../shared/interfaces/geojson-types-with-srs.interface';
 import {MAP_SERVICE} from '../../../../app.module';
 import {MapService} from '../../../interfaces/map.service';
+import {LinkObject} from '../../../../shared/interfaces/link-object.interface';
+
+type CellType = 'text' | 'url';
 
 /**
- * A TableCell represents a single value which is tied to a given feature via its fid.
+ * Each TableCell has an fid (identifying the feature), a displayvalue and a type. These are then further narrowed down to handle string
+ * and linkobject values.
  */
-interface TableCell {
-  displayValue: string;
+interface AbstractTableCell {
   fid: number;
+  displayValue: string;
+  cellType: CellType;
+}
+
+interface TextTableCell extends AbstractTableCell {
+  cellType: 'text';
+}
+
+interface UrlTableCell extends AbstractTableCell {
+  cellType: 'url';
+  url: string;
+}
+
+type TableCell = TextTableCell | UrlTableCell;
+
+/**
+ * A TableHeader is a AbstractTableCell with a displayValue that is string only.
+ */
+interface TableHeader extends Omit<AbstractTableCell, 'cellType'> {
+  displayValue: string;
 }
 
 /**
- * A row consists of a key which represents the attribute value ("header" in the transposed table) and a set of TableCell objects.
+ * A row consists of a key which represents the attribute value ("header" in the transposed table) and a set of AbstractTableCell
+ * objects.
  */
 type TableRows = Map<string, TableCell[]>;
 
@@ -54,10 +78,10 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
   public readonly staticFilesBaseUrl: string;
 
   /**
-   * The order of the TableCell elements reflects the order of the tableHeaders elements.
+   * The order of the TableCell elements reflects the order of the TableHeader elements.
    */
   public readonly tableRows: TableRows = new Map<string, TableCell[]>();
-  public readonly tableHeaders: TableCell[] = [];
+  public readonly tableHeaders: TableHeader[] = [];
 
   private readonly featureGeometries: Map<number, GeometryWithSrs | null> = new Map();
   private readonly pinnedFeatureId$ = this.store.select(selectPinnedFeatureId);
@@ -111,6 +135,14 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
       this.removeHighlightClassFromCellsForFid(fid);
       this.store.dispatch(FeatureInfoActions.clearHighlight());
     }
+  }
+
+  /**
+   * Fixed compareFn for KeyValuePipe that always returns 0, essentially preserving the key order of the object. This
+   * is necessary because the KeyValuePipe orders the keys ascending: https://angular.io/api/common/KeyValuePipe#description
+   */
+  public preserveKeyValueOrder(): number {
+    return 0;
   }
 
   /**
@@ -195,14 +227,24 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
     }
   }
 
-  private createTableHeaderForFeature(fid: number, featureIndex: number, totalFeatures: number): TableCell {
+  private createTableHeaderForFeature(fid: number, featureIndex: number, totalFeatures: number): TableHeader {
     const displayValue = `${DEFAULT_TABLE_HEADER_PREFIX} ${featureIndex + 1}/${totalFeatures}`;
     return {displayValue, fid};
   }
 
-  private createTableCellForFeatureAndField(fid: number, value: string | number | null): TableCell {
-    const displayValue = value?.toString() ?? DEFAULT_CELL_VALUE;
-    return {fid, displayValue};
+  private createTableCellForFeatureAndField(fid: number, value: string | LinkObject | null): TableCell {
+    const displayValue = value ?? DEFAULT_CELL_VALUE;
+
+    if (typeof displayValue === 'string') {
+      return {cellType: 'text', fid, displayValue};
+    }
+
+    return {
+      cellType: 'url',
+      fid,
+      displayValue: displayValue.title ?? displayValue.href,
+      url: displayValue.href,
+    };
   }
 
   /**
