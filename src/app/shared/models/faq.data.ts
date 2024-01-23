@@ -57,10 +57,10 @@ export const faqData: FaqCollection[] = [
         answer: "Sie können die Legende anzeigen, indem Sie auf die Schaltfläche 'Legende' klicken.",
       },
       {
-        question: 'Wie kann ich die Transparenz eines Layers ändern?',
+        question: 'Wie kann ich das Deckvermögen eines Layers ändern?',
         answer:
-          'Sie können die Transparenz eines Layers ändern, indem Sie auf den Layer klicken und dann den Schieberegler unter' +
-          " 'Transparenz' verwenden.",
+          'Sie können das Deckvermögen eines Layers ändern, indem Sie auf den Layer klicken und dann den Schieberegler unter' +
+          " 'Deckvermögen' verwenden.",
       },
       {
         question: 'Kann ich die Kartenansicht speichern?',
