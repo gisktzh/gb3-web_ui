@@ -154,10 +154,20 @@ describe('ActiveMapItemEffects', () => {
   });
 
   describe('hideLegendAfterRemovingAllMapItems$', () => {
-    it('dispatches MapUiActions.hideLegend() if removeAllActiveMapItems action is executed', (done: DoneFn) => {
+    it('dispatches MapUiActions.setLegendOverlayVisibility() if removeAllActiveMapItems action is executed', (done: DoneFn) => {
       actions$ = of(ActiveMapItemActions.removeAllActiveMapItems());
       effects.hideLegendAfterRemovingAllMapItems$.subscribe((action) => {
         expect(action).toEqual(MapUiActions.setLegendOverlayVisibility({isVisible: false}));
+        done();
+      });
+    });
+  });
+
+  describe('hideMapAttributeFilterAfterRemovingAllMapItems$', () => {
+    it('dispatches MapUiActions.setAttributeFilterVisibility() if removeAllActiveMapItems action is executed', (done: DoneFn) => {
+      actions$ = of(ActiveMapItemActions.removeAllActiveMapItems());
+      effects.hideMapAttributeFilterAfterRemovingAllMapItems$.subscribe((action) => {
+        expect(action).toEqual(MapUiActions.setAttributeFilterVisibility({isVisible: false}));
         done();
       });
     });
