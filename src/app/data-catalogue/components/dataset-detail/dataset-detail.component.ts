@@ -130,7 +130,7 @@ export class DatasetDetailComponent extends AbstractBaseDetailComponent<DatasetM
   private extractGeospatialElements(datasetMetadata: DatasetMetadata): DataDisplayElement[] {
     return [
       {title: 'Geographisches Gebiet / Ausdehnung', value: datasetMetadata.scope, type: 'text'},
-      {title: 'Referenzsystem ', value: 'CH1903+_LV95', type: 'text'}, // TODO GBS-834: Value not delivered
+      {title: 'Referenzsystem ', value: 'CH1903+_LV95', type: 'text'},
 
       {title: 'Erfassungsmassstab', value: datasetMetadata.scale ? `1:${datasetMetadata.scale.toString()}` : null, type: 'text'},
       {

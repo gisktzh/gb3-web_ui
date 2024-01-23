@@ -63,7 +63,7 @@ export class ServiceDetailComponent extends AbstractBaseDetailComponent<ServiceM
         type: 'url',
       },
       {title: 'Version', value: serviceMetadata.version, type: 'text'},
-      {title: 'Publikationsdatum', value: null, type: 'text'}, // TODO: GB3-834: Not delivered
+      {title: 'Publikationsdatum', value: null, type: 'text'},
       {title: 'Zugang', value: serviceMetadata.access, type: 'text'},
     ];
   }

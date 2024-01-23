@@ -67,7 +67,7 @@ export class MapDetailComponent extends AbstractBaseDetailComponent<MapMetadata>
         title: 'Internet URL',
         value: mapMetadata.gb2Url ?? null,
         type: 'url',
-      }, // TODO GB3-834: how to distinguish between intra and internet?
+      },
       {title: 'Weiterführende Verweise', value: mapMetadata.externalLinks, type: 'urlList'},
     ];
   }
