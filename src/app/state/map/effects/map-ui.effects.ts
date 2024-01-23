@@ -30,6 +30,7 @@ import {selectUrlState} from '../../app/reducers/url.reducer';
 import {DataDownloadEmailConfirmationDialogComponent} from '../../../map/components/map-tools/data-download-email-confirmation-dialog/data-download-email-confirmation-dialog.component';
 import {MapImportDialogComponent} from '../../../map/components/map-tools/map-import/map-import-dialog/map-import-dialog.component';
 import {MapAttributeFiltersItemActions} from '../actions/map-attribute-filters-item.actions';
+import {selectMapAttributeFiltersItem} from '../selectors/map-attribute-filters-item.selector';
 
 const CREATE_FAVOURITE_DIALOG_MAX_WIDTH = 500;
 const DELETE_FAVOURITE_DIALOG_MAX_WIDTH = 500;
@@ -121,6 +122,15 @@ export class MapUiEffects {
       map(() => {
         return MapUiActions.setAttributeFilterVisibility({isVisible: false});
       }),
+    );
+  });
+
+  public closeAttributeFilterIfAttributeFilterItemIsUndefined$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ActiveMapItemActions.removeActiveMapItem),
+      concatLatestFrom(() => this.store.select(selectMapAttributeFiltersItem)),
+      filter(([__, attributeFilterItem]) => attributeFilterItem === undefined),
+      map(() => MapUiActions.setAttributeFilterVisibility({isVisible: false})),
     );
   });
 

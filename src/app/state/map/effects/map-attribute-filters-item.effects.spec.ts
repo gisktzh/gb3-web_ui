@@ -41,7 +41,7 @@ describe('MapAttributeFiltersItemEffects', () => {
       });
     });
 
-    it('does not dispatch MapUiActions.setAttributeFilterVisibility() when the legend is openend on mobile', fakeAsync(() => {
+    it('does not dispatch MapUiActions.showBottomSheet() when the legend is opened on desktop', fakeAsync(() => {
       store.overrideSelector(selectScreenMode, 'regular');
       let actualAction;
 

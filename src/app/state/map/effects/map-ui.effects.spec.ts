@@ -13,6 +13,9 @@ import {ShareLinkItem} from '../../../shared/interfaces/share-link.interface';
 import {SymbolizationToGb3ConverterUtils} from '../../../shared/utils/symbolization-to-gb3-converter.utils';
 import {selectScreenMode} from '../../app/reducers/app-layout.reducer';
 import {MapAttributeFiltersItemActions} from '../actions/map-attribute-filters-item.actions';
+import {selectMapAttributeFiltersItem} from '../selectors/map-attribute-filters-item.selector';
+import {ActiveMapItemActions} from '../actions/active-map-item.actions';
+import {createGb2WmsMapItemMock} from '../../../testing/map-testing/active-map-item-test.utils';
 
 describe('MapUiEffects', () => {
   let actions$: Observable<Action>;
@@ -115,6 +118,34 @@ describe('MapUiEffects', () => {
 
       actions$ = of(MapUiActions.setLegendOverlayVisibility({isVisible: true}));
       effects.closeAttributeFilterWhenOpeningLegend$.subscribe((action) => (actualAction = action));
+      tick();
+
+      expect(actualAction).toBeUndefined();
+    }));
+  });
+
+  describe('closeAttributeFilterIfAttributeFilterItemIsUndefined$', () => {
+    it('dispatches MapUiActions.setAttributeFilterVisibility() when the current mapAttributeFilter is undefined', (done: DoneFn) => {
+      const activeMapItem = createGb2WmsMapItemMock('123');
+      store.overrideSelector(selectMapAttributeFiltersItem, undefined);
+
+      const expectedAction = MapUiActions.setAttributeFilterVisibility({isVisible: false});
+
+      actions$ = of(ActiveMapItemActions.removeActiveMapItem({activeMapItem}));
+      effects.closeAttributeFilterIfAttributeFilterItemIsUndefined$.subscribe((action) => {
+        expect(action).toEqual(expectedAction);
+        done();
+      });
+    });
+
+    it('does not dispatch MapUiActions.setAttributeFilterVisibility() when the mapAttributeFilter is defined', fakeAsync(() => {
+      const removedMapItem = createGb2WmsMapItemMock('123');
+      const filterMapItem = createGb2WmsMapItemMock('456');
+      store.overrideSelector(selectMapAttributeFiltersItem, filterMapItem);
+      let actualAction;
+
+      actions$ = of(ActiveMapItemActions.removeActiveMapItem({activeMapItem: removedMapItem}));
+      effects.closeAttributeFilterIfAttributeFilterItemIsUndefined$.subscribe((action) => (actualAction = action));
       tick();
 
       expect(actualAction).toBeUndefined();
