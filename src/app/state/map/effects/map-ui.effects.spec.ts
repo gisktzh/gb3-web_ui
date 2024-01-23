@@ -11,6 +11,8 @@ import {ShareLinkActions} from '../actions/share-link.actions';
 import {selectCurrentShareLinkItem} from '../selectors/current-share-link-item.selector';
 import {ShareLinkItem} from '../../../shared/interfaces/share-link.interface';
 import {SymbolizationToGb3ConverterUtils} from '../../../shared/utils/symbolization-to-gb3-converter.utils';
+import {selectScreenMode} from '../../app/reducers/app-layout.reducer';
+import {MapAttributeFiltersItemActions} from '../actions/map-attribute-filters-item.actions';
 
 describe('MapUiEffects', () => {
   let actions$: Observable<Action>;
@@ -93,5 +95,41 @@ describe('MapUiEffects', () => {
 
       expect(actualAction).toBeUndefined();
     }));
+  });
+
+  describe('closeAttributeFilterWhenOpeningLegend$', () => {
+    it('dispatches MapUiActions.setAttributeFilterVisibility() when the legend is openend on desktop', (done: DoneFn) => {
+      store.overrideSelector(selectScreenMode, 'regular');
+      const expectedAction = MapUiActions.setAttributeFilterVisibility({isVisible: false});
+
+      actions$ = of(MapUiActions.setLegendOverlayVisibility({isVisible: true}));
+      effects.closeAttributeFilterWhenOpeningLegend$.subscribe((action) => {
+        expect(action).toEqual(expectedAction);
+        done();
+      });
+    });
+
+    it('does not dispatch MapUiActions.setAttributeFilterVisibility() when the legend is openend on mobile', fakeAsync(() => {
+      store.overrideSelector(selectScreenMode, 'mobile');
+      let actualAction;
+
+      actions$ = of(MapUiActions.setLegendOverlayVisibility({isVisible: true}));
+      effects.closeAttributeFilterWhenOpeningLegend$.subscribe((action) => (actualAction = action));
+      tick();
+
+      expect(actualAction).toBeUndefined();
+    }));
+  });
+
+  describe('openAttributeFilterOverlay', () => {
+    it('dispatches MapUiActions.setAttributeFilterVisibility() when the attributeFilterItemID is set', (done: DoneFn) => {
+      const expectedAction = MapUiActions.setAttributeFilterVisibility({isVisible: true});
+
+      actions$ = of(MapAttributeFiltersItemActions.setMapAttributeFiltersItemId({id: '123'}));
+      effects.openAttributeFilterOverlay.subscribe((action) => {
+        expect(action).toEqual(expectedAction);
+        done();
+      });
+    });
   });
 });

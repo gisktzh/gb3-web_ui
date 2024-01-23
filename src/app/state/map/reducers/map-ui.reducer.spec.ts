@@ -90,6 +90,32 @@ describe('MapUi Reducer', () => {
     });
   });
 
+  describe('setAttributeFilterVisibility', () => {
+    it('adjust isAttributeFilterOverlayVisible and bottomSheetContent only', () => {
+      const expectedSetting = true;
+      const action = MapUiActions.setAttributeFilterVisibility({isVisible: expectedSetting});
+
+      const result = reducer(initialState, action);
+
+      expect(result).toEqual({...initialState, isAttributeFilterOverlayVisible: expectedSetting, bottomSheetContent: 'map-attributes'});
+    });
+
+    it('sets bottomSheetContent to none if !isVisible', () => {
+      const expectedSetting = false;
+      const mockState: MapUiState = {
+        ...initialState,
+        hideZoomButtons: true,
+        isFeatureInfoOverlayVisible: true,
+        bottomSheetContent: 'legend',
+      };
+      const action = MapUiActions.setAttributeFilterVisibility({isVisible: expectedSetting});
+
+      const result = reducer(mockState, action);
+
+      expect(result).toEqual({...mockState, isAttributeFilterOverlayVisible: expectedSetting, bottomSheetContent: 'none'});
+    });
+  });
+
   describe('changeUiElementsVisibility', () => {
     it('adjust hideUiElements, hideToggleUiElementsButton and hideZoomButtons only', () => {
       const expectedSetting = true;
