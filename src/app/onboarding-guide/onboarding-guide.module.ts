@@ -4,11 +4,10 @@ import {TourMatMenuModule} from 'ngx-ui-tour-md-menu';
 import {CenterAnchorComponent} from './components/center-anchor/center-anchor.component';
 import {OnboardingGuideComponent} from './components/onboarding-guide/onboarding-guide.component';
 import {MaterialModule} from '../shared/external/material.module';
-import {TypedTourAnchorDirective} from './directives/typed-tour-anchor.directive';
 
 @NgModule({
-  declarations: [CenterAnchorComponent, OnboardingGuideComponent, TypedTourAnchorDirective],
+  declarations: [CenterAnchorComponent, OnboardingGuideComponent],
   imports: [CommonModule, TourMatMenuModule, MaterialModule],
-  exports: [TourMatMenuModule, CenterAnchorComponent, OnboardingGuideComponent, TypedTourAnchorDirective],
+  exports: [TourMatMenuModule, CenterAnchorComponent, OnboardingGuideComponent],
 })
 export class OnboardingGuideModule {}

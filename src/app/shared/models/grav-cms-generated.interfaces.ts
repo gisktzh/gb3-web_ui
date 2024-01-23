@@ -46,19 +46,6 @@ export interface Pages {
   support: boolean;
 }
 
-export interface MapInfosRoot {
-  'map-infos': MapInfo[];
-}
-
-export interface MapInfo {
-  title: string;
-  description: string;
-  topics: string[];
-  from_date: string;
-  to_date: string;
-  flex_id: string;
-}
-
 export interface FrequentlyUsedRoot {
   'frequently-used': FrequentlyUsed[];
 }

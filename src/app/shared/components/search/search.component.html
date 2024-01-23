@@ -12,6 +12,7 @@
     />
     <ng-container *ngIf="showFilterButton && (mode === 'compact' || mode === 'mobile')">
       <button
+        typedTourAnchor="map.search.filter"
         mat-icon-button
         (click)="openFilter()"
         [ngClass]="{'search__bar__filter-button--active': isAnyFilterActive}"

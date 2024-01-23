@@ -1,4 +1,9 @@
-<mat-card appearance="raised" class="map-data-catalogue" [ngClass]="{'map-data-catalogue--hide-shadow': screenMode === 'mobile'}">
+<mat-card
+  typedTourAnchor="map.available-maps"
+  appearance="raised"
+  class="map-data-catalogue"
+  [ngClass]="{'map-data-catalogue--hide-shadow': screenMode === 'mobile'}"
+>
   <mat-card-header
     *ngIf="screenMode !== 'mobile'"
     [ngClass]="{'map-data-catalogue__header--minimized': isMinimized}"

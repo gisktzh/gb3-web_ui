@@ -36,6 +36,7 @@ import {KeyValuePreserveOrderPipe} from './pipes/key-value-preserve-order.pipe';
 import {LayerTooltipPipe} from './pipes/layer-tooltip.pipe';
 import {ClickOnSpaceBarDirective} from './directives/click-on-spacebar.directive';
 import {Gb2ExitButtonComponent} from './components/external-link-button/gb2-exit-button.component';
+import {TypedTourAnchorDirective} from './directives/typed-tour-anchor.directive';
 
 @NgModule({
   declarations: [
@@ -72,6 +73,7 @@ import {Gb2ExitButtonComponent} from './components/external-link-button/gb2-exit
     ShowTooltipIfTruncatedDirective,
     ClickOnSpaceBarDirective,
     Gb2ExitButtonComponent,
+    TypedTourAnchorDirective,
   ],
   imports: [MaterialModule, RouterModule, CommonModule, ResizableModule],
   exports: [
@@ -107,6 +109,7 @@ import {Gb2ExitButtonComponent} from './components/external-link-button/gb2-exit
     ShowTooltipIfTruncatedDirective,
     ClickOnSpaceBarDirective,
     Gb2ExitButtonComponent,
+    TypedTourAnchorDirective,
   ],
 })
 export class SharedModule {}

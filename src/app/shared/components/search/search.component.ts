@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {debounceTime, distinctUntilChanged, fromEvent, Subject, Subscription, tap} from 'rxjs';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
@@ -13,7 +13,7 @@ const SEARCH_TERM_INPUT_DEBOUNCE_IN_MS = 300;
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss'],
 })
-export class SearchComponent implements AfterViewInit, OnDestroy {
+export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() public placeholderText!: string;
   @Input() public showFilterButton: boolean = true;
   @Input() public alwaysEnableClearButton: boolean = false;
@@ -37,6 +37,19 @@ export class SearchComponent implements AfterViewInit, OnDestroy {
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(private readonly store: Store) {}
+
+  public ngOnInit() {
+    this.subscriptions.add(
+      this.screenMode$
+        .pipe(
+          tap((screenMode) => {
+            this.screenMode = screenMode;
+            this.clearInput();
+          }),
+        )
+        .subscribe(),
+    );
+  }
 
   public ngAfterViewInit() {
     this.initSubscriptions();
@@ -63,17 +76,6 @@ export class SearchComponent implements AfterViewInit, OnDestroy {
   }
 
   private initSubscriptions() {
-    this.subscriptions.add(
-      this.screenMode$
-        .pipe(
-          tap((screenMode) => {
-            this.screenMode = screenMode;
-            this.clearInput();
-          }),
-        )
-        .subscribe(),
-    );
-
     this.subscriptions.add(
       this.term
         .pipe(
