@@ -19,7 +19,7 @@ import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 
 const GEO_DATA_CATALOGUE_SUMMARY =
-  'Der Geoatenkatalog listet Geodaten auf und lässt sich nach verschiedenen Kriterien sortieren. Die Geodaten bestehen aus Geodatensätzen, Geodiensten und GIS-Browser Karten sowie den eigentlichen Geometadaten.';
+  'Im Geodatenkatalog finden Sie Informationen zur Herkunft, Aktualität und Genauigkeit der Daten, Hinweise zur Nutzung und zum Datenbezug u.a.';
 
 @Injectable()
 class DataCataloguePaginatorIntl implements MatPaginatorIntl {

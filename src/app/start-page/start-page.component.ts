@@ -8,7 +8,7 @@ import {selectScreenMode} from '../state/app/reducers/app-layout.reducer';
 import {selectLinks} from '../state/support/reducers/support-content.reducer';
 
 const START_PAGE_SUMMARY =
-  'Geoinformationen sind verlässliche, raumbezogene Daten und Karten. Sie dienen als wichtige Grundlage für vielfältige Aufgaben und Entscheide und stehen über verschiedene Portale zur Einsicht und Nutzung bereit.';
+  'Das Geoportal bietet Ihnen einen zentralen Zugang zu den Geodaten des Kantons Zürich. Auf dieser Informationsplattform können Sie die Daten über verschiedene Auskunftssysteme sichten oder beziehen.';
 
 @Component({
   selector: 'start-page',
