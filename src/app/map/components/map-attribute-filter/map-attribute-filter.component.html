@@ -1,11 +1,7 @@
 <ng-container *ngIf="mapAttributeFiltersItem">
   <mat-card appearance="raised" class="attribute-filter no-box-shadow" [ngClass]="{'attribute-filter--mobile': screenMode === 'mobile'}">
     <div class="attribute-filter__content" [ngClass]="{'attribute-filter__content--mobile': screenMode === 'mobile'}">
-      <mat-card
-        class="no-box-shadow"
-        appearance="raised"
-        *ngFor="let filterConfiguration of mapAttributeFiltersItem.settings.filterConfigurations"
-      >
+      <mat-card class="no-box-shadow" *ngFor="let filterConfiguration of mapAttributeFiltersItem.settings.filterConfigurations">
         <mat-card-header>
           <mat-card-title>{{ filterConfiguration.name }}</mat-card-title>
         </mat-card-header>
