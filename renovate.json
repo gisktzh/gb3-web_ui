@@ -17,6 +17,16 @@
         ],
         "fileFilters": ["**/*"]
       }
+    },
+    {
+      "matchManagers": ["npm"],
+      "matchPackageNames": ["@types/node"],
+      "allowedVersions": "<20"
+    },
+    {
+      "matchManagers": ["dockerfile"],
+      "matchDepNames": ["node"],
+      "allowedVersions": "<20"
     }
   ]
 }
