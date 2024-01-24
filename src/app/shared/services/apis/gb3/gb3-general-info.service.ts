@@ -29,7 +29,7 @@ export class Gb3GeneralInfoService extends Gb3ApiService {
     const generalInfo = generalInfoListData.general_info;
     return {
       alternativeSpatialReferences: generalInfo.spatial_references,
-      externalMaps: generalInfo.external_maps,
+      externalMaps: generalInfo.external_maps.map((externalMap) => ({name: externalMap.title ?? externalMap.href, url: externalMap.href})),
       locationInformation: {
         heightDom: generalInfo.height_dom,
         heightDtm: generalInfo.height_dtm,
@@ -41,21 +41,13 @@ export class Gb3GeneralInfoService extends Gb3ApiService {
             egrisEgrid: generalInfo.parcel.egris_egrid,
             municipalityName: generalInfo.parcel.municipality_name,
             oerebExtract: {
-              pdfUrl: generalInfo.parcel.oereb_extract.pdf_url,
+              pdfUrl: generalInfo.parcel.oereb_extract.href,
             },
             ownershipInformation: {
-              url: this.createOwnershipInformationUrl(generalInfo.parcel.egris_egrid, generalInfo.parcel.bfsnr),
+              url: generalInfo.parcel.owner.href,
             },
           }
         : undefined,
     };
-  }
-
-  private createOwnershipInformationUrl(egrid: string, bfsNr: number): string {
-    const url = new URL(this.configService.apiConfig.ownershipInformationApi.baseUrl);
-    url.searchParams.append('egrid', egrid);
-    url.searchParams.append('bfsNr', bfsNr.toString());
-
-    return url.toString();
   }
 }
