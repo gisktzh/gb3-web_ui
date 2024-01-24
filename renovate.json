@@ -1,5 +1,5 @@
 {
-  "extends": ["local>Renovate_Bot/renovate-presets:node", "local>Renovate_Bot/renovate-presets:npm"],
+  "extends": ["local>Renovate_Bot/renovate-presets"],
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "assignees": ["lukas.merz@ebp.ch", "sebastian.wendland@ebp.ch"],
   "reviewers": ["lukas.merz@ebp.ch", "sebastian.wendland@ebp.ch"],
@@ -17,6 +17,16 @@
         ],
         "fileFilters": ["**/*"]
       }
+    },
+    {
+      "matchManagers": ["npm"],
+      "matchPackageNames": ["@types/node"],
+      "allowedVersions": "<20"
+    },
+    {
+      "matchManagers": ["dockerfile"],
+      "matchDepNames": ["node"],
+      "allowedVersions": "<20"
     }
   ]
 }
