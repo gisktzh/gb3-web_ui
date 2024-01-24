@@ -4,6 +4,7 @@
 @use 'mixins/material.mixin' as mat-mixins;
 @use 'variables/z-index-variables' as z-index-variables;
 @use 'variables/map-layout-variables' as map-layout-variables;
+@use 'variables/search-bar-variables' as search-bar-variables;
 
 .search-window {
   .search-window__searchbar {
@@ -26,7 +27,7 @@
     }
     .search-window__searchbar--mobile {
       width: auto;
-      height: 64px;
+      height: search-bar-variables.$search-bar-height-compact;
 
       &__box {
         height: 100%;

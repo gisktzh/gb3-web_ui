@@ -1,15 +1,16 @@
 @use 'mixins/helpers.mixin' as mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'variables/search-bar-variables' as search-bar-variables;
 
 .start-page {
   .start-page__search {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: calc(0px - 106px / 2);
+    margin-top: calc(0px - search-bar-variables.$search-bar-height / 2);
 
     &--mobile {
-      margin-top: calc(0px - 60px / 2);
+      margin-top: calc(0px - search-bar-variables.$search-bar-height-compact / 2);
     }
   }
 }
