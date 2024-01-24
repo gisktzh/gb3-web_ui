@@ -8,6 +8,7 @@ import {BaseMetadataInformation} from '../../interfaces/base-metadata-informatio
 import {AbstractBaseDetailComponent} from '../abstract-base-detail/abstract-base-detail.component';
 import {MetadataLink} from '../../interfaces/metadata-link.interface';
 import {DataExtractionUtils} from '../../utils/data-extraction.utils';
+import {Store} from '@ngrx/store';
 
 interface BaseMetadataWithTopicInformation extends BaseMetadataInformation {
   topic: string;
@@ -31,8 +32,9 @@ export class MapDetailComponent extends AbstractBaseDetailComponent<MapMetadata>
     @Inject(ConfigService) configService: ConfigService,
     @Inject(Router) router: Router,
     @Inject(ErrorHandler) errorHandler: ErrorHandler,
+    @Inject(Store) store: Store,
   ) {
-    super(route, gb3MetadataService, configService, router, errorHandler);
+    super(route, gb3MetadataService, configService, router, errorHandler, store);
   }
 
   protected loadMetadata(id: string) {
@@ -65,7 +67,7 @@ export class MapDetailComponent extends AbstractBaseDetailComponent<MapMetadata>
         title: 'Internet URL',
         value: mapMetadata.gb2Url ?? null,
         type: 'url',
-      }, // TODO GB3-834: how to distinguish between intra and internet?
+      },
       {title: 'Weiterführende Verweise', value: mapMetadata.externalLinks, type: 'urlList'},
     ];
   }

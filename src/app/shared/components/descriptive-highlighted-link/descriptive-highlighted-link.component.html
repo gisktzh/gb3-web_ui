@@ -1,4 +1,4 @@
-<div class="descriptive-highlighted-link">
+<div class="descriptive-highlighted-link" [ngClass]="{'descriptive-highlighted-link--multiline': multiLine}">
   <div class="descriptive-highlighted-link__content">
     <b class="descriptive-highlighted-link__content__title">{{ id }} {{ title }}</b>
     <p *ngIf="description" class="descriptive-highlighted-link__content__description">{{ description }}</p>
