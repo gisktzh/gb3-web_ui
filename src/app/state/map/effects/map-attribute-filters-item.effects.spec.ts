@@ -7,6 +7,7 @@ import {MapUiActions} from '../actions/map-ui.actions';
 import {selectScreenMode} from '../../app/reducers/app-layout.reducer';
 import {MapAttributeFiltersItemActions} from '../actions/map-attribute-filters-item.actions';
 import {MapAttributeFiltersItemEffects} from './map-attribute-filters-item.effects';
+import {ScreenMode} from '../../../shared/types/screen-size.type';
 
 describe('MapAttributeFiltersItemEffects', () => {
   let actions$: Observable<Action>;
@@ -41,15 +42,17 @@ describe('MapAttributeFiltersItemEffects', () => {
       });
     });
 
-    it('does not dispatch MapUiActions.showBottomSheet() when the legend is opened on desktop', fakeAsync(() => {
-      store.overrideSelector(selectScreenMode, 'regular');
-      let actualAction;
+    [{screenMode: 'regular'}, {screenMode: 'smallTablet'}].forEach(({screenMode}) =>
+      it(`does not dispatch MapUiActions.showBottomSheet() when screenMode is ${screenMode}`, fakeAsync(() => {
+        store.overrideSelector(selectScreenMode, screenMode as ScreenMode);
+        let actualAction;
 
-      actions$ = of(MapAttributeFiltersItemActions.setMapAttributeFiltersItemId({id: '123'}));
-      effects.showMapAttributes$.subscribe((action) => (actualAction = action));
-      tick();
+        actions$ = of(MapAttributeFiltersItemActions.setMapAttributeFiltersItemId({id: '123'}));
+        effects.showMapAttributes$.subscribe((action) => (actualAction = action));
+        tick();
 
-      expect(actualAction).toBeUndefined();
-    }));
+        expect(actualAction).toBeUndefined();
+      })),
+    );
   });
 });

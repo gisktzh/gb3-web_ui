@@ -35,7 +35,7 @@ export class MapAttributeFilterComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  public close() {
+  public clearMapAttributeFiltersItemId() {
     this.store.dispatch(MapAttributeFiltersItemActions.clearMapAttributeFiltersItemId());
   }
 
@@ -58,7 +58,7 @@ export class MapAttributeFilterComponent implements OnInit, OnDestroy {
         .pipe(
           tap((item) => {
             if (item === undefined) {
-              this.close();
+              this.clearMapAttributeFiltersItemId();
             }
             this.mapAttributeFiltersItem = item;
           }),
