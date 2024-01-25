@@ -2,11 +2,12 @@ import {TestBed} from '@angular/core/testing';
 
 import {AuthService} from './auth.service';
 import {OAuthEvent, OAuthService, OAuthSuccessEvent} from 'angular-oauth2-oidc';
-import {provideMockStore} from '@ngrx/store/testing';
+import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {SharedModule} from '../shared/shared.module';
 import {Subject} from 'rxjs';
 import {AuthNotificationService} from './notifications/auth-notification.service';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {AuthStatusActions} from '../state/auth/actions/auth-status.actions';
 
 const mockAuthNotificationService = jasmine.createSpyObj<AuthNotificationService>({
   showImpendingLogoutDialog: void 0,
@@ -17,6 +18,7 @@ describe('AuthService', () => {
   let service: AuthService;
   let mockOAuthEvents: Subject<OAuthEvent>;
   let mockOAuthService: jasmine.SpyObj<OAuthService>;
+  let store: MockStore;
 
   beforeEach(() => {
     mockOAuthEvents = new Subject<OAuthEvent>();
@@ -53,6 +55,7 @@ describe('AuthService', () => {
     });
 
     service = TestBed.inject(AuthService);
+    store = TestBed.inject(MockStore);
   });
 
   describe('login', () => {
@@ -65,17 +68,21 @@ describe('AuthService', () => {
 
   describe('logout', () => {
     it('shows dialog for forced logout and sets isAuthenticated', () => {
+      const storeDispatchSpy = spyOn(store, 'dispatch');
+
       service.logout(true);
 
       expect(mockAuthNotificationService.showForcedLogoutDialog).toHaveBeenCalledTimes(1);
-      service.isAuthenticated$.subscribe((isAuthenticated) => expect(isAuthenticated).toBe(false));
+      expect(storeDispatchSpy).toHaveBeenCalledOnceWith(AuthStatusActions.setStatus({isAuthenticated: false, accessToken: undefined}));
     });
 
     it('shows dialog for programmatic logout and sets isAuthenticated', () => {
+      const storeDispatchSpy = spyOn(store, 'dispatch');
+
       service.logout(false);
 
       expect(mockAuthNotificationService.showProgrammaticLogoutDialog).toHaveBeenCalledTimes(1);
-      service.isAuthenticated$.subscribe((isAuthenticated) => expect(isAuthenticated).toBe(false));
+      expect(storeDispatchSpy).toHaveBeenCalledOnceWith(AuthStatusActions.setStatus({isAuthenticated: false, accessToken: undefined}));
     });
   });
 
@@ -84,7 +91,8 @@ describe('AuthService', () => {
       const expectedResult = 'test-token';
       mockOAuthService.getAccessToken.and.returnValue(expectedResult);
 
-      const result = service.getAccessToken();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result = (service as any).getAccessToken();
 
       expect(result).toEqual(expectedResult);
     });

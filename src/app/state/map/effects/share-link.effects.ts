@@ -1,4 +1,4 @@
-import {ErrorHandler, Injectable} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Actions, concatLatestFrom, createEffect, ofType} from '@ngrx/effects';
 import {combineLatestWith, filter, of, switchMap, take, tap} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
@@ -19,9 +19,9 @@ import {
 } from '../../../shared/errors/share-link.errors';
 import {selectLoadedLayerCatalogueAndShareItem} from '../selectors/loaded-layer-catalogue-and-share-item.selector';
 import {selectItems} from '../reducers/active-map-item.reducer';
-import {AuthService} from '../../../auth/auth.service';
 import {DrawingActions} from '../actions/drawing.actions';
 import {selectDrawings} from '../reducers/drawing.reducer';
+import {selectIsAuthenticated} from '../../auth/reducers/auth-status.reducer';
 
 /**
  * This class contains a bunch of effects. Most of them are straightforward: do something asynchronous and return a new action afterward or
@@ -167,7 +167,7 @@ export class ShareLinkEffects {
     () => {
       return this.actions$.pipe(
         ofType(ShareLinkActions.setInitializationError),
-        concatLatestFrom(() => this.authService.isAuthenticated$),
+        concatLatestFrom(() => this.store.select(selectIsAuthenticated)),
         tap(([{error}, isAuthenticated]) => {
           throw new ShareLinkCouldNotBeValidated(isAuthenticated, error);
         }),
@@ -232,7 +232,5 @@ export class ShareLinkEffects {
     private readonly basemapConfigService: BasemapConfigService,
     private readonly configService: ConfigService,
     private readonly favouritesService: FavouritesService,
-    private readonly errorHandler: ErrorHandler,
-    private readonly authService: AuthService,
   ) {}
 }

@@ -5,7 +5,6 @@ import {provideMockStore} from '@ngrx/store/testing';
 import {EsriMapMock} from '../../../testing/map-testing/esri-map.mock';
 import {AuthModule} from '../../../auth/auth.module';
 import {AuthService} from '../../../auth/auth.service';
-import {Subject} from 'rxjs';
 import {InternalDrawingLayer, UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {MapConstants} from '../../../shared/constants/map.constants';
@@ -34,9 +33,7 @@ function compareMapItemToEsriLayer(expectedMapItem: Gb2WmsActiveMapItem, actualE
 
 const mockAuthService = jasmine.createSpyObj<AuthService>({
   logout: void 0,
-  getAccessToken: void 0,
   login: void 0,
-  isAuthenticated$: new Subject<boolean>().asObservable(),
 });
 
 const internalLayerPrefix = MapConstants.INTERNAL_LAYER_PREFIX;
@@ -240,7 +237,6 @@ describe('EsriMapService', () => {
 
   describe('clearInternalDrawingLayer', () => {
     it('clear all geometries from an internal layers', () => {
-      const internalLayerPrefix = MapConstants.INTERNAL_LAYER_PREFIX;
       for (const internalDrawingLayerKey in InternalDrawingLayer) {
         const internalDrawingLayer: InternalDrawingLayer =
           InternalDrawingLayer[internalDrawingLayerKey as keyof typeof InternalDrawingLayer];

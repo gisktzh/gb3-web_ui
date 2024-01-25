@@ -6,7 +6,6 @@ import {Store} from '@ngrx/store';
 import dayjs from 'dayjs';
 import {BehaviorSubject, first, pairwise, skip, Subscription, tap, withLatestFrom} from 'rxjs';
 import {filter, map} from 'rxjs/operators';
-import {AuthService} from '../../../auth/auth.service';
 import {InternalDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {GeometryWithSrs, PointWithSrs, PolygonWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {
@@ -20,7 +19,7 @@ import {LoadingState} from '../../../shared/types/loading-state.type';
 import {ViewProcessState} from '../../../shared/types/view-process-state.type';
 import {ZoomType} from '../../../shared/types/zoom.type';
 import {PrintUtils} from '../../../shared/utils/print.utils';
-import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.reducer';
+import {selectAccessToken} from '../../../state/auth/reducers/auth-status.reducer';
 import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
 import {MapConfigActions} from '../../../state/map/actions/map-config.actions';
 import {selectItems} from '../../../state/map/reducers/active-map-item.reducer';
@@ -77,7 +76,7 @@ export class EsriMapService implements MapService, OnDestroy {
   private readonly subscriptions: Subscription = new Subscription();
   private readonly activeBasemapId$ = this.store.select(selectActiveBasemapId);
   private readonly rotation$ = this.store.select(selectRotation);
-  private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
+  private readonly accessToken$ = this.store.select(selectAccessToken);
   private readonly wmsImageFormatMimeType = this.configService.gb2Config.wmsFormatMimeType;
 
   constructor(
@@ -86,7 +85,6 @@ export class EsriMapService implements MapService, OnDestroy {
     private readonly geoJSONMapperService: GeoJSONMapperService,
     private readonly basemapConfigService: BasemapConfigService,
     private readonly configService: ConfigService,
-    private readonly authService: AuthService,
     private readonly esriSymbolizationService: EsriSymbolizationService,
     private readonly esriMapViewService: EsriMapViewService,
     private readonly esriToolService: EsriToolService,
@@ -626,10 +624,10 @@ export class EsriMapService implements MapService, OnDestroy {
    */
   private initializeInterceptors() {
     this.subscriptions.add(
-      this.isAuthenticated$
+      this.accessToken$
         .pipe(
-          tap(() => {
-            const newInterceptor = this.getWmsOverrideInterceptor(this.authService.getAccessToken());
+          tap((accessToken) => {
+            const newInterceptor = this.getWmsOverrideInterceptor(accessToken);
             esriConfig.request.interceptors = []; // pop existing as soon as we add more interceptors
             esriConfig.request.interceptors.push(newInterceptor);
           }),
@@ -879,7 +877,7 @@ export class EsriMapService implements MapService, OnDestroy {
     this.mapView.rotation = rotation;
   }
 
-  private getWmsOverrideInterceptor(accessToken?: string): __esri.RequestInterceptor {
+  private getWmsOverrideInterceptor(accessToken: string | undefined): __esri.RequestInterceptor {
     const wmsOverrideUrl = this.configService.overridesConfig.overrideWmsUrl;
     const {gb2Wms, gb2WmsCapabilities} = this.configService.apiConfig;
     return wmsAuthAndUrlOverrideInterceptorFactory([gb2Wms.baseUrl, gb2WmsCapabilities.baseUrl], wmsOverrideUrl, accessToken);
