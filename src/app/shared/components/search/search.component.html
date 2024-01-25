@@ -42,7 +42,9 @@
           [disabled]="(!alwaysEnableClearButton && searchInput.value.length === 0) || disabled"
         >
           <mat-icon *ngIf="screenMode === 'mobile'; else close">cancel</mat-icon>
-          <ng-template #close><mat-icon>close</mat-icon></ng-template>
+          <ng-template #close>
+            <mat-icon>close</mat-icon>
+          </ng-template>
         </button>
       </ng-template>
     </ng-container>
