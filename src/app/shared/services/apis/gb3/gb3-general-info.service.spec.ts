@@ -82,15 +82,12 @@ describe('Gb3GeneralInfoService', () => {
 
     const expected: GeneralInfoResponse = {
       parcel: {
-        bfsnr: mockResponse.general_info.parcel!.bfsnr,
         ownershipInformation: {
           url: mockResponse.general_info.parcel!.owner.href,
         },
         oerebExtract: {
           pdfUrl: mockResponse.general_info.parcel!.oereb_extract.href,
         },
-        egrisEgrid: mockResponse.general_info.parcel!.egris_egrid,
-        municipalityName: mockResponse.general_info.parcel!.municipality_name,
       },
       externalMaps: [
         {

@@ -37,9 +37,6 @@ export class Gb3GeneralInfoService extends Gb3ApiService {
       },
       parcel: generalInfo.parcel
         ? {
-            bfsnr: generalInfo.parcel.bfsnr,
-            egrisEgrid: generalInfo.parcel.egris_egrid,
-            municipalityName: generalInfo.parcel.municipality_name,
             oerebExtract: {
               pdfUrl: generalInfo.parcel.oereb_extract.href,
             },

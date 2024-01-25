@@ -18,12 +18,6 @@ interface LocationInformation {
 }
 
 interface Parcel {
-  /** BFS number */
-  bfsnr: number;
-  /** EGRIS egrid */
-  egrisEgrid: string;
-  /** Municipality name */
-  municipalityName: string;
   oerebExtract: {
     /** PDF URL */
     pdfUrl: string;
