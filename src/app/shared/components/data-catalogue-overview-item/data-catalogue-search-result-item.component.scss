@@ -1,0 +1,49 @@
+@use '../../../../styles/functions/helper.function' as functions;
+@use '../../../../styles/variables/ktzh-design-variables' as ktzh-variables;
+@use '../../../../styles/mixins/helpers.mixin' as helper-mixins;
+
+.data-catalogue-search-result-item {
+  display: flex;
+  padding: 12px;
+  justify-content: space-between;
+  align-items: center;
+
+  .data-catalogue-search-result-item__content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    overflow: hidden;
+
+    .data-catalogue-search-result-item__content__title {
+      font-family: ktzh-variables.$zh-font-family-bold;
+    }
+
+    .data-catalogue-search-result-item__content__details {
+      display: flex;
+      gap: 12px;
+
+      .data-catalogue-search-result-item__content__details__item {
+        display: flex;
+        gap: 4px;
+        font-size: smaller;
+
+        &--truncated {
+          overflow: hidden;
+        }
+
+        .data-catalogue-search-result-item__content__details__item__title {
+          color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 200);
+        }
+
+        .data-catalogue-search-result-item__content__details__item__content {
+          @include helper-mixins.single-line-text();
+        }
+      }
+    }
+  }
+
+  .data-catalogue-search-result-item__link {
+    background-color: ktzh-variables.$zh-light-grey;
+    border-radius: 50%;
+  }
+}

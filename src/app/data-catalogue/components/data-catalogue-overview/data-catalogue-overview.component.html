@@ -38,7 +38,7 @@
         <cdk-table [dataSource]="dataCatalogueItems">
           <ng-container cdkColumnDef="data">
             <cdk-cell *cdkCellDef="let row">
-              <data-catalogue-overview-item [item]="row"></data-catalogue-overview-item>
+              <data-catalogue-search-result-item [item]="row"></data-catalogue-search-result-item>
             </cdk-cell>
           </ng-container>
 

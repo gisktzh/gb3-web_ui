@@ -24,7 +24,10 @@
     [loadingState]="combinedSearchAndDataCatalogLoadingState"
     [numberOfItems]="filteredMetadataItems.length"
   >
-    <search-result-entry-data-catalog [filteredMetadataItems]="filteredMetadataItems"></search-result-entry-data-catalog>
+    <data-catalogue-search-result-item
+      *ngFor="let filteredMetadataItem of filteredMetadataItems"
+      [item]="filteredMetadataItem"
+    ></data-catalogue-search-result-item>
   </search-result-group>
   <search-result-group
     *ngIf="filteredFaqItems.length > 0"

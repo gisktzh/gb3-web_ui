@@ -1,0 +1,22 @@
+<div class="data-catalogue-search-result-item">
+  <div class="data-catalogue-search-result-item__content">
+    <span class="data-catalogue-search-result-item__content__title">{{ item.name }}</span>
+    <div class="data-catalogue-search-result-item__content__details">
+      <div class="data-catalogue-search-result-item__content__details__item">
+        <span class="data-catalogue-search-result-item__content__details__item__title">Typ:</span>
+        <span class="data-catalogue-search-result-item__content__details__item__content">{{ item.type }}</span>
+      </div>
+      <div class="data-catalogue-search-result-item__content__details__item data-catalogue-overview-item__details__item--truncated">
+        <span class="data-catalogue-search-result-item__content__details__item__title">Beschreibung:</span>
+        <span class="data-catalogue-search-result-item__content__details__item__content">{{ item.description }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="data-catalogue-search-result-item__link">
+    <a mat-icon-button [routerLink]="item.relativeUrl" clickOnSpaceBar>
+      <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
+    </a>
+  </div>
+</div>
+<mat-divider></mat-divider>

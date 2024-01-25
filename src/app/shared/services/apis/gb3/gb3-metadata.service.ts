@@ -81,14 +81,14 @@ export class Gb3MetadataService extends Gb3ApiService {
         result.datasets.map((dataset) => {
           const {
             uuid: guid,
-            description,
+            shortDescription,
             name,
             contact: {
               metadata: {department},
             },
             outputFormat,
           } = this.transformDatasetsDetailDataToDatasetMetadata(dataset);
-          return new DatasetOverviewMetadataItem(guid, name, description, department, outputFormat);
+          return new DatasetOverviewMetadataItem(guid, name, shortDescription, department, outputFormat);
         }),
       ),
     );
