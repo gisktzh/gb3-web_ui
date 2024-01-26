@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import {TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {Gb3ShareLinkService} from './gb3-share-link.service';
@@ -6,11 +7,17 @@ import {HttpClient} from '@angular/common/http';
 import {of} from 'rxjs';
 import {ShareLinkItem} from '../../../interfaces/share-link.interface';
 import {Gb3VectorLayer} from '../../../interfaces/gb3-vector-layer.interface';
+import {MockStore, provideMockStore} from '@ngrx/store/testing';
+import {selectMaps} from '../../../../state/map/selectors/maps.selector';
+import {selectActiveMapItemConfigurations} from '../../../../state/map/selectors/active-map-item-configuration.selector';
+import {selectFavouriteBaseConfig} from '../../../../state/map/selectors/favourite-base-config.selector';
+import {selectUserDrawingsVectorLayers} from '../../../../state/map/selectors/user-drawings-vector-layers.selector';
 
 // todo: add tests for vector layers
 const mockedVectorLayer = {type: undefined, styles: undefined, geojson: {type: undefined, features: []}} as unknown as Gb3VectorLayer;
 describe('Gb3ShareLinkService', () => {
   let service: Gb3ShareLinkService;
+  let store: MockStore;
   const shareLinkItemIdMock = 'mock-id';
   const serverDataMock: SharedFavorite = {
     east: 2600003,
@@ -91,8 +98,18 @@ describe('Gb3ShareLinkService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
+      providers: [provideMockStore({})],
+    });
+    store = TestBed.inject(MockStore);
+    store.overrideSelector(selectActiveMapItemConfigurations, []);
+    store.overrideSelector(selectMaps, []);
+    store.overrideSelector(selectFavouriteBaseConfig, {center: {x: 0, y: 0}, scale: 0, basemap: ''});
+    store.overrideSelector(selectUserDrawingsVectorLayers, {
+      drawings: {type: 'Vector', geojson: {type: 'FeatureCollection', features: []}, styles: {}},
+      measurements: {type: 'Vector', geojson: {type: 'FeatureCollection', features: []}, styles: {}},
     });
     service = TestBed.inject(Gb3ShareLinkService);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(service, 'getFullEndpointUrl').and.returnValue('');
   });
 

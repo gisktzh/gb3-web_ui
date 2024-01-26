@@ -34,6 +34,7 @@ import {Gb3StyledInternalDrawingRepresentation} from '../../../shared/interfaces
 import {UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 import {selectIsAuthenticated} from '../../auth/reducers/auth-status.reducer';
+import {MapRestoreItem} from '../../../shared/interfaces/map-restore-item.interface';
 
 function createActiveMapItemsFromConfigs(activeMapItemConfigurations: ActiveMapItemConfiguration[]): ActiveMapItem[] {
   return activeMapItemConfigurations.map(
@@ -234,7 +235,7 @@ describe('ShareLinkEffects', () => {
     const expectedItem = shareLinkItemMock;
     const expectedOriginalError = new ShareLinkPropertyCouldNotBeValidated("He's dead, Jim.");
     const expectedTopics: Topic[] = [];
-    const expectedValidationObject = {
+    const expectedCompleteItem: MapRestoreItem = {
       activeMapItems: createActiveMapItemsFromConfigs(shareLinkItemMock.content),
       scale: shareLinkItemMock.scale,
       basemapId: shareLinkItemMock.basemapId,
@@ -274,7 +275,7 @@ describe('ShareLinkEffects', () => {
           store.overrideSelector(selectLoadedLayerCatalogueAndShareItem, {shareLinkItem: expectedItem, topics: expectedTopics});
 
           effects.initializeApplicationByVerifyingSharedItem$.subscribe((action) => {
-            expect(action).toEqual(ShareLinkActions.validateItem({item: expectedItem, topics: expectedTopics}));
+            expect(action).toEqual(ShareLinkActions.validateItem({item: expectedItem}));
             done();
           });
         });
@@ -290,18 +291,18 @@ describe('ShareLinkEffects', () => {
         });
 
         it('dispatches ShareLinkActions.completeValidation() with the service response on success with no drawings', (done: DoneFn) => {
-          actions$ = of(ShareLinkActions.validateItem({item: expectedItem, topics: expectedTopics}));
+          actions$ = of(ShareLinkActions.validateItem({item: expectedItem}));
           favouriteServiceMock.getDrawingsForFavourite.and.returnValue({
             drawingsToAdd: [],
             drawingActiveMapItems: [],
           });
 
-          const expected = {...expectedValidationObject, drawings: []};
+          const expectedAction = ShareLinkActions.completeValidation({mapRestoreItem: {...expectedCompleteItem, drawings: []}});
 
           effects.validateShareLinkItem$.subscribe((action) => {
-            expect(favouriteServiceMock.getActiveMapItemsForFavourite).toHaveBeenCalledOnceWith(expectedItem.content);
+            expect(favouriteServiceMock.getActiveMapItemsForFavourite).toHaveBeenCalledOnceWith(expectedItem.content, false);
             expect(favouriteServiceMock.getDrawingsForFavourite).toHaveBeenCalledOnceWith(expectedItem.drawings, expectedItem.measurements);
-            expect(action).toEqual(ShareLinkActions.completeValidation(expected));
+            expect(action).toEqual(expectedAction);
             done();
           });
         });
@@ -310,27 +311,29 @@ describe('ShareLinkEffects', () => {
           'dispatches ShareLinkActions.completeValidation() with the service response on success with drawings added on top of the' +
             ' active map items',
           (done: DoneFn) => {
-            actions$ = of(ShareLinkActions.validateItem({item: expectedItem, topics: expectedTopics}));
-            const drawingActiveMapItems = expectedValidationObject.drawings.map((d) =>
+            actions$ = of(ShareLinkActions.validateItem({item: expectedItem}));
+            const drawingActiveMapItems = expectedCompleteItem.drawings.map((d) =>
               ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, d.source),
             );
             favouriteServiceMock.getDrawingsForFavourite.and.returnValue({
-              drawingsToAdd: expectedValidationObject.drawings,
+              drawingsToAdd: expectedCompleteItem.drawings,
               drawingActiveMapItems: drawingActiveMapItems,
             });
 
-            const expected = {
-              ...expectedValidationObject,
-              activeMapItems: [...drawingActiveMapItems, ...expectedValidationObject.activeMapItems],
-            };
+            const expectedAction = ShareLinkActions.completeValidation({
+              mapRestoreItem: {
+                ...expectedCompleteItem,
+                activeMapItems: [...drawingActiveMapItems, ...expectedCompleteItem.activeMapItems],
+              },
+            });
 
             effects.validateShareLinkItem$.subscribe((action) => {
-              expect(favouriteServiceMock.getActiveMapItemsForFavourite).toHaveBeenCalledOnceWith(expectedItem.content);
+              expect(favouriteServiceMock.getActiveMapItemsForFavourite).toHaveBeenCalledOnceWith(expectedItem.content, false);
               expect(favouriteServiceMock.getDrawingsForFavourite).toHaveBeenCalledOnceWith(
                 expectedItem.drawings,
                 expectedItem.measurements,
               );
-              expect(action).toEqual(ShareLinkActions.completeValidation(expected));
+              expect(action).toEqual(expectedAction);
               done();
             });
           },
@@ -342,7 +345,7 @@ describe('ShareLinkEffects', () => {
             basemapId: 'there-is-no-map',
           };
           const expectedError = new ShareLinkPropertyCouldNotBeValidated(`Basemap ist ungültig: '${faultyItem.basemapId}'`);
-          actions$ = of(ShareLinkActions.validateItem({item: faultyItem, topics: expectedTopics}));
+          actions$ = of(ShareLinkActions.validateItem({item: faultyItem}));
 
           effects.validateShareLinkItem$.subscribe((action) => {
             expect(action).toEqual(ShareLinkActions.setValidationError({error: expectedError}));
@@ -356,7 +359,7 @@ describe('ShareLinkEffects', () => {
             scale: -1337,
           };
           const expectedError = new ShareLinkPropertyCouldNotBeValidated(`Massstab ist ungültig: '${faultyItem.scale}'`);
-          actions$ = of(ShareLinkActions.validateItem({item: faultyItem, topics: expectedTopics}));
+          actions$ = of(ShareLinkActions.validateItem({item: faultyItem}));
 
           effects.validateShareLinkItem$.subscribe((action) => {
             expect(action).toEqual(ShareLinkActions.setValidationError({error: expectedError}));
@@ -365,11 +368,11 @@ describe('ShareLinkEffects', () => {
         });
 
         it('dispatches ShareLinkActions.setValidationError() with the error on active map items validation failure', (done: DoneFn) => {
-          actions$ = of(ShareLinkActions.validateItem({item: expectedItem, topics: expectedTopics}));
+          actions$ = of(ShareLinkActions.validateItem({item: expectedItem}));
           const favouriteServiceMockSpy = favouriteServiceMock.getActiveMapItemsForFavourite.and.throwError(expectedOriginalError);
 
           effects.validateShareLinkItem$.subscribe((action) => {
-            expect(favouriteServiceMockSpy).toHaveBeenCalledOnceWith(expectedItem.content);
+            expect(favouriteServiceMockSpy).toHaveBeenCalledOnceWith(expectedItem.content, false);
             expect(action).toEqual(ShareLinkActions.setValidationError({error: expectedOriginalError}));
             done();
           });
@@ -437,16 +440,16 @@ describe('ShareLinkEffects', () => {
 
     describe('Action: completeValidation', () => {
       beforeEach(() => {
-        actions$ = of(ShareLinkActions.completeValidation(expectedValidationObject));
+        actions$ = of(ShareLinkActions.completeValidation({mapRestoreItem: expectedCompleteItem}));
       });
 
       describe('setMapConfigAfterValidation$', () => {
         it('dispatches MapConfigActions.setInitialMapConfig() with the service response on success', (done: DoneFn) => {
           const expectedInitialMapConfig = {
-            x: expectedValidationObject.x,
-            y: expectedValidationObject.y,
-            scale: expectedValidationObject.scale,
-            basemapId: expectedValidationObject.basemapId,
+            x: expectedCompleteItem.x,
+            y: expectedCompleteItem.y,
+            scale: expectedCompleteItem.scale,
+            basemapId: expectedCompleteItem.basemapId,
             initialMaps: [],
           };
 
@@ -460,11 +463,12 @@ describe('ShareLinkEffects', () => {
       describe('setActiveMapItemsAfterValidation$', () => {
         it('dispatches ActiveMapItemActions.initializeActiveMapItems() with the service response on success', (done: DoneFn) => {
           const expectedActiveMapItems = {
-            activeMapItems: expectedValidationObject.activeMapItems,
+            initialMapItems: expectedCompleteItem.activeMapItems,
           };
+          const expectedAction = ActiveMapItemActions.addInitialMapItems(expectedActiveMapItems);
 
           effects.setActiveMapItemsAfterValidation$.subscribe((action) => {
-            expect(action).toEqual(ActiveMapItemActions.initializeActiveMapItems(expectedActiveMapItems));
+            expect(action).toEqual(expectedAction);
             done();
           });
         });
@@ -473,7 +477,7 @@ describe('ShareLinkEffects', () => {
       describe('setInitialDrawingsAfterValidation$', () => {
         it('dispatches DrawingActions.addDrawings() with the correct drawings', (done: DoneFn) => {
           const drawings = {
-            drawings: expectedValidationObject.drawings,
+            drawings: expectedCompleteItem.drawings,
           };
 
           effects.setInitialDrawingsAfterValidation$.subscribe((action) => {
@@ -485,8 +489,8 @@ describe('ShareLinkEffects', () => {
 
       describe('completeInitialization$', () => {
         it('dispatches ShareLinkActions.completeApplicationInitialization() after the ActiveMapItems and drawings have been set', (done: DoneFn) => {
-          store.overrideSelector(selectItems, expectedValidationObject.activeMapItems);
-          store.overrideSelector(selectDrawings, expectedValidationObject.drawings);
+          store.overrideSelector(selectItems, expectedCompleteItem.activeMapItems);
+          store.overrideSelector(selectDrawings, expectedCompleteItem.drawings);
 
           effects.completeInitialization$.subscribe((action) => {
             expect(action).toEqual(ShareLinkActions.completeApplicationInitialization());

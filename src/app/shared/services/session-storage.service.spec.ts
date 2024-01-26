@@ -18,8 +18,8 @@ describe('SessionStorageService', () => {
     spyOn(sessionStorage, 'removeItem').and.callFake((key: string): void => {
       delete store[key];
     });
-    spyOn(sessionStorage, 'setItem').and.callFake((key: string, value: string): string => {
-      return (store[key] = <string>value);
+    spyOn(sessionStorage, 'setItem').and.callFake((key: string, value: string) => {
+      store[key] = value;
     });
     spyOn(sessionStorage, 'clear').and.callFake(() => {
       store = {};

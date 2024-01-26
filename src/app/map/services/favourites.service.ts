@@ -74,9 +74,12 @@ export class FavouritesService implements OnDestroy {
    * Throws at the first occurrence of an error - this is to ensure that a favourite is somewhat stable, instead of showing only those parts
    * of the favourite that exist.
    * @param activeMapItemConfigurations
-   * @private
+   * @param ignoreErrors indicating whether any error should be ignored. Default: false
    */
-  public getActiveMapItemsForFavourite(activeMapItemConfigurations: ActiveMapItemConfiguration[]): ActiveMapItem[] {
+  public getActiveMapItemsForFavourite(
+    activeMapItemConfigurations: ActiveMapItemConfiguration[],
+    ignoreErrors: boolean = false,
+  ): ActiveMapItem[] {
     const activeMapItems: ActiveMapItem[] = [];
 
     activeMapItemConfigurations.forEach((configuration) => {
@@ -87,7 +90,11 @@ export class FavouritesService implements OnDestroy {
           const subLayer = existingMap.layers.find((layer) => layer.id === configuration.layers[0].id);
 
           if (!subLayer) {
-            throw new FavouriteIsInvalid(`Der Layer '${configuration.layers[0].layer}' existiert nicht (mehr).`);
+            if (ignoreErrors) {
+              return;
+            } else {
+              throw new FavouriteIsInvalid(`Der Layer '${configuration.layers[0].layer}' existiert nicht (mehr).`);
+            }
           }
           activeMapItems.push(
             ActiveMapItemFactory.createGb2WmsMapItem(existingMap, subLayer, configuration.visible, configuration.opacity),
@@ -109,7 +116,9 @@ export class FavouritesService implements OnDestroy {
           );
         }
       } else {
-        throw new FavouriteIsInvalid(`Die Karte '${configuration.mapId}' existiert nicht (mehr).`);
+        if (!ignoreErrors) {
+          throw new FavouriteIsInvalid(`Die Karte '${configuration.mapId}' existiert nicht (mehr).`);
+        }
       }
     });
 
