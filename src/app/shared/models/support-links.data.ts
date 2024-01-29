@@ -19,11 +19,6 @@ export const supportLinks: LinksGroup[] = [
         label: 'Gebührenverordnung für Geodaten (GebV GeoD)',
         title: 'Gebührenverordnung für Geodaten (GebV GeoD)',
       },
-    ],
-  },
-  {
-    label: 'Bund',
-    links: [
       {
         url: 'https://www.admin.ch/opc/de/classified-compilation/20050726/index.html',
         label: 'Bundesgesetz über Geoinformation (GeoIG, 510.62)',
@@ -33,16 +28,6 @@ export const supportLinks: LinksGroup[] = [
         url: 'https://www.admin.ch/opc/de/classified-compilation/20071088/index.html',
         label: 'Verordnung über Geoinformation (GeoIV, 510.620)',
         title: 'Verordnung über Geoinformation (GeoIV, 510.620)',
-      },
-      {
-        url: 'https://www.cadastre.ch/de/manual-av/publication.html',
-        label: 'Amtliche Vermessung: Sammlung aller Gesetze, Verordnungen und Weisungen (cadastre.ch)',
-        title: 'Amtliche Vermessung: Sammlung aller Gesetze, Verordnungen und Weisungen (cadastre.ch)',
-      },
-      {
-        url: 'https://www.cadastre.ch/de/manual-oereb/publication.html',
-        label: 'ÖREB-Kataster: Sammlung aller Gesetze, Verordnungen und Weisungen (cadastre.ch)',
-        title: 'ÖREB-Kataster: Sammlung aller Gesetze, Verordnungen und Weisungen (cadastre.ch)',
       },
     ],
   },
