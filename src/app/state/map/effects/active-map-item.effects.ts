@@ -119,6 +119,15 @@ export class ActiveMapItemEffects {
     );
   });
 
+  public hideMapAttributeFilterAfterRemovingAllMapItems$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ActiveMapItemActions.removeAllActiveMapItems),
+      concatLatestFrom(() => this.store.select(selectScreenMode)),
+      filter(([_, screenMode]) => screenMode !== 'mobile'),
+      map(() => MapUiActions.setAttributeFilterVisibility({isVisible: false})),
+    );
+  });
+
   public clearFeatureInfoContentAfterRemovingAllMapItems$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ActiveMapItemActions.removeAllActiveMapItems),

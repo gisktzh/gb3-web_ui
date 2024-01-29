@@ -22,6 +22,11 @@
     class="map-container__legend-overlay"
     [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
   ></legend-overlay>
+  <map-attribute-filter-overlay
+    *ngIf="screenMode !== 'mobile'"
+    class="map-container__attribute-filter-overlay"
+    [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
+  ></map-attribute-filter-overlay>
   <div class="map-container__all-map-items-container" *ngIf="screenMode !== 'mobile'">
     <div class="map-container__all-map-items-container__inner-container">
       <active-map-items
@@ -53,10 +58,6 @@
     <mat-icon svgIcon="ktzh_legend"></mat-icon>
     Legende
   </button>
-  <map-attribute-filter
-    class="map-container__map-attribute-filter"
-    [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
-  ></map-attribute-filter>
   <feature-info-overlay
     *ngIf="screenMode !== 'mobile'"
     class="map-container__feature-info-overlay"
