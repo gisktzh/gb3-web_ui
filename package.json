@@ -15,7 +15,7 @@
     "watch": "ng build --configuration development",
     "test": "ng test",
     "test-ci": "ng test --no-watch --no-progress --code-coverage",
-    "prepare": "node ./prepare.js",
+    "prepare": "node ./prepare.mjs",
     "update-version": "node ./update-version.js",
     "format-all": "prettier --write ./src",
     "generate-gb3-api": "npx swagger-typescript-api -p https://maps.zh.ch/api-docs/gb3/v1/swagger.yaml -o ./src/app/shared/models -n gb3-api-generated.interfaces.ts --no-client --extract-response-body --extract-request-body --extract-request-body && node ./remove-generated-api-version-references.js ./src/app/shared/models/gb3-api-generated.interfaces.ts"
