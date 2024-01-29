@@ -69,12 +69,7 @@ export interface General {
       name: string;
     }[];
     /** External maps */
-    external_maps: {
-      /** Name */
-      name: string;
-      /** URL */
-      url: string;
-    }[];
+    external_maps: LinkObject[];
     parcel: {
       /** BFS number */
       bfsnr: number;
@@ -82,10 +77,8 @@ export interface General {
       egris_egrid: string;
       /** Municipality name */
       municipality_name: string;
-      oereb_extract: {
-        /** PDF URL */
-        pdf_url: string;
-      };
+      oereb_extract: LinkObject;
+      owner: LinkObject;
     } | null;
   };
 }

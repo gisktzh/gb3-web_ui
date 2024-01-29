@@ -17,7 +17,10 @@ const mockResponse: GeneralInfoListData = {
       egris_egrid: 'this-weird-number',
       municipality_name: 'Rivendell',
       oereb_extract: {
-        pdf_url: 'https://www.test.ch',
+        href: 'https://www.test.ch',
+      },
+      owner: {
+        href: 'https://www.ownertest.ch',
       },
     },
     height_dtm: 1337,
@@ -30,8 +33,11 @@ const mockResponse: GeneralInfoListData = {
     },
     external_maps: [
       {
-        name: 'Other GIS Client',
-        url: 'https://www.other-gis-client.ch',
+        title: 'Other GIS Client',
+        href: 'https://www.other-gis-client.ch',
+      },
+      {
+        href: 'https://www.other-gis-client-without-title.ch',
       },
     ],
   },
@@ -76,22 +82,21 @@ describe('Gb3GeneralInfoService', () => {
 
     const expected: GeneralInfoResponse = {
       parcel: {
-        bfsnr: mockResponse.general_info.parcel!.bfsnr,
         ownershipInformation: {
-          url: `${configService.apiConfig.ownershipInformationApi.baseUrl}?egrid=${mockResponse.general_info.parcel!.egris_egrid}&bfsNr=${
-            mockResponse.general_info.parcel!.bfsnr
-          }`,
+          url: mockResponse.general_info.parcel!.owner.href,
         },
         oerebExtract: {
-          pdfUrl: mockResponse.general_info.parcel!.oereb_extract.pdf_url,
+          pdfUrl: mockResponse.general_info.parcel!.oereb_extract.href,
         },
-        egrisEgrid: mockResponse.general_info.parcel!.egris_egrid,
-        municipalityName: mockResponse.general_info.parcel!.municipality_name,
       },
       externalMaps: [
         {
-          name: mockResponse.general_info.external_maps[0].name,
-          url: mockResponse.general_info.external_maps[0].url,
+          name: mockResponse.general_info.external_maps[0].title!,
+          url: mockResponse.general_info.external_maps[0].href,
+        },
+        {
+          name: mockResponse.general_info.external_maps[1].href,
+          url: mockResponse.general_info.external_maps[1].href,
         },
       ],
       locationInformation: {
@@ -129,8 +134,12 @@ describe('Gb3GeneralInfoService', () => {
       parcel: undefined,
       externalMaps: [
         {
-          name: mockResponse.general_info.external_maps[0].name,
-          url: mockResponse.general_info.external_maps[0].url,
+          name: mockResponse.general_info.external_maps[0].title!,
+          url: mockResponse.general_info.external_maps[0].href,
+        },
+        {
+          name: mockResponse.general_info.external_maps[1].href,
+          url: mockResponse.general_info.external_maps[1].href,
         },
       ],
       locationInformation: {
