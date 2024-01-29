@@ -6,12 +6,24 @@ import {AuthService} from '../../../auth/auth.service';
 
 @Injectable()
 export class AuthStatusEffects {
-  public dispatchLogout = createEffect(
+  public login$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(AuthStatusActions.performLogin),
+        tap(() => {
+          this.authService.login();
+        }),
+      );
+    },
+    {dispatch: false},
+  );
+
+  public logout$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(AuthStatusActions.performLogout),
-        tap(({forced}) => {
-          this.authService.logout(forced);
+        tap(({isForced}) => {
+          this.authService.logout(isForced);
         }),
       );
     },

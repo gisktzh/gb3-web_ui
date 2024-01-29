@@ -21,7 +21,6 @@ import {
 import {LayerCatalogActions} from '../actions/layer-catalog.actions';
 import {selectLoadedLayerCatalogueAndShareItem} from '../selectors/loaded-layer-catalogue-and-share-item.selector';
 import {Map, Topic} from '../../../shared/interfaces/topic.interface';
-import {spyOnPropertyGetter} from '../../../testing/testing.utils';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {selectItems} from '../reducers/active-map-item.reducer';
@@ -34,6 +33,7 @@ import {DrawingActions} from '../actions/drawing.actions';
 import {Gb3StyledInternalDrawingRepresentation} from '../../../shared/interfaces/internal-drawing-representation.interface';
 import {UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
+import {selectIsAuthenticated} from '../../auth/reducers/auth-status.reducer';
 
 function createActiveMapItemsFromConfigs(activeMapItemConfigurations: ActiveMapItemConfiguration[]): ActiveMapItem[] {
   return activeMapItemConfigurations.map(
@@ -120,7 +120,6 @@ describe('ShareLinkEffects', () => {
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
-    authServiceMock = jasmine.createSpyObj<AuthService>([], {isAuthenticated$: of(false)});
     favouriteServiceMock = jasmine.createSpyObj<FavouritesService>(['getActiveMapItemsForFavourite', 'getDrawingsForFavourite']);
 
     TestBed.configureTestingModule({
@@ -396,7 +395,7 @@ describe('ShareLinkEffects', () => {
       describe('throwInitializationError$', () => {
         it('throws a ShareLinkCouldNotBeValidated error with the login reminder and dispatches ShareLinkActions.setInitializationError() with the error on failure', (done: DoneFn) => {
           const isAuthenticated = true;
-          spyOnPropertyGetter(authServiceMock, 'isAuthenticated$').and.returnValue(of(isAuthenticated));
+          store.overrideSelector(selectIsAuthenticated, isAuthenticated);
 
           const expectedError = new ShareLinkCouldNotBeValidated(isAuthenticated, expectedOriginalError);
 
@@ -416,7 +415,7 @@ describe('ShareLinkEffects', () => {
 
         it('throws a ShareLinkCouldNotBeValidated error without the login reminder and dispatches ShareLinkActions.setInitializationError() with the error on failure', (done: DoneFn) => {
           const isAuthenticated = false;
-          spyOnPropertyGetter(authServiceMock, 'isAuthenticated$').and.returnValue(of(isAuthenticated));
+          store.overrideSelector(selectIsAuthenticated, isAuthenticated);
 
           const expectedError = new ShareLinkCouldNotBeValidated(isAuthenticated, expectedOriginalError);
 

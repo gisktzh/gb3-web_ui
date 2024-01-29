@@ -1,11 +1,12 @@
 import {CanActivateFn} from '@angular/router';
-import {filter, Observable} from 'rxjs';
+import {Observable} from 'rxjs';
 import {inject} from '@angular/core';
-import {AuthService} from '../../auth/auth.service';
+import {Store} from '@ngrx/store';
+import {selectIsInitialDataLoaded} from '../../state/auth/reducers/auth-status.reducer';
 
 /**
  * This guard waits for the authentication service to finish loading the current login-state.
  */
 export const authLoadingGuard: CanActivateFn = (): Observable<boolean> => {
-  return inject(AuthService).isDoneLoading$.pipe(filter((isDoneLoading) => isDoneLoading));
+  return inject(Store).select(selectIsInitialDataLoaded);
 };
