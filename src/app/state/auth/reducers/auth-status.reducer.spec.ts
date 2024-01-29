@@ -8,7 +8,6 @@ describe('auth status reducer', () => {
   beforeEach(() => {
     existingState = {
       isInitialDataLoaded: true,
-      accessToken: 'mellon',
       userName: 'Gandalf',
       isAuthenticated: true,
     };
@@ -31,7 +30,6 @@ describe('auth status reducer', () => {
       const state = reducer(existingState, action);
 
       expect(state.isInitialDataLoaded).toBe(true);
-      expect(state.accessToken).toBe(existingState.accessToken);
       expect(state.userName).toBe(existingState.userName);
       expect(state.isAuthenticated).toBe(existingState.isAuthenticated);
     });
@@ -43,7 +41,6 @@ describe('auth status reducer', () => {
       const state = reducer(existingState, action);
 
       expect(state.isInitialDataLoaded).toBe(existingState.isInitialDataLoaded);
-      expect(state.accessToken).toBe(existingState.accessToken);
       expect(state.userName).toBe(existingState.userName);
       expect(state.isAuthenticated).toBe(existingState.isAuthenticated);
     });
@@ -55,7 +52,6 @@ describe('auth status reducer', () => {
       const state = reducer(existingState, action);
 
       expect(state.isInitialDataLoaded).toBe(existingState.isInitialDataLoaded);
-      expect(state.accessToken).toBe(existingState.accessToken);
       expect(state.userName).toBe(existingState.userName);
       expect(state.isAuthenticated).toBe(existingState.isAuthenticated);
     });
@@ -67,7 +63,6 @@ describe('auth status reducer', () => {
       const state = reducer(existingState, action);
 
       expect(state.isInitialDataLoaded).toBe(existingState.isInitialDataLoaded);
-      expect(state.accessToken).toBe(existingState.accessToken);
       expect(state.userName).toBe(existingState.userName);
       expect(state.isAuthenticated).toBe(existingState.isAuthenticated);
     });
@@ -76,14 +71,12 @@ describe('auth status reducer', () => {
   describe('setStatus', () => {
     it('sets isAuthenticated, accessToken and userName; keeps everything else', () => {
       const isAuthenticated = false;
-      const accessToken = 'You shall not pass';
       const userName = 'Balrog';
 
-      const action = AuthStatusActions.setStatus({isAuthenticated, accessToken, userName});
+      const action = AuthStatusActions.setStatus({isAuthenticated, userName});
       const state = reducer(existingState, action);
 
       expect(state.isInitialDataLoaded).toBe(existingState.isInitialDataLoaded);
-      expect(state.accessToken).toBe(accessToken);
       expect(state.userName).toBe(userName);
       expect(state.isAuthenticated).toBe(isAuthenticated);
     });
