@@ -6,6 +6,6 @@ export const AuthStatusActions = createActionGroup({
     'Set Initial Data Loaded': emptyProps(),
     'Perform Login': emptyProps(),
     'Perform Logout': props<{isForced: boolean}>(),
-    'Set Status': props<{isAuthenticated: boolean; accessToken: string | undefined; userName?: string}>(),
+    'Set Status': props<{isAuthenticated: boolean; userName?: string}>(),
   },
 });

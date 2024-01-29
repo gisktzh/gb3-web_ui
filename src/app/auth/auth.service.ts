@@ -26,9 +26,7 @@ export class AuthService {
       this.store.dispatch(AuthStatusActions.setInitialDataLoaded());
     }
     this.oauthService.events.subscribe((event) => {
-      this.store.dispatch(
-        AuthStatusActions.setStatus({isAuthenticated: this.oauthService.hasValidAccessToken(), accessToken: this.getAccessToken()}),
-      );
+      this.store.dispatch(AuthStatusActions.setStatus({isAuthenticated: this.oauthService.hasValidAccessToken()}));
 
       if (isDevMode()) {
         this.enableOauthDebug(event);
@@ -65,10 +63,10 @@ export class AuthService {
       this.authNotificationService.showProgrammaticLogoutDialog();
     }
 
-    this.store.dispatch(AuthStatusActions.setStatus({isAuthenticated: false, accessToken: undefined}));
+    this.store.dispatch(AuthStatusActions.setStatus({isAuthenticated: false}));
   }
 
-  private getAccessToken(): string {
+  public getAccessToken(): string {
     return this.oauthService.getAccessToken();
   }
 
@@ -131,7 +129,7 @@ export class AuthService {
               userName = await this.getUserInfo();
             }
 
-            this.store.dispatch(AuthStatusActions.setStatus({isAuthenticated, accessToken: this.getAccessToken(), userName}));
+            this.store.dispatch(AuthStatusActions.setStatus({isAuthenticated, userName}));
           })();
         }),
       )

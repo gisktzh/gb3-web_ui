@@ -33,6 +33,7 @@ function compareMapItemToEsriLayer(expectedMapItem: Gb2WmsActiveMapItem, actualE
 
 const mockAuthService = jasmine.createSpyObj<AuthService>({
   logout: void 0,
+  getAccessToken: void 0,
   login: void 0,
 });
 

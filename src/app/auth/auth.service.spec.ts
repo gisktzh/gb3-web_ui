@@ -73,7 +73,7 @@ describe('AuthService', () => {
       service.logout(true);
 
       expect(mockAuthNotificationService.showForcedLogoutDialog).toHaveBeenCalledTimes(1);
-      expect(storeDispatchSpy).toHaveBeenCalledOnceWith(AuthStatusActions.setStatus({isAuthenticated: false, accessToken: undefined}));
+      expect(storeDispatchSpy).toHaveBeenCalledOnceWith(AuthStatusActions.setStatus({isAuthenticated: false}));
     });
 
     it('shows dialog for programmatic logout and sets isAuthenticated', () => {
@@ -82,7 +82,7 @@ describe('AuthService', () => {
       service.logout(false);
 
       expect(mockAuthNotificationService.showProgrammaticLogoutDialog).toHaveBeenCalledTimes(1);
-      expect(storeDispatchSpy).toHaveBeenCalledOnceWith(AuthStatusActions.setStatus({isAuthenticated: false, accessToken: undefined}));
+      expect(storeDispatchSpy).toHaveBeenCalledOnceWith(AuthStatusActions.setStatus({isAuthenticated: false}));
     });
   });
 
@@ -91,8 +91,7 @@ describe('AuthService', () => {
       const expectedResult = 'test-token';
       mockOAuthService.getAccessToken.and.returnValue(expectedResult);
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const result = (service as any).getAccessToken();
+      const result = service.getAccessToken();
 
       expect(result).toEqual(expectedResult);
     });
