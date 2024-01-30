@@ -24,6 +24,7 @@ export class ResultGroupComponent implements OnInit, OnDestroy {
   @Input() public filteredMaps: Map[] = [];
   @Input() public header: string = '';
   @Input() public searchTerms: string[] = [];
+  @Input() public isExpanded: boolean = false;
 
   public screenMode: ScreenMode = 'regular';
   public mapConfigState?: MapConfigState;
