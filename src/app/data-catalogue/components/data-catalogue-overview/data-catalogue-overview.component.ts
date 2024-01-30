@@ -19,7 +19,7 @@ import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 
 const GEO_DATA_CATALOGUE_SUMMARY =
-  'Im Geodatenkatalog finden Sie Informationen zur Herkunft, Aktualität und Genauigkeit der Daten, Hinweise zur Nutzung und zum Datenbezug u.a.';
+  'Im Geodatenkatalog finden Sie Informationen zur Herkunft, Aktualität und Genauigkeit der Daten, Hinweise zur Nutzung und zum Datenbezug.';
 
 @Injectable()
 class DataCataloguePaginatorIntl implements MatPaginatorIntl {

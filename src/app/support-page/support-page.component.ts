@@ -5,7 +5,7 @@ import {ScreenMode} from '../shared/types/screen-size.type';
 import {selectScreenMode} from '../state/app/reducers/app-layout.reducer';
 
 const SUPPORT_PAGE_SUMMARY =
-  'Herzlich Willkommen im neuen GIS-Browser! Wir verstehen, dass die Verwendung eines neuen Tools manchmal überwältigend sein kann, aber keine Sorge, wir sind hier, um Ihnen zu helfen. Unser Ziel ist es, Ihnen eine nahtlose und benutzerfreundliche Erfahrung zu bieten, damit Sie schnell und einfach auf die gewünschten Informationen zugreifen können. In diesem Hilfe- und Support-Bereich finden Sie alle Informationen, die Sie benötigen, um den neuen Kartenviewer zu nutzen.';
+  'Hier werden häufig gestellte Fragen und deren Antworten aufgelistet. Sie haben die Möglichkeit, eine Supportanfrage zu stellen und finden weitere hilfreiche Informationen.';
 
 @Component({
   selector: 'support-page',
