@@ -1,9 +1,7 @@
 import {createActionGroup, emptyProps, props} from '@ngrx/store';
 import {ShareLinkItem} from '../../../shared/interfaces/share-link.interface';
-import {Topic} from '../../../shared/interfaces/topic.interface';
-import {ActiveMapItem} from '../../../map/models/active-map-item.model';
 import {errorProps} from '../../../shared/utils/error-props.utils';
-import {Gb3StyledInternalDrawingRepresentation} from '../../../shared/interfaces/internal-drawing-representation.interface';
+import {MapRestoreItem} from '../../../shared/interfaces/map-restore-item.interface';
 
 export const ShareLinkActions = createActionGroup({
   source: 'ShareLink',
@@ -16,16 +14,9 @@ export const ShareLinkActions = createActionGroup({
     'Set Creation Error': errorProps(),
     'Set Item Id': props<{id: string}>(),
 
-    'Validate item': props<{item: ShareLinkItem; topics: Topic[]}>(),
+    'Validate item': props<{item: ShareLinkItem}>(),
     'Set Validation Error': errorProps(),
-    'Complete Validation': props<{
-      activeMapItems: ActiveMapItem[];
-      basemapId: string;
-      drawings: Gb3StyledInternalDrawingRepresentation[];
-      x: number;
-      y: number;
-      scale: number;
-    }>(),
+    'Complete Validation': props<{mapRestoreItem: MapRestoreItem}>(),
 
     'Initialize Application Based On Id': props<{id: string}>(),
     'Set Initialization Error': errorProps(),

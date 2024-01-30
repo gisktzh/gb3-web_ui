@@ -498,9 +498,9 @@ initializeApplicationByLoadingShareLinkItem$ │             │                
                                        │ ShareLinkActions.completeValidation │
                                        └──────┬────────────┬──────────┬──────┘
                  setMapConfigAfterValidation$ │            │          │ setActiveMapItemsAfterValidation$
-                  ┌───────────────────────────▼──────────┐ │ ┌────────▼──────────────────────────────────────┐
-                  │ MapConfigActions.setInitialMapConfig │ │ │ ActiveMapItemActions.initializeActiveMapItems │
-                  └──────────────────────────────────────┘ │ └────────┬──────────────────────────────────────┘
+                  ┌───────────────────────────▼──────────┐ │ ┌────────▼────────────────────────────────┐
+                  │ MapConfigActions.setInitialMapConfig │ │ │ ActiveMapItemActions.addInitialMapItems │
+                  └──────────────────────────────────────┘ │ └────────┬────────────────────────────────┘
                                                            │ ◄────────┘
                                    completeInitialization$ │
                                  ┌─────────────────────────▼──────────────────────────┐

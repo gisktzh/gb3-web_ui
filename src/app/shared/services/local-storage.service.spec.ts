@@ -18,8 +18,8 @@ describe('LocalStorageService', () => {
     spyOn(localStorage, 'removeItem').and.callFake((key: string): void => {
       delete store[key];
     });
-    spyOn(localStorage, 'setItem').and.callFake((key: string, value: string): string => {
-      return (store[key] = <string>value);
+    spyOn(localStorage, 'setItem').and.callFake((key: string, value: string) => {
+      store[key] = value;
     });
     spyOn(localStorage, 'clear').and.callFake(() => {
       store = {};

@@ -459,17 +459,4 @@ describe('ActiveMapItem Reducer', () => {
       expect(state.items.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).every((item) => item.settings.isNoticeMarkedAsRead)).toBeTrue();
     });
   });
-
-  describe('initializeActiveMapItems', () => {
-    it('sets the active map items', () => {
-      const expectedActiveMapItems: ActiveMapItem[] = [
-        createGb2WmsMapItemMock('initialMapItemOne'),
-        createGb2WmsMapItemMock('initialMapItemTwo'),
-      ];
-      const action = ActiveMapItemActions.initializeActiveMapItems({activeMapItems: expectedActiveMapItems});
-      const state = reducer(existingState, action);
-
-      expect(state.items).toEqual(expectedActiveMapItems);
-    });
-  });
 });
