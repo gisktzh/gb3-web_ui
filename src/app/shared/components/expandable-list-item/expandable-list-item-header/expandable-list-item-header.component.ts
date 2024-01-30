@@ -8,7 +8,6 @@ import {LoadingState} from 'src/app/shared/types/loading-state.type';
 })
 export class ExpandableListItemHeaderComponent {
   @Input() public title!: string;
-  @Input() public filterString: string | undefined = undefined;
   @Input() public isExpanded: boolean = true;
   @Input() public loadingState: LoadingState;
   @Input() public numberOfItems: number = 0;
