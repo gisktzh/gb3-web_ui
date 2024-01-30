@@ -1,7 +1,12 @@
 import {DataCataloguePage} from '../enums/data-catalogue-page.enum';
 import {MainPage} from '../enums/main-page.enum';
+import {DataCatalogueSearchResultDisplayItem} from '../interfaces/data-catalogue-search-resuilt-display.interface';
 
 type OverviewMetadataItemModel = 'Geodatensatz' | 'Karte' | 'Geoservice' | 'Produkt';
+export enum OGDAvailability {
+  OGD = 'Frei (OGD)',
+  NOGD = 'Eingeschränkt (NOGD)',
+}
 
 export abstract class OverviewMetadataItem {
   public readonly relativeUrl: string;
@@ -9,7 +14,7 @@ export abstract class OverviewMetadataItem {
   protected constructor(
     public readonly uuid: string,
     public readonly name: string,
-    public readonly description: string,
+    private readonly description: string,
     public readonly type: OverviewMetadataItemModel,
     public readonly responsibleDepartment: string,
   ) {
@@ -29,6 +34,22 @@ export abstract class OverviewMetadataItem {
     }
   }
 
+  /**
+   * Returns the DataCatalogueSearchResultDisplayItem representation of the given OverviewMetadataItem used for displaying in content lists.
+   * Subclasses should override this method to add more properties as per their requirement.
+   */
+  public getDisplayRepresentationForList(): DataCatalogueSearchResultDisplayItem {
+    return {
+      title: this.name,
+      uuid: this.uuid,
+      relativeUrl: this.relativeUrl,
+      fields: [
+        {title: 'Typ', content: this.type},
+        {title: 'Beschreibung', content: this.description, truncatable: true},
+      ],
+    };
+  }
+
   private createUrl(dataTypeUrlPath: DataCataloguePage): string {
     return `/${MainPage.Data}/${dataTypeUrlPath}/${this.uuid}`;
   }
@@ -42,10 +63,22 @@ export class ServiceOverviewMetadataItem extends OverviewMetadataItem {
 
 export class DatasetOverviewMetadataItem extends OverviewMetadataItem {
   public readonly outputFormat: string[];
+  private readonly ogd: OGDAvailability;
 
-  constructor(uuid: string, name: string, description: string, responsibleDepartment: string, outputFormat: string[]) {
+  constructor(uuid: string, name: string, description: string, responsibleDepartment: string, outputFormat: string[], ogd: boolean) {
     super(uuid, name, description, 'Geodatensatz', responsibleDepartment);
     this.outputFormat = outputFormat;
+    this.ogd = ogd ? OGDAvailability.OGD : OGDAvailability.NOGD;
+  }
+
+  public override getDisplayRepresentationForList(): DataCatalogueSearchResultDisplayItem {
+    const {fields, ...rest} = super.getDisplayRepresentationForList();
+    fields.splice(1, 0, {content: this.ogd, title: 'Verfügbarkeit'});
+
+    return {
+      ...rest,
+      fields,
+    };
   }
 }
 

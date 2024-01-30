@@ -1,6 +1,7 @@
 import {
   DatasetOverviewMetadataItem,
   MapOverviewMetadataItem,
+  OGDAvailability,
   ProductOverviewMetadataItem,
   ServiceOverviewMetadataItem,
 } from './overview-metadata-item.model';
@@ -26,8 +27,19 @@ describe('OverviewMetadataItemModel', () => {
     const testItem = new ProductOverviewMetadataItem(TEST_GUID, '', '', '');
     expect(testItem.relativeUrl).toEqual(expectUrlForType(DataCataloguePage.Products));
   });
-  it('creates the correct URL for DatasetOverviewMetadataItem', () => {
-    const testItem = new DatasetOverviewMetadataItem(TEST_GUID, '', '', '', ['']);
-    expect(testItem.relativeUrl).toEqual(expectUrlForType(DataCataloguePage.Datasets));
+  describe('DatasetOverviewMetadataItem', () => {
+    it('creates the correct URL for DatasetOverviewMetadataItem', () => {
+      const testItem = new DatasetOverviewMetadataItem(TEST_GUID, '', '', '', [''], true);
+      expect(testItem.relativeUrl).toEqual(expectUrlForType(DataCataloguePage.Datasets));
+    });
+    [
+      {ogd: true, mapping: OGDAvailability.OGD},
+      {ogd: false, mapping: OGDAvailability.NOGD},
+    ].forEach((testCase) =>
+      it(`creates the correct OGD mapping for DatasetOverviewMetadataItem if OGD is ${testCase.ogd}`, () => {
+        const testItem = new DatasetOverviewMetadataItem(TEST_GUID, '', '', '', [''], testCase.ogd);
+        expect(testItem.ogd).toEqual(testCase.mapping);
+      }),
+    );
   });
 });

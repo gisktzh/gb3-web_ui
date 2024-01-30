@@ -93,7 +93,7 @@ describe('DataCatalogueEffects', () => {
 
   describe('initializeDataCatalogueFilters$', () => {
     it('extracts the configured filter values', (done: DoneFn) => {
-      const mockItems = [new DatasetOverviewMetadataItem('1337', 'Test', 'Testbeschreibung', 'Testamt', ['csv', 'Shapefile'])];
+      const mockItems = [new DatasetOverviewMetadataItem('1337', 'Test', 'Testbeschreibung', 'Testamt', ['csv', 'Shapefile'], true)];
       const mockConfig: DataCatalogueFilterConfiguration[] = [
         {key: 'description', label: 'Description'},
         {key: 'responsibleDepartment', label: 'Verantwortlich'},

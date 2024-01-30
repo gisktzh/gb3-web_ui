@@ -16,6 +16,7 @@ import {
   ServiceOverviewMetadataItem,
 } from '../../../shared/models/overview-metadata-item.model';
 import {FaqCollection, FaqItem} from '../../../shared/interfaces/faq.interface';
+import {DataCatalogueSearchResultDisplayItem} from '../../../shared/interfaces/data-catalogue-search-resuilt-display.interface';
 
 describe('search-result selector', () => {
   describe('selectFilteredSearchApiResultMatches', () => {
@@ -366,7 +367,7 @@ describe('search-result selector', () => {
       new MapOverviewMetadataItem('1234-rofl-yolo-swag', 'one', 'desc', 'dep'), // should match
       new MapOverviewMetadataItem('nope-nope-nope-nope', 'two', 'desc', 'dep'), // should not match
       new ProductOverviewMetadataItem('nope-rofl-yolo-swag', 'three', 'desc', 'dep'), // should not match
-      new DatasetOverviewMetadataItem('aaaa-bbbb-cccc-dddd', 'four', 'desc', 'dep', ['format']), // should match
+      new DatasetOverviewMetadataItem('aaaa-bbbb-cccc-dddd', 'four', 'desc', 'dep', ['format'], true), // should match
       new ServiceOverviewMetadataItem('nada-bbbb-cccc-dddd', 'five', 'desc', 'dep'), // should not match
     ];
 
@@ -389,7 +390,10 @@ describe('search-result selector', () => {
 
     it('returns only filtered items if items and filtered values are available', () => {
       const actual = selectFilteredMetadataItems.projector(filteredSearchApiResultMatchesMock, itemsMock);
-      const expected: OverviewMetadataItem[] = [itemsMock[0], itemsMock[3]];
+      const expected: DataCatalogueSearchResultDisplayItem[] = [
+        itemsMock[0].getDisplayRepresentationForList(),
+        itemsMock[3].getDisplayRepresentationForList(),
+      ];
 
       expect(actual).toEqual(expected);
     });

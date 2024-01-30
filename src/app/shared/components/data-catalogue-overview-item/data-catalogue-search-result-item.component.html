@@ -1,15 +1,16 @@
 <div class="data-catalogue-search-result-item">
   <div class="data-catalogue-search-result-item__content">
-    <span class="data-catalogue-search-result-item__content__title">{{ item.name }}</span>
+    <span class="data-catalogue-search-result-item__content__title">{{ item.title }}</span>
     <div class="data-catalogue-search-result-item__content__details">
-      <div class="data-catalogue-search-result-item__content__details__item">
-        <span class="data-catalogue-search-result-item__content__details__item__title">Typ:</span>
-        <span class="data-catalogue-search-result-item__content__details__item__content">{{ item.type }}</span>
-      </div>
-      <div class="data-catalogue-search-result-item__content__details__item data-catalogue-overview-item__details__item--truncated">
-        <span class="data-catalogue-search-result-item__content__details__item__title">Beschreibung:</span>
-        <span class="data-catalogue-search-result-item__content__details__item__content">{{ item.description }}</span>
-      </div>
+      <ng-container *ngFor="let field of item.fields">
+        <div
+          class="data-catalogue-search-result-item__content__details__item"
+          [ngClass]="{'data-catalogue-search-result-item__content__details__item--truncated': field.truncatable}"
+        >
+          <span class="data-catalogue-search-result-item__content__details__item__title">{{ field.title }}</span>
+          <span class="data-catalogue-search-result-item__content__details__item__content">{{ field.content }}</span>
+        </div>
+      </ng-container>
     </div>
   </div>
 

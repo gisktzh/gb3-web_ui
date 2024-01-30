@@ -1,5 +1,6 @@
 import {Component, Input} from '@angular/core';
-import {OverviewMetadataItem} from '../../../../shared/models/overview-metadata-item.model';
+
+import {DataCatalogueSearchResultDisplayItem} from '../../../../shared/interfaces/data-catalogue-search-resuilt-display.interface';
 
 @Component({
   selector: 'search-result-entry-data-catalog',
@@ -7,5 +8,5 @@ import {OverviewMetadataItem} from '../../../../shared/models/overview-metadata-
   styleUrls: ['./search-result-entry-data-catalog.component.scss'],
 })
 export class SearchResultEntryDataCatalogComponent {
-  @Input() public filteredMetadataItems: OverviewMetadataItem[] = [];
+  @Input() public filteredMetadataItems: DataCatalogueSearchResultDisplayItem[] = [];
 }

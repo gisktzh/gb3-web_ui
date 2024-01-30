@@ -395,7 +395,7 @@ describe('Gb3MetadataService', () => {
   });
 
   describe('load all', () => {
-    it('calls all 4 overview endpoints once and groups the result into a flat map', (done: DoneFn) => {
+    it('calls all 4 overview endpoints once and groups the result into a flat map, using the correct properties', (done: DoneFn) => {
       const httpTestingController = TestBed.inject(HttpTestingController);
 
       service
@@ -424,9 +424,10 @@ describe('Gb3MetadataService', () => {
             new DatasetOverviewMetadataItem(
               mockDatasetDetailResponse.dataset.uuid,
               mockDatasetDetailResponse.dataset.name,
-              mockDatasetDetailResponse.dataset.beschreibung,
+              mockDatasetDetailResponse.dataset.kurzbeschreibung,
               mockDatasetDetailResponse.dataset.kontakt_metadaten.amt,
               mockDatasetDetailResponse.dataset.abgabeformate,
+              mockDatasetDetailResponse.dataset.ogd,
             ),
           ];
           httpTestingController.verify();

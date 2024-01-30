@@ -3,7 +3,6 @@ import {filter, Observable, Subject, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {DataCatalogueActions} from '../../../state/data-catalogue/actions/data-catalogue.actions';
 import {selectLoadingState} from '../../../state/data-catalogue/reducers/data-catalogue.reducer';
-import {OverviewMetadataItem} from '../../../shared/models/overview-metadata-item.model';
 import {LoadingState} from '../../../shared/types/loading-state.type';
 import {MatPaginator, MatPaginatorIntl} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
@@ -17,6 +16,8 @@ import {SearchActions} from '../../../state/app/actions/search.actions';
 import {ConfigService} from '../../../shared/services/config.service';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
+
+import {DataCatalogueSearchResultDisplayItem} from '../../../shared/interfaces/data-catalogue-search-resuilt-display.interface';
 
 const GEO_DATA_CATALOGUE_SUMMARY =
   'Im Geodatenkatalog finden Sie Informationen zur Herkunft, Aktualität und Genauigkeit der Daten, Hinweise zur Nutzung und zum Datenbezug.';
@@ -51,7 +52,8 @@ class DataCataloguePaginatorIntl implements MatPaginatorIntl {
 })
 export class DataCatalogueOverviewComponent implements OnInit, OnDestroy, AfterViewInit {
   public loadingState: LoadingState;
-  public dataCatalogueItems: MatTableDataSource<OverviewMetadataItem> = new MatTableDataSource<OverviewMetadataItem>([]);
+  public dataCatalogueItems: MatTableDataSource<DataCatalogueSearchResultDisplayItem> =
+    new MatTableDataSource<DataCatalogueSearchResultDisplayItem>([]);
   public activeFilters: ActiveDataCatalogueFilter[] = [];
   public screenMode: ScreenMode = 'regular';
   public heroText = GEO_DATA_CATALOGUE_SUMMARY;
@@ -59,7 +61,7 @@ export class DataCatalogueOverviewComponent implements OnInit, OnDestroy, AfterV
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly searchConfig = this.configService.searchConfig.dataCatalogPage;
   private readonly activeFilters$: Observable<ActiveDataCatalogueFilter[]> = this.store.select(selectActiveFilterValues);
-  private readonly dataCatalogueItems$: Observable<OverviewMetadataItem[]> = this.store.select(selectDataCatalogueItems);
+  private readonly dataCatalogueItems$: Observable<DataCatalogueSearchResultDisplayItem[]> = this.store.select(selectDataCatalogueItems);
   private readonly dataCatalogueLoadingState$: Observable<LoadingState> = this.store.select(selectLoadingState);
   private readonly subscriptions: Subscription = new Subscription();
   @ViewChild(MatPaginator) private paginator!: MatPaginator;

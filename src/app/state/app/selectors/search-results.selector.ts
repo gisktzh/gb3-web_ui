@@ -13,6 +13,7 @@ import {OverviewMetadataItem} from '../../../shared/models/overview-metadata-ite
 import {selectFaq} from '../../support/reducers/support-content.reducer';
 import {FaqItem} from '../../../shared/interfaces/faq.interface';
 import {selectMaps} from '../../map/selectors/maps.selector';
+import {DataCatalogueSearchResultDisplayItem} from '../../../shared/interfaces/data-catalogue-search-resuilt-display.interface';
 
 export const selectFilteredSearchApiResultMatches = createSelector(
   selectSearchApiResultMatches,
@@ -79,7 +80,7 @@ export const selectFilteredLayerCatalogMaps = createSelector(
 export const selectFilteredMetadataItems = createSelector(
   selectFilteredSearchApiResultMatches,
   selectItems,
-  (filteredSearchApiResultMatches, metadataItems): OverviewMetadataItem[] => {
+  (filteredSearchApiResultMatches, metadataItems): DataCatalogueSearchResultDisplayItem[] => {
     const filteredMetadataItems: OverviewMetadataItem[] = [];
     const filteredMetadataMatches: MetadataSearchApiResultMatch[] = filteredSearchApiResultMatches
       .filter((filteredMatch) =>
@@ -108,7 +109,7 @@ export const selectFilteredMetadataItems = createSelector(
         filteredMetadataItems.push(metadataItem);
       }
     });
-    return filteredMetadataItems;
+    return filteredMetadataItems.map((filteredMetadataItem) => filteredMetadataItem.getDisplayRepresentationForList());
   },
 );
 

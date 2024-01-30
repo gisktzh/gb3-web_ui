@@ -87,8 +87,9 @@ export class Gb3MetadataService extends Gb3ApiService {
               metadata: {department},
             },
             outputFormat,
+            ogd,
           } = this.transformDatasetsDetailDataToDatasetMetadata(dataset);
-          return new DatasetOverviewMetadataItem(guid, name, shortDescription, department, outputFormat);
+          return new DatasetOverviewMetadataItem(guid, name, shortDescription, department, outputFormat, ogd);
         }),
       ),
     );
