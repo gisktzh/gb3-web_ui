@@ -15,7 +15,7 @@ import {DataCatalogueDetailPageSectionComponent} from './components/data-catalog
 import {DataCatalogueFilterDialogComponent} from './components/data-catalogue-filter-dialog/data-catalogue-filter-dialog.component';
 import {DatasetElementDetailComponent} from './components/dataset-detail/dataset-element-detail/dataset-element-detail.component';
 import {DataDisplayComponent} from './components/data-display/data-display.component';
-import {DataCatalogueSearchResultItemComponent} from '../shared/components/data-catalogue-overview-item/data-catalogue-search-result-item.component';
+import {OverviewSearchResultItemComponent} from '../shared/components/data-catalogue-overview-item/overview-search-result-item.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +37,7 @@ import {DataCatalogueSearchResultItemComponent} from '../shared/components/data-
     SharedModule,
     DatasetElementDetailComponent,
     DataDisplayComponent,
-    DataCatalogueSearchResultItemComponent,
+    OverviewSearchResultItemComponent,
   ],
   exports: [],
 })

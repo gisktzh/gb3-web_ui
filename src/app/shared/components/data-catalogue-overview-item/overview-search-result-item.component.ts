@@ -9,11 +9,11 @@ import {OverviewSearchResultDisplayItem} from '../../interfaces/overview-search-
 
 @Component({
   standalone: true,
-  selector: 'data-catalogue-search-result-item',
-  templateUrl: './data-catalogue-search-result-item.component.html',
-  styleUrls: ['./data-catalogue-search-result-item.component.scss'],
+  selector: 'overview-search-result-item',
+  templateUrl: './overview-search-result-item.component.html',
+  styleUrls: ['./overview-search-result-item.component.scss'],
   imports: [RouterModule, MatIcon, MatDivider, MatButtonModule, ClickOnSpaceBarDirective, NgForOf, NgClass],
 })
-export class DataCatalogueSearchResultItemComponent {
+export class OverviewSearchResultItemComponent {
   @Input() public item!: OverviewSearchResultDisplayItem;
 }

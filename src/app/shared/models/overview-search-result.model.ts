@@ -38,7 +38,7 @@ export class OverviewFaqItem extends OverviewSearchResult implements HasRelative
       uuid: this.uuid,
       relativeUrl: this.relativeUrl,
       fields: [
-        {title: 'Typ', content: 'FAQ'},
+        {title: 'Typ', content: 'Frage'},
         {title: 'Beschreibung', content: this.description, truncatable: true},
       ],
     };

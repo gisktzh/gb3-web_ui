@@ -37,7 +37,7 @@ describe('OverviewMetadataItemModel', () => {
       expectedUrl: expectUrlForType(DataCataloguePage.Products),
       type: 'Produkt',
     },
-    {group: 'OverviewFaqItem', class: OverviewFaqItem, expectedUrl: `${MainPage.Support}/${SupportPage.Faq}`, type: 'FAQ'},
+    {group: 'OverviewFaqItem', class: OverviewFaqItem, expectedUrl: `${MainPage.Support}/${SupportPage.Faq}`, type: 'Frage'},
   ].forEach((testCase) =>
     describe(testCase.group, () => {
       it(`creates the correct URL for ${testCase.group}`, () => {

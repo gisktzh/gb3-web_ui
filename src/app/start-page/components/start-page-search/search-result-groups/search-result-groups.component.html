@@ -24,10 +24,10 @@
     [loadingState]="combinedSearchAndDataCatalogLoadingState"
     [numberOfItems]="filteredMetadataItems.length"
   >
-    <data-catalogue-search-result-item
+    <overview-search-result-item
       *ngFor="let filteredMetadataItem of filteredMetadataItems"
       [item]="filteredMetadataItem"
-    ></data-catalogue-search-result-item>
+    ></overview-search-result-item>
   </search-result-group>
   <search-result-group
     *ngIf="filteredFaqItems.length > 0"
@@ -35,9 +35,6 @@
     header="Support"
     [numberOfItems]="filteredFaqItems.length"
   >
-    <data-catalogue-search-result-item
-      *ngFor="let filteredFaqItem of filteredFaqItems"
-      [item]="filteredFaqItem"
-    ></data-catalogue-search-result-item>
+    <overview-search-result-item *ngFor="let filteredFaqItem of filteredFaqItems" [item]="filteredFaqItem"></overview-search-result-item>
   </search-result-group>
 </mat-accordion>

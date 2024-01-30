@@ -14,7 +14,7 @@ import {TwitterFeedComponent} from './components/twitter-feed/twitter-feed.compo
 import {StartPageRoutingModule} from './start-page-routing.module';
 import {StartPageComponent} from './start-page.component';
 import {DataCatalogueModule} from '../data-catalogue/data-catalogue.module';
-import {DataCatalogueSearchResultItemComponent} from '../shared/components/data-catalogue-overview-item/data-catalogue-search-result-item.component';
+import {OverviewSearchResultItemComponent} from '../shared/components/data-catalogue-overview-item/overview-search-result-item.component';
 import {ClickOnSpaceBarDirective} from '../shared/directives/click-on-spacebar.directive';
 
 @NgModule({
@@ -36,7 +36,7 @@ import {ClickOnSpaceBarDirective} from '../shared/directives/click-on-spacebar.d
     SharedModule,
     StartPageRoutingModule,
     DataCatalogueModule,
-    DataCatalogueSearchResultItemComponent,
+    OverviewSearchResultItemComponent,
     ClickOnSpaceBarDirective,
   ],
 })
