@@ -5,7 +5,7 @@ import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 
 const PRIVACY_SUMMARY =
-  'Geoinformationen sind verlässliche, raumbezogene Daten und Karten. Sie dienen als wichtige Grundlage für vielfältige Aufgaben und Entscheide und stehen über verschiedene Portale zur Einsicht und Nutzung bereit.';
+  'In den Informationen und Richtlinien zum Datenschutz finden Sie die Angaben zur Verarbeitung personenbezogener Daten, den Umfang der Datenverarbeitung, die Verwendung von Cookies und was alles bei der Registrierung gespeichert wird.';
 
 @Component({
   selector: 'privacy-page',
