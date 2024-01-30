@@ -1,23 +1,61 @@
 import {DataCataloguePage} from '../enums/data-catalogue-page.enum';
 import {MainPage} from '../enums/main-page.enum';
-import {DataCatalogueSearchResultDisplayItem} from '../interfaces/data-catalogue-search-resuilt-display.interface';
+import {OverviewSearchResultDisplayItem} from '../interfaces/overview-search-resuilt-display.interface';
+import {SupportPage} from '../enums/support-page.enum';
+import {OGDAvailability} from '../enums/ogd-availability.enum';
 
-type OverviewMetadataItemModel = 'Geodatensatz' | 'Karte' | 'Geoservice' | 'Produkt';
-export enum OGDAvailability {
-  OGD = 'Frei (OGD)',
-  NOGD = 'Eingeschränkt (NOGD)',
+type OverviewSearchResultModel = 'Geodatensatz' | 'Karte' | 'Geoservice' | 'Produkt';
+
+interface HasRelativeUrl {
+  relativeUrl: string;
 }
 
-export abstract class OverviewMetadataItem {
-  public readonly relativeUrl: string;
-
+abstract class OverviewSearchResult {
   protected constructor(
     public readonly uuid: string,
     public readonly name: string,
-    private readonly description: string,
-    public readonly type: OverviewMetadataItemModel,
+    public readonly description: string,
+  ) {}
+
+  /**
+   * Returns the DataCatalogueSearchResultDisplayItem representation of the given OverviewSearchResult used for displaying in content lists.
+   * Subclasses should override this method to add more properties as per their requirement.
+   */
+  public abstract createDisplayRepresentationForList(): OverviewSearchResultDisplayItem;
+}
+
+export class OverviewFaqItem extends OverviewSearchResult implements HasRelativeUrl {
+  public readonly relativeUrl: string;
+
+  constructor(uuid: string, question: string, answer: string) {
+    super(uuid, question, answer);
+    this.relativeUrl = `${MainPage.Support}/${SupportPage.Faq}`;
+  }
+
+  public override createDisplayRepresentationForList(): OverviewSearchResultDisplayItem {
+    return {
+      title: this.name,
+      uuid: this.uuid,
+      relativeUrl: this.relativeUrl,
+      fields: [
+        {title: 'Typ', content: 'FAQ'},
+        {title: 'Beschreibung', content: this.description, truncatable: true},
+      ],
+    };
+  }
+}
+
+export abstract class OverviewMetadataItem extends OverviewSearchResult implements HasRelativeUrl {
+  public readonly relativeUrl: string;
+
+  protected constructor(
+    uuid: string,
+    name: string,
+    description: string,
+    public readonly type: OverviewSearchResultModel,
     public readonly responsibleDepartment: string,
   ) {
+    super(uuid, name, description);
     switch (this.type) {
       case 'Geodatensatz':
         this.relativeUrl = this.createUrl(DataCataloguePage.Datasets);
@@ -34,11 +72,7 @@ export abstract class OverviewMetadataItem {
     }
   }
 
-  /**
-   * Returns the DataCatalogueSearchResultDisplayItem representation of the given OverviewMetadataItem used for displaying in content lists.
-   * Subclasses should override this method to add more properties as per their requirement.
-   */
-  public getDisplayRepresentationForList(): DataCatalogueSearchResultDisplayItem {
+  public override createDisplayRepresentationForList(): OverviewSearchResultDisplayItem {
     return {
       title: this.name,
       uuid: this.uuid,
@@ -63,7 +97,7 @@ export class ServiceOverviewMetadataItem extends OverviewMetadataItem {
 
 export class DatasetOverviewMetadataItem extends OverviewMetadataItem {
   public readonly outputFormat: string[];
-  private readonly ogd: OGDAvailability;
+  public readonly ogd: OGDAvailability;
 
   constructor(uuid: string, name: string, description: string, responsibleDepartment: string, outputFormat: string[], ogd: boolean) {
     super(uuid, name, description, 'Geodatensatz', responsibleDepartment);
@@ -71,8 +105,8 @@ export class DatasetOverviewMetadataItem extends OverviewMetadataItem {
     this.ogd = ogd ? OGDAvailability.OGD : OGDAvailability.NOGD;
   }
 
-  public override getDisplayRepresentationForList(): DataCatalogueSearchResultDisplayItem {
-    const {fields, ...rest} = super.getDisplayRepresentationForList();
+  public override createDisplayRepresentationForList(): OverviewSearchResultDisplayItem {
+    const {fields, ...rest} = super.createDisplayRepresentationForList();
     fields.splice(1, 0, {content: this.ogd, title: 'Verfügbarkeit'});
 
     return {

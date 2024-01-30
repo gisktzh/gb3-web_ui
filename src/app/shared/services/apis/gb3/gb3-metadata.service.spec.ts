@@ -25,7 +25,7 @@ import {
   OverviewMetadataItem,
   ProductOverviewMetadataItem,
   ServiceOverviewMetadataItem,
-} from '../../../models/overview-metadata-item.model';
+} from '../../../models/overview-search-result.model';
 
 const mockContact = {
   amt: 'Amt für Tests',

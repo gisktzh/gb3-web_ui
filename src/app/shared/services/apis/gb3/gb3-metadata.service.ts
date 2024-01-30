@@ -33,7 +33,7 @@ import {
   OverviewMetadataItem,
   ProductOverviewMetadataItem,
   ServiceOverviewMetadataItem,
-} from '../../../models/overview-metadata-item.model';
+} from '../../../models/overview-search-result.model';
 import {LinkObject} from '../../../interfaces/link-object.interface';
 
 @Injectable({

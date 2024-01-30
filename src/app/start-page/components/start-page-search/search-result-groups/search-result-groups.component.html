@@ -35,6 +35,9 @@
     header="Support"
     [numberOfItems]="filteredFaqItems.length"
   >
-    <search-result-entry-support [filteredFaqItems]="filteredFaqItems"></search-result-entry-support>
+    <data-catalogue-search-result-item
+      *ngFor="let filteredFaqItem of filteredFaqItems"
+      [item]="filteredFaqItem"
+    ></data-catalogue-search-result-item>
   </search-result-group>
 </mat-accordion>

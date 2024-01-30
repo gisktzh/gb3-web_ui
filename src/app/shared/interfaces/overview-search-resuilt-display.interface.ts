@@ -1,4 +1,4 @@
-export interface DataCatalogueSearchResultDisplayItemField {
+export interface OverviewSearchResultDisplayItemField {
   title: string;
   content: string;
   /**
@@ -7,9 +7,9 @@ export interface DataCatalogueSearchResultDisplayItemField {
   truncatable?: boolean;
 }
 
-export interface DataCatalogueSearchResultDisplayItem {
+export interface OverviewSearchResultDisplayItem {
   title: string;
   uuid: string;
   relativeUrl: string;
-  fields: DataCatalogueSearchResultDisplayItemField[];
+  fields: OverviewSearchResultDisplayItemField[];
 }

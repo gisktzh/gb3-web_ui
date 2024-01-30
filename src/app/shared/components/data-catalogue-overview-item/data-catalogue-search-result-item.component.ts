@@ -5,7 +5,7 @@ import {MatDivider} from '@angular/material/divider';
 import {MatButtonModule} from '@angular/material/button';
 import {ClickOnSpaceBarDirective} from '../../directives/click-on-spacebar.directive';
 import {NgClass, NgForOf} from '@angular/common';
-import {DataCatalogueSearchResultDisplayItem} from '../../interfaces/data-catalogue-search-resuilt-display.interface';
+import {OverviewSearchResultDisplayItem} from '../../interfaces/overview-search-resuilt-display.interface';
 
 @Component({
   standalone: true,
@@ -15,5 +15,5 @@ import {DataCatalogueSearchResultDisplayItem} from '../../interfaces/data-catalo
   imports: [RouterModule, MatIcon, MatDivider, MatButtonModule, ClickOnSpaceBarDirective, NgForOf, NgClass],
 })
 export class DataCatalogueSearchResultItemComponent {
-  @Input() public item!: DataCatalogueSearchResultDisplayItem;
+  @Input() public item!: OverviewSearchResultDisplayItem;
 }

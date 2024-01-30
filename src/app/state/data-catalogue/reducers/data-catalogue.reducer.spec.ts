@@ -4,7 +4,7 @@ import {
   DatasetOverviewMetadataItem,
   MapOverviewMetadataItem,
   OverviewMetadataItem,
-} from '../../../shared/models/overview-metadata-item.model';
+} from '../../../shared/models/overview-search-result.model';
 import {DataCatalogueState} from '../states/data-catalogue.state';
 import {DataCatalogueFilter} from '../../../shared/interfaces/data-catalogue-filter.interface';
 

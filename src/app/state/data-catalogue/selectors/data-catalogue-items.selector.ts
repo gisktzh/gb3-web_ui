@@ -3,17 +3,17 @@ import {selectItems} from '../reducers/data-catalogue.reducer';
 import {selectActiveFiltersPerGroup} from './active-filters-per-group.selector';
 import {selectFilteredMetadataItems} from '../../app/selectors/search-results.selector';
 import {selectTerm} from '../../app/reducers/search.reducer';
-import {OverviewMetadataItem} from '../../../shared/models/overview-metadata-item.model';
-import {DataCatalogueSearchResultDisplayItem} from '../../../shared/interfaces/data-catalogue-search-resuilt-display.interface';
+import {OverviewMetadataItem} from '../../../shared/models/overview-search-result.model';
+import {OverviewSearchResultDisplayItem} from '../../../shared/interfaces/overview-search-resuilt-display.interface';
 
 export const selectDataCatalogueItems = createSelector(
   selectItems,
   selectActiveFiltersPerGroup,
   selectTerm,
   selectFilteredMetadataItems,
-  (items, activeFilters, searchTerm, filteredBySearch): DataCatalogueSearchResultDisplayItem[] => {
+  (items, activeFilters, searchTerm, filteredBySearch): OverviewSearchResultDisplayItem[] => {
     if (activeFilters.length === 0 && searchTerm === '') {
-      return items.map((item) => item.getDisplayRepresentationForList());
+      return items.map((item) => item.createDisplayRepresentationForList());
     }
 
     // We cast to any because not all items have all the properties from DataCatalogueFilterConfiguration. To remove the cast, we would need to refactor
@@ -33,6 +33,6 @@ export const selectDataCatalogueItems = createSelector(
       .filter((item) => {
         return searchTerm === '' || filteredBySearch.some((searchItem) => searchItem.uuid === item.uuid);
       })
-      .map((item: OverviewMetadataItem) => item.getDisplayRepresentationForList());
+      .map((item: OverviewMetadataItem) => item.createDisplayRepresentationForList());
   },
 );

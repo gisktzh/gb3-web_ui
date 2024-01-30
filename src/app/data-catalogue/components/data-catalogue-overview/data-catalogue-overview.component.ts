@@ -17,7 +17,7 @@ import {ConfigService} from '../../../shared/services/config.service';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 
-import {DataCatalogueSearchResultDisplayItem} from '../../../shared/interfaces/data-catalogue-search-resuilt-display.interface';
+import {OverviewSearchResultDisplayItem} from '../../../shared/interfaces/overview-search-resuilt-display.interface';
 
 const GEO_DATA_CATALOGUE_SUMMARY =
   'Im Geodatenkatalog finden Sie Informationen zur Herkunft, Aktualität und Genauigkeit der Daten, Hinweise zur Nutzung und zum Datenbezug.';
@@ -52,8 +52,9 @@ class DataCataloguePaginatorIntl implements MatPaginatorIntl {
 })
 export class DataCatalogueOverviewComponent implements OnInit, OnDestroy, AfterViewInit {
   public loadingState: LoadingState;
-  public dataCatalogueItems: MatTableDataSource<DataCatalogueSearchResultDisplayItem> =
-    new MatTableDataSource<DataCatalogueSearchResultDisplayItem>([]);
+  public dataCatalogueItems: MatTableDataSource<OverviewSearchResultDisplayItem> = new MatTableDataSource<OverviewSearchResultDisplayItem>(
+    [],
+  );
   public activeFilters: ActiveDataCatalogueFilter[] = [];
   public screenMode: ScreenMode = 'regular';
   public heroText = GEO_DATA_CATALOGUE_SUMMARY;
@@ -61,7 +62,7 @@ export class DataCatalogueOverviewComponent implements OnInit, OnDestroy, AfterV
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly searchConfig = this.configService.searchConfig.dataCatalogPage;
   private readonly activeFilters$: Observable<ActiveDataCatalogueFilter[]> = this.store.select(selectActiveFilterValues);
-  private readonly dataCatalogueItems$: Observable<DataCatalogueSearchResultDisplayItem[]> = this.store.select(selectDataCatalogueItems);
+  private readonly dataCatalogueItems$: Observable<OverviewSearchResultDisplayItem[]> = this.store.select(selectDataCatalogueItems);
   private readonly dataCatalogueLoadingState$: Observable<LoadingState> = this.store.select(selectLoadingState);
   private readonly subscriptions: Subscription = new Subscription();
   @ViewChild(MatPaginator) private paginator!: MatPaginator;

@@ -8,7 +8,7 @@ import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {DataCatalogueActions} from '../actions/data-catalogue.actions';
 import {MetadataOverviewCouldNotBeLoaded} from '../../../shared/errors/data-catalogue.errors';
 import {Gb3MetadataService} from '../../../shared/services/apis/gb3/gb3-metadata.service';
-import {DatasetOverviewMetadataItem, MapOverviewMetadataItem} from '../../../shared/models/overview-metadata-item.model';
+import {DatasetOverviewMetadataItem, MapOverviewMetadataItem} from '../../../shared/models/overview-search-result.model';
 import {selectLoadingState} from '../reducers/data-catalogue.reducer';
 import {ConfigService} from '../../../shared/services/config.service';
 import {DataCatalogueFilter, DataCatalogueFilterConfiguration} from '../../../shared/interfaces/data-catalogue-filter.interface';

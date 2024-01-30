@@ -6,9 +6,7 @@ import {DiscoverMapsComponent} from './components/discover-maps/discover-maps.co
 import {FrequentlyUsedItemsComponent} from './components/frequently-used-items/frequently-used-items.component';
 import {GisBrowserTeaserComponent} from './components/gis-browser-teaser/gis-browser-teaser.component';
 import {NewsFeedComponent} from './components/news-feed/news-feed.component';
-import {SearchResultEntryDataCatalogComponent} from './components/start-page-search/search-result-entry-data-catalog/search-result-entry-data-catalog.component';
 import {SearchResultEntryMapComponent} from './components/start-page-search/search-result-entry-map/search-result-entry-map.component';
-import {SearchResultEntrySupportComponent} from './components/start-page-search/search-result-entry-support/search-result-entry-support.component';
 import {SearchResultGroupComponent} from './components/start-page-search/search-result-group/search-result-group.component';
 import {SearchResultGroupsComponent} from './components/start-page-search/search-result-groups/search-result-groups.component';
 import {StartPageSearchComponent} from './components/start-page-search/start-page-search.component';
@@ -31,8 +29,6 @@ import {ClickOnSpaceBarDirective} from '../shared/directives/click-on-spacebar.d
     StartPageSearchComponent,
     SearchResultGroupComponent,
     SearchResultEntryMapComponent,
-    SearchResultEntryDataCatalogComponent,
-    SearchResultEntrySupportComponent,
     SearchResultGroupsComponent,
   ],
   imports: [
