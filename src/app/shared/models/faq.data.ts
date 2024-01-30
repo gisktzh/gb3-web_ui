@@ -8,10 +8,10 @@ export const faqData: FaqCollection[] = [
         question: 'Was ist das Geoportal?',
         answer:
           'Das Geoportal des Kantons Zürich ist eine Webapplikation für die Suche und Darstellung' +
-          ' von kantonalen Geodaten.Die zwei wesentlichen Bestandteile des Geoportals sind der' +
-          ' GIS - Browser und der Geodatenkatalog.Der GIS - Browser stellt Daten im Kartenformat' +
+          ' von kantonalen Geodaten. Die zwei wesentlichen Bestandteile des Geoportals sind der' +
+          ' GIS - Browser und der Geodatenkatalog. Der GIS - Browser stellt Daten im Kartenformat' +
           ' grafisch dar. Im Geodatenkatalog sind die Geodatensätze zu finden mit den wichtigsten' +
-          ' Metadaten aus dem Geolion(https://geolion.zh.ch/) (Hintergrundinformationen wie z.B.' +
+          ' Metadaten aus dem Geolion https://geolion.zh.ch/ (Hintergrundinformationen wie z.B. ' +
           ' Herkunft, Aktualität, Hinweise zur Nutzung und zum Datenbezug).',
       },
       {
@@ -19,20 +19,20 @@ export const faqData: FaqCollection[] = [
         answer:
           'Ja, das Geoportal wurde sowohl für Desktop als auch für Tablets und Smartphones konzipiert.' +
           ' Die mobile Version ist für kleine Bildschirme optimiert, daher wurden in dieser Version' +
-          ' bestimmten Funktionen weggelassen.Dazu gehören das Zeichnen und Messen, der Datenbezug und Datenimport sowie das Drucken.',
+          ' bestimmten Funktionen weggelassen. Dazu gehören das Zeichnen und Messen, der Datenbezug und Datenimport sowie das Drucken.',
       },
       {
         question: 'Warum werde ich bei einigen Karten auf maps.zh.ch weitergeleitet?',
         answer:
           'Grundsätzlich sind alle Karten im neuen Geoportal auffindbar. Einige Karten bleiben vorerst' +
-          ' auf der alten Webapplikation(https://maps.zh.ch). Wenn Sie eine noch nicht migrierte Karte' +
+          ' auf der alten Webapplikation https://maps.zh.ch . Wenn Sie eine noch nicht migrierte Karte' +
           ' anzeigen möchten, werden Sie automatisch zur alten Darstellung auf die alte Webapplikation weitergeleitet.',
       },
       {
         question: 'Kann ich Daten aus dem GIS-Browser exportieren?',
         answer:
           'Je nach gesetzlicher Grundlage und Verfügbarkeit können Sie die Daten direkt über den GIS-Browser herunterladen' +
-          ' oder im Geodatenshop(https://geodatenshop.zh.ch) bestellen. Verwenden Sie dafür die Desktop-Version, klicken Sie' +
+          ' oder im Geodatenshop https://geodatenshop.zh.ch bestellen. Verwenden Sie dafür die Desktop-Version, klicken Sie' +
           ' auf die Schaltfläche «Daten beziehen» und wählen Sie das Gebiet aus.',
       },
       {
@@ -48,8 +48,8 @@ export const faqData: FaqCollection[] = [
       {
         question: 'Wie kann ich ein Konto erstellen?',
         answer:
-          'Sie können sich über die Schaltfläche «Login» oder über unser Registrierportal (https://maps.zh.ch/gb3/v0/profile/sign_up)' +
-          ' registrieren.Ein Login benötigen Sie, um die Funktion «Favoriten erstellen» nutzen zu können.',
+          'Sie können sich über die Schaltfläche «Login» oder über unser Registrierportal https://maps.zh.ch/gb3/v0/profile/sign_up ' +
+          ' registrieren. Ein Login benötigen Sie, um die Funktion «Favoriten erstellen» nutzen zu können.',
       },
       {
         question: 'Wie erhalte ich weitere Informationen zu Daten oder Karten?',
@@ -59,7 +59,7 @@ export const faqData: FaqCollection[] = [
         question: 'Welcher Bezugsrahmen gilt für die Koordinaten im Kanton Zürich?',
         answer:
           'Im Kanton Zürich gilt für die Lage aller Koordinaten der Bezugsrahmen der neuen Landesvermessung LV95 (Bezugssystem CH1903+).' +
-          ' Für die Höhe gilt der Bezugsrahmen LN02(Schweizerisches Landesnivellementsnetz basierend auf dem Ausgangspunkt «Repère Pierre' +
+          ' Für die Höhe gilt der Bezugsrahmen LN02 (Schweizerisches Landesnivellementsnetz basierend auf dem Ausgangspunkt «Repère Pierre' +
           ' du Niton» in Genf mit einer Höhe von 373.6 m).',
       },
       {
@@ -96,7 +96,7 @@ export const faqData: FaqCollection[] = [
         question: 'Wie kann ich die Zoomstufe ändern?',
         answer:
           'Auf Desktop können Sie die Zoomstufe ändern, indem Sie mit der Maus oder dem Trackpad scrollen ändern oder die Schaltflächen' +
-          ' «Vergrössern» und «Verkleinern» unten links auf der Karte verwenden.Auf dem mobilen Gerät können Sie das Kartenbild mit' +
+          ' «Vergrössern» und «Verkleinern» unten links auf der Karte verwenden. Auf dem mobilen Gerät können Sie das Kartenbild mit' +
           ' Fingerbewegungen anpassen, indem Sie zwei Finger auseinander - oder zusammenziehen.',
       },
       {
@@ -112,7 +112,7 @@ export const faqData: FaqCollection[] = [
         question: 'Wie kann ich eine Kartenansicht teilen?',
         answer:
           'Klicken Sie auf die Schaltfläche «Teilen». Mit dem generierten Link können Sie die aktuelle Kartenansicht sowie Zeichnungen' +
-          ' und Messungen teilen.Importierte Daten können Sie hingegen nicht teilen.',
+          ' und Messungen teilen. Importierte Daten können Sie hingegen nicht teilen.',
       },
       {
         question: 'Wie kann ich eine Kartenansicht speichern?',
@@ -125,12 +125,12 @@ export const faqData: FaqCollection[] = [
         answer:
           'Daten sind teilweise nicht für das ganze Kantonsgebiet verfügbar oder nur in einem bestimmten Massstabsbereich sichtbar.' +
           ' Überprüfen Sie, ob die Karte und die dazugehörigen Layer eingeschaltet sind und ob Sie sich im richtigen Massstabsbereich' +
-          ' befinden.Um den Sichtbarkeitsbereich eines Layers herauszufinden, gehen Sie zu den «Ebenen» unter «aktive Karten» und halten' +
+          ' befinden. Um den Sichtbarkeitsbereich eines Layers herauszufinden, gehen Sie zu den «Ebenen» unter «aktive Karten» und halten' +
           ' Sie die Maus auf dem gewünschten Layer.' +
           '<br/>' +
           'Sollten Sie immer noch nichts sehen, überprüfen Sie die Reihenfolge der dargestellten Karten unter «aktive Karten». Allenfalls' +
-          ' wird ihre Karte durch eine andere Karte überlagert.Falls Sie immer noch nichts sehen, überprüfen Sie, ob andere Gebiete Daten' +
-          ' enthalten.Möglicherweise sind für den Kartenausschnitt, den Sie ausgewählt haben, keine Daten verfügbar.',
+          ' wird ihre Karte durch eine andere Karte überlagert. Falls Sie immer noch nichts sehen, überprüfen Sie, ob andere Gebiete Daten' +
+          ' enthalten. Möglicherweise sind für den Kartenausschnitt, den Sie ausgewählt haben, keine Daten verfügbar.',
       },
     ],
   },
@@ -142,7 +142,7 @@ export const faqData: FaqCollection[] = [
         answer:
           'Open Government Data (OGD) umfassen sämtliche Geodaten gemäss den Anhängen 1 bis 3 der kantonalen Geoinformationsverordnung' +
           ' (KGeoIV) mit Zugangsberechtigungsstufe A, bei welchen zudem «Freie Nutzung und Weitergabe» und «Downloaddienst» mit JA' +
-          ' deklariert sind.Aktuell erfüllen rund 200 Geobasisdatensätze des Kantons diese Kriterien.Die entsprechenden Dokumente' +
+          ' deklariert sind. Aktuell erfüllen rund 200 Geobasisdatensätze des Kantons diese Kriterien. Die entsprechenden Dokumente' +
           ' finden Sie in der Sektion «Weiterführende Informationen».',
       },
       {
@@ -155,7 +155,7 @@ export const faqData: FaqCollection[] = [
         question: 'Warum können einige Produkte bei der Bestellung nicht ausgewählt werden?',
         answer:
           'Im GIS-Browser können Sie nur offene bzw. frei verfügbare Daten (OGD) herunterladen. Produkte, die keine Checkbox haben,' +
-          ' gelten nicht als OGD und müssen über den Geodatenshop (https://geodatenshop.zh.ch) bestellt werden.',
+          ' gelten nicht als OGD und müssen über den Geodatenshop https://geodatenshop.zh.ch bestellt werden.',
       },
       {
         question: 'Kann ich eine Bestellung stornieren?',
@@ -179,7 +179,7 @@ export const faqData: FaqCollection[] = [
         question: 'Können die offenen Geodaten auch als Geodienste bezogen werden?',
         answer:
           'Ja, das ist möglich, und Sie erhalten so stets die aktuellsten Daten, die verfügbar sind. Alle Open-Data-Geodienste finden' +
-          ' Sie im Geodatenkatalog(https://geo.zh.ch/data). Filtern Sie dazu in der Suche nach der Kategorie "Geoservice".',
+          ' Sie im Geodatenkatalog https://geo.zh.ch/data . Filtern Sie dazu in der Suche nach der Kategorie "Geoservice".',
       },
       {
         question: 'Wie kann ich Katasterpläne bestellen?',
@@ -191,14 +191,14 @@ export const faqData: FaqCollection[] = [
         question: 'Gibt es noch andere Varianten zum Bezug von offenen Geodaten?',
         answer:
           'Rasterdaten wie etwa Höhenmodelle (DTM, DOM), Orthofotos und historische Karten können Sie auch über unseren Download-Index' +
-          ' (https://maps.zh.ch/download/) herunterladen.',
+          ' https://maps.zh.ch/download/ herunterladen.',
       },
       {
         question:
           'Was bedeutet die Fehlermeldung «400 Bad Request: Raster products can only be ordered using a PARCEL selection perimeter»?',
         answer:
           'Das ausgewählte Gebiet ist zu gross. Verwenden Sie einen kleineren Ausschnitt, wenn Sie Rasterdaten bestellen, oder beziehen' +
-          ' Sie die Daten aus unserem Download- Index(https://maps.zh.ch/download/).',
+          ' Sie die Daten aus unserem Download- Index https://maps.zh.ch/download/ .',
       },
       {
         question: 'Was bedeutet die Fehlermeldung: «400 Bad Request: Self-intersecting polygon»?',
@@ -214,15 +214,15 @@ export const faqData: FaqCollection[] = [
           'Ich würde gerne Orthofotos des Kantons Zürich für grosse Gebiete bis zur gesamten Kantonsfläche beziehen.' +
           ' Gibt es eine einfache Möglichkeit ein Gebiet grösser als 4 km² zu beziehen?',
         answer:
-          'Sie können die Daten über unseren Download-Index (https://maps.zh.ch/download/)  herunterladen. Alternativ' +
+          'Sie können die Daten über unseren Download-Index https://maps.zh.ch/download/ herunterladen. Alternativ' +
           ' können Sie in der alten Webapplikation https://maps.zh.ch/ in der Karte «Digitale Höhenmodelle 2021/22 ZH»' +
-          ' oder «Orthofoto ZH 2014-2021» die Kacheln direkt herunterladen.Klicken Sie dafür im Kartenfenster auf den Bereich' +
+          ' oder «Orthofoto ZH 2014-2021» die Kacheln direkt herunterladen. Klicken Sie dafür im Kartenfenster auf den Bereich' +
           ' der Kachel, die Sie beziehen möchten.Im rechten Info- Bereich sehen Sie nun den Link zum Download.',
       },
       {
         question: 'Ich will kantonale Daten veröffentlichen. Welche Quelle soll ich angeben?',
         answer:
-          'Details zur Quellenangabe von Daten aus dem GIS-Browser finden Sie in unseren Nutzungshinweisen (https://geo.zh.ch/terms-of-usen).',
+          'Details zur Quellenangabe von Daten aus dem GIS-Browser finden Sie in unseren Nutzungshinweisen https://geo.zh.ch/terms-of-use .',
       },
     ],
   },
