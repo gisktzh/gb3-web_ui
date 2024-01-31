@@ -33,7 +33,7 @@ import {
   OverviewMetadataItem,
   ProductOverviewMetadataItem,
   ServiceOverviewMetadataItem,
-} from '../../../models/overview-metadata-item.model';
+} from '../../../models/overview-search-result.model';
 import {LinkObject} from '../../../interfaces/link-object.interface';
 
 @Injectable({
@@ -81,14 +81,15 @@ export class Gb3MetadataService extends Gb3ApiService {
         result.datasets.map((dataset) => {
           const {
             uuid: guid,
-            description,
+            shortDescription,
             name,
             contact: {
               metadata: {department},
             },
             outputFormat,
+            ogd,
           } = this.transformDatasetsDetailDataToDatasetMetadata(dataset);
-          return new DatasetOverviewMetadataItem(guid, name, description, department, outputFormat);
+          return new DatasetOverviewMetadataItem(guid, name, shortDescription, department, outputFormat, ogd);
         }),
       ),
     );

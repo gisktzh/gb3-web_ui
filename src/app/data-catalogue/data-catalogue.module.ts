@@ -12,10 +12,10 @@ import {ProductDetailComponent} from './components/product-detail/product-detail
 import {DataDisplaySectionComponent} from './components/data-display-section/data-display-section.component';
 import {DataCatalogueDetailPageComponent} from './components/data-catalogue-detail-page/data-catalogue-detail-page.component';
 import {DataCatalogueDetailPageSectionComponent} from './components/data-catalogue-detail-page-section/data-catalogue-detail-page-section.component';
-import {DataCatalogueOverviewItemComponent} from './components/data-catalogue-overview-item/data-catalogue-overview-item.component';
 import {DataCatalogueFilterDialogComponent} from './components/data-catalogue-filter-dialog/data-catalogue-filter-dialog.component';
 import {DatasetElementDetailComponent} from './components/dataset-detail/dataset-element-detail/dataset-element-detail.component';
 import {DataDisplayComponent} from './components/data-display/data-display.component';
+import {OverviewSearchResultItemComponent} from '../shared/components/data-catalogue-overview-item/overview-search-result-item.component';
 
 @NgModule({
   declarations: [
@@ -28,9 +28,17 @@ import {DataDisplayComponent} from './components/data-display/data-display.compo
     DataDisplaySectionComponent,
     DataCatalogueDetailPageComponent,
     DataCatalogueDetailPageSectionComponent,
-    DataCatalogueOverviewItemComponent,
     DataCatalogueFilterDialogComponent,
   ],
-  imports: [CommonModule, DataCatalogueRoutingModule, MaterialModule, SharedModule, DatasetElementDetailComponent, DataDisplayComponent],
+  imports: [
+    CommonModule,
+    DataCatalogueRoutingModule,
+    MaterialModule,
+    SharedModule,
+    DatasetElementDetailComponent,
+    DataDisplayComponent,
+    OverviewSearchResultItemComponent,
+  ],
+  exports: [],
 })
 export class DataCatalogueModule {}

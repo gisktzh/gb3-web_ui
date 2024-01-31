@@ -2,6 +2,7 @@ import {Directive, ElementRef, HostListener} from '@angular/core';
 
 @Directive({
   selector: '[clickOnSpaceBar]',
+  standalone: true,
 })
 export class ClickOnSpaceBarDirective {
   constructor(private elementRef: ElementRef) {}

@@ -1,5 +1,5 @@
 import {createActionGroup, emptyProps, props} from '@ngrx/store';
-import {OverviewMetadataItem} from '../../../shared/models/overview-metadata-item.model';
+import {OverviewMetadataItem} from '../../../shared/models/overview-search-result.model';
 import {errorProps} from '../../../shared/utils/error-props.utils';
 import {DataCatalogueFilterKey} from '../../../shared/types/data-catalogue-filter.type';
 
