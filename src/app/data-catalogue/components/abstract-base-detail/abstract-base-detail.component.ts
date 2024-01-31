@@ -13,6 +13,9 @@ import {BaseMetadataInformation} from '../../interfaces/base-metadata-informatio
 import {RouteParamConstants} from '../../../shared/constants/route-param.constants';
 import {HttpErrorResponse} from '@angular/common/http';
 import {MetadataCouldNotBeLoaded, MetadataNotFound} from '../../../shared/errors/data-catalogue.errors';
+import {Store} from '@ngrx/store';
+import {selectScreenMode} from '../../../state/app/reducers/app-layout.reducer';
+import {ScreenMode} from '../../../shared/types/screen-size.type';
 
 type DetailMetadata = ProductMetadata | MapMetadata | ServiceMetadata | DatasetMetadata;
 
@@ -24,9 +27,11 @@ export abstract class AbstractBaseDetailComponent<T extends DetailMetadata> impl
   public abstract informationElements: DataDisplayElement[];
   public loadingState: LoadingState = 'loading';
   public readonly apiBaseUrl: string;
+  public screenMode: ScreenMode = 'regular';
 
   protected readonly mainPageEnum = MainPage;
   protected readonly dataCataloguePageEnum = DataCataloguePage;
+  protected readonly screenMode$ = this.store.select(selectScreenMode);
   protected readonly subscriptions: Subscription = new Subscription();
 
   protected constructor(
@@ -35,6 +40,7 @@ export abstract class AbstractBaseDetailComponent<T extends DetailMetadata> impl
     private readonly configService: ConfigService,
     private readonly router: Router,
     private readonly errorHandler: ErrorHandler,
+    private readonly store: Store,
   ) {
     this.apiBaseUrl = this.configService.apiConfig.gb2StaticFiles.baseUrl;
   }
@@ -84,6 +90,7 @@ export abstract class AbstractBaseDetailComponent<T extends DetailMetadata> impl
         )
         .subscribe(),
     );
+    this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
   }
 
   /**

@@ -8,6 +8,7 @@ import {BaseMetadataInformation} from '../../interfaces/base-metadata-informatio
 import {AbstractBaseDetailComponent} from '../abstract-base-detail/abstract-base-detail.component';
 import {MetadataLink} from '../../interfaces/metadata-link.interface';
 import {DataExtractionUtils} from '../../utils/data-extraction.utils';
+import {Store} from '@ngrx/store';
 
 @Component({
   selector: 'product-detail',
@@ -26,8 +27,9 @@ export class ProductDetailComponent extends AbstractBaseDetailComponent<ProductM
     @Inject(ConfigService) configService: ConfigService,
     @Inject(Router) router: Router,
     @Inject(ErrorHandler) errorHandler: ErrorHandler,
+    @Inject(Store) store: Store,
   ) {
-    super(route, gb3MetadataService, configService, router, errorHandler);
+    super(route, gb3MetadataService, configService, router, errorHandler, store);
   }
 
   protected loadMetadata(id: string) {
@@ -44,15 +46,12 @@ export class ProductDetailComponent extends AbstractBaseDetailComponent<ProductM
   private extractBaseMetadataInformation(productMetadata: ProductMetadata): BaseMetadataInformation {
     return {
       itemTitle: productMetadata.name,
-      keywords: ['Produkt'], // todo: add OGD status once API delivers that
+      category: 'Produkt',
+      shortDescription: productMetadata.description,
     };
   }
 
   private extractInformationElements(productMetadata: ProductMetadata): DataDisplayElement[] {
-    return [
-      {title: 'GIS-ZH Nr.', value: productMetadata.gisZHNr.toString(), type: 'text'},
-      {title: 'Bezeichnung', value: productMetadata.name, type: 'text'},
-      {title: 'Beschreibung', value: productMetadata.description, type: 'text'},
-    ];
+    return [{title: 'Nr.', value: productMetadata.gisZHNr.toString(), type: 'text'}];
   }
 }

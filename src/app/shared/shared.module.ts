@@ -32,11 +32,10 @@ import {AppendMapConfigurationToUrlPipe} from './pipes/append-map-configuration-
 import {BasemapImageLinkPipe} from './pipes/background-map-image-link.pipe';
 import {FormatContentPipe} from './pipes/format-content.pipe';
 import {HighlightSearchQueryPipe} from './pipes/highlight-search-query.pipe';
-import {KeyValuePreserveOrderPipe} from './pipes/key-value-preserve-order.pipe';
 import {LayerTooltipPipe} from './pipes/layer-tooltip.pipe';
-import {ClickOnSpaceBarDirective} from './directives/click-on-spacebar.directive';
 import {Gb2ExitButtonComponent} from './components/external-link-button/gb2-exit-button.component';
 import {TypedTourAnchorDirective} from './directives/typed-tour-anchor.directive';
+import {ClickOnSpaceBarDirective} from './directives/click-on-spacebar.directive';
 
 @NgModule({
   declarations: [
@@ -50,7 +49,6 @@ import {TypedTourAnchorDirective} from './directives/typed-tour-anchor.directive
     PageNotificationComponent,
     MainFooterComponent,
     ScrollbarWidthCalculationComponent,
-    KeyValuePreserveOrderPipe,
     AppendMapConfigurationToUrlPipe,
     LayerTooltipPipe,
     DescriptiveHighlightedLinkComponent,
@@ -71,11 +69,10 @@ import {TypedTourAnchorDirective} from './directives/typed-tour-anchor.directive
     ExpandableListItemComponent,
     ExpandableListItemHeaderComponent,
     ShowTooltipIfTruncatedDirective,
-    ClickOnSpaceBarDirective,
     Gb2ExitButtonComponent,
     TypedTourAnchorDirective,
   ],
-  imports: [MaterialModule, RouterModule, CommonModule, ResizableModule],
+  imports: [MaterialModule, RouterModule, CommonModule, ResizableModule, ClickOnSpaceBarDirective],
   exports: [
     MaterialModule,
     ResizableModule,
@@ -89,7 +86,6 @@ import {TypedTourAnchorDirective} from './directives/typed-tour-anchor.directive
     PageNotificationComponent,
     MainFooterComponent,
     ScrollbarWidthCalculationComponent,
-    KeyValuePreserveOrderPipe,
     AppendMapConfigurationToUrlPipe,
     LayerTooltipPipe,
     DescriptiveHighlightedLinkComponent,
@@ -107,7 +103,6 @@ import {TypedTourAnchorDirective} from './directives/typed-tour-anchor.directive
     NavbarMobileComponent,
     ExpandableListItemComponent,
     ShowTooltipIfTruncatedDirective,
-    ClickOnSpaceBarDirective,
     Gb2ExitButtonComponent,
     TypedTourAnchorDirective,
   ],

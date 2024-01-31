@@ -3,7 +3,7 @@ import {
   MapOverviewMetadataItem,
   ProductOverviewMetadataItem,
   ServiceOverviewMetadataItem,
-} from '../models/overview-metadata-item.model';
+} from '../models/overview-search-result.model';
 
 export type DataCatalogueFilterKey =
   | keyof DatasetOverviewMetadataItem

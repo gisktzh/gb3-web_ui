@@ -1,10 +1,11 @@
 import {GeometryWithSrs} from './geojson-types-with-srs.interface';
 import {HasMetaDataLink} from './metaDataLink.interface';
 import {IsSingleLayer} from './single-layer.interface';
+import {LinkObject} from './link-object.interface';
 
 export interface FeatureInfoResultFeatureField {
   label: string;
-  value: string | number | null;
+  value: string | LinkObject | null;
 }
 
 interface FeatureInfoResultFeature {

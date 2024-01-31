@@ -3,7 +3,7 @@
 
 .search-result-entry-map {
   display: flex;
-  padding: 12px 0 11px 0;
+  padding: 12px;
   height: 46px;
   overflow: hidden;
 
@@ -20,5 +20,10 @@
     margin-right: auto;
     margin-top: auto;
     margin-bottom: auto;
+  }
+
+  .search-result-entry-map__link {
+    background-color: ktzh-variables.$zh-light-grey;
+    border-radius: 50%;
   }
 }

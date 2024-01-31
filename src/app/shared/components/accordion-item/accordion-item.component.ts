@@ -18,7 +18,7 @@ export class AccordionItemComponent implements OnInit, OnDestroy {
    * * Light = white borders, white font
    * * Dark = dark borders, black font
    */
-  @Input() public variant: 'light' | 'dark' = 'light';
+  @Input() public variant: 'light' | 'dark' | 'grey' = 'light';
   @Input() public header!: string;
   public ariaIdentifier!: string;
   public screenMode: ScreenMode = 'regular';

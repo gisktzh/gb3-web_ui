@@ -1,20 +1,29 @@
+import {LinkObject} from '../../shared/interfaces/link-object.interface';
+
 interface AbstractDataDisplayElement {
   title: string;
-  value: string | null;
-  type: 'text' | 'url' | 'email';
+  value: string[] | string | LinkObject | LinkObject[] | null;
+  type: 'text' | 'url' | 'textList' | 'urlList';
 }
 
 interface TextDataDisplayElement extends AbstractDataDisplayElement {
   type: 'text';
+  value: string | null;
 }
 
 interface UrlDataDisplayElement extends AbstractDataDisplayElement {
   type: 'url';
-  displayText?: string;
+  value: LinkObject | null;
 }
 
-interface EmailDataDisplayElement extends AbstractDataDisplayElement {
-  type: 'email';
+interface StringListDataDisplayElement extends AbstractDataDisplayElement {
+  type: 'textList';
+  value: string[] | null;
 }
 
-export type DataDisplayElement = EmailDataDisplayElement | TextDataDisplayElement | UrlDataDisplayElement;
+interface UrlListDataDisplayElement extends AbstractDataDisplayElement {
+  type: 'urlList';
+  value: LinkObject[] | null;
+}
+
+export type DataDisplayElement = TextDataDisplayElement | UrlDataDisplayElement | StringListDataDisplayElement | UrlListDataDisplayElement;

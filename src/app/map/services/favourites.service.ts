@@ -74,9 +74,12 @@ export class FavouritesService implements OnDestroy {
    * Throws at the first occurrence of an error - this is to ensure that a favourite is somewhat stable, instead of showing only those parts
    * of the favourite that exist.
    * @param activeMapItemConfigurations
-   * @private
+   * @param ignoreErrors indicating whether any error should be ignored. Default: false
    */
-  public getActiveMapItemsForFavourite(activeMapItemConfigurations: ActiveMapItemConfiguration[]): ActiveMapItem[] {
+  public getActiveMapItemsForFavourite(
+    activeMapItemConfigurations: ActiveMapItemConfiguration[],
+    ignoreErrors: boolean = false,
+  ): ActiveMapItem[] {
     const activeMapItems: ActiveMapItem[] = [];
 
     activeMapItemConfigurations.forEach((configuration) => {
@@ -84,31 +87,15 @@ export class FavouritesService implements OnDestroy {
 
       if (existingMap) {
         if (configuration.isSingleLayer) {
-          const subLayer = existingMap.layers.find((layer) => layer.id === configuration.layers[0].id);
-
-          if (!subLayer) {
-            throw new FavouriteIsInvalid(`Der Layer '${configuration.layers[0].layer}' existiert nicht (mehr).`);
+          const activeMapItem = this.createSingleLayerMapItem(existingMap, configuration, ignoreErrors);
+          if (activeMapItem) {
+            activeMapItems.push(activeMapItem);
           }
-          activeMapItems.push(
-            ActiveMapItemFactory.createGb2WmsMapItem(existingMap, subLayer, configuration.visible, configuration.opacity),
-          );
         } else {
-          const adjustedMap = produce(existingMap, (draft) => {
-            draft.layers.forEach((layer) => {
-              const sublayerConfiguration = configuration.layers.find((favLayer) => favLayer.id === layer.id);
-
-              // hide sublayer if it is a newly added layer to not interfere with favourite composition
-              layer.visible = sublayerConfiguration ? sublayerConfiguration.visible : false;
-            });
-            // ensure consistent sorting order with saved configuration in favourite
-            const sortIds = configuration.layers.map((layer) => layer.id);
-            draft.layers.sort((a, b) => sortIds.indexOf(a.id) - sortIds.indexOf(b.id));
-          });
-          activeMapItems.push(
-            ActiveMapItemFactory.createGb2WmsMapItem(adjustedMap, undefined, configuration.visible, configuration.opacity),
-          );
+          const activeMapItem = this.createMultiLayerMapItem(existingMap, configuration);
+          activeMapItems.push(activeMapItem);
         }
-      } else {
+      } else if (!ignoreErrors) {
         throw new FavouriteIsInvalid(`Die Karte '${configuration.mapId}' existiert nicht (mehr).`);
       }
     });
@@ -167,5 +154,35 @@ export class FavouritesService implements OnDestroy {
     );
     this.subscriptions.add(this.favouriteBaseConfig$.subscribe());
     this.subscriptions.add(this.userDrawingsVectorLayers$.subscribe());
+  }
+
+  private createSingleLayerMapItem(
+    existingMap: Map,
+    configuration: ActiveMapItemConfiguration,
+    ignoreErrors: boolean,
+  ): ActiveMapItem | undefined {
+    let activeMapItem: ActiveMapItem | undefined = undefined;
+    const subLayer = existingMap.layers.find((layer) => layer.id === configuration.layers[0].id);
+    if (subLayer) {
+      activeMapItem = ActiveMapItemFactory.createGb2WmsMapItem(existingMap, subLayer, configuration.visible, configuration.opacity);
+    } else if (!ignoreErrors) {
+      throw new FavouriteIsInvalid(`Der Layer '${configuration.layers[0].layer}' existiert nicht (mehr).`);
+    }
+    return activeMapItem;
+  }
+
+  private createMultiLayerMapItem(existingMap: Map, configuration: ActiveMapItemConfiguration): ActiveMapItem {
+    const adjustedMap = produce(existingMap, (draft) => {
+      draft.layers.forEach((layer) => {
+        const sublayerConfiguration = configuration.layers.find((favLayer) => favLayer.id === layer.id);
+
+        // hide sublayer if it is a newly added layer to not interfere with favourite composition
+        layer.visible = sublayerConfiguration ? sublayerConfiguration.visible : false;
+      });
+      // ensure consistent sorting order with saved configuration in favourite
+      const sortIds = configuration.layers.map((layer) => layer.id);
+      draft.layers.sort((a, b) => sortIds.indexOf(a.id) - sortIds.indexOf(b.id));
+    });
+    return ActiveMapItemFactory.createGb2WmsMapItem(adjustedMap, undefined, configuration.visible, configuration.opacity);
   }
 }

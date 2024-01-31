@@ -1,4 +1,4 @@
-import {ErrorHandler, Injectable} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Actions, concatLatestFrom, createEffect, ofType} from '@ngrx/effects';
 import {combineLatestWith, filter, of, switchMap, take, tap} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
@@ -6,22 +6,18 @@ import {ShareLinkActions} from '../actions/share-link.actions';
 import {Gb3ShareLinkService} from '../../../shared/services/apis/gb3/gb3-share-link.service';
 import {Store} from '@ngrx/store';
 import {LayerCatalogActions} from '../actions/layer-catalog.actions';
-import {BasemapConfigService} from '../../../map/services/basemap-config.service';
-import {ConfigService} from '../../../shared/services/config.service';
-import {FavouritesService} from '../../../map/services/favourites.service';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {
   ShareLinkCouldNotBeLoaded,
   ShareLinkCouldNotBeValidated,
   ShareLinkItemCouldNotBeCreated,
-  ShareLinkPropertyCouldNotBeValidated,
 } from '../../../shared/errors/share-link.errors';
 import {selectLoadedLayerCatalogueAndShareItem} from '../selectors/loaded-layer-catalogue-and-share-item.selector';
 import {selectItems} from '../reducers/active-map-item.reducer';
-import {AuthService} from '../../../auth/auth.service';
 import {DrawingActions} from '../actions/drawing.actions';
 import {selectDrawings} from '../reducers/drawing.reducer';
+import {selectIsAuthenticated} from '../../auth/reducers/auth-status.reducer';
 
 /**
  * This class contains a bunch of effects. Most of them are straightforward: do something asynchronous and return a new action afterward or
@@ -113,7 +109,7 @@ export class ShareLinkEffects {
       filter(([_, value]) => value !== undefined),
       take(1),
       map(([_, value]) => {
-        return ShareLinkActions.validateItem({item: value!.shareLinkItem, topics: value!.topics});
+        return ShareLinkActions.validateItem({item: value!.shareLinkItem});
       }),
     );
   });
@@ -121,34 +117,9 @@ export class ShareLinkEffects {
   public validateShareLinkItem$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ShareLinkActions.validateItem),
-      map(({item: {content, drawings, basemapId, scale, center, measurements}}) => {
-        // validate basemap
-        const basemapIdOrDefault = this.basemapConfigService.checkBasemapIdOrGetDefault(basemapId);
-        if (basemapIdOrDefault !== basemapId) {
-          throw new ShareLinkPropertyCouldNotBeValidated(`Basemap ist ungültig: '${basemapId}'`);
-        }
-
-        // validate scale
-        const maxScale = this.configService.mapConfig.mapScaleConfig.maxScale;
-        const minScale = this.configService.mapConfig.mapScaleConfig.minScale;
-        if (scale > minScale || scale < maxScale) {
-          throw new ShareLinkPropertyCouldNotBeValidated(`Massstab ist ungültig: '${scale}'`);
-        }
-
-        // validate active map items => validated within the favourite service
-        const activeMapItems = this.favouritesService.getActiveMapItemsForFavourite(content);
-
-        // extract drawing layers that are needed for the given favourite (i.e. they contain features)
-        const {drawingsToAdd, drawingActiveMapItems} = this.favouritesService.getDrawingsForFavourite(drawings, measurements);
-
-        // complete validation
-        return ShareLinkActions.completeValidation({
-          activeMapItems: [...drawingActiveMapItems, ...activeMapItems], // make sure drawings layers are added at the top
-          scale,
-          basemapId: basemapIdOrDefault,
-          drawings: drawingsToAdd,
-          ...center,
-        });
+      map(({item}) => {
+        const mapRestoreItem = this.shareLinkService.createMapRestoreItem(item);
+        return ShareLinkActions.completeValidation({mapRestoreItem});
       }),
       catchError((error: unknown) => of(ShareLinkActions.setValidationError({error}))),
     );
@@ -167,7 +138,7 @@ export class ShareLinkEffects {
     () => {
       return this.actions$.pipe(
         ofType(ShareLinkActions.setInitializationError),
-        concatLatestFrom(() => this.authService.isAuthenticated$),
+        concatLatestFrom(() => this.store.select(selectIsAuthenticated)),
         tap(([{error}, isAuthenticated]) => {
           throw new ShareLinkCouldNotBeValidated(isAuthenticated, error);
         }),
@@ -179,12 +150,12 @@ export class ShareLinkEffects {
   public setMapConfigAfterValidation$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ShareLinkActions.completeValidation),
-      map((value) => {
+      map(({mapRestoreItem}) => {
         return MapConfigActions.setInitialMapConfig({
-          x: value.x,
-          y: value.y,
-          scale: value.scale,
-          basemapId: value.basemapId,
+          x: mapRestoreItem.x,
+          y: mapRestoreItem.y,
+          scale: mapRestoreItem.scale,
+          basemapId: mapRestoreItem.basemapId,
           initialMaps: [], // active map items are added in a separate effect
         });
       }),
@@ -194,8 +165,8 @@ export class ShareLinkEffects {
   public setActiveMapItemsAfterValidation$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ShareLinkActions.completeValidation),
-      map((value) => {
-        return ActiveMapItemActions.initializeActiveMapItems({activeMapItems: value.activeMapItems});
+      map(({mapRestoreItem}) => {
+        return ActiveMapItemActions.addInitialMapItems({initialMapItems: mapRestoreItem.activeMapItems});
       }),
     );
   });
@@ -203,8 +174,8 @@ export class ShareLinkEffects {
   public setInitialDrawingsAfterValidation$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ShareLinkActions.completeValidation),
-      map((value) => {
-        return DrawingActions.addDrawings({drawings: value.drawings});
+      map(({mapRestoreItem}) => {
+        return DrawingActions.addDrawings({drawings: mapRestoreItem.drawings});
       }),
     );
   });
@@ -215,8 +186,8 @@ export class ShareLinkEffects {
       combineLatestWith(this.store.select(selectItems), this.store.select(selectDrawings)),
       // ensure that the active map items and initial drawings have been set before continuing
       filter(
-        ([value, activeMapItems, drawings]) =>
-          value.activeMapItems.length === activeMapItems.length && value.drawings.length === drawings.length,
+        ([{mapRestoreItem}, activeMapItems, drawings]) =>
+          mapRestoreItem.activeMapItems.length === activeMapItems.length && mapRestoreItem.drawings.length === drawings.length,
       ),
       take(1),
       map(() => {
@@ -229,10 +200,5 @@ export class ShareLinkEffects {
     private readonly actions$: Actions,
     private readonly shareLinkService: Gb3ShareLinkService,
     private readonly store: Store,
-    private readonly basemapConfigService: BasemapConfigService,
-    private readonly configService: ConfigService,
-    private readonly favouritesService: FavouritesService,
-    private readonly errorHandler: ErrorHandler,
-    private readonly authService: AuthService,
   ) {}
 }

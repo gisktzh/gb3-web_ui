@@ -1,15 +1,39 @@
-<div class="data-catalogue-detail-page">
-  <div class="data-catalogue-detail-page__content">
-    <a [routerLink]="'/' + mainPageEnum.Data" class="data-catalogue-detail-page__back-button" mat-button>
-      <mat-icon [svgIcon]="'ktzh_arrow_left'"></mat-icon>
-      Zur Übersicht
-    </a>
-    <h1 class="data-catalogue-detail-page__title mat-headline-4">{{ baseMetadataInformation.itemTitle }}</h1>
-    <p *ngIf="baseMetadataInformation.shortDescription" class="data-catalogue-detail-page__description mat-body">
-      {{ baseMetadataInformation.shortDescription }}
-    </p>
-    <ng-content select="[topLink]"></ng-content>
-    <keyword-list [keywords]="baseMetadataInformation.keywords" listTitle="Schlagwörter"></keyword-list>
-    <ng-content></ng-content>
+<page-section>
+  <div class="data-catalogue-detail-page">
+    <div class="data-catalogue-detail-page__content">
+      <a
+        [routerLink]="'/' + mainPageEnum.Data"
+        class="data-catalogue-detail-page__back-button"
+        [ngClass]="{'data-catalogue-detail-page__back-button--mobile': screenMode === 'mobile'}"
+        mat-button
+      >
+        <mat-icon [svgIcon]="'ktzh_arrow_left'"></mat-icon>
+        Zur Übersicht
+      </a>
+      <div class="data-catalogue-detail-page__title" [ngClass]="{'data-catalogue-detail-page__title--mobile': screenMode === 'mobile'}">
+        @if (baseMetadataInformation.imageUrl) {
+          <img
+            [src]="baseMetadataInformation.imageUrl"
+            class="data-catalogue-detail-page__title__image"
+            alt="Beispielbild zur Karte {{ baseMetadataInformation.itemTitle }}"
+          />
+        }
+        <div>
+          <h1 class="data-catalogue-detail-page__title__text mat-headline-4">{{ baseMetadataInformation.itemTitle }}</h1>
+          @if (baseMetadataInformation.shortDescription) {
+            <p class="data-catalogue-detail-page__description mat-body" [innerHTML]="baseMetadataInformation.shortDescription"></p>
+          }
+          <div class="data-catalogue-detail-page__category">
+            <b class="data-catalogue-detail-page__category__title">Kategorie</b>
+            <div class="data-catalogue-detail-page__category__content">
+              <span class="data-catalogue-detail-page__category__content__pill">{{ baseMetadataInformation.category }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ng-content select="[topLink]"></ng-content>
+      <ng-content></ng-content>
+    </div>
   </div>
-</div>
+</page-section>

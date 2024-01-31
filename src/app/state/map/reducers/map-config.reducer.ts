@@ -82,7 +82,7 @@ export const mapConfigFeature = createFeature({
     on(MapConfigActions.resetExtent, (state): MapConfigState => {
       return {...state};
     }),
-    on(MapConfigActions.changeZoom, (state, {zoomType}): MapConfigState => {
+    on(MapConfigActions.changeZoom, (state): MapConfigState => {
       return {...state};
     }),
     on(MapConfigActions.setBasemap, (state, {activeBasemapId}): MapConfigState => {

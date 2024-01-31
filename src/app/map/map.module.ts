@@ -20,7 +20,6 @@ import {TableColumnIdentifierDirective} from './components/feature-info-overlay/
 import {FeatureInfoGeneralInformationComponent} from './components/feature-info-overlay/feature-info-general-information/feature-info-general-information.component';
 import {FeatureInfoItemComponent} from './components/feature-info-overlay/feature-info-item/feature-info-item.component';
 import {FeatureInfoOverlayComponent} from './components/feature-info-overlay/feature-info-overlay.component';
-import {FeatureInfoPrintContentComponent} from './components/feature-info-overlay/feature-info-print-content/feature-info-print-content.component';
 import {FeatureInfoComponent} from './components/feature-info-overlay/feature-info/feature-info.component';
 import {LegendContentComponent} from './components/legend-overlay/legend-content/legend-content.component';
 import {LegendItemComponent} from './components/legend-overlay/legend-item/legend-item.component';
@@ -83,6 +82,7 @@ import {MapImportLayerListComponent} from './components/map-tools/map-import/map
 import {MapImportDisplayNameComponent} from './components/map-tools/map-import/map-import-display-name/map-import-display-name.component';
 import {TimeExtentToStringPipe} from './pipes/time-extent-to-string.pipe';
 import {DateToStringPipe} from './pipes/date-to-string.pipe';
+import {MapAttributeFilterOverlayComponent} from './components/map-attribute-filter-overlay/map-attribute-filter-overlay.component';
 
 @NgModule({
   declarations: [
@@ -93,14 +93,12 @@ import {DateToStringPipe} from './pipes/date-to-string.pipe';
     LegendOverlayComponent,
     LegendItemComponent,
     FeatureInfoOverlayComponent,
-    MapOverlayComponent,
     MapDataCatalogueComponent,
     MapOverlayListItemComponent,
     FeatureInfoItemComponent,
     CoordinateScaleInputsComponent,
     MapControlsComponent,
     BasemapSelectorComponent,
-    MapAttributeFilterComponent,
     SearchWindowComponent,
     FavouriteCreationDialogComponent,
     ApiDialogWrapperComponent,
@@ -115,7 +113,6 @@ import {DateToStringPipe} from './pipes/date-to-string.pipe';
     ActiveMapItemLayersComponent,
     ActiveMapItemLayerComponent,
     FeatureInfoContentComponent,
-    FeatureInfoPrintContentComponent,
     TableColumnIdentifierDirective,
     BaseMapDataItemComponent,
     MapDataItemMapComponent,
@@ -174,7 +171,10 @@ import {DateToStringPipe} from './pipes/date-to-string.pipe';
     MapImportDisplayNameComponent,
     TimeExtentToStringPipe,
     DateToStringPipe,
+    MapOverlayComponent,
+    MapAttributeFilterComponent,
+    MapAttributeFilterOverlayComponent,
   ],
-  exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent],
+  exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent, MapOverlayComponent],
 })
 export class MapModule {}

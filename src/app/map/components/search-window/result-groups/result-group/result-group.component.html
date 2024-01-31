@@ -1,5 +1,5 @@
 <expandable-list-item
-  [expanded]="screenMode !== 'mobile'"
+  [expanded]="screenMode !== 'mobile' || isExpanded"
   [header]="header"
   class="result-group"
   [numberOfItems]="filteredMaps.length || searchResults.length"
@@ -14,8 +14,9 @@
       tabindex="0"
     >
       <mat-card-header *ngIf="result.indexType === 'activeMapItems'" class="result-group__container__element__header">{{
-        result.indexName
-      }}</mat-card-header>
+          result.indexName
+        }}
+      </mat-card-header>
       <mat-card-content
         class="result-group__container__element__content"
         [innerHTML]="result.displayString | highlightSearchQuery: this.searchTerms"
@@ -35,7 +36,7 @@
             <mat-icon>add</mat-icon>
           </button>
         </ng-template>
-        <img [alt]="map.title" [src]="map.icon" class="result-group__container__element__map-content__image" />
+        <img [alt]="map.title" [src]="map.icon" class="result-group__container__element__map-content__image"/>
         <p
           [innerHTML]="map.title | highlightSearchQuery: this.searchTerms"
           class="result-group__container__element__map-content__title"

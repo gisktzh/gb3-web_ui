@@ -1,8 +1,4 @@
-<map-overlay-list-item
-  [forceExpanded]="this.isPrintable"
-  [metaDataLink]="showInteractiveElements ? legendItem.metaDataLink : undefined"
-  [overlayTitle]="legendItem.title"
->
+<map-overlay-list-item [metaDataLink]="showInteractiveElements ? legendItem.metaDataLink : undefined" [overlayTitle]="legendItem.title">
   <div *ngFor="let layer of legendItem.layers" class="legend-item">
     <map-overlay-list-item
       *ngIf="!legendItem.isSingleLayer; else legendContent"

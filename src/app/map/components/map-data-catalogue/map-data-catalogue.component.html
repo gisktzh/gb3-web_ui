@@ -40,7 +40,7 @@
         <expandable-list-item
           *ngIf="!(!!filterString && filteredFavourites.length === 0)"
           [header]="'Favoriten'"
-          [expanded]="!!filterString && filteredFavourites.length <= autoOpenThreshold"
+          [expanded]="!!filterString"
           [filterString]="filterString"
           [loadingState]="favouritesLoadingState"
           [numberOfItems]="filteredFavourites.length"
@@ -68,7 +68,7 @@
           [numberOfItems]="topic.maps.length"
           [header]="topic.title"
           [filterString]="filterString"
-          [expanded]="!!filterString && topic.maps.length <= autoOpenThreshold"
+          [expanded]="!!filterString"
           [loadingState]="catalogueLoadingState"
           [showBadge]="!!filterString"
         >

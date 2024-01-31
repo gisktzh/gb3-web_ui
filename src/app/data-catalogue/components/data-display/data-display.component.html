@@ -2,23 +2,36 @@
   <div *ngFor="let element of elements" class="data-display__item">
     <span class="data-display__item__title">{{ element.title }}</span>
     <span class="data-display__item__value">
-      <ng-container [ngSwitch]="element.type">
-        <ng-container *ngSwitchCase="'text'">
-          <span [innerText]="element.value ?? '-'"></span>
-        </ng-container>
-        <ng-container *ngSwitchCase="'url'">
-          <a *ngIf="element.value; else noResult" href="{{ element.value }}" rel="noopener noreferrer" target="_blank">{{
-            element.type === 'url' && element.displayText !== undefined ? element.displayText : element.value
-          }}</a>
-        </ng-container>
-        <ng-container *ngSwitchCase="'email'">
-          <a *ngIf="element.value; else noResult" href="mailto:{{ element.value }}" rel="noopener noreferrer" target="_blank">{{
-            element.value
-          }}</a>
-        </ng-container>
-      </ng-container>
+      @switch (element.type) {
+        @case ('text') {
+          <span [innerHTML]="element.value ?? '-'"></span>
+        }
+        @case ('url') {
+          @if (element.value) {
+            <a href="{{ element.value.href }}" rel="noopener noreferrer" target="_blank">{{ element.value.title ?? element.value.href }}</a>
+          } @else {
+            <span>-</span>
+          }
+        }
+        @case ('textList') {
+          @for (item of element.value; track item; let last = $last) {
+            <span>{{ item }}{{ !last ? '; ' : '' }}</span>
+          }
+        }
+        @case ('urlList') {
+          @if (element.value && element.value.length && element.value.length > 0) {
+            <ul class="data-display__item__value__list">
+              @for (item of element.value; track item) {
+                <li>
+                  <a [href]="item.href" target="_blank"> {{ item.title }}</a>
+                </li>
+              }
+            </ul>
+          } @else {
+            <span>-</span>
+          }
+        }
+      }
     </span>
   </div>
 </div>
-
-<ng-template #noResult> - </ng-template>

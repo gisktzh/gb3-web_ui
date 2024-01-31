@@ -1,23 +1,18 @@
 import {Injectable, isDevMode} from '@angular/core';
 import {OAuthErrorEvent, OAuthEvent, OAuthService} from 'angular-oauth2-oidc';
-import {BehaviorSubject, distinctUntilChanged, filter, interval, Subscription, tap} from 'rxjs';
+import {distinctUntilChanged, filter, interval, Subscription, tap} from 'rxjs';
 import {environment} from '../../environments/environment';
 import {Store} from '@ngrx/store';
 import {AuthStatusActions} from '../state/auth/actions/auth-status.actions';
 import {AuthNotificationService} from './notifications/auth-notification.service';
 import {Gb2UserInfo} from './interfaces/gb2-user-info.interface';
 import {Router} from '@angular/router';
+import {selectIsAuthenticated} from '../state/auth/reducers/auth-status.reducer';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly isAuthenticatedSubject$ = new BehaviorSubject<boolean>(false);
-  private readonly isDoneLoadingSubject$ = new BehaviorSubject<boolean>(false);
-
-  public readonly isAuthenticated$ = this.isAuthenticatedSubject$.asObservable();
-  public readonly isDoneLoading$ = this.isDoneLoadingSubject$.asObservable();
-
   private readonly isAuthenticatedCheckInterval$: Subscription = new Subscription();
 
   constructor(
@@ -28,10 +23,10 @@ export class AuthService {
   ) {
     if (!this.getAccessToken()) {
       // no token => the current user is definitely not logged in
-      this.isDoneLoadingSubject$.next(true);
+      this.store.dispatch(AuthStatusActions.setInitialDataLoaded());
     }
     this.oauthService.events.subscribe((event) => {
-      this.isAuthenticatedSubject$.next(this.oauthService.hasValidAccessToken());
+      this.store.dispatch(AuthStatusActions.setStatus({isAuthenticated: this.oauthService.hasValidAccessToken()}));
 
       if (isDevMode()) {
         this.enableOauthDebug(event);
@@ -39,7 +34,7 @@ export class AuthService {
 
       if (event.type === 'user_profile_loaded') {
         // the user profile is loaded and there is either a valid or invalid token
-        this.isDoneLoadingSubject$.next(true);
+        this.store.dispatch(AuthStatusActions.setInitialDataLoaded());
       }
     });
 
@@ -68,7 +63,7 @@ export class AuthService {
       this.authNotificationService.showProgrammaticLogoutDialog();
     }
 
-    this.isAuthenticatedSubject$.next(false);
+    this.store.dispatch(AuthStatusActions.setStatus({isAuthenticated: false}));
   }
 
   public getAccessToken(): string {
@@ -115,7 +110,8 @@ export class AuthService {
    * @private
    */
   private registerIsAuthenticatedHandler() {
-    this.isAuthenticated$
+    this.store
+      .select(selectIsAuthenticated)
       .pipe(
         distinctUntilChanged(),
         tap((isAuthenticated) => {
@@ -167,7 +163,6 @@ export class AuthService {
 
   private redirect(state: string): Promise<boolean> {
     const url = decodeURIComponent(state);
-
     return this.router.navigateByUrl(url);
   }
 }

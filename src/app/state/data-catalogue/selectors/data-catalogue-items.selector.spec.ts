@@ -4,8 +4,9 @@ import {
   MapOverviewMetadataItem,
   OverviewMetadataItem,
   ProductOverviewMetadataItem,
-} from '../../../shared/models/overview-metadata-item.model';
+} from '../../../shared/models/overview-search-result.model';
 import {ActiveDataCatalogueFilterGroup} from '../../../shared/interfaces/data-catalogue-filter.interface';
+import {OverviewSearchResultDisplayItem} from '../../../shared/interfaces/overview-search-resuilt-display.interface';
 
 describe('selectDataCatalogueItems', () => {
   it('returns an empty list if no items, filters and search terms / results are available', () => {
@@ -16,7 +17,7 @@ describe('selectDataCatalogueItems', () => {
 
   it('returns an empty list if no items are available (irrespective of a filter)', () => {
     const actual = selectDataCatalogueItems.projector([], [{key: 'uuid', values: ['does-not-matter']}], 'does-also-not-matter', [
-      new MapOverviewMetadataItem('something', 'name', 'desc', 'dep'),
+      new MapOverviewMetadataItem('something', 'name', 'desc', 'dep').createDisplayRepresentationForList(),
     ]);
 
     expect(actual).toEqual([]);
@@ -29,7 +30,7 @@ describe('selectDataCatalogueItems', () => {
     ];
     const actual = selectDataCatalogueItems.projector(items, [], '', []);
 
-    expect(actual).toEqual(items);
+    expect(actual).toEqual(items.map((item) => item.createDisplayRepresentationForList()));
   });
 
   describe('filter conditions: multiple filters (AND)', () => {
@@ -48,7 +49,7 @@ describe('selectDataCatalogueItems', () => {
         ];
         const actual = selectDataCatalogueItems.projector(items, filter, '', []);
 
-        expect(actual).toEqual([items[0], items[4]]);
+        expect(actual).toEqual([items[0].createDisplayRepresentationForList(), items[4].createDisplayRepresentationForList()]);
       });
 
       it('returns all items that match one of the filter values', () => {
@@ -60,7 +61,7 @@ describe('selectDataCatalogueItems', () => {
         const filter: ActiveDataCatalogueFilterGroup[] = [{key: 'responsibleDepartment', values: ['Test-2', 'Test-3']}];
         const actual = selectDataCatalogueItems.projector(items, filter, '', []);
 
-        expect(actual).toEqual([items[0], items[1]]);
+        expect(actual).toEqual([items[0].createDisplayRepresentationForList(), items[1].createDisplayRepresentationForList()]);
       });
     });
   });
@@ -76,7 +77,7 @@ describe('selectDataCatalogueItems', () => {
         const filter: ActiveDataCatalogueFilterGroup[] = [{key: 'responsibleDepartment', values: ['Test-3']}];
         const actual = selectDataCatalogueItems.projector(items, filter, '', []);
 
-        expect(actual).toEqual([items[0], items[2]]);
+        expect(actual).toEqual([items[0].createDisplayRepresentationForList(), items[2].createDisplayRepresentationForList()]);
       });
 
       it('returns all items that match one of the filter values', () => {
@@ -88,7 +89,7 @@ describe('selectDataCatalogueItems', () => {
         const filter: ActiveDataCatalogueFilterGroup[] = [{key: 'responsibleDepartment', values: ['Test-2', 'Test-3']}];
         const actual = selectDataCatalogueItems.projector(items, filter, '', []);
 
-        expect(actual).toEqual([items[0], items[1]]);
+        expect(actual).toEqual([items[0].createDisplayRepresentationForList(), items[1].createDisplayRepresentationForList()]);
       });
     });
 
@@ -103,24 +104,24 @@ describe('selectDataCatalogueItems', () => {
 
       it('returns an item which has a given property and matches the filter value', () => {
         const items: OverviewMetadataItem[] = [
-          new DatasetOverviewMetadataItem('2', 'TestTest', 'TestTest-2', 'TestTest-3', 'output'),
-          new DatasetOverviewMetadataItem('3', 'TestTest3', 'TestTest-32', 'Test3Test-3', 'output3'),
+          new DatasetOverviewMetadataItem('2', 'TestTest', 'TestTest-2', 'TestTest-3', ['output'], true),
+          new DatasetOverviewMetadataItem('3', 'TestTest3', 'TestTest-32', 'Test3Test-3', ['output3'], false),
         ];
         const filter: ActiveDataCatalogueFilterGroup[] = [{key: 'outputFormat', values: ['output']}];
         const actual = selectDataCatalogueItems.projector(items, filter, '', []);
 
-        expect(actual).toEqual([items[0]]);
+        expect(actual).toEqual([items[0].createDisplayRepresentationForList()]);
       });
 
       it('does return all matching items for all ', () => {
         const items: OverviewMetadataItem[] = [
-          new DatasetOverviewMetadataItem('2', 'TestTest', 'TestTest-2', 'TestTest-3', 'output'),
-          new DatasetOverviewMetadataItem('3', 'TestTest3', 'TestTest-32', 'Test3Test-3', 'output3'),
+          new DatasetOverviewMetadataItem('2', 'TestTest', 'TestTest-2', 'TestTest-3', ['output'], true),
+          new DatasetOverviewMetadataItem('3', 'TestTest3', 'TestTest-32', 'Test3Test-3', ['output3'], false),
         ];
         const filter: ActiveDataCatalogueFilterGroup[] = [{key: 'outputFormat', values: ['output']}];
         const actual = selectDataCatalogueItems.projector(items, filter, '', []);
 
-        expect(actual).toEqual([items[0]]);
+        expect(actual).toEqual([items[0].createDisplayRepresentationForList()]);
       });
     });
   });
@@ -135,13 +136,13 @@ describe('selectDataCatalogueItems', () => {
           new MapOverviewMetadataItem('4', 'Test wird nicht matchen', 'Test-2', 'Test-1'), // should match
           new ProductOverviewMetadataItem('1', 'Test Match', 'Test-2', 'Test-3'), // should not match
         ];
-        const searchTermResults: OverviewMetadataItem[] = [
-          new MapOverviewMetadataItem('2', 'Test in 2', 'Test-2', 'Test-2'),
-          new MapOverviewMetadataItem('4', 'Test wird nicht matchen', 'Test-2', 'Test-1'),
+        const searchTermResults: OverviewSearchResultDisplayItem[] = [
+          new MapOverviewMetadataItem('2', 'Test in 2', 'Test-2', 'Test-2').createDisplayRepresentationForList(),
+          new MapOverviewMetadataItem('4', 'Test wird nicht matchen', 'Test-2', 'Test-1').createDisplayRepresentationForList(),
         ];
         const actual = selectDataCatalogueItems.projector(items, [], 'a search term', searchTermResults);
 
-        expect(actual).toEqual([items[2], items[3]]);
+        expect(actual).toEqual([items[2].createDisplayRepresentationForList(), items[3].createDisplayRepresentationForList()]);
       });
     });
 
@@ -158,10 +159,12 @@ describe('selectDataCatalogueItems', () => {
           {key: 'responsibleDepartment', values: ['Test-1', 'Test-3']},
           {key: 'name', values: ['Test Match', 'Test in 2']},
         ];
-        const searchTermResults: OverviewMetadataItem[] = [new ProductOverviewMetadataItem('1', 'Test Match', 'Test-2', 'Test-3')];
+        const searchTermResults: OverviewSearchResultDisplayItem[] = [
+          new ProductOverviewMetadataItem('1', 'Test Match', 'Test-2', 'Test-3').createDisplayRepresentationForList(),
+        ];
         const actual = selectDataCatalogueItems.projector(items, filter, 'a search term', searchTermResults);
 
-        expect(actual).toEqual([items[0], items[4]]);
+        expect(actual).toEqual([items[0].createDisplayRepresentationForList(), items[4].createDisplayRepresentationForList()]);
       });
     });
   });

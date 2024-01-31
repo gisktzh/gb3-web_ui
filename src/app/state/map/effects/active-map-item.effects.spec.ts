@@ -154,10 +154,20 @@ describe('ActiveMapItemEffects', () => {
   });
 
   describe('hideLegendAfterRemovingAllMapItems$', () => {
-    it('dispatches MapUiActions.hideLegend() if removeAllActiveMapItems action is executed', (done: DoneFn) => {
+    it('dispatches MapUiActions.setLegendOverlayVisibility() if removeAllActiveMapItems action is executed', (done: DoneFn) => {
       actions$ = of(ActiveMapItemActions.removeAllActiveMapItems());
       effects.hideLegendAfterRemovingAllMapItems$.subscribe((action) => {
         expect(action).toEqual(MapUiActions.setLegendOverlayVisibility({isVisible: false}));
+        done();
+      });
+    });
+  });
+
+  describe('hideMapAttributeFilterAfterRemovingAllMapItems$', () => {
+    it('dispatches MapUiActions.setAttributeFilterVisibility() if removeAllActiveMapItems action is executed', (done: DoneFn) => {
+      actions$ = of(ActiveMapItemActions.removeAllActiveMapItems());
+      effects.hideMapAttributeFilterAfterRemovingAllMapItems$.subscribe((action) => {
+        expect(action).toEqual(MapUiActions.setAttributeFilterVisibility({isVisible: false}));
         done();
       });
     });
@@ -375,7 +385,7 @@ describe('ActiveMapItemEffects', () => {
   });
 
   describe('addFavourite$', () => {
-    it('dispatches MapConfigActions.setBasemap() after adding all favourite map items using the map service', (done: DoneFn) => {
+    it('dispatches DrawingActions.overwriteDrawingLayersWithDrawings() after adding all favourite map items using the map service', (done: DoneFn) => {
       const expectedFavouriteActiveMapItems: ActiveMapItem[] = [
         createGb2WmsMapItemMock('favouriteOne'),
         createGb2WmsMapItemMock('favouriteTwo'),
@@ -412,6 +422,33 @@ describe('ActiveMapItemEffects', () => {
           expect(mapServiceRemoveMapItemSpy).toHaveBeenCalledWith(item.id);
         });
         expect(action).toEqual(DrawingActions.overwriteDrawingLayersWithDrawings({layersToOverride: [], drawingsToAdd: []}));
+        done();
+      });
+    });
+  });
+
+  describe('updateBasemapForFavourite$', () => {
+    it('dispatches MapConfigActions.setBasemap()', (done: DoneFn) => {
+      const expectedCenter: PointWithSrs = {
+        type: 'Point',
+        srs: MapConstants.DEFAULT_SRS,
+        coordinates: [1337, 9000.0001],
+      };
+      const expectedFavouriteBaseConfig: FavouriteBaseConfig = {
+        scale: 1_500_000,
+        center: {x: expectedCenter.coordinates[0], y: expectedCenter.coordinates[1]},
+        basemap: 'favMap',
+      };
+
+      actions$ = of(
+        ActiveMapItemActions.addFavourite({
+          activeMapItems: [],
+          baseConfig: expectedFavouriteBaseConfig,
+          drawingsToAdd: [],
+        }),
+      );
+      effects.updateBasemapForFavourite$.subscribe((action) => {
+        expect(action).toEqual(MapConfigActions.setBasemap({activeBasemapId: expectedFavouriteBaseConfig.basemap}));
         done();
       });
     });

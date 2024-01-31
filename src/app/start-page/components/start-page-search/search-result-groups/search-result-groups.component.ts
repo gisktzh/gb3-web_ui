@@ -1,8 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
-import {FaqItem} from 'src/app/shared/interfaces/faq.interface';
-import {OverviewMetadataItem} from 'src/app/shared/models/overview-metadata-item.model';
 import {LoadingState} from 'src/app/shared/types/loading-state.type';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
@@ -15,6 +13,7 @@ import {
 } from '../../../../state/app/selectors/search-results.selector';
 import {selectLoadingState as selectDataCatalogLoadingState} from '../../../../state/data-catalogue/reducers/data-catalogue.reducer';
 import {selectLoadingState as selectLayerCatalogLoadingState} from '../../../../state/map/reducers/layer-catalog.reducer';
+import {OverviewSearchResultDisplayItem} from '../../../../shared/interfaces/overview-search-resuilt-display.interface';
 
 @Component({
   selector: 'search-result-groups',
@@ -24,8 +23,8 @@ import {selectLoadingState as selectLayerCatalogLoadingState} from '../../../../
 export class SearchResultGroupsComponent implements OnInit, OnDestroy {
   public layerCatalogLoadingState: LoadingState;
   public filteredMaps: Map[] = [];
-  public filteredMetadataItems: OverviewMetadataItem[] = [];
-  public filteredFaqItems: FaqItem[] = [];
+  public filteredMetadataItems: OverviewSearchResultDisplayItem[] = [];
+  public filteredFaqItems: OverviewSearchResultDisplayItem[] = [];
   public dataCatalogLoadingState: LoadingState;
   public combinedSearchAndDataCatalogLoadingState: LoadingState;
   public searchApiLoadingState: LoadingState;

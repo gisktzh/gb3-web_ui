@@ -7,9 +7,10 @@
  * Install husky only if the npm was called without omitting 'dev'
  * Or in other words: install husky only in a development environment
  *
- * For more information see: https://typicode.github.io/husky/#/?id=with-a-custom-script
+ * For more information see: https://typicode.github.io/husky/how-to.html#ci-server-and-docker
  */
 const installHusky = process.env.npm_config_omit !== 'dev';
 if (installHusky) {
-  require('husky').install();
+  const husky = (await import('husky')).default;
+  console.log(husky());
 }

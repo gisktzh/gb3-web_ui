@@ -9,7 +9,6 @@ import {ConfigService} from '../../../../shared/services/config.service';
 })
 export class LegendItemComponent {
   @Input() public legendItem!: LegendDisplay;
-  @Input() public isPrintable: boolean = false;
   /** A value indicating whether interactive elements (like buttons) should be shown. [Default: true] */
   @Input() public showInteractiveElements: boolean = true;
   public readonly staticFilesBaseUrl: string;

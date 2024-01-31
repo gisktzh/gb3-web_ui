@@ -22,6 +22,14 @@
     .data-display__item__value {
       a {
         color: ktzh-variables.$zh-active-blue;
+        text-decoration: none;
+        word-break: break-word;
+      }
+
+      .data-display__item__value__list {
+        margin: 0;
+        padding-left: 36px;
+        color: functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent);
       }
     }
   }

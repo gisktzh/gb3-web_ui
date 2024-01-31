@@ -8,6 +8,7 @@ import {BaseMetadataInformation} from '../../interfaces/base-metadata-informatio
 import {AbstractBaseDetailComponent} from '../abstract-base-detail/abstract-base-detail.component';
 import {MetadataLink} from '../../interfaces/metadata-link.interface';
 import {DataExtractionUtils} from '../../utils/data-extraction.utils';
+import {Store} from '@ngrx/store';
 
 @Component({
   selector: 'service-detail',
@@ -27,8 +28,9 @@ export class ServiceDetailComponent extends AbstractBaseDetailComponent<ServiceM
     @Inject(ConfigService) configService: ConfigService,
     @Inject(Router) router: Router,
     @Inject(ErrorHandler) errorHandler: ErrorHandler,
+    @Inject(Store) store: Store,
   ) {
-    super(route, gb3MetadataService, configService, router, errorHandler);
+    super(route, gb3MetadataService, configService, router, errorHandler, store);
   }
 
   protected loadMetadata(id: string) {
@@ -46,7 +48,8 @@ export class ServiceDetailComponent extends AbstractBaseDetailComponent<ServiceM
   private extractBaseMetadataInformation(serviceMetadata: ServiceMetadata): BaseMetadataInformation {
     return {
       itemTitle: serviceMetadata.name,
-      keywords: ['Geodienst'], // todo: add OGD status once API delivers that
+      category: 'Geodienst',
+      shortDescription: serviceMetadata.description,
     };
   }
 
@@ -54,11 +57,13 @@ export class ServiceDetailComponent extends AbstractBaseDetailComponent<ServiceM
     return [
       {title: 'GIS-ZH Nr.', value: serviceMetadata.gisZHNr.toString(), type: 'text'},
       {title: 'Geodienst', value: serviceMetadata.serviceType, type: 'text'},
-      {title: 'Bezeichnung', value: serviceMetadata.name, type: 'text'},
-      {title: 'Beschreibung', value: serviceMetadata.description, type: 'text'},
-      {title: 'URL', value: serviceMetadata.url, type: 'url'},
-      {title: 'GetCapabilities', value: this.createGetCapabilitiesLink(serviceMetadata.url, serviceMetadata.serviceType), type: 'url'},
+      {
+        title: 'GetCapabilities',
+        value: {href: this.createGetCapabilitiesLink(serviceMetadata.url, serviceMetadata.serviceType)},
+        type: 'url',
+      },
       {title: 'Version', value: serviceMetadata.version, type: 'text'},
+      {title: 'Publikationsdatum', value: null, type: 'text'},
       {title: 'Zugang', value: serviceMetadata.access, type: 'text'},
     ];
   }

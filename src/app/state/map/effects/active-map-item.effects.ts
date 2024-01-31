@@ -71,9 +71,9 @@ export class ActiveMapItemEffects {
           return false;
         }
         const definedActiveTool: ToolType = activeTool;
+        let activeUserDrawingLayer: UserDrawingLayer;
         switch (action.type) {
           case '[ActiveMapItem] Remove Active Map Item':
-            let activeUserDrawingLayer: UserDrawingLayer;
             switch (definedActiveTool) {
               case 'measure-line':
               case 'measure-point':
@@ -85,6 +85,7 @@ export class ActiveMapItemEffects {
               case 'draw-polygon':
               case 'draw-rectangle':
               case 'draw-circle':
+              case 'draw-text':
                 activeUserDrawingLayer = UserDrawingLayer.Drawings;
                 break;
               case 'select-circle':
@@ -93,7 +94,8 @@ export class ActiveMapItemEffects {
               case 'select-section':
               case 'select-canton':
               case 'select-municipality':
-                // selection tools are used on an internal layer
+              case 'measure-elevation-profile':
+                // these tools are used on an internal layer
                 return false;
             }
             // is there still a drawing item for the current active tool? if not => cancel tool
@@ -114,6 +116,15 @@ export class ActiveMapItemEffects {
       concatLatestFrom(() => this.store.select(selectScreenMode)),
       filter(([_, screenMode]) => screenMode !== 'mobile'),
       map(() => MapUiActions.setLegendOverlayVisibility({isVisible: false})),
+    );
+  });
+
+  public hideMapAttributeFilterAfterRemovingAllMapItems$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ActiveMapItemActions.removeAllActiveMapItems),
+      concatLatestFrom(() => this.store.select(selectScreenMode)),
+      filter(([_, screenMode]) => screenMode !== 'mobile'),
+      map(() => MapUiActions.setAttributeFilterVisibility({isVisible: false})),
     );
   });
 
@@ -280,6 +291,15 @@ export class ActiveMapItemEffects {
         });
 
         return DrawingActions.overwriteDrawingLayersWithDrawings({layersToOverride: drawingLayersToOverride, drawingsToAdd});
+      }),
+    );
+  });
+
+  public updateBasemapForFavourite$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ActiveMapItemActions.addFavourite),
+      map(({baseConfig}) => {
+        return MapConfigActions.setBasemap({activeBasemapId: baseConfig.basemap});
       }),
     );
   });

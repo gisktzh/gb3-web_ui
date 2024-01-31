@@ -1,16 +1,8 @@
 <loading-and-process-bar [loadingState]="loadingState"></loading-and-process-bar>
 
 <data-catalogue-detail-page *ngIf="baseMetadataInformation" [baseMetadataInformation]="baseMetadataInformation">
-  <data-catalogue-detail-page-section topLink>
-    <descriptive-highlighted-link [description]="serviceUrlForCopy" [title]="'Geodienst URL kopieren'">
-      <button [cdkCopyToClipboard]="serviceUrlForCopy ?? ''" mat-icon-button>
-        <mat-icon svgIcon="ktzh_copy_to_clipboard"></mat-icon>
-      </button>
-    </descriptive-highlighted-link>
-  </data-catalogue-detail-page-section>
-
   <data-catalogue-detail-page-section>
-    <data-display-section [sectionTitle]="'Zuständig für Geometadaten'">
+    <data-display-section [sectionTitle]="'Verantwortlich für Geodaten'">
       <data-display [elements]="metadataContactElements"></data-display>
     </data-display-section>
   </data-catalogue-detail-page-section>
@@ -27,6 +19,7 @@
         *ngFor="let linkedDataset of linkedDatasets"
         [description]="linkedDataset.shortDescription"
         [title]="linkedDataset.name"
+        [id]="linkedDataset.gisZHNr"
       >
         <a [routerLink]="['/', mainPageEnum.Data, dataCataloguePageEnum.Datasets, linkedDataset.uuid]" mat-icon-button>
           <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>

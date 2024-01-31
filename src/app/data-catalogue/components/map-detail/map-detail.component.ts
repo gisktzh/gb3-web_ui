@@ -8,6 +8,7 @@ import {BaseMetadataInformation} from '../../interfaces/base-metadata-informatio
 import {AbstractBaseDetailComponent} from '../abstract-base-detail/abstract-base-detail.component';
 import {MetadataLink} from '../../interfaces/metadata-link.interface';
 import {DataExtractionUtils} from '../../utils/data-extraction.utils';
+import {Store} from '@ngrx/store';
 
 interface BaseMetadataWithTopicInformation extends BaseMetadataInformation {
   topic: string;
@@ -23,6 +24,7 @@ export class MapDetailComponent extends AbstractBaseDetailComponent<MapMetadata>
   public informationElements: DataDisplayElement[] = [];
   public geodataContactElements: DataDisplayElement[] = [];
   public linkedDatasets: MetadataLink[] = [];
+  public gB2Url?: string;
 
   constructor(
     @Inject(ActivatedRoute) route: ActivatedRoute,
@@ -30,8 +32,9 @@ export class MapDetailComponent extends AbstractBaseDetailComponent<MapMetadata>
     @Inject(ConfigService) configService: ConfigService,
     @Inject(Router) router: Router,
     @Inject(ErrorHandler) errorHandler: ErrorHandler,
+    @Inject(Store) store: Store,
   ) {
-    super(route, gb3MetadataService, configService, router, errorHandler);
+    super(route, gb3MetadataService, configService, router, errorHandler, store);
   }
 
   protected loadMetadata(id: string) {
@@ -43,21 +46,29 @@ export class MapDetailComponent extends AbstractBaseDetailComponent<MapMetadata>
     this.informationElements = this.extractInformationElements(mapMetadata);
     this.geodataContactElements = DataExtractionUtils.extractContactElements(mapMetadata.contact.geodata);
     this.linkedDatasets = mapMetadata.datasets;
+    this.gB2Url = mapMetadata.gb2Url?.href;
   }
 
   private extractBaseMetadataInformation(mapMetadata: MapMetadata): BaseMetadataWithTopicInformation {
     return {
       itemTitle: mapMetadata.name,
       topic: mapMetadata.topic,
-      keywords: ['GIS-Browser Karte'], // todo: add OGD status once API delivers that
+      category: 'GIS-Browser Karte',
+      imageUrl: mapMetadata.imageUrl,
+      shortDescription: mapMetadata.description,
     };
   }
 
   private extractInformationElements(mapMetadata: MapMetadata): DataDisplayElement[] {
     return [
-      {title: 'GIS-ZH Nr.', value: mapMetadata.gisZHNr.toString(), type: 'text'},
-      {title: 'Bezeichnung', value: mapMetadata.name, type: 'text'},
-      {title: 'Beschreibung', value: mapMetadata.description, type: 'text'},
+      {title: 'Nr.', value: mapMetadata.gisZHNr.toString(), type: 'text'},
+      {title: 'Kartentyp', value: mapMetadata.gb2Url ? 'GB2' : 'GB3', type: 'text'},
+      {
+        title: 'Internet URL',
+        value: mapMetadata.gb2Url ?? null,
+        type: 'url',
+      },
+      {title: 'Weiterführende Verweise', value: mapMetadata.externalLinks, type: 'urlList'},
     ];
   }
 }

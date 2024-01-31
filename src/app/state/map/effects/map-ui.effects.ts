@@ -29,6 +29,8 @@ import {UrlActions} from '../../app/actions/url.actions';
 import {selectUrlState} from '../../app/reducers/url.reducer';
 import {DataDownloadEmailConfirmationDialogComponent} from '../../../map/components/map-tools/data-download-email-confirmation-dialog/data-download-email-confirmation-dialog.component';
 import {MapImportDialogComponent} from '../../../map/components/map-tools/map-import/map-import-dialog/map-import-dialog.component';
+import {MapAttributeFiltersItemActions} from '../actions/map-attribute-filters-item.actions';
+import {selectMapAttributeFiltersItem} from '../selectors/map-attribute-filters-item.selector';
 
 const CREATE_FAVOURITE_DIALOG_MAX_WIDTH = 500;
 const DELETE_FAVOURITE_DIALOG_MAX_WIDTH = 500;
@@ -109,6 +111,26 @@ export class MapUiEffects {
           return LegendActions.clearLegend();
         }
       }),
+    );
+  });
+
+  public closeAttributeFilterWhenOpeningLegend$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapUiActions.setLegendOverlayVisibility),
+      concatLatestFrom(() => this.store.select(selectScreenMode)),
+      filter(([{isVisible}, screenMode]) => isVisible && screenMode !== 'mobile'),
+      map(() => {
+        return MapUiActions.setAttributeFilterVisibility({isVisible: false});
+      }),
+    );
+  });
+
+  public closeAttributeFilterIfAttributeFilterItemIsUndefined$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ActiveMapItemActions.removeActiveMapItem),
+      concatLatestFrom(() => this.store.select(selectMapAttributeFiltersItem)),
+      filter(([__, attributeFilterItem]) => attributeFilterItem === undefined),
+      map(() => MapUiActions.setAttributeFilterVisibility({isVisible: false})),
     );
   });
 
@@ -285,6 +307,13 @@ export class MapUiEffects {
     },
     {dispatch: false},
   );
+
+  public openAttributeFilterOverlay = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapAttributeFiltersItemActions.setMapAttributeFiltersItemId),
+      map(() => MapUiActions.setAttributeFilterVisibility({isVisible: true})),
+    );
+  });
 
   constructor(
     private readonly actions$: Actions,

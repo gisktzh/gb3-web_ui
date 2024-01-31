@@ -9,6 +9,7 @@ export const initialState: MapUiState = {
   isLegendOverlayVisible: false,
   isFeatureInfoOverlayVisible: false,
   isElevationProfileOverlayVisible: false,
+  isAttributeFilterOverlayVisible: false,
   hideUiElements: false,
   hideToggleUiElementsButton: false,
   hideZoomButtons: false,
@@ -44,6 +45,13 @@ export const mapUiFeature = createFeature({
         ...state,
         isFeatureInfoOverlayVisible: isVisible,
         bottomSheetContent: isVisible ? 'feature-info' : 'none',
+      };
+    }),
+    on(MapUiActions.setAttributeFilterVisibility, (state, {isVisible}): MapUiState => {
+      return {
+        ...state,
+        isAttributeFilterOverlayVisible: isVisible,
+        bottomSheetContent: isVisible ? 'map-attributes' : 'none',
       };
     }),
     on(MapUiActions.changeUiElementsVisibility, (state, {hideAllUiElements, hideUiToggleButton}): MapUiState => {
@@ -94,6 +102,7 @@ export const {
   selectIsElevationProfileOverlayVisible,
   selectIsLegendOverlayVisible,
   selectIsFeatureInfoOverlayVisible,
+  selectIsAttributeFilterOverlayVisible,
   selectBottomSheetContent,
   selectHideUiElements,
   selectHideToggleUiElementsButton,

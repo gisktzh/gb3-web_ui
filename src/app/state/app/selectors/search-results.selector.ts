@@ -9,10 +9,10 @@ import {selectAvailableSpecialSearchIndexes} from '../../map/selectors/available
 import {SearchType} from '../../../shared/types/search.type';
 import {selectItems} from '../../data-catalogue/reducers/data-catalogue.reducer';
 import {SearchIndexType} from '../../../shared/configs/search-index.config';
-import {OverviewMetadataItem} from '../../../shared/models/overview-metadata-item.model';
+import {OverviewFaqItem, OverviewMetadataItem} from '../../../shared/models/overview-search-result.model';
 import {selectFaq} from '../../support/reducers/support-content.reducer';
-import {FaqItem} from '../../../shared/interfaces/faq.interface';
 import {selectMaps} from '../../map/selectors/maps.selector';
+import {OverviewSearchResultDisplayItem} from '../../../shared/interfaces/overview-search-resuilt-display.interface';
 
 export const selectFilteredSearchApiResultMatches = createSelector(
   selectSearchApiResultMatches,
@@ -79,7 +79,7 @@ export const selectFilteredLayerCatalogMaps = createSelector(
 export const selectFilteredMetadataItems = createSelector(
   selectFilteredSearchApiResultMatches,
   selectItems,
-  (filteredSearchApiResultMatches, metadataItems): OverviewMetadataItem[] => {
+  (filteredSearchApiResultMatches, metadataItems): OverviewSearchResultDisplayItem[] => {
     const filteredMetadataItems: OverviewMetadataItem[] = [];
     const filteredMetadataMatches: MetadataSearchApiResultMatch[] = filteredSearchApiResultMatches
       .filter((filteredMatch) =>
@@ -108,7 +108,7 @@ export const selectFilteredMetadataItems = createSelector(
         filteredMetadataItems.push(metadataItem);
       }
     });
-    return filteredMetadataItems;
+    return filteredMetadataItems.map((filteredMetadataItem) => filteredMetadataItem.createDisplayRepresentationForList());
   },
 );
 
@@ -116,7 +116,7 @@ export const selectFilteredFaqItems = createSelector(
   selectTerm,
   selectFaq,
   selectFilterGroups,
-  (searchTerm, faqCollections, filterGroups): FaqItem[] => {
+  (searchTerm, faqCollections, filterGroups): OverviewSearchResultDisplayItem[] => {
     const filters = filterGroups.flatMap((filterGroup) => filterGroup.filters);
     const isNoFilterActive = filters.every((filter) => !filter.isActive); // no filter active means all results are shown (all filters active === no filter active)
     const isFaqFilterActive = isNoFilterActive || (filters.find((filter) => filter.type === 'faqs')?.isActive ?? false);
@@ -132,6 +132,7 @@ export const selectFilteredFaqItems = createSelector(
         return (
           faqItem.question.toLowerCase().includes(lowerCasedFilterString) || faqItem.answer.toLowerCase().includes(lowerCasedFilterString)
         );
-      });
+      })
+      .map((faqItem) => new OverviewFaqItem(faqItem.uuid, faqItem.question, faqItem.answer).createDisplayRepresentationForList());
   },
 );

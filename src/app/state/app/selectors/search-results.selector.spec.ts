@@ -11,11 +11,13 @@ import {Map} from '../../../shared/interfaces/topic.interface';
 import {
   DatasetOverviewMetadataItem,
   MapOverviewMetadataItem,
+  OverviewFaqItem,
   OverviewMetadataItem,
   ProductOverviewMetadataItem,
   ServiceOverviewMetadataItem,
-} from '../../../shared/models/overview-metadata-item.model';
-import {FaqCollection, FaqItem} from '../../../shared/interfaces/faq.interface';
+} from '../../../shared/models/overview-search-result.model';
+import {FaqCollection} from '../../../shared/interfaces/faq.interface';
+import {OverviewSearchResultDisplayItem} from '../../../shared/interfaces/overview-search-resuilt-display.interface';
 
 describe('search-result selector', () => {
   describe('selectFilteredSearchApiResultMatches', () => {
@@ -366,7 +368,7 @@ describe('search-result selector', () => {
       new MapOverviewMetadataItem('1234-rofl-yolo-swag', 'one', 'desc', 'dep'), // should match
       new MapOverviewMetadataItem('nope-nope-nope-nope', 'two', 'desc', 'dep'), // should not match
       new ProductOverviewMetadataItem('nope-rofl-yolo-swag', 'three', 'desc', 'dep'), // should not match
-      new DatasetOverviewMetadataItem('aaaa-bbbb-cccc-dddd', 'four', 'desc', 'dep', 'format'), // should match
+      new DatasetOverviewMetadataItem('aaaa-bbbb-cccc-dddd', 'four', 'desc', 'dep', ['format'], true), // should match
       new ServiceOverviewMetadataItem('nada-bbbb-cccc-dddd', 'five', 'desc', 'dep'), // should not match
     ];
 
@@ -389,7 +391,10 @@ describe('search-result selector', () => {
 
     it('returns only filtered items if items and filtered values are available', () => {
       const actual = selectFilteredMetadataItems.projector(filteredSearchApiResultMatchesMock, itemsMock);
-      const expected: OverviewMetadataItem[] = [itemsMock[0], itemsMock[3]];
+      const expected: OverviewSearchResultDisplayItem[] = [
+        itemsMock[0].createDisplayRepresentationForList(),
+        itemsMock[3].createDisplayRepresentationForList(),
+      ];
 
       expect(actual).toEqual(expected);
     });
@@ -415,11 +420,13 @@ describe('search-result selector', () => {
           items: [
             {
               // no match
+              uuid: '411d7ada-86f0-4193-8e9d-bbad47e95365',
               question: 'What is the answer to life, the universe, and everything?',
               answer: '42',
             },
             {
               // match in question
+              uuid: '37f2b4e5-7463-4b80-8b77-82283d98855b',
               question: `beginning of question ${searchTerm.toUpperCase()} end of question`,
               answer: '6 x 9',
             },
@@ -430,16 +437,19 @@ describe('search-result selector', () => {
           items: [
             {
               // match in answer
+              uuid: 'efacbea0-1ed5-4a73-905e-cf64d0cf79b1',
               question: 'What does the fox say?',
               answer: `beginning of answer ${searchTerm.toLowerCase()} end of answer`,
             },
             {
               // match in both: answer and question
+              uuid: 'ca6fbf46-00d6-4231-9390-d6d7e4c77f31',
               question: `beginning of question ${searchTerm} end of question`,
               answer: `beginning of answer ${searchTerm} end of answer`,
             },
             {
               // partial match in question
+              uuid: '86daf589-8d2d-4781-baf3-cc62e7c456dc',
               question: `beginning of question ${searchTerm.slice(0, searchTerm.length / 2)} end of question`,
               answer: 'an example answer',
             },
@@ -477,8 +487,23 @@ describe('search-result selector', () => {
       const searchTerm = simpleSearchTerm;
       const faqsMock = createFaqCollectionsMock(searchTerm);
       const actual = selectFilteredFaqItems.projector(searchTerm, faqsMock, []);
-      const expected: FaqItem[] = [faqsMock[0].items[1], faqsMock[1].items[0], faqsMock[1].items[1]];
-
+      const expected: OverviewSearchResultDisplayItem[] = [
+        new OverviewFaqItem(
+          faqsMock[0].items[1].uuid,
+          faqsMock[0].items[1].question,
+          faqsMock[0].items[1].answer,
+        ).createDisplayRepresentationForList(),
+        new OverviewFaqItem(
+          faqsMock[1].items[0].uuid,
+          faqsMock[1].items[0].question,
+          faqsMock[1].items[0].answer,
+        ).createDisplayRepresentationForList(),
+        new OverviewFaqItem(
+          faqsMock[1].items[1].uuid,
+          faqsMock[1].items[1].question,
+          faqsMock[1].items[1].answer,
+        ).createDisplayRepresentationForList(),
+      ];
       expect(actual).toEqual(expected);
     });
 
@@ -486,8 +511,23 @@ describe('search-result selector', () => {
       const searchTerm = complexSearchTerm;
       const faqsMock = createFaqCollectionsMock(searchTerm);
       const actual = selectFilteredFaqItems.projector(searchTerm, faqsMock, []);
-      const expected: FaqItem[] = [faqsMock[0].items[1], faqsMock[1].items[0], faqsMock[1].items[1]];
-
+      const expected: OverviewSearchResultDisplayItem[] = [
+        new OverviewFaqItem(
+          faqsMock[0].items[1].uuid,
+          faqsMock[0].items[1].question,
+          faqsMock[0].items[1].answer,
+        ).createDisplayRepresentationForList(),
+        new OverviewFaqItem(
+          faqsMock[1].items[0].uuid,
+          faqsMock[1].items[0].question,
+          faqsMock[1].items[0].answer,
+        ).createDisplayRepresentationForList(),
+        new OverviewFaqItem(
+          faqsMock[1].items[1].uuid,
+          faqsMock[1].items[1].question,
+          faqsMock[1].items[1].answer,
+        ).createDisplayRepresentationForList(),
+      ];
       expect(actual).toEqual(expected);
     });
 
@@ -521,7 +561,23 @@ describe('search-result selector', () => {
           ],
         },
       ]);
-      const expected: FaqItem[] = [faqsMock[0].items[1], faqsMock[1].items[0], faqsMock[1].items[1]];
+      const expected: OverviewSearchResultDisplayItem[] = [
+        new OverviewFaqItem(
+          faqsMock[0].items[1].uuid,
+          faqsMock[0].items[1].question,
+          faqsMock[0].items[1].answer,
+        ).createDisplayRepresentationForList(),
+        new OverviewFaqItem(
+          faqsMock[1].items[0].uuid,
+          faqsMock[1].items[0].question,
+          faqsMock[1].items[0].answer,
+        ).createDisplayRepresentationForList(),
+        new OverviewFaqItem(
+          faqsMock[1].items[1].uuid,
+          faqsMock[1].items[1].question,
+          faqsMock[1].items[1].answer,
+        ).createDisplayRepresentationForList(),
+      ];
 
       expect(actual).toEqual(expected);
     });

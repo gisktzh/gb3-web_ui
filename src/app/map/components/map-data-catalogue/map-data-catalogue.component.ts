@@ -21,11 +21,6 @@ import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {MapCouldNotBeFound} from '../../../shared/errors/map.errors';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 
-/**
- * Defines the upper limit (inclusive) of filtered results which trigger an automatic open of the associated expansion panel.
- */
-const AUTO_OPEN_THRESHOLD = 3;
-
 @Component({
   selector: 'map-data-catalogue',
   templateUrl: './map-data-catalogue.component.html',
@@ -40,7 +35,6 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy {
   public filterString: string | undefined = undefined;
   public filteredFavourites: Favourite[] = [];
   public isAuthenticated: boolean = false;
-  public autoOpenThreshold: number = AUTO_OPEN_THRESHOLD;
   public isMinimized = false;
   public screenMode: ScreenMode = 'regular';
 

@@ -1,28 +1,32 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 @use 'mixins/helpers.mixin' as mixins;
-
-$search-height: 106px;
-$search-height-compact: 64px;
+@use 'variables/search-bar-variables' as search-bar-variables;
 
 .data-catalogue-overview__search {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: calc(0px - $search-height / 2);
+  margin-top: calc(0px - search-bar-variables.$search-bar-height / 2);
 
   &--mobile {
-    margin-top: calc(0px - $search-height-compact / 2);
+    margin-top: calc(0px - search-bar-variables.$search-bar-height-compact / 2);
   }
 
   .data-catalogue-overview__search__bar {
     @include mixins.map-element-box-shadow;
     width: ktzh-variables.$zh-layout-max-content-width;
-    height: $search-height;
+    height: search-bar-variables.$search-bar-height;
     background-color: ktzh-variables.$zh-background-color;
+  }
 
-    &--mobile {
-      height: $search-height-compact;
-      width: calc(100vw - 24px);
+  @media (max-width: calc(ktzh-variables.$zh-layout-max-content-width + 48px)) {
+    .data-catalogue-overview__search__bar {
+      width: calc(100vw - 62px);
+
+      &--mobile {
+        width: calc(100vw - 24px);
+        height: search-bar-variables.$search-bar-height-compact;
+      }
     }
   }
 }
@@ -32,7 +36,6 @@ $search-height-compact: 64px;
   justify-content: center;
 
   .data-catalogue-overview__content {
-    padding: 40px 24px;
     max-width: ktzh-variables.$zh-layout-max-content-width;
     width: 100%;
 
@@ -40,6 +43,11 @@ $search-height-compact: 64px;
       display: flex;
       align-items: center;
       gap: 8px;
+
+      &--mobile {
+        flex-direction: column;
+        align-items: flex-start;
+      }
 
       .data-catalogue-overview__content__active-filters__result-size {
         display: flex;
