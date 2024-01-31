@@ -11,11 +11,15 @@ interface HasRelativeUrl {
 }
 
 abstract class OverviewSearchResult {
-  protected constructor(
-    public readonly uuid: string,
-    public readonly name: string,
-    public readonly description: string,
-  ) {}
+  public readonly uuid: string;
+  public readonly name: string;
+  public readonly description: string;
+
+  protected constructor(uuid: string, name: string, description: string) {
+    this.uuid = uuid;
+    this.name = name;
+    this.description = description;
+  }
 
   /**
    * Returns the DataCatalogueSearchResultDisplayItem representation of the given OverviewSearchResult used for displaying in content lists.
@@ -47,15 +51,15 @@ export class OverviewFaqItem extends OverviewSearchResult implements HasRelative
 
 export abstract class OverviewMetadataItem extends OverviewSearchResult implements HasRelativeUrl {
   public readonly relativeUrl: string;
+  public readonly type: OverviewSearchResultModel;
+  public readonly responsibleDepartment: string;
 
-  protected constructor(
-    uuid: string,
-    name: string,
-    description: string,
-    public readonly type: OverviewSearchResultModel,
-    public readonly responsibleDepartment: string,
-  ) {
+  protected constructor(uuid: string, name: string, description: string, type: OverviewSearchResultModel, responsibleDepartment: string) {
     super(uuid, name, description);
+
+    this.type = type;
+    this.responsibleDepartment = responsibleDepartment;
+
     switch (this.type) {
       case 'Geodatensatz':
         this.relativeUrl = this.createUrl(DataCataloguePage.Datasets);

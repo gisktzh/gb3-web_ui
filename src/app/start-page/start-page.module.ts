@@ -13,7 +13,6 @@ import {StartPageSearchComponent} from './components/start-page-search/start-pag
 import {TwitterFeedComponent} from './components/twitter-feed/twitter-feed.component';
 import {StartPageRoutingModule} from './start-page-routing.module';
 import {StartPageComponent} from './start-page.component';
-import {DataCatalogueModule} from '../data-catalogue/data-catalogue.module';
 import {OverviewSearchResultItemComponent} from '../shared/components/data-catalogue-overview-item/overview-search-result-item.component';
 import {ClickOnSpaceBarDirective} from '../shared/directives/click-on-spacebar.directive';
 
@@ -31,13 +30,6 @@ import {ClickOnSpaceBarDirective} from '../shared/directives/click-on-spacebar.d
     SearchResultEntryMapComponent,
     SearchResultGroupsComponent,
   ],
-  imports: [
-    CommonModule,
-    SharedModule,
-    StartPageRoutingModule,
-    DataCatalogueModule,
-    OverviewSearchResultItemComponent,
-    ClickOnSpaceBarDirective,
-  ],
+  imports: [CommonModule, SharedModule, StartPageRoutingModule, OverviewSearchResultItemComponent, ClickOnSpaceBarDirective],
 })
 export class StartPageModule {}

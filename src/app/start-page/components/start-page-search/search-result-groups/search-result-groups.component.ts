@@ -13,7 +13,6 @@ import {
 } from '../../../../state/app/selectors/search-results.selector';
 import {selectLoadingState as selectDataCatalogLoadingState} from '../../../../state/data-catalogue/reducers/data-catalogue.reducer';
 import {selectLoadingState as selectLayerCatalogLoadingState} from '../../../../state/map/reducers/layer-catalog.reducer';
-
 import {OverviewSearchResultDisplayItem} from '../../../../shared/interfaces/overview-search-resuilt-display.interface';
 
 @Component({

@@ -16,7 +16,6 @@ import {SearchActions} from '../../../state/app/actions/search.actions';
 import {ConfigService} from '../../../shared/services/config.service';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
-
 import {OverviewSearchResultDisplayItem} from '../../../shared/interfaces/overview-search-resuilt-display.interface';
 
 const GEO_DATA_CATALOGUE_SUMMARY =
