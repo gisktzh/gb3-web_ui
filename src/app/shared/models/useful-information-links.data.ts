@@ -10,7 +10,7 @@ export const usefulInformationLinks: LinksGroup[] = [
         title: 'API Dokumentation GIS-Browser 3, GIS-ZH Schnittstellen',
       },
       {
-        url: 'https://geolion.ktzh.ch/api',
+        url: 'https://geolion.zh.ch/api',
         label: 'API Dokumentation Geodatenkatalog',
         title: 'API Dokumentation Geodatenkatalog',
       },
