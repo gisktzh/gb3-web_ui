@@ -5,28 +5,23 @@ export const usefulInformationLinks: LinksGroup[] = [
     label: 'Dokumentation',
     links: [
       {
-        url: 'https://maps.zh.ch/api-docs/index.html',
-        label: 'API Dokumentation GIS-Browser 3, GIS-ZH Schnittstellen',
+        href: 'https://maps.zh.ch/api-docs/index.html',
         title: 'API Dokumentation GIS-Browser 3, GIS-ZH Schnittstellen',
       },
       {
-        url: 'https://geolion.zh.ch/api',
-        label: 'API Dokumentation Geodatenkatalog',
+        href: 'https://geolion.zh.ch/api',
         title: 'API Dokumentation Geodatenkatalog',
       },
       {
-        url: 'https://maps.zh.ch/apidoc',
-        label: 'API Dokumentation GIS-Browser 2, GIS-ZH Schnittstellen',
+        href: 'https://maps.zh.ch/apidoc',
         title: 'API Dokumentation GIS-Browser 2, GIS-ZH Schnittstellen',
       },
       {
-        url: 'https://maps.zh.ch/download/',
-        label: 'Rasterdaten beziehen',
+        href: 'https://maps.zh.ch/download/',
         title: 'Rasterdaten beziehen',
       },
       {
-        url: 'https://www.zh.ch/content/dam/zhweb/bilder-dokumente/themen/planen-bauen/geoinformation/geodaten/geodatenshop/rest_schnittstelle_ogd_interface.pdf',
-        label: 'Spezifikation REST-Schnittstelle',
+        href: 'https://www.zh.ch/content/dam/zhweb/bilder-dokumente/themen/planen-bauen/geoinformation/geodaten/geodatenshop/rest_schnittstelle_ogd_interface.pdf',
         title: 'Spezifikation REST-Schnittstelle',
       },
     ],
@@ -35,13 +30,11 @@ export const usefulInformationLinks: LinksGroup[] = [
     label: 'Tools',
     links: [
       {
-        url: 'https://www.swisstopo.admin.ch/de/karten-daten-online/calculation-services.html',
-        label: 'Transformations- und Rechendienste Swisstopo',
+        href: 'https://www.swisstopo.admin.ch/de/karten-daten-online/calculation-services.html',
         title: 'Transformations- und Rechendienste Swisstopo',
       },
       {
-        url: 'https://www.zh.ch/de/planen-bauen/geoinformation/geodaten/geodatenbezug/vorlagen-fuer-administrativer-grenzen-und-karten.html',
-        label: 'Gemeinde-Kartentool',
+        href: 'https://www.zh.ch/de/planen-bauen/geoinformation/geodaten/geodatenbezug/vorlagen-fuer-administrativer-grenzen-und-karten.html',
         title: 'Gemeinde-Kartentool',
       },
     ],
@@ -50,13 +43,11 @@ export const usefulInformationLinks: LinksGroup[] = [
     label: 'Standards',
     links: [
       {
-        url: 'https://www.interlis.ch/',
-        label: 'Interlis',
+        href: 'https://www.interlis.ch/',
         title: 'Interlis',
       },
       {
-        url: 'https://www.ogc.org/',
-        label: 'Open Geospatial Consortium',
+        href: 'https://www.ogc.org/',
         title: 'Open Geospatial Consortium',
       },
     ],
@@ -65,18 +56,15 @@ export const usefulInformationLinks: LinksGroup[] = [
     label: 'Weitere Daten',
     links: [
       {
-        url: 'https://geodienste.ch/',
-        label: 'https://geodienste.ch/',
+        href: 'https://geodienste.ch/',
         title: 'https://geodienste.ch/',
       },
       {
-        url: 'https://www.zh.ch/de/politik-staat/statistik-daten/datenkatalog.html#/',
-        label: 'https://www.zh.ch/de/politik-staat/statistik-daten/datenkatalog.html#/',
+        href: 'https://www.zh.ch/de/politik-staat/statistik-daten/datenkatalog.html#/',
         title: 'https://www.zh.ch/de/politik-staat/statistik-daten/datenkatalog.html#/',
       },
       {
-        url: 'https://opendata.swiss/de',
-        label: 'https://opendata.swiss/de',
+        href: 'https://opendata.swiss/de',
         title: 'https://opendata.swiss/de',
       },
     ],
@@ -85,23 +73,19 @@ export const usefulInformationLinks: LinksGroup[] = [
     label: 'Das könnte Sie auch interessieren',
     links: [
       {
-        url: 'https://www.zh.ch/de/planen-bauen/geoinformation.html',
-        label: 'Themenseite der Geoinformation',
+        href: 'https://www.zh.ch/de/planen-bauen/geoinformation.html',
         title: 'Themenseite der Geoinformation',
       },
       {
-        url: 'https://map.geo.admin.ch/?lang=de',
-        label: 'Kartenviewer des Bundes',
+        href: 'https://map.geo.admin.ch/?lang=de',
         title: 'Kartenviewer des Bundes',
       },
       {
-        url: 'https://www.cadastre.ch/de/home.html',
-        label: 'Das schweizerische Katasterwesen',
+        href: 'https://www.cadastre.ch/de/home.html',
         title: 'Das schweizerische Katasterwesen',
       },
       {
-        url: 'https://www.swisstopo.admin.ch/de/wissen-fakten/geodaesie-vermessung/bezugsysteme.html',
-        label: 'Schweizerische Bezugssysteme',
+        href: 'https://www.swisstopo.admin.ch/de/wissen-fakten/geodaesie-vermessung/bezugsysteme.html',
         title: 'Schweizerische Bezugssysteme',
       },
     ],

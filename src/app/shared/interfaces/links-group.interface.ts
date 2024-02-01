@@ -1,6 +1,6 @@
-import {LinkableElement} from './linkable-element.interface';
+import {LinkObject} from './link-object.interface';
 
 export interface LinksGroup {
   label: string;
-  links: LinkableElement[];
+  links: LinkObject[];
 }
