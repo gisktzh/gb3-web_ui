@@ -5,7 +5,7 @@ import {TitleLink} from '../shared/components/page-section/page-section.componen
 import {LinksGroup} from '../shared/interfaces/links-group.interface';
 import {ScreenMode} from '../shared/types/screen-size.type';
 import {selectScreenMode} from '../state/app/reducers/app-layout.reducer';
-import {selectLinks} from '../state/support/reducers/support-content.reducer';
+import {selectAdditionalInformationLinks} from '../state/support/reducers/support-content.reducer';
 
 const START_PAGE_SUMMARY =
   'Das Geoportal bietet Ihnen einen zentralen Zugang zu den Geodaten des Kantons Zürich. Auf dieser Informationsplattform können Sie die Daten über verschiedene Auskunftssysteme sichten oder beziehen.';
@@ -21,11 +21,11 @@ export class StartPageComponent implements OnInit, OnDestroy {
     url: 'https://www.zh.ch/de/news-uebersicht.html?organisation=organisationen%253Akanton-zuerich%252Fbaudirektion%252Famt-fuer-raumentwicklung&topic=themen%253Aplanen-bauen%252Fgeoinformation',
     displayTitle: 'Mehr Beiträge',
   };
-  public usefulLinksGroups: LinksGroup[] = [];
+  public additionalInformationLinksGroups: LinksGroup[] = [];
   public screenMode: ScreenMode = 'regular';
 
   private readonly screenMode$ = this.store.select(selectScreenMode);
-  private readonly usefulLinksGroups$: Observable<LinksGroup[]> = this.store.select(selectLinks);
+  private readonly additionalInformationLinksGroups$: Observable<LinksGroup[]> = this.store.select(selectAdditionalInformationLinks);
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(private readonly store: Store) {}
@@ -39,7 +39,11 @@ export class StartPageComponent implements OnInit, OnDestroy {
   }
 
   private initSubscriptions() {
-    this.subscriptions.add(this.usefulLinksGroups$.pipe(tap((usefulLinks) => (this.usefulLinksGroups = usefulLinks))).subscribe());
+    this.subscriptions.add(
+      this.additionalInformationLinksGroups$
+        .pipe(tap((additionalInformationLinks) => (this.additionalInformationLinksGroups = additionalInformationLinks)))
+        .subscribe(),
+    );
     this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
   }
 }

@@ -1,6 +1,6 @@
 import {LinksGroup} from '../interfaces/links-group.interface';
 
-export const supportLinks: LinksGroup[] = [
+export const additionalInformationLinks: LinksGroup[] = [
   {
     label: 'Rechtliche Grundlagen',
     links: [

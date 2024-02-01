@@ -3,5 +3,6 @@ import {LinksGroup} from '../../../shared/interfaces/links-group.interface';
 
 export interface SupportContentState {
   faq: FaqCollection[];
-  links: LinksGroup[];
+  additionalInformationLinks: LinksGroup[];
+  usefulInformationLinks: LinksGroup[];
 }
