@@ -10,12 +10,8 @@
 }
 
 .search-filter-dialog-content {
-  width: 956px;
+  width: 100%;
   padding: 20px 24px;
-
-  &--mobile {
-    width: 90vw;
-  }
 
   .search-filter-dialog-content__wrapper {
     display: flex;
