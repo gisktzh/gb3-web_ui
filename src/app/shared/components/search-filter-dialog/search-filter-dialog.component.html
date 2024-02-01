@@ -1,5 +1,5 @@
 <h1 mat-dialog-title>Filter</h1>
-<div mat-dialog-content class="search-filter-dialog-content">
+<div mat-dialog-content class="search-filter-dialog-content" [ngClass]="{'search-filter-dialog-content--mobile': screenMode === 'mobile'}">
   <cdk-accordion>
     <accordion-item
       *ngFor="let filterGroup of nonEmptyFilterGroups; trackBy: trackByFilterGroupLabel"
