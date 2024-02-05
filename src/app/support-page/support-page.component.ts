@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {Observable, Subscription, tap} from 'rxjs';
+import {Subscription, tap} from 'rxjs';
 import {ScreenMode} from '../shared/types/screen-size.type';
 import {selectScreenMode} from '../state/app/reducers/app-layout.reducer';
 import {LinksGroup} from '../shared/interfaces/links-group.interface';
@@ -20,7 +20,7 @@ export class SupportPageComponent implements OnInit, OnDestroy {
   public additionalInformationLinksGroups: LinksGroup[] = [];
 
   private readonly screenMode$ = this.store.select(selectScreenMode);
-  private readonly additionalInformationLinksGroups$: Observable<LinksGroup[]> = this.store.select(selectAdditionalInformationLinks);
+  private readonly additionalInformationLinksGroups$ = this.store.select(selectAdditionalInformationLinks);
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(private readonly store: Store) {}
