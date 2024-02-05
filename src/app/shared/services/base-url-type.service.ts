@@ -8,7 +8,7 @@ import {LinksGroup, RelativeLinksGroup} from '../interfaces/links-group.interfac
   providedIn: 'root',
 })
 export class BaseUrlTypeService {
-  constructor(protected readonly configService: ConfigService) {}
+  constructor(private readonly configService: ConfigService) {}
 
   public convertRelativeLinksGroupsToLinksGroups(relativeLinksGroups: RelativeLinksGroup[]): LinksGroup[] {
     return relativeLinksGroups.map((linksGroup) => {
