@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {LinkableElement} from 'src/app/shared/interfaces/linkable-element.interface';
+import {LinkObject} from '../../../shared/interfaces/link-object.interface';
 
 @Component({
   selector: 'contact',
@@ -7,5 +7,5 @@ import {LinkableElement} from 'src/app/shared/interfaces/linkable-element.interf
   styleUrls: ['./contact.component.scss'],
 })
 export class ContactComponent {
-  public email: LinkableElement[] = [{title: 'gis@bd.zh.ch', url: 'mailto:gis@bd.zh.ch', label: 'gis@bd.zh.ch'}];
+  public email: LinkObject[] = [{title: 'gis@bd.zh.ch', href: 'mailto:gis@bd.zh.ch'}];
 }
