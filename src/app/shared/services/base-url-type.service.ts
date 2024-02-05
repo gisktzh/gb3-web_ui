@@ -21,7 +21,7 @@ export class BaseUrlTypeService {
     });
   }
 
-  private convertRelativeLinkObjectToLinkObject(link: LinkObject | RelativeLinkObject): LinkObject {
+  public convertRelativeLinkObjectToLinkObject(link: LinkObject | RelativeLinkObject): LinkObject {
     if ('baseUrlType' in link) {
       switch (link.baseUrlType) {
         case 'Geolion':

@@ -1,8 +1,8 @@
 import {createFeature, createReducer} from '@ngrx/store';
-import {additionalInformationLinks} from '../../../shared/models/additional-information-links.data';
-import {faqData} from '../../../shared/models/faq.data';
+import {additionalInformationLinks} from '../../../shared/data/additional-information-links.data';
+import {faqData} from '../../../shared/data/faq.data';
 import {SupportContentState} from '../states/support-content.state';
-import {usefulInformationLinks} from '../../../shared/models/useful-information-links.data';
+import {usefulInformationLinks} from '../../../shared/data/useful-information-links.data';
 
 export const supportContentFeatureKey = 'supportContent';
 
