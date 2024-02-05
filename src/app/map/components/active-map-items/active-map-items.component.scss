@@ -39,8 +39,9 @@
 
     .active-map-items__header__title {
       @include mixins.non-selectable-text;
-      padding-right: 1em;
+      padding-right: 12px;
       margin-bottom: 0;
+      white-space: nowrap;
     }
 
     .active-map-items__header__badge {
