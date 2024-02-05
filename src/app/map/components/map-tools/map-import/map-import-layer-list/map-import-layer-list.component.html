@@ -1,12 +1,5 @@
 @if (!!layerSelections) {
   <div class="map-import-layer-list">
-    <mat-checkbox
-      class="map-import-layer-list__checkbox"
-      [checked]="areAllLayersSelected"
-      [indeterminate]="areSomeButNotAllLayersSelected"
-      (change)="toggleSelectAllLayers($event.checked)"
-      >Alle auswählen</mat-checkbox
-    >
     <div class="map-import-layer-list__layers">
       @for (selection of layerSelections; track selection.layer.id) {
         <mat-checkbox
