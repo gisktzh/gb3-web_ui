@@ -1,11 +1,12 @@
 import {LinkObject} from './link-object.interface';
-import {BaseUrl} from '../types/base-url.type';
+import {RelativeLinkObject} from './relative-link-object.interface';
 
 export interface LinksGroup {
   label: string;
-  links: ConfigurableLinkObject[];
+  links: LinkObject[];
 }
 
-interface ConfigurableLinkObject extends LinkObject {
-  baseUrl?: BaseUrl;
+export interface RelativeLinksGroup {
+  label: string;
+  links: (LinkObject | RelativeLinkObject)[];
 }

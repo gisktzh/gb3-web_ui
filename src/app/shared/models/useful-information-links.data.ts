@@ -1,6 +1,6 @@
-import {LinksGroup} from '../interfaces/links-group.interface';
+import {RelativeLinksGroup} from '../interfaces/links-group.interface';
 
-export const usefulInformationLinks: LinksGroup[] = [
+export const usefulInformationLinks: RelativeLinksGroup[] = [
   {
     label: 'Dokumentation',
     links: [
@@ -9,9 +9,9 @@ export const usefulInformationLinks: LinksGroup[] = [
         title: 'API Dokumentation GIS-Browser 3, GIS-ZH Schnittstellen',
       },
       {
-        href: '/api',
+        relativeUrl: '/api',
         title: 'API Dokumentation Geodatenkatalog',
-        baseUrl: 'Geolion',
+        baseUrlType: 'Geolion',
       },
       {
         href: 'https://maps.zh.ch/apidoc',

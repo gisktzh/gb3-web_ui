@@ -1,1 +1,1 @@
-export type BaseUrl = 'Geolion';
+export type BaseUrlType = 'Geolion';
