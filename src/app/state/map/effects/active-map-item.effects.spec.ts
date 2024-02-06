@@ -28,6 +28,7 @@ import {PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.in
 import {MapConstants} from '../../../shared/constants/map.constants';
 import {selectIsMapServiceInitialized} from '../reducers/map-config.reducer';
 import {DrawingActions} from '../actions/drawing.actions';
+import {selectNonTemporaryActiveMapItems} from '../selectors/active-map-items.selector';
 
 describe('ActiveMapItemEffects', () => {
   let actions$: Observable<Action>;
@@ -88,6 +89,37 @@ describe('ActiveMapItemEffects', () => {
         done();
       });
     });
+  });
+
+  describe('removeTemporaryActiveMapItem$', () => {
+    it('dispatches ActiveMapItemActions.removeActiveMapItem if the active map item is not yet added to the map', (done: DoneFn) => {
+      const expectedId = 'mapMock';
+      const activeMapItem = createGb2WmsMapItemMock(expectedId, undefined, undefined, undefined, undefined, true);
+
+      store.overrideSelector(selectNonTemporaryActiveMapItems, []);
+
+      const expectedAction = ActiveMapItemActions.removeActiveMapItem({activeMapItem});
+      actions$ = of(ActiveMapItemActions.removeTemporaryActiveMapItem({activeMapItem}));
+      effects.removeTemporaryActiveMapItem$.subscribe((action) => {
+        expect(action).toEqual(expectedAction);
+        done();
+      });
+    });
+
+    it('does not dispatch anything if the item is already added as permanent item', fakeAsync(async () => {
+      const expectedId = 'mapMock';
+      const temporaryActiveMapItem = createGb2WmsMapItemMock(expectedId, undefined, undefined, undefined, undefined, true);
+      const activeMapItem = createGb2WmsMapItemMock(expectedId);
+
+      store.overrideSelector(selectNonTemporaryActiveMapItems, [activeMapItem]);
+
+      actions$ = of(ActiveMapItemActions.removeTemporaryActiveMapItem({activeMapItem: temporaryActiveMapItem}));
+      let actualAction;
+      actions$ = of(ActiveMapItemActions.removeTemporaryActiveMapItem({activeMapItem: temporaryActiveMapItem}));
+      effects.removeTemporaryActiveMapItem$.subscribe((action) => (actualAction = action));
+      tick();
+      expect(actualAction).toBeUndefined();
+    }));
   });
 
   describe('removeAllMapItems$', () => {

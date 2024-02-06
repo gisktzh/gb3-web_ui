@@ -19,6 +19,8 @@ export class BaseMapDataItemComponent {
   public isAddItemDisabled: boolean = false;
 
   @Output() public readonly addEvent = new EventEmitter<void>();
+  @Output() public readonly hoverStartEvent = new EventEmitter<MapLayer>();
+  @Output() public readonly hoverEndEvent = new EventEmitter<MapLayer>();
 
   public readonly addLayerEvent = new EventEmitter<MapLayer>();
   public readonly deleteEvent = new EventEmitter<void>();
@@ -34,6 +36,18 @@ export class BaseMapDataItemComponent {
 
   public addItem() {
     this.addEvent.emit();
+  }
+
+  public hoverStart(layer?: MapLayer) {
+    if (!this.gb2Url) {
+      this.hoverStartEvent.emit(layer);
+    }
+  }
+
+  public hoverEnd(layer?: MapLayer) {
+    if (!this.gb2Url) {
+      this.hoverEndEvent.emit(layer);
+    }
   }
 
   public deleteItem() {

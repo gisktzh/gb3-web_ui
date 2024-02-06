@@ -4,6 +4,8 @@
     class="base-map-data-item__header"
     [matTooltipDisabled]="!invalid"
     matTooltip="{{ this.errorTooltip }}"
+    (mouseenter)="hoverStart()"
+    (mouseleave)="hoverEnd()"
   >
     <button
       (click)="itemExpansionPanel.toggle()"
@@ -75,6 +77,8 @@
         [filterString]="filterString"
         [layer]="layer"
         (addLayerEvent)="addItemLayer(layer)"
+        (mouseenter)="hoverStart(layer)"
+        (mouseleave)="hoverEnd(layer)"
       ></map-data-item-map-layer>
     </ng-container>
   </ng-template>

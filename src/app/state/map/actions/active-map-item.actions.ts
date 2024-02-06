@@ -13,6 +13,7 @@ export const ActiveMapItemActions = createActionGroup({
     'Add Active Map Item': props<{activeMapItem: ActiveMapItem; position: number}>(),
     'Remove Active Map Item': props<{activeMapItem: ActiveMapItem}>(),
     'Remove All Active Map Items': emptyProps(),
+    'Remove Temporary Active Map Item': props<{activeMapItem: ActiveMapItem}>(),
     'Force Full Visibility': props<{activeMapItem: ActiveMapItem}>(),
     'Set Opacity': props<{opacity: number; activeMapItem: ActiveMapItem}>(),
     'Set Visibility': props<{visible: boolean; activeMapItem: ActiveMapItem}>(),

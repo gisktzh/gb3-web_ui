@@ -21,7 +21,7 @@ export class EmbeddedMapPageComponent implements OnInit, OnDestroy {
   public id: string | null = null;
   public initializeApplicationLoadingState: LoadingState;
   public isEmbedded: boolean = false;
-  protected readonly MainPageEnum = MainPage;
+  protected readonly mainPageEnum = MainPage;
 
   private readonly subscriptions: Subscription = new Subscription();
   private readonly queryLegends$ = this.store.select(selectQueryLegends);

@@ -8,11 +8,20 @@ import {ExternalWmsActiveMapItem} from '../../map/models/implementations/externa
 import {ExternalKmlActiveMapItem} from '../../map/models/implementations/external-kml.model';
 
 export class ActiveMapItemFactory {
-  public static createGb2WmsMapItem(map: Map, layer?: MapLayer, visible?: boolean, opacity?: number): Gb2WmsActiveMapItem {
+  public static createTemporaryGb2WmsMapItem(map: Map, layer?: MapLayer, visible?: boolean, opacity?: number): Gb2WmsActiveMapItem {
+    return ActiveMapItemFactory.createGb2WmsMapItem(map, layer, visible, opacity, true);
+  }
+  public static createGb2WmsMapItem(
+    map: Map,
+    layer?: MapLayer,
+    visible?: boolean,
+    opacity?: number,
+    isTemporary?: boolean,
+  ): Gb2WmsActiveMapItem {
     if (opacity === undefined) {
       opacity = map.opacity;
     }
-    return new Gb2WmsActiveMapItem(map, layer, visible, opacity);
+    return new Gb2WmsActiveMapItem(map, layer, visible, opacity, isTemporary);
   }
 
   public static createDrawingMapItem(id: UserDrawingLayer, prefix: string, visible?: boolean, opacity?: number): DrawingActiveMapItem {

@@ -73,6 +73,16 @@ describe('ActiveMapItem Reducer', () => {
       expect(state.items.length).toBe(existingState.items.length);
       expect(state.items).toEqual(existingState.items);
     });
+
+    it('converts a temporary item to nonTemporary if it is added', () => {
+      const expectedActiveMapItem = createGb2WmsMapItemMock('new unique item', undefined, undefined, undefined, undefined, true);
+      existingState.items.push(expectedActiveMapItem);
+      const action = ActiveMapItemActions.addActiveMapItem({activeMapItem: expectedActiveMapItem, position: 0});
+      const state = reducer(existingState, action);
+
+      expect(state.items.length).toBe(existingState.items.length);
+      expect(state.items[0].isTemporary).toBeFalse();
+    });
   });
 
   describe('removeActiveMapItem', () => {
