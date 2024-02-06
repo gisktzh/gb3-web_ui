@@ -5,6 +5,7 @@ import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {ScreenMode} from '../../types/screen-size.type';
 import {SearchMode} from '../../types/search-mode.type';
 import {map} from 'rxjs/operators';
+import {selectSelectedSearchResult} from '../../../state/app/reducers/search.reducer';
 
 const SEARCH_TERM_INPUT_DEBOUNCE_IN_MS = 300;
 
@@ -23,6 +24,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() public focusOnInit: boolean = false;
   @Input() public disabled: boolean = false;
   @Input() public isAnyFilterActive: boolean = false;
+  @Input() public canSearchBeSetManually: boolean = false;
 
   @Output() public readonly focusEvent = new EventEmitter<void>();
   @Output() public readonly changeSearchTermEvent = new EventEmitter<string>();
@@ -98,6 +100,18 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
           tap((event) => {
             const term = (<HTMLInputElement>event.target).value;
             this.setTerm(term);
+          }),
+        )
+        .subscribe(),
+    );
+    this.subscriptions.add(
+      this.store
+        .select(selectSelectedSearchResult)
+        .pipe(
+          tap((selectedSearchResult) => {
+            if (this.canSearchBeSetManually && selectedSearchResult) {
+              this.inputRef.nativeElement.value = selectedSearchResult.displayString;
+            }
           }),
         )
         .subscribe(),

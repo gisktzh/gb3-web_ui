@@ -3,7 +3,8 @@
   <mat-accordion
     *ngIf="
       searchTerms[0].length >= 1 &&
-      (filteredMaps.length !== 0 || filteredActiveMapMatches.length !== 0 || filteredAddressesAndPlacesMatches.length !== 0)
+      (filteredMaps.length !== 0 || filteredActiveMapMatches.length !== 0 || filteredAddressesAndPlacesMatches.length !== 0) &&
+      !selectedSearchResult
     "
     class="result-window__content"
     [multi]="showMultiplePanels"

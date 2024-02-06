@@ -12,6 +12,7 @@
       [showClearButton]="screenMode !== 'mobile'"
       [showFilterButton]="screenMode !== 'mobile'"
       [isAnyFilterActive]="isAnySearchFilterActive"
+      [canSearchBeSetManually]="true"
     ></search>
   </div>
   <div class="search-window__results-container" *ngIf="screenMode !== 'mobile'">
