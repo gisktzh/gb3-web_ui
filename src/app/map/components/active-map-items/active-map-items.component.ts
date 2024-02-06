@@ -90,7 +90,7 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
       this.activeMapItems$
         .pipe(
           tap((currentActiveMapItems) => {
-            this.activeMapItems = currentActiveMapItems.filter((f) => !f.isTemporary); // todo LME fix
+            this.activeMapItems = currentActiveMapItems;
             const gb2ActiveMapItems = currentActiveMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem));
             this.updateNumberOfNotices(gb2ActiveMapItems);
             this.updateFavouritesMessage();

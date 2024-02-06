@@ -25,7 +25,11 @@
   </div>
   <div class="result-group__container" [ngClass]="{'result-group__container--mobile': screenMode === 'mobile'}">
     <mat-card *ngFor="let map of filteredMaps" class="result-group__container__element">
-      <mat-card-content class="result-group__container__element__map-content">
+      <mat-card-content
+        class="result-group__container__element__map-content"
+        (mouseenter)="addActiveMap(map, true)"
+        (mouseleave)="removeTemporaryMap(map)"
+      >
         <gb2-exit-button
           *ngIf="map.gb2Url; else addToMap"
           [url]="map.gb2Url | appendMapConfigurationToUrl: mapConfigState"

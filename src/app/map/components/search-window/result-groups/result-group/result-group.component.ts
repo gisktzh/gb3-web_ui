@@ -56,17 +56,28 @@ export class ResultGroupComponent implements OnInit, OnDestroy {
     }
   }
 
-  public addActiveMap(activeMap: Map) {
-    this.addActiveItem(ActiveMapItemFactory.createGb2WmsMapItem(activeMap));
+  public addActiveMap(activeMap: Map, isTemporary: boolean = false) {
+    if (!activeMap.gb2Url) {
+      this.addActiveItem(
+        isTemporary ? ActiveMapItemFactory.createTemporaryGb2WmsMapItem(activeMap) : ActiveMapItemFactory.createGb2WmsMapItem(activeMap),
+      );
+    }
   }
 
-  private addActiveItem(activeMapItem: ActiveMapItem) {
-    // add new map items on top (position 0)
-    this.store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem, position: 0}));
+  public removeTemporaryMap(activeMap: Map) {
+    if (!activeMap.gb2Url) {
+      const item = ActiveMapItemFactory.createTemporaryGb2WmsMapItem(activeMap);
+      this.store.dispatch(ActiveMapItemActions.removeTemporaryActiveMapItem({activeMapItem: item}));
+    }
   }
 
   public initSubscriptions() {
     this.subscriptions.add(this.scrennMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
     this.subscriptions.add(this.mapConfigState$.pipe(tap((mapConfigState) => (this.mapConfigState = mapConfigState))).subscribe());
+  }
+
+  private addActiveItem(activeMapItem: ActiveMapItem) {
+    // add new map items on top (position 0)
+    this.store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem, position: 0}));
   }
 }
