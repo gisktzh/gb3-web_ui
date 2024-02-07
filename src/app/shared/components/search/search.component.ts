@@ -24,7 +24,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() public focusOnInit: boolean = false;
   @Input() public disabled: boolean = false;
   @Input() public isAnyFilterActive: boolean = false;
-  @Input() public canSearchBeSetManually: boolean = false;
+  @Input() public canSearchTermBeSetManually: boolean = false;
 
   @Output() public readonly focusEvent = new EventEmitter<void>();
   @Output() public readonly changeSearchTermEvent = new EventEmitter<string>();
@@ -111,7 +111,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
         .select(selectSelectedSearchResult)
         .pipe(
           tap((selectedSearchResult) => {
-            if (this.canSearchBeSetManually && selectedSearchResult) {
+            if (this.canSearchTermBeSetManually && selectedSearchResult) {
               setTimeout(() => {
                 this.setTerm(selectedSearchResult.displayString, false);
               }, 0);
@@ -125,7 +125,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
         .select(selectTerm)
         .pipe(
           tap((term) => {
-            if (this.canSearchBeSetManually) {
+            if (this.canSearchTermBeSetManually) {
               setTimeout(() => {
                 this.setTerm(term, false);
               }, 0);

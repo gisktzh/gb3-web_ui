@@ -91,9 +91,6 @@ export const searchFeature = createFeature({
     on(SearchActions.selectSearchResult, (state, {searchResult}): SearchState => {
       return {...state, selectedSearchResult: searchResult};
     }),
-    on(SearchActions.clearSearchResult, (state): SearchState => {
-      return {...state, selectedSearchResult: undefined};
-    }),
   ),
 });
 

@@ -81,7 +81,7 @@ export class SearchEffects {
     );
   });
 
-  public loadMetadataProductsForSearch = createEffect(() => {
+  public loadMetadataProductsForSearch$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(SearchActions.searchForTerm),
       filter((value) =>
@@ -95,7 +95,7 @@ export class SearchEffects {
     );
   });
 
-  public zoomToAndHighlightSelectedSearchResult = createEffect(
+  public zoomToAndHighlightSelectedSearchResult$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(SearchActions.selectSearchResult),
@@ -111,24 +111,17 @@ export class SearchEffects {
     {dispatch: false},
   );
 
-  public clearSearchResultAfterSearchTermChangesOrFeatureInfoOpened = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(SearchActions.searchForTerm),
-      map(() => SearchActions.clearSearchResult()),
-    );
-  });
-
-  public clearSearchTermAndResultAfterFeatureInfoOpened = createEffect(() => {
+  public clearSearchTermAfterFeatureInfoOpened$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapUiActions.setFeatureInfoVisibility),
       map(() => SearchActions.clearSearchTerm()),
     );
   });
 
-  public removeHighlightAfterClearingSearchResult = createEffect(
+  public removeHighlightAfterChangingSearchTermOrClearingSearchResult$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(SearchActions.clearSearchResult, SearchActions.clearSearchTerm),
+        ofType(SearchActions.searchForTerm, SearchActions.clearSearchTerm),
         concatLatestFrom(() => this.store.select(selectUrlState)),
         filter(([_, urlState]) => urlState.mainPage === 'maps'),
         tap(() => {
