@@ -16,6 +16,10 @@
       [matBadge]="this.activeMapItems.length"
     ></span>
     <div class="active-map-items__header__buttons">
+      <button mat-icon-button (click)="restartOnboardingGuide()" matTooltip="Onboarding-Guide erneut öffnen" [matTooltipPosition]="'below'">
+        <mat-icon>help_outline</mat-icon>
+      </button>
+      <mat-divider class="active-map-items__header__buttons__divider" [vertical]="true"></mat-divider>
       <button
         class="active-map-items__header__buttons__action active-map-items__header__buttons__action--notices"
         (click)="showMapNotices()"
