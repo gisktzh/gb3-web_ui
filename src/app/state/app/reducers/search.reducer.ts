@@ -38,7 +38,7 @@ export const searchFeature = createFeature({
         term: initialState.term,
         searchApiLoadingState: initialState.searchApiLoadingState,
         searchApiResultMatches: initialState.searchApiResultMatches,
-        // selectedSearchResult: initialState.selectedSearchResult
+        selectedSearchResult: initialState.selectedSearchResult,
       };
     }),
     on(SearchActions.setFilterGroups, (state, {filterGroups}): SearchState => {

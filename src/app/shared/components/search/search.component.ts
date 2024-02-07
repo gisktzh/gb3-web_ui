@@ -6,7 +6,6 @@ import {ScreenMode} from '../../types/screen-size.type';
 import {SearchMode} from '../../types/search-mode.type';
 import {map} from 'rxjs/operators';
 import {selectSelectedSearchResult, selectTerm} from '../../../state/app/reducers/search.reducer';
-import {GeometrySearchApiResultMatch} from '../../services/apis/search/interfaces/search-api-result-match.interface';
 
 const SEARCH_TERM_INPUT_DEBOUNCE_IN_MS = 300;
 
@@ -33,8 +32,6 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   @Output() public readonly openFilterEvent = new EventEmitter<void>();
 
   public screenMode: ScreenMode = 'regular';
-  public selectedSearchResult?: GeometrySearchApiResultMatch;
-  public searchTerm: string = '';
 
   @ViewChild('searchInput') private readonly inputRef!: ElementRef<HTMLInputElement>;
   private readonly term = new Subject<{term: string; emitChangeEvent: boolean}>();
@@ -79,23 +76,6 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     this.term.next({term, emitChangeEvent});
   }
 
-  private setSearchTerm(searchTerm: string | undefined, selectedSearchResult: GeometrySearchApiResultMatch | undefined) {
-    if (this.canSearchBeSetManually) {
-      let displayString = '';
-      if (selectedSearchResult) {
-        displayString = selectedSearchResult.displayString;
-      } else if (!searchTerm) {
-        displayString = '';
-      } else {
-        displayString = searchTerm;
-      }
-      // This is necessary to force it to be rendered in the next tick, otherwise, changedetection won't pick it up
-      setTimeout(() => {
-        this.inputRef.nativeElement.value = displayString;
-      }, 0);
-    }
-  }
-
   private initSubscriptions() {
     this.subscriptions.add(
       this.term
@@ -131,8 +111,11 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
         .select(selectSelectedSearchResult)
         .pipe(
           tap((selectedSearchResult) => {
-            this.selectedSearchResult = selectedSearchResult;
-            this.setSearchTerm(undefined, selectedSearchResult);
+            if (this.canSearchBeSetManually && selectedSearchResult) {
+              setTimeout(() => {
+                this.setTerm(selectedSearchResult.displayString, false);
+              }, 0);
+            }
           }),
         )
         .subscribe(),
@@ -142,8 +125,11 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
         .select(selectTerm)
         .pipe(
           tap((term) => {
-            this.searchTerm = term;
-            this.setSearchTerm(term, this.selectedSearchResult);
+            if (this.canSearchBeSetManually) {
+              setTimeout(() => {
+                this.setTerm(term, false);
+              }, 0);
+            }
           }),
         )
         .subscribe(),
