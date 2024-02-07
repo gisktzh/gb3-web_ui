@@ -1,6 +1,6 @@
-import {RelativeLinksGroup} from '../interfaces/links-group.interface';
+import {AbstractLinksGroup} from '../interfaces/links-group.interface';
 
-export const usefulInformationLinks: RelativeLinksGroup[] = [
+export const usefulInformationLinks: AbstractLinksGroup[] = [
   {
     label: 'Dokumentation',
     links: [
@@ -58,15 +58,12 @@ export const usefulInformationLinks: RelativeLinksGroup[] = [
     links: [
       {
         href: 'https://geodienste.ch/',
-        title: 'https://geodienste.ch/',
       },
       {
         href: 'https://www.zh.ch/de/politik-staat/statistik-daten/datenkatalog.html#/',
-        title: 'https://www.zh.ch/de/politik-staat/statistik-daten/datenkatalog.html#/',
       },
       {
         href: 'https://opendata.swiss/de',
-        title: 'https://opendata.swiss/de',
       },
     ],
   },

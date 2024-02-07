@@ -3,7 +3,7 @@ import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {LinksGroup} from '../../../shared/interfaces/links-group.interface';
 import {selectUsefulInformationLinks} from '../../../state/support/reducers/support-content.reducer';
-import {BaseUrlTypeService} from '../../../shared/services/base-url-type.service';
+import {LinksGroupsService} from '../../../shared/services/links-groups.service';
 
 @Component({
   selector: 'useful-information',
@@ -17,7 +17,7 @@ export class UsefulInformationComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly store: Store,
-    private readonly baseUrlService: BaseUrlTypeService,
+    private readonly baseUrlService: LinksGroupsService,
   ) {}
 
   public ngOnDestroy() {
@@ -33,7 +33,7 @@ export class UsefulInformationComponent implements OnInit, OnDestroy {
       this.usefulInformationLinksGroups$
         .pipe(
           tap(
-            (linksGroups) => (this.usefulInformationLinksGroups = this.baseUrlService.convertRelativeLinksGroupsToLinksGroups(linksGroups)),
+            (linksGroups) => (this.usefulInformationLinksGroups = this.baseUrlService.convertAbstractLinksGroupsToLinksGroups(linksGroups)),
           ),
         )
         .subscribe(),

@@ -1,19 +1,19 @@
-import {LinksGroup, RelativeLinksGroup} from '../interfaces/links-group.interface';
+import {AbstractLinksGroup, LinksGroup} from '../interfaces/links-group.interface';
 import {TestBed} from '@angular/core/testing';
-import {BaseUrlTypeService} from './base-url-type.service';
+import {LinksGroupsService} from './links-groups.service';
 import {RelativeLinkObject} from '../interfaces/relative-link-object.interface';
 import {LinkObject} from '../interfaces/link-object.interface';
 
 describe('BaseUrlTypeService', () => {
-  let service: BaseUrlTypeService;
+  let service: LinksGroupsService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(BaseUrlTypeService);
+    service = TestBed.inject(LinksGroupsService);
   });
-  describe('convertRelativeLinksGroupsToLinksGroups', () => {
-    it('converts  RelativeLinksGroups correctly', () => {
-      const mockRelativeLinksGroups: RelativeLinksGroup[] = [
+  describe('convertAbstractLinksGroupsToLinksGroups', () => {
+    it('converts  AbstarctLinksGroups correctly', () => {
+      const mockAbstractLinksGroups: AbstractLinksGroup[] = [
         {
           label: 'Group One',
           links: [
@@ -32,7 +32,7 @@ describe('BaseUrlTypeService', () => {
         },
       ];
 
-      const actual = service.convertRelativeLinksGroupsToLinksGroups(mockRelativeLinksGroups);
+      const actual = service.convertAbstractLinksGroupsToLinksGroups(mockAbstractLinksGroups);
       expect(actual).toEqual(expected);
     });
   });
