@@ -1,13 +1,15 @@
 import {createFeature, createReducer} from '@ngrx/store';
-import {supportLinks} from '../../../shared/models/support-links.data';
-import {faqData} from '../../../shared/models/faq.data';
+import {additionalInformationLinks} from '../../../shared/data/additional-information-links.data';
+import {faqData} from '../../../shared/data/faq.data';
 import {SupportContentState} from '../states/support-content.state';
+import {usefulInformationLinks} from '../../../shared/data/useful-information-links.data';
 
 export const supportContentFeatureKey = 'supportContent';
 
 export const initialState: SupportContentState = {
   faq: faqData,
-  links: supportLinks,
+  additionalInformationLinks: additionalInformationLinks,
+  usefulInformationLinks: usefulInformationLinks,
 };
 
 export const supportContentFeature = createFeature({
@@ -15,4 +17,4 @@ export const supportContentFeature = createFeature({
   reducer: createReducer(initialState),
 });
 
-export const {name, reducer, selectLinks, selectFaq} = supportContentFeature;
+export const {name, reducer, selectAdditionalInformationLinks, selectFaq, selectUsefulInformationLinks} = supportContentFeature;

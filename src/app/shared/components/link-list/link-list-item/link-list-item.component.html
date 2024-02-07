@@ -1,7 +1,7 @@
 <ul class="link-list-item">
   <li *ngFor="let link of links" class="link-list-item__item">
-    <a [href]="link.url" [title]="link.title" rel="noopener noreferrer" class="link-list-item__item__link" target="_blank">
-      <span>{{ link.label }}</span>
+    <a [href]="link.href" [title]="link.title ?? link.href" rel="noopener noreferrer" class="link-list-item__item__link" target="_blank">
+      <span>{{ link.title ?? link.href }}</span>
       <mat-icon svgIcon="ktzh_arrow_right" class="link-list-item__item__link__icon"></mat-icon>
     </a>
   </li>
