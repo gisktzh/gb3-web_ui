@@ -11,6 +11,7 @@ export class ActiveMapItemFactory {
   public static createTemporaryGb2WmsMapItem(map: Map, layer?: MapLayer, visible?: boolean, opacity?: number): Gb2WmsActiveMapItem {
     return ActiveMapItemFactory.createGb2WmsMapItem(map, layer, visible, opacity, true);
   }
+
   public static createGb2WmsMapItem(
     map: Map,
     layer?: MapLayer,

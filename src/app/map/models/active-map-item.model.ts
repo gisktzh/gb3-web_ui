@@ -39,10 +39,10 @@ export abstract class ActiveMapItem implements HasLoadingState, HasOpacity, HasV
    */
   public isTemporary: boolean;
 
-  protected constructor(visible?: boolean, opacity?: number, isTemporary?: boolean) {
-    this.visible = visible ?? true;
-    this.opacity = opacity ?? 1;
-    this.isTemporary = isTemporary ?? false;
+  protected constructor(visible: boolean = true, opacity: number = 1, isTemporary: boolean = false) {
+    this.visible = visible;
+    this.opacity = opacity;
+    this.isTemporary = isTemporary;
   }
 
   /**

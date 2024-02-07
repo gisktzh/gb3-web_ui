@@ -5,7 +5,7 @@
     [matTooltipDisabled]="!invalid"
     matTooltip="{{ this.errorTooltip }}"
     (delayedMouseEnter)="hoverStart()"
-    [delayDurationInMs]="250"
+    [delayDurationInMs]="this.hoverDelay"
     (mouseleave)="hoverEnd()"
   >
     <button
@@ -78,7 +78,8 @@
         [filterString]="filterString"
         [layer]="layer"
         (addLayerEvent)="addItemLayer(layer)"
-        (mouseenter)="hoverStart(layer)"
+        (delayedMouseEnter)="hoverStart(layer)"
+        [delayDurationInMs]="this.hoverDelay"
         (mouseleave)="hoverEnd(layer)"
       ></map-data-item-map-layer>
     </ng-container>

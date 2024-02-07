@@ -19,14 +19,14 @@ export const activeMapItemFeature = createFeature({
     on(
       ActiveMapItemActions.addActiveMapItem,
       produce((draft, {activeMapItem, position}) => {
-        const existing = draft.items.findIndex((mapItem) => mapItem.id === activeMapItem.id);
-        if (existing > -1) {
-          if (!draft.items[existing].isTemporary) {
+        const existing = draft.items.find((mapItem) => mapItem.id === activeMapItem.id);
+        if (existing) {
+          if (!existing.isTemporary) {
             // the map item is already active - no state changes necessary
             return draft;
           } else {
             // the map item is existing as a temporary (i.e. hovered) item, so we convert it to a non-temporary one
-            draft.items[existing].isTemporary = false;
+            existing.isTemporary = false;
             return draft;
           }
         }

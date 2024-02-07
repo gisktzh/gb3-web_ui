@@ -28,7 +28,7 @@
       <mat-card-content
         class="result-group__container__element__map-content"
         (delayedMouseEnter)="addActiveMap(map, true)"
-        [delayDurationInMs]="250"
+        [delayDurationInMs]="this.hoverDelay"
         (mouseleave)="removeTemporaryMap(map)"
       >
         <gb2-exit-button

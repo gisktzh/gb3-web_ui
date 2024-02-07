@@ -13,6 +13,7 @@ import {MapConfigState} from '../../../../../state/map/states/map-config.state';
 import {MapService} from '../../../../interfaces/map.service';
 import {ActiveMapItem} from '../../../../models/active-map-item.model';
 import {MapDrawingService} from '../../../../services/map-drawing.service';
+import {MapConstants} from '../../../../../shared/constants/map.constants';
 
 @Component({
   selector: 'result-group',
@@ -28,8 +29,9 @@ export class ResultGroupComponent implements OnInit, OnDestroy {
 
   public screenMode: ScreenMode = 'regular';
   public mapConfigState?: MapConfigState;
+  public readonly hoverDelay = MapConstants.TEMPORARY_PREVIEW_DELAY;
 
-  private readonly scrennMode$ = this.store.select(selectScreenMode);
+  private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly mapConfigState$ = this.store.select(selectMapConfigState);
   private readonly subscriptions: Subscription = new Subscription();
 
@@ -71,8 +73,8 @@ export class ResultGroupComponent implements OnInit, OnDestroy {
     }
   }
 
-  public initSubscriptions() {
-    this.subscriptions.add(this.scrennMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
+  private initSubscriptions() {
+    this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
     this.subscriptions.add(this.mapConfigState$.pipe(tap((mapConfigState) => (this.mapConfigState = mapConfigState))).subscribe());
   }
 
