@@ -34,9 +34,10 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public screenMode: ScreenMode = 'regular';
   public selectedSearchResult?: GeometrySearchApiResultMatch;
+  public searchTerm: string = '';
 
   @ViewChild('searchInput') private readonly inputRef!: ElementRef<HTMLInputElement>;
-  private readonly term = new Subject<string>();
+  private readonly term = new Subject<{term: string; emitChangeEvent: boolean}>();
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly subscriptions: Subscription = new Subscription();
 
@@ -66,7 +67,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public clearInput() {
-    this.setTerm('');
+    this.setTerm('', false);
     this.clearSearchTermEvent.emit();
   }
 
@@ -74,8 +75,25 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     this.openFilterEvent.emit();
   }
 
-  private setTerm(term: string) {
-    this.term.next(term);
+  private setTerm(term: string, emitChangeEvent: boolean = true) {
+    this.term.next({term, emitChangeEvent});
+  }
+
+  private setSearchTerm(searchTerm: string | undefined, selectedSearchResult: GeometrySearchApiResultMatch | undefined) {
+    if (this.canSearchBeSetManually) {
+      let displayString = '';
+      if (selectedSearchResult) {
+        displayString = selectedSearchResult.displayString;
+      } else if (!searchTerm) {
+        displayString = '';
+      } else {
+        displayString = searchTerm;
+      }
+      // This is necessary to force it to be rendered in the next tick, otherwise, changedetection won't pick it up
+      setTimeout(() => {
+        this.inputRef.nativeElement.value = displayString;
+      }, 0);
+    }
   }
 
   private initSubscriptions() {
@@ -83,12 +101,14 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
       this.term
         .pipe(
           map((term) => {
-            this.inputRef.nativeElement.value = term;
-            return term.trim();
+            this.inputRef.nativeElement.value = term.term;
+            return term;
           }),
           distinctUntilChanged(),
           tap((term) => {
-            this.changeSearchTermEvent.emit(term);
+            if (term.emitChangeEvent) {
+              this.changeSearchTermEvent.emit(term.term.trim());
+            }
           }),
         )
         .subscribe(),
@@ -100,6 +120,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
           debounceTime(SEARCH_TERM_INPUT_DEBOUNCE_IN_MS),
           tap((event) => {
             const term = (<HTMLInputElement>event.target).value;
+
             this.setTerm(term);
           }),
         )
@@ -111,12 +132,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
         .pipe(
           tap((selectedSearchResult) => {
             this.selectedSearchResult = selectedSearchResult;
-            if (this.canSearchBeSetManually) {
-              // This is necessary to force it to be rendered in the next tick, otherwise, changedetection won't pick it up
-              setTimeout(() => {
-                this.inputRef.nativeElement.value = selectedSearchResult?.displayString ?? '';
-              }, 0);
-            }
+            this.setSearchTerm(undefined, selectedSearchResult);
           }),
         )
         .subscribe(),
@@ -126,12 +142,8 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
         .select(selectTerm)
         .pipe(
           tap((term) => {
-            if (!this.selectedSearchResult) {
-              // This is necessary to force it to be rendered in the next tick, otherwise, changedetection won't pick it up
-              setTimeout(() => {
-                this.inputRef.nativeElement.value = term;
-              }, 0);
-            }
+            this.searchTerm = term;
+            this.setSearchTerm(term, this.selectedSearchResult);
           }),
         )
         .subscribe(),

@@ -113,7 +113,7 @@ export class SearchEffects {
 
   public clearSearchResultAfterSearchTermChangesOrFeatureInfoOpened = createEffect(() => {
     return this.actions$.pipe(
-      ofType(SearchActions.searchForTerm, MapUiActions.setFeatureInfoVisibility, SearchActions.clearSearchTerm),
+      ofType(SearchActions.searchForTerm, SearchActions.clearSearchTerm),
       map(() => SearchActions.clearSearchResult()),
     );
   });
@@ -121,7 +121,7 @@ export class SearchEffects {
   public removeHighlightAfterClearingSearchResult = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(SearchActions.clearSearchResult),
+        ofType(SearchActions.clearSearchResult, MapUiActions.setFeatureInfoVisibility),
         concatLatestFrom(() => this.store.select(selectUrlState)),
         filter(([_, urlState]) => urlState.mainPage === 'maps'),
         tap(() => {
