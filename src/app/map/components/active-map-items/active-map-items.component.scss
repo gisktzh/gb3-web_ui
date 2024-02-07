@@ -4,7 +4,7 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
 :host ::ng-deep {
-  .active-map-items__header__buttons__action--notices {
+  .active-map-items__header__buttons .active-map-items__header__buttons__action--notices {
     .mat-badge-content.mat-badge-active {
       top: 6px;
       right: 10px;
@@ -39,8 +39,9 @@
 
     .active-map-items__header__title {
       @include mixins.non-selectable-text;
-      padding-right: 1em;
+      padding-right: 12px;
       margin-bottom: 0;
+      white-space: nowrap;
     }
 
     .active-map-items__header__badge {
