@@ -5,7 +5,8 @@ import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {ScreenMode} from '../../types/screen-size.type';
 import {SearchMode} from '../../types/search-mode.type';
 import {map} from 'rxjs/operators';
-import {selectSelectedSearchResult} from '../../../state/app/reducers/search.reducer';
+import {selectSelectedSearchResult, selectTerm} from '../../../state/app/reducers/search.reducer';
+import {GeometrySearchApiResultMatch} from '../../services/apis/search/interfaces/search-api-result-match.interface';
 
 const SEARCH_TERM_INPUT_DEBOUNCE_IN_MS = 300;
 
@@ -32,6 +33,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   @Output() public readonly openFilterEvent = new EventEmitter<void>();
 
   public screenMode: ScreenMode = 'regular';
+  public selectedSearchResult?: GeometrySearchApiResultMatch;
 
   @ViewChild('searchInput') private readonly inputRef!: ElementRef<HTMLInputElement>;
   private readonly term = new Subject<string>();
@@ -46,7 +48,6 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
         .pipe(
           tap((screenMode) => {
             this.screenMode = screenMode;
-            this.clearInput();
           }),
         )
         .subscribe(),
@@ -109,8 +110,27 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
         .select(selectSelectedSearchResult)
         .pipe(
           tap((selectedSearchResult) => {
-            if (this.canSearchBeSetManually && selectedSearchResult) {
-              this.inputRef.nativeElement.value = selectedSearchResult.displayString;
+            this.selectedSearchResult = selectedSearchResult;
+            if (this.canSearchBeSetManually) {
+              // This is necessary to force it to be rendered in the next tick, otherwise, changedetection won't pick it up
+              setTimeout(() => {
+                this.inputRef.nativeElement.value = selectedSearchResult?.displayString ?? '';
+              }, 0);
+            }
+          }),
+        )
+        .subscribe(),
+    );
+    this.subscriptions.add(
+      this.store
+        .select(selectTerm)
+        .pipe(
+          tap((term) => {
+            if (!this.selectedSearchResult) {
+              // This is necessary to force it to be rendered in the next tick, otherwise, changedetection won't pick it up
+              setTimeout(() => {
+                this.inputRef.nativeElement.value = term;
+              }, 0);
             }
           }),
         )

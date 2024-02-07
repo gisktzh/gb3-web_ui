@@ -6,8 +6,6 @@ import {SearchFilterDialogComponent} from 'src/app/shared/components/search-filt
 import {PanelClass} from 'src/app/shared/enums/panel-class.enum';
 import {ConfigService} from 'src/app/shared/services/config.service';
 import {SearchActions} from 'src/app/state/app/actions/search.actions';
-import {initialState, selectSearchState} from 'src/app/state/app/reducers/search.reducer';
-import {SearchState} from 'src/app/state/app/states/search.state';
 import {selectIsAnySearchFilterActiveSelector} from '../../../state/app/selectors/is-any-search-filter-active.selector';
 
 @Component({
@@ -17,11 +15,9 @@ import {selectIsAnySearchFilterActiveSelector} from '../../../state/app/selector
 })
 export class SearchWindowMobileComponent implements OnInit, OnDestroy {
   @Input() focusOnInit: boolean = true;
-  public searchState: SearchState = initialState;
   public isAnySearchFilterActive: boolean = false;
 
   private readonly searchConfig = this.configService.searchConfig.mapPage;
-  private readonly searchState$ = this.store.select(selectSearchState);
   private readonly isAnySearchFilterActive$ = this.store.select(selectIsAnySearchFilterActiveSelector);
   private readonly subscriptions: Subscription = new Subscription();
 
@@ -56,7 +52,6 @@ export class SearchWindowMobileComponent implements OnInit, OnDestroy {
   }
 
   private initSubscriptions() {
-    this.subscriptions.add(this.searchState$.pipe(tap((searchState) => (this.searchState = searchState))).subscribe());
     this.subscriptions.add(this.isAnySearchFilterActive$.pipe(tap((value) => (this.isAnySearchFilterActive = value))).subscribe());
   }
 }

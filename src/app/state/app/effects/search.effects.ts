@@ -94,6 +94,7 @@ export class SearchEffects {
       map(() => DataCatalogueActions.loadCatalogue()),
     );
   });
+
   public zoomToAndHighlightSelectedSearchResult = createEffect(
     () => {
       return this.actions$.pipe(
@@ -110,10 +111,17 @@ export class SearchEffects {
     {dispatch: false},
   );
 
-  public removeHighlightAfterClearingSearchTerm = createEffect(
+  public clearSearchResultAfterSearchTermChangesOrFeatureInfoOpened = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(SearchActions.searchForTerm, MapUiActions.setFeatureInfoVisibility, SearchActions.clearSearchTerm),
+      map(() => SearchActions.clearSearchResult()),
+    );
+  });
+
+  public removeHighlightAfterClearingSearchResult = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(SearchActions.searchForTerm, MapUiActions.setFeatureInfoVisibility, SearchActions.clearSearchTerm),
+        ofType(SearchActions.clearSearchResult),
         concatLatestFrom(() => this.store.select(selectUrlState)),
         filter(([_, urlState]) => urlState.mainPage === 'maps'),
         tap(() => {

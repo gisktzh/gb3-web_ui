@@ -23,7 +23,7 @@ export const searchFeature = createFeature({
         term,
         searchApiResultMatches: initialState.searchApiResultMatches,
         searchApiLoadingState: 'loading',
-        selectedSearchResult: undefined,
+        selectedSearchResult: initialState.selectedSearchResult,
       };
     }),
     on(SearchActions.setSearchApiError, (state): SearchState => {
@@ -38,6 +38,7 @@ export const searchFeature = createFeature({
         term: initialState.term,
         searchApiLoadingState: initialState.searchApiLoadingState,
         searchApiResultMatches: initialState.searchApiResultMatches,
+        // selectedSearchResult: initialState.selectedSearchResult
       };
     }),
     on(SearchActions.setFilterGroups, (state, {filterGroups}): SearchState => {
@@ -89,6 +90,9 @@ export const searchFeature = createFeature({
     }),
     on(SearchActions.selectSearchResult, (state, {searchResult}): SearchState => {
       return {...state, selectedSearchResult: searchResult};
+    }),
+    on(SearchActions.clearSearchResult, (state): SearchState => {
+      return {...state, selectedSearchResult: undefined};
     }),
   ),
 });

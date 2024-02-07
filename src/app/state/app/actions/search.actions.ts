@@ -21,5 +21,6 @@ export const SearchActions = createActionGroup({
     'Reset Filters': emptyProps(),
     'Reset Search and Filters': emptyProps(),
     'Select Search Result': props<{searchResult: GeometrySearchApiResultMatch}>(),
+    'Clear Search Result': emptyProps(),
   },
 });
