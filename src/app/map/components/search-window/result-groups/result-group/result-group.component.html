@@ -27,7 +27,8 @@
     <mat-card *ngFor="let map of filteredMaps" class="result-group__container__element">
       <mat-card-content
         class="result-group__container__element__map-content"
-        (mouseenter)="addActiveMap(map, true)"
+        (delayedMouseEnter)="addActiveMap(map, true)"
+        [delayDurationInMs]="250"
         (mouseleave)="removeTemporaryMap(map)"
       >
         <gb2-exit-button

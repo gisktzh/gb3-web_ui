@@ -4,7 +4,8 @@
     class="base-map-data-item__header"
     [matTooltipDisabled]="!invalid"
     matTooltip="{{ this.errorTooltip }}"
-    (mouseenter)="hoverStart()"
+    (delayedMouseEnter)="hoverStart()"
+    [delayDurationInMs]="250"
     (mouseleave)="hoverEnd()"
   >
     <button
