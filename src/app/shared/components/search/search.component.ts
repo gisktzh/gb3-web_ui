@@ -6,6 +6,7 @@ import {ScreenMode} from '../../types/screen-size.type';
 import {SearchMode} from '../../types/search-mode.type';
 import {map} from 'rxjs/operators';
 import {selectSelectedSearchResult, selectTerm} from '../../../state/app/reducers/search.reducer';
+import {GeometrySearchApiResultMatch} from '../../services/apis/search/interfaces/search-api-result-match.interface';
 
 const SEARCH_TERM_INPUT_DEBOUNCE_IN_MS = 300;
 
@@ -32,6 +33,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   @Output() public readonly openFilterEvent = new EventEmitter<void>();
 
   public screenMode: ScreenMode = 'regular';
+  public selectedSearchResult?: GeometrySearchApiResultMatch;
 
   @ViewChild('searchInput') private readonly inputRef!: ElementRef<HTMLInputElement>;
   private readonly term = new Subject<{term: string; emitChangeEvent: boolean}>();
@@ -111,6 +113,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
         .select(selectSelectedSearchResult)
         .pipe(
           tap((selectedSearchResult) => {
+            this.selectedSearchResult = selectedSearchResult;
             if (this.canSearchTermBeSetManually && selectedSearchResult) {
               setTimeout(() => {
                 this.setTerm(selectedSearchResult.displayString, false);
@@ -125,7 +128,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
         .select(selectTerm)
         .pipe(
           tap((term) => {
-            if (this.canSearchTermBeSetManually) {
+            if (this.canSearchTermBeSetManually && !this.selectedSearchResult) {
               setTimeout(() => {
                 this.setTerm(term, false);
               }, 0);

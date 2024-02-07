@@ -114,6 +114,7 @@ export class SearchEffects {
   public clearSearchTermAfterFeatureInfoOpened$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapUiActions.setFeatureInfoVisibility),
+      filter(({isVisible}) => isVisible),
       map(() => SearchActions.clearSearchTerm()),
     );
   });
