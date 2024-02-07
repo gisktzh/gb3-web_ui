@@ -1,7 +1,10 @@
 import {initialState, reducer} from './search.reducer';
 import {SearchState} from '../states/search.state';
 import {SearchFilterGroup} from '../../../shared/interfaces/search-filter-group.interface';
-import {SearchApiResultMatch} from '../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
+import {
+  GeometrySearchApiResultMatch,
+  SearchApiResultMatch,
+} from '../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
 import {SearchActions} from '../actions/search.actions';
 import {SearchOptions} from '../../../shared/interfaces/search-config.interface';
 
@@ -56,6 +59,13 @@ describe('search Reducer', () => {
     },
   ];
 
+  const selectedSearchResultMock: GeometrySearchApiResultMatch = {
+    indexType: 'places',
+    displayString: 'Mein Lieblingsort',
+    score: 100,
+    geometry: {type: 'Polygon', srs: 2056, coordinates: [[[44, 22]]]},
+  };
+
   const errorMock: Error = new Error('oh no! anyway...');
   let existingState: SearchState;
 
@@ -64,6 +74,7 @@ describe('search Reducer', () => {
       filterGroups: filterGroupsMock,
       searchApiLoadingState: 'loaded',
       searchApiResultMatches: searchMatchesMock,
+      selectedSearchResult: undefined,
       term: 'search term',
     };
   });
@@ -87,6 +98,7 @@ describe('search Reducer', () => {
       expect(state.searchApiLoadingState).toBe('loading');
       expect(state.searchApiResultMatches).toEqual(initialState.searchApiResultMatches);
       expect(state.term).toBe(searchTerm);
+      expect(state.selectedSearchResult).toBe(initialState.selectedSearchResult);
     });
   });
 
@@ -125,6 +137,7 @@ describe('search Reducer', () => {
       expect(state.searchApiLoadingState).toBe(initialState.searchApiLoadingState);
       expect(state.searchApiResultMatches).toEqual(initialState.searchApiResultMatches);
       expect(state.term).toBe(initialState.term);
+      expect(state.selectedSearchResult).toBe(initialState.selectedSearchResult);
     });
   });
 
@@ -199,6 +212,14 @@ describe('search Reducer', () => {
       expect(state.searchApiLoadingState).toBe(initialState.searchApiLoadingState);
       expect(state.searchApiResultMatches).toEqual(initialState.searchApiResultMatches);
       expect(state.term).toBe(initialState.term);
+    });
+  });
+  describe('selectSearchResult', () => {
+    it('sets the selectedSearchResult', () => {
+      const action = SearchActions.selectSearchResult({searchResult: selectedSearchResultMock});
+      const state = reducer(existingState, action);
+
+      expect(state.selectedSearchResult).toEqual(selectedSearchResultMock);
     });
   });
 });
