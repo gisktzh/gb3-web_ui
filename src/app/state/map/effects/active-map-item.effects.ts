@@ -23,6 +23,7 @@ import {selectIsMapServiceInitialized} from '../reducers/map-config.reducer';
 import {selectActiveTool} from '../reducers/tool.reducer';
 import {DrawingActiveMapItem} from '../../../map/models/implementations/drawing.model';
 import {DrawingActions} from '../actions/drawing.actions';
+import {selectNonTemporaryActiveMapItems} from '../selectors/active-map-items.selector';
 
 @Injectable()
 export class ActiveMapItemEffects {
@@ -49,6 +50,18 @@ export class ActiveMapItemEffects {
     },
     {dispatch: false},
   );
+
+  public removeTemporaryActiveMapItem$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ActiveMapItemActions.removeTemporaryActiveMapItem),
+      concatLatestFrom(() => this.store.select(selectNonTemporaryActiveMapItems)),
+      filter(([{activeMapItem}, nonTemporaryActiveMapItems]) => {
+        // we only remove the temporary item if it is not converted to a non-temporary in the meantime, i.e.
+        return !nonTemporaryActiveMapItems.some((nonTemporaryActiveMapItem) => nonTemporaryActiveMapItem.id === activeMapItem.id);
+      }),
+      map(([{activeMapItem}, _]) => ActiveMapItemActions.removeActiveMapItem({activeMapItem})),
+    );
+  });
 
   public removeAllMapItems$ = createEffect(
     () => {

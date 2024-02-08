@@ -8,11 +8,11 @@ import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item
 import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.reducer';
 import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
 import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
-import {selectItems} from '../../../state/map/reducers/active-map-item.reducer';
 import {ActiveMapItem} from '../../models/active-map-item.model';
 import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
 import {selectActiveTool} from '../../../state/map/reducers/tool.reducer';
 import {OnboardingGuideService} from '../../../onboarding-guide/services/onboarding-guide.service';
+import {selectNonTemporaryActiveMapItems} from '../../../state/map/selectors/active-map-items.selector';
 
 const FAVOURITE_HELPER_MESSAGES = {
   noMapsAdded: 'Um einen Favoriten anzulegen, muss mindestens eine Karte hinzugefügt werden.',
@@ -36,7 +36,7 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
   public isActiveMapItemDragAndDropDisabled: boolean = false;
   public readonly favouriteHelperMessages = FAVOURITE_HELPER_MESSAGES;
 
-  private readonly activeMapItems$ = this.store.select(selectItems);
+  private readonly activeMapItems$ = this.store.select(selectNonTemporaryActiveMapItems);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly activeTool$ = this.store.select(selectActiveTool);

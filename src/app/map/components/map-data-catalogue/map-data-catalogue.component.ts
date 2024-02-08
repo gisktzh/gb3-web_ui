@@ -92,8 +92,9 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy {
   /**
    * Adds an activeMap to the map. If a filter is active, takes the original map from the store to avoid adding a filtered, incomplete map.
    * @param activeMap
+   * @param isTemporary Temporary items are not shown in the active map items GUI, yet added to the state
    */
-  public addActiveMap(activeMap: Map) {
+  public addActiveMap(activeMap: Map, isTemporary: boolean = false) {
     if (this.filterString !== '') {
       const originalActiveMap = this.originalMaps.find((originalMap) => originalMap.id === activeMap.id);
       if (!originalActiveMap) {
@@ -102,11 +103,30 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy {
       activeMap = originalActiveMap;
     }
 
-    this.addActiveItem(ActiveMapItemFactory.createGb2WmsMapItem(activeMap));
+    this.addActiveItem(
+      isTemporary ? ActiveMapItemFactory.createTemporaryGb2WmsMapItem(activeMap) : ActiveMapItemFactory.createGb2WmsMapItem(activeMap),
+    );
   }
 
-  public addActiveLayer(activeMap: Map, layer: MapLayer) {
-    this.addActiveItem(ActiveMapItemFactory.createGb2WmsMapItem(activeMap, layer));
+  public addTemporaryMapItem(activeMap: Map, layer: MapLayer | undefined) {
+    if (layer) {
+      this.addActiveLayer(activeMap, layer, true);
+    } else {
+      this.addActiveMap(activeMap, true);
+    }
+  }
+
+  public removeTemporaryMapItem(activeMap: Map, layer?: MapLayer) {
+    const item = ActiveMapItemFactory.createTemporaryGb2WmsMapItem(activeMap, layer);
+    this.store.dispatch(ActiveMapItemActions.removeTemporaryActiveMapItem({activeMapItem: item}));
+  }
+
+  public addActiveLayer(activeMap: Map, layer: MapLayer, isTemporary: boolean = false) {
+    this.addActiveItem(
+      isTemporary
+        ? ActiveMapItemFactory.createTemporaryGb2WmsMapItem(activeMap, layer)
+        : ActiveMapItemFactory.createGb2WmsMapItem(activeMap, layer),
+    );
   }
 
   public trackByTopicTitle(index: number, item: Topic) {

@@ -83,6 +83,7 @@ import {MapImportDisplayNameComponent} from './components/map-tools/map-import/m
 import {TimeExtentToStringPipe} from './pipes/time-extent-to-string.pipe';
 import {DateToStringPipe} from './pipes/date-to-string.pipe';
 import {MapAttributeFilterOverlayComponent} from './components/map-attribute-filter-overlay/map-attribute-filter-overlay.component';
+import {DelayedMouseEnterDirective} from '../shared/directives/delayed-mouse-enter.directive';
 
 @NgModule({
   declarations: [
@@ -174,6 +175,7 @@ import {MapAttributeFilterOverlayComponent} from './components/map-attribute-fil
     MapOverlayComponent,
     MapAttributeFilterComponent,
     MapAttributeFilterOverlayComponent,
+    DelayedMouseEnterDirective,
   ],
   exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent, MapOverlayComponent],
 })

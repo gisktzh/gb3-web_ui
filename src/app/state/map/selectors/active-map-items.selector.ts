@@ -8,3 +8,7 @@ export const selectGb2WmsActiveMapItemsWithMapNotices = createSelector(selectIte
     .filter(isActiveMapItemOfType(Gb2WmsActiveMapItem))
     .filter((gb2WmsActiveMapItem) => gb2WmsActiveMapItem.settings.notice);
 });
+
+export const selectNonTemporaryActiveMapItems = createSelector(selectItems, (activeMapItems) => {
+  return activeMapItems.filter((activeMapItem) => !activeMapItem.isTemporary);
+});

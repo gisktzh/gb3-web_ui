@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Map} from '../../../../shared/interfaces/topic.interface';
 import {MainPage} from '../../../../shared/enums/main-page.enum';
 import {MapConfigState} from '../../../../state/map/states/map-config.state';
@@ -11,7 +11,7 @@ import {selectMapConfigState} from '../../../../state/map/reducers/map-config.re
   templateUrl: './search-result-entry-map.component.html',
   styleUrls: ['./search-result-entry-map.component.scss'],
 })
-export class SearchResultEntryMapComponent {
+export class SearchResultEntryMapComponent implements OnInit, OnDestroy {
   @Input() public filteredMaps: Map[] = [];
 
   public mapConfigState?: MapConfigState;

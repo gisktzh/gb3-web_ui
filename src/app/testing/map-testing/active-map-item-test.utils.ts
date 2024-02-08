@@ -15,6 +15,7 @@ export function createGb2WmsMapItemMock(
   visible: boolean = true,
   opacity: number = 1,
   uuid: string = UuidUtils.createUuid(),
+  isTemporary: boolean = false,
 ): Gb2WmsActiveMapItem {
   const mapMock = {id, title: id, layers: [], uuid} as Partial<Map>;
   for (let layerNumber = 0; layerNumber < numberOfLayers; layerNumber++) {
@@ -22,7 +23,7 @@ export function createGb2WmsMapItemMock(
     const layerMock = {layer: uniqueLayerName, title: uniqueLayerName, id: layerNumber} as Partial<MapLayer>;
     mapMock.layers?.push(<MapLayer>layerMock);
   }
-  return ActiveMapItemFactory.createGb2WmsMapItem(<Map>mapMock, undefined, visible, opacity);
+  return ActiveMapItemFactory.createGb2WmsMapItem(<Map>mapMock, undefined, visible, opacity, isTemporary);
 }
 
 export function createDrawingMapItemMock(id: UserDrawingLayer, visible: boolean = true, opacity: number = 1): DrawingActiveMapItem {

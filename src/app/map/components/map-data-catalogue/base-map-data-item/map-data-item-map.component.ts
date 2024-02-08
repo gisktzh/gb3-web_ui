@@ -1,7 +1,6 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
-import {ConfigService} from 'src/app/shared/services/config.service';
 import {MapLayer} from '../../../../shared/interfaces/topic.interface';
 import {LoadingState} from '../../../../shared/types/loading-state.type';
 import {selectMapConfigState} from '../../../../state/map/reducers/map-config.reducer';
@@ -24,10 +23,7 @@ export class MapDataItemMapComponent extends BaseMapDataItemComponent implements
   private readonly mapConfigState$ = this.store.select(selectMapConfigState);
   private readonly subscriptions: Subscription = new Subscription();
 
-  constructor(
-    private readonly store: Store,
-    private configService: ConfigService,
-  ) {
+  constructor(private readonly store: Store) {
     super();
   }
 
