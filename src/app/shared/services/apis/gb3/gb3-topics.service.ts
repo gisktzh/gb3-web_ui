@@ -18,6 +18,7 @@ import {
   WmsFilterValue,
 } from '../../../interfaces/topic.interface';
 import {
+  Geometry,
   InfoFeatureField,
   TopicsFeatureInfoDetailData,
   TopicsLegendDetailData,
@@ -29,6 +30,7 @@ import {InvalidTimeSliderConfiguration} from '../../../errors/map.errors';
 import {QueryTopic} from '../../../interfaces/query-topic.interface';
 import {ApiGeojsonGeometryToGb3ConverterUtils} from '../../../utils/api-geojson-geometry-to-gb3-converter.utils';
 import {LinkObject} from '../../../interfaces/link-object.interface';
+import {GeometryWithSrs} from '../../../interfaces/geojson-types-with-srs.interface';
 
 const INACTIVE_STRING_FILTER_VALUE = '';
 const INACTIVE_NUMBER_FILTER_VALUE = -1;
@@ -314,24 +316,26 @@ export class Gb3TopicsService extends Gb3ApiService {
               features: layer.features.map((feature) => {
                 return {
                   fid: feature.fid ?? -1, // todo GB3-1025: This will break raster info queries
-                  bbox: feature.bbox ?? [], // todo GB3-1025: This will break raster info queries
                   fields: feature.fields.map((field): FeatureInfoResultFeatureField => {
                     return {
                       label: field.label,
                       value: this.createFeatureInfoFieldValue(field),
                     };
                   }),
-                  geometry: {
-                    // todo GB3-1025: This will break raster info queries
-                    ...ApiGeojsonGeometryToGb3ConverterUtils.convert(feature.geometry ?? {type: 'Point', coordinates: []}),
-                    srs: this.configService.mapConfig.defaultMapConfig.srsId,
-                  },
+                  geometry: feature.geometry ? this.convertGeometryToSupportedGeometry(feature.geometry) : undefined,
                 };
               }),
             };
           }),
         },
       },
+    };
+  }
+
+  private convertGeometryToSupportedGeometry(geometry: Geometry): GeometryWithSrs | undefined {
+    return {
+      ...ApiGeojsonGeometryToGb3ConverterUtils.convert(geometry),
+      srs: this.configService.mapConfig.defaultMapConfig.srsId,
     };
   }
 

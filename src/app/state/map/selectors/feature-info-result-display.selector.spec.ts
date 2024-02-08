@@ -17,7 +17,7 @@ describe('selectFeatureInfosForDisplay', () => {
         topic: 'test-map',
         layers: [
           {
-            features: [{fid: 123, bbox: [1, 2, 3, 4], fields: [], geometry: {srs: 2056, type: 'Point', coordinates: []}}],
+            features: [{fid: 123, fields: [], geometry: {srs: 2056, type: 'Point', coordinates: []}}],
             layer: 'None',
             title: 'EmptyLayer',
           },
