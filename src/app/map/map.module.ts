@@ -4,9 +4,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {OnboardingGuideModule} from '../onboarding-guide/onboarding-guide.module';
 import {SharedModule} from '../shared/shared.module';
 import {ActiveMapItemHeaderComponent} from './components/active-map-items/active-map-item-header/active-map-item-header.component';
-import {
-  ActiveMapItemLayerComponent
-} from './components/active-map-items/active-map-item-layers/active-map-item-layer/active-map-item-layer.component';
+import {ActiveMapItemLayerComponent} from './components/active-map-items/active-map-item-layers/active-map-item-layer/active-map-item-layer.component';
 import {ActiveMapItemLayersComponent} from './components/active-map-items/active-map-item-layers/active-map-item-layers.component';
 import {ActiveMapItemSettingsComponent} from './components/active-map-items/active-map-item-settings/active-map-item-settings.component';
 import {ActiveMapItemComponent} from './components/active-map-items/active-map-item/active-map-item.component';
@@ -19,9 +17,7 @@ import {FavouriteCreationDialogComponent} from './components/favourite-creation-
 import {FavouriteDeletionDialogComponent} from './components/favourite-deletion-dialog/favourite-deletion-dialog.component';
 import {FeatureInfoContentComponent} from './components/feature-info-overlay/feature-info-content/feature-info-content.component';
 import {TableColumnIdentifierDirective} from './components/feature-info-overlay/feature-info-content/table-column-identifier.directive';
-import {
-  FeatureInfoGeneralInformationComponent
-} from './components/feature-info-overlay/feature-info-general-information/feature-info-general-information.component';
+import {FeatureInfoGeneralInformationComponent} from './components/feature-info-overlay/feature-info-general-information/feature-info-general-information.component';
 import {FeatureInfoItemComponent} from './components/feature-info-overlay/feature-info-item/feature-info-item.component';
 import {FeatureInfoOverlayComponent} from './components/feature-info-overlay/feature-info-overlay.component';
 import {FeatureInfoComponent} from './components/feature-info-overlay/feature-info/feature-info.component';
@@ -31,9 +27,7 @@ import {LegendOverlayComponent} from './components/legend-overlay/legend-overlay
 import {LegendComponent} from './components/legend-overlay/legend/legend.component';
 import {MapAttributeFilterComponent} from './components/map-attribute-filter/map-attribute-filter.component';
 import {MapContainerComponent} from './components/map-container/map-container.component';
-import {
-  BasemapSelectionListComponent
-} from './components/map-controls/basemap-selector/basemap-selection-list/basemap-selection-list.component';
+import {BasemapSelectionListComponent} from './components/map-controls/basemap-selector/basemap-selection-list/basemap-selection-list.component';
 import {BasemapSelectorComponent} from './components/map-controls/basemap-selector/basemap-selector.component';
 import {CoordinateScaleInputsComponent} from './components/map-controls/coordinate-scale-inputs/coordinate-scale-inputs.component';
 import {DataInputComponent} from './components/map-controls/data-input/data-input.component';
@@ -51,9 +45,7 @@ import {MapNoticeDialogComponent} from './components/map-notice-dialog/map-notic
 import {MapOverlayListItemComponent} from './components/map-overlay/map-overlay-list-item/map-overlay-list-item.component';
 import {MapOverlayComponent} from './components/map-overlay/map-overlay.component';
 import {AbstractToolsComponent} from './components/map-tools/abstract-tools/abstract-tools.component';
-import {
-  DataDownloadSelectionToolsComponent
-} from './components/map-tools/data-download-selection-tools/data-download-selection-tools.component';
+import {DataDownloadSelectionToolsComponent} from './components/map-tools/data-download-selection-tools/data-download-selection-tools.component';
 import {DrawingToolsComponent} from './components/map-tools/drawing-tools/drawing-tools.component';
 import {MapToolsDesktopComponent} from './components/map-tools/map-tools-desktop/map-tools-desktop.component';
 import {MapToolsMobileComponent} from './components/map-tools/map-tools-mobile/map-tools-mobile.component';
@@ -71,31 +63,21 @@ import {TimeSliderComponent} from './components/time-slider/time-slider.componen
 import {MapPageComponent} from './map-page.component';
 import {MapRoutingModule} from './map-routing.module';
 import {MapRotationPipe} from './pipes/map-rotation.pipe';
-import {
-  DataDownloadSelectMunicipalityDialogComponent
-} from './components/map-tools/data-download-select-municipality-dialog/data-download-select-municipality-dialog.component';
+import {DataDownloadSelectMunicipalityDialogComponent} from './components/map-tools/data-download-select-municipality-dialog/data-download-select-municipality-dialog.component';
 import {ProductComponent} from './components/map-tools/product/product.component';
 import {DataDownloadFilterDialogComponent} from './components/map-tools/data-download-filter-dialog/data-download-filter-dialog.component';
 import {DataDownloadEmailDialogComponent} from './components/map-tools/data-download-email-dialog/data-download-email-dialog.component';
 import {ElevationProfileOverlayComponent} from './components/elevation-profile-overlay/elevation-profile-overlay.component';
 import {NgChartsModule} from 'ng2-charts';
-import {
-  ElevationProfileChartComponent
-} from './components/elevation-profile-overlay/elevation-profile-chart/elevation-profile-chart.component';
-import {
-  ElevationProfileStatisticsComponent
-} from './components/elevation-profile-overlay/elevation-profile-statistics/elevation-profile-statistics.component';
-import {
-  DataDownloadEmailConfirmationDialogComponent
-} from './components/map-tools/data-download-email-confirmation-dialog/data-download-email-confirmation-dialog.component';
+import {ElevationProfileChartComponent} from './components/elevation-profile-overlay/elevation-profile-chart/elevation-profile-chart.component';
+import {ElevationProfileStatisticsComponent} from './components/elevation-profile-overlay/elevation-profile-statistics/elevation-profile-statistics.component';
+import {DataDownloadEmailConfirmationDialogComponent} from './components/map-tools/data-download-email-confirmation-dialog/data-download-email-confirmation-dialog.component';
 import {DataDownloadStatusQueueComponent} from './components/map-tools/data-download-status-queue/data-download-status-queue.component';
 import {DataDownloadOrderStatusPipe} from './pipes/data-download-order-status.pipe';
 import {DataDownloadOrderDownloadUrlPipe} from './pipes/data-download-order-download-url.pipe';
 import {DrawingSettingsDialogComponent} from './components/map-tools/drawing-settings-dialog/drawing-settings-dialog.component';
 import {MapImportDialogComponent} from './components/map-tools/map-import/map-import-dialog/map-import-dialog.component';
-import {
-  MapImportServiceAndUrlComponent
-} from './components/map-tools/map-import/map-import-service-and-url/map-import-service-and-url.component';
+import {MapImportServiceAndUrlComponent} from './components/map-tools/map-import/map-import-service-and-url/map-import-service-and-url.component';
 import {MapImportLayerListComponent} from './components/map-tools/map-import/map-import-layer-list/map-import-layer-list.component';
 import {MapImportDisplayNameComponent} from './components/map-tools/map-import/map-import-display-name/map-import-display-name.component';
 import {TimeExtentToStringPipe} from './pipes/time-extent-to-string.pipe';
@@ -193,7 +175,7 @@ import {DelayedMouseEnterDirective} from '../shared/directives/delayed-mouse-ent
     MapOverlayComponent,
     MapAttributeFilterComponent,
     MapAttributeFilterOverlayComponent,
-    DelayedMouseEnterDirective
+    DelayedMouseEnterDirective,
   ],
   exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent, MapOverlayComponent],
 })

@@ -7,7 +7,7 @@ import {Subject, Subscription, takeUntil, tap, timer} from 'rxjs';
  */
 @Directive({
   selector: '[delayedMouseEnter]',
-  standalone: true
+  standalone: true,
 })
 export class DelayedMouseEnterDirective implements OnDestroy {
   /**
@@ -16,14 +16,14 @@ export class DelayedMouseEnterDirective implements OnDestroy {
   @Input() public delayDurationInMs: number = 1000;
   @Output() public readonly delayedMouseEnter = new EventEmitter<void>();
   private readonly unsubscribe$ = new Subject<void>();
-  private subscription: Subscription|undefined;
+  private subscription?: Subscription;
 
   @HostListener('mouseenter')
   public onMouseEnter() {
     this.subscription = timer(this.delayDurationInMs)
       .pipe(
         tap(() => this.delayedMouseEnter.emit()),
-        takeUntil(this.unsubscribe$)
+        takeUntil(this.unsubscribe$),
       )
       .subscribe();
   }
