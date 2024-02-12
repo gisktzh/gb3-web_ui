@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import {DiscoverMapsRoot, FrequentlyUsedRoot, PageInfosRoot} from './grav-cms-generated.interfaces';
+import {DiscoverMapsRoot, FrequentlyUsedRoot, PageInfosRoot} from '../models/grav-cms-generated.interfaces';
 
 export const discoverMapsDataMock: DiscoverMapsRoot = {
   'discover-maps': [

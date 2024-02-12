@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {LinkableElement} from 'src/app/shared/interfaces/linkable-element.interface';
+import {MainPage} from '../../../shared/enums/main-page.enum';
 
 @Component({
   selector: 'contact',
@@ -7,5 +7,5 @@ import {LinkableElement} from 'src/app/shared/interfaces/linkable-element.interf
   styleUrls: ['./contact.component.scss'],
 })
 export class ContactComponent {
-  public email: LinkableElement[] = [{title: 'gis@bd.zh.ch', url: 'mailto:gis@bd.zh.ch', label: 'gis@bd.zh.ch'}];
+  protected readonly mainPageEnum = MainPage;
 }

@@ -79,6 +79,8 @@
               <map-data-item-map
                 (addEvent)="addActiveMap(map)"
                 (addLayerEvent)="addActiveLayer(map, $event)"
+                (hoverStartEvent)="addTemporaryMapItem(map, $event)"
+                (hoverEndEvent)="removeTemporaryMapItem(map, $event)"
                 [filterString]="filterString"
                 [imageUrl]="map.icon"
                 [layers]="map.layers"

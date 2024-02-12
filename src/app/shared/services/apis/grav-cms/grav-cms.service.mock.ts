@@ -5,7 +5,7 @@ import {GravCmsService} from './grav-cms.service';
 import {DiscoverMapsItem} from '../../../interfaces/discover-maps-item.interface';
 import {PageNotification} from '../../../interfaces/page-notification.interface';
 import {FrequentlyUsedItem} from '../../../interfaces/frequently-used-item.interface';
-import {discoverMapsDataMock, frequentlyUsedDataMock, pageInfosDataMock} from '../../../models/grav-cms-data.mock';
+import {discoverMapsDataMock, frequentlyUsedDataMock, pageInfosDataMock} from '../../../data/grav-cms-data.mock';
 
 /**
  * Returns mockdata and mimicks an API request delay between 1ms and 1000ms.

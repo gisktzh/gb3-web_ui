@@ -3,7 +3,7 @@ import {News} from '../../../interfaces/news.interface';
 import {delay, map} from 'rxjs/operators';
 import {Observable, of} from 'rxjs';
 import {KTZHNewsService} from './ktzhnews.service';
-import {ktzhNewsDataMock} from '../../../models/ktzh-news-data.mock';
+import {ktzhNewsDataMock} from '../../../data/ktzh-news-data.mock';
 
 @Injectable({
   providedIn: 'root',

@@ -34,10 +34,15 @@ export abstract class ActiveMapItem implements HasLoadingState, HasOpacity, HasV
   public opacity: number;
   public loadingState: LoadingState;
   public viewProcessState: ViewProcessState;
+  /**
+   * A temporary item is an active map item that should not be shown in the list of active map items, i.e. during hover state
+   */
+  public isTemporary: boolean;
 
-  protected constructor(visible?: boolean, opacity?: number) {
-    this.visible = visible ?? true;
-    this.opacity = opacity ?? 1;
+  protected constructor(visible: boolean = true, opacity: number = 1, isTemporary: boolean = false) {
+    this.visible = visible;
+    this.opacity = opacity;
+    this.isTemporary = isTemporary;
   }
 
   /**

@@ -10,6 +10,7 @@ import {ActiveMapItemActions} from '../../../../../state/map/actions/active-map-
 import {selectMapConfigState} from '../../../../../state/map/reducers/map-config.reducer';
 import {MapConfigState} from '../../../../../state/map/states/map-config.state';
 import {ActiveMapItem} from '../../../../models/active-map-item.model';
+import {MapConstants} from '../../../../../shared/constants/map.constants';
 import {SearchActions} from '../../../../../state/app/actions/search.actions';
 
 @Component({
@@ -26,6 +27,7 @@ export class ResultGroupComponent implements OnInit, OnDestroy {
 
   public screenMode: ScreenMode = 'regular';
   public mapConfigState?: MapConfigState;
+  public readonly hoverDelay = MapConstants.TEMPORARY_PREVIEW_DELAY;
 
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly mapConfigState$ = this.store.select(selectMapConfigState);
@@ -45,17 +47,28 @@ export class ResultGroupComponent implements OnInit, OnDestroy {
     this.store.dispatch(SearchActions.selectMapSearchResult({searchResult}));
   }
 
-  public addActiveMap(activeMap: Map) {
-    this.addActiveItem(ActiveMapItemFactory.createGb2WmsMapItem(activeMap));
+  public addActiveMap(activeMap: Map, isTemporary: boolean = false) {
+    if (!activeMap.gb2Url) {
+      this.addActiveItem(
+        isTemporary ? ActiveMapItemFactory.createTemporaryGb2WmsMapItem(activeMap) : ActiveMapItemFactory.createGb2WmsMapItem(activeMap),
+      );
+    }
+  }
+
+  public removeTemporaryMap(activeMap: Map) {
+    if (!activeMap.gb2Url) {
+      const item = ActiveMapItemFactory.createTemporaryGb2WmsMapItem(activeMap);
+      this.store.dispatch(ActiveMapItemActions.removeTemporaryActiveMapItem({activeMapItem: item}));
+    }
+  }
+
+  private initSubscriptions() {
+    this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
+    this.subscriptions.add(this.mapConfigState$.pipe(tap((mapConfigState) => (this.mapConfigState = mapConfigState))).subscribe());
   }
 
   private addActiveItem(activeMapItem: ActiveMapItem) {
     // add new map items on top (position 0)
     this.store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem, position: 0}));
-  }
-
-  public initSubscriptions() {
-    this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
-    this.subscriptions.add(this.mapConfigState$.pipe(tap((mapConfigState) => (this.mapConfigState = mapConfigState))).subscribe());
   }
 }

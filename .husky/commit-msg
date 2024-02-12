@@ -1,12 +1,13 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 echo "🚀 Checking commit message!"
-message="$(cat "$1")"
-valid_commit_pattern='GB3-[0-9]+: .+'
-if ! [[ $message =~ $valid_commit_pattern ]];
-then
-  echo -e "\033[31m⚠️ Commit message does not adhere to naming convention $valid_commit_pattern! \e[0m"
+message=$(cat "$1")
+valid_commit_pattern='GB3-[0-9][0-9]*: .*'
+
+if ! echo "$message" | grep -Eq "$valid_commit_pattern"; then
+  printf "\033[31m⚠️ Commit message does not adhere to naming convention %s! \033[0m\n" "$valid_commit_pattern"
 else
-  echo -e "✅  Commit message!"
+  echo "✅ Commit message!"
 fi
+
 echo ""

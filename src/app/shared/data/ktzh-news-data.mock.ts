@@ -1,4 +1,4 @@
-import {RootObject as KTZHNewsRootObject} from './ktzh-news-generated.interfaces';
+import {RootObject as KTZHNewsRootObject} from '../models/ktzh-news-generated.interfaces';
 
 /**
  * Mockdata response taken from the endpoint, used in the MockService.

@@ -1,6 +1,5 @@
 import {createFeature, createReducer, on} from '@ngrx/store';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
-import {ActiveMapItem} from '../../../map/models/active-map-item.model';
 import {ActiveMapItemState} from '../states/active-map-item.state';
 import {produce} from 'immer';
 import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
@@ -17,15 +16,25 @@ export const activeMapItemFeature = createFeature({
   name: activeMapItemFeatureKey,
   reducer: createReducer(
     initialState,
-    on(ActiveMapItemActions.addActiveMapItem, (state, {activeMapItem, position}): ActiveMapItemState => {
-      if (state.items.some((mapItem) => mapItem.id === activeMapItem.id)) {
-        // the map item is already active - no state changes necessary
-        return {...state};
-      }
-      const newActiveMapItems: ActiveMapItem[] = [...state.items];
-      newActiveMapItems.splice(position, 0, activeMapItem);
-      return {...state, items: newActiveMapItems};
-    }),
+    on(
+      ActiveMapItemActions.addActiveMapItem,
+      produce((draft, {activeMapItem, position}) => {
+        const existing = draft.items.find((mapItem) => mapItem.id === activeMapItem.id);
+        if (existing) {
+          if (!existing.isTemporary) {
+            // the map item is already active - no state changes necessary
+            return draft;
+          } else {
+            // the map item is existing as a temporary (i.e. hovered) item, so we convert it to a non-temporary one
+            existing.isTemporary = false;
+            return draft;
+          }
+        }
+
+        draft.items.splice(position, 0, activeMapItem);
+        return draft;
+      }),
+    ),
     on(ActiveMapItemActions.removeActiveMapItem, (state, {activeMapItem}): ActiveMapItemState => {
       const remainingActiveMapItems = state.items.filter((mapItem) => mapItem.id !== activeMapItem.id);
       return {...state, items: [...remainingActiveMapItems]};
