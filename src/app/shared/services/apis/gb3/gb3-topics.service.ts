@@ -332,7 +332,7 @@ export class Gb3TopicsService extends Gb3ApiService {
     };
   }
 
-  private convertGeometryToSupportedGeometry(geometry: Geometry): GeometryWithSrs | undefined {
+  private convertGeometryToSupportedGeometry(geometry: Geometry): GeometryWithSrs {
     return {
       ...ApiGeojsonGeometryToGb3ConverterUtils.convert(geometry),
       srs: this.configService.mapConfig.defaultMapConfig.srsId,
