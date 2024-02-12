@@ -40,6 +40,7 @@ type TableCell = TextTableCell | UrlTableCell;
  */
 interface TableHeader extends Omit<AbstractTableCell, 'cellType'> {
   displayValue: string;
+  hasGeometry: boolean;
 }
 
 /**
@@ -83,7 +84,7 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
   public readonly tableRows: TableRows = new Map<string, TableCell[]>();
   public readonly tableHeaders: TableHeader[] = [];
 
-  private readonly featureGeometries: Map<number, GeometryWithSrs | null> = new Map();
+  private readonly featureGeometries: Map<number, GeometryWithSrs | undefined> = new Map();
   private readonly pinnedFeatureId$ = this.store.select(selectPinnedFeatureId);
   private readonly subscriptions: Subscription = new Subscription();
   private pinnedFeatureId: string | undefined;
@@ -110,7 +111,11 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
     this.initPinnedFeatureIdHandler();
   }
 
-  public toggleHighlightForFeature(fid: number, highlightButton: MatRadioButton) {
+  public toggleHighlightForFeature(fid: number, highlightButton: MatRadioButton, hasGeometry: boolean) {
+    if (!hasGeometry) {
+      return;
+    }
+
     if (highlightButton.checked) {
       this.store.dispatch(FeatureInfoActions.clearHighlight());
       // Programmaticaly dispatch the hover effect which is not triggered anymore because the button is inside the hover area
@@ -227,9 +232,9 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
     }
   }
 
-  private createTableHeaderForFeature(fid: number, featureIndex: number, totalFeatures: number): TableHeader {
+  private createTableHeaderForFeature(fid: number, featureIndex: number, totalFeatures: number, hasGeometry: boolean): TableHeader {
     const displayValue = `${DEFAULT_TABLE_HEADER_PREFIX} ${featureIndex + 1}/${totalFeatures}`;
-    return {displayValue, fid};
+    return {displayValue, fid, hasGeometry};
   }
 
   private createTableCellForFeatureAndField(fid: number, value: string | LinkObject | null): TableCell {
@@ -260,7 +265,7 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
   private initTableData() {
     this.layer.features.forEach(({fid, geometry, fields}, featureIdx, features) => {
       this.featureGeometries.set(fid, geometry);
-      const tableHeader = this.createTableHeaderForFeature(fid, featureIdx, features.length);
+      const tableHeader = this.createTableHeaderForFeature(fid, featureIdx, features.length, !!geometry);
       this.tableHeaders.push(tableHeader);
 
       fields.forEach(({label, value}) => {
