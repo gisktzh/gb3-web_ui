@@ -63,9 +63,6 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
-    if (this.screenMode !== 'mobile') {
-      this.clearInput();
-    }
   }
 
   public clearInput() {
