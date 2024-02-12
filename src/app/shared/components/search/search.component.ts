@@ -63,6 +63,9 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
+    if (this.screenMode !== 'mobile') {
+      this.clearInput();
+    }
   }
 
   public clearInput() {
@@ -84,9 +87,12 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
         .pipe(
           map((searchTerm) => {
             this.inputRef.nativeElement.value = searchTerm.term;
-            return searchTerm;
+            const term = searchTerm.term.trim();
+            return {...searchTerm, term};
           }),
-          distinctUntilChanged(),
+          distinctUntilChanged((prev, curr) => {
+            return prev.term === curr.term;
+          }),
           tap((searchTerm) => {
             if (searchTerm.emitChangeEvent) {
               this.changeSearchTermEvent.emit(searchTerm.term.trim());
@@ -102,12 +108,12 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
           debounceTime(SEARCH_TERM_INPUT_DEBOUNCE_IN_MS),
           tap((event) => {
             const term = (<HTMLInputElement>event.target).value;
-
             this.setTerm(term);
           }),
         )
         .subscribe(),
     );
+
     this.subscriptions.add(
       this.store
         .select(selectSelectedSearchResult)
@@ -123,6 +129,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
         )
         .subscribe(),
     );
+
     this.subscriptions.add(
       this.store
         .select(selectTerm)
