@@ -63,6 +63,9 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
+
+    // make sure our filterstring is properly cleaned to avoid NG100 on navigation
+    this.store.dispatch(LayerCatalogActions.clearFilterString());
   }
 
   /**
