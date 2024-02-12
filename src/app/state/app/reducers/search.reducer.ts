@@ -88,7 +88,7 @@ export const searchFeature = createFeature({
     on(SearchActions.resetSearchAndFilters, (): SearchState => {
       return {...initialState};
     }),
-    on(SearchActions.selectSearchResult, (state, {searchResult}): SearchState => {
+    on(SearchActions.selectMapSearchResult, (state, {searchResult}): SearchState => {
       return {...state, selectedSearchResult: searchResult};
     }),
   ),

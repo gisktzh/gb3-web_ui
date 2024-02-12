@@ -214,9 +214,9 @@ describe('search Reducer', () => {
       expect(state.term).toBe(initialState.term);
     });
   });
-  describe('selectSearchResult', () => {
+  describe('selectMapSearchResult', () => {
     it('sets the selectedSearchResult', () => {
-      const action = SearchActions.selectSearchResult({searchResult: selectedSearchResultMock});
+      const action = SearchActions.selectMapSearchResult({searchResult: selectedSearchResultMock});
       const state = reducer(existingState, action);
 
       expect(state.selectedSearchResult).toEqual(selectedSearchResultMock);

@@ -270,7 +270,7 @@ export class MapUiEffects {
 
   public closeBottomSheetAfterSelectingSearchResult$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(SearchActions.selectSearchResult),
+      ofType(SearchActions.selectMapSearchResult),
       concatLatestFrom(() => this.store.select(selectScreenMode)),
       filter(([_, screenMode]) => screenMode === 'mobile'),
       map(() => MapUiActions.hideBottomSheet()),

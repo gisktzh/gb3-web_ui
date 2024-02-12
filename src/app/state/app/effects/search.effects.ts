@@ -98,7 +98,7 @@ export class SearchEffects {
   public zoomToAndHighlightSelectedSearchResult$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(SearchActions.selectSearchResult),
+        ofType(SearchActions.selectMapSearchResult),
         tap(({searchResult}) => {
           // only zoom to result if the geometry is available in the index
           if (searchResult.geometry) {

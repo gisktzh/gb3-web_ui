@@ -178,7 +178,7 @@ describe('MapUiEffects', () => {
 
       store.overrideSelector(selectScreenMode, 'mobile');
 
-      actions$ = of(SearchActions.selectSearchResult({searchResult: searchResultsMock}));
+      actions$ = of(SearchActions.selectMapSearchResult({searchResult: searchResultsMock}));
       effects.closeBottomSheetAfterSelectingSearchResult$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
         done();
@@ -186,7 +186,6 @@ describe('MapUiEffects', () => {
     });
 
     it('dispatches nothing when a result is selected in the search on desktop', fakeAsync(async () => {
-      const expectedAction = MapUiActions.hideBottomSheet();
       const searchResultsMock: GeometrySearchApiResultMatch = {
         indexType: 'places',
         displayString: 'Some Place',
@@ -196,7 +195,7 @@ describe('MapUiEffects', () => {
 
       store.overrideSelector(selectScreenMode, 'regular');
       let newAction;
-      actions$ = of(SearchActions.selectSearchResult({searchResult: searchResultsMock}));
+      actions$ = of(SearchActions.selectMapSearchResult({searchResult: searchResultsMock}));
       effects.closeBottomSheetAfterSelectingSearchResult$.subscribe((action) => (newAction = action));
       flush();
       expect(newAction).toBeUndefined();

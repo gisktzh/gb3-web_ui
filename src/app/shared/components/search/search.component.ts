@@ -36,7 +36,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   public selectedSearchResult?: GeometrySearchApiResultMatch;
 
   @ViewChild('searchInput') private readonly inputRef!: ElementRef<HTMLInputElement>;
-  private readonly term = new Subject<{term: string; emitChangeEvent: boolean}>();
+  private readonly searchTerm = new Subject<{term: string; emitChangeEvent: boolean}>();
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly subscriptions: Subscription = new Subscription();
 
@@ -75,21 +75,21 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private setTerm(term: string, emitChangeEvent: boolean = true) {
-    this.term.next({term, emitChangeEvent});
+    this.searchTerm.next({term, emitChangeEvent});
   }
 
   private initSubscriptions() {
     this.subscriptions.add(
-      this.term
+      this.searchTerm
         .pipe(
-          map((term) => {
-            this.inputRef.nativeElement.value = term.term;
-            return term;
+          map((searchTerm) => {
+            this.inputRef.nativeElement.value = searchTerm.term;
+            return searchTerm;
           }),
           distinctUntilChanged(),
-          tap((term) => {
-            if (term.emitChangeEvent) {
-              this.changeSearchTermEvent.emit(term.term.trim());
+          tap((searchTerm) => {
+            if (searchTerm.emitChangeEvent) {
+              this.changeSearchTermEvent.emit(searchTerm.term.trim());
             }
           }),
         )

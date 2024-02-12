@@ -7,7 +7,6 @@ import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {RouterTestingModule} from '@angular/router/testing';
 import {MAP_SERVICE} from '../../../app.module';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
-import {MapService} from '../../../map/interfaces/map.service';
 import {SearchEffects} from './search.effects';
 import {SearchActions} from '../actions/search.actions';
 import {GeometrySearchApiResultMatch} from '../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
@@ -20,7 +19,6 @@ describe('SearchEffects', () => {
   let actions$: Observable<Action>;
   let store: MockStore;
   let effects: SearchEffects;
-  let mapService: MapService;
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
@@ -30,7 +28,6 @@ describe('SearchEffects', () => {
       providers: [SearchEffects, provideMockActions(() => actions$), provideMockStore(), {provide: MAP_SERVICE, useClass: MapServiceStub}],
     });
     effects = TestBed.inject(SearchEffects);
-    mapService = TestBed.inject(MAP_SERVICE);
     store = TestBed.inject(MockStore);
   });
 
@@ -52,7 +49,7 @@ describe('SearchEffects', () => {
         geometry: {type: 'Point', srs: 2056, coordinates: [1, 2]},
       };
 
-      const expectedAction = SearchActions.selectSearchResult({
+      const expectedAction = SearchActions.selectMapSearchResult({
         searchResult: searchResultsMock,
       });
       actions$ = of(expectedAction);

@@ -20,6 +20,6 @@ export const SearchActions = createActionGroup({
     'Set Filter Value': props<{groupLabel: string; filterLabel: string; isActive: boolean}>(),
     'Reset Filters': emptyProps(),
     'Reset Search and Filters': emptyProps(),
-    'Select Search Result': props<{searchResult: GeometrySearchApiResultMatch}>(),
+    'Select Map Search Result': props<{searchResult: GeometrySearchApiResultMatch}>(),
   },
 });
