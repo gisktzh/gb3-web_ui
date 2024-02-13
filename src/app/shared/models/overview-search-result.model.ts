@@ -28,6 +28,27 @@ abstract class OverviewSearchResult {
   public abstract createDisplayRepresentationForList(): OverviewSearchResultDisplayItem;
 }
 
+export class OverviewLinkItem extends OverviewSearchResult {
+  private readonly url: string;
+
+  constructor(title: string, url: string) {
+    super('uuid', title, 'x');
+    this.url = url;
+  }
+
+  public override createDisplayRepresentationForList(): OverviewSearchResultDisplayItem {
+    return {
+      title: this.name,
+      uuid: this.uuid,
+      url: {
+        isInternal: false,
+        path: this.url,
+      },
+      fields: [{title: 'Typ', content: 'Info'}],
+    };
+  }
+}
+
 export class OverviewFaqItem extends OverviewSearchResult implements HasRelativeUrl {
   public readonly relativeUrl: string;
 
@@ -40,7 +61,10 @@ export class OverviewFaqItem extends OverviewSearchResult implements HasRelative
     return {
       title: this.name,
       uuid: this.uuid,
-      relativeUrl: this.relativeUrl,
+      url: {
+        isInternal: true,
+        path: this.relativeUrl,
+      },
       fields: [
         {title: 'Typ', content: 'Frage'},
         {title: 'Beschreibung', content: this.description, truncatable: true},
@@ -80,7 +104,7 @@ export abstract class OverviewMetadataItem extends OverviewSearchResult implemen
     return {
       title: this.name,
       uuid: this.uuid,
-      relativeUrl: this.relativeUrl,
+      url: {isInternal: true, path: this.relativeUrl},
       fields: [
         {title: 'Typ', content: this.type},
         {title: 'Beschreibung', content: this.description, truncatable: true},

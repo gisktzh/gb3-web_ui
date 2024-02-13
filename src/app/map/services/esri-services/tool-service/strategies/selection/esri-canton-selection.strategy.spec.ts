@@ -8,6 +8,7 @@ import {Observable, of} from 'rxjs';
 import {CantonWithGeometry} from '../../../../../../shared/interfaces/gb3-geoshop-product.interface';
 import {MinimalGeometriesUtils} from '../../../../../../testing/map-testing/minimal-geometries.utils';
 import {DataDownloadSelection} from '../../../../../../shared/interfaces/data-download-selection.interface';
+import {provideMockStore} from '@ngrx/store/testing';
 
 describe('EsriCantonSelectionStrategy', () => {
   let layer: GraphicsLayer;
@@ -21,7 +22,7 @@ describe('EsriCantonSelectionStrategy', () => {
   let cantonWithGeometry$: Observable<CantonWithGeometry | undefined>;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({providers: [provideMockStore()]});
     layer = new GraphicsLayer({
       id: InternalDrawingLayer.Selection,
     });

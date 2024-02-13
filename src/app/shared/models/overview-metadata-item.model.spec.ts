@@ -50,7 +50,7 @@ describe('OverviewMetadataItemModel', () => {
 
         const actual = testItem.createDisplayRepresentationForList();
         const expected: OverviewSearchResultDisplayItem = {
-          relativeUrl: testCase.expectedUrl,
+          url: {isInternal: true, path: testCase.expectedUrl},
           uuid: TEST_GUID,
           title: 'Gandalf',
           fields: [
@@ -75,7 +75,7 @@ describe('OverviewMetadataItemModel', () => {
 
       const actual = testItem.createDisplayRepresentationForList();
       const expected: OverviewSearchResultDisplayItem = {
-        relativeUrl: expectUrlForType(DataCataloguePage.Datasets),
+        url: {isInternal: true, path: expectUrlForType(DataCataloguePage.Datasets)},
         uuid: TEST_GUID,
         title: 'Gandalf',
         fields: [

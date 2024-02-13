@@ -8,6 +8,10 @@ describe('App Reducer', () => {
   beforeEach(() => {
     existingState = {
       devMode: false,
+      dynamicInternalUrlsConfiguration: {
+        geolion: {href: ''},
+        wmszhch: {href: ''},
+      },
     };
   });
 

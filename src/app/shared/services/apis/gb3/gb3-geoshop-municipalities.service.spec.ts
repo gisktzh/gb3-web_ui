@@ -6,6 +6,7 @@ import {of} from 'rxjs';
 import {ConfigService} from '../../config.service';
 import {Municipality, MunicipalityWithGeometry} from '../../../interfaces/gb3-geoshop-product.interface';
 import {Gb3GeoshopMunicipalitiesService} from './gb3-geoshop-municipalities.service';
+import {provideMockStore} from '@ngrx/store/testing';
 
 describe('Gb3GeoshopMunicipalitiesService', () => {
   let service: Gb3GeoshopMunicipalitiesService;
@@ -14,6 +15,7 @@ describe('Gb3GeoshopMunicipalitiesService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
+      providers: [provideMockStore()],
     });
     service = TestBed.inject(Gb3GeoshopMunicipalitiesService);
     configService = TestBed.inject(ConfigService);
