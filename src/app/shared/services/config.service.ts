@@ -25,6 +25,10 @@ import {FilterConfigs} from '../interfaces/filter-config.interface';
 import {DataDownloadConfig} from '../interfaces/data-download-config.interface';
 import {dataDownloadConfig} from '../configs/data-download.config';
 import {defaultFillColor, defaultLineColor, defaultLineWidth, defaultOutline} from '../configs/drawing.config';
+import {Store} from '@ngrx/store';
+import {AppActions} from '../../state/app/actions/app.actions';
+
+import {DynamicInternalUrlsConfiguration} from '../types/dynamic-internal-url.type';
 
 @Injectable({
   providedIn: 'root',
@@ -69,6 +73,22 @@ export class ConfigService {
     defaultOutline: defaultOutline,
   };
 
+  constructor(
+    @Inject(DOCUMENT) private readonly document: Document,
+    private readonly store: Store,
+  ) {
+    const runtimeConfig = this.findRuntimeConfig();
+    if (!runtimeConfig) {
+      throw new HostNameResolutionMismatch(); // note: this will actually prevent the app from loading in general
+    }
+
+    this.apiConfig = runtimeConfig.apiBasePaths;
+    this.overridesConfig = runtimeConfig.overrides;
+    this.authConfig = runtimeConfig.authSettings;
+
+    this.initializeDynamicInternalUrlsState();
+  }
+
   public get filterConfigs(): FilterConfigs {
     return {
       dataCatalogue: dataCatalogueFilterConfig,
@@ -100,17 +120,6 @@ export class ConfigService {
     return dataDownloadConfig;
   }
 
-  constructor(@Inject(DOCUMENT) private readonly document: Document) {
-    const runtimeConfig = this.findRuntimeConfig();
-    if (!runtimeConfig) {
-      throw new HostNameResolutionMismatch(); // note: this will actually prevent the app from loading in general
-    }
-
-    this.apiConfig = runtimeConfig.apiBasePaths;
-    this.overridesConfig = runtimeConfig.overrides;
-    this.authConfig = runtimeConfig.authSettings;
-  }
-
   /**
    * Filters the search indexes from the config using the given search index types.
    * @param searchIndexTypes Only search indexes with this type will be returned
@@ -127,5 +136,17 @@ export class ConfigService {
   private findRuntimeConfig(): RuntimeConfig | undefined {
     const hostName = this.document.location.host.split(':')[0];
     return defaultRuntimeConfig.find((config) => config.hostMatch === hostName);
+  }
+
+  private initializeDynamicInternalUrlsState() {
+    const dynamicInternalUrlsConfiguration: DynamicInternalUrlsConfiguration = {
+      geolion: {
+        href: this.apiConfig.geoLion.baseUrl,
+      },
+      wmszhch: {
+        href: this.apiConfig.ktzhWebsite.baseUrl,
+      },
+    };
+    this.store.dispatch(AppActions.setDynamicInternalUrlConfiguration({dynamicInternalUrlsConfiguration}));
   }
 }
