@@ -17,7 +17,7 @@ import {GeometrySearchApiResultMatch} from '../../../shared/services/apis/search
   styleUrls: ['./search-window-mobile.component.scss'],
 })
 export class SearchWindowMobileComponent implements OnInit, OnDestroy, AfterViewInit {
-  @Input() focusOnInit: boolean = true;
+  @Input() public focusOnInit: boolean = true;
   public isAnySearchFilterActive: boolean = false;
   public selectedSearchResult?: GeometrySearchApiResultMatch;
 
@@ -51,6 +51,7 @@ export class SearchWindowMobileComponent implements OnInit, OnDestroy, AfterView
           tap((selectedSearchResult) => {
             this.selectedSearchResult = selectedSearchResult;
             if (selectedSearchResult) {
+              // This is necessary to avoid NG100 ExpressionChangedAfterItHasBeenCheckedError
               setTimeout(() => {
                 this.searchComponent.setTerm(selectedSearchResult?.displayString ?? '', false);
               }, 0);
@@ -65,6 +66,7 @@ export class SearchWindowMobileComponent implements OnInit, OnDestroy, AfterView
         .pipe(
           tap((term) => {
             if (!this.selectedSearchResult) {
+              // This is necessary to avoid NG100 ExpressionChangedAfterItHasBeenCheckedError
               setTimeout(() => {
                 this.searchComponent.setTerm(term, false);
               }, 0);

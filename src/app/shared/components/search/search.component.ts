@@ -22,7 +22,6 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() public focusOnInit: boolean = false;
   @Input() public disabled: boolean = false;
   @Input() public isAnyFilterActive: boolean = false;
-  @Input() public canSearchTermBeSetManually: boolean = false;
 
   @Output() public readonly focusEvent = new EventEmitter<void>();
   @Output() public readonly changeSearchTermEvent = new EventEmitter<string>();
