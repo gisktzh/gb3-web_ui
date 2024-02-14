@@ -5,8 +5,6 @@ import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {ScreenMode} from '../../types/screen-size.type';
 import {SearchMode} from '../../types/search-mode.type';
 import {map} from 'rxjs/operators';
-import {selectSelectedSearchResult, selectTerm} from '../../../state/app/reducers/search.reducer';
-import {GeometrySearchApiResultMatch} from '../../services/apis/search/interfaces/search-api-result-match.interface';
 
 const SEARCH_TERM_INPUT_DEBOUNCE_IN_MS = 300;
 
@@ -19,7 +17,6 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() public placeholderText!: string;
   @Input() public showFilterButton: boolean = true;
   @Input() public alwaysEnableClearButton: boolean = false;
-  @Input() public showClearButton: boolean = true;
   @Input() public clearButtonLabel?: string;
   @Input() public mode: SearchMode = 'normal';
   @Input() public focusOnInit: boolean = false;
@@ -33,7 +30,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   @Output() public readonly openFilterEvent = new EventEmitter<void>();
 
   public screenMode: ScreenMode = 'regular';
-  public selectedSearchResult?: GeometrySearchApiResultMatch;
+  // public selectedSearchResult?: GeometrySearchApiResultMatch;
 
   @ViewChild('searchInput') private readonly inputRef!: ElementRef<HTMLInputElement>;
   private readonly searchTerm = new Subject<{term: string; emitChangeEvent: boolean}>();
@@ -74,7 +71,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     this.openFilterEvent.emit();
   }
 
-  private setTerm(term: string, emitChangeEvent: boolean = true) {
+  public setTerm(term: string, emitChangeEvent: boolean = true) {
     this.searchTerm.next({term, emitChangeEvent});
   }
 
@@ -106,37 +103,6 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
           tap((event) => {
             const term = (<HTMLInputElement>event.target).value;
             this.setTerm(term);
-          }),
-        )
-        .subscribe(),
-    );
-
-    this.subscriptions.add(
-      this.store
-        .select(selectSelectedSearchResult)
-        .pipe(
-          tap((selectedSearchResult) => {
-            this.selectedSearchResult = selectedSearchResult;
-            if (this.canSearchTermBeSetManually && selectedSearchResult) {
-              setTimeout(() => {
-                this.setTerm(selectedSearchResult.displayString, false);
-              }, 0);
-            }
-          }),
-        )
-        .subscribe(),
-    );
-
-    this.subscriptions.add(
-      this.store
-        .select(selectTerm)
-        .pipe(
-          tap((term) => {
-            if (this.canSearchTermBeSetManually && !this.selectedSearchResult) {
-              setTimeout(() => {
-                this.setTerm(term, false);
-              }, 0);
-            }
           }),
         )
         .subscribe(),
