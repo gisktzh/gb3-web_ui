@@ -6,7 +6,7 @@ export const appFeatureKey = 'app';
 
 export const initialState: AppState = {
   devMode: false,
-  dynamicInternalUrlsConfiguration: {wmszhch: {href: ''}, geolion: {href: ''}},
+  dynamicInternalUrlsConfiguration: {geolion: {href: ''}},
 };
 
 export const appFeature = createFeature({

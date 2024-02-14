@@ -8,7 +8,6 @@ export interface OverviewSearchResultDisplayItemField {
 }
 
 export interface OverviewSearchResultDisplayItem {
-  // todo LME: maybe use type discrimination for url?
   title: string;
   uuid: string;
   url: {

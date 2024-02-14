@@ -152,6 +152,6 @@ export const selectFilteredUsefulLinks = createSelector(
         // Return true if the map title OR one of the keywords includes the filter string
         return link.title?.toLowerCase().includes(lowerCasedFilterString);
       })
-      .map((faqItem) => new OverviewLinkItem(faqItem.title ?? faqItem.href, faqItem.href).createDisplayRepresentationForList());
+      .map((linkItem) => new OverviewLinkItem(linkItem.title ?? linkItem.href, linkItem.href).createDisplayRepresentationForList());
   },
 );

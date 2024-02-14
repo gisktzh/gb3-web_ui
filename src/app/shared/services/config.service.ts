@@ -143,9 +143,6 @@ export class ConfigService {
       geolion: {
         href: this.apiConfig.geoLion.baseUrl,
       },
-      wmszhch: {
-        href: this.apiConfig.ktzhWebsite.baseUrl,
-      },
     };
     this.store.dispatch(AppActions.setDynamicInternalUrlConfiguration({dynamicInternalUrlsConfiguration}));
   }
