@@ -98,6 +98,7 @@ export class Gb3ShareLinkService extends Gb3ApiService {
         type: drawings.geojson.type,
         features: castFeatures,
       },
+      content: undefined, // TODO gb3-645: remove once api ready
     };
   }
 

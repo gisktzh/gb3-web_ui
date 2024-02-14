@@ -36,6 +36,7 @@ export class SymbolizationToGb3ConverterUtils {
         features: gb3GeoJsonFeatures,
       },
       styles: allStyles,
+      content: undefined, // TODO gb3-645: remove once api ready
     };
   }
 

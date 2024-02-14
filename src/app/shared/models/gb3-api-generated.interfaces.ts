@@ -9,6 +9,9 @@
  * ---------------------------------------------------------------
  */
 
+import {TimeExtent} from '../../map/interfaces/time-extent.interface';
+import {FilterConfiguration} from '../interfaces/topic.interface';
+
 export interface Canton {
   /** GeoJSON geometry object */
   boundingbox: Geometry;
@@ -766,6 +769,10 @@ export type FavoriteContent = {
    * @max 1
    */
   opacity: number;
+  /** TimeExtent of the timeslider */ // TODO gb3-645: will be used once api ready
+  timeExtent?: TimeExtent;
+  /** Selected Attributefilters */
+  attributeFilters?: FilterConfiguration;
   /** Single layer of the map */
   isSingleLayer: boolean;
   layers: {

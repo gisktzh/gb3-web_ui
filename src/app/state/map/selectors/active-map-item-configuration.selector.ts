@@ -16,6 +16,8 @@ export const selectActiveMapItemConfigurations = createSelector(selectItems, (ac
         visible: activeMapItem.visible,
         opacity: activeMapItem.opacity,
         isSingleLayer: activeMapItem.isSingleLayer,
+        timeExtent: activeMapItem.settings.timeSliderExtent,
+        attributeFilters: activeMapItem.settings.filterConfigurations, // TODO gb3-645: update once i figured out what fields i need
       };
     });
   return activeMapItemConfigurations;
