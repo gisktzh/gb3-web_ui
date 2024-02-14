@@ -293,6 +293,14 @@ export class ActiveMapItemEffects {
           this.mapService.removeMapItem(activeMapItem.id);
           activeMapItem.addToMap(this.mapService, idx);
 
+          // TODO GB3-645: move to esri-map.serivce
+          if (activeMapItem instanceof Gb2WmsActiveMapItem) {
+            const attributeFilterParameters = this.gb3TopicsService.transformFilterConfigurationToParameters(
+              activeMapItem.settings.filterConfigurations ?? [],
+            );
+            this.mapService.setAttributeFilters(attributeFilterParameters, activeMapItem);
+          }
+
           if (activeMapItem instanceof DrawingActiveMapItem) {
             this.mapService.getToolService().addExistingDrawingsToLayer(
               drawingsToAdd.filter((drawing) => drawing.source === activeMapItem.settings.userDrawingLayer),

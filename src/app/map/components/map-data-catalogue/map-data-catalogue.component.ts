@@ -73,7 +73,7 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy {
    */
   public addFavouriteToMap({id, content, drawings, measurements, baseConfig}: Favourite) {
     try {
-      const activeMapItemsForFavourite = this.favouritesService.getActiveMapItemsForFavourite(content);
+      const activeMapItemsForFavourite = this.favouritesService.getActiveMapItemsForFavourite(drawings.content!); // TODO GB3-645: revert to "content" once API delivers this
       const {drawingsToAdd, drawingActiveMapItems} = this.favouritesService.getDrawingsForFavourite(drawings, measurements);
 
       this.store.dispatch(

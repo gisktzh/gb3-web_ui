@@ -201,6 +201,12 @@ export class EsriMapService implements MapService, OnDestroy {
       // apply initial time slider settings
       this.setEsriTimeSliderExtent(mapItem.settings.timeSliderExtent, mapItem, esriLayer);
     }
+    // if (mapItem.settings.filterConfigurations) {
+    //   const attributeFilterParameters = this.gb3TopicsService.transformFilterConfigurationToParameters(
+    //     mapItem.settings.filterConfigurations,
+    //   );
+    //   this.setAttributeFilters(attributeFilterParameters, mapItem);
+    // }
     this.addLayer(esriLayer, position);
   }
 
@@ -494,7 +500,15 @@ export class EsriMapService implements MapService, OnDestroy {
     }
   }
 
-  private handlePrintPreview(center: {x: number; y: number}, extentWidth: number, extentHeight: number, rotation: number): PolygonWithSrs {
+  private handlePrintPreview(
+    center: {
+      x: number;
+      y: number;
+    },
+    extentWidth: number,
+    extentHeight: number,
+    rotation: number,
+  ): PolygonWithSrs {
     const printPreviewArea = PrintUtils.createPrintPreviewArea(center, extentWidth, extentHeight);
     const symbolization = this.esriSymbolizationService.createSymbolizationForDrawingLayer(
       printPreviewArea,

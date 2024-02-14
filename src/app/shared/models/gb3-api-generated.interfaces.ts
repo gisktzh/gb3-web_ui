@@ -770,9 +770,9 @@ export type FavoriteContent = {
    */
   opacity: number;
   /** TimeExtent of the timeslider */ // TODO gb3-645: will be used once api ready
-  timeExtent?: TimeExtent;
+  timeExtent: TimeExtent | undefined;
   /** Selected Attributefilters */
-  attributeFilters?: FilterConfiguration;
+  attributeFilters: FilterConfiguration[] | undefined;
   /** Single layer of the map */
   isSingleLayer: boolean;
   layers: {

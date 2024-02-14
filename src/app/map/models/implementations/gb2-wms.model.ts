@@ -16,16 +16,16 @@ export class Gb2WmsSettings extends AbstractActiveMapItemSettings {
   public readonly layers: MapLayer[];
   public readonly notice?: string;
 
-  constructor(map: Map, layer?: MapLayer) {
+  constructor(map: Map, layer?: MapLayer, timeExtent?: TimeExtent, attributeFilter?: FilterConfiguration[]) {
     super();
     this.url = map.wmsUrl;
     this.mapId = map.id;
     this.layers = layer ? [layer] : map.layers;
     this.timeSliderConfiguration = map.timeSliderConfiguration;
     if (map.timeSliderConfiguration) {
-      this.timeSliderExtent = TimeExtentUtils.createInitialTimeSliderExtent(map.timeSliderConfiguration);
+      this.timeSliderExtent = timeExtent ?? TimeExtentUtils.createInitialTimeSliderExtent(map.timeSliderConfiguration);
     }
-    this.filterConfigurations = map.filterConfigurations;
+    this.filterConfigurations = attributeFilter ?? map.filterConfigurations;
     this.searchConfigurations = map.searchConfigurations;
     this.notice = map.notice ?? undefined;
   }
@@ -39,13 +39,21 @@ export class Gb2WmsActiveMapItem extends ActiveMapItem {
   public readonly isSingleLayer: boolean;
   public readonly geometadataUuid: string | null;
 
-  constructor(map: Map, layer?: MapLayer, visible?: boolean, opacity?: number, isTemporary?: boolean) {
+  constructor(
+    map: Map,
+    layer?: MapLayer,
+    visible?: boolean,
+    opacity?: number,
+    timeExtent?: TimeExtent,
+    attributeFilter?: FilterConfiguration[],
+    isTemporary?: boolean,
+  ) {
     super(visible, opacity, isTemporary);
     this.isSingleLayer = !!layer;
     this.id = layer ? Gb2WmsActiveMapItem.createSingleLayerId(map.id, layer.layer) : map.id;
     this.title = layer ? layer.title : map.title;
     this.mapImageUrl = map.icon;
-    this.settings = new Gb2WmsSettings(map, layer);
+    this.settings = new Gb2WmsSettings(map, layer, timeExtent, attributeFilter);
     this.geometadataUuid = map.uuid;
   }
 

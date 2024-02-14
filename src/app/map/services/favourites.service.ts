@@ -183,6 +183,13 @@ export class FavouritesService implements OnDestroy {
       const sortIds = configuration.layers.map((layer) => layer.id);
       draft.layers.sort((a, b) => sortIds.indexOf(a.id) - sortIds.indexOf(b.id));
     });
-    return ActiveMapItemFactory.createGb2WmsMapItem(adjustedMap, undefined, configuration.visible, configuration.opacity);
+    return ActiveMapItemFactory.createGb2WmsMapItem(
+      adjustedMap,
+      undefined,
+      configuration.visible,
+      configuration.opacity,
+      configuration.timeExtent,
+      configuration.attributeFilters,
+    );
   }
 }
