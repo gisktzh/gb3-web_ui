@@ -589,8 +589,8 @@ export class EsriMapService implements MapService, OnDestroy {
     const dateFormat = timeSliderConfiguration.dateFormat;
 
     esriLayer.customLayerParameters = esriLayer.customLayerParameters ?? {};
-    esriLayer.customLayerParameters[timeSliderParameterSource.startRangeParameter] = dayjs(timeSliderExtent.start).format(dateFormat);
-    esriLayer.customLayerParameters[timeSliderParameterSource.endRangeParameter] = dayjs(timeSliderExtent.end).format(dateFormat);
+    esriLayer.customLayerParameters[timeSliderParameterSource.startRangeParameter] = dayjs.utc(timeSliderExtent.start).format(dateFormat);
+    esriLayer.customLayerParameters[timeSliderParameterSource.endRangeParameter] = dayjs.utc(timeSliderExtent.end).format(dateFormat);
   }
 
   /**

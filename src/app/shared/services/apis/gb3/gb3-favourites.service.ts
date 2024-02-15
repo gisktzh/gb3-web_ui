@@ -9,6 +9,7 @@ import {
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {CreateFavourite, Favourite, FavouritesResponse} from '../../../interfaces/favourite.interface';
+import {TimeExtentUtils} from '../../../utils/time-extent.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -53,6 +54,18 @@ export class Gb3FavouritesService extends Gb3ApiService {
           y: data.north,
         },
       },
+      content: data.content.map((content) => {
+        return {
+          ...content,
+          timeExtent: data.drawings.timeExtent
+            ? {
+                //TODO: refactor once TimeExtent is sent in content.
+                start: TimeExtentUtils.getUTCDate(data.drawings.timeExtent.find((timeExtent) => timeExtent.id === content.mapId)?.start),
+                end: TimeExtentUtils.getUTCDate(data.drawings.timeExtent.find((timeExtent) => timeExtent.id === content.mapId)?.end),
+              }
+            : undefined,
+        };
+      }),
     })) as unknown as FavouritesResponse; // todo: typecasts once API is fixed
   }
 
@@ -63,6 +76,19 @@ export class Gb3FavouritesService extends Gb3ApiService {
       north: baseConfig.center.y,
       scaledenom: baseConfig.scale,
       basemap: baseConfig.basemap,
+      drawings: {
+        //TODO: Remove once timeExtent sent in content
+        ...payload.drawings,
+        timeExtent: payload.content.map((activeMapItemConfiguration) => {
+          return activeMapItemConfiguration.timeExtent
+            ? {
+                start: activeMapItemConfiguration.timeExtent.start,
+                end: activeMapItemConfiguration.timeExtent.end,
+                id: activeMapItemConfiguration.mapId,
+              }
+            : undefined;
+        }),
+      },
     } as unknown as PersonalFavoriteNew; // todo: typecasts once API is fixed
   }
 }

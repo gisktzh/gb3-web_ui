@@ -50,7 +50,7 @@ export class FavouritesService implements OnDestroy {
           content: this.activeMapItemConfigurations,
           baseConfig,
           measurements,
-          drawings: {...drawings, content: this.activeMapItemConfigurations}, //TODO GB3-645: remove once api ready
+          drawings,
         });
       }),
     );

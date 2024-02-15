@@ -1063,6 +1063,8 @@ export interface VectorLayer {
   geojson: GeojsonFeatureCollection;
   /** Style definitions for features. NOTE: keys are style IDs referenced in feature 'style' property */
   styles: VectorLayerStyles;
+
+  timeExtent?: {start: string; end: string; id: string}[];
 }
 
 /**
