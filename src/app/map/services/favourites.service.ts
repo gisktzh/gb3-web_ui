@@ -189,7 +189,22 @@ export class FavouritesService implements OnDestroy {
       configuration.visible,
       configuration.opacity,
       configuration.timeExtent,
-      configuration.attributeFilters,
+      existingMap.filterConfigurations
+        ? existingMap.filterConfigurations.map((filterConfiguration) => {
+            return {
+              ...filterConfiguration,
+              filterValues: filterConfiguration.filterValues.map((filterValue) => {
+                return {
+                  ...filterValue,
+                  isActive:
+                    configuration.attributeFilters
+                      ?.find((attributeFilter) => attributeFilter.parameter === filterConfiguration.parameter)
+                      ?.activeFilters.some((activeFilter) => activeFilter === filterValue.name) ?? false,
+                };
+              }),
+            };
+          })
+        : undefined,
     );
   }
 }

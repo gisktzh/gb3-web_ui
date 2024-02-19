@@ -122,6 +122,11 @@ export interface FilterConfiguration {
   filterValues: FilterValue[];
 }
 
+export interface FavouriteFilterConfiguration {
+  parameter: string;
+  activeFilters: string[];
+}
+
 export interface SearchConfiguration {
   index: string;
   title: string;

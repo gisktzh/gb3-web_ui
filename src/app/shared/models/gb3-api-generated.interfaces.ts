@@ -10,7 +10,7 @@
  */
 
 import {TimeExtent} from '../../map/interfaces/time-extent.interface';
-import {FilterConfiguration} from '../interfaces/topic.interface';
+import {FavouriteFilterConfiguration} from '../interfaces/topic.interface';
 
 export interface Canton {
   /** GeoJSON geometry object */
@@ -772,7 +772,7 @@ export type FavoriteContent = {
   /** TimeExtent of the timeslider */ // TODO gb3-645: will be used once api ready
   timeExtent: TimeExtent | undefined;
   /** Selected Attributefilters */
-  attributeFilters: FilterConfiguration[] | undefined;
+  attributeFilters: FavouriteFilterConfiguration[] | undefined;
   /** Single layer of the map */
   isSingleLayer: boolean;
   layers: {
@@ -1064,7 +1064,9 @@ export interface VectorLayer {
   /** Style definitions for features. NOTE: keys are style IDs referenced in feature 'style' property */
   styles: VectorLayerStyles;
 
+  // TODO GB3-645 remove when API is ready
   timeExtent?: {start: string; end: string; id: string}[];
+  filterConfigurations?: {attributeFilters: FavouriteFilterConfiguration[]; id: string}[];
 }
 
 /**
