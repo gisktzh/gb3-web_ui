@@ -29,7 +29,6 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   @Output() public readonly openFilterEvent = new EventEmitter<void>();
 
   public screenMode: ScreenMode = 'regular';
-  // public selectedSearchResult?: GeometrySearchApiResultMatch;
 
   @ViewChild('searchInput') private readonly inputRef!: ElementRef<HTMLInputElement>;
   private readonly searchTerm = new Subject<{term: string; emitChangeEvent: boolean}>();
