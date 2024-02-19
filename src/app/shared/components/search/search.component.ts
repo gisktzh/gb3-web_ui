@@ -17,7 +17,6 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() public placeholderText!: string;
   @Input() public showFilterButton: boolean = true;
   @Input() public alwaysEnableClearButton: boolean = false;
-  @Input() public showClearButton: boolean = true;
   @Input() public clearButtonLabel?: string;
   @Input() public mode: SearchMode = 'normal';
   @Input() public focusOnInit: boolean = false;
@@ -32,7 +31,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   public screenMode: ScreenMode = 'regular';
 
   @ViewChild('searchInput') private readonly inputRef!: ElementRef<HTMLInputElement>;
-  private readonly term = new Subject<string>();
+  private readonly searchTerm = new Subject<{term: string; emitChangeEvent: boolean}>();
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly subscriptions: Subscription = new Subscription();
 
@@ -44,7 +43,6 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
         .pipe(
           tap((screenMode) => {
             this.screenMode = screenMode;
-            this.clearInput();
           }),
         )
         .subscribe(),
@@ -63,7 +61,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public clearInput() {
-    this.setTerm('');
+    this.setTerm('', false);
     this.clearSearchTermEvent.emit();
   }
 
@@ -71,21 +69,26 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
     this.openFilterEvent.emit();
   }
 
-  private setTerm(term: string) {
-    this.term.next(term);
+  public setTerm(term: string, emitChangeEvent: boolean = true) {
+    this.searchTerm.next({term, emitChangeEvent});
   }
 
   private initSubscriptions() {
     this.subscriptions.add(
-      this.term
+      this.searchTerm
         .pipe(
-          map((term) => {
-            this.inputRef.nativeElement.value = term;
-            return term.trim();
+          map((searchTerm) => {
+            this.inputRef.nativeElement.value = searchTerm.term;
+            const term = searchTerm.term.trim();
+            return {...searchTerm, term};
           }),
-          distinctUntilChanged(),
-          tap((term) => {
-            this.changeSearchTermEvent.emit(term);
+          distinctUntilChanged((prev, curr) => {
+            return prev.term === curr.term;
+          }),
+          tap((searchTerm) => {
+            if (searchTerm.emitChangeEvent) {
+              this.changeSearchTermEvent.emit(searchTerm.term.trim());
+            }
           }),
         )
         .subscribe(),

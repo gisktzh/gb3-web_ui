@@ -1,4 +1,4 @@
-import {fakeAsync, TestBed, tick} from '@angular/core/testing';
+import {fakeAsync, flush, TestBed, tick} from '@angular/core/testing';
 import {MapUiEffects} from './map-ui.effects';
 import {provideMockActions} from '@ngrx/effects/testing';
 import {MatDialog} from '@angular/material/dialog';
@@ -16,6 +16,8 @@ import {MapAttributeFiltersItemActions} from '../actions/map-attribute-filters-i
 import {selectMapAttributeFiltersItem} from '../selectors/map-attribute-filters-item.selector';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {createGb2WmsMapItemMock} from '../../../testing/map-testing/active-map-item-test.utils';
+import {SearchActions} from '../../app/actions/search.actions';
+import {GeometrySearchApiResultMatch} from '../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
 
 describe('MapUiEffects', () => {
   let actions$: Observable<Action>;
@@ -162,5 +164,41 @@ describe('MapUiEffects', () => {
         done();
       });
     });
+  });
+
+  describe('closeBottomSheetAfterSelectingSearchResult$', () => {
+    it('dispatches MapUiActions.hideBottomSheet() when a result is selected in the search on mobile', (done: DoneFn) => {
+      const expectedAction = MapUiActions.hideBottomSheet();
+      const searchResultsMock: GeometrySearchApiResultMatch = {
+        indexType: 'places',
+        displayString: 'Some Place',
+        score: 1,
+        geometry: {type: 'Point', srs: 2056, coordinates: [1, 2]},
+      };
+
+      store.overrideSelector(selectScreenMode, 'mobile');
+
+      actions$ = of(SearchActions.selectMapSearchResult({searchResult: searchResultsMock}));
+      effects.closeBottomSheetAfterSelectingSearchResult$.subscribe((action) => {
+        expect(action).toEqual(expectedAction);
+        done();
+      });
+    });
+
+    it('dispatches nothing when a result is selected in the search on desktop', fakeAsync(async () => {
+      const searchResultsMock: GeometrySearchApiResultMatch = {
+        indexType: 'places',
+        displayString: 'Some Place',
+        score: 1,
+        geometry: {type: 'Point', srs: 2056, coordinates: [1, 2]},
+      };
+
+      store.overrideSelector(selectScreenMode, 'regular');
+      let newAction;
+      actions$ = of(SearchActions.selectMapSearchResult({searchResult: searchResultsMock}));
+      effects.closeBottomSheetAfterSelectingSearchResult$.subscribe((action) => (newAction = action));
+      flush();
+      expect(newAction).toBeUndefined();
+    }));
   });
 });

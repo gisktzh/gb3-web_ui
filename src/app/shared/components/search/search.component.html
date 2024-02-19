@@ -21,33 +21,32 @@
       >
         <mat-icon svgIcon="ktzh_filter"></mat-icon>
       </button>
-      <mat-divider *ngIf="showClearButton" [vertical]="true" class="search__bar__divider"></mat-divider>
+      <mat-divider [vertical]="true" class="search__bar__divider"></mat-divider>
     </ng-container>
-    <ng-container *ngIf="showClearButton">
+
+    <button
+      *ngIf="clearButtonLabel; else noClearLabel"
+      mat-button
+      (click)="clearInput()"
+      class="search__bar__close-button"
+      [disabled]="(!alwaysEnableClearButton && searchInput.value.length === 0) || disabled"
+    >
+      {{ clearButtonLabel }}
+      <mat-icon>close</mat-icon>
+    </button>
+    <ng-template #noClearLabel>
       <button
-        *ngIf="clearButtonLabel; else noClearLabel"
-        mat-button
+        mat-icon-button
         (click)="clearInput()"
-        class="search__bar__close-button"
+        class="search__bar__close-icon-button"
         [disabled]="(!alwaysEnableClearButton && searchInput.value.length === 0) || disabled"
       >
-        {{ clearButtonLabel }}
-        <mat-icon>close</mat-icon>
+        <mat-icon *ngIf="screenMode === 'mobile'; else close">cancel</mat-icon>
+        <ng-template #close>
+          <mat-icon>close</mat-icon>
+        </ng-template>
       </button>
-      <ng-template #noClearLabel>
-        <button
-          mat-icon-button
-          (click)="clearInput()"
-          class="search__bar__close-icon-button"
-          [disabled]="(!alwaysEnableClearButton && searchInput.value.length === 0) || disabled"
-        >
-          <mat-icon *ngIf="screenMode === 'mobile'; else close">cancel</mat-icon>
-          <ng-template #close>
-            <mat-icon>close</mat-icon>
-          </ng-template>
-        </button>
-      </ng-template>
-    </ng-container>
+    </ng-template>
   </div>
   <button
     class="search__filter-button"
