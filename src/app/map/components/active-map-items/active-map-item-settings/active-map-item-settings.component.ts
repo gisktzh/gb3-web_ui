@@ -20,30 +20,25 @@ export class ActiveMapItemSettingsComponent implements OnInit, OnDestroy {
 
   public formattedCurrentOpacity: string = '';
   public numberOfChangedFilters: number = 0;
-
-  private _currentOpacity: number = 0;
+  public currentOpacity: number = 0;
 
   private readonly subscriptions: Subscription = new Subscription();
   private readonly activeMapItems$ = this.store.select(selectItems);
-
-  public get currentOpacity(): number {
-    return this._currentOpacity;
-  }
-
-  public set currentOpacity(value: number) {
-    this._currentOpacity = value;
-    this.formattedCurrentOpacity = this.convertTransparencyToString(value);
-  }
 
   constructor(private readonly store: Store) {}
 
   public ngOnInit(): void {
     this.currentOpacity = this.activeMapItem.opacity;
+    this.formattedCurrentOpacity = this.convertTransparencyToString(this.currentOpacity);
     this.initSubscriptions();
   }
 
   public ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
+  }
+
+  public updateFormattedCurrentOpacity() {
+    this.formattedCurrentOpacity = this.convertTransparencyToString(this.currentOpacity);
   }
 
   public onOpacitySliderChange(opacity: number) {
