@@ -50,7 +50,7 @@ describe('NumberUtils', () => {
     });
   });
 
-  describe('tryExtractNumberFromMixedString', () => {
+  describe('parseNumberFromMixedString', () => {
     describe('valid number extraction', () => {
       [
         {input: '1337', expected: 1337},
@@ -65,14 +65,14 @@ describe('NumberUtils', () => {
         {input: '1337..51', expected: 1337},
       ].forEach((testCase) => {
         it(`converts ${testCase.input} to ${testCase.expected}`, () => {
-          expect(NumberUtils.tryExtractNumberFromMixedString(testCase.input)).toBe(testCase.expected);
+          expect(NumberUtils.parseNumberFromMixedString(testCase.input)).toBe(testCase.expected);
         });
       });
     });
     describe('invalid number extraction', () => {
       [{input: 'ff'}, {input: 'eins.zwei'}].forEach((testCase) => {
         it(`converts ${testCase.input} to undefined}`, () => {
-          expect(NumberUtils.tryExtractNumberFromMixedString(testCase.input)).toBe(undefined);
+          expect(NumberUtils.parseNumberFromMixedString(testCase.input)).toBe(undefined);
         });
       });
     });

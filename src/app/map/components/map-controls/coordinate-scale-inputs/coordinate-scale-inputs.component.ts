@@ -45,7 +45,7 @@ export class CoordinateScaleInputsComponent implements OnInit, OnDestroy {
 
   public setScale(event: Event) {
     const input = (event.target as HTMLInputElement).value;
-    const newScale = NumberUtils.tryExtractNumberFromMixedString(input);
+    const newScale = NumberUtils.parseNumberFromMixedString(input);
 
     if (newScale && newScale !== this.scale) {
       this.store.dispatch(MapConfigActions.setScale({scale: newScale}));
