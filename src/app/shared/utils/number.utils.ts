@@ -14,4 +14,9 @@ export class NumberUtils {
     const multiplierAndDivisor = 10 ** decimals;
     return Math.round(value * multiplierAndDivisor) / multiplierAndDivisor;
   }
+
+  public static tryExtractNumberFromMixedString(mixedString: string): number | undefined {
+    const possibleNumber = parseFloat(mixedString.replace(/[^\d.]/g, ''));
+    return isNaN(possibleNumber) ? undefined : possibleNumber;
+  }
 }
