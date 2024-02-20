@@ -14,4 +14,14 @@ export class NumberUtils {
     const multiplierAndDivisor = 10 ** decimals;
     return Math.round(value * multiplierAndDivisor) / multiplierAndDivisor;
   }
+
+  /**
+   * Tries to extract a number from a mixed input string by eliminating all non-numeric characters while also accounting for decimal
+   * notation. If it cannot extract a valid number, it will return undefined.
+   * @param mixedString
+   */
+  public static parseNumberFromMixedString(mixedString: string): number | undefined {
+    const possibleNumber = parseFloat(mixedString.replace(/[^\d.]/g, ''));
+    return isNaN(possibleNumber) ? undefined : possibleNumber;
+  }
 }
