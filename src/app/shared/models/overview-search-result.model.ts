@@ -3,9 +3,7 @@ import {MainPage} from '../enums/main-page.enum';
 import {OverviewSearchResultDisplayItem} from '../interfaces/overview-search-resuilt-display.interface';
 import {SupportPage} from '../enums/support-page.enum';
 import {v4 as uuidv4} from 'uuid';
-import {OverviewSearchResultDisplayItemFlag} from '../types/overview-search-result-flag.type';
-
-type OverviewSearchResultModel = 'Geodatensatz' | 'Karte' | 'Geoservice' | 'Produkt';
+import {OverviewApiSearchResultModel, OverviewSearchResultDisplayItemFlag} from '../types/overview-search-result.type';
 
 interface HasRelativeUrl {
   relativeUrl: string;
@@ -44,6 +42,7 @@ export class OverviewLinkItem extends OverviewSearchResult {
       title: this.name,
       uuid: this.uuid,
       flags: this.flags,
+      type: 'Info',
       url: {
         isInternal: false,
         path: this.url,
@@ -66,6 +65,7 @@ export class OverviewFaqItem extends OverviewSearchResult implements HasRelative
       title: this.name,
       uuid: this.uuid,
       flags: this.flags,
+      type: 'Frage',
       url: {
         isInternal: true,
         path: this.relativeUrl,
@@ -77,14 +77,14 @@ export class OverviewFaqItem extends OverviewSearchResult implements HasRelative
 
 export abstract class OverviewMetadataItem extends OverviewSearchResult implements HasRelativeUrl {
   public readonly relativeUrl: string;
-  public readonly type: OverviewSearchResultModel;
+  public readonly type: OverviewApiSearchResultModel;
   public readonly responsibleDepartment: string;
 
   protected constructor(
     uuid: string,
     name: string,
     description: string,
-    type: OverviewSearchResultModel,
+    type: OverviewApiSearchResultModel,
     responsibleDepartment: string,
     ogd?: boolean,
   ) {
@@ -114,6 +114,7 @@ export abstract class OverviewMetadataItem extends OverviewSearchResult implemen
       title: this.name,
       uuid: this.uuid,
       flags: this.flags,
+      type: this.type,
       url: {isInternal: true, path: this.relativeUrl},
       fields: [{title: 'Beschreibung', content: this.description, truncatable: true}],
     };

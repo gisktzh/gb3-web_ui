@@ -19,6 +19,7 @@
     justify-content: center;
     align-items: center;
     border-radius: 2px;
+    @include mat-mixins.mat-icon-override-size(26px);
   }
 
   .overview-search-result-item__content {
