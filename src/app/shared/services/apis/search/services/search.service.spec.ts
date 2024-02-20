@@ -5,6 +5,7 @@ import {HttpClient, HttpRequest} from '@angular/common/http';
 import {of} from 'rxjs';
 import {SearchIndex} from '../interfaces/search-index.interface';
 import {ConfigService} from '../../../config.service';
+import {provideMockStore} from '@ngrx/store/testing';
 
 describe('SearchService', () => {
   let service: SearchService;
@@ -178,6 +179,7 @@ describe('SearchService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
+      providers: [provideMockStore()],
     });
     service = TestBed.inject(SearchService);
   });

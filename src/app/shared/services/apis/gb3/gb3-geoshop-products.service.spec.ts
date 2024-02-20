@@ -9,6 +9,7 @@ import {ConfigService} from '../../config.service';
 import {Product} from '../../../interfaces/gb3-geoshop-product.interface';
 import {DataDownloadFilter} from '../../../interfaces/data-download-filter.interface';
 import {ProductAvailability} from '../../../enums/product-availability.enum';
+import {provideMockStore} from '@ngrx/store/testing';
 
 describe('Gb3GeoshopProductsService', () => {
   let service: Gb3GeoshopProductsService;
@@ -17,6 +18,7 @@ describe('Gb3GeoshopProductsService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
+      providers: [provideMockStore()],
     });
     service = TestBed.inject(Gb3GeoshopProductsService);
     configService = TestBed.inject(ConfigService);

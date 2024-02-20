@@ -3,6 +3,7 @@ import {MainPage} from '../enums/main-page.enum';
 import {OverviewSearchResultDisplayItem} from '../interfaces/overview-search-resuilt-display.interface';
 import {SupportPage} from '../enums/support-page.enum';
 import {OGDAvailability} from '../enums/ogd-availability.enum';
+import {v4 as uuidv4} from 'uuid';
 
 type OverviewSearchResultModel = 'Geodatensatz' | 'Karte' | 'Geoservice' | 'Produkt';
 
@@ -15,7 +16,7 @@ abstract class OverviewSearchResult {
   public readonly name: string;
   public readonly description: string;
 
-  protected constructor(uuid: string, name: string, description: string) {
+  protected constructor(name: string, uuid: string = uuidv4(), description: string = '') {
     this.uuid = uuid;
     this.name = name;
     this.description = description;
@@ -28,11 +29,32 @@ abstract class OverviewSearchResult {
   public abstract createDisplayRepresentationForList(): OverviewSearchResultDisplayItem;
 }
 
+export class OverviewLinkItem extends OverviewSearchResult {
+  private readonly url: string;
+
+  constructor(title: string, url: string) {
+    super(title);
+    this.url = url;
+  }
+
+  public override createDisplayRepresentationForList(): OverviewSearchResultDisplayItem {
+    return {
+      title: this.name,
+      uuid: this.uuid,
+      url: {
+        isInternal: false,
+        path: this.url,
+      },
+      fields: [{title: 'Typ', content: 'Info'}],
+    };
+  }
+}
+
 export class OverviewFaqItem extends OverviewSearchResult implements HasRelativeUrl {
   public readonly relativeUrl: string;
 
   constructor(uuid: string, question: string, answer: string) {
-    super(uuid, question, answer);
+    super(question, uuid, answer);
     this.relativeUrl = `${MainPage.Support}/${SupportPage.Faq}`;
   }
 
@@ -40,7 +62,10 @@ export class OverviewFaqItem extends OverviewSearchResult implements HasRelative
     return {
       title: this.name,
       uuid: this.uuid,
-      relativeUrl: this.relativeUrl,
+      url: {
+        isInternal: true,
+        path: this.relativeUrl,
+      },
       fields: [
         {title: 'Typ', content: 'Frage'},
         {title: 'Beschreibung', content: this.description, truncatable: true},
@@ -55,7 +80,7 @@ export abstract class OverviewMetadataItem extends OverviewSearchResult implemen
   public readonly responsibleDepartment: string;
 
   protected constructor(uuid: string, name: string, description: string, type: OverviewSearchResultModel, responsibleDepartment: string) {
-    super(uuid, name, description);
+    super(name, uuid, description);
 
     this.type = type;
     this.responsibleDepartment = responsibleDepartment;
@@ -80,7 +105,7 @@ export abstract class OverviewMetadataItem extends OverviewSearchResult implemen
     return {
       title: this.name,
       uuid: this.uuid,
-      relativeUrl: this.relativeUrl,
+      url: {isInternal: true, path: this.relativeUrl},
       fields: [
         {title: 'Typ', content: this.type},
         {title: 'Beschreibung', content: this.description, truncatable: true},

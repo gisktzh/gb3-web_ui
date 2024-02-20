@@ -2,6 +2,7 @@ import {
   DatasetOverviewMetadataItem,
   MapOverviewMetadataItem,
   OverviewFaqItem,
+  OverviewLinkItem,
   ProductOverviewMetadataItem,
   ServiceOverviewMetadataItem,
 } from './overview-search-result.model';
@@ -10,6 +11,7 @@ import {MainPage} from '../enums/main-page.enum';
 import {OGDAvailability} from '../enums/ogd-availability.enum';
 import {SupportPage} from '../enums/support-page.enum';
 import {OverviewSearchResultDisplayItem} from '../interfaces/overview-search-resuilt-display.interface';
+import {validate as validateUuid} from 'uuid';
 
 const TEST_GUID = '1337';
 
@@ -50,7 +52,7 @@ describe('OverviewMetadataItemModel', () => {
 
         const actual = testItem.createDisplayRepresentationForList();
         const expected: OverviewSearchResultDisplayItem = {
-          relativeUrl: testCase.expectedUrl,
+          url: {isInternal: true, path: testCase.expectedUrl},
           uuid: TEST_GUID,
           title: 'Gandalf',
           fields: [
@@ -64,6 +66,17 @@ describe('OverviewMetadataItemModel', () => {
     }),
   );
 
+  describe('OverviewLinkItem', () => {
+    it('creates the correct OverviewSearchResultDisplayItem for OverviewLinkItem', () => {
+      const actual = new OverviewLinkItem('TestTitel', 'https://www.example.com').createDisplayRepresentationForList();
+
+      expect(validateUuid(actual.uuid)).toBeTrue();
+      expect(actual.url).toEqual({path: 'https://www.example.com', isInternal: false});
+      expect(actual.title).toEqual('TestTitel');
+      expect(actual.fields).toEqual([{title: 'Typ', content: 'Info'}]);
+    });
+  });
+
   describe('DatasetOverviewMetadataItem', () => {
     it('creates the correct URL for DatasetOverviewMetadataItem', () => {
       const testItem = new DatasetOverviewMetadataItem(TEST_GUID, '', '', '', [''], true);
@@ -75,7 +88,7 @@ describe('OverviewMetadataItemModel', () => {
 
       const actual = testItem.createDisplayRepresentationForList();
       const expected: OverviewSearchResultDisplayItem = {
-        relativeUrl: expectUrlForType(DataCataloguePage.Datasets),
+        url: {isInternal: true, path: expectUrlForType(DataCataloguePage.Datasets)},
         uuid: TEST_GUID,
         title: 'Gandalf',
         fields: [

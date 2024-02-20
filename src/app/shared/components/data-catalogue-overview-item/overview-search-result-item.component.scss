@@ -43,8 +43,16 @@
     }
   }
 
-  .overview-search-result-item__link {
+  .overview-search-result-item__link__wrapper {
     background-color: ktzh-variables.$zh-light-grey;
     border-radius: 50%;
+
+    .overview-search-result-item__link__wrapper__link {
+      .overview-search-result-item__link__wrapper__link__icon {
+        &--external {
+          rotate: -45deg;
+        }
+      }
+    }
   }
 }

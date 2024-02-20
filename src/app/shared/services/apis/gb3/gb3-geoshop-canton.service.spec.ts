@@ -5,6 +5,7 @@ import {of} from 'rxjs';
 import {ConfigService} from '../../config.service';
 import {CantonWithGeometry} from '../../../interfaces/gb3-geoshop-product.interface';
 import {Gb3GeoshopCantonService} from './gb3-geoshop-canton.service';
+import {provideMockStore} from '@ngrx/store/testing';
 
 describe('Gb3GeoshopCantonService', () => {
   let service: Gb3GeoshopCantonService;
@@ -13,6 +14,7 @@ describe('Gb3GeoshopCantonService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
+      providers: [provideMockStore()],
     });
     service = TestBed.inject(Gb3GeoshopCantonService);
     configService = TestBed.inject(ConfigService);

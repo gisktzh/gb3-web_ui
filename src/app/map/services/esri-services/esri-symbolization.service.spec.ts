@@ -13,6 +13,7 @@ import {LayerSymbolizations, PicturePointSymbolization, SimplePointSymbolization
 import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import {provideMockStore} from '@ngrx/store/testing';
+import {Store} from '@ngrx/store';
 
 const SRS: SupportedSrs = 2056;
 const mockIconUrl = '/path/to/icon.svg';
@@ -146,7 +147,7 @@ describe('EsriSymbolizationService', () => {
 
   beforeEach(() => {
     // simple mock by overriding a readonly property and then injecting it into the TestBed.
-    let configService = new ConfigService(document);
+    let configService = new ConfigService(document, {dispatch: () => {}} as unknown as Store<object>);
     configService = Object.assign(configService, {layerSymbolizations: mockSymbolizations});
     TestBed.configureTestingModule({
       providers: [EsriSymbolizationService, {provide: ConfigService, useValue: configService}, provideMockStore()],

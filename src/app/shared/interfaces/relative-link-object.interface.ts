@@ -1,7 +1,7 @@
-import {BaseUrlType} from '../types/base-url.type';
+import {DynamicInternalUrlType} from '../types/dynamic-internal-url.type';
 
 export interface RelativeLinkObject {
-  baseUrlType: BaseUrlType;
+  baseUrlType: DynamicInternalUrlType;
   title: string;
   relativeUrl: string;
 }

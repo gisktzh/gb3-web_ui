@@ -3,6 +3,7 @@ import {
   selectFilteredLayerCatalogMaps,
   selectFilteredMetadataItems,
   selectFilteredSearchApiResultMatches,
+  selectFilteredUsefulLinks,
 } from './search-results.selector';
 import {SearchFilterGroup} from '../../../shared/interfaces/search-filter-group.interface';
 import {SearchIndex} from '../../../shared/services/apis/search/interfaces/search-index.interface';
@@ -12,12 +13,14 @@ import {
   DatasetOverviewMetadataItem,
   MapOverviewMetadataItem,
   OverviewFaqItem,
+  OverviewLinkItem,
   OverviewMetadataItem,
   ProductOverviewMetadataItem,
   ServiceOverviewMetadataItem,
 } from '../../../shared/models/overview-search-result.model';
 import {FaqCollection} from '../../../shared/interfaces/faq.interface';
 import {OverviewSearchResultDisplayItem} from '../../../shared/interfaces/overview-search-resuilt-display.interface';
+import {LinksGroup} from '../../../shared/interfaces/links-group.interface';
 
 describe('search-result selector', () => {
   describe('selectFilteredSearchApiResultMatches', () => {
@@ -578,6 +581,149 @@ describe('search-result selector', () => {
           faqsMock[1].items[1].answer,
         ).createDisplayRepresentationForList(),
       ];
+
+      expect(actual).toEqual(expected);
+    });
+  });
+
+  describe('selectFilteredUsefulLinks', () => {
+    const filterGroupsMock: SearchFilterGroup[] = [
+      {
+        label: 'Group1',
+        useDynamicActiveMapItemsFilter: false,
+        filters: [{label: 'Filter-faqs Label', isActive: true, type: 'usefulLinks'}],
+      },
+      {label: 'Group2', useDynamicActiveMapItemsFilter: true, filters: []},
+    ];
+
+    const simpleSearchTerm = '12searchTerm';
+    const complexSearchTerm = '. 12 * seArch_ term TeRM';
+
+    function createLinksGroupMock(searchTerm: string): LinksGroup[] {
+      return [
+        {
+          label: 'label one',
+          links: [
+            {title: 'link 1', href: 'href 1'},
+            {title: `link 2 ${searchTerm.toUpperCase()}`, href: 'href 2'},
+          ],
+        },
+        {
+          label: 'label two',
+          links: [
+            {title: `link 3 ${searchTerm.toLowerCase()}`, href: 'href 3'},
+            {title: `link 4 ${searchTerm}`, href: 'href 4'},
+            {title: `link 5 ${searchTerm.slice(0, searchTerm.length / 2)}`, href: 'href 5'},
+          ],
+        },
+      ];
+    }
+
+    it('returns an empty list if no items, filters are available and the search term is empty', () => {
+      const actual = selectFilteredUsefulLinks.projector('', [], []);
+
+      expect(actual).toEqual([]);
+    });
+
+    it('returns an empty list if no items are available (irrespective of a search term or a filter)', () => {
+      const actualWithSearchTermAndFilters = selectFilteredUsefulLinks.projector('any filter', [], filterGroupsMock);
+      expect(actualWithSearchTermAndFilters).toEqual([]);
+
+      const actualWithSearch = selectFilteredUsefulLinks.projector('any filter', [], []);
+      expect(actualWithSearch).toEqual([]);
+
+      const actualFilters = selectFilteredUsefulLinks.projector('', [], filterGroupsMock);
+      expect(actualFilters).toEqual([]);
+    });
+
+    it('returns an empty list if the search term is empty (irrespective of a filter)', () => {
+      const linksGroupMock = createLinksGroupMock(simpleSearchTerm);
+      const actual = selectFilteredUsefulLinks.projector('', linksGroupMock, []);
+
+      expect(actual).toEqual([]);
+    });
+
+    it('returns only filtered items if no filters but simple search terms are available', () => {
+      // note: because the uuid is dynamic and cannot easily be mocked, we use Partial types and delete the UUID for easier comparison
+      const linksGroupMock = createLinksGroupMock(simpleSearchTerm);
+      const actual: Partial<OverviewSearchResultDisplayItem>[] = selectFilteredUsefulLinks.projector(simpleSearchTerm, linksGroupMock, []);
+      const expected: Partial<OverviewSearchResultDisplayItem>[] = [
+        new OverviewLinkItem(linksGroupMock[0].links[1].title!, linksGroupMock[0].links[1].href).createDisplayRepresentationForList(),
+        new OverviewLinkItem(linksGroupMock[1].links[0].title!, linksGroupMock[1].links[0].href).createDisplayRepresentationForList(),
+        new OverviewLinkItem(linksGroupMock[1].links[1].title!, linksGroupMock[1].links[1].href).createDisplayRepresentationForList(),
+      ];
+
+      actual.forEach((a) => {
+        delete a.uuid;
+      });
+      expected.forEach((e) => {
+        delete e.uuid;
+      });
+
+      expect(actual).toEqual(expected);
+    });
+
+    it('returns only filtered items if no filters but complex search terms are available', () => {
+      // note: because the uuid is dynamic and cannot easily be mocked, we use Partial types and delete the UUID for easier comparison
+      const linksGroupMock = createLinksGroupMock(complexSearchTerm);
+      const actual: Partial<OverviewSearchResultDisplayItem>[] = selectFilteredUsefulLinks.projector(complexSearchTerm, linksGroupMock, []);
+      const expected: Partial<OverviewSearchResultDisplayItem>[] = [
+        new OverviewLinkItem(linksGroupMock[0].links[1].title!, linksGroupMock[0].links[1].href).createDisplayRepresentationForList(),
+        new OverviewLinkItem(linksGroupMock[1].links[0].title!, linksGroupMock[1].links[0].href).createDisplayRepresentationForList(),
+        new OverviewLinkItem(linksGroupMock[1].links[1].title!, linksGroupMock[1].links[1].href).createDisplayRepresentationForList(),
+      ];
+
+      actual.forEach((a) => {
+        delete a.uuid;
+      });
+      expected.forEach((e) => {
+        delete e.uuid;
+      });
+
+      expect(actual).toEqual(expected);
+    });
+
+    it('returns an empty list if search terms are matching but a usefullinks filter is not active', () => {
+      const linksGroupMock = createLinksGroupMock(simpleSearchTerm);
+      const actual = selectFilteredUsefulLinks.projector(simpleSearchTerm, linksGroupMock, [
+        {
+          label: 'test',
+          useDynamicActiveMapItemsFilter: false,
+          filters: [
+            {label: 'other-filter', isActive: true, type: 'metadata-products'},
+            {label: 'faqs-filter', isActive: false, type: 'usefulLinks'},
+          ],
+        },
+      ]);
+
+      expect(actual).toEqual([]);
+    });
+
+    it('returns only filtered items if filters and simple search terms are available', () => {
+      // note: because the uuid is dynamic and cannot easily be mocked, we use Partial types and delete the UUID for easier comparison
+      const linksGroupMock = createLinksGroupMock(simpleSearchTerm);
+      const actual: Partial<OverviewSearchResultDisplayItem>[] = selectFilteredUsefulLinks.projector(simpleSearchTerm, linksGroupMock, [
+        {
+          label: 'test',
+          useDynamicActiveMapItemsFilter: false,
+          filters: [
+            {label: 'other-filter', isActive: false, type: 'metadata-products'},
+            {label: 'test', isActive: true, type: 'usefulLinks'},
+          ],
+        },
+      ]);
+      const expected: Partial<OverviewSearchResultDisplayItem>[] = [
+        new OverviewLinkItem(linksGroupMock[0].links[1].title!, linksGroupMock[0].links[1].href).createDisplayRepresentationForList(),
+        new OverviewLinkItem(linksGroupMock[1].links[0].title!, linksGroupMock[1].links[0].href).createDisplayRepresentationForList(),
+        new OverviewLinkItem(linksGroupMock[1].links[1].title!, linksGroupMock[1].links[1].href).createDisplayRepresentationForList(),
+      ];
+
+      actual.forEach((a) => {
+        delete a.uuid;
+      });
+      expected.forEach((e) => {
+        delete e.uuid;
+      });
 
       expect(actual).toEqual(expected);
     });
