@@ -148,6 +148,10 @@ const symbolIconsConfig = [
     id: 'ktzh_settings',
     path: 'assets/icons/symbols/settings.svg',
   },
+  {
+    id: 'ktzh_lock',
+    path: 'assets/icons/symbols/lock.svg',
+  },
 ];
 
 const drawingSymbolIconsConfig = [

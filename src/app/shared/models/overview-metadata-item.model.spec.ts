@@ -8,7 +8,6 @@ import {
 } from './overview-search-result.model';
 import {DataCataloguePage} from '../enums/data-catalogue-page.enum';
 import {MainPage} from '../enums/main-page.enum';
-import {OGDAvailability} from '../enums/ogd-availability.enum';
 import {SupportPage} from '../enums/support-page.enum';
 import {OverviewSearchResultDisplayItem} from '../interfaces/overview-search-resuilt-display.interface';
 import {validate as validateUuid} from 'uuid';
@@ -26,20 +25,29 @@ describe('OverviewMetadataItemModel', () => {
       class: ServiceOverviewMetadataItem,
       expectedUrl: expectUrlForType(DataCataloguePage.Services),
       type: 'Geoservice',
+      expectedFlags: {ogd: undefined},
     },
     {
       group: 'MapOverviewMetadataItem',
       class: MapOverviewMetadataItem,
       expectedUrl: expectUrlForType(DataCataloguePage.Maps),
       type: 'Karte',
+      expectedFlags: {ogd: undefined},
     },
     {
       group: 'ProductOverviewMetadataItem',
       class: ProductOverviewMetadataItem,
       expectedUrl: expectUrlForType(DataCataloguePage.Products),
       type: 'Produkt',
+      expectedFlags: {ogd: undefined},
     },
-    {group: 'OverviewFaqItem', class: OverviewFaqItem, expectedUrl: `${MainPage.Support}/${SupportPage.Faq}`, type: 'Frage'},
+    {
+      group: 'OverviewFaqItem',
+      class: OverviewFaqItem,
+      expectedUrl: `${MainPage.Support}/${SupportPage.Faq}`,
+      type: 'Frage',
+      expectedFlags: {},
+    },
   ].forEach((testCase) =>
     describe(testCase.group, () => {
       it(`creates the correct URL for ${testCase.group}`, () => {
@@ -54,11 +62,9 @@ describe('OverviewMetadataItemModel', () => {
         const expected: OverviewSearchResultDisplayItem = {
           url: {isInternal: true, path: testCase.expectedUrl},
           uuid: TEST_GUID,
+          flags: testCase.expectedFlags,
           title: 'Gandalf',
-          fields: [
-            {title: 'Typ', content: testCase.type},
-            {title: 'Beschreibung', content: 'Amon Amarth', truncatable: true},
-          ],
+          fields: [{title: 'Beschreibung', content: 'Amon Amarth', truncatable: true}],
         };
 
         expect(actual).toEqual(expected);
@@ -73,7 +79,7 @@ describe('OverviewMetadataItemModel', () => {
       expect(validateUuid(actual.uuid)).toBeTrue();
       expect(actual.url).toEqual({path: 'https://www.example.com', isInternal: false});
       expect(actual.title).toEqual('TestTitel');
-      expect(actual.fields).toEqual([{title: 'Typ', content: 'Info'}]);
+      expect(actual.fields).toEqual([]);
     });
   });
 
@@ -91,24 +97,11 @@ describe('OverviewMetadataItemModel', () => {
         url: {isInternal: true, path: expectUrlForType(DataCataloguePage.Datasets)},
         uuid: TEST_GUID,
         title: 'Gandalf',
-        fields: [
-          {title: 'Typ', content: 'Geodatensatz'},
-          {title: 'Verfügbarkeit', content: OGDAvailability.OGD},
-          {title: 'Beschreibung', content: 'Amon Amarth', truncatable: true},
-        ],
+        flags: {ogd: true},
+        fields: [{title: 'Beschreibung', content: 'Amon Amarth', truncatable: true}],
       };
 
       expect(actual).toEqual(expected);
     });
-
-    [
-      {ogd: true, mapping: OGDAvailability.OGD},
-      {ogd: false, mapping: OGDAvailability.NOGD},
-    ].forEach((testCase) =>
-      it(`creates the correct OGD mapping for DatasetOverviewMetadataItem if OGD is ${testCase.ogd}`, () => {
-        const testItem = new DatasetOverviewMetadataItem(TEST_GUID, '', '', '', [''], testCase.ogd);
-        expect(testItem.ogd).toEqual(testCase.mapping);
-      }),
-    );
   });
 });
