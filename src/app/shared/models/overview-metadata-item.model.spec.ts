@@ -11,6 +11,7 @@ import {MainPage} from '../enums/main-page.enum';
 import {SupportPage} from '../enums/support-page.enum';
 import {OverviewSearchResultDisplayItem} from '../interfaces/overview-search-resuilt-display.interface';
 import {validate as validateUuid} from 'uuid';
+import {OverviewSearchResultType} from '../types/overview-search-result.type';
 
 const TEST_GUID = '1337';
 
@@ -24,28 +25,28 @@ describe('OverviewMetadataItemModel', () => {
       group: 'ServiceOverviewMetadataItem',
       class: ServiceOverviewMetadataItem,
       expectedUrl: expectUrlForType(DataCataloguePage.Services),
-      type: 'Geoservice',
+      type: 'Geoservice' as OverviewSearchResultType,
       expectedFlags: {ogd: undefined},
     },
     {
       group: 'MapOverviewMetadataItem',
       class: MapOverviewMetadataItem,
       expectedUrl: expectUrlForType(DataCataloguePage.Maps),
-      type: 'Karte',
+      type: 'Karte' as OverviewSearchResultType,
       expectedFlags: {ogd: undefined},
     },
     {
       group: 'ProductOverviewMetadataItem',
       class: ProductOverviewMetadataItem,
       expectedUrl: expectUrlForType(DataCataloguePage.Products),
-      type: 'Produkt',
+      type: 'Produkt' as OverviewSearchResultType,
       expectedFlags: {ogd: undefined},
     },
     {
       group: 'OverviewFaqItem',
       class: OverviewFaqItem,
       expectedUrl: `${MainPage.Support}/${SupportPage.Faq}`,
-      type: 'Frage',
+      type: 'Frage' as OverviewSearchResultType,
       expectedFlags: {},
     },
   ].forEach((testCase) =>
@@ -62,6 +63,7 @@ describe('OverviewMetadataItemModel', () => {
         const expected: OverviewSearchResultDisplayItem = {
           url: {isInternal: true, path: testCase.expectedUrl},
           uuid: TEST_GUID,
+          type: testCase.type,
           flags: testCase.expectedFlags,
           title: 'Gandalf',
           fields: [{title: 'Beschreibung', content: 'Amon Amarth', truncatable: true}],
@@ -97,6 +99,7 @@ describe('OverviewMetadataItemModel', () => {
         url: {isInternal: true, path: expectUrlForType(DataCataloguePage.Datasets)},
         uuid: TEST_GUID,
         title: 'Gandalf',
+        type: 'Geodatensatz',
         flags: {ogd: true},
         fields: [{title: 'Beschreibung', content: 'Amon Amarth', truncatable: true}],
       };
