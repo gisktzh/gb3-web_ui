@@ -1,5 +1,5 @@
 <div class="overview-search-result-item">
-  <div class="overview-search-result-item__icon">
+  <div class="overview-search-result-item__icon" *ngIf="!isMobile">
     @switch (item.type) {
       @case ('Geodatensatz') {
         <mat-icon>dataset</mat-icon>
@@ -23,7 +23,7 @@
   </div>
   <div class="overview-search-result-item__content">
     <div class="overview-search-result-item__content__title">
-      <span class="overview-search-result-item__content__title">{{ item.title }}</span>
+      <span class="overview-search-result-item__content__title__text">{{ item.title }}</span>
       <div *ngIf="item.flags.ogd === false" class="overview-search-result-item__content__title__flag">
         <mat-icon svgIcon="ktzh_lock"></mat-icon>
       </div>

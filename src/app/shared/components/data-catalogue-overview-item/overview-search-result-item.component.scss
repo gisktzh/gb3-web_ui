@@ -36,6 +36,10 @@
       gap: 6px;
       height: 26px;
 
+      .overview-search-result-item__content__title__text {
+        @include helper-mixins.single-line-text();
+      }
+
       .overview-search-result-item__content__title__flag {
         background-color: ktzh-variables.$zh-light-grey;
         width: 26px;
@@ -44,6 +48,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        flex-shrink: 0;
         @include mat-mixins.mat-icon-custom-svg-size(16px);
       }
     }
