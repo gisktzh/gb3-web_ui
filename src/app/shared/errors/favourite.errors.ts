@@ -27,8 +27,12 @@ export class FavouritesCouldNotBeLoaded extends RecoverableError {
 export class FavouriteCouldNotBeLoaded extends RecoverableError {
   public override name = 'FavouriteCouldNotBeLoaded';
 
-  constructor(reason: string) {
-    super();
-    this.message = reason;
+  constructor(originalError?: unknown) {
+    super(originalError);
+    if (originalError instanceof RecoverableError && originalError.message) {
+      this.message = originalError.message;
+    } else {
+      this.message = 'Der Favorit konnte nicht geladen werden.';
+    }
   }
 }

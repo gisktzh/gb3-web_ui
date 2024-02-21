@@ -41,7 +41,7 @@ export class FavouriteListEffects {
         ofType(FavouriteListActions.setInvalid),
         filter(({error}) => error !== undefined),
         tap(({error}) => {
-          throw new FavouriteCouldNotBeLoaded(error!.message);
+          throw new FavouriteCouldNotBeLoaded(error);
         }),
       );
     },

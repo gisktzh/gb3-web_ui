@@ -13,7 +13,7 @@ import {FavoritesDetailData} from '../../shared/models/gb3-api-generated.interfa
 
 import {selectMaps} from '../../state/map/selectors/maps.selector';
 import {selectFavouriteBaseConfig} from '../../state/map/selectors/favourite-base-config.selector';
-import {FavouriteCouldNotBeLoaded, FavouriteIsInvalid} from '../../shared/errors/favourite.errors';
+import {FavouriteIsInvalid} from '../../shared/errors/favourite.errors';
 import {selectUserDrawingsVectorLayers} from '../../state/map/selectors/user-drawings-vector-layers.selector';
 import {Gb3VectorLayer} from '../../shared/interfaces/gb3-vector-layer.interface';
 import {UserDrawingLayer} from '../../shared/enums/drawing-layer.enum';
@@ -247,20 +247,23 @@ export class FavouritesService implements OnDestroy {
     filterConfigs: FilterConfiguration[],
     mapTitle: string,
   ) {
-    let errorMessage = '';
     attributeFilters.forEach((attributeFilter) => {
       const favouriteFilterConfigExists: boolean | undefined = filterConfigs.some(
         (filterConfig) => filterConfig.parameter === attributeFilter.parameter,
       );
       if (!favouriteFilterConfigExists) {
-        errorMessage = `Die Filterkonfiguration mit dem Parameter ${attributeFilter.parameter} existiert nicht mehr auf der Karte ${mapTitle}.\n`;
+        throw new FavouriteIsInvalid(
+          `Die Filterkonfiguration mit dem Parameter ${attributeFilter.name} (${attributeFilter.parameter}) existiert nicht mehr auf der Karte ${mapTitle}.`,
+        );
       } else {
         attributeFilter.activeFilters.forEach((activeFilter) => {
           const activeFilterExists: boolean | undefined = filterConfigs
             .find((filterConfig) => filterConfig.parameter === attributeFilter.parameter)
             ?.filterValues.some((filterValue) => filterValue.name === activeFilter.name);
           if (!activeFilterExists) {
-            errorMessage = `${errorMessage}Der Filter mit dem Namen ${activeFilter.name} existiert nicht mehr in der Filterkonfiguration ${attributeFilter.parameter} der Karte ${mapTitle}.\n`;
+            throw new FavouriteIsInvalid(
+              `Der Filter mit dem Namen ${activeFilter.name} existiert nicht mehr in der Filterkonfiguration ${attributeFilter.name} der Karte ${mapTitle}.`,
+            );
           }
         });
       }
@@ -271,21 +274,21 @@ export class FavouritesService implements OnDestroy {
         (attributeFilter) => attributeFilter.parameter === filterConfig.parameter,
       );
       if (newFilterConfigHasBeenAdded) {
-        errorMessage = `${errorMessage}Eine neue Filterkonfiguration mit dem Parameter ${filterConfig.name} wurde zur Karte ${mapTitle} hinzugefügt.\n`;
+        throw new FavouriteIsInvalid(
+          `Eine neue Filterkonfiguration mit dem Parameter ${filterConfig.name} (${filterConfig.parameter}) wurde zur Karte ${mapTitle} hinzugefügt.`,
+        );
       } else {
         filterConfig.filterValues.forEach((filterValue) => {
           const newFilterValueHasBeenAdded: boolean | undefined = !attributeFilters
             .find((attributeFilter) => attributeFilter.parameter === filterConfig.parameter)
             ?.activeFilters.some((activeFilter) => activeFilter.name === filterValue.name);
           if (newFilterValueHasBeenAdded) {
-            errorMessage = `${errorMessage}Ein neuer Filter mit dem Namen ${filterValue.name} wurde zur Filterkonfiguration ${filterConfig.name} der Karte ${mapTitle} hinzugefügt.\n`;
+            throw new FavouriteIsInvalid(
+              `Ein neuer Filter mit dem Namen ${filterValue.name} wurde zur Filterkonfiguration ${filterConfig.name} der Karte ${mapTitle} hinzugefügt.`,
+            );
           }
         });
       }
     });
-    if (errorMessage) {
-      console.log(errorMessage);
-      throw new FavouriteCouldNotBeLoaded(errorMessage);
-    }
   }
 }
