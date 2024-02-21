@@ -12,6 +12,7 @@ import {HttpClient} from '@angular/common/http';
 import {BasemapConfigService} from '../../../../map/services/basemap-config.service';
 import {FavouritesService} from '../../../../map/services/favourites.service';
 import {MapRestoreItem} from '../../../interfaces/map-restore-item.interface';
+import {TimeExtentUtils} from '../../../utils/time-extent.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -107,7 +108,27 @@ export class Gb3ShareLinkService extends Gb3ApiService {
       basemapId: sharedFavorite.basemap,
       center: {x: sharedFavorite.east, y: sharedFavorite.north},
       scale: sharedFavorite.scaledenom,
-      content: sharedFavorite.content,
+      content: sharedFavorite.content.map((content) => {
+        return {
+          ...content,
+          timeExtent: sharedFavorite.drawings.timeExtent
+            ? {
+                //TODO GB3-645: refactor once TimeExtent is sent in content.
+                start: TimeExtentUtils.getUTCDate(
+                  sharedFavorite.drawings.timeExtent.find((timeExtent) => timeExtent.id === content.mapId)?.start,
+                ),
+                end: TimeExtentUtils.getUTCDate(
+                  sharedFavorite.drawings.timeExtent.find((timeExtent) => timeExtent.id === content.mapId)?.end,
+                ),
+              }
+            : undefined,
+          //TODO GB3-645: refactor once TimeExtent is sent in content.
+          attributeFilters: sharedFavorite.drawings.filterConfigurations
+            ? sharedFavorite.drawings.filterConfigurations.find((filterConfiguration) => filterConfiguration.id === content.mapId)
+                ?.attributeFilters
+            : undefined,
+        };
+      }),
       drawings: this.mapVectorLayerToGb3VectorLayer(sharedFavorite.drawings),
       measurements: this.mapVectorLayerToGb3VectorLayer(sharedFavorite.measurements),
     };
@@ -120,8 +141,28 @@ export class Gb3ShareLinkService extends Gb3ApiService {
       north: shareLink.center.y,
       scaledenom: shareLink.scale,
       content: shareLink.content,
-      drawings: shareLink.drawings,
+      drawings: {
+        //TODO: Remove once timeExtent sent in content
+        ...shareLink.drawings,
+        timeExtent: shareLink.content.map((activeMapItemConfiguration) => {
+          return activeMapItemConfiguration.timeExtent
+            ? {
+                start: activeMapItemConfiguration.timeExtent.start,
+                end: activeMapItemConfiguration.timeExtent.end,
+                id: activeMapItemConfiguration.mapId,
+              }
+            : undefined;
+        }),
+        filterConfigurations: shareLink.content.map((activeMapItemConfiguration) => {
+          return activeMapItemConfiguration.attributeFilters
+            ? {
+                attributeFilters: activeMapItemConfiguration.attributeFilters,
+                id: activeMapItemConfiguration.mapId,
+              }
+            : undefined;
+        }),
+      },
       measurements: shareLink.measurements,
-    };
+    } as unknown as SharedFavoriteNew; // TODO GB3-645 remove
   }
 }

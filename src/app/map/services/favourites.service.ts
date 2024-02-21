@@ -224,7 +224,7 @@ export class FavouritesService implements OnDestroy {
     mapTitle: string,
   ): FilterConfiguration[] {
     if (attributeFilters) {
-      this.constructErrorMessageIfFilterConfigurationChanged(attributeFilters, filterConfigurations, mapTitle);
+      this.throwErrorIfFilterConfigurationChanged(attributeFilters, filterConfigurations, mapTitle);
     }
     return filterConfigurations.map((filterConfiguration) => {
       return {
@@ -242,7 +242,7 @@ export class FavouritesService implements OnDestroy {
     });
   }
 
-  private constructErrorMessageIfFilterConfigurationChanged(
+  private throwErrorIfFilterConfigurationChanged(
     attributeFilters: FavouriteFilterConfiguration[],
     filterConfigs: FilterConfiguration[],
     mapTitle: string,

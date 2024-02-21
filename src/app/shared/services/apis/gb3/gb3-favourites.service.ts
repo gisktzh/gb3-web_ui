@@ -86,8 +86,8 @@ export class Gb3FavouritesService extends Gb3ApiService {
         timeExtent: payload.content.map((activeMapItemConfiguration) => {
           return activeMapItemConfiguration.timeExtent
             ? {
-                start: activeMapItemConfiguration.timeExtent.start,
-                end: activeMapItemConfiguration.timeExtent.end,
+                start: activeMapItemConfiguration.timeExtent.start.toString(),
+                end: activeMapItemConfiguration.timeExtent.end.toString(),
                 id: activeMapItemConfiguration.mapId,
               }
             : undefined;
