@@ -4,7 +4,7 @@ import {Gb3FavouritesService} from '../../shared/services/apis/gb3/gb3-favourite
 import {Observable, Subscription, switchMap, tap, withLatestFrom} from 'rxjs';
 import {ActiveMapItem} from '../models/active-map-item.model';
 import {Favourite, FavouritesResponse} from '../../shared/interfaces/favourite.interface';
-import {FavouriteFilterConfiguration, FilterConfiguration, Map} from '../../shared/interfaces/topic.interface';
+import {FavouriteFilterConfiguration, FilterConfiguration, Map, TimeSliderConfiguration} from '../../shared/interfaces/topic.interface';
 import {produce} from 'immer';
 import {ActiveMapItemFactory} from '../../shared/factories/active-map-item.factory';
 import {ActiveMapItemConfiguration} from '../../shared/interfaces/active-map-item-configuration.interface';
@@ -21,6 +21,8 @@ import {MapConstants} from '../../shared/constants/map.constants';
 import {SymbolizationToGb3ConverterUtils} from '../../shared/utils/symbolization-to-gb3-converter.utils';
 import {DrawingActiveMapItem} from '../models/implementations/drawing.model';
 import {Gb3StyledInternalDrawingRepresentation} from '../../shared/interfaces/internal-drawing-representation.interface';
+import {TimeExtent} from '../interfaces/time-extent.interface';
+import {TimeExtentUtils} from '../../shared/utils/time-extent.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -208,6 +210,10 @@ export class FavouritesService implements OnDestroy {
         )
       : undefined;
 
+    if (existingMap.timeSliderConfiguration && configuration.timeExtent) {
+      this.throwErrorIfTimeSliderInvalid(existingMap.timeSliderConfiguration, configuration.timeExtent, existingMap.title);
+    }
+
     return ActiveMapItemFactory.createGb2WmsMapItem(
       adjustedMap,
       undefined,
@@ -253,7 +259,7 @@ export class FavouritesService implements OnDestroy {
       );
       if (!favouriteFilterConfigExists) {
         throw new FavouriteIsInvalid(
-          `Die Filterkonfiguration mit dem Parameter ${attributeFilter.name} (${attributeFilter.parameter}) existiert nicht mehr auf der Karte ${mapTitle}.`,
+          `Die Filterkonfiguration mit dem Parameter '${attributeFilter.name} (${attributeFilter.parameter})' existiert nicht mehr auf der Karte '${mapTitle}'.`,
         );
       } else {
         attributeFilter.activeFilters.forEach((activeFilter) => {
@@ -262,7 +268,7 @@ export class FavouritesService implements OnDestroy {
             ?.filterValues.some((filterValue) => filterValue.name === activeFilter.name);
           if (!activeFilterExists) {
             throw new FavouriteIsInvalid(
-              `Der Filter mit dem Namen ${activeFilter.name} existiert nicht mehr in der Filterkonfiguration ${attributeFilter.name} der Karte ${mapTitle}.`,
+              `Der Filter mit dem Namen '${activeFilter.name}' existiert nicht mehr in der Filterkonfiguration '${attributeFilter.name}' der Karte '${mapTitle}'.`,
             );
           }
         });
@@ -275,7 +281,7 @@ export class FavouritesService implements OnDestroy {
       );
       if (newFilterConfigHasBeenAdded) {
         throw new FavouriteIsInvalid(
-          `Eine neue Filterkonfiguration mit dem Parameter ${filterConfig.name} (${filterConfig.parameter}) wurde zur Karte ${mapTitle} hinzugefügt.`,
+          `Eine neue Filterkonfiguration mit dem Parameter '${filterConfig.name} (${filterConfig.parameter})' wurde zur Karte '${mapTitle}' hinzugefügt.`,
         );
       } else {
         filterConfig.filterValues.forEach((filterValue) => {
@@ -284,11 +290,20 @@ export class FavouritesService implements OnDestroy {
             ?.activeFilters.some((activeFilter) => activeFilter.name === filterValue.name);
           if (newFilterValueHasBeenAdded) {
             throw new FavouriteIsInvalid(
-              `Ein neuer Filter mit dem Namen ${filterValue.name} wurde zur Filterkonfiguration ${filterConfig.name} der Karte ${mapTitle} hinzugefügt.`,
+              `Ein neuer Filter mit dem Namen '${filterValue.name}' wurde zur Filterkonfiguration '${filterConfig.name}' der Karte '${mapTitle}' hinzugefügt.`,
             );
           }
         });
       }
     });
+  }
+
+  private throwErrorIfTimeSliderInvalid(timeSliderConfiguration: TimeSliderConfiguration, timeExtent: TimeExtent, mapTitle: string) {
+    const minDate = TimeExtentUtils.getUTCDate(timeSliderConfiguration.minimumDate);
+    const maxDate = TimeExtentUtils.getUTCDate(timeSliderConfiguration.maximumDate);
+
+    if (timeExtent.start < minDate || timeExtent.end > maxDate) {
+      throw new FavouriteIsInvalid(`Die Timeslider-Konfiguration der Karte '${mapTitle}' ist ungültig.`);
+    }
   }
 }
