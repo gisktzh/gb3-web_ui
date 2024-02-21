@@ -20,6 +20,7 @@ import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {MapCouldNotBeFound} from '../../../shared/errors/map.errors';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
+import {FavouriteCouldNotBeLoaded} from '../../../shared/errors/favourite.errors';
 
 @Component({
   selector: 'map-data-catalogue',
@@ -83,8 +84,12 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy {
           drawingsToAdd,
         }),
       );
-    } catch (e) {
-      this.store.dispatch(FavouriteListActions.setInvalid({id}));
+    } catch (error) {
+      if (error instanceof FavouriteCouldNotBeLoaded) {
+        this.store.dispatch(FavouriteListActions.setInvalid({id, error}));
+      } else {
+        this.store.dispatch(FavouriteListActions.setInvalid({id}));
+      }
     }
   }
 
