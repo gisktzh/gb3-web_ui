@@ -4,7 +4,7 @@ import {Gb3FavouritesService} from '../../shared/services/apis/gb3/gb3-favourite
 import {Observable, Subscription, switchMap, tap, withLatestFrom} from 'rxjs';
 import {ActiveMapItem} from '../models/active-map-item.model';
 import {Favourite, FavouritesResponse} from '../../shared/interfaces/favourite.interface';
-import {Map} from '../../shared/interfaces/topic.interface';
+import {FavouriteFilterConfiguration, FilterConfiguration, Map} from '../../shared/interfaces/topic.interface';
 import {produce} from 'immer';
 import {ActiveMapItemFactory} from '../../shared/factories/active-map-item.factory';
 import {ActiveMapItemConfiguration} from '../../shared/interfaces/active-map-item-configuration.interface';
@@ -13,7 +13,7 @@ import {FavoritesDetailData} from '../../shared/models/gb3-api-generated.interfa
 
 import {selectMaps} from '../../state/map/selectors/maps.selector';
 import {selectFavouriteBaseConfig} from '../../state/map/selectors/favourite-base-config.selector';
-import {FavouriteIsInvalid} from '../../shared/errors/favourite.errors';
+import {FavouriteCouldNotBeLoaded, FavouriteIsInvalid} from '../../shared/errors/favourite.errors';
 import {selectUserDrawingsVectorLayers} from '../../state/map/selectors/user-drawings-vector-layers.selector';
 import {Gb3VectorLayer} from '../../shared/interfaces/gb3-vector-layer.interface';
 import {UserDrawingLayer} from '../../shared/enums/drawing-layer.enum';
@@ -163,8 +163,24 @@ export class FavouritesService implements OnDestroy {
   ): ActiveMapItem | undefined {
     let activeMapItem: ActiveMapItem | undefined = undefined;
     const subLayer = existingMap.layers.find((layer) => layer.id === configuration.layers[0].id);
+
+    const filterConfigurations: FilterConfiguration[] | undefined = existingMap.filterConfigurations
+      ? this.mapFavouriteFilterConfigurationsToFilterConfigurations(
+          existingMap.filterConfigurations,
+          configuration.attributeFilters,
+          existingMap.title,
+        )
+      : undefined;
+
     if (subLayer) {
-      activeMapItem = ActiveMapItemFactory.createGb2WmsMapItem(existingMap, subLayer, configuration.visible, configuration.opacity);
+      activeMapItem = ActiveMapItemFactory.createGb2WmsMapItem(
+        existingMap,
+        subLayer,
+        configuration.visible,
+        configuration.opacity,
+        configuration.timeExtent,
+        filterConfigurations,
+      );
     } else if (!ignoreErrors) {
       throw new FavouriteIsInvalid(`Der Layer '${configuration.layers[0].layer}' existiert nicht (mehr).`);
     }
@@ -183,28 +199,93 @@ export class FavouritesService implements OnDestroy {
       const sortIds = configuration.layers.map((layer) => layer.id);
       draft.layers.sort((a, b) => sortIds.indexOf(a.id) - sortIds.indexOf(b.id));
     });
+
+    const filterConfigurations: FilterConfiguration[] | undefined = existingMap.filterConfigurations
+      ? this.mapFavouriteFilterConfigurationsToFilterConfigurations(
+          existingMap.filterConfigurations,
+          configuration.attributeFilters,
+          existingMap.title,
+        )
+      : undefined;
+
     return ActiveMapItemFactory.createGb2WmsMapItem(
       adjustedMap,
       undefined,
       configuration.visible,
       configuration.opacity,
       configuration.timeExtent,
-      existingMap.filterConfigurations
-        ? existingMap.filterConfigurations.map((filterConfiguration) => {
-            return {
-              ...filterConfiguration,
-              filterValues: filterConfiguration.filterValues.map((filterValue) => {
-                return {
-                  ...filterValue,
-                  isActive:
-                    configuration.attributeFilters
-                      ?.find((attributeFilter) => attributeFilter.parameter === filterConfiguration.parameter)
-                      ?.activeFilters.some((activeFilter) => activeFilter === filterValue.name) ?? false,
-                };
-              }),
-            };
-          })
-        : undefined,
+      filterConfigurations,
     );
+  }
+
+  private mapFavouriteFilterConfigurationsToFilterConfigurations(
+    filterConfigurations: FilterConfiguration[],
+    attributeFilters: FavouriteFilterConfiguration[] | undefined,
+    mapTitle: string,
+  ): FilterConfiguration[] {
+    if (attributeFilters) {
+      this.constructErrorMessageIfFilterConfigurationChanged(attributeFilters, filterConfigurations, mapTitle);
+    }
+    return filterConfigurations.map((filterConfiguration) => {
+      return {
+        ...filterConfiguration,
+        filterValues: filterConfiguration.filterValues.map((filterValue) => {
+          return {
+            ...filterValue,
+            isActive:
+              attributeFilters
+                ?.find((attributeFilter) => attributeFilter.parameter === filterConfiguration.parameter)
+                ?.activeFilters.find((activeFilter) => activeFilter.name === filterValue.name)?.isActive ?? false,
+          };
+        }),
+      };
+    });
+  }
+
+  private constructErrorMessageIfFilterConfigurationChanged(
+    attributeFilters: FavouriteFilterConfiguration[],
+    filterConfigs: FilterConfiguration[],
+    mapTitle: string,
+  ) {
+    let errorMessage = '';
+    attributeFilters.forEach((attributeFilter) => {
+      const favouriteFilterConfigExists: boolean | undefined = filterConfigs.some(
+        (filterConfig) => filterConfig.parameter === attributeFilter.parameter,
+      );
+      if (!favouriteFilterConfigExists) {
+        errorMessage = `Die Filterkonfiguration mit dem Parameter ${attributeFilter.parameter} existiert nicht mehr auf der Karte ${mapTitle}.\n`;
+      } else {
+        attributeFilter.activeFilters.forEach((activeFilter) => {
+          const activeFilterExists: boolean | undefined = filterConfigs
+            .find((filterConfig) => filterConfig.parameter === attributeFilter.parameter)
+            ?.filterValues.some((filterValue) => filterValue.name === activeFilter.name);
+          if (!activeFilterExists) {
+            errorMessage = `${errorMessage}Der Filter mit dem Namen ${activeFilter.name} existiert nicht mehr in der Filterkonfiguration ${attributeFilter.parameter} der Karte ${mapTitle}.\n`;
+          }
+        });
+      }
+    });
+
+    filterConfigs.forEach((filterConfig) => {
+      const newFilterConfigHasBeenAdded: boolean | undefined = !attributeFilters.some(
+        (attributeFilter) => attributeFilter.parameter === filterConfig.parameter,
+      );
+      if (newFilterConfigHasBeenAdded) {
+        errorMessage = `${errorMessage}Eine neue Filterkonfiguration mit dem Parameter ${filterConfig.name} wurde zur Karte ${mapTitle} hinzugefügt.\n`;
+      } else {
+        filterConfig.filterValues.forEach((filterValue) => {
+          const newFilterValueHasBeenAdded: boolean | undefined = !attributeFilters
+            .find((attributeFilter) => attributeFilter.parameter === filterConfig.parameter)
+            ?.activeFilters.some((activeFilter) => activeFilter.name === filterValue.name);
+          if (newFilterValueHasBeenAdded) {
+            errorMessage = `${errorMessage}Ein neuer Filter mit dem Namen ${filterValue.name} wurde zur Filterkonfiguration ${filterConfig.name} der Karte ${mapTitle} hinzugefügt.\n`;
+          }
+        });
+      }
+    });
+    if (errorMessage) {
+      console.log(errorMessage);
+      throw new FavouriteCouldNotBeLoaded(errorMessage);
+    }
   }
 }

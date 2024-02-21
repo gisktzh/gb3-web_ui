@@ -124,7 +124,7 @@ export interface FilterConfiguration {
 
 export interface FavouriteFilterConfiguration {
   parameter: string;
-  activeFilters: string[];
+  activeFilters: {name: string; isActive: boolean}[];
 }
 
 export interface SearchConfiguration {

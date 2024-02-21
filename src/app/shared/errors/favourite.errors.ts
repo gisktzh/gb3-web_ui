@@ -23,3 +23,12 @@ export class FavouritesCouldNotBeLoaded extends RecoverableError {
   public override message = 'Favoriten konnten nicht geladen werden.';
   public override name = 'FavouritesCouldNotBeLoaded';
 }
+
+export class FavouriteCouldNotBeLoaded extends RecoverableError {
+  public override name = 'FavouriteCouldNotBeLoaded';
+
+  constructor(reason: string) {
+    super();
+    this.message = reason;
+  }
+}

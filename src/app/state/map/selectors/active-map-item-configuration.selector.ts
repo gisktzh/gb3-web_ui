@@ -21,9 +21,9 @@ export const selectActiveMapItemConfigurations = createSelector(selectItems, (ac
           ? activeMapItem.settings.filterConfigurations.map((filterConfiguration) => {
               return {
                 parameter: filterConfiguration.parameter,
-                activeFilters: filterConfiguration.filterValues
-                  .filter((filterValue) => filterValue.isActive)
-                  .map((filterValue) => filterValue.name),
+                activeFilters: filterConfiguration.filterValues.map((filterValue) => {
+                  return {name: filterValue.name, isActive: filterValue.isActive};
+                }),
               };
             })
           : undefined,
