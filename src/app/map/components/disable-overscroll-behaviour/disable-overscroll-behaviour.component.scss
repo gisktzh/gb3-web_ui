@@ -1,0 +1,10 @@
+/*
+This component should only be used in components where the overscroll behaviour should be disabled globally.
+Since these styles have to be added to <html> and <body>, ViewEncapsulation is turned off for this components, which in
+turn means that extreme care should be taken if any other styles are added to this component.
+*/
+
+body,
+html {
+  overscroll-behavior: none;
+}
