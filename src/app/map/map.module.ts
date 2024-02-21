@@ -84,6 +84,7 @@ import {TimeExtentToStringPipe} from './pipes/time-extent-to-string.pipe';
 import {DateToStringPipe} from './pipes/date-to-string.pipe';
 import {MapAttributeFilterOverlayComponent} from './components/map-attribute-filter-overlay/map-attribute-filter-overlay.component';
 import {DelayedMouseEnterDirective} from '../shared/directives/delayed-mouse-enter.directive';
+import {DisableOverscrollBehaviourComponent} from './components/disable-overscroll-behaviour/disable-overscroll-behaviour.component';
 
 @NgModule({
   declarations: [
@@ -176,6 +177,7 @@ import {DelayedMouseEnterDirective} from '../shared/directives/delayed-mouse-ent
     MapAttributeFilterComponent,
     MapAttributeFilterOverlayComponent,
     DelayedMouseEnterDirective,
+    DisableOverscrollBehaviourComponent,
   ],
   exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent, MapOverlayComponent],
 })
