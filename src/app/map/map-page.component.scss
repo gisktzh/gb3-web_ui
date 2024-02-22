@@ -160,7 +160,7 @@
 
   .map-container__map-tools {
     position: absolute;
-    top: 120px;
+    top: 88px; // calculated from figma (86px) and adjusted for the problematic height calculation of the search bar
     right: 12px;
 
     &--mobile {
