@@ -41,7 +41,7 @@
     "@angular/platform-browser": "^17.2.2",
     "@angular/platform-browser-dynamic": "^17.2.2",
     "@angular/router": "^17.2.2",
-    "@arcgis/core": "~4.28.0",
+    "@arcgis/core": "~4.29.0",
     "@ngrx/effects": "^17.1.1",
     "@ngrx/entity": "^17.1.1",
     "@ngrx/router-store": "^17.1.1",
