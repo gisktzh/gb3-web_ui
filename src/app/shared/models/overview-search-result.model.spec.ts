@@ -19,7 +19,7 @@ function expectUrlForType(dataCataloguePage: DataCataloguePage): string {
   return `/${MainPage.Data}/${dataCataloguePage}/${TEST_GUID}`;
 }
 
-describe('OverviewMetadataItemModel', () => {
+describe('OverviewSearchResult', () => {
   [
     {
       group: 'ServiceOverviewMetadataItem',

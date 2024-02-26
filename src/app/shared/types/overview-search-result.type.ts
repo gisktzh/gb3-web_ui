@@ -10,9 +10,9 @@ export type OverviewSearchResultDisplayItemFlag = Partial<Record<OverviewSearchR
 /**
  * Results from the GB3 API have one of these types.
  */
-export type OverviewApiSearchResultModel = 'Geodatensatz' | 'Karte' | 'Geoservice' | 'Produkt';
+export type OverviewApiSearchResultType = 'Geodatensatz' | 'Karte' | 'Geoservice' | 'Produkt';
 
 /**
  * All available types for OverviewSearchResults, which extend the API-only types.
  */
-export type OverviewSearchResultType = OverviewApiSearchResultModel | 'Frage' | 'Info';
+export type OverviewSearchResultType = OverviewApiSearchResultType | 'Frage' | 'Info';

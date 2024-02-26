@@ -3,7 +3,7 @@ import {MainPage} from '../enums/main-page.enum';
 import {OverviewSearchResultDisplayItem} from '../interfaces/overview-search-resuilt-display.interface';
 import {SupportPage} from '../enums/support-page.enum';
 import {v4 as uuidv4} from 'uuid';
-import {OverviewApiSearchResultModel, OverviewSearchResultDisplayItemFlag} from '../types/overview-search-result.type';
+import {OverviewApiSearchResultType, OverviewSearchResultDisplayItemFlag} from '../types/overview-search-result.type';
 
 interface HasRelativeUrl {
   relativeUrl: string;
@@ -77,14 +77,14 @@ export class OverviewFaqItem extends OverviewSearchResult implements HasRelative
 
 export abstract class OverviewMetadataItem extends OverviewSearchResult implements HasRelativeUrl {
   public readonly relativeUrl: string;
-  public readonly type: OverviewApiSearchResultModel;
+  public readonly type: OverviewApiSearchResultType;
   public readonly responsibleDepartment: string;
 
   protected constructor(
     uuid: string,
     name: string,
     description: string,
-    type: OverviewApiSearchResultModel,
+    type: OverviewApiSearchResultType,
     responsibleDepartment: string,
     ogd?: boolean,
   ) {
