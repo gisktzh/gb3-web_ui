@@ -44,10 +44,9 @@
         class="map-management-mobile-header__tools__buttons__action map-management-mobile-header__tools__buttons__action--notices"
         (click)="showMapNotices()"
         [disabled]="numberOfNotices === 0"
-        [matBadge]="numberOfUnreadNotices"
-        [matBadgeHidden]="numberOfUnreadNotices === 0"
         mat-icon-button
       >
+        <notification-indicator *ngIf="numberOfUnreadNotices > 0"></notification-indicator>
         <mat-icon svgIcon="ktzh_notification"></mat-icon>
       </button>
       <mat-divider class="map-management-mobile-header__tools__buttons__divider" [vertical]="true"></mat-divider>
