@@ -1,5 +1,5 @@
 <div class="overview-search-result-item">
-  <div class="overview-search-result-item__icon" *ngIf="!isMobile">
+  <div class="overview-search-result-item__icon" *ngIf="!isMobile" [matTooltip]="item.type" [matTooltipPosition]="'right'">
     @switch (item.type) {
       @case ('Geodatensatz') {
         <mat-icon svgIcon="ktzh_search_dataset"></mat-icon>
