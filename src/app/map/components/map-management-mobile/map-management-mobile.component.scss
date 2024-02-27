@@ -4,18 +4,6 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
 :host ::ng-deep {
-  .map-management-mobile-header__tools__buttons__action--notices {
-    .mat-badge-content.mat-badge-active {
-      top: 12px;
-      right: 16px;
-      font-size: 0;
-      width: 8px;
-      height: 8px;
-    }
-
-    @include mat-mixins.mat-badge-override-color(ktzh-variables.$zh-red, ktzh-variables.$zh-white);
-  }
-
   .map-management-mobile-header__tools__buttons__action {
     @include mixins.tool-button-mobile;
   }
