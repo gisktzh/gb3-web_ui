@@ -154,6 +154,9 @@ const symbolIconsConfig = [
   },
 ];
 
+/**
+ * Icons representing drawing symbols
+ */
 const drawingSymbolIconsConfig = [
   {
     id: 'ktzh_drawing_symbol_line',
@@ -185,6 +188,9 @@ const drawingSymbolIconsConfig = [
   },
 ];
 
+/**
+ * Icons representing selection symbols
+ */
 const selectingSymbolIconsConfig = [
   {
     id: 'ktzh_select_section',
@@ -199,6 +205,36 @@ const selectingSymbolIconsConfig = [
     path: 'assets/icons/tools/select-municipality.svg',
   },
 ];
+
+/**
+ * Icons representing search result symbols
+ */
+const searchSymbolIconsConfig = [
+  {
+    id: 'ktzh_search_dataset',
+    path: 'assets/icons/search/dataset.svg',
+  },
+  {
+    id: 'ktzh_search_faq',
+    path: 'assets/icons/search/faq.svg',
+  },
+  {
+    id: 'ktzh_search_helpful_information',
+    path: 'assets/icons/search/helpful-information.svg',
+  },
+  {
+    id: 'ktzh_search_map',
+    path: 'assets/icons/search/map.svg',
+  },
+  {
+    id: 'ktzh_search_product',
+    path: 'assets/icons/search/product.svg',
+  },
+  {
+    id: 'ktzh_search_service',
+    path: 'assets/icons/search/service.svg',
+  },
+];
 export const iconsConfig = [
   ...toolIconsConfig,
   ...controlIconsConfig,
@@ -206,4 +242,5 @@ export const iconsConfig = [
   ...symbolIconsConfig,
   ...drawingSymbolIconsConfig,
   ...selectingSymbolIconsConfig,
+  ...searchSymbolIconsConfig,
 ];

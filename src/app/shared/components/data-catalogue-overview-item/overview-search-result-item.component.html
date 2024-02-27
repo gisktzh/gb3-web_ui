@@ -2,22 +2,22 @@
   <div class="overview-search-result-item__icon" *ngIf="!isMobile">
     @switch (item.type) {
       @case ('Geodatensatz') {
-        <mat-icon>dataset</mat-icon>
+        <mat-icon svgIcon="ktzh_search_dataset"></mat-icon>
       }
       @case ('Produkt') {
-        <mat-icon>inventory_2</mat-icon>
+        <mat-icon svgIcon="ktzh_search_product"></mat-icon>
       }
       @case ('Karte') {
-        <mat-icon>map</mat-icon>
+        <mat-icon svgIcon="ktzh_search_map"></mat-icon>
       }
       @case ('Geoservice') {
-        <mat-icon>smart_toy</mat-icon>
+        <mat-icon svgIcon="ktzh_search_service"></mat-icon>
       }
       @case ('Frage') {
-        <mat-icon>help</mat-icon>
+        <mat-icon svgIcon="ktzh_search_faq"></mat-icon>
       }
       @case ('Info') {
-        <mat-icon>info</mat-icon>
+        <mat-icon svgIcon="ktzh_search_helpful_information"></mat-icon>
       }
     }
   </div>
