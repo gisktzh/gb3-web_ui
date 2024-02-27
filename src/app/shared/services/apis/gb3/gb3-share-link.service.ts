@@ -122,11 +122,6 @@ export class Gb3ShareLinkService extends Gb3ApiService {
                 ),
               }
             : undefined,
-          //TODO GB3-645: refactor once TimeExtent is sent in content.
-          attributeFilters: sharedFavorite.drawings.filterConfigurations
-            ? sharedFavorite.drawings.filterConfigurations.find((filterConfiguration) => filterConfiguration.id === content.mapId)
-                ?.attributeFilters
-            : undefined,
         };
       }),
       drawings: this.mapVectorLayerToGb3VectorLayer(sharedFavorite.drawings),
@@ -149,14 +144,6 @@ export class Gb3ShareLinkService extends Gb3ApiService {
             ? {
                 start: activeMapItemConfiguration.timeExtent.start,
                 end: activeMapItemConfiguration.timeExtent.end,
-                id: activeMapItemConfiguration.mapId,
-              }
-            : undefined;
-        }),
-        filterConfigurations: shareLink.content.map((activeMapItemConfiguration) => {
-          return activeMapItemConfiguration.attributeFilters
-            ? {
-                attributeFilters: activeMapItemConfiguration.attributeFilters,
                 id: activeMapItemConfiguration.mapId,
               }
             : undefined;

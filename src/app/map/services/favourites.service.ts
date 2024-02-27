@@ -4,7 +4,13 @@ import {Gb3FavouritesService} from '../../shared/services/apis/gb3/gb3-favourite
 import {Observable, Subscription, switchMap, tap, withLatestFrom} from 'rxjs';
 import {ActiveMapItem} from '../models/active-map-item.model';
 import {Favourite, FavouritesResponse} from '../../shared/interfaces/favourite.interface';
-import {FavouriteFilterConfiguration, FilterConfiguration, Map, TimeSliderConfiguration} from '../../shared/interfaces/topic.interface';
+import {
+  FavouriteFilterConfiguration,
+  FilterConfiguration,
+  Map,
+  TimeSliderConfiguration,
+  TimeSliderLayerSource,
+} from '../../shared/interfaces/topic.interface';
 import {produce} from 'immer';
 import {ActiveMapItemFactory} from '../../shared/factories/active-map-item.factory';
 import {ActiveMapItemConfiguration} from '../../shared/interfaces/active-map-item-configuration.interface';
@@ -299,11 +305,25 @@ export class FavouritesService implements OnDestroy {
   }
 
   private throwErrorIfTimeSliderInvalid(timeSliderConfiguration: TimeSliderConfiguration, timeExtent: TimeExtent, mapTitle: string) {
-    const minDate = TimeExtentUtils.getUTCDate(timeSliderConfiguration.minimumDate);
-    const maxDate = TimeExtentUtils.getUTCDate(timeSliderConfiguration.maximumDate);
+    switch (timeSliderConfiguration.sourceType) {
+      case 'parameter':
+        {
+          const minDate = TimeExtentUtils.getUTCDate(timeSliderConfiguration.minimumDate);
+          const maxDate = TimeExtentUtils.getUTCDate(timeSliderConfiguration.maximumDate);
 
-    if (timeExtent.start < minDate || timeExtent.end > maxDate) {
-      throw new FavouriteIsInvalid(`Die Timeslider-Konfiguration der Karte '${mapTitle}' ist ungültig.`);
+          if (timeExtent.start < minDate || timeExtent.end > maxDate) {
+            throw new FavouriteIsInvalid(`Die Timeslider-Konfiguration der Karte '${mapTitle}' ist ungültig.`);
+          }
+        }
+        break;
+      case 'layer': {
+        const selectedYearExists = (timeSliderConfiguration.source as TimeSliderLayerSource).layers.some(
+          (layer) => TimeExtentUtils.getUTCDate(layer.date) === timeExtent.start,
+        );
+        if (!selectedYearExists) {
+          throw new FavouriteIsInvalid(`Die Timeslider-Konfiguration der Karte '${mapTitle}' ist ungültig.`);
+        }
+      }
     }
   }
 }
