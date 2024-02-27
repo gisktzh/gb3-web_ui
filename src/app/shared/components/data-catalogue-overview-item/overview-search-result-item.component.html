@@ -1,13 +1,41 @@
 <div class="overview-search-result-item">
+  <div class="overview-search-result-item__icon" *ngIf="!isMobile">
+    @switch (item.type) {
+      @case ('Geodatensatz') {
+        <mat-icon svgIcon="ktzh_search_dataset"></mat-icon>
+      }
+      @case ('Produkt') {
+        <mat-icon svgIcon="ktzh_search_product"></mat-icon>
+      }
+      @case ('Karte') {
+        <mat-icon svgIcon="ktzh_search_map"></mat-icon>
+      }
+      @case ('Geoservice') {
+        <mat-icon svgIcon="ktzh_search_service"></mat-icon>
+      }
+      @case ('Frage') {
+        <mat-icon svgIcon="ktzh_search_faq"></mat-icon>
+      }
+      @case ('Info') {
+        <mat-icon svgIcon="ktzh_search_helpful_information"></mat-icon>
+      }
+    }
+  </div>
   <div class="overview-search-result-item__content">
-    <span class="overview-search-result-item__content__title">{{ item.title }}</span>
-    <div class="overview-search-result-item__content__details">
+    <div class="overview-search-result-item__content__title">
+      <span class="overview-search-result-item__content__title__text">{{ item.title }}</span>
+      <div *ngIf="item.flags.ogd === false" class="overview-search-result-item__content__title__flag">
+        <mat-icon svgIcon="ktzh_lock"></mat-icon>
+      </div>
+    </div>
+    <div class="overview-search-result-item__content__details" *ngIf="item.fields.length > 0">
       <ng-container *ngFor="let field of item.fields">
         <div
           class="overview-search-result-item__content__details__item"
           [ngClass]="{'overview-search-result-item__content__details__item--truncated': field.truncatable}"
         >
-          <span class="overview-search-result-item__content__details__item__title">{{ field.title }}:</span>
+          <!-- Only show the title if we have more than 1 element to have a clean display -->
+          <span class="overview-search-result-item__content__details__item__title" *ngIf="item.fields.length > 1">{{ field.title }}:</span>
           <span class="overview-search-result-item__content__details__item__content">{{ field.content }}</span>
         </div>
       </ng-container>

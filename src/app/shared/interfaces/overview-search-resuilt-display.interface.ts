@@ -1,3 +1,5 @@
+import {OverviewSearchResultDisplayItemFlags, OverviewSearchResultType} from '../types/overview-search-result.type';
+
 export interface OverviewSearchResultDisplayItemField {
   title: string;
   content: string;
@@ -6,10 +8,11 @@ export interface OverviewSearchResultDisplayItemField {
    */
   truncatable?: boolean;
 }
-
 export interface OverviewSearchResultDisplayItem {
   title: string;
   uuid: string;
+  flags: OverviewSearchResultDisplayItemFlags;
+  type: OverviewSearchResultType;
   url: {
     /**
      * Whether the URL is internal and should be rendered as routerLink or as normal anchor link

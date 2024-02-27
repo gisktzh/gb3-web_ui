@@ -2,10 +2,8 @@ import {DataCataloguePage} from '../enums/data-catalogue-page.enum';
 import {MainPage} from '../enums/main-page.enum';
 import {OverviewSearchResultDisplayItem} from '../interfaces/overview-search-resuilt-display.interface';
 import {SupportPage} from '../enums/support-page.enum';
-import {OGDAvailability} from '../enums/ogd-availability.enum';
 import {v4 as uuidv4} from 'uuid';
-
-type OverviewSearchResultModel = 'Geodatensatz' | 'Karte' | 'Geoservice' | 'Produkt';
+import {OverviewApiSearchResultType, OverviewSearchResultDisplayItemFlags} from '../types/overview-search-result.type';
 
 interface HasRelativeUrl {
   relativeUrl: string;
@@ -15,11 +13,13 @@ abstract class OverviewSearchResult {
   public readonly uuid: string;
   public readonly name: string;
   public readonly description: string;
+  public readonly flags: OverviewSearchResultDisplayItemFlags;
 
-  protected constructor(name: string, uuid: string = uuidv4(), description: string = '') {
+  protected constructor(name: string, uuid: string = uuidv4(), description: string = '', flags: OverviewSearchResultDisplayItemFlags = {}) {
     this.uuid = uuid;
     this.name = name;
     this.description = description;
+    this.flags = flags;
   }
 
   /**
@@ -41,11 +41,13 @@ export class OverviewLinkItem extends OverviewSearchResult {
     return {
       title: this.name,
       uuid: this.uuid,
+      flags: this.flags,
+      type: 'Info',
       url: {
         isInternal: false,
         path: this.url,
       },
-      fields: [{title: 'Typ', content: 'Info'}],
+      fields: [],
     };
   }
 }
@@ -62,25 +64,31 @@ export class OverviewFaqItem extends OverviewSearchResult implements HasRelative
     return {
       title: this.name,
       uuid: this.uuid,
+      flags: this.flags,
+      type: 'Frage',
       url: {
         isInternal: true,
         path: this.relativeUrl,
       },
-      fields: [
-        {title: 'Typ', content: 'Frage'},
-        {title: 'Beschreibung', content: this.description, truncatable: true},
-      ],
+      fields: [{title: 'Beschreibung', content: this.description, truncatable: true}],
     };
   }
 }
 
 export abstract class OverviewMetadataItem extends OverviewSearchResult implements HasRelativeUrl {
   public readonly relativeUrl: string;
-  public readonly type: OverviewSearchResultModel;
+  public readonly type: OverviewApiSearchResultType;
   public readonly responsibleDepartment: string;
 
-  protected constructor(uuid: string, name: string, description: string, type: OverviewSearchResultModel, responsibleDepartment: string) {
-    super(name, uuid, description);
+  protected constructor(
+    uuid: string,
+    name: string,
+    description: string,
+    type: OverviewApiSearchResultType,
+    responsibleDepartment: string,
+    ogd?: boolean,
+  ) {
+    super(name, uuid, description, {ogd});
 
     this.type = type;
     this.responsibleDepartment = responsibleDepartment;
@@ -105,11 +113,10 @@ export abstract class OverviewMetadataItem extends OverviewSearchResult implemen
     return {
       title: this.name,
       uuid: this.uuid,
+      flags: this.flags,
+      type: this.type,
       url: {isInternal: true, path: this.relativeUrl},
-      fields: [
-        {title: 'Typ', content: this.type},
-        {title: 'Beschreibung', content: this.description, truncatable: true},
-      ],
+      fields: [{title: 'Beschreibung', content: this.description, truncatable: true}],
     };
   }
 
@@ -126,22 +133,10 @@ export class ServiceOverviewMetadataItem extends OverviewMetadataItem {
 
 export class DatasetOverviewMetadataItem extends OverviewMetadataItem {
   public readonly outputFormat: string[];
-  public readonly ogd: OGDAvailability;
 
   constructor(uuid: string, name: string, description: string, responsibleDepartment: string, outputFormat: string[], ogd: boolean) {
-    super(uuid, name, description, 'Geodatensatz', responsibleDepartment);
+    super(uuid, name, description, 'Geodatensatz', responsibleDepartment, ogd);
     this.outputFormat = outputFormat;
-    this.ogd = ogd ? OGDAvailability.OGD : OGDAvailability.NOGD;
-  }
-
-  public override createDisplayRepresentationForList(): OverviewSearchResultDisplayItem {
-    const {fields, ...rest} = super.createDisplayRepresentationForList();
-    fields.splice(1, 0, {content: this.ogd, title: 'Verfügbarkeit'});
-
-    return {
-      ...rest,
-      fields,
-    };
   }
 }
 
