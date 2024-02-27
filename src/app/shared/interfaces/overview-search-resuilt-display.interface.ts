@@ -1,4 +1,4 @@
-import {OverviewSearchResultDisplayItemFlag, OverviewSearchResultType} from '../types/overview-search-result.type';
+import {OverviewSearchResultDisplayItemFlags, OverviewSearchResultType} from '../types/overview-search-result.type';
 
 export interface OverviewSearchResultDisplayItemField {
   title: string;
@@ -11,7 +11,7 @@ export interface OverviewSearchResultDisplayItemField {
 export interface OverviewSearchResultDisplayItem {
   title: string;
   uuid: string;
-  flags: OverviewSearchResultDisplayItemFlag;
+  flags: OverviewSearchResultDisplayItemFlags;
   type: OverviewSearchResultType;
   url: {
     /**

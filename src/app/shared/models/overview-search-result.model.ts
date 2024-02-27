@@ -3,7 +3,7 @@ import {MainPage} from '../enums/main-page.enum';
 import {OverviewSearchResultDisplayItem} from '../interfaces/overview-search-resuilt-display.interface';
 import {SupportPage} from '../enums/support-page.enum';
 import {v4 as uuidv4} from 'uuid';
-import {OverviewApiSearchResultType, OverviewSearchResultDisplayItemFlag} from '../types/overview-search-result.type';
+import {OverviewApiSearchResultType, OverviewSearchResultDisplayItemFlags} from '../types/overview-search-result.type';
 
 interface HasRelativeUrl {
   relativeUrl: string;
@@ -13,9 +13,9 @@ abstract class OverviewSearchResult {
   public readonly uuid: string;
   public readonly name: string;
   public readonly description: string;
-  public readonly flags: OverviewSearchResultDisplayItemFlag;
+  public readonly flags: OverviewSearchResultDisplayItemFlags;
 
-  protected constructor(name: string, uuid: string = uuidv4(), description: string = '', flags: OverviewSearchResultDisplayItemFlag = {}) {
+  protected constructor(name: string, uuid: string = uuidv4(), description: string = '', flags: OverviewSearchResultDisplayItemFlags = {}) {
     this.uuid = uuid;
     this.name = name;
     this.description = description;
