@@ -45,7 +45,8 @@ export class Gb3FavouritesService extends Gb3ApiService {
 
   private mapFavouritesListDataToFavouritesResponse(favouritesListData: UserFavoritesListData): FavouritesResponse {
     return favouritesListData.map((data) => ({
-      ...data,
+      id: data.id,
+      title: data.title,
       baseConfig: {
         basemap: data.basemap,
         scale: data.scaledenom,
@@ -65,6 +66,8 @@ export class Gb3FavouritesService extends Gb3ApiService {
             : undefined,
         };
       }),
+      drawings: data.drawings,
+      measurements: data.measurements,
     })) as unknown as FavouritesResponse; // todo: typecasts once API is fixed
   }
 
@@ -75,8 +78,8 @@ export class Gb3FavouritesService extends Gb3ApiService {
       north: baseConfig.center.y,
       scaledenom: baseConfig.scale,
       basemap: baseConfig.basemap,
-      content: payload.content.map((c) => {
-        return {...c, timeExtent: [c.timeExtent]};
+      content: payload.content.map((content) => {
+        return {...content, timeExtent: content.timeExtent ? [content.timeExtent] : undefined};
       }),
     } as unknown as PersonalFavoriteNew; // todo: typecasts once API is fixed
   }

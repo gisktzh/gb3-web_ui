@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {filter, of, switchMap, tap} from 'rxjs';
+import {of, switchMap, tap} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
 import {FavouriteListActions} from '../actions/favourite-list.actions';
 import {FavouritesService} from '../../../map/services/favourites.service';
@@ -39,7 +39,6 @@ export class FavouriteListEffects {
     () => {
       return this.actions$.pipe(
         ofType(FavouriteListActions.setInvalid),
-        filter(({error}) => error !== undefined),
         tap(({error}) => {
           throw new FavouriteCouldNotBeLoaded(error);
         }),

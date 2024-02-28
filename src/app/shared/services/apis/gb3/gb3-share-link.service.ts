@@ -12,6 +12,7 @@ import {HttpClient} from '@angular/common/http';
 import {BasemapConfigService} from '../../../../map/services/basemap-config.service';
 import {FavouritesService} from '../../../../map/services/favourites.service';
 import {MapRestoreItem} from '../../../interfaces/map-restore-item.interface';
+import {TimeExtentUtils} from '../../../utils/time-extent.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -107,7 +108,15 @@ export class Gb3ShareLinkService extends Gb3ApiService {
       center: {x: sharedFavorite.east, y: sharedFavorite.north},
       scale: sharedFavorite.scaledenom,
       content: sharedFavorite.content.map((content) => {
-        return {...content, timeExtent: content.timeExtent ? content.timeExtent[0] : undefined};
+        return {
+          ...content,
+          timeExtent: content.timeExtent
+            ? {
+                start: TimeExtentUtils.getUTCDate(content.timeExtent[0].start.toString()),
+                end: TimeExtentUtils.getUTCDate(content.timeExtent[0].end.toString()),
+              }
+            : undefined,
+        };
       }),
       drawings: this.mapVectorLayerToGb3VectorLayer(sharedFavorite.drawings),
       measurements: this.mapVectorLayerToGb3VectorLayer(sharedFavorite.measurements),
