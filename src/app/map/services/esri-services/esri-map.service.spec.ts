@@ -96,6 +96,29 @@ describe('EsriMapService', () => {
     const mapItem2 = createGb2WmsMapItemMock('mapTwo', 2);
     mapItem2.settings.layers[0].visible = false;
     const mapItem3 = createGb2WmsMapItemMock('mapThree');
+    mapItem3.settings.filterConfigurations = [
+      {
+        name: 'Anzeigeoptionen nach Hauptnutzung',
+        parameter: 'FILTER_GEBART',
+        filterValues: [
+          {
+            isActive: true,
+            values: ['Gebäude Wohnen'],
+            name: 'Wohnen',
+          },
+          {
+            isActive: false,
+            values: ['Gebäude Wohnen'],
+            name: 'Gewerbe und Verwaltung',
+          },
+          {
+            isActive: false,
+            values: ['Gebäude Wohnen'],
+            name: 'Andere',
+          },
+        ],
+      },
+    ];
 
     expect(mapMock.layers.length).toBe(getExpectedNumberOfLayersWithInternalLayers(0));
 

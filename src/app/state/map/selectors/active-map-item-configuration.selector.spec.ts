@@ -1,65 +1,66 @@
-import {ActiveMapItem} from '../../../map/models/active-map-item.model';
 import {selectActiveMapItemConfigurations} from './active-map-item-configuration.selector';
 import {TimeExtentUtils} from '../../../shared/utils/time-extent.utils';
-import {immerable} from 'immer';
-import {AddToMapVisitor} from '../../../map/interfaces/add-to-map.visitor';
 import {ActiveMapItemConfiguration} from '../../../shared/interfaces/active-map-item-configuration.interface';
+import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
+import {Map} from '../../../shared/interfaces/topic.interface';
 
 describe('selectActiveMapItemConfiguration', () => {
   it('returns activeMapItemConfigurations from ActiveMapItmes', () => {
-    const activeMapItemsMock: ActiveMapItem[] = [
+    const gb2ActiveMapItem = ActiveMapItemFactory.createGb2WmsMapItem(
       {
         id: 'StatGebAlterZH',
-        opacity: 0.71,
-        visible: true,
-        isSingleLayer: false,
-        title: 'Gebäudealter',
-        mapImageUrl: null,
-        geometadataUuid: null,
-        loadingState: undefined,
-        isTemporary: false,
-        viewProcessState: undefined,
-        [immerable]: true,
-        addToMap(addToMapVisitor: AddToMapVisitor, position: number) {},
-        settings: {
-          type: 'gb2Wms',
-          url: '',
-          layers: [],
-          mapId: '123',
-          isNoticeMarkedAsRead: false,
-          timeSliderExtent: {
-            start: TimeExtentUtils.getUTCDate('1000-01-01T00:00:00.000Z'),
-            end: TimeExtentUtils.getUTCDate('2020-01-01T00:00:00.000Z'),
+        mapId: 'StatGebAlterZH',
+        layers: [],
+        timeSliderConfiguration: {
+          name: 'Aktueller Gebäudebestand nach Baujahr',
+          alwaysMaxRange: false,
+          dateFormat: 'YYYY',
+          description: 'Gebäude bis 2020',
+          maximumDate: '2020',
+          minimumDate: '1000',
+          minimalRange: 'P1Y',
+          sourceType: 'parameter',
+          source: {
+            startRangeParameter: 'FILTER_VON',
+            endRangeParameter: 'FILTER_BIS',
+            layerIdentifiers: ['geb-alter_wohnen', 'geb-alter_grau', 'geb-alter_2'],
           },
-          filterConfigurations: [
+        },
+      } as unknown as Map,
+      undefined,
+      true,
+      0.71,
+      {
+        start: TimeExtentUtils.getUTCDate('1000-01-01T00:00:00.000Z'),
+        end: TimeExtentUtils.getUTCDate('2020-01-01T00:00:00.000Z'),
+      },
+      [
+        {
+          parameter: 'FILTER_GEBART',
+          name: 'Anzeigeoptionen nach Hauptnutzung',
+          filterValues: [
             {
-              parameter: 'FILTER_GEBART',
-              name: 'Anzeigeoptionen nach Hauptnutzung',
-              filterValues: [
-                {
-                  name: 'Wohnen',
-                  isActive: true,
-                  values: [],
-                },
-                {
-                  name: 'Gewerbe und Verwaltung',
-                  isActive: false,
-                  values: [],
-                },
-                {
-                  name: 'Andere',
-                  isActive: false,
-                  values: [],
-                },
-              ],
+              name: 'Wohnen',
+              isActive: true,
+              values: [],
+            },
+            {
+              name: 'Gewerbe und Verwaltung',
+              isActive: false,
+              values: [],
+            },
+            {
+              name: 'Andere',
+              isActive: false,
+              values: [],
             },
           ],
-          [immerable]: true,
         },
-      },
-    ];
+      ],
+      false,
+    );
 
-    const actual = selectActiveMapItemConfigurations.projector(activeMapItemsMock);
+    const actual = selectActiveMapItemConfigurations.projector([gb2ActiveMapItem]);
     const expected: ActiveMapItemConfiguration[] = [
       {
         id: 'StatGebAlterZH',
@@ -95,6 +96,6 @@ describe('selectActiveMapItemConfiguration', () => {
       },
     ];
 
-    // expect(actual).toEqual(expected);
+    expect(actual).toEqual(expected);
   });
 });
