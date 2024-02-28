@@ -770,7 +770,7 @@ export type FavoriteContent = {
    */
   opacity: number;
   /** TimeExtent of the timeslider */ // TODO gb3-645: will be used once api ready
-  timeExtent: TimeExtent | undefined;
+  timeExtent: TimeExtent[] | undefined;
   /** Selected Attributefilters */
   attributeFilters: FavouriteFilterConfiguration[] | undefined;
   /** Single layer of the map */
@@ -1063,10 +1063,6 @@ export interface VectorLayer {
   geojson: GeojsonFeatureCollection;
   /** Style definitions for features. NOTE: keys are style IDs referenced in feature 'style' property */
   styles: VectorLayerStyles;
-
-  // TODO GB3-645 remove when API is ready
-  timeExtent?: {start: string; end: string; id: string}[];
-  filterConfigurations?: {attributeFilters: FavouriteFilterConfiguration[]; id: string}[];
 }
 
 /**

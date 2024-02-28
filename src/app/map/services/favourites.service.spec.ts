@@ -20,7 +20,9 @@ import {DrawingActiveMapItem} from '../models/implementations/drawing.model';
 import {MapConstants} from '../../shared/constants/map.constants';
 import {UserDrawingLayer} from '../../shared/enums/drawing-layer.enum';
 import {SymbolizationToGb3ConverterUtils} from '../../shared/utils/symbolization-to-gb3-converter.utils';
-import {Map} from '../../shared/interfaces/topic.interface';
+import {FavouriteFilterConfiguration, FilterConfiguration, Map, TimeSliderConfiguration} from '../../shared/interfaces/topic.interface';
+import {TimeExtentUtils} from '../../shared/utils/time-extent.utils';
+import {TimeExtent} from '../interfaces/time-extent.interface';
 
 describe('FavouritesService', () => {
   let service: FavouritesService;
@@ -273,9 +275,19 @@ describe('FavouritesService', () => {
             parameter: 'FILTER_GEBART',
             filterValues: [
               {
-                isActive: false,
+                isActive: true,
                 values: ['Gebäude Wohnen'],
                 name: 'Wohnen',
+              },
+              {
+                isActive: false,
+                values: ['Gebäude Wohnen'],
+                name: 'Gewerbe und Verwaltung',
+              },
+              {
+                isActive: false,
+                values: ['Gebäude Wohnen'],
+                name: 'Andere',
               },
             ],
           },
@@ -335,6 +347,8 @@ describe('FavouritesService', () => {
           opacity: 1,
           visible: true,
           isSingleLayer: true,
+          attributeFilters: undefined,
+          timeExtent: undefined,
         },
         {
           id: 'StatGebAlterZH',
@@ -359,6 +373,30 @@ describe('FavouritesService', () => {
           opacity: 0.71,
           visible: true,
           isSingleLayer: false,
+          attributeFilters: [
+            {
+              parameter: 'FILTER_GEBART',
+              name: 'Anzeigeoptionen nach Hauptnutzung',
+              activeFilters: [
+                {
+                  name: 'Wohnen',
+                  isActive: true,
+                },
+                {
+                  name: 'Gewerbe und Verwaltung',
+                  isActive: false,
+                },
+                {
+                  name: 'Andere',
+                  isActive: false,
+                },
+              ],
+            },
+          ],
+          timeExtent: {
+            start: TimeExtentUtils.getUTCDate('1000-01-01T00:00:00.000Z'),
+            end: TimeExtentUtils.getUTCDate('2020-01-01T00:00:00.000Z'),
+          },
         },
         {
           id: 'AVfarbigZH',
@@ -383,6 +421,8 @@ describe('FavouritesService', () => {
           opacity: 1,
           visible: false,
           isSingleLayer: false,
+          timeExtent: undefined,
+          attributeFilters: undefined,
         },
       ];
 
@@ -417,6 +457,8 @@ describe('FavouritesService', () => {
           opacity: 1,
           visible: true,
           isSingleLayer: false,
+          attributeFilters: undefined,
+          timeExtent: undefined,
         },
       ];
 
@@ -434,6 +476,8 @@ describe('FavouritesService', () => {
           opacity: 1,
           visible: true,
           isSingleLayer: false,
+          attributeFilters: undefined,
+          timeExtent: undefined,
         },
         {
           id: 'FaBoFFFZH_fff',
@@ -448,6 +492,8 @@ describe('FavouritesService', () => {
           opacity: 1,
           visible: true,
           isSingleLayer: true,
+          attributeFilters: undefined,
+          timeExtent: undefined,
         },
         {
           id: 'StatGebAlterZH',
@@ -472,6 +518,30 @@ describe('FavouritesService', () => {
           opacity: 0.71,
           visible: true,
           isSingleLayer: false,
+          attributeFilters: [
+            {
+              parameter: 'FILTER_GEBART',
+              name: 'Anzeigeoptionen nach Hauptnutzung',
+              activeFilters: [
+                {
+                  name: 'Wohnen',
+                  isActive: true,
+                },
+                {
+                  name: 'Gewerbe und Verwaltung',
+                  isActive: false,
+                },
+                {
+                  name: 'Andere',
+                  isActive: false,
+                },
+              ],
+            },
+          ],
+          timeExtent: {
+            start: TimeExtentUtils.getUTCDate('1000-01-01T00:00:00.000Z'),
+            end: TimeExtentUtils.getUTCDate('2020-01-01T00:00:00.000Z'),
+          },
         },
       ];
 
@@ -499,6 +569,8 @@ describe('FavouritesService', () => {
           opacity: 1,
           visible: true,
           isSingleLayer: true,
+          timeExtent: undefined,
+          attributeFilters: undefined,
         },
       ];
 
@@ -522,6 +594,8 @@ describe('FavouritesService', () => {
           opacity: 1,
           visible: true,
           isSingleLayer: true,
+          timeExtent: undefined,
+          attributeFilters: undefined,
         },
         {
           id: 'FaBoFFFZH_fff',
@@ -536,6 +610,8 @@ describe('FavouritesService', () => {
           opacity: 1,
           visible: true,
           isSingleLayer: true,
+          timeExtent: undefined,
+          attributeFilters: undefined,
         },
         {
           id: 'StatGebAlterZH',
@@ -560,6 +636,30 @@ describe('FavouritesService', () => {
           opacity: 0.71,
           visible: true,
           isSingleLayer: false,
+          attributeFilters: [
+            {
+              parameter: 'FILTER_GEBART',
+              name: 'Anzeigeoptionen nach Hauptnutzung',
+              activeFilters: [
+                {
+                  name: 'Wohnen',
+                  isActive: true,
+                },
+                {
+                  name: 'Gewerbe und Verwaltung',
+                  isActive: false,
+                },
+                {
+                  name: 'Andere',
+                  isActive: false,
+                },
+              ],
+            },
+          ],
+          timeExtent: {
+            start: TimeExtentUtils.getUTCDate('1000-01-01T00:00:00.000Z'),
+            end: TimeExtentUtils.getUTCDate('2020-01-01T00:00:00.000Z'),
+          },
         },
       ];
 
@@ -760,6 +860,236 @@ describe('FavouritesService', () => {
 
       expect(actual).toEqual(expected);
       expect(converterSpy).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe('mapFavouriteFilterConfigurationsToFilterConfigurations', () => {
+    it('returns the filterConfigurations with the respective flags from the FavouriteFilterConfiguration', () => {
+      const attributeFilters: FavouriteFilterConfiguration[] = [
+        {
+          name: 'Anzeigeoptionen nach Hauptnutzung',
+          parameter: 'FILTER_GEBART',
+          activeFilters: [
+            {name: 'Wohnen', isActive: false},
+            {name: 'Gewerbe und Verwaltung', isActive: true},
+            {name: 'Andere', isActive: true},
+          ],
+        },
+      ];
+      const filterConfigs: FilterConfiguration[] = [
+        {
+          name: 'Anzeigeoptionen nach Hauptnutzung',
+          parameter: 'FILTER_GEBART',
+          filterValues: [
+            {name: 'Wohnen', isActive: false, values: []},
+            {name: 'Gewerbe und Verwaltung', isActive: false, values: []},
+            {name: 'Andere', isActive: false, values: []},
+          ],
+        },
+      ];
+
+      const expectedFilterConfigs: FilterConfiguration[] = [
+        {
+          name: 'Anzeigeoptionen nach Hauptnutzung',
+          parameter: 'FILTER_GEBART',
+          filterValues: [
+            {name: 'Wohnen', isActive: false, values: []},
+            {name: 'Gewerbe und Verwaltung', isActive: true, values: []},
+            {name: 'Andere', isActive: true, values: []},
+          ],
+        },
+      ];
+
+      const actualFilterConfigs = service.mapFavouriteFilterConfigurationsToFilterConfigurations(
+        filterConfigs,
+        attributeFilters,
+        'Gebäudealter',
+      );
+      expect(actualFilterConfigs).toEqual(expectedFilterConfigs);
+    });
+  });
+
+  describe('throwErrorIfFilterConfigurationChanged', () => {
+    it('throws a FavouriteIsInvalidError if the parameter in the Favourite does not exist anymore', () => {
+      const attributeFilters: FavouriteFilterConfiguration[] = [
+        {
+          name: 'Anzeigeoptionen nach Hauptnutzung',
+          parameter: 'FILTER_GEBART_OLD',
+          activeFilters: [
+            {name: 'Wohnen', isActive: false},
+            {name: 'Gewerbe und Verwaltung', isActive: false},
+            {name: 'Andere', isActive: false},
+          ],
+        },
+      ];
+      const filterConfigs: FilterConfiguration[] = [
+        {
+          name: 'Anzeigeoptionen nach Hauptnutzung',
+          parameter: 'FILTER_GEBART',
+          filterValues: [
+            {name: 'Wohnen', isActive: false, values: []},
+            {name: 'Gewerbe und Verwaltung', isActive: false, values: []},
+            {name: 'Andere', isActive: false, values: []},
+          ],
+        },
+      ];
+
+      const expectedError = new FavouriteIsInvalid(
+        `Die Filterkonfiguration mit dem Parameter '${attributeFilters[0].name} (${attributeFilters[0].parameter})' existiert nicht mehr auf der Karte 'Gebäudealter'.`,
+      );
+
+      expect(() => service.throwErrorIfFilterConfigurationChanged(attributeFilters, filterConfigs, 'Gebäudealter')).toThrow(expectedError);
+    });
+    it('throws a FavouriteIsInvalidError if the name of a Filter in the Favourite does not exist anymore', () => {
+      const attributeFilters: FavouriteFilterConfiguration[] = [
+        {
+          name: 'Anzeigeoptionen nach Hauptnutzung',
+          parameter: 'FILTER_GEBART',
+          activeFilters: [
+            {name: 'Wohngebäude', isActive: false},
+            {name: 'Gewerbe und Verwaltung', isActive: false},
+            {name: 'Andere', isActive: false},
+          ],
+        },
+      ];
+      const filterConfigs: FilterConfiguration[] = [
+        {
+          name: 'Anzeigeoptionen nach Hauptnutzung',
+          parameter: 'FILTER_GEBART',
+          filterValues: [
+            {name: 'Wohnen', isActive: false, values: []},
+            {name: 'Gewerbe und Verwaltung', isActive: false, values: []},
+            {name: 'Andere', isActive: false, values: []},
+          ],
+        },
+      ];
+
+      const expectedError = new FavouriteIsInvalid(
+        `Der Filter mit dem Namen 'Wohngebäude' existiert nicht mehr in der Filterkonfiguration '${attributeFilters[0].name}' der Karte 'Gebäudealter'.`,
+      );
+
+      expect(() => service.throwErrorIfFilterConfigurationChanged(attributeFilters, filterConfigs, 'Gebäudealter')).toThrow(expectedError);
+    });
+    it('throws a FavouriteIsInvalidError if a new filterConfiguration has been added', () => {
+      const attributeFilters: FavouriteFilterConfiguration[] = [
+        {
+          name: 'Anzeigeoptionen nach Hauptnutzung',
+          parameter: 'FILTER_GEBART',
+          activeFilters: [
+            {name: 'Wohnen', isActive: false},
+            {name: 'Gewerbe und Verwaltung', isActive: false},
+            {name: 'Andere', isActive: false},
+          ],
+        },
+      ];
+      const filterConfigs: FilterConfiguration[] = [
+        {
+          name: 'Anzeigeoptionen nach Hauptnutzung',
+          parameter: 'FILTER_GEBART',
+          filterValues: [
+            {name: 'Wohnen', isActive: false, values: []},
+            {name: 'Gewerbe und Verwaltung', isActive: false, values: []},
+            {name: 'Andere', isActive: false, values: []},
+          ],
+        },
+        {
+          name: 'Anzeigeoptionen nach Hauptnutzung 2',
+          parameter: 'FILTER_GEBART_2',
+          filterValues: [
+            {name: 'Wohnen', isActive: false, values: []},
+            {name: 'Gewerbe und Verwaltung', isActive: false, values: []},
+            {name: 'Andere', isActive: false, values: []},
+          ],
+        },
+      ];
+
+      const expectedError = new FavouriteIsInvalid(
+        `Eine neue Filterkonfiguration mit dem Parameter '${filterConfigs[1].name} (${filterConfigs[1].parameter})' wurde zur Karte 'Gebäudealter' hinzugefügt.`,
+      );
+
+      expect(() => service.throwErrorIfFilterConfigurationChanged(attributeFilters, filterConfigs, 'Gebäudealter')).toThrow(expectedError);
+    });
+    it('throws a FavouriteIsInvalidError if a new filter has been added', () => {
+      const attributeFilters: FavouriteFilterConfiguration[] = [
+        {
+          name: 'Anzeigeoptionen nach Hauptnutzung',
+          parameter: 'FILTER_GEBART',
+          activeFilters: [
+            {name: 'Wohnen', isActive: false},
+            {name: 'Gewerbe und Verwaltung', isActive: false},
+            {name: 'Andere', isActive: false},
+          ],
+        },
+      ];
+      const filterConfigs: FilterConfiguration[] = [
+        {
+          name: 'Anzeigeoptionen nach Hauptnutzung',
+          parameter: 'FILTER_GEBART',
+          filterValues: [
+            {name: 'Wohnen', isActive: false, values: []},
+            {name: 'Gewerbe und Verwaltung', isActive: false, values: []},
+            {name: 'Andere', isActive: false, values: []},
+            {name: 'Sonstige', isActive: false, values: []},
+          ],
+        },
+      ];
+
+      const expectedError = new FavouriteIsInvalid(
+        `Ein neuer Filter mit dem Namen '${filterConfigs[0].filterValues[3].name}' wurde zur Filterkonfiguration '${filterConfigs[0].name}' der Karte 'Gebäudealter' hinzugefügt.`,
+      );
+
+      expect(() => service.throwErrorIfFilterConfigurationChanged(attributeFilters, filterConfigs, 'Gebäudealter')).toThrow(expectedError);
+    });
+  });
+  describe('throwErrorIfTimeSliderInvalid', () => {
+    it('throws a FavouriteIsInvalidError if the timeSliderConfiguration for a parameter configuration is invalid', () => {
+      const timeExtent: TimeExtent = {
+        start: TimeExtentUtils.getUTCDate('0999-01-01T00:00:00.000Z'),
+        end: TimeExtentUtils.getUTCDate('2020-01-01T00:00:00.000Z'),
+      };
+      const timeSliderConfiguration: TimeSliderConfiguration = {
+        name: 'Aktueller Gebäudebestand nach Baujahr',
+        dateFormat: 'YYYY',
+        minimumDate: '1000',
+        maximumDate: '2020',
+        alwaysMaxRange: false,
+        sourceType: 'parameter',
+        source: {
+          endRangeParameter: 'FILTER_BIS',
+          startRangeParameter: 'FILTER_VON',
+          layerIdentifiers: ['geb-alter_wohnen', 'geb-alter_grau', 'geb-alter_2'],
+        },
+      };
+
+      const expectedError = new FavouriteIsInvalid(`Die Timeslider-Konfiguration der Karte 'Gebäudealter' ist ungültig.`);
+
+      expect(() => service.throwErrorIfTimeSliderInvalid(timeSliderConfiguration, timeExtent, 'Gebäudealter')).toThrow(expectedError);
+    });
+    it('throws a FavouriteIsInvalidError if the timeSliderConfiguration for a layer configuration is invalid', () => {
+      const timeExtent: TimeExtent = {
+        start: TimeExtentUtils.getUTCDate('2016-01-01T00:00:00.000Z'),
+        end: TimeExtentUtils.getUTCDate('2020-01-01T00:00:00.000Z'),
+      };
+      const timeSliderConfiguration: TimeSliderConfiguration = {
+        name: 'Jahr',
+        dateFormat: 'YYYY',
+        minimumDate: '2014',
+        maximumDate: '2021',
+        alwaysMaxRange: false,
+        sourceType: 'layer',
+        source: {
+          layers: [
+            {date: '2014', layerName: 'ortho_2014'},
+            {date: '2015', layerName: 'ortho_2015'},
+            {date: '2018', layerName: 'ortho_2018'},
+            {date: '2020', layerName: 'ortho_2020'},
+            {date: '2021', layerName: 'ortho_2021'},
+          ],
+        },
+      };
+
+      const expectedError = new FavouriteIsInvalid(`Die Timeslider-Konfiguration der Karte 'Orthofoto' ist ungültig.`);
+      expect(() => service.throwErrorIfTimeSliderInvalid(timeSliderConfiguration, timeExtent, 'Orthofoto')).toThrow(expectedError);
     });
   });
 });

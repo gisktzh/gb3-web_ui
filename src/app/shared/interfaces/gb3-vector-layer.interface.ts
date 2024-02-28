@@ -1,6 +1,5 @@
 import {SupportedGeometry} from '../types/SupportedGeometry.type';
 import {AbstractGb3Layer} from './abstract-gb3-layer.interface';
-import {ActiveMapItemConfiguration} from './active-map-item-configuration.interface';
 
 export interface Gb3GeoJsonFeature {
   type: 'Feature';
@@ -49,6 +48,4 @@ export interface Gb3VectorLayer extends AbstractGb3Layer {
    * @example {"a":{"pointRadius":15,"fillColor":"#ee3333","fillOpacity":0,"strokeColor":"#ee3333","strokeWidth":3}}
    */
   styles: Gb3VectorLayerStyle;
-  //Todo: remove once the API is ready to read this data from the content
-  content: ActiveMapItemConfiguration[] | undefined;
 }

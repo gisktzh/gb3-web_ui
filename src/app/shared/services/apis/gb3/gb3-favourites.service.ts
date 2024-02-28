@@ -57,11 +57,10 @@ export class Gb3FavouritesService extends Gb3ApiService {
       content: data.content.map((content) => {
         return {
           ...content,
-          timeExtent: data.drawings.timeExtent
+          timeExtent: content.timeExtent
             ? {
-                //TODO GB3-645: refactor once TimeExtent is sent in content.
-                start: TimeExtentUtils.getUTCDate(data.drawings.timeExtent.find((timeExtent) => timeExtent.id === content.mapId)?.start),
-                end: TimeExtentUtils.getUTCDate(data.drawings.timeExtent.find((timeExtent) => timeExtent.id === content.mapId)?.end),
+                start: TimeExtentUtils.getUTCDate(content.timeExtent[0].start.toString()),
+                end: TimeExtentUtils.getUTCDate(content.timeExtent[0].end.toString()),
               }
             : undefined,
         };
@@ -76,19 +75,9 @@ export class Gb3FavouritesService extends Gb3ApiService {
       north: baseConfig.center.y,
       scaledenom: baseConfig.scale,
       basemap: baseConfig.basemap,
-      drawings: {
-        //TODO: Remove once timeExtent sent in content
-        ...payload.drawings,
-        timeExtent: payload.content.map((activeMapItemConfiguration) => {
-          return activeMapItemConfiguration.timeExtent
-            ? {
-                start: activeMapItemConfiguration.timeExtent.start,
-                end: activeMapItemConfiguration.timeExtent.end,
-                id: activeMapItemConfiguration.mapId,
-              }
-            : undefined;
-        }),
-      },
+      content: payload.content.map((c) => {
+        return {...c, timeExtent: [c.timeExtent]};
+      }),
     } as unknown as PersonalFavoriteNew; // todo: typecasts once API is fixed
   }
 }

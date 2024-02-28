@@ -18,6 +18,7 @@ import {DrawingActiveMapItem} from '../../../map/models/implementations/drawing.
 import {MAP_SERVICE} from '../../../app.module';
 import {MapService} from '../../../map/interfaces/map.service';
 import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
+import {TimeExtentUtils} from '../../../shared/utils/time-extent.utils';
 
 @Injectable()
 export class AuthStatusEffects {
@@ -56,7 +57,27 @@ export class AuthStatusEffects {
       map(() => {
         const shareLinkItemJson = this.sessionStorageService.get('shareLinkItem');
         this.sessionStorageService.remove('shareLinkItem');
-        return shareLinkItemJson ? (JSON.parse(shareLinkItemJson) as ShareLinkItem) : undefined;
+        let shareLinkItemFixed = shareLinkItemJson ? (JSON.parse(shareLinkItemJson) as ShareLinkItem) : undefined;
+        if (shareLinkItemFixed) {
+          shareLinkItemFixed = {
+            ...shareLinkItemFixed,
+            content: shareLinkItemFixed.content.map((content) => {
+              return {
+                ...content,
+                timeExtent: content.timeExtent
+                  ? {
+                      start: TimeExtentUtils.getUTCDate(content.timeExtent?.start.toString()),
+                      end: TimeExtentUtils.getUTCDate(content.timeExtent?.end.toString()),
+                    }
+                  : undefined,
+                attributeFilters: content.attributeFilters ?? undefined,
+              };
+            }),
+          };
+        }
+
+        // return shareLinkItemJson ? (JSON.parse(shareLinkItemJson) as ShareLinkItem) : undefined;
+        return shareLinkItemFixed;
       }),
       filter((shareLinkItem): shareLinkItem is ShareLinkItem => !!shareLinkItem),
       map((shareLinkItem) => {

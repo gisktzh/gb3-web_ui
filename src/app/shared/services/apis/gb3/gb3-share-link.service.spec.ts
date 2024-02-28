@@ -35,6 +35,8 @@ describe('Gb3ShareLinkService', () => {
         visible: true,
         opacity: 1,
         isSingleLayer: false,
+        timeExtent: undefined,
+        attributeFilters: undefined,
         layers: [
           {
             id: 113561,
@@ -58,6 +60,8 @@ describe('Gb3ShareLinkService', () => {
         visible: true,
         opacity: 1,
         isSingleLayer: false,
+        timeExtent: undefined,
+        attributeFilters: undefined,
         layers: [
           {
             id: 113561,
@@ -82,6 +86,8 @@ describe('Gb3ShareLinkService', () => {
         visible: true,
         opacity: 1,
         isSingleLayer: false,
+        timeExtent: undefined,
+        attributeFilters: undefined,
         layers: [
           {
             id: 113561,

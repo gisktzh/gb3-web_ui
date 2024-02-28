@@ -12,7 +12,6 @@ import {HttpClient} from '@angular/common/http';
 import {BasemapConfigService} from '../../../../map/services/basemap-config.service';
 import {FavouritesService} from '../../../../map/services/favourites.service';
 import {MapRestoreItem} from '../../../interfaces/map-restore-item.interface';
-import {TimeExtentUtils} from '../../../utils/time-extent.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -99,7 +98,6 @@ export class Gb3ShareLinkService extends Gb3ApiService {
         type: drawings.geojson.type,
         features: castFeatures,
       },
-      content: undefined, // TODO gb3-645: remove once api ready
     };
   }
 
@@ -109,20 +107,7 @@ export class Gb3ShareLinkService extends Gb3ApiService {
       center: {x: sharedFavorite.east, y: sharedFavorite.north},
       scale: sharedFavorite.scaledenom,
       content: sharedFavorite.content.map((content) => {
-        return {
-          ...content,
-          timeExtent: sharedFavorite.drawings.timeExtent
-            ? {
-                //TODO GB3-645: refactor once TimeExtent is sent in content.
-                start: TimeExtentUtils.getUTCDate(
-                  sharedFavorite.drawings.timeExtent.find((timeExtent) => timeExtent.id === content.mapId)?.start,
-                ),
-                end: TimeExtentUtils.getUTCDate(
-                  sharedFavorite.drawings.timeExtent.find((timeExtent) => timeExtent.id === content.mapId)?.end,
-                ),
-              }
-            : undefined,
-        };
+        return {...content, timeExtent: content.timeExtent ? content.timeExtent[0] : undefined};
       }),
       drawings: this.mapVectorLayerToGb3VectorLayer(sharedFavorite.drawings),
       measurements: this.mapVectorLayerToGb3VectorLayer(sharedFavorite.measurements),
@@ -135,21 +120,11 @@ export class Gb3ShareLinkService extends Gb3ApiService {
       east: shareLink.center.x,
       north: shareLink.center.y,
       scaledenom: shareLink.scale,
-      content: shareLink.content,
-      drawings: {
-        //TODO: Remove once timeExtent sent in content
-        ...shareLink.drawings,
-        timeExtent: shareLink.content.map((activeMapItemConfiguration) => {
-          return activeMapItemConfiguration.timeExtent
-            ? {
-                start: activeMapItemConfiguration.timeExtent.start,
-                end: activeMapItemConfiguration.timeExtent.end,
-                id: activeMapItemConfiguration.mapId,
-              }
-            : undefined;
-        }),
-      },
+      content: shareLink.content.map((content) => {
+        return {...content, timeExtent: content.timeExtent ? [content.timeExtent] : undefined};
+      }),
+      drawings: shareLink.drawings,
       measurements: shareLink.measurements,
-    } as unknown as SharedFavoriteNew; // TODO GB3-645 remove
+    };
   }
 }

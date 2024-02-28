@@ -230,7 +230,7 @@ export class FavouritesService implements OnDestroy {
     );
   }
 
-  private mapFavouriteFilterConfigurationsToFilterConfigurations(
+  public mapFavouriteFilterConfigurationsToFilterConfigurations(
     filterConfigurations: FilterConfiguration[],
     attributeFilters: FavouriteFilterConfiguration[] | undefined,
     mapTitle: string,
@@ -254,7 +254,7 @@ export class FavouritesService implements OnDestroy {
     });
   }
 
-  private throwErrorIfFilterConfigurationChanged(
+  public throwErrorIfFilterConfigurationChanged(
     attributeFilters: FavouriteFilterConfiguration[],
     filterConfigs: FilterConfiguration[],
     mapTitle: string,
@@ -304,7 +304,7 @@ export class FavouritesService implements OnDestroy {
     });
   }
 
-  private throwErrorIfTimeSliderInvalid(timeSliderConfiguration: TimeSliderConfiguration, timeExtent: TimeExtent, mapTitle: string) {
+  public throwErrorIfTimeSliderInvalid(timeSliderConfiguration: TimeSliderConfiguration, timeExtent: TimeExtent, mapTitle: string) {
     switch (timeSliderConfiguration.sourceType) {
       case 'parameter':
         {
@@ -318,7 +318,8 @@ export class FavouritesService implements OnDestroy {
         break;
       case 'layer': {
         const selectedYearExists = (timeSliderConfiguration.source as TimeSliderLayerSource).layers.some(
-          (layer) => TimeExtentUtils.getUTCDate(layer.date) === timeExtent.start,
+          (layer) =>
+            TimeExtentUtils.getUTCDate(layer.date).toString() === TimeExtentUtils.getUTCDate(timeExtent.start.toString()).toString(),
         );
         if (!selectedYearExists) {
           throw new FavouriteIsInvalid(`Die Timeslider-Konfiguration der Karte '${mapTitle}' ist ungültig.`);
