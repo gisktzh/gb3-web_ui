@@ -1,5 +1,5 @@
 import {provideMockActions} from '@ngrx/effects/testing';
-import {fakeAsync, TestBed, tick} from '@angular/core/testing';
+import {fakeAsync, flush, TestBed} from '@angular/core/testing';
 import {Observable, of} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
@@ -28,6 +28,7 @@ import {PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.in
 import {MapConstants} from '../../../shared/constants/map.constants';
 import {selectIsMapServiceInitialized} from '../reducers/map-config.reducer';
 import {DrawingActions} from '../actions/drawing.actions';
+import {selectNonTemporaryActiveMapItems} from '../selectors/active-map-items.selector';
 
 describe('ActiveMapItemEffects', () => {
   let actions$: Observable<Action>;
@@ -90,6 +91,36 @@ describe('ActiveMapItemEffects', () => {
     });
   });
 
+  describe('removeTemporaryActiveMapItem$', () => {
+    it('dispatches ActiveMapItemActions.removeActiveMapItem if the active map item is not yet added to the map', (done: DoneFn) => {
+      const expectedId = 'mapMock';
+      const activeMapItem = createGb2WmsMapItemMock(expectedId, undefined, undefined, undefined, undefined, true);
+
+      store.overrideSelector(selectNonTemporaryActiveMapItems, []);
+
+      const expectedAction = ActiveMapItemActions.removeActiveMapItem({activeMapItem});
+      actions$ = of(ActiveMapItemActions.removeTemporaryActiveMapItem({activeMapItem}));
+      effects.removeTemporaryActiveMapItem$.subscribe((action) => {
+        expect(action).toEqual(expectedAction);
+        done();
+      });
+    });
+
+    it('does not dispatch anything if the item is already added as permanent item', fakeAsync(async () => {
+      const expectedId = 'mapMock';
+      const temporaryActiveMapItem = createGb2WmsMapItemMock(expectedId, undefined, undefined, undefined, undefined, true);
+      const activeMapItem = createGb2WmsMapItemMock(expectedId);
+
+      store.overrideSelector(selectNonTemporaryActiveMapItems, [activeMapItem]);
+
+      let actualAction;
+      actions$ = of(ActiveMapItemActions.removeTemporaryActiveMapItem({activeMapItem: temporaryActiveMapItem}));
+      effects.removeTemporaryActiveMapItem$.subscribe((action) => (actualAction = action));
+      flush();
+      expect(actualAction).toBeUndefined();
+    }));
+  });
+
   describe('removeAllMapItems$', () => {
     it('removes all map items using the map service, no further action dispatch', (done: DoneFn) => {
       const mapServiceSpy = spyOn(mapService, 'removeAllMapItems').and.callThrough();
@@ -147,7 +178,7 @@ describe('ActiveMapItemEffects', () => {
       let actualAction;
       actions$ = of(ActiveMapItemActions.removeActiveMapItem({activeMapItem: activeMapItems[1]}));
       effects.cancelToolAfterRemovingAllCorrespondingMapItems$.subscribe((action) => (actualAction = action));
-      tick();
+      flush();
 
       expect(actualAction).toBeUndefined();
     }));

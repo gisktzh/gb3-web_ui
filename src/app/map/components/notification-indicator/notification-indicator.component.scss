@@ -1,0 +1,12 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.notification-indicator {
+  background: ktzh-variables.$zh-red;
+  width: 8px;
+  height: 8px;
+  position: absolute;
+  display: block;
+  top: 10px;
+  right: 10px;
+  border-radius: 50%;
+}

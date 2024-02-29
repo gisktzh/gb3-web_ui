@@ -9,10 +9,12 @@ import {selectAvailableSpecialSearchIndexes} from '../../map/selectors/available
 import {SearchType} from '../../../shared/types/search.type';
 import {selectItems} from '../../data-catalogue/reducers/data-catalogue.reducer';
 import {SearchIndexType} from '../../../shared/configs/search-index.config';
-import {OverviewFaqItem, OverviewMetadataItem} from '../../../shared/models/overview-search-result.model';
+import {OverviewFaqItem, OverviewLinkItem, OverviewMetadataItem} from '../../../shared/models/overview-search-result.model';
 import {selectFaq} from '../../support/reducers/support-content.reducer';
 import {selectMaps} from '../../map/selectors/maps.selector';
 import {OverviewSearchResultDisplayItem} from '../../../shared/interfaces/overview-search-resuilt-display.interface';
+import {selectUsefulInformationLinksWithDynamicUrls} from '../../support/selectors/useful-information-links.selector';
+import {FilterUtils} from '../../../shared/utils/filter.utils';
 
 export const selectFilteredSearchApiResultMatches = createSelector(
   selectSearchApiResultMatches,
@@ -58,9 +60,7 @@ export const selectFilteredLayerCatalogMaps = createSelector(
   selectMaps,
   selectFilterGroups,
   (searchTerm, maps, filterGroups): Map[] => {
-    const filters = filterGroups.flatMap((filterGroup) => filterGroup.filters);
-    const isNoFilterActive = filters.every((filter) => !filter.isActive); // no filter active means all results are shown (all filters active === no filter active)
-    const isMapFilterActive = isNoFilterActive || (filters.find((filter) => filter.type === 'maps')?.isActive ?? false);
+    const isMapFilterActive = FilterUtils.isSearchFilterActive(filterGroups, 'maps');
     const lowerCasedFilterString = searchTerm.toLowerCase();
     if (!isMapFilterActive || lowerCasedFilterString === '') {
       return [];
@@ -117,9 +117,7 @@ export const selectFilteredFaqItems = createSelector(
   selectFaq,
   selectFilterGroups,
   (searchTerm, faqCollections, filterGroups): OverviewSearchResultDisplayItem[] => {
-    const filters = filterGroups.flatMap((filterGroup) => filterGroup.filters);
-    const isNoFilterActive = filters.every((filter) => !filter.isActive); // no filter active means all results are shown (all filters active === no filter active)
-    const isFaqFilterActive = isNoFilterActive || (filters.find((filter) => filter.type === 'faqs')?.isActive ?? false);
+    const isFaqFilterActive = FilterUtils.isSearchFilterActive(filterGroups, 'faqs');
     const lowerCasedFilterString = searchTerm.toLowerCase();
     if (!isFaqFilterActive || lowerCasedFilterString === '') {
       return [];
@@ -134,5 +132,26 @@ export const selectFilteredFaqItems = createSelector(
         );
       })
       .map((faqItem) => new OverviewFaqItem(faqItem.uuid, faqItem.question, faqItem.answer).createDisplayRepresentationForList());
+  },
+);
+
+export const selectFilteredUsefulLinks = createSelector(
+  selectTerm,
+  selectUsefulInformationLinksWithDynamicUrls,
+  selectFilterGroups,
+  (searchTerm, usefulLinks, filterGroups): OverviewSearchResultDisplayItem[] => {
+    const isUsefulLinksFilterActive = FilterUtils.isSearchFilterActive(filterGroups, 'usefulLinks');
+    const lowerCasedFilterString = searchTerm.toLowerCase();
+    if (!isUsefulLinksFilterActive || lowerCasedFilterString === '') {
+      return [];
+    }
+
+    return usefulLinks
+      .flatMap((usefulLink) => usefulLink.links)
+      .filter((link) => {
+        // Return true if the map title OR one of the keywords includes the filter string
+        return link.title?.toLowerCase().includes(lowerCasedFilterString);
+      })
+      .map((linkItem) => new OverviewLinkItem(linkItem.title ?? linkItem.href, linkItem.href).createDisplayRepresentationForList());
   },
 );

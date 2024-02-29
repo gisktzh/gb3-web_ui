@@ -5,7 +5,7 @@
       <th
         (mouseenter)="onFeatureHoverStart(tableHeader.fid)"
         (mouseleave)="onFeatureHoverEnd(tableHeader.fid)"
-        (click)="toggleHighlightForFeature(tableHeader.fid, highlightButton)"
+        (click)="toggleHighlightForFeature(tableHeader.fid, highlightButton, tableHeader.hasGeometry)"
         *ngFor="let tableHeader of tableHeaders"
         [featureId]="tableHeader.fid"
         [layerId]="layer.layer"
@@ -16,7 +16,7 @@
       >
         <div class="feature-info-content__table__row__column__wrapper">
           {{ tableHeader.displayValue.split(' ')[1] }}
-          <mat-radio-button #highlightButton labelPosition="before"> Markieren: </mat-radio-button>
+          <mat-radio-button [disabled]="!tableHeader.hasGeometry" #highlightButton labelPosition="before"> Markieren: </mat-radio-button>
         </div>
       </th>
     </tr>

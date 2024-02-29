@@ -1,15 +1,29 @@
-@use '../../../../styles/functions/helper.function' as functions;
-@use '../../../../styles/variables/ktzh-design-variables' as ktzh-variables;
-@use '../../../../styles/mixins/helpers.mixin' as helper-mixins;
+@use 'functions/helper.function' as functions;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'mixins/helpers.mixin' as helper-mixins;
+@use 'mixins/material.mixin' as mat-mixins;
 
 .overview-search-result-item {
   display: flex;
   padding: 12px;
-  justify-content: space-between;
   align-items: center;
   gap: 12px;
 
+  .overview-search-result-item__icon {
+    flex-grow: 0;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    background-color: ktzh-variables.$zh-light-grey;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 2px;
+    @include mat-mixins.mat-icon-override-size(26px);
+  }
+
   .overview-search-result-item__content {
+    flex-grow: 2;
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -17,6 +31,26 @@
 
     .overview-search-result-item__content__title {
       font-family: ktzh-variables.$zh-font-family-bold;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      height: 26px;
+
+      .overview-search-result-item__content__title__text {
+        @include helper-mixins.single-line-text();
+      }
+
+      .overview-search-result-item__content__title__flag {
+        background-color: ktzh-variables.$zh-light-grey;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-shrink: 0;
+        @include mat-mixins.mat-icon-custom-svg-size(16px);
+      }
     }
 
     .overview-search-result-item__content__details {
@@ -43,8 +77,18 @@
     }
   }
 
-  .overview-search-result-item__link {
+  .overview-search-result-item__link__wrapper {
+    flex-grow: 0;
+    flex-shrink: 0;
     background-color: ktzh-variables.$zh-light-grey;
     border-radius: 50%;
+
+    .overview-search-result-item__link__wrapper__link {
+      .overview-search-result-item__link__wrapper__link__icon {
+        &--external {
+          rotate: -45deg;
+        }
+      }
+    }
   }
 }

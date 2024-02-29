@@ -8,6 +8,7 @@ import {ElevationProfileResponse} from '../../../models/swisstopo-api-generated.
 import {LineString} from 'geojson';
 import {MinimalGeometriesUtils} from '../../../../testing/map-testing/minimal-geometries.utils';
 import {ElevationProfileData, ElevationProfileDataPoint, ElevationProfileStatistics} from '../../../interfaces/elevation-profile.interface';
+import {provideMockStore} from '@ngrx/store/testing';
 
 describe('SwisstopoApiService', () => {
   let service: SwisstopoApiService;
@@ -16,6 +17,7 @@ describe('SwisstopoApiService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
+      providers: [provideMockStore()],
     });
     service = TestBed.inject(SwisstopoApiService);
     httpClient = TestBed.inject(HttpClient);

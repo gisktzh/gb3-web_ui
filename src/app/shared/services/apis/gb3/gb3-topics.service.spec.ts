@@ -10,6 +10,7 @@ import {FilterConfiguration, TopicsResponse, WmsFilterValue} from '../../../inte
 import {LegendResponse} from '../../../interfaces/legend.interface';
 import {QueryTopic} from '../../../interfaces/query-topic.interface';
 import {FeatureInfoResponse} from '../../../interfaces/feature-info.interface';
+import {provideMockStore} from '@ngrx/store/testing';
 
 describe('Gb3TopicsService', () => {
   let service: Gb3TopicsService;
@@ -17,6 +18,7 @@ describe('Gb3TopicsService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
+      providers: [provideMockStore()],
     });
     service = TestBed.inject(Gb3TopicsService);
   });
@@ -626,25 +628,7 @@ describe('Gb3TopicsService', () => {
                       },
                     ],
                     bbox: [2676224.6939999983, 1241584.1049999967, 2689665.811999999, 1254306.2330000028],
-                    geometry: {
-                      type: 'MultiPolygon',
-                      crs: {
-                        type: 'name',
-                        properties: {
-                          name: 'EPSG:2056',
-                        },
-                      },
-                      coordinates: [
-                        [
-                          [
-                            [2680344.89, 1254235.87],
-                            [2680364.91, 1254226.92],
-                            [2680381.62, 1254221.95],
-                            [2680344.89, 1254235.87],
-                          ],
-                        ],
-                      ],
-                    },
+                    geometry: undefined,
                   },
                 ],
               },
@@ -716,7 +700,6 @@ describe('Gb3TopicsService', () => {
                           },
                         },
                       ],
-                      bbox: [2682671.789999999, 1247866.0890000015, 2682753.579, 1247937.0270000026],
                       geometry: {
                         type: 'MultiPolygon',
                         coordinates: [
@@ -767,7 +750,6 @@ describe('Gb3TopicsService', () => {
                           value: '2159.843540479304',
                         },
                       ],
-                      bbox: [2682674.557, 1247872.6230000034, 2682747.420000002, 1247933.7089999989],
                       geometry: {
                         type: 'MultiPolygon',
                         coordinates: [
@@ -806,21 +788,7 @@ describe('Gb3TopicsService', () => {
                           value: '11.12.2023',
                         },
                       ],
-                      bbox: [2676224.6939999983, 1241584.1049999967, 2689665.811999999, 1254306.2330000028],
-                      geometry: {
-                        type: 'MultiPolygon',
-                        coordinates: [
-                          [
-                            [
-                              [2680344.89, 1254235.87],
-                              [2680364.91, 1254226.92],
-                              [2680381.62, 1254221.95],
-                              [2680344.89, 1254235.87],
-                            ],
-                          ],
-                        ],
-                        srs: 2056,
-                      },
+                      geometry: undefined,
                     },
                   ],
                 },

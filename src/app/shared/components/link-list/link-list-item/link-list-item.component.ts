@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {LinkableElement} from '../../../interfaces/linkable-element.interface';
+import {LinkObject} from '../../../interfaces/link-object.interface';
 
 @Component({
   selector: 'link-list-item',
@@ -7,5 +7,5 @@ import {LinkableElement} from '../../../interfaces/linkable-element.interface';
   styleUrls: ['./link-list-item.component.scss'],
 })
 export class LinkListItemComponent {
-  @Input() public links: LinkableElement[] = [];
+  @Input() public links: LinkObject[] = [];
 }

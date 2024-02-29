@@ -11,8 +11,7 @@ export interface FeatureInfoResultFeatureField {
 interface FeatureInfoResultFeature {
   fid: number;
   fields: FeatureInfoResultFeatureField[];
-  bbox: number[];
-  geometry: GeometryWithSrs;
+  geometry: GeometryWithSrs | undefined;
 }
 
 export interface FeatureInfoResultLayer extends HasMetaDataLink {

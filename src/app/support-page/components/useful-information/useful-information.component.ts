@@ -1,8 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {Observable, Subscription, tap} from 'rxjs';
+import {Subscription, tap} from 'rxjs';
 import {LinksGroup} from '../../../shared/interfaces/links-group.interface';
-import {selectLinks} from '../../../state/support/reducers/support-content.reducer';
+import {selectUsefulInformationLinksWithDynamicUrls} from '../../../state/support/selectors/useful-information-links.selector';
 
 @Component({
   selector: 'useful-information',
@@ -10,8 +10,8 @@ import {selectLinks} from '../../../state/support/reducers/support-content.reduc
   styleUrls: ['./useful-information.component.scss'],
 })
 export class UsefulInformationComponent implements OnInit, OnDestroy {
-  public usefulLinksGroups: LinksGroup[] = [];
-  private readonly usefulLinksGroups$: Observable<LinksGroup[]> = this.store.select(selectLinks);
+  public usefulInformationLinksGroups: LinksGroup[] = [];
+  private readonly usefulInformationLinksGroups$ = this.store.select(selectUsefulInformationLinksWithDynamicUrls);
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(private readonly store: Store) {}
@@ -26,13 +26,7 @@ export class UsefulInformationComponent implements OnInit, OnDestroy {
 
   private initSubscriptions() {
     this.subscriptions.add(
-      this.usefulLinksGroups$
-        .pipe(
-          tap((usefulLinks) => {
-            this.usefulLinksGroups = usefulLinks;
-          }),
-        )
-        .subscribe(),
+      this.usefulInformationLinksGroups$.pipe(tap((linksGroups) => (this.usefulInformationLinksGroups = linksGroups))).subscribe(),
     );
   }
 }

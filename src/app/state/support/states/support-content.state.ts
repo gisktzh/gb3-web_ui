@@ -1,7 +1,8 @@
 import {FaqCollection} from '../../../shared/interfaces/faq.interface';
-import {LinksGroup} from '../../../shared/interfaces/links-group.interface';
+import {AbstractLinksGroup, LinksGroup} from '../../../shared/interfaces/links-group.interface';
 
 export interface SupportContentState {
   faq: FaqCollection[];
-  links: LinksGroup[];
+  additionalInformationLinks: LinksGroup[];
+  usefulInformationLinks: AbstractLinksGroup[];
 }

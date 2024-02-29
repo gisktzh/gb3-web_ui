@@ -2,19 +2,12 @@
   <map-rotation-button [rotation]="rotation"></map-rotation-button>
   <div class="coordinate-scale-inputs__coordinate">
     <data-input>
-      <input (change)="this.setMapCenter($event)" [value]="this.mapCenter" class="coordinate-scale-inputs__input" type="text" />
+      <input (change)="setMapCenter($event)" [(ngModel)]="mapCenterInput" class="coordinate-scale-inputs__input" type="text" />
     </data-input>
   </div>
   <div class="coordinate-scale-inputs__scale">
     <data-input prefix="1:">
-      <input
-        (change)="this.setScale($event)"
-        [valueAsNumber]="this.scale"
-        class="coordinate-scale-inputs__input"
-        [max]="this.maxScale"
-        [min]="this.minScale"
-        type="number"
-      />
+      <input (change)="setScale($event)" [(ngModel)]="scaleInput" class="coordinate-scale-inputs__input" type="text" />
     </data-input>
   </div>
 </div>

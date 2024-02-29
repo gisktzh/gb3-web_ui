@@ -6,17 +6,18 @@
   padding: 12px;
   height: 46px;
   overflow: hidden;
+  gap: 12px;
 
   .search-result-entry-map__image {
-    height: 32px;
-    width: 32px;
+    height: 44px;
+    width: 44px;
     align-self: center;
-    margin-right: 8px;
     border-radius: 4px;
   }
 
   .search-result-entry-map__title {
     @include mixins.single-line-text;
+    font-family: ktzh-variables.$zh-font-family-bold;
     margin-right: auto;
     margin-top: auto;
     margin-bottom: auto;

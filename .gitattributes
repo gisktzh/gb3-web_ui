@@ -1,0 +1,2 @@
+.husky/commit-msg eol=lf
+.husky/pre-commit eol=lf

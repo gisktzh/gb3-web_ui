@@ -268,10 +268,12 @@ export class MapUiEffects {
     );
   });
 
-  public clearSearchTermAfterClosingBottomSheet$ = createEffect(() => {
+  public closeBottomSheetAfterSelectingSearchResult$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(MapUiActions.hideBottomSheet),
-      map(() => SearchActions.clearSearchTerm()),
+      ofType(SearchActions.selectMapSearchResult),
+      concatLatestFrom(() => this.store.select(selectScreenMode)),
+      filter(([_, screenMode]) => screenMode === 'mobile'),
+      map(() => MapUiActions.hideBottomSheet()),
     );
   });
 

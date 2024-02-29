@@ -39,8 +39,8 @@ export class Gb2WmsActiveMapItem extends ActiveMapItem {
   public readonly isSingleLayer: boolean;
   public readonly geometadataUuid: string | null;
 
-  constructor(map: Map, layer?: MapLayer, visible?: boolean, opacity?: number) {
-    super(visible, opacity);
+  constructor(map: Map, layer?: MapLayer, visible?: boolean, opacity?: number, isTemporary?: boolean) {
+    super(visible, opacity, isTemporary);
     this.isSingleLayer = !!layer;
     this.id = layer ? Gb2WmsActiveMapItem.createSingleLayerId(map.id, layer.layer) : map.id;
     this.title = layer ? layer.title : map.title;

@@ -1,7 +1,11 @@
 <div class="result-window">
   <loading-and-process-bar class="result-window__loading-bar" [loadingState]="searchApiLoadingState"></loading-and-process-bar>
   <mat-accordion
-    *ngIf="searchTerms[0].length >= 1"
+    *ngIf="
+      searchTerms[0].length >= 1 &&
+      (filteredMaps.length !== 0 || filteredActiveMapMatches.length !== 0 || filteredAddressesAndPlacesMatches.length !== 0) &&
+      !selectedSearchResult
+    "
     class="result-window__content"
     [multi]="showMultiplePanels"
     [ngClass]="{'result-window__content--mobile': screenMode === 'mobile'}"

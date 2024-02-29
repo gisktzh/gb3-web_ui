@@ -51,10 +51,6 @@ export class MapManagementMobileComponent implements OnInit, OnDestroy {
     this.clearInput();
   }
 
-  public close() {
-    this.store.dispatch(MapUiActions.hideBottomSheet());
-  }
-
   public changeTabs(tab: TabType) {
     this.activeTab = tab;
   }

@@ -16,7 +16,12 @@ export class OnboardingGuideService {
     @Inject(ONBOARDING_STEPS) private readonly onboardingGuideConfig: OnboardingGuideConfig,
   ) {
     const {id, steps} = this.onboardingGuideConfig;
-    this.tourService.initialize(steps, {nextBtnTitle: 'Weiter', prevBtnTitle: 'Zurück', endBtnTitle: 'Beenden'});
+    this.tourService.initialize(steps, {
+      nextBtnTitle: 'Weiter',
+      prevBtnTitle: 'Zurück',
+      endBtnTitle: 'Beenden',
+      disableScrollToAnchor: true,
+    });
     this.onboardingGuideId = id;
     this.initSubscriptions();
   }
