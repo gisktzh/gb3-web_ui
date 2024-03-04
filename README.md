@@ -558,7 +558,7 @@ There are the following branches:
 
 ## Release management
 
-This sections gives a brief overview of the release process and how to publish it.
+This section gives a brief overview of the release process and how to publish it.
 
 ### Azure Devops
 
