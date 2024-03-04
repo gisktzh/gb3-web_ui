@@ -68,8 +68,6 @@ import {ProductComponent} from './components/map-tools/product/product.component
 import {DataDownloadFilterDialogComponent} from './components/map-tools/data-download-filter-dialog/data-download-filter-dialog.component';
 import {DataDownloadEmailDialogComponent} from './components/map-tools/data-download-email-dialog/data-download-email-dialog.component';
 import {ElevationProfileOverlayComponent} from './components/elevation-profile-overlay/elevation-profile-overlay.component';
-import {NgChartsModule} from 'ng2-charts';
-import {ElevationProfileChartComponent} from './components/elevation-profile-overlay/elevation-profile-chart/elevation-profile-chart.component';
 import {ElevationProfileStatisticsComponent} from './components/elevation-profile-overlay/elevation-profile-statistics/elevation-profile-statistics.component';
 import {DataDownloadEmailConfirmationDialogComponent} from './components/map-tools/data-download-email-confirmation-dialog/data-download-email-confirmation-dialog.component';
 import {DataDownloadStatusQueueComponent} from './components/map-tools/data-download-status-queue/data-download-status-queue.component';
@@ -86,8 +84,11 @@ import {MapAttributeFilterOverlayComponent} from './components/map-attribute-fil
 import {DelayedMouseEnterDirective} from '../shared/directives/delayed-mouse-enter.directive';
 import {DisableOverscrollBehaviourComponent} from './components/disable-overscroll-behaviour/disable-overscroll-behaviour.component';
 import {NotificationIndicatorComponent} from './components/notification-indicator/notification-indicator.component';
+import {ElevationProfileChartComponent} from './components/elevation-profile-overlay/elevation-profile-chart/elevation-profile-chart.component';
+import {provideCharts, withDefaultRegisterables} from 'ng2-charts';
 
 @NgModule({
+  providers: [provideCharts(withDefaultRegisterables())],
   declarations: [
     MapPageComponent,
     MapContainerComponent,
@@ -152,7 +153,6 @@ import {NotificationIndicatorComponent} from './components/notification-indicato
     DataDownloadFilterDialogComponent,
     DataDownloadEmailDialogComponent,
     ElevationProfileOverlayComponent,
-    ElevationProfileChartComponent,
     ElevationProfileStatisticsComponent,
     DataDownloadEmailConfirmationDialogComponent,
     DataDownloadStatusQueueComponent,
@@ -168,7 +168,6 @@ import {NotificationIndicatorComponent} from './components/notification-indicato
     OnboardingGuideModule,
     FormsModule,
     ReactiveFormsModule,
-    NgChartsModule,
     MapImportServiceAndUrlComponent,
     MapImportLayerListComponent,
     MapImportDisplayNameComponent,
@@ -180,6 +179,7 @@ import {NotificationIndicatorComponent} from './components/notification-indicato
     DelayedMouseEnterDirective,
     DisableOverscrollBehaviourComponent,
     NotificationIndicatorComponent,
+    ElevationProfileChartComponent,
   ],
   exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent, MapOverlayComponent],
 })
