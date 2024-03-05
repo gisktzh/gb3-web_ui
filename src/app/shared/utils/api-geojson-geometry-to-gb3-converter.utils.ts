@@ -1,6 +1,6 @@
 import {Geometry} from '../models/gb3-api-generated.interfaces';
 import {SupportedGeometry} from '../types/SupportedGeometry.type';
-import {LineString, MultiPoint, MultiPolygon, Point, Polygon} from 'geojson';
+import {LineString, MultiLineString, MultiPoint, MultiPolygon, Point, Polygon} from 'geojson';
 
 export class ApiGeojsonGeometryToGb3ConverterUtils {
   /**
@@ -22,6 +22,10 @@ export class ApiGeojsonGeometryToGb3ConverterUtils {
       }
       case 'LineString': {
         castGeometry = {type: geometry.type, coordinates: geometry.coordinates} as LineString;
+        break;
+      }
+      case 'MultiLineString': {
+        castGeometry = {type: geometry.type, coordinates: geometry.coordinates} as MultiLineString;
         break;
       }
       case 'MultiPoint': {

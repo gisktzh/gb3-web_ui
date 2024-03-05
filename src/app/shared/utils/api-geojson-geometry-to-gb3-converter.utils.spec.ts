@@ -1,5 +1,5 @@
 import {Geometry} from '../models/gb3-api-generated.interfaces';
-import {LineString, MultiPoint, MultiPolygon, Point, Polygon} from 'geojson';
+import {LineString, MultiLineString, MultiPoint, MultiPolygon, Point, Polygon} from 'geojson';
 import {ApiGeojsonGeometryToGb3ConverterUtils} from './api-geojson-geometry-to-gb3-converter.utils';
 
 describe('ApiGeojsonGeometryToGb3ConverterUtils', () => {
@@ -85,6 +85,40 @@ describe('ApiGeojsonGeometryToGb3ConverterUtils', () => {
         [101.0, 1.0],
         [102.0, 2.0],
         [103.0, 3.0],
+      ],
+    };
+
+    expect(actual).toEqual(expected);
+  });
+
+  it('converts an API multi line string geometry to the internal SupportedGeometry type', () => {
+    const geometry: Geometry = {
+      type: 'MultiLineString',
+      coordinates: [
+        [
+          [100.0, 0.0],
+          [101.0, 1.0],
+        ],
+        [
+          [102.0, 2.0],
+          [103.0, 3.0],
+        ],
+      ],
+      crs: {type: 'name', properties: {name: 'EPSG:2056'}},
+    };
+
+    const actual = ApiGeojsonGeometryToGb3ConverterUtils.convert(geometry);
+    const expected: MultiLineString = {
+      type: 'MultiLineString',
+      coordinates: [
+        [
+          [100.0, 0.0],
+          [101.0, 1.0],
+        ],
+        [
+          [102.0, 2.0],
+          [103.0, 3.0],
+        ],
       ],
     };
 
