@@ -9,7 +9,6 @@
  * ---------------------------------------------------------------
  */
 
-import {TimeExtent} from '../../map/interfaces/time-extent.interface';
 import {FavouriteFilterConfiguration} from '../interfaces/topic.interface';
 
 export interface Canton {
@@ -769,8 +768,8 @@ export type FavoriteContent = {
    * @max 1
    */
   opacity: number;
-  /** TimeExtent of the timeslider */ // TODO gb3-645: will be used once api ready
-  timeExtent: TimeExtent[] | undefined;
+  /** TimeExtent of the timeslider */ // TODO gb3-530: will be used once api ready
+  timeExtent: [{start: string; end: string}] | undefined;
   /** Selected Attributefilters */
   attributeFilters: FavouriteFilterConfiguration[] | undefined;
   /** Single layer of the map */

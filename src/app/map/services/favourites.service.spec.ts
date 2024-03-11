@@ -1221,7 +1221,7 @@ describe('FavouritesService', () => {
       expect(() => service.getActiveMapItemsForFavourite(activeMapItemConfigurations, false)).toThrow(expectedError);
     });
 
-    it('throws a FavouriteIsInvalidError if the timeSliderConfiguration for a parameter configuration is invalid', () => {
+    it('throws a FavouriteIsInvalidError if the timeSliderConfiguration for a parameter configuration is invalid (start < minimumDate)', () => {
       service['availableMaps'] = [
         {
           id: 'StatGebAlterZH',
@@ -1370,6 +1370,480 @@ describe('FavouritesService', () => {
           timeExtent: {
             start: TimeExtentUtils.parseUTCDate('0999-01-01T00:00:00.000Z'),
             end: TimeExtentUtils.parseUTCDate('2020-01-01T00:00:00.000Z'),
+          },
+        },
+      ];
+
+      const expectedError = new FavouriteIsInvalid(`Die Konfiguration für den Zeitschieberegler der Karte 'Gebäudealter' ist ungültig.`);
+
+      expect(() => service.getActiveMapItemsForFavourite(activeMapItemConfigurations, false)).toThrow(expectedError);
+    });
+
+    it('throws a FavouriteIsInvalidError if the timeSliderConfiguration for a parameter configuration is invalid (range to small)', () => {
+      service['availableMaps'] = [
+        {
+          id: 'StatGebAlterZH',
+          uuid: '246fe226-ead7-4f91-b735-d294994913e0',
+          printTitle: 'Gebäudealter',
+          gb2Url: null,
+          icon: 'https://maps.zh.ch/images/custom/themekl-statgebalterzh.gif',
+          wmsUrl: 'https://maps.zh.ch/wms/StatGebAlterZH',
+          minScale: null,
+          organisation: 'Statistisches Amt',
+          notice: null,
+          title: 'Gebäudealter',
+          keywords: ['Gebäudealter', 'stat', 'obs', 'fap', 'denkk', 'fsla'],
+          opacity: 1,
+          layers: [
+            {
+              id: 160331,
+              layer: 'geb-alter_2',
+              title: 'Gebäude mit Baujahr x und älter',
+              queryable: false,
+              uuid: null,
+              groupTitle: 'Gebäudealter',
+              minScale: 100001,
+              maxScale: 15000001,
+              wmsSort: 11,
+              tocSort: 1100,
+              initiallyVisible: true,
+              visible: true,
+              isHidden: false,
+            },
+            {
+              id: 160330,
+              layer: 'geb-alter_grau',
+              title: 'Baujahr',
+              queryable: false,
+              uuid: null,
+              groupTitle: 'Gebäudealter - Polygone',
+              minScale: 1,
+              maxScale: 100000,
+              wmsSort: 10,
+              tocSort: 1000,
+              initiallyVisible: false,
+              visible: false,
+              isHidden: false,
+            },
+            {
+              id: 160329,
+              layer: 'geb-alter_wohnen',
+              title: 'Baujahr',
+              queryable: true,
+              uuid: null,
+              groupTitle: 'Gebäudealter - Polygone',
+              minScale: 1,
+              maxScale: 100000,
+              wmsSort: 9,
+              tocSort: 900,
+              initiallyVisible: true,
+              visible: true,
+              isHidden: false,
+            },
+          ],
+          timeSliderConfiguration: {
+            name: 'Aktueller Gebäudebestand nach Baujahr',
+            alwaysMaxRange: false,
+            dateFormat: 'YYYY',
+            description: 'Gebäude bis 2020',
+            maximumDate: '2020',
+            minimumDate: '1000',
+            minimalRange: 'P10Y',
+            sourceType: 'parameter',
+            source: {
+              startRangeParameter: 'FILTER_VON',
+              endRangeParameter: 'FILTER_BIS',
+              layerIdentifiers: ['geb-alter_wohnen', 'geb-alter_grau', 'geb-alter_2'],
+            },
+          },
+          filterConfigurations: [
+            {
+              name: 'Anzeigeoptionen nach Hauptnutzung',
+              parameter: 'FILTER_GEBART',
+              filterValues: [
+                {
+                  isActive: true,
+                  values: ['Gebäude Wohnen'],
+                  name: 'Wohnen',
+                },
+                {
+                  isActive: false,
+                  values: ['Gebäude Wohnen'],
+                  name: 'Gewerbe und Verwaltung',
+                },
+                {
+                  isActive: false,
+                  values: ['Gebäude Wohnen'],
+                  name: 'Andere',
+                },
+              ],
+            },
+          ],
+        },
+      ];
+      const activeMapItemConfigurations: ActiveMapItemConfiguration[] = [
+        {
+          id: 'StatGebAlterZH',
+          mapId: 'StatGebAlterZH',
+          layers: [
+            {
+              id: 160331,
+              layer: 'geb-alter_2',
+              visible: true,
+            },
+            {
+              id: 160330,
+              layer: 'geb-alter_grau',
+              visible: false,
+            },
+            {
+              id: 160329,
+              layer: 'geb-alter_wohnen',
+              visible: true,
+            },
+          ],
+          opacity: 0.71,
+          visible: true,
+          isSingleLayer: false,
+          attributeFilters: [
+            {
+              parameter: 'FILTER_GEBART',
+              name: 'Anzeigeoptionen nach Hauptnutzung',
+              activeFilters: [
+                {
+                  name: 'Wohnen',
+                  isActive: true,
+                },
+                {
+                  name: 'Gewerbe und Verwaltung',
+                  isActive: true,
+                },
+                {
+                  name: 'Andere',
+                  isActive: true,
+                },
+              ],
+            },
+          ],
+          timeExtent: {
+            start: TimeExtentUtils.parseUTCDate('1450-01-01T00:00:00.000Z'),
+            end: TimeExtentUtils.parseUTCDate('1455-01-01T00:00:00.000Z'),
+          },
+        },
+      ];
+
+      const expectedError = new FavouriteIsInvalid(`Die Konfiguration für den Zeitschieberegler der Karte 'Gebäudealter' ist ungültig.`);
+
+      expect(() => service.getActiveMapItemsForFavourite(activeMapItemConfigurations, false)).toThrow(expectedError);
+    });
+
+    it('throws a FavouriteIsInvalidError if the timeSliderConfiguration for a parameter configuration is invalid (start and end date mixed up)', () => {
+      service['availableMaps'] = [
+        {
+          id: 'StatGebAlterZH',
+          uuid: '246fe226-ead7-4f91-b735-d294994913e0',
+          printTitle: 'Gebäudealter',
+          gb2Url: null,
+          icon: 'https://maps.zh.ch/images/custom/themekl-statgebalterzh.gif',
+          wmsUrl: 'https://maps.zh.ch/wms/StatGebAlterZH',
+          minScale: null,
+          organisation: 'Statistisches Amt',
+          notice: null,
+          title: 'Gebäudealter',
+          keywords: ['Gebäudealter', 'stat', 'obs', 'fap', 'denkk', 'fsla'],
+          opacity: 1,
+          layers: [
+            {
+              id: 160331,
+              layer: 'geb-alter_2',
+              title: 'Gebäude mit Baujahr x und älter',
+              queryable: false,
+              uuid: null,
+              groupTitle: 'Gebäudealter',
+              minScale: 100001,
+              maxScale: 15000001,
+              wmsSort: 11,
+              tocSort: 1100,
+              initiallyVisible: true,
+              visible: true,
+              isHidden: false,
+            },
+            {
+              id: 160330,
+              layer: 'geb-alter_grau',
+              title: 'Baujahr',
+              queryable: false,
+              uuid: null,
+              groupTitle: 'Gebäudealter - Polygone',
+              minScale: 1,
+              maxScale: 100000,
+              wmsSort: 10,
+              tocSort: 1000,
+              initiallyVisible: false,
+              visible: false,
+              isHidden: false,
+            },
+            {
+              id: 160329,
+              layer: 'geb-alter_wohnen',
+              title: 'Baujahr',
+              queryable: true,
+              uuid: null,
+              groupTitle: 'Gebäudealter - Polygone',
+              minScale: 1,
+              maxScale: 100000,
+              wmsSort: 9,
+              tocSort: 900,
+              initiallyVisible: true,
+              visible: true,
+              isHidden: false,
+            },
+          ],
+          timeSliderConfiguration: {
+            name: 'Aktueller Gebäudebestand nach Baujahr',
+            alwaysMaxRange: false,
+            dateFormat: 'YYYY',
+            description: 'Gebäude bis 2020',
+            maximumDate: '2020',
+            minimumDate: '1000',
+            minimalRange: 'P10Y',
+            sourceType: 'parameter',
+            source: {
+              startRangeParameter: 'FILTER_VON',
+              endRangeParameter: 'FILTER_BIS',
+              layerIdentifiers: ['geb-alter_wohnen', 'geb-alter_grau', 'geb-alter_2'],
+            },
+          },
+          filterConfigurations: [
+            {
+              name: 'Anzeigeoptionen nach Hauptnutzung',
+              parameter: 'FILTER_GEBART',
+              filterValues: [
+                {
+                  isActive: true,
+                  values: ['Gebäude Wohnen'],
+                  name: 'Wohnen',
+                },
+                {
+                  isActive: false,
+                  values: ['Gebäude Wohnen'],
+                  name: 'Gewerbe und Verwaltung',
+                },
+                {
+                  isActive: false,
+                  values: ['Gebäude Wohnen'],
+                  name: 'Andere',
+                },
+              ],
+            },
+          ],
+        },
+      ];
+      const activeMapItemConfigurations: ActiveMapItemConfiguration[] = [
+        {
+          id: 'StatGebAlterZH',
+          mapId: 'StatGebAlterZH',
+          layers: [
+            {
+              id: 160331,
+              layer: 'geb-alter_2',
+              visible: true,
+            },
+            {
+              id: 160330,
+              layer: 'geb-alter_grau',
+              visible: false,
+            },
+            {
+              id: 160329,
+              layer: 'geb-alter_wohnen',
+              visible: true,
+            },
+          ],
+          opacity: 0.71,
+          visible: true,
+          isSingleLayer: false,
+          attributeFilters: [
+            {
+              parameter: 'FILTER_GEBART',
+              name: 'Anzeigeoptionen nach Hauptnutzung',
+              activeFilters: [
+                {
+                  name: 'Wohnen',
+                  isActive: true,
+                },
+                {
+                  name: 'Gewerbe und Verwaltung',
+                  isActive: true,
+                },
+                {
+                  name: 'Andere',
+                  isActive: true,
+                },
+              ],
+            },
+          ],
+          timeExtent: {
+            start: TimeExtentUtils.parseUTCDate('1750-01-01T00:00:00.000Z'),
+            end: TimeExtentUtils.parseUTCDate('1455-01-01T00:00:00.000Z'),
+          },
+        },
+      ];
+
+      const expectedError = new FavouriteIsInvalid(`Die Konfiguration für den Zeitschieberegler der Karte 'Gebäudealter' ist ungültig.`);
+
+      expect(() => service.getActiveMapItemsForFavourite(activeMapItemConfigurations, false)).toThrow(expectedError);
+    });
+
+    it('throws a FavouriteIsInvalidError if the timeSliderConfiguration for a parameter configuration is invalid (not max range if Flag is set)', () => {
+      service['availableMaps'] = [
+        {
+          id: 'StatGebAlterZH',
+          uuid: '246fe226-ead7-4f91-b735-d294994913e0',
+          printTitle: 'Gebäudealter',
+          gb2Url: null,
+          icon: 'https://maps.zh.ch/images/custom/themekl-statgebalterzh.gif',
+          wmsUrl: 'https://maps.zh.ch/wms/StatGebAlterZH',
+          minScale: null,
+          organisation: 'Statistisches Amt',
+          notice: null,
+          title: 'Gebäudealter',
+          keywords: ['Gebäudealter', 'stat', 'obs', 'fap', 'denkk', 'fsla'],
+          opacity: 1,
+          layers: [
+            {
+              id: 160331,
+              layer: 'geb-alter_2',
+              title: 'Gebäude mit Baujahr x und älter',
+              queryable: false,
+              uuid: null,
+              groupTitle: 'Gebäudealter',
+              minScale: 100001,
+              maxScale: 15000001,
+              wmsSort: 11,
+              tocSort: 1100,
+              initiallyVisible: true,
+              visible: true,
+              isHidden: false,
+            },
+            {
+              id: 160330,
+              layer: 'geb-alter_grau',
+              title: 'Baujahr',
+              queryable: false,
+              uuid: null,
+              groupTitle: 'Gebäudealter - Polygone',
+              minScale: 1,
+              maxScale: 100000,
+              wmsSort: 10,
+              tocSort: 1000,
+              initiallyVisible: false,
+              visible: false,
+              isHidden: false,
+            },
+            {
+              id: 160329,
+              layer: 'geb-alter_wohnen',
+              title: 'Baujahr',
+              queryable: true,
+              uuid: null,
+              groupTitle: 'Gebäudealter - Polygone',
+              minScale: 1,
+              maxScale: 100000,
+              wmsSort: 9,
+              tocSort: 900,
+              initiallyVisible: true,
+              visible: true,
+              isHidden: false,
+            },
+          ],
+          timeSliderConfiguration: {
+            name: 'Aktueller Gebäudebestand nach Baujahr',
+            alwaysMaxRange: true,
+            dateFormat: 'YYYY',
+            description: 'Gebäude bis 2020',
+            maximumDate: '2020',
+            minimumDate: '1000',
+            minimalRange: 'P10Y',
+            sourceType: 'parameter',
+            source: {
+              startRangeParameter: 'FILTER_VON',
+              endRangeParameter: 'FILTER_BIS',
+              layerIdentifiers: ['geb-alter_wohnen', 'geb-alter_grau', 'geb-alter_2'],
+            },
+          },
+          filterConfigurations: [
+            {
+              name: 'Anzeigeoptionen nach Hauptnutzung',
+              parameter: 'FILTER_GEBART',
+              filterValues: [
+                {
+                  isActive: true,
+                  values: ['Gebäude Wohnen'],
+                  name: 'Wohnen',
+                },
+                {
+                  isActive: false,
+                  values: ['Gebäude Wohnen'],
+                  name: 'Gewerbe und Verwaltung',
+                },
+                {
+                  isActive: false,
+                  values: ['Gebäude Wohnen'],
+                  name: 'Andere',
+                },
+              ],
+            },
+          ],
+        },
+      ];
+      const activeMapItemConfigurations: ActiveMapItemConfiguration[] = [
+        {
+          id: 'StatGebAlterZH',
+          mapId: 'StatGebAlterZH',
+          layers: [
+            {
+              id: 160331,
+              layer: 'geb-alter_2',
+              visible: true,
+            },
+            {
+              id: 160330,
+              layer: 'geb-alter_grau',
+              visible: false,
+            },
+            {
+              id: 160329,
+              layer: 'geb-alter_wohnen',
+              visible: true,
+            },
+          ],
+          opacity: 0.71,
+          visible: true,
+          isSingleLayer: false,
+          attributeFilters: [
+            {
+              parameter: 'FILTER_GEBART',
+              name: 'Anzeigeoptionen nach Hauptnutzung',
+              activeFilters: [
+                {
+                  name: 'Wohnen',
+                  isActive: true,
+                },
+                {
+                  name: 'Gewerbe und Verwaltung',
+                  isActive: true,
+                },
+                {
+                  name: 'Andere',
+                  isActive: true,
+                },
+              ],
+            },
+          ],
+          timeExtent: {
+            start: TimeExtentUtils.parseUTCDate('1250-01-01T00:00:00.000Z'),
+            end: TimeExtentUtils.parseUTCDate('2000-01-01T00:00:00.000Z'),
           },
         },
       ];

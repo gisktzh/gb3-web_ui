@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {SessionStorageKey} from '../types/session-storage-key.type';
 import {TimeExtentUtils} from '../utils/time-extent.utils';
+import dayjs from 'dayjs';
 
 @Injectable({
   providedIn: 'root',
@@ -20,7 +21,7 @@ export class SessionStorageService {
 
   // Returns a date in the correct format after parsing from stringified Object
   public reviver(key: string, value: any) {
-    if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/.test(value)) {
+    if (typeof value === 'string' && dayjs(value).isValid()) {
       return TimeExtentUtils.parseUTCDate(value);
     } else {
       return value;

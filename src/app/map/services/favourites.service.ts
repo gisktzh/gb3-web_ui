@@ -328,7 +328,9 @@ export class FavouritesService implements OnDestroy {
           const maxDate = TimeExtentUtils.parseUTCDate(timeSliderConfiguration.maximumDate, timeSliderConfiguration.dateFormat);
           let validRange = true;
 
-          if (timeSliderConfiguration.minimalRange) {
+          if (timeSliderConfiguration.alwaysMaxRange && timeExtent.start > minDate && timeExtent.end < maxDate) {
+            validRange = false;
+          } else if (timeSliderConfiguration.minimalRange) {
             const startEndDiff: number = TimeExtentUtils.calculateDifferenceBetweenDates(timeExtent.start, timeExtent.end);
             const minimalRange: number = dayjs.duration(timeSliderConfiguration.minimalRange).asMilliseconds();
             validRange = startEndDiff > minimalRange;
@@ -344,9 +346,7 @@ export class FavouritesService implements OnDestroy {
         break;
       case 'layer': {
         const selectedYearExists = (timeSliderConfiguration.source as TimeSliderLayerSource).layers.some(
-          (layer) =>
-            TimeExtentUtils.parseUTCDate(layer.date, timeSliderConfiguration.dateFormat).getTime() ===
-            TimeExtentUtils.parseUTCDate(timeExtent.start.toString()).getTime(),
+          (layer) => TimeExtentUtils.parseUTCDate(layer.date, timeSliderConfiguration.dateFormat).getTime() === timeExtent.start.getTime(),
         );
         if (!selectedYearExists && !ignoreErrors) {
           throw new FavouriteIsInvalid(`Die Konfiguration für den Zeitschieberegler der Karte '${mapTitle}' ist ungültig.`);
