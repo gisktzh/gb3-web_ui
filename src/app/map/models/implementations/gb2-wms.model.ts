@@ -10,7 +10,7 @@ export class Gb2WmsSettings extends AbstractActiveMapItemSettings {
   public readonly timeSliderConfiguration?: TimeSliderConfiguration;
   public timeSliderExtent?: TimeExtent;
   public isNoticeMarkedAsRead = false;
-  public filterConfigurations?: FilterConfiguration[];
+  public readonly filterConfigurations?: FilterConfiguration[];
   public readonly searchConfigurations?: SearchConfiguration[];
   public readonly mapId: string;
   public readonly layers: MapLayer[];

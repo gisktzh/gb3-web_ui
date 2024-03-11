@@ -93,7 +93,7 @@ export class TimeSliderService {
    */
   private createStopsForLayerSource(timeSliderConfig: TimeSliderConfiguration): Array<Date> {
     const timeSliderLayerSource = timeSliderConfig.source as TimeSliderLayerSource;
-    return timeSliderLayerSource.layers.map((l) => TimeExtentUtils.getUTCDate(l.date, timeSliderConfig.dateFormat));
+    return timeSliderLayerSource.layers.map((layer) => TimeExtentUtils.parseUTCDate(layer.date, timeSliderConfig.dateFormat));
   }
 
   /**
@@ -105,8 +105,8 @@ export class TimeSliderService {
    * start to finish using the given duration; this can lead to gaps near the end but supports all cases.
    */
   private createStopsForParameterSource(timeSliderConfig: TimeSliderConfiguration): Array<Date> {
-    const minimumDate: Date = TimeExtentUtils.getUTCDate(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat);
-    const maximumDate: Date = TimeExtentUtils.getUTCDate(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat);
+    const minimumDate: Date = TimeExtentUtils.parseUTCDate(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat);
+    const maximumDate: Date = TimeExtentUtils.parseUTCDate(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat);
     const initialRange: string | null = timeSliderConfig.range ?? timeSliderConfig.minimalRange ?? null;
     let stopRangeDuration: Duration | null = initialRange ? dayjs.duration(initialRange) : null;
     if (

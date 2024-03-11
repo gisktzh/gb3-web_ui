@@ -33,7 +33,7 @@ export class ShareLinkItemTestUtils {
           opacity: 0.5,
           visible: true,
           isSingleLayer: false,
-          timeExtent: {start: TimeExtentUtils.getUTCDate('1000'), end: TimeExtentUtils.getUTCDate('2020')},
+          timeExtent: {start: TimeExtentUtils.parseUTCDate('1000'), end: TimeExtentUtils.parseUTCDate('2020')},
           attributeFilters: [
             {
               parameter: 'FILTER_GEBART',

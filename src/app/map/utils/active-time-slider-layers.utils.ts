@@ -19,7 +19,7 @@ export class ActiveTimeSliderLayersUtils {
     const timeSliderLayerSource = timeSliderConfiguration.source as TimeSliderLayerSource;
     const timeSliderLayer = timeSliderLayerSource.layers.find((layer) => layer.layerName === mapLayer.layer);
     if (timeSliderLayer) {
-      const date = TimeExtentUtils.getUTCDate(timeSliderLayer.date, timeSliderConfiguration.dateFormat);
+      const date = TimeExtentUtils.parseUTCDate(timeSliderLayer.date, timeSliderConfiguration.dateFormat);
       return date >= timeExtent.start && date < timeExtent.end;
     } else {
       return undefined;

@@ -208,7 +208,7 @@ export class EsriMapService implements MapService, OnDestroy {
         mapItem.settings.filterConfigurations,
       );
       // apply initial attribute filter settings
-      this.setEsriAttributeFilters(attributeFilterParameters, mapItem, esriLayer);
+      this.setEsriAttributeFilters(attributeFilterParameters, esriLayer);
     }
     this.addLayer(esriLayer, position);
   }
@@ -333,7 +333,7 @@ export class EsriMapService implements MapService, OnDestroy {
     const esriLayer = this.esriMapViewService.findEsriLayer(mapItem.id);
 
     if (esriLayer) {
-      this.setEsriAttributeFilters(attributeFilterParameters, mapItem, esriLayer);
+      this.setEsriAttributeFilters(attributeFilterParameters, esriLayer);
     }
   }
 
@@ -573,8 +573,8 @@ export class EsriMapService implements MapService, OnDestroy {
     }
   }
 
-  public setEsriAttributeFilters(attributeFilterParameters: WmsFilterValue[], mapItem: Gb2WmsActiveMapItem, esriLayer: __esri.Layer) {
-    if (esriLayer && esriLayer instanceof EsriWMSLayer) {
+  private setEsriAttributeFilters(attributeFilterParameters: WmsFilterValue[], esriLayer: __esri.Layer) {
+    if (esriLayer instanceof EsriWMSLayer) {
       const customLayerParameters: {[index: string]: string} = esriLayer.customLayerParameters ?? {};
       attributeFilterParameters.forEach((attributeFilterParameter) => {
         customLayerParameters[attributeFilterParameter.name] = attributeFilterParameter.value;

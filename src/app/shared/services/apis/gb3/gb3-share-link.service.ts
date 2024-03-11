@@ -112,8 +112,8 @@ export class Gb3ShareLinkService extends Gb3ApiService {
           ...content,
           timeExtent: content.timeExtent
             ? {
-                start: TimeExtentUtils.getUTCDate(content.timeExtent[0].start.toString()),
-                end: TimeExtentUtils.getUTCDate(content.timeExtent[0].end.toString()),
+                start: TimeExtentUtils.parseUTCDate(content.timeExtent[0].start.toString()),
+                end: TimeExtentUtils.parseUTCDate(content.timeExtent[0].end.toString()),
               }
             : undefined,
         };

@@ -11,8 +11,8 @@ export class TimeExtentUtils {
    * Creates an initial time extent based on the given time slider configuration.
    */
   public static createInitialTimeSliderExtent(timeSliderConfig: TimeSliderConfiguration): TimeExtent {
-    const minimumDate: Date = TimeExtentUtils.getUTCDate(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat);
-    const maximumDate: Date = TimeExtentUtils.getUTCDate(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat);
+    const minimumDate: Date = TimeExtentUtils.parseUTCDate(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat);
+    const maximumDate: Date = TimeExtentUtils.parseUTCDate(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat);
     const range: Duration | null = timeSliderConfig.range ? dayjs.duration(timeSliderConfig.range) : null;
     return {
       start: minimumDate,
@@ -20,7 +20,7 @@ export class TimeExtentUtils {
     };
   }
 
-  public static getUTCDate(date?: string, format?: string): Date {
+  public static parseUTCDate(date?: string, format?: string): Date {
     return dayjs.utc(date, format).toDate();
   }
 

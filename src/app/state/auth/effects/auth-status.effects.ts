@@ -56,24 +56,7 @@ export class AuthStatusEffects {
       map(() => {
         const shareLinkItemString = this.sessionStorageService.get('shareLinkItem');
         this.sessionStorageService.remove('shareLinkItem');
-        let shareLinkItemJson = shareLinkItemString
-          ? (JSON.parse(shareLinkItemString, this.sessionStorageService.reviver) as ShareLinkItem)
-          : undefined;
-        if (shareLinkItemJson) {
-          shareLinkItemJson = {
-            ...shareLinkItemJson,
-            content: shareLinkItemJson.content.map((content) => {
-              return {
-                ...content,
-                timeExtent: content.timeExtent ?? undefined,
-                attributeFilters: content.attributeFilters ?? undefined,
-              };
-            }),
-          };
-        }
-
-        // return shareLinkItemJson ? (JSON.parse(shareLinkItemJson) as ShareLinkItem) : undefined;
-        return shareLinkItemJson;
+        return shareLinkItemString ? (JSON.parse(shareLinkItemString, this.sessionStorageService.reviver) as ShareLinkItem) : undefined;
       }),
       filter((shareLinkItem): shareLinkItem is ShareLinkItem => !!shareLinkItem),
       map((shareLinkItem) => {

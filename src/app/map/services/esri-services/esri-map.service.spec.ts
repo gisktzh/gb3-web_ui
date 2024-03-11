@@ -12,6 +12,7 @@ import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
 import {EsriMapViewService} from './esri-map-view.service';
 import {EsriToolService} from './tool-service/esri-tool.service';
 import {createDrawingMapItemMock, createGb2WmsMapItemMock} from '../../../testing/map-testing/active-map-item-test.utils';
+import {FilterConfiguration} from '../../../shared/interfaces/topic.interface';
 
 function compareMapItemToEsriLayer(expectedMapItem: Gb2WmsActiveMapItem, actualEsriLayer: __esri.Layer) {
   expect(actualEsriLayer.id).toBe(expectedMapItem.id);
@@ -95,8 +96,7 @@ describe('EsriMapService', () => {
     mapItem1.visible = false;
     const mapItem2 = createGb2WmsMapItemMock('mapTwo', 2);
     mapItem2.settings.layers[0].visible = false;
-    const mapItem3 = createGb2WmsMapItemMock('mapThree');
-    mapItem3.settings.filterConfigurations = [
+    const attributeFilters: FilterConfiguration[] = [
       {
         name: 'Anzeigeoptionen nach Hauptnutzung',
         parameter: 'FILTER_GEBART',
@@ -119,6 +119,7 @@ describe('EsriMapService', () => {
         ],
       },
     ];
+    const mapItem3 = createGb2WmsMapItemMock('mapThree', 1, true, 1, '123', false, undefined, attributeFilters);
 
     expect(mapMock.layers.length).toBe(getExpectedNumberOfLayersWithInternalLayers(0));
 

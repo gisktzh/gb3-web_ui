@@ -31,8 +31,8 @@ describe('selectActiveMapItemConfiguration', () => {
       true,
       0.71,
       {
-        start: TimeExtentUtils.getUTCDate('1000-01-01T00:00:00.000Z'),
-        end: TimeExtentUtils.getUTCDate('2020-01-01T00:00:00.000Z'),
+        start: TimeExtentUtils.parseUTCDate('1000-01-01T00:00:00.000Z'),
+        end: TimeExtentUtils.parseUTCDate('2020-01-01T00:00:00.000Z'),
       },
       [
         {
@@ -90,8 +90,8 @@ describe('selectActiveMapItemConfiguration', () => {
           },
         ],
         timeExtent: {
-          start: TimeExtentUtils.getUTCDate('1000-01-01T00:00:00.000Z'),
-          end: TimeExtentUtils.getUTCDate('2020-01-01T00:00:00.000Z'),
+          start: TimeExtentUtils.parseUTCDate('1000-01-01T00:00:00.000Z'),
+          end: TimeExtentUtils.parseUTCDate('2020-01-01T00:00:00.000Z'),
         },
       },
     ];
