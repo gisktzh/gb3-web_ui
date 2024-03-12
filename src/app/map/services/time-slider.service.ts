@@ -57,14 +57,22 @@ export class TimeSliderService {
       /*
           Minimal range
             Either the start or end date has changed;
-            1. ensure that the changed date is still within the valid minimum range:
+            1. Ensure that startDate < endDate.
+            2. ensure that the changed date is still within the valid minimum range:
               a. in case the start date was changed: minDate <= startDate <= maxDate - range
               b. in case the end date was changed:   maxDate >= endDate >= minDate + range
-            2. if the difference between the new start and end date is under the given minimum range then
+            3. if the difference between the new start and end date is under the given minimum range then
                adjust the value of the changed value accordingly to enforce the minimal range between them
-            3. if the previous changes are not enough (e.g. in case the min/max limits have changed) then
+            4. if the previous changes are not enough (e.g. in case the min/max limits have changed) then
                also adjust the value of the previously unchanged value.
          */
+
+      if (timeExtent.start > timeExtent.end) {
+        const startDate: Date = timeExtent.start;
+        timeExtent.start = timeExtent.end;
+        timeExtent.end = startDate;
+      }
+
       const startEndDiff: number = TimeExtentUtils.calculateDifferenceBetweenDates(timeExtent.start, timeExtent.end);
       const minimalRange: Duration = dayjs.duration(timeSliderConfig.minimalRange);
 

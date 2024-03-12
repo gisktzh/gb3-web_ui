@@ -10,3 +10,10 @@ export interface ActiveMapItemConfiguration extends Pick<Gb2WmsActiveMapItem, 'i
   attributeFilters: FavouriteFilterConfiguration[] | undefined;
   timeExtent: TimeExtent | undefined;
 }
+
+// This is used to ensure no fields are lost during stringifying and parsing the map state when logging in or out of the application.
+// All values that can be undefined need to be set as undefined here so they will be added back to the shareLinkItem after parsing from sessionStorage.
+export const defaultActiveMapItemConfiguration: Partial<ActiveMapItemConfiguration> = {
+  timeExtent: undefined,
+  attributeFilters: undefined,
+};

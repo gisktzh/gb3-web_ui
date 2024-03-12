@@ -19,6 +19,7 @@ import {MAP_SERVICE} from '../../../app.module';
 import {MapService} from '../../../map/interfaces/map.service';
 import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
 import {StorageUtils} from '../../../shared/utils/storage.utils';
+import {defaultActiveMapItemConfiguration} from '../../../shared/interfaces/active-map-item-configuration.interface';
 
 @Injectable()
 export class AuthStatusEffects {
@@ -57,7 +58,22 @@ export class AuthStatusEffects {
       map(() => {
         const shareLinkItemString = this.sessionStorageService.get('shareLinkItem');
         this.sessionStorageService.remove('shareLinkItem');
-        return shareLinkItemString ? StorageUtils.parseJson<ShareLinkItem>(shareLinkItemString) : undefined;
+
+        const shareLinkItemJson: ShareLinkItem | undefined = shareLinkItemString
+          ? StorageUtils.parseJson<ShareLinkItem>(shareLinkItemString)
+          : undefined;
+
+        return shareLinkItemJson
+          ? {
+              ...shareLinkItemJson,
+              content: shareLinkItemJson?.content.map((content) => {
+                return {
+                  ...defaultActiveMapItemConfiguration,
+                  ...content,
+                };
+              }),
+            }
+          : undefined;
       }),
       filter((shareLinkItem): shareLinkItem is ShareLinkItem => !!shareLinkItem),
       map((shareLinkItem) => {
