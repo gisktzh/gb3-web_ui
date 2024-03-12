@@ -112,8 +112,8 @@ export class Gb3ShareLinkService extends Gb3ApiService {
           ...content,
           timeExtent: content.timeExtent
             ? {
-                start: TimeExtentUtils.parseUTCDate(content.timeExtent[0].start),
-                end: TimeExtentUtils.parseUTCDate(content.timeExtent[0].end),
+                start: TimeExtentUtils.parseUTCDate(content.timeExtent[0].start.toString()),
+                end: TimeExtentUtils.parseUTCDate(content.timeExtent[0].end.toString()),
               }
             : undefined,
         };
@@ -132,14 +132,7 @@ export class Gb3ShareLinkService extends Gb3ApiService {
       content: shareLink.content.map((content) => {
         return {
           ...content,
-          timeExtent: content.timeExtent
-            ? [
-                {
-                  start: content.timeExtent.start.toString(),
-                  end: content.timeExtent.end.toString(),
-                },
-              ]
-            : undefined,
+          timeExtent: content.timeExtent ? [content.timeExtent] : undefined,
         };
       }),
       drawings: shareLink.drawings,
