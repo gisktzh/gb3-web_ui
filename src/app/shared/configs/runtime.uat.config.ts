@@ -52,6 +52,7 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       clientId: 'gb3',
       issuer: 'https://uatmaps.kt.ktzh.ch/',
     },
+    featureFlags: {},
     overrides: {
       overrideWmsUrl: 'http://uatwms.kt.ktzh.ch',
     },

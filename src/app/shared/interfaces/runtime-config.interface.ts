@@ -1,3 +1,5 @@
+import {FeatureFlags} from './feature-flags.interface';
+
 interface ApiBaseUrlConfig {
   baseUrl: string;
 }
@@ -50,4 +52,5 @@ export interface RuntimeConfig {
   apiBasePaths: ApiConfig;
   overrides: OverrideSettings;
   authSettings: AuthSettings;
+  featureFlags: Partial<FeatureFlags>;
 }

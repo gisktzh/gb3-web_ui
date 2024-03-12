@@ -52,6 +52,7 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       clientId: 'gb3',
       issuer: 'https://testmaps.kt.ktzh.ch/',
     },
+    featureFlags: {},
     overrides: {
       overrideWmsUrl: 'http://testwms.kt.ktzh.ch',
     },

@@ -52,6 +52,7 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       clientId: 'gb3',
       issuer: 'http://localhost:4200/',
     },
+    featureFlags: {},
     overrides: {
       overrideWmsUrl: 'http://localhost:4200/wms',
     },
