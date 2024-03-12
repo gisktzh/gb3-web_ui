@@ -393,8 +393,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: TimeExtentUtils.parseUTCDate('1000-01-01T00:00:00.000Z'),
-            end: TimeExtentUtils.parseUTCDate('2020-01-01T00:00:00.000Z'),
+            start: TimeExtentUtils.parseDefaultUTCDate('1000-01-01T00:00:00.000Z'),
+            end: TimeExtentUtils.parseDefaultUTCDate('2020-01-01T00:00:00.000Z'),
           },
         },
         {
@@ -538,8 +538,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: TimeExtentUtils.parseUTCDate('1000-01-01T00:00:00.000Z'),
-            end: TimeExtentUtils.parseUTCDate('2020-01-01T00:00:00.000Z'),
+            start: TimeExtentUtils.parseDefaultUTCDate('1000-01-01T00:00:00.000Z'),
+            end: TimeExtentUtils.parseDefaultUTCDate('2020-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -656,8 +656,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: TimeExtentUtils.parseUTCDate('1000-01-01T00:00:00.000Z'),
-            end: TimeExtentUtils.parseUTCDate('2020-01-01T00:00:00.000Z'),
+            start: TimeExtentUtils.parseDefaultUTCDate('1000-01-01T00:00:00.000Z'),
+            end: TimeExtentUtils.parseDefaultUTCDate('2020-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -717,8 +717,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: TimeExtentUtils.parseUTCDate('1000-01-01T00:00:00.000Z'),
-            end: TimeExtentUtils.parseUTCDate('2020-01-01T00:00:00.000Z'),
+            start: TimeExtentUtils.parseDefaultUTCDate('1000-01-01T00:00:00.000Z'),
+            end: TimeExtentUtils.parseDefaultUTCDate('2020-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -807,8 +807,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: TimeExtentUtils.parseUTCDate('1000-01-01T00:00:00.000Z'),
-            end: TimeExtentUtils.parseUTCDate('2020-01-01T00:00:00.000Z'),
+            start: TimeExtentUtils.parseDefaultUTCDate('1000-01-01T00:00:00.000Z'),
+            end: TimeExtentUtils.parseDefaultUTCDate('2020-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -866,8 +866,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: TimeExtentUtils.parseUTCDate('1000-01-01T00:00:00.000Z'),
-            end: TimeExtentUtils.parseUTCDate('2020-01-01T00:00:00.000Z'),
+            start: TimeExtentUtils.parseDefaultUTCDate('1000-01-01T00:00:00.000Z'),
+            end: TimeExtentUtils.parseDefaultUTCDate('2020-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -1047,8 +1047,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: TimeExtentUtils.parseUTCDate('1000-01-01T00:00:00.000Z'),
-            end: TimeExtentUtils.parseUTCDate('2020-01-01T00:00:00.000Z'),
+            start: TimeExtentUtils.parseDefaultUTCDate('1000-01-01T00:00:00.000Z'),
+            end: TimeExtentUtils.parseDefaultUTCDate('2020-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -1208,8 +1208,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: TimeExtentUtils.parseUTCDate('1000-01-01T00:00:00.000Z'),
-            end: TimeExtentUtils.parseUTCDate('2020-01-01T00:00:00.000Z'),
+            start: TimeExtentUtils.parseDefaultUTCDate('1000-01-01T00:00:00.000Z'),
+            end: TimeExtentUtils.parseDefaultUTCDate('2020-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -1368,8 +1368,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: TimeExtentUtils.parseUTCDate('0999-01-01T00:00:00.000Z'),
-            end: TimeExtentUtils.parseUTCDate('2020-01-01T00:00:00.000Z'),
+            start: TimeExtentUtils.parseDefaultUTCDate('0999-01-01T00:00:00.000Z'),
+            end: TimeExtentUtils.parseDefaultUTCDate('2020-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -1526,8 +1526,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: TimeExtentUtils.parseUTCDate('1450-01-01T00:00:00.000Z'),
-            end: TimeExtentUtils.parseUTCDate('1455-01-01T00:00:00.000Z'),
+            start: TimeExtentUtils.parseDefaultUTCDate('1450-01-01T00:00:00.000Z'),
+            end: TimeExtentUtils.parseDefaultUTCDate('1455-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -1684,8 +1684,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: TimeExtentUtils.parseUTCDate('1750-01-01T00:00:00.000Z'),
-            end: TimeExtentUtils.parseUTCDate('1455-01-01T00:00:00.000Z'),
+            start: TimeExtentUtils.parseDefaultUTCDate('1750-01-01T00:00:00.000Z'),
+            end: TimeExtentUtils.parseDefaultUTCDate('1455-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -1842,8 +1842,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: TimeExtentUtils.parseUTCDate('1250-01-01T00:00:00.000Z'),
-            end: TimeExtentUtils.parseUTCDate('2000-01-01T00:00:00.000Z'),
+            start: TimeExtentUtils.parseDefaultUTCDate('1250-01-01T00:00:00.000Z'),
+            end: TimeExtentUtils.parseDefaultUTCDate('2000-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -2118,8 +2118,8 @@ describe('FavouritesService', () => {
           isSingleLayer: false,
           attributeFilters: undefined,
           timeExtent: {
-            start: TimeExtentUtils.parseUTCDate('2016-01-01T00:00:00.000Z'),
-            end: TimeExtentUtils.parseUTCDate('2017-01-01T00:00:00.000Z'),
+            start: TimeExtentUtils.parseDefaultUTCDate('2016-01-01T00:00:00.000Z'),
+            end: TimeExtentUtils.parseDefaultUTCDate('2017-01-01T00:00:00.000Z'),
           },
         },
       ];

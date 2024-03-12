@@ -5,7 +5,7 @@ export class StorageUtils {
   // Returns a date in the correct format after parsing from stringified Object. This is used within the JSON.parse method, hence the "any" type for the value parameter
   private static reviver(key: string, value: any): any {
     if (typeof value === 'string' && dayjs(value).isValid()) {
-      return TimeExtentUtils.parseUTCDate(value);
+      return TimeExtentUtils.parseDefaultUTCDate(value);
     }
     return value;
   }

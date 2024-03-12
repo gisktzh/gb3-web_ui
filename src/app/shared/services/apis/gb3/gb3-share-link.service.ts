@@ -109,11 +109,17 @@ export class Gb3ShareLinkService extends Gb3ApiService {
       scale: sharedFavorite.scaledenom,
       content: sharedFavorite.content.map((content) => {
         return {
-          ...content,
+          id: content.id,
+          visible: content.visible,
+          opacity: content.opacity,
+          isSingleLayer: content.isSingleLayer,
+          layers: content.layers,
+          mapId: content.mapId,
+          attributeFilters: content.attributeFilters,
           timeExtent: content.timeExtent
             ? {
-                start: TimeExtentUtils.parseUTCDate(content.timeExtent[0].start),
-                end: TimeExtentUtils.parseUTCDate(content.timeExtent[0].end),
+                start: TimeExtentUtils.parseDefaultUTCDate(content.timeExtent[0].start),
+                end: TimeExtentUtils.parseDefaultUTCDate(content.timeExtent[0].end),
               }
             : undefined,
         };
@@ -131,7 +137,13 @@ export class Gb3ShareLinkService extends Gb3ApiService {
       scaledenom: shareLink.scale,
       content: shareLink.content.map((content) => {
         return {
-          ...content,
+          id: content.id,
+          mapId: content.mapId,
+          visible: content.visible,
+          opacity: content.opacity,
+          isSingleLayer: content.isSingleLayer,
+          layers: content.layers,
+          attributeFilters: content.attributeFilters,
           timeExtent: content.timeExtent
             ? [
                 {

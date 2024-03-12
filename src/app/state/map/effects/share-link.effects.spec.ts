@@ -83,7 +83,7 @@ describe('ShareLinkEffects', () => {
         opacity: 0.5,
         visible: true,
         isSingleLayer: false,
-        timeExtent: {start: TimeExtentUtils.parseUTCDate('1000'), end: TimeExtentUtils.parseUTCDate('2020')},
+        timeExtent: {start: TimeExtentUtils.parseDefaultUTCDate('1000'), end: TimeExtentUtils.parseDefaultUTCDate('2020')},
         attributeFilters: [
           {
             parameter: 'FILTER_GEBART',

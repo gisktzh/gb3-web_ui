@@ -57,11 +57,17 @@ export class Gb3FavouritesService extends Gb3ApiService {
       },
       content: data.content.map((content) => {
         return {
-          ...content,
+          id: content.id,
+          visible: content.visible,
+          opacity: content.opacity,
+          isSingleLayer: content.isSingleLayer,
+          layers: content.layers,
+          mapId: content.mapId,
+          attributeFilters: content.attributeFilters,
           timeExtent: content.timeExtent
             ? {
-                start: TimeExtentUtils.parseUTCDate(content.timeExtent[0].start),
-                end: TimeExtentUtils.parseUTCDate(content.timeExtent[0].end),
+                start: TimeExtentUtils.parseDefaultUTCDate(content.timeExtent[0].start),
+                end: TimeExtentUtils.parseDefaultUTCDate(content.timeExtent[0].end),
               }
             : undefined,
         };
@@ -80,7 +86,13 @@ export class Gb3FavouritesService extends Gb3ApiService {
       basemap: baseConfig.basemap,
       content: payload.content.map((content) => {
         return {
-          ...content,
+          id: content.id,
+          mapId: content.mapId,
+          visible: content.visible,
+          opacity: content.opacity,
+          isSingleLayer: content.isSingleLayer,
+          layers: content.layers,
+          attributeFilters: content.attributeFilters,
           timeExtent: content.timeExtent
             ? [
                 {
@@ -91,6 +103,6 @@ export class Gb3FavouritesService extends Gb3ApiService {
             : undefined,
         };
       }),
-    } as unknown as PersonalFavoriteNew; // todo: typecasts once API is fixed
+    };
   }
 }
