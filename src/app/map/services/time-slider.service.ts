@@ -88,6 +88,15 @@ export class TimeSliderService {
     return timeExtent;
   }
 
+  public validateTimeExtent(timeSliderConfig: TimeSliderConfiguration, timeExtent: TimeExtent): boolean {
+    const minDate = TimeExtentUtils.parseUTCDate(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat);
+    const maxDate = TimeExtentUtils.parseUTCDate(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat);
+
+    const updatedTimeExtent: TimeExtent = this.createValidTimeExtent(timeSliderConfig, timeExtent, false, minDate, maxDate);
+
+    return timeExtent.start.getTime() === updatedTimeExtent.start.getTime() && timeExtent.end.getTime() === updatedTimeExtent.end.getTime();
+  }
+
   /**
    * Creates stops for a layer source containing multiple dates which may not necessarily have constant gaps between them.
    */

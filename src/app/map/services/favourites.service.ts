@@ -29,7 +29,7 @@ import {DrawingActiveMapItem} from '../models/implementations/drawing.model';
 import {Gb3StyledInternalDrawingRepresentation} from '../../shared/interfaces/internal-drawing-representation.interface';
 import {TimeExtent} from '../interfaces/time-extent.interface';
 import {TimeExtentUtils} from '../../shared/utils/time-extent.utils';
-import dayjs from 'dayjs';
+import {TimeSliderService} from './time-slider.service';
 
 @Injectable({
   providedIn: 'root',
@@ -46,6 +46,7 @@ export class FavouritesService implements OnDestroy {
   constructor(
     private readonly store: Store,
     private readonly gb3FavouritesService: Gb3FavouritesService,
+    private readonly timeSliderService: TimeSliderService,
   ) {
     this.initSubscriptions();
   }
@@ -324,22 +325,7 @@ export class FavouritesService implements OnDestroy {
     switch (timeSliderConfiguration.sourceType) {
       case 'parameter':
         {
-          const minDate = TimeExtentUtils.parseUTCDate(timeSliderConfiguration.minimumDate, timeSliderConfiguration.dateFormat);
-          const maxDate = TimeExtentUtils.parseUTCDate(timeSliderConfiguration.maximumDate, timeSliderConfiguration.dateFormat);
-          let validRange = true;
-
-          if (timeSliderConfiguration.alwaysMaxRange && timeExtent.start > minDate && timeExtent.end < maxDate) {
-            validRange = false;
-          } else if (timeSliderConfiguration.minimalRange) {
-            const startEndDiff: number = TimeExtentUtils.calculateDifferenceBetweenDates(timeExtent.start, timeExtent.end);
-            const minimalRange: number = dayjs.duration(timeSliderConfiguration.minimalRange).asMilliseconds();
-            validRange = startEndDiff > minimalRange;
-          }
-
-          if (
-            (timeExtent.start < minDate || timeExtent.end > maxDate || timeExtent.start > timeExtent.end || !validRange) &&
-            !ignoreErrors
-          ) {
+          if (!this.timeSliderService.validateTimeExtent(timeSliderConfiguration, timeExtent)) {
             throw new FavouriteIsInvalid(`Die Konfiguration für den Zeitschieberegler der Karte '${mapTitle}' ist ungültig.`);
           }
         }
