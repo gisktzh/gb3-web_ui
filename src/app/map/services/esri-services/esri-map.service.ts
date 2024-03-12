@@ -560,7 +560,7 @@ export class EsriMapService implements MapService, OnDestroy {
   }
 
   private setEsriTimeSliderExtent(timeExtent: TimeExtent, mapItem: Gb2WmsActiveMapItem, esriLayer: __esri.Layer) {
-    if (esriLayer && esriLayer instanceof EsriWMSLayer && mapItem.settings.timeSliderConfiguration) {
+    if (esriLayer instanceof EsriWMSLayer && mapItem.settings.timeSliderConfiguration) {
       switch (mapItem.settings.timeSliderConfiguration.sourceType) {
         case 'parameter':
           this.applyTimeSliderCustomParameters(esriLayer, timeExtent, mapItem.settings.timeSliderConfiguration);

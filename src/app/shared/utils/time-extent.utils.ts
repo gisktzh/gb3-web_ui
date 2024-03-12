@@ -20,7 +20,7 @@ export class TimeExtentUtils {
     };
   }
 
-  public static parseUTCDate(date?: string, format?: string): Date {
+  public static parseUTCDate(date: string, format?: string): Date {
     return dayjs.utc(date, format).toDate();
   }
 
