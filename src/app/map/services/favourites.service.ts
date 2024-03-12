@@ -324,10 +324,8 @@ export class FavouritesService implements OnDestroy {
   ) {
     switch (timeSliderConfiguration.sourceType) {
       case 'parameter':
-        {
-          if (!this.timeSliderService.validateTimeExtent(timeSliderConfiguration, timeExtent)) {
-            throw new FavouriteIsInvalid(`Die Konfiguration für den Zeitschieberegler der Karte '${mapTitle}' ist ungültig.`);
-          }
+        if (!this.timeSliderService.validateTimeExtent(timeSliderConfiguration, timeExtent)) {
+          throw new FavouriteIsInvalid(`Die Konfiguration für den Zeitschieberegler der Karte '${mapTitle}' ist ungültig.`);
         }
         break;
       case 'layer': {
