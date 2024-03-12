@@ -29,6 +29,7 @@ import {DrawingActiveMapItem} from '../models/implementations/drawing.model';
 import {Gb3StyledInternalDrawingRepresentation} from '../../shared/interfaces/internal-drawing-representation.interface';
 import {TimeExtent} from '../interfaces/time-extent.interface';
 import {TimeExtentUtils} from '../../shared/utils/time-extent.utils';
+import dayjs from 'dayjs';
 
 @Injectable({
   providedIn: 'root',
@@ -327,14 +328,13 @@ export class FavouritesService implements OnDestroy {
           const maxDate = TimeExtentUtils.parseUTCDate(timeSliderConfiguration.maximumDate, timeSliderConfiguration.dateFormat);
           let validRange = true;
 
-          // if (timeSliderConfiguration.alwaysMaxRange && timeExtent.start > minDate && timeExtent.end < maxDate) {
-          //   validRange = false;
-          // }
-          // else if (timeSliderConfiguration.minimalRange) {
-          //   const startEndDiff: number = TimeExtentUtils.calculateDifferenceBetweenDates(timeExtent.start, timeExtent.end);
-          //   const minimalRange: number = dayjs.duration(timeSliderConfiguration.minimalRange).asMilliseconds();
-          //   validRange = startEndDiff > minimalRange;
-          // }
+          if (timeSliderConfiguration.alwaysMaxRange && timeExtent.start > minDate && timeExtent.end < maxDate) {
+            validRange = false;
+          } else if (timeSliderConfiguration.minimalRange) {
+            const startEndDiff: number = TimeExtentUtils.calculateDifferenceBetweenDates(timeExtent.start, timeExtent.end);
+            const minimalRange: number = dayjs.duration(timeSliderConfiguration.minimalRange).asMilliseconds();
+            validRange = startEndDiff > minimalRange;
+          }
 
           if (
             (timeExtent.start < minDate || timeExtent.end > maxDate || timeExtent.start > timeExtent.end || !validRange) &&

@@ -60,8 +60,8 @@ export class Gb3FavouritesService extends Gb3ApiService {
           ...content,
           timeExtent: content.timeExtent
             ? {
-                start: TimeExtentUtils.parseUTCDate(content.timeExtent[0].start.toString()),
-                end: TimeExtentUtils.parseUTCDate(content.timeExtent[0].end.toString()),
+                start: TimeExtentUtils.parseUTCDate(content.timeExtent[0].start),
+                end: TimeExtentUtils.parseUTCDate(content.timeExtent[0].end),
               }
             : undefined,
         };
@@ -81,7 +81,14 @@ export class Gb3FavouritesService extends Gb3ApiService {
       content: payload.content.map((content) => {
         return {
           ...content,
-          timeExtent: content.timeExtent ? [content.timeExtent] : undefined,
+          timeExtent: content.timeExtent
+            ? [
+                {
+                  start: content.timeExtent.start.toString(),
+                  end: content.timeExtent.end.toString(),
+                },
+              ]
+            : undefined,
         };
       }),
     } as unknown as PersonalFavoriteNew; // todo: typecasts once API is fixed
