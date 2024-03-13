@@ -275,10 +275,12 @@ export class FavouritesService implements OnDestroy {
       const matchingFilterConfiguration: FilterConfiguration | undefined = filterConfigs.find(
         (filterConfig) => filterConfig.parameter === attributeFilter.parameter,
       );
-      if (!matchingFilterConfiguration && !ignoreErrors) {
-        throw new FavouriteIsInvalid(
-          `Die Filterkonfiguration mit dem Parameter '${attributeFilter.name} (${attributeFilter.parameter})' existiert nicht mehr auf der Karte '${mapTitle}'.`,
-        );
+      if (!matchingFilterConfiguration) {
+        if (!ignoreErrors) {
+          throw new FavouriteIsInvalid(
+            `Die Filterkonfiguration mit dem Parameter '${attributeFilter.name} (${attributeFilter.parameter})' existiert nicht mehr auf der Karte '${mapTitle}'.`,
+          );
+        }
       } else {
         attributeFilter.activeFilters.forEach((activeFilter) => {
           const activeFilterExists: boolean | undefined = matchingFilterConfiguration?.filterValues.some(
@@ -297,10 +299,12 @@ export class FavouritesService implements OnDestroy {
       const matchingFavouriteFilterConfiguration: FavouriteFilterConfiguration | undefined = attributeFilters.find(
         (attributeFilter) => attributeFilter.parameter === filterConfig.parameter,
       );
-      if (!matchingFavouriteFilterConfiguration && !ignoreErrors) {
-        throw new FavouriteIsInvalid(
-          `Eine neue Filterkonfiguration mit dem Parameter '${filterConfig.name} (${filterConfig.parameter})' wurde zur Karte '${mapTitle}' hinzugefügt.`,
-        );
+      if (!matchingFavouriteFilterConfiguration) {
+        if (!ignoreErrors) {
+          throw new FavouriteIsInvalid(
+            `Eine neue Filterkonfiguration mit dem Parameter '${filterConfig.name} (${filterConfig.parameter})' wurde zur Karte '${mapTitle}' hinzugefügt.`,
+          );
+        }
       } else {
         filterConfig.filterValues.forEach((filterValue) => {
           const newFilterValueHasBeenAdded: boolean | undefined = !matchingFavouriteFilterConfiguration?.activeFilters.some(
@@ -324,7 +328,7 @@ export class FavouritesService implements OnDestroy {
   ) {
     switch (timeSliderConfiguration.sourceType) {
       case 'parameter':
-        if (!this.timeSliderService.validateTimeExtent(timeSliderConfiguration, timeExtent)) {
+        if (!this.timeSliderService.isTimeExtentValid(timeSliderConfiguration, timeExtent) && !ignoreErrors) {
           throw new FavouriteIsInvalid(`Die Konfiguration für den Zeitschieberegler der Karte '${mapTitle}' ist ungültig.`);
         }
         break;

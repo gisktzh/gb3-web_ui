@@ -55,18 +55,18 @@ export class AuthStatusEffects {
     return this.actions$.pipe(
       ofType(LayerCatalogActions.setLayerCatalog),
       first(),
-      map(() => {
+      map((): ShareLinkItem | undefined => {
         const shareLinkItemString = this.sessionStorageService.get('shareLinkItem');
         this.sessionStorageService.remove('shareLinkItem');
 
-        const shareLinkItemJson: ShareLinkItem | undefined = shareLinkItemString
+        const shareLinkItem: ShareLinkItem | undefined = shareLinkItemString
           ? StorageUtils.parseJson<ShareLinkItem>(shareLinkItemString)
           : undefined;
 
-        return shareLinkItemJson
+        return shareLinkItem
           ? {
-              ...shareLinkItemJson,
-              content: shareLinkItemJson?.content.map((content) => {
+              ...shareLinkItem,
+              content: shareLinkItem?.content.map((content) => {
                 return {
                   ...defaultActiveMapItemConfiguration,
                   ...content,

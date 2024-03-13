@@ -96,7 +96,7 @@ export class TimeSliderService {
     return timeExtent;
   }
 
-  public validateTimeExtent(timeSliderConfig: TimeSliderConfiguration, timeExtent: TimeExtent): boolean {
+  public isTimeExtentValid(timeSliderConfig: TimeSliderConfiguration, timeExtent: TimeExtent): boolean {
     const minDate = TimeExtentUtils.parseUTCDate(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat);
     const maxDate = TimeExtentUtils.parseUTCDate(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat);
 

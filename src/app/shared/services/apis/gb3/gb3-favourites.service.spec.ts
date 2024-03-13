@@ -13,6 +13,7 @@ import {selectUserDrawingsVectorLayers} from '../../../../state/map/selectors/us
 import {Gb3FavouritesService} from './gb3-favourites.service';
 import {CreateFavourite, Favourite} from '../../../interfaces/favourite.interface';
 
+// todo: add tests for vector layers
 const mockedVectorLayer = {type: undefined, styles: undefined, geojson: {type: undefined, features: []}} as unknown as Gb3VectorLayer;
 describe('Gb3FavouritesService', () => {
   let service: Gb3FavouritesService;

@@ -96,8 +96,8 @@ export class Gb3FavouritesService extends Gb3ApiService {
           timeExtent: content.timeExtent
             ? [
                 {
-                  start: content.timeExtent.start.toString(),
-                  end: content.timeExtent.end.toString(),
+                  start: content.timeExtent.start.toUTCString(),
+                  end: content.timeExtent.end.toUTCString(),
                 },
               ]
             : undefined,
