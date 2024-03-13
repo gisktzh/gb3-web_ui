@@ -1,52 +1,25 @@
 import {StorageUtils} from './storage.utils';
+import {TimeExtentUtils} from './time-extent.utils';
 
 describe('StorageUtils', () => {
   describe('parseJson', () => {
     it(`parses a Json with valid Dates correctly`, () => {
-      const shareLinkItemString =
-        '{"center":{"x":2683131.5,"y":1247228},"scale":5374,"basemapId":"arelkbackgroundzh","content":[{"id":"StatGebAlterZH","mapId":"StatGebAlterZH","timeExtent":{"start":"1506-01-01T00:00:00.000Z","end":"1890-01-01T00:04:22.000Z"},"attributeFilters":[{"parameter":"FILTER_GEBART","name":"Anzeigeoptionen nach Hauptnutzung","activeFilters":[{"name":"Wohnen","isActive":false},{"name":"Gewerbe und Verwaltung","isActive":false},{"name":"Andere","isActive":false}]}]}]}';
+      const stringToParse: string = '{"date":"1506-01-01T00:00:00.000Z", "number": 2683132, "string": "test"}';
 
-      const shareLinkItem = {
-        center: {x: 2683131.5, y: 1247228},
-        scale: 5374,
-        basemapId: 'arelkbackgroundzh',
-        content: [
-          {
-            id: 'StatGebAlterZH',
-            mapId: 'StatGebAlterZH',
-            layers: [
-              {id: 160331, layer: 'geb-alter_2', visible: true},
-              {
-                id: 160330,
-                layer: 'geb-alter_grau',
-                visible: false,
-              },
-              {id: 160329, layer: 'geb-alter_wohnen', visible: true},
-            ],
-            visible: true,
-            opacity: 1,
-            isSingleLayer: false,
-            timeExtent: {start: '1506-01-01T00:00:00.000Z', end: '1890-01-01T00:04:22.000Z'},
-            attributeFilters: [
-              {
-                parameter: 'FILTER_GEBART',
-                name: 'Anzeigeoptionen nach Hauptnutzung',
-                activeFilters: [
-                  {name: 'Wohnen', isActive: false},
-                  {
-                    name: 'Gewerbe und Verwaltung',
-                    isActive: false,
-                  },
-                  {name: 'Andere', isActive: false},
-                ],
-              },
-            ],
-          },
-        ],
-        drawings: {type: 'Vector', geojson: {type: 'FeatureCollection', features: []}, styles: {}},
-        measurements: {type: 'Vector', geojson: {type: 'FeatureCollection', features: []}, styles: {}},
-      };
-      expect(StorageUtils.parseJson(shareLinkItemString)).toBe(shareLinkItem);
+      const expectedJsonObject = {date: TimeExtentUtils.parseDefaultUTCDate('1506-01-01T00:00:00.000Z'), number: 2683132, string: 'test'};
+      expect(StorageUtils.parseJson(stringToParse)).toEqual(expectedJsonObject);
+    });
+    it(`does not parses an invalid Date-String `, () => {
+      const stringToParse: string = '{"invalidDate":"T1506-01-01T00:00:00.000Z"}';
+
+      const expectedJsonObject = {invalidDate: 'T1506-01-01T00:00:00.000Z'};
+      expect(StorageUtils.parseJson(stringToParse)).toEqual(expectedJsonObject);
+    });
+    it(`does not parses a number as Date`, () => {
+      const stringToParse: string = '{"validDateAsNumber":19000101}';
+
+      const expectedJsonObject = {validDateAsNumber: 19000101};
+      expect(StorageUtils.parseJson(stringToParse)).toEqual(expectedJsonObject);
     });
   });
 });
