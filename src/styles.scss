@@ -1,8 +1,18 @@
 @use '@arcgis/core/assets/esri/themes/light/main.css';
-@use 'material-icons/iconfont/filled'; /* we only import the filled icons to reduce bundle size */
 @use 'gb3-theme';
 @use 'overrides/esri-overrides';
 @use 'overrides/material-overrides';
+
+/*
+  Import the Material Icons font and set the path to the font files.
+  This workaround is needed with Angular 17.2.3 due to internal path resolution changes.
+  See https://github.com/angular/angular-cli/issues/27256
+
+  The fix is recommended by the material-icons package maintainers,
+  see https://github.com/marella/material-icons?tab=readme-ov-file#using-sass
+ */
+$material-icons-font-path: 'material-icons/iconfont/';
+@import 'material-icons/iconfont/filled';
 
 body {
   margin: 0;
