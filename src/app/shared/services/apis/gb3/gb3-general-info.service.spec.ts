@@ -9,6 +9,7 @@ import {Gb3GeneralInfoService} from './gb3-general-info.service';
 import {GeneralInfoResponse} from '../../../interfaces/general-info.interface';
 import {GeneralInfoListData} from '../../../models/gb3-api-generated.interfaces';
 import {SupportedSrs} from '../../../types/supported-srs.type';
+import {provideMockStore} from '@ngrx/store/testing';
 
 const mockResponse: GeneralInfoListData = {
   general_info: {
@@ -56,6 +57,7 @@ describe('Gb3GeneralInfoService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
+      providers: [provideMockStore()],
     });
     service = TestBed.inject(Gb3GeneralInfoService);
     configService = TestBed.inject(ConfigService);

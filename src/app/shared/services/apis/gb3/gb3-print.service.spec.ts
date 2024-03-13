@@ -10,6 +10,7 @@ import {PrintCreation} from '../../../interfaces/print.interface';
 import {ConfigService} from '../../config.service';
 import {PrintableOverlayItem} from '../../../interfaces/overlay-print.interface';
 import {FeatureInfoQueryLocation} from '../../../interfaces/feature-info.interface';
+import {provideMockStore} from '@ngrx/store/testing';
 
 describe('Gb3PrintService', () => {
   let service: Gb3PrintService;
@@ -19,6 +20,7 @@ describe('Gb3PrintService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
+      providers: [provideMockStore()],
     });
     service = TestBed.inject(Gb3PrintService);
     httpClient = TestBed.inject(HttpClient);

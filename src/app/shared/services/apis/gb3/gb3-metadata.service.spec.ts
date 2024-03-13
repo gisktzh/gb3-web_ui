@@ -26,6 +26,7 @@ import {
   ProductOverviewMetadataItem,
   ServiceOverviewMetadataItem,
 } from '../../../models/overview-search-result.model';
+import {provideMockStore} from '@ngrx/store/testing';
 
 const mockContact = {
   amt: 'Amt für Tests',
@@ -178,6 +179,7 @@ describe('Gb3MetadataService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
+      providers: [provideMockStore()],
     });
     service = TestBed.inject(Gb3MetadataService);
     configService = TestBed.inject(ConfigService);

@@ -831,7 +831,7 @@ export interface Geometry {
    * Type of GeoJSON geometry object
    * @example "Polygon"
    */
-  type: 'Polygon' | 'Point' | 'LineString' | 'MultiPoint' | 'MultiPolygon';
+  type: 'Polygon' | 'Point' | 'LineString' | 'MultiPoint' | 'MultiLineString' | 'MultiPolygon';
   crs?: GeometryCrs;
   /**
    * coordinates for GeoJSON geometry object

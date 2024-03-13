@@ -6,7 +6,7 @@ import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {Map} from '../../../../shared/interfaces/topic.interface';
 import {GeometrySearchApiResultMatch} from '../../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
 import {LoadingState} from '../../../../shared/types/loading-state.type';
-import {selectSearchApiLoadingState, selectTerm} from '../../../../state/app/reducers/search.reducer';
+import {selectSearchApiLoadingState, selectSelectedSearchResult, selectTerm} from '../../../../state/app/reducers/search.reducer';
 import {
   selectFilteredLayerCatalogMaps,
   selectFilteredSearchApiResultMatches,
@@ -25,8 +25,10 @@ export class ResultGroupsComponent implements OnInit, OnDestroy {
   public filteredMaps: Map[] = [];
   public searchApiLoadingState: LoadingState;
   public screenMode: ScreenMode = 'regular';
+  public selectedSearchResult?: GeometrySearchApiResultMatch;
 
   private readonly searchTerm$ = this.store.select(selectTerm);
+  private readonly selectedSearchResult$ = this.store.select(selectSelectedSearchResult);
   private readonly filteredSearchApiResultMatches$ = this.store.select(selectFilteredSearchApiResultMatches);
   private readonly filteredMaps$ = this.store.select(selectFilteredLayerCatalogMaps);
   private readonly searchApiLoadingState$ = this.store.select(selectSearchApiLoadingState);
@@ -81,5 +83,8 @@ export class ResultGroupsComponent implements OnInit, OnDestroy {
       this.searchApiLoadingState$.pipe(tap((searchApiLoadingState) => (this.searchApiLoadingState = searchApiLoadingState))).subscribe(),
     );
     this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
+    this.subscriptions.add(
+      this.selectedSearchResult$.pipe(tap((selectedSearchResult) => (this.selectedSearchResult = selectedSearchResult))).subscribe(),
+    );
   }
 }

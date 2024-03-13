@@ -18,6 +18,7 @@ export const searchConfig: SearchConfig = {
           {label: 'Metadaten: Geodienste', isActive: false, type: 'metadata-services'},
           {label: 'Metadaten: Produkte', isActive: false, type: 'metadata-products'},
           {label: 'Häufige Fragen', isActive: false, type: 'faqs'},
+          {label: 'Hilfreiche Informationen', isActive: false, type: 'usefulLinks'},
         ],
       },
     ],

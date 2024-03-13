@@ -11,6 +11,7 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 > 5. [Naming conventions](#naming-conventions)
 > 6. [Code documentation](#code-documentation)
 > 7. [Git conventions](#git-conventions)
+> 8. [Release management](#release-management)
 
 ## Node version
 
@@ -554,3 +555,41 @@ There are the following branches:
 ### Naming conventions
 
 > **See [Branchname and commit message](#branchname-and-commit-message)**
+
+## Release management
+
+This section gives a brief overview of the release process and how to publish it.
+
+### Azure Devops
+
+#### 1. Create a changelog file anywhere
+
+It will be used later within a Teams announcement.
+
+#### 2. Frontend
+
+1. Create a pull request in `gb3-frontend` from `develop` to `main` with the title **_Release_**
+2. Click on **Add commit message** and remove any line that does **not** start with `Merged PR XXXXX:` \
+   This has the effect that only a few lines remain containing a good summary of the release.
+3. Remove the `Merged PR XXXXX:` from the beginning of each line - only the PR titles should remain. Add them to the changelog.
+4. Finish creating the PR by clicking on **Create** - no need to add any reviewers.
+5. Wait until the required checks succeed and then merge the PR.
+
+#### 3. All other repositories
+
+1. Check if all required features are merged back to `main`
+2. Copy all PR titles and add them to the changelog.
+
+#### 4. Create a release using the release pipeline '_Code Mirroring_'
+
+1. Click on **Create release**
+2. Add the changelog from above to the `Release description` field.
+3. Start the release by clicking **Create**
+
+#### 5. Publish the changelog
+
+1. Open Teams and go to the GB3 **Allgemein** channel
+2. Click on **Einen Beitrag starten**
+3. Change the type of article by choosing **Ankündigung** (left of **Veröffentlichen**)
+4. Enter the release title as _Überschrift_. E.g. `Release 42`
+5. Add the changelog from above as text and slightly format it. Use previous changelogs as styleguide.

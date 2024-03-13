@@ -10,6 +10,7 @@ export const initialState: SearchState = {
   searchApiLoadingState: undefined,
   searchApiResultMatches: [],
   filterGroups: [],
+  selectedSearchResult: undefined,
 };
 
 export const searchFeature = createFeature({
@@ -22,6 +23,7 @@ export const searchFeature = createFeature({
         term,
         searchApiResultMatches: initialState.searchApiResultMatches,
         searchApiLoadingState: 'loading',
+        selectedSearchResult: initialState.selectedSearchResult,
       };
     }),
     on(SearchActions.setSearchApiError, (state): SearchState => {
@@ -36,6 +38,7 @@ export const searchFeature = createFeature({
         term: initialState.term,
         searchApiLoadingState: initialState.searchApiLoadingState,
         searchApiResultMatches: initialState.searchApiResultMatches,
+        selectedSearchResult: initialState.selectedSearchResult,
       };
     }),
     on(SearchActions.setFilterGroups, (state, {filterGroups}): SearchState => {
@@ -85,8 +88,19 @@ export const searchFeature = createFeature({
     on(SearchActions.resetSearchAndFilters, (): SearchState => {
       return {...initialState};
     }),
+    on(SearchActions.selectMapSearchResult, (state, {searchResult}): SearchState => {
+      return {...state, selectedSearchResult: searchResult};
+    }),
   ),
 });
 
-export const {name, reducer, selectTerm, selectSearchState, selectSearchApiLoadingState, selectSearchApiResultMatches, selectFilterGroups} =
-  searchFeature;
+export const {
+  name,
+  reducer,
+  selectTerm,
+  selectSearchState,
+  selectSearchApiLoadingState,
+  selectSearchApiResultMatches,
+  selectFilterGroups,
+  selectSelectedSearchResult,
+} = searchFeature;

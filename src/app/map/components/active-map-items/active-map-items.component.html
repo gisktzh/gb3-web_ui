@@ -24,12 +24,11 @@
         class="active-map-items__header__buttons__action active-map-items__header__buttons__action--notices"
         (click)="showMapNotices()"
         [disabled]="numberOfNotices === 0"
-        [matBadge]="numberOfUnreadNotices"
-        [matBadgeHidden]="numberOfUnreadNotices === 0"
         mat-icon-button
         matTooltip="Kartenhinweise zu den aktiven Karten"
         [matTooltipPosition]="'below'"
       >
+        <notification-indicator *ngIf="numberOfUnreadNotices > 0"></notification-indicator>
         <mat-icon svgIcon="ktzh_notification"></mat-icon>
       </button>
       <mat-divider class="active-map-items__header__buttons__divider" [vertical]="true"></mat-divider>

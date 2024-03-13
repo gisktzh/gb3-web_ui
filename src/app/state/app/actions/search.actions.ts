@@ -1,5 +1,8 @@
 import {createActionGroup, emptyProps, props} from '@ngrx/store';
-import {SearchApiResultMatch} from '../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
+import {
+  GeometrySearchApiResultMatch,
+  SearchApiResultMatch,
+} from '../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
 import {errorProps} from '../../../shared/utils/error-props.utils';
 import {SearchOptions} from '../../../shared/interfaces/search-config.interface';
 import {SearchFilterGroup} from '../../../shared/interfaces/search-filter-group.interface';
@@ -17,5 +20,6 @@ export const SearchActions = createActionGroup({
     'Set Filter Value': props<{groupLabel: string; filterLabel: string; isActive: boolean}>(),
     'Reset Filters': emptyProps(),
     'Reset Search and Filters': emptyProps(),
+    'Select Map Search Result': props<{searchResult: GeometrySearchApiResultMatch}>(),
   },
 });

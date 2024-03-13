@@ -32,9 +32,20 @@
   <search-result-group
     *ngIf="filteredFaqItems.length > 0"
     class="search-result-groups__group"
-    header="Support"
+    header="Häufige Fragen"
     [numberOfItems]="filteredFaqItems.length"
   >
     <overview-search-result-item *ngFor="let filteredFaqItem of filteredFaqItems" [item]="filteredFaqItem"></overview-search-result-item>
+  </search-result-group>
+  <search-result-group
+    *ngIf="filteredUsefulLinks.length > 0"
+    class="search-result-groups__group"
+    header="Hilfreiche Informationen"
+    [numberOfItems]="filteredUsefulLinks.length"
+  >
+    <overview-search-result-item
+      *ngFor="let filteredUsefulLink of filteredUsefulLinks"
+      [item]="filteredUsefulLink"
+    ></overview-search-result-item>
   </search-result-group>
 </mat-accordion>

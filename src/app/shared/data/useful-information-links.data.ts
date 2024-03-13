@@ -11,7 +11,7 @@ export const usefulInformationLinks: AbstractLinksGroup[] = [
       {
         relativeUrl: '/api',
         title: 'API Dokumentation Geodatenkatalog',
-        baseUrlType: 'Geolion',
+        baseUrlType: 'geolion',
       },
       {
         href: 'https://maps.zh.ch/apidoc',

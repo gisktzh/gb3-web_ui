@@ -9,6 +9,7 @@ import {ConfigService} from '../../config.service';
 import {PageNotification} from '../../../interfaces/page-notification.interface';
 import {MainPage} from '../../../enums/main-page.enum';
 import {FrequentlyUsedItem} from '../../../interfaces/frequently-used-item.interface';
+import {provideMockStore} from '@ngrx/store/testing';
 
 describe('GravCmsService', () => {
   let service: GravCmsService;
@@ -17,6 +18,7 @@ describe('GravCmsService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
+      providers: [provideMockStore()],
     });
     service = TestBed.inject(GravCmsService);
     configService = TestBed.inject(ConfigService);

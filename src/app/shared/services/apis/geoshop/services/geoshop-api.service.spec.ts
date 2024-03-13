@@ -18,6 +18,7 @@ import {DataDownloadSelection} from '../../../../interfaces/data-download-select
 import {InternalDrawingLayer} from '../../../../enums/drawing-layer.enum';
 import {OrderUnsupportedGeometry} from '../../../../errors/data-download.errors';
 import {Product} from '../../../../interfaces/gb3-geoshop-product.interface';
+import {provideMockStore} from '@ngrx/store/testing';
 
 describe('GeoshopApiService', () => {
   let service: GeoshopApiService;
@@ -25,6 +26,7 @@ describe('GeoshopApiService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
+      providers: [provideMockStore()],
     });
     service = TestBed.inject(GeoshopApiService);
   });

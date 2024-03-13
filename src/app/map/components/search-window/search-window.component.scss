@@ -15,13 +15,13 @@
     overflow: hidden;
   }
 
-  @media (max-width: calc(map-layout-variables.$map-overlay-width + map-layout-variables.$element-margin + map-layout-variables.$legend-button-width + map-layout-variables.$element-margin + map-layout-variables.$search-window-width)) {
+  @media (max-width: calc(#{map-layout-variables.$map-overlay-width} + #{map-layout-variables.$element-margin} + #{map-layout-variables.$legend-button-width} + #{map-layout-variables.$element-margin} + #{map-layout-variables.$search-window-width})) {
     .search-window__searchbar {
       width: calc(
         100vw -
           (
-            map-layout-variables.$map-overlay-width + map-layout-variables.$element-margin + map-layout-variables.$legend-button-width +
-              map-layout-variables.$element-margin
+            #{map-layout-variables.$map-overlay-width} + #{map-layout-variables.$element-margin} + #{map-layout-variables.$legend-button-width} +
+              #{map-layout-variables.$element-margin}
           )
       );
     }
@@ -43,14 +43,14 @@
     z-index: z-index-variables.$search-window-results;
   }
 
-  @media (max-width: calc(map-layout-variables.$map-overlay-width + map-layout-variables.$element-margin + map-layout-variables.$legend-button-width + map-layout-variables.$element-margin + map-layout-variables.$search-window-width)) {
+  @media (max-width: calc(#{map-layout-variables.$map-overlay-width} + #{map-layout-variables.$element-margin} + #{map-layout-variables.$legend-button-width} + #{map-layout-variables.$element-margin} + #{map-layout-variables.$search-window-width})) {
     .search-window__results-container {
       width: calc(
         100vw -
           (
-            map-layout-variables.$map-overlay-width + map-layout-variables.$element-margin + map-layout-variables.$legend-button-width +
-              map-layout-variables.$element-margin
-          ) - (map-layout-variables.$search-window-width - map-layout-variables.$search-results-width)
+            #{map-layout-variables.$map-overlay-width} + #{map-layout-variables.$element-margin} + #{map-layout-variables.$legend-button-width} +
+              #{map-layout-variables.$element-margin}
+          ) - (#{map-layout-variables.$search-window-width} - #{map-layout-variables.$search-results-width})
       );
     }
   }

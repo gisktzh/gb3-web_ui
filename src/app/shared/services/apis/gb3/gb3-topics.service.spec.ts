@@ -10,6 +10,7 @@ import {FilterConfiguration, TopicsResponse, WmsFilterValue} from '../../../inte
 import {LegendResponse} from '../../../interfaces/legend.interface';
 import {QueryTopic} from '../../../interfaces/query-topic.interface';
 import {FeatureInfoResponse} from '../../../interfaces/feature-info.interface';
+import {provideMockStore} from '@ngrx/store/testing';
 
 describe('Gb3TopicsService', () => {
   let service: Gb3TopicsService;
@@ -17,6 +18,7 @@ describe('Gb3TopicsService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
+      providers: [provideMockStore()],
     });
     service = TestBed.inject(Gb3TopicsService);
   });

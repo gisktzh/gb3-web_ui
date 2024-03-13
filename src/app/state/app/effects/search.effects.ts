@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {Actions, concatLatestFrom, createEffect, ofType} from '@ngrx/effects';
 import {combineLatestWith, distinctUntilChanged, filter, of, switchMap, takeWhile, tap} from 'rxjs';
 import {SearchActions} from '../actions/search.actions';
@@ -13,6 +13,11 @@ import {ConfigService} from '../../../shared/services/config.service';
 import {selectLoadingState as selectDataCatalogueLoadingState} from '../../data-catalogue/reducers/data-catalogue.reducer';
 import {DataCatalogueActions} from '../../data-catalogue/actions/data-catalogue.actions';
 import {SearchIndexType} from '../../../shared/configs/search-index.config';
+import {MAP_SERVICE} from '../../../app.module';
+import {MapService} from '../../../map/interfaces/map.service';
+import {MapDrawingService} from '../../../map/services/map-drawing.service';
+import {MapUiActions} from '../../map/actions/map-ui.actions';
+import {selectUrlState} from '../reducers/url.reducer';
 
 @Injectable()
 export class SearchEffects {
@@ -76,7 +81,7 @@ export class SearchEffects {
     );
   });
 
-  public loadMetadataProductsForSearch = createEffect(() => {
+  public loadMetadataProductsForSearch$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(SearchActions.searchForTerm),
       filter((value) =>
@@ -90,10 +95,50 @@ export class SearchEffects {
     );
   });
 
+  public zoomToAndHighlightSelectedSearchResult$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(SearchActions.selectMapSearchResult),
+        tap(({searchResult}) => {
+          // only zoom to result if the geometry is available in the index
+          if (searchResult.geometry) {
+            this.mapService.zoomToExtent(searchResult.geometry);
+            this.mapDrawingService.drawSearchResultHighlight(searchResult.geometry);
+          }
+        }),
+      );
+    },
+    {dispatch: false},
+  );
+
+  public clearSearchTermAfterFeatureInfoOpened$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapUiActions.setFeatureInfoVisibility),
+      filter(({isVisible}) => isVisible),
+      map(() => SearchActions.clearSearchTerm()),
+    );
+  });
+
+  public removeHighlightAfterChangingSearchTermOrClearingSearchResult$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(SearchActions.searchForTerm, SearchActions.clearSearchTerm),
+        concatLatestFrom(() => this.store.select(selectUrlState)),
+        filter(([_, urlState]) => urlState.mainPage === 'maps'),
+        tap(() => {
+          this.mapDrawingService.clearSearchResultHighlight();
+        }),
+      );
+    },
+    {dispatch: false},
+  );
+
   constructor(
     private readonly actions$: Actions,
     private readonly store: Store,
     private readonly searchService: SearchService,
     private readonly configService: ConfigService,
+    @Inject(MAP_SERVICE) private readonly mapService: MapService,
+    private readonly mapDrawingService: MapDrawingService,
   ) {}
 }

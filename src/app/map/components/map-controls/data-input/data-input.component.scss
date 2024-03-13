@@ -16,5 +16,9 @@
     overflow: hidden;
     font-size: 12px;
     width: 100%;
+
+    .data-input__prefix {
+      line-height: normal;
+    }
   }
 }

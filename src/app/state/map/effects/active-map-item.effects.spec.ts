@@ -46,8 +46,8 @@ describe('ActiveMapItemEffects', () => {
         ActiveMapItemEffects,
         provideMockActions(() => actions$),
         provideMockStore(),
-        {provide: MAP_SERVICE, useClass: MapServiceStub}
-      ]
+        {provide: MAP_SERVICE, useClass: MapServiceStub},
+      ],
     });
     effects = TestBed.inject(ActiveMapItemEffects);
     gb3TopicsService = TestBed.inject(Gb3TopicsService);
@@ -140,7 +140,7 @@ describe('ActiveMapItemEffects', () => {
       const activeMapItems: ActiveMapItem[] = [
         createDrawingMapItemMock(UserDrawingLayer.Measurements),
         createDrawingMapItemMock(UserDrawingLayer.Drawings),
-        createGb2WmsMapItemMock('mapMock')
+        createGb2WmsMapItemMock('mapMock'),
       ];
       store.overrideSelector(selectItems, activeMapItems);
       store.overrideSelector(selectActiveTool, 'measure-area');
@@ -170,7 +170,7 @@ describe('ActiveMapItemEffects', () => {
       const activeMapItems: ActiveMapItem[] = [
         createDrawingMapItemMock(UserDrawingLayer.Measurements),
         createDrawingMapItemMock(UserDrawingLayer.Drawings),
-        createGb2WmsMapItemMock('mapMock')
+        createGb2WmsMapItemMock('mapMock'),
       ];
       store.overrideSelector(selectItems, activeMapItems);
       store.overrideSelector(selectActiveTool, 'measure-area');
@@ -289,7 +289,7 @@ describe('ActiveMapItemEffects', () => {
       const expectedAction = ActiveMapItemActions.setSublayerVisibility({
         visible: expectedVisibility,
         activeMapItem: expectedActiveMapItem,
-        layerId: expectedLayerId
+        layerId: expectedLayerId,
       });
       actions$ = of(expectedAction);
       effects.setSublayerVisibility$.subscribe((action) => {
@@ -308,7 +308,7 @@ describe('ActiveMapItemEffects', () => {
 
       const expectedAction = ActiveMapItemActions.reorderActiveMapItem({
         previousPosition: expectedPreviousPosition,
-        currentPosition: expectedCurrentPosition
+        currentPosition: expectedCurrentPosition,
       });
       actions$ = of(expectedAction);
       effects.reorderItem$.subscribe((action) => {
@@ -329,7 +329,7 @@ describe('ActiveMapItemEffects', () => {
       const expectedAction = ActiveMapItemActions.reorderSublayer({
         activeMapItem: expectedActiveMapItem,
         previousPosition: expectedPreviousPosition,
-        currentPosition: expectedCurrentPosition
+        currentPosition: expectedCurrentPosition,
       });
       actions$ = of(expectedAction);
       effects.reorderSublayer$.subscribe((action) => {
@@ -348,7 +348,7 @@ describe('ActiveMapItemEffects', () => {
 
       const expectedAction = ActiveMapItemActions.setTimeSliderExtent({
         activeMapItem: expectedActiveMapItem,
-        timeExtent: expectedTimeExtent
+        timeExtent: expectedTimeExtent,
       });
       actions$ = of(expectedAction);
       effects.setTimeSliderExtentOnMap$.subscribe((action) => {
@@ -368,20 +368,20 @@ describe('ActiveMapItemEffects', () => {
           {
             name: 'Wohnen',
             values: ['Gebäude Wohnen'],
-            isActive: true
+            isActive: true,
           },
           {
             name: 'Gewerbe und Verwaltung',
             values: ['Gebäude Landwirtschaft', 'Gebäude Industrie', 'Gebäude Verwaltung'],
-            isActive: true
+            isActive: true,
           },
           {
             name: 'Andere',
             values: ['Nebengebäude', 'Gebäude Handel', 'Gebäude Gastgewerbe', 'Gebäude Verkehrswesen', 'unbekannt'],
-            isActive: false
-          }
-        ]
-      }
+            isActive: false,
+          },
+        ],
+      },
     ];
 
     const mapMock = {id: 'test', title: 'test_title', layers: [], filterConfigurations: filterConfigurationsMock} as Partial<Map>;
@@ -392,7 +392,7 @@ describe('ActiveMapItemEffects', () => {
         createDrawingMapItemMock(UserDrawingLayer.Measurements),
         createDrawingMapItemMock(UserDrawingLayer.Drawings),
         createGb2WmsMapItemMock('otherMapItemMock'),
-        expectedActiveMapItem
+        expectedActiveMapItem,
       ];
       store.overrideSelector(selectItems, activeMapItems);
       const gb3TopicsServiceSpy = spyOn(gb3TopicsService, 'transformFilterConfigurationToParameters').and.callThrough();
@@ -402,7 +402,7 @@ describe('ActiveMapItemEffects', () => {
         isFilterValueActive: true,
         filterValueName: 'irrelevant_for_this_test',
         attributeFilterParameter: 'irrelevant_for_this_test',
-        activeMapItem: expectedActiveMapItem
+        activeMapItem: expectedActiveMapItem,
       });
       actions$ = of(expectedAction);
       effects.setActiveFilters$.subscribe(([action, _]) => {
@@ -419,21 +419,21 @@ describe('ActiveMapItemEffects', () => {
     it('dispatches DrawingActions.overwriteDrawingLayersWithDrawings() after adding all favourite map items using the map service', (done: DoneFn) => {
       const expectedFavouriteActiveMapItems: ActiveMapItem[] = [
         createGb2WmsMapItemMock('favouriteOne'),
-        createGb2WmsMapItemMock('favouriteTwo')
+        createGb2WmsMapItemMock('favouriteTwo'),
       ];
       const expectedCenter: PointWithSrs = {
         type: 'Point',
         srs: MapConstants.DEFAULT_SRS,
-        coordinates: [1337, 9000.0001]
+        coordinates: [1337, 9000.0001],
       };
       const expectedFavouriteBaseConfig: FavouriteBaseConfig = {
         scale: 1_500_000,
         center: {x: expectedCenter.coordinates[0], y: expectedCenter.coordinates[1]},
-        basemap: 'I have come here to chew bubblegum and kick ass. And I\'m all out of bubblegum.'
+        basemap: "I have come here to chew bubblegum and kick ass. And I'm all out of bubblegum.",
       };
       const activeMapItemSpies: {spy: jasmine.Spy; expectedPosition: number}[] = expectedFavouriteActiveMapItems.map((item, index) => ({
         spy: spyOn(item, 'addToMap').and.callThrough(),
-        expectedPosition: index
+        expectedPosition: index,
       }));
       const mapServiceRemoveMapItemSpy = spyOn(mapService, 'removeMapItem').and.callThrough();
 
@@ -441,8 +441,8 @@ describe('ActiveMapItemEffects', () => {
         ActiveMapItemActions.addFavourite({
           activeMapItems: expectedFavouriteActiveMapItems,
           baseConfig: expectedFavouriteBaseConfig,
-          drawingsToAdd: []
-        })
+          drawingsToAdd: [],
+        }),
       );
       effects.addFavourite$.subscribe((action) => {
         activeMapItemSpies.forEach((itemSpy) => {
@@ -463,20 +463,20 @@ describe('ActiveMapItemEffects', () => {
       const expectedCenter: PointWithSrs = {
         type: 'Point',
         srs: MapConstants.DEFAULT_SRS,
-        coordinates: [1337, 9000.0001]
+        coordinates: [1337, 9000.0001],
       };
       const expectedFavouriteBaseConfig: FavouriteBaseConfig = {
         scale: 1_500_000,
         center: {x: expectedCenter.coordinates[0], y: expectedCenter.coordinates[1]},
-        basemap: 'favMap'
+        basemap: 'favMap',
       };
 
       actions$ = of(
         ActiveMapItemActions.addFavourite({
           activeMapItems: [],
           baseConfig: expectedFavouriteBaseConfig,
-          drawingsToAdd: []
-        })
+          drawingsToAdd: [],
+        }),
       );
       effects.updateBasemapForFavourite$.subscribe((action) => {
         expect(action).toEqual(MapConfigActions.setBasemap({activeBasemapId: expectedFavouriteBaseConfig.basemap}));
@@ -490,11 +490,11 @@ describe('ActiveMapItemEffects', () => {
       store.overrideSelector(selectIsMapServiceInitialized, true);
       const expectedInitialActiveMapItems: ActiveMapItem[] = [
         createGb2WmsMapItemMock('initialItemOne'),
-        createGb2WmsMapItemMock('initialItemTwo')
+        createGb2WmsMapItemMock('initialItemTwo'),
       ];
       const activeMapItemSpies: {spy: jasmine.Spy; expectedPosition: number}[] = expectedInitialActiveMapItems.map((item, index) => ({
         spy: spyOn(item, 'addToMap').and.callThrough(),
-        expectedPosition: index
+        expectedPosition: index,
       }));
 
       actions$ = of(ActiveMapItemActions.addInitialMapItems({initialMapItems: expectedInitialActiveMapItems}));
@@ -511,11 +511,11 @@ describe('ActiveMapItemEffects', () => {
       store.overrideSelector(selectIsMapServiceInitialized, false);
       const expectedInitialActiveMapItems: ActiveMapItem[] = [
         createGb2WmsMapItemMock('initialItemOne'),
-        createGb2WmsMapItemMock('initialItemTwo')
+        createGb2WmsMapItemMock('initialItemTwo'),
       ];
       const activeMapItemSpies: {spy: jasmine.Spy; expectedPosition: number}[] = expectedInitialActiveMapItems.map((item, index) => ({
         spy: spyOn(item, 'addToMap').and.callThrough(),
-        expectedPosition: index
+        expectedPosition: index,
       }));
 
       actions$ = of(ActiveMapItemActions.addInitialMapItems({initialMapItems: expectedInitialActiveMapItems}));

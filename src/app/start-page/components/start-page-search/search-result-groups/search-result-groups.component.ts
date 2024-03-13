@@ -10,6 +10,7 @@ import {
   selectFilteredFaqItems,
   selectFilteredLayerCatalogMaps,
   selectFilteredMetadataItems,
+  selectFilteredUsefulLinks,
 } from '../../../../state/app/selectors/search-results.selector';
 import {selectLoadingState as selectDataCatalogLoadingState} from '../../../../state/data-catalogue/reducers/data-catalogue.reducer';
 import {selectLoadingState as selectLayerCatalogLoadingState} from '../../../../state/map/reducers/layer-catalog.reducer';
@@ -25,6 +26,7 @@ export class SearchResultGroupsComponent implements OnInit, OnDestroy {
   public filteredMaps: Map[] = [];
   public filteredMetadataItems: OverviewSearchResultDisplayItem[] = [];
   public filteredFaqItems: OverviewSearchResultDisplayItem[] = [];
+  public filteredUsefulLinks: OverviewSearchResultDisplayItem[] = [];
   public dataCatalogLoadingState: LoadingState;
   public combinedSearchAndDataCatalogLoadingState: LoadingState;
   public searchApiLoadingState: LoadingState;
@@ -34,6 +36,7 @@ export class SearchResultGroupsComponent implements OnInit, OnDestroy {
   private readonly layerCatalogLoadingState$ = this.store.select(selectLayerCatalogLoadingState);
   private readonly dataCatalogLoadingState$ = this.store.select(selectDataCatalogLoadingState);
   private readonly filteredFaqItems$ = this.store.select(selectFilteredFaqItems);
+  private readonly filteredUsefulLinks$ = this.store.select(selectFilteredUsefulLinks);
   private readonly filteredMetadataItems$ = this.store.select(selectFilteredMetadataItems);
   private readonly filteredMaps$ = this.store.select(selectFilteredLayerCatalogMaps);
   private readonly screenMode$ = this.store.select(selectScreenMode);
@@ -81,6 +84,9 @@ export class SearchResultGroupsComponent implements OnInit, OnDestroy {
         .subscribe(),
     );
     this.subscriptions.add(this.filteredFaqItems$.pipe(tap((filteredFaqItems) => (this.filteredFaqItems = filteredFaqItems))).subscribe());
+    this.subscriptions.add(
+      this.filteredUsefulLinks$.pipe(tap((filteredUsefulLinks) => (this.filteredUsefulLinks = filteredUsefulLinks))).subscribe(),
+    );
     this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
   }
 
