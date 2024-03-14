@@ -237,6 +237,10 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.prod.ts"
+                },
+                {
+                  "replace": "src/app/shared/configs/runtime.config.ts",
+                  "with": "src/app/shared/configs/runtime.testing.config.ts"
                 }
               ]
             }

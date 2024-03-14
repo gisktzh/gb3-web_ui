@@ -12,6 +12,7 @@ import {HttpClient} from '@angular/common/http';
 import {BasemapConfigService} from '../../../../map/services/basemap-config.service';
 import {FavouritesService} from '../../../../map/services/favourites.service';
 import {MapRestoreItem} from '../../../interfaces/map-restore-item.interface';
+import {TimeExtentUtils} from '../../../utils/time-extent.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -106,7 +107,23 @@ export class Gb3ShareLinkService extends Gb3ApiService {
       basemapId: sharedFavorite.basemap,
       center: {x: sharedFavorite.east, y: sharedFavorite.north},
       scale: sharedFavorite.scaledenom,
-      content: sharedFavorite.content,
+      content: sharedFavorite.content.map((content) => {
+        return {
+          id: content.id,
+          visible: content.visible,
+          opacity: content.opacity,
+          isSingleLayer: content.isSingleLayer,
+          layers: content.layers,
+          mapId: content.mapId,
+          attributeFilters: content.attributeFilters,
+          timeExtent: content.timeExtent
+            ? {
+                start: TimeExtentUtils.parseDefaultUTCDate(content.timeExtent[0].start),
+                end: TimeExtentUtils.parseDefaultUTCDate(content.timeExtent[0].end),
+              }
+            : undefined,
+        };
+      }),
       drawings: this.mapVectorLayerToGb3VectorLayer(sharedFavorite.drawings),
       measurements: this.mapVectorLayerToGb3VectorLayer(sharedFavorite.measurements),
     };
@@ -118,7 +135,25 @@ export class Gb3ShareLinkService extends Gb3ApiService {
       east: shareLink.center.x,
       north: shareLink.center.y,
       scaledenom: shareLink.scale,
-      content: shareLink.content,
+      content: shareLink.content.map((content) => {
+        return {
+          id: content.id,
+          mapId: content.mapId,
+          visible: content.visible,
+          opacity: content.opacity,
+          isSingleLayer: content.isSingleLayer,
+          layers: content.layers,
+          attributeFilters: content.attributeFilters,
+          timeExtent: content.timeExtent
+            ? [
+                {
+                  start: content.timeExtent.start.toUTCString(),
+                  end: content.timeExtent.end.toUTCString(),
+                },
+              ]
+            : undefined,
+        };
+      }),
       drawings: shareLink.drawings,
       measurements: shareLink.measurements,
     };

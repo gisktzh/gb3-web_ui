@@ -35,6 +35,7 @@ import {UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 import {selectIsAuthenticated} from '../../auth/reducers/auth-status.reducer';
 import {MapRestoreItem} from '../../../shared/interfaces/map-restore-item.interface';
+import {TimeExtentUtils} from '../../../shared/utils/time-extent.utils';
 
 function createActiveMapItemsFromConfigs(activeMapItemConfigurations: ActiveMapItemConfiguration[]): ActiveMapItem[] {
   return activeMapItemConfigurations.map(
@@ -82,6 +83,21 @@ describe('ShareLinkEffects', () => {
         opacity: 0.5,
         visible: true,
         isSingleLayer: false,
+        timeExtent: {start: TimeExtentUtils.parseDefaultUTCDate('1000'), end: TimeExtentUtils.parseDefaultUTCDate('2020')},
+        attributeFilters: [
+          {
+            parameter: 'FILTER_GEBART',
+            name: 'Anzeigeoptionen nach Hauptnutzung',
+            activeFilters: [
+              {name: 'Wohnen', isActive: false},
+              {name: 'Andere', isActive: false},
+              {
+                name: 'Gewerbe und Verwaltung',
+                isActive: false,
+              },
+            ],
+          },
+        ],
       },
       {
         id: 'Lageklassen2003ZH',
@@ -101,6 +117,8 @@ describe('ShareLinkEffects', () => {
         opacity: 1,
         visible: true,
         isSingleLayer: false,
+        timeExtent: undefined,
+        attributeFilters: undefined,
       },
     ],
     drawings: {

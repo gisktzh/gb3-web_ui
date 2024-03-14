@@ -83,8 +83,8 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy {
           drawingsToAdd,
         }),
       );
-    } catch (e) {
-      this.store.dispatch(FavouriteListActions.setInvalid({id}));
+    } catch (error) {
+      this.store.dispatch(FavouriteListActions.setInvalid({id, error}));
     }
   }
 

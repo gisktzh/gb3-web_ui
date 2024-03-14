@@ -29,11 +29,14 @@ import {Store} from '@ngrx/store';
 import {AppActions} from '../../state/app/actions/app.actions';
 
 import {DynamicInternalUrlsConfiguration} from '../types/dynamic-internal-url.type';
+import {defaultFeatureFlags} from '../configs/feature-flags.config';
+import {FeatureFlags} from '../interfaces/feature-flags.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ConfigService {
+  public readonly featureFlags: FeatureFlags;
   public readonly basemapConfig = {
     availableBasemaps: defaultBasemaps,
     defaultBasemap: defaultBasemap,
@@ -85,6 +88,7 @@ export class ConfigService {
     this.apiConfig = runtimeConfig.apiBasePaths;
     this.overridesConfig = runtimeConfig.overrides;
     this.authConfig = runtimeConfig.authSettings;
+    this.featureFlags = {...defaultFeatureFlags, ...runtimeConfig.featureFlags};
 
     this.initializeDynamicInternalUrlsState();
   }

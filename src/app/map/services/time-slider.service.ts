@@ -57,14 +57,22 @@ export class TimeSliderService {
       /*
           Minimal range
             Either the start or end date has changed;
-            1. ensure that the changed date is still within the valid minimum range:
+            1. Ensure that startDate < endDate.
+            2. ensure that the changed date is still within the valid minimum range:
               a. in case the start date was changed: minDate <= startDate <= maxDate - range
               b. in case the end date was changed:   maxDate >= endDate >= minDate + range
-            2. if the difference between the new start and end date is under the given minimum range then
+            3. if the difference between the new start and end date is under the given minimum range then
                adjust the value of the changed value accordingly to enforce the minimal range between them
-            3. if the previous changes are not enough (e.g. in case the min/max limits have changed) then
+            4. if the previous changes are not enough (e.g. in case the min/max limits have changed) then
                also adjust the value of the previously unchanged value.
          */
+
+      if (timeExtent.start > timeExtent.end) {
+        const startDate: Date = timeExtent.start;
+        timeExtent.start = timeExtent.end;
+        timeExtent.end = startDate;
+      }
+
       const startEndDiff: number = TimeExtentUtils.calculateDifferenceBetweenDates(timeExtent.start, timeExtent.end);
       const minimalRange: Duration = dayjs.duration(timeSliderConfig.minimalRange);
 
@@ -88,12 +96,21 @@ export class TimeSliderService {
     return timeExtent;
   }
 
+  public isTimeExtentValid(timeSliderConfig: TimeSliderConfiguration, timeExtent: TimeExtent): boolean {
+    const minDate = TimeExtentUtils.parseUTCDate(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat);
+    const maxDate = TimeExtentUtils.parseUTCDate(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat);
+
+    const updatedTimeExtent: TimeExtent = this.createValidTimeExtent(timeSliderConfig, timeExtent, false, minDate, maxDate);
+
+    return timeExtent.start.getTime() === updatedTimeExtent.start.getTime() && timeExtent.end.getTime() === updatedTimeExtent.end.getTime();
+  }
+
   /**
    * Creates stops for a layer source containing multiple dates which may not necessarily have constant gaps between them.
    */
   private createStopsForLayerSource(timeSliderConfig: TimeSliderConfiguration): Array<Date> {
     const timeSliderLayerSource = timeSliderConfig.source as TimeSliderLayerSource;
-    return timeSliderLayerSource.layers.map((l) => dayjs(l.date, timeSliderConfig.dateFormat).toDate());
+    return timeSliderLayerSource.layers.map((layer) => TimeExtentUtils.parseUTCDate(layer.date, timeSliderConfig.dateFormat));
   }
 
   /**
@@ -105,8 +122,8 @@ export class TimeSliderService {
    * start to finish using the given duration; this can lead to gaps near the end but supports all cases.
    */
   private createStopsForParameterSource(timeSliderConfig: TimeSliderConfiguration): Array<Date> {
-    const minimumDate: Date = dayjs(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat).toDate();
-    const maximumDate: Date = dayjs(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat).toDate();
+    const minimumDate: Date = TimeExtentUtils.parseUTCDate(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat);
+    const maximumDate: Date = TimeExtentUtils.parseUTCDate(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat);
     const initialRange: string | null = timeSliderConfig.range ?? timeSliderConfig.minimalRange ?? null;
     let stopRangeDuration: Duration | null = initialRange ? dayjs.duration(initialRange) : null;
     if (

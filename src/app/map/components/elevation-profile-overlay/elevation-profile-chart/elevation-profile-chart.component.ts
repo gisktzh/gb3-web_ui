@@ -3,13 +3,16 @@ import {ElevationProfileData, ElevationProfileDataPoint} from '../../../../share
 import {ElevationProfileChartJsDataConfiguration} from './types/chartjs.type';
 import {ElevationPlotConfigService} from './services/elevation-plot-config.service';
 import {ElevationProfileChartJsOptions} from './interfaces/chartjs.interface';
+import {BaseChartDirective} from 'ng2-charts';
 
 const VERTIXAL_AXIS_LABEL = 'MüM';
 
 @Component({
+  standalone: true,
   selector: 'elevation-profile-chart',
   templateUrl: './elevation-profile-chart.component.html',
   styleUrls: ['./elevation-profile-chart.component.scss'],
+  imports: [BaseChartDirective],
 })
 export class ElevationProfileChartComponent implements OnInit {
   @Input() public elevationProfileData!: ElevationProfileData;

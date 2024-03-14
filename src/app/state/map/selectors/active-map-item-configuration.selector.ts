@@ -16,6 +16,18 @@ export const selectActiveMapItemConfigurations = createSelector(selectItems, (ac
         visible: activeMapItem.visible,
         opacity: activeMapItem.opacity,
         isSingleLayer: activeMapItem.isSingleLayer,
+        timeExtent: activeMapItem.settings.timeSliderExtent,
+        attributeFilters: activeMapItem.settings.filterConfigurations
+          ? activeMapItem.settings.filterConfigurations.map((filterConfiguration) => {
+              return {
+                parameter: filterConfiguration.parameter,
+                name: filterConfiguration.name,
+                activeFilters: filterConfiguration.filterValues.map((filterValue) => {
+                  return {name: filterValue.name, isActive: filterValue.isActive};
+                }),
+              };
+            })
+          : undefined,
       };
     });
   return activeMapItemConfigurations;

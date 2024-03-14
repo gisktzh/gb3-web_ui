@@ -8,8 +8,9 @@ export const FavouriteListActions = createActionGroup({
     'Load Favourites': emptyProps(),
     'Set Favourites': props<{favourites: Favourite[]}>(),
     'Clear Favourites': emptyProps(),
-    'Set Invalid': props<{id: string}>(),
+    'Set Invalid': props<{id: string; error: unknown}>(),
     'Remove Favourite': props<{id: string}>(),
     'Set Error': errorProps(),
+    'Display Error': props<{message: string}>(),
   },
 });

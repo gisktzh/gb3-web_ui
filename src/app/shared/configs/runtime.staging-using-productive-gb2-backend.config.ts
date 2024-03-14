@@ -53,6 +53,7 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       clientId: 'gb3',
       issuer: 'https://web.maps.zh.ch/',
     },
+    featureFlags: {},
     overrides: {
       overrideWmsUrl: 'https://web.wms.zh.ch',
     },

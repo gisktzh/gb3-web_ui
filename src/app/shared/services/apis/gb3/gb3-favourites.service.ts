@@ -9,6 +9,7 @@ import {
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {CreateFavourite, Favourite, FavouritesResponse} from '../../../interfaces/favourite.interface';
+import {TimeExtentUtils} from '../../../utils/time-extent.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -44,7 +45,8 @@ export class Gb3FavouritesService extends Gb3ApiService {
 
   private mapFavouritesListDataToFavouritesResponse(favouritesListData: UserFavoritesListData): FavouritesResponse {
     return favouritesListData.map((data) => ({
-      ...data,
+      id: data.id,
+      title: data.title,
       baseConfig: {
         basemap: data.basemap,
         scale: data.scaledenom,
@@ -53,6 +55,25 @@ export class Gb3FavouritesService extends Gb3ApiService {
           y: data.north,
         },
       },
+      content: data.content.map((content) => {
+        return {
+          id: content.id,
+          visible: content.visible,
+          opacity: content.opacity,
+          isSingleLayer: content.isSingleLayer,
+          layers: content.layers,
+          mapId: content.mapId,
+          attributeFilters: content.attributeFilters,
+          timeExtent: content.timeExtent
+            ? {
+                start: TimeExtentUtils.parseDefaultUTCDate(content.timeExtent[0].start),
+                end: TimeExtentUtils.parseDefaultUTCDate(content.timeExtent[0].end),
+              }
+            : undefined,
+        };
+      }),
+      drawings: data.drawings,
+      measurements: data.measurements,
     })) as unknown as FavouritesResponse; // todo: typecasts once API is fixed
   }
 
@@ -63,6 +84,25 @@ export class Gb3FavouritesService extends Gb3ApiService {
       north: baseConfig.center.y,
       scaledenom: baseConfig.scale,
       basemap: baseConfig.basemap,
-    } as unknown as PersonalFavoriteNew; // todo: typecasts once API is fixed
+      content: payload.content.map((content) => {
+        return {
+          id: content.id,
+          mapId: content.mapId,
+          visible: content.visible,
+          opacity: content.opacity,
+          isSingleLayer: content.isSingleLayer,
+          layers: content.layers,
+          attributeFilters: content.attributeFilters,
+          timeExtent: content.timeExtent
+            ? [
+                {
+                  start: content.timeExtent.start.toUTCString(),
+                  end: content.timeExtent.end.toUTCString(),
+                },
+              ]
+            : undefined,
+        };
+      }),
+    };
   }
 }

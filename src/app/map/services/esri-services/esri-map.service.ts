@@ -60,6 +60,7 @@ import {ExternalWmsActiveMapItem} from '../../models/implementations/external-wm
 import {ExternalKmlActiveMapItem} from '../../models/implementations/external-kml.model';
 import {ExternalWmsLayer} from '../../../shared/interfaces/external-layer.interface';
 import {ActiveTimeSliderLayersUtils} from '../../utils/active-time-slider-layers.utils';
+import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
 
@@ -90,6 +91,7 @@ export class EsriMapService implements MapService, OnDestroy {
     private readonly esriSymbolizationService: EsriSymbolizationService,
     private readonly esriMapViewService: EsriMapViewService,
     private readonly esriToolService: EsriToolService,
+    private readonly gb3TopicsService: Gb3TopicsService,
   ) {
     /**
      * Because the GetCapabalities response often sends a non-secure http://wms.zh.ch response, Esri Javascript API fails on https
@@ -200,6 +202,13 @@ export class EsriMapService implements MapService, OnDestroy {
     if (mapItem.settings.timeSliderExtent) {
       // apply initial time slider settings
       this.setEsriTimeSliderExtent(mapItem.settings.timeSliderExtent, mapItem, esriLayer);
+    }
+    if (mapItem.settings.filterConfigurations) {
+      const attributeFilterParameters = this.gb3TopicsService.transformFilterConfigurationToParameters(
+        mapItem.settings.filterConfigurations,
+      );
+      // apply initial attribute filter settings
+      this.setEsriAttributeFilters(attributeFilterParameters, esriLayer);
     }
     this.addLayer(esriLayer, position);
   }
@@ -322,13 +331,9 @@ export class EsriMapService implements MapService, OnDestroy {
 
   public setAttributeFilters(attributeFilterParameters: WmsFilterValue[], mapItem: Gb2WmsActiveMapItem) {
     const esriLayer = this.esriMapViewService.findEsriLayer(mapItem.id);
-    if (esriLayer && esriLayer instanceof EsriWMSLayer) {
-      const customLayerParameters: {[index: string]: string} = esriLayer.customLayerParameters ?? {};
-      attributeFilterParameters.forEach((attributeFilterParameter) => {
-        customLayerParameters[attributeFilterParameter.name] = attributeFilterParameter.value;
-      });
-      esriLayer.customLayerParameters = customLayerParameters;
-      esriLayer.refresh();
+
+    if (esriLayer) {
+      this.setEsriAttributeFilters(attributeFilterParameters, esriLayer);
     }
   }
 
@@ -494,7 +499,15 @@ export class EsriMapService implements MapService, OnDestroy {
     }
   }
 
-  private handlePrintPreview(center: {x: number; y: number}, extentWidth: number, extentHeight: number, rotation: number): PolygonWithSrs {
+  private handlePrintPreview(
+    center: {
+      x: number;
+      y: number;
+    },
+    extentWidth: number,
+    extentHeight: number,
+    rotation: number,
+  ): PolygonWithSrs {
     const printPreviewArea = PrintUtils.createPrintPreviewArea(center, extentWidth, extentHeight);
     const symbolization = this.esriSymbolizationService.createSymbolizationForDrawingLayer(
       printPreviewArea,
@@ -547,7 +560,7 @@ export class EsriMapService implements MapService, OnDestroy {
   }
 
   private setEsriTimeSliderExtent(timeExtent: TimeExtent, mapItem: Gb2WmsActiveMapItem, esriLayer: __esri.Layer) {
-    if (esriLayer && esriLayer instanceof EsriWMSLayer && mapItem.settings.timeSliderConfiguration) {
+    if (esriLayer instanceof EsriWMSLayer && mapItem.settings.timeSliderConfiguration) {
       switch (mapItem.settings.timeSliderConfiguration.sourceType) {
         case 'parameter':
           this.applyTimeSliderCustomParameters(esriLayer, timeExtent, mapItem.settings.timeSliderConfiguration);
@@ -556,6 +569,17 @@ export class EsriMapService implements MapService, OnDestroy {
           this.synchronizeTimeSliderLayers(esriLayer, timeExtent, mapItem);
           break;
       }
+      esriLayer.refresh();
+    }
+  }
+
+  private setEsriAttributeFilters(attributeFilterParameters: WmsFilterValue[], esriLayer: __esri.Layer) {
+    if (esriLayer instanceof EsriWMSLayer) {
+      const customLayerParameters: {[index: string]: string} = esriLayer.customLayerParameters ?? {};
+      attributeFilterParameters.forEach((attributeFilterParameter) => {
+        customLayerParameters[attributeFilterParameter.name] = attributeFilterParameter.value;
+      });
+      esriLayer.customLayerParameters = customLayerParameters;
       esriLayer.refresh();
     }
   }
@@ -575,8 +599,8 @@ export class EsriMapService implements MapService, OnDestroy {
     const dateFormat = timeSliderConfiguration.dateFormat;
 
     esriLayer.customLayerParameters = esriLayer.customLayerParameters ?? {};
-    esriLayer.customLayerParameters[timeSliderParameterSource.startRangeParameter] = dayjs(timeSliderExtent.start).format(dateFormat);
-    esriLayer.customLayerParameters[timeSliderParameterSource.endRangeParameter] = dayjs(timeSliderExtent.end).format(dateFormat);
+    esriLayer.customLayerParameters[timeSliderParameterSource.startRangeParameter] = dayjs.utc(timeSliderExtent.start).format(dateFormat);
+    esriLayer.customLayerParameters[timeSliderParameterSource.endRangeParameter] = dayjs.utc(timeSliderExtent.end).format(dateFormat);
   }
 
   /**

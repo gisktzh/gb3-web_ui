@@ -1,5 +1,6 @@
 import {ShareLinkItem} from '../../shared/interfaces/share-link.interface';
 import {MinimalGeometriesUtils} from './minimal-geometries.utils';
+import {TimeExtentUtils} from '../../shared/utils/time-extent.utils';
 
 export class ShareLinkItemTestUtils {
   public static createShareLinkItem(): ShareLinkItem {
@@ -32,6 +33,21 @@ export class ShareLinkItemTestUtils {
           opacity: 0.5,
           visible: true,
           isSingleLayer: false,
+          timeExtent: {start: TimeExtentUtils.parseDefaultUTCDate('1000'), end: TimeExtentUtils.parseDefaultUTCDate('2020')},
+          attributeFilters: [
+            {
+              parameter: 'FILTER_GEBART',
+              name: 'Anzeigeoptionen nach Hauptnutzung',
+              activeFilters: [
+                {name: 'Wohnen', isActive: false},
+                {name: 'Andere', isActive: false},
+                {
+                  name: 'Gewerbe und Verwaltung',
+                  isActive: false,
+                },
+              ],
+            },
+          ],
         },
         {
           id: 'Lageklassen2003ZH',
@@ -51,6 +67,8 @@ export class ShareLinkItemTestUtils {
           opacity: 1,
           visible: true,
           isSingleLayer: false,
+          timeExtent: undefined,
+          attributeFilters: undefined,
         },
       ],
       drawings: {

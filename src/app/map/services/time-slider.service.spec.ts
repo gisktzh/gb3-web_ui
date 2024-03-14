@@ -308,9 +308,9 @@ describe('TimeSliderService', () => {
       it('should create the correct stops', () => {
         const stops = service.createStops(timeSliderConfig);
         expect(stops.length).toBe(3);
-        expect(dayjs(stops[0]).diff(dayjs(firstStop, dateFormat))).toBe(0);
-        expect(dayjs(stops[1]).diff(dayjs(secondStop, dateFormat))).toBe(0);
-        expect(dayjs(stops[2]).diff(dayjs(thirdStop, dateFormat))).toBe(0);
+        expect(dayjs(stops[0]).diff(dayjs.utc(firstStop, dateFormat))).toBe(0);
+        expect(dayjs(stops[1]).diff(dayjs.utc(secondStop, dateFormat))).toBe(0);
+        expect(dayjs(stops[2]).diff(dayjs.utc(thirdStop, dateFormat))).toBe(0);
       });
     });
     describe('using a parameter source', () => {
@@ -341,15 +341,15 @@ describe('TimeSliderService', () => {
         it('should create the correct stops', () => {
           const stops = service.createStops(timeSliderConfig);
           expect(stops.length).toBe(15);
-          expect(dayjs(stops[0]).diff(dayjs(minimumDate, dateFormat))).toBe(0);
-          expect(dayjs(stops[1]).diff(dayjs(minimumDate, dateFormat).add(1, 'month'))).toBe(0);
-          expect(dayjs(stops[stops.length - 1]).diff(dayjs(maximumDate, dateFormat))).toBe(0);
+          expect(dayjs(stops[0]).diff(dayjs.utc('2000-01', dateFormat))).toBe(0);
+          expect(dayjs(stops[1]).diff(dayjs.utc('2000-02', dateFormat))).toBe(0);
+          expect(dayjs(stops[stops.length - 1]).diff(dayjs.utc('2001-03', dateFormat))).toBe(0);
         });
       });
       describe('with mixed time units', () => {
         const dateFormat = 'YYYY-MM';
-        const minimumDate = dayjs('2000-01', dateFormat);
-        const maximumDate = dayjs('2001-03', dateFormat);
+        const minimumDate = dayjs.utc('2000-01', dateFormat);
+        const maximumDate = dayjs.utc('2001-03', dateFormat);
         const parameterSource: TimeSliderParameterSource = {
           startRangeParameter: '',
           endRangeParameter: '',
@@ -407,9 +407,9 @@ describe('TimeSliderService', () => {
              */
             const expectedNumberOfStops = 15;
             expect(stops.length).toBe(expectedNumberOfStops);
-            expect(dayjs(stops[0]).diff(dayjs(minimumDate, dateFormat))).toBe(0);
-            expect(dayjs(stops[1]).diff(dayjs(minimumDate, dateFormat).add(1, 'months'))).toBe(0);
-            expect(dayjs(stops[stops.length - 1]).diff(dayjs(maximumDate, dateFormat))).toBe(0);
+            expect(dayjs(stops[0]).diff(dayjs.utc('2000-01', dateFormat))).toBe(0);
+            expect(dayjs(stops[1]).diff(dayjs.utc('2000-02', dateFormat))).toBe(0);
+            expect(dayjs(stops[stops.length - 1]).diff(dayjs.utc('2001-03', dateFormat))).toBe(0);
           });
         });
       });

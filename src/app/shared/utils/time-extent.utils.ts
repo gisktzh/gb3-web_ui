@@ -1,20 +1,31 @@
 import {Duration} from 'dayjs/plugin/duration';
+import utc from 'dayjs/plugin/utc';
 import dayjs, {ManipulateType} from 'dayjs';
 import {TimeSliderConfiguration} from '../interfaces/topic.interface';
 import {TimeExtent} from '../../map/interfaces/time-extent.interface';
+
+dayjs.extend(utc);
 
 export class TimeExtentUtils {
   /**
    * Creates an initial time extent based on the given time slider configuration.
    */
   public static createInitialTimeSliderExtent(timeSliderConfig: TimeSliderConfiguration): TimeExtent {
-    const minimumDate: Date = dayjs(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat).toDate();
-    const maximumDate: Date = dayjs(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat).toDate();
+    const minimumDate: Date = TimeExtentUtils.parseUTCDate(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat);
+    const maximumDate: Date = TimeExtentUtils.parseUTCDate(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat);
     const range: Duration | null = timeSliderConfig.range ? dayjs.duration(timeSliderConfig.range) : null;
     return {
       start: minimumDate,
       end: range ? TimeExtentUtils.addDuration(minimumDate, range) : maximumDate,
     };
+  }
+
+  public static parseUTCDate(date: string, format: string): Date {
+    return dayjs.utc(date, format).toDate();
+  }
+
+  public static parseDefaultUTCDate(date: string): Date {
+    return dayjs.utc(date).toDate();
   }
 
   /**
