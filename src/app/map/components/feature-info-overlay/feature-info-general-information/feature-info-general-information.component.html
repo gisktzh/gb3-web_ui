@@ -1,4 +1,4 @@
-<mat-expansion-panel hideToggle #expansionPanel class="general-information general-information--no-content-indent">
+<mat-expansion-panel hideToggle="true" #expansionPanel class="general-information general-information--no-content-indent">
   <mat-expansion-panel-header class="general-information__header">
     <mat-panel-title>
       <mat-icon
@@ -42,28 +42,32 @@
 </mat-expansion-panel>
 
 <div class="external-links">
-  <a
-    *ngIf="generalInfoData.parcel"
-    [href]="generalInfoData.parcel.oerebExtract.pdfUrl"
-    class="external-links__button"
-    rel="noopener noreferrer"
-    target="_blank"
-    mat-raised-button
-    color="accent"
-  >
-    <mat-icon>download</mat-icon>
-    <span class="external-links__button__label" matTooltip="ÖREB-Auszug" showTooltipIfTruncated>ÖREB-Auszug</span>
-  </a>
-  <a
-    *ngIf="generalInfoData.parcel"
-    [href]="generalInfoData.parcel.ownershipInformation.url"
-    class="external-links__button"
-    mat-raised-button
-    rel="noopener"
-    target="_blank"
-    color="accent"
-  >
-    <mat-icon class="external-links__button__icon">download</mat-icon>
-    <span class="external-links__button__label" matTooltip="Eigentümerabfrage" showTooltipIfTruncated>Eigentümerabfrage</span>
-  </a>
+  <ng-container *featureFlag="'oerebExtract'">
+    <a
+      *ngIf="generalInfoData.parcel"
+      [href]="generalInfoData.parcel.oerebExtract.pdfUrl"
+      class="external-links__button"
+      rel="noopener noreferrer"
+      target="_blank"
+      mat-raised-button
+      color="accent"
+    >
+      <mat-icon>download</mat-icon>
+      <span class="external-links__button__label" matTooltip="ÖREB-Auszug" showTooltipIfTruncated>ÖREB-Auszug</span>
+    </a>
+  </ng-container>
+  <ng-container *featureFlag="'ownershipInformation'">
+    <a
+      *ngIf="generalInfoData.parcel"
+      [href]="generalInfoData.parcel.ownershipInformation.url"
+      class="external-links__button"
+      mat-raised-button
+      rel="noopener"
+      target="_blank"
+      color="accent"
+    >
+      <mat-icon class="external-links__button__icon">download</mat-icon>
+      <span class="external-links__button__label" matTooltip="Eigentümerabfrage" showTooltipIfTruncated>Eigentümerabfrage</span>
+    </a>
+  </ng-container>
 </div>

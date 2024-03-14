@@ -86,6 +86,7 @@ import {DisableOverscrollBehaviourComponent} from './components/disable-overscro
 import {NotificationIndicatorComponent} from './components/notification-indicator/notification-indicator.component';
 import {ElevationProfileChartComponent} from './components/elevation-profile-overlay/elevation-profile-chart/elevation-profile-chart.component';
 import {provideCharts, withDefaultRegisterables} from 'ng2-charts';
+import {FeatureFlagDirective} from '../shared/directives/feature-flag.directive';
 
 @NgModule({
   providers: [provideCharts(withDefaultRegisterables())],
@@ -180,6 +181,7 @@ import {provideCharts, withDefaultRegisterables} from 'ng2-charts';
     DisableOverscrollBehaviourComponent,
     NotificationIndicatorComponent,
     ElevationProfileChartComponent,
+    FeatureFlagDirective,
   ],
   exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent, MapOverlayComponent],
 })

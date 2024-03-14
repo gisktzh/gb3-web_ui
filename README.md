@@ -169,6 +169,7 @@ match. This is because there are times when you _might_ want to deviate from the
 > 8. [Error handling](#error-handling)
 > 9. [Application Initialization based on share link](#application-initialization-based-on-share-link)
 > 10. [Adding new NPM packages](#adding-new-npm-packages)
+> 11. [Feature flags](#feature-flags)
 
 ### The `ActiveMapItem` class
 
@@ -531,6 +532,16 @@ To test if a new package has to be added to the **dependencies** or the **devDep
 npm ci --ignore-scripts --omit=dev
 npm run build-production
 ```
+
+### Feature flags
+
+Feature flags can be used to toggle features throughout the application. They work as follows:
+
+- Available featureflags are defined in the `FeatureFlags` interface.
+- Default values for all features flags need to be defined in the `feature-flags.config.ts` file.
+- Each runtime configuration might specify overrides for the default values; they are then injected via the `ConfigService`.
+- The `FeatureFlagsService` and its `getFeatureFlag` method is used to access the feature flags.
+- For convenience, the `FeatureFlagDirective` can be used to toggle elements based on a feature flag.
 
 ## Git conventions
 
