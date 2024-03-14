@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {TimeExtent} from '../../interfaces/time-extent.interface';
 import {TimeSliderConfiguration, TimeSliderLayerSource} from '../../../shared/interfaces/topic.interface';
 import dayjs, {ManipulateType} from 'dayjs';
@@ -21,7 +21,7 @@ type DatePickerStartView = 'month' | 'year' | 'multi-year';
   templateUrl: './time-slider.component.html',
   styleUrls: ['./time-slider.component.scss'],
 })
-export class TimeSliderComponent implements OnInit {
+export class TimeSliderComponent implements OnInit, OnChanges {
   @Output() public readonly changeTimeExtentEvent = new EventEmitter<TimeExtent>();
 
   @Input() public initialTimeExtent!: TimeExtent;
@@ -64,6 +64,18 @@ export class TimeSliderComponent implements OnInit {
     if (this.hasDatePicker) {
       this.datePickerUnit = this.extractUniqueDatePickerUnitFromDateFormat(this.timeSliderConfiguration.dateFormat) ?? 'days';
       this.datePickerStartView = this.createDatePickerStartView(this.datePickerUnit);
+    }
+  }
+
+  public ngOnChanges(changes: SimpleChanges) {
+    // This is needed to update the timeExtent when opening a favourite containing a map with a timeslider that is currently visible
+    if (changes['initialTimeExtent']) {
+      const start: Date = changes['initialTimeExtent'].currentValue.start;
+      const end: Date = changes['initialTimeExtent'].currentValue.end;
+      this.timeExtent = {start, end};
+      this.firstSliderPosition = this.findPositionOfDate(start) ?? 0;
+      this.secondSliderPosition = this.timeSliderConfiguration.range ? undefined : this.findPositionOfDate(end);
+      this.updateTimeExtentDisplay();
     }
   }
 

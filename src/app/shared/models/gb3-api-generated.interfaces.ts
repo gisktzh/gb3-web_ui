@@ -9,6 +9,8 @@
  * ---------------------------------------------------------------
  */
 
+import {FavouriteFilterConfiguration} from '../interfaces/topic.interface';
+
 export interface Canton {
   /** GeoJSON geometry object */
   boundingbox: Geometry;
@@ -766,6 +768,10 @@ export type FavoriteContent = {
    * @max 1
    */
   opacity: number;
+  /** TimeExtent of the timeslider */ // TODO gb3-530: will be used once api ready
+  timeExtent: {start: string; end: string}[] | undefined;
+  /** Selected Attributefilters */
+  attributeFilters: FavouriteFilterConfiguration[] | undefined;
   /** Single layer of the map */
   isSingleLayer: boolean;
   layers: {

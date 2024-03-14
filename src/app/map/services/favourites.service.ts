@@ -4,7 +4,13 @@ import {Gb3FavouritesService} from '../../shared/services/apis/gb3/gb3-favourite
 import {Observable, Subscription, switchMap, tap, withLatestFrom} from 'rxjs';
 import {ActiveMapItem} from '../models/active-map-item.model';
 import {Favourite, FavouritesResponse} from '../../shared/interfaces/favourite.interface';
-import {Map} from '../../shared/interfaces/topic.interface';
+import {
+  FavouriteFilterConfiguration,
+  FilterConfiguration,
+  Map,
+  TimeSliderConfiguration,
+  TimeSliderLayerSource,
+} from '../../shared/interfaces/topic.interface';
 import {produce} from 'immer';
 import {ActiveMapItemFactory} from '../../shared/factories/active-map-item.factory';
 import {ActiveMapItemConfiguration} from '../../shared/interfaces/active-map-item-configuration.interface';
@@ -21,6 +27,9 @@ import {MapConstants} from '../../shared/constants/map.constants';
 import {SymbolizationToGb3ConverterUtils} from '../../shared/utils/symbolization-to-gb3-converter.utils';
 import {DrawingActiveMapItem} from '../models/implementations/drawing.model';
 import {Gb3StyledInternalDrawingRepresentation} from '../../shared/interfaces/internal-drawing-representation.interface';
+import {TimeExtent} from '../interfaces/time-extent.interface';
+import {TimeExtentUtils} from '../../shared/utils/time-extent.utils';
+import {TimeSliderService} from './time-slider.service';
 
 @Injectable({
   providedIn: 'root',
@@ -37,6 +46,7 @@ export class FavouritesService implements OnDestroy {
   constructor(
     private readonly store: Store,
     private readonly gb3FavouritesService: Gb3FavouritesService,
+    private readonly timeSliderService: TimeSliderService,
   ) {
     this.initSubscriptions();
   }
@@ -92,7 +102,7 @@ export class FavouritesService implements OnDestroy {
             activeMapItems.push(activeMapItem);
           }
         } else {
-          const activeMapItem = this.createMultiLayerMapItem(existingMap, configuration);
+          const activeMapItem = this.createMultiLayerMapItem(existingMap, configuration, ignoreErrors);
           activeMapItems.push(activeMapItem);
         }
       } else if (!ignoreErrors) {
@@ -152,8 +162,6 @@ export class FavouritesService implements OnDestroy {
         .pipe(tap((activeMapItemConfigurations) => (this.activeMapItemConfigurations = activeMapItemConfigurations)))
         .subscribe(),
     );
-    this.subscriptions.add(this.favouriteBaseConfig$.subscribe());
-    this.subscriptions.add(this.userDrawingsVectorLayers$.subscribe());
   }
 
   private createSingleLayerMapItem(
@@ -163,15 +171,36 @@ export class FavouritesService implements OnDestroy {
   ): ActiveMapItem | undefined {
     let activeMapItem: ActiveMapItem | undefined = undefined;
     const subLayer = existingMap.layers.find((layer) => layer.id === configuration.layers[0].id);
+
+    const filterConfigurations: FilterConfiguration[] | undefined = existingMap.filterConfigurations
+      ? this.synchronizeFilterConfigurationsAndAttributeFilters(
+          existingMap.filterConfigurations,
+          configuration.attributeFilters,
+          existingMap.title,
+          ignoreErrors,
+        )
+      : undefined;
+
+    if (existingMap.timeSliderConfiguration && configuration.timeExtent) {
+      this.validateTimeSlider(existingMap.timeSliderConfiguration, configuration.timeExtent, existingMap.title, ignoreErrors);
+    }
+
     if (subLayer) {
-      activeMapItem = ActiveMapItemFactory.createGb2WmsMapItem(existingMap, subLayer, configuration.visible, configuration.opacity);
+      activeMapItem = ActiveMapItemFactory.createGb2WmsMapItem(
+        existingMap,
+        subLayer,
+        configuration.visible,
+        configuration.opacity,
+        configuration.timeExtent,
+        filterConfigurations,
+      );
     } else if (!ignoreErrors) {
       throw new FavouriteIsInvalid(`Der Layer '${configuration.layers[0].layer}' existiert nicht (mehr).`);
     }
     return activeMapItem;
   }
 
-  private createMultiLayerMapItem(existingMap: Map, configuration: ActiveMapItemConfiguration): ActiveMapItem {
+  private createMultiLayerMapItem(existingMap: Map, configuration: ActiveMapItemConfiguration, ignoreErrors: boolean): ActiveMapItem {
     const adjustedMap = produce(existingMap, (draft) => {
       draft.layers.forEach((layer) => {
         const sublayerConfiguration = configuration.layers.find((favLayer) => favLayer.id === layer.id);
@@ -183,6 +212,134 @@ export class FavouritesService implements OnDestroy {
       const sortIds = configuration.layers.map((layer) => layer.id);
       draft.layers.sort((a, b) => sortIds.indexOf(a.id) - sortIds.indexOf(b.id));
     });
-    return ActiveMapItemFactory.createGb2WmsMapItem(adjustedMap, undefined, configuration.visible, configuration.opacity);
+
+    const filterConfigurations: FilterConfiguration[] | undefined = existingMap.filterConfigurations
+      ? this.synchronizeFilterConfigurationsAndAttributeFilters(
+          existingMap.filterConfigurations,
+          configuration.attributeFilters,
+          existingMap.title,
+          ignoreErrors,
+        )
+      : undefined;
+
+    if (existingMap.timeSliderConfiguration && configuration.timeExtent) {
+      this.validateTimeSlider(existingMap.timeSliderConfiguration, configuration.timeExtent, existingMap.title, ignoreErrors);
+    }
+
+    return ActiveMapItemFactory.createGb2WmsMapItem(
+      adjustedMap,
+      undefined,
+      configuration.visible,
+      configuration.opacity,
+      configuration.timeExtent,
+      filterConfigurations,
+    );
+  }
+
+  private synchronizeFilterConfigurationsAndAttributeFilters(
+    filterConfigurations: FilterConfiguration[],
+    attributeFilters: FavouriteFilterConfiguration[] | undefined,
+    mapTitle: string,
+    ignoreErrors: boolean,
+  ): FilterConfiguration[] {
+    if (!attributeFilters) {
+      return filterConfigurations;
+    }
+
+    this.validateAttributeFilters(attributeFilters, filterConfigurations, mapTitle, ignoreErrors);
+
+    return filterConfigurations.map((filterConfiguration) => {
+      const currentFilterConfiguration = attributeFilters.find(
+        (attributeFilter) => attributeFilter.parameter === filterConfiguration.parameter,
+      );
+      return {
+        ...filterConfiguration,
+        filterValues: filterConfiguration.filterValues.map((filterValue) => {
+          return {
+            ...filterValue,
+            isActive:
+              currentFilterConfiguration?.activeFilters.find((activeFilter) => activeFilter.name === filterValue.name)?.isActive ?? false,
+          };
+        }),
+      };
+    });
+  }
+
+  private validateAttributeFilters(
+    attributeFilters: FavouriteFilterConfiguration[],
+    filterConfigs: FilterConfiguration[],
+    mapTitle: string,
+    ignoreErrors: boolean,
+  ) {
+    attributeFilters.forEach((attributeFilter) => {
+      const matchingFilterConfiguration: FilterConfiguration | undefined = filterConfigs.find(
+        (filterConfig) => filterConfig.parameter === attributeFilter.parameter,
+      );
+      if (!matchingFilterConfiguration) {
+        if (!ignoreErrors) {
+          throw new FavouriteIsInvalid(
+            `Die Filterkonfiguration mit dem Parameter '${attributeFilter.name} (${attributeFilter.parameter})' existiert nicht mehr auf der Karte '${mapTitle}'.`,
+          );
+        }
+      } else {
+        attributeFilter.activeFilters.forEach((activeFilter) => {
+          const activeFilterExists: boolean | undefined = matchingFilterConfiguration?.filterValues.some(
+            (filterValue) => filterValue.name === activeFilter.name,
+          );
+          if (!activeFilterExists && !ignoreErrors) {
+            throw new FavouriteIsInvalid(
+              `Der Filter mit dem Namen '${activeFilter.name}' existiert nicht mehr in der Filterkonfiguration '${attributeFilter.name}' der Karte '${mapTitle}'.`,
+            );
+          }
+        });
+      }
+    });
+
+    filterConfigs.forEach((filterConfig) => {
+      const matchingFavouriteFilterConfiguration: FavouriteFilterConfiguration | undefined = attributeFilters.find(
+        (attributeFilter) => attributeFilter.parameter === filterConfig.parameter,
+      );
+      if (!matchingFavouriteFilterConfiguration) {
+        if (!ignoreErrors) {
+          throw new FavouriteIsInvalid(
+            `Eine neue Filterkonfiguration mit dem Parameter '${filterConfig.name} (${filterConfig.parameter})' wurde zur Karte '${mapTitle}' hinzugefügt.`,
+          );
+        }
+      } else {
+        filterConfig.filterValues.forEach((filterValue) => {
+          const newFilterValueHasBeenAdded: boolean | undefined = !matchingFavouriteFilterConfiguration?.activeFilters.some(
+            (activeFilter) => activeFilter.name === filterValue.name,
+          );
+          if (newFilterValueHasBeenAdded && !ignoreErrors) {
+            throw new FavouriteIsInvalid(
+              `Ein neuer Filter mit dem Namen '${filterValue.name}' wurde zur Filterkonfiguration '${filterConfig.name}' der Karte '${mapTitle}' hinzugefügt.`,
+            );
+          }
+        });
+      }
+    });
+  }
+
+  private validateTimeSlider(
+    timeSliderConfiguration: TimeSliderConfiguration,
+    timeExtent: TimeExtent,
+    mapTitle: string,
+    ignoreErrors: boolean,
+  ) {
+    switch (timeSliderConfiguration.sourceType) {
+      case 'parameter':
+        if (!this.timeSliderService.isTimeExtentValid(timeSliderConfiguration, timeExtent) && !ignoreErrors) {
+          throw new FavouriteIsInvalid(`Die Konfiguration für den Zeitschieberegler der Karte '${mapTitle}' ist ungültig.`);
+        }
+        break;
+      case 'layer': {
+        const selectedYearExists = (timeSliderConfiguration.source as TimeSliderLayerSource).layers.some(
+          (layer) => TimeExtentUtils.parseUTCDate(layer.date, timeSliderConfiguration.dateFormat).getTime() === timeExtent.start.getTime(),
+        );
+        if (!selectedYearExists && !ignoreErrors) {
+          throw new FavouriteIsInvalid(`Die Konfiguration für den Zeitschieberegler der Karte '${mapTitle}' ist ungültig.`);
+        }
+      }
+    }
   }
 }
