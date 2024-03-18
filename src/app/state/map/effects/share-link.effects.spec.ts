@@ -10,7 +10,6 @@ import {ShareLinkActions} from '../actions/share-link.actions';
 import {ShareLinkItem} from '../../../shared/interfaces/share-link.interface';
 import {AuthService} from '../../../auth/auth.service';
 import {FavouritesService} from '../../../map/services/favourites.service';
-import {RouterTestingModule} from '@angular/router/testing';
 import {catchError} from 'rxjs/operators';
 import {
   ShareLinkCouldNotBeLoaded,
@@ -142,7 +141,7 @@ describe('ShareLinkEffects', () => {
     favouriteServiceMock = jasmine.createSpyObj<FavouritesService>(['getActiveMapItemsForFavourite', 'getDrawingsForFavourite']);
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule],
+      imports: [HttpClientTestingModule],
       providers: [
         ShareLinkEffects,
         provideMockActions(() => actions$),

@@ -4,7 +4,6 @@ import {Observable, of} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
-import {RouterTestingModule} from '@angular/router/testing';
 import {AuthService} from '../../../auth/auth.service';
 import {AuthStatusEffects} from './auth-status.effects';
 import {SessionStorageService} from '../../../shared/services/session-storage.service';
@@ -45,7 +44,7 @@ describe('AuthStatusEffects', () => {
     actions$ = new Observable<Action>();
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule],
+      imports: [HttpClientTestingModule],
       providers: [
         provideMockActions(() => actions$),
         provideMockStore(),

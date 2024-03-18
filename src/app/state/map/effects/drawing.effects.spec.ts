@@ -3,7 +3,6 @@ import {fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {Observable, of} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {RouterTestingModule} from '@angular/router/testing';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {DrawingEffects} from './drawing.effects';
 import {DrawingActions} from '../actions/drawing.actions';
@@ -19,7 +18,7 @@ describe('DrawingEffects', () => {
     actions$ = new Observable<Action>();
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule],
+      imports: [HttpClientTestingModule],
       providers: [DrawingEffects, provideMockActions(() => actions$)],
     });
     effects = TestBed.inject(DrawingEffects);
