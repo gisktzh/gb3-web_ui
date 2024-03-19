@@ -197,6 +197,18 @@
 @supports (height: 100svh) {
   .map-container {
     height: calc(100svh - #{map-layout-variables.$navbar-height}); // subtracts height of navbar
+
+    &--dev-mode {
+      height: calc(100svh - #{map-layout-variables.$navbar-height} - #{map-layout-variables.$dev-mode-banner-height});
+    }
+
+    &--mobile {
+      height: 100svh;
+
+      &.map-container--dev-mode {
+        height: calc(100% - #{map-layout-variables.$dev-mode-banner-height});
+      }
+    }
   }
 }
 
