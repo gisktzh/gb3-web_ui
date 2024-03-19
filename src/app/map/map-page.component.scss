@@ -194,6 +194,12 @@
   }
 }
 
+@supports (height: 100svh) {
+  .map-container {
+    height: calc(100vh - #{map-layout-variables.$navbar-height}); // subtracts height of navbar
+  }
+}
+
 @media print {
   .map-container {
     display: none;
