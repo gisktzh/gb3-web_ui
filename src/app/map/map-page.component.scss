@@ -196,7 +196,7 @@
 
 @supports (height: 100svh) {
   .map-container {
-    height: calc(100vh - #{map-layout-variables.$navbar-height}); // subtracts height of navbar
+    height: calc(100svh - #{map-layout-variables.$navbar-height}); // subtracts height of navbar
   }
 }
 
