@@ -228,7 +228,7 @@ export class FavouritesService implements OnDestroy {
         )
       : undefined;
 
-    let timeExtent: TimeExtent | undefined = configuration.timeExtent;
+    let timeExtent: TimeExtent | undefined = undefined;
     if (existingMap.timeSliderConfiguration && configuration.timeExtent) {
       timeExtent = this.validateTimeExtentOrCreateDefault(
         existingMap.timeSliderConfiguration,
@@ -350,14 +350,15 @@ export class FavouritesService implements OnDestroy {
   }
 
   private validateTimeSlider(timeSliderConfiguration: TimeSliderConfiguration, timeExtent: TimeExtent): boolean {
+    const isTimeExtentValid = this.timeSliderService.isTimeExtentValid(timeSliderConfiguration, timeExtent);
     switch (timeSliderConfiguration.sourceType) {
       case 'parameter':
-        return this.timeSliderService.isTimeExtentValid(timeSliderConfiguration, timeExtent);
+        return isTimeExtentValid;
       case 'layer': {
         const selectedYearExists = (timeSliderConfiguration.source as TimeSliderLayerSource).layers.some(
           (layer) => TimeExtentUtils.parseUTCDate(layer.date, timeSliderConfiguration.dateFormat).getTime() === timeExtent.start.getTime(),
         );
-        return selectedYearExists;
+        return selectedYearExists && isTimeExtentValid;
       }
     }
   }
