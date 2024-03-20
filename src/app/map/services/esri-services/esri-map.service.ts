@@ -23,7 +23,7 @@ import {PrintUtils} from '../../../shared/utils/print.utils';
 import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.reducer';
 import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
 import {MapConfigActions} from '../../../state/map/actions/map-config.actions';
-import {selectItems} from '../../../state/map/selectors/active-map-items.selector';
+import {selectAllItems} from '../../../state/map/selectors/active-map-items.selector';
 import {selectDrawings} from '../../../state/map/reducers/drawing.reducer';
 import {selectActiveBasemapId, selectMapConfigState, selectRotation} from '../../../state/map/reducers/map-config.reducer';
 import {MapConfigState} from '../../../state/map/states/map-config.state';
@@ -150,7 +150,7 @@ export class EsriMapService implements MapService, OnDestroy {
       .select(selectMapConfigState)
       .pipe(
         first(),
-        withLatestFrom(this.store.select(selectItems), this.store.select(selectDrawings)),
+        withLatestFrom(this.store.select(selectAllItems), this.store.select(selectDrawings)),
         tap(([config, activeMapItems, drawings]) => {
           const {x, y} = config.center;
           const {minScale, maxScale} = config.scaleSettings;
