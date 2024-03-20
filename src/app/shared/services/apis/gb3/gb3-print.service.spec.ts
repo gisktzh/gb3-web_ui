@@ -21,6 +21,8 @@ import {
 } from '../../../../testing/map-testing/active-map-item-test.utils';
 import {UserDrawingLayer} from '../../../enums/drawing-layer.enum';
 import {UuidUtils} from '../../../utils/uuid.utils';
+import {BasemapConfigService} from '../../../../map/services/basemap-config.service';
+import {Basemap} from '../../../interfaces/basemap.interface';
 
 describe('Gb3PrintService', () => {
   let service: Gb3PrintService;
@@ -327,6 +329,17 @@ describe('Gb3PrintService', () => {
   describe('createPrintCreation', () => {
     it('creates a PrintCreation object from given parameters', () => {
       spyOn(UuidUtils, 'createUuid').and.returnValue('not-a-real-uuid');
+      const basemapConfigService = TestBed.inject(BasemapConfigService);
+      spyOnProperty(basemapConfigService, 'availableBasemaps', 'get').and.returnValue([
+        {
+          type: 'wms',
+          id: 'test-basemap',
+          title: 'test-basemap-title',
+          url: 'https://test-basemap.com',
+          layers: [{name: 'layer0_test-basemap'}, {name: 'layer1_test-basemap'}],
+        } as Basemap,
+      ]);
+
       const format = 'rom';
       const reportLayout = 'A38';
       const reportOrientation: ReportOrientation = 'hoch';
@@ -343,7 +356,7 @@ describe('Gb3PrintService', () => {
         createGb2WmsMapItemMock('visible map #3', 4),
         createExternalWmsMapItemMock('https://www.example.com/wms', 'visible map #4', []),
       ];
-      const mapConfigState: MapConfigState = {center: {x: 900, y: 1}} as MapConfigState;
+      const mapConfigState: MapConfigState = {activeBasemapId: 'test-basemap', center: {x: 900, y: 1}} as MapConfigState;
       const drawings: Gb3StyledInternalDrawingRepresentation[] = [
         {
           id: 'not-a-real-uuid',
@@ -384,6 +397,14 @@ describe('Gb3PrintService', () => {
           center: [mapConfigState.center.x, mapConfigState.center.y],
           rotation: rotation,
           mapItems: [
+            {
+              type: 'WMS',
+              mapTitle: 'test-basemap-title',
+              layers: ['layer0_test-basemap', 'layer1_test-basemap'], // no inversion here because this is not an active map item
+              url: 'https://test-basemap.com',
+              opacity: 1,
+              background: true,
+            },
             {
               type: 'WMS',
               mapTitle: 'visible map #3',

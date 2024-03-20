@@ -103,7 +103,7 @@ export class Gb3PrintService extends Gb3ApiService {
       reportOrientation: reportOrientation ?? undefined,
       attributes: {
         reportTitle: mapItems
-          .map((mapItem) => (mapItem.type === 'WMS' ? mapItem.mapTitle : undefined))
+          .map((mapItem) => (mapItem.type === 'WMS' && !mapItem.background ? mapItem.mapTitle : undefined))
           .filter((mapItemTitle): mapItemTitle is string => !!mapItemTitle)
           .join(', '),
         userTitle: title ?? '',
