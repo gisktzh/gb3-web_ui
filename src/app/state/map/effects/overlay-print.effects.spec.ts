@@ -4,7 +4,6 @@ import {EMPTY, Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
-import {RouterTestingModule} from '@angular/router/testing';
 import {catchError} from 'rxjs/operators';
 import {Gb3PrintService} from '../../../shared/services/apis/gb3/gb3-print.service';
 import {PrintCreationResponse} from '../../../shared/interfaces/print.interface';
@@ -28,7 +27,7 @@ describe('OverlayPrintEffects', () => {
     actions$ = new Observable<Action>();
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule],
+      imports: [HttpClientTestingModule],
       providers: [
         OverlayPrintEffects,
         provideMockActions(() => actions$),

@@ -4,7 +4,6 @@ import {EMPTY, Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
-import {RouterTestingModule} from '@angular/router/testing';
 import {MAP_LOADER_SERVICE} from '../../../app.module';
 import {createExternalKmlMapItemMock, createExternalWmsMapItemMock} from '../../../testing/map-testing/active-map-item-test.utils';
 import {ExternalMapItemActions} from '../actions/external-map-item.actions';
@@ -28,7 +27,7 @@ describe('ExternalMapItemEffects', () => {
     actions$ = new Observable<Action>();
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule],
+      imports: [HttpClientTestingModule],
       providers: [
         ExternalMapItemEffects,
         provideMockActions(() => actions$),

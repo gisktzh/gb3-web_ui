@@ -1,6 +1,5 @@
 import {TestBed} from '@angular/core/testing';
 import {UrlUtils} from './url.utils';
-import {RouterTestingModule} from '@angular/router/testing';
 import {Params, Router, UrlSegment} from '@angular/router';
 import {MainPage} from '../enums/main-page.enum';
 
@@ -9,12 +8,6 @@ function createSegmentsFromUrl(router: Router, url: string): UrlSegment[] {
 }
 
 describe('UrlUtils', () => {
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
-    });
-  });
-
   it('should extract URL segments from a UrlTree', () => {
     const router = TestBed.inject(Router);
     expect(UrlUtils.extractUrlSegments(router.parseUrl(''))).toEqual([]);
