@@ -3,14 +3,18 @@ import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.m
 import {createSelector} from '@ngrx/store';
 import {selectActiveMapItemState} from '../reducers/active-map-item.reducer';
 
-export const selectItems = createSelector(selectActiveMapItemState, (state) => state.items);
+export const selectAllItems = createSelector(selectActiveMapItemState, (state) => state.items);
+
+export const selectItems = createSelector(selectAllItems, (activeMapItems) => {
+  return activeMapItems.filter((activeMapItem) => !activeMapItem.isTemporary);
+});
+
+export const selectTemporaryActiveMapItems = createSelector(selectAllItems, (activeMapItems) => {
+  return activeMapItems.filter((activeMapItem) => activeMapItem.isTemporary);
+});
 
 export const selectGb2WmsActiveMapItemsWithMapNotices = createSelector(selectItems, (activeMapItems) => {
   return activeMapItems
     .filter(isActiveMapItemOfType(Gb2WmsActiveMapItem))
     .filter((gb2WmsActiveMapItem) => gb2WmsActiveMapItem.settings.notice);
-});
-
-export const selectNonTemporaryActiveMapItems = createSelector(selectItems, (activeMapItems) => {
-  return activeMapItems.filter((activeMapItem) => !activeMapItem.isTemporary);
 });

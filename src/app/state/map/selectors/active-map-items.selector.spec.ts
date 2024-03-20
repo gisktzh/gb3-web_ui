@@ -2,7 +2,7 @@ import {ActiveMapItem} from '../../../map/models/active-map-item.model';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 import {Map} from '../../../shared/interfaces/topic.interface';
 import {UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
-import {selectGb2WmsActiveMapItemsWithMapNotices, selectNonTemporaryActiveMapItems} from './active-map-items.selector';
+import {selectGb2WmsActiveMapItemsWithMapNotices, selectItems} from './active-map-items.selector';
 
 const drawingsActiveMapItem = ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, 'test');
 const measurementsActiveMapItem = ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Measurements, 'test');
@@ -26,7 +26,7 @@ describe('activeMapItemsSelector', () => {
     it('returns only items which are not temporary', () => {
       basicMockState = [gb2ActiveMapItem, temporaryGb2ActiveMapItem, gb2ActiveMapItemWithNotice];
 
-      const actual = selectNonTemporaryActiveMapItems.projector(basicMockState);
+      const actual = selectItems.projector(basicMockState);
 
       expect(actual).toEqual([gb2ActiveMapItem, gb2ActiveMapItemWithNotice]);
     });

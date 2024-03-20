@@ -18,7 +18,7 @@ import {FeatureInfoActions} from '../actions/feature-info.actions';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {MapUiActions} from '../actions/map-ui.actions';
 import {ToolActions} from '../actions/tool.actions';
-import {selectItems, selectNonTemporaryActiveMapItems} from '../selectors/active-map-items.selector';
+import {selectItems} from '../selectors/active-map-items.selector';
 import {selectIsMapServiceInitialized} from '../reducers/map-config.reducer';
 import {selectActiveTool} from '../reducers/tool.reducer';
 import {DrawingActiveMapItem} from '../../../map/models/implementations/drawing.model';
@@ -53,7 +53,7 @@ export class ActiveMapItemEffects {
   public removeTemporaryActiveMapItem$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ActiveMapItemActions.removeTemporaryActiveMapItem),
-      concatLatestFrom(() => this.store.select(selectNonTemporaryActiveMapItems)),
+      concatLatestFrom(() => this.store.select(selectItems)),
       filter(([{activeMapItem}, nonTemporaryActiveMapItems]) => {
         // we only remove the temporary item if it is not converted to a non-temporary in the meantime, i.e.
         return !nonTemporaryActiveMapItems.some((nonTemporaryActiveMapItem) => nonTemporaryActiveMapItem.id === activeMapItem.id);

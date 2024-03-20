@@ -12,7 +12,7 @@ import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {MapService} from '../../../map/interfaces/map.service';
 import {createDrawingMapItemMock, createGb2WmsMapItemMock} from '../../../testing/map-testing/active-map-item-test.utils';
 import {ToolActions} from '../actions/tool.actions';
-import {selectItems, selectNonTemporaryActiveMapItems} from '../selectors/active-map-items.selector';
+import {selectItems} from '../selectors/active-map-items.selector';
 import {selectActiveTool} from '../reducers/tool.reducer';
 import {ActiveMapItem} from '../../../map/models/active-map-item.model';
 import {UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
@@ -94,7 +94,7 @@ describe('ActiveMapItemEffects', () => {
       const expectedId = 'mapMock';
       const activeMapItem = createGb2WmsMapItemMock(expectedId, undefined, undefined, undefined, undefined, true);
 
-      store.overrideSelector(selectNonTemporaryActiveMapItems, []);
+      store.overrideSelector(selectItems, []);
 
       const expectedAction = ActiveMapItemActions.removeActiveMapItem({activeMapItem});
       actions$ = of(ActiveMapItemActions.removeTemporaryActiveMapItem({activeMapItem}));
@@ -109,7 +109,7 @@ describe('ActiveMapItemEffects', () => {
       const temporaryActiveMapItem = createGb2WmsMapItemMock(expectedId, undefined, undefined, undefined, undefined, true);
       const activeMapItem = createGb2WmsMapItemMock(expectedId);
 
-      store.overrideSelector(selectNonTemporaryActiveMapItems, [activeMapItem]);
+      store.overrideSelector(selectItems, [activeMapItem]);
 
       let actualAction;
       actions$ = of(ActiveMapItemActions.removeTemporaryActiveMapItem({activeMapItem: temporaryActiveMapItem}));
