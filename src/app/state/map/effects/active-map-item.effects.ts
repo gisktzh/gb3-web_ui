@@ -18,12 +18,11 @@ import {FeatureInfoActions} from '../actions/feature-info.actions';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {MapUiActions} from '../actions/map-ui.actions';
 import {ToolActions} from '../actions/tool.actions';
-import {selectItems} from '../reducers/active-map-item.reducer';
+import {selectItems, selectNonTemporaryActiveMapItems} from '../selectors/active-map-items.selector';
 import {selectIsMapServiceInitialized} from '../reducers/map-config.reducer';
 import {selectActiveTool} from '../reducers/tool.reducer';
 import {DrawingActiveMapItem} from '../../../map/models/implementations/drawing.model';
 import {DrawingActions} from '../actions/drawing.actions';
-import {selectNonTemporaryActiveMapItems} from '../selectors/active-map-items.selector';
 
 @Injectable()
 export class ActiveMapItemEffects {

@@ -25,7 +25,7 @@ import {createDrawingMapItemMock, createGb2WmsMapItemMock} from '../../../testin
 import {InternalDrawingLayer, UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {MapConstants} from '../../../shared/constants/map.constants';
 import {DrawingActions} from '../../map/actions/drawing.actions';
-import {selectItems} from '../../map/reducers/active-map-item.reducer';
+import {selectItems} from '../../map/selectors/active-map-items.selector';
 import {selectDrawings} from '../../map/reducers/drawing.reducer';
 import {ToolService} from '../../../map/interfaces/tool.service';
 

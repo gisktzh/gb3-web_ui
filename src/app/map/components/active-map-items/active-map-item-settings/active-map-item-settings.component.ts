@@ -5,10 +5,10 @@ import {isActiveMapItemOfType} from '../../../../shared/type-guards/active-map-i
 import {NumberUtils} from '../../../../shared/utils/number.utils';
 import {ActiveMapItemActions} from '../../../../state/map/actions/active-map-item.actions';
 import {MapAttributeFiltersItemActions} from '../../../../state/map/actions/map-attribute-filters-item.actions';
-import {selectItems} from '../../../../state/map/reducers/active-map-item.reducer';
 import {TimeExtent} from '../../../interfaces/time-extent.interface';
 import {ActiveMapItem} from '../../../models/active-map-item.model';
 import {Gb2WmsActiveMapItem} from '../../../models/implementations/gb2-wms.model';
+import {selectItems} from '../../../../state/map/selectors/active-map-items.selector';
 
 @Component({
   selector: 'active-map-item-settings',

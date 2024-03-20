@@ -1,5 +1,5 @@
 import {createSelector} from '@ngrx/store';
-import {selectItems} from '../reducers/active-map-item.reducer';
+import {selectItems} from '../selectors/active-map-items.selector';
 import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
 import {DrawingActiveMapItem} from '../../../map/models/implementations/drawing.model';
 

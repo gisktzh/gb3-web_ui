@@ -23,7 +23,7 @@ import {PrintUtils} from '../../../shared/utils/print.utils';
 import {selectIsAuthenticated} from '../../../state/auth/reducers/auth-status.reducer';
 import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.actions';
 import {MapConfigActions} from '../../../state/map/actions/map-config.actions';
-import {selectItems} from '../../../state/map/reducers/active-map-item.reducer';
+import {selectItems} from '../../../state/map/selectors/active-map-items.selector';
 import {selectDrawings} from '../../../state/map/reducers/drawing.reducer';
 import {selectActiveBasemapId, selectMapConfigState, selectRotation} from '../../../state/map/reducers/map-config.reducer';
 import {MapConfigState} from '../../../state/map/states/map-config.state';

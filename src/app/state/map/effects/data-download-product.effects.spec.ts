@@ -13,7 +13,7 @@ import {ProductsCouldNotBeLoaded, RelevantProductsCouldNotBeLoaded} from '../../
 import {Product} from '../../../shared/interfaces/gb3-geoshop-product.interface';
 import {Gb3GeoshopProductsService} from '../../../shared/services/apis/gb3/gb3-geoshop-products.service';
 import {MapUiActions} from '../actions/map-ui.actions';
-import {selectItems} from '../reducers/active-map-item.reducer';
+import {selectItems} from '../selectors/active-map-items.selector';
 import {ActiveMapItem} from '../../../map/models/active-map-item.model';
 import {createGb2WmsMapItemMock} from '../../../testing/map-testing/active-map-item-test.utils';
 import {DataDownloadFilter} from '../../../shared/interfaces/data-download-filter.interface';

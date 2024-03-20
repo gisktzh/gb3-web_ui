@@ -1,7 +1,9 @@
 import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
 import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
 import {createSelector} from '@ngrx/store';
-import {selectItems} from '../reducers/active-map-item.reducer';
+import {selectActiveMapItemState} from '../reducers/active-map-item.reducer';
+
+export const selectItems = createSelector(selectActiveMapItemState, (state) => state.items);
 
 export const selectGb2WmsActiveMapItemsWithMapNotices = createSelector(selectItems, (activeMapItems) => {
   return activeMapItems

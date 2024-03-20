@@ -14,7 +14,7 @@ import {
   ShareLinkItemCouldNotBeCreated,
 } from '../../../shared/errors/share-link.errors';
 import {selectLoadedLayerCatalogueAndShareItem} from '../selectors/loaded-layer-catalogue-and-share-item.selector';
-import {selectItems} from '../reducers/active-map-item.reducer';
+import {selectItems} from '../selectors/active-map-items.selector';
 import {DrawingActions} from '../actions/drawing.actions';
 import {selectDrawings} from '../reducers/drawing.reducer';
 import {selectIsAuthenticated} from '../../auth/reducers/auth-status.reducer';
