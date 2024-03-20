@@ -20,10 +20,10 @@ export function createGb2WmsMapItemMock(
   timeExtent?: TimeExtent,
   attributeFilters?: FilterConfiguration[],
 ): Gb2WmsActiveMapItem {
-  const mapMock = {id, title: id, layers: [], uuid} as Partial<Map>;
+  const mapMock = {id, title: id, layers: [], uuid, wmsUrl: `https://${id}.com`} as Partial<Map>;
   for (let layerNumber = 0; layerNumber < numberOfLayers; layerNumber++) {
     const uniqueLayerName = `layer${layerNumber}_${id}`;
-    const layerMock = {layer: uniqueLayerName, title: uniqueLayerName, id: layerNumber} as Partial<MapLayer>;
+    const layerMock = {layer: uniqueLayerName, title: uniqueLayerName, id: layerNumber, visible: true} as Partial<MapLayer>;
     mapMock.layers?.push(<MapLayer>layerMock);
   }
   return ActiveMapItemFactory.createGb2WmsMapItem(<Map>mapMock, undefined, visible, opacity, timeExtent, attributeFilters, isTemporary);
