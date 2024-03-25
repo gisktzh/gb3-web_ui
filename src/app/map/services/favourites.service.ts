@@ -181,8 +181,14 @@ export class FavouritesService implements OnDestroy {
         )
       : undefined;
 
+    let timeExtent: TimeExtent | undefined = configuration.timeExtent;
     if (existingMap.timeSliderConfiguration && configuration.timeExtent) {
-      this.validateTimeSlider(existingMap.timeSliderConfiguration, configuration.timeExtent, existingMap.title, ignoreErrors);
+      timeExtent = this.validateTimeExtentOrCreateDefault(
+        existingMap.timeSliderConfiguration,
+        configuration.timeExtent,
+        ignoreErrors,
+        existingMap.title,
+      );
     }
 
     if (subLayer) {
@@ -191,7 +197,7 @@ export class FavouritesService implements OnDestroy {
         subLayer,
         configuration.visible,
         configuration.opacity,
-        configuration.timeExtent,
+        timeExtent,
         filterConfigurations,
       );
     } else if (!ignoreErrors) {
@@ -222,8 +228,14 @@ export class FavouritesService implements OnDestroy {
         )
       : undefined;
 
+    let timeExtent: TimeExtent | undefined = undefined;
     if (existingMap.timeSliderConfiguration && configuration.timeExtent) {
-      this.validateTimeSlider(existingMap.timeSliderConfiguration, configuration.timeExtent, existingMap.title, ignoreErrors);
+      timeExtent = this.validateTimeExtentOrCreateDefault(
+        existingMap.timeSliderConfiguration,
+        configuration.timeExtent,
+        ignoreErrors,
+        existingMap.title,
+      );
     }
 
     return ActiveMapItemFactory.createGb2WmsMapItem(
@@ -231,9 +243,26 @@ export class FavouritesService implements OnDestroy {
       undefined,
       configuration.visible,
       configuration.opacity,
-      configuration.timeExtent,
+      timeExtent,
       filterConfigurations,
     );
+  }
+
+  private validateTimeExtentOrCreateDefault(
+    timeSliderConfiguration: TimeSliderConfiguration,
+    timeExtent: TimeExtent,
+    ignoreErrors: boolean,
+    title: string,
+  ): TimeExtent {
+    const isValid = this.validateTimeSlider(timeSliderConfiguration, timeExtent);
+    if (!isValid) {
+      if (ignoreErrors) {
+        return TimeExtentUtils.createInitialTimeSliderExtent(timeSliderConfiguration);
+      } else {
+        throw new FavouriteIsInvalid(`Die Konfiguration für den Zeitschieberegler der Karte '${title}' ist ungültig.`);
+      }
+    }
+    return timeExtent;
   }
 
   private synchronizeFilterConfigurationsAndAttributeFilters(
@@ -320,25 +349,16 @@ export class FavouritesService implements OnDestroy {
     });
   }
 
-  private validateTimeSlider(
-    timeSliderConfiguration: TimeSliderConfiguration,
-    timeExtent: TimeExtent,
-    mapTitle: string,
-    ignoreErrors: boolean,
-  ) {
+  private validateTimeSlider(timeSliderConfiguration: TimeSliderConfiguration, timeExtent: TimeExtent): boolean {
+    const isTimeExtentValid = this.timeSliderService.isTimeExtentValid(timeSliderConfiguration, timeExtent);
     switch (timeSliderConfiguration.sourceType) {
       case 'parameter':
-        if (!this.timeSliderService.isTimeExtentValid(timeSliderConfiguration, timeExtent) && !ignoreErrors) {
-          throw new FavouriteIsInvalid(`Die Konfiguration für den Zeitschieberegler der Karte '${mapTitle}' ist ungültig.`);
-        }
-        break;
+        return isTimeExtentValid;
       case 'layer': {
         const selectedYearExists = (timeSliderConfiguration.source as TimeSliderLayerSource).layers.some(
           (layer) => TimeExtentUtils.parseUTCDate(layer.date, timeSliderConfiguration.dateFormat).getTime() === timeExtent.start.getTime(),
         );
-        if (!selectedYearExists && !ignoreErrors) {
-          throw new FavouriteIsInvalid(`Die Konfiguration für den Zeitschieberegler der Karte '${mapTitle}' ist ungültig.`);
-        }
+        return selectedYearExists && isTimeExtentValid;
       }
     }
   }
