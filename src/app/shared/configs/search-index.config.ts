@@ -3,6 +3,10 @@ import {SearchIndex} from '../services/apis/search/interfaces/search-index.inter
 export type SearchIndexType =
   | 'addresses'
   | 'places'
+  | 'gvz'
+  | 'parcels'
+  | 'egrid'
+  | 'egid'
   | 'activeMapItems'
   | 'metadata-maps'
   | 'metadata-products'
@@ -22,6 +26,30 @@ export const searchIndexConfig: SearchIndex[] = [
     label: 'Orte',
     active: true,
     indexType: 'places',
+  },
+  {
+    indexName: 'gvz',
+    label: 'GVZ-Nr.',
+    active: true,
+    indexType: 'gvz',
+  },
+  {
+    indexName: 'egid',
+    label: 'EGID',
+    active: true,
+    indexType: 'egid',
+  },
+  {
+    indexName: 'egrid',
+    label: 'E-GRID',
+    active: true,
+    indexType: 'egrid',
+  },
+  {
+    indexName: 'parznr',
+    label: 'Parzellen-Nr.',
+    active: true,
+    indexType: 'parcels',
   },
   {
     indexName: 'meta_gb2karten',

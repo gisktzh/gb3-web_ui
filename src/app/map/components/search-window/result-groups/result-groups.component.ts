@@ -57,12 +57,16 @@ export class ResultGroupsComponent implements OnInit, OnDestroy {
             filteredSearchApiResultMatches.forEach((resultMatch) => {
               if (resultMatch.indexType) {
                 switch (resultMatch.indexType) {
-                  case 'addresses':
-                  case 'places':
-                    filteredAddressesAndPlacesMatches.push(resultMatch);
-                    break;
                   case 'activeMapItems':
                     filteredActiveMapMatches.push(resultMatch);
+                    break;
+                  case 'addresses':
+                  case 'places':
+                  case 'gvz':
+                  case 'egid':
+                  case 'egrid':
+                  case 'parcels':
+                    filteredAddressesAndPlacesMatches.push(resultMatch);
                     break;
                   case 'metadata-maps':
                   case 'metadata-products':

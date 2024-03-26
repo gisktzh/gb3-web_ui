@@ -10,7 +10,7 @@ interface AbstractSearchApiResultMatch {
 }
 
 export interface GeometrySearchApiResultMatch extends AbstractSearchApiResultMatch {
-  indexType: 'addresses' | 'places' | 'activeMapItems';
+  indexType: 'addresses' | 'places' | 'gvz' | 'egid' | 'parcels' | 'egrid' | 'activeMapItems';
   displayString: string;
   geometry: GeometryWithSrs;
 }
