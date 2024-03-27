@@ -191,4 +191,5 @@ export const activeMapItemFeature = createFeature({
   ),
 });
 
-export const {name, reducer, selectActiveMapItemState, selectItems} = activeMapItemFeature;
+// we're explicitly not exposing `selectItems` because there is a selector doing that already filtering all temporary items by default
+export const {name, reducer, selectActiveMapItemState} = activeMapItemFeature;

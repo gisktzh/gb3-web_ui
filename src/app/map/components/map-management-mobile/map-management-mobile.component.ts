@@ -7,7 +7,7 @@ import {selectIsAuthenticated} from 'src/app/state/auth/reducers/auth-status.red
 import {ActiveMapItemActions} from 'src/app/state/map/actions/active-map-item.actions';
 import {LayerCatalogActions} from 'src/app/state/map/actions/layer-catalog.actions';
 import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
-import {selectItems} from 'src/app/state/map/reducers/active-map-item.reducer';
+import {selectItems} from 'src/app/state/map/selectors/active-map-items.selector';
 import {selectFilterString} from 'src/app/state/map/reducers/layer-catalog.reducer';
 import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
 

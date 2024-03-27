@@ -9,7 +9,7 @@ import {PrintActions} from '../../../../state/map/actions/print.actions';
 import {MapConfigState} from '../../../../state/map/states/map-config.state';
 import {selectMapConfigState} from '../../../../state/map/reducers/map-config.reducer';
 import {ActiveMapItem} from '../../../models/active-map-item.model';
-import {selectItems} from '../../../../state/map/reducers/active-map-item.reducer';
+import {selectItems} from '../../../../state/map/selectors/active-map-items.selector';
 import {BasemapConfigService} from '../../../services/basemap-config.service';
 import {MapUiActions} from '../../../../state/map/actions/map-ui.actions';
 import {map} from 'rxjs/operators';

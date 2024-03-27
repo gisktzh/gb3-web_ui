@@ -195,6 +195,11 @@ instance of `ActiveMapItem` to the map by using the appropriate method on the `A
 In order to avoid the `Array.filter(m => m instanceof x).map(m => m as x)` pattern, the `isActiveMapItemOfType`
 typeguard can be used: `Array.filter(isActiveMapItemOfType(x))`.
 
+#### Selectors
+
+To get a list of all currently active map items, the `selectItems` selector from the class `active-map-item.selector.ts` can be used. This selector returns all non-temporary `ActiveMapItem`s.
+If you want to get all active map items including the temporary items, you can use the `selectAllItems` selector instead.
+
 ### Spatial Reference System(s)
 
 Because we're using different datasources, we cannot always determin what SRS our GeoJSON objects have. In order to

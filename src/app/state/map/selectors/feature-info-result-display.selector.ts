@@ -1,6 +1,6 @@
 import {createSelector} from '@ngrx/store';
 import {selectMaps} from './maps.selector';
-import {selectItems} from '../reducers/active-map-item.reducer';
+import {selectItems} from '../selectors/active-map-items.selector';
 import {selectData} from '../reducers/feature-info.reducer';
 import {FeatureInfoResultDisplay} from '../../../shared/interfaces/feature-info.interface';
 import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';

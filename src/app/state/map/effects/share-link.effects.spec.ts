@@ -22,7 +22,7 @@ import {selectLoadedLayerCatalogueAndShareItem} from '../selectors/loaded-layer-
 import {Map, Topic} from '../../../shared/interfaces/topic.interface';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
-import {selectItems} from '../reducers/active-map-item.reducer';
+import {selectItems} from '../selectors/active-map-items.selector';
 import {ActiveMapItemConfiguration} from '../../../shared/interfaces/active-map-item-configuration.interface';
 import {ActiveMapItem} from '../../../map/models/active-map-item.model';
 import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
