@@ -16,6 +16,7 @@ import {ConfigService} from '../../../../shared/services/config.service';
 import {Gb3StyledInternalDrawingRepresentation} from '../../../../shared/interfaces/internal-drawing-representation.interface';
 import {selectDrawings} from '../../../../state/map/reducers/drawing.reducer';
 import {Gb3PrintService} from '../../../../shared/services/apis/gb3/gb3-print.service';
+import {PrintData} from '../../../interfaces/print-data.interface';
 
 interface PrintForm {
   title: FormControl<string | null>;
@@ -81,21 +82,8 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const value = this.formGroup.value;
-    const printCreation = this.printService.createPrintCreation(
-      value.format,
-      value.reportLayout,
-      value.reportOrientation,
-      value.title,
-      value.comment,
-      value.showLegend,
-      value.scale,
-      value.dpi,
-      value.rotation,
-      this.activeMapItems,
-      this.mapConfigState,
-      this.drawings,
-    );
+    const printData = this.getPrintData();
+    const printCreation = this.printService.createPrintCreation(printData);
     this.store.dispatch(PrintActions.requestPrintCreation({creation: printCreation}));
   }
 
@@ -258,5 +246,54 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     this.uniqueReportLayouts = printCapabilities ? [...new Set(printCapabilities.reports.map((report) => report.layout))] : [];
     this.updateFormGroupControlsState(true);
     this.isFormInitialized.next(true);
+  }
+
+  private getPrintData(): PrintData {
+    return {
+      format: this.getStringOrDefaultValue(this.formGroup.value.format),
+      reportLayout: this.getStringOrDefaultValue(this.formGroup.value.reportLayout),
+      reportOrientation: this.formGroup.value.reportOrientation ?? undefined,
+      title: this.getStringOrDefaultValue(this.formGroup.value.title),
+      comment: this.getStringOrDefaultValue(this.formGroup.value.comment),
+      showLegend: this.getBooleanOrDefaultValue(this.formGroup.value.showLegend),
+      scale: this.getNumberOrDefaultValue(this.formGroup.value.scale),
+      dpi: this.getNumberOrDefaultValue(this.formGroup.value.dpi),
+      rotation: this.getNumberOrDefaultValue(this.formGroup.value.rotation),
+      mapCenter: {
+        x: this.getNumberOrDefaultValue(this.mapConfigState?.center.x),
+        y: this.getNumberOrDefaultValue(this.mapConfigState?.center.y),
+      },
+      activeBasemapId: this.getStringOrDefaultValue(this.mapConfigState?.activeBasemapId),
+      activeMapItems: this.getArrayOrDefaultValue(this.activeMapItems),
+      drawings: this.getArrayOrDefaultValue(this.drawings),
+    };
+  }
+
+  private getStringOrDefaultValue(stringValue: string | null | undefined): string {
+    if (stringValue === undefined || stringValue === null) {
+      return '';
+    }
+    return stringValue;
+  }
+
+  private getNumberOrDefaultValue(numberValue: number | null | undefined): number {
+    if (numberValue === undefined || numberValue === null) {
+      return 0;
+    }
+    return numberValue;
+  }
+
+  private getBooleanOrDefaultValue(booleanValue: boolean | null | undefined): boolean {
+    if (booleanValue === undefined || booleanValue === null) {
+      return false;
+    }
+    return booleanValue;
+  }
+
+  private getArrayOrDefaultValue<T>(arrayValue: T[] | null | undefined): T[] {
+    if (arrayValue === undefined || arrayValue === null) {
+      return [];
+    }
+    return arrayValue;
   }
 }

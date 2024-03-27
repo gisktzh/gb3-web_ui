@@ -6,14 +6,12 @@ import {PrintCapabilitiesListData, PrintCreateData, PrintNew} from '../../../mod
 import {HttpClient} from '@angular/common/http';
 import {of} from 'rxjs';
 import {Gb3PrintService} from './gb3-print.service';
-import {PrintCreation, ReportOrientation} from '../../../interfaces/print.interface';
+import {PrintCreation} from '../../../interfaces/print.interface';
 import {ConfigService} from '../../config.service';
 import {PrintableOverlayItem} from '../../../interfaces/overlay-print.interface';
 import {FeatureInfoQueryLocation} from '../../../interfaces/feature-info.interface';
 import {provideMockStore} from '@ngrx/store/testing';
 import {Gb3StyledInternalDrawingRepresentation} from '../../../interfaces/internal-drawing-representation.interface';
-import {MapConfigState} from '../../../../state/map/states/map-config.state';
-import {ActiveMapItem} from '../../../../map/models/active-map-item.model';
 import {
   createDrawingMapItemMock,
   createExternalWmsMapItemMock,
@@ -23,6 +21,7 @@ import {UserDrawingLayer} from '../../../enums/drawing-layer.enum';
 import {UuidUtils} from '../../../utils/uuid.utils';
 import {BasemapConfigService} from '../../../../map/services/basemap-config.service';
 import {Basemap} from '../../../interfaces/basemap.interface';
+import {PrintData} from '../../../../map/interfaces/print-data.interface';
 
 describe('Gb3PrintService', () => {
   let service: Gb3PrintService;
@@ -340,62 +339,52 @@ describe('Gb3PrintService', () => {
         } as Basemap,
       ]);
 
-      const format = 'rom';
-      const reportLayout = 'A38';
-      const reportOrientation: ReportOrientation = 'hoch';
-      const title = 'Asterix & Obelix';
-      const comment = 'Die Spinnen, die Römer';
-      const showLegend = true;
-      const scale = 666;
-      const dpi = 1337;
-      const rotation = 420;
-      const activeMapItems: ActiveMapItem[] = [
-        createGb2WmsMapItemMock('visible map #1', 2),
-        createGb2WmsMapItemMock('invisible map #2', 1, false),
-        createDrawingMapItemMock(UserDrawingLayer.Drawings),
-        createGb2WmsMapItemMock('visible map #3', 4),
-        createExternalWmsMapItemMock('https://www.example.com/wms', 'visible map #4', []),
-      ];
-      const mapConfigState: MapConfigState = {activeBasemapId: 'test-basemap', center: {x: 900, y: 1}} as MapConfigState;
-      const drawings: Gb3StyledInternalDrawingRepresentation[] = [
-        {
-          id: 'not-a-real-uuid',
-          labelText: 'style me up',
-          source: UserDrawingLayer.Drawings,
-          properties: {style: {type: 'point'}},
-        } as Gb3StyledInternalDrawingRepresentation,
-      ];
+      const printData: PrintData = {
+        format: 'rom',
+        reportLayout: 'A38',
+        reportOrientation: 'hoch',
+        title: 'Asterix & Obelix',
+        comment: 'Die Spinnen, die Römer',
+        showLegend: true,
+        scale: 666,
+        dpi: 1337,
+        rotation: 420,
+        activeBasemapId: 'test-basemap',
+        activeMapItems: [
+          createGb2WmsMapItemMock('visible map #1', 2),
+          createGb2WmsMapItemMock('invisible map #2', 1, false),
+          createDrawingMapItemMock(UserDrawingLayer.Drawings),
+          createGb2WmsMapItemMock('visible map #3', 4),
+          createExternalWmsMapItemMock('https://www.example.com/wms', 'visible map #4', []),
+        ],
+        mapCenter: {x: 900, y: 1},
+        drawings: [
+          {
+            id: 'not-a-real-uuid',
+            labelText: 'style me up',
+            source: UserDrawingLayer.Drawings,
+            properties: {style: {type: 'point'}},
+          } as Gb3StyledInternalDrawingRepresentation,
+        ],
+      };
 
-      const result = service.createPrintCreation(
-        format,
-        reportLayout,
-        reportOrientation,
-        title,
-        comment,
-        showLegend,
-        scale,
-        dpi,
-        rotation,
-        activeMapItems,
-        mapConfigState,
-        drawings,
-      );
+      const result = service.createPrintCreation(printData);
 
       expect(result).toEqual({
-        format: format,
-        reportLayout: reportLayout,
-        reportOrientation: reportOrientation,
+        format: printData.format,
+        reportLayout: printData.reportLayout,
+        reportOrientation: printData.reportOrientation,
         attributes: {
           reportTitle: 'visible map #3, visible map #1',
-          userTitle: title,
-          userComment: comment,
-          showLegend: showLegend,
+          userTitle: printData.title,
+          userComment: printData.comment,
+          showLegend: printData.showLegend,
         },
         map: {
-          scale: scale,
-          dpi: dpi,
-          center: [mapConfigState.center.x, mapConfigState.center.y],
-          rotation: rotation,
+          scale: printData.scale,
+          dpi: printData.dpi,
+          center: [printData.mapCenter.x, printData.mapCenter.y],
+          rotation: printData.rotation,
           mapItems: [
             {
               type: 'WMS',
@@ -432,29 +421,6 @@ describe('Gb3PrintService', () => {
               customParams: {format: 'image/png; mode=8bit', transparent: true},
             },
           ],
-        },
-      });
-    });
-
-    it('handles undefined parameters and not return undefined values', () => {
-      const result = service.createPrintCreation(null, null, null, null, null, null, null, null, null, undefined, undefined, []);
-
-      expect(result).toEqual({
-        format: '',
-        reportLayout: '',
-        reportOrientation: undefined,
-        attributes: {
-          reportTitle: '',
-          userTitle: '',
-          userComment: '',
-          showLegend: false,
-        },
-        map: {
-          scale: 0,
-          dpi: 0,
-          center: [0, 0],
-          rotation: 0,
-          mapItems: [],
         },
       });
     });
