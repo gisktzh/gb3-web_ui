@@ -59,6 +59,10 @@ export class ResultGroupsComponent implements OnInit, OnDestroy {
                 switch (resultMatch.indexType) {
                   case 'addresses':
                   case 'places':
+                  case 'gvz':
+                  case 'egid':
+                  case 'egrid':
+                  case 'parcels':
                     filteredAddressesAndPlacesMatches.push(resultMatch);
                     break;
                   case 'activeMapItems':

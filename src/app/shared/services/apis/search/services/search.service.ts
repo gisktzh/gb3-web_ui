@@ -30,6 +30,10 @@ export class SearchService extends BaseApiService {
           case 'addresses':
           case 'places':
           case 'activeMapItems':
+          case 'gvz':
+          case 'egrid':
+          case 'egid':
+          case 'parcels':
             match.geometry = {...match.geometry, srs: 4326}; // elastic search always delivers pure GeoJSON with 4326 coordinates
             break;
           case 'metadata-maps':
