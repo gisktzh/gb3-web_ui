@@ -4,7 +4,6 @@ import {EMPTY, Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {provideMockStore} from '@ngrx/store/testing';
-import {RouterTestingModule} from '@angular/router/testing';
 import {catchError} from 'rxjs/operators';
 import {FavouriteListEffects} from './favourite-list.effects';
 import {FavouriteListActions} from '../actions/favourite-list.actions';
@@ -21,7 +20,7 @@ describe('FavouriteListEffects', () => {
     favouriteServiceMock = jasmine.createSpyObj<FavouritesService>(['loadFavourites']);
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule],
+      imports: [HttpClientTestingModule],
       providers: [
         FavouriteListEffects,
         provideMockActions(() => actions$),

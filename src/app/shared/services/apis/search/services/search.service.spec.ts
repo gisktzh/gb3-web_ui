@@ -14,7 +14,10 @@ describe('SearchService', () => {
     {indexName: 'fme-addresses', label: 'Adressen', active: true, indexType: 'addresses'},
     {indexName: 'fme-places', label: 'Orte', active: true, indexType: 'places'},
     {indexName: 'Kbs', label: 'KbS', active: true, indexType: 'activeMapItems'},
-    {indexName: 'Gvz', label: 'GVZ-Nr.', active: true, indexType: 'activeMapItems'},
+    {indexName: 'gvz', label: 'GVZ-Nr.', active: true, indexType: 'gvz'},
+    {indexName: 'parcels', label: 'Parzellen-Nr.', active: true, indexType: 'parcels'},
+    {indexName: 'egrid', label: 'E-GRID', active: true, indexType: 'egrid'},
+    {indexName: 'egid', label: 'EGID', active: true, indexType: 'egid'},
   ];
 
   const mockData: {index: string; matches: any[]}[] = [
@@ -120,7 +123,7 @@ describe('SearchService', () => {
       ],
     },
     {
-      index: 'Gvz',
+      index: 'gvz',
       matches: [
         {
           displayString: '1267',
@@ -174,6 +177,143 @@ describe('SearchService', () => {
         },
       ],
     },
+    {
+      index: 'parcels',
+      matches: [
+        {
+          displayString: '1267',
+          score: 2.1905336,
+          geometry: {
+            type: 'Polygon',
+            coordinates: [
+              [
+                [8.4398936813, 47.3952625371],
+                [8.4398905522, 47.3952609722],
+                [8.4399683716, 47.395194419],
+                [8.4400220981, 47.3951484751],
+                [8.4400230348, 47.3951489797],
+                [8.4400278978, 47.3951448269],
+                [8.4399897715, 47.395124271],
+                [8.4399937999, 47.3951208181],
+              ],
+            ],
+          },
+        },
+        {
+          displayString: '121',
+          score: 2.1905336,
+          geometry: {
+            type: 'Polygon',
+            coordinates: [
+              [
+                [8.4370490678, 47.3952137939],
+                [8.4369388942, 47.3951968098],
+                [8.4369291567, 47.3952271528],
+                [8.4369124563, 47.3952245267],
+                [8.4369120041, 47.3952258438],
+                [8.4368966517, 47.395271131],
+                [8.4370233172, 47.395290914],
+                [8.4370490678, 47.3952137939],
+              ],
+            ],
+          },
+        },
+      ],
+    },
+    {
+      index: 'egrid',
+      matches: [
+        {
+          displayString: '1267',
+          score: 2.1905336,
+          geometry: {
+            type: 'Polygon',
+            coordinates: [
+              [
+                [8.4398936813, 47.3952625371],
+                [8.4398905522, 47.3952609722],
+                [8.4399683716, 47.395194419],
+                [8.4400220981, 47.3951484751],
+                [8.4400230348, 47.3951489797],
+                [8.4400278978, 47.3951448269],
+                [8.4399897715, 47.395124271],
+                [8.4399937999, 47.3951208181],
+                [8.4399611603, 47.3951032189],
+                [8.439957132, 47.3951066719],
+                [8.4399095723, 47.3950810886],
+                [8.4399055171, 47.3950845239],
+                [8.4399064539, 47.3950850285],
+                [8.4398777811, 47.3951093383],
+                [8.4398851286, 47.3951133314],
+                [8.4397752775, 47.395206625],
+                [8.439773622, 47.3952080516],
+                [8.4397768337, 47.3952097777],
+                [8.439890818, 47.3952652514],
+                [8.4398936813, 47.3952625371],
+              ],
+            ],
+          },
+        },
+        {
+          displayString: '121',
+          score: 2.1905336,
+          geometry: {
+            type: 'Polygon',
+            coordinates: [
+              [
+                [8.4370490678, 47.3952137939],
+                [8.4369388942, 47.3951968098],
+              ],
+            ],
+          },
+        },
+      ],
+    },
+    {
+      index: 'egid',
+      matches: [
+        {
+          displayString: '1267',
+          score: 2.1905336,
+          geometry: {
+            type: 'Polygon',
+            coordinates: [
+              [
+                [8.4398936813, 47.3952625371],
+                [8.4398905522, 47.3952609722],
+                [8.4399683716, 47.395194419],
+                [8.4399095723, 47.3950810886],
+                [8.4399055171, 47.3950845239],
+                [8.4399064539, 47.3950850285],
+                [8.4398777811, 47.3951093383],
+                [8.4398851286, 47.3951133314],
+                [8.4397752775, 47.395206625],
+                [8.439773622, 47.3952080516],
+                [8.4397768337, 47.3952097777],
+                [8.439890818, 47.3952652514],
+                [8.4398936813, 47.3952625371],
+              ],
+            ],
+          },
+        },
+        {
+          displayString: '121',
+          score: 2.1905336,
+          geometry: {
+            type: 'Polygon',
+            coordinates: [
+              [
+                [8.4370490678, 47.3952137939],
+                [8.4369388942, 47.3951968098],
+                [8.4369291567, 47.3952271528],
+                [8.4370233172, 47.395290914],
+                [8.4370490678, 47.3952137939],
+              ],
+            ],
+          },
+        },
+      ],
+    },
   ];
 
   beforeEach(() => {
@@ -216,6 +356,26 @@ describe('SearchService', () => {
         expect(match.score).toBeGreaterThan(0);
         expect(match.indexName).toBeDefined();
         switch (match.indexType) {
+          case 'gvz':
+            expect(match.geometry.srs).toEqual(4326);
+            expect(match.indexName).toEqual('GVZ-Nr.');
+            expect(match.displayString).not.toEqual('');
+            break;
+          case 'egrid':
+            expect(match.geometry.srs).toEqual(4326);
+            expect(match.indexName).toEqual('E-GRID');
+            expect(match.displayString).not.toEqual('');
+            break;
+          case 'egid':
+            expect(match.geometry.srs).toEqual(4326);
+            expect(match.indexName).toEqual('EGID');
+            expect(match.displayString).not.toEqual('');
+            break;
+          case 'parcels':
+            expect(match.geometry.srs).toEqual(4326);
+            expect(match.indexName).toEqual('Parzellen-Nr.');
+            expect(match.displayString).not.toEqual('');
+            break;
           case 'addresses':
             expect(match.geometry.srs).toEqual(4326);
             expect(match.indexName).toEqual('Adressen');

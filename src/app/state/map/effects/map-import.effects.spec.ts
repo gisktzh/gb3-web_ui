@@ -4,7 +4,6 @@ import {Observable, of} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
-import {RouterTestingModule} from '@angular/router/testing';
 import {createExternalWmsMapItemMock} from '../../../testing/map-testing/active-map-item-test.utils';
 import {MapImportEffects} from './map-import.effects';
 import {MapImportActions} from '../actions/map-import.actions';
@@ -27,7 +26,7 @@ describe('MapImportEffects', () => {
     actions$ = new Observable<Action>();
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule],
+      imports: [HttpClientTestingModule],
       providers: [MapImportEffects, provideMockActions(() => actions$), provideMockStore()],
     });
     effects = TestBed.inject(MapImportEffects);

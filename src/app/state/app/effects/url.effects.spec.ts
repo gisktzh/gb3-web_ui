@@ -3,12 +3,11 @@ import {fakeAsync, flush, TestBed} from '@angular/core/testing';
 import {Observable, of} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
-import {RouterTestingModule} from '@angular/router/testing';
 import {routerNavigatedAction} from '@ngrx/router-store';
 import {UrlEffects} from './url.effects';
 import {UrlActions} from '../actions/url.actions';
 import {MainPage} from '../../../shared/enums/main-page.enum';
-import {ActivatedRouteSnapshot, NavigationEnd, Params, Router} from '@angular/router';
+import {ActivatedRouteSnapshot, NavigationEnd, Params, Router, RouterModule} from '@angular/router';
 import {BasemapConfigService} from '../../../map/services/basemap-config.service';
 import {selectQueryParams} from '../selectors/router.selector';
 import {selectMapConfigParams} from '../../map/selectors/map-config-params.selector';
@@ -25,7 +24,7 @@ describe('UrlEffects', () => {
     actions$ = new Observable<Action>();
 
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
+      imports: [RouterModule.forRoot([])],
       providers: [UrlEffects, provideMockActions(() => actions$), provideMockStore()],
     });
     effects = TestBed.inject(UrlEffects);

@@ -4,20 +4,19 @@ import {LoadingState} from '../../../../shared/types/loading-state.type';
 import {Store} from '@ngrx/store';
 import {BehaviorSubject, combineLatestWith, distinctUntilChanged, filter, Subscription, tap, withLatestFrom} from 'rxjs';
 import {selectCapabilities, selectCapabilitiesLoadingState, selectCreationLoadingState} from '../../../../state/map/reducers/print.reducer';
-import {PrintCapabilities, PrintCreation, PrintMapItem, ReportOrientation} from '../../../../shared/interfaces/print.interface';
+import {PrintCapabilities, ReportOrientation} from '../../../../shared/interfaces/print.interface';
 import {PrintActions} from '../../../../state/map/actions/print.actions';
 import {MapConfigState} from '../../../../state/map/states/map-config.state';
 import {selectMapConfigState} from '../../../../state/map/reducers/map-config.reducer';
 import {ActiveMapItem} from '../../../models/active-map-item.model';
-import {selectItems} from '../../../../state/map/reducers/active-map-item.reducer';
-import {BasemapConfigService} from '../../../services/basemap-config.service';
+import {selectItems} from '../../../../state/map/selectors/active-map-items.selector';
 import {MapUiActions} from '../../../../state/map/actions/map-ui.actions';
 import {map} from 'rxjs/operators';
 import {ConfigService} from '../../../../shared/services/config.service';
-import {UserDrawingLayer} from '../../../../shared/enums/drawing-layer.enum';
 import {Gb3StyledInternalDrawingRepresentation} from '../../../../shared/interfaces/internal-drawing-representation.interface';
 import {selectDrawings} from '../../../../state/map/reducers/drawing.reducer';
-import {SymbolizationToGb3ConverterUtils} from '../../../../shared/utils/symbolization-to-gb3-converter.utils';
+import {Gb3PrintService} from '../../../../shared/services/apis/gb3/gb3-print.service';
+import {PrintData} from '../../../interfaces/print-data.interface';
 
 interface PrintForm {
   title: FormControl<string | null>;
@@ -57,14 +56,14 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
   public uniqueReportLayouts: string[] = [];
   public readonly scales: number[] = this.configService.printConfig.scales;
 
+  private drawings: Gb3StyledInternalDrawingRepresentation[] = [];
   private readonly isFormInitialized: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private readonly subscriptions: Subscription = new Subscription();
-  private drawings: Gb3StyledInternalDrawingRepresentation[] = [];
 
   constructor(
     private readonly store: Store,
-    private readonly basemapConfigService: BasemapConfigService,
     private readonly configService: ConfigService,
+    private readonly printService: Gb3PrintService,
   ) {
     // disable the form until the print capabilities from the print API returns; otherwise the form is not complete.
     this.formGroup.disable();
@@ -83,7 +82,8 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const printCreation = this.createPrintCreation();
+    const printData = this.getPrintData();
+    const printCreation = this.printService.createPrintCreation(printData);
     this.store.dispatch(PrintActions.requestPrintCreation({creation: printCreation}));
   }
 
@@ -248,94 +248,52 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     this.isFormInitialized.next(true);
   }
 
-  private createPrintCreation(): PrintCreation {
-    const value = this.formGroup.value;
+  private getPrintData(): PrintData {
     return {
-      format: value.format ?? '',
-      reportLayout: value.reportLayout ?? '',
-      reportOrientation: value.reportOrientation ?? undefined,
-      attributes: {
-        reportTitle: this.activeMapItems
-          ? this.activeMapItems
-              .filter((activeMapItem) => activeMapItem.visible)
-              .map((activeMapItem) => activeMapItem.title)
-              .join(', ')
-          : '',
-        userTitle: value.title ?? '',
-        userComment: value.comment ?? '',
-        showLegend: value.showLegend ?? false,
+      format: this.getStringOrDefaultValue(this.formGroup.value.format),
+      reportLayout: this.getStringOrDefaultValue(this.formGroup.value.reportLayout),
+      reportOrientation: this.formGroup.value.reportOrientation ?? undefined,
+      title: this.getStringOrDefaultValue(this.formGroup.value.title),
+      comment: this.getStringOrDefaultValue(this.formGroup.value.comment),
+      showLegend: this.getBooleanOrDefaultValue(this.formGroup.value.showLegend),
+      scale: this.getNumberOrDefaultValue(this.formGroup.value.scale),
+      dpi: this.getNumberOrDefaultValue(this.formGroup.value.dpi),
+      rotation: this.getNumberOrDefaultValue(this.formGroup.value.rotation),
+      mapCenter: {
+        x: this.getNumberOrDefaultValue(this.mapConfigState?.center.x),
+        y: this.getNumberOrDefaultValue(this.mapConfigState?.center.y),
       },
-      map: {
-        scale: value.scale ?? 0,
-        dpi: value.dpi ?? 0,
-        center: [this.mapConfigState?.center.x ?? 0, this.mapConfigState?.center.y ?? 0],
-        rotation: value.rotation ?? 0,
-        mapItems: this.createPrintCreationMapItems(),
-      },
+      activeBasemapId: this.getStringOrDefaultValue(this.mapConfigState?.activeBasemapId),
+      activeMapItems: this.getArrayOrDefaultValue(this.activeMapItems),
+      drawings: this.getArrayOrDefaultValue(this.drawings),
     };
   }
 
-  private createPrintCreationMapItems(): PrintMapItem[] {
-    // order matters: the lowest index has the highest visibility
-    const mapItems: PrintMapItem[] = [];
-
-    // add all active map items
-    if (this.activeMapItems) {
-      this.activeMapItems
-        .filter((activeMapItem) => activeMapItem.visible)
-        .forEach((activeMapItem) => {
-          switch (activeMapItem.settings.type) {
-            case 'drawing':
-              mapItems.push(this.printDrawingLayer(activeMapItem.settings.userDrawingLayer));
-              break;
-            case 'gb2Wms':
-              mapItems.push({
-                layers: activeMapItem.settings.layers.filter((layer) => layer.visible).map((layer) => layer.layer),
-                type: 'WMS',
-                opacity: activeMapItem.opacity,
-                url: activeMapItem.settings.url,
-                mapTitle: activeMapItem.title,
-                customParams: {
-                  format: this.configService.gb2Config.wmsFormatMimeType,
-                  transparent: true, // always true
-                },
-              });
-              break;
-            case 'externalService':
-              // we do not print external map services
-              break;
-          }
-        });
+  private getStringOrDefaultValue(stringValue: string | null | undefined): string {
+    if (stringValue === undefined || stringValue === null) {
+      return '';
     }
-
-    // add basemap
-    const activeBasemapId = this.mapConfigState?.activeBasemapId;
-    const activeBasemap = this.basemapConfigService.availableBasemaps.find((basemap) => basemap.id === activeBasemapId);
-    if (activeBasemap) {
-      switch (activeBasemap.type) {
-        case 'blank':
-          // a blank basemap does not have to be printed
-          break;
-        case 'wms':
-          mapItems.push({
-            layers: activeBasemap.layers.map((layer) => layer.name),
-            type: 'WMS',
-            opacity: 1,
-            url: activeBasemap.url,
-            mapTitle: activeBasemap.title,
-            background: true,
-          });
-          break;
-      }
-    }
-
-    // reverse the order as the print API uses an inverse positioning to draw them (lowest index has lowest visibility)
-    return mapItems.reverse();
+    return stringValue;
   }
 
-  private printDrawingLayer(source: UserDrawingLayer): PrintMapItem {
-    const drawingsToDraw = this.drawings.filter((d) => d.source === source);
+  private getNumberOrDefaultValue(numberValue: number | null | undefined): number {
+    if (numberValue === undefined || numberValue === null) {
+      return 0;
+    }
+    return numberValue;
+  }
 
-    return SymbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(drawingsToDraw);
+  private getBooleanOrDefaultValue(booleanValue: boolean | null | undefined): boolean {
+    if (booleanValue === undefined || booleanValue === null) {
+      return false;
+    }
+    return booleanValue;
+  }
+
+  private getArrayOrDefaultValue<T>(arrayValue: T[] | null | undefined): T[] {
+    if (arrayValue === undefined || arrayValue === null) {
+      return [];
+    }
+    return arrayValue;
   }
 }

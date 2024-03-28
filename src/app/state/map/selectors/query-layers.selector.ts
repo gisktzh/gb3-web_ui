@@ -1,5 +1,5 @@
 import {createSelector} from '@ngrx/store';
-import {selectItems} from '../reducers/active-map-item.reducer';
+import {selectItems} from '../selectors/active-map-items.selector';
 import {selectScale} from '../reducers/map-config.reducer';
 import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
 import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';

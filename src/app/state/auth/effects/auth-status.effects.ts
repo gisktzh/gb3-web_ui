@@ -12,7 +12,7 @@ import {ShareLinkItem} from '../../../shared/interfaces/share-link.interface';
 import {Gb3ShareLinkService} from '../../../shared/services/apis/gb3/gb3-share-link.service';
 import {ActiveMapItemActions} from '../../map/actions/active-map-item.actions';
 import {DrawingActions} from '../../map/actions/drawing.actions';
-import {selectItems} from '../../map/reducers/active-map-item.reducer';
+import {selectItems} from '../../map/selectors/active-map-items.selector';
 import {selectDrawings} from '../../map/reducers/drawing.reducer';
 import {DrawingActiveMapItem} from '../../../map/models/implementations/drawing.model';
 import {MAP_SERVICE} from '../../../app.module';

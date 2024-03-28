@@ -30,7 +30,7 @@ export class MapImportDisplayNameComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly store: Store,
-    private formBuilder: FormBuilder,
+    private readonly formBuilder: FormBuilder,
   ) {}
 
   public ngOnInit(): void {

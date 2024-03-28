@@ -7,16 +7,26 @@
 :host ::ng-deep {
   .map-management__button {
     @include mixins.tool-button-mobile;
+    @include mixins.map-element-box-shadow;
   }
 }
 
 .map-container {
   height: calc(100vh - #{map-layout-variables.$navbar-height}); // subtracts height of navbar
+
+  @supports (height: 100dvh) {
+    height: calc(100dvh - #{map-layout-variables.$navbar-height}); // subtracts height of navbar
+  }
+
   position: relative;
   $minimal-bottom-height: map-layout-variables.$esri-attribution-widget-height;
 
   &--dev-mode {
     height: calc(100vh - #{map-layout-variables.$navbar-height} - #{map-layout-variables.$dev-mode-banner-height});
+
+    @supports (height: 100dvh) {
+      height: calc(100dvh - #{map-layout-variables.$navbar-height} - #{map-layout-variables.$dev-mode-banner-height});
+    }
   }
 
   &--mobile {

@@ -2,7 +2,7 @@ import {createSelector} from '@ngrx/store';
 import {selectItems as selectLegendItems} from '../reducers/legend.reducer';
 import {selectMaps} from './maps.selector';
 import {LegendDisplay} from '../../../shared/interfaces/legend.interface';
-import {selectItems as selectActiveMapItems} from '../reducers/active-map-item.reducer';
+import {selectItems as selectActiveMapItems} from '../selectors/active-map-items.selector';
 import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
 import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
 

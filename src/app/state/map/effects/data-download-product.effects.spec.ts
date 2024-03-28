@@ -4,7 +4,6 @@ import {EMPTY, Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
-import {RouterTestingModule} from '@angular/router/testing';
 import {MAP_SERVICE} from '../../../app.module';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
 import {DataDownloadProductEffects} from './data-download-product.effects';
@@ -14,7 +13,7 @@ import {ProductsCouldNotBeLoaded, RelevantProductsCouldNotBeLoaded} from '../../
 import {Product} from '../../../shared/interfaces/gb3-geoshop-product.interface';
 import {Gb3GeoshopProductsService} from '../../../shared/services/apis/gb3/gb3-geoshop-products.service';
 import {MapUiActions} from '../actions/map-ui.actions';
-import {selectItems} from '../reducers/active-map-item.reducer';
+import {selectItems} from '../selectors/active-map-items.selector';
 import {ActiveMapItem} from '../../../map/models/active-map-item.model';
 import {createGb2WmsMapItemMock} from '../../../testing/map-testing/active-map-item-test.utils';
 import {DataDownloadFilter} from '../../../shared/interfaces/data-download-filter.interface';
@@ -77,7 +76,7 @@ describe('DataDownloadProductEffects', () => {
     actions$ = new Observable<Action>();
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule],
+      imports: [HttpClientTestingModule],
       providers: [
         DataDownloadProductEffects,
         provideMockActions(() => actions$),

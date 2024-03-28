@@ -4,7 +4,6 @@ import {Observable, of} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
-import {RouterTestingModule} from '@angular/router/testing';
 import {AuthService} from '../../../auth/auth.service';
 import {AuthStatusEffects} from './auth-status.effects';
 import {SessionStorageService} from '../../../shared/services/session-storage.service';
@@ -26,7 +25,7 @@ import {createDrawingMapItemMock, createGb2WmsMapItemMock} from '../../../testin
 import {InternalDrawingLayer, UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {MapConstants} from '../../../shared/constants/map.constants';
 import {DrawingActions} from '../../map/actions/drawing.actions';
-import {selectItems} from '../../map/reducers/active-map-item.reducer';
+import {selectItems} from '../../map/selectors/active-map-items.selector';
 import {selectDrawings} from '../../map/reducers/drawing.reducer';
 import {ToolService} from '../../../map/interfaces/tool.service';
 
@@ -45,7 +44,7 @@ describe('AuthStatusEffects', () => {
     actions$ = new Observable<Action>();
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule],
+      imports: [HttpClientTestingModule],
       providers: [
         provideMockActions(() => actions$),
         provideMockStore(),

@@ -7,7 +7,7 @@ export const defaultMapConfig: MapConfigState = {
   srsId: MapConstants.DEFAULT_SRS,
   center: {
     x: 2682260.0,
-    y: 1248390.0,
+    y: 1253708.0,
   },
   scale: 320_000,
   rotation: 0,

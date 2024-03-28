@@ -27,7 +27,7 @@ export const searchConfig: SearchConfig = {
     searchOptions: {
       faq: false,
       maps: true,
-      searchIndexTypes: ['addresses', 'places', 'activeMapItems'],
+      searchIndexTypes: ['addresses', 'places', 'activeMapItems', 'gvz', 'egrid', 'egid', 'parcels'],
     },
     filterGroups: [
       {
@@ -36,6 +36,10 @@ export const searchConfig: SearchConfig = {
         filters: [
           {label: 'Adressen', isActive: false, type: 'addresses'},
           {label: 'Orte', isActive: false, type: 'places'},
+          {label: 'GVZ-Nummer', isActive: false, type: 'gvz'},
+          {label: 'Parzellen-, Grundstücks- und Liegenschaftsnummer', isActive: false, type: 'parcels'},
+          {label: 'Eidgenössische Grundstücksidentifikation (E-GRID)', isActive: false, type: 'egrid'},
+          {label: 'Eidgenössische Gebäudeidentifikator (EGID)', isActive: false, type: 'egid'},
           {label: 'Karten', isActive: false, type: 'maps'},
         ],
       },

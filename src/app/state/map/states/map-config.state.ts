@@ -1,8 +1,9 @@
 import {SupportedSrs} from '../../../shared/types/supported-srs.type';
+import {Coordinates} from '../../../shared/interfaces/coordinate.interface';
 
 export interface MapConfigState {
   isMapServiceInitialized: boolean;
-  center: {x: number; y: number};
+  center: Coordinates;
   scale: number;
   rotation: number;
   srsId: SupportedSrs;
