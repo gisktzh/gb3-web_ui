@@ -1,8 +1,15 @@
-import {Injectable} from '@angular/core';
+/* eslint-disable @typescript-eslint/naming-convention */
+import {Inject, Injectable} from '@angular/core';
 import {Gb3ApiService} from './gb3-api.service';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {PrintCapabilities, PrintCreation, PrintCreationResponse, ReportOrientation} from '../../../interfaces/print.interface';
+import {
+  PrintCapabilities,
+  PrintCreation,
+  PrintCreationResponse,
+  PrintMapItem,
+  ReportOrientation,
+} from '../../../interfaces/print.interface';
 import {
   PrintCapabilitiesListData,
   PrintCreateData,
@@ -13,12 +20,29 @@ import {
   PrintNew,
 } from '../../../models/gb3-api-generated.interfaces';
 import {PrintableOverlayItem} from '../../../interfaces/overlay-print.interface';
+import {SymbolizationToGb3ConverterUtils} from '../../../utils/symbolization-to-gb3-converter.utils';
+import {ActiveMapItem} from '../../../../map/models/active-map-item.model';
+import {HttpClient} from '@angular/common/http';
+import {ConfigService} from '../../config.service';
+import {BasemapConfigService} from '../../../../map/services/basemap-config.service';
+import {Gb3StyledInternalDrawingRepresentation} from '../../../interfaces/internal-drawing-representation.interface';
+import {PrintData} from '../../../../map/interfaces/print-data.interface';
+import {Gb2WmsSettings} from '../../../../map/models/implementations/gb2-wms.model';
+import {DrawingLayerSettings} from '../../../../map/models/implementations/drawing.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class Gb3PrintService extends Gb3ApiService {
   protected readonly endpoint = 'print';
+
+  constructor(
+    @Inject(HttpClient) http: HttpClient,
+    @Inject(ConfigService) configService: ConfigService,
+    private readonly basemapConfigService: BasemapConfigService,
+  ) {
+    super(http, configService);
+  }
 
   public loadPrintCapabilities(): Observable<PrintCapabilities> {
     const printCapabilitiesData = this.get<PrintCapabilitiesListData>(this.createCapabilitiesUrl());
@@ -56,6 +80,35 @@ export class Gb3PrintService extends Gb3ApiService {
     );
   }
 
+  /**
+   * Creates a PrintCreation object from the given parameters used to create a print job on the print API
+   */
+  public createPrintCreation(printData: PrintData): PrintCreation {
+    const mapItems = this.createPrintCreationMapItems(printData.activeMapItems, printData.activeBasemapId, printData.drawings);
+    const reportTitle = mapItems
+      .map((mapItem) => (mapItem.type === 'WMS' && !mapItem.background ? mapItem.mapTitle : undefined))
+      .filter((mapItemTitle): mapItemTitle is string => !!mapItemTitle)
+      .join(', ');
+    return {
+      format: printData.format,
+      reportLayout: printData.reportLayout,
+      reportOrientation: printData.reportOrientation,
+      attributes: {
+        reportTitle,
+        userTitle: printData.title,
+        userComment: printData.comment,
+        showLegend: printData.showLegend,
+      },
+      map: {
+        scale: printData.scale,
+        dpi: printData.dpi,
+        center: [printData.mapCenter.x, printData.mapCenter.y],
+        rotation: printData.rotation,
+        mapItems,
+      },
+    };
+  }
+
   private createPrintLegendUrl(): string {
     return `${this.getFullEndpointUrl()}/legend`;
   }
@@ -70,6 +123,92 @@ export class Gb3PrintService extends Gb3ApiService {
 
   private createCreateUrl(): string {
     return `${this.getFullEndpointUrl()}`;
+  }
+
+  private createPrintCreationMapItems(
+    activeMapItems: ActiveMapItem[],
+    activeBasemapId: string,
+    drawings: Gb3StyledInternalDrawingRepresentation[],
+  ): PrintMapItem[] {
+    const printMapItems = this.convertActiveMapItemsToPrintMapItems(activeMapItems, drawings);
+    const printBasemapItem = this.convertActiveBaseMapToPrintMapItem(activeBasemapId);
+    if (printBasemapItem) {
+      printMapItems.push(printBasemapItem);
+    }
+    // reverse the order as the print API uses an inverse positioning to draw them (lowest index has lowest visibility)
+    return printMapItems.reverse();
+  }
+
+  private convertActiveMapItemsToPrintMapItems(
+    activeMapItems: ActiveMapItem[],
+    drawings: Gb3StyledInternalDrawingRepresentation[],
+  ): PrintMapItem[] {
+    const mapItems: PrintMapItem[] = [];
+    activeMapItems
+      .filter((activeMapItem) => activeMapItem.visible)
+      .forEach((activeMapItem) => {
+        switch (activeMapItem.settings.type) {
+          case 'drawing':
+            mapItems.push(this.createDrawingPrintItem(activeMapItem.settings, drawings));
+            break;
+          case 'gb2Wms':
+            mapItems.push(this.createGb2WmsPrintItem(activeMapItem, activeMapItem.settings));
+            break;
+          case 'externalService':
+            // we do not print external map services
+            break;
+        }
+      });
+    return mapItems;
+  }
+
+  private convertActiveBaseMapToPrintMapItem(activeBasemapId: string): PrintMapItem | undefined {
+    let activeBasemapPrintItem: PrintMapItem | undefined;
+
+    // add basemap
+    const activeBasemap = this.basemapConfigService.availableBasemaps.find((basemap) => basemap.id === activeBasemapId);
+    if (activeBasemap) {
+      switch (activeBasemap.type) {
+        case 'blank':
+          // a blank basemap does not have to be printed
+          break;
+        case 'wms':
+          activeBasemapPrintItem = {
+            layers: activeBasemap.layers.map((layer) => layer.name),
+            type: 'WMS',
+            opacity: 1,
+            url: activeBasemap.url,
+            mapTitle: activeBasemap.title,
+            background: true,
+          };
+          break;
+      }
+    }
+
+    return activeBasemapPrintItem;
+  }
+
+  private createGb2WmsPrintItem(activeMapItem: ActiveMapItem, gb2WmsSettings: Gb2WmsSettings): PrintMapItem {
+    return {
+      // order matters: the lowest index has the highest visibility
+      layers: gb2WmsSettings.layers
+        .filter((layer) => layer.visible)
+        .map((layer) => layer.layer)
+        .reverse(), // reverse the order of the sublayers because the order in the GB3 interfaces (Topic, ActiveMapItem) is inverted to the print API specs
+      type: 'WMS',
+      opacity: activeMapItem.opacity,
+      url: gb2WmsSettings.url,
+      mapTitle: activeMapItem.title,
+      customParams: {
+        format: this.configService.gb2Config.wmsFormatMimeType,
+        transparent: true, // always true
+      },
+    };
+  }
+
+  private createDrawingPrintItem(drawingSettings: DrawingLayerSettings, drawings: Gb3StyledInternalDrawingRepresentation[]): PrintMapItem {
+    const drawingsToDraw = drawings.filter((drawing) => drawing.source === drawingSettings.userDrawingLayer);
+    return SymbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(drawingsToDraw);
   }
 
   private mapPrintCapabilitiesListDataToPrintCapabilities(data: PrintCapabilitiesListData): PrintCapabilities {

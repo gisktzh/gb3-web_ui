@@ -11,6 +11,17 @@ import {ConfigService} from '../../config.service';
 import {PrintableOverlayItem} from '../../../interfaces/overlay-print.interface';
 import {FeatureInfoQueryLocation} from '../../../interfaces/feature-info.interface';
 import {provideMockStore} from '@ngrx/store/testing';
+import {Gb3StyledInternalDrawingRepresentation} from '../../../interfaces/internal-drawing-representation.interface';
+import {
+  createDrawingMapItemMock,
+  createExternalWmsMapItemMock,
+  createGb2WmsMapItemMock,
+} from '../../../../testing/map-testing/active-map-item-test.utils';
+import {UserDrawingLayer} from '../../../enums/drawing-layer.enum';
+import {UuidUtils} from '../../../utils/uuid.utils';
+import {BasemapConfigService} from '../../../../map/services/basemap-config.service';
+import {Basemap} from '../../../interfaces/basemap.interface';
+import {PrintData} from '../../../../map/interfaces/print-data.interface';
 
 describe('Gb3PrintService', () => {
   let service: Gb3PrintService;
@@ -310,6 +321,107 @@ describe('Gb3PrintService', () => {
           },
         );
         done();
+      });
+    });
+  });
+
+  describe('createPrintCreation', () => {
+    it('creates a PrintCreation object from given parameters', () => {
+      spyOn(UuidUtils, 'createUuid').and.returnValue('not-a-real-uuid');
+      const basemapConfigService = TestBed.inject(BasemapConfigService);
+      spyOnProperty(basemapConfigService, 'availableBasemaps', 'get').and.returnValue([
+        {
+          type: 'wms',
+          id: 'test-basemap',
+          title: 'test-basemap-title',
+          url: 'https://test-basemap.com',
+          layers: [{name: 'layer0_test-basemap'}, {name: 'layer1_test-basemap'}],
+        } as Basemap,
+      ]);
+
+      const printData: PrintData = {
+        format: 'rom',
+        reportLayout: 'A38',
+        reportOrientation: 'hoch',
+        title: 'Asterix & Obelix',
+        comment: 'Die Spinnen, die Römer',
+        showLegend: true,
+        scale: 666,
+        dpi: 1337,
+        rotation: 420,
+        activeBasemapId: 'test-basemap',
+        activeMapItems: [
+          createGb2WmsMapItemMock('visible map #1', 2),
+          createGb2WmsMapItemMock('invisible map #2', 1, false),
+          createDrawingMapItemMock(UserDrawingLayer.Drawings),
+          createGb2WmsMapItemMock('visible map #3', 4),
+          createExternalWmsMapItemMock('https://www.example.com/wms', 'visible map #4', []),
+        ],
+        mapCenter: {x: 900, y: 1},
+        drawings: [
+          {
+            id: 'not-a-real-uuid',
+            labelText: 'style me up',
+            source: UserDrawingLayer.Drawings,
+            properties: {style: {type: 'point'}},
+          } as Gb3StyledInternalDrawingRepresentation,
+        ],
+      };
+
+      const result = service.createPrintCreation(printData);
+
+      expect(result).toEqual({
+        format: printData.format,
+        reportLayout: printData.reportLayout,
+        reportOrientation: printData.reportOrientation,
+        attributes: {
+          reportTitle: 'visible map #3, visible map #1',
+          userTitle: printData.title,
+          userComment: printData.comment,
+          showLegend: printData.showLegend,
+        },
+        map: {
+          scale: printData.scale,
+          dpi: printData.dpi,
+          center: [printData.mapCenter.x, printData.mapCenter.y],
+          rotation: printData.rotation,
+          mapItems: [
+            {
+              type: 'WMS',
+              mapTitle: 'test-basemap-title',
+              layers: ['layer0_test-basemap', 'layer1_test-basemap'], // no inversion here because this is not an active map item
+              url: 'https://test-basemap.com',
+              opacity: 1,
+              background: true,
+            },
+            {
+              type: 'WMS',
+              mapTitle: 'visible map #3',
+              layers: ['layer3_visible map #3', 'layer2_visible map #3', 'layer1_visible map #3', 'layer0_visible map #3'],
+              url: 'https://visible map #3.com',
+              opacity: 1,
+              customParams: {format: 'image/png; mode=8bit', transparent: true},
+            },
+            {
+              type: 'Vector',
+              geojson: {
+                type: 'FeatureCollection',
+                features: [jasmine.objectContaining({properties: jasmine.objectContaining({style: 'not-a-real-uuid'})})],
+              },
+              styles: {
+                'not-a-real-uuid': {type: 'point'},
+              },
+            },
+            {
+              type: 'WMS',
+              mapTitle: 'visible map #1',
+              layers: ['layer1_visible map #1', 'layer0_visible map #1'],
+              url: 'https://visible map #1.com',
+              opacity: 1,
+              customParams: {format: 'image/png; mode=8bit', transparent: true},
+            },
+          ],
+        },
       });
     });
   });

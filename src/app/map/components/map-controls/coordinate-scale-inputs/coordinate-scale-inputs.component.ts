@@ -6,6 +6,7 @@ import {MapConfigActions} from '../../../../state/map/actions/map-config.actions
 import {ConfigService} from '../../../../shared/services/config.service';
 import {CoordinateParserService} from '../../../services/coordinate-parser.service';
 import {NumberUtils} from '../../../../shared/utils/number.utils';
+import {Coordinates} from '../../../../shared/interfaces/coordinate.interface';
 
 /**
  * Note that for scale and mapCenter, we have two properties - one mimicks the state and one mimicks the input. The input value is used in
@@ -35,7 +36,7 @@ export class CoordinateScaleInputsComponent implements OnInit, OnDestroy {
   private readonly subscriptions: Subscription = new Subscription();
   private readonly rotation$ = this.store.select(selectRotation);
   private readonly scaleState$: Observable<number> = this.store.select(selectScale);
-  private readonly centerState$: Observable<{x: number; y: number}> = this.store.select(selectCenter);
+  private readonly centerState$: Observable<Coordinates> = this.store.select(selectCenter);
 
   constructor(
     private readonly coordinateParserService: CoordinateParserService,
