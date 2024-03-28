@@ -14,7 +14,7 @@ export const MapConfigActions = createActionGroup({
       basemapId: string;
       initialMaps: string[];
     }>(),
-    'Set Map Extent': props<{x: number; y: number; scale: number}>(),
+    'Set Map Extent': props<Coordinates & {scale: number}>(),
     'Set Map Center': props<{center: PointWithSrs}>(),
     'Set Ready': props<{calculatedMinScale: number; calculatedMaxScale: number}>(),
     'Set Scale': props<{scale: number}>(),
