@@ -19,10 +19,10 @@ export enum DpiSetting {
  * These choices are used in the GUI to populate the dropdown.
  */
 export enum FileFormat {
-  PDF,
-  PNG,
-  TIFF,
-  GIF,
+  pdf,
+  png,
+  tiff,
+  gif,
 }
 
 /**
@@ -40,12 +40,13 @@ export interface PrintRules {
   reportFormats: ReportFormat[];
   availableFileFormatsForLegend: FileFormat[]; // technically, only PDF is supported, but in case it is extended
   availableFileFormatsForMapSet: FileFormat[]; // technically, only PDF is supported, but in case it is extended
+  availableDocumentFormatsForMapSet: DocumentFormat[]; // technically, only A4 is supported, but in case it is extended
 }
 
 /**
  * Note: _all_ formats can be quer/hoch, so this is not explicitly labelled.
  */
-const examplePrintRules: PrintRules = {
+export const printRules: PrintRules = {
   reportFormats: [
     {
       documentFormat: DocumentFormat.A0,
@@ -68,6 +69,7 @@ const examplePrintRules: PrintRules = {
       availableDpiSettings: [DpiSetting.low, DpiSetting.high],
     },
   ],
-  availableFileFormatsForLegend: [FileFormat.PDF],
-  availableFileFormatsForMapSet: [FileFormat.PDF],
+  availableFileFormatsForLegend: [FileFormat.pdf],
+  availableFileFormatsForMapSet: [FileFormat.pdf],
+  availableDocumentFormatsForMapSet: [DocumentFormat.A4],
 };

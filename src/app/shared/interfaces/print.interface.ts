@@ -127,6 +127,8 @@ interface PrintMapWms extends AbstractGb3Layer {
 
 export type ReportOrientation = 'hoch' | 'quer';
 
+export type ReportType = 'standard' | 'mapset';
+
 export interface PrintCreationResponse {
   /** print document retrieval endpoint URL */
   reportUrl: string;
