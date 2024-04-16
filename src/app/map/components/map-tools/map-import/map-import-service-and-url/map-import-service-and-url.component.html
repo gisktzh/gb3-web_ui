@@ -6,13 +6,28 @@
       <mat-option value="kml">KML</mat-option>
     </mat-select>
   </mat-form-field>
-  <mat-form-field>
+
+  <mat-form-field class="map-import-service-and-url__url-input">
     <mat-label>URL</mat-label>
-    <input matInput placeholder="Bitte URL zum Kartendienst eingeben" formControlName="url" />
+    <input matInput placeholder="Bitte URL zum Kartendienst eingeben" formControlName="url" (keyup)="handleManualValidation($event)" />
     <mat-icon *ngIf="loadingState === 'loaded'" color="primary" matSuffix>check</mat-icon>
     <mat-icon *ngIf="loadingState === 'error'" color="warn" matSuffix>error</mat-icon>
+    <button
+      class="map-import-service-and-url__url-input__validate-button"
+      [disabled]="!serviceFormGroup.controls.url.value || loadingState === 'loading'"
+      type="button"
+      mat-button
+      (click)="validateUrl()"
+      matSuffix
+    >
+      URL prüfen
+    </button>
     @if (loadingState === 'error') {
       <mat-error class="mat-caption">Fehler beim Laden</mat-error>
     }
+    <mat-hint
+      >Überprüfen Sie die URL hinsichtlich Ihrer Importierbarkeit durch Drücken der Enter-Taste oder über die Schaltfläche "URL
+      prüfen".</mat-hint
+    >
   </mat-form-field>
 </form>
