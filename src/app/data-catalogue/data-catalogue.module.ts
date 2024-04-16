@@ -1,5 +1,5 @@
 import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {DataCataloguePageComponent} from './data-catalogue-page.component';
 import {DataCatalogueRoutingModule} from './data-catalogue-routing.module';
 import {DataCatalogueOverviewComponent} from './components/data-catalogue-overview/data-catalogue-overview.component';
@@ -38,6 +38,7 @@ import {OverviewSearchResultItemComponent} from '../shared/components/data-catal
     DatasetElementDetailComponent,
     DataDisplayComponent,
     OverviewSearchResultItemComponent,
+    NgOptimizedImage,
   ],
   exports: [],
 })
