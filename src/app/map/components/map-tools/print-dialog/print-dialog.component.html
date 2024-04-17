@@ -67,7 +67,7 @@
   <!--    <loading-and-process-bar [loadingState]="printCapabilitiesLoadingState"></loading-and-process-bar>-->
   <!--  </div>-->
 
-  <mat-stepper orientation="vertical" #stepper>
+  <mat-stepper orientation="vertical" [linear]="linear" #stepper>
     <mat-step [stepControl]="formGroup" label="Beschriftung">
       <form [formGroup]="formGroup" class="print-dialog__content">
         <div class="print-dialog__content__form">
@@ -102,7 +102,7 @@
       <form [formGroup]="formGroup">
         <mat-form-field class="print-dialog__content__form__element" hideRequiredMarker>
           <mat-label>Layout</mat-label>
-          <mat-select formControlName="reportLayout">
+          <mat-select formControlName="reportLayout" (selectionChange)="selectedReportLayout.next($event.value)">
             <mat-option *ngFor="let reportLayout of availableReportLayouts" [value]="reportLayout">
               {{ reportLayout }}
             </mat-option>
@@ -202,6 +202,7 @@
           >
             Drucken
           </button>
+          <loading-and-process-bar [loadingState]="printCreationLoadingState"></loading-and-process-bar>
         </div>
       </form>
     </mat-step>

@@ -59,15 +59,16 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
   public activeMapItems?: ActiveMapItem[];
   public availableReportLayouts: string[] = Object.values(DocumentFormat).filter((value) => typeof value === 'string') as string[];
   public availableDpiSettings: number[] = []; // changes only if ReportLayout changes
-  public availablePortraitOptions: string[] = []; // changes only if report Type changes
   public availableFileTypes: string[] = Object.values(FileFormat).filter((value) => typeof value === 'string') as string[];
 
   public readonly scales: number[] = this.configService.printConfig.scales;
+  public linear = true;
 
   private drawings: Gb3StyledInternalDrawingRepresentation[] = [];
   private readonly isFormInitialized: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public isLegendSelected: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   public selectedReportType: BehaviorSubject<ReportType> = new BehaviorSubject<ReportType>('standard');
+  public selectedReportLayout: BehaviorSubject<string> = new BehaviorSubject<string>('A4');
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(
@@ -99,10 +100,26 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
   }
 
   public finishWithDefaultValues(stepper: MatStepper) {
+    this.formGroup.setValue({
+      title: this.formGroup.controls.title.value,
+      comment: this.formGroup.controls.comment.value,
+      reportType: 'standard',
+      reportLayout: DocumentFormat[printConfig.defaultPrintValues.documentFormat],
+      reportOrientation: printConfig.defaultPrintValues.orientation,
+      dpi: printConfig.defaultPrintValues.dpiSetting,
+      rotation: printConfig.defaultPrintValues.rotation,
+      scale: this.formGroup.controls.scale.value,
+      fileFormat: FileFormat[printConfig.defaultPrintValues.fileFormat],
+      showLegend: printConfig.defaultPrintValues.legend,
+    });
+
+    // Move the stepper to the last step and mark all steps as completed
+    this.linear = false;
     stepper._steps.toArray().forEach((step) => {
       step.completed = true;
     });
     stepper.selectedIndex = stepper._steps.length - 1;
+    this.linear = true;
   }
 
   private initSubscriptions() {
@@ -112,9 +129,9 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
         .pipe(
           combineLatestWith(this.isFormInitialized),
           filter(([_, isFormInitialized]) => isFormInitialized),
-          tap(([value, _]) => {
-            this.updateUniqueDpiSettings(value.reportLayout ?? DocumentFormat[printConfig.defaultPrintValues.documentFormat]);
-          }),
+          // tap(([value, _]) => {
+          //   this.updateUniqueDpiSettings(value.reportLayout ?? DocumentFormat[printConfig.defaultPrintValues.documentFormat]);
+          // }),
           // for the print preview we only use some properties and only if they've changed
           map(([value, _]) => ({
             reportLayout: value.reportLayout,
@@ -131,7 +148,10 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
               previous.rotation === current.rotation &&
               previous.fileFormat === current.fileFormat,
           ),
-          tap((value) => this.updatePrintPreview(value.reportLayout, value.reportOrientation, value.scale, value.rotation)),
+          tap((value) => {
+            console.log(value);
+            this.updatePrintPreview(value.reportLayout, value.reportOrientation, value.scale, value.rotation);
+          }),
         )
         .subscribe(),
     );
@@ -144,7 +164,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
         .pipe(
           tap((printCreationLoadingState) => {
             this.printCreationLoadingState = printCreationLoadingState;
-            this.updateFormGroupState();
+            // this.updateFormGroupState();
           }),
         )
         .subscribe(),
@@ -179,8 +199,10 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.add(
-      this.selectedReportType.subscribe((reportType) => {
+      this.selectedReportType.pipe(distinctUntilChanged()).subscribe((reportType) => {
         this.updateUniqueReportLayouts(reportType);
+        this.updateUniqueFileTypes(reportType, this.isLegendSelected.value);
+
         if (reportType === 'mapset') {
           this.formGroup.setValue({
             title: this.formGroup.controls.title.value,
@@ -209,8 +231,16 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.add(
-      this.isLegendSelected.subscribe((isLegendSelected) => {
+      this.isLegendSelected.pipe(distinctUntilChanged()).subscribe((isLegendSelected) => {
+        console.log('isLegendSelected', isLegendSelected);
         this.updateUniqueFileTypes(this.formGroup.value.reportType ?? 'standard', isLegendSelected);
+      }),
+    );
+
+    this.subscriptions.add(
+      this.selectedReportLayout.pipe(distinctUntilChanged()).subscribe((reportLayout) => {
+        console.log(reportLayout);
+        this.updateUniqueDpiSettings(reportLayout);
       }),
     );
   }
@@ -271,16 +301,15 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
       fileFormat: FileFormat[defaultReport.fileFormat],
       showLegend: defaultReport.legend,
     });
-    // this.availableReportLayouts = Object.values(DocumentFormat).filter((value) => typeof value === 'string') as string[];
-    this.updateUniqueDpiSettings(DocumentFormat[printConfig.defaultPrintValues.documentFormat]);
     this.isFormInitialized.next(true);
     this.updateFormGroupState();
   }
 
   private getPrintData(): PrintData {
     return {
-      format: this.getStringOrDefaultValue(this.formGroup.value.fileFormat),
+      format: this.getStringOrDefaultValue(this.formGroup.controls.fileFormat.value),
       reportLayout: this.getStringOrDefaultValue(this.formGroup.value.reportLayout),
+      reportType: this.getStringOrDefaultValue(this.formGroup.value.reportType),
       reportOrientation: this.formGroup.value.reportOrientation ?? undefined,
       title: this.getStringOrDefaultValue(this.formGroup.value.title),
       comment: this.getStringOrDefaultValue(this.formGroup.value.comment),
@@ -310,29 +339,34 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
       (reportFormat) => DocumentFormat[reportFormat.documentFormat] === reportLayout,
     )!.availableDpiSettings;
 
-    // this.formGroup.controls.dpi.setValue(this.availableDpiSettings[0]);
-    // if (this.availableDpiSettings.length === 1) {
-    //   this.formGroup.controls.dpi.disable();
-    // } else {
-    //   this.formGroup.controls.dpi.enable();
-    // }
+    this.formGroup.controls.dpi.setValue(this.availableDpiSettings[0]);
+    if (this.availableDpiSettings.length === 1) {
+      this.formGroup.controls.dpi.disable();
+    } else {
+      this.formGroup.controls.dpi.enable();
+    }
   }
 
   private updateUniqueFileTypes(reportType: ReportType, showLegend: boolean) {
-    if (showLegend) {
-      this.availableFileTypes = printRules.availableFileFormatsForLegend.map((fileFormat) => FileFormat[fileFormat]);
-    } else if (reportType === 'mapset') {
-      this.availableFileTypes = printRules.availableFileFormatsForMapSet.map((fileFormat) => FileFormat[fileFormat]);
-    } else {
-      this.availableFileTypes = Object.values(FileFormat).filter((value) => typeof value === 'string') as string[];
-    }
+    const allAvailableFileFormats = Object.values(FileFormat).filter((value) => typeof value === 'string') as string[];
+    const availableFileFormatsForLegend = showLegend
+      ? printRules.availableFileFormatsForLegend.map((fileFormat) => FileFormat[fileFormat])
+      : allAvailableFileFormats;
+    const availableFileFormatsForMapSet =
+      reportType === 'mapset'
+        ? printRules.availableFileFormatsForMapSet.map((fileFormat) => FileFormat[fileFormat])
+        : allAvailableFileFormats;
+
+    this.availableFileTypes = allAvailableFileFormats.filter(
+      (format) => availableFileFormatsForLegend.includes(format) && availableFileFormatsForMapSet.includes(format),
+    );
 
     if (this.availableFileTypes.length === 1) {
-      this.formGroup.controls.fileFormat.setValue(this.availableFileTypes[0]);
-      this.formGroup.controls.fileFormat.disable();
+      this.formGroup.controls.fileFormat.disable({emitEvent: false});
     } else {
       this.formGroup.controls.fileFormat.enable();
     }
+    this.formGroup.controls.fileFormat.setValue(this.availableFileTypes[0]);
   }
 
   private getStringOrDefaultValue(stringValue: string | null | undefined): string {
@@ -364,4 +398,5 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
   }
 
   protected readonly legendFeature = legendFeature;
+  protected readonly DocumentFormat = DocumentFormat;
 }

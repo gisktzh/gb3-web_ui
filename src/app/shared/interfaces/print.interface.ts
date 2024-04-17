@@ -26,6 +26,11 @@ export interface PrintCreation {
    */
   reportLayout: string;
   /**
+   * report layout
+   * @example "standard"
+   */
+  reportType: string;
+  /**
    * report orientation
    * @example "hoch"
    */

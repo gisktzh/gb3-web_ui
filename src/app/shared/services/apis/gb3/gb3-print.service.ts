@@ -92,6 +92,7 @@ export class Gb3PrintService extends Gb3ApiService {
     return {
       format: printData.format,
       reportLayout: printData.reportLayout,
+      reportType: printData.reportType,
       reportOrientation: printData.reportOrientation,
       attributes: {
         reportTitle,
@@ -229,7 +230,11 @@ export class Gb3PrintService extends Gb3ApiService {
 
   private mapPrintCreationToCreateCreatePayload(printCreation: PrintCreation): PrintNew {
     return {
-      report: this.transformSizeAndOrientationToLayoutName(printCreation.reportLayout, printCreation.reportOrientation),
+      report: this.transformSizeAndOrientationToLayoutName(
+        printCreation.reportLayout,
+        printCreation.reportOrientation,
+        printCreation.reportType,
+      ),
       format: printCreation.format,
       map: {
         dpi: printCreation.map.dpi,
@@ -288,7 +293,10 @@ export class Gb3PrintService extends Gb3ApiService {
     return report;
   }
 
-  private transformSizeAndOrientationToLayoutName(size: string, orientation: ReportOrientation | undefined): string {
+  private transformSizeAndOrientationToLayoutName(size: string, orientation: ReportOrientation | undefined, reportType: string): string {
+    if (reportType === 'mapset') {
+      return 'Kartenset';
+    }
     if (!orientation) {
       return size;
     }
