@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
-import {Actions, concatLatestFrom, createEffect, ofType} from '@ngrx/effects';
+import {Actions, createEffect, ofType} from '@ngrx/effects';
+import {concatLatestFrom} from '@ngrx/operators';
 import {iif, of, switchMap, tap} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
 import {FeatureInfoActions} from '../actions/feature-info.actions';

@@ -1,5 +1,6 @@
 import {Inject, Injectable} from '@angular/core';
-import {Actions, concatLatestFrom, createEffect, ofType} from '@ngrx/effects';
+import {Actions, createEffect, ofType} from '@ngrx/effects';
+import {concatLatestFrom} from '@ngrx/operators';
 import {combineLatestWith, distinctUntilChanged, filter, of, switchMap, takeWhile, tap} from 'rxjs';
 import {SearchActions} from '../actions/search.actions';
 import {SearchService} from '../../../shared/services/apis/search/services/search.service';
