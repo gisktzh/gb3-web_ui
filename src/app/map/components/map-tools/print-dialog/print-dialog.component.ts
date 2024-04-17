@@ -90,7 +90,6 @@ export class PrintDialogComponent implements OnInit, OnDestroy, AfterViewInit {
   public ngAfterViewInit() {
     this.subscriptions.add(
       this.stepper.selectionChange.subscribe((stepEvent: StepperSelectionEvent) => {
-        console.log(stepEvent.selectedIndex);
         this.stepper._steps.toArray().forEach((step, index) => {
           if (index > stepEvent.selectedIndex) {
             step.completed = false;
@@ -149,13 +148,14 @@ export class PrintDialogComponent implements OnInit, OnDestroy, AfterViewInit {
           // tap(([value, _]) => {
           //   this.updateUniqueDpiSettings(value.reportLayout ?? DocumentFormat[printConfig.defaultPrintValues.documentFormat]);
           // }),
-          // for the print preview we only use some properties and only if they've changed
+          // for the print preview we only use some properties and only if they've changed.
+          // The disabled properties are not showing in the 'value' object, thus we need to get them from the formGroup
           map(([value, _]) => ({
-            reportLayout: value.reportLayout,
-            reportOrientation: value.reportOrientation,
-            scale: value.scale,
-            rotation: value.rotation,
-            fileFormat: value.fileFormat,
+            reportLayout: value.reportLayout ?? this.formGroup.controls.reportLayout.value,
+            reportOrientation: value.reportOrientation ?? this.formGroup.controls.reportOrientation.value,
+            scale: value.scale ?? this.formGroup.controls.scale.value,
+            rotation: value.rotation ?? this.formGroup.controls.rotation.value,
+            fileFormat: value.fileFormat ?? this.formGroup.controls.fileFormat.value,
           })),
           distinctUntilChanged(
             (previous, current) =>
@@ -166,14 +166,11 @@ export class PrintDialogComponent implements OnInit, OnDestroy, AfterViewInit {
               previous.fileFormat === current.fileFormat,
           ),
           tap((value) => {
-            console.log(value);
             this.updatePrintPreview(value.reportLayout, value.reportOrientation, value.scale, value.rotation);
           }),
         )
         .subscribe(),
     );
-
-    // this.subscriptions.add(this.formGroup.controls.reportLayout.valueChanges.pipe(tap((value) => console.log(value))).subscribe());
 
     this.subscriptions.add(
       this.store
@@ -249,15 +246,12 @@ export class PrintDialogComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.subscriptions.add(
       this.isLegendSelected.pipe().subscribe((isLegendSelected) => {
-        console.log('isLegendSelected', isLegendSelected);
         this.updateUniqueFileTypes(this.formGroup.value.reportType ?? 'standard', isLegendSelected);
       }),
     );
 
     this.subscriptions.add(
       this.selectedReportLayout.pipe().subscribe((reportLayout) => {
-        console.log(reportLayout);
-        console.log(this.stepper);
         this.updateUniqueDpiSettings(reportLayout);
       }),
     );
