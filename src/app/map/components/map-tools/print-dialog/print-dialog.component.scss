@@ -2,12 +2,17 @@
 @use 'functions/helper.function' as functions;
 @use 'mixins/material.mixin' as mat-mixins;
 
-:host ::ng-deep .print-dialog__content__form__element {
+:host ::ng-deep .print_dialog__stepper__content__form__element {
   @include mat-mixins.mat-text-field-override-background;
+  padding-top: 6px;
 
   .mat-mdc-form-field-subscript-wrapper {
     height: 0;
   }
+}
+
+:host ::ng-deep .mdc-text-field--outlined {
+  --mdc-outlined-text-field-container-shape: 25px;
 }
 
 .print-dialog {
@@ -56,19 +61,29 @@
           flex: 1;
         }
       }
-    }
-  }
 
-  .stepper-button {
-    height: 48px;
+      .print_dialog__stepper__content__hint {
+        display: flex;
+        align-items: center;
+        padding-top: 6px;
 
-    &.mdc-button {
-      background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 50);
-      color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 300);
+        .print_dialog__stepper__content__hint__text {
+          padding-left: 6px;
+        }
+      }
 
-      &:last-of-type {
-        background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent);
-        color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-accent);
+      .print_dialog__stepper__content__button {
+        height: 48px;
+
+        &.mdc-button {
+          background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 50);
+          color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 300);
+
+          &:last-of-type {
+            background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent);
+            color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-accent);
+          }
+        }
       }
     }
   }
