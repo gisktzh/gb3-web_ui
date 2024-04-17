@@ -37,6 +37,7 @@
     overflow-y: auto;
     padding-right: 12px;
     margin-bottom: 16px;
+    gap: 16px;
 
     .print-dialog__content__form {
       display: flex;
@@ -55,6 +56,25 @@
     }
   }
 
+  .stepper-button {
+    height: 48px;
+    margin-left: 12px;
+
+    &.mdc-button {
+      background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 50);
+      color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 300);
+
+      &:last-of-type {
+        background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent);
+        color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-accent);
+      }
+
+      &:disabled {
+        color: ktzh-variables.$zh-disabled-foreground-color;
+      }
+    }
+  }
+
   .print-dialog__footer {
     flex-grow: 0;
     align-self: flex-end;
@@ -66,11 +86,6 @@
       &.mdc-button {
         background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 50);
         color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 300);
-
-        &:last-of-type {
-          background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent);
-          color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-accent);
-        }
 
         &:disabled {
           color: ktzh-variables.$zh-disabled-foreground-color;
