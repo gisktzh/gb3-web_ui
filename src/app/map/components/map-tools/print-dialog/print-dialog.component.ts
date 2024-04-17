@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {LoadingState} from '../../../../shared/types/loading-state.type';
 import {Store} from '@ngrx/store';
@@ -19,8 +19,8 @@ import {Gb3PrintService} from '../../../../shared/services/apis/gb3/gb3-print.se
 import {PrintData} from '../../../interfaces/print-data.interface';
 import {DocumentFormat, FileFormat, printRules} from '../../../../shared/interfaces/print-rules.interface';
 import {printConfig} from '../../../../shared/configs/print.config';
-import {legendFeature} from '../../../../state/map/reducers/legend.reducer';
 import {MatStepper} from '@angular/material/stepper';
+import {StepperSelectionEvent} from '@angular/cdk/stepper';
 
 interface PrintForm {
   title: FormControl<string | null>;
@@ -40,7 +40,9 @@ interface PrintForm {
   templateUrl: './print-dialog.component.html',
   styleUrls: ['./print-dialog.component.scss'],
 })
-export class PrintDialogComponent implements OnInit, OnDestroy {
+export class PrintDialogComponent implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChild('stepper') private readonly stepper!: MatStepper;
+
   public readonly formGroup: FormGroup<PrintForm> = new FormGroup({
     title: new FormControl(),
     comment: new FormControl(),
@@ -85,6 +87,21 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     this.initSubscriptions();
   }
 
+  public ngAfterViewInit() {
+    this.subscriptions.add(
+      this.stepper.selectionChange.subscribe((stepEvent: StepperSelectionEvent) => {
+        console.log(stepEvent.selectedIndex);
+        this.stepper._steps.toArray().forEach((step, index) => {
+          if (index > stepEvent.selectedIndex) {
+            step.completed = false;
+          } else {
+            step.completed = true;
+          }
+        });
+      }),
+    );
+  }
+
   public print() {
     if (!this.formGroup.valid || this.printCreationLoadingState === 'loading') {
       return;
@@ -99,7 +116,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     this.store.dispatch(MapUiActions.hideMapSideDrawerContent());
   }
 
-  public finishWithDefaultValues(stepper: MatStepper) {
+  public finishWithDefaultValues() {
     this.formGroup.setValue({
       title: this.formGroup.controls.title.value,
       comment: this.formGroup.controls.comment.value,
@@ -115,10 +132,10 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
 
     // Move the stepper to the last step and mark all steps as completed
     this.linear = false;
-    stepper._steps.toArray().forEach((step) => {
+    this.stepper._steps.toArray().forEach((step) => {
       step.completed = true;
     });
-    stepper.selectedIndex = stepper._steps.length - 1;
+    this.stepper.selectedIndex = this.stepper._steps.length - 1;
     this.linear = true;
   }
 
@@ -199,7 +216,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.add(
-      this.selectedReportType.pipe(distinctUntilChanged()).subscribe((reportType) => {
+      this.selectedReportType.pipe().subscribe((reportType) => {
         this.updateUniqueReportLayouts(reportType);
         this.updateUniqueFileTypes(reportType, this.isLegendSelected.value);
 
@@ -210,16 +227,16 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
             reportType: reportType,
             reportLayout: DocumentFormat[printConfig.defaultMapSetPrintValues.documentFormat],
             reportOrientation: printConfig.defaultMapSetPrintValues.orientation,
-            dpi: this.formGroup.controls.dpi.value,
-            rotation: this.formGroup.controls.rotation.value,
+            dpi: printConfig.defaultMapSetPrintValues.dpiSetting,
+            rotation: printConfig.defaultMapSetPrintValues.rotation,
             scale: this.formGroup.controls.scale.value,
             fileFormat: FileFormat[printConfig.defaultMapSetPrintValues.fileFormat],
-            showLegend: this.formGroup.controls.showLegend.value,
+            showLegend: printConfig.defaultMapSetPrintValues.legend,
           });
 
-          this.formGroup.controls.fileFormat.disable();
-          this.formGroup.controls.reportOrientation.disable();
-          this.formGroup.controls.reportLayout.disable();
+          this.formGroup.controls.fileFormat.disable({emitEvent: false});
+          this.formGroup.controls.reportOrientation.disable({emitEvent: false});
+          this.formGroup.controls.reportLayout.disable({emitEvent: false});
         } else {
           this.formGroup.controls.reportLayout.enable();
           this.formGroup.controls.reportOrientation.enable();
@@ -231,15 +248,16 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.add(
-      this.isLegendSelected.pipe(distinctUntilChanged()).subscribe((isLegendSelected) => {
+      this.isLegendSelected.pipe().subscribe((isLegendSelected) => {
         console.log('isLegendSelected', isLegendSelected);
         this.updateUniqueFileTypes(this.formGroup.value.reportType ?? 'standard', isLegendSelected);
       }),
     );
 
     this.subscriptions.add(
-      this.selectedReportLayout.pipe(distinctUntilChanged()).subscribe((reportLayout) => {
+      this.selectedReportLayout.pipe().subscribe((reportLayout) => {
         console.log(reportLayout);
+        console.log(this.stepper);
         this.updateUniqueDpiSettings(reportLayout);
       }),
     );
@@ -256,11 +274,10 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
 
     if (reportLayout) {
       const documentFormat = printConfig.pixelSizes[reportLayout as keyof typeof DocumentFormat];
-      if (reportOrientation === 'hoch') {
-        currentReportSizing = documentFormat.portrait;
-      }
       if (reportOrientation === 'quer') {
         currentReportSizing = documentFormat.landscape;
+      } else {
+        currentReportSizing = documentFormat.portrait;
       }
     }
 
@@ -294,7 +311,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
       comment: null,
       reportType: 'standard',
       reportLayout: DocumentFormat[defaultReport.documentFormat],
-      reportOrientation: defaultReport?.orientation,
+      reportOrientation: defaultReport.orientation,
       dpi: defaultReport.dpiSetting,
       rotation: defaultReport.rotation,
       scale: defaultScale ?? 0,
@@ -308,15 +325,15 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
   private getPrintData(): PrintData {
     return {
       format: this.getStringOrDefaultValue(this.formGroup.controls.fileFormat.value),
-      reportLayout: this.getStringOrDefaultValue(this.formGroup.value.reportLayout),
-      reportType: this.getStringOrDefaultValue(this.formGroup.value.reportType),
-      reportOrientation: this.formGroup.value.reportOrientation ?? undefined,
-      title: this.getStringOrDefaultValue(this.formGroup.value.title),
-      comment: this.getStringOrDefaultValue(this.formGroup.value.comment),
-      showLegend: this.getBooleanOrDefaultValue(this.formGroup.value.showLegend),
-      scale: this.getNumberOrDefaultValue(this.formGroup.value.scale),
-      dpi: this.getNumberOrDefaultValue(this.formGroup.value.dpi),
-      rotation: this.getNumberOrDefaultValue(this.formGroup.value.rotation),
+      reportLayout: this.getStringOrDefaultValue(this.formGroup.controls.reportLayout.value),
+      reportType: this.getStringOrDefaultValue(this.formGroup.controls.reportType.value),
+      reportOrientation: this.formGroup.controls.reportOrientation.value ?? undefined,
+      title: this.getStringOrDefaultValue(this.formGroup.controls.title.value),
+      comment: this.getStringOrDefaultValue(this.formGroup.controls.comment.value),
+      showLegend: this.getBooleanOrDefaultValue(this.formGroup.controls.showLegend.value),
+      scale: this.getNumberOrDefaultValue(this.formGroup.controls.scale.value),
+      dpi: this.getNumberOrDefaultValue(this.formGroup.controls.dpi.value),
+      rotation: this.getNumberOrDefaultValue(this.formGroup.controls.rotation.value),
       mapCenter: {
         x: this.getNumberOrDefaultValue(this.mapConfigState?.center.x),
         y: this.getNumberOrDefaultValue(this.mapConfigState?.center.y),
@@ -339,12 +356,12 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
       (reportFormat) => DocumentFormat[reportFormat.documentFormat] === reportLayout,
     )!.availableDpiSettings;
 
-    this.formGroup.controls.dpi.setValue(this.availableDpiSettings[0]);
     if (this.availableDpiSettings.length === 1) {
-      this.formGroup.controls.dpi.disable();
+      this.formGroup.controls.dpi.disable({emitEvent: false});
     } else {
       this.formGroup.controls.dpi.enable();
     }
+    this.formGroup.controls.dpi.setValue(this.availableDpiSettings[0]);
   }
 
   private updateUniqueFileTypes(reportType: ReportType, showLegend: boolean) {
@@ -396,7 +413,4 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     }
     return arrayValue;
   }
-
-  protected readonly legendFeature = legendFeature;
-  protected readonly DocumentFormat = DocumentFormat;
 }
