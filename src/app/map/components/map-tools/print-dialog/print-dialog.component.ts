@@ -3,15 +3,15 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {LoadingState} from '../../../../shared/types/loading-state.type';
 import {Store} from '@ngrx/store';
 import {BehaviorSubject, combineLatestWith, distinctUntilChanged, filter, Subscription, tap} from 'rxjs';
-import {selectCapabilities, selectCreationLoadingState} from '../../../../state/map/reducers/print.reducer';
-import {PrintCapabilities, ReportOrientation, ReportType} from '../../../../shared/interfaces/print.interface';
+import {selectCreationLoadingState} from '../../../../state/map/reducers/print.reducer';
+import {ReportOrientation, ReportType} from '../../../../shared/interfaces/print.interface';
 import {PrintActions} from '../../../../state/map/actions/print.actions';
 import {MapConfigState} from '../../../../state/map/states/map-config.state';
 import {selectMapConfigState} from '../../../../state/map/reducers/map-config.reducer';
 import {ActiveMapItem} from '../../../models/active-map-item.model';
 import {selectItems} from '../../../../state/map/selectors/active-map-items.selector';
 import {MapUiActions} from '../../../../state/map/actions/map-ui.actions';
-import {map, withLatestFrom} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
 import {ConfigService} from '../../../../shared/services/config.service';
 import {Gb3StyledInternalDrawingRepresentation} from '../../../../shared/interfaces/internal-drawing-representation.interface';
 import {selectDrawings} from '../../../../state/map/reducers/drawing.reducer';
@@ -54,8 +54,6 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     showLegend: new FormControl(false, [Validators.required]),
   });
 
-  public printCapabilities?: PrintCapabilities;
-  public printCapabilitiesLoadingState: LoadingState;
   public printCreationLoadingState: LoadingState;
   public mapConfigState?: MapConfigState;
   public activeMapItems?: ActiveMapItem[];
@@ -76,13 +74,9 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     private readonly store: Store,
     private readonly configService: ConfigService,
     private readonly printService: Gb3PrintService,
-  ) {
-    // disable the form until the print capabilities from the print API returns; otherwise the form is not complete.
-    this.formGroup.disable();
-  }
+  ) {}
 
   public ngOnDestroy() {
-    console.log('PrintDialogComponent destroyed');
     this.subscriptions.unsubscribe();
   }
 
@@ -119,7 +113,6 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
           combineLatestWith(this.isFormInitialized),
           filter(([_, isFormInitialized]) => isFormInitialized),
           tap(([value, _]) => {
-            this.updateFormGroupControlsState();
             this.updateUniqueDpiSettings(value.reportLayout ?? DocumentFormat[printConfig.defaultPrintValues.documentFormat]);
           }),
           // for the print preview we only use some properties and only if they've changed
@@ -145,33 +138,6 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
 
     // this.subscriptions.add(this.formGroup.controls.reportLayout.valueChanges.pipe(tap((value) => console.log(value))).subscribe());
 
-    // initialize the form (once)
-    this.subscriptions.add(
-      this.store
-        .select(selectCapabilities)
-        .pipe(
-          filter((printCapabilities) => printCapabilities !== undefined),
-          withLatestFrom(this.store.select(selectMapConfigState)),
-          tap(([printCapabilities, mapConfigState]) => {
-            this.printCapabilities = printCapabilities;
-            this.initializeDefaultFormValues(mapConfigState.scale);
-          }),
-        )
-        .subscribe(),
-    );
-
-    // this.subscriptions.add(
-    //   this.store
-    //     .select(selectCapabilitiesLoadingState)
-    //     .pipe(
-    //       tap((printCapabilitiesLoadingState) => {
-    //         this.printCapabilitiesLoadingState = printCapabilitiesLoadingState;
-    //         this.updateFormGroupState();
-    //       }),
-    //     )
-    //     .subscribe(),
-    // );
-
     this.subscriptions.add(
       this.store
         .select(selectCreationLoadingState)
@@ -187,7 +153,14 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.store
         .select(selectMapConfigState)
-        .pipe(tap((mapConfigState) => (this.mapConfigState = mapConfigState)))
+        .pipe(
+          tap((mapConfigState) => {
+            this.mapConfigState = mapConfigState;
+            if (!this.isFormInitialized.value) {
+              this.initializeDefaultFormValues(mapConfigState.scale);
+            }
+          }),
+        )
         .subscribe(),
     );
 
@@ -248,19 +221,25 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     scale: number | null | undefined,
     rotation: number | null | undefined,
   ) {
-    let currentReport = this.printCapabilities?.reports.find(
-      (report) => report.layout === reportLayout && report.orientation === reportOrientation,
-    );
-    if (!currentReport) {
-      // find the current report by only using the layout because some reports don't have an orientation (e.g. 'kartenset')
-      currentReport = this.printCapabilities?.reports.find((report) => report.layout === reportLayout);
+    const defaultDocumentFormat = DocumentFormat[printConfig.defaultPrintValues.documentFormat] as keyof typeof DocumentFormat;
+    let currentReportSizing = printConfig.pixelSizes[defaultDocumentFormat].landscape;
+
+    if (reportLayout) {
+      const documentFormat = printConfig.pixelSizes[reportLayout as keyof typeof DocumentFormat];
+      if (reportOrientation === 'hoch') {
+        currentReportSizing = documentFormat.portrait;
+      }
+      if (reportOrientation === 'quer') {
+        currentReportSizing = documentFormat.landscape;
+      }
     }
-    if (currentReport && scale) {
+
+    if (currentReportSizing && scale) {
       this.store.dispatch(
         PrintActions.showPrintPreview({
           scale: scale,
-          height: currentReport.map.height,
-          width: currentReport.map.width,
+          height: currentReportSizing.height,
+          width: currentReportSizing.width,
           rotation: rotation ?? 0,
         }),
       );
@@ -272,21 +251,6 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
       this.formGroup.disable();
     } else {
       this.formGroup.enable();
-      this.updateFormGroupControlsState();
-    }
-  }
-
-  private updateFormGroupControlsState(emitEvent = false) {
-    if (this.formGroup.disabled) {
-      return;
-    }
-
-    const formGroupValue = this.formGroup.value;
-    const currentReport = this.printCapabilities?.reports.find((report) => report.layout === formGroupValue.reportLayout);
-    if (!currentReport?.orientation) {
-      this.formGroup.controls.reportOrientation.disable({emitEvent});
-    } else {
-      this.formGroup.controls.reportOrientation.enable({emitEvent});
     }
   }
 
@@ -309,7 +273,6 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     });
     // this.availableReportLayouts = Object.values(DocumentFormat).filter((value) => typeof value === 'string') as string[];
     this.updateUniqueDpiSettings(DocumentFormat[printConfig.defaultPrintValues.documentFormat]);
-    this.updateFormGroupControlsState(true);
     this.isFormInitialized.next(true);
     this.updateFormGroupState();
   }
