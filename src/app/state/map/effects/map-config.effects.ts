@@ -1,5 +1,6 @@
 import {Inject, Injectable} from '@angular/core';
-import {Actions, concatLatestFrom, createEffect, ofType} from '@ngrx/effects';
+import {Actions, createEffect, ofType} from '@ngrx/effects';
+import {concatLatestFrom} from '@ngrx/operators';
 import {tap} from 'rxjs';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {MapService} from '../../../map/interfaces/map.service';
