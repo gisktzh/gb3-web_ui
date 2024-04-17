@@ -2,13 +2,14 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MapServiceType} from '../../../../types/map-service.type';
 import {Store} from '@ngrx/store';
-import {debounceTime, distinctUntilChanged, filter, Subscription, tap} from 'rxjs';
+import {distinctUntilChanged, filter, Subscription, tap} from 'rxjs';
 import {NgIf} from '@angular/common';
 import {SharedModule} from '../../../../../shared/shared.module';
 import {MapImportActions} from '../../../../../state/map/actions/map-import.actions';
 import {LoadingState} from '../../../../../shared/types/loading-state.type';
 import {selectLoadingState} from '../../../../../state/map/reducers/external-map-item.reducer';
 import {selectServiceType, selectUrl} from '../../../../../state/map/reducers/map-import.reducer';
+import {ExternalMapItemActions} from '../../../../../state/map/actions/external-map-item.actions';
 
 interface ServiceFormGroup {
   serviceType: FormControl<MapServiceType | null>;
@@ -47,6 +48,16 @@ export class MapImportServiceAndUrlComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
+  public validateUrl() {
+    this.store.dispatch(MapImportActions.setUrl({url: this.serviceFormGroup.controls.url.value!}));
+  }
+
+  public handleManualValidation(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+      this.validateUrl();
+    }
+  }
+
   private initSubscriptions() {
     this.subscriptions.add(
       this.serviceFormGroup.controls.serviceType.valueChanges
@@ -59,10 +70,9 @@ export class MapImportServiceAndUrlComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.serviceFormGroup.controls.url.valueChanges
         .pipe(
-          debounceTime(300),
           distinctUntilChanged(),
           filter((url): url is string => !!url),
-          tap((url) => this.store.dispatch(MapImportActions.setUrl({url}))),
+          tap((url) => this.store.dispatch(ExternalMapItemActions.clearLoadingState())),
         )
         .subscribe(),
     );
