@@ -11,7 +11,7 @@ export const discoverMapsDataMock: DiscoverMapsRoot = {
       id: 'AVfarbigZH',
       image: {
         name: 'areupbackgroundzh.png',
-        path: 'assets/images/basemaps/areavbackgroundzh.png',
+        path: 'assets/images/basemaps/areavbackgroundzh.webp',
         size: 106551,
         type: 'image/png',
       },
@@ -26,7 +26,7 @@ export const discoverMapsDataMock: DiscoverMapsRoot = {
       id: 'OrthoZH',
       image: {
         name: 'aredtmbackgroundzh.png',
-        path: 'assets/images/basemaps/aredtmbackgroundzh.png',
+        path: 'assets/images/basemaps/aredtmbackgroundzh.webp',
         size: 99094,
         type: 'image/png',
       },
@@ -41,7 +41,7 @@ export const discoverMapsDataMock: DiscoverMapsRoot = {
       id: 'Lageklassen2019ZH',
       image: {
         name: 'arewildbackgroundzh.png',
-        path: 'assets/images/basemaps/arewildbackgroundzh.png',
+        path: 'assets/images/basemaps/arewildbackgroundzh.webp',
         size: 108516,
         type: 'image/png',
       },
@@ -93,7 +93,7 @@ export const frequentlyUsedDataMock: FrequentlyUsedRoot = {
       flex_id: 'ef0a1c679935ed064fdbd89245a80bf9',
       image: {
         name: 'aredtmbackgroundzh.png',
-        path: 'assets/images/basemaps/aredtmbackgroundzh.png',
+        path: 'assets/images/basemaps/aredtmbackgroundzh.webp',
         size: 108482,
         type: 'image/png',
       },
@@ -116,7 +116,7 @@ export const frequentlyUsedDataMock: FrequentlyUsedRoot = {
       flex_id: '2077f02a1f274f82b7a73aed7b6a081c',
       image: {
         name: 'arelkbackgroundzh.png',
-        path: 'assets/images/basemaps/arelkbackgroundzh.png',
+        path: 'assets/images/basemaps/arelkbackgroundzh.webp',
         size: 133726,
         type: 'image/png',
       },

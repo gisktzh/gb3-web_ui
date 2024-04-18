@@ -1,6 +1,6 @@
 <div *ngFor="let map of filteredMaps">
   <div class="search-result-entry-map">
-    <img [alt]="map.title" [src]="map.icon" class="search-result-entry-map__image" />
+    <img [alt]="map.title" [ngSrc]="map.icon" class="search-result-entry-map__image" width="44" height="44" />
     <p class="search-result-entry-map__title" showTooltipIfTruncated matTooltip="{{ map.title }}">{{ map.title }}</p>
     <gb2-exit-button
       *ngIf="map.gb2Url; else openMap"

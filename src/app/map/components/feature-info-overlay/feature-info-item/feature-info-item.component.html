@@ -26,8 +26,10 @@
     <img
       *ngIf="!featureInfo.isSingleLayer && featureInfo.icon; else defaultIcon"
       class="feature-info-item-icon"
-      src="{{ featureInfo.icon }}"
+      ngSrc="{{ featureInfo.icon }}"
       [alt]="featureInfo.title"
+      width="24"
+      height="24"
     />
     <ng-template #defaultIcon>
       <mat-icon class="feature-info-item-icon">layers</mat-icon>

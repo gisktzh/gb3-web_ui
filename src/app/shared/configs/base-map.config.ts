@@ -14,7 +14,7 @@ export const defaultBasemaps: Basemap[] = [
   {
     id: 'areosmbackgroundzh',
     type: 'wms',
-    relativeImagePath: 'assets/images/basemaps/areosmbackgroundzh.png',
+    relativeImagePath: 'assets/images/basemaps/areosmbackgroundzh.webp',
     url: 'https://maps.zh.ch/wms/AREOSMBackgroundZH',
     title: 'Situationsplan',
     srsId: 2056,
@@ -42,7 +42,7 @@ export const defaultBasemaps: Basemap[] = [
   {
     id: 'areavbackgroundzh',
     type: 'wms',
-    relativeImagePath: 'assets/images/basemaps/areavbackgroundzh.png',
+    relativeImagePath: 'assets/images/basemaps/areavbackgroundzh.webp',
     url: 'https://maps.zh.ch/wms/AREAVBackgroundZH',
     title: 'Amtliche Vermessung',
     srsId: 2056,
@@ -118,7 +118,7 @@ export const defaultBasemaps: Basemap[] = [
   {
     id: 'aredtmbackgroundzh',
     type: 'wms',
-    relativeImagePath: 'assets/images/basemaps/aredtmbackgroundzh.png',
+    relativeImagePath: 'assets/images/basemaps/aredtmbackgroundzh.webp',
     url: 'https://maps.zh.ch/wms/AREDTMBackgroundZH',
     title: 'Gelände',
     srsId: 2056,
@@ -140,7 +140,7 @@ export const defaultBasemaps: Basemap[] = [
   {
     id: 'areorthobackgroundzh',
     type: 'wms',
-    relativeImagePath: 'assets/images/basemaps/areorthobackgroundzh.png',
+    relativeImagePath: 'assets/images/basemaps/areorthobackgroundzh.webp',
     url: 'https://maps.zh.ch/wms/AREOrthoBackgroundZH',
     title: 'Luftbild',
     srsId: 2056,
@@ -162,7 +162,7 @@ export const defaultBasemaps: Basemap[] = [
   {
     id: 'arewildbackgroundzh',
     type: 'wms',
-    relativeImagePath: 'assets/images/basemaps/arewildbackgroundzh.png',
+    relativeImagePath: 'assets/images/basemaps/arewildbackgroundzh.webp',
     url: 'https://maps.zh.ch/wms/AREWildBackgroundZH',
     title: 'Historische Karte J. Wild (~1850)',
     srsId: 2056,
@@ -175,7 +175,7 @@ export const defaultBasemaps: Basemap[] = [
   {
     id: 'arelkbackgroundzh',
     type: 'wms',
-    relativeImagePath: 'assets/images/basemaps/arelkbackgroundzh.png',
+    relativeImagePath: 'assets/images/basemaps/arelkbackgroundzh.webp',
     url: 'https://maps.zh.ch/wms/ARElkBackgroundZH',
     title: 'Basiskarte',
     srsId: 2056,

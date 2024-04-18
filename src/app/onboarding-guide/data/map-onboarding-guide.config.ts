@@ -12,7 +12,7 @@ export const mapOnboardingGuideConfig: OnboardingGuideConfig = {
       title: 'Willkommen auf dem GIS-Browser des Kantons Zürich',
       enableBackdrop: true,
       showArrow: false,
-      image: '/assets/images/onboarding-guide/intro.png',
+      image: '/assets/images/onboarding-guide/intro.webp',
     },
     {
       anchorId: 'map.search.input',
@@ -85,7 +85,7 @@ export const mapOnboardingGuideConfig: OnboardingGuideConfig = {
       content: 'Wir wünschen Ihnen viel Vergnügen bei der Nutzung des GIS-Browsers!',
       title: "Das war's",
       showArrow: false,
-      image: '/assets/images/onboarding-guide/intro.png',
+      image: '/assets/images/onboarding-guide/intro.webp',
     },
   ],
 };
