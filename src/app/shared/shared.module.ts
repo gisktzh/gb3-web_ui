@@ -1,4 +1,4 @@
-import {CommonModule} from '@angular/common';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {RouterModule} from '@angular/router';
 import {ResizableModule} from 'angular-resizable-element';
@@ -72,7 +72,7 @@ import {ClickOnSpaceBarDirective} from './directives/click-on-spacebar.directive
     Gb2ExitButtonComponent,
     TypedTourAnchorDirective,
   ],
-  imports: [MaterialModule, RouterModule, CommonModule, ResizableModule, ClickOnSpaceBarDirective],
+  imports: [MaterialModule, RouterModule, CommonModule, ResizableModule, ClickOnSpaceBarDirective, NgOptimizedImage],
   exports: [
     MaterialModule,
     ResizableModule,

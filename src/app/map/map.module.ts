@@ -1,4 +1,4 @@
-import {CommonModule} from '@angular/common';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {OnboardingGuideModule} from '../onboarding-guide/onboarding-guide.module';
@@ -182,6 +182,7 @@ import {FeatureFlagDirective} from '../shared/directives/feature-flag.directive'
     NotificationIndicatorComponent,
     ElevationProfileChartComponent,
     FeatureFlagDirective,
+    NgOptimizedImage,
   ],
   exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent, MapOverlayComponent],
 })
