@@ -9,11 +9,11 @@
     <mat-step [stepControl]="formGroup" label="Beschriftung">
       <form [formGroup]="formGroup" class="print_dialog__stepper__content">
         <div class="print_dialog__stepper__content__form">
-          <mat-form-field appearance="fill" class="print_dialog__stepper__content__form__element">
+          <mat-form-field appearance="outline" class="print_dialog__stepper__content__form__element">
             <mat-label>Kartentitel</mat-label>
             <input matInput formControlName="title" />
           </mat-form-field>
-          <mat-form-field appearance="fill" class="print_dialog__stepper__content__form__element">
+          <mat-form-field appearance="outline" class="print_dialog__stepper__content__form__element">
             <mat-label>Kommentar</mat-label>
             <textarea matInput formControlName="comment"></textarea>
           </mat-form-field>
@@ -29,8 +29,10 @@
     <mat-step [stepControl]="formGroup" label="Art">
       <form [formGroup]="formGroup" class="print_dialog__stepper__content">
         <mat-radio-group formControlName="reportType">
-          <mat-radio-button value="standard" (click)="selectedReportType.next('standard')">Standard-Druck </mat-radio-button>
-          <mat-radio-button value="mapset" (click)="selectedReportType.next('mapset')">Aktive Karten separat Drucken </mat-radio-button>
+          <mat-radio-button value="standard" (click)="selectedReportType.next('standard')"
+            >Karten/Layer überlagernd drucken
+          </mat-radio-button>
+          <mat-radio-button value="mapset" (click)="selectedReportType.next('mapset')">Karten/Layer separat drucken </mat-radio-button>
         </mat-radio-group>
         <div>
           <button mat-button matStepperPrevious class="print_dialog__stepper__content__button" type="button">Zurück</button>
@@ -41,7 +43,7 @@
     <mat-step [stepControl]="formGroup" label="Format">
       <form [formGroup]="formGroup" class="print_dialog__stepper__content">
         <div>
-          <mat-form-field appearance="fill" class="print_dialog__stepper__content__form__element" hideRequiredMarker>
+          <mat-form-field appearance="outline" class="print_dialog__stepper__content__form__element" hideRequiredMarker>
             <mat-label>Layout</mat-label>
             <mat-select formControlName="reportLayout" (selectionChange)="selectedReportLayout.next($event.value)">
               <mat-option *ngFor="let reportLayout of availableReportLayouts" [value]="reportLayout">
@@ -86,7 +88,7 @@
       <form [formGroup]="formGroup" class="print_dialog__stepper__content">
         <div class="print_dialog__stepper__content__form--row">
           <mat-form-field
-            appearance="fill"
+            appearance="outline"
             class="print_dialog__stepper__content__form--row__element print_dialog__stepper__content__form__element"
           >
             <mat-label>Rotation</mat-label>
@@ -94,7 +96,7 @@
             <mat-error>Minimum: -90° Maximum: 90°</mat-error>
           </mat-form-field>
           <mat-form-field
-            appearance="fill"
+            appearance="outline"
             class="print_dialog__stepper__content__form--row__element print_dialog__stepper__content__form__element"
             hideRequiredMarker
           >
@@ -115,7 +117,7 @@
     <mat-step [stepControl]="formGroup" label="Auflösung">
       <form [formGroup]="formGroup" class="print_dialog__stepper__content">
         <div>
-          <mat-form-field appearance="fill" class="print_dialog__stepper__content__form__element" hideRequiredMarker>
+          <mat-form-field appearance="outline" class="print_dialog__stepper__content__form__element" hideRequiredMarker>
             <mat-label>Auflösung</mat-label>
             <mat-select formControlName="dpi">
               <mat-option *ngFor="let dpi of availableDpiSettings" [value]="dpi">
@@ -155,7 +157,7 @@
     <mat-step [stepControl]="formGroup" label="Dateiformat">
       <form [formGroup]="formGroup" class="print_dialog__stepper__content">
         <div>
-          <mat-form-field appearance="fill" class="print_dialog__stepper__content__form__element" hideRequiredMarker>
+          <mat-form-field appearance="outline" class="print_dialog__stepper__content__form__element" hideRequiredMarker>
             <mat-label>Format</mat-label>
             <mat-select formControlName="fileFormat">
               <mat-option *ngFor="let format of availableFileTypes" [value]="format">

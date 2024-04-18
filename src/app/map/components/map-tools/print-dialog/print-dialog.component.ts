@@ -145,9 +145,6 @@ export class PrintDialogComponent implements OnInit, OnDestroy, AfterViewInit {
         .pipe(
           combineLatestWith(this.isFormInitialized),
           filter(([_, isFormInitialized]) => isFormInitialized),
-          // tap(([value, _]) => {
-          //   this.updateUniqueDpiSettings(value.reportLayout ?? DocumentFormat[printConfig.defaultPrintValues.documentFormat]);
-          // }),
           // for the print preview we only use some properties and only if they've changed.
           // The disabled properties are not showing in the 'value' object, thus we need to get them from the formGroup
           map(([value, _]) => ({
@@ -178,7 +175,6 @@ export class PrintDialogComponent implements OnInit, OnDestroy, AfterViewInit {
         .pipe(
           tap((printCreationLoadingState) => {
             this.printCreationLoadingState = printCreationLoadingState;
-            // this.updateFormGroupState();
           }),
         )
         .subscribe(),
