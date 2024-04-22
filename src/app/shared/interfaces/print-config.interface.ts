@@ -1,9 +1,10 @@
 import {DocumentFormat, DpiSetting, FileFormat} from './print-rules.interface';
-import {ReportOrientation} from './print.interface';
+import {ReportOrientation, ReportType} from './print.interface';
 
 export type ReportOrientationE = 'landscape' | 'portrait';
 
 interface DefaultPrintSettings {
+  reportType: ReportType;
   documentFormat: DocumentFormat;
   fileFormat: FileFormat;
   dpiSetting: DpiSetting;

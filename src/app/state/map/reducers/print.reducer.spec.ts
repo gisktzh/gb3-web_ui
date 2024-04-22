@@ -27,6 +27,7 @@ describe('print reducer', () => {
     ],
   };
   const creationMock: PrintCreation = {
+    reportType: 'standard',
     format: 'tschif',
     reportLayout: 'mobile',
     reportOrientation: 'hoch',

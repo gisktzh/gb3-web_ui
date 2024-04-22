@@ -56,6 +56,7 @@ export const printConfig: PrintConfig = {
     },
   },
   defaultPrintValues: {
+    reportType: 'standard',
     documentFormat: DocumentFormat.A4,
     fileFormat: FileFormat.pdf,
     dpiSetting: 300,
@@ -64,6 +65,7 @@ export const printConfig: PrintConfig = {
     rotation: 0,
   },
   defaultMapSetPrintValues: {
+    reportType: 'mapset',
     documentFormat: DocumentFormat.A4,
     fileFormat: FileFormat.pdf,
     dpiSetting: 300,

@@ -150,6 +150,7 @@ describe('Gb3PrintService', () => {
 
   describe('create print job', () => {
     const printCreationMock: PrintCreation = {
+      reportType: 'standard',
       format: 'tschif',
       reportLayout: 'mobile',
       reportOrientation: 'hoch',
@@ -340,6 +341,7 @@ describe('Gb3PrintService', () => {
       ]);
 
       const printData: PrintData = {
+        reportType: 'standard',
         format: 'rom',
         reportLayout: 'A38',
         reportOrientation: 'hoch',
@@ -371,6 +373,7 @@ describe('Gb3PrintService', () => {
       const result = service.createPrintCreation(printData);
 
       expect(result).toEqual({
+        reportType: printData.reportType,
         format: printData.format,
         reportLayout: printData.reportLayout,
         reportOrientation: printData.reportOrientation,
