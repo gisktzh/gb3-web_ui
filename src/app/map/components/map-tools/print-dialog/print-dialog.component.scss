@@ -68,6 +68,10 @@
         align-items: center;
         padding-top: 6px;
 
+        .print-dialog__stepper__content__hint__icon {
+          overflow: unset;
+        }
+
         .print-dialog__stepper__content__hint__text {
           padding-left: 6px;
         }

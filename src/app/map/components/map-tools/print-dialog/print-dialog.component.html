@@ -47,8 +47,8 @@
     >
       <form [formGroup]="formGroup" class="print-dialog__stepper__content">
         <mat-radio-group formControlName="reportType">
-          <mat-radio-button value="standard">Karten überlagernd drucken </mat-radio-button>
-          <mat-radio-button value="mapset">Karten separat drucken (Kartenset) </mat-radio-button>
+          <mat-radio-button value="standard">Karten überlagernd drucken</mat-radio-button>
+          <mat-radio-button value="mapset">Karten separat drucken (Kartenset)</mat-radio-button>
         </mat-radio-group>
         <div>
           <button mat-button matStepperPrevious class="print-dialog__stepper__content__button" type="button">Zurück</button>
@@ -75,7 +75,7 @@
           </mat-form-field>
           <mat-hint *ngIf="formGroup.controls.reportLayout.disabled">
             <div class="print-dialog__stepper__content__hint">
-              <mat-icon>info</mat-icon>
+              <mat-icon class="print-dialog__stepper__content__hint__icon">info</mat-icon>
               <span class="print-dialog__stepper__content__hint__text">Kartensets können nur in A4 gedruckt werden</span>
             </div>
           </mat-hint>
@@ -103,7 +103,7 @@
           </mat-radio-group>
           <mat-hint *ngIf="formGroup.controls.reportOrientation.disabled">
             <div class="print-dialog__stepper__content__hint">
-              <mat-icon>info</mat-icon>
+              <mat-icon class="print-dialog__stepper__content__hint__icon">info</mat-icon>
               <span class="print-dialog__stepper__content__hint__text">Kartensets können nur im Hochformat gedruckt werden</span>
             </div>
           </mat-hint>
@@ -169,7 +169,7 @@
           </mat-form-field>
           <mat-hint *ngIf="formGroup.controls.dpi.disabled">
             <div class="print-dialog__stepper__content__hint">
-              <mat-icon>info</mat-icon>
+              <mat-icon class="print-dialog__stepper__content__hint__icon">info</mat-icon>
               <span class="print-dialog__stepper__content__hint__text">A0 kann nur mit 150 dpi gedruckt werden</span>
             </div>
           </mat-hint>
@@ -207,7 +207,7 @@
       <form [formGroup]="formGroup" class="print-dialog__stepper__content">
         <div>
           <mat-form-field appearance="outline" class="print-dialog__stepper__content__form__element" hideRequiredMarker>
-            <mat-label> Dateiformat </mat-label>
+            <mat-label> Dateiformat</mat-label>
             <mat-select formControlName="fileFormat">
               <mat-option *ngFor="let format of availableFileFormats" [value]="format">
                 {{ format }}
@@ -216,7 +216,7 @@
           </mat-form-field>
           <mat-hint *ngIf="formGroup.controls.fileFormat.disabled">
             <div class="print-dialog__stepper__content__hint">
-              <mat-icon>info</mat-icon>
+              <mat-icon class="print-dialog__stepper__content__hint__icon">info</mat-icon>
               <span class="print-dialog__stepper__content__hint__text"
                 >Kartensets oder Karten mit Legenden können nur als PDF gedruckt werden</span
               >
