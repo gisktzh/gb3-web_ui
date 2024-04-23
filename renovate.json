@@ -27,6 +27,11 @@
       "matchManagers": ["dockerfile"],
       "matchDepNames": ["node"],
       "allowedVersions": "<20"
+    },
+    {
+      "matchManagers": ["npm"],
+      "groupName": "eslint",
+      "matchPackagePrefixes": ["eslint", "@angular-eslint", "@ngrx/eslint", "@typescript-eslint"]
     }
   ]
 }
