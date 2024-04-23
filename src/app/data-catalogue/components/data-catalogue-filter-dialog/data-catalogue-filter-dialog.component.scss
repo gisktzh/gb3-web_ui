@@ -11,6 +11,7 @@
 
 .filter-dialog-content {
   width: ktzh-variables.$zh-filter-dialog-width;
+  max-width: ktzh-variables.$zh-filter-dialog-max-width;
   padding: 20px 24px;
 
   .filter-dialog-content__wrapper {
