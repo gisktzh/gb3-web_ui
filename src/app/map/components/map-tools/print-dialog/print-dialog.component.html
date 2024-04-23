@@ -124,10 +124,10 @@
       "
     >
       <form [formGroup]="formGroup" class="print-dialog__stepper__content">
-        <div class="print-dialog__stepper__content__form--row">
+        <div class="print-dialog__stepper__content__form__row">
           <mat-form-field
             appearance="outline"
-            class="print-dialog__stepper__content__form--row__element print-dialog__stepper__content__form__element"
+            class="print-dialog__stepper__content__form__row__element print-dialog__stepper__content__form__element"
           >
             <mat-label>Rotation [°]</mat-label>
             <input matInput formControlName="rotation" type="number" min="-90" max="90" placeholder="0" />
@@ -135,7 +135,7 @@
           </mat-form-field>
           <mat-form-field
             appearance="outline"
-            class="print-dialog__stepper__content__form--row__element print-dialog__stepper__content__form__element"
+            class="print-dialog__stepper__content__form__row__element print-dialog__stepper__content__form__element"
             hideRequiredMarker
           >
             <mat-label>Massstab</mat-label>
@@ -170,7 +170,9 @@
           <mat-hint *ngIf="formGroup.controls.dpi.disabled">
             <div class="print-dialog__stepper__content__hint">
               <mat-icon class="print-dialog__stepper__content__hint__icon">info</mat-icon>
-              <span class="print-dialog__stepper__content__hint__text">A0 kann nur mit 150 dpi gedruckt werden</span>
+              <span class="print-dialog__stepper__content__hint__text"
+                >{{ formGroup.controls.reportLayout.value }} kann nur mit 150 dpi gedruckt werden</span
+              >
             </div>
           </mat-hint>
         </div>
@@ -218,7 +220,7 @@
             <div class="print-dialog__stepper__content__hint">
               <mat-icon class="print-dialog__stepper__content__hint__icon">info</mat-icon>
               <span class="print-dialog__stepper__content__hint__text"
-                >Kartensets oder Karten mit Legenden können nur als PDF gedruckt werden</span
+                >Kartensets oder Karten mit Legenden können nur als {{ formGroup.controls.fileFormat.value }} gedruckt werden</span
               >
             </div>
           </mat-hint>
