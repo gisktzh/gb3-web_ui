@@ -10,7 +10,7 @@
 }
 
 .search-filter-dialog-content {
-  width: 80vw;
+  width: ktzh-variables.$zh-filter-dialog-width;
   padding: 20px 24px;
 
   .search-filter-dialog-content__wrapper {
