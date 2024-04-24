@@ -1,4 +1,4 @@
-import {CommonModule} from '@angular/common';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {SharedModule} from '../shared/shared.module';
 import {ContentLoadingStateComponent} from './components/content-loading-state/content-loading-state.component';
@@ -30,6 +30,13 @@ import {ClickOnSpaceBarDirective} from '../shared/directives/click-on-spacebar.d
     SearchResultEntryMapComponent,
     SearchResultGroupsComponent,
   ],
-  imports: [CommonModule, SharedModule, StartPageRoutingModule, OverviewSearchResultItemComponent, ClickOnSpaceBarDirective],
+  imports: [
+    CommonModule,
+    SharedModule,
+    StartPageRoutingModule,
+    OverviewSearchResultItemComponent,
+    ClickOnSpaceBarDirective,
+    NgOptimizedImage,
+  ],
 })
 export class StartPageModule {}
