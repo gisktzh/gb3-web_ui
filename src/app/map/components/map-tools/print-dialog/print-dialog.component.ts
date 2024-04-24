@@ -17,10 +17,11 @@ import {Gb3StyledInternalDrawingRepresentation} from '../../../../shared/interfa
 import {selectDrawings} from '../../../../state/map/reducers/drawing.reducer';
 import {Gb3PrintService} from '../../../../shared/services/apis/gb3/gb3-print.service';
 import {PrintData} from '../../../interfaces/print-data.interface';
-import {DocumentFormat, DpiSetting, FileFormat, printRules} from '../../../../shared/interfaces/print-rules.interface';
+import {DocumentFormat, DpiSetting, FileFormat} from '../../../../shared/interfaces/print-rules.interface';
 import {printConfig} from '../../../../shared/configs/print.config';
 import {MatStepper} from '@angular/material/stepper';
 import {ValueConversionUtils} from '../../../utils/value-conversion.utils';
+import {AvailablePrintSettingsUtils} from '../../../utils/available-print-settings.utils';
 
 interface PrintForm {
   title: FormControl<string | null>;
@@ -159,8 +160,9 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
           withLatestFrom(this.formGroup.controls.showLegend.valueChanges),
         )
         .subscribe(([reportType, isLegendSelected]) => {
-          this.updateUniqueReportLayouts(reportType);
-          this.updateUniqueFileTypes(reportType, isLegendSelected ?? true);
+          this.availableReportLayouts = AvailablePrintSettingsUtils.updateUniqueReportLayouts(reportType);
+          this.availableFileFormats = AvailablePrintSettingsUtils.updateUniqueFileTypes(reportType, isLegendSelected ?? true);
+          this.updateFileTypeValueOnValueChange();
 
           if (reportType === 'mapset') {
             this.formGroup.setValue({
@@ -197,7 +199,8 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
           distinctUntilChanged(),
         )
         .subscribe((reportLayout) => {
-          this.updateUniqueDpiSettings(reportLayout);
+          this.availableDpiSettings = AvailablePrintSettingsUtils.updateUniqueDpiSettings(reportLayout);
+          this.updateDpiValueOnValueChange();
         }),
     );
 
@@ -205,10 +208,11 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
       this.formGroup.controls.showLegend.valueChanges
         .pipe(withLatestFrom(this.formGroup.controls.reportType.valueChanges))
         .subscribe(([isLegendSelected, reportType]) => {
-          this.updateUniqueFileTypes(
+          this.availableFileFormats = AvailablePrintSettingsUtils.updateUniqueFileTypes(
             reportType ?? printConfig.defaultPrintValues.reportType,
             isLegendSelected ?? printConfig.defaultPrintValues.legend,
           );
+          this.updateFileTypeValueOnValueChange();
         }),
     );
 
@@ -333,18 +337,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     };
   }
 
-  private updateUniqueReportLayouts(reportType: ReportType) {
-    this.availableReportLayouts =
-      reportType === 'standard'
-        ? (Object.values(DocumentFormat).filter((value) => typeof value === 'string') as string[])
-        : printRules.availableDocumentFormatsForMapSet.map((layout) => DocumentFormat[layout]);
-  }
-
-  private updateUniqueDpiSettings(reportLayout: string) {
-    this.availableDpiSettings = printRules.reportFormats.find(
-      (reportFormat) => DocumentFormat[reportFormat.documentFormat] === reportLayout,
-    )!.availableDpiSettings;
-
+  private updateDpiValueOnValueChange() {
     if (this.availableDpiSettings.length === 1) {
       this.formGroup.controls.dpi.disable({emitEvent: false});
     } else {
@@ -353,20 +346,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     this.formGroup.controls.dpi.setValue(this.availableDpiSettings[0]);
   }
 
-  private updateUniqueFileTypes(reportType: ReportType, showLegend: boolean) {
-    const allAvailableFileFormats = Object.values(FileFormat).filter((value) => typeof value === 'string') as string[];
-    const availableFileFormatsForLegend = showLegend
-      ? printRules.availableFileFormatsForLegend.map((fileFormat) => FileFormat[fileFormat])
-      : allAvailableFileFormats;
-    const availableFileFormatsForMapSet =
-      reportType === 'mapset'
-        ? printRules.availableFileFormatsForMapSet.map((fileFormat) => FileFormat[fileFormat])
-        : allAvailableFileFormats;
-
-    this.availableFileFormats = allAvailableFileFormats.filter(
-      (format) => availableFileFormatsForLegend.includes(format) && availableFileFormatsForMapSet.includes(format),
-    );
-
+  private updateFileTypeValueOnValueChange() {
     if (this.availableFileFormats.length === 1) {
       this.formGroup.controls.fileFormat.disable({emitEvent: false});
     } else {

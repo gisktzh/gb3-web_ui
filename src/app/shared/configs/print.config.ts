@@ -69,7 +69,7 @@ export const printConfig: PrintConfig = {
     documentFormat: DocumentFormat.A4,
     fileFormat: FileFormat.pdf,
     dpiSetting: 300,
-    orientation: 'landscape',
+    orientation: 'portrait',
     legend: true,
     rotation: 0,
   },
