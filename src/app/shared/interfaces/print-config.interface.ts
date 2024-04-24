@@ -1,8 +1,6 @@
 import {DocumentFormat, DpiSetting, FileFormat} from './print-rules.interface';
 import {ReportOrientation, ReportType} from './print.interface';
 
-export type ReportOrientationE = 'landscape' | 'portrait';
-
 interface DefaultPrintSettings {
   reportType: ReportType;
   documentFormat: DocumentFormat;
@@ -17,7 +15,7 @@ export interface PrintConfig {
   scales: number[];
   pixelSizes: {
     [K in keyof typeof DocumentFormat]: {
-      [K in ReportOrientationE]: {
+      [K in ReportOrientation]: {
         width: number;
         height: number;
       };

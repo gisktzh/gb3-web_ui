@@ -254,7 +254,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
 
   private updatePrintPreview(
     reportLayout: string | null | undefined,
-    reportOrientation: string | null | undefined,
+    reportOrientation: ReportOrientation | null | undefined,
     scale: number | null | undefined,
     rotation: number | null | undefined,
   ) {
@@ -263,7 +263,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
 
     if (reportLayout) {
       const documentFormat = printConfig.pixelSizes[reportLayout as keyof typeof DocumentFormat];
-      if (reportOrientation === 'quer') {
+      if (reportOrientation === 'landscape') {
         currentReportSizing = documentFormat.landscape;
       } else {
         currentReportSizing = documentFormat.portrait;

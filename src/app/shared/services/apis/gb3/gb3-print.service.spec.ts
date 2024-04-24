@@ -153,7 +153,7 @@ describe('Gb3PrintService', () => {
       reportType: 'standard',
       format: 'tschif',
       reportLayout: 'mobile',
-      reportOrientation: 'hoch',
+      reportOrientation: 'portrait',
       attributes: {
         reportTitle: 'Passierschein a38',
         userTitle: 'Haus, das Verrückte macht',
@@ -344,7 +344,7 @@ describe('Gb3PrintService', () => {
         reportType: 'standard',
         format: 'rom',
         reportLayout: 'A38',
-        reportOrientation: 'hoch',
+        reportOrientation: 'portrait',
         title: 'Asterix & Obelix',
         comment: 'Die Spinnen, die Römer',
         showLegend: true,

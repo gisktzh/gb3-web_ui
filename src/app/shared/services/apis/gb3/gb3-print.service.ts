@@ -281,8 +281,8 @@ export class Gb3PrintService extends Gb3ApiService {
       const size = splitName[0];
       let orientation: ReportOrientation | undefined;
       switch (splitName[1] as ReportOrientation) {
-        case 'hoch':
-        case 'quer':
+        case 'portrait':
+        case 'landscape':
           orientation = splitName[1] as ReportOrientation;
       }
       if (size && orientation) {
@@ -300,6 +300,6 @@ export class Gb3PrintService extends Gb3ApiService {
     if (!orientation) {
       return size;
     }
-    return `${size} ${orientation}`;
+    return `${size} ${orientation === 'portrait' ? 'hoch' : 'quer'}`;
   }
 }

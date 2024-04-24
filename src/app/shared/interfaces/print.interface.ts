@@ -130,7 +130,7 @@ interface PrintMapWms extends AbstractGb3Layer {
   background?: boolean;
 }
 
-export type ReportOrientation = 'hoch' | 'quer';
+export type ReportOrientation = 'landscape' | 'portrait';
 
 export type ReportType = 'standard' | 'mapset';
 

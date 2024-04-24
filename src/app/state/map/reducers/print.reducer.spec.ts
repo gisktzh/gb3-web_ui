@@ -10,7 +10,7 @@ describe('print reducer', () => {
     reports: [
       {
         layout: 'A4',
-        orientation: 'hoch',
+        orientation: 'portrait',
         map: {
           width: 520,
           height: 660,
@@ -30,7 +30,7 @@ describe('print reducer', () => {
     reportType: 'standard',
     format: 'tschif',
     reportLayout: 'mobile',
-    reportOrientation: 'hoch',
+    reportOrientation: 'portrait',
     attributes: {
       reportTitle: 'Passierschein a38',
       userTitle: 'Haus, das Verrückte macht',

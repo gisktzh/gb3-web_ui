@@ -91,15 +91,15 @@
       [stepControl]="formGroup"
       [label]="
         formGroup.controls.reportOrientation.value && orientationStep.completed
-          ? 'Orientierung: ' + (formGroup.controls.reportOrientation.value === 'hoch' ? 'Hochformat' : 'Querformat')
+          ? 'Orientierung: ' + (formGroup.controls.reportOrientation.value === 'portrait' ? 'Hochformat' : 'Querformat')
           : 'Orientierung'
       "
     >
       <form [formGroup]="formGroup" class="print-dialog__stepper__content">
         <div>
           <mat-radio-group formControlName="reportOrientation">
-            <mat-radio-button value="hoch">Hochformat</mat-radio-button>
-            <mat-radio-button value="quer">Querformat</mat-radio-button>
+            <mat-radio-button value="portrait">Hochformat</mat-radio-button>
+            <mat-radio-button value="landscape">Querformat</mat-radio-button>
           </mat-radio-group>
           <mat-hint *ngIf="formGroup.controls.reportOrientation.disabled">
             <div class="print-dialog__stepper__content__hint">
