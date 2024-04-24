@@ -11,8 +11,14 @@
   }
 }
 
-:host ::ng-deep .mdc-text-field--outlined {
-  --mdc-outlined-text-field-container-shape: 1px;
+:host ::ng-deep .print-dialog__stepper__content .mdc-text-field--outlined .mdc-notched-outline {
+  .mdc-notched-outline__leading {
+    border-radius: 1px 0 0 1px;
+  }
+
+  .mdc-notched-outline__trailing {
+    border-radius: 0 1px 1px 0;
+  }
 }
 
 .print-dialog {
