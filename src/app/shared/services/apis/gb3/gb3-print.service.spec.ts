@@ -2,7 +2,7 @@
 
 import {TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {PrintCapabilitiesListData, PrintCreateData, PrintNew} from '../../../models/gb3-api-generated.interfaces';
+import {PrintCreateData, PrintNew} from '../../../models/gb3-api-generated.interfaces';
 import {HttpClient} from '@angular/common/http';
 import {of} from 'rxjs';
 import {Gb3PrintService} from './gb3-print.service';
@@ -40,112 +40,6 @@ describe('Gb3PrintService', () => {
 
   it('should be created', () => {
     expect(service).toBeTruthy();
-  });
-
-  describe('load print capabilities', () => {
-    const mockData: PrintCapabilitiesListData = {
-      print: {
-        formats: ['pdf', 'png', 'tif', 'gif'],
-        dpis: [300, 150],
-        reports: [
-          {
-            name: 'A4 hoch',
-            map: {
-              width: 520,
-              height: 660,
-            },
-          },
-          {
-            name: 'A4 quer',
-            map: {
-              width: 770,
-              height: 420,
-            },
-          },
-          {
-            name: 'A3 hoch',
-            map: {
-              width: 770,
-              height: 1010,
-            },
-          },
-          {
-            name: 'A3 quer',
-            map: {
-              width: 1120,
-              height: 670,
-            },
-          },
-          {
-            name: 'A2 hoch',
-            map: {
-              width: 1118,
-              height: 1430,
-            },
-          },
-          {
-            name: 'A2 quer',
-            map: {
-              width: 1600,
-              height: 970,
-            },
-          },
-          {
-            name: 'A1 hoch',
-            map: {
-              width: 1620,
-              height: 2050,
-            },
-          },
-          {
-            name: 'A1 quer',
-            map: {
-              width: 2320,
-              height: 1340,
-            },
-          },
-          {
-            name: 'A0 hoch',
-            map: {
-              width: 2290,
-              height: 3020,
-            },
-          },
-          {
-            name: 'A0 quer',
-            map: {
-              width: 3300,
-              height: 2070,
-            },
-          },
-          {
-            name: 'Kartenset',
-            map: {
-              width: 520,
-              height: 660,
-            },
-          },
-        ],
-      },
-    };
-
-    it('should receive the data and transform it', (done: DoneFn) => {
-      spyOn(httpClient, 'get').and.returnValue(of(mockData));
-      service.loadPrintCapabilities().subscribe((capabilities) => {
-        expect(capabilities).toBeDefined();
-        expect(capabilities.reports.length).toBe(mockData.print.reports.length);
-        mockData.print.reports.forEach((mockReport) => {
-          const actualReport = capabilities.reports.find(
-            (report) => mockReport.name === (report.orientation ? `${report.layout} ${report.orientation}` : report.layout),
-          );
-          expect(actualReport).toBeDefined();
-          expect(actualReport!.map).toEqual(mockReport.map);
-        });
-        expect(capabilities.formats).toEqual(jasmine.arrayWithExactContents(mockData.print.formats));
-        expect(capabilities.dpis).toEqual(jasmine.arrayWithExactContents(mockData.print.dpis));
-        done();
-      });
-    });
   });
 
   describe('create print job', () => {

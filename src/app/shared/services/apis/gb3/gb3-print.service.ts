@@ -3,15 +3,8 @@ import {Inject, Injectable} from '@angular/core';
 import {Gb3ApiService} from './gb3-api.service';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
+import {PrintCreation, PrintCreationResponse, PrintMapItem, ReportOrientation} from '../../../interfaces/print.interface';
 import {
-  PrintCapabilities,
-  PrintCreation,
-  PrintCreationResponse,
-  PrintMapItem,
-  ReportOrientation,
-} from '../../../interfaces/print.interface';
-import {
-  PrintCapabilitiesListData,
   PrintCreateData,
   PrintFeatureInfoCreateData,
   PrintFeatureInfoNew,
@@ -42,11 +35,6 @@ export class Gb3PrintService extends Gb3ApiService {
     private readonly basemapConfigService: BasemapConfigService,
   ) {
     super(http, configService);
-  }
-
-  public loadPrintCapabilities(): Observable<PrintCapabilities> {
-    const printCapabilitiesData = this.get<PrintCapabilitiesListData>(this.createCapabilitiesUrl());
-    return printCapabilitiesData.pipe(map((data) => this.mapPrintCapabilitiesListDataToPrintCapabilities(data)));
   }
 
   public createPrintJob(printCreation: PrintCreation): Observable<PrintCreationResponse> {
@@ -116,10 +104,6 @@ export class Gb3PrintService extends Gb3ApiService {
 
   private createFeatureInfoPrintUrl(): string {
     return `${this.getFullEndpointUrl()}/feature_info`;
-  }
-
-  private createCapabilitiesUrl(): string {
-    return `${this.getFullEndpointUrl()}/capabilities`;
   }
 
   private createCreateUrl(): string {
@@ -210,22 +194,6 @@ export class Gb3PrintService extends Gb3ApiService {
   private createDrawingPrintItem(drawingSettings: DrawingLayerSettings, drawings: Gb3StyledInternalDrawingRepresentation[]): PrintMapItem {
     const drawingsToDraw = drawings.filter((drawing) => drawing.source === drawingSettings.userDrawingLayer);
     return SymbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(drawingsToDraw);
-  }
-
-  private mapPrintCapabilitiesListDataToPrintCapabilities(data: PrintCapabilitiesListData): PrintCapabilities {
-    const printData = data.print;
-    return {
-      dpis: printData.dpis,
-      formats: printData.formats,
-      reports: printData.reports.map((report) => {
-        const {layout, orientation} = this.transformReportNameToLayoutAndOrientation(report.name);
-        return {
-          map: report.map,
-          layout: layout,
-          orientation: orientation,
-        };
-      }),
-    };
   }
 
   private mapPrintCreationToCreateCreatePayload(printCreation: PrintCreation): PrintNew {

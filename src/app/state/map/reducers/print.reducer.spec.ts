@@ -1,31 +1,9 @@
 import {initialState, reducer} from './print.reducer';
 import {PrintState} from '../states/print.state';
-import {PrintCapabilities, PrintCreation, PrintCreationResponse} from '../../../shared/interfaces/print.interface';
+import {PrintCreation, PrintCreationResponse} from '../../../shared/interfaces/print.interface';
 import {PrintActions} from '../actions/print.actions';
 
 describe('print reducer', () => {
-  const capabilitiesMock: PrintCapabilities = {
-    formats: ['pdf', 'png', 'tif', 'gif'],
-    dpis: [300, 150],
-    reports: [
-      {
-        layout: 'A4',
-        orientation: 'portrait',
-        map: {
-          width: 520,
-          height: 660,
-        },
-      },
-      {
-        layout: 'Kartenset',
-        orientation: undefined,
-        map: {
-          width: 520,
-          height: 660,
-        },
-      },
-    ],
-  };
   const creationMock: PrintCreation = {
     reportType: 'standard',
     format: 'tschif',
@@ -64,8 +42,6 @@ describe('print reducer', () => {
 
   beforeEach(() => {
     existingState = {
-      capabilities: capabilitiesMock,
-      capabilitiesLoadingState: 'loaded',
       creation: creationMock,
       creationLoadingState: 'loaded',
       creationResponse: creationResponseMock,
@@ -81,67 +57,12 @@ describe('print reducer', () => {
     });
   });
 
-  describe('loadPrintCapabilities', () => {
-    it('sets the print capabilities loading state to `loading` and resets rest of the state if there are no capabilities loaded yet', () => {
-      existingState.capabilities = undefined;
-      const action = PrintActions.loadPrintCapabilities();
-      const state = reducer(existingState, action);
-
-      expect(state.capabilities).toBe(initialState.capabilities);
-      expect(state.capabilitiesLoadingState).toBe('loading');
-      expect(state.creation).toBe(initialState.creation);
-      expect(state.creationLoadingState).toBe(initialState.creationLoadingState);
-      expect(state.creationResponse).toBe(initialState.creationResponse);
-    });
-
-    it('changes nothing if there are already capabilities loaded', () => {
-      const action = PrintActions.loadPrintCapabilities();
-      const state = reducer(existingState, action);
-
-      expect(state.capabilities).toBe(existingState.capabilities);
-      expect(state.capabilitiesLoadingState).toBe(existingState.capabilitiesLoadingState);
-      expect(state.creation).toBe(existingState.creation);
-      expect(state.creationLoadingState).toBe(existingState.creationLoadingState);
-      expect(state.creationResponse).toBe(existingState.creationResponse);
-    });
-  });
-
-  describe('setPrintCapabilities', () => {
-    it('sets the print capabilities loading state to `loaded` on success and sets the capabilities', () => {
-      existingState.capabilitiesLoadingState = 'loading';
-      existingState.capabilities = undefined;
-      const action = PrintActions.setPrintCapabilities({capabilities: capabilitiesMock});
-      const state = reducer(existingState, action);
-
-      expect(state.capabilities).toBe(capabilitiesMock);
-      expect(state.capabilitiesLoadingState).toBe('loaded');
-      expect(state.creation).toBe(existingState.creation);
-      expect(state.creationLoadingState).toBe(existingState.creationLoadingState);
-      expect(state.creationResponse).toBe(existingState.creationResponse);
-    });
-  });
-
-  describe('setPrintCapabilitiesError', () => {
-    it('sets the print capabilities loading state to `error` on failure and resets state', () => {
-      const action = PrintActions.setPrintCapabilitiesError({error: errorMock});
-      const state = reducer(existingState, action);
-
-      expect(state.capabilities).toBe(initialState.capabilities);
-      expect(state.capabilitiesLoadingState).toBe('error');
-      expect(state.creation).toBe(initialState.creation);
-      expect(state.creationLoadingState).toBe(initialState.creationLoadingState);
-      expect(state.creationResponse).toBe(initialState.creationResponse);
-    });
-  });
-
   describe('requestPrintCreation', () => {
     it('sets the print creation loading state to `loading`, sets the print creation item and resets print creation response', () => {
       existingState.creation = undefined;
       const action = PrintActions.requestPrintCreation({creation: creationMock});
       const state = reducer(existingState, action);
 
-      expect(state.capabilities).toBe(existingState.capabilities);
-      expect(state.capabilitiesLoadingState).toBe(existingState.capabilitiesLoadingState);
       expect(state.creation).toBe(creationMock);
       expect(state.creationLoadingState).toBe('loading');
       expect(state.creationResponse).toBe(existingState.creationResponse);
@@ -155,8 +76,6 @@ describe('print reducer', () => {
       const action = PrintActions.setPrintRequestResponse({creationResponse: creationResponseMock});
       const state = reducer(existingState, action);
 
-      expect(state.capabilities).toBe(existingState.capabilities);
-      expect(state.capabilitiesLoadingState).toBe(existingState.capabilitiesLoadingState);
       expect(state.creation).toBe(existingState.creation);
       expect(state.creationLoadingState).toBe('loaded');
       expect(state.creationResponse).toBe(creationResponseMock);
@@ -168,8 +87,6 @@ describe('print reducer', () => {
       const action = PrintActions.setPrintRequestError({error: errorMock});
       const state = reducer(existingState, action);
 
-      expect(state.capabilities).toBe(existingState.capabilities);
-      expect(state.capabilitiesLoadingState).toBe(existingState.capabilitiesLoadingState);
       expect(state.creation).toBe(existingState.creation);
       expect(state.creationLoadingState).toBe('error');
       expect(state.creationResponse).toBe(initialState.creationResponse);
@@ -181,8 +98,6 @@ describe('print reducer', () => {
       const action = PrintActions.clearPrintRequest();
       const state = reducer(existingState, action);
 
-      expect(state.capabilities).toBe(existingState.capabilities);
-      expect(state.capabilitiesLoadingState).toBe(existingState.capabilitiesLoadingState);
       expect(state.creation).toBe(initialState.creation);
       expect(state.creationLoadingState).toBe(initialState.creationLoadingState);
       expect(state.creationResponse).toBe(initialState.creationResponse);

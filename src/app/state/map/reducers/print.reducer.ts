@@ -5,8 +5,6 @@ import {PrintActions} from '../actions/print.actions';
 export const printFeatureKey = 'print';
 
 export const initialState: PrintState = {
-  capabilities: undefined,
-  capabilitiesLoadingState: undefined,
   creation: undefined,
   creationLoadingState: undefined,
   creationResponse: undefined,
@@ -16,19 +14,6 @@ export const printFeature = createFeature({
   name: printFeatureKey,
   reducer: createReducer(
     initialState,
-    on(PrintActions.loadPrintCapabilities, (state): PrintState => {
-      // If we already have infos, we do not reset the state
-      if (state.capabilities) {
-        return state;
-      }
-      return {...initialState, capabilitiesLoadingState: 'loading'};
-    }),
-    on(PrintActions.setPrintCapabilities, (state, {capabilities}): PrintState => {
-      return {...state, capabilities, capabilitiesLoadingState: 'loaded'};
-    }),
-    on(PrintActions.setPrintCapabilitiesError, (): PrintState => {
-      return {...initialState, capabilitiesLoadingState: 'error'};
-    }),
     on(PrintActions.requestPrintCreation, (state, {creation}): PrintState => {
       return {...state, creation, creationLoadingState: 'loading'};
     }),
@@ -49,5 +34,4 @@ export const printFeature = createFeature({
   ),
 });
 
-export const {name, reducer, selectCapabilities, selectCapabilitiesLoadingState, selectCreationLoadingState, selectCreationResponse} =
-  printFeature;
+export const {name, reducer, selectCreationLoadingState, selectCreationResponse} = printFeature;

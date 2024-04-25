@@ -1,24 +1,6 @@
 import {Gb3VectorLayer} from './gb3-vector-layer.interface';
 import {AbstractGb3Layer} from './abstract-gb3-layer.interface';
 
-export interface PrintCapabilities {
-  /** Available output formats */
-  formats: string[];
-  /** Available DPI settings */
-  dpis: number[];
-  /** Available print templates */
-  reports: {
-    layout: string;
-    orientation?: ReportOrientation;
-    map: {
-      /** Width of map element in px @ 72dpi */
-      width: number;
-      /** Height of map element in px @ 72dpi */
-      height: number;
-    };
-  }[];
-}
-
 export interface PrintCreation {
   /**
    * report layout

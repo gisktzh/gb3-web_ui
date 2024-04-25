@@ -1,5 +1,5 @@
 import {provideMockActions} from '@ngrx/effects/testing';
-import {fakeAsync, TestBed, tick} from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 import {EMPTY, Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
@@ -8,37 +8,14 @@ import {catchError} from 'rxjs/operators';
 import {PrintEffects} from './print.effects';
 import {Gb3PrintService} from '../../../shared/services/apis/gb3/gb3-print.service';
 import {PrintActions} from '../actions/print.actions';
-import {PrintCapabilities, PrintCreation, PrintCreationResponse} from '../../../shared/interfaces/print.interface';
-import {PrintInfoCouldNotBeLoaded, PrintRequestCouldNotBeHandled} from '../../../shared/errors/print.errors';
+import {PrintCreation, PrintCreationResponse} from '../../../shared/interfaces/print.interface';
+import {PrintRequestCouldNotBeHandled} from '../../../shared/errors/print.errors';
 import {MAP_SERVICE} from '../../../app.module';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
-import {selectCapabilities} from '../reducers/print.reducer';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {MapUiActions} from '../actions/map-ui.actions';
 
 describe('PrintEffects', () => {
-  const capabilitiesMock: PrintCapabilities = {
-    formats: ['pdf', 'png', 'tif', 'gif'],
-    dpis: [300, 150],
-    reports: [
-      {
-        layout: 'A4',
-        orientation: 'portrait',
-        map: {
-          width: 520,
-          height: 660,
-        },
-      },
-      {
-        layout: 'Kartenset',
-        orientation: undefined,
-        map: {
-          width: 520,
-          height: 660,
-        },
-      },
-    ],
-  };
   const creationMock: PrintCreation = {
     reportType: 'standard',
     format: 'tschif',
@@ -91,72 +68,6 @@ describe('PrintEffects', () => {
 
   afterEach(() => {
     store.resetSelectors();
-  });
-
-  describe('loadPrintCapabilities$', () => {
-    it('dispatches PrintActions.setPrintCapabilities() with the service response on success', (done: DoneFn) => {
-      const expectedCapabilities = capabilitiesMock;
-      const gb3PrintServiceSpy = spyOn(gb3PrintService, 'loadPrintCapabilities').and.returnValue(of(expectedCapabilities));
-
-      actions$ = of(PrintActions.loadPrintCapabilities());
-      effects.loadPrintCapabilities$.subscribe((action) => {
-        expect(gb3PrintServiceSpy).toHaveBeenCalledTimes(1);
-        expect(action).toEqual(PrintActions.setPrintCapabilities({capabilities: expectedCapabilities}));
-        done();
-      });
-    });
-
-    it('dispatches PrintActions.setPrintCapabilitiesError() with the error on failure', (done: DoneFn) => {
-      const expectedError = new Error('oh no! butterfingers');
-      const gb3PrintServiceSpy = spyOn(gb3PrintService, 'loadPrintCapabilities').and.returnValue(throwError(() => expectedError));
-
-      actions$ = of(PrintActions.loadPrintCapabilities());
-      effects.loadPrintCapabilities$.subscribe((action) => {
-        expect(gb3PrintServiceSpy).toHaveBeenCalledTimes(1);
-        expect(action).toEqual(PrintActions.setPrintCapabilitiesError({error: expectedError}));
-        done();
-      });
-    });
-
-    it('dispatches nothing if the capabilities are already in the store', fakeAsync(async () => {
-      const expectedCapabilities = capabilitiesMock;
-      store.overrideSelector(selectCapabilities, expectedCapabilities);
-      const gb3PrintServiceSpy = spyOn(gb3PrintService, 'loadPrintCapabilities').and.returnValue(
-        of({
-          formats: ['blub'],
-          dpis: [123, 456],
-          reports: [],
-        }),
-      );
-
-      actions$ = of(PrintActions.loadPrintCapabilities());
-      effects.loadPrintCapabilities$.subscribe();
-      tick();
-
-      expect(gb3PrintServiceSpy).toHaveBeenCalledTimes(0);
-      store.select(selectCapabilities).subscribe((capabilities) => {
-        expect(capabilities).toEqual(expectedCapabilities);
-      });
-      tick();
-    }));
-  });
-
-  describe('throwPrintCapabilitiesError$', () => {
-    it('throws a PrintInfoCouldNotBeLoaded error', (done: DoneFn) => {
-      const expectedOriginalError = new Error('oh no! butterfingers');
-
-      actions$ = of(PrintActions.setPrintCapabilitiesError({error: expectedOriginalError}));
-      effects.throwPrintCapabilitiesError$
-        .pipe(
-          catchError((error) => {
-            const expectedError = new PrintInfoCouldNotBeLoaded(expectedOriginalError);
-            expect(error).toEqual(expectedError);
-            done();
-            return EMPTY;
-          }),
-        )
-        .subscribe();
-    });
   });
 
   describe('setPrintCreationAfterSuccessfullyLoading$', () => {
