@@ -11,16 +11,6 @@
   }
 }
 
-:host ::ng-deep .print-dialog__stepper__content .mdc-text-field--outlined .mdc-notched-outline {
-  .mdc-notched-outline__leading {
-    border-radius: 1px 0 0 1px;
-  }
-
-  .mdc-notched-outline__trailing {
-    border-radius: 0 1px 1px 0;
-  }
-}
-
 .print-dialog {
   width: 50vw;
   height: 100%;
@@ -44,6 +34,7 @@
   .print-dialog__stepper {
     flex: 1;
     overflow-y: auto;
+    margin-bottom: 16px;
 
     .print-dialog__stepper__content {
       flex-grow: 1;
