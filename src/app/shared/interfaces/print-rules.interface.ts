@@ -21,7 +21,7 @@ export enum DpiSetting {
 export enum FileFormat {
   pdf,
   png,
-  tiff,
+  tif,
   gif,
 }
 
