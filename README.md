@@ -490,6 +490,10 @@ The basic flow based on actions and effects goes like this:
 ```
                                      ┌─────────────────────────────────────────────────┐
                                      │ ShareLinkActions.initializeApplicationBasedOnId │
+                                     └─────────────────────┬───────────────────────────┘
+                    waitForAuthenticationStatusToBeLoaded$ │
+                                     ┌─────────────────────▼───────────────────────────┐
+                                     │ ShareLinkActions.authenticationInitialized      │
                                      └───────┬─────────────┬─────────────────┬─────────┘
 initializeApplicationByLoadingShareLinkItem$ │             │                 │ initializeApplicationByLoadingTopics$
                              ┌───────────────▼───────────┐ │ ┌───────────────▼──────────────────────┐
