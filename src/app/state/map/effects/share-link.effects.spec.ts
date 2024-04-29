@@ -1,5 +1,5 @@
 import {provideMockActions} from '@ngrx/effects/testing';
-import {TestBed} from '@angular/core/testing';
+import {fakeAsync, flush, TestBed} from '@angular/core/testing';
 import {EMPTY, Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
@@ -265,19 +265,19 @@ describe('ShareLinkEffects', () => {
     };
 
     describe('Action: Initialize Application Based On Id', () => {
+      it('does not dispatch ShareLinkActions.authenticationInitialized() as long as the initialData is not loaded', fakeAsync(async () => {
+        actions$ = of(ShareLinkActions.initializeApplicationBasedOnId({id: expectedId}));
+        store.overrideSelector(selectIsInitialDataLoaded, false);
+        effects.waitForAuthenticationStatusToBeLoaded$.subscribe((action) => {
+          flush();
+          expect(action).toBeUndefined();
+        });
+      }));
       it('dispatches ShareLinkActions.authenticationInitialized() when the initialData is loaded', (done: DoneFn) => {
         actions$ = of(ShareLinkActions.initializeApplicationBasedOnId({id: expectedId}));
         store.overrideSelector(selectIsInitialDataLoaded, true);
         effects.waitForAuthenticationStatusToBeLoaded$.subscribe((action) => {
           expect(action).toEqual(ShareLinkActions.authenticationInitialized({id: expectedId}));
-          done();
-        });
-      });
-      it('does not dispatch ShareLinkActions.authenticationInitialized() as long as the initialData is not loaded', (done: DoneFn) => {
-        actions$ = of(ShareLinkActions.initializeApplicationBasedOnId({id: expectedId}));
-        store.overrideSelector(selectIsInitialDataLoaded, false);
-        effects.waitForAuthenticationStatusToBeLoaded$.subscribe((action) => {
-          expect(action).toBeUndefined();
           done();
         });
       });
