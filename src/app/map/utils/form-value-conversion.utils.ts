@@ -1,4 +1,4 @@
-export class ValueConversionUtils {
+export class FormValueConversionUtils {
   public static getStringOrDefaultValue(stringValue: string | null | undefined): string {
     if (stringValue === undefined || stringValue === null) {
       return '';

@@ -20,7 +20,7 @@ import {PrintData} from '../../../interfaces/print-data.interface';
 import {DocumentFormat, DpiSetting, FileFormat} from '../../../../shared/interfaces/print-rules.interface';
 import {printConfig} from '../../../../shared/configs/print.config';
 import {MatStepper} from '@angular/material/stepper';
-import {ValueConversionUtils} from '../../../utils/value-conversion.utils';
+import {FormValueConversionUtils} from '../../../utils/form-value-conversion.utils';
 import {AvailablePrintSettingsUtils} from '../../../utils/available-print-settings.utils';
 
 interface PrintForm {
@@ -158,38 +158,39 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
           filter((value): value is ReportType => value !== null),
           distinctUntilChanged(),
           withLatestFrom(this.formGroup.controls.showLegend.valueChanges),
-        )
-        .subscribe(([reportType, isLegendSelected]) => {
-          this.availableReportLayouts = AvailablePrintSettingsUtils.updateUniqueReportLayouts(reportType);
-          this.availableFileFormats = AvailablePrintSettingsUtils.updateUniqueFileTypes(reportType, isLegendSelected ?? true);
-          this.updateFileTypeValueOnValueChange();
+          tap(([reportType, isLegendSelected]) => {
+            this.availableReportLayouts = AvailablePrintSettingsUtils.updateUniqueReportLayouts(reportType);
+            this.availableFileFormats = AvailablePrintSettingsUtils.updateUniqueFileTypes(reportType, isLegendSelected ?? true);
+            this.updateFileTypeValueOnValueChange();
 
-          if (reportType === 'mapset') {
-            this.formGroup.setValue({
-              title: this.formGroup.controls.title.value,
-              comment: this.formGroup.controls.comment.value,
-              reportType: reportType,
-              reportLayout: DocumentFormat[printConfig.defaultMapSetPrintValues.documentFormat],
-              reportOrientation: printConfig.defaultMapSetPrintValues.orientation,
-              dpi: printConfig.defaultMapSetPrintValues.dpiSetting,
-              // We are persistng the rotation and scale from the form
-              rotation: this.formGroup.controls.rotation.value,
-              scale: this.formGroup.controls.scale.value,
-              fileFormat: FileFormat[printConfig.defaultMapSetPrintValues.fileFormat],
-              showLegend: printConfig.defaultMapSetPrintValues.legend,
-            });
+            if (reportType === 'mapset') {
+              this.formGroup.setValue({
+                title: this.formGroup.controls.title.value,
+                comment: this.formGroup.controls.comment.value,
+                reportType: reportType,
+                reportLayout: DocumentFormat[printConfig.defaultMapSetPrintValues.documentFormat],
+                reportOrientation: printConfig.defaultMapSetPrintValues.orientation,
+                dpi: printConfig.defaultMapSetPrintValues.dpiSetting,
+                // We are persistng the rotation and scale from the form
+                rotation: this.formGroup.controls.rotation.value,
+                scale: this.formGroup.controls.scale.value,
+                fileFormat: FileFormat[printConfig.defaultMapSetPrintValues.fileFormat],
+                showLegend: printConfig.defaultMapSetPrintValues.legend,
+              });
 
-            this.formGroup.controls.fileFormat.disable({emitEvent: false});
-            this.formGroup.controls.reportOrientation.disable({emitEvent: false});
-            this.formGroup.controls.reportLayout.disable({emitEvent: false});
-          } else {
-            this.formGroup.controls.reportLayout.enable();
-            this.formGroup.controls.reportOrientation.enable();
-            if (!this.formGroup.controls.showLegend.value) {
-              this.formGroup.controls.fileFormat.enable();
+              this.formGroup.controls.fileFormat.disable({emitEvent: false});
+              this.formGroup.controls.reportOrientation.disable({emitEvent: false});
+              this.formGroup.controls.reportLayout.disable({emitEvent: false});
+            } else {
+              this.formGroup.controls.reportLayout.enable();
+              this.formGroup.controls.reportOrientation.enable();
+              if (!this.formGroup.controls.showLegend.value) {
+                this.formGroup.controls.fileFormat.enable();
+              }
             }
-          }
-        }),
+          }),
+        )
+        .subscribe(),
     );
 
     this.subscriptions.add(
@@ -197,33 +198,33 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
         .pipe(
           filter((value): value is string => !!value),
           distinctUntilChanged(),
+          tap((reportLayout) => {
+            this.availableDpiSettings = AvailablePrintSettingsUtils.updateUniqueDpiSettings(reportLayout);
+            this.updateDpiValueOnValueChange();
+          }),
         )
-        .subscribe((reportLayout) => {
-          this.availableDpiSettings = AvailablePrintSettingsUtils.updateUniqueDpiSettings(reportLayout);
-          this.updateDpiValueOnValueChange();
-        }),
+        .subscribe(),
     );
 
     this.subscriptions.add(
       this.formGroup.controls.showLegend.valueChanges
-        .pipe(withLatestFrom(this.formGroup.controls.reportType.valueChanges))
-        .subscribe(([isLegendSelected, reportType]) => {
-          this.availableFileFormats = AvailablePrintSettingsUtils.updateUniqueFileTypes(
-            reportType ?? printConfig.defaultPrintValues.reportType,
-            isLegendSelected ?? printConfig.defaultPrintValues.legend,
-          );
-          this.updateFileTypeValueOnValueChange();
-        }),
+        .pipe(
+          withLatestFrom(this.formGroup.controls.reportType.valueChanges),
+          tap(([isLegendSelected, reportType]) => {
+            this.availableFileFormats = AvailablePrintSettingsUtils.updateUniqueFileTypes(
+              reportType ?? printConfig.defaultPrintValues.reportType,
+              isLegendSelected ?? printConfig.defaultPrintValues.legend,
+            );
+            this.updateFileTypeValueOnValueChange();
+          }),
+        )
+        .subscribe(),
     );
 
     this.subscriptions.add(
       this.store
         .select(selectCreationLoadingState)
-        .pipe(
-          tap((printCreationLoadingState) => {
-            this.printCreationLoadingState = printCreationLoadingState;
-          }),
-        )
+        .pipe(tap((printCreationLoadingState) => (this.printCreationLoadingState = printCreationLoadingState)))
         .subscribe(),
     );
 
@@ -317,23 +318,23 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
 
   private getPrintData(): PrintData {
     return {
-      format: ValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.fileFormat.value),
-      reportLayout: ValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.reportLayout.value),
-      reportType: ValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.reportType.value),
+      format: FormValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.fileFormat.value),
+      reportLayout: FormValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.reportLayout.value),
+      reportType: FormValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.reportType.value),
       reportOrientation: this.formGroup.controls.reportOrientation.value ?? undefined,
-      title: ValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.title.value),
-      comment: ValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.comment.value),
-      showLegend: ValueConversionUtils.getBooleanOrDefaultValue(this.formGroup.controls.showLegend.value),
-      scale: ValueConversionUtils.getNumberOrDefaultValue(this.formGroup.controls.scale.value),
-      dpi: ValueConversionUtils.getNumberOrDefaultValue(this.formGroup.controls.dpi.value),
-      rotation: ValueConversionUtils.getNumberOrDefaultValue(this.formGroup.controls.rotation.value),
+      title: FormValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.title.value),
+      comment: FormValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.comment.value),
+      showLegend: FormValueConversionUtils.getBooleanOrDefaultValue(this.formGroup.controls.showLegend.value),
+      scale: FormValueConversionUtils.getNumberOrDefaultValue(this.formGroup.controls.scale.value),
+      dpi: FormValueConversionUtils.getNumberOrDefaultValue(this.formGroup.controls.dpi.value),
+      rotation: FormValueConversionUtils.getNumberOrDefaultValue(this.formGroup.controls.rotation.value),
       mapCenter: {
-        x: ValueConversionUtils.getNumberOrDefaultValue(this.mapConfigState?.center.x),
-        y: ValueConversionUtils.getNumberOrDefaultValue(this.mapConfigState?.center.y),
+        x: FormValueConversionUtils.getNumberOrDefaultValue(this.mapConfigState?.center.x),
+        y: FormValueConversionUtils.getNumberOrDefaultValue(this.mapConfigState?.center.y),
       },
-      activeBasemapId: ValueConversionUtils.getStringOrDefaultValue(this.mapConfigState?.activeBasemapId),
-      activeMapItems: ValueConversionUtils.getArrayOrDefaultValue(this.activeMapItems),
-      drawings: ValueConversionUtils.getArrayOrDefaultValue(this.drawings),
+      activeBasemapId: FormValueConversionUtils.getStringOrDefaultValue(this.mapConfigState?.activeBasemapId),
+      activeMapItems: FormValueConversionUtils.getArrayOrDefaultValue(this.activeMapItems),
+      drawings: FormValueConversionUtils.getArrayOrDefaultValue(this.drawings),
     };
   }
 

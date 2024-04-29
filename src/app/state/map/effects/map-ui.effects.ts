@@ -50,7 +50,7 @@ export class MapUiEffects {
     );
   });
 
-  public loadDataForSideDrawer$ = createEffect(() => {
+  public loadProductsForDataDownloadSideDrawer$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapUiActions.showMapSideDrawerContent),
       filter((value) => value.mapSideDrawerContent === 'data-download'),

@@ -13,7 +13,7 @@
         formGroup.controls.title.value && descriptionStep.completed
           ? 'Beschriftung: Kartentitel: ' +
             formGroup.controls.title.value +
-            (formGroup.controls.comment.value ? ' Kommentar: ' + formGroup.controls.comment.value : '')
+            (formGroup.controls.comment.value ? ', Kommentar: ' + formGroup.controls.comment.value : '')
           : 'Beschriftung'
       "
     >
@@ -119,7 +119,7 @@
       [stepControl]="formGroup"
       [label]="
         rotationStep.completed
-          ? 'Rotation/Massstab:  ' + formGroup.controls.rotation.value + '°/1:' + formGroup.controls.scale.value
+          ? 'Rotation/Massstab:  ' + formGroup.controls.rotation.value + '° / 1:' + formGroup.controls.scale.value
           : 'Rotation/Massstab'
       "
     >
@@ -155,7 +155,7 @@
     <mat-step
       #dpiStep
       [stepControl]="formGroup"
-      [label]="formGroup.controls.dpi.value && dpiStep.completed ? 'Auflösung: ' + formGroup.controls.dpi.value + 'dpi' : 'Auflösung'"
+      [label]="formGroup.controls.dpi.value && dpiStep.completed ? 'Auflösung: ' + formGroup.controls.dpi.value + ' dpi' : 'Auflösung'"
     >
       <form [formGroup]="formGroup" class="print-dialog__stepper__content">
         <div>
