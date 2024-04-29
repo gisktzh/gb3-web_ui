@@ -32,7 +32,7 @@ import {DrawingActions} from '../actions/drawing.actions';
 import {Gb3StyledInternalDrawingRepresentation} from '../../../shared/interfaces/internal-drawing-representation.interface';
 import {UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
-import {selectIsAuthenticated} from '../../auth/reducers/auth-status.reducer';
+import {selectIsAuthenticated, selectIsInitialDataLoaded} from '../../auth/reducers/auth-status.reducer';
 import {MapRestoreItem} from '../../../shared/interfaces/map-restore-item.interface';
 import {TimeExtentUtils} from '../../../shared/utils/time-extent.utils';
 
@@ -264,9 +264,28 @@ describe('ShareLinkEffects', () => {
       ] as Gb3StyledInternalDrawingRepresentation[],
     };
 
-    describe('Action: initializeApplicationBasedOnId', () => {
-      beforeEach(() => {
+    describe('Action: Initialize Application Based On Id', () => {
+      it('dispatches ShareLinkActions.authenticationInitialized() when the initialData is loaded', (done: DoneFn) => {
         actions$ = of(ShareLinkActions.initializeApplicationBasedOnId({id: expectedId}));
+        store.overrideSelector(selectIsInitialDataLoaded, true);
+        effects.waitForAuthenticationStatusToBeLoaded$.subscribe((action) => {
+          expect(action).toEqual(ShareLinkActions.authenticationInitialized({id: expectedId}));
+          done();
+        });
+      });
+      it('does not dispatch ShareLinkActions.authenticationInitialized() as long as the initialData is not loaded', (done: DoneFn) => {
+        actions$ = of(ShareLinkActions.initializeApplicationBasedOnId({id: expectedId}));
+        store.overrideSelector(selectIsInitialDataLoaded, false);
+        effects.waitForAuthenticationStatusToBeLoaded$.subscribe((action) => {
+          expect(action).toBeUndefined();
+          done();
+        });
+      });
+    });
+
+    describe('Action: Authentication Initialized', () => {
+      beforeEach(() => {
+        actions$ = of(ShareLinkActions.authenticationInitialized({id: expectedId}));
       });
 
       describe('initializeApplicationByLoadingShareLinkItem$', () => {

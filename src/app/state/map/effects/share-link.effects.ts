@@ -17,7 +17,7 @@ import {selectLoadedLayerCatalogueAndShareItem} from '../selectors/loaded-layer-
 import {selectItems} from '../selectors/active-map-items.selector';
 import {DrawingActions} from '../actions/drawing.actions';
 import {selectDrawings} from '../reducers/drawing.reducer';
-import {selectIsAuthenticated} from '../../auth/reducers/auth-status.reducer';
+import {selectIsAuthenticated, selectIsInitialDataLoaded} from '../../auth/reducers/auth-status.reducer';
 
 /**
  * This class contains a bunch of effects. Most of them are straightforward: do something asynchronous and return a new action afterward or
@@ -82,9 +82,22 @@ export class ShareLinkEffects {
     {dispatch: false},
   );
 
-  public initializeApplicationByLoadingShareLinkItem$ = createEffect(() => {
+  public waitForAuthenticationStatusToBeLoaded$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ShareLinkActions.initializeApplicationBasedOnId),
+      // we can't use `concatLatestFrom` here because the selector will return undefined values until all internal values are successfully
+      // loaded
+      combineLatestWith(this.store.select(selectIsInitialDataLoaded)),
+      filter(([_, value]) => value === true),
+      map(([value, _]) => {
+        return ShareLinkActions.authenticationInitialized({id: value.id});
+      }),
+    );
+  });
+
+  public initializeApplicationByLoadingShareLinkItem$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ShareLinkActions.authenticationInitialized),
       map((value) => {
         return ShareLinkActions.loadItem({id: value.id});
       }),
@@ -93,7 +106,7 @@ export class ShareLinkEffects {
 
   public initializeApplicationByLoadingTopics$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(ShareLinkActions.initializeApplicationBasedOnId),
+      ofType(ShareLinkActions.authenticationInitialized),
       map(() => {
         return LayerCatalogActions.loadLayerCatalog();
       }),
@@ -102,7 +115,7 @@ export class ShareLinkEffects {
 
   public initializeApplicationByVerifyingSharedItem$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(ShareLinkActions.initializeApplicationBasedOnId),
+      ofType(ShareLinkActions.authenticationInitialized),
       // we can't use `concatLatestFrom` here because the selector will return undefined values until all internal values are successfully
       // loaded
       combineLatestWith(this.store.select(selectLoadedLayerCatalogueAndShareItem)),
