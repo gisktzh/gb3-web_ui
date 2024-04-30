@@ -8,6 +8,7 @@
       data-test-id="map-ruler"
       mat-icon-button
       matTooltip="Messen"
+      [disabled]="!isMapReady"
     >
       <mat-icon svgIcon="ktzh_measure_menu"></mat-icon>
     </button>
@@ -20,6 +21,7 @@
       data-test-id="map-drawing"
       mat-icon-button
       matTooltip="Zeichnen"
+      [disabled]="!isMapReady"
     >
       <mat-icon svgIcon="ktzh_drawing_menu"></mat-icon>
     </button>
@@ -32,6 +34,7 @@
       data-test-id="map-data-download"
       mat-icon-button
       matTooltip="Daten beziehen"
+      [disabled]="!isMapReady"
     >
       <mat-icon svgIcon="ktzh_download"></mat-icon>
     </button>
@@ -41,6 +44,7 @@
       data-test-id="map-print"
       mat-icon-button
       matTooltip="Drucken"
+      [disabled]="!isMapReady"
     >
       <mat-icon svgIcon="ktzh_print"></mat-icon>
     </button>
@@ -51,6 +55,7 @@
       data-test-id="map-share"
       mat-icon-button
       matTooltip="Teilen"
+      [disabled]="!isMapReady"
     >
       <mat-icon svgIcon="ktzh_share"></mat-icon>
     </button>
@@ -61,6 +66,7 @@
       data-test-id="map-import"
       mat-icon-button
       matTooltip="Kartendienst importieren"
+      [disabled]="!isMapReady"
     >
       <!-- TODO GB3-348: this is a placeholder icon -->
       <mat-icon svgIcon="ktzh_map_management"></mat-icon>

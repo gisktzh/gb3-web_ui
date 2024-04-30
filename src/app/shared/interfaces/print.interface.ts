@@ -1,30 +1,17 @@
 import {Gb3VectorLayer} from './gb3-vector-layer.interface';
 import {AbstractGb3Layer} from './abstract-gb3-layer.interface';
 
-export interface PrintCapabilities {
-  /** Available output formats */
-  formats: string[];
-  /** Available DPI settings */
-  dpis: number[];
-  /** Available print templates */
-  reports: {
-    layout: string;
-    orientation?: ReportOrientation;
-    map: {
-      /** Width of map element in px @ 72dpi */
-      width: number;
-      /** Height of map element in px @ 72dpi */
-      height: number;
-    };
-  }[];
-}
-
 export interface PrintCreation {
   /**
    * report layout
    * @example "A4"
    */
   reportLayout: string;
+  /**
+   * report layout
+   * @example "standard"
+   */
+  reportType: string;
   /**
    * report orientation
    * @example "hoch"
@@ -125,7 +112,9 @@ interface PrintMapWms extends AbstractGb3Layer {
   background?: boolean;
 }
 
-export type ReportOrientation = 'hoch' | 'quer';
+export type ReportOrientation = 'landscape' | 'portrait';
+
+export type ReportType = 'standard' | 'mapset';
 
 export interface PrintCreationResponse {
   /** print document retrieval endpoint URL */
