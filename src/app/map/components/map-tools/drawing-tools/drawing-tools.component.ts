@@ -1,7 +1,10 @@
-import {Component} from '@angular/core';
+import {Component, Inject} from '@angular/core';
 import {AbstractToolsComponent} from '../abstract-tools/abstract-tools.component';
 import {DrawingSettingsDialogComponent} from '../drawing-settings-dialog/drawing-settings-dialog.component';
 import {PanelClass} from '../../../../shared/enums/panel-class.enum';
+import {Store} from '@ngrx/store';
+import {MatDialog} from '@angular/material/dialog';
+import {ExportActions} from '../../../../state/map/actions/export.actions';
 
 const DRAWING_SETTINGS_DIALOG_MAX_WIDTH = 420;
 
@@ -11,6 +14,10 @@ const DRAWING_SETTINGS_DIALOG_MAX_WIDTH = 420;
   styleUrls: ['./drawing-tools.component.scss'],
 })
 export class DrawingToolsComponent extends AbstractToolsComponent {
+  constructor(@Inject(Store) store: Store, @Inject(MatDialog) dialogService: MatDialog) {
+    super(store, dialogService);
+  }
+
   public togglePointDrawing() {
     this.toggleTool('draw-point');
   }
@@ -33,6 +40,10 @@ export class DrawingToolsComponent extends AbstractToolsComponent {
 
   public toggleTextDrawing() {
     this.toggleTool('draw-text');
+  }
+
+  public downloadDrawings() {
+    this.store.dispatch(ExportActions.requestExportDrawings({exportFormat: 'geojson'}));
   }
 
   public openSettingsDialog() {

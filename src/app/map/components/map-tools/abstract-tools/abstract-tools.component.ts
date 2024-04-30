@@ -15,7 +15,7 @@ export class AbstractToolsComponent implements OnInit, OnDestroy {
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(
-    private readonly store: Store,
+    protected readonly store: Store,
     protected readonly dialogService: MatDialog,
   ) {}
 

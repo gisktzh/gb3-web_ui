@@ -788,6 +788,25 @@ export type FavoriteDrawings = VectorLayer;
 
 export type FavoriteMeasurements = VectorLayer;
 
+export interface GenericGeojsonFeature {
+  /** GeoJSON Feature */
+  type: 'Feature';
+  /** Feature properties */
+  properties: object | null;
+  /** GeoJSON geometry object */
+  geometry: Geometry;
+}
+
+/**
+ * GeoJSON FeatureCollection
+ * @example {"type":"FeatureCollection","features":[{"type":"Feature","properties":{},"geometry":{"type":"Point","coordinates":[8.5438572,47.3780431]}}]}
+ */
+export interface GenericGeojsonFeatureCollection {
+  /** GeoJSON FeatureCollection */
+  type: 'FeatureCollection';
+  features: GenericGeojsonFeature[];
+}
+
 export interface GeojsonFeature {
   /** GeoJSON Feature */
   type: 'Feature';
@@ -1126,7 +1145,21 @@ export type VectorLayerStyles = {
   };
 };
 
+/** Vector layer without styles */
+export interface VectorLayerWithoutStyles {
+  /** Vector layer type */
+  type: 'Vector';
+  /** GeoJSON FeatureCollection */
+  geojson: GenericGeojsonFeatureCollection;
+}
+
 export type CantonListData = Canton;
+
+export type ImportGeojsonCreatePayload = GenericGeojsonFeatureCollection | GenericGeojsonFeature;
+
+export type ImportGeojsonCreateData = VectorLayerWithoutStyles;
+
+export type ExportGeojsonCreateData = GenericGeojsonFeatureCollection;
 
 export type TopicsFeatureInfoDetailData = Feature;
 
