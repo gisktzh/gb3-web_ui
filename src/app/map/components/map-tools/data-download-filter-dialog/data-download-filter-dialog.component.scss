@@ -10,7 +10,8 @@
 }
 
 .data-download-filter-dialog {
-  width: 956px;
+  width: ktzh-variables.$zh-filter-dialog-width;
+  max-width: ktzh-variables.$zh-filter-dialog-max-width;
   padding: 20px 24px;
 
   .data-download-filter-dialog__wrapper {
