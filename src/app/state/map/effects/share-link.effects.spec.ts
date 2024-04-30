@@ -265,20 +265,22 @@ describe('ShareLinkEffects', () => {
     };
 
     describe('Action: Initialize Application Based On Id', () => {
-      it('does not dispatch ShareLinkActions.authenticationInitialized() as long as the initialData is not loaded', fakeAsync(async () => {
-        actions$ = of(ShareLinkActions.initializeApplicationBasedOnId({id: expectedId}));
-        store.overrideSelector(selectIsInitialDataLoaded, false);
-        effects.waitForAuthenticationStatusToBeLoaded$.subscribe((action) => {
+      describe('waitForAuthenticationStatusToBeLoaded$', () => {
+        it('does not dispatch ShareLinkActions.authenticationInitialized() as long as the initialData is not loaded', fakeAsync(async () => {
+          actions$ = of(ShareLinkActions.initializeApplicationBasedOnId({id: expectedId}));
+          store.overrideSelector(selectIsInitialDataLoaded, false);
+          let newAction: Action | undefined;
+          effects.waitForAuthenticationStatusToBeLoaded$.subscribe((action) => (newAction = action));
           flush();
-          expect(action).toBeUndefined();
-        });
-      }));
-      it('dispatches ShareLinkActions.authenticationInitialized() when the initialData is loaded', (done: DoneFn) => {
-        actions$ = of(ShareLinkActions.initializeApplicationBasedOnId({id: expectedId}));
-        store.overrideSelector(selectIsInitialDataLoaded, true);
-        effects.waitForAuthenticationStatusToBeLoaded$.subscribe((action) => {
-          expect(action).toEqual(ShareLinkActions.authenticationInitialized({id: expectedId}));
-          done();
+          expect(newAction).toBeUndefined();
+        }));
+        it('dispatches ShareLinkActions.authenticationInitialized() when the initialData is loaded', (done: DoneFn) => {
+          actions$ = of(ShareLinkActions.initializeApplicationBasedOnId({id: expectedId}));
+          store.overrideSelector(selectIsInitialDataLoaded, true);
+          effects.waitForAuthenticationStatusToBeLoaded$.subscribe((action) => {
+            expect(action).toEqual(ShareLinkActions.authenticationInitialized({id: expectedId}));
+            done();
+          });
         });
       });
     });

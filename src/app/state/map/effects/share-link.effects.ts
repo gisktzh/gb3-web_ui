@@ -85,12 +85,12 @@ export class ShareLinkEffects {
   public waitForAuthenticationStatusToBeLoaded$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ShareLinkActions.initializeApplicationBasedOnId),
-      // we can't use `concatLatestFrom` here because the selector will return undefined values until all internal values are successfully
-      // loaded
+      // we use `combineLatestWith` here to wait for the authentication service to finish its initialization (and change to `true`)
       combineLatestWith(this.store.select(selectIsInitialDataLoaded)),
-      filter(([_, value]) => value === true),
-      map(([value, _]) => {
-        return ShareLinkActions.authenticationInitialized({id: value.id});
+      filter(([_, isAuthenticationInitialized]) => isAuthenticationInitialized === true),
+      take(1),
+      map(([{id}, _]) => {
+        return ShareLinkActions.authenticationInitialized({id});
       }),
     );
   });
