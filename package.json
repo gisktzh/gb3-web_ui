@@ -58,6 +58,7 @@
     "angular-resizable-element": "^7.0.2",
     "chart.js": "^4.4.0",
     "dayjs": "^1.11.7",
+    "file-saver": "^2.0.5",
     "immer": "^10.0.1",
     "material-icons": "^1.13.12",
     "ng2-charts": "^6.0.0",
@@ -70,6 +71,7 @@
   "devDependencies": {
     "@ngrx/eslint-plugin": "^17.1.1",
     "@ngrx/schematics": "^17.1.1",
+    "@types/file-saver": "^2.0.7",
     "@types/jasmine": "~5.1.0",
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "@typescript-eslint/parser": "^7.0.0",

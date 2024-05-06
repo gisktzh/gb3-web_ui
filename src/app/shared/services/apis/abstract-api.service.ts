@@ -18,8 +18,18 @@ export abstract class BaseApiService {
     return this.http.get<T>(url);
   }
 
-  protected post<T, R>(url: string, body?: T, headers?: {[header: string]: string | string[]}): Observable<R> {
+  protected post<T, R>(
+    url: string,
+    body?: T,
+    headers?: {
+      [header: string]: string | string[];
+    },
+  ): Observable<R> {
     return this.http.post<R>(url, body, {headers});
+  }
+
+  protected postBlob<T>(url: string, body?: T, headers?: {[header: string]: string | string[]}): Observable<Blob> {
+    return this.http.post(url, body, {headers, responseType: 'blob'});
   }
 
   protected delete<T>(url: string): Observable<T> {
