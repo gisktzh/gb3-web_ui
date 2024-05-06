@@ -32,7 +32,7 @@ import {DrawingActions} from '../actions/drawing.actions';
 import {Gb3StyledInternalDrawingRepresentation} from '../../../shared/interfaces/internal-drawing-representation.interface';
 import {UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
-import {selectIsAuthenticated, selectIsInitialDataLoaded} from '../../auth/reducers/auth-status.reducer';
+import {selectIsAuthenticated, selectIsAuthenticationInitialized} from '../../auth/reducers/auth-status.reducer';
 import {MapRestoreItem} from '../../../shared/interfaces/map-restore-item.interface';
 import {TimeExtentUtils} from '../../../shared/utils/time-extent.utils';
 
@@ -268,7 +268,7 @@ describe('ShareLinkEffects', () => {
       describe('waitForAuthenticationStatusToBeLoaded$', () => {
         it('does not dispatch ShareLinkActions.authenticationInitialized() as long as the initialData is not loaded', fakeAsync(async () => {
           actions$ = of(ShareLinkActions.initializeApplicationBasedOnId({id: expectedId}));
-          store.overrideSelector(selectIsInitialDataLoaded, false);
+          store.overrideSelector(selectIsAuthenticationInitialized, false);
           let newAction: Action | undefined;
           effects.waitForAuthenticationStatusToBeLoaded$.subscribe((action) => (newAction = action));
           flush();
@@ -276,7 +276,7 @@ describe('ShareLinkEffects', () => {
         }));
         it('dispatches ShareLinkActions.authenticationInitialized() when the initialData is loaded', (done: DoneFn) => {
           actions$ = of(ShareLinkActions.initializeApplicationBasedOnId({id: expectedId}));
-          store.overrideSelector(selectIsInitialDataLoaded, true);
+          store.overrideSelector(selectIsAuthenticationInitialized, true);
           effects.waitForAuthenticationStatusToBeLoaded$.subscribe((action) => {
             expect(action).toEqual(ShareLinkActions.authenticationInitialized({id: expectedId}));
             done();

@@ -17,7 +17,7 @@ import {selectLoadedLayerCatalogueAndShareItem} from '../selectors/loaded-layer-
 import {selectItems} from '../selectors/active-map-items.selector';
 import {DrawingActions} from '../actions/drawing.actions';
 import {selectDrawings} from '../reducers/drawing.reducer';
-import {selectIsAuthenticated, selectIsInitialDataLoaded} from '../../auth/reducers/auth-status.reducer';
+import {selectIsAuthenticated, selectIsAuthenticationInitialized} from '../../auth/reducers/auth-status.reducer';
 
 /**
  * This class contains a bunch of effects. Most of them are straightforward: do something asynchronous and return a new action afterward or
@@ -87,7 +87,7 @@ export class ShareLinkEffects {
       ofType(ShareLinkActions.initializeApplicationBasedOnId),
       // we use `combineLatestWith` here to wait for the authentication service to finish its initialization (and change to `true`)
       combineLatestWith(
-        this.store.select(selectIsInitialDataLoaded).pipe(
+        this.store.select(selectIsAuthenticationInitialized).pipe(
           filter((isAuthenticationInitialized) => isAuthenticationInitialized === true),
           take(1),
         ),
