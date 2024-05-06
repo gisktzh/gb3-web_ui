@@ -4,12 +4,12 @@ import {of, switchMap, tap} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
 import {DOCUMENT} from '@angular/common';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
-import {PrintRequestCouldNotBeHandled} from '../../../shared/errors/print.errors';
 import {Store} from '@ngrx/store';
 import {ExportActions} from '../actions/export.actions';
 import {Gb3ExportService} from '../../../shared/services/apis/gb3/gb3-export.service';
 import {selectUserDrawingsVectorLayers} from '../selectors/user-drawings-vector-layers.selector';
 import {concatLatestFrom} from '@ngrx/operators';
+import {DrawingCouldNotBeExported} from '../../../shared/errors/export.errors';
 
 @Injectable()
 export class ExportEffects {
@@ -33,7 +33,7 @@ export class ExportEffects {
       return this.actions$.pipe(
         ofType(ExportActions.setExportDrawingsRequestError),
         tap(({error}) => {
-          throw new PrintRequestCouldNotBeHandled(error);
+          throw new DrawingCouldNotBeExported(error);
         }),
       );
     },
