@@ -5,6 +5,8 @@ import {PanelClass} from '../../../../shared/enums/panel-class.enum';
 import {Store} from '@ngrx/store';
 import {MatDialog} from '@angular/material/dialog';
 import {ExportActions} from '../../../../state/map/actions/export.actions';
+import {tap} from 'rxjs';
+import {selectDrawings} from '../../../../state/map/reducers/drawing.reducer';
 
 const DRAWING_SETTINGS_DIALOG_MAX_WIDTH = 420;
 
@@ -14,6 +16,10 @@ const DRAWING_SETTINGS_DIALOG_MAX_WIDTH = 420;
   styleUrls: ['./drawing-tools.component.scss'],
 })
 export class DrawingToolsComponent extends AbstractToolsComponent {
+  public hasDrawings: boolean = false;
+
+  private readonly drawings$ = this.store.select(selectDrawings);
+
   constructor(@Inject(Store) store: Store, @Inject(MatDialog) dialogService: MatDialog) {
     super(store, dialogService);
   }
@@ -53,5 +59,10 @@ export class DrawingToolsComponent extends AbstractToolsComponent {
       autoFocus: false,
       maxWidth: DRAWING_SETTINGS_DIALOG_MAX_WIDTH,
     });
+  }
+
+  protected override initSubscriptions() {
+    super.initSubscriptions();
+    this.subscriptions.add(this.drawings$.pipe(tap((drawings) => (this.hasDrawings = drawings.length > 0))).subscribe());
   }
 }

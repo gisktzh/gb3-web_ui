@@ -76,6 +76,7 @@
   </button>
   <button
     (click)="this.downloadDrawings()"
+    [disabled]="!hasDrawings"
     class="drawing-tools__button"
     color="accent"
     mat-icon-button
