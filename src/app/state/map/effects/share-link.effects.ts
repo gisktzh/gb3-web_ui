@@ -121,9 +121,12 @@ export class ShareLinkEffects {
       ofType(ShareLinkActions.authenticationInitialized),
       // we can't use `concatLatestFrom` here because the selector will return undefined values until all internal values are successfully
       // loaded
-      combineLatestWith(this.store.select(selectLoadedLayerCatalogueAndShareItem)),
-      filter(([_, value]) => value !== undefined),
-      take(1),
+      combineLatestWith(
+        this.store.select(selectLoadedLayerCatalogueAndShareItem).pipe(
+          filter((value) => value !== undefined),
+          take(1),
+        ),
+      ),
       map(([_, value]) => {
         return ShareLinkActions.validateItem({item: value!.shareLinkItem});
       }),
