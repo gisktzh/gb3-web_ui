@@ -19,9 +19,7 @@ export class ExportEffects {
       concatLatestFrom(() => this.store.select(selectUserDrawingsVectorLayers)),
       switchMap(([{exportFormat}, drawings]) =>
         this.exportService.exportDrawing(exportFormat, drawings.drawings).pipe(
-          map((exportDrawingsResponse) => {
-            return ExportActions.setExportDrawingsRequestResponse();
-          }),
+          map(() => ExportActions.setExportDrawingsRequestResponse()),
           catchError((error: unknown) => of(ExportActions.setExportDrawingsRequestError({error}))),
         ),
       ),
