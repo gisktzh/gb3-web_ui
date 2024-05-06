@@ -86,9 +86,12 @@ export class ShareLinkEffects {
     return this.actions$.pipe(
       ofType(ShareLinkActions.initializeApplicationBasedOnId),
       // we use `combineLatestWith` here to wait for the authentication service to finish its initialization (and change to `true`)
-      combineLatestWith(this.store.select(selectIsInitialDataLoaded)),
-      filter(([_, isAuthenticationInitialized]) => isAuthenticationInitialized === true),
-      take(1),
+      combineLatestWith(
+        this.store.select(selectIsInitialDataLoaded).pipe(
+          filter((isAuthenticationInitialized) => isAuthenticationInitialized === true),
+          take(1),
+        ),
+      ),
       map(([{id}, _]) => {
         return ShareLinkActions.authenticationInitialized({id});
       }),
