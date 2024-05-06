@@ -93,14 +93,14 @@ export class ShareLinkEffects {
         ),
       ),
       map(([{id}, _]) => {
-        return ShareLinkActions.authenticationInitialized({id});
+        return ShareLinkActions.completedAuthenticationInitialization({id});
       }),
     );
   });
 
   public initializeApplicationByLoadingShareLinkItem$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(ShareLinkActions.authenticationInitialized),
+      ofType(ShareLinkActions.completedAuthenticationInitialization),
       map((value) => {
         return ShareLinkActions.loadItem({id: value.id});
       }),
@@ -109,7 +109,7 @@ export class ShareLinkEffects {
 
   public initializeApplicationByLoadingTopics$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(ShareLinkActions.authenticationInitialized),
+      ofType(ShareLinkActions.completedAuthenticationInitialization),
       map(() => {
         return LayerCatalogActions.loadLayerCatalog();
       }),
@@ -118,7 +118,7 @@ export class ShareLinkEffects {
 
   public initializeApplicationByVerifyingSharedItem$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(ShareLinkActions.authenticationInitialized),
+      ofType(ShareLinkActions.completedAuthenticationInitialization),
       // we can't use `concatLatestFrom` here because the selector will return undefined values until all internal values are successfully
       // loaded
       combineLatestWith(

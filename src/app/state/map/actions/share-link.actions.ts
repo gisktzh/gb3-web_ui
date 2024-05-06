@@ -22,6 +22,6 @@ export const ShareLinkActions = createActionGroup({
     'Set Initialization Error': errorProps(),
     'Complete Application Initialization': emptyProps(),
 
-    'Authentication Initialized': props<{id: string}>(),
+    'Completed Authentication Initialization': props<{id: string}>(),
   },
 });
