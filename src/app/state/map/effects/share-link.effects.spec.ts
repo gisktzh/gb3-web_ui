@@ -278,7 +278,7 @@ describe('ShareLinkEffects', () => {
           actions$ = of(ShareLinkActions.initializeApplicationBasedOnId({id: expectedId}));
           store.overrideSelector(selectIsAuthenticationInitialized, true);
           effects.waitForAuthenticationStatusToBeLoaded$.subscribe((action) => {
-            expect(action).toEqual(ShareLinkActions.authenticationInitialized({id: expectedId}));
+            expect(action).toEqual(ShareLinkActions.completedAuthenticationInitialization({id: expectedId}));
             done();
           });
         });
@@ -287,7 +287,7 @@ describe('ShareLinkEffects', () => {
 
     describe('Action: Authentication Initialized', () => {
       beforeEach(() => {
-        actions$ = of(ShareLinkActions.authenticationInitialized({id: expectedId}));
+        actions$ = of(ShareLinkActions.completedAuthenticationInitialization({id: expectedId}));
       });
 
       describe('initializeApplicationByLoadingShareLinkItem$', () => {
