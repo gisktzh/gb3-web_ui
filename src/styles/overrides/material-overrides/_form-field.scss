@@ -1,0 +1,9 @@
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline {
+  .mdc-notched-outline__leading {
+    border-radius: 1px 0 0 1px;
+  }
+
+  .mdc-notched-outline__trailing {
+    border-radius: 0 1px 1px 0;
+  }
+}

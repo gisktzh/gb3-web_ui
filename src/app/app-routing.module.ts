@@ -3,7 +3,6 @@ import {RouterModule, Routes} from '@angular/router';
 import {MainPage} from './shared/enums/main-page.enum';
 import {NotFoundErrorPageComponent} from './error-handling/components/not-found-error-page/not-found-error-page.component';
 import {FatalErrorPageComponent} from './error-handling/components/fatal-error-page/fatal-error-page.component';
-import {authLoadingGuard} from './shared/guards/auth-loading-guard.guard';
 import {fatalErrorMapGuard} from './embedded-page/guards/fatal-error-page.guard';
 
 const routes: Routes = [
@@ -20,7 +19,6 @@ const routes: Routes = [
       {
         path: MainPage.ShareLink,
         loadChildren: () => import('./share-link/share-link.module').then((m) => m.ShareLinkModule),
-        canActivate: [authLoadingGuard],
       },
       {
         path: MainPage.Embedded,
