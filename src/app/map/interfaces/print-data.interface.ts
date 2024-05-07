@@ -6,6 +6,7 @@ import {ReportOrientation} from '../../shared/interfaces/print.interface';
 export interface PrintData {
   format: string;
   reportLayout: string;
+  reportType: string;
   reportOrientation: ReportOrientation | undefined;
   title: string;
   comment: string;

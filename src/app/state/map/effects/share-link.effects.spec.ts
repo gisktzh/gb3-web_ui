@@ -1,5 +1,5 @@
 import {provideMockActions} from '@ngrx/effects/testing';
-import {TestBed} from '@angular/core/testing';
+import {fakeAsync, flush, TestBed} from '@angular/core/testing';
 import {EMPTY, Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
@@ -32,7 +32,7 @@ import {DrawingActions} from '../actions/drawing.actions';
 import {Gb3StyledInternalDrawingRepresentation} from '../../../shared/interfaces/internal-drawing-representation.interface';
 import {UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
-import {selectIsAuthenticated} from '../../auth/reducers/auth-status.reducer';
+import {selectIsAuthenticated, selectIsAuthenticationInitialized} from '../../auth/reducers/auth-status.reducer';
 import {MapRestoreItem} from '../../../shared/interfaces/map-restore-item.interface';
 import {TimeExtentUtils} from '../../../shared/utils/time-extent.utils';
 
@@ -264,9 +264,30 @@ describe('ShareLinkEffects', () => {
       ] as Gb3StyledInternalDrawingRepresentation[],
     };
 
-    describe('Action: initializeApplicationBasedOnId', () => {
+    describe('Action: Initialize Application Based On Id', () => {
+      describe('waitForAuthenticationStatusToBeLoaded$', () => {
+        it('does not dispatch ShareLinkActions.authenticationInitialized() as long as the initialData is not loaded', fakeAsync(async () => {
+          actions$ = of(ShareLinkActions.initializeApplicationBasedOnId({id: expectedId}));
+          store.overrideSelector(selectIsAuthenticationInitialized, false);
+          let newAction: Action | undefined;
+          effects.waitForAuthenticationStatusToBeLoaded$.subscribe((action) => (newAction = action));
+          flush();
+          expect(newAction).toBeUndefined();
+        }));
+        it('dispatches ShareLinkActions.authenticationInitialized() when the initialData is loaded', (done: DoneFn) => {
+          actions$ = of(ShareLinkActions.initializeApplicationBasedOnId({id: expectedId}));
+          store.overrideSelector(selectIsAuthenticationInitialized, true);
+          effects.waitForAuthenticationStatusToBeLoaded$.subscribe((action) => {
+            expect(action).toEqual(ShareLinkActions.completedAuthenticationInitialization({id: expectedId}));
+            done();
+          });
+        });
+      });
+    });
+
+    describe('Action: Authentication Initialized', () => {
       beforeEach(() => {
-        actions$ = of(ShareLinkActions.initializeApplicationBasedOnId({id: expectedId}));
+        actions$ = of(ShareLinkActions.completedAuthenticationInitialization({id: expectedId}));
       });
 
       describe('initializeApplicationByLoadingShareLinkItem$', () => {

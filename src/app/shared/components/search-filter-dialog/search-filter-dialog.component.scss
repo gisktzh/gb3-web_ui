@@ -10,12 +10,9 @@
 }
 
 .search-filter-dialog-content {
-  width: 956px;
+  width: ktzh-variables.$zh-filter-dialog-width;
+  max-width: ktzh-variables.$zh-filter-dialog-max-width;
   padding: 20px 24px;
-
-  &--mobile {
-    width: 90vw;
-  }
 
   .search-filter-dialog-content__wrapper {
     display: flex;

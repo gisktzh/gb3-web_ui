@@ -1,5 +1,5 @@
 <form [formGroup]="serviceFormGroup" class="map-import-service-and-url">
-  <mat-form-field>
+  <mat-form-field appearance="outline">
     <mat-label>Kartendienst oder Geodatenformat</mat-label>
     <mat-select formControlName="serviceType">
       <mat-option value="wms">WMS</mat-option>
@@ -7,7 +7,7 @@
     </mat-select>
   </mat-form-field>
 
-  <mat-form-field class="map-import-service-and-url__url-input">
+  <mat-form-field appearance="outline" class="map-import-service-and-url__url-input">
     <mat-label>URL</mat-label>
     <input matInput placeholder="Bitte URL zum Kartendienst eingeben" formControlName="url" (keyup)="handleManualValidation($event)" />
     <mat-icon *ngIf="loadingState === 'loaded'" color="primary" matSuffix>check</mat-icon>

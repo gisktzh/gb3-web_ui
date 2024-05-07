@@ -5,7 +5,7 @@ import {AuthStatusState} from '../states/auth-status.state';
 export const authStatusFeatureKey = 'authStatus';
 
 export const initialState: AuthStatusState = {
-  isInitialDataLoaded: false,
+  isAuthenticationInitialized: false,
   isAuthenticated: false,
   userName: undefined,
 };
@@ -15,7 +15,7 @@ export const authStatusFeature = createFeature({
   reducer: createReducer(
     initialState,
     on(AuthStatusActions.setInitialDataLoaded, (state) => {
-      return {...state, isInitialDataLoaded: true};
+      return {...state, isAuthenticationInitialized: true};
     }),
     on(AuthStatusActions.performLogin, (state) => {
       return state;
@@ -32,4 +32,5 @@ export const authStatusFeature = createFeature({
   ),
 });
 
-export const {name, reducer, selectAuthStatusState, selectIsAuthenticated, selectUserName, selectIsInitialDataLoaded} = authStatusFeature;
+export const {name, reducer, selectAuthStatusState, selectIsAuthenticated, selectUserName, selectIsAuthenticationInitialized} =
+  authStatusFeature;

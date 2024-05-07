@@ -19,7 +19,6 @@ import {DataDownloadRegionActions} from '../actions/data-download-region.actions
 import {LegendActions} from '../actions/legend.actions';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {MapUiActions} from '../actions/map-ui.actions';
-import {PrintActions} from '../actions/print.actions';
 import {ShareLinkActions} from '../actions/share-link.actions';
 import {ToolActions} from '../actions/tool.actions';
 import {selectActiveTool} from '../reducers/tool.reducer';
@@ -52,17 +51,11 @@ export class MapUiEffects {
     );
   });
 
-  public loadDataForSideDrawer$ = createEffect(() => {
+  public loadProductsForDataDownloadSideDrawer$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapUiActions.showMapSideDrawerContent),
-      map((value) => {
-        switch (value.mapSideDrawerContent) {
-          case 'print':
-            return PrintActions.loadPrintCapabilities();
-          case 'data-download':
-            return DataDownloadProductActions.loadProductsAndRelevantProducts();
-        }
-      }),
+      filter((value) => value.mapSideDrawerContent === 'data-download'),
+      map((value) => DataDownloadProductActions.loadProductsAndRelevantProducts()),
     );
   });
 
