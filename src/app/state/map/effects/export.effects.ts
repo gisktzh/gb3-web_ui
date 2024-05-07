@@ -1,9 +1,7 @@
-import {Inject, Injectable} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {of, switchMap, tap} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
-import {DOCUMENT} from '@angular/common';
-import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {Store} from '@ngrx/store';
 import {ExportActions} from '../actions/export.actions';
 import {Gb3ExportService} from '../../../shared/services/apis/gb3/gb3-export.service';
@@ -41,8 +39,6 @@ export class ExportEffects {
   constructor(
     private readonly actions$: Actions,
     private readonly exportService: Gb3ExportService,
-    @Inject(DOCUMENT) private readonly document: Document,
-    private readonly mapDrawingService: MapDrawingService,
     private readonly store: Store,
   ) {}
 }
