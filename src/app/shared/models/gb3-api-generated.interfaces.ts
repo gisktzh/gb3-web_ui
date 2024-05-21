@@ -1145,21 +1145,7 @@ export type VectorLayerStyles = {
   };
 };
 
-/** Vector layer without styles */
-export interface VectorLayerWithoutStyles {
-  /** Vector layer type */
-  type: 'Vector';
-  /** GeoJSON FeatureCollection */
-  geojson: GenericGeojsonFeatureCollection;
-}
-
 export type CantonListData = Canton;
-
-export type ImportGeojsonCreatePayload = GenericGeojsonFeatureCollection | GenericGeojsonFeature;
-
-export type ImportGeojsonCreateData = VectorLayerWithoutStyles;
-
-export type ExportGeojsonCreateData = GenericGeojsonFeatureCollection;
 
 export type TopicsFeatureInfoDetailData = Feature;
 
