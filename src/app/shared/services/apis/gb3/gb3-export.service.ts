@@ -25,9 +25,10 @@ export class Gb3ExportService extends Gb3ApiService {
   }
 
   public exportDrawing(exportFormat: ExportFormat, drawings: Gb3VectorLayer) {
-    return this.postBlob<Gb3VectorLayer>(this.getFullEndpointUrlForExportFormat(exportFormat), drawings).pipe(
+    return this.post<Gb3VectorLayer, Blob>(this.getFullEndpointUrlForExportFormat(exportFormat), drawings, undefined, 'blob').pipe(
       map((blob) => {
         saveAs(blob, 'geojson.json');
+        return blob;
       }),
     );
   }

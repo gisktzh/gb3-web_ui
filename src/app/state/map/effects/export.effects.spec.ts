@@ -1,4 +1,4 @@
-import {EMPTY, Observable, of} from 'rxjs';
+import {EMPTY, Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {ExportEffects} from './export.effects';
@@ -87,7 +87,7 @@ describe('ExportEffects', () => {
   describe('requestExportDrawings$', () => {
     it('dispatches ExportActions.setExportDrawingsRequestResponse()', (done: DoneFn) => {
       const expectedFormat = 'geojson';
-      const gb3ExportServiceSpy = spyOn(gb3ExportService, 'exportDrawing').and.returnValue(of());
+      const gb3ExportServiceSpy = spyOn(gb3ExportService, 'exportDrawing').and.returnValue(of(new Blob()));
 
       store.overrideSelector(selectUserDrawingsVectorLayers, mockDrawings);
       actions$ = of(ExportActions.requestExportDrawings({exportFormat: expectedFormat}));
@@ -97,9 +97,23 @@ describe('ExportEffects', () => {
         done();
       });
     });
+
+    it('dispatches ExportActions.setExportDrawingsRequestError() on error', (done: DoneFn) => {
+      const expectedFormat = 'geojson';
+      const expectedError = new Error('oh no! butterfingers');
+      const gb3ExportServiceSpy = spyOn(gb3ExportService, 'exportDrawing').and.returnValue(throwError(() => expectedError));
+
+      store.overrideSelector(selectUserDrawingsVectorLayers, mockDrawings);
+      actions$ = of(ExportActions.requestExportDrawings({exportFormat: expectedFormat}));
+      effects.requestExportDrawings$.subscribe((action) => {
+        expect(gb3ExportServiceSpy).toHaveBeenCalledOnceWith(expectedFormat, mockDrawings.drawings);
+        expect(action).toEqual(ExportActions.setExportDrawingsRequestError({error: expectedError}));
+        done();
+      });
+    });
   });
   describe('throwExportDrawingsRequestError$', () => {
-    it('throws a PrintInfoCouldNotBeLoaded error', (done: DoneFn) => {
+    it('throws a DrawingCouldNotBeExported error', (done: DoneFn) => {
       const expectedOriginalError = new Error('oh no! butterfingers');
 
       actions$ = of(ExportActions.setExportDrawingsRequestError({error: expectedOriginalError}));
