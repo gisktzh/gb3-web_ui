@@ -74,14 +74,5 @@
   <button class="drawing-tools__button" color="accent" disabled mat-icon-button matTooltip="Zeichnungen hochladen">
     <mat-icon svgIcon="ktzh_upload"></mat-icon>
   </button>
-  <button
-    (click)="this.downloadDrawings()"
-    [disabled]="!hasDrawings"
-    class="drawing-tools__button"
-    color="accent"
-    mat-icon-button
-    matTooltip="Zeichnungen herunterladen"
-  >
-    <mat-icon svgIcon="ktzh_download"></mat-icon>
-  </button>
+  <drawing-download-button></drawing-download-button>
 </div>

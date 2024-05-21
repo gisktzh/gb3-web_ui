@@ -11,11 +11,11 @@ import {MatDialog} from '@angular/material/dialog';
 })
 export class AbstractToolsComponent implements OnInit, OnDestroy {
   public activeTool: ToolType | undefined = undefined;
-  protected readonly subscriptions: Subscription = new Subscription();
+  private readonly subscriptions: Subscription = new Subscription();
   private readonly activeTool$ = this.store.select(selectActiveTool);
 
   constructor(
-    protected readonly store: Store,
+    private readonly store: Store,
     protected readonly dialogService: MatDialog,
   ) {}
 
@@ -35,7 +35,7 @@ export class AbstractToolsComponent implements OnInit, OnDestroy {
     }
   }
 
-  protected initSubscriptions() {
+  private initSubscriptions() {
     this.subscriptions.add(this.activeTool$.pipe(tap((activeTool) => (this.activeTool = activeTool))).subscribe());
   }
 }

@@ -1,0 +1,7 @@
+@use 'mixins/helpers.mixin' as mixins;
+
+:host ::ng-deep {
+  .drawing-tools__button {
+    @include mixins.tool-button;
+  }
+}
