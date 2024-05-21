@@ -11,8 +11,8 @@ import {MatDialog} from '@angular/material/dialog';
 })
 export class AbstractToolsComponent implements OnInit, OnDestroy {
   public activeTool: ToolType | undefined = undefined;
-  private readonly subscriptions: Subscription = new Subscription();
   private readonly activeTool$ = this.store.select(selectActiveTool);
+  private readonly subscriptions: Subscription = new Subscription();
 
   constructor(
     private readonly store: Store,
