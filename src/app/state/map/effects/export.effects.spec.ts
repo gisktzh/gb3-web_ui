@@ -90,10 +90,10 @@ describe('ExportEffects', () => {
       const gb3ExportServiceSpy = spyOn(gb3ExportService, 'exportDrawing').and.returnValue(of(new Blob()));
 
       store.overrideSelector(selectUserDrawingsVectorLayers, mockDrawings);
-      actions$ = of(ExportActions.requestExportDrawings({exportFormat: expectedFormat}));
+      actions$ = of(ExportActions.requestDrawingsExport({exportFormat: expectedFormat}));
       effects.requestExportDrawings$.subscribe((action) => {
         expect(gb3ExportServiceSpy).toHaveBeenCalledOnceWith(expectedFormat, mockDrawings.drawings);
-        expect(action).toEqual(ExportActions.setExportDrawingsRequestResponse());
+        expect(action).toEqual(ExportActions.setDrawingsExportRequestResponse());
         done();
       });
     });
@@ -104,10 +104,10 @@ describe('ExportEffects', () => {
       const gb3ExportServiceSpy = spyOn(gb3ExportService, 'exportDrawing').and.returnValue(throwError(() => expectedError));
 
       store.overrideSelector(selectUserDrawingsVectorLayers, mockDrawings);
-      actions$ = of(ExportActions.requestExportDrawings({exportFormat: expectedFormat}));
+      actions$ = of(ExportActions.requestDrawingsExport({exportFormat: expectedFormat}));
       effects.requestExportDrawings$.subscribe((action) => {
         expect(gb3ExportServiceSpy).toHaveBeenCalledOnceWith(expectedFormat, mockDrawings.drawings);
-        expect(action).toEqual(ExportActions.setExportDrawingsRequestError({error: expectedError}));
+        expect(action).toEqual(ExportActions.setDrawingsExportRequestError({error: expectedError}));
         done();
       });
     });
@@ -116,7 +116,7 @@ describe('ExportEffects', () => {
     it('throws a DrawingCouldNotBeExported error', (done: DoneFn) => {
       const expectedOriginalError = new Error('oh no! butterfingers');
 
-      actions$ = of(ExportActions.setExportDrawingsRequestError({error: expectedOriginalError}));
+      actions$ = of(ExportActions.setDrawingsExportRequestError({error: expectedOriginalError}));
       effects.throwExportDrawingsRequestError$
         .pipe(
           catchError((error) => {

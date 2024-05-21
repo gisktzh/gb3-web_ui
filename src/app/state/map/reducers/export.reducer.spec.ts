@@ -13,7 +13,7 @@ describe('Export Reducer', () => {
   describe('requestExportDrawings', () => {
     it('sets the loading state and export format', () => {
       const exportFormat = 'geojson';
-      const action = ExportActions.requestExportDrawings({exportFormat});
+      const action = ExportActions.requestDrawingsExport({exportFormat});
       const result = reducer(initialState, action);
 
       expect(result.exportLoadingState).toEqual('loading');
@@ -22,7 +22,7 @@ describe('Export Reducer', () => {
   });
   describe('setExportDrawingsRequestResponse', () => {
     it('sets the loading state', () => {
-      const action = ExportActions.setExportDrawingsRequestResponse();
+      const action = ExportActions.setDrawingsExportRequestResponse();
       const result = reducer(initialState, action);
 
       expect(result.exportLoadingState).toEqual('loaded');
@@ -30,7 +30,7 @@ describe('Export Reducer', () => {
   });
   describe('setExportDrawingsRequestError', () => {
     it('sets the loading state and clears the export format', () => {
-      const action = ExportActions.setExportDrawingsRequestError({});
+      const action = ExportActions.setDrawingsExportRequestError({});
       const result = reducer(initialState, action);
 
       expect(result.exportLoadingState).toEqual('error');

@@ -12,7 +12,7 @@ export const exportFeature = createFeature({
   name: exportFeatureKey,
   reducer: createReducer(
     initialState,
-    on(ExportActions.requestDrawingsExport, ({exportFormat}): ExportState => {
+    on(ExportActions.requestDrawingsExport, (_, {exportFormat}): ExportState => {
       return {...initialState, exportLoadingState: 'loading', exportFormat};
     }),
     on(ExportActions.setDrawingsExportRequestResponse, (state): ExportState => {
