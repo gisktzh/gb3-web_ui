@@ -49,7 +49,7 @@ export class DrawingToolsComponent extends AbstractToolsComponent {
   }
 
   public downloadDrawings() {
-    this.store.dispatch(ExportActions.requestExportDrawings({exportFormat: 'geojson'}));
+    this.store.dispatch(ExportActions.requestDrawingsExport({exportFormat: 'geojson'}));
   }
 
   public openSettingsDialog() {

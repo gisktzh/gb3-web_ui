@@ -5,8 +5,8 @@ import {errorProps} from '../../../shared/utils/error-props.utils';
 export const ExportActions = createActionGroup({
   source: 'Export',
   events: {
-    'Request Export Drawings': props<{exportFormat: ExportFormat}>(),
-    'Set Export Drawings Request Response': emptyProps(),
-    'Set Export Drawings Request Error': errorProps(),
+    'Request Drawings Export': props<{exportFormat: ExportFormat}>(),
+    'Set Drawings Export Request Response': emptyProps(),
+    'Set Drawings Export Request Error': errorProps(),
   },
 });

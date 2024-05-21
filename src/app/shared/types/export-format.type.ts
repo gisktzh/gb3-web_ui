@@ -1,1 +1,1 @@
-export type ExportFormat = 'geojson' | 'kml';
+export type ExportFormat = 'geojson';

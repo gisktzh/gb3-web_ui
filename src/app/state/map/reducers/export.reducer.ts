@@ -12,13 +12,13 @@ export const exportFeature = createFeature({
   name: exportFeatureKey,
   reducer: createReducer(
     initialState,
-    on(ExportActions.requestExportDrawings, (state, {exportFormat}): ExportState => {
+    on(ExportActions.requestDrawingsExport, ({exportFormat}): ExportState => {
       return {...initialState, exportLoadingState: 'loading', exportFormat};
     }),
-    on(ExportActions.setExportDrawingsRequestResponse, (state): ExportState => {
+    on(ExportActions.setDrawingsExportRequestResponse, (state): ExportState => {
       return {...state, exportLoadingState: 'loaded'};
     }),
-    on(ExportActions.setExportDrawingsRequestError, (state): ExportState => {
+    on(ExportActions.setDrawingsExportRequestError, (state): ExportState => {
       return {...state, exportLoadingState: 'error', exportFormat: initialState.exportFormat};
     }),
   ),

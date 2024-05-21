@@ -24,10 +24,10 @@ export abstract class BaseApiService {
     headers?: {
       [header: string]: string | string[];
     },
-    responseType?: 'blob',
+    processAsBlob: boolean = false,
   ): Observable<R> {
-    if (responseType === 'blob') {
-      return this.http.post(url, body, {headers, responseType}) as Observable<R>;
+    if (processAsBlob) {
+      return this.http.post(url, body, {headers, responseType: 'blob'}) as Observable<R>;
     } else {
       return this.http.post<R>(url, body, {headers});
     }

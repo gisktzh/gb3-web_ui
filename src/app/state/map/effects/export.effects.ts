@@ -13,12 +13,12 @@ import {DrawingCouldNotBeExported} from '../../../shared/errors/export.errors';
 export class ExportEffects {
   public requestExportDrawings$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(ExportActions.requestExportDrawings),
+      ofType(ExportActions.requestDrawingsExport),
       concatLatestFrom(() => this.store.select(selectUserDrawingsVectorLayers)),
       switchMap(([{exportFormat}, drawings]) =>
         this.exportService.exportDrawing(exportFormat, drawings.drawings).pipe(
-          map(() => ExportActions.setExportDrawingsRequestResponse()),
-          catchError((error: unknown) => of(ExportActions.setExportDrawingsRequestError({error}))),
+          map(() => ExportActions.setDrawingsExportRequestResponse()),
+          catchError((error: unknown) => of(ExportActions.setDrawingsExportRequestError({error}))),
         ),
       ),
     );
@@ -27,7 +27,7 @@ export class ExportEffects {
   public throwExportDrawingsRequestError$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(ExportActions.setExportDrawingsRequestError),
+        ofType(ExportActions.setDrawingsExportRequestError),
         tap(({error}) => {
           throw new DrawingCouldNotBeExported(error);
         }),
