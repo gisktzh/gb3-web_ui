@@ -10,7 +10,7 @@ import {PrintUtils} from '../../../shared/utils/print.utils';
 import {PrintRequestCouldNotBeHandled} from '../../../shared/errors/print.errors';
 import {Store} from '@ngrx/store';
 import {MapUiActions} from '../actions/map-ui.actions';
-import {saveAs} from 'file-saver';
+import {FileDownloadService} from '../../../shared/services/file-download-service';
 
 @Injectable()
 export class PrintEffects {
@@ -44,7 +44,7 @@ export class PrintEffects {
     return this.actions$.pipe(
       ofType(PrintActions.setPrintRequestResponse),
       map((value) => {
-        saveAs(value.creationResponse.reportUrl, value.creationResponse.reportUrl.split('/').pop());
+        this.fileDownloadService.downloadFileFromUrl(value.creationResponse.reportUrl, value.creationResponse.reportUrl.split('/').pop());
         return PrintActions.clearPrintRequest();
       }),
     );
@@ -89,6 +89,7 @@ export class PrintEffects {
     private readonly printService: Gb3PrintService,
     @Inject(DOCUMENT) private readonly document: Document,
     private readonly mapDrawingService: MapDrawingService,
+    private readonly fileDownloadService: FileDownloadService,
     private readonly store: Store,
   ) {}
 }

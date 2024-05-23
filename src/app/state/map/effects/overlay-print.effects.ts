@@ -10,7 +10,7 @@ import {Store} from '@ngrx/store';
 import {OverlayPrintActions} from '../actions/overlay-print-actions';
 import {selectPrintLegendItems} from '../selectors/print-legend-items.selector';
 import {selectPrintFeatureInfoItems} from '../selectors/print-feature-info-items.selector';
-import {saveAs} from 'file-saver';
+import {FileDownloadService} from '../../../shared/services/file-download-service';
 
 @Injectable()
 export class OverlayPrintEffects {
@@ -52,7 +52,7 @@ export class OverlayPrintEffects {
       return this.actions$.pipe(
         ofType(OverlayPrintActions.setPrintRequestResponse),
         tap((value) => {
-          saveAs(value.creationResponse.reportUrl, value.creationResponse.reportUrl.split('/').pop());
+          this.fileDownloadService.downloadFileFromUrl(value.creationResponse.reportUrl, value.creationResponse.reportUrl.split('/').pop());
         }),
       );
     },
@@ -74,6 +74,7 @@ export class OverlayPrintEffects {
   constructor(
     private readonly actions$: Actions,
     private readonly printService: Gb3PrintService,
+    private readonly fileDownloadService: FileDownloadService,
     @Inject(DOCUMENT) private readonly document: Document,
     private readonly store: Store,
   ) {}
