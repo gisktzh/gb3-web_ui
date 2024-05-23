@@ -3,15 +3,8 @@ import {Inject, Injectable} from '@angular/core';
 import {Gb3ApiService} from './gb3-api.service';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
+import {PrintCreation, PrintCreationResponse, PrintMapItem, ReportOrientation} from '../../../interfaces/print.interface';
 import {
-  PrintCapabilities,
-  PrintCreation,
-  PrintCreationResponse,
-  PrintMapItem,
-  ReportOrientation,
-} from '../../../interfaces/print.interface';
-import {
-  PrintCapabilitiesListData,
   PrintCreateData,
   PrintFeatureInfoCreateData,
   PrintFeatureInfoNew,
@@ -42,11 +35,6 @@ export class Gb3PrintService extends Gb3ApiService {
     private readonly basemapConfigService: BasemapConfigService,
   ) {
     super(http, configService);
-  }
-
-  public loadPrintCapabilities(): Observable<PrintCapabilities> {
-    const printCapabilitiesData = this.get<PrintCapabilitiesListData>(this.createCapabilitiesUrl());
-    return printCapabilitiesData.pipe(map((data) => this.mapPrintCapabilitiesListDataToPrintCapabilities(data)));
   }
 
   public createPrintJob(printCreation: PrintCreation): Observable<PrintCreationResponse> {
@@ -92,6 +80,7 @@ export class Gb3PrintService extends Gb3ApiService {
     return {
       format: printData.format,
       reportLayout: printData.reportLayout,
+      reportType: printData.reportType,
       reportOrientation: printData.reportOrientation,
       attributes: {
         reportTitle,
@@ -115,10 +104,6 @@ export class Gb3PrintService extends Gb3ApiService {
 
   private createFeatureInfoPrintUrl(): string {
     return `${this.getFullEndpointUrl()}/feature_info`;
-  }
-
-  private createCapabilitiesUrl(): string {
-    return `${this.getFullEndpointUrl()}/capabilities`;
   }
 
   private createCreateUrl(): string {
@@ -211,25 +196,13 @@ export class Gb3PrintService extends Gb3ApiService {
     return SymbolizationToGb3ConverterUtils.convertInternalToExternalRepresentation(drawingsToDraw);
   }
 
-  private mapPrintCapabilitiesListDataToPrintCapabilities(data: PrintCapabilitiesListData): PrintCapabilities {
-    const printData = data.print;
-    return {
-      dpis: printData.dpis,
-      formats: printData.formats,
-      reports: printData.reports.map((report) => {
-        const {layout, orientation} = this.transformReportNameToLayoutAndOrientation(report.name);
-        return {
-          map: report.map,
-          layout: layout,
-          orientation: orientation,
-        };
-      }),
-    };
-  }
-
   private mapPrintCreationToCreateCreatePayload(printCreation: PrintCreation): PrintNew {
     return {
-      report: this.transformSizeAndOrientationToLayoutName(printCreation.reportLayout, printCreation.reportOrientation),
+      report: this.transformSizeAndOrientationToLayoutName(
+        printCreation.reportLayout,
+        printCreation.reportOrientation,
+        printCreation.reportType,
+      ),
       format: printCreation.format,
       map: {
         dpi: printCreation.map.dpi,
@@ -276,8 +249,8 @@ export class Gb3PrintService extends Gb3ApiService {
       const size = splitName[0];
       let orientation: ReportOrientation | undefined;
       switch (splitName[1] as ReportOrientation) {
-        case 'hoch':
-        case 'quer':
+        case 'portrait':
+        case 'landscape':
           orientation = splitName[1] as ReportOrientation;
       }
       if (size && orientation) {
@@ -288,10 +261,13 @@ export class Gb3PrintService extends Gb3ApiService {
     return report;
   }
 
-  private transformSizeAndOrientationToLayoutName(size: string, orientation: ReportOrientation | undefined): string {
+  private transformSizeAndOrientationToLayoutName(size: string, orientation: ReportOrientation | undefined, reportType: string): string {
+    if (reportType === 'mapset') {
+      return 'Kartenset';
+    }
     if (!orientation) {
       return size;
     }
-    return `${size} ${orientation}`;
+    return `${size} ${orientation === 'portrait' ? 'hoch' : 'quer'}`;
   }
 }

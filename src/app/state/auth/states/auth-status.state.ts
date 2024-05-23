@@ -1,5 +1,5 @@
 export interface AuthStatusState {
-  isInitialDataLoaded: boolean;
+  isAuthenticationInitialized: boolean;
   isAuthenticated: boolean;
   userName: string | undefined;
 }

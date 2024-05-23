@@ -4,6 +4,7 @@ import {Subscription, tap} from 'rxjs';
 import {ToolMenuVisibility} from '../../../../shared/types/tool-menu-visibility.type';
 import {MapUiActions} from '../../../../state/map/actions/map-ui.actions';
 import {selectToolMenuVisibility} from '../../../../state/map/reducers/map-ui.reducer';
+import {selectReady} from '../../../../state/map/reducers/map-config.reducer';
 
 @Component({
   selector: 'map-tools-desktop',
@@ -12,8 +13,10 @@ import {selectToolMenuVisibility} from '../../../../state/map/reducers/map-ui.re
 })
 export class MapToolsDesktopComponent implements OnInit, OnDestroy {
   public toolMenuVisibility: ToolMenuVisibility | undefined = undefined;
+  public isMapReady: boolean = true;
 
   private readonly toolMenuVisibility$ = this.store.select(selectToolMenuVisibility);
+  private readonly isMapReady$ = this.store.select(selectReady);
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(private readonly store: Store) {}
@@ -47,5 +50,6 @@ export class MapToolsDesktopComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.toolMenuVisibility$.pipe(tap((toolMenuVisibility) => (this.toolMenuVisibility = toolMenuVisibility))).subscribe(),
     );
+    this.subscriptions.add(this.isMapReady$.pipe(tap((ready) => (this.isMapReady = ready))).subscribe());
   }
 }

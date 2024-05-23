@@ -7,7 +7,7 @@ describe('auth status reducer', () => {
 
   beforeEach(() => {
     existingState = {
-      isInitialDataLoaded: true,
+      isAuthenticationInitialized: true,
       userName: 'Gandalf',
       isAuthenticated: true,
     };
@@ -22,14 +22,14 @@ describe('auth status reducer', () => {
     });
   });
 
-  describe('setInitialDataLoaded', () => {
-    it('sets isInitialDataLoaded to true; keeps everything else', () => {
-      existingState.isInitialDataLoaded = false;
+  describe('athenticationInitialized', () => {
+    it('sets isAuthenticationInitialized to true; keeps everything else', () => {
+      existingState.isAuthenticationInitialized = false;
 
       const action = AuthStatusActions.setInitialDataLoaded();
       const state = reducer(existingState, action);
 
-      expect(state.isInitialDataLoaded).toBe(true);
+      expect(state.isAuthenticationInitialized).toBe(true);
       expect(state.userName).toBe(existingState.userName);
       expect(state.isAuthenticated).toBe(existingState.isAuthenticated);
     });
@@ -40,7 +40,7 @@ describe('auth status reducer', () => {
       const action = AuthStatusActions.performLogin();
       const state = reducer(existingState, action);
 
-      expect(state.isInitialDataLoaded).toBe(existingState.isInitialDataLoaded);
+      expect(state.isAuthenticationInitialized).toBe(existingState.isAuthenticationInitialized);
       expect(state.userName).toBe(existingState.userName);
       expect(state.isAuthenticated).toBe(existingState.isAuthenticated);
     });
@@ -51,7 +51,7 @@ describe('auth status reducer', () => {
       const action = AuthStatusActions.performLogin();
       const state = reducer(existingState, action);
 
-      expect(state.isInitialDataLoaded).toBe(existingState.isInitialDataLoaded);
+      expect(state.isAuthenticationInitialized).toBe(existingState.isAuthenticationInitialized);
       expect(state.userName).toBe(existingState.userName);
       expect(state.isAuthenticated).toBe(existingState.isAuthenticated);
     });
@@ -62,7 +62,7 @@ describe('auth status reducer', () => {
       const action = AuthStatusActions.performLogout({isForced: false});
       const state = reducer(existingState, action);
 
-      expect(state.isInitialDataLoaded).toBe(existingState.isInitialDataLoaded);
+      expect(state.isAuthenticationInitialized).toBe(existingState.isAuthenticationInitialized);
       expect(state.userName).toBe(existingState.userName);
       expect(state.isAuthenticated).toBe(existingState.isAuthenticated);
     });
@@ -76,7 +76,7 @@ describe('auth status reducer', () => {
       const action = AuthStatusActions.setStatus({isAuthenticated, userName});
       const state = reducer(existingState, action);
 
-      expect(state.isInitialDataLoaded).toBe(existingState.isInitialDataLoaded);
+      expect(state.isAuthenticationInitialized).toBe(existingState.isAuthenticationInitialized);
       expect(state.userName).toBe(userName);
       expect(state.isAuthenticated).toBe(isAuthenticated);
     });
