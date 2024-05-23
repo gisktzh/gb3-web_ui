@@ -10,6 +10,7 @@ import {PrintUtils} from '../../../shared/utils/print.utils';
 import {PrintRequestCouldNotBeHandled} from '../../../shared/errors/print.errors';
 import {Store} from '@ngrx/store';
 import {MapUiActions} from '../actions/map-ui.actions';
+import {saveAs} from 'file-saver';
 
 @Injectable()
 export class PrintEffects {
@@ -39,11 +40,11 @@ export class PrintEffects {
     {dispatch: false},
   );
 
-  public openPrintDocumentInNewTab$ = createEffect(() => {
+  public downloadPrintDocument$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(PrintActions.setPrintRequestResponse),
       map((value) => {
-        this.document.defaultView!.window.open(value.creationResponse.reportUrl, '_blank');
+        saveAs(value.creationResponse.reportUrl, value.creationResponse.reportUrl.split('/').pop());
         return PrintActions.clearPrintRequest();
       }),
     );

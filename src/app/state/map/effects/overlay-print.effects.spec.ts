@@ -169,14 +169,14 @@ describe('OverlayPrintEffects', () => {
     });
   });
 
-  describe('openPrintDocumentInNewTab$', () => {
+  describe('downloadPrintDocument$', () => {
     it('opens a print document in a new tab, no further dispatch', (done: DoneFn) => {
       const expectedCreationResponse = creationResponseMock;
       const documentWindowOpenSpy = spyOn(document.defaultView!.window, 'open').and.returnValue(null);
       const expectedAction = OverlayPrintActions.setPrintRequestResponse({overlay: 'legend', creationResponse: expectedCreationResponse});
 
       actions$ = of(expectedAction);
-      effects.openPrintDocumentInNewTab$.subscribe((action) => {
+      effects.downloadPrintDocument$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
         expect(documentWindowOpenSpy).toHaveBeenCalledOnceWith(expectedCreationResponse.reportUrl, '_blank');
         done();

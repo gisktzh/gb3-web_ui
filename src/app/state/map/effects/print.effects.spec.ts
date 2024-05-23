@@ -116,13 +116,13 @@ describe('PrintEffects', () => {
     });
   });
 
-  describe('openPrintDocumentInNewTab$', () => {
+  describe('downloadPrintDocument$', () => {
     it('opens a print document in a new tab and dispatches a clearPrintRequest action', (done: DoneFn) => {
       const expectedCreationResponse = creationResponseMock;
       const documentWindowOpenSpy = spyOn(document.defaultView!.window, 'open').and.returnValue(null);
 
       actions$ = of(PrintActions.setPrintRequestResponse({creationResponse: expectedCreationResponse}));
-      effects.openPrintDocumentInNewTab$.subscribe((action) => {
+      effects.downloadPrintDocument$.subscribe((action) => {
         expect(documentWindowOpenSpy).toHaveBeenCalledOnceWith(expectedCreationResponse.reportUrl, '_blank');
         expect(action).toEqual(PrintActions.clearPrintRequest());
         done();

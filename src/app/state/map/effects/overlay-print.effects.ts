@@ -10,6 +10,7 @@ import {Store} from '@ngrx/store';
 import {OverlayPrintActions} from '../actions/overlay-print-actions';
 import {selectPrintLegendItems} from '../selectors/print-legend-items.selector';
 import {selectPrintFeatureInfoItems} from '../selectors/print-feature-info-items.selector';
+import {saveAs} from 'file-saver';
 
 @Injectable()
 export class OverlayPrintEffects {
@@ -46,12 +47,12 @@ export class OverlayPrintEffects {
     );
   });
 
-  public openPrintDocumentInNewTab$ = createEffect(
+  public downloadPrintDocument$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(OverlayPrintActions.setPrintRequestResponse),
         tap((value) => {
-          this.document.defaultView!.window.open(value.creationResponse.reportUrl, '_blank');
+          saveAs(value.creationResponse.reportUrl, value.creationResponse.reportUrl.split('/').pop());
         }),
       );
     },
