@@ -49,6 +49,7 @@
     "@ngrx/store": "^17.1.1",
     "@ngrx/store-devtools": "^17.1.1",
     "@terraformer/arcgis": "^2.1.2",
+    "@types/file-saver": "^2.0.7",
     "@types/geojson": "^7946.0.10",
     "@types/node": "^20.8",
     "@types/terraformer__arcgis": "^2.0.2",
@@ -71,7 +72,6 @@
   "devDependencies": {
     "@ngrx/eslint-plugin": "^17.1.1",
     "@ngrx/schematics": "^17.1.1",
-    "@types/file-saver": "^2.0.7",
     "@types/jasmine": "~5.1.0",
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "@typescript-eslint/parser": "^7.0.0",
