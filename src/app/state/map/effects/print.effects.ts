@@ -1,14 +1,12 @@
-import {Inject, Injectable} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {of, switchMap, tap} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
 import {PrintActions} from '../actions/print.actions';
 import {Gb3PrintService} from '../../../shared/services/apis/gb3/gb3-print.service';
-import {DOCUMENT} from '@angular/common';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {PrintUtils} from '../../../shared/utils/print.utils';
 import {PrintRequestCouldNotBeHandled} from '../../../shared/errors/print.errors';
-import {Store} from '@ngrx/store';
 import {MapUiActions} from '../actions/map-ui.actions';
 import {FileDownloadService} from '../../../shared/services/file-download-service';
 
@@ -44,7 +42,7 @@ export class PrintEffects {
     return this.actions$.pipe(
       ofType(PrintActions.setPrintRequestResponse),
       map((value) => {
-        this.fileDownloadService.downloadFileFromUrl(value.creationResponse.reportUrl, value.creationResponse.reportUrl.split('/').pop());
+        this.extractFileNameFromUrl(value.creationResponse.reportUrl);
         return PrintActions.clearPrintRequest();
       }),
     );
@@ -84,12 +82,14 @@ export class PrintEffects {
     );
   });
 
+  private extractFileNameFromUrl(url: string): void {
+    this.fileDownloadService.downloadFileFromUrl(url, url.split('/').pop());
+  }
+
   constructor(
     private readonly actions$: Actions,
     private readonly printService: Gb3PrintService,
-    @Inject(DOCUMENT) private readonly document: Document,
     private readonly mapDrawingService: MapDrawingService,
     private readonly fileDownloadService: FileDownloadService,
-    private readonly store: Store,
   ) {}
 }
