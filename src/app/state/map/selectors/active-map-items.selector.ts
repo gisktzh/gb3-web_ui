@@ -26,9 +26,6 @@ export const selectGb2WmsActiveMapItemsWithMapNotices = createSelector(selectIte
 
 /**
  * Returns all activeMapItems from the activeMapItemState that are temporary.
- *
- * Note: In theory, only one activemapitem can be temporary at a time. However, due to race conditions, it is possible that multiple
- * temporary items are present.
  */
 export const selectTemporaryMapItems = createSelector(selectAllItems, (activeMapItems) => {
   return activeMapItems.filter((activeMapItem) => activeMapItem.isTemporary);

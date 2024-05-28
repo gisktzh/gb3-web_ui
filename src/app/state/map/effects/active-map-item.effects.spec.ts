@@ -28,6 +28,7 @@ import {MapConstants} from '../../../shared/constants/map.constants';
 import {selectIsMapServiceInitialized} from '../reducers/map-config.reducer';
 import {DrawingActions} from '../actions/drawing.actions';
 import {LayerCatalogActions} from '../actions/layer-catalog.actions';
+import {SearchActions} from '../../app/actions/search.actions';
 
 describe('ActiveMapItemEffects', () => {
   let actions$: Observable<Action>;
@@ -121,21 +122,27 @@ describe('ActiveMapItemEffects', () => {
   });
 
   describe('removeAllTemporaryMapItems$', () => {
-    it('removes all temporary map items using the map service and dispatches ActiveMapItemActions.removeAllTemporaryActiveMapItems()', (done: DoneFn) => {
-      const activeMapItem1 = createGb2WmsMapItemMock('temp-1', 0, true, 1.0, 'uuid-1', true);
-      const activeMapItem2 = createGb2WmsMapItemMock('temp-2', 0, true, 1.0, 'uuid-2', true);
-      store.overrideSelector(selectTemporaryMapItems, [activeMapItem1, activeMapItem2]);
-      const mapServiceSpy = spyOn(mapService, 'removeMapItem').and.callThrough();
+    [
+      {name: 'LayerCatalogActions.setFilterString', action: LayerCatalogActions.setFilterString},
+      {name: 'LayerCatalogActions.clearFilterString', action: LayerCatalogActions.clearFilterString},
+      {name: 'SearchActions.searchForTerm', action: SearchActions.searchForTerm},
+      {name: 'SearchActions.clearSearchTerm', action: SearchActions.clearSearchTerm},
+    ].forEach(({name, action}) => {
+      it(`reacts on ${name} and removes all temporary map items using the map service and dispatches ActiveMapItemActions.removeAllTemporaryActiveMapItems()`, (done: DoneFn) => {
+        const activeMapItem1 = createGb2WmsMapItemMock('temp-1', 0, true, 1.0, 'uuid-1', true);
+        const activeMapItem2 = createGb2WmsMapItemMock('temp-2', 0, true, 1.0, 'uuid-2', true);
+        store.overrideSelector(selectTemporaryMapItems, [activeMapItem1, activeMapItem2]);
+        const mapServiceSpy = spyOn(mapService, 'removeMapItem').and.callThrough();
 
-      const triggeringAction = LayerCatalogActions.setFilterString({filterString: 'a'});
-      const expectedAction = ActiveMapItemActions.removeAllTemporaryActiveMapItems();
-      actions$ = of(triggeringAction);
-      effects.removeAllTemporaryMapItems$.subscribe((action) => {
-        expect(mapServiceSpy).toHaveBeenCalledTimes(2);
-        expect(mapServiceSpy).toHaveBeenCalledWith(activeMapItem1.id);
-        expect(mapServiceSpy).toHaveBeenCalledWith(activeMapItem2.id);
-        expect(action).toEqual(expectedAction);
-        done();
+        const expectedAction = ActiveMapItemActions.removeAllTemporaryActiveMapItems();
+        actions$ = of(action);
+        effects.removeAllTemporaryMapItems$.subscribe((action) => {
+          expect(mapServiceSpy).toHaveBeenCalledTimes(2);
+          expect(mapServiceSpy).toHaveBeenCalledWith(activeMapItem1.id);
+          expect(mapServiceSpy).toHaveBeenCalledWith(activeMapItem2.id);
+          expect(action).toEqual(expectedAction);
+          done();
+        });
       });
     });
   });

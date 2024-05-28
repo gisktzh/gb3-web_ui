@@ -24,6 +24,7 @@ import {selectActiveTool} from '../reducers/tool.reducer';
 import {DrawingActiveMapItem} from '../../../map/models/implementations/drawing.model';
 import {DrawingActions} from '../actions/drawing.actions';
 import {LayerCatalogActions} from '../actions/layer-catalog.actions';
+import {SearchActions} from '../../app/actions/search.actions';
 
 @Injectable()
 export class ActiveMapItemEffects {
@@ -41,7 +42,12 @@ export class ActiveMapItemEffects {
 
   public removeAllTemporaryMapItems$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(LayerCatalogActions.setFilterString),
+      ofType(
+        LayerCatalogActions.setFilterString,
+        LayerCatalogActions.clearFilterString,
+        SearchActions.searchForTerm,
+        SearchActions.clearSearchTerm,
+      ),
       concatLatestFrom(() => this.store.select(selectTemporaryMapItems)),
       map(([, activeMapItems]) => {
         activeMapItems.forEach((activeMapItem) => {
