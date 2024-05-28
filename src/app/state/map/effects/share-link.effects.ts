@@ -176,6 +176,7 @@ export class ShareLinkEffects {
           scale: mapRestoreItem.scale,
           basemapId: mapRestoreItem.basemapId,
           initialMaps: [], // active map items are added in a separate effect
+          calculateInitialExtent: false,
         });
       }),
     );

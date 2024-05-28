@@ -22,6 +22,7 @@ export const defaultMapConfig: MapConfigState = {
   isMaxZoomedOut: false,
   activeBasemapId: defaultBasemap.id,
   initialMaps: [],
+  calculateInitialExtent: true,
   initialMapPadding: MapConstants.INITIAL_MAP_PADDING,
   initialMapPaddingMobile: MapConstants.INITIAL_MAP_PADDING_MOBILE,
   zurichBoundingBox: MapConstants.KT_ZURICH_BOUNDING_BOX,

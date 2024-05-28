@@ -155,9 +155,9 @@ export class EsriMapService implements MapService, OnDestroy {
         withLatestFrom(this.store.select(selectAllItems), this.store.select(selectDrawings)),
         tap(([config, activeMapItems, drawings]) => {
           const {minScale, maxScale} = config.scaleSettings;
-          const {srsId, activeBasemapId} = config;
+          const {scale, srsId, activeBasemapId} = config;
           const mapInstance = this.createMap(activeBasemapId);
-          const {x, y, scale} = this.initialMapExtentService.calculateInitialExtent(config);
+          const {x, y} = config.center;
           this.setMapView(mapInstance, scale, x, y, srsId, minScale, maxScale);
           this.attachMapViewListeners();
           this.addBasemapSubscription();
