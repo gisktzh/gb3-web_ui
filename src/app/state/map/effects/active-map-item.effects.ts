@@ -18,11 +18,12 @@ import {FeatureInfoActions} from '../actions/feature-info.actions';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {MapUiActions} from '../actions/map-ui.actions';
 import {ToolActions} from '../actions/tool.actions';
-import {selectItems} from '../selectors/active-map-items.selector';
+import {selectItems, selectTemporaryMapItems} from '../selectors/active-map-items.selector';
 import {selectIsMapServiceInitialized} from '../reducers/map-config.reducer';
 import {selectActiveTool} from '../reducers/tool.reducer';
 import {DrawingActiveMapItem} from '../../../map/models/implementations/drawing.model';
 import {DrawingActions} from '../actions/drawing.actions';
+import {LayerCatalogActions} from '../actions/layer-catalog.actions';
 
 @Injectable()
 export class ActiveMapItemEffects {
@@ -37,6 +38,19 @@ export class ActiveMapItemEffects {
     },
     {dispatch: false},
   );
+
+  public removeAllTemporaryMapItems$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(LayerCatalogActions.setFilterString),
+      concatLatestFrom(() => this.store.select(selectTemporaryMapItems)),
+      map(([, activeMapItems]) => {
+        activeMapItems.forEach((activeMapItem) => {
+          this.mapService.removeMapItem(activeMapItem.id);
+        });
+        return ActiveMapItemActions.removeAllTemporaryActiveMapItems();
+      }),
+    );
+  });
 
   public removeMapItem$ = createEffect(
     () => {

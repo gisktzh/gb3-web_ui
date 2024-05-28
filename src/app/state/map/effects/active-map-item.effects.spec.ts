@@ -12,7 +12,7 @@ import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {MapService} from '../../../map/interfaces/map.service';
 import {createDrawingMapItemMock, createGb2WmsMapItemMock} from '../../../testing/map-testing/active-map-item-test.utils';
 import {ToolActions} from '../actions/tool.actions';
-import {selectItems} from '../selectors/active-map-items.selector';
+import {selectItems, selectTemporaryMapItems} from '../selectors/active-map-items.selector';
 import {selectActiveTool} from '../reducers/tool.reducer';
 import {ActiveMapItem} from '../../../map/models/active-map-item.model';
 import {UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
@@ -27,6 +27,7 @@ import {PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.in
 import {MapConstants} from '../../../shared/constants/map.constants';
 import {selectIsMapServiceInitialized} from '../reducers/map-config.reducer';
 import {DrawingActions} from '../actions/drawing.actions';
+import {LayerCatalogActions} from '../actions/layer-catalog.actions';
 
 describe('ActiveMapItemEffects', () => {
   let actions$: Observable<Action>;
@@ -117,6 +118,26 @@ describe('ActiveMapItemEffects', () => {
       flush();
       expect(actualAction).toBeUndefined();
     }));
+  });
+
+  describe('removeAllTemporaryMapItems$', () => {
+    it('removes all temporary map items using the map service and dispatches ActiveMapItemActions.removeAllTemporaryActiveMapItems()', (done: DoneFn) => {
+      const activeMapItem1 = createGb2WmsMapItemMock('temp-1', 0, true, 1.0, 'uuid-1', true);
+      const activeMapItem2 = createGb2WmsMapItemMock('temp-2', 0, true, 1.0, 'uuid-2', true);
+      store.overrideSelector(selectTemporaryMapItems, [activeMapItem1, activeMapItem2]);
+      const mapServiceSpy = spyOn(mapService, 'removeMapItem').and.callThrough();
+
+      const triggeringAction = LayerCatalogActions.setFilterString({filterString: 'a'});
+      const expectedAction = ActiveMapItemActions.removeAllTemporaryActiveMapItems();
+      actions$ = of(triggeringAction);
+      effects.removeAllTemporaryMapItems$.subscribe((action) => {
+        expect(mapServiceSpy).toHaveBeenCalledTimes(2);
+        expect(mapServiceSpy).toHaveBeenCalledWith(activeMapItem1.id);
+        expect(mapServiceSpy).toHaveBeenCalledWith(activeMapItem2.id);
+        expect(action).toEqual(expectedAction);
+        done();
+      });
+    });
   });
 
   describe('removeAllMapItems$', () => {
