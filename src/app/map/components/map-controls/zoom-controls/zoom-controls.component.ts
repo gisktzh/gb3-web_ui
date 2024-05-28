@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {MAT_TOOLTIP_DEFAULT_OPTIONS} from '@angular/material/tooltip';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
@@ -21,7 +21,7 @@ import {MapUiState} from '../../../../state/map/states/map-ui.state';
   styleUrls: ['./zoom-controls.component.scss'],
   providers: [{provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useFactory: toolTipFactoryMapToolsAndControls, deps: [ConfigService]}],
 })
-export class ZoomControlsComponent {
+export class ZoomControlsComponent implements OnInit, OnDestroy {
   @Input() public showLocateMeButton!: boolean;
 
   public isMaxZoomedIn: boolean = false;

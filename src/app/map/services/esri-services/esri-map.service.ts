@@ -25,7 +25,12 @@ import {ActiveMapItemActions} from '../../../state/map/actions/active-map-item.a
 import {MapConfigActions} from '../../../state/map/actions/map-config.actions';
 import {selectAllItems} from '../../../state/map/selectors/active-map-items.selector';
 import {selectDrawings} from '../../../state/map/reducers/drawing.reducer';
-import {selectActiveBasemapId, selectMapConfigState, selectRotation} from '../../../state/map/reducers/map-config.reducer';
+import {
+  initialState as initialMapConfigState,
+  selectActiveBasemapId,
+  selectMapConfigState,
+  selectRotation,
+} from '../../../state/map/reducers/map-config.reducer';
 import {MapConfigState} from '../../../state/map/states/map-config.state';
 import {MapService} from '../../interfaces/map.service';
 import {TimeExtent} from '../../interfaces/time-extent.interface';
@@ -73,6 +78,7 @@ export class EsriMapService implements MapService, OnDestroy {
   private effectiveMaxZoom = 23;
   private effectiveMinZoom = 0;
   private effectiveMinScale = 0;
+  private mapConfigState: MapConfigState = initialMapConfigState;
   private readonly printPreviewHandle$: BehaviorSubject<IHandle | null> = new BehaviorSubject<IHandle | null>(null);
   private readonly defaultMapConfig: MapConfigState = this.configService.mapConfig.defaultMapConfig;
   private readonly numberOfDrawingLayers = Object.keys(InternalDrawingLayer).length;
@@ -80,6 +86,7 @@ export class EsriMapService implements MapService, OnDestroy {
   private readonly activeBasemapId$ = this.store.select(selectActiveBasemapId);
   private readonly rotation$ = this.store.select(selectRotation);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
+  private readonly mapConfigState$ = this.store.select(selectMapConfigState);
   private readonly wmsImageFormatMimeType = this.configService.gb2Config.wmsFormatMimeType;
 
   constructor(
@@ -298,12 +305,8 @@ export class EsriMapService implements MapService, OnDestroy {
   }
 
   public resetExtent() {
-    const {
-      center: {x, y},
-      srsId,
-      scale,
-    } = this.defaultMapConfig;
-    this.mapView.center = new EsriPoint({x: x, y: y, spatialReference: new EsriSpatialReference({wkid: srsId})});
+    const {x, y, scale} = this.initialMapExtentService.calculateInitialExtent(this.mapConfigState);
+    this.mapView.center = new EsriPoint({x, y, spatialReference: new EsriSpatialReference({wkid: this.mapConfigState.srsId})});
     this.mapView.scale = scale;
   }
 
@@ -684,6 +687,7 @@ export class EsriMapService implements MapService, OnDestroy {
         )
         .subscribe(),
     );
+    this.subscriptions.add(this.mapConfigState$.pipe(tap((mapConfigState) => (this.mapConfigState = mapConfigState))).subscribe());
   }
 
   private addBasemapSubscription() {
