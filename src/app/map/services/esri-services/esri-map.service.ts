@@ -61,6 +61,8 @@ import {ExternalKmlActiveMapItem} from '../../models/implementations/external-km
 import {ExternalWmsLayer} from '../../../shared/interfaces/external-layer.interface';
 import {ActiveTimeSliderLayersUtils} from '../../utils/active-time-slider-layers.utils';
 import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
+import Extent from '@arcgis/core/geometry/Extent';
+import {SupportedSrs} from '../../../shared/types/supported-srs.type';
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
 
@@ -156,7 +158,8 @@ export class EsriMapService implements MapService, OnDestroy {
           const {minScale, maxScale} = config.scaleSettings;
           const {scale, srsId, activeBasemapId} = config;
           const mapInstance = this.createMap(activeBasemapId);
-          this.setMapView(mapInstance, scale, x, y, srsId, minScale, maxScale);
+          const initialExtent = this.calculateInitialExtent(config, srsId);
+          this.setMapView(mapInstance, initialExtent, srsId, minScale, maxScale);
           this.attachMapViewListeners();
           this.addBasemapSubscription();
           this.rotationReset();
@@ -741,15 +744,13 @@ export class EsriMapService implements MapService, OnDestroy {
     });
   }
 
-  private setMapView(mapInstance: __esri.Map, scale: number, x: number, y: number, srsId: number, minScale: number, maxScale: number) {
-    const spatialReference = new EsriSpatialReference({wkid: srsId});
+  private setMapView(mapInstance: __esri.Map, extent: __esri.Extent, srsId: number, minScale: number, maxScale: number) {
     this.mapView = new EsriMapView({
       map: mapInstance,
       ui: {
         components: ['attribution'],
       },
-      scale: scale,
-      center: new EsriPoint({x, y, spatialReference}),
+      extent,
       constraints: {
         snapToZoom: false,
         minScale: minScale,
@@ -765,12 +766,103 @@ export class EsriMapService implements MapService, OnDestroy {
            * MAPCONSTANTS.minScale.
            */
           numLODs: 32,
-          spatialReference,
+          spatialReference: extent.spatialReference,
         }).lods,
       },
-      spatialReference: spatialReference,
+      spatialReference: extent.spatialReference,
       popupEnabled: false,
     });
+  }
+
+  private calculateInitialExtent(config: MapConfigState, srsId: SupportedSrs): Extent {
+    const spatialReference = new EsriSpatialReference({wkid: srsId});
+
+    const zurichExtent = new Extent({
+      xmin: 2669240,
+      ymin: 1223900,
+      xmax: 2716890,
+      ymax: 1283340,
+      spatialReference,
+    });
+
+    const zurichWidth = zurichExtent.xmax - zurichExtent.xmin;
+    const zurichHeight = zurichExtent.ymax - zurichExtent.ymin;
+
+    const viewExtentPadding = {
+      top: 88,
+      bottom: 88,
+      left: 474,
+      right: 160,
+    };
+
+    const mapWidth = window.innerWidth;
+    const mapHeight = window.innerHeight - 72;
+
+    const viewportWidth = mapWidth - viewExtentPadding.left - viewExtentPadding.right;
+    const viewportHeight = mapHeight - viewExtentPadding.top - viewExtentPadding.bottom;
+
+    const screenAspectRatio = viewportWidth / viewportHeight;
+    const zurichAspectRatio = zurichWidth / zurichHeight;
+
+    let extent = new Extent();
+    if (zurichAspectRatio > screenAspectRatio) {
+      // Width is defining factor
+      console.log('Width is defining factor');
+
+      const resolution = zurichWidth / viewportWidth;
+
+      const leftPadding = viewExtentPadding.left * resolution;
+      const rightPadding = viewExtentPadding.right * resolution;
+
+      const extentLeft = zurichExtent.xmin - leftPadding;
+      const extentRight = zurichExtent.xmax + rightPadding;
+
+      const topPadding = viewExtentPadding.top * resolution;
+      const bottomPadding = viewExtentPadding.bottom * resolution;
+      const zurichHeightInPixels = zurichHeight / resolution;
+      const leftoverSpace = viewportHeight - zurichHeightInPixels;
+      const padding = (leftoverSpace / 2) * resolution;
+
+      const extentTop = zurichExtent.ymax + padding + topPadding;
+      const extentBottom = zurichExtent.ymin - padding - bottomPadding;
+
+      extent = new Extent({
+        xmin: extentLeft,
+        ymin: extentBottom,
+        xmax: extentRight,
+        ymax: extentTop,
+        spatialReference,
+      });
+    } else {
+      // Height is defining factor
+      console.log('Height is defining factor');
+
+      const resolution = zurichHeight / viewportHeight;
+      const topPadding = viewExtentPadding.top * resolution;
+      const bottomPadding = viewExtentPadding.bottom * resolution;
+
+      const extentTop = zurichExtent.ymax + topPadding;
+      const extentBottom = zurichExtent.ymin - bottomPadding;
+
+      const leftPadding = viewExtentPadding.left * resolution;
+      const rightPadding = viewExtentPadding.right * resolution;
+      const zurichWidthInPixels = zurichWidth / resolution;
+      const leftoverSpace = viewportWidth - zurichWidthInPixels;
+      const padding = (leftoverSpace / 2) * resolution;
+
+      const extentLeft = zurichExtent.xmin - padding - leftPadding;
+      const extentRight = zurichExtent.xmax + padding + rightPadding;
+
+      extent = new Extent({
+        xmin: extentLeft,
+        ymin: extentBottom,
+        xmax: extentRight,
+        ymax: extentTop,
+        spatialReference,
+      });
+    }
+
+    return extent;
   }
 
   private attachMapViewListeners() {
@@ -888,9 +980,10 @@ export class EsriMapService implements MapService, OnDestroy {
   }
 
   private updateMapConfig() {
+    const extent = this.mapView.extent;
     const {center, scale} = this.mapView;
-    const {x, y} = this.transformationService.transform(center);
-    this.store.dispatch(MapConfigActions.setMapExtent({x, y, scale}));
+    // const {x, y} = this.transformationService.transform(center);
+    // this.store.dispatch(MapConfigActions.setMapExtent({x, y, scale}));
   }
 
   private switchBasemap(basemapId: string) {
