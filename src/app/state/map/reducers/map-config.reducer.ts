@@ -19,6 +19,9 @@ export const initialState: MapConfigState = {
   isMaxZoomedIn: defaultMapConfig.isMaxZoomedIn,
   isMaxZoomedOut: defaultMapConfig.isMaxZoomedOut,
   initialMaps: defaultMapConfig.initialMaps,
+  initialMapPadding: defaultMapConfig.initialMapPadding,
+  initialMapPaddingMobile: defaultMapConfig.initialMapPaddingMobile,
+  zurichBoundingBox: defaultMapConfig.zurichBoundingBox,
 };
 
 export const mapConfigFeature = createFeature({
