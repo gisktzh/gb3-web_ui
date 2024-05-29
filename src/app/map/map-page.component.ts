@@ -9,7 +9,7 @@ import {MapSideDrawerContent} from '../shared/types/map-side-drawer-content.type
 import {selectQueryLegends} from '../state/map/selectors/query-legends.selector';
 import {selectScreenMode} from '../state/app/reducers/app-layout.reducer';
 import {ScreenMode} from '../shared/types/screen-size.type';
-import {initialState, selectMapConfigState, selectRotation} from '../state/map/reducers/map-config.reducer';
+import {initialState as initialMapConfigState, selectMapConfigState, selectRotation} from '../state/map/reducers/map-config.reducer';
 import {selectDevMode} from '../state/app/reducers/app.reducer';
 import {InitialMapExtentService} from './services/initial-map-extent.service';
 import {MapConfigState} from '../state/map/states/map-config.state';
@@ -26,7 +26,7 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
   public mapUiState?: MapUiState;
   public mapSideDrawerContent: MapSideDrawerContent = 'none';
   public screenMode: ScreenMode = 'mobile';
-  public mapConfigState: MapConfigState = initialState;
+  public mapConfigState: MapConfigState = initialMapConfigState;
   public rotation: number = 0;
   public isDevModeActive: boolean = false;
 
