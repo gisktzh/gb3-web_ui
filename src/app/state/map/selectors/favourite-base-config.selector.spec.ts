@@ -18,6 +18,10 @@ describe('selectFavouriteBaseConfig', () => {
       ready: true,
       scaleSettings: {maxScale: 1_000_000, minScale: 10_000, calculatedMaxScale: 25, calculatedMinScale: 26},
       srsId: 2056,
+      calculateInitialExtent: true,
+      initialMapPaddingMobile: {left: 0, right: 0, top: 0, bottom: 0},
+      initialMapPadding: {left: 0, right: 0, top: 0, bottom: 0},
+      zurichBoundingBox: {xmin: 0, xmax: 1, ymin: 0, ymax: 1},
     };
   });
   it('returns the correct subset of the current map config', () => {
