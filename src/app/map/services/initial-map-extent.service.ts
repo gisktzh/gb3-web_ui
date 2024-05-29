@@ -30,8 +30,8 @@ export class InitialMapExtentService implements OnDestroy {
     const min = defaultMapConfig.initialBoundingBox.min;
     const max = defaultMapConfig.initialBoundingBox.max;
 
-    const zurichWidth = max.x - min.x;
-    const zurichHeight = max.y - min.y;
+    const boundingBoxWidth = max.x - min.x;
+    const boundingBoxHeight = max.y - min.y;
 
     const viewExtentPadding = this.screenMode !== 'mobile' ? defaultMapConfig.initialMapPadding : defaultMapConfig.initialMapPaddingMobile;
 
@@ -42,13 +42,13 @@ export class InitialMapExtentService implements OnDestroy {
     const viewportHeight = mapHeight - viewExtentPadding.top - viewExtentPadding.bottom;
 
     const screenAspectRatio = viewportWidth / viewportHeight;
-    const zurichAspectRatio = zurichWidth / zurichHeight;
+    const boundingBoxAspectRatio = boundingBoxWidth / boundingBoxHeight;
 
     let resolution: number;
-    if (zurichAspectRatio > screenAspectRatio) {
-      resolution = zurichWidth / viewportWidth;
+    if (boundingBoxAspectRatio > screenAspectRatio) {
+      resolution = boundingBoxWidth / viewportWidth;
     } else {
-      resolution = zurichHeight / viewportHeight;
+      resolution = boundingBoxHeight / viewportHeight;
     }
 
     const {x, y} = this.getCenter(resolution, viewExtentPadding, {min, max});
