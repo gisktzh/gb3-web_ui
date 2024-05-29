@@ -35,6 +35,10 @@ export const activeMapItemFeature = createFeature({
         return draft;
       }),
     ),
+    on(ActiveMapItemActions.removeAllTemporaryActiveMapItems, (state): ActiveMapItemState => {
+      const remainingActiveMapItems = state.items.filter((mapItem) => !mapItem.isTemporary);
+      return {...state, items: [...remainingActiveMapItems]};
+    }),
     on(ActiveMapItemActions.removeActiveMapItem, (state, {activeMapItem}): ActiveMapItemState => {
       const remainingActiveMapItems = state.items.filter((mapItem) => mapItem.id !== activeMapItem.id);
       return {...state, items: [...remainingActiveMapItems]};

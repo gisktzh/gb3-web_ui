@@ -23,3 +23,10 @@ export const selectGb2WmsActiveMapItemsWithMapNotices = createSelector(selectIte
     .filter(isActiveMapItemOfType(Gb2WmsActiveMapItem))
     .filter((gb2WmsActiveMapItem) => gb2WmsActiveMapItem.settings.notice);
 });
+
+/**
+ * Returns all activeMapItems from the activeMapItemState that are temporary.
+ */
+export const selectTemporaryMapItems = createSelector(selectAllItems, (activeMapItems) => {
+  return activeMapItems.filter((activeMapItem) => activeMapItem.isTemporary);
+});
