@@ -5,6 +5,8 @@ import {Store} from '@ngrx/store';
 import {Injectable, OnDestroy} from '@angular/core';
 import {MapConstants} from '../../shared/constants/map.constants';
 import {defaultMapConfig} from '../../shared/configs/map.config';
+import {Coordinate} from '../../shared/interfaces/coordinate.interface';
+import {BoundingBox, InitialMapPadding} from '../../state/map/states/map-config.state';
 
 const NAV_BAR_HEIGHT = 72;
 
@@ -43,70 +45,27 @@ export class InitialMapExtentService implements OnDestroy {
     const zurichAspectRatio = zurichWidth / zurichHeight;
 
     let resolution: number;
-    let y: number;
-    let x: number;
     if (zurichAspectRatio > screenAspectRatio) {
       resolution = zurichWidth / viewportWidth;
-
-      x = this.getCenterForRestrictingAxis(resolution, viewExtentPadding.left, viewExtentPadding.right, min.x, max.x);
-      y = this.getCenterForNonRestrictingAxis(
-        resolution,
-        viewExtentPadding.bottom,
-        viewExtentPadding.top,
-        zurichWidth,
-        viewportWidth,
-        min.y,
-        max.y,
-      );
     } else {
       resolution = zurichHeight / viewportHeight;
-
-      y = this.getCenterForRestrictingAxis(resolution, viewExtentPadding.bottom, viewExtentPadding.top, min.y, max.y);
-      x = this.getCenterForNonRestrictingAxis(
-        resolution,
-        viewExtentPadding.left,
-        viewExtentPadding.right,
-        zurichWidth,
-        viewportWidth,
-        min.x,
-        max.x,
-      );
     }
-    const scale = resolution * MapConstants.DPI * MapConstants.INCHES_PER_UNIT.m;
 
+    const {x, y} = this.getCenter(resolution, viewExtentPadding, {min, max});
+    const scale = resolution * MapConstants.DPI * MapConstants.INCHES_PER_UNIT.m;
     return {x, y, scale};
   }
 
-  private getCenterForRestrictingAxis(
-    resolution: number,
-    paddingLeftOrBottom: number,
-    paddingRightOrTop: number,
-    bboxLeftOrBottom: number,
-    bboxRightOrTop: number,
-  ): number {
-    const extentLeftOrBottom = bboxLeftOrBottom - paddingLeftOrBottom * resolution;
-    const extentRightOrTop = bboxRightOrTop + paddingRightOrTop * resolution;
+  private getCenter(resolution: number, viewExtentPadding: InitialMapPadding, boundingBox: BoundingBox): Coordinate {
+    const extentLeft = boundingBox.min.x - viewExtentPadding.left * resolution;
+    const extentRight = boundingBox.max.x + viewExtentPadding.right * resolution;
+    const x = (extentLeft + extentRight) / 2;
 
-    return (extentLeftOrBottom + extentRightOrTop) / 2;
-  }
+    const extentBottom = boundingBox.min.y - viewExtentPadding.bottom * resolution;
+    const extentTop = boundingBox.max.y + viewExtentPadding.top * resolution;
+    const y = (extentBottom + extentTop) / 2;
 
-  private getCenterForNonRestrictingAxis(
-    resolution: number,
-    paddingLeftOrBottom: number,
-    paddingRightOrTop: number,
-    zurichWidth: number,
-    viewportWidth: number,
-    bboxLeftOrBottom: number,
-    bboxRightOrTop: number,
-  ): number {
-    const zurichWidthInPixels = zurichWidth / resolution;
-    const leftoverSpace = viewportWidth - zurichWidthInPixels;
-    const padding = (leftoverSpace / 2) * resolution;
-
-    const extentLeftOrBottom = bboxLeftOrBottom - padding - paddingLeftOrBottom * resolution;
-    const extentRightOrTop = bboxRightOrTop + padding + paddingRightOrTop * resolution;
-
-    return (extentLeftOrBottom + extentRightOrTop) / 2;
+    return {x, y};
   }
 
   private initSubscriptions() {
