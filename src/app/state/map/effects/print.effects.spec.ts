@@ -14,6 +14,7 @@ import {MAP_SERVICE} from '../../../app.module';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {MapUiActions} from '../actions/map-ui.actions';
+import {FileDownloadService} from '../../../shared/services/file-download-service';
 
 describe('PrintEffects', () => {
   const creationMock: PrintCreation = {
@@ -53,6 +54,7 @@ describe('PrintEffects', () => {
   let store: MockStore;
   let effects: PrintEffects;
   let gb3PrintService: Gb3PrintService;
+  let fileDownloadService: FileDownloadService;
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
@@ -63,6 +65,8 @@ describe('PrintEffects', () => {
     });
     effects = TestBed.inject(PrintEffects);
     gb3PrintService = TestBed.inject(Gb3PrintService);
+    fileDownloadService = TestBed.inject(FileDownloadService);
+
     store = TestBed.inject(MockStore);
   });
 
@@ -116,14 +120,17 @@ describe('PrintEffects', () => {
     });
   });
 
-  describe('openPrintDocumentInNewTab$', () => {
+  describe('downloadPrintDocument$', () => {
     it('opens a print document in a new tab and dispatches a clearPrintRequest action', (done: DoneFn) => {
       const expectedCreationResponse = creationResponseMock;
-      const documentWindowOpenSpy = spyOn(document.defaultView!.window, 'open').and.returnValue(null);
+      const fileDownloadServiceSpy = spyOn(fileDownloadService, 'downloadFileFromUrl');
 
       actions$ = of(PrintActions.setPrintRequestResponse({creationResponse: expectedCreationResponse}));
-      effects.openPrintDocumentInNewTab$.subscribe((action) => {
-        expect(documentWindowOpenSpy).toHaveBeenCalledOnceWith(expectedCreationResponse.reportUrl, '_blank');
+      effects.downloadPrintDocument$.subscribe((action) => {
+        expect(fileDownloadServiceSpy).toHaveBeenCalledOnceWith(
+          expectedCreationResponse.reportUrl,
+          expectedCreationResponse.reportUrl.split('/').pop(),
+        );
         expect(action).toEqual(PrintActions.clearPrintRequest());
         done();
       });

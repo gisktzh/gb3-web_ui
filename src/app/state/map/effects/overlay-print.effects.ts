@@ -1,15 +1,16 @@
-import {Inject, Injectable} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
 import {filter, of, switchMap, tap} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
 import {Gb3PrintService} from '../../../shared/services/apis/gb3/gb3-print.service';
-import {DOCUMENT} from '@angular/common';
 import {PrintRequestCouldNotBeHandled} from '../../../shared/errors/print.errors';
 import {Store} from '@ngrx/store';
 import {OverlayPrintActions} from '../actions/overlay-print-actions';
 import {selectPrintLegendItems} from '../selectors/print-legend-items.selector';
 import {selectPrintFeatureInfoItems} from '../selectors/print-feature-info-items.selector';
+import {FileDownloadService} from '../../../shared/services/file-download-service';
+import {PrintActions} from '../actions/print.actions';
 
 @Injectable()
 export class OverlayPrintEffects {
@@ -46,12 +47,13 @@ export class OverlayPrintEffects {
     );
   });
 
-  public openPrintDocumentInNewTab$ = createEffect(
+  public downloadPrintDocument$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(OverlayPrintActions.setPrintRequestResponse),
         tap((value) => {
-          this.document.defaultView!.window.open(value.creationResponse.reportUrl, '_blank');
+          this.extractFileNameFromUrl(value.creationResponse.reportUrl);
+          return PrintActions.clearPrintRequest();
         }),
       );
     },
@@ -70,10 +72,14 @@ export class OverlayPrintEffects {
     {dispatch: false},
   );
 
+  private extractFileNameFromUrl(url: string): void {
+    this.fileDownloadService.downloadFileFromUrl(url, url.split('/').pop());
+  }
+
   constructor(
     private readonly actions$: Actions,
     private readonly printService: Gb3PrintService,
-    @Inject(DOCUMENT) private readonly document: Document,
+    private readonly fileDownloadService: FileDownloadService,
     private readonly store: Store,
   ) {}
 }
