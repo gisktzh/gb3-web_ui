@@ -49,8 +49,8 @@ export class MapImportDisplayNameComponent implements OnInit, OnDestroy {
           // prevent race condition where validation is not yet complete
           combineLatestWith(this.displayNameFormGroup.statusChanges),
           filter(([_, status]) => status === 'VALID'),
-          map(([name, _]) => name as string),
-          filter((name) => name !== null),
+          map(([name, _]) => name),
+          filter((name): name is string => name !== null),
           tap((name) => this.store.dispatch(MapImportActions.setTitle({title: name}))),
         )
         .subscribe(),
