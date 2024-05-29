@@ -13,7 +13,6 @@ export const MapConfigActions = createActionGroup({
       scale: number | undefined;
       basemapId: string;
       initialMaps: string[];
-      calculateInitialExtent: boolean;
     }>(),
     'Set Map Extent': props<Coordinates & {scale: number}>(),
     'Set Map Center': props<{center: PointWithSrs}>(),

@@ -86,7 +86,7 @@ export class UrlEffects {
         if (x || y || scale || basemap || initialMapIds) {
           const basemapId = this.basemapConfigService.checkBasemapIdOrGetDefault(basemap);
           const initialMaps = initialMapIds ? initialMapIds.split(',') : [];
-          return MapConfigActions.setInitialMapConfig({x, y, scale, basemapId, initialMaps, calculateInitialExtent: false});
+          return MapConfigActions.setInitialMapConfig({x, y, scale, basemapId, initialMaps});
         } else {
           return UrlActions.setMapPageParams({params: mapConfigParams});
         }

@@ -55,7 +55,6 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
           scale,
           basemapId: this.mapConfigState.activeBasemapId,
           initialMaps: [],
-          calculateInitialExtent: false,
         }),
       );
     }
