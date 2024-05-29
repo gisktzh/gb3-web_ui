@@ -6,6 +6,8 @@ import {Injectable, OnDestroy} from '@angular/core';
 import {MapConstants} from '../../shared/constants/map.constants';
 import {defaultMapConfig} from '../../shared/configs/map.config';
 
+const NAV_BAR_HEIGHT = 72;
+
 @Injectable({
   providedIn: 'root',
 })
@@ -32,7 +34,7 @@ export class InitialMapExtentService implements OnDestroy {
     const viewExtentPadding = this.screenMode !== 'mobile' ? defaultMapConfig.initialMapPadding : defaultMapConfig.initialMapPaddingMobile;
 
     const mapWidth = window.innerWidth;
-    const mapHeight = this.screenMode !== 'mobile' ? window.innerHeight - 72 : window.innerHeight;
+    const mapHeight = this.screenMode !== 'mobile' ? window.innerHeight - NAV_BAR_HEIGHT : window.innerHeight;
 
     const viewportWidth = mapWidth - viewExtentPadding.left - viewExtentPadding.right;
     const viewportHeight = mapHeight - viewExtentPadding.top - viewExtentPadding.bottom;
