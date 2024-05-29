@@ -1,9 +1,9 @@
 import {SupportedSrs} from '../../../shared/types/supported-srs.type';
-import {Coordinates} from '../../../shared/interfaces/coordinate.interface';
+import {Coordinate} from '../../../shared/interfaces/coordinate.interface';
 
 export interface MapConfigState {
   isMapServiceInitialized: boolean;
-  center: Coordinates;
+  center: Coordinate;
   scale: number;
   rotation: number;
   srsId: SupportedSrs;
@@ -13,8 +13,20 @@ export interface MapConfigState {
   isMaxZoomedOut: boolean;
   activeBasemapId: string;
   initialMaps: string[];
-  calculateInitialExtent: boolean;
-  initialMapPadding: {top: number; right: number; bottom: number; left: number};
-  initialMapPaddingMobile: {top: number; right: number; bottom: number; left: number};
-  zurichBoundingBox: {xmin: number; ymin: number; xmax: number; ymax: number};
+  predefinedInitialExtent: boolean;
+  initialMapPadding: InitialMapPadding;
+  initialMapPaddingMobile: InitialMapPadding;
+  initialBoundingBox: BoundingBox;
+}
+
+export interface InitialMapPadding {
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
+}
+
+export interface BoundingBox {
+  min: Coordinate;
+  max: Coordinate;
 }

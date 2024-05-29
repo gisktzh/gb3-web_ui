@@ -298,7 +298,7 @@ export class EsriMapService implements MapService, OnDestroy {
   }
 
   public resetExtent() {
-    const {x, y, scale} = this.initialMapExtentService.calculateInitialExtent(this.defaultMapConfig);
+    const {x, y, scale} = this.initialMapExtentService.calculateInitialExtent();
     this.mapView.center = new EsriPoint({x, y, spatialReference: new EsriSpatialReference({wkid: this.defaultMapConfig.srsId})});
     this.mapView.scale = scale;
   }
@@ -746,12 +746,12 @@ export class EsriMapService implements MapService, OnDestroy {
       ui: {
         components: ['attribution'],
       },
-      scale: scale,
+      scale,
       center: new EsriPoint({x, y, spatialReference}),
       constraints: {
         snapToZoom: false,
-        minScale: minScale,
-        maxScale: maxScale,
+        minScale,
+        maxScale,
         lods: EsriTileInfo.create({
           /**
            * This number seems to be required for Esri to generate enough ZoomLevels to also include 1:1. Setting it to anything below 32

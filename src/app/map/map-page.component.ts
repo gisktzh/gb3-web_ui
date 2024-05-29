@@ -46,8 +46,8 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
 
   public ngOnInit() {
     this.initSubscriptions();
-    if (this.mapConfigState.calculateInitialExtent) {
-      const {x, y, scale} = this.initialMapExtentService.calculateInitialExtent(this.mapConfigState);
+    if (!this.mapConfigState.predefinedInitialExtent) {
+      const {x, y, scale} = this.initialMapExtentService.calculateInitialExtent();
       this.store.dispatch(
         MapConfigActions.setInitialMapConfig({
           x,

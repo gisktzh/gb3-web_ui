@@ -1,4 +1,5 @@
 import {SupportedSrs} from '../types/supported-srs.type';
+import {BoundingBox, InitialMapPadding} from '../../state/map/states/map-config.state';
 
 export class MapConstants {
   public static readonly MINIMUM_MAP_SCALE = 1_500_000;
@@ -29,9 +30,9 @@ export class MapConstants {
   /**
    * Map padding for initial map load for regular and smallTablet view
    */
-  public static readonly INITIAL_MAP_PADDING = {
+  public static readonly INITIAL_MAP_PADDING: InitialMapPadding = {
     left: 474,
-    right: 172,
+    right: 180,
     top: 88,
     bottom: 88,
   };
@@ -39,7 +40,7 @@ export class MapConstants {
   /**
    * Map padding for initial map load for mobile view
    */
-  public static readonly INITIAL_MAP_PADDING_MOBILE = {
+  public static readonly INITIAL_MAP_PADDING_MOBILE: InitialMapPadding = {
     left: 12,
     right: 12,
     top: 84,
@@ -49,10 +50,8 @@ export class MapConstants {
   /**
    * Bounding Box for the Kanton of Zürich.
    */
-  public static readonly KT_ZURICH_BOUNDING_BOX = {
-    xmin: 2669240,
-    ymin: 1223900,
-    xmax: 2716890,
-    ymax: 1283340,
+  public static readonly KT_ZURICH_BOUNDING_BOX: BoundingBox = {
+    min: {x: 2669240, y: 1223900},
+    max: {x: 2716890, y: 1283340},
   };
 }

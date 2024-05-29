@@ -1,10 +1,10 @@
-import {MapConfigState} from '../../state/map/states/map-config.state';
 import {ScreenMode} from '../../shared/types/screen-size.type';
 import {selectScreenMode} from '../../state/app/reducers/app-layout.reducer';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {Injectable, OnDestroy} from '@angular/core';
 import {MapConstants} from '../../shared/constants/map.constants';
+import {defaultMapConfig} from '../../shared/configs/map.config';
 
 @Injectable({
   providedIn: 'root',
@@ -15,18 +15,21 @@ export class InitialMapExtentService implements OnDestroy {
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(private readonly store: Store) {
-    this.initializeSubscriptions();
+    this.initSubscriptions();
   }
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
   }
 
-  public calculateInitialExtent(config: MapConfigState): {x: number; y: number; scale: number} {
-    const zurichWidth = config.zurichBoundingBox.xmax - config.zurichBoundingBox.xmin;
-    const zurichHeight = config.zurichBoundingBox.ymax - config.zurichBoundingBox.ymin;
+  public calculateInitialExtent(): {x: number; y: number; scale: number} {
+    const min = defaultMapConfig.initialBoundingBox.min;
+    const max = defaultMapConfig.initialBoundingBox.max;
 
-    const viewExtentPadding = this.screenMode !== 'mobile' ? config.initialMapPadding : config.initialMapPaddingMobile;
+    const zurichWidth = max.x - min.x;
+    const zurichHeight = max.y - min.y;
+
+    const viewExtentPadding = this.screenMode !== 'mobile' ? defaultMapConfig.initialMapPadding : defaultMapConfig.initialMapPaddingMobile;
 
     const mapWidth = window.innerWidth;
     const mapHeight = this.screenMode !== 'mobile' ? window.innerHeight - 72 : window.innerHeight;
@@ -43,67 +46,49 @@ export class InitialMapExtentService implements OnDestroy {
     if (zurichAspectRatio > screenAspectRatio) {
       resolution = zurichWidth / viewportWidth;
 
-      const {extentLeftOrBottom: extentLeft, extentRightOrTop: extentRight} = this.getExtentForRestrictingAxis(
-        resolution,
-        viewExtentPadding.left,
-        viewExtentPadding.right,
-        config.zurichBoundingBox.xmin,
-        config.zurichBoundingBox.xmax,
-      );
-      x = (extentLeft + extentRight) / 2;
-
-      const {extentLeftOrBottom: extentBottom, extentRightOrTop: extentTop} = this.getExtentForNonRestrictingAxis(
+      x = this.getCenterForRestrictingAxis(resolution, viewExtentPadding.left, viewExtentPadding.right, min.x, max.x);
+      y = this.getCenterForNonRestrictingAxis(
         resolution,
         viewExtentPadding.bottom,
         viewExtentPadding.top,
         zurichWidth,
         viewportWidth,
-        config.zurichBoundingBox.ymin,
-        config.zurichBoundingBox.ymax,
+        min.y,
+        max.y,
       );
-      y = (extentTop + extentBottom) / 2;
     } else {
       resolution = zurichHeight / viewportHeight;
 
-      const {extentLeftOrBottom: extentBottom, extentRightOrTop: extentTop} = this.getExtentForRestrictingAxis(
-        resolution,
-        viewExtentPadding.bottom,
-        viewExtentPadding.top,
-        config.zurichBoundingBox.ymin,
-        config.zurichBoundingBox.ymax,
-      );
-      y = (extentTop + extentBottom) / 2;
-
-      const {extentLeftOrBottom: extentLeft, extentRightOrTop: extentRight} = this.getExtentForNonRestrictingAxis(
+      y = this.getCenterForRestrictingAxis(resolution, viewExtentPadding.bottom, viewExtentPadding.top, min.y, max.y);
+      x = this.getCenterForNonRestrictingAxis(
         resolution,
         viewExtentPadding.left,
         viewExtentPadding.right,
         zurichWidth,
         viewportWidth,
-        config.zurichBoundingBox.xmin,
-        config.zurichBoundingBox.xmax,
+        min.x,
+        max.x,
       );
-      x = (extentLeft + extentRight) / 2;
     }
     const scale = resolution * MapConstants.DPI * MapConstants.INCHES_PER_UNIT.m;
 
     return {x, y, scale};
   }
 
-  private getExtentForRestrictingAxis(
+  private getCenterForRestrictingAxis(
     resolution: number,
     paddingLeftOrBottom: number,
     paddingRightOrTop: number,
     bboxLeftOrBottom: number,
     bboxRightOrTop: number,
-  ) {
+  ): number {
     const extentLeftOrBottom = bboxLeftOrBottom - paddingLeftOrBottom * resolution;
     const extentRightOrTop = bboxRightOrTop + paddingRightOrTop * resolution;
 
-    return {extentLeftOrBottom, extentRightOrTop};
+    return (extentLeftOrBottom + extentRightOrTop) / 2;
   }
 
-  private getExtentForNonRestrictingAxis(
+  private getCenterForNonRestrictingAxis(
     resolution: number,
     paddingLeftOrBottom: number,
     paddingRightOrTop: number,
@@ -111,7 +96,7 @@ export class InitialMapExtentService implements OnDestroy {
     viewportWidth: number,
     bboxLeftOrBottom: number,
     bboxRightOrTop: number,
-  ) {
+  ): number {
     const zurichWidthInPixels = zurichWidth / resolution;
     const leftoverSpace = viewportWidth - zurichWidthInPixels;
     const padding = (leftoverSpace / 2) * resolution;
@@ -119,10 +104,10 @@ export class InitialMapExtentService implements OnDestroy {
     const extentLeftOrBottom = bboxLeftOrBottom - padding - paddingLeftOrBottom * resolution;
     const extentRightOrTop = bboxRightOrTop + padding + paddingRightOrTop * resolution;
 
-    return {extentLeftOrBottom, extentRightOrTop};
+    return (extentLeftOrBottom + extentRightOrTop) / 2;
   }
 
-  private initializeSubscriptions() {
+  private initSubscriptions() {
     this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
   }
 }

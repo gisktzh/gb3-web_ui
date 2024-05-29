@@ -19,10 +19,10 @@ export const initialState: MapConfigState = {
   isMaxZoomedIn: defaultMapConfig.isMaxZoomedIn,
   isMaxZoomedOut: defaultMapConfig.isMaxZoomedOut,
   initialMaps: defaultMapConfig.initialMaps,
-  calculateInitialExtent: defaultMapConfig.calculateInitialExtent,
+  predefinedInitialExtent: defaultMapConfig.predefinedInitialExtent,
   initialMapPadding: defaultMapConfig.initialMapPadding,
   initialMapPaddingMobile: defaultMapConfig.initialMapPaddingMobile,
-  zurichBoundingBox: defaultMapConfig.zurichBoundingBox,
+  initialBoundingBox: defaultMapConfig.initialBoundingBox,
 };
 
 export const mapConfigFeature = createFeature({
@@ -42,7 +42,7 @@ export const mapConfigFeature = createFeature({
       };
       const activeBasemapId = basemapId ?? initialState.activeBasemapId;
 
-      return {...state, activeBasemapId, initialMaps, ...initialExtent, calculateInitialExtent: false};
+      return {...state, activeBasemapId, initialMaps, ...initialExtent, predefinedInitialExtent: true};
     }),
     on(MapConfigActions.setMapExtent, (state, {x, y, scale}): MapConfigState => {
       /**
