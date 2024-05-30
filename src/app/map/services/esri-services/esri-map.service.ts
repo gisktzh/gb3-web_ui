@@ -61,6 +61,7 @@ import {ExternalKmlActiveMapItem} from '../../models/implementations/external-km
 import {ExternalWmsLayer} from '../../../shared/interfaces/external-layer.interface';
 import {ActiveTimeSliderLayersUtils} from '../../utils/active-time-slider-layers.utils';
 import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
+import {InitialMapExtentService} from '../initial-map-extent.service';
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
 
@@ -92,6 +93,7 @@ export class EsriMapService implements MapService, OnDestroy {
     private readonly esriMapViewService: EsriMapViewService,
     private readonly esriToolService: EsriToolService,
     private readonly gb3TopicsService: Gb3TopicsService,
+    private readonly initialMapExtentService: InitialMapExtentService,
   ) {
     /**
      * Because the GetCapabalities response often sends a non-secure http://wms.zh.ch response, Esri Javascript API fails on https
@@ -296,12 +298,8 @@ export class EsriMapService implements MapService, OnDestroy {
   }
 
   public resetExtent() {
-    const {
-      center: {x, y},
-      srsId,
-      scale,
-    } = this.defaultMapConfig;
-    this.mapView.center = new EsriPoint({x: x, y: y, spatialReference: new EsriSpatialReference({wkid: srsId})});
+    const {x, y, scale} = this.initialMapExtentService.calculateInitialExtent();
+    this.mapView.center = new EsriPoint({x, y, spatialReference: new EsriSpatialReference({wkid: this.defaultMapConfig.srsId})});
     this.mapView.scale = scale;
   }
 
@@ -748,12 +746,12 @@ export class EsriMapService implements MapService, OnDestroy {
       ui: {
         components: ['attribution'],
       },
-      scale: scale,
+      scale,
       center: new EsriPoint({x, y, spatialReference}),
       constraints: {
         snapToZoom: false,
-        minScale: minScale,
-        maxScale: maxScale,
+        minScale,
+        maxScale,
         lods: EsriTileInfo.create({
           /**
            * This number seems to be required for Esri to generate enough ZoomLevels to also include 1:1. Setting it to anything below 32
@@ -768,7 +766,7 @@ export class EsriMapService implements MapService, OnDestroy {
           spatialReference,
         }).lods,
       },
-      spatialReference: spatialReference,
+      spatialReference,
       popupEnabled: false,
     });
   }
