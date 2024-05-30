@@ -1,6 +1,6 @@
 import {ActiveMapItem} from '../models/active-map-item.model';
 import {Gb3StyledInternalDrawingRepresentation} from '../../shared/interfaces/internal-drawing-representation.interface';
-import {Coordinates} from '../../shared/interfaces/coordinate.interface';
+import {Coordinate} from '../../shared/interfaces/coordinate.interface';
 import {ReportOrientation} from '../../shared/interfaces/print.interface';
 
 export interface PrintData {
@@ -14,7 +14,7 @@ export interface PrintData {
   dpi: number;
   scale: number;
   rotation: number;
-  mapCenter: Coordinates;
+  mapCenter: Coordinate;
   activeBasemapId: string;
   activeMapItems: ActiveMapItem[];
   drawings: Gb3StyledInternalDrawingRepresentation[];

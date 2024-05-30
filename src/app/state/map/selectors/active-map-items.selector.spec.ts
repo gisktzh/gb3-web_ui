@@ -1,7 +1,7 @@
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 import {Map} from '../../../shared/interfaces/topic.interface';
 import {UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
-import {selectAllItems, selectGb2WmsActiveMapItemsWithMapNotices, selectItems} from './active-map-items.selector';
+import {selectAllItems, selectGb2WmsActiveMapItemsWithMapNotices, selectItems, selectTemporaryMapItems} from './active-map-items.selector';
 import {ActiveMapItemState} from '../states/active-map-item.state';
 
 const drawingsActiveMapItem = ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, 'test');
@@ -62,6 +62,22 @@ describe('activeMapItemsSelector', () => {
       const actual = selectGb2WmsActiveMapItemsWithMapNotices.projector(activeMapItems);
 
       expect(actual).toEqual([gb2ActiveMapItemWithNotice]);
+    });
+  });
+
+  describe('selectTemporaryMapItems', () => {
+    it('returns temporary items only', () => {
+      const activeMapItems = [
+        temporaryGb2ActiveMapItem,
+        drawingsActiveMapItem,
+        measurementsActiveMapItem,
+        gb2ActiveMapItem,
+        gb2ActiveMapItemWithNotice,
+      ];
+
+      const actual = selectTemporaryMapItems.projector(activeMapItems);
+
+      expect(actual).toEqual([temporaryGb2ActiveMapItem]);
     });
   });
 });

@@ -150,75 +150,77 @@ export class Gb3TopicsService extends Gb3ApiService {
       topics: topicsListData.categories.map((category) => {
         return {
           title: category.title,
-          maps: category.topics.map((topic) => {
-            return {
-              id: topic.topic,
-              uuid: topic.geolion_karten_uuid,
-              printTitle: topic.print_title,
-              gb2Url: topic.gb2_url,
-              icon: this.createAbsoluteIconUrl(topic.icon),
-              wmsUrl: topic.wms_url,
-              minScale: topic.min_scale,
-              organisation: topic.organisation,
-              notice: topic.notice,
-              title: topic.title,
-              keywords: topic.keywords,
-              permissionMissing: topic.permission_missing,
-              opacity: topic.opacity,
-              layers: topic.layers
-                .map(
-                  (layer): MapLayer => ({
-                    id: layer.id,
-                    layer: layer.layer,
-                    title: layer.title,
-                    queryable: layer.queryable,
-                    uuid: layer.geolion_geodatensatz_uuid,
-                    groupTitle: layer.group_title,
-                    minScale: layer.min_scale,
-                    maxScale: layer.max_scale,
-                    wmsSort: layer.wms_sort,
-                    tocSort: layer.toc_sort,
-                    initiallyVisible: layer.initially_visible,
-                    permissionMissing: layer.permission_missing,
-                    visible: layer.initially_visible,
-                    isHidden: false,
-                  }),
-                )
-                .reverse(), // reverse the order of the layers because the order in the GB3 interfaces (Topic, ActiveMapItem) is inverted to the order of the WMS specifications
-              timeSliderConfiguration: topic.timesliderConfiguration
-                ? {
-                    name: topic.timesliderConfiguration.name,
-                    alwaysMaxRange: topic.timesliderConfiguration.alwaysMaxRange,
-                    dateFormat: topic.timesliderConfiguration.dateFormat,
-                    description: topic.timesliderConfiguration.description,
-                    maximumDate: topic.timesliderConfiguration.maximumDate,
-                    minimumDate: topic.timesliderConfiguration.minimumDate,
-                    minimalRange: topic.timesliderConfiguration.minimalRange,
-                    range: topic.timesliderConfiguration.range,
-                    sourceType: topic.timesliderConfiguration.sourceType as TimeSliderSourceType,
-                    source: this.transformTimeSliderConfigurationSource(
-                      topic.timesliderConfiguration.source,
-                      topic.timesliderConfiguration.sourceType,
-                    ),
-                  }
-                : undefined,
-              filterConfigurations: topic.filterConfigurations?.map((filterConfiguration): FilterConfiguration => {
-                return {
-                  name: filterConfiguration.name,
-                  description: filterConfiguration.description,
-                  parameter: filterConfiguration.parameter,
-                  filterValues: filterConfiguration.filterValues.map(
-                    (filterValue): FilterValue => ({
-                      isActive: false,
-                      values: filterValue.values,
-                      name: filterValue.name,
+          maps: [...category.topics]
+            .sort((a, b) => a.title.localeCompare(b.title))
+            .map((topic) => {
+              return {
+                id: topic.topic,
+                uuid: topic.geolion_karten_uuid,
+                printTitle: topic.print_title,
+                gb2Url: topic.gb2_url,
+                icon: this.createAbsoluteIconUrl(topic.icon),
+                wmsUrl: topic.wms_url,
+                minScale: topic.min_scale,
+                organisation: topic.organisation,
+                notice: topic.notice,
+                title: topic.title,
+                keywords: topic.keywords,
+                permissionMissing: topic.permission_missing,
+                opacity: topic.opacity,
+                layers: topic.layers
+                  .map(
+                    (layer): MapLayer => ({
+                      id: layer.id,
+                      layer: layer.layer,
+                      title: layer.title,
+                      queryable: layer.queryable,
+                      uuid: layer.geolion_geodatensatz_uuid,
+                      groupTitle: layer.group_title,
+                      minScale: layer.min_scale,
+                      maxScale: layer.max_scale,
+                      wmsSort: layer.wms_sort,
+                      tocSort: layer.toc_sort,
+                      initiallyVisible: layer.initially_visible,
+                      permissionMissing: layer.permission_missing,
+                      visible: layer.initially_visible,
+                      isHidden: false,
                     }),
-                  ),
-                };
-              }),
-              searchConfigurations: topic.searchConfigurations ?? undefined,
-            };
-          }),
+                  )
+                  .reverse(), // reverse the order of the layers because the order in the GB3 interfaces (Topic, ActiveMapItem) is inverted to the order of the WMS specifications
+                timeSliderConfiguration: topic.timesliderConfiguration
+                  ? {
+                      name: topic.timesliderConfiguration.name,
+                      alwaysMaxRange: topic.timesliderConfiguration.alwaysMaxRange,
+                      dateFormat: topic.timesliderConfiguration.dateFormat,
+                      description: topic.timesliderConfiguration.description,
+                      maximumDate: topic.timesliderConfiguration.maximumDate,
+                      minimumDate: topic.timesliderConfiguration.minimumDate,
+                      minimalRange: topic.timesliderConfiguration.minimalRange,
+                      range: topic.timesliderConfiguration.range,
+                      sourceType: topic.timesliderConfiguration.sourceType as TimeSliderSourceType,
+                      source: this.transformTimeSliderConfigurationSource(
+                        topic.timesliderConfiguration.source,
+                        topic.timesliderConfiguration.sourceType,
+                      ),
+                    }
+                  : undefined,
+                filterConfigurations: topic.filterConfigurations?.map((filterConfiguration): FilterConfiguration => {
+                  return {
+                    name: filterConfiguration.name,
+                    description: filterConfiguration.description,
+                    parameter: filterConfiguration.parameter,
+                    filterValues: filterConfiguration.filterValues.map(
+                      (filterValue): FilterValue => ({
+                        isActive: false,
+                        values: filterValue.values,
+                        name: filterValue.name,
+                      }),
+                    ),
+                  };
+                }),
+                searchConfigurations: topic.searchConfigurations ?? undefined,
+              };
+            }),
         };
       }),
     };

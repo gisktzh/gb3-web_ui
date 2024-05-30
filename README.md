@@ -476,6 +476,54 @@ For examples of this, see e.g. the `LegendEffect`.
 interface and throw it explicitly using the `handleError` method. Otherwise, depending on the order of Angular's DI, the
 error handler might not yet be registered and throw the exception outside of the Angular error handler.
 
+### Map page Initialization
+
+When the `/maps` page is opened without any further parameters, the initial center and scale of the map is calculated based on the viewport.
+This is required because all the UI-Elements are placed above the map page and can potentially cover parts of the Canton of Zurich.
+Thus, the map cannot be centered on the entire page but its center needs to calculated dynamically.
+For this, a number of constant are defined in the `map-page.constants.ts` file.
+This includes the bounding box of the Canton of Zurich and the paddings to make sure nothing is covered by the UI-Elements.
+There are different constants for regular and tablet view and mobile view. These constants describe the number of pixels the center needs to be shifted in each direction.
+These numbers are derived from the UI-Elements and need to be updated whenever any of these elements are changed.
+The following list explains how each value is derived and on which value it is based:
+
+- For Regular and Tablet View:
+
+  - Left (474px):
+    - `$map-overlay-width` (450px) & `$map-overlay-width-adjustment`(12px) (`_map-layout-variables.scss`)
+    - standard padding (12px, not globally defined)
+  - Right (180px):
+    - `.basemap-selector__active`-class (width: 96px, `basemap-selector.component.scss`)
+    - `--mdc-icon-button-state-layer-size` (48px, Angular Material)
+    - `.map-controls`-class (gap: 12px, `map-controls.component.scss`)
+    - `.map-container__map-controls`-class (right: 12px, `map-page.component.scss`)
+    - standard padding (12px, not globally defined)
+  - Top (88px):
+    - Height of the search-bar (64px/100%, `search-bar.component.scss`)
+    - `.map-container__search-window`-class (top: 12px, `map-page.component.scss`)
+    - standard padding (12px, not globally defined)
+  - Bottom (88px):
+    - `.coordinate-scale-inputs`-class (48px: height: 42px + padding 3px (top and bottom), `coordinate-scale-inputs.component.scss`)
+    - `.map-controls__inputs`-class (gap: 12px, `map-controls.component.scss`)
+    - `.map-container__map-controls`-class (bottom: 28px, `map-page.component.scss`)
+
+- For Mobile View:
+  - Left (12px):
+    - standard padding (12px, not globally defined)
+  - Right (12px):
+    - standard padding (12px, not globally defined)
+  - Top (84px):
+    - `@mixin tool-button-mobile` (60px `_helpers.mixin.scss`)
+    - `.map-container__map-tools--mobile`-class (top: 12px, `map-page.component.scss`)
+    - standard padding (12px, not globally defined)
+  - Bottom (100px):
+    - `search-window__searchbar--mobile`-class (height: 60px, `search-window.component.scss`)
+    - `.map-container__search-window--mobile`-class (bottom: 28px, `map-page.component.scss`)
+    - standard padding (12px, not globally defined)
+
+Additionally, there is the `NAV_BAR_HEIGHT`-Constant in the `map.constant.ts` file (72px).
+This needs to be changed if `$navbar-height` is changed in the `_map-layout-variables.scss` file.
+
 ### Application Initialization based on share link
 
 Loading and initializing of the application based on a previously shared link ID is completely done within

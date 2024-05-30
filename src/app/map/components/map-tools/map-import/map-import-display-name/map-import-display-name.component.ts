@@ -3,9 +3,10 @@ import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, V
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {Store} from '@ngrx/store';
-import {filter, Subscription, tap} from 'rxjs';
+import {combineLatestWith, filter, Subscription, tap} from 'rxjs';
 import {MapImportActions} from '../../../../../state/map/actions/map-import.actions';
 import {selectTitle} from '../../../../../state/map/reducers/map-import.reducer';
+import {map} from 'rxjs/operators';
 
 interface DisplayNameFormGroup {
   name: FormControl<string | null>;
@@ -45,7 +46,10 @@ export class MapImportDisplayNameComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.displayNameFormGroup.controls.name.valueChanges
         .pipe(
-          filter(() => this.displayNameFormGroup.valid),
+          // prevent race condition where validation is not yet complete
+          combineLatestWith(this.displayNameFormGroup.statusChanges),
+          filter(([_, status]) => status === 'VALID'),
+          map(([name, _]) => name),
           filter((name): name is string => name !== null),
           tap((name) => this.store.dispatch(MapImportActions.setTitle({title: name}))),
         )
