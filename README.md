@@ -484,7 +484,7 @@ Thus, the map cannot be centered on the entire page but its center needs to calc
 For this, a number of constant are defined in the `map-page.constants.ts` file.
 This includes the bounding box of the Canton of Zurich and the paddings to make sure nothing is covered by the UI-Elements.
 There are different constants for regular and tablet view and mobile view. These constants describe the number of pixels the center needs to be shifted in each direction.
-This numbers are derived from the UI-Elements and need to be updated whenever any of these elements are changed.
+These numbers are derived from the UI-Elements and need to be updated whenever any of these elements are changed.
 The following list explains how each value is derived and on which value it is based:
 
 - For Regular and Tablet View:
@@ -521,7 +521,7 @@ The following list explains how each value is derived and on which value it is b
     - `.map-container__search-window--mobile`-class (bottom: 28px, `map-page.component.scss`)
     - standard padding (12px, not globally defined)
 
-Additionally, there is a constant in the `initial-map-extent.service.ts` file for the height of the navbar (72px).
+Additionally, there is the `NAV_BAR_HEIGHT`-Constant in the `map.constant.ts` file (72px).
 This needs to be changed if `$navbar-height` is changed in the `_map-layout-variables.scss` file.
 
 ### Application Initialization based on share link

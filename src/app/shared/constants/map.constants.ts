@@ -13,6 +13,7 @@ export class MapConstants {
     degrees: 4374754,
   };
   public static readonly DPI = 96;
+  public static readonly NAV_BAR_HEIGHT = 72;
   public static readonly DRAWING_IDENTIFIER = '__id';
   public static readonly DRAWING_LABEL_IDENTIFIER = '__labelText';
   public static readonly BELONGS_TO_IDENTIFIER = '__belongsTo';
