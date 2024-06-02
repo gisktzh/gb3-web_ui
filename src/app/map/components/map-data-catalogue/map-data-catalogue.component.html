@@ -29,7 +29,7 @@
       *ngIf="catalogueLoadingState === 'loaded'"
       [ngClass]="{
         'map-data-catalogue__content__items--hidden': filterString && topics.length === 0 && filteredFavourites.length === 0,
-        'map-data-catalogue__content__items--mobile': screenMode === 'mobile'
+        'map-data-catalogue__content__items--mobile': screenMode === 'mobile',
       }"
       class="map-data-catalogue__content__items"
       displayMode="flat"

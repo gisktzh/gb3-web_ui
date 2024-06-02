@@ -34,7 +34,7 @@
             showTooltipIfTruncated
             [ngClass]="{
               'data-download-status-queue__content__status-job__info__status__text--error':
-                statusJob.status?.status?.type === 'failure' || statusJob.isAborted
+                statusJob.status?.status?.type === 'failure' || statusJob.isAborted,
             }"
           >
             {{ statusJob | dataDownloadOrderStatus }}
