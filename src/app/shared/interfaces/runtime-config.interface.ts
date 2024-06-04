@@ -25,7 +25,6 @@ export interface ApiConfig {
    */
   gb2Wms: ApiBaseUrlConfig;
   geoLion: ApiBaseUrlConfig;
-  searchApi: VersionedApiBaseUrlConfig;
   ktzhWebsite: MockedApiBaseUrlConfig;
   gravCms: MockedApiBaseUrlConfig;
   twitterWidget: ApiBaseUrlConfig;

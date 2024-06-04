@@ -23,10 +23,6 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       geoLion: {
         baseUrl: 'https://www.geolion.zh.ch',
       },
-      searchApi: {
-        baseUrl: 'http://localhost:4200/gb3',
-        version: 'v2',
-      },
       ktzhWebsite: {
         baseUrl: 'https://www.zh.ch',
         useMockData: true,
