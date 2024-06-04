@@ -1,0 +1,58 @@
+swagger: '2.0'
+info:
+  version: '1.0.0'
+  title: 'GB3 Frontend'
+parameters:
+  devMode:
+    name: 'devMode'
+    in: 'query'
+    description: 'This is a boolean parameter that, when set to true, activates the development mode. The development mode can provide additional debugging information. This parameter will be removed after loading the page. You can only exit development mode by reloading the page.'
+    required: false
+    type: 'boolean'
+paths:
+  /maps:
+    get:
+      summary: 'Get map details'
+      description: 'The main page of the application displaying the map with all its features'
+      parameters:
+        - $ref: '#/parameters/devMode'
+        - name: 'x'
+          in: 'query'
+          description: 'This is the x-coordinate in the Swiss coordinate system LV95 (EPSG:2056). It represents the easting value or horizontal position. This value will be updated if the x-coordinate of the center of the map changes.'
+          required: false
+          type: 'number'
+        - name: 'y'
+          in: 'query'
+          description: 'This is the y-coordinate in the Swiss coordinate system LV95 (EPSG:2056). It represents the northing value or vertical position. This value will be updated if y-coordinate of the center of the map changes.'
+          required: false
+          type: 'number'
+        - name: 'scale'
+          in: 'query'
+          description: 'This parameter represents the scale of the map. The scale is the ratio of a distance on the map to the corresponding distance on the ground. This value will be updated if the scale of the map changes.'
+          required: false
+          type: 'number'
+        - name: 'basemap'
+          in: 'query'
+          description: 'This is an identifier for the basemap to be used. A basemap provides a background of geographical context for the content you want to display on a map. This value will be updated if the background of the map changes.'
+          required: false
+          type: 'string'
+          enum:
+            - 'INTERNAL_blank'
+            - 'areosmbackgroundzh'
+            - 'areavbackgroundzh'
+            - 'aredtmbackgroundzh'
+            - 'areorthobackgroundzh'
+            - 'arewildbackgroundzh'
+            - 'arelkbackgroundzh'
+        - name: 'initialMapIds'
+          in: 'query'
+          description: 'This is a comma-separated list of identifiers for the maps that should be initially displayed. Each identifier corresponds to a specific map. This parameter will be removed after loading the page.'
+          required: false
+          type: 'string'
+      responses:
+        '200':
+          description: 'Successful operation'
+        '400':
+          description: 'Invalid parameters'
+        '404':
+          description: 'Map not found'
