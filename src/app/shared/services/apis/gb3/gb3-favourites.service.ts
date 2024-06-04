@@ -74,7 +74,7 @@ export class Gb3FavouritesService extends Gb3ApiService {
       }),
       drawings: data.drawings,
       measurements: data.measurements,
-    })) as unknown as FavouritesResponse; // todo: typecasts once API is fixed
+    }));
   }
 
   private mapCreateFavouriteToCreatePersonalFavoritePayload({baseConfig, ...payload}: CreateFavourite): PersonalFavoriteNew {
