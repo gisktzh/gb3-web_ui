@@ -118,8 +118,8 @@ export class Gb3ShareLinkService extends Gb3ApiService {
           attributeFilters: content.attributeFilters,
           timeExtent: content.timeExtent
             ? {
-                start: TimeExtentUtils.parseDefaultUTCDate(content.timeExtent[0].start),
-                end: TimeExtentUtils.parseDefaultUTCDate(content.timeExtent[0].end),
+                start: TimeExtentUtils.parseDefaultUTCDate(content.timeExtent.start),
+                end: TimeExtentUtils.parseDefaultUTCDate(content.timeExtent.end),
               }
             : undefined,
         };
@@ -145,12 +145,10 @@ export class Gb3ShareLinkService extends Gb3ApiService {
           layers: content.layers,
           attributeFilters: content.attributeFilters,
           timeExtent: content.timeExtent
-            ? [
-                {
-                  start: content.timeExtent.start.toUTCString(),
-                  end: content.timeExtent.end.toUTCString(),
-                },
-              ]
+            ? {
+                start: content.timeExtent.start.toUTCString(),
+                end: content.timeExtent.end.toUTCString(),
+              }
             : undefined,
         };
       }),
