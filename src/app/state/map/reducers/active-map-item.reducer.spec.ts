@@ -106,6 +106,21 @@ describe('ActiveMapItem Reducer', () => {
     });
   });
 
+  describe('removeAllTemporaryActiveMapItems', () => {
+    it('removes all temporary items', () => {
+      const temporaryItems: ActiveMapItem[] = [
+        createGb2WmsMapItemMock('temp-1', 0, true, 1, 'uuid-1', true),
+        createGb2WmsMapItemMock('temp-2', 0, true, 1, 'uuid-2', true),
+      ];
+      const extendedState: ActiveMapItemState = {items: [...existingState.items, ...temporaryItems]};
+      const action = ActiveMapItemActions.removeAllTemporaryActiveMapItems();
+      const state = reducer(extendedState, action);
+
+      expect(state.items.length).toBe(existingState.items.length);
+      expect(state.items).toEqual(existingState.items);
+    });
+  });
+
   describe('removeAllActiveMapItems', () => {
     it('removes all items', () => {
       const action = ActiveMapItemActions.removeAllActiveMapItems();

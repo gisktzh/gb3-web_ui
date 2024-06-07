@@ -14,6 +14,8 @@ import {provideMockStore} from '@ngrx/store/testing';
 
 describe('Gb3TopicsService', () => {
   let service: Gb3TopicsService;
+  let configService: ConfigService;
+  let httpClient: HttpClient;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -21,6 +23,8 @@ describe('Gb3TopicsService', () => {
       providers: [provideMockStore()],
     });
     service = TestBed.inject(Gb3TopicsService);
+    configService = TestBed.inject(ConfigService);
+    httpClient = TestBed.inject(HttpClient);
   });
 
   it('should be created', () => {
@@ -29,8 +33,6 @@ describe('Gb3TopicsService', () => {
 
   describe('loadTopics', () => {
     it('should receive the data and transform it correctly', (done: DoneFn) => {
-      const configService = TestBed.inject(ConfigService);
-      const httpClient = TestBed.inject(HttpClient);
       const data: TopicsListData = {
         categories: [
           {
@@ -260,12 +262,65 @@ describe('Gb3TopicsService', () => {
         done();
       });
     });
+
+    it('should sort topics alphabetically ascending by title', (done: DoneFn) => {
+      const randomOrder = ['B-2', 'B-3', 'A-1', 'AA 2', 'AA 1', '-1'];
+      const data: TopicsListData = {
+        categories: [
+          {
+            title: 'Raumplanung, Zonenpläne',
+            topics: [
+              ...randomOrder.map((title) => ({
+                title,
+                topic: 'StatGebAlterZH',
+                print_title: 'Gebäudealter',
+                icon: '/images/custom/themekl-statgebalterzh.gif',
+                organisation: 'Statistisches Amt',
+                geolion_karten_uuid: '246fe226-ead7-4f91-b735-d294994913e0',
+                geolion_gdd: null,
+                keywords: [],
+                notice: null,
+                opacity: 0.1337,
+                timesliderConfiguration: {
+                  name: 'Aktueller Gebäudebestand nach Baujahr',
+                  source: {
+                    layerIdentifiers: ['geb-alter_wohnen', 'geb-alter_grau', 'geb-alter_2'],
+                    endRangeParameter: 'FILTER_BIS',
+                    startRangeParameter: 'FILTER_VON',
+                  },
+                  dateFormat: 'YYYY',
+                  sourceType: 'parameter',
+                  description: 'Gebäude bis 2020',
+                  maximumDate: '2020',
+                  minimumDate: '1850',
+                  minimalRange: 'P1Y',
+                  alwaysMaxRange: false,
+                },
+                filterConfigurations: [],
+                searchConfigurations: null,
+                wms_url: 'https://maps.zh.ch/wms/StatGebAlterZH',
+                gb2_url: 'https://maps.zh.ch/?topic=StatGebAlterZH',
+                layers: [],
+                min_scale: null,
+              })),
+            ],
+          },
+        ],
+      };
+
+      spyOn(httpClient, 'get').and.returnValue(of(data));
+
+      const expectedOrder = ['-1', 'A-1', 'AA 1', 'AA 2', 'B-2', 'B-3'];
+      service.loadTopics().subscribe((actual) => {
+        const actualTitles = actual.topics.map((topic) => topic.maps.map((map) => map.title)).flat();
+        expect(actualTitles).toEqual(expectedOrder);
+        done();
+      });
+    });
   });
 
   describe('loadLegends', () => {
     it('should receive the data and transform it correctly', (done: DoneFn) => {
-      const configService = TestBed.inject(ConfigService);
-      const httpClient = TestBed.inject(HttpClient);
       const data: TopicsLegendDetailData = {
         legend: {
           topic: 'Lageklassen2003ZH',
@@ -469,8 +524,6 @@ describe('Gb3TopicsService', () => {
 
   describe('loadFeatureInfos', () => {
     it('should receive the data and transform it correctly', (done: DoneFn) => {
-      const configService = TestBed.inject(ConfigService);
-      const httpClient = TestBed.inject(HttpClient);
       const data: TopicsFeatureInfoDetailData = {
         feature_info: {
           query_position: {
