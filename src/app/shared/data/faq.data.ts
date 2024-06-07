@@ -55,7 +55,7 @@ export const faqData: FaqCollection[] = [
         uuid: '23b2da02-25b5-4303-8ba2-cb65e11f1477',
         question: 'Wie kann ich ein Konto erstellen?',
         answer:
-          'Sie können sich über die Schaltfläche «Login» oder über unser Registrierportal https://maps.zh.ch/gb3/v0/profile/sign_up ' +
+          'Sie können sich über die Schaltfläche «Login» oder über unser Registrierportal https://maps.zh.ch/gb3/signup ' +
           ' registrieren. Ein Login benötigen Sie, um die Funktion «Favoriten erstellen» nutzen zu können.',
       },
       {
