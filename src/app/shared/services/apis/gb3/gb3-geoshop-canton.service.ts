@@ -19,7 +19,7 @@ export class Gb3GeoshopCantonService extends Gb3ApiService {
 
   private mapCantonListDataToCanton(data: CantonListData): CantonWithGeometry {
     return {
-      boundingBox: ApiGeojsonGeometryToGb3ConverterUtils.convert(data.boundingbox),
+      boundingBox: ApiGeojsonGeometryToGb3ConverterUtils.castGeometryToSupportedGeometry(data.boundingbox),
     };
   }
 }

@@ -186,7 +186,8 @@ export class Gb3TopicsService extends Gb3ApiService {
                       isHidden: false,
                     }),
                   )
-                  .reverse(), // reverse the order of the layers because the order in the GB3 interfaces (Topic, ActiveMapItem) is inverted to the order of the WMS specifications
+                  .reverse(), // reverse the order of the layers because the order in the GB3 interfaces (Topic, ActiveMapItem) is inverted
+                // to the order of the WMS specifications
                 timeSliderConfiguration: topic.timesliderConfiguration
                   ? {
                       name: topic.timesliderConfiguration.name,
@@ -337,7 +338,7 @@ export class Gb3TopicsService extends Gb3ApiService {
 
   private convertGeometryToSupportedGeometry(geometry: Geometry): GeometryWithSrs {
     return {
-      ...ApiGeojsonGeometryToGb3ConverterUtils.convert(geometry),
+      ...ApiGeojsonGeometryToGb3ConverterUtils.castGeometryToSupportedGeometry(geometry),
       srs: this.configService.mapConfig.defaultMapConfig.srsId,
     };
   }

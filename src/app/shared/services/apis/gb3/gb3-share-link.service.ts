@@ -3,8 +3,7 @@ import {Gb3ApiService} from './gb3-api.service';
 import {ShareLinkItem} from '../../../interfaces/share-link.interface';
 import {map} from 'rxjs/operators';
 import {Observable} from 'rxjs';
-import {GeojsonFeature, SharedFavorite, SharedFavoriteNew, VectorLayer} from '../../../models/gb3-api-generated.interfaces';
-import {Gb3GeoJsonFeature, Gb3VectorLayer} from '../../../interfaces/gb3-vector-layer.interface';
+import {SharedFavorite, SharedFavoriteNew} from '../../../models/gb3-api-generated.interfaces';
 import {ApiGeojsonGeometryToGb3ConverterUtils} from '../../../utils/api-geojson-geometry-to-gb3-converter.utils';
 import {ShareLinkPropertyCouldNotBeValidated} from '../../../errors/share-link.errors';
 import {ConfigService} from '../../config.service';
@@ -78,30 +77,6 @@ export class Gb3ShareLinkService extends Gb3ApiService {
     return `${this.getFullEndpointUrl()}/${shareLinkId}`;
   }
 
-  /**
-   * This mapper casts the generic geometry from the GB3 API to a narrowly typed, internal feature which has the correct GeoJSON typing.
-   * This is necessary because the API (in its current state) does not use the GeoJSON interface, but allows for type and coordinate
-   * combinations that do not exist.
-   * @param inFeature The feature to be transformed
-   */
-  private castGeojsonFeatureToGb3GeoJsonFeature(inFeature: GeojsonFeature): Gb3GeoJsonFeature {
-    const castGeometry = ApiGeojsonGeometryToGb3ConverterUtils.convert(inFeature.geometry);
-    return {...inFeature, geometry: castGeometry};
-  }
-
-  private mapVectorLayerToGb3VectorLayer(drawings: VectorLayer): Gb3VectorLayer {
-    const castFeatures = drawings.geojson.features.map((feature) => this.castGeojsonFeatureToGb3GeoJsonFeature(feature));
-
-    return {
-      type: drawings.type,
-      styles: drawings.styles,
-      geojson: {
-        type: drawings.geojson.type,
-        features: castFeatures,
-      },
-    };
-  }
-
   private mapSharedFavoriteToShareLink(sharedFavorite: SharedFavorite): ShareLinkItem {
     return {
       basemapId: sharedFavorite.basemap,
@@ -124,8 +99,8 @@ export class Gb3ShareLinkService extends Gb3ApiService {
             : undefined,
         };
       }),
-      drawings: this.mapVectorLayerToGb3VectorLayer(sharedFavorite.drawings),
-      measurements: this.mapVectorLayerToGb3VectorLayer(sharedFavorite.measurements),
+      drawings: ApiGeojsonGeometryToGb3ConverterUtils.convertVectorLayerToGb3VectorLayer(sharedFavorite.drawings),
+      measurements: ApiGeojsonGeometryToGb3ConverterUtils.convertVectorLayerToGb3VectorLayer(sharedFavorite.measurements),
     };
   }
 

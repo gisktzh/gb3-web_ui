@@ -37,7 +37,7 @@ export class Gb3GeoshopMunicipalitiesService extends Gb3ApiService {
     return {
       bfsNo: data.municipality.bfs_no,
       name: data.municipality.name,
-      boundingBox: ApiGeojsonGeometryToGb3ConverterUtils.convert(data.municipality.boundingbox),
+      boundingBox: ApiGeojsonGeometryToGb3ConverterUtils.castGeometryToSupportedGeometry(data.municipality.boundingbox),
     };
   }
 }

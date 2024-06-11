@@ -10,6 +10,7 @@ import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {CreateFavourite, Favourite, FavouritesResponse} from '../../../interfaces/favourite.interface';
 import {TimeExtentUtils} from '../../../utils/time-extent.utils';
+import {ApiGeojsonGeometryToGb3ConverterUtils} from '../../../utils/api-geojson-geometry-to-gb3-converter.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -72,8 +73,8 @@ export class Gb3FavouritesService extends Gb3ApiService {
             : undefined,
         };
       }),
-      drawings: data.drawings,
-      measurements: data.measurements,
+      drawings: ApiGeojsonGeometryToGb3ConverterUtils.convertVectorLayerToGb3VectorLayer(data.drawings),
+      measurements: ApiGeojsonGeometryToGb3ConverterUtils.convertVectorLayerToGb3VectorLayer(data.measurements),
     }));
   }
 
