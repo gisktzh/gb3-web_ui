@@ -3,7 +3,7 @@ import {Store} from '@ngrx/store';
 import {MatDialogRef} from '@angular/material/dialog';
 import {ExportActions} from '../../../../state/map/actions/export.actions';
 import {ExportFormat} from '../../../../shared/types/export-format.type';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormControl, Validators} from '@angular/forms';
 import {Subscription} from 'rxjs';
 
 @Component({
@@ -14,9 +14,7 @@ import {Subscription} from 'rxjs';
 export class DrawingDownloadDialogComponent implements OnInit, OnDestroy {
   public availableExportFormats: string[] = Object.values(ExportFormat);
   public exportFormat: ExportFormat = ExportFormat.GEOJSON;
-  public readonly formGroup: FormGroup = new FormGroup({
-    exportFormat: new FormControl('geojson', [Validators.required]),
-  });
+  public exportFormatControl: FormControl = new FormControl('geojson', Validators.required);
 
   private readonly subscriptions: Subscription = new Subscription();
 
@@ -33,8 +31,8 @@ export class DrawingDownloadDialogComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  public downloadDrawings() {
-    this.store.dispatch(ExportActions.requestDrawingsExport({exportFormat: this.exportFormat}));
+  public downloadDrawings(exportFormat: ExportFormat) {
+    this.store.dispatch(ExportActions.requestDrawingsExport({exportFormat}));
   }
 
   public cancel() {
@@ -43,8 +41,8 @@ export class DrawingDownloadDialogComponent implements OnInit, OnDestroy {
 
   private initSubscriptions() {
     this.subscriptions.add(
-      this.formGroup.valueChanges.subscribe((value) => {
-        this.exportFormat = value.exportFormat;
+      this.exportFormatControl.valueChanges.subscribe((value) => {
+        this.exportFormat = value;
       }),
     );
   }

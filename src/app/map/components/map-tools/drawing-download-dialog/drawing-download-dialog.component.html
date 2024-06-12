@@ -1,9 +1,9 @@
 <api-dialog-wrapper title="Zeichungen herunterladen" (closeEvent)="cancel()" class="drawing-download-dialog">
   <ng-container content>
-    <form [formGroup]="formGroup">
+    <form>
       <mat-form-field appearance="outline" hideRequiredMarker class="drawing-download-dialog__form-field">
         <mat-label>Typ</mat-label>
-        <mat-select formControlName="exportFormat">
+        <mat-select [formControl]="exportFormatControl">
           <mat-option *ngFor="let exportFormat of availableExportFormats" [value]="exportFormat">
             {{ exportFormat | uppercase }}
           </mat-option>
@@ -14,7 +14,7 @@
   <ng-container actions>
     <div>
       <button (click)="cancel()" mat-button>Abbrechen</button>
-      <button (click)="downloadDrawings()" mat-button [disabled]="formGroup.invalid">Herunterladen</button>
+      <button (click)="downloadDrawings(exportFormat)" mat-button [disabled]="exportFormatControl.invalid">Herunterladen</button>
     </div>
   </ng-container>
 </api-dialog-wrapper>
