@@ -13,7 +13,7 @@ describe('Export Reducer', () => {
   });
   describe('requestExportDrawings', () => {
     it('sets the loading state and export format', () => {
-      const exportFormat: ExportFormat = 'geojson';
+      const exportFormat: ExportFormat = ExportFormat.GEOJSON;
       const action = ExportActions.requestDrawingsExport({exportFormat});
       const result = reducer(initialState, action);
 
