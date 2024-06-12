@@ -186,7 +186,8 @@ export class Gb3TopicsService extends Gb3ApiService {
                       isHidden: false,
                     }),
                   )
-                  .reverse(), // reverse the order of the layers because the order in the GB3 interfaces (Topic, ActiveMapItem) is inverted to the order of the WMS specifications
+                  .reverse(), // reverse the order of the layers because the order in the GB3 interfaces (Topic, ActiveMapItem) is inverted
+                // to the order of the WMS specifications
                 timeSliderConfiguration: topic.timesliderConfiguration
                   ? {
                       name: topic.timesliderConfiguration.name,
@@ -286,7 +287,8 @@ export class Gb3TopicsService extends Gb3ApiService {
 
   private createFeatureInfoUrl(topicName: string, x: number, y: number, queryLayers: string): string {
     const url = new URL(`${this.getFullEndpointUrl()}/${topicName}/feature_info`);
-    url.searchParams.append('bbox', `${x},${y},${x},${y}`);
+    url.searchParams.append('x', x.toString());
+    url.searchParams.append('y', y.toString());
     url.searchParams.append('queryLayers', queryLayers);
     return url.toString();
   }
@@ -313,11 +315,11 @@ export class Gb3TopicsService extends Gb3ApiService {
           layers: featureInfo.results.layers.map((layer) => {
             return {
               title: layer.title,
-              layer: layer.layer ?? '', // todo GB3-1025: This will break raster info queries
+              layer: layer.layer,
               metaDataLink: layer.geolion_geodatensatz_uuid ? this.createDatasetTabLink(layer.geolion_geodatensatz_uuid) : undefined,
               features: layer.features.map((feature) => {
                 return {
-                  fid: feature.fid ?? -1, // todo GB3-1025: This will break raster info queries
+                  fid: feature.fid,
                   fields: feature.fields.map((field): FeatureInfoResultFeatureField => {
                     return {
                       label: field.label,
@@ -336,7 +338,7 @@ export class Gb3TopicsService extends Gb3ApiService {
 
   private convertGeometryToSupportedGeometry(geometry: Geometry): GeometryWithSrs {
     return {
-      ...ApiGeojsonGeometryToGb3ConverterUtils.convert(geometry),
+      ...ApiGeojsonGeometryToGb3ConverterUtils.castGeometryToSupportedGeometry(geometry),
       srs: this.configService.mapConfig.defaultMapConfig.srsId,
     };
   }

@@ -239,28 +239,6 @@ export class Gb3PrintService extends Gb3ApiService {
     };
   }
 
-  /**
-   * Transforms the given layout string (e.g. `A4 hoch`) into size (`A4`) and orientation (`hoch`)
-   */
-  private transformReportNameToLayoutAndOrientation(name: string): {layout: string; orientation: ReportOrientation | undefined} {
-    const report: {layout: string; orientation: ReportOrientation | undefined} = {layout: name, orientation: undefined};
-    const splitName = name.split(' ');
-    if (splitName.length === 2) {
-      const size = splitName[0];
-      let orientation: ReportOrientation | undefined;
-      switch (splitName[1] as ReportOrientation) {
-        case 'portrait':
-        case 'landscape':
-          orientation = splitName[1] as ReportOrientation;
-      }
-      if (size && orientation) {
-        report.layout = size;
-        report.orientation = orientation;
-      }
-    }
-    return report;
-  }
-
   private transformSizeAndOrientationToLayoutName(size: string, orientation: ReportOrientation | undefined, reportType: string): string {
     if (reportType === 'mapset') {
       return 'Kartenset';

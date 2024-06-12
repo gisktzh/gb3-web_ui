@@ -10,6 +10,7 @@ import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {CreateFavourite, Favourite, FavouritesResponse} from '../../../interfaces/favourite.interface';
 import {TimeExtentUtils} from '../../../utils/time-extent.utils';
+import {ApiGeojsonGeometryToGb3ConverterUtils} from '../../../utils/api-geojson-geometry-to-gb3-converter.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -66,15 +67,15 @@ export class Gb3FavouritesService extends Gb3ApiService {
           attributeFilters: content.attributeFilters,
           timeExtent: content.timeExtent
             ? {
-                start: TimeExtentUtils.parseDefaultUTCDate(content.timeExtent[0].start),
-                end: TimeExtentUtils.parseDefaultUTCDate(content.timeExtent[0].end),
+                start: TimeExtentUtils.parseDefaultUTCDate(content.timeExtent.start),
+                end: TimeExtentUtils.parseDefaultUTCDate(content.timeExtent.end),
               }
             : undefined,
         };
       }),
-      drawings: data.drawings,
-      measurements: data.measurements,
-    })) as unknown as FavouritesResponse; // todo: typecasts once API is fixed
+      drawings: ApiGeojsonGeometryToGb3ConverterUtils.convertVectorLayerToGb3VectorLayer(data.drawings),
+      measurements: ApiGeojsonGeometryToGb3ConverterUtils.convertVectorLayerToGb3VectorLayer(data.measurements),
+    }));
   }
 
   private mapCreateFavouriteToCreatePersonalFavoritePayload({baseConfig, ...payload}: CreateFavourite): PersonalFavoriteNew {
@@ -94,12 +95,10 @@ export class Gb3FavouritesService extends Gb3ApiService {
           layers: content.layers,
           attributeFilters: content.attributeFilters,
           timeExtent: content.timeExtent
-            ? [
-                {
-                  start: content.timeExtent.start.toUTCString(),
-                  end: content.timeExtent.end.toUTCString(),
-                },
-              ]
+            ? {
+                start: content.timeExtent.start.toUTCString(),
+                end: content.timeExtent.end.toUTCString(),
+              }
             : undefined,
         };
       }),

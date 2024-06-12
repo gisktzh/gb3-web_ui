@@ -9,7 +9,7 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
     apiBasePaths: {
       gb2Api: {
         baseUrl: 'http://localhost:4200/gb3',
-        version: 'v1',
+        version: 'v2',
       },
       gb2StaticFiles: {
         baseUrl: 'http://localhost:4200',
@@ -22,10 +22,6 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       },
       geoLion: {
         baseUrl: 'https://www.geolion.zh.ch',
-      },
-      searchApi: {
-        baseUrl: 'http://localhost:4200/gb3',
-        version: 'v1',
       },
       ktzhWebsite: {
         baseUrl: 'https://www.zh.ch',
