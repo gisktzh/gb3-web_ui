@@ -1,0 +1,19 @@
+<api-dialog-wrapper title="Zeichungen herunterladen" (closeEvent)="cancel()" class="drawing-download-dialog">
+  <ng-container content>
+    <div class="drawing-download-dialog__buttons">
+      <button (click)="downloadDrawings('geojson')" class="drawing-download-dialog__buttons__button" color="accent" mat-flat-button>
+        GEOJSON
+        <mat-icon svgIcon="ktzh_download"></mat-icon>
+      </button>
+      <button (click)="downloadDrawings('kml')" class="drawing-download-dialog__buttons__button" color="accent" mat-flat-button>
+        KML
+        <mat-icon svgIcon="ktzh_download"></mat-icon>
+      </button>
+    </div>
+  </ng-container>
+  <ng-container actions>
+    <div>
+      <button (click)="cancel()" mat-button class="drawing-download-dialog__cancel-button">Schliessen</button>
+    </div>
+  </ng-container>
+</api-dialog-wrapper>
