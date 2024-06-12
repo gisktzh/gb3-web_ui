@@ -1,1 +1,4 @@
-export type ExportFormat = 'geojson' | 'kml';
+export enum ExportFormat {
+  GEOJSON = 'geojson',
+  KML = 'kml',
+}

@@ -1,19 +1,20 @@
 <api-dialog-wrapper title="Zeichungen herunterladen" (closeEvent)="cancel()" class="drawing-download-dialog">
   <ng-container content>
-    <div class="drawing-download-dialog__buttons">
-      <button (click)="downloadDrawings('geojson')" class="drawing-download-dialog__buttons__button" color="accent" mat-flat-button>
-        GEOJSON
-        <mat-icon svgIcon="ktzh_download"></mat-icon>
-      </button>
-      <button (click)="downloadDrawings('kml')" class="drawing-download-dialog__buttons__button" color="accent" mat-flat-button>
-        KML
-        <mat-icon svgIcon="ktzh_download"></mat-icon>
-      </button>
-    </div>
+    <form [formGroup]="formGroup">
+      <mat-form-field appearance="outline" hideRequiredMarker class="drawing-download-dialog__form-field">
+        <mat-label>Typ</mat-label>
+        <mat-select formControlName="exportFormat">
+          <mat-option *ngFor="let exportFormat of availableExportFormats" [value]="exportFormat">
+            {{ exportFormat | uppercase }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </form>
   </ng-container>
   <ng-container actions>
     <div>
-      <button (click)="cancel()" mat-button class="drawing-download-dialog__cancel-button">Schliessen</button>
+      <button (click)="cancel()" mat-button>Abbrechen</button>
+      <button (click)="downloadDrawings()" mat-button [disabled]="formGroup.invalid">Herunterladen</button>
     </div>
   </ng-container>
 </api-dialog-wrapper>

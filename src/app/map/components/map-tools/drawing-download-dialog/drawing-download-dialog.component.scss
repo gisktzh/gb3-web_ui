@@ -2,23 +2,7 @@
 @use 'functions/helper.function' as functions;
 
 .drawing-download-dialog {
-  .drawing-download-dialog__buttons {
-    display: flex;
-    gap: 24px;
-    justify-content: center;
-    padding: 12px 0;
-
-    .drawing-download-dialog__buttons__button {
-      height: 48px;
-      flex-grow: 1;
-      flex-basis: 0;
-    }
-  }
-
-  .drawing-download-dialog__cancel-button {
-    &.mdc-button {
-      background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 50);
-      color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 300);
-    }
+  .drawing-download-dialog__form-field {
+    width: 100%;
   }
 }
