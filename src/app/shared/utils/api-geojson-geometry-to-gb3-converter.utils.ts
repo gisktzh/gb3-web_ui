@@ -13,10 +13,10 @@ export class ApiGeojsonGeometryToGb3ConverterUtils {
       styles,
       geojson: {
         type: geojson.type,
-        features: geojson.features.map((f) => ({
-          type: f.type,
-          properties: f.properties,
-          geometry: ApiGeojsonGeometryToGb3ConverterUtils.castGeometryToSupportedGeometry(f.geometry),
+        features: geojson.features.map((feature) => ({
+          type: feature.type,
+          properties: feature.properties,
+          geometry: ApiGeojsonGeometryToGb3ConverterUtils.castGeometryToSupportedGeometry(feature.geometry),
         })),
       },
     };
