@@ -83,5 +83,5 @@ export class MapServiceStub implements MapService {
 
   public stopDrawPrintPreview() {}
 
-  public removeGeometryFromInternalDrawingLayer(id: string, drawingLayer: InternalDrawingLayer): void {}
+  public removeGeometryFromInternalDrawingLayer(drawingLayer: InternalDrawingLayer, id: string): void {}
 }

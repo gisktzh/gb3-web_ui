@@ -115,8 +115,8 @@ export class EsriMapService implements MapService, OnDestroy {
     this.esriMapViewService.mapView = value;
   }
 
-  public removeGeometryFromInternalDrawingLayer(id: string, internalDrawingLayer: InternalDrawingLayer) {
-    const layer = this.esriMapViewService.findEsriLayer(this.createInternalLayerId(internalDrawingLayer));
+  public removeGeometryFromInternalDrawingLayer(drawingLayer: InternalDrawingLayer, id: string): void {
+    const layer = this.esriMapViewService.findEsriLayer(this.createInternalLayerId(drawingLayer));
     if (layer) {
       const graphicsToBeRemoved = (layer as __esri.GraphicsLayer).graphics
         .filter((graphic) => graphic.attributes[MapConstants.DRAWING_IDENTIFIER] === id)

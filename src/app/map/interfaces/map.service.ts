@@ -83,10 +83,10 @@ export interface MapService extends AddToMapVisitor {
 
   /**
    * Removes a geometry from an internal DrawingLayer
-   * @param id Id of the geometry which should be removed
    * @param drawingLayer Internal drawing layer from which the geometry shall be removed
+   * @param id Id of the geometry which should be removed
    */
-  removeGeometryFromInternalDrawingLayer(id: string, drawingLayer: InternalDrawingLayer): void;
+  removeGeometryFromInternalDrawingLayer(drawingLayer: InternalDrawingLayer, id: string): void;
 
   /** Clears all geometries from an internal DrawingLayer */
   clearInternalDrawingLayer(drawingLayer: InternalDrawingLayer): void;
