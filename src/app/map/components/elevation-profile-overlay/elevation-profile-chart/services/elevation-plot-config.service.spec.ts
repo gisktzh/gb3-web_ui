@@ -23,8 +23,8 @@ describe('GeoJsonMapperService', () => {
   describe('createElevationProfileDataset', () => {
     it('creates a dataset using the properties and the base config', () => {
       const mockElevationProfileData: ElevationProfileDataPoint[] = [
-        {distance: 1, altitude: 2},
-        {distance: 3, altitude: 4},
+        {distance: 1, altitude: 2, x: 2600000, y: 1200000},
+        {distance: 3, altitude: 4, x: 2600001, y: 1200001},
       ];
       const mockLabel = 'The only edible fruit in Mirkwood are nuts ¯\\_(ツ)_/¯';
 

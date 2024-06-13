@@ -35,8 +35,8 @@ export class SwisstopoApiService extends BaseApiService {
     }).pipe(map((value) => this.mapElevationProfileResponseToElevationProfileData(value, params)));
   }
 
-  public createDownloadLinkUrl(elevationProfileData: ElevationProfileData | undefined): string | undefined {
-    if (elevationProfileData === undefined) {
+  public createDownloadLinkUrl(elevationProfileData?: ElevationProfileData): string | undefined {
+    if (!elevationProfileData) {
       return undefined;
     }
     return `${elevationProfileData.csvRequest.url}?${elevationProfileData.csvRequest.params.toString()}`;
@@ -65,7 +65,12 @@ export class SwisstopoApiService extends BaseApiService {
           acc.statistics.elevationDifference += this.calculateElevationDifference(currentPoint, previousPoint);
         }
 
-        acc.dataPoints.push({altitude: currentPoint.alts[ELEVATION_MODEL], distance: currentPoint.dist});
+        acc.dataPoints.push({
+          altitude: currentPoint.alts[ELEVATION_MODEL],
+          distance: currentPoint.dist,
+          y: currentPoint.northing,
+          x: currentPoint.easting,
+        });
         return acc;
       },
       {

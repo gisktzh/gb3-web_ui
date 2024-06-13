@@ -39,13 +39,13 @@ describe('SwisstopoApiService', () => {
       spyOn(httpClient, 'post').and.returnValue(of(mockData));
 
       const expectedDataPoints: ElevationProfileDataPoint[] = [
-        {distance: mockData[0].dist, altitude: mockData[0].alts[ELEVATION_MODEL]},
-        {distance: mockData[1].dist, altitude: mockData[1].alts[ELEVATION_MODEL]},
-        {distance: mockData[2].dist, altitude: mockData[2].alts[ELEVATION_MODEL]},
-        {distance: mockData[3].dist, altitude: mockData[3].alts[ELEVATION_MODEL]},
+        {distance: mockData[0].dist, altitude: mockData[0].alts[ELEVATION_MODEL], x: mockData[0].easting, y: mockData[0].northing},
+        {distance: mockData[1].dist, altitude: mockData[1].alts[ELEVATION_MODEL], x: mockData[1].easting, y: mockData[1].northing},
+        {distance: mockData[2].dist, altitude: mockData[2].alts[ELEVATION_MODEL], x: mockData[2].easting, y: mockData[2].northing},
+        {distance: mockData[3].dist, altitude: mockData[3].alts[ELEVATION_MODEL], x: mockData[3].easting, y: mockData[3].northing},
       ];
       /**
-       * Given the mock data, and ELEVATION_MODEL === 'COMB', the following values are to be expected. Note that we do not calculated
+       * Given the mock data, and ELEVATION_MODEL === 'COMB', the following values are to be expected. Note that we do not calculate
        * them dynamically, because that would be a copy of the implementation, not a test of the outcome.
        */
       const expectedStatistics: ElevationProfileStatistics = {

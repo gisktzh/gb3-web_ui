@@ -95,7 +95,7 @@ describe('ElevationProfileEffects', () => {
   describe('clearExistingElevationProfileOnMapUiReset$', () => {
     it('dispatches ElevationProfileActions.clearProfile if mapUi is reset and elevationProfileData is not undefined', (done: DoneFn) => {
       store.overrideSelector(selectData, {
-        dataPoints: [{altitude: 1, distance: 250}],
+        dataPoints: [{altitude: 1, distance: 250, x: 2600000, y: 1200000}],
         statistics: {groundDistance: 666, linearDistance: 42, elevationDifference: 1337, lowestPoint: 9000, highestPoint: 9001},
         csvRequest: {url: '', params: new URLSearchParams()},
       });
@@ -121,7 +121,7 @@ describe('ElevationProfileEffects', () => {
   describe('requestElevationProfile$', () => {
     it('calls the swisstopo API and returns the data', (done: DoneFn) => {
       const mockData: ElevationProfileData = {
-        dataPoints: [{altitude: 1, distance: 250}],
+        dataPoints: [{altitude: 1, distance: 250, x: 2600000, y: 1200000}],
         statistics: {groundDistance: 666, linearDistance: 42, elevationDifference: 1337, lowestPoint: 9000, highestPoint: 9001},
         csvRequest: {url: '', params: new URLSearchParams()},
       };

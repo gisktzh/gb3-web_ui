@@ -6,7 +6,15 @@ export interface ElevationProfileDataPointYAxis {
   altitude: number;
 }
 
-export interface ElevationProfileDataPoint extends ElevationProfileDataPointXAxis, ElevationProfileDataPointYAxis {}
+export interface ElevationProfileDataPointLocation {
+  x: number;
+  y: number;
+}
+
+export interface ElevationProfileDataPoint
+  extends ElevationProfileDataPointXAxis,
+    ElevationProfileDataPointYAxis,
+    ElevationProfileDataPointLocation {}
 
 export interface ElevationProfileStatistics {
   linearDistance: number;
