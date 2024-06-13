@@ -9,6 +9,8 @@ import {Store} from '@ngrx/store';
 import {ConfigService} from '../../shared/services/config.service';
 import {selectReady} from '../../state/map/reducers/map-config.reducer';
 
+const ELEVATION_PROFILE_LOCATION_IDENTIFIER = 'elevation_profile_location';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -27,6 +29,19 @@ export class MapDrawingService implements OnDestroy {
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
+  }
+
+  public drawElevationProfileLocation(geometry: PointWithSrs) {
+    this.mapService.removeGeometryFromInternalDrawingLayer(ELEVATION_PROFILE_LOCATION_IDENTIFIER, InternalDrawingLayer.ElevationProfile);
+    this.mapService.addGeometryToInternalDrawingLayer(
+      geometry,
+      InternalDrawingLayer.ElevationProfile,
+      ELEVATION_PROFILE_LOCATION_IDENTIFIER,
+    );
+  }
+
+  public removeElevationProfileLocation() {
+    this.mapService.removeGeometryFromInternalDrawingLayer(ELEVATION_PROFILE_LOCATION_IDENTIFIER, InternalDrawingLayer.ElevationProfile);
   }
 
   public drawFeatureInfoHighlight(geometry: GeometryWithSrs) {

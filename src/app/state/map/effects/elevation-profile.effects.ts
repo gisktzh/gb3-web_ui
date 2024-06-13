@@ -13,6 +13,7 @@ import {ToolActions} from '../actions/tool.actions';
 import {MapUiActions} from '../actions/map-ui.actions';
 import {selectData} from '../reducers/elevation-profile.reducer';
 import {Store} from '@ngrx/store';
+import {MapDrawingService} from '../../../map/services/map-drawing.service';
 
 @Injectable()
 export class ElevationProfileEffects {
@@ -79,10 +80,35 @@ export class ElevationProfileEffects {
     {dispatch: false},
   );
 
+  public drawElevationProfileLocation$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(ElevationProfileActions.drawElevationProfileHoverLocation),
+        tap(({location}) => {
+          this.mapDrawingService.drawElevationProfileLocation(location);
+        }),
+      );
+    },
+    {dispatch: false},
+  );
+
+  public removeElevationProfileLocation$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(ElevationProfileActions.removeElevationProfileHoverLocation),
+        tap(() => {
+          this.mapDrawingService.removeElevationProfileLocation();
+        }),
+      );
+    },
+    {dispatch: false},
+  );
+
   constructor(
     private readonly actions$: Actions,
     private readonly swisstopoApiService: SwisstopoApiService,
     private readonly store: Store,
     @Inject(MAP_SERVICE) private readonly mapService: MapService,
+    private readonly mapDrawingService: MapDrawingService,
   ) {}
 }

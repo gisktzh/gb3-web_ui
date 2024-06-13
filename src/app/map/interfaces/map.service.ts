@@ -73,8 +73,20 @@ export interface MapService extends AddToMapVisitor {
    */
   zoomToExtent(geometry: GeometryWithSrs, expandFactor?: number, animationDuration?: number): void;
 
-  /** Adds a geometry to a DrawingLayer */
-  addGeometryToInternalDrawingLayer(geometry: GeometryWithSrs, drawingLayer: InternalDrawingLayer): void;
+  /**
+   * Adds a geometry to an internal DrawingLayer
+   * @param geometry Geometry to be added
+   * @param drawingLayer Internal drawing layer to witch the geometry shall be added
+   * @param id Optional ID for the geometry
+   */
+  addGeometryToInternalDrawingLayer(geometry: GeometryWithSrs, drawingLayer: InternalDrawingLayer, id?: string): void;
+
+  /**
+   * Removes a geometry from an internal DrawingLayer
+   * @param id Id of the geometry which should be removed
+   * @param drawingLayer Internal drawing layer from which the geometry shall be removed
+   */
+  removeGeometryFromInternalDrawingLayer(id: string, drawingLayer: InternalDrawingLayer): void;
 
   /** Clears all geometries from an internal DrawingLayer */
   clearInternalDrawingLayer(drawingLayer: InternalDrawingLayer): void;

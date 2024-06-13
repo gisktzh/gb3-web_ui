@@ -6,7 +6,7 @@
  */
 import {LineString} from 'geojson';
 
-type SupportedSrs = '2056' | '21781';
+export type SupportedSrs = '2056' | '21781';
 export interface ElevationProfileRequest {
   /**
    * A GeoJSON representation of a polyline (type = LineString). The LineString should not have more than PROFILE_MAX_AMOUNT_POINTS,

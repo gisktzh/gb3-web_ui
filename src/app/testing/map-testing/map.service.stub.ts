@@ -82,4 +82,6 @@ export class MapServiceStub implements MapService {
   public async startDrawPrintPreview(extentWidth: number, extentHeight: number, rotation: number) {}
 
   public stopDrawPrintPreview() {}
+
+  public removeGeometryFromInternalDrawingLayer(id: string, drawingLayer: InternalDrawingLayer): void {}
 }

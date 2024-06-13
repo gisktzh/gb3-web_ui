@@ -4,8 +4,11 @@ import {ElevationProfileChartJsDataConfiguration} from './types/chartjs.type';
 import {ElevationPlotConfigService} from './services/elevation-plot-config.service';
 import {ElevationProfileChartJsOptions} from './interfaces/chartjs.interface';
 import {BaseChartDirective} from 'ng2-charts';
+import {Store} from '@ngrx/store';
+import {ElevationProfileActions} from '../../../../state/map/actions/elevation-profile.actions';
 
 const VERTIXAL_AXIS_LABEL = 'MüM';
+
 @Component({
   standalone: true,
   selector: 'elevation-profile-chart',
@@ -20,7 +23,10 @@ export class ElevationProfileChartComponent implements OnInit {
   };
   public readonly lineChartOptions: ElevationProfileChartJsOptions = this.elevationPlotConfigService.getElevationPlotChartOptions();
 
-  constructor(private readonly elevationPlotConfigService: ElevationPlotConfigService) {
+  constructor(
+    private readonly elevationPlotConfigService: ElevationPlotConfigService,
+    private readonly store: Store,
+  ) {
     this.setupHoverEvent();
   }
 
@@ -30,6 +36,10 @@ export class ElevationProfileChartComponent implements OnInit {
     }
   }
 
+  public clearElevationProfileLocation() {
+    this.store.dispatch(ElevationProfileActions.removeElevationProfileHoverLocation());
+  }
+
   private updateData(elevationProfileData: ElevationProfileDataPoint[], maxDistance: number) {
     this.lineChartData.datasets.push(
       this.elevationPlotConfigService.createElevationProfileDataset(elevationProfileData, VERTIXAL_AXIS_LABEL),
@@ -37,14 +47,15 @@ export class ElevationProfileChartComponent implements OnInit {
     this.lineChartOptions.scales.x.max = maxDistance;
   }
 
-  private chartHover(datasetIndex: number, index: number) {
-    console.log(this.lineChartData.datasets[datasetIndex].data[index]);
+  private drawElevationProfileLocation(datasetIndex: number, index: number) {
+    const location = this.lineChartData.datasets[datasetIndex].data[index].location;
+    this.store.dispatch(ElevationProfileActions.drawElevationProfileHoverLocation({location}));
   }
 
   private setupHoverEvent() {
     this.lineChartOptions.onHover = (event, elements, chart) => {
       if (elements.length > 0) {
-        this.chartHover(elements[0].datasetIndex, elements[0].index);
+        this.drawElevationProfileLocation(elements[0].datasetIndex, elements[0].index);
       }
     };
   }

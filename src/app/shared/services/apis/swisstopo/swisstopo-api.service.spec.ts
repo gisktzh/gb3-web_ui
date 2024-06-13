@@ -1,6 +1,6 @@
 import {TestBed} from '@angular/core/testing';
 
-import {ELEVATION_MODEL, SwisstopoApiService} from './swisstopo-api.service';
+import {ELEVATION_MODEL, REQUEST_SRS_MAPPING, SwisstopoApiService} from './swisstopo-api.service';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {HttpClient} from '@angular/common/http';
 import {of} from 'rxjs';
@@ -35,14 +35,30 @@ describe('SwisstopoApiService', () => {
         {alts: {COMB: 13, DTM2: 23, DTM25: 33}, easting: 13, dist: 20, northing: 23},
         {alts: {COMB: -14, DTM2: -24, DTM25: -34}, easting: 14, dist: 30, northing: 24},
       ];
-      const mockGeometry: LineString = MinimalGeometriesUtils.getMinimalLineString(2056);
+      const mockGeometry: LineString = MinimalGeometriesUtils.getMinimalLineString(REQUEST_SRS_MAPPING.internal);
       spyOn(httpClient, 'post').and.returnValue(of(mockData));
 
       const expectedDataPoints: ElevationProfileDataPoint[] = [
-        {distance: mockData[0].dist, altitude: mockData[0].alts[ELEVATION_MODEL], x: mockData[0].easting, y: mockData[0].northing},
-        {distance: mockData[1].dist, altitude: mockData[1].alts[ELEVATION_MODEL], x: mockData[1].easting, y: mockData[1].northing},
-        {distance: mockData[2].dist, altitude: mockData[2].alts[ELEVATION_MODEL], x: mockData[2].easting, y: mockData[2].northing},
-        {distance: mockData[3].dist, altitude: mockData[3].alts[ELEVATION_MODEL], x: mockData[3].easting, y: mockData[3].northing},
+        {
+          distance: mockData[0].dist,
+          altitude: mockData[0].alts[ELEVATION_MODEL],
+          location: {type: 'Point', coordinates: [mockData[0].easting, mockData[0].northing], srs: REQUEST_SRS_MAPPING.internal},
+        },
+        {
+          distance: mockData[1].dist,
+          altitude: mockData[1].alts[ELEVATION_MODEL],
+          location: {type: 'Point', coordinates: [mockData[1].easting, mockData[1].northing], srs: REQUEST_SRS_MAPPING.internal},
+        },
+        {
+          distance: mockData[2].dist,
+          altitude: mockData[2].alts[ELEVATION_MODEL],
+          location: {type: 'Point', coordinates: [mockData[2].easting, mockData[2].northing], srs: REQUEST_SRS_MAPPING.internal},
+        },
+        {
+          distance: mockData[3].dist,
+          altitude: mockData[3].alts[ELEVATION_MODEL],
+          location: {type: 'Point', coordinates: [mockData[3].easting, mockData[3].northing], srs: REQUEST_SRS_MAPPING.internal},
+        },
       ];
       /**
        * Given the mock data, and ELEVATION_MODEL === 'COMB', the following values are to be expected. Note that we do not calculate
@@ -77,11 +93,11 @@ describe('SwisstopoApiService', () => {
         },
         csvRequest: {
           url: 'some/url',
-          params: new URLSearchParams({geom: '1234', sr: '2056'}),
+          params: new URLSearchParams({geom: '1234', sr: REQUEST_SRS_MAPPING.api}),
         },
       };
 
-      const expected = 'some/url?geom=1234&sr=2056';
+      const expected = `some/url?geom=1234&sr=${REQUEST_SRS_MAPPING.api}`;
       const actual = service.createDownloadLinkUrl(data);
       expect(actual).toEqual(expected);
     });

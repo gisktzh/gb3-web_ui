@@ -1,3 +1,5 @@
+import {PointWithSrs} from './geojson-types-with-srs.interface';
+
 export interface ElevationProfileDataPointXAxis {
   distance: number;
 }
@@ -7,8 +9,7 @@ export interface ElevationProfileDataPointYAxis {
 }
 
 export interface ElevationProfileDataPointLocation {
-  x: number;
-  y: number;
+  location: PointWithSrs;
 }
 
 export interface ElevationProfileDataPoint
