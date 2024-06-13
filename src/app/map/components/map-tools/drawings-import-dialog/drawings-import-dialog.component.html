@@ -1,0 +1,12 @@
+<api-dialog-wrapper title="Einstellungen" (closeEvent)="cancel()" class="drawings-import-dialog">
+  <ng-container content>
+    <div class="drawings-import-dialog__content">
+      <drop-zone (addedFile)="handleFileChange($event)" (error)="handleFileErrors($event)"></drop-zone>
+    </div>
+  </ng-container>
+  <ng-container actions>
+    <div>
+      <button (click)="cancel()" mat-button>Abbrechen</button>
+    </div>
+  </ng-container>
+</api-dialog-wrapper>
