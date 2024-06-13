@@ -1,6 +1,6 @@
 import {initialState, reducer} from './export.reducer';
 import {ExportActions} from '../actions/export.actions';
-import {ExportFormat} from '../../../shared/types/export-format.type';
+import {ExportFormat} from '../../../shared/enums/export-format.enum';
 
 describe('Export Reducer', () => {
   describe('an unknown action', () => {
@@ -13,7 +13,7 @@ describe('Export Reducer', () => {
   });
   describe('requestExportDrawings', () => {
     it('sets the loading state and export format', () => {
-      const exportFormat: ExportFormat = ExportFormat.GEOJSON;
+      const exportFormat: ExportFormat = ExportFormat.Geojson;
       const action = ExportActions.requestDrawingsExport({exportFormat});
       const result = reducer(initialState, action);
 

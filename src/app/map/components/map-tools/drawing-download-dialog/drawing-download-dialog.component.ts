@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {MatDialogRef} from '@angular/material/dialog';
 import {ExportActions} from '../../../../state/map/actions/export.actions';
-import {ExportFormat} from '../../../../shared/types/export-format.type';
+import {ExportFormat} from '../../../../shared/enums/export-format.enum';
 import {FormControl, Validators} from '@angular/forms';
 import {Subscription} from 'rxjs';
 
@@ -13,7 +13,7 @@ import {Subscription} from 'rxjs';
 })
 export class DrawingDownloadDialogComponent implements OnInit, OnDestroy {
   public availableExportFormats: string[] = Object.values(ExportFormat);
-  public exportFormat: ExportFormat = ExportFormat.GEOJSON;
+  public exportFormat: ExportFormat = ExportFormat.Geojson;
   public exportFormatControl: FormControl = new FormControl('geojson', Validators.required);
 
   private readonly subscriptions: Subscription = new Subscription();

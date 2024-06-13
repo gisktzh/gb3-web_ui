@@ -1,5 +1,5 @@
 import {createActionGroup, emptyProps, props} from '@ngrx/store';
-import {ExportFormat} from '../../../shared/types/export-format.type';
+import {ExportFormat} from '../../../shared/enums/export-format.enum';
 import {errorProps} from '../../../shared/utils/error-props.utils';
 
 export const ExportActions = createActionGroup({

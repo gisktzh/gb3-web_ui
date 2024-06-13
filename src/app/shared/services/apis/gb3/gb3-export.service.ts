@@ -4,7 +4,7 @@ import {Gb3VectorLayer} from '../../../interfaces/gb3-vector-layer.interface';
 import {HttpClient} from '@angular/common/http';
 import {ConfigService} from '../../config.service';
 import {map} from 'rxjs/operators';
-import {ExportFormat} from '../../../types/export-format.type';
+import {ExportFormat} from '../../../enums/export-format.enum';
 import {FileDownloadService} from '../../file-download-service';
 
 @Injectable({
