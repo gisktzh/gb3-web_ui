@@ -1,3 +1,3 @@
-<div class="elevation-profile-chart">
+<div class="elevation-profile-chart" (mouseleave)="clearElevationProfileLocation()">
   <canvas [legend]="false" [data]="lineChartData" [options]="lineChartOptions" [type]="'line'" baseChart></canvas>
 </div>

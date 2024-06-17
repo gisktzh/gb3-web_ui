@@ -6,7 +6,7 @@ import {ElevationProfileState} from '../states/elevation-profile.state';
 
 describe('ElevationProfile Reducer', () => {
   const mockData: ElevationProfileData = {
-    dataPoints: [{altitude: 1, distance: 250}],
+    dataPoints: [{altitude: 1, distance: 250, location: {type: 'Point', coordinates: [1, 2], srs: 2056}}],
     statistics: {groundDistance: 666, linearDistance: 42, elevationDifference: 1337, lowestPoint: 9000, highestPoint: 9001},
     csvRequest: {url: '', params: new URLSearchParams()},
   };

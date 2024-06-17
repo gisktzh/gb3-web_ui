@@ -1,12 +1,13 @@
 import {TestBed} from '@angular/core/testing';
 
-import {MapDrawingService} from './map-drawing.service';
+import {ELEVATION_PROFILE_LOCATION_IDENTIFIER, MapDrawingService} from './map-drawing.service';
 import {MAP_SERVICE} from '../../app.module';
 import {provideMockStore} from '@ngrx/store/testing';
 import {MapService} from '../interfaces/map.service';
 import {InternalDrawingLayer} from '../../shared/enums/drawing-layer.enum';
 import {MapServiceStub} from '../../testing/map-testing/map.service.stub';
 import {MinimalGeometriesUtils} from '../../testing/map-testing/minimal-geometries.utils';
+import {PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
 
 describe('MapDrawingService', () => {
   let service: MapDrawingService;
@@ -121,6 +122,34 @@ describe('MapDrawingService', () => {
       service.clearSearchResultHighlight();
 
       expect(mapServiceSpy).toHaveBeenCalledOnceWith(InternalDrawingLayer.SearchResultHighlight);
+    });
+  });
+
+  describe('removeElevationProfileHoverLocation', () => {
+    it('calls mapService.removeGeometryFromInternalDrawingLayer with the correct id and layer', () => {
+      const mapServiceSpy = spyOn(mapService, 'removeGeometryFromInternalDrawingLayer').and.callThrough();
+
+      service.removeElevationProfileHoverLocation();
+
+      expect(mapServiceSpy).toHaveBeenCalledOnceWith(InternalDrawingLayer.ElevationProfile, ELEVATION_PROFILE_LOCATION_IDENTIFIER);
+    });
+  });
+
+  describe('drawElevationProfileHoverLocation', () => {
+    const mockLocation: PointWithSrs = {type: 'Point', coordinates: [1, 2], srs: 2056};
+
+    it('uses mapDrawingService.removeElevationProfileHoverLocation to clear the location before drawing a new object', () => {
+      const selfServiceSpy = spyOn(service, 'removeElevationProfileHoverLocation').and.callThrough();
+      const mapServiceSpy = spyOn(mapService, 'addGeometryToInternalDrawingLayer').and.callThrough();
+
+      service.drawElevationProfileHoverLocation(mockLocation);
+
+      expect(mapServiceSpy).toHaveBeenCalledOnceWith(
+        mockLocation,
+        InternalDrawingLayer.ElevationProfile,
+        ELEVATION_PROFILE_LOCATION_IDENTIFIER,
+      );
+      expect(selfServiceSpy).toHaveBeenCalledOnceWith();
     });
   });
 });

@@ -58,7 +58,28 @@ const defaultSymbolization: SymbolizationStyle = {
 };
 
 export const layerSymbolizations: LayerSymbolizations = {
-  [InternalDrawingLayer.ElevationProfile]: defaultSymbolization,
+  [InternalDrawingLayer.ElevationProfile]: {
+    ...defaultSymbolization,
+    point: {
+      type: 'simple',
+      size: 8,
+      color: {
+        r: 255,
+        g: 0,
+        b: 0,
+        a: 1,
+      },
+      outline: {
+        width: 2,
+        color: {
+          r: 255,
+          g: 0,
+          b: 0,
+          a: 1.0,
+        },
+      },
+    },
+  },
   [InternalDrawingLayer.LocatePosition]: {
     text: defaultSymbolization.text,
     point: {

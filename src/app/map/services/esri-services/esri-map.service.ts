@@ -62,6 +62,7 @@ import {ExternalWmsLayer} from '../../../shared/interfaces/external-layer.interf
 import {ActiveTimeSliderLayersUtils} from '../../utils/active-time-slider-layers.utils';
 import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
 import {InitialMapExtentService} from '../initial-map-extent.service';
+import {MapConstants} from '../../../shared/constants/map.constants';
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
 
@@ -112,6 +113,14 @@ export class EsriMapService implements MapService, OnDestroy {
 
   private set mapView(value: __esri.MapView) {
     this.esriMapViewService.mapView = value;
+  }
+
+  public removeGeometryFromInternalDrawingLayer(drawingLayer: InternalDrawingLayer, id: string): void {
+    const layer = this.esriMapViewService.findEsriLayer(this.createInternalLayerId(drawingLayer));
+    if (layer && layer instanceof __esri.GraphicsLayer) {
+      const graphicsToBeRemoved = layer.graphics.filter((graphic) => graphic.attributes[MapConstants.DRAWING_IDENTIFIER] === id).toArray();
+      layer.removeMany(graphicsToBeRemoved);
+    }
   }
 
   public moveLayerToTop(mapItem: ActiveMapItem) {
@@ -390,10 +399,10 @@ export class EsriMapService implements MapService, OnDestroy {
     ) as never;
   }
 
-  public addGeometryToInternalDrawingLayer(geometry: GeometryWithSrs, drawingLayer: InternalDrawingLayer) {
+  public addGeometryToInternalDrawingLayer(geometry: GeometryWithSrs, drawingLayer: InternalDrawingLayer, id?: string) {
     const symbolization = this.esriSymbolizationService.createSymbolizationForDrawingLayer(geometry, drawingLayer);
     const esriGeometry = this.geoJSONMapperService.fromGeoJSONToEsri(geometry);
-    this.addEsriGeometryToDrawingLayer(esriGeometry, symbolization, drawingLayer);
+    this.addEsriGeometryToDrawingLayer(esriGeometry, symbolization, drawingLayer, id);
   }
 
   public clearInternalDrawingLayer(internalDrawingLayer: InternalDrawingLayer) {
@@ -437,6 +446,10 @@ export class EsriMapService implements MapService, OnDestroy {
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
+  }
+
+  public setRotationAngle(rotation: number) {
+    this.mapView.rotation = rotation;
   }
 
   private createWmsLayer(
@@ -489,8 +502,13 @@ export class EsriMapService implements MapService, OnDestroy {
     esriGeometry: __esri.Geometry,
     esriSymbolization: __esri.Symbol,
     internalDrawingLayer: InternalDrawingLayer,
+    id?: string,
   ) {
-    const graphicItem = new EsriGraphic({geometry: esriGeometry, symbol: esriSymbolization});
+    const graphicItem = new EsriGraphic({
+      geometry: esriGeometry,
+      symbol: esriSymbolization,
+      attributes: {[MapConstants.DRAWING_IDENTIFIER]: id},
+    });
     const targetLayer = this.esriMapViewService.findEsriLayer(this.createInternalLayerId(internalDrawingLayer));
     if (targetLayer) {
       (targetLayer as __esri.GraphicsLayer).add(graphicItem);
@@ -895,10 +913,6 @@ export class EsriMapService implements MapService, OnDestroy {
     this.mapView.map.basemap.baseLayers.map((baseLayer) => {
       baseLayer.visible = basemapId === baseLayer.id;
     });
-  }
-
-  public setRotationAngle(rotation: number) {
-    this.mapView.rotation = rotation;
   }
 
   private getWmsOverrideInterceptor(accessToken?: string): __esri.RequestInterceptor {

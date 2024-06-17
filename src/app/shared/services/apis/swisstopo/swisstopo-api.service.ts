@@ -4,16 +4,27 @@ import {
   ElevationProfileAltitude,
   ElevationProfileResponse,
   ElevationProfileSearchParams,
+  SupportedSrs as SwisstopoSupportedSrs,
 } from '../../../models/swisstopo-api-generated.interface';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {ElevationProfileData} from '../../../interfaces/elevation-profile.interface';
 import {Geometry} from 'geojson';
+import {SupportedSrs} from '../../../types/supported-srs.type';
 
 /**
  * Defines which of the available elevation model data we're using.
  */
 export const ELEVATION_MODEL: keyof ElevationProfileAltitude = 'COMB';
+
+/**
+ * The SRS to use for the request to the API and map them to our internal system. Since the API requires a string, we use this lookup to
+ * convert it to our internal type.
+ */
+export const REQUEST_SRS_MAPPING: {internal: SupportedSrs; api: SwisstopoSupportedSrs} = {
+  internal: 2056,
+  api: '2056',
+};
 
 type SupportedProfileFormat = 'csv' | 'json';
 
@@ -26,7 +37,7 @@ export class SwisstopoApiService extends BaseApiService {
   public loadElevationProfile(geometry: Geometry): Observable<ElevationProfileData> {
     const payload: ElevationProfileSearchParams = {
       geom: JSON.stringify(geometry),
-      sr: '2056',
+      sr: REQUEST_SRS_MAPPING.api,
     };
     const params = new URLSearchParams(payload);
 
@@ -65,7 +76,15 @@ export class SwisstopoApiService extends BaseApiService {
           acc.statistics.elevationDifference += this.calculateElevationDifference(currentPoint, previousPoint);
         }
 
-        acc.dataPoints.push({altitude: currentPoint.alts[ELEVATION_MODEL], distance: currentPoint.dist});
+        acc.dataPoints.push({
+          altitude: currentPoint.alts[ELEVATION_MODEL],
+          distance: currentPoint.dist,
+          location: {
+            type: 'Point',
+            coordinates: [currentPoint.easting, currentPoint.northing],
+            srs: REQUEST_SRS_MAPPING.internal,
+          },
+        });
         return acc;
       },
       {
