@@ -3,6 +3,8 @@ import Uppy from '@uppy/core';
 import DropTarget from '@uppy/drop-target';
 import FileInput from '@uppy/file-input';
 import {NgClass} from '@angular/common';
+import {MatButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
 
 /**
  * This component only handles the file upload into a File object; it does _NOT_ handle the actual upload to the server.
@@ -11,7 +13,7 @@ import {NgClass} from '@angular/common';
 @Component({
   selector: 'drop-zone',
   standalone: true,
-  imports: [NgClass],
+  imports: [NgClass, MatButton, MatIcon],
   templateUrl: './drop-zone.component.html',
   styleUrl: './drop-zone.component.scss',
 })
@@ -23,6 +25,7 @@ export class DropZoneComponent implements AfterViewInit {
     restrictions: {
       maxNumberOfFiles: 1,
       maxFileSize: 10000000,
+      allowedFileTypes: ['.kml', '.json', '.geojson'],
       // todo lme: use allowed filetypes
     },
   });
@@ -46,23 +49,39 @@ export class DropZoneComponent implements AfterViewInit {
       .on('file-added', (data) => {
         this.addedFile.emit(data.data);
         this.uppyInstance.removeFile(data.id); // needed as long as only 1 file can be uploaded
-        /*
-        -> example solution for uploading
-        const formData: FormData = new FormData();
-        formData.append('file', data.data);
-        this.client
-          .post('https://maps.zh.ch/gb3/v2/import', formData)
-          .pipe(tap(() => console.log('File uploaded successfully')))
-          .subscribe();
-
-         */
       })
       .on('restriction-failed', (file, error) => {
         this.error.emit(error.message);
       })
       .on('error', (error) => {
         this.error.emit(error.message);
-      });
+      })
+      .on('file-removed', (file) => {});
     // todo lme: do we need more events? note: upload stuff is not needed here
+
+    const fileInput: HTMLInputElement = document.querySelector('#file-input')!;
+
+    fileInput.addEventListener('change', (event) => {
+      const files = fileInput.files?.length ? Array.from(fileInput.files) : [];
+
+      files.forEach((file) => {
+        try {
+          this.uppyInstance.addFile({
+            source: 'file input',
+            name: file.name,
+            type: file.type,
+            data: file,
+          });
+        } catch (err) {
+          // handle other errors
+          console.error(err);
+        }
+      });
+    });
+  }
+
+  public openFileDialog() {
+    const fileInput: HTMLInputElement = document.querySelector('#file-input')!;
+    fileInput.click();
   }
 }

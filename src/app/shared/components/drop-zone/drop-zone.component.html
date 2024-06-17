@@ -1,4 +1,9 @@
 <div #dropBoxContainer class="drop-zone" [ngClass]="{'drop-zone--hovered': isHovered}">
-  <p class="drop-zone__">LOL</p>
-  <div id="file-input"></div>
+  <p class="drop-zone__">Zum Hochladen Datei ziehen und hier ablegen</p>
+  <p>Mögliche Dateitypen: KML, JSON (max. ??MB)</p>
+  <input type="file" id="file-input" class="drop-zone__input" accept=".kml,.json,.geojson" />
+  <button (click)="openFileDialog()" mat-flat-button class="drop-zone__button" color="accent" [disabled]="isHovered">
+    Datei auswählen
+    <mat-icon svgIcon="ktzh_upload" iconPositionEnd></mat-icon>
+  </button>
 </div>
