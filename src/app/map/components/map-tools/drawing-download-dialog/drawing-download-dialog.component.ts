@@ -52,7 +52,6 @@ export class DrawingDownloadDialogComponent implements OnInit, OnDestroy {
             this.loadingState = loadingState;
             if (loadingState === 'loaded') {
               this.dialogRef.close();
-              this.store.dispatch(ExportActions.resetDrawingsExportRequest());
             }
           }),
         )
