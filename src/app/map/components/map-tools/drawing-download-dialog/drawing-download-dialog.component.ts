@@ -4,7 +4,9 @@ import {MatDialogRef} from '@angular/material/dialog';
 import {ExportActions} from '../../../../state/map/actions/export.actions';
 import {ExportFormat} from '../../../../shared/enums/export-format.enum';
 import {FormControl, Validators} from '@angular/forms';
-import {Subscription} from 'rxjs';
+import {Subscription, tap} from 'rxjs';
+import {selectExportLoadingState} from '../../../../state/map/reducers/export.reducer';
+import {LoadingState} from '../../../../shared/types/loading-state.type';
 
 @Component({
   selector: 'drawing-download-dialog',
@@ -12,10 +14,12 @@ import {Subscription} from 'rxjs';
   styleUrl: './drawing-download-dialog.component.scss',
 })
 export class DrawingDownloadDialogComponent implements OnInit, OnDestroy {
-  public availableExportFormats: string[] = Object.values(ExportFormat);
-  public exportFormat: ExportFormat = ExportFormat.Geojson;
+  public availableExportFormats = Object.values(ExportFormat);
+  public exportFormat = ExportFormat.Geojson;
   public exportFormatControl: FormControl = new FormControl('geojson', Validators.required);
+  public loadingState: LoadingState = undefined;
 
+  private readonly loadingState$ = this.store.select(selectExportLoadingState);
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(
@@ -40,10 +44,19 @@ export class DrawingDownloadDialogComponent implements OnInit, OnDestroy {
   }
 
   private initSubscriptions() {
+    this.subscriptions.add(this.exportFormatControl.valueChanges.pipe(tap((value) => (this.exportFormat = value))).subscribe());
     this.subscriptions.add(
-      this.exportFormatControl.valueChanges.subscribe((value) => {
-        this.exportFormat = value;
-      }),
+      this.loadingState$
+        .pipe(
+          tap((loadingState) => {
+            this.loadingState = loadingState;
+            if (loadingState === 'loaded') {
+              this.dialogRef.close();
+              this.store.dispatch(ExportActions.resetDrawingsExportRequest());
+            }
+          }),
+        )
+        .subscribe(),
     );
   }
 }

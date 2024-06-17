@@ -21,7 +21,10 @@ export const exportFeature = createFeature({
     on(ExportActions.setDrawingsExportRequestError, (state): ExportState => {
       return {...state, exportLoadingState: 'error', exportFormat: initialState.exportFormat};
     }),
+    on(ExportActions.resetDrawingsExportRequest, (): ExportState => {
+      return {...initialState};
+    }),
   ),
 });
 
-export const {name, reducer} = exportFeature;
+export const {name, reducer, selectExportLoadingState} = exportFeature;

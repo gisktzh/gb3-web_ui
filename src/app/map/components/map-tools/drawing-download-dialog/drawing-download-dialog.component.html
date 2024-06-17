@@ -1,4 +1,4 @@
-<api-dialog-wrapper title="Zeichungen herunterladen" (closeEvent)="cancel()" class="drawing-download-dialog">
+<api-dialog-wrapper title="Zeichungen herunterladen" (closeEvent)="cancel()" class="drawing-download-dialog" [savingState]="loadingState">
   <ng-container content>
     <form>
       <mat-form-field appearance="outline" hideRequiredMarker class="drawing-download-dialog__form-field">
