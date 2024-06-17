@@ -1,5 +1,5 @@
 import {createActionGroup, emptyProps, props} from '@ngrx/store';
-import {ExportFormat} from '../../../shared/types/export-format.type';
+import {ExportFormat} from '../../../shared/enums/export-format.enum';
 import {errorProps} from '../../../shared/utils/error-props.utils';
 
 export const ExportActions = createActionGroup({
@@ -8,5 +8,6 @@ export const ExportActions = createActionGroup({
     'Request Drawings Export': props<{exportFormat: ExportFormat}>(),
     'Set Drawings Export Request Response': emptyProps(),
     'Set Drawings Export Request Error': errorProps(),
+    'Reset Drawings Export Request': emptyProps(),
   },
 });

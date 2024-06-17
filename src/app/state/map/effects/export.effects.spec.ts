@@ -11,6 +11,7 @@ import {ExportActions} from '../actions/export.actions';
 import {provideMockActions} from '@ngrx/effects/testing';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {selectUserDrawingsVectorLayers} from '../selectors/user-drawings-vector-layers.selector';
+import {ExportFormat} from '../../../shared/enums/export-format.enum';
 
 describe('ExportEffects', () => {
   const mockDrawings: UserDrawingVectorLayers = {
@@ -86,7 +87,7 @@ describe('ExportEffects', () => {
 
   describe('requestExportDrawings$', () => {
     it('dispatches ExportActions.setExportDrawingsRequestResponse()', (done: DoneFn) => {
-      const expectedFormat = 'geojson';
+      const expectedFormat: ExportFormat = ExportFormat.Geojson;
       const gb3ExportServiceSpy = spyOn(gb3ExportService, 'exportDrawing').and.returnValue(of(new Blob()));
 
       store.overrideSelector(selectUserDrawingsVectorLayers, mockDrawings);
@@ -99,7 +100,7 @@ describe('ExportEffects', () => {
     });
 
     it('dispatches ExportActions.setExportDrawingsRequestError() on error', (done: DoneFn) => {
-      const expectedFormat = 'geojson';
+      const expectedFormat: ExportFormat = ExportFormat.Geojson;
       const expectedError = new Error('oh no! butterfingers');
       const gb3ExportServiceSpy = spyOn(gb3ExportService, 'exportDrawing').and.returnValue(throwError(() => expectedError));
 
