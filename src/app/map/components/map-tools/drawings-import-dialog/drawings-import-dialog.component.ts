@@ -3,6 +3,7 @@ import {Store} from '@ngrx/store';
 import {MatDialogRef} from '@angular/material/dialog';
 import {ConfigService} from '../../../../shared/services/config.service';
 import {FileValidationError} from '../../../../shared/errors/file-upload.errors';
+import {ImportActions} from '../../../../state/map/actions/import.actions';
 
 @Component({
   selector: 'drawings-import-dialog',
@@ -21,6 +22,7 @@ export class DrawingsImportDialogComponent {
 
   public handleFileChange(file: Blob | File) {
     console.log('File changed', file);
+    this.store.dispatch(ImportActions.requestDrawingsImport({file}));
     // todo: dispatch action, set upload state, handle response and errors, close, etc.
   }
 
