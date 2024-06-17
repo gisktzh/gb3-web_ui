@@ -16,7 +16,6 @@ import {ElevationProfileData} from '../../../shared/interfaces/elevation-profile
 import {MinimalGeometriesUtils} from '../../../testing/map-testing/minimal-geometries.utils';
 import {catchError} from 'rxjs/operators';
 import {ElevationProfileCouldNotBeLoaded} from '../../../shared/errors/elevation-profile.errors';
-import {TypedAction} from '@ngrx/store/src/models';
 import {selectData} from '../reducers/elevation-profile.reducer';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
@@ -59,7 +58,7 @@ describe('ElevationProfileEffects', () => {
   });
 
   describe('clearExistingElevationProfilesOnNew$', () => {
-    it('does nothing for other tools', fakeAsync(async () => {
+    it('does nothing for other tools', fakeAsync(() => {
       actions$ = of(ToolActions.activateTool({tool: 'measure-line'}));
 
       effects.clearExistingElevationProfilesOnNew$.subscribe();
@@ -79,7 +78,7 @@ describe('ElevationProfileEffects', () => {
   });
 
   describe('clearExistingElevationProfileOnClose$', () => {
-    it('does nothing if elevation profile is being set to visible', fakeAsync(async () => {
+    it('does nothing if elevation profile is being set to visible', fakeAsync(() => {
       actions$ = of(MapUiActions.setElevationProfileOverlayVisibility({isVisible: true}));
 
       effects.clearExistingElevationProfileOnClose$.subscribe();
@@ -113,7 +112,7 @@ describe('ElevationProfileEffects', () => {
       });
     });
 
-    it('does nothing if elevationProfileData is undefined', fakeAsync(async () => {
+    it('does nothing if elevationProfileData is undefined', fakeAsync(() => {
       store.overrideSelector(selectData, undefined);
       actions$ = of(MapUiActions.resetMapUiState());
 
@@ -175,45 +174,45 @@ describe('ElevationProfileEffects', () => {
   });
 
   describe('resetProfileDrawing$', () => {
-    it('clears the drawing layer, does not dispatch', fakeAsync(async () => {
+    it('clears the drawing layer, does not dispatch', (done: DoneFn) => {
       mapServiceSpy = spyOn(mapService, 'clearInternalDrawingLayer');
 
-      let actualAction: TypedAction<any> | undefined;
       actions$ = of(ElevationProfileActions.clearProfile());
-      effects.resetProfileDrawing$.subscribe((action) => (actualAction = action));
-      tick();
 
-      expect(mapServiceSpy).toHaveBeenCalledOnceWith(InternalDrawingLayer.ElevationProfile);
-      expect(actualAction).toEqual(ElevationProfileActions.clearProfile());
-    }));
+      effects.resetProfileDrawing$.subscribe((action) => {
+        expect(mapServiceSpy).toHaveBeenCalledOnceWith(InternalDrawingLayer.ElevationProfile);
+        expect(action).toEqual(ElevationProfileActions.clearProfile());
+        done();
+      });
+    });
   });
 
   describe('drawElevationProfileLocation$', () => {
-    it('calls MapDrawingService.drawElevationProfileLocation, does not dispatch', fakeAsync(async () => {
+    it('calls MapDrawingService.drawElevationProfileHoverLocation, does not dispatch', (done: DoneFn) => {
       const mockLocation: PointWithSrs = {type: 'Point', coordinates: [1, 2], srs: 2056};
-      mapDrawingServiceSpy = spyOn(mapDrawingService, 'drawElevationProfileLocation');
+      mapDrawingServiceSpy = spyOn(mapDrawingService, 'drawElevationProfileHoverLocation');
 
-      let actualAction: TypedAction<any> | undefined;
       actions$ = of(ElevationProfileActions.drawElevationProfileHoverLocation({location: mockLocation}));
-      effects.drawElevationProfileLocation$.subscribe((action) => (actualAction = action));
-      tick();
 
-      expect(mapDrawingServiceSpy).toHaveBeenCalledOnceWith(mockLocation);
-      expect(actualAction).toEqual(ElevationProfileActions.drawElevationProfileHoverLocation({location: mockLocation}));
-    }));
+      effects.drawElevationProfileLocation$.subscribe((action) => {
+        expect(mapDrawingServiceSpy).toHaveBeenCalledOnceWith(mockLocation);
+        expect(action).toEqual(ElevationProfileActions.drawElevationProfileHoverLocation({location: mockLocation}));
+        done();
+      });
+    });
   });
 
   describe('removeElevationProfileLocation$', () => {
-    it('calls MapDrawingService.removeElevationProfileHoverLocation, does not dispatch', fakeAsync(async () => {
-      mapDrawingServiceSpy = spyOn(mapDrawingService, 'removeElevationProfileLocation');
+    it('calls MapDrawingService.removeElevationProfileHoverLocation, does not dispatch', (done: DoneFn) => {
+      mapDrawingServiceSpy = spyOn(mapDrawingService, 'removeElevationProfileHoverLocation');
 
-      let actualAction: TypedAction<any> | undefined;
       actions$ = of(ElevationProfileActions.removeElevationProfileHoverLocation());
-      effects.removeElevationProfileLocation$.subscribe((action) => (actualAction = action));
-      tick();
 
-      expect(mapDrawingServiceSpy).toHaveBeenCalledOnceWith();
-      expect(actualAction).toEqual(ElevationProfileActions.removeElevationProfileHoverLocation());
-    }));
+      effects.removeElevationProfileLocation$.subscribe((action) => {
+        expect(mapDrawingServiceSpy).toHaveBeenCalledOnceWith();
+        expect(action).toEqual(ElevationProfileActions.removeElevationProfileHoverLocation());
+        done();
+      });
+    });
   });
 });

@@ -46,8 +46,8 @@ export class SwisstopoApiService extends BaseApiService {
     }).pipe(map((value) => this.mapElevationProfileResponseToElevationProfileData(value, params)));
   }
 
-  public createDownloadLinkUrl(elevationProfileData?: ElevationProfileData): string | undefined {
-    if (!elevationProfileData) {
+  public createDownloadLinkUrl(elevationProfileData: ElevationProfileData | undefined): string | undefined {
+    if (elevationProfileData === undefined) {
       return undefined;
     }
     return `${elevationProfileData.csvRequest.url}?${elevationProfileData.csvRequest.params.toString()}`;

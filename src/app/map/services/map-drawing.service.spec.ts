@@ -125,37 +125,31 @@ describe('MapDrawingService', () => {
     });
   });
 
-  describe('removeElevationProfileLocation', () => {
+  describe('removeElevationProfileHoverLocation', () => {
     it('calls mapService.removeGeometryFromInternalDrawingLayer with the correct id and layer', () => {
       const mapServiceSpy = spyOn(mapService, 'removeGeometryFromInternalDrawingLayer').and.callThrough();
 
-      service.removeElevationProfileLocation();
+      service.removeElevationProfileHoverLocation();
 
       expect(mapServiceSpy).toHaveBeenCalledOnceWith(InternalDrawingLayer.ElevationProfile, ELEVATION_PROFILE_LOCATION_IDENTIFIER);
     });
   });
 
-  describe('drawElevationProfileLocation', () => {
+  describe('drawElevationProfileHoverLocation', () => {
     const mockLocation: PointWithSrs = {type: 'Point', coordinates: [1, 2], srs: 2056};
 
-    it('uses mapDrawingService.removeElevationProfileLocation to clear the location before drawing', () => {
-      const selfServiceSpy = spyOn(service, 'removeElevationProfileLocation').and.callThrough();
-
-      service.drawElevationProfileLocation(mockLocation);
-
-      expect(selfServiceSpy).toHaveBeenCalledOnceWith();
-    });
-
-    it('calls mapService.removeGeometryFromInternalDrawingLayer with the correct id and layer', () => {
+    it('uses mapDrawingService.removeElevationProfileHoverLocation to clear the location before drawing a new object', () => {
+      const selfServiceSpy = spyOn(service, 'removeElevationProfileHoverLocation').and.callThrough();
       const mapServiceSpy = spyOn(mapService, 'addGeometryToInternalDrawingLayer').and.callThrough();
 
-      service.drawElevationProfileLocation(mockLocation);
+      service.drawElevationProfileHoverLocation(mockLocation);
 
       expect(mapServiceSpy).toHaveBeenCalledOnceWith(
         mockLocation,
         InternalDrawingLayer.ElevationProfile,
         ELEVATION_PROFILE_LOCATION_IDENTIFIER,
       );
+      expect(selfServiceSpy).toHaveBeenCalledOnceWith();
     });
   });
 });
