@@ -16,7 +16,7 @@ import {LoadingState} from '../../../../shared/types/loading-state.type';
 export class DrawingDownloadDialogComponent implements OnInit, OnDestroy {
   public availableExportFormats = Object.values(ExportFormat);
   public exportFormat = ExportFormat.Geojson;
-  public exportFormatControl: FormControl = new FormControl('geojson', Validators.required);
+  public exportFormatControl = new FormControl('geojson', Validators.required);
   public loadingState: LoadingState = undefined;
 
   private readonly loadingState$ = this.store.select(selectExportLoadingState);
@@ -44,7 +44,9 @@ export class DrawingDownloadDialogComponent implements OnInit, OnDestroy {
   }
 
   private initSubscriptions() {
-    this.subscriptions.add(this.exportFormatControl.valueChanges.pipe(tap((value) => (this.exportFormat = value))).subscribe());
+    this.subscriptions.add(
+      this.exportFormatControl.valueChanges.pipe(tap((value) => (this.exportFormat = value as ExportFormat))).subscribe(),
+    );
     this.subscriptions.add(
       this.loadingState$
         .pipe(
