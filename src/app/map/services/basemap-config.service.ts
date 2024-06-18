@@ -25,9 +25,9 @@ export class BasemapConfigService {
       return this.defaultBasemap.id;
     }
 
-    id = id.toLowerCase();
-    if (this.availableBasemaps.some((availableBasemap) => availableBasemap.id === id)) {
-      return id;
+    const basemap = this.availableBasemaps.find((availableBasemap) => availableBasemap.id.toLowerCase() === id!.toLowerCase());
+    if (basemap) {
+      return basemap.id;
     }
 
     return this.defaultBasemap.id;
