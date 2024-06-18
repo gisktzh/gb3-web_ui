@@ -1,4 +1,4 @@
-import {AfterViewInit, Component} from '@angular/core';
+import {Component} from '@angular/core';
 import {AbstractToolsComponent} from '../abstract-tools/abstract-tools.component';
 import {DrawingSettingsDialogComponent} from '../drawing-settings-dialog/drawing-settings-dialog.component';
 import {PanelClass} from '../../../../shared/enums/panel-class.enum';
@@ -11,11 +11,7 @@ const DRAWING_SETTINGS_DIALOG_MAX_WIDTH = 420;
   templateUrl: './drawing-tools.component.html',
   styleUrls: ['./drawing-tools.component.scss'],
 })
-export class DrawingToolsComponent extends AbstractToolsComponent implements AfterViewInit {
-  public ngAfterViewInit() {
-    this.openImportDrawingsDialog();
-  }
-
+export class DrawingToolsComponent extends AbstractToolsComponent {
   public togglePointDrawing() {
     this.toggleTool('draw-point');
   }

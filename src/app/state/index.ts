@@ -132,7 +132,7 @@ export interface State {
   externalMapItem: ExternalMapItemState;
   app: AppState;
   export: ExportState;
-  drawingsImport: ImportState;
+  drawingImport: ImportState;
 }
 
 export const reducers: ActionReducerMap<State> = {
@@ -169,7 +169,7 @@ export const reducers: ActionReducerMap<State> = {
   externalMapItem: externalMapItemReducer,
   app: appReducer,
   export: exportReducer,
-  drawingsImport: importReducer,
+  drawingImport: importReducer,
 };
 
 export const effects = [
