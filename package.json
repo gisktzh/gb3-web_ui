@@ -18,7 +18,7 @@
     "prepare": "node ./prepare.mjs",
     "update-version": "node ./update-version.js",
     "format-all": "prettier --write ./src",
-    "generate-gb3-api": "npx swagger-typescript-api -p https://maps.zh.ch/api-docs/gb3/v1/swagger.yaml -o ./src/app/shared/models -n gb3-api-generated.interfaces.ts --no-client --extract-response-body --extract-request-body --extract-request-body && node ./remove-generated-api-version-references.js ./src/app/shared/models/gb3-api-generated.interfaces.ts"
+    "generate-gb3-api": "npx swagger-typescript-api -p https://maps.zh.ch/api-docs/gb3/v2/swagger.yaml -o ./src/app/shared/models -n gb3-api-generated.interfaces.ts --no-client --extract-response-body --extract-request-body --extract-request-body && node ./remove-generated-api-version-references.js ./src/app/shared/models/gb3-api-generated.interfaces.ts"
   },
   "private": true,
   "engines": {
@@ -44,10 +44,12 @@
     "@arcgis/core": "~4.29.0",
     "@ngrx/effects": "^17.1.1",
     "@ngrx/entity": "^17.1.1",
+    "@ngrx/operators": "^17.2.0",
     "@ngrx/router-store": "^17.1.1",
     "@ngrx/store": "^17.1.1",
     "@ngrx/store-devtools": "^17.1.1",
     "@terraformer/arcgis": "^2.1.2",
+    "@types/file-saver": "^2.0.7",
     "@types/geojson": "^7946.0.10",
     "@types/node": "^20.8",
     "@types/terraformer__arcgis": "^2.0.2",
@@ -57,13 +59,14 @@
     "angular-resizable-element": "^7.0.2",
     "chart.js": "^4.4.0",
     "dayjs": "^1.11.7",
+    "file-saver": "^2.0.5",
     "immer": "^10.0.1",
     "material-icons": "^1.13.12",
     "ng2-charts": "^6.0.0",
     "ngx-ui-tour-md-menu": "^12.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "uuid": "^9.0.0",
+    "uuid": "^10.0.0",
     "zone.js": "~0.14.2"
   },
   "devDependencies": {
@@ -85,7 +88,7 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "lint-staged": "^15.0.0",
-    "prettier": "^3.2.5",
+    "prettier": "^3.3.2",
     "puppeteer": "^22.0.0",
     "typescript": "~5.2.2"
   }

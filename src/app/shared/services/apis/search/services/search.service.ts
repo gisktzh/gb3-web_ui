@@ -10,7 +10,7 @@ import {map} from 'rxjs/operators';
   providedIn: 'root',
 })
 export class SearchService extends BaseApiService {
-  protected apiBaseUrl = `${this.configService.apiConfig.searchApi.baseUrl}/${this.configService.apiConfig.searchApi.version}`;
+  protected apiBaseUrl = `${this.configService.apiConfig.gb2Api.baseUrl}/${this.configService.apiConfig.gb2Api.version}`;
 
   public searchIndexes(term: string, searchIndexes: SearchIndex[]): Observable<SearchApiResultMatch[]> {
     const searchIndexNames = searchIndexes.map((index) => index.indexName).toString();

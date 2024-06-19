@@ -220,7 +220,7 @@ describe('Gb3GeoshopProductsService', () => {
 
       service.loadRelevanteProducts(topicGuids).subscribe((actual) => {
         httpTestingController.expectNone((req: HttpRequest<unknown>) =>
-          req.url.includes(`${configService.apiConfig.searchApi.baseUrl}/products/relevant`),
+          req.url.includes(`${configService.apiConfig.gb2Api.baseUrl}/products/relevant`),
         );
         expect(actual).toEqual(expected);
         done();

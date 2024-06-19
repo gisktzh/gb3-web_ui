@@ -9,7 +9,7 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
     apiBasePaths: {
       gb2Api: {
         baseUrl: 'https://uatmaps.kt.ktzh.ch/gb3',
-        version: 'v1',
+        version: 'v2',
       },
       gb2StaticFiles: {
         baseUrl: 'https://uatmaps.kt.ktzh.ch',
@@ -22,10 +22,6 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       },
       geoLion: {
         baseUrl: 'https://uatgeolion.kt.ktzh.ch',
-      },
-      searchApi: {
-        baseUrl: 'https://uatmaps.kt.ktzh.ch/gb3',
-        version: 'v1',
       },
       ktzhWebsite: {
         baseUrl: 'https://www.zh.ch',

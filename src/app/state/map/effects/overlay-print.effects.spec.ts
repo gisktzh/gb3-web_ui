@@ -15,6 +15,7 @@ import {OverlayPrintEffects} from './overlay-print.effects';
 import {selectPrintLegendItems} from '../selectors/print-legend-items.selector';
 import {FeatureInfoPrintConfiguration, PrintableOverlayItem} from '../../../shared/interfaces/overlay-print.interface';
 import {selectPrintFeatureInfoItems} from '../selectors/print-feature-info-items.selector';
+import {FileDownloadService} from '../../../shared/services/file-download-service';
 
 describe('OverlayPrintEffects', () => {
   const creationResponseMock: PrintCreationResponse = {reportUrl: 'response url'};
@@ -22,6 +23,7 @@ describe('OverlayPrintEffects', () => {
   let store: MockStore;
   let effects: OverlayPrintEffects;
   let gb3PrintService: Gb3PrintService;
+  let fileDownloadService: FileDownloadService;
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
@@ -37,6 +39,7 @@ describe('OverlayPrintEffects', () => {
     });
     effects = TestBed.inject(OverlayPrintEffects);
     gb3PrintService = TestBed.inject(Gb3PrintService);
+    fileDownloadService = TestBed.inject(FileDownloadService);
     store = TestBed.inject(MockStore);
   });
 
@@ -169,16 +172,19 @@ describe('OverlayPrintEffects', () => {
     });
   });
 
-  describe('openPrintDocumentInNewTab$', () => {
+  describe('downloadPrintDocument$', () => {
     it('opens a print document in a new tab, no further dispatch', (done: DoneFn) => {
       const expectedCreationResponse = creationResponseMock;
-      const documentWindowOpenSpy = spyOn(document.defaultView!.window, 'open').and.returnValue(null);
+      const fileDownloadServiceSpy = spyOn(fileDownloadService, 'downloadFileFromUrl');
       const expectedAction = OverlayPrintActions.setPrintRequestResponse({overlay: 'legend', creationResponse: expectedCreationResponse});
 
       actions$ = of(expectedAction);
-      effects.openPrintDocumentInNewTab$.subscribe((action) => {
+      effects.downloadPrintDocument$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
-        expect(documentWindowOpenSpy).toHaveBeenCalledOnceWith(expectedCreationResponse.reportUrl, '_blank');
+        expect(fileDownloadServiceSpy).toHaveBeenCalledOnceWith(
+          expectedCreationResponse.reportUrl,
+          expectedCreationResponse.reportUrl.split('/').pop(),
+        );
         done();
       });
     });

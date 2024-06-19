@@ -1,5 +1,6 @@
 import {Inject, Injectable} from '@angular/core';
-import {Actions, concatLatestFrom, createEffect, ofType} from '@ngrx/effects';
+import {Actions, createEffect, ofType} from '@ngrx/effects';
+import {concatLatestFrom} from '@ngrx/operators';
 import {combineLatestWith, first, take, tap} from 'rxjs';
 import {AuthStatusActions} from '../actions/auth-status.actions';
 import {AuthService} from '../../../auth/auth.service';

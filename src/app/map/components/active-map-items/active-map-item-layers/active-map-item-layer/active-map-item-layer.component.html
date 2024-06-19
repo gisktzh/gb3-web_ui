@@ -13,7 +13,8 @@
     class="active-map-item-layer__title"
     matTooltip="{{ layer | layerTooltip }}"
     [ngClass]="{
-      'active-map-item-layer__title--inactive': !activeMapItem.visible || !layer.visible || scale < layer.minScale || scale > layer.maxScale
+      'active-map-item-layer__title--inactive':
+        !activeMapItem.visible || !layer.visible || scale < layer.minScale || scale > layer.maxScale,
     }"
   >
     {{ layer.title }}

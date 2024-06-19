@@ -87,6 +87,8 @@ import {NotificationIndicatorComponent} from './components/notification-indicato
 import {ElevationProfileChartComponent} from './components/elevation-profile-overlay/elevation-profile-chart/elevation-profile-chart.component';
 import {provideCharts, withDefaultRegisterables} from 'ng2-charts';
 import {FeatureFlagDirective} from '../shared/directives/feature-flag.directive';
+import {DrawingDownloadButtonComponent} from './components/map-tools/drawing-download-button/drawing-download-button.component';
+import {DrawingDownloadDialogComponent} from './components/map-tools/drawing-download-dialog/drawing-download-dialog.component';
 
 @NgModule({
   providers: [provideCharts(withDefaultRegisterables())],
@@ -160,6 +162,7 @@ import {FeatureFlagDirective} from '../shared/directives/feature-flag.directive'
     DataDownloadOrderStatusPipe,
     DataDownloadOrderDownloadUrlPipe,
     DrawingSettingsDialogComponent,
+    DrawingDownloadDialogComponent,
     MapImportDialogComponent,
   ],
   imports: [
@@ -181,6 +184,7 @@ import {FeatureFlagDirective} from '../shared/directives/feature-flag.directive'
     DisableOverscrollBehaviourComponent,
     NotificationIndicatorComponent,
     ElevationProfileChartComponent,
+    DrawingDownloadButtonComponent,
     FeatureFlagDirective,
     NgOptimizedImage,
   ],

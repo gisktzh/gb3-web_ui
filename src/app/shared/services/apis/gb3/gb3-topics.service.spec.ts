@@ -578,7 +578,6 @@ describe('Gb3TopicsService', () => {
                         },
                       },
                     ],
-                    bbox: [2682671.789999999, 1247866.0890000015, 2682753.579, 1247937.0270000026],
                     geometry: {
                       type: 'MultiPolygon',
                       crs: {
@@ -635,7 +634,6 @@ describe('Gb3TopicsService', () => {
                         value: 2159.843540479304,
                       },
                     ],
-                    bbox: [2682674.557, 1247872.6230000034, 2682747.420000002, 1247933.7089999989],
                     geometry: {
                       type: 'MultiPolygon',
                       crs: {
@@ -680,7 +678,6 @@ describe('Gb3TopicsService', () => {
                         value: '11.12.2023',
                       },
                     ],
-                    bbox: [2676224.6939999983, 1241584.1049999967, 2689665.811999999, 1254306.2330000028],
                     geometry: undefined,
                   },
                 ],
@@ -702,7 +699,7 @@ describe('Gb3TopicsService', () => {
 
       const expectedUrl =
         `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/` +
-        `topics/AVfarbigZH/feature_info?bbox=1337%2C42.666%2C1337%2C42.666&queryLayers=TBLI-1%2CMBSF-1%2CRESF-1%2CSOSFC-1%2CLCSFC-1`;
+        `topics/AVfarbigZH/feature_info?x=${x}&y=${y}&queryLayers=TBLI-1%2CMBSF-1%2CRESF-1%2CSOSFC-1%2CLCSFC-1`;
       const expected: FeatureInfoResponse[] = [
         {
           featureInfo: {

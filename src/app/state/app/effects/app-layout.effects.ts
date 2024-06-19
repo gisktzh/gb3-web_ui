@@ -1,4 +1,5 @@
-import {Actions, concatLatestFrom, createEffect, ofType} from '@ngrx/effects';
+import {Actions, createEffect, ofType} from '@ngrx/effects';
+import {concatLatestFrom} from '@ngrx/operators';
 import {Injectable} from '@angular/core';
 import {AppLayoutActions} from '../actions/app-layout.actions';
 import {LayerCatalogActions} from '../../map/actions/layer-catalog.actions';

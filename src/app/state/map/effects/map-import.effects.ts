@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
-import {Actions, concatLatestFrom, createEffect, ofType} from '@ngrx/effects';
+import {Actions, createEffect, ofType} from '@ngrx/effects';
+import {concatLatestFrom} from '@ngrx/operators';
 import {filter, map} from 'rxjs/operators';
 import {MapImportActions} from '../actions/map-import.actions';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';

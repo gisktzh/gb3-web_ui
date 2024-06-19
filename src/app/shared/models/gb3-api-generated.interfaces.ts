@@ -9,11 +9,62 @@
  * ---------------------------------------------------------------
  */
 
-import {FavouriteFilterConfiguration} from '../interfaces/topic.interface';
-
 export interface Canton {
   /** GeoJSON geometry object */
   boundingbox: Geometry;
+}
+
+/**
+ * Error objects provide additional information about problems encountered while performing an operation.
+ * Error objects MUST be returned as an array keyed by errors in the top level of a JSON:API document.
+ *
+ * An error object MAY have the following members, and MUST contain at least one of:
+ * - id
+ * - links
+ * - status
+ * - code
+ * - title
+ * - detail
+ * - source
+ * - meta
+ */
+export interface ErrorObject {
+  /** A unique identifier for this particular occurrence of the problem. */
+  id?: string;
+  /** A links object containing the following members: about, type */
+  links?: {
+    /** A link that leads to further details about this particular occurrence of the problem. When dereferenced, it should lead to a human-readable explanation of the error. */
+    about?: LinkObject;
+    /** A link that identifies the type of error that this particular error is an instance of. This URI SHOULD be dereferencable to a human-readable explanation of the general error. */
+    type?: LinkObject;
+  };
+  /** The HTTP status code applicable to this problem, expressed as a string value. */
+  status?: string;
+  /** An application-specific error code, expressed as a string value. */
+  code?: string;
+  /** A short, human-readable summary of the problem that SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization. */
+  title?: string;
+  /** A human-readable explanation specific to this occurrence of the problem. Like title, this field’s value can be localized. */
+  detail?: string;
+  /** An object containing references to the source of the error, optionally including any of the following members: pointer, parameter, header */
+  source?: {
+    /** A JSON Pointer https://tools.ietf.org/html/rfc6901 to the associated entity in the request document [e.g. "/data" for a primary data object, or "/data/attributes/title" for a specific attribute]. */
+    pointer?: string;
+    /** A string indicating which URI query parameter caused the error. */
+    parameter?: string;
+    /** A string indicating which HTTP header caused the error. */
+    header?: string;
+  };
+  /** A meta object containing non-standard meta-information about the error. */
+  meta?: {
+    /** Can be any value - string, number, boolean, array or object. */
+    AnyValue?: any;
+  };
+}
+
+export interface ErrorResponse {
+  errors?: ErrorObject[];
+  required?: any;
 }
 
 export interface Feature {
@@ -28,7 +79,7 @@ export interface Feature {
       geolion_karten_uuid: string | null;
       layers: {
         /** Layer name (layer info only) */
-        layer?: string;
+        layer: string;
         /** Layer or topic info title */
         title: string;
         /** Geolion ID of layer (layer info only) */
@@ -37,15 +88,9 @@ export interface Feature {
         geolion_geodatensatz_uuid?: string | null;
         features: {
           /** Feature ID (layer info only) */
-          fid?: number;
+          fid: number;
           /** Feature fields */
           fields: InfoFeatureField[];
-          /**
-           * Bounding box of this feature (layer info only)
-           * @maxItems 4
-           * @minItems 4
-           */
-          bbox?: number[];
           /** Feature geometry (layer info only) */
           geometry?: Geometry;
         }[];
@@ -225,26 +270,6 @@ export interface PersonalFavoriteNew {
   measurements: FavoriteMeasurements;
 }
 
-export interface PrintCapabilities {
-  print: {
-    /** Available output formats */
-    formats: string[];
-    /** Available DPI settings */
-    dpis: number[];
-    /** Available print templates */
-    reports: {
-      /** Report name */
-      name: string;
-      map: {
-        /** Width of map element in px @ 72dpi */
-        width: number;
-        /** Height of map element in px @ 72dpi */
-        height: number;
-      };
-    }[];
-  };
-}
-
 export type PrintFeatureInfoNew = {
   /** List of query topics */
   query_topics?: {
@@ -366,7 +391,7 @@ export interface PrintNew {
            */
           url: string;
           /**
-           * WMS layer names
+           * WMS layer names ordered from bottom to top
            * @example ["wald","seen","gemeindegrenzen"]
            */
           layers: string[];
@@ -410,7 +435,7 @@ export interface RelevantProductsList {
 
 export type SearchResultsList = {
   index: string;
-  matches: SearchMatch[];
+  matches: (SearchMatch | MetaSearchMatch)[];
 }[];
 
 export interface SharedFavorite {
@@ -768,10 +793,6 @@ export type FavoriteContent = {
    * @max 1
    */
   opacity: number;
-  /** TimeExtent of the timeslider */ // TODO gb3-530: will be used once api ready
-  timeExtent: {start: string; end: string}[] | undefined;
-  /** Selected Attributefilters */
-  attributeFilters: FavouriteFilterConfiguration[] | undefined;
   /** Single layer of the map */
   isSingleLayer: boolean;
   layers: {
@@ -782,11 +803,49 @@ export type FavoriteContent = {
     /** Visibility of the layer */
     visible: boolean;
   }[];
+  attributeFilters?: {
+    /** Filter parameter name */
+    parameter: string;
+    /** Filter title */
+    name: string;
+    activeFilters: {
+      /** Filter item name */
+      name: string;
+      /** Filter item checked */
+      isActive: boolean;
+    }[];
+  }[];
+  /** Time extent of the map */
+  timeExtent?: {
+    /** Start of time extent */
+    start: string;
+    /** End of time extent */
+    end: string;
+  };
 }[];
 
 export type FavoriteDrawings = VectorLayer;
 
 export type FavoriteMeasurements = VectorLayer;
+
+export interface GenericGeojsonFeature {
+  /** GeoJSON Feature */
+  type: 'Feature';
+  /** Feature properties */
+  properties: object | null;
+  /** GeoJSON geometry object */
+  geometry: Geometry;
+}
+
+/**
+ * GeoJSON FeatureCollection
+ * @example {"type":"FeatureCollection","features":[{"type":"Feature","properties":{},"geometry":{"type":"Point","coordinates":[8.5438572,47.3780431]}}]}
+ */
+export interface GenericGeojsonFeatureCollection {
+  /** GeoJSON FeatureCollection */
+  type: 'FeatureCollection';
+  features: GenericGeojsonFeature[];
+}
 
 export interface GeojsonFeature {
   /** GeoJSON Feature */
@@ -795,11 +854,11 @@ export interface GeojsonFeature {
     /**
      * UUID of the given feature
      */
-    id: string; // todo: specify API interface to expect these properties
+    id: string; // todo: specify API interface to expect these properties; see https://jira-geo.zh.ch/browse/GB3-825
     /**
      * UUID if the feature has a belongsTo relationship with another feature, e.g. the label of a measurement.
      */
-    belongsTo?: string; // todo: specify API interface to expect these properties
+    belongsTo?: string; // todo: specify API interface to expect these properties; see https://jira-geo.zh.ch/browse/GB3-825
     /**
      * Reference to style ID in 'styles'
      * @example "a"
@@ -1009,9 +1068,11 @@ export interface QueryCoordinates {
 }
 
 export interface SearchMatch {
+  /** Display string of the match */
   displayString: string;
+  /** Score of the match */
   score: number;
-  /** GeoJSON geometry object */
+  /** Geometry of the match */
   geometry?: Geometry;
 }
 
@@ -1126,7 +1187,42 @@ export type VectorLayerStyles = {
   };
 };
 
+/** Vector layer without styles */
+export interface VectorLayerWithoutStyles {
+  /** Vector layer type */
+  type: 'Vector';
+  /** GeoJSON FeatureCollection */
+  geojson: GenericGeojsonFeatureCollection;
+  /** Style definitions for features. NOTE: keys are style IDs referenced in feature 'style' property */
+  styles?: VectorLayerStyles;
+}
+
 export type CantonListData = Canton;
+
+export interface ImportGeojsonCreatePayload {
+  /** GeoJSON file containing FeatureCollection or Feature */
+  file: File;
+}
+
+export type ImportGeojsonCreateData = VectorLayerWithoutStyles;
+
+export type ExportGeojsonCreateData = GenericGeojsonFeatureCollection;
+
+export interface ImportCreatePayload {
+  /** GeoJSON file containing FeatureCollection or Feature, or KML file */
+  file: File;
+}
+
+export type ImportCreateData = VectorLayerWithoutStyles;
+
+export interface ImportKmlCreatePayload {
+  /** KML file */
+  file: File;
+}
+
+export type ImportKmlCreateData = VectorLayer;
+
+export type ExportKmlCreateData = any;
 
 export type TopicsFeatureInfoDetailData = Feature;
 
@@ -1172,8 +1268,6 @@ export type UserFavoritesCreateData = PersonalFavorite;
 export type UserFavoritesDetailData = PersonalFavorite;
 
 export type UserFavoritesDeleteData = any;
-
-export type PrintCapabilitiesListData = PrintCapabilities;
 
 export interface PrintCreateData {
   /** Link to report file */

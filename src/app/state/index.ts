@@ -17,6 +17,7 @@ import {reducer as generalInfoReducer} from './map/reducers/general-info.reducer
 import {reducer as toolReducer} from './map/reducers/tool.reducer';
 import {reducer as appLayoutReducer} from './app/reducers/app-layout.reducer';
 import {reducer as printReducer} from './map/reducers/print.reducer';
+import {reducer as exportReducer} from './map/reducers/export.reducer';
 import {reducer as mapUiReducer} from './map/reducers/map-ui.reducer';
 import {reducer as shareLinkReducer} from './map/reducers/share-link.reducer';
 import {reducer as dataCatalogueReducer} from './data-catalogue/reducers/data-catalogue.reducer';
@@ -91,6 +92,8 @@ import {ExternalMapItemState} from './map/states/external-map-item.state';
 import {ExternalMapItemEffects} from './map/effects/external-map-item.effects';
 import {AppState} from './app/states/app.state';
 import {AppEffects} from './app/effects/app.effects';
+import {ExportEffects} from './map/effects/export.effects';
+import {ExportState} from './map/states/export.state';
 
 export interface State {
   mapConfig: MapConfigState;
@@ -125,6 +128,7 @@ export interface State {
   mapImport: MapImportState;
   externalMapItem: ExternalMapItemState;
   app: AppState;
+  export: ExportState;
 }
 
 export const reducers: ActionReducerMap<State> = {
@@ -160,6 +164,7 @@ export const reducers: ActionReducerMap<State> = {
   mapImport: mapImportReducer,
   externalMapItem: externalMapItemReducer,
   app: appReducer,
+  export: exportReducer,
 };
 
 export const effects = [
@@ -191,6 +196,7 @@ export const effects = [
   ElevationProfileEffects,
   MapImportEffects,
   ExternalMapItemEffects,
+  ExportEffects,
   AppEffects,
 ];
 
