@@ -30,8 +30,4 @@ export class Gb3ImportService extends Gb3ApiService {
       }),
     );
   }
-
-  private getFullEndpointUrlForExportFormat(exportFormat: string): string {
-    return `${this.getFullEndpointUrl()}/${exportFormat}`;
-  }
 }
