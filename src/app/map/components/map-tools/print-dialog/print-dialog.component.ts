@@ -22,6 +22,7 @@ import {printConfig} from '../../../../shared/configs/print.config';
 import {MatStepper} from '@angular/material/stepper';
 import {FormValueConversionUtils} from '../../../utils/form-value-conversion.utils';
 import {AvailablePrintSettingsUtils} from '../../../utils/available-print-settings.utils';
+import {selectIsMapSideDrawerOpen} from '../../../../state/map/reducers/map-ui.reducer';
 
 interface PrintForm {
   title: FormControl<string | null>;
@@ -60,12 +61,13 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
   public printCreationLoadingState: LoadingState;
   public mapConfigState?: MapConfigState;
   public activeMapItems?: ActiveMapItem[];
+  public readonly maxScale = this.configService.mapConfig.mapScaleConfig.maxScale;
+  public readonly minScale = this.configService.mapConfig.mapScaleConfig.minScale;
 
   public availableReportLayouts: string[] = Object.values(DocumentFormat).filter((value) => typeof value === 'string') as string[];
   public availableDpiSettings: number[] = Object.values(DpiSetting).filter((value) => typeof value === 'number') as number[];
   public availableFileFormats: string[] = Object.values(FileFormat).filter((value) => typeof value === 'string') as string[];
 
-  public readonly scales: number[] = this.configService.printConfig.scales;
   public linear = true;
 
   private drawings: Gb3StyledInternalDrawingRepresentation[] = [];
@@ -128,8 +130,8 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.formGroup.valueChanges
         .pipe(
-          combineLatestWith(this.isFormInitialized),
-          filter(([_, isFormInitialized]) => isFormInitialized),
+          combineLatestWith(this.isFormInitialized, this.store.select(selectIsMapSideDrawerOpen)),
+          filter(([_, isFormInitialized, isMapSideDrawerOpen]) => isFormInitialized && isMapSideDrawerOpen),
           // for the print preview we only use some properties and only if they've changed.
           // The disabled properties are not showing in the 'value' object, thus we need to get them from the formGroup
           map(([value, _]) => ({
@@ -297,9 +299,6 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
 
   private initializeDefaultFormValues(currentScale: number) {
     const defaultReport = printConfig.defaultPrintValues;
-    const defaultScale = this.configService.printConfig.scales.reduce(function (prev, curr) {
-      return Math.abs(curr - currentScale) < Math.abs(prev - currentScale) ? curr : prev;
-    });
     this.formGroup.setValue({
       title: '',
       comment: null,
@@ -308,7 +307,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
       reportOrientation: defaultReport.orientation,
       dpi: defaultReport.dpiSetting,
       rotation: defaultReport.rotation,
-      scale: defaultScale ?? 0,
+      scale: Math.round(currentScale),
       fileFormat: FileFormat[defaultReport.fileFormat],
       showLegend: defaultReport.legend,
     });

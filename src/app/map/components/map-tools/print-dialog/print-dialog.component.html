@@ -139,11 +139,9 @@
             hideRequiredMarker
           >
             <mat-label>Massstab</mat-label>
-            <mat-select formControlName="scale">
-              <mat-option *ngFor="let scale of scales" [value]="scale">
-                {{ '1:' + scale }}
-              </mat-option>
-            </mat-select>
+            <input matInput formControlName="scale" type="number" [min]="maxScale" [max]="minScale" [placeholder]="maxScale.toString()" />
+            <span matPrefix class="print-dialog__stepper__content__form__row__element__label-prefix"> 1: </span>
+            <mat-error>Minimum: 1:{{ maxScale }} Maximum: 1:{{ minScale }}</mat-error>
           </mat-form-field>
         </div>
         <div>
