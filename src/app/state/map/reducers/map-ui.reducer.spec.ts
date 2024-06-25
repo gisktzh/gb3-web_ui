@@ -147,6 +147,7 @@ describe('MapUi Reducer', () => {
         ...initialState,
         hideZoomButtons: true,
         mapSideDrawerContent: 'print',
+        isMapSideDrawerOpen: false,
       };
       const action = MapUiActions.hideMapSideDrawerContent();
 
@@ -183,6 +184,15 @@ describe('MapUi Reducer', () => {
     });
   });
 
+  describe('notifyMapSideDrawerAfterOpen', () => {
+    it('set isMapSideDrawer to true', () => {
+      const action = MapUiActions.notifyMapSideDrawerAfterOpen();
+
+      const result = reducer(initialState, action);
+
+      expect(result).toEqual({...initialState, isMapSideDrawerOpen: true});
+    });
+  });
   describe('resetMapUiState', () => {
     it('resets state to initialState', () => {
       const mockState: MapUiState = {
