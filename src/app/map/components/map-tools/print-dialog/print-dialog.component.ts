@@ -169,10 +169,10 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
             fileFormat: value.fileFormat ?? this.formGroup.controls.fileFormat.value,
           })),
           distinctUntilChanged(
+            // We do not check for scale here, because the scale is dealt with separately
             (previous, current) =>
               previous.reportLayout === current.reportLayout &&
               previous.reportOrientation === current.reportOrientation &&
-              // previous.scale === current.scale &&
               previous.rotation === current.rotation &&
               previous.fileFormat === current.fileFormat,
           ),
