@@ -23,6 +23,7 @@ import {MatStepper} from '@angular/material/stepper';
 import {FormValueConversionUtils} from '../../../utils/form-value-conversion.utils';
 import {AvailablePrintSettingsUtils} from '../../../utils/available-print-settings.utils';
 import {selectIsMapSideDrawerOpen} from '../../../../state/map/reducers/map-ui.reducer';
+import {NumberUtils} from '../../../../shared/utils/number.utils';
 
 interface PrintForm {
   title: FormControl<string | null>;
@@ -61,6 +62,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
   public printCreationLoadingState: LoadingState;
   public mapConfigState?: MapConfigState;
   public activeMapItems?: ActiveMapItem[];
+  public scale: number = 0;
   public readonly maxScale = this.configService.mapConfig.mapScaleConfig.maxScale;
   public readonly minScale = this.configService.mapConfig.mapScaleConfig.minScale;
 
@@ -100,6 +102,31 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
 
   public close() {
     this.store.dispatch(MapUiActions.hideMapSideDrawerContent());
+  }
+
+  public updateScale(event: Event) {
+    const input = (event.target as HTMLInputElement).value;
+    let newScale = NumberUtils.parseNumberFromMixedString(input);
+    if (newScale === undefined || newScale === this.scale) {
+      this.formGroup.controls.scale.setValue(this.scale);
+      return;
+    }
+
+    if (newScale > this.minScale) {
+      newScale = this.minScale;
+    }
+    if (newScale < this.maxScale) {
+      newScale = this.maxScale;
+    }
+
+    this.scale = newScale;
+    this.formGroup.controls.scale.setValue(newScale);
+    this.updatePrintPreview(
+      this.formGroup.controls.reportLayout.value,
+      this.formGroup.controls.reportOrientation.value,
+      newScale,
+      this.formGroup.controls.rotation.value,
+    );
   }
 
   public completeWithDefaultValues() {
@@ -145,7 +172,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
             (previous, current) =>
               previous.reportLayout === current.reportLayout &&
               previous.reportOrientation === current.reportOrientation &&
-              previous.scale === current.scale &&
+              // previous.scale === current.scale &&
               previous.rotation === current.rotation &&
               previous.fileFormat === current.fileFormat,
           ),
@@ -311,6 +338,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
       fileFormat: FileFormat[defaultReport.fileFormat],
       showLegend: defaultReport.legend,
     });
+    this.scale = Math.round(currentScale);
     this.isFormInitialized.next(true);
     this.updateFormGroupState();
   }
