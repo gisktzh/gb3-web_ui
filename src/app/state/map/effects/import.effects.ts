@@ -82,7 +82,7 @@ export class ImportEffects {
     );
   });
 
-  public overrideExistingDrawings = createEffect(() => {
+  public overrideExistingDrawings$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ImportActions.addDrawingToMap),
       map(({drawingLayersToOverride, drawingsToAdd}) =>
