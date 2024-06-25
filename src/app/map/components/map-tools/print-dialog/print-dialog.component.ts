@@ -336,6 +336,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
 
   private initializeDefaultFormValues(currentScale: number) {
     const defaultReport = printConfig.defaultPrintValues;
+    const roundedScale = Math.round(currentScale);
     this.formGroup.setValue({
       title: '',
       comment: null,
@@ -344,11 +345,11 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
       reportOrientation: defaultReport.orientation,
       dpi: defaultReport.dpiSetting,
       rotation: defaultReport.rotation,
-      scale: Math.round(currentScale).toString(),
+      scale: roundedScale.toString(),
       fileFormat: FileFormat[defaultReport.fileFormat],
       showLegend: defaultReport.legend,
     });
-    this.scale = Math.round(currentScale);
+    this.scale = roundedScale;
     this.isFormInitialized.next(true);
     this.updateFormGroupState();
   }
