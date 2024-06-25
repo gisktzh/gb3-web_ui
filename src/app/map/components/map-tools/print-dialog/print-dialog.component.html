@@ -139,7 +139,7 @@
             hideRequiredMarker
           >
             <mat-label>Massstab</mat-label>
-            <input matInput formControlName="scale" [placeholder]="maxScale.toString()" />
+            <input matInput formControlName="scale" />
             <span matPrefix class="print-dialog__stepper__content__form__row__element__label-prefix"> 1: </span>
             <mat-error>Minimum: 1:{{ maxScale }} Maximum: 1:{{ minScale }}</mat-error>
           </mat-form-field>
