@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {LoadingState} from '../../../../shared/types/loading-state.type';
 import {Store} from '@ngrx/store';
-import {BehaviorSubject, combineLatestWith, distinctUntilChanged, filter, Subscription, tap, withLatestFrom} from 'rxjs';
+import {BehaviorSubject, combineLatestWith, debounceTime, distinctUntilChanged, filter, Subscription, tap, withLatestFrom} from 'rxjs';
 import {selectCreationLoadingState} from '../../../../state/map/reducers/print.reducer';
 import {ReportOrientation, ReportType} from '../../../../shared/interfaces/print.interface';
 import {PrintActions} from '../../../../state/map/actions/print.actions';
@@ -33,7 +33,7 @@ interface PrintForm {
   reportOrientation: FormControl<ReportOrientation | null>;
   dpi: FormControl<number | null>;
   rotation: FormControl<number | null>;
-  scale: FormControl<number | null>;
+  scale: FormControl<string | null>;
   fileFormat: FormControl<string | null>;
   showLegend: FormControl<boolean | null>;
 }
@@ -54,7 +54,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     reportOrientation: new FormControl(),
     dpi: new FormControl(0, [Validators.required]),
     rotation: new FormControl(0, [Validators.min(-90), Validators.max(90)]),
-    scale: new FormControl(0, [Validators.required]),
+    scale: new FormControl('', [Validators.required]),
     fileFormat: new FormControl('', [Validators.required]),
     showLegend: new FormControl(false, [Validators.required]),
   });
@@ -104,31 +104,6 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     this.store.dispatch(MapUiActions.hideMapSideDrawerContent());
   }
 
-  public updateScale(event: Event) {
-    const input = (event.target as HTMLInputElement).value;
-    let newScale = NumberUtils.parseNumberFromMixedString(input);
-    if (newScale === undefined || newScale === this.scale) {
-      this.formGroup.controls.scale.setValue(this.scale);
-      return;
-    }
-
-    if (newScale > this.minScale) {
-      newScale = this.minScale;
-    }
-    if (newScale < this.maxScale) {
-      newScale = this.maxScale;
-    }
-
-    this.scale = newScale;
-    this.formGroup.controls.scale.setValue(newScale);
-    this.updatePrintPreview(
-      this.formGroup.controls.reportLayout.value,
-      this.formGroup.controls.reportOrientation.value,
-      newScale,
-      this.formGroup.controls.rotation.value,
-    );
-  }
-
   public completeWithDefaultValues() {
     this.formGroup.setValue({
       title: this.formGroup.controls.title.value,
@@ -176,7 +151,42 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
               previous.rotation === current.rotation &&
               previous.fileFormat === current.fileFormat,
           ),
-          tap((value) => this.updatePrintPreview(value.reportLayout, value.reportOrientation, value.scale, value.rotation)),
+          tap((value) => this.updatePrintPreview(value.reportLayout, value.reportOrientation, parseInt(value.scale!), value.rotation)),
+        )
+        .subscribe(),
+    );
+
+    this.subscriptions.add(
+      this.formGroup.controls.scale.valueChanges
+        .pipe(
+          combineLatestWith(this.isFormInitialized, this.store.select(selectIsMapSideDrawerOpen)),
+          filter(([_, isFormInitialized, isMapSideDrawerOpen]) => isFormInitialized && isMapSideDrawerOpen),
+          map(([scaleInput]) => {
+            let newScale = NumberUtils.parseNumberFromMixedString(scaleInput!);
+            if (newScale === undefined || newScale === this.scale) {
+              this.formGroup.controls.scale.setValue(this.scale.toString(), {emitEvent: false});
+              return this.scale;
+            }
+            if (newScale > this.minScale) {
+              newScale = this.minScale;
+            }
+            if (newScale < this.maxScale) {
+              newScale = this.maxScale;
+            }
+            this.formGroup.controls.scale.setValue(newScale.toString(), {emitEvent: false});
+            this.scale = newScale;
+            return this.scale;
+          }),
+          distinctUntilChanged(),
+          debounceTime(300),
+          tap((scale) =>
+            this.updatePrintPreview(
+              this.formGroup.controls.reportLayout.value,
+              this.formGroup.controls.reportOrientation.value,
+              scale,
+              this.formGroup.controls.rotation.value,
+            ),
+          ),
         )
         .subscribe(),
     );
@@ -334,7 +344,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
       reportOrientation: defaultReport.orientation,
       dpi: defaultReport.dpiSetting,
       rotation: defaultReport.rotation,
-      scale: Math.round(currentScale),
+      scale: Math.round(currentScale).toString(),
       fileFormat: FileFormat[defaultReport.fileFormat],
       showLegend: defaultReport.legend,
     });
@@ -352,7 +362,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
       title: FormValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.title.value),
       comment: FormValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.comment.value),
       showLegend: FormValueConversionUtils.getBooleanOrDefaultValue(this.formGroup.controls.showLegend.value),
-      scale: FormValueConversionUtils.getNumberOrDefaultValue(this.formGroup.controls.scale.value),
+      scale: parseInt(FormValueConversionUtils.getStringOrDefaultValue(this.formGroup.controls.scale.value)),
       dpi: FormValueConversionUtils.getNumberOrDefaultValue(this.formGroup.controls.dpi.value),
       rotation: FormValueConversionUtils.getNumberOrDefaultValue(this.formGroup.controls.rotation.value),
       mapCenter: {
