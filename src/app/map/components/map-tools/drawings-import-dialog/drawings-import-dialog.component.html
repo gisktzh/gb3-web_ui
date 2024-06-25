@@ -1,4 +1,10 @@
-<api-dialog-wrapper title="Zeichnung hochladen" (closeEvent)="cancel()" class="drawings-import-dialog" [savingState]="loadingState">
+<api-dialog-wrapper
+  title="Zeichnung hochladen"
+  (closeEvent)="cancel()"
+  class="drawings-import-dialog"
+  [savingState]="loadingState"
+  [errorText]="'Das File konnte nicht hochgeladen werden.'"
+>
   <ng-container content>
     <div class="drawings-import-dialog__content">
       <drop-zone (addedFile)="handleFileChange($event)" (error)="handleFileErrors($event)"></drop-zone>

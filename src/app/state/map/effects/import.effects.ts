@@ -2,10 +2,9 @@ import {Inject, Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {of, switchMap, tap} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
-import {Store} from '@ngrx/store';
 import {ImportActions} from '../actions/import.actions';
 import {Gb3ImportService} from '../../../shared/services/apis/gb3/gb3-import.service';
-import {FileValidationError} from '../../../shared/errors/file-upload.errors';
+import {FileImportError} from '../../../shared/errors/file-upload.errors';
 import {DEFAULT_INTERNAL_STYLE, SymbolizationToGb3ConverterUtils} from '../../../shared/utils/symbolization-to-gb3-converter.utils';
 import {UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {MAP_SERVICE} from '../../../app.module';
@@ -104,7 +103,7 @@ export class ImportEffects {
       return this.actions$.pipe(
         ofType(ImportActions.setDrawingsImportRequestError),
         tap(({error}) => {
-          throw new FileValidationError(error);
+          throw new FileImportError(error);
         }),
       );
     },
@@ -115,6 +114,5 @@ export class ImportEffects {
     private readonly actions$: Actions,
     @Inject(MAP_SERVICE) private readonly mapService: MapService,
     private readonly importService: Gb3ImportService,
-    private readonly store: Store,
   ) {}
 }

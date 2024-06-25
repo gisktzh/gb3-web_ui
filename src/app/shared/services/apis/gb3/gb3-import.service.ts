@@ -25,7 +25,6 @@ export class Gb3ImportService extends Gb3ApiService {
     formData.append('file', file);
     return this.post<FormData, Gb3VectorLayer>(this.getFullEndpointUrl(), formData).pipe(
       map((res) => {
-        console.log('File imported', res);
         return res;
       }),
     );
