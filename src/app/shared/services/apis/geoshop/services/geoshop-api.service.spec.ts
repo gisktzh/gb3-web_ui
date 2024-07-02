@@ -2,13 +2,13 @@
 import {TestBed} from '@angular/core/testing';
 
 import {GeoshopApiService} from './geoshop-api.service';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {
   Order as ApiOrder,
   OrderResponse as ApiOrderResponse,
   OrderStatus as ApiOrderStatus,
 } from '../../../../models/geoshop-api-generated.interface';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {of} from 'rxjs';
 import {OrderStatus} from '../../../../interfaces/geoshop-order-status.interface';
 import {ConfigService} from '../../../config.service';
@@ -25,8 +25,8 @@ describe('GeoshopApiService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [provideMockStore()],
+      imports: [],
+      providers: [provideMockStore(), provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     });
     service = TestBed.inject(GeoshopApiService);
   });

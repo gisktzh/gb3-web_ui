@@ -2,7 +2,7 @@ import {provideMockActions} from '@ngrx/effects/testing';
 import {fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {EMPTY, Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {catchError} from 'rxjs/operators';
 import {Gb3PrintService} from '../../../shared/services/apis/gb3/gb3-print.service';
@@ -16,6 +16,7 @@ import {selectPrintLegendItems} from '../selectors/print-legend-items.selector';
 import {FeatureInfoPrintConfiguration, PrintableOverlayItem} from '../../../shared/interfaces/overlay-print.interface';
 import {selectPrintFeatureInfoItems} from '../selectors/print-feature-info-items.selector';
 import {FileDownloadService} from '../../../shared/services/file-download-service';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
 describe('OverlayPrintEffects', () => {
   const creationResponseMock: PrintCreationResponse = {reportUrl: 'response url'};
@@ -29,12 +30,14 @@ describe('OverlayPrintEffects', () => {
     actions$ = new Observable<Action>();
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: [],
       providers: [
         OverlayPrintEffects,
         provideMockActions(() => actions$),
         provideMockStore(),
         {provide: MAP_SERVICE, useClass: MapServiceStub},
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
     });
     effects = TestBed.inject(OverlayPrintEffects);

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import {HttpClient} from '@angular/common/http';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {HttpClient, provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {TestBed} from '@angular/core/testing';
 import {of} from 'rxjs';
 import {TopicsFeatureInfoDetailData, TopicsLegendDetailData, TopicsListData} from '../../../models/gb3-api-generated.interfaces';
@@ -19,8 +19,8 @@ describe('Gb3TopicsService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [provideMockStore()],
+      imports: [],
+      providers: [provideMockStore(), provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     });
     service = TestBed.inject(Gb3TopicsService);
     configService = TestBed.inject(ConfigService);

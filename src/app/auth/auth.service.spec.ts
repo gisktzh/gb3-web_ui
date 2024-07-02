@@ -6,8 +6,9 @@ import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {SharedModule} from '../shared/shared.module';
 import {Subject} from 'rxjs';
 import {AuthNotificationService} from './notifications/auth-notification.service';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {AuthStatusActions} from '../state/auth/actions/auth-status.actions';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
 const mockAuthNotificationService = jasmine.createSpyObj<AuthNotificationService>({
   showImpendingLogoutDialog: void 0,
@@ -46,11 +47,13 @@ describe('AuthService', () => {
       },
     );
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, SharedModule],
+      imports: [SharedModule],
       providers: [
         provideMockStore({}),
         {provide: OAuthService, useValue: mockOAuthService},
         {provide: AuthNotificationService, useValue: mockAuthNotificationService},
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
     });
 

@@ -2,13 +2,14 @@ import {provideMockActions} from '@ngrx/effects/testing';
 import {fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {Observable, of} from 'rxjs';
 import {Action} from '@ngrx/store';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {DrawingEffects} from './drawing.effects';
 import {DrawingActions} from '../actions/drawing.actions';
 import {ActiveMapItem} from '../../../map/models/active-map-item.model';
 import {UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {createDrawingMapItemMock, createGb2WmsMapItemMock} from '../../../testing/map-testing/active-map-item-test.utils';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
 describe('DrawingEffects', () => {
   let actions$: Observable<Action>;
@@ -18,8 +19,13 @@ describe('DrawingEffects', () => {
     actions$ = new Observable<Action>();
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [DrawingEffects, provideMockActions(() => actions$)],
+      imports: [],
+      providers: [
+        DrawingEffects,
+        provideMockActions(() => actions$),
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
     });
     effects = TestBed.inject(DrawingEffects);
   });

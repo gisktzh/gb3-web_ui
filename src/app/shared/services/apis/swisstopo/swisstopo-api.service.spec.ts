@@ -1,8 +1,8 @@
 import {TestBed} from '@angular/core/testing';
 
 import {ELEVATION_MODEL, REQUEST_SRS_MAPPING, SwisstopoApiService} from './swisstopo-api.service';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {HttpClient} from '@angular/common/http';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
+import {HttpClient, provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {of} from 'rxjs';
 import {ElevationProfileResponse} from '../../../models/swisstopo-api-generated.interface';
 import {LineString} from 'geojson';
@@ -16,8 +16,8 @@ describe('SwisstopoApiService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [provideMockStore()],
+      imports: [],
+      providers: [provideMockStore(), provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     });
     service = TestBed.inject(SwisstopoApiService);
     httpClient = TestBed.inject(HttpClient);

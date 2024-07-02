@@ -19,7 +19,7 @@ import {EsriPointDrawingStrategy} from './strategies/drawing/esri-point-drawing.
 import {EsriLineDrawingStrategy} from './strategies/drawing/esri-line-drawing.strategy';
 import {EsriPolygonDrawingStrategy} from './strategies/drawing/esri-polygon-drawing.strategy';
 import {EsriTextDrawingStrategy} from './strategies/drawing/esri-text-drawing.strategy';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {EsriElevationProfileMeasurementStrategy} from './strategies/measurement/esri-elevation-profile-measurement.strategy';
 import {EsriPolygonSelectionStrategy} from './strategies/selection/esri-polygon-selection.strategy';
 import {EsriScreenExtentSelectionStrategy} from './strategies/selection/esri-screen-extent-selection.strategy';
@@ -34,6 +34,7 @@ import {EsriGraphicToInternalDrawingRepresentationUtils} from '../utils/esri-gra
 import {DataDownloadSelection} from '../../../../shared/interfaces/data-download-selection.interface';
 import {DataDownloadOrderActions} from '../../../../state/map/actions/data-download-order.actions';
 import {ToolActions} from '../../../../state/map/actions/tool.actions';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
 describe('EsriToolService', () => {
   let service: EsriToolService;
@@ -43,13 +44,15 @@ describe('EsriToolService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [MatDialogModule, HttpClientTestingModule],
+      imports: [MatDialogModule],
       providers: [
         provideMockStore({selectors: [{selector: selectDrawingLayers, value: []}]}),
         {
           provide: EsriMapViewService,
           useValue: mapViewService,
         },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
     });
     service = TestBed.inject(EsriToolService);

@@ -10,9 +10,10 @@ import {ConfigService} from '../../../../../../shared/services/config.service';
 import {Gb3GeoshopMunicipalitiesService} from '../../../../../../shared/services/apis/gb3/gb3-geoshop-municipalities.service';
 import {Municipality} from '../../../../../../shared/interfaces/gb3-geoshop-product.interface';
 import {DataDownloadSelectMunicipalityDialogComponent} from '../../../../../components/map-tools/data-download-select-municipality-dialog/data-download-select-municipality-dialog.component';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {MinimalGeometriesUtils} from '../../../../../../testing/map-testing/minimal-geometries.utils';
 import {DataDownloadSelection} from '../../../../../../shared/interfaces/data-download-selection.interface';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
 describe('EsriMunicipalitySelectionStrategy', () => {
   const callbackHandler = {
@@ -28,8 +29,8 @@ describe('EsriMunicipalitySelectionStrategy', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [MatDialogModule, HttpClientTestingModule],
-      providers: [provideMockStore({})],
+      imports: [MatDialogModule],
+      providers: [provideMockStore({}), provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     });
     layer = new GraphicsLayer({
       id: InternalDrawingLayer.Selection,
