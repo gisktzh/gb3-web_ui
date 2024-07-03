@@ -1,4 +1,4 @@
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {TestBed} from '@angular/core/testing';
 import {provideMockActions} from '@ngrx/effects/testing';
 import {Action} from '@ngrx/store';
@@ -14,6 +14,7 @@ import {MapConfigActions} from '../actions/map-config.actions';
 import {selectRotation} from '../reducers/map-config.reducer';
 import {selectMapConfigParams} from '../selectors/map-config-params.selector';
 import {MapConfigEffects} from './map-config.effects';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
 describe('MapConfigEffects', () => {
   let actions$: Observable<Action>;
@@ -25,12 +26,14 @@ describe('MapConfigEffects', () => {
     actions$ = new Observable<Action>();
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: [],
       providers: [
         MapConfigEffects,
         provideMockActions(() => actions$),
         provideMockStore(),
         {provide: MAP_SERVICE, useClass: MapServiceStub},
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
     });
     effects = TestBed.inject(MapConfigEffects);

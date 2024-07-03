@@ -2,7 +2,7 @@ import {provideMockActions} from '@ngrx/effects/testing';
 import {discardPeriodicTasks, fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {EMPTY, Observable, of, Subscription, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {MAP_SERVICE} from '../../../app.module';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
@@ -15,6 +15,7 @@ import {DataDownloadOrderStatusJobEffects} from './data-download-order-status-jo
 import {selectStatusJobs} from '../reducers/data-download-order-status-job.reducer';
 import {DataDownloadOrderStatusJobActions} from '../actions/data-download-order-status-job.actions';
 import {catchError} from 'rxjs/operators';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
 describe('DataDownloadOrderStatusJobEffects', () => {
   let actions$: Observable<Action>;
@@ -27,12 +28,14 @@ describe('DataDownloadOrderStatusJobEffects', () => {
     actions$ = new Observable<Action>();
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: [],
       providers: [
         DataDownloadOrderStatusJobEffects,
         provideMockActions(() => actions$),
         provideMockStore(),
         {provide: MAP_SERVICE, useClass: MapServiceStub},
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
     });
     effects = TestBed.inject(DataDownloadOrderStatusJobEffects);

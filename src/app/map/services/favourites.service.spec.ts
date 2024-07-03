@@ -1,7 +1,7 @@
 import {TestBed} from '@angular/core/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {FavouritesService} from './favourites.service';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {selectActiveMapItemConfigurations} from '../../state/map/selectors/active-map-item-configuration.selector';
 import {selectMaps} from '../../state/map/selectors/maps.selector';
 import {selectFavouriteBaseConfig} from '../../state/map/selectors/favourite-base-config.selector';
@@ -22,6 +22,7 @@ import {UserDrawingLayer} from '../../shared/enums/drawing-layer.enum';
 import {SymbolizationToGb3ConverterUtils} from '../../shared/utils/symbolization-to-gb3-converter.utils';
 import {Map} from '../../shared/interfaces/topic.interface';
 import {TimeExtentUtils} from '../../shared/utils/time-extent.utils';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
 describe('FavouritesService', () => {
   let service: FavouritesService;
@@ -30,8 +31,8 @@ describe('FavouritesService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [provideMockStore({})],
+      imports: [],
+      providers: [provideMockStore({}), provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     });
     store = TestBed.inject(MockStore);
     store.overrideSelector(selectActiveMapItemConfigurations, []);

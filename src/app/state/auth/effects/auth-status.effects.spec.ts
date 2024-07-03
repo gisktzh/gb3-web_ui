@@ -2,7 +2,7 @@ import {provideMockActions} from '@ngrx/effects/testing';
 import {fakeAsync, flush, TestBed} from '@angular/core/testing';
 import {Observable, of} from 'rxjs';
 import {Action} from '@ngrx/store';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {AuthService} from '../../../auth/auth.service';
 import {AuthStatusEffects} from './auth-status.effects';
@@ -28,6 +28,7 @@ import {DrawingActions} from '../../map/actions/drawing.actions';
 import {selectItems} from '../../map/selectors/active-map-items.selector';
 import {selectDrawings} from '../../map/reducers/drawing.reducer';
 import {ToolService} from '../../../map/interfaces/tool.service';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
 const mockOAuthService = jasmine.createSpyObj<AuthService>({
   logout: void 0,
@@ -44,13 +45,15 @@ describe('AuthStatusEffects', () => {
     actions$ = new Observable<Action>();
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: [],
       providers: [
         provideMockActions(() => actions$),
         provideMockStore(),
         {provide: AuthService, useValue: mockOAuthService},
         AuthStatusEffects,
         {provide: MAP_SERVICE, useClass: MapServiceStub},
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
     });
     storageService = TestBed.inject(SessionStorageService);

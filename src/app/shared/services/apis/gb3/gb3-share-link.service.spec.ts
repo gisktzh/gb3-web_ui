@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import {TestBed} from '@angular/core/testing';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {Gb3ShareLinkService} from './gb3-share-link.service';
 import {SharedFavorite, SharedFavoriteNew} from '../../../models/gb3-api-generated.interfaces';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {of} from 'rxjs';
 import {ShareLinkItem} from '../../../interfaces/share-link.interface';
 import {Gb3VectorLayer} from '../../../interfaces/gb3-vector-layer.interface';
@@ -103,8 +103,8 @@ describe('Gb3ShareLinkService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [provideMockStore({})],
+      imports: [],
+      providers: [provideMockStore({}), provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     });
     store = TestBed.inject(MockStore);
     store.overrideSelector(selectActiveMapItemConfigurations, []);

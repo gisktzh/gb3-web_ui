@@ -8,7 +8,7 @@
 ========================== */
 
 // For usage, refer to: https://material.angular.io/guide/theming
-$zh-light-theme: mat.define-light-theme(
+$zh-light-theme: mat.m2-define-light-theme(
   (
     color: (
       primary: ktzh-variables.$zh-primary,

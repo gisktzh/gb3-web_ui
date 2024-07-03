@@ -1,5 +1,5 @@
 import {registerLocaleData} from '@angular/common';
-import {HttpClientModule} from '@angular/common/http';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import localeDeCH from '@angular/common/locales/de-CH';
 import {ErrorHandler, InjectionToken, LOCALE_ID, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
@@ -43,11 +43,11 @@ export const GRAV_CMS_SERVICE = new InjectionToken<GravCmsService>('GravCmsServi
 
 @NgModule({
   declarations: [AppComponent],
+  bootstrap: [AppComponent],
   imports: [
     AppRoutingModule,
     BrowserAnimationsModule,
     BrowserModule,
-    HttpClientModule,
     SharedModule,
     StoreModule.forRoot(reducers, {metaReducers}),
     EffectsModule.forRoot(effects),
@@ -67,7 +67,7 @@ export const GRAV_CMS_SERVICE = new InjectionToken<GravCmsService>('GravCmsServi
       provide: EFFECTS_ERROR_HANDLER,
       useValue: effectErrorHandler,
     },
+    provideHttpClient(withInterceptorsFromDi()),
   ],
-  bootstrap: [AppComponent],
 })
 export class AppModule {}

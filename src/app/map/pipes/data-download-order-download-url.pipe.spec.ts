@@ -1,8 +1,9 @@
 import {GeoshopApiService} from '../../shared/services/apis/geoshop/services/geoshop-api.service';
 import {DataDownloadOrderDownloadUrlPipe} from './data-download-order-download-url.pipe';
 import {TestBed} from '@angular/core/testing';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {provideMockStore} from '@ngrx/store/testing';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
 describe('DataDownloadOrderDownloadUrlPipe', () => {
   let pipe: DataDownloadOrderDownloadUrlPipe;
@@ -10,8 +11,8 @@ describe('DataDownloadOrderDownloadUrlPipe', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [provideMockStore()],
+      imports: [],
+      providers: [provideMockStore(), provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     });
     geoshopApiService = TestBed.inject(GeoshopApiService);
     pipe = new DataDownloadOrderDownloadUrlPipe(geoshopApiService);

@@ -2,7 +2,7 @@ import {provideMockActions} from '@ngrx/effects/testing';
 import {TestBed} from '@angular/core/testing';
 import {EMPTY, Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {catchError} from 'rxjs/operators';
 import {PrintEffects} from './print.effects';
@@ -15,6 +15,7 @@ import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {MapUiActions} from '../actions/map-ui.actions';
 import {FileDownloadService} from '../../../shared/services/file-download-service';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
 describe('PrintEffects', () => {
   const creationMock: PrintCreation = {
@@ -60,8 +61,15 @@ describe('PrintEffects', () => {
     actions$ = new Observable<Action>();
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [PrintEffects, provideMockActions(() => actions$), provideMockStore(), {provide: MAP_SERVICE, useClass: MapServiceStub}],
+      imports: [],
+      providers: [
+        PrintEffects,
+        provideMockActions(() => actions$),
+        provideMockStore(),
+        {provide: MAP_SERVICE, useClass: MapServiceStub},
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
     });
     effects = TestBed.inject(PrintEffects);
     gb3PrintService = TestBed.inject(Gb3PrintService);

@@ -2,7 +2,7 @@ import {provideMockActions} from '@ngrx/effects/testing';
 import {fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {EMPTY, Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {ElevationProfileEffects} from './elevation-profile.effects';
 import {ToolActions} from '../actions/tool.actions';
 import {MAP_SERVICE} from '../../../app.module';
@@ -20,6 +20,7 @@ import {selectData} from '../reducers/elevation-profile.reducer';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
 describe('ElevationProfileEffects', () => {
   let actions$: Observable<Action>;
@@ -36,7 +37,7 @@ describe('ElevationProfileEffects', () => {
     actions$ = new Observable<Action>();
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: [],
       providers: [
         ElevationProfileEffects,
         SwisstopoApiService,
@@ -44,6 +45,8 @@ describe('ElevationProfileEffects', () => {
         provideMockStore(),
         {provide: MAP_SERVICE, useClass: MapServiceStub},
         MapDrawingService,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
     });
     effects = TestBed.inject(ElevationProfileEffects);

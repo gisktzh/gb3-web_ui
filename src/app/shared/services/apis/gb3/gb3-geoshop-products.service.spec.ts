@@ -2,8 +2,8 @@
 import {TestBed} from '@angular/core/testing';
 
 import {Gb3GeoshopProductsService} from './gb3-geoshop-products.service';
-import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
-import {HttpClient, HttpRequest} from '@angular/common/http';
+import {HttpTestingController, provideHttpClientTesting} from '@angular/common/http/testing';
+import {HttpClient, HttpRequest, provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {of} from 'rxjs';
 import {ConfigService} from '../../config.service';
 import {Product} from '../../../interfaces/gb3-geoshop-product.interface';
@@ -17,8 +17,8 @@ describe('Gb3GeoshopProductsService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [provideMockStore()],
+      imports: [],
+      providers: [provideMockStore(), provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     });
     service = TestBed.inject(Gb3GeoshopProductsService);
     configService = TestBed.inject(ConfigService);
