@@ -13,6 +13,7 @@ import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.fa
 import {MapConstants} from '../../../shared/constants/map.constants';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {DrawingActions} from '../actions/drawing.actions';
+import {Gb3GeoJsonFeature} from '../../../shared/interfaces/gb3-vector-layer.interface';
 
 @Injectable()
 export class ImportEffects {
@@ -41,17 +42,12 @@ export class ImportEffects {
                 ...feature,
                 properties: {
                   ...feature.properties,
-                  style:
-                    feature.geometry.type !== 'Point'
-                      ? `GB3_INTERNAL_STYLE_${feature.geometry.type.toUpperCase()}`
-                      : feature.properties.text
-                        ? 'GB3_INTERNAL_STYLE_TEXT'
-                        : 'GB3_INTERNAL_STYLE_POINT',
+                  style: this.getStyleName(feature),
                 },
               };
             }),
           },
-          styles: drawing.styles ?? {
+          styles: {
             GB3_INTERNAL_STYLE_POINT: {...DEFAULT_INTERNAL_STYLE, type: 'point'},
             GB3_INTERNAL_STYLE_TEXT: {...DEFAULT_INTERNAL_STYLE, type: 'text'},
             GB3_INTERNAL_STYLE_POLYGON: {...DEFAULT_INTERNAL_STYLE, type: 'polygon'},
@@ -109,6 +105,13 @@ export class ImportEffects {
     },
     {dispatch: false},
   );
+
+  private getStyleName(feature: Gb3GeoJsonFeature): string {
+    if (feature.geometry.type === 'Point') {
+      return feature.properties.text ? 'GB3_INTERNAL_STYLE_TEXT' : 'GB3_INTERNAL_STYLE_POINT';
+    }
+    return `GB3_INTERNAL_STYLE_${feature.geometry.type.toUpperCase()}`;
+  }
 
   constructor(
     private readonly actions$: Actions,
