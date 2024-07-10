@@ -31,8 +31,8 @@ export class MapDrawingService implements OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  public drawElevationProfileLocation(geometry: PointWithSrs) {
-    this.removeElevationProfileLocation();
+  public drawElevationProfileHoverLocation(geometry: PointWithSrs) {
+    this.removeElevationProfileHoverLocation();
     this.mapService.addGeometryToInternalDrawingLayer(
       geometry,
       InternalDrawingLayer.ElevationProfile,
@@ -40,7 +40,7 @@ export class MapDrawingService implements OnDestroy {
     );
   }
 
-  public removeElevationProfileLocation() {
+  public removeElevationProfileHoverLocation() {
     this.mapService.removeGeometryFromInternalDrawingLayer(InternalDrawingLayer.ElevationProfile, ELEVATION_PROFILE_LOCATION_IDENTIFIER);
   }
 

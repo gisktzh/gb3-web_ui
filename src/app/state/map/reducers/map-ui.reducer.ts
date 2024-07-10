@@ -10,6 +10,7 @@ export const initialState: MapUiState = {
   isFeatureInfoOverlayVisible: false,
   isElevationProfileOverlayVisible: false,
   isAttributeFilterOverlayVisible: false,
+  isMapSideDrawerOpen: false,
   hideUiElements: false,
   hideToggleUiElementsButton: false,
   hideZoomButtons: false,
@@ -72,6 +73,7 @@ export const mapUiFeature = createFeature({
       return {
         ...state,
         mapSideDrawerContent: 'none',
+        isMapSideDrawerOpen: false,
       };
     }),
     on(MapUiActions.showBottomSheet, (state, {bottomSheetContent}): MapUiState => {
@@ -87,6 +89,9 @@ export const mapUiFeature = createFeature({
         bottomSheetContent: 'none',
         hideUiElements: false,
       };
+    }),
+    on(MapUiActions.notifyMapSideDrawerAfterOpen, (state): MapUiState => {
+      return {...state, isMapSideDrawerOpen: true};
     }),
     on(MapUiActions.resetMapUiState, (): MapUiState => {
       return {...initialState};
@@ -107,4 +112,5 @@ export const {
   selectHideUiElements,
   selectHideToggleUiElementsButton,
   selectMapSideDrawerContent,
+  selectIsMapSideDrawerOpen,
 } = mapUiFeature;

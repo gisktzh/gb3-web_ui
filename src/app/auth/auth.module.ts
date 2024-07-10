@@ -1,4 +1,4 @@
-import {HttpClientModule} from '@angular/common/http';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {NgModule} from '@angular/core';
 import {AuthConfig, OAuthModule, OAuthModuleConfig, OAuthStorage} from 'angular-oauth2-oidc';
 import {authConfigFactory} from '../shared/factories/auth-config.factory';
@@ -12,11 +12,12 @@ import {AuthNotificationDialogComponent} from './notifications/auth-notification
 
 @NgModule({
   declarations: [AuthNotificationDialogComponent, LoginRedirectComponent],
-  imports: [OAuthModule.forRoot(), HttpClientModule, SharedModule, AuthRoutingModule],
+  imports: [OAuthModule.forRoot(), SharedModule, AuthRoutingModule],
   providers: [
     {provide: AuthConfig, useFactory: authConfigFactory, deps: [ConfigService]},
     {provide: OAuthModuleConfig, useFactory: oAuthConfigFactory, deps: [ConfigService]},
     {provide: OAuthStorage, useFactory: storageFactory},
+    provideHttpClient(withInterceptorsFromDi()),
   ],
 })
 export class AuthModule {}

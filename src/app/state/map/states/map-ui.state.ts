@@ -8,6 +8,7 @@ export interface MapUiState {
   isFeatureInfoOverlayVisible: boolean;
   isElevationProfileOverlayVisible: boolean;
   isAttributeFilterOverlayVisible: boolean;
+  isMapSideDrawerOpen: boolean;
   hideUiElements: boolean;
   hideToggleUiElementsButton: boolean;
   hideZoomButtons: boolean;

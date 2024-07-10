@@ -12,7 +12,6 @@ interface DefaultPrintSettings {
 }
 
 export interface PrintConfig {
-  scales: number[];
   pixelSizes: {
     [K in keyof typeof DocumentFormat]: {
       [K in ReportOrientation]: {

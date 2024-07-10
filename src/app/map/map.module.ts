@@ -90,6 +90,7 @@ import {FeatureFlagDirective} from '../shared/directives/feature-flag.directive'
 import {DrawingDownloadButtonComponent} from './components/map-tools/drawing-download-button/drawing-download-button.component';
 import {DrawingsImportDialogComponent} from './components/map-tools/drawings-import-dialog/drawings-import-dialog.component';
 import {DropZoneComponent} from '../shared/components/drop-zone/drop-zone.component';
+import {DrawingDownloadDialogComponent} from './components/map-tools/drawing-download-dialog/drawing-download-dialog.component';
 
 @NgModule({
   providers: [provideCharts(withDefaultRegisterables())],
@@ -163,6 +164,7 @@ import {DropZoneComponent} from '../shared/components/drop-zone/drop-zone.compon
     DataDownloadOrderStatusPipe,
     DataDownloadOrderDownloadUrlPipe,
     DrawingSettingsDialogComponent,
+    DrawingDownloadDialogComponent,
     MapImportDialogComponent,
     DrawingsImportDialogComponent,
   ],

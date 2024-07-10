@@ -2,7 +2,7 @@ import {provideMockActions} from '@ngrx/effects/testing';
 import {fakeAsync, flush, TestBed, tick} from '@angular/core/testing';
 import {EMPTY, Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {MAP_SERVICE} from '../../../app.module';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
@@ -21,7 +21,7 @@ import {selectOrder, selectSelection} from '../reducers/data-download-order.redu
 import {GeoshopApiService} from '../../../shared/services/apis/geoshop/services/geoshop-api.service';
 import {Polygon} from 'geojson';
 import {OrderCouldNotBeSent, OrderSelectionIsInvalid, OrderUnsupportedGeometry} from '../../../shared/errors/data-download.errors';
-import {HttpErrorResponse} from '@angular/common/http';
+import {HttpErrorResponse, provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {selectMapSideDrawerContent} from '../reducers/map-ui.reducer';
 import {selectProducts} from '../reducers/data-download-product.reducer';
 import {DataDownloadOrderStatusJobActions} from '../actions/data-download-order-status-job.actions';
@@ -63,12 +63,14 @@ describe('DataDownloadOrderEffects', () => {
     actions$ = new Observable<Action>();
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: [],
       providers: [
         DataDownloadOrderEffects,
         provideMockActions(() => actions$),
         provideMockStore(),
         {provide: MAP_SERVICE, useClass: MapServiceStub},
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
     });
     effects = TestBed.inject(DataDownloadOrderEffects);

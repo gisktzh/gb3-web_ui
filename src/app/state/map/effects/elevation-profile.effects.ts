@@ -85,7 +85,7 @@ export class ElevationProfileEffects {
       return this.actions$.pipe(
         ofType(ElevationProfileActions.drawElevationProfileHoverLocation),
         tap(({location}) => {
-          this.mapDrawingService.drawElevationProfileLocation(location);
+          this.mapDrawingService.drawElevationProfileHoverLocation(location);
         }),
       );
     },
@@ -97,7 +97,7 @@ export class ElevationProfileEffects {
       return this.actions$.pipe(
         ofType(ElevationProfileActions.removeElevationProfileHoverLocation),
         tap(() => {
-          this.mapDrawingService.removeElevationProfileLocation();
+          this.mapDrawingService.removeElevationProfileHoverLocation();
         }),
       );
     },

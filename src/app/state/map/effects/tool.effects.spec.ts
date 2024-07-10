@@ -2,7 +2,7 @@ import {provideMockActions} from '@ngrx/effects/testing';
 import {fakeAsync, flush, TestBed} from '@angular/core/testing';
 import {Observable, of} from 'rxjs';
 import {Action} from '@ngrx/store';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {ToolEffects} from './tool.effects';
 import {MAP_SERVICE} from '../../../app.module';
@@ -12,6 +12,7 @@ import {ToolService} from '../../../map/interfaces/tool.service';
 import {MeasurementTool} from '../../../shared/types/measurement-tool.type';
 import {DrawingTool} from '../../../shared/types/drawing-tool.type';
 import {DataDownloadSelectionTool} from '../../../shared/types/data-download-selection-tool.type';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
 describe('ToolEffects', () => {
   let actions$: Observable<Action>;
@@ -23,8 +24,15 @@ describe('ToolEffects', () => {
     actions$ = new Observable<Action>();
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [ToolEffects, provideMockActions(() => actions$), provideMockStore(), {provide: MAP_SERVICE, useClass: MapServiceStub}],
+      imports: [],
+      providers: [
+        ToolEffects,
+        provideMockActions(() => actions$),
+        provideMockStore(),
+        {provide: MAP_SERVICE, useClass: MapServiceStub},
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
     });
     effects = TestBed.inject(ToolEffects);
     const mapService = TestBed.inject(MAP_SERVICE);

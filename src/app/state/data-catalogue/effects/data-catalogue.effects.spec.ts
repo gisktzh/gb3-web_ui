@@ -3,7 +3,7 @@ import {TestBed} from '@angular/core/testing';
 import {Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {DataCatalogueEffects} from './data-catalogue.effects';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {DataCatalogueActions} from '../actions/data-catalogue.actions';
 import {MetadataOverviewCouldNotBeLoaded} from '../../../shared/errors/data-catalogue.errors';
@@ -12,6 +12,7 @@ import {DatasetOverviewMetadataItem, MapOverviewMetadataItem} from '../../../sha
 import {selectLoadingState} from '../reducers/data-catalogue.reducer';
 import {ConfigService} from '../../../shared/services/config.service';
 import {DataCatalogueFilter, DataCatalogueFilterConfiguration} from '../../../shared/interfaces/data-catalogue-filter.interface';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
 describe('DataCatalogueEffects', () => {
   let actions$: Observable<Action>;
@@ -23,8 +24,16 @@ describe('DataCatalogueEffects', () => {
   beforeEach(() => {
     actions$ = new Observable<Action>();
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [DataCatalogueEffects, provideMockActions(() => actions$), provideMockStore(), Gb3MetadataService, ConfigService],
+      imports: [],
+      providers: [
+        DataCatalogueEffects,
+        provideMockActions(() => actions$),
+        provideMockStore(),
+        Gb3MetadataService,
+        ConfigService,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
     });
     effects = TestBed.inject(DataCatalogueEffects);
     gb3MetadataService = TestBed.inject(Gb3MetadataService);

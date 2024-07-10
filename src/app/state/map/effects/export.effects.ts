@@ -24,6 +24,13 @@ export class ExportEffects {
     );
   });
 
+  public resetStateAfterSuccessfulRequest$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ExportActions.setDrawingsExportRequestResponse),
+      map(() => ExportActions.resetDrawingsExportRequest()),
+    );
+  });
+
   public throwExportDrawingsRequestError$ = createEffect(
     () => {
       return this.actions$.pipe(

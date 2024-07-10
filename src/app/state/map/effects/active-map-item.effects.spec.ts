@@ -2,7 +2,7 @@ import {provideMockActions} from '@ngrx/effects/testing';
 import {fakeAsync, flush, TestBed} from '@angular/core/testing';
 import {Observable, of} from 'rxjs';
 import {Action} from '@ngrx/store';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {MAP_SERVICE} from '../../../app.module';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
@@ -29,6 +29,7 @@ import {selectIsMapServiceInitialized} from '../reducers/map-config.reducer';
 import {DrawingActions} from '../actions/drawing.actions';
 import {LayerCatalogActions} from '../actions/layer-catalog.actions';
 import {SearchActions} from '../../app/actions/search.actions';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
 describe('ActiveMapItemEffects', () => {
   let actions$: Observable<Action>;
@@ -41,12 +42,14 @@ describe('ActiveMapItemEffects', () => {
     actions$ = new Observable<Action>();
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: [],
       providers: [
         ActiveMapItemEffects,
         provideMockActions(() => actions$),
         provideMockStore(),
         {provide: MAP_SERVICE, useClass: MapServiceStub},
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
     });
     effects = TestBed.inject(ActiveMapItemEffects);

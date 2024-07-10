@@ -2,7 +2,7 @@ import {provideMockActions} from '@ngrx/effects/testing';
 import {fakeAsync, flush, TestBed} from '@angular/core/testing';
 import {Observable, of} from 'rxjs';
 import {Action} from '@ngrx/store';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {createExternalWmsMapItemMock} from '../../../testing/map-testing/active-map-item-test.utils';
 import {MapImportEffects} from './map-import.effects';
@@ -16,6 +16,7 @@ import {MapImportState} from '../states/map-import.state';
 import {ExternalKmlLayer, ExternalWmsLayer} from '../../../shared/interfaces/external-layer.interface';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 import {UuidUtils} from '../../../shared/utils/uuid.utils';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
 describe('MapImportEffects', () => {
   let actions$: Observable<Action>;
@@ -26,8 +27,14 @@ describe('MapImportEffects', () => {
     actions$ = new Observable<Action>();
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [MapImportEffects, provideMockActions(() => actions$), provideMockStore()],
+      imports: [],
+      providers: [
+        MapImportEffects,
+        provideMockActions(() => actions$),
+        provideMockStore(),
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
     });
     effects = TestBed.inject(MapImportEffects);
     store = TestBed.inject(MockStore);

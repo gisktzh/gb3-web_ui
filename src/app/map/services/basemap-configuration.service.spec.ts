@@ -32,7 +32,7 @@ const mockBasemaps: Basemap[] = [
     srsId: 2056,
     layers: [],
   },
-  {id: 'test-4', type: 'blank', title: 'Test 4'},
+  {id: 'INTERNAL__blank', type: 'blank', title: 'Test 4'},
 ];
 
 const mockBasemapConfig = {
@@ -69,7 +69,7 @@ describe('BasemapConfigService', () => {
       expect(service.checkBasemapIdOrGetDefault(testId)).toEqual(testId);
     });
 
-    it('should return the lower-cased id if it exists but is supplied as upper-case', () => {
+    it('should return the id from the config if it exists but is supplied as upper-case', () => {
       const testId = mockBasemaps[0].id.toUpperCase();
 
       const expected = mockBasemaps[0].id;
@@ -91,6 +91,12 @@ describe('BasemapConfigService', () => {
 
         expect(service.checkBasemapIdOrGetDefault(testId)).toEqual(expected);
       });
+    });
+
+    it('should return the blank basemap id if the id is `INTERNAL__blank`', () => {
+      const testId = 'INTERNAL__blank';
+
+      expect(service.checkBasemapIdOrGetDefault(testId)).toEqual(testId);
     });
   });
 });
