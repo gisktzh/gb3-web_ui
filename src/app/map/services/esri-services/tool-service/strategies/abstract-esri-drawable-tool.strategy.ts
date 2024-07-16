@@ -35,7 +35,7 @@ export abstract class AbstractEsriDrawableToolStrategy<
     this.sketchViewModel = new SketchViewModel({
       view: mapView,
       layer: layer,
-      tooltipOptions: {enabled: false}, // todo: check how we can fix the display; seems not implemented:
+      tooltipOptions: {enabled: true, helpMessage: 'Drücke Tab um Werte einzugeben'}, // todo: check how we can fix the display; seems not implemented:
       // https://community.esri.com/t5/arcgis-javascript-maps-sdk-questions/how-to-show-cursor-tooltips-when-a-sketch-tool-is/td-p/1276503
       updateOnGraphicClick: false,
     });
