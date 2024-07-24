@@ -1,15 +1,13 @@
 import SketchViewModel from '@arcgis/core/widgets/Sketch/SketchViewModel';
 import MapView from '@arcgis/core/views/MapView';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
-import {EsriSketchTool} from '../../esri.module';
 import {EsriToolStrategy} from '../interfaces/strategy.interface';
 import {DrawingCallbackHandler} from '../interfaces/drawing-callback-handler.interface';
 import Graphic from '@arcgis/core/Graphic';
 import {DrawingLayer} from '../../../../../shared/enums/drawing-layer.enum';
 import {MapConstants} from '../../../../../shared/constants/map.constants';
 import {UuidUtils} from '../../../../../shared/utils/uuid.utils';
-
-export type SupportedEsriTool = Extract<EsriSketchTool, 'polygon' | 'polyline' | 'point' | 'rectangle' | 'circle'>;
+import {SupportedEsriTool} from './supported-esri-tool.type';
 
 export abstract class AbstractEsriDrawableToolStrategy<
   T extends

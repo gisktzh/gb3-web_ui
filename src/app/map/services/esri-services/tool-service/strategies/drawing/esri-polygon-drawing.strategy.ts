@@ -1,11 +1,9 @@
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import MapView from '@arcgis/core/views/MapView';
-import {SupportedEsriTool} from '../abstract-esri-drawable-tool.strategy';
 import {AbstractEsriDrawingStrategy} from '../abstract-esri-drawing.strategy';
 import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
-
-type PolygonType = Extract<SupportedEsriTool, 'circle' | 'polygon' | 'rectangle'>;
+import {SupportedEsriPolygonTool, SupportedEsriTool} from '../supported-esri-tool.type';
 
 export class EsriPolygonDrawingStrategy extends AbstractEsriDrawingStrategy<DrawingCallbackHandler['completeDrawing']> {
   protected readonly tool: SupportedEsriTool = 'polygon';
@@ -15,7 +13,7 @@ export class EsriPolygonDrawingStrategy extends AbstractEsriDrawingStrategy<Draw
     mapView: MapView,
     polygonSymbol: SimpleFillSymbol,
     completeDrawingCallbackHandler: DrawingCallbackHandler['completeDrawing'],
-    polygonType: PolygonType,
+    polygonType: SupportedEsriPolygonTool,
   ) {
     super(layer, mapView, completeDrawingCallbackHandler);
 

@@ -8,7 +8,7 @@ import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 import {selectDrawingLayers} from '../../../../state/map/selectors/drawing-layers.selector';
 import {Subscription, tap} from 'rxjs';
 import {EsriToolStrategy} from './interfaces/strategy.interface';
-import {EsriDefaultStrategy} from './strategies/measurement/esri-default.strategy';
+import {EsriDefaultStrategy} from './strategies/esri-default.strategy';
 import {EsriLineMeasurementStrategy} from './strategies/measurement/esri-line-measurement.strategy';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {EsriSymbolizationService} from '../esri-symbolization.service';
@@ -171,6 +171,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
    * @param strategySetter A setter function that takes a given layer and sets a strategy for the given tool.
    */
   private initializeTool(layer: GraphicsLayer, strategySetter: (layer: GraphicsLayer) => void) {
+    this.cancelTool();
     strategySetter(layer);
     this.startDrawing();
   }
@@ -282,6 +283,17 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
           areaStyle,
           labelStyle,
           (geometry, label, labelText) => this.completeMeasurement(geometry, label, labelText),
+          'polygon',
+        );
+        break;
+      case 'measure-circle':
+        this.toolStrategy = new EsriAreaMeasurementStrategy(
+          layer,
+          this.esriMapViewService.mapView,
+          areaStyle,
+          labelStyle,
+          (geometry, label, labelText) => this.completeMeasurement(geometry, label, labelText),
+          'circle',
         );
         break;
       case 'measure-line':

@@ -30,6 +30,16 @@
     <mat-icon svgIcon="ktzh_drawing_symbol_polygon"></mat-icon>
   </button>
   <button
+    (click)="this.toggleCircleMeasurement()"
+    [ngClass]="{'measurement-tools__button--active': activeTool === 'measure-circle'}"
+    class="measurement-tools__button"
+    color="accent"
+    mat-icon-button
+    matTooltip="Kreis: Mittelpunkt und Radius wählen."
+  >
+    <mat-icon svgIcon="ktzh_drawing_symbol_circle"></mat-icon>
+  </button>
+  <button
     (click)="this.toggleElevationProfileMeasurement()"
     [ngClass]="{'measurement-tools__button--active': activeTool === 'measure-elevation-profile'}"
     class="measurement-tools__button"

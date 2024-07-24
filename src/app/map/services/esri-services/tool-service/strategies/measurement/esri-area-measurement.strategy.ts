@@ -6,14 +6,14 @@ import Polygon from '@arcgis/core/geometry/Polygon';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import MapView from '@arcgis/core/views/MapView';
-import {SupportedEsriTool} from '../abstract-esri-drawable-tool.strategy';
 import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
 import Point from '@arcgis/core/geometry/Point';
+import {SupportedEsriPolygonTool} from '../supported-esri-tool.type';
 
 const M2_TO_KM2_CONVERSION_THRESHOLD = 100_000;
 
 export class EsriAreaMeasurementStrategy extends AbstractEsriMeasurementStrategy<Polygon, DrawingCallbackHandler['completeMeasurement']> {
-  protected readonly tool: SupportedEsriTool = 'polygon';
+  protected readonly tool: SupportedEsriPolygonTool = 'polygon';
   private readonly labelSymbolization: TextSymbol;
 
   constructor(
@@ -22,9 +22,11 @@ export class EsriAreaMeasurementStrategy extends AbstractEsriMeasurementStrategy
     polygonSymbol: SimpleFillSymbol,
     labelSymbolization: TextSymbol,
     completeDrawingCallbackHandler: DrawingCallbackHandler['completeMeasurement'],
+    polygonType: SupportedEsriPolygonTool,
   ) {
     super(layer, mapView, completeDrawingCallbackHandler);
 
+    this.tool = polygonType;
     this.sketchViewModel.polygonSymbol = polygonSymbol;
     this.labelSymbolization = labelSymbolization;
   }

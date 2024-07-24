@@ -1,5 +1,5 @@
-import {EsriToolStrategy} from '../../interfaces/strategy.interface';
-import {UserDrawingLayer} from '../../../../../../shared/enums/drawing-layer.enum';
+import {EsriToolStrategy} from '../interfaces/strategy.interface';
+import {UserDrawingLayer} from '../../../../../shared/enums/drawing-layer.enum';
 
 /**
  * This is the default strategy which is assigned to the ToolService by default. It does not have any functionality and
