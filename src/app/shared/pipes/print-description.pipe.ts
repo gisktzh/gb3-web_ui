@@ -9,16 +9,12 @@ export class PrintDescriptionPipe implements PipeTransform {
     if (!completed) {
       return 'Beschriftung';
     }
-    const titleText = this.getTitleText(title);
-    const commentText = this.getCommentText(comment);
+    const titleText = this.getTextSnippet(title, 'Kartentitel');
+    const commentText = this.getTextSnippet(comment, 'Kommentar');
     return `Beschriftung: ${titleText}, ${commentText}`;
   }
 
-  private getTitleText(title: string | null): string {
-    return `Kartentitel: ${title !== '' && title !== null ? title : '-'}`;
-  }
-
-  private getCommentText(comment: string | null): string {
-    return `Kommentar: ${comment !== '' && comment !== null ? comment : '-'}`;
+  private getTextSnippet(text: string | null, prefix: string): string {
+    return `${prefix}: ${text !== '' && text !== null ? text : '-'}`;
   }
 }
