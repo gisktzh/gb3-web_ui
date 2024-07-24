@@ -21,13 +21,13 @@ export abstract class AbstractEsriMeasurementStrategy<
 
   protected constructor(layer: GraphicsLayer, mapView: MapView, completeDrawingCallbackHandler: TDrawingCallbackHandler) {
     super(layer, mapView, completeDrawingCallbackHandler);
+    this.sketchViewModel.tooltipOptions.enabled = true;
+    this.sketchViewModel.tooltipOptions.visibleElements.helpMessage = true;
+    this.sketchViewModel.tooltipOptions.helpMessage = 'Klicke auf die Karte um zu beginnen. Drücke "Tab" um Werte einzugeben';
   }
 
   public start(): void {
     this.sketchViewModel.create(this.tool, {mode: 'click'});
-    this.sketchViewModel.tooltipOptions.enabled = true;
-    this.sketchViewModel.tooltipOptions.visibleElements.helpMessage = true;
-    this.sketchViewModel.tooltipOptions.helpMessage = 'Klicke auf die Karte um zu beginnen. Drücke "Tab" um Werte einzugeben';
 
     reactiveUtils.on(
       () => this.sketchViewModel,
