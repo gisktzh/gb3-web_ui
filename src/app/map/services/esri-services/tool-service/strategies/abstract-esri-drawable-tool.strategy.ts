@@ -59,6 +59,7 @@ export abstract class AbstractEsriDrawableToolStrategy<
 
   protected setIdentifierOnGraphic(graphic: Graphic, graphicIdentifier?: string): void {
     graphic.setAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName, graphicIdentifier ?? UuidUtils.createUuid());
+    graphic.setAttribute('__tool', this.tool);
   }
 
   protected setLabelTextAttributeOnGraphic(graphic: Graphic, text: string) {

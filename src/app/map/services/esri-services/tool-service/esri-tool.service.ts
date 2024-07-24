@@ -45,6 +45,7 @@ import {EsriElevationProfileMeasurementStrategy} from './strategies/measurement/
 import {ElevationProfileActions} from '../../../../state/map/actions/elevation-profile.actions';
 import {EsriGraphicToInternalDrawingRepresentationUtils} from '../utils/esri-graphic-to-internal-drawing-representation.utils';
 import {InternalDrawingRepresentationToEsriGraphicUtils} from '../utils/internal-drawing-representation-to-esri-graphic.utils';
+import {SupportedEsriTool} from './strategies/supported-esri-tool.type';
 
 export const HANDLE_GROUP_KEY = 'EsriToolService';
 
@@ -91,6 +92,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
   }
 
   public editDrawing(graphic: Graphic) {
+    this.setToolStrategyForEditingFeature(graphic);
     this.toolStrategy.edit(graphic);
   }
 
@@ -233,7 +235,6 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
   }
 
   private endDrawing() {
-    this.toolStrategy.cancel();
     this.esriMapViewService.mapView.removeHandles(HANDLE_GROUP_KEY);
     this.store.dispatch(ToolActions.deactivateTool());
   }
@@ -265,6 +266,52 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
 
     if (activeMapItem) {
       this.store.dispatch(ActiveMapItemActions.forceFullVisibility({activeMapItem}));
+    }
+  }
+
+  private setToolStrategyForEditingFeature(graphic: Graphic) {
+    const tool: SupportedEsriTool = graphic.getAttribute('__tool') as SupportedEsriTool;
+    let drawingType: DrawingTool;
+    let measurementType: MeasurementTool;
+    let dataDownloadSelectionType: DataDownloadSelectionTool = 'select-polygon';
+    switch (tool) {
+      case 'polyline':
+        drawingType = 'draw-line';
+        measurementType = 'measure-line';
+        break;
+      case 'polygon':
+        drawingType = 'draw-polygon';
+        measurementType = 'measure-area';
+        dataDownloadSelectionType = 'select-polygon';
+        break;
+      case 'circle':
+        drawingType = 'draw-circle';
+        measurementType = 'measure-circle';
+        dataDownloadSelectionType = 'select-circle';
+        break;
+      case 'rectangle':
+        drawingType = 'draw-rectangle';
+        measurementType = 'measure-area';
+        dataDownloadSelectionType = 'select-rectangle';
+        break;
+      case 'point':
+        measurementType = 'measure-point';
+        if (graphic.symbol instanceof SimpleMarkerSymbol) {
+          drawingType = 'draw-point';
+        } else {
+          drawingType = 'draw-text';
+        }
+        break;
+    }
+
+    if (graphic.layer.id.includes(UserDrawingLayer.Drawings)) {
+      this.setDrawingStrategy(drawingType, graphic.layer as GraphicsLayer);
+    } else if (graphic.layer.id.includes(UserDrawingLayer.Measurements)) {
+      this.setMeasurementStrategy(measurementType, graphic.layer as GraphicsLayer);
+    } else if (graphic.layer.id.includes(InternalDrawingLayer.Selection)) {
+      this.setDataDownloadSelectionStrategy(dataDownloadSelectionType, graphic.layer as GraphicsLayer);
+    } else if (graphic.layer.id.includes(InternalDrawingLayer.ElevationProfile)) {
+      this.setMeasurementStrategy('measure-elevation-profile', graphic.layer as GraphicsLayer);
     }
   }
 

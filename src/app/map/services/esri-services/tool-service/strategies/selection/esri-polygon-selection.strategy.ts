@@ -9,6 +9,8 @@ import {EsriGraphicToInternalDrawingRepresentationUtils} from '../../../utils/es
 import {SupportedSrs} from '../../../../../../shared/types/supported-srs.type';
 import Graphic from '@arcgis/core/Graphic';
 import {SupportedEsriPolygonTool, SupportedEsriTool} from '../supported-esri-tool.type';
+import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
+import {HANDLE_GROUP_KEY} from '../../esri-tool.service';
 
 export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrategy<DrawingCallbackHandler['completeSelection']> {
   public readonly internalLayerType: InternalDrawingLayer = InternalDrawingLayer.Selection;
@@ -33,7 +35,27 @@ export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrate
     });
   }
 
-  public edit(_graphic: Graphic) {} // TODO: implement
+  public edit(graphic: Graphic) {
+    void this.sketchViewModel.update(graphic, {multipleSelectionEnabled: false});
+
+    const editHandle = reactiveUtils.on(
+      () => this.sketchViewModel,
+      'update',
+      ({state}) => {
+        switch (state) {
+          case 'active':
+          case 'start':
+          case 'cancel':
+            break; // currently, these events do not trigger any action
+          case 'complete':
+            this.complete(graphic);
+            break;
+        }
+      },
+    );
+
+    this.sketchViewModel.view.addHandles([editHandle], HANDLE_GROUP_KEY);
+  }
 
   private complete(graphic: Graphic) {
     this.setIdentifierOnGraphic(graphic);
