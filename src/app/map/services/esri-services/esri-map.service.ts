@@ -76,6 +76,7 @@ export class EsriMapService implements MapService, OnDestroy {
   private effectiveMaxZoom = 23;
   private effectiveMinZoom = 0;
   private effectiveMinScale = 0;
+  private isEditModeActive = false;
   private readonly printPreviewHandle$: BehaviorSubject<IHandle | null> = new BehaviorSubject<IHandle | null>(null);
   private readonly defaultMapConfig: MapConfigState = this.configService.mapConfig.defaultMapConfig;
   private readonly numberOfDrawingLayers = Object.keys(InternalDrawingLayer).length;
@@ -803,13 +804,17 @@ export class EsriMapService implements MapService, OnDestroy {
       async (event: __esri.ViewClickEvent) => {
         const clickLocation = this.transformationService.transform(event.mapPoint);
         if (event.button === 0) {
+          if (this.isEditModeActive) {
+            this.isEditModeActive = false;
+            return;
+          }
           this.dispatchFeatureInfoRequest(clickLocation.x, clickLocation.y);
         } else {
-          const hitTestResults = await this.mapView.hitTest(event);
-          const results = hitTestResults.results;
+          const {results} = await this.mapView.hitTest(event);
           if (results.length > 0) {
-            const clickedFeature = HitTestSelectionUtils.selectFeatureFromHitTestResult(results as GraphicHit[], clickLocation);
-            this.esriToolService.editDrawing(clickedFeature);
+            this.isEditModeActive = true;
+            const selectedFeature = HitTestSelectionUtils.selectFeatureFromHitTestResult(results as GraphicHit[], clickLocation);
+            this.esriToolService.editDrawing(selectedFeature);
           }
         }
       },
