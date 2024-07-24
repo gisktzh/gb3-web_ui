@@ -54,14 +54,6 @@ export abstract class AbstractEsriMeasurementStrategy<
   public edit(graphic: __esri.Graphic) {
     void this.sketchViewModel.update(graphic, {multipleSelectionEnabled: false});
 
-    const deleteHandle = reactiveUtils.on(
-      () => this.sketchViewModel,
-      'delete',
-      () => {
-        this.removeLabelOnEditAndDelete(graphic);
-      },
-    );
-
     const editHandle = reactiveUtils.on(
       () => this.sketchViewModel,
       'update',
@@ -76,16 +68,22 @@ export abstract class AbstractEsriMeasurementStrategy<
           case 'active':
             break;
           case 'complete':
-            console.log(state, this.layer.graphics.length);
+            if (graphic.getAttribute(AbstractEsriDrawableToolStrategy.belongsToFieldName)) {
+              break;
+            }
             graphicIdentifier = graphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName);
-            labelConfiguration = this.createLabelForGeometry(graphic.geometry as TGeometry, graphicIdentifier);
-            this.layer.add(labelConfiguration.label);
-            this.completeDrawingCallbackHandler(graphic, labelConfiguration.label, labelConfiguration.labelText);
+            if (
+              this.layer.graphics.find((g) => g.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName) === graphicIdentifier)
+            ) {
+              labelConfiguration = this.createLabelForGeometry(graphic.geometry as TGeometry, graphicIdentifier);
+              this.layer.add(labelConfiguration.label);
+              this.completeDrawingCallbackHandler(graphic, labelConfiguration.label, labelConfiguration.labelText);
+            }
             break;
         }
       },
     );
-    this.sketchViewModel.view.addHandles([editHandle, deleteHandle], HANDLE_GROUP_KEY);
+    this.sketchViewModel.view.addHandles([editHandle], HANDLE_GROUP_KEY);
   }
 
   /**
