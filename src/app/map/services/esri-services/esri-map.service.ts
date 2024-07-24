@@ -63,6 +63,8 @@ import {ActiveTimeSliderLayersUtils} from '../../utils/active-time-slider-layers
 import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
 import {InitialMapExtentService} from '../initial-map-extent.service';
 import {MapConstants} from '../../../shared/constants/map.constants';
+import {HitTestSelectionUtils} from '../../utils/hit-test-selection.utils';
+import GraphicHit = __esri.GraphicHit;
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
 
@@ -798,9 +800,18 @@ export class EsriMapService implements MapService, OnDestroy {
     esriReactiveUtils.on(
       () => this.mapView,
       'click',
-      (event: __esri.ViewClickEvent) => {
-        const {x, y} = this.transformationService.transform(event.mapPoint);
-        this.dispatchFeatureInfoRequest(x, y);
+      async (event: __esri.ViewClickEvent) => {
+        const clickLocation = this.transformationService.transform(event.mapPoint);
+        if (event.button === 0) {
+          this.dispatchFeatureInfoRequest(clickLocation.x, clickLocation.y);
+        } else {
+          const hitTestResults = await this.mapView.hitTest(event);
+          const results = hitTestResults.results;
+          if (results.length > 0) {
+            const clickedFeature = HitTestSelectionUtils.selectFeatureFromHitTestResult(results as GraphicHit[], clickLocation);
+            this.esriToolService.editDrawing(clickedFeature);
+          }
+        }
       },
     );
 

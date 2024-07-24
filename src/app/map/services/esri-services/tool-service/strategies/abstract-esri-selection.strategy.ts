@@ -38,6 +38,10 @@ export abstract class AbstractEsriSelectionStrategy<T extends DrawingCallbackHan
     this.layer.removeAll();
   }
 
+  public edit(graphic: Graphic) {
+    console.log(graphic);
+  }
+
   protected abstract createSelection(): Observable<DataDownloadSelection | undefined>;
 
   private drawSelection(drawingRepresentation: UnstyledInternalDrawingRepresentation) {

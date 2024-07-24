@@ -34,6 +34,8 @@ export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrate
     });
   }
 
+  public edit(_graphic: Graphic) {} // TODO: implement
+
   private complete(graphic: Graphic) {
     this.setIdentifierOnGraphic(graphic);
     const drawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(

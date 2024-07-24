@@ -29,6 +29,10 @@ export abstract class AbstractEsriDrawingStrategy<
     });
   }
 
+  public edit(graphic: __esri.Graphic) {
+    void this.sketchViewModel.update(graphic, {multipleSelectionEnabled: false});
+  }
+
   protected handleComplete(graphic: Graphic, labelText?: string) {
     this.setIdentifierOnGraphic(graphic);
     this.completeDrawingCallbackHandler(graphic, labelText);

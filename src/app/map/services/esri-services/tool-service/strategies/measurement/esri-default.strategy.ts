@@ -8,11 +8,9 @@ import {UserDrawingLayer} from '../../../../../../shared/enums/drawing-layer.enu
 export class EsriDefaultStrategy implements EsriToolStrategy {
   public internalLayerType: UserDrawingLayer = UserDrawingLayer.Drawings;
 
-  public start(): void {
-    throw Error('Default Strategy is not implemented.');
-  }
+  public start(): void {}
 
-  public cancel() {
-    throw Error('Default Strategy is not implemented.');
-  }
+  public edit(_graphic: __esri.Graphic) {}
+
+  public cancel() {}
 }

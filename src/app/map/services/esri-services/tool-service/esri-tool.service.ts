@@ -46,7 +46,7 @@ import {ElevationProfileActions} from '../../../../state/map/actions/elevation-p
 import {EsriGraphicToInternalDrawingRepresentationUtils} from '../utils/esri-graphic-to-internal-drawing-representation.utils';
 import {InternalDrawingRepresentationToEsriGraphicUtils} from '../utils/internal-drawing-representation-to-esri-graphic.utils';
 
-const HANDLE_GROUP_KEY = 'EsriToolService';
+export const HANDLE_GROUP_KEY = 'EsriToolService';
 
 /**
  * Handles the measurement and sketch drawings. It employs the Strategy pattern to delegate the actual drawing logic to dedicated
@@ -88,6 +88,10 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
 
   public cancelTool() {
     this.toolStrategy.cancel();
+  }
+
+  public editDrawing(graphic: Graphic) {
+    this.toolStrategy.edit(graphic);
   }
 
   public initializeDrawing(drawingTool: DrawingTool) {
@@ -228,6 +232,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
   }
 
   private endDrawing() {
+    this.toolStrategy.cancel();
     this.esriMapViewService.mapView.removeHandles(HANDLE_GROUP_KEY);
     this.store.dispatch(ToolActions.deactivateTool());
   }
