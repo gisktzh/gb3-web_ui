@@ -5,7 +5,7 @@ import {catchError, map} from 'rxjs/operators';
 import {ImportActions} from '../actions/import.actions';
 import {Gb3ImportService} from '../../../shared/services/apis/gb3/gb3-import.service';
 import {FileImportError} from '../../../shared/errors/file-upload.errors';
-import {DEFAULT_INTERNAL_STYLE, SymbolizationToGb3ConverterUtils} from '../../../shared/utils/symbolization-to-gb3-converter.utils';
+import {SymbolizationToGb3ConverterUtils} from '../../../shared/utils/symbolization-to-gb3-converter.utils';
 import {UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {MAP_SERVICE} from '../../../app.module';
 import {MapService} from '../../../map/interfaces/map.service';
@@ -33,34 +33,8 @@ export class ImportEffects {
     return this.actions$.pipe(
       ofType(ImportActions.createActiveMapItemFromDrawing),
       map(({drawing}) => {
-        const styledDrawing = {
-          ...drawing,
-          geojson: {
-            ...drawing.geojson,
-            features: drawing.geojson.features.map((feature) => {
-              return {
-                ...feature,
-                properties: {
-                  ...feature.properties,
-                  style: this.getStyleName(feature),
-                },
-              };
-            }),
-          },
-          styles: {
-            GB3_INTERNAL_STYLE_POINT: {...DEFAULT_INTERNAL_STYLE, type: 'point'},
-            GB3_INTERNAL_STYLE_TEXT: {...DEFAULT_INTERNAL_STYLE, type: 'text'},
-            GB3_INTERNAL_STYLE_POLYGON: {...DEFAULT_INTERNAL_STYLE, type: 'polygon'},
-            GB3_INTERNAL_STYLE_MULTIPOLYGON: {...DEFAULT_INTERNAL_STYLE, type: 'polygon'},
-            GB3_INTERNAL_STYLE_LINESTRING: {...DEFAULT_INTERNAL_STYLE, type: 'line'},
-            GB3_INTERNAL_STYLE_MULTILINESTRING: {...DEFAULT_INTERNAL_STYLE, type: 'line'},
-          },
-        };
         const activeMapItem = ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, MapConstants.USER_DRAWING_LAYER_PREFIX);
-        const drawingsToAdd = SymbolizationToGb3ConverterUtils.convertExternalToInternalRepresentation(
-          styledDrawing,
-          UserDrawingLayer.Drawings,
-        );
+        const drawingsToAdd = SymbolizationToGb3ConverterUtils.convertExternalToInternalRepresentation(drawing, UserDrawingLayer.Drawings);
         const drawingLayersToOverride: UserDrawingLayer[] = [];
         this.mapService.removeMapItem(activeMapItem.id);
         activeMapItem.addToMap(this.mapService, 0);
