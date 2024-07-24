@@ -4,23 +4,6 @@ import {UserDrawingLayer} from '../enums/drawing-layer.enum';
 import {MapConstants} from '../constants/map.constants';
 import {UuidUtils} from './uuid.utils';
 
-export const DEFAULT_INTERNAL_STYLE = {
-  label: '[text]',
-  fontSize: 12,
-  fontColor: '#ff0000',
-  fontFamily: 'sans-serif',
-  labelYOffset: 0,
-  labelAlign: 'ct',
-  haloColor: '#ffffff',
-  haloRadius: 1,
-  pointRadius: 5,
-  strokeColor: '#ff0000',
-  strokeOpacity: 1,
-  strokeWidth: 2,
-  fillColor: '#ff0000',
-  fillOpacity: 0.3,
-};
-
 export class SymbolizationToGb3ConverterUtils {
   /**
    * Converts a list of internal drawings to a GB3VectorLayer representation.
