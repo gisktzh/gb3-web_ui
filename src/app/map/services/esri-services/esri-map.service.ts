@@ -802,18 +802,18 @@ export class EsriMapService implements MapService, OnDestroy {
       () => this.mapView,
       'click',
       async (event: __esri.ViewClickEvent) => {
-        const clickLocation = this.transformationService.transform(event.mapPoint);
+        const {x, y} = this.transformationService.transform(event.mapPoint);
         if (event.button === 0) {
           if (this.isEditModeActive) {
             this.isEditModeActive = false;
             return;
           }
-          this.dispatchFeatureInfoRequest(clickLocation.x, clickLocation.y);
+          this.dispatchFeatureInfoRequest(x, y);
         } else {
           const {results} = await this.mapView.hitTest(event);
           if (results.length > 0) {
             this.isEditModeActive = true;
-            const selectedFeature = HitTestSelectionUtils.selectFeatureFromHitTestResult(results as GraphicHit[], clickLocation);
+            const selectedFeature = HitTestSelectionUtils.selectFeatureFromHitTestResult(results as GraphicHit[]);
             this.esriToolService.editDrawing(selectedFeature);
           }
         }
