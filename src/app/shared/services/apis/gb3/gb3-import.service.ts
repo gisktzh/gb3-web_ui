@@ -3,7 +3,6 @@ import {Inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {ConfigService} from '../../config.service';
 import {map} from 'rxjs/operators';
-import {FileDownloadService} from '../../file-download-service';
 import {Gb3VectorLayer} from '../../../interfaces/gb3-vector-layer.interface';
 
 @Injectable({
@@ -12,11 +11,7 @@ import {Gb3VectorLayer} from '../../../interfaces/gb3-vector-layer.interface';
 export class Gb3ImportService extends Gb3ApiService {
   protected readonly endpoint = 'import';
 
-  constructor(
-    @Inject(HttpClient) http: HttpClient,
-    @Inject(ConfigService) configService: ConfigService,
-    private readonly fileDownloadService: FileDownloadService,
-  ) {
+  constructor(@Inject(HttpClient) http: HttpClient, @Inject(ConfigService) configService: ConfigService) {
     super(http, configService);
   }
 
