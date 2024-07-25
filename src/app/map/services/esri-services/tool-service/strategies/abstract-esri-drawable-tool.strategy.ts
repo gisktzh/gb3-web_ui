@@ -18,6 +18,7 @@ export abstract class AbstractEsriDrawableToolStrategy<
 {
   public static readonly identifierFieldName = MapConstants.DRAWING_IDENTIFIER;
   public static readonly belongsToFieldName = MapConstants.BELONGS_TO_IDENTIFIER;
+  public static readonly toolFieldName = MapConstants.TOOL_IDENTIFIER;
   public abstract readonly internalLayerType: DrawingLayer;
   protected readonly sketchViewModel: SketchViewModel;
   protected readonly layer: GraphicsLayer;
@@ -58,8 +59,12 @@ export abstract class AbstractEsriDrawableToolStrategy<
   }
 
   protected setIdentifierOnGraphic(graphic: Graphic, graphicIdentifier?: string): void {
+    // If the graphic already has an id (i.e when it is edited), we do not set a new one
+    if (graphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName)) {
+      return;
+    }
     graphic.setAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName, graphicIdentifier ?? UuidUtils.createUuid());
-    graphic.setAttribute('__tool', this.tool);
+    graphic.setAttribute(AbstractEsriDrawableToolStrategy.toolFieldName, this.tool);
   }
 
   protected setLabelTextAttributeOnGraphic(graphic: Graphic, text: string) {

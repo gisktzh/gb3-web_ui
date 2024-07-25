@@ -63,7 +63,7 @@ export abstract class AbstractEsriMeasurementStrategy<
 
         switch (state) {
           case 'start':
-            this.removeLabelOnEditAndDelete(graphic);
+            this.removeLabelOnEdit(graphic);
             break;
           case 'active':
             break;
@@ -72,6 +72,7 @@ export abstract class AbstractEsriMeasurementStrategy<
               break;
             }
             graphicIdentifier = graphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName);
+            // checks if the graphic still exists in the layer, i. e if it was not deleted during edit
             if (
               this.layer.graphics.find((g) => g.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName) === graphicIdentifier)
             ) {
@@ -94,7 +95,7 @@ export abstract class AbstractEsriMeasurementStrategy<
    */
   protected abstract createLabelConfigurationForGeometry(geometry: TGeometry): LabelConfiguration;
 
-  private removeLabelOnEditAndDelete(graphic: Graphic) {
+  private removeLabelOnEdit(graphic: Graphic) {
     const labelGraphic: Graphic = this.layer.graphics.find(
       (g) =>
         g.getAttribute(AbstractEsriDrawableToolStrategy.belongsToFieldName) ===

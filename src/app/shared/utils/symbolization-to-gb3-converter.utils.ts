@@ -21,6 +21,7 @@ export class SymbolizationToGb3ConverterUtils {
         properties: {
           id: feature.properties[MapConstants.DRAWING_IDENTIFIER],
           belongsTo: feature.properties[MapConstants.BELONGS_TO_IDENTIFIER],
+          tool: feature.properties[MapConstants.TOOL_IDENTIFIER],
           style: uuid,
           text: feature.labelText,
         },
@@ -48,6 +49,7 @@ export class SymbolizationToGb3ConverterUtils {
       properties: {
         [MapConstants.DRAWING_IDENTIFIER]: feature.properties.id,
         [MapConstants.BELONGS_TO_IDENTIFIER]: feature.properties.belongsTo,
+        [MapConstants.TOOL_IDENTIFIER]: feature.properties.tool,
         style: gb3VectorLayer.styles[feature.properties.style],
       },
       geometry: {

@@ -22,6 +22,11 @@ export interface Gb3GeoJsonFeature {
      * @example "Label text"
      */
     text?: string;
+    /**
+     * The tool used to draw the feature
+     * @example "polygon"
+     */
+    tool: string;
   };
   geometry: SupportedGeometry;
 }

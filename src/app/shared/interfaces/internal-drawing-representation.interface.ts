@@ -57,4 +57,5 @@ export type Gb3StyledInternalDrawingRepresentation = InternalDrawingRepresentati
   style: Gb3StyleRepresentation;
   [AbstractEsriDrawableToolStrategy.identifierFieldName]: string;
   [AbstractEsriDrawableToolStrategy.belongsToFieldName]?: string;
+  [AbstractEsriDrawableToolStrategy.toolFieldName]: string;
 }>;

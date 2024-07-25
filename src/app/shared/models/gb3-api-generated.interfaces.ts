@@ -869,6 +869,11 @@ export interface GeojsonFeature {
      * @example "Label text"
      */
     text?: string;
+    /**
+     * The tool used to draw the feature
+     * @example "polygon"
+     */
+    tool: string;
   };
   /** GeoJSON geometry object */
   geometry: Geometry;

@@ -17,6 +17,7 @@ export class MapConstants {
   public static readonly DRAWING_IDENTIFIER = '__id';
   public static readonly DRAWING_LABEL_IDENTIFIER = '__labelText';
   public static readonly BELONGS_TO_IDENTIFIER = '__belongsTo';
+  public static readonly TOOL_IDENTIFIER = '__tool';
 
   /**
    * Query params that are removed upon loading the initial map configuration.
