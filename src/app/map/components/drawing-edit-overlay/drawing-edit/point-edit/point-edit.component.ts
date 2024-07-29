@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {Gb3PointStyle} from '../../../../../shared/interfaces/internal-drawing-representation.interface';
+import {Gb3PointStyle, PointStyleConfiguration} from '../../../../../shared/interfaces/internal-drawing-representation.interface';
 
 @Component({
   selector: 'point-edit',
@@ -11,18 +11,10 @@ export class PointEditComponent {
 
   @Output() public updateStyle = new EventEmitter<Gb3PointStyle>();
 
-  public updateSliderValue(field: string, strokeWidth: number) {
+  public updateValue(field: keyof PointStyleConfiguration, value: number | string) {
     this.pointStyle = {
       ...this.pointStyle,
-      [field]: strokeWidth,
-    };
-    this.updateStyle.emit(this.pointStyle);
-  }
-
-  public updateColorValue(field: string, color: string) {
-    this.pointStyle = {
-      ...this.pointStyle,
-      [field]: color,
+      [field]: value,
     };
     this.updateStyle.emit(this.pointStyle);
   }

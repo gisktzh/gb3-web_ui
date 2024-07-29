@@ -1,6 +1,6 @@
 <h2>Umrandung</h2>
 <slider-edit
-  (updateValue)="updateSliderValue('strokeWidth', $event)"
+  (updateValue)="updateValue('strokeWidth', $event)"
   [sliderValue]="pointStyle.strokeWidth"
   [min]="1"
   [max]="12"
@@ -8,20 +8,18 @@
   title="Strichstärke"
 >
 </slider-edit>
-<slider-edit (updateValue)="updateSliderValue('strokeOpacity', $event)" [sliderValue]="pointStyle.strokeOpacity" title="Deckkraft">
-</slider-edit>
-<color-picker-edit (updateColor)="updateColorValue('strokeColor', $event)" [fillColor]="pointStyle.strokeColor" title="Strichfarbe">
+<slider-edit (updateValue)="updateValue('strokeOpacity', $event)" [sliderValue]="pointStyle.strokeOpacity" title="Deckkraft"> </slider-edit>
+<color-picker-edit (updateColor)="updateValue('strokeColor', $event)" [fillColor]="pointStyle.strokeColor" title="Strichfarbe">
 </color-picker-edit>
 
 <h2>Füllung</h2>
-<slider-edit (updateValue)="updateSliderValue('fillOpacity', $event)" [sliderValue]="pointStyle.fillOpacity" title="Deckkraft">
-</slider-edit>
-<color-picker-edit (updateColor)="updateColorValue('fillColor', $event)" [fillColor]="pointStyle.fillColor" title="Füllfarbe">
+<slider-edit (updateValue)="updateValue('fillOpacity', $event)" [sliderValue]="pointStyle.fillOpacity" title="Deckkraft"> </slider-edit>
+<color-picker-edit (updateColor)="updateValue('fillColor', $event)" [fillColor]="pointStyle.fillColor" title="Füllfarbe">
 </color-picker-edit>
 
 <h2>Größe</h2>
 <slider-edit
-  (updateValue)="updateSliderValue('pointRadius', $event)"
+  (updateValue)="updateValue('pointRadius', $event)"
   [sliderValue]="pointStyle.pointRadius"
   [min]="1"
   [max]="50"

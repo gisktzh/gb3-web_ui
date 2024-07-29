@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {Gb3PolygonStyle} from '../../../../../shared/interfaces/internal-drawing-representation.interface';
+import {AreaStyleConfiguration, Gb3PolygonStyle} from '../../../../../shared/interfaces/internal-drawing-representation.interface';
 
 @Component({
   selector: 'polygon-edit',
@@ -11,18 +11,10 @@ export class PolygonEditComponent {
 
   @Output() public updateStyle = new EventEmitter<Gb3PolygonStyle>();
 
-  public updateSliderValue(field: string, value: number) {
+  public updateValue(field: keyof AreaStyleConfiguration, value: number | string) {
     this.polygonStyle = {
       ...this.polygonStyle,
       [field]: value,
-    };
-    this.updateStyle.emit(this.polygonStyle);
-  }
-
-  public updateColorValue(field: string, color: string) {
-    this.polygonStyle = {
-      ...this.polygonStyle,
-      [field]: color,
     };
     this.updateStyle.emit(this.polygonStyle);
   }

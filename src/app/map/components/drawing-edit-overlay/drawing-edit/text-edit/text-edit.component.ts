@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {Gb3TextStyle} from '../../../../../shared/interfaces/internal-drawing-representation.interface';
+import {Gb3TextStyle, TextStyleConfiguration} from '../../../../../shared/interfaces/internal-drawing-representation.interface';
 
 @Component({
   selector: 'text-edit',
@@ -12,7 +12,7 @@ export class TextEditComponent {
 
   @Output() public updateStyle = new EventEmitter<{style: Gb3TextStyle; labelText: string}>();
 
-  public updateValue(field: string, value: number | string) {
+  public updateValue(field: keyof TextStyleConfiguration, value: number | string) {
     this.textStyle = {
       ...this.textStyle,
       [field]: value.toString(),

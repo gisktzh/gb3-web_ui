@@ -22,11 +22,11 @@ export interface InternalDrawingType {
 
 export interface LineStyleConfiguration extends Pick<MapfishPrintStyleProperties, 'strokeColor' | 'strokeOpacity' | 'strokeWidth'> {}
 
-interface AreaStyleConfiguration extends LineStyleConfiguration, Pick<MapfishPrintStyleProperties, 'fillColor' | 'fillOpacity'> {}
+export interface AreaStyleConfiguration extends LineStyleConfiguration, Pick<MapfishPrintStyleProperties, 'fillColor' | 'fillOpacity'> {}
 
-interface PointStyleConfiguration extends Pick<MapfishPrintStyleProperties, 'pointRadius'> {}
+export interface PointStyleConfiguration extends AreaStyleConfiguration, Pick<MapfishPrintStyleProperties, 'pointRadius'> {}
 
-interface TextStyleConfiguration
+export interface TextStyleConfiguration
   extends Pick<
     MapfishPrintStyleProperties,
     'label' | 'fontSize' | 'fontColor' | 'fontFamily' | 'labelYOffset' | 'labelAlign' | 'haloColor' | 'haloRadius'
@@ -36,7 +36,7 @@ export interface Gb3LineStringStyle extends InternalDrawingType, LineStyleConfig
   type: 'line';
 }
 
-export interface Gb3PointStyle extends InternalDrawingType, AreaStyleConfiguration, PointStyleConfiguration {
+export interface Gb3PointStyle extends InternalDrawingType, PointStyleConfiguration {
   type: 'point';
 }
 
