@@ -95,8 +95,8 @@ import {LineEditComponent} from './components/drawing-edit-overlay/drawing-edit/
 import {PointEditComponent} from './components/drawing-edit-overlay/drawing-edit/point-edit/point-edit.component';
 import {TextEditComponent} from './components/drawing-edit-overlay/drawing-edit/text-edit/text-edit.component';
 import {PolygonEditComponent} from './components/drawing-edit-overlay/drawing-edit/polygon-edit/polygon-edit.component';
-import {FillEditComponent} from './components/drawing-edit-overlay/drawing-edit/fill-edit/fill-edit.component';
-import {StrokeEditComponent} from './components/drawing-edit-overlay/drawing-edit/stroke-edit/stroke-edit.component';
+import {ColorPickerEditComponent} from './components/drawing-edit-overlay/drawing-edit/color-picker-edit/color-picker-edit.component';
+import {SliderEditComponent} from './components/drawing-edit-overlay/drawing-edit/slider-edit/slider-edit.component';
 
 @NgModule({
   providers: [provideCharts(withDefaultRegisterables())],
@@ -178,8 +178,8 @@ import {StrokeEditComponent} from './components/drawing-edit-overlay/drawing-edi
     PolygonEditComponent,
     PointEditComponent,
     TextEditComponent,
-    FillEditComponent,
-    StrokeEditComponent,
+    ColorPickerEditComponent,
+    SliderEditComponent,
   ],
   imports: [
     CommonModule,

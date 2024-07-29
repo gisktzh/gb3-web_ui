@@ -1,9 +1,19 @@
-<stroke-edit
-  (updateStroke)="updateStrokeAttributes($event)"
-  [strokeColor]="polygonStyle.strokeColor"
-  [strokeOpacity]="polygonStyle.strokeOpacity"
-  [strokeWidth]="polygonStyle.strokeWidth"
+<h2>Umrandung</h2>
+<slider-edit
+  (updateValue)="updateSliderValue('strokeWidth', $event)"
+  [sliderValue]="polygonStyle.strokeWidth"
+  [min]="1"
+  [max]="12"
+  [step]="1"
+  title="Strichstärke"
 >
-</stroke-edit>
-<fill-edit (updateFill)="updateFillAttributes($event)" [fillColor]="polygonStyle.fillColor" [fillOpacity]="polygonStyle.fillOpacity">
-</fill-edit>
+</slider-edit>
+<slider-edit (updateValue)="updateSliderValue('strokeOpacity', $event)" [sliderValue]="polygonStyle.strokeOpacity" title="Deckkraft">
+</slider-edit>
+<color-picker-edit (updateColor)="updateColorValue('strokeColor', $event)" [fillColor]="polygonStyle.strokeColor" title="Strichfarbe">
+</color-picker-edit>
+<h2>Füllung</h2>
+<slider-edit (updateValue)="updateSliderValue('fillOpacity', $event)" [sliderValue]="polygonStyle.fillOpacity" title="Deckkraft">
+</slider-edit>
+<color-picker-edit (updateColor)="updateColorValue('fillColor', $event)" [fillColor]="polygonStyle.fillColor" title="Füllfarbe">
+</color-picker-edit>

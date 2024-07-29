@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {Gb3TextStyle} from '../../../../../shared/interfaces/internal-drawing-representation.interface';
 
 @Component({
@@ -8,4 +8,17 @@ import {Gb3TextStyle} from '../../../../../shared/interfaces/internal-drawing-re
 })
 export class TextEditComponent {
   @Input() public textStyle!: Gb3TextStyle;
+  @Input() public labelText!: string;
+
+  @Output() public updateStyle = new EventEmitter<{style: Gb3TextStyle; labelText: string}>();
+
+  public updateValue(field: string, value: number | string) {
+    this.textStyle = {
+      ...this.textStyle,
+      [field]: value.toString(),
+    };
+    this.updateStyle.emit({style: this.textStyle, labelText: this.labelText});
+  }
+
+  protected readonly parseInt = parseInt;
 }

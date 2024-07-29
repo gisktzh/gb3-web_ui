@@ -1,6 +1,5 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {Gb3LineStringStyle} from '../../../../../shared/interfaces/internal-drawing-representation.interface';
-import {StrokeStyle} from '../stroke-edit/stroke-edit.component';
 
 @Component({
   selector: 'line-edit',
@@ -12,12 +11,19 @@ export class LineEditComponent {
 
   @Output() public updateStyle = new EventEmitter<Gb3LineStringStyle>();
 
-  public updateStrokeAttributes(lineStyle: StrokeStyle) {
-    this.updateStyle.emit({
+  public updateSliderValue(field: string, value: number) {
+    this.lineStyle = {
       ...this.lineStyle,
-      strokeWidth: lineStyle.strokeWidth,
-      strokeColor: lineStyle.strokeColor,
-      strokeOpacity: lineStyle.strokeOpacity,
-    });
+      [field]: value,
+    };
+    this.updateStyle.emit(this.lineStyle);
+  }
+
+  public updateColorValue(color: string) {
+    this.lineStyle = {
+      ...this.lineStyle,
+      strokeColor: color,
+    };
+    this.updateStyle.emit(this.lineStyle);
   }
 }

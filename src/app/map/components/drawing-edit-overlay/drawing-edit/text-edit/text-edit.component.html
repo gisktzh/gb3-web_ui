@@ -1,1 +1,37 @@
-<p>{{ textStyle.fontColor }}</p>
+<h2>Text</h2>
+<mat-form-field appearance="outline" class="label-text">
+  <mat-label>Beschriftung</mat-label>
+  <input matInput [value]="labelText" [(ngModel)]="labelText" (ngModelChange)="updateValue('label', labelText!)" />
+</mat-form-field>
+<h2>Schrift</h2>
+<slider-edit
+  (updateValue)="updateValue('fontSize', $event)"
+  [sliderValue]="parseInt(textStyle.fontSize)"
+  [min]="8"
+  [max]="48"
+  [step]="1"
+  title="Grösse"
+>
+</slider-edit>
+<color-picker-edit (updateColor)="updateValue('fontColor', $event)" [fillColor]="textStyle.fontColor" title="Farbe"> </color-picker-edit>
+<h2>Halo</h2>
+<slider-edit
+  (updateValue)="updateValue('haloRadius', $event)"
+  [sliderValue]="parseInt(textStyle.haloRadius)"
+  [min]="1"
+  [max]="12"
+  [step]="1"
+  title="Grösse"
+>
+</slider-edit>
+<color-picker-edit (updateColor)="updateValue('haloColor', $event)" [fillColor]="textStyle.haloColor" title="Farbe"> </color-picker-edit>
+<h2>Offset</h2>
+<slider-edit
+  (updateValue)="updateValue('labelYOffset', $event)"
+  [sliderValue]="parseInt(textStyle.labelYOffset)"
+  [min]="1"
+  [max]="20"
+  [step]="1"
+  title="Abstand"
+>
+</slider-edit>

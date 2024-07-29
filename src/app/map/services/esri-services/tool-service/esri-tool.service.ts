@@ -104,7 +104,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
     this.toolStrategy.edit(graphic);
   }
 
-  public updateDrawingStyling(drawing: Gb3StyledInternalDrawingRepresentation, style: Gb3StyleRepresentation) {
+  public updateDrawingStyling(drawing: Gb3StyledInternalDrawingRepresentation, style: Gb3StyleRepresentation, labelText?: string) {
     const fullLayerIdentifier = this.configService.mapConfig.userDrawingLayerPrefix + drawing.source;
     const drawingLayer = this.esriMapViewService.findEsriLayer(fullLayerIdentifier);
 
@@ -116,7 +116,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
       );
 
       if (graphic) {
-        const symbol = StyleRepresentationToEsriSymbolUtils.convert(style, drawing.source);
+        const symbol = StyleRepresentationToEsriSymbolUtils.convert(style, labelText);
 
         if (symbol) {
           graphic.symbol = symbol;
@@ -311,7 +311,6 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
       case 'polygon':
         drawingType = 'draw-polygon';
         measurementType = 'measure-area';
-        dataDownloadSelectionType = 'select-polygon';
         break;
       case 'circle':
         drawingType = 'draw-circle';
@@ -325,11 +324,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
         break;
       case 'point':
         measurementType = 'measure-point';
-        if (graphic.symbol instanceof SimpleMarkerSymbol) {
-          drawingType = 'draw-point';
-        } else {
-          drawingType = 'draw-text';
-        }
+        drawingType = 'draw-point';
         break;
     }
 

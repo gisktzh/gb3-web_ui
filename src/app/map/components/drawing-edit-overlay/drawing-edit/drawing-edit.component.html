@@ -9,6 +9,10 @@
     <point-edit [pointStyle]="style" (updateStyle)="updateStyle($event)"></point-edit>
   }
   @if (style.type === 'text') {
-    <text-edit [textStyle]="style"></text-edit>
+    <text-edit
+      [textStyle]="style"
+      [labelText]="selectedFeature?.labelText!"
+      (updateStyle)="updateStyle($event.style, $event.labelText)"
+    ></text-edit>
   }
 }

@@ -1,0 +1,9 @@
+<div class="slider-edit__option">
+  <slider-wrapper [title]="title" [value]="sliderValue" [overwriteFooter]="true" class="slider-edit__option__width">
+    <ng-container content>
+      <mat-slider [min]="min" [max]="max" [step]="step" color="primary" class="slider-edit__option__width__slider">
+        <input matSliderThumb [(ngModel)]="sliderValue" (ngModelChange)="updateSlideValue()" />
+      </mat-slider>
+    </ng-container>
+  </slider-wrapper>
+</div>

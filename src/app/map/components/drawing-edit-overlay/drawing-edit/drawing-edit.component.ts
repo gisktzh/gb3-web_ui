@@ -30,8 +30,8 @@ export class DrawingEditComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  public updateStyle(style: Gb3StyleRepresentation) {
-    this.store.dispatch(DrawingActions.updateStyling({style, drawing: this.selectedFeature!}));
+  public updateStyle(style: Gb3StyleRepresentation, labelText?: string) {
+    this.store.dispatch(DrawingActions.updateStyling({style, drawing: this.selectedFeature!, labelText}));
   }
   private initSubscriptions() {
     this.subscriptions.add(

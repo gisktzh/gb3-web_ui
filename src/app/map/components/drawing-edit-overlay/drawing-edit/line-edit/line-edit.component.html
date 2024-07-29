@@ -1,7 +1,13 @@
-<stroke-edit
-  (updateStroke)="updateStrokeAttributes($event)"
-  [strokeColor]="lineStyle.strokeColor"
-  [strokeOpacity]="lineStyle.strokeOpacity"
-  [strokeWidth]="lineStyle.strokeWidth"
+<h2>Umrandung</h2>
+<slider-edit
+  (updateValue)="updateSliderValue('strokeWidth', $event)"
+  [sliderValue]="lineStyle.strokeWidth"
+  [min]="1"
+  [max]="12"
+  [step]="1"
+  title="Strichstärke"
 >
-</stroke-edit>
+</slider-edit>
+<slider-edit (updateValue)="updateSliderValue('strokeOpacity', $event)" [sliderValue]="lineStyle.strokeOpacity" title="Deckkraft">
+</slider-edit>
+<color-picker-edit (updateColor)="updateColorValue($event)" [fillColor]="lineStyle.strokeColor" title="Strichfarbe"></color-picker-edit>
