@@ -10,6 +10,7 @@ export const initialState: MapUiState = {
   isFeatureInfoOverlayVisible: false,
   isElevationProfileOverlayVisible: false,
   isAttributeFilterOverlayVisible: false,
+  isDrawingEditOverlayVisible: false,
   isMapSideDrawerOpen: false,
   hideUiElements: false,
   hideToggleUiElementsButton: false,
@@ -53,6 +54,12 @@ export const mapUiFeature = createFeature({
         ...state,
         isAttributeFilterOverlayVisible: isVisible,
         bottomSheetContent: isVisible ? 'map-attributes' : 'none',
+      };
+    }),
+    on(MapUiActions.setDrawingEditOverlayVisibility, (state, {isVisible}): MapUiState => {
+      return {
+        ...state,
+        isDrawingEditOverlayVisible: isVisible,
       };
     }),
     on(MapUiActions.changeUiElementsVisibility, (state, {hideAllUiElements, hideUiToggleButton}): MapUiState => {
@@ -108,6 +115,7 @@ export const {
   selectIsLegendOverlayVisible,
   selectIsFeatureInfoOverlayVisible,
   selectIsAttributeFilterOverlayVisible,
+  selectIsDrawingEditOverlayVisible,
   selectBottomSheetContent,
   selectHideUiElements,
   selectHideToggleUiElementsButton,

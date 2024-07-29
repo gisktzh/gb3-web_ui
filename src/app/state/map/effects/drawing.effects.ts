@@ -1,14 +1,20 @@
-import {Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {filter} from 'rxjs';
+import {filter, tap} from 'rxjs';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {map} from 'rxjs/operators';
 import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
 import {DrawingActiveMapItem} from '../../../map/models/implementations/drawing.model';
 import {DrawingActions} from '../actions/drawing.actions';
+import {MapUiActions} from '../actions/map-ui.actions';
+import {ToolService} from '../../../map/interfaces/tool.service';
+import {MapService} from '../../../map/interfaces/map.service';
+import {MAP_SERVICE} from '../../../app.module';
 
 @Injectable()
 export class DrawingEffects {
+  private readonly toolService: ToolService;
+
   public clearSingleDrawingLayer$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ActiveMapItemActions.removeActiveMapItem),
@@ -25,5 +31,36 @@ export class DrawingEffects {
     );
   });
 
-  constructor(private readonly actions$: Actions) {}
+  public editDrawing$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(DrawingActions.editDrawing),
+      map(({drawingId}) => MapUiActions.setDrawingEditOverlayVisibility({isVisible: true})),
+    );
+  });
+
+  public closeDrawingEditOverlayAfterFinishDrawingOrEditing$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(DrawingActions.addDrawing, DrawingActions.addDrawings),
+      map(() => MapUiActions.setDrawingEditOverlayVisibility({isVisible: false})),
+    );
+  });
+
+  public passStylingToToolService$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(DrawingActions.updateStyling),
+        tap(({drawing, style}) => {
+          this.toolService.updateDrawingStyling(drawing, style);
+        }),
+      );
+    },
+    {dispatch: false},
+  );
+
+  constructor(
+    private readonly actions$: Actions,
+    @Inject(MAP_SERVICE) private readonly mapService: MapService,
+  ) {
+    this.toolService = this.mapService.getToolService();
+  }
 }

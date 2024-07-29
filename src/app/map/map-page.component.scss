@@ -146,6 +146,13 @@
     height: 100%;
   }
 
+  .map-container__drawing-edit-overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+  }
+
   .map-container__bottom-sheet-overlay {
     pointer-events: none;
     position: absolute;

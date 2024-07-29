@@ -16,11 +16,11 @@ interface InternalDrawingRepresentation<T = Record<never, never>> extends Featur
  */
 export type UnstyledInternalDrawingRepresentation = InternalDrawingRepresentation;
 
-interface InternalDrawingType {
+export interface InternalDrawingType {
   type: 'point' | 'line' | 'polygon' | 'text';
 }
 
-interface LineStyleConfiguration extends Pick<MapfishPrintStyleProperties, 'strokeColor' | 'strokeOpacity' | 'strokeWidth'> {}
+export interface LineStyleConfiguration extends Pick<MapfishPrintStyleProperties, 'strokeColor' | 'strokeOpacity' | 'strokeWidth'> {}
 
 interface AreaStyleConfiguration extends LineStyleConfiguration, Pick<MapfishPrintStyleProperties, 'fillColor' | 'fillOpacity'> {}
 

@@ -26,7 +26,10 @@ import {EsriLineDrawingStrategy} from './strategies/drawing/esri-line-drawing.st
 import {EsriPolygonDrawingStrategy} from './strategies/drawing/esri-polygon-drawing.strategy';
 import {DrawingCallbackHandler} from './interfaces/drawing-callback-handler.interface';
 import Graphic from '@arcgis/core/Graphic';
-import {Gb3StyledInternalDrawingRepresentation} from '../../../../shared/interfaces/internal-drawing-representation.interface';
+import {
+  Gb3StyledInternalDrawingRepresentation,
+  Gb3StyleRepresentation,
+} from '../../../../shared/interfaces/internal-drawing-representation.interface';
 import {DrawingActions} from '../../../../state/map/actions/drawing.actions';
 import {silentArcgisToGeoJSON} from '../../../../shared/utils/esri-transformer-wrapper.utils';
 import {DrawingLayerNotInitialized} from '../errors/esri.errors';
@@ -46,6 +49,8 @@ import {ElevationProfileActions} from '../../../../state/map/actions/elevation-p
 import {EsriGraphicToInternalDrawingRepresentationUtils} from '../utils/esri-graphic-to-internal-drawing-representation.utils';
 import {InternalDrawingRepresentationToEsriGraphicUtils} from '../utils/internal-drawing-representation-to-esri-graphic.utils';
 import {SupportedEsriTool} from './strategies/supported-esri-tool.type';
+import {AbstractEsriDrawableToolStrategy} from './strategies/abstract-esri-drawable-tool.strategy';
+import {StyleRepresentationToEsriSymbolUtils} from '../utils/style-representation-to-esri-symbol.utils';
 
 export const HANDLE_GROUP_KEY = 'EsriToolService';
 
@@ -93,7 +98,31 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
 
   public editDrawing(graphic: Graphic) {
     this.setToolStrategyForEditingFeature(graphic);
+    this.store.dispatch(
+      DrawingActions.editDrawing({drawingId: graphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName)}),
+    );
     this.toolStrategy.edit(graphic);
+  }
+
+  public updateDrawingStyling(drawing: Gb3StyledInternalDrawingRepresentation, style: Gb3StyleRepresentation) {
+    const fullLayerIdentifier = this.configService.mapConfig.userDrawingLayerPrefix + drawing.source;
+    const drawingLayer = this.esriMapViewService.findEsriLayer(fullLayerIdentifier);
+
+    if (drawingLayer) {
+      const graphic = (drawingLayer as GraphicsLayer).graphics.find(
+        (g) =>
+          g.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName) ===
+          drawing.properties[AbstractEsriDrawableToolStrategy.identifierFieldName],
+      );
+
+      if (graphic) {
+        const symbol = StyleRepresentationToEsriSymbolUtils.convert(style, drawing.source);
+
+        if (symbol) {
+          graphic.symbol = symbol;
+        }
+      }
+    }
   }
 
   public initializeDrawing(drawingTool: DrawingTool) {

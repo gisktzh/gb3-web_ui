@@ -89,6 +89,12 @@ import {provideCharts, withDefaultRegisterables} from 'ng2-charts';
 import {FeatureFlagDirective} from '../shared/directives/feature-flag.directive';
 import {DrawingDownloadButtonComponent} from './components/map-tools/drawing-download-button/drawing-download-button.component';
 import {DrawingDownloadDialogComponent} from './components/map-tools/drawing-download-dialog/drawing-download-dialog.component';
+import {DrawingEditOverlayComponent} from './components/drawing-edit-overlay/drawing-edit-overlay.component';
+import {DrawingEditComponent} from './components/drawing-edit-overlay/drawing-edit/drawing-edit.component';
+import {LineEditComponent} from './components/drawing-edit-overlay/drawing-edit/line-edit/line-edit.component';
+import {PolygonEditComponent} from './components/drawing-edit-overlay/drawing-edit/polygon-edit/polygon-edit.component';
+import {PointEditComponent} from './components/drawing-edit-overlay/drawing-edit/point-edit/point-edit.component';
+import {TextEditComponent} from './components/drawing-edit-overlay/drawing-edit/text-edit/text-edit.component';
 
 @NgModule({
   providers: [provideCharts(withDefaultRegisterables())],
@@ -164,6 +170,12 @@ import {DrawingDownloadDialogComponent} from './components/map-tools/drawing-dow
     DrawingSettingsDialogComponent,
     DrawingDownloadDialogComponent,
     MapImportDialogComponent,
+    DrawingEditOverlayComponent,
+    DrawingEditComponent,
+    LineEditComponent,
+    PolygonEditComponent,
+    PointEditComponent,
+    TextEditComponent,
   ],
   imports: [
     CommonModule,

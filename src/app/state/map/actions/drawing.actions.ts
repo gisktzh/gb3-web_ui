@@ -1,5 +1,8 @@
 import {createActionGroup, emptyProps, props} from '@ngrx/store';
-import {Gb3StyledInternalDrawingRepresentation} from '../../../shared/interfaces/internal-drawing-representation.interface';
+import {
+  Gb3StyledInternalDrawingRepresentation,
+  Gb3StyleRepresentation,
+} from '../../../shared/interfaces/internal-drawing-representation.interface';
 import {DrawingLayer, UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 
 export const DrawingActions = createActionGroup({
@@ -9,6 +12,8 @@ export const DrawingActions = createActionGroup({
     'Add Drawings': props<{drawings: Gb3StyledInternalDrawingRepresentation[]}>(),
     'Clear Drawings': emptyProps(),
     'Clear Drawing Layer': props<{layer: UserDrawingLayer}>(),
+    'Edit Drawing': props<{drawingId: string}>(),
+    'Update Styling': props<{drawing: Gb3StyledInternalDrawingRepresentation; style: Gb3StyleRepresentation}>(),
     /**
      * This action can be used to remove one (or more) DrawingLayer's drawings from the state and add new layers. This is useful
      * (mostly) in the context of loading favourites, because it allows us to properly handle edge cases where a user might have

@@ -1,0 +1,20 @@
+@if (style) {
+  @if (style.type === 'line') {
+    <line-edit
+      (updateStroke)="updateStyle($event)"
+      [strokeColor]="style.strokeColor"
+      [strokeOpacity]="style.strokeOpacity"
+      [strokeWidth]="style.strokeWidth"
+    >
+    </line-edit>
+  }
+  @if (style.type === 'polygon') {
+    <polygon-edit [polygonStyle]="style" (updateStyle)="updateStyle($event)"></polygon-edit>
+  }
+  @if (style.type === 'point') {
+    <point-edit [pointStyle]="style"></point-edit>
+  }
+  @if (style.type === 'text') {
+    <text-edit [textStyle]="style"></text-edit>
+  }
+}
