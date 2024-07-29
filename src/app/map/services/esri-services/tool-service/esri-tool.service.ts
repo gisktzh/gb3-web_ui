@@ -445,7 +445,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
           layer,
           this.esriMapViewService.mapView,
           textStyle,
-          (geometry, labelText) => this.completeDrawing(geometry, labelText),
+          (geometry, labelText) => (labelText ? this.completeDrawing(geometry, labelText) : this.endDrawing()),
           this.dialogService,
         );
         break;
