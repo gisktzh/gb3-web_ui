@@ -1,0 +1,33 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'functions/helper.function' as functions;
+
+.fill-edit__option {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 24px;
+
+  .fill-edit__option__label {
+    color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary, 50);
+    padding-bottom: 12px;
+  }
+
+  .fill-edit__option__color-picker {
+    border: none;
+    height: 30px;
+    width: 70px;
+    padding: 0;
+    background: none;
+  }
+
+  .fill-edit__option__width {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary, 50);
+
+    .fill-edit__option__width__slider {
+      width: 100%;
+      margin: 0;
+    }
+  }
+}

@@ -1,3 +1,18 @@
-<p>{{ pointStyle.strokeColor }}</p>
-<p>{{ pointStyle.strokeOpacity }}</p>
-<p>{{ pointStyle.strokeWidth }}</p>
+<stroke-edit
+  (updateStroke)="updateStrokeAttributes($event)"
+  [strokeWidth]="pointStyle.strokeWidth"
+  [strokeOpacity]="pointStyle.strokeOpacity"
+  [strokeColor]="pointStyle.strokeColor"
+>
+</stroke-edit>
+<fill-edit (updateFill)="updateFillAttributes($event)" [fillColor]="pointStyle.fillColor" [fillOpacity]="pointStyle.fillOpacity">
+</fill-edit>
+<div class="stroke-edit__option">
+  <slider-wrapper title="Radius" [value]="pointRadius" [overwriteFooter]="true" class="stroke-edit__option__width">
+    <ng-container content>
+      <mat-slider [min]="0" [max]="50" [step]="1" color="primary" class="stroke-edit__option__width__slider">
+        <input matSliderThumb [(ngModel)]="pointRadius" (ngModelChange)="updatePointRadius()" />
+      </mat-slider>
+    </ng-container>
+  </slider-wrapper>
+</div>

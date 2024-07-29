@@ -1,28 +1,18 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {
-  Gb3LineStringStyle,
-  Gb3PolygonStyle,
-  Gb3StyleRepresentation,
-} from '../../../../../shared/interfaces/internal-drawing-representation.interface';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Gb3PolygonStyle} from '../../../../../shared/interfaces/internal-drawing-representation.interface';
+import {StrokeStyle} from '../stroke-edit/stroke-edit.component';
+import {FillStyle} from '../fill-edit/fill-edit.component';
 
 @Component({
   selector: 'polygon-edit',
   templateUrl: './polygon-edit.component.html',
   styleUrl: './polygon-edit.component.scss',
 })
-export class PolygonEditComponent implements OnInit {
+export class PolygonEditComponent {
   @Input() public polygonStyle!: Gb3PolygonStyle;
 
-  public polygonFillOpacity: number = 0;
-  public polygonFillColor: string = '';
-
-  public ngOnInit(): void {
-    this.polygonFillOpacity = this.polygonStyle.fillOpacity;
-    this.polygonFillColor = this.polygonStyle.fillColor;
-  }
-
-  @Output() public updateStyle = new EventEmitter<Gb3StyleRepresentation>();
-  public updateStyleAttributes(strokeStyle: Gb3LineStringStyle) {
+  @Output() public updateStyle = new EventEmitter<Gb3PolygonStyle>();
+  public updateStrokeAttributes(strokeStyle: StrokeStyle) {
     this.polygonStyle = {
       ...this.polygonStyle,
       strokeWidth: strokeStyle.strokeWidth,
@@ -32,7 +22,12 @@ export class PolygonEditComponent implements OnInit {
     this.updateStyle.emit(this.polygonStyle);
   }
 
-  public updateFillAttributes() {
-    this.updateStyle.emit({...this.polygonStyle, fillOpacity: this.polygonFillOpacity, fillColor: this.polygonFillColor});
+  public updateFillAttributes(fillStyle: FillStyle) {
+    this.polygonStyle = {
+      ...this.polygonStyle,
+      fillOpacity: fillStyle.fillOpacity,
+      fillColor: fillStyle.fillColor,
+    };
+    this.updateStyle.emit(this.polygonStyle);
   }
 }

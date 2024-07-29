@@ -92,9 +92,11 @@ import {DrawingDownloadDialogComponent} from './components/map-tools/drawing-dow
 import {DrawingEditOverlayComponent} from './components/drawing-edit-overlay/drawing-edit-overlay.component';
 import {DrawingEditComponent} from './components/drawing-edit-overlay/drawing-edit/drawing-edit.component';
 import {LineEditComponent} from './components/drawing-edit-overlay/drawing-edit/line-edit/line-edit.component';
-import {PolygonEditComponent} from './components/drawing-edit-overlay/drawing-edit/polygon-edit/polygon-edit.component';
 import {PointEditComponent} from './components/drawing-edit-overlay/drawing-edit/point-edit/point-edit.component';
 import {TextEditComponent} from './components/drawing-edit-overlay/drawing-edit/text-edit/text-edit.component';
+import {PolygonEditComponent} from './components/drawing-edit-overlay/drawing-edit/polygon-edit/polygon-edit.component';
+import {FillEditComponent} from './components/drawing-edit-overlay/drawing-edit/fill-edit/fill-edit.component';
+import {StrokeEditComponent} from './components/drawing-edit-overlay/drawing-edit/stroke-edit/stroke-edit.component';
 
 @NgModule({
   providers: [provideCharts(withDefaultRegisterables())],
@@ -176,6 +178,8 @@ import {TextEditComponent} from './components/drawing-edit-overlay/drawing-edit/
     PolygonEditComponent,
     PointEditComponent,
     TextEditComponent,
+    FillEditComponent,
+    StrokeEditComponent,
   ],
   imports: [
     CommonModule,

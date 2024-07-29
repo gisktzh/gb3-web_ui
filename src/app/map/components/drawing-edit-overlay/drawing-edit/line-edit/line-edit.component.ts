@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {Gb3LineStringStyle} from '../../../../../shared/interfaces/internal-drawing-representation.interface';
+import {StrokeStyle} from '../stroke-edit/stroke-edit.component';
 
 @Component({
   selector: 'line-edit',
@@ -7,18 +8,16 @@ import {Gb3LineStringStyle} from '../../../../../shared/interfaces/internal-draw
   styleUrl: './line-edit.component.scss',
 })
 export class LineEditComponent {
-  @Input() public strokeColor: string = '';
-  @Input() public strokeWidth: number = 0;
-  @Input() public strokeOpacity: number = 0;
+  @Input() public lineStyle!: Gb3LineStringStyle;
 
-  @Output() public updateStroke = new EventEmitter<Gb3LineStringStyle>();
+  @Output() public updateStyle = new EventEmitter<Gb3LineStringStyle>();
 
-  public updateStrokeAttributes() {
-    this.updateStroke.emit({
-      strokeColor: this.strokeColor,
-      strokeWidth: this.strokeWidth,
-      strokeOpacity: this.strokeOpacity,
-      type: 'line',
+  public updateStrokeAttributes(lineStyle: StrokeStyle) {
+    this.updateStyle.emit({
+      ...this.lineStyle,
+      strokeWidth: lineStyle.strokeWidth,
+      strokeColor: lineStyle.strokeColor,
+      strokeOpacity: lineStyle.strokeOpacity,
     });
   }
 }
