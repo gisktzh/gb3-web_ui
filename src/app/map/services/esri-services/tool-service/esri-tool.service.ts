@@ -97,10 +97,12 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
   }
 
   public editDrawing(graphic: Graphic) {
+    const drawingId = graphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName);
+    if (!drawingId) {
+      return;
+    }
     this.setToolStrategyForEditingFeature(graphic);
-    this.store.dispatch(
-      DrawingActions.editDrawing({drawingId: graphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName)}),
-    );
+    this.store.dispatch(DrawingActions.editDrawing({drawingId}));
     this.toolStrategy.edit(graphic);
   }
 

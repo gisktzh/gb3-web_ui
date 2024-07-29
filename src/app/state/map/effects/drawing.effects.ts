@@ -57,6 +57,17 @@ export class DrawingEffects {
     {dispatch: false},
   );
 
+  public cancelToolAfterClosingDrawingEditOverlay$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(MapUiActions.setDrawingEditOverlayVisibility),
+        filter(({isVisible}) => !isVisible),
+        tap(() => this.toolService.cancelTool()),
+      );
+    },
+    {dispatch: false},
+  );
+
   constructor(
     private readonly actions$: Actions,
     @Inject(MAP_SERVICE) private readonly mapService: MapService,
