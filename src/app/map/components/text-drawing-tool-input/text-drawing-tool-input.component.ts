@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, ValidatorFn, Validators} from '@angular/forms';
+import {MatDialogRef} from '@angular/material/dialog';
 
 const TEXT_DRAWING_MAX_LENGTH = 50;
 const TEXT_DRAWING_CONSTRAINTS: ValidatorFn[] = [
@@ -18,7 +19,13 @@ export class TextDrawingToolInputComponent implements OnInit {
   public textFormControl!: FormControl<string | null>;
   public readonly maxLength: number = TEXT_DRAWING_MAX_LENGTH;
 
+  constructor(private readonly dialogRef: MatDialogRef<TextDrawingToolInputComponent>) {}
+
   public ngOnInit() {
     this.textFormControl = new FormControl('', TEXT_DRAWING_CONSTRAINTS);
+  }
+
+  public close() {
+    this.dialogRef.close();
   }
 }

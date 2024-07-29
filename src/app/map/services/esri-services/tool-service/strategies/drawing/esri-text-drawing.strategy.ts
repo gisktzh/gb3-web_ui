@@ -34,6 +34,9 @@ export class EsriTextDrawingStrategy extends AbstractEsriDrawingStrategy<Drawing
       .afterClosed()
       .pipe(
         tap((text = '') => {
+          if (!text) {
+            this.layer.remove(graphic);
+          }
           (graphic.symbol as TextSymbol).text = text;
           super.handleComplete(graphic, text);
         }),
