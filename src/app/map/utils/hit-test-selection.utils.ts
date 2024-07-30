@@ -1,4 +1,3 @@
-import Point from '@arcgis/core/geometry/Point';
 import Graphic from '@arcgis/core/Graphic';
 import Polygon from '@arcgis/core/geometry/Polygon';
 import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
@@ -8,15 +7,38 @@ type HitWithArea = {hit: Graphic; area: number};
 
 export class HitTestSelectionUtils {
   public static selectFeatureFromHitTestResult(hits: GraphicHit[]): Graphic {
-    const pointHits = hits.filter((hit) => hit.graphic.geometry.type === 'point');
-    if (pointHits.length > 0) {
-      return pointHits[0].graphic;
+    let pointHit: Graphic | null = null;
+    let lineHit: Graphic | null = null;
+    const polygonHits: GraphicHit[] = [];
+
+    for (const hit of hits) {
+      switch (hit.graphic.geometry.type) {
+        case 'point':
+          if (!pointHit) {
+            pointHit = hit.graphic;
+          }
+          break;
+        case 'polyline':
+          if (!lineHit) {
+            lineHit = hit.graphic;
+          }
+          break;
+        case 'polygon':
+          polygonHits.push(hit);
+          break;
+        case 'extent':
+        case 'mesh':
+        case 'multipoint':
+          break;
+      }
     }
-    const lineHits = hits.filter((hit) => hit.graphic.geometry.type === 'polyline');
-    if (lineHits.length > 0) {
-      return lineHits[0].graphic;
+
+    if (pointHit) {
+      return pointHit;
     }
-    const polygonHits = hits.filter((hit) => hit.graphic.geometry.type === 'polygon');
+    if (lineHit) {
+      return lineHit;
+    }
     if (polygonHits.length > 0) {
       return this.selectSmallestPolygonFromHitTestResult(polygonHits);
     }
@@ -24,7 +46,7 @@ export class HitTestSelectionUtils {
   }
 
   public static selectSmallestPolygonFromHitTestResult(polygonHits: GraphicHit[]): Graphic {
-    const hitWithSmallestArea = polygonHits.reduce(
+    const hitSelection = polygonHits.reduce(
       (hitWithSmallestArea: HitWithArea, currentHit) => {
         const area = geometryEngine.planarArea(currentHit.graphic.geometry as Polygon);
         if (area < hitWithSmallestArea.area) {
@@ -37,10 +59,6 @@ export class HitTestSelectionUtils {
         area: geometryEngine.planarArea(polygonHits[0].graphic.geometry as Polygon),
       },
     );
-    return hitWithSmallestArea.hit;
-  }
-
-  public static calculateDistance(centroid: Point, clickLocation: Point): number {
-    return Math.sqrt(Math.pow(centroid.x - clickLocation.x, 2) + Math.pow(centroid.y - clickLocation.y, 2));
+    return hitSelection.hit;
   }
 }
