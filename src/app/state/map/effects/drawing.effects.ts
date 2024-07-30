@@ -38,7 +38,7 @@ export class DrawingEffects {
     );
   });
 
-  public closeDrawingEditOverlayAfterFinishDrawingOrEditing$ = createEffect(() => {
+  public closeDrawingEditOverlayAfterFinishEditingOrDeleting$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(DrawingActions.addDrawing, DrawingActions.addDrawings, DrawingActions.deleteDrawing),
       map(() => MapUiActions.setDrawingEditOverlayVisibility({isVisible: false})),
