@@ -37,7 +37,10 @@ export const drawingFeature = createFeature({
       return {...state, selectedFeature: state.drawings.find((drawing) => drawing.properties.__id === drawingId)};
     }),
     on(DrawingActions.deleteDrawing, (state, {drawingId}): DrawingState => {
-      return {...state, drawings: state.drawings.filter((drawing) => drawing.properties.__id !== drawingId)};
+      return {
+        ...state,
+        drawings: state.drawings.filter((drawing) => drawing.properties.__id !== drawingId && drawing.properties.__belongsTo !== drawingId),
+      };
     }),
     on(DrawingActions.clearDrawings, (): DrawingState => {
       return {...initialState};

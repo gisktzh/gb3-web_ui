@@ -52,6 +52,8 @@ export abstract class AbstractEsriDrawingStrategy<
       'update',
       ({state}) => {
         let graphicIdentifier: string;
+        let graphicExistsOnLayer: boolean;
+
         switch (state) {
           case 'active':
           case 'start':
@@ -60,16 +62,18 @@ export abstract class AbstractEsriDrawingStrategy<
           case 'complete':
             graphicIdentifier = graphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName);
 
-            if (
-              this.layer.graphics.find((g) => g.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName) === graphicIdentifier)
-            ) {
-              this.handleComplete(graphic);
+            // checks if the graphic still exists in the layer, i. e if it was not deleted during edit
+            graphicExistsOnLayer = !!this.layer.graphics.find(
+              (g) => g.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName) === graphicIdentifier,
+            );
+            if (!graphicExistsOnLayer) {
+              break;
             }
+            this.handleComplete(graphic);
             break;
         }
       },
     );
-
     this.sketchViewModel.view.addHandles([editHandle, deleteHandle], HANDLE_GROUP_KEY);
   }
 

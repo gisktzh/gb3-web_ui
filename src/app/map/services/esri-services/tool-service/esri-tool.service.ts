@@ -185,11 +185,10 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
       UserDrawingLayer.Measurements,
     );
 
-    // note: order is important as the features are drawn in the order of the array, starting at the bottom
-    this.store.dispatch(DrawingActions.addDrawings({drawings: [internalDrawingRepresentation, internalDrawingRepresentationLabel]}));
     switch (mode) {
       case 'add':
       case 'edit':
+        // note: order is important as the features are drawn in the order of the array, starting at the bottom
         this.store.dispatch(DrawingActions.addDrawings({drawings: [internalDrawingRepresentation, internalDrawingRepresentationLabel]}));
         break;
       case 'delete':

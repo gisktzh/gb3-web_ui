@@ -69,6 +69,7 @@ export abstract class AbstractEsriMeasurementStrategy<
       ({state}) => {
         let labelConfiguration: {label: Graphic; labelText: string};
         let graphicIdentifier: string;
+        let graphicExistsOnLayer: boolean;
 
         switch (state) {
           case 'start':
@@ -77,18 +78,29 @@ export abstract class AbstractEsriMeasurementStrategy<
           case 'active':
             break;
           case 'complete':
-            if (graphic.getAttribute(AbstractEsriDrawableToolStrategy.belongsToFieldName)) {
+            graphicIdentifier = graphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName);
+
+            // checks if the graphic still exists in the layer, i. e if it was not deleted during edit
+            graphicExistsOnLayer = !!this.layer.graphics.find(
+              (g) => g.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName) === graphicIdentifier,
+            );
+            if (!graphicExistsOnLayer) {
               break;
             }
-            graphicIdentifier = graphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName);
-            // checks if the graphic still exists in the layer, i. e if it was not deleted during edit
-            if (
-              this.layer.graphics.find((g) => g.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName) === graphicIdentifier)
-            ) {
-              labelConfiguration = this.createLabelForGeometry(graphic.geometry as TGeometry, graphicIdentifier);
-              this.layer.add(labelConfiguration.label);
-              this.completeDrawingCallbackHandler(graphic, labelConfiguration.label, labelConfiguration.labelText, 'add');
+
+            // If we are editing a label, we need to find the graphic that the label belongs to and update both
+            if (graphic.getAttribute(AbstractEsriDrawableToolStrategy.belongsToFieldName)) {
+              const belongsToIdentifier = graphic.getAttribute(AbstractEsriDrawableToolStrategy.belongsToFieldName);
+              const belongsToGraphic = this.layer.graphics.find(
+                (g) => g.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName) === belongsToIdentifier,
+              );
+              this.completeDrawingCallbackHandler(belongsToGraphic, graphic, (graphic.symbol as TextSymbol).text, 'edit');
+              break;
             }
+
+            labelConfiguration = this.createLabelForGeometry(graphic.geometry as TGeometry, graphicIdentifier);
+            this.layer.add(labelConfiguration.label);
+            this.completeDrawingCallbackHandler(graphic, labelConfiguration.label, labelConfiguration.labelText, 'add');
             break;
         }
       },
