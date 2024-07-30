@@ -97,6 +97,10 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
   }
 
   public editDrawing(graphic: Graphic) {
+    //Disable edit of selection layer
+    if (graphic.layer.id.includes(InternalDrawingLayer.Selection)) {
+      return;
+    }
     const drawingId = graphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName);
     if (!drawingId) {
       return;
