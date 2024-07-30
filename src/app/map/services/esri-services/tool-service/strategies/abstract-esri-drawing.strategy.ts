@@ -58,10 +58,11 @@ export abstract class AbstractEsriDrawingStrategy<
           case 'cancel':
             break; // currently, these events do not trigger any action
           case 'complete':
+            graphicIdentifier = graphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName);
+
             if (
               this.layer.graphics.find((g) => g.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName) === graphicIdentifier)
             ) {
-              graphicIdentifier = graphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName);
               this.handleComplete(graphic);
             }
             break;

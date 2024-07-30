@@ -80,11 +80,11 @@ export abstract class AbstractEsriMeasurementStrategy<
             if (graphic.getAttribute(AbstractEsriDrawableToolStrategy.belongsToFieldName)) {
               break;
             }
+            graphicIdentifier = graphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName);
             // checks if the graphic still exists in the layer, i. e if it was not deleted during edit
             if (
               this.layer.graphics.find((g) => g.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName) === graphicIdentifier)
             ) {
-              graphicIdentifier = graphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName);
               labelConfiguration = this.createLabelForGeometry(graphic.geometry as TGeometry, graphicIdentifier);
               this.layer.add(labelConfiguration.label);
               this.completeDrawingCallbackHandler(graphic, labelConfiguration.label, labelConfiguration.labelText, 'add');
