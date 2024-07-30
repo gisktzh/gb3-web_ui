@@ -73,6 +73,57 @@ describe('Drawing Reducer', () => {
     });
   });
 
+  describe('addDrawings', () => {
+    it('adds drawings to the end of the current drawings', () => {
+      const currentState: DrawingState = {
+        drawings: [
+          {properties: {__id: 1}} as unknown as Gb3StyledInternalDrawingRepresentation,
+          {properties: {__id: 2, __belongsTo: 1}} as unknown as Gb3StyledInternalDrawingRepresentation,
+        ],
+        selectedDrawing: undefined,
+      };
+
+      const newDrawings: Gb3StyledInternalDrawingRepresentation[] = [
+        {
+          properties: {__id: 3},
+        },
+        {
+          properties: {__id: 4, __belongsTo: 3},
+        },
+      ] as unknown as Gb3StyledInternalDrawingRepresentation[];
+      const action = DrawingActions.addDrawings({drawings: newDrawings});
+
+      const result = reducer(currentState, action);
+
+      expect(result.drawings.length).toEqual(4);
+      expect(result.drawings[2]).toEqual(newDrawings[0]);
+      expect(result.drawings[3]).toEqual(newDrawings[1]);
+    });
+    it('replaces drawings if they already exist in the state', () => {
+      const currentState: DrawingState = {
+        drawings: [
+          {properties: {__id: 1}} as unknown as Gb3StyledInternalDrawingRepresentation,
+          {properties: {__id: 2, __belongsTo: 1}} as unknown as Gb3StyledInternalDrawingRepresentation,
+        ],
+        selectedDrawing: undefined,
+      };
+
+      const newDrawings: Gb3StyledInternalDrawingRepresentation[] = [
+        {
+          properties: {__id: 1},
+        },
+        {
+          properties: {__id: 4, __belongsTo: 1},
+        },
+      ] as unknown as Gb3StyledInternalDrawingRepresentation[];
+      const action = DrawingActions.addDrawings({drawings: newDrawings});
+      const result = reducer(currentState, action);
+
+      expect(result.drawings.length).toEqual(2);
+      expect(result.drawings[0]).toEqual(newDrawings[0]);
+    });
+  });
+
   describe('clearDrawingLayer', () => {
     let currentState: DrawingState;
 

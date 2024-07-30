@@ -147,7 +147,7 @@ describe('DrawingEffects', () => {
     it('dispatches nothing when FeatureINfo is closed', fakeAsync(async () => {
       const toolServiceSpy = spyOn(toolService, 'cancelTool').and.callThrough();
       let newAction;
-      actions$ = of(MapUiActions.setDrawingEditOverlayVisibility({isVisible: false}));
+      actions$ = of(MapUiActions.setDrawingEditOverlayVisibility({isVisible: true}));
       effects.cancelToolAfterClosingDrawingEditOverlay$.subscribe((action) => (newAction = action));
       flush();
       expect(toolServiceSpy).not.toHaveBeenCalled();
