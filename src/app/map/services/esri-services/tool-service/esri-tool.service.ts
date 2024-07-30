@@ -151,19 +151,22 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
   }
 
   public completeDrawing(graphic: Graphic, mode: DrawingMode, labelText?: string) {
-    const drawingId = graphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName);
-    const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
-      graphic,
-      labelText,
-      this.configService.mapConfig.defaultMapConfig.srsId,
-      UserDrawingLayer.Drawings,
-    );
+    let drawingId;
+    let internalDrawingRepresentation: Gb3StyledInternalDrawingRepresentation;
+
     switch (mode) {
       case 'add':
       case 'edit':
+        internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
+          graphic,
+          labelText,
+          this.configService.mapConfig.defaultMapConfig.srsId,
+          UserDrawingLayer.Drawings,
+        );
         this.store.dispatch(DrawingActions.addDrawing({drawing: internalDrawingRepresentation}));
         break;
       case 'delete':
+        drawingId = graphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName);
         this.store.dispatch(DrawingActions.deleteDrawing({drawingId}));
         break;
     }
@@ -171,27 +174,30 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
   }
 
   public completeMeasurement(graphic: Graphic, labelPoint: Graphic, labelText: string, mode: DrawingMode) {
-    const drawingId = graphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName);
-    const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
-      graphic,
-      undefined,
-      this.configService.mapConfig.defaultMapConfig.srsId,
-      UserDrawingLayer.Measurements,
-    );
-    const internalDrawingRepresentationLabel = EsriGraphicToInternalDrawingRepresentationUtils.convert(
-      labelPoint,
-      labelText,
-      this.configService.mapConfig.defaultMapConfig.srsId,
-      UserDrawingLayer.Measurements,
-    );
+    let drawingId: string;
+    let internalDrawingRepresentation: Gb3StyledInternalDrawingRepresentation;
+    let internalDrawingRepresentationLabel: Gb3StyledInternalDrawingRepresentation;
 
     switch (mode) {
       case 'add':
       case 'edit':
+        internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
+          graphic,
+          undefined,
+          this.configService.mapConfig.defaultMapConfig.srsId,
+          UserDrawingLayer.Measurements,
+        );
+        internalDrawingRepresentationLabel = EsriGraphicToInternalDrawingRepresentationUtils.convert(
+          labelPoint,
+          labelText,
+          this.configService.mapConfig.defaultMapConfig.srsId,
+          UserDrawingLayer.Measurements,
+        );
         // note: order is important as the features are drawn in the order of the array, starting at the bottom
         this.store.dispatch(DrawingActions.addDrawings({drawings: [internalDrawingRepresentation, internalDrawingRepresentationLabel]}));
         break;
       case 'delete':
+        drawingId = graphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName);
         this.store.dispatch(DrawingActions.deleteDrawing({drawingId}));
         break;
     }
