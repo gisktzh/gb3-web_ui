@@ -34,6 +34,7 @@ describe('InternalDrawingRepresentationToEsriGraphicUtils', () => {
         },
         [MapConstants.DRAWING_IDENTIFIER]: id,
         [MapConstants.BELONGS_TO_IDENTIFIER]: undefined,
+        [MapConstants.TOOL_IDENTIFIER]: 'polygon',
       },
       geometry: {
         type: 'MultiPolygon',
@@ -69,6 +70,11 @@ describe('InternalDrawingRepresentationToEsriGraphicUtils', () => {
         color: new Color(Color.fromHex(fillColorHex)),
         outline: {width: strokeWidth, color: new Color(strokeColorHex)},
       }),
+      attributes: {
+        [MapConstants.DRAWING_IDENTIFIER]: id,
+        [MapConstants.BELONGS_TO_IDENTIFIER]: undefined,
+        [MapConstants.TOOL_IDENTIFIER]: 'polygon',
+      },
     });
 
     expect(actual.toJSON()).toEqual(expected.toJSON());
@@ -92,6 +98,7 @@ describe('InternalDrawingRepresentationToEsriGraphicUtils', () => {
         },
         [MapConstants.DRAWING_IDENTIFIER]: id,
         [MapConstants.BELONGS_TO_IDENTIFIER]: belongsToId,
+        [MapConstants.TOOL_IDENTIFIER]: 'line',
       },
       geometry: {
         type: 'LineString',
@@ -121,6 +128,11 @@ describe('InternalDrawingRepresentationToEsriGraphicUtils', () => {
         color: new Color(Color.fromHex(strokeColorHex)),
         width: strokeWidth,
       }),
+      attributes: {
+        [MapConstants.DRAWING_IDENTIFIER]: id,
+        [MapConstants.BELONGS_TO_IDENTIFIER]: belongsToId,
+        [MapConstants.TOOL_IDENTIFIER]: 'line',
+      },
     });
 
     expect(actual.toJSON()).toEqual(expected.toJSON());
@@ -147,6 +159,7 @@ describe('InternalDrawingRepresentationToEsriGraphicUtils', () => {
         },
         [MapConstants.DRAWING_IDENTIFIER]: id,
         [MapConstants.BELONGS_TO_IDENTIFIER]: undefined,
+        [MapConstants.TOOL_IDENTIFIER]: 'point',
       },
       geometry: {
         type: 'Point',
@@ -168,8 +181,14 @@ describe('InternalDrawingRepresentationToEsriGraphicUtils', () => {
         size: pointRadius,
         outline: {
           color: strokeColorHex,
+          width: strokeWidth,
         },
       }),
+      attributes: {
+        [MapConstants.DRAWING_IDENTIFIER]: id,
+        [MapConstants.BELONGS_TO_IDENTIFIER]: undefined,
+        [MapConstants.TOOL_IDENTIFIER]: 'point',
+      },
     });
 
     expect(actual.toJSON()).toEqual(expected.toJSON());

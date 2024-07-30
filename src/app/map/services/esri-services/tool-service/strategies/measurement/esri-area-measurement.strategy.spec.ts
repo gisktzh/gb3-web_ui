@@ -44,7 +44,14 @@ describe('EsriAreaMeasurementStrategy', () => {
   describe('cancellation', () => {
     it('does not fire the callback handler on cancel and does not add the label', () => {
       const callbackSpy = spyOn(callbackHandler, 'handle');
-      const strategy = new EsriAreaMeasurementStrategyWrapper(layer, mapView, fillSymbol, textSymbol, () => callbackHandler.handle());
+      const strategy = new EsriAreaMeasurementStrategyWrapper(
+        layer,
+        mapView,
+        fillSymbol,
+        textSymbol,
+        () => callbackHandler.handle(),
+        'polygon',
+      );
 
       strategy.start();
       strategy.svm.emit('create', {state: 'cancel', graphic: new Graphic()});
@@ -57,7 +64,14 @@ describe('EsriAreaMeasurementStrategy', () => {
   describe('completion', () => {
     it('adds the label and fires the callback handler on completion', () => {
       const callbackSpy = spyOn(callbackHandler, 'handle');
-      const strategy = new EsriAreaMeasurementStrategyWrapper(layer, mapView, fillSymbol, textSymbol, () => callbackHandler.handle());
+      const strategy = new EsriAreaMeasurementStrategyWrapper(
+        layer,
+        mapView,
+        fillSymbol,
+        textSymbol,
+        () => callbackHandler.handle(),
+        'polygon',
+      );
       const graphic = new Graphic({
         geometry: new Polygon({
           spatialReference: {wkid: 2056},
@@ -79,7 +93,14 @@ describe('EsriAreaMeasurementStrategy', () => {
     });
 
     it('creates the label at the centroid of the polygon', () => {
-      const strategy = new EsriAreaMeasurementStrategyWrapper(layer, mapView, fillSymbol, textSymbol, () => callbackHandler.handle());
+      const strategy = new EsriAreaMeasurementStrategyWrapper(
+        layer,
+        mapView,
+        fillSymbol,
+        textSymbol,
+        () => callbackHandler.handle(),
+        'polygon',
+      );
       const location = new Polygon({
         spatialReference: {wkid: 2056},
         rings: [
@@ -104,7 +125,14 @@ describe('EsriAreaMeasurementStrategy', () => {
 
     it('applies the defined styling to the created label', () => {
       textSymbol = new TextSymbol({haloColor: 'red', xoffset: 42, color: 'blue'});
-      const strategy = new EsriAreaMeasurementStrategyWrapper(layer, mapView, fillSymbol, textSymbol, () => callbackHandler.handle());
+      const strategy = new EsriAreaMeasurementStrategyWrapper(
+        layer,
+        mapView,
+        fillSymbol,
+        textSymbol,
+        () => callbackHandler.handle(),
+        'polygon',
+      );
       const graphic = new Graphic({
         geometry: new Polygon({
           spatialReference: {wkid: 2056},
@@ -131,7 +159,14 @@ describe('EsriAreaMeasurementStrategy', () => {
 
   describe('label', () => {
     it('adds the area of the polygon as label', () => {
-      const strategy = new EsriAreaMeasurementStrategyWrapper(layer, mapView, fillSymbol, textSymbol, () => callbackHandler.handle());
+      const strategy = new EsriAreaMeasurementStrategyWrapper(
+        layer,
+        mapView,
+        fillSymbol,
+        textSymbol,
+        () => callbackHandler.handle(),
+        'polygon',
+      );
       const sideLength = 12;
       const location = new Polygon({
         spatialReference: {wkid: 2056},
@@ -156,7 +191,14 @@ describe('EsriAreaMeasurementStrategy', () => {
     });
 
     it('rounds the area to 2 decimals', () => {
-      const strategy = new EsriAreaMeasurementStrategyWrapper(layer, mapView, fillSymbol, textSymbol, () => callbackHandler.handle());
+      const strategy = new EsriAreaMeasurementStrategyWrapper(
+        layer,
+        mapView,
+        fillSymbol,
+        textSymbol,
+        () => callbackHandler.handle(),
+        'polygon',
+      );
       const sideLength = 42.1337;
       const location = new Polygon({
         spatialReference: {wkid: 2056},
@@ -181,7 +223,14 @@ describe('EsriAreaMeasurementStrategy', () => {
     });
 
     it('rounds the area to km² after 100000 square metres', () => {
-      const strategy = new EsriAreaMeasurementStrategyWrapper(layer, mapView, fillSymbol, textSymbol, () => callbackHandler.handle());
+      const strategy = new EsriAreaMeasurementStrategyWrapper(
+        layer,
+        mapView,
+        fillSymbol,
+        textSymbol,
+        () => callbackHandler.handle(),
+        'polygon',
+      );
       const sideLength = 10_000;
       const location = new Polygon({
         spatialReference: {wkid: 2056},
@@ -208,7 +257,14 @@ describe('EsriAreaMeasurementStrategy', () => {
 
   describe('mode', () => {
     it('sets mode to click', () => {
-      const strategy = new EsriAreaMeasurementStrategyWrapper(layer, mapView, fillSymbol, textSymbol, () => callbackHandler.handle());
+      const strategy = new EsriAreaMeasurementStrategyWrapper(
+        layer,
+        mapView,
+        fillSymbol,
+        textSymbol,
+        () => callbackHandler.handle(),
+        'polygon',
+      );
       const spy = spyOn(strategy.svm, 'create');
 
       strategy.start();

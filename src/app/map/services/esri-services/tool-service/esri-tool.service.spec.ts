@@ -35,6 +35,7 @@ import {DataDownloadSelection} from '../../../../shared/interfaces/data-download
 import {DataDownloadOrderActions} from '../../../../state/map/actions/data-download-order.actions';
 import {ToolActions} from '../../../../state/map/actions/tool.actions';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {DrawingMode} from './interfaces/drawing-callback-handler.interface';
 
 describe('EsriToolService', () => {
   let service: EsriToolService;
@@ -305,6 +306,7 @@ describe('EsriToolService', () => {
 
     it('completes drawings by dispatching DrawingActions.addDrawing and calling endDrawing', () => {
       const labelText = 'labelText';
+      const mode: DrawingMode = 'add';
       const storeSpy = spyOn(store, 'dispatch').and.callThrough();
       const endDrawingSpy = spyOn<any>(service, 'endDrawing').and.stub();
       const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
@@ -316,13 +318,14 @@ describe('EsriToolService', () => {
 
       const expectedAction = DrawingActions.addDrawing({drawing: internalDrawingRepresentation});
 
-      service.completeDrawing(graphicMock, labelText);
+      service.completeDrawing(graphicMock, mode, labelText);
 
       expect(storeSpy).toHaveBeenCalledOnceWith(expectedAction);
       expect(endDrawingSpy).toHaveBeenCalledOnceWith();
     });
 
     it('completes measurements by dispatching DrawingActions.addDrawing and calling endDrawing', () => {
+      const mode: DrawingMode = 'add';
       const labelText = 'labelText';
       const labelPoint = new Graphic({
         attributes: {
@@ -362,7 +365,7 @@ describe('EsriToolService', () => {
 
       const expectedAction = DrawingActions.addDrawings({drawings: [internalDrawingRepresentation, internalDrawingRepresentationLabel]});
 
-      service.completeMeasurement(graphicMock, labelPoint, labelText);
+      service.completeMeasurement(graphicMock, labelPoint, labelText, mode);
 
       expect(storeSpy).toHaveBeenCalledOnceWith(expectedAction);
       expect(endDrawingSpy).toHaveBeenCalledOnceWith();

@@ -10,10 +10,14 @@ import {ActiveMapItem} from '../../../map/models/active-map-item.model';
 import {UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {createDrawingMapItemMock, createGb2WmsMapItemMock} from '../../../testing/map-testing/active-map-item-test.utils';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {MapService} from '../../../map/interfaces/map.service';
+import {MAP_SERVICE} from '../../../app.module';
+import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
 
 describe('DrawingEffects', () => {
   let actions$: Observable<Action>;
   let effects: DrawingEffects;
+  let mapService: MapService;
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
@@ -25,9 +29,11 @@ describe('DrawingEffects', () => {
         provideMockActions(() => actions$),
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
+        {provide: MAP_SERVICE, useClass: MapServiceStub},
       ],
     });
     effects = TestBed.inject(DrawingEffects);
+    mapService = TestBed.inject(MAP_SERVICE);
   });
 
   describe('clearAllDrawingLayers$', () => {

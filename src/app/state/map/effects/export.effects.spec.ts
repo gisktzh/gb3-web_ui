@@ -26,6 +26,7 @@ describe('ExportEffects', () => {
             properties: {
               id: 'test',
               style: 'style',
+              tool: 'point',
             },
             geometry: {
               type: 'LineString',
@@ -50,6 +51,7 @@ describe('ExportEffects', () => {
             properties: {
               id: '2',
               style: 'style2',
+              tool: 'point',
             },
             geometry: {
               type: 'LineString',

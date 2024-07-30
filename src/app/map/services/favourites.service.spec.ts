@@ -2479,6 +2479,7 @@ describe('FavouritesService', () => {
               properties: {
                 id: 'e3f511b7-ffdc-44bc-af12-8ddf0b5cfd16',
                 style: '7273f5c3-58e9-429a-82f3-d49ea8730f5b',
+                tool: 'point',
               },
             },
             {
@@ -2493,6 +2494,7 @@ describe('FavouritesService', () => {
               properties: {
                 id: 'a28d0209-8203-4715-9abe-3761bae66354',
                 style: 'c65f3e07-a99f-4417-bc92-f7b938c558ba',
+                tool: 'point',
               },
             },
             {
@@ -2510,6 +2512,7 @@ describe('FavouritesService', () => {
               properties: {
                 id: '57ecf144-aad4-4e7d-9600-ff8a108b94a9',
                 style: '7273f5c3-58e9-429a-82f3-d49ea8730f5b',
+                tool: 'point',
               },
             },
             {
@@ -2522,6 +2525,7 @@ describe('FavouritesService', () => {
                 id: '3e17055c-505d-43c3-981a-0b89eeda8d12',
                 text: 'Test text',
                 style: '3241409f-747b-4397-a829-037a0202083a',
+                tool: 'point',
               },
             },
           ],
@@ -2563,6 +2567,7 @@ describe('FavouritesService', () => {
               properties: {
                 id: '27468688-3e9e-4147-8d13-fa50fd4d0a1b',
                 style: '8bcd01df-e5a0-45a5-933f-5ae9abd66253',
+                tool: 'point',
               },
             },
             {
@@ -2576,6 +2581,7 @@ describe('FavouritesService', () => {
                 text: '2681612.66/1249387.32',
                 style: '6b36dba4-d168-4565-9468-ffb5b3e93a2a',
                 belongsTo: '27468688-3e9e-4147-8d13-fa50fd4d0a1b',
+                tool: 'point',
               },
             },
           ],

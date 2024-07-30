@@ -79,7 +79,7 @@ export class ShareLinkItemTestUtils {
             {
               type: 'Feature',
               geometry: minimalPolygonGeometry,
-              properties: {id: 'drawing_id', text: 'drawing', style: ''},
+              properties: {id: 'drawing_id', text: 'drawing', style: '', tool: 'point'},
             },
           ],
         },
@@ -93,7 +93,7 @@ export class ShareLinkItemTestUtils {
             {
               type: 'Feature',
               geometry: minimalPolygonGeometry,
-              properties: {id: 'measurement_id', text: 'measurement', style: ''},
+              properties: {id: 'measurement_id', text: 'measurement', style: '', tool: 'point'},
             },
           ],
         },
