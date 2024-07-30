@@ -123,7 +123,7 @@ describe('MapUi Reducer', () => {
 
       const result = reducer(initialState, action);
 
-      expect(result).toEqual({...initialState, isAttributeFilterOverlayVisible: expectedSetting});
+      expect(result).toEqual({...initialState, isDrawingEditOverlayVisible: expectedSetting});
     });
   });
 
