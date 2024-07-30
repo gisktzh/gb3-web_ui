@@ -33,14 +33,14 @@ export class DrawingEffects {
 
   public editDrawing$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(DrawingActions.editDrawing),
+      ofType(DrawingActions.selectFeatureToEdit),
       map(() => MapUiActions.setDrawingEditOverlayVisibility({isVisible: true})),
     );
   });
 
   public closeDrawingEditOverlayAfterFinishDrawingOrEditing$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(DrawingActions.addDrawing, DrawingActions.addDrawings),
+      ofType(DrawingActions.addDrawing, DrawingActions.addDrawings, DrawingActions.deleteDrawing),
       map(() => MapUiActions.setDrawingEditOverlayVisibility({isVisible: false})),
     );
   });

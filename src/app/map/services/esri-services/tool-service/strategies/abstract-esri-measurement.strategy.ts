@@ -44,7 +44,7 @@ export abstract class AbstractEsriMeasurementStrategy<
             graphicIdentifier = this.setAndGetIdentifierOnGraphic(graphic);
             labelConfiguration = this.createLabelForGeometry(graphic.geometry as TGeometry, graphicIdentifier);
             this.layer.add(labelConfiguration.label);
-            this.completeDrawingCallbackHandler(graphic, labelConfiguration.label, labelConfiguration.labelText);
+            this.completeDrawingCallbackHandler(graphic, labelConfiguration.label, labelConfiguration.labelText, 'add');
             break;
         }
       },
@@ -53,6 +53,15 @@ export abstract class AbstractEsriMeasurementStrategy<
 
   public edit(graphic: __esri.Graphic) {
     void this.sketchViewModel.update(graphic, {multipleSelectionEnabled: false});
+
+    const deleteHandle = reactiveUtils.on(
+      () => this.sketchViewModel,
+      'delete',
+      () => {
+        // When deleting, all we care about is the "__id"-attribute of the graphic
+        this.completeDrawingCallbackHandler(graphic, graphic, '', 'delete');
+      },
+    );
 
     const editHandle = reactiveUtils.on(
       () => this.sketchViewModel,
@@ -71,20 +80,20 @@ export abstract class AbstractEsriMeasurementStrategy<
             if (graphic.getAttribute(AbstractEsriDrawableToolStrategy.belongsToFieldName)) {
               break;
             }
-            graphicIdentifier = graphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName);
             // checks if the graphic still exists in the layer, i. e if it was not deleted during edit
             if (
               this.layer.graphics.find((g) => g.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName) === graphicIdentifier)
             ) {
+              graphicIdentifier = graphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName);
               labelConfiguration = this.createLabelForGeometry(graphic.geometry as TGeometry, graphicIdentifier);
               this.layer.add(labelConfiguration.label);
-              this.completeDrawingCallbackHandler(graphic, labelConfiguration.label, labelConfiguration.labelText);
+              this.completeDrawingCallbackHandler(graphic, labelConfiguration.label, labelConfiguration.labelText, 'add');
             }
             break;
         }
       },
     );
-    this.sketchViewModel.view.addHandles([editHandle], HANDLE_GROUP_KEY);
+    this.sketchViewModel.view.addHandles([editHandle, deleteHandle], HANDLE_GROUP_KEY);
   }
 
   /**

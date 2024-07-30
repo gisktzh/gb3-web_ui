@@ -33,8 +33,11 @@ export const drawingFeature = createFeature({
         draft.selectedFeature = undefined;
       }),
     ),
-    on(DrawingActions.editDrawing, (state, {drawingId}): DrawingState => {
+    on(DrawingActions.selectFeatureToEdit, (state, {drawingId}): DrawingState => {
       return {...state, selectedFeature: state.drawings.find((drawing) => drawing.properties.__id === drawingId)};
+    }),
+    on(DrawingActions.deleteDrawing, (state, {drawingId}): DrawingState => {
+      return {...state, drawings: state.drawings.filter((drawing) => drawing.properties.__id !== drawingId)};
     }),
     on(DrawingActions.clearDrawings, (): DrawingState => {
       return {...initialState};

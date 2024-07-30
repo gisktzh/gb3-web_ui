@@ -1,7 +1,7 @@
 import MapView from '@arcgis/core/views/MapView';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {AbstractEsriDrawableToolStrategy} from './abstract-esri-drawable-tool.strategy';
-import {DrawingCallbackHandler} from '../interfaces/drawing-callback-handler.interface';
+import {DrawingCallbackHandler, DrawingMode} from '../interfaces/drawing-callback-handler.interface';
 import {UserDrawingLayer} from '../../../../../shared/enums/drawing-layer.enum';
 import Graphic from '@arcgis/core/Graphic';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
@@ -39,27 +39,41 @@ export abstract class AbstractEsriDrawingStrategy<
   public edit(graphic: __esri.Graphic) {
     void this.sketchViewModel.update(graphic, {multipleSelectionEnabled: false});
 
+    const deleteHandle = reactiveUtils.on(
+      () => this.sketchViewModel,
+      'delete',
+      () => {
+        this.handleComplete(graphic, 'delete');
+      },
+    );
+
     const editHandle = reactiveUtils.on(
       () => this.sketchViewModel,
       'update',
       ({state}) => {
+        let graphicIdentifier: string;
         switch (state) {
           case 'active':
           case 'start':
           case 'cancel':
             break; // currently, these events do not trigger any action
           case 'complete':
-            this.handleComplete(graphic);
+            if (
+              this.layer.graphics.find((g) => g.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName) === graphicIdentifier)
+            ) {
+              graphicIdentifier = graphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName);
+              this.handleComplete(graphic);
+            }
             break;
         }
       },
     );
 
-    this.sketchViewModel.view.addHandles([editHandle], HANDLE_GROUP_KEY);
+    this.sketchViewModel.view.addHandles([editHandle, deleteHandle], HANDLE_GROUP_KEY);
   }
 
-  protected handleComplete(graphic: Graphic, labelText?: string) {
+  protected handleComplete(graphic: Graphic, mode: DrawingMode = 'add', labelText?: string) {
     this.setIdentifierOnGraphic(graphic);
-    this.completeDrawingCallbackHandler(graphic, labelText);
+    this.completeDrawingCallbackHandler(graphic, mode, labelText);
   }
 }

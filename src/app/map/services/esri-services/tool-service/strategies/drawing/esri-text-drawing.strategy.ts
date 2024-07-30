@@ -1,5 +1,5 @@
 import {AbstractEsriDrawingStrategy} from '../abstract-esri-drawing.strategy';
-import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
+import {DrawingCallbackHandler, DrawingMode} from '../../interfaces/drawing-callback-handler.interface';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import {MatDialog} from '@angular/material/dialog';
 import {PanelClass} from '../../../../../../shared/enums/panel-class.enum';
@@ -24,7 +24,7 @@ export class EsriTextDrawingStrategy extends AbstractEsriDrawingStrategy<Drawing
     this.dialogService = dialogService;
   }
 
-  protected override handleComplete(graphic: __esri.Graphic) {
+  protected override handleComplete(graphic: __esri.Graphic, mode: DrawingMode) {
     const dialog = this.dialogService.open<TextDrawingToolInputComponent, void, string>(TextDrawingToolInputComponent, {
       panelClass: PanelClass.ApiWrapperDialog,
       restoreFocus: false,
@@ -38,7 +38,7 @@ export class EsriTextDrawingStrategy extends AbstractEsriDrawingStrategy<Drawing
             this.layer.remove(graphic);
           }
           (graphic.symbol as TextSymbol).text = text;
-          super.handleComplete(graphic, text);
+          super.handleComplete(graphic, mode, text);
         }),
       )
       .subscribe();
