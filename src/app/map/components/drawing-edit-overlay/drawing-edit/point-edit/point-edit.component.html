@@ -11,11 +11,12 @@
 <slider-edit (updateValue)="updateValue('strokeOpacity', $event)" [sliderValue]="pointStyle.strokeOpacity" title="Deckkraft"> </slider-edit>
 <color-picker-edit (updateColor)="updateValue('strokeColor', $event)" [fillColor]="pointStyle.strokeColor" title="Strichfarbe">
 </color-picker-edit>
-
+<mat-divider class="divider"></mat-divider>
 <h2>Füllung</h2>
 <slider-edit (updateValue)="updateValue('fillOpacity', $event)" [sliderValue]="pointStyle.fillOpacity" title="Deckkraft"> </slider-edit>
 <color-picker-edit (updateColor)="updateValue('fillColor', $event)" [fillColor]="pointStyle.fillColor" title="Füllfarbe">
 </color-picker-edit>
+<mat-divider class="divider"></mat-divider>
 
 <h2>Größe</h2>
 <slider-edit

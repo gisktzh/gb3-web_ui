@@ -33,7 +33,7 @@ export class DrawingEffects {
 
   public editDrawing$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(DrawingActions.selectFeatureToEdit),
+      ofType(DrawingActions.selectDrawing),
       map(() => MapUiActions.setDrawingEditOverlayVisibility({isVisible: true})),
     );
   });
@@ -48,9 +48,9 @@ export class DrawingEffects {
   public passStylingToToolService$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(DrawingActions.updateStyling),
+        ofType(DrawingActions.updateDrawingStyles),
         tap(({drawing, style, labelText}) => {
-          this.toolService.updateDrawingStyling(drawing, style, labelText);
+          this.toolService.updateDrawingStyles(drawing, style, labelText);
         }),
       );
     },

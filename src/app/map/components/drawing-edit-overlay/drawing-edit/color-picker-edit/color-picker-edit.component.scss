@@ -1,17 +1,17 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 @use 'functions/helper.function' as functions;
 
-.color-picker-edit__option {
+.color-picker-edit {
   display: flex;
   flex-direction: column;
   padding-bottom: 24px;
 
-  .color-picker-edit__option__label {
+  .color-picker-edit__label {
     color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary, 50);
     padding-bottom: 12px;
   }
 
-  .color-picker-edit__option__color-picker {
+  .color-picker-edit__color-picker {
     border: none;
     height: 30px;
     width: 70px;

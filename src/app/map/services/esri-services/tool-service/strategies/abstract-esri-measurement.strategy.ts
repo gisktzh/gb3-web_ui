@@ -94,7 +94,7 @@ export abstract class AbstractEsriMeasurementStrategy<
               const belongsToGraphic = this.layer.graphics.find(
                 (g) => g.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName) === belongsToIdentifier,
               );
-              this.completeDrawingCallbackHandler(belongsToGraphic, graphic, (graphic.symbol as TextSymbol).text, 'edit');
+              this.completeDrawingCallbackHandler(belongsToGraphic, graphic, (graphic.symbol as TextSymbol).text, 'add');
               break;
             }
 

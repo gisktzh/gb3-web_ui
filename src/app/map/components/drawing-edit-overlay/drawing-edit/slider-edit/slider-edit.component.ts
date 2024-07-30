@@ -13,8 +13,4 @@ export class SliderEditComponent {
   @Input() public title: string = '';
 
   @Output() public updateValue = new EventEmitter<number>();
-
-  public updateSlideValue() {
-    this.updateValue.emit(this.sliderValue);
-  }
 }

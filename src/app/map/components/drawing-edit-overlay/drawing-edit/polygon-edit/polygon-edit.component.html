@@ -12,6 +12,7 @@
 </slider-edit>
 <color-picker-edit (updateColor)="updateValue('strokeColor', $event)" [fillColor]="polygonStyle.strokeColor" title="Strichfarbe">
 </color-picker-edit>
+<mat-divider class="divider"></mat-divider>
 <h2>Füllung</h2>
 <slider-edit (updateValue)="updateValue('fillOpacity', $event)" [sliderValue]="polygonStyle.fillOpacity" title="Deckkraft"> </slider-edit>
 <color-picker-edit (updateColor)="updateValue('fillColor', $event)" [fillColor]="polygonStyle.fillColor" title="Füllfarbe">

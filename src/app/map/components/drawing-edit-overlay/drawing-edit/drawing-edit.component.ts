@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
-import {selectSelectedFeature} from '../../../../state/map/reducers/drawing.reducer';
+import {selectSelectedDrawing} from '../../../../state/map/reducers/drawing.reducer';
 import {
   Gb3StyledInternalDrawingRepresentation,
   Gb3StyleRepresentation,
@@ -17,7 +17,7 @@ export class DrawingEditComponent implements OnInit, OnDestroy {
   public selectedFeature?: Gb3StyledInternalDrawingRepresentation;
   public style?: Gb3StyleRepresentation;
 
-  private readonly selectedFeature$ = this.store.select(selectSelectedFeature);
+  private readonly selectedFeature$ = this.store.select(selectSelectedDrawing);
   private readonly subscriptions = new Subscription();
 
   constructor(private readonly store: Store) {}
@@ -31,7 +31,7 @@ export class DrawingEditComponent implements OnInit, OnDestroy {
   }
 
   public updateStyle(style: Gb3StyleRepresentation, labelText?: string) {
-    this.store.dispatch(DrawingActions.updateStyling({style, drawing: this.selectedFeature!, labelText}));
+    this.store.dispatch(DrawingActions.updateDrawingStyles({style, drawing: this.selectedFeature!, labelText}));
   }
   private initSubscriptions() {
     this.subscriptions.add(
@@ -41,7 +41,7 @@ export class DrawingEditComponent implements OnInit, OnDestroy {
             if (!selectedFeature) {
               return;
             }
-            this.style = selectedFeature?.properties.style;
+            this.style = selectedFeature.properties.style;
             this.selectedFeature = selectedFeature;
           }),
         )

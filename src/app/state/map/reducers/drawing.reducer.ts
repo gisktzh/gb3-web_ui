@@ -7,7 +7,7 @@ export const drawingFeatureKey = 'drawing';
 
 export const initialState: DrawingState = {
   drawings: [],
-  selectedFeature: undefined,
+  selectedDrawing: undefined,
 };
 
 export const drawingFeature = createFeature({
@@ -19,7 +19,7 @@ export const drawingFeature = createFeature({
       produce((draft, {drawing}) => {
         draft.drawings = draft.drawings.filter((d) => d.properties.__id !== drawing.properties.__id);
         draft.drawings.push(drawing);
-        draft.selectedFeature = undefined;
+        draft.selectedDrawing = undefined;
       }),
     ),
     on(
@@ -30,11 +30,11 @@ export const drawingFeature = createFeature({
           (d) => d.properties.__id !== drawings[0].properties.__id && d.properties.__belongsTo !== drawings[0].properties.__id,
         );
         draft.drawings = [...drawingsToKeep, ...drawings];
-        draft.selectedFeature = undefined;
+        draft.selectedDrawing = undefined;
       }),
     ),
-    on(DrawingActions.selectFeatureToEdit, (state, {drawingId}): DrawingState => {
-      return {...state, selectedFeature: state.drawings.find((drawing) => drawing.properties.__id === drawingId)};
+    on(DrawingActions.selectDrawing, (state, {drawingId}): DrawingState => {
+      return {...state, selectedDrawing: state.drawings.find((drawing) => drawing.properties.__id === drawingId)};
     }),
     on(DrawingActions.deleteDrawing, (state, {drawingId}): DrawingState => {
       return {
@@ -55,4 +55,4 @@ export const drawingFeature = createFeature({
   ),
 });
 
-export const {name, reducer, selectDrawingState, selectDrawings, selectSelectedFeature} = drawingFeature;
+export const {name, reducer, selectDrawingState, selectDrawings, selectSelectedDrawing} = drawingFeature;

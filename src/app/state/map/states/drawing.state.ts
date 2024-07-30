@@ -2,5 +2,5 @@ import {Gb3StyledInternalDrawingRepresentation} from '../../../shared/interfaces
 
 export interface DrawingState {
   drawings: Gb3StyledInternalDrawingRepresentation[];
-  selectedFeature: Gb3StyledInternalDrawingRepresentation | undefined;
+  selectedDrawing: Gb3StyledInternalDrawingRepresentation | undefined;
 }

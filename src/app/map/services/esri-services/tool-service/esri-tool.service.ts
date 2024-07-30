@@ -102,32 +102,27 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
       return;
     }
     this.setToolStrategyForEditingFeature(graphic);
-    // Exclude elevation-measurements from being able to update styles
-    if (!graphic.layer.id.includes(InternalDrawingLayer.ElevationProfile)) {
-      this.store.dispatch(DrawingActions.selectFeatureToEdit({drawingId}));
+    // Open the panel only for drawings
+    if (graphic.layer.id.includes(UserDrawingLayer.Drawings)) {
+      this.store.dispatch(DrawingActions.selectDrawing({drawingId}));
     }
     this.toolStrategy.edit(graphic);
   }
 
-  public updateDrawingStyling(drawing: Gb3StyledInternalDrawingRepresentation, style: Gb3StyleRepresentation, labelText?: string) {
+  public updateDrawingStyles(drawing: Gb3StyledInternalDrawingRepresentation, style: Gb3StyleRepresentation, labelText?: string) {
     const fullLayerIdentifier = this.configService.mapConfig.userDrawingLayerPrefix + drawing.source;
     const drawingLayer = this.esriMapViewService.findEsriLayer(fullLayerIdentifier);
 
-    if (drawingLayer) {
-      const graphic = (drawingLayer as GraphicsLayer).graphics.find(
-        (g) =>
-          g.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName) ===
-          drawing.properties[AbstractEsriDrawableToolStrategy.identifierFieldName],
-      );
-
-      if (graphic) {
-        const symbol = StyleRepresentationToEsriSymbolUtils.convert(style, labelText);
-
-        if (symbol) {
-          graphic.symbol = symbol;
-        }
-      }
+    if (!drawingLayer) {
+      return;
     }
+
+    const graphic = (drawingLayer as GraphicsLayer).graphics.find(
+      (g) =>
+        g.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName) ===
+        drawing.properties[AbstractEsriDrawableToolStrategy.identifierFieldName],
+    );
+    graphic.symbol = StyleRepresentationToEsriSymbolUtils.convert(style, labelText);
   }
 
   public initializeDrawing(drawingTool: DrawingTool) {

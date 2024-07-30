@@ -3,6 +3,7 @@
   <mat-label>Beschriftung</mat-label>
   <input matInput [value]="labelText" [(ngModel)]="labelText" (ngModelChange)="updateValue('label', labelText!)" />
 </mat-form-field>
+<mat-divider class="divider"></mat-divider>
 <h2>Schrift</h2>
 <slider-edit
   (updateValue)="updateValue('fontSize', $event)"
@@ -14,6 +15,7 @@
 >
 </slider-edit>
 <color-picker-edit (updateColor)="updateValue('fontColor', $event)" [fillColor]="textStyle.fontColor" title="Farbe"> </color-picker-edit>
+<mat-divider class="divider"></mat-divider>
 <h2>Halo</h2>
 <slider-edit
   (updateValue)="updateValue('haloRadius', $event)"
@@ -25,6 +27,7 @@
 >
 </slider-edit>
 <color-picker-edit (updateColor)="updateValue('haloColor', $event)" [fillColor]="textStyle.haloColor" title="Farbe"> </color-picker-edit>
+<mat-divider class="divider"></mat-divider>
 <h2>Offset</h2>
 <slider-edit
   (updateValue)="updateValue('labelYOffset', $event)"

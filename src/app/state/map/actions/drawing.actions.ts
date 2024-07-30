@@ -12,9 +12,9 @@ export const DrawingActions = createActionGroup({
     'Add Drawings': props<{drawings: Gb3StyledInternalDrawingRepresentation[]}>(),
     'Clear Drawings': emptyProps(),
     'Clear Drawing Layer': props<{layer: UserDrawingLayer}>(),
-    'Select Feature To Edit': props<{drawingId: string}>(),
+    'Select Drawing': props<{drawingId: string}>(),
     'Delete Drawing': props<{drawingId: string}>(),
-    'Update Styling': props<{drawing: Gb3StyledInternalDrawingRepresentation; style: Gb3StyleRepresentation; labelText?: string}>(),
+    'Update Drawing Styles': props<{drawing: Gb3StyledInternalDrawingRepresentation; style: Gb3StyleRepresentation; labelText?: string}>(),
     /**
      * This action can be used to remove one (or more) DrawingLayer's drawings from the state and add new layers. This is useful
      * (mostly) in the context of loading favourites, because it allows us to properly handle edge cases where a user might have
