@@ -9,13 +9,7 @@
     <mat-step
       #descriptionStep
       [stepControl]="formGroup"
-      [label]="
-        formGroup.controls.title.value && descriptionStep.completed
-          ? 'Beschriftung: Kartentitel: ' +
-            formGroup.controls.title.value +
-            (formGroup.controls.comment.value ? ', Kommentar: ' + formGroup.controls.comment.value : '')
-          : 'Beschriftung'
-      "
+      [label]="descriptionStep.completed | printDescription: formGroup.controls.title.value : formGroup.controls.comment.value"
     >
       <form [formGroup]="formGroup" class="print-dialog__stepper__content">
         <div class="print-dialog__stepper__content__form">

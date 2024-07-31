@@ -91,6 +91,7 @@ import {DrawingDownloadButtonComponent} from './components/map-tools/drawing-dow
 import {DrawingsImportDialogComponent} from './components/map-tools/drawings-import-dialog/drawings-import-dialog.component';
 import {DropZoneComponent} from '../shared/components/drop-zone/drop-zone.component';
 import {DrawingDownloadDialogComponent} from './components/map-tools/drawing-download-dialog/drawing-download-dialog.component';
+import {PrintDescriptionPipe} from './components/map-tools/print-dialog/print-description.pipe';
 
 @NgModule({
   providers: [provideCharts(withDefaultRegisterables())],
@@ -191,6 +192,7 @@ import {DrawingDownloadDialogComponent} from './components/map-tools/drawing-dow
     FeatureFlagDirective,
     NgOptimizedImage,
     DropZoneComponent,
+    PrintDescriptionPipe,
   ],
   exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent, MapOverlayComponent],
 })

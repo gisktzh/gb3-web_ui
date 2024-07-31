@@ -338,7 +338,7 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     const defaultReport = printConfig.defaultPrintValues;
     const roundedScale = Math.round(currentScale);
     this.formGroup.setValue({
-      title: '',
+      title: null,
       comment: null,
       reportType: printConfig.defaultPrintValues.reportType,
       reportLayout: DocumentFormat[defaultReport.documentFormat],
