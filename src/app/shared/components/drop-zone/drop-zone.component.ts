@@ -19,17 +19,17 @@ import {MatIcon} from '@angular/material/icon';
 })
 export class DropZoneComponent implements AfterViewInit {
   @Output() public addedFile = new EventEmitter<Blob | File>();
-  @Output() public error = new EventEmitter<string>();
+  @Output() public uploadError = new EventEmitter<string>();
   protected isHovered = false;
   private readonly uppyInstance = new Uppy({
     restrictions: {
       maxNumberOfFiles: 1,
-      maxFileSize: 10000000,
+      maxFileSize: 10000000, // 10MB
       allowedFileTypes: ['.kml', '.json', '.geojson'],
-      // todo lme: use allowed filetypes
     },
   });
   @ViewChild('dropBoxContainer') private dropBoxContainer!: ElementRef<HTMLDivElement>;
+  @ViewChild('fileInput') private fileInput!: ElementRef<HTMLInputElement>;
 
   public ngAfterViewInit() {
     this.uppyInstance
@@ -45,23 +45,20 @@ export class DropZoneComponent implements AfterViewInit {
           this.isHovered = false;
         },
       })
-      .use(FileInput, {target: '#file-input'}) // todo lme: maybe replace with https://uppy.io/docs/file-input/#custom-file-inpt for styles
+      .use(FileInput, {target: '#file-input'})
       .on('file-added', (data) => {
         this.addedFile.emit(data.data);
         this.uppyInstance.removeFile(data.id); // needed as long as only 1 file can be uploaded
       })
       .on('restriction-failed', (file, error) => {
-        this.error.emit(error.message);
+        this.uploadError.emit(error.message);
       })
       .on('error', (error) => {
-        this.error.emit(error.message);
-      })
-      .on('file-removed', (file) => {});
-    // todo lme: do we need more events? note: upload stuff is not needed here
+        this.uploadError.emit(error.message);
+      });
 
-    const fileInput: HTMLInputElement = document.querySelector('#file-input')!;
-
-    fileInput.addEventListener('change', (event) => {
+    const fileInput: HTMLInputElement = this.fileInput.nativeElement;
+    fileInput.addEventListener('change', () => {
       const files = fileInput.files?.length ? Array.from(fileInput.files) : [];
 
       files.forEach((file) => {
@@ -73,15 +70,9 @@ export class DropZoneComponent implements AfterViewInit {
             data: file,
           });
         } catch (err) {
-          // handle other errors
-          console.error(err);
+          this.uploadError.emit('Ein unerwarteter Fehler ist aufgetreten.');
         }
       });
     });
-  }
-
-  public openFileDialog() {
-    const fileInput: HTMLInputElement = document.querySelector('#file-input')!;
-    fileInput.click();
   }
 }

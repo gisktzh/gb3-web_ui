@@ -3,11 +3,11 @@
   (closeEvent)="cancel()"
   class="drawings-import-dialog"
   [savingState]="loadingState"
-  [errorText]="'Das File konnte nicht hochgeladen werden.'"
+  [errorText]="'Beim Hochladen ist ein Fehler aufgetreten.'"
 >
   <ng-container content>
     <div class="drawings-import-dialog__content">
-      <drop-zone (addedFile)="handleFileChange($event)" (error)="handleFileErrors($event)"></drop-zone>
+      <drop-zone (addedFile)="handleFileChange($event)" (uploadError)="handleFileErrors($event)"></drop-zone>
     </div>
   </ng-container>
   <ng-container actions>

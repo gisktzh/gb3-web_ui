@@ -5,6 +5,7 @@ import {PanelClass} from '../../../../shared/enums/panel-class.enum';
 import {DrawingsImportDialogComponent} from '../drawings-import-dialog/drawings-import-dialog.component';
 
 const DRAWING_SETTINGS_DIALOG_MAX_WIDTH = 420;
+const DRAWING_UPLOAD_DIALOG_MAX_WIDTH = 750;
 
 @Component({
   selector: 'drawing-tools',
@@ -50,7 +51,7 @@ export class DrawingToolsComponent extends AbstractToolsComponent {
       panelClass: PanelClass.ApiWrapperDialog,
       restoreFocus: false,
       autoFocus: false,
-      maxWidth: 750, // todo LME: set correct width
+      maxWidth: DRAWING_UPLOAD_DIALOG_MAX_WIDTH,
     });
   }
 }
