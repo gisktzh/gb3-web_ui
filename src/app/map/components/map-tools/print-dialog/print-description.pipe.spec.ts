@@ -7,7 +7,7 @@ describe('PrintDescriptionPipe', () => {
     pipe = new PrintDescriptionPipe();
   });
   it('creates an instance', () => {
-    const pipe = new PrintDescriptionPipe();
+    pipe = new PrintDescriptionPipe();
     expect(pipe).toBeTruthy();
   });
 
