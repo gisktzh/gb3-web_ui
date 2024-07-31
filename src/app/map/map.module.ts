@@ -89,6 +89,7 @@ import {provideCharts, withDefaultRegisterables} from 'ng2-charts';
 import {FeatureFlagDirective} from '../shared/directives/feature-flag.directive';
 import {DrawingDownloadButtonComponent} from './components/map-tools/drawing-download-button/drawing-download-button.component';
 import {DrawingDownloadDialogComponent} from './components/map-tools/drawing-download-dialog/drawing-download-dialog.component';
+import {PrintDescriptionPipe} from './components/map-tools/print-dialog/print-description.pipe';
 
 @NgModule({
   providers: [provideCharts(withDefaultRegisterables())],
@@ -187,6 +188,7 @@ import {DrawingDownloadDialogComponent} from './components/map-tools/drawing-dow
     DrawingDownloadButtonComponent,
     FeatureFlagDirective,
     NgOptimizedImage,
+    PrintDescriptionPipe,
   ],
   exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent, MapOverlayComponent],
 })
