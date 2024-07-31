@@ -13,7 +13,7 @@ import {SupportedEsriPolygonTool} from '../supported-esri-tool.type';
 const M2_TO_KM2_CONVERSION_THRESHOLD = 100_000;
 
 export class EsriAreaMeasurementStrategy extends AbstractEsriMeasurementStrategy<Polygon, DrawingCallbackHandler['completeMeasurement']> {
-  protected readonly tool: SupportedEsriPolygonTool = 'polygon';
+  protected readonly tool: SupportedEsriPolygonTool;
   private readonly labelSymbolization: TextSymbol;
 
   constructor(

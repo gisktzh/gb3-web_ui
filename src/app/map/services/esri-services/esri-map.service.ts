@@ -63,10 +63,18 @@ import {ActiveTimeSliderLayersUtils} from '../../utils/active-time-slider-layers
 import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
 import {InitialMapExtentService} from '../initial-map-extent.service';
 import {MapConstants} from '../../../shared/constants/map.constants';
-import {HitTestSelectionUtils} from '../../utils/hit-test-selection.utils';
+import {HitTestSelectionUtils} from './utils/hit-test-selection.utils';
+import * as intl from '@arcgis/core/intl';
 import GraphicHit = __esri.GraphicHit;
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
+
+// used to distinguish between info-click and drawing-edit in the click listener
+enum EsriMouseButtonType {
+  LeftClick = 0,
+  MiddleClick = 1,
+  RightClick = 2,
+}
 
 @Injectable({
   providedIn: 'root',
@@ -105,6 +113,10 @@ export class EsriMapService implements MapService, OnDestroy {
      * https to avoid mixed-content. This configuration forces the WMS to be upgraded to https.
      */
     esriConfig.request.httpsDomains?.push('wms.zh.ch');
+    /**
+     * The Esri API uses the browser's locale settings to determine the language of the map. This can be overridden by setting the locale
+     */
+    intl.setLocale('de');
 
     this.initializeInterceptors();
     this.initializeSubscriptions();
@@ -802,15 +814,18 @@ export class EsriMapService implements MapService, OnDestroy {
       () => this.mapView,
       'click',
       async (event: __esri.ViewClickEvent) => {
-        const {x, y} = this.transformationService.transform(event.mapPoint);
-        if (event.button === 0) {
+        if (event.button === EsriMouseButtonType.LeftClick) {
+          const {x, y} = this.transformationService.transform(event.mapPoint);
           if (this.isEditModeActive) {
             this.isEditModeActive = false;
-            return;
+          } else {
+            this.dispatchFeatureInfoRequest(x, y);
           }
-          this.dispatchFeatureInfoRequest(x, y);
-        } else {
-          const {results} = await this.mapView.hitTest(event);
+        } else if (event.button === EsriMouseButtonType.RightClick) {
+          const layersToTest = this.mapView.map.layers
+            .filter((layer) => this.configService.mapConfig.editableLayerIds.includes(layer.id))
+            .toArray();
+          const {results} = await this.mapView.hitTest(event, {include: layersToTest});
           if (results.length > 0) {
             this.isEditModeActive = true;
             const selectedFeature = HitTestSelectionUtils.selectFeatureFromHitTestResult(results as GraphicHit[]);

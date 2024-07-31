@@ -31,6 +31,7 @@ import {AppActions} from '../../state/app/actions/app.actions';
 import {DynamicInternalUrlsConfiguration} from '../types/dynamic-internal-url.type';
 import {defaultFeatureFlags} from '../configs/feature-flags.config';
 import {FeatureFlags} from '../interfaces/feature-flags.interface';
+import {InternalDrawingLayer, UserDrawingLayer} from '../enums/drawing-layer.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -54,6 +55,11 @@ export class ConfigService {
       maxScale: MapConstants.MAXIMUM_MAP_SCALE,
       minScale: MapConstants.MINIMUM_MAP_SCALE,
     },
+    editableLayerIds: [
+      MapConstants.USER_DRAWING_LAYER_PREFIX + UserDrawingLayer.Drawings,
+      MapConstants.USER_DRAWING_LAYER_PREFIX + UserDrawingLayer.Measurements,
+      MapConstants.INTERNAL_LAYER_PREFIX + InternalDrawingLayer.ElevationProfile,
+    ],
   };
   public readonly apiConfig: ApiConfig;
   public readonly overridesConfig: OverrideSettings;

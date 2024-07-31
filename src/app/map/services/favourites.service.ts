@@ -22,8 +22,7 @@ import {selectFavouriteBaseConfig} from '../../state/map/selectors/favourite-bas
 import {FavouriteIsInvalid} from '../../shared/errors/favourite.errors';
 import {selectUserDrawingsVectorLayers} from '../../state/map/selectors/user-drawings-vector-layers.selector';
 import {Gb3VectorLayer} from '../../shared/interfaces/gb3-vector-layer.interface';
-import {UserDrawingLayer} from '../../shared/enums/drawing-layer.enum';
-import {MapConstants} from '../../shared/constants/map.constants';
+import {DrawinLayerPrefix, UserDrawingLayer} from '../../shared/enums/drawing-layer.enum';
 import {SymbolizationToGb3ConverterUtils} from '../../shared/utils/symbolization-to-gb3-converter.utils';
 import {DrawingActiveMapItem} from '../models/implementations/drawing.model';
 import {Gb3StyledInternalDrawingRepresentation} from '../../shared/interfaces/internal-drawing-representation.interface';
@@ -134,18 +133,14 @@ export class FavouritesService implements OnDestroy {
     const drawingsToAdd: Gb3StyledInternalDrawingRepresentation[] = [];
 
     if (measurements.geojson.features.length > 0) {
-      drawingActiveMapItems.push(
-        ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Measurements, MapConstants.USER_DRAWING_LAYER_PREFIX),
-      );
+      drawingActiveMapItems.push(ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Measurements, DrawinLayerPrefix.Drawing));
       drawingsToAdd.push(
         ...SymbolizationToGb3ConverterUtils.convertExternalToInternalRepresentation(measurements, UserDrawingLayer.Measurements),
       );
     }
 
     if (drawings.geojson.features.length > 0) {
-      drawingActiveMapItems.push(
-        ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, MapConstants.USER_DRAWING_LAYER_PREFIX),
-      );
+      drawingActiveMapItems.push(ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, DrawinLayerPrefix.Drawing));
       drawingsToAdd.push(...SymbolizationToGb3ConverterUtils.convertExternalToInternalRepresentation(drawings, UserDrawingLayer.Drawings));
     }
 

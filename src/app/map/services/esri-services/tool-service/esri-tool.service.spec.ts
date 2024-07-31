@@ -35,7 +35,7 @@ import {DataDownloadSelection} from '../../../../shared/interfaces/data-download
 import {DataDownloadOrderActions} from '../../../../state/map/actions/data-download-order.actions';
 import {ToolActions} from '../../../../state/map/actions/tool.actions';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
-import {DrawingMode} from './interfaces/drawing-callback-handler.interface';
+import {DrawingMode} from './types/drawing-mode.type';
 import {
   Gb3StyledInternalDrawingRepresentation,
   Gb3StyleRepresentation,

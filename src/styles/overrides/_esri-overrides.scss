@@ -7,4 +7,8 @@
 .esri-tooltip {
   --font-size: 12px;
   font-family: ktzh-variables.$zh-font-family;
+
+  .esri-tooltip-content {
+    border-radius: 1px;
+  }
 }

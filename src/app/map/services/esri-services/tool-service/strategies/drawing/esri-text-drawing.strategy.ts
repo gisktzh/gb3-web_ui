@@ -1,11 +1,12 @@
 import {AbstractEsriDrawingStrategy} from '../abstract-esri-drawing.strategy';
-import {DrawingCallbackHandler, DrawingMode} from '../../interfaces/drawing-callback-handler.interface';
+import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import {MatDialog} from '@angular/material/dialog';
 import {PanelClass} from '../../../../../../shared/enums/panel-class.enum';
 import {tap} from 'rxjs';
 import {TextDrawingToolInputComponent} from '../../../../../components/text-drawing-tool-input/text-drawing-tool-input.component';
 import {SupportedEsriTool} from '../supported-esri-tool.type';
+import {DrawingMode} from '../../types/drawing-mode.type';
 
 export class EsriTextDrawingStrategy extends AbstractEsriDrawingStrategy<DrawingCallbackHandler['completeDrawing']> {
   protected readonly tool: SupportedEsriTool = 'point';

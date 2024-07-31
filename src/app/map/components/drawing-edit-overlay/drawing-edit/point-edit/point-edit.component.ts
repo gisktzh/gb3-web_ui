@@ -9,13 +9,13 @@ import {Gb3PointStyle, PointStyleConfiguration} from '../../../../../shared/inte
 export class PointEditComponent {
   @Input() public pointStyle!: Gb3PointStyle;
 
-  @Output() public updateStyle = new EventEmitter<Gb3PointStyle>();
+  @Output() public updateStyleEvent = new EventEmitter<Gb3PointStyle>();
 
   public updateValue(field: keyof PointStyleConfiguration, value: number | string) {
     this.pointStyle = {
       ...this.pointStyle,
       [field]: value,
     };
-    this.updateStyle.emit(this.pointStyle);
+    this.updateStyleEvent.emit(this.pointStyle);
   }
 }

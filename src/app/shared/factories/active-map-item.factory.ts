@@ -1,8 +1,7 @@
 import {FilterConfiguration, Map, MapLayer} from '../interfaces/topic.interface';
-
 import {Gb2WmsActiveMapItem} from '../../map/models/implementations/gb2-wms.model';
 import {DrawingActiveMapItem} from '../../map/models/implementations/drawing.model';
-import {UserDrawingLayer} from '../enums/drawing-layer.enum';
+import {DrawinLayerPrefix, UserDrawingLayer} from '../enums/drawing-layer.enum';
 import {ExternalKmlLayer, ExternalWmsLayer} from '../interfaces/external-layer.interface';
 import {ExternalWmsActiveMapItem} from '../../map/models/implementations/external-wms.model';
 import {ExternalKmlActiveMapItem} from '../../map/models/implementations/external-kml.model';
@@ -35,7 +34,12 @@ export class ActiveMapItemFactory {
     return new Gb2WmsActiveMapItem(map, layer, visible, opacity, timeExtent, attributeFilters, isTemporary);
   }
 
-  public static createDrawingMapItem(id: UserDrawingLayer, prefix: string, visible?: boolean, opacity?: number): DrawingActiveMapItem {
+  public static createDrawingMapItem(
+    id: UserDrawingLayer,
+    prefix: DrawinLayerPrefix,
+    visible?: boolean,
+    opacity?: number,
+  ): DrawingActiveMapItem {
     let title: string;
     switch (id) {
       case UserDrawingLayer.Drawings:
@@ -46,8 +50,7 @@ export class ActiveMapItemFactory {
         break;
     }
 
-    const fullLayerIdentifier = prefix + id;
-    return new DrawingActiveMapItem(title, fullLayerIdentifier, id, visible, opacity);
+    return new DrawingActiveMapItem(title, prefix, id, visible, opacity);
   }
 
   public static createExternalWmsMapItem(

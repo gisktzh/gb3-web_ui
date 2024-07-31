@@ -1,23 +1,20 @@
 import Graphic from '@arcgis/core/Graphic';
 import Polygon from '@arcgis/core/geometry/Polygon';
 import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
+import {UnsupportedGeometryType} from '../errors/esri.errors';
 import GraphicHit = __esri.GraphicHit;
 
 type HitWithArea = {hit: Graphic; area: number};
 
 export class HitTestSelectionUtils {
   public static selectFeatureFromHitTestResult(hits: GraphicHit[]): Graphic {
-    let pointHit: Graphic | null = null;
     let lineHit: Graphic | null = null;
     const polygonHits: GraphicHit[] = [];
 
     for (const hit of hits) {
       switch (hit.graphic.geometry.type) {
         case 'point':
-          if (!pointHit) {
-            pointHit = hit.graphic;
-          }
-          break;
+          return hit.graphic;
         case 'polyline':
           if (!lineHit) {
             lineHit = hit.graphic;
@@ -33,16 +30,13 @@ export class HitTestSelectionUtils {
       }
     }
 
-    if (pointHit) {
-      return pointHit;
-    }
     if (lineHit) {
       return lineHit;
     }
     if (polygonHits.length > 0) {
       return this.selectSmallestPolygonFromHitTestResult(polygonHits);
     }
-    return hits[0].graphic;
+    throw new UnsupportedGeometryType(hits[0].graphic.geometry.type);
   }
 
   public static selectSmallestPolygonFromHitTestResult(polygonHits: GraphicHit[]): Graphic {

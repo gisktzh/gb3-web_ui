@@ -50,18 +50,16 @@
     pointer-events: none;
   }
 
-  .map-container__legend-overlay {
+  .map-container__overlay {
     position: absolute;
     top: 0;
     left: 0;
     height: 100%;
-  }
 
-  .map-container__attribute-filter-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
+    &--right {
+      left: unset;
+      right: 0;
+    }
   }
 
   .map-container__all-map-items-container {
@@ -130,27 +128,6 @@
     position: absolute;
     top: 132px; // starting at the first 'active map item' position
     left: calc(24px + #{map-layout-variables.$map-overlay-width});
-  }
-
-  .map-container__feature-info-overlay {
-    position: absolute;
-    top: 0;
-    right: 0;
-    height: 100%;
-  }
-
-  .map-container__elevation-profile-overlay {
-    position: absolute;
-    top: 0;
-    right: 0;
-    height: 100%;
-  }
-
-  .map-container__drawing-edit-overlay {
-    position: absolute;
-    top: 0;
-    right: 0;
-    height: 100%;
   }
 
   .map-container__bottom-sheet-overlay {

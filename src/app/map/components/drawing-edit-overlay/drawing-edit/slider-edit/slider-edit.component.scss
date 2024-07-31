@@ -5,9 +5,29 @@
   display: flex;
   flex-direction: column;
   padding-bottom: 24px;
+  color: functions.get-contrast-color-from-palette(ktzh-variables.$zh-primary, 50);
 
   .slider-edit__slider {
     width: 100%;
     margin: 0;
+  }
+
+  .slider-edit__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    &__min:before,
+    &__max:before {
+      background: functions.get-color-from-palette(ktzh-variables.$zh-black100-palette, A700);
+      content: ' ';
+      display: block;
+      width: 44px;
+      height: 1pt;
+    }
+
+    &__max:before {
+      height: 12pt;
+    }
   }
 }

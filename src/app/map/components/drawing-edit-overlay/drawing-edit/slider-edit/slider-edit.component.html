@@ -2,8 +2,16 @@
   <slider-wrapper [title]="title" [value]="sliderValue" [overwriteFooter]="true">
     <ng-container content>
       <mat-slider [min]="min" [max]="max" [step]="step" color="primary" class="slider-edit__slider">
-        <input matSliderThumb [(ngModel)]="sliderValue" (ngModelChange)="updateValue.emit(sliderValue)" />
+        <input matSliderThumb [(ngModel)]="sliderValue" (ngModelChange)="updateSlider()" />
       </mat-slider>
     </ng-container>
+    @if (showLineWidth) {
+      <ng-container footer>
+        <div class="slider-edit__footer">
+          <span class="slider-edit__footer__min"></span>
+          <span class="slider-edit__footer__max"></span>
+        </div>
+      </ng-container>
+    }
   </slider-wrapper>
 </div>

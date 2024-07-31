@@ -20,12 +20,12 @@
   <map-controls class="map-container__map-controls" *ngIf="screenMode !== 'mobile'"></map-controls>
   <legend-overlay
     *ngIf="screenMode !== 'mobile'"
-    class="map-container__legend-overlay"
+    class="map-container__overlay"
     [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
   ></legend-overlay>
   <map-attribute-filter-overlay
     *ngIf="screenMode !== 'mobile'"
-    class="map-container__attribute-filter-overlay"
+    class="map-container__overlay"
     [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
   ></map-attribute-filter-overlay>
   <div class="map-container__all-map-items-container" *ngIf="screenMode !== 'mobile'">
@@ -61,17 +61,17 @@
   </button>
   <feature-info-overlay
     *ngIf="screenMode !== 'mobile'"
-    class="map-container__feature-info-overlay"
+    class="map-container__overlay map-container__overlay--right"
     [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
   ></feature-info-overlay>
   <elevation-profile-overlay
     *ngIf="screenMode !== 'mobile'"
-    class="map-container__elevation-profile-overlay"
+    class="map-container__overlay map-container__overlay--right"
     [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
   ></elevation-profile-overlay>
   <drawing-edit-overlay
     *ngIf="screenMode !== 'mobile'"
-    class="map-container__drawing-edit-overlay"
+    class="map-container__overlay map-container__overlay--right"
     [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
   ></drawing-edit-overlay>
   <search-window

@@ -9,6 +9,8 @@
  * ---------------------------------------------------------------
  */
 
+import {SupportedEsriTool} from '../../map/services/esri-services/tool-service/strategies/supported-esri-tool.type';
+
 export interface Canton {
   /** GeoJSON geometry object */
   boundingbox: Geometry;
@@ -873,7 +875,7 @@ export interface GeojsonFeature {
      * The tool used to draw the feature
      * @example "polygon"
      */
-    tool: string;
+    tool: SupportedEsriTool; // todo: specify API interface to expect these properties; see https://jira-geo.zh.ch/browse/GB3-825
   };
   /** GeoJSON geometry object */
   geometry: Geometry;

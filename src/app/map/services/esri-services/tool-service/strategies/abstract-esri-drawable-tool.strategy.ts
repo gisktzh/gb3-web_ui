@@ -59,12 +59,12 @@ export abstract class AbstractEsriDrawableToolStrategy<
   }
 
   protected setIdentifierOnGraphic(graphic: Graphic, graphicIdentifier?: string): void {
-    // If the graphic already has an id (i.e when it is edited), we do not set a new one
-    if (graphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName)) {
-      return;
+    // If the graphic does not have an id (i.e when it newly created), we need to create one
+    if (!graphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName)) {
+      const identifier = graphicIdentifier ?? UuidUtils.createUuid();
+      graphic.setAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName, identifier);
+      graphic.setAttribute(AbstractEsriDrawableToolStrategy.toolFieldName, this.tool);
     }
-    graphic.setAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName, graphicIdentifier ?? UuidUtils.createUuid());
-    graphic.setAttribute(AbstractEsriDrawableToolStrategy.toolFieldName, this.tool);
   }
 
   protected setLabelTextAttributeOnGraphic(graphic: Graphic, text: string) {
@@ -73,5 +73,12 @@ export abstract class AbstractEsriDrawableToolStrategy<
 
   protected setBelongsToAttributeOnGraphic(graphic: __esri.Graphic, belongsToGraphicUuid: string) {
     graphic.setAttribute(AbstractEsriDrawableToolStrategy.belongsToFieldName, belongsToGraphicUuid);
+  }
+
+  // When deleting a feature during edit, the "complete"-state is still triggered. Therefore, we need to check whether a feature still exists on the layer
+  protected checkIfGraphicExistsOnLayer(graphicIdentifier: string): boolean {
+    return this.layer.graphics.some(
+      (existingGraphic) => existingGraphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName) === graphicIdentifier,
+    );
   }
 }

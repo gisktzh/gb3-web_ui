@@ -4,6 +4,7 @@ import {HasSrs} from './geojson-types-with-srs.interface';
 import {SupportedGeometry} from '../types/SupportedGeometry.type';
 import {AbstractEsriDrawableToolStrategy} from '../../map/services/esri-services/tool-service/strategies/abstract-esri-drawable-tool.strategy';
 import {MapfishPrintStyleProperties} from '../models/mapfish-print-style-properties-generated.interface';
+import {SupportedEsriTool} from '../../map/services/esri-services/tool-service/strategies/supported-esri-tool.type';
 
 interface InternalDrawingRepresentation<T = Record<never, never>> extends Feature<SupportedGeometry, T> {
   labelText?: string;
@@ -57,5 +58,5 @@ export type Gb3StyledInternalDrawingRepresentation = InternalDrawingRepresentati
   style: Gb3StyleRepresentation;
   [AbstractEsriDrawableToolStrategy.identifierFieldName]: string;
   [AbstractEsriDrawableToolStrategy.belongsToFieldName]?: string;
-  [AbstractEsriDrawableToolStrategy.toolFieldName]: string;
+  [AbstractEsriDrawableToolStrategy.toolFieldName]: SupportedEsriTool;
 }>;

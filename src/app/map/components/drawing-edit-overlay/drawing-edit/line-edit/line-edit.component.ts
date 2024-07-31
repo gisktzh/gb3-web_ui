@@ -9,13 +9,13 @@ import {Gb3LineStringStyle, LineStyleConfiguration} from '../../../../../shared/
 export class LineEditComponent {
   @Input() public lineStyle!: Gb3LineStringStyle;
 
-  @Output() public updateStyle = new EventEmitter<Gb3LineStringStyle>();
+  @Output() public updateStyleEvent = new EventEmitter<Gb3LineStringStyle>();
 
   public updateValue(field: keyof LineStyleConfiguration, value: number | string) {
     this.lineStyle = {
       ...this.lineStyle,
       [field]: value,
     };
-    this.updateStyle.emit(this.lineStyle);
+    this.updateStyleEvent.emit(this.lineStyle);
   }
 }

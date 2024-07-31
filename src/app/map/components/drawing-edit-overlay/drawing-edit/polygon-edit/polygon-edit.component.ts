@@ -9,13 +9,13 @@ import {AreaStyleConfiguration, Gb3PolygonStyle} from '../../../../../shared/int
 export class PolygonEditComponent {
   @Input() public polygonStyle!: Gb3PolygonStyle;
 
-  @Output() public updateStyle = new EventEmitter<Gb3PolygonStyle>();
+  @Output() public updateStyleEvent = new EventEmitter<Gb3PolygonStyle>();
 
   public updateValue(field: keyof AreaStyleConfiguration, value: number | string) {
     this.polygonStyle = {
       ...this.polygonStyle,
       [field]: value,
     };
-    this.updateStyle.emit(this.polygonStyle);
+    this.updateStyleEvent.emit(this.polygonStyle);
   }
 }

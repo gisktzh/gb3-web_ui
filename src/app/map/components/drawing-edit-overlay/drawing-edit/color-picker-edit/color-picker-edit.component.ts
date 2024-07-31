@@ -9,5 +9,9 @@ export class ColorPickerEditComponent {
   @Input() public fillColor: string = '';
   @Input() public title: string = '';
 
-  @Output() public updateColor = new EventEmitter<string>();
+  @Output() public updateColorEvent = new EventEmitter<string>();
+
+  public updateColor() {
+    this.updateColorEvent.emit(this.fillColor);
+  }
 }

@@ -10,6 +10,10 @@ import {MapUiActions} from '../actions/map-ui.actions';
 import {ToolService} from '../../../map/interfaces/tool.service';
 import {MapService} from '../../../map/interfaces/map.service';
 import {MAP_SERVICE} from '../../../app.module';
+import {concatLatestFrom} from '@ngrx/operators';
+import {Store} from '@ngrx/store';
+import {selectSelectedDrawing} from '../reducers/drawing.reducer';
+import {DrawingNotFound} from '../../../shared/errors/drawing.errors';
 
 @Injectable()
 export class DrawingEffects {
@@ -34,7 +38,13 @@ export class DrawingEffects {
   public editDrawing$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(DrawingActions.selectDrawing),
-      map(() => MapUiActions.setDrawingEditOverlayVisibility({isVisible: true})),
+      concatLatestFrom(() => this.store.select(selectSelectedDrawing)),
+      map(([_, selectedDrawing]) => {
+        if (!selectedDrawing) {
+          throw new DrawingNotFound();
+        }
+        return MapUiActions.setDrawingEditOverlayVisibility({isVisible: true});
+      }),
     );
   });
 
@@ -70,6 +80,7 @@ export class DrawingEffects {
 
   constructor(
     private readonly actions$: Actions,
+    private readonly store: Store,
     @Inject(MAP_SERVICE) private readonly mapService: MapService,
   ) {
     this.toolService = this.mapService.getToolService();
