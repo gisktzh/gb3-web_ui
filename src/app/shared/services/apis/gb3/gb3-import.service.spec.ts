@@ -1,10 +1,11 @@
 import {TestBed} from '@angular/core/testing';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {Gb3ImportService} from './gb3-import.service';
 import {ConfigService} from '../../config.service';
 import {Gb3VectorLayer} from '../../../interfaces/gb3-vector-layer.interface';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {of} from 'rxjs';
+import {provideMockStore} from '@ngrx/store/testing';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 
 describe('Gb3ImportService', () => {
   let service: Gb3ImportService;
@@ -13,8 +14,8 @@ describe('Gb3ImportService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [],
+      imports: [],
+      providers: [provideMockStore(), provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     });
 
     service = TestBed.inject(Gb3ImportService);
@@ -27,18 +28,20 @@ describe('Gb3ImportService', () => {
   });
 
   it('should import drawing', (done: DoneFn) => {
-    const mockFile = new File([''], 'filename', {type: 'text/plain'});
+    const mockFile = new File([], 'filename', {type: 'text/plain'});
+    const mockFormData = new FormData();
+    mockFormData.append('file', mockFile);
     const mockResponse: Gb3VectorLayer = {
       type: 'Vector',
       geojson: {type: 'FeatureCollection', features: []},
       styles: {},
     };
-    const httpGetSpy = spyOn(httpClient, 'get').and.returnValue(of(mockResponse));
+    const httpGetSpy = spyOn(httpClient, 'post').and.returnValue(of(mockResponse));
     const expectedUrl = `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/import`;
 
-    service.importDrawing(mockFile).subscribe((res) => {
-      expect(httpGetSpy).toHaveBeenCalledOnceWith(expectedUrl);
-      expect(res).toEqual(mockResponse);
+    service.importDrawing(mockFile).subscribe((response) => {
+      expect(httpGetSpy).toHaveBeenCalledOnceWith(expectedUrl, mockFormData, {headers: undefined});
+      expect(response).toEqual(mockResponse);
       done();
     });
   });
