@@ -18,6 +18,7 @@ import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.fa
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {DrawingActions} from '../actions/drawing.actions';
 import {Gb3StyledInternalDrawingRepresentation} from '../../../shared/interfaces/internal-drawing-representation.interface';
+import {SymbolizationToGb3ConverterUtils} from '../../../shared/utils/symbolization-to-gb3-converter.utils';
 
 describe('ImportEffects', () => {
   let actions$: Observable<Action>;
@@ -88,7 +89,53 @@ describe('ImportEffects', () => {
       });
     });
   });
-  // describe('addDrawingToMap$', () => {});
+  describe('addDrawingToMap$', () => {
+    it('dispatches ImportActions.addDrawingToMap', (done: DoneFn) => {
+      const mockDrawing: Gb3VectorLayer = {
+        type: 'Vector',
+        geojson: {
+          type: 'FeatureCollection',
+          features: [
+            {
+              type: 'Feature',
+              properties: {
+                id: 'test',
+                style: 'style',
+              },
+              geometry: {
+                type: 'LineString',
+                coordinates: [
+                  [0, 0],
+                  [1, 1],
+                ],
+              },
+            },
+          ],
+        },
+        styles: {},
+      };
+      const activeMapItem = ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, MapConstants.USER_DRAWING_LAYER_PREFIX);
+      const drawingLayersToOverride = [UserDrawingLayer.Drawings];
+      const drawingsToAdd = SymbolizationToGb3ConverterUtils.convertExternalToInternalRepresentation(
+        mockDrawing,
+        UserDrawingLayer.Drawings,
+      );
+      const converterSpy = spyOn(SymbolizationToGb3ConverterUtils, 'convertExternalToInternalRepresentation').and.returnValue(
+        drawingsToAdd,
+      );
+      const mapServiceSpy = spyOn(TestBed.inject(MAP_SERVICE), 'removeMapItem');
+      const toolServiceSpy = spyOn(TestBed.inject(MAP_SERVICE).getToolService(), 'addExistingDrawingsToLayer');
+      actions$ = of(ImportActions.createActiveMapItemFromDrawing({drawing: mockDrawing}));
+      effects.addDrawingToMap$.subscribe((action) => {
+        expect(converterSpy).toHaveBeenCalledOnceWith(mockDrawing, UserDrawingLayer.Drawings);
+        expect(mapServiceSpy).toHaveBeenCalledOnceWith(activeMapItem.id);
+        expect(toolServiceSpy).toHaveBeenCalledOnceWith(drawingsToAdd, UserDrawingLayer.Drawings);
+        expect(action).toEqual(ImportActions.addDrawingToMap({activeMapItem, drawingLayersToOverride, drawingsToAdd}));
+        done();
+      });
+    });
+  });
+
   describe('addDrawingToActiveMapItmes$', () => {
     it('dispatches ActiveMapItemActions.addActiveMapItem', (done: DoneFn) => {
       const activeMapItem = ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, MapConstants.USER_DRAWING_LAYER_PREFIX);
