@@ -36,6 +36,11 @@ import {DataDownloadOrderActions} from '../../../../state/map/actions/data-downl
 import {ToolActions} from '../../../../state/map/actions/tool.actions';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {DrawingMode} from './interfaces/drawing-callback-handler.interface';
+import {
+  Gb3StyledInternalDrawingRepresentation,
+  Gb3StyleRepresentation,
+} from '../../../../shared/interfaces/internal-drawing-representation.interface';
+import {StyleRepresentationToEsriSymbolUtils} from '../utils/style-representation-to-esri-symbol.utils';
 
 describe('EsriToolService', () => {
   let service: EsriToolService;
@@ -584,60 +589,70 @@ describe('EsriToolService', () => {
       expect(setToolStrategySpy).not.toHaveBeenCalled();
     });
   });
-  // describe('Update Drawing Style', () => {
-  //   let graphicMock: Graphic;
-  //   let drawingMOck: Gb3StyledInternalDrawingRepresentation;
-  //
-  //   beforeEach(() => {
-  //     graphicMock = new Graphic({
-  //       attributes: {
-  //         [MapConstants.DRAWING_IDENTIFIER]: 'id',
-  //         [MapConstants.TOOL_IDENTIFIER]: 'point',
-  //       },
-  //       layer: {
-  //         id: 'USER_DRAWING__drawings',
-  //       },
-  //       geometry: new Polygon({
-  //         spatialReference: {wkid: 2056},
-  //         rings: [
-  //           [
-  //             [0, 0],
-  //             [0, 69],
-  //             [42, 0],
-  //             [0, 0],
-  //           ],
-  //         ],
-  //       }),
-  //       symbol: new SimpleFillSymbol({
-  //         color: new Color(Color.fromHex('#abcdef')),
-  //         outline: {width: 42, color: new Color('#080085')},
-  //       }),
-  //     });
-  //     drawingMOck = {
-  //       properties: {
-  //         style: {} as Gb3StyleRepresentation,
-  //         [MapConstants.DRAWING_IDENTIFIER]: 'id',
-  //         [MapConstants.BELONGS_TO_IDENTIFIER]: 'belongsTo_id',
-  //         [MapConstants.TOOL_IDENTIFIER]: 'point',
-  //       },
-  //       source: UserDrawingLayer.Drawings,
-  //     } as Gb3StyledInternalDrawingRepresentation;
-  //     const userDrawingLayerId = MapConstants.USER_DRAWING_LAYER_PREFIX + UserDrawingLayer.Drawings;
-  //     // add the graphic layer to the view to avoid the initialization
-  //     mapViewService.mapView.map.layers.add(
-  //       new GraphicsLayer({
-  //         id: userDrawingLayerId,
-  //         graphics: [graphicMock],
-  //       }),
-  //     );
-  //   });
-  //   it('should call the correct method on the strategy and dispatch the correct action', () => {
-  //     const convertSpy = spyOn(StyleRepresentationToEsriSymbolUtils, 'convert').and.stub();
-  //
-  //     service.updateDrawingStyles(drawingMOck, {} as Gb3StyleRepresentation);
-  //     expect(convertSpy).toHaveBeenCalledOnceWith({} as Gb3StyleRepresentation);
-  //   });
-  // });
+  describe('Update Drawing Style', () => {
+    let graphicMock: Graphic;
+    let drawingMOck: Gb3StyledInternalDrawingRepresentation;
+
+    beforeEach(() => {
+      graphicMock = new Graphic({
+        attributes: {
+          [MapConstants.DRAWING_IDENTIFIER]: 'id',
+          [MapConstants.TOOL_IDENTIFIER]: 'point',
+        },
+        layer: {
+          id: 'USER_DRAWING__drawings',
+        },
+        geometry: new Polygon({
+          spatialReference: {wkid: 2056},
+          rings: [
+            [
+              [0, 0],
+              [0, 69],
+              [42, 0],
+              [0, 0],
+            ],
+          ],
+        }),
+        symbol: new SimpleFillSymbol({
+          color: new Color(Color.fromHex('#abcdef')),
+          outline: {width: 42, color: new Color('#080085')},
+        }),
+      });
+      drawingMOck = {
+        properties: {
+          style: {} as Gb3StyleRepresentation,
+          [MapConstants.DRAWING_IDENTIFIER]: 'id',
+          [MapConstants.BELONGS_TO_IDENTIFIER]: 'belongsTo_id',
+          [MapConstants.TOOL_IDENTIFIER]: 'point',
+        },
+        source: UserDrawingLayer.Drawings,
+      } as Gb3StyledInternalDrawingRepresentation;
+    });
+    it('should call the convert method on if the drawingLayer is found', () => {
+      const convertSpy = spyOn(StyleRepresentationToEsriSymbolUtils, 'convert').and.stub();
+      const userDrawingLayerId = MapConstants.USER_DRAWING_LAYER_PREFIX + UserDrawingLayer.Drawings;
+      // add the graphic layer to the view to avoid the initialization
+      mapViewService.mapView.map.layers.add(
+        new GraphicsLayer({
+          id: userDrawingLayerId,
+          graphics: [graphicMock],
+        }),
+      );
+      const style = {} as Gb3StyleRepresentation;
+      const labelText = 'some Text';
+      service.updateDrawingStyles(drawingMOck, style, labelText);
+      expect(convertSpy).toHaveBeenCalledOnceWith(style, labelText);
+    });
+
+    it('should not call the convert method if the drawingLayer does not exist', () => {
+      const convertSpy = spyOn(StyleRepresentationToEsriSymbolUtils, 'convert').and.stub();
+
+      const style = {} as Gb3StyleRepresentation;
+      const labelText = 'some Text';
+      service.updateDrawingStyles(drawingMOck, style, labelText);
+      expect(convertSpy).not.toHaveBeenCalled();
+    });
+  });
 
   describe('Set Tool Strategy For Editing Feature', () => {
     let mockGraphic: Graphic;

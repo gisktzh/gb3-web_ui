@@ -32,6 +32,41 @@ describe('Drawing Reducer', () => {
     });
   });
 
+  describe('selectDrawing', () => {
+    it('selects a drawing based on its Id', () => {
+      const currentState: DrawingState = {
+        drawings: [
+          {properties: {__id: '1'}} as unknown as Gb3StyledInternalDrawingRepresentation,
+          {properties: {__id: '2'}} as unknown as Gb3StyledInternalDrawingRepresentation,
+        ],
+        selectedDrawing: undefined,
+      };
+      const action = DrawingActions.selectDrawing({drawingId: '1'});
+
+      const result = reducer(currentState, action);
+
+      expect(result.selectedDrawing).toEqual(currentState.drawings[0]);
+    });
+  });
+
+  describe('deleteDrawing', () => {
+    it('selects a drawing based on its Id', () => {
+      const currentState: DrawingState = {
+        drawings: [
+          {properties: {__id: '1'}} as unknown as Gb3StyledInternalDrawingRepresentation,
+          {properties: {__id: '2'}} as unknown as Gb3StyledInternalDrawingRepresentation,
+        ],
+        selectedDrawing: undefined,
+      };
+      const action = DrawingActions.deleteDrawing({drawingId: '1'});
+
+      const result = reducer(currentState, action);
+
+      expect(result.drawings.length).toEqual(1);
+      expect(result.drawings).toEqual([currentState.drawings[1]]);
+    });
+  });
+
   describe('addDrawing', () => {
     it('adds a drawing to the end of the current drawings', () => {
       const currentState: DrawingState = {
