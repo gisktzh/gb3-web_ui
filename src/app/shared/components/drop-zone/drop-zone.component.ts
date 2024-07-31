@@ -8,7 +8,6 @@ import {MatIcon} from '@angular/material/icon';
 
 /**
  * This component only handles the file upload into a File object; it does _NOT_ handle the actual upload to the server.
- * Todo: We need to clear the internal store in case of errors
  */
 @Component({
   selector: 'drop-zone',

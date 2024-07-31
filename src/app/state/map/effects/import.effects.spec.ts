@@ -4,7 +4,6 @@ import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {EMPTY, Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {TestBed} from '@angular/core/testing';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {provideMockActions} from '@ngrx/effects/testing';
 import {Gb3VectorLayer} from '../../../shared/interfaces/gb3-vector-layer.interface';
 import {ImportActions} from '../actions/import.actions';
@@ -29,7 +28,7 @@ describe('ImportEffects', () => {
     actions$ = new Observable<Action>();
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: [],
       providers: [ImportEffects, provideMockActions(() => actions$), provideMockStore(), {provide: MAP_SERVICE, useClass: MapServiceStub}],
     });
     effects = TestBed.inject(ImportEffects);
