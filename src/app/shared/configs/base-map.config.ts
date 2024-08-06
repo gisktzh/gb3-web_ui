@@ -1,5 +1,5 @@
 import {Basemap} from '../interfaces/basemap.interface';
-import {MapConstants} from '../constants/map.constants';
+import {DrawingLayerPrefix} from '../enums/drawing-layer.enum';
 
 /**
  * A list of all available basemaps.
@@ -7,7 +7,7 @@ import {MapConstants} from '../constants/map.constants';
  */
 export const defaultBasemaps: Basemap[] = [
   {
-    id: `${MapConstants.INTERNAL_LAYER_PREFIX}blank`,
+    id: `${DrawingLayerPrefix.Internal}blank`,
     type: 'blank',
     title: 'Kein Hintergrund',
   },

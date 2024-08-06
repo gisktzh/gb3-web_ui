@@ -22,7 +22,7 @@ import {selectFavouriteBaseConfig} from '../../state/map/selectors/favourite-bas
 import {FavouriteIsInvalid} from '../../shared/errors/favourite.errors';
 import {selectUserDrawingsVectorLayers} from '../../state/map/selectors/user-drawings-vector-layers.selector';
 import {Gb3VectorLayer} from '../../shared/interfaces/gb3-vector-layer.interface';
-import {DrawinLayerPrefix, UserDrawingLayer} from '../../shared/enums/drawing-layer.enum';
+import {DrawingLayerPrefix, UserDrawingLayer} from '../../shared/enums/drawing-layer.enum';
 import {SymbolizationToGb3ConverterUtils} from '../../shared/utils/symbolization-to-gb3-converter.utils';
 import {DrawingActiveMapItem} from '../models/implementations/drawing.model';
 import {Gb3StyledInternalDrawingRepresentation} from '../../shared/interfaces/internal-drawing-representation.interface';
@@ -133,14 +133,14 @@ export class FavouritesService implements OnDestroy {
     const drawingsToAdd: Gb3StyledInternalDrawingRepresentation[] = [];
 
     if (measurements.geojson.features.length > 0) {
-      drawingActiveMapItems.push(ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Measurements, DrawinLayerPrefix.Drawing));
+      drawingActiveMapItems.push(ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Measurements, DrawingLayerPrefix.Drawing));
       drawingsToAdd.push(
         ...SymbolizationToGb3ConverterUtils.convertExternalToInternalRepresentation(measurements, UserDrawingLayer.Measurements),
       );
     }
 
     if (drawings.geojson.features.length > 0) {
-      drawingActiveMapItems.push(ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, DrawinLayerPrefix.Drawing));
+      drawingActiveMapItems.push(ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, DrawingLayerPrefix.Drawing));
       drawingsToAdd.push(...SymbolizationToGb3ConverterUtils.convertExternalToInternalRepresentation(drawings, UserDrawingLayer.Drawings));
     }
 

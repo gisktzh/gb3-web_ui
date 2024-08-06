@@ -22,7 +22,7 @@ import {pageConfig} from '../configs/page.config';
 import {mapAnimationConfig} from '../configs/map-animation.config';
 import {dataDownloadConfig} from '../configs/data-download.config';
 import {AppActions} from '../../state/app/actions/app.actions';
-import {DrawinLayerPrefix, InternalDrawingLayer, UserDrawingLayer} from '../enums/drawing-layer.enum';
+import {DrawingLayerPrefix, InternalDrawingLayer, UserDrawingLayer} from '../enums/drawing-layer.enum';
 
 interface ConfigServiceKey {
   serviceKey: keyof ConfigService;
@@ -158,8 +158,8 @@ describe('ConfigService', () => {
         {
           serviceKey: 'mapConfig',
           expected: {
-            internalLayerPrefix: MapConstants.INTERNAL_LAYER_PREFIX,
-            userDrawingLayerPrefix: MapConstants.USER_DRAWING_LAYER_PREFIX,
+            internalLayerPrefix: DrawingLayerPrefix.Internal,
+            userDrawingLayerPrefix: DrawingLayerPrefix.Drawing,
             locateMeZoom: MapConstants.LOCATE_ME_ZOOM,
             defaultMapConfig: defaultMapConfig,
             mapScaleConfig: {
@@ -167,9 +167,9 @@ describe('ConfigService', () => {
               minScale: MapConstants.MINIMUM_MAP_SCALE,
             },
             editableLayerIds: [
-              DrawinLayerPrefix.Drawing + UserDrawingLayer.Drawings,
-              DrawinLayerPrefix.Drawing + UserDrawingLayer.Measurements,
-              DrawinLayerPrefix.Internal + InternalDrawingLayer.ElevationProfile,
+              DrawingLayerPrefix.Drawing + UserDrawingLayer.Drawings,
+              DrawingLayerPrefix.Drawing + UserDrawingLayer.Measurements,
+              DrawingLayerPrefix.Internal + InternalDrawingLayer.ElevationProfile,
             ],
           },
         },

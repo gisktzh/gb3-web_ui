@@ -31,7 +31,7 @@ import {AppActions} from '../../state/app/actions/app.actions';
 import {DynamicInternalUrlsConfiguration} from '../types/dynamic-internal-url.type';
 import {defaultFeatureFlags} from '../configs/feature-flags.config';
 import {FeatureFlags} from '../interfaces/feature-flags.interface';
-import {InternalDrawingLayer, UserDrawingLayer} from '../enums/drawing-layer.enum';
+import {DrawingLayerPrefix, InternalDrawingLayer, UserDrawingLayer} from '../enums/drawing-layer.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -47,8 +47,8 @@ export class ConfigService {
     wmsFormatMimeType: Gb2Constants.WMS_IMAGE_FORMAT_MIME_TYPE,
   };
   public readonly mapConfig = {
-    internalLayerPrefix: MapConstants.INTERNAL_LAYER_PREFIX,
-    userDrawingLayerPrefix: MapConstants.USER_DRAWING_LAYER_PREFIX,
+    internalLayerPrefix: DrawingLayerPrefix.Internal,
+    userDrawingLayerPrefix: DrawingLayerPrefix.Drawing,
     locateMeZoom: MapConstants.LOCATE_ME_ZOOM,
     defaultMapConfig: defaultMapConfig,
     mapScaleConfig: {
@@ -56,9 +56,9 @@ export class ConfigService {
       minScale: MapConstants.MINIMUM_MAP_SCALE,
     },
     editableLayerIds: [
-      MapConstants.USER_DRAWING_LAYER_PREFIX + UserDrawingLayer.Drawings,
-      MapConstants.USER_DRAWING_LAYER_PREFIX + UserDrawingLayer.Measurements,
-      MapConstants.INTERNAL_LAYER_PREFIX + InternalDrawingLayer.ElevationProfile,
+      DrawingLayerPrefix.Drawing + UserDrawingLayer.Drawings,
+      DrawingLayerPrefix.Drawing + UserDrawingLayer.Measurements,
+      DrawingLayerPrefix.Internal + InternalDrawingLayer.ElevationProfile,
     ],
   };
   public readonly apiConfig: ApiConfig;

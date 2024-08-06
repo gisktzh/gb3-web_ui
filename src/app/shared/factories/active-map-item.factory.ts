@@ -1,7 +1,7 @@
 import {FilterConfiguration, Map, MapLayer} from '../interfaces/topic.interface';
 import {Gb2WmsActiveMapItem} from '../../map/models/implementations/gb2-wms.model';
 import {DrawingActiveMapItem} from '../../map/models/implementations/drawing.model';
-import {DrawinLayerPrefix, UserDrawingLayer} from '../enums/drawing-layer.enum';
+import {DrawingLayerPrefix, UserDrawingLayer} from '../enums/drawing-layer.enum';
 import {ExternalKmlLayer, ExternalWmsLayer} from '../interfaces/external-layer.interface';
 import {ExternalWmsActiveMapItem} from '../../map/models/implementations/external-wms.model';
 import {ExternalKmlActiveMapItem} from '../../map/models/implementations/external-kml.model';
@@ -36,7 +36,7 @@ export class ActiveMapItemFactory {
 
   public static createDrawingMapItem(
     id: UserDrawingLayer,
-    prefix: DrawinLayerPrefix,
+    prefix: DrawingLayerPrefix,
     visible?: boolean,
     opacity?: number,
   ): DrawingActiveMapItem {

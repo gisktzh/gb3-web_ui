@@ -6,7 +6,7 @@ import {EsriMapMock} from '../../../../testing/map-testing/esri-map.mock';
 import {EsriMapViewService} from '../esri-map-view.service';
 import {EsriPointMeasurementStrategy} from './strategies/measurement/esri-point-measurement.strategy';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
-import {InternalDrawingLayer, UserDrawingLayer} from '../../../../shared/enums/drawing-layer.enum';
+import {DrawingLayerPrefix, InternalDrawingLayer, UserDrawingLayer} from '../../../../shared/enums/drawing-layer.enum';
 import {DrawingActiveMapItem} from '../../../models/implementations/drawing.model';
 import {EsriLineMeasurementStrategy} from './strategies/measurement/esri-line-measurement.strategy';
 import {EsriAreaMeasurementStrategy} from './strategies/measurement/esri-area-measurement.strategy';
@@ -85,7 +85,7 @@ describe('EsriToolService', () => {
   describe('Visibility Handling', () => {
     let userDrawingLayerId: string;
     beforeEach(() => {
-      userDrawingLayerId = MapConstants.USER_DRAWING_LAYER_PREFIX + UserDrawingLayer.Measurements;
+      userDrawingLayerId = DrawingLayerPrefix.Drawing + UserDrawingLayer.Measurements;
     });
 
     it('forces visibility if layer is present by dispatching an action', () => {
@@ -121,10 +121,7 @@ describe('EsriToolService', () => {
           take(1),
           tap((lastAction) => {
             const expected = {
-              activeMapItem: ActiveMapItemFactory.createDrawingMapItem(
-                UserDrawingLayer.Measurements,
-                MapConstants.USER_DRAWING_LAYER_PREFIX,
-              ),
+              activeMapItem: ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Measurements, DrawingLayerPrefix.Drawing),
               position: 0,
               type: ActiveMapItemActions.addActiveMapItem.type,
             };
@@ -155,7 +152,7 @@ describe('EsriToolService', () => {
   describe('Strategy Initialization', () => {
     describe('Measurement', () => {
       beforeEach(() => {
-        const userDrawingLayerId = MapConstants.USER_DRAWING_LAYER_PREFIX + UserDrawingLayer.Measurements;
+        const userDrawingLayerId = DrawingLayerPrefix.Drawing + UserDrawingLayer.Measurements;
         // add the graphic layer to the view to avoid the initialization
         mapViewService.mapView.map.layers.add(
           new GraphicsLayer({
@@ -189,7 +186,7 @@ describe('EsriToolService', () => {
 
     describe('Drawing', () => {
       beforeEach(() => {
-        const userDrawingLayerId = MapConstants.USER_DRAWING_LAYER_PREFIX + UserDrawingLayer.Drawings;
+        const userDrawingLayerId = DrawingLayerPrefix.Drawing + UserDrawingLayer.Drawings;
         // add the graphic layer to the view to avoid the initialization
         mapViewService.mapView.map.layers.add(
           new GraphicsLayer({
@@ -233,7 +230,7 @@ describe('EsriToolService', () => {
 
     describe('DataDownloadSelection', () => {
       beforeEach(() => {
-        const internalDrawingLayerId = MapConstants.INTERNAL_LAYER_PREFIX + InternalDrawingLayer.Selection;
+        const internalDrawingLayerId = DrawingLayerPrefix.Internal + InternalDrawingLayer.Selection;
         // add the graphic layer to the view to avoid the initialization
         mapViewService.mapView.map.layers.add(
           new GraphicsLayer({
@@ -276,7 +273,7 @@ describe('EsriToolService', () => {
 
     describe('ElevationProfile', () => {
       beforeEach(() => {
-        const elevationProfileLayerId = MapConstants.INTERNAL_LAYER_PREFIX + InternalDrawingLayer.ElevationProfile;
+        const elevationProfileLayerId = DrawingLayerPrefix.Internal + InternalDrawingLayer.ElevationProfile;
         // add the graphic layer to the view to avoid the initialization
         mapViewService.mapView.map.layers.add(
           new GraphicsLayer({
@@ -629,7 +626,7 @@ describe('EsriToolService', () => {
     });
     it('should call the convert method on if the drawingLayer is found', () => {
       const convertSpy = spyOn(StyleRepresentationToEsriSymbolUtils, 'convert').and.stub();
-      const userDrawingLayerId = MapConstants.USER_DRAWING_LAYER_PREFIX + UserDrawingLayer.Drawings;
+      const userDrawingLayerId = DrawingLayerPrefix.Drawing + UserDrawingLayer.Drawings;
       // add the graphic layer to the view to avoid the initialization
       mapViewService.mapView.map.layers.add(
         new GraphicsLayer({

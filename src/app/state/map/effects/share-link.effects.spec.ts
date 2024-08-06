@@ -30,7 +30,7 @@ import {Gb3VectorLayer} from '../../../shared/interfaces/gb3-vector-layer.interf
 import {selectDrawings} from '../reducers/drawing.reducer';
 import {DrawingActions} from '../actions/drawing.actions';
 import {Gb3StyledInternalDrawingRepresentation} from '../../../shared/interfaces/internal-drawing-representation.interface';
-import {DrawinLayerPrefix, UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
+import {DrawingLayerPrefix, UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 import {selectIsAuthenticated, selectIsAuthenticationInitialized} from '../../auth/reducers/auth-status.reducer';
 import {MapRestoreItem} from '../../../shared/interfaces/map-restore-item.interface';
@@ -354,7 +354,7 @@ describe('ShareLinkEffects', () => {
           (done: DoneFn) => {
             actions$ = of(ShareLinkActions.validateItem({item: expectedItem}));
             const drawingActiveMapItems = expectedCompleteItem.drawings.map((d) =>
-              ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, DrawinLayerPrefix.Drawing),
+              ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, DrawingLayerPrefix.Drawing),
             );
             favouriteServiceMock.getDrawingsForFavourite.and.returnValue({
               drawingsToAdd: expectedCompleteItem.drawings,

@@ -12,7 +12,7 @@ import {EsriDefaultStrategy} from './strategies/esri-default.strategy';
 import {EsriLineMeasurementStrategy} from './strategies/measurement/esri-line-measurement.strategy';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {EsriSymbolizationService} from '../esri-symbolization.service';
-import {DrawinLayerPrefix, InternalDrawingLayer, UserDrawingLayer} from '../../../../shared/enums/drawing-layer.enum';
+import {DrawingLayerPrefix, InternalDrawingLayer, UserDrawingLayer} from '../../../../shared/enums/drawing-layer.enum';
 import {DrawingActiveMapItem} from '../../../models/implementations/drawing.model';
 import {EsriAreaMeasurementStrategy} from './strategies/measurement/esri-area-measurement.strategy';
 import {EsriPointMeasurementStrategy} from './strategies/measurement/esri-point-measurement.strategy';
@@ -111,7 +111,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
   }
 
   public updateDrawingStyles(drawing: Gb3StyledInternalDrawingRepresentation, style: Gb3StyleRepresentation, labelText?: string) {
-    const fullLayerIdentifier = DrawingActiveMapItem.getFullLayerIdentifier(DrawinLayerPrefix.Drawing, drawing.source);
+    const fullLayerIdentifier = DrawingActiveMapItem.getFullLayerIdentifier(DrawingLayerPrefix.Drawing, drawing.source);
     const drawingLayer = this.esriMapViewService.findEsriLayer(fullLayerIdentifier);
 
     if (!drawingLayer) {
@@ -212,7 +212,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
   }
 
   public addExistingDrawingsToLayer(drawingsToAdd: Gb3StyledInternalDrawingRepresentation[], layerIdentifier: UserDrawingLayer) {
-    const fullLayerIdentifier = DrawingActiveMapItem.getFullLayerIdentifier(DrawinLayerPrefix.Drawing, layerIdentifier);
+    const fullLayerIdentifier = DrawingActiveMapItem.getFullLayerIdentifier(DrawingLayerPrefix.Drawing, layerIdentifier);
     const drawingLayer = this.esriMapViewService.findEsriLayer(fullLayerIdentifier);
 
     if (drawingLayer) {
@@ -241,7 +241,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
    * @param strategySetter A setter function that takes a given layer and sets a strategy for the given tool.
    */
   private initializeInternalDrawingTool(layerIdentifier: InternalDrawingLayer, strategySetter: (layer: GraphicsLayer) => void) {
-    const fullLayerIdentifier = DrawingActiveMapItem.getFullLayerIdentifier(DrawinLayerPrefix.Internal, layerIdentifier);
+    const fullLayerIdentifier = DrawingActiveMapItem.getFullLayerIdentifier(DrawingLayerPrefix.Internal, layerIdentifier);
     const drawingLayer = this.esriMapViewService.findEsriLayer(fullLayerIdentifier);
     if (drawingLayer) {
       this.initializeTool(drawingLayer as GraphicsLayer, strategySetter);
@@ -255,7 +255,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
    * @param strategySetter A setter function that takes a given layer and sets a strategy for the given tool.
    */
   private initializeUserDrawingTool(layerIdentifier: UserDrawingLayer, strategySetter: (layer: GraphicsLayer) => void) {
-    const fullLayerIdentifier = DrawingActiveMapItem.getFullLayerIdentifier(DrawinLayerPrefix.Drawing, layerIdentifier);
+    const fullLayerIdentifier = DrawingActiveMapItem.getFullLayerIdentifier(DrawingLayerPrefix.Drawing, layerIdentifier);
     const drawingLayer = this.esriMapViewService.findEsriLayer(fullLayerIdentifier);
 
     if (!drawingLayer) {
@@ -270,7 +270,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
           this.initializeTool(layer! as GraphicsLayer, strategySetter);
         });
 
-      const drawingLayerAdd = ActiveMapItemFactory.createDrawingMapItem(layerIdentifier, DrawinLayerPrefix.Drawing);
+      const drawingLayerAdd = ActiveMapItemFactory.createDrawingMapItem(layerIdentifier, DrawingLayerPrefix.Drawing);
       this.store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem: drawingLayerAdd, position: 0}));
     } else {
       this.forceVisibility(fullLayerIdentifier);

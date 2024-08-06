@@ -1,9 +1,8 @@
 import {Gb2WmsActiveMapItem} from '../../map/models/implementations/gb2-wms.model';
 import {FilterConfiguration, Map, MapLayer} from '../../shared/interfaces/topic.interface';
 import {ActiveMapItemFactory} from '../../shared/factories/active-map-item.factory';
-import {UserDrawingLayer} from '../../shared/enums/drawing-layer.enum';
+import {DrawingLayerPrefix, UserDrawingLayer} from '../../shared/enums/drawing-layer.enum';
 import {DrawingActiveMapItem} from '../../map/models/implementations/drawing.model';
-import {MapConstants} from '../../shared/constants/map.constants';
 import {UuidUtils} from '../../shared/utils/uuid.utils';
 import {ExternalKmlLayer, ExternalWmsLayer} from '../../shared/interfaces/external-layer.interface';
 import {ExternalWmsActiveMapItem} from '../../map/models/implementations/external-wms.model';
@@ -30,7 +29,7 @@ export function createGb2WmsMapItemMock(
 }
 
 export function createDrawingMapItemMock(id: UserDrawingLayer, visible: boolean = true, opacity: number = 1): DrawingActiveMapItem {
-  return ActiveMapItemFactory.createDrawingMapItem(id, MapConstants.USER_DRAWING_LAYER_PREFIX, visible, opacity);
+  return ActiveMapItemFactory.createDrawingMapItem(id, DrawingLayerPrefix.Drawing, visible, opacity);
 }
 
 export function createExternalWmsMapItemMock(

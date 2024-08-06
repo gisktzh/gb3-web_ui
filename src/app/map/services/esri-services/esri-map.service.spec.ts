@@ -5,9 +5,8 @@ import {provideMockStore} from '@ngrx/store/testing';
 import {EsriMapMock} from '../../../testing/map-testing/esri-map.mock';
 import {AuthModule} from '../../../auth/auth.module';
 import {AuthService} from '../../../auth/auth.service';
-import {InternalDrawingLayer, UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
+import {DrawingLayerPrefix, InternalDrawingLayer, UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
-import {MapConstants} from '../../../shared/constants/map.constants';
 import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
 import {EsriMapViewService} from './esri-map-view.service';
 import {EsriToolService} from './tool-service/esri-tool.service';
@@ -38,7 +37,7 @@ const mockAuthService = jasmine.createSpyObj<AuthService>({
   login: void 0,
 });
 
-const internalLayerPrefix = MapConstants.INTERNAL_LAYER_PREFIX;
+const internalLayerPrefix = DrawingLayerPrefix.Internal;
 const internalLayers = Object.values(InternalDrawingLayer).map((drawingLayer) => {
   return new GraphicsLayer({
     id: `${internalLayerPrefix}${drawingLayer}`,

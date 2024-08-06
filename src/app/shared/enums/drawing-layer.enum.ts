@@ -13,7 +13,7 @@ export enum UserDrawingLayer {
   Drawings = 'drawings',
 }
 
-export enum DrawinLayerPrefix {
+export enum DrawingLayerPrefix {
   Drawing = 'USER_DRAWING__',
   Internal = 'INTERNAL__',
 }

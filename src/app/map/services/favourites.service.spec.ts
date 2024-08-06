@@ -17,8 +17,7 @@ import {FavouriteIsInvalid} from '../../shared/errors/favourite.errors';
 import {Gb3VectorLayer} from '../../shared/interfaces/gb3-vector-layer.interface';
 import {Gb3StyledInternalDrawingRepresentation} from '../../shared/interfaces/internal-drawing-representation.interface';
 import {DrawingActiveMapItem} from '../models/implementations/drawing.model';
-import {MapConstants} from '../../shared/constants/map.constants';
-import {UserDrawingLayer} from '../../shared/enums/drawing-layer.enum';
+import {DrawingLayerPrefix, UserDrawingLayer} from '../../shared/enums/drawing-layer.enum';
 import {SymbolizationToGb3ConverterUtils} from '../../shared/utils/symbolization-to-gb3-converter.utils';
 import {Map} from '../../shared/interfaces/topic.interface';
 import {TimeExtentUtils} from '../../shared/utils/time-extent.utils';
@@ -2604,8 +2603,8 @@ describe('FavouritesService', () => {
           {id: 'id_4_drawings'} as Gb3StyledInternalDrawingRepresentation,
         ],
         drawingActiveMapItems: [
-          ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Measurements, MapConstants.USER_DRAWING_LAYER_PREFIX, true, 1),
-          ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, MapConstants.USER_DRAWING_LAYER_PREFIX, true, 1),
+          ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Measurements, DrawingLayerPrefix.Drawing, true, 1),
+          ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, DrawingLayerPrefix.Drawing, true, 1),
         ],
       };
 
