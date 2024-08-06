@@ -97,6 +97,7 @@ import {TextEditComponent} from './components/drawing-edit-overlay/drawing-edit/
 import {PolygonEditComponent} from './components/drawing-edit-overlay/drawing-edit/polygon-edit/polygon-edit.component';
 import {ColorPickerEditComponent} from './components/drawing-edit-overlay/drawing-edit/color-picker-edit/color-picker-edit.component';
 import {SliderEditComponent} from './components/drawing-edit-overlay/drawing-edit/slider-edit/slider-edit.component';
+import {PrintDescriptionPipe} from './components/map-tools/print-dialog/print-description.pipe';
 
 @NgModule({
   providers: [provideCharts(withDefaultRegisterables())],
@@ -203,6 +204,7 @@ import {SliderEditComponent} from './components/drawing-edit-overlay/drawing-edi
     DrawingDownloadButtonComponent,
     FeatureFlagDirective,
     NgOptimizedImage,
+    PrintDescriptionPipe,
   ],
   exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent, MapOverlayComponent],
 })
