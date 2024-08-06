@@ -5,6 +5,7 @@ import FileInput from '@uppy/file-input';
 import {NgClass} from '@angular/common';
 import {MatButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
+import {FileUploadRestrictionsConfig} from '../../configs/file-upload-restrictions.config';
 
 /**
  * This component only handles the file upload into a File object; it does _NOT_ handle the actual upload to the server.
@@ -21,11 +22,7 @@ export class DropZoneComponent implements AfterViewInit {
   @Output() public uploadError = new EventEmitter<string>();
   protected isHovered = false;
   private readonly uppyInstance = new Uppy({
-    restrictions: {
-      maxNumberOfFiles: 1,
-      maxFileSize: 10000000, // 10MB
-      allowedFileTypes: ['.kml', '.json', '.geojson'],
-    },
+    restrictions: FileUploadRestrictionsConfig,
   });
   @ViewChild('dropBoxContainer') private dropBoxContainer!: ElementRef<HTMLDivElement>;
   @ViewChild('fileInput') private fileInput!: ElementRef<HTMLInputElement>;

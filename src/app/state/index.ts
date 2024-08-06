@@ -96,7 +96,7 @@ import {AppEffects} from './app/effects/app.effects';
 import {ExportEffects} from './map/effects/export.effects';
 import {ExportState} from './map/states/export.state';
 import {ImportEffects} from './map/effects/import.effects';
-import {ImportState} from './map/states/impor.state';
+import {ImportState} from './map/states/import.state';
 
 export interface State {
   mapConfig: MapConfigState;

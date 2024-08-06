@@ -1,6 +1,6 @@
 import {createFeature, createReducer, on} from '@ngrx/store';
 import {ImportActions} from '../actions/import.actions';
-import {ImportState} from '../states/impor.state';
+import {ImportState} from '../states/import.state';
 
 export const importFeatureKey = 'drawingImport';
 export const initialState: ImportState = {
