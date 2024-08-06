@@ -18,6 +18,7 @@ import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {DrawingActions} from '../actions/drawing.actions';
 import {Gb3StyledInternalDrawingRepresentation} from '../../../shared/interfaces/internal-drawing-representation.interface';
 import {SymbolizationToGb3ConverterUtils} from '../../../shared/utils/symbolization-to-gb3-converter.utils';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
 
 describe('ImportEffects', () => {
   let actions$: Observable<Action>;
@@ -28,7 +29,7 @@ describe('ImportEffects', () => {
     actions$ = new Observable<Action>();
 
     TestBed.configureTestingModule({
-      imports: [],
+      imports: [HttpClientTestingModule],
       providers: [ImportEffects, provideMockActions(() => actions$), provideMockStore(), {provide: MAP_SERVICE, useClass: MapServiceStub}],
     });
     effects = TestBed.inject(ImportEffects);
