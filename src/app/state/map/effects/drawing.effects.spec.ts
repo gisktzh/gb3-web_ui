@@ -1,6 +1,6 @@
 import {provideMockActions} from '@ngrx/effects/testing';
 import {fakeAsync, flush, TestBed, tick} from '@angular/core/testing';
-import {Observable, of} from 'rxjs';
+import {EMPTY, Observable, of} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
@@ -18,11 +18,16 @@ import {
   Gb3StyleRepresentation,
 } from '../../../shared/interfaces/internal-drawing-representation.interface';
 import {ToolService} from '../../../map/interfaces/tool.service';
+import {MockStore, provideMockStore} from '@ngrx/store/testing';
+import {selectSelectedDrawing} from '../reducers/drawing.reducer';
+import {DrawingNotFound} from '../../../shared/errors/drawing.errors';
+import {catchError} from 'rxjs/operators';
 
 describe('DrawingEffects', () => {
   let actions$: Observable<Action>;
   let effects: DrawingEffects;
   let toolService: ToolService;
+  let store: MockStore;
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
@@ -34,12 +39,14 @@ describe('DrawingEffects', () => {
         provideMockActions(() => actions$),
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
+        provideMockStore(),
         {provide: MAP_SERVICE, useClass: MapServiceStub},
       ],
     });
     effects = TestBed.inject(DrawingEffects);
     const mapService = TestBed.inject(MAP_SERVICE);
     toolService = mapService.getToolService();
+    store = TestBed.inject(MockStore);
   });
 
   describe('clearAllDrawingLayers$', () => {
@@ -75,14 +82,31 @@ describe('DrawingEffects', () => {
       });
     });
   });
-  describe('editDrawing', () => {
+  describe('editDrawing$', () => {
     it('dispatches MapUiActions.setDrawingEditOverlayVisibility()', (done: DoneFn) => {
+      store.overrideSelector(selectSelectedDrawing, {id: '123'} as Gb3StyledInternalDrawingRepresentation);
       actions$ = of(DrawingActions.selectDrawing({drawingId: '123'}));
 
       effects.editDrawing$.subscribe((action) => {
         expect(action).toEqual(MapUiActions.setDrawingEditOverlayVisibility({isVisible: true}));
         done();
       });
+    });
+    it('throws a DrawingNotFound Error if the selectedFeatrue is undefined', (done: DoneFn) => {
+      store.overrideSelector(selectSelectedDrawing, undefined);
+      actions$ = of(DrawingActions.selectDrawing({drawingId: '123'}));
+
+      const expectedError = new DrawingNotFound();
+
+      effects.editDrawing$
+        .pipe(
+          catchError((e: unknown) => {
+            expect(e).toEqual(expectedError);
+            done();
+            return EMPTY;
+          }),
+        )
+        .subscribe();
     });
   });
 

@@ -98,7 +98,7 @@ describe('InternalDrawingRepresentationToEsriGraphicUtils', () => {
         },
         [MapConstants.DRAWING_IDENTIFIER]: id,
         [MapConstants.BELONGS_TO_IDENTIFIER]: belongsToId,
-        [MapConstants.TOOL_IDENTIFIER]: 'line',
+        [MapConstants.TOOL_IDENTIFIER]: 'polyline',
       },
       geometry: {
         type: 'LineString',
@@ -131,7 +131,7 @@ describe('InternalDrawingRepresentationToEsriGraphicUtils', () => {
       attributes: {
         [MapConstants.DRAWING_IDENTIFIER]: id,
         [MapConstants.BELONGS_TO_IDENTIFIER]: belongsToId,
-        [MapConstants.TOOL_IDENTIFIER]: 'line',
+        [MapConstants.TOOL_IDENTIFIER]: 'polyline',
       },
     });
 

@@ -1,6 +1,7 @@
 import GraphicHit = __esri.GraphicHit;
 import {HitTestSelectionUtils} from './hit-test-selection.utils';
 import Polygon from '@arcgis/core/geometry/Polygon';
+import {UnsupportedGeometryType} from '../errors/esri.errors';
 
 describe('HitTestSelectionUtils', () => {
   it('should return the first point hit', () => {
@@ -132,7 +133,7 @@ describe('HitTestSelectionUtils', () => {
       },
     ] as unknown as GraphicHit[];
 
-    const actual = HitTestSelectionUtils.selectFeatureFromHitTestResult(hits);
-    expect(actual).toBe(hits[0].graphic);
+    const expectedError = new UnsupportedGeometryType('extent');
+    expect(() => HitTestSelectionUtils.selectFeatureFromHitTestResult(hits)).toThrow(expectedError);
   });
 });

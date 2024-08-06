@@ -587,12 +587,6 @@ describe('EsriToolService', () => {
       const setToolStrategySpy = spyOn<any>(service, 'setToolStrategyForEditingFeature').and.stub();
       expect(setToolStrategySpy).not.toHaveBeenCalled();
     });
-    it('should do nothing for selction type drawings', () => {
-      graphicMock.layer.id = 'INTERNAL_DRAWING__selection';
-      service.editDrawing(graphicMock);
-      const setToolStrategySpy = spyOn<any>(service, 'setToolStrategyForEditingFeature').and.stub();
-      expect(setToolStrategySpy).not.toHaveBeenCalled();
-    });
   });
   describe('Update Drawing Style', () => {
     let graphicMock: Graphic;

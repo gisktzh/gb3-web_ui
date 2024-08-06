@@ -19,7 +19,7 @@ describe('ApiGeojsonGeometryToGb3ConverterUtils', () => {
                 belongsTo: 'gimli',
                 text: 'frodo',
                 style: 'gandalf',
-                tool: 'aragorn',
+                tool: 'polygon',
               },
               geometry: {
                 type: 'Polygon',
@@ -54,7 +54,7 @@ describe('ApiGeojsonGeometryToGb3ConverterUtils', () => {
                 belongsTo: 'gimli',
                 text: 'frodo',
                 style: 'gandalf',
-                tool: 'aragorn',
+                tool: 'polygon',
               },
               geometry: {
                 type: 'Polygon',
