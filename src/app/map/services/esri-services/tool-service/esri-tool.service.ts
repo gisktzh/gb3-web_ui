@@ -319,7 +319,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
   }
 
   private setToolStrategyForEditingFeature(graphic: Graphic) {
-    const tool: SupportedEsriTool = graphic.getAttribute('__tool') as SupportedEsriTool;
+    const tool: SupportedEsriTool = (graphic.getAttribute('__tool') as SupportedEsriTool) ?? graphic.geometry.type;
     let drawingType: DrawingTool;
     let measurementType: MeasurementTool;
     switch (tool) {
