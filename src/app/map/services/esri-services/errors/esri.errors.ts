@@ -37,6 +37,6 @@ export class LayerCouldNotBeLoaded extends RecoverableError {
   }
 }
 
-export class NoneEditableLayerType extends SilentError {
+export class NonEditableLayerType extends SilentError {
   public override message = 'Dieser Layer kann nicht bearbeitet werden.';
 }

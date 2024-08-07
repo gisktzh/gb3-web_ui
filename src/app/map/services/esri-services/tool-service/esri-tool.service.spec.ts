@@ -41,6 +41,7 @@ import {
   Gb3StyleRepresentation,
 } from '../../../../shared/interfaces/internal-drawing-representation.interface';
 import {StyleRepresentationToEsriSymbolUtils} from '../utils/style-representation-to-esri-symbol.utils';
+import {NonEditableLayerType} from '../errors/esri.errors';
 
 describe('EsriToolService', () => {
   let service: EsriToolService;
@@ -716,19 +717,18 @@ describe('EsriToolService', () => {
       service['setToolStrategyForEditingFeature'](mockGraphic);
       expect(setMeasurementStrategySpy).toHaveBeenCalledWith('measure-line', mockGraphic.layer);
     });
-    it('should set the correct strategy for a polygon selection', () => {
-      mockGraphic.layer.id = 'INTERNAL_DRAWING__selection';
-      mockGraphic.attributes[MapConstants.TOOL_IDENTIFIER] = 'polygon';
-      const setSelectionStrategySpy = spyOn<any>(service, 'setDataDownloadSelectionStrategy').and.stub();
-      service['setToolStrategyForEditingFeature'](mockGraphic);
-      expect(setSelectionStrategySpy).toHaveBeenCalledWith('select-polygon', mockGraphic.layer);
-    });
     it('should set the correct strategy for a elevation profile', () => {
       mockGraphic.layer.id = 'INTERNAL_DRAWING__elevation_profile';
       mockGraphic.attributes[MapConstants.TOOL_IDENTIFIER] = 'polyline';
       const setMeasurementStrategySpy = spyOn<any>(service, 'setMeasurementStrategy').and.stub();
       service['setToolStrategyForEditingFeature'](mockGraphic);
       expect(setMeasurementStrategySpy).toHaveBeenCalledWith('measure-elevation-profile', mockGraphic.layer);
+    });
+    it('should throw an error for nonEditableLayers', () => {
+      mockGraphic.layer.id = 'INTERNAL_DRAWING__selection';
+      mockGraphic.attributes[MapConstants.TOOL_IDENTIFIER] = 'polygon';
+
+      expect(() => service['setToolStrategyForEditingFeature'](mockGraphic)).toThrow(new NonEditableLayerType());
     });
   });
 });

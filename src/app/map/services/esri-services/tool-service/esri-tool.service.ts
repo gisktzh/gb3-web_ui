@@ -32,7 +32,7 @@ import {
 } from '../../../../shared/interfaces/internal-drawing-representation.interface';
 import {DrawingActions} from '../../../../state/map/actions/drawing.actions';
 import {silentArcgisToGeoJSON} from '../../../../shared/utils/esri-transformer-wrapper.utils';
-import {DrawingLayerNotInitialized, NoneEditableLayerType} from '../errors/esri.errors';
+import {DrawingLayerNotInitialized, NonEditableLayerType} from '../errors/esri.errors';
 import {DataDownloadSelectionTool} from '../../../../shared/types/data-download-selection-tool.type';
 import {DataDownloadOrderActions} from '../../../../state/map/actions/data-download-order.actions';
 import {DataDownloadSelection} from '../../../../shared/interfaces/data-download-selection.interface';
@@ -352,7 +352,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
     } else if (graphic.layer.id.includes(InternalDrawingLayer.ElevationProfile)) {
       this.setMeasurementStrategy('measure-elevation-profile', graphic.layer as GraphicsLayer);
     } else {
-      throw new NoneEditableLayerType();
+      throw new NonEditableLayerType();
     }
   }
 
