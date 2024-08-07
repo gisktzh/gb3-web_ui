@@ -1,4 +1,4 @@
-import {FatalError, RecoverableError} from '../../../../shared/errors/abstract.errors';
+import {FatalError, RecoverableError, SilentError} from '../../../../shared/errors/abstract.errors';
 
 export class UnsupportedGeometryType extends FatalError {
   public override message = `Nicht unterstützter Geometrietyp (${this.geometryType})`;
@@ -35,4 +35,8 @@ export class LayerCouldNotBeLoaded extends RecoverableError {
     }
     this.message = message;
   }
+}
+
+export class NoneEditableLayerType extends SilentError {
+  public override message = 'Dieser Layer kann nicht bearbeitet werden.';
 }
