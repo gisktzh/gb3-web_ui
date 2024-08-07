@@ -95,13 +95,13 @@ export abstract class AbstractEsriMeasurementStrategy<
       const belongsToGraphic = this.layer.graphics.find(
         (existingGraphic) => existingGraphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName) === belongsToIdentifier,
       );
-      this.completeDrawingCallbackHandler(belongsToGraphic, graphic, (graphic.symbol as TextSymbol).text, 'add');
+      this.completeDrawingCallbackHandler(belongsToGraphic, graphic, (graphic.symbol as TextSymbol).text, 'edit');
       return;
     }
 
     const labelConfiguration = this.createLabelForGeometry(graphic.geometry as TGeometry, graphicIdentifier);
     this.layer.add(labelConfiguration.label);
-    this.completeDrawingCallbackHandler(graphic, labelConfiguration.label, labelConfiguration.labelText, 'add');
+    this.completeDrawingCallbackHandler(graphic, labelConfiguration.label, labelConfiguration.labelText, 'edit');
   }
 
   private removeLabelOnEdit(graphic: Graphic) {
