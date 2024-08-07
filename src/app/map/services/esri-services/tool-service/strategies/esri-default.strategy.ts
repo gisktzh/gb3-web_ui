@@ -18,7 +18,7 @@ export class EsriDefaultStrategy implements EsriToolStrategy {
   }
 
   public cancel() {
-    // This does not currently throw because we are calling the cancel-Method before setting a new strategy, which would crash the drawing tools
+    throw new EsriDefaultStrategyNotImplementedError();
   }
 }
 
