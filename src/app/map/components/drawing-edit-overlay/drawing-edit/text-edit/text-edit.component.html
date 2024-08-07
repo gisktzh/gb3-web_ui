@@ -1,7 +1,14 @@
 <h2>Text</h2>
 <mat-form-field appearance="outline" class="label-text">
   <mat-label>Beschriftung</mat-label>
-  <input matInput [value]="labelText" [(ngModel)]="labelText" (ngModelChange)="updateValue('label', labelText)" required />
+  <input
+    matInput
+    [value]="labelText"
+    [maxLength]="maxLength"
+    [(ngModel)]="labelText"
+    (ngModelChange)="updateValue('label', labelText)"
+    required
+  />
 </mat-form-field>
 <mat-divider class="divider"></mat-divider>
 <h2>Schrift</h2>

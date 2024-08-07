@@ -16,6 +16,7 @@ export class MapConstants {
   public static readonly DRAWING_LABEL_IDENTIFIER = '__labelText';
   public static readonly BELONGS_TO_IDENTIFIER = '__belongsTo';
   public static readonly TOOL_IDENTIFIER = '__tool';
+  public static readonly TEXT_DRAWING_MAX_LENGTH = 50;
 
   /**
    * Query params that are removed upon loading the initial map configuration.
