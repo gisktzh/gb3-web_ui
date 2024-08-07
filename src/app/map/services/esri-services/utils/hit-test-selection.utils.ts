@@ -7,7 +7,10 @@ import GraphicHit = __esri.GraphicHit;
 type HitWithArea = {hit: Graphic; area: number};
 
 export class HitTestSelectionUtils {
-  public static selectFeatureFromHitTestResult(hits: GraphicHit[]): Graphic {
+  public static selectFeatureFromHitTestResult(hits: GraphicHit[]): Graphic | undefined {
+    if (hits.length === 0) {
+      return undefined;
+    }
     let lineHit: Graphic | null = null;
     const polygonHits: GraphicHit[] = [];
 

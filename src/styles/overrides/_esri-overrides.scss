@@ -9,6 +9,6 @@
   font-family: ktzh-variables.$zh-font-family;
 
   .esri-tooltip-content {
-    border-radius: 1px;
+    border-radius: ktzh-variables.$zh-border-radius;
   }
 }

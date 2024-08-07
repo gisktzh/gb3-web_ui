@@ -826,9 +826,9 @@ export class EsriMapService implements MapService, OnDestroy {
             .filter((layer) => this.configService.mapConfig.editableLayerIds.includes(layer.id))
             .toArray();
           const {results} = await this.mapView.hitTest(event, {include: layersToTest});
-          if (results.length > 0) {
+          const selectedFeature = HitTestSelectionUtils.selectFeatureFromHitTestResult(results as GraphicHit[]);
+          if (selectedFeature) {
             this.isEditModeActive = true;
-            const selectedFeature = HitTestSelectionUtils.selectFeatureFromHitTestResult(results as GraphicHit[]);
             this.esriToolService.editDrawing(selectedFeature);
           }
         }

@@ -4,6 +4,12 @@ import Polygon from '@arcgis/core/geometry/Polygon';
 import {UnsupportedGeometryType} from '../errors/esri.errors';
 
 describe('HitTestSelectionUtils', () => {
+  it('should return undefined', () => {
+    const hits: GraphicHit[] = [] as unknown as GraphicHit[];
+
+    const actual = HitTestSelectionUtils.selectFeatureFromHitTestResult(hits);
+    expect(actual).toBe(undefined);
+  });
   it('should return the first point hit', () => {
     const hits: GraphicHit[] = [
       {
