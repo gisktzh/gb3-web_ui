@@ -11,31 +11,15 @@ export class HitTestSelectionUtils {
     if (hits.length === 0) {
       return undefined;
     }
-    let lineHit: Graphic | null = null;
-    const polygonHits: GraphicHit[] = [];
-
-    for (const hit of hits) {
-      switch (hit.graphic.geometry.type) {
-        case 'point':
-          return hit.graphic;
-        case 'polyline':
-          if (!lineHit) {
-            lineHit = hit.graphic;
-          }
-          break;
-        case 'polygon':
-          polygonHits.push(hit);
-          break;
-        case 'extent':
-        case 'mesh':
-        case 'multipoint':
-          break;
-      }
+    const pointHit = hits.find((hit) => hit.graphic.geometry.type === 'point');
+    if (pointHit) {
+      return pointHit.graphic;
     }
-
+    const lineHit = hits.find((hit) => hit.graphic.geometry.type === 'polyline');
     if (lineHit) {
-      return lineHit;
+      return lineHit.graphic;
     }
+    const polygonHits = hits.filter((hit) => hit.graphic.geometry.type === 'polygon');
     if (polygonHits.length > 0) {
       return this.selectSmallestPolygonFromHitTestResult(polygonHits);
     }
