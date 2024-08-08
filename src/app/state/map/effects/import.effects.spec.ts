@@ -18,8 +18,9 @@ import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {DrawingActions} from '../actions/drawing.actions';
 import {Gb3StyledInternalDrawingRepresentation} from '../../../shared/interfaces/internal-drawing-representation.interface';
 import {SymbolizationToGb3ConverterUtils} from '../../../shared/utils/symbolization-to-gb3-converter.utils';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {MinimalGeometriesUtils} from '../../../testing/map-testing/minimal-geometries.utils';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
 describe('ImportEffects', () => {
   let actions$: Observable<Action>;
@@ -30,8 +31,15 @@ describe('ImportEffects', () => {
     actions$ = new Observable<Action>();
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [ImportEffects, provideMockActions(() => actions$), provideMockStore(), {provide: MAP_SERVICE, useClass: MapServiceStub}],
+      imports: [],
+      providers: [
+        ImportEffects,
+        provideMockActions(() => actions$),
+        provideMockStore(),
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+        {provide: MAP_SERVICE, useClass: MapServiceStub},
+      ],
     });
     effects = TestBed.inject(ImportEffects);
     store = TestBed.inject(MockStore);
