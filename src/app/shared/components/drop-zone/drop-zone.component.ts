@@ -42,7 +42,7 @@ export class DropZoneComponent implements AfterViewInit {
           this.isHovered = false;
         },
       })
-      .use(FileInput, {target: '#file-input'})
+      .use(FileInput, {target: this.fileInput.nativeElement})
       .on('file-added', (data) => {
         this.addedFileEvent.emit(data.data);
         this.uppyInstance.removeFile(data.id); // needed as long as only 1 file can be uploaded
