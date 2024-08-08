@@ -7,6 +7,7 @@ import {ExternalKmlLayer, ExternalWmsLayer} from '../interfaces/external-layer.i
 import {ExternalWmsActiveMapItem} from '../../map/models/implementations/external-wms.model';
 import {ExternalKmlActiveMapItem} from '../../map/models/implementations/external-kml.model';
 import {TimeExtent} from '../../map/interfaces/time-extent.interface';
+import {produce} from 'immer';
 
 export class ActiveMapItemFactory {
   public static createTemporaryGb2WmsMapItem(
@@ -32,7 +33,14 @@ export class ActiveMapItemFactory {
     if (opacity === undefined) {
       opacity = map.opacity;
     }
-    return new Gb2WmsActiveMapItem(map, layer, visible, opacity, timeExtent, attributeFilters, isTemporary);
+    const activeMapItem = new Gb2WmsActiveMapItem(map, layer, visible, opacity, timeExtent, attributeFilters, isTemporary);
+    if (activeMapItem.isSingleLayer) {
+      return produce(activeMapItem, (draft) => {
+        draft.settings.layers[0].visible = true;
+      });
+    }
+
+    return activeMapItem;
   }
 
   public static createDrawingMapItem(id: UserDrawingLayer, prefix: string, visible?: boolean, opacity?: number): DrawingActiveMapItem {
