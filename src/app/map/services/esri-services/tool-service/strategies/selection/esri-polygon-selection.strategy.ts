@@ -9,6 +9,7 @@ import {EsriGraphicToInternalDrawingRepresentationUtils} from '../../../utils/es
 import {SupportedSrs} from '../../../../../../shared/types/supported-srs.type';
 import Graphic from '@arcgis/core/Graphic';
 import {SupportedEsriPolygonTool, SupportedEsriTool} from '../supported-esri-tool.type';
+import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 
 export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrategy<DrawingCallbackHandler['completeSelection']> {
   public readonly internalLayerType: InternalDrawingLayer = InternalDrawingLayer.Selection;
@@ -17,20 +18,24 @@ export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrate
 
   public start(): void {
     this.sketchViewModel.create(this.tool, {mode: 'click'});
-    this.sketchViewModel.on('create', ({state, graphic}) => {
-      switch (state) {
-        case 'cancel':
-        case 'active':
-          break; // currently, these events do not trigger any action
-        case 'start':
-          // remove all old selections before starting a new one
-          this.layer.removeAll();
-          break;
-        case 'complete':
-          this.complete(graphic);
-          break;
-      }
-    });
+
+    reactiveUtils.on(
+      () => this.sketchViewModel,
+      'create',
+      ({state, graphic}: {state: __esri.SketchViewModelCreateEvent['state']; graphic: Graphic}) => {
+        switch (state) {
+          case 'start':
+            this.layer.removeAll();
+            break;
+          case 'active':
+          case 'cancel':
+            break; // currently, these events do not trigger any action
+          case 'complete':
+            this.complete(graphic);
+            break;
+        }
+      },
+    );
   }
 
   public edit(graphic: Graphic) {

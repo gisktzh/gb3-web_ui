@@ -16,7 +16,6 @@ class EsriPointMeasurementStrategyWrapper extends EsriPointMeasurementStrategy {
 }
 
 describe('AbstractEsriMeasurementStrategy', () => {
-  // describe('edit', () => {});
   describe('completeEditing', () => {
     let mapView: MapView;
     let layer: GraphicsLayer;

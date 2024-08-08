@@ -31,20 +31,22 @@ export abstract class AbstractEsriMeasurementStrategy<
     reactiveUtils.on(
       () => this.sketchViewModel,
       'create',
-      ({state, graphic}) => {
-        let labelConfiguration: {label: Graphic; labelText: string};
-        let graphicIdentifier: string;
+      ({state, graphic}: {state: __esri.SketchViewModelCreateEvent['state']; graphic: Graphic}) => {
         switch (state) {
           case 'active':
           case 'start':
           case 'cancel':
             break; // currently, these events do not trigger any action
-          case 'complete':
-            graphicIdentifier = this.setAndGetIdentifierOnGraphic(graphic);
-            labelConfiguration = this.createLabelForGeometry(graphic.geometry as TGeometry, graphicIdentifier);
+          case 'complete': {
+            const graphicIdentifier = this.setAndGetIdentifierOnGraphic(graphic);
+            const labelConfiguration: {label: Graphic; labelText: string} = this.createLabelForGeometry(
+              graphic.geometry as TGeometry,
+              graphicIdentifier,
+            );
             this.layer.add(labelConfiguration.label);
             this.completeDrawingCallbackHandler(graphic, labelConfiguration.label, labelConfiguration.labelText, 'add');
             break;
+          }
         }
       },
     );
@@ -56,7 +58,7 @@ export abstract class AbstractEsriMeasurementStrategy<
     reactiveUtils.on(
       () => this.sketchViewModel,
       'update',
-      ({state}) => {
+      ({state}: {state: __esri.SketchViewModelUpdateEvent['state']}) => {
         switch (state) {
           case 'start':
             this.removeLabelOnEdit(graphic);

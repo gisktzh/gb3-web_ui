@@ -23,7 +23,7 @@ export abstract class AbstractEsriDrawingStrategy<
     reactiveUtils.on(
       () => this.sketchViewModel,
       'create',
-      ({state, graphic}) => {
+      ({state, graphic}: {state: __esri.SketchViewModelCreateEvent['state']; graphic: Graphic}) => {
         switch (state) {
           case 'active':
           case 'start':
@@ -43,12 +43,10 @@ export abstract class AbstractEsriDrawingStrategy<
     reactiveUtils.on(
       () => this.sketchViewModel,
       'update',
-      ({state}) => {
+      ({state}: {state: __esri.SketchViewModelUpdateEvent['state']}) => {
         switch (state) {
           case 'active':
           case 'start':
-          case 'cancel':
-            break; // currently, these events do not trigger any action
           case 'complete':
             this.completeEditing(graphic);
             break;
