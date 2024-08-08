@@ -6,6 +6,7 @@ import Graphic from '@arcgis/core/Graphic';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import Polygon from '@arcgis/core/geometry/Polygon';
 import {EsriPolygonDrawingStrategy} from './esri-polygon-drawing.strategy';
+import {AbstractEsriDrawingStrategy} from '../abstract-esri-drawing.strategy';
 
 class EsriPolygonDrawingStrategyWrapper extends EsriPolygonDrawingStrategy {
   public get svm() {
@@ -71,6 +72,27 @@ describe('EsriPolygonDrawingStrategy', () => {
 
       expect(callbackSpy).toHaveBeenCalled();
     });
+    it('calls completeEditing on completion for editing drawings', () => {
+      const strategy = new EsriPolygonDrawingStrategyWrapper(layer, mapView, fillSymbol, () => callbackHandler.handle(), 'polygon');
+      const completeEditingSpy = spyOn<any>(AbstractEsriDrawingStrategy.prototype, 'completeEditing');
+      const graphic = new Graphic({
+        geometry: new Polygon({
+          spatialReference: {wkid: 2056},
+          rings: [
+            [
+              [0, 0],
+              [12, 0],
+              [0, 12],
+            ],
+          ],
+        }),
+      });
+
+      strategy.edit(graphic);
+      strategy.svm.emit('update', {state: 'complete'});
+
+      expect(completeEditingSpy).toHaveBeenCalledWith(graphic);
+    });
   });
 
   describe('polygon type and mode', () => {
@@ -99,6 +121,14 @@ describe('EsriPolygonDrawingStrategy', () => {
       strategy.start();
 
       expect(spy).toHaveBeenCalledOnceWith('polygon', {mode: 'click'});
+    });
+    it('sets mode to update', () => {
+      const strategy = new EsriPolygonDrawingStrategyWrapper(layer, mapView, fillSymbol, () => callbackHandler.handle(), 'polygon');
+      const spy = spyOn(strategy.svm, 'update');
+      const graphic = new Graphic();
+      strategy.edit(graphic);
+
+      expect(spy).toHaveBeenCalledOnceWith(graphic, {multipleSelectionEnabled: false});
     });
   });
 });

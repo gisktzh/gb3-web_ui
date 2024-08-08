@@ -16,6 +16,7 @@ class EsriPointMeasurementStrategyWrapper extends EsriPointMeasurementStrategy {
 }
 
 describe('AbstractEsriMeasurementStrategy', () => {
+  // describe('edit', () => {});
   describe('completeEditing', () => {
     let mapView: MapView;
     let layer: GraphicsLayer;
@@ -82,6 +83,38 @@ describe('AbstractEsriMeasurementStrategy', () => {
       expect(checkGraphicSpy).toHaveBeenCalled();
       expect(createLabelSpy).toHaveBeenCalled();
       expect(handleCompleteSpy).toHaveBeenCalledWith(graphic, labelGraphic, 'test', 'edit');
+    });
+  });
+  describe('removeLabelOnEdit', () => {
+    let mapView: MapView;
+    let layer: GraphicsLayer;
+    let pointSymbol: SimpleMarkerSymbol;
+    let strategy: EsriPointMeasurementStrategy;
+    let textSymbol: TextSymbol;
+    const callbackHandler = {
+      handle: () => {
+        return undefined;
+      },
+    };
+
+    beforeEach(() => {
+      mapView = new MapView({map: new Map()});
+      layer = new GraphicsLayer({
+        id: UserDrawingLayer.Measurements,
+      });
+      mapView.map.layers.add(layer);
+      pointSymbol = new SimpleMarkerSymbol();
+      textSymbol = new TextSymbol({text: 'test'});
+      strategy = new EsriPointMeasurementStrategyWrapper(layer, mapView, pointSymbol, textSymbol, () => callbackHandler.handle());
+    });
+    it('should remove the label from the layer', () => {
+      const graphic = new Graphic();
+      graphic.setAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName, '123');
+      const labelGraphic = new Graphic();
+      labelGraphic.setAttribute(AbstractEsriDrawableToolStrategy.belongsToFieldName, '123');
+      layer.add(labelGraphic);
+      strategy['removeLabelOnEdit'](graphic);
+      expect(layer.graphics.length).toBe(0);
     });
   });
 });

@@ -6,6 +6,7 @@ import Graphic from '@arcgis/core/Graphic';
 import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
 import Polyline from '@arcgis/core/geometry/Polyline';
 import {EsriLineDrawingStrategy} from './esri-line-drawing.strategy';
+import {AbstractEsriDrawingStrategy} from '../abstract-esri-drawing.strategy';
 
 class EsriLineDrawingStrategyWrapper extends EsriLineDrawingStrategy {
   public get svm() {
@@ -69,6 +70,26 @@ describe('EsriLineDrawingStrategy', () => {
 
       expect(callbackSpy).toHaveBeenCalled();
     });
+    it('calls completeEditing on completion for editing drawings', () => {
+      const strategy = new EsriLineDrawingStrategyWrapper(layer, mapView, lineSymbol, () => callbackHandler.handle());
+      const completeEditingSpy = spyOn<any>(AbstractEsriDrawingStrategy.prototype, 'completeEditing');
+      const graphic = new Graphic({
+        geometry: new Polyline({
+          spatialReference: {wkid: 2056},
+          paths: [
+            [
+              [0, 0],
+              [12, 0],
+            ],
+          ],
+        }),
+      });
+
+      strategy.edit(graphic);
+      strategy.svm.emit('update', {state: 'complete'});
+
+      expect(completeEditingSpy).toHaveBeenCalledWith(graphic);
+    });
   });
 
   describe('mode', () => {
@@ -79,6 +100,14 @@ describe('EsriLineDrawingStrategy', () => {
       strategy.start();
 
       expect(spy).toHaveBeenCalledOnceWith('polyline', {mode: 'click'});
+    });
+    it('sets mode to update', () => {
+      const strategy = new EsriLineDrawingStrategyWrapper(layer, mapView, lineSymbol, () => callbackHandler.handle());
+      const spy = spyOn(strategy.svm, 'update');
+      const graphic = new Graphic();
+      strategy.edit(graphic);
+
+      expect(spy).toHaveBeenCalledOnceWith(graphic, {multipleSelectionEnabled: false});
     });
   });
 });

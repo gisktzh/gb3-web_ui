@@ -8,6 +8,7 @@ import Point from '@arcgis/core/geometry/Point';
 import {EsriAreaMeasurementStrategy} from './esri-area-measurement.strategy';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import Polygon from '@arcgis/core/geometry/Polygon';
+import {AbstractEsriMeasurementStrategy} from '../abstract-esri-measurement.strategy';
 
 class EsriAreaMeasurementStrategyWrapper extends EsriAreaMeasurementStrategy {
   public get svm() {
@@ -58,6 +59,37 @@ describe('EsriAreaMeasurementStrategy', () => {
 
       expect(callbackSpy).not.toHaveBeenCalled();
       expect(layer.graphics.length).toEqual(0);
+    });
+  });
+
+  describe('activation', () => {
+    it('calls removeLabelOnEdit on activating the edit mode', () => {
+      const strategy = new EsriAreaMeasurementStrategyWrapper(
+        layer,
+        mapView,
+        fillSymbol,
+        textSymbol,
+        () => callbackHandler.handle(),
+        'polygon',
+      );
+      const removeLabelOnEditSpy = spyOn<any>(AbstractEsriMeasurementStrategy.prototype, 'removeLabelOnEdit');
+      const graphic = new Graphic({
+        geometry: new Polygon({
+          spatialReference: {wkid: 2056},
+          rings: [
+            [
+              [0, 0],
+              [12, 0],
+              [0, 12],
+            ],
+          ],
+        }),
+      });
+
+      strategy.edit(graphic);
+      strategy.svm.emit('update', {state: 'start'});
+
+      expect(removeLabelOnEditSpy).toHaveBeenCalledWith(graphic);
     });
   });
 
@@ -154,6 +186,34 @@ describe('EsriAreaMeasurementStrategy', () => {
       expect((addedGraphic.symbol as TextSymbol).haloColor).toEqual(textSymbol.haloColor);
       expect((addedGraphic.symbol as TextSymbol).xoffset).toEqual(textSymbol.xoffset);
       expect((addedGraphic.symbol as TextSymbol).color).toEqual(textSymbol.color);
+    });
+    it('calls completeEditing on completion for editing drawings', () => {
+      const strategy = new EsriAreaMeasurementStrategyWrapper(
+        layer,
+        mapView,
+        fillSymbol,
+        textSymbol,
+        () => callbackHandler.handle(),
+        'polygon',
+      );
+      const completeEditingSpy = spyOn<any>(AbstractEsriMeasurementStrategy.prototype, 'completeEditing');
+      const graphic = new Graphic({
+        geometry: new Polygon({
+          spatialReference: {wkid: 2056},
+          rings: [
+            [
+              [0, 0],
+              [12, 0],
+              [0, 12],
+            ],
+          ],
+        }),
+      });
+
+      strategy.edit(graphic);
+      strategy.svm.emit('update', {state: 'complete'});
+
+      expect(completeEditingSpy).toHaveBeenCalledWith(graphic);
     });
   });
 
@@ -270,6 +330,21 @@ describe('EsriAreaMeasurementStrategy', () => {
       strategy.start();
 
       expect(spy).toHaveBeenCalledOnceWith('polygon', {mode: 'click'});
+    });
+    it('sets mode to update', () => {
+      const strategy = new EsriAreaMeasurementStrategyWrapper(
+        layer,
+        mapView,
+        fillSymbol,
+        textSymbol,
+        () => callbackHandler.handle(),
+        'polygon',
+      );
+      const spy = spyOn(strategy.svm, 'update');
+      const graphic = new Graphic();
+      strategy.edit(graphic);
+
+      expect(spy).toHaveBeenCalledOnceWith(graphic, {multipleSelectionEnabled: false});
     });
   });
 });
