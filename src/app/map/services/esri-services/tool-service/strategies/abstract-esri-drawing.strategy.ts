@@ -47,6 +47,7 @@ export abstract class AbstractEsriDrawingStrategy<
         switch (state) {
           case 'active':
           case 'start':
+            break;
           case 'complete':
             this.completeEditing(graphic);
             break;
