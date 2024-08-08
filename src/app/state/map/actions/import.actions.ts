@@ -10,6 +10,7 @@ export const ImportActions = createActionGroup({
   events: {
     'Request Drawings Import': props<{file: File | Blob}>(),
     'Set Drawings Import Request Error': errorProps(),
+    'Set File Validation Error': props<{errorMessage: string}>(),
     'Create Active Map Item From Drawing': props<{drawing: Gb3VectorLayer}>(),
     'Add Drawing to Map': props<{
       activeMapItem: DrawingActiveMapItem;

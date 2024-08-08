@@ -4,7 +4,7 @@ import {of, switchMap, tap} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
 import {ImportActions} from '../actions/import.actions';
 import {Gb3ImportService} from '../../../shared/services/apis/gb3/gb3-import.service';
-import {FileImportError} from '../../../shared/errors/file-upload.errors';
+import {FileImportError, FileValidationError} from '../../../shared/errors/file-upload.errors';
 import {SymbolizationToGb3ConverterUtils} from '../../../shared/utils/symbolization-to-gb3-converter.utils';
 import {UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {MAP_SERVICE} from '../../../app.module';
@@ -16,7 +16,7 @@ import {DrawingActions} from '../actions/drawing.actions';
 
 @Injectable()
 export class ImportEffects {
-  public requestImportDrawings$ = createEffect(() => {
+  public requestImportDrawing$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ImportActions.requestDrawingsImport),
       switchMap(({file}) =>
@@ -44,7 +44,7 @@ export class ImportEffects {
     );
   });
 
-  public addDrawingToActiveMapItmes$ = createEffect(() => {
+  public addDrawingToActiveMapItems$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ImportActions.addDrawingToMap),
       map(({activeMapItem}) => ActiveMapItemActions.addActiveMapItem({activeMapItem, position: 0})),
@@ -73,6 +73,18 @@ export class ImportEffects {
         ofType(ImportActions.setDrawingsImportRequestError),
         tap(({error}) => {
           throw new FileImportError(error);
+        }),
+      );
+    },
+    {dispatch: false},
+  );
+
+  public throwFileValidationError$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(ImportActions.setFileValidationError),
+        tap(({errorMessage}) => {
+          throw new FileValidationError(errorMessage);
         }),
       );
     },

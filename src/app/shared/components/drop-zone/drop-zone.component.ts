@@ -18,8 +18,9 @@ import {FileUploadRestrictionsConfig} from '../../configs/file-upload-restrictio
   styleUrl: './drop-zone.component.scss',
 })
 export class DropZoneComponent implements AfterViewInit {
-  @Output() public addedFile = new EventEmitter<Blob | File>();
-  @Output() public uploadError = new EventEmitter<string>();
+  @Output() public readonly addedFileEvent = new EventEmitter<Blob | File>();
+  @Output() public readonly uploadErrorEvent = new EventEmitter<string>();
+  public acceptedFileTypes = FileUploadRestrictionsConfig.allowedFileTypes!.join(', ');
   protected isHovered = false;
   private readonly uppyInstance = new Uppy({
     restrictions: FileUploadRestrictionsConfig,
@@ -43,17 +44,18 @@ export class DropZoneComponent implements AfterViewInit {
       })
       .use(FileInput, {target: '#file-input'})
       .on('file-added', (data) => {
-        this.addedFile.emit(data.data);
+        this.addedFileEvent.emit(data.data);
         this.uppyInstance.removeFile(data.id); // needed as long as only 1 file can be uploaded
       })
       .on('restriction-failed', (file, error) => {
-        this.uploadError.emit(error.message);
+        this.uploadErrorEvent.emit(error.message);
+        this.fileInput.nativeElement.value = '';
       })
       .on('error', (error) => {
-        this.uploadError.emit(error.message);
+        this.uploadErrorEvent.emit(error.message);
       });
 
-    const fileInput: HTMLInputElement = this.fileInput.nativeElement;
+    const fileInput = this.fileInput.nativeElement;
     fileInput.addEventListener('change', () => {
       const files = fileInput.files?.length ? Array.from(fileInput.files) : [];
 
@@ -66,7 +68,11 @@ export class DropZoneComponent implements AfterViewInit {
             data: file,
           });
         } catch (err) {
-          this.uploadError.emit('Ein unerwarteter Fehler ist aufgetreten.');
+          // We only throw an error if the file size does not exceed the maximum, because this case is already handled by Uppy.
+          // Otherwise, we would throw two errors for the same cause. This can only happen when the user uploads a large file from the file-input, not via drag-and-drop
+          if (file.size < FileUploadRestrictionsConfig.maxFileSize!) {
+            this.uploadErrorEvent.emit('Ein unerwarteter Fehler ist aufgetreten.');
+          }
         }
       });
     });

@@ -17,8 +17,11 @@ export const importFeature = createFeature({
     on(ImportActions.addDrawingToMap, (state): ImportState => {
       return {...state, loadingState: 'loaded'};
     }),
-    on(ImportActions.setDrawingsImportRequestError, (state): ImportState => {
-      return {...state, loadingState: 'error'};
+    on(ImportActions.setDrawingsImportRequestError, (): ImportState => {
+      return {...initialState, loadingState: 'error'};
+    }),
+    on(ImportActions.setFileValidationError, (): ImportState => {
+      return {...initialState, loadingState: 'error'};
     }),
     on(ImportActions.resetDrawingImportState, (): ImportState => {
       return {...initialState};

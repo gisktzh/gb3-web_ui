@@ -3,7 +3,7 @@
 
 .drop-zone {
   height: 204px;
-  border: 2px dashed #ccc; /// todo lme: change color
+  border: 2px dashed ktzh-variables.$zh-black20;
   border-radius: 4px;
   display: flex;
   flex-direction: column;
@@ -12,7 +12,6 @@
   padding: 12px;
 
   &--hovered {
-    z-index: 10000;
     background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 50);
   }
 

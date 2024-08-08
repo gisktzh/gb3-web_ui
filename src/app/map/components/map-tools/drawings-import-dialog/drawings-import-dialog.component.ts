@@ -1,7 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {MatDialogRef} from '@angular/material/dialog';
-import {FileValidationError} from '../../../../shared/errors/file-upload.errors';
 import {ImportActions} from '../../../../state/map/actions/import.actions';
 import {selectLoadingState} from '../../../../state/map/reducers/import.reducer';
 import {Subscription, tap} from 'rxjs';
@@ -40,9 +39,8 @@ export class DrawingsImportDialogComponent implements OnInit, OnDestroy {
     this.store.dispatch(ImportActions.requestDrawingsImport({file}));
   }
 
-  public handleFileErrors(error: string) {
-    this.store.dispatch(ImportActions.setDrawingsImportRequestError({error}));
-    throw new FileValidationError(error);
+  public handleFileError(error: string) {
+    this.store.dispatch(ImportActions.setFileValidationError({errorMessage: error}));
   }
 
   private initSubscriptions() {

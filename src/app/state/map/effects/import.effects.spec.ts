@@ -10,7 +10,7 @@ import {ImportActions} from '../actions/import.actions';
 import {MAP_SERVICE} from '../../../app.module';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
 import {catchError} from 'rxjs/operators';
-import {FileImportError} from '../../../shared/errors/file-upload.errors';
+import {FileImportError, FileValidationError} from '../../../shared/errors/file-upload.errors';
 import {UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {MapConstants} from '../../../shared/constants/map.constants';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
@@ -19,6 +19,7 @@ import {DrawingActions} from '../actions/drawing.actions';
 import {Gb3StyledInternalDrawingRepresentation} from '../../../shared/interfaces/internal-drawing-representation.interface';
 import {SymbolizationToGb3ConverterUtils} from '../../../shared/utils/symbolization-to-gb3-converter.utils';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {MinimalGeometriesUtils} from '../../../testing/map-testing/minimal-geometries.utils';
 
 describe('ImportEffects', () => {
   let actions$: Observable<Action>;
@@ -54,13 +55,7 @@ describe('ImportEffects', () => {
                 id: 'test',
                 style: 'style',
               },
-              geometry: {
-                type: 'LineString',
-                coordinates: [
-                  [0, 0],
-                  [1, 1],
-                ],
-              },
+              geometry: MinimalGeometriesUtils.getMinimalLineString(2056),
             },
           ],
         },
@@ -70,7 +65,7 @@ describe('ImportEffects', () => {
       const gb3ImportServiceSpy = spyOn(gb3ImportService, 'importDrawing').and.returnValue(of(expectedDrawing));
 
       actions$ = of(ImportActions.requestDrawingsImport({file}));
-      effects.requestImportDrawings$.subscribe((action) => {
+      effects.requestImportDrawing$.subscribe((action) => {
         expect(gb3ImportServiceSpy).toHaveBeenCalledOnceWith(file);
         expect(action).toEqual(ImportActions.createActiveMapItemFromDrawing({drawing: expectedDrawing}));
         done();
@@ -82,7 +77,7 @@ describe('ImportEffects', () => {
       const gb3ImportServiceSpy = spyOn(gb3ImportService, 'importDrawing').and.returnValue(throwError(() => expectedError));
 
       actions$ = of(ImportActions.requestDrawingsImport({file: new File([], 'test')}));
-      effects.requestImportDrawings$.subscribe((action) => {
+      effects.requestImportDrawing$.subscribe((action) => {
         expect(gb3ImportServiceSpy).toHaveBeenCalledOnceWith(file);
         expect(action).toEqual(ImportActions.setDrawingsImportRequestError({error: expectedError}));
         done();
@@ -142,7 +137,7 @@ describe('ImportEffects', () => {
       actions$ = of(
         ImportActions.addDrawingToMap({activeMapItem, drawingLayersToOverride: [UserDrawingLayer.Drawings], drawingsToAdd: []}),
       );
-      effects.addDrawingToActiveMapItmes$.subscribe((action) => {
+      effects.addDrawingToActiveMapItems$.subscribe((action) => {
         expect(action).toEqual(ActiveMapItemActions.addActiveMapItem({activeMapItem, position: 0}));
         done();
       });
@@ -181,6 +176,23 @@ describe('ImportEffects', () => {
         .pipe(
           catchError((error) => {
             const expectedError = new FileImportError(expectedOriginalError);
+            expect(error).toEqual(expectedError);
+            done();
+            return EMPTY;
+          }),
+        )
+        .subscribe();
+    });
+  });
+  describe('throwFileValidationError$', () => {
+    it('throws a FileValidationError error', (done: DoneFn) => {
+      const errorMessage = 'oh no! butterfingers';
+
+      actions$ = of(ImportActions.setFileValidationError({errorMessage}));
+      effects.throwFileValidationError$
+        .pipe(
+          catchError((error) => {
+            const expectedError = new FileValidationError(errorMessage);
             expect(error).toEqual(expectedError);
             done();
             return EMPTY;
