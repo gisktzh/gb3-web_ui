@@ -16,6 +16,7 @@ import {DataCatalogueFilterDialogComponent} from './components/data-catalogue-fi
 import {DatasetElementDetailComponent} from './components/dataset-detail/dataset-element-detail/dataset-element-detail.component';
 import {DataDisplayComponent} from './components/data-display/data-display.component';
 import {OverviewSearchResultItemComponent} from '../shared/components/data-catalogue-overview-item/overview-search-result-item.component';
+import {FormatLineBreaksPipe} from '../shared/pipes/format-line-breaks.pipe';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import {OverviewSearchResultItemComponent} from '../shared/components/data-catal
     DataDisplayComponent,
     OverviewSearchResultItemComponent,
     NgOptimizedImage,
+    FormatLineBreaksPipe,
   ],
   exports: [],
 })
