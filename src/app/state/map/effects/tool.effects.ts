@@ -19,6 +19,7 @@ export class ToolEffects {
             case 'measure-line':
             case 'measure-point':
             case 'measure-area':
+            case 'measure-circle':
               this.toolService.initializeMeasurement(tool);
               break;
             case 'measure-elevation-profile':

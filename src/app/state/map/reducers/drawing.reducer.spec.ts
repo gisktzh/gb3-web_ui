@@ -22,6 +22,7 @@ describe('Drawing Reducer', () => {
           'mockDrawing1' as unknown as Gb3StyledInternalDrawingRepresentation,
           'mockDrawing2' as unknown as Gb3StyledInternalDrawingRepresentation,
         ],
+        selectedDrawing: undefined,
       };
       const action = DrawingActions.clearDrawings();
 
@@ -31,22 +32,130 @@ describe('Drawing Reducer', () => {
     });
   });
 
+  describe('selectDrawing', () => {
+    it('selects a drawing based on its Id', () => {
+      const currentState: DrawingState = {
+        drawings: [
+          {properties: {__id: '1'}} as unknown as Gb3StyledInternalDrawingRepresentation,
+          {properties: {__id: '2'}} as unknown as Gb3StyledInternalDrawingRepresentation,
+        ],
+        selectedDrawing: undefined,
+      };
+      const action = DrawingActions.selectDrawing({drawingId: '1'});
+
+      const result = reducer(currentState, action);
+
+      expect(result.selectedDrawing).toEqual(currentState.drawings[0]);
+    });
+  });
+
+  describe('deleteDrawing', () => {
+    it('selects a drawing based on its Id', () => {
+      const currentState: DrawingState = {
+        drawings: [
+          {properties: {__id: '1'}} as unknown as Gb3StyledInternalDrawingRepresentation,
+          {properties: {__id: '2'}} as unknown as Gb3StyledInternalDrawingRepresentation,
+        ],
+        selectedDrawing: undefined,
+      };
+      const action = DrawingActions.deleteDrawing({drawingId: '1'});
+
+      const result = reducer(currentState, action);
+
+      expect(result.drawings.length).toEqual(1);
+      expect(result.drawings).toEqual([currentState.drawings[1]]);
+    });
+  });
+
   describe('addDrawing', () => {
     it('adds a drawing to the end of the current drawings', () => {
       const currentState: DrawingState = {
         drawings: [
-          'mockDrawing1' as unknown as Gb3StyledInternalDrawingRepresentation,
-          'mockDrawing2' as unknown as Gb3StyledInternalDrawingRepresentation,
+          {properties: {__id: 1}} as unknown as Gb3StyledInternalDrawingRepresentation,
+          {properties: {__id: 2}} as unknown as Gb3StyledInternalDrawingRepresentation,
         ],
+        selectedDrawing: undefined,
       };
 
-      const newDrawing: Gb3StyledInternalDrawingRepresentation = 'mockNewDrawing' as unknown as Gb3StyledInternalDrawingRepresentation;
+      const newDrawing: Gb3StyledInternalDrawingRepresentation = {
+        properties: {__id: 3},
+      } as unknown as Gb3StyledInternalDrawingRepresentation;
       const action = DrawingActions.addDrawing({drawing: newDrawing});
 
       const result = reducer(currentState, action);
 
       expect(result.drawings.length).toEqual(3);
       expect(result.drawings[2]).toEqual(newDrawing);
+    });
+    it('replaces a drawing if it already exists in the state', () => {
+      const currentState: DrawingState = {
+        drawings: [
+          {properties: {__id: 1}} as unknown as Gb3StyledInternalDrawingRepresentation,
+          {properties: {__id: 2}} as unknown as Gb3StyledInternalDrawingRepresentation,
+        ],
+        selectedDrawing: undefined,
+      };
+
+      const newDrawing: Gb3StyledInternalDrawingRepresentation = {
+        properties: {__id: 2},
+      } as unknown as Gb3StyledInternalDrawingRepresentation;
+      const action = DrawingActions.addDrawing({drawing: newDrawing});
+
+      const result = reducer(currentState, action);
+
+      expect(result.drawings.length).toEqual(2);
+      expect(result.drawings[1]).toEqual(newDrawing);
+    });
+  });
+
+  describe('addDrawings', () => {
+    it('adds drawings to the end of the current drawings', () => {
+      const currentState: DrawingState = {
+        drawings: [
+          {properties: {__id: 1}} as unknown as Gb3StyledInternalDrawingRepresentation,
+          {properties: {__id: 2, __belongsTo: 1}} as unknown as Gb3StyledInternalDrawingRepresentation,
+        ],
+        selectedDrawing: undefined,
+      };
+
+      const newDrawings: Gb3StyledInternalDrawingRepresentation[] = [
+        {
+          properties: {__id: 3},
+        },
+        {
+          properties: {__id: 4, __belongsTo: 3},
+        },
+      ] as unknown as Gb3StyledInternalDrawingRepresentation[];
+      const action = DrawingActions.addDrawings({drawings: newDrawings});
+
+      const result = reducer(currentState, action);
+
+      expect(result.drawings.length).toEqual(4);
+      expect(result.drawings[2]).toEqual(newDrawings[0]);
+      expect(result.drawings[3]).toEqual(newDrawings[1]);
+    });
+    it('replaces drawings if they already exist in the state', () => {
+      const currentState: DrawingState = {
+        drawings: [
+          {properties: {__id: 1}} as unknown as Gb3StyledInternalDrawingRepresentation,
+          {properties: {__id: 2, __belongsTo: 1}} as unknown as Gb3StyledInternalDrawingRepresentation,
+        ],
+        selectedDrawing: undefined,
+      };
+
+      const newDrawings: Gb3StyledInternalDrawingRepresentation[] = [
+        {
+          properties: {__id: 1},
+        },
+        {
+          properties: {__id: 4, __belongsTo: 1},
+        },
+      ] as unknown as Gb3StyledInternalDrawingRepresentation[];
+      const action = DrawingActions.addDrawings({drawings: newDrawings});
+      const result = reducer(currentState, action);
+
+      expect(result.drawings.length).toEqual(2);
+      expect(result.drawings[0]).toEqual(newDrawings[0]);
     });
   });
 
@@ -61,6 +170,7 @@ describe('Drawing Reducer', () => {
           {source: UserDrawingLayer.Measurements, id: 'measurementLayer1'} as Gb3StyledInternalDrawingRepresentation,
           {source: UserDrawingLayer.Measurements, id: 'measurementLayer2'} as Gb3StyledInternalDrawingRepresentation,
         ],
+        selectedDrawing: undefined,
       };
     });
 

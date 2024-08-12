@@ -1,15 +1,13 @@
 import SketchViewModel from '@arcgis/core/widgets/Sketch/SketchViewModel';
 import MapView from '@arcgis/core/views/MapView';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
-import {EsriSketchTool} from '../../esri.module';
 import {EsriToolStrategy} from '../interfaces/strategy.interface';
 import {DrawingCallbackHandler} from '../interfaces/drawing-callback-handler.interface';
 import Graphic from '@arcgis/core/Graphic';
 import {DrawingLayer} from '../../../../../shared/enums/drawing-layer.enum';
 import {MapConstants} from '../../../../../shared/constants/map.constants';
 import {UuidUtils} from '../../../../../shared/utils/uuid.utils';
-
-export type SupportedEsriTool = Extract<EsriSketchTool, 'polygon' | 'polyline' | 'point' | 'rectangle' | 'circle'>;
+import {SupportedEsriTool} from './supported-esri-tool.type';
 
 export abstract class AbstractEsriDrawableToolStrategy<
   T extends
@@ -20,6 +18,7 @@ export abstract class AbstractEsriDrawableToolStrategy<
 {
   public static readonly identifierFieldName = MapConstants.DRAWING_IDENTIFIER;
   public static readonly belongsToFieldName = MapConstants.BELONGS_TO_IDENTIFIER;
+  public static readonly toolFieldName = MapConstants.TOOL_IDENTIFIER;
   public abstract readonly internalLayerType: DrawingLayer;
   protected readonly sketchViewModel: SketchViewModel;
   protected readonly layer: GraphicsLayer;
@@ -50,6 +49,8 @@ export abstract class AbstractEsriDrawableToolStrategy<
 
   public abstract start(): void;
 
+  public abstract edit(graphic: __esri.Graphic): void;
+
   protected setAndGetIdentifierOnGraphic(graphic: Graphic): string {
     const identifier = UuidUtils.createUuid();
     this.setIdentifierOnGraphic(graphic, identifier);
@@ -58,7 +59,12 @@ export abstract class AbstractEsriDrawableToolStrategy<
   }
 
   protected setIdentifierOnGraphic(graphic: Graphic, graphicIdentifier?: string): void {
-    graphic.setAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName, graphicIdentifier ?? UuidUtils.createUuid());
+    // If the graphic does not have an id (i.e when it newly created), we need to create one
+    if (!graphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName)) {
+      const identifier = graphicIdentifier ?? UuidUtils.createUuid();
+      graphic.setAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName, identifier);
+      graphic.setAttribute(AbstractEsriDrawableToolStrategy.toolFieldName, this.tool);
+    }
   }
 
   protected setLabelTextAttributeOnGraphic(graphic: Graphic, text: string) {
@@ -67,5 +73,12 @@ export abstract class AbstractEsriDrawableToolStrategy<
 
   protected setBelongsToAttributeOnGraphic(graphic: __esri.Graphic, belongsToGraphicUuid: string) {
     graphic.setAttribute(AbstractEsriDrawableToolStrategy.belongsToFieldName, belongsToGraphicUuid);
+  }
+
+  // When deleting a feature during edit, the "complete"-state is still triggered. Therefore, we need to check whether a feature still exists on the layer
+  protected checkIfGraphicExistsOnLayer(graphicIdentifier: string): boolean {
+    return this.layer.graphics.some(
+      (existingGraphic) => existingGraphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName) === graphicIdentifier,
+    );
   }
 }

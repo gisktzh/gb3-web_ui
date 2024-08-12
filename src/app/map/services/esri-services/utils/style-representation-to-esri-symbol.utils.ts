@@ -25,7 +25,8 @@ export class StyleRepresentationToEsriSymbolUtils {
           color: this.convertHexToEsriColor(style.fillColor, style.fillOpacity),
           size: style.pointRadius,
           outline: {
-            color: this.convertHexToEsriColor(style.strokeColor),
+            color: this.convertHexToEsriColor(style.strokeColor, style.strokeOpacity),
+            width: style.strokeWidth,
           },
         });
       }
@@ -39,8 +40,8 @@ export class StyleRepresentationToEsriSymbolUtils {
         return new EsriSimpleFillSymbol({
           color: this.convertHexToEsriColor(style.fillColor, style.fillOpacity),
           outline: {
+            color: this.convertHexToEsriColor(style.strokeColor, style.strokeOpacity),
             width: style.strokeWidth,
-            color: this.convertHexToEsriColor(style.strokeColor),
           },
         });
       }

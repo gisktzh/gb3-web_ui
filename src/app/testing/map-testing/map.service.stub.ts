@@ -11,7 +11,10 @@ import {WmsFilterValue} from '../../shared/interfaces/topic.interface';
 import {DataDownloadSelectionTool} from '../../shared/types/data-download-selection-tool.type';
 import {DrawingTool} from '../../shared/types/drawing-tool.type';
 import {MeasurementTool} from '../../shared/types/measurement-tool.type';
-import {Gb3StyledInternalDrawingRepresentation} from '../../shared/interfaces/internal-drawing-representation.interface';
+import {
+  Gb3StyledInternalDrawingRepresentation,
+  Gb3StyleRepresentation,
+} from '../../shared/interfaces/internal-drawing-representation.interface';
 import {ExternalWmsActiveMapItem} from '../../map/models/implementations/external-wms.model';
 import {ExternalKmlActiveMapItem} from '../../map/models/implementations/external-kml.model';
 
@@ -21,6 +24,7 @@ export class MapServiceStub implements MapService {
     initializeDrawing(drawingTool: DrawingTool) {},
     initializeMeasurement(measurementTool: MeasurementTool) {},
     addExistingDrawingsToLayer(drawingsToAdd: Gb3StyledInternalDrawingRepresentation[], layerIdentifier: UserDrawingLayer) {},
+    updateDrawingStyles(drawing: Gb3StyledInternalDrawingRepresentation, style: Gb3StyleRepresentation, labelText?: string) {},
     cancelTool() {},
     initializeElevationProfileMeasurement() {},
   };
@@ -84,4 +88,6 @@ export class MapServiceStub implements MapService {
   public stopDrawPrintPreview() {}
 
   public removeGeometryFromInternalDrawingLayer(drawingLayer: InternalDrawingLayer, id: string): void {}
+
+  public cancelEditMode(): void {}
 }

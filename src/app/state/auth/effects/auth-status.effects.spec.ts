@@ -205,6 +205,7 @@ describe('AuthStatusEffects', () => {
               },
               [MapConstants.DRAWING_IDENTIFIER]: 'id',
               [MapConstants.BELONGS_TO_IDENTIFIER]: undefined,
+              [MapConstants.TOOL_IDENTIFIER]: 'point',
             },
             geometry: {
               type: 'Polygon',
@@ -256,6 +257,7 @@ describe('AuthStatusEffects', () => {
               },
               [MapConstants.DRAWING_IDENTIFIER]: 'id',
               [MapConstants.BELONGS_TO_IDENTIFIER]: undefined,
+              [MapConstants.TOOL_IDENTIFIER]: 'point',
             },
             geometry: {
               type: 'Polygon',
@@ -336,6 +338,7 @@ describe('AuthStatusEffects', () => {
               },
               [MapConstants.DRAWING_IDENTIFIER]: 'id',
               [MapConstants.BELONGS_TO_IDENTIFIER]: undefined,
+              [MapConstants.TOOL_IDENTIFIER]: 'point',
             },
             geometry: {
               type: 'Polygon',
@@ -389,6 +392,7 @@ describe('AuthStatusEffects', () => {
               },
               [MapConstants.DRAWING_IDENTIFIER]: 'id',
               [MapConstants.BELONGS_TO_IDENTIFIER]: undefined,
+              [MapConstants.TOOL_IDENTIFIER]: 'point',
             },
             geometry: {
               type: 'Polygon',

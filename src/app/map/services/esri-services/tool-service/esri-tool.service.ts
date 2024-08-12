@@ -8,11 +8,11 @@ import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 import {selectDrawingLayers} from '../../../../state/map/selectors/drawing-layers.selector';
 import {Subscription, tap} from 'rxjs';
 import {EsriToolStrategy} from './interfaces/strategy.interface';
-import {EsriDefaultStrategy} from './strategies/measurement/esri-default.strategy';
+import {EsriDefaultStrategy} from './strategies/esri-default.strategy';
 import {EsriLineMeasurementStrategy} from './strategies/measurement/esri-line-measurement.strategy';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {EsriSymbolizationService} from '../esri-symbolization.service';
-import {InternalDrawingLayer, UserDrawingLayer} from '../../../../shared/enums/drawing-layer.enum';
+import {DrawingLayerPrefix, InternalDrawingLayer, UserDrawingLayer} from '../../../../shared/enums/drawing-layer.enum';
 import {DrawingActiveMapItem} from '../../../models/implementations/drawing.model';
 import {EsriAreaMeasurementStrategy} from './strategies/measurement/esri-area-measurement.strategy';
 import {EsriPointMeasurementStrategy} from './strategies/measurement/esri-point-measurement.strategy';
@@ -26,10 +26,13 @@ import {EsriLineDrawingStrategy} from './strategies/drawing/esri-line-drawing.st
 import {EsriPolygonDrawingStrategy} from './strategies/drawing/esri-polygon-drawing.strategy';
 import {DrawingCallbackHandler} from './interfaces/drawing-callback-handler.interface';
 import Graphic from '@arcgis/core/Graphic';
-import {Gb3StyledInternalDrawingRepresentation} from '../../../../shared/interfaces/internal-drawing-representation.interface';
+import {
+  Gb3StyledInternalDrawingRepresentation,
+  Gb3StyleRepresentation,
+} from '../../../../shared/interfaces/internal-drawing-representation.interface';
 import {DrawingActions} from '../../../../state/map/actions/drawing.actions';
 import {silentArcgisToGeoJSON} from '../../../../shared/utils/esri-transformer-wrapper.utils';
-import {DrawingLayerNotInitialized} from '../errors/esri.errors';
+import {DrawingLayerNotInitialized, NonEditableLayerType} from '../errors/esri.errors';
 import {DataDownloadSelectionTool} from '../../../../shared/types/data-download-selection-tool.type';
 import {DataDownloadOrderActions} from '../../../../state/map/actions/data-download-order.actions';
 import {DataDownloadSelection} from '../../../../shared/interfaces/data-download-selection.interface';
@@ -45,8 +48,12 @@ import {EsriElevationProfileMeasurementStrategy} from './strategies/measurement/
 import {ElevationProfileActions} from '../../../../state/map/actions/elevation-profile.actions';
 import {EsriGraphicToInternalDrawingRepresentationUtils} from '../utils/esri-graphic-to-internal-drawing-representation.utils';
 import {InternalDrawingRepresentationToEsriGraphicUtils} from '../utils/internal-drawing-representation-to-esri-graphic.utils';
+import {SupportedEsriTool} from './strategies/supported-esri-tool.type';
+import {AbstractEsriDrawableToolStrategy} from './strategies/abstract-esri-drawable-tool.strategy';
+import {StyleRepresentationToEsriSymbolUtils} from '../utils/style-representation-to-esri-symbol.utils';
+import {DrawingMode} from './types/drawing-mode.type';
 
-const HANDLE_GROUP_KEY = 'EsriToolService';
+export const HANDLE_GROUP_KEY = 'EsriToolService';
 
 /**
  * Handles the measurement and sketch drawings. It employs the Strategy pattern to delegate the actual drawing logic to dedicated
@@ -90,6 +97,37 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
     this.toolStrategy.cancel();
   }
 
+  public editDrawing(graphic: Graphic) {
+    const drawingId = graphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName);
+    if (!drawingId) {
+      return;
+    }
+    this.setToolStrategyForEditingFeature(graphic);
+    // Open the panel only for drawings, not measurements or elevation profile, as their style is not currently editable
+    if (graphic.layer.id.includes(UserDrawingLayer.Drawings)) {
+      this.store.dispatch(DrawingActions.selectDrawing({drawingId}));
+    }
+    this.toolStrategy.edit(graphic);
+  }
+
+  public updateDrawingStyles(drawing: Gb3StyledInternalDrawingRepresentation, style: Gb3StyleRepresentation, labelText?: string) {
+    const fullLayerIdentifier = DrawingActiveMapItem.getFullLayerIdentifier(DrawingLayerPrefix.Drawing, drawing.source);
+    const drawingLayer = this.esriMapViewService.findEsriLayer(fullLayerIdentifier);
+
+    if (!drawingLayer) {
+      return;
+    }
+
+    const graphic = (drawingLayer as GraphicsLayer).graphics.find(
+      (existingGraphic) =>
+        existingGraphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName) ===
+        drawing.properties[AbstractEsriDrawableToolStrategy.identifierFieldName],
+    );
+    if (graphic) {
+      graphic.symbol = StyleRepresentationToEsriSymbolUtils.convert(style, labelText);
+    }
+  }
+
   public initializeDrawing(drawingTool: DrawingTool) {
     this.initializeUserDrawingTool(UserDrawingLayer.Drawings, (layer) => this.setDrawingStrategy(drawingTool, layer));
   }
@@ -110,33 +148,54 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
     );
   }
 
-  public completeDrawing(graphic: Graphic, labelText?: string) {
-    const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
-      graphic,
-      labelText,
-      this.configService.mapConfig.defaultMapConfig.srsId,
-      UserDrawingLayer.Drawings,
-    );
-    this.store.dispatch(DrawingActions.addDrawing({drawing: internalDrawingRepresentation}));
+  public completeDrawing(graphic: Graphic, mode: DrawingMode, labelText?: string) {
+    switch (mode) {
+      case 'add':
+      case 'edit': {
+        const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
+          graphic,
+          labelText,
+          this.configService.mapConfig.defaultMapConfig.srsId,
+          UserDrawingLayer.Drawings,
+        );
+        this.store.dispatch(DrawingActions.addDrawing({drawing: internalDrawingRepresentation}));
+        break;
+      }
+      case 'delete': {
+        const drawingId = graphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName);
+        this.store.dispatch(DrawingActions.deleteDrawing({drawingId}));
+        break;
+      }
+    }
     this.endDrawing();
   }
 
-  public completeMeasurement(graphic: Graphic, labelPoint: Graphic, labelText: string) {
-    const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
-      graphic,
-      undefined,
-      this.configService.mapConfig.defaultMapConfig.srsId,
-      UserDrawingLayer.Measurements,
-    );
-    const internalDrawingRepresentationLabel = EsriGraphicToInternalDrawingRepresentationUtils.convert(
-      labelPoint,
-      labelText,
-      this.configService.mapConfig.defaultMapConfig.srsId,
-      UserDrawingLayer.Measurements,
-    );
-
-    // note: order is important as the features are drawn in the order of the array, starting at the bottom
-    this.store.dispatch(DrawingActions.addDrawings({drawings: [internalDrawingRepresentation, internalDrawingRepresentationLabel]}));
+  public completeMeasurement(graphic: Graphic, labelPoint: Graphic, labelText: string, mode: DrawingMode) {
+    switch (mode) {
+      case 'add':
+      case 'edit': {
+        const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
+          graphic,
+          undefined,
+          this.configService.mapConfig.defaultMapConfig.srsId,
+          UserDrawingLayer.Measurements,
+        );
+        const internalDrawingRepresentationLabel = EsriGraphicToInternalDrawingRepresentationUtils.convert(
+          labelPoint,
+          labelText,
+          this.configService.mapConfig.defaultMapConfig.srsId,
+          UserDrawingLayer.Measurements,
+        );
+        // note: order is important as the features are drawn in the order of the array, starting at the bottom
+        this.store.dispatch(DrawingActions.addDrawings({drawings: [internalDrawingRepresentation, internalDrawingRepresentationLabel]}));
+        break;
+      }
+      case 'delete': {
+        const drawingId = graphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName);
+        this.store.dispatch(DrawingActions.deleteDrawing({drawingId}));
+        break;
+      }
+    }
     this.endDrawing();
   }
 
@@ -150,7 +209,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
   }
 
   public addExistingDrawingsToLayer(drawingsToAdd: Gb3StyledInternalDrawingRepresentation[], layerIdentifier: UserDrawingLayer) {
-    const fullLayerIdentifier = this.configService.mapConfig.userDrawingLayerPrefix + layerIdentifier;
+    const fullLayerIdentifier = DrawingActiveMapItem.getFullLayerIdentifier(DrawingLayerPrefix.Drawing, layerIdentifier);
     const drawingLayer = this.esriMapViewService.findEsriLayer(fullLayerIdentifier);
 
     if (drawingLayer) {
@@ -178,7 +237,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
    * @param strategySetter A setter function that takes a given layer and sets a strategy for the given tool.
    */
   private initializeInternalDrawingTool(layerIdentifier: InternalDrawingLayer, strategySetter: (layer: GraphicsLayer) => void) {
-    const fullLayerIdentifier = `${this.configService.mapConfig.internalLayerPrefix}${layerIdentifier}`;
+    const fullLayerIdentifier = DrawingActiveMapItem.getFullLayerIdentifier(DrawingLayerPrefix.Internal, layerIdentifier);
     const drawingLayer = this.esriMapViewService.findEsriLayer(fullLayerIdentifier);
     if (drawingLayer) {
       this.initializeTool(drawingLayer as GraphicsLayer, strategySetter);
@@ -192,7 +251,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
    * @param strategySetter A setter function that takes a given layer and sets a strategy for the given tool.
    */
   private initializeUserDrawingTool(layerIdentifier: UserDrawingLayer, strategySetter: (layer: GraphicsLayer) => void) {
-    const fullLayerIdentifier = this.configService.mapConfig.userDrawingLayerPrefix + layerIdentifier;
+    const fullLayerIdentifier = DrawingActiveMapItem.getFullLayerIdentifier(DrawingLayerPrefix.Drawing, layerIdentifier);
     const drawingLayer = this.esriMapViewService.findEsriLayer(fullLayerIdentifier);
 
     if (!drawingLayer) {
@@ -207,10 +266,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
           this.initializeTool(layer! as GraphicsLayer, strategySetter);
         });
 
-      const drawingLayerAdd = ActiveMapItemFactory.createDrawingMapItem(
-        layerIdentifier,
-        this.configService.mapConfig.userDrawingLayerPrefix,
-      );
+      const drawingLayerAdd = ActiveMapItemFactory.createDrawingMapItem(layerIdentifier, DrawingLayerPrefix.Drawing);
       this.store.dispatch(ActiveMapItemActions.addActiveMapItem({activeMapItem: drawingLayerAdd, position: 0}));
     } else {
       this.forceVisibility(fullLayerIdentifier);
@@ -262,6 +318,44 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
     }
   }
 
+  private setToolStrategyForEditingFeature(graphic: Graphic) {
+    const tool: SupportedEsriTool = (graphic.getAttribute('__tool') as SupportedEsriTool) ?? graphic.geometry.type;
+    let drawingType: DrawingTool;
+    let measurementType: MeasurementTool;
+    switch (tool) {
+      case 'polyline':
+        drawingType = 'draw-line';
+        measurementType = 'measure-line';
+        break;
+      case 'polygon':
+        drawingType = 'draw-polygon';
+        measurementType = 'measure-area';
+        break;
+      case 'circle':
+        drawingType = 'draw-circle';
+        measurementType = 'measure-circle';
+        break;
+      case 'rectangle':
+        drawingType = 'draw-rectangle';
+        measurementType = 'measure-area';
+        break;
+      case 'point':
+        measurementType = 'measure-point';
+        drawingType = 'draw-point';
+        break;
+    }
+
+    if (graphic.layer.id.includes(UserDrawingLayer.Drawings)) {
+      this.setDrawingStrategy(drawingType, graphic.layer as GraphicsLayer);
+    } else if (graphic.layer.id.includes(UserDrawingLayer.Measurements)) {
+      this.setMeasurementStrategy(measurementType, graphic.layer as GraphicsLayer);
+    } else if (graphic.layer.id.includes(InternalDrawingLayer.ElevationProfile)) {
+      this.setMeasurementStrategy('measure-elevation-profile', graphic.layer as GraphicsLayer);
+    } else {
+      throw new NonEditableLayerType();
+    }
+  }
+
   private setMeasurementStrategy(measurementType: MeasurementTool, layer: GraphicsLayer) {
     // because we currently do not have pictures symbols, the pointStyle is cast to SimpleMarkerSymbol.
     const pointStyle = this.esriSymbolizationService.createPointSymbolization(UserDrawingLayer.Measurements, false) as SimpleMarkerSymbol;
@@ -276,7 +370,18 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
           this.esriMapViewService.mapView,
           areaStyle,
           labelStyle,
-          (geometry, label, labelText) => this.completeMeasurement(geometry, label, labelText),
+          (geometry, label, labelText, mode) => this.completeMeasurement(geometry, label, labelText, mode),
+          'polygon',
+        );
+        break;
+      case 'measure-circle':
+        this.toolStrategy = new EsriAreaMeasurementStrategy(
+          layer,
+          this.esriMapViewService.mapView,
+          areaStyle,
+          labelStyle,
+          (geometry, label, labelText, mode) => this.completeMeasurement(geometry, label, labelText, mode),
+          'circle',
         );
         break;
       case 'measure-line':
@@ -285,7 +390,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
           this.esriMapViewService.mapView,
           lineStyle,
           labelStyle,
-          (geometry, label, labelText) => this.completeMeasurement(geometry, label, labelText),
+          (geometry, label, labelText, mode) => this.completeMeasurement(geometry, label, labelText, mode),
         );
         break;
       case 'measure-point':
@@ -294,7 +399,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
           this.esriMapViewService.mapView,
           pointStyle,
           labelStyle,
-          (geometry, label, labelText) => this.completeMeasurement(geometry, label, labelText),
+          (geometry, label, labelText, mode) => this.completeMeasurement(geometry, label, labelText, mode),
         );
         break;
       case 'measure-elevation-profile':
@@ -314,13 +419,13 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
 
     switch (drawingType) {
       case 'draw-point':
-        this.toolStrategy = new EsriPointDrawingStrategy(layer, this.esriMapViewService.mapView, pointStyle, (geometry) =>
-          this.completeDrawing(geometry),
+        this.toolStrategy = new EsriPointDrawingStrategy(layer, this.esriMapViewService.mapView, pointStyle, (geometry, mode, labelText) =>
+          this.completeDrawing(geometry, mode, labelText),
         );
         break;
       case 'draw-line':
-        this.toolStrategy = new EsriLineDrawingStrategy(layer, this.esriMapViewService.mapView, lineStyle, (geometry) =>
-          this.completeDrawing(geometry),
+        this.toolStrategy = new EsriLineDrawingStrategy(layer, this.esriMapViewService.mapView, lineStyle, (geometry, mode) =>
+          this.completeDrawing(geometry, mode),
         );
         break;
       case 'draw-polygon':
@@ -328,7 +433,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
           layer,
           this.esriMapViewService.mapView,
           areaStyle,
-          (geometry) => this.completeDrawing(geometry),
+          (geometry, mode) => this.completeDrawing(geometry, mode),
           'polygon',
         );
         break;
@@ -337,7 +442,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
           layer,
           this.esriMapViewService.mapView,
           areaStyle,
-          (geometry) => this.completeDrawing(geometry),
+          (geometry, mode) => this.completeDrawing(geometry, mode),
           'rectangle',
         );
         break;
@@ -346,7 +451,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
           layer,
           this.esriMapViewService.mapView,
           areaStyle,
-          (geometry) => this.completeDrawing(geometry),
+          (geometry, mode) => this.completeDrawing(geometry, mode),
           'circle',
         );
         break;
@@ -355,7 +460,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
           layer,
           this.esriMapViewService.mapView,
           textStyle,
-          (geometry, labelText) => this.completeDrawing(geometry, labelText),
+          (geometry, mode, labelText) => (labelText ? this.completeDrawing(geometry, mode, labelText) : this.endDrawing()),
           this.dialogService,
         );
         break;

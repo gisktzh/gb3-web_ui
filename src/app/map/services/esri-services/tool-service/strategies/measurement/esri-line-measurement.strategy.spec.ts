@@ -8,6 +8,7 @@ import Point from '@arcgis/core/geometry/Point';
 import {EsriLineMeasurementStrategy} from './esri-line-measurement.strategy';
 import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
 import Polyline from '@arcgis/core/geometry/Polyline';
+import {AbstractEsriMeasurementStrategy} from '../abstract-esri-measurement.strategy';
 
 class EsriLineMeasurementStrategyWrapper extends EsriLineMeasurementStrategy {
   public get svm() {
@@ -51,6 +52,19 @@ describe('EsriLineMeasurementStrategy', () => {
 
       expect(callbackSpy).not.toHaveBeenCalled();
       expect(layer.graphics.length).toEqual(0);
+    });
+  });
+
+  describe('activation', () => {
+    it('calls removeLabelOnEdit on activating the edit mode', () => {
+      const strategy = new EsriLineMeasurementStrategyWrapper(layer, mapView, lineSymbol, textSymbol, () => callbackHandler.handle());
+      const removeLabelOnEditSpy = spyOn<any>(AbstractEsriMeasurementStrategy.prototype, 'removeLabelOnEdit');
+      const graphic = new Graphic();
+
+      strategy.edit(graphic);
+      strategy.svm.emit('update', {state: 'start'});
+
+      expect(removeLabelOnEditSpy).toHaveBeenCalledWith(graphic);
     });
   });
 
@@ -124,6 +138,26 @@ describe('EsriLineMeasurementStrategy', () => {
       expect((addedGraphic.symbol as TextSymbol).haloColor).toEqual(textSymbol.haloColor);
       expect((addedGraphic.symbol as TextSymbol).xoffset).toEqual(textSymbol.xoffset);
       expect((addedGraphic.symbol as TextSymbol).color).toEqual(textSymbol.color);
+    });
+    it('calls completeEditing on completion for editing drawings', () => {
+      const strategy = new EsriLineMeasurementStrategyWrapper(layer, mapView, lineSymbol, textSymbol, () => callbackHandler.handle());
+      const completeEditingSpy = spyOn<any>(AbstractEsriMeasurementStrategy.prototype, 'completeEditing');
+      const graphic = new Graphic({
+        geometry: new Polyline({
+          spatialReference: {wkid: 2056},
+          paths: [
+            [
+              [0, 0],
+              [12, 0],
+            ],
+          ],
+        }),
+      });
+
+      strategy.edit(graphic);
+      strategy.svm.emit('update', {state: 'complete'});
+
+      expect(completeEditingSpy).toHaveBeenCalledWith(graphic);
     });
   });
 
@@ -208,6 +242,14 @@ describe('EsriLineMeasurementStrategy', () => {
       strategy.start();
 
       expect(spy).toHaveBeenCalledOnceWith('polyline', {mode: 'click'});
+    });
+    it('sets mode to update', () => {
+      const strategy = new EsriLineMeasurementStrategyWrapper(layer, mapView, lineSymbol, textSymbol, () => callbackHandler.handle());
+      const spy = spyOn(strategy.svm, 'update');
+      const graphic = new Graphic();
+      strategy.edit(graphic);
+
+      expect(spy).toHaveBeenCalledOnceWith(graphic, {multipleSelectionEnabled: false});
     });
   });
 });

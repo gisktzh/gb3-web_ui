@@ -11,8 +11,7 @@ import {MAP_SERVICE} from '../../../app.module';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
 import {catchError} from 'rxjs/operators';
 import {FileImportError, FileValidationError} from '../../../shared/errors/file-upload.errors';
-import {UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
-import {MapConstants} from '../../../shared/constants/map.constants';
+import {DrawingLayerPrefix, UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {DrawingActions} from '../actions/drawing.actions';
@@ -62,6 +61,7 @@ describe('ImportEffects', () => {
               properties: {
                 id: 'test',
                 style: 'style',
+                tool: 'polyline',
               },
               geometry: MinimalGeometriesUtils.getMinimalLineString(2056),
             },
@@ -104,6 +104,7 @@ describe('ImportEffects', () => {
               properties: {
                 id: 'test',
                 style: 'style',
+                tool: 'polyline',
               },
               geometry: {
                 type: 'LineString',
@@ -117,7 +118,7 @@ describe('ImportEffects', () => {
         },
         styles: {},
       };
-      const activeMapItem = ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, MapConstants.USER_DRAWING_LAYER_PREFIX);
+      const activeMapItem = ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, DrawingLayerPrefix.Drawing);
       const drawingLayersToOverride = [UserDrawingLayer.Drawings];
       const drawingsToAdd = SymbolizationToGb3ConverterUtils.convertExternalToInternalRepresentation(
         mockDrawing,
@@ -141,7 +142,7 @@ describe('ImportEffects', () => {
 
   describe('addDrawingToActiveMapItmes$', () => {
     it('dispatches ActiveMapItemActions.addActiveMapItem', (done: DoneFn) => {
-      const activeMapItem = ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, MapConstants.USER_DRAWING_LAYER_PREFIX);
+      const activeMapItem = ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, DrawingLayerPrefix.Drawing);
       actions$ = of(
         ImportActions.addDrawingToMap({activeMapItem, drawingLayersToOverride: [UserDrawingLayer.Drawings], drawingsToAdd: []}),
       );
@@ -153,7 +154,7 @@ describe('ImportEffects', () => {
   });
   describe('overrideExistingDrawings$', () => {
     it('dispatches DrawingActions.overwriteDrawingLayersWithDrawings', (done: DoneFn) => {
-      const activeMapItem = ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, MapConstants.USER_DRAWING_LAYER_PREFIX);
+      const activeMapItem = ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, DrawingLayerPrefix.Drawing);
       const layersToOverride = [UserDrawingLayer.Drawings];
       const drawingsToAdd: Gb3StyledInternalDrawingRepresentation[] = [];
       actions$ = of(ImportActions.addDrawingToMap({activeMapItem, drawingLayersToOverride: layersToOverride, drawingsToAdd}));
@@ -165,7 +166,7 @@ describe('ImportEffects', () => {
   });
   describe('resetLoadingStateAfterSuccessfullyAddingDrawingToMap$', () => {
     it('dispatches ImportActions.resetLoadingStateAfterSuccessfullyAddingDrawingToMap$', (done: DoneFn) => {
-      const activeMapItem = ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, MapConstants.USER_DRAWING_LAYER_PREFIX);
+      const activeMapItem = ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, DrawingLayerPrefix.Drawing);
       const layersToOverride = [UserDrawingLayer.Drawings];
       const drawingsToAdd: Gb3StyledInternalDrawingRepresentation[] = [];
       actions$ = of(ImportActions.addDrawingToMap({activeMapItem, drawingLayersToOverride: layersToOverride, drawingsToAdd}));

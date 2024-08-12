@@ -7,6 +7,7 @@ export const drawingFeatureKey = 'drawing';
 
 export const initialState: DrawingState = {
   drawings: [],
+  selectedDrawing: undefined,
 };
 
 export const drawingFeature = createFeature({
@@ -16,11 +17,30 @@ export const drawingFeature = createFeature({
     on(
       DrawingActions.addDrawing,
       produce((draft, {drawing}) => {
+        draft.drawings = draft.drawings.filter((d) => d.properties.__id !== drawing.properties.__id);
         draft.drawings.push(drawing);
+        draft.selectedDrawing = undefined;
       }),
     ),
-    on(DrawingActions.addDrawings, (state, {drawings}): DrawingState => {
-      return {...state, drawings: [...state.drawings, ...drawings]};
+    on(
+      DrawingActions.addDrawings,
+      produce((draft, {drawings}) => {
+        // Remove previous positions of this drawing and its corresponding labels
+        const drawingsToKeep = draft.drawings.filter(
+          (d) => d.properties.__id !== drawings[0].properties.__id && d.properties.__belongsTo !== drawings[0].properties.__id,
+        );
+        draft.drawings = [...drawingsToKeep, ...drawings];
+        draft.selectedDrawing = undefined;
+      }),
+    ),
+    on(DrawingActions.selectDrawing, (state, {drawingId}): DrawingState => {
+      return {...state, selectedDrawing: state.drawings.find((drawing) => drawing.properties.__id === drawingId)};
+    }),
+    on(DrawingActions.deleteDrawing, (state, {drawingId}): DrawingState => {
+      return {
+        ...state,
+        drawings: state.drawings.filter((drawing) => drawing.properties.__id !== drawingId && drawing.properties.__belongsTo !== drawingId),
+      };
     }),
     on(DrawingActions.clearDrawings, (): DrawingState => {
       return {...initialState};
@@ -35,4 +55,4 @@ export const drawingFeature = createFeature({
   ),
 });
 
-export const {name, reducer, selectDrawingState, selectDrawings} = drawingFeature;
+export const {name, reducer, selectDrawingState, selectDrawings, selectSelectedDrawing} = drawingFeature;

@@ -11,6 +11,7 @@ import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import {of} from 'rxjs';
 import {TextDrawingToolInputComponent} from '../../../../../components/text-drawing-tool-input/text-drawing-tool-input.component';
 import Point from '@arcgis/core/geometry/Point';
+import {AbstractEsriDrawingStrategy} from '../abstract-esri-drawing.strategy';
 
 class EsriTextDrawingStrategyWrapper extends EsriTextDrawingStrategy {
   public get svm() {
@@ -102,6 +103,24 @@ describe('EsriTextDrawingStrategy', () => {
 
       expect((graphic.symbol as TextSymbol).text).toEqual(expectedText);
     });
+
+    it('calls completeEditing on completion for editing drawings', () => {
+      const strategy = new EsriTextDrawingStrategyWrapper(layer, mapView, textSymbol, () => callbackHandler.handle(), dialog);
+      const completeEditingSpy = spyOn<any>(AbstractEsriDrawingStrategy.prototype, 'completeEditing');
+      const graphic = new Graphic({
+        geometry: new Point({
+          spatialReference: {wkid: 2056},
+          x: 1337,
+          y: 42,
+        }),
+        symbol: new TextSymbol(),
+      });
+
+      strategy.edit(graphic);
+      strategy.svm.emit('update', {state: 'complete'});
+
+      expect(completeEditingSpy).toHaveBeenCalledWith(graphic);
+    });
   });
 
   describe('mode', () => {
@@ -112,6 +131,14 @@ describe('EsriTextDrawingStrategy', () => {
       strategy.start();
 
       expect(spy).toHaveBeenCalledOnceWith('point', {mode: 'click'});
+    });
+    it('sets mode to update', () => {
+      const strategy = new EsriTextDrawingStrategyWrapper(layer, mapView, textSymbol, () => callbackHandler.handle(), dialog);
+      const spy = spyOn(strategy.svm, 'update');
+      const graphic = new Graphic();
+      strategy.edit(graphic);
+
+      expect(spy).toHaveBeenCalledOnceWith(graphic, {multipleSelectionEnabled: false});
     });
   });
 });

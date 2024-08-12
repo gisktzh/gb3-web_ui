@@ -91,6 +91,14 @@ import {DrawingDownloadButtonComponent} from './components/map-tools/drawing-dow
 import {DrawingsImportDialogComponent} from './components/map-tools/drawings-import-dialog/drawings-import-dialog.component';
 import {DropZoneComponent} from '../shared/components/drop-zone/drop-zone.component';
 import {DrawingDownloadDialogComponent} from './components/map-tools/drawing-download-dialog/drawing-download-dialog.component';
+import {DrawingEditOverlayComponent} from './components/drawing-edit-overlay/drawing-edit-overlay.component';
+import {DrawingEditComponent} from './components/drawing-edit-overlay/drawing-edit/drawing-edit.component';
+import {LineEditComponent} from './components/drawing-edit-overlay/drawing-edit/line-edit/line-edit.component';
+import {PointEditComponent} from './components/drawing-edit-overlay/drawing-edit/point-edit/point-edit.component';
+import {TextEditComponent} from './components/drawing-edit-overlay/drawing-edit/text-edit/text-edit.component';
+import {PolygonEditComponent} from './components/drawing-edit-overlay/drawing-edit/polygon-edit/polygon-edit.component';
+import {ColorPickerEditComponent} from './components/drawing-edit-overlay/drawing-edit/color-picker-edit/color-picker-edit.component';
+import {SliderEditComponent} from './components/drawing-edit-overlay/drawing-edit/slider-edit/slider-edit.component';
 import {PrintDescriptionPipe} from './components/map-tools/print-dialog/print-description.pipe';
 
 @NgModule({
@@ -168,6 +176,14 @@ import {PrintDescriptionPipe} from './components/map-tools/print-dialog/print-de
     DrawingDownloadDialogComponent,
     MapImportDialogComponent,
     DrawingsImportDialogComponent,
+    DrawingEditOverlayComponent,
+    DrawingEditComponent,
+    LineEditComponent,
+    PolygonEditComponent,
+    PointEditComponent,
+    TextEditComponent,
+    ColorPickerEditComponent,
+    SliderEditComponent,
   ],
   imports: [
     CommonModule,

@@ -4,4 +4,5 @@ export interface EsriToolStrategy {
   internalLayerType: DrawingLayer;
   start: () => void;
   cancel: () => void;
+  edit: (graphic: __esri.Graphic) => void;
 }

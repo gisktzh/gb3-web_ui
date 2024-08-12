@@ -1,14 +1,24 @@
-import {Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {filter} from 'rxjs';
+import {filter, tap} from 'rxjs';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {map} from 'rxjs/operators';
 import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
 import {DrawingActiveMapItem} from '../../../map/models/implementations/drawing.model';
 import {DrawingActions} from '../actions/drawing.actions';
+import {MapUiActions} from '../actions/map-ui.actions';
+import {ToolService} from '../../../map/interfaces/tool.service';
+import {MapService} from '../../../map/interfaces/map.service';
+import {MAP_SERVICE} from '../../../app.module';
+import {concatLatestFrom} from '@ngrx/operators';
+import {Store} from '@ngrx/store';
+import {selectSelectedDrawing} from '../reducers/drawing.reducer';
+import {DrawingNotFound} from '../../../shared/errors/drawing.errors';
 
 @Injectable()
 export class DrawingEffects {
+  private readonly toolService: ToolService;
+
   public clearSingleDrawingLayer$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ActiveMapItemActions.removeActiveMapItem),
@@ -25,5 +35,53 @@ export class DrawingEffects {
     );
   });
 
-  constructor(private readonly actions$: Actions) {}
+  public editDrawing$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(DrawingActions.selectDrawing),
+      concatLatestFrom(() => this.store.select(selectSelectedDrawing)),
+      map(([_, selectedDrawing]) => {
+        if (!selectedDrawing) {
+          throw new DrawingNotFound();
+        }
+        return MapUiActions.setDrawingEditOverlayVisibility({isVisible: true});
+      }),
+    );
+  });
+
+  public closeDrawingEditOverlayAfterFinishEditingOrDeleting$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(DrawingActions.addDrawing, DrawingActions.addDrawings, DrawingActions.deleteDrawing),
+      map(() => MapUiActions.setDrawingEditOverlayVisibility({isVisible: false})),
+    );
+  });
+
+  public passStylingToToolService$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(DrawingActions.updateDrawingStyles),
+        tap(({drawing, style, labelText}) => {
+          this.toolService.updateDrawingStyles(drawing, style, labelText);
+        }),
+      );
+    },
+    {dispatch: false},
+  );
+
+  public cancelEditModeAfterClosingDrawingEditOverlay$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(DrawingActions.cancelEditMode),
+      map(() => {
+        this.mapService.cancelEditMode();
+        return MapUiActions.setDrawingEditOverlayVisibility({isVisible: false});
+      }),
+    );
+  });
+
+  constructor(
+    private readonly actions$: Actions,
+    private readonly store: Store,
+    @Inject(MAP_SERVICE) private readonly mapService: MapService,
+  ) {
+    this.toolService = this.mapService.getToolService();
+  }
 }

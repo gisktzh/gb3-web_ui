@@ -1,35 +1,17 @@
 <api-dialog-wrapper title="Einstellungen" (closeEvent)="cancel()" class="drawing-settings-dialog">
   <ng-container content>
     <div class="drawing-settings-dialog__content">
-      <div class="drawing-settings-dialog__content__option">
-        <slider-wrapper
-          title="Strichstärke"
-          [value]="lineWidth"
-          [overwriteFooter]="true"
-          class="drawing-settings-dialog__content__option__width"
-        >
-          <ng-container content>
-            <mat-slider [min]="1" [max]="12" [step]="1" color="primary" class="drawing-settings-dialog__content__option__width__slider">
-              <input matSliderThumb [(ngModel)]="lineWidth" />
-            </mat-slider>
-          </ng-container>
-          <ng-container footer>
-            <div class="drawing-settings-dialog__content__option__width__footer">
-              <span class="drawing-settings-dialog__content__option__width__footer__min"></span>
-              <span class="drawing-settings-dialog__content__option__width__footer__max"></span>
-            </div>
-          </ng-container>
-        </slider-wrapper>
-      </div>
-
-      <div class="drawing-settings-dialog__content__option">
-        <span class="drawing-settings-dialog__content__option__label">Text- und Strichfarbe</span>
-        <input class="drawing-settings-dialog__content__option__color-picker" type="color" [(ngModel)]="lineColor" />
-      </div>
-      <div class="drawing-settings-dialog__content__option">
-        <span class="drawing-settings-dialog__content__option__label">Füllfarbe</span>
-        <input class="drawing-settings-dialog__content__option__color-picker" type="color" [(ngModel)]="fillColor" />
-      </div>
+      <slider-edit
+        (updateSliderEvent)="lineWidth = $event"
+        [sliderValue]="lineWidth"
+        [min]="1"
+        [max]="12"
+        [step]="1"
+        [showLineWidth]="true"
+        title="Strichstärke"
+      ></slider-edit>
+      <color-picker-edit (updateColorEvent)="lineColor = $event" [fillColor]="lineColor" title="Strichfarbe"></color-picker-edit>
+      <color-picker-edit (updateColorEvent)="fillColor = $event" [fillColor]="fillColor" title="FüllFarbe"></color-picker-edit>
     </div>
   </ng-container>
   <ng-container actions>

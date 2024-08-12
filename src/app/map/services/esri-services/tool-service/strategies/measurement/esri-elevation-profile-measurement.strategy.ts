@@ -1,6 +1,6 @@
-import {SupportedEsriTool} from '../abstract-esri-drawable-tool.strategy';
 import {AbstractEsriDrawingStrategy} from '../abstract-esri-drawing.strategy';
 import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
+import {SupportedEsriTool} from '../supported-esri-tool.type';
 
 /**
  * Note: Although used for measurement, it is actually a DrawingStrategy, because none of the MeasurementStrategy's specifics are

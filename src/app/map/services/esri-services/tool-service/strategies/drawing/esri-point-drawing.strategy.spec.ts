@@ -6,6 +6,7 @@ import Map from '@arcgis/core/Map';
 import Graphic from '@arcgis/core/Graphic';
 import Point from '@arcgis/core/geometry/Point';
 import {EsriPointDrawingStrategy} from './esri-point-drawing.strategy';
+import {AbstractEsriDrawingStrategy} from '../abstract-esri-drawing.strategy';
 
 class EsriPointDrawingStrategyWrapper extends EsriPointDrawingStrategy {
   public get svm() {
@@ -59,6 +60,16 @@ describe('EsriPointDrawingStrategy', () => {
 
       expect(callbackSpy).toHaveBeenCalled();
     });
+    it('calls completeEditing on completion for editing drawings', () => {
+      const strategy = new EsriPointDrawingStrategyWrapper(layer, mapView, pointSymbol, () => callbackHandler.handle());
+      const completeEditingSpy = spyOn<any>(AbstractEsriDrawingStrategy.prototype, 'completeEditing');
+      const graphic = new Graphic({geometry: new Point({x: 1, y: 2})});
+
+      strategy.edit(graphic);
+      strategy.svm.emit('update', {state: 'complete'});
+
+      expect(completeEditingSpy).toHaveBeenCalledWith(graphic);
+    });
   });
 
   describe('mode', () => {
@@ -69,6 +80,14 @@ describe('EsriPointDrawingStrategy', () => {
       strategy.start();
 
       expect(spy).toHaveBeenCalledOnceWith('point', {mode: 'click'});
+    });
+    it('sets mode to update', () => {
+      const strategy = new EsriPointDrawingStrategyWrapper(layer, mapView, pointSymbol, () => callbackHandler.handle());
+      const spy = spyOn(strategy.svm, 'update');
+      const graphic = new Graphic();
+      strategy.edit(graphic);
+
+      expect(spy).toHaveBeenCalledOnceWith(graphic, {multipleSelectionEnabled: false});
     });
   });
 });

@@ -19,6 +19,10 @@ export class MeasurementToolsComponent extends AbstractToolsComponent {
     this.toggleTool('measure-area');
   }
 
+  public toggleCircleMeasurement() {
+    this.toggleTool('measure-circle');
+  }
+
   public toggleElevationProfileMeasurement() {
     this.toggleTool('measure-elevation-profile');
   }

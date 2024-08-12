@@ -6,11 +6,10 @@ import {ImportActions} from '../actions/import.actions';
 import {Gb3ImportService} from '../../../shared/services/apis/gb3/gb3-import.service';
 import {FileImportError, FileValidationError} from '../../../shared/errors/file-upload.errors';
 import {SymbolizationToGb3ConverterUtils} from '../../../shared/utils/symbolization-to-gb3-converter.utils';
-import {UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
+import {DrawingLayerPrefix, UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {MAP_SERVICE} from '../../../app.module';
 import {MapService} from '../../../map/interfaces/map.service';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
-import {MapConstants} from '../../../shared/constants/map.constants';
 import {ActiveMapItemActions} from '../actions/active-map-item.actions';
 import {DrawingActions} from '../actions/drawing.actions';
 
@@ -32,7 +31,7 @@ export class ImportEffects {
     return this.actions$.pipe(
       ofType(ImportActions.createActiveMapItemFromDrawing),
       map(({drawing}) => {
-        const activeMapItem = ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, MapConstants.USER_DRAWING_LAYER_PREFIX);
+        const activeMapItem = ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, DrawingLayerPrefix.Drawing);
         const drawingsToAdd = SymbolizationToGb3ConverterUtils.convertExternalToInternalRepresentation(drawing, UserDrawingLayer.Drawings);
         const drawingLayersToOverride: UserDrawingLayer[] = [];
         this.mapService.removeMapItem(activeMapItem.id);
