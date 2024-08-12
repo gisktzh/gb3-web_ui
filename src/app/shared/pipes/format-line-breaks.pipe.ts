@@ -6,7 +6,7 @@ import {Pipe, PipeTransform} from '@angular/core';
  * * \r because \n is optional
  * * \n directly if neither \r\n nor \r are present
  *
- * The reason for this is that the GB3 backend is inconsistent and uses all three line breaks.
+ * The reason for this is that the data from the GB3 backend is inconsistent and uses all three line breaks.
  */
 const LINE_BREAK_REGEX = /\r\n?|\n/g;
 
