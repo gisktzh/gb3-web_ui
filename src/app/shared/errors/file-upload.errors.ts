@@ -31,6 +31,6 @@ export class FileValidationError extends RecoverableError {
 }
 
 export class FileImportError extends RecoverableError {
-  public override message = 'Beim Import der Datei ist ein Fehler aufgetreten.';
+  public override message = 'Beim Hochladen der Datei ist ein Fehler aufgetreten.';
   public override name = 'FileImportError';
 }
