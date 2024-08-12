@@ -159,7 +159,7 @@ describe('DrawingEffects', () => {
     });
   });
 
-  describe('cancelToolAfterClosingDrawingEditOverlay$', () => {
+  describe('cancelEditModeAfterClosingDrawingEditOverlay', () => {
     it('calls toolService.cancelTool', (done: DoneFn) => {
       actions$ = of(DrawingActions.cancelEditMode());
       const mapServiceSpy = spyOn(mapService, 'cancelEditMode').and.callThrough();

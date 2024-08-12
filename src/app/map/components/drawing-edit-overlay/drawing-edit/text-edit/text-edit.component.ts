@@ -1,8 +1,9 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {Gb3TextStyle, TextStyleConfiguration} from '../../../../../shared/interfaces/internal-drawing-representation.interface';
 import {MapConstants} from '../../../../../shared/constants/map.constants';
-import {debounceTime, Subject, Subscription} from 'rxjs';
+import {debounceTime, Subject, Subscription, tap} from 'rxjs';
 
+const COLOR_INPUT_DEBOUNCE_IN_MS = 10;
 @Component({
   selector: 'text-edit',
   templateUrl: './text-edit.component.html',
@@ -14,7 +15,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
 
   @Output() public updateStyleEvent = new EventEmitter<{style: Gb3TextStyle; labelText: string}>();
 
-  public maxLength: number = MapConstants.TEXT_DRAWING_MAX_LENGTH;
+  public readonly maxLength: number = MapConstants.TEXT_DRAWING_MAX_LENGTH;
 
   private readonly subscriptions = new Subscription();
   private readonly debouncer = new Subject<{
@@ -24,10 +25,12 @@ export class TextEditComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.subscriptions.add(
-      this.debouncer.pipe(debounceTime(10)).subscribe(({field, value}) => {
-        console.log('debounced');
-        this.updateValue(field, value);
-      }),
+      this.debouncer
+        .pipe(
+          debounceTime(COLOR_INPUT_DEBOUNCE_IN_MS),
+          tap(({field, value}) => this.updateValue(field, value)),
+        )
+        .subscribe(),
     );
   }
 
@@ -46,7 +49,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
     }
   }
 
-  public updatedValueWithDelay(field: keyof TextStyleConfiguration, value: number | string) {
+  public updateValueWithDelay(field: keyof TextStyleConfiguration, value: number | string) {
     this.debouncer.next({field, value});
   }
 }
