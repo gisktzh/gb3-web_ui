@@ -1,7 +1,7 @@
 import {initialState, reducer} from './import.reducer';
 import {ImportActions} from '../actions/import.actions';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
-import {UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
+import {DrawingLayerPrefix, UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 
 describe('Import Reducer', () => {
   describe('an unknown action', () => {
@@ -23,7 +23,7 @@ describe('Import Reducer', () => {
   });
   describe('addDrawingToMap', () => {
     it('sets the loading state to loaded', () => {
-      const activeMapItem = ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, 'prefix');
+      const activeMapItem = ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, DrawingLayerPrefix.Drawing);
       const action = ImportActions.addDrawingToMap({activeMapItem, drawingsToAdd: [], drawingLayersToOverride: []});
       const result = reducer(initialState, action);
 

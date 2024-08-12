@@ -97,7 +97,9 @@ export abstract class AbstractEsriMeasurementStrategy<
       const belongsToGraphic = this.layer.graphics.find(
         (existingGraphic) => existingGraphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName) === belongsToIdentifier,
       );
-      this.completeDrawingCallbackHandler(belongsToGraphic, graphic, (graphic.symbol as TextSymbol).text, 'edit');
+      if (belongsToGraphic) {
+        this.completeDrawingCallbackHandler(belongsToGraphic, graphic, (graphic.symbol as TextSymbol).text, 'edit');
+      }
       return;
     }
 
@@ -107,12 +109,14 @@ export abstract class AbstractEsriMeasurementStrategy<
   }
 
   private removeLabelOnEdit(graphic: Graphic) {
-    const labelGraphic: Graphic = this.layer.graphics.find(
+    const labelGraphic = this.layer.graphics.find(
       (existingGraphic) =>
         existingGraphic.getAttribute(AbstractEsriDrawableToolStrategy.belongsToFieldName) ===
         graphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName),
     );
-    this.layer.remove(labelGraphic);
+    if (labelGraphic) {
+      this.layer.remove(labelGraphic);
+    }
   }
 
   private createLabelForGeometry(geometry: TGeometry, belongsToGraphic: string): {label: Graphic; labelText: string} {
