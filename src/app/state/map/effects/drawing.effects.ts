@@ -67,16 +67,15 @@ export class DrawingEffects {
     {dispatch: false},
   );
 
-  public cancelToolAfterClosingDrawingEditOverlay$ = createEffect(
-    () => {
-      return this.actions$.pipe(
-        ofType(MapUiActions.setDrawingEditOverlayVisibility),
-        filter(({isVisible}) => !isVisible),
-        tap(() => this.toolService.cancelTool()),
-      );
-    },
-    {dispatch: false},
-  );
+  public cancelEditModeAfterClosingDrawingEditOverlay$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(DrawingActions.cancelEditMode),
+      map(() => {
+        this.mapService.cancelEditMode();
+        return MapUiActions.setDrawingEditOverlayVisibility({isVisible: false});
+      }),
+    );
+  });
 
   constructor(
     private readonly actions$: Actions,

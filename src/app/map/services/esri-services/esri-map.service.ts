@@ -467,6 +467,11 @@ export class EsriMapService implements MapService, OnDestroy {
     this.mapView.rotation = rotation;
   }
 
+  public cancelEditMode() {
+    this.isEditModeActive = false;
+    this.esriToolService.cancelTool();
+  }
+
   private createWmsLayer(
     id: string,
     title: string,

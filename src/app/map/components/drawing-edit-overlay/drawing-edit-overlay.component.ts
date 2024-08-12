@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {selectIsDrawingEditOverlayVisible} from '../../../state/map/reducers/map-ui.reducer';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
-import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
+import {DrawingActions} from '../../../state/map/actions/drawing.actions';
 
 @Component({
   selector: 'drawing-edit-overlay',
@@ -26,7 +26,7 @@ export class DrawingEditOverlayComponent implements OnInit, OnDestroy {
   }
 
   public close() {
-    this.store.dispatch(MapUiActions.setDrawingEditOverlayVisibility({isVisible: false}));
+    this.store.dispatch(DrawingActions.cancelEditMode());
   }
 
   private initSubscriptions() {

@@ -1,5 +1,5 @@
 import {provideMockActions} from '@ngrx/effects/testing';
-import {fakeAsync, flush, TestBed, tick} from '@angular/core/testing';
+import {fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {EMPTY, Observable, of} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
@@ -22,11 +22,13 @@ import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {selectSelectedDrawing} from '../reducers/drawing.reducer';
 import {DrawingNotFound} from '../../../shared/errors/drawing.errors';
 import {catchError} from 'rxjs/operators';
+import {MapService} from '../../../map/interfaces/map.service';
 
 describe('DrawingEffects', () => {
   let actions$: Observable<Action>;
   let effects: DrawingEffects;
   let toolService: ToolService;
+  let mapService: MapService;
   let store: MockStore;
 
   beforeEach(() => {
@@ -44,7 +46,7 @@ describe('DrawingEffects', () => {
       ],
     });
     effects = TestBed.inject(DrawingEffects);
-    const mapService = TestBed.inject(MAP_SERVICE);
+    mapService = TestBed.inject(MAP_SERVICE);
     toolService = mapService.getToolService();
     store = TestBed.inject(MockStore);
   });
@@ -159,23 +161,14 @@ describe('DrawingEffects', () => {
 
   describe('cancelToolAfterClosingDrawingEditOverlay$', () => {
     it('calls toolService.cancelTool', (done: DoneFn) => {
-      actions$ = of(MapUiActions.setDrawingEditOverlayVisibility({isVisible: false}));
-      const toolServiceSpy = spyOn(toolService, 'cancelTool').and.callThrough();
+      actions$ = of(DrawingActions.cancelEditMode());
+      const mapServiceSpy = spyOn(mapService, 'cancelEditMode').and.callThrough();
 
-      effects.cancelToolAfterClosingDrawingEditOverlay$.subscribe(() => {
-        expect(toolServiceSpy).toHaveBeenCalledTimes(1);
+      effects.cancelEditModeAfterClosingDrawingEditOverlay$.subscribe((action) => {
+        expect(mapServiceSpy).toHaveBeenCalledTimes(1);
+        expect(action).toEqual(MapUiActions.setDrawingEditOverlayVisibility({isVisible: false}));
         done();
       });
     });
-
-    it('dispatches nothing when FeatureINfo is closed', fakeAsync(async () => {
-      const toolServiceSpy = spyOn(toolService, 'cancelTool').and.callThrough();
-      let newAction;
-      actions$ = of(MapUiActions.setDrawingEditOverlayVisibility({isVisible: true}));
-      effects.cancelToolAfterClosingDrawingEditOverlay$.subscribe((action) => (newAction = action));
-      flush();
-      expect(toolServiceSpy).not.toHaveBeenCalled();
-      expect(newAction).toBeUndefined();
-    }));
   });
 });
