@@ -1,14 +1,14 @@
 steps:
-  - task: SonarCloudPrepare@1
+  - task: SonarCloudPrepare@2
     displayName: 'Prepare Sonar Cloud WebClient'
     inputs:
       SonarCloud: 'EBP Sonar Cloud'
       organization: 'ebpgroup'
       scannerMode: 'CLI'
       configMode: 'file'
-  - task: SonarCloudAnalyze@1
+  - task: SonarCloudAnalyze@2
     inputs:
       jdkversion: 'JAVA_HOME_17_X64'
-  - task: SonarCloudPublish@1
+  - task: SonarCloudPublish@2
     inputs:
       pollingTimeoutSec: '300'
