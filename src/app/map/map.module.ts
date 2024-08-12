@@ -88,6 +88,8 @@ import {ElevationProfileChartComponent} from './components/elevation-profile-ove
 import {provideCharts, withDefaultRegisterables} from 'ng2-charts';
 import {FeatureFlagDirective} from '../shared/directives/feature-flag.directive';
 import {DrawingDownloadButtonComponent} from './components/map-tools/drawing-download-button/drawing-download-button.component';
+import {DrawingsImportDialogComponent} from './components/map-tools/drawings-import-dialog/drawings-import-dialog.component';
+import {DropZoneComponent} from '../shared/components/drop-zone/drop-zone.component';
 import {DrawingDownloadDialogComponent} from './components/map-tools/drawing-download-dialog/drawing-download-dialog.component';
 import {DrawingEditOverlayComponent} from './components/drawing-edit-overlay/drawing-edit-overlay.component';
 import {DrawingEditComponent} from './components/drawing-edit-overlay/drawing-edit/drawing-edit.component';
@@ -173,6 +175,7 @@ import {PrintDescriptionPipe} from './components/map-tools/print-dialog/print-de
     DrawingSettingsDialogComponent,
     DrawingDownloadDialogComponent,
     MapImportDialogComponent,
+    DrawingsImportDialogComponent,
     DrawingEditOverlayComponent,
     DrawingEditComponent,
     LineEditComponent,
@@ -204,6 +207,7 @@ import {PrintDescriptionPipe} from './components/map-tools/print-dialog/print-de
     DrawingDownloadButtonComponent,
     FeatureFlagDirective,
     NgOptimizedImage,
+    DropZoneComponent,
     PrintDescriptionPipe,
   ],
   exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent, MapOverlayComponent],

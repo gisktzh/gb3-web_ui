@@ -7,7 +7,7 @@
   </div>
   <div class="api-dialog-wrapper__content" mat-dialog-content>
     <ng-content select="[content]"></ng-content>
-    <mat-error *ngIf="errorText && savingState === 'error'" class="mat-caption">{{ errorText }}</mat-error>
+    <span *ngIf="errorText && savingState === 'error'" class="mat-caption api-dialog-wrapper__content__error">{{ errorText }}</span>
   </div>
   <div mat-dialog-actions>
     <ng-content select="[actions]"></ng-content>

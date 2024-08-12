@@ -180,7 +180,6 @@ export class Gb3TopicsService extends Gb3ApiService {
                       maxScale: layer.max_scale,
                       wmsSort: layer.wms_sort,
                       tocSort: layer.toc_sort,
-                      initiallyVisible: layer.initially_visible,
                       permissionMissing: layer.permission_missing,
                       visible: layer.initially_visible,
                       isHidden: false,
