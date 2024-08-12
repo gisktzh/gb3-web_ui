@@ -1,0 +1,17 @@
+<api-dialog-wrapper
+  [savingState]="loadingState"
+  title="Zeichnung hochladen"
+  errorText="Beim Hochladen der Datei ist ein Fehler aufgetreten!"
+  (closeEvent)="cancel()"
+>
+  <ng-container content>
+    <div>
+      <drop-zone (addedFileEvent)="handleFileChange($event)" (uploadErrorEvent)="handleFileError($event)"></drop-zone>
+    </div>
+  </ng-container>
+  <ng-container actions>
+    <div class="drawings-import-dialog__actions">
+      <button (click)="cancel()" mat-button class="drawings-import-dialog__actions__button">Schliessen</button>
+    </div>
+  </ng-container>
+</api-dialog-wrapper>
