@@ -6,26 +6,26 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: calc(0px - search-bar-variables.$search-bar-height / 2);
+  margin-top: calc(0px - #{search-bar-variables.$search-bar-height} / 2);
 
   &--mobile {
-    margin-top: calc(0px - search-bar-variables.$search-bar-height-compact / 2);
+    margin-top: calc(0px - #{search-bar-variables.$search-bar-wrapper-height-compact} / 2);
   }
 
   .data-catalogue-overview__search__bar {
     @include mixins.map-element-box-shadow;
     width: ktzh-variables.$zh-layout-max-content-width;
-    height: search-bar-variables.$search-bar-height;
+    height: search-bar-variables.$search-bar-wrapper-height;
     background-color: ktzh-variables.$zh-background-color;
   }
 
-  @media (max-width: calc(ktzh-variables.$zh-layout-max-content-width + 48px)) {
+  @media (max-width: calc(#{ktzh-variables.$zh-layout-max-content-width} + 48px)) {
     .data-catalogue-overview__search__bar {
       width: calc(100vw - 62px);
 
       &--mobile {
         width: calc(100vw - 24px);
-        height: search-bar-variables.$search-bar-height-compact;
+        height: search-bar-variables.$search-bar-wrapper-height-compact;
       }
     }
   }

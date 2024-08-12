@@ -3,6 +3,10 @@
 @use 'mixins/material.mixin' as mat-mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
+:host {
+  height: 100%;
+}
+
 .search {
   height: 100%;
   display: flex;
@@ -43,6 +47,7 @@
       border: none;
       outline: none;
       flex-grow: 1;
+      height: 100%;
 
       &--mobile {
         // This is necessary because mobile screens will zoom in for fonts that are <16px

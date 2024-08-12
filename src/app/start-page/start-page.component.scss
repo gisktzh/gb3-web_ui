@@ -7,10 +7,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: calc(0px - search-bar-variables.$search-bar-height / 2);
+    margin-top: calc(0px - #{search-bar-variables.$search-bar-wrapper-height} / 2);
 
     &--mobile {
-      margin-top: calc(0px - search-bar-variables.$search-bar-height-compact / 2);
+      margin-top: calc(0px - #{search-bar-variables.$search-bar-wrapper-height-compact} / 2);
     }
   }
 }
