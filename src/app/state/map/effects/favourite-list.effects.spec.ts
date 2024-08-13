@@ -2,13 +2,14 @@ import {provideMockActions} from '@ngrx/effects/testing';
 import {TestBed} from '@angular/core/testing';
 import {EMPTY, Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {provideMockStore} from '@ngrx/store/testing';
 import {catchError} from 'rxjs/operators';
 import {FavouriteListEffects} from './favourite-list.effects';
 import {FavouriteListActions} from '../actions/favourite-list.actions';
 import {FavouriteCouldNotBeLoaded, FavouriteIsInvalid, FavouritesCouldNotBeLoaded} from '../../../shared/errors/favourite.errors';
 import {FavouritesService} from '../../../map/services/favourites.service';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
 describe('FavouriteListEffects', () => {
   let actions$: Observable<Action>;
@@ -20,12 +21,14 @@ describe('FavouriteListEffects', () => {
     favouriteServiceMock = jasmine.createSpyObj<FavouritesService>(['loadFavourites']);
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: [],
       providers: [
         FavouriteListEffects,
         provideMockActions(() => actions$),
         provideMockStore(),
         {provide: FavouritesService, useValue: favouriteServiceMock},
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
     });
     effects = TestBed.inject(FavouriteListEffects);

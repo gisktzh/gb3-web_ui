@@ -1,17 +1,14 @@
-@use '@arcgis/core/assets/esri/themes/light/main.css';
+@use 'material-icons/iconfont/filled.css'; /* we only import the filled icons to reduce bundle size */
 @use 'gb3-theme';
 @use 'overrides/esri-overrides';
 @use 'overrides/material-overrides';
 
 /*
-  Import the Material Icons font explicitly as CSS and not as SCSS.
-  This workaround is needed with Angular 17.2.3 due to internal path resolution changes.
-  See https://github.com/angular/angular-cli/issues/27256
-
-  As soon as the karma runner moves away from webpack OR the package is updated OR someone has a better fix for this
-  issue, we can remove this workaround.
+  Import the ArcGIS theme explicitly by using `import` instead of `use` to
+  avoid the following error after upgrading to Angular 18:
+    Could not resolve "../base/icons/fonts/CalciteWebCoreIcons.woff?qt9ftt"
  */
-@import 'material-icons/iconfont/filled.css';
+@import '@arcgis/core/assets/esri/themes/light/main.css';
 
 body {
   margin: 0;

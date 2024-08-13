@@ -4,6 +4,7 @@ import {HasSrs} from './geojson-types-with-srs.interface';
 import {SupportedGeometry} from '../types/SupportedGeometry.type';
 import {AbstractEsriDrawableToolStrategy} from '../../map/services/esri-services/tool-service/strategies/abstract-esri-drawable-tool.strategy';
 import {MapfishPrintStyleProperties} from '../models/mapfish-print-style-properties-generated.interface';
+import {SupportedEsriTool} from '../../map/services/esri-services/tool-service/strategies/supported-esri-tool.type';
 
 interface InternalDrawingRepresentation<T = Record<never, never>> extends Feature<SupportedGeometry, T> {
   labelText?: string;
@@ -16,17 +17,17 @@ interface InternalDrawingRepresentation<T = Record<never, never>> extends Featur
  */
 export type UnstyledInternalDrawingRepresentation = InternalDrawingRepresentation;
 
-interface InternalDrawingType {
+export interface InternalDrawingType {
   type: 'point' | 'line' | 'polygon' | 'text';
 }
 
-interface LineStyleConfiguration extends Pick<MapfishPrintStyleProperties, 'strokeColor' | 'strokeOpacity' | 'strokeWidth'> {}
+export interface LineStyleConfiguration extends Pick<MapfishPrintStyleProperties, 'strokeColor' | 'strokeOpacity' | 'strokeWidth'> {}
 
-interface AreaStyleConfiguration extends LineStyleConfiguration, Pick<MapfishPrintStyleProperties, 'fillColor' | 'fillOpacity'> {}
+export interface AreaStyleConfiguration extends LineStyleConfiguration, Pick<MapfishPrintStyleProperties, 'fillColor' | 'fillOpacity'> {}
 
-interface PointStyleConfiguration extends Pick<MapfishPrintStyleProperties, 'pointRadius'> {}
+export interface PointStyleConfiguration extends AreaStyleConfiguration, Pick<MapfishPrintStyleProperties, 'pointRadius'> {}
 
-interface TextStyleConfiguration
+export interface TextStyleConfiguration
   extends Pick<
     MapfishPrintStyleProperties,
     'label' | 'fontSize' | 'fontColor' | 'fontFamily' | 'labelYOffset' | 'labelAlign' | 'haloColor' | 'haloRadius'
@@ -36,7 +37,7 @@ export interface Gb3LineStringStyle extends InternalDrawingType, LineStyleConfig
   type: 'line';
 }
 
-export interface Gb3PointStyle extends InternalDrawingType, AreaStyleConfiguration, PointStyleConfiguration {
+export interface Gb3PointStyle extends InternalDrawingType, PointStyleConfiguration {
   type: 'point';
 }
 
@@ -57,4 +58,5 @@ export type Gb3StyledInternalDrawingRepresentation = InternalDrawingRepresentati
   style: Gb3StyleRepresentation;
   [AbstractEsriDrawableToolStrategy.identifierFieldName]: string;
   [AbstractEsriDrawableToolStrategy.belongsToFieldName]?: string;
+  [AbstractEsriDrawableToolStrategy.toolFieldName]: SupportedEsriTool;
 }>;

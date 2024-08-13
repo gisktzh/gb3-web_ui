@@ -9,12 +9,18 @@ import Multipoint from '@arcgis/core/geometry/Multipoint';
 import Polyline from '@arcgis/core/geometry/Polyline';
 import Polygon from '@arcgis/core/geometry/Polygon';
 import {UnsupportedGeometryType} from '../errors/esri.errors';
+import {AbstractEsriDrawableToolStrategy} from '../tool-service/strategies/abstract-esri-drawable-tool.strategy';
 
 export class InternalDrawingRepresentationToEsriGraphicUtils {
   public static convert(drawing: Gb3StyledInternalDrawingRepresentation): Graphic {
     const symbolization = StyleRepresentationToEsriSymbolUtils.convert(drawing.properties.style, drawing.labelText);
     const geometry = InternalDrawingRepresentationToEsriGraphicUtils.convertGeoJsonToArcGIS(drawing.geometry);
-    return new Graphic({geometry: geometry, symbol: symbolization});
+    const attributes = {
+      [AbstractEsriDrawableToolStrategy.identifierFieldName]: drawing.properties.__id,
+      [AbstractEsriDrawableToolStrategy.belongsToFieldName]: drawing.properties.__belongsTo,
+      [AbstractEsriDrawableToolStrategy.toolFieldName]: drawing.properties.__tool,
+    };
+    return new Graphic({geometry: geometry, symbol: symbolization, attributes});
   }
 
   /**

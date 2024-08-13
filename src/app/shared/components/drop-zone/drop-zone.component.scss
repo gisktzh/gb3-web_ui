@@ -1,0 +1,25 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'functions/helper.function' as functions;
+
+.drop-zone {
+  height: 204px;
+  border: 2px dashed ktzh-variables.$zh-black20;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 12px;
+
+  &--hovered {
+    background-color: functions.get-color-from-palette(ktzh-variables.$zh-accent, 50);
+  }
+
+  .drop-zone__input {
+    display: none;
+  }
+
+  .drop-zone__button {
+    height: 48px;
+  }
+}

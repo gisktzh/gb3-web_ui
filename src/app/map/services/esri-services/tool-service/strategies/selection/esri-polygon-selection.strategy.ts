@@ -1,15 +1,15 @@
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import MapView from '@arcgis/core/views/MapView';
-import {AbstractEsriDrawableToolStrategy, SupportedEsriTool} from '../abstract-esri-drawable-tool.strategy';
+import {AbstractEsriDrawableToolStrategy} from '../abstract-esri-drawable-tool.strategy';
 import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
 import {InternalDrawingLayer} from '../../../../../../shared/enums/drawing-layer.enum';
 import {DataDownloadSelection} from '../../../../../../shared/interfaces/data-download-selection.interface';
 import {EsriGraphicToInternalDrawingRepresentationUtils} from '../../../utils/esri-graphic-to-internal-drawing-representation.utils';
 import {SupportedSrs} from '../../../../../../shared/types/supported-srs.type';
 import Graphic from '@arcgis/core/Graphic';
-
-type PolygonType = Extract<SupportedEsriTool, 'circle' | 'polygon' | 'rectangle'>;
+import {SupportedEsriPolygonTool, SupportedEsriTool} from '../supported-esri-tool.type';
+import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 
 export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrategy<DrawingCallbackHandler['completeSelection']> {
   public readonly internalLayerType: InternalDrawingLayer = InternalDrawingLayer.Selection;
@@ -18,20 +18,28 @@ export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrate
 
   public start(): void {
     this.sketchViewModel.create(this.tool, {mode: 'click'});
-    this.sketchViewModel.on('create', ({state, graphic}) => {
-      switch (state) {
-        case 'cancel':
-        case 'active':
-          break; // currently, these events do not trigger any action
-        case 'start':
-          // remove all old selections before starting a new one
-          this.layer.removeAll();
-          break;
-        case 'complete':
-          this.complete(graphic);
-          break;
-      }
-    });
+
+    reactiveUtils.on(
+      () => this.sketchViewModel,
+      'create',
+      ({state, graphic}: {state: __esri.SketchViewModelCreateEvent['state']; graphic: Graphic}) => {
+        switch (state) {
+          case 'start':
+            this.layer.removeAll();
+            break;
+          case 'active':
+          case 'cancel':
+            break; // currently, these events do not trigger any action
+          case 'complete':
+            this.complete(graphic);
+            break;
+        }
+      },
+    );
+  }
+
+  public edit(graphic: Graphic) {
+    // currently, editing is not supported for selection strategies
   }
 
   private complete(graphic: Graphic) {
@@ -54,7 +62,7 @@ export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrate
     mapView: MapView,
     polygonSymbol: SimpleFillSymbol,
     completeCallbackHandler: DrawingCallbackHandler['completeSelection'],
-    polygonType: PolygonType,
+    polygonType: SupportedEsriPolygonTool,
     srs: SupportedSrs,
   ) {
     super(layer, mapView, completeCallbackHandler);

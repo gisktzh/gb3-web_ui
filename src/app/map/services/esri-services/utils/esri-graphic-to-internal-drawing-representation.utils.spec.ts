@@ -25,6 +25,7 @@ describe('EsriGraphicToInternalDrawingRepresentationUtils', () => {
     const graphic: Graphic = new Graphic({
       attributes: {
         [MapConstants.DRAWING_IDENTIFIER]: id,
+        [MapConstants.TOOL_IDENTIFIER]: 'polygon',
       },
       geometry: new Polygon({
         spatialReference: {wkid: 2056},
@@ -54,6 +55,7 @@ describe('EsriGraphicToInternalDrawingRepresentationUtils', () => {
         },
         [MapConstants.DRAWING_IDENTIFIER]: id,
         [MapConstants.BELONGS_TO_IDENTIFIER]: undefined,
+        [MapConstants.TOOL_IDENTIFIER]: 'polygon',
       },
       geometry: {
         type: 'Polygon',

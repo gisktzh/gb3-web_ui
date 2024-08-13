@@ -62,8 +62,6 @@ export interface MapLayer extends HasVisibility, HasHidingState {
   wmsSort: number;
   /** Sort order in TOC */
   tocSort: number;
-  /** True if layer is initially enabled in TOC */
-  initiallyVisible: boolean;
   /** True if layer is queryable by current user */
   queryable: boolean;
   /** True if unaccessible with current permissions. Not available in production environment. */

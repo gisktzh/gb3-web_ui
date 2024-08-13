@@ -9,9 +9,10 @@ import {DrawingCouldNotBeExported} from '../../../shared/errors/export.errors';
 import {catchError} from 'rxjs/operators';
 import {ExportActions} from '../actions/export.actions';
 import {provideMockActions} from '@ngrx/effects/testing';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {selectUserDrawingsVectorLayers} from '../selectors/user-drawings-vector-layers.selector';
 import {ExportFormat} from '../../../shared/enums/export-format.enum';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
 describe('ExportEffects', () => {
   const mockDrawings: UserDrawingVectorLayers = {
@@ -25,6 +26,7 @@ describe('ExportEffects', () => {
             properties: {
               id: 'test',
               style: 'style',
+              tool: 'point',
             },
             geometry: {
               type: 'LineString',
@@ -49,6 +51,7 @@ describe('ExportEffects', () => {
             properties: {
               id: '2',
               style: 'style2',
+              tool: 'point',
             },
             geometry: {
               type: 'LineString',
@@ -73,8 +76,14 @@ describe('ExportEffects', () => {
     actions$ = new Observable<Action>();
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [ExportEffects, provideMockActions(() => actions$), provideMockStore()],
+      imports: [],
+      providers: [
+        ExportEffects,
+        provideMockActions(() => actions$),
+        provideMockStore(),
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
     });
     effects = TestBed.inject(ExportEffects);
     gb3ExportService = TestBed.inject(Gb3ExportService);

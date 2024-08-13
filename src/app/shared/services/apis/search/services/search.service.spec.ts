@@ -1,7 +1,7 @@
 import {TestBed} from '@angular/core/testing';
-import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
+import {HttpTestingController, provideHttpClientTesting} from '@angular/common/http/testing';
 import {SearchService} from './search.service';
-import {HttpClient, HttpRequest} from '@angular/common/http';
+import {HttpClient, HttpRequest, provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {of} from 'rxjs';
 import {SearchIndex} from '../interfaces/search-index.interface';
 import {ConfigService} from '../../../config.service';
@@ -318,8 +318,8 @@ describe('SearchService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [provideMockStore()],
+      imports: [],
+      providers: [provideMockStore(), provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     });
     service = TestBed.inject(SearchService);
   });

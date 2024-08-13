@@ -7,6 +7,7 @@ import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import Map from '@arcgis/core/Map';
 import Graphic from '@arcgis/core/Graphic';
 import Point from '@arcgis/core/geometry/Point';
+import {AbstractEsriMeasurementStrategy} from '../abstract-esri-measurement.strategy';
 
 class EsriPointMeasurementStrategyWrapper extends EsriPointMeasurementStrategy {
   public get svm() {
@@ -50,6 +51,19 @@ describe('EsriPointMeasurementStrategy', () => {
 
       expect(callbackSpy).not.toHaveBeenCalled();
       expect(layer.graphics.length).toEqual(0);
+    });
+  });
+
+  describe('activation', () => {
+    it('calls removeLabelOnEdit on activating the edit mode', () => {
+      const strategy = new EsriPointMeasurementStrategyWrapper(layer, mapView, pointSymbol, textSymbol, () => callbackHandler.handle());
+      const removeLabelOnEditSpy = spyOn<any>(AbstractEsriMeasurementStrategy.prototype, 'removeLabelOnEdit');
+      const graphic = new Graphic({geometry: new Point({x: 1, y: 2})});
+
+      strategy.edit(graphic);
+      strategy.svm.emit('update', {state: 'start'});
+
+      expect(removeLabelOnEditSpy).toHaveBeenCalledWith(graphic);
     });
   });
 
@@ -107,6 +121,16 @@ describe('EsriPointMeasurementStrategy', () => {
       const addedGraphic = layer.graphics.getItemAt(0);
       expect((addedGraphic.symbol as TextSymbol).text).toEqual(`${location.x}/${location.y}`);
     });
+    it('calls completeEditing on completion for editing drawings', () => {
+      const strategy = new EsriPointMeasurementStrategyWrapper(layer, mapView, pointSymbol, textSymbol, () => callbackHandler.handle());
+      const completeEditingSpy = spyOn<any>(AbstractEsriMeasurementStrategy.prototype, 'completeEditing');
+      const graphic = new Graphic({geometry: new Point({x: 1, y: 2})});
+
+      strategy.edit(graphic);
+      strategy.svm.emit('update', {state: 'complete'});
+
+      expect(completeEditingSpy).toHaveBeenCalledWith(graphic);
+    });
   });
 
   describe('mode', () => {
@@ -117,6 +141,14 @@ describe('EsriPointMeasurementStrategy', () => {
       strategy.start();
 
       expect(spy).toHaveBeenCalledOnceWith('point', {mode: 'click'});
+    });
+    it('sets mode to update', () => {
+      const strategy = new EsriPointMeasurementStrategyWrapper(layer, mapView, pointSymbol, textSymbol, () => callbackHandler.handle());
+      const spy = spyOn(strategy.svm, 'update');
+      const graphic = new Graphic();
+      strategy.edit(graphic);
+
+      expect(spy).toHaveBeenCalledOnceWith(graphic, {multipleSelectionEnabled: false});
     });
   });
 });

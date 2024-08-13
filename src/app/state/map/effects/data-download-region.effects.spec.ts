@@ -2,7 +2,7 @@ import {provideMockActions} from '@ngrx/effects/testing';
 import {fakeAsync, flush, TestBed} from '@angular/core/testing';
 import {EMPTY, Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {MAP_SERVICE} from '../../../app.module';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
@@ -15,6 +15,7 @@ import {DataDownloadRegionActions} from '../actions/data-download-region.actions
 import {MinimalGeometriesUtils} from '../../../testing/map-testing/minimal-geometries.utils';
 import {selectCanton, selectMunicipalities} from '../reducers/data-download-region.reducer';
 import {catchError} from 'rxjs/operators';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
 describe('DataDownloadRegionEffects', () => {
   const errorMock = new Error('oh no! anyway...');
@@ -29,12 +30,14 @@ describe('DataDownloadRegionEffects', () => {
     actions$ = new Observable<Action>();
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: [],
       providers: [
         DataDownloadRegionEffects,
         provideMockActions(() => actions$),
         provideMockStore(),
         {provide: MAP_SERVICE, useClass: MapServiceStub},
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
     });
     effects = TestBed.inject(DataDownloadRegionEffects);

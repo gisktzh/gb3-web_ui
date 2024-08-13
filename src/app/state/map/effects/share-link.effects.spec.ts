@@ -2,7 +2,7 @@ import {provideMockActions} from '@ngrx/effects/testing';
 import {fakeAsync, flush, TestBed} from '@angular/core/testing';
 import {EMPTY, Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {ShareLinkEffects} from './share-link.effects';
 import {Gb3ShareLinkService} from '../../../shared/services/apis/gb3/gb3-share-link.service';
@@ -30,11 +30,12 @@ import {Gb3VectorLayer} from '../../../shared/interfaces/gb3-vector-layer.interf
 import {selectDrawings} from '../reducers/drawing.reducer';
 import {DrawingActions} from '../actions/drawing.actions';
 import {Gb3StyledInternalDrawingRepresentation} from '../../../shared/interfaces/internal-drawing-representation.interface';
-import {UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
+import {DrawingLayerPrefix, UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 import {selectIsAuthenticated, selectIsAuthenticationInitialized} from '../../auth/reducers/auth-status.reducer';
 import {MapRestoreItem} from '../../../shared/interfaces/map-restore-item.interface';
 import {TimeExtentUtils} from '../../../shared/utils/time-extent.utils';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
 function createActiveMapItemsFromConfigs(activeMapItemConfigurations: ActiveMapItemConfiguration[]): ActiveMapItem[] {
   return activeMapItemConfigurations.map(
@@ -141,13 +142,15 @@ describe('ShareLinkEffects', () => {
     favouriteServiceMock = jasmine.createSpyObj<FavouritesService>(['getActiveMapItemsForFavourite', 'getDrawingsForFavourite']);
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: [],
       providers: [
         ShareLinkEffects,
         provideMockActions(() => actions$),
         provideMockStore(),
         {provide: FavouritesService, useValue: favouriteServiceMock},
         {provide: AuthService, useValue: authServiceMock},
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
     });
     effects = TestBed.inject(ShareLinkEffects);
@@ -351,7 +354,7 @@ describe('ShareLinkEffects', () => {
           (done: DoneFn) => {
             actions$ = of(ShareLinkActions.validateItem({item: expectedItem}));
             const drawingActiveMapItems = expectedCompleteItem.drawings.map((d) =>
-              ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, d.source),
+              ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, DrawingLayerPrefix.Drawing),
             );
             favouriteServiceMock.getDrawingsForFavourite.and.returnValue({
               drawingsToAdd: expectedCompleteItem.drawings,

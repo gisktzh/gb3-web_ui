@@ -116,6 +116,17 @@ describe('MapUi Reducer', () => {
     });
   });
 
+  describe('setDrawingEditOverlayVisibility', () => {
+    it('adjust isDrawingEditOverlayVisible', () => {
+      const expectedSetting = !initialState.isDrawingEditOverlayVisible;
+      const action = MapUiActions.setDrawingEditOverlayVisibility({isVisible: expectedSetting});
+
+      const result = reducer(initialState, action);
+
+      expect(result).toEqual({...initialState, isDrawingEditOverlayVisible: expectedSetting});
+    });
+  });
+
   describe('changeUiElementsVisibility', () => {
     it('adjust hideUiElements, hideToggleUiElementsButton and hideZoomButtons only', () => {
       const expectedSetting = true;

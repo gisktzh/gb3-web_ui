@@ -13,6 +13,11 @@ export enum UserDrawingLayer {
   Drawings = 'drawings',
 }
 
+export enum DrawingLayerPrefix {
+  Drawing = 'USER_DRAWING__',
+  Internal = 'INTERNAL__',
+}
+
 /**
  * All layers which can be used to draw on them; may be internal or external.
  */

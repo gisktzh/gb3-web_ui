@@ -6,7 +6,7 @@ import {EsriMapMock} from '../../../../testing/map-testing/esri-map.mock';
 import {EsriMapViewService} from '../esri-map-view.service';
 import {EsriPointMeasurementStrategy} from './strategies/measurement/esri-point-measurement.strategy';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
-import {InternalDrawingLayer, UserDrawingLayer} from '../../../../shared/enums/drawing-layer.enum';
+import {DrawingLayerPrefix, InternalDrawingLayer, UserDrawingLayer} from '../../../../shared/enums/drawing-layer.enum';
 import {DrawingActiveMapItem} from '../../../models/implementations/drawing.model';
 import {EsriLineMeasurementStrategy} from './strategies/measurement/esri-line-measurement.strategy';
 import {EsriAreaMeasurementStrategy} from './strategies/measurement/esri-area-measurement.strategy';
@@ -19,7 +19,7 @@ import {EsriPointDrawingStrategy} from './strategies/drawing/esri-point-drawing.
 import {EsriLineDrawingStrategy} from './strategies/drawing/esri-line-drawing.strategy';
 import {EsriPolygonDrawingStrategy} from './strategies/drawing/esri-polygon-drawing.strategy';
 import {EsriTextDrawingStrategy} from './strategies/drawing/esri-text-drawing.strategy';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {EsriElevationProfileMeasurementStrategy} from './strategies/measurement/esri-elevation-profile-measurement.strategy';
 import {EsriPolygonSelectionStrategy} from './strategies/selection/esri-polygon-selection.strategy';
 import {EsriScreenExtentSelectionStrategy} from './strategies/selection/esri-screen-extent-selection.strategy';
@@ -34,6 +34,14 @@ import {EsriGraphicToInternalDrawingRepresentationUtils} from '../utils/esri-gra
 import {DataDownloadSelection} from '../../../../shared/interfaces/data-download-selection.interface';
 import {DataDownloadOrderActions} from '../../../../state/map/actions/data-download-order.actions';
 import {ToolActions} from '../../../../state/map/actions/tool.actions';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {DrawingMode} from './types/drawing-mode.type';
+import {
+  Gb3StyledInternalDrawingRepresentation,
+  Gb3StyleRepresentation,
+} from '../../../../shared/interfaces/internal-drawing-representation.interface';
+import {StyleRepresentationToEsriSymbolUtils} from '../utils/style-representation-to-esri-symbol.utils';
+import {NonEditableLayerType} from '../errors/esri.errors';
 
 describe('EsriToolService', () => {
   let service: EsriToolService;
@@ -43,13 +51,15 @@ describe('EsriToolService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [MatDialogModule, HttpClientTestingModule],
+      imports: [MatDialogModule],
       providers: [
         provideMockStore({selectors: [{selector: selectDrawingLayers, value: []}]}),
         {
           provide: EsriMapViewService,
           useValue: mapViewService,
         },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
     });
     service = TestBed.inject(EsriToolService);
@@ -76,7 +86,7 @@ describe('EsriToolService', () => {
   describe('Visibility Handling', () => {
     let userDrawingLayerId: string;
     beforeEach(() => {
-      userDrawingLayerId = MapConstants.USER_DRAWING_LAYER_PREFIX + UserDrawingLayer.Measurements;
+      userDrawingLayerId = DrawingLayerPrefix.Drawing + UserDrawingLayer.Measurements;
     });
 
     it('forces visibility if layer is present by dispatching an action', () => {
@@ -112,10 +122,7 @@ describe('EsriToolService', () => {
           take(1),
           tap((lastAction) => {
             const expected = {
-              activeMapItem: ActiveMapItemFactory.createDrawingMapItem(
-                UserDrawingLayer.Measurements,
-                MapConstants.USER_DRAWING_LAYER_PREFIX,
-              ),
+              activeMapItem: ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Measurements, DrawingLayerPrefix.Drawing),
               position: 0,
               type: ActiveMapItemActions.addActiveMapItem.type,
             };
@@ -146,7 +153,7 @@ describe('EsriToolService', () => {
   describe('Strategy Initialization', () => {
     describe('Measurement', () => {
       beforeEach(() => {
-        const userDrawingLayerId = MapConstants.USER_DRAWING_LAYER_PREFIX + UserDrawingLayer.Measurements;
+        const userDrawingLayerId = DrawingLayerPrefix.Drawing + UserDrawingLayer.Measurements;
         // add the graphic layer to the view to avoid the initialization
         mapViewService.mapView.map.layers.add(
           new GraphicsLayer({
@@ -171,11 +178,16 @@ describe('EsriToolService', () => {
         service.initializeMeasurement('measure-area');
         expect(polygonSpy).toHaveBeenCalled();
       });
+      it(`sets the correct strategy for circle measurement`, () => {
+        const circleSpy = spyOn(EsriAreaMeasurementStrategy.prototype, 'start');
+        service.initializeMeasurement('measure-circle');
+        expect(circleSpy).toHaveBeenCalled();
+      });
     });
 
     describe('Drawing', () => {
       beforeEach(() => {
-        const userDrawingLayerId = MapConstants.USER_DRAWING_LAYER_PREFIX + UserDrawingLayer.Drawings;
+        const userDrawingLayerId = DrawingLayerPrefix.Drawing + UserDrawingLayer.Drawings;
         // add the graphic layer to the view to avoid the initialization
         mapViewService.mapView.map.layers.add(
           new GraphicsLayer({
@@ -219,7 +231,7 @@ describe('EsriToolService', () => {
 
     describe('DataDownloadSelection', () => {
       beforeEach(() => {
-        const internalDrawingLayerId = MapConstants.INTERNAL_LAYER_PREFIX + InternalDrawingLayer.Selection;
+        const internalDrawingLayerId = DrawingLayerPrefix.Internal + InternalDrawingLayer.Selection;
         // add the graphic layer to the view to avoid the initialization
         mapViewService.mapView.map.layers.add(
           new GraphicsLayer({
@@ -262,7 +274,7 @@ describe('EsriToolService', () => {
 
     describe('ElevationProfile', () => {
       beforeEach(() => {
-        const elevationProfileLayerId = MapConstants.INTERNAL_LAYER_PREFIX + InternalDrawingLayer.ElevationProfile;
+        const elevationProfileLayerId = DrawingLayerPrefix.Internal + InternalDrawingLayer.ElevationProfile;
         // add the graphic layer to the view to avoid the initialization
         mapViewService.mapView.map.layers.add(
           new GraphicsLayer({
@@ -300,8 +312,9 @@ describe('EsriToolService', () => {
       }),
     });
 
-    it('completes drawings by dispatching DrawingActions.addDrawing and calling endDrawing', () => {
+    it('completes drawings by dispatching DrawingActions.addDrawing and calling endDrawing for drawingMOde = "add"', () => {
       const labelText = 'labelText';
+      const mode: DrawingMode = 'add';
       const storeSpy = spyOn(store, 'dispatch').and.callThrough();
       const endDrawingSpy = spyOn<any>(service, 'endDrawing').and.stub();
       const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
@@ -313,13 +326,49 @@ describe('EsriToolService', () => {
 
       const expectedAction = DrawingActions.addDrawing({drawing: internalDrawingRepresentation});
 
-      service.completeDrawing(graphicMock, labelText);
+      service.completeDrawing(graphicMock, mode, labelText);
 
       expect(storeSpy).toHaveBeenCalledOnceWith(expectedAction);
       expect(endDrawingSpy).toHaveBeenCalledOnceWith();
     });
 
-    it('completes measurements by dispatching DrawingActions.addDrawing and calling endDrawing', () => {
+    it('completes drawings by dispatching DrawingActions.addDrawing and calling endDrawing for drawingMode = "edit"', () => {
+      const labelText = 'labelText';
+      const mode: DrawingMode = 'edit';
+      const storeSpy = spyOn(store, 'dispatch').and.callThrough();
+      const endDrawingSpy = spyOn<any>(service, 'endDrawing').and.stub();
+      const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
+        graphicMock,
+        labelText,
+        2056,
+        UserDrawingLayer.Drawings,
+      );
+
+      const expectedAction = DrawingActions.addDrawing({drawing: internalDrawingRepresentation});
+
+      service.completeDrawing(graphicMock, mode, labelText);
+
+      expect(storeSpy).toHaveBeenCalledOnceWith(expectedAction);
+      expect(endDrawingSpy).toHaveBeenCalledOnceWith();
+    });
+
+    it('completes drawings by dispatching DrawingActions.deleteDrawing and calling endDrawing', () => {
+      const labelText = 'labelText';
+      const mode: DrawingMode = 'delete';
+      const storeSpy = spyOn(store, 'dispatch').and.callThrough();
+      const endDrawingSpy = spyOn<any>(service, 'endDrawing').and.stub();
+      const drawingId = graphicMock.attributes[MapConstants.DRAWING_IDENTIFIER];
+
+      const expectedAction = DrawingActions.deleteDrawing({drawingId});
+
+      service.completeDrawing(graphicMock, mode, labelText);
+
+      expect(storeSpy).toHaveBeenCalledOnceWith(expectedAction);
+      expect(endDrawingSpy).toHaveBeenCalledOnceWith();
+    });
+
+    it('completes measurements by dispatching DrawingActions.addDrawings and calling endDrawing for drawingMode = "add"', () => {
+      const mode: DrawingMode = 'add';
       const labelText = 'labelText';
       const labelPoint = new Graphic({
         attributes: {
@@ -359,7 +408,90 @@ describe('EsriToolService', () => {
 
       const expectedAction = DrawingActions.addDrawings({drawings: [internalDrawingRepresentation, internalDrawingRepresentationLabel]});
 
-      service.completeMeasurement(graphicMock, labelPoint, labelText);
+      service.completeMeasurement(graphicMock, labelPoint, labelText, mode);
+
+      expect(storeSpy).toHaveBeenCalledOnceWith(expectedAction);
+      expect(endDrawingSpy).toHaveBeenCalledOnceWith();
+    });
+
+    it('completes measurements by dispatching DrawingActions.addDrawings and calling endDrawing for drawingMode = "edit"', () => {
+      const mode: DrawingMode = 'edit';
+      const labelText = 'labelText';
+      const labelPoint = new Graphic({
+        attributes: {
+          [MapConstants.DRAWING_IDENTIFIER]: 'idTwo',
+          [MapConstants.DRAWING_LABEL_IDENTIFIER]: 'id',
+        },
+        geometry: new Polygon({
+          spatialReference: {wkid: 4326},
+          rings: [
+            [
+              [0, 0],
+              [0, 69],
+              [42, 0],
+              [0, 0],
+            ],
+          ],
+        }),
+        symbol: new SimpleFillSymbol({
+          color: new Color(Color.fromHex('#abcdef')),
+          outline: {width: 42, color: new Color('#080085')},
+        }),
+      });
+      const storeSpy = spyOn(store, 'dispatch').and.callThrough();
+      const endDrawingSpy = spyOn<any>(service, 'endDrawing').and.stub();
+      const internalDrawingRepresentation = EsriGraphicToInternalDrawingRepresentationUtils.convert(
+        graphicMock,
+        undefined,
+        2056,
+        UserDrawingLayer.Measurements,
+      );
+      const internalDrawingRepresentationLabel = EsriGraphicToInternalDrawingRepresentationUtils.convert(
+        labelPoint,
+        labelText,
+        2056,
+        UserDrawingLayer.Measurements,
+      );
+
+      const expectedAction = DrawingActions.addDrawings({drawings: [internalDrawingRepresentation, internalDrawingRepresentationLabel]});
+
+      service.completeMeasurement(graphicMock, labelPoint, labelText, mode);
+
+      expect(storeSpy).toHaveBeenCalledOnceWith(expectedAction);
+      expect(endDrawingSpy).toHaveBeenCalledOnceWith();
+    });
+
+    it('completes measurements by dispatching DrawingActions.deleteDrawing and calling endDrawing for drawingMode = "delete"', () => {
+      const mode: DrawingMode = 'delete';
+      const labelText = 'labelText';
+      const labelPoint = new Graphic({
+        attributes: {
+          [MapConstants.DRAWING_IDENTIFIER]: 'idTwo',
+          [MapConstants.DRAWING_LABEL_IDENTIFIER]: 'id',
+        },
+        geometry: new Polygon({
+          spatialReference: {wkid: 4326},
+          rings: [
+            [
+              [0, 0],
+              [0, 69],
+              [42, 0],
+              [0, 0],
+            ],
+          ],
+        }),
+        symbol: new SimpleFillSymbol({
+          color: new Color(Color.fromHex('#abcdef')),
+          outline: {width: 42, color: new Color('#080085')},
+        }),
+      });
+      const storeSpy = spyOn(store, 'dispatch').and.callThrough();
+      const endDrawingSpy = spyOn<any>(service, 'endDrawing').and.stub();
+      const drawingId = graphicMock.attributes[MapConstants.DRAWING_IDENTIFIER];
+
+      const expectedAction = DrawingActions.deleteDrawing({drawingId});
+
+      service.completeMeasurement(graphicMock, labelPoint, labelText, mode);
 
       expect(storeSpy).toHaveBeenCalledOnceWith(expectedAction);
       expect(endDrawingSpy).toHaveBeenCalledOnceWith();
@@ -397,6 +529,206 @@ describe('EsriToolService', () => {
 
       expect(storeSpy).toHaveBeenCalledOnceWith(expectedAction);
       expect(removeHandlesSpy).toHaveBeenCalledOnceWith('EsriToolService');
+    });
+  });
+
+  describe('Edit Drawing', () => {
+    let graphicMock: Graphic;
+    beforeEach(() => {
+      graphicMock = new Graphic({
+        attributes: {
+          [MapConstants.DRAWING_IDENTIFIER]: 'id',
+          [MapConstants.TOOL_IDENTIFIER]: 'point',
+        },
+        layer: {
+          id: 'USER_DRAWING__drawings',
+        },
+        geometry: new Polygon({
+          spatialReference: {wkid: 2056},
+          rings: [
+            [
+              [0, 0],
+              [0, 69],
+              [42, 0],
+              [0, 0],
+            ],
+          ],
+        }),
+        symbol: new SimpleFillSymbol({
+          color: new Color(Color.fromHex('#abcdef')),
+          outline: {width: 42, color: new Color('#080085')},
+        }),
+      });
+    });
+
+    it('should call the correct edit method on the strategy and dispatch the correct action', () => {
+      const storeSpy = spyOn(store, 'dispatch').and.callThrough();
+      const editSpy = spyOn(EsriPointDrawingStrategy.prototype, 'edit').and.stub();
+      service.editDrawing(graphicMock);
+      const expectedAction = DrawingActions.selectDrawing({drawingId: graphicMock.attributes[MapConstants.DRAWING_IDENTIFIER]});
+
+      expect(editSpy).toHaveBeenCalledOnceWith(graphicMock);
+      expect(storeSpy).toHaveBeenCalledOnceWith(expectedAction);
+    });
+    it('should call the correct edit method on the strategy and not dispatch an action for measurements', () => {
+      graphicMock.layer.id = 'USER_DRAWING__measurements';
+      const storeSpy = spyOn(store, 'dispatch').and.callThrough();
+      const editSpy = spyOn(EsriPointMeasurementStrategy.prototype, 'edit').and.stub();
+      service.editDrawing(graphicMock);
+
+      expect(editSpy).toHaveBeenCalledOnceWith(graphicMock);
+      expect(storeSpy).not.toHaveBeenCalled();
+    });
+    it('should do nothing if the graphic has no id', () => {
+      graphicMock.attributes[MapConstants.DRAWING_IDENTIFIER] = undefined;
+      service.editDrawing(graphicMock);
+      const setToolStrategySpy = spyOn<any>(service, 'setToolStrategyForEditingFeature').and.stub();
+      expect(setToolStrategySpy).not.toHaveBeenCalled();
+    });
+  });
+  describe('Update Drawing Style', () => {
+    let graphicMock: Graphic;
+    let drawingMOck: Gb3StyledInternalDrawingRepresentation;
+
+    beforeEach(() => {
+      graphicMock = new Graphic({
+        attributes: {
+          [MapConstants.DRAWING_IDENTIFIER]: 'id',
+          [MapConstants.TOOL_IDENTIFIER]: 'point',
+        },
+        layer: {
+          id: 'USER_DRAWING__drawings',
+        },
+        geometry: new Polygon({
+          spatialReference: {wkid: 2056},
+          rings: [
+            [
+              [0, 0],
+              [0, 69],
+              [42, 0],
+              [0, 0],
+            ],
+          ],
+        }),
+        symbol: new SimpleFillSymbol({
+          color: new Color(Color.fromHex('#abcdef')),
+          outline: {width: 42, color: new Color('#080085')},
+        }),
+      });
+      drawingMOck = {
+        properties: {
+          style: {} as Gb3StyleRepresentation,
+          [MapConstants.DRAWING_IDENTIFIER]: 'id',
+          [MapConstants.BELONGS_TO_IDENTIFIER]: 'belongsTo_id',
+          [MapConstants.TOOL_IDENTIFIER]: 'point',
+        },
+        source: UserDrawingLayer.Drawings,
+      } as Gb3StyledInternalDrawingRepresentation;
+    });
+    it('should call the convert method on if the drawingLayer is found', () => {
+      const convertSpy = spyOn(StyleRepresentationToEsriSymbolUtils, 'convert').and.stub();
+      const userDrawingLayerId = DrawingLayerPrefix.Drawing + UserDrawingLayer.Drawings;
+      // add the graphic layer to the view to avoid the initialization
+      mapViewService.mapView.map.layers.add(
+        new GraphicsLayer({
+          id: userDrawingLayerId,
+          graphics: [graphicMock],
+        }),
+      );
+      const style = {} as Gb3StyleRepresentation;
+      const labelText = 'some Text';
+      service.updateDrawingStyles(drawingMOck, style, labelText);
+      expect(convertSpy).toHaveBeenCalledOnceWith(style, labelText);
+    });
+
+    it('should not call the convert method if the drawingLayer does not exist', () => {
+      const convertSpy = spyOn(StyleRepresentationToEsriSymbolUtils, 'convert').and.stub();
+
+      const style = {} as Gb3StyleRepresentation;
+      const labelText = 'some Text';
+      service.updateDrawingStyles(drawingMOck, style, labelText);
+      expect(convertSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Set Tool Strategy For Editing Feature', () => {
+    let mockGraphic: Graphic;
+    beforeEach(() => {
+      mockGraphic = new Graphic({
+        attributes: {
+          [MapConstants.DRAWING_IDENTIFIER]: 'id',
+          [MapConstants.TOOL_IDENTIFIER]: 'point',
+        },
+        layer: {
+          id: 'USER_DRAWING__drawings',
+        },
+        geometry: new Polygon({
+          spatialReference: {wkid: 2056},
+          rings: [
+            [
+              [0, 0],
+              [0, 69],
+              [42, 0],
+              [0, 0],
+            ],
+          ],
+        }),
+        symbol: new SimpleFillSymbol({
+          color: new Color(Color.fromHex('#abcdef')),
+          outline: {width: 42, color: new Color('#080085')},
+        }),
+      });
+    });
+    it('should set the correct strategy for a point drawing', () => {
+      const setDrawingStrategySpy = spyOn<any>(service, 'setDrawingStrategy').and.stub();
+      service['setToolStrategyForEditingFeature'](mockGraphic);
+      expect(setDrawingStrategySpy).toHaveBeenCalledWith('draw-point', mockGraphic.layer);
+    });
+    it('should set the correct strategy for a polygon drawing', () => {
+      mockGraphic.attributes[MapConstants.TOOL_IDENTIFIER] = 'polygon';
+      const setDrawingStrategySpy = spyOn<any>(service, 'setDrawingStrategy').and.stub();
+      service['setToolStrategyForEditingFeature'](mockGraphic);
+      expect(setDrawingStrategySpy).toHaveBeenCalledWith('draw-polygon', mockGraphic.layer);
+    });
+    it('should set the correct strategy for a polyline drawing', () => {
+      mockGraphic.attributes[MapConstants.TOOL_IDENTIFIER] = 'polyline';
+      const setDrawingStrategySpy = spyOn<any>(service, 'setDrawingStrategy').and.stub();
+      service['setToolStrategyForEditingFeature'](mockGraphic);
+      expect(setDrawingStrategySpy).toHaveBeenCalledWith('draw-line', mockGraphic.layer);
+    });
+
+    it('should set the correct strategy for a point measurement', () => {
+      mockGraphic.layer.id = 'USER_DRAWING__measurements';
+      const setMeasurementStrategySpy = spyOn<any>(service, 'setMeasurementStrategy').and.stub();
+      service['setToolStrategyForEditingFeature'](mockGraphic);
+      expect(setMeasurementStrategySpy).toHaveBeenCalledWith('measure-point', mockGraphic.layer);
+    });
+    it('should set the correct strategy for a polygon measurement', () => {
+      mockGraphic.layer.id = 'USER_DRAWING__measurements';
+      mockGraphic.attributes[MapConstants.TOOL_IDENTIFIER] = 'polygon';
+      const setMeasurementStrategySpy = spyOn<any>(service, 'setMeasurementStrategy').and.stub();
+      service['setToolStrategyForEditingFeature'](mockGraphic);
+      expect(setMeasurementStrategySpy).toHaveBeenCalledWith('measure-area', mockGraphic.layer);
+    });
+    it('should set the correct strategy for a polyline measurement', () => {
+      mockGraphic.layer.id = 'USER_DRAWING__measurements';
+      mockGraphic.attributes[MapConstants.TOOL_IDENTIFIER] = 'polyline';
+      const setMeasurementStrategySpy = spyOn<any>(service, 'setMeasurementStrategy').and.stub();
+      service['setToolStrategyForEditingFeature'](mockGraphic);
+      expect(setMeasurementStrategySpy).toHaveBeenCalledWith('measure-line', mockGraphic.layer);
+    });
+    it('should set the correct strategy for a elevation profile', () => {
+      mockGraphic.layer.id = 'INTERNAL_DRAWING__elevation_profile';
+      mockGraphic.attributes[MapConstants.TOOL_IDENTIFIER] = 'polyline';
+      const setMeasurementStrategySpy = spyOn<any>(service, 'setMeasurementStrategy').and.stub();
+      service['setToolStrategyForEditingFeature'](mockGraphic);
+      expect(setMeasurementStrategySpy).toHaveBeenCalledWith('measure-elevation-profile', mockGraphic.layer);
+    });
+    it('should throw an error for nonEditableLayers', () => {
+      mockGraphic.layer.id = 'INTERNAL_DRAWING__selection';
+      mockGraphic.attributes[MapConstants.TOOL_IDENTIFIER] = 'polygon';
+
+      expect(() => service['setToolStrategyForEditingFeature'](mockGraphic)).toThrow(new NonEditableLayerType());
     });
   });
 });

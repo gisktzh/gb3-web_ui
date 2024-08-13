@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import {HttpClient} from '@angular/common/http';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {HttpClient, provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {TestBed} from '@angular/core/testing';
 import {of} from 'rxjs';
 import {TopicsFeatureInfoDetailData, TopicsLegendDetailData, TopicsListData} from '../../../models/gb3-api-generated.interfaces';
@@ -19,8 +19,8 @@ describe('Gb3TopicsService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [provideMockStore()],
+      imports: [],
+      providers: [provideMockStore(), provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     });
     service = TestBed.inject(Gb3TopicsService);
     configService = TestBed.inject(ConfigService);
@@ -210,7 +210,6 @@ describe('Gb3TopicsService', () => {
                     wmsSort: 11,
                     tocSort: 1100,
                     visible: true,
-                    initiallyVisible: true,
                     queryable: false,
                     isHidden: false,
                     permissionMissing: undefined,
@@ -226,7 +225,6 @@ describe('Gb3TopicsService', () => {
                     wmsSort: 10,
                     tocSort: 1000,
                     visible: false,
-                    initiallyVisible: false,
                     queryable: false,
                     isHidden: false,
                     permissionMissing: undefined,
@@ -243,7 +241,6 @@ describe('Gb3TopicsService', () => {
                     tocSort: 900,
                     queryable: true,
                     visible: true,
-                    initiallyVisible: true,
                     isHidden: false,
                     permissionMissing: undefined,
                   },

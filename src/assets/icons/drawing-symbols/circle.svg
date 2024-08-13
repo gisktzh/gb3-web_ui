@@ -1,14 +1,11 @@
 <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_1597_83202)">
-<path d="M11 3C15.4183 3 19 6.58172 19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3Z" stroke="currentColor" stroke-width="2"/>
-<path d="M0 14V8H6V14H0Z" fill="currentColor"/>
-<path d="M16 14V8H22V14H16Z" fill="currentColor"/>
-<path d="M8 6V0H14V6H8Z" fill="currentColor"/>
-<path d="M8 22V16H14V22H8Z" fill="currentColor"/>
-</g>
-<defs>
-<clipPath id="clip0_1597_83202">
-<rect width="22" height="22" fill="white"/>
-</clipPath>
-</defs>
+  <g clip-path="url(#a)">
+    <circle cx="11" cy="11" r="10" stroke="currentColor" stroke-width="2"/>
+    <path fill="currentColor" d="M8 8h6v6H8z"/>
+  </g>
+  <defs>
+    <clipPath id="a">
+      <path fill="#fff" d="M0 0h22v22H0z"/>
+    </clipPath>
+  </defs>
 </svg>

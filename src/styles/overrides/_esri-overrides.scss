@@ -1,3 +1,14 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
 .esri-view .esri-view-surface:focus::after {
   outline: none;
+}
+
+.esri-tooltip {
+  --font-size: 12px;
+  font-family: ktzh-variables.$zh-font-family;
+
+  .esri-tooltip-content {
+    border-radius: ktzh-variables.$zh-border-radius;
+  }
 }

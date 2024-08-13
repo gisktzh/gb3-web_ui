@@ -12,14 +12,14 @@ describe('SymbolizationToGb3ConverterUtils', () => {
           geometry: {type: 'Point', srs: 2056, coordinates: []},
           source: UserDrawingLayer.Drawings,
           labelText: 'A',
-          properties: {__id: 'a', style: {} as Gb3StyleRepresentation},
+          properties: {__id: 'a', style: {} as Gb3StyleRepresentation, __tool: 'point'},
         },
         {
           type: 'Feature',
           geometry: {type: 'Point', srs: 2056, coordinates: []},
           source: UserDrawingLayer.Drawings,
           labelText: 'B',
-          properties: {__id: 'b', style: {} as Gb3StyleRepresentation},
+          properties: {__id: 'b', style: {} as Gb3StyleRepresentation, __tool: 'point'},
         },
       ];
 
@@ -49,6 +49,7 @@ describe('SymbolizationToGb3ConverterUtils', () => {
                 style: 'a',
                 text: mockText,
                 id: 'xyz',
+                tool: 'point',
               },
             },
           ],

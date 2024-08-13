@@ -1,0 +1,20 @@
+@if (style) {
+  @switch (style.type) {
+    @case ('point') {
+      <point-edit [pointStyle]="style" (updateStyleEvent)="updateStyle($event)"></point-edit>
+    }
+    @case ('line') {
+      <line-edit (updateStyleEvent)="updateStyle($event)" [lineStyle]="style"></line-edit>
+    }
+    @case ('polygon') {
+      <polygon-edit [polygonStyle]="style" (updateStyleEvent)="updateStyle($event)"></polygon-edit>
+    }
+    @case ('text') {
+      <text-edit
+        [textStyle]="style"
+        [labelText]="selectedFeature?.labelText!"
+        (updateStyleEvent)="updateStyle($event.style, $event.labelText)"
+      ></text-edit>
+    }
+  }
+}

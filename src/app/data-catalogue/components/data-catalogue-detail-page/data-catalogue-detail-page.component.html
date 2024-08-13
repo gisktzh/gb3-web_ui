@@ -21,7 +21,10 @@
         <div>
           <h1 class="data-catalogue-detail-page__title__text mat-headline-4">{{ baseMetadataInformation.itemTitle }}</h1>
           @if (baseMetadataInformation.shortDescription) {
-            <p class="data-catalogue-detail-page__description mat-body" [innerHTML]="baseMetadataInformation.shortDescription"></p>
+            <p
+              class="data-catalogue-detail-page__description mat-body"
+              [innerHTML]="baseMetadataInformation.shortDescription | formatLineBreaks"
+            ></p>
           }
           <div class="data-catalogue-detail-page__category">
             <b class="data-catalogue-detail-page__category__title">Kategorie</b>

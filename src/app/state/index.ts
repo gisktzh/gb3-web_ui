@@ -31,6 +31,7 @@ import {reducer as drawingStyleReducer} from './map/reducers/drawing-style.reduc
 import {reducer as mapImportReducer} from './map/reducers/map-import.reducer';
 import {reducer as externalMapItemReducer} from './map/reducers/external-map-item.reducer';
 import {reducer as appReducer} from './app/reducers/app.reducer';
+import {reducer as importReducer} from './map/reducers/import.reducer';
 import {ActiveMapItemState} from './map/states/active-map-item.state';
 import {FavouriteListState} from './map/states/favourite-list.state';
 import {FeatureInfoState} from './map/states/feature-info.state';
@@ -94,6 +95,8 @@ import {AppState} from './app/states/app.state';
 import {AppEffects} from './app/effects/app.effects';
 import {ExportEffects} from './map/effects/export.effects';
 import {ExportState} from './map/states/export.state';
+import {ImportEffects} from './map/effects/import.effects';
+import {ImportState} from './map/states/import.state';
 
 export interface State {
   mapConfig: MapConfigState;
@@ -129,6 +132,7 @@ export interface State {
   externalMapItem: ExternalMapItemState;
   app: AppState;
   export: ExportState;
+  drawingImport: ImportState;
 }
 
 export const reducers: ActionReducerMap<State> = {
@@ -165,6 +169,7 @@ export const reducers: ActionReducerMap<State> = {
   externalMapItem: externalMapItemReducer,
   app: appReducer,
   export: exportReducer,
+  drawingImport: importReducer,
 };
 
 export const effects = [
@@ -197,6 +202,7 @@ export const effects = [
   MapImportEffects,
   ExternalMapItemEffects,
   ExportEffects,
+  ImportEffects,
   AppEffects,
 ];
 

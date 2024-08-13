@@ -1,4 +1,3 @@
-import {SupportedEsriTool} from '../abstract-esri-drawable-tool.strategy';
 import {AbstractEsriDrawingStrategy} from '../abstract-esri-drawing.strategy';
 import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
@@ -6,6 +5,8 @@ import {MatDialog} from '@angular/material/dialog';
 import {PanelClass} from '../../../../../../shared/enums/panel-class.enum';
 import {tap} from 'rxjs';
 import {TextDrawingToolInputComponent} from '../../../../../components/text-drawing-tool-input/text-drawing-tool-input.component';
+import {SupportedEsriTool} from '../supported-esri-tool.type';
+import {DrawingMode} from '../../types/drawing-mode.type';
 
 export class EsriTextDrawingStrategy extends AbstractEsriDrawingStrategy<DrawingCallbackHandler['completeDrawing']> {
   protected readonly tool: SupportedEsriTool = 'point';
@@ -24,7 +25,7 @@ export class EsriTextDrawingStrategy extends AbstractEsriDrawingStrategy<Drawing
     this.dialogService = dialogService;
   }
 
-  protected override handleComplete(graphic: __esri.Graphic) {
+  protected override handleComplete(graphic: __esri.Graphic, mode: DrawingMode) {
     const dialog = this.dialogService.open<TextDrawingToolInputComponent, void, string>(TextDrawingToolInputComponent, {
       panelClass: PanelClass.ApiWrapperDialog,
       restoreFocus: false,
@@ -34,8 +35,11 @@ export class EsriTextDrawingStrategy extends AbstractEsriDrawingStrategy<Drawing
       .afterClosed()
       .pipe(
         tap((text = '') => {
+          if (!text) {
+            this.layer.remove(graphic);
+          }
           (graphic.symbol as TextSymbol).text = text;
-          super.handleComplete(graphic, text);
+          super.handleComplete(graphic, mode, text);
         }),
       )
       .subscribe();

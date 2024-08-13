@@ -3,7 +3,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
-    "types": ["twitter-for-web", "@angular/localize"]
+    "types": ["twitter-for-web", "@angular/localize", "./types/arcgis-javascript-sdk.d.ts"]
   },
   "files": ["src/main.ts", "src/polyfills.ts"],
   "include": ["src/**/*.d.ts"]

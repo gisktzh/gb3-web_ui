@@ -224,11 +224,11 @@ $zh-bordeaux-palette: (
 
 /* Theme palettes
 ========================== */
-$zh-primary: mat.define-palette($zh-darkblue-palette);
-$zh-accent: mat.define-palette($zh-black100-palette);
-$zh-warn: mat.define-palette($zh-bordeaux-palette);
+$zh-primary: mat.m2-define-palette($zh-darkblue-palette);
+$zh-accent: mat.m2-define-palette($zh-black100-palette);
+$zh-warn: mat.m2-define-palette($zh-bordeaux-palette);
 // another theme palette used as an alternative color
-$zh-secondary-accent: mat.define-palette($zh-active-blue-palette);
+$zh-secondary-accent: mat.m2-define-palette($zh-active-blue-palette);
 
 /* Typography
 ========================== */
@@ -272,7 +272,7 @@ $material-default-sizes: (
 );
 
 @function get-typography-override($headline) {
-  @return mat.define-typography-level(
+  @return mat.m2-define-typography-level(
     $font-size: map-get(map-get($material-default-sizes, font-size), $headline),
     $line-height: map-get(map-get($material-default-sizes, line-height), $headline),
     $font-weight: map-get(map-get($material-default-sizes, font-weight), $headline),
@@ -281,7 +281,7 @@ $material-default-sizes: (
   );
 }
 
-$zh-typography-config: mat.define-typography-config(
+$zh-typography-config: mat.m2-define-typography-config(
   // define headline overrides
   $headline-6: get-typography-override(headline-6),
   $headline-5: get-typography-override(headline-5),

@@ -71,7 +71,14 @@
     <mat-icon svgIcon="ktzh_drawing_symbol_text"></mat-icon>
   </button>
   <mat-divider class="drawing-tools__divider"></mat-divider>
-  <button class="drawing-tools__button" color="accent" disabled mat-icon-button matTooltip="Zeichnungen hochladen">
+  <button
+    class="drawing-tools__button"
+    color="accent"
+    mat-icon-button
+    matTooltip="Zeichnungen hochladen"
+    (click)="this.openImportDrawingsDialog()"
+    [disabled]="activeTool"
+  >
     <mat-icon svgIcon="ktzh_upload"></mat-icon>
   </button>
   <drawing-download-button></drawing-download-button>

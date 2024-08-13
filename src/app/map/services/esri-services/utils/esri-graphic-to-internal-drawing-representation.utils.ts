@@ -30,6 +30,7 @@ export class EsriGraphicToInternalDrawingRepresentationUtils {
         style: EsriSymbolToStyleRepresentationUtils.convert(graphic.symbol),
         [AbstractEsriDrawableToolStrategy.identifierFieldName]: graphic.attributes[AbstractEsriDrawableToolStrategy.identifierFieldName],
         [AbstractEsriDrawableToolStrategy.belongsToFieldName]: graphic.attributes[AbstractEsriDrawableToolStrategy.belongsToFieldName],
+        [AbstractEsriDrawableToolStrategy.toolFieldName]: graphic.attributes[AbstractEsriDrawableToolStrategy.toolFieldName],
       },
       source,
       labelText,

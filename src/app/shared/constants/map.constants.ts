@@ -5,8 +5,6 @@ export class MapConstants {
   public static readonly MINIMUM_MAP_SCALE = 1_500_000;
   public static readonly MAXIMUM_MAP_SCALE = 1;
   public static readonly DEFAULT_SRS: SupportedSrs = 2056;
-  public static readonly INTERNAL_LAYER_PREFIX = 'INTERNAL__';
-  public static readonly USER_DRAWING_LAYER_PREFIX = 'USER_DRAWING__';
   public static readonly LOCATE_ME_ZOOM = 750;
   public static readonly INCHES_PER_UNIT = {
     m: 39.3701,
@@ -17,6 +15,8 @@ export class MapConstants {
   public static readonly DRAWING_IDENTIFIER = '__id';
   public static readonly DRAWING_LABEL_IDENTIFIER = '__labelText';
   public static readonly BELONGS_TO_IDENTIFIER = '__belongsTo';
+  public static readonly TOOL_IDENTIFIER = '__tool';
+  public static readonly TEXT_DRAWING_MAX_LENGTH = 50;
 
   /**
    * Query params that are removed upon loading the initial map configuration.

@@ -1,12 +1,12 @@
 import {FilterConfiguration, Map, MapLayer} from '../interfaces/topic.interface';
-
 import {Gb2WmsActiveMapItem} from '../../map/models/implementations/gb2-wms.model';
 import {DrawingActiveMapItem} from '../../map/models/implementations/drawing.model';
-import {UserDrawingLayer} from '../enums/drawing-layer.enum';
+import {DrawingLayerPrefix, UserDrawingLayer} from '../enums/drawing-layer.enum';
 import {ExternalKmlLayer, ExternalWmsLayer} from '../interfaces/external-layer.interface';
 import {ExternalWmsActiveMapItem} from '../../map/models/implementations/external-wms.model';
 import {ExternalKmlActiveMapItem} from '../../map/models/implementations/external-kml.model';
 import {TimeExtent} from '../../map/interfaces/time-extent.interface';
+import {produce} from 'immer';
 
 export class ActiveMapItemFactory {
   public static createTemporaryGb2WmsMapItem(
@@ -32,10 +32,22 @@ export class ActiveMapItemFactory {
     if (opacity === undefined) {
       opacity = map.opacity;
     }
-    return new Gb2WmsActiveMapItem(map, layer, visible, opacity, timeExtent, attributeFilters, isTemporary);
+    const activeMapItem = new Gb2WmsActiveMapItem(map, layer, visible, opacity, timeExtent, attributeFilters, isTemporary);
+    if (activeMapItem.isSingleLayer) {
+      return produce(activeMapItem, (draft) => {
+        draft.settings.layers[0].visible = true;
+      });
+    }
+
+    return activeMapItem;
   }
 
-  public static createDrawingMapItem(id: UserDrawingLayer, prefix: string, visible?: boolean, opacity?: number): DrawingActiveMapItem {
+  public static createDrawingMapItem(
+    id: UserDrawingLayer,
+    prefix: DrawingLayerPrefix,
+    visible?: boolean,
+    opacity?: number,
+  ): DrawingActiveMapItem {
     let title: string;
     switch (id) {
       case UserDrawingLayer.Drawings:
@@ -46,8 +58,7 @@ export class ActiveMapItemFactory {
         break;
     }
 
-    const fullLayerIdentifier = prefix + id;
-    return new DrawingActiveMapItem(title, fullLayerIdentifier, id, visible, opacity);
+    return new DrawingActiveMapItem(title, prefix, id, visible, opacity);
   }
 
   public static createExternalWmsMapItem(

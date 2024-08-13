@@ -6,6 +6,7 @@ import Graphic from '@arcgis/core/Graphic';
 import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
 import Polyline from '@arcgis/core/geometry/Polyline';
 import {EsriElevationProfileMeasurementStrategy} from './esri-elevation-profile-measurement.strategy';
+import {AbstractEsriDrawingStrategy} from '../abstract-esri-drawing.strategy';
 
 class EsriElevationProfileMeasurementStrategyWrapper extends EsriElevationProfileMeasurementStrategy {
   public get svm() {
@@ -49,7 +50,7 @@ describe('EsriElevationProfileMeasurementStrategy', () => {
   });
 
   describe('completion', () => {
-    it('fires the callback handler on completion', () => {
+    it('fires the callback handler on completion for creating new drawings', () => {
       const callbackSpy = spyOn(callbackHandler, 'handle');
       const strategy = new EsriElevationProfileMeasurementStrategyWrapper(layer, mapView, lineSymbol, () => callbackHandler.handle());
       const graphic = new Graphic({
@@ -69,6 +70,26 @@ describe('EsriElevationProfileMeasurementStrategy', () => {
 
       expect(callbackSpy).toHaveBeenCalled();
     });
+    it('calls completeEditing on completion for editing drawings', () => {
+      const strategy = new EsriElevationProfileMeasurementStrategyWrapper(layer, mapView, lineSymbol, () => callbackHandler.handle());
+      const completeEditingSpy = spyOn<any>(AbstractEsriDrawingStrategy.prototype, 'completeEditing');
+      const graphic = new Graphic({
+        geometry: new Polyline({
+          spatialReference: {wkid: 2056},
+          paths: [
+            [
+              [0, 0],
+              [12, 0],
+            ],
+          ],
+        }),
+      });
+
+      strategy.edit(graphic);
+      strategy.svm.emit('update', {state: 'complete'});
+
+      expect(completeEditingSpy).toHaveBeenCalledWith(graphic);
+    });
   });
 
   describe('mode', () => {
@@ -79,6 +100,14 @@ describe('EsriElevationProfileMeasurementStrategy', () => {
       strategy.start();
 
       expect(spy).toHaveBeenCalledOnceWith('polyline', {mode: 'click'});
+    });
+    it('sets mode to update', () => {
+      const strategy = new EsriElevationProfileMeasurementStrategyWrapper(layer, mapView, lineSymbol, () => callbackHandler.handle());
+      const spy = spyOn(strategy.svm, 'update');
+      const graphic = new Graphic();
+      strategy.edit(graphic);
+
+      expect(spy).toHaveBeenCalledOnceWith(graphic, {multipleSelectionEnabled: false});
     });
   });
 });

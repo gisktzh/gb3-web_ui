@@ -14,6 +14,7 @@ export const MapUiActions = createActionGroup({
     'Set Elevation Profile Overlay Visibility': props<{isVisible: boolean}>(),
     'Set Legend Overlay Visibility': props<{isVisible: boolean}>(),
     'Set Feature Info Visibility': props<{isVisible: boolean}>(),
+    'Set Drawing Edit Overlay Visibility': props<{isVisible: boolean}>(),
     'Set Attribute Filter Visibility': props<{isVisible: boolean}>(),
     'Show Share Link Dialog': emptyProps(),
     'Show Create Favourite Dialog': emptyProps(),

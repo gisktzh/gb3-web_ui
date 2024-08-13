@@ -1,11 +1,11 @@
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 import {Map} from '../../../shared/interfaces/topic.interface';
-import {UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
+import {DrawingLayerPrefix, UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {selectAllItems, selectGb2WmsActiveMapItemsWithMapNotices, selectItems, selectTemporaryMapItems} from './active-map-items.selector';
 import {ActiveMapItemState} from '../states/active-map-item.state';
 
-const drawingsActiveMapItem = ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, 'test');
-const measurementsActiveMapItem = ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Measurements, 'test');
+const drawingsActiveMapItem = ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, DrawingLayerPrefix.Drawing);
+const measurementsActiveMapItem = ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Measurements, DrawingLayerPrefix.Drawing);
 const gb2ActiveMapItem = ActiveMapItemFactory.createGb2WmsMapItem({} as Map);
 const temporaryGb2ActiveMapItem = ActiveMapItemFactory.createTemporaryGb2WmsMapItem({} as Map);
 const gb2ActiveMapItemWithNotice = ActiveMapItemFactory.createGb2WmsMapItem({notice: 'I am a notice!'} as Map);
