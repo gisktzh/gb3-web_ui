@@ -18,13 +18,17 @@ export const searchFeature = createFeature({
   reducer: createReducer(
     initialState,
     on(SearchActions.searchForTerm, (state, {term}): SearchState => {
-      return {
-        ...state,
-        term,
-        searchApiResultMatches: initialState.searchApiResultMatches,
-        searchApiLoadingState: 'loading',
-        selectedSearchResult: initialState.selectedSearchResult,
-      };
+      const trimmedTerm = term.trim();
+      if (state.term !== trimmedTerm) {
+        return {
+          ...state,
+          term: trimmedTerm,
+          searchApiResultMatches: initialState.searchApiResultMatches,
+          searchApiLoadingState: 'loading',
+          selectedSearchResult: initialState.selectedSearchResult,
+        };
+      }
+      return state;
     }),
     on(SearchActions.setSearchApiError, (state): SearchState => {
       return {...state, searchApiLoadingState: 'error', searchApiResultMatches: initialState.searchApiResultMatches};

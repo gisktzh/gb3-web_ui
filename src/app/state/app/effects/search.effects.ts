@@ -19,12 +19,14 @@ import {MapService} from '../../../map/interfaces/map.service';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {MapUiActions} from '../../map/actions/map-ui.actions';
 import {selectUrlState} from '../reducers/url.reducer';
+import {selectTerm} from '../reducers/search.reducer';
 
 @Injectable()
 export class SearchEffects {
   public searchResultsFromSearchApi$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(SearchActions.searchForTerm),
+      distinctUntilChanged((prev, curr) => prev.term.trim() === curr.term.trim()),
       filter((termAndOptions) => termAndOptions.options.searchIndexTypes.length > 0),
       combineLatestWith(
         this.store
@@ -32,14 +34,15 @@ export class SearchEffects {
           // simplified 'distinctUntilChanged' due to the fact that it is not possible to add and remove active map items with new search indexes at the same time;
           // therefore, comparing the amount of previous and current search indexes suffices to distinct between new indexes
           .pipe(distinctUntilChanged((previous, current) => previous.length === current.length)),
+        this.store.select(selectTerm),
       ),
-      takeWhile(([termAndOptions, _]) => termAndOptions.options.searchIndexTypes.length > 0),
-      switchMap(([termAndOptions, activeMapIndexes]) => {
+      takeWhile(([termAndOptions]) => termAndOptions.options.searchIndexTypes.length > 0),
+      switchMap(([termAndOptions, activeMapIndexes, term]) => {
         const searchIndexes = this.configService.filterSearchIndexes(termAndOptions.options.searchIndexTypes);
         if (termAndOptions.options.searchIndexTypes.includes('activeMapItems')) {
           searchIndexes.push(...activeMapIndexes);
         }
-        return this.searchService.searchIndexes(termAndOptions.term, searchIndexes).pipe(
+        return this.searchService.searchIndexes(term, searchIndexes).pipe(
           map((results) => SearchActions.setSearchApiResults({results})),
           catchError((error: unknown) => of(SearchActions.setSearchApiError({error}))),
         );
