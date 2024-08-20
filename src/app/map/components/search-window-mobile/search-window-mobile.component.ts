@@ -51,10 +51,12 @@ export class SearchWindowMobileComponent implements OnInit, OnDestroy, AfterView
           tap((selectedSearchResult) => {
             this.selectedSearchResult = selectedSearchResult;
             if (selectedSearchResult) {
-              // This is necessary to avoid NG100 ExpressionChangedAfterItHasBeenCheckedError
-              setTimeout(() => {
-                this.searchComponent.setTerm(selectedSearchResult?.displayString ?? '', false);
-              }, 0);
+              if (selectedSearchResult) {
+                // This is necessary to avoid NG100 ExpressionChangedAfterItHasBeenCheckedError
+                setTimeout(() => {
+                  this.searchComponent.setTerm(selectedSearchResult?.displayString ?? '', false);
+                }, 0);
+              }
             }
           }),
         )
