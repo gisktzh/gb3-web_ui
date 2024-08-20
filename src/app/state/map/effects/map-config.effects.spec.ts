@@ -15,15 +15,19 @@ import {selectRotation} from '../reducers/map-config.reducer';
 import {selectMapConfigParams} from '../selectors/map-config-params.selector';
 import {MapConfigEffects} from './map-config.effects';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {InitialMapExtentService} from '../../../map/services/initial-map-extent.service';
+import {SearchActions} from '../../app/actions/search.actions';
 
 describe('MapConfigEffects', () => {
   let actions$: Observable<Action>;
   let store: MockStore;
   let effects: MapConfigEffects;
   let mapService: MapService;
+  let initialMapExtentServiceMock: jasmine.SpyObj<InitialMapExtentService>;
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
+    initialMapExtentServiceMock = jasmine.createSpyObj<InitialMapExtentService>(['calculateInitialExtent']);
 
     TestBed.configureTestingModule({
       imports: [],
@@ -32,6 +36,7 @@ describe('MapConfigEffects', () => {
         provideMockActions(() => actions$),
         provideMockStore(),
         {provide: MAP_SERVICE, useClass: MapServiceStub},
+        {provide: InitialMapExtentService, useValue: initialMapExtentServiceMock},
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
@@ -125,6 +130,26 @@ describe('MapConfigEffects', () => {
       actions$ = of(MapConfigActions.handleMapRotation({rotation: expectedRotation}));
       effects.updateMapRotation$.subscribe((action) => {
         expect(action).toEqual(MapConfigActions.setRotation({rotation: expectedRotation}));
+        done();
+      });
+    });
+  });
+
+  describe('setBaseMapAndInitialMaps$', () => {
+    it('dispatches MapConfigActions.setInitialMapConfig()', (done: DoneFn) => {
+      actions$ = of(
+        SearchActions.initializeSearchFromUrlParameters({
+          initialMaps: ['one', 'two'],
+          basemapId: 'base',
+          searchTerm: 'search',
+          searchIndex: 'index',
+        }),
+      );
+      initialMapExtentServiceMock.calculateInitialExtent.and.returnValue({x: 1, y: 2, scale: 3});
+      effects.setBaseMapAndInitialMaps$.subscribe((action) => {
+        expect(action).toEqual(
+          MapConfigActions.setInitialMapConfig({initialMaps: ['one', 'two'], basemapId: 'base', x: 1, y: 2, scale: 3}),
+        );
         done();
       });
     });

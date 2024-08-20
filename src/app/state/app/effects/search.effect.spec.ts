@@ -14,6 +14,7 @@ import {MapUiActions} from '../../map/actions/map-ui.actions';
 import {selectUrlState} from '../reducers/url.reducer';
 import {MainPage} from '../../../shared/enums/main-page.enum';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {selectReady} from '../../map/reducers/map-config.reducer';
 
 describe('SearchEffects', () => {
   let actions$: Observable<Action>;
@@ -48,6 +49,7 @@ describe('SearchEffects', () => {
       const mapServiceSpy = spyOn(mapService, 'zoomToExtent').and.callThrough();
       const mapDrawingService = TestBed.inject(MapDrawingService);
       const mapDrawingServiceSpy = spyOn(mapDrawingService, 'drawSearchResultHighlight').and.callThrough();
+      store.overrideSelector(selectReady, true);
 
       const searchResultsMock: GeometrySearchApiResultMatch = {
         indexType: 'places',
@@ -60,7 +62,7 @@ describe('SearchEffects', () => {
         searchResult: searchResultsMock,
       });
       actions$ = of(expectedAction);
-      effects.zoomToAndHighlightSelectedSearchResult$.subscribe((action) => {
+      effects.zoomToAndHighlightSelectedSearchResult$.subscribe(([action]) => {
         expect(mapServiceSpy).toHaveBeenCalledTimes(1);
         expect(mapDrawingServiceSpy).toHaveBeenCalledTimes(1);
         expect(action).toEqual(expectedAction);

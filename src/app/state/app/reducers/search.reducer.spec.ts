@@ -89,6 +89,29 @@ describe('search Reducer', () => {
     });
   });
 
+  describe('resetLoadingState', () => {
+    it('sets the loading state to undefined', () => {
+      const action = SearchActions.resetLoadingState();
+      const state = reducer(initialState, action);
+
+      expect(state.searchApiLoadingState).toBe(undefined);
+    });
+  });
+
+  describe('initializeSearchFromUrlParameters', () => {
+    it('sets the loading state to `loading`', () => {
+      const action = SearchActions.initializeSearchFromUrlParameters({
+        searchTerm: undefined,
+        searchIndex: undefined,
+        initialMaps: [],
+        basemapId: 'test',
+      });
+      const state = reducer(initialState, action);
+
+      expect(state.searchApiLoadingState).toBe('loading');
+    });
+  });
+
   describe('searchForTerm', () => {
     it('sets the search term and the loading state to `loading` and resets results', () => {
       const searchTerm = 'test term';
@@ -238,11 +261,12 @@ describe('search Reducer', () => {
     });
   });
   describe('selectMapSearchResult', () => {
-    it('sets the selectedSearchResult', () => {
+    it('sets the selectedSearchResult and sets the loadingState to loaded', () => {
       const action = SearchActions.selectMapSearchResult({searchResult: selectedSearchResultMock});
       const state = reducer(existingState, action);
 
       expect(state.selectedSearchResult).toEqual(selectedSearchResultMock);
+      expect(state.searchApiLoadingState).toBe('loaded');
     });
   });
 });
