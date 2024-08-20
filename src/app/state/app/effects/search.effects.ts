@@ -6,7 +6,11 @@ import {SearchActions} from '../actions/search.actions';
 import {SearchService} from '../../../shared/services/apis/search/services/search.service';
 import {Store} from '@ngrx/store';
 import {catchError, map} from 'rxjs/operators';
-import {SearchResultsCouldNotBeLoaded} from '../../../shared/errors/search.errors';
+import {
+  InvalidSearchParameters,
+  NoSearchResultsFoundForParameters,
+  SearchResultsCouldNotBeLoaded,
+} from '../../../shared/errors/search.errors';
 import {selectLoadingState as selectLayerCatalogLoadingState} from '../../map/reducers/layer-catalog.reducer';
 import {LayerCatalogActions} from '../../map/actions/layer-catalog.actions';
 import {selectAvailableSpecialSearchIndexes} from '../../map/selectors/available-search-index.selector';
@@ -20,6 +24,9 @@ import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {MapUiActions} from '../../map/actions/map-ui.actions';
 import {selectUrlState} from '../reducers/url.reducer';
 import {selectTerm} from '../reducers/search.reducer';
+import {selectReady} from '../../map/reducers/map-config.reducer';
+import {SearchIndex} from '../../../shared/services/apis/search/interfaces/search-index.interface';
+import {GeometrySearchApiResultMatch} from '../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
 
 @Injectable()
 export class SearchEffects {
@@ -103,7 +110,9 @@ export class SearchEffects {
     () => {
       return this.actions$.pipe(
         ofType(SearchActions.selectMapSearchResult),
-        tap(({searchResult}) => {
+        combineLatestWith(this.store.select(selectReady)),
+        filter(([, isMapViewReady]) => isMapViewReady),
+        tap(([{searchResult}]) => {
           // only zoom to result if the geometry is available in the index
           if (searchResult.geometry) {
             this.mapService.zoomToExtent(searchResult.geometry);
@@ -136,6 +145,79 @@ export class SearchEffects {
     },
     {dispatch: false},
   );
+
+  public validateSearchUrlParameters$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(SearchActions.initializeSearchFromUrlParameters),
+      map(({searchTerm, searchIndex: searchIndexString}) => {
+        if (!searchTerm || !searchIndexString) {
+          return SearchActions.handleInvalidParameters();
+        }
+        const searchIndex: SearchIndex = {
+          indexName: searchIndexString,
+          label: searchIndexString,
+          active: true,
+          indexType: 'activeMapItems',
+        };
+        return SearchActions.searchForTermFromUrlParams({searchTerm, searchIndex});
+      }),
+    );
+  });
+
+  public handleSearchUrlParameter$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(SearchActions.searchForTermFromUrlParams),
+      switchMap(({searchIndex, searchTerm}) => {
+        return this.searchService.searchIndexes(searchTerm, [searchIndex]).pipe(
+          map((results) => {
+            if (
+              results.length === 0 ||
+              !(results[0] as GeometrySearchApiResultMatch).geometry ||
+              !(results[0] as GeometrySearchApiResultMatch).displayString
+            ) {
+              return SearchActions.handleEmptyResultsFromUrlSearch();
+            }
+            const mostSignificantResult = results[0] as GeometrySearchApiResultMatch;
+            return SearchActions.selectMapSearchResult({searchResult: mostSignificantResult});
+          }),
+          catchError((error: unknown) => of(SearchActions.setSearchApiError({error}))),
+        );
+      }),
+    );
+  });
+
+  public throwErrorForInvalidSearchParameters$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(SearchActions.handleInvalidParameters),
+        tap(() => {
+          throw new InvalidSearchParameters();
+        }),
+      );
+    },
+    {dispatch: false},
+  );
+
+  public throwErrorForEmptySearchResults$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(SearchActions.handleEmptyResultsFromUrlSearch),
+        map(() => {
+          throw new NoSearchResultsFoundForParameters();
+        }),
+      );
+    },
+    {dispatch: false},
+  );
+
+  public resetSearchLoadingState$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(SearchActions.handleEmptyResultsFromUrlSearch, SearchActions.handleInvalidParameters),
+      map(() => {
+        return SearchActions.resetLoadingState();
+      }),
+    );
+  });
 
   constructor(
     private readonly actions$: Actions,

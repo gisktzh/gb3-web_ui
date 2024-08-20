@@ -17,6 +17,12 @@ export const searchFeature = createFeature({
   name: searchFeatureKey,
   reducer: createReducer(
     initialState,
+    on(SearchActions.resetLoadingState, (state): SearchState => {
+      return {...state, searchApiLoadingState: initialState.searchApiLoadingState};
+    }),
+    on(SearchActions.initializeSearchFromUrlParameters, (state): SearchState => {
+      return {...state, searchApiLoadingState: 'loading'};
+    }),
     on(SearchActions.searchForTerm, (state, {term}): SearchState => {
       const trimmedTerm = term.trim();
       if (state.term !== trimmedTerm) {
@@ -93,7 +99,7 @@ export const searchFeature = createFeature({
       return {...initialState};
     }),
     on(SearchActions.selectMapSearchResult, (state, {searchResult}): SearchState => {
-      return {...state, selectedSearchResult: searchResult};
+      return {...state, selectedSearchResult: searchResult, searchApiLoadingState: 'loaded'};
     }),
   ),
 });
