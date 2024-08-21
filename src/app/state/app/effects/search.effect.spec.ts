@@ -1,6 +1,6 @@
 import {provideMockActions} from '@ngrx/effects/testing';
 import {fakeAsync, flush, TestBed} from '@angular/core/testing';
-import {Observable, of} from 'rxjs';
+import {EMPTY, Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
@@ -15,11 +15,17 @@ import {selectUrlState} from '../reducers/url.reducer';
 import {MainPage} from '../../../shared/enums/main-page.enum';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {selectReady} from '../../map/reducers/map-config.reducer';
+import {SearchIndex} from '../../../shared/services/apis/search/interfaces/search-index.interface';
+import {SearchService} from '../../../shared/services/apis/search/services/search.service';
+import {GeometryWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
+import {InvalidSearchParameters, NoSearchResultsFoundForParameters} from '../../../shared/errors/search.errors';
+import {catchError} from 'rxjs/operators';
 
 describe('SearchEffects', () => {
   let actions$: Observable<Action>;
   let store: MockStore;
   let effects: SearchEffects;
+  let searchService: SearchService;
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
@@ -37,6 +43,7 @@ describe('SearchEffects', () => {
     });
     effects = TestBed.inject(SearchEffects);
     store = TestBed.inject(MockStore);
+    searchService = TestBed.inject(SearchService);
   });
 
   afterEach(() => {
@@ -125,5 +132,183 @@ describe('SearchEffects', () => {
 
       expect(newAction).toBeUndefined();
     }));
+  });
+
+  describe('validateSearchUrlParameters$', () => {
+    it('dispatches SearchActions.handleInvalidParameters() if search term is undefined', (done: DoneFn) => {
+      const searchIndexString = 'index';
+      const searchTerm = undefined;
+      const basemapId = 'base';
+      const initialMaps = ['one', 'two'];
+
+      const expectedAction = SearchActions.handleInvalidParameters();
+      actions$ = of(SearchActions.initializeSearchFromUrlParameters({searchTerm, searchIndex: searchIndexString, initialMaps, basemapId}));
+      effects.validateSearchUrlParameters$.subscribe((action) => {
+        expect(action).toEqual(expectedAction);
+        done();
+      });
+    });
+    it('dispatches SearchActions.handleInvalidParameters() if search index is undefined', (done: DoneFn) => {
+      const searchIndexString = undefined;
+      const searchTerm = 'term';
+      const basemapId = 'base';
+      const initialMaps = ['one', 'two'];
+
+      const expectedAction = SearchActions.handleInvalidParameters();
+      actions$ = of(SearchActions.initializeSearchFromUrlParameters({searchTerm, searchIndex: searchIndexString, initialMaps, basemapId}));
+      effects.validateSearchUrlParameters$.subscribe((action) => {
+        expect(action).toEqual(expectedAction);
+        done();
+      });
+    });
+    it('dispatches SearchActions.searchForTermFromUrlParams() if search index and search term are defined', (done: DoneFn) => {
+      const searchIndexString = 'index';
+      const searchTerm = 'term';
+      const basemapId = 'base';
+      const initialMaps = ['one', 'two'];
+      const searchIndex: SearchIndex = {
+        indexName: searchIndexString,
+        label: searchIndexString,
+        active: true,
+        indexType: 'activeMapItems',
+      };
+
+      const expectedAction = SearchActions.searchForTermFromUrlParams({searchTerm, searchIndex});
+      actions$ = of(SearchActions.initializeSearchFromUrlParameters({searchTerm, searchIndex: searchIndexString, initialMaps, basemapId}));
+      effects.validateSearchUrlParameters$.subscribe((action) => {
+        expect(action).toEqual(expectedAction);
+        done();
+      });
+    });
+  });
+  describe('handleSearchUrlParameters$', () => {
+    it('dispatches SeacrchActions.handleEmptyResultsFromUrlSearch if no results are found', (done: DoneFn) => {
+      const searchIndexString = 'index';
+      const searchTerm = 'term';
+      const searchIndex: SearchIndex = {
+        indexName: searchIndexString,
+        label: searchIndexString,
+        active: true,
+        indexType: 'activeMapItems',
+      };
+      const searchServiceSpy = spyOn(searchService, 'searchIndexes').and.returnValue(of([]));
+      const expectedAction = SearchActions.handleEmptyResultsFromUrlSearch();
+      actions$ = of(SearchActions.searchForTermFromUrlParams({searchTerm, searchIndex}));
+      effects.handleSearchUrlParameter$.subscribe((action) => {
+        expect(searchServiceSpy).toHaveBeenCalledOnceWith(searchTerm, [searchIndex]);
+        expect(action).toEqual(expectedAction);
+        done();
+      });
+    });
+    it('dispatches SeacrchActions.handleEmptyResultsFromUrlSearch if no geometry exist on the best results', (done: DoneFn) => {
+      const searchIndexString = 'index';
+      const searchTerm = 'term';
+      const searchIndex: SearchIndex = {
+        indexName: searchIndexString,
+        label: searchIndexString,
+        active: true,
+        indexType: 'activeMapItems',
+      };
+      const searchServiceSpy = spyOn(searchService, 'searchIndexes').and.returnValue(
+        of([{indexType: 'index'} as unknown as GeometrySearchApiResultMatch]),
+      );
+      const expectedAction = SearchActions.handleEmptyResultsFromUrlSearch();
+      actions$ = of(SearchActions.searchForTermFromUrlParams({searchTerm, searchIndex}));
+      effects.handleSearchUrlParameter$.subscribe((action) => {
+        expect(searchServiceSpy).toHaveBeenCalledOnceWith(searchTerm, [searchIndex]);
+        expect(action).toEqual(expectedAction);
+        done();
+      });
+    });
+    it('dispatches SeacrchActions.selectMapSearchResult if a GeometrySearchApiResultMatch is found', (done: DoneFn) => {
+      const searchIndexString = 'index';
+      const searchTerm = 'term';
+      const searchIndex: SearchIndex = {
+        indexName: searchIndexString,
+        label: searchIndexString,
+        active: true,
+        indexType: 'activeMapItems',
+      };
+      const expectedResult = {
+        indexType: 'places',
+        displayString: 'result',
+        geometry: {} as GeometryWithSrs,
+      } as GeometrySearchApiResultMatch;
+      const searchServiceSpy = spyOn(searchService, 'searchIndexes').and.returnValue(of([expectedResult]));
+      const expectedAction = SearchActions.selectMapSearchResult({searchResult: expectedResult});
+      actions$ = of(SearchActions.searchForTermFromUrlParams({searchTerm, searchIndex}));
+      effects.handleSearchUrlParameter$.subscribe((action) => {
+        expect(searchServiceSpy).toHaveBeenCalledOnceWith(searchTerm, [searchIndex]);
+        expect(action).toEqual(expectedAction);
+        done();
+      });
+    });
+    it('dispatches SearchActions.setSearchApiError if an error occurs', (done: DoneFn) => {
+      const searchIndexString = 'index';
+      const searchTerm = 'term';
+      const searchIndex: SearchIndex = {
+        indexName: searchIndexString,
+        label: searchIndexString,
+        active: true,
+        indexType: 'activeMapItems',
+      };
+      const expectedError = new Error('error');
+      const searchServiceSpy = spyOn(searchService, 'searchIndexes').and.returnValue(throwError(() => expectedError));
+      const expectedAction = SearchActions.setSearchApiError({error: expectedError});
+      actions$ = of(SearchActions.searchForTermFromUrlParams({searchTerm, searchIndex}));
+      effects.handleSearchUrlParameter$.subscribe((action) => {
+        expect(searchServiceSpy).toHaveBeenCalledOnceWith(searchTerm, [searchIndex]);
+        expect(action).toEqual(expectedAction);
+        done();
+      });
+    });
+  });
+  describe('throwErrorForInvalidSearchParameters$', () => {
+    it('throws an InvalidSearchParameters error', (done: DoneFn) => {
+      actions$ = of(SearchActions.handleInvalidParameters());
+      effects.throwErrorForInvalidSearchParameters$
+        .pipe(
+          catchError((error: unknown) => {
+            const expectedError = new InvalidSearchParameters();
+            expect(error).toEqual(expectedError);
+            done();
+            return EMPTY;
+          }),
+        )
+        .subscribe();
+    });
+  });
+  describe('throwErrorForEmptySearchResults$', () => {
+    it('throws an NoSearchResultsFoundForParameters error', (done: DoneFn) => {
+      actions$ = of(SearchActions.handleEmptyResultsFromUrlSearch());
+      effects.throwErrorForEmptySearchResults$
+        .pipe(
+          catchError((error: unknown) => {
+            const expectedError = new NoSearchResultsFoundForParameters();
+            expect(error).toEqual(expectedError);
+            done();
+            return EMPTY;
+          }),
+        )
+        .subscribe();
+    });
+  });
+  describe('resetSearchLoadingState', () => {
+    it('dispatches SeacrchActions.resetLoadingState on SearchActions.handleEmptyResultsFromUrlSearch', (done: DoneFn) => {
+      const expectedAction = SearchActions.resetLoadingState();
+      actions$ = of(SearchActions.handleEmptyResultsFromUrlSearch());
+      effects.resetSearchLoadingState$.subscribe((action) => {
+        expect(action).toEqual(expectedAction);
+        done();
+      });
+    });
+    it('dispatches SeacrchActions.resetLoadingState on SearchActions.handleInvalidParameters', (done: DoneFn) => {
+      const expectedAction = SearchActions.resetLoadingState();
+      actions$ = of(SearchActions.handleInvalidParameters());
+      effects.resetSearchLoadingState$.subscribe((action) => {
+        expect(action).toEqual(expectedAction);
+        done();
+      });
+    });
   });
 });
