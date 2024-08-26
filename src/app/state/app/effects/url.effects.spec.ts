@@ -143,8 +143,8 @@ describe('UrlEffects', () => {
       });
     });
 
-    it('dispatches SearchActions.initializeSearchFromUrlParameters() if current query params are containing any search parameters', (done: DoneFn) => {
-      const params = {x: 123, y: 456, scale: 789, basemap: 'Dust II', initialMapIds: 'one,two', searchTerm: 'search', searchIndex: 'index'};
+    it('dispatches SearchActions.initializeSearchFromUrlParameters() if current query params contain a searchTerm', (done: DoneFn) => {
+      const params = {x: 123, y: 456, scale: 789, basemap: 'Dust II', initialMapIds: 'one,two', searchTerm: 'search'};
       const basemapConfigService = TestBed.inject(BasemapConfigService);
       spyOn(basemapConfigService, 'checkBasemapIdOrGetDefault').and.returnValue(params.basemap);
       store.overrideSelector(selectQueryParams, params);
@@ -152,6 +152,27 @@ describe('UrlEffects', () => {
 
       const expectedAction = SearchActions.initializeSearchFromUrlParameters({
         searchTerm: params.searchTerm,
+        searchIndex: undefined,
+        initialMaps: params.initialMapIds.split(','),
+        basemapId: params.basemap,
+      });
+
+      actions$ = of(UrlActions.setPage({mainPage: MainPage.Maps, isHeadlessPage: false, isSimplifiedPage: false}));
+      effects.handleInitialMapPageParameters$.subscribe((action) => {
+        expect(action).toEqual(expectedAction);
+        done();
+      });
+    });
+
+    it('dispatches SearchActions.initializeSearchFromUrlParameters() if current query params contain a searchIndex', (done: DoneFn) => {
+      const params = {x: 123, y: 456, scale: 789, basemap: 'Dust II', initialMapIds: 'one,two', searchIndex: 'index'};
+      const basemapConfigService = TestBed.inject(BasemapConfigService);
+      spyOn(basemapConfigService, 'checkBasemapIdOrGetDefault').and.returnValue(params.basemap);
+      store.overrideSelector(selectQueryParams, params);
+      store.overrideSelector(selectMapConfigParams, {x: 1, y: 2, scale: 3, basemap: '4'});
+
+      const expectedAction = SearchActions.initializeSearchFromUrlParameters({
+        searchTerm: undefined,
         searchIndex: params.searchIndex,
         initialMaps: params.initialMapIds.split(','),
         basemapId: params.basemap,

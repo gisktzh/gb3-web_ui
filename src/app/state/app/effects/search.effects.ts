@@ -26,7 +26,7 @@ import {selectUrlState} from '../reducers/url.reducer';
 import {selectTerm} from '../reducers/search.reducer';
 import {selectReady} from '../../map/reducers/map-config.reducer';
 import {SearchIndex} from '../../../shared/services/apis/search/interfaces/search-index.interface';
-import {GeometrySearchApiResultMatch} from '../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
+import {isGeometrySearchApiResultMatch} from '../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
 
 @Injectable()
 export class SearchEffects {
@@ -170,14 +170,10 @@ export class SearchEffects {
       switchMap(({searchIndex, searchTerm}) => {
         return this.searchService.searchIndexes(searchTerm, [searchIndex]).pipe(
           map((results) => {
-            if (
-              results.length === 0 ||
-              !(results[0] as GeometrySearchApiResultMatch).geometry ||
-              !(results[0] as GeometrySearchApiResultMatch).displayString
-            ) {
-              return SearchActions.handleEmptyResultsFromUrlSearch();
+            if (results.length === 0 || !isGeometrySearchApiResultMatch(results[0])) {
+              return SearchActions.handleEmptyResultsFromUrlSearch({searchTerm});
             }
-            const mostSignificantResult = results[0] as GeometrySearchApiResultMatch;
+            const mostSignificantResult = results[0];
             return SearchActions.selectMapSearchResult({searchResult: mostSignificantResult});
           }),
           catchError((error: unknown) => of(SearchActions.setSearchApiError({error}))),
@@ -202,8 +198,8 @@ export class SearchEffects {
     () => {
       return this.actions$.pipe(
         ofType(SearchActions.handleEmptyResultsFromUrlSearch),
-        map(() => {
-          throw new NoSearchResultsFoundForParameters();
+        map(({searchTerm}) => {
+          throw new NoSearchResultsFoundForParameters(searchTerm);
         }),
       );
     },

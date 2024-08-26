@@ -23,3 +23,7 @@ export interface MetadataSearchApiResultMatch extends AbstractSearchApiResultMat
 export interface UnknownSearchApiResultMatch extends AbstractSearchApiResultMatch {
   indexType: 'unknown';
 }
+
+export function isGeometrySearchApiResultMatch(match: any): match is GeometrySearchApiResultMatch {
+  return match.geometry && match.displayString && match.indexType && match.score;
+}

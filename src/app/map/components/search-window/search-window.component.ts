@@ -56,7 +56,7 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
         .pipe(
           tap((selectedSearchResult) => {
             if (selectedSearchResult) {
-              this.searchComponent.setTerm(selectedSearchResult?.displayString, false);
+              this.searchComponent.setTerm(selectedSearchResult.displayString, false);
             }
           }),
         )

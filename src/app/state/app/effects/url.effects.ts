@@ -84,11 +84,16 @@ export class UrlEffects {
       filter((mainPage) => mainPage === MainPage.Maps),
       concatLatestFrom(() => [this.store.select(selectQueryParams), this.store.select(selectMapConfigParams)]),
       map(([_, currentParams, mapConfigParams]) => {
-        const {x, y, scale, basemap, initialMapIds, searchTerm, searchIndex} = currentParams;
+        const {x, y, scale, basemap, initialMapIds, searchTerm, searchIndex} = UrlUtils.extractUrlParamsForMapInitialization(currentParams);
         const basemapId = this.basemapConfigService.checkBasemapIdOrGetDefault(basemap);
         const initialMaps = initialMapIds ? initialMapIds.split(',') : [];
         if (searchTerm || searchIndex) {
-          return SearchActions.initializeSearchFromUrlParameters({searchTerm, searchIndex, basemapId, initialMaps});
+          return SearchActions.initializeSearchFromUrlParameters({
+            searchTerm: searchTerm,
+            searchIndex: searchIndex ? searchIndex.split(',')[0] : undefined,
+            basemapId,
+            initialMaps,
+          });
         } else if (x || y || scale || basemap || initialMapIds) {
           return MapConfigActions.setInitialMapConfig({x, y, scale, basemapId, initialMaps});
         } else {

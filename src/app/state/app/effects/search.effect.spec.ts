@@ -181,7 +181,7 @@ describe('SearchEffects', () => {
       });
     });
   });
-  describe('handleSearchUrlParameters$', () => {
+  describe('handleSearchUrlParameter$', () => {
     it('dispatches SeacrchActions.handleEmptyResultsFromUrlSearch if no results are found', (done: DoneFn) => {
       const searchIndexString = 'index';
       const searchTerm = 'term';
@@ -192,7 +192,7 @@ describe('SearchEffects', () => {
         indexType: 'activeMapItems',
       };
       const searchServiceSpy = spyOn(searchService, 'searchIndexes').and.returnValue(of([]));
-      const expectedAction = SearchActions.handleEmptyResultsFromUrlSearch();
+      const expectedAction = SearchActions.handleEmptyResultsFromUrlSearch({searchTerm});
       actions$ = of(SearchActions.searchForTermFromUrlParams({searchTerm, searchIndex}));
       effects.handleSearchUrlParameter$.subscribe((action) => {
         expect(searchServiceSpy).toHaveBeenCalledOnceWith(searchTerm, [searchIndex]);
@@ -212,7 +212,7 @@ describe('SearchEffects', () => {
       const searchServiceSpy = spyOn(searchService, 'searchIndexes').and.returnValue(
         of([{indexType: 'index'} as unknown as GeometrySearchApiResultMatch]),
       );
-      const expectedAction = SearchActions.handleEmptyResultsFromUrlSearch();
+      const expectedAction = SearchActions.handleEmptyResultsFromUrlSearch({searchTerm});
       actions$ = of(SearchActions.searchForTermFromUrlParams({searchTerm, searchIndex}));
       effects.handleSearchUrlParameter$.subscribe((action) => {
         expect(searchServiceSpy).toHaveBeenCalledOnceWith(searchTerm, [searchIndex]);
@@ -220,7 +220,7 @@ describe('SearchEffects', () => {
         done();
       });
     });
-    it('dispatches SeacrchActions.selectMapSearchResult if a GeometrySearchApiResultMatch is found', (done: DoneFn) => {
+    it('dispatches SearchActions.selectMapSearchResult if a GeometrySearchApiResultMatch is found', (done: DoneFn) => {
       const searchIndexString = 'index';
       const searchTerm = 'term';
       const searchIndex: SearchIndex = {
@@ -233,6 +233,7 @@ describe('SearchEffects', () => {
         indexType: 'places',
         displayString: 'result',
         geometry: {} as GeometryWithSrs,
+        score: 100,
       } as GeometrySearchApiResultMatch;
       const searchServiceSpy = spyOn(searchService, 'searchIndexes').and.returnValue(of([expectedResult]));
       const expectedAction = SearchActions.selectMapSearchResult({searchResult: expectedResult});
@@ -280,11 +281,12 @@ describe('SearchEffects', () => {
   });
   describe('throwErrorForEmptySearchResults$', () => {
     it('throws an NoSearchResultsFoundForParameters error', (done: DoneFn) => {
-      actions$ = of(SearchActions.handleEmptyResultsFromUrlSearch());
+      const searchTerm = 'Empty Results';
+      actions$ = of(SearchActions.handleEmptyResultsFromUrlSearch({searchTerm}));
       effects.throwErrorForEmptySearchResults$
         .pipe(
           catchError((error: unknown) => {
-            const expectedError = new NoSearchResultsFoundForParameters();
+            const expectedError = new NoSearchResultsFoundForParameters(searchTerm);
             expect(error).toEqual(expectedError);
             done();
             return EMPTY;
@@ -293,10 +295,11 @@ describe('SearchEffects', () => {
         .subscribe();
     });
   });
-  describe('resetSearchLoadingState', () => {
+  describe('resetSearchLoadingState$', () => {
     it('dispatches SeacrchActions.resetLoadingState on SearchActions.handleEmptyResultsFromUrlSearch', (done: DoneFn) => {
       const expectedAction = SearchActions.resetLoadingState();
-      actions$ = of(SearchActions.handleEmptyResultsFromUrlSearch());
+      const searchTerm = 'Empty Results';
+      actions$ = of(SearchActions.handleEmptyResultsFromUrlSearch({searchTerm}));
       effects.resetSearchLoadingState$.subscribe((action) => {
         expect(action).toEqual(expectedAction);
         done();

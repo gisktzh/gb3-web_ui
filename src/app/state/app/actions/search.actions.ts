@@ -31,7 +31,7 @@ export const SearchActions = createActionGroup({
     'Reset Filters': emptyProps(),
     'Reset Search and Filters': emptyProps(),
     'Select Map Search Result': props<{searchResult: GeometrySearchApiResultMatch}>(),
-    'Handle Empty Results From Url Search': emptyProps(),
+    'Handle Empty Results From Url Search': props<{searchTerm: string}>(),
     'Handle Invalid Parameters': emptyProps(),
     'Reset Loading State': emptyProps(),
   },
