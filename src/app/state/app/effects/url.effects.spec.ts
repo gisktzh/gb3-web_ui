@@ -15,18 +15,26 @@ import {MapConfigActions} from '../../map/actions/map-config.actions';
 import {selectMainPage} from '../reducers/url.reducer';
 import {RouteParamConstants} from '../../../shared/constants/route-param.constants';
 import {SearchActions} from '../actions/search.actions';
+import {InitialMapExtentService} from '../../../map/services/initial-map-extent.service';
 
 describe('UrlEffects', () => {
   let actions$: Observable<Action>;
   let store: MockStore;
   let effects: UrlEffects;
+  let initialMapExtentServiceMock: jasmine.SpyObj<InitialMapExtentService>;
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
+    initialMapExtentServiceMock = jasmine.createSpyObj<InitialMapExtentService>(['calculateInitialExtent']);
 
     TestBed.configureTestingModule({
       imports: [RouterModule.forRoot([])],
-      providers: [UrlEffects, provideMockActions(() => actions$), provideMockStore()],
+      providers: [
+        UrlEffects,
+        provideMockActions(() => actions$),
+        provideMockStore(),
+        {provide: InitialMapExtentService, useValue: initialMapExtentServiceMock},
+      ],
     });
     effects = TestBed.inject(UrlEffects);
     store = TestBed.inject(MockStore);
@@ -133,6 +141,27 @@ describe('UrlEffects', () => {
         initialMaps: params.initialMapIds.split(','),
         x: params.x,
         y: params.y,
+        basemapId: params.basemap,
+      });
+
+      actions$ = of(UrlActions.setPage({mainPage: MainPage.Maps, isHeadlessPage: false, isSimplifiedPage: false}));
+      effects.handleInitialMapPageParameters$.subscribe((action) => {
+        expect(action).toEqual(expectedAction);
+        done();
+      });
+    });
+
+    it('dispatches MapConfigActions.setInitialMapConfig() if current query params contain basemap or initalMaps', (done: DoneFn) => {
+      const params = {basemap: 'Dust II', initialMapIds: 'one,two'};
+      const basemapConfigService = TestBed.inject(BasemapConfigService);
+      spyOn(basemapConfigService, 'checkBasemapIdOrGetDefault').and.returnValue(params.basemap);
+      store.overrideSelector(selectQueryParams, params);
+      store.overrideSelector(selectMapConfigParams, {x: 1, y: 2, scale: 3, basemap: '4'});
+      const extent = initialMapExtentServiceMock.calculateInitialExtent.and.returnValue({x: 11, y: 22, scale: 33})();
+
+      const expectedAction = MapConfigActions.setInitialMapConfig({
+        ...extent,
+        initialMaps: params.initialMapIds.split(','),
         basemapId: params.basemap,
       });
 
