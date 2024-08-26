@@ -52,5 +52,9 @@
     @include mixins.single-line-text;
     margin-bottom: 0;
     flex-grow: 1;
+
+    &--inactive {
+      color: ktzh-variables.$zh-disabled-foreground-color;
+    }
   }
 }

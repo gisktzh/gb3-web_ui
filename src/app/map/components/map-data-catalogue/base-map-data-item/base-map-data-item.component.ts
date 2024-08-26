@@ -36,18 +36,24 @@ export class BaseMapDataItemComponent {
   public layers: MapLayer[] = [];
   public imageUrl?: string;
 
+  public isHoverStateActive: boolean = false;
+
   public addItem() {
     this.addEvent.emit();
   }
 
   public hoverStart(layer?: MapLayer) {
     if (!this.gb2Url) {
+      if (!layer) {
+        this.isHoverStateActive = true;
+      }
       this.hoverStartEvent.emit(layer);
     }
   }
 
   public hoverEnd(layer?: MapLayer) {
     if (!this.gb2Url) {
+      this.isHoverStateActive = false;
       this.hoverEndEvent.emit(layer);
     }
   }
