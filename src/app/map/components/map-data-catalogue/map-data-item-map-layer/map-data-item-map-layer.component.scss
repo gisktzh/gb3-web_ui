@@ -3,6 +3,15 @@
 @use 'mixins/material.mixin' as mat-mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
+:host ::ng-deep {
+  .map-data-item-map-layer__visibility-checkbox {
+    @include mat-mixins.mat-checkbox-override-accent-color(
+      functions.get-color-from-palette(ktzh-variables.$zh-secondary-accent),
+      functions.get-contrast-color-from-palette(ktzh-variables.$zh-secondary-accent)
+    );
+  }
+}
+
 .map-data-item-map-layer {
   position: relative;
   height: 44px;
@@ -46,6 +55,12 @@
       functions.get-contrast-color-from-palette(ktzh-variables.$zh-secondary-accent)
     );
     @include mat-mixins.mat-icon-button-override-icon-size(18px);
+  }
+
+  .map-data-item-map-layer__visibility-checkbox {
+    aspect-ratio: 1 / 1;
+    width: auto;
+    padding: 2px;
   }
 
   .map-data-item-map-layer__title {
