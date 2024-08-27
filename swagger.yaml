@@ -69,8 +69,10 @@ paths:
           type: 'string'
           enum:
             - 'bautraeger'
+            - 'beleuchtung'
             - 'boje'
             - 'fassung'
+            - 'gewaesserangaben'
             - 'gvz'
             - 'hydrostation'
             - 'kantonsnummer'
@@ -79,8 +81,12 @@ paths:
             - 'lichtsignalanlage'
             - 'naturschutzobjekte'
             - 'schweizmobil'
+            - 'strkm'
+            - 'topoterm'
             - 'velosignalisation'
             - 'veloverbindungen'
+            - 'verkehrsmessstellen'
+            - 'verkehrstechnik'
             - 'wanderweg'
             - 'wasserrechtwww'
       responses:
