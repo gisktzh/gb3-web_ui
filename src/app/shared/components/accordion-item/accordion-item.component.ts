@@ -1,8 +1,9 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {ScreenMode} from '../../types/screen-size.type';
+import {CdkAccordionItem} from '@angular/cdk/accordion';
 
 /**
  * Implements the KTZH accordion style; to be used with a cdk-accordion element.
@@ -25,6 +26,7 @@ export class AccordionItemComponent implements OnInit, OnDestroy {
 
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly subscriptions: Subscription = new Subscription();
+  @ViewChild('accordionItem') accordionItem!: CdkAccordionItem;
 
   constructor(private readonly store: Store) {}
 
@@ -36,5 +38,16 @@ export class AccordionItemComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
+  }
+
+  public toggle(event: Event) {
+    event.preventDefault();
+
+    // programmatically click the element if it is a link to handle both space and enter key navigation
+    if (event.target instanceof HTMLAnchorElement) {
+      event.target.click();
+    } else {
+      this.accordionItem.toggle();
+    }
   }
 }
