@@ -36,8 +36,21 @@ export class BaseMapDataItemComponent {
   public layers: MapLayer[] = [];
   public imageUrl?: string;
 
+  public isMapHovered: boolean = false;
+  public hoveredLayer?: MapLayer;
+
   public addItem() {
     this.addEvent.emit();
+  }
+
+  public setIsHovered(layer?: MapLayer) {
+    if (!this.gb2Url) {
+      if (layer) {
+        this.hoveredLayer = layer;
+      } else {
+        this.isMapHovered = true;
+      }
+    }
   }
 
   public hoverStart(layer?: MapLayer) {
@@ -48,6 +61,8 @@ export class BaseMapDataItemComponent {
 
   public hoverEnd(layer?: MapLayer) {
     if (!this.gb2Url) {
+      this.isMapHovered = false;
+      this.hoveredLayer = undefined;
       this.hoverEndEvent.emit(layer);
     }
   }
