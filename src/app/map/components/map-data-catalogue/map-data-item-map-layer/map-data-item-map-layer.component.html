@@ -1,6 +1,6 @@
 <div *ngIf="!layer.isHidden" class="map-data-item-map-layer">
   <span class="map-data-item-map-layer__connection-line map-data-item-map-layer__connection-line-top"></span>
-  @if (isHoverStateActive) {
+  @if (isMapHovered) {
     <mat-checkbox class="map-data-item-map-layer__visibility-checkbox" [checked]="layer.visible"></mat-checkbox>
   } @else {
     <button class="map-data-item-map-layer__add-button" (click)="addItemLayer()" mat-icon-button>
@@ -10,7 +10,7 @@
   <p
     [innerHTML]="layer.title | highlightSearchQuery: this.filterString"
     class="map-data-item-map-layer__title"
-    [ngClass]="{'map-data-item-map-layer__title--inactive': !visibleAtCurrentScale && isHoverStateActive}"
+    [ngClass]="{'map-data-item-map-layer__title--inactive': !visibleAtCurrentScale && (isMapHovered || isLayerHovered)}"
     matTooltip="{{ layer | layerTooltip }}"
   ></p>
   <span class="map-data-item-map-layer__connection-line map-data-item-map-layer__connection-line-bottom"></span>

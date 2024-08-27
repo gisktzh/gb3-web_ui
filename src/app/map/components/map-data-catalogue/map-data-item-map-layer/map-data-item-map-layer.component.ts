@@ -12,7 +12,8 @@ import {selectScale} from '../../../../state/map/reducers/map-config.reducer';
 export class MapDataItemMapLayerComponent implements OnInit, OnDestroy {
   @Input() public layer!: MapLayer;
   @Input() public filterString: string | undefined = undefined;
-  @Input() public isHoverStateActive: boolean = false;
+  @Input() public isMapHovered: boolean = false;
+  @Input() public isLayerHovered: boolean = false;
 
   @Output() public readonly addLayerEvent = new EventEmitter<void>();
 

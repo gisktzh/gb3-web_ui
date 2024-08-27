@@ -77,7 +77,8 @@
       <map-data-item-map-layer
         [filterString]="filterString"
         [layer]="layer"
-        [isHoverStateActive]="isHoverStateActive"
+        [isMapHovered]="isMapHovered"
+        [isLayerHovered]="layer === hoveredLayer"
         (addLayerEvent)="addItemLayer(layer)"
         (delayedMouseEnter)="hoverStart(layer)"
         [delayDurationInMs]="this.hoverDelay"
