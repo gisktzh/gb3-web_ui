@@ -67,6 +67,22 @@ paths:
           required: false
           default: ''
           type: 'string'
+          enum:
+            - 'bautraeger'
+            - 'boje'
+            - 'fassung'
+            - 'gvz'
+            - 'hydrostation'
+            - 'kantonsnummer'
+            - 'kbs'
+            - 'kunstbauten'
+            - 'lichtsignalanlage'
+            - 'naturschutzobjekte'
+            - 'schweizmobil'
+            - 'velosignalisation'
+            - 'veloverbindungen'
+            - 'wanderweg'
+            - 'wasserrechtwww'
       responses:
         '200':
           description: 'Successful operation'
