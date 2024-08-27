@@ -12,6 +12,16 @@ export const SearchActions = createActionGroup({
   source: 'Search',
   events: {
     'Search For Term': props<{term: string; options: SearchOptions}>(),
+    'Search For Term From Url Params': props<{
+      searchTerm: string;
+      searchIndex: SearchIndex;
+    }>(),
+    'Initialize Search From Url Parameters': props<{
+      searchTerm: string | undefined;
+      searchIndex: string | undefined;
+      basemapId: string;
+      initialMaps: string[];
+    }>(),
     'Set Search Api Error': errorProps(),
     'Set Search Api Results': props<{results: SearchApiResultMatch[]}>(),
     'Clear Search Term': emptyProps(),
@@ -21,5 +31,8 @@ export const SearchActions = createActionGroup({
     'Reset Filters': emptyProps(),
     'Reset Search and Filters': emptyProps(),
     'Select Map Search Result': props<{searchResult: GeometrySearchApiResultMatch}>(),
+    'Handle Empty Results From Url Search': props<{searchTerm: string}>(),
+    'Handle Invalid Parameters': emptyProps(),
+    'Reset Loading State': emptyProps(),
   },
 });

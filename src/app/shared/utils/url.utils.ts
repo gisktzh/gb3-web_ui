@@ -74,4 +74,38 @@ export class UrlUtils {
       Object.keys(firstParams).every((key) => firstParams[key] === secondParams[key])
     );
   }
+
+  /**
+   * Extracts the URL parameters from the given parameters and filters out the last occurrence of each parameter
+   * @param params
+   */
+  public static extractUrlParamsForMapInitialization(params: Params) {
+    const {
+      x: xParam,
+      y: yParam,
+      scale: scaleParam,
+      basemap: basemapParam,
+      initialMapIds: initialMapIdsParam,
+      searchTerm: searchTermParam,
+      searchIndex: searchIndexParam,
+    } = params;
+
+    const x = UrlUtils.extractLastOccurrenceOfParam(xParam);
+    const y = UrlUtils.extractLastOccurrenceOfParam(yParam);
+    const scale = UrlUtils.extractLastOccurrenceOfParam(scaleParam);
+    const basemap = UrlUtils.extractLastOccurrenceOfParam(basemapParam);
+    const initialMapIds = UrlUtils.extractLastOccurrenceOfParam(initialMapIdsParam);
+    const searchTerm = UrlUtils.extractLastOccurrenceOfParam(searchTermParam);
+    const searchIndex = searchIndexParam ? UrlUtils.extractLastOccurrenceOfParam(searchIndexParam).split(',')[0] : undefined;
+
+    return {x, y, scale, basemap, initialMapIds, searchTerm, searchIndex};
+  }
+
+  /**
+   * Extracts the last occurrence of the given parameter if it is an array; otherwise, it returns the parameter itself
+   * @param param
+   */
+  public static extractLastOccurrenceOfParam<T>(param: T | T[]): T {
+    return Array.isArray(param) ? param[param.length - 1] : param;
+  }
 }
