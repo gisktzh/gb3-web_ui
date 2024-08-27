@@ -27,7 +27,7 @@ export class MapDataItemMapLayerComponent implements OnInit, OnDestroy {
   public ngOnInit() {
     this.subscriptions.add(
       this.scale$
-        .pipe(tap((scale) => (this.visibleAtCurrentScale = this.layer.minScale <= scale && scale <= this.layer.maxScale)))
+        .pipe(tap((scale) => (this.visibleAtCurrentScale = this.layer.minScale < scale && scale <= this.layer.maxScale)))
         .subscribe(),
     );
   }

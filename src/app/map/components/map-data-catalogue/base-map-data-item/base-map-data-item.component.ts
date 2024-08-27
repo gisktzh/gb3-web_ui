@@ -43,13 +43,18 @@ export class BaseMapDataItemComponent {
     this.addEvent.emit();
   }
 
-  public hoverStart(layer?: MapLayer) {
+  public setIsHovered(layer?: MapLayer) {
     if (!this.gb2Url) {
       if (layer) {
         this.hoveredLayer = layer;
       } else {
         this.isMapHovered = true;
       }
+    }
+  }
+
+  public hoverStart(layer?: MapLayer) {
+    if (!this.gb2Url) {
       this.hoverStartEvent.emit(layer);
     }
   }
