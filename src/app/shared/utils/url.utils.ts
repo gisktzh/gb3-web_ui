@@ -96,7 +96,7 @@ export class UrlUtils {
     const basemap = UrlUtils.extractLastOccurrenceOfParam(basemapParam);
     const initialMapIds = UrlUtils.extractLastOccurrenceOfParam(initialMapIdsParam);
     const searchTerm = UrlUtils.extractLastOccurrenceOfParam(searchTermParam);
-    const searchIndex = UrlUtils.extractLastOccurrenceOfParam(searchIndexParam);
+    const searchIndex = searchIndexParam ? UrlUtils.extractLastOccurrenceOfParam(searchIndexParam).split(',')[0] : undefined;
 
     return {x, y, scale, basemap, initialMapIds, searchTerm, searchIndex};
   }

@@ -26,7 +26,7 @@ import {selectUrlState} from '../reducers/url.reducer';
 import {selectTerm} from '../reducers/search.reducer';
 import {selectReady} from '../../map/reducers/map-config.reducer';
 import {SearchIndex} from '../../../shared/services/apis/search/interfaces/search-index.interface';
-import {isGeometrySearchApiResultMatch} from '../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
+import {isGeometrySearchApiResultMatch} from '../../../shared/type-guards/search-api-result-match.type-guard';
 
 @Injectable()
 export class SearchEffects {

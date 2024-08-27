@@ -91,7 +91,7 @@ export class UrlEffects {
         if (searchTerm || searchIndex) {
           return SearchActions.initializeSearchFromUrlParameters({
             searchTerm: searchTerm,
-            searchIndex: searchIndex ? searchIndex.split(',')[0] : undefined,
+            searchIndex,
             basemapId,
             initialMaps,
           });

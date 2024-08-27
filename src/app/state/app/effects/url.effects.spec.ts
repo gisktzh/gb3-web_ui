@@ -116,7 +116,7 @@ describe('UrlEffects', () => {
 
   describe('handleInitialMapPageParameters$', () => {
     it('dispatches UrlActions.setMapPageParams() if current query params are not containing any map config parameters', (done: DoneFn) => {
-      const params = {x: 123, y: 456, scale: 789, basemap: 'Dust II', initialMapIds: 'one,two'};
+      const params = {x: 123, y: 456, scale: 789, basemap: 'Dust II'};
       store.overrideSelector(selectQueryParams, {});
       store.overrideSelector(selectMapConfigParams, params);
 
