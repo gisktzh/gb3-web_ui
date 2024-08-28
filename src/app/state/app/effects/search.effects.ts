@@ -6,7 +6,11 @@ import {SearchActions} from '../actions/search.actions';
 import {SearchService} from '../../../shared/services/apis/search/services/search.service';
 import {Store} from '@ngrx/store';
 import {catchError, map} from 'rxjs/operators';
-import {SearchResultsCouldNotBeLoaded} from '../../../shared/errors/search.errors';
+import {
+  InvalidSearchParameters,
+  NoSearchResultsFoundForParameters,
+  SearchResultsCouldNotBeLoaded,
+} from '../../../shared/errors/search.errors';
 import {selectLoadingState as selectLayerCatalogLoadingState} from '../../map/reducers/layer-catalog.reducer';
 import {LayerCatalogActions} from '../../map/actions/layer-catalog.actions';
 import {selectAvailableSpecialSearchIndexes} from '../../map/selectors/available-search-index.selector';
@@ -19,12 +23,17 @@ import {MapService} from '../../../map/interfaces/map.service';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {MapUiActions} from '../../map/actions/map-ui.actions';
 import {selectUrlState} from '../reducers/url.reducer';
+import {selectTerm} from '../reducers/search.reducer';
+import {selectReady} from '../../map/reducers/map-config.reducer';
+import {SearchIndex} from '../../../shared/services/apis/search/interfaces/search-index.interface';
+import {isGeometrySearchApiResultMatch} from '../../../shared/type-guards/search-api-result-match.type-guard';
 
 @Injectable()
 export class SearchEffects {
   public searchResultsFromSearchApi$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(SearchActions.searchForTerm),
+      distinctUntilChanged((prev, curr) => prev.term.trim() === curr.term.trim()),
       filter((termAndOptions) => termAndOptions.options.searchIndexTypes.length > 0),
       combineLatestWith(
         this.store
@@ -32,14 +41,15 @@ export class SearchEffects {
           // simplified 'distinctUntilChanged' due to the fact that it is not possible to add and remove active map items with new search indexes at the same time;
           // therefore, comparing the amount of previous and current search indexes suffices to distinct between new indexes
           .pipe(distinctUntilChanged((previous, current) => previous.length === current.length)),
+        this.store.select(selectTerm),
       ),
-      takeWhile(([termAndOptions, _]) => termAndOptions.options.searchIndexTypes.length > 0),
-      switchMap(([termAndOptions, activeMapIndexes]) => {
+      takeWhile(([termAndOptions]) => termAndOptions.options.searchIndexTypes.length > 0),
+      switchMap(([termAndOptions, activeMapIndexes, term]) => {
         const searchIndexes = this.configService.filterSearchIndexes(termAndOptions.options.searchIndexTypes);
         if (termAndOptions.options.searchIndexTypes.includes('activeMapItems')) {
           searchIndexes.push(...activeMapIndexes);
         }
-        return this.searchService.searchIndexes(termAndOptions.term, searchIndexes).pipe(
+        return this.searchService.searchIndexes(term, searchIndexes).pipe(
           map((results) => SearchActions.setSearchApiResults({results})),
           catchError((error: unknown) => of(SearchActions.setSearchApiError({error}))),
         );
@@ -100,7 +110,9 @@ export class SearchEffects {
     () => {
       return this.actions$.pipe(
         ofType(SearchActions.selectMapSearchResult),
-        tap(({searchResult}) => {
+        combineLatestWith(this.store.select(selectReady)),
+        filter(([, isMapViewReady]) => isMapViewReady),
+        tap(([{searchResult}]) => {
           // only zoom to result if the geometry is available in the index
           if (searchResult.geometry) {
             this.mapService.zoomToExtent(searchResult.geometry);
@@ -133,6 +145,75 @@ export class SearchEffects {
     },
     {dispatch: false},
   );
+
+  public validateSearchUrlParameters$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(SearchActions.initializeSearchFromUrlParameters),
+      map(({searchTerm, searchIndex: searchIndexString}) => {
+        if (!searchTerm || !searchIndexString) {
+          return SearchActions.handleInvalidParameters();
+        }
+        const searchIndex: SearchIndex = {
+          indexName: searchIndexString,
+          label: searchIndexString,
+          active: true,
+          indexType: 'activeMapItems',
+        };
+        return SearchActions.searchForTermFromUrlParams({searchTerm, searchIndex});
+      }),
+    );
+  });
+
+  public handleSearchUrlParameter$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(SearchActions.searchForTermFromUrlParams),
+      switchMap(({searchIndex, searchTerm}) => {
+        return this.searchService.searchIndexes(searchTerm, [searchIndex]).pipe(
+          map((results) => {
+            if (results.length === 0 || !isGeometrySearchApiResultMatch(results[0])) {
+              return SearchActions.handleEmptyResultsFromUrlSearch({searchTerm});
+            }
+            const mostSignificantResult = results[0];
+            return SearchActions.selectMapSearchResult({searchResult: mostSignificantResult});
+          }),
+          catchError((error: unknown) => of(SearchActions.setSearchApiError({error}))),
+        );
+      }),
+    );
+  });
+
+  public throwErrorForInvalidSearchParameters$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(SearchActions.handleInvalidParameters),
+        tap(() => {
+          throw new InvalidSearchParameters();
+        }),
+      );
+    },
+    {dispatch: false},
+  );
+
+  public throwErrorForEmptySearchResults$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(SearchActions.handleEmptyResultsFromUrlSearch),
+        map(({searchTerm}) => {
+          throw new NoSearchResultsFoundForParameters(searchTerm);
+        }),
+      );
+    },
+    {dispatch: false},
+  );
+
+  public resetSearchLoadingState$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(SearchActions.handleEmptyResultsFromUrlSearch, SearchActions.handleInvalidParameters),
+      map(() => {
+        return SearchActions.resetLoadingState();
+      }),
+    );
+  });
 
   constructor(
     private readonly actions$: Actions,

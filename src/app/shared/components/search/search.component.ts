@@ -79,15 +79,14 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
         .pipe(
           map((searchTerm) => {
             this.inputRef.nativeElement.value = searchTerm.term;
-            const term = searchTerm.term.trim();
-            return {...searchTerm, term};
+            return {...searchTerm, term: searchTerm.term};
           }),
           distinctUntilChanged((prev, curr) => {
             return prev.term === curr.term;
           }),
           tap((searchTerm) => {
             if (searchTerm.emitChangeEvent) {
-              this.changeSearchTermEvent.emit(searchTerm.term.trim());
+              this.changeSearchTermEvent.emit(searchTerm.term);
             }
           }),
         )

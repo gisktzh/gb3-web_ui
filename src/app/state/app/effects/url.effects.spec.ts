@@ -14,18 +14,27 @@ import {selectMapConfigParams} from '../../map/selectors/map-config-params.selec
 import {MapConfigActions} from '../../map/actions/map-config.actions';
 import {selectMainPage} from '../reducers/url.reducer';
 import {RouteParamConstants} from '../../../shared/constants/route-param.constants';
+import {SearchActions} from '../actions/search.actions';
+import {InitialMapExtentService} from '../../../map/services/initial-map-extent.service';
 
 describe('UrlEffects', () => {
   let actions$: Observable<Action>;
   let store: MockStore;
   let effects: UrlEffects;
+  let initialMapExtentServiceMock: jasmine.SpyObj<InitialMapExtentService>;
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
+    initialMapExtentServiceMock = jasmine.createSpyObj<InitialMapExtentService>(['calculateInitialExtent']);
 
     TestBed.configureTestingModule({
       imports: [RouterModule.forRoot([])],
-      providers: [UrlEffects, provideMockActions(() => actions$), provideMockStore()],
+      providers: [
+        UrlEffects,
+        provideMockActions(() => actions$),
+        provideMockStore(),
+        {provide: InitialMapExtentService, useValue: initialMapExtentServiceMock},
+      ],
     });
     effects = TestBed.inject(UrlEffects);
     store = TestBed.inject(MockStore);
@@ -107,7 +116,7 @@ describe('UrlEffects', () => {
 
   describe('handleInitialMapPageParameters$', () => {
     it('dispatches UrlActions.setMapPageParams() if current query params are not containing any map config parameters', (done: DoneFn) => {
-      const params = {x: 123, y: 456, scale: 789, basemap: 'Dust II', initialMapIds: 'one,two'};
+      const params = {x: 123, y: 456, scale: 789, basemap: 'Dust II'};
       store.overrideSelector(selectQueryParams, {});
       store.overrideSelector(selectMapConfigParams, params);
 
@@ -132,6 +141,69 @@ describe('UrlEffects', () => {
         initialMaps: params.initialMapIds.split(','),
         x: params.x,
         y: params.y,
+        basemapId: params.basemap,
+      });
+
+      actions$ = of(UrlActions.setPage({mainPage: MainPage.Maps, isHeadlessPage: false, isSimplifiedPage: false}));
+      effects.handleInitialMapPageParameters$.subscribe((action) => {
+        expect(action).toEqual(expectedAction);
+        done();
+      });
+    });
+
+    it('dispatches MapConfigActions.setInitialMapConfig() if current query params contain basemap or initalMaps', (done: DoneFn) => {
+      const params = {basemap: 'Dust II', initialMapIds: 'one,two'};
+      const basemapConfigService = TestBed.inject(BasemapConfigService);
+      spyOn(basemapConfigService, 'checkBasemapIdOrGetDefault').and.returnValue(params.basemap);
+      store.overrideSelector(selectQueryParams, params);
+      store.overrideSelector(selectMapConfigParams, {x: 1, y: 2, scale: 3, basemap: '4'});
+      const extent = initialMapExtentServiceMock.calculateInitialExtent.and.returnValue({x: 11, y: 22, scale: 33})();
+
+      const expectedAction = MapConfigActions.setInitialMapConfig({
+        ...extent,
+        initialMaps: params.initialMapIds.split(','),
+        basemapId: params.basemap,
+      });
+
+      actions$ = of(UrlActions.setPage({mainPage: MainPage.Maps, isHeadlessPage: false, isSimplifiedPage: false}));
+      effects.handleInitialMapPageParameters$.subscribe((action) => {
+        expect(action).toEqual(expectedAction);
+        done();
+      });
+    });
+
+    it('dispatches SearchActions.initializeSearchFromUrlParameters() if current query params contain a searchTerm', (done: DoneFn) => {
+      const params = {x: 123, y: 456, scale: 789, basemap: 'Dust II', initialMapIds: 'one,two', searchTerm: 'search'};
+      const basemapConfigService = TestBed.inject(BasemapConfigService);
+      spyOn(basemapConfigService, 'checkBasemapIdOrGetDefault').and.returnValue(params.basemap);
+      store.overrideSelector(selectQueryParams, params);
+      store.overrideSelector(selectMapConfigParams, {x: 1, y: 2, scale: 3, basemap: '4'});
+
+      const expectedAction = SearchActions.initializeSearchFromUrlParameters({
+        searchTerm: params.searchTerm,
+        searchIndex: undefined,
+        initialMaps: params.initialMapIds.split(','),
+        basemapId: params.basemap,
+      });
+
+      actions$ = of(UrlActions.setPage({mainPage: MainPage.Maps, isHeadlessPage: false, isSimplifiedPage: false}));
+      effects.handleInitialMapPageParameters$.subscribe((action) => {
+        expect(action).toEqual(expectedAction);
+        done();
+      });
+    });
+
+    it('dispatches SearchActions.initializeSearchFromUrlParameters() if current query params contain a searchIndex', (done: DoneFn) => {
+      const params = {x: 123, y: 456, scale: 789, basemap: 'Dust II', initialMapIds: 'one,two', searchIndex: 'index'};
+      const basemapConfigService = TestBed.inject(BasemapConfigService);
+      spyOn(basemapConfigService, 'checkBasemapIdOrGetDefault').and.returnValue(params.basemap);
+      store.overrideSelector(selectQueryParams, params);
+      store.overrideSelector(selectMapConfigParams, {x: 1, y: 2, scale: 3, basemap: '4'});
+
+      const expectedAction = SearchActions.initializeSearchFromUrlParameters({
+        searchTerm: undefined,
+        searchIndex: params.searchIndex,
+        initialMaps: params.initialMapIds.split(','),
         basemapId: params.basemap,
       });
 
@@ -166,10 +238,10 @@ describe('UrlEffects', () => {
       const routerSpy = spyOn(router, 'navigate').and.callThrough();
       store.overrideSelector(selectMainPage, MainPage.Maps);
       const params = {x: 123, y: 456, scale: 789, basemap: 'Dust II'};
-      const existingParams = {...params, initialMapIds: 'one,two'};
+      const existingParams = {...params, initialMapIds: 'one,two', searchTerm: 'search', searchIndex: 'index'};
       store.overrideSelector(selectQueryParams, existingParams);
 
-      const expectedParams = {...params, initialMapIds: null};
+      const expectedParams = {...params, initialMapIds: null, searchTerm: null, searchIndex: null};
 
       actions$ = of(UrlActions.setMapPageParams({params}));
       effects.setMapPageParameters$.subscribe(() => {

@@ -68,6 +68,7 @@ describe('search Reducer', () => {
 
   const errorMock: Error = new Error('oh no! anyway...');
   let existingState: SearchState;
+  const existingStateTerm = 'search term';
 
   beforeEach(() => {
     existingState = {
@@ -75,7 +76,7 @@ describe('search Reducer', () => {
       searchApiLoadingState: 'loaded',
       searchApiResultMatches: searchMatchesMock,
       selectedSearchResult: undefined,
-      term: 'search term',
+      term: existingStateTerm,
     };
   });
 
@@ -85,6 +86,29 @@ describe('search Reducer', () => {
       const result = reducer(initialState, action);
 
       expect(result).toBe(initialState);
+    });
+  });
+
+  describe('resetLoadingState', () => {
+    it('sets the loading state to undefined', () => {
+      const action = SearchActions.resetLoadingState();
+      const state = reducer(initialState, action);
+
+      expect(state.searchApiLoadingState).toBe(undefined);
+    });
+  });
+
+  describe('initializeSearchFromUrlParameters', () => {
+    it('sets the loading state to `loading`', () => {
+      const action = SearchActions.initializeSearchFromUrlParameters({
+        searchTerm: undefined,
+        searchIndex: undefined,
+        initialMaps: [],
+        basemapId: 'test',
+      });
+      const state = reducer(initialState, action);
+
+      expect(state.searchApiLoadingState).toBe('loading');
     });
   });
 
@@ -99,6 +123,28 @@ describe('search Reducer', () => {
       expect(state.searchApiResultMatches).toEqual(initialState.searchApiResultMatches);
       expect(state.term).toBe(searchTerm);
       expect(state.selectedSearchResult).toBe(initialState.selectedSearchResult);
+    });
+
+    ['   t', 't   ', '   t   '].forEach((searchTerm) => {
+      it(`trims the term correctly for "${searchTerm}"`, () => {
+        const action = SearchActions.searchForTerm({term: searchTerm, options: searchOptionsMock});
+        const state = reducer(existingState, action);
+
+        expect(state.term).toBe('t');
+      });
+    });
+
+    [`${existingStateTerm}   `, `  ${existingStateTerm}   `, `  ${existingStateTerm}   `].forEach((searchTerm) => {
+      it(`does not change the state for "${searchTerm}"`, () => {
+        const action = SearchActions.searchForTerm({term: searchTerm, options: searchOptionsMock});
+        const state = reducer(existingState, action);
+
+        expect(state.filterGroups).toEqual(filterGroupsMock);
+        expect(state.searchApiLoadingState).toBe(existingState.searchApiLoadingState);
+        expect(state.searchApiResultMatches).toEqual(existingState.searchApiResultMatches);
+        expect(state.term).toBe(existingState.term);
+        expect(state.selectedSearchResult).toBe(existingState.selectedSearchResult);
+      });
     });
   });
 
@@ -215,11 +261,12 @@ describe('search Reducer', () => {
     });
   });
   describe('selectMapSearchResult', () => {
-    it('sets the selectedSearchResult', () => {
+    it('sets the selectedSearchResult and sets the loadingState to loaded', () => {
       const action = SearchActions.selectMapSearchResult({searchResult: selectedSearchResultMock});
       const state = reducer(existingState, action);
 
       expect(state.selectedSearchResult).toEqual(selectedSearchResultMock);
+      expect(state.searchApiLoadingState).toBe('loaded');
     });
   });
 });

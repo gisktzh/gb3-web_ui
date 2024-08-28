@@ -19,25 +19,25 @@ paths:
         - $ref: '#/parameters/devMode'
         - name: 'x'
           in: 'query'
-          description: 'This is the x-coordinate in the Swiss coordinate system LV95 (EPSG:2056). It represents the easting value or horizontal position. This value will be updated if the x-coordinate of the center of the map changes.'
+          description: 'This is the x-coordinate in the Swiss coordinate system LV95 (EPSG:2056). It represents the easting value or horizontal position. This value will be updated if the x-coordinate of the center of the map changes. If provided more than once, last value will be used.'
           required: false
           default: none
           type: 'number'
         - name: 'y'
           in: 'query'
-          description: 'This is the y-coordinate in the Swiss coordinate system LV95 (EPSG:2056). It represents the northing value or vertical position. This value will be updated if y-coordinate of the center of the map changes.'
+          description: 'This is the y-coordinate in the Swiss coordinate system LV95 (EPSG:2056). It represents the northing value or vertical position. This value will be updated if y-coordinate of the center of the map changes. If provided more than once, last value will be used.'
           required: false
           default: none
           type: 'number'
         - name: 'scale'
           in: 'query'
-          description: 'This parameter represents the scale of the map. The scale is the ratio of a distance on the map to the corresponding distance on the ground. This value will be updated if the scale of the map changes.'
+          description: 'This parameter represents the scale of the map. The scale is the ratio of a distance on the map to the corresponding distance on the ground. This value will be updated if the scale of the map changes. If provided more than once, last value will be used.'
           required: false
           default: none
           type: 'number'
         - name: 'basemap'
           in: 'query'
-          description: 'This is an identifier for the basemap to be used. A basemap provides a background of geographical context for the content you want to display on a map. This value will be updated if the background of the map changes.'
+          description: 'This is an identifier for the basemap to be used. A basemap provides a background of geographical context for the content you want to display on a map. This value will be updated if the background of the map changes. If provided more than once, last value will be used.'
           required: false
           default: 'arelkbackgroundzh'
           type: 'string'
@@ -51,10 +51,44 @@ paths:
             - 'arelkbackgroundzh'
         - name: 'initialMapIds'
           in: 'query'
-          description: 'This is a comma-separated list of identifiers for the maps that should be initially displayed. Each identifier corresponds to a specific map. This parameter will be removed after loading the page.'
+          description: 'This is a comma-separated list of identifiers for the maps that should be initially displayed. Each identifier corresponds to a specific map. This parameter will be removed after loading the page. If provided more than once, last value will be used.'
           required: false
           default: ''
           type: 'string'
+        - name: 'searchTerm'
+          in: 'query'
+          description: 'This is a search term that can be used to search for a specific location on the map in one of the available indexes. Only works in combination with the searchIndex parameter. If provided more than once, last value will be used.'
+          required: false
+          default: ''
+          type: 'string'
+        - name: 'searchIndex'
+          in: 'query'
+          description: 'This parameter defines which index should be searched with the provided search term. Only works in combination with the searchTerm parameter. Only one index can be searched at a time. If provided more than once, last value will be used.'
+          required: false
+          default: ''
+          type: 'string'
+          enum:
+            - 'bautraeger'
+            - 'beleuchtung'
+            - 'boje'
+            - 'fassung'
+            - 'gewaesserangaben'
+            - 'gvz'
+            - 'hydrostation'
+            - 'kantonsnummer'
+            - 'kbs'
+            - 'kunstbauten'
+            - 'lichtsignalanlage'
+            - 'naturschutzobjekte'
+            - 'schweizmobil'
+            - 'strkm'
+            - 'topoterm'
+            - 'velosignalisation'
+            - 'veloverbindungen'
+            - 'verkehrsmessstellen'
+            - 'verkehrstechnik'
+            - 'wanderweg'
+            - 'wasserrechtwww'
       responses:
         '200':
           description: 'Successful operation'

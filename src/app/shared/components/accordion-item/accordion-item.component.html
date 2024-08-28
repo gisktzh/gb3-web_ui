@@ -6,7 +6,8 @@
   class="accordion-item"
   role="button"
   tabindex="0"
-  (keydown.space)="accordionItem.toggle()"
+  (keydown.space)="toggle($event)"
+  (keydown.enter)="toggle($event)"
 >
   <div class="accordion-item__content" [ngClass]="'accordion-item__content--' + variant">
     <div
@@ -22,14 +23,13 @@
         <mat-icon [svgIcon]="accordionItem.expanded ? 'ktzh_remove' : 'ktzh_add'"></mat-icon>
       </span>
     </div>
-    <div
+    <section
       [attr.aria-labelledby]="'media-contact-header-' + ariaIdentifier"
       [attr.id]="'media-contact-body-' + ariaIdentifier"
       [style.display]="accordionItem.expanded ? '' : 'none'"
       class="accordion-item__content__body"
-      role="region"
     >
       <ng-content></ng-content>
-    </div>
+    </section>
   </div>
 </cdk-accordion-item>

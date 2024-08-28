@@ -17,6 +17,8 @@ import {Store} from '@ngrx/store';
 import {BasemapConfigService} from '../../../map/services/basemap-config.service';
 import {selectQueryParams} from '../selectors/router.selector';
 import {RouteParamConstants} from '../../../shared/constants/route-param.constants';
+import {SearchActions} from '../actions/search.actions';
+import {InitialMapExtentService} from '../../../map/services/initial-map-extent.service';
 
 @Injectable()
 export class UrlEffects {
@@ -83,10 +85,21 @@ export class UrlEffects {
       filter((mainPage) => mainPage === MainPage.Maps),
       concatLatestFrom(() => [this.store.select(selectQueryParams), this.store.select(selectMapConfigParams)]),
       map(([_, currentParams, mapConfigParams]) => {
-        const {x, y, scale, basemap, initialMapIds} = currentParams;
-        if (x || y || scale || basemap || initialMapIds) {
-          const basemapId = this.basemapConfigService.checkBasemapIdOrGetDefault(basemap);
-          const initialMaps = initialMapIds ? initialMapIds.split(',') : [];
+        const {x, y, scale, basemap, initialMapIds, searchTerm, searchIndex} = UrlUtils.extractUrlParamsForMapInitialization(currentParams);
+        const basemapId = this.basemapConfigService.checkBasemapIdOrGetDefault(basemap);
+        const initialMaps = initialMapIds ? initialMapIds.split(',') : [];
+        if (searchTerm || searchIndex) {
+          return SearchActions.initializeSearchFromUrlParameters({
+            searchTerm: searchTerm,
+            searchIndex,
+            basemapId,
+            initialMaps,
+          });
+        } else if (x || y || scale || basemap || initialMapIds) {
+          if (!x && !y && !scale) {
+            const initialExtent = this.initalMapExtentService.calculateInitialExtent();
+            return MapConfigActions.setInitialMapConfig({...initialExtent, initialMaps, basemapId});
+          }
           return MapConfigActions.setInitialMapConfig({x, y, scale, basemapId, initialMaps});
         } else {
           return UrlActions.setMapPageParams({params: mapConfigParams});
@@ -135,5 +148,6 @@ export class UrlEffects {
     private readonly store: Store,
     private readonly route: ActivatedRoute,
     private readonly basemapConfigService: BasemapConfigService,
+    private readonly initalMapExtentService: InitialMapExtentService,
   ) {}
 }

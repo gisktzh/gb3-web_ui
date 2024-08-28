@@ -17,14 +17,24 @@ export const searchFeature = createFeature({
   name: searchFeatureKey,
   reducer: createReducer(
     initialState,
+    on(SearchActions.resetLoadingState, (state): SearchState => {
+      return {...state, searchApiLoadingState: initialState.searchApiLoadingState};
+    }),
+    on(SearchActions.initializeSearchFromUrlParameters, (state): SearchState => {
+      return {...state, searchApiLoadingState: 'loading'};
+    }),
     on(SearchActions.searchForTerm, (state, {term}): SearchState => {
-      return {
-        ...state,
-        term,
-        searchApiResultMatches: initialState.searchApiResultMatches,
-        searchApiLoadingState: 'loading',
-        selectedSearchResult: initialState.selectedSearchResult,
-      };
+      const trimmedTerm = term.trim();
+      if (state.term !== trimmedTerm) {
+        return {
+          ...state,
+          term: trimmedTerm,
+          searchApiResultMatches: initialState.searchApiResultMatches,
+          searchApiLoadingState: 'loading',
+          selectedSearchResult: initialState.selectedSearchResult,
+        };
+      }
+      return state;
     }),
     on(SearchActions.setSearchApiError, (state): SearchState => {
       return {...state, searchApiLoadingState: 'error', searchApiResultMatches: initialState.searchApiResultMatches};
@@ -89,7 +99,7 @@ export const searchFeature = createFeature({
       return {...initialState};
     }),
     on(SearchActions.selectMapSearchResult, (state, {searchResult}): SearchState => {
-      return {...state, selectedSearchResult: searchResult};
+      return {...state, selectedSearchResult: searchResult, searchApiLoadingState: 'loaded'};
     }),
   ),
 });

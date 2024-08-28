@@ -65,8 +65,7 @@ export interface ErrorObject {
 }
 
 export interface ErrorResponse {
-  errors?: ErrorObject[];
-  required?: any;
+  errors: ErrorObject[];
 }
 
 export interface Feature {
@@ -1134,7 +1133,7 @@ export interface VectorLayer {
 
 /**
  * Style definitions for features. NOTE: keys are style IDs referenced in feature 'style' property
- * @example {"a":{"pointRadius":15,"fillColor":"#ee3333","fillOpacity":0,"strokeColor":"#ee3333","strokeWidth":3}}
+ * @example {"a":{"pointRadius":15,"fillColor":"#ee3333","fillOpacity":0,"strokeColor":"#ee3333","strokeWidth":3,"type":"point"}}
  */
 export type VectorLayerStyles = {
   /** Style definition based on OpenLayers 2 Symbolizer. NOTE: Style properties are optional. */
@@ -1191,6 +1190,8 @@ export type VectorLayerStyles = {
     labelXOffset?: string;
     /** Label Y offset of the drawing */
     labelYOffset?: string;
+    /** Geometry type of the drawing (point, line, polygon or text) */
+    type?: 'point' | 'line' | 'polygon' | 'text';
   };
 };
 
@@ -1211,7 +1212,7 @@ export interface ImportGeojsonCreatePayload {
   file: File;
 }
 
-export type ImportGeojsonCreateData = VectorLayerWithoutStyles;
+export type ImportGeojsonCreateData = VectorLayer;
 
 export type ExportGeojsonCreateData = GenericGeojsonFeatureCollection;
 
@@ -1220,7 +1221,7 @@ export interface ImportCreatePayload {
   file: File;
 }
 
-export type ImportCreateData = VectorLayerWithoutStyles;
+export type ImportCreateData = VectorLayer;
 
 export interface ImportKmlCreatePayload {
   /** KML file */

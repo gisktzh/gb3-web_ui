@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Subscription, tap} from 'rxjs';
+import {filter, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {ConfigService} from '../../../shared/services/config.service';
 import {SearchActions} from '../../../state/app/actions/search.actions';
@@ -55,7 +55,9 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
       this.selectedSearchResult$
         .pipe(
           tap((selectedSearchResult) => {
-            this.searchComponent.setTerm(selectedSearchResult?.displayString ?? '', false);
+            if (selectedSearchResult) {
+              this.searchComponent.setTerm(selectedSearchResult.displayString, false);
+            }
           }),
         )
         .subscribe(),
@@ -64,6 +66,7 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
     this.subscriptions.add(
       this.term$
         .pipe(
+          filter((term) => term === ''),
           tap((term) => {
             this.searchComponent.setTerm(term, false);
           }),

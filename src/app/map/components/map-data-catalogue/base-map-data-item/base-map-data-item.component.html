@@ -5,6 +5,7 @@
     [matTooltipDisabled]="!invalid"
     matTooltip="{{ this.errorTooltip }}"
     (delayedMouseEnter)="hoverStart()"
+    (mouseenter)="setIsHovered()"
     [delayDurationInMs]="this.hoverDelay"
     (mouseleave)="hoverEnd()"
   >
@@ -77,8 +78,11 @@
       <map-data-item-map-layer
         [filterString]="filterString"
         [layer]="layer"
+        [isMapHovered]="isMapHovered"
+        [isLayerHovered]="layer === hoveredLayer"
         (addLayerEvent)="addItemLayer(layer)"
         (delayedMouseEnter)="hoverStart(layer)"
+        (mouseenter)="setIsHovered(layer)"
         [delayDurationInMs]="this.hoverDelay"
         (mouseleave)="hoverEnd(layer)"
       ></map-data-item-map-layer>

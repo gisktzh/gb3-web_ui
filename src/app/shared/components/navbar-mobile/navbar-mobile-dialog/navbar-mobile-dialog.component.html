@@ -27,19 +27,38 @@
       mat-button
       [routerLink]="[mainPageEnum.Start]"
       routerLinkActive="navbar__item--active"
+      ariaCurrentWhenActive="page"
       (click)="close()"
       >Geoportal</a
     >
     <hr />
-    <a class="navbar__item" mat-button [routerLink]="[mainPageEnum.Maps]" routerLinkActive="navbar__item--active" (click)="close()"
+    <a
+      class="navbar__item"
+      mat-button
+      [routerLink]="[mainPageEnum.Maps]"
+      routerLinkActive="navbar__item--active"
+      ariaCurrentWhenActive="page"
+      (click)="close()"
       >GIS-Browser</a
     >
     <hr />
-    <a class="navbar__item" mat-button [routerLink]="[mainPageEnum.Data]" routerLinkActive="navbar__item--active" (click)="close()"
+    <a
+      class="navbar__item"
+      mat-button
+      [routerLink]="[mainPageEnum.Data]"
+      routerLinkActive="navbar__item--active"
+      ariaCurrentWhenActive="page"
+      (click)="close()"
       >Geodatenkatalog</a
     >
     <hr />
-    <a class="navbar__item" mat-button [routerLink]="[mainPageEnum.Support]" routerLinkActive="navbar__item--active" (click)="close()"
+    <a
+      class="navbar__item"
+      mat-button
+      [routerLink]="[mainPageEnum.Support]"
+      routerLinkActive="navbar__item--active"
+      ariaCurrentWhenActive="page"
+      (click)="close()"
       >Hilfe & Support</a
     >
     <hr />

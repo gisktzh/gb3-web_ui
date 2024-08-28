@@ -13,6 +13,7 @@
     background-color: ktzh-variables.$zh-background-color;
     pointer-events: all;
     overflow: hidden;
+    height: search-bar-variables.$search-bar-height;
   }
 
   @media (max-width: calc(#{map-layout-variables.$map-overlay-width} + #{map-layout-variables.$element-margin} + #{map-layout-variables.$legend-button-width} + #{map-layout-variables.$element-margin} + #{map-layout-variables.$search-window-width})) {
@@ -27,7 +28,7 @@
     }
     .search-window__searchbar--mobile {
       width: auto;
-      height: search-bar-variables.$search-bar-height-compact;
+      height: search-bar-variables.$search-bar-wrapper-height-compact;
 
       &__box {
         height: 100%;
@@ -37,7 +38,7 @@
 
   .search-window__results-container {
     position: absolute;
-    top: 64px;
+    top: search-bar-variables.$search-bar-height;
     bottom: 0;
     width: map-layout-variables.$search-results-width;
     z-index: z-index-variables.$search-window-results;

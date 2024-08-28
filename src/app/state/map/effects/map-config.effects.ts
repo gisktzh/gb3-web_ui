@@ -9,6 +9,8 @@ import {selectMapConfigParams} from '../selectors/map-config-params.selector';
 import {map} from 'rxjs/operators';
 import {UrlActions} from '../../app/actions/url.actions';
 import {Store} from '@ngrx/store';
+import {SearchActions} from '../../app/actions/search.actions';
+import {InitialMapExtentService} from '../../../map/services/initial-map-extent.service';
 
 @Injectable()
 export class MapConfigEffects {
@@ -73,9 +75,20 @@ export class MapConfigEffects {
     );
   });
 
+  public setBaseMapAndInitialMaps$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(SearchActions.initializeSearchFromUrlParameters),
+      map(({basemapId, initialMaps}) => {
+        const {x, y, scale} = this.initialMapExtentService.calculateInitialExtent();
+        return MapConfigActions.setInitialMapConfig({basemapId, initialMaps, x, y, scale});
+      }),
+    );
+  });
+
   constructor(
     private readonly actions$: Actions,
     @Inject(MAP_SERVICE) private readonly mapService: MapService,
     private readonly store: Store,
+    private readonly initialMapExtentService: InitialMapExtentService,
   ) {}
 }
