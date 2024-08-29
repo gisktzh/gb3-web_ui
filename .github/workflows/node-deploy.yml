@@ -1,0 +1,46 @@
+name: Deploy to GH Pages
+
+on: workflow_call
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  build:
+    name: Build app
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          cache: 'npm'
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Install dependencies and build
+        env:
+          APP_RELEASE: 'EBP Dev Release'
+        run: |
+          npm ci
+          npm run build-dev-ebp
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist/browser
+  deploy:
+    name: Deploy to GH pages
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,33 @@
+name: GB3 Frontend
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  node:
+    name: Node
+    uses: ./.github/workflows/node-tests.yml
+
+  docker:
+    name: Docker
+    uses: ./.github/workflows/docker-dry-run.yml
+
+  deploy-dev:
+    name: Deploy dev environment
+    if: github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/node-deploy.yml
+
+    # todo: sonar analysis
