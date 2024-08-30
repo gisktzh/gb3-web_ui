@@ -1,22 +1,64 @@
 {
-  "extends": ["local>Renovate_Bot/renovate-presets", "local>Renovate_Bot/renovate-presets:angular"],
+  "extends": ["config:recommended"],
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "assignees": ["gb3-developers"],
   "reviewers": ["gb3-developers"],
   "packageRules": [
     {
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest", "lockFileMaintenance", "bump"],
+      "automerge": true,
+      "description": "This basic rule allows automatic merges for all packages for minor or patch level changes. Anything higher than that (like major) will NOT automatically be merged."
+    },
+    {
+      "matchManagers": ["dockerfile", "kubernetes"],
+      "automerge": false,
+      "description": "Do not automerge docker or kubernetes updates as they have a great potential for breaking changes."
+    },
+    {
+      "matchManagers": ["npm"],
+      "matchUpdateTypes": ["major", "minor", "patch"],
+      "groupName": "karma",
+      "matchPackagePrefixes": ["karma"]
+    },
+    {
+      "matchManagers": ["npm"],
+      "groupName": "angular",
+      "matchPackagePrefixes": [
+        "@angular/",
+        "@angular-devkit/",
+        "@angular-eslint/",
+        "@schematics/angular",
+        "angular-oauth2-oidc",
+        "@ngrx/",
+        "typescript"
+      ]
+    },
+    {
+      "matchManagers": ["npm"],
+      "groupName": "arcgis",
+      "matchPackagePrefixes": ["@arcgis/"],
+      "matchUpdateTypes": ["minor"],
+      "automerge": false,
+      "autoApprove": false,
+      "description": "Sometimes there are breaking changes for ArcGIS with updates on minor level. Therefore, this rule prevents automerge and autoApprove for this update type."
+    },
+    {
+      "matchManagers": ["npm"],
+      "groupName": "jasmine",
+      "matchPackagePrefixes": ["jasmine", "@types/jasmine"]
+    },
+    {
+      "matchManagers": ["npm"],
+      "groupName": "eslint",
+      "matchPackagePrefixes": ["eslint", "@angular-eslint", "@ngrx/eslint", "@typescript-eslint"]
+    },
+    {
       "matchManagers": ["npm"],
       "matchPackageNames": ["prettier"],
-      "description": "Automatically re-formats all files in the project using the new prettier version",
-      "postUpgradeTasks": {
-        "commands": [
-          "cd $(find . -maxdepth 2 -name package.json -printf '%h\n' | head -1)",
-          "npm ci --ignore-scripts",
-          "npm run format-all",
-          "rm -rf node_modules"
-        ],
-        "fileFilters": ["**/*"]
-      }
+      "matchUpdateTypes": ["major", "minor"],
+      "prBodyNotes": [
+        ":warning: Possible change of default style; please use `npm run format-all` to re-format all files in the project :warning:"
+      ]
     },
     {
       "matchManagers": ["npm"],
@@ -27,11 +69,6 @@
       "matchManagers": ["dockerfile"],
       "matchDepNames": ["node"],
       "allowedVersions": "<20"
-    },
-    {
-      "matchManagers": ["npm"],
-      "groupName": "eslint",
-      "matchPackagePrefixes": ["eslint", "@angular-eslint", "@ngrx/eslint", "@typescript-eslint"]
     }
   ]
 }
