@@ -1,5 +1,8 @@
 /**
  * Generated using https://transform.tools/json-to-typescript and the output from the endpoint.
+ * There are some slight manual adjustments:
+ * - The root object is renamed to include the endpoint name to avoid conflicts with other interface names
+ * - The optional `image` in `FrequentlyUsed` is changed from `image?: Image` to `image: Image | null` to avoid errors
  */
 /* eslint-disable */
 /* tslint:disable */
@@ -9,20 +12,21 @@ export interface DiscoverMapsRoot {
 }
 
 export interface Map {
-  title: string;
   description: string;
-  id: string;
-  from_date: string;
-  to_date: string;
-  image: Image;
   flex_id: string;
+  from_date: string;
+  id: string;
+  image: Image;
+  image_alt?: string;
+  title: string;
+  to_date: string;
 }
 
 export interface Image {
   name: string;
-  type: string;
-  size: number;
   path: string;
+  size: number;
+  type: string;
 }
 
 export interface PageInfosRoot {
@@ -51,10 +55,11 @@ export interface FrequentlyUsedRoot {
 }
 
 export interface FrequentlyUsed {
-  title: string;
-  description: string;
-  url?: string;
-  image: Image | null;
   created: string;
+  description: string;
   flex_id: string;
+  image: Image | null;
+  title: string;
+  image_alt?: string;
+  url?: string;
 }

@@ -16,7 +16,7 @@
         <img
           *ngIf="frequentlyUsedItem.image !== undefined"
           [src]="frequentlyUsedItem.image.url"
-          [alt]="frequentlyUsedItem.image.name"
+          [alt]="frequentlyUsedItem.image.altText ?? ''"
           class="frequently-used-items__item__image-container__image"
         />
       </div>

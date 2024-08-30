@@ -52,6 +52,7 @@ export class GravCmsService extends BaseApiService {
           type: discoverMapData.image.type,
           size: discoverMapData.image.size,
           path: discoverMapData.image.path,
+          altText: discoverMapData.image_alt,
         },
       };
     });
@@ -86,6 +87,7 @@ export class GravCmsService extends BaseApiService {
               type: frequentlyUsedData.image.type,
               size: frequentlyUsedData.image.size,
               path: frequentlyUsedData.image.path,
+              altText: frequentlyUsedData.image_alt,
             }
           : undefined,
         created: dayjs.unix(+frequentlyUsedData.created).toDate(),

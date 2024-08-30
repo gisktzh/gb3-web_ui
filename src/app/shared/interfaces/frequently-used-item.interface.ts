@@ -13,4 +13,5 @@ interface FrequentlyUsedItemImage {
   type: string;
   size: number;
   path: string;
+  altText?: string;
 }
