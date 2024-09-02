@@ -105,6 +105,7 @@ describe('SearchEffects', () => {
         isHeadlessPage: false,
         isSimplifiedPage: false,
         previousPage: MainPage.Data,
+        keepTemporaryUrlParams: false,
       });
 
       const mapDrawingService = TestBed.inject(MapDrawingService);
@@ -123,6 +124,7 @@ describe('SearchEffects', () => {
         isHeadlessPage: false,
         isSimplifiedPage: false,
         previousPage: MainPage.Data,
+        keepTemporaryUrlParams: false,
       });
 
       let newAction;

@@ -12,7 +12,7 @@ import {BasemapConfigService} from '../../../map/services/basemap-config.service
 import {selectQueryParams} from '../selectors/router.selector';
 import {selectMapConfigParams} from '../../map/selectors/map-config-params.selector';
 import {MapConfigActions} from '../../map/actions/map-config.actions';
-import {selectMainPage} from '../reducers/url.reducer';
+import {selectKeepTemporaryUrlParams, selectMainPage} from '../reducers/url.reducer';
 import {RouteParamConstants} from '../../../shared/constants/route-param.constants';
 import {SearchActions} from '../actions/search.actions';
 import {InitialMapExtentService} from '../../../map/services/initial-map-extent.service';
@@ -223,6 +223,7 @@ describe('UrlEffects', () => {
       const params = {x: 123, y: 456, scale: 789, basemap: 'Dust II'};
       const existingParams = {x: 1, y: 2, scale: 3, basemap: '4'};
       store.overrideSelector(selectQueryParams, existingParams);
+      store.overrideSelector(selectKeepTemporaryUrlParams, false);
 
       const expectedParams = params;
 
@@ -240,6 +241,7 @@ describe('UrlEffects', () => {
       const params = {x: 123, y: 456, scale: 789, basemap: 'Dust II'};
       const existingParams = {...params, initialMapIds: 'one,two', searchTerm: 'search', searchIndex: 'index'};
       store.overrideSelector(selectQueryParams, existingParams);
+      store.overrideSelector(selectKeepTemporaryUrlParams, false);
 
       const expectedParams = {...params, initialMapIds: null, searchTerm: null, searchIndex: null};
 
@@ -257,6 +259,7 @@ describe('UrlEffects', () => {
       const params = {x: 123, y: 456, scale: 789, basemap: 'Dust II'};
       const existingParams = params;
       store.overrideSelector(selectQueryParams, existingParams);
+      store.overrideSelector(selectKeepTemporaryUrlParams, false);
 
       actions$ = of(UrlActions.setMapPageParams({params}));
       effects.setMapPageParameters$.subscribe();
