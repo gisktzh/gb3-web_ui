@@ -13,6 +13,7 @@ import {BasemapConfigService} from '../../../services/basemap-config.service';
 })
 export class BasemapSelectorComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('basemapSelector', {read: ElementRef, static: false}) private basemapSelectorRef!: ElementRef;
+  @ViewChild('basemapSelectorButton', {read: ElementRef}) private basemapSelectorButtonRef!: ElementRef;
 
   public activeBasemap?: Basemap;
   public isSelectionOpen: boolean = false;
@@ -48,6 +49,11 @@ export class BasemapSelectorComponent implements OnInit, OnDestroy, AfterViewIni
         )
         .subscribe(),
     );
+  }
+
+  public toggleAndFocusBasemapSelectorButton() {
+    this.toggleSelection();
+    this.basemapSelectorButtonRef.nativeElement.focus();
   }
 
   public toggleSelection() {
