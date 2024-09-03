@@ -1,0 +1,52 @@
+name: GB3 Frontend
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  node:
+    name: Node
+    uses: ./.github/workflows/node-tests.yml
+    with:
+      cache_key: node-coverage-report-${{ github.sha }}-${{ github.run_id }}
+  docker:
+    name: Docker Dry Run
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: gisktzh/github-actions/docker-dry-run@main
+        with:
+          image: gb3-frontend
+  sonarcloud:
+    name: SonarCloud
+    needs: node
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: gisktzh/github-actions/sonarcloud-analysis@main
+        with:
+          sonar_token: ${{ secrets.SONAR_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          coverage_file_path: './coverage/gb3-frontend/lcov.info'
+          coverage_cache_key: node-coverage-report-${{ github.sha }}-${{ github.run_id }}
+  deploy-dev:
+    name: Deploy dev environment
+    if: github.ref == 'refs/heads/develop'
+    needs:
+      - node
+      - sonarcloud
+      - docker
+    uses: ./.github/workflows/node-deploy.yml

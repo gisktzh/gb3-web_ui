@@ -104,7 +104,8 @@
         "eqeqeq": [2, "smart"],
         "semi": "error",
         "prefer-template": "warn",
-        "@typescript-eslint/switch-exhaustiveness-check": "error"
+        "@typescript-eslint/switch-exhaustiveness-check": "error",
+        "no-console": ["warn", {"allow": ["warn", "error"]}]
       }
     },
     {

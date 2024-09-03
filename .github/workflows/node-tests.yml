@@ -1,0 +1,37 @@
+name: Run tests
+
+on:
+  workflow_call:
+    inputs:
+      cache_key:
+        description: 'Cache key for coverage report'
+        required: true
+        type: string
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  build-and-test:
+    name: Run tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          cache: 'npm'
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Cache coverage report
+        uses: actions/cache@v4
+        with:
+          path: './coverage/gb3-frontend/lcov.info'
+          key: ${{ inputs.cache_key }}
+
+      - name: Install dependencies and run tests
+        run: |
+          npm ci
+          npm run test-ci
