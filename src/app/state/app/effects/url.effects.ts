@@ -11,7 +11,7 @@ import {distinctUntilChanged, filter, switchMap} from 'rxjs';
 import {MapConfigActions} from '../../map/actions/map-config.actions';
 import {MapConstants} from '../../../shared/constants/map.constants';
 import {selectMapConfigParams} from '../../map/selectors/map-config-params.selector';
-import {selectMainPage} from '../reducers/url.reducer';
+import {selectKeepTemporaryUrlParams, selectMainPage} from '../reducers/url.reducer';
 import {MainPage} from '../../../shared/enums/main-page.enum';
 import {Store} from '@ngrx/store';
 import {BasemapConfigService} from '../../../map/services/basemap-config.service';
@@ -112,11 +112,18 @@ export class UrlEffects {
     () => {
       return this.actions$.pipe(
         ofType(UrlActions.setMapPageParams),
-        concatLatestFrom(() => [this.store.select(selectQueryParams), this.store.select(selectMainPage)]),
+        concatLatestFrom(() => [
+          this.store.select(selectQueryParams),
+          this.store.select(selectMainPage),
+          this.store.select(selectKeepTemporaryUrlParams),
+        ]),
         filter(([, , mainPage]) => mainPage === MainPage.Maps),
-        map(([{params}, currentParams, _]) => {
+        map(([{params}, currentParams, _, keepTemporaryUrlParams]) => {
           let adjustedAndCurrentParams: {params: Params; currentParams: Params} = {params, currentParams};
-          if (Object.keys(currentParams).some((paramKey) => MapConstants.TEMPORARY_URL_PARAMS.includes(paramKey))) {
+          if (
+            !keepTemporaryUrlParams &&
+            Object.keys(currentParams).some((paramKey) => MapConstants.TEMPORARY_URL_PARAMS.includes(paramKey))
+          ) {
             // remove temporary parameters
             const paramsToRemove = MapConstants.TEMPORARY_URL_PARAMS.reduce((prev, curr) => ({...prev, [curr]: null}), {});
             const adjustedParams: Params = {
@@ -140,6 +147,15 @@ export class UrlEffects {
     },
     {dispatch: false},
   );
+
+  public keepTemporaryUrlParameters$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(SearchActions.setSearchApiError, SearchActions.handleEmptyResultsFromUrlSearch, SearchActions.handleInvalidParameters),
+      map(() => {
+        return UrlActions.keepTemporaryUrlParameters();
+      }),
+    );
+  });
 
   constructor(
     private readonly actions$: Actions,

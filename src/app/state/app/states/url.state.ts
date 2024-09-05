@@ -11,4 +11,5 @@ export interface UrlState {
    * Flag which can be used to toggle simplified layouts, e.g. no ZH Lion in the header.
    */
   isSimplifiedPage: boolean;
+  keepTemporaryUrlParams: boolean;
 }

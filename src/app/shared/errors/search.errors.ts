@@ -6,7 +6,8 @@ export class SearchResultsCouldNotBeLoaded extends RecoverableError {
 }
 
 export class InvalidSearchParameters extends RecoverableError {
-  public override message = 'Um über die URL zu suchen, müssen die Parameter "searchTerm" und "searchIndex" definiert sein.';
+  public override message =
+    'Um über die URL zu suchen, müssen die Parameter "searchTerm" und "searchIndex" definiert sein. Bitte passen Sie die URL entsprechend an.';
   public override name = 'InvalidSearchParameters';
 }
 
