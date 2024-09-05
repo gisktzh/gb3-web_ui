@@ -382,7 +382,12 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     } else {
       this.formGroup.controls.dpi.enable();
     }
-    this.formGroup.controls.dpi.setValue(this.availableDpiSettings[0]);
+    const isSelectedDpiSettingAllowed = this.availableDpiSettings.some(
+      (availableDpiSetting) => availableDpiSetting === this.formGroup.controls.dpi.value,
+    );
+    if (!isSelectedDpiSettingAllowed) {
+      this.formGroup.controls.dpi.setValue(this.availableDpiSettings[0]);
+    }
   }
 
   private updateFileTypeValueOnValueChange() {
@@ -391,6 +396,11 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
     } else {
       this.formGroup.controls.fileFormat.enable();
     }
-    this.formGroup.controls.fileFormat.setValue(this.availableFileFormats[0]);
+    const isSelectedFileFormatAllowed = this.availableFileFormats.some(
+      (availableFileFormat) => availableFileFormat === this.formGroup.controls.fileFormat.value,
+    );
+    if (!isSelectedFileFormatAllowed) {
+      this.formGroup.controls.fileFormat.setValue(this.availableFileFormats[0]);
+    }
   }
 }
