@@ -18,6 +18,8 @@ import {selectUrlState} from './state/app/reducers/url.reducer';
 import {selectMapUiState} from './state/map/reducers/map-ui.reducer';
 import {MapUiState} from './state/map/states/map-ui.state';
 import {selectDevMode} from './state/app/reducers/app.reducer';
+import {SkipLink} from './shared/types/skip-link.type';
+import {SkipLinkConstants} from './shared/constants/skip-link.constants';
 
 @Component({
   selector: 'app-root',
@@ -31,6 +33,8 @@ export class AppComponent implements OnInit, OnDestroy {
   public isSimplifiedPage: boolean = false;
   public scrollbarWidth?: number;
   public isDevModeActive: boolean = false;
+  public readonly skipLinks: SkipLink[] = SkipLinkConstants.skipLinks;
+  public readonly skipLinksMobile: SkipLink[] = SkipLinkConstants.skipLinksMobile;
 
   private snackBarRef?: MatSnackBarRef<PageNotificationComponent>;
   private readonly urlState$ = this.store.select(selectUrlState);
@@ -57,6 +61,14 @@ export class AppComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
+  }
+
+  public skipTo(elementId: string): void {
+    const element = document.getElementById(elementId);
+    if (element) {
+      element.setAttribute('tabindex', '-1');
+      element.focus();
+    }
   }
 
   @HostListener('document:click', ['$event'])

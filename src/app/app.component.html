@@ -1,10 +1,20 @@
 <main class="app">
-  <navbar-mobile *ngIf="screenMode === 'mobile' && !isHeadlessPage && !mapUiState?.hideUiElements"></navbar-mobile>
-  <navbar *ngIf="!isHeadlessPage && screenMode !== 'mobile'" class="app__navbar" [isSimplifiedPage]="isSimplifiedPage"></navbar>
+  <skip-link
+    *ngIf="!isSimplifiedPage && !isHeadlessPage"
+    [skipLinks]="screenMode === 'mobile' ? skipLinksMobile : skipLinks"
+    (skipToLocationEvent)="skipTo($event)"
+  ></skip-link>
+  <navbar-mobile *ngIf="screenMode === 'mobile' && !isHeadlessPage && !mapUiState?.hideUiElements" id="navigation-mobile"></navbar-mobile>
+  <navbar
+    *ngIf="!isHeadlessPage && screenMode !== 'mobile'"
+    class="app__navbar"
+    [isSimplifiedPage]="isSimplifiedPage"
+    id="navigation"
+  ></navbar>
   <dev-mode-banner *ngIf="isDevModeActive" class="app__dev-mode-banner"></dev-mode-banner>
   <article [ngClass]="{'app__headless-page': isHeadlessPage}">
-    <router-outlet></router-outlet>
-    <main-footer *ngIf="!isSimplifiedPage && !isHeadlessPage"></main-footer>
+    <router-outlet id="main-content"></router-outlet>
+    <main-footer *ngIf="!isSimplifiedPage && !isHeadlessPage" id="footer"></main-footer>
   </article>
   <scrollbar-width-calculation class="app__scrollbar-width-calculation" *ngIf="scrollbarWidth === undefined"></scrollbar-width-calculation>
 </main>
