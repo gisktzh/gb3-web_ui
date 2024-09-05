@@ -5,6 +5,8 @@ import {SkipLink} from '../../types/skip-link.type';
   selector: 'skip-link',
   templateUrl: './skip-link.component.html',
   styleUrl: './skip-link.component.scss',
+  standalone: true,
+  imports: [],
 })
 export class SkipLinkComponent {
   @Input() public skipLinks: SkipLink[] = [];
