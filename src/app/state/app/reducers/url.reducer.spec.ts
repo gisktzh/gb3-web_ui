@@ -13,7 +13,7 @@ describe('UrlReducer', () => {
     });
   });
 
-  describe('setUrl', () => {
+  describe('setPage', () => {
     it('correctly sets the values from the action and previus state', () => {
       const props = {mainPage: MainPage.Data, isSimplifiedPage: true, isHeadlessPage: true};
       const action = UrlActions.setPage(props);
@@ -25,6 +25,16 @@ describe('UrlReducer', () => {
       expect(result.isHeadlessPage).toBe(props.isHeadlessPage);
       expect(result.isSimplifiedPage).toBe(props.isSimplifiedPage);
       expect(result.previousPage).toBe(mockState.mainPage);
+    });
+  });
+  describe('keepTemporaryUrlParameters', () => {
+    it('correctly sets the value for keepTemporaryUrlParams ', () => {
+      const action = UrlActions.keepTemporaryUrlParameters();
+      const mockState: UrlState = {...initialState, keepTemporaryUrlParams: false};
+
+      const result = reducer(mockState, action);
+
+      expect(result.keepTemporaryUrlParams).toBe(true);
     });
   });
 });

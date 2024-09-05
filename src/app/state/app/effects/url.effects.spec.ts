@@ -268,4 +268,21 @@ describe('UrlEffects', () => {
       expect(routerSpy).not.toHaveBeenCalled();
     }));
   });
+  describe('keepTemporaryUrlParameters$', () => {
+    const actions = [
+      {name: 'SearchActions.setSearchApiError', action: SearchActions.setSearchApiError},
+      {name: 'SearchActions.handleEmptyResultsFromUrlSearch', action: SearchActions.handleEmptyResultsFromUrlSearch},
+      {name: 'SearchActions.handleInvalidParameters', action: SearchActions.handleInvalidParameters},
+    ];
+    actions.forEach(({name, action}) => {
+      it(`dispatches UrlActions.keepTemporaryUrlParameters when ${name} is triggered`, () => {
+        const expectedAction = UrlActions.keepTemporaryUrlParameters();
+
+        actions$ = of(action);
+        effects.keepTemporaryUrlParameters$.subscribe((result) => {
+          expect(result).toEqual(expectedAction);
+        });
+      });
+    });
+  });
 });

@@ -121,8 +121,8 @@ export class UrlEffects {
         map(([{params}, currentParams, _, keepTemporaryUrlParams]) => {
           let adjustedAndCurrentParams: {params: Params; currentParams: Params} = {params, currentParams};
           if (
-            Object.keys(currentParams).some((paramKey) => MapConstants.TEMPORARY_URL_PARAMS.includes(paramKey)) &&
-            !keepTemporaryUrlParams
+            !keepTemporaryUrlParams &&
+            Object.keys(currentParams).some((paramKey) => MapConstants.TEMPORARY_URL_PARAMS.includes(paramKey))
           ) {
             // remove temporary parameters
             const paramsToRemove = MapConstants.TEMPORARY_URL_PARAMS.reduce((prev, curr) => ({...prev, [curr]: null}), {});
