@@ -1,9 +1,13 @@
 <div class="basemap-selector" #basemapSelector typedTourAnchor="map.background">
   <button
+    #basemapSelectorButton
     mat-flat-button
     (click)="toggleSelection()"
     class="basemap-selector__active"
     [ngStyle]="{'background-image': 'url(' + (activeBasemap?.id | basemapImageLink) + ')'}"
   ></button>
-  <basemap-selection-list *ngIf="isSelectionOpen"></basemap-selection-list>
+  <basemap-selection-list
+    *ngIf="isSelectionOpen"
+    (basemapChangedEvent)="toggleSelectionAndFocusBasemapSelectorButton()"
+  ></basemap-selection-list>
 </div>
