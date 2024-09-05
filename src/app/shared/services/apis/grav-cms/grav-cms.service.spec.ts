@@ -60,6 +60,7 @@ describe('GravCmsService', () => {
               size: 542427,
               path: 'assets/uploads/discovermaps/c8xtlxyksm9w5tj.png',
             },
+            image_alt: 'Bildbeschriftung für Landschaftstypologie',
             flex_id: 'da0a66b63d2b036dd6d0ad6b470d1a2c',
           },
         ],
@@ -82,6 +83,7 @@ describe('GravCmsService', () => {
             type: 'image/png',
             size: 662482,
             path: 'assets/uploads/discovermaps/ruvsmjzmt6ienof.png',
+            altText: undefined,
           },
         },
         {
@@ -98,6 +100,7 @@ describe('GravCmsService', () => {
             type: 'image/png',
             size: 542427,
             path: 'assets/uploads/discovermaps/c8xtlxyksm9w5tj.png',
+            altText: 'Bildbeschriftung für Landschaftstypologie',
           },
         },
       ];
@@ -171,6 +174,7 @@ describe('GravCmsService', () => {
               size: 2361401,
               path: 'assets/uploads/frequentlyused/mdph1k0nyqstliu.png',
             },
+            image_alt: 'Bildbeschriftung für Orthofotos',
             flex_id: 'b07395a55bd971a90884aff2e8bb7abf',
           },
           {
@@ -186,6 +190,16 @@ describe('GravCmsService', () => {
               path: 'assets/uploads/frequentlyused/czef0j9wrdgbyni.png',
             },
             flex_id: 'dc10938d401e622da75cbcfdcebf64d5',
+          },
+          {
+            title: 'Azeroth',
+            description:
+              'Eine gefährliche, schöne, magische und inspirierende Welt. Eine Welt voller Entdeckungen, Innovationen und Wunder. Eine Welt, für die es sich zu kämpfen lohnt. Eine Welt, die es wert ist, beschützt zu werden.',
+            url: '/maps?initialMapIds=F0r7H3H0rD3',
+            created: '1424201337',
+            image: null,
+            image_alt: 'Bildbeschriftung für Azeroth',
+            flex_id: '00000000-0000-4000-y000-000000000000',
           },
         ],
       };
@@ -204,6 +218,7 @@ describe('GravCmsService', () => {
             type: 'image/png',
             size: 2361401,
             path: 'assets/uploads/frequentlyused/mdph1k0nyqstliu.png',
+            altText: 'Bildbeschriftung für Orthofotos',
           },
           created: new Date(Date.UTC(2023, 8, 18, 9, 24, 31)),
         },
@@ -219,8 +234,18 @@ describe('GravCmsService', () => {
             type: 'image/png',
             size: 506099,
             path: 'assets/uploads/frequentlyused/czef0j9wrdgbyni.png',
+            altText: undefined,
           },
           created: new Date(Date.UTC(2023, 8, 18, 9, 23, 2)),
+        },
+        {
+          id: '00000000-0000-4000-y000-000000000000',
+          title: 'Azeroth',
+          description:
+            'Eine gefährliche, schöne, magische und inspirierende Welt. Eine Welt voller Entdeckungen, Innovationen und Wunder. Eine Welt, für die es sich zu kämpfen lohnt. Eine Welt, die es wert ist, beschützt zu werden.',
+          url: '/maps?initialMapIds=F0r7H3H0rD3',
+          image: undefined,
+          created: new Date(Date.UTC(2015, 1, 17, 19, 28, 57)),
         },
       ];
 
