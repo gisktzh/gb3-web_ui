@@ -51,7 +51,7 @@ export class BasemapSelectorComponent implements OnInit, OnDestroy, AfterViewIni
     );
   }
 
-  public toggleAndFocusBasemapSelectorButton() {
+  public toggleSelectionAndFocusBasemapSelectorButton() {
     this.toggleSelection();
     this.basemapSelectorButtonRef.nativeElement.focus();
   }

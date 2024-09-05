@@ -6,5 +6,8 @@
     class="basemap-selector__active"
     [ngStyle]="{'background-image': 'url(' + (activeBasemap?.id | basemapImageLink) + ')'}"
   ></button>
-  <basemap-selection-list *ngIf="isSelectionOpen" (basemapChangedEvent)="toggleAndFocusBasemapSelectorButton()"></basemap-selection-list>
+  <basemap-selection-list
+    *ngIf="isSelectionOpen"
+    (basemapChangedEvent)="toggleSelectionAndFocusBasemapSelectorButton()"
+  ></basemap-selection-list>
 </div>
