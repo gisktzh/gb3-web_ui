@@ -20,7 +20,7 @@ import {MapUiState} from './state/map/states/map-ui.state';
 import {selectDevMode} from './state/app/reducers/app.reducer';
 import {SkipLink} from './shared/types/skip-link.type';
 import {SkipLinkConstants} from './shared/constants/skip-link.constants';
-import {TemplateVariables} from './shared/enums/template-variables.enum';
+import {SkipLinkTemplateVariable} from './shared/enums/skip-link-template-variable.enum';
 
 @Component({
   selector: 'app-root',
@@ -28,7 +28,7 @@ import {TemplateVariables} from './shared/enums/template-variables.enum';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit, OnDestroy {
-  @ViewChildren(Object.values(TemplateVariables).join(', '), {read: ElementRef}) private readonly elements!: QueryList<ElementRef>;
+  @ViewChildren(Object.values(SkipLinkTemplateVariable).join(', '), {read: ElementRef}) private readonly elements!: QueryList<ElementRef>;
 
   public screenMode: ScreenMode = 'regular';
   public mapUiState?: MapUiState;
@@ -38,7 +38,7 @@ export class AppComponent implements OnInit, OnDestroy {
   public isDevModeActive: boolean = false;
   public readonly skipLinks: SkipLink[] = SkipLinkConstants.skipLinks;
 
-  protected readonly templateVariables = TemplateVariables;
+  protected readonly templateVariables = SkipLinkTemplateVariable;
 
   private snackBarRef?: MatSnackBarRef<PageNotificationComponent>;
   private readonly urlState$ = this.store.select(selectUrlState);

@@ -1,5 +1,5 @@
 @for (skipLink of skipLinks; track skipLink.id) {
-  <a class="skip-link" tabindex="0" role="link" (keydown.enter)="skipToLocation(skipLink.id)" (click)="skipToLocation(skipLink.id)">
+  <a class="skip-link" tabindex="0" (keydown.enter)="skipToLocation(skipLink.id)" (click)="skipToLocation(skipLink.id)">
     {{ skipLink.label }}
   </a>
 }

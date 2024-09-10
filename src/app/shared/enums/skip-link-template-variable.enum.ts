@@ -1,6 +1,5 @@
-export enum TemplateVariables {
+export enum SkipLinkTemplateVariable {
   Navigation = 'navigation',
-  NavigationMobile = 'navigationMobile',
   MainContent = 'mainContent',
   Footer = 'footer',
 }

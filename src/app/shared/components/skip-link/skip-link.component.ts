@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {SkipLink} from '../../types/skip-link.type';
-import {TemplateVariables} from '../../enums/template-variables.enum';
+import {SkipLinkTemplateVariable} from '../../enums/skip-link-template-variable.enum';
 
 @Component({
   selector: 'skip-link',
@@ -14,7 +14,7 @@ export class SkipLinkComponent {
 
   @Output() public skipToLocationEvent = new EventEmitter<string>();
 
-  public skipToLocation(id: TemplateVariables): void {
+  public skipToLocation(id: SkipLinkTemplateVariable): void {
     this.skipToLocationEvent.emit(id);
   }
 }
