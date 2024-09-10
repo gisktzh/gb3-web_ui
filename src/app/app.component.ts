@@ -37,7 +37,6 @@ export class AppComponent implements OnInit, OnDestroy {
   public scrollbarWidth?: number;
   public isDevModeActive: boolean = false;
   public readonly skipLinks: SkipLink[] = SkipLinkConstants.skipLinks;
-  public readonly skipLinksMobile: SkipLink[] = SkipLinkConstants.skipLinksMobile;
 
   protected readonly templateVariables = TemplateVariables;
 

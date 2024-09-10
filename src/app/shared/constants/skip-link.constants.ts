@@ -7,10 +7,4 @@ export class SkipLinkConstants {
     {id: TemplateVariables.MainContent, label: 'Inhalt'},
     {id: TemplateVariables.Footer, label: 'Fussbereich'},
   ];
-
-  public static readonly skipLinksMobile: SkipLink[] = [
-    {id: TemplateVariables.NavigationMobile, label: 'Navigation'},
-    {id: TemplateVariables.MainContent, label: 'Inhalt'},
-    {id: TemplateVariables.Footer, label: 'Fussbereich'},
-  ];
 }

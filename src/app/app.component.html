@@ -1,14 +1,10 @@
 <main class="app">
   @if (!isHeadlessPage && !isSimplifiedPage) {
-    <skip-link
-      [skipLinks]="screenMode === 'mobile' ? skipLinksMobile : skipLinks"
-      (skipToLocationEvent)="skipToDomElement($event)"
-    ></skip-link>
+    <skip-link [skipLinks]="skipLinks" (skipToLocationEvent)="skipToDomElement($event)"></skip-link>
   }
   @if (screenMode === 'mobile' && !isHeadlessPage && !mapUiState?.hideUiElements) {
-    <navbar-mobile #navigationMobile [id]="templateVariables.NavigationMobile"></navbar-mobile>
-  }
-  @if (!isHeadlessPage && screenMode !== 'mobile') {
+    <navbar-mobile #navigation [id]="templateVariables.Navigation"></navbar-mobile>
+  } @else if (!isHeadlessPage && screenMode !== 'mobile') {
     <navbar class="app__navbar" [isSimplifiedPage]="isSimplifiedPage" #navigation [id]="templateVariables.Navigation"></navbar>
   }
   @if (isDevModeActive) {
