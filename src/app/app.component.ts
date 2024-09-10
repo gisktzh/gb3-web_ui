@@ -30,15 +30,14 @@ import {SkipLinkTemplateVariable} from './shared/enums/skip-link-template-variab
 export class AppComponent implements OnInit, OnDestroy {
   @ViewChildren(Object.values(SkipLinkTemplateVariable).join(', '), {read: ElementRef}) private readonly elements!: QueryList<ElementRef>;
 
-  public screenMode: ScreenMode = 'regular';
-  public mapUiState?: MapUiState;
-  public isHeadlessPage: boolean = false;
-  public isSimplifiedPage: boolean = false;
-  public scrollbarWidth?: number;
-  public isDevModeActive: boolean = false;
-  public readonly skipLinks: SkipLink[] = SkipLinkConstants.skipLinks;
-
-  protected readonly templateVariables = SkipLinkTemplateVariable;
+  protected screenMode: ScreenMode = 'regular';
+  protected mapUiState?: MapUiState;
+  protected isHeadlessPage: boolean = false;
+  protected isSimplifiedPage: boolean = false;
+  protected scrollbarWidth?: number;
+  protected isDevModeActive: boolean = false;
+  protected readonly skipLinks: SkipLink[] = SkipLinkConstants.skipLinks;
+  protected readonly templateVariable = SkipLinkTemplateVariable;
 
   private snackBarRef?: MatSnackBarRef<PageNotificationComponent>;
   private readonly urlState$ = this.store.select(selectUrlState);

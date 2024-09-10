@@ -3,17 +3,17 @@
     <skip-link [skipLinks]="skipLinks" (skipToLocationEvent)="skipToDomElement($event)"></skip-link>
   }
   @if (screenMode === 'mobile' && !isHeadlessPage && !mapUiState?.hideUiElements) {
-    <navbar-mobile #navigation [id]="templateVariables.Navigation"></navbar-mobile>
+    <navbar-mobile #navigation [id]="templateVariable.Navigation"></navbar-mobile>
   } @else if (!isHeadlessPage && screenMode !== 'mobile') {
-    <navbar class="app__navbar" [isSimplifiedPage]="isSimplifiedPage" #navigation [id]="templateVariables.Navigation"></navbar>
+    <navbar class="app__navbar" [isSimplifiedPage]="isSimplifiedPage" #navigation [id]="templateVariable.Navigation"></navbar>
   }
   @if (isDevModeActive) {
     <dev-mode-banner class="app__dev-mode-banner"></dev-mode-banner>
   }
   <article [ngClass]="{'app__headless-page': isHeadlessPage}">
-    <router-outlet #mainContent [id]="templateVariables.MainContent"></router-outlet>
+    <router-outlet #mainContent [id]="templateVariable.MainContent"></router-outlet>
     @if (!isHeadlessPage && !isSimplifiedPage) {
-      <main-footer #footer [id]="templateVariables.Footer"></main-footer>
+      <main-footer #footer [id]="templateVariable.Footer"></main-footer>
     }
   </article>
   @if (scrollbarWidth === undefined) {
