@@ -1,4 +1,6 @@
+import {TemplateVariables} from '../enums/template-variables.enum';
+
 export type SkipLink = {
-  id: string;
+  id: TemplateVariables;
   label: string;
 };

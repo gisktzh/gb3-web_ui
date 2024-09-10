@@ -1,15 +1,16 @@
 import {SkipLink} from '../types/skip-link.type';
+import {TemplateVariables} from '../enums/template-variables.enum';
 
 export class SkipLinkConstants {
   public static readonly skipLinks: SkipLink[] = [
-    {id: 'navigation', label: 'Navigation'},
-    {id: 'main-content', label: 'Inhalt'},
-    {id: 'footer', label: 'Fussbereich'},
+    {id: TemplateVariables.Navigation, label: 'Navigation'},
+    {id: TemplateVariables.MainContent, label: 'Inhalt'},
+    {id: TemplateVariables.Footer, label: 'Fussbereich'},
   ];
 
   public static readonly skipLinksMobile: SkipLink[] = [
-    {id: 'navigation-mobile', label: 'Navigation'},
-    {id: 'main-content', label: 'Inhalt'},
-    {id: 'footer', label: 'Fussbereich'},
+    {id: TemplateVariables.NavigationMobile, label: 'Navigation'},
+    {id: TemplateVariables.MainContent, label: 'Inhalt'},
+    {id: TemplateVariables.Footer, label: 'Fussbereich'},
   ];
 }

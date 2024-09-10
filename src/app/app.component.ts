@@ -1,5 +1,5 @@
 import {BreakpointObserver} from '@angular/cdk/layout';
-import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
+import {Component, ElementRef, HostListener, OnDestroy, OnInit, QueryList, Renderer2, ViewChildren} from '@angular/core';
 import {MatSnackBar, MatSnackBarRef} from '@angular/material/snack-bar';
 import {Store} from '@ngrx/store';
 import {filter, Subscription, take, tap} from 'rxjs';
@@ -20,6 +20,7 @@ import {MapUiState} from './state/map/states/map-ui.state';
 import {selectDevMode} from './state/app/reducers/app.reducer';
 import {SkipLink} from './shared/types/skip-link.type';
 import {SkipLinkConstants} from './shared/constants/skip-link.constants';
+import {TemplateVariables} from './shared/enums/template-variables.enum';
 
 @Component({
   selector: 'app-root',
@@ -27,6 +28,8 @@ import {SkipLinkConstants} from './shared/constants/skip-link.constants';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit, OnDestroy {
+  @ViewChildren(Object.values(TemplateVariables).join(', '), {read: ElementRef}) private readonly elements!: QueryList<ElementRef>;
+
   public screenMode: ScreenMode = 'regular';
   public mapUiState?: MapUiState;
   public isHeadlessPage: boolean = false;
@@ -35,6 +38,8 @@ export class AppComponent implements OnInit, OnDestroy {
   public isDevModeActive: boolean = false;
   public readonly skipLinks: SkipLink[] = SkipLinkConstants.skipLinks;
   public readonly skipLinksMobile: SkipLink[] = SkipLinkConstants.skipLinksMobile;
+
+  protected readonly templateVariables = TemplateVariables;
 
   private snackBarRef?: MatSnackBarRef<PageNotificationComponent>;
   private readonly urlState$ = this.store.select(selectUrlState);
@@ -51,6 +56,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly pageNotificationService: PageNotificationService,
     private readonly store: Store,
     private readonly iconsService: IconsService,
+    private readonly renderer: Renderer2,
   ) {
     this.iconsService.initIcons();
   }
@@ -63,11 +69,11 @@ export class AppComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  public skipTo(elementId: string): void {
-    const element = document.getElementById(elementId);
+  public skipToDomElement(elementId: string): void {
+    const element = this.elements.find((el) => el.nativeElement.id === elementId);
     if (element) {
-      element.setAttribute('tabindex', '-1');
-      element.focus();
+      this.renderer.setAttribute(element.nativeElement, 'tabindex', '-1');
+      element.nativeElement.focus();
     }
   }
 
