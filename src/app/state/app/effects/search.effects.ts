@@ -27,6 +27,7 @@ import {selectTerm} from '../reducers/search.reducer';
 import {selectReady} from '../../map/reducers/map-config.reducer';
 import {SearchIndex} from '../../../shared/services/apis/search/interfaces/search-index.interface';
 import {isGeometrySearchApiResultMatch} from '../../../shared/type-guards/search-api-result-match.type-guard';
+import {selectIsAuthenticated} from '../../auth/reducers/auth-status.reducer';
 
 @Injectable()
 export class SearchEffects {
@@ -61,8 +62,9 @@ export class SearchEffects {
     () => {
       return this.actions$.pipe(
         ofType(SearchActions.setSearchApiError),
-        tap(({error}) => {
-          throw new SearchResultsCouldNotBeLoaded(error);
+        concatLatestFrom(() => this.store.select(selectIsAuthenticated)),
+        tap(([{error}, isAuthenticated]) => {
+          throw new SearchResultsCouldNotBeLoaded(isAuthenticated, error);
         }),
       );
     },
