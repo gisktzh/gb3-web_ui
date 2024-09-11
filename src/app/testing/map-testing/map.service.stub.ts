@@ -41,6 +41,8 @@ export class MapServiceStub implements MapService {
 
   public handleZoom(zoomType: ZoomType): void {}
 
+  public setMapCenter(center: PointWithSrs): void {}
+
   public init(): void {}
 
   public removeAllMapItems(): void {}
