@@ -11,7 +11,6 @@ import {UrlActions} from '../../app/actions/url.actions';
 import {Store} from '@ngrx/store';
 import {SearchActions} from '../../app/actions/search.actions';
 import {InitialMapExtentService} from '../../../map/services/initial-map-extent.service';
-import {ConfigService} from '../../../shared/services/config.service';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
 
 @Injectable()
@@ -55,7 +54,7 @@ export class MapConfigEffects {
       return this.actions$.pipe(
         ofType(MapConfigActions.setMapCenter),
         tap(({center}) => {
-          this.mapService.zoomToPoint(center, this.configService.mapConfig.locateMeZoom);
+          this.mapService.setMapCenter(center);
           this.mapDrawingService.drawSearchResultHighlight(center);
         }),
       );
@@ -92,7 +91,6 @@ export class MapConfigEffects {
     private readonly actions$: Actions,
     @Inject(MAP_SERVICE) private readonly mapService: MapService,
     private readonly store: Store,
-    private readonly configService: ConfigService,
     private readonly initialMapExtentService: InitialMapExtentService,
     private readonly mapDrawingService: MapDrawingService,
   ) {}
