@@ -337,12 +337,6 @@ export class EsriMapService implements MapService, OnDestroy {
     }
   }
 
-  public setMapCenter(center: PointWithSrs): Promise<never> {
-    return this.mapView.goTo({
-      center: this.createGeoReferencedPoint(center),
-    }) as never;
-  }
-
   public setTimeSliderExtent(timeExtent: TimeExtent, mapItem: Gb2WmsActiveMapItem) {
     const esriLayer = this.esriMapViewService.findEsriLayer(mapItem.id);
 

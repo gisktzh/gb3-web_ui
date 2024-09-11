@@ -23,9 +23,6 @@ export interface MapService extends AddToMapVisitor {
   /** Sets the scale of the whole map */
   setScale(scale: number): void;
 
-  /** Sets the map center point */
-  setMapCenter(center: PointWithSrs): void;
-
   /** Resets the extent of the map to the initial extent */
   resetExtent(): void;
 
