@@ -72,10 +72,6 @@ describe('LayerCatalogEffects', () => {
       });
     });
     it('throws a TopicsCouldNotBeLoaded error if the Topicservice fails', (done: DoneFn) => {
-      const mockItems = [
-        {title: 'Topic', maps: []},
-        {title: 'Topic2', maps: []},
-      ];
       store.overrideSelector(selectItems, []);
       const originalError = new Error('oh no! butterfingers');
       const expectedError = new TopicsCouldNotBeLoaded();
@@ -92,7 +88,7 @@ describe('LayerCatalogEffects', () => {
   });
 
   describe('handleInitialMapLoad', () => {
-    it('dispatches ActiveMapItemActions.addInitialMapItems with the correct inital Maps', () => {
+    it('dispatches ActiveMapItemActions.addInitialMapItems with the correct inital Maps', (done: DoneFn) => {
       const mapConfigStateMock: MapConfigState = {
         initialMaps: ['1'],
       } as MapConfigState;
@@ -105,6 +101,7 @@ describe('LayerCatalogEffects', () => {
       actions$ = of(LayerCatalogActions.setLayerCatalog({items: []}));
       effects.handleInitialMapLoad.subscribe((action) => {
         expect(action).toEqual(expectedAction);
+        done();
       });
     });
     it('dispatches LayerCatalogActions.setInitialMapsError if a map is not found', (done: DoneFn) => {
