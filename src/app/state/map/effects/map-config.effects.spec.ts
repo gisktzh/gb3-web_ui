@@ -103,7 +103,7 @@ describe('MapConfigEffects', () => {
       const mapServiceSpy = spyOn(mapService, 'setMapCenter').and.callThrough();
       const mapDrawingServiceSpy = spyOn(mapDrawingService, 'drawSearchResultHighlight').and.callThrough();
 
-      const expectedAction = MapConfigActions.setMapCenter({center: expectedCenter});
+      const expectedAction = MapConfigActions.setMapCenterAndDrawHighlight({center: expectedCenter});
       actions$ = of(expectedAction);
       effects.setCenterOnMap$.subscribe((action) => {
         expect(mapServiceSpy).toHaveBeenCalledOnceWith(expectedCenter);

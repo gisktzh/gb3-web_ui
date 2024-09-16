@@ -52,7 +52,7 @@ export class MapConfigEffects {
   public setCenterOnMap$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(MapConfigActions.setMapCenter),
+        ofType(MapConfigActions.setMapCenterAndDrawHighlight),
         tap(({center}) => {
           this.mapService.setMapCenter(center);
           this.mapDrawingService.drawSearchResultHighlight(center);
@@ -64,7 +64,12 @@ export class MapConfigEffects {
 
   public updateMapPageQueryParams$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(MapConfigActions.setMapCenter, MapConfigActions.setScale, MapConfigActions.setBasemap, MapConfigActions.setMapExtent),
+      ofType(
+        MapConfigActions.setMapCenterAndDrawHighlight,
+        MapConfigActions.setScale,
+        MapConfigActions.setBasemap,
+        MapConfigActions.setMapExtent,
+      ),
       concatLatestFrom(() => this.store.select(selectMapConfigParams)),
       map(([_, params]) => UrlActions.setMapPageParams({params})),
     );

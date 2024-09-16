@@ -60,7 +60,7 @@ export class CoordinateScaleInputsComponent implements OnInit, OnDestroy {
     const center = this.coordinateParserService.parse(input.value);
 
     if (center) {
-      this.store.dispatch(MapConfigActions.setMapCenter({center}));
+      this.store.dispatch(MapConfigActions.setMapCenterAndDrawHighlight({center}));
     } else {
       input.value = this.mapCenter;
     }
