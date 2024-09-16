@@ -1,7 +1,7 @@
 import {Gb3RuntimeError, RecoverableError} from './abstract.errors';
 
-export class InitialMapsParameterInvalid extends RecoverableError {
-  public override name = 'InitialMapsParameterInvalid';
+export class InitialMapIdsParameterInvalid extends RecoverableError {
+  public override name = 'InitialMapIdsParameterInvalid';
 
   constructor(initialMapParameter: string) {
     super();

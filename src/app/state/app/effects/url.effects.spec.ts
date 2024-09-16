@@ -19,6 +19,7 @@ import {InitialMapExtentService} from '../../../map/services/initial-map-extent.
 import {selectIsAuthenticated} from '../../auth/reducers/auth-status.reducer';
 import {catchError} from 'rxjs/operators';
 import {InitialMapsCouldNotBeLoaded} from '../../../shared/errors/initial-maps.errors';
+import {LayerCatalogActions} from '../../map/actions/layer-catalog.actions';
 
 describe('UrlEffects', () => {
   let actions$: Observable<Action>;
@@ -276,7 +277,7 @@ describe('UrlEffects', () => {
     it('throws an InitialMapsCouldNotBeLoaded error', (done: DoneFn) => {
       store.overrideSelector(selectIsAuthenticated, true);
       const originalError = new Error('error');
-      actions$ = of(UrlActions.setInitialMapsError({error: originalError}));
+      actions$ = of(LayerCatalogActions.setInitialMapsError({error: originalError}));
       effects.setErrorForInvalidInitialMapIds$
         .pipe(
           catchError((error: unknown) => {
@@ -294,7 +295,7 @@ describe('UrlEffects', () => {
       {name: 'SearchActions.setSearchApiError', action: SearchActions.setSearchApiError},
       {name: 'SearchActions.handleEmptyResultsFromUrlSearch', action: SearchActions.handleEmptyResultsFromUrlSearch},
       {name: 'SearchActions.handleInvalidParameters', action: SearchActions.handleInvalidParameters},
-      {name: 'UrlActions.setInitialMapsError', action: UrlActions.setInitialMapsError},
+      {name: 'LayerCatalogActions.setInitialMapsError', action: LayerCatalogActions.setInitialMapsError},
     ];
     actions.forEach(({name, action}) => {
       it(`dispatches UrlActions.keepTemporaryUrlParameters when ${name} is triggered`, () => {

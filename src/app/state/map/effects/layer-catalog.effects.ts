@@ -13,8 +13,7 @@ import {selectItems} from '../reducers/layer-catalog.reducer';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 
 import {TopicsCouldNotBeLoaded} from '../../../shared/errors/map.errors';
-import {UrlActions} from '../../app/actions/url.actions';
-import {InitialMapsParameterInvalid} from '../../../shared/errors/initial-maps.errors';
+import {InitialMapIdsParameterInvalid} from '../../../shared/errors/initial-maps.errors';
 
 @Injectable()
 export class LayerCatalogEffects {
@@ -51,14 +50,14 @@ export class LayerCatalogEffects {
         const initialMapItems = initialMaps.map((initialMap) => {
           const availableMap = availableMaps.find((map) => map.id === initialMap);
           if (!availableMap) {
-            throw new InitialMapsParameterInvalid(initialMap);
+            throw new InitialMapIdsParameterInvalid(initialMap);
           }
           return ActiveMapItemFactory.createGb2WmsMapItem(availableMap);
         });
 
         return ActiveMapItemActions.addInitialMapItems({initialMapItems});
       }),
-      catchError((error: unknown) => of(UrlActions.setInitialMapsError({error}))),
+      catchError((error: unknown) => of(LayerCatalogActions.setInitialMapsError({error}))),
     );
   });
 

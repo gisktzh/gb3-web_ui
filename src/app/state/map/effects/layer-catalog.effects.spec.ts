@@ -14,8 +14,8 @@ import {Map} from '../../../shared/interfaces/topic.interface';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
-import {UrlActions} from '../../app/actions/url.actions';
-import {InitialMapsParameterInvalid} from '../../../shared/errors/initial-maps.errors';
+import {InitialMapIdsParameterInvalid} from '../../../shared/errors/initial-maps.errors';
+import {selectItems} from '../reducers/layer-catalog.reducer';
 
 describe('LayerCatalogEffects', () => {
   let actions$: Observable<Action>;
@@ -45,6 +45,33 @@ describe('LayerCatalogEffects', () => {
     store.resetSelectors();
   });
 
+  describe('requestLayerCatalog$', () => {
+    it('dispatches LayerCatalogActions.setLayerCatalog when there are already items in the store ', () => {
+      const mockItems = [{title: 'Topic', maps: []}];
+      store.overrideSelector(selectItems, mockItems);
+      const expectedAction = LayerCatalogActions.setLayerCatalog({items: mockItems});
+      actions$ = of(LayerCatalogActions.loadLayerCatalog());
+      effects.requestLayerCatalog$.subscribe((action) => {
+        expect(action).toEqual(expectedAction);
+      });
+    });
+
+    it('calls the Topicservice and dispatches LayerCatalogActions.setLayerCatalog with the results if the store has no items yet', () => {
+      const mockItems = [
+        {title: 'Topic', maps: []},
+        {title: 'Topic2', maps: []},
+      ];
+      store.overrideSelector(selectItems, []);
+      const expectedAction = LayerCatalogActions.setLayerCatalog({items: mockItems});
+      const spy = spyOn(gb3TopicsService, 'loadTopics').and.returnValue(of({topics: mockItems}));
+      actions$ = of(LayerCatalogActions.loadLayerCatalog());
+      effects.requestLayerCatalog$.subscribe((action) => {
+        expect(spy).toHaveBeenCalledTimes(1);
+        expect(action).toEqual(expectedAction);
+      });
+    });
+  });
+
   describe('handleInitialMapLoad', () => {
     it('dispatches ActiveMapItemActions.addInitialMapItems with the correct inital Maps', () => {
       const mapConfigStateMock: MapConfigState = {
@@ -61,7 +88,7 @@ describe('LayerCatalogEffects', () => {
         expect(action).toEqual(expectedAction);
       });
     });
-    it('dispatches UrlActions.setInitialMapsError if a map is not found', (done: DoneFn) => {
+    it('dispatches LayerCatalogActions.setInitialMapsError if a map is not found', (done: DoneFn) => {
       const mapConfigStateMock: MapConfigState = {
         initialMaps: ['1'],
       } as MapConfigState;
@@ -69,8 +96,8 @@ describe('LayerCatalogEffects', () => {
 
       store.overrideSelector(selectMaps, mapMock);
       store.overrideSelector(selectMapConfigState, mapConfigStateMock);
-      const expectedError = new InitialMapsParameterInvalid(mapConfigStateMock.initialMaps[0]);
-      const expectedAction = UrlActions.setInitialMapsError({error: expectedError});
+      const expectedError = new InitialMapIdsParameterInvalid(mapConfigStateMock.initialMaps[0]);
+      const expectedAction = LayerCatalogActions.setInitialMapsError({error: expectedError});
       actions$ = of(LayerCatalogActions.setLayerCatalog({items: []}));
       effects.handleInitialMapLoad.subscribe((action) => {
         expect(action).toEqual(expectedAction);

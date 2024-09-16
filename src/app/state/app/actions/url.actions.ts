@@ -1,7 +1,6 @@
 import {createActionGroup, emptyProps, props} from '@ngrx/store';
 import {MainPage} from '../../../shared/enums/main-page.enum';
 import {Params} from '@angular/router';
-import {errorProps} from '../../../shared/utils/error-props.utils';
 
 export const UrlActions = createActionGroup({
   source: 'Url',
@@ -10,6 +9,5 @@ export const UrlActions = createActionGroup({
     'Set App Params': props<{params: Params}>(),
     'Set Map Page Params': props<{params: Params}>(),
     'Keep Temporary Url Parameters': emptyProps(),
-    'Set Initial Maps Error': errorProps(),
   },
 });
