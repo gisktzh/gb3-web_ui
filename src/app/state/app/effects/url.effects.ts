@@ -19,6 +19,9 @@ import {selectQueryParams} from '../selectors/router.selector';
 import {RouteParamConstants} from '../../../shared/constants/route-param.constants';
 import {SearchActions} from '../actions/search.actions';
 import {InitialMapExtentService} from '../../../map/services/initial-map-extent.service';
+import {selectIsAuthenticated} from '../../auth/reducers/auth-status.reducer';
+import {InitialMapsCouldNotBeLoaded} from '../../../shared/errors/initial-maps.errors';
+import {LayerCatalogActions} from '../../map/actions/layer-catalog.actions';
 
 @Injectable()
 export class UrlEffects {
@@ -148,9 +151,27 @@ export class UrlEffects {
     {dispatch: false},
   );
 
+  public setErrorForInvalidInitialMapIds$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(LayerCatalogActions.setInitialMapsError),
+        concatLatestFrom(() => this.store.select(selectIsAuthenticated)),
+        map(([{error}, isAuthenticated]) => {
+          throw new InitialMapsCouldNotBeLoaded(isAuthenticated, error);
+        }),
+      );
+    },
+    {dispatch: false},
+  );
+
   public keepTemporaryUrlParameters$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(SearchActions.setSearchApiError, SearchActions.handleEmptyResultsFromUrlSearch, SearchActions.handleInvalidParameters),
+      ofType(
+        SearchActions.setSearchApiError,
+        SearchActions.handleEmptyResultsFromUrlSearch,
+        SearchActions.handleInvalidParameters,
+        LayerCatalogActions.setInitialMapsError,
+      ),
       map(() => {
         return UrlActions.keepTemporaryUrlParameters();
       }),

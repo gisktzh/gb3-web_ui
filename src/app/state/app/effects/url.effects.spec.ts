@@ -1,6 +1,6 @@
 import {provideMockActions} from '@ngrx/effects/testing';
 import {fakeAsync, flush, TestBed} from '@angular/core/testing';
-import {Observable, of} from 'rxjs';
+import {EMPTY, Observable, of} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {routerNavigatedAction} from '@ngrx/router-store';
@@ -16,6 +16,10 @@ import {selectKeepTemporaryUrlParams, selectMainPage} from '../reducers/url.redu
 import {RouteParamConstants} from '../../../shared/constants/route-param.constants';
 import {SearchActions} from '../actions/search.actions';
 import {InitialMapExtentService} from '../../../map/services/initial-map-extent.service';
+import {selectIsAuthenticated} from '../../auth/reducers/auth-status.reducer';
+import {catchError} from 'rxjs/operators';
+import {InitialMapsCouldNotBeLoaded} from '../../../shared/errors/initial-maps.errors';
+import {LayerCatalogActions} from '../../map/actions/layer-catalog.actions';
 
 describe('UrlEffects', () => {
   let actions$: Observable<Action>;
@@ -268,11 +272,30 @@ describe('UrlEffects', () => {
       expect(routerSpy).not.toHaveBeenCalled();
     }));
   });
+
+  describe('setErrorForInvalidInitialMapIds$', () => {
+    it('throws an InitialMapsCouldNotBeLoaded error', (done: DoneFn) => {
+      store.overrideSelector(selectIsAuthenticated, true);
+      const originalError = new Error('error');
+      actions$ = of(LayerCatalogActions.setInitialMapsError({error: originalError}));
+      effects.setErrorForInvalidInitialMapIds$
+        .pipe(
+          catchError((error: unknown) => {
+            const expectedError = new InitialMapsCouldNotBeLoaded(true, originalError);
+            expect(error).toEqual(expectedError);
+            done();
+            return EMPTY;
+          }),
+        )
+        .subscribe();
+    });
+  });
   describe('keepTemporaryUrlParameters$', () => {
     const actions = [
       {name: 'SearchActions.setSearchApiError', action: SearchActions.setSearchApiError},
       {name: 'SearchActions.handleEmptyResultsFromUrlSearch', action: SearchActions.handleEmptyResultsFromUrlSearch},
       {name: 'SearchActions.handleInvalidParameters', action: SearchActions.handleInvalidParameters},
+      {name: 'LayerCatalogActions.setInitialMapsError', action: LayerCatalogActions.setInitialMapsError},
     ];
     actions.forEach(({name, action}) => {
       it(`dispatches UrlActions.keepTemporaryUrlParameters when ${name} is triggered`, () => {
