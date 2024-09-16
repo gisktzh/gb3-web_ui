@@ -1,4 +1,4 @@
-import {Observable, of} from 'rxjs';
+import {Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {LayerCatalogEffects} from './layer-catalog.effects';
@@ -16,6 +16,7 @@ import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 import {InitialMapIdsParameterInvalid} from '../../../shared/errors/initial-maps.errors';
 import {selectItems} from '../reducers/layer-catalog.reducer';
+import {TopicsCouldNotBeLoaded} from '../../../shared/errors/map.errors';
 
 describe('LayerCatalogEffects', () => {
   let actions$: Observable<Action>;
@@ -68,6 +69,24 @@ describe('LayerCatalogEffects', () => {
       effects.requestLayerCatalog$.subscribe((action) => {
         expect(spy).toHaveBeenCalledTimes(1);
         expect(action).toEqual(expectedAction);
+      });
+    });
+    it('throws a TopicsCouldNotBeLoaded error if the Topicservice fails', (done: DoneFn) => {
+      const mockItems = [
+        {title: 'Topic', maps: []},
+        {title: 'Topic2', maps: []},
+      ];
+      store.overrideSelector(selectItems, []);
+      const originalError = new Error('oh no! butterfingers');
+      const expectedError = new TopicsCouldNotBeLoaded();
+      const spy = spyOn(gb3TopicsService, 'loadTopics').and.returnValue(throwError(() => originalError));
+      actions$ = of(LayerCatalogActions.loadLayerCatalog());
+      effects.requestLayerCatalog$.subscribe({
+        error: (error) => {
+          expect(spy).toHaveBeenCalledTimes(1);
+          expect(error).toEqual(expectedError);
+          done();
+        },
       });
     });
   });
