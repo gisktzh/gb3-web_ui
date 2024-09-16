@@ -1,31 +1,21 @@
 import {Duration} from 'dayjs/plugin/duration';
-import utc from 'dayjs/plugin/utc';
-import dayjs, {ManipulateType} from 'dayjs';
+import {ManipulateType} from 'dayjs';
 import {TimeSliderConfiguration} from '../interfaces/topic.interface';
 import {TimeExtent} from '../../map/interfaces/time-extent.interface';
-
-dayjs.extend(utc);
+import {DayjsTimeService} from '../services/dayjs-time.service';
 
 export class TimeExtentUtils {
   /**
    * Creates an initial time extent based on the given time slider configuration.
    */
   public static createInitialTimeSliderExtent(timeSliderConfig: TimeSliderConfiguration): TimeExtent {
-    const minimumDate: Date = TimeExtentUtils.parseUTCDate(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat);
-    const maximumDate: Date = TimeExtentUtils.parseUTCDate(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat);
-    const range: Duration | null = timeSliderConfig.range ? dayjs.duration(timeSliderConfig.range) : null;
+    const minimumDate: Date = DayjsTimeService.parseUTCDate(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat);
+    const maximumDate: Date = DayjsTimeService.parseUTCDate(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat);
+    const range: Duration | null = timeSliderConfig.range ? DayjsTimeService.getDuration(timeSliderConfig.range) : null;
     return {
       start: minimumDate,
       end: range ? TimeExtentUtils.addDuration(minimumDate, range) : maximumDate,
     };
-  }
-
-  public static parseUTCDate(date: string, format: string): Date {
-    return dayjs.utc(date, format).toDate();
-  }
-
-  public static parseDefaultUTCDate(date: string): Date {
-    return dayjs.utc(date).toDate();
   }
 
   /**
@@ -110,10 +100,10 @@ export class TimeExtentUtils {
   public static addDuration(date: Date, duration: Duration): Date {
     const unit = TimeExtentUtils.extractUniqueUnitFromDuration(duration);
     if (!unit) {
-      return dayjs(date).add(duration).toDate();
+      return DayjsTimeService.addDuration(date, duration);
     }
     const value = TimeExtentUtils.getDurationAsNumber(duration, unit);
-    return dayjs(date).add(value, unit).toDate();
+    return DayjsTimeService.addDuration(date, DayjsTimeService.getDurationWithUnit(value, unit));
   }
 
   /**
@@ -132,10 +122,10 @@ export class TimeExtentUtils {
   public static subtractDuration(date: Date, duration: Duration): Date {
     const unit = TimeExtentUtils.extractUniqueUnitFromDuration(duration);
     if (!unit) {
-      return dayjs(date).subtract(duration).toDate();
+      return DayjsTimeService.subtractDuration(date, duration);
     }
     const value = TimeExtentUtils.getDurationAsNumber(duration, unit);
-    return dayjs(date).subtract(value, unit).toDate();
+    return DayjsTimeService.subtractDuration(date, DayjsTimeService.getDurationWithUnit(value, unit));
   }
 
   /**
@@ -183,6 +173,6 @@ export class TimeExtentUtils {
    * Returns the difference in milliseconds between the two given dates.
    */
   public static calculateDifferenceBetweenDates(firstDate: Date, secondDate: Date): number {
-    return Math.abs(dayjs(firstDate).diff(secondDate));
+    return DayjsTimeService.calculateDifferenceBetweenDates(firstDate, secondDate);
   }
 }

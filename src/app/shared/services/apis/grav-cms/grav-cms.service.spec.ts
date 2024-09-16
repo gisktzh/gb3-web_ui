@@ -10,6 +10,8 @@ import {PageNotification} from '../../../interfaces/page-notification.interface'
 import {MainPage} from '../../../enums/main-page.enum';
 import {FrequentlyUsedItem} from '../../../interfaces/frequently-used-item.interface';
 import {provideMockStore} from '@ngrx/store/testing';
+import {TIME_SERVICE} from '../../../../app.module';
+import {DayjsTimeService} from '../../dayjs-time.service';
 
 describe('GravCmsService', () => {
   let service: GravCmsService;
@@ -18,7 +20,12 @@ describe('GravCmsService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [],
-      providers: [provideMockStore(), provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
+      providers: [
+        provideMockStore(),
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+        {provide: TIME_SERVICE, useClass: DayjsTimeService},
+      ],
     });
     service = TestBed.inject(GravCmsService);
     configService = TestBed.inject(ConfigService);

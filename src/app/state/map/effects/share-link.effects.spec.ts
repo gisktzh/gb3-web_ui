@@ -34,8 +34,8 @@ import {DrawingLayerPrefix, UserDrawingLayer} from '../../../shared/enums/drawin
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 import {selectIsAuthenticated, selectIsAuthenticationInitialized} from '../../auth/reducers/auth-status.reducer';
 import {MapRestoreItem} from '../../../shared/interfaces/map-restore-item.interface';
-import {TimeExtentUtils} from '../../../shared/utils/time-extent.utils';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {DayjsTimeService} from '../../../shared/services/dayjs-time.service';
 
 function createActiveMapItemsFromConfigs(activeMapItemConfigurations: ActiveMapItemConfiguration[]): ActiveMapItem[] {
   return activeMapItemConfigurations.map(
@@ -83,7 +83,7 @@ describe('ShareLinkEffects', () => {
         opacity: 0.5,
         visible: true,
         isSingleLayer: false,
-        timeExtent: {start: TimeExtentUtils.parseDefaultUTCDate('1000'), end: TimeExtentUtils.parseDefaultUTCDate('2020')},
+        timeExtent: {start: DayjsTimeService.parseUTCDate('1000'), end: DayjsTimeService.parseUTCDate('2020')},
         attributeFilters: [
           {
             parameter: 'FILTER_GEBART',

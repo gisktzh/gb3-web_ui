@@ -1,15 +1,16 @@
 import {TestBed} from '@angular/core/testing';
-
 import {TimeSliderService} from './time-slider.service';
 import dayjs from 'dayjs';
 import {TimeSliderConfiguration, TimeSliderParameterSource} from '../../shared/interfaces/topic.interface';
 import {TimeExtent} from '../interfaces/time-extent.interface';
+import {TIME_SERVICE} from '../../app.module';
+import {DayjsTimeService} from '../../shared/services/dayjs-time.service';
 
 describe('TimeSliderService', () => {
   let service: TimeSliderService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({providers: [{provide: TIME_SERVICE, useClass: DayjsTimeService}]});
     service = TestBed.inject(TimeSliderService);
   });
 

@@ -12,11 +12,15 @@ import {selectMaps} from '../../../../state/map/selectors/maps.selector';
 import {selectActiveMapItemConfigurations} from '../../../../state/map/selectors/active-map-item-configuration.selector';
 import {selectFavouriteBaseConfig} from '../../../../state/map/selectors/favourite-base-config.selector';
 import {selectUserDrawingsVectorLayers} from '../../../../state/map/selectors/user-drawings-vector-layers.selector';
+import {DayjsTimeService} from '../../dayjs-time.service';
+import {TimeService} from '../../../../map/interfaces/time.service';
+import {TIME_SERVICE} from '../../../../app.module';
 
 // todo: add tests for vector layers
 const mockedVectorLayer = {type: undefined, styles: undefined, geojson: {type: undefined, features: []}} as unknown as Gb3VectorLayer;
 describe('Gb3ShareLinkService', () => {
   let service: Gb3ShareLinkService;
+  let timeService: TimeService;
   let store: MockStore;
   const shareLinkItemIdMock = 'mock-id';
   const serverDataMock: SharedFavorite = {
@@ -104,7 +108,12 @@ describe('Gb3ShareLinkService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [],
-      providers: [provideMockStore({}), provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
+      providers: [
+        provideMockStore({}),
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+        {provide: TIME_SERVICE, useClass: DayjsTimeService},
+      ],
     });
     store = TestBed.inject(MockStore);
     store.overrideSelector(selectActiveMapItemConfigurations, []);

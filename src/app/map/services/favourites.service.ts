@@ -29,6 +29,7 @@ import {Gb3StyledInternalDrawingRepresentation} from '../../shared/interfaces/in
 import {TimeExtent} from '../interfaces/time-extent.interface';
 import {TimeExtentUtils} from '../../shared/utils/time-extent.utils';
 import {TimeSliderService} from './time-slider.service';
+import {DayjsTimeService} from '../../shared/services/dayjs-time.service';
 
 @Injectable({
   providedIn: 'root',
@@ -351,7 +352,7 @@ export class FavouritesService implements OnDestroy {
         return isTimeExtentValid;
       case 'layer': {
         const selectedYearExists = (timeSliderConfiguration.source as TimeSliderLayerSource).layers.some(
-          (layer) => TimeExtentUtils.parseUTCDate(layer.date, timeSliderConfiguration.dateFormat).getTime() === timeExtent.start.getTime(),
+          (layer) => DayjsTimeService.parseUTCDate(layer.date, timeSliderConfiguration.dateFormat).getTime() === timeExtent.start.getTime(),
         );
         return selectedYearExists && isTimeExtentValid;
       }

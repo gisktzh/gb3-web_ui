@@ -1,16 +1,17 @@
-import {Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {BaseApiService} from '../abstract-api.service';
 import {Observable} from 'rxjs';
 import {DiscoverMapsItem} from '../../../interfaces/discover-maps-item.interface';
 import {map} from 'rxjs/operators';
 import {DiscoverMapsRoot, FrequentlyUsedRoot, PageInfosRoot, Pages} from '../../../models/grav-cms-generated.interfaces';
 import {PageNotification, PageNotificationSeverity} from '../../../interfaces/page-notification.interface';
-import dayjs from 'dayjs';
 import {MainPage} from '../../../enums/main-page.enum';
 import {FrequentlyUsedItem} from '../../../interfaces/frequently-used-item.interface';
-import customParseFormat from 'dayjs/plugin/customParseFormat';
+import {TIME_SERVICE} from '../../../../app.module';
+import {TimeService} from '../../../../map/interfaces/time.service';
+import {HttpClient} from '@angular/common/http';
+import {ConfigService} from '../../config.service';
 
-dayjs.extend(customParseFormat);
 const DATE_FORMAT = 'DD.MM.YYYY';
 
 @Injectable({
@@ -22,6 +23,13 @@ export class GravCmsService extends BaseApiService {
   private readonly pageInfosEndpoint: string = 'pageinfos.json';
   private readonly frequentlyUsedItemsEndpoint: string = 'frequentlyused.json';
 
+  constructor(
+    @Inject(TIME_SERVICE) private readonly timeService: TimeService,
+    httpClient: HttpClient,
+    configService: ConfigService,
+  ) {
+    super(httpClient, configService);
+  }
   public loadDiscoverMapsData(): Observable<DiscoverMapsItem[]> {
     const requestUrl = this.createFullEndpointUrl(this.discoverMapsEndpoint);
     return this.get<DiscoverMapsRoot>(requestUrl).pipe(map((response) => this.transformDiscoverMapsData(response)));
@@ -44,8 +52,8 @@ export class GravCmsService extends BaseApiService {
         title: discoverMapData.title,
         description: discoverMapData.description,
         mapId: discoverMapData.id,
-        fromDate: dayjs(discoverMapData.from_date, DATE_FORMAT).toDate(),
-        toDate: dayjs(discoverMapData.to_date, DATE_FORMAT).toDate(),
+        fromDate: this.timeService.getDate(discoverMapData.from_date, DATE_FORMAT),
+        toDate: this.timeService.getDate(discoverMapData.to_date, DATE_FORMAT),
         image: {
           url: this.createFullImageUrl(discoverMapData.image.path),
           name: discoverMapData.image.name,
@@ -65,8 +73,8 @@ export class GravCmsService extends BaseApiService {
         title: pageInfoData.title,
         description: pageInfoData.description,
         pages: this.transformPagesToMainPages(pageInfoData.pages),
-        fromDate: dayjs(pageInfoData.from_date, DATE_FORMAT).toDate(),
-        toDate: dayjs(pageInfoData.to_date, DATE_FORMAT).toDate(),
+        fromDate: this.timeService.getDate(pageInfoData.from_date, DATE_FORMAT),
+        toDate: this.timeService.getDate(pageInfoData.to_date, DATE_FORMAT),
         severity: pageInfoData.severity as PageNotificationSeverity,
         isMarkedAsRead: false,
       };
@@ -90,7 +98,7 @@ export class GravCmsService extends BaseApiService {
               altText: frequentlyUsedData.image_alt,
             }
           : undefined,
-        created: dayjs.unix(+frequentlyUsedData.created).toDate(),
+        created: this.timeService.getUnixDate(+frequentlyUsedData.created),
       };
     });
   }

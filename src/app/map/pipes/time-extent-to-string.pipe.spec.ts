@@ -1,15 +1,24 @@
 import {TimeExtentToStringPipe} from './time-extent-to-string.pipe';
 import {TimeExtent} from '../interfaces/time-extent.interface';
+import {TestBed} from '@angular/core/testing';
+import {TIME_SERVICE} from '../../app.module';
+import {DayjsTimeService} from '../../shared/services/dayjs-time.service';
+import {TimeService} from '../interfaces/time.service';
 
 describe('TimeExtentToStringPipe', () => {
+  let pipe: TimeExtentToStringPipe;
+  let timeService: TimeService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({providers: [{provide: TIME_SERVICE, useClass: DayjsTimeService}]});
+    timeService = TestBed.inject(TIME_SERVICE);
+    pipe = new TimeExtentToStringPipe(timeService);
+  });
   it('create an instance', () => {
-    const pipe = new TimeExtentToStringPipe();
     expect(pipe).toBeTruthy();
   });
 
   it('formats a defined time extent', () => {
-    const pipe = new TimeExtentToStringPipe();
-
     const timeExtent: TimeExtent = {
       start: new Date(2023, 1, 3),
       end: new Date(2024, 2, 4),
@@ -24,8 +33,6 @@ describe('TimeExtentToStringPipe', () => {
   });
 
   it('formats a defined time extent using simple values', () => {
-    const pipe = new TimeExtentToStringPipe();
-
     const timeExtent: TimeExtent = {
       start: new Date(2023, 1, 3),
       end: new Date(2024, 2, 4),
@@ -40,8 +47,6 @@ describe('TimeExtentToStringPipe', () => {
   });
 
   it('formats an undefined time extent', () => {
-    const pipe = new TimeExtentToStringPipe();
-
     const timeExtent = undefined;
     const dateFormat = 'YYYY-MM-DD';
     const hasSimpleCurrentValue = true;

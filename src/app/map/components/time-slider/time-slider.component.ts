@@ -1,19 +1,19 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Inject, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {TimeExtent} from '../../interfaces/time-extent.interface';
 import {TimeSliderConfiguration, TimeSliderLayerSource} from '../../../shared/interfaces/topic.interface';
-import dayjs, {ManipulateType} from 'dayjs';
+import {ManipulateType, UnitType} from 'dayjs';
 import {TimeSliderService} from '../../services/time-slider.service';
 import {TimeExtentUtils} from '../../../shared/utils/time-extent.utils';
-import duration from 'dayjs/plugin/duration';
 import {MatDatepicker} from '@angular/material/datepicker';
-
-dayjs.extend(duration);
+import {TIME_SERVICE} from '../../../app.module';
+import {TimeService} from '../../interfaces/time.service';
+import {DayjsTimeService} from '../../../shared/services/dayjs-time.service';
 
 // There is an array (`allowedDatePickerManipulationUnits`) and a new union type (`DatePickerManipulationUnits`) for two reasons:
 // To be able to extract a union type subset of `ManipulateType` AND to have an array used to check if a given value is in said union type.
 // => more infos: https://stackoverflow.com/questions/50085494/how-to-check-if-a-given-value-is-in-a-union-type-array
 const allowedDatePickerManipulationUnits = ['years', 'months', 'days'] as const; // TS3.4 syntax
-type DatePickerManipulationUnits = Extract<ManipulateType, (typeof allowedDatePickerManipulationUnits)[number]>;
+export type DatePickerManipulationUnits = Extract<ManipulateType, (typeof allowedDatePickerManipulationUnits)[number]>;
 type DatePickerStartView = 'month' | 'year' | 'multi-year';
 
 @Component({
@@ -47,7 +47,10 @@ export class TimeSliderComponent implements OnInit, OnChanges {
   public datePickerStartView: DatePickerStartView = 'month';
   private datePickerUnit: DatePickerManipulationUnits = 'days';
 
-  constructor(private readonly timeSliderService: TimeSliderService) {}
+  constructor(
+    private readonly timeSliderService: TimeSliderService,
+    @Inject(TIME_SERVICE) private readonly timeService: TimeService,
+  ) {}
 
   public ngOnInit() {
     this.availableDates = this.timeSliderService.createStops(this.timeSliderConfiguration);
@@ -145,8 +148,12 @@ export class TimeSliderComponent implements OnInit, OnChanges {
     if (eventDate === null) {
       return;
     }
+
     // format the given event date to the configured time format and back to ensure that it is a valid date within the current available dates
-    const date = dayjs(dayjs(eventDate).format(this.timeSliderConfiguration.dateFormat), this.timeSliderConfiguration.dateFormat).toDate();
+    const date = this.timeService.getDate(
+      this.timeService.getDateAsString(eventDate, this.timeSliderConfiguration.dateFormat),
+      this.timeSliderConfiguration.dateFormat,
+    );
     const position = this.findPositionOfDate(date);
     if (position !== undefined) {
       if (changedMinimumDate) {
@@ -170,7 +177,7 @@ export class TimeSliderComponent implements OnInit, OnChanges {
    */
   private isRangeExactlyOneOfSingleTimeUnit(range: string | null | undefined): boolean {
     if (range) {
-      const rangeDuration = dayjs.duration(range);
+      const rangeDuration = DayjsTimeService.getDuration(range);
       const unit = TimeExtentUtils.extractUniqueUnitFromDuration(rangeDuration);
       return unit !== undefined && TimeExtentUtils.getDurationAsNumber(rangeDuration, unit) === 1;
     }
@@ -209,7 +216,9 @@ export class TimeSliderComponent implements OnInit, OnChanges {
   }
 
   private isLayerSourceContinuous(layerSource: TimeSliderLayerSource, unit: DatePickerManipulationUnits): boolean {
-    const dateAsAscendingSortedNumbers = layerSource.layers.map((layer) => dayjs(layer.date, unit).get(unit)).sort((a, b) => a - b);
+    const dateAsAscendingSortedNumbers = layerSource.layers
+      .map((layer) => this.timeService.getPartial(layer.date, unit as UnitType))
+      .sort((a, b) => a - b);
     // all date numbers must be part of a continuous and strictly monotonously rising series each with exactly
     // one step between them: `date[0] = x` => `date[n] = x + n`
     return !dateAsAscendingSortedNumbers.some((dateAsNumber, index) => dateAsNumber !== dateAsAscendingSortedNumbers[0] + index);

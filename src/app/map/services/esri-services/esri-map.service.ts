@@ -1,9 +1,8 @@
-import {Injectable, OnDestroy} from '@angular/core';
+import {Inject, Injectable, OnDestroy} from '@angular/core';
 import esriConfig from '@arcgis/core/config';
 import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {Store} from '@ngrx/store';
-import dayjs from 'dayjs';
 import {BehaviorSubject, first, pairwise, skip, Subscription, tap, withLatestFrom} from 'rxjs';
 import {filter, map} from 'rxjs/operators';
 import {AuthService} from '../../../auth/auth.service';
@@ -65,6 +64,8 @@ import {InitialMapExtentService} from '../initial-map-extent.service';
 import {MapConstants} from '../../../shared/constants/map.constants';
 import {HitTestSelectionUtils} from './utils/hit-test-selection.utils';
 import * as intl from '@arcgis/core/intl';
+import {TIME_SERVICE} from '../../../app.module';
+import {TimeService} from '../../interfaces/time.service';
 import GraphicHit = __esri.GraphicHit;
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
@@ -106,6 +107,7 @@ export class EsriMapService implements MapService, OnDestroy {
     private readonly esriToolService: EsriToolService,
     private readonly gb3TopicsService: Gb3TopicsService,
     private readonly initialMapExtentService: InitialMapExtentService,
+    @Inject(TIME_SERVICE) private readonly timeService: TimeService,
   ) {
     /**
      * Because the GetCapabalities response often sends a non-secure http://wms.zh.ch response, Esri Javascript API fails on https
@@ -635,8 +637,14 @@ export class EsriMapService implements MapService, OnDestroy {
     const dateFormat = timeSliderConfiguration.dateFormat;
 
     esriLayer.customLayerParameters = esriLayer.customLayerParameters ?? {};
-    esriLayer.customLayerParameters[timeSliderParameterSource.startRangeParameter] = dayjs.utc(timeSliderExtent.start).format(dateFormat);
-    esriLayer.customLayerParameters[timeSliderParameterSource.endRangeParameter] = dayjs.utc(timeSliderExtent.end).format(dateFormat);
+    esriLayer.customLayerParameters[timeSliderParameterSource.startRangeParameter] = this.timeService.getUTCDateAsString(
+      timeSliderExtent.start,
+      dateFormat,
+    );
+    esriLayer.customLayerParameters[timeSliderParameterSource.endRangeParameter] = this.timeService.getUTCDateAsString(
+      timeSliderExtent.end,
+      dateFormat,
+    );
   }
 
   /**

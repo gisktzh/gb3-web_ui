@@ -2,8 +2,8 @@ import {TimeService} from '../../map/interfaces/time.service';
 import dayjs, {ManipulateType, UnitType} from 'dayjs';
 import duration, {Duration} from 'dayjs/plugin/duration';
 import {Injectable} from '@angular/core';
-import customParseFormat from 'dayjs/plugin/customParseFormat';
 import utc from 'dayjs/plugin/utc';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 
 dayjs.extend(duration);
 dayjs.extend(customParseFormat);
@@ -22,25 +22,31 @@ export class DayjsTimeService implements TimeService {
   public getDate(date: string, format: string): Date {
     return dayjs(date, format).toDate();
   }
-  public getUTCDate(date: Date, format?: string): Date {
-    return dayjs.utc(date, format).toDate();
+  public getUTCDateAsString(date: Date, format?: string): string {
+    return dayjs.utc(date).format(format);
   }
   public getUnixDate(created: number): Date {
     return dayjs.unix(created).toDate();
   }
-  public getDuration(time: string | number, unit?: ManipulateType): Duration {
+  public static parseUTCDate(date: string, format?: string): Date {
+    return dayjs.utc(date, format).toDate();
+  }
+  public static getDuration(time: string): Duration {
+    return dayjs.duration(time);
+  }
+  public static getDurationWithUnit(time: number, unit?: ManipulateType): Duration {
     return dayjs.duration(time, unit);
   }
-  public isValidDate(value: string): boolean {
+  public static isValidDate(value: string): boolean {
     return dayjs(value).isValid();
   }
-  public addDuration(date: Date, durationToAdd: Duration): Date {
+  public static addDuration(date: Date, durationToAdd: Duration): Date {
     return dayjs(date).add(durationToAdd).toDate();
   }
-  public subtractDuration(date: Date, durationToSubtract: Duration): Date {
+  public static subtractDuration(date: Date, durationToSubtract: Duration): Date {
     return dayjs(date).subtract(durationToSubtract).toDate();
   }
-  public calculateDifferenceBetweenDates(firstDate: Date, secondDate: Date): number {
+  public static calculateDifferenceBetweenDates(firstDate: Date, secondDate: Date): number {
     return Math.abs(dayjs(secondDate).diff(dayjs(firstDate)));
   }
 }
