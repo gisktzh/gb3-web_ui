@@ -1,4 +1,4 @@
-import {Observable, of, throwError} from 'rxjs';
+import {EMPTY, Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {LayerCatalogEffects} from './layer-catalog.effects';
@@ -14,9 +14,11 @@ import {Map} from '../../../shared/interfaces/topic.interface';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
-import {InitialMapIdsParameterInvalid} from '../../../shared/errors/initial-maps.errors';
+import {InitialMapIdsParameterInvalid, InitialMapsCouldNotBeLoaded} from '../../../shared/errors/initial-maps.errors';
 import {selectItems} from '../reducers/layer-catalog.reducer';
 import {TopicsCouldNotBeLoaded} from '../../../shared/errors/map.errors';
+import {selectIsAuthenticated} from '../../auth/reducers/auth-status.reducer';
+import {catchError} from 'rxjs/operators';
 
 describe('LayerCatalogEffects', () => {
   let actions$: Observable<Action>;
@@ -71,6 +73,7 @@ describe('LayerCatalogEffects', () => {
         expect(action).toEqual(expectedAction);
       });
     });
+
     it('throws a TopicsCouldNotBeLoaded error if the Topicservice fails', (done: DoneFn) => {
       store.overrideSelector(selectItems, []);
       const originalError = new Error('oh no! butterfingers');
@@ -104,6 +107,7 @@ describe('LayerCatalogEffects', () => {
         done();
       });
     });
+
     it('dispatches LayerCatalogActions.setInitialMapsError if a map is not found', (done: DoneFn) => {
       const mapConfigStateMock: MapConfigState = {
         initialMaps: ['1'],
@@ -119,6 +123,24 @@ describe('LayerCatalogEffects', () => {
         expect(action).toEqual(expectedAction);
         done();
       });
+    });
+  });
+
+  describe('setErrorForInvalidInitialMapIds$', () => {
+    it('throws an InitialMapsCouldNotBeLoaded error', (done: DoneFn) => {
+      store.overrideSelector(selectIsAuthenticated, true);
+      const originalError = new Error('error');
+      actions$ = of(LayerCatalogActions.setInitialMapsError({error: originalError}));
+      effects.setErrorForInvalidInitialMapIds$
+        .pipe(
+          catchError((error: unknown) => {
+            const expectedError = new InitialMapsCouldNotBeLoaded(true, originalError);
+            expect(error).toEqual(expectedError);
+            done();
+            return EMPTY;
+          }),
+        )
+        .subscribe();
     });
   });
 });

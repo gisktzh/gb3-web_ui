@@ -13,7 +13,8 @@ import {selectItems} from '../reducers/layer-catalog.reducer';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 
 import {TopicsCouldNotBeLoaded} from '../../../shared/errors/map.errors';
-import {InitialMapIdsParameterInvalid} from '../../../shared/errors/initial-maps.errors';
+import {InitialMapIdsParameterInvalid, InitialMapsCouldNotBeLoaded} from '../../../shared/errors/initial-maps.errors';
+import {selectIsAuthenticated} from '../../auth/reducers/auth-status.reducer';
 
 @Injectable()
 export class LayerCatalogEffects {
@@ -60,6 +61,19 @@ export class LayerCatalogEffects {
       catchError((error: unknown) => of(LayerCatalogActions.setInitialMapsError({error}))),
     );
   });
+
+  public setErrorForInvalidInitialMapIds$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(LayerCatalogActions.setInitialMapsError),
+        concatLatestFrom(() => this.store.select(selectIsAuthenticated)),
+        map(([{error}, isAuthenticated]) => {
+          throw new InitialMapsCouldNotBeLoaded(isAuthenticated, error);
+        }),
+      );
+    },
+    {dispatch: false},
+  );
 
   constructor(
     private readonly actions$: Actions,
