@@ -17,6 +17,7 @@ import {MapConfigEffects} from './map-config.effects';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {InitialMapExtentService} from '../../../map/services/initial-map-extent.service';
 import {SearchActions} from '../../app/actions/search.actions';
+import {MapDrawingService} from '../../../map/services/map-drawing.service';
 
 describe('MapConfigEffects', () => {
   let actions$: Observable<Action>;
@@ -24,6 +25,7 @@ describe('MapConfigEffects', () => {
   let effects: MapConfigEffects;
   let mapService: MapService;
   let initialMapExtentServiceMock: jasmine.SpyObj<InitialMapExtentService>;
+  let mapDrawingService: MapDrawingService;
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
@@ -44,6 +46,7 @@ describe('MapConfigEffects', () => {
     effects = TestBed.inject(MapConfigEffects);
     mapService = TestBed.inject(MAP_SERVICE);
     store = TestBed.inject(MockStore);
+    mapDrawingService = TestBed.inject(MapDrawingService);
   });
 
   afterEach(() => {
@@ -94,15 +97,17 @@ describe('MapConfigEffects', () => {
     });
   });
 
-  describe('setCenterOnMap$', () => {
-    it('sets the map center using the map service, no further action dispatch', (done: DoneFn) => {
+  describe('setCenterOnMapAndDrawHighlight$', () => {
+    it('sets the map center using the map service and draws point highlight, no further action dispatch', (done: DoneFn) => {
       const expectedCenter: PointWithSrs = {srs: 2056, type: 'Point', coordinates: [123, 456]};
       const mapServiceSpy = spyOn(mapService, 'setMapCenter').and.callThrough();
+      const mapDrawingServiceSpy = spyOn(mapDrawingService, 'drawSearchResultHighlight').and.callThrough();
 
-      const expectedAction = MapConfigActions.setMapCenter({center: expectedCenter});
+      const expectedAction = MapConfigActions.setMapCenterAndDrawHighlight({center: expectedCenter});
       actions$ = of(expectedAction);
-      effects.setCenterOnMap$.subscribe((action) => {
+      effects.setMapCenterAndDrawHighlight$.subscribe((action) => {
         expect(mapServiceSpy).toHaveBeenCalledOnceWith(expectedCenter);
+        expect(mapDrawingServiceSpy).toHaveBeenCalledOnceWith(expectedCenter);
         expect(action).toEqual(expectedAction);
         done();
       });

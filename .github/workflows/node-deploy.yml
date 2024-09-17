@@ -29,6 +29,9 @@ jobs:
           npm ci
           npm run build-dev-ebp
 
+      - name: Create CNAME file for custom domain
+        run: echo 'dev.geo.zh.ch' > ./dist/browser/CNAME
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

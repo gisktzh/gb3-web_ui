@@ -1,4 +1,4 @@
-<mat-toolbar class="navbar" color="primary">
+<mat-toolbar aria-label="Hauptnavigation" class="navbar" color="primary" role="navigation">
   <span class="navbar__item">
     <img
       [ngStyle]="{display: !this.isSimplifiedPage ? 'none' : 'inline'}"
@@ -60,6 +60,7 @@
       </button>
     </mat-menu>
   </ng-template>
+
   <div class="navbar__underline-container" *ngIf="!isSimplifiedPage">
     <div class="navbar__underline-container__content-container">
       <span></span>

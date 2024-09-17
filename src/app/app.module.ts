@@ -31,6 +31,7 @@ import {effectErrorHandler} from './state/app/effects/effects-error-handler.effe
 import {EsriMapLoaderService} from './map/services/esri-services/esri-map-loader.service';
 import {MapLoaderService} from './map/interfaces/map-loader.service';
 import {DevModeBannerComponent} from './shared/components/dev-mode-banner/dev-mode-banner.component';
+import {SkipLinkComponent} from './shared/components/skip-link/skip-link.component';
 
 // necessary for the locale 'de-CH' to work
 // see https://stackoverflow.com/questions/46419026/missing-locale-data-for-the-locale-xxx-with-angular
@@ -55,6 +56,7 @@ export const GRAV_CMS_SERVICE = new InjectionToken<GravCmsService>('GravCmsServi
     ErrorHandlingModule,
     StoreRouterConnectingModule.forRoot(),
     DevModeBannerComponent,
+    SkipLinkComponent,
   ],
   providers: [
     {provide: ErrorHandler, deps: [Router, ErrorHandlerService, EmbeddedErrorHandlerService], useFactory: errorHandlerServiceFactory},

@@ -84,7 +84,7 @@
     "eslint-plugin-rxjs": "^5.0.2",
     "eslint-plugin-rxjs-angular": "^2.0.0",
     "husky": "^9.0.0",
-    "jasmine-core": "~5.2.0",
+    "jasmine-core": "~5.3.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
@@ -93,6 +93,6 @@
     "lint-staged": "^15.0.0",
     "prettier": "^3.3.3",
     "puppeteer": "^23.0.0",
-    "typescript": "~5.4.5"
+    "typescript": "~5.5.0"
   }
 }

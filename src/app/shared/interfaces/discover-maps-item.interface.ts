@@ -14,4 +14,5 @@ interface DiscoverMapsItemImage {
   type: string;
   size: number;
   path: string;
+  altText: string | undefined;
 }

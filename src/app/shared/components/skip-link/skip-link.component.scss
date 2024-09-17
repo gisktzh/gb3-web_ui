@@ -1,0 +1,18 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.skip-link {
+  position: absolute;
+  left: max(24px, calc((100% - #{ktzh-variables.$zh-layout-max-content-width}) / 2));
+  top: -100px;
+  padding: 24px 12px;
+  background-color: white;
+  font-weight: bold;
+  font-size: 16px;
+  pointer-events: none;
+}
+
+.skip-link:focus {
+  top: 0;
+  z-index: 1000;
+  pointer-events: all;
+}

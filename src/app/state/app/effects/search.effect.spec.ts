@@ -18,8 +18,13 @@ import {selectReady} from '../../map/reducers/map-config.reducer';
 import {SearchIndex} from '../../../shared/services/apis/search/interfaces/search-index.interface';
 import {SearchService} from '../../../shared/services/apis/search/services/search.service';
 import {GeometryWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
-import {InvalidSearchParameters, NoSearchResultsFoundForParameters} from '../../../shared/errors/search.errors';
+import {
+  InvalidSearchParameters,
+  NoSearchResultsFoundForParameters,
+  SearchResultsCouldNotBeLoaded,
+} from '../../../shared/errors/search.errors';
 import {catchError} from 'rxjs/operators';
+import {selectIsAuthenticated} from '../../auth/reducers/auth-status.reducer';
 
 describe('SearchEffects', () => {
   let actions$: Observable<Action>;
@@ -48,6 +53,24 @@ describe('SearchEffects', () => {
 
   afterEach(() => {
     store.resetSelectors();
+  });
+
+  describe('throwSearchApiError$', () => {
+    it('throws a SearchResultsCouldNotBeLoaded error', (done: DoneFn) => {
+      store.overrideSelector(selectIsAuthenticated, true);
+      const originalError = new Error('error');
+      actions$ = of(SearchActions.setSearchApiError({error: originalError}));
+      effects.throwSearchApiError$
+        .pipe(
+          catchError((error: unknown) => {
+            const expectedError = new SearchResultsCouldNotBeLoaded(true, originalError);
+            expect(error).toEqual(expectedError);
+            done();
+            return EMPTY;
+          }),
+        )
+        .subscribe();
+    });
   });
 
   describe('zoomToAndHighlightSelectedSearchResult$', () => {
@@ -105,6 +128,7 @@ describe('SearchEffects', () => {
         isHeadlessPage: false,
         isSimplifiedPage: false,
         previousPage: MainPage.Data,
+        keepTemporaryUrlParams: false,
       });
 
       const mapDrawingService = TestBed.inject(MapDrawingService);
@@ -123,6 +147,7 @@ describe('SearchEffects', () => {
         isHeadlessPage: false,
         isSimplifiedPage: false,
         previousPage: MainPage.Data,
+        keepTemporaryUrlParams: false,
       });
 
       let newAction;

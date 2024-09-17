@@ -13,6 +13,8 @@ import {selectItems} from '../reducers/layer-catalog.reducer';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 
 import {TopicsCouldNotBeLoaded} from '../../../shared/errors/map.errors';
+import {InitialMapIdsParameterInvalid, InitialMapsCouldNotBeLoaded} from '../../../shared/errors/initial-maps.errors';
+import {selectIsAuthenticated} from '../../auth/reducers/auth-status.reducer';
 
 @Injectable()
 export class LayerCatalogEffects {
@@ -46,13 +48,32 @@ export class LayerCatalogEffects {
       concatLatestFrom(() => [this.store.select(selectMaps), this.store.select(selectMapConfigState)]),
       // create an array of ActiveMapItems for each id in the initialMaps configuration that has a matching map in the layer catalog
       map(([_, availableMaps, {initialMaps}]) => {
-        const initialMapItems = availableMaps
-          .filter((availableMap) => initialMaps.includes(availableMap.id))
-          .map((availableMap) => ActiveMapItemFactory.createGb2WmsMapItem(availableMap));
+        const initialMapItems = initialMaps.map((initialMap) => {
+          const availableMap = availableMaps.find((map) => map.id === initialMap);
+          if (!availableMap) {
+            throw new InitialMapIdsParameterInvalid(initialMap);
+          }
+          return ActiveMapItemFactory.createGb2WmsMapItem(availableMap);
+        });
+
         return ActiveMapItemActions.addInitialMapItems({initialMapItems});
       }),
+      catchError((error: unknown) => of(LayerCatalogActions.setInitialMapsError({error}))),
     );
   });
+
+  public setErrorForInvalidInitialMapIds$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(LayerCatalogActions.setInitialMapsError),
+        concatLatestFrom(() => this.store.select(selectIsAuthenticated)),
+        map(([{error}, isAuthenticated]) => {
+          throw new InitialMapsCouldNotBeLoaded(isAuthenticated, error);
+        }),
+      );
+    },
+    {dispatch: false},
+  );
 
   constructor(
     private readonly actions$: Actions,

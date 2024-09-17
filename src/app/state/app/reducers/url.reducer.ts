@@ -9,6 +9,7 @@ export const initialState: UrlState = {
   previousPage: undefined,
   isHeadlessPage: false,
   isSimplifiedPage: false,
+  keepTemporaryUrlParams: false,
 };
 
 export const urlFeature = createFeature({
@@ -18,7 +19,11 @@ export const urlFeature = createFeature({
     on(UrlActions.setPage, (state, {mainPage, isHeadlessPage, isSimplifiedPage}): UrlState => {
       return {...state, previousPage: state.mainPage, mainPage, isHeadlessPage, isSimplifiedPage};
     }),
+    on(UrlActions.keepTemporaryUrlParameters, (state): UrlState => {
+      return {...state, keepTemporaryUrlParams: true};
+    }),
   ),
 });
 
-export const {name, reducer, selectUrlState, selectMainPage, selectIsHeadlessPage, selectIsSimplifiedPage} = urlFeature;
+export const {name, reducer, selectUrlState, selectMainPage, selectIsHeadlessPage, selectIsSimplifiedPage, selectKeepTemporaryUrlParams} =
+  urlFeature;

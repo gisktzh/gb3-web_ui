@@ -37,10 +37,8 @@ $number-of-entries: 2;
             display: block;
             width: 100%;
             height: 327px;
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center center;
-            // The url is added dynamically via ngStyle
+            object-fit: cover;
+            object-position: center;
           }
 
           .discover-maps__list__item__wrapper__content__container {
