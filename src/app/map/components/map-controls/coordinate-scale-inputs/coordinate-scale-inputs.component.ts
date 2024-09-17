@@ -55,12 +55,12 @@ export class CoordinateScaleInputsComponent implements OnInit, OnDestroy {
     }
   }
 
-  public setMapCenter(event: Event) {
+  public setMapCenterAndDrawHighlight(event: Event) {
     const input = event.target as HTMLInputElement;
     const center = this.coordinateParserService.parse(input.value);
 
     if (center) {
-      this.store.dispatch(MapConfigActions.setMapCenter({center}));
+      this.store.dispatch(MapConfigActions.setMapCenterAndDrawHighlight({center}));
     } else {
       input.value = this.mapCenter;
     }
