@@ -49,7 +49,7 @@ export class MapConfigEffects {
     {dispatch: false},
   );
 
-  public setCenterOnMap$ = createEffect(
+  public setMapCenterAndDrawHighlight$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(MapConfigActions.setMapCenterAndDrawHighlight),

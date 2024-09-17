@@ -2,7 +2,12 @@
   <map-rotation-button [rotation]="rotation"></map-rotation-button>
   <div class="coordinate-scale-inputs__coordinate">
     <data-input>
-      <input (change)="setMapCenter($event)" [(ngModel)]="mapCenterInput" class="coordinate-scale-inputs__input" type="text" />
+      <input
+        (change)="setMapCenterAndDrawHighlight($event)"
+        [(ngModel)]="mapCenterInput"
+        class="coordinate-scale-inputs__input"
+        type="text"
+      />
     </data-input>
   </div>
   <div class="coordinate-scale-inputs__scale">
