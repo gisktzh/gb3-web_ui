@@ -1,18 +1,13 @@
 import {TimeExtentToStringPipe} from './time-extent-to-string.pipe';
 import {TimeExtent} from '../interfaces/time-extent.interface';
 import {TestBed} from '@angular/core/testing';
-import {TIME_SERVICE} from '../../app.module';
-import {DayjsTimeService} from '../../shared/services/dayjs-time.service';
-import {TimeService} from '../interfaces/time.service';
 
 describe('TimeExtentToStringPipe', () => {
   let pipe: TimeExtentToStringPipe;
-  let timeService: TimeService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({providers: [{provide: TIME_SERVICE, useClass: DayjsTimeService}]});
-    timeService = TestBed.inject(TIME_SERVICE);
-    pipe = new TimeExtentToStringPipe(timeService);
+    TestBed.configureTestingModule({});
+    pipe = new TimeExtentToStringPipe();
   });
   it('create an instance', () => {
     expect(pipe).toBeTruthy();

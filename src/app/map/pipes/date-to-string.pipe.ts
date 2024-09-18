@@ -1,14 +1,13 @@
-import {Inject, Pipe, PipeTransform} from '@angular/core';
-import {TIME_SERVICE} from '../../app.module';
-import {TimeService} from '../interfaces/time.service';
+import {Pipe, PipeTransform} from '@angular/core';
+import {DayjsUtils} from '../../shared/utils/dayjs.utils';
 
 @Pipe({
   name: 'dateToString',
   standalone: true,
 })
 export class DateToStringPipe implements PipeTransform {
-  constructor(@Inject(TIME_SERVICE) private readonly timeService: TimeService) {}
+  constructor() {}
   public transform(value: Date | undefined, dateFormat: string): string {
-    return value ? this.timeService.getDateAsString(value, dateFormat) : '';
+    return value ? DayjsUtils.getDateAsString(value, dateFormat) : '';
   }
 }

@@ -1,19 +1,15 @@
-import {Inject, Injectable} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {TimeSliderConfiguration, TimeSliderLayerSource} from '../../shared/interfaces/topic.interface';
 import {Duration} from 'dayjs/plugin/duration';
 import {TimeExtentUtils} from '../../shared/utils/time-extent.utils';
 import {TimeExtent} from '../interfaces/time-extent.interface';
-
 import {InvalidTimeSliderConfiguration} from '../../shared/errors/map.errors';
-import {TIME_SERVICE} from '../../app.module';
-import {TimeService} from '../interfaces/time.service';
-import {DayjsTimeService} from '../../shared/services/dayjs-time.service';
+import {DayjsUtils} from '../../shared/utils/dayjs.utils';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TimeSliderService {
-  constructor(@Inject(TIME_SERVICE) private readonly timeService: TimeService) {}
   /**
    * Creates stops which define specific locations on the time slider where thumbs will snap to when manipulated.
    */
@@ -52,7 +48,7 @@ export class TimeSliderService {
             The start has changed as fixed ranges technically don't have an end date
             => the end date has to be adjusted accordingly to enforce the fixed range between start and end date
          */
-      const range: Duration = DayjsTimeService.getDuration(timeSliderConfig.range);
+      const range: Duration = DayjsUtils.getDuration(timeSliderConfig.range);
       timeExtent.end = TimeExtentUtils.addDuration(timeExtent.start, range);
     } else if (timeSliderConfig.minimalRange) {
       /*
@@ -75,7 +71,7 @@ export class TimeSliderService {
       }
 
       const startEndDiff: number = TimeExtentUtils.calculateDifferenceBetweenDates(timeExtent.start, timeExtent.end);
-      const minimalRange: Duration = DayjsTimeService.getDuration(timeSliderConfig.minimalRange);
+      const minimalRange: Duration = DayjsUtils.getDuration(timeSliderConfig.minimalRange);
 
       if (startEndDiff < minimalRange.asMilliseconds()) {
         if (hasStartDateChanged) {
@@ -98,8 +94,8 @@ export class TimeSliderService {
   }
 
   public isTimeExtentValid(timeSliderConfig: TimeSliderConfiguration, timeExtent: TimeExtent): boolean {
-    const minDate = DayjsTimeService.parseUTCDate(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat);
-    const maxDate = DayjsTimeService.parseUTCDate(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat);
+    const minDate = DayjsUtils.parseUTCDate(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat);
+    const maxDate = DayjsUtils.parseUTCDate(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat);
 
     const updatedTimeExtent: TimeExtent = this.createValidTimeExtent(timeSliderConfig, timeExtent, false, minDate, maxDate);
 
@@ -111,7 +107,7 @@ export class TimeSliderService {
    */
   private createStopsForLayerSource(timeSliderConfig: TimeSliderConfiguration): Array<Date> {
     const timeSliderLayerSource = timeSliderConfig.source as TimeSliderLayerSource;
-    return timeSliderLayerSource.layers.map((layer) => DayjsTimeService.parseUTCDate(layer.date, timeSliderConfig.dateFormat));
+    return timeSliderLayerSource.layers.map((layer) => DayjsUtils.parseUTCDate(layer.date, timeSliderConfig.dateFormat));
   }
 
   /**
@@ -123,10 +119,10 @@ export class TimeSliderService {
    * start to finish using the given duration; this can lead to gaps near the end but supports all cases.
    */
   private createStopsForParameterSource(timeSliderConfig: TimeSliderConfiguration): Array<Date> {
-    const minimumDate: Date = DayjsTimeService.parseUTCDate(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat);
-    const maximumDate: Date = DayjsTimeService.parseUTCDate(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat);
+    const minimumDate: Date = DayjsUtils.parseUTCDate(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat);
+    const maximumDate: Date = DayjsUtils.parseUTCDate(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat);
     const initialRange: string | null = timeSliderConfig.range ?? timeSliderConfig.minimalRange ?? null;
-    let stopRangeDuration: Duration | null = initialRange ? DayjsTimeService.getDuration(initialRange) : null;
+    let stopRangeDuration: Duration | null = initialRange ? DayjsUtils.getDuration(initialRange) : null;
     if (
       stopRangeDuration &&
       TimeExtentUtils.calculateDifferenceBetweenDates(minimumDate, maximumDate) <= stopRangeDuration.asMilliseconds()
@@ -140,7 +136,7 @@ export class TimeSliderService {
       }
 
       // create a new duration base on the smallest unit with the lowest valid unit number (1)
-      stopRangeDuration = DayjsTimeService.getDurationWithUnit(1, unit);
+      stopRangeDuration = DayjsUtils.getDurationWithUnit(1, unit);
     }
 
     const dates: Date[] = [];

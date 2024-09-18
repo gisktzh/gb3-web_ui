@@ -11,7 +11,7 @@ import {HttpClient} from '@angular/common/http';
 import {BasemapConfigService} from '../../../../map/services/basemap-config.service';
 import {FavouritesService} from '../../../../map/services/favourites.service';
 import {MapRestoreItem} from '../../../interfaces/map-restore-item.interface';
-import {DayjsTimeService} from '../../dayjs-time.service';
+import {DayjsUtils} from '../../../utils/dayjs.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -93,8 +93,8 @@ export class Gb3ShareLinkService extends Gb3ApiService {
           attributeFilters: content.attributeFilters,
           timeExtent: content.timeExtent
             ? {
-                start: DayjsTimeService.parseUTCDate(content.timeExtent.start),
-                end: DayjsTimeService.parseUTCDate(content.timeExtent.end),
+                start: DayjsUtils.parseUTCDate(content.timeExtent.start),
+                end: DayjsUtils.parseUTCDate(content.timeExtent.end),
               }
             : undefined,
         };

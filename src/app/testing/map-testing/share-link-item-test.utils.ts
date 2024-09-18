@@ -1,6 +1,6 @@
 import {ShareLinkItem} from '../../shared/interfaces/share-link.interface';
 import {MinimalGeometriesUtils} from './minimal-geometries.utils';
-import {DayjsTimeService} from '../../shared/services/dayjs-time.service';
+import {DayjsUtils} from '../../shared/utils/dayjs.utils';
 
 export class ShareLinkItemTestUtils {
   public static createShareLinkItem(): ShareLinkItem {
@@ -33,7 +33,7 @@ export class ShareLinkItemTestUtils {
           opacity: 0.5,
           visible: true,
           isSingleLayer: false,
-          timeExtent: {start: DayjsTimeService.parseUTCDate('1000'), end: DayjsTimeService.parseUTCDate('2020')},
+          timeExtent: {start: DayjsUtils.parseUTCDate('1000'), end: DayjsUtils.parseUTCDate('2020')},
           attributeFilters: [
             {
               parameter: 'FILTER_GEBART',

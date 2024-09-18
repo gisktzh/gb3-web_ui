@@ -1,4 +1,4 @@
-import {DayjsTimeService} from '../services/dayjs-time.service';
+import {DayjsUtils} from './dayjs.utils';
 
 export class StorageUtils {
   /**
@@ -16,8 +16,8 @@ export class StorageUtils {
    *   the original string. If it is, we return the parsed date, otherwise the original string (see GB3-1597).
    */
   private static reviver(key: string, value: any): any {
-    if (typeof value === 'string' && DayjsTimeService.isValidDate(value)) {
-      const parsed = DayjsTimeService.parseUTCDate(value);
+    if (typeof value === 'string' && DayjsUtils.isValidDate(value)) {
+      const parsed = DayjsUtils.parseUTCDate(value);
       return parsed.toISOString() === value ? parsed : value;
     }
     return value;

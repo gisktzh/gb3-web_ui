@@ -22,8 +22,7 @@ import {SymbolizationToGb3ConverterUtils} from '../../shared/utils/symbolization
 import {Map} from '../../shared/interfaces/topic.interface';
 import {TimeExtentUtils} from '../../shared/utils/time-extent.utils';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
-import {DayjsTimeService} from '../../shared/services/dayjs-time.service';
-import {TIME_SERVICE} from '../../app.module';
+import {DayjsUtils} from '../../shared/utils/dayjs.utils';
 
 describe('FavouritesService', () => {
   let service: FavouritesService;
@@ -33,12 +32,7 @@ describe('FavouritesService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [],
-      providers: [
-        provideMockStore({}),
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting(),
-        {provide: TIME_SERVICE, useClass: DayjsTimeService},
-      ],
+      providers: [provideMockStore({}), provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     });
     store = TestBed.inject(MockStore);
     store.overrideSelector(selectActiveMapItemConfigurations, []);
@@ -391,8 +385,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: DayjsTimeService.parseUTCDate('1000-01-01T00:00:00.000Z'),
-            end: DayjsTimeService.parseUTCDate('2020-01-01T00:00:00.000Z'),
+            start: DayjsUtils.parseUTCDate('1000-01-01T00:00:00.000Z'),
+            end: DayjsUtils.parseUTCDate('2020-01-01T00:00:00.000Z'),
           },
         },
         {
@@ -536,8 +530,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: DayjsTimeService.parseUTCDate('1000-01-01T00:00:00.000Z'),
-            end: DayjsTimeService.parseUTCDate('2020-01-01T00:00:00.000Z'),
+            start: DayjsUtils.parseUTCDate('1000-01-01T00:00:00.000Z'),
+            end: DayjsUtils.parseUTCDate('2020-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -654,8 +648,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: DayjsTimeService.parseUTCDate('1000-01-01T00:00:00.000Z'),
-            end: DayjsTimeService.parseUTCDate('2020-01-01T00:00:00.000Z'),
+            start: DayjsUtils.parseUTCDate('1000-01-01T00:00:00.000Z'),
+            end: DayjsUtils.parseUTCDate('2020-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -715,8 +709,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: DayjsTimeService.parseUTCDate('1000-01-01T00:00:00.000Z'),
-            end: DayjsTimeService.parseUTCDate('2020-01-01T00:00:00.000Z'),
+            start: DayjsUtils.parseUTCDate('1000-01-01T00:00:00.000Z'),
+            end: DayjsUtils.parseUTCDate('2020-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -805,8 +799,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: DayjsTimeService.parseUTCDate('1000-01-01T00:00:00.000Z'),
-            end: DayjsTimeService.parseUTCDate('2020-01-01T00:00:00.000Z'),
+            start: DayjsUtils.parseUTCDate('1000-01-01T00:00:00.000Z'),
+            end: DayjsUtils.parseUTCDate('2020-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -864,8 +858,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: DayjsTimeService.parseUTCDate('1000-01-01T00:00:00.000Z'),
-            end: DayjsTimeService.parseUTCDate('2020-01-01T00:00:00.000Z'),
+            start: DayjsUtils.parseUTCDate('1000-01-01T00:00:00.000Z'),
+            end: DayjsUtils.parseUTCDate('2020-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -1042,8 +1036,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: DayjsTimeService.parseUTCDate('1000-01-01T00:00:00.000Z'),
-            end: DayjsTimeService.parseUTCDate('2020-01-01T00:00:00.000Z'),
+            start: DayjsUtils.parseUTCDate('1000-01-01T00:00:00.000Z'),
+            end: DayjsUtils.parseUTCDate('2020-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -1200,8 +1194,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: DayjsTimeService.parseUTCDate('1000-01-01T00:00:00.000Z'),
-            end: DayjsTimeService.parseUTCDate('2020-01-01T00:00:00.000Z'),
+            start: DayjsUtils.parseUTCDate('1000-01-01T00:00:00.000Z'),
+            end: DayjsUtils.parseUTCDate('2020-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -1357,8 +1351,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: DayjsTimeService.parseUTCDate('0999-01-01T00:00:00.000Z'),
-            end: DayjsTimeService.parseUTCDate('2020-01-01T00:00:00.000Z'),
+            start: DayjsUtils.parseUTCDate('0999-01-01T00:00:00.000Z'),
+            end: DayjsUtils.parseUTCDate('2020-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -1512,8 +1506,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: DayjsTimeService.parseUTCDate('1450-01-01T00:00:00.000Z'),
-            end: DayjsTimeService.parseUTCDate('1455-01-01T00:00:00.000Z'),
+            start: DayjsUtils.parseUTCDate('1450-01-01T00:00:00.000Z'),
+            end: DayjsUtils.parseUTCDate('1455-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -1667,8 +1661,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: DayjsTimeService.parseUTCDate('1750-01-01T00:00:00.000Z'),
-            end: DayjsTimeService.parseUTCDate('1455-01-01T00:00:00.000Z'),
+            start: DayjsUtils.parseUTCDate('1750-01-01T00:00:00.000Z'),
+            end: DayjsUtils.parseUTCDate('1455-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -1822,8 +1816,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: DayjsTimeService.parseUTCDate('1250-01-01T00:00:00.000Z'),
-            end: DayjsTimeService.parseUTCDate('2000-01-01T00:00:00.000Z'),
+            start: DayjsUtils.parseUTCDate('1250-01-01T00:00:00.000Z'),
+            end: DayjsUtils.parseUTCDate('2000-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -2088,8 +2082,8 @@ describe('FavouritesService', () => {
           isSingleLayer: false,
           attributeFilters: undefined,
           timeExtent: {
-            start: DayjsTimeService.parseUTCDate('2016-01-01T00:00:00.000Z'),
-            end: DayjsTimeService.parseUTCDate('2017-01-01T00:00:00.000Z'),
+            start: DayjsUtils.parseUTCDate('2016-01-01T00:00:00.000Z'),
+            end: DayjsUtils.parseUTCDate('2017-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -2354,8 +2348,8 @@ describe('FavouritesService', () => {
           isSingleLayer: false,
           attributeFilters: undefined,
           timeExtent: {
-            start: DayjsTimeService.parseUTCDate('2016-01-01T00:00:00.000Z'),
-            end: DayjsTimeService.parseUTCDate('2017-01-01T00:00:00.000Z'),
+            start: DayjsUtils.parseUTCDate('2016-01-01T00:00:00.000Z'),
+            end: DayjsUtils.parseUTCDate('2017-01-01T00:00:00.000Z'),
           },
         },
       ];

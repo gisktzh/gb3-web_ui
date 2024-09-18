@@ -12,8 +12,6 @@ import {EsriMapViewService} from './esri-map-view.service';
 import {EsriToolService} from './tool-service/esri-tool.service';
 import {createDrawingMapItemMock, createGb2WmsMapItemMock} from '../../../testing/map-testing/active-map-item-test.utils';
 import {FilterConfiguration} from '../../../shared/interfaces/topic.interface';
-import {TIME_SERVICE} from '../../../app.module';
-import {DayjsTimeService} from '../../../shared/services/dayjs-time.service';
 
 function compareMapItemToEsriLayer(expectedMapItem: Gb2WmsActiveMapItem, actualEsriLayer: __esri.Layer) {
   expect(actualEsriLayer.id).toBe(expectedMapItem.id);
@@ -76,7 +74,6 @@ describe('EsriMapService', () => {
           provide: EsriToolService,
           useValue: toolServiceSpy,
         },
-        {provide: TIME_SERVICE, useClass: DayjsTimeService},
       ],
     });
     service = TestBed.inject(EsriMapService);

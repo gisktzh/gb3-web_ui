@@ -1,6 +1,6 @@
 import {MapLayer, TimeSliderConfiguration, TimeSliderLayerSource} from '../../shared/interfaces/topic.interface';
 import {TimeExtent} from '../interfaces/time-extent.interface';
-import {DayjsTimeService} from '../../shared/services/dayjs-time.service';
+import {DayjsUtils} from '../../shared/utils/dayjs.utils';
 
 export class ActiveTimeSliderLayersUtils {
   /**
@@ -19,7 +19,7 @@ export class ActiveTimeSliderLayersUtils {
     const timeSliderLayerSource = timeSliderConfiguration.source as TimeSliderLayerSource;
     const timeSliderLayer = timeSliderLayerSource.layers.find((layer) => layer.layerName === mapLayer.layer);
     if (timeSliderLayer) {
-      const date = DayjsTimeService.parseUTCDate(timeSliderLayer.date, timeSliderConfiguration.dateFormat);
+      const date = DayjsUtils.parseUTCDate(timeSliderLayer.date, timeSliderConfiguration.dateFormat);
       return date >= timeExtent.start && date < timeExtent.end;
     } else {
       return undefined;

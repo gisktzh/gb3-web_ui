@@ -15,7 +15,7 @@ import {selectActiveMapItemConfigurations} from '../../map/selectors/active-map-
 import {selectMaps} from '../../map/selectors/maps.selector';
 import {selectFavouriteBaseConfig} from '../../map/selectors/favourite-base-config.selector';
 import {selectUserDrawingsVectorLayers} from '../../map/selectors/user-drawings-vector-layers.selector';
-import {MAP_SERVICE, TIME_SERVICE} from '../../../app.module';
+import {MAP_SERVICE} from '../../../app.module';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
 import {LayerCatalogActions} from '../../map/actions/layer-catalog.actions';
 import {Gb3ShareLinkService} from '../../../shared/services/apis/gb3/gb3-share-link.service';
@@ -29,7 +29,6 @@ import {selectItems} from '../../map/selectors/active-map-items.selector';
 import {selectDrawings} from '../../map/reducers/drawing.reducer';
 import {ToolService} from '../../../map/interfaces/tool.service';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
-import {DayjsTimeService} from '../../../shared/services/dayjs-time.service';
 
 const mockOAuthService = jasmine.createSpyObj<AuthService>({
   logout: void 0,
@@ -53,7 +52,6 @@ describe('AuthStatusEffects', () => {
         {provide: AuthService, useValue: mockOAuthService},
         AuthStatusEffects,
         {provide: MAP_SERVICE, useClass: MapServiceStub},
-        {provide: TIME_SERVICE, useClass: DayjsTimeService},
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],

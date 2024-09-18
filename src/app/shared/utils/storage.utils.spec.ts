@@ -1,5 +1,5 @@
 import {StorageUtils} from './storage.utils';
-import {DayjsTimeService} from '../services/dayjs-time.service';
+import {DayjsUtils} from './dayjs.utils';
 
 describe('StorageUtils', () => {
   describe('parseJson', () => {
@@ -8,7 +8,7 @@ describe('StorageUtils', () => {
         '{"date":"1506-01-01T00:00:00.000Z", "number": 2683132, "string": "test", "stringifiedNumberParseableAsDate": "12"}';
 
       const expectedJsonObject = {
-        date: DayjsTimeService.parseUTCDate('1506-01-01T00:00:00.000Z'),
+        date: DayjsUtils.parseUTCDate('1506-01-01T00:00:00.000Z'),
         number: 2683132,
         string: 'test',
         stringifiedNumberParseableAsDate: '12',

@@ -1,13 +1,11 @@
-import {Component, EventEmitter, Inject, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {TimeExtent} from '../../interfaces/time-extent.interface';
 import {TimeSliderConfiguration, TimeSliderLayerSource} from '../../../shared/interfaces/topic.interface';
 import {ManipulateType, UnitType} from 'dayjs';
 import {TimeSliderService} from '../../services/time-slider.service';
 import {TimeExtentUtils} from '../../../shared/utils/time-extent.utils';
 import {MatDatepicker} from '@angular/material/datepicker';
-import {TIME_SERVICE} from '../../../app.module';
-import {TimeService} from '../../interfaces/time.service';
-import {DayjsTimeService} from '../../../shared/services/dayjs-time.service';
+import {DayjsUtils} from '../../../shared/utils/dayjs.utils';
 
 // There is an array (`allowedDatePickerManipulationUnits`) and a new union type (`DatePickerManipulationUnits`) for two reasons:
 // To be able to extract a union type subset of `ManipulateType` AND to have an array used to check if a given value is in said union type.
@@ -47,10 +45,7 @@ export class TimeSliderComponent implements OnInit, OnChanges {
   public datePickerStartView: DatePickerStartView = 'month';
   private datePickerUnit: DatePickerManipulationUnits = 'days';
 
-  constructor(
-    private readonly timeSliderService: TimeSliderService,
-    @Inject(TIME_SERVICE) private readonly timeService: TimeService,
-  ) {}
+  constructor(private readonly timeSliderService: TimeSliderService) {}
 
   public ngOnInit() {
     this.availableDates = this.timeSliderService.createStops(this.timeSliderConfiguration);
@@ -150,8 +145,8 @@ export class TimeSliderComponent implements OnInit, OnChanges {
     }
 
     // format the given event date to the configured time format and back to ensure that it is a valid date within the current available dates
-    const date = this.timeService.getDate(
-      this.timeService.getDateAsString(eventDate, this.timeSliderConfiguration.dateFormat),
+    const date = DayjsUtils.getDate(
+      DayjsUtils.getDateAsString(eventDate, this.timeSliderConfiguration.dateFormat),
       this.timeSliderConfiguration.dateFormat,
     );
     const position = this.findPositionOfDate(date);
@@ -177,7 +172,7 @@ export class TimeSliderComponent implements OnInit, OnChanges {
    */
   private isRangeExactlyOneOfSingleTimeUnit(range: string | null | undefined): boolean {
     if (range) {
-      const rangeDuration = DayjsTimeService.getDuration(range);
+      const rangeDuration = DayjsUtils.getDuration(range);
       const unit = TimeExtentUtils.extractUniqueUnitFromDuration(rangeDuration);
       return unit !== undefined && TimeExtentUtils.getDurationAsNumber(rangeDuration, unit) === 1;
     }
@@ -217,7 +212,7 @@ export class TimeSliderComponent implements OnInit, OnChanges {
 
   private isLayerSourceContinuous(layerSource: TimeSliderLayerSource, unit: DatePickerManipulationUnits): boolean {
     const dateAsAscendingSortedNumbers = layerSource.layers
-      .map((layer) => this.timeService.getPartial(layer.date, unit as UnitType))
+      .map((layer) => DayjsUtils.getPartial(layer.date, unit as UnitType))
       .sort((a, b) => a - b);
     // all date numbers must be part of a continuous and strictly monotonously rising series each with exactly
     // one step between them: `date[0] = x` => `date[n] = x + n`
