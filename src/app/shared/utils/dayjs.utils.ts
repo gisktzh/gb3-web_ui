@@ -14,8 +14,8 @@ export class DayjsUtils {
   public static getDateAsString(date: Date, format: string): string {
     return dayjs(date).format(format);
   }
-  public static getDate(date: string, format: string): Date {
-    return dayjs(date, format).toDate();
+  public static getDate(date: string, format?: string): Date {
+    return format ? dayjs(date, format).toDate() : dayjs(date).toDate();
   }
   public static getUTCDateAsString(date: Date, format?: string): string {
     return dayjs.utc(date).format(format);
