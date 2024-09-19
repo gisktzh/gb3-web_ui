@@ -9,7 +9,7 @@ dayjs.extend(utc);
 
 export class DayjsUtils {
   public static getPartial(date: string, unit: UnitType): number {
-    return dayjs(date, unit).get(unit);
+    return dayjs(date).get(unit);
   }
   public static getDateAsString(date: Date, format: string): string {
     return dayjs(date).format(format);
