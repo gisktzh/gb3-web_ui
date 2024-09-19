@@ -1,4 +1,5 @@
-import dayjs, {ManipulateType, UnitType} from 'dayjs';
+import dayjs from 'dayjs';
+import {ManipulateTypeAlias as ManipulateType, UnitTypeAlias as UnitType} from '../types/dayjs-alias-type';
 import duration, {Duration} from 'dayjs/plugin/duration';
 import utc from 'dayjs/plugin/utc';
 import customParseFormat from 'dayjs/plugin/customParseFormat';

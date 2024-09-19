@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {TimeExtent} from '../../interfaces/time-extent.interface';
 import {TimeSliderConfiguration, TimeSliderLayerSource} from '../../../shared/interfaces/topic.interface';
-import {ManipulateType, UnitType} from 'dayjs';
+import {ManipulateTypeAlias as ManipulateType, UnitTypeAlias as UnitType} from '../../../shared/types/dayjs-alias-type';
 import {TimeSliderService} from '../../services/time-slider.service';
 import {TimeExtentUtils} from '../../../shared/utils/time-extent.utils';
 import {MatDatepicker} from '@angular/material/datepicker';

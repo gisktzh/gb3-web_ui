@@ -1,5 +1,5 @@
 import {Duration} from 'dayjs/plugin/duration';
-import {ManipulateType} from 'dayjs';
+import {ManipulateTypeAlias as ManipulateType} from '../types/dayjs-alias-type';
 import {TimeSliderConfiguration} from '../interfaces/topic.interface';
 import {TimeExtent} from '../../map/interfaces/time-extent.interface';
 import {DayjsUtils} from './dayjs.utils';
