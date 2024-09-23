@@ -4,6 +4,7 @@
     <data-input>
       <input
         (change)="setMapCenterAndDrawHighlight($event)"
+        (keydown.enter)="setMapCenterAndDrawHighlight($event)"
         [(ngModel)]="mapCenterInput"
         class="coordinate-scale-inputs__input"
         type="text"
