@@ -20,14 +20,16 @@ import {DrawingActiveMapItem} from '../models/implementations/drawing.model';
 import {DrawingLayerPrefix, UserDrawingLayer} from '../../shared/enums/drawing-layer.enum';
 import {SymbolizationToGb3ConverterUtils} from '../../shared/utils/symbolization-to-gb3-converter.utils';
 import {Map} from '../../shared/interfaces/topic.interface';
-import {TimeExtentUtils} from '../../shared/utils/time-extent.utils';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
-import {DayjsUtils} from '../../shared/utils/dayjs.utils';
+import {TimeService} from '../../shared/interfaces/time-service.interface';
+import {TIME_SERVICE} from '../../app.module';
+import {TimeSliderService} from './time-slider.service';
 
 describe('FavouritesService', () => {
   let service: FavouritesService;
   let store: MockStore;
   let gb3FavouritesService: Gb3FavouritesService;
+  let timeService: TimeService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -35,6 +37,7 @@ describe('FavouritesService', () => {
       providers: [provideMockStore({}), provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     });
     store = TestBed.inject(MockStore);
+    timeService = TestBed.inject(TIME_SERVICE);
     store.overrideSelector(selectActiveMapItemConfigurations, []);
     store.overrideSelector(selectMaps, []);
     store.overrideSelector(selectFavouriteBaseConfig, {center: {x: 0, y: 0}, scale: 0, basemap: ''});
@@ -385,8 +388,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: DayjsUtils.parseUTCDate('1000-01-01T00:00:00.000Z'),
-            end: DayjsUtils.parseUTCDate('2020-01-01T00:00:00.000Z'),
+            start: timeService.getUTCDateFromString('1000-01-01T00:00:00.000Z'),
+            end: timeService.getUTCDateFromString('2020-01-01T00:00:00.000Z'),
           },
         },
         {
@@ -530,8 +533,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: DayjsUtils.parseUTCDate('1000-01-01T00:00:00.000Z'),
-            end: DayjsUtils.parseUTCDate('2020-01-01T00:00:00.000Z'),
+            start: timeService.getUTCDateFromString('1000-01-01T00:00:00.000Z'),
+            end: timeService.getUTCDateFromString('2020-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -648,8 +651,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: DayjsUtils.parseUTCDate('1000-01-01T00:00:00.000Z'),
-            end: DayjsUtils.parseUTCDate('2020-01-01T00:00:00.000Z'),
+            start: timeService.getUTCDateFromString('1000-01-01T00:00:00.000Z'),
+            end: timeService.getUTCDateFromString('2020-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -709,8 +712,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: DayjsUtils.parseUTCDate('1000-01-01T00:00:00.000Z'),
-            end: DayjsUtils.parseUTCDate('2020-01-01T00:00:00.000Z'),
+            start: timeService.getUTCDateFromString('1000-01-01T00:00:00.000Z'),
+            end: timeService.getUTCDateFromString('2020-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -799,8 +802,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: DayjsUtils.parseUTCDate('1000-01-01T00:00:00.000Z'),
-            end: DayjsUtils.parseUTCDate('2020-01-01T00:00:00.000Z'),
+            start: timeService.getUTCDateFromString('1000-01-01T00:00:00.000Z'),
+            end: timeService.getUTCDateFromString('2020-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -858,8 +861,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: DayjsUtils.parseUTCDate('1000-01-01T00:00:00.000Z'),
-            end: DayjsUtils.parseUTCDate('2020-01-01T00:00:00.000Z'),
+            start: timeService.getUTCDateFromString('1000-01-01T00:00:00.000Z'),
+            end: timeService.getUTCDateFromString('2020-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -872,6 +875,7 @@ describe('FavouritesService', () => {
     });
 
     it('throws a FavouriteIsInvalidError if a new filterConfiguration has been added', () => {
+      // eslint-disable-next-line @typescript-eslint/dot-notation
       service['availableMaps'] = [
         {
           id: 'StatGebAlterZH',
@@ -1036,8 +1040,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: DayjsUtils.parseUTCDate('1000-01-01T00:00:00.000Z'),
-            end: DayjsUtils.parseUTCDate('2020-01-01T00:00:00.000Z'),
+            start: timeService.getUTCDateFromString('1000-01-01T00:00:00.000Z'),
+            end: timeService.getUTCDateFromString('2020-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -1050,6 +1054,7 @@ describe('FavouritesService', () => {
     });
 
     it('throws a FavouriteIsInvalidError if a new filter has been added', () => {
+      // eslint-disable-next-line @typescript-eslint/dot-notation
       service['availableMaps'] = [
         {
           id: 'StatGebAlterZH',
@@ -1194,8 +1199,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: DayjsUtils.parseUTCDate('1000-01-01T00:00:00.000Z'),
-            end: DayjsUtils.parseUTCDate('2020-01-01T00:00:00.000Z'),
+            start: timeService.getUTCDateFromString('1000-01-01T00:00:00.000Z'),
+            end: timeService.getUTCDateFromString('2020-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -1208,6 +1213,7 @@ describe('FavouritesService', () => {
     });
 
     it('throws a FavouriteIsInvalidError if the timeSliderConfiguration for a parameter configuration is invalid (start < minimumDate)', () => {
+      // eslint-disable-next-line @typescript-eslint/dot-notation
       service['availableMaps'] = [
         {
           id: 'StatGebAlterZH',
@@ -1351,8 +1357,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: DayjsUtils.parseUTCDate('0999-01-01T00:00:00.000Z'),
-            end: DayjsUtils.parseUTCDate('2020-01-01T00:00:00.000Z'),
+            start: timeService.getUTCDateFromString('0999-01-01T00:00:00.000Z'),
+            end: timeService.getUTCDateFromString('2020-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -1363,6 +1369,7 @@ describe('FavouritesService', () => {
     });
 
     it('throws a FavouriteIsInvalidError if the timeSliderConfiguration for a parameter configuration is invalid (range to small)', () => {
+      // eslint-disable-next-line @typescript-eslint/dot-notation
       service['availableMaps'] = [
         {
           id: 'StatGebAlterZH',
@@ -1506,8 +1513,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: DayjsUtils.parseUTCDate('1450-01-01T00:00:00.000Z'),
-            end: DayjsUtils.parseUTCDate('1455-01-01T00:00:00.000Z'),
+            start: timeService.getUTCDateFromString('1450-01-01T00:00:00.000Z'),
+            end: timeService.getUTCDateFromString('1455-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -1518,6 +1525,7 @@ describe('FavouritesService', () => {
     });
 
     it('throws a FavouriteIsInvalidError if the timeSliderConfiguration for a parameter configuration is invalid (start and end date mixed up)', () => {
+      // eslint-disable-next-line @typescript-eslint/dot-notation
       service['availableMaps'] = [
         {
           id: 'StatGebAlterZH',
@@ -1661,8 +1669,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: DayjsUtils.parseUTCDate('1750-01-01T00:00:00.000Z'),
-            end: DayjsUtils.parseUTCDate('1455-01-01T00:00:00.000Z'),
+            start: timeService.getUTCDateFromString('1750-01-01T00:00:00.000Z'),
+            end: timeService.getUTCDateFromString('1455-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -1673,6 +1681,7 @@ describe('FavouritesService', () => {
     });
 
     it('throws a FavouriteIsInvalidError if the timeSliderConfiguration for a parameter configuration is invalid (not max range if Flag is set)', () => {
+      // eslint-disable-next-line @typescript-eslint/dot-notation
       service['availableMaps'] = [
         {
           id: 'StatGebAlterZH',
@@ -1816,8 +1825,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: DayjsUtils.parseUTCDate('1250-01-01T00:00:00.000Z'),
-            end: DayjsUtils.parseUTCDate('2000-01-01T00:00:00.000Z'),
+            start: timeService.getUTCDateFromString('1250-01-01T00:00:00.000Z'),
+            end: timeService.getUTCDateFromString('2000-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -1828,6 +1837,7 @@ describe('FavouritesService', () => {
     });
 
     it('throws a FavouriteIsInvalidError if the timeSliderConfiguration for a layer configuration is invalid', () => {
+      // eslint-disable-next-line @typescript-eslint/dot-notation
       service['availableMaps'] = [
         {
           id: 'OrthoFCIRZH',
@@ -2082,8 +2092,8 @@ describe('FavouritesService', () => {
           isSingleLayer: false,
           attributeFilters: undefined,
           timeExtent: {
-            start: DayjsUtils.parseUTCDate('2016-01-01T00:00:00.000Z'),
-            end: DayjsUtils.parseUTCDate('2017-01-01T00:00:00.000Z'),
+            start: timeService.getUTCDateFromString('2016-01-01T00:00:00.000Z'),
+            end: timeService.getUTCDateFromString('2017-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -2094,6 +2104,7 @@ describe('FavouritesService', () => {
     });
 
     it('returns the initalTimsliderExtent if the timeExtent is invalid but ignoreErrors is set to true', () => {
+      // eslint-disable-next-line @typescript-eslint/dot-notation
       service['availableMaps'] = [
         {
           id: 'OrthoFCIRZH',
@@ -2348,21 +2359,24 @@ describe('FavouritesService', () => {
           isSingleLayer: false,
           attributeFilters: undefined,
           timeExtent: {
-            start: DayjsUtils.parseUTCDate('2016-01-01T00:00:00.000Z'),
-            end: DayjsUtils.parseUTCDate('2017-01-01T00:00:00.000Z'),
+            start: timeService.getUTCDateFromString('2016-01-01T00:00:00.000Z'),
+            end: timeService.getUTCDateFromString('2017-01-01T00:00:00.000Z'),
           },
         },
       ];
 
       const result = service.getActiveMapItemsForFavourite(activeMapItemConfigurations, true);
-      const initialTimeExtent = TimeExtentUtils.createInitialTimeSliderExtent(service['availableMaps'][0].timeSliderConfiguration!);
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      const initialTimeExtent = TimeSliderService.createInitialTimeSliderExtent(service['availableMaps'][0].timeSliderConfiguration!);
       const activeMapItems: ActiveMapItem[] = [
         ActiveMapItemFactory.createGb2WmsMapItem(
+          // eslint-disable-next-line @typescript-eslint/dot-notation
           service['availableMaps'][0],
           undefined,
           true,
           1,
           initialTimeExtent,
+          // eslint-disable-next-line @typescript-eslint/dot-notation
           service['availableMaps'][0].filterConfigurations,
         ),
       ];

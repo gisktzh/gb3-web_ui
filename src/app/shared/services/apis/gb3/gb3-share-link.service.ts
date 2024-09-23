@@ -11,7 +11,8 @@ import {HttpClient} from '@angular/common/http';
 import {BasemapConfigService} from '../../../../map/services/basemap-config.service';
 import {FavouritesService} from '../../../../map/services/favourites.service';
 import {MapRestoreItem} from '../../../interfaces/map-restore-item.interface';
-import {DayjsUtils} from '../../../utils/dayjs.utils';
+import {TimeService} from '../../../interfaces/time-service.interface';
+import {TIME_SERVICE} from '../../../../app.module';
 
 @Injectable({
   providedIn: 'root',
@@ -22,10 +23,11 @@ export class Gb3ShareLinkService extends Gb3ApiService {
   constructor(
     @Inject(HttpClient) http: HttpClient,
     @Inject(ConfigService) configService: ConfigService,
+    @Inject(TIME_SERVICE) timeService: TimeService,
     private readonly basemapConfigService: BasemapConfigService,
     private readonly favouritesService: FavouritesService,
   ) {
-    super(http, configService);
+    super(http, configService, timeService);
   }
 
   public loadShareLink(shareLinkId: string): Observable<ShareLinkItem> {
@@ -93,8 +95,8 @@ export class Gb3ShareLinkService extends Gb3ApiService {
           attributeFilters: content.attributeFilters,
           timeExtent: content.timeExtent
             ? {
-                start: DayjsUtils.parseUTCDate(content.timeExtent.start),
-                end: DayjsUtils.parseUTCDate(content.timeExtent.end),
+                start: this.timeService.getUTCDateFromString(content.timeExtent.start),
+                end: this.timeService.getUTCDateFromString(content.timeExtent.end),
               }
             : undefined,
         };

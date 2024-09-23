@@ -3,6 +3,8 @@ import {Inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {ConfigService} from '../../config.service';
 import {Gb3VectorLayer} from '../../../interfaces/gb3-vector-layer.interface';
+import {TimeService} from '../../../interfaces/time-service.interface';
+import {TIME_SERVICE} from '../../../../app.module';
 
 @Injectable({
   providedIn: 'root',
@@ -10,8 +12,12 @@ import {Gb3VectorLayer} from '../../../interfaces/gb3-vector-layer.interface';
 export class Gb3ImportService extends Gb3ApiService {
   protected readonly endpoint = 'import';
 
-  constructor(@Inject(HttpClient) http: HttpClient, @Inject(ConfigService) configService: ConfigService) {
-    super(http, configService);
+  constructor(
+    @Inject(HttpClient) http: HttpClient,
+    @Inject(ConfigService) configService: ConfigService,
+    @Inject(TIME_SERVICE) timeService: TimeService,
+  ) {
+    super(http, configService, timeService);
   }
 
   public importDrawing(file: File | Blob) {

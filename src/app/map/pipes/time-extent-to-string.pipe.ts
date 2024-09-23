@@ -1,13 +1,15 @@
-import {Pipe, PipeTransform} from '@angular/core';
+import {Inject, Pipe, PipeTransform} from '@angular/core';
 import {TimeExtent} from '../interfaces/time-extent.interface';
-import {DayjsUtils} from '../../shared/utils/dayjs.utils';
+import {TIME_SERVICE} from '../../app.module';
+import {TimeService} from '../../shared/interfaces/time-service.interface';
 
 @Pipe({
   name: 'timeExtentToString',
   standalone: true,
 })
 export class TimeExtentToStringPipe implements PipeTransform {
-  constructor() {}
+  constructor(@Inject(TIME_SERVICE) private readonly timeService: TimeService) {}
+
   public transform(timeExtent: TimeExtent | undefined, dateFormat: string, hasSimpleCurrentValue: boolean): string {
     if (!timeExtent) {
       return '';
@@ -18,6 +20,6 @@ export class TimeExtentToStringPipe implements PipeTransform {
   }
 
   private convertDateToString(value: Date, dateFormat: string): string {
-    return value ? DayjsUtils.getDateAsString(value, dateFormat) : '';
+    return value ? this.timeService.getDateAsFormattedString(value, dateFormat) : '';
   }
 }

@@ -1,9 +1,8 @@
 import {ShareLinkItem} from '../../shared/interfaces/share-link.interface';
 import {MinimalGeometriesUtils} from './minimal-geometries.utils';
-import {DayjsUtils} from '../../shared/utils/dayjs.utils';
 
 export class ShareLinkItemTestUtils {
-  public static createShareLinkItem(): ShareLinkItem {
+  public static createShareLinkItem(timeExtentStart: Date, timeExtentEnd: Date): ShareLinkItem {
     const {srs, ...minimalPolygonGeometry} = MinimalGeometriesUtils.getMinimalPolygon(2056);
     return {
       basemapId: 'arelkbackgroundzh',
@@ -33,7 +32,7 @@ export class ShareLinkItemTestUtils {
           opacity: 0.5,
           visible: true,
           isSingleLayer: false,
-          timeExtent: {start: DayjsUtils.parseUTCDate('1000'), end: DayjsUtils.parseUTCDate('2020')},
+          timeExtent: {start: timeExtentStart, end: timeExtentEnd},
           attributeFilters: [
             {
               parameter: 'FILTER_GEBART',

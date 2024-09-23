@@ -661,3 +661,7 @@ It will be used later within a Teams announcement.
 3. Change the type of article by choosing **Ankündigung** (left of **Veröffentlichen**)
 4. Enter the release title as _Überschrift_. E.g. `Release 42`
 5. Add the changelog from above as text and slightly format it. Use previous changelogs as styleguide.
+
+## Contributors
+
+### Individual contributors

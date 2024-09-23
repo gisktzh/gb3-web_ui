@@ -15,7 +15,7 @@ import {selectActiveMapItemConfigurations} from '../../map/selectors/active-map-
 import {selectMaps} from '../../map/selectors/maps.selector';
 import {selectFavouriteBaseConfig} from '../../map/selectors/favourite-base-config.selector';
 import {selectUserDrawingsVectorLayers} from '../../map/selectors/user-drawings-vector-layers.selector';
-import {MAP_SERVICE} from '../../../app.module';
+import {MAP_SERVICE, TIME_SERVICE} from '../../../app.module';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
 import {LayerCatalogActions} from '../../map/actions/layer-catalog.actions';
 import {Gb3ShareLinkService} from '../../../shared/services/apis/gb3/gb3-share-link.service';
@@ -29,6 +29,7 @@ import {selectItems} from '../../map/selectors/active-map-items.selector';
 import {selectDrawings} from '../../map/reducers/drawing.reducer';
 import {ToolService} from '../../../map/interfaces/tool.service';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {TimeService} from '../../../shared/interfaces/time-service.interface';
 
 const mockOAuthService = jasmine.createSpyObj<AuthService>({
   logout: void 0,
@@ -40,6 +41,7 @@ describe('AuthStatusEffects', () => {
   let store: MockStore;
   let effects: AuthStatusEffects;
   let storageService: SessionStorageService;
+  let timeService: TimeService;
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
@@ -56,6 +58,7 @@ describe('AuthStatusEffects', () => {
         provideHttpClientTesting(),
       ],
     });
+    timeService = TestBed.inject(TIME_SERVICE);
     storageService = TestBed.inject(SessionStorageService);
     store = TestBed.inject(MockStore);
     store.overrideSelector(selectActiveMapItemConfigurations, []);
@@ -74,7 +77,10 @@ describe('AuthStatusEffects', () => {
 
   describe('login$', () => {
     it('logins using the AuthService and stores the current map state into a share link item; dispatches no further actions', (done: DoneFn) => {
-      const shareLinkItem: ShareLinkItem = ShareLinkItemTestUtils.createShareLinkItem();
+      const shareLinkItem: ShareLinkItem = ShareLinkItemTestUtils.createShareLinkItem(
+        timeService.getUTCDateFromString('1000'),
+        timeService.getUTCDateFromString('2020'),
+      );
       const storageServiceSpy = spyOn(storageService, 'set');
       store.overrideSelector(selectCurrentShareLinkItem, shareLinkItem);
 
@@ -93,7 +99,10 @@ describe('AuthStatusEffects', () => {
 
   describe('logout$', () => {
     it('logouts using the AuthService and stores the current map state into a share link item; dispatches no further actions', (done: DoneFn) => {
-      const shareLinkItem: ShareLinkItem = ShareLinkItemTestUtils.createShareLinkItem();
+      const shareLinkItem: ShareLinkItem = ShareLinkItemTestUtils.createShareLinkItem(
+        timeService.getUTCDateFromString('1000'),
+        timeService.getUTCDateFromString('2020'),
+      );
       const storageServiceSpy = spyOn(storageService, 'set');
       store.overrideSelector(selectCurrentShareLinkItem, shareLinkItem);
       const isForced = true;
@@ -116,7 +125,10 @@ describe('AuthStatusEffects', () => {
       'dispatches AuthStatusActions.completeRestoreApplication after setting the layer catalog' +
         'and loading an existing share link item from the session storage.',
       (done: DoneFn) => {
-        const shareLinkItem: ShareLinkItem = ShareLinkItemTestUtils.createShareLinkItem();
+        const shareLinkItem: ShareLinkItem = ShareLinkItemTestUtils.createShareLinkItem(
+          timeService.getUTCDateFromString('1000'),
+          timeService.getUTCDateFromString('2020'),
+        );
         const shareLinkItemString = JSON.stringify(shareLinkItem);
         const storageServiceGetSpy = spyOn(storageService, 'get').and.returnValue(shareLinkItemString);
         const storageServiceRemoveSpy = spyOn(storageService, 'remove').and.stub();

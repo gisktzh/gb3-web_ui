@@ -31,6 +31,8 @@ import {effectErrorHandler} from './state/app/effects/effects-error-handler.effe
 import {EsriMapLoaderService} from './map/services/esri-services/esri-map-loader.service';
 import {MapLoaderService} from './map/interfaces/map-loader.service';
 import {DevModeBannerComponent} from './shared/components/dev-mode-banner/dev-mode-banner.component';
+import {TimeService} from './shared/interfaces/time-service.interface';
+import {timeServiceFactory} from './shared/factories/time-service.factory';
 
 // necessary for the locale 'de-CH' to work
 // see https://stackoverflow.com/questions/46419026/missing-locale-data-for-the-locale-xxx-with-angular
@@ -40,6 +42,7 @@ export const MAP_SERVICE = new InjectionToken<MapService>('MapService');
 export const MAP_LOADER_SERVICE = new InjectionToken<MapLoaderService>('MapLoaderService');
 export const NEWS_SERVICE = new InjectionToken<NewsService>('NewsService');
 export const GRAV_CMS_SERVICE = new InjectionToken<GravCmsService>('GravCmsService');
+export const TIME_SERVICE = new InjectionToken<TimeService>('TimeService');
 
 @NgModule({
   declarations: [AppComponent],
@@ -60,6 +63,7 @@ export const GRAV_CMS_SERVICE = new InjectionToken<GravCmsService>('GravCmsServi
     {provide: ErrorHandler, deps: [Router, ErrorHandlerService, EmbeddedErrorHandlerService], useFactory: errorHandlerServiceFactory},
     {provide: MAP_SERVICE, useClass: EsriMapService},
     {provide: MAP_LOADER_SERVICE, useClass: EsriMapLoaderService},
+    {provide: TIME_SERVICE, useFactory: timeServiceFactory},
     {provide: NEWS_SERVICE, deps: [KTZHNewsService, KTZHNewsServiceMock, ConfigService], useFactory: newsFactory},
     {provide: GRAV_CMS_SERVICE, deps: [GravCmsService, GravCmsServiceMock, ConfigService], useFactory: gravCmsFactory},
     {provide: LOCALE_ID, useValue: 'de-CH'},
