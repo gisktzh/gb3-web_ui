@@ -3,7 +3,6 @@ import {TimeSliderService} from './time-slider.service';
 import dayjs from 'dayjs';
 import {TimeSliderConfiguration, TimeSliderParameterSource} from '../../shared/interfaces/topic.interface';
 import {TimeExtent} from '../interfaces/time-extent.interface';
-import {DayjsUtils} from '../../shared/utils/dayjs.utils';
 import {TIME_SERVICE} from '../../app.module';
 import {TimeService} from '../../shared/interfaces/time-service.interface';
 
@@ -130,7 +129,7 @@ describe('TimeSliderService', () => {
       });
 
       it('should create a new start date if it is smaller than the minimum date', () => {
-        const newValue: TimeExtent = {start: DayjsUtils.subtractDuration(minimumDate, DayjsUtils.getDuration('P1M')), end: minimumDate};
+        const newValue: TimeExtent = {start: timeService.subtractRangeFromDate(minimumDate, 'P1M'), end: minimumDate};
         const calculatedTimeExtent = service.createValidTimeExtent(timeSliderConfig, newValue, true, minimumDate, maximumDate);
         expect(
           timeService.calculateDifferenceBetweenDates(calculatedTimeExtent.start, timeService.getDateFromString('2000-01', dateFormat)),
@@ -141,7 +140,7 @@ describe('TimeSliderService', () => {
       });
 
       it('should create a new start date if it is bigger than the maximum date', () => {
-        const newValue: TimeExtent = {start: DayjsUtils.addDuration(maximumDate, DayjsUtils.getDuration('P1M')), end: minimumDate};
+        const newValue: TimeExtent = {start: timeService.addRangeToDate(maximumDate, 'P1M'), end: minimumDate};
         const calculatedTimeExtent = service.createValidTimeExtent(timeSliderConfig, newValue, true, minimumDate, maximumDate);
         expect(
           timeService.calculateDifferenceBetweenDates(calculatedTimeExtent.start, timeService.getDateFromString('2001-03', dateFormat)),
@@ -400,9 +399,7 @@ describe('TimeSliderService', () => {
             const expectedNumberOfStops = 12;
             expect(stops.length).toBe(expectedNumberOfStops);
             expect(timeService.calculateDifferenceBetweenDates(stops[0], minimumDate)).toBe(0);
-            expect(
-              timeService.calculateDifferenceBetweenDates(stops[1], DayjsUtils.addDuration(minimumDate, DayjsUtils.getDuration(range))),
-            ).toBe(0);
+            expect(timeService.calculateDifferenceBetweenDates(stops[1], timeService.addRangeToDate(minimumDate, range))).toBe(0);
             expect(timeService.calculateDifferenceBetweenDates(stops[stops.length - 1], maximumDate)).toBe(0);
           });
         });

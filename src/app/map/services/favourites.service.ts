@@ -254,7 +254,7 @@ export class FavouritesService implements OnDestroy {
     const isValid = this.validateTimeSlider(timeSliderConfiguration, timeExtent);
     if (!isValid) {
       if (ignoreErrors) {
-        return TimeSliderService.createInitialTimeSliderExtent(timeSliderConfiguration);
+        return this.timeSliderService.createInitialTimeSliderExtent(timeSliderConfiguration);
       } else {
         throw new FavouriteIsInvalid(`Die Konfiguration für den Zeitschieberegler der Karte '${title}' ist ungültig.`);
       }

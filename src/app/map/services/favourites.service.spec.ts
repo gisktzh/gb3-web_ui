@@ -30,6 +30,7 @@ describe('FavouritesService', () => {
   let store: MockStore;
   let gb3FavouritesService: Gb3FavouritesService;
   let timeService: TimeService;
+  let timeSliderService: TimeSliderService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -38,6 +39,7 @@ describe('FavouritesService', () => {
     });
     store = TestBed.inject(MockStore);
     timeService = TestBed.inject(TIME_SERVICE);
+    timeSliderService = TestBed.inject(TimeSliderService);
     store.overrideSelector(selectActiveMapItemConfigurations, []);
     store.overrideSelector(selectMaps, []);
     store.overrideSelector(selectFavouriteBaseConfig, {center: {x: 0, y: 0}, scale: 0, basemap: ''});
@@ -2367,7 +2369,7 @@ describe('FavouritesService', () => {
 
       const result = service.getActiveMapItemsForFavourite(activeMapItemConfigurations, true);
       // eslint-disable-next-line @typescript-eslint/dot-notation
-      const initialTimeExtent = TimeSliderService.createInitialTimeSliderExtent(service['availableMaps'][0].timeSliderConfiguration!);
+      const initialTimeExtent = timeSliderService.createInitialTimeSliderExtent(service['availableMaps'][0].timeSliderConfiguration!);
       const activeMapItems: ActiveMapItem[] = [
         ActiveMapItemFactory.createGb2WmsMapItem(
           // eslint-disable-next-line @typescript-eslint/dot-notation

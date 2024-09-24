@@ -1,18 +1,16 @@
 import {Component, EventEmitter, Inject, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {TimeExtent} from '../../interfaces/time-extent.interface';
 import {TimeSliderConfiguration, TimeSliderLayerSource} from '../../../shared/interfaces/topic.interface';
-import {ManipulateTypeAlias as ManipulateType, UnitTypeAlias as UnitType} from '../../../shared/types/dayjs-alias-type';
 import {TimeSliderService} from '../../services/time-slider.service';
 import {MatDatepicker} from '@angular/material/datepicker';
-import {DayjsUtils} from '../../../shared/utils/dayjs.utils';
 import {TIME_SERVICE} from '../../../app.module';
-import {TimeService} from '../../../shared/interfaces/time-service.interface';
+import {DateUnit, TimeService} from '../../../shared/interfaces/time-service.interface';
 
 // There is an array (`allowedDatePickerManipulationUnits`) and a new union type (`DatePickerManipulationUnits`) for two reasons:
 // To be able to extract a union type subset of `ManipulateType` AND to have an array used to check if a given value is in said union type.
 // => more infos: https://stackoverflow.com/questions/50085494/how-to-check-if-a-given-value-is-in-a-union-type-array
 const allowedDatePickerManipulationUnits = ['years', 'months', 'days'] as const; // TS3.4 syntax
-export type DatePickerManipulationUnits = Extract<ManipulateType, (typeof allowedDatePickerManipulationUnits)[number]>;
+export type DatePickerManipulationUnits = Extract<DateUnit, (typeof allowedDatePickerManipulationUnits)[number]>;
 type DatePickerStartView = 'month' | 'year' | 'multi-year';
 
 @Component({
@@ -164,23 +162,8 @@ export class TimeSliderComponent implements OnInit, OnChanges {
     }
   }
 
-  /**
-   * Returns `true` if the given range is defined and is exactly one of a single time unit (year, month, ...).
-   * If the optional parameter `allowedTimeUnits` is given then only the units in there are allowed; all other return `false` as well.
-   * @param range The range (in ISO-8601 time span format) to be evaluated
-   *
-   * @example
-   * `P1Y1M` is a duration of one year AND one month which is more than one time unit; therefore is the result `false`
-   * `P2Y` is a duration of two years which is more than one of a single time unit; therefore is the result `false`
-   * `P1D` is a duration of one day which is exactly one of a single time unit; therefore the result is `true`
-   */
   private isRangeExactlyOneOfSingleTimeUnit(range: string | null | undefined): boolean {
-    if (range) {
-      const rangeDuration = DayjsUtils.getDuration(range);
-      const unit = TimeSliderService.extractUniqueUnitFromDuration(rangeDuration);
-      return unit !== undefined && TimeSliderService.getDurationAsNumber(rangeDuration, unit) === 1;
-    }
-    return false;
+    return range ? this.timeService.isStringSingleTimeUnitRange(range) : false;
   }
 
   /**
@@ -216,7 +199,7 @@ export class TimeSliderComponent implements OnInit, OnChanges {
 
   private isLayerSourceContinuous(layerSource: TimeSliderLayerSource, unit: DatePickerManipulationUnits): boolean {
     const dateAsAscendingSortedNumbers = layerSource.layers
-      .map((layer) => DayjsUtils.getPartial(layer.date, unit as UnitType))
+      .map((layer) => this.timeService.getPartialFromString(layer.date, unit))
       .sort((a, b) => a - b);
     // all date numbers must be part of a continuous and strictly monotonously rising series each with exactly
     // one step between them: `date[0] = x` => `date[n] = x + n`

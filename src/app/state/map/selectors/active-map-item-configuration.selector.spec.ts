@@ -2,7 +2,6 @@ import {selectActiveMapItemConfigurations} from './active-map-item-configuration
 import {ActiveMapItemConfiguration} from '../../../shared/interfaces/active-map-item-configuration.interface';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 import {Map} from '../../../shared/interfaces/topic.interface';
-import {DayjsUtils} from '../../../shared/utils/dayjs.utils';
 
 describe('selectActiveMapItemConfiguration', () => {
   it('returns activeMapItemConfigurations from ActiveMapItmes', () => {
@@ -30,10 +29,7 @@ describe('selectActiveMapItemConfiguration', () => {
       undefined,
       true,
       0.71,
-      {
-        start: DayjsUtils.parseUTCDate('1000-01-01T00:00:00.000Z'),
-        end: DayjsUtils.parseUTCDate('2020-01-01T00:00:00.000Z'),
-      },
+      undefined,
       [
         {
           parameter: 'FILTER_GEBART',
@@ -89,10 +85,7 @@ describe('selectActiveMapItemConfiguration', () => {
             ],
           },
         ],
-        timeExtent: {
-          start: DayjsUtils.parseUTCDate('1000-01-01T00:00:00.000Z'),
-          end: DayjsUtils.parseUTCDate('2020-01-01T00:00:00.000Z'),
-        },
+        timeExtent: undefined,
       },
     ];
 

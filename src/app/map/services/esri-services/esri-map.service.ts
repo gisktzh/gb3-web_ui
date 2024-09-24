@@ -58,7 +58,6 @@ import {TransformationService} from './transformation.service';
 import {ExternalWmsActiveMapItem} from '../../models/implementations/external-wms.model';
 import {ExternalKmlActiveMapItem} from '../../models/implementations/external-kml.model';
 import {ExternalWmsLayer} from '../../../shared/interfaces/external-layer.interface';
-import {ActiveTimeSliderLayersUtils} from '../../utils/active-time-slider-layers.utils';
 import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
 import {InitialMapExtentService} from '../initial-map-extent.service';
 import {MapConstants} from '../../../shared/constants/map.constants';
@@ -66,6 +65,7 @@ import {HitTestSelectionUtils} from './utils/hit-test-selection.utils';
 import * as intl from '@arcgis/core/intl';
 import {TimeService} from '../../../shared/interfaces/time-service.interface';
 import {TIME_SERVICE} from '../../../app.module';
+import {TimeSliderService} from '../time-slider.service';
 import GraphicHit = __esri.GraphicHit;
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
@@ -107,6 +107,7 @@ export class EsriMapService implements MapService, OnDestroy {
     private readonly esriToolService: EsriToolService,
     private readonly gb3TopicsService: Gb3TopicsService,
     private readonly initialMapExtentService: InitialMapExtentService,
+    private readonly timeSliderService: TimeSliderService,
     @Inject(TIME_SERVICE) private readonly timeService: TimeService,
   ) {
     /**
@@ -666,7 +667,7 @@ export class EsriMapService implements MapService, OnDestroy {
     const timeSliderLayerSource = timeSliderConfig.source as TimeSliderLayerSource;
     const timeSliderLayerNames = timeSliderLayerSource.layers.map((layer) => layer.layerName);
     const visibleTimeSliderLayers = mapItem.settings.layers.filter(
-      (layer) => ActiveTimeSliderLayersUtils.isLayerVisible(layer, mapItem.settings.timeSliderConfiguration, timeSliderExtent) === true,
+      (layer) => this.timeSliderService.isLayerVisible(layer, mapItem.settings.timeSliderConfiguration, timeSliderExtent) === true,
     );
     // include all layers that are not specified in the time slider config
     const esriSublayers = esriLayer.sublayers.filter((sublayer) => !timeSliderLayerNames.includes(sublayer.name));

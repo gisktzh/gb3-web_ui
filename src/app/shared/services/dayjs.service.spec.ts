@@ -67,4 +67,27 @@ describe('DayjsService', () => {
       expect(dayjsService.calculateDifferenceBetweenDates(date1, date2)).toBe(86400000); // 1 day in milliseconds
     });
   });
+
+  describe('addDuration', () => {
+    it('adds the duration to the date', () => {
+      const date = new Date(2023, 9, 1);
+      const range = 'P1D';
+      expect(dayjsService.addRangeToDate(date, range)).toEqual(new Date(2023, 9, 2));
+    });
+  });
+
+  describe('subtractDuration', () => {
+    it('subtracts the duration from the date', () => {
+      const date = new Date(2023, 9, 1);
+      const range = 'P1D';
+      expect(dayjsService.subtractRangeFromDate(date, range)).toEqual(new Date(2023, 8, 30));
+    });
+  });
+
+  describe('getPartial', () => {
+    it('returns the correct partial value', () => {
+      expect(dayjsService.getPartialFromString('2023-10-01', 'years')).toBe(2023);
+      expect(dayjsService.getPartialFromString('2023-10-01', 'months')).toBe(9); // month is 0-indexed
+    });
+  });
 });

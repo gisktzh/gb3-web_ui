@@ -35,7 +35,8 @@ import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.fa
 import {selectIsAuthenticated, selectIsAuthenticationInitialized} from '../../auth/reducers/auth-status.reducer';
 import {MapRestoreItem} from '../../../shared/interfaces/map-restore-item.interface';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
-import {DayjsUtils} from '../../../shared/utils/dayjs.utils';
+import {TimeService} from '../../../shared/interfaces/time-service.interface';
+import {TIME_SERVICE} from '../../../app.module';
 
 function createActiveMapItemsFromConfigs(activeMapItemConfigurations: ActiveMapItemConfiguration[]): ActiveMapItem[] {
   return activeMapItemConfigurations.map(
@@ -54,88 +55,8 @@ describe('ShareLinkEffects', () => {
   let gb3ShareLinkService: Gb3ShareLinkService;
   let authServiceMock: jasmine.SpyObj<AuthService>;
   let favouriteServiceMock: jasmine.SpyObj<FavouritesService>;
-
-  const shareLinkItemMock: ShareLinkItem = {
-    basemapId: 'arelkbackgroundzh',
-    center: {x: 2675158, y: 1259964},
-    scale: 18000,
-    content: [
-      {
-        id: 'StatGebAlterZH',
-        mapId: 'StatGebAlterZH',
-        layers: [
-          {
-            id: 132494,
-            layer: 'geb-alter_wohnen',
-            visible: true,
-          },
-          {
-            id: 132495,
-            layer: 'geb-alter_grau',
-            visible: false,
-          },
-          {
-            id: 132496,
-            layer: 'geb-alter_2',
-            visible: true,
-          },
-        ],
-        opacity: 0.5,
-        visible: true,
-        isSingleLayer: false,
-        timeExtent: {start: DayjsUtils.parseUTCDate('1000'), end: DayjsUtils.parseUTCDate('2020')},
-        attributeFilters: [
-          {
-            parameter: 'FILTER_GEBART',
-            name: 'Anzeigeoptionen nach Hauptnutzung',
-            activeFilters: [
-              {name: 'Wohnen', isActive: false},
-              {name: 'Andere', isActive: false},
-              {
-                name: 'Gewerbe und Verwaltung',
-                isActive: false,
-              },
-            ],
-          },
-        ],
-      },
-      {
-        id: 'Lageklassen2003ZH',
-        mapId: 'Lageklassen2003ZH',
-        layers: [
-          {
-            id: 135765,
-            layer: 'lageklassen-2003-flaechen',
-            visible: true,
-          },
-          {
-            id: 135775,
-            layer: 'lageklassen-2003-einzelobjekte',
-            visible: true,
-          },
-        ],
-        opacity: 1,
-        visible: true,
-        isSingleLayer: false,
-        timeExtent: undefined,
-        attributeFilters: undefined,
-      },
-    ],
-    drawings: {
-      type: 'Vector',
-      geojson: {
-        type: 'FeatureCollection',
-        features: [{type: 'Feature', geometry: {type: 'Point', coordinates: [0, 1]}, properties: {text: 'drawing', style: ''}}],
-      },
-    } as Gb3VectorLayer,
-    measurements: {
-      type: 'Vector',
-      geojson: {
-        type: 'FeatureCollection',
-        features: [{type: 'Feature', geometry: {type: 'Point', coordinates: [0, 1]}, properties: {text: 'measurement', style: ''}}],
-      },
-    } as Gb3VectorLayer,
-  };
+  let timeService: TimeService;
+  let shareLinkItemMock: ShareLinkItem;
 
   beforeEach(() => {
     actions$ = new Observable<Action>();
@@ -155,7 +76,89 @@ describe('ShareLinkEffects', () => {
     });
     effects = TestBed.inject(ShareLinkEffects);
     gb3ShareLinkService = TestBed.inject(Gb3ShareLinkService);
+    timeService = TestBed.inject(TIME_SERVICE);
     store = TestBed.inject(MockStore);
+    shareLinkItemMock = {
+      basemapId: 'arelkbackgroundzh',
+      center: {x: 2675158, y: 1259964},
+      scale: 18000,
+      content: [
+        {
+          id: 'StatGebAlterZH',
+          mapId: 'StatGebAlterZH',
+          layers: [
+            {
+              id: 132494,
+              layer: 'geb-alter_wohnen',
+              visible: true,
+            },
+            {
+              id: 132495,
+              layer: 'geb-alter_grau',
+              visible: false,
+            },
+            {
+              id: 132496,
+              layer: 'geb-alter_2',
+              visible: true,
+            },
+          ],
+          opacity: 0.5,
+          visible: true,
+          isSingleLayer: false,
+          timeExtent: {start: timeService.getUTCDateFromString('1000'), end: timeService.getUTCDateFromString('2020')},
+          attributeFilters: [
+            {
+              parameter: 'FILTER_GEBART',
+              name: 'Anzeigeoptionen nach Hauptnutzung',
+              activeFilters: [
+                {name: 'Wohnen', isActive: false},
+                {name: 'Andere', isActive: false},
+                {
+                  name: 'Gewerbe und Verwaltung',
+                  isActive: false,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: 'Lageklassen2003ZH',
+          mapId: 'Lageklassen2003ZH',
+          layers: [
+            {
+              id: 135765,
+              layer: 'lageklassen-2003-flaechen',
+              visible: true,
+            },
+            {
+              id: 135775,
+              layer: 'lageklassen-2003-einzelobjekte',
+              visible: true,
+            },
+          ],
+          opacity: 1,
+          visible: true,
+          isSingleLayer: false,
+          timeExtent: undefined,
+          attributeFilters: undefined,
+        },
+      ],
+      drawings: {
+        type: 'Vector',
+        geojson: {
+          type: 'FeatureCollection',
+          features: [{type: 'Feature', geometry: {type: 'Point', coordinates: [0, 1]}, properties: {text: 'drawing', style: ''}}],
+        },
+      } as Gb3VectorLayer,
+      measurements: {
+        type: 'Vector',
+        geojson: {
+          type: 'FeatureCollection',
+          features: [{type: 'Feature', geometry: {type: 'Point', coordinates: [0, 1]}, properties: {text: 'measurement', style: ''}}],
+        },
+      } as Gb3VectorLayer,
+    };
   });
 
   describe('loadShareLinkItem$', () => {
@@ -252,20 +255,25 @@ describe('ShareLinkEffects', () => {
 
   describe('Initialize the application based on a share link', () => {
     const expectedId = 'abcd-efgh-ijkl-mnop';
-    const expectedItem = shareLinkItemMock;
     const expectedOriginalError = new ShareLinkPropertyCouldNotBeValidated("He's dead, Jim.");
     const expectedTopics: Topic[] = [];
-    const expectedCompleteItem: MapRestoreItem = {
-      activeMapItems: createActiveMapItemsFromConfigs(shareLinkItemMock.content),
-      scale: shareLinkItemMock.scale,
-      basemapId: shareLinkItemMock.basemapId,
-      x: shareLinkItemMock.center.x,
-      y: shareLinkItemMock.center.y,
-      drawings: [
-        {id: 'mockDrawing1', source: UserDrawingLayer.Drawings, geometry: {type: 'Point', srs: 2056, coordinates: [0, 0]}},
-        {id: 'mockDrawing2', source: UserDrawingLayer.Measurements, geometry: {type: 'Point', srs: 2056, coordinates: [0, 0]}},
-      ] as Gb3StyledInternalDrawingRepresentation[],
-    };
+    let expectedCompleteItem: MapRestoreItem;
+    let expectedItem: ShareLinkItem;
+
+    beforeEach(() => {
+      expectedItem = shareLinkItemMock;
+      expectedCompleteItem = {
+        activeMapItems: createActiveMapItemsFromConfigs(shareLinkItemMock.content),
+        scale: shareLinkItemMock.scale,
+        basemapId: shareLinkItemMock.basemapId,
+        x: shareLinkItemMock.center.x,
+        y: shareLinkItemMock.center.y,
+        drawings: [
+          {id: 'mockDrawing1', source: UserDrawingLayer.Drawings, geometry: {type: 'Point', srs: 2056, coordinates: [0, 0]}},
+          {id: 'mockDrawing2', source: UserDrawingLayer.Measurements, geometry: {type: 'Point', srs: 2056, coordinates: [0, 0]}},
+        ] as Gb3StyledInternalDrawingRepresentation[],
+      };
+    });
 
     describe('Action: Initialize Application Based On Id', () => {
       describe('waitForAuthenticationStatusToBeLoaded$', () => {
