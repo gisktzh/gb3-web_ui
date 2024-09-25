@@ -106,7 +106,7 @@ describe('ShareLinkEffects', () => {
           opacity: 0.5,
           visible: true,
           isSingleLayer: false,
-          timeExtent: {start: timeService.getUTCDateFromString('1000'), end: timeService.getUTCDateFromString('2020')},
+          timeExtent: {start: timeService.createUTCDateFromString('1000'), end: timeService.createUTCDateFromString('2020')},
           attributeFilters: [
             {
               parameter: 'FILTER_GEBART',

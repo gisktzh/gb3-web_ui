@@ -27,6 +27,7 @@ import {DrawingActions} from '../actions/drawing.actions';
 import {LayerCatalogActions} from '../actions/layer-catalog.actions';
 import {SearchActions} from '../../app/actions/search.actions';
 import {TimeSliderService} from '../../../map/services/time-slider.service';
+import {produce} from 'immer';
 
 @Injectable()
 export class ActiveMapItemEffects {
@@ -367,24 +368,23 @@ export class ActiveMapItemEffects {
         if (!existingMapItem) {
           return undefined;
         }
-        const clonedMapItem = structuredClone(existingMapItem);
 
-        clonedMapItem.settings.timeSliderExtent = timeExtent;
-        clonedMapItem.settings.layers.forEach((layer) => {
-          const isVisible = this.timeSliderService.isLayerVisible(
-            layer,
-            existingMapItem.settings.timeSliderConfiguration,
-            existingMapItem.settings.timeSliderExtent,
-          );
-          if (isVisible !== undefined) {
-            layer.visible = isVisible;
-          }
+        return produce(existingMapItem, (draft) => {
+          draft.settings.timeSliderExtent = timeExtent;
+          draft.settings.layers.forEach((layer) => {
+            const isVisible = this.timeSliderService.isLayerVisible(
+              layer,
+              existingMapItem.settings.timeSliderConfiguration,
+              existingMapItem.settings.timeSliderExtent,
+            );
+            if (isVisible !== undefined) {
+              layer.visible = isVisible;
+            }
+          });
         });
-
-        return clonedMapItem;
       }),
-      filter((a) => a !== undefined),
-      map((a) => ActiveMapItemActions.replaceActiveMapItem({activeMapItem: a})),
+      filter((modifiedActiveMapItem) => modifiedActiveMapItem !== undefined),
+      map((modifiedActiveMapItem) => ActiveMapItemActions.replaceActiveMapItem({modifiedActiveMapItem})),
     );
   });
 

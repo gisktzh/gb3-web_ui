@@ -48,8 +48,8 @@ export class GravCmsService extends BaseApiService {
         title: discoverMapData.title,
         description: discoverMapData.description,
         mapId: discoverMapData.id,
-        fromDate: this.timeService.getDateFromString(discoverMapData.from_date, DATE_FORMAT),
-        toDate: this.timeService.getDateFromString(discoverMapData.to_date, DATE_FORMAT),
+        fromDate: this.timeService.createDateFromString(discoverMapData.from_date, DATE_FORMAT),
+        toDate: this.timeService.createDateFromString(discoverMapData.to_date, DATE_FORMAT),
         image: {
           url: this.createFullImageUrl(discoverMapData.image.path),
           name: discoverMapData.image.name,
@@ -69,8 +69,8 @@ export class GravCmsService extends BaseApiService {
         title: pageInfoData.title,
         description: pageInfoData.description,
         pages: this.transformPagesToMainPages(pageInfoData.pages),
-        fromDate: this.timeService.getDateFromString(pageInfoData.from_date, DATE_FORMAT),
-        toDate: this.timeService.getDateFromString(pageInfoData.to_date, DATE_FORMAT),
+        fromDate: this.timeService.createDateFromString(pageInfoData.from_date, DATE_FORMAT),
+        toDate: this.timeService.createDateFromString(pageInfoData.to_date, DATE_FORMAT),
         severity: pageInfoData.severity as PageNotificationSeverity,
         isMarkedAsRead: false,
       };
@@ -94,7 +94,7 @@ export class GravCmsService extends BaseApiService {
               altText: frequentlyUsedData.image_alt,
             }
           : undefined,
-        created: this.timeService.getDateFromUnixTimestamp(Number(frequentlyUsedData.created)),
+        created: this.timeService.createDateFromUnixTimestamp(Number(frequentlyUsedData.created)),
       };
     });
   }

@@ -1,11 +1,12 @@
 import {Injectable} from '@angular/core';
-import {DateUnit, TimeService} from '../interfaces/time-service.interface';
+import {TimeService} from '../interfaces/time-service.interface';
 import dayjs, {ManipulateType} from 'dayjs';
-import duration, {Duration} from 'dayjs/plugin/duration';
+import durationPlugin, {Duration} from 'dayjs/plugin/duration';
 import utc from 'dayjs/plugin/utc';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+import {DateUnit} from '../types/date-unit.type';
 
-dayjs.extend(duration);
+dayjs.extend(durationPlugin);
 dayjs.extend(customParseFormat);
 dayjs.extend(utc);
 
@@ -13,7 +14,7 @@ dayjs.extend(utc);
   providedIn: 'root',
 })
 export class DayjsService implements TimeService {
-  public getDateFromString(date: string, format?: string): Date {
+  public createDateFromString(date: string, format?: string): Date {
     return this.createDayjsObject(date, format).toDate();
   }
 
@@ -25,15 +26,15 @@ export class DayjsService implements TimeService {
     return this.createUTCDayjsObject(date).format(format);
   }
 
-  public getPartialFromString(date: string, unit: DateUnit): number {
+  public createPartialFromString(date: string, unit: DateUnit): number {
     return this.createDayjsObject(date).get(unit);
   }
 
-  public getDateFromUnixTimestamp(timestamp: number): Date {
+  public createDateFromUnixTimestamp(timestamp: number): Date {
     return dayjs.unix(timestamp).toDate();
   }
 
-  public getUTCDateFromString(date: string, format?: string): Date {
+  public createUTCDateFromString(date: string, format?: string): Date {
     return this.createUTCDayjsObject(date, format).toDate();
   }
 
@@ -116,7 +117,6 @@ export class DayjsService implements TimeService {
    * Gets the whole given duration as a number value in the desired unit.
    */
   private getDurationAsNumber(duration: Duration, unit: ManipulateType): number {
-    // todo: this one as well
     switch (unit) {
       case 'ms':
       case 'millisecond':

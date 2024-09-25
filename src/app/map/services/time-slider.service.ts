@@ -3,7 +3,8 @@ import {MapLayer, TimeSliderConfiguration, TimeSliderLayerSource} from '../../sh
 import {TimeExtent} from '../interfaces/time-extent.interface';
 import {InvalidTimeSliderConfiguration} from '../../shared/errors/map.errors';
 import {TIME_SERVICE} from '../../app.module';
-import {DateUnit, TimeService} from '../../shared/interfaces/time-service.interface';
+import {TimeService} from '../../shared/interfaces/time-service.interface';
+import {DateUnit} from '../../shared/types/date-unit.type';
 
 @Injectable({
   providedIn: 'root',
@@ -14,8 +15,8 @@ export class TimeSliderService {
    * Creates an initial time extent based on the given time slider configuration.
    */
   public createInitialTimeSliderExtent(timeSliderConfig: TimeSliderConfiguration): TimeExtent {
-    const minimumDate: Date = this.timeService.getUTCDateFromString(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat);
-    const maximumDate: Date = this.timeService.getUTCDateFromString(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat);
+    const minimumDate: Date = this.timeService.createUTCDateFromString(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat);
+    const maximumDate: Date = this.timeService.createUTCDateFromString(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat);
     return {
       start: minimumDate,
       end: timeSliderConfig.range ? this.addRangeToDate(minimumDate, timeSliderConfig.range) : maximumDate,
@@ -50,7 +51,7 @@ export class TimeSliderService {
     const timeSliderLayerSource = timeSliderConfiguration.source as TimeSliderLayerSource;
     const timeSliderLayer = timeSliderLayerSource.layers.find((layer) => layer.layerName === mapLayer.layer);
     if (timeSliderLayer) {
-      const date = this.timeService.getUTCDateFromString(timeSliderLayer.date, timeSliderConfiguration.dateFormat);
+      const date = this.timeService.createUTCDateFromString(timeSliderLayer.date, timeSliderConfiguration.dateFormat);
       return date >= timeExtent.start && date < timeExtent.end;
     } else {
       return undefined;
@@ -128,8 +129,8 @@ export class TimeSliderService {
   }
 
   public isTimeExtentValid(timeSliderConfig: TimeSliderConfiguration, timeExtent: TimeExtent): boolean {
-    const minDate = this.timeService.getUTCDateFromString(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat);
-    const maxDate = this.timeService.getUTCDateFromString(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat);
+    const minDate = this.timeService.createUTCDateFromString(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat);
+    const maxDate = this.timeService.createUTCDateFromString(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat);
 
     const updatedTimeExtent: TimeExtent = this.createValidTimeExtent(timeSliderConfig, timeExtent, false, minDate, maxDate);
 
@@ -140,7 +141,7 @@ export class TimeSliderService {
    * Extracts a unit from the given date format (ISO8601) if it contains exactly one or <undefined> if it contains multiple units.
    *
    * @remarks
-   * It does return a unit ('years'/'months'/...) only if the given duration contains values of this unit and nothing else; <undefined>
+   * It does return a unit ('years'/'months'/...) only if the given range contains values of this unit and nothing else; <undefined>
    *   otherwise.
    *
    * @example
@@ -168,20 +169,20 @@ export class TimeSliderService {
    */
   private createStopsForLayerSource(timeSliderConfig: TimeSliderConfiguration): Array<Date> {
     const timeSliderLayerSource = timeSliderConfig.source as TimeSliderLayerSource;
-    return timeSliderLayerSource.layers.map((layer) => this.timeService.getUTCDateFromString(layer.date, timeSliderConfig.dateFormat));
+    return timeSliderLayerSource.layers.map((layer) => this.timeService.createUTCDateFromString(layer.date, timeSliderConfig.dateFormat));
   }
 
   /**
    * Creates stops for a parameter source.
    *
    * @remarks
-   * This is done by using a strict interval (e.g. one year) if the default range duration only contains
+   * This is done by using a strict interval (e.g. one year) if the default range only contains
    * a single type of unit (e.g. 'years'). Otherwise a more generic approach is used by creating date stops from
-   * start to finish using the given duration; this can lead to gaps near the end but supports all cases.
+   * start to finish using the given range; this can lead to gaps near the end but supports all cases.
    */
   private createStopsForParameterSource(timeSliderConfig: TimeSliderConfiguration): Array<Date> {
-    const minimumDate: Date = this.timeService.getUTCDateFromString(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat);
-    const maximumDate: Date = this.timeService.getUTCDateFromString(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat);
+    const minimumDate: Date = this.timeService.createUTCDateFromString(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat);
+    const maximumDate: Date = this.timeService.createUTCDateFromString(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat);
     const initialRange: string | null = timeSliderConfig.range ?? timeSliderConfig.minimalRange ?? null;
     if (
       initialRange &&
@@ -206,7 +207,7 @@ export class TimeSliderService {
       if (initialRange) {
         date = this.addRangeToDate(date, initialRange);
       } else if (unit) {
-        date = this.addMinimalDuration(date, unit);
+        date = this.addMinimalRange(date, unit);
       } else {
         throw new InvalidTimeSliderConfiguration('Datumsformat sowie minimale Range sind ungültig.');
       }
@@ -215,7 +216,7 @@ export class TimeSliderService {
     return dates;
   }
 
-  private addMinimalDuration(date: Date, unit: string): Date {
+  private addMinimalRange(date: Date, unit: string): Date {
     return this.timeService.addMinimalRangeToDate(date, unit);
   }
 

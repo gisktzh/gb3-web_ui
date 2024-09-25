@@ -173,11 +173,11 @@ export const activeMapItemFeature = createFeature({
     ),
     on(
       ActiveMapItemActions.replaceActiveMapItem,
-      produce((draft, {activeMapItem}) => {
-        const existing = draft.items.find((mapItem) => mapItem.id === activeMapItem.id);
+      produce((draft, {modifiedActiveMapItem}) => {
+        const existing = draft.items.find((mapItem) => mapItem.id === modifiedActiveMapItem.id);
         if (existing) {
           const index = draft.items.indexOf(existing);
-          draft.items.splice(index, 1, activeMapItem);
+          draft.items.splice(index, 1, modifiedActiveMapItem);
         }
       }),
     ),

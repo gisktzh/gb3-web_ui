@@ -11,7 +11,6 @@ getTestBed().initTestEnvironment(
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting([
     // we provide the time service here so it is the same as in the running app and we don't have to inject it in each test
-    // todo: add to documentation
     {
       provide: TIME_SERVICE,
       useFactory: timeServiceFactory,

@@ -582,7 +582,7 @@ describe('ActiveMapItemEffects', () => {
       expect(newAction).toBeUndefined();
     }));
 
-    it('sets the time extent and reevaluates all layer visibilities, dispatches replaceActiveMapItem', () => {
+    it('sets the time extent and reevaluates all layer visibilities, dispatches replaceActiveMapItem', (done: DoneFn) => {
       const timeExtent: TimeExtent = {
         start: new Date(2023, 0, 1),
         end: new Date(2023, 11, 31),
@@ -604,12 +604,13 @@ describe('ActiveMapItemEffects', () => {
           ],
         } as TimeSliderLayerSource,
       } as TimeSliderConfiguration;
+      mapMock.initialTimeSliderExtent = timeExtent;
       const activeMapItem = ActiveMapItemFactory.createGb2WmsMapItem(<Map>mapMock);
       store.overrideSelector(selectItems, [activeMapItem]);
 
       actions$ = of(ActiveMapItemActions.setTimeSliderExtent({timeExtent, activeMapItem}));
-
-      effects.setTimeSliderExtent$.subscribe((action) => {
+      const expectedAction = ActiveMapItemActions.replaceActiveMapItem({modifiedActiveMapItem: activeMapItem});
+      effects.setTimeSliderExtent$.subscribe(({modifiedActiveMapItem, type}) => {
         const expectedTimeExtent = timeExtent;
         const expectedLayers: Partial<MapLayer>[] = [
           {layer: 'layer01', visible: false},
@@ -617,10 +618,12 @@ describe('ActiveMapItemEffects', () => {
           {layer: 'layer03', visible: false},
         ];
 
-        expect(action).toEqual(ActiveMapItemActions.replaceActiveMapItem({activeMapItem: activeMapItem}));
-        expect(action.activeMapItem).toBeInstanceOf(Gb2WmsActiveMapItem);
-        expect((<Gb2WmsActiveMapItem>action.activeMapItem).settings.timeSliderExtent).toEqual(expectedTimeExtent);
-        expect((<Gb2WmsActiveMapItem>action.activeMapItem).settings.layers).toEqual(<MapLayer[]>expectedLayers);
+        expect(type).toEqual(expectedAction.type);
+        expect(modifiedActiveMapItem).toBeInstanceOf(Gb2WmsActiveMapItem);
+        expect((<Gb2WmsActiveMapItem>modifiedActiveMapItem).settings.timeSliderExtent).toEqual(expectedTimeExtent);
+        expect((<Gb2WmsActiveMapItem>modifiedActiveMapItem).settings.layers).toEqual(<MapLayer[]>expectedLayers);
+
+        done();
       });
     });
   });

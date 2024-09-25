@@ -354,7 +354,8 @@ export class FavouritesService implements OnDestroy {
       case 'layer': {
         const selectedYearExists = (timeSliderConfiguration.source as TimeSliderLayerSource).layers.some(
           (layer) =>
-            this.timeService.getUTCDateFromString(layer.date, timeSliderConfiguration.dateFormat).getTime() === timeExtent.start.getTime(),
+            this.timeService.createUTCDateFromString(layer.date, timeSliderConfiguration.dateFormat).getTime() ===
+            timeExtent.start.getTime(),
         );
         return selectedYearExists && isTimeExtentValid;
       }

@@ -9,7 +9,20 @@ export interface Topic {
   maps: Map[];
 }
 
-export interface Map extends HasOpacity {
+/**
+ * TimeSliderSettings are either or - they have either a config AND an extent, or neither.
+ */
+export type TimeSliderSettings =
+  | {
+      timeSliderConfiguration: TimeSliderConfiguration;
+      initialTimeSliderExtent: TimeExtent;
+    }
+  | {
+      timeSliderConfiguration: undefined;
+      initialTimeSliderExtent: undefined;
+    };
+
+interface BasicMap extends HasOpacity {
   /** Map identifier */
   id: string;
   /** Map title */
@@ -35,15 +48,14 @@ export interface Map extends HasOpacity {
   minScale: number | null;
   /** True if unaccessible with current permissions. Not available in production environment. */
   permissionMissing?: boolean;
-  /** Timeslider Settings */
-  timeSliderConfiguration?: TimeSliderConfiguration;
-  initialTimeSliderExtent?: TimeExtent;
   /** Filters Settings */
   filterConfigurations?: FilterConfiguration[];
   searchConfigurations?: SearchConfiguration[];
   /** Topic-specific notice for end-users */
   notice: string | null;
 }
+
+export type Map = BasicMap & TimeSliderSettings;
 
 export interface MapLayer extends HasVisibility, HasHidingState {
   /** Layer ID */

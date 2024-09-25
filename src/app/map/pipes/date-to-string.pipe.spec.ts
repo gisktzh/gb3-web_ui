@@ -13,7 +13,7 @@ describe('DateToStringPipe', () => {
     pipe = new DateToStringPipe(timeService);
   });
 
-  it('create an instance', () => {
+  it('creates an instance', () => {
     expect(pipe).toBeTruthy();
   });
 

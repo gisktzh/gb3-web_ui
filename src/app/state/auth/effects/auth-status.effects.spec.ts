@@ -78,8 +78,8 @@ describe('AuthStatusEffects', () => {
   describe('login$', () => {
     it('logins using the AuthService and stores the current map state into a share link item; dispatches no further actions', (done: DoneFn) => {
       const shareLinkItem: ShareLinkItem = ShareLinkItemTestUtils.createShareLinkItem(
-        timeService.getUTCDateFromString('1000'),
-        timeService.getUTCDateFromString('2020'),
+        timeService.createUTCDateFromString('1000'),
+        timeService.createUTCDateFromString('2020'),
       );
       const storageServiceSpy = spyOn(storageService, 'set');
       store.overrideSelector(selectCurrentShareLinkItem, shareLinkItem);
@@ -100,8 +100,8 @@ describe('AuthStatusEffects', () => {
   describe('logout$', () => {
     it('logouts using the AuthService and stores the current map state into a share link item; dispatches no further actions', (done: DoneFn) => {
       const shareLinkItem: ShareLinkItem = ShareLinkItemTestUtils.createShareLinkItem(
-        timeService.getUTCDateFromString('1000'),
-        timeService.getUTCDateFromString('2020'),
+        timeService.createUTCDateFromString('1000'),
+        timeService.createUTCDateFromString('2020'),
       );
       const storageServiceSpy = spyOn(storageService, 'set');
       store.overrideSelector(selectCurrentShareLinkItem, shareLinkItem);
@@ -126,8 +126,8 @@ describe('AuthStatusEffects', () => {
         'and loading an existing share link item from the session storage.',
       (done: DoneFn) => {
         const shareLinkItem: ShareLinkItem = ShareLinkItemTestUtils.createShareLinkItem(
-          timeService.getUTCDateFromString('1000'),
-          timeService.getUTCDateFromString('2020'),
+          timeService.createUTCDateFromString('1000'),
+          timeService.createUTCDateFromString('2020'),
         );
         const shareLinkItemString = JSON.stringify(shareLinkItem);
         const storageServiceGetSpy = spyOn(storageService, 'get').and.returnValue(shareLinkItemString);

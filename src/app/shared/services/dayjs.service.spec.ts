@@ -4,7 +4,6 @@ import {DayjsService} from './dayjs.service';
 
 describe('DayjsService', () => {
   let dayjsService: DayjsService;
-  // todo override
   beforeEach(() => {
     TestBed.configureTestingModule({providers: [{provide: TIME_SERVICE, useClass: DayjsService}]});
     dayjsService = TestBed.inject(TIME_SERVICE) as DayjsService;
@@ -16,11 +15,11 @@ describe('DayjsService', () => {
 
   describe('getDateFromString', () => {
     it('returns the date object from a string', () => {
-      expect(dayjsService.getDateFromString('2023-10-01')).toEqual(new Date(2023, 9, 1));
+      expect(dayjsService.createDateFromString('2023-10-01')).toEqual(new Date(2023, 9, 1));
     });
 
     it('returns the date object from a string with a format', () => {
-      expect(dayjsService.getDateFromString('2023-10-01', 'YYYY-MM-DD')).toEqual(new Date(2023, 9, 1));
+      expect(dayjsService.createDateFromString('2023-10-01', 'YYYY-MM-DD')).toEqual(new Date(2023, 9, 1));
     });
   });
 
@@ -42,14 +41,14 @@ describe('DayjsService', () => {
     it('returns the date object from a Unix timestamp', () => {
       const expectedDate = new Date(Date.UTC(2000, 0, 1));
       // 946684800 is the Unix timestamp for 2000-01-01T00:00:00.000Z (from https://timestampgenerator.com/946684800/+00:00)
-      expect(dayjsService.getDateFromUnixTimestamp(946684800).getTime()).toEqual(expectedDate.getTime());
+      expect(dayjsService.createDateFromUnixTimestamp(946684800).getTime()).toEqual(expectedDate.getTime());
     });
   });
 
   describe('getUTCDateFromString', () => {
     it('parses the UTC date from a string', () => {
-      expect(dayjsService.getUTCDateFromString('2023-10-01', 'YYYY-MM-DD')).toEqual(new Date(Date.UTC(2023, 9, 1)));
-      expect(dayjsService.getUTCDateFromString('2023-10-01')).toEqual(new Date(Date.UTC(2023, 9, 1)));
+      expect(dayjsService.createUTCDateFromString('2023-10-01', 'YYYY-MM-DD')).toEqual(new Date(Date.UTC(2023, 9, 1)));
+      expect(dayjsService.createUTCDateFromString('2023-10-01')).toEqual(new Date(Date.UTC(2023, 9, 1)));
     });
   });
 
@@ -86,8 +85,8 @@ describe('DayjsService', () => {
 
   describe('getPartial', () => {
     it('returns the correct partial value', () => {
-      expect(dayjsService.getPartialFromString('2023-10-01', 'years')).toBe(2023);
-      expect(dayjsService.getPartialFromString('2023-10-01', 'months')).toBe(9); // month is 0-indexed
+      expect(dayjsService.createPartialFromString('2023-10-01', 'years')).toBe(2023);
+      expect(dayjsService.createPartialFromString('2023-10-01', 'months')).toBe(9); // month is 0-indexed
     });
   });
 });

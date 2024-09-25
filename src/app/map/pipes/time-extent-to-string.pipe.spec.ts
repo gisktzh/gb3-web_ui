@@ -13,7 +13,7 @@ describe('TimeExtentToStringPipe', () => {
     timeService = TestBed.inject(TIME_SERVICE);
     pipe = new TimeExtentToStringPipe(timeService);
   });
-  it('create an instance', () => {
+  it('creates an instance', () => {
     expect(pipe).toBeTruthy();
   });
 

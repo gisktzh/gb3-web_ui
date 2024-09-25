@@ -95,8 +95,8 @@ export class Gb3ShareLinkService extends Gb3ApiService {
           attributeFilters: content.attributeFilters,
           timeExtent: content.timeExtent
             ? {
-                start: this.timeService.getUTCDateFromString(content.timeExtent.start),
-                end: this.timeService.getUTCDateFromString(content.timeExtent.end),
+                start: this.timeService.createUTCDateFromString(content.timeExtent.start),
+                end: this.timeService.createUTCDateFromString(content.timeExtent.end),
               }
             : undefined,
         };

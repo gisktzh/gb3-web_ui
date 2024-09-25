@@ -438,13 +438,13 @@ describe('ActiveMapItem Reducer', () => {
 
   describe('replaceActiveMapItem', () => {
     it('replaces the active map item correctly', () => {
-      const modifiedItem = structuredClone(activeMapItemsMock[1]);
+      const modifiedActiveMapItem = structuredClone(activeMapItemsMock[1]);
       const modifiedOpacity = activeMapItemsMock[1].opacity + 1337;
-      modifiedItem.opacity = modifiedOpacity;
+      modifiedActiveMapItem.opacity = modifiedOpacity;
 
       existingState.items = activeMapItemsMock;
 
-      const action = ActiveMapItemActions.replaceActiveMapItem({activeMapItem: modifiedItem});
+      const action = ActiveMapItemActions.replaceActiveMapItem({modifiedActiveMapItem});
       const state = reducer(existingState, action);
 
       expect((<Gb2WmsActiveMapItem>state.items[1]).opacity).toEqual(modifiedOpacity);

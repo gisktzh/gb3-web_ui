@@ -14,6 +14,7 @@ import {
   TimeSliderLayer,
   TimeSliderLayerSource,
   TimeSliderParameterSource,
+  TimeSliderSettings,
   TimeSliderSourceType,
   TopicsResponse,
   WmsFilterValue,
@@ -37,7 +38,6 @@ import {ConfigService} from '../../config.service';
 import {TIME_SERVICE} from '../../../../app.module';
 import {TimeService} from '../../../interfaces/time-service.interface';
 import {TimeSliderService} from '../../../../map/services/time-slider.service';
-import {TimeExtent} from '../../../../map/interfaces/time-extent.interface';
 
 const INACTIVE_STRING_FILTER_VALUE = '';
 const INACTIVE_NUMBER_FILTER_VALUE = -1;
@@ -236,12 +236,7 @@ export class Gb3TopicsService extends Gb3ApiService {
 
   private handleTimeSliderConfiguration(
     timesliderConfiguration: TopicsListData['categories'][0]['topics'][0]['timesliderConfiguration'] | undefined,
-  ):
-    | {
-        initialTimeSliderExtent: undefined;
-        timeSliderConfiguration: undefined;
-      }
-    | {initialTimeSliderExtent: TimeExtent; timeSliderConfiguration: TimeSliderConfiguration} {
+  ): TimeSliderSettings {
     if (!timesliderConfiguration) {
       return {
         timeSliderConfiguration: undefined,
