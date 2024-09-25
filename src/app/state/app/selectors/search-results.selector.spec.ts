@@ -210,6 +210,8 @@ describe('search-result selector', () => {
           layers: [],
           printTitle: '',
           opacity: 1,
+          timeSliderConfiguration: undefined,
+          initialTimeSliderExtent: undefined,
         },
         {
           // matching by title
@@ -226,6 +228,8 @@ describe('search-result selector', () => {
           layers: [],
           printTitle: '',
           opacity: 1,
+          timeSliderConfiguration: undefined,
+          initialTimeSliderExtent: undefined,
         },
         {
           // not matching
@@ -242,6 +246,8 @@ describe('search-result selector', () => {
           layers: [],
           printTitle: '',
           opacity: 1,
+          timeSliderConfiguration: undefined,
+          initialTimeSliderExtent: undefined,
         },
         {
           // matching by title and keywords
@@ -258,6 +264,8 @@ describe('search-result selector', () => {
           layers: [],
           printTitle: '',
           opacity: 1,
+          timeSliderConfiguration: undefined,
+          initialTimeSliderExtent: undefined,
         },
         {
           // partially matching by title
@@ -274,6 +282,8 @@ describe('search-result selector', () => {
           layers: [],
           printTitle: '',
           opacity: 1,
+          timeSliderConfiguration: undefined,
+          initialTimeSliderExtent: undefined,
         },
       ];
     }

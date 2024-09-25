@@ -103,6 +103,8 @@ describe('FavouritesService', () => {
           title: 'Fruchtfolgeflächen (FFF)',
           keywords: ['Fruchtfolgeflächen', '(FFF)', 'bvv', 'boden', 'TBAK2', 'fsla', 'fabo', 'vp', 'fap'],
           opacity: 1,
+          timeSliderConfiguration: undefined,
+          initialTimeSliderExtent: undefined,
           layers: [
             {
               id: 157886,
@@ -147,6 +149,8 @@ describe('FavouritesService', () => {
           title: 'Amtliche Vermessung in Farbe',
           keywords: ['Amtliche', 'Vermessung', 'in', 'Farbe', 'pk', 'Amtlichen Vermessung', 'AV'],
           opacity: 1,
+          timeSliderConfiguration: undefined,
+          initialTimeSliderExtent: undefined,
           layers: [
             {
               id: 151493,
@@ -312,6 +316,8 @@ describe('FavouritesService', () => {
           title: 'LiDAR-Befliegung 2021 ZH',
           keywords: ['LiDAR-Befliegung', '2021', 'ZH'],
           opacity: 1,
+          timeSliderConfiguration: undefined,
+          initialTimeSliderExtent: undefined,
           layers: [
             {
               id: 159533,
@@ -956,6 +962,10 @@ describe('FavouritesService', () => {
               layerIdentifiers: ['geb-alter_wohnen', 'geb-alter_grau', 'geb-alter_2'],
             },
           },
+          initialTimeSliderExtent: {
+            start: timeService.createUTCDateFromString('1000-01-01T00:00:00.000Z'),
+            end: timeService.createUTCDateFromString('2020-01-01T00:00:00.000Z'),
+          },
           filterConfigurations: [
             {
               name: 'Anzeigeoptionen nach Hauptnutzung',
@@ -1135,6 +1145,10 @@ describe('FavouritesService', () => {
               layerIdentifiers: ['geb-alter_wohnen', 'geb-alter_grau', 'geb-alter_2'],
             },
           },
+          initialTimeSliderExtent: {
+            start: timeService.createUTCDateFromString('1000-01-01T00:00:00.000Z'),
+            end: timeService.createUTCDateFromString('2020-01-01T00:00:00.000Z'),
+          },
           filterConfigurations: [
             {
               name: 'Anzeigeoptionen nach Hauptnutzung',
@@ -1294,6 +1308,10 @@ describe('FavouritesService', () => {
               layerIdentifiers: ['geb-alter_wohnen', 'geb-alter_grau', 'geb-alter_2'],
             },
           },
+          initialTimeSliderExtent: {
+            start: timeService.createUTCDateFromString('1000-01-01T00:00:00.000Z'),
+            end: timeService.createUTCDateFromString('2020-01-01T00:00:00.000Z'),
+          },
           filterConfigurations: [
             {
               name: 'Anzeigeoptionen nach Hauptnutzung',
@@ -1449,6 +1467,10 @@ describe('FavouritesService', () => {
               endRangeParameter: 'FILTER_BIS',
               layerIdentifiers: ['geb-alter_wohnen', 'geb-alter_grau', 'geb-alter_2'],
             },
+          },
+          initialTimeSliderExtent: {
+            start: timeService.createUTCDateFromString('1000-01-01T00:00:00.000Z'),
+            end: timeService.createUTCDateFromString('2020-01-01T00:00:00.000Z'),
           },
           filterConfigurations: [
             {
@@ -1606,6 +1628,10 @@ describe('FavouritesService', () => {
               layerIdentifiers: ['geb-alter_wohnen', 'geb-alter_grau', 'geb-alter_2'],
             },
           },
+          initialTimeSliderExtent: {
+            start: timeService.createUTCDateFromString('2020-01-01T00:00:00.000Z'),
+            end: timeService.createUTCDateFromString('1000-01-01T00:00:00.000Z'),
+          },
           filterConfigurations: [
             {
               name: 'Anzeigeoptionen nach Hauptnutzung',
@@ -1761,6 +1787,10 @@ describe('FavouritesService', () => {
               endRangeParameter: 'FILTER_BIS',
               layerIdentifiers: ['geb-alter_wohnen', 'geb-alter_grau', 'geb-alter_2'],
             },
+          },
+          initialTimeSliderExtent: {
+            start: timeService.createUTCDateFromString('1000-01-01T00:00:00.000Z'),
+            end: timeService.createUTCDateFromString('2020-01-01T00:00:00.000Z'),
           },
           filterConfigurations: [
             {
@@ -2035,6 +2065,10 @@ describe('FavouritesService', () => {
               ],
             },
           },
+          initialTimeSliderExtent: {
+            start: timeService.createUTCDateFromString('2016-01-01T00:00:00.000Z'),
+            end: timeService.createUTCDateFromString('2017-01-01T00:00:00.000Z'),
+          },
           filterConfigurations: undefined,
         },
       ];
@@ -2301,6 +2335,10 @@ describe('FavouritesService', () => {
                 },
               ],
             },
+          },
+          initialTimeSliderExtent: {
+            start: timeService.createUTCDateFromString('2014-01-01T00:00:00.000Z'),
+            end: timeService.createUTCDateFromString('2021-01-01T00:00:00.000Z'),
           },
           filterConfigurations: undefined,
         },
