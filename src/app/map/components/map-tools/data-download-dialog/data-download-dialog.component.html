@@ -6,15 +6,17 @@
     </button>
   </div>
   <div class="data-download-dialog__content" *ngIf="order">
-    <search
-      class="data-download-dialog__content__search"
-      placeholderText="Nach Geodaten filtern"
-      (changeSearchTermEvent)="setFilterTerm($event)"
-      (clearSearchTermEvent)="clearFilterTerm()"
-      (openFilterEvent)="openFilterWindow()"
-      [disabled]="savingState === 'loading'"
-      [isAnyFilterActive]="activeDataDownloadFiltersPerCategory.length > 0"
-    ></search>
+    <div>
+      <search
+        class="data-download-dialog__content__search"
+        placeholderText="Nach Geodaten filtern"
+        (changeSearchTermEvent)="setFilterTerm($event)"
+        (clearSearchTermEvent)="clearFilterTerm()"
+        (openFilterEvent)="openFilterWindow()"
+        [disabled]="savingState === 'loading'"
+        [isAnyFilterActive]="activeDataDownloadFiltersPerCategory.length > 0"
+      ></search>
+    </div>
 
     <div class="data-download-dialog__content__products">
       <expandable-list-item

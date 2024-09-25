@@ -31,6 +31,7 @@ import {effectErrorHandler} from './state/app/effects/effects-error-handler.effe
 import {EsriMapLoaderService} from './map/services/esri-services/esri-map-loader.service';
 import {MapLoaderService} from './map/interfaces/map-loader.service';
 import {DevModeBannerComponent} from './shared/components/dev-mode-banner/dev-mode-banner.component';
+import {SkipLinkComponent} from './shared/components/skip-link/skip-link.component';
 import {TimeService} from './shared/interfaces/time-service.interface';
 import {timeServiceFactory} from './shared/factories/time-service.factory';
 
@@ -58,6 +59,7 @@ export const TIME_SERVICE = new InjectionToken<TimeService>('TimeService');
     ErrorHandlingModule,
     StoreRouterConnectingModule.forRoot(),
     DevModeBannerComponent,
+    SkipLinkComponent,
   ],
   providers: [
     {provide: ErrorHandler, deps: [Router, ErrorHandlerService, EmbeddedErrorHandlerService], useFactory: errorHandlerServiceFactory},

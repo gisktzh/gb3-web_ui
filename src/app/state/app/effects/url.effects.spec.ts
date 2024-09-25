@@ -16,6 +16,7 @@ import {selectKeepTemporaryUrlParams, selectMainPage} from '../reducers/url.redu
 import {RouteParamConstants} from '../../../shared/constants/route-param.constants';
 import {SearchActions} from '../actions/search.actions';
 import {InitialMapExtentService} from '../../../map/services/initial-map-extent.service';
+import {LayerCatalogActions} from '../../map/actions/layer-catalog.actions';
 
 describe('UrlEffects', () => {
   let actions$: Observable<Action>;
@@ -268,11 +269,13 @@ describe('UrlEffects', () => {
       expect(routerSpy).not.toHaveBeenCalled();
     }));
   });
+
   describe('keepTemporaryUrlParameters$', () => {
     const actions = [
       {name: 'SearchActions.setSearchApiError', action: SearchActions.setSearchApiError},
       {name: 'SearchActions.handleEmptyResultsFromUrlSearch', action: SearchActions.handleEmptyResultsFromUrlSearch},
       {name: 'SearchActions.handleInvalidParameters', action: SearchActions.handleInvalidParameters},
+      {name: 'LayerCatalogActions.setInitialMapsError', action: LayerCatalogActions.setInitialMapsError},
     ];
     actions.forEach(({name, action}) => {
       it(`dispatches UrlActions.keepTemporaryUrlParameters when ${name} is triggered`, () => {

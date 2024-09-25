@@ -54,6 +54,14 @@
     },
     {
       "matchManagers": ["npm"],
+      "matchPackageNames": ["zone.js"],
+      "matchUpdateTypes": ["minor"],
+      "automerge": false,
+      "autoApprove": false,
+      "description": "There are breaking changes for zone.js with updates on minor level. Therefore, this rule prevents automerge and autoApprove for this update type."
+    },
+    {
+      "matchManagers": ["npm"],
       "matchPackageNames": ["prettier"],
       "matchUpdateTypes": ["major", "minor"],
       "prBodyNotes": [

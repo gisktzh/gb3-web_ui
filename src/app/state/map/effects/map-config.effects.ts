@@ -11,6 +11,7 @@ import {UrlActions} from '../../app/actions/url.actions';
 import {Store} from '@ngrx/store';
 import {SearchActions} from '../../app/actions/search.actions';
 import {InitialMapExtentService} from '../../../map/services/initial-map-extent.service';
+import {MapDrawingService} from '../../../map/services/map-drawing.service';
 
 @Injectable()
 export class MapConfigEffects {
@@ -48,12 +49,13 @@ export class MapConfigEffects {
     {dispatch: false},
   );
 
-  public setCenterOnMap$ = createEffect(
+  public setMapCenterAndDrawHighlight$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(MapConfigActions.setMapCenter),
+        ofType(MapConfigActions.setMapCenterAndDrawHighlight),
         tap(({center}) => {
           this.mapService.setMapCenter(center);
+          this.mapDrawingService.drawSearchResultHighlight(center);
         }),
       );
     },
@@ -62,7 +64,12 @@ export class MapConfigEffects {
 
   public updateMapPageQueryParams$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(MapConfigActions.setMapCenter, MapConfigActions.setScale, MapConfigActions.setBasemap, MapConfigActions.setMapExtent),
+      ofType(
+        MapConfigActions.setMapCenterAndDrawHighlight,
+        MapConfigActions.setScale,
+        MapConfigActions.setBasemap,
+        MapConfigActions.setMapExtent,
+      ),
       concatLatestFrom(() => this.store.select(selectMapConfigParams)),
       map(([_, params]) => UrlActions.setMapPageParams({params})),
     );
@@ -90,5 +97,6 @@ export class MapConfigEffects {
     @Inject(MAP_SERVICE) private readonly mapService: MapService,
     private readonly store: Store,
     private readonly initialMapExtentService: InitialMapExtentService,
+    private readonly mapDrawingService: MapDrawingService,
   ) {}
 }

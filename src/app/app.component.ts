@@ -1,5 +1,5 @@
 import {BreakpointObserver} from '@angular/cdk/layout';
-import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
+import {Component, ElementRef, HostListener, OnDestroy, OnInit, QueryList, Renderer2, ViewChildren} from '@angular/core';
 import {MatSnackBar, MatSnackBarRef} from '@angular/material/snack-bar';
 import {Store} from '@ngrx/store';
 import {filter, Subscription, take, tap} from 'rxjs';
@@ -18,6 +18,9 @@ import {selectUrlState} from './state/app/reducers/url.reducer';
 import {selectMapUiState} from './state/map/reducers/map-ui.reducer';
 import {MapUiState} from './state/map/states/map-ui.state';
 import {selectDevMode} from './state/app/reducers/app.reducer';
+import {SkipLink} from './shared/types/skip-link.type';
+import {SkipLinkConstants} from './shared/constants/skip-link.constants';
+import {SkipLinkTemplateVariable} from './shared/enums/skip-link-template-variable.enum';
 
 @Component({
   selector: 'app-root',
@@ -25,12 +28,16 @@ import {selectDevMode} from './state/app/reducers/app.reducer';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit, OnDestroy {
-  public screenMode: ScreenMode = 'regular';
-  public mapUiState?: MapUiState;
-  public isHeadlessPage: boolean = false;
-  public isSimplifiedPage: boolean = false;
-  public scrollbarWidth?: number;
-  public isDevModeActive: boolean = false;
+  @ViewChildren(Object.values(SkipLinkTemplateVariable).join(', '), {read: ElementRef}) private readonly elements!: QueryList<ElementRef>;
+
+  protected screenMode: ScreenMode = 'regular';
+  protected mapUiState?: MapUiState;
+  protected isHeadlessPage: boolean = false;
+  protected isSimplifiedPage: boolean = false;
+  protected scrollbarWidth?: number;
+  protected isDevModeActive: boolean = false;
+  protected readonly skipLinks: SkipLink[] = SkipLinkConstants.skipLinks;
+  protected readonly templateVariable = SkipLinkTemplateVariable;
 
   private snackBarRef?: MatSnackBarRef<PageNotificationComponent>;
   private readonly urlState$ = this.store.select(selectUrlState);
@@ -47,6 +54,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly pageNotificationService: PageNotificationService,
     private readonly store: Store,
     private readonly iconsService: IconsService,
+    private readonly renderer: Renderer2,
   ) {
     this.iconsService.initIcons();
   }
@@ -57,6 +65,14 @@ export class AppComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
+  }
+
+  public skipToDomElement(elementId: string): void {
+    const element = this.elements.find((el) => el.nativeElement.id === elementId);
+    if (element) {
+      this.renderer.setAttribute(element.nativeElement, 'tabindex', '-1');
+      element.nativeElement.focus();
+    }
   }
 
   @HostListener('document:click', ['$event'])
