@@ -2,6 +2,7 @@ import {HasVisibility} from '../../map/interfaces/has-visibility.interface';
 import {HasHidingState} from './has-hiding-state.interface';
 import {HasActiveState} from './has-active-state.interface';
 import {HasOpacity} from '../../map/interfaces/has-opacity.interface';
+import {TimeExtent} from '../../map/interfaces/time-extent.interface';
 
 export interface Topic {
   title: string;
@@ -36,6 +37,7 @@ export interface Map extends HasOpacity {
   permissionMissing?: boolean;
   /** Timeslider Settings */
   timeSliderConfiguration?: TimeSliderConfiguration;
+  initialTimeSliderExtent?: TimeExtent;
   /** Filters Settings */
   filterConfigurations?: FilterConfiguration[];
   searchConfigurations?: SearchConfiguration[];

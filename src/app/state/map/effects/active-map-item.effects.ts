@@ -26,6 +26,7 @@ import {DrawingActiveMapItem} from '../../../map/models/implementations/drawing.
 import {DrawingActions} from '../actions/drawing.actions';
 import {LayerCatalogActions} from '../actions/layer-catalog.actions';
 import {SearchActions} from '../../app/actions/search.actions';
+import {TimeSliderService} from '../../../map/services/time-slider.service';
 
 @Injectable()
 export class ActiveMapItemEffects {
@@ -354,11 +355,45 @@ export class ActiveMapItemEffects {
     );
   });
 
+  public setTimeSliderExtent$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ActiveMapItemActions.setTimeSliderExtent),
+      concatLatestFrom(() => this.store.select(selectItems)),
+      map(([{activeMapItem, timeExtent}, activeMapItems]) => {
+        const existingMapItem = activeMapItems
+          .filter(isActiveMapItemOfType(Gb2WmsActiveMapItem))
+          .find((mapItem) => mapItem.id === activeMapItem.id);
+
+        if (!existingMapItem) {
+          return undefined;
+        }
+        const clonedMapItem = structuredClone(existingMapItem);
+
+        clonedMapItem.settings.timeSliderExtent = timeExtent;
+        clonedMapItem.settings.layers.forEach((layer) => {
+          const isVisible = this.timeSliderService.isLayerVisible(
+            layer,
+            existingMapItem.settings.timeSliderConfiguration,
+            existingMapItem.settings.timeSliderExtent,
+          );
+          if (isVisible !== undefined) {
+            layer.visible = isVisible;
+          }
+        });
+
+        return clonedMapItem;
+      }),
+      filter((a) => a !== undefined),
+      map((a) => ActiveMapItemActions.replaceActiveMapItem({activeMapItem: a})),
+    );
+  });
+
   constructor(
     private readonly actions$: Actions,
     @Inject(MAP_SERVICE) private readonly mapService: MapService,
     private readonly gb3TopicsService: Gb3TopicsService,
     private readonly store: Store,
     private readonly configService: ConfigService,
+    private readonly timeSliderService: TimeSliderService,
   ) {}
 }

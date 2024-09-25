@@ -1,7 +1,13 @@
 import {Injectable} from '@angular/core';
 import {DateUnit, TimeService} from '../interfaces/time-service.interface';
 import dayjs, {ManipulateType} from 'dayjs';
-import {Duration} from 'dayjs/plugin/duration';
+import duration, {Duration} from 'dayjs/plugin/duration';
+import utc from 'dayjs/plugin/utc';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+
+dayjs.extend(duration);
+dayjs.extend(customParseFormat);
+dayjs.extend(utc);
 
 @Injectable({
   providedIn: 'root',

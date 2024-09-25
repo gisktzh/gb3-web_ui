@@ -22,8 +22,7 @@ export class Gb2WmsSettings extends AbstractActiveMapItemSettings {
     this.layers = layer ? [layer] : map.layers;
     this.timeSliderConfiguration = map.timeSliderConfiguration;
     if (map.timeSliderConfiguration) {
-      //this.timeSliderExtent = timeExtent ?? TimeSliderService.createInitialTimeSliderExtent(map.timeSliderConfiguration); // todo: solve
-      //this.timeSliderExtent = timeExtent ?? TimeSliderService.createInitialTimeSliderExtent(map.timeSliderConfiguration);
+      this.timeSliderExtent = timeExtent ?? map.initialTimeSliderExtent;
     }
     this.filterConfigurations = filterConfigurations ?? map.filterConfigurations;
     this.searchConfigurations = map.searchConfigurations;

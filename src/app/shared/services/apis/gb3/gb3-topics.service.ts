@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {forkJoin, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {DataCataloguePage} from '../../../enums/data-catalogue-page.enum';
@@ -10,6 +10,7 @@ import {
   FilterValue,
   Map,
   MapLayer,
+  TimeSliderConfiguration,
   TimeSliderLayer,
   TimeSliderLayerSource,
   TimeSliderParameterSource,
@@ -31,6 +32,12 @@ import {QueryTopic} from '../../../interfaces/query-topic.interface';
 import {ApiGeojsonGeometryToGb3ConverterUtils} from '../../../utils/api-geojson-geometry-to-gb3-converter.utils';
 import {LinkObject} from '../../../interfaces/link-object.interface';
 import {GeometryWithSrs} from '../../../interfaces/geojson-types-with-srs.interface';
+import {HttpClient} from '@angular/common/http';
+import {ConfigService} from '../../config.service';
+import {TIME_SERVICE} from '../../../../app.module';
+import {TimeService} from '../../../interfaces/time-service.interface';
+import {TimeSliderService} from '../../../../map/services/time-slider.service';
+import {TimeExtent} from '../../../../map/interfaces/time-extent.interface';
 
 const INACTIVE_STRING_FILTER_VALUE = '';
 const INACTIVE_NUMBER_FILTER_VALUE = -1;
@@ -43,6 +50,15 @@ export class Gb3TopicsService extends Gb3ApiService {
   private readonly staticFilesUrl = this.configService.apiConfig.gb2StaticFiles.baseUrl;
   private readonly dataDatasetTabUrl = `/${MainPage.Data}/${DataCataloguePage.Datasets}`;
   private readonly dataMapTabUrl = `/${MainPage.Data}/${DataCataloguePage.Maps}`;
+
+  constructor(
+    httpClient: HttpClient,
+    configService: ConfigService,
+    @Inject(TIME_SERVICE) timeService: TimeService,
+    private readonly timeSliderService: TimeSliderService,
+  ) {
+    super(httpClient, configService, timeService);
+  }
 
   public loadTopics(): Observable<TopicsResponse> {
     const requestUrl = this.createTopicsUrl();
@@ -187,23 +203,7 @@ export class Gb3TopicsService extends Gb3ApiService {
                   )
                   .reverse(), // reverse the order of the layers because the order in the GB3 interfaces (Topic, ActiveMapItem) is inverted
                 // to the order of the WMS specifications
-                timeSliderConfiguration: topic.timesliderConfiguration
-                  ? {
-                      name: topic.timesliderConfiguration.name,
-                      alwaysMaxRange: topic.timesliderConfiguration.alwaysMaxRange,
-                      dateFormat: topic.timesliderConfiguration.dateFormat,
-                      description: topic.timesliderConfiguration.description,
-                      maximumDate: topic.timesliderConfiguration.maximumDate,
-                      minimumDate: topic.timesliderConfiguration.minimumDate,
-                      minimalRange: topic.timesliderConfiguration.minimalRange,
-                      range: topic.timesliderConfiguration.range,
-                      sourceType: topic.timesliderConfiguration.sourceType as TimeSliderSourceType,
-                      source: this.transformTimeSliderConfigurationSource(
-                        topic.timesliderConfiguration.source,
-                        topic.timesliderConfiguration.sourceType,
-                      ),
-                    }
-                  : undefined,
+                ...this.handleTimeSliderConfiguration(topic.timesliderConfiguration),
                 filterConfigurations: topic.filterConfigurations?.map((filterConfiguration): FilterConfiguration => {
                   return {
                     name: filterConfiguration.name,
@@ -232,6 +232,38 @@ export class Gb3TopicsService extends Gb3ApiService {
       });
     });
     return topicsResponse;
+  }
+
+  private handleTimeSliderConfiguration(
+    timesliderConfiguration: TopicsListData['categories'][0]['topics'][0]['timesliderConfiguration'] | undefined,
+  ):
+    | {
+        initialTimeSliderExtent: undefined;
+        timeSliderConfiguration: undefined;
+      }
+    | {initialTimeSliderExtent: TimeExtent; timeSliderConfiguration: TimeSliderConfiguration} {
+    if (!timesliderConfiguration) {
+      return {
+        timeSliderConfiguration: undefined,
+        initialTimeSliderExtent: undefined,
+      };
+    }
+    const config: TimeSliderConfiguration = {
+      name: timesliderConfiguration.name,
+      alwaysMaxRange: timesliderConfiguration.alwaysMaxRange,
+      dateFormat: timesliderConfiguration.dateFormat,
+      description: timesliderConfiguration.description,
+      maximumDate: timesliderConfiguration.maximumDate,
+      minimumDate: timesliderConfiguration.minimumDate,
+      minimalRange: timesliderConfiguration.minimalRange,
+      range: timesliderConfiguration.range,
+      sourceType: timesliderConfiguration.sourceType as TimeSliderSourceType,
+      source: this.transformTimeSliderConfigurationSource(timesliderConfiguration.source, timesliderConfiguration.sourceType),
+    };
+    return {
+      timeSliderConfiguration: config,
+      initialTimeSliderExtent: this.timeSliderService.createInitialTimeSliderExtent(config),
+    };
   }
 
   private transformTimeSliderConfigurationSource(
