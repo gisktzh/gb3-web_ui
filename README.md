@@ -12,6 +12,7 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 > 6. [Code documentation](#code-documentation)
 > 7. [Git conventions](#git-conventions)
 > 8. [Release management](#release-management)
+> 9. [Contributors](#contributors)
 
 ## Node version
 
@@ -626,38 +627,22 @@ There are the following branches:
 
 ## Release management
 
-This section gives a brief overview of the release process and how to publish it.
+This is still WIP after our move from Azure DevOps to GitHub.
 
-### Azure Devops
+## Contributors
 
-#### 1. Create a changelog file anywhere
+<img src="./.readme/are.png" width="250" />
 
-It will be used later within a Teams announcement.
+The project was developed for the [Amt für Raumentwicklung - Abteilung Geoinformation](https://gis.zh.ch) of the Canton of Zurich.
 
-#### 2. Frontend
+<img src="./.readme/ebp.png" width="150"/>
 
-1. Create a pull request in `gb3-frontend` from `develop` to `main` with the title **_Release_**
-2. Click on **Add commit message** and remove any line that does **not** start with `Merged PR XXXXX:` \
-   This has the effect that only a few lines remain containing a good summary of the release.
-3. Remove the `Merged PR XXXXX:` from the beginning of each line - only the PR titles should remain. Add them to the changelog.
-4. Finish creating the PR by clicking on **Create** - no need to add any reviewers.
-5. Wait until the required checks succeed and then merge the PR.
+It has been initially developed by [EBP Schweiz AG](https://ebp.ch) as a closed-source project and has been made open-source in 2024 after the first production release. EBP is still actively contributing and maintaining the project.
 
-#### 3. All other repositories
+### Individual contributors
 
-1. Check if all required features are merged back to `main`
-2. Copy all PR titles and add them to the changelog.
+The following people have contributed to this project:
 
-#### 4. Create a release using the release pipeline '_Code Mirroring_'
-
-1. Click on **Create release**
-2. Add the changelog from above to the `Release description` field.
-3. Start the release by clicking **Create**
-
-#### 5. Publish the changelog
-
-1. Open Teams and go to the GB3 **Allgemein** channel
-2. Click on **Einen Beitrag starten**
-3. Change the type of article by choosing **Ankündigung** (left of **Veröffentlichen**)
-4. Enter the release title as _Überschrift_. E.g. `Release 42`
-5. Add the changelog from above as text and slightly format it. Use previous changelogs as styleguide.
+<a href="https://github.com/gisktzh/gb3-web_ui/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=gisktzh/gb3-web_ui" />
+</a>
