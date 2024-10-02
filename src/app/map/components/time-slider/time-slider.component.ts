@@ -1,19 +1,17 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Inject, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {TimeExtent} from '../../interfaces/time-extent.interface';
 import {TimeSliderConfiguration, TimeSliderLayerSource} from '../../../shared/interfaces/topic.interface';
-import dayjs, {ManipulateType} from 'dayjs';
 import {TimeSliderService} from '../../services/time-slider.service';
-import {TimeExtentUtils} from '../../../shared/utils/time-extent.utils';
-import duration from 'dayjs/plugin/duration';
 import {MatDatepicker} from '@angular/material/datepicker';
-
-dayjs.extend(duration);
+import {TIME_SERVICE} from '../../../app.module';
+import {TimeService} from '../../../shared/interfaces/time-service.interface';
+import {DateUnit} from '../../../shared/types/date-unit.type';
 
 // There is an array (`allowedDatePickerManipulationUnits`) and a new union type (`DatePickerManipulationUnits`) for two reasons:
 // To be able to extract a union type subset of `ManipulateType` AND to have an array used to check if a given value is in said union type.
 // => more infos: https://stackoverflow.com/questions/50085494/how-to-check-if-a-given-value-is-in-a-union-type-array
 const allowedDatePickerManipulationUnits = ['years', 'months', 'days'] as const; // TS3.4 syntax
-type DatePickerManipulationUnits = Extract<ManipulateType, (typeof allowedDatePickerManipulationUnits)[number]>;
+type DatePickerManipulationUnits = Extract<DateUnit, (typeof allowedDatePickerManipulationUnits)[number]>;
 type DatePickerStartView = 'month' | 'year' | 'multi-year';
 
 @Component({
@@ -47,7 +45,10 @@ export class TimeSliderComponent implements OnInit, OnChanges {
   public datePickerStartView: DatePickerStartView = 'month';
   private datePickerUnit: DatePickerManipulationUnits = 'days';
 
-  constructor(private readonly timeSliderService: TimeSliderService) {}
+  constructor(
+    private readonly timeSliderService: TimeSliderService,
+    @Inject(TIME_SERVICE) private readonly timeService: TimeService,
+  ) {}
 
   public ngOnInit() {
     this.availableDates = this.timeSliderService.createStops(this.timeSliderConfiguration);
@@ -57,7 +58,7 @@ export class TimeSliderComponent implements OnInit, OnChanges {
     this.timeExtentDisplay = {start: this.initialTimeExtent.start, end: this.initialTimeExtent.end};
     this.firstSliderPosition = this.findPositionOfDate(this.timeExtent.start) ?? 0;
     this.secondSliderPosition = this.timeSliderConfiguration.range ? undefined : this.findPositionOfDate(this.timeExtent.end);
-    this.hasSimpleCurrentValue = this.isRangeExactlyOneOfSingleTimeUnit(this.timeSliderConfiguration.range);
+    this.hasSimpleCurrentValue = this.isStringSingleTimeUnitRange(this.timeSliderConfiguration.range);
 
     // date picker
     this.hasDatePicker = this.isRangeContinuousWithinAllowedTimeUnits(this.timeSliderConfiguration);
@@ -101,19 +102,19 @@ export class TimeSliderComponent implements OnInit, OnChanges {
 
     // correct the thumb that was modified with the calculated time extent if necessary (e.g. enforcing a minimal range)
     const hasStartTimeBeenCorrected =
-      TimeExtentUtils.calculateDifferenceBetweenDates(newValidatedTimeExtent.start, newTimeExtent.start) > 0;
+      this.timeService.calculateDifferenceBetweenDates(newValidatedTimeExtent.start, newTimeExtent.start) > 0;
     if (hasStartTimeBeenCorrected) {
       this.firstSliderPosition = this.findPositionOfDate(newValidatedTimeExtent.start) ?? 0;
     }
-    const hasEndTimeBeenCorrected = TimeExtentUtils.calculateDifferenceBetweenDates(newValidatedTimeExtent.end, newTimeExtent.end) > 0;
+    const hasEndTimeBeenCorrected = this.timeService.calculateDifferenceBetweenDates(newValidatedTimeExtent.end, newTimeExtent.end) > 0;
     if (!this.timeSliderConfiguration.range && hasEndTimeBeenCorrected) {
       this.secondSliderPosition = this.findPositionOfDate(newValidatedTimeExtent.end) ?? 0;
     }
 
     // overwrite the current time extent and trigger the corresponding event if the new validated time extent is different from the previous one
     if (
-      TimeExtentUtils.calculateDifferenceBetweenDates(this.timeExtent.start, newValidatedTimeExtent.start) > 0 ||
-      TimeExtentUtils.calculateDifferenceBetweenDates(this.timeExtent.end, newValidatedTimeExtent.end) > 0
+      this.timeService.calculateDifferenceBetweenDates(this.timeExtent.start, newValidatedTimeExtent.start) > 0 ||
+      this.timeService.calculateDifferenceBetweenDates(this.timeExtent.end, newValidatedTimeExtent.end) > 0
     ) {
       this.timeExtent = newValidatedTimeExtent;
       this.changeTimeExtentEvent.emit(this.timeExtent);
@@ -145,8 +146,12 @@ export class TimeSliderComponent implements OnInit, OnChanges {
     if (eventDate === null) {
       return;
     }
+
     // format the given event date to the configured time format and back to ensure that it is a valid date within the current available dates
-    const date = dayjs(dayjs(eventDate).format(this.timeSliderConfiguration.dateFormat), this.timeSliderConfiguration.dateFormat).toDate();
+    const date = this.timeService.createDateFromString(
+      this.timeService.getDateAsFormattedString(eventDate, this.timeSliderConfiguration.dateFormat),
+      this.timeSliderConfiguration.dateFormat,
+    );
     const position = this.findPositionOfDate(date);
     if (position !== undefined) {
       if (changedMinimumDate) {
@@ -158,23 +163,8 @@ export class TimeSliderComponent implements OnInit, OnChanges {
     }
   }
 
-  /**
-   * Returns `true` if the given range is defined and is exactly one of a single time unit (year, month, ...).
-   * If the optional parameter `allowedTimeUnits` is given then only the units in there are allowed; all other return `false` as well.
-   * @param range The range (in ISO-8601 time span format) to be evaluated
-   *
-   * @example
-   * `P1Y1M` is a duration of one year AND one month which is more than one time unit; therefore is the result `false`
-   * `P2Y` is a duration of two years which is more than one of a single time unit; therefore is the result `false`
-   * `P1D` is a duration of one day which is exactly one of a single time unit; therefore the result is `true`
-   */
-  private isRangeExactlyOneOfSingleTimeUnit(range: string | null | undefined): boolean {
-    if (range) {
-      const rangeDuration = dayjs.duration(range);
-      const unit = TimeExtentUtils.extractUniqueUnitFromDuration(rangeDuration);
-      return unit !== undefined && TimeExtentUtils.getDurationAsNumber(rangeDuration, unit) === 1;
-    }
-    return false;
+  private isStringSingleTimeUnitRange(range: string | null | undefined): boolean {
+    return range ? this.timeService.isStringSingleTimeUnitRange(range) : false;
   }
 
   /**
@@ -201,7 +191,7 @@ export class TimeSliderComponent implements OnInit, OnChanges {
   }
 
   private extractUniqueDatePickerUnitFromDateFormat(dateFormat: string): DatePickerManipulationUnits | undefined {
-    const unit = TimeExtentUtils.extractUniqueUnitFromDateFormat(dateFormat);
+    const unit = this.timeSliderService.extractUniqueUnitFromDateFormat(dateFormat);
     if (unit !== undefined && allowedDatePickerManipulationUnits.some((allowedUnit) => allowedUnit === unit)) {
       return unit as DatePickerManipulationUnits;
     }
@@ -209,7 +199,9 @@ export class TimeSliderComponent implements OnInit, OnChanges {
   }
 
   private isLayerSourceContinuous(layerSource: TimeSliderLayerSource, unit: DatePickerManipulationUnits): boolean {
-    const dateAsAscendingSortedNumbers = layerSource.layers.map((layer) => dayjs(layer.date, unit).get(unit)).sort((a, b) => a - b);
+    const dateAsAscendingSortedNumbers = layerSource.layers
+      .map((layer) => this.timeService.createPartialFromString(layer.date, unit))
+      .sort((a, b) => a - b);
     // all date numbers must be part of a continuous and strictly monotonously rising series each with exactly
     // one step between them: `date[0] = x` => `date[n] = x + n`
     return !dateAsAscendingSortedNumbers.some((dateAsNumber, index) => dateAsNumber !== dateAsAscendingSortedNumbers[0] + index);
@@ -217,7 +209,7 @@ export class TimeSliderComponent implements OnInit, OnChanges {
 
   private findPositionOfDate(date: Date): number | undefined {
     const index = this.availableDates.findIndex(
-      (availableDate) => TimeExtentUtils.calculateDifferenceBetweenDates(availableDate, date) === 0,
+      (availableDate) => this.timeService.calculateDifferenceBetweenDates(availableDate, date) === 0,
     );
     return index === -1 ? undefined : index;
   }

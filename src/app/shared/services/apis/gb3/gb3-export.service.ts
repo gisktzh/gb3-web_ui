@@ -6,6 +6,8 @@ import {ConfigService} from '../../config.service';
 import {map} from 'rxjs/operators';
 import {ExportFormat} from '../../../enums/export-format.enum';
 import {FileDownloadService} from '../../file-download-service';
+import {TIME_SERVICE} from '../../../../app.module';
+import {TimeService} from 'src/app/shared/interfaces/time-service.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -16,9 +18,10 @@ export class Gb3ExportService extends Gb3ApiService {
   constructor(
     @Inject(HttpClient) http: HttpClient,
     @Inject(ConfigService) configService: ConfigService,
+    @Inject(TIME_SERVICE) timeService: TimeService,
     private readonly fileDownloadService: FileDownloadService,
   ) {
-    super(http, configService);
+    super(http, configService, timeService);
   }
 
   public exportDrawing(exportFormat: ExportFormat, drawings: Gb3VectorLayer) {

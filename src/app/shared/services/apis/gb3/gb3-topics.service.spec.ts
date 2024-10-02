@@ -171,6 +171,10 @@ describe('Gb3TopicsService', () => {
                   alwaysMaxRange: false,
                   range: undefined,
                 },
+                initialTimeSliderExtent: {
+                  start: new Date('1850'),
+                  end: new Date('2020'),
+                },
                 filterConfigurations: [
                   {
                     name: 'Anzeigeoptionen nach Hauptnutzung',

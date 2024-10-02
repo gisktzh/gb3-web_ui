@@ -1,14 +1,23 @@
 import {DateToStringPipe} from './date-to-string.pipe';
+import {TestBed} from '@angular/core/testing';
+import {TIME_SERVICE} from '../../app.module';
+import {TimeService} from '../../shared/interfaces/time-service.interface';
 
 describe('DateToStringPipe', () => {
-  it('create an instance', () => {
-    const pipe = new DateToStringPipe();
+  let pipe: DateToStringPipe;
+  let timeService: TimeService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+    timeService = TestBed.inject(TIME_SERVICE);
+    pipe = new DateToStringPipe(timeService);
+  });
+
+  it('creates an instance', () => {
     expect(pipe).toBeTruthy();
   });
 
   it('formats a defined date', () => {
-    const pipe = new DateToStringPipe();
-
     const date = new Date(2023, 1, 3); // monthIndex + 1 === month
     const dateFormat = 'YYYY-MM-DD';
 
@@ -19,8 +28,6 @@ describe('DateToStringPipe', () => {
   });
 
   it('formats an undefined date', () => {
-    const pipe = new DateToStringPipe();
-
     const date = undefined;
     const dateFormat = 'YYYY-MM-DD';
 

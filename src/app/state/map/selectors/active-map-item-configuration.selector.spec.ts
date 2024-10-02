@@ -1,5 +1,4 @@
 import {selectActiveMapItemConfigurations} from './active-map-item-configuration.selector';
-import {TimeExtentUtils} from '../../../shared/utils/time-extent.utils';
 import {ActiveMapItemConfiguration} from '../../../shared/interfaces/active-map-item-configuration.interface';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 import {Map} from '../../../shared/interfaces/topic.interface';
@@ -30,10 +29,7 @@ describe('selectActiveMapItemConfiguration', () => {
       undefined,
       true,
       0.71,
-      {
-        start: TimeExtentUtils.parseDefaultUTCDate('1000-01-01T00:00:00.000Z'),
-        end: TimeExtentUtils.parseDefaultUTCDate('2020-01-01T00:00:00.000Z'),
-      },
+      undefined,
       [
         {
           parameter: 'FILTER_GEBART',
@@ -89,10 +85,7 @@ describe('selectActiveMapItemConfiguration', () => {
             ],
           },
         ],
-        timeExtent: {
-          start: TimeExtentUtils.parseDefaultUTCDate('1000-01-01T00:00:00.000Z'),
-          end: TimeExtentUtils.parseDefaultUTCDate('2020-01-01T00:00:00.000Z'),
-        },
+        timeExtent: undefined,
       },
     ];
 

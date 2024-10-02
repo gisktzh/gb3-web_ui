@@ -171,6 +171,7 @@ match. This is because there are times when you _might_ want to deviate from the
 > 9. [Application Initialization based on share link](#application-initialization-based-on-share-link)
 > 10. [Adding new NPM packages](#adding-new-npm-packages)
 > 11. [Feature flags](#feature-flags)
+> 12. [Handling of date objects](#handling-of-date-objects)
 
 ### The `ActiveMapItem` class
 
@@ -600,6 +601,12 @@ Feature flags can be used to toggle features throughout the application. They wo
 - Each runtime configuration might specify overrides for the default values; they are then injected via the `ConfigService`.
 - The `FeatureFlagsService` and its `getFeatureFlag` method is used to access the feature flags.
 - For convenience, the `FeatureFlagDirective` can be used to toggle elements based on a feature flag.
+
+### Handling of date objects
+
+Currently, we are using [dayjs](https://day.js.org/) to handle date objects. In order to have a high degree of abstraction and to be able to easily replace the library (i.e. using native Javascript features like `Intl`),
+all date handlings are done via the `TimeService` interface, which is implemented as e.g. the `DayjsService`. Currently, the actual implementation is injected via the `timeServiceFactory`; and as a convenience, this is also
+added in `test.ts` so it does not have to be provided for each and every test.
 
 ## Git conventions
 
