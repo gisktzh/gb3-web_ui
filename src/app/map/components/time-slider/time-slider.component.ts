@@ -11,7 +11,7 @@ import {DateUnit} from '../../../shared/types/date-unit.type';
 // To be able to extract a union type subset of `ManipulateType` AND to have an array used to check if a given value is in said union type.
 // => more infos: https://stackoverflow.com/questions/50085494/how-to-check-if-a-given-value-is-in-a-union-type-array
 const allowedDatePickerManipulationUnits = ['years', 'months', 'days'] as const; // TS3.4 syntax
-export type DatePickerManipulationUnits = Extract<DateUnit, (typeof allowedDatePickerManipulationUnits)[number]>;
+type DatePickerManipulationUnits = Extract<DateUnit, (typeof allowedDatePickerManipulationUnits)[number]>;
 type DatePickerStartView = 'month' | 'year' | 'multi-year';
 
 @Component({
@@ -58,7 +58,7 @@ export class TimeSliderComponent implements OnInit, OnChanges {
     this.timeExtentDisplay = {start: this.initialTimeExtent.start, end: this.initialTimeExtent.end};
     this.firstSliderPosition = this.findPositionOfDate(this.timeExtent.start) ?? 0;
     this.secondSliderPosition = this.timeSliderConfiguration.range ? undefined : this.findPositionOfDate(this.timeExtent.end);
-    this.hasSimpleCurrentValue = this.isRangeExactlyOneOfSingleTimeUnit(this.timeSliderConfiguration.range);
+    this.hasSimpleCurrentValue = this.isStringSingleTimeUnitRange(this.timeSliderConfiguration.range);
 
     // date picker
     this.hasDatePicker = this.isRangeContinuousWithinAllowedTimeUnits(this.timeSliderConfiguration);
@@ -163,7 +163,7 @@ export class TimeSliderComponent implements OnInit, OnChanges {
     }
   }
 
-  private isRangeExactlyOneOfSingleTimeUnit(range: string | null | undefined): boolean {
+  private isStringSingleTimeUnitRange(range: string | null | undefined): boolean {
     return range ? this.timeService.isStringSingleTimeUnitRange(range) : false;
   }
 

@@ -20,7 +20,7 @@ export abstract class AbstractStorageService<T extends LocalStorageKey | Session
   }
 
   /**
-   *   Returns a date in the correct format after parsing from stringified Object. This is used within the JSON.parse
+   * Returns a date in the correct format after parsing from stringified Object. This is used within the JSON.parse
    * method, hence the "any" type for the value parameter.
    *
    * Because we parse a stringified date that was created by using JSON.stringify() which uses the ISO8601 format, which looks like

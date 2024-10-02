@@ -13,7 +13,7 @@ export interface TimeService {
    * Creates a date object from a Unix timestamp.
    */
   createDateFromUnixTimestamp: (timestamp: number) => Date;
-  /*
+  /**
    * Creates a date object from a string in UTC; with an optional format in ISO 8601.
    */
   createUTCDateFromString: (date: string, format?: string) => Date;

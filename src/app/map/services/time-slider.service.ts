@@ -19,7 +19,7 @@ export class TimeSliderService {
     const maximumDate: Date = this.timeService.createUTCDateFromString(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat);
     return {
       start: minimumDate,
-      end: timeSliderConfig.range ? this.addRangeToDate(minimumDate, timeSliderConfig.range) : maximumDate,
+      end: timeSliderConfig.range ? this.timeService.addRangeToDate(minimumDate, timeSliderConfig.range) : maximumDate,
     };
   }
 
@@ -84,7 +84,7 @@ export class TimeSliderService {
             The start has changed as fixed ranges technically don't have an end date
             => the end date has to be adjusted accordingly to enforce the fixed range between start and end date
          */
-      timeExtent.end = this.addRangeToDate(timeExtent.start, timeSliderConfig.range);
+      timeExtent.end = this.timeService.addRangeToDate(timeExtent.start, timeSliderConfig.range);
     } else if (timeSliderConfig.minimalRange) {
       /*
           Minimal range
@@ -110,16 +110,16 @@ export class TimeSliderService {
 
       if (startEndDiff < minimalRangeInMs) {
         if (hasStartDateChanged) {
-          const newStartDate = this.subtractRangeFromDate(timeExtent.end, timeSliderConfig.minimalRange);
+          const newStartDate = this.timeService.subtractRangeFromDate(timeExtent.end, timeSliderConfig.minimalRange);
           timeExtent.start = this.validateDateWithinLimits(newStartDate, minimumDate, maximumDate);
           if (this.timeService.calculateDifferenceBetweenDates(timeExtent.start, timeExtent.end) < minimalRangeInMs) {
-            timeExtent.end = this.addRangeToDate(timeExtent.start, timeSliderConfig.minimalRange);
+            timeExtent.end = this.timeService.addRangeToDate(timeExtent.start, timeSliderConfig.minimalRange);
           }
         } else {
-          const newEndDate = this.addRangeToDate(timeExtent.start, timeSliderConfig.minimalRange);
+          const newEndDate = this.timeService.addRangeToDate(timeExtent.start, timeSliderConfig.minimalRange);
           timeExtent.end = this.validateDateWithinLimits(newEndDate, minimumDate, maximumDate);
           if (this.timeService.calculateDifferenceBetweenDates(timeExtent.start, timeExtent.end) < minimalRangeInMs) {
-            timeExtent.start = this.subtractRangeFromDate(timeExtent.end, timeSliderConfig.minimalRange);
+            timeExtent.start = this.timeService.subtractRangeFromDate(timeExtent.end, timeSliderConfig.minimalRange);
           }
         }
       }
@@ -158,10 +158,6 @@ export class TimeSliderService {
     if (dateFormat.replace(/M/g, '').trim() === '') return 'months';
     if (dateFormat.replace(/Y/g, '').trim() === '') return 'years';
     return undefined;
-  }
-
-  private addRangeToDate(date: Date, range: string): Date {
-    return this.timeService.addRangeToDate(date, range);
   }
 
   /**
@@ -205,7 +201,7 @@ export class TimeSliderService {
       dates.push(date);
 
       if (initialRange) {
-        date = this.addRangeToDate(date, initialRange);
+        date = this.timeService.addRangeToDate(date, initialRange);
       } else if (unit) {
         date = this.addMinimalRange(date, unit);
       } else {
@@ -252,9 +248,5 @@ export class TimeSliderService {
       validDate = maximumDate;
     }
     return validDate;
-  }
-
-  private subtractRangeFromDate(date: Date, range: string): Date {
-    return this.timeService.subtractRangeFromDate(date, range);
   }
 }
