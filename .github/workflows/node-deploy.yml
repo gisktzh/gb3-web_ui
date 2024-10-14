@@ -28,6 +28,7 @@ jobs:
         run: |
           npm ci
           npm run build-dev-ebp
+          cp ./dist/browser/index.html ./dist/browser/404.html
 
       - name: Create CNAME file for custom domain
         run: echo 'dev.geo.zh.ch' > ./dist/browser/CNAME
