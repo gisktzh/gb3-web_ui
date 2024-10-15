@@ -8,6 +8,7 @@
     (mouseenter)="setIsHovered()"
     [delayDurationInMs]="this.hoverDelay"
     (mouseleave)="hoverEnd()"
+    tabindex="-1"
   >
     <button
       (click)="itemExpansionPanel.toggle()"
@@ -29,29 +30,27 @@
       [matTooltip]="'Beenden Sie den aktuellen Zeichnungsvorgang um das Element hinzuzufügen.'"
       [matTooltipDisabled]="!isAddItemDisabled"
     >
-      <img
-        *ngIf="imageUrl; else imagePlaceholder"
-        class="base-map-data-item__header__image-container__image"
-        [alt]="title"
-        [src]="imageUrl"
-      />
-      <ng-template #imagePlaceholder>
+      @if (imageUrl) {
+        <img class="base-map-data-item__header__image-container__image" [alt]="title" [src]="imageUrl" />
+      } @else {
         <span
           class="base-map-data-item__header__image-container__image-placeholder"
           [ngClass]="{'base-map-data-item__header__image-container__image-placeholder--disabled': invalid}"
         ></span>
-      </ng-template>
-      <button
-        (click)="addItem()"
-        *ngIf="!gb2Url"
-        [disabled]="invalid === true || isAddItemDisabled"
-        (keydown.space)="$event.stopPropagation()"
-        class="base-map-data-item__header__image-container__button"
-        data-test-id="add-active-map"
-        mat-icon-button
-      >
-        <mat-icon [color]="invalid === true ? 'warn' : null" [fontIcon]="invalid ? 'error' : 'add'"></mat-icon>
-      </button>
+      }
+      @if (!gb2Url) {
+        <button
+          (click)="addItem()"
+          [disabled]="invalid === true || isAddItemDisabled"
+          (keydown.enter)="$event.stopPropagation()"
+          (keydown.space)="$event.stopPropagation()"
+          class="base-map-data-item__header__image-container__button"
+          data-test-id="add-active-map"
+          mat-icon-button
+        >
+          <mat-icon [color]="invalid === true ? 'warn' : null" [fontIcon]="invalid ? 'error' : 'add'"></mat-icon>
+        </button>
+      }
     </div>
     <p
       [innerHTML]="title | highlightSearchQuery: this.filterString"
@@ -60,16 +59,19 @@
       matTooltip="{{ title }}"
       showTooltipIfTruncated
     ></p>
-    <gb2-exit-button
-      *ngIf="gb2Url"
-      [color]="'accent'"
-      [highlighted]="true"
-      [size]="'small'"
-      [url]="gb2Url | appendMapConfigurationToUrl: mapConfigState"
-    ></gb2-exit-button>
-    <button (click)="deleteItem()" *ngIf="showDeleteButton" mat-icon-button>
-      <mat-icon>delete</mat-icon>
-    </button>
+    @if (gb2Url) {
+      <gb2-exit-button
+        [color]="'accent'"
+        [highlighted]="true"
+        [size]="'small'"
+        [url]="gb2Url | appendMapConfigurationToUrl: mapConfigState"
+      ></gb2-exit-button>
+    }
+    @if (showDeleteButton) {
+      <button (click)="deleteItem()" (keydown.enter)="$event.stopPropagation()" (keydown.space)="$event.stopPropagation()" mat-icon-button>
+        <mat-icon>delete</mat-icon>
+      </button>
+    }
     <loading-and-process-bar [loadingState]="this.loadingState" class="base-map-data-item__header__loader"></loading-and-process-bar>
   </mat-expansion-panel-header>
   <!-- Expansion panel content -->

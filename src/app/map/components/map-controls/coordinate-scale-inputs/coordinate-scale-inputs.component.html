@@ -1,5 +1,9 @@
 <div class="coordinate-scale-inputs" typedTourAnchor="map.navigation">
-  <map-rotation-button [rotation]="rotation"></map-rotation-button>
+  <div class="coordinate-scale-inputs__scale">
+    <data-input prefix="1:">
+      <input (change)="setScale($event)" [(ngModel)]="scaleInput" class="coordinate-scale-inputs__input" type="text" />
+    </data-input>
+  </div>
   <div class="coordinate-scale-inputs__coordinate">
     <data-input>
       <input
@@ -11,9 +15,5 @@
       />
     </data-input>
   </div>
-  <div class="coordinate-scale-inputs__scale">
-    <data-input prefix="1:">
-      <input (change)="setScale($event)" [(ngModel)]="scaleInput" class="coordinate-scale-inputs__input" type="text" />
-    </data-input>
-  </div>
+  <map-rotation-button [rotation]="rotation"></map-rotation-button>
 </div>
