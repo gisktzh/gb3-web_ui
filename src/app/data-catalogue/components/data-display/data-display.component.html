@@ -4,7 +4,7 @@
     <span class="data-display__item__value">
       @switch (element.type) {
         @case ('text') {
-          <span [innerHTML]="element.value ?? '-'"></span>
+          <span [innerHTML]="element.value | textOrPlaceholder"></span>
         }
         @case ('url') {
           @if (element.value) {

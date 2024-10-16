@@ -19,7 +19,7 @@ describe('DataExtractionUtils', () => {
       zipCode: 2222,
       poBox: null,
       section: null,
-      url: 'https://www.example.com',
+      url: {href: 'https://www.example.com'},
     };
 
     const result = DataExtractionUtils.extractContactElements(mockContact);
@@ -36,7 +36,7 @@ describe('DataExtractionUtils', () => {
       {title: 'Tel', value: mockContact.phone, type: 'text'},
       {title: 'Tel direkt', value: mockContact.phoneDirect, type: 'text'},
       {title: 'E-Mail', value: mockContact.email, type: 'url'},
-      {title: 'www', value: {href: mockContact.url}, type: 'url'},
+      {title: 'www', value: mockContact.url, type: 'url'},
     ];
     expect(result).toEqual(expected);
   });
