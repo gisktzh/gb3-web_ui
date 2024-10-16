@@ -22,6 +22,8 @@ import {Gb3StyledInternalDrawingRepresentation} from '../../../interfaces/intern
 import {PrintData} from '../../../../map/interfaces/print-data.interface';
 import {Gb2WmsSettings} from '../../../../map/models/implementations/gb2-wms.model';
 import {DrawingLayerSettings} from '../../../../map/models/implementations/drawing.model';
+import {TIME_SERVICE} from '../../../../app.module';
+import {TimeService} from '../../../interfaces/time-service.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -32,9 +34,10 @@ export class Gb3PrintService extends Gb3ApiService {
   constructor(
     @Inject(HttpClient) http: HttpClient,
     @Inject(ConfigService) configService: ConfigService,
+    @Inject(TIME_SERVICE) timeService: TimeService,
     private readonly basemapConfigService: BasemapConfigService,
   ) {
-    super(http, configService);
+    super(http, configService, timeService);
   }
 
   public createPrintJob(printCreation: PrintCreation): Observable<PrintCreationResponse> {

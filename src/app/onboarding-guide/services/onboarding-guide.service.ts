@@ -3,7 +3,6 @@ import {TourService} from 'ngx-ui-tour-md-menu';
 import {tap} from 'rxjs';
 import {LocalStorageService} from '../../shared/services/local-storage.service';
 import {OnboardingGuideConfig} from '../interfaces/onboarding-guide-config.interface';
-import {StorageUtils} from '../../shared/utils/storage.utils';
 
 export const ONBOARDING_STEPS = new InjectionToken<string>('onboardingSteps');
 
@@ -57,7 +56,7 @@ export class OnboardingGuideService {
     if (!viewedGuides.includes(this.onboardingGuideId)) {
       viewedGuides.push(this.onboardingGuideId);
 
-      this.localStorageService.set('onboardingGuidesViewed', StorageUtils.stringifyJson(viewedGuides));
+      this.localStorageService.set('onboardingGuidesViewed', this.localStorageService.stringifyJson(viewedGuides));
     }
   }
 

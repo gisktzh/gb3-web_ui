@@ -168,6 +168,15 @@ export interface MetadataDatasets {
   datasets: Dataset[];
 }
 
+export interface MetadataGeoshopProducts {
+  geoshop_products?: {
+    /** Geoshop product ID */
+    giszhnr: number;
+    /** Link auf Geodatashop bei NOGD-Daten */
+    url_shop: string | null;
+  }[];
+}
+
 export interface MetadataMap {
   map: Map;
 }
@@ -421,6 +430,11 @@ export interface PrintNew {
   };
 }
 
+export interface PrintReport {
+  /** Link to report file */
+  report_url: string;
+}
+
 export interface ProductsList {
   /** Timestamp of product list in ISO8601 format */
   timestamp: string;
@@ -656,9 +670,9 @@ export interface Contact {
   /** Telephon direkt */
   telephon_direkt: string;
   /** E-Mail */
-  email: LinkObject;
+  email: LinkObject | null;
   /** URL */
-  weburl: LinkObject;
+  weburl: LinkObject | null;
 }
 
 export interface Dataset {
@@ -751,13 +765,13 @@ export interface Dataset {
     datenbezugart: string;
     attribute: {
       /** Attributname */
-      name: string;
+      name: string | null;
       /** Attributtyp */
-      typ: string;
+      typ: string | null;
       /** Einheit des Attributwerts */
       einheit: string | null;
       /** Beschreibung des Attributs */
-      beschreibung: string;
+      beschreibung: string | null;
     }[];
   }[];
   services: {
@@ -968,6 +982,10 @@ export interface Map {
   name: string;
   /** Beschreibung der Karte */
   beschreibung: string;
+  /** Link to the internet version of the current map */
+  gbkarten_internet_url: LinkObject | null;
+  /** Link to the intranet version of the current map (only available whether this api is called from intranet) */
+  gbkarten_intranet_url: LinkObject | null;
   /** Link auf GB2-Karte */
   gb2_url: LinkObject | null;
   /** Links auf weiterführende Verweise */
@@ -1121,6 +1139,21 @@ export interface Service {
   }[];
 }
 
+export interface VectorInputGeneral {
+  /** GeoJSON file containing FeatureCollection or Feature, or KML file */
+  file: File;
+}
+
+export interface VectorInputGeojson {
+  /** GeoJSON file containing FeatureCollection or Feature */
+  file: File;
+}
+
+export interface VectorInputKml {
+  /** KML file */
+  file: File;
+}
+
 /** Vector layer */
 export interface VectorLayer {
   /** Vector layer type */
@@ -1207,26 +1240,11 @@ export interface VectorLayerWithoutStyles {
 
 export type CantonListData = Canton;
 
-export interface ImportGeojsonCreatePayload {
-  /** GeoJSON file containing FeatureCollection or Feature */
-  file: File;
-}
-
 export type ImportGeojsonCreateData = VectorLayer;
 
 export type ExportGeojsonCreateData = GenericGeojsonFeatureCollection;
 
-export interface ImportCreatePayload {
-  /** GeoJSON file containing FeatureCollection or Feature, or KML file */
-  file: File;
-}
-
 export type ImportCreateData = VectorLayer;
-
-export interface ImportKmlCreatePayload {
-  /** KML file */
-  file: File;
-}
 
 export type ImportKmlCreateData = VectorLayer;
 
@@ -1242,14 +1260,7 @@ export type MetadataDatasetsListData = MetadataDatasets;
 
 export type MetadataDatasetsDetailData = MetadataDataset;
 
-export interface MetadataGeoshopProductsListData {
-  geoshop_products: {
-    /** Geoshop product ID */
-    giszhnr: number;
-    /** Link auf Geodatashop bei NOGD-Daten */
-    url_shop: string | null;
-  }[];
-}
+export type MetadataGeoshopProductsListData = MetadataGeoshopProducts;
 
 export type MetadataMapsListData = MetadataMaps;
 
@@ -1277,20 +1288,11 @@ export type UserFavoritesDetailData = PersonalFavorite;
 
 export type UserFavoritesDeleteData = any;
 
-export interface PrintCreateData {
-  /** Link to report file */
-  report_url: string;
-}
+export type PrintCreateData = PrintReport;
 
-export interface PrintFeatureInfoCreateData {
-  /** Link to report file */
-  report_url: string;
-}
+export type PrintFeatureInfoCreateData = PrintReport;
 
-export interface PrintLegendCreateData {
-  /** Link to report file */
-  report_url: string;
-}
+export type PrintLegendCreateData = PrintReport;
 
 export type PrintDetailData = any;
 

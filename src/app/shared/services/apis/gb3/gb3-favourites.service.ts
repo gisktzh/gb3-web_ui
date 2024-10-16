@@ -9,7 +9,6 @@ import {
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {CreateFavourite, Favourite, FavouritesResponse} from '../../../interfaces/favourite.interface';
-import {TimeExtentUtils} from '../../../utils/time-extent.utils';
 import {ApiGeojsonGeometryToGb3ConverterUtils} from '../../../utils/api-geojson-geometry-to-gb3-converter.utils';
 
 @Injectable({
@@ -67,8 +66,8 @@ export class Gb3FavouritesService extends Gb3ApiService {
           attributeFilters: content.attributeFilters,
           timeExtent: content.timeExtent
             ? {
-                start: TimeExtentUtils.parseDefaultUTCDate(content.timeExtent.start),
-                end: TimeExtentUtils.parseDefaultUTCDate(content.timeExtent.end),
+                start: this.timeService.createUTCDateFromString(content.timeExtent.start),
+                end: this.timeService.createUTCDateFromString(content.timeExtent.end),
               }
             : undefined,
         };

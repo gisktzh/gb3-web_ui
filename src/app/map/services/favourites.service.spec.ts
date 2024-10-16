@@ -20,13 +20,17 @@ import {DrawingActiveMapItem} from '../models/implementations/drawing.model';
 import {DrawingLayerPrefix, UserDrawingLayer} from '../../shared/enums/drawing-layer.enum';
 import {SymbolizationToGb3ConverterUtils} from '../../shared/utils/symbolization-to-gb3-converter.utils';
 import {Map} from '../../shared/interfaces/topic.interface';
-import {TimeExtentUtils} from '../../shared/utils/time-extent.utils';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {TimeService} from '../../shared/interfaces/time-service.interface';
+import {TIME_SERVICE} from '../../app.module';
+import {TimeSliderService} from './time-slider.service';
 
 describe('FavouritesService', () => {
   let service: FavouritesService;
   let store: MockStore;
   let gb3FavouritesService: Gb3FavouritesService;
+  let timeService: TimeService;
+  let timeSliderService: TimeSliderService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -34,6 +38,8 @@ describe('FavouritesService', () => {
       providers: [provideMockStore({}), provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     });
     store = TestBed.inject(MockStore);
+    timeService = TestBed.inject(TIME_SERVICE);
+    timeSliderService = TestBed.inject(TimeSliderService);
     store.overrideSelector(selectActiveMapItemConfigurations, []);
     store.overrideSelector(selectMaps, []);
     store.overrideSelector(selectFavouriteBaseConfig, {center: {x: 0, y: 0}, scale: 0, basemap: ''});
@@ -79,246 +85,257 @@ describe('FavouritesService', () => {
   });
 
   describe('getActiveMapItemsForFavourite', () => {
-    const availableMaps: Map[] = [
-      {
-        id: 'FaBoFFFZH',
-        uuid: '27fd3dc4-a4d8-450c-837f-70dd2f5cd5fe',
-        printTitle: 'Fruchtfolgeflächen (FFF)',
-        gb2Url: null,
-        icon: 'https://maps.zh.ch/images/custom/themekl-fabofffzh.gif',
-        wmsUrl: 'https://maps.zh.ch/wms/FaBoFFFZH',
-        minScale: 2500,
-        organisation: 'ALN Bodenschutz',
-        notice: null,
-        title: 'Fruchtfolgeflächen (FFF)',
-        keywords: ['Fruchtfolgeflächen', '(FFF)', 'bvv', 'boden', 'TBAK2', 'fsla', 'fabo', 'vp', 'fap'],
-        opacity: 1,
-        layers: [
-          {
-            id: 157886,
-            layer: 'fff',
-            title: 'Fruchtfolgeflächen',
-            queryable: true,
-            uuid: '0aa893ad-c264-ce46-bf1f-6fa785998b8c',
-            groupTitle: 'Fruchtfolgeflächen',
-            minScale: 1,
-            maxScale: 50000,
-            wmsSort: 2,
-            tocSort: 200,
-            visible: true,
-            isHidden: false,
-          },
-          {
-            id: 157885,
-            layer: 'perimeter-fff',
-            title: 'Fruchtfolgeflächen',
-            queryable: true,
-            uuid: '0aa893ad-c264-ce46-bf1f-6fa785998b8c',
-            groupTitle: 'Fruchtfolgeflächen',
-            minScale: 50000,
-            maxScale: 500000,
-            wmsSort: 1,
-            tocSort: 100,
-            visible: true,
-            isHidden: false,
-          },
-        ],
-      },
-      {
-        id: 'AVfarbigZH',
-        uuid: '26d7c027-38f2-42cb-a17a-99f17a2e383e',
-        printTitle: 'Amtliche Vermessung in Farbe',
-        gb2Url: null,
-        icon: 'https://maps.zh.ch/images/custom/themekl-avfarbigzh.gif',
-        wmsUrl: 'https://maps.zh.ch/wms/AVfarbigZH',
-        minScale: 100,
-        organisation: 'ARE Geoinformation',
-        notice: null,
-        title: 'Amtliche Vermessung in Farbe',
-        keywords: ['Amtliche', 'Vermessung', 'in', 'Farbe', 'pk', 'Amtlichen Vermessung', 'AV'],
-        opacity: 1,
-        layers: [
-          {
-            id: 151493,
-            layer: 'liegensch-einzelobj',
-            title: 'Einzelobjekte (Flächen) innerhalb Liegenschaften',
-            queryable: true,
-            uuid: null,
-            groupTitle: null,
-            minScale: 99,
-            maxScale: 2500,
-            wmsSort: 49,
-            tocSort: 4900,
-            visible: true,
-            isHidden: false,
-          },
-          {
-            id: 151492,
-            layer: 'TBBP',
-            title: 'Hoheitsgrenzpunkte',
-            queryable: true,
-            uuid: '1466f09e-702d-7b38-053c-7b85f8e82549',
-            groupTitle: 'Hoheitsgrenzen',
-            minScale: 99,
-            maxScale: 1000,
-            wmsSort: 47,
-            tocSort: 9099,
-            visible: true,
-            isHidden: false,
-          },
-          {
-            id: 151491,
-            layer: 'av-fixpunkte-nummern',
-            title: 'Fixpunkte Nummern',
-            queryable: false,
-            uuid: '75fe4385-de51-3588-40e2-be8575166f2a',
-            groupTitle: 'Fixpunkte',
-            minScale: 99,
-            maxScale: 1000,
-            wmsSort: 46,
-            tocSort: 9089,
-            visible: true,
-            isHidden: false,
-          },
-        ],
-        searchConfigurations: [
-          {
-            index: 'gvz',
-            title: 'GVZ-Nr.',
-          },
-        ],
-      },
-      {
-        id: 'StatGebAlterZH',
-        uuid: '246fe226-ead7-4f91-b735-d294994913e0',
-        printTitle: 'Gebäudealter',
-        gb2Url: null,
-        icon: 'https://maps.zh.ch/images/custom/themekl-statgebalterzh.gif',
-        wmsUrl: 'https://maps.zh.ch/wms/StatGebAlterZH',
-        minScale: null,
-        organisation: 'Statistisches Amt',
-        notice: null,
-        title: 'Gebäudealter',
-        keywords: ['Gebäudealter', 'stat', 'obs', 'fap', 'denkk', 'fsla'],
-        opacity: 1,
-        layers: [
-          {
-            id: 160331,
-            layer: 'geb-alter_2',
-            title: 'Gebäude mit Baujahr x und älter',
-            queryable: false,
-            uuid: null,
-            groupTitle: 'Gebäudealter',
-            minScale: 100001,
-            maxScale: 15000001,
-            wmsSort: 11,
-            tocSort: 1100,
-            visible: true,
-            isHidden: false,
-          },
-          {
-            id: 160330,
-            layer: 'geb-alter_grau',
-            title: 'Baujahr',
-            queryable: false,
-            uuid: null,
-            groupTitle: 'Gebäudealter - Polygone',
-            minScale: 1,
-            maxScale: 100000,
-            wmsSort: 10,
-            tocSort: 1000,
-            visible: false,
-            isHidden: false,
-          },
-          {
-            id: 160329,
-            layer: 'geb-alter_wohnen',
-            title: 'Baujahr',
-            queryable: true,
-            uuid: null,
-            groupTitle: 'Gebäudealter - Polygone',
-            minScale: 1,
-            maxScale: 100000,
-            wmsSort: 9,
-            tocSort: 900,
-            visible: true,
-            isHidden: false,
-          },
-        ],
-        timeSliderConfiguration: {
-          name: 'Aktueller Gebäudebestand nach Baujahr',
-          alwaysMaxRange: false,
-          dateFormat: 'YYYY',
-          description: 'Gebäude bis 2020',
-          maximumDate: '2020',
-          minimumDate: '1000',
-          minimalRange: 'P1Y',
-          sourceType: 'parameter',
-          source: {
-            startRangeParameter: 'FILTER_VON',
-            endRangeParameter: 'FILTER_BIS',
-            layerIdentifiers: ['geb-alter_wohnen', 'geb-alter_grau', 'geb-alter_2'],
-          },
-        },
-        filterConfigurations: [
-          {
-            name: 'Anzeigeoptionen nach Hauptnutzung',
-            parameter: 'FILTER_GEBART',
-            filterValues: [
-              {
-                isActive: true,
-                values: ['Gebäude Wohnen'],
-                name: 'Wohnen',
-              },
-              {
-                isActive: false,
-                values: ['Gebäude Wohnen'],
-                name: 'Gewerbe und Verwaltung',
-              },
-              {
-                isActive: false,
-                values: ['Gebäude Wohnen'],
-                name: 'Andere',
-              },
-            ],
-          },
-        ],
-      },
-      {
-        id: 'Lidar2021BefliegungZH',
-        uuid: '1dac9be1-1412-45dd-a1dd-c151c737272b',
-        printTitle: 'LiDAR-Befliegung 2021 ZH',
-        gb2Url: null,
-        icon: 'https://maps.zh.ch/images/custom/themekl-lidar2021befliegungzh.gif',
-        wmsUrl: 'https://maps.zh.ch/wms/Lidar2021BefliegungZH',
-        minScale: null,
-        organisation: 'ARE Geoinformation',
-        notice:
-          'Die kantonale LiDAR-Befliegungen sind die Basis für die Berechnung der Höhemodelle und decken den ganzen Kanton ab. Diese Karte zeigt die abgedeckte Fläche jeder aufgenommenen Überfliegung, die während dem Projekt stattgefunden hat. Die Überlappung der Flächen wird benötigt, um die einzelnen Streifen zusammenführen zu können und eine höhere Genauigkeit zu erhalten.',
-        title: 'LiDAR-Befliegung 2021 ZH',
-        keywords: ['LiDAR-Befliegung', '2021', 'ZH'],
-        opacity: 1,
-        layers: [
-          {
-            id: 159533,
-            layer: 'lidarbefliegung',
-            title: 'LiDAR-Befliegung',
-            queryable: true,
-            uuid: '10b88da3-3715-44f5-9480-eb754955a892',
-            groupTitle: 'Inventar',
-            minScale: 1,
-            maxScale: 1000000,
-            wmsSort: 0,
-            tocSort: 0,
-            visible: true,
-            isHidden: false,
-          },
-        ],
-      },
-    ];
+    let availableMaps: Map[];
 
     beforeEach(() => {
       // eslint-disable-next-line @typescript-eslint/dot-notation
+      availableMaps = [
+        {
+          id: 'FaBoFFFZH',
+          uuid: '27fd3dc4-a4d8-450c-837f-70dd2f5cd5fe',
+          printTitle: 'Fruchtfolgeflächen (FFF)',
+          gb2Url: null,
+          icon: 'https://maps.zh.ch/images/custom/themekl-fabofffzh.gif',
+          wmsUrl: 'https://maps.zh.ch/wms/FaBoFFFZH',
+          minScale: 2500,
+          organisation: 'ALN Bodenschutz',
+          notice: null,
+          title: 'Fruchtfolgeflächen (FFF)',
+          keywords: ['Fruchtfolgeflächen', '(FFF)', 'bvv', 'boden', 'TBAK2', 'fsla', 'fabo', 'vp', 'fap'],
+          opacity: 1,
+          timeSliderConfiguration: undefined,
+          initialTimeSliderExtent: undefined,
+          layers: [
+            {
+              id: 157886,
+              layer: 'fff',
+              title: 'Fruchtfolgeflächen',
+              queryable: true,
+              uuid: '0aa893ad-c264-ce46-bf1f-6fa785998b8c',
+              groupTitle: 'Fruchtfolgeflächen',
+              minScale: 1,
+              maxScale: 50000,
+              wmsSort: 2,
+              tocSort: 200,
+              visible: true,
+              isHidden: false,
+            },
+            {
+              id: 157885,
+              layer: 'perimeter-fff',
+              title: 'Fruchtfolgeflächen',
+              queryable: true,
+              uuid: '0aa893ad-c264-ce46-bf1f-6fa785998b8c',
+              groupTitle: 'Fruchtfolgeflächen',
+              minScale: 50000,
+              maxScale: 500000,
+              wmsSort: 1,
+              tocSort: 100,
+              visible: true,
+              isHidden: false,
+            },
+          ],
+        },
+        {
+          id: 'AVfarbigZH',
+          uuid: '26d7c027-38f2-42cb-a17a-99f17a2e383e',
+          printTitle: 'Amtliche Vermessung in Farbe',
+          gb2Url: null,
+          icon: 'https://maps.zh.ch/images/custom/themekl-avfarbigzh.gif',
+          wmsUrl: 'https://maps.zh.ch/wms/AVfarbigZH',
+          minScale: 100,
+          organisation: 'ARE Geoinformation',
+          notice: null,
+          title: 'Amtliche Vermessung in Farbe',
+          keywords: ['Amtliche', 'Vermessung', 'in', 'Farbe', 'pk', 'Amtlichen Vermessung', 'AV'],
+          opacity: 1,
+          timeSliderConfiguration: undefined,
+          initialTimeSliderExtent: undefined,
+          layers: [
+            {
+              id: 151493,
+              layer: 'liegensch-einzelobj',
+              title: 'Einzelobjekte (Flächen) innerhalb Liegenschaften',
+              queryable: true,
+              uuid: null,
+              groupTitle: null,
+              minScale: 99,
+              maxScale: 2500,
+              wmsSort: 49,
+              tocSort: 4900,
+              visible: true,
+              isHidden: false,
+            },
+            {
+              id: 151492,
+              layer: 'TBBP',
+              title: 'Hoheitsgrenzpunkte',
+              queryable: true,
+              uuid: '1466f09e-702d-7b38-053c-7b85f8e82549',
+              groupTitle: 'Hoheitsgrenzen',
+              minScale: 99,
+              maxScale: 1000,
+              wmsSort: 47,
+              tocSort: 9099,
+              visible: true,
+              isHidden: false,
+            },
+            {
+              id: 151491,
+              layer: 'av-fixpunkte-nummern',
+              title: 'Fixpunkte Nummern',
+              queryable: false,
+              uuid: '75fe4385-de51-3588-40e2-be8575166f2a',
+              groupTitle: 'Fixpunkte',
+              minScale: 99,
+              maxScale: 1000,
+              wmsSort: 46,
+              tocSort: 9089,
+              visible: true,
+              isHidden: false,
+            },
+          ],
+          searchConfigurations: [
+            {
+              index: 'gvz',
+              title: 'GVZ-Nr.',
+            },
+          ],
+        },
+        {
+          id: 'StatGebAlterZH',
+          uuid: '246fe226-ead7-4f91-b735-d294994913e0',
+          printTitle: 'Gebäudealter',
+          gb2Url: null,
+          icon: 'https://maps.zh.ch/images/custom/themekl-statgebalterzh.gif',
+          wmsUrl: 'https://maps.zh.ch/wms/StatGebAlterZH',
+          minScale: null,
+          organisation: 'Statistisches Amt',
+          notice: null,
+          title: 'Gebäudealter',
+          keywords: ['Gebäudealter', 'stat', 'obs', 'fap', 'denkk', 'fsla'],
+          opacity: 1,
+          layers: [
+            {
+              id: 160331,
+              layer: 'geb-alter_2',
+              title: 'Gebäude mit Baujahr x und älter',
+              queryable: false,
+              uuid: null,
+              groupTitle: 'Gebäudealter',
+              minScale: 100001,
+              maxScale: 15000001,
+              wmsSort: 11,
+              tocSort: 1100,
+              visible: true,
+              isHidden: false,
+            },
+            {
+              id: 160330,
+              layer: 'geb-alter_grau',
+              title: 'Baujahr',
+              queryable: false,
+              uuid: null,
+              groupTitle: 'Gebäudealter - Polygone',
+              minScale: 1,
+              maxScale: 100000,
+              wmsSort: 10,
+              tocSort: 1000,
+              visible: false,
+              isHidden: false,
+            },
+            {
+              id: 160329,
+              layer: 'geb-alter_wohnen',
+              title: 'Baujahr',
+              queryable: true,
+              uuid: null,
+              groupTitle: 'Gebäudealter - Polygone',
+              minScale: 1,
+              maxScale: 100000,
+              wmsSort: 9,
+              tocSort: 900,
+              visible: true,
+              isHidden: false,
+            },
+          ],
+          timeSliderConfiguration: {
+            name: 'Aktueller Gebäudebestand nach Baujahr',
+            alwaysMaxRange: false,
+            dateFormat: 'YYYY',
+            description: 'Gebäude bis 2020',
+            maximumDate: '2020',
+            minimumDate: '1000',
+            minimalRange: 'P1Y',
+            sourceType: 'parameter',
+            source: {
+              startRangeParameter: 'FILTER_VON',
+              endRangeParameter: 'FILTER_BIS',
+              layerIdentifiers: ['geb-alter_wohnen', 'geb-alter_grau', 'geb-alter_2'],
+            },
+          },
+          initialTimeSliderExtent: {
+            start: timeService.createUTCDateFromString('1000-01-01T00:00:00.000Z'),
+            end: timeService.createUTCDateFromString('2020-01-01T00:00:00.000Z'),
+          },
+          filterConfigurations: [
+            {
+              name: 'Anzeigeoptionen nach Hauptnutzung',
+              parameter: 'FILTER_GEBART',
+              filterValues: [
+                {
+                  isActive: true,
+                  values: ['Gebäude Wohnen'],
+                  name: 'Wohnen',
+                },
+                {
+                  isActive: false,
+                  values: ['Gebäude Wohnen'],
+                  name: 'Gewerbe und Verwaltung',
+                },
+                {
+                  isActive: false,
+                  values: ['Gebäude Wohnen'],
+                  name: 'Andere',
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: 'Lidar2021BefliegungZH',
+          uuid: '1dac9be1-1412-45dd-a1dd-c151c737272b',
+          printTitle: 'LiDAR-Befliegung 2021 ZH',
+          gb2Url: null,
+          icon: 'https://maps.zh.ch/images/custom/themekl-lidar2021befliegungzh.gif',
+          wmsUrl: 'https://maps.zh.ch/wms/Lidar2021BefliegungZH',
+          minScale: null,
+          organisation: 'ARE Geoinformation',
+          notice:
+            'Die kantonale LiDAR-Befliegungen sind die Basis für die Berechnung der Höhemodelle und decken den ganzen Kanton ab. Diese Karte zeigt die abgedeckte Fläche jeder aufgenommenen Überfliegung, die während dem Projekt stattgefunden hat. Die Überlappung der Flächen wird benötigt, um die einzelnen Streifen zusammenführen zu können und eine höhere Genauigkeit zu erhalten.',
+          title: 'LiDAR-Befliegung 2021 ZH',
+          keywords: ['LiDAR-Befliegung', '2021', 'ZH'],
+          opacity: 1,
+          timeSliderConfiguration: undefined,
+          initialTimeSliderExtent: undefined,
+          layers: [
+            {
+              id: 159533,
+              layer: 'lidarbefliegung',
+              title: 'LiDAR-Befliegung',
+              queryable: true,
+              uuid: '10b88da3-3715-44f5-9480-eb754955a892',
+              groupTitle: 'Inventar',
+              minScale: 1,
+              maxScale: 1000000,
+              wmsSort: 0,
+              tocSort: 0,
+              visible: true,
+              isHidden: false,
+            },
+          ],
+        },
+      ];
       service['availableMaps'] = availableMaps;
     });
 
@@ -384,8 +401,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: TimeExtentUtils.parseDefaultUTCDate('1000-01-01T00:00:00.000Z'),
-            end: TimeExtentUtils.parseDefaultUTCDate('2020-01-01T00:00:00.000Z'),
+            start: timeService.createUTCDateFromString('1000-01-01T00:00:00.000Z'),
+            end: timeService.createUTCDateFromString('2020-01-01T00:00:00.000Z'),
           },
         },
         {
@@ -529,8 +546,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: TimeExtentUtils.parseDefaultUTCDate('1000-01-01T00:00:00.000Z'),
-            end: TimeExtentUtils.parseDefaultUTCDate('2020-01-01T00:00:00.000Z'),
+            start: timeService.createUTCDateFromString('1000-01-01T00:00:00.000Z'),
+            end: timeService.createUTCDateFromString('2020-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -647,8 +664,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: TimeExtentUtils.parseDefaultUTCDate('1000-01-01T00:00:00.000Z'),
-            end: TimeExtentUtils.parseDefaultUTCDate('2020-01-01T00:00:00.000Z'),
+            start: timeService.createUTCDateFromString('1000-01-01T00:00:00.000Z'),
+            end: timeService.createUTCDateFromString('2020-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -708,8 +725,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: TimeExtentUtils.parseDefaultUTCDate('1000-01-01T00:00:00.000Z'),
-            end: TimeExtentUtils.parseDefaultUTCDate('2020-01-01T00:00:00.000Z'),
+            start: timeService.createUTCDateFromString('1000-01-01T00:00:00.000Z'),
+            end: timeService.createUTCDateFromString('2020-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -798,8 +815,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: TimeExtentUtils.parseDefaultUTCDate('1000-01-01T00:00:00.000Z'),
-            end: TimeExtentUtils.parseDefaultUTCDate('2020-01-01T00:00:00.000Z'),
+            start: timeService.createUTCDateFromString('1000-01-01T00:00:00.000Z'),
+            end: timeService.createUTCDateFromString('2020-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -857,8 +874,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: TimeExtentUtils.parseDefaultUTCDate('1000-01-01T00:00:00.000Z'),
-            end: TimeExtentUtils.parseDefaultUTCDate('2020-01-01T00:00:00.000Z'),
+            start: timeService.createUTCDateFromString('1000-01-01T00:00:00.000Z'),
+            end: timeService.createUTCDateFromString('2020-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -871,6 +888,7 @@ describe('FavouritesService', () => {
     });
 
     it('throws a FavouriteIsInvalidError if a new filterConfiguration has been added', () => {
+      // eslint-disable-next-line @typescript-eslint/dot-notation
       service['availableMaps'] = [
         {
           id: 'StatGebAlterZH',
@@ -943,6 +961,10 @@ describe('FavouritesService', () => {
               endRangeParameter: 'FILTER_BIS',
               layerIdentifiers: ['geb-alter_wohnen', 'geb-alter_grau', 'geb-alter_2'],
             },
+          },
+          initialTimeSliderExtent: {
+            start: timeService.createUTCDateFromString('1000-01-01T00:00:00.000Z'),
+            end: timeService.createUTCDateFromString('2020-01-01T00:00:00.000Z'),
           },
           filterConfigurations: [
             {
@@ -1035,8 +1057,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: TimeExtentUtils.parseDefaultUTCDate('1000-01-01T00:00:00.000Z'),
-            end: TimeExtentUtils.parseDefaultUTCDate('2020-01-01T00:00:00.000Z'),
+            start: timeService.createUTCDateFromString('1000-01-01T00:00:00.000Z'),
+            end: timeService.createUTCDateFromString('2020-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -1049,6 +1071,7 @@ describe('FavouritesService', () => {
     });
 
     it('throws a FavouriteIsInvalidError if a new filter has been added', () => {
+      // eslint-disable-next-line @typescript-eslint/dot-notation
       service['availableMaps'] = [
         {
           id: 'StatGebAlterZH',
@@ -1121,6 +1144,10 @@ describe('FavouritesService', () => {
               endRangeParameter: 'FILTER_BIS',
               layerIdentifiers: ['geb-alter_wohnen', 'geb-alter_grau', 'geb-alter_2'],
             },
+          },
+          initialTimeSliderExtent: {
+            start: timeService.createUTCDateFromString('1000-01-01T00:00:00.000Z'),
+            end: timeService.createUTCDateFromString('2020-01-01T00:00:00.000Z'),
           },
           filterConfigurations: [
             {
@@ -1193,8 +1220,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: TimeExtentUtils.parseDefaultUTCDate('1000-01-01T00:00:00.000Z'),
-            end: TimeExtentUtils.parseDefaultUTCDate('2020-01-01T00:00:00.000Z'),
+            start: timeService.createUTCDateFromString('1000-01-01T00:00:00.000Z'),
+            end: timeService.createUTCDateFromString('2020-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -1207,6 +1234,7 @@ describe('FavouritesService', () => {
     });
 
     it('throws a FavouriteIsInvalidError if the timeSliderConfiguration for a parameter configuration is invalid (start < minimumDate)', () => {
+      // eslint-disable-next-line @typescript-eslint/dot-notation
       service['availableMaps'] = [
         {
           id: 'StatGebAlterZH',
@@ -1280,6 +1308,10 @@ describe('FavouritesService', () => {
               layerIdentifiers: ['geb-alter_wohnen', 'geb-alter_grau', 'geb-alter_2'],
             },
           },
+          initialTimeSliderExtent: {
+            start: timeService.createUTCDateFromString('1000-01-01T00:00:00.000Z'),
+            end: timeService.createUTCDateFromString('2020-01-01T00:00:00.000Z'),
+          },
           filterConfigurations: [
             {
               name: 'Anzeigeoptionen nach Hauptnutzung',
@@ -1350,8 +1382,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: TimeExtentUtils.parseDefaultUTCDate('0999-01-01T00:00:00.000Z'),
-            end: TimeExtentUtils.parseDefaultUTCDate('2020-01-01T00:00:00.000Z'),
+            start: timeService.createUTCDateFromString('0999-01-01T00:00:00.000Z'),
+            end: timeService.createUTCDateFromString('2020-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -1362,6 +1394,7 @@ describe('FavouritesService', () => {
     });
 
     it('throws a FavouriteIsInvalidError if the timeSliderConfiguration for a parameter configuration is invalid (range to small)', () => {
+      // eslint-disable-next-line @typescript-eslint/dot-notation
       service['availableMaps'] = [
         {
           id: 'StatGebAlterZH',
@@ -1435,6 +1468,10 @@ describe('FavouritesService', () => {
               layerIdentifiers: ['geb-alter_wohnen', 'geb-alter_grau', 'geb-alter_2'],
             },
           },
+          initialTimeSliderExtent: {
+            start: timeService.createUTCDateFromString('1000-01-01T00:00:00.000Z'),
+            end: timeService.createUTCDateFromString('2020-01-01T00:00:00.000Z'),
+          },
           filterConfigurations: [
             {
               name: 'Anzeigeoptionen nach Hauptnutzung',
@@ -1505,8 +1542,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: TimeExtentUtils.parseDefaultUTCDate('1450-01-01T00:00:00.000Z'),
-            end: TimeExtentUtils.parseDefaultUTCDate('1455-01-01T00:00:00.000Z'),
+            start: timeService.createUTCDateFromString('1450-01-01T00:00:00.000Z'),
+            end: timeService.createUTCDateFromString('1455-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -1517,6 +1554,7 @@ describe('FavouritesService', () => {
     });
 
     it('throws a FavouriteIsInvalidError if the timeSliderConfiguration for a parameter configuration is invalid (start and end date mixed up)', () => {
+      // eslint-disable-next-line @typescript-eslint/dot-notation
       service['availableMaps'] = [
         {
           id: 'StatGebAlterZH',
@@ -1590,6 +1628,10 @@ describe('FavouritesService', () => {
               layerIdentifiers: ['geb-alter_wohnen', 'geb-alter_grau', 'geb-alter_2'],
             },
           },
+          initialTimeSliderExtent: {
+            start: timeService.createUTCDateFromString('2020-01-01T00:00:00.000Z'),
+            end: timeService.createUTCDateFromString('1000-01-01T00:00:00.000Z'),
+          },
           filterConfigurations: [
             {
               name: 'Anzeigeoptionen nach Hauptnutzung',
@@ -1660,8 +1702,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: TimeExtentUtils.parseDefaultUTCDate('1750-01-01T00:00:00.000Z'),
-            end: TimeExtentUtils.parseDefaultUTCDate('1455-01-01T00:00:00.000Z'),
+            start: timeService.createUTCDateFromString('1750-01-01T00:00:00.000Z'),
+            end: timeService.createUTCDateFromString('1455-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -1672,6 +1714,7 @@ describe('FavouritesService', () => {
     });
 
     it('throws a FavouriteIsInvalidError if the timeSliderConfiguration for a parameter configuration is invalid (not max range if Flag is set)', () => {
+      // eslint-disable-next-line @typescript-eslint/dot-notation
       service['availableMaps'] = [
         {
           id: 'StatGebAlterZH',
@@ -1745,6 +1788,10 @@ describe('FavouritesService', () => {
               layerIdentifiers: ['geb-alter_wohnen', 'geb-alter_grau', 'geb-alter_2'],
             },
           },
+          initialTimeSliderExtent: {
+            start: timeService.createUTCDateFromString('1000-01-01T00:00:00.000Z'),
+            end: timeService.createUTCDateFromString('2020-01-01T00:00:00.000Z'),
+          },
           filterConfigurations: [
             {
               name: 'Anzeigeoptionen nach Hauptnutzung',
@@ -1815,8 +1862,8 @@ describe('FavouritesService', () => {
             },
           ],
           timeExtent: {
-            start: TimeExtentUtils.parseDefaultUTCDate('1250-01-01T00:00:00.000Z'),
-            end: TimeExtentUtils.parseDefaultUTCDate('2000-01-01T00:00:00.000Z'),
+            start: timeService.createUTCDateFromString('1250-01-01T00:00:00.000Z'),
+            end: timeService.createUTCDateFromString('2000-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -1827,6 +1874,7 @@ describe('FavouritesService', () => {
     });
 
     it('throws a FavouriteIsInvalidError if the timeSliderConfiguration for a layer configuration is invalid', () => {
+      // eslint-disable-next-line @typescript-eslint/dot-notation
       service['availableMaps'] = [
         {
           id: 'OrthoFCIRZH',
@@ -2017,6 +2065,10 @@ describe('FavouritesService', () => {
               ],
             },
           },
+          initialTimeSliderExtent: {
+            start: timeService.createUTCDateFromString('2016-01-01T00:00:00.000Z'),
+            end: timeService.createUTCDateFromString('2017-01-01T00:00:00.000Z'),
+          },
           filterConfigurations: undefined,
         },
       ];
@@ -2081,8 +2133,8 @@ describe('FavouritesService', () => {
           isSingleLayer: false,
           attributeFilters: undefined,
           timeExtent: {
-            start: TimeExtentUtils.parseDefaultUTCDate('2016-01-01T00:00:00.000Z'),
-            end: TimeExtentUtils.parseDefaultUTCDate('2017-01-01T00:00:00.000Z'),
+            start: timeService.createUTCDateFromString('2016-01-01T00:00:00.000Z'),
+            end: timeService.createUTCDateFromString('2017-01-01T00:00:00.000Z'),
           },
         },
       ];
@@ -2093,6 +2145,7 @@ describe('FavouritesService', () => {
     });
 
     it('returns the initalTimsliderExtent if the timeExtent is invalid but ignoreErrors is set to true', () => {
+      // eslint-disable-next-line @typescript-eslint/dot-notation
       service['availableMaps'] = [
         {
           id: 'OrthoFCIRZH',
@@ -2283,6 +2336,10 @@ describe('FavouritesService', () => {
               ],
             },
           },
+          initialTimeSliderExtent: {
+            start: timeService.createUTCDateFromString('2014-01-01T00:00:00.000Z'),
+            end: timeService.createUTCDateFromString('2021-01-01T00:00:00.000Z'),
+          },
           filterConfigurations: undefined,
         },
       ];
@@ -2347,21 +2404,24 @@ describe('FavouritesService', () => {
           isSingleLayer: false,
           attributeFilters: undefined,
           timeExtent: {
-            start: TimeExtentUtils.parseDefaultUTCDate('2016-01-01T00:00:00.000Z'),
-            end: TimeExtentUtils.parseDefaultUTCDate('2017-01-01T00:00:00.000Z'),
+            start: timeService.createUTCDateFromString('2016-01-01T00:00:00.000Z'),
+            end: timeService.createUTCDateFromString('2017-01-01T00:00:00.000Z'),
           },
         },
       ];
 
       const result = service.getActiveMapItemsForFavourite(activeMapItemConfigurations, true);
-      const initialTimeExtent = TimeExtentUtils.createInitialTimeSliderExtent(service['availableMaps'][0].timeSliderConfiguration!);
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      const initialTimeExtent = timeSliderService.createInitialTimeSliderExtent(service['availableMaps'][0].timeSliderConfiguration!);
       const activeMapItems: ActiveMapItem[] = [
         ActiveMapItemFactory.createGb2WmsMapItem(
+          // eslint-disable-next-line @typescript-eslint/dot-notation
           service['availableMaps'][0],
           undefined,
           true,
           1,
           initialTimeExtent,
+          // eslint-disable-next-line @typescript-eslint/dot-notation
           service['availableMaps'][0].filterConfigurations,
         ),
       ];

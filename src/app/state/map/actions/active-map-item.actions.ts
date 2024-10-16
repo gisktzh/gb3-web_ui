@@ -12,6 +12,7 @@ export const ActiveMapItemActions = createActionGroup({
   events: {
     'Add Active Map Item': props<{activeMapItem: ActiveMapItem; position: number}>(),
     'Remove Active Map Item': props<{activeMapItem: ActiveMapItem}>(),
+    'Replace Active Map Item': props<{modifiedActiveMapItem: ActiveMapItem}>(),
     'Remove All Active Map Items': emptyProps(),
     'Remove Temporary Active Map Item': props<{activeMapItem: ActiveMapItem}>(),
     'Remove All Temporary Active Map Items': emptyProps(),

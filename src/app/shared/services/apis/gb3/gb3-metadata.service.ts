@@ -297,7 +297,7 @@ export class Gb3MetadataService extends Gb3ApiService {
       department: contact.amt,
       division: contact.fachstelle,
       section: contact.sektion,
-      url: contact.weburl.href,
+      url: contact.weburl,
       street: contact.strassenname,
       poBox: contact.postfach,
       email: contact.email,

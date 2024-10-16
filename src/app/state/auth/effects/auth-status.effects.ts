@@ -19,7 +19,6 @@ import {DrawingActiveMapItem} from '../../../map/models/implementations/drawing.
 import {MAP_SERVICE} from '../../../app.module';
 import {MapService} from '../../../map/interfaces/map.service';
 import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
-import {StorageUtils} from '../../../shared/utils/storage.utils';
 import {defaultActiveMapItemConfiguration} from '../../../shared/interfaces/active-map-item-configuration.interface';
 
 @Injectable()
@@ -30,7 +29,7 @@ export class AuthStatusEffects {
         ofType(AuthStatusActions.performLogin),
         concatLatestFrom(() => this.store.select(selectCurrentShareLinkItem)),
         tap(([_, shareLinkItem]) => {
-          this.sessionStorageService.set('shareLinkItem', StorageUtils.stringifyJson(shareLinkItem));
+          this.sessionStorageService.set('shareLinkItem', this.sessionStorageService.stringifyJson(shareLinkItem));
           this.authService.login();
         }),
       );
@@ -44,7 +43,7 @@ export class AuthStatusEffects {
         ofType(AuthStatusActions.performLogout),
         concatLatestFrom(() => this.store.select(selectCurrentShareLinkItem)),
         tap(([{isForced}, shareLinkItem]) => {
-          this.sessionStorageService.set('shareLinkItem', StorageUtils.stringifyJson(shareLinkItem));
+          this.sessionStorageService.set('shareLinkItem', this.sessionStorageService.stringifyJson(shareLinkItem));
           this.authService.logout(isForced);
         }),
       );
@@ -61,7 +60,7 @@ export class AuthStatusEffects {
         this.sessionStorageService.remove('shareLinkItem');
 
         const shareLinkItem: ShareLinkItem | undefined = shareLinkItemString
-          ? StorageUtils.parseJson<ShareLinkItem>(shareLinkItemString)
+          ? this.sessionStorageService.parseJson<ShareLinkItem>(shareLinkItemString)
           : undefined;
 
         return shareLinkItem

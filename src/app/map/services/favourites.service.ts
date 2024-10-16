@@ -1,4 +1,4 @@
-import {Injectable, OnDestroy} from '@angular/core';
+import {Inject, Injectable, OnDestroy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Gb3FavouritesService} from '../../shared/services/apis/gb3/gb3-favourites.service';
 import {Observable, Subscription, switchMap, tap, withLatestFrom} from 'rxjs';
@@ -27,8 +27,9 @@ import {SymbolizationToGb3ConverterUtils} from '../../shared/utils/symbolization
 import {DrawingActiveMapItem} from '../models/implementations/drawing.model';
 import {Gb3StyledInternalDrawingRepresentation} from '../../shared/interfaces/internal-drawing-representation.interface';
 import {TimeExtent} from '../interfaces/time-extent.interface';
-import {TimeExtentUtils} from '../../shared/utils/time-extent.utils';
 import {TimeSliderService} from './time-slider.service';
+import {TimeService} from '../../shared/interfaces/time-service.interface';
+import {TIME_SERVICE} from '../../app.module';
 
 @Injectable({
   providedIn: 'root',
@@ -46,6 +47,7 @@ export class FavouritesService implements OnDestroy {
     private readonly store: Store,
     private readonly gb3FavouritesService: Gb3FavouritesService,
     private readonly timeSliderService: TimeSliderService,
+    @Inject(TIME_SERVICE) private readonly timeService: TimeService,
   ) {
     this.initSubscriptions();
   }
@@ -252,7 +254,7 @@ export class FavouritesService implements OnDestroy {
     const isValid = this.validateTimeSlider(timeSliderConfiguration, timeExtent);
     if (!isValid) {
       if (ignoreErrors) {
-        return TimeExtentUtils.createInitialTimeSliderExtent(timeSliderConfiguration);
+        return this.timeSliderService.createInitialTimeSliderExtent(timeSliderConfiguration);
       } else {
         throw new FavouriteIsInvalid(`Die Konfiguration für den Zeitschieberegler der Karte '${title}' ist ungültig.`);
       }
@@ -351,7 +353,9 @@ export class FavouritesService implements OnDestroy {
         return isTimeExtentValid;
       case 'layer': {
         const selectedYearExists = (timeSliderConfiguration.source as TimeSliderLayerSource).layers.some(
-          (layer) => TimeExtentUtils.parseUTCDate(layer.date, timeSliderConfiguration.dateFormat).getTime() === timeExtent.start.getTime(),
+          (layer) =>
+            this.timeService.createUTCDateFromString(layer.date, timeSliderConfiguration.dateFormat).getTime() ===
+            timeExtent.start.getTime(),
         );
         return selectedYearExists && isTimeExtentValid;
       }

@@ -20,7 +20,13 @@ import {MapUiActions} from '../actions/map-ui.actions';
 import {FeatureInfoActions} from '../actions/feature-info.actions';
 import {TimeExtent} from '../../../map/interfaces/time-extent.interface';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
-import {FilterConfiguration, Map} from '../../../shared/interfaces/topic.interface';
+import {
+  FilterConfiguration,
+  Map,
+  MapLayer,
+  TimeSliderConfiguration,
+  TimeSliderLayerSource,
+} from '../../../shared/interfaces/topic.interface';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {FavouriteBaseConfig} from '../../../shared/interfaces/favourite.interface';
 import {PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
@@ -30,6 +36,7 @@ import {DrawingActions} from '../actions/drawing.actions';
 import {LayerCatalogActions} from '../actions/layer-catalog.actions';
 import {SearchActions} from '../../app/actions/search.actions';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
 
 describe('ActiveMapItemEffects', () => {
   let actions$: Observable<Action>;
@@ -553,6 +560,69 @@ describe('ActiveMapItemEffects', () => {
           expect(itemSpy.spy).not.toHaveBeenCalled();
         });
         expect(action).toEqual(MapConfigActions.clearInitialMapsConfig());
+        done();
+      });
+    });
+  });
+
+  describe('setTimeSliderExtent$', () => {
+    it('dispatches nothing if item does not exist', fakeAsync(() => {
+      const timeExtent: TimeExtent = {
+        start: new Date(2023, 0, 1),
+        end: new Date(2023, 11, 31),
+      };
+      const activeMapItem = createGb2WmsMapItemMock('id');
+      store.overrideSelector(selectItems, []);
+
+      let newAction;
+      actions$ = of(ActiveMapItemActions.setTimeSliderExtent({timeExtent, activeMapItem}));
+      effects.setTimeSliderExtent$.subscribe((action) => (newAction = action));
+      flush();
+
+      expect(newAction).toBeUndefined();
+    }));
+
+    it('sets the time extent and reevaluates all layer visibilities, dispatches replaceActiveMapItem', (done: DoneFn) => {
+      const timeExtent: TimeExtent = {
+        start: new Date(2023, 0, 1),
+        end: new Date(2023, 11, 31),
+      };
+      const mapMock: Partial<Map> = {id: 'id'};
+      mapMock.layers = [
+        {layer: 'layer01', visible: false} as MapLayer,
+        {layer: 'layer02', visible: false} as MapLayer,
+        {layer: 'layer03', visible: false} as MapLayer,
+      ];
+      mapMock.timeSliderConfiguration = {
+        dateFormat: 'YYYY-MM-DD',
+        sourceType: 'layer',
+        source: {
+          layers: [
+            {layerName: 'layer01', date: '2022-06-30'},
+            {layerName: 'layer02', date: '2023-06-30'},
+            {layerName: 'layer03', date: '2024-06-30'},
+          ],
+        } as TimeSliderLayerSource,
+      } as TimeSliderConfiguration;
+      mapMock.initialTimeSliderExtent = timeExtent;
+      const activeMapItem = ActiveMapItemFactory.createGb2WmsMapItem(<Map>mapMock);
+      store.overrideSelector(selectItems, [activeMapItem]);
+
+      actions$ = of(ActiveMapItemActions.setTimeSliderExtent({timeExtent, activeMapItem}));
+      const expectedAction = ActiveMapItemActions.replaceActiveMapItem({modifiedActiveMapItem: activeMapItem});
+      effects.setTimeSliderExtent$.subscribe(({modifiedActiveMapItem, type}) => {
+        const expectedTimeExtent = timeExtent;
+        const expectedLayers: Partial<MapLayer>[] = [
+          {layer: 'layer01', visible: false},
+          {layer: 'layer02', visible: true},
+          {layer: 'layer03', visible: false},
+        ];
+
+        expect(type).toEqual(expectedAction.type);
+        expect(modifiedActiveMapItem).toBeInstanceOf(Gb2WmsActiveMapItem);
+        expect((<Gb2WmsActiveMapItem>modifiedActiveMapItem).settings.timeSliderExtent).toEqual(expectedTimeExtent);
+        expect((<Gb2WmsActiveMapItem>modifiedActiveMapItem).settings.layers).toEqual(<MapLayer[]>expectedLayers);
+
         done();
       });
     });

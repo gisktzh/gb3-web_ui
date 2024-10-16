@@ -79,6 +79,8 @@ const mockMapDetailResponse = {
     topic: 'test-topic',
     verweise: [],
     gb2_url: null,
+    gbkarten_internet_url: null,
+    gbkarten_intranet_url: null,
   },
 } as MetadataMapsDetailData;
 
@@ -153,7 +155,7 @@ const mockDatasetDetailResponse = {
 } as MetadataDatasetsDetailData;
 
 const expectedMockDepartmentalContact: DepartmentalContact = {
-  url: mockContact.weburl.href,
+  url: mockContact.weburl,
   email: mockContact.email,
   phoneDirect: mockContact.telephon_direkt,
   phone: mockContact.telephon,

@@ -4,7 +4,6 @@ import {ActiveMapItemState} from '../states/active-map-item.state';
 import {produce} from 'immer';
 import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
 import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
-import {ActiveTimeSliderLayersUtils} from '../../../map/utils/active-time-slider-layers.utils';
 
 export const activeMapItemFeatureKey = 'activeMapItem';
 
@@ -138,26 +137,6 @@ export const activeMapItemFeature = createFeature({
       }),
     ),
     on(
-      ActiveMapItemActions.setTimeSliderExtent,
-      produce((draft, {timeExtent, activeMapItem}) => {
-        draft.items.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).forEach((mapItem) => {
-          if (mapItem.id === activeMapItem.id) {
-            mapItem.settings.timeSliderExtent = timeExtent;
-            mapItem.settings.layers.forEach((layer) => {
-              const isVisible = ActiveTimeSliderLayersUtils.isLayerVisible(
-                layer,
-                mapItem.settings.timeSliderConfiguration,
-                mapItem.settings.timeSliderExtent,
-              );
-              if (isVisible !== undefined) {
-                layer.visible = isVisible;
-              }
-            });
-          }
-        });
-      }),
-    ),
-    on(
       ActiveMapItemActions.setAttributeFilterValueState,
       produce((draft, {isFilterValueActive, filterValueName, attributeFilterParameter, activeMapItem}) => {
         draft.items.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).forEach((mapItem) => {
@@ -190,6 +169,16 @@ export const activeMapItemFeature = createFeature({
         draft.items.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).forEach((mapItem) => {
           mapItem.settings.isNoticeMarkedAsRead = true;
         });
+      }),
+    ),
+    on(
+      ActiveMapItemActions.replaceActiveMapItem,
+      produce((draft, {modifiedActiveMapItem}) => {
+        const existing = draft.items.find((mapItem) => mapItem.id === modifiedActiveMapItem.id);
+        if (existing) {
+          const index = draft.items.indexOf(existing);
+          draft.items.splice(index, 1, modifiedActiveMapItem);
+        }
       }),
     ),
   ),

@@ -2,13 +2,27 @@ import {HasVisibility} from '../../map/interfaces/has-visibility.interface';
 import {HasHidingState} from './has-hiding-state.interface';
 import {HasActiveState} from './has-active-state.interface';
 import {HasOpacity} from '../../map/interfaces/has-opacity.interface';
+import {TimeExtent} from '../../map/interfaces/time-extent.interface';
 
 export interface Topic {
   title: string;
   maps: Map[];
 }
 
-export interface Map extends HasOpacity {
+/**
+ * TimeSliderSettings are either or - they have either a config AND an extent, or neither.
+ */
+export type TimeSliderSettings =
+  | {
+      timeSliderConfiguration: TimeSliderConfiguration;
+      initialTimeSliderExtent: TimeExtent;
+    }
+  | {
+      timeSliderConfiguration: undefined;
+      initialTimeSliderExtent: undefined;
+    };
+
+interface BasicMap extends HasOpacity {
   /** Map identifier */
   id: string;
   /** Map title */
@@ -34,14 +48,14 @@ export interface Map extends HasOpacity {
   minScale: number | null;
   /** True if unaccessible with current permissions. Not available in production environment. */
   permissionMissing?: boolean;
-  /** Timeslider Settings */
-  timeSliderConfiguration?: TimeSliderConfiguration;
   /** Filters Settings */
   filterConfigurations?: FilterConfiguration[];
   searchConfigurations?: SearchConfiguration[];
   /** Topic-specific notice for end-users */
   notice: string | null;
 }
+
+export type Map = BasicMap & TimeSliderSettings;
 
 export interface MapLayer extends HasVisibility, HasHidingState {
   /** Layer ID */

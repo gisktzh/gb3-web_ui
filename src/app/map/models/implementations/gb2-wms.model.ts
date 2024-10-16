@@ -1,6 +1,5 @@
 import {FilterConfiguration, Map, MapLayer, SearchConfiguration, TimeSliderConfiguration} from '../../../shared/interfaces/topic.interface';
 import {TimeExtent} from '../../interfaces/time-extent.interface';
-import {TimeExtentUtils} from '../../../shared/utils/time-extent.utils';
 import {AbstractActiveMapItemSettings, ActiveMapItem} from '../active-map-item.model';
 import {AddToMapVisitor} from '../../interfaces/add-to-map.visitor';
 
@@ -23,7 +22,7 @@ export class Gb2WmsSettings extends AbstractActiveMapItemSettings {
     this.layers = layer ? [layer] : map.layers;
     this.timeSliderConfiguration = map.timeSliderConfiguration;
     if (map.timeSliderConfiguration) {
-      this.timeSliderExtent = timeExtent ?? TimeExtentUtils.createInitialTimeSliderExtent(map.timeSliderConfiguration);
+      this.timeSliderExtent = timeExtent ?? map.initialTimeSliderExtent;
     }
     this.filterConfigurations = filterConfigurations ?? map.filterConfigurations;
     this.searchConfigurations = map.searchConfigurations;

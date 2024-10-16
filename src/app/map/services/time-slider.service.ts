@@ -1,18 +1,28 @@
-import {Injectable} from '@angular/core';
-import {TimeSliderConfiguration, TimeSliderLayerSource} from '../../shared/interfaces/topic.interface';
-import dayjs from 'dayjs';
-import duration, {Duration} from 'dayjs/plugin/duration';
-import {TimeExtentUtils} from '../../shared/utils/time-extent.utils';
+import {Inject, Injectable} from '@angular/core';
+import {MapLayer, TimeSliderConfiguration, TimeSliderLayerSource} from '../../shared/interfaces/topic.interface';
 import {TimeExtent} from '../interfaces/time-extent.interface';
-
 import {InvalidTimeSliderConfiguration} from '../../shared/errors/map.errors';
-
-dayjs.extend(duration);
+import {TIME_SERVICE} from '../../app.module';
+import {TimeService} from '../../shared/interfaces/time-service.interface';
+import {DateUnit} from '../../shared/types/date-unit.type';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TimeSliderService {
+  constructor(@Inject(TIME_SERVICE) private readonly timeService: TimeService) {}
+  /**
+   * Creates an initial time extent based on the given time slider configuration.
+   */
+  public createInitialTimeSliderExtent(timeSliderConfig: TimeSliderConfiguration): TimeExtent {
+    const minimumDate: Date = this.timeService.createUTCDateFromString(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat);
+    const maximumDate: Date = this.timeService.createUTCDateFromString(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat);
+    return {
+      start: minimumDate,
+      end: timeSliderConfig.range ? this.timeService.addRangeToDate(minimumDate, timeSliderConfig.range) : maximumDate,
+    };
+  }
+
   /**
    * Creates stops which define specific locations on the time slider where thumbs will snap to when manipulated.
    */
@@ -22,6 +32,29 @@ export class TimeSliderService {
         return this.createStopsForParameterSource(timeSliderConfig);
       case 'layer':
         return this.createStopsForLayerSource(timeSliderConfig);
+    }
+  }
+
+  /**
+   * Is the given layer visible? Returns `true` or `false` depending on the layer to be within the given time extent; or `undefined` if
+   * either the layer isn't part of a time slider configuration, the extent is undefined or the configuration source isn't of type `layer`.
+   */
+  public isLayerVisible(
+    mapLayer: MapLayer,
+    timeSliderConfiguration: TimeSliderConfiguration | undefined,
+    timeExtent: TimeExtent | undefined,
+  ): boolean | undefined {
+    if (!timeSliderConfiguration || timeSliderConfiguration.sourceType === 'parameter' || !timeExtent) {
+      return undefined;
+    }
+
+    const timeSliderLayerSource = timeSliderConfiguration.source as TimeSliderLayerSource;
+    const timeSliderLayer = timeSliderLayerSource.layers.find((layer) => layer.layerName === mapLayer.layer);
+    if (timeSliderLayer) {
+      const date = this.timeService.createUTCDateFromString(timeSliderLayer.date, timeSliderConfiguration.dateFormat);
+      return date >= timeExtent.start && date < timeExtent.end;
+    } else {
+      return undefined;
     }
   }
 
@@ -51,8 +84,7 @@ export class TimeSliderService {
             The start has changed as fixed ranges technically don't have an end date
             => the end date has to be adjusted accordingly to enforce the fixed range between start and end date
          */
-      const range: Duration = dayjs.duration(timeSliderConfig.range);
-      timeExtent.end = TimeExtentUtils.addDuration(timeExtent.start, range);
+      timeExtent.end = this.timeService.addRangeToDate(timeExtent.start, timeSliderConfig.range);
     } else if (timeSliderConfig.minimalRange) {
       /*
           Minimal range
@@ -73,21 +105,21 @@ export class TimeSliderService {
         timeExtent.end = startDate;
       }
 
-      const startEndDiff: number = TimeExtentUtils.calculateDifferenceBetweenDates(timeExtent.start, timeExtent.end);
-      const minimalRange: Duration = dayjs.duration(timeSliderConfig.minimalRange);
+      const startEndDiff: number = this.timeService.calculateDifferenceBetweenDates(timeExtent.start, timeExtent.end);
+      const minimalRangeInMs: number = this.timeService.getISORangeInMilliseconds(timeSliderConfig.minimalRange);
 
-      if (startEndDiff < minimalRange.asMilliseconds()) {
+      if (startEndDiff < minimalRangeInMs) {
         if (hasStartDateChanged) {
-          const newStartDate = TimeExtentUtils.subtractDuration(timeExtent.end, minimalRange);
+          const newStartDate = this.timeService.subtractRangeFromDate(timeExtent.end, timeSliderConfig.minimalRange);
           timeExtent.start = this.validateDateWithinLimits(newStartDate, minimumDate, maximumDate);
-          if (TimeExtentUtils.calculateDifferenceBetweenDates(timeExtent.start, timeExtent.end) < minimalRange.asMilliseconds()) {
-            timeExtent.end = TimeExtentUtils.addDuration(timeExtent.start, minimalRange);
+          if (this.timeService.calculateDifferenceBetweenDates(timeExtent.start, timeExtent.end) < minimalRangeInMs) {
+            timeExtent.end = this.timeService.addRangeToDate(timeExtent.start, timeSliderConfig.minimalRange);
           }
         } else {
-          const newEndDate = TimeExtentUtils.addDuration(timeExtent.start, minimalRange);
+          const newEndDate = this.timeService.addRangeToDate(timeExtent.start, timeSliderConfig.minimalRange);
           timeExtent.end = this.validateDateWithinLimits(newEndDate, minimumDate, maximumDate);
-          if (TimeExtentUtils.calculateDifferenceBetweenDates(timeExtent.start, timeExtent.end) < minimalRange.asMilliseconds()) {
-            timeExtent.start = TimeExtentUtils.subtractDuration(timeExtent.end, minimalRange);
+          if (this.timeService.calculateDifferenceBetweenDates(timeExtent.start, timeExtent.end) < minimalRangeInMs) {
+            timeExtent.start = this.timeService.subtractRangeFromDate(timeExtent.end, timeSliderConfig.minimalRange);
           }
         }
       }
@@ -97,8 +129,8 @@ export class TimeSliderService {
   }
 
   public isTimeExtentValid(timeSliderConfig: TimeSliderConfiguration, timeExtent: TimeExtent): boolean {
-    const minDate = TimeExtentUtils.parseUTCDate(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat);
-    const maxDate = TimeExtentUtils.parseUTCDate(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat);
+    const minDate = this.timeService.createUTCDateFromString(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat);
+    const maxDate = this.timeService.createUTCDateFromString(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat);
 
     const updatedTimeExtent: TimeExtent = this.createValidTimeExtent(timeSliderConfig, timeExtent, false, minDate, maxDate);
 
@@ -106,50 +138,102 @@ export class TimeSliderService {
   }
 
   /**
+   * Extracts a unit from the given date format (ISO8601) if it contains exactly one or <undefined> if it contains multiple units.
+   *
+   * @remarks
+   * It does return a unit ('years'/'months'/...) only if the given range contains values of this unit and nothing else; <undefined>
+   *   otherwise.
+   *
+   * @example
+   * 'YYYY' is a date format containing only years; The unique unit is years and therefore this method returns 'years'
+   * 'H:m s.SSS' is a date format containing hours, minutes, seconds and milliseconds; there are multiple units therefore this method
+   *   returns 'undefined'
+   * */
+  public extractUniqueUnitFromDateFormat(dateFormat: string): DateUnit | undefined {
+    if (dateFormat.replace(/S/g, '').trim() === '') return 'milliseconds';
+    if (dateFormat.replace(/s/g, '').trim() === '') return 'seconds';
+    if (dateFormat.replace(/m/g, '').trim() === '') return 'minutes';
+    if (dateFormat.replace(/[hH]/g, '').trim() === '') return 'hours';
+    if (dateFormat.replace(/[dD]/g, '').trim() === '') return 'days';
+    if (dateFormat.replace(/M/g, '').trim() === '') return 'months';
+    if (dateFormat.replace(/Y/g, '').trim() === '') return 'years';
+    return undefined;
+  }
+
+  /**
    * Creates stops for a layer source containing multiple dates which may not necessarily have constant gaps between them.
    */
   private createStopsForLayerSource(timeSliderConfig: TimeSliderConfiguration): Array<Date> {
     const timeSliderLayerSource = timeSliderConfig.source as TimeSliderLayerSource;
-    return timeSliderLayerSource.layers.map((layer) => TimeExtentUtils.parseUTCDate(layer.date, timeSliderConfig.dateFormat));
+    return timeSliderLayerSource.layers.map((layer) => this.timeService.createUTCDateFromString(layer.date, timeSliderConfig.dateFormat));
   }
 
   /**
    * Creates stops for a parameter source.
    *
    * @remarks
-   * This is done by using a strict interval (e.g. one year) if the default range duration only contains
+   * This is done by using a strict interval (e.g. one year) if the default range only contains
    * a single type of unit (e.g. 'years'). Otherwise a more generic approach is used by creating date stops from
-   * start to finish using the given duration; this can lead to gaps near the end but supports all cases.
+   * start to finish using the given range; this can lead to gaps near the end but supports all cases.
    */
   private createStopsForParameterSource(timeSliderConfig: TimeSliderConfiguration): Array<Date> {
-    const minimumDate: Date = TimeExtentUtils.parseUTCDate(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat);
-    const maximumDate: Date = TimeExtentUtils.parseUTCDate(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat);
+    const minimumDate: Date = this.timeService.createUTCDateFromString(timeSliderConfig.minimumDate, timeSliderConfig.dateFormat);
+    const maximumDate: Date = this.timeService.createUTCDateFromString(timeSliderConfig.maximumDate, timeSliderConfig.dateFormat);
     const initialRange: string | null = timeSliderConfig.range ?? timeSliderConfig.minimalRange ?? null;
-    let stopRangeDuration: Duration | null = initialRange ? dayjs.duration(initialRange) : null;
     if (
-      stopRangeDuration &&
-      TimeExtentUtils.calculateDifferenceBetweenDates(minimumDate, maximumDate) <= stopRangeDuration.asMilliseconds()
+      initialRange &&
+      this.timeService.calculateDifferenceBetweenDates(minimumDate, maximumDate) <= this.timeService.getISORangeInMilliseconds(initialRange)
     ) {
       throw new InvalidTimeSliderConfiguration('min date + range > max date');
     }
-    if (!stopRangeDuration) {
-      const unit = TimeExtentUtils.extractSmallestUnitFromDateFormat(timeSliderConfig.dateFormat);
+
+    let unit: DateUnit | undefined;
+    if (!initialRange) {
+      unit = this.extractSmallestUnitFromDateFormat(timeSliderConfig.dateFormat);
       if (!unit) {
         throw new InvalidTimeSliderConfiguration('Datumsformat sowie minimale Range sind ungültig.');
       }
-
-      // create a new duration base on the smallest unit with the lowest valid unit number (1)
-      stopRangeDuration = dayjs.duration(1, unit);
     }
 
     const dates: Date[] = [];
     let date = minimumDate;
     while (date < maximumDate) {
       dates.push(date);
-      date = TimeExtentUtils.addDuration(date, stopRangeDuration);
+
+      if (initialRange) {
+        date = this.timeService.addRangeToDate(date, initialRange);
+      } else if (unit) {
+        date = this.addMinimalRange(date, unit);
+      } else {
+        throw new InvalidTimeSliderConfiguration('Datumsformat sowie minimale Range sind ungültig.');
+      }
     }
     dates.push(maximumDate);
     return dates;
+  }
+
+  private addMinimalRange(date: Date, unit: string): Date {
+    return this.timeService.addMinimalRangeToDate(date, unit);
+  }
+
+  /**
+   * Extracts the smallest unit from the given date format (ISO8601) or <undefined> if nothing matches.
+   *
+   * @example
+   * 'YYYY-MM' is a date format containing years and months; The smallest unit is months (months < years) and therefore this method returns
+   *   'months'
+   * 'H:m s.SSS' is a date format containing hours, minutes, seconds and milliseconds; The smallest unit is milliseconds and therefore this
+   *   method returns 'milliseconds'
+   * */
+  private extractSmallestUnitFromDateFormat(dateFormat: string): DateUnit | undefined {
+    if (dateFormat.includes('SSS')) return 'milliseconds';
+    if (dateFormat.includes('s')) return 'seconds';
+    if (dateFormat.includes('m')) return 'minutes';
+    if (dateFormat.toLowerCase().includes('h')) return 'hours'; // both `h` and `H` are used for `hours`
+    if (dateFormat.toLowerCase().includes('d')) return 'days'; // both `d` and `D` are used for `days`
+    if (dateFormat.includes('M')) return 'months';
+    if (dateFormat.includes('Y')) return 'years';
+    return undefined;
   }
 
   /**
