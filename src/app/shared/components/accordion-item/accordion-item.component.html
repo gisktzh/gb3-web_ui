@@ -16,6 +16,7 @@
       [ngClass]="{
         'accordion-item__content__header--opened': accordionItem.expanded,
         'accordion-item__content__header--grey': variant === 'grey',
+        'accordion-item__content__header--light': variant === 'light',
       }"
     >
       <span [ngClass]="{'accordion-item__content__header__text': screenMode === 'mobile' && !accordionItem.expanded}">{{ header }}</span>
