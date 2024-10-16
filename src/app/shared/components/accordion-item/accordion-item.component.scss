@@ -41,6 +41,10 @@
         color: ktzh-variables.$zh-black100;
       }
 
+      &--light {
+        color: ktzh-variables.$zh-white;
+      }
+
       .accordion-item__content__header__icon-wrapper {
         display: flex;
       }

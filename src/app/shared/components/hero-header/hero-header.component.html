@@ -1,5 +1,5 @@
 <div class="hero-header">
-  <img alt="Kt. ZH Logo" class="hero-header__image" ngSrc="/assets/images/ktzh_inverted.svg" height="180" width="184" />
+  <img aria-hidden="true" alt="Kt. ZH Logo" class="hero-header__image" ngSrc="/assets/images/ktzh_inverted.svg" height="180" width="184" />
   <h1 class="hero-header__title mat-headline-3" [ngClass]="{'hero-header__title--mobile': screenMode === 'mobile'}">{{ heroTitle }}</h1>
   <p *ngIf="screenMode !== 'mobile'" class="hero-header__intro-paragraph">
     {{ heroText }}

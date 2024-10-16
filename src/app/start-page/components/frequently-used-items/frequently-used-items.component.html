@@ -7,39 +7,45 @@
   <p *ngIf="frequentlyUsedItems.length === 0 && loadingState === 'loaded'" class="mat-caption">
     Aktuell gibt es keine häufig verwendete Karten oder Daten.
   </p>
-  <ng-container *ngFor="let frequentlyUsedItem of frequentlyUsedItems">
-    <div class="frequently-used-items__item" [ngClass]="{'frequently-used-items__item--mobile': screenMode === 'mobile'}">
-      <div
-        class="frequently-used-items__item__image-container"
-        [ngClass]="{'frequently-used-items__item__image-container--mobile': screenMode === 'mobile'}"
+  <ul style="margin: 0; padding: 0">
+    <li *ngFor="let frequentlyUsedItem of frequentlyUsedItems" style="list-style-type: none">
+      <section
+        class="frequently-used-items__item"
+        [ngClass]="{'frequently-used-items__item--mobile': screenMode === 'mobile'}"
+        [attr.aria-label]="frequentlyUsedItem.title"
       >
-        <img
-          *ngIf="frequentlyUsedItem.image !== undefined"
-          [src]="frequentlyUsedItem.image.url"
-          [alt]="frequentlyUsedItem.image.altText ?? ''"
-          class="frequently-used-items__item__image-container__image"
-        />
-      </div>
-      <div
-        class="frequently-used-items__item__text-container"
-        [ngClass]="{'frequently-used-items__item__text-container--mobile': screenMode === 'mobile'}"
-      >
-        <h1>{{ frequentlyUsedItem.title }}</h1>
-        <p class="frequently-used-items__item__text-container__text">{{ frequentlyUsedItem.description }}</p>
-        <a
-          *ngIf="frequentlyUsedItem.url !== undefined"
-          [href]="frequentlyUsedItem.url"
-          class="frequently-used-items__item__text-container__link"
-          mat-button
-          target="_self"
-          rel="noopener noreferrer"
-          title="Link öffnen"
+        <div
+          class="frequently-used-items__item__image-container"
+          [ngClass]="{'frequently-used-items__item__image-container--mobile': screenMode === 'mobile'}"
         >
-          Link öffnen
-          <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
-        </a>
-      </div>
-    </div>
-    <mat-divider></mat-divider>
-  </ng-container>
+          <img
+            *ngIf="frequentlyUsedItem.image !== undefined"
+            [src]="frequentlyUsedItem.image.url"
+            [alt]="frequentlyUsedItem.image.altText ?? ''"
+            class="frequently-used-items__item__image-container__image"
+          />
+        </div>
+        <div
+          class="frequently-used-items__item__text-container"
+          [ngClass]="{'frequently-used-items__item__text-container--mobile': screenMode === 'mobile'}"
+        >
+          <h1>{{ frequentlyUsedItem.title }}</h1>
+          <p class="frequently-used-items__item__text-container__text">{{ frequentlyUsedItem.description }}</p>
+          <a
+            *ngIf="frequentlyUsedItem.url !== undefined"
+            [href]="frequentlyUsedItem.url"
+            class="frequently-used-items__item__text-container__link"
+            mat-button
+            target="_self"
+            rel="noopener noreferrer"
+            title="Link öffnen"
+          >
+            Link öffnen
+            <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
+          </a>
+        </div>
+      </section>
+      <mat-divider></mat-divider>
+    </li>
+  </ul>
 </div>
