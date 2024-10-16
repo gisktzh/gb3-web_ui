@@ -1,6 +1,6 @@
 export interface LayerAttributes {
-  name: string;
-  description: string;
-  type: string;
+  name: string | null;
+  description: string | null;
+  type: string | null;
   unit: string | null;
 }

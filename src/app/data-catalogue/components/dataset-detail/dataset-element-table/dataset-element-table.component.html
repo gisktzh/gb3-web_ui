@@ -8,10 +8,10 @@
     </tr>
     @for (attribute of attributes; track attribute.name) {
       <tr class="dataset-element-table__table__row">
-        <td class="dataset-element-table__table__row__column">{{ attribute.name }}</td>
-        <td class="dataset-element-table__table__row__column" [innerHTML]="attribute.description | formatLineBreaks"></td>
-        <td class="dataset-element-table__table__row__column">{{ attribute.type }}</td>
-        <td class="dataset-element-table__table__row__column">{{ attribute.unit }}</td>
+        <td class="dataset-element-table__table__row__column">{{ attribute.name ?? '-' }}</td>
+        <td class="dataset-element-table__table__row__column" [innerHTML]="attribute.description ?? '-' | formatLineBreaks"></td>
+        <td class="dataset-element-table__table__row__column">{{ attribute.type ?? '-' }}</td>
+        <td class="dataset-element-table__table__row__column">{{ attribute.unit ?? '-' }}</td>
       </tr>
     }
   </table>

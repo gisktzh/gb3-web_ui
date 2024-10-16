@@ -15,8 +15,8 @@ export interface DepartmentalContact {
   village: string;
   phone: string;
   phoneDirect: string;
-  email: LinkObject;
-  url: string;
+  email: LinkObject | null;
+  url: LinkObject | null;
 }
 
 interface BaseMetadataInterface {

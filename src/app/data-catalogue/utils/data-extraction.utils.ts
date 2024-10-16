@@ -12,7 +12,7 @@ export class DataExtractionUtils {
       {title: 'Tel', value: contact.phone, type: 'text'},
       {title: 'Tel direkt', value: contact.phoneDirect, type: 'text'},
       {title: 'E-Mail', value: contact.email, type: 'url'},
-      {title: 'www', value: {href: contact.url}, type: 'url'},
+      {title: 'www', value: contact.url, type: 'url'},
     ];
   }
 }
