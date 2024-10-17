@@ -222,7 +222,7 @@ export class Gb3MetadataService extends Gb3ApiService {
         : null,
       datasets: mapData.datasets.map(this.extractDatasetDetail),
       contact: {
-        geodata: this.extractContactDetails(mapData.kontakt_metadaten!), // TODO: Remove the ! once the API is fixed
+        geodata: this.extractContactDetails(mapData.kontakt_geodaten!), // TODO: Remove the ! once the API is fixed
       },
     };
   }

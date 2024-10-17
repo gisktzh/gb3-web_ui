@@ -1047,7 +1047,7 @@ export interface Map {
   /** Link auf Bild */
   image_url: string | null;
   /** Kontakt: Verantwortlich für Geodaten */
-  kontakt_metadaten?: Contact;
+  kontakt_geodaten?: Contact;
   /** Map GB2-Nummer */
   gb2_id: number;
   /** Topic name */
