@@ -17,6 +17,7 @@
         (click)="openFilter()"
         [ngClass]="{'search__bar__filter-button--active': isAnyFilterActive}"
         matTooltip="Suchresultate verfeinern"
+        aria-label="Suchresultate verfeinern"
         [disabled]="disabled"
       >
         <mat-icon svgIcon="ktzh_filter"></mat-icon>
@@ -30,6 +31,7 @@
       (click)="clearInput()"
       class="search__bar__close-button"
       [disabled]="(!alwaysEnableClearButton && searchInput.value.length === 0) || disabled"
+      aria-label="Sucheingabe löschen"
     >
       {{ clearButtonLabel }}
       <mat-icon>close</mat-icon>
@@ -40,6 +42,7 @@
         (click)="clearInput()"
         class="search__bar__close-icon-button"
         [disabled]="(!alwaysEnableClearButton && searchInput.value.length === 0) || disabled"
+        aria-label="Sucheingabe löschen"
       >
         <mat-icon *ngIf="screenMode === 'mobile'; else close">cancel</mat-icon>
         <ng-template #close>

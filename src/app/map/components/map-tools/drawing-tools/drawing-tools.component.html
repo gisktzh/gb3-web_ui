@@ -4,7 +4,8 @@
     class="drawing-tools__button"
     color="accent"
     mat-icon-button
-    matTooltip="Einstellungen"
+    [matTooltip]="tooltipText.settings"
+    [attr.aria-label]="tooltipText.settings"
     [disabled]="activeTool"
   >
     <mat-icon svgIcon="ktzh_settings"></mat-icon>
@@ -16,7 +17,8 @@
     class="drawing-tools__button"
     color="accent"
     mat-icon-button
-    matTooltip="Punkt: In Karte klicken um zu wählen."
+    [matTooltip]="tooltipText.pointDrawing"
+    [attr.aria-label]="tooltipText.pointDrawing"
   >
     <mat-icon svgIcon="ktzh_drawing_symbol_point"></mat-icon>
   </button>
@@ -26,7 +28,8 @@
     class="drawing-tools__button"
     color="accent"
     mat-icon-button
-    matTooltip="Linie: Mit Doppelklick beenden."
+    [matTooltip]="tooltipText.lineDrawing"
+    [attr.aria-label]="tooltipText.lineDrawing"
   >
     <mat-icon svgIcon="ktzh_drawing_symbol_line"></mat-icon>
   </button>
@@ -36,7 +39,8 @@
     class="drawing-tools__button"
     color="accent"
     mat-icon-button
-    matTooltip="Polygon: Auf Startpunkt klicken oder Doppelklick um zu beenden."
+    [matTooltip]="tooltipText.polygonDrawing"
+    [attr.aria-label]="tooltipText.polygonDrawing"
   >
     <mat-icon svgIcon="ktzh_drawing_symbol_polygon"></mat-icon>
   </button>
@@ -46,7 +50,8 @@
     class="drawing-tools__button"
     color="accent"
     mat-icon-button
-    matTooltip="Rechteck: Diagonale Eckpunkte wählen."
+    [matTooltip]="tooltipText.rectangleDrawing"
+    [attr.aria-label]="tooltipText.rectangleDrawing"
   >
     <mat-icon svgIcon="ktzh_drawing_symbol_rectangle"></mat-icon>
   </button>
@@ -56,7 +61,8 @@
     class="drawing-tools__button"
     color="accent"
     mat-icon-button
-    matTooltip="Kreis: Mittelpunkt und Radius wählen."
+    [matTooltip]="tooltipText.circleDrawing"
+    [attr.aria-label]="tooltipText.circleDrawing"
   >
     <mat-icon svgIcon="ktzh_drawing_symbol_circle"></mat-icon>
   </button>
@@ -66,7 +72,8 @@
     class="drawing-tools__button"
     color="accent"
     mat-icon-button
-    matTooltip="Text: In Karte klicken um Position zu wählen, anschliessend Text eingeben."
+    [matTooltip]="tooltipText.textDrawing"
+    [attr.aria-label]="tooltipText.textDrawing"
   >
     <mat-icon svgIcon="ktzh_drawing_symbol_text"></mat-icon>
   </button>
@@ -75,7 +82,8 @@
     class="drawing-tools__button"
     color="accent"
     mat-icon-button
-    matTooltip="Zeichnungen hochladen"
+    [matTooltip]="tooltipText.uploadDrawings"
+    [attr.aria-label]="tooltipText.uploadDrawings"
     (click)="this.openImportDrawingsDialog()"
     [disabled]="activeTool"
   >

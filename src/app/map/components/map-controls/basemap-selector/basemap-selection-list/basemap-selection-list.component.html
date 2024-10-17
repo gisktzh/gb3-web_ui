@@ -17,11 +17,12 @@
         class="basemap-selection-list__item__image"
         height="48"
         width="96"
+        [attr.aria-label]="availableBasemap.title"
       />
       <span *ngSwitchCase="'blank'" class="basemap-selection-list__item__image basemap-selection-list__item__image--blank"></span>
     </ng-container>
 
-    <span class="basemap-selection-list__item__title">
+    <span class="basemap-selection-list__item__title" aria-hidden="true">
       {{ availableBasemap.title }}
     </span>
   </button>

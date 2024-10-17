@@ -5,6 +5,8 @@
     (click)="toggleSelection()"
     class="basemap-selector__active"
     [ngStyle]="{'background-image': 'url(' + (activeBasemap?.id | basemapImageLink) + ')'}"
+    matTooltip="Hintergrundkarte ändern"
+    aria-label="Hintergrundkarte ändern"
   ></button>
   <basemap-selection-list
     *ngIf="isSelectionOpen"

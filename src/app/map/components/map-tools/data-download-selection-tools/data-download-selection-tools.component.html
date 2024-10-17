@@ -5,7 +5,8 @@
     class="data-download-selection-tools__button"
     color="accent"
     mat-icon-button
-    matTooltip="Kreis-Selektion: Mittelpunkt und Radius wählen."
+    [matTooltip]="tooltipText.circleSelecting"
+    [attr.aria-label]="tooltipText.circleSelecting"
   >
     <mat-icon svgIcon="ktzh_drawing_symbol_circle"></mat-icon>
   </button>
@@ -15,7 +16,8 @@
     class="data-download-selection-tools__button"
     color="accent"
     mat-icon-button
-    matTooltip="Polygon-Selektion: Auf Startpunkt klicken oder Doppelklick um zu beenden."
+    [matTooltip]="tooltipText.polygonSelecting"
+    [attr.aria-label]="tooltipText.polygonSelecting"
   >
     <mat-icon svgIcon="ktzh_drawing_symbol_polygon"></mat-icon>
   </button>
@@ -25,7 +27,8 @@
     class="data-download-selection-tools__button"
     color="accent"
     mat-icon-button
-    matTooltip="Rechteck-Selektion: Diagonale Eckpunkte wählen."
+    [matTooltip]="tooltipText.rectangleSelecting"
+    [attr.aria-label]="tooltipText.rectangleSelecting"
   >
     <mat-icon svgIcon="ktzh_drawing_symbol_rectangle"></mat-icon>
   </button>
@@ -36,7 +39,8 @@
     class="data-download-selection-tools__button"
     color="accent"
     mat-icon-button
-    matTooltip="Selektion: Aktueller Karten-Ausschnitt."
+    [matTooltip]="tooltipText.sectionSelecting"
+    [attr.aria-label]="tooltipText.sectionSelecting"
   >
     <mat-icon svgIcon="ktzh_select_section"></mat-icon>
   </button>
@@ -46,7 +50,8 @@
     class="data-download-selection-tools__button"
     color="accent"
     mat-icon-button
-    matTooltip="Selektion: Ganzer Kanton Zürich."
+    [matTooltip]="tooltipText.cantonSelecting"
+    [attr.aria-label]="tooltipText.cantonSelecting"
   >
     <mat-icon svgIcon="ktzh_select_canton"></mat-icon>
   </button>
@@ -56,7 +61,8 @@
     class="data-download-selection-tools__button"
     color="accent"
     mat-icon-button
-    matTooltip="Selektion: Auswahl einer Zürcher Gemeinde."
+    [matTooltip]="tooltipText.municipalitySelecting"
+    [attr.aria-label]="tooltipText.municipalitySelecting"
   >
     <mat-icon svgIcon="ktzh_select_municipality"></mat-icon>
   </button>

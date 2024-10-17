@@ -10,7 +10,7 @@
     class="map-data-catalogue__header"
   >
     <h2 class="map-data-catalogue__header__title">Kartenkatalog</h2>
-    <button (click)="toggleMinimizeMapDataCatalogue()" mat-icon-button>
+    <button (click)="toggleMinimizeMapDataCatalogue()" mat-icon-button [attr.aria-label]="isMinimized ? 'Aufklappen' : 'Zuklappen'">
       <mat-icon [fontIcon]="isMinimized ? 'arrow_drop_down' : 'arrow_drop_up'"></mat-icon>
     </button>
   </mat-card-header>

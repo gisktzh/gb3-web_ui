@@ -20,12 +20,19 @@ const FAVOURITE_HELPER_MESSAGES = {
   authenticatedAndMapsAdded: 'Aktive Karten als Favorit speichern',
 };
 
+const TOOLTIP_TEXT = {
+  onboardingGuide: 'Onboarding-Guide erneut öffnen',
+  mapNotices: 'Kartenhinweise zu den aktiven Karten',
+  removeAll: 'Alle aktiven Karten entfernen',
+};
+
 @Component({
   selector: 'active-map-items',
   templateUrl: './active-map-items.component.html',
   styleUrls: ['./active-map-items.component.scss'],
 })
 export class ActiveMapItemsComponent implements OnInit, OnDestroy {
+  public tooltipText = TOOLTIP_TEXT;
   public isAuthenticated: boolean = false;
   public activeMapItems: ActiveMapItem[] = [];
   public isMinimized = false;
