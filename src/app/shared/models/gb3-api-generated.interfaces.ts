@@ -934,6 +934,16 @@ export interface GeometryCrs {
   };
 }
 
+/** Image source path and meta data */
+export interface Image {
+  /** Source path of the image file for rendering e.g. as thumbnail */
+  src: LinkObject;
+  /** Alternative text of the image for accessiblity purposes */
+  alt: string;
+  /** Link to the original image file */
+  url: LinkObject;
+}
+
 /** Feature field */
 export type InfoFeatureField =
   | {
@@ -941,12 +951,24 @@ export type InfoFeatureField =
       label: string;
       /** Field value (string, numeric or null) */
       value: string | number | null;
+      /** type for the link object */
+      type: string;
     }
   | {
       /** Field label */
       label: string;
       /** Field link */
-      link: LinkObject;
+      value: LinkObject;
+      /** type for the link object */
+      type: string;
+    }
+  | {
+      /** Field label */
+      label: string;
+      /** Field image */
+      value: Image;
+      /** type for the image object */
+      type: string;
     };
 
 /** A link MUST be represented as either: a string containing the link’s URL or a link object. */
@@ -1033,7 +1055,7 @@ export interface Product {
   gdpnummer: number;
   /** Name des Geodatenprodukts */
   name: string;
-  /** Beschreibung */
+  /** Beschreibung des Geoproduktes */
   beschreibung: string;
   datasets: {
     /** Dataset UUID */
@@ -1113,7 +1135,7 @@ export interface Service {
   servicetyp: string;
   /** Name des Geodienstes */
   name: string;
-  /** Beschreibung */
+  /** Beschreibung des Geodienstes */
   beschreibung: string;
   /** URL */
   url: LinkObject;
@@ -1265,8 +1287,6 @@ export type MetadataGeoshopProductsListData = MetadataGeoshopProducts;
 export type MetadataMapsListData = MetadataMaps;
 
 export type MetadataMapsDetailData = MetadataMap;
-
-export type MetadataMapsDetail2Data = MetadataMap;
 
 export type MetadataProductsListData = MetadataProducts;
 

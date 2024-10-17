@@ -21,6 +21,7 @@ import {
 } from '../../../interfaces/topic.interface';
 import {
   Geometry,
+  Image,
   InfoFeatureField,
   TopicsFeatureInfoDetailData,
   TopicsLegendDetailData,
@@ -369,14 +370,10 @@ export class Gb3TopicsService extends Gb3ApiService {
     };
   }
 
-  private createFeatureInfoFieldValue(field: InfoFeatureField): string | LinkObject | null {
-    if ('link' in field) {
-      return {
-        title: field.link.title,
-        href: field.link.href,
-      };
+  private createFeatureInfoFieldValue(field: InfoFeatureField): string | LinkObject | Image | null {
+    if (typeof field.value === 'number') {
+      return field.value.toString();
     }
-
-    return field.value?.toString() ?? null;
+    return field.value;
   }
 }
