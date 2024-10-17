@@ -47,6 +47,7 @@
           class="base-map-data-item__header__image-container__button"
           data-test-id="add-active-map"
           mat-icon-button
+          [attr.aria-label]="invalid ? 'Bei dieser Karte ist ein Fehler ist aufgetreten' : 'Karte hinzufügen'"
         >
           <mat-icon [color]="invalid === true ? 'warn' : null" [fontIcon]="invalid ? 'error' : 'add'"></mat-icon>
         </button>

@@ -15,6 +15,12 @@ import {selectMapUiState} from '../../../../state/map/reducers/map-ui.reducer';
 import {GeolocationState} from '../../../../state/map/states/geolocation.state';
 import {MapUiState} from '../../../../state/map/states/map-ui.state';
 
+const TOOLTIP_TEXT = {
+  locateMe: 'Deinen Standort anzeigen',
+  home: 'Ganze Karte anzeigen',
+  zoomIn: 'Vergrössern',
+  zoomOut: 'Verkleinern',
+};
 @Component({
   selector: 'zoom-controls',
   templateUrl: './zoom-controls.component.html',
@@ -23,6 +29,8 @@ import {MapUiState} from '../../../../state/map/states/map-ui.state';
 })
 export class ZoomControlsComponent implements OnInit, OnDestroy {
   @Input() public showLocateMeButton!: boolean;
+
+  public tooltipText = TOOLTIP_TEXT;
 
   public isMaxZoomedIn: boolean = false;
   public isMaxZoomedOut: boolean = false;

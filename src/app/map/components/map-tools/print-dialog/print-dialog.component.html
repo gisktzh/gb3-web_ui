@@ -1,7 +1,7 @@
 <div class="print-dialog">
   <div class="print-dialog__header">
     <h1 class="print-dialog__header__title">Drucken</h1>
-    <button mat-icon-button (click)="close()" [disabled]="printCreationLoadingState === 'loading'">
+    <button mat-icon-button (click)="close()" [disabled]="printCreationLoadingState === 'loading'" aria-label="Schliessen">
       <mat-icon>close</mat-icon>
     </button>
   </div>

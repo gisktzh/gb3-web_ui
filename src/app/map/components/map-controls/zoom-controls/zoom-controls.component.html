@@ -9,7 +9,12 @@
       [matTooltip]="
         this.geolocationState.loadingState === 'error'
           ? this.geolocationState.errorReason || 'Ein Fehler ist aufgetreten'
-          : 'Deinen Standort anzeigen'
+          : tooltipText.locateMe
+      "
+      [attr.aria-label]="
+        this.geolocationState.loadingState === 'error'
+          ? this.geolocationState.errorReason || 'Ein Fehler ist aufgetreten'
+          : tooltipText.locateMe
       "
       [disabled]="this.geolocationState.loadingState === 'loading'"
       [ngClass]="{'zoom-controls--hidden': mapUiState?.hideUiElements}"
@@ -29,7 +34,8 @@
       color="accent"
       class="zoom-controls__button"
       data-test-id="map-home"
-      matTooltip="Ganze Karte anzeigen"
+      [matTooltip]="tooltipText.home"
+      [attr.aria-label]="tooltipText.home"
     >
       <mat-icon svgIcon="ktzh_home_extent"></mat-icon>
     </button>
@@ -40,7 +46,8 @@
       [disabled]="this.isMaxZoomedIn"
       class="zoom-controls__button"
       data-test-id="map-add"
-      matTooltip="Vergrössern"
+      [matTooltip]="tooltipText.zoomIn"
+      [attr.aria-label]="tooltipText.zoomIn"
     >
       <mat-icon svgIcon="ktzh_add"></mat-icon>
     </button>
@@ -51,7 +58,8 @@
       [disabled]="this.isMaxZoomedOut"
       class="zoom-controls__button"
       data-test-id="map-remove"
-      matTooltip="Verkleinern"
+      [matTooltip]="tooltipText.zoomOut"
+      [attr.aria-label]="tooltipText.zoomOut"
     >
       <mat-icon svgIcon="ktzh_remove"></mat-icon>
     </button>

@@ -16,7 +16,13 @@
       [matBadge]="this.activeMapItems.length"
     ></span>
     <div class="active-map-items__header__buttons">
-      <button mat-icon-button (click)="restartOnboardingGuide()" matTooltip="Onboarding-Guide erneut öffnen" [matTooltipPosition]="'below'">
+      <button
+        mat-icon-button
+        (click)="restartOnboardingGuide()"
+        [matTooltip]="tooltipText.onboardingGuide"
+        [attr.aria-label]="tooltipText.onboardingGuide"
+        [matTooltipPosition]="'below'"
+      >
         <mat-icon>help_outline</mat-icon>
       </button>
       <mat-divider class="active-map-items__header__buttons__divider" [vertical]="true"></mat-divider>
@@ -25,7 +31,8 @@
         (click)="showMapNotices()"
         [disabled]="numberOfNotices === 0"
         mat-icon-button
-        matTooltip="Kartenhinweise zu den aktiven Karten"
+        [matTooltip]="tooltipText.mapNotices"
+        [attr.aria-label]="tooltipText.mapNotices"
         [matTooltipPosition]="'below'"
       >
         <notification-indicator *ngIf="numberOfUnreadNotices > 0"></notification-indicator>
@@ -37,13 +44,14 @@
         [disabled]="activeMapItems.length === 0"
         mat-icon-button
         class="active-map-items__header__buttons__action"
-        matTooltip="Alle aktiven Karten entfernen"
+        [matTooltip]="tooltipText.removeAll"
+        [attr.aria-label]="tooltipText.removeAll"
         [matTooltipPosition]="'below'"
       >
         <mat-icon svgIcon="ktzh_delete"></mat-icon>
       </button>
       <mat-divider class="active-map-items__header__buttons__divider" [vertical]="true"></mat-divider>
-      <span [matTooltip]="toolTipsFavourite" [matTooltipPosition]="'below'">
+      <span [matTooltip]="toolTipsFavourite" [attr.aria-label]="toolTipsFavourite" [matTooltipPosition]="'below'">
         <button
           (click)="showFavouriteDialog()"
           [disabled]="activeMapItems.length === 0 || !this.isAuthenticated"
@@ -54,7 +62,7 @@
         </button>
       </span>
       <mat-divider class="active-map-items__header__buttons__divider" [vertical]="true"></mat-divider>
-      <button (click)="toggleMinimizeActiveMapItems()" mat-icon-button>
+      <button (click)="toggleMinimizeActiveMapItems()" mat-icon-button [attr.aria-label]="isMinimized ? 'Aufklappen' : 'Zuklappen'">
         <mat-icon [fontIcon]="isMinimized ? 'arrow_drop_down' : 'arrow_drop_up'"></mat-icon>
       </button>
     </div>
@@ -85,9 +93,6 @@
       [ngClass]="{'active-map-items__content__item--mobile': screenMode === 'mobile'}"
     >
       <ng-container activeMapItemDragHandle>
-        <!-- The CDK drag handle is not detected within a child component; therefore, it's necessary to pass it down using ng-content
-               More information: https://stackoverflow.com/questions/54773383/cdkdraghandle-doesnt-work-inside-child-component
-          -->
         <div
           class="active-map-items__content__item__drag-handle"
           cdkDragHandle

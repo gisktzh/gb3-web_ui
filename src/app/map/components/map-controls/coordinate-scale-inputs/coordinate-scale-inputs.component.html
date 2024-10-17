@@ -1,7 +1,13 @@
 <div class="coordinate-scale-inputs" typedTourAnchor="map.navigation">
   <div class="coordinate-scale-inputs__scale">
     <data-input prefix="1:">
-      <input (change)="setScale($event)" [(ngModel)]="scaleInput" class="coordinate-scale-inputs__input" type="text" />
+      <input
+        (change)="setScale($event)"
+        [(ngModel)]="scaleInput"
+        class="coordinate-scale-inputs__input"
+        type="text"
+        aria-label="Massstab anpassen"
+      />
     </data-input>
   </div>
   <div class="coordinate-scale-inputs__coordinate">
@@ -12,6 +18,7 @@
         [(ngModel)]="mapCenterInput"
         class="coordinate-scale-inputs__input"
         type="text"
+        aria-label="Koordinaten eingeben"
       />
     </data-input>
   </div>
