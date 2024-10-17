@@ -81,14 +81,12 @@ export class Gb3MetadataService extends Gb3ApiService {
         result.datasets.map((dataset) => {
           const {
             uuid: guid,
-            shortDescription,
+            kurzbeschreibung: shortDescription,
             name,
-            contact: {
-              metadata: {department},
-            },
-            outputFormat,
+            kontakt_metadaten: {amt: department},
+            abgabeformate: outputFormat,
             ogd,
-          } = this.transformDatasetsDetailDataToDatasetMetadata(dataset);
+          } = dataset;
           return new DatasetOverviewMetadataItem(guid, name, shortDescription, department, outputFormat, ogd);
         }),
       ),
@@ -103,12 +101,10 @@ export class Gb3MetadataService extends Gb3ApiService {
         result.products.map((product) => {
           const {
             uuid: guid,
-            description,
+            beschreibung: description,
             name,
-            contact: {
-              metadata: {department},
-            },
-          } = this.transformProductDetailToProductMetadata(product);
+            kontakt_metadaten: {amt: department},
+          } = product;
           return new ProductOverviewMetadataItem(guid, name, description, department);
         }),
       ),
@@ -123,12 +119,10 @@ export class Gb3MetadataService extends Gb3ApiService {
         result.maps.map((mapMetadata) => {
           const {
             uuid: guid,
-            description,
+            beschreibung: description,
             name,
-            contact: {
-              geodata: {department},
-            },
-          } = this.transformMapsDetailToMapMetadata(mapMetadata);
+            kontakt_metadaten: {amt: department},
+          } = mapMetadata;
           return new MapOverviewMetadataItem(guid, name, description, department);
         }),
       ),
@@ -143,12 +137,10 @@ export class Gb3MetadataService extends Gb3ApiService {
         result.services.map((service) => {
           const {
             uuid: guid,
-            description,
+            beschreibung: description,
             name,
-            contact: {
-              metadata: {department},
-            },
-          } = this.transformServicesDetailToServiceMetadata(service);
+            kontakt_metadaten: {amt: department},
+          } = service;
           return new ServiceOverviewMetadataItem(guid, name, description, department);
         }),
       ),
