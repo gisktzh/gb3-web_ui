@@ -2,7 +2,7 @@ import {GeometryWithSrs} from './geojson-types-with-srs.interface';
 import {HasMetaDataLink} from './metaDataLink.interface';
 import {IsSingleLayer} from './single-layer.interface';
 import {LinkObject} from './link-object.interface';
-import {Image} from '../models/gb3-api-generated.interfaces';
+import {Image} from './image.interface';
 
 export interface FeatureInfoResultFeatureField {
   label: string;

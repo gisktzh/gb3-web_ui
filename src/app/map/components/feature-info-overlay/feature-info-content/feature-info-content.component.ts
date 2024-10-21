@@ -11,7 +11,7 @@ import {GeometryWithSrs} from '../../../../shared/interfaces/geojson-types-with-
 import {MAP_SERVICE} from '../../../../app.module';
 import {MapService} from '../../../interfaces/map.service';
 import {LinkObject} from '../../../../shared/interfaces/link-object.interface';
-import {Image} from '../../../../shared/models/gb3-api-generated.interfaces';
+import {Image} from '../../../../shared/interfaces/image.interface';
 
 type CellType = 'text' | 'url' | 'image';
 

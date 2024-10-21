@@ -21,7 +21,6 @@ import {
 } from '../../../interfaces/topic.interface';
 import {
   Geometry,
-  Image,
   InfoFeatureField,
   TopicsFeatureInfoDetailData,
   TopicsLegendDetailData,
@@ -39,6 +38,7 @@ import {ConfigService} from '../../config.service';
 import {TIME_SERVICE} from '../../../../app.module';
 import {TimeService} from '../../../interfaces/time-service.interface';
 import {TimeSliderService} from '../../../../map/services/time-slider.service';
+import {Image} from '../../../interfaces/image.interface';
 
 const INACTIVE_STRING_FILTER_VALUE = '';
 const INACTIVE_NUMBER_FILTER_VALUE = -1;
