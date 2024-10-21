@@ -74,7 +74,7 @@ const mockMapDetailResponse = {
     ],
     beschreibung: 'Lorem ipsum dolor',
     image_url: '/gb3/example/picture.png',
-    kontakt_geodaten: {...mockContact},
+    kontakt_metadaten: {...mockContact},
     name: 'Testmap',
     topic: 'test-topic',
     verweise: [],
@@ -417,7 +417,7 @@ describe('Gb3MetadataService', () => {
               mockMapDetailResponse.map.uuid,
               mockMapDetailResponse.map.name,
               mockMapDetailResponse.map.beschreibung,
-              mockMapDetailResponse.map.kontakt_geodaten.amt,
+              mockMapDetailResponse.map.kontakt_metadaten.amt,
             ),
             new ProductOverviewMetadataItem(
               mockProductDetailResponse.product.uuid,
