@@ -1,5 +1,5 @@
 <div class="feature-info-content">
-  <table class="feature-info-content__table" attr.aria-describedby="Informationen zu {{ layer.title }}">
+  <table class="feature-info-content__table" [attr.aria-describedby]="'Informationen zu ' + layer.title">
     <tr class="feature-info-content__table__row">
       <th class="feature-info-content__table__row__column feature-info-content__table__row__column--header" scope="col"></th>
       <th
@@ -56,8 +56,8 @@
                   class="feature-info-content__table__row__column__image"
                   ngSrc="{{ cellValue.src }}"
                   [alt]="cellValue.alt"
-                  width="100"
-                  height="100"
+                  width="200"
+                  height="200"
                 />
               </a>
             }
