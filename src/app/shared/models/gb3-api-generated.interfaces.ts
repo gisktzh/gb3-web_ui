@@ -846,6 +846,125 @@ export interface Contact {
   weburl: LinkObject | null;
 }
 
+export interface Dataset {
+  /** UUID */
+  uuid: string;
+  /** Link auf Bild */
+  image_url: string | null;
+  /** Verfügbarkeit OGD/NOGD */
+  ogd: boolean;
+  /** Kontakt: Verantwortlich für Geodaten */
+  kontakt_geodaten: Contact;
+  /** Kontakt: Zuständig für Geometadaten */
+  kontakt_metadaten: Contact;
+  /** Dataset GIS-ZH-Nummer */
+  giszhnr: number;
+  /** Name des Geodatensatzes */
+  name: string;
+  /** Kurzbeschreibung */
+  kurzbeschreibung: string;
+  /** Beschreibung */
+  beschreibung: string;
+  /** eCH Geokategorien / Themen */
+  themen: string[];
+  /** Schlüsselwörter */
+  keywords: string[] | null;
+  /** Geodaten aktueller Stand (dd.mm.YYYY) */
+  datenstand: string | null;
+  /** Nachführungstyp */
+  nachfuehrungstyp: string | null;
+  /** Bearbeitungsstatus */
+  bearbeitungstatus: string | null;
+  /** Geographisches Gebiet / Ausdehnung */
+  geogausdehnung: string | null;
+  /** Erfassungsmassstab */
+  erfassungsmasstab: number | null;
+  /** Auflösung */
+  aufloesung: number | null;
+  /** Lagegenauigkeit */
+  lagegenauigkeit: number | null;
+  /** Geobasisdaten-Klasse */
+  gesetzklasse: string | null;
+  /** Link auf Geobasisdaten */
+  geobasisdaten: LinkObject | null;
+  /** Link auf Geodatashop bei NOGD-Daten */
+  url_shop: LinkObject | null;
+  /** Abgabeformate */
+  abgabeformate: string[];
+  /** Datenerfassung */
+  datenerfassung: string | null;
+  /** Datengrundlage */
+  datengrundlage: string | null;
+  /** Dokumentation (HTML) */
+  documentationhtml: LinkObject | null;
+  /** Link auf Dokumentation (PDF) */
+  pdf: LinkObject | null;
+  /** Bemerkungen */
+  bemerkungen: string | null;
+  /** Link auf Geocat */
+  geocat: LinkObject | null;
+  /** Link auf OpendataSwiss */
+  opendataswiss: LinkObject | null;
+  /** Link auf ArcMap .mxd */
+  mxd: LinkObject | null;
+  /** Links auf ArcMap .lyr */
+  lyrs: LinkObject[];
+  maps: {
+    /** Map UUID */
+    uuid: string;
+    /** Map GB2-ID */
+    gb2_id: number;
+    /** Topic name */
+    topic: string;
+    /** Kartenname */
+    name: string;
+  }[];
+  layers: {
+    /** Layername */
+    name: string;
+    /** Layer GIS-ZH-Nummer */
+    giszhnr: string;
+    /** Beschreibung des Layers */
+    beschreibung: string;
+    /** Geometrietyp */
+    geometrietyp: string;
+    /** Pfad\Filename */
+    pfadfilename: string | null;
+    /** Metadaten Sichtbarkeit */
+    metadaten_sichtbarkeit: string;
+    /** Datenbezugart */
+    datenbezugart: string;
+    attribute: {
+      /** Attributname */
+      name: string | null;
+      /** Attributtyp */
+      typ: string | null;
+      /** Einheit des Attributwerts */
+      einheit: string | null;
+      /** Beschreibung des Attributs */
+      beschreibung: string | null;
+    }[];
+  }[];
+  services: {
+    /** Service UUID */
+    uuid: string;
+    /** Geodaten-Service-Nummer */
+    gdsernummer: number;
+    /** Servicetyp, z.B. WMS, WFS */
+    servicetyp: string;
+    /** Servicename */
+    name: string;
+  }[];
+  products: {
+    /** Product UUID */
+    uuid: string;
+    /** Geodatenprodukt-Nummer */
+    gdpnummer: number;
+    /** Produktname */
+    name: string;
+  }[];
+}
+
 export type FavoriteContent = {
   /** ID of the map */
   id: string;
@@ -1047,7 +1166,7 @@ export interface Map {
   /** Link auf Bild */
   image_url: string | null;
   /** Kontakt: Verantwortlich für Geodaten */
-  kontakt_geodaten?: Contact;
+  kontakt_metadaten: Contact;
   /** Map GB2-Nummer */
   gb2_id: number;
   /** Topic name */
