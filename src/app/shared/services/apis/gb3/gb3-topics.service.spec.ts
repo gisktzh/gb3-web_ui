@@ -549,34 +549,41 @@ describe('Gb3TopicsService', () => {
                       {
                         label: 'BFSNr',
                         value: 261,
+                        type: 'text',
                       },
                       {
                         label: 'Nummer',
                         value: 'AU5641',
+                        type: 'text',
                       },
                       {
                         label: 'EGRIS_EGRID',
                         value: 'CH327810999162',
+                        type: 'text',
                       },
                       {
                         label: 'Vollständigkeit',
                         value: 'Vollstaendig',
+                        type: 'text',
                       },
                       {
                         label: 'Fläche [m\u0026sup2;]',
                         value: 2874,
+                        type: 'text',
                       },
                       {
                         label: 'Value might be null',
                         value: null,
+                        type: 'text',
                       },
                       {
                         label: 'A LinkObject',
-                        link: {
+                        value: {
                           title: 'Amon Amarth',
                           href: 'not just a LOTR location',
                           hreflang: 'test',
                         },
+                        type: 'url',
                       },
                     ],
                     geometry: {
@@ -613,26 +620,32 @@ describe('Gb3TopicsService', () => {
                       {
                         label: 'BFSNr',
                         value: 261,
+                        type: 'text',
                       },
                       {
                         label: 'Qualität',
                         value: 'AV93',
+                        type: 'text',
                       },
                       {
                         label: 'Art',
                         value: 'Gebäude Verwaltung',
+                        type: 'text',
                       },
                       {
                         label: 'GWR_EGID',
                         value: 302019364,
+                        type: 'text',
                       },
                       {
                         label: 'GVZ Nr.',
                         value: 'AU04950',
+                        type: 'text',
                       },
                       {
                         label: 'Geometrie [m\u0026sup2;]',
                         value: 2159.843540479304,
+                        type: 'text',
                       },
                     ],
                     geometry: {
@@ -669,14 +682,17 @@ describe('Gb3TopicsService', () => {
                       {
                         label: 'BFSNr',
                         value: 261,
+                        type: 'text',
                       },
                       {
                         label: 'Name',
                         value: 'Zürich',
+                        type: 'text',
                       },
                       {
                         label: 'Stand AV',
                         value: '11.12.2023',
+                        type: 'text',
                       },
                     ],
                     geometry: undefined,
