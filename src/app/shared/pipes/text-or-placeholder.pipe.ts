@@ -5,7 +5,7 @@ import {Pipe, PipeTransform} from '@angular/core';
   standalone: true,
 })
 export class TextOrPlaceholderPipe implements PipeTransform {
-  transform(value: string | null): string {
+  public transform(value: string | null): string {
     return value ?? '-';
   }
 }

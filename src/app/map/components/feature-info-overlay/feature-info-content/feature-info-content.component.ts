@@ -11,8 +11,9 @@ import {GeometryWithSrs} from '../../../../shared/interfaces/geojson-types-with-
 import {MAP_SERVICE} from '../../../../app.module';
 import {MapService} from '../../../interfaces/map.service';
 import {LinkObject} from '../../../../shared/interfaces/link-object.interface';
+import {Image} from '../../../../shared/models/gb3-api-generated.interfaces';
 
-type CellType = 'text' | 'url';
+type CellType = 'text' | 'url' | 'image';
 
 /**
  * Each TableCell has an fid (identifying the feature), a displayvalue and a type. These are then further narrowed down to handle string
@@ -33,7 +34,14 @@ interface UrlTableCell extends AbstractTableCell {
   url: string;
 }
 
-type TableCell = TextTableCell | UrlTableCell;
+interface ImageTableCell extends AbstractTableCell {
+  cellType: 'image';
+  url: string;
+  src: string;
+  alt: string;
+}
+
+type TableCell = TextTableCell | UrlTableCell | ImageTableCell;
 
 /**
  * A TableHeader is a AbstractTableCell with a displayValue that is string only.
@@ -237,11 +245,22 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
     return {displayValue, fid, hasGeometry};
   }
 
-  private createTableCellForFeatureAndField(fid: number, value: string | LinkObject | null): TableCell {
+  private createTableCellForFeatureAndField(fid: number, value: string | LinkObject | Image | null): TableCell {
     const displayValue = value ?? DEFAULT_CELL_VALUE;
 
     if (typeof displayValue === 'string') {
       return {cellType: 'text', fid, displayValue};
+    }
+
+    if ('alt' in displayValue) {
+      return {
+        cellType: 'image',
+        fid,
+        displayValue: displayValue.src.title ?? displayValue.src.href,
+        url: displayValue.url.href,
+        src: displayValue.src.href,
+        alt: displayValue.alt,
+      };
     }
 
     return {
