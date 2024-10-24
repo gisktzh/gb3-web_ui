@@ -70,6 +70,8 @@ import GraphicHit = __esri.GraphicHit;
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
 
+const DEFAULT_COPYRIGHT = '© OpenStreetMap Contributors and MapServer Developers';
+
 // used to distinguish between info-click and drawing-edit in the click listener
 enum EsriMouseButtonType {
   LeftClick = 0,
@@ -769,6 +771,7 @@ export class EsriMapService implements MapService, OnDestroy {
                 sublayers: baseMap.layers.map((basemapLayer) => ({name: basemapLayer.name})),
                 visible: initialBasemapId === baseMap.id,
                 imageFormat: this.wmsImageFormatMimeType,
+                copyright: DEFAULT_COPYRIGHT,
               });
             case 'blank':
               return new EsriFeatureLayer({
@@ -779,6 +782,7 @@ export class EsriMapService implements MapService, OnDestroy {
                 source: [], // empty source as this is a blank basemap
                 spatialReference: new EsriSpatialReference({wkid: this.configService.mapConfig.defaultMapConfig.srsId}),
                 visible: initialBasemapId === baseMap.id,
+                copyright: DEFAULT_COPYRIGHT,
               });
           }
         }),
