@@ -31,14 +31,12 @@ import {Gb3ApiService} from './gb3-api.service';
 import {InvalidTimeSliderConfiguration} from '../../../errors/map.errors';
 import {QueryTopic} from '../../../interfaces/query-topic.interface';
 import {ApiGeojsonGeometryToGb3ConverterUtils} from '../../../utils/api-geojson-geometry-to-gb3-converter.utils';
-import {LinkObject} from '../../../interfaces/link-object.interface';
 import {GeometryWithSrs} from '../../../interfaces/geojson-types-with-srs.interface';
 import {HttpClient} from '@angular/common/http';
 import {ConfigService} from '../../config.service';
 import {TIME_SERVICE} from '../../../../app.module';
 import {TimeService} from '../../../interfaces/time-service.interface';
 import {TimeSliderService} from '../../../../map/services/time-slider.service';
-import {Image} from '../../../interfaces/image.interface';
 
 const INACTIVE_STRING_FILTER_VALUE = '';
 const INACTIVE_NUMBER_FILTER_VALUE = -1;
@@ -348,10 +346,7 @@ export class Gb3TopicsService extends Gb3ApiService {
                 return {
                   fid: feature.fid,
                   fields: feature.fields.map((field): FeatureInfoResultFeatureField => {
-                    return {
-                      label: field.label,
-                      value: this.createFeatureInfoFieldValue(field),
-                    };
+                    return this.createFeatureInfoField(field);
                   }),
                   geometry: feature.geometry ? this.convertGeometryToSupportedGeometry(feature.geometry) : undefined,
                 };
@@ -370,17 +365,21 @@ export class Gb3TopicsService extends Gb3ApiService {
     };
   }
 
-  private createFeatureInfoFieldValue(field: InfoFeatureField): string | LinkObject | Image | null {
+  private createFeatureInfoField(field: InfoFeatureField): FeatureInfoResultFeatureField {
     switch (field.type) {
       case 'image':
-        return field.value;
+        return {type: field.type, value: field.value, label: field.label};
       case 'link':
         return {
-          title: field.value.title,
-          href: field.value.href,
+          type: field.type,
+          value: {
+            title: field.value.title,
+            href: field.value.href,
+          },
+          label: field.label,
         };
       case 'text':
-        return typeof field.value === 'number' ? field.value.toString() : null;
+        return {type: field.type, value: typeof field.value === 'number' ? field.value.toString() : null, label: field.label};
     }
   }
 }

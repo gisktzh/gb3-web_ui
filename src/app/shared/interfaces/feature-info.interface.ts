@@ -4,10 +4,32 @@ import {IsSingleLayer} from './single-layer.interface';
 import {LinkObject} from './link-object.interface';
 import {Image} from './image.interface';
 
-export interface FeatureInfoResultFeatureField {
+export type FeatureInfoResultFeatureFieldType = 'image' | 'link' | 'text';
+
+export interface AbstractFeatureInfoResultFeatureField {
   label: string;
-  value: string | LinkObject | Image | null;
+  type: FeatureInfoResultFeatureFieldType;
 }
+
+export interface FeatureInfoResultFeatureImageField extends AbstractFeatureInfoResultFeatureField {
+  value: Image;
+  type: 'image';
+}
+
+export interface FeatureInfoResultFeatureLinkField extends AbstractFeatureInfoResultFeatureField {
+  value: LinkObject;
+  type: 'link';
+}
+
+export interface FeatureInfoResultFeatureTextField extends AbstractFeatureInfoResultFeatureField {
+  value: string | null;
+  type: 'text';
+}
+
+export type FeatureInfoResultFeatureField =
+  | FeatureInfoResultFeatureImageField
+  | FeatureInfoResultFeatureLinkField
+  | FeatureInfoResultFeatureTextField;
 
 interface FeatureInfoResultFeature {
   fid: number;

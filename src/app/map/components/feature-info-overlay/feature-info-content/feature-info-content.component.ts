@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, Inject, Input, OnDestroy, OnInit, QueryList, Renderer2, ViewChildren} from '@angular/core';
 import {ConfigService} from '../../../../shared/services/config.service';
-import {FeatureInfoResultLayer} from '../../../../shared/interfaces/feature-info.interface';
+import {FeatureInfoResultFeatureField, FeatureInfoResultLayer} from '../../../../shared/interfaces/feature-info.interface';
 import {FeatureInfoActions} from '../../../../state/map/actions/feature-info.actions';
 import {Store} from '@ngrx/store';
 import {selectPinnedFeatureId} from '../../../../state/map/reducers/feature-info.reducer';
@@ -10,8 +10,6 @@ import {TableColumnIdentifierDirective} from './table-column-identifier.directiv
 import {GeometryWithSrs} from '../../../../shared/interfaces/geojson-types-with-srs.interface';
 import {MAP_SERVICE} from '../../../../app.module';
 import {MapService} from '../../../interfaces/map.service';
-import {LinkObject} from '../../../../shared/interfaces/link-object.interface';
-import {Image} from '../../../../shared/interfaces/image.interface';
 
 type CellType = 'text' | 'url' | 'image';
 
@@ -245,30 +243,27 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
     return {displayValue, fid, hasGeometry};
   }
 
-  private createTableCellForFeatureAndField(fid: number, value: string | LinkObject | Image | null): TableCell {
-    const displayValue = value ?? DEFAULT_CELL_VALUE;
-
-    if (typeof displayValue === 'string') {
-      return {cellType: 'text', fid, displayValue};
+  private createTableCellForFeatureAndField(fid: number, feature: FeatureInfoResultFeatureField): TableCell {
+    switch (feature.type) {
+      case 'text':
+        return {cellType: 'text', fid, displayValue: feature.value ?? DEFAULT_CELL_VALUE};
+      case 'image':
+        return {
+          cellType: 'image',
+          fid,
+          displayValue: feature.value.src.title ?? feature.value.src.href,
+          url: feature.value.url.href,
+          src: feature.value.src.href,
+          alt: feature.value.alt,
+        };
+      case 'link':
+        return {
+          cellType: 'url',
+          fid,
+          displayValue: feature.value.title ?? feature.value.href,
+          url: feature.value.href,
+        };
     }
-
-    if ('alt' in displayValue) {
-      return {
-        cellType: 'image',
-        fid,
-        displayValue: displayValue.src.title ?? displayValue.src.href,
-        url: displayValue.url.href,
-        src: displayValue.src.href,
-        alt: displayValue.alt,
-      };
-    }
-
-    return {
-      cellType: 'url',
-      fid,
-      displayValue: displayValue.title ?? displayValue.href,
-      url: displayValue.href,
-    };
   }
 
   /**
@@ -287,15 +282,15 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
       const tableHeader = this.createTableHeaderForFeature(fid, featureIdx, features.length, !!geometry);
       this.tableHeaders.push(tableHeader);
 
-      fields.forEach(({label, value}) => {
-        const tableCell = this.createTableCellForFeatureAndField(fid, value);
+      fields.forEach((feature) => {
+        const tableCell = this.createTableCellForFeatureAndField(fid, feature);
 
-        if (this.tableRows.has(label)) {
+        if (this.tableRows.has(feature.label)) {
           // see: https://stackoverflow.com/questions/70723319/object-is-possibly-undefined-using-es6-map-get-right-after-map-set
           // -> it should never happen, but IF it were to happen, we are not doing anything.
-          this.tableRows.get(label)?.push(tableCell);
+          this.tableRows.get(feature.label)?.push(tableCell);
         } else {
-          this.tableRows.set(label, [tableCell]);
+          this.tableRows.set(feature.label, [tableCell]);
         }
       });
     });
