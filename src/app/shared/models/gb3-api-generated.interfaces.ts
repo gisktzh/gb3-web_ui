@@ -678,8 +678,8 @@ export interface Contact {
 export interface Dataset {
   /** UUID */
   uuid: string;
-  /** Link auf Bild */
-  image_url: string | null;
+  /** image object of the thumbnail image */
+  image_url: Image;
   /** Verfügbarkeit OGD/NOGD */
   ogd: boolean;
   /** Kontakt: Verantwortlich für Geodaten */
@@ -934,6 +934,16 @@ export interface GeometryCrs {
   };
 }
 
+/** Image source path and meta data */
+export interface Image {
+  /** Source path of the image file for rendering e.g. as thumbnail */
+  src: LinkObject;
+  /** Alternative text of the image for accessiblity purposes */
+  alt: string;
+  /** Link to the original image file */
+  url: LinkObject;
+}
+
 /** Feature field */
 export type InfoFeatureField =
   | {
@@ -941,12 +951,24 @@ export type InfoFeatureField =
       label: string;
       /** Field value (string, numeric or null) */
       value: string | number | null;
+      /** type for the text object (here 'text') */
+      type: 'text';
     }
   | {
       /** Field label */
       label: string;
       /** Field link */
-      link: LinkObject;
+      value: LinkObject;
+      /** type for the link object (here 'link') */
+      type: 'link';
+    }
+  | {
+      /** Field label */
+      label: string;
+      /** Field image */
+      value: Image;
+      /** type for the image object (here 'image') */
+      type: 'image';
     };
 
 /** A link MUST be represented as either: a string containing the link’s URL or a link object. */
@@ -970,10 +992,10 @@ export interface LinkObject {
 export interface Map {
   /** Map UUID */
   uuid: string;
-  /** Link auf Bild */
-  image_url: string | null;
+  /** image object of the thumbnail image */
+  image_url: Image;
   /** Kontakt: Verantwortlich für Geodaten */
-  kontakt_geodaten: Contact;
+  kontakt_metadaten: Contact;
   /** Map GB2-Nummer */
   gb2_id: number;
   /** Topic name */
@@ -1025,15 +1047,15 @@ export interface MunicipalityItem {
 export interface Product {
   /** Product UUID */
   uuid: string;
-  /** Link auf Bild */
-  image_url: string | null;
+  /** image object of the thumbnail image */
+  image_url: Image;
   /** Kontakt: Zuständig für Geometadaten */
   kontakt_metadaten: Contact;
   /** Product GDP-Nummer */
   gdpnummer: number;
   /** Name des Geodatenprodukts */
   name: string;
-  /** Beschreibung */
+  /** Beschreibung des Geoproduktes */
   beschreibung: string;
   datasets: {
     /** Dataset UUID */
@@ -1103,8 +1125,8 @@ export interface SearchMatch {
 export interface Service {
   /** Service UUID */
   uuid: string;
-  /** Link auf Bild */
-  image_url: string | null;
+  /** image object of the thumbnail image */
+  image_url: Image;
   /** Kontakt: Zuständig für Geometadaten */
   kontakt_metadaten: Contact;
   /** Service GDSer-Nummer */
@@ -1113,7 +1135,7 @@ export interface Service {
   servicetyp: string;
   /** Name des Geodienstes */
   name: string;
-  /** Beschreibung */
+  /** Beschreibung des Geodienstes */
   beschreibung: string;
   /** URL */
   url: LinkObject;
@@ -1265,8 +1287,6 @@ export type MetadataGeoshopProductsListData = MetadataGeoshopProducts;
 export type MetadataMapsListData = MetadataMaps;
 
 export type MetadataMapsDetailData = MetadataMap;
-
-export type MetadataMapsDetail2Data = MetadataMap;
 
 export type MetadataProductsListData = MetadataProducts;
 

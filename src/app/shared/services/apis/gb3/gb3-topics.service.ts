@@ -31,7 +31,6 @@ import {Gb3ApiService} from './gb3-api.service';
 import {InvalidTimeSliderConfiguration} from '../../../errors/map.errors';
 import {QueryTopic} from '../../../interfaces/query-topic.interface';
 import {ApiGeojsonGeometryToGb3ConverterUtils} from '../../../utils/api-geojson-geometry-to-gb3-converter.utils';
-import {LinkObject} from '../../../interfaces/link-object.interface';
 import {GeometryWithSrs} from '../../../interfaces/geojson-types-with-srs.interface';
 import {HttpClient} from '@angular/common/http';
 import {ConfigService} from '../../config.service';
@@ -347,10 +346,7 @@ export class Gb3TopicsService extends Gb3ApiService {
                 return {
                   fid: feature.fid,
                   fields: feature.fields.map((field): FeatureInfoResultFeatureField => {
-                    return {
-                      label: field.label,
-                      value: this.createFeatureInfoFieldValue(field),
-                    };
+                    return this.createFeatureInfoField(field);
                   }),
                   geometry: feature.geometry ? this.convertGeometryToSupportedGeometry(feature.geometry) : undefined,
                 };
@@ -369,14 +365,21 @@ export class Gb3TopicsService extends Gb3ApiService {
     };
   }
 
-  private createFeatureInfoFieldValue(field: InfoFeatureField): string | LinkObject | null {
-    if ('link' in field) {
-      return {
-        title: field.link.title,
-        href: field.link.href,
-      };
+  private createFeatureInfoField(field: InfoFeatureField): FeatureInfoResultFeatureField {
+    switch (field.type) {
+      case 'image':
+        return {type: field.type, value: field.value, label: field.label};
+      case 'link':
+        return {
+          type: field.type,
+          value: {
+            title: field.value.title,
+            href: field.value.href,
+          },
+          label: field.label,
+        };
+      case 'text':
+        return {type: field.type, value: typeof field.value === 'number' ? field.value.toString() : field.value, label: field.label};
     }
-
-    return field.value?.toString() ?? null;
   }
 }
