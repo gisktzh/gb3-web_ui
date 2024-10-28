@@ -165,7 +165,23 @@ export interface MetadataDataset {
 }
 
 export interface MetadataDatasets {
-  datasets: Dataset[];
+  datasets: {
+    /** UUID */
+    uuid: string;
+    /** Kurzbeschreibung */
+    kurzbeschreibung: string;
+    /** Name des Geodatensatzes */
+    name: string;
+    /** Kontakt: Zuständig für Geometadaten */
+    kontakt_metadaten: {
+      /** Amt */
+      amt: string;
+    };
+    /** Abgabeformate */
+    abgabeformate: string[];
+    /** Verfügbarkeit OGD/NOGD */
+    ogd: boolean;
+  }[];
 }
 
 export interface MetadataGeoshopProducts {
@@ -182,7 +198,19 @@ export interface MetadataMap {
 }
 
 export interface MetadataMaps {
-  maps: Map[];
+  maps: {
+    /** Map UUID */
+    uuid: string;
+    /** Beschreibung der Karte */
+    beschreibung: string;
+    /** Kartenname */
+    name: string;
+    /** Kontakt: Zuständig für Geometadaten */
+    kontakt_metadaten: {
+      /** Amt */
+      amt: string;
+    };
+  }[];
 }
 
 export interface MetadataProduct {
@@ -190,7 +218,19 @@ export interface MetadataProduct {
 }
 
 export interface MetadataProducts {
-  products: Product[];
+  products: {
+    /** Product UUID */
+    uuid: string;
+    /** Beschreibung des Geoproduktes */
+    beschreibung: string;
+    /** Name des Geodatenprodukts */
+    name: string;
+    /** Kontakt: Zuständig für Geometadaten */
+    kontakt_metadaten: {
+      /** Amt */
+      amt: string;
+    };
+  }[];
 }
 
 export interface MetadataService {
@@ -198,7 +238,19 @@ export interface MetadataService {
 }
 
 export interface MetadataServices {
-  services: Service[];
+  services: {
+    /** Service UUID */
+    uuid: string;
+    /** Beschreibung des Geodienstes */
+    beschreibung: string;
+    /** Name des Geodienstes */
+    name: string;
+    /** Kontakt: Zuständig für Geometadaten */
+    kontakt_metadaten: {
+      /** Amt */
+      amt: string;
+    };
+  }[];
 }
 
 export interface MunicipalitiesList {
