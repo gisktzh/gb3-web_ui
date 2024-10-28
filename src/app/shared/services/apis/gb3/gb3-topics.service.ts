@@ -379,7 +379,7 @@ export class Gb3TopicsService extends Gb3ApiService {
           label: field.label,
         };
       case 'text':
-        return {type: field.type, value: typeof field.value === 'number' ? field.value.toString() : null, label: field.label};
+        return {type: field.type, value: typeof field.value === 'number' ? field.value.toString() : field.value, label: field.label};
     }
   }
 }
