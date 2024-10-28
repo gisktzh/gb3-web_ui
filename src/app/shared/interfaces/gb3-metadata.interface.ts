@@ -1,5 +1,6 @@
 import {LinkObject} from './link-object.interface';
 import {DatasetLayer} from './dataset-layer.interface';
+import {Image} from './image.interface';
 
 export interface DepartmentalContact {
   department: string;
@@ -24,7 +25,7 @@ interface BaseMetadataInterface {
   gisZHNr: number;
   name: string;
   description: string;
-  imageUrl: string | null;
+  imageUrl: Image;
 }
 
 export interface DatasetMetadata extends BaseMetadataInterface {

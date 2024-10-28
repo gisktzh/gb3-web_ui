@@ -177,7 +177,7 @@ export class Gb3MetadataService extends Gb3ApiService {
       mxd: dataset.mxd ? this.createLinkObject(dataset.mxd) : null,
       lyr: dataset.lyrs,
       pdf: dataset.pdf ? {href: this.createAbsoluteUrl(dataset.pdf.href), title: dataset.pdf.title} : null,
-      imageUrl: dataset.image_url ? this.createAbsoluteUrl(dataset.image_url.src.href) : null,
+      imageUrl: dataset.image_url,
       contact: {
         geodata: this.extractContactDetails(dataset.kontakt_geodaten),
         metadata: this.extractContactDetails(dataset.kontakt_metadaten),
@@ -212,7 +212,7 @@ export class Gb3MetadataService extends Gb3ApiService {
       gisZHNr: mapData.gb2_id,
       name: mapData.name,
       description: mapData.beschreibung,
-      imageUrl: mapData.image_url ? this.createAbsoluteUrl(mapData.image_url.src.href) : null,
+      imageUrl: mapData.image_url,
       externalLinks: mapData.verweise,
       gb2Url: mapData.gb2_url
         ? {
@@ -241,7 +241,7 @@ export class Gb3MetadataService extends Gb3ApiService {
       datasets: service.datasets.map(this.extractDatasetDetail),
       serviceType: service.servicetyp,
       description: service.beschreibung,
-      imageUrl: service.image_url ? this.createAbsoluteUrl(service.image_url.src.href) : null,
+      imageUrl: service.image_url,
     };
   }
 
@@ -254,7 +254,7 @@ export class Gb3MetadataService extends Gb3ApiService {
         metadata: this.extractContactDetails(product.kontakt_metadaten),
       },
       description: product.beschreibung,
-      imageUrl: product.image_url ? this.createAbsoluteUrl(product.image_url.src.href) : null,
+      imageUrl: product.image_url,
       datasets: product.datasets.map(this.extractDatasetDetail),
     };
   }
