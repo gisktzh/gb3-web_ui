@@ -9,7 +9,7 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
     apiBasePaths: {
       gb2Api: {
         baseUrl: 'http://localhost:4200/gb3',
-        version: 'v2',
+        version: 'v3',
       },
       gb2StaticFiles: {
         baseUrl: 'http://localhost:4200',
