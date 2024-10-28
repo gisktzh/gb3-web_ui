@@ -553,8 +553,8 @@ describe('Gb3TopicsService', () => {
                       },
                       {
                         label: 'Nummer',
-                        value: 'AU5641',
-                        type: 'text',
+                        value: {url: {href: 'https://www.example.com'}, src: {href: 'https://www.example.com'}, alt: 'Text'},
+                        type: 'image',
                       },
                       {
                         label: 'EGRIS_EGRID',
@@ -742,8 +742,8 @@ describe('Gb3TopicsService', () => {
                         },
                         {
                           label: 'Nummer',
-                          value: 'AU5641',
-                          type: 'text',
+                          value: {url: {href: 'https://www.example.com'}, src: {href: 'https://www.example.com'}, alt: 'Text'},
+                          type: 'image',
                         },
                         {
                           label: 'EGRIS_EGRID',
