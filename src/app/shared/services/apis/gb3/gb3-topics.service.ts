@@ -371,19 +371,16 @@ export class Gb3TopicsService extends Gb3ApiService {
   }
 
   private createFeatureInfoFieldValue(field: InfoFeatureField): string | LinkObject | Image | null {
-    if (field.value === null) {
-      return null;
-    }
-    if (typeof field.value === 'number') {
-      return field.value.toString();
-    }
-    if (typeof field.value === 'string' || 'alt' in field.value) {
-      return field.value;
-    } else {
-      return {
-        title: field.value.title,
-        href: field.value.href,
-      };
+    switch (field.type) {
+      case 'image':
+        return field.value;
+      case 'link':
+        return {
+          title: field.value.title,
+          href: field.value.href,
+        };
+      case 'text':
+        return typeof field.value === 'number' ? field.value.toString() : null;
     }
   }
 }

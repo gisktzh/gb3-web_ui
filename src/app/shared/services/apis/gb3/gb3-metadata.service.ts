@@ -185,7 +185,7 @@ export class Gb3MetadataService extends Gb3ApiService {
       mxd: dataset.mxd ? this.createLinkObject(dataset.mxd) : null,
       lyr: dataset.lyrs,
       pdf: dataset.pdf ? {href: this.createAbsoluteUrl(dataset.pdf.href), title: dataset.pdf.title} : null,
-      imageUrl: dataset.image_url ? this.createAbsoluteUrl(dataset.image_url) : null,
+      imageUrl: dataset.image_url ? this.createAbsoluteUrl(dataset.image_url.src.href) : null,
       contact: {
         geodata: this.extractContactDetails(dataset.kontakt_geodaten),
         metadata: this.extractContactDetails(dataset.kontakt_metadaten),
@@ -220,7 +220,7 @@ export class Gb3MetadataService extends Gb3ApiService {
       gisZHNr: mapData.gb2_id,
       name: mapData.name,
       description: mapData.beschreibung,
-      imageUrl: mapData.image_url ? this.createAbsoluteUrl(mapData.image_url) : null,
+      imageUrl: mapData.image_url ? this.createAbsoluteUrl(mapData.image_url.src.href) : null,
       externalLinks: mapData.verweise,
       gb2Url: mapData.gb2_url
         ? {
@@ -230,7 +230,7 @@ export class Gb3MetadataService extends Gb3ApiService {
         : null,
       datasets: mapData.datasets.map(this.extractDatasetDetail),
       contact: {
-        geodata: this.extractContactDetails(mapData.kontakt_geodaten),
+        geodata: this.extractContactDetails(mapData.kontakt_metadaten),
       },
     };
   }
@@ -249,7 +249,7 @@ export class Gb3MetadataService extends Gb3ApiService {
       datasets: service.datasets.map(this.extractDatasetDetail),
       serviceType: service.servicetyp,
       description: service.beschreibung,
-      imageUrl: service.image_url ? this.createAbsoluteUrl(service.image_url) : null,
+      imageUrl: service.image_url ? this.createAbsoluteUrl(service.image_url.src.href) : null,
     };
   }
 
@@ -262,7 +262,7 @@ export class Gb3MetadataService extends Gb3ApiService {
         metadata: this.extractContactDetails(product.kontakt_metadaten),
       },
       description: product.beschreibung,
-      imageUrl: product.image_url ? this.createAbsoluteUrl(product.image_url) : null,
+      imageUrl: product.image_url ? this.createAbsoluteUrl(product.image_url.src.href) : null,
       datasets: product.datasets.map(this.extractDatasetDetail),
     };
   }
