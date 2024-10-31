@@ -731,7 +731,7 @@ export interface Dataset {
   /** UUID */
   uuid: string;
   /** image object of the thumbnail image */
-  image_url: Image;
+  image_url: Image | null;
   /** Verfügbarkeit OGD/NOGD */
   ogd: boolean;
   /** Kontakt: Verantwortlich für Geodaten */
@@ -1045,7 +1045,7 @@ export interface Map {
   /** Map UUID */
   uuid: string;
   /** image object of the thumbnail image */
-  image_url: Image;
+  image_url: Image | null;
   /** Kontakt: Verantwortlich für Geodaten */
   kontakt_metadaten: Contact;
   /** Map GB2-Nummer */
@@ -1100,7 +1100,7 @@ export interface Product {
   /** Product UUID */
   uuid: string;
   /** image object of the thumbnail image */
-  image_url: Image;
+  image_url: Image | null;
   /** Kontakt: Zuständig für Geometadaten */
   kontakt_metadaten: Contact;
   /** Product GDP-Nummer */
@@ -1178,7 +1178,7 @@ export interface Service {
   /** Service UUID */
   uuid: string;
   /** image object of the thumbnail image */
-  image_url: Image;
+  image_url: Image | null;
   /** Kontakt: Zuständig für Geometadaten */
   kontakt_metadaten: Contact;
   /** Service GDSer-Nummer */

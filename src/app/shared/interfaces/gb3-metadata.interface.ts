@@ -25,7 +25,7 @@ interface BaseMetadataInterface {
   gisZHNr: number;
   name: string;
   description: string;
-  imageUrl: Image;
+  imageUrl: Image | null;
 }
 
 export interface DatasetMetadata extends BaseMetadataInterface {

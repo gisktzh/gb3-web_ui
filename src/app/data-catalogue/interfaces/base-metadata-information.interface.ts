@@ -4,5 +4,5 @@ export interface BaseMetadataInformation {
   itemTitle: string;
   category: string;
   shortDescription?: string;
-  imageUrl?: Image;
+  imageUrl: Image | null;
 }
