@@ -171,8 +171,6 @@ const expectedMockDepartmentalContact: DepartmentalContact = {
   division: mockContact.fachstelle,
 };
 
-const staticFileUrl = 'https://maps.zh.ch';
-
 describe('Gb3MetadataService', () => {
   let service: Gb3MetadataService;
   let configService: ConfigService;
@@ -212,7 +210,7 @@ describe('Gb3MetadataService', () => {
       const expected: ServiceMetadata = {
         version: mockServiceDetailResponse.service.version,
         url: mockServiceDetailResponse.service.url.href,
-        imageUrl: `${staticFileUrl}${mockServiceDetailResponse.service.image_url.src.href}`,
+        imageUrl: mockServiceDetailResponse.service.image_url,
         uuid: mockServiceDetailResponse.service.uuid,
         gisZHNr: mockServiceDetailResponse.service.gdsernummer,
         name: mockServiceDetailResponse.service.name,
@@ -256,7 +254,7 @@ describe('Gb3MetadataService', () => {
 
       const expected: MapMetadata = {
         topic: mockMapDetailResponse.map.topic,
-        imageUrl: `${staticFileUrl}${mockMapDetailResponse.map.image_url.src.href}`,
+        imageUrl: mockMapDetailResponse.map.image_url,
         uuid: mockMapDetailResponse.map.uuid,
         gisZHNr: mockMapDetailResponse.map.gb2_id,
         name: mockMapDetailResponse.map.name,
@@ -299,7 +297,7 @@ describe('Gb3MetadataService', () => {
       spyOn(httpClient, 'get').and.returnValue(of(mockProductDetailResponse));
 
       const expected: ProductMetadata = {
-        imageUrl: `${staticFileUrl}${mockProductDetailResponse.product.image_url.src.href}`,
+        imageUrl: mockProductDetailResponse.product.image_url,
         uuid: mockProductDetailResponse.product.uuid,
         gisZHNr: mockProductDetailResponse.product.gdpnummer,
         name: mockProductDetailResponse.product.name,
@@ -362,7 +360,7 @@ describe('Gb3MetadataService', () => {
         pdf: mockDatasetDetailResponse.dataset.pdf,
         outputFormat: mockDatasetDetailResponse.dataset.abgabeformate,
         shortDescription: mockDatasetDetailResponse.dataset.kurzbeschreibung,
-        imageUrl: `${staticFileUrl}${mockDatasetDetailResponse.dataset.image_url.url.href}`,
+        imageUrl: mockDatasetDetailResponse.dataset.image_url,
         uuid: mockDatasetDetailResponse.dataset.uuid,
         gisZHNr: mockDatasetDetailResponse.dataset.giszhnr,
         name: mockDatasetDetailResponse.dataset.name,
