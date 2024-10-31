@@ -16,7 +16,7 @@
             <img
               [src]="baseMetadataInformation.imageUrl.src.href"
               class="data-catalogue-detail-page__title__image"
-              alt="Beispielbild zur Karte {{ baseMetadataInformation.itemTitle }}"
+              [alt]="baseMetadataInformation.imageUrl.alt"
             />
           </a>
         }
