@@ -89,6 +89,8 @@ export interface MapMetadata extends BaseMetadataInterface {
   datasets: LinkedDataset[];
   externalLinks: LinkObject[];
   gb2Url: LinkObject | null;
+  intranetUrl: LinkObject | null;
+  internetUrl: LinkObject | null;
 }
 
 export interface ServiceMetadata extends BaseMetadataInterface {
