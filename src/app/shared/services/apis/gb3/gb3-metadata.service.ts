@@ -214,6 +214,8 @@ export class Gb3MetadataService extends Gb3ApiService {
       description: mapData.beschreibung,
       imageUrl: mapData.image_url ? this.createAbsoluteUrl(mapData.image_url.src.href) : null,
       externalLinks: mapData.verweise,
+      internetUrl: mapData.gbkarten_internet_url,
+      intranetUrl: mapData.gbkarten_intranet_url,
       gb2Url: mapData.gb2_url
         ? {
             href: this.createAbsoluteUrl(mapData.gb2_url.href),

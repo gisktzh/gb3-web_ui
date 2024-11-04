@@ -263,6 +263,8 @@ describe('Gb3MetadataService', () => {
         gb2Url: mockMapDetailResponse.map.gb2_url,
         externalLinks: mockMapDetailResponse.map.verweise,
         description: mockMapDetailResponse.map.beschreibung,
+        intranetUrl: mockMapDetailResponse.map.gbkarten_intranet_url,
+        internetUrl: mockMapDetailResponse.map.gbkarten_internet_url,
         contact: {
           geodata: expectedMockDepartmentalContact,
         },
