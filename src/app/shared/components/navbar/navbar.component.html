@@ -1,5 +1,5 @@
 <mat-toolbar aria-label="Hauptnavigation" class="navbar" color="primary" role="navigation">
-  <span class="navbar__item">
+  <span class="navbar__item" role="banner">
     <img
       [ngStyle]="{display: !this.isSimplifiedPage ? 'none' : 'inline'}"
       alt="KTZH Logo"
@@ -7,6 +7,7 @@
       ngSrc="assets/images/ktzh_inverted.svg"
       height="184"
       width="180"
+      aria-hidden="true"
     />
     Geoportal Kanton Zürich
   </span>

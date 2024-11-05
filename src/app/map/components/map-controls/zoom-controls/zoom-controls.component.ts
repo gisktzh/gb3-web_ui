@@ -31,6 +31,7 @@ export class ZoomControlsComponent implements OnInit, OnDestroy {
   @Input() public showLocateMeButton!: boolean;
 
   public tooltipText = TOOLTIP_TEXT;
+  public locationButtonTooltipText = this.tooltipText.locateMe;
 
   public isMaxZoomedIn: boolean = false;
   public isMaxZoomedOut: boolean = false;
@@ -70,7 +71,19 @@ export class ZoomControlsComponent implements OnInit, OnDestroy {
   private initSubscriptions() {
     this.subscriptions.add(this.isMaxZoomedIn$.pipe(tap((value) => (this.isMaxZoomedIn = value))).subscribe());
     this.subscriptions.add(this.isMaxZoomedOut$.pipe(tap((value) => (this.isMaxZoomedOut = value))).subscribe());
-    this.subscriptions.add(this.geolocationState$.pipe(tap((value) => (this.geolocationState = value))).subscribe());
+    this.subscriptions.add(
+      this.geolocationState$
+        .pipe(
+          tap((value) => {
+            this.geolocationState = value;
+            this.locationButtonTooltipText =
+              value.loadingState === 'error'
+                ? (this.geolocationState.errorReason ?? 'Ein Fehler ist aufgetreten')
+                : this.tooltipText.locateMe;
+          }),
+        )
+        .subscribe(),
+    );
     this.subscriptions.add(this.mapUiState$.pipe(tap((value) => (this.mapUiState = value))).subscribe());
     this.subscriptions.add(this.screenHeight$.pipe(tap((value) => (this.screenHeight = value))).subscribe());
   }

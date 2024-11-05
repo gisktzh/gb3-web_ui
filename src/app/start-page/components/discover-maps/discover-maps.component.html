@@ -14,7 +14,9 @@
             class="discover-maps__list__item__wrapper__content__image"
           />
           <div class="discover-maps__list__item__wrapper__content__container">
-            <p class="mat-headline-6 discover-maps__list__item__wrapper__content__container__title">{{ discoverMapsEntry.title }}</p>
+            <h3 class="ktzh-h3-medium--bold discover-maps__list__item__wrapper__content__container__title">
+              {{ discoverMapsEntry.title }}
+            </h3>
             <p class="discover-maps__list__item__wrapper__content__container__text">{{ discoverMapsEntry.description }}</p>
             <a [color]="'accent'" [queryParams]="{initialMapIds: discoverMapsEntry.mapId}" [routerLink]="mainPageEnum.Maps" mat-flat-button
               >Karte öffnen</a

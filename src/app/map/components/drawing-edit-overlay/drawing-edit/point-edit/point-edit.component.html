@@ -1,4 +1,4 @@
-<h2>Umrandung</h2>
+<h3 class="ktzh-h3-medium--bold">Umrandung</h3>
 <slider-edit
   (updateSliderEvent)="updateValue('strokeWidth', $event)"
   [sliderValue]="pointStyle.strokeWidth"
@@ -13,14 +13,14 @@
 <color-picker-edit (updateColorEvent)="updateValue('strokeColor', $event)" [fillColor]="pointStyle.strokeColor" title="Strichfarbe">
 </color-picker-edit>
 <mat-divider class="divider"></mat-divider>
-<h2>Füllung</h2>
+<h3 class="ktzh-h3-medium--bold">Füllung</h3>
 <slider-edit (updateSliderEvent)="updateValue('fillOpacity', $event)" [sliderValue]="pointStyle.fillOpacity" title="Deckkraft">
 </slider-edit>
 <color-picker-edit (updateColorEvent)="updateValue('fillColor', $event)" [fillColor]="pointStyle.fillColor" title="Füllfarbe">
 </color-picker-edit>
 <mat-divider class="divider"></mat-divider>
 
-<h2>Grösse</h2>
+<h3 class="ktzh-h3-medium--bold">Grösse</h3>
 <slider-edit
   (updateSliderEvent)="updateValue('pointRadius', $event)"
   [sliderValue]="pointStyle.pointRadius"

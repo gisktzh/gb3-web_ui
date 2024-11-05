@@ -12,14 +12,19 @@
   <div class="accordion-item__content" [ngClass]="'accordion-item__content--' + variant">
     <div
       (click)="accordionItem.toggle()"
-      class="accordion-item__content__header mat-h2"
+      class="accordion-item__content__header"
       [ngClass]="{
         'accordion-item__content__header--opened': accordionItem.expanded,
         'accordion-item__content__header--grey': variant === 'grey',
         'accordion-item__content__header--light': variant === 'light',
       }"
     >
-      <span [ngClass]="{'accordion-item__content__header__text': screenMode === 'mobile' && !accordionItem.expanded}">{{ header }}</span>
+      <h4
+        class="ktzh-h4-bigger-regular"
+        [ngClass]="{'accordion-item__content__header__text': screenMode === 'mobile' && !accordionItem.expanded}"
+      >
+        {{ header }}
+      </h4>
       <span class="accordion-item__content__header__icon-wrapper">
         <mat-icon [svgIcon]="accordionItem.expanded ? 'ktzh_remove' : 'ktzh_add'"></mat-icon>
       </span>

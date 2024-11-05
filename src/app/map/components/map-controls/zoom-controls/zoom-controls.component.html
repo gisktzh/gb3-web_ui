@@ -6,16 +6,8 @@
       color="accent"
       class="zoom-controls__button"
       data-test-id="map-locate-me"
-      [matTooltip]="
-        this.geolocationState.loadingState === 'error'
-          ? this.geolocationState.errorReason || 'Ein Fehler ist aufgetreten'
-          : tooltipText.locateMe
-      "
-      [attr.aria-label]="
-        this.geolocationState.loadingState === 'error'
-          ? this.geolocationState.errorReason || 'Ein Fehler ist aufgetreten'
-          : tooltipText.locateMe
-      "
+      [matTooltip]="locationButtonTooltipText"
+      [attr.aria-label]="locationButtonTooltipText"
       [disabled]="this.geolocationState.loadingState === 'loading'"
       [ngClass]="{'zoom-controls--hidden': mapUiState?.hideUiElements}"
     >

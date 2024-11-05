@@ -1,10 +1,14 @@
 <div class="faq" *ngFor="let faqCollection of this.faqCollections">
-  <h2 class="faq__header">{{ faqCollection.category }}</h2>
+  <h3 class="ktzh-h3-small-big">{{ faqCollection.category }}</h3>
   <div>
     <cdk-accordion [multi]="true">
-      <accordion-item *ngFor="let item of faqCollection.items" [header]="item.question" variant="dark">
-        <p [innerHTML]="item.answer | formatContent" class="faq__content"></p>
-      </accordion-item>
+      <ul style="margin: 0; padding: 0">
+        <li *ngFor="let item of faqCollection.items" style="list-style-type: none">
+          <accordion-item [header]="item.question" variant="dark">
+            <p [innerHTML]="item.answer | formatContent" class="faq__content"></p>
+          </accordion-item>
+        </li>
+      </ul>
     </cdk-accordion>
   </div>
 </div>
