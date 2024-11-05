@@ -37,7 +37,8 @@ $number-of-entries: 3;
 
           .news-feed__list__item__wrapper__content__header {
             margin-bottom: 4px;
-            font-size: x-small;
+            font-size: 16px;
+            line-height: 24px;
 
             &:before {
               content: 'Mitteilung ';
