@@ -27,7 +27,7 @@
 
   <data-catalogue-detail-page-section *ngIf="linkedDatasets.length > 0">
     <data-display-section [sectionTitle]="'Verwendete Geodaten'">
-      <generic-list [listData]="linkedDatasets" [itemTemplate]="linkedDataset"></generic-list>
+      <generic-list [listData]="linkedDatasets" [itemTemplate]="linkedDataset" [hasGap]="true"></generic-list>
       <ng-template #linkedDataset let-linkedDataset>
         <descriptive-highlighted-link
           [description]="linkedDataset.shortDescription"

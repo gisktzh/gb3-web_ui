@@ -66,7 +66,7 @@
 
   <data-catalogue-detail-page-section *ngIf="linkedData.maps.length > 0">
     <data-display-section [sectionTitle]="'Karten mit diesem Datensatz'">
-      <generic-list [listData]="linkedData.maps" [itemTemplate]="linkedMap"></generic-list>
+      <generic-list [listData]="linkedData.maps" [itemTemplate]="linkedMap" [hasGap]="true"></generic-list>
       <ng-template #linkedMap let-map>
         <descriptive-highlighted-link [title]="map.name" [multiLine]="screenMode === 'mobile'">
           @if (screenMode === 'mobile') {

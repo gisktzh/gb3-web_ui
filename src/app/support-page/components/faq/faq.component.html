@@ -2,13 +2,12 @@
   <h3 class="ktzh-h3-small-big">{{ faqCollection.category }}</h3>
   <div>
     <cdk-accordion [multi]="true">
-      <ul style="margin: 0; padding: 0">
-        <li *ngFor="let item of faqCollection.items" style="list-style-type: none">
-          <accordion-item [header]="item.question" variant="dark">
-            <p [innerHTML]="item.answer | formatContent" class="faq__content"></p>
-          </accordion-item>
-        </li>
-      </ul>
+      <generic-list [listData]="faqCollection.items" [itemTemplate]="faqItem"></generic-list>
+      <ng-template #faqItem let-faqItem>
+        <accordion-item [header]="faqItem.question" variant="dark">
+          <p [innerHTML]="faqItem.answer | formatContent" class="faq__content"></p>
+        </accordion-item>
+      </ng-template>
     </cdk-accordion>
   </div>
 </div>
