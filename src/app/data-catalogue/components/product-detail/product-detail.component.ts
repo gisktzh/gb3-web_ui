@@ -48,6 +48,7 @@ export class ProductDetailComponent extends AbstractBaseDetailComponent<ProductM
       itemTitle: productMetadata.name,
       category: 'Produkt',
       shortDescription: productMetadata.description,
+      imageUrl: null,
     };
   }
 

@@ -12,11 +12,13 @@
       </a>
       <div class="data-catalogue-detail-page__title" [ngClass]="{'data-catalogue-detail-page__title--mobile': screenMode === 'mobile'}">
         @if (baseMetadataInformation.imageUrl) {
-          <img
-            [src]="baseMetadataInformation.imageUrl"
-            class="data-catalogue-detail-page__title__image"
-            alt="Beispielbild zur Karte {{ baseMetadataInformation.itemTitle }}"
-          />
+          <a [href]="baseMetadataInformation.imageUrl.url.href">
+            <img
+              [src]="baseMetadataInformation.imageUrl.src.href"
+              class="data-catalogue-detail-page__title__image"
+              [alt]="baseMetadataInformation.imageUrl.alt"
+            />
+          </a>
         }
         <div>
           <h1 class="data-catalogue-detail-page__title__text mat-headline-4">{{ baseMetadataInformation.itemTitle }}</h1>
