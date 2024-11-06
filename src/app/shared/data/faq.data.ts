@@ -47,6 +47,13 @@ export const faqData: FaqCollection[] = [
           ' Die importierten Karten und Daten werden zu keinem Zeitpunkt im GIS- Browser gespeichert und können auch nicht geteilt werden.',
       },
       {
+        uuid: '9bb8c476-684b-4d89-94c3-37b48a27ffa6',
+        question: 'TEST',
+        answer:
+          'Sie können Kartendienste oder Dateien in verschiedenen Formaten über die Schaltfläche «Kartendienst importieren» einbinden.' +
+          ' Die importierten Karten und Daten werden zu keinem Zeitpunkt im GIS- Browser gespeichert und können auch nicht geteilt werden.',
+      },
+      {
         uuid: 'da755d95-192d-4e19-b526-a5c1b9af87b5',
         question: 'Kann ich Daten im GIS-Browser bearbeiten?',
         answer: 'Nein, die Bearbeitung von Daten ist im GIS-Browser nicht möglich.',
