@@ -1,6 +1,6 @@
 <mat-card appearance="raised" class="data-download-status-queue" *ngIf="statusJobs.length > 0">
   <mat-card-header [ngClass]="{'data-download-status-queue__header--minimized': isMinimized}" class="data-download-status-queue__header">
-    <h2 class="data-download-status-queue__header__title">Download Warteschlage</h2>
+    <h2 class="data-download-status-queue__header__title">Download Warteschlange</h2>
     <button (click)="toggleIsMinimized()" mat-icon-button>
       <mat-icon [fontIcon]="isMinimized ? 'arrow_drop_up' : 'arrow_drop_down'"></mat-icon>
     </button>
