@@ -1,6 +1,0 @@
-steps:
-  - task: PublishCodeCoverageResults@2
-    displayName: 'Publish code coverage'
-    inputs:
-      summaryFileLocation: $(System.DefaultWorkingDirectory)/coverage/gb3-frontend/lcov.info
-      failIfCoverageEmpty: true
