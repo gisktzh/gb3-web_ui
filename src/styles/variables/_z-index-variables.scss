@@ -11,4 +11,4 @@ $cdk-drag-handle: 1;
 $collapsing-flexbox-list-item-hover: 1;
 $data-download-order-queue: 1;
 $scrollbar-width-calculation-container: 0;
-$map-container: -1;
+$map-container: -1; // should always stay at the bottom (lower than 0), only adjust if you know what you're doing

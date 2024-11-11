@@ -5,10 +5,10 @@ import {NgClass, NgTemplateOutlet} from '@angular/common';
   selector: 'generic-list',
   standalone: true,
   imports: [NgTemplateOutlet, NgClass],
-  templateUrl: './generic-list.component.html',
-  styleUrl: './generic-list.component.scss',
+  templateUrl: './generic-unordered-list.component.html',
+  styleUrl: './generic-unordered-list.component.scss',
 })
-export class GenericListComponent {
+export class GenericUnorderedListComponent {
   @Input() public listData: any[] = [];
   @Input() public itemTemplate: TemplateRef<any> | null = null;
   @Input() public hasGap: boolean = false;

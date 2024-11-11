@@ -14,16 +14,13 @@ h4.ktzh-h4-bigger-regular {
   letter-spacing: 0.25px;
 }
 
-h3.ktzh-h3-medium--bold {
+h3.ktzh-h3-medium {
   font-size: 20px;
-  font-family: ktzh-variables.$zh-font-family-bold;
-}
 
-h3.ktzh-h3-medium--thin {
-  font-size: 20px;
-  font-family: ktzh-variables.$zh-font-family;
+  &--bold {
+    font-family: ktzh-variables.$zh-font-family-bold;
+  }
 }
-
 h3.ktzh-h3-small-big {
   margin: 0 0 20px;
 

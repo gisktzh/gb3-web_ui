@@ -9,7 +9,7 @@
   </p>
   <generic-list [listData]="frequentlyUsedItems" [itemTemplate]="frequentlyUsedItem"></generic-list>
   <ng-template #frequentlyUsedItem let-frequentlyUsedItem>
-    <section
+    <div
       class="frequently-used-items__item"
       [ngClass]="{'frequently-used-items__item--mobile': screenMode === 'mobile'}"
       [attr.aria-label]="frequentlyUsedItem.title"
@@ -44,7 +44,7 @@
           <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
         </a>
       </div>
-    </section>
+    </div>
     <mat-divider></mat-divider>
   </ng-template>
 </div>
