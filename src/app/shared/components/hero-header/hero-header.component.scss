@@ -15,16 +15,6 @@ $column-gap: 8px;
     width: max(71px, $left-offset);
   }
 
-  & .hero-header__title {
-    margin-bottom: 0;
-    word-wrap: break-word;
-    font-size: 72px;
-
-    &--mobile {
-      font-size: 32px;
-    }
-  }
-
   & .hero-header__intro-paragraph {
     font-family: ktzh-variables.$zh-font-family-bold;
     font-size: large;

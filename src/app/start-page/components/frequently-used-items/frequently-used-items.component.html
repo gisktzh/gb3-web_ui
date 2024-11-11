@@ -7,8 +7,13 @@
   <p *ngIf="frequentlyUsedItems.length === 0 && loadingState === 'loaded'" class="mat-caption">
     Aktuell gibt es keine häufig verwendete Karten oder Daten.
   </p>
-  <ng-container *ngFor="let frequentlyUsedItem of frequentlyUsedItems">
-    <div class="frequently-used-items__item" [ngClass]="{'frequently-used-items__item--mobile': screenMode === 'mobile'}">
+  <generic-list [listData]="frequentlyUsedItems" [itemTemplate]="frequentlyUsedItem"></generic-list>
+  <ng-template #frequentlyUsedItem let-frequentlyUsedItem>
+    <div
+      class="frequently-used-items__item"
+      [ngClass]="{'frequently-used-items__item--mobile': screenMode === 'mobile'}"
+      [attr.aria-label]="frequentlyUsedItem.title"
+    >
       <div
         class="frequently-used-items__item__image-container"
         [ngClass]="{'frequently-used-items__item__image-container--mobile': screenMode === 'mobile'}"
@@ -24,7 +29,7 @@
         class="frequently-used-items__item__text-container"
         [ngClass]="{'frequently-used-items__item__text-container--mobile': screenMode === 'mobile'}"
       >
-        <h1>{{ frequentlyUsedItem.title }}</h1>
+        <h3 class="ktzh-h3-small-big">{{ frequentlyUsedItem.title }}</h3>
         <p class="frequently-used-items__item__text-container__text">{{ frequentlyUsedItem.description }}</p>
         <a
           *ngIf="frequentlyUsedItem.url !== undefined"
@@ -41,5 +46,5 @@
       </div>
     </div>
     <mat-divider></mat-divider>
-  </ng-container>
+  </ng-template>
 </div>

@@ -71,10 +71,6 @@
         margin-bottom: 24px;
       }
 
-      .page-section__content-container__title-wrapper__title {
-        margin-bottom: 0;
-      }
-
       & .page-section__content-container__title-wrapper__link {
         @include mat-mixins.mat-button-ktzh-link;
       }

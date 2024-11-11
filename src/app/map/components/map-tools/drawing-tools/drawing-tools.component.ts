@@ -6,13 +6,23 @@ import {DrawingsImportDialogComponent} from '../drawings-import-dialog/drawings-
 
 const DRAWING_SETTINGS_DIALOG_MAX_WIDTH = 420;
 const DRAWING_UPLOAD_DIALOG_MAX_WIDTH = 750;
-
+const TOOLTIP_TEXT = {
+  settings: 'Einstellungen',
+  pointDrawing: 'Punkt: In Karte klicken um zu wählen.',
+  lineDrawing: 'Linie: Mit Doppelklick beenden.',
+  polygonDrawing: 'Polygon: Auf Startpunkt klicken oder Doppelklick um zu beenden.',
+  rectangleDrawing: 'Rechteck: Diagonale Eckpunkte wählen.',
+  circleDrawing: 'Kreis: Mittelpunkt und Radius wählen.',
+  textDrawing: 'Text: In Karte klicken um Position zu wählen, anschliessend Text eingeben.',
+  uploadDrawings: 'Zeichnungen hochladen',
+};
 @Component({
   selector: 'drawing-tools',
   templateUrl: './drawing-tools.component.html',
   styleUrls: ['./drawing-tools.component.scss'],
 })
 export class DrawingToolsComponent extends AbstractToolsComponent {
+  public tooltipText = TOOLTIP_TEXT;
   public togglePointDrawing() {
     this.toggleTool('draw-point');
   }

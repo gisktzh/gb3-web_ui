@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {LinkObject} from '../../../interfaces/link-object.interface';
+import {LinkObject} from '../../../../interfaces/link-object.interface';
 
 @Component({
   selector: 'link-list-item',

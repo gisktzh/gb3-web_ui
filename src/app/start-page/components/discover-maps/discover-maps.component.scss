@@ -46,10 +46,7 @@ $number-of-entries: 2;
 
             .discover-maps__list__item__wrapper__content__container__title {
               @include mixins.multiline-ellipsis(2);
-              margin-bottom: 8px;
-              font-weight: bold;
               color: ktzh-variables.$zh-blue;
-              line-height: 1.05;
             }
 
             .discover-maps__list__item__wrapper__content__container__text {

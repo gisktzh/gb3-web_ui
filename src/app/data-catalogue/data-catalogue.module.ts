@@ -17,6 +17,7 @@ import {DatasetElementDetailComponent} from './components/dataset-detail/dataset
 import {DataDisplayComponent} from './components/data-display/data-display.component';
 import {OverviewSearchResultItemComponent} from '../shared/components/data-catalogue-overview-item/overview-search-result-item.component';
 import {FormatLineBreaksPipe} from '../shared/pipes/format-line-breaks.pipe';
+import {GenericUnorderedListComponent} from '../shared/components/lists/generic-unordered-list/generic-unordered-list.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import {FormatLineBreaksPipe} from '../shared/pipes/format-line-breaks.pipe';
     OverviewSearchResultItemComponent,
     NgOptimizedImage,
     FormatLineBreaksPipe,
+    GenericUnorderedListComponent,
   ],
   exports: [],
 })

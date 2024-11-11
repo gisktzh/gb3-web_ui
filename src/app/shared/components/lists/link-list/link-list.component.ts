@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {LinksGroup} from '../../interfaces/links-group.interface';
+import {LinksGroup} from '../../../interfaces/links-group.interface';
 
 @Component({
   selector: 'link-list',

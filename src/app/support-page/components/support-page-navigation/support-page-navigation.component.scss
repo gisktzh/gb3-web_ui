@@ -5,10 +5,6 @@
 .support-page-navigation {
   border-bottom: functions.get-color-from-palette(ktzh-variables.$zh-accent, 50) solid 2px;
 
-  .support-page-navigation__header {
-    margin-bottom: 36px;
-  }
-
   .support-page-navigation__buttons {
     display: flex;
     overflow-x: auto;

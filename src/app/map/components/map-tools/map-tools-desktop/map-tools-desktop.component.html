@@ -7,8 +7,9 @@
       color="accent"
       data-test-id="map-ruler"
       mat-icon-button
-      matTooltip="Messen"
+      [matTooltip]="tooltipText.measurement"
       [disabled]="!isMapReady"
+      [attr.aria-label]="tooltipText.measurement"
     >
       <mat-icon svgIcon="ktzh_measure_menu"></mat-icon>
     </button>
@@ -20,7 +21,8 @@
       color="accent"
       data-test-id="map-drawing"
       mat-icon-button
-      matTooltip="Zeichnen"
+      [matTooltip]="tooltipText.drawing"
+      [attr.aria-label]="tooltipText.drawing"
       [disabled]="!isMapReady"
     >
       <mat-icon svgIcon="ktzh_drawing_menu"></mat-icon>
@@ -33,7 +35,8 @@
       color="accent"
       data-test-id="map-data-download"
       mat-icon-button
-      matTooltip="Daten beziehen"
+      [matTooltip]="tooltipText.dataDownload"
+      [attr.aria-label]="tooltipText.dataDownload"
       [disabled]="!isMapReady"
     >
       <mat-icon svgIcon="ktzh_download"></mat-icon>
@@ -43,7 +46,8 @@
       class="map-tools-desktop__list__button"
       data-test-id="map-print"
       mat-icon-button
-      matTooltip="Drucken"
+      [matTooltip]="tooltipText.print"
+      [attr.aria-label]="tooltipText.print"
       [disabled]="!isMapReady"
     >
       <mat-icon svgIcon="ktzh_print"></mat-icon>
@@ -54,7 +58,8 @@
       class="map-tools-desktop__list__button"
       data-test-id="map-share"
       mat-icon-button
-      matTooltip="Teilen"
+      [matTooltip]="tooltipText.share"
+      [attr.aria-label]="tooltipText.share"
       [disabled]="!isMapReady"
     >
       <mat-icon svgIcon="ktzh_share"></mat-icon>
@@ -65,10 +70,10 @@
       class="map-tools-desktop__list__button"
       data-test-id="map-import"
       mat-icon-button
-      matTooltip="Kartendienst importieren"
+      [matTooltip]="tooltipText.mapImport"
+      [attr.aria-label]="tooltipText.mapImport"
       [disabled]="!isMapReady"
     >
-      <!-- TODO GB3-348: this is a placeholder icon -->
       <mat-icon svgIcon="ktzh_map_management"></mat-icon>
     </button>
   </div>
