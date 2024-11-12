@@ -1,8 +1,8 @@
 {
   "extends": ["config:recommended"],
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "assignees": ["gb3-developers"],
-  "reviewers": ["gb3-developers"],
+  "assignees": ["team:gb3-maintainer"],
+  "reviewers": ["team:gb3-maintainer"],
   "packageRules": [
     {
       "matchUpdateTypes": ["minor", "patch", "pin", "digest", "lockFileMaintenance", "bump"],
