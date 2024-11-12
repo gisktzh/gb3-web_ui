@@ -1,0 +1,26 @@
+services:
+  gb3-frontend:
+    restart: always
+    ports:
+      - 8081:8080
+    environment:
+      - TZ=Europe/Zurich
+    build:
+      context: ./
+      args:
+        - http_proxy=http://igw-axzh.abxsec.com:8080
+        - https_proxy=http://igw-axzh.abxsec.com:8080
+        - TARGET_ENVIRONMENT=$STAGE
+    image: gitlab.ktzh.ch:5050/gis/gb3-web_ui/gb3-frontend:latest
+    container_name: gb3-frontend
+    volumes:
+      - nginx-logs:/var/log/nginx
+    logging:
+      options:
+        max-size: "50m"
+        max-file: "5"
+    
+volumes:
+  nginx-logs:
+    external: true
+    name: nginx-logs
