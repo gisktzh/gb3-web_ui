@@ -22,7 +22,7 @@
   },
   "private": true,
   "engines": {
-    "node": "20.x"
+    "node": "22.x"
   },
   "dependencies": {
     "@angular-devkit/build-angular": "^18.1.0",
