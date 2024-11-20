@@ -1,4 +1,0 @@
-variables:
-  VM_IMAGE: 'ubuntu-latest'
-  NODE_VERSION: '20.x'
-  NODE_OPTIONS: '--max_old_space_size=6144' # increase node memory size to avoid out-of-memory exceptions

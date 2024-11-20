@@ -327,13 +327,13 @@ Within the runtime configurations there are API configurations used to configure
 
 #### Available URL configurations
 
-| Stagename |      Subdomain      |        Verwendung        |     GB2 Backend     |    WMS Backend     |        Geolion         |                 Bemerkung                  |
-| :-------: | :-----------------: | :----------------------: | :-----------------: | :----------------: | :--------------------: | :----------------------------------------: |
-|    DEV    |    dev.geo.zh.ch    |           EBP            |                     |                    |                        | calm-plant-0ecbec603.2.azurestaticapps.net |
-|   PROD    |      geo.zh.ch      |        öffentlich        |     maps.zh.ch      |     wms.zh.ch      |     geolion.zh.ch      |                                            |
-|   PROD    |     geo.ktzh.ch     |        Verwaltung        |   web.maps.zh.ch    |   web.wms.zh.ch    |    geolion.ktzh.ch     |                                            |
-|    UAT    |   uat.geo.ktzh.ch   | Verwaltungsinterne Tests | uatmaps.kt.ktzh.ch  | uatwms.kt.ktzh.ch  | uatgeolion.kt.ktzh.ch  |                                            |
-|  STAGING  | staging.geo.ktzh.ch | Produktionsvorbereitung  | testmaps.kt.ktzh.ch | testwms.kt.ktzh.ch | testgeolion.kt.ktzh.ch |                                            |
+| Stagename |      Subdomain      |        Verwendung        |     GB2 Backend     |    WMS Backend     |        Geolion         | Bemerkung |
+| :-------: | :-----------------: | :----------------------: | :-----------------: | :----------------: | :--------------------: | :-------: |
+|    DEV    |    dev.geo.zh.ch    |           EBP            |                     |                    |                        |           |
+|   PROD    |      geo.zh.ch      |        öffentlich        |     maps.zh.ch      |     wms.zh.ch      |     geolion.zh.ch      |           |
+|   PROD    |     geo.ktzh.ch     |        Verwaltung        |   web.maps.zh.ch    |   web.wms.zh.ch    |    geolion.ktzh.ch     |           |
+|    UAT    |   uat.geo.ktzh.ch   | Verwaltungsinterne Tests | uatmaps.kt.ktzh.ch  | uatwms.kt.ktzh.ch  | uatgeolion.kt.ktzh.ch  |           |
+|  STAGING  | staging.geo.ktzh.ch | Produktionsvorbereitung  | testmaps.kt.ktzh.ch | testwms.kt.ktzh.ch | testgeolion.kt.ktzh.ch |           |
 
 ### (S)CSS structure
 
