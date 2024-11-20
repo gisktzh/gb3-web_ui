@@ -120,7 +120,7 @@ export class DatasetDetailComponent extends AbstractBaseDetailComponent<DatasetM
       {
         title: 'Link',
         value: {
-          href: datasetMetadata.ogd ? 'https://www.bfs.admin.ch/bfsstatic/dam/assets/13267666/master' : 'https://geodatenshop.zh.ch',
+          href: datasetMetadata.ogd ? 'https://geolion.zh.ch/OGDZH_DatenGisBrowser_2024.pdf' : 'https://geodatenshop.zh.ch',
           title: datasetMetadata.ogd ? 'OGD Anleitung PDF' : 'NOGD Geodatenshop',
         },
         type: 'url',
