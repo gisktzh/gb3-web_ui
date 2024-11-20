@@ -369,6 +369,8 @@ helper files in our `\styles` folder:
   notable the color palettes that are used everywhere. Try to avoid hard-coded color values inside some local SCSS file.
 - **variables/\_z-index-variables.scss** contains all z-indices ordered by the highest value first. This is used to keep
   track of which element should be on top of which element in one place.
+- **\_headings.scss** contains all heading styles used in the application. This is used to keep track of all heading styles in
+  one place. They are based on the design system of the Canton of Zurich [(see Figma)](https://www.figma.com/design/MsFtPBJrdzPPevIAZwtxDn/GB3-mit-KTZH-Design-System?node-id=10-5055&node-type=canvas&t=BCmKrCIFSSdxjNgz-0).
 
 To use those global styles within a local SCSS file use the following syntax (or part of it):
 

@@ -18,26 +18,24 @@
     </mat-panel-title>
   </mat-expansion-panel-header>
   <div class="general-information__additional-content">
-    <ul class="general-information__additional-content__list">
-      <li *ngFor="let aCrs of generalInfoData.alternativeSpatialReferences" class="general-information__additional-content__crs">
-        <b>{{ aCrs.name }}:</b> {{ aCrs.coordinates[0] | number: '1.0-10' }} / {{ aCrs.coordinates[1] | number: '1.0-10' }}
-      </li>
-    </ul>
+    <generic-list [listData]="generalInfoData.alternativeSpatialReferences" [itemTemplate]="aCrs"></generic-list>
+    <ng-template #aCrs let-aCrs>
+      <b>{{ aCrs.name }}:</b> {{ aCrs.coordinates[0] | number: '1.0-10' }} / {{ aCrs.coordinates[1] | number: '1.0-10' }}
+    </ng-template>
     <b>Weitere Kartendienste:</b>
-    <ul class="general-information__additional-content__list">
-      <li *ngFor="let extMap of generalInfoData.externalMaps" class="general-information__additional-content__links">
-        <a
-          [href]="extMap.url"
-          [title]="extMap.name"
-          class="general-information__additional-content__links__ref"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <span>{{ extMap.name }}</span
-          ><span><mat-icon [inline]="true">north_east</mat-icon></span></a
-        >
-      </li>
-    </ul>
+    <generic-list [listData]="generalInfoData.externalMaps" [itemTemplate]="externalMaps"></generic-list>
+    <ng-template #externalMaps let-extMap>
+      <a
+        [href]="extMap.url"
+        [title]="extMap.name"
+        class="general-information__additional-content__links__ref"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <span>{{ extMap.name }}</span
+        ><span><mat-icon [inline]="true">north_east</mat-icon></span></a
+      >
+    </ng-template>
   </div>
 </mat-expansion-panel>
 

@@ -56,7 +56,7 @@ const mockServiceDetailResponse = {
     ],
     name: 'test-service',
     beschreibung: 'Lorem ipsum dolor',
-    image_url: '/gb3/example/picture.png',
+    image_url: {url: {href: '/gb3/example/picture.png'}, src: {href: '/gb3/example/picture.png'}, alt: 'Testbild'},
     kontakt_metadaten: {...mockContact},
     servicetyp: 'type of service',
     version: '1.0.1b',
@@ -73,8 +73,8 @@ const mockMapDetailResponse = {
       {name: 'data-2', uuid: '2', kurzbeschreibung: 'Lorem ipsum dolor', url_shop: null, giszhnr: 2},
     ],
     beschreibung: 'Lorem ipsum dolor',
-    image_url: '/gb3/example/picture.png',
-    kontakt_geodaten: {...mockContact},
+    image_url: {url: {href: '/gb3/example/picture.png'}, src: {href: '/gb3/example/picture.png'}, alt: 'Testbild'},
+    kontakt_metadaten: {...mockContact},
     name: 'Testmap',
     topic: 'test-topic',
     verweise: [],
@@ -93,7 +93,7 @@ const mockProductDetailResponse = {
       {name: 'data-2', uuid: '2', kurzbeschreibung: 'Lorem ipsum dolor', giszhnr: 1},
     ],
     beschreibung: 'Lorem ipsum dolor',
-    image_url: '/gb3/example/picture.png',
+    image_url: {url: {href: '/gb3/example/picture.png'}, src: {href: '/gb3/example/picture.png'}, alt: 'Testbild'},
     kontakt_metadaten: {...mockContact},
     name: 'Testmap',
   },
@@ -104,7 +104,7 @@ const mockDatasetDetailResponse = {
     uuid: '131',
     gisZHNr: 12,
     beschreibung: 'Lorem ipsum dolor',
-    image_url: '/gb3/example/picture.png',
+    image_url: {url: {href: '/gb3/example/picture.png'}, src: {href: '/gb3/example/picture.png'}, alt: 'Testbild'},
     kontakt_geodaten: {...mockContact},
     kontakt_metadaten: {...mockContact},
     name: 'Testmap',
@@ -171,8 +171,6 @@ const expectedMockDepartmentalContact: DepartmentalContact = {
   division: mockContact.fachstelle,
 };
 
-const staticFileUrl = 'https://maps.zh.ch';
-
 describe('Gb3MetadataService', () => {
   let service: Gb3MetadataService;
   let configService: ConfigService;
@@ -212,7 +210,7 @@ describe('Gb3MetadataService', () => {
       const expected: ServiceMetadata = {
         version: mockServiceDetailResponse.service.version,
         url: mockServiceDetailResponse.service.url.href,
-        imageUrl: `${staticFileUrl}${mockServiceDetailResponse.service.image_url}`,
+        imageUrl: mockServiceDetailResponse.service.image_url,
         uuid: mockServiceDetailResponse.service.uuid,
         gisZHNr: mockServiceDetailResponse.service.gdsernummer,
         name: mockServiceDetailResponse.service.name,
@@ -256,13 +254,15 @@ describe('Gb3MetadataService', () => {
 
       const expected: MapMetadata = {
         topic: mockMapDetailResponse.map.topic,
-        imageUrl: `${staticFileUrl}${mockMapDetailResponse.map.image_url}`,
+        imageUrl: mockMapDetailResponse.map.image_url,
         uuid: mockMapDetailResponse.map.uuid,
         gisZHNr: mockMapDetailResponse.map.gb2_id,
         name: mockMapDetailResponse.map.name,
         gb2Url: mockMapDetailResponse.map.gb2_url,
         externalLinks: mockMapDetailResponse.map.verweise,
         description: mockMapDetailResponse.map.beschreibung,
+        intranetUrl: mockMapDetailResponse.map.gbkarten_intranet_url,
+        internetUrl: mockMapDetailResponse.map.gbkarten_internet_url,
         contact: {
           geodata: expectedMockDepartmentalContact,
         },
@@ -299,7 +299,7 @@ describe('Gb3MetadataService', () => {
       spyOn(httpClient, 'get').and.returnValue(of(mockProductDetailResponse));
 
       const expected: ProductMetadata = {
-        imageUrl: `${staticFileUrl}${mockProductDetailResponse.product.image_url}`,
+        imageUrl: mockProductDetailResponse.product.image_url,
         uuid: mockProductDetailResponse.product.uuid,
         gisZHNr: mockProductDetailResponse.product.gdpnummer,
         name: mockProductDetailResponse.product.name,
@@ -362,7 +362,7 @@ describe('Gb3MetadataService', () => {
         pdf: mockDatasetDetailResponse.dataset.pdf,
         outputFormat: mockDatasetDetailResponse.dataset.abgabeformate,
         shortDescription: mockDatasetDetailResponse.dataset.kurzbeschreibung,
-        imageUrl: `${staticFileUrl}${mockDatasetDetailResponse.dataset.image_url}`,
+        imageUrl: mockDatasetDetailResponse.dataset.image_url,
         uuid: mockDatasetDetailResponse.dataset.uuid,
         gisZHNr: mockDatasetDetailResponse.dataset.giszhnr,
         name: mockDatasetDetailResponse.dataset.name,
@@ -417,7 +417,7 @@ describe('Gb3MetadataService', () => {
               mockMapDetailResponse.map.uuid,
               mockMapDetailResponse.map.name,
               mockMapDetailResponse.map.beschreibung,
-              mockMapDetailResponse.map.kontakt_geodaten.amt,
+              mockMapDetailResponse.map.kontakt_metadaten.amt,
             ),
             new ProductOverviewMetadataItem(
               mockProductDetailResponse.product.uuid,

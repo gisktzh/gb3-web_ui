@@ -31,12 +31,13 @@
       }
 
       .data-catalogue-detail-page__title__image {
+        display: block;
         max-width: 368px;
       }
+    }
 
-      .data-catalogue-detail-page__title__text {
-        margin-bottom: 12px;
-      }
+    .data-catalogue-detail-page__description {
+      margin: 24px 0;
     }
 
     .data-catalogue-detail-page__category {

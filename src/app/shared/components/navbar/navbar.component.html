@@ -1,5 +1,5 @@
 <mat-toolbar aria-label="Hauptnavigation" class="navbar" color="primary" role="navigation">
-  <span class="navbar__item">
+  <span class="navbar__item" role="banner">
     <img
       [ngStyle]="{display: !this.isSimplifiedPage ? 'none' : 'inline'}"
       alt="KTZH Logo"
@@ -7,6 +7,7 @@
       ngSrc="assets/images/ktzh_inverted.svg"
       height="184"
       width="180"
+      aria-hidden="true"
     />
     Geoportal Kanton Zürich
   </span>
@@ -41,32 +42,37 @@
     Geodatenshop
   </a>
   <mat-divider class="navbar__divider" vertical></mat-divider>
-  <a (click)="this.startLogin()" *ngIf="!this.isAuthenticated; else userProfile" class="navbar__item" mat-button>Login</a>
-  <ng-template #userProfile>
-    <a [matMenuTriggerFor]="userMenu" class="navbar__item" *ngIf="screenMode === 'regular'; else reducedNavbar" mat-button>
-      <mat-icon svgIcon="ktzh_user"></mat-icon>
-      {{ this.userName }}
-    </a>
-    <ng-template #reducedNavbar>
-      <a [matMenuTriggerFor]="userMenu" class="navbar__item" mat-button #trigger="matMenuTrigger">
+  @if (!this.isAuthenticated) {
+    <button (click)="this.startLogin()" class="navbar__item navbar__item--button" mat-button>Login</button>
+  } @else {
+    @if (screenMode === 'regular') {
+      <button [matMenuTriggerFor]="userMenu" class="navbar__item navbar__item--button" mat-button>
+        <mat-icon svgIcon="ktzh_user"></mat-icon>
+        {{ this.userName }}
+      </button>
+    } @else {
+      <button [matMenuTriggerFor]="userMenu" class="navbar__item navbar__item--button" mat-button #trigger="matMenuTrigger">
         <mat-icon svgIcon="ktzh_user"></mat-icon>
         <mat-icon [fontIcon]="trigger.menuOpen ? 'arrow_drop_up' : 'arrow_drop_down'"></mat-icon>
-      </a>
-    </ng-template>
+      </button>
+    }
+
     <mat-menu #userMenu="matMenu">
       <button (click)="this.logout()" mat-menu-item>
         <mat-icon>logout</mat-icon>
         <span>Logout</span>
       </button>
     </mat-menu>
-  </ng-template>
+  }
 
-  <div class="navbar__underline-container" *ngIf="!isSimplifiedPage">
-    <div class="navbar__underline-container__content-container">
-      <span></span>
-      <span class="navbar__underline"></span>
-      <span class="navbar__underline"></span>
+  @if (!isSimplifiedPage) {
+    <div class="navbar__underline-container">
+      <div class="navbar__underline-container__content-container">
+        <span></span>
+        <span class="navbar__underline"></span>
+        <span class="navbar__underline"></span>
+      </div>
+      <span class="navbar__underline" [ngStyle]="{width: scrollbarWidth + 'px'}"></span>
     </div>
-    <span class="navbar__underline" [ngStyle]="{width: scrollbarWidth + 'px'}"></span>
-  </div>
+  }
 </mat-toolbar>

@@ -87,6 +87,7 @@ export class DatasetDetailComponent extends AbstractBaseDetailComponent<DatasetM
       itemTitle: datasetMetadata.name,
       shortDescription: datasetMetadata.description,
       category: 'Geodatensatz',
+      imageUrl: null,
     };
   }
 

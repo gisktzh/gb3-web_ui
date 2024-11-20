@@ -1,5 +1,11 @@
 <div class="map-rotation-button" [ngClass]="{'map-rotation-button--mobile': screenMode === 'mobile'}">
-  <button (click)="resetRotation()" mat-icon-button class="map-rotation-button--button">
+  <button
+    (click)="resetRotation()"
+    mat-icon-button
+    class="map-rotation-button--button"
+    matTooltip="Kartenrotation: Klicken um nach Norden auszurichten"
+    aria-label="Kartenrotation: Klicken um nach Norden auszurichten"
+  >
     <mat-icon [style.transform]="rotation | mapRotation">explore</mat-icon>
   </button>
 </div>

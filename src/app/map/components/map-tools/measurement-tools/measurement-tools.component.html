@@ -5,7 +5,8 @@
     class="measurement-tools__button"
     color="accent"
     mat-icon-button
-    matTooltip="Punkt: In Karte klicken um zu wählen."
+    [matTooltip]="tooltipText.pointMeasurement"
+    [attr.aria-label]="tooltipText.pointMeasurement"
   >
     <mat-icon svgIcon="ktzh_drawing_symbol_point"></mat-icon>
   </button>
@@ -15,7 +16,8 @@
     class="measurement-tools__button"
     color="accent"
     mat-icon-button
-    matTooltip="Strecke: Mit Doppelklick beenden."
+    [matTooltip]="tooltipText.lineMeasurement"
+    [attr.aria-label]="tooltipText.lineMeasurement"
   >
     <mat-icon svgIcon="ktzh_drawing_symbol_line"></mat-icon>
   </button>
@@ -25,7 +27,8 @@
     class="measurement-tools__button"
     color="accent"
     mat-icon-button
-    matTooltip="Fläche: Auf Startpunkt klicken oder Doppelklick um zu beenden."
+    [matTooltip]="tooltipText.areaMeasurement"
+    [attr.aria-label]="tooltipText.areaMeasurement"
   >
     <mat-icon svgIcon="ktzh_drawing_symbol_polygon"></mat-icon>
   </button>
@@ -35,7 +38,8 @@
     class="measurement-tools__button"
     color="accent"
     mat-icon-button
-    matTooltip="Kreis: Mittelpunkt und Radius wählen."
+    [matTooltip]="tooltipText.circleMeasurement"
+    [attr.aria-label]="tooltipText.circleMeasurement"
   >
     <mat-icon svgIcon="ktzh_drawing_symbol_circle"></mat-icon>
   </button>
@@ -45,7 +49,8 @@
     class="measurement-tools__button"
     color="accent"
     mat-icon-button
-    matTooltip="Höhenprofil: Mit Doppelklick beenden, um das Profil zu laden."
+    [matTooltip]="tooltipText.elevationProfileMeasurement"
+    [attr.aria-label]="tooltipText.elevationProfileMeasurement"
   >
     <mat-icon svgIcon="ktzh_drawing_symbol_elevation"></mat-icon>
   </button>

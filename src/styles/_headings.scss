@@ -1,0 +1,59 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+// This file is a collection of heading styles that are used across the application.
+// The names of the classes describe which heading each class can be used for.
+// The styles are based on the design system of the Kanton of Zürich:
+// (https://www.figma.com/design/MsFtPBJrdzPPevIAZwtxDn/GB3-mit-KTZH-Design-System?node-id=10-5055&node-type=canvas&t=BCmKrCIFSSdxjNgz-0)
+
+h4.ktzh-h4-bigger-regular {
+  margin: 0;
+
+  font-size: 18px;
+  font-family: ktzh-variables.$zh-font-family-bold;
+
+  letter-spacing: 0.25px;
+}
+
+h3.ktzh-h3-medium {
+  font-size: 20px;
+
+  &--bold {
+    font-family: ktzh-variables.$zh-font-family-bold;
+  }
+}
+h3.ktzh-h3-small-big {
+  margin: 0 0 20px;
+
+  font-size: 28px;
+  font-family: ktzh-variables.$zh-font-family-bold;
+
+  line-height: 36px;
+  letter-spacing: normal;
+}
+
+h2.ktzh-h2-big,
+h3.ktzh-h3-big {
+  margin-bottom: 12px;
+
+  font-size: 32px;
+  line-height: 40px;
+}
+
+h2.ktzh-h2-small-huge,
+h1.ktzh-h1-small-huge {
+  margin: 0;
+
+  font-size: 48px;
+  letter-spacing: normal;
+}
+
+h1.ktzh-h1-giant {
+  margin: 0;
+
+  font-size: 72px;
+  word-wrap: break-word;
+
+  &--mobile {
+    font-size: 32px;
+  }
+}

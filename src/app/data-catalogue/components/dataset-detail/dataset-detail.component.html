@@ -66,35 +66,38 @@
 
   <data-catalogue-detail-page-section *ngIf="linkedData.maps.length > 0">
     <data-display-section [sectionTitle]="'Karten mit diesem Datensatz'">
-      <descriptive-highlighted-link *ngFor="let map of linkedData.maps" [title]="map.name" [multiLine]="screenMode === 'mobile'">
-        @if (screenMode === 'mobile') {
-          <a [queryParams]="{initialMapIds: map.topic}" [routerLink]="['/', mainPageEnum.Maps]" class="dataset-detail__linked-data-link">
-            Im GIS-Browser öffnen
-          </a>
-          <span>|</span>
-          <a [routerLink]="['/', mainPageEnum.Data, dataCataloguePageEnum.Maps, map.uuid]" class="dataset-detail__linked-data-link">
-            Zu Metadaten springen
-          </a>
-        } @else {
-          <a
-            [queryParams]="{initialMapIds: map.topic}"
-            [routerLink]="['/', mainPageEnum.Maps]"
-            class="dataset-detail__linked-data-button"
-            mat-button
-          >
-            <mat-icon [svgIcon]="'ktzh_arrow_right'"></mat-icon>
-            Im GIS-Browser öffnen
-          </a>
-          <a
-            [routerLink]="['/', mainPageEnum.Data, dataCataloguePageEnum.Maps, map.uuid]"
-            class="dataset-detail__linked-data-button"
-            mat-button
-          >
-            <mat-icon [svgIcon]="'ktzh_arrow_right'"></mat-icon>
-            Zu Metadaten springen
-          </a>
-        }
-      </descriptive-highlighted-link>
+      <generic-list [listData]="linkedData.maps" [itemTemplate]="linkedMap" [hasGap]="true"></generic-list>
+      <ng-template #linkedMap let-map>
+        <descriptive-highlighted-link [title]="map.name" [multiLine]="screenMode === 'mobile'">
+          @if (screenMode === 'mobile') {
+            <a [queryParams]="{initialMapIds: map.topic}" [routerLink]="['/', mainPageEnum.Maps]" class="dataset-detail__linked-data-link">
+              Im GIS-Browser öffnen
+            </a>
+            <span>|</span>
+            <a [routerLink]="['/', mainPageEnum.Data, dataCataloguePageEnum.Maps, map.uuid]" class="dataset-detail__linked-data-link">
+              Zu Metadaten springen
+            </a>
+          } @else {
+            <a
+              [queryParams]="{initialMapIds: map.topic}"
+              [routerLink]="['/', mainPageEnum.Maps]"
+              class="dataset-detail__linked-data-button"
+              mat-button
+            >
+              <mat-icon [svgIcon]="'ktzh_arrow_right'"></mat-icon>
+              Im GIS-Browser öffnen
+            </a>
+            <a
+              [routerLink]="['/', mainPageEnum.Data, dataCataloguePageEnum.Maps, map.uuid]"
+              class="dataset-detail__linked-data-button"
+              mat-button
+            >
+              <mat-icon [svgIcon]="'ktzh_arrow_right'"></mat-icon>
+              Zu Metadaten springen
+            </a>
+          }
+        </descriptive-highlighted-link>
+      </ng-template>
     </data-display-section>
   </data-catalogue-detail-page-section>
 </data-catalogue-detail-page>

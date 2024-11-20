@@ -50,6 +50,7 @@ export class ServiceDetailComponent extends AbstractBaseDetailComponent<ServiceM
       itemTitle: serviceMetadata.name,
       category: 'Geodienst',
       shortDescription: serviceMetadata.description,
+      imageUrl: null,
     };
   }
 

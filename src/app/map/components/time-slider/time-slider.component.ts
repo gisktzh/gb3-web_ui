@@ -32,7 +32,6 @@ export class TimeSliderComponent implements OnInit, OnChanges {
   public secondSliderPosition?: number;
 
   public timeExtent!: TimeExtent;
-  public timeExtentDisplay!: TimeExtent;
 
   public effectiveMinimumDateIndex!: number;
   public effectiveMaximumDateIndex!: number;
@@ -55,7 +54,6 @@ export class TimeSliderComponent implements OnInit, OnChanges {
     this.effectiveMinimumDateIndex = 0;
     this.effectiveMaximumDateIndex = this.availableDates.length - 1;
     this.timeExtent = {start: this.initialTimeExtent.start, end: this.initialTimeExtent.end};
-    this.timeExtentDisplay = {start: this.initialTimeExtent.start, end: this.initialTimeExtent.end};
     this.firstSliderPosition = this.findPositionOfDate(this.timeExtent.start) ?? 0;
     this.secondSliderPosition = this.timeSliderConfiguration.range ? undefined : this.findPositionOfDate(this.timeExtent.end);
     this.hasSimpleCurrentValue = this.isStringSingleTimeUnitRange(this.timeSliderConfiguration.range);
@@ -76,7 +74,6 @@ export class TimeSliderComponent implements OnInit, OnChanges {
       this.timeExtent = {start, end};
       this.firstSliderPosition = this.findPositionOfDate(start) ?? 0;
       this.secondSliderPosition = this.timeSliderConfiguration.range ? undefined : this.findPositionOfDate(end);
-      this.updateTimeExtentDisplay();
     }
   }
 
@@ -119,15 +116,6 @@ export class TimeSliderComponent implements OnInit, OnChanges {
       this.timeExtent = newValidatedTimeExtent;
       this.changeTimeExtentEvent.emit(this.timeExtent);
     }
-    // overwrite the display of the timeslider in any case to avoid display of invalid ranges such as 1700-1700
-    this.timeExtentDisplay = newValidatedTimeExtent;
-  }
-
-  public updateTimeExtentDisplay() {
-    this.timeExtentDisplay = {
-      start: this.availableDates[this.firstSliderPosition],
-      end: this.secondSliderPosition ? this.availableDates[this.secondSliderPosition] : this.availableDates[this.firstSliderPosition],
-    };
   }
 
   public yearOrMonthSelected(

@@ -1,4 +1,4 @@
-<h2>Text</h2>
+<h3 class="ktzh-h3-medium ktzh-h3-medium--bold">Text</h3>
 <mat-form-field appearance="outline" class="label-text">
   <mat-label>Beschriftung</mat-label>
   <input
@@ -11,7 +11,7 @@
   />
 </mat-form-field>
 <mat-divider class="divider"></mat-divider>
-<h2>Schrift</h2>
+<h3 class="ktzh-h3-medium ktzh-h3-medium--bold">Schrift</h3>
 <slider-edit
   (updateSliderEvent)="updateValue('fontSize', $event)"
   [sliderValue]="textStyle.fontSize | number"
@@ -24,7 +24,7 @@
 <color-picker-edit (updateColorEvent)="updateValueWithDelay('fontColor', $event)" [fillColor]="textStyle.fontColor" title="Farbe">
 </color-picker-edit>
 <mat-divider class="divider"></mat-divider>
-<h2>Halo</h2>
+<h3 class="ktzh-h3-medium ktzh-h3-medium--bold">Halo</h3>
 <slider-edit
   (updateSliderEvent)="updateValue('haloRadius', $event)"
   [sliderValue]="textStyle.haloRadius | number"
@@ -37,7 +37,7 @@
 <color-picker-edit (updateColorEvent)="updateValue('haloColor', $event)" [fillColor]="textStyle.haloColor" title="Farbe">
 </color-picker-edit>
 <mat-divider class="divider"></mat-divider>
-<h2>Versatz</h2>
+<h3 class="ktzh-h3-medium ktzh-h3-medium--bold">Versatz</h3>
 <slider-edit
   (updateSliderEvent)="updateValue('labelYOffset', $event)"
   [sliderValue]="textStyle.labelYOffset | number"

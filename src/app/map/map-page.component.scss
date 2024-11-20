@@ -186,6 +186,11 @@
     left: 50%;
     transform: translate(-50%, 0);
   }
+
+  .map-container__map {
+    z-index: z-index-variables.$map-container;
+    position: relative;
+  }
 }
 
 @media print {

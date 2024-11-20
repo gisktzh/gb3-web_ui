@@ -372,11 +372,7 @@ export class ActiveMapItemEffects {
         return produce(existingMapItem, (draft) => {
           draft.settings.timeSliderExtent = timeExtent;
           draft.settings.layers.forEach((layer) => {
-            const isVisible = this.timeSliderService.isLayerVisible(
-              layer,
-              existingMapItem.settings.timeSliderConfiguration,
-              existingMapItem.settings.timeSliderExtent,
-            );
+            const isVisible = this.timeSliderService.isLayerVisible(layer, existingMapItem.settings.timeSliderConfiguration, timeExtent);
             if (isVisible !== undefined) {
               layer.visible = isVisible;
             }

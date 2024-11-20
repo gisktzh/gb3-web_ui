@@ -5,6 +5,7 @@
     this.hideBottomPadding ? 'page-section--no-padding-bottom' : '',
     this.screenMode === 'mobile' && !pageTitle ? 'page-section--mobile' : '',
   ]"
+  [attr.aria-label]="sectionTitle"
 >
   <div class="page-section__content-container">
     <ng-container *ngIf="sectionTitle">
@@ -16,7 +17,9 @@
         class="page-section__content-container__title-wrapper"
         [ngClass]="{'page-section__content-container__title-wrapper--mobile': screenMode === 'mobile'}"
       >
-        <h1 class="page-section__content-container__title-wrapper__title mat-headline-4">{{ this.sectionTitle }}</h1>
+        <h2 class="ktzh-h2-big">
+          {{ this.sectionTitle }}
+        </h2>
         <a
           *ngIf="this.titleLink"
           [href]="this.titleLink.url"

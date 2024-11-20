@@ -100,6 +100,7 @@ import {PolygonEditComponent} from './components/drawing-edit-overlay/drawing-ed
 import {ColorPickerEditComponent} from './components/drawing-edit-overlay/drawing-edit/color-picker-edit/color-picker-edit.component';
 import {SliderEditComponent} from './components/drawing-edit-overlay/drawing-edit/slider-edit/slider-edit.component';
 import {PrintDescriptionPipe} from './components/map-tools/print-dialog/print-description.pipe';
+import {GenericUnorderedListComponent} from '../shared/components/lists/generic-unordered-list/generic-unordered-list.component';
 
 @NgModule({
   providers: [provideCharts(withDefaultRegisterables())],
@@ -209,6 +210,7 @@ import {PrintDescriptionPipe} from './components/map-tools/print-dialog/print-de
     NgOptimizedImage,
     DropZoneComponent,
     PrintDescriptionPipe,
+    GenericUnorderedListComponent,
   ],
   exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent, MapOverlayComponent],
 })

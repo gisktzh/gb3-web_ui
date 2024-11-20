@@ -15,6 +15,7 @@ import {StartPageRoutingModule} from './start-page-routing.module';
 import {StartPageComponent} from './start-page.component';
 import {OverviewSearchResultItemComponent} from '../shared/components/data-catalogue-overview-item/overview-search-result-item.component';
 import {ClickOnSpaceBarDirective} from '../shared/directives/click-on-spacebar.directive';
+import {GenericUnorderedListComponent} from '../shared/components/lists/generic-unordered-list/generic-unordered-list.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import {ClickOnSpaceBarDirective} from '../shared/directives/click-on-spacebar.d
     OverviewSearchResultItemComponent,
     ClickOnSpaceBarDirective,
     NgOptimizedImage,
+    GenericUnorderedListComponent,
   ],
 })
 export class StartPageModule {}

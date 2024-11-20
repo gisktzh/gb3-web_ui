@@ -6,6 +6,15 @@ import {MapUiActions} from '../../../../state/map/actions/map-ui.actions';
 import {selectToolMenuVisibility} from '../../../../state/map/reducers/map-ui.reducer';
 import {selectReady} from '../../../../state/map/reducers/map-config.reducer';
 
+const TOOLTIP_TEXT = {
+  measurement: 'Messen',
+  drawing: 'Zeichnen',
+  dataDownload: 'Daten beziehen',
+  print: 'Drucken',
+  share: 'Teilen',
+  mapImport: 'Kartendienst importieren',
+};
+
 @Component({
   selector: 'map-tools-desktop',
   templateUrl: './map-tools-desktop.component.html',
@@ -14,6 +23,8 @@ import {selectReady} from '../../../../state/map/reducers/map-config.reducer';
 export class MapToolsDesktopComponent implements OnInit, OnDestroy {
   public toolMenuVisibility: ToolMenuVisibility | undefined = undefined;
   public isMapReady: boolean = true;
+
+  public tooltipText = TOOLTIP_TEXT;
 
   private readonly toolMenuVisibility$ = this.store.select(selectToolMenuVisibility);
   private readonly isMapReady$ = this.store.select(selectReady);

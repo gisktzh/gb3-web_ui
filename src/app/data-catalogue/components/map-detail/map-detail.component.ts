@@ -65,7 +65,12 @@ export class MapDetailComponent extends AbstractBaseDetailComponent<MapMetadata>
       {title: 'Kartentyp', value: mapMetadata.gb2Url ? 'GB2' : 'GB3', type: 'text'},
       {
         title: 'Internet URL',
-        value: mapMetadata.gb2Url ?? null,
+        value: mapMetadata.internetUrl ?? null,
+        type: 'url',
+      },
+      {
+        title: 'Intranet URL',
+        value: mapMetadata.intranetUrl ?? null,
         type: 'url',
       },
       {title: 'Weiterführende Verweise', value: mapMetadata.externalLinks, type: 'urlList'},
