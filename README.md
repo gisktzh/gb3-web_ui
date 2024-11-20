@@ -19,7 +19,7 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 We strive to use the most recent LTS version. Whenever an update is due, make sure you adjust the following:
 
 - `Dockerfile`
-- `.azure-pipelines/templates/variables.yaml` (**Warning!** There are cases where the pipeline does not yet have the
+- `.github/workflows/node*.yml` (**Warning!** There are cases where the pipeline does not yet have the
   newest node version; in that case, leave it as before and ignore the pipeline warnings)
 - `.nvmrc`
 - `package.json`, update the `@typed/node` package to the matching version; run `npm install` afterwards to freshly generate the `package-lock.json`

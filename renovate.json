@@ -70,12 +70,12 @@
     {
       "matchManagers": ["npm"],
       "matchPackageNames": ["@types/node"],
-      "allowedVersions": "<20"
+      "allowedVersions": "<22"
     },
     {
       "matchManagers": ["dockerfile"],
       "matchDepNames": ["node"],
-      "allowedVersions": "<20"
+      "allowedVersions": "<22"
     }
   ]
 }
