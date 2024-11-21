@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
@@ -12,6 +12,7 @@ import {MapConfigState} from '../../../../../state/map/states/map-config.state';
 import {ActiveMapItem} from '../../../../models/active-map-item.model';
 import {MapConstants} from '../../../../../shared/constants/map.constants';
 import {SearchActions} from '../../../../../state/app/actions/search.actions';
+import {SearchResultIdentifierDirective} from '../../../../../shared/directives/search-result-identifier.directive';
 
 @Component({
   selector: 'result-group',
@@ -20,6 +21,7 @@ import {SearchActions} from '../../../../../state/app/actions/search.actions';
   standalone: false,
 })
 export class ResultGroupComponent implements OnInit, OnDestroy {
+  @ViewChildren(SearchResultIdentifierDirective) public readonly searchResultElement!: QueryList<SearchResultIdentifierDirective>;
   @Input() public searchResults: GeometrySearchApiResultMatch[] = [];
   @Input() public filteredMaps: Map[] = [];
   @Input() public header: string = '';
