@@ -12,6 +12,7 @@
       (keydown.space)="selectSearchResult(result)"
       class="result-group__container__element search-result-group__container__element--interactive"
       tabindex="0"
+      searchResultIdentifier
     >
       <mat-card-header *ngIf="result.indexType === 'activeMapItems'" class="result-group__container__element__header"
         >{{ result.indexName }}
@@ -30,6 +31,10 @@
         (delayedMouseEnter)="addActiveMap(map, true)"
         [delayDurationInMs]="this.hoverDelay"
         (mouseleave)="removeTemporaryMap(map)"
+        searchResultIdentifier
+        [isMapResult]="true"
+        (addResultFromArrowNavigation)="addActiveMap(map, true)"
+        (removeResultFromArrowNavigation)="removeTemporaryMap(map)"
       >
         <gb2-exit-button
           *ngIf="map.gb2Url; else addToMap"

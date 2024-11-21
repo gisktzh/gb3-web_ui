@@ -101,6 +101,7 @@ import {ColorPickerEditComponent} from './components/drawing-edit-overlay/drawin
 import {SliderEditComponent} from './components/drawing-edit-overlay/drawing-edit/slider-edit/slider-edit.component';
 import {PrintDescriptionPipe} from './components/map-tools/print-dialog/print-description.pipe';
 import {GenericUnorderedListComponent} from '../shared/components/lists/generic-unordered-list/generic-unordered-list.component';
+import {SearchResultIdentifierDirective} from '../shared/directives/search-result-identifier.directive';
 
 @NgModule({
   providers: [provideCharts(withDefaultRegisterables())],
@@ -211,6 +212,7 @@ import {GenericUnorderedListComponent} from '../shared/components/lists/generic-
     DropZoneComponent,
     PrintDescriptionPipe,
     GenericUnorderedListComponent,
+    SearchResultIdentifierDirective,
   ],
   exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent, MapOverlayComponent],
 })
