@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, Input, OnDestroy, OnInit, QueryList, Renderer2, ViewChildren} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {Subscription, tap, withLatestFrom} from 'rxjs';
+import {combineLatestWith, map, Subscription, tap} from 'rxjs';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {Map} from '../../../../shared/interfaces/topic.interface';
@@ -37,6 +37,7 @@ export class ResultGroupsComponent implements OnInit, OnDestroy, AfterViewInit {
   private selectedSearchResultIndex: number = -1;
   private readonly unlistenArrowDown: () => void;
   private readonly unlistenArrowUp: () => void;
+  private readonly unlistenEnter: () => void;
 
   private readonly searchTerm$ = this.store.select(selectTerm);
   private readonly selectedSearchResult$ = this.store.select(selectSelectedSearchResult);
@@ -44,13 +45,14 @@ export class ResultGroupsComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly filteredMaps$ = this.store.select(selectFilteredLayerCatalogMaps);
   private readonly searchApiLoadingState$ = this.store.select(selectSearchApiLoadingState);
   private readonly screenMode$ = this.store.select(selectScreenMode);
-  private readonly listenToEvents$ = this.store.select(selectTerm).pipe(
-    withLatestFrom(this.selectedSearchResult$, this.filteredMaps$, this.filteredSearchApiResultMatches$),
-    tap(([searchTerm, selectedSearchResult, filteredMaps, filteredSearchApiResultMatches]) => {
-      this.listenToEvents =
+  private readonly listenToEvents$ = this.searchTerm$.pipe(
+    combineLatestWith(this.selectedSearchResult$, this.filteredMaps$, this.filteredSearchApiResultMatches$),
+    map(([searchTerm, selectedSearchResult, filteredMaps, filteredSearchApiResultMatches]) => {
+      return (
         searchTerm.split(' ')[0].length >= 1 &&
         (filteredMaps.length !== 0 || filteredSearchApiResultMatches.length !== 0) &&
-        !selectedSearchResult;
+        !selectedSearchResult
+      );
     }),
   );
   private readonly subscriptions: Subscription = new Subscription();
@@ -62,7 +64,6 @@ export class ResultGroupsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.unlistenArrowDown = this.renderer.listen('document', 'keydown.arrowdown', (event) => {
       event.preventDefault();
       if (this.listenToEvents) {
-        // Remove style from current selected search result
         this.removeStyleFromCurrentSelectedSearchResult();
         this.updateIndex('down');
         this.addStyleToNewSelectedSearchResult();
@@ -77,12 +78,19 @@ export class ResultGroupsComponent implements OnInit, OnDestroy, AfterViewInit {
         this.addStyleToNewSelectedSearchResult();
       }
     });
+
+    this.unlistenEnter = this.renderer.listen('document', 'keydown.enter', () => {
+      if (this.selectedSearchResultIndex >= 0 && this.allSearchResults.length > 0) {
+        this.allSearchResults[this.selectedSearchResultIndex].host.nativeElement.click();
+      }
+    });
   }
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
     this.unlistenArrowDown();
     this.unlistenArrowUp();
+    this.unlistenEnter();
   }
 
   public ngOnInit() {
@@ -157,11 +165,11 @@ export class ResultGroupsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.subscriptions.add(
       this.selectedSearchResult$.pipe(tap((selectedSearchResult) => (this.selectedSearchResult = selectedSearchResult))).subscribe(),
     );
-    this.subscriptions.add(this.listenToEvents$.subscribe());
+    this.subscriptions.add(this.listenToEvents$.pipe(tap((listenToEvents) => (this.listenToEvents = listenToEvents))).subscribe());
   }
 
   private removeStyleFromCurrentSelectedSearchResult() {
-    if (this.selectedSearchResultIndex >= 0) {
+    if (this.selectedSearchResultIndex >= 0 && this.allSearchResults.length > 0) {
       const selectedResult = this.allSearchResults[this.selectedSearchResultIndex];
       this.renderer.removeStyle(selectedResult.host.nativeElement, 'outline');
       selectedResult.removeSearchResult();
@@ -188,7 +196,7 @@ export class ResultGroupsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private addStyleToNewSelectedSearchResult() {
-    if (this.selectedSearchResultIndex >= 0) {
+    if (this.selectedSearchResultIndex >= 0 && this.allSearchResults.length > 0) {
       const selectedResult = this.allSearchResults[this.selectedSearchResultIndex];
       this.renderer.setStyle(selectedResult.host.nativeElement, 'outline', 'rgb(16, 16, 16) auto 1px');
       selectedResult.host.nativeElement.scrollIntoView({behavior: 'smooth', block: 'center'});
