@@ -29,7 +29,7 @@
         "@schematics/angular",
         "angular-oauth2-oidc",
         "@ngrx/",
-        "typescript"
+        "zone.js"
       ]
     },
     {
