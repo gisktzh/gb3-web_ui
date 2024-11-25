@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, Input, OnDestroy, OnInit, QueryList, Renderer2, ViewChildren} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {Subscription, tap} from 'rxjs';
+import {Subscription, tap, withLatestFrom} from 'rxjs';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {Map} from '../../../../shared/interfaces/topic.interface';
@@ -31,10 +31,12 @@ export class ResultGroupsComponent implements OnInit, OnDestroy, AfterViewInit {
   public screenMode: ScreenMode = 'regular';
   public selectedSearchResult?: GeometrySearchApiResultMatch;
 
-  private unlistenArrowDown: () => void;
-  private unlistenArrowUp: () => void;
+  private listenToEvents: boolean = false;
   private allSearchResults: SearchResultIdentifierDirective[] = [];
+  private resultGroups: {isVisible: boolean; size: number}[] = [];
   private selectedSearchResultIndex: number = -1;
+  private readonly unlistenArrowDown: () => void;
+  private readonly unlistenArrowUp: () => void;
 
   private readonly searchTerm$ = this.store.select(selectTerm);
   private readonly selectedSearchResult$ = this.store.select(selectSelectedSearchResult);
@@ -42,20 +44,24 @@ export class ResultGroupsComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly filteredMaps$ = this.store.select(selectFilteredLayerCatalogMaps);
   private readonly searchApiLoadingState$ = this.store.select(selectSearchApiLoadingState);
   private readonly screenMode$ = this.store.select(selectScreenMode);
+  private readonly listenToEvents$ = this.store.select(selectTerm).pipe(
+    withLatestFrom(this.selectedSearchResult$, this.filteredMaps$, this.filteredSearchApiResultMatches$),
+    tap(([searchTerm, selectedSearchResult, filteredMaps, filteredSearchApiResultMatches]) => {
+      this.listenToEvents =
+        searchTerm.split(' ')[0].length >= 1 &&
+        (filteredMaps.length !== 0 || filteredSearchApiResultMatches.length !== 0) &&
+        !selectedSearchResult;
+    }),
+  );
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(
     private readonly store: Store,
     private readonly renderer: Renderer2,
   ) {
-    this.unlistenArrowDown = this.renderer.listen('document', 'keydown.arrowdown', () => {
-      if (
-        this.searchTerms[0].length >= 1 &&
-        (this.filteredMaps.length !== 0 ||
-          this.filteredActiveMapMatches.length !== 0 ||
-          this.filteredAddressesAndPlacesMatches.length !== 0) &&
-        !this.selectedSearchResult
-      ) {
+    this.unlistenArrowDown = this.renderer.listen('document', 'keydown.arrowdown', (event) => {
+      event.preventDefault();
+      if (this.listenToEvents) {
         // Remove style from current selected search result
         this.removeStyleFromCurrentSelectedSearchResult();
         this.updateIndex('down');
@@ -63,14 +69,9 @@ export class ResultGroupsComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     });
 
-    this.unlistenArrowUp = this.renderer.listen('document', 'keydown.arrowup', () => {
-      if (
-        this.searchTerms[0].length >= 1 &&
-        (this.filteredMaps.length !== 0 ||
-          this.filteredActiveMapMatches.length !== 0 ||
-          this.filteredAddressesAndPlacesMatches.length !== 0) &&
-        !this.selectedSearchResult
-      ) {
+    this.unlistenArrowUp = this.renderer.listen('document', 'keydown.arrowup', (event) => {
+      event.preventDefault();
+      if (this.listenToEvents) {
         this.removeStyleFromCurrentSelectedSearchResult();
         this.updateIndex('up');
         this.addStyleToNewSelectedSearchResult();
@@ -92,7 +93,9 @@ export class ResultGroupsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.subscriptions.add(
       this.resultGroupComponents.changes.subscribe((resultGroupComponents: ResultGroupComponent[]) => {
         this.allSearchResults = [];
-        this.resultGroupComponents.forEach((resultGroupComponent) => {
+        this.resultGroups = [];
+        resultGroupComponents.forEach((resultGroupComponent) => {
+          this.resultGroups.push({isVisible: resultGroupComponent.isExpanded, size: resultGroupComponent.searchResults.length});
           this.allSearchResults = this.allSearchResults.concat(resultGroupComponent.searchResultElement.toArray());
         });
       }),
@@ -105,6 +108,7 @@ export class ResultGroupsComponent implements OnInit, OnDestroy, AfterViewInit {
         .pipe(
           tap((searchTerm) => {
             this.searchTerms = searchTerm.split(' ');
+            this.removeStyleFromCurrentSelectedSearchResult();
             this.selectedSearchResultIndex = -1;
           }),
         )
@@ -153,12 +157,13 @@ export class ResultGroupsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.subscriptions.add(
       this.selectedSearchResult$.pipe(tap((selectedSearchResult) => (this.selectedSearchResult = selectedSearchResult))).subscribe(),
     );
+    this.subscriptions.add(this.listenToEvents$.subscribe());
   }
 
   private removeStyleFromCurrentSelectedSearchResult() {
     if (this.selectedSearchResultIndex >= 0) {
       const selectedResult = this.allSearchResults[this.selectedSearchResultIndex];
-      this.renderer.removeStyle(selectedResult.host.nativeElement, 'backgroundColor');
+      this.renderer.removeStyle(selectedResult.host.nativeElement, 'outline');
       selectedResult.removeSearchResult();
     }
   }
@@ -166,7 +171,7 @@ export class ResultGroupsComponent implements OnInit, OnDestroy, AfterViewInit {
   private updateIndex(direction: 'up' | 'down') {
     switch (direction) {
       case 'up':
-        if (this.selectedSearchResultIndex <= 0) {
+        if (this.selectedSearchResultIndex < 0) {
           this.selectedSearchResultIndex = this.allSearchResults.length - 1;
         } else {
           this.selectedSearchResultIndex--;
@@ -174,7 +179,7 @@ export class ResultGroupsComponent implements OnInit, OnDestroy, AfterViewInit {
         break;
       case 'down':
         if (this.selectedSearchResultIndex >= this.allSearchResults.length - 1) {
-          this.selectedSearchResultIndex = 0;
+          this.selectedSearchResultIndex = -1;
         } else {
           this.selectedSearchResultIndex++;
         }
@@ -183,9 +188,11 @@ export class ResultGroupsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private addStyleToNewSelectedSearchResult() {
-    const selectedResult = this.allSearchResults[this.selectedSearchResultIndex];
-    this.renderer.setStyle(selectedResult.host.nativeElement, 'backgroundColor', 'red');
-    selectedResult.host.nativeElement.scrollIntoView({behavior: 'smooth', block: 'center'});
-    selectedResult.dispatchEventIfMapResult();
+    if (this.selectedSearchResultIndex >= 0) {
+      const selectedResult = this.allSearchResults[this.selectedSearchResultIndex];
+      this.renderer.setStyle(selectedResult.host.nativeElement, 'outline', 'rgb(16, 16, 16) auto 1px');
+      selectedResult.host.nativeElement.scrollIntoView({behavior: 'smooth', block: 'center'});
+      selectedResult.dispatchEventIfMapResult();
+    }
   }
 }
