@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnDestroy, OnInit, Renderer2, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, HostListener, OnDestroy, OnInit, Renderer2, ViewChild} from '@angular/core';
 import {combineLatestWith, filter, map, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {ConfigService} from '../../../shared/services/config.service';
@@ -35,11 +35,7 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild(ResultGroupsComponent) private readonly resultGroupsComponent!: ResultGroupsComponent;
   private listenToEvents: boolean = false;
   private allSearchResults: SearchResultIdentifierDirective[] = [];
-  private resultGroups: {isVisible: boolean; size: number}[] = [];
   private selectedSearchResultIndex: number = -1;
-  private readonly unlistenArrowDown: () => void;
-  private readonly unlistenArrowUp: () => void;
-  private readonly unlistenEnter: () => void;
 
   private readonly searchConfig = this.configService.searchConfig.mapPage;
   private readonly searchState$ = this.store.select(selectSearchState);
@@ -47,10 +43,10 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly isAnySearchFilterActive$ = this.store.select(selectIsAnySearchFilterActiveSelector);
   private readonly selectedSearchResult$ = this.store.select(selectSelectedSearchResult);
   private readonly term$ = this.store.select(selectTerm).pipe(
-    tap((term) => {
+    tap((term: string) => {
       this.removeStyleFromCurrentSelectedSearchResult();
       this.selectedSearchResultIndex = -1;
-      this.term = term as string;
+      this.term = term;
     }),
   );
   private readonly subscriptions: Subscription = new Subscription();
@@ -73,32 +69,7 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
     private readonly configService: ConfigService,
     private readonly dialogService: MatDialog,
     private readonly renderer: Renderer2,
-  ) {
-    this.unlistenArrowDown = this.renderer.listen('document', 'keydown.arrowdown', (event) => {
-      event.preventDefault();
-      if (this.listenToEvents) {
-        this.removeStyleFromCurrentSelectedSearchResult();
-        this.updateIndex('down');
-        this.addStyleToNewSelectedSearchResult();
-      }
-    });
-
-    this.unlistenArrowUp = this.renderer.listen('document', 'keydown.arrowup', (event) => {
-      event.preventDefault();
-      if (this.listenToEvents) {
-        this.removeStyleFromCurrentSelectedSearchResult();
-        this.updateIndex('up');
-        this.addStyleToNewSelectedSearchResult();
-      }
-    });
-
-    this.unlistenEnter = this.renderer.listen('document', 'keydown.enter', () => {
-      if (this.selectedSearchResultIndex >= 0 && this.allSearchResults.length > 0) {
-        const result = this.allSearchResults[this.selectedSearchResultIndex];
-        result.host.nativeElement.click();
-      }
-    });
-  }
+  ) {}
 
   public ngOnInit() {
     this.store.dispatch(SearchActions.setFilterGroups({filterGroups: this.searchConfig.filterGroups}));
@@ -126,9 +97,7 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
     this.subscriptions.add(
       this.resultGroupsComponent.resultGroupComponents.changes.subscribe((resultGroupComponents: ResultGroupComponent[]) => {
         this.allSearchResults = [];
-        this.resultGroups = [];
         resultGroupComponents.forEach((resultGroupComponent) => {
-          this.resultGroups.push({isVisible: resultGroupComponent.isExpanded, size: resultGroupComponent.searchResults.length});
           this.allSearchResults = this.allSearchResults.concat(resultGroupComponent.searchResultElement.toArray());
         });
       }),
@@ -172,6 +141,36 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
     this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
     this.subscriptions.add(this.isAnySearchFilterActive$.pipe(tap((value) => (this.isAnySearchFilterActive = value))).subscribe());
     this.subscriptions.add(this.listenToEvents$.pipe(tap((listenToEvents) => (this.listenToEvents = listenToEvents))).subscribe());
+  }
+
+  @HostListener('keydown.arrowdown', ['$event'])
+  public handleArrowDown(event: KeyboardEvent) {
+    console.log('arrow down');
+    event.preventDefault();
+    if (this.listenToEvents) {
+      this.removeStyleFromCurrentSelectedSearchResult();
+      this.updateIndex('down');
+      this.addStyleToNewSelectedSearchResult();
+    }
+  }
+
+  @HostListener('keydown.arrowup', ['$event'])
+  public handleArrowUp(event: KeyboardEvent) {
+    console.log('handleArrowUp');
+    event.preventDefault();
+    if (this.listenToEvents) {
+      this.removeStyleFromCurrentSelectedSearchResult();
+      this.updateIndex('up');
+      this.addStyleToNewSelectedSearchResult();
+    }
+  }
+
+  @HostListener('keydown.enter', ['$event'])
+  public handleEnter(event: KeyboardEvent) {
+    if (this.selectedSearchResultIndex >= 0 && this.allSearchResults.length > 0) {
+      const result = this.allSearchResults[this.selectedSearchResultIndex];
+      result.host.nativeElement.click();
+    }
   }
 
   private removeStyleFromCurrentSelectedSearchResult() {
