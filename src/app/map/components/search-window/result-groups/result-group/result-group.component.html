@@ -4,6 +4,7 @@
   class="result-group"
   [numberOfItems]="filteredMaps.length || searchResults.length"
   [showBadge]="true"
+  [allowTabFocus]="false"
 >
   <div class="result-group__container" [ngClass]="{'result-group__container--mobile': screenMode === 'mobile'}">
     @for (result of searchResults; track result; let first = $first) {
@@ -13,6 +14,7 @@
         class="result-group__container__element search-result-group__container__element--interactive"
         [tabindex]="first ? 0 : -1"
         searchResultIdentifier
+        [text]="result.displayString"
       >
         <mat-card-header *ngIf="result.indexType === 'activeMapItems'" class="result-group__container__element__header"
           >{{ result.indexName }}
@@ -38,6 +40,7 @@
               (mouseleave)="removeTemporaryMap(map)"
               searchResultIdentifier
               [isMapResult]="true"
+              [text]="map.printTitle"
               (addResultFromArrowNavigation)="addActiveMap(map, true)"
               (removeResultFromArrowNavigation)="removeTemporaryMap(map)"
             >

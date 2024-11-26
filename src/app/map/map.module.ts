@@ -214,6 +214,13 @@ import {SearchResultIdentifierDirective} from '../shared/directives/search-resul
     GenericUnorderedListComponent,
     SearchResultIdentifierDirective,
   ],
-  exports: [LegendOverlayComponent, FeatureInfoOverlayComponent, MapContainerComponent, ZoomControlsComponent, MapOverlayComponent],
+  exports: [
+    LegendOverlayComponent,
+    FeatureInfoOverlayComponent,
+    MapContainerComponent,
+    ZoomControlsComponent,
+    MapOverlayComponent,
+    TableColumnIdentifierDirective,
+  ],
 })
 export class MapModule {}
