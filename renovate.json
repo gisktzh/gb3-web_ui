@@ -4,14 +4,7 @@
   "reviewers": ["team:gb3-maintainer"],
   "packageRules": [
     {
-      "matchUpdateTypes": [
-        "minor",
-        "patch",
-        "pin",
-        "digest",
-        "lockFileMaintenance",
-        "bump"
-      ],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest", "lockFileMaintenance", "bump"],
       "automerge": true,
       "description": "This basic rule allows automatic merges for all packages for minor or patch level changes. Anything higher than that (like major) will NOT automatically be merged."
     },
@@ -36,7 +29,7 @@
         "@schematics/angular{/,}**",
         "angular-oauth2-oidc{/,}**",
         "@ngrx/{/,}**",
-        "zone.js{/,}**"
+        "zone.js"
       ]
     },
     {
@@ -56,12 +49,7 @@
     {
       "matchManagers": ["npm"],
       "groupName": "eslint",
-      "matchPackageNames": [
-        "eslint{/,}**",
-        "@angular-eslint{/,}**",
-        "@ngrx/eslint{/,}**",
-        "@typescript-eslint{/,}**"
-      ]
+      "matchPackageNames": ["eslint{/,}**", "@angular-eslint{/,}**", "@ngrx/eslint{/,}**", "@typescript-eslint{/,}**"]
     },
     {
       "matchManagers": ["npm"],
