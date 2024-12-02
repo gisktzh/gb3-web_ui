@@ -7,30 +7,35 @@
   [allowTabFocus]="false"
 >
   <div class="result-group__container" [ngClass]="{'result-group__container--mobile': screenMode === 'mobile'}">
-    @for (result of searchResults; track result; let first = $first) {
-      <mat-card
-        (click)="selectSearchResult(result)"
-        (keydown.space)="selectSearchResult(result)"
-        class="result-group__container__element search-result-group__container__element--interactive"
-        [tabIndex]="first ? 0 : -1"
-        searchResultIdentifier
-        [text]="result.displayString"
-      >
-        <mat-card-header *ngIf="result.indexType === 'activeMapItems'" class="result-group__container__element__header"
-          >{{ result.indexName }}
-        </mat-card-header>
-        <mat-card-content
-          class="result-group__container__element__content"
-          [innerHTML]="result.displayString | highlightSearchQuery: this.searchTerms"
-        ></mat-card-content>
-        <mat-divider></mat-divider>
-      </mat-card>
-    }
+    <ul class="result-group-list">
+      @for (result of searchResults; track result; let first = $first) {
+        <li class="result-group-list__list-item">
+          <button
+            (click)="selectSearchResult(result)"
+            class="result-group__container__element search-result-group__container__element--interactive button-test"
+            [tabIndex]="first ? 0 : -1"
+            searchResultIdentifier
+            [text]="result.displayString"
+          >
+            <div class="content">
+              @if (result.indexType === 'activeMapItems') {
+                <div class="result-group__container__element__header content-text">{{ result.indexName }}</div>
+              }
+              <div
+                class="result-group__container__element__content content-text"
+                [innerHTML]="result.displayString | highlightSearchQuery: this.searchTerms"
+              ></div>
+            </div>
+            <mat-divider></mat-divider>
+          </button>
+        </li>
+      }
+    </ul>
   </div>
   <div class="result-group__container" [ngClass]="{'result-group__container--mobile': screenMode === 'mobile'}">
-    <ul class="list">
+    <ul class="result-group-list">
       @for (map of filteredMaps; track map; let first = $first) {
-        <li class="list-item">
+        <li class="result-group-list__list-item">
           <div class="result-group__container__element">
             <button
               class="result-group__container__element__map-content"
@@ -60,7 +65,7 @@
               <img [alt]="map.title" [src]="map.icon" class="result-group__container__element__map-content__image" />
               <p
                 [innerHTML]="map.title | highlightSearchQuery: this.searchTerms"
-                class="result-group__container__element__map-content__title"
+                class="result-group__container__element__map-content__title content-text"
                 matTooltip="{{ map.title }}"
               ></p>
             </button>

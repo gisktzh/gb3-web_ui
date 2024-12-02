@@ -45,7 +45,6 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly selectedSearchResult$ = this.store.select(selectSelectedSearchResult);
   private readonly term$ = this.store.select(selectTerm).pipe(
     tap((term: string) => {
-      this.removeStyleFromCurrentSelectedSearchResult();
       this.selectedSearchResultIndex = -1;
       this.term = term;
     }),
@@ -146,64 +145,42 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @HostListener('keydown.arrowdown', ['$event'])
   public handleArrowDown(event: KeyboardEvent) {
-    console.log('arrow down');
-    event.preventDefault();
-    if (this.listenToEvents) {
-      this.removeStyleFromCurrentSelectedSearchResult();
-      this.updateIndex('down');
-      this.addStyleToNewSelectedSearchResult();
-    }
+    this.handelArrowKey(event, 'down');
   }
 
   @HostListener('keydown.arrowup', ['$event'])
   public handleArrowUp(event: KeyboardEvent) {
-    console.log('handleArrowUp');
-    event.preventDefault();
-    if (this.listenToEvents) {
-      this.removeStyleFromCurrentSelectedSearchResult();
-      this.updateIndex('up');
-      this.addStyleToNewSelectedSearchResult();
-    }
+    this.handelArrowKey(event, 'up');
   }
 
   @HostListener('keydown.tab', ['$event'])
-  public handleTab(event: KeyboardEvent) {
-    setTimeout(() => {
-      const focusedElement = this.allSearchResults.find((result) => result.host.nativeElement === document.activeElement);
-      if (focusedElement) {
-        const index = this.allSearchResults.indexOf(focusedElement);
-        this.selectedSearchResultIndex = index;
-        this.addStyleToNewSelectedSearchResult();
-      }
-    }, 0);
-  }
-
   @HostListener('keydown.shift.tab', ['$event'])
-  public handleAltTab(event: KeyboardEvent) {
+  public handleTab() {
+    // Timeout is necessary to wait until the default Event from Tab has finished
     setTimeout(() => {
       const focusedElement = this.allSearchResults.find((result) => result.host.nativeElement === document.activeElement);
       if (focusedElement) {
-        const index = this.allSearchResults.indexOf(focusedElement);
-        this.selectedSearchResultIndex = index;
-        this.addStyleToNewSelectedSearchResult();
+        this.selectedSearchResultIndex = this.allSearchResults.indexOf(focusedElement);
+        this.setFocusOnSelectedElement();
       }
     }, 0);
   }
 
   @HostListener('keydown.enter', ['$event'])
-  public handleEnter(event: KeyboardEvent) {
+  @HostListener('keydown.space', ['$event'])
+  public handleEnter() {
     if (this.selectedSearchResultIndex >= 0 && this.allSearchResults.length > 0) {
       const result = this.allSearchResults[this.selectedSearchResultIndex];
       result.host.nativeElement.click();
     }
   }
 
-  private removeStyleFromCurrentSelectedSearchResult() {
-    // if (this.selectedSearchResultIndex >= 0 && this.allSearchResults.length > 0) {
-    //   const selectedResult = this.allSearchResults[this.selectedSearchResultIndex];
-    //   this.renderer.removeStyle(selectedResult.host.nativeElement, 'outline');
-    //   selectedResult.removeSearchResult();
-    // }
+  private handelArrowKey(event: KeyboardEvent, direction: 'up' | 'down') {
+    event.preventDefault();
+    if (this.listenToEvents) {
+      this.updateIndex(direction);
+      this.setFocusOnSelectedElement();
+    }
   }
 
   private updateIndex(direction: 'up' | 'down') {
@@ -226,14 +203,10 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  private addStyleToNewSelectedSearchResult() {
+  private setFocusOnSelectedElement() {
     if (this.selectedSearchResultIndex >= 0 && this.allSearchResults.length > 0) {
       this.selectedResult = this.allSearchResults[this.selectedSearchResultIndex];
       this.searchComponent.setTerm(this.selectedResult.text, false);
-      if (this.selectedResult.isNested) {
-        // const test = this.selectedResult.host.nativeElement.ch;
-        // test.
-      }
       this.selectedResult.host.nativeElement.focus();
       this.selectedResult.addTemporaryMap();
     } else {
