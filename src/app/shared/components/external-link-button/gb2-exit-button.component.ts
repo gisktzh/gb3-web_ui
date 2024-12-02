@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {ExternalLinkButtonComponent} from './external-link-button.component';
 
 @Component({
@@ -8,6 +8,7 @@ import {ExternalLinkButtonComponent} from './external-link-button.component';
   standalone: false,
 })
 export class Gb2ExitButtonComponent extends ExternalLinkButtonComponent {
+  @ViewChild('link') public readonly anchor!: HTMLAnchorElement;
   public override toolTip?: string =
     'Diese Karte ist noch nicht im neuen GIS-Browser verfügbar. Öffnen Sie die Karte im alten GIS-Browser mit diesem Link.';
 }

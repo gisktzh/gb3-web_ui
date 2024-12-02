@@ -36,6 +36,7 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   private listenToEvents: boolean = false;
   private allSearchResults: SearchResultIdentifierDirective[] = [];
   private selectedSearchResultIndex: number = -1;
+  private selectedResult: SearchResultIdentifierDirective | undefined;
 
   private readonly searchConfig = this.configService.searchConfig.mapPage;
   private readonly searchState$ = this.store.select(selectSearchState);
@@ -174,14 +175,15 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private removeStyleFromCurrentSelectedSearchResult() {
-    if (this.selectedSearchResultIndex >= 0 && this.allSearchResults.length > 0) {
-      const selectedResult = this.allSearchResults[this.selectedSearchResultIndex];
-      this.renderer.removeStyle(selectedResult.host.nativeElement, 'outline');
-      selectedResult.removeSearchResult();
-    }
+    // if (this.selectedSearchResultIndex >= 0 && this.allSearchResults.length > 0) {
+    //   const selectedResult = this.allSearchResults[this.selectedSearchResultIndex];
+    //   this.renderer.removeStyle(selectedResult.host.nativeElement, 'outline');
+    //   selectedResult.removeSearchResult();
+    // }
   }
 
   private updateIndex(direction: 'up' | 'down') {
+    this.selectedResult?.removeTemporaryMap();
     switch (direction) {
       case 'up':
         if (this.selectedSearchResultIndex < 0) {
@@ -202,12 +204,16 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private addStyleToNewSelectedSearchResult() {
     if (this.selectedSearchResultIndex >= 0 && this.allSearchResults.length > 0) {
-      const selectedResult = this.allSearchResults[this.selectedSearchResultIndex];
-      this.searchComponent.setTerm(selectedResult.text, false);
-      this.renderer.setStyle(selectedResult.host.nativeElement, 'outline', 'rgb(16, 16, 16) auto 1px');
-      selectedResult.host.nativeElement.scrollIntoView({behavior: 'smooth', block: 'center'});
-      selectedResult.dispatchEventIfMapResult();
+      this.selectedResult = this.allSearchResults[this.selectedSearchResultIndex];
+      this.searchComponent.setTerm(this.selectedResult.text, false);
+      if (this.selectedResult.isNested) {
+        // const test = this.selectedResult.host.nativeElement.ch;
+        // test.
+      }
+      this.selectedResult.host.nativeElement.focus();
+      this.selectedResult.addTemporaryMap();
     } else {
+      this.searchComponent.inputRef.nativeElement.focus();
       this.searchComponent.setTerm(this.term, false);
     }
   }
