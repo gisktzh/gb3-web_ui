@@ -13,6 +13,7 @@ import {ActiveMapItem} from '../../../../models/active-map-item.model';
 import {MapConstants} from '../../../../../shared/constants/map.constants';
 import {SearchActions} from '../../../../../state/app/actions/search.actions';
 import {SearchResultIdentifierDirective} from '../../../../../shared/directives/search-result-identifier.directive';
+import {Gb2ExitButtonComponent} from '../../../../../shared/components/external-link-button/gb2-exit-button.component';
 
 @Component({
   selector: 'result-group',
@@ -22,6 +23,7 @@ import {SearchResultIdentifierDirective} from '../../../../../shared/directives/
 })
 export class ResultGroupComponent implements OnInit, OnDestroy {
   @ViewChildren(SearchResultIdentifierDirective) public readonly searchResultElement!: QueryList<SearchResultIdentifierDirective>;
+  @ViewChildren(Gb2ExitButtonComponent) public readonly gb2ExitButtons!: QueryList<Gb2ExitButtonComponent>;
   @Input() public searchResults: GeometrySearchApiResultMatch[] = [];
   @Input() public filteredMaps: Map[] = [];
   @Input() public header: string = '';
@@ -50,21 +52,20 @@ export class ResultGroupComponent implements OnInit, OnDestroy {
     this.store.dispatch(SearchActions.selectMapSearchResult({searchResult}));
   }
 
-  public parentClick(map: Map) {
-    const index = this.filteredMaps.indexOf(map);
-    const item = this.searchResultElement.toArray()[index];
-    if (!item) {
-      return;
-    }
+  public delegateClickToChild(map: Map) {
     if (map.gb2Url) {
-      const gb2 = item.host.nativeElement.firstElementChild?.firstElementChild as HTMLAnchorElement;
-      gb2.click();
+      const index = this.filteredMaps.indexOf(map);
+      const searchResult = this.searchResultElement.toArray()[index];
+      if (!searchResult) {
+        return;
+      }
+      const url = map.gb2Url;
+      const gb2Button = this.gb2ExitButtons.find((gb2ExitButton) => gb2ExitButton.url.includes(url));
+      gb2Button?.anchor._elementRef.nativeElement.click();
     } else {
-      const button = item.host.nativeElement.firstElementChild as HTMLButtonElement;
-      button.click();
+      this.addActiveMap(map);
     }
   }
-
   public addActiveMap(activeMap: Map, isTemporary: boolean = false) {
     if (!activeMap.gb2Url) {
       this.addActiveItem(
