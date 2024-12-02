@@ -43,6 +43,10 @@
       .result-group__container__element__map-content {
         display: flex;
         padding: 5px;
+        width: 100%;
+        border: none;
+        background-color: unset;
+        cursor: pointer;
 
         .result-group__container__element__map-content__image {
           height: 32px;

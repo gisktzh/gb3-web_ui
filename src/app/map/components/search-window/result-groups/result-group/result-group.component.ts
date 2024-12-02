@@ -50,6 +50,21 @@ export class ResultGroupComponent implements OnInit, OnDestroy {
     this.store.dispatch(SearchActions.selectMapSearchResult({searchResult}));
   }
 
+  public parentClick(map: Map) {
+    const index = this.filteredMaps.indexOf(map);
+    const item = this.searchResultElement.toArray()[index];
+    if (!item) {
+      return;
+    }
+    if (map.gb2Url) {
+      const gb2 = item.host.nativeElement.firstElementChild?.firstElementChild as HTMLAnchorElement;
+      gb2.click();
+    } else {
+      const button = item.host.nativeElement.firstElementChild as HTMLButtonElement;
+      button.click();
+    }
+  }
+
   public addActiveMap(activeMap: Map, isTemporary: boolean = false) {
     if (!activeMap.gb2Url) {
       this.addActiveItem(

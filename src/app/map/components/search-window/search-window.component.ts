@@ -166,6 +166,30 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  @HostListener('keydown.tab', ['$event'])
+  public handleTab(event: KeyboardEvent) {
+    setTimeout(() => {
+      const focusedElement = this.allSearchResults.find((result) => result.host.nativeElement === document.activeElement);
+      if (focusedElement) {
+        const index = this.allSearchResults.indexOf(focusedElement);
+        this.selectedSearchResultIndex = index;
+        this.addStyleToNewSelectedSearchResult();
+      }
+    }, 0);
+  }
+
+  @HostListener('keydown.shift.tab', ['$event'])
+  public handleAltTab(event: KeyboardEvent) {
+    setTimeout(() => {
+      const focusedElement = this.allSearchResults.find((result) => result.host.nativeElement === document.activeElement);
+      if (focusedElement) {
+        const index = this.allSearchResults.indexOf(focusedElement);
+        this.selectedSearchResultIndex = index;
+        this.addStyleToNewSelectedSearchResult();
+      }
+    }, 0);
+  }
+
   @HostListener('keydown.enter', ['$event'])
   public handleEnter(event: KeyboardEvent) {
     if (this.selectedSearchResultIndex >= 0 && this.allSearchResults.length > 0) {
