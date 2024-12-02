@@ -7,28 +7,6 @@
   @include mat-mixins.mat-expansion-panel-remove-content-indent;
 }
 
-.button-test {
-  width: 100%;
-  border: none;
-  background-color: unset;
-  cursor: pointer;
-  padding: 0;
-}
-
-.content {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-}
-
-.content-text {
-  font-size: 14px;
-  line-height: 20px;
-  letter-spacing: 0.25px;
-  font-family: Inter, Arial, Helvetica, sans-serif;
-}
-
 .result-group {
   .result-group__container {
     overflow-y: auto;
@@ -50,8 +28,25 @@
     }
 
     .result-group__container__element {
-      box-shadow: none;
-      font-size: 14px;
+      width: 100%;
+      border: none;
+      background-color: unset;
+      cursor: pointer;
+      padding: 0;
+
+      .result-group__container__element__container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+      }
+
+      .result-group__container__element__text {
+        font-size: 14px;
+        line-height: 20px;
+        letter-spacing: 0.25px;
+        font-family: ktzh-variables.$zh-font-family;
+      }
 
       .result-group__container__element__header {
         font-weight: bold;

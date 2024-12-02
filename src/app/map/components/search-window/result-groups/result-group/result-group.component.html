@@ -12,17 +12,17 @@
         <li class="result-group-list__list-item">
           <button
             (click)="selectSearchResult(result)"
-            class="result-group__container__element search-result-group__container__element--interactive button-test"
+            class="result-group__container__element search-result-group__container__element--interactive"
             [tabIndex]="first ? 0 : -1"
             searchResultIdentifier
             [text]="result.displayString"
           >
-            <div class="content">
+            <div class="result-group__container__element__container">
               @if (result.indexType === 'activeMapItems') {
-                <div class="result-group__container__element__header content-text">{{ result.indexName }}</div>
+                <div class="result-group__container__element__header result-group__container__element__text">{{ result.indexName }}</div>
               }
               <div
-                class="result-group__container__element__content content-text"
+                class="result-group__container__element__content result-group__container__element__text"
                 [innerHTML]="result.displayString | highlightSearchQuery: this.searchTerms"
               ></div>
             </div>
@@ -42,7 +42,7 @@
               (delayedMouseEnter)="addActiveMap(map, true)"
               [delayDurationInMs]="this.hoverDelay"
               (mouseleave)="removeTemporaryMap(map)"
-              (click)="parentClick(map)"
+              (click)="delegateClickToChild(map)"
               searchResultIdentifier
               [isMapResult]="true"
               [text]="map.printTitle"
@@ -65,7 +65,7 @@
               <img [alt]="map.title" [src]="map.icon" class="result-group__container__element__map-content__image" />
               <p
                 [innerHTML]="map.title | highlightSearchQuery: this.searchTerms"
-                class="result-group__container__element__map-content__title content-text"
+                class="result-group__container__element__map-content__title result-group__container__element__text"
                 matTooltip="{{ map.title }}"
               ></p>
             </button>
