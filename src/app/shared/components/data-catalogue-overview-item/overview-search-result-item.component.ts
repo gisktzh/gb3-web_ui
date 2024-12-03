@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {RouterModule} from '@angular/router';
 import {MatIcon} from '@angular/material/icon';
 import {MatDivider} from '@angular/material/divider';
@@ -10,14 +10,29 @@ import {Store} from '@ngrx/store';
 import {selectScreenMode} from '../../../state/app/reducers/app-layout.reducer';
 import {Subscription, tap} from 'rxjs';
 import {MatTooltip} from '@angular/material/tooltip';
+import {SearchResultIdentifierDirective} from '../../directives/search-result-identifier.directive';
 
 @Component({
   selector: 'overview-search-result-item',
   templateUrl: './overview-search-result-item.component.html',
   styleUrls: ['./overview-search-result-item.component.scss'],
-  imports: [RouterModule, MatIcon, MatDivider, MatButtonModule, ClickOnSpaceBarDirective, NgForOf, NgClass, NgIf, MatTooltip],
+  imports: [
+    RouterModule,
+    MatIcon,
+    MatDivider,
+    MatButtonModule,
+    ClickOnSpaceBarDirective,
+    NgForOf,
+    NgClass,
+    NgIf,
+    NgSwitch,
+    NgSwitchCase,
+    MatTooltip,
+    SearchResultIdentifierDirective,
+  ],
 })
 export class OverviewSearchResultItemComponent implements OnInit, OnDestroy {
+  @ViewChild(SearchResultIdentifierDirective) public readonly searchResultElement!: SearchResultIdentifierDirective;
   @Input() public item!: OverviewSearchResultDisplayItem;
   public isMobile: boolean = false;
 
