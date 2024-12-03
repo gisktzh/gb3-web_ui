@@ -102,6 +102,7 @@ import {SliderEditComponent} from './components/drawing-edit-overlay/drawing-edi
 import {PrintDescriptionPipe} from './components/map-tools/print-dialog/print-description.pipe';
 import {GenericUnorderedListComponent} from '../shared/components/lists/generic-unordered-list/generic-unordered-list.component';
 import {SearchResultIdentifierDirective} from '../shared/directives/search-result-identifier.directive';
+import {SearchResultKeyboardNavigationDirective} from '../shared/directives/search-result-keyboard-navigation.directive';
 
 @NgModule({
   providers: [provideCharts(withDefaultRegisterables())],
@@ -213,6 +214,7 @@ import {SearchResultIdentifierDirective} from '../shared/directives/search-resul
     PrintDescriptionPipe,
     GenericUnorderedListComponent,
     SearchResultIdentifierDirective,
+    SearchResultKeyboardNavigationDirective,
   ],
   exports: [
     LegendOverlayComponent,
