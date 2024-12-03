@@ -49,15 +49,7 @@ export class ResultGroupsComponent implements OnInit, OnDestroy {
   }
 
   private initSubscriptions() {
-    this.subscriptions.add(
-      this.searchTerm$
-        .pipe(
-          tap((searchTerm) => {
-            this.searchTerms = searchTerm.split(' ');
-          }),
-        )
-        .subscribe(),
-    );
+    this.subscriptions.add(this.searchTerm$.pipe(tap((searchTerm) => (this.searchTerms = searchTerm.split(' ')))).subscribe());
     this.subscriptions.add(this.filteredMaps$.pipe(tap((filteredMaps) => (this.filteredMaps = filteredMaps))).subscribe());
     this.subscriptions.add(
       this.filteredSearchApiResultMatches$
