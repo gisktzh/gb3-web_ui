@@ -1,11 +1,18 @@
-<div *ngFor="let map of filteredMaps">
-  <div class="search-result-entry-map">
+@for (map of filteredMaps; track map; let first = $first) {
+  <button
+    class="search-result-entry-map"
+    [tabIndex]="first ? 0 : -1"
+    (click)="delegateClickToChild(map)"
+    searchResultIdentifier
+    [text]="map.title"
+  >
     <img [alt]="map.title" [ngSrc]="map.icon" class="search-result-entry-map__image" width="44" height="44" />
     <p class="search-result-entry-map__title" showTooltipIfTruncated matTooltip="{{ map.title }}">{{ map.title }}</p>
     <gb2-exit-button
       *ngIf="map.gb2Url; else openMap"
       [url]="map.gb2Url | appendMapConfigurationToUrl: mapConfigState"
       [highlighted]="true"
+      [disableTabFocus]="true"
     ></gb2-exit-button>
     <ng-template #openMap>
       <a
@@ -15,10 +22,11 @@
         data-test-id="open-active-map"
         mat-icon-button
         class="search-result-entry-map__link"
+        tabIndex="-1"
       >
         <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
       </a>
     </ng-template>
-  </div>
+  </button>
   <mat-divider></mat-divider>
-</div>
+}

@@ -3,6 +3,7 @@ import {SearchResultIdentifierDirective} from './search-result-identifier.direct
 import {Subscription, tap} from 'rxjs';
 import {selectTerm} from '../../state/app/reducers/search.reducer';
 import {Store} from '@ngrx/store';
+import {SearchComponent} from '../components/search/search.component';
 
 @Directive({
   selector: '[searchResultKeyboardNavigation]',
@@ -10,11 +11,14 @@ import {Store} from '@ngrx/store';
 })
 export class SearchResultKeyboardNavigationDirective implements OnInit, OnDestroy {
   @Input() public allSearchResults: SearchResultIdentifierDirective[] = [];
+  @Input() public searchComponent?: SearchComponent;
+  private term: string = '';
   private selectedSearchResultIndex: number = -1;
   private selectedResult: SearchResultIdentifierDirective | undefined;
   private readonly term$ = this.store.select(selectTerm).pipe(
-    tap(() => {
+    tap((term: string) => {
       this.selectedSearchResultIndex = -1;
+      this.term = term;
     }),
   );
   private readonly subscriptions: Subscription = new Subscription();
@@ -53,8 +57,9 @@ export class SearchResultKeyboardNavigationDirective implements OnInit, OnDestro
 
   @HostListener('keydown.enter', ['$event'])
   @HostListener('keydown.space', ['$event'])
-  public handleEnter() {
+  public handleEnter(event: KeyboardEvent) {
     if (this.selectedSearchResultIndex >= 0 && this.allSearchResults.length > 0) {
+      event.preventDefault();
       const result = this.allSearchResults[this.selectedSearchResultIndex];
       result.host.nativeElement.click();
     }
@@ -89,12 +94,12 @@ export class SearchResultKeyboardNavigationDirective implements OnInit, OnDestro
   private setFocusOnSelectedElement() {
     if (this.selectedSearchResultIndex >= 0 && this.allSearchResults.length > 0) {
       this.selectedResult = this.allSearchResults[this.selectedSearchResultIndex];
-      // this.host.nativeElement.searchComponent.setTerm(this.selectedResult.text, false);
+      this.searchComponent?.setTerm(this.selectedResult.text, false);
       this.selectedResult.host.nativeElement.focus();
       this.selectedResult.addTemporaryMap();
     } else {
-      // this.host.nativeElement.searchComponent.inputRef.nativeElement.focus();
-      // this.host.nativeElement.searchComponent.setTerm(this.term, false);
+      this.searchComponent?.inputRef.nativeElement.focus();
+      this.searchComponent?.setTerm(this.term, false);
     }
   }
 }

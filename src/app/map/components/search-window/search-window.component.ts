@@ -29,7 +29,7 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   public term: string = '';
   public allSearchResults: SearchResultIdentifierDirective[] = [];
 
-  @ViewChild(SearchComponent) private readonly searchComponent!: SearchComponent;
+  @ViewChild(SearchComponent) public readonly searchComponent!: SearchComponent;
   @ViewChild(ResultGroupsComponent) private readonly resultGroupsComponent!: ResultGroupsComponent;
 
   private readonly searchConfig = this.configService.searchConfig.mapPage;
@@ -89,6 +89,8 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
         )
         .subscribe(),
     );
+    // Necessary because we are passing the searchComponent to the searchResultKeyboardNavigation directive
+    this.cdr.detectChanges();
   }
 
   public searchForTerm(term: string) {

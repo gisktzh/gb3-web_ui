@@ -4,9 +4,13 @@
 .search-result-entry-map {
   display: flex;
   padding: 12px;
-  height: 46px;
+  height: 70px;
   overflow: hidden;
   gap: 12px;
+  background-color: unset;
+  border: none;
+  width: 100%;
+  cursor: pointer;
 
   .search-result-entry-map__image {
     height: 44px;
