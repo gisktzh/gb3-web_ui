@@ -4,7 +4,7 @@ import WMSLayer from '@arcgis/core/layers/WMSLayer';
 import Point from '@arcgis/core/geometry/Point';
 import Collection from '@arcgis/core/core/Collection';
 import TimeSlider from '@arcgis/core/widgets/TimeSlider';
-import TimeExtent from '@arcgis/core/TimeExtent';
+import TimeExtent from '@arcgis/core/time/TimeExtent';
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils';
 import SpatialReference from '@arcgis/core/geometry/SpatialReference';
 import Graphic from '@arcgis/core/Graphic';
