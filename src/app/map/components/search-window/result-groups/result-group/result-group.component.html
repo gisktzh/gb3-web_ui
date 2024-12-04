@@ -38,39 +38,49 @@
       @for (map of filteredMaps; track map; let first = $first) {
         <li class="result-group-list__list-item">
           <div class="result-group__container__element">
-            <button
-              class="result-group__container__element__map-content"
-              (delayedMouseEnter)="addActiveMap(map, true)"
-              [delayDurationInMs]="this.hoverDelay"
-              (mouseleave)="removeTemporaryMap(map)"
-              (click)="delegateClickToChild(map)"
-              searchResultIdentifier
-              [isMapResult]="true"
-              [text]="map.printTitle"
-              [isFocusable]="first"
-              (addResultFromArrowNavigation)="addActiveMap(map, true)"
-              (removeResultFromArrowNavigation)="removeTemporaryMap(map)"
-              [attr.data-index]="filteredMaps.indexOf(map)"
-              [tabIndex]="first ? 0 : -1"
-            >
-              @if (map.gb2Url) {
-                <gb2-exit-button
-                  [url]="map.gb2Url | appendMapConfigurationToUrl: mapConfigState"
-                  [disableTabFocus]="true"
-                ></gb2-exit-button>
-              } @else {
-                <button (click)="addActiveMap(map)" color="primary" data-test-id="add-active-map" mat-icon-button tabindex="-1">
-                  <mat-icon>add</mat-icon>
-                </button>
-              }
-
+            @if (map.gb2Url) {
+              <a
+                class="result-group__container__element__link"
+                [tabIndex]="first ? 0 : -1"
+                searchResultIdentifier
+                [text]="map.title"
+                [isFocusable]="first"
+                [href]="map.gb2Url | appendMapConfigurationToUrl: mapConfigState"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <mat-icon svgIcon="ktzh_arrow_right" class="result-group__container__element__link__icon"></mat-icon>
+                <ng-container *ngTemplateOutlet="content"></ng-container>
+              </a>
+            } @else {
+              <button
+                class="result-group__container__element__button"
+                (delayedMouseEnter)="addActiveMap(map, true)"
+                [delayDurationInMs]="this.hoverDelay"
+                (mouseleave)="removeTemporaryMap(map)"
+                (click)="delegateClickToChild(map)"
+                searchResultIdentifier
+                [isMapResult]="true"
+                [text]="map.printTitle"
+                [isFocusable]="first"
+                (addResultFromArrowNavigation)="addActiveMap(map, true)"
+                (removeResultFromArrowNavigation)="removeTemporaryMap(map)"
+                [attr.data-index]="filteredMaps.indexOf(map)"
+                [tabIndex]="first ? 0 : -1"
+              >
+                <mat-icon class="result-group__container__element__button__icon">add</mat-icon>
+                <ng-container *ngTemplateOutlet="content"></ng-container>
+              </button>
+            }
+            <ng-template #content>
               <img [alt]="map.title" [src]="map.icon" class="result-group__container__element__map-content__image" />
               <p
                 [innerHTML]="map.title | highlightSearchQuery: this.searchTerms"
                 class="result-group__container__element__map-content__title result-group__container__element__text"
                 matTooltip="{{ map.title }}"
               ></p>
-            </button>
+            </ng-template>
+
             <mat-divider></mat-divider>
           </div>
         </li>
