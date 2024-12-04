@@ -1,7 +1,7 @@
 import {FilterConfiguration, Map, MapLayer} from '../interfaces/topic.interface';
 import {ActiveMapItemFactory} from './active-map-item.factory';
 import {Gb2WmsActiveMapItem} from '../../map/models/implementations/gb2-wms.model';
-import TimeExtent from '@arcgis/core/TimeExtent';
+import TimeExtent from '@arcgis/core/time/TimeExtent';
 
 describe('ActiveMapItemFactory', () => {
   describe('createTemporaryGb2WmsMapItem', () => {
