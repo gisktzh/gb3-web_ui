@@ -47,6 +47,11 @@ const routes: Routes = [
         loadChildren: () => import('./embedded-page/embedded-map-page.module').then((m) => m.EmbeddedMapPageModule),
         title: `GIS-Browser ${siteOperator}`,
       },
+      {
+        path: MainPage.Apps,
+        loadChildren: () => import('./apps-page/apps-page.routes').then((m) => m.APPS_ROUTES),
+        title: `Apps ${siteOperator}`,
+      },
 
       {path: MainPage.Error, component: FatalErrorPageComponent, canDeactivate: [fatalErrorMapGuard], title: `Fehler ${siteOperator}`},
       {path: MainPage.NotFound, component: NotFoundErrorPageComponent, title: `Seite nicht gefunden ${siteOperator}`},
