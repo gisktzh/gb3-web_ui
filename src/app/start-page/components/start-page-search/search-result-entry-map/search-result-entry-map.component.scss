@@ -4,12 +4,9 @@
 .search-result-entry-map {
   display: flex;
   padding: 12px;
-  height: 70px;
+  height: 46px;
   overflow: hidden;
   gap: 12px;
-  background-color: unset;
-  border: none;
-  width: 100%;
   cursor: pointer;
 
   .search-result-entry-map__image {
@@ -31,4 +28,21 @@
     background-color: ktzh-variables.$zh-light-grey;
     border-radius: 50%;
   }
+}
+
+.search-result-entry-map:hover {
+  background-color: lightgray;
+}
+
+.test {
+  background-color: rgb(240, 240, 240);
+  width: 24px;
+  height: 24px;
+  padding: 12px;
+  border-radius: 50%;
+}
+
+.rotate {
+  rotate: -45deg;
+  color: blue;
 }

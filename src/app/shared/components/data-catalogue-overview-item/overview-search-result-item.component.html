@@ -1,4 +1,4 @@
-<div class="overview-search-result-item">
+<a class="overview-search-result-item">
   <div class="overview-search-result-item__icon" *ngIf="!isMobile" [matTooltip]="item.type" [matTooltipPosition]="'right'">
     @switch (item.type) {
       @case ('Geodatensatz') {
@@ -45,8 +45,7 @@
   <div class="overview-search-result-item__link__wrapper">
     @if (item.url.isInternal) {
       <a
-        searchResultIdentifier
-        [text]="item.title"
+        #internalLink
         mat-icon-button
         [routerLink]="item.url.path"
         [attr.aria-label]="item.title + ' ' + item.type + ' Details öffnen'"
@@ -56,8 +55,7 @@
       </a>
     } @else {
       <a
-        searchResultIdentifier
-        [text]="item.title"
+        #externalLink
         class="overview-search-result-item__link__wrapper__link"
         mat-icon-button
         [href]="item.url.path"
@@ -70,5 +68,5 @@
       </a>
     }
   </div>
-</div>
+</a>
 <mat-divider></mat-divider>

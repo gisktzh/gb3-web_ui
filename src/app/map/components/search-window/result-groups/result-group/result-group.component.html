@@ -16,6 +16,7 @@
             [tabIndex]="first ? 0 : -1"
             searchResultIdentifier
             [text]="result.displayString"
+            [isFocusable]="first"
           >
             <div class="result-group__container__element__container">
               @if (result.indexType === 'activeMapItems') {
@@ -46,6 +47,7 @@
               searchResultIdentifier
               [isMapResult]="true"
               [text]="map.printTitle"
+              [isFocusable]="first"
               (addResultFromArrowNavigation)="addActiveMap(map, true)"
               (removeResultFromArrowNavigation)="removeTemporaryMap(map)"
               [attr.data-index]="filteredMaps.indexOf(map)"

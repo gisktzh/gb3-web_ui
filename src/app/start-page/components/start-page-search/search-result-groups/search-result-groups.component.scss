@@ -13,5 +13,16 @@
 
   .search-result-groups__group {
     box-sizing: border-box;
+
+    .search-result-groups__group__list {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+
+      .search-result-groups__group__list__list-item {
+        list-style-type: none;
+      }
+    }
   }
 }

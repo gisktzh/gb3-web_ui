@@ -1,20 +1,22 @@
 @for (map of filteredMaps; track map; let first = $first) {
-  <button
+  <a
     class="search-result-entry-map"
     [tabIndex]="first ? 0 : -1"
     (click)="delegateClickToChild(map)"
     searchResultIdentifier
     [text]="map.title"
+    [isFocusable]="first"
   >
     <img [alt]="map.title" [ngSrc]="map.icon" class="search-result-entry-map__image" width="44" height="44" />
     <p class="search-result-entry-map__title" showTooltipIfTruncated matTooltip="{{ map.title }}">{{ map.title }}</p>
-    <gb2-exit-button
-      *ngIf="map.gb2Url; else openMap"
-      [url]="map.gb2Url | appendMapConfigurationToUrl: mapConfigState"
-      [highlighted]="true"
-      [disableTabFocus]="true"
-    ></gb2-exit-button>
-    <ng-template #openMap>
+    @if (map.gb2Url) {
+      <gb2-exit-button
+        [url]="map.gb2Url | appendMapConfigurationToUrl: mapConfigState"
+        [highlighted]="true"
+        [disableTabFocus]="true"
+      ></gb2-exit-button>
+      <mat-icon svgIcon="ktzh_arrow_right" class="test rotate"></mat-icon>
+    } @else {
       <a
         [queryParams]="{initialMapIds: map.id}"
         [routerLink]="['/', mainPageEnum.Maps]"
@@ -26,7 +28,8 @@
       >
         <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
       </a>
-    </ng-template>
-  </button>
+      <mat-icon svgIcon="ktzh_arrow_right" class="test"></mat-icon>
+    }
+  </a>
   <mat-divider></mat-divider>
 }
