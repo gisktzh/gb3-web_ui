@@ -21,8 +21,8 @@
   .navbar-mobile__dialog__header {
     display: flex;
     align-items: center;
-    margin-bottom: 32px;
-    padding: 16px 6px 0;
+    //margin-bottom: 32px;
+    //padding: 16px 6px 0;
 
     .navbar-mobile__dialog__header__title {
       @include material-mixins.mat-icon-custom-svg-size(18px);
@@ -34,8 +34,14 @@
 
   .navbar-mobile__dialog__content {
     flex: 1;
-    overflow: hidden scroll;
+    overflow: auto;
     padding: 0 6px;
+
+    .navbar-mobile__dialog__content__container {
+      display: flex;
+      flex-direction: column;
+      padding: 0 6px;
+    }
   }
 }
 
@@ -49,6 +55,7 @@ a.navbar__item {
   font-size: 18px;
   flex-grow: 1;
   justify-content: flex-start;
+  height: 60px;
 
   &.navbar__item--active {
     font-family: ktzh-variables.$zh-font-family-bold;
@@ -59,4 +66,15 @@ a.navbar__item {
   order: 2;
   padding-left: 8px;
   margin-right: 0px;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+}
+
+.line {
+  width: calc(100% - 24px);
+  margin: auto;
 }
