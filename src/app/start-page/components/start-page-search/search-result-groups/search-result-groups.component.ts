@@ -16,7 +16,7 @@ import {selectLoadingState as selectDataCatalogLoadingState} from '../../../../s
 import {selectLoadingState as selectLayerCatalogLoadingState} from '../../../../state/map/reducers/layer-catalog.reducer';
 import {OverviewSearchResultDisplayItem} from '../../../../shared/interfaces/overview-search-resuilt-display.interface';
 import {SearchResultEntryMapComponent} from '../search-result-entry-map/search-result-entry-map.component';
-import {OverviewSearchResultItemComponent} from '../../../../shared/components/data-catalogue-overview-item/overview-search-result-item.component';
+import {SearchResultIdentifierDirective} from '../../../../shared/directives/search-result-identifier.directive';
 
 @Component({
   selector: 'search-result-groups',
@@ -27,8 +27,8 @@ import {OverviewSearchResultItemComponent} from '../../../../shared/components/d
 export class SearchResultGroupsComponent implements OnInit, OnDestroy {
   @ViewChild(SearchResultEntryMapComponent)
   public readonly searchResultEntryMapComponents!: SearchResultEntryMapComponent;
-  @ViewChildren(OverviewSearchResultItemComponent)
-  public readonly overviewSearchResultItemComponents!: QueryList<OverviewSearchResultItemComponent>;
+  @ViewChildren(SearchResultIdentifierDirective)
+  public readonly overviewSearchResultItemComponents!: QueryList<SearchResultIdentifierDirective>;
 
   public layerCatalogLoadingState: LoadingState;
   public filteredMaps: Map[] = [];

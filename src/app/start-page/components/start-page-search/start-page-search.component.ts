@@ -12,7 +12,6 @@ import {selectTerm} from '../../../state/app/reducers/search.reducer';
 import {selectActiveSearchFilterValues} from '../../../state/data-catalogue/selectors/active-search-filters.selector';
 import {SearchComponent} from '../../../shared/components/search/search.component';
 import {SearchResultGroupsComponent} from './search-result-groups/search-result-groups.component';
-import {OverviewSearchResultItemComponent} from '../../../shared/components/data-catalogue-overview-item/overview-search-result-item.component';
 import {SearchResultIdentifierDirective} from '../../../shared/directives/search-result-identifier.directive';
 
 @Component({
@@ -86,11 +85,9 @@ export class StartPageSearchComponent implements OnInit, OnDestroy, AfterViewIni
             .pipe(
               combineLatestWith(this.searchResultGroupsComponent.searchResultEntryMapComponents.searchResultElement.changes),
               tap(([overviewSearchResultItemComponents, searchResultElement]) => {
-                const resultsFromOverviewSearch = (overviewSearchResultItemComponents as QueryList<OverviewSearchResultItemComponent>)
-                  .toArray()
-                  .map((overviewSearchResultItemComponent) => {
-                    return overviewSearchResultItemComponent.searchResultElement;
-                  });
+                const resultsFromOverviewSearch = (
+                  overviewSearchResultItemComponents as QueryList<SearchResultIdentifierDirective>
+                ).toArray();
                 const resultsFromMaps = (searchResultElement as QueryList<SearchResultIdentifierDirective>).toArray();
                 this.allResults = resultsFromMaps.concat(resultsFromOverviewSearch);
                 this.cdr.detectChanges();

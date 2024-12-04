@@ -44,15 +44,18 @@ export class SearchResultKeyboardNavigationDirective implements OnInit, OnDestro
 
   @HostListener('keydown.tab', ['$event'])
   @HostListener('keydown.shift.tab', ['$event'])
-  public handleTab() {
-    // Timeout is necessary to wait until the default Event from Tab has finished
-    setTimeout(() => {
-      const focusedElement = this.allSearchResults.find((result) => result.host.nativeElement === document.activeElement);
-      if (focusedElement) {
-        this.selectedSearchResultIndex = this.allSearchResults.indexOf(focusedElement);
+  public handleTab(event: KeyboardEvent) {
+    this.selectedResult?.removeTemporaryMap();
+    const direction = event.shiftKey ? -1 : 1;
+    for (let i = this.selectedSearchResultIndex + direction; i >= 0 && i < this.allSearchResults.length; i += direction) {
+      const item = this.allSearchResults[i] as SearchResultIdentifierDirective;
+      if (item.isFocusable) {
+        event.preventDefault();
+        this.selectedSearchResultIndex = i;
         this.setFocusOnSelectedElement();
+        break;
       }
-    }, 0);
+    }
   }
 
   @HostListener('keydown.enter', ['$event'])
