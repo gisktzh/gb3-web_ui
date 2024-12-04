@@ -9,6 +9,7 @@ import {ScreenMode} from '../../types/screen-size.type';
 import {NavbarMobileDialogComponent} from '../navbar-mobile/navbar-mobile-dialog/navbar-mobile-dialog.component';
 import {PanelClass} from '../../enums/panel-class.enum';
 import {MatDialog} from '@angular/material/dialog';
+import {ConfigService} from '../../services/config.service';
 
 @Component({
   selector: 'navbar',
@@ -22,6 +23,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   public userName?: string;
   public scrollbarWidth: number = 0;
   public screenMode: ScreenMode = 'regular';
+  public isIntranetHost: boolean = false;
 
   protected readonly mainPageEnum = MainPage;
 
@@ -34,7 +36,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
   constructor(
     private readonly store: Store,
     private readonly dialog: MatDialog,
-  ) {}
+    private readonly configService: ConfigService,
+  ) {
+    this.isIntranetHost = this.configService.isIntranetHost();
+  }
 
   public ngOnInit() {
     this.initSubscriptions();
