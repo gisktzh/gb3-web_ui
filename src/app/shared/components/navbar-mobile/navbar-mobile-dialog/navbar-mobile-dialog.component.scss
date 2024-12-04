@@ -21,8 +21,8 @@
   .navbar-mobile__dialog__header {
     display: flex;
     align-items: center;
-    //margin-bottom: 32px;
-    //padding: 16px 6px 0;
+    height: 72px;
+    padding: 0;
 
     .navbar-mobile__dialog__header__title {
       @include material-mixins.mat-icon-custom-svg-size(18px);
@@ -35,12 +35,13 @@
   .navbar-mobile__dialog__content {
     flex: 1;
     overflow: auto;
-    padding: 0 6px;
+    padding: 0 12px;
 
     .navbar-mobile__dialog__content__container {
       display: flex;
       flex-direction: column;
-      padding: 0 6px;
+      padding: 0;
+      border-top: 1px inset;
     }
   }
 }
@@ -62,19 +63,13 @@ a.navbar__item {
   }
 }
 
+a.navbar__user {
+  margin-left: 12px;
+  padding-left: 12px;
+}
+
 .arrow-icon {
   order: 2;
   padding-left: 8px;
   margin-right: 0px;
-}
-
-.header {
-  display: flex;
-  flex-direction: column;
-  padding: 8px;
-}
-
-.line {
-  width: calc(100% - 24px);
-  margin: auto;
 }

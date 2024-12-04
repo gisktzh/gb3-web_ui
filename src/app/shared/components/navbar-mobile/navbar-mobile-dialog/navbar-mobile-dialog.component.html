@@ -1,26 +1,30 @@
 <mat-card class="navbar-mobile__dialog">
-  <mat-card-header class="header">
-    <div class="navbar-mobile__dialog__header">
-      <a (click)="this.startLogin()" *ngIf="!this.isAuthenticated; else userProfile" class="navbar__item" mat-button>Login</a>
-      <ng-template #userProfile>
-        <a [matMenuTriggerFor]="userMenu" class="navbar__item" mat-button #trigger="matMenuTrigger">
+  <mat-card-header class="navbar-mobile__dialog__header">
+    <a (click)="this.startLogin()" *ngIf="!this.isAuthenticated; else userProfile" class="navbar__item navbar__user" mat-button>
+      <mat-icon svgIcon="ktzh_user"></mat-icon>
+      <span>Login</span>
+    </a>
+    <ng-template #userProfile>
+      <a [matMenuTriggerFor]="userMenu" class="navbar__item navbar__user" mat-button #trigger="matMenuTrigger">
+        <mat-icon svgIcon="ktzh_user"></mat-icon>
+        <span>{{ this.userName }}</span>
+        <mat-icon [fontIcon]="trigger.menuOpen ? 'arrow_drop_up' : 'arrow_drop_down'" class="arrow-icon"></mat-icon>
+      </a>
+      <mat-menu #userMenu="matMenu" style="padding-left: 12px">
+        <a href="https://maps.zh.ch/groups_users" target="_blank" rel="noopener noreferrer" mat-menu-item>
           <mat-icon svgIcon="ktzh_user"></mat-icon>
-          <span>{{ this.userName }}</span>
-          <mat-icon [fontIcon]="trigger.menuOpen ? 'arrow_drop_up' : 'arrow_drop_down'" class="arrow-icon"></mat-icon>
+          <span>Profil</span>
         </a>
-        <mat-menu #userMenu="matMenu">
-          <button (click)="this.logout()" mat-menu-item>
-            <mat-icon>logout</mat-icon>
-            <span>Logout</span>
-          </button>
-        </mat-menu>
-      </ng-template>
-      <button mat-icon-button (click)="close()">
-        <mat-icon>close</mat-icon>
-      </button>
-    </div>
-
-    <hr class="line" />
+        <mat-divider></mat-divider>
+        <button (click)="this.logout()" mat-menu-item>
+          <mat-icon>logout</mat-icon>
+          <span>Logout</span>
+        </button>
+      </mat-menu>
+    </ng-template>
+    <button mat-icon-button (click)="close()">
+      <mat-icon>close</mat-icon>
+    </button>
   </mat-card-header>
   <mat-card-content class="navbar-mobile__dialog__content">
     <div class="navbar-mobile__dialog__content__container">
