@@ -1,10 +1,10 @@
-import {Component, HostListener, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {RouterModule} from '@angular/router';
 import {MatIcon} from '@angular/material/icon';
 import {MatDivider} from '@angular/material/divider';
-import {MatButtonModule, MatIconAnchor} from '@angular/material/button';
+import {MatButtonModule} from '@angular/material/button';
 import {ClickOnSpaceBarDirective} from '../../directives/click-on-spacebar.directive';
-import {NgClass, NgForOf, NgIf, NgSwitch, NgSwitchCase} from '@angular/common';
+import {NgClass, NgForOf, NgIf, NgSwitch, NgSwitchCase, NgTemplateOutlet} from '@angular/common';
 import {OverviewSearchResultDisplayItem} from '../../interfaces/overview-search-resuilt-display.interface';
 import {Store} from '@ngrx/store';
 import {selectScreenMode} from '../../../state/app/reducers/app-layout.reducer';
@@ -29,11 +29,12 @@ import {SearchResultIdentifierDirective} from '../../directives/search-result-id
     NgSwitchCase,
     MatTooltip,
     SearchResultIdentifierDirective,
+    NgTemplateOutlet,
   ],
 })
 export class OverviewSearchResultItemComponent implements OnInit, OnDestroy {
-  @ViewChild('externalLink') public readonly externalLink?: MatIconAnchor;
-  @ViewChild('internalLink') public readonly internalLink?: MatIconAnchor;
+  @ViewChild('externalLink') public readonly externalLink?: ElementRef;
+  @ViewChild('internalLink') public readonly internalLink?: ElementRef;
   @ViewChild(SearchResultIdentifierDirective) public readonly searchResultElement!: SearchResultIdentifierDirective;
   @Input() public item!: OverviewSearchResultDisplayItem;
   public isMobile: boolean = false;
@@ -56,9 +57,9 @@ export class OverviewSearchResultItemComponent implements OnInit, OnDestroy {
       return;
     }
     if (this.item.url.isInternal) {
-      this.internalLink?._elementRef.nativeElement.click();
+      this.internalLink?.nativeElement.click();
     } else {
-      this.externalLink?._elementRef.nativeElement.click();
+      this.externalLink?.nativeElement.click();
     }
   }
 }

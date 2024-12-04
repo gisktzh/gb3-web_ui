@@ -1,4 +1,27 @@
-<a class="overview-search-result-item">
+@if (item.url.isInternal) {
+  <a
+    #internalLink
+    [routerLink]="item.url.path"
+    [attr.aria-label]="item.title + ' ' + item.type + ' Details öffnen'"
+    tabIndex="-1"
+    class="overview-search-result-item"
+  >
+    <ng-container *ngTemplateOutlet="content"></ng-container>
+  </a>
+} @else {
+  <a
+    #externalLink
+    [href]="item.url.path"
+    target="_blank"
+    rel="noopener noreferrer"
+    [attr.aria-label]="'Details zu {{item.title}} {{item.type}} öffnen'"
+    tabIndex="-1"
+    class="overview-search-result-item"
+  >
+    <ng-container *ngTemplateOutlet="content"></ng-container>
+  </a>
+}
+<ng-template #content>
   <div class="overview-search-result-item__icon" *ngIf="!isMobile" [matTooltip]="item.type" [matTooltipPosition]="'right'">
     @switch (item.type) {
       @case ('Geodatensatz') {
@@ -41,32 +64,10 @@
       </ng-container>
     </div>
   </div>
-
-  <div class="overview-search-result-item__link__wrapper">
-    @if (item.url.isInternal) {
-      <a
-        #internalLink
-        mat-icon-button
-        [routerLink]="item.url.path"
-        [attr.aria-label]="item.title + ' ' + item.type + ' Details öffnen'"
-        tabIndex="-1"
-      >
-        <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
-      </a>
-    } @else {
-      <a
-        #externalLink
-        class="overview-search-result-item__link__wrapper__link"
-        mat-icon-button
-        [href]="item.url.path"
-        target="_blank"
-        rel="noopener noreferrer"
-        [attr.aria-label]="'Details zu {{item.title}} {{item.type}} öffnen'"
-        tabIndex="-1"
-      >
-        <mat-icon class="overview-search-result-item__link__wrapper__link__icon--external" svgIcon="ktzh_arrow_right"></mat-icon>
-      </a>
-    }
-  </div>
-</a>
+  <mat-icon
+    svgIcon="ktzh_arrow_right"
+    class="search-result-entry-map__icon"
+    [ngClass]="{'search-result-entry-map__icon--rotate': !item.url.isInternal}"
+  ></mat-icon>
+</ng-template>
 <mat-divider></mat-divider>
