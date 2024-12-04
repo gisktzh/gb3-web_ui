@@ -10,4 +10,5 @@ export enum MainPage {
   Embedded = 'e',
   Error = 'error',
   NotFound = 'not-found',
+  Apps = 'apps',
 }
