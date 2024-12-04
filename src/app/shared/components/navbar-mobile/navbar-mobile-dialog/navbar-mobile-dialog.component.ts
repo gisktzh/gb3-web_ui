@@ -5,6 +5,7 @@ import {Subscription, tap} from 'rxjs';
 import {MainPage} from 'src/app/shared/enums/main-page.enum';
 import {selectIsAuthenticated, selectUserName} from 'src/app/state/auth/reducers/auth-status.reducer';
 import {AuthStatusActions} from '../../../../state/auth/actions/auth-status.actions';
+import {ConfigService} from '../../../services/config.service';
 
 @Component({
   selector: 'navbar-mobile-dialog',
@@ -15,6 +16,7 @@ export class NavbarMobileDialogComponent implements OnInit, OnDestroy {
   protected readonly mainPageEnum = MainPage;
   public isAuthenticated: boolean = false;
   public userName?: string;
+  public isIntranetHost: boolean = false;
 
   private readonly subscriptions = new Subscription();
   private readonly userName$ = this.store.select(selectUserName);
@@ -23,7 +25,10 @@ export class NavbarMobileDialogComponent implements OnInit, OnDestroy {
   constructor(
     private readonly dialogRef: MatDialogRef<NavbarMobileDialogComponent>,
     private readonly store: Store,
-  ) {}
+    private readonly configService: ConfigService,
+  ) {
+    this.isIntranetHost = this.configService.isIntranetHost();
+  }
 
   public ngOnInit() {
     this.initSubscriptions();
