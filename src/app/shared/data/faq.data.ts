@@ -56,11 +56,11 @@ export const faqData: FaqCollection[] = [
         question: 'Wie verwende ich Zeichnen und Messen?',
         answer: 
           'Zeichnen und Messen stellt das erstellte Objekt (Punkt, Linie oder Fläche) direkt auf dem GIS-Browser dar.' +
-          'Das Messen ergänzt dynamisch Informationen wie z.B. Koordinate, Länge oder Fläche.' +
-          'Zeichnungen und Messungen lassen sich mittels Rechtsklick bearbeiten (u.a. das Einfügen von weiteren Stützpunkten oder Entfernen einzelner Objekte).' +
-          'Zeichnungen können zusätzlich in Farbe, Dicke und Deckkraft angepasst werden.' +
-          'Das Messen erlaubt die Eingabe einer gewünschten Länge einer Linie oder die Koordinaten eines Punktes.' +
-          'Zeichnungen können als GeoJSON- oder KML-Datei gespeichert und wieder importiert werden (Funktionen Zeichnung herunter-/hochladen).',
+          ' Das Messen ergänzt dynamisch Informationen wie z.B. Koordinate, Länge oder Fläche.' +
+          ' Zeichnungen und Messungen lassen sich mittels Rechtsklick bearbeiten (u.a. das Einfügen von weiteren Stützpunkten oder Entfernen einzelner Objekte).' +
+          ' Zeichnungen können zusätzlich in Farbe, Dicke und Deckkraft angepasst werden.' +
+          ' Das Messen erlaubt die Eingabe einer gewünschten Länge einer Linie oder die Koordinaten eines Punktes.' +
+          ' Zeichnungen können als GeoJSON- oder KML-Datei gespeichert und wieder importiert werden (Funktionen Zeichnung herunter-/hochladen).',
       },
       {
         uuid: 'd1177871-e8c8-49e2-b3f0-4ec7b45986a5',
@@ -72,12 +72,12 @@ export const faqData: FaqCollection[] = [
         question: 'Wie verwende ich einen Favoriten?',
         answer: 
           'Im neuen GIS-Browser können Kartenauswahl, Messungen und Zeichnungen als Favorit über den Stern in Aktive Karten gespeichert werden.' +
-          'Dazu muss vorangehend ein Konto erstellt werden.' +
-          'Das Favorisieren erlaubt personalisierte Karteneinstellungen auf Knopfdruck abzurufen.' +
-          'Favoriten können über das Teilen-Symbol als Link geteilt werden.' +
-          'Der generierte Link kann geladen werden und von einem anderen User aktiv als Favorit in seinem Profil hinzugefügt werden.  ' +
-          'Der geteilte Link kann ohne Konto als Lesezeichen (Bookmark) im Browser hinzugefügt werden.' +
-          'Das Speichern von importierten Kartendiensten ist nicht unterstützt.',
+          ' Dazu muss vorangehend ein Konto erstellt werden.' +
+          ' Das Favorisieren erlaubt personalisierte Karteneinstellungen auf Knopfdruck abzurufen.' +
+          ' Favoriten können über das Teilen-Symbol als Link geteilt werden.' +
+          ' Der generierte Link kann geladen werden und von einem anderen User aktiv als Favorit in seinem Profil hinzugefügt werden.  ' +
+          ' Der geteilte Link kann ohne Konto als Lesezeichen (Bookmark) im Browser hinzugefügt werden.' +
+          ' Das Speichern von importierten Kartendiensten ist nicht unterstützt.',
       },
       {
         uuid: '23b2da02-25b5-4303-8ba2-cb65e11f1477',
@@ -91,7 +91,7 @@ export const faqData: FaqCollection[] = [
         question: 'Wo finde ich meine Profileinstellungen?',
         answer: 
           'Der neue GIS-Browser erlaubt aktuell keinen direkten Absprung zu den Einstellungen.' +
-          'Einstellungen zu Gruppen, Username und Passwort können hier vorgenommen werden: https://maps.zh.ch/groups_users ',
+          ' Einstellungen zu Gruppen, Username und Passwort können hier vorgenommen werden: https://maps.zh.ch/groups_users ',
       },
       {
         uuid: '15b45f71-157e-4baa-8301-0ba3d141bc59',
