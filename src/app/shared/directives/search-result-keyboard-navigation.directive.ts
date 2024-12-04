@@ -45,17 +45,24 @@ export class SearchResultKeyboardNavigationDirective implements OnInit, OnDestro
   @HostListener('keydown.tab', ['$event'])
   @HostListener('keydown.shift.tab', ['$event'])
   public handleTab(event: KeyboardEvent) {
+    // If there is no selected result, we don't need to do anything
+    if (this.selectedSearchResultIndex < 0) {
+      return;
+    }
     this.selectedResult?.removeTemporaryMap();
     const direction = event.shiftKey ? -1 : 1;
+    // Find the next focusable element (first of group) and set focus on it
     for (let i = this.selectedSearchResultIndex + direction; i >= 0 && i < this.allSearchResults.length; i += direction) {
       const item = this.allSearchResults[i] as SearchResultIdentifierDirective;
       if (item.isFocusable) {
         event.preventDefault();
         this.selectedSearchResultIndex = i;
         this.setFocusOnSelectedElement();
-        break;
+        return;
       }
     }
+    // If there was no focusable element (move back from first group or forward from last group), we reset the index
+    this.selectedSearchResultIndex = -1;
   }
 
   @HostListener('keydown.enter', ['$event'])

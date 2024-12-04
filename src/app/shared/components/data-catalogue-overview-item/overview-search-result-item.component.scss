@@ -8,6 +8,8 @@
   padding: 12px;
   align-items: center;
   gap: 12px;
+  text-decoration: none;
+  color: unset;
 
   .overview-search-result-item__icon {
     flex-grow: 0;
@@ -76,19 +78,17 @@
       }
     }
   }
+}
 
-  .overview-search-result-item__link__wrapper {
-    flex-grow: 0;
-    flex-shrink: 0;
-    background-color: ktzh-variables.$zh-light-grey;
-    border-radius: 50%;
+.search-result-entry-map__icon {
+  background-color: rgb(240, 240, 240);
+  min-width: 24px;
+  min-height: 24px;
+  padding: 12px;
+  border-radius: 50%;
+}
 
-    .overview-search-result-item__link__wrapper__link {
-      .overview-search-result-item__link__wrapper__link__icon {
-        &--external {
-          rotate: -45deg;
-        }
-      }
-    }
-  }
+.search-result-entry-map__icon--rotate {
+  rotate: -45deg;
+  color: #00407c;
 }
