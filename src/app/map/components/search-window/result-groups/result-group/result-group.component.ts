@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
@@ -12,6 +12,8 @@ import {MapConfigState} from '../../../../../state/map/states/map-config.state';
 import {ActiveMapItem} from '../../../../models/active-map-item.model';
 import {MapConstants} from '../../../../../shared/constants/map.constants';
 import {SearchActions} from '../../../../../state/app/actions/search.actions';
+import {SearchResultIdentifierDirective} from '../../../../../shared/directives/search-result-identifier.directive';
+import {Gb2ExitButtonComponent} from '../../../../../shared/components/external-link-button/gb2-exit-button.component';
 
 @Component({
   selector: 'result-group',
@@ -19,6 +21,8 @@ import {SearchActions} from '../../../../../state/app/actions/search.actions';
   styleUrls: ['./result-group.component.scss'],
 })
 export class ResultGroupComponent implements OnInit, OnDestroy {
+  @ViewChildren(SearchResultIdentifierDirective) public readonly searchResultElement!: QueryList<SearchResultIdentifierDirective>;
+  @ViewChildren(Gb2ExitButtonComponent) public readonly gb2ExitButtons!: QueryList<Gb2ExitButtonComponent>;
   @Input() public searchResults: GeometrySearchApiResultMatch[] = [];
   @Input() public filteredMaps: Map[] = [];
   @Input() public header: string = '';
@@ -47,6 +51,20 @@ export class ResultGroupComponent implements OnInit, OnDestroy {
     this.store.dispatch(SearchActions.selectMapSearchResult({searchResult}));
   }
 
+  public delegateClickToChild(map: Map) {
+    if (map.gb2Url) {
+      const index = this.filteredMaps.indexOf(map);
+      const searchResult = this.searchResultElement.toArray()[index];
+      if (!searchResult) {
+        return;
+      }
+      const url = map.gb2Url;
+      const gb2Button = this.gb2ExitButtons.find((gb2ExitButton) => gb2ExitButton.url.includes(url));
+      gb2Button?.anchor._elementRef.nativeElement.click();
+    } else {
+      this.addActiveMap(map);
+    }
+  }
   public addActiveMap(activeMap: Map, isTemporary: boolean = false) {
     if (!activeMap.gb2Url) {
       this.addActiveItem(

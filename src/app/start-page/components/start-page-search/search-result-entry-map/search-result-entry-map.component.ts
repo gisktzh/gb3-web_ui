@@ -1,10 +1,11 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {Map} from '../../../../shared/interfaces/topic.interface';
 import {MainPage} from '../../../../shared/enums/main-page.enum';
 import {MapConfigState} from '../../../../state/map/states/map-config.state';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {selectMapConfigState} from '../../../../state/map/reducers/map-config.reducer';
+import {SearchResultIdentifierDirective} from '../../../../shared/directives/search-result-identifier.directive';
 
 @Component({
   selector: 'search-result-entry-map',
@@ -13,6 +14,7 @@ import {selectMapConfigState} from '../../../../state/map/reducers/map-config.re
 })
 export class SearchResultEntryMapComponent implements OnInit, OnDestroy {
   @Input() public filteredMaps: Map[] = [];
+  @ViewChildren(SearchResultIdentifierDirective) public readonly searchResultElement!: QueryList<SearchResultIdentifierDirective>;
 
   public mapConfigState?: MapConfigState;
   protected readonly mainPageEnum = MainPage;

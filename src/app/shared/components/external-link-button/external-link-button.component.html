@@ -1,4 +1,5 @@
 <a
+  #anchor
   [href]="url"
   class="external-link-button"
   [ngClass]="{'external-link-button--small': size === 'small', 'external-link-button--highlighted': highlighted}"
@@ -10,6 +11,7 @@
   target="_blank"
   clickOnSpaceBar
   [attr.aria-label]="toolTip"
+  [tabIndex]="disableTabFocus ? -1 : 0"
 >
-  <mat-icon svgIcon="ktzh_arrow_right"></mat-icon>
+  <mat-icon svgIcon="ktzh_arrow_right" class="external-link-button__icon"></mat-icon>
 </a>

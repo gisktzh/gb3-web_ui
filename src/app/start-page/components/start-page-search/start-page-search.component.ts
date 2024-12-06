@@ -1,7 +1,7 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, QueryList, ViewChild} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
-import {Subscription, tap} from 'rxjs';
+import {combineLatestWith, Subscription, tap} from 'rxjs';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {SearchFilterDialogComponent} from '../../../shared/components/search-filter-dialog/search-filter-dialog.component';
@@ -10,16 +10,24 @@ import {ConfigService} from '../../../shared/services/config.service';
 import {SearchActions} from '../../../state/app/actions/search.actions';
 import {selectTerm} from '../../../state/app/reducers/search.reducer';
 import {selectActiveSearchFilterValues} from '../../../state/data-catalogue/selectors/active-search-filters.selector';
+import {SearchComponent} from '../../../shared/components/search/search.component';
+import {SearchResultGroupsComponent} from './search-result-groups/search-result-groups.component';
+import {SearchResultIdentifierDirective} from '../../../shared/directives/search-result-identifier.directive';
 
 @Component({
   selector: 'start-page-search',
   templateUrl: './start-page-search.component.html',
   styleUrls: ['./start-page-search.component.scss'],
 })
-export class StartPageSearchComponent implements OnInit, OnDestroy {
+export class StartPageSearchComponent implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChild(SearchComponent) public readonly searchComponent!: SearchComponent;
+  @ViewChild(SearchResultGroupsComponent) private readonly searchResultGroupsComponent?: SearchResultGroupsComponent;
+
   public searchTerms: string[] = [];
   public activeSearchFilterValues: {groupLabel: string; filterLabel: string}[] = [];
   public screenMode: ScreenMode = 'regular';
+
+  public allResults: SearchResultIdentifierDirective[] = [];
 
   private readonly searchConfig = this.configService.searchConfig.startPage;
   private readonly screenMode$ = this.store.select(selectScreenMode);
@@ -31,6 +39,7 @@ export class StartPageSearchComponent implements OnInit, OnDestroy {
     private readonly store: Store,
     private readonly configService: ConfigService,
     private readonly dialogService: MatDialog,
+    private readonly cdr: ChangeDetectorRef,
   ) {}
 
   public ngOnDestroy() {
@@ -41,6 +50,11 @@ export class StartPageSearchComponent implements OnInit, OnDestroy {
   public ngOnInit() {
     this.store.dispatch(SearchActions.setFilterGroups({filterGroups: this.searchConfig.filterGroups}));
     this.initSubscriptions();
+  }
+
+  public ngAfterViewInit() {
+    // Necessary because we are passing the searchComponent to the searchResultKeyboardNavigation directive
+    this.cdr.detectChanges();
   }
 
   public searchForTerm(term: string) {
@@ -62,6 +76,28 @@ export class StartPageSearchComponent implements OnInit, OnDestroy {
     });
   }
 
+  private addSubscriptions() {
+    setTimeout(() => {
+      if (this.searchResultGroupsComponent instanceof SearchResultGroupsComponent) {
+        this.subscriptions.add(
+          this.searchResultGroupsComponent.overviewSearchResultItemComponents.changes
+            .pipe(
+              combineLatestWith(this.searchResultGroupsComponent.searchResultEntryMapComponents.searchResultElement.changes),
+              tap(([overviewSearchResultItemComponents, searchResultElement]) => {
+                const resultsFromOverviewSearch = (
+                  overviewSearchResultItemComponents as QueryList<SearchResultIdentifierDirective>
+                ).toArray();
+                const resultsFromMaps = (searchResultElement as QueryList<SearchResultIdentifierDirective>).toArray();
+                this.allResults = resultsFromMaps.concat(resultsFromOverviewSearch);
+                this.cdr.detectChanges();
+              }),
+            )
+            .subscribe(),
+        );
+      }
+    });
+  }
+
   private initSubscriptions() {
     this.subscriptions.add(
       this.searchTerm$
@@ -71,6 +107,7 @@ export class StartPageSearchComponent implements OnInit, OnDestroy {
               this.searchTerms = [];
             } else {
               this.searchTerms = searchTerm.split(' ');
+              this.addSubscriptions();
             }
           }),
         )
