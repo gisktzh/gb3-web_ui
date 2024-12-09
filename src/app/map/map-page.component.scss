@@ -48,6 +48,7 @@
     bottom: calc(12px + $minimal-bottom-height);
     right: 12px;
     pointer-events: none;
+    z-index: z-index-variables.$map-ui-element;
   }
 
   .map-container__overlay {
@@ -55,6 +56,7 @@
     top: 0;
     left: 0;
     height: 100%;
+    z-index: z-index-variables.$map-overlay;
 
     &--right {
       left: unset;
@@ -71,6 +73,7 @@
     bottom: calc(12px + $minimal-bottom-height);
     width: map-layout-variables.$map-overlay-width;
     pointer-events: none;
+    z-index: z-index-variables.$map-ui-element;
 
     .map-container__all-map-items-container__inner-container {
       display: flex;
@@ -118,6 +121,7 @@
     height: 48px;
     width: map-layout-variables.$legend-button-width;
     background-color: ktzh-variables.$zh-background-color;
+    z-index: z-index-variables.$map-ui-element;
   }
 
   .map-container__map-attribute-filter {
@@ -144,6 +148,7 @@
     right: 12px;
     bottom: 85px;
     pointer-events: none;
+    z-index: z-index-variables.$map-ui-element;
 
     &--mobile {
       bottom: 12px + $minimal-bottom-height;
@@ -156,6 +161,7 @@
     position: absolute;
     top: 88px; // calculated from figma (86px) and adjusted for the problematic height calculation of the search bar
     right: 12px;
+    z-index: z-index-variables.$map-ui-element;
 
     &--mobile {
       left: 12px;
@@ -168,6 +174,7 @@
     position: absolute;
     bottom: 100px;
     background-color: ktzh-variables.$zh-background-color;
+    z-index: z-index-variables.$map-ui-element;
 
     &--right {
       right: 12px;
@@ -185,11 +192,6 @@
     bottom: 0;
     left: 50%;
     transform: translate(-50%, 0);
-  }
-
-  .map-container__map {
-    z-index: z-index-variables.$map-container;
-    position: relative;
   }
 }
 
