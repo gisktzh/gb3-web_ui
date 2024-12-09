@@ -36,6 +36,7 @@ import {LayerTooltipPipe} from './pipes/layer-tooltip.pipe';
 import {Gb2ExitButtonComponent} from './components/external-link-button/gb2-exit-button.component';
 import {TypedTourAnchorDirective} from './directives/typed-tour-anchor.directive';
 import {ClickOnSpaceBarDirective} from './directives/click-on-spacebar.directive';
+import {FeatureFlagDirective} from './directives/feature-flag.directive';
 
 @NgModule({
   declarations: [
@@ -72,7 +73,7 @@ import {ClickOnSpaceBarDirective} from './directives/click-on-spacebar.directive
     Gb2ExitButtonComponent,
     TypedTourAnchorDirective,
   ],
-  imports: [MaterialModule, RouterModule, CommonModule, ResizableModule, ClickOnSpaceBarDirective, NgOptimizedImage],
+  imports: [MaterialModule, RouterModule, CommonModule, ResizableModule, ClickOnSpaceBarDirective, NgOptimizedImage, FeatureFlagDirective],
   exports: [
     MaterialModule,
     ResizableModule,

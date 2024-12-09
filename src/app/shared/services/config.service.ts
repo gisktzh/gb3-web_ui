@@ -138,10 +138,6 @@ export class ConfigService {
     return this.searchIndexConfig.filter((searchIndex) => searchIndexTypes.includes(searchIndex.indexType));
   }
 
-  public isIntranetHost(): boolean {
-    return this.document.location.host.includes('ktzh');
-  }
-
   /**
    * Extracts the hostname from Document.location, also removing any port mappings.
    *
