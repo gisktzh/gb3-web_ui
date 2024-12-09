@@ -48,7 +48,9 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       clientId: 'gb3',
       issuer: 'https://testmaps.kt.ktzh.ch/',
     },
-    featureFlags: {},
+    featureFlags: {
+      koPlaNavItem: true,
+    },
     overrides: {
       overrideWmsUrl: 'http://testwms.kt.ktzh.ch',
     },

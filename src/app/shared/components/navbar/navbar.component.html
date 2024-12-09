@@ -51,19 +51,18 @@
       <mat-icon>launch</mat-icon>
       Geodatenshop
     </a>
-    @if (isIntranetHost) {
-      <a
-        class="navbar__item"
-        href="https://gdi.zh.ch/portal/home/"
-        mat-button
-        target="_blank"
-        rel="noopener noreferrer"
-        matTooltip="Kollaborationsplattform"
-      >
-        <mat-icon>launch</mat-icon>
-        KoPla
-      </a>
-    }
+    <a
+      class="navbar__item"
+      href="https://gdi.zh.ch/portal/home/"
+      mat-button
+      target="_blank"
+      rel="noopener noreferrer"
+      matTooltip="Kollaborationsplattform"
+      *featureFlag="'koPlaNavItem'"
+    >
+      <mat-icon>launch</mat-icon>
+      KoPla
+    </a>
     <mat-divider class="navbar__divider" vertical></mat-divider>
     @if (!isAuthenticated) {
       <button (click)="startLogin()" class="navbar__item navbar__item--button" mat-button>
