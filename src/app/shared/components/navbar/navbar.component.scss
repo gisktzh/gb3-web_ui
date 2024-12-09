@@ -11,7 +11,7 @@
     flex: 1 1 auto;
   }
 
-  .navbar__menu__text {
+  .navbar__menu-text {
     font-family: ktzh-variables.$zh-font-family;
     font-size: 16px;
     font-weight: 400;
@@ -38,6 +38,12 @@
 
     &.navbar__item--button {
       font-family: ktzh-variables.$zh-font-family;
+    }
+
+    .navbar__item__arrow-icon {
+      order: 2;
+      padding-left: 8px;
+      margin-right: 0px;
     }
 
     .navbar__logo {

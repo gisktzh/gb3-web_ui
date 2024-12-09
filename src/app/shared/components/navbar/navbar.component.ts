@@ -33,7 +33,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly store: Store,
-    public dialog: MatDialog,
+    private readonly dialog: MatDialog,
   ) {}
 
   public ngOnInit() {

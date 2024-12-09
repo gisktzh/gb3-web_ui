@@ -1,7 +1,7 @@
 <mat-toolbar aria-label="Hauptnavigation" class="navbar" color="primary" role="navigation">
   <span class="navbar__item" role="banner">
     <img
-      [ngStyle]="{display: !this.isSimplifiedPage ? 'none' : 'inline'}"
+      [ngStyle]="{display: !isSimplifiedPage ? 'none' : 'inline'}"
       alt="KTZH Logo"
       class="navbar__logo"
       ngSrc="assets/images/ktzh_inverted.svg"
@@ -52,14 +52,15 @@
       Geodatenshop
     </a>
     <mat-divider class="navbar__divider" vertical></mat-divider>
-    @if (!this.isAuthenticated) {
-      <button (click)="this.startLogin()" class="navbar__item navbar__item--button" mat-button>
+    @if (!isAuthenticated) {
+      <button (click)="startLogin()" class="navbar__item navbar__item--button" mat-button>
         <mat-icon svgIcon="ktzh_user"></mat-icon>Login
       </button>
     } @else {
-      <button [matMenuTriggerFor]="userMenu" class="navbar__item navbar__item--button" mat-button>
+      <button [matMenuTriggerFor]="userMenu" class="navbar__item navbar__item--button" mat-button #trigger="matMenuTrigger">
         <mat-icon svgIcon="ktzh_user"></mat-icon>
-        {{ this.userName }}
+        {{ userName }}
+        <mat-icon [fontIcon]="trigger.menuOpen ? 'arrow_drop_up' : 'arrow_drop_down'" class="navbar__item__arrow-icon"></mat-icon>
       </button>
 
       <mat-menu #userMenu="matMenu" style="padding-left: 12px">
@@ -68,15 +69,15 @@
           <span>Profil</span>
         </a>
         <mat-divider></mat-divider>
-        <button (click)="this.logout()" mat-menu-item>
+        <button (click)="logout()" mat-menu-item>
           <mat-icon>logout</mat-icon>
           <span>Logout</span>
         </button>
       </mat-menu>
     }
   } @else {
-    <button class="navbar__menu" mat-button (click)="showMenu()">
-      <span class="navbar__menu__text">Menu</span>
+    <button mat-button (click)="showMenu()">
+      <span class="navbar__menu-text">Menu</span>
 
       <mat-icon svgIcon="ktzh_menu_mobile" iconPositionEnd>launch</mat-icon>
     </button>
