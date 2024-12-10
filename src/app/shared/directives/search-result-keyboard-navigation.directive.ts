@@ -1,4 +1,4 @@
-import {Directive, HostListener, Input, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Directive, HostListener, Input, OnDestroy, OnInit} from '@angular/core';
 import {SearchResultIdentifierDirective} from './search-result-identifier.directive';
 import {Subscription, tap} from 'rxjs';
 import {selectTerm} from '../../state/app/reducers/search.reducer';
@@ -9,7 +9,7 @@ import {SearchComponent} from '../components/search/search.component';
   selector: '[searchResultKeyboardNavigation]',
   standalone: true,
 })
-export class SearchResultKeyboardNavigationDirective implements OnInit, OnDestroy {
+export class SearchResultKeyboardNavigationDirective implements OnInit, OnDestroy, AfterViewInit {
   @Input() public allSearchResults: SearchResultIdentifierDirective[] = [];
   @Input() public searchComponent?: SearchComponent;
   private term: string = '';
@@ -23,7 +23,10 @@ export class SearchResultKeyboardNavigationDirective implements OnInit, OnDestro
   );
   private readonly subscriptions: Subscription = new Subscription();
 
-  constructor(private readonly store: Store) {}
+  constructor(
+    private readonly store: Store,
+    private readonly cdr: ChangeDetectorRef,
+  ) {}
 
   public ngOnInit() {
     this.subscriptions.add(this.term$.subscribe());
@@ -31,6 +34,15 @@ export class SearchResultKeyboardNavigationDirective implements OnInit, OnDestro
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
+  }
+
+  public ngAfterViewInit() {
+    this.cdr.detectChanges();
+    if (this.searchComponent) {
+      this.searchComponent.inputRef.nativeElement.onfocus = () => {
+        this.selectedSearchResultIndex = -1;
+      };
+    }
   }
   @HostListener('keydown.arrowdown', ['$event'])
   public handleArrowDown(event: KeyboardEvent) {

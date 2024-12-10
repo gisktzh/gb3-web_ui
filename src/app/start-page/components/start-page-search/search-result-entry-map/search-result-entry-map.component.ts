@@ -1,11 +1,10 @@
-import {Component, Input, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Map} from '../../../../shared/interfaces/topic.interface';
 import {MainPage} from '../../../../shared/enums/main-page.enum';
 import {MapConfigState} from '../../../../state/map/states/map-config.state';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {selectMapConfigState} from '../../../../state/map/reducers/map-config.reducer';
-import {SearchResultIdentifierDirective} from '../../../../shared/directives/search-result-identifier.directive';
 
 @Component({
   selector: 'search-result-entry-map',
@@ -14,8 +13,9 @@ import {SearchResultIdentifierDirective} from '../../../../shared/directives/sea
   standalone: false,
 })
 export class SearchResultEntryMapComponent implements OnInit, OnDestroy {
-  @Input() public filteredMaps: Map[] = [];
-  @ViewChildren(SearchResultIdentifierDirective) public readonly searchResultElement!: QueryList<SearchResultIdentifierDirective>;
+  @Input() public map!: Map;
+  @ViewChild('externalLink') public readonly externalLink?: ElementRef;
+  @ViewChild('internalLink') public readonly internalLink?: ElementRef;
 
   public mapConfigState?: MapConfigState;
   protected readonly mainPageEnum = MainPage;
@@ -30,5 +30,17 @@ export class SearchResultEntryMapComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
+  }
+
+  @HostListener('click', ['$event'])
+  public onClick(event: MouseEvent) {
+    if (event.isTrusted) {
+      return;
+    }
+    if (this.map.gb2Url) {
+      this.internalLink?.nativeElement.click();
+    } else {
+      this.externalLink?.nativeElement.click();
+    }
   }
 }

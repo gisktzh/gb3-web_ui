@@ -1,7 +1,7 @@
 import {AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, QueryList, ViewChild} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
-import {combineLatestWith, Subscription, tap} from 'rxjs';
+import {combineLatestWith, filter, Subscription, switchMap, tap} from 'rxjs';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {SearchFilterDialogComponent} from '../../../shared/components/search-filter-dialog/search-filter-dialog.component';
@@ -13,6 +13,12 @@ import {selectActiveSearchFilterValues} from '../../../state/data-catalogue/sele
 import {SearchComponent} from '../../../shared/components/search/search.component';
 import {SearchResultGroupsComponent} from './search-result-groups/search-result-groups.component';
 import {SearchResultIdentifierDirective} from '../../../shared/directives/search-result-identifier.directive';
+import {
+  selectFilteredFaqItems,
+  selectFilteredLayerCatalogMaps,
+  selectFilteredMetadataItems,
+  selectFilteredUsefulLinks,
+} from '../../../state/app/selectors/search-results.selector';
 
 @Component({
   selector: 'start-page-search',
@@ -27,7 +33,6 @@ export class StartPageSearchComponent implements OnInit, OnDestroy, AfterViewIni
   public searchTerms: string[] = [];
   public activeSearchFilterValues: {groupLabel: string; filterLabel: string}[] = [];
   public screenMode: ScreenMode = 'regular';
-
   public allResults: SearchResultIdentifierDirective[] = [];
 
   private readonly searchConfig = this.configService.searchConfig.startPage;
@@ -76,29 +81,6 @@ export class StartPageSearchComponent implements OnInit, OnDestroy, AfterViewIni
       restoreFocus: false,
     });
   }
-
-  private addSubscriptions() {
-    setTimeout(() => {
-      if (this.searchResultGroupsComponent instanceof SearchResultGroupsComponent) {
-        this.subscriptions.add(
-          this.searchResultGroupsComponent.overviewSearchResultItemComponents.changes
-            .pipe(
-              combineLatestWith(this.searchResultGroupsComponent.searchResultEntryMapComponents.searchResultElement.changes),
-              tap(([overviewSearchResultItemComponents, searchResultElement]) => {
-                const resultsFromOverviewSearch = (
-                  overviewSearchResultItemComponents as QueryList<SearchResultIdentifierDirective>
-                ).toArray();
-                const resultsFromMaps = (searchResultElement as QueryList<SearchResultIdentifierDirective>).toArray();
-                this.allResults = resultsFromMaps.concat(resultsFromOverviewSearch);
-                this.cdr.detectChanges();
-              }),
-            )
-            .subscribe(),
-        );
-      }
-    });
-  }
-
   private initSubscriptions() {
     this.subscriptions.add(
       this.searchTerm$
@@ -108,8 +90,20 @@ export class StartPageSearchComponent implements OnInit, OnDestroy, AfterViewIni
               this.searchTerms = [];
             } else {
               this.searchTerms = searchTerm.split(' ');
-              this.addSubscriptions();
             }
+          }),
+          combineLatestWith(
+            this.store.select(selectFilteredFaqItems),
+            this.store.select(selectFilteredUsefulLinks),
+            this.store.select(selectFilteredMetadataItems),
+            this.store.select(selectFilteredLayerCatalogMaps),
+          ),
+          filter(() => this.searchResultGroupsComponent !== undefined),
+          switchMap(() => this.searchResultGroupsComponent!.overviewSearchResultItemComponents.changes),
+          tap((overviewChanges) => {
+            const resultsFromOverviewSearch = (overviewChanges as QueryList<SearchResultIdentifierDirective>).toArray();
+            this.allResults = [...resultsFromOverviewSearch];
+            this.cdr.detectChanges(); // Trigger change detection to reflect updates in the template
           }),
         )
         .subscribe(),

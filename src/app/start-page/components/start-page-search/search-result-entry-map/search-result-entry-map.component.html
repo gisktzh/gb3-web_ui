@@ -1,39 +1,33 @@
-@for (map of filteredMaps; track map; let first = $first) {
-  @if (map.gb2Url) {
-    <a
-      class="search-result-entry-map"
-      [tabIndex]="first ? 0 : -1"
-      searchResultIdentifier
-      [text]="map.title"
-      [isFocusable]="first"
-      [href]="map.gb2Url | appendMapConfigurationToUrl: mapConfigState"
-      rel="noopener noreferrer"
-      target="_blank"
-    >
-      <ng-container *ngTemplateOutlet="linkContent"></ng-container>
-    </a>
-  } @else {
-    <a
-      class="search-result-entry-map"
-      [tabIndex]="first ? 0 : -1"
-      searchResultIdentifier
-      [text]="map.title"
-      [isFocusable]="first"
-      [queryParams]="{initialMapIds: map.id}"
-      [routerLink]="['/', mainPageEnum.Maps]"
-      data-test-id="open-active-map"
-    >
-      <ng-container *ngTemplateOutlet="linkContent"></ng-container>
-    </a>
-  }
-  <ng-template #linkContent>
-    <img [alt]="map.title" [ngSrc]="map.icon" class="search-result-entry-map__image" width="44" height="44" />
-    <p class="search-result-entry-map__title" showTooltipIfTruncated matTooltip="{{ map.title }}">{{ map.title }}</p>
-    <mat-icon
-      svgIcon="ktzh_arrow_right"
-      class="search-result-entry-map__icon"
-      [ngClass]="{'search-result-entry-map__icon--rotate': map.gb2Url}"
-    ></mat-icon>
-  </ng-template>
-  <mat-divider></mat-divider>
+@if (map.gb2Url) {
+  <a
+    #internalLink
+    class="search-result-entry-map"
+    tabIndex="-1"
+    [href]="map.gb2Url | appendMapConfigurationToUrl: mapConfigState"
+    rel="noopener noreferrer"
+    target="_blank"
+  >
+    <ng-container *ngTemplateOutlet="linkContent"></ng-container>
+  </a>
+} @else {
+  <a
+    #externalLink
+    class="search-result-entry-map"
+    tabIndex="-1"
+    [queryParams]="{initialMapIds: map.id}"
+    [routerLink]="['/', mainPageEnum.Maps]"
+    data-test-id="open-active-map"
+  >
+    <ng-container *ngTemplateOutlet="linkContent"></ng-container>
+  </a>
 }
+<ng-template #linkContent>
+  <img [alt]="map.title" [ngSrc]="map.icon" class="search-result-entry-map__image" width="44" height="44" />
+  <p class="search-result-entry-map__title" showTooltipIfTruncated matTooltip="{{ map.title }}">{{ map.title }}</p>
+  <mat-icon
+    svgIcon="ktzh_arrow_right"
+    class="search-result-entry-map__icon"
+    [ngClass]="{'search-result-entry-map__icon--rotate': map.gb2Url}"
+  ></mat-icon>
+</ng-template>
+<mat-divider></mat-divider>
