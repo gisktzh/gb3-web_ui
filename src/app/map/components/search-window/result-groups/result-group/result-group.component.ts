@@ -33,6 +33,8 @@ export class ResultGroupComponent implements OnInit, OnDestroy {
   public screenMode: ScreenMode = 'regular';
   public mapConfigState?: MapConfigState;
   public readonly hoverDelay = MapConstants.TEMPORARY_PREVIEW_DELAY;
+  public readonly toolTip: string =
+    'Diese Karte ist noch nicht im neuen GIS-Browser verfügbar. Öffnen Sie die Karte im alten GIS-Browser mit diesem Link.';
 
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly mapConfigState$ = this.store.select(selectMapConfigState);
@@ -50,21 +52,6 @@ export class ResultGroupComponent implements OnInit, OnDestroy {
 
   public selectSearchResult(searchResult: GeometrySearchApiResultMatch) {
     this.store.dispatch(SearchActions.selectMapSearchResult({searchResult}));
-  }
-
-  public delegateClickToChild(map: Map) {
-    if (map.gb2Url) {
-      const index = this.filteredMaps.indexOf(map);
-      const searchResult = this.searchResultElement.toArray()[index];
-      if (!searchResult) {
-        return;
-      }
-      const url = map.gb2Url;
-      const gb2Button = this.gb2ExitButtons.find((gb2ExitButton) => gb2ExitButton.url.includes(url));
-      gb2Button?.anchor._elementRef.nativeElement.click();
-    } else {
-      this.addActiveMap(map);
-    }
   }
   public addActiveMap(activeMap: Map, isTemporary: boolean = false) {
     if (!activeMap.gb2Url) {

@@ -21,6 +21,8 @@ export class SearchResultEntryMapComponent implements OnInit, OnDestroy {
   protected readonly mainPageEnum = MainPage;
   private readonly mapConfigState$ = this.store.select(selectMapConfigState);
   private readonly subscriptions: Subscription = new Subscription();
+  public readonly toolTip: string =
+    'Diese Karte ist noch nicht im neuen GIS-Browser verfügbar. Öffnen Sie die Karte im alten GIS-Browser mit diesem Link.';
 
   constructor(private readonly store: Store) {}
 
@@ -38,9 +40,9 @@ export class SearchResultEntryMapComponent implements OnInit, OnDestroy {
       return;
     }
     if (this.map.gb2Url) {
-      this.internalLink?.nativeElement.click();
-    } else {
       this.externalLink?.nativeElement.click();
+    } else {
+      this.internalLink?.nativeElement.click();
     }
   }
 }

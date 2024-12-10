@@ -1,22 +1,25 @@
 @if (map.gb2Url) {
   <a
-    #internalLink
+    #externalLink
     class="search-result-entry-map"
     tabIndex="-1"
     [href]="map.gb2Url | appendMapConfigurationToUrl: mapConfigState"
     rel="noopener noreferrer"
     target="_blank"
+    [attr.aria-label]="'Karte ' + map.title + ' öffnen.' + toolTip"
+    [matTooltip]="map.gb2Url ? toolTip : ''"
   >
     <ng-container *ngTemplateOutlet="linkContent"></ng-container>
   </a>
 } @else {
   <a
-    #externalLink
+    #internalLink
     class="search-result-entry-map"
     tabIndex="-1"
     [queryParams]="{initialMapIds: map.id}"
     [routerLink]="['/', mainPageEnum.Maps]"
     data-test-id="open-active-map"
+    [attr.aria-label]="'Karte ' + map.title + ' öffnen.'"
   >
     <ng-container *ngTemplateOutlet="linkContent"></ng-container>
   </a>

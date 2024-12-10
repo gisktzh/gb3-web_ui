@@ -2,7 +2,7 @@
   <a
     #internalLink
     [routerLink]="item.url.path"
-    [attr.aria-label]="item.title + ' ' + item.type + ' Details öffnen'"
+    [attr.aria-label]="'Details zu' + item.title + ' ' + item.type + ' öffnen.'"
     tabIndex="-1"
     class="overview-search-result-item"
   >
@@ -14,7 +14,7 @@
     [href]="item.url.path"
     target="_blank"
     rel="noopener noreferrer"
-    [attr.aria-label]="'Details zu {{item.title}} {{item.type}} öffnen'"
+    [attr.aria-label]="'Details zu' + item.title + ' ' + item.type + ' öffnen.'"
     tabIndex="-1"
     class="overview-search-result-item"
   >
