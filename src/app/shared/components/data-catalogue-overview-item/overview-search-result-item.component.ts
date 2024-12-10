@@ -35,7 +35,6 @@ import {SearchResultIdentifierDirective} from '../../directives/search-result-id
 export class OverviewSearchResultItemComponent implements OnInit, OnDestroy {
   @ViewChild('externalLink') public readonly externalLink?: ElementRef;
   @ViewChild('internalLink') public readonly internalLink?: ElementRef;
-  @ViewChild(SearchResultIdentifierDirective) public readonly searchResultElement!: SearchResultIdentifierDirective;
   @Input() public item!: OverviewSearchResultDisplayItem;
   public isMobile: boolean = false;
 

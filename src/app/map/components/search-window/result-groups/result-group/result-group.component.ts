@@ -13,7 +13,6 @@ import {ActiveMapItem} from '../../../../models/active-map-item.model';
 import {MapConstants} from '../../../../../shared/constants/map.constants';
 import {SearchActions} from '../../../../../state/app/actions/search.actions';
 import {SearchResultIdentifierDirective} from '../../../../../shared/directives/search-result-identifier.directive';
-import {Gb2ExitButtonComponent} from '../../../../../shared/components/external-link-button/gb2-exit-button.component';
 
 @Component({
   selector: 'result-group',
@@ -22,8 +21,7 @@ import {Gb2ExitButtonComponent} from '../../../../../shared/components/external-
   standalone: false,
 })
 export class ResultGroupComponent implements OnInit, OnDestroy {
-  @ViewChildren(SearchResultIdentifierDirective) public readonly searchResultElement!: QueryList<SearchResultIdentifierDirective>;
-  @ViewChildren(Gb2ExitButtonComponent) public readonly gb2ExitButtons!: QueryList<Gb2ExitButtonComponent>;
+  @ViewChildren(SearchResultIdentifierDirective) public readonly searchResultElements!: QueryList<SearchResultIdentifierDirective>;
   @Input() public searchResults: GeometrySearchApiResultMatch[] = [];
   @Input() public filteredMaps: Map[] = [];
   @Input() public header: string = '';

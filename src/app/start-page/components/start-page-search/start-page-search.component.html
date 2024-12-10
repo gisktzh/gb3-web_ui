@@ -13,23 +13,19 @@
     ></search>
   </div>
 
-  <div
-    class="start-page-search__results"
-    *ngIf="searchTerms.length > 0"
-    [ngClass]="{'start-page-search__results--mobile': screenMode === 'mobile'}"
-  >
-    <div>
-      <mat-chip-row
-        *ngFor="let activeFilterValue of activeSearchFilterValues"
-        (removed)="deactivateFilter(activeFilterValue.groupLabel, activeFilterValue.filterLabel)"
-      >
-        {{ activeFilterValue.filterLabel }}
-        <button matChipRemove>
-          <mat-icon>cancel</mat-icon>
-        </button>
-      </mat-chip-row>
+  @if (searchTerms.length > 0) {
+    <div class="start-page-search__results" [ngClass]="{'start-page-search__results--mobile': screenMode === 'mobile'}">
+      <div>
+        @for (activeFilterValue of activeSearchFilterValues; track activeFilterValue) {
+          <mat-chip-row (removed)="deactivateFilter(activeFilterValue.groupLabel, activeFilterValue.filterLabel)">
+            {{ activeFilterValue.filterLabel }}
+            <button matChipRemove>
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip-row>
+        }
+      </div>
+      <search-result-groups></search-result-groups>
     </div>
-
-    <search-result-groups></search-result-groups>
-  </div>
+  }
 </div>

@@ -27,7 +27,6 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   public searchState: SearchState = initialState;
   public screenMode: ScreenMode = 'regular';
   public isAnySearchFilterActive: boolean = false;
-  public term: string = '';
   public allSearchResults: SearchResultIdentifierDirective[] = [];
 
   @ViewChild(SearchComponent) public readonly searchComponent!: SearchComponent;
@@ -74,7 +73,7 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
       this.resultGroupsComponent.resultGroupComponents.changes.subscribe((resultGroupComponents: ResultGroupComponent[]) => {
         this.allSearchResults = [];
         resultGroupComponents.forEach((resultGroupComponent) => {
-          this.allSearchResults = this.allSearchResults.concat(resultGroupComponent.searchResultElement.toArray());
+          this.allSearchResults = this.allSearchResults.concat(resultGroupComponent.searchResultElements.toArray());
         });
         this.cdr.detectChanges();
       }),
