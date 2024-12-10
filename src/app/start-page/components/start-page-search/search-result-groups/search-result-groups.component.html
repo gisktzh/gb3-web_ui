@@ -11,15 +11,19 @@
     [loadingState]="layerCatalogLoadingState"
     [numberOfItems]="filteredMaps.length"
   >
-    @for (filteredMap of filteredMaps; track filteredMap; let first = $first) {
-      <search-result-entry-map
-        [tabIndex]="first ? 0 : -1"
-        [map]="filteredMap"
-        searchResultIdentifier
-        [isFocusable]="first"
-        [text]="filteredMap.title"
-      ></search-result-entry-map>
-    }
+    <ul class="search-result-groups__group__list">
+      @for (filteredMap of filteredMaps; track filteredMap; let first = $first) {
+        <li class="search-result-groups__group__list__list-item">
+          <search-result-entry-map
+            [tabIndex]="first ? 0 : -1"
+            [map]="filteredMap"
+            searchResultIdentifier
+            [isFocusable]="first"
+            [text]="filteredMap.title"
+          ></search-result-entry-map>
+        </li>
+      }
+    </ul>
   </search-result-group>
   <search-result-group
     *ngIf="

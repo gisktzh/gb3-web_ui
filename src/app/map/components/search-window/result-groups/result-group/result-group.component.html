@@ -48,6 +48,8 @@
                 [href]="map.gb2Url | appendMapConfigurationToUrl: mapConfigState"
                 rel="noopener noreferrer"
                 target="_blank"
+                [attr.aria-label]="'Karte ' + map.title + ' öffnen. ' + toolTip"
+                [matTooltip]="'Karte ' + map.title + ' öffnen. ' + toolTip"
               >
                 <mat-icon svgIcon="ktzh_arrow_right" class="result-group__container__element__link__icon"></mat-icon>
                 <ng-container *ngTemplateOutlet="content"></ng-container>
@@ -58,7 +60,7 @@
                 (delayedMouseEnter)="addActiveMap(map, true)"
                 [delayDurationInMs]="this.hoverDelay"
                 (mouseleave)="removeTemporaryMap(map)"
-                (click)="delegateClickToChild(map)"
+                (click)="addActiveMap(map)"
                 searchResultIdentifier
                 [isMapResult]="true"
                 [text]="map.printTitle"
@@ -67,6 +69,8 @@
                 (removeResultFromArrowNavigation)="removeTemporaryMap(map)"
                 [attr.data-index]="filteredMaps.indexOf(map)"
                 [tabIndex]="first ? 0 : -1"
+                [attr.aria-label]="'Karte ' + map.title + ' öffnen.'"
+                [matTooltip]="'Karte ' + map.title + ' öffnen.'"
               >
                 <mat-icon class="result-group__container__element__button__icon">add</mat-icon>
                 <ng-container *ngTemplateOutlet="content"></ng-container>
@@ -77,7 +81,6 @@
               <p
                 [innerHTML]="map.title | highlightSearchQuery: this.searchTerms"
                 class="result-group__container__element__map-content__title result-group__container__element__text"
-                matTooltip="{{ map.title }}"
               ></p>
             </ng-template>
 
