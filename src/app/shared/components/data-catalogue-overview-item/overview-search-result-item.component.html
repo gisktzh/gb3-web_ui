@@ -22,47 +22,55 @@
   </a>
 }
 <ng-template #content>
-  <div class="overview-search-result-item__icon" *ngIf="!isMobile" [matTooltip]="item.type" [matTooltipPosition]="'right'">
-    @switch (item.type) {
-      @case ('Geodatensatz') {
-        <mat-icon svgIcon="ktzh_search_dataset"></mat-icon>
+  @if (!isMobile) {
+    <div class="overview-search-result-item__icon" [matTooltip]="item.type" [matTooltipPosition]="'right'">
+      @switch (item.type) {
+        @case ('Geodatensatz') {
+          <mat-icon svgIcon="ktzh_search_dataset"></mat-icon>
+        }
+        @case ('Produkt') {
+          <mat-icon svgIcon="ktzh_search_product"></mat-icon>
+        }
+        @case ('Karte') {
+          <mat-icon svgIcon="ktzh_search_map"></mat-icon>
+        }
+        @case ('Geoservice') {
+          <mat-icon svgIcon="ktzh_search_service"></mat-icon>
+        }
+        @case ('Frage') {
+          <mat-icon svgIcon="ktzh_search_faq"></mat-icon>
+        }
+        @case ('Info') {
+          <mat-icon svgIcon="ktzh_search_helpful_information"></mat-icon>
+        }
       }
-      @case ('Produkt') {
-        <mat-icon svgIcon="ktzh_search_product"></mat-icon>
-      }
-      @case ('Karte') {
-        <mat-icon svgIcon="ktzh_search_map"></mat-icon>
-      }
-      @case ('Geoservice') {
-        <mat-icon svgIcon="ktzh_search_service"></mat-icon>
-      }
-      @case ('Frage') {
-        <mat-icon svgIcon="ktzh_search_faq"></mat-icon>
-      }
-      @case ('Info') {
-        <mat-icon svgIcon="ktzh_search_helpful_information"></mat-icon>
-      }
-    }
-  </div>
+    </div>
+  }
   <div class="overview-search-result-item__content">
     <div class="overview-search-result-item__content__title">
       <span class="overview-search-result-item__content__title__text">{{ item.title }}</span>
-      <div *ngIf="item.flags.ogd === false" class="overview-search-result-item__content__title__flag">
-        <mat-icon svgIcon="ktzh_lock"></mat-icon>
-      </div>
-    </div>
-    <div class="overview-search-result-item__content__details" *ngIf="item.fields.length > 0">
-      <ng-container *ngFor="let field of item.fields">
-        <div
-          class="overview-search-result-item__content__details__item"
-          [ngClass]="{'overview-search-result-item__content__details__item--truncated': field.truncatable}"
-        >
-          <!-- Only show the title if we have more than 1 element to have a clean display -->
-          <span class="overview-search-result-item__content__details__item__title" *ngIf="item.fields.length > 1">{{ field.title }}:</span>
-          <span class="overview-search-result-item__content__details__item__content">{{ field.content }}</span>
+      @if (item.flags.ogd === false) {
+        <div class="overview-search-result-item__content__title__flag">
+          <mat-icon svgIcon="ktzh_lock"></mat-icon>
         </div>
-      </ng-container>
+      }
     </div>
+    @if (item.fields.length > 0) {
+      <div class="overview-search-result-item__content__details">
+        @for (field of item.fields; track field) {
+          <div
+            class="overview-search-result-item__content__details__item"
+            [ngClass]="{'overview-search-result-item__content__details__item--truncated': field.truncatable}"
+          >
+            <!-- Only show the title if we have more than 1 element to have a clean display -->
+            @if (item.fields.length > 1) {
+              <span class="overview-search-result-item__content__details__item__title">{{ field.title }}:</span>
+            }
+            <span class="overview-search-result-item__content__details__item__content">{{ field.content }}</span>
+          </div>
+        }
+      </div>
+    }
   </div>
   <mat-icon
     svgIcon="ktzh_arrow_right"

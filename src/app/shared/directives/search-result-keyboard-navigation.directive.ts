@@ -11,16 +11,11 @@ import {SearchComponent} from '../components/search/search.component';
 })
 export class SearchResultKeyboardNavigationDirective implements OnInit, OnDestroy, AfterViewInit {
   @Input() public allSearchResults: SearchResultIdentifierDirective[] = [];
-  @Input() public searchComponent?: SearchComponent;
+  @Input() public searchComponent!: SearchComponent;
   private term: string = '';
   private selectedSearchResultIndex: number = -1;
   private selectedResult: SearchResultIdentifierDirective | undefined;
-  private readonly term$ = this.store.select(selectTerm).pipe(
-    tap((term: string) => {
-      this.selectedSearchResultIndex = -1;
-      this.term = term;
-    }),
-  );
+  private readonly term$ = this.store.select(selectTerm);
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(
@@ -29,7 +24,16 @@ export class SearchResultKeyboardNavigationDirective implements OnInit, OnDestro
   ) {}
 
   public ngOnInit() {
-    this.subscriptions.add(this.term$.subscribe());
+    this.subscriptions.add(
+      this.term$
+        .pipe(
+          tap((term: string) => {
+            this.selectedSearchResultIndex = -1;
+            this.term = term;
+          }),
+        )
+        .subscribe(),
+    );
   }
 
   public ngOnDestroy() {
@@ -38,11 +42,10 @@ export class SearchResultKeyboardNavigationDirective implements OnInit, OnDestro
 
   public ngAfterViewInit() {
     this.cdr.detectChanges();
-    if (this.searchComponent) {
-      this.searchComponent.inputRef.nativeElement.onfocus = () => {
-        this.selectedSearchResultIndex = -1;
-      };
-    }
+
+    this.searchComponent.inputRef.nativeElement.onfocus = () => {
+      this.selectedSearchResultIndex = -1;
+    };
   }
   @HostListener('keydown.arrowdown', ['$event'])
   public handleArrowDown(event: KeyboardEvent) {
@@ -116,12 +119,12 @@ export class SearchResultKeyboardNavigationDirective implements OnInit, OnDestro
   private setFocusOnSelectedElement() {
     if (this.selectedSearchResultIndex >= 0 && this.allSearchResults.length > 0) {
       this.selectedResult = this.allSearchResults[this.selectedSearchResultIndex];
-      this.searchComponent?.setTerm(this.selectedResult.text, false);
+      this.searchComponent.setTerm(this.selectedResult.text, false);
       this.selectedResult.host.nativeElement.focus();
       this.selectedResult.addTemporaryMap();
     } else {
-      this.searchComponent?.inputRef.nativeElement.focus();
-      this.searchComponent?.setTerm(this.term, false);
+      this.searchComponent.inputRef.nativeElement.focus();
+      this.searchComponent.setTerm(this.term, false);
     }
   }
 }

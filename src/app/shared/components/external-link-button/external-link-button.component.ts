@@ -1,5 +1,4 @@
-import {Component, Input, ViewChild} from '@angular/core';
-import {MatIconAnchor} from '@angular/material/button';
+import {Component, Input} from '@angular/core';
 
 @Component({
   selector: 'external-link-button',
@@ -13,5 +12,4 @@ export class ExternalLinkButtonComponent {
   @Input() public color: 'primary' | 'accent' = 'primary';
   @Input() public toolTip?: string;
   @Input() public disableTabFocus: boolean = false;
-  @ViewChild('anchor') public readonly anchor!: MatIconAnchor;
 }
