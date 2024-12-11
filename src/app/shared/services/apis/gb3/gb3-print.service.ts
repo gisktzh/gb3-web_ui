@@ -3,7 +3,13 @@ import {Inject, Injectable} from '@angular/core';
 import {Gb3ApiService} from './gb3-api.service';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {PrintCreation, PrintCreationResponse, PrintMapItem, ReportOrientation} from '../../../interfaces/print.interface';
+import {
+  CustomLayerParameters,
+  PrintCreation,
+  PrintCreationResponse,
+  PrintMapItem,
+  ReportOrientation,
+} from '../../../interfaces/print.interface';
 import {
   PrintCreateData,
   PrintFeatureInfoCreateData,
@@ -24,6 +30,8 @@ import {Gb2WmsSettings} from '../../../../map/models/implementations/gb2-wms.mod
 import {DrawingLayerSettings} from '../../../../map/models/implementations/drawing.model';
 import {TIME_SERVICE} from '../../../../app.module';
 import {TimeService} from '../../../interfaces/time-service.interface';
+import {Gb3TopicsService} from './gb3-topics.service';
+import {TimeSliderParameterSource} from '../../../interfaces/topic.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -36,6 +44,7 @@ export class Gb3PrintService extends Gb3ApiService {
     @Inject(ConfigService) configService: ConfigService,
     @Inject(TIME_SERVICE) timeService: TimeService,
     private readonly basemapConfigService: BasemapConfigService,
+    private readonly gb3TopicsService: Gb3TopicsService,
   ) {
     super(http, configService, timeService);
   }
@@ -177,6 +186,34 @@ export class Gb3PrintService extends Gb3ApiService {
   }
 
   private createGb2WmsPrintItem(activeMapItem: ActiveMapItem, gb2WmsSettings: Gb2WmsSettings): PrintMapItem {
+    const customLayerParameters: CustomLayerParameters = {};
+    if (gb2WmsSettings.filterConfigurations) {
+      const attributeFilterParameters = this.gb3TopicsService.transformFilterConfigurationToParameters(gb2WmsSettings.filterConfigurations);
+      attributeFilterParameters.forEach((filterParameter) => {
+        customLayerParameters[filterParameter.name] = filterParameter.value;
+      });
+    }
+    if (gb2WmsSettings.timeSliderConfiguration && gb2WmsSettings.timeSliderExtent) {
+      switch (gb2WmsSettings.timeSliderConfiguration.sourceType) {
+        case 'parameter': {
+          const timeSliderParameterSource = gb2WmsSettings.timeSliderConfiguration.source as TimeSliderParameterSource;
+          const dateFormat = gb2WmsSettings.timeSliderConfiguration.dateFormat;
+
+          customLayerParameters[timeSliderParameterSource.startRangeParameter] = this.timeService.getDateAsUTCString(
+            gb2WmsSettings.timeSliderExtent.start,
+            dateFormat,
+          );
+          customLayerParameters[timeSliderParameterSource.endRangeParameter] = this.timeService.getDateAsUTCString(
+            gb2WmsSettings.timeSliderExtent.end,
+            dateFormat,
+          );
+          break;
+        }
+        case 'layer':
+          // This already works as is as we are printing the visible layers already
+          break;
+      }
+    }
     return {
       // order matters: the lowest index has the highest visibility
       layers: gb2WmsSettings.layers
@@ -190,6 +227,7 @@ export class Gb3PrintService extends Gb3ApiService {
       customParams: {
         format: this.configService.gb2Config.wmsFormatMimeType,
         transparent: true, // always true
+        ...customLayerParameters,
       },
     };
   }

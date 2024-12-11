@@ -120,3 +120,7 @@ export interface PrintCreationResponse {
   /** print document retrieval endpoint URL */
   reportUrl: string;
 }
+
+export interface CustomLayerParameters {
+  [key: string]: string;
+}
