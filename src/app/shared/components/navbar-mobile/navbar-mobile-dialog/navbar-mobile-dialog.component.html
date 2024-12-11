@@ -72,6 +72,18 @@
         <mat-icon>launch</mat-icon>
         Geodatenshop</a
       >
+      <a
+        class="navbar__item"
+        href="https://gdi.zh.ch/portal/home/"
+        mat-button
+        target="_blank"
+        rel="noopener noreferrer"
+        (click)="close()"
+        *featureFlag="'koPlaNavItem'"
+      >
+        <mat-icon>launch</mat-icon>
+        KoPla</a
+      >
     </div>
   </mat-card-content>
 </mat-card>

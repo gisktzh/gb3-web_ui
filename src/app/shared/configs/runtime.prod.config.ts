@@ -48,7 +48,9 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       clientId: 'gb3',
       issuer: 'https://web.maps.zh.ch/',
     },
-    featureFlags: {},
+    featureFlags: {
+      koPlaNavItem: true,
+    },
     overrides: {},
   },
   {
