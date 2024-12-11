@@ -3,7 +3,13 @@ import {Inject, Injectable} from '@angular/core';
 import {Gb3ApiService} from './gb3-api.service';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {PrintCreation, PrintCreationResponse, PrintMapItem, ReportOrientation} from '../../../interfaces/print.interface';
+import {
+  CustomLayerParameters,
+  PrintCreation,
+  PrintCreationResponse,
+  PrintMapItem,
+  ReportOrientation,
+} from '../../../interfaces/print.interface';
 import {
   PrintCreateData,
   PrintFeatureInfoCreateData,
@@ -180,30 +186,29 @@ export class Gb3PrintService extends Gb3ApiService {
   }
 
   private createGb2WmsPrintItem(activeMapItem: ActiveMapItem, gb2WmsSettings: Gb2WmsSettings): PrintMapItem {
-    const customLayerParameters: {[index: string]: string} = {};
+    const customLayerParameters: CustomLayerParameters = {};
     if (gb2WmsSettings.filterConfigurations) {
-      const attributeFilterParameters = this.gb3TopicsService.transformFilterConfigurationToParameters(
-        gb2WmsSettings.filterConfigurations ?? [],
-      );
+      const attributeFilterParameters = this.gb3TopicsService.transformFilterConfigurationToParameters(gb2WmsSettings.filterConfigurations);
       attributeFilterParameters.forEach((filterParameter) => {
         customLayerParameters[filterParameter.name] = filterParameter.value;
       });
     }
-    if (gb2WmsSettings.timeSliderConfiguration) {
+    if (gb2WmsSettings.timeSliderConfiguration && gb2WmsSettings.timeSliderExtent) {
       switch (gb2WmsSettings.timeSliderConfiguration.sourceType) {
-        case 'parameter':
+        case 'parameter': {
           const timeSliderParameterSource = gb2WmsSettings.timeSliderConfiguration.source as TimeSliderParameterSource;
           const dateFormat = gb2WmsSettings.timeSliderConfiguration.dateFormat;
 
           customLayerParameters[timeSliderParameterSource.startRangeParameter] = this.timeService.getDateAsUTCString(
-            gb2WmsSettings.timeSliderExtent!.start,
+            gb2WmsSettings.timeSliderExtent.start,
             dateFormat,
           );
           customLayerParameters[timeSliderParameterSource.endRangeParameter] = this.timeService.getDateAsUTCString(
-            gb2WmsSettings.timeSliderExtent!.end,
+            gb2WmsSettings.timeSliderExtent.end,
             dateFormat,
           );
           break;
+        }
         case 'layer':
           // This already works as is as we are printing the visible layers already
           break;
