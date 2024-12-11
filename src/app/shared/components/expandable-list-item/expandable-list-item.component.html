@@ -6,7 +6,7 @@
   hideToggle="true"
   [ngClass]="{'expandable-list-item--no-padding': noPadding}"
 >
-  <mat-expansion-panel-header class="expandable-list-item__header">
+  <mat-expansion-panel-header class="expandable-list-item__header" [tabIndex]="allowTabFocus ? 0 : -1">
     <expandable-list-item-header
       [isExpanded]="itemExpansionPanel.expanded"
       [numberOfItems]="numberOfItems"

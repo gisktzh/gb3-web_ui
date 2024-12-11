@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {LoadingState} from 'src/app/shared/types/loading-state.type';
@@ -15,6 +15,7 @@ import {
 import {selectLoadingState as selectDataCatalogLoadingState} from '../../../../state/data-catalogue/reducers/data-catalogue.reducer';
 import {selectLoadingState as selectLayerCatalogLoadingState} from '../../../../state/map/reducers/layer-catalog.reducer';
 import {OverviewSearchResultDisplayItem} from '../../../../shared/interfaces/overview-search-resuilt-display.interface';
+import {SearchResultIdentifierDirective} from '../../../../shared/directives/search-result-identifier.directive';
 
 @Component({
   selector: 'search-result-groups',
@@ -22,6 +23,9 @@ import {OverviewSearchResultDisplayItem} from '../../../../shared/interfaces/ove
   styleUrls: ['./search-result-groups.component.scss'],
 })
 export class SearchResultGroupsComponent implements OnInit, OnDestroy {
+  @ViewChildren(SearchResultIdentifierDirective)
+  public readonly overviewSearchResultItemComponents!: QueryList<SearchResultIdentifierDirective>;
+
   public layerCatalogLoadingState: LoadingState;
   public filteredMaps: Map[] = [];
   public filteredMetadataItems: OverviewSearchResultDisplayItem[] = [];
