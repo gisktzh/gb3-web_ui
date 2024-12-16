@@ -4,7 +4,7 @@ import {Gb3ApiService} from './gb3-api.service';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {
-  CustomLayerParameters,
+  DynamicStringParameters,
   PrintCreation,
   PrintCreationResponse,
   PrintMapItem,
@@ -186,11 +186,11 @@ export class Gb3PrintService extends Gb3ApiService {
   }
 
   private createGb2WmsPrintItem(activeMapItem: ActiveMapItem, gb2WmsSettings: Gb2WmsSettings): PrintMapItem {
-    const customLayerParameters: CustomLayerParameters = {};
+    const dynamicStringParameters: DynamicStringParameters = {};
     if (gb2WmsSettings.filterConfigurations) {
       const attributeFilterParameters = this.gb3TopicsService.transformFilterConfigurationToParameters(gb2WmsSettings.filterConfigurations);
       attributeFilterParameters.forEach((filterParameter) => {
-        customLayerParameters[filterParameter.name] = filterParameter.value;
+        dynamicStringParameters[filterParameter.name] = filterParameter.value;
       });
     }
     if (gb2WmsSettings.timeSliderConfiguration && gb2WmsSettings.timeSliderExtent) {
@@ -199,11 +199,11 @@ export class Gb3PrintService extends Gb3ApiService {
           const timeSliderParameterSource = gb2WmsSettings.timeSliderConfiguration.source as TimeSliderParameterSource;
           const dateFormat = gb2WmsSettings.timeSliderConfiguration.dateFormat;
 
-          customLayerParameters[timeSliderParameterSource.startRangeParameter] = this.timeService.getDateAsUTCString(
+          dynamicStringParameters[timeSliderParameterSource.startRangeParameter] = this.timeService.getDateAsUTCString(
             gb2WmsSettings.timeSliderExtent.start,
             dateFormat,
           );
-          customLayerParameters[timeSliderParameterSource.endRangeParameter] = this.timeService.getDateAsUTCString(
+          dynamicStringParameters[timeSliderParameterSource.endRangeParameter] = this.timeService.getDateAsUTCString(
             gb2WmsSettings.timeSliderExtent.end,
             dateFormat,
           );
@@ -227,7 +227,7 @@ export class Gb3PrintService extends Gb3ApiService {
       customParams: {
         format: this.configService.gb2Config.wmsFormatMimeType,
         transparent: true, // always true
-        ...customLayerParameters,
+        dynamicStringParams: dynamicStringParameters,
       },
     };
   }
@@ -263,7 +263,11 @@ export class Gb3PrintService extends Gb3ApiService {
                 type: 'WMS',
                 url: mapItem.url,
                 layers: mapItem.layers,
-                custom_params: mapItem.customParams,
+                custom_params: {
+                  format: mapItem.customParams?.format,
+                  transparent: mapItem.customParams?.transparent,
+                  ...mapItem.customParams?.dynamicStringParams,
+                },
                 opacity: mapItem.opacity,
                 map_title: mapItem.mapTitle,
                 background: mapItem.background,

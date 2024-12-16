@@ -22,9 +22,13 @@ import {UuidUtils} from '../../../utils/uuid.utils';
 import {BasemapConfigService} from '../../../../map/services/basemap-config.service';
 import {Basemap} from '../../../interfaces/basemap.interface';
 import {PrintData} from '../../../../map/interfaces/print-data.interface';
+import {TimeService} from '../../../interfaces/time-service.interface';
+import {TIME_SERVICE} from '../../../../app.module';
+import {TimeSliderConfiguration} from '../../../interfaces/topic.interface';
 
 describe('Gb3PrintService', () => {
   let service: Gb3PrintService;
+  let timeService: TimeService;
   let httpClient: HttpClient;
   let configService: ConfigService;
 
@@ -36,6 +40,7 @@ describe('Gb3PrintService', () => {
     service = TestBed.inject(Gb3PrintService);
     httpClient = TestBed.inject(HttpClient);
     configService = TestBed.inject(ConfigService);
+    timeService = TestBed.inject(TIME_SERVICE);
   });
 
   it('should be created', () => {
@@ -64,7 +69,11 @@ describe('Gb3PrintService', () => {
             type: 'WMS',
             mapTitle: 'karte 1',
             customParams: {
-              myCustomParamOne: 'myCustomValue',
+              format: 'image/png; mode=8bit',
+              transparent: true,
+              dynamicStringParams: {
+                myCustomParamOne: 'myCustomValue',
+              },
             },
             background: false,
             layers: ['gott', 'würfelt', 'nicht'],
@@ -118,6 +127,8 @@ describe('Gb3PrintService', () => {
             type: 'WMS',
             map_title: 'karte 1',
             custom_params: {
+              format: 'image/png; mode=8bit',
+              transparent: true,
               myCustomParamOne: 'myCustomValue',
             },
             background: false,
@@ -128,7 +139,10 @@ describe('Gb3PrintService', () => {
           {
             type: 'WMS',
             map_title: 'karte 2',
-            custom_params: undefined,
+            custom_params: {
+              format: undefined,
+              transparent: undefined,
+            },
             background: false,
             layers: ['holla', 'die', 'waldfee'],
             url: 'url 2',
@@ -137,7 +151,10 @@ describe('Gb3PrintService', () => {
           {
             type: 'WMS',
             map_title: 'karte 3',
-            custom_params: undefined,
+            custom_params: {
+              format: undefined,
+              transparent: undefined,
+            },
             background: false,
             layers: ['yolo'],
             url: 'url 3',
@@ -146,7 +163,10 @@ describe('Gb3PrintService', () => {
           {
             type: 'WMS',
             map_title: 'karte 4',
-            custom_params: undefined,
+            custom_params: {
+              format: undefined,
+              transparent: undefined,
+            },
             background: true,
             layers: [],
             url: 'url 4',
@@ -233,6 +253,44 @@ describe('Gb3PrintService', () => {
           layers: [{name: 'layer0_test-basemap'}, {name: 'layer1_test-basemap'}],
         } as Basemap,
       ]);
+      const dateFormat = 'YYYY';
+      const minimumDate = timeService.createDateFromString('2000', dateFormat);
+      const maximumDate = timeService.createDateFromString('2020', dateFormat);
+      const minimumDateString = timeService.getDateAsFormattedString(minimumDate, dateFormat);
+      const maximumDateString = timeService.getDateAsFormattedString(maximumDate, dateFormat);
+      const alwaysMaxRange = false;
+      const range = 'P1Y';
+      const minimalRange = undefined;
+      const timeSliderConfiguration: TimeSliderConfiguration = {
+        name: 'mockTimeSlider',
+        dateFormat: dateFormat,
+        minimumDate: minimumDateString,
+        maximumDate: maximumDateString,
+        alwaysMaxRange: alwaysMaxRange,
+        range: range,
+        minimalRange: minimalRange,
+        sourceType: 'parameter',
+        source: {
+          startRangeParameter: 'filter_von',
+          endRangeParameter: 'filter_bis',
+          layerIdentifiers: [],
+        },
+      };
+
+      const mockItem = createGb2WmsMapItemMock(
+        'map with timeSlider',
+        1,
+        true,
+        1,
+        'uuid',
+        false,
+        {
+          start: minimumDate,
+          end: maximumDate,
+        },
+        [],
+        timeSliderConfiguration,
+      );
 
       const printData: PrintData = {
         reportType: 'standard',
@@ -252,6 +310,18 @@ describe('Gb3PrintService', () => {
           createDrawingMapItemMock(UserDrawingLayer.Drawings),
           createGb2WmsMapItemMock('visible map #3', 4),
           createExternalWmsMapItemMock('https://www.example.com/wms', 'visible map #4', []),
+          createGb2WmsMapItemMock('map with filter', 1, true, 1, 'uuid', false, undefined, [
+            {
+              name: 'Test Filter',
+              parameter: 'test_filter',
+              description: 'A Filter',
+              filterValues: [
+                {name: 'first', isActive: false, values: ['some', 'value']},
+                {name: 'second', isActive: true, values: ['other', 'values']},
+              ],
+            },
+          ]),
+          mockItem,
         ],
         mapCenter: {x: 900, y: 1},
         drawings: [
@@ -272,7 +342,7 @@ describe('Gb3PrintService', () => {
         reportLayout: printData.reportLayout,
         reportOrientation: printData.reportOrientation,
         attributes: {
-          reportTitle: 'visible map #3, visible map #1',
+          reportTitle: 'map with timeSlider, map with filter, visible map #3, visible map #1',
           userTitle: printData.title,
           userComment: printData.comment,
           showLegend: printData.showLegend,
@@ -293,11 +363,31 @@ describe('Gb3PrintService', () => {
             },
             {
               type: 'WMS',
+              mapTitle: 'map with timeSlider',
+              layers: ['layer0_map with timeSlider'],
+              url: 'https://map with timeSlider.com',
+              opacity: 1,
+              customParams: {
+                format: 'image/png; mode=8bit',
+                transparent: true,
+                dynamicStringParams: {filter_von: '1999', filter_bis: '2019'},
+              },
+            },
+            {
+              type: 'WMS',
+              mapTitle: 'map with filter',
+              layers: ['layer0_map with filter'],
+              url: 'https://map with filter.com',
+              opacity: 1,
+              customParams: {format: 'image/png; mode=8bit', transparent: true, dynamicStringParams: {test_filter: "'some','value','',''"}},
+            },
+            {
+              type: 'WMS',
               mapTitle: 'visible map #3',
               layers: ['layer3_visible map #3', 'layer2_visible map #3', 'layer1_visible map #3', 'layer0_visible map #3'],
               url: 'https://visible map #3.com',
               opacity: 1,
-              customParams: {format: 'image/png; mode=8bit', transparent: true},
+              customParams: {format: 'image/png; mode=8bit', transparent: true, dynamicStringParams: {}},
             },
             {
               type: 'Vector',
@@ -315,8 +405,17 @@ describe('Gb3PrintService', () => {
               layers: ['layer1_visible map #1', 'layer0_visible map #1'],
               url: 'https://visible map #1.com',
               opacity: 1,
-              customParams: {format: 'image/png; mode=8bit', transparent: true},
+              customParams: {format: 'image/png; mode=8bit', transparent: true, dynamicStringParams: {}},
             },
+
+            // {
+            //   type: 'WMS',
+            //   mapTitle: 'map with filter',
+            //   layers: ['layer1_map with filter', 'layer0_map with filter'],
+            //   url: 'https://map with filter.com',
+            //   opacity: 1,
+            //   customParams: {format: 'image/png; mode=8bit', transparent: true, dynamicStringParams: {test: '1,2'}},
+            // }
           ],
         },
       });
