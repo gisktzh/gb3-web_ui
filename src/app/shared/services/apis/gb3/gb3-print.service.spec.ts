@@ -370,7 +370,7 @@ describe('Gb3PrintService', () => {
               customParams: {
                 format: 'image/png; mode=8bit',
                 transparent: true,
-                dynamicStringParams: {filter_von: '1999', filter_bis: '2019'},
+                dynamicStringParams: {filter_von: '2000', filter_bis: '2020'},
               },
             },
             {
@@ -407,15 +407,6 @@ describe('Gb3PrintService', () => {
               opacity: 1,
               customParams: {format: 'image/png; mode=8bit', transparent: true, dynamicStringParams: {}},
             },
-
-            // {
-            //   type: 'WMS',
-            //   mapTitle: 'map with filter',
-            //   layers: ['layer1_map with filter', 'layer0_map with filter'],
-            //   url: 'https://map with filter.com',
-            //   opacity: 1,
-            //   customParams: {format: 'image/png; mode=8bit', transparent: true, dynamicStringParams: {test: '1,2'}},
-            // }
           ],
         },
       });
