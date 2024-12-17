@@ -263,11 +263,13 @@ export class Gb3PrintService extends Gb3ApiService {
                 type: 'WMS',
                 url: mapItem.url,
                 layers: mapItem.layers,
-                custom_params: {
-                  format: mapItem.customParams?.format,
-                  transparent: mapItem.customParams?.transparent,
-                  ...mapItem.customParams?.dynamicStringParams,
-                },
+                custom_params: mapItem.customParams
+                  ? {
+                      format: mapItem.customParams.format,
+                      transparent: mapItem.customParams.transparent,
+                      ...mapItem.customParams.dynamicStringParams,
+                    }
+                  : undefined,
                 opacity: mapItem.opacity,
                 map_title: mapItem.mapTitle,
                 background: mapItem.background,

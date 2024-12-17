@@ -139,10 +139,7 @@ describe('Gb3PrintService', () => {
           {
             type: 'WMS',
             map_title: 'karte 2',
-            custom_params: {
-              format: undefined,
-              transparent: undefined,
-            },
+            custom_params: undefined,
             background: false,
             layers: ['holla', 'die', 'waldfee'],
             url: 'url 2',
@@ -151,10 +148,7 @@ describe('Gb3PrintService', () => {
           {
             type: 'WMS',
             map_title: 'karte 3',
-            custom_params: {
-              format: undefined,
-              transparent: undefined,
-            },
+            custom_params: undefined,
             background: false,
             layers: ['yolo'],
             url: 'url 3',
@@ -163,10 +157,7 @@ describe('Gb3PrintService', () => {
           {
             type: 'WMS',
             map_title: 'karte 4',
-            custom_params: {
-              format: undefined,
-              transparent: undefined,
-            },
+            custom_params: undefined,
             background: true,
             layers: [],
             url: 'url 4',
