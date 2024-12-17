@@ -253,11 +253,11 @@ describe('Gb3PrintService', () => {
           layers: [{name: 'layer0_test-basemap'}, {name: 'layer1_test-basemap'}],
         } as Basemap,
       ]);
-      const dateFormat = 'YYYY';
-      const minimumDate = timeService.createDateFromString('2000', dateFormat);
-      const maximumDate = timeService.createDateFromString('2020', dateFormat);
-      const minimumDateString = timeService.getDateAsFormattedString(minimumDate, dateFormat);
-      const maximumDateString = timeService.getDateAsFormattedString(maximumDate, dateFormat);
+      const dateFormat = 'YYYY-MM-DD';
+      const minimumDate = timeService.createUTCDateFromString('2000-02-01', dateFormat);
+      const maximumDate = timeService.createUTCDateFromString('2020-02-01', dateFormat);
+      const minimumDateString = timeService.getDateAsUTCString(minimumDate, dateFormat);
+      const maximumDateString = timeService.getDateAsUTCString(maximumDate, dateFormat);
       const alwaysMaxRange = false;
       const range = 'P1Y';
       const minimalRange = undefined;
@@ -370,7 +370,7 @@ describe('Gb3PrintService', () => {
               customParams: {
                 format: 'image/png; mode=8bit',
                 transparent: true,
-                dynamicStringParams: {filter_von: '2000', filter_bis: '2020'},
+                dynamicStringParams: {filter_von: '2000-02-01', filter_bis: '2020-02-01'},
               },
             },
             {
