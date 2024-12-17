@@ -25,7 +25,11 @@ describe('print reducer', () => {
           type: 'WMS',
           mapTitle: 'karte 1',
           customParams: {
-            myCustomParamOne: 'myCustomValue',
+            format: 'image/png; mode=8bit',
+            transparent: true,
+            dynamicStringParams: {
+              myCustomParamOne: 'myCustomValue',
+            },
           },
           background: false,
           layers: ['gott', 'würfelt', 'nicht'],
