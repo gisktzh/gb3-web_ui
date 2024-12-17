@@ -1,4 +1,4 @@
-<div class="search-window">
+<div class="search-window" searchResultKeyboardNavigation [allSearchResults]="allSearchResults" [searchComponent]="searchComponent">
   <div class="search-window__searchbar" [ngClass]="{'search-window__searchbar--mobile': screenMode === 'mobile'}">
     <search
       typedTourAnchor="map.search.input"
@@ -13,7 +13,9 @@
       [isAnyFilterActive]="isAnySearchFilterActive"
     ></search>
   </div>
-  <div class="search-window__results-container" *ngIf="screenMode !== 'mobile'">
-    <result-groups></result-groups>
-  </div>
+  @if (screenMode !== 'mobile') {
+    <div class="search-window__results-container">
+      <result-groups></result-groups>
+    </div>
+  }
 </div>
