@@ -9,6 +9,14 @@
     @include mixins.tool-button-mobile;
     @include mixins.map-element-box-shadow;
   }
+
+  /*
+   * We are setting the z-index for all direct children to 1 to ensure that the elements are above the map. The map itself has a z-index of 0.
+   * This is a workaround to ensure that the TAB order works as expected so that the elements within the map container are last in the TAB order.
+   */
+  .map-container .mat-drawer-content > * {
+    z-index: z-index-variables.$map-ui-element;
+  }
 }
 
 .map-container {
@@ -55,6 +63,7 @@
     top: 0;
     left: 0;
     height: 100%;
+    z-index: z-index-variables.$map-overlay;
 
     &--right {
       left: unset;
@@ -188,8 +197,8 @@
   }
 
   .map-container__map {
-    z-index: z-index-variables.$map-container;
     position: relative;
+    z-index: z-index-variables.$map-container;
   }
 }
 

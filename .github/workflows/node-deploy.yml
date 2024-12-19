@@ -1,12 +1,11 @@
 name: Deploy to GH Pages
 
-on: 
+on:
   workflow_call:
-  workflow_dispatch: 
-
+  workflow_dispatch:
 
 env:
-  NODE_VERSION: '20'
+  NODE_VERSION: '22'
 
 jobs:
   build:

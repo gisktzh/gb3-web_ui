@@ -1,7 +1,7 @@
 <mat-toolbar aria-label="Hauptnavigation" class="navbar" color="primary" role="navigation">
   <span class="navbar__item" role="banner">
     <img
-      [ngStyle]="{display: !this.isSimplifiedPage ? 'none' : 'inline'}"
+      [ngStyle]="{display: !isSimplifiedPage ? 'none' : 'inline'}"
       alt="KTZH Logo"
       class="navbar__logo"
       ngSrc="assets/images/ktzh_inverted.svg"
@@ -12,57 +12,86 @@
     Geoportal Kanton Zürich
   </span>
   <span class="navbar__spacer"></span>
-
-  <a
-    [queryParams]="{}"
-    [routerLinkActiveOptions]="{exact: true}"
-    class="navbar__item"
-    mat-button
-    [routerLink]="[mainPageEnum.Start]"
-    routerLinkActive="navbar__item--active"
-    ariaCurrentWhenActive="page"
-    >Geoportal</a
-  >
-  <a class="navbar__item" mat-button [routerLink]="[mainPageEnum.Maps]" routerLinkActive="navbar__item--active" ariaCurrentWhenActive="page"
-    >GIS-Browser</a
-  >
-  <a class="navbar__item" mat-button [routerLink]="[mainPageEnum.Data]" routerLinkActive="navbar__item--active" ariaCurrentWhenActive="page"
-    >Geodatenkatalog</a
-  >
-  <a
-    class="navbar__item"
-    mat-button
-    [routerLink]="[mainPageEnum.Support]"
-    routerLinkActive="navbar__item--active"
-    ariaCurrentWhenActive="page"
-    >Hilfe & Support</a
-  >
-  <a class="navbar__item" href="https://geodatenshop.zh.ch" mat-button target="_blank" rel="noopener noreferrer">
-    <mat-icon>launch</mat-icon>
-    Geodatenshop
-  </a>
-  <mat-divider class="navbar__divider" vertical></mat-divider>
-  @if (!this.isAuthenticated) {
-    <button (click)="this.startLogin()" class="navbar__item navbar__item--button" mat-button>Login</button>
-  } @else {
-    @if (screenMode === 'regular') {
-      <button [matMenuTriggerFor]="userMenu" class="navbar__item navbar__item--button" mat-button>
-        <mat-icon svgIcon="ktzh_user"></mat-icon>
-        {{ this.userName }}
+  @if (screenMode === 'regular') {
+    <a
+      [queryParams]="{}"
+      [routerLinkActiveOptions]="{exact: true}"
+      class="navbar__item"
+      mat-button
+      [routerLink]="[mainPageEnum.Start]"
+      routerLinkActive="navbar__item--active"
+      ariaCurrentWhenActive="page"
+      >Geoportal</a
+    >
+    <a
+      class="navbar__item"
+      mat-button
+      [routerLink]="[mainPageEnum.Maps]"
+      routerLinkActive="navbar__item--active"
+      ariaCurrentWhenActive="page"
+      >GIS-Browser</a
+    >
+    <a
+      class="navbar__item"
+      mat-button
+      [routerLink]="[mainPageEnum.Data]"
+      routerLinkActive="navbar__item--active"
+      ariaCurrentWhenActive="page"
+      >Geodatenkatalog</a
+    >
+    <a
+      class="navbar__item"
+      mat-button
+      [routerLink]="[mainPageEnum.Support]"
+      routerLinkActive="navbar__item--active"
+      ariaCurrentWhenActive="page"
+      >Hilfe & Support</a
+    >
+    <a class="navbar__item" href="https://geodatenshop.zh.ch" mat-button target="_blank" rel="noopener noreferrer">
+      <mat-icon>launch</mat-icon>
+      Geodatenshop
+    </a>
+    <a
+      class="navbar__item"
+      href="https://gdi.zh.ch/portal/home/"
+      mat-button
+      target="_blank"
+      rel="noopener noreferrer"
+      *featureFlag="'koPlaNavItem'"
+    >
+      <mat-icon>launch</mat-icon>
+      KoPla
+    </a>
+    <mat-divider class="navbar__divider" vertical></mat-divider>
+    @if (!isAuthenticated) {
+      <button (click)="startLogin()" class="navbar__item navbar__item--button" mat-button>
+        <mat-icon svgIcon="ktzh_user"></mat-icon>Login
       </button>
     } @else {
       <button [matMenuTriggerFor]="userMenu" class="navbar__item navbar__item--button" mat-button #trigger="matMenuTrigger">
         <mat-icon svgIcon="ktzh_user"></mat-icon>
-        <mat-icon [fontIcon]="trigger.menuOpen ? 'arrow_drop_up' : 'arrow_drop_down'"></mat-icon>
+        {{ userName }}
+        <mat-icon [fontIcon]="trigger.menuOpen ? 'arrow_drop_up' : 'arrow_drop_down'" class="navbar__item__arrow-icon"></mat-icon>
       </button>
-    }
 
-    <mat-menu #userMenu="matMenu">
-      <button (click)="this.logout()" mat-menu-item>
-        <mat-icon>logout</mat-icon>
-        <span>Logout</span>
-      </button>
-    </mat-menu>
+      <mat-menu #userMenu="matMenu" style="padding-left: 12px">
+        <a href="https://maps.zh.ch/groups_users" target="_blank" rel="noopener noreferrer" mat-menu-item>
+          <mat-icon svgIcon="ktzh_user"></mat-icon>
+          <span>Profil</span>
+        </a>
+        <mat-divider></mat-divider>
+        <button (click)="logout()" mat-menu-item>
+          <mat-icon>logout</mat-icon>
+          <span>Logout</span>
+        </button>
+      </mat-menu>
+    }
+  } @else {
+    <button mat-button (click)="showMenu()">
+      <span class="navbar__menu-text">Menu</span>
+
+      <mat-icon svgIcon="ktzh_menu_mobile" iconPositionEnd>launch</mat-icon>
+    </button>
   }
 
   @if (!isSimplifiedPage) {

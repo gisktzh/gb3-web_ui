@@ -50,6 +50,7 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
     },
     featureFlags: {
       iframeShareLink: true,
+      koPlaNavItem: true,
     },
     overrides: {
       overrideWmsUrl: 'http://uatwms.kt.ktzh.ch',

@@ -1,5 +1,5 @@
 import {Gb2WmsActiveMapItem} from '../../map/models/implementations/gb2-wms.model';
-import {FilterConfiguration, Map, MapLayer} from '../../shared/interfaces/topic.interface';
+import {FilterConfiguration, Map, MapLayer, TimeSliderConfiguration} from '../../shared/interfaces/topic.interface';
 import {ActiveMapItemFactory} from '../../shared/factories/active-map-item.factory';
 import {DrawingLayerPrefix, UserDrawingLayer} from '../../shared/enums/drawing-layer.enum';
 import {DrawingActiveMapItem} from '../../map/models/implementations/drawing.model';
@@ -18,8 +18,9 @@ export function createGb2WmsMapItemMock(
   isTemporary: boolean = false,
   timeExtent?: TimeExtent,
   attributeFilters?: FilterConfiguration[],
+  timeSliderConfiguration?: TimeSliderConfiguration,
 ): Gb2WmsActiveMapItem {
-  const mapMock = {id, title: id, layers: [], uuid, wmsUrl: `https://${id}.com`} as Partial<Map>;
+  const mapMock = {id, title: id, layers: [], uuid, wmsUrl: `https://${id}.com`, timeSliderConfiguration} as Partial<Map>;
   for (let layerNumber = 0; layerNumber < numberOfLayers; layerNumber++) {
     const uniqueLayerName = `layer${layerNumber}_${id}`;
     const layerMock = {layer: uniqueLayerName, title: uniqueLayerName, id: layerNumber, visible: true} as Partial<MapLayer>;

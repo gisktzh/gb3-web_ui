@@ -95,7 +95,7 @@ interface PrintMapWms extends AbstractGb3Layer {
    * Custom WMS params
    * @example {"format":"image/png; mode=8bit","transparent":true}
    */
-  customParams?: object;
+  customParams?: CustomPrintParameters;
   /**
    * Layer opacity
    * @min 0
@@ -119,4 +119,14 @@ export type ReportType = 'standard' | 'mapset';
 export interface PrintCreationResponse {
   /** print document retrieval endpoint URL */
   reportUrl: string;
+}
+
+export interface DynamicStringParameters {
+  [key: string]: string;
+}
+
+export interface CustomPrintParameters {
+  transparent?: boolean;
+  format?: string;
+  dynamicStringParams: DynamicStringParameters;
 }

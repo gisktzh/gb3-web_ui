@@ -6,6 +6,9 @@ import {selectIsAuthenticated, selectUserName} from '../../../state/auth/reducer
 import {MainPage} from '../../enums/main-page.enum';
 import {selectScreenMode, selectScrollbarWidth} from '../../../state/app/reducers/app-layout.reducer';
 import {ScreenMode} from '../../types/screen-size.type';
+import {NavbarMobileDialogComponent} from '../navbar-mobile/navbar-mobile-dialog/navbar-mobile-dialog.component';
+import {PanelClass} from '../../enums/panel-class.enum';
+import {MatDialog} from '@angular/material/dialog';
 
 @Component({
   selector: 'navbar',
@@ -28,7 +31,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
 
-  constructor(private readonly store: Store) {}
+  constructor(
+    private readonly store: Store,
+    private readonly dialog: MatDialog,
+  ) {}
 
   public ngOnInit() {
     this.initSubscriptions();
@@ -44,6 +50,19 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   public logout() {
     this.store.dispatch(AuthStatusActions.performLogout({isForced: false}));
+  }
+
+  public showMenu() {
+    this.dialog.open(NavbarMobileDialogComponent, {
+      position: {top: '0', right: '0'},
+      maxWidth: '433px',
+      maxHeight: '100vh',
+      height: '100%',
+      width: '100%',
+      panelClass: PanelClass.ApiWrapperDialog,
+      autoFocus: false,
+      hasBackdrop: false,
+    });
   }
 
   private initSubscriptions() {

@@ -17,39 +17,39 @@
       "matchManagers": ["npm"],
       "matchUpdateTypes": ["major", "minor", "patch"],
       "groupName": "karma",
-      "matchPackagePrefixes": ["karma"]
+      "matchPackageNames": ["karma{/,}**"]
     },
     {
       "matchManagers": ["npm"],
       "groupName": "angular",
-      "matchPackagePrefixes": [
-        "@angular/",
-        "@angular-devkit/",
-        "@angular-eslint/",
-        "@schematics/angular",
-        "angular-oauth2-oidc",
-        "@ngrx/",
-        "typescript"
+      "matchPackageNames": [
+        "@angular/{/,}**",
+        "@angular-devkit/{/,}**",
+        "@angular-eslint/{/,}**",
+        "@schematics/angular{/,}**",
+        "angular-oauth2-oidc{/,}**",
+        "@ngrx/{/,}**",
+        "zone.js"
       ]
     },
     {
       "matchManagers": ["npm"],
       "groupName": "arcgis",
-      "matchPackagePrefixes": ["@arcgis/"],
       "matchUpdateTypes": ["minor"],
       "automerge": false,
       "autoApprove": false,
-      "description": "Sometimes there are breaking changes for ArcGIS with updates on minor level. Therefore, this rule prevents automerge and autoApprove for this update type."
+      "description": "Sometimes there are breaking changes for ArcGIS with updates on minor level. Therefore, this rule prevents automerge and autoApprove for this update type.",
+      "matchPackageNames": ["@arcgis/{/,}**"]
     },
     {
       "matchManagers": ["npm"],
       "groupName": "jasmine",
-      "matchPackagePrefixes": ["jasmine", "@types/jasmine"]
+      "matchPackageNames": ["jasmine{/,}**", "@types/jasmine{/,}**"]
     },
     {
       "matchManagers": ["npm"],
       "groupName": "eslint",
-      "matchPackagePrefixes": ["eslint", "@angular-eslint", "@ngrx/eslint", "@typescript-eslint"]
+      "matchPackageNames": ["eslint{/,}**", "@angular-eslint{/,}**", "@ngrx/eslint{/,}**", "@typescript-eslint{/,}**"]
     },
     {
       "matchManagers": ["npm"],
@@ -70,12 +70,12 @@
     {
       "matchManagers": ["npm"],
       "matchPackageNames": ["@types/node"],
-      "allowedVersions": "<20"
+      "allowedVersions": "<22"
     },
     {
       "matchManagers": ["dockerfile"],
       "matchDepNames": ["node"],
-      "allowedVersions": "<20"
+      "allowedVersions": "<22"
     }
   ]
 }
