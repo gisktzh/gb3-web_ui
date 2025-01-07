@@ -13,6 +13,7 @@ import {selectId, selectSavingState} from '../../../state/map/reducers/share-lin
   selector: 'share-link-dialog',
   templateUrl: './share-link-dialog.component.html',
   styleUrls: ['./share-link-dialog.component.scss'],
+  standalone: false,
 })
 export class ShareLinkDialogComponent implements OnInit, OnDestroy, HasSavingState {
   public savingState: LoadingState = undefined;

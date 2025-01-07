@@ -11,6 +11,7 @@ import {selectMunicipalities, selectMunicipalitiesLoadingState} from '../../../.
   selector: 'data-download-select-municipality-dialog',
   templateUrl: './data-download-select-municipality-dialog.component.html',
   styleUrls: ['./data-download-select-municipality-dialog.component.scss'],
+  standalone: false,
 })
 export class DataDownloadSelectMunicipalityDialogComponent implements OnInit, OnDestroy {
   @ViewChild('municipalityInput') input?: ElementRef<HTMLInputElement>;

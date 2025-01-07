@@ -5,6 +5,7 @@ import {LinksGroup} from '../../../interfaces/links-group.interface';
   selector: 'link-list',
   templateUrl: './link-list.component.html',
   styleUrls: ['./link-list.component.scss'],
+  standalone: false,
 })
 export class LinkListComponent {
   @Input() public linksGroups: LinksGroup[] = [];

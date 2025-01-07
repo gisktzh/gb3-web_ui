@@ -5,6 +5,7 @@ import {DOCUMENT} from '@angular/common';
 
 @Directive({
   selector: '[dragCursor]',
+  standalone: false,
 })
 export class DragCursorDirective implements OnInit, OnDestroy {
   private readonly subscriptions: Subscription = new Subscription();

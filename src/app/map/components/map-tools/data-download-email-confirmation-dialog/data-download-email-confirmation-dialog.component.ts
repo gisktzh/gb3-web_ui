@@ -5,6 +5,7 @@ import {MatDialogRef} from '@angular/material/dialog';
   selector: 'data-download-email-confirmation-dialog',
   templateUrl: './data-download-email-confirmation-dialog.component.html',
   styleUrls: ['./data-download-email-confirmation-dialog.component.scss'],
+  standalone: false,
 })
 export class DataDownloadEmailConfirmationDialogComponent {
   constructor(private readonly dialogRef: MatDialogRef<DataDownloadEmailConfirmationDialogComponent>) {}

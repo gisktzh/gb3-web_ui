@@ -6,6 +6,7 @@ import {MatTooltip} from '@angular/material/tooltip';
 
 @Directive({
   selector: '[matTooltip][showTooltipIfTruncated]',
+  standalone: false,
 })
 export class ShowTooltipIfTruncatedDirective {
   constructor(

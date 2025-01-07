@@ -4,6 +4,7 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
   selector: 'color-picker-edit',
   templateUrl: './color-picker-edit.component.html',
   styleUrl: './color-picker-edit.component.scss',
+  standalone: false,
 })
 export class ColorPickerEditComponent {
   @Input() public fillColor: string = '';

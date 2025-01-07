@@ -20,6 +20,7 @@ import {OverviewSearchResultDisplayItem} from '../../../../shared/interfaces/ove
   selector: 'search-result-groups',
   templateUrl: './search-result-groups.component.html',
   styleUrls: ['./search-result-groups.component.scss'],
+  standalone: false,
 })
 export class SearchResultGroupsComponent implements OnInit, OnDestroy {
   public layerCatalogLoadingState: LoadingState;

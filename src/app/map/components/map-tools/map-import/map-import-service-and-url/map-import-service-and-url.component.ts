@@ -18,7 +18,6 @@ interface ServiceFormGroup {
 
 @Component({
   selector: 'map-import-service-and-url',
-  standalone: true,
   imports: [NgIf, SharedModule, ReactiveFormsModule],
   templateUrl: './map-import-service-and-url.component.html',
   styleUrl: './map-import-service-and-url.component.scss',

@@ -12,6 +12,7 @@ import {LoadingState} from '../../../../shared/types/loading-state.type';
   selector: 'drawing-download-dialog',
   templateUrl: './drawing-download-dialog.component.html',
   styleUrl: './drawing-download-dialog.component.scss',
+  standalone: false,
 })
 export class DrawingDownloadDialogComponent implements OnInit, OnDestroy {
   public availableExportFormats = Object.values(ExportFormat);

@@ -15,6 +15,7 @@ import {FavouriteCouldNotBeRemoved} from '../../../shared/errors/favourite.error
   selector: 'app-favourite-deletion-dialog',
   templateUrl: './favourite-deletion-dialog.component.html',
   styleUrls: ['./favourite-deletion-dialog.component.scss'],
+  standalone: false,
 })
 export class FavouriteDeletionDialogComponent implements HasSavingState, OnDestroy {
   public savingState: LoadingState;

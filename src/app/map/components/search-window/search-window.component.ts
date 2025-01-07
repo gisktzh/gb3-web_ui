@@ -18,6 +18,7 @@ import {SearchComponent} from '../../../shared/components/search/search.componen
   selector: 'search-window',
   templateUrl: './search-window.component.html',
   styleUrls: ['./search-window.component.scss'],
+  standalone: false,
 })
 export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   public searchState: SearchState = initialState;

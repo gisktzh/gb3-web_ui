@@ -8,6 +8,7 @@ import {FaqCollection} from '../../../shared/interfaces/faq.interface';
   selector: 'faq',
   templateUrl: './faq.component.html',
   styleUrls: ['./faq.component.scss'],
+  standalone: false,
 })
 export class FaqComponent implements OnInit, OnDestroy {
   public faqCollections: FaqCollection[] = [];

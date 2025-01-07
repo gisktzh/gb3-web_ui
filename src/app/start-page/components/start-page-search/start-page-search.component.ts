@@ -15,6 +15,7 @@ import {selectActiveSearchFilterValues} from '../../../state/data-catalogue/sele
   selector: 'start-page-search',
   templateUrl: './start-page-search.component.html',
   styleUrls: ['./start-page-search.component.scss'],
+  standalone: false,
 })
 export class StartPageSearchComponent implements OnInit, OnDestroy {
   public searchTerms: string[] = [];

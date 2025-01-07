@@ -10,6 +10,7 @@ import {selectMapConfigState} from '../../../../state/map/reducers/map-config.re
   selector: 'search-result-entry-map',
   templateUrl: './search-result-entry-map.component.html',
   styleUrls: ['./search-result-entry-map.component.scss'],
+  standalone: false,
 })
 export class SearchResultEntryMapComponent implements OnInit, OnDestroy {
   @Input() public filteredMaps: Map[] = [];

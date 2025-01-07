@@ -13,6 +13,7 @@ export interface TitleLink {
   selector: 'page-section',
   templateUrl: './page-section.component.html',
   styleUrls: ['./page-section.component.scss'],
+  standalone: false,
 })
 export class PageSectionComponent implements OnInit, OnDestroy {
   @Input() public background?: 'primary' | 'accent';

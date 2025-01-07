@@ -8,6 +8,7 @@ import {selectScale} from '../../../../state/map/reducers/map-config.reducer';
   selector: 'map-data-item-map-layer',
   templateUrl: './map-data-item-map-layer.component.html',
   styleUrls: ['./map-data-item-map-layer.component.scss'],
+  standalone: false,
 })
 export class MapDataItemMapLayerComponent implements OnInit, OnDestroy {
   @Input() public layer!: MapLayer;

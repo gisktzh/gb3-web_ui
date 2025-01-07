@@ -12,23 +12,10 @@ import {Subscription, tap} from 'rxjs';
 import {MatTooltip} from '@angular/material/tooltip';
 
 @Component({
-  standalone: true,
   selector: 'overview-search-result-item',
   templateUrl: './overview-search-result-item.component.html',
   styleUrls: ['./overview-search-result-item.component.scss'],
-  imports: [
-    RouterModule,
-    MatIcon,
-    MatDivider,
-    MatButtonModule,
-    ClickOnSpaceBarDirective,
-    NgForOf,
-    NgClass,
-    NgIf,
-    NgSwitch,
-    NgSwitchCase,
-    MatTooltip,
-  ],
+  imports: [RouterModule, MatIcon, MatDivider, MatButtonModule, ClickOnSpaceBarDirective, NgForOf, NgClass, NgIf, MatTooltip],
 })
 export class OverviewSearchResultItemComponent implements OnInit, OnDestroy {
   @Input() public item!: OverviewSearchResultDisplayItem;

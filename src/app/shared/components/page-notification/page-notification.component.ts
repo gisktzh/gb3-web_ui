@@ -11,6 +11,7 @@ import {ScreenMode} from '../../types/screen-size.type';
   selector: 'page-notification',
   templateUrl: './page-notification.component.html',
   styleUrls: ['./page-notification.component.scss'],
+  standalone: false,
 })
 export class PageNotificationComponent implements OnInit, OnDestroy {
   public readonly icon: string;

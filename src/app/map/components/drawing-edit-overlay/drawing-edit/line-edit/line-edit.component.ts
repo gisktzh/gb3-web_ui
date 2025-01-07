@@ -5,6 +5,7 @@ import {Gb3LineStringStyle, LineStyleConfiguration} from '../../../../../shared/
   selector: 'line-edit',
   templateUrl: './line-edit.component.html',
   styleUrl: './line-edit.component.scss',
+  standalone: false,
 })
 export class LineEditComponent {
   @Input() public lineStyle!: Gb3LineStringStyle;

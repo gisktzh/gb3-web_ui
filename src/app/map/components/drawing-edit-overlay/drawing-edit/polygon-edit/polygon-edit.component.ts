@@ -5,6 +5,7 @@ import {AreaStyleConfiguration, Gb3PolygonStyle} from '../../../../../shared/int
   selector: 'polygon-edit',
   templateUrl: './polygon-edit.component.html',
   styleUrl: './polygon-edit.component.scss',
+  standalone: false,
 })
 export class PolygonEditComponent {
   @Input() public polygonStyle!: Gb3PolygonStyle;

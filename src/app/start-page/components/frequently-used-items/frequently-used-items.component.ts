@@ -17,6 +17,7 @@ const NUMBER_OF_FREQUENTLY_USED_ITEMS = 3;
   selector: 'frequently-used-items',
   templateUrl: './frequently-used-items.component.html',
   styleUrls: ['./frequently-used-items.component.scss'],
+  standalone: false,
 })
 export class FrequentlyUsedItemsComponent implements OnInit, OnDestroy, HasLoadingState {
   public frequentlyUsedItems: FrequentlyUsedItem[] = [];

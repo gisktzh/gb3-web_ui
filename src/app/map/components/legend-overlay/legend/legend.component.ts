@@ -10,6 +10,7 @@ import {selectLegendItemsForDisplay} from 'src/app/state/map/selectors/legend-re
   selector: 'legend',
   templateUrl: './legend.component.html',
   styleUrls: ['./legend.component.scss'],
+  standalone: false,
 })
 export class LegendComponent implements OnInit, OnDestroy {
   @Input() public showInteractiveElements: boolean = true;

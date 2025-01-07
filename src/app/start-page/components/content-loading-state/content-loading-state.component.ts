@@ -5,6 +5,7 @@ import {LoadingState} from '../../../shared/types/loading-state.type';
   selector: 'content-loading-state',
   templateUrl: './content-loading-state.component.html',
   styleUrls: ['./content-loading-state.component.scss'],
+  standalone: false,
 })
 export class ContentLoadingStateComponent {
   @Input() public loadingState: LoadingState = 'loading';

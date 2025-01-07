@@ -12,6 +12,7 @@ import {RouteParamConstants} from '../../../shared/constants/route-param.constan
   selector: 'share-link-redirect',
   templateUrl: './share-link-redirect.component.html',
   styleUrls: ['./share-link-redirect.component.scss'],
+  standalone: false,
 })
 export class ShareLinkRedirectComponent implements OnInit, OnDestroy {
   public id: string | null = null;

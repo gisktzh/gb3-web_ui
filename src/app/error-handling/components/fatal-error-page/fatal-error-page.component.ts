@@ -6,6 +6,7 @@ import {Subscription, tap} from 'rxjs';
   selector: 'fatal-error-page',
   templateUrl: './fatal-error-page.component.html',
   styleUrls: ['./fatal-error-page.component.scss'],
+  standalone: false,
 })
 export class FatalErrorPageComponent implements OnInit, OnDestroy {
   public errorMessage: string | null = null;

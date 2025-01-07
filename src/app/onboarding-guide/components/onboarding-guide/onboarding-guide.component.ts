@@ -9,6 +9,7 @@ import {selectScreenMode} from '../../../state/app/reducers/app-layout.reducer';
   selector: 'onboarding-guide',
   templateUrl: './onboarding-guide.component.html',
   styleUrls: ['./onboarding-guide.component.scss'],
+  standalone: false,
 })
 export class OnboardingGuideComponent implements OnDestroy {
   public screenMode: ScreenMode = 'regular';

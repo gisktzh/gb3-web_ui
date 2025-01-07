@@ -9,8 +9,7 @@ import {DatasetElementTableComponent} from '../dataset-element-table/dataset-ele
 
 @Component({
   selector: 'dataset-element-detail',
-  standalone: true,
-  imports: [NgForOf, NgIf, DataDisplayComponent, CdkAccordionModule, SharedModule, DatasetElementTableComponent],
+  imports: [DataDisplayComponent, CdkAccordionModule, SharedModule, DatasetElementTableComponent],
   templateUrl: './dataset-element-detail.component.html',
   styleUrl: './dataset-element-detail.component.scss',
 })

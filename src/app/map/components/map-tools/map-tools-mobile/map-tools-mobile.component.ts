@@ -11,6 +11,7 @@ import {initialState as initialGeolocationState, selectGeolocationState} from '.
   selector: 'map-tools-mobile',
   templateUrl: './map-tools-mobile.component.html',
   styleUrls: ['./map-tools-mobile.component.scss'],
+  standalone: false,
 })
 export class MapToolsMobileComponent {
   public numberOfQueryLegends: number = 0;

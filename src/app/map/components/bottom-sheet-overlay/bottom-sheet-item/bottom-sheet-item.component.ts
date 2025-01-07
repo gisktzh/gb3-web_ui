@@ -12,6 +12,7 @@ import {selectMapAttributeFiltersItem} from 'src/app/state/map/selectors/map-att
   selector: 'bottom-sheet-item',
   templateUrl: './bottom-sheet-item.component.html',
   styleUrls: ['./bottom-sheet-item.component.scss'],
+  standalone: false,
 })
 export class BottomSheetItemComponent implements OnInit, OnDestroy {
   @Input() public overlayTitle?: string = '';

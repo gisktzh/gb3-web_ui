@@ -10,6 +10,7 @@ import {selectId, selectSavingState} from 'src/app/state/map/reducers/share-link
   selector: 'share-link-mobile',
   templateUrl: './share-link-mobile.component.html',
   styleUrls: ['./share-link-mobile.component.scss'],
+  standalone: false,
 })
 export class ShareLinkMobileComponent implements OnInit, OnDestroy {
   public shareLinkUrl?: string;

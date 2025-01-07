@@ -14,6 +14,7 @@ import {Store} from '@ngrx/store';
   selector: 'service-detail',
   templateUrl: './service-detail.component.html',
   styleUrls: ['./service-detail.component.scss'],
+  standalone: false,
 })
 export class ServiceDetailComponent extends AbstractBaseDetailComponent<ServiceMetadata> {
   public baseMetadataInformation?: BaseMetadataInformation;

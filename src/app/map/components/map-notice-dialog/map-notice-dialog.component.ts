@@ -7,6 +7,7 @@ import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
   selector: 'map-notice-dialog',
   templateUrl: './map-notice-dialog.component.html',
   styleUrls: ['./map-notice-dialog.component.scss'],
+  standalone: false,
 })
 export class MapNoticeDialogComponent {
   constructor(

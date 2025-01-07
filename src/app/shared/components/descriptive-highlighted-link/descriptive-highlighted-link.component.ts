@@ -4,6 +4,7 @@ import {Component, Input} from '@angular/core';
   selector: 'descriptive-highlighted-link',
   templateUrl: './descriptive-highlighted-link.component.html',
   styleUrls: ['./descriptive-highlighted-link.component.scss'],
+  standalone: false,
 })
 export class DescriptiveHighlightedLinkComponent {
   @Input() public title!: string;

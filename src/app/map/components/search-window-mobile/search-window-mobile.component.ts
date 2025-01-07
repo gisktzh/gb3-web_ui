@@ -15,6 +15,7 @@ import {GeometrySearchApiResultMatch} from '../../../shared/services/apis/search
   selector: 'search-window-mobile',
   templateUrl: './search-window-mobile.component.html',
   styleUrls: ['./search-window-mobile.component.scss'],
+  standalone: false,
 })
 export class SearchWindowMobileComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() public focusOnInit: boolean = true;

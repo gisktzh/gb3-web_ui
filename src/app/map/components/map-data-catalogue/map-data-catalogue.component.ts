@@ -25,6 +25,7 @@ import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
   selector: 'map-data-catalogue',
   templateUrl: './map-data-catalogue.component.html',
   styleUrls: ['./map-data-catalogue.component.scss'],
+  standalone: false,
 })
 export class MapDataCatalogueComponent implements OnInit, OnDestroy {
   @Output() public readonly changeIsMinimizedEvent = new EventEmitter<boolean>();

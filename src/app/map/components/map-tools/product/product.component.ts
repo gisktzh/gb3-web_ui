@@ -11,6 +11,7 @@ import {BehaviorSubject, Subscription, tap} from 'rxjs';
   selector: 'product',
   templateUrl: './product.component.html',
   styleUrls: ['./product.component.scss'],
+  standalone: false,
 })
 export class ProductComponent implements OnInit, OnDestroy {
   @Input() public product!: Product;

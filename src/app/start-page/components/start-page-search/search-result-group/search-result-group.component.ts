@@ -9,6 +9,7 @@ import {LoadingState} from '../../../../shared/types/loading-state.type';
   selector: 'search-result-group',
   templateUrl: './search-result-group.component.html',
   styleUrls: ['./search-result-group.component.scss'],
+  standalone: false,
 })
 export class SearchResultGroupComponent implements OnInit, OnDestroy {
   @Input() public header: string = '';

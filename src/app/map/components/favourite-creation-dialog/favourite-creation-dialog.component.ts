@@ -17,6 +17,7 @@ const FAVOURITE_NAME_CONSTRAINTS: ValidatorFn[] = [Validators.minLength(1), Vali
   selector: 'favourite-creation-dialog',
   templateUrl: './favourite-creation-dialog.component.html',
   styleUrls: ['./favourite-creation-dialog.component.scss'],
+  standalone: false,
 })
 export class FavouriteCreationDialogComponent implements OnInit, OnDestroy, HasSavingState {
   public nameFormControl!: FormControl<string | null>;

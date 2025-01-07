@@ -6,6 +6,7 @@ import {DialogContent} from '../auth-notification.service';
   selector: 'app-auth-notification-dialog',
   templateUrl: './auth-notification-dialog.component.html',
   styleUrls: ['./auth-notification-dialog.component.scss'],
+  standalone: false,
 })
 export class AuthNotificationDialogComponent {
   constructor(@Inject(MAT_DIALOG_DATA) public readonly data: DialogContent) {}

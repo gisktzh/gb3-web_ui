@@ -6,8 +6,7 @@ import {TextOrPlaceholderPipe} from '../../../../shared/pipes/text-or-placeholde
 
 @Component({
   selector: 'dataset-element-table',
-  standalone: true,
-  imports: [NgForOf, FormatLineBreaksPipe, TextOrPlaceholderPipe],
+  imports: [FormatLineBreaksPipe, TextOrPlaceholderPipe],
   templateUrl: './dataset-element-table.component.html',
   styleUrl: './dataset-element-table.component.scss',
 })

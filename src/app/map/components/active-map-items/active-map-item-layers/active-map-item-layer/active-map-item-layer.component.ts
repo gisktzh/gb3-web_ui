@@ -10,6 +10,7 @@ import {selectScale} from '../../../../../state/map/reducers/map-config.reducer'
   selector: 'active-map-item-layer',
   templateUrl: './active-map-item-layer.component.html',
   styleUrls: ['./active-map-item-layer.component.scss'],
+  standalone: false,
 })
 export class ActiveMapItemLayerComponent implements OnInit, OnDestroy {
   @Input() public activeMapItem!: ActiveMapItem;

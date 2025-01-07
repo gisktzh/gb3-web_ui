@@ -13,6 +13,7 @@ const FAVOURITE_ERROR_TOOLTIP =
   selector: 'map-data-item-favourite',
   templateUrl: './base-map-data-item.component.html',
   styleUrls: ['./base-map-data-item.component.scss'],
+  standalone: false,
 })
 export class MapDataItemFavouriteComponent extends BaseMapDataItemComponent implements OnInit, OnDestroy {
   @Input() public override loadingState: LoadingState;

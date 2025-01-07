@@ -14,6 +14,7 @@ const TWITTER_MAX_TWEETS = 4;
   selector: 'twitter-feed',
   templateUrl: './twitter-feed.component.html',
   styleUrls: ['./twitter-feed.component.scss'],
+  standalone: false,
 })
 export class TwitterFeedComponent implements AfterViewInit, OnDestroy, HasLoadingState {
   public loadingState: LoadingState = 'loading';

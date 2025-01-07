@@ -8,6 +8,7 @@ const COLOR_INPUT_DEBOUNCE_IN_MS = 10;
   selector: 'text-edit',
   templateUrl: './text-edit.component.html',
   styleUrl: './text-edit.component.scss',
+  standalone: false,
 })
 export class TextEditComponent implements OnInit, OnDestroy {
   @Input() public textStyle!: Gb3TextStyle;

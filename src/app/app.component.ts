@@ -26,6 +26,7 @@ import {SkipLinkTemplateVariable} from './shared/enums/skip-link-template-variab
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  standalone: false,
 })
 export class AppComponent implements OnInit, OnDestroy {
   @ViewChildren(Object.values(SkipLinkTemplateVariable).join(', '), {read: ElementRef}) private readonly elements!: QueryList<ElementRef>;

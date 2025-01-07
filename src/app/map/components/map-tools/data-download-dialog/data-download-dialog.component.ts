@@ -24,6 +24,7 @@ import {selectActiveDataDownloadFiltersPerCategory} from '../../../../state/map/
   selector: 'data-download-dialog',
   templateUrl: './data-download-dialog.component.html',
   styleUrls: ['./data-download-dialog.component.scss'],
+  standalone: false,
 })
 export class DataDownloadDialogComponent implements OnInit, OnDestroy {
   public order?: Order;

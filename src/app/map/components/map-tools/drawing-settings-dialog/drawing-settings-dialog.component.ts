@@ -11,6 +11,7 @@ import {ConfigService} from '../../../../shared/services/config.service';
   selector: 'drawing-settings-dialog',
   templateUrl: './drawing-settings-dialog.component.html',
   styleUrls: ['./drawing-settings-dialog.component.scss'],
+  standalone: false,
 })
 export class DrawingSettingsDialogComponent implements OnInit, OnDestroy {
   public fillColor = ColorUtils.convertSymbolizationColorToHex(this.configService.drawingConfig.defaultFillColor).hexColor;

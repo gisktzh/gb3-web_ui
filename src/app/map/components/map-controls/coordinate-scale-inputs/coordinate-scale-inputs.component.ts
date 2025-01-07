@@ -22,6 +22,7 @@ import {Coordinate} from '../../../../shared/interfaces/coordinate.interface';
   selector: 'coordinate-scale-inputs',
   templateUrl: './coordinate-scale-inputs.component.html',
   styleUrls: ['./coordinate-scale-inputs.component.scss'],
+  standalone: false,
 })
 export class CoordinateScaleInputsComponent implements OnInit, OnDestroy {
   public scale: number = 0;
