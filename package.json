@@ -26,8 +26,8 @@
   },
   "dependencies": {
     "@angular-devkit/build-angular": "^19.0.6",
-    "@angular-eslint/schematics": "^18.4.2",
-    "@angular-eslint/template-parser": "^18.4.2",
+    "@angular-eslint/schematics": "^19.0.2",
+    "@angular-eslint/template-parser": "^19.0.2",
     "@angular/animations": "^19.0.5",
     "@angular/cdk": "^19.0.4",
     "@angular/cli": "^19.0.6",
@@ -59,7 +59,7 @@
     "@uppy/core": "^4.0.0",
     "@uppy/drop-target": "^3.0.0",
     "@uppy/file-input": "^4.0.0",
-    "angular-oauth2-oidc": "^17.0.0",
+    "angular-oauth2-oidc": "^19.0.0",
     "angular-resizable-element": "^7.0.2",
     "chart.js": "^4.4.0",
     "dayjs": "^1.11.7",
@@ -94,6 +94,6 @@
     "lint-staged": "^15.0.0",
     "prettier": "^3.3.3",
     "puppeteer": "^23.0.0",
-    "typescript": "~5.5.0"
+    "typescript": "~5.5.4"
   }
 }
