@@ -1,5 +1,5 @@
-<div class="data-catalogue">
-  <div class="data-catalogue__content">
+<div>
+  <div>
     <page-section [background]="'primary'" [pageTitle]="true">
       <hero-header
         heroText="In dieser Übersicht finden Sie alle Applikationen die von kantonaler Bedeutung sind und mit Geoinformationen zu tun haben."
@@ -7,6 +7,14 @@
       ></hero-header>
     </page-section>
 
-    <page-section> {{ this.externalApps }} </page-section>
+    <page-section>
+      <link-grid-list>
+        @for (externalApp of this.externalApps; track $index) {
+          <link-grid-list-item [title]="externalApp.title" [url]="externalApp.appUrl">
+            <img class="app-image" [src]="externalApp.image.url" [alt]="externalApp.image.altText" />
+          </link-grid-list-item>
+        }
+      </link-grid-list>
+    </page-section>
   </div>
 </div>

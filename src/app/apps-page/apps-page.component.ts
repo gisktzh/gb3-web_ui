@@ -1,18 +1,20 @@
-import {Component} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {SharedModule} from '../shared/shared.module';
 import {Observable, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {ExternalApp} from '../shared/interfaces/external-app.interface';
 import {selectExternalApps} from '../state/external-apps/reducers/external-apps.reducer';
+import {LinkGridListComponent} from '../shared/components/lists/link-grid-list/link-grid-list.component';
+import {LinkGridListItemComponent} from '../shared/components/lists/link-grid-list/link-grid-list-item/link-grid-list-item.component';
 
 @Component({
   selector: 'apps-page',
   standalone: true,
-  imports: [SharedModule],
+  imports: [SharedModule, LinkGridListComponent, LinkGridListItemComponent],
   templateUrl: './apps-page.component.html',
   styleUrl: './apps-page.component.scss',
 })
-export class AppsPageComponent {
+export class AppsPageComponent implements OnInit, OnDestroy {
   public externalApps: ExternalApp[] = [];
   private readonly externalApps$: Observable<ExternalApp[]> = this.store.select(selectExternalApps);
   private readonly subscriptions: Subscription = new Subscription();

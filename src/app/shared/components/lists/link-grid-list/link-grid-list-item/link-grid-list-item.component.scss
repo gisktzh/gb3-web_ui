@@ -1,0 +1,49 @@
+@use 'mixins/helpers.mixin' as mixins;
+@use 'mixins/collapsing-flexbox-list.mixin' as collapsing-flexbox-list;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+/// The border width around the link elements
+$border-width: 8px; // todo: make variable
+
+/// Number of entries to be displayed
+$number-of-entries: 3;
+
+.link-grid-list-item {
+  @include collapsing-flexbox-list.list__item(
+    $border-width: $border-width,
+    $max-content-width: ktzh-variables.$zh-layout-max-content-width,
+    $number-of-entries: $number-of-entries,
+    $height: 310px
+  );
+
+  .link-grid-list-item__wrapper {
+    &:hover {
+      .link-grid-list-item__wrapper__content__title {
+        color: ktzh-variables.$zh-black100 !important;
+      }
+    }
+    @include collapsing-flexbox-list.list__item__wrapper(ktzh-variables.$zh-white);
+
+    .link-grid-list-item__wrapper__content {
+      padding: 40px;
+
+      .link-grid-list-item__wrapper__content__header {
+        margin-bottom: 4px;
+        font-size: 16px;
+        line-height: 24px;
+      }
+
+      .link-grid-list-item__wrapper__content__title {
+        @include mixins.multiline-ellipsis(3);
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: ktzh-variables.$zh-blue;
+        line-height: 1.05;
+      }
+
+      .link-grid-list-item__wrapper__content__text {
+        @include mixins.multiline-ellipsis(6);
+      }
+    }
+  }
+}
