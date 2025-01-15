@@ -7,7 +7,6 @@ import {CommonModule} from '@angular/common';
 
 @Component({
   selector: 'map-overlay',
-  standalone: true,
   templateUrl: './map-overlay.component.html',
   styleUrls: ['./map-overlay.component.scss'],
   imports: [SharedModule, CommonModule],

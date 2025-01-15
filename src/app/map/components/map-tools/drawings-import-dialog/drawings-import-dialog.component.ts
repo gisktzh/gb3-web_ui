@@ -10,6 +10,7 @@ import {LoadingState} from '../../../../shared/types/loading-state.type';
   selector: 'drawings-import-dialog',
   templateUrl: './drawings-import-dialog.component.html',
   styleUrl: './drawings-import-dialog.component.scss',
+  standalone: false,
 })
 export class DrawingsImportDialogComponent implements OnInit, OnDestroy {
   public loadingState: LoadingState = undefined;

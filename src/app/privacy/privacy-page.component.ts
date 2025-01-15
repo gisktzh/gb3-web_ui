@@ -11,6 +11,7 @@ const PRIVACY_SUMMARY =
   selector: 'privacy-page',
   templateUrl: './privacy-page.component.html',
   styleUrls: ['./privacy-page.component.scss'],
+  standalone: false,
 })
 export class PrivacyPageComponent implements OnInit, OnDestroy {
   public heroText = PRIVACY_SUMMARY;

@@ -8,7 +8,6 @@ import {FeatureFlags} from '../interfaces/feature-flags.interface';
 
 const featureFlagToCheck: keyof FeatureFlags = 'oerebExtract';
 @Component({
-  standalone: true,
   template: `<div><span *featureFlag="featureFlagToCheck">Test</span></div>`,
   imports: [FeatureFlagDirective],
 })

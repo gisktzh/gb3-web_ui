@@ -6,6 +6,7 @@ import {environment} from '../../../../environments/environment';
   selector: 'main-footer',
   templateUrl: './main-footer.component.html',
   styleUrls: ['./main-footer.component.scss'],
+  standalone: false,
 })
 export class MainFooterComponent {
   public readonly dataProtectionLink = [MainPage.Privacy];

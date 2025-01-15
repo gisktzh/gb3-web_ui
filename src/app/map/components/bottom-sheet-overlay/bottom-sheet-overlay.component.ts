@@ -8,6 +8,7 @@ import {selectBottomSheetContent} from 'src/app/state/map/reducers/map-ui.reduce
   selector: 'bottom-sheet-overlay',
   templateUrl: './bottom-sheet-overlay.component.html',
   styleUrls: ['./bottom-sheet-overlay.component.scss'],
+  standalone: false,
 })
 export class BottomSheetOverlayComponent implements OnInit, OnDestroy {
   @Input() public showInteractiveElements: boolean = true;

@@ -42,6 +42,7 @@ interface PrintForm {
   selector: 'print-dialog',
   templateUrl: './print-dialog.component.html',
   styleUrls: ['./print-dialog.component.scss'],
+  standalone: false,
 })
 export class PrintDialogComponent implements OnInit, OnDestroy {
   @ViewChild('stepper') private readonly stepper!: MatStepper;

@@ -4,6 +4,7 @@ import {DataDownloadConstants} from '../../shared/constants/data-download.consta
 
 @Pipe({
   name: 'dataDownloadOrderStatus',
+  standalone: false,
 })
 export class DataDownloadOrderStatusPipe implements PipeTransform {
   public transform(orderStatusJob: OrderStatusJob): string {

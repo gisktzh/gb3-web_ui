@@ -3,6 +3,7 @@ import {ConfigService} from '../services/config.service';
 
 @Pipe({
   name: 'basemapImageLink',
+  standalone: false,
 })
 export class BasemapImageLinkPipe implements PipeTransform {
   constructor(private readonly configService: ConfigService) {}

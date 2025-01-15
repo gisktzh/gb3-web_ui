@@ -16,6 +16,7 @@ import {
   selector: 'result-groups',
   templateUrl: './result-groups.component.html',
   styleUrls: ['./result-groups.component.scss'],
+  standalone: false,
 })
 export class ResultGroupsComponent implements OnInit, OnDestroy {
   @Input() showMultiplePanels: boolean = true;

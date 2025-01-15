@@ -12,7 +12,9 @@
     height: map-layout-variables.$navbar-height;
     overflow: hidden;
     @include mixins.hide-on-small-screens;
-    z-index: z-index-variables.$navbar;
+    & {
+      z-index: z-index-variables.$navbar;
+    }
   }
 
   .app__dev-mode-banner {

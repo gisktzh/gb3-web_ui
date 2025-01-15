@@ -11,7 +11,6 @@ import {MatDialog} from '@angular/material/dialog';
 
 @Component({
   selector: 'drawing-download-button',
-  standalone: true,
   imports: [MatIcon, MatTooltip, MatIconButton],
   templateUrl: './drawing-download-button.component.html',
   styleUrl: './drawing-download-button.component.scss',

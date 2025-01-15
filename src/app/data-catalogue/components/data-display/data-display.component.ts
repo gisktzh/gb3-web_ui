@@ -5,7 +5,6 @@ import {TextOrPlaceholderPipe} from '../../../shared/pipes/text-or-placeholder.p
 
 @Component({
   selector: 'data-display',
-  standalone: true,
   imports: [NgForOf, TextOrPlaceholderPipe],
   templateUrl: './data-display.component.html',
   styleUrls: ['./data-display.component.scss'],

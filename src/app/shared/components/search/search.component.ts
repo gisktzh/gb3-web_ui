@@ -12,6 +12,7 @@ const SEARCH_TERM_INPUT_DEBOUNCE_IN_MS = 300;
   selector: 'search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss'],
+  standalone: false,
 })
 export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() public placeholderText!: string;

@@ -15,6 +15,7 @@ import {MainPage} from '../shared/enums/main-page.enum';
   selector: 'embedded-map-page',
   templateUrl: './embedded-map-page.component.html',
   styleUrls: ['./embedded-map-page.component.scss'],
+  standalone: false,
 })
 export class EmbeddedMapPageComponent implements OnInit, OnDestroy {
   public numberOfQueryLegends: number = 0;

@@ -8,6 +8,7 @@ import {selectHideToggleUiElementsButton, selectHideUiElements} from 'src/app/st
   selector: 'ui-toggle',
   templateUrl: './ui-toggle.component.html',
   styleUrls: ['./ui-toggle.component.scss'],
+  standalone: false,
 })
 export class UiToggleComponent implements OnInit, OnDestroy {
   public checked: boolean = false;

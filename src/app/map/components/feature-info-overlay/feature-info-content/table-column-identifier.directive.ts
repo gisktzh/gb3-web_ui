@@ -2,6 +2,7 @@ import {Directive, ElementRef, Input} from '@angular/core';
 
 @Directive({
   selector: '[tableColumnIdentifier]',
+  standalone: false,
 })
 export class TableColumnIdentifierDirective {
   @Input() public topicId!: string;

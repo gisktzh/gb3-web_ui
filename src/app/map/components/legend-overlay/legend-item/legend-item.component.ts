@@ -6,6 +6,7 @@ import {ConfigService} from '../../../../shared/services/config.service';
   selector: 'legend-item',
   templateUrl: './legend-item.component.html',
   styleUrls: ['./legend-item.component.scss'],
+  standalone: false,
 })
 export class LegendItemComponent {
   @Input() public legendItem!: LegendDisplay;

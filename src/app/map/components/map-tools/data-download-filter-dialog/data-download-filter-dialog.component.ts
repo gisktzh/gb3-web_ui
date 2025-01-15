@@ -10,6 +10,7 @@ import {DataDownloadProductActions} from '../../../../state/map/actions/data-dow
   selector: 'data-download-filter-dialog',
   templateUrl: './data-download-filter-dialog.component.html',
   styleUrls: ['./data-download-filter-dialog.component.scss'],
+  standalone: false,
 })
 export class DataDownloadFilterDialogComponent implements OnInit, OnDestroy {
   public dataDownloadFilters: DataDownloadFilter[] = [];

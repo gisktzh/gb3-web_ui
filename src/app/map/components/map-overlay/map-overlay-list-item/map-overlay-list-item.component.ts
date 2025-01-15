@@ -5,6 +5,7 @@ import {ToggleButtonPosition} from '../../../types/toggle-button-position.type';
   selector: 'map-overlay-list-item',
   templateUrl: './map-overlay-list-item.component.html',
   styleUrls: ['./map-overlay-list-item.component.scss'],
+  standalone: false,
 })
 export class MapOverlayListItemComponent {
   @Input() public overlayTitle: string = '';

@@ -11,6 +11,7 @@ type TabType = 'layers' | 'settings';
   selector: 'active-map-item',
   templateUrl: './active-map-item.component.html',
   styleUrls: ['./active-map-item.component.scss'],
+  standalone: false,
 })
 export class ActiveMapItemComponent implements OnInit, OnDestroy {
   @Input() public activeMapItem!: ActiveMapItem;

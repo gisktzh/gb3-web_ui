@@ -18,6 +18,7 @@ interface BaseMetadataWithTopicInformation extends BaseMetadataInformation {
   selector: 'map-detail',
   templateUrl: './map-detail.component.html',
   styleUrls: ['./map-detail.component.scss'],
+  standalone: false,
 })
 export class MapDetailComponent extends AbstractBaseDetailComponent<MapMetadata> {
   public baseMetadataInformation?: BaseMetadataWithTopicInformation;

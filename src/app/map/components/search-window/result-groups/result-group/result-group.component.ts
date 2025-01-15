@@ -17,6 +17,7 @@ import {SearchActions} from '../../../../../state/app/actions/search.actions';
   selector: 'result-group',
   templateUrl: './result-group.component.html',
   styleUrls: ['./result-group.component.scss'],
+  standalone: false,
 })
 export class ResultGroupComponent implements OnInit, OnDestroy {
   @Input() public searchResults: GeometrySearchApiResultMatch[] = [];

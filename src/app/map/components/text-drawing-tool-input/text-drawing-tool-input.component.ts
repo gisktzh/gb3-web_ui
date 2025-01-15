@@ -14,6 +14,7 @@ const TEXT_DRAWING_CONSTRAINTS: ValidatorFn[] = [
   selector: 'text-drawing-tool-input',
   templateUrl: './text-drawing-tool-input.component.html',
   styleUrls: ['./text-drawing-tool-input.component.scss'],
+  standalone: false,
 })
 export class TextDrawingToolInputComponent implements OnInit {
   public textFormControl!: FormControl<string | null>;

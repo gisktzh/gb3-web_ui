@@ -8,6 +8,7 @@ import {DrawingActions} from '../../../state/map/actions/drawing.actions';
   selector: 'drawing-edit-overlay',
   templateUrl: './drawing-edit-overlay.component.html',
   styleUrl: './drawing-edit-overlay.component.scss',
+  standalone: false,
 })
 export class DrawingEditOverlayComponent implements OnInit, OnDestroy {
   public isVisible: boolean = false;

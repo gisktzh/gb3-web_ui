@@ -2,6 +2,7 @@ import {Pipe, PipeTransform} from '@angular/core';
 
 @Pipe({
   name: 'highlightSearchQuery',
+  standalone: false,
 })
 export class HighlightSearchQueryPipe implements PipeTransform {
   public transform(textItem: string, searchQuery: string | string[] | undefined): string {

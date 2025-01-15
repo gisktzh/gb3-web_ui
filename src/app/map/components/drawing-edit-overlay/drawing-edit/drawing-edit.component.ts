@@ -12,6 +12,7 @@ import {DrawingActions} from '../../../../state/map/actions/drawing.actions';
   selector: 'drawing-edit',
   templateUrl: './drawing-edit.component.html',
   styleUrl: './drawing-edit.component.scss',
+  standalone: false,
 })
 export class DrawingEditComponent implements OnInit, OnDestroy {
   public selectedFeature?: Gb3StyledInternalDrawingRepresentation;

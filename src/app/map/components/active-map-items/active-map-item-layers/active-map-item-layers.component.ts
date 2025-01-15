@@ -9,6 +9,7 @@ import {CdkDrag, CdkDragDrop} from '@angular/cdk/drag-drop';
   selector: 'active-map-item-layers',
   templateUrl: './active-map-item-layers.component.html',
   styleUrls: ['./active-map-item-layers.component.scss'],
+  standalone: false,
 })
 export class ActiveMapItemLayersComponent {
   @Input() public activeMapItem!: ActiveMapItem;

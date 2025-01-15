@@ -3,6 +3,7 @@ import {MapLayer} from '../interfaces/topic.interface';
 
 @Pipe({
   name: 'layerTooltip',
+  standalone: false,
 })
 export class LayerTooltipPipe implements PipeTransform {
   public transform(layer: MapLayer): unknown {

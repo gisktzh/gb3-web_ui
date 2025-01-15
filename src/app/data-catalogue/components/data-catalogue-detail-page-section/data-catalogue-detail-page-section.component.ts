@@ -4,6 +4,7 @@ import {Component, Input} from '@angular/core';
   selector: 'data-catalogue-detail-page-section',
   templateUrl: './data-catalogue-detail-page-section.component.html',
   styleUrls: ['./data-catalogue-detail-page-section.component.scss'],
+  standalone: false,
 })
 export class DataCatalogueDetailPageSectionComponent {
   @Input() public hasTwoColumns: boolean = false;

@@ -5,6 +5,7 @@ import {ExternalLinkButtonComponent} from './external-link-button.component';
   selector: 'gb2-exit-button',
   templateUrl: './external-link-button.component.html',
   styleUrls: ['./external-link-button.component.scss'],
+  standalone: false,
 })
 export class Gb2ExitButtonComponent extends ExternalLinkButtonComponent {
   public override toolTip?: string =

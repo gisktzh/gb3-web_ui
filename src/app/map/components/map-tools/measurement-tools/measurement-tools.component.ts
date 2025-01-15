@@ -12,6 +12,7 @@ const TOOLTIP_TEXT = {
   selector: 'measurement-tools',
   templateUrl: './measurement-tools.component.html',
   styleUrls: ['./measurement-tools.component.scss'],
+  standalone: false,
 })
 export class MeasurementToolsComponent extends AbstractToolsComponent {
   public tooltipText = TOOLTIP_TEXT;

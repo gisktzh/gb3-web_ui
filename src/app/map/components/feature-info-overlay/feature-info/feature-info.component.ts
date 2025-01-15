@@ -12,6 +12,7 @@ import {selectFeatureInfosForDisplay} from '../../../../state/map/selectors/feat
   selector: 'feature-info',
   templateUrl: './feature-info.component.html',
   styleUrls: ['./feature-info.component.scss'],
+  standalone: false,
 })
 export class FeatureInfoComponent implements OnInit, OnDestroy {
   @Input() public showInteractiveElements: boolean = true;

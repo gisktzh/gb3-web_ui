@@ -2,6 +2,7 @@ import {Pipe, PipeTransform} from '@angular/core';
 
 @Pipe({
   name: 'formatContent',
+  standalone: false,
 })
 export class FormatContentPipe implements PipeTransform {
   public transform(value: string): string {

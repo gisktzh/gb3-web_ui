@@ -19,6 +19,7 @@ import {MapConfigActions} from '../state/map/actions/map-config.actions';
   selector: 'map-page',
   templateUrl: './map-page.component.html',
   styleUrls: ['./map-page.component.scss'],
+  standalone: false,
 })
 export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
   public numberOfQueryLegends: number = 0;

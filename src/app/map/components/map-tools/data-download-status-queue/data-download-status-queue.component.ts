@@ -10,6 +10,7 @@ import {DataDownloadOrderStatusJobActions} from '../../../../state/map/actions/d
   selector: 'data-download-status-queue',
   templateUrl: './data-download-status-queue.component.html',
   styleUrls: ['./data-download-status-queue.component.scss'],
+  standalone: false,
 })
 export class DataDownloadStatusQueueComponent implements OnInit, OnDestroy {
   public isMinimized = false;

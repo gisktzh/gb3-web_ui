@@ -14,6 +14,7 @@ import {OverlayPrintActions} from '../../../state/map/actions/overlay-print-acti
   selector: 'feature-info-overlay',
   templateUrl: './feature-info-overlay.component.html',
   styleUrls: ['./feature-info-overlay.component.scss'],
+  standalone: false,
 })
 export class FeatureInfoOverlayComponent implements OnInit, OnDestroy {
   /** A value indicating whether interactive elements (like buttons) should be shown. [Default: true] */

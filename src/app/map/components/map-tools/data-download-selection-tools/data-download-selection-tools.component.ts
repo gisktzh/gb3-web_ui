@@ -13,6 +13,7 @@ const TOOLTIP_TEXT = {
   selector: 'data-download-selection-tools',
   templateUrl: './data-download-selection-tools.component.html',
   styleUrls: ['./data-download-selection-tools.component.scss'],
+  standalone: false,
 })
 export class DataDownloadSelectionToolsComponent extends AbstractToolsComponent {
   public tooltipText = TOOLTIP_TEXT;

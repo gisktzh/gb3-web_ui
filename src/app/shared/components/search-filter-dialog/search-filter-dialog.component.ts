@@ -12,6 +12,7 @@ import {ScreenMode} from '../../types/screen-size.type';
   selector: 'search-filter-dialog',
   templateUrl: './search-filter-dialog.component.html',
   styleUrls: ['./search-filter-dialog.component.scss'],
+  standalone: false,
 })
 export class SearchFilterDialogComponent implements OnInit, OnDestroy {
   public nonEmptyFilterGroups: SearchFilterGroup[] = [];

@@ -20,6 +20,7 @@ const TOOLTIP_TEXT = {
   selector: 'drawing-tools',
   templateUrl: './drawing-tools.component.html',
   styleUrls: ['./drawing-tools.component.scss'],
+  standalone: false,
 })
 export class DrawingToolsComponent extends AbstractToolsComponent {
   public tooltipText = TOOLTIP_TEXT;

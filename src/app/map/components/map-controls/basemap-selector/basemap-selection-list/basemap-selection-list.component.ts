@@ -12,6 +12,7 @@ import {BasemapConfigService} from '../../../../services/basemap-config.service'
   selector: 'basemap-selection-list',
   templateUrl: './basemap-selection-list.component.html',
   styleUrls: ['./basemap-selection-list.component.scss'],
+  standalone: false,
 })
 export class BasemapSelectionListComponent implements OnInit, OnDestroy {
   @Output() public readonly basemapChangedEvent = new EventEmitter();

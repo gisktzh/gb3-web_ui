@@ -5,6 +5,7 @@ import {LoadingState} from '../../types/loading-state.type';
   selector: 'expandable-list-item',
   templateUrl: './expandable-list-item.component.html',
   styleUrls: ['./expandable-list-item.component.scss'],
+  standalone: false,
 })
 export class ExpandableListItemComponent {
   @Input() public expanded: boolean = false;

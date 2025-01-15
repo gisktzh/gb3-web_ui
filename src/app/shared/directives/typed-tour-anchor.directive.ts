@@ -8,6 +8,7 @@ import {OnboardingGuideAnchor} from '../../onboarding-guide/types/onboarding-gui
  */
 @Directive({
   selector: '[typedTourAnchor]',
+  standalone: false,
 })
 export class TypedTourAnchorDirective extends TourAnchorMatMenuDirective implements OnInit {
   @Input() public typedTourAnchor!: OnboardingGuideAnchor;

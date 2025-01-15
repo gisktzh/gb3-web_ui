@@ -12,6 +12,7 @@ import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
   templateUrl: './map-tools.component.html',
   styleUrls: ['./map-tools.component.scss'],
   providers: [{provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useFactory: toolTipFactoryMapToolsAndControls, deps: [ConfigService]}],
+  standalone: false,
 })
 export class MapToolsComponent implements OnInit, OnDestroy {
   public screenMode: ScreenMode = 'regular';

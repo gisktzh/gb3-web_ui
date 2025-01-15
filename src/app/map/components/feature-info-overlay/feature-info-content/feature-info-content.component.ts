@@ -78,6 +78,7 @@ const DEFAULT_TABLE_HEADER_PREFIX = 'Resultat';
   selector: 'feature-info-content',
   templateUrl: './feature-info-content.component.html',
   styleUrls: ['./feature-info-content.component.scss'],
+  standalone: false,
 })
 export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() public layer!: FeatureInfoResultLayer;

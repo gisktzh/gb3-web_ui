@@ -14,6 +14,7 @@ import {Store} from '@ngrx/store';
   selector: 'product-detail',
   templateUrl: './product-detail.component.html',
   styleUrls: ['./product-detail.component.scss'],
+  standalone: false,
 })
 export class ProductDetailComponent extends AbstractBaseDetailComponent<ProductMetadata> {
   public baseMetadataInformation?: BaseMetadataInformation;

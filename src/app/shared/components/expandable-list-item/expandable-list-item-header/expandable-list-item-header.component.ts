@@ -5,6 +5,7 @@ import {LoadingState} from 'src/app/shared/types/loading-state.type';
   selector: 'expandable-list-item-header',
   templateUrl: './expandable-list-item-header.component.html',
   styleUrls: ['./expandable-list-item-header.component.scss'],
+  standalone: false,
 })
 export class ExpandableListItemHeaderComponent {
   @Input() public title!: string;

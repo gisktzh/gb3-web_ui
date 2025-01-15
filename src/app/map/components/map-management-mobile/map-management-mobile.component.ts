@@ -23,6 +23,7 @@ const FAVOURITE_HELPER_MESSAGES = {
   selector: 'map-management-mobile',
   templateUrl: './map-management-mobile.component.html',
   styleUrls: ['./map-management-mobile.component.scss'],
+  standalone: false,
 })
 export class MapManagementMobileComponent implements OnInit, OnDestroy {
   public activeMapItems: ActiveMapItem[] = [];

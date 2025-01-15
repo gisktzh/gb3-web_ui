@@ -21,13 +21,12 @@
 
 .map-container {
   height: calc(100vh - #{map-layout-variables.$navbar-height}); // subtracts height of navbar
+  position: relative;
+  $minimal-bottom-height: map-layout-variables.$esri-attribution-widget-height;
 
   @supports (height: 100dvh) {
     height: calc(100dvh - #{map-layout-variables.$navbar-height}); // subtracts height of navbar
   }
-
-  position: relative;
-  $minimal-bottom-height: map-layout-variables.$esri-attribution-widget-height;
 
   &--dev-mode {
     height: calc(100vh - #{map-layout-variables.$navbar-height} - #{map-layout-variables.$dev-mode-banner-height});
@@ -72,14 +71,14 @@
   }
 
   .map-container__all-map-items-container {
-    @include mixins.hide-on-small-screens;
-
     position: absolute;
     top: 12px;
     left: 12px;
     bottom: calc(12px + $minimal-bottom-height);
     width: map-layout-variables.$map-overlay-width;
     pointer-events: none;
+
+    @include mixins.hide-on-small-screens;
 
     .map-container__all-map-items-container__inner-container {
       display: flex;
@@ -121,12 +120,14 @@
     @include mixins.hide-on-small-screens;
     @include material-mixins.mat-icon-custom-svg-size(16px);
 
-    position: absolute;
-    top: 12px;
-    left: calc(24px + #{map-layout-variables.$map-overlay-width});
-    height: 48px;
-    width: map-layout-variables.$legend-button-width;
-    background-color: ktzh-variables.$zh-background-color;
+    & {
+      position: absolute;
+      top: 12px;
+      left: calc(24px + #{map-layout-variables.$map-overlay-width});
+      height: 48px;
+      width: map-layout-variables.$legend-button-width;
+      background-color: ktzh-variables.$zh-background-color;
+    }
   }
 
   .map-container__map-attribute-filter {

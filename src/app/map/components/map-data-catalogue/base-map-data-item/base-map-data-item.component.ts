@@ -8,6 +8,7 @@ import {MapConstants} from '../../../../shared/constants/map.constants';
   // no selector here as it is a base component
   templateUrl: './base-map-data-item.component.html',
   styleUrls: ['./base-map-data-item.component.scss'],
+  standalone: false,
 })
 export class BaseMapDataItemComponent {
   @Input() public title!: string;

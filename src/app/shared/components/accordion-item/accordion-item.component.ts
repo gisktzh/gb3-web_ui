@@ -12,6 +12,7 @@ import {CdkAccordionItem} from '@angular/cdk/accordion';
   selector: 'accordion-item',
   templateUrl: './accordion-item.component.html',
   styleUrls: ['./accordion-item.component.scss'],
+  standalone: false,
 })
 export class AccordionItemComponent implements OnInit, OnDestroy {
   /**
