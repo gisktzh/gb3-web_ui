@@ -55,5 +55,6 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
     overrides: {
       overrideWmsUrl: 'https://web.wms.zh.ch',
     },
+    accessMode: 'internet',
   },
 ];

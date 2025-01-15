@@ -52,5 +52,6 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
     overrides: {
       overrideWmsUrl: 'http://localhost:4200/wms',
     },
+    accessMode: 'internet',
   },
 ];

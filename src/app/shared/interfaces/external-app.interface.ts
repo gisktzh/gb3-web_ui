@@ -4,6 +4,7 @@
  * * `image` should be a separate interface; we could maybe use the LinkObject interface
  * * `visibility` should be an enum, if that is better suited should it become filterable
  */
+import {AccessMode} from '../types/access-mode.type';
 
 type ExternalAppTopic =
   | 'Bauten'
@@ -34,7 +35,7 @@ type ExternalAppCategory =
   | 'Erfassungstool';
 
 export interface ExternalApp {
-  visibility: 'internet' | 'intranet' | 'both';
+  visibility: AccessMode | 'both';
   title: string;
   description: string;
   email: string;

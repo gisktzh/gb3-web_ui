@@ -3,9 +3,9 @@ import {SharedModule} from '../shared/shared.module';
 import {Observable, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {ExternalApp} from '../shared/interfaces/external-app.interface';
-import {selectExternalApps} from '../state/external-apps/reducers/external-apps.reducer';
 import {LinkGridListComponent} from '../shared/components/lists/link-grid-list/link-grid-list.component';
 import {LinkGridListItemComponent} from '../shared/components/lists/link-grid-list/link-grid-list-item/link-grid-list-item.component';
+import {selectExternalAppsForAccessMode} from '../state/external-apps/selectors/external-apps.selector';
 
 @Component({
   selector: 'apps-page',
@@ -16,7 +16,7 @@ import {LinkGridListItemComponent} from '../shared/components/lists/link-grid-li
 })
 export class AppsPageComponent implements OnInit, OnDestroy {
   public externalApps: ExternalApp[] = [];
-  private readonly externalApps$: Observable<ExternalApp[]> = this.store.select(selectExternalApps);
+  private readonly externalApps$: Observable<ExternalApp[]> = this.store.select(selectExternalAppsForAccessMode);
   private readonly subscriptions: Subscription = new Subscription();
 
   constructor(private readonly store: Store) {}

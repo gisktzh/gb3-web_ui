@@ -50,5 +50,6 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
     },
     featureFlags: {},
     overrides: {},
+    accessMode: 'internet',
   },
 ];

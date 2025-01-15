@@ -54,5 +54,6 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       oerebExtract: !defaultFeatureFlags.oerebExtract,
     },
     overrides: {},
+    accessMode: 'internet',
   },
 ];

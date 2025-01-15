@@ -7,6 +7,7 @@ export const appFeatureKey = 'app';
 export const initialState: AppState = {
   devMode: false,
   dynamicInternalUrlsConfiguration: {geolion: {href: ''}},
+  accessMode: 'internet',
 };
 
 export const appFeature = createFeature({
@@ -19,7 +20,10 @@ export const appFeature = createFeature({
     on(AppActions.setDynamicInternalUrlConfiguration, (state, {dynamicInternalUrlsConfiguration}): AppState => {
       return {...state, dynamicInternalUrlsConfiguration};
     }),
+    on(AppActions.setEnvironment, (state, {environment}): AppState => {
+      return {...state, accessMode: environment};
+    }),
   ),
 });
 
-export const {name, reducer, selectAppState, selectDevMode, selectDynamicInternalUrlsConfiguration} = appFeature;
+export const {name, reducer, selectAppState, selectDevMode, selectDynamicInternalUrlsConfiguration, selectAccessMode} = appFeature;
