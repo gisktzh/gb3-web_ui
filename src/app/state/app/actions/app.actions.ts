@@ -8,6 +8,6 @@ export const AppActions = createActionGroup({
   events: {
     'Activate Dev Mode': emptyProps(),
     'Set Dynamic Internal Url Configuration': props<{dynamicInternalUrlsConfiguration: DynamicInternalUrlsConfiguration}>(),
-    'Set Environment': props<{environment: AccessMode}>(),
+    'Set Access Mode': props<{accessMode: AccessMode}>(),
   },
 });

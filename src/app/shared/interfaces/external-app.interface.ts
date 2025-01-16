@@ -1,9 +1,3 @@
-/**
- * Todo: some things need more details:
- * * `topic` and `categories` could be enums; depending on how the filters are implemented; also, they should not be in this file
- * * `image` should be a separate interface; we could maybe use the LinkObject interface
- * * `visibility` should be an enum, if that is better suited should it become filterable
- */
 import {AccessMode} from '../types/access-mode.type';
 
 type ExternalAppTopic =

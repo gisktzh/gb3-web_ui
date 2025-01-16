@@ -20,8 +20,8 @@ export const appFeature = createFeature({
     on(AppActions.setDynamicInternalUrlConfiguration, (state, {dynamicInternalUrlsConfiguration}): AppState => {
       return {...state, dynamicInternalUrlsConfiguration};
     }),
-    on(AppActions.setEnvironment, (state, {environment}): AppState => {
-      return {...state, accessMode: environment};
+    on(AppActions.setAccessMode, (state, {accessMode}): AppState => {
+      return {...state, accessMode};
     }),
   ),
 });

@@ -96,7 +96,7 @@ export class ConfigService {
     this.authConfig = runtimeConfig.authSettings;
     this.featureFlags = {...defaultFeatureFlags, ...runtimeConfig.featureFlags};
 
-    this.store.dispatch(AppActions.setEnvironment({environment: runtimeConfig.accessMode}));
+    this.store.dispatch(AppActions.setAccessMode({accessMode: runtimeConfig.accessMode}));
     this.initializeDynamicInternalUrlsState();
   }
 
