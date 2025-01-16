@@ -21,7 +21,7 @@ export const externalAppsData: ExternalApp[] = [
     appUrl: 'https://portal.ebaugesuche.zh.ch/ ',
     department: 'ARE',
     image: {
-      url: 'https://cataas.com/cat?width=500&height=250',
+      url: 'https://maps.zh.ch/system/docs/Stromnetzgebiete/baugesuche_thumbnail.webp',
       altText: '',
     },
     title: 'eBaugesuche',
@@ -69,7 +69,7 @@ export const externalAppsData: ExternalApp[] = [
     appUrl: 'https://web.maps.zh.ch/apps/elm/tba/videoStrassenraumZH.html?easting=2678552.42&northing=1254281.63&map=true',
     department: 'TBA',
     image: {
-      url: 'https://cataas.com/cat?width=500&height=250',
+      url: 'https://maps.zh.ch/system/docs/Stromnetzgebiete/infra3d_thumbnail.webp',
       altText: '',
     },
     title: '3D Strassenraum für Kantonsstrassen',
@@ -84,7 +84,7 @@ export const externalAppsData: ExternalApp[] = [
     appUrl: 'https://vdp.zh.ch/',
     department: 'TBA',
     image: {
-      url: 'https://cataas.com/cat?width=500&height=250',
+      url: 'https://maps.zh.ch/system/docs/Stromnetzgebiete/verkehr_thumbnail.webp',
       altText: '',
     },
     title: 'Veloverkehr Online',
@@ -100,7 +100,7 @@ export const externalAppsData: ExternalApp[] = [
     appUrl: 'https://hydroproweb.zh.ch/Karten/A4%20Wassertemperaturen/Wassertemp.html',
     department: 'AWEL',
     image: {
-      url: 'https://cataas.com/cat?width=500&height=250',
+      url: 'https://maps.zh.ch/system/docs/Stromnetzgebiete/wassertemperatur_thumbnail.webp',
       altText: '',
     },
     title: 'Wassertemperaturen der Oberflächengewässern',
@@ -116,10 +116,10 @@ export const externalAppsData: ExternalApp[] = [
     appUrl: 'https://wl62www41.webland.ch/tensiometer_cms/tensiometerwerte.php',
     department: 'ALN',
     image: {
-      url: 'https://cataas.com/cat?width=500&height=250',
+      url: 'https://maps.zh.ch/system/docs/Stromnetzgebiete/bodenfeuchte_thumbnail.webp',
       altText: '',
     },
-    title: 'Bodenfeuchte',
+    title: 'Bodenfeuchte-Messnetz',
     email: 'reto.mani@bd.zh.ch',
     keywords: ['Bodenfeuchte', 'Saugspannungsbereich'],
     topic: 'Boden',
@@ -132,7 +132,7 @@ export const externalAppsData: ExternalApp[] = [
     appUrl: 'https://openzh.shinyapps.io/Lokalklima/',
     department: 'STAT',
     image: {
-      url: 'https://cataas.com/cat?width=500&height=250',
+      url: 'https://maps.zh.ch/system/docs/Stromnetzgebiete/lokalklima_thumbnail.webp',
       altText: '',
     },
     title: 'Lokalklima-Messnetz',
