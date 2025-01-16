@@ -1,26 +1,27 @@
-import {AfterViewInit, ChangeDetectorRef, Directive, HostListener, Input, OnDestroy, OnInit} from '@angular/core';
-import {SearchResultIdentifierDirective} from './search-result-identifier.directive';
+import {AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {SearchResultIdentifierDirective} from '../../../directives/search-result-identifier.directive';
+import {SearchComponent} from '../search.component';
+import {selectTerm} from '../../../../state/app/reducers/search.reducer';
 import {Subscription, tap} from 'rxjs';
-import {selectTerm} from '../../state/app/reducers/search.reducer';
 import {Store} from '@ngrx/store';
-import {SearchComponent} from '../components/search/search.component';
 
-@Directive({
-  selector: '[searchResultKeyboardNavigation]',
-  standalone: true,
+@Component({
+  selector: 'abstract-search-container',
+  imports: [],
+  template: '',
 })
-export class SearchResultKeyboardNavigationDirective implements OnInit, OnDestroy, AfterViewInit {
-  @Input() public allSearchResults: SearchResultIdentifierDirective[] = [];
-  @Input() public searchComponent!: SearchComponent;
+export class AbstractSearchContainerComponent implements OnInit, OnDestroy, AfterViewInit {
+  public allSearchResults: SearchResultIdentifierDirective[] = [];
+  @ViewChild(SearchComponent) public readonly searchComponent!: SearchComponent;
   private term: string = '';
   private selectedSearchResultIndex: number = -1;
   private selectedResult: SearchResultIdentifierDirective | undefined;
-  private readonly term$ = this.store.select(selectTerm);
-  private readonly subscriptions: Subscription = new Subscription();
+  protected readonly term$ = this.store.select(selectTerm);
+  protected readonly subscriptions: Subscription = new Subscription();
 
   constructor(
-    private readonly store: Store,
-    private readonly cdr: ChangeDetectorRef,
+    protected readonly store: Store,
+    protected readonly cdr: ChangeDetectorRef,
   ) {}
 
   public ngOnInit() {
@@ -68,7 +69,7 @@ export class SearchResultKeyboardNavigationDirective implements OnInit, OnDestro
     const direction = event.shiftKey ? -1 : 1;
     // Find the next focusable element (first of group) and set focus on it
     for (let i = this.selectedSearchResultIndex + direction; i >= 0 && i < this.allSearchResults.length; i += direction) {
-      const item = this.allSearchResults[i] as SearchResultIdentifierDirective;
+      const item = this.allSearchResults[i];
       if (item.isFocusable) {
         event.preventDefault();
         this.selectedSearchResultIndex = i;

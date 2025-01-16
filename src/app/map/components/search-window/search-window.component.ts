@@ -1,21 +1,20 @@
-import {AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {filter, Subscription, tap} from 'rxjs';
+import {AfterViewInit, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {filter, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {ConfigService} from '../../../shared/services/config.service';
 import {SearchActions} from '../../../state/app/actions/search.actions';
 import {SearchFilterDialogComponent} from '../../../shared/components/search-filter-dialog/search-filter-dialog.component';
 import {PanelClass} from '../../../shared/enums/panel-class.enum';
 import {MatDialog} from '@angular/material/dialog';
-import {initialState, selectSearchState, selectSelectedSearchResult, selectTerm} from '../../../state/app/reducers/search.reducer';
+import {initialState, selectSearchState, selectSelectedSearchResult} from '../../../state/app/reducers/search.reducer';
 import {SearchState} from '../../../state/app/states/search.state';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
 import {selectIsAnySearchFilterActiveSelector} from '../../../state/app/selectors/is-any-search-filter-active.selector';
-import {SearchComponent} from '../../../shared/components/search/search.component';
 import {ResultGroupsComponent} from './result-groups/result-groups.component';
-import {SearchResultIdentifierDirective} from '../../../shared/directives/search-result-identifier.directive';
 import {ResultGroupComponent} from './result-groups/result-group/result-group.component';
+import {AbstractSearchContainerComponent} from '../../../shared/components/search/abstract-search-container/abstract-search-container.component';
 
 @Component({
   selector: 'search-window',
@@ -23,13 +22,11 @@ import {ResultGroupComponent} from './result-groups/result-group/result-group.co
   styleUrls: ['./search-window.component.scss'],
   standalone: false,
 })
-export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
+export class SearchWindowComponent extends AbstractSearchContainerComponent implements OnInit, OnDestroy, AfterViewInit {
   public searchState: SearchState = initialState;
   public screenMode: ScreenMode = 'regular';
   public isAnySearchFilterActive: boolean = false;
-  public allSearchResults: SearchResultIdentifierDirective[] = [];
 
-  @ViewChild(SearchComponent) public readonly searchComponent!: SearchComponent;
   @ViewChild(ResultGroupsComponent) private readonly resultGroupsComponent!: ResultGroupsComponent;
 
   private readonly searchConfig = this.configService.searchConfig.mapPage;
@@ -37,26 +34,29 @@ export class SearchWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly isAnySearchFilterActive$ = this.store.select(selectIsAnySearchFilterActiveSelector);
   private readonly selectedSearchResult$ = this.store.select(selectSelectedSearchResult);
-  private readonly term$ = this.store.select(selectTerm);
-  private readonly subscriptions: Subscription = new Subscription();
   constructor(
-    private readonly store: Store,
     private readonly configService: ConfigService,
     private readonly dialogService: MatDialog,
-    private readonly cdr: ChangeDetectorRef,
-  ) {}
+    @Inject(Store) store: Store,
+    @Inject(ChangeDetectorRef) cdr: ChangeDetectorRef,
+  ) {
+    super(store, cdr);
+  }
 
-  public ngOnInit() {
+  public override ngOnInit() {
+    super.ngOnInit();
     this.store.dispatch(SearchActions.setFilterGroups({filterGroups: this.searchConfig.filterGroups}));
     this.initSubscriptions();
   }
 
-  public ngOnDestroy() {
+  public override ngOnDestroy() {
+    super.ngOnDestroy();
     this.subscriptions.unsubscribe();
     this.store.dispatch(SearchActions.resetSearchAndFilters());
   }
 
-  public ngAfterViewInit() {
+  public override ngAfterViewInit() {
+    super.ngAfterViewInit();
     this.subscriptions.add(
       this.selectedSearchResult$
         .pipe(
