@@ -45,6 +45,17 @@
     <mat-icon svgIcon="ktzh_select_section"></mat-icon>
   </button>
   <button
+    (click)="this.toggleFederationSelecting()"
+    [ngClass]="{'data-download-selection-tools__button--active': activeTool === 'select-federation'}"
+    class="data-download-selection-tools__button"
+    color="accent"
+    mat-icon-button
+    [matTooltip]="tooltipText.federationSelecting"
+    [attr.aria-label]="tooltipText.federationSelecting"
+  >
+    <mat-icon svgIcon="ktzh_select_switzerland"></mat-icon>
+  </button>
+  <button
     (click)="this.toggleCantonSelecting()"
     [ngClass]="{'data-download-selection-tools__button--active': activeTool === 'select-canton'}"
     class="data-download-selection-tools__button"

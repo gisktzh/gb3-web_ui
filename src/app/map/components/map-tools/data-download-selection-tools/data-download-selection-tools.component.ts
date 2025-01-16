@@ -6,6 +6,7 @@ const TOOLTIP_TEXT = {
   polygonSelecting: 'Polygon-Selektion: Auf Startpunkt klicken oder Doppelklick um zu beenden.',
   rectangleSelecting: 'Rechteck-Selektion: Diagonale Eckpunkte wählen.',
   sectionSelecting: 'Selektion: Aktueller Karten-Ausschnitt.',
+  federationSelecting: 'Selektion: Ganze Schweiz.',
   cantonSelecting: 'Selektion: Ganzer Kanton Zürich.',
   municipalitySelecting: 'Selektion: Auswahl einer Zürcher Gemeinde.',
 };
@@ -31,6 +32,10 @@ export class DataDownloadSelectionToolsComponent extends AbstractToolsComponent 
 
   public toggleSectionSelecting() {
     this.toggleTool('select-section');
+  }
+
+  public toggleFederationSelecting() {
+    this.toggleTool('select-federation');
   }
 
   public toggleCantonSelecting() {

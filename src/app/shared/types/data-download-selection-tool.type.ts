@@ -3,5 +3,6 @@ export type DataDownloadSelectionTool =
   | 'select-polygon'
   | 'select-rectangle'
   | 'select-section'
+  | 'select-federation'
   | 'select-canton'
   | 'select-municipality';

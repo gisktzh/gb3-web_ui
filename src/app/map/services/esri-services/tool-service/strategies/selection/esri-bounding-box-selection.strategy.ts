@@ -1,38 +1,42 @@
 import {InternalDrawingLayer} from '../../../../../../shared/enums/drawing-layer.enum';
-import {DataDownloadSelection} from '../../../../../../shared/interfaces/data-download-selection.interface';
+import {DataDownloadSelection, GeometryDataDownloadSelection} from '../../../../../../shared/interfaces/data-download-selection.interface';
 import {UnstyledInternalDrawingRepresentation} from '../../../../../../shared/interfaces/internal-drawing-representation.interface';
 import {AbstractEsriSelectionStrategy} from '../abstract-esri-selection.strategy';
 import {Observable} from 'rxjs';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import {map} from 'rxjs/operators';
-import {CantonWithGeometry} from '../../../../../../shared/interfaces/gb3-geoshop-product.interface';
 import {SupportedGeometry} from '../../../../../../shared/types/SupportedGeometry.type';
 import {ConfigService} from '../../../../../../shared/services/config.service';
 import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
+import {HasBoundingBox} from '../../../../../../shared/interfaces/has-bounding-box.interface';
+import {BoundingBoxDataDownloadSelectionGeometry} from '../../../../../../shared/types/data-download-selection-geometry.type';
 
-export class EsriCantonSelectionStrategy extends AbstractEsriSelectionStrategy<DrawingCallbackHandler['completeSelection']> {
-  private readonly cantonWithGeometry$;
+export class EsriBoundingBoxSelectionStrategy extends AbstractEsriSelectionStrategy<DrawingCallbackHandler['completeSelection']> {
+  private readonly boundingBoxWithGeometry$;
+  private readonly type: BoundingBoxDataDownloadSelectionGeometry;
   constructor(
     layer: GraphicsLayer,
     polygonSymbol: SimpleFillSymbol,
     completeCallbackHandler: DrawingCallbackHandler['completeSelection'],
-    cantonWithGeometry$: Observable<CantonWithGeometry | undefined>,
+    boundingBoxWithGeometry$: Observable<HasBoundingBox | undefined>,
+    type: BoundingBoxDataDownloadSelectionGeometry,
     private readonly configService: ConfigService,
   ) {
     super(layer, polygonSymbol, completeCallbackHandler);
-    this.cantonWithGeometry$ = cantonWithGeometry$;
+    this.boundingBoxWithGeometry$ = boundingBoxWithGeometry$;
+    this.type = type;
   }
 
   protected createSelection(): Observable<DataDownloadSelection | undefined> {
-    return this.cantonWithGeometry$.pipe(
-      map((cantonWithGeometry) => {
-        if (!cantonWithGeometry) {
+    return this.boundingBoxWithGeometry$.pipe(
+      map((boundingBoxWithGeometry) => {
+        if (!boundingBoxWithGeometry) {
           return undefined;
         }
-        const selection: DataDownloadSelection = {
-          type: 'canton',
-          drawingRepresentation: this.createDrawingRepresentation(cantonWithGeometry.boundingBox),
+        const selection: GeometryDataDownloadSelection = {
+          type: this.type,
+          drawingRepresentation: this.createDrawingRepresentation(boundingBoxWithGeometry.boundingBox),
         };
         return selection;
       }),

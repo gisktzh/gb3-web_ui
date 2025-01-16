@@ -23,7 +23,7 @@ import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {EsriElevationProfileMeasurementStrategy} from './strategies/measurement/esri-elevation-profile-measurement.strategy';
 import {EsriPolygonSelectionStrategy} from './strategies/selection/esri-polygon-selection.strategy';
 import {EsriScreenExtentSelectionStrategy} from './strategies/selection/esri-screen-extent-selection.strategy';
-import {EsriCantonSelectionStrategy} from './strategies/selection/esri-canton-selection.strategy';
+import {EsriBoundingBoxSelectionStrategy} from './strategies/selection/esri-bounding-box-selection.strategy';
 import {EsriMunicipalitySelectionStrategy} from './strategies/selection/esri-municipality-selection.strategy';
 import Graphic from '@arcgis/core/Graphic';
 import Polygon from '@arcgis/core/geometry/Polygon';
@@ -261,7 +261,7 @@ describe('EsriToolService', () => {
         expect(screenExtentSpy).toHaveBeenCalled();
       });
       it(`sets the correct strategy for canton selection`, () => {
-        const cantonSpy = spyOn(EsriCantonSelectionStrategy.prototype, 'start');
+        const cantonSpy = spyOn(EsriBoundingBoxSelectionStrategy.prototype, 'start');
         service.initializeDataDownloadSelection('select-canton');
         expect(cantonSpy).toHaveBeenCalled();
       });

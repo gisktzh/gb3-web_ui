@@ -8,7 +8,11 @@ import {DataDownloadRegionActions} from '../actions/data-download-region.actions
 import {selectCanton, selectFederation, selectMunicipalities} from '../reducers/data-download-region.reducer';
 import {Gb3GeoshopCantonService} from '../../../shared/services/apis/gb3/gb3-geoshop-canton.service';
 import {Gb3GeoshopMunicipalitiesService} from '../../../shared/services/apis/gb3/gb3-geoshop-municipalities.service';
-import {CantonCouldNotBeLoaded, MunicipalitiesCouldNotBeLoaded} from '../../../shared/errors/data-download.errors';
+import {
+  CantonCouldNotBeLoaded,
+  FederationCouldNotBeLoaded,
+  MunicipalitiesCouldNotBeLoaded,
+} from '../../../shared/errors/data-download.errors';
 import {Gb3GeoshopFederationService} from '../../../shared/services/apis/gb3/gb3-geoshop-federation.service';
 
 @Injectable()
@@ -34,7 +38,7 @@ export class DataDownloadRegionEffects {
       return this.actions$.pipe(
         ofType(DataDownloadRegionActions.setFederationError),
         tap(({error}) => {
-          throw new CantonCouldNotBeLoaded(error);
+          throw new FederationCouldNotBeLoaded(error);
         }),
       );
     },

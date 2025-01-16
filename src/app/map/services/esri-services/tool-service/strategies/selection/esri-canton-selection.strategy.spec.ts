@@ -1,7 +1,7 @@
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {InternalDrawingLayer} from '../../../../../../shared/enums/drawing-layer.enum';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
-import {EsriCantonSelectionStrategy} from './esri-canton-selection.strategy';
+import {EsriBoundingBoxSelectionStrategy} from './esri-bounding-box-selection.strategy';
 import {fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {ConfigService} from '../../../../../../shared/services/config.service';
 import {Observable, of} from 'rxjs';
@@ -34,7 +34,7 @@ describe('EsriCantonSelectionStrategy', () => {
     it('does clear the layer and does not dispatch anything', () => {
       const callbackSpy = spyOn(callbackHandler, 'handle');
       cantonWithGeometry$ = of(undefined);
-      const strategy = new EsriCantonSelectionStrategy(
+      const strategy = new EsriBoundingBoxSelectionStrategy(
         layer,
         fillSymbol,
         (selection) => callbackHandler.handle(selection),
@@ -53,7 +53,7 @@ describe('EsriCantonSelectionStrategy', () => {
     it('dispatches a new selection', fakeAsync(() => {
       const callbackSpy = spyOn(callbackHandler, 'handle');
       cantonWithGeometry$ = of({boundingBox: MinimalGeometriesUtils.getMinimalPolygon(2056)});
-      const strategy = new EsriCantonSelectionStrategy(
+      const strategy = new EsriBoundingBoxSelectionStrategy(
         layer,
         fillSymbol,
         (selection) => callbackHandler.handle(selection),

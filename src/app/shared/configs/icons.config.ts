@@ -197,6 +197,10 @@ const selectingSymbolIconsConfig = [
     path: 'assets/icons/tools/select-section.svg',
   },
   {
+    id: 'ktzh_select_switzerland',
+    path: 'assets/icons/tools/select-switzerland.svg',
+  },
+  {
     id: 'ktzh_select_canton',
     path: 'assets/icons/tools/select-canton.svg',
   },

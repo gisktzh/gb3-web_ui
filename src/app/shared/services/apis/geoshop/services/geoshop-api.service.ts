@@ -46,6 +46,7 @@ export class GeoshopApiService extends BaseApiService {
   public createOrderFromSelection(selection: DataDownloadSelection): Order {
     switch (selection.type) {
       case 'polygon':
+      case 'federation':
       case 'canton':
         return this.createDirectOrderFromSelection(selection);
       case 'municipality':
