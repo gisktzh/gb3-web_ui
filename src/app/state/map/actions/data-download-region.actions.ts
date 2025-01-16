@@ -1,10 +1,13 @@
 import {createActionGroup, emptyProps, props} from '@ngrx/store';
 import {errorProps} from '../../../shared/utils/error-props.utils';
-import {CantonWithGeometry, Municipality} from '../../../shared/interfaces/gb3-geoshop-product.interface';
+import {CantonWithGeometry, FederationWithGeometry, Municipality} from '../../../shared/interfaces/gb3-geoshop-product.interface';
 
 export const DataDownloadRegionActions = createActionGroup({
   source: 'DataDownloadRegion',
   events: {
+    'Load Federation': emptyProps(),
+    'Set Federation': props<{federation: FederationWithGeometry}>(),
+    'Set Federation Error': errorProps(),
     'Load Canton': emptyProps(),
     'Set Canton': props<{canton: CantonWithGeometry}>(),
     'Set Canton Error': errorProps(),

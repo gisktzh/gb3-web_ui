@@ -7,6 +7,7 @@ export interface Municipality {
   name: string;
 }
 
+export type FederationWithGeometry = HasBoundingBox;
 export type CantonWithGeometry = HasBoundingBox;
 export type MunicipalityWithGeometry = Municipality & HasBoundingBox;
 
