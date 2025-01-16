@@ -6,7 +6,7 @@ import {Directive, ElementRef, EventEmitter, Input, Output} from '@angular/core'
 })
 export class SearchResultIdentifierDirective {
   @Input() public isMapResult: boolean = false;
-  @Input() public text: string = '';
+  @Input({required: true}) public text!: string;
   @Input() public isFocusable: boolean = false;
   @Output() public readonly addResultFromArrowNavigation = new EventEmitter<void>();
   @Output() public readonly removeResultFromArrowNavigation = new EventEmitter<void>();
