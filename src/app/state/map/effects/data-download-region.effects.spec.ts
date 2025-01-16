@@ -6,16 +6,21 @@ import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {MAP_SERVICE} from '../../../app.module';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
-import {CantonCouldNotBeLoaded, MunicipalitiesCouldNotBeLoaded} from '../../../shared/errors/data-download.errors';
-import {CantonWithGeometry, Municipality} from '../../../shared/interfaces/gb3-geoshop-product.interface';
+import {
+  CantonCouldNotBeLoaded,
+  FederationCouldNotBeLoaded,
+  MunicipalitiesCouldNotBeLoaded,
+} from '../../../shared/errors/data-download.errors';
+import {CantonWithGeometry, FederationWithGeometry, Municipality} from '../../../shared/interfaces/gb3-geoshop-product.interface';
 import {DataDownloadRegionEffects} from './data-download-region.effects';
 import {Gb3GeoshopCantonService} from '../../../shared/services/apis/gb3/gb3-geoshop-canton.service';
 import {Gb3GeoshopMunicipalitiesService} from '../../../shared/services/apis/gb3/gb3-geoshop-municipalities.service';
 import {DataDownloadRegionActions} from '../actions/data-download-region.actions';
 import {MinimalGeometriesUtils} from '../../../testing/map-testing/minimal-geometries.utils';
-import {selectCanton, selectMunicipalities} from '../reducers/data-download-region.reducer';
+import {selectCanton, selectFederation, selectMunicipalities} from '../reducers/data-download-region.reducer';
 import {catchError} from 'rxjs/operators';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {Gb3GeoshopFederationService} from '../../../shared/services/apis/gb3/gb3-geoshop-federation.service';
 
 describe('DataDownloadRegionEffects', () => {
   const errorMock = new Error('oh no! anyway...');
@@ -23,6 +28,7 @@ describe('DataDownloadRegionEffects', () => {
   let actions$: Observable<Action>;
   let store: MockStore;
   let effects: DataDownloadRegionEffects;
+  let geoshopFederationService: Gb3GeoshopFederationService;
   let geoshopCantonService: Gb3GeoshopCantonService;
   let geoshopMunicipalitiesService: Gb3GeoshopMunicipalitiesService;
 
@@ -41,6 +47,7 @@ describe('DataDownloadRegionEffects', () => {
       ],
     });
     effects = TestBed.inject(DataDownloadRegionEffects);
+    geoshopFederationService = TestBed.inject(Gb3GeoshopFederationService);
     geoshopCantonService = TestBed.inject(Gb3GeoshopCantonService);
     geoshopMunicipalitiesService = TestBed.inject(Gb3GeoshopMunicipalitiesService);
     store = TestBed.inject(MockStore);
@@ -48,6 +55,71 @@ describe('DataDownloadRegionEffects', () => {
 
   afterEach(() => {
     store.resetSelectors();
+  });
+
+  describe('loadFederation$', () => {
+    it('dispatches DataDownloadRegionActions.setFederation() after loading the federation successfully', (done: DoneFn) => {
+      const federation: FederationWithGeometry = {boundingBox: MinimalGeometriesUtils.getMinimalPolygon(2056)};
+      store.overrideSelector(selectFederation, undefined);
+      const geoshopFederationServiceSpy = spyOn(geoshopFederationService, 'loadFederation').and.returnValue(of(federation));
+
+      const expectedAction = DataDownloadRegionActions.setFederation({federation});
+
+      actions$ = of(DataDownloadRegionActions.loadFederation());
+      effects.loadFederation$.subscribe((action) => {
+        expect(geoshopFederationServiceSpy).toHaveBeenCalledOnceWith();
+        expect(action).toEqual(expectedAction);
+        done();
+      });
+    });
+
+    it('dispatches DataDownloadRegionActions.setFederationError() after loading the federation unsuccessfully', (done: DoneFn) => {
+      const error = errorMock;
+      store.overrideSelector(selectFederation, undefined);
+      const geoshopFederationServiceSpy = spyOn(geoshopFederationService, 'loadFederation').and.returnValue(throwError(() => error));
+
+      const expectedAction = DataDownloadRegionActions.setFederationError({error});
+
+      actions$ = of(DataDownloadRegionActions.loadFederation());
+      effects.loadFederation$.subscribe((action) => {
+        expect(geoshopFederationServiceSpy).toHaveBeenCalledOnceWith();
+        expect(action).toEqual(expectedAction);
+        done();
+      });
+    });
+
+    it('dispatches nothing if the federation is already in the store', fakeAsync(async () => {
+      const federation: FederationWithGeometry = {boundingBox: MinimalGeometriesUtils.getMinimalPolygon(2056)};
+      store.overrideSelector(selectFederation, federation);
+      const geoshopFederationServiceSpy = spyOn(geoshopFederationService, 'loadFederation').and.callThrough();
+
+      let newAction;
+      actions$ = of(DataDownloadRegionActions.loadFederation());
+      effects.loadFederation$.subscribe((action) => (newAction = action));
+      flush();
+
+      expect(geoshopFederationServiceSpy).not.toHaveBeenCalled();
+      expect(newAction).toBeUndefined();
+    }));
+  });
+
+  describe('throwFederationError$', () => {
+    it('throws a FederationCouldNotBeLoaded error after setting a federation error', (done: DoneFn) => {
+      const error = errorMock;
+
+      const expectedError = new FederationCouldNotBeLoaded(error);
+
+      actions$ = of(DataDownloadRegionActions.setFederationError({error}));
+      effects.throwFederationError$
+        .pipe(
+          catchError((e: unknown) => {
+            expect(e).toEqual(expectedError);
+            done();
+            return EMPTY;
+          }),
+        )
+        .subscribe();
+    });
   });
 
   describe('loadCanton$', () => {

@@ -39,6 +39,7 @@ describe('EsriCantonSelectionStrategy', () => {
         fillSymbol,
         (selection) => callbackHandler.handle(selection),
         cantonWithGeometry$,
+        'canton',
         configService,
       );
       const layerRemoveAllSpy = spyOn(layer, 'removeAll');
@@ -58,6 +59,7 @@ describe('EsriCantonSelectionStrategy', () => {
         fillSymbol,
         (selection) => callbackHandler.handle(selection),
         cantonWithGeometry$,
+        'canton',
         configService,
       );
 

@@ -260,6 +260,11 @@ describe('EsriToolService', () => {
         service.initializeDataDownloadSelection('select-section');
         expect(screenExtentSpy).toHaveBeenCalled();
       });
+      it(`sets the correct strategy for federation selection`, () => {
+        const federationSpy = spyOn(EsriBoundingBoxSelectionStrategy.prototype, 'start');
+        service.initializeDataDownloadSelection('select-federation');
+        expect(federationSpy).toHaveBeenCalled();
+      });
       it(`sets the correct strategy for canton selection`, () => {
         const cantonSpy = spyOn(EsriBoundingBoxSelectionStrategy.prototype, 'start');
         service.initializeDataDownloadSelection('select-canton');
