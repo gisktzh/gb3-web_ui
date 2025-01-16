@@ -6,7 +6,7 @@
 ></content-loading-state>
 <link-grid-list>
   @for (newsEntry of this.news; track $index) {
-    <link-grid-list-item [title]="newsEntry.title" [entryType]="'Mitteilung'" [entryDate]="newsEntry.date">
+    <link-grid-list-item [url]="newsEntry.link" [title]="newsEntry.title" [entryType]="'Mitteilung'" [entryDate]="newsEntry.date">
       {{ newsEntry.teaserText }}
     </link-grid-list-item>
   }

@@ -5,15 +5,20 @@
 /// The border width around the link elements
 $border-width: 8px; // todo: make variable
 
-/// Number of entries to be displayed
-$number-of-entries: 3;
-
 .link-grid-list-item {
+  --number-of-entries: 3;
+  --height: 310px;
+
+  &--large {
+    --number-of-entries: 2;
+    --height: 649px;
+  }
+
   @include collapsing-flexbox-list.list__item(
     $border-width: $border-width,
     $max-content-width: ktzh-variables.$zh-layout-max-content-width,
-    $number-of-entries: $number-of-entries,
-    $height: 310px
+    $number-of-entries: var(--number-of-entries),
+    $height: var(--height)
   );
 
   .link-grid-list-item__wrapper {
@@ -22,7 +27,16 @@ $number-of-entries: 3;
         color: ktzh-variables.$zh-black100 !important;
       }
     }
+
     @include collapsing-flexbox-list.list__item__wrapper(ktzh-variables.$zh-white);
+
+    .link-grid-list-item__wrapper__image {
+      display: block;
+      width: 100%;
+      height: 327px;
+      object-fit: cover;
+      object-position: center;
+    }
 
     .link-grid-list-item__wrapper__content {
       padding: 40px;
