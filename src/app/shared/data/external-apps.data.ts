@@ -2,7 +2,7 @@ import {ExternalApp} from '../interfaces/external-app.interface';
 
 export const externalAppsData: ExternalApp[] = [
   {
-    appUrl: 'https://lk.zh.ch ',
+    appUrl: 'https://lk.zh.ch',
     department: 'ARE',
     image: {
       url: 'https://maps.zh.ch/system/docs/Stromnetzgebiete/leitungskataster_thumbnail.webp',
@@ -18,20 +18,20 @@ export const externalAppsData: ExternalApp[] = [
       'Der kantonale Leitungskataster bildet alle ober- und unterirdischen Versorgungs- und Entsorgungsleitungen der Medien Wasser, Abwasser, Elektrizität, Fernwärme, Gas und Kommunikation ab. Mit diesem Auskunftssystem lassen sich Projekte einfacher planen und koordinieren.',
   },
   {
-    appUrl: 'https://portal.ebaugesuche.zh.ch/ ',
-    department: 'ARE',
+    appUrl: 'https://hydroproweb.zh.ch/Karten/A1%20Pegel%20und%20Abfl%C3%BCsse/PegelAbfl.html',
+    department: 'AWEL',
     image: {
-      url: 'https://maps.zh.ch/system/docs/Stromnetzgebiete/baugesuche_thumbnail.webp',
+      url: 'https://maps.zh.ch/system/docs/Stromnetzgebiete/pegel_thumbnail.webp',
       altText: '',
     },
-    title: 'eBaugesuche',
+    title: 'Abflüsse und Wasserstände der Oberflächengewässer',
     email: 'datenlogistik@bd.zh.ch',
-    keywords: ['Baueingabe', 'Baugesuche', 'Bauprojekte', 'Baubewilligungen'],
-    topic: 'Bauten',
-    categories: ['Fachapplikationen', 'Erfassungstool'],
+    keywords: ['Abflüsse', 'Wasserstände', 'Oberflächengewässer'],
+    topic: 'Wasser',
+    categories: ['Fachapplikationen'],
     visibility: 'both',
     description:
-      'Die Plattform «eBaugesucheZH» ermöglicht die vollständig elektronische Abwicklung des Baubewilligungsverfahrens von der Eingabe des Baugesuchs über die Prüfung, Bewilligung bis zur Abnahme des Bauvorhabens. Viele Gemeinden bieten diesen Online-Service bereits an.',
+      'Die nachfolgende Karte zeigt die aktuellen Abflüsse und Wasserstände der für den Kanton Zürich massgebenden hydrometrischen Stationen. Für alle Stationen lassen sich Ganglinien der letzten 24 Stunden, 7 und 31 Tage darstellen.',
   },
   {
     appUrl: 'https://web.maps.zh.ch/potree',
