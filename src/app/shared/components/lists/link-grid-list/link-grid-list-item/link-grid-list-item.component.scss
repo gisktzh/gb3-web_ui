@@ -3,7 +3,7 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
 /// The border width around the link elements
-$border-width: 8px; // todo: make variable
+$border-width: 8px;
 
 .link-grid-list-item {
   --number-of-entries: 3;
