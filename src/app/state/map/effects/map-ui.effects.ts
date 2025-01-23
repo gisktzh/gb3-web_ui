@@ -246,6 +246,14 @@ export class MapUiEffects {
     );
   });
 
+  public loadDataDownloadFederation$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MapUiActions.toggleToolMenu),
+      filter((action) => action.tool === 'data-download'),
+      map(() => DataDownloadRegionActions.loadFederation()),
+    );
+  });
+
   public loadDataDownloadCanton$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapUiActions.toggleToolMenu),

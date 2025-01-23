@@ -2,7 +2,7 @@ import {initialState, reducer} from './data-download-region.reducer';
 import {DataDownloadRegionState} from '../states/data-download-region.state';
 import {DataDownloadRegionActions} from '../actions/data-download-region.actions';
 import {MinimalGeometriesUtils} from '../../../testing/map-testing/minimal-geometries.utils';
-import {CantonWithGeometry, Municipality} from '../../../shared/interfaces/gb3-geoshop-product.interface';
+import {BoundingBoxWithGeometry, Municipality} from '../../../shared/interfaces/gb3-geoshop-product.interface';
 
 describe('data download region reducer', () => {
   const existingStateMunicipalities: Municipality[] = [
@@ -32,6 +32,8 @@ describe('data download region reducer', () => {
 
   beforeEach(() => {
     existingState = {
+      federation: {boundingBox: MinimalGeometriesUtils.getMinimalPolygon(2056)},
+      federationLoadingState: 'loaded',
       canton: {boundingBox: MinimalGeometriesUtils.getMinimalPolygon(2056)},
       cantonLoadingState: 'loaded',
       municipalities: existingStateMunicipalities,
@@ -45,6 +47,66 @@ describe('data download region reducer', () => {
       const result = reducer(initialState, action);
 
       expect(result).toBe(initialState);
+    });
+  });
+
+  describe('loadFederation', () => {
+    it('sets the federationLoadingState to `loading` if the federation is not loaded yet and resets the federation; keeps everything else', () => {
+      existingState.federation = undefined;
+
+      const action = DataDownloadRegionActions.loadFederation();
+      const state = reducer(existingState, action);
+
+      expect(state.federation).toEqual(initialState.federation);
+      expect(state.federationLoadingState).toBe('loading');
+      expect(state.canton).toEqual(existingState.canton);
+      expect(state.cantonLoadingState).toBe(existingState.cantonLoadingState);
+      expect(state.municipalities).toEqual(existingState.municipalities);
+      expect(state.municipalitiesLoadingState).toBe(existingState.municipalitiesLoadingState);
+    });
+
+    it('keeps everything as it is if there is already a federation', () => {
+      const action = DataDownloadRegionActions.loadFederation();
+      const state = reducer(existingState, action);
+
+      expect(state.federation).toEqual(existingState.federation);
+      expect(state.federationLoadingState).toBe(existingState.federationLoadingState);
+      expect(state.canton).toEqual(existingState.canton);
+      expect(state.cantonLoadingState).toBe(existingState.cantonLoadingState);
+      expect(state.municipalities).toEqual(existingState.municipalities);
+      expect(state.municipalitiesLoadingState).toBe(existingState.municipalitiesLoadingState);
+    });
+  });
+
+  describe('setFederation', () => {
+    it('sets federationLoadingState to loaded and federation to the given value; keeps everything else', () => {
+      existingState.federationLoadingState = 'loading';
+      existingState.federation = undefined;
+      const expectedFederation: BoundingBoxWithGeometry = {boundingBox: MinimalGeometriesUtils.getMinimalPolygon(2056)};
+
+      const action = DataDownloadRegionActions.setFederation({federation: expectedFederation});
+      const state = reducer(existingState, action);
+
+      expect(state.federation).toEqual(expectedFederation);
+      expect(state.federationLoadingState).toBe('loaded');
+      expect(state.canton).toEqual(existingState.canton);
+      expect(state.cantonLoadingState).toBe(existingState.cantonLoadingState);
+      expect(state.municipalities).toEqual(existingState.municipalities);
+      expect(state.municipalitiesLoadingState).toBe(existingState.municipalitiesLoadingState);
+    });
+  });
+
+  describe('setFederationError', () => {
+    it('sets federationLoadingState to error and resets federation; keeps everything else', () => {
+      const action = DataDownloadRegionActions.setFederationError({error: errorMock});
+      const state = reducer(existingState, action);
+
+      expect(state.federation).toEqual(initialState.federation);
+      expect(state.federationLoadingState).toBe('error');
+      expect(state.canton).toEqual(existingState.canton);
+      expect(state.cantonLoadingState).toBe(existingState.cantonLoadingState);
+      expect(state.municipalities).toEqual(existingState.municipalities);
+      expect(state.municipalitiesLoadingState).toBe(existingState.municipalitiesLoadingState);
     });
   });
 
@@ -76,7 +138,7 @@ describe('data download region reducer', () => {
     it('sets cantonLoadingState to loaded and canton to the given value; keeps everything else', () => {
       existingState.cantonLoadingState = 'loading';
       existingState.canton = undefined;
-      const expectedCanton: CantonWithGeometry = {boundingBox: MinimalGeometriesUtils.getMinimalPolygon(2056)};
+      const expectedCanton: BoundingBoxWithGeometry = {boundingBox: MinimalGeometriesUtils.getMinimalPolygon(2056)};
 
       const action = DataDownloadRegionActions.setCanton({canton: expectedCanton});
       const state = reducer(existingState, action);

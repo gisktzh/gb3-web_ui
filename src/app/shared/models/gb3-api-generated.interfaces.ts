@@ -11,7 +11,7 @@
 
 import {SupportedEsriTool} from '../../map/services/esri-services/tool-service/strategies/supported-esri-tool.type';
 
-export interface Canton {
+export interface BboxGeoshop {
   /** GeoJSON geometry object */
   boundingbox: Geometry;
 }
@@ -1312,7 +1312,9 @@ export interface VectorLayerWithoutStyles {
   styles?: VectorLayerStyles;
 }
 
-export type CantonListData = Canton;
+export type SwitzerlandListData = BboxGeoshop;
+
+export type CantonListData = BboxGeoshop;
 
 export type ImportGeojsonCreateData = VectorLayer;
 

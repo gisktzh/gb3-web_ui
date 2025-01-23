@@ -5,20 +5,52 @@ import {catchError, map} from 'rxjs/operators';
 import {filter, of, switchMap, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {DataDownloadRegionActions} from '../actions/data-download-region.actions';
-import {selectCanton, selectMunicipalities} from '../reducers/data-download-region.reducer';
-import {Gb3GeoshopCantonService} from '../../../shared/services/apis/gb3/gb3-geoshop-canton.service';
+import {selectCanton, selectFederation, selectMunicipalities} from '../reducers/data-download-region.reducer';
+import {Gb3GeoshopBoundingBoxService} from '../../../shared/services/apis/gb3/gb3-geoshop-bounding-box.service';
 import {Gb3GeoshopMunicipalitiesService} from '../../../shared/services/apis/gb3/gb3-geoshop-municipalities.service';
-import {CantonCouldNotBeLoaded, MunicipalitiesCouldNotBeLoaded} from '../../../shared/errors/data-download.errors';
+import {
+  CantonCouldNotBeLoaded,
+  FederationCouldNotBeLoaded,
+  MunicipalitiesCouldNotBeLoaded,
+} from '../../../shared/errors/data-download.errors';
 
 @Injectable()
 export class DataDownloadRegionEffects {
+  public loadFederation$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(DataDownloadRegionActions.loadFederation),
+      concatLatestFrom(() => [this.store.select(selectFederation)]),
+      filter(([_, federation]) => federation === undefined),
+      switchMap(() =>
+        this.geoshopBoundingBoxService.load('CH').pipe(
+          map((federation) => {
+            return DataDownloadRegionActions.setFederation({federation});
+          }),
+          catchError((error: unknown) => of(DataDownloadRegionActions.setFederationError({error}))),
+        ),
+      ),
+    );
+  });
+
+  public throwFederationError$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(DataDownloadRegionActions.setFederationError),
+        tap(({error}) => {
+          throw new FederationCouldNotBeLoaded(error);
+        }),
+      );
+    },
+    {dispatch: false},
+  );
+
   public loadCanton$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(DataDownloadRegionActions.loadCanton),
       concatLatestFrom(() => [this.store.select(selectCanton)]),
       filter(([_, canton]) => canton === undefined),
       switchMap(() =>
-        this.geoshopCantonService.loadCanton().pipe(
+        this.geoshopBoundingBoxService.load('ZH').pipe(
           map((canton) => {
             return DataDownloadRegionActions.setCanton({canton});
           }),
@@ -71,7 +103,7 @@ export class DataDownloadRegionEffects {
   constructor(
     private readonly actions$: Actions,
     private readonly store: Store,
+    private readonly geoshopBoundingBoxService: Gb3GeoshopBoundingBoxService,
     private readonly geoshopMunicipalitiesService: Gb3GeoshopMunicipalitiesService,
-    private readonly geoshopCantonService: Gb3GeoshopCantonService,
   ) {}
 }

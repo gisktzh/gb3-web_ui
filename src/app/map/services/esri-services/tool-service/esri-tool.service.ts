@@ -39,11 +39,11 @@ import {DataDownloadSelection} from '../../../../shared/interfaces/data-download
 import {EsriPolygonSelectionStrategy} from './strategies/selection/esri-polygon-selection.strategy';
 import {EsriMunicipalitySelectionStrategy} from './strategies/selection/esri-municipality-selection.strategy';
 import {MatDialog} from '@angular/material/dialog';
-import {EsriCantonSelectionStrategy} from './strategies/selection/esri-canton-selection.strategy';
+import {EsriBoundingBoxSelectionStrategy} from './strategies/selection/esri-bounding-box-selection.strategy';
 import {EsriScreenExtentSelectionStrategy} from './strategies/selection/esri-screen-extent-selection.strategy';
 import {EsriTextDrawingStrategy} from './strategies/drawing/esri-text-drawing.strategy';
 import {Gb3GeoshopMunicipalitiesService} from '../../../../shared/services/apis/gb3/gb3-geoshop-municipalities.service';
-import {selectCanton} from '../../../../state/map/reducers/data-download-region.reducer';
+import {selectCanton, selectFederation} from '../../../../state/map/reducers/data-download-region.reducer';
 import {EsriElevationProfileMeasurementStrategy} from './strategies/measurement/esri-elevation-profile-measurement.strategy';
 import {ElevationProfileActions} from '../../../../state/map/actions/elevation-profile.actions';
 import {EsriGraphicToInternalDrawingRepresentationUtils} from '../utils/esri-graphic-to-internal-drawing-representation.utils';
@@ -509,12 +509,23 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
           this.esriMapViewService.mapView.extent,
         );
         break;
+      case 'select-federation':
+        this.toolStrategy = new EsriBoundingBoxSelectionStrategy(
+          layer,
+          areaStyle,
+          (selection) => this.completeSelection(selection),
+          this.store.select(selectFederation),
+          'federation',
+          this.configService,
+        );
+        break;
       case 'select-canton':
-        this.toolStrategy = new EsriCantonSelectionStrategy(
+        this.toolStrategy = new EsriBoundingBoxSelectionStrategy(
           layer,
           areaStyle,
           (selection) => this.completeSelection(selection),
           this.store.select(selectCanton),
+          'canton',
           this.configService,
         );
         break;

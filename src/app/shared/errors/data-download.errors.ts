@@ -10,6 +10,11 @@ export class RelevantProductsCouldNotBeLoaded extends RecoverableError {
   public override name = 'RelevantProductsCouldNotBeLoaded';
 }
 
+export class FederationCouldNotBeLoaded extends RecoverableError {
+  public override message = 'Die relevanten Bundesinformationen des Geodatenshops konnten nicht geladen werden.';
+  public override name = 'FederationCouldNotBeLoaded';
+}
+
 export class CantonCouldNotBeLoaded extends RecoverableError {
   public override message = 'Die relevanten Kantonsinformationen des Geodatenshops konnten nicht geladen werden.';
   public override name = 'CantonCouldNotBeLoaded';

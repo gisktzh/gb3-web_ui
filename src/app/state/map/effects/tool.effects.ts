@@ -37,6 +37,7 @@ export class ToolEffects {
             case 'select-polygon':
             case 'select-rectangle':
             case 'select-section':
+            case 'select-federation':
             case 'select-canton':
             case 'select-municipality':
               this.toolService.initializeDataDownloadSelection(tool);
