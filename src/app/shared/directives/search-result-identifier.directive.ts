@@ -1,4 +1,4 @@
-import {Directive, ElementRef, EventEmitter, Input, Output} from '@angular/core';
+import {Directive, ElementRef, EventEmitter, HostListener, Input, Output} from '@angular/core';
 
 @Directive({
   selector: '[searchResultIdentifier]',
@@ -12,12 +12,14 @@ export class SearchResultIdentifierDirective {
   @Output() public readonly removeResultFromArrowNavigation = new EventEmitter<void>();
   constructor(public readonly host: ElementRef<HTMLElement>) {}
 
+  @HostListener('focus')
   public addTemporaryMap() {
     if (this.isMapResult) {
       this.addResultFromArrowNavigation.emit();
     }
   }
 
+  @HostListener('blur')
   public removeTemporaryMap() {
     if (this.isMapResult) {
       this.removeResultFromArrowNavigation.emit();
