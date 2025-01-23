@@ -22,9 +22,9 @@ $border-width: 8px;
   );
 
   .link-grid-list-item__wrapper {
-    &:hover {
+    &:hover .link-grid-list-item__wrapper__content {
       .link-grid-list-item__wrapper__content__title {
-        color: ktzh-variables.$zh-black100 !important;
+        color: ktzh-variables.$zh-black100;
       }
     }
 
