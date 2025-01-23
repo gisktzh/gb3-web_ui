@@ -20,6 +20,9 @@ export class OverviewSearchResultItemComponent implements OnInit, OnDestroy {
   @ViewChild('externalLink') public readonly externalLink?: ElementRef;
   @ViewChild('internalLink') public readonly internalLink?: ElementRef;
   @Input() public item!: OverviewSearchResultDisplayItem;
+  // This is a workaround for OverviewSearchResultItemComponent that do not have the SearchResultIdentifierDirective applied to them (no arrow-key navigation enabled)
+  // Can be removed if/when all searches have the arrow-key navigation enabled
+  @Input() public canFocusWithTabKey: boolean = false;
   public isMobile: boolean = false;
 
   private readonly screenMode$ = this.store.select(selectScreenMode);

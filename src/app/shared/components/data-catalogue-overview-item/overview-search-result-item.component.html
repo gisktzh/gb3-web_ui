@@ -3,7 +3,7 @@
     #internalLink
     [routerLink]="item.url.path"
     [attr.aria-label]="'Details zu' + item.title + ' ' + item.type + ' öffnen.'"
-    tabIndex="-1"
+    [tabIndex]="canFocusWithTabKey ? 0 : -1"
     class="overview-search-result-item"
   >
     <ng-container *ngTemplateOutlet="content"></ng-container>
