@@ -6,14 +6,13 @@ import {filter, of, switchMap, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {DataDownloadRegionActions} from '../actions/data-download-region.actions';
 import {selectCanton, selectFederation, selectMunicipalities} from '../reducers/data-download-region.reducer';
-import {Gb3GeoshopCantonService} from '../../../shared/services/apis/gb3/gb3-geoshop-canton.service';
+import {Gb3GeoshopBoundingBoxService} from '../../../shared/services/apis/gb3/gb3-geoshop-bounding-box.service';
 import {Gb3GeoshopMunicipalitiesService} from '../../../shared/services/apis/gb3/gb3-geoshop-municipalities.service';
 import {
   CantonCouldNotBeLoaded,
   FederationCouldNotBeLoaded,
   MunicipalitiesCouldNotBeLoaded,
 } from '../../../shared/errors/data-download.errors';
-import {Gb3GeoshopFederationService} from '../../../shared/services/apis/gb3/gb3-geoshop-federation.service';
 
 @Injectable()
 export class DataDownloadRegionEffects {
@@ -23,7 +22,7 @@ export class DataDownloadRegionEffects {
       concatLatestFrom(() => [this.store.select(selectFederation)]),
       filter(([_, federation]) => federation === undefined),
       switchMap(() =>
-        this.geoshopFederationService.loadFederation().pipe(
+        this.geoshopBoundingBoxService.load('CH').pipe(
           map((federation) => {
             return DataDownloadRegionActions.setFederation({federation});
           }),
@@ -51,7 +50,7 @@ export class DataDownloadRegionEffects {
       concatLatestFrom(() => [this.store.select(selectCanton)]),
       filter(([_, canton]) => canton === undefined),
       switchMap(() =>
-        this.geoshopCantonService.loadCanton().pipe(
+        this.geoshopBoundingBoxService.load('ZH').pipe(
           map((canton) => {
             return DataDownloadRegionActions.setCanton({canton});
           }),
@@ -104,8 +103,7 @@ export class DataDownloadRegionEffects {
   constructor(
     private readonly actions$: Actions,
     private readonly store: Store,
-    private readonly geoshopFederationService: Gb3GeoshopFederationService,
+    private readonly geoshopBoundingBoxService: Gb3GeoshopBoundingBoxService,
     private readonly geoshopMunicipalitiesService: Gb3GeoshopMunicipalitiesService,
-    private readonly geoshopCantonService: Gb3GeoshopCantonService,
   ) {}
 }

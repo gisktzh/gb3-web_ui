@@ -1,10 +1,10 @@
-import {CantonWithGeometry, FederationWithGeometry, Municipality} from '../../../shared/interfaces/gb3-geoshop-product.interface';
+import {BoundingBoxWithGeometry, Municipality} from '../../../shared/interfaces/gb3-geoshop-product.interface';
 import {LoadingState} from '../../../shared/types/loading-state.type';
 
 export interface DataDownloadRegionState {
-  federation: FederationWithGeometry | undefined;
+  federation: BoundingBoxWithGeometry | undefined;
   federationLoadingState: LoadingState;
-  canton: CantonWithGeometry | undefined;
+  canton: BoundingBoxWithGeometry | undefined;
   cantonLoadingState: LoadingState;
   municipalities: Municipality[];
   municipalitiesLoadingState: LoadingState;

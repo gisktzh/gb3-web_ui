@@ -2,7 +2,7 @@ import {initialState, reducer} from './data-download-region.reducer';
 import {DataDownloadRegionState} from '../states/data-download-region.state';
 import {DataDownloadRegionActions} from '../actions/data-download-region.actions';
 import {MinimalGeometriesUtils} from '../../../testing/map-testing/minimal-geometries.utils';
-import {CantonWithGeometry, FederationWithGeometry, Municipality} from '../../../shared/interfaces/gb3-geoshop-product.interface';
+import {BoundingBoxWithGeometry, Municipality} from '../../../shared/interfaces/gb3-geoshop-product.interface';
 
 describe('data download region reducer', () => {
   const existingStateMunicipalities: Municipality[] = [
@@ -82,7 +82,7 @@ describe('data download region reducer', () => {
     it('sets federationLoadingState to loaded and federation to the given value; keeps everything else', () => {
       existingState.federationLoadingState = 'loading';
       existingState.federation = undefined;
-      const expectedFederation: FederationWithGeometry = {boundingBox: MinimalGeometriesUtils.getMinimalPolygon(2056)};
+      const expectedFederation: BoundingBoxWithGeometry = {boundingBox: MinimalGeometriesUtils.getMinimalPolygon(2056)};
 
       const action = DataDownloadRegionActions.setFederation({federation: expectedFederation});
       const state = reducer(existingState, action);
@@ -138,7 +138,7 @@ describe('data download region reducer', () => {
     it('sets cantonLoadingState to loaded and canton to the given value; keeps everything else', () => {
       existingState.cantonLoadingState = 'loading';
       existingState.canton = undefined;
-      const expectedCanton: CantonWithGeometry = {boundingBox: MinimalGeometriesUtils.getMinimalPolygon(2056)};
+      const expectedCanton: BoundingBoxWithGeometry = {boundingBox: MinimalGeometriesUtils.getMinimalPolygon(2056)};
 
       const action = DataDownloadRegionActions.setCanton({canton: expectedCanton});
       const state = reducer(existingState, action);

@@ -5,7 +5,7 @@ import {EsriBoundingBoxSelectionStrategy} from './esri-bounding-box-selection.st
 import {fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {ConfigService} from '../../../../../../shared/services/config.service';
 import {Observable, of} from 'rxjs';
-import {CantonWithGeometry} from '../../../../../../shared/interfaces/gb3-geoshop-product.interface';
+import {BoundingBoxWithGeometry} from '../../../../../../shared/interfaces/gb3-geoshop-product.interface';
 import {MinimalGeometriesUtils} from '../../../../../../testing/map-testing/minimal-geometries.utils';
 import {DataDownloadSelection} from '../../../../../../shared/interfaces/data-download-selection.interface';
 import {provideMockStore} from '@ngrx/store/testing';
@@ -19,7 +19,7 @@ describe('EsriCantonSelectionStrategy', () => {
     },
   };
   let configService: ConfigService;
-  let cantonWithGeometry$: Observable<CantonWithGeometry | undefined>;
+  let cantonWithGeometry$: Observable<BoundingBoxWithGeometry | undefined>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({providers: [provideMockStore()]});
