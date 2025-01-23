@@ -11,6 +11,10 @@
   text-decoration: none;
   color: unset;
 
+  &:hover {
+    background-color: ktzh-variables.$zh-light-grey;
+  }
+
   .overview-search-result-item__icon {
     flex-grow: 0;
     flex-shrink: 0;

@@ -1,5 +1,6 @@
 @if (item.url.isInternal) {
   <a
+    matRipple
     #internalLink
     [routerLink]="item.url.path"
     [attr.aria-label]="'Details zu' + item.title + ' ' + item.type + ' öffnen.'"
@@ -10,6 +11,7 @@
   </a>
 } @else {
   <a
+    matRipple
     #externalLink
     [href]="item.url.path"
     target="_blank"

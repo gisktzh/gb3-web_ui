@@ -10,6 +10,10 @@
   text-decoration: none;
   color: unset;
 
+  &:hover {
+    background-color: ktzh-variables.$zh-light-grey;
+  }
+
   .search-result-entry-map__image {
     height: 44px;
     width: 44px;

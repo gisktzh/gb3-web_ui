@@ -9,12 +9,13 @@ import {Store} from '@ngrx/store';
 import {selectScreenMode} from '../../../state/app/reducers/app-layout.reducer';
 import {Subscription, tap} from 'rxjs';
 import {MatTooltip} from '@angular/material/tooltip';
+import {MatRipple} from '@angular/material/core';
 
 @Component({
   selector: 'overview-search-result-item',
   templateUrl: './overview-search-result-item.component.html',
   styleUrls: ['./overview-search-result-item.component.scss'],
-  imports: [RouterModule, MatIcon, MatDivider, MatButtonModule, NgClass, MatTooltip, NgTemplateOutlet],
+  imports: [RouterModule, MatIcon, MatDivider, MatButtonModule, NgClass, MatTooltip, NgTemplateOutlet, MatRipple],
 })
 export class OverviewSearchResultItemComponent implements OnInit, OnDestroy {
   @ViewChild('externalLink') public readonly externalLink?: ElementRef;

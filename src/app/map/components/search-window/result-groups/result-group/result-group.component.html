@@ -11,6 +11,7 @@
       @for (result of searchResults; track result; let first = $first) {
         <li class="result-group-list__list-item">
           <button
+            matRipple
             (click)="selectSearchResult(result)"
             class="result-group__container__element search-result-group__container__element--interactive"
             [tabIndex]="first ? 0 : -1"
@@ -40,6 +41,7 @@
           <div class="result-group__container__element">
             @if (map.gb2Url) {
               <a
+                matRipple
                 class="result-group__container__element__link"
                 [tabIndex]="first ? 0 : -1"
                 searchResultIdentifier
@@ -56,6 +58,7 @@
               </a>
             } @else {
               <button
+                matRipple
                 class="result-group__container__element__button"
                 (delayedMouseEnter)="addActiveMap(map, true)"
                 [delayDurationInMs]="this.hoverDelay"
