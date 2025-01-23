@@ -10,7 +10,7 @@ import {Store} from '@ngrx/store';
   imports: [],
   template: '',
 })
-export class AbstractSearchContainerComponent implements OnInit, OnDestroy, AfterViewInit {
+export class BaseSearchContainerComponent implements OnInit, OnDestroy, AfterViewInit {
   public allSearchResults: SearchResultIdentifierDirective[] = [];
   @ViewChild(SearchComponent) public readonly searchComponent!: SearchComponent;
   private term: string = '';

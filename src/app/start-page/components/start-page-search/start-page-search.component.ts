@@ -18,7 +18,7 @@ import {
   selectFilteredMetadataItems,
   selectFilteredUsefulLinks,
 } from '../../../state/app/selectors/search-results.selector';
-import {AbstractSearchContainerComponent} from '../../../shared/components/search/abstract-search-container/abstract-search-container.component';
+import {BaseSearchContainerComponent} from '../../../shared/components/search/base-search-container/base-search-container.component';
 
 @Component({
   selector: 'start-page-search',
@@ -26,7 +26,7 @@ import {AbstractSearchContainerComponent} from '../../../shared/components/searc
   styleUrls: ['./start-page-search.component.scss'],
   standalone: false,
 })
-export class StartPageSearchComponent extends AbstractSearchContainerComponent implements OnInit, OnDestroy, AfterViewInit {
+export class StartPageSearchComponent extends BaseSearchContainerComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild(SearchResultGroupsComponent) private readonly searchResultGroupsComponent?: SearchResultGroupsComponent;
 
   public searchTerms: string[] = [];

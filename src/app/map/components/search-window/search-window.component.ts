@@ -14,7 +14,7 @@ import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
 import {selectIsAnySearchFilterActiveSelector} from '../../../state/app/selectors/is-any-search-filter-active.selector';
 import {ResultGroupsComponent} from './result-groups/result-groups.component';
 import {ResultGroupComponent} from './result-groups/result-group/result-group.component';
-import {AbstractSearchContainerComponent} from '../../../shared/components/search/abstract-search-container/abstract-search-container.component';
+import {BaseSearchContainerComponent} from '../../../shared/components/search/base-search-container/base-search-container.component';
 
 @Component({
   selector: 'search-window',
@@ -22,7 +22,7 @@ import {AbstractSearchContainerComponent} from '../../../shared/components/searc
   styleUrls: ['./search-window.component.scss'],
   standalone: false,
 })
-export class SearchWindowComponent extends AbstractSearchContainerComponent implements OnInit, OnDestroy, AfterViewInit {
+export class SearchWindowComponent extends BaseSearchContainerComponent implements OnInit, OnDestroy, AfterViewInit {
   public searchState: SearchState = initialState;
   public screenMode: ScreenMode = 'regular';
   public isAnySearchFilterActive: boolean = false;
