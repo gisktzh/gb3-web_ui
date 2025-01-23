@@ -8,23 +8,23 @@ import {HasBoundingBox} from '../../../interfaces/has-bounding-box.interface';
 
 type GeoshopBbox = 'ZH' | 'CH';
 enum BboxEndpoints {
-  CANTON = 'canton',
-  SWITZERLAND = 'switzerland',
+  ZH = 'canton',
+  CH = 'switzerland',
 }
 
 @Injectable({
   providedIn: 'root',
 })
 export class Gb3GeoshopBoundingBoxService extends Gb3ApiService {
-  protected endpoint: BboxEndpoints = BboxEndpoints.CANTON;
+  protected endpoint: BboxEndpoints = BboxEndpoints.ZH;
 
   public load(bbox: GeoshopBbox): Observable<HasBoundingBox> {
     switch (bbox) {
       case 'ZH':
-        this.endpoint = BboxEndpoints.CANTON;
+        this.endpoint = BboxEndpoints.ZH;
         break;
       case 'CH':
-        this.endpoint = BboxEndpoints.SWITZERLAND;
+        this.endpoint = BboxEndpoints.CH;
         break;
     }
     const bboxListData = this.get<BboxGeoshop>(this.getFullEndpointUrl());
