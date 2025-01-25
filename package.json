@@ -66,7 +66,7 @@
     "file-saver": "^2.0.5",
     "immer": "^10.0.1",
     "material-icons": "^1.13.12",
-    "ng2-charts": "^7.0.0",
+    "ng2-charts": "^8.0.0",
     "ngx-ui-tour-md-menu": "^14.0.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
