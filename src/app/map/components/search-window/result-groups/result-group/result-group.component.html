@@ -4,50 +4,93 @@
   class="result-group"
   [numberOfItems]="filteredMaps.length || searchResults.length"
   [showBadge]="true"
+  [allowTabFocus]="false"
 >
   <div class="result-group__container" [ngClass]="{'result-group__container--mobile': screenMode === 'mobile'}">
-    <mat-card
-      *ngFor="let result of searchResults"
-      (click)="selectSearchResult(result)"
-      (keydown.space)="selectSearchResult(result)"
-      class="result-group__container__element search-result-group__container__element--interactive"
-      tabindex="0"
-    >
-      <mat-card-header *ngIf="result.indexType === 'activeMapItems'" class="result-group__container__element__header"
-        >{{ result.indexName }}
-      </mat-card-header>
-      <mat-card-content
-        class="result-group__container__element__content"
-        [innerHTML]="result.displayString | highlightSearchQuery: this.searchTerms"
-      ></mat-card-content>
-      <mat-divider></mat-divider>
-    </mat-card>
+    <ul class="result-group-list">
+      @for (result of searchResults; track result; let first = $first) {
+        <li class="result-group-list__list-item">
+          <button
+            matRipple
+            (click)="selectSearchResult(result)"
+            class="result-group__container__element search-result-group__container__element--interactive"
+            [tabIndex]="first ? 0 : -1"
+            searchResultIdentifier
+            [text]="result.displayString"
+            [isFocusable]="first"
+          >
+            <div class="result-group__container__element__container">
+              @if (result.indexType === 'activeMapItems') {
+                <div class="result-group__container__element__header result-group__container__element__text">{{ result.indexName }}</div>
+              }
+              <div
+                class="result-group__container__element__content result-group__container__element__text"
+                [innerHTML]="result.displayString | highlightSearchQuery: this.searchTerms"
+              ></div>
+            </div>
+            <mat-divider></mat-divider>
+          </button>
+        </li>
+      }
+    </ul>
   </div>
   <div class="result-group__container" [ngClass]="{'result-group__container--mobile': screenMode === 'mobile'}">
-    <mat-card *ngFor="let map of filteredMaps" class="result-group__container__element">
-      <mat-card-content
-        class="result-group__container__element__map-content"
-        (delayedMouseEnter)="addActiveMap(map, true)"
-        [delayDurationInMs]="this.hoverDelay"
-        (mouseleave)="removeTemporaryMap(map)"
-      >
-        <gb2-exit-button
-          *ngIf="map.gb2Url; else addToMap"
-          [url]="map.gb2Url | appendMapConfigurationToUrl: mapConfigState"
-        ></gb2-exit-button>
-        <ng-template #addToMap>
-          <button (click)="addActiveMap(map)" color="primary" data-test-id="add-active-map" mat-icon-button>
-            <mat-icon>add</mat-icon>
-          </button>
-        </ng-template>
-        <img [alt]="map.title" [src]="map.icon" class="result-group__container__element__map-content__image" />
-        <p
-          [innerHTML]="map.title | highlightSearchQuery: this.searchTerms"
-          class="result-group__container__element__map-content__title"
-          matTooltip="{{ map.title }}"
-        ></p>
-      </mat-card-content>
-      <mat-divider></mat-divider>
-    </mat-card>
+    <ul class="result-group-list">
+      @for (map of filteredMaps; track map; let first = $first) {
+        <li class="result-group-list__list-item">
+          <div class="result-group__container__element">
+            @if (map.gb2Url) {
+              <a
+                matRipple
+                class="result-group__container__element__link"
+                [tabIndex]="first ? 0 : -1"
+                searchResultIdentifier
+                [text]="map.title"
+                [isFocusable]="first"
+                [href]="map.gb2Url | appendMapConfigurationToUrl: mapConfigState"
+                rel="noopener noreferrer"
+                target="_blank"
+                [attr.aria-label]="'Karte ' + map.title + ' öffnen. ' + toolTip"
+                [matTooltip]="'Karte ' + map.title + ' öffnen. ' + toolTip"
+              >
+                <mat-icon svgIcon="ktzh_arrow_right" class="result-group__container__element__link__icon"></mat-icon>
+                <ng-container *ngTemplateOutlet="content"></ng-container>
+              </a>
+            } @else {
+              <button
+                matRipple
+                class="result-group__container__element__button"
+                (delayedMouseEnter)="addActiveMap(map, true)"
+                [delayDurationInMs]="this.hoverDelay"
+                (mouseleave)="removeTemporaryMap(map)"
+                (click)="addActiveMap(map)"
+                searchResultIdentifier
+                [isMapResult]="true"
+                [text]="map.printTitle"
+                [isFocusable]="first"
+                (addResultFromArrowNavigation)="addActiveMap(map, true)"
+                (removeResultFromArrowNavigation)="removeTemporaryMap(map)"
+                [attr.data-index]="filteredMaps.indexOf(map)"
+                [tabIndex]="first ? 0 : -1"
+                [attr.aria-label]="'Karte ' + map.title + ' öffnen.'"
+                [matTooltip]="'Karte ' + map.title + ' öffnen.'"
+              >
+                <mat-icon class="result-group__container__element__button__icon">add</mat-icon>
+                <ng-container *ngTemplateOutlet="content"></ng-container>
+              </button>
+            }
+            <ng-template #content>
+              <img [alt]="map.title" [src]="map.icon" class="result-group__container__element__map-content__image" />
+              <p
+                [innerHTML]="map.title | highlightSearchQuery: this.searchTerms"
+                class="result-group__container__element__map-content__title result-group__container__element__text"
+              ></p>
+            </ng-template>
+
+            <mat-divider></mat-divider>
+          </div>
+        </li>
+      }
+    </ul>
   </div>
 </expandable-list-item>

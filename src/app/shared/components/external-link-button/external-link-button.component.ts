@@ -12,4 +12,5 @@ export class ExternalLinkButtonComponent {
   @Input() public highlighted: boolean = false;
   @Input() public color: 'primary' | 'accent' = 'primary';
   @Input() public toolTip?: string;
+  @Input() public disableTabFocus: boolean = false;
 }

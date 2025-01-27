@@ -16,6 +16,7 @@ import {StartPageComponent} from './start-page.component';
 import {OverviewSearchResultItemComponent} from '../shared/components/data-catalogue-overview-item/overview-search-result-item.component';
 import {ClickOnSpaceBarDirective} from '../shared/directives/click-on-spacebar.directive';
 import {GenericUnorderedListComponent} from '../shared/components/lists/generic-unordered-list/generic-unordered-list.component';
+import {SearchResultIdentifierDirective} from '../shared/directives/search-result-identifier.directive';
 import {LinkGridListComponent} from '../shared/components/lists/link-grid-list/link-grid-list.component';
 import {LinkGridListItemComponent} from '../shared/components/lists/link-grid-list/link-grid-list-item/link-grid-list-item.component';
 
@@ -41,6 +42,7 @@ import {LinkGridListItemComponent} from '../shared/components/lists/link-grid-li
     ClickOnSpaceBarDirective,
     NgOptimizedImage,
     GenericUnorderedListComponent,
+    SearchResultIdentifierDirective,
     LinkGridListComponent,
     LinkGridListItemComponent,
   ],

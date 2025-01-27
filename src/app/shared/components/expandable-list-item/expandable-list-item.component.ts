@@ -16,4 +16,5 @@ export class ExpandableListItemComponent {
   @Input() public numberOfItems: number = 0;
   @Input() public showBadge: boolean = false;
   @Input() public noPadding: boolean = false;
+  @Input() public allowTabFocus: boolean = true;
 }

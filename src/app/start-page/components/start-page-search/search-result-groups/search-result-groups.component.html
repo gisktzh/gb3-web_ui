@@ -4,48 +4,86 @@
   multi="true"
   [ngClass]="{'search-result-groups--mobile': screenMode === 'mobile'}"
 >
-  <search-result-group
-    *ngIf="filteredMaps.length > 0 || layerCatalogLoadingState === 'loading' || layerCatalogLoadingState === 'error'"
-    class="search-result-groups__group"
-    header="Karten"
-    [loadingState]="layerCatalogLoadingState"
-    [numberOfItems]="filteredMaps.length"
-  >
-    <search-result-entry-map [filteredMaps]="filteredMaps"></search-result-entry-map>
-  </search-result-group>
-  <search-result-group
-    *ngIf="
-      filteredMetadataItems.length > 0 ||
-      combinedSearchAndDataCatalogLoadingState === 'loading' ||
-      combinedSearchAndDataCatalogLoadingState === 'error'
-    "
-    class="search-result-groups__group"
-    header="Geodatenkatalog"
-    [loadingState]="combinedSearchAndDataCatalogLoadingState"
-    [numberOfItems]="filteredMetadataItems.length"
-  >
-    <overview-search-result-item
-      *ngFor="let filteredMetadataItem of filteredMetadataItems"
-      [item]="filteredMetadataItem"
-    ></overview-search-result-item>
-  </search-result-group>
-  <search-result-group
-    *ngIf="filteredFaqItems.length > 0"
-    class="search-result-groups__group"
-    header="Häufige Fragen"
-    [numberOfItems]="filteredFaqItems.length"
-  >
-    <overview-search-result-item *ngFor="let filteredFaqItem of filteredFaqItems" [item]="filteredFaqItem"></overview-search-result-item>
-  </search-result-group>
-  <search-result-group
-    *ngIf="filteredUsefulLinks.length > 0"
-    class="search-result-groups__group"
-    header="Hilfreiche Informationen"
-    [numberOfItems]="filteredUsefulLinks.length"
-  >
-    <overview-search-result-item
-      *ngFor="let filteredUsefulLink of filteredUsefulLinks"
-      [item]="filteredUsefulLink"
-    ></overview-search-result-item>
-  </search-result-group>
+  @if (filteredMaps.length > 0 || layerCatalogLoadingState === 'loading' || layerCatalogLoadingState === 'error') {
+    <search-result-group
+      class="search-result-groups__group"
+      header="Karten"
+      [loadingState]="layerCatalogLoadingState"
+      [numberOfItems]="filteredMaps.length"
+    >
+      <ul class="search-result-groups__group__list">
+        @for (filteredMap of filteredMaps; track filteredMap; let first = $first) {
+          <li class="search-result-groups__group__list__list-item">
+            <search-result-entry-map
+              [tabIndex]="first ? 0 : -1"
+              [map]="filteredMap"
+              searchResultIdentifier
+              [isFocusable]="first"
+              [text]="filteredMap.title"
+            ></search-result-entry-map>
+          </li>
+        }
+      </ul>
+    </search-result-group>
+  }
+  @if (
+    filteredMetadataItems.length > 0 ||
+    combinedSearchAndDataCatalogLoadingState === 'loading' ||
+    combinedSearchAndDataCatalogLoadingState === 'error'
+  ) {
+    <search-result-group
+      class="search-result-groups__group"
+      header="Geodatenkatalog"
+      [loadingState]="combinedSearchAndDataCatalogLoadingState"
+      [numberOfItems]="filteredMetadataItems.length"
+    >
+      <ul class="search-result-groups__group__list">
+        @for (filteredMetadataItem of filteredMetadataItems; track filteredMetadataItem; let first = $first) {
+          <li class="search-result-groups__group__list__list-item">
+            <overview-search-result-item
+              [tabIndex]="first ? 0 : -1"
+              [item]="filteredMetadataItem"
+              searchResultIdentifier
+              [text]="filteredMetadataItem.title"
+              [isFocusable]="first"
+            ></overview-search-result-item>
+          </li>
+        }
+      </ul>
+    </search-result-group>
+  }
+  @if (filteredFaqItems.length > 0) {
+    <search-result-group class="search-result-groups__group" header="Häufige Fragen" [numberOfItems]="filteredFaqItems.length">
+      <ul class="search-result-groups__group__list">
+        @for (filteredFaqItem of filteredFaqItems; track filteredFaqItem; let first = $first) {
+          <li class="search-result-groups__group__list__list-item">
+            <overview-search-result-item
+              [tabIndex]="first ? 0 : -1"
+              [item]="filteredFaqItem"
+              searchResultIdentifier
+              [text]="filteredFaqItem.title"
+              [isFocusable]="first"
+            ></overview-search-result-item>
+          </li>
+        }
+      </ul>
+    </search-result-group>
+  }
+  @if (filteredUsefulLinks.length > 0) {
+    <search-result-group class="search-result-groups__group" header="Hilfreiche Informationen" [numberOfItems]="filteredUsefulLinks.length">
+      <ul class="search-result-groups__group__list">
+        @for (filteredUsefulLink of filteredUsefulLinks; track filteredUsefulLink; let first = $first) {
+          <li class="search-result-groups__group__list__list-item">
+            <overview-search-result-item
+              [tabIndex]="first ? 0 : -1"
+              [item]="filteredUsefulLink"
+              searchResultIdentifier
+              [text]="filteredUsefulLink.title"
+              [isFocusable]="first"
+            ></overview-search-result-item>
+          </li>
+        }
+      </ul>
+    </search-result-group>
+  }
 </mat-accordion>

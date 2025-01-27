@@ -1,8 +1,6 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
 .external-link-button {
-  rotate: -45deg;
-
   &--highlighted {
     background-color: ktzh-variables.$zh-light-grey;
   }
@@ -23,5 +21,9 @@
       width: 30px;
       height: 30px;
     }
+  }
+
+  .external-link-button__icon {
+    rotate: -45deg;
   }
 }
