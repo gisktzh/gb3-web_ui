@@ -3,28 +3,19 @@
   loadingCompletedText="Fehler beim Laden der Karten zum Entdecken."
   loadingText="Lade neue Karten zum Entdecken..."
 ></content-loading-state>
-<div class="discover-maps">
-  <ul class="discover-maps__list">
-    <li *ngFor="let discoverMapsEntry of this.discoverMapsItems" class="discover-maps__list__item">
-      <div class="discover-maps__list__item__wrapper">
-        <div class="discover-maps__list__item__wrapper__content">
-          <img
-            [src]="discoverMapsEntry.image.url"
-            [alt]="discoverMapsEntry.image.altText ?? ''"
-            class="discover-maps__list__item__wrapper__content__image"
-          />
-          <div class="discover-maps__list__item__wrapper__content__container">
-            <h3 class="ktzh-h3-medium ktzh-h3-medium--bold discover-maps__list__item__wrapper__content__container__title">
-              {{ discoverMapsEntry.title }}
-            </h3>
-            <p class="discover-maps__list__item__wrapper__content__container__text">{{ discoverMapsEntry.description }}</p>
-            <a [color]="'accent'" [queryParams]="{initialMapIds: discoverMapsEntry.mapId}" [routerLink]="mainPageEnum.Maps" mat-flat-button
-              >Karte öffnen</a
-            >
-          </div>
-        </div>
-      </div>
-    </li>
-  </ul>
-</div>
+<link-grid-list>
+  @for (discoverMapsEntry of this.discoverMapsItems; track $index) {
+    <link-grid-list-item
+      [internalLink]="mainPageEnum.Maps"
+      [internalQueryParams]="{initialMapIds: discoverMapsEntry.mapId}"
+      [title]="discoverMapsEntry.title"
+      [size]="'large'"
+      [imageUrl]="discoverMapsEntry.image.url"
+    >
+      <p>
+        {{ discoverMapsEntry.description }}
+      </p>
+    </link-grid-list-item>
+  }
+</link-grid-list>
 <p *ngIf="discoverMapsItems.length === 0 && loadingState === 'loaded'" class="mat-caption">Aktuell gibt es keine Empfehlungen.</p>

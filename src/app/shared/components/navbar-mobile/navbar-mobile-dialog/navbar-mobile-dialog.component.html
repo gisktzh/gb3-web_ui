@@ -62,7 +62,17 @@
       <a
         class="navbar__item"
         mat-button
-        [routerLink]="[mainPageEnum.Support]"
+        [routerLink]="[mainPageEnum.Apps]"
+      routerLinkActive="navbar__item--active"
+      ariaCurrentWhenActive="page"
+      (click)="close()"
+      >Apps</a
+    >
+    <hr />
+    <a
+      class="navbar__item"
+      mat-button
+      [routerLink]="[mainPageEnum.Support]"
         routerLinkActive="navbar__item--active"
         ariaCurrentWhenActive="page"
         (click)="close()"

@@ -52,6 +52,7 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
       koPlaNavItem: true,
     },
     overrides: {},
+    accessMode: 'intranet',
   },
   {
     hostMatch: 'geo.zh.ch',
@@ -99,5 +100,6 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
     },
     featureFlags: {},
     overrides: {},
+    accessMode: 'internet',
   },
 ];
