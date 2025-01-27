@@ -102,9 +102,8 @@ export class StartPageSearchComponent extends BaseSearchContainerComponent imple
           ),
           filter(() => this.searchResultGroupsComponent !== undefined),
           switchMap(() => this.searchResultGroupsComponent!.overviewSearchResultItemComponents.changes),
-          tap((overviewChanges) => {
-            const resultsFromOverviewSearch = (overviewChanges as QueryList<SearchResultIdentifierDirective>).toArray();
-            this.allSearchResults = [...resultsFromOverviewSearch];
+          tap((overviewChanges: QueryList<SearchResultIdentifierDirective>) => {
+            this.allSearchResults = overviewChanges.toArray();
             this.cdr.detectChanges(); // Trigger change detection to reflect updates in the template
           }),
         )

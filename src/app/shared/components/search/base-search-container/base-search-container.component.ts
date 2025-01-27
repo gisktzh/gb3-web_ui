@@ -15,7 +15,6 @@ export class BaseSearchContainerComponent implements OnInit, OnDestroy, AfterVie
   @ViewChild(SearchComponent) public readonly searchComponent!: SearchComponent;
   private term: string = '';
   private selectedSearchResultIndex: number = -1;
-  private selectedResult: SearchResultIdentifierDirective | undefined;
   protected readonly term$ = this.store.select(selectTerm);
   protected readonly subscriptions: Subscription = new Subscription();
 
@@ -50,12 +49,12 @@ export class BaseSearchContainerComponent implements OnInit, OnDestroy, AfterVie
   }
   @HostListener('keydown.arrowdown', ['$event'])
   public handleArrowDown(event: KeyboardEvent) {
-    this.handelArrowKey(event, 'down');
+    this.handleArrowKey(event, 'down');
   }
 
   @HostListener('keydown.arrowup', ['$event'])
   public handleArrowUp(event: KeyboardEvent) {
-    this.handelArrowKey(event, 'up');
+    this.handleArrowKey(event, 'up');
   }
 
   @HostListener('keydown.tab', ['$event'])
@@ -66,7 +65,6 @@ export class BaseSearchContainerComponent implements OnInit, OnDestroy, AfterVie
       // We need to wait for the next tick to get the currently focused element instead of the previously focused element
       setTimeout(() => {
         this.updateIndexToSelectedElement();
-        return;
       }, 0);
     } else {
       const direction = event.shiftKey ? -1 : 1;
@@ -95,7 +93,7 @@ export class BaseSearchContainerComponent implements OnInit, OnDestroy, AfterVie
     }
   }
 
-  private handelArrowKey(event: KeyboardEvent, direction: 'up' | 'down') {
+  private handleArrowKey(event: KeyboardEvent, direction: 'up' | 'down') {
     event.preventDefault();
     this.updateIndexToSelectedElement();
     this.updateIndex(direction);
@@ -123,9 +121,9 @@ export class BaseSearchContainerComponent implements OnInit, OnDestroy, AfterVie
 
   private setFocusOnSelectedElement() {
     if (this.selectedSearchResultIndex >= 0 && this.allSearchResults.length > 0) {
-      this.selectedResult = this.allSearchResults[this.selectedSearchResultIndex];
-      this.searchComponent.setTerm(this.selectedResult.text, false);
-      this.selectedResult.host.nativeElement.focus();
+      const selectedResult = this.allSearchResults[this.selectedSearchResultIndex];
+      this.searchComponent.setTerm(selectedResult.text, false);
+      selectedResult.host.nativeElement.focus();
     } else {
       this.searchComponent.inputRef.nativeElement.focus();
       this.searchComponent.setTerm(this.term, false);
@@ -140,7 +138,6 @@ export class BaseSearchContainerComponent implements OnInit, OnDestroy, AfterVie
     const activeResult = focusableElements.find((item) => item.host.nativeElement === activeElement);
     if (activeResult) {
       this.selectedSearchResultIndex = this.allSearchResults.indexOf(activeResult);
-      this.selectedResult = this.allSearchResults[this.selectedSearchResultIndex];
     }
   }
 }
