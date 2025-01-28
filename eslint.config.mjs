@@ -23,7 +23,7 @@ import rxjsX from 'eslint-plugin-rxjs-x';
 export default tseslint.config(
   {
     ignores: ['projects/**/*', '**/*.mock.ts', '**/*.stub.ts'],
-    files: ['**/*.ts'],
+    files: ['src/**/*.ts'],
     extends: [
       eslint.configs.recommended,
       ...tseslint.configs.recommended,
