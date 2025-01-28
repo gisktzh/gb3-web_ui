@@ -1,4 +1,5 @@
 import {FeatureFlags} from './feature-flags.interface';
+import {AccessMode} from '../types/access-mode.type';
 
 interface ApiBaseUrlConfig {
   baseUrl: string;
@@ -52,4 +53,5 @@ export interface RuntimeConfig {
   overrides: OverrideSettings;
   authSettings: AuthSettings;
   featureFlags: Partial<FeatureFlags>;
+  accessMode: AccessMode;
 }

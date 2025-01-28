@@ -3,12 +3,12 @@ import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {HttpClient, provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {of} from 'rxjs';
 import {ConfigService} from '../../config.service';
-import {CantonWithGeometry} from '../../../interfaces/gb3-geoshop-product.interface';
-import {Gb3GeoshopCantonService} from './gb3-geoshop-canton.service';
+import {BoundingBoxWithGeometry} from '../../../interfaces/gb3-geoshop-product.interface';
+import {Gb3GeoshopBoundingBoxService} from './gb3-geoshop-bounding-box.service';
 import {provideMockStore} from '@ngrx/store/testing';
 
-describe('Gb3GeoshopCantonService', () => {
-  let service: Gb3GeoshopCantonService;
+describe('Gb3GeoshopBoundingBoxService', () => {
+  let service: Gb3GeoshopBoundingBoxService;
   let configService: ConfigService;
 
   beforeEach(() => {
@@ -16,7 +16,7 @@ describe('Gb3GeoshopCantonService', () => {
       imports: [],
       providers: [provideMockStore(), provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     });
-    service = TestBed.inject(Gb3GeoshopCantonService);
+    service = TestBed.inject(Gb3GeoshopBoundingBoxService);
     configService = TestBed.inject(ConfigService);
   });
 
@@ -24,7 +24,7 @@ describe('Gb3GeoshopCantonService', () => {
     expect(service).toBeTruthy();
   });
 
-  describe('loadCanton', () => {
+  describe('load', () => {
     it('should receive the data and transform it correctly', (done: DoneFn) => {
       const serverData = {
         boundingbox: {
@@ -43,7 +43,7 @@ describe('Gb3GeoshopCantonService', () => {
       const httpClient = TestBed.inject(HttpClient);
       const getCallSpy = spyOn(httpClient, 'get').and.returnValue(of(serverData));
 
-      const expected: CantonWithGeometry = {
+      const expected: BoundingBoxWithGeometry = {
         boundingBox: {
           type: 'Polygon',
           coordinates: [
@@ -58,7 +58,7 @@ describe('Gb3GeoshopCantonService', () => {
         },
       };
 
-      service.loadCanton().subscribe((actual) => {
+      service.load('ZH').subscribe((actual) => {
         expect(getCallSpy).toHaveBeenCalledOnceWith(
           `${configService.apiConfig.gb2Api.baseUrl}/${configService.apiConfig.gb2Api.version}/canton`,
         );

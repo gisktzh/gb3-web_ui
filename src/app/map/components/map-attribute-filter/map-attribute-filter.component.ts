@@ -12,7 +12,6 @@ import {selectMapAttributeFiltersItem} from '../../../state/map/selectors/map-at
 
 @Component({
   selector: 'map-attribute-filter',
-  standalone: true,
   templateUrl: './map-attribute-filter.component.html',
   styleUrls: ['./map-attribute-filter.component.scss'],
   imports: [SharedModule, CommonModule],

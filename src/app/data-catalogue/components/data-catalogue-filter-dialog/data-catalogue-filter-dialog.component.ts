@@ -11,6 +11,7 @@ import {DataCatalogueFilterKey} from '../../../shared/types/data-catalogue-filte
   selector: 'data-catalogue-filter-dialog',
   templateUrl: './data-catalogue-filter-dialog.component.html',
   styleUrls: ['./data-catalogue-filter-dialog.component.scss'],
+  standalone: false,
 })
 export class DataCatalogueFilterDialogComponent implements OnInit, OnDestroy {
   public dataCatalogueFilters: DataCatalogueFilter[] = [];

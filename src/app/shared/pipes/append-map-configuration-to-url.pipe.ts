@@ -6,6 +6,7 @@ import {MapConfigState} from '../../state/map/states/map-config.state';
  */
 @Pipe({
   name: 'appendMapConfigurationToUrl',
+  standalone: false,
 })
 export class AppendMapConfigurationToUrlPipe implements PipeTransform {
   public transform(value: string, mapConfigState?: MapConfigState): string {

@@ -7,7 +7,7 @@ export interface Municipality {
   name: string;
 }
 
-export type CantonWithGeometry = HasBoundingBox;
+export type BoundingBoxWithGeometry = HasBoundingBox;
 export type MunicipalityWithGeometry = Municipality & HasBoundingBox;
 
 export interface Product {

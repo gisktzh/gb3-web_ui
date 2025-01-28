@@ -18,6 +18,7 @@ type DatePickerStartView = 'month' | 'year' | 'multi-year';
   selector: 'time-slider',
   templateUrl: './time-slider.component.html',
   styleUrls: ['./time-slider.component.scss'],
+  standalone: false,
 })
 export class TimeSliderComponent implements OnInit, OnChanges {
   @Output() public readonly changeTimeExtentEvent = new EventEmitter<TimeExtent>();

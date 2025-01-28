@@ -4,6 +4,7 @@ import {Component, Input} from '@angular/core';
   selector: 'external-link-button',
   templateUrl: './external-link-button.component.html',
   styleUrls: ['./external-link-button.component.scss'],
+  standalone: false,
 })
 export class ExternalLinkButtonComponent {
   @Input() public url!: string;
@@ -11,4 +12,5 @@ export class ExternalLinkButtonComponent {
   @Input() public highlighted: boolean = false;
   @Input() public color: 'primary' | 'accent' = 'primary';
   @Input() public toolTip?: string;
+  @Input() public disableTabFocus: boolean = false;
 }

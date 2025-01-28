@@ -1,5 +1,7 @@
 name: GB3 Frontend
 
+# This workflow uses the runner specified in the repository variables, using "vars.RUNNER_VERSION"
+
 on:
   push:
     branches:
@@ -22,9 +24,10 @@ jobs:
     uses: ./.github/workflows/node-tests.yml
     with:
       cache_key: node-coverage-report-${{ github.sha }}-${{ github.run_id }}
+      runner_version: ${{ vars.RUNNER_VERSION }}
   docker:
     name: Docker Dry Run
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.RUNNER_VERSION }}
     steps:
       - uses: actions/checkout@v4
       - uses: gisktzh/github-actions/docker-dry-run@main
@@ -33,7 +36,7 @@ jobs:
   sonarcloud:
     name: SonarCloud
     needs: node
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.RUNNER_VERSION }}
     steps:
       - uses: actions/checkout@v4
       - uses: gisktzh/github-actions/sonarcloud-analysis@main
@@ -50,3 +53,5 @@ jobs:
       - sonarcloud
       - docker
     uses: ./.github/workflows/node-deploy.yml
+    with:
+      runner_version: ${{ vars.RUNNER_VERSION }}

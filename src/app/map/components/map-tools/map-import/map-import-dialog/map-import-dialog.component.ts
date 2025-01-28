@@ -12,6 +12,7 @@ import {selectLoadingState} from '../../../../../state/map/reducers/external-map
   selector: 'map-import-dialog',
   templateUrl: './map-import-dialog.component.html',
   styleUrl: './map-import-dialog.component.scss',
+  standalone: false,
 })
 export class MapImportDialogComponent implements OnInit, OnDestroy {
   public externalServiceLoadingState: LoadingState;

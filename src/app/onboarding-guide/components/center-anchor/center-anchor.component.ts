@@ -8,6 +8,7 @@ import {OnboardingGuideAnchor} from '../../types/onboarding-guide-anchor.type';
   selector: 'center-anchor',
   templateUrl: './center-anchor.component.html',
   styleUrls: ['./center-anchor.component.scss'],
+  standalone: false,
 })
 export class CenterAnchorComponent {
   @Input() public anchorName!: OnboardingGuideAnchor;

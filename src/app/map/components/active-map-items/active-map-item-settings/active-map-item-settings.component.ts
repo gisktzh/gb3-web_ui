@@ -14,6 +14,7 @@ import {selectItems} from '../../../../state/map/selectors/active-map-items.sele
   selector: 'active-map-item-settings',
   templateUrl: './active-map-item-settings.component.html',
   styleUrls: ['./active-map-item-settings.component.scss'],
+  standalone: false,
 })
 export class ActiveMapItemSettingsComponent implements OnInit, OnDestroy {
   @Input() public activeMapItem!: ActiveMapItem;

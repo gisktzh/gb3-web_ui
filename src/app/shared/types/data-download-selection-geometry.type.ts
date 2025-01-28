@@ -1,1 +1,2 @@
-export type DataDownloadSelectionGeometry = 'polygon' | 'canton' | 'municipality';
+export type DataDownloadSelectionGeometry = 'polygon' | 'federation' | 'canton' | 'municipality';
+export type BoundingBoxDataDownloadSelectionGeometry = Exclude<DataDownloadSelectionGeometry, 'municipality' | 'polygon'>;

@@ -10,6 +10,7 @@ import {BaseMapDataItemComponent} from './base-map-data-item.component';
   selector: 'map-data-item-map',
   templateUrl: './base-map-data-item.component.html',
   styleUrls: ['./base-map-data-item.component.scss'],
+  standalone: false,
 })
 export class MapDataItemMapComponent extends BaseMapDataItemComponent implements OnInit, OnDestroy {
   @Input() public override layers: MapLayer[] = [];

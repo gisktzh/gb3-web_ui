@@ -10,7 +10,6 @@ import {ElevationProfileActions} from '../../../../state/map/actions/elevation-p
 const VERTIXAL_AXIS_LABEL = 'MüM';
 
 @Component({
-  standalone: true,
   selector: 'elevation-profile-chart',
   templateUrl: './elevation-profile-chart.component.html',
   styleUrls: ['./elevation-profile-chart.component.scss'],

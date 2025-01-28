@@ -9,6 +9,7 @@ import {MapConfigActions} from 'src/app/state/map/actions/map-config.actions';
   selector: 'map-rotation-button',
   templateUrl: './map-rotation-button.component.html',
   styleUrls: ['./map-rotation-button.component.scss'],
+  standalone: false,
 })
 export class MapRotationButtonComponent implements OnInit, OnDestroy {
   @Input() public rotation: number = 0;

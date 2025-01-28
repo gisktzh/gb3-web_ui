@@ -16,6 +16,7 @@ import {LegendDisplay} from '../../../shared/interfaces/legend.interface';
   selector: 'legend-overlay',
   templateUrl: './legend-overlay.component.html',
   styleUrls: ['./legend-overlay.component.scss'],
+  standalone: false,
 })
 export class LegendOverlayComponent implements OnInit, OnDestroy {
   /** A value indicating whether interactive elements (like buttons) should be shown. [Default: true] */

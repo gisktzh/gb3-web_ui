@@ -5,6 +5,8 @@ import {DataDownloadRegionActions} from '../actions/data-download-region.actions
 export const dataDownloadRegionFeatureKey = 'dataDownloadRegion';
 
 export const initialState: DataDownloadRegionState = {
+  federation: undefined,
+  federationLoadingState: undefined,
   canton: undefined,
   cantonLoadingState: undefined,
   municipalities: [],
@@ -15,6 +17,18 @@ export const dataDownloadRegionFeature = createFeature({
   name: dataDownloadRegionFeatureKey,
   reducer: createReducer(
     initialState,
+    on(DataDownloadRegionActions.loadFederation, (state): DataDownloadRegionState => {
+      if (state.federation) {
+        return state;
+      }
+      return {...state, federation: initialState.federation, federationLoadingState: 'loading'};
+    }),
+    on(DataDownloadRegionActions.setFederation, (state, {federation}): DataDownloadRegionState => {
+      return {...state, federation, federationLoadingState: 'loaded'};
+    }),
+    on(DataDownloadRegionActions.setFederationError, (state): DataDownloadRegionState => {
+      return {...state, federation: initialState.federation, federationLoadingState: 'error'};
+    }),
     on(DataDownloadRegionActions.loadCanton, (state): DataDownloadRegionState => {
       if (state.canton) {
         return state;
@@ -45,6 +59,8 @@ export const dataDownloadRegionFeature = createFeature({
 export const {
   name,
   reducer,
+  selectFederation,
+  selectFederationLoadingState,
   selectDataDownloadRegionState,
   selectCanton,
   selectCantonLoadingState,

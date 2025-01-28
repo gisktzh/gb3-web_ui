@@ -4,16 +4,10 @@
   loadingText="Lade Neuigkeiten aus dem GIS-Team..."
   loadingCompletedText="Fehler beim Laden der News."
 ></content-loading-state>
-<div class="news-feed">
-  <ul class="news-feed__list">
-    <li *ngFor="let newsEntry of this.news" class="news-feed__list__item">
-      <a [href]="newsEntry.link" [title]="newsEntry.title" rel="noopener noreferrer" target="_blank" class="news-feed__list__item__wrapper">
-        <div class="news-feed__list__item__wrapper__content">
-          <p class="mat-subtitle-2 news-feed__list__item__wrapper__content__header">{{ newsEntry.date }}</p>
-          <p class="mat-headline-6 news-feed__list__item__wrapper__content__news-title">{{ newsEntry.title }}</p>
-          <p class="news-feed__list__item__wrapper__content__news-text">{{ newsEntry.teaserText }}</p>
-        </div>
-      </a>
-    </li>
-  </ul>
-</div>
+<link-grid-list>
+  @for (newsEntry of this.news; track $index) {
+    <link-grid-list-item [url]="newsEntry.link" [title]="newsEntry.title" [entryType]="'Mitteilung'" [entryDate]="newsEntry.date">
+      {{ newsEntry.teaserText }}
+    </link-grid-list-item>
+  }
+</link-grid-list>

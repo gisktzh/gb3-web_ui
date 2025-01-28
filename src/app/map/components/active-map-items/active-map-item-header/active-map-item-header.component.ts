@@ -13,6 +13,7 @@ import {ActiveMapItem} from '../../../models/active-map-item.model';
   selector: 'active-map-item-header',
   templateUrl: './active-map-item-header.component.html',
   styleUrls: ['./active-map-item-header.component.scss'],
+  standalone: false,
 })
 export class ActiveMapItemHeaderComponent implements OnInit, OnDestroy {
   @Input() public activeMapItem!: ActiveMapItem;

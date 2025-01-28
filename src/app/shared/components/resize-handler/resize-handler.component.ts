@@ -18,6 +18,7 @@ const MAX_DIMENSION_PERCENTAGE = 0.85;
   selector: 'resize-handler',
   templateUrl: './resize-handler.component.html',
   styleUrls: ['./resize-handler.component.scss'],
+  standalone: false,
 })
 export class ResizeHandlerComponent {
   @Input() public location!: ResizeHandlerLocation;

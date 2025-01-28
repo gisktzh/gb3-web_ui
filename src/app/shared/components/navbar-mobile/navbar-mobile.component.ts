@@ -11,6 +11,7 @@ import {selectDevMode} from '../../../state/app/reducers/app.reducer';
   selector: 'navbar-mobile',
   templateUrl: './navbar-mobile.component.html',
   styleUrls: ['./navbar-mobile.component.scss'],
+  standalone: false,
 })
 export class NavbarMobileComponent implements OnInit, OnDestroy {
   public isSimplifiedPage: boolean = false;

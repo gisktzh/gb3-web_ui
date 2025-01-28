@@ -6,14 +6,18 @@ import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {MAP_SERVICE} from '../../../app.module';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
-import {CantonCouldNotBeLoaded, MunicipalitiesCouldNotBeLoaded} from '../../../shared/errors/data-download.errors';
-import {CantonWithGeometry, Municipality} from '../../../shared/interfaces/gb3-geoshop-product.interface';
+import {
+  CantonCouldNotBeLoaded,
+  FederationCouldNotBeLoaded,
+  MunicipalitiesCouldNotBeLoaded,
+} from '../../../shared/errors/data-download.errors';
+import {BoundingBoxWithGeometry, Municipality} from '../../../shared/interfaces/gb3-geoshop-product.interface';
 import {DataDownloadRegionEffects} from './data-download-region.effects';
-import {Gb3GeoshopCantonService} from '../../../shared/services/apis/gb3/gb3-geoshop-canton.service';
+import {Gb3GeoshopBoundingBoxService} from '../../../shared/services/apis/gb3/gb3-geoshop-bounding-box.service';
 import {Gb3GeoshopMunicipalitiesService} from '../../../shared/services/apis/gb3/gb3-geoshop-municipalities.service';
 import {DataDownloadRegionActions} from '../actions/data-download-region.actions';
 import {MinimalGeometriesUtils} from '../../../testing/map-testing/minimal-geometries.utils';
-import {selectCanton, selectMunicipalities} from '../reducers/data-download-region.reducer';
+import {selectCanton, selectFederation, selectMunicipalities} from '../reducers/data-download-region.reducer';
 import {catchError} from 'rxjs/operators';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
@@ -23,7 +27,7 @@ describe('DataDownloadRegionEffects', () => {
   let actions$: Observable<Action>;
   let store: MockStore;
   let effects: DataDownloadRegionEffects;
-  let geoshopCantonService: Gb3GeoshopCantonService;
+  let geoshopBoundingBoxService: Gb3GeoshopBoundingBoxService;
   let geoshopMunicipalitiesService: Gb3GeoshopMunicipalitiesService;
 
   beforeEach(() => {
@@ -41,7 +45,7 @@ describe('DataDownloadRegionEffects', () => {
       ],
     });
     effects = TestBed.inject(DataDownloadRegionEffects);
-    geoshopCantonService = TestBed.inject(Gb3GeoshopCantonService);
+    geoshopBoundingBoxService = TestBed.inject(Gb3GeoshopBoundingBoxService);
     geoshopMunicipalitiesService = TestBed.inject(Gb3GeoshopMunicipalitiesService);
     store = TestBed.inject(MockStore);
   });
@@ -50,17 +54,82 @@ describe('DataDownloadRegionEffects', () => {
     store.resetSelectors();
   });
 
+  describe('loadFederation$', () => {
+    it('dispatches DataDownloadRegionActions.setFederation() after loading the federation successfully', (done: DoneFn) => {
+      const federation: BoundingBoxWithGeometry = {boundingBox: MinimalGeometriesUtils.getMinimalPolygon(2056)};
+      store.overrideSelector(selectFederation, undefined);
+      const geoshopBoundingBoxServiceSpy = spyOn(geoshopBoundingBoxService, 'load').and.returnValue(of(federation));
+
+      const expectedAction = DataDownloadRegionActions.setFederation({federation});
+
+      actions$ = of(DataDownloadRegionActions.loadFederation());
+      effects.loadFederation$.subscribe((action) => {
+        expect(geoshopBoundingBoxServiceSpy).toHaveBeenCalledOnceWith('CH');
+        expect(action).toEqual(expectedAction);
+        done();
+      });
+    });
+
+    it('dispatches DataDownloadRegionActions.setFederationError() after loading the federation unsuccessfully', (done: DoneFn) => {
+      const error = errorMock;
+      store.overrideSelector(selectFederation, undefined);
+      const geoshopBoundingBoxServiceSpy = spyOn(geoshopBoundingBoxService, 'load').and.returnValue(throwError(() => error));
+
+      const expectedAction = DataDownloadRegionActions.setFederationError({error});
+
+      actions$ = of(DataDownloadRegionActions.loadFederation());
+      effects.loadFederation$.subscribe((action) => {
+        expect(geoshopBoundingBoxServiceSpy).toHaveBeenCalledOnceWith('CH');
+        expect(action).toEqual(expectedAction);
+        done();
+      });
+    });
+
+    it('dispatches nothing if the federation is already in the store', fakeAsync(async () => {
+      const federation: BoundingBoxWithGeometry = {boundingBox: MinimalGeometriesUtils.getMinimalPolygon(2056)};
+      store.overrideSelector(selectFederation, federation);
+      const geoshopBoundingBoxServiceSpy = spyOn(geoshopBoundingBoxService, 'load').and.callThrough();
+
+      let newAction;
+      actions$ = of(DataDownloadRegionActions.loadFederation());
+      effects.loadFederation$.subscribe((action) => (newAction = action));
+      flush();
+
+      expect(geoshopBoundingBoxServiceSpy).not.toHaveBeenCalled();
+      expect(newAction).toBeUndefined();
+    }));
+  });
+
+  describe('throwFederationError$', () => {
+    it('throws a FederationCouldNotBeLoaded error after setting a federation error', (done: DoneFn) => {
+      const error = errorMock;
+
+      const expectedError = new FederationCouldNotBeLoaded(error);
+
+      actions$ = of(DataDownloadRegionActions.setFederationError({error}));
+      effects.throwFederationError$
+        .pipe(
+          catchError((e: unknown) => {
+            expect(e).toEqual(expectedError);
+            done();
+            return EMPTY;
+          }),
+        )
+        .subscribe();
+    });
+  });
+
   describe('loadCanton$', () => {
     it('dispatches DataDownloadRegionActions.setCanton() after loading the canton successfully', (done: DoneFn) => {
-      const canton: CantonWithGeometry = {boundingBox: MinimalGeometriesUtils.getMinimalPolygon(2056)};
+      const canton: BoundingBoxWithGeometry = {boundingBox: MinimalGeometriesUtils.getMinimalPolygon(2056)};
       store.overrideSelector(selectCanton, undefined);
-      const geoshopCantonServiceSpy = spyOn(geoshopCantonService, 'loadCanton').and.returnValue(of(canton));
+      const geoshopBoundingBoxServiceSpy = spyOn(geoshopBoundingBoxService, 'load').and.returnValue(of(canton));
 
       const expectedAction = DataDownloadRegionActions.setCanton({canton});
 
       actions$ = of(DataDownloadRegionActions.loadCanton());
       effects.loadCanton$.subscribe((action) => {
-        expect(geoshopCantonServiceSpy).toHaveBeenCalledOnceWith();
+        expect(geoshopBoundingBoxServiceSpy).toHaveBeenCalledOnceWith('ZH');
         expect(action).toEqual(expectedAction);
         done();
       });
@@ -69,29 +138,29 @@ describe('DataDownloadRegionEffects', () => {
     it('dispatches DataDownloadRegionActions.setCantonError() after loading the canton unsuccessfully', (done: DoneFn) => {
       const error = errorMock;
       store.overrideSelector(selectCanton, undefined);
-      const geoshopCantonServiceSpy = spyOn(geoshopCantonService, 'loadCanton').and.returnValue(throwError(() => error));
+      const geoshopBoundingBoxServiceSpy = spyOn(geoshopBoundingBoxService, 'load').and.returnValue(throwError(() => error));
 
       const expectedAction = DataDownloadRegionActions.setCantonError({error});
 
       actions$ = of(DataDownloadRegionActions.loadCanton());
       effects.loadCanton$.subscribe((action) => {
-        expect(geoshopCantonServiceSpy).toHaveBeenCalledOnceWith();
+        expect(geoshopBoundingBoxServiceSpy).toHaveBeenCalledOnceWith('ZH');
         expect(action).toEqual(expectedAction);
         done();
       });
     });
 
     it('dispatches nothing if the canton is already in the store', fakeAsync(async () => {
-      const canton: CantonWithGeometry = {boundingBox: MinimalGeometriesUtils.getMinimalPolygon(2056)};
+      const canton: BoundingBoxWithGeometry = {boundingBox: MinimalGeometriesUtils.getMinimalPolygon(2056)};
       store.overrideSelector(selectCanton, canton);
-      const geoshopCantonServiceSpy = spyOn(geoshopCantonService, 'loadCanton').and.callThrough();
+      const geoshopBoundingBoxServiceSpy = spyOn(geoshopBoundingBoxService, 'load').and.callThrough();
 
       let newAction;
       actions$ = of(DataDownloadRegionActions.loadCanton());
       effects.loadCanton$.subscribe((action) => (newAction = action));
       flush();
 
-      expect(geoshopCantonServiceSpy).not.toHaveBeenCalled();
+      expect(geoshopBoundingBoxServiceSpy).not.toHaveBeenCalled();
       expect(newAction).toBeUndefined();
     }));
   });

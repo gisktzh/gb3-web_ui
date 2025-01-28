@@ -16,7 +16,6 @@ const NAME_CONSTRAINTS: ValidatorFn[] = [Validators.minLength(1), Validators.req
 
 @Component({
   selector: 'map-import-display-name',
-  standalone: true,
   imports: [FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule],
   templateUrl: './map-import-display-name.component.html',
   styleUrl: './map-import-display-name.component.scss',

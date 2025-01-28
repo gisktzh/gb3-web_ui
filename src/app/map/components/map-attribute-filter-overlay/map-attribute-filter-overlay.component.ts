@@ -11,7 +11,6 @@ import {selectMapAttributeFiltersItem} from '../../../state/map/selectors/map-at
 
 @Component({
   selector: 'map-attribute-filter-overlay',
-  standalone: true,
   imports: [MapAttributeFilterComponent, MapOverlayComponent, CommonModule],
   templateUrl: './map-attribute-filter-overlay.component.html',
   styleUrl: './map-attribute-filter-overlay.component.scss',

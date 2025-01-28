@@ -10,6 +10,7 @@ import {AuthStatusActions} from '../../../../state/auth/actions/auth-status.acti
   selector: 'navbar-mobile-dialog',
   templateUrl: './navbar-mobile-dialog.component.html',
   styleUrls: ['./navbar-mobile-dialog.component.scss'],
+  standalone: false,
 })
 export class NavbarMobileDialogComponent implements OnInit, OnDestroy {
   protected readonly mainPageEnum = MainPage;

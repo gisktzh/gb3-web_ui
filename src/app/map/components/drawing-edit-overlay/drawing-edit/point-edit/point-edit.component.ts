@@ -5,6 +5,7 @@ import {Gb3PointStyle, PointStyleConfiguration} from '../../../../../shared/inte
   selector: 'point-edit',
   templateUrl: './point-edit.component.html',
   styleUrl: './point-edit.component.scss',
+  standalone: false,
 })
 export class PointEditComponent {
   @Input() public pointStyle!: Gb3PointStyle;

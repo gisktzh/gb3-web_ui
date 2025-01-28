@@ -5,6 +5,7 @@ import {ElevationProfileStatistics} from '../../../../shared/interfaces/elevatio
   selector: 'elevation-profile-statistics',
   templateUrl: './elevation-profile-statistics.component.html',
   styleUrls: ['./elevation-profile-statistics.component.scss'],
+  standalone: false,
 })
 export class ElevationProfileStatisticsComponent {
   @Input() public statistics!: ElevationProfileStatistics;

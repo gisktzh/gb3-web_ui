@@ -11,6 +11,7 @@ const TERMS_OF_USE_SUMMARY =
   selector: 'terms-of-use-page',
   templateUrl: './terms-of-use-page.component.html',
   styleUrls: ['./terms-of-use-page.component.scss'],
+  standalone: false,
 })
 export class TermsOfUsePageComponent implements OnInit, OnDestroy {
   public heroText = TERMS_OF_USE_SUMMARY;

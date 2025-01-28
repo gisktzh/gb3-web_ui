@@ -12,6 +12,7 @@ import {SwisstopoApiService} from '../../../shared/services/apis/swisstopo/swiss
   selector: 'elevation-profile-overlay',
   templateUrl: './elevation-profile-overlay.component.html',
   styleUrls: ['./elevation-profile-overlay.component.scss'],
+  standalone: false,
 })
 export class ElevationProfileOverlayComponent implements OnInit, OnDestroy {
   public isVisible: boolean = false;

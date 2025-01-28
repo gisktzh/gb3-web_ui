@@ -8,6 +8,7 @@ import {selectUsefulInformationLinksWithDynamicUrls} from '../../../state/suppor
   selector: 'useful-information',
   templateUrl: './useful-information.component.html',
   styleUrls: ['./useful-information.component.scss'],
+  standalone: false,
 })
 export class UsefulInformationComponent implements OnInit, OnDestroy {
   public usefulInformationLinksGroups: LinksGroup[] = [];

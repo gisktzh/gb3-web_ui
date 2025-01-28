@@ -14,6 +14,7 @@ import {MatDialog} from '@angular/material/dialog';
   selector: 'navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss'],
+  standalone: false,
 })
 export class NavbarComponent implements OnInit, OnDestroy {
   @Input() public isSimplifiedPage: boolean = false;

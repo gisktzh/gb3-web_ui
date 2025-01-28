@@ -16,9 +16,8 @@
         "plugin:rxjs/recommended",
         "prettier"
       ],
-      "plugins": ["rxjs", "rxjs-angular"],
+      "plugins": ["rxjs"],
       "rules": {
-        "rxjs-angular/prefer-composition": "error",
         "@typescript-eslint/ban-ts-comment": [
           "warn",
           {
@@ -119,10 +118,6 @@
           }
         ]
       }
-    },
-    {
-      "files": ["*.ts"],
-      "extends": ["plugin:@ngrx/recommended-requiring-type-checking"]
     }
   ]
 }

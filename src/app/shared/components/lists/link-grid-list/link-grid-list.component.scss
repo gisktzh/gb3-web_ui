@@ -1,0 +1,12 @@
+@use 'mixins/collapsing-flexbox-list.mixin' as collapsing-flexbox-list;
+
+/// The border width around the link elements
+$border-width: 8px;
+
+.link-grid-list {
+  width: 100%;
+
+  .link-grid-list__content {
+    @include collapsing-flexbox-list.list($border-width);
+  }
+}

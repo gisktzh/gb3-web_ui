@@ -14,6 +14,7 @@ const START_PAGE_SUMMARY =
   selector: 'start-page',
   templateUrl: './start-page.component.html',
   styleUrls: ['./start-page.component.scss'],
+  standalone: false,
 })
 export class StartPageComponent implements OnInit, OnDestroy {
   public heroText = START_PAGE_SUMMARY;

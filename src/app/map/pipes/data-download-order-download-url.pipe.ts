@@ -3,6 +3,7 @@ import {GeoshopApiService} from '../../shared/services/apis/geoshop/services/geo
 
 @Pipe({
   name: 'dataDownloadOrderDownloadUrl',
+  standalone: false,
 })
 export class DataDownloadOrderDownloadUrlPipe implements PipeTransform {
   constructor(private readonly geoshopApiService: GeoshopApiService) {}

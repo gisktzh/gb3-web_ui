@@ -13,6 +13,7 @@ const SUPPORT_PAGE_SUMMARY =
   selector: 'support-page',
   templateUrl: './support-page.component.html',
   styleUrls: ['./support-page.component.scss'],
+  standalone: false,
 })
 export class SupportPageComponent implements OnInit, OnDestroy {
   public heroText = SUPPORT_PAGE_SUMMARY;

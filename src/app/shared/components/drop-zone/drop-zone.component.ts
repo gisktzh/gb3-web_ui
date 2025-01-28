@@ -12,7 +12,6 @@ import {FileUploadRestrictionsConfig} from '../../configs/file-upload-restrictio
  */
 @Component({
   selector: 'drop-zone',
-  standalone: true,
   imports: [NgClass, MatButton, MatIcon],
   templateUrl: './drop-zone.component.html',
   styleUrl: './drop-zone.component.scss',

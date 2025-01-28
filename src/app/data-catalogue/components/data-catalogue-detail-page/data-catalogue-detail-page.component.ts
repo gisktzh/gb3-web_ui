@@ -10,6 +10,7 @@ import {Subscription, tap} from 'rxjs';
   selector: 'data-catalogue-detail-page',
   templateUrl: './data-catalogue-detail-page.component.html',
   styleUrls: ['./data-catalogue-detail-page.component.scss'],
+  standalone: false,
 })
 export class DataCatalogueDetailPageComponent implements OnInit, OnDestroy {
   @Input() public baseMetadataInformation!: BaseMetadataInformation;

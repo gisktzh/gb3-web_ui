@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
@@ -11,13 +11,16 @@ import {
   selectFilteredLayerCatalogMaps,
   selectFilteredSearchApiResultMatches,
 } from '../../../../state/app/selectors/search-results.selector';
+import {ResultGroupComponent} from './result-group/result-group.component';
 
 @Component({
   selector: 'result-groups',
   templateUrl: './result-groups.component.html',
   styleUrls: ['./result-groups.component.scss'],
+  standalone: false,
 })
 export class ResultGroupsComponent implements OnInit, OnDestroy {
+  @ViewChildren(ResultGroupComponent) public readonly resultGroupComponents!: QueryList<ResultGroupComponent>;
   @Input() showMultiplePanels: boolean = true;
   public searchTerms: string[] = [];
   public filteredAddressesAndPlacesMatches: GeometrySearchApiResultMatch[] = [];

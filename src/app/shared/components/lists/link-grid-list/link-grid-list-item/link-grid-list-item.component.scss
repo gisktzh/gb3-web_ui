@@ -1,0 +1,63 @@
+@use 'mixins/helpers.mixin' as mixins;
+@use 'mixins/collapsing-flexbox-list.mixin' as collapsing-flexbox-list;
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+/// The border width around the link elements
+$border-width: 8px;
+
+.link-grid-list-item {
+  --number-of-entries: 3;
+  --height: 310px;
+
+  &--large {
+    --number-of-entries: 2;
+    --height: 649px;
+  }
+
+  @include collapsing-flexbox-list.list__item(
+    $border-width: $border-width,
+    $max-content-width: ktzh-variables.$zh-layout-max-content-width,
+    $number-of-entries: var(--number-of-entries),
+    $height: var(--height)
+  );
+
+  .link-grid-list-item__wrapper {
+    &:hover .link-grid-list-item__wrapper__content {
+      .link-grid-list-item__wrapper__content__title {
+        color: ktzh-variables.$zh-black100;
+      }
+    }
+
+    @include collapsing-flexbox-list.list__item__wrapper(ktzh-variables.$zh-white);
+
+    .link-grid-list-item__wrapper__image {
+      display: block;
+      width: 100%;
+      height: 327px;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .link-grid-list-item__wrapper__content {
+      padding: 40px;
+
+      .link-grid-list-item__wrapper__content__header {
+        margin-bottom: 4px;
+        font-size: 16px;
+        line-height: 24px;
+      }
+
+      .link-grid-list-item__wrapper__content__title {
+        @include mixins.multiline-ellipsis(3);
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: ktzh-variables.$zh-blue;
+        line-height: 1.05;
+      }
+
+      .link-grid-list-item__wrapper__content__text {
+        @include mixins.multiline-ellipsis(6);
+      }
+    }
+  }
+}

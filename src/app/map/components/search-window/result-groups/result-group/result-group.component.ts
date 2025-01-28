@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
@@ -12,13 +12,16 @@ import {MapConfigState} from '../../../../../state/map/states/map-config.state';
 import {ActiveMapItem} from '../../../../models/active-map-item.model';
 import {MapConstants} from '../../../../../shared/constants/map.constants';
 import {SearchActions} from '../../../../../state/app/actions/search.actions';
+import {SearchResultIdentifierDirective} from '../../../../../shared/directives/search-result-identifier.directive';
 
 @Component({
   selector: 'result-group',
   templateUrl: './result-group.component.html',
   styleUrls: ['./result-group.component.scss'],
+  standalone: false,
 })
 export class ResultGroupComponent implements OnInit, OnDestroy {
+  @ViewChildren(SearchResultIdentifierDirective) public readonly searchResultElements!: QueryList<SearchResultIdentifierDirective>;
   @Input() public searchResults: GeometrySearchApiResultMatch[] = [];
   @Input() public filteredMaps: Map[] = [];
   @Input() public header: string = '';
@@ -28,6 +31,8 @@ export class ResultGroupComponent implements OnInit, OnDestroy {
   public screenMode: ScreenMode = 'regular';
   public mapConfigState?: MapConfigState;
   public readonly hoverDelay = MapConstants.TEMPORARY_PREVIEW_DELAY;
+  public readonly toolTip: string =
+    'Diese Karte ist noch nicht im neuen GIS-Browser verfügbar. Öffnen Sie die Karte im alten GIS-Browser mit diesem Link.';
 
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly mapConfigState$ = this.store.select(selectMapConfigState);
@@ -46,7 +51,6 @@ export class ResultGroupComponent implements OnInit, OnDestroy {
   public selectSearchResult(searchResult: GeometrySearchApiResultMatch) {
     this.store.dispatch(SearchActions.selectMapSearchResult({searchResult}));
   }
-
   public addActiveMap(activeMap: Map, isTemporary: boolean = false) {
     if (!activeMap.gb2Url) {
       this.addActiveItem(

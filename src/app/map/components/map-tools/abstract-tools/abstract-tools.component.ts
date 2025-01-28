@@ -8,6 +8,7 @@ import {MatDialog} from '@angular/material/dialog';
 
 @Component({
   template: '',
+  standalone: false,
 })
 export class AbstractToolsComponent implements OnInit, OnDestroy {
   public activeTool: ToolType | undefined = undefined;

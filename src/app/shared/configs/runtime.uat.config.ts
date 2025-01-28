@@ -55,5 +55,6 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
     overrides: {
       overrideWmsUrl: 'http://uatwms.kt.ktzh.ch',
     },
+    accessMode: 'intranet',
   },
 ];

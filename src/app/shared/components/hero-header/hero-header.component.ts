@@ -8,6 +8,7 @@ import {ScreenMode} from '../../types/screen-size.type';
   selector: 'hero-header',
   templateUrl: './hero-header.component.html',
   styleUrls: ['./hero-header.component.scss'],
+  standalone: false,
 })
 export class HeroHeaderComponent implements OnInit, OnDestroy {
   @Input() public heroTitle: string = '';

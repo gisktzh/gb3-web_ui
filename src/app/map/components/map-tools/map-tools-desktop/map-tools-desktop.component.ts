@@ -19,6 +19,7 @@ const TOOLTIP_TEXT = {
   selector: 'map-tools-desktop',
   templateUrl: './map-tools-desktop.component.html',
   styleUrls: ['./map-tools-desktop.component.scss'],
+  standalone: false,
 })
 export class MapToolsDesktopComponent implements OnInit, OnDestroy {
   public toolMenuVisibility: ToolMenuVisibility | undefined = undefined;

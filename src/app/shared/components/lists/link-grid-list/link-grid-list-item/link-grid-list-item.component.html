@@ -1,0 +1,32 @@
+<li class="link-grid-list-item" [class.link-grid-list-item--large]="size === 'large'">
+  @if (this.internalLink) {
+    <a [routerLink]="this.internalLink" [queryParams]="this.internalQueryParams" [title]="this.title" class="link-grid-list-item__wrapper">
+      <ng-container [ngTemplateOutlet]="content"></ng-container>
+    </a>
+  } @else {
+    <a [href]="this.url" [title]="this.title" rel="noopener noreferrer" target="_blank" class="link-grid-list-item__wrapper">
+      <ng-container [ngTemplateOutlet]="content"></ng-container>
+    </a>
+  }
+</li>
+
+<ng-template #content>
+  @if (this.imageUrl && this.size === 'large') {
+    <img [src]="this.imageUrl" alt="" class="link-grid-list-item__wrapper__image" />
+  }
+  <div class="link-grid-list-item__wrapper__content">
+    <div class="mat-subtitle-2 link-grid-list-item__wrapper__content__header">
+      @if (this.entryType) {
+        <strong>{{ this.entryType }}</strong>
+      }
+      @if (this.entryDate) {
+        {{ this.entryDate }}
+      }
+    </div>
+
+    <div class="mat-headline-6 link-grid-list-item__wrapper__content__title">{{ this.title }}</div>
+    <div class="link-grid-list-item__wrapper__content__text">
+      <ng-content></ng-content>
+    </div>
+  </div>
+</ng-template>

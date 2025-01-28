@@ -7,6 +7,12 @@
   height: 46px;
   overflow: hidden;
   gap: 12px;
+  text-decoration: none;
+  color: unset;
+
+  &:hover {
+    background-color: ktzh-variables.$zh-light-grey;
+  }
 
   .search-result-entry-map__image {
     height: 44px;
@@ -27,4 +33,17 @@
     background-color: ktzh-variables.$zh-light-grey;
     border-radius: 50%;
   }
+}
+
+.search-result-entry-map__icon {
+  background-color: rgb(240, 240, 240);
+  width: 24px;
+  height: 24px;
+  padding: 12px;
+  border-radius: 50%;
+}
+
+.search-result-entry-map__icon--rotate {
+  rotate: -45deg;
+  color: ktzh-variables.$zh-darkblue;
 }

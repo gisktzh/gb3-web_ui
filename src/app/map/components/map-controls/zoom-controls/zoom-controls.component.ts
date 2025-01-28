@@ -26,6 +26,7 @@ const TOOLTIP_TEXT = {
   templateUrl: './zoom-controls.component.html',
   styleUrls: ['./zoom-controls.component.scss'],
   providers: [{provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useFactory: toolTipFactoryMapToolsAndControls, deps: [ConfigService]}],
+  standalone: false,
 })
 export class ZoomControlsComponent implements OnInit, OnDestroy {
   @Input() public showLocateMeButton!: boolean;

@@ -10,6 +10,7 @@ import {BasemapConfigService} from '../../../services/basemap-config.service';
   selector: 'basemap-selector',
   templateUrl: './basemap-selector.component.html',
   styleUrls: ['./basemap-selector.component.scss'],
+  standalone: false,
 })
 export class BasemapSelectorComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('basemapSelector', {read: ElementRef, static: false}) private basemapSelectorRef!: ElementRef;

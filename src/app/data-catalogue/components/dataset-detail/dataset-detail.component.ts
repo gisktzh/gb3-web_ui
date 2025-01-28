@@ -24,6 +24,7 @@ interface MetadataLinkWithTopicId extends MetadataLinkWithoutDescription {
   selector: 'dataset-detail',
   templateUrl: './dataset-detail.component.html',
   styleUrls: ['./dataset-detail.component.scss'],
+  standalone: false,
 })
 export class DatasetDetailComponent extends AbstractBaseDetailComponent<DatasetMetadata> {
   public baseMetadataInformation?: BaseMetadataInformation;

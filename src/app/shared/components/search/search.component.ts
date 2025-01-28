@@ -12,6 +12,7 @@ const SEARCH_TERM_INPUT_DEBOUNCE_IN_MS = 300;
   selector: 'search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss'],
+  standalone: false,
 })
 export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() public placeholderText!: string;
@@ -30,7 +31,7 @@ export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public screenMode: ScreenMode = 'regular';
 
-  @ViewChild('searchInput') private readonly inputRef!: ElementRef<HTMLInputElement>;
+  @ViewChild('searchInput') public readonly inputRef!: ElementRef<HTMLInputElement>;
   private readonly searchTerm = new Subject<{term: string; emitChangeEvent: boolean}>();
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly subscriptions: Subscription = new Subscription();

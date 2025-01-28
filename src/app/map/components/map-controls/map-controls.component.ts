@@ -12,6 +12,7 @@ import {MapService} from '../../interfaces/map.service';
   selector: 'map-controls',
   templateUrl: './map-controls.component.html',
   styleUrls: ['./map-controls.component.scss'],
+  standalone: false,
 })
 export class MapControlsComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('scaleBarContainer', {static: true}) private scaleBarContainerRef!: ElementRef;

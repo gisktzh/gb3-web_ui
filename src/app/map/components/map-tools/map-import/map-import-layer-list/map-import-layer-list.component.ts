@@ -10,8 +10,7 @@ import {ExternalLayerId} from '../../../../../shared/types/external-layer-id.typ
 
 @Component({
   selector: 'map-import-layer-list',
-  standalone: true,
-  imports: [NgForOf, NgIf, MatCheckboxModule],
+  imports: [MatCheckboxModule],
   templateUrl: './map-import-layer-list.component.html',
   styleUrl: './map-import-layer-list.component.scss',
 })

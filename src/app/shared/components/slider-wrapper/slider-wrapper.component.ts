@@ -4,6 +4,7 @@ import {Component, Input} from '@angular/core';
   selector: 'slider-wrapper',
   templateUrl: './slider-wrapper.component.html',
   styleUrls: ['./slider-wrapper.component.scss'],
+  standalone: false,
 })
 export class SliderWrapperComponent<T> {
   /** The title of the slider wrapper */

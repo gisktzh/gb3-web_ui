@@ -5,6 +5,7 @@ import {GeneralInfoResponse} from '../../../../shared/interfaces/general-info.in
   selector: 'feature-info-general-information',
   templateUrl: './feature-info-general-information.component.html',
   styleUrls: ['./feature-info-general-information.component.scss'],
+  standalone: false,
 })
 export class FeatureInfoGeneralInformationComponent {
   @Input() public generalInfoData!: GeneralInfoResponse;

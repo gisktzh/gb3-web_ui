@@ -9,6 +9,7 @@ const TICK_LENGTH_IN_MS = 100;
   selector: 'error-notification',
   templateUrl: './error-notification.component.html',
   styleUrls: ['./error-notification.component.scss'],
+  standalone: false,
 })
 export class ErrorNotificationComponent implements OnInit, OnDestroy {
   public progressbarValue$ = new BehaviorSubject<number>(100);

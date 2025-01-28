@@ -48,6 +48,7 @@ class DataCataloguePaginatorIntl implements MatPaginatorIntl {
   templateUrl: './data-catalogue-overview.component.html',
   styleUrls: ['./data-catalogue-overview.component.scss'],
   providers: [{provide: MatPaginatorIntl, useClass: DataCataloguePaginatorIntl}],
+  standalone: false,
 })
 export class DataCatalogueOverviewComponent implements OnInit, OnDestroy, AfterViewInit {
   public loadingState: LoadingState;

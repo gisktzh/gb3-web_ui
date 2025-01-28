@@ -16,6 +16,7 @@ const NUMBER_OF_ENTRIES = 2;
   selector: 'discover-maps',
   templateUrl: './discover-maps.component.html',
   styleUrls: ['./discover-maps.component.scss'],
+  standalone: false,
 })
 export class DiscoverMapsComponent implements OnInit, HasLoadingState, OnDestroy {
   public loadingState: LoadingState = 'loading';

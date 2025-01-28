@@ -6,6 +6,7 @@ import {LoadingState} from '../../../shared/types/loading-state.type';
   selector: 'api-dialog-wrapper',
   templateUrl: './api-dialog-wrapper.component.html',
   styleUrls: ['./api-dialog-wrapper.component.scss'],
+  standalone: false,
 })
 export class ApiDialogWrapperComponent implements HasSavingState {
   @Input() public title: string = '';

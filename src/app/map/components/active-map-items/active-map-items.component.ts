@@ -30,6 +30,7 @@ const TOOLTIP_TEXT = {
   selector: 'active-map-items',
   templateUrl: './active-map-items.component.html',
   styleUrls: ['./active-map-items.component.scss'],
+  standalone: false,
 })
 export class ActiveMapItemsComponent implements OnInit, OnDestroy {
   public tooltipText = TOOLTIP_TEXT;

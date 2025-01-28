@@ -4,6 +4,7 @@ import {Component, EventEmitter, Input, numberAttribute, Output} from '@angular/
   selector: 'slider-edit',
   templateUrl: './slider-edit.component.html',
   styleUrl: './slider-edit.component.scss',
+  standalone: false,
 })
 export class SliderEditComponent {
   @Input({transform: numberAttribute}) public sliderValue: number = 0;

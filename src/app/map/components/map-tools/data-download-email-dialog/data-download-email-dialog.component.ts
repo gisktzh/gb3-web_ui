@@ -8,6 +8,7 @@ import {DataDownloadOrderActions} from '../../../../state/map/actions/data-downl
   selector: 'data-download-email-dialog',
   templateUrl: './data-download-email-dialog.component.html',
   styleUrls: ['./data-download-email-dialog.component.scss'],
+  standalone: false,
 })
 export class DataDownloadEmailDialogComponent {
   public emailFormControl: FormControl<string | null> = new FormControl(null, [Validators.required, Validators.email]);

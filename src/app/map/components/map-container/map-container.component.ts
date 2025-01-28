@@ -8,6 +8,7 @@ import {MAP_SERVICE} from '../../../app.module';
   templateUrl: './map-container.component.html',
   styleUrls: ['./map-container.component.scss'],
   providers: [FeatureHighlightingService],
+  standalone: false,
 })
 export class MapContainerComponent implements OnInit, AfterViewInit {
   @ViewChild('mainMap', {static: true}) mainMapRef!: ElementRef;

@@ -15,6 +15,7 @@ const NUMBER_OF_NEWS = 3;
   selector: 'news-feed',
   templateUrl: './news-feed.component.html',
   styleUrls: ['./news-feed.component.scss'],
+  standalone: false,
 })
 export class NewsFeedComponent implements OnInit, HasLoadingState, OnDestroy {
   public loadingState: LoadingState = 'loading';

@@ -8,6 +8,7 @@ describe('App Reducer', () => {
 
   beforeEach(() => {
     existingState = {
+      accessMode: 'internet',
       devMode: false,
       dynamicInternalUrlsConfiguration: {
         geolion: {href: ''},
@@ -31,6 +32,7 @@ describe('App Reducer', () => {
 
       expect(state.devMode).toBe(true);
       expect(state.dynamicInternalUrlsConfiguration).toEqual(existingState.dynamicInternalUrlsConfiguration);
+      expect(state.accessMode).toEqual(existingState.accessMode);
     });
   });
 
@@ -44,6 +46,18 @@ describe('App Reducer', () => {
 
       expect(state.dynamicInternalUrlsConfiguration).toEqual(dynamicInternalUrlsConfiguration);
       expect(state.devMode).toBe(existingState.devMode);
+      expect(state.accessMode).toBe(existingState.accessMode);
+    });
+  });
+
+  describe('setAccessMode', () => {
+    it('sets the accessMode to intranet; keeps everything else', () => {
+      const action = AppActions.setAccessMode({accessMode: 'intranet'});
+      const state = reducer(existingState, action);
+
+      expect(state.accessMode).toEqual('intranet');
+      expect(state.dynamicInternalUrlsConfiguration).toEqual(existingState.dynamicInternalUrlsConfiguration);
+      expect(state.devMode).toEqual(existingState.devMode);
     });
   });
 });

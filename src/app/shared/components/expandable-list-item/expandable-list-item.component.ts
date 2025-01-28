@@ -5,6 +5,7 @@ import {LoadingState} from '../../types/loading-state.type';
   selector: 'expandable-list-item',
   templateUrl: './expandable-list-item.component.html',
   styleUrls: ['./expandable-list-item.component.scss'],
+  standalone: false,
 })
 export class ExpandableListItemComponent {
   @Input() public expanded: boolean = false;
@@ -15,4 +16,5 @@ export class ExpandableListItemComponent {
   @Input() public numberOfItems: number = 0;
   @Input() public showBadge: boolean = false;
   @Input() public noPadding: boolean = false;
+  @Input() public allowTabFocus: boolean = true;
 }
