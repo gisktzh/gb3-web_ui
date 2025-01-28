@@ -18,7 +18,7 @@ import {Gb3GeoshopMunicipalitiesService} from '../../../shared/services/apis/gb3
 import {DataDownloadRegionActions} from '../actions/data-download-region.actions';
 import {MinimalGeometriesUtils} from '../../../testing/map-testing/minimal-geometries.utils';
 import {selectCanton, selectFederation, selectMunicipalities} from '../reducers/data-download-region.reducer';
-import {catchError} from 'rxjs/operators';
+import {catchError} from 'rxjs';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
 describe('DataDownloadRegionEffects', () => {

@@ -2,7 +2,7 @@ import {Inject, Injectable} from '@angular/core';
 import {BaseApiService} from '../abstract-api.service';
 import {Observable} from 'rxjs';
 import {DiscoverMapsItem} from '../../../interfaces/discover-maps-item.interface';
-import {map} from 'rxjs/operators';
+import {map} from 'rxjs';
 import {DiscoverMapsRoot, FrequentlyUsedRoot, PageInfosRoot, Pages} from '../../../models/grav-cms-generated.interfaces';
 import {PageNotification, PageNotificationSeverity} from '../../../interfaces/page-notification.interface';
 import {MainPage} from '../../../enums/main-page.enum';

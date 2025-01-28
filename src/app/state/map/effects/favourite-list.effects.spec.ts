@@ -4,7 +4,7 @@ import {EMPTY, Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {provideMockStore} from '@ngrx/store/testing';
-import {catchError} from 'rxjs/operators';
+import {catchError} from 'rxjs';
 import {FavouriteListEffects} from './favourite-list.effects';
 import {FavouriteListActions} from '../actions/favourite-list.actions';
 import {FavouriteCouldNotBeLoaded, FavouriteIsInvalid, FavouritesCouldNotBeLoaded} from '../../../shared/errors/favourite.errors';

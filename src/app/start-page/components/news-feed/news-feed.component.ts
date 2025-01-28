@@ -3,7 +3,7 @@ import {HasLoadingState} from '../../../shared/interfaces/has-loading-state.inte
 import {LoadingState} from '../../../shared/types/loading-state.type';
 import {Subscription, tap} from 'rxjs';
 import {NEWS_SERVICE} from '../../../app.module';
-import {catchError} from 'rxjs/operators';
+import {catchError} from 'rxjs';
 import {NewsService} from '../../../shared/interfaces/news-service.interface';
 import {News} from '../../../shared/interfaces/news.interface';
 

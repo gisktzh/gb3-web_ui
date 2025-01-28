@@ -4,7 +4,7 @@ import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {Store} from '@ngrx/store';
 import {BehaviorSubject, first, pairwise, skip, Subscription, tap, withLatestFrom} from 'rxjs';
-import {filter, map} from 'rxjs/operators';
+import {filter, map} from 'rxjs';
 import {AuthService} from '../../../auth/auth.service';
 import {InternalDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {GeometryWithSrs, PointWithSrs, PolygonWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';

@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
 import {filter, of, switchMap, tap} from 'rxjs';
-import {catchError, map} from 'rxjs/operators';
+import {catchError, map} from 'rxjs';
 import {Gb3PrintService} from '../../../shared/services/apis/gb3/gb3-print.service';
 import {PrintRequestCouldNotBeHandled} from '../../../shared/errors/print.errors';
 import {Store} from '@ngrx/store';

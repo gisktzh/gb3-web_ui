@@ -26,7 +26,7 @@ import {selectMapSideDrawerContent} from '../reducers/map-ui.reducer';
 import {selectProducts} from '../reducers/data-download-product.reducer';
 import {DataDownloadOrderStatusJobActions} from '../actions/data-download-order-status-job.actions';
 import {selectStatusJobs} from '../reducers/data-download-order-status-job.reducer';
-import {catchError} from 'rxjs/operators';
+import {catchError} from 'rxjs';
 
 describe('DataDownloadOrderEffects', () => {
   const polygonSelectionMock: DataDownloadSelection = {

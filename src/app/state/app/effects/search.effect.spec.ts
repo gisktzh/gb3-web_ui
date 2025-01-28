@@ -23,7 +23,7 @@ import {
   NoSearchResultsFoundForParameters,
   SearchResultsCouldNotBeLoaded,
 } from '../../../shared/errors/search.errors';
-import {catchError} from 'rxjs/operators';
+import {catchError} from 'rxjs';
 import {selectIsAuthenticated} from '../../auth/reducers/auth-status.reducer';
 
 describe('SearchEffects', () => {

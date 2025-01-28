@@ -3,7 +3,7 @@ import {MapServiceType} from '../../types/map-service.type';
 import {from, Observable, throwError} from 'rxjs';
 import {ExternalServiceActiveMapItem} from '../../models/external-service.model';
 import {EsriError, EsriKMLLayer, EsriWMSLayer} from './esri.module';
-import {catchError, map} from 'rxjs/operators';
+import {catchError, map} from 'rxjs';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 import {MapLoaderService} from '../../interfaces/map-loader.service';
 import {ExternalKmlLayer, ExternalWmsLayer} from '../../../shared/interfaces/external-layer.interface';

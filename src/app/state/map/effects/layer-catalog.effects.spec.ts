@@ -18,7 +18,7 @@ import {InitialMapIdsParameterInvalid, InitialMapsCouldNotBeLoaded} from '../../
 import {selectItems} from '../reducers/layer-catalog.reducer';
 import {TopicsCouldNotBeLoaded} from '../../../shared/errors/map.errors';
 import {selectIsAuthenticated} from '../../auth/reducers/auth-status.reducer';
-import {catchError} from 'rxjs/operators';
+import {catchError} from 'rxjs';
 
 describe('LayerCatalogEffects', () => {
   let actions$: Observable<Action>;

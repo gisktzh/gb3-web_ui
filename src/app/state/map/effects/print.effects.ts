@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {of, switchMap, tap} from 'rxjs';
-import {catchError, map} from 'rxjs/operators';
+import {catchError, map} from 'rxjs';
 import {PrintActions} from '../actions/print.actions';
 import {Gb3PrintService} from '../../../shared/services/apis/gb3/gb3-print.service';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';

@@ -6,7 +6,7 @@ import {Store} from '@ngrx/store';
 import {combineLatestWith, filter, Subscription, tap} from 'rxjs';
 import {MapImportActions} from '../../../../../state/map/actions/map-import.actions';
 import {selectTitle} from '../../../../../state/map/reducers/map-import.reducer';
-import {map} from 'rxjs/operators';
+import {map} from 'rxjs';
 
 interface DisplayNameFormGroup {
   name: FormControl<string | null>;

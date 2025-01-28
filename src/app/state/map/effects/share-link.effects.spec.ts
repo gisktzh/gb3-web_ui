@@ -10,7 +10,7 @@ import {ShareLinkActions} from '../actions/share-link.actions';
 import {ShareLinkItem} from '../../../shared/interfaces/share-link.interface';
 import {AuthService} from '../../../auth/auth.service';
 import {FavouritesService} from '../../../map/services/favourites.service';
-import {catchError} from 'rxjs/operators';
+import {catchError} from 'rxjs';
 import {
   ShareLinkCouldNotBeLoaded,
   ShareLinkCouldNotBeValidated,

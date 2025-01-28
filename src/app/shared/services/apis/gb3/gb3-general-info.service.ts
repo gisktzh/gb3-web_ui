@@ -3,7 +3,7 @@ import {Gb3ApiService} from './gb3-api.service';
 import {GeneralInfoListData} from '../../../models/gb3-api-generated.interfaces';
 import {Observable} from 'rxjs';
 import {GeneralInfoResponse} from '../../../interfaces/general-info.interface';
-import {map} from 'rxjs/operators';
+import {map} from 'rxjs';
 import {Gb3QueryCoordinatesToPointConverterUtils} from '../../../utils/gb3-query-coordinates-to-point-converter.utils';
 
 @Injectable({

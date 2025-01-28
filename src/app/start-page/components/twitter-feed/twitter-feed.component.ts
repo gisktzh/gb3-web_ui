@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
 import {ScriptInjectorService} from '../../../shared/services/script-injector.service';
 import {Subscription, tap} from 'rxjs';
-import {catchError} from 'rxjs/operators';
+import {catchError} from 'rxjs';
 import {LoadingState} from 'src/app/shared/types/loading-state.type';
 import {HasLoadingState} from '../../../shared/interfaces/has-loading-state.interface';
 

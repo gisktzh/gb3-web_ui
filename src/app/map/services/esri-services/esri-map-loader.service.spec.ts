@@ -10,7 +10,7 @@ import {UuidUtils} from '../../../shared/utils/uuid.utils';
 import {ExternalKmlActiveMapItem} from '../../models/implementations/external-kml.model';
 import {LayerCouldNotBeLoaded} from './errors/esri.errors';
 import {EsriError, EsriWMSLayer} from './esri.module';
-import {catchError} from 'rxjs/operators';
+import {catchError} from 'rxjs';
 import {ExternalServiceHasNoLayers} from '../../../shared/errors/map-import.errors';
 
 describe('EsriMapLoaderService', () => {

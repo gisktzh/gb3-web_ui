@@ -14,7 +14,7 @@ import {DataDownloadConfig} from '../../../shared/interfaces/data-download-confi
 import {DataDownloadOrderStatusJobEffects} from './data-download-order-status-job.effects';
 import {selectStatusJobs} from '../reducers/data-download-order-status-job.reducer';
 import {DataDownloadOrderStatusJobActions} from '../actions/data-download-order-status-job.actions';
-import {catchError} from 'rxjs/operators';
+import {catchError} from 'rxjs';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
 describe('DataDownloadOrderStatusJobEffects', () => {

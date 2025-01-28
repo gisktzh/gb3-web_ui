@@ -15,7 +15,7 @@ import {MapLoaderServiceMock} from '../../../testing/map-testing/map-loader.serv
 import {MapImportActions} from '../actions/map-import.actions';
 import {ExternalKmlLayer, ExternalWmsLayer} from '../../../shared/interfaces/external-layer.interface';
 import {ExternalServiceCouldNotBeLoaded} from '../../../shared/errors/map-import.errors';
-import {catchError} from 'rxjs/operators';
+import {catchError} from 'rxjs';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
 describe('ExternalMapItemEffects', () => {

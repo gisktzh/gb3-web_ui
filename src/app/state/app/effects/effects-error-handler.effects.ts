@@ -1,6 +1,6 @@
 import {ErrorHandler} from '@angular/core';
 import {Observable} from 'rxjs';
-import {catchError} from 'rxjs/operators';
+import {catchError} from 'rxjs';
 import {Action} from '@ngrx/store';
 
 // This effect is used to overwrite the default error handler from NGRX with our custom error handler.

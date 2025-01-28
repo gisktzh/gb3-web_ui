@@ -8,7 +8,7 @@ import {DataDisplayElement} from '../../types/data-display-element.type';
 import {MainPage} from '../../../shared/enums/main-page.enum';
 import {DataCataloguePage} from '../../../shared/enums/data-catalogue-page.enum';
 import {DatasetMetadata, MapMetadata, ProductMetadata, ServiceMetadata} from '../../../shared/interfaces/gb3-metadata.interface';
-import {catchError} from 'rxjs/operators';
+import {catchError} from 'rxjs';
 import {BaseMetadataInformation} from '../../interfaces/base-metadata-information.interface';
 import {RouteParamConstants} from '../../../shared/constants/route-param.constants';
 import {HttpErrorResponse} from '@angular/common/http';

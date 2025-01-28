@@ -6,7 +6,7 @@ import {Gb3ExportService} from '../../../shared/services/apis/gb3/gb3-export.ser
 import {TestBed} from '@angular/core/testing';
 import {UserDrawingVectorLayers} from '../../../shared/interfaces/user-drawing-vector-layers.interface';
 import {DrawingCouldNotBeExported} from '../../../shared/errors/export.errors';
-import {catchError} from 'rxjs/operators';
+import {catchError} from 'rxjs';
 import {ExportActions} from '../actions/export.actions';
 import {provideMockActions} from '@ngrx/effects/testing';
 import {provideHttpClientTesting} from '@angular/common/http/testing';

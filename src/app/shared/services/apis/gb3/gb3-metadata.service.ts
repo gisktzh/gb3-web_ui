@@ -26,7 +26,7 @@ import {
   ProductMetadata,
   ServiceMetadata,
 } from '../../../interfaces/gb3-metadata.interface';
-import {map} from 'rxjs/operators';
+import {map} from 'rxjs';
 import {
   DatasetOverviewMetadataItem,
   MapOverviewMetadataItem,

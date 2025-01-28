@@ -4,7 +4,7 @@ import {SearchApiResultMatch} from '../interfaces/search-api-result-match.interf
 import {BaseApiService} from '../../abstract-api.service';
 import {SearchApiResult} from '../interfaces/search-api-result.interface';
 import {SearchIndex} from '../interfaces/search-index.interface';
-import {map} from 'rxjs/operators';
+import {map} from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
