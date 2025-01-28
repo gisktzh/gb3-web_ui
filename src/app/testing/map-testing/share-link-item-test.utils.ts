@@ -3,7 +3,7 @@ import {MinimalGeometriesUtils} from './minimal-geometries.utils';
 
 export class ShareLinkItemTestUtils {
   public static createShareLinkItem(timeExtentStart: Date, timeExtentEnd: Date): ShareLinkItem {
-    const {srs, ...minimalPolygonGeometry} = MinimalGeometriesUtils.getMinimalPolygon(2056);
+    const {srs: _, ...minimalPolygonGeometry} = MinimalGeometriesUtils.getMinimalPolygon(2056);
     return {
       basemapId: 'arelkbackgroundzh',
       center: {x: 2675158, y: 1259964},

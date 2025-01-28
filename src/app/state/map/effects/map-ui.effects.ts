@@ -55,7 +55,7 @@ export class MapUiEffects {
     return this.actions$.pipe(
       ofType(MapUiActions.showMapSideDrawerContent),
       filter((value) => value.mapSideDrawerContent === 'data-download'),
-      map((value) => DataDownloadProductActions.loadProductsAndRelevantProducts()),
+      map((_) => DataDownloadProductActions.loadProductsAndRelevantProducts()),
     );
   });
 

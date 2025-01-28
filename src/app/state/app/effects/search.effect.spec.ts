@@ -135,7 +135,7 @@ describe('SearchEffects', () => {
       const mapDrawingServiceSpy = spyOn(mapDrawingService, 'clearSearchResultHighlight').and.callThrough();
 
       actions$ = of(SearchActions.clearSearchTerm());
-      effects.removeHighlightAfterChangingSearchTermOrClearingSearchResult$.subscribe((action) => {
+      effects.removeHighlightAfterChangingSearchTermOrClearingSearchResult$.subscribe((_) => {
         expect(mapDrawingServiceSpy).toHaveBeenCalledTimes(1);
         done();
       });
