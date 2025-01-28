@@ -146,8 +146,8 @@ export default tseslint.config(
     },
   },
   {
-    files: ['**/*.html'],
-    ignores: ['**/index.html'],
+    files: ['src/**/*.html'],
+    ignores: ['src/**/index.html'],
     extends: [...angular.configs.templateRecommended, ...angular.configs.templateAccessibility, prettierRecommended],
     rules: {
       '@angular-eslint/template/eqeqeq': [
