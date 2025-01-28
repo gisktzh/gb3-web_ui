@@ -1,3 +1,4 @@
 {
-  "*": "prettier --write -u"
+  "!(*.ts)": "prettier --write -u",
+  "*.ts": ["eslint", "prettier --write -u"]
 }
