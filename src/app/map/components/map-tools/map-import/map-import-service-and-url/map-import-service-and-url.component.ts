@@ -71,7 +71,7 @@ export class MapImportServiceAndUrlComponent implements OnInit, OnDestroy {
         .pipe(
           distinctUntilChanged(),
           filter((url): url is string => !!url),
-          tap((_) => this.store.dispatch(ExternalMapItemActions.clearLoadingState())),
+          tap(() => this.store.dispatch(ExternalMapItemActions.clearLoadingState())),
         )
         .subscribe(),
     );

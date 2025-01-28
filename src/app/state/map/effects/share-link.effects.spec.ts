@@ -361,7 +361,7 @@ describe('ShareLinkEffects', () => {
             ' active map items',
           (done: DoneFn) => {
             actions$ = of(ShareLinkActions.validateItem({item: expectedItem}));
-            const drawingActiveMapItems = expectedCompleteItem.drawings.map((_) =>
+            const drawingActiveMapItems = expectedCompleteItem.drawings.map(() =>
               ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, DrawingLayerPrefix.Drawing),
             );
             favouriteServiceMock.getDrawingsForFavourite.and.returnValue({
