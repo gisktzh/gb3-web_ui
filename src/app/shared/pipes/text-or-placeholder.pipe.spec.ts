@@ -10,7 +10,7 @@ describe('TextOrPlaceholderPipe', () => {
     expect(pipe).toBeTruthy();
   });
   it('returns the string value if present', () => {
-    const value: string = 'test';
+    const value = 'test';
 
     const result = pipe.transform(value);
 

@@ -54,7 +54,7 @@ export const faqData: FaqCollection[] = [
       {
         uuid: 'a1b7dfd2-bbe7-45f1-aaf4-3bbee3667cf5',
         question: 'Wie verwende ich Zeichnen und Messen?',
-        answer: 
+        answer:
           'Zeichnen und Messen stellt das erstellte Objekt (Punkt, Linie oder Fläche) direkt auf dem GIS-Browser dar.' +
           ' Das Messen ergänzt dynamisch Informationen wie z.B. Koordinate, Länge oder Fläche.' +
           ' Zeichnungen und Messungen lassen sich mittels Rechtsklick bearbeiten (u.a. das Einfügen von weiteren Stützpunkten oder Entfernen einzelner Objekte).' +
@@ -65,12 +65,13 @@ export const faqData: FaqCollection[] = [
       {
         uuid: 'd1177871-e8c8-49e2-b3f0-4ec7b45986a5',
         question: 'Wo kann ich ein Höhenprofil zeichnen?',
-        answer: 'Das Höhenprofil ist eine Unterkategorie der Messfunktion. Der Service greift auf Daten vom Bundesamt für Landestopografie swisstopo.',
+        answer:
+          'Das Höhenprofil ist eine Unterkategorie der Messfunktion. Der Service greift auf Daten vom Bundesamt für Landestopografie swisstopo.',
       },
       {
         uuid: '5d898de9-5cee-4c75-b61e-ff75a750d1bf',
         question: 'Wie verwende ich einen Favoriten?',
-        answer: 
+        answer:
           'Im neuen GIS-Browser können Kartenauswahl, Messungen und Zeichnungen als Favorit über den Stern in Aktive Karten gespeichert werden.' +
           ' Dazu muss vorangehend ein Konto erstellt werden.' +
           ' Das Favorisieren erlaubt personalisierte Karteneinstellungen auf Knopfdruck abzurufen.' +
@@ -89,7 +90,7 @@ export const faqData: FaqCollection[] = [
       {
         uuid: 'ee5fed0f-cd6c-43e6-84ef-b6d5b5de2af1',
         question: 'Wo finde ich meine Profileinstellungen?',
-        answer: 
+        answer:
           'Der neue GIS-Browser erlaubt aktuell keinen direkten Absprung zu den Einstellungen.' +
           ' Einstellungen zu Gruppen, Username und Passwort können hier vorgenommen werden: https://maps.zh.ch/groups_users ',
       },
