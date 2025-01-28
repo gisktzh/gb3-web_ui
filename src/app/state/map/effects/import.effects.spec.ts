@@ -183,7 +183,7 @@ describe('ImportEffects', () => {
       actions$ = of(ImportActions.setDrawingsImportRequestError({error: expectedOriginalError}));
       effects.throwImportDrawingsRequestError$
         .pipe(
-          catchError((error) => {
+          catchError((error: unknown) => {
             const expectedError = new FileImportError(expectedOriginalError);
             expect(error).toEqual(expectedError);
             done();
@@ -200,7 +200,7 @@ describe('ImportEffects', () => {
       actions$ = of(ImportActions.setFileValidationError({errorMessage}));
       effects.throwFileValidationError$
         .pipe(
-          catchError((error) => {
+          catchError((error: unknown) => {
             const expectedError = new FileValidationError(errorMessage);
             expect(error).toEqual(expectedError);
             done();

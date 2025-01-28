@@ -131,7 +131,7 @@ describe('ExternalMapItemEffects', () => {
       actions$ = of(ExternalMapItemActions.setItemError({error: originalError}));
       effects.throwExternalMapItemError$
         .pipe(
-          catchError((error) => {
+          catchError((error: unknown) => {
             expect(error).toEqual(expectedError);
             done();
             return EMPTY;

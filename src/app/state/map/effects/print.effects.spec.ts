@@ -121,7 +121,7 @@ describe('PrintEffects', () => {
       actions$ = of(PrintActions.setPrintRequestError({error: expectedOriginalError}));
       effects.throwPrintRequestError$
         .pipe(
-          catchError((error) => {
+          catchError((error: unknown) => {
             const expectedError = new PrintRequestCouldNotBeHandled(expectedOriginalError);
             expect(error).toEqual(expectedError);
             done();

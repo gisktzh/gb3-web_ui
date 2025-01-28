@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {GeolocationActions} from 'src/app/state/map/actions/geolocation.actions';
@@ -13,7 +13,7 @@ import {initialState as initialGeolocationState, selectGeolocationState} from '.
   styleUrls: ['./map-tools-mobile.component.scss'],
   standalone: false,
 })
-export class MapToolsMobileComponent {
+export class MapToolsMobileComponent implements OnInit, OnDestroy {
   public numberOfQueryLegends: number = 0;
   public geolocationState: GeolocationState = initialGeolocationState;
 

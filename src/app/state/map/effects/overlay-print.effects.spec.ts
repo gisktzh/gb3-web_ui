@@ -164,7 +164,7 @@ describe('OverlayPrintEffects', () => {
       actions$ = of(OverlayPrintActions.setPrintRequestError({overlay: 'legend', error: expectedOriginalError}));
       effects.throwPrintRequestError$
         .pipe(
-          catchError((error) => {
+          catchError((error: unknown) => {
             const expectedError = new PrintRequestCouldNotBeHandled(expectedOriginalError);
             expect(error).toEqual(expectedError);
             done();

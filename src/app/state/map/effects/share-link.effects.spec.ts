@@ -454,7 +454,7 @@ describe('ShareLinkEffects', () => {
           actions$ = of(ShareLinkActions.setInitializationError({error: expectedOriginalError}));
           effects.throwInitializationError$
             .pipe(
-              catchError((error) => {
+              catchError((error: unknown) => {
                 expect(error).toEqual(expectedError);
                 expect(error).toBeInstanceOf(ShareLinkCouldNotBeValidated);
                 expect((error as ShareLinkCouldNotBeValidated).message).not.toContain('Möglicherweise hilft es, wenn Sie sich einloggen.');
@@ -474,7 +474,7 @@ describe('ShareLinkEffects', () => {
           actions$ = of(ShareLinkActions.setInitializationError({error: expectedOriginalError}));
           effects.throwInitializationError$
             .pipe(
-              catchError((error) => {
+              catchError((error: unknown) => {
                 expect(error).toEqual(expectedError);
                 expect(error).toBeInstanceOf(ShareLinkCouldNotBeValidated);
                 expect((error as ShareLinkCouldNotBeValidated).message).toContain('Möglicherweise hilft es, wenn Sie sich einloggen.');

@@ -165,7 +165,7 @@ describe('ElevationProfileEffects', () => {
       actions$ = of(ElevationProfileActions.setProfileError({error: expectedOriginalError}));
       effects.setElevationProfileError$
         .pipe(
-          catchError((error) => {
+          catchError((error: unknown) => {
             const expectedError = new ElevationProfileCouldNotBeLoaded(expectedOriginalError);
             expect(error).toEqual(expectedError);
             done();

@@ -9,7 +9,7 @@ import {Action} from '@ngrx/store';
 // For more information see: https://ngrx.io/guide/effects/lifecycle#customizing-the-effects-error-handler
 export function effectErrorHandler<T extends Action>(observable$: Observable<T>, errorHandler: ErrorHandler): Observable<T> {
   return observable$.pipe(
-    catchError((error, caught) => {
+    catchError((error: unknown, caught: Observable<T>) => {
       errorHandler.handleError(error);
       return caught;
     }),

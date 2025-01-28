@@ -129,7 +129,7 @@ describe('ExportEffects', () => {
       actions$ = of(ExportActions.setDrawingsExportRequestError({error: expectedOriginalError}));
       effects.throwExportDrawingsRequestError$
         .pipe(
-          catchError((error) => {
+          catchError((error: unknown) => {
             const expectedError = new DrawingCouldNotBeExported(expectedOriginalError);
             expect(error).toEqual(expectedError);
             done();

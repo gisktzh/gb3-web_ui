@@ -41,7 +41,7 @@ describe('EsriMapLoaderService', () => {
       (service as any)
         .loadService(layer)
         .pipe(
-          catchError((actual) => {
+          catchError((actual: unknown) => {
             expect(actual).toEqual(expectedError);
             done();
             return EMPTY;
@@ -119,7 +119,7 @@ describe('EsriMapLoaderService', () => {
       service
         .loadExternalService(url, 'wms')
         .pipe(
-          catchError((actual) => {
+          catchError((actual: unknown) => {
             expect(actual).toEqual(expectedError);
             done();
             return EMPTY;
@@ -184,7 +184,7 @@ describe('EsriMapLoaderService', () => {
       service
         .loadExternalService(url, 'kml')
         .pipe(
-          catchError((actual) => {
+          catchError((actual: unknown) => {
             expect(actual).toEqual(expectedError);
             done();
             return EMPTY;
