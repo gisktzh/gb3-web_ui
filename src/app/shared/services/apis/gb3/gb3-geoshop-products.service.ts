@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Gb3ApiService} from './gb3-api.service';
 import {Observable, of} from 'rxjs';
 import {ProductsListData, ProductsRelevantListData} from '../../../models/gb3-api-generated.interfaces';
-import {map} from 'rxjs/operators';
+import {map} from 'rxjs';
 import {Product, ProductFormat} from '../../../interfaces/gb3-geoshop-product.interface';
 import {DataDownloadFilter} from '../../../interfaces/data-download-filter.interface';
 import {ProductAvailability} from '../../../enums/product-availability.enum';

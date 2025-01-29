@@ -1,7 +1,7 @@
 import {Inject, Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
-import {catchError, map} from 'rxjs/operators';
+import {catchError, map} from 'rxjs';
 import {DataDownloadOrderActions} from '../actions/data-download-order.actions';
 import {MapUiActions} from '../actions/map-ui.actions';
 import {MAP_SERVICE} from '../../../app.module';

@@ -5,7 +5,7 @@ import {combineLatestWith, distinctUntilChanged, filter, of, switchMap, takeWhil
 import {SearchActions} from '../actions/search.actions';
 import {SearchService} from '../../../shared/services/apis/search/services/search.service';
 import {Store} from '@ngrx/store';
-import {catchError, map} from 'rxjs/operators';
+import {catchError, map} from 'rxjs';
 import {
   InvalidSearchParameters,
   NoSearchResultsFoundForParameters,

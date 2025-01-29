@@ -10,7 +10,7 @@ import {UuidUtils} from '../../../shared/utils/uuid.utils';
 import {ExternalKmlActiveMapItem} from '../../models/implementations/external-kml.model';
 import {LayerCouldNotBeLoaded} from './errors/esri.errors';
 import {EsriError, EsriWMSLayer} from './esri.module';
-import {catchError} from 'rxjs/operators';
+import {catchError} from 'rxjs';
 import {ExternalServiceHasNoLayers} from '../../../shared/errors/map-import.errors';
 
 describe('EsriMapLoaderService', () => {
@@ -41,7 +41,7 @@ describe('EsriMapLoaderService', () => {
       (service as any)
         .loadService(layer)
         .pipe(
-          catchError((actual) => {
+          catchError((actual: unknown) => {
             expect(actual).toEqual(expectedError);
             done();
             return EMPTY;
@@ -119,7 +119,7 @@ describe('EsriMapLoaderService', () => {
       service
         .loadExternalService(url, 'wms')
         .pipe(
-          catchError((actual) => {
+          catchError((actual: unknown) => {
             expect(actual).toEqual(expectedError);
             done();
             return EMPTY;
@@ -184,7 +184,7 @@ describe('EsriMapLoaderService', () => {
       service
         .loadExternalService(url, 'kml')
         .pipe(
-          catchError((actual) => {
+          catchError((actual: unknown) => {
             expect(actual).toEqual(expectedError);
             done();
             return EMPTY;

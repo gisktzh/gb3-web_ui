@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {BaseApiService} from '../abstract-api.service';
 import {RootObject as KTZHNewsRootObject} from '../../../models/ktzh-news-generated.interfaces';
 import {News} from '../../../interfaces/news.interface';
-import {map} from 'rxjs/operators';
+import {map} from 'rxjs';
 import {Observable} from 'rxjs';
 import {NewsService} from '../../../interfaces/news-service.interface';
 

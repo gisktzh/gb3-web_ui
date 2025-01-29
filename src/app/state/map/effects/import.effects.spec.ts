@@ -9,7 +9,7 @@ import {Gb3VectorLayer} from '../../../shared/interfaces/gb3-vector-layer.interf
 import {ImportActions} from '../actions/import.actions';
 import {MAP_SERVICE} from '../../../app.module';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
-import {catchError} from 'rxjs/operators';
+import {catchError} from 'rxjs';
 import {FileImportError, FileValidationError} from '../../../shared/errors/file-upload.errors';
 import {DrawingLayerPrefix, UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
@@ -183,7 +183,7 @@ describe('ImportEffects', () => {
       actions$ = of(ImportActions.setDrawingsImportRequestError({error: expectedOriginalError}));
       effects.throwImportDrawingsRequestError$
         .pipe(
-          catchError((error) => {
+          catchError((error: unknown) => {
             const expectedError = new FileImportError(expectedOriginalError);
             expect(error).toEqual(expectedError);
             done();
@@ -200,7 +200,7 @@ describe('ImportEffects', () => {
       actions$ = of(ImportActions.setFileValidationError({errorMessage}));
       effects.throwFileValidationError$
         .pipe(
-          catchError((error) => {
+          catchError((error: unknown) => {
             const expectedError = new FileValidationError(errorMessage);
             expect(error).toEqual(expectedError);
             done();

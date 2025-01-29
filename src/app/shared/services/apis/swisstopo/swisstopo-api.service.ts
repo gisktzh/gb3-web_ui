@@ -7,7 +7,7 @@ import {
   SupportedSrs as SwisstopoSupportedSrs,
 } from '../../../models/swisstopo-api-generated.interface';
 import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {map} from 'rxjs';
 import {ElevationProfileData} from '../../../interfaces/elevation-profile.interface';
 import {Geometry} from 'geojson';
 import {SupportedSrs} from '../../../types/supported-srs.type';

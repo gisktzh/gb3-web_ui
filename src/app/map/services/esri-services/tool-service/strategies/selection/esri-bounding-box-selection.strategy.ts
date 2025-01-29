@@ -5,7 +5,7 @@ import {AbstractEsriSelectionStrategy} from '../abstract-esri-selection.strategy
 import {Observable} from 'rxjs';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
-import {map} from 'rxjs/operators';
+import {map} from 'rxjs';
 import {SupportedGeometry} from '../../../../../../shared/types/SupportedGeometry.type';
 import {ConfigService} from '../../../../../../shared/services/config.service';
 import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';

@@ -8,7 +8,7 @@ import {Store} from '@ngrx/store';
 import {selectCurrentShareLinkItem} from '../../map/selectors/current-share-link-item.selector';
 import {SessionStorageService} from '../../../shared/services/session-storage.service';
 import {LayerCatalogActions} from '../../map/actions/layer-catalog.actions';
-import {filter, map} from 'rxjs/operators';
+import {filter, map} from 'rxjs';
 import {ShareLinkItem} from '../../../shared/interfaces/share-link.interface';
 import {Gb3ShareLinkService} from '../../../shared/services/apis/gb3/gb3-share-link.service';
 import {ActiveMapItemActions} from '../../map/actions/active-map-item.actions';

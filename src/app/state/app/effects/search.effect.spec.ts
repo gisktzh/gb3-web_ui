@@ -23,7 +23,7 @@ import {
   NoSearchResultsFoundForParameters,
   SearchResultsCouldNotBeLoaded,
 } from '../../../shared/errors/search.errors';
-import {catchError} from 'rxjs/operators';
+import {catchError} from 'rxjs';
 import {selectIsAuthenticated} from '../../auth/reducers/auth-status.reducer';
 
 describe('SearchEffects', () => {
@@ -135,7 +135,7 @@ describe('SearchEffects', () => {
       const mapDrawingServiceSpy = spyOn(mapDrawingService, 'clearSearchResultHighlight').and.callThrough();
 
       actions$ = of(SearchActions.clearSearchTerm());
-      effects.removeHighlightAfterChangingSearchTermOrClearingSearchResult$.subscribe((action) => {
+      effects.removeHighlightAfterChangingSearchTermOrClearingSearchResult$.subscribe(() => {
         expect(mapDrawingServiceSpy).toHaveBeenCalledTimes(1);
         done();
       });

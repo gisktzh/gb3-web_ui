@@ -11,7 +11,7 @@ import {selectMapConfigState} from '../../../../state/map/reducers/map-config.re
 import {ActiveMapItem} from '../../../models/active-map-item.model';
 import {selectItems} from '../../../../state/map/selectors/active-map-items.selector';
 import {MapUiActions} from '../../../../state/map/actions/map-ui.actions';
-import {map} from 'rxjs/operators';
+import {map} from 'rxjs';
 import {ConfigService} from '../../../../shared/services/config.service';
 import {Gb3StyledInternalDrawingRepresentation} from '../../../../shared/interfaces/internal-drawing-representation.interface';
 import {selectDrawings} from '../../../../state/map/reducers/drawing.reducer';

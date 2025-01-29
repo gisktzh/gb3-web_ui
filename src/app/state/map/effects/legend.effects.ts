@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
 import {of, switchMap, tap} from 'rxjs';
-import {catchError, map} from 'rxjs/operators';
+import {catchError, map} from 'rxjs';
 import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
 import {Store} from '@ngrx/store';
 import {LegendActions} from '../actions/legend.actions';

@@ -21,7 +21,7 @@ import {ToolService} from '../../../map/interfaces/tool.service';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {selectSelectedDrawing} from '../reducers/drawing.reducer';
 import {DrawingNotFound} from '../../../shared/errors/drawing.errors';
-import {catchError} from 'rxjs/operators';
+import {catchError} from 'rxjs';
 import {MapService} from '../../../map/interfaces/map.service';
 
 describe('DrawingEffects', () => {

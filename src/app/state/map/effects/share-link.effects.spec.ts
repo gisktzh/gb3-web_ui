@@ -10,7 +10,7 @@ import {ShareLinkActions} from '../actions/share-link.actions';
 import {ShareLinkItem} from '../../../shared/interfaces/share-link.interface';
 import {AuthService} from '../../../auth/auth.service';
 import {FavouritesService} from '../../../map/services/favourites.service';
-import {catchError} from 'rxjs/operators';
+import {catchError} from 'rxjs';
 import {
   ShareLinkCouldNotBeLoaded,
   ShareLinkCouldNotBeValidated,
@@ -361,7 +361,7 @@ describe('ShareLinkEffects', () => {
             ' active map items',
           (done: DoneFn) => {
             actions$ = of(ShareLinkActions.validateItem({item: expectedItem}));
-            const drawingActiveMapItems = expectedCompleteItem.drawings.map((d) =>
+            const drawingActiveMapItems = expectedCompleteItem.drawings.map(() =>
               ActiveMapItemFactory.createDrawingMapItem(UserDrawingLayer.Drawings, DrawingLayerPrefix.Drawing),
             );
             favouriteServiceMock.getDrawingsForFavourite.and.returnValue({
@@ -454,7 +454,7 @@ describe('ShareLinkEffects', () => {
           actions$ = of(ShareLinkActions.setInitializationError({error: expectedOriginalError}));
           effects.throwInitializationError$
             .pipe(
-              catchError((error) => {
+              catchError((error: unknown) => {
                 expect(error).toEqual(expectedError);
                 expect(error).toBeInstanceOf(ShareLinkCouldNotBeValidated);
                 expect((error as ShareLinkCouldNotBeValidated).message).not.toContain('Möglicherweise hilft es, wenn Sie sich einloggen.');
@@ -474,7 +474,7 @@ describe('ShareLinkEffects', () => {
           actions$ = of(ShareLinkActions.setInitializationError({error: expectedOriginalError}));
           effects.throwInitializationError$
             .pipe(
-              catchError((error) => {
+              catchError((error: unknown) => {
                 expect(error).toEqual(expectedError);
                 expect(error).toBeInstanceOf(ShareLinkCouldNotBeValidated);
                 expect((error as ShareLinkCouldNotBeValidated).message).toContain('Möglicherweise hilft es, wenn Sie sich einloggen.');

@@ -5,7 +5,7 @@ import {Subscription, tap} from 'rxjs';
 import {GRAV_CMS_SERVICE} from '../../../app.module';
 import {HasLoadingState} from '../../../shared/interfaces/has-loading-state.interface';
 import {LoadingState} from '../../../shared/types/loading-state.type';
-import {catchError} from 'rxjs/operators';
+import {catchError} from 'rxjs';
 import {FrequentlyUsedItemsCouldNotBeLoaded} from '../../../shared/errors/start-page.errors';
 import {Store} from '@ngrx/store';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';

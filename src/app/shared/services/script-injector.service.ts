@@ -1,6 +1,6 @@
 import {Injectable, Renderer2, RendererFactory2} from '@angular/core';
 import {BehaviorSubject, combineLatest, filter, Observable, tap} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {map} from 'rxjs';
 import {LoadingState} from '../types/loading-state.type';
 import {ConfigService} from './config.service';
 
