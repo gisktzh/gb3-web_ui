@@ -1,0 +1,9 @@
+@use 'mixins/helpers.mixin' as mixins;
+
+a {
+  @include mixins.link-decoration;
+}
+
+.external-link {
+  @include mixins.external-link-decoration;
+}

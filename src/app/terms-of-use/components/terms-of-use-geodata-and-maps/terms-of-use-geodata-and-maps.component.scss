@@ -1,0 +1,5 @@
+@use 'mixins/helpers.mixin' as mixins;
+
+a {
+  @include mixins.external-link-decoration;
+}
