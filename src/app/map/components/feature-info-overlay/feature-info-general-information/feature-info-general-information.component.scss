@@ -59,7 +59,6 @@ span {
     }
 
     .general-information__additional-content__links__ref {
-      display: inline-flex;
       @include mixins.external-link-decoration;
     }
   }
