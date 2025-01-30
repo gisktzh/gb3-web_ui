@@ -6,7 +6,7 @@ import {MapConfigActions} from '../actions/map-config.actions';
 import {MapService} from '../../../map/interfaces/map.service';
 import {MAP_SERVICE} from '../../../app.module';
 import {selectMapConfigParams} from '../selectors/map-config-params.selector';
-import {map} from 'rxjs/operators';
+import {map} from 'rxjs';
 import {UrlActions} from '../../app/actions/url.actions';
 import {Store} from '@ngrx/store';
 import {SearchActions} from '../../app/actions/search.actions';

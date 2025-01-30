@@ -14,7 +14,7 @@ import {MapUiActions} from '../actions/map-ui.actions';
 import {SwisstopoApiService} from '../../../shared/services/apis/swisstopo/swisstopo-api.service';
 import {ElevationProfileData} from '../../../shared/interfaces/elevation-profile.interface';
 import {MinimalGeometriesUtils} from '../../../testing/map-testing/minimal-geometries.utils';
-import {catchError} from 'rxjs/operators';
+import {catchError} from 'rxjs';
 import {ElevationProfileCouldNotBeLoaded} from '../../../shared/errors/elevation-profile.errors';
 import {selectData} from '../reducers/elevation-profile.reducer';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
@@ -165,7 +165,7 @@ describe('ElevationProfileEffects', () => {
       actions$ = of(ElevationProfileActions.setProfileError({error: expectedOriginalError}));
       effects.setElevationProfileError$
         .pipe(
-          catchError((error) => {
+          catchError((error: unknown) => {
             const expectedError = new ElevationProfileCouldNotBeLoaded(expectedOriginalError);
             expect(error).toEqual(expectedError);
             done();

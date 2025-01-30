@@ -5,5 +5,5 @@ import {selectItems} from '../selectors/active-map-items.selector';
 import {selectId} from '../reducers/map-attribute-filters-item.reducer';
 
 export const selectMapAttributeFiltersItem = createSelector(selectId, selectItems, (id, activeMapItems) => {
-  return activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).find((activeMapItem) => activeMapItem.id == id);
+  return activeMapItems.filter(isActiveMapItemOfType(Gb2WmsActiveMapItem)).find((activeMapItem) => activeMapItem.id === id);
 });

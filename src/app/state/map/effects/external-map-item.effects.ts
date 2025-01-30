@@ -1,6 +1,6 @@
 import {Inject, Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {catchError, map} from 'rxjs/operators';
+import {catchError, map} from 'rxjs';
 import {MAP_LOADER_SERVICE} from '../../../app.module';
 import {of, switchMap, tap} from 'rxjs';
 import {MapImportActions} from '../actions/map-import.actions';

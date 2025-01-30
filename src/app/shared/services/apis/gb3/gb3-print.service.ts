@@ -2,7 +2,7 @@
 import {Inject, Injectable} from '@angular/core';
 import {Gb3ApiService} from './gb3-api.service';
 import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {map} from 'rxjs';
 import {
   DynamicStringParameters,
   PrintCreation,

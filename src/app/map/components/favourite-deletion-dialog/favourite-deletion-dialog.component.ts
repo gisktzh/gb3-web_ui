@@ -2,7 +2,7 @@ import {Component, Inject, OnDestroy} from '@angular/core';
 import {HasSavingState} from '../../../shared/interfaces/has-saving-state.interface';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {Subscription, tap} from 'rxjs';
-import {catchError} from 'rxjs/operators';
+import {catchError} from 'rxjs';
 import {FavouritesService} from '../../services/favourites.service';
 import {Favourite} from '../../../shared/interfaces/favourite.interface';
 import {Store} from '@ngrx/store';

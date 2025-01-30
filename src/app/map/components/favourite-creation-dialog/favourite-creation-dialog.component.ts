@@ -3,7 +3,7 @@ import {MatDialogRef} from '@angular/material/dialog';
 import {FormControl, ValidatorFn, Validators} from '@angular/forms';
 import {FavouritesService} from '../../services/favourites.service';
 import {Subscription, tap} from 'rxjs';
-import {catchError} from 'rxjs/operators';
+import {catchError} from 'rxjs';
 import {HasSavingState} from '../../../shared/interfaces/has-saving-state.interface';
 import {FavouriteListActions} from '../../../state/map/actions/favourite-list.actions';
 import {Store} from '@ngrx/store';

@@ -7,7 +7,7 @@ import {
   UserFavoritesListData,
 } from '../../../models/gb3-api-generated.interfaces';
 import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {map} from 'rxjs';
 import {CreateFavourite, Favourite, FavouritesResponse} from '../../../interfaces/favourite.interface';
 import {ApiGeojsonGeometryToGb3ConverterUtils} from '../../../utils/api-geojson-geometry-to-gb3-converter.utils';
 

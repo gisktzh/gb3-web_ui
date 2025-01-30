@@ -3,7 +3,7 @@ import {Inject, Injectable} from '@angular/core';
 import {Gb3VectorLayer} from '../../../interfaces/gb3-vector-layer.interface';
 import {HttpClient} from '@angular/common/http';
 import {ConfigService} from '../../config.service';
-import {map} from 'rxjs/operators';
+import {map} from 'rxjs';
 import {ExportFormat} from '../../../enums/export-format.enum';
 import {FileDownloadService} from '../../file-download-service';
 import {TIME_SERVICE} from '../../../../app.module';

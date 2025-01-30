@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
 import {UrlActions} from '../actions/url.actions';
-import {map} from 'rxjs/operators';
+import {map} from 'rxjs';
 import {routerCancelAction, routerNavigatedAction} from '@ngrx/router-store';
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {UrlUtils} from '../../../shared/utils/url.utils';

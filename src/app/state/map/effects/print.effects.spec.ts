@@ -4,7 +4,7 @@ import {EMPTY, Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
-import {catchError} from 'rxjs/operators';
+import {catchError} from 'rxjs';
 import {PrintEffects} from './print.effects';
 import {Gb3PrintService} from '../../../shared/services/apis/gb3/gb3-print.service';
 import {PrintActions} from '../actions/print.actions';
@@ -121,7 +121,7 @@ describe('PrintEffects', () => {
       actions$ = of(PrintActions.setPrintRequestError({error: expectedOriginalError}));
       effects.throwPrintRequestError$
         .pipe(
-          catchError((error) => {
+          catchError((error: unknown) => {
             const expectedError = new PrintRequestCouldNotBeHandled(expectedOriginalError);
             expect(error).toEqual(expectedError);
             done();

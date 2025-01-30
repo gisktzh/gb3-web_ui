@@ -4,7 +4,7 @@ import {debounceTime, distinctUntilChanged, fromEvent, Subject, Subscription, ta
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {ScreenMode} from '../../types/screen-size.type';
 import {SearchMode} from '../../types/search-mode.type';
-import {map} from 'rxjs/operators';
+import {map} from 'rxjs';
 
 const SEARCH_TERM_INPUT_DEBOUNCE_IN_MS = 300;
 

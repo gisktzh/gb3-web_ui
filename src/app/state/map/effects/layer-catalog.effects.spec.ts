@@ -18,7 +18,7 @@ import {InitialMapIdsParameterInvalid, InitialMapsCouldNotBeLoaded} from '../../
 import {selectItems} from '../reducers/layer-catalog.reducer';
 import {TopicsCouldNotBeLoaded} from '../../../shared/errors/map.errors';
 import {selectIsAuthenticated} from '../../auth/reducers/auth-status.reducer';
-import {catchError} from 'rxjs/operators';
+import {catchError} from 'rxjs';
 
 describe('LayerCatalogEffects', () => {
   let actions$: Observable<Action>;
@@ -81,7 +81,7 @@ describe('LayerCatalogEffects', () => {
       const spy = spyOn(gb3TopicsService, 'loadTopics').and.returnValue(throwError(() => originalError));
       actions$ = of(LayerCatalogActions.loadLayerCatalog());
       effects.requestLayerCatalog$.subscribe({
-        error: (error) => {
+        error: (error: unknown) => {
           expect(spy).toHaveBeenCalledTimes(1);
           expect(error).toEqual(expectedError);
           done();

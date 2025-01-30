@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
 import {filter, of, switchMap, tap} from 'rxjs';
-import {catchError, map} from 'rxjs/operators';
+import {catchError, map} from 'rxjs';
 import {DataCatalogueActions} from '../actions/data-catalogue.actions';
 import {Gb3MetadataService} from '../../../shared/services/apis/gb3/gb3-metadata.service';
 import {Store} from '@ngrx/store';

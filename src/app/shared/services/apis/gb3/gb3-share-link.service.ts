@@ -1,7 +1,7 @@
 import {Inject, Injectable} from '@angular/core';
 import {Gb3ApiService} from './gb3-api.service';
 import {ShareLinkItem} from '../../../interfaces/share-link.interface';
-import {map} from 'rxjs/operators';
+import {map} from 'rxjs';
 import {Observable} from 'rxjs';
 import {SharedFavorite, SharedFavoriteNew} from '../../../models/gb3-api-generated.interfaces';
 import {ApiGeojsonGeometryToGb3ConverterUtils} from '../../../utils/api-geojson-geometry-to-gb3-converter.utils';

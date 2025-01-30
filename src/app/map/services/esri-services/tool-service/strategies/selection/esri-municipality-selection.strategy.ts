@@ -10,7 +10,7 @@ import {UnstyledInternalDrawingRepresentation} from '../../../../../../shared/in
 import {InternalDrawingLayer} from '../../../../../../shared/enums/drawing-layer.enum';
 import {Municipality, MunicipalityWithGeometry} from '../../../../../../shared/interfaces/gb3-geoshop-product.interface';
 import {Gb3GeoshopMunicipalitiesService} from '../../../../../../shared/services/apis/gb3/gb3-geoshop-municipalities.service';
-import {map} from 'rxjs/operators';
+import {map} from 'rxjs';
 import {ConfigService} from '../../../../../../shared/services/config.service';
 import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
 

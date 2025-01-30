@@ -2,7 +2,7 @@ import {Inject, Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
 import {filter, of, switchMap, tap} from 'rxjs';
-import {catchError, map} from 'rxjs/operators';
+import {catchError, map} from 'rxjs';
 import {ElevationProfileActions} from '../actions/elevation-profile.actions';
 import {SwisstopoApiService} from '../../../shared/services/apis/swisstopo/swisstopo-api.service';
 import {ElevationProfileCouldNotBeLoaded} from '../../../shared/errors/elevation-profile.errors';
