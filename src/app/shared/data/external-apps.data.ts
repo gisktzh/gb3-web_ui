@@ -87,7 +87,7 @@ export const externalAppsData: ExternalApp[] = [
       url: 'https://maps.zh.ch/system/docs/Stromnetzgebiete/verkehr_thumbnail.webp',
       altText: '',
     },
-    title: 'Veloverkehr Online',
+    title: 'Verkehr Online',
     email: 'tba.vo@bd.zh.ch',
     keywords: ['Verkehrsmessstellen', 'Verkehrsaufkommen', 'Messstellen'],
     topic: 'Verkehr',
@@ -103,7 +103,7 @@ export const externalAppsData: ExternalApp[] = [
       url: 'https://maps.zh.ch/system/docs/Stromnetzgebiete/wassertemperatur_thumbnail.webp',
       altText: '',
     },
-    title: 'Wassertemperaturen der Oberflächengewässern',
+    title: 'Wassertemperaturen der Oberflächengewässer',
     email: 'hydrometrie@bd.zh.ch',
     keywords: ['Wassertemperatur', 'Limmat', 'Sihl', 'Zürichsee', 'Temperatur'],
     topic: 'Wasser',
@@ -113,7 +113,7 @@ export const externalAppsData: ExternalApp[] = [
       'Die Daten geben Auskunft über die aktuellen und historischen Messwerte der hydrometrischen Stationen an Oberflächengewässern.',
   },
   {
-    appUrl: 'https://wl62www41.webland.ch/tensiometer_cms/tensiometerwerte.php',
+    appUrl: 'https://www.zh.ch/de/umwelt-tiere/boden/messnetz-bodenfeuchte.html',
     department: 'ALN',
     image: {
       url: 'https://maps.zh.ch/system/docs/Stromnetzgebiete/bodenfeuchte_thumbnail.webp',
