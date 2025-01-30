@@ -72,7 +72,7 @@
       }
 
       & .page-section__content-container__title-wrapper__link {
-        @include mat-mixins.mat-button-ktzh-link;
+        @include mixins.external-link-decoration;
       }
     }
 

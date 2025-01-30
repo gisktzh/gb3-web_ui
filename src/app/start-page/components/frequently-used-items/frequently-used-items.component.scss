@@ -51,9 +51,7 @@
       }
 
       .frequently-used-items__item__text-container__link {
-        @include mat-mixins.mat-button-ktzh-link;
-        width: max-content;
-        padding: 0;
+        @include mixins.link-decoration;
       }
     }
   }

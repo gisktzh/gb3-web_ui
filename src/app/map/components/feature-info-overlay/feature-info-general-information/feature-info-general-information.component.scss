@@ -59,14 +59,7 @@ span {
     }
 
     .general-information__additional-content__links__ref {
-      text-decoration: none;
-      color: ktzh-variables.$zh-active-blue;
-      display: inline-flex;
-      height: 0;
-
-      &:hover {
-        text-decoration: underline;
-      }
+      @include mixins.external-link-decoration;
     }
   }
 }
