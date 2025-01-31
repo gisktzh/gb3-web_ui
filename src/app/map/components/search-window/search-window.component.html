@@ -13,9 +13,7 @@
       [isAnyFilterActive]="isAnySearchFilterActive"
     ></search>
   </div>
-  @if (screenMode !== 'mobile') {
-    <div class="search-window__results-container">
-      <result-groups></result-groups>
-    </div>
-  }
+  <div class="search-window__results-container" [hidden]="screenMode === 'mobile'">
+    <result-groups></result-groups>
+  </div>
 </div>
