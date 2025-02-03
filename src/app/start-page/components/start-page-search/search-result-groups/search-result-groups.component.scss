@@ -26,3 +26,13 @@
     }
   }
 }
+
+@media (max-width: calc(#{ktzh-variables.$zh-layout-max-content-width} + 48px)) {
+  .search-result-groups {
+    width: calc(100vw - 62px);
+
+    &--mobile {
+      width: calc(100vw - 24px);
+    }
+  }
+}

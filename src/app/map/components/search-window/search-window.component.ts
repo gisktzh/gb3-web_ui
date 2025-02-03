@@ -3,15 +3,9 @@ import {filter, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {ConfigService} from '../../../shared/services/config.service';
 import {SearchActions} from '../../../state/app/actions/search.actions';
-import {SearchFilterDialogComponent} from '../../../shared/components/search-filter-dialog/search-filter-dialog.component';
-import {PanelClass} from '../../../shared/enums/panel-class.enum';
-import {MatDialog} from '@angular/material/dialog';
-import {initialState, selectSearchState, selectSelectedSearchResult} from '../../../state/app/reducers/search.reducer';
-import {SearchState} from '../../../state/app/states/search.state';
+import {selectSelectedSearchResult} from '../../../state/app/reducers/search.reducer';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
-import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
-import {selectIsAnySearchFilterActiveSelector} from '../../../state/app/selectors/is-any-search-filter-active.selector';
 import {ResultGroupsComponent} from './result-groups/result-groups.component';
 import {ResultGroupComponent} from './result-groups/result-group/result-group.component';
 import {BaseSearchContainerComponent} from '../../../shared/components/search/base-search-container/base-search-container.component';
@@ -23,20 +17,15 @@ import {BaseSearchContainerComponent} from '../../../shared/components/search/ba
   standalone: false,
 })
 export class SearchWindowComponent extends BaseSearchContainerComponent implements OnInit, OnDestroy, AfterViewInit {
-  public searchState: SearchState = initialState;
-  public screenMode: ScreenMode = 'regular';
-  public isAnySearchFilterActive: boolean = false;
-
   @ViewChild(ResultGroupsComponent) private readonly resultGroupsComponent: ResultGroupsComponent | undefined;
 
-  private readonly searchConfig = this.configService.searchConfig.mapPage;
-  private readonly searchState$ = this.store.select(selectSearchState);
+  public screenMode: ScreenMode = 'regular';
+  public readonly searchConfig = this.configService.searchConfig.mapPage;
+
   private readonly screenMode$ = this.store.select(selectScreenMode);
-  private readonly isAnySearchFilterActive$ = this.store.select(selectIsAnySearchFilterActiveSelector);
   private readonly selectedSearchResult$ = this.store.select(selectSelectedSearchResult);
   constructor(
     private readonly configService: ConfigService,
-    private readonly dialogService: MatDialog,
     @Inject(Store) store: Store,
     @Inject(ChangeDetectorRef) cdr: ChangeDetectorRef,
   ) {
@@ -95,30 +84,7 @@ export class SearchWindowComponent extends BaseSearchContainerComponent implemen
     this.cdr.detectChanges();
   }
 
-  public searchForTerm(term: string) {
-    this.store.dispatch(SearchActions.searchForTerm({term, options: this.searchConfig.searchOptions}));
-  }
-
-  public clearSearchTerm() {
-    this.store.dispatch(SearchActions.clearSearchTerm());
-  }
-
-  public openFilterMenu() {
-    this.dialogService.open<SearchFilterDialogComponent>(SearchFilterDialogComponent, {
-      panelClass: PanelClass.ApiWrapperDialog,
-      restoreFocus: false,
-    });
-  }
-
-  public handleFocus() {
-    if (this.screenMode === 'mobile') {
-      this.store.dispatch(MapUiActions.showBottomSheet({bottomSheetContent: 'search'}));
-    }
-  }
-
   private initSubscriptions() {
-    this.subscriptions.add(this.searchState$.pipe(tap((searchState) => (this.searchState = searchState))).subscribe());
     this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());
-    this.subscriptions.add(this.isAnySearchFilterActive$.pipe(tap((value) => (this.isAnySearchFilterActive = value))).subscribe());
   }
 }

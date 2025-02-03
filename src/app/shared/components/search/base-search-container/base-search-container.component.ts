@@ -3,7 +3,7 @@ import {SearchResultIdentifierDirective} from '../../../directives/search-result
 import {selectTerm} from '../../../../state/app/reducers/search.reducer';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
-import {SearchBarComponent} from '../../../../map/components/search-bar/search-bar.component';
+import {SearchBarComponent} from '../search-bar/search-bar.component';
 
 @Component({
   selector: 'abstract-search-container',

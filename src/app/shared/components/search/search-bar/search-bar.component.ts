@@ -1,22 +1,21 @@
-import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {SharedModule} from '../../../shared/shared.module';
-import {SearchState} from '../../../state/app/states/search.state';
-import {initialState, selectSearchState, selectSelectedSearchResult} from '../../../state/app/reducers/search.reducer';
-import {ScreenMode} from '../../../shared/types/screen-size.type';
-import {ResultGroupsComponent} from '../search-window/result-groups/result-groups.component';
-import {selectScreenMode} from '../../../state/app/reducers/app-layout.reducer';
-import {selectIsAnySearchFilterActiveSelector} from '../../../state/app/selectors/is-any-search-filter-active.selector';
-import {ConfigService} from '../../../shared/services/config.service';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {SharedModule} from '../../../shared.module';
+import {SearchState} from '../../../../state/app/states/search.state';
+import {initialState, selectSearchState} from '../../../../state/app/reducers/search.reducer';
+import {ScreenMode} from '../../../types/screen-size.type';
+import {ResultGroupsComponent} from '../../../../map/components/search-window/result-groups/result-groups.component';
+import {selectScreenMode} from '../../../../state/app/reducers/app-layout.reducer';
+import {selectIsAnySearchFilterActiveSelector} from '../../../../state/app/selectors/is-any-search-filter-active.selector';
+import {ConfigService} from '../../../services/config.service';
 import {MatDialog} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
-import {SearchActions} from '../../../state/app/actions/search.actions';
+import {SearchActions} from '../../../../state/app/actions/search.actions';
 import {Subscription, tap} from 'rxjs';
-import {SearchFilterDialogComponent} from '../../../shared/components/search-filter-dialog/search-filter-dialog.component';
-import {PanelClass} from '../../../shared/enums/panel-class.enum';
-import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
+import {SearchFilterDialogComponent} from '../../search-filter-dialog/search-filter-dialog.component';
+import {PanelClass} from '../../../enums/panel-class.enum';
 import {NgClass} from '@angular/common';
-import {SearchInputComponent} from '../../../shared/components/search/search-input.component';
-import {SearchMode} from '../../../shared/types/search-mode.type';
+import {SearchInputComponent} from '../search-input.component';
+import {SearchMode} from '../../../types/search-mode.type';
 
 @Component({
   selector: 'search-bar',
@@ -27,6 +26,9 @@ import {SearchMode} from '../../../shared/types/search-mode.type';
 export class SearchBarComponent implements OnInit, OnDestroy {
   @Input() public mode: SearchMode = 'normal';
   @Input() public placeholderText: string = 'Suche nach Karten, Kartendaten, Geodaten und Geodiensten';
+  @Input() public searchConfig = this.configService.searchConfig.mapPage;
+  @Input() public showFilterButton = true;
+
   public searchState: SearchState = initialState;
   public screenMode: ScreenMode = 'regular';
   public isAnySearchFilterActive: boolean = false;
@@ -34,17 +36,14 @@ export class SearchBarComponent implements OnInit, OnDestroy {
   @ViewChild(SearchInputComponent) public readonly searchInput!: SearchInputComponent;
   @ViewChild(ResultGroupsComponent) private readonly resultGroupsComponent: ResultGroupsComponent | undefined;
 
-  private readonly searchConfig = this.configService.searchConfig.mapPage;
   private readonly searchState$ = this.store.select(selectSearchState);
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly isAnySearchFilterActive$ = this.store.select(selectIsAnySearchFilterActiveSelector);
-  private readonly selectedSearchResult$ = this.store.select(selectSelectedSearchResult);
   private readonly subscriptions: Subscription = new Subscription();
   constructor(
     private readonly configService: ConfigService,
     private readonly dialogService: MatDialog,
     private readonly store: Store,
-    private readonly cdr: ChangeDetectorRef,
   ) {}
 
   public ngOnInit() {
@@ -73,9 +72,9 @@ export class SearchBarComponent implements OnInit, OnDestroy {
   }
 
   public handleFocus() {
-    if (this.screenMode === 'mobile') {
-      this.store.dispatch(MapUiActions.showBottomSheet({bottomSheetContent: 'search'}));
-    }
+    // if (this.screenMode === 'mobile') {
+    //   this.store.dispatch(MapUiActions.showBottomSheet({bottomSheetContent: 'search'}));
+    // }
   }
 
   private initSubscriptions() {

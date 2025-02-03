@@ -19,7 +19,7 @@ import {GenericUnorderedListComponent} from '../shared/components/lists/generic-
 import {SearchResultIdentifierDirective} from '../shared/directives/search-result-identifier.directive';
 import {LinkGridListComponent} from '../shared/components/lists/link-grid-list/link-grid-list.component';
 import {LinkGridListItemComponent} from '../shared/components/lists/link-grid-list/link-grid-list-item/link-grid-list-item.component';
-import {SearchBarComponent} from '../map/components/search-bar/search-bar.component';
+import {SearchBarComponent} from '../shared/components/search/search-bar/search-bar.component';
 
 @NgModule({
   declarations: [

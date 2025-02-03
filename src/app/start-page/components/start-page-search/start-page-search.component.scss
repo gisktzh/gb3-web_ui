@@ -2,13 +2,13 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
 .start-page-search {
-  width: ktzh-variables.$zh-layout-max-content-width;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
 
   .start-page-search__search-bar {
-    width: 100%;
+    width: ktzh-variables.$zh-layout-max-content-width;
     height: 106px;
   }
 
@@ -26,11 +26,13 @@
 
 @media (max-width: calc(#{ktzh-variables.$zh-layout-max-content-width} + 48px)) {
   .start-page-search {
-    width: calc(100vw - 62px);
+    .start-page-search__search-bar {
+      width: calc(100vw - 62px);
 
-    &--mobile {
-      width: calc(100vw - 24px);
-      height: 60px;
+      &--mobile {
+        width: calc(100vw - 24px);
+        height: 60px;
+      }
     }
   }
 }

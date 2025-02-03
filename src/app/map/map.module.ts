@@ -102,7 +102,7 @@ import {SliderEditComponent} from './components/drawing-edit-overlay/drawing-edi
 import {PrintDescriptionPipe} from './components/map-tools/print-dialog/print-description.pipe';
 import {GenericUnorderedListComponent} from '../shared/components/lists/generic-unordered-list/generic-unordered-list.component';
 import {SearchResultIdentifierDirective} from '../shared/directives/search-result-identifier.directive';
-import {SearchBarComponent} from './components/search-bar/search-bar.component';
+import {SearchBarComponent} from '../shared/components/search/search-bar/search-bar.component';
 
 @NgModule({
   providers: [provideCharts(withDefaultRegisterables())],

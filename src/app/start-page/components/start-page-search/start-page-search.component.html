@@ -1,7 +1,9 @@
-<div class="start-page-search" [ngClass]="{'start-page-search--mobile': screenMode === 'mobile'}">
+<div class="start-page-search">
   <search-bar
     class="start-page-search__search-bar"
     [mode]="screenMode === 'mobile' ? 'compact' : 'normal'"
+    [searchConfig]="searchConfig"
+    [ngClass]="{'start-page-search__search-bar--mobile': screenMode === 'mobile'}"
     placeholderText="Suche nach Karten, Kartendaten, Geodaten und Geodiensten"
   ></search-bar>
 
