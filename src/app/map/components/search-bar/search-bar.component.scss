@@ -1,0 +1,20 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'mixins/helpers.mixin' as mixins;
+@use 'variables/search-bar-variables' as search-bar-variables;
+.search-window__searchbar {
+  @include mixins.map-element-box-shadow;
+  width: 100%;
+  height: 100%;
+  background-color: ktzh-variables.$zh-background-color;
+  pointer-events: all;
+  overflow: hidden;
+}
+
+.search-window__searchbar--mobile {
+  width: auto;
+  height: search-bar-variables.$search-bar-wrapper-height-compact;
+
+  &__box {
+    height: 100%;
+  }
+}

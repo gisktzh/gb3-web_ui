@@ -2,33 +2,14 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 
 .start-page-search {
-  height: 100%;
+  width: ktzh-variables.$zh-layout-max-content-width;
   display: flex;
   flex-direction: column;
   align-items: center;
 
-  .start-page-search__search {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    .start-page-search__search__bar {
-      @include mixins.map-element-box-shadow;
-      width: ktzh-variables.$zh-layout-max-content-width;
-      height: 106px;
-      background-color: ktzh-variables.$zh-background-color;
-    }
-
-    @media (max-width: calc(ktzh-variables.$zh-layout-max-content-width + 48px)) {
-      .start-page-search__search__bar {
-        width: calc(100vw - 62px);
-
-        &--mobile {
-          width: calc(100vw - 24px);
-          height: 60px;
-        }
-      }
-    }
+  .start-page-search__search-bar {
+    width: 100%;
+    height: 106px;
   }
 
   .start-page-search__results {
@@ -39,6 +20,17 @@
 
     &--mobile {
       padding-top: 12px;
+    }
+  }
+}
+
+@media (max-width: calc(#{ktzh-variables.$zh-layout-max-content-width} + 48px)) {
+  .start-page-search {
+    width: calc(100vw - 62px);
+
+    &--mobile {
+      width: calc(100vw - 24px);
+      height: 60px;
     }
   }
 }

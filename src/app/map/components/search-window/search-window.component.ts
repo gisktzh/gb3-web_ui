@@ -62,7 +62,7 @@ export class SearchWindowComponent extends BaseSearchContainerComponent implemen
         .pipe(
           tap((selectedSearchResult) => {
             if (selectedSearchResult) {
-              this.searchComponent.setTerm(selectedSearchResult.displayString, false);
+              this.searchComponent.searchInput.setTerm(selectedSearchResult.displayString, false);
             }
           }),
         )
@@ -86,7 +86,7 @@ export class SearchWindowComponent extends BaseSearchContainerComponent implemen
         .pipe(
           filter((term) => term === ''),
           tap((term) => {
-            this.searchComponent.setTerm(term, false);
+            this.searchComponent.searchInput.setTerm(term, false);
           }),
         )
         .subscribe(),

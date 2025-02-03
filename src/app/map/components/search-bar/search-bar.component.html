@@ -1,0 +1,13 @@
+<div class="search-window__searchbar" [ngClass]="{'search-window__searchbar--mobile': screenMode === 'mobile'}">
+  <search-input
+    typedTourAnchor="map.search.input"
+    (changeSearchTermEvent)="searchForTerm($event)"
+    (clearSearchTermEvent)="clearSearchTerm()"
+    (openFilterEvent)="openFilterMenu()"
+    (focusEvent)="handleFocus()"
+    [placeholderText]="placeholderText"
+    [mode]="mode"
+    [showFilterButton]="screenMode !== 'mobile'"
+    [isAnyFilterActive]="isAnySearchFilterActive"
+  ></search-input>
+</div>

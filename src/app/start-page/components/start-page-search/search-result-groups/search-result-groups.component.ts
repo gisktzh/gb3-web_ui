@@ -60,7 +60,13 @@ export class SearchResultGroupsComponent implements OnInit, OnDestroy {
   private initSubscriptions() {
     this.subscriptions.add(this.filteredMaps$.pipe(tap((filteredMaps) => (this.filteredMaps = filteredMaps))).subscribe());
     this.subscriptions.add(
-      this.filteredMetadataItems$.pipe(tap((filteredMetadataItems) => (this.filteredMetadataItems = filteredMetadataItems))).subscribe(),
+      this.filteredMetadataItems$
+        .pipe(
+          tap((filteredMetadataItems) => {
+            this.filteredMetadataItems = filteredMetadataItems;
+          }),
+        )
+        .subscribe(),
     );
 
     this.subscriptions.add(
