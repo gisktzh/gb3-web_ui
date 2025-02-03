@@ -1,6 +1,6 @@
 import {AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {SearchResultIdentifierDirective} from '../../../directives/search-result-identifier.directive';
-import {SearchComponent} from '../search.component';
+import {SearchInputComponent} from '../search-input.component';
 import {selectTerm} from '../../../../state/app/reducers/search.reducer';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
@@ -12,7 +12,7 @@ import {Store} from '@ngrx/store';
 })
 export class BaseSearchContainerComponent implements OnInit, OnDestroy, AfterViewInit {
   public allSearchResults: SearchResultIdentifierDirective[] = [];
-  @ViewChild(SearchComponent) public readonly searchComponent!: SearchComponent;
+  @ViewChild(SearchInputComponent) public readonly searchComponent!: SearchInputComponent;
   private term: string = '';
   private selectedSearchResultIndex: number = -1;
   protected readonly term$ = this.store.select(selectTerm);

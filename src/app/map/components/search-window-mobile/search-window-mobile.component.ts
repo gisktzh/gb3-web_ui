@@ -8,7 +8,7 @@ import {ConfigService} from 'src/app/shared/services/config.service';
 import {SearchActions} from 'src/app/state/app/actions/search.actions';
 import {selectIsAnySearchFilterActiveSelector} from '../../../state/app/selectors/is-any-search-filter-active.selector';
 import {selectSelectedSearchResult, selectTerm} from '../../../state/app/reducers/search.reducer';
-import {SearchComponent} from '../../../shared/components/search/search.component';
+import {SearchInputComponent} from '../../../shared/components/search/search-input.component';
 import {GeometrySearchApiResultMatch} from '../../../shared/services/apis/search/interfaces/search-api-result-match.interface';
 
 @Component({
@@ -22,7 +22,7 @@ export class SearchWindowMobileComponent implements OnInit, OnDestroy, AfterView
   public isAnySearchFilterActive: boolean = false;
   public selectedSearchResult?: GeometrySearchApiResultMatch;
 
-  @ViewChild(SearchComponent) private readonly searchComponent!: SearchComponent;
+  @ViewChild(SearchInputComponent) private readonly searchComponent!: SearchInputComponent;
 
   private readonly searchConfig = this.configService.searchConfig.mapPage;
   private readonly isAnySearchFilterActive$ = this.store.select(selectIsAnySearchFilterActiveSelector);

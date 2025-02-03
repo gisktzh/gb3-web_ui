@@ -1,20 +1,19 @@
 import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {debounceTime, distinctUntilChanged, fromEvent, Subject, Subscription, tap} from 'rxjs';
+import {debounceTime, distinctUntilChanged, fromEvent, map, Subject, Subscription, tap} from 'rxjs';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {ScreenMode} from '../../types/screen-size.type';
 import {SearchMode} from '../../types/search-mode.type';
-import {map} from 'rxjs';
 
 const SEARCH_TERM_INPUT_DEBOUNCE_IN_MS = 300;
 
 @Component({
-  selector: 'search',
-  templateUrl: './search.component.html',
-  styleUrls: ['./search.component.scss'],
+  selector: 'search-input',
+  templateUrl: './search-input.component.html',
+  styleUrls: ['./search-input.component.scss'],
   standalone: false,
 })
-export class SearchComponent implements OnInit, AfterViewInit, OnDestroy {
+export class SearchInputComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() public placeholderText!: string;
   @Input() public showFilterButton: boolean = true;
   @Input() public alwaysEnableClearButton: boolean = false;

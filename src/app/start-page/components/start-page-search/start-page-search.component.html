@@ -1,6 +1,6 @@
 <div class="start-page-search">
   <div class="start-page-search__search">
-    <search
+    <search-input
       class="start-page-search__search__bar"
       [ngClass]="{'start-page-search__search__bar--mobile': screenMode === 'mobile'}"
       placeholderText="Suche nach Karten, Kartendaten, Geodaten und Geodiensten"
@@ -10,7 +10,7 @@
       [mode]="screenMode === 'mobile' ? 'compact' : 'normal'"
       [showFilterButton]="true"
       [isAnyFilterActive]="activeSearchFilterValues.length > 0"
-    ></search>
+    ></search-input>
   </div>
 
   @if (searchTerms.length > 0) {

@@ -21,7 +21,7 @@ import {PageNotificationComponent} from './components/page-notification/page-not
 import {ResizeHandlerComponent} from './components/resize-handler/resize-handler.component';
 import {ScrollbarWidthCalculationComponent} from './components/scrollbar-width-calculation/scrollbar-width-calculation.component';
 import {SearchFilterDialogComponent} from './components/search-filter-dialog/search-filter-dialog.component';
-import {SearchComponent} from './components/search/search.component';
+import {SearchInputComponent} from './components/search/search-input.component';
 import {SliderWrapperComponent} from './components/slider-wrapper/slider-wrapper.component';
 import {PageSectionComponent} from './components/page-section/page-section.component';
 import {WaitingPageComponent} from './components/waiting-page/waiting-page.component';
@@ -62,7 +62,7 @@ import {FeatureFlagDirective} from './directives/feature-flag.directive';
     LinkListComponent,
     LinkListItemComponent,
     AccordionItemComponent,
-    SearchComponent,
+    SearchInputComponent,
     SearchFilterDialogComponent,
     ExternalLinkButtonComponent,
     NavbarMobileComponent,
@@ -98,7 +98,7 @@ import {FeatureFlagDirective} from './directives/feature-flag.directive';
     LinkListComponent,
     LinkListItemComponent,
     AccordionItemComponent,
-    SearchComponent,
+    SearchInputComponent,
     SearchFilterDialogComponent,
     ExternalLinkButtonComponent,
     NavbarMobileComponent,
