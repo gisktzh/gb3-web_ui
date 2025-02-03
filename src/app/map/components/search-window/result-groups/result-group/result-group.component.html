@@ -53,7 +53,10 @@
                 [attr.aria-label]="'Karte ' + map.title + ' öffnen. ' + toolTip"
                 [matTooltip]="'Karte ' + map.title + ' öffnen. ' + toolTip"
               >
-                <mat-icon svgIcon="ktzh_arrow_right" class="result-group__container__element__link__icon"></mat-icon>
+                <div style="padding: 12px">
+                  <mat-icon svgIcon="ktzh_arrow_right" class="result-group__container__element__link__icon"></mat-icon>
+                </div>
+
                 <ng-container *ngTemplateOutlet="content"></ng-container>
               </a>
             } @else {
@@ -75,7 +78,9 @@
                 [attr.aria-label]="'Karte ' + map.title + ' öffnen.'"
                 [matTooltip]="'Karte ' + map.title + ' öffnen.'"
               >
-                <mat-icon class="result-group__container__element__button__icon">add</mat-icon>
+                <div style="padding: 12px">
+                  <mat-icon class="result-group__container__element__button__icon">add</mat-icon>
+                </div>
                 <ng-container *ngTemplateOutlet="content"></ng-container>
               </button>
             }
