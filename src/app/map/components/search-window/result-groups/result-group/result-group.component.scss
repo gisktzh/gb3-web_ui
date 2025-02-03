@@ -31,6 +31,7 @@
       width: 100%;
       border: none;
       background-color: unset;
+      color: ktzh-variables.$zh-black100;
       padding: 0;
 
       .result-group__container__element__container {
@@ -54,6 +55,7 @@
 
       .result-group__container__element__content {
         padding: 5px;
+        text-align: start;
       }
 
       .result-group__container__element__button {
@@ -63,6 +65,7 @@
         border: none;
         background-color: unset;
         cursor: pointer;
+        color: ktzh-variables.$zh-black100;
 
         .result-group__container__element__button__icon {
           padding: 12px;

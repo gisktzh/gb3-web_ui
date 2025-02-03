@@ -27,7 +27,7 @@ export class SearchWindowComponent extends BaseSearchContainerComponent implemen
   public screenMode: ScreenMode = 'regular';
   public isAnySearchFilterActive: boolean = false;
 
-  @ViewChild(ResultGroupsComponent) private readonly resultGroupsComponent!: ResultGroupsComponent;
+  @ViewChild(ResultGroupsComponent) private readonly resultGroupsComponent: ResultGroupsComponent | undefined;
 
   private readonly searchConfig = this.configService.searchConfig.mapPage;
   private readonly searchState$ = this.store.select(selectSearchState);
@@ -69,15 +69,17 @@ export class SearchWindowComponent extends BaseSearchContainerComponent implemen
         .subscribe(),
     );
 
-    this.subscriptions.add(
-      this.resultGroupsComponent.resultGroupComponents.changes.subscribe((resultGroupComponents: ResultGroupComponent[]) => {
-        this.allSearchResults = [];
-        resultGroupComponents.forEach((resultGroupComponent) => {
-          this.allSearchResults = this.allSearchResults.concat(resultGroupComponent.searchResultElements.toArray());
-        });
-        this.cdr.detectChanges();
-      }),
-    );
+    if (this.resultGroupsComponent) {
+      this.subscriptions.add(
+        this.resultGroupsComponent.resultGroupComponents.changes.subscribe((resultGroupComponents: ResultGroupComponent[]) => {
+          this.allSearchResults = [];
+          resultGroupComponents.forEach((resultGroupComponent) => {
+            this.allSearchResults = this.allSearchResults.concat(resultGroupComponent.searchResultElements.toArray());
+          });
+          this.cdr.detectChanges();
+        }),
+      );
+    }
 
     this.subscriptions.add(
       this.term$
