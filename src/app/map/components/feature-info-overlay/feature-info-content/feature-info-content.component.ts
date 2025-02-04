@@ -245,9 +245,13 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
   }
 
   private createTableCellForFeatureAndField(fid: number, feature: FeatureInfoResultFeatureField): TableCell {
+    if (feature.value === null) {
+      return {cellType: 'text', fid, displayValue: DEFAULT_CELL_VALUE};
+    }
+
     switch (feature.type) {
       case 'text':
-        return {cellType: 'text', fid, displayValue: feature.value ?? DEFAULT_CELL_VALUE};
+        return {cellType: 'text', fid, displayValue: feature.value};
       case 'image':
         return {
           cellType: 'image',

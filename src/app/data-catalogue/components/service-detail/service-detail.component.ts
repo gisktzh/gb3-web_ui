@@ -20,7 +20,7 @@ export class ServiceDetailComponent extends AbstractBaseDetailComponent<ServiceM
   public baseMetadataInformation?: BaseMetadataInformation;
   public informationElements: DataDisplayElement[] = [];
   public metadataContactElements: DataDisplayElement[] = [];
-  public serviceUrlForCopy?: string;
+  public serviceUrlForCopy?: string | null;
   public linkedDatasets: MetadataLink[] = [];
 
   constructor(
@@ -59,14 +59,22 @@ export class ServiceDetailComponent extends AbstractBaseDetailComponent<ServiceM
     return [
       {title: 'GIS-ZH Nr.', value: serviceMetadata.gisZHNr.toString(), type: 'text'},
       {title: 'Geodienst', value: serviceMetadata.serviceType, type: 'text'},
-      {
-        title: 'GetCapabilities',
-        value: {href: this.createGetCapabilitiesLink(serviceMetadata.url, serviceMetadata.serviceType)},
-        type: 'url',
-      },
+      this.handleServiceUrl(serviceMetadata),
       {title: 'Version', value: serviceMetadata.version, type: 'text'},
       {title: 'Zugang', value: serviceMetadata.access, type: 'text'},
     ];
+  }
+
+  private handleServiceUrl({url, serviceType}: ServiceMetadata): DataDisplayElement {
+    if (url) {
+      return {
+        title: 'GetCapabilities',
+        value: {href: this.createGetCapabilitiesLink(url, serviceType)},
+        type: 'url',
+      };
+    }
+
+    return {title: 'GetCapabilities', value: null, type: 'text'};
   }
 
   private createGetCapabilitiesLink(baseUrl: string, serviceType: string): string {

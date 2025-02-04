@@ -9,7 +9,7 @@ export const defaultRuntimeConfig: RuntimeConfig[] = [
     apiBasePaths: {
       gb2Api: {
         baseUrl: 'https://maps.zh.ch/gb3',
-        version: 'v3',
+        version: 'v4',
       },
       gb2StaticFiles: {
         baseUrl: 'https://maps.zh.ch',

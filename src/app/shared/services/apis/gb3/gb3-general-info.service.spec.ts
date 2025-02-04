@@ -85,10 +85,10 @@ describe('Gb3GeneralInfoService', () => {
     const expected: GeneralInfoResponse = {
       parcel: {
         ownershipInformation: {
-          url: mockResponse.general_info.parcel!.owner.href,
+          url: mockResponse.general_info.parcel!.owner!.href,
         },
         oerebExtract: {
-          pdfUrl: mockResponse.general_info.parcel!.oereb_extract.href,
+          pdfUrl: mockResponse.general_info.parcel!.oereb_extract!.href,
         },
       },
       externalMaps: [
@@ -164,6 +164,20 @@ describe('Gb3GeneralInfoService', () => {
 
     service.loadGeneralInfo(mockCoord.x, mockCoord.y).subscribe((result) => {
       expect(result).toEqual(expected);
+      done();
+    });
+  });
+
+  it('handles missing parcel urls correctly', (done: DoneFn) => {
+    const response = structuredClone(mockResponse);
+    response.general_info.parcel!.oereb_extract = null;
+    response.general_info.parcel!.owner = null;
+
+    spyOn(httpClient, 'get').and.returnValue(of(response));
+
+    service.loadGeneralInfo(mockCoord.x, mockCoord.y).subscribe((result) => {
+      expect(result.parcel?.ownershipInformation.url).toBeNull();
+      expect(result.parcel?.oerebExtract.pdfUrl).toBeNull();
       done();
     });
   });

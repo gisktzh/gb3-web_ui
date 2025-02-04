@@ -1,6 +1,5 @@
 import {Inject, Injectable} from '@angular/core';
-import {forkJoin, Observable} from 'rxjs';
-import {map} from 'rxjs';
+import {forkJoin, map, Observable} from 'rxjs';
 import {DataCataloguePage} from '../../../enums/data-catalogue-page.enum';
 import {MainPage} from '../../../enums/main-page.enum';
 import {FeatureInfoResponse, FeatureInfoResultFeatureField} from '../../../interfaces/feature-info.interface';
@@ -372,10 +371,12 @@ export class Gb3TopicsService extends Gb3ApiService {
       case 'link':
         return {
           type: field.type,
-          value: {
-            title: field.value.title,
-            href: field.value.href,
-          },
+          value: field.value
+            ? {
+                title: field.value.title,
+                href: field.value.href,
+              }
+            : null,
           label: field.label,
         };
       case 'text':

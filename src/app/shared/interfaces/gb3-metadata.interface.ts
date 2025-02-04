@@ -96,7 +96,7 @@ export interface MapMetadata extends BaseMetadataInterface {
 
 export interface ServiceMetadata extends BaseMetadataInterface {
   serviceType: string;
-  url: string;
+  url: string | null;
   version: string;
   access: string;
   contact: {
