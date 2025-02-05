@@ -9,7 +9,7 @@
  * ---------------------------------------------------------------
  */
 
-import {SupportedEsriTool} from '../../map/services/esri-services/tool-service/strategies/supported-esri-tool.type';
+import {SupportedEsriTool} from 'src/app/map/services/esri-services/tool-service/strategies/supported-esri-tool.type';
 
 export interface BboxGeoshop {
   /** GeoJSON geometry object */
@@ -125,8 +125,9 @@ export interface General {
       egris_egrid: string;
       /** Municipality name */
       municipality_name: string;
-      oereb_extract: LinkObject;
-      owner: LinkObject;
+      oereb_extract: LinkObject | null;
+      owner: LinkObject | null;
+      // IMPORTANT: The nullability is added manually due to this bug: https://github.com/acacode/swagger-typescript-api/issues/533
     } | null;
   };
 }
@@ -1010,7 +1011,7 @@ export type InfoFeatureField =
       /** Field label */
       label: string;
       /** Field link */
-      value: LinkObject;
+      value: LinkObject | null;
       /** type for the link object (here 'link') */
       type: 'link';
     }
@@ -1018,7 +1019,7 @@ export type InfoFeatureField =
       /** Field label */
       label: string;
       /** Field image */
-      value: Image;
+      value: Image | null;
       /** type for the image object (here 'image') */
       type: 'image';
     };
@@ -1190,7 +1191,7 @@ export interface Service {
   /** Beschreibung des Geodienstes */
   beschreibung: string;
   /** URL */
-  url: LinkObject;
+  url: LinkObject | null;
   /** Version */
   version: string;
   /** Zugang */

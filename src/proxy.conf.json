@@ -1,5 +1,5 @@
 {
-  "/v3": {
+  "/v4": {
     "target": "http://localhost:3000",
     "secure": false
   },
