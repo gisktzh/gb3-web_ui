@@ -17,7 +17,7 @@ export class FormatContentPipe implements PipeTransform {
     const urlCapturingGroup = /(https?:\/\/)((www\.)?[-a-zA-Z0-9@:%._+~#?&//=]{1,256}\.[a-zA-Z0-9()]{1,6}\b[-a-zA-Z0-9()@:%_+.~#?&//=]*)/gi;
     return url.replace(urlCapturingGroup, (match, protocol, host) => {
       const hostWithoutTrailingSlashes = host.endsWith('/') ? host.slice(0, -1) : host;
-      return `<a href="${match}" target="_blank">${hostWithoutTrailingSlashes}</a>`;
+      return `<a href="${match}" target="_blank" class="link-highlight">${hostWithoutTrailingSlashes}</a>`;
     });
   }
 }

@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Observable, Subscription, tap} from 'rxjs';
 import {selectFaq} from '../../../state/support/reducers/support-content.reducer';
 import {Store} from '@ngrx/store';
@@ -9,7 +9,6 @@ import {FaqCollection} from '../../../shared/interfaces/faq.interface';
   templateUrl: './faq.component.html',
   styleUrls: ['./faq.component.scss'],
   standalone: false,
-  encapsulation: ViewEncapsulation.None,
 })
 export class FaqComponent implements OnInit, OnDestroy {
   public faqCollections: FaqCollection[] = [];
