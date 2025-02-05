@@ -16,6 +16,7 @@ import {PanelClass} from '../../../enums/panel-class.enum';
 import {NgClass} from '@angular/common';
 import {SearchInputComponent} from '../search-input.component';
 import {SearchMode} from '../../../types/search-mode.type';
+import {MapUiActions} from '../../../../state/map/actions/map-ui.actions';
 
 @Component({
   selector: 'search-bar',
@@ -28,6 +29,7 @@ export class SearchBarComponent implements OnInit, OnDestroy {
   @Input() public placeholderText: string = 'Suche nach Karten, Kartendaten, Geodaten und Geodiensten';
   @Input() public searchConfig = this.configService.searchConfig.mapPage;
   @Input() public showFilterButton = true;
+  @Input() public hasFocusEvent = false;
 
   public searchState: SearchState = initialState;
   public screenMode: ScreenMode = 'regular';
@@ -72,9 +74,9 @@ export class SearchBarComponent implements OnInit, OnDestroy {
   }
 
   public handleFocus() {
-    // if (this.screenMode === 'mobile') {
-    //   this.store.dispatch(MapUiActions.showBottomSheet({bottomSheetContent: 'search'}));
-    // }
+    if (this.screenMode === 'mobile' && this.hasFocusEvent) {
+      this.store.dispatch(MapUiActions.showBottomSheet({bottomSheetContent: 'search'}));
+    }
   }
 
   private initSubscriptions() {

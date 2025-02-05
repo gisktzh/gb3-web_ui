@@ -70,14 +70,14 @@
       class="map-container__overlay map-container__overlay--right"
       [ngClass]="{'map-container__map-element--hidden': mapUiState?.hideUiElements}"
     ></drawing-edit-overlay>
+    <search-window
+      class="map-container__search-window"
+      [ngClass]="{
+        'map-container__map-element--hidden': mapUiState?.hideUiElements,
+      }"
+    ></search-window>
   }
-  <search-window
-    class="map-container__search-window"
-    [ngClass]="{
-      'map-container__map-element--hidden': mapUiState?.hideUiElements,
-      'map-container__search-window--mobile': screenMode === 'mobile',
-    }"
-  ></search-window>
+
   <map-tools
     [ngClass]="{
       'map-container__map-element--hidden': mapUiState?.hideUiElements,
@@ -108,6 +108,13 @@
         <map-rotation-button [rotation]="rotation"></map-rotation-button>
       </div>
     }
+    <search-bar
+      class="map-container__search-window map-container__search-window--mobile"
+      mode="compact"
+      [hasFocusEvent]="true"
+      [showFilterButton]="false"
+    ></search-bar>
+
     <bottom-sheet-overlay></bottom-sheet-overlay>
   }
   <map-container class="map-container__map"></map-container>
