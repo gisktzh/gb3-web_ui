@@ -1,6 +1,6 @@
 @use 'mixins/helpers.mixin' as mixins;
 
-a {
+.internal-link {
   @include mixins.link-decoration;
 }
 
