@@ -12,9 +12,5 @@
   .faq__content {
     font-size: 18px;
     color: ktzh-variables.$zh-black60;
-
-    a {
-      @include mixins.external-link-decoration;
-    }
   }
 }
