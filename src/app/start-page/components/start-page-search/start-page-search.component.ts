@@ -52,7 +52,6 @@ export class StartPageSearchComponent extends BaseSearchContainerComponent imple
   public override ngOnDestroy() {
     super.ngOnDestroy();
     this.subscriptions.unsubscribe();
-    this.store.dispatch(SearchActions.resetSearchAndFilters());
   }
 
   public override ngAfterViewInit() {
@@ -85,6 +84,7 @@ export class StartPageSearchComponent extends BaseSearchContainerComponent imple
           filter(() => this.searchResultGroupsComponent !== undefined),
           switchMap(() => this.searchResultGroupsComponent!.overviewSearchResultItemComponents.changes),
           tap((overviewChanges: QueryList<SearchResultIdentifierDirective>) => {
+            console.log('overviewChanges', overviewChanges);
             this.allSearchResults = overviewChanges.toArray();
             this.cdr.detectChanges(); // Trigger change detection to reflect updates in the template
           }),

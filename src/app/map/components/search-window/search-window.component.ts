@@ -41,7 +41,6 @@ export class SearchWindowComponent extends BaseSearchContainerComponent implemen
   public override ngOnDestroy() {
     super.ngOnDestroy();
     this.subscriptions.unsubscribe();
-    this.store.dispatch(SearchActions.resetSearchAndFilters());
   }
 
   public override ngAfterViewInit() {
