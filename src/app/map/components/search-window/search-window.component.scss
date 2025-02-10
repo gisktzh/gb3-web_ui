@@ -6,7 +6,7 @@
 @use 'variables/map-layout-variables' as map-layout-variables;
 @use 'variables/search-bar-variables' as search-bar-variables;
 
-.search-window__searchbar {
+.search-window {
   @include mixins.map-element-box-shadow;
   width: map-layout-variables.$search-window-width;
   background-color: ktzh-variables.$zh-background-color;
@@ -16,7 +16,7 @@
 }
 
 @media (max-width: calc(#{map-layout-variables.$map-overlay-width} + #{map-layout-variables.$element-margin} + #{map-layout-variables.$legend-button-width} + #{map-layout-variables.$element-margin} + #{map-layout-variables.$search-window-width})) {
-  .search-window__searchbar {
+  .search-window {
     width: calc(
       100vw -
         (

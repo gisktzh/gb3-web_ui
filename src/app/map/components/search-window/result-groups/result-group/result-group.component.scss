@@ -84,10 +84,14 @@
         color: unset;
         margin: 0 1px;
 
-        .result-group__container__element__link__icon {
-          align-self: center;
-          rotate: -45deg;
-          color: ktzh-variables.$zh-darkblue;
+        .result-group__container__element__link__icon-wrapper {
+          padding: 12px;
+
+          .result-group__container__element__link__icon-wrapper__icon {
+            align-self: center;
+            rotate: -45deg;
+            color: ktzh-variables.$zh-darkblue;
+          }
         }
 
         &:hover {

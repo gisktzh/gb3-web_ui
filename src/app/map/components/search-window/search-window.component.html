@@ -1,8 +1,6 @@
-<div class="search-window__searchbar">
+<div class="search-window">
   <search-bar mode="compact" [searchConfig]="searchConfig" placeholderText="Suchen nach Adressen, Orten, Karten und mehr..."></search-bar>
-  @if (screenMode !== 'mobile') {
-    <div class="search-window__results-container">
-      <result-groups></result-groups>
-    </div>
-  }
+  <div class="search-window__results-container">
+    <result-groups></result-groups>
+  </div>
 </div>
