@@ -10,6 +10,7 @@ import {TableColumnIdentifierDirective} from './table-column-identifier.directiv
 import {GeometryWithSrs} from '../../../../shared/interfaces/geojson-types-with-srs.interface';
 import {MAP_SERVICE} from '../../../../app.module';
 import {MapService} from '../../../interfaces/map.service';
+import {StyleExpression} from '../../../../shared/types/style-expression.type';
 
 type CellType = 'text' | 'url' | 'image';
 
@@ -70,6 +71,9 @@ const DEFAULT_CELL_VALUE = '-';
  */
 const DEFAULT_TABLE_HEADER_PREFIX = 'Resultat';
 
+const DEFAULT_TABLE_HEADER_WIDTH = '130px';
+const MIN_TABLE_HEADER_WIDTH = 80;
+
 /**
  * Important to know: All tables are isolated from each other, yet the pinned state is shared among all of them. As such, the pinnedFeature
  * is added to the global state and handled accordingly in this component here.
@@ -90,6 +94,8 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
    */
   public readonly tableRows: TableRows = new Map<string, TableCell[]>();
   public readonly tableHeaders: TableHeader[] = [];
+  public readonly minTableHeaderWidth: number = MIN_TABLE_HEADER_WIDTH;
+  public tableHeaderWidth: string = DEFAULT_TABLE_HEADER_WIDTH;
 
   private readonly featureGeometries: Map<number, GeometryWithSrs | undefined> = new Map();
   private readonly pinnedFeatureId$ = this.store.select(selectPinnedFeatureId);
@@ -104,6 +110,10 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
     @Inject(MAP_SERVICE) private readonly mapService: MapService,
   ) {
     this.staticFilesBaseUrl = this.configService.apiConfig.gb2StaticFiles.baseUrl;
+  }
+
+  public resize(style: StyleExpression) {
+    this.tableHeaderWidth = style['width'] ?? DEFAULT_TABLE_HEADER_WIDTH;
   }
 
   public ngOnInit() {

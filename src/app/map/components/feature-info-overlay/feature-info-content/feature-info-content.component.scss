@@ -77,12 +77,10 @@ $fixed-border: inset calc(-1 * $border-size) 0 0 0 ktzh-variables.$zh-black100;
 
           // make the left-most column headers sticky and add a right border
           &:nth-of-type(1) {
-            max-width: 130px;
-            min-width: 130px;
-            width: 130px;
             position: sticky;
             left: 0;
             color: ktzh-variables.$zh-black60;
+            box-sizing: border-box;
           }
 
           &:nth-of-type(1)::after {
@@ -98,6 +96,7 @@ $fixed-border: inset calc(-1 * $border-size) 0 0 0 ktzh-variables.$zh-black100;
           // make all other headers (i.e. top row minus left-most) fixed width for fixed column width
           &:not(&:nth-of-type(1)) {
             min-width: 200px;
+            width: 100%;
             overflow: hidden;
           }
         }
@@ -137,6 +136,11 @@ $fixed-border: inset calc(-1 * $border-size) 0 0 0 ktzh-variables.$zh-black100;
           -webkit-box-shadow: $bottom-border, $left-border, $right-border;
           box-shadow: $bottom-border, $left-border, $right-border;
         }
+      }
+
+      & .feature-info-content__table__row__resize {
+        top: 0;
+        left: 0;
       }
     }
   }
