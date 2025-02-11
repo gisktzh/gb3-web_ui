@@ -1,4 +1,4 @@
-<div class="feature-info-content">
+<div class="feature-info-content" #container>
   <table class="feature-info-content__table" [attr.aria-describedby]="'Informationen zu ' + layer.title">
     <tr class="feature-info-content__table__row">
       <th
@@ -78,6 +78,7 @@
   </table>
   <resize-handler
     [minWidth]="minTableHeaderWidth"
+    [maxWidth]="maxTableHeaderWidth"
     location="left"
     (resizeEvent)="resize($event)"
     class="feature-info-content__resize"

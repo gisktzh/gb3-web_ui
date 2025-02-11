@@ -1,4 +1,16 @@
-import {AfterViewInit, Component, Inject, Input, OnDestroy, OnInit, QueryList, Renderer2, ViewChildren} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Inject,
+  Input,
+  OnDestroy,
+  OnInit,
+  QueryList,
+  Renderer2,
+  ViewChild,
+  ViewChildren,
+} from '@angular/core';
 import {ConfigService} from '../../../../shared/services/config.service';
 import {FeatureInfoResultFeatureField, FeatureInfoResultLayer} from '../../../../shared/interfaces/feature-info.interface';
 import {FeatureInfoActions} from '../../../../state/map/actions/feature-info.actions';
@@ -71,7 +83,7 @@ const DEFAULT_CELL_VALUE = '-';
  */
 const DEFAULT_TABLE_HEADER_PREFIX = 'Resultat';
 
-const DEFAULT_TABLE_HEADER_WIDTH = '130px';
+const DEFAULT_TABLE_HEADER_WIDTH = 130;
 const MIN_TABLE_HEADER_WIDTH = 80;
 
 /**
@@ -95,13 +107,16 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
   public readonly tableRows: TableRows = new Map<string, TableCell[]>();
   public readonly tableHeaders: TableHeader[] = [];
   public readonly minTableHeaderWidth: number = MIN_TABLE_HEADER_WIDTH;
-  public tableHeaderWidth: string = DEFAULT_TABLE_HEADER_WIDTH;
+  public maxTableHeaderWidth: number = DEFAULT_TABLE_HEADER_WIDTH;
+  public tableHeaderWidth: string = `${DEFAULT_TABLE_HEADER_WIDTH}px`;
 
+  private resizeObserver!: ResizeObserver;
   private readonly featureGeometries: Map<number, GeometryWithSrs | undefined> = new Map();
   private readonly pinnedFeatureId$ = this.store.select(selectPinnedFeatureId);
   private readonly subscriptions: Subscription = new Subscription();
   private pinnedFeatureId: string | undefined;
   @ViewChildren(TableColumnIdentifierDirective) private readonly tableColumns!: QueryList<TableColumnIdentifierDirective>;
+  @ViewChild('container') private readonly container!: ElementRef;
 
   constructor(
     private readonly store: Store,
@@ -113,7 +128,7 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
   }
 
   public resize(style: StyleExpression) {
-    this.tableHeaderWidth = style['width'] ?? DEFAULT_TABLE_HEADER_WIDTH;
+    this.tableHeaderWidth = style['width'] ?? `${DEFAULT_TABLE_HEADER_WIDTH}px`;
   }
 
   public ngOnInit() {
@@ -122,10 +137,20 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+    }
   }
 
   public ngAfterViewInit() {
     this.initPinnedFeatureIdHandler();
+    this.resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        this.maxTableHeaderWidth = entry.contentRect.width * 0.8;
+      }
+    });
+
+    this.resizeObserver.observe(this.container.nativeElement);
   }
 
   public toggleHighlightForFeature(fid: number, highlightButton: MatRadioButton, hasGeometry: boolean) {
