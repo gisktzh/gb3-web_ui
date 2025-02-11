@@ -137,11 +137,13 @@ $fixed-border: inset calc(-1 * $border-size) 0 0 0 ktzh-variables.$zh-black100;
           box-shadow: $bottom-border, $left-border, $right-border;
         }
       }
-
-      & .feature-info-content__table__row__resize {
-        top: 0;
-        left: 0;
-      }
     }
+  }
+  & .feature-info-content__resize {
+    top: 38px;
+    left: 0;
+    width: 140px;
+    z-index: 10;
+    height: calc(100% - 38px);
   }
 }

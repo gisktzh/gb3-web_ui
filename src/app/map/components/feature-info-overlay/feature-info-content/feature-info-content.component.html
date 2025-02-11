@@ -5,14 +5,7 @@
         class="feature-info-content__table__row__column feature-info-content__table__row__column--header"
         scope="col"
         [ngStyle]="{'min-width': tableHeaderWidth}"
-      >
-        <resize-handler
-          [minWidth]="minTableHeaderWidth"
-          location="left"
-          (resizeEvent)="resize($event)"
-          class="feature-info-content__table__row__resize"
-        ></resize-handler>
-      </th>
+      ></th>
       <th
         (mouseenter)="onFeatureHoverStart(tableHeader.fid)"
         (mouseleave)="onFeatureHoverEnd(tableHeader.fid)"
@@ -41,12 +34,6 @@
           <span class="feature-info-content__table__row__column--attribute" [matTooltip]="tableRow.key" showTooltipIfTruncated>{{
             tableRow.key
           }}</span>
-          <resize-handler
-            [minWidth]="minTableHeaderWidth"
-            location="left"
-            (resizeEvent)="resize($event)"
-            class="feature-info-content__table__row__resize"
-          ></resize-handler>
         </th>
         <td
           (mouseenter)="onFeatureHoverStart(cellValue.fid)"
@@ -89,4 +76,11 @@
       </tr>
     </ng-container>
   </table>
+  <resize-handler
+    [minWidth]="minTableHeaderWidth"
+    location="left"
+    (resizeEvent)="resize($event)"
+    class="feature-info-content__resize"
+    [ngStyle]="{width: tableHeaderWidth}"
+  ></resize-handler>
 </div>
