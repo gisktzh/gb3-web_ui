@@ -147,6 +147,7 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
     this.resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
         this.maxTableHeaderWidth = entry.contentRect.width * 0.8;
+        this.resize({width: `${DEFAULT_TABLE_HEADER_WIDTH}px`});
       }
     });
 
