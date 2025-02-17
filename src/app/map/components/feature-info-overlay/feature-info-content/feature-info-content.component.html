@@ -1,7 +1,11 @@
-<div class="feature-info-content">
+<div class="feature-info-content" #container>
   <table class="feature-info-content__table" [attr.aria-describedby]="'Informationen zu ' + layer.title">
     <tr class="feature-info-content__table__row">
-      <th class="feature-info-content__table__row__column feature-info-content__table__row__column--header" scope="col"></th>
+      <th
+        class="feature-info-content__table__row__column feature-info-content__table__row__column--header"
+        scope="col"
+        [ngStyle]="{'min-width': tableHeaderWidth}"
+      ></th>
       <th
         (mouseenter)="onFeatureHoverStart(tableHeader.fid)"
         (mouseleave)="onFeatureHoverEnd(tableHeader.fid)"
@@ -22,7 +26,11 @@
     </tr>
     <ng-container *ngFor="let tableRow of tableRows | keyvalue: preserveKeyValueOrder">
       <tr class="feature-info-content__table__row">
-        <th class="feature-info-content__table__row__column feature-info-content__table__row__column--header" scope="col">
+        <th
+          class="feature-info-content__table__row__column feature-info-content__table__row__column--header"
+          scope="col"
+          [ngStyle]="{'min-width': tableHeaderWidth}"
+        >
           <span class="feature-info-content__table__row__column--attribute" [matTooltip]="tableRow.key" showTooltipIfTruncated>{{
             tableRow.key
           }}</span>
@@ -68,4 +76,12 @@
       </tr>
     </ng-container>
   </table>
+  <resize-handler
+    [minWidth]="minTableHeaderWidth"
+    [maxWidth]="maxTableHeaderWidth"
+    location="left"
+    (resizeEvent)="resize($event)"
+    class="feature-info-content__resize"
+    [ngStyle]="{width: tableHeaderWidth}"
+  ></resize-handler>
 </div>
