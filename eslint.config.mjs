@@ -1,11 +1,4 @@
 /*jshint esversion: 6 */
-/**
- * TODO: The following import should be added to this config once the following issues are resolved:
- *  * eslint-plugin-rxjs-angular
- *    Either it will be updated to support ESLint 9 or included into 'angular-eslint'
- *    * https://github.com/cartant/eslint-plugin-rxjs-angular/issues/23
- *    * https://github.com/angular-eslint/angular-eslint/discussions/2094
- */
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import prettierRecommended from 'eslint-plugin-prettier/recommended';
@@ -13,12 +6,17 @@ import ngrx from '@ngrx/eslint-plugin/v9';
 import angular from 'angular-eslint';
 
 /**
- * TODO: The following import should be revisited once the following issues are resolved:
+ * TODO: The following imports should be revisited once the following issues are resolved:
  *  * eslint-plugin-rxjs
  *    Either it will be updated to support ESLint 9 or included into 'rxjs'
  *    * https://github.com/ReactiveX/rxjs/discussions/7492
+ *  * eslint-plugin-rxjs-angular
+ *    Either it will be updated to support ESLint 9 or included into 'angular-eslint'
+ *    * https://github.com/cartant/eslint-plugin-rxjs-angular/issues/23
+ *    * https://github.com/angular-eslint/angular-eslint/discussions/2094
  */
 import rxjsX from 'eslint-plugin-rxjs-x';
+import rxjsAngularX from 'eslint-plugin-rxjs-angular-x';
 
 export default tseslint.config(
   {
@@ -34,6 +32,7 @@ export default tseslint.config(
     ],
     plugins: {
       rxjs: rxjsX,
+      'rxjs-angular-x': rxjsAngularX,
     },
     processor: angular.processInlineTemplates,
     rules: {
@@ -112,6 +111,7 @@ export default tseslint.config(
 
       'arrow-parens': ['off', 'always'],
       'rxjs/no-floating-observables': 'warn',
+      'rxjs-angular-x/prefer-composition': 'error',
       'dot-notation': 'off',
 
       '@typescript-eslint/dot-notation': [
