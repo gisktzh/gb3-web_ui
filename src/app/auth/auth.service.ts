@@ -157,6 +157,7 @@ export class AuthService {
     if (event instanceof OAuthErrorEvent) {
       console.error('OAuthErrorEvent Object:', event);
     } else {
+      //eslint-disable-next-line no-console -- Debugging OAuth events in development mode
       console.log('OAuthEvent Object:', event);
     }
   }
