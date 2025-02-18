@@ -137,7 +137,7 @@ export default tseslint.config(
       '@typescript-eslint/switch-exhaustiveness-check': 'error',
 
       'no-console': [
-        'warn',
+        'error',
         {
           allow: ['warn', 'error'],
         },
