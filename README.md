@@ -157,6 +157,9 @@ Whenever possible, a Jira ticket should be referenced in both branchname and com
 
 Our githooks check for both the branch name and the commit message, but they will only output a warning if they don't
 match. This is because there are times when you _might_ want to deviate from these rules.
+ES Lint is enabled in the precommit hook. This means that every commit will be checked for linting errors. If there are any, the commit will be rejected.
+Either fix the error (unused variable or import, etc.) or disable the rule for the specific line or file (`any` in `.spec.ts` files).
+The rules are defined in the `.eslintrc.config.mjs` file.
 
 ## Code documentation
 
