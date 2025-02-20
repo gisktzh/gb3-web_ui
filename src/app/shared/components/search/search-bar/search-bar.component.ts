@@ -19,7 +19,7 @@ import {MapUiActions} from '../../../../state/map/actions/map-ui.actions';
 
 @Component({
   selector: 'search-bar',
-  imports: [SharedModule, NgClass],
+  imports: [SharedModule, NgClass, SearchInputComponent],
   templateUrl: './search-bar.component.html',
   styleUrl: './search-bar.component.scss',
 })

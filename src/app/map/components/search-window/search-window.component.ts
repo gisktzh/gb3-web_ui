@@ -17,7 +17,7 @@ import {BaseSearchContainerComponent} from '../../../shared/components/search/ba
   standalone: false,
 })
 export class SearchWindowComponent extends BaseSearchContainerComponent implements OnInit, OnDestroy, AfterViewInit {
-  @ViewChild(ResultGroupsComponent) private readonly resultGroupsComponent: ResultGroupsComponent | undefined;
+  @ViewChild(ResultGroupsComponent) private readonly resultGroupsComponent!: ResultGroupsComponent;
 
   public screenMode: ScreenMode = 'regular';
   public readonly searchConfig = this.configService.searchConfig.mapPage;
@@ -57,17 +57,15 @@ export class SearchWindowComponent extends BaseSearchContainerComponent implemen
         .subscribe(),
     );
 
-    if (this.resultGroupsComponent) {
-      this.subscriptions.add(
-        this.resultGroupsComponent.resultGroupComponents.changes.subscribe((resultGroupComponents: ResultGroupComponent[]) => {
-          this.allSearchResults = [];
-          resultGroupComponents.forEach((resultGroupComponent) => {
-            this.allSearchResults = this.allSearchResults.concat(resultGroupComponent.searchResultElements.toArray());
-          });
-          this.cdr.detectChanges();
-        }),
-      );
-    }
+    this.subscriptions.add(
+      this.resultGroupsComponent.resultGroupComponents.changes.subscribe((resultGroupComponents: ResultGroupComponent[]) => {
+        this.allSearchResults = [];
+        resultGroupComponents.forEach((resultGroupComponent) => {
+          this.allSearchResults = this.allSearchResults.concat(resultGroupComponent.searchResultElements.toArray());
+        });
+        this.cdr.detectChanges();
+      }),
+    );
 
     this.subscriptions.add(
       this.term$

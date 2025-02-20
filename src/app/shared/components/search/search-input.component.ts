@@ -4,6 +4,9 @@ import {debounceTime, distinctUntilChanged, fromEvent, map, Subject, Subscriptio
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {ScreenMode} from '../../types/screen-size.type';
 import {SearchMode} from '../../types/search-mode.type';
+import {NgClass} from '@angular/common';
+import {MatIcon} from '@angular/material/icon';
+import {SharedModule} from '../../shared.module';
 
 const SEARCH_TERM_INPUT_DEBOUNCE_IN_MS = 300;
 
@@ -11,7 +14,7 @@ const SEARCH_TERM_INPUT_DEBOUNCE_IN_MS = 300;
   selector: 'search-input',
   templateUrl: './search-input.component.html',
   styleUrls: ['./search-input.component.scss'],
-  standalone: false,
+  imports: [NgClass, MatIcon, SharedModule],
 })
 export class SearchInputComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() public placeholderText!: string;

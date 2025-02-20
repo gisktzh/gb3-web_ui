@@ -159,6 +159,13 @@ Our githooks check for both the branch name and the commit message, but they wil
 match. This is because there are times when you _might_ want to deviate from these rules.
 ES Lint is enabled in the precommit hook. This means that every commit will be checked for linting errors. If there are any, the commit will be rejected.
 Either fix the error (unused variable or import, etc.) or disable the rule for the specific line or file (`any` in `.spec.ts` files).
+In caye of the latter, consider adding a comment explaining why the rule was disabled. Example for such a case:
+
+```typescript
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Allow "any" in test file
+const action = {} as any;
+```
+
 The rules are defined in the `.eslintrc.config.mjs` file.
 
 ## Code documentation
