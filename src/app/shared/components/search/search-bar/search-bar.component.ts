@@ -3,7 +3,6 @@ import {SharedModule} from '../../../shared.module';
 import {SearchState} from '../../../../state/app/states/search.state';
 import {initialState, selectSearchState} from '../../../../state/app/reducers/search.reducer';
 import {ScreenMode} from '../../../types/screen-size.type';
-import {ResultGroupsComponent} from '../../../../map/components/search-window/result-groups/result-groups.component';
 import {selectScreenMode} from '../../../../state/app/reducers/app-layout.reducer';
 import {selectIsAnySearchFilterActiveSelector} from '../../../../state/app/selectors/is-any-search-filter-active.selector';
 import {ConfigService} from '../../../services/config.service';
@@ -36,7 +35,6 @@ export class SearchBarComponent implements OnInit, OnDestroy {
   public isAnySearchFilterActive: boolean = false;
 
   @ViewChild(SearchInputComponent) public readonly searchInput!: SearchInputComponent;
-  @ViewChild(ResultGroupsComponent) private readonly resultGroupsComponent: ResultGroupsComponent | undefined;
 
   private readonly searchState$ = this.store.select(selectSearchState);
   private readonly screenMode$ = this.store.select(selectScreenMode);
@@ -55,7 +53,6 @@ export class SearchBarComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
-    setTimeout(() => this.store.dispatch(SearchActions.resetSearchAndFilters()), 0);
   }
 
   public searchForTerm(term: string) {

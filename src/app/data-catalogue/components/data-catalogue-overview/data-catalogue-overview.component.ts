@@ -91,12 +91,12 @@ export class DataCatalogueOverviewComponent implements OnInit, OnDestroy, AfterV
   }
 
   public ngOnInit() {
+    this.store.dispatch(SearchActions.clearSearchTerm());
     this.initSubscriptions();
   }
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
-    this.store.dispatch(SearchActions.resetSearchAndFilters());
   }
 
   public searchForTerm(term: string) {
