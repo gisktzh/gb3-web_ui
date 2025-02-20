@@ -1,6 +1,6 @@
 <div class="search-window-mobile">
   <div class="search-window-mobile__searchbar">
-    <search
+    <search-input
       mode="mobile"
       placeholderText="Suchen nach Adressen, Orten, Karten und mehr..."
       [focusOnInit]="focusOnInit"
@@ -8,7 +8,7 @@
       (clearSearchTermEvent)="clearSearchTerm()"
       (openFilterEvent)="openFilterMenu()"
       [isAnyFilterActive]="isAnySearchFilterActive"
-    ></search>
+    ></search-input>
   </div>
   <div class="search-window-mobile__results-container">
     <result-groups [showMultiplePanels]="false"></result-groups>

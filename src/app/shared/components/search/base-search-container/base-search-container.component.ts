@@ -1,9 +1,9 @@
 import {AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {SearchResultIdentifierDirective} from '../../../directives/search-result-identifier.directive';
-import {SearchComponent} from '../search.component';
 import {selectTerm} from '../../../../state/app/reducers/search.reducer';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
+import {SearchBarComponent} from '../search-bar/search-bar.component';
 
 @Component({
   selector: 'abstract-search-container',
@@ -12,7 +12,7 @@ import {Store} from '@ngrx/store';
 })
 export class BaseSearchContainerComponent implements OnInit, OnDestroy, AfterViewInit {
   public allSearchResults: SearchResultIdentifierDirective[] = [];
-  @ViewChild(SearchComponent) public readonly searchComponent!: SearchComponent;
+  @ViewChild(SearchBarComponent) public readonly searchComponent!: SearchBarComponent;
   private term: string = '';
   private selectedSearchResultIndex: number = -1;
   protected readonly term$ = this.store.select(selectTerm);
@@ -43,7 +43,7 @@ export class BaseSearchContainerComponent implements OnInit, OnDestroy, AfterVie
   public ngAfterViewInit() {
     this.cdr.detectChanges();
 
-    this.searchComponent.inputRef.nativeElement.onfocus = () => {
+    this.searchComponent.searchInput.inputRef.nativeElement.onfocus = () => {
       this.selectedSearchResultIndex = -1;
     };
   }
@@ -122,11 +122,11 @@ export class BaseSearchContainerComponent implements OnInit, OnDestroy, AfterVie
   private setFocusOnSelectedElement() {
     if (this.selectedSearchResultIndex >= 0 && this.allSearchResults.length > 0) {
       const selectedResult = this.allSearchResults[this.selectedSearchResultIndex];
-      this.searchComponent.setTerm(selectedResult.text, false);
+      this.searchComponent.searchInput.setTerm(selectedResult.text, false);
       selectedResult.host.nativeElement.focus();
     } else {
-      this.searchComponent.inputRef.nativeElement.focus();
-      this.searchComponent.setTerm(this.term, false);
+      this.searchComponent.searchInput.inputRef.nativeElement.focus();
+      this.searchComponent.searchInput.setTerm(this.term, false);
     }
   }
 

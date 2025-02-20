@@ -3,7 +3,7 @@
 </page-section>
 
 <div class="data-catalogue-overview__search" [ngClass]="{'data-catalogue-overview__search--mobile': screenMode === 'mobile'}">
-  <search
+  <search-input
     class="data-catalogue-overview__search__bar"
     [ngClass]="{'data-catalogue-overview__search__bar--mobile': screenMode === 'mobile'}"
     [mode]="screenMode === 'mobile' ? 'compact' : 'normal'"
@@ -12,7 +12,7 @@
     (clearSearchTermEvent)="clearSearchTerm()"
     (openFilterEvent)="openFilterWindow()"
     [isAnyFilterActive]="activeFilters.length > 0"
-  ></search>
+  ></search-input>
 </div>
 <page-section>
   <div class="data-catalogue-overview">

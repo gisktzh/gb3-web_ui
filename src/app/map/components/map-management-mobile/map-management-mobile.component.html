@@ -25,7 +25,7 @@
     </button>
   </div>
   <div class="map-management-mobile-header__tools">
-    <search
+    <search-input
       class="map-management-mobile-header__tools__filter"
       [ngClass]="{'map-management-mobile-header__tools__filter--hidden': activeTab !== 'mapsCatalogue'}"
       [mode]="'mobile'"
@@ -35,7 +35,7 @@
       (focusEvent)="startFiltering()"
       (changeSearchTermEvent)="filterCatalog($event)"
       (clearSearchTermEvent)="clearInput()"
-    ></search>
+    ></search-input>
     <div
       class="map-management-mobile-header__tools__buttons"
       [ngClass]="{'map-management-mobile-header__tools__buttons--hidden': activeTab !== 'activeMaps'}"

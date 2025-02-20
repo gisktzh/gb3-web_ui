@@ -1,19 +1,6 @@
 <div class="search-window">
-  <div class="search-window__searchbar" [ngClass]="{'search-window__searchbar--mobile': screenMode === 'mobile'}">
-    <search
-      typedTourAnchor="map.search.input"
-      mode="compact"
-      class="search-window__searchbar--mobile__box"
-      placeholderText="Suchen nach Adressen, Orten, Karten und mehr..."
-      (changeSearchTermEvent)="searchForTerm($event)"
-      (clearSearchTermEvent)="clearSearchTerm()"
-      (openFilterEvent)="openFilterMenu()"
-      (focusEvent)="handleFocus()"
-      [showFilterButton]="screenMode !== 'mobile'"
-      [isAnyFilterActive]="isAnySearchFilterActive"
-    ></search>
-  </div>
-  <div class="search-window__results-container" [hidden]="screenMode === 'mobile'">
+  <search-bar mode="compact" [searchConfig]="searchConfig" placeholderText="Suchen nach Adressen, Orten, Karten und mehr..."></search-bar>
+  <div class="search-window__results-container">
     <result-groups></result-groups>
   </div>
 </div>

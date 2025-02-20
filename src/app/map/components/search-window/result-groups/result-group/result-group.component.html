@@ -53,7 +53,10 @@
                 [attr.aria-label]="'Karte ' + map.title + ' öffnen. ' + toolTip"
                 [matTooltip]="'Karte ' + map.title + ' öffnen. ' + toolTip"
               >
-                <mat-icon svgIcon="ktzh_arrow_right" class="result-group__container__element__link__icon"></mat-icon>
+                <div class="result-group__container__element__link__icon-wrapper">
+                  <mat-icon svgIcon="ktzh_arrow_right" class="result-group__container__element__link__icon-wrapper__icon"></mat-icon>
+                </div>
+
                 <ng-container *ngTemplateOutlet="content"></ng-container>
               </a>
             } @else {

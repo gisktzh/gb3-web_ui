@@ -1,17 +1,11 @@
 <div class="start-page-search">
-  <div class="start-page-search__search">
-    <search
-      class="start-page-search__search__bar"
-      [ngClass]="{'start-page-search__search__bar--mobile': screenMode === 'mobile'}"
-      placeholderText="Suche nach Karten, Kartendaten, Geodaten und Geodiensten"
-      (changeSearchTermEvent)="searchForTerm($event)"
-      (clearSearchTermEvent)="clearSearchTerm()"
-      (openFilterEvent)="openFilterMenu()"
-      [mode]="screenMode === 'mobile' ? 'compact' : 'normal'"
-      [showFilterButton]="true"
-      [isAnyFilterActive]="activeSearchFilterValues.length > 0"
-    ></search>
-  </div>
+  <search-bar
+    class="start-page-search__search-bar"
+    [mode]="screenMode === 'mobile' ? 'compact' : 'normal'"
+    [searchConfig]="searchConfig"
+    [ngClass]="{'start-page-search__search-bar--mobile': screenMode === 'mobile'}"
+    placeholderText="Suche nach Karten, Kartendaten, Geodaten und Geodiensten"
+  ></search-bar>
 
   @if (searchTerms.length > 0) {
     <div class="start-page-search__results" [ngClass]="{'start-page-search__results--mobile': screenMode === 'mobile'}">

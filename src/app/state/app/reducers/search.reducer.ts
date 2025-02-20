@@ -51,8 +51,8 @@ export const searchFeature = createFeature({
         selectedSearchResult: initialState.selectedSearchResult,
       };
     }),
-    on(SearchActions.setFilterGroups, (state, {filterGroups}): SearchState => {
-      return {...state, filterGroups};
+    on(SearchActions.setFilterGroups, (_state, {filterGroups}): SearchState => {
+      return {...initialState, filterGroups};
     }),
     on(
       SearchActions.setActiveMapItemsFilterGroup,
