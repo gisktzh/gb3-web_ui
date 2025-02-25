@@ -6,7 +6,7 @@ import {AbstractEsriDrawableToolStrategy} from '../tool-service/strategies/abstr
 import {DrawingLayer} from '../../../../shared/enums/drawing-layer.enum';
 import {SupportedSrs} from '../../../../shared/types/supported-srs.type';
 import {EsriSymbolToStyleRepresentationUtils} from './esri-symbol-to-style-representation.utils';
-import {TypeUtils} from './type.utils';
+import {hasNonNullishProperty} from '../type-guards/esri-nullish.type-guard';
 
 export class EsriGraphicToInternalDrawingRepresentationUtils {
   /**
@@ -18,11 +18,11 @@ export class EsriGraphicToInternalDrawingRepresentationUtils {
     srs: SupportedSrs,
     source: DrawingLayer,
   ): Gb3StyledInternalDrawingRepresentation {
-    if (!TypeUtils.hasNonNullish(graphic, 'geometry')) {
+    if (!hasNonNullishProperty(graphic, 'geometry')) {
       throw new GeometryMissing();
     }
 
-    if (!TypeUtils.hasNonNullish(graphic, 'symbol')) {
+    if (!hasNonNullishProperty(graphic, 'symbol')) {
       throw new SymbolizationMissing();
     }
 

@@ -65,9 +65,9 @@ import * as intl from '@arcgis/core/intl';
 import {TimeService} from '../../../shared/interfaces/time-service.interface';
 import {TIME_SERVICE} from '../../../app.module';
 import {TimeSliderService} from '../time-slider.service';
-import {TypeUtils} from './utils/type.utils';
 import {ZoomExtentMissing} from './errors/esri.errors';
 import {SymbolUnion} from '@arcgis/core/unionTypes';
+import {hasNonNullishProperty} from './type-guards/esri-nullish.type-guard';
 import GraphicHit = __esri.GraphicHit;
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
@@ -421,7 +421,7 @@ export class EsriMapService implements MapService, OnDestroy {
       ) as never;
     }
 
-    if (TypeUtils.hasNonNullish(esriGeometry, 'extent')) {
+    if (hasNonNullishProperty(esriGeometry, 'extent')) {
       return this.mapView.goTo(
         {
           center: esriGeometry.extent.clone().expand(expandFactor),

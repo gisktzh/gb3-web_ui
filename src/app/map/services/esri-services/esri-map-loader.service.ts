@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {MapServiceType} from '../../types/map-service.type';
-import {catchError, filter, from, map, Observable, pipe, throwError} from 'rxjs';
+import {catchError, filter, from, map, Observable, throwError} from 'rxjs';
 import {ExternalServiceActiveMapItem} from '../../models/external-service.model';
 import {EsriError, EsriKMLLayer, EsriWMSLayer} from './esri.module';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
@@ -10,7 +10,7 @@ import {ExternalWmsActiveMapItem} from '../../models/implementations/external-wm
 import {ExternalKmlActiveMapItem} from '../../models/implementations/external-kml.model';
 import {LayerCouldNotBeLoaded} from './errors/esri.errors';
 import {ExternalServiceHasNoLayers, ExternalServiceHasNoUrl} from '../../../shared/errors/map-import.errors';
-import {TypeUtils} from './utils/type.utils';
+import {hasNonNullishProperty, isNullish} from './type-guards/esri-nullish.type-guard';
 
 @Injectable({
   providedIn: 'root',
@@ -80,7 +80,7 @@ export class EsriMapLoaderService implements MapLoaderService {
     }
 
     return this.loadService(layer).pipe(
-      nonNullishFilter('sublayers'),
+      filter((kmlLayer) => hasNonNullishProperty(kmlLayer, 'sublayers')),
       map((kmlLayer) => {
         const subLayers: ExternalKmlLayer[] = kmlLayer.sublayers
           .map(
@@ -96,7 +96,7 @@ export class EsriMapLoaderService implements MapLoaderService {
           throw new ExternalServiceHasNoLayers();
         }
 
-        if (TypeUtils.isNullish(kmlLayer.url)) {
+        if (isNullish(kmlLayer.url)) {
           throw new ExternalServiceHasNoUrl();
         }
 
@@ -104,8 +104,4 @@ export class EsriMapLoaderService implements MapLoaderService {
       }),
     );
   }
-}
-
-export function nonNullishFilter<T, K extends keyof T>(key: K): (source: Observable<T>) => Observable<T & Record<K, NonNullable<T[K]>>> {
-  return pipe(filter((obj): obj is T & Record<K, NonNullable<T[K]>> => obj[key] !== undefined && obj[key] !== null));
 }

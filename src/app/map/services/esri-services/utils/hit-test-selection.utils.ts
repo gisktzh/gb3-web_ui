@@ -2,18 +2,18 @@ import Graphic from '@arcgis/core/Graphic';
 import Polygon from '@arcgis/core/geometry/Polygon';
 import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
 import {UnsupportedGeometryType} from '../errors/esri.errors';
-import {TypeUtils} from './type.utils';
+import {hasNonNullishProperty, isNullish} from '../type-guards/esri-nullish.type-guard';
 import GraphicHit = __esri.GraphicHit;
 
 type HitWithArea = {hit: Graphic; area: number};
 
 export class HitTestSelectionUtils {
   public static selectFeatureFromHitTestResult(hits: GraphicHit[]): Graphic | undefined {
-    if (hits.length === 0 || hits.every((hit) => TypeUtils.isNullish(hit.graphic.geometry))) {
+    if (hits.length === 0 || hits.every((hit) => isNullish(hit.graphic.geometry))) {
       return undefined;
     }
 
-    const graphics = hits.map((hit) => hit.graphic).filter((geometry) => TypeUtils.hasNonNullish(geometry, 'geometry'));
+    const graphics = hits.map((hit) => hit.graphic).filter((geometry) => hasNonNullishProperty(geometry, 'geometry'));
     const pointGraphic = graphics.find((graphic) => graphic.geometry.type === 'point');
     if (pointGraphic) {
       return pointGraphic;

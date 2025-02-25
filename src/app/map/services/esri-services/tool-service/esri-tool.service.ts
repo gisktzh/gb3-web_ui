@@ -52,7 +52,7 @@ import {SupportedEsriTool} from './strategies/supported-esri-tool.type';
 import {AbstractEsriDrawableToolStrategy} from './strategies/abstract-esri-drawable-tool.strategy';
 import {StyleRepresentationToEsriSymbolUtils} from '../utils/style-representation-to-esri-symbol.utils';
 import {DrawingMode} from './types/drawing-mode.type';
-import {TypeUtils} from '../utils/type.utils';
+import {hasNonNullishProperty} from '../type-guards/esri-nullish.type-guard';
 
 export const HANDLE_GROUP_KEY = 'EsriToolService';
 
@@ -99,7 +99,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
   }
 
   public editDrawing(graphic: Graphic) {
-    if (!TypeUtils.hasNonNullish(graphic, 'layer')) {
+    if (!hasNonNullishProperty(graphic, 'layer')) {
       throw new EditFeatureInitializationFailed('Zeichnung ist keinem Layer zugewiesen.');
     }
 
@@ -324,11 +324,11 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
   }
 
   private setToolStrategyForEditingFeature(graphic: Graphic) {
-    if (!TypeUtils.hasNonNullish(graphic, 'geometry')) {
+    if (!hasNonNullishProperty(graphic, 'geometry')) {
       throw new EditFeatureInitializationFailed('Keine Geometrie zum Bearbeiten');
     }
 
-    if (!TypeUtils.hasNonNullish(graphic, 'layer')) {
+    if (!hasNonNullishProperty(graphic, 'layer')) {
       throw new EditFeatureInitializationFailed('Zeichnung ist keinem Layer zugewiesen.');
     }
 
