@@ -6,6 +6,7 @@ import {AbstractEsriMeasurementStrategy, LabelConfiguration} from '../abstract-e
 import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
 import Point from '@arcgis/core/geometry/Point';
 import {SupportedEsriTool} from '../supported-esri-tool.type';
+import {LabelPositionCalculationFailed} from '../../../errors/esri.errors';
 
 const M_TO_KM_CONVERSION_THRESHOLD = 10_000;
 
@@ -30,10 +31,14 @@ export class EsriLineMeasurementStrategy extends AbstractEsriMeasurementStrategy
     this.labelSymbolization.text = this.getRoundedPolylineLengthString(geometry);
     const lastVertex = this.getLabelPosition(geometry);
 
+    if (!lastVertex) {
+      throw new LabelPositionCalculationFailed('Linie hat keinen Punkt');
+    }
+
     return {location: lastVertex, symbolization: this.labelSymbolization};
   }
 
-  private getLabelPosition(geometry: Polyline): Point {
+  private getLabelPosition(geometry: Polyline): Point | nullish {
     return geometry.getPoint(0, geometry.paths[0].length - 1);
   }
 

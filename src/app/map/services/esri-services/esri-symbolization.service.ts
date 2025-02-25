@@ -7,13 +7,13 @@ import {LayerSymbolizations, SymbolizationColor} from '../../../shared/interface
 import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import Color from '@arcgis/core/Color';
-import MarkerSymbol from '@arcgis/core/symbols/MarkerSymbol';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import {UnsupportedGeometryType} from './errors/esri.errors';
 import {DrawingStyleState} from '../../../state/map/states/drawing-style.state';
 import {Store} from '@ngrx/store';
 import {selectDrawingStyleState} from '../../../state/map/reducers/drawing-style.reducer';
 import {tap} from 'rxjs';
+import {MarkerSymbol2DUnion, SymbolUnion} from '@arcgis/core/unionTypes';
 
 @Injectable({
   providedIn: 'root',
@@ -32,7 +32,7 @@ export class EsriSymbolizationService {
       .subscribe();
   }
 
-  public createSymbolizationForDrawingLayer(geometry: GeometryWithSrs, drawingLayer: DrawingLayer, label?: string): __esri.Symbol {
+  public createSymbolizationForDrawingLayer(geometry: GeometryWithSrs, drawingLayer: DrawingLayer, label?: string): SymbolUnion {
     switch (geometry.type) {
       case 'Point':
       case 'MultiPoint':
@@ -80,7 +80,7 @@ export class EsriSymbolizationService {
     });
   }
 
-  public createPointSymbolization(drawingLayer: DrawingLayer, isCustomizable: boolean): MarkerSymbol {
+  public createPointSymbolization(drawingLayer: DrawingLayer, isCustomizable: boolean): MarkerSymbol2DUnion {
     const pointSymbology = this.layerSymbolizations[drawingLayer].point;
     switch (pointSymbology.type) {
       case 'simple':

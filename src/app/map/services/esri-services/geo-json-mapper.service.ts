@@ -15,7 +15,7 @@ import {UnsupportedGeometryType} from './errors/esri.errors';
   providedIn: 'root',
 })
 export class GeoJSONMapperService {
-  public fromGeoJSONToEsri<T extends GeometryWithSrs>(geometry: T): __esri.Geometry {
+  public fromGeoJSONToEsri<T extends GeometryWithSrs>(geometry: T): __esri.GeometryUnion {
     switch (geometry.type) {
       case 'Point':
         return this.geoJSONPointToEsriPoint(geometry);

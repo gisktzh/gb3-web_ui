@@ -4,15 +4,16 @@ import {Store} from '@ngrx/store';
 import {selectSrsId} from '../../../state/map/reducers/map-config.reducer';
 import SpatialReference from '@arcgis/core/geometry/SpatialReference';
 import {ConfigService} from '../../../shared/services/config.service';
+import {GeometryUnion} from '@arcgis/core/unionTypes';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TransformationService {
+  public projectionLoaded: boolean = false;
   private readonly defaultSrs: __esri.SpatialReference;
   private readonly srs$ = this.store.select(selectSrsId);
   private srs: __esri.SpatialReference | undefined;
-  public projectionLoaded: boolean = false;
 
   constructor(
     private readonly store: Store,
@@ -25,11 +26,11 @@ export class TransformationService {
     });
   }
 
-  public transform<T extends __esri.Geometry>(transformable: T): T {
+  public transform<T extends GeometryUnion>(transformable: T): T {
     return projection.project(transformable, this.srs ?? this.defaultSrs) as T;
   }
 
-  public transformTo<T extends __esri.Geometry>(transformable: T, to: SpatialReference): T {
+  public transformTo<T extends GeometryUnion>(transformable: T, to: SpatialReference): T {
     return projection.project(transformable, to) as T;
   }
 }

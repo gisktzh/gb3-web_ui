@@ -32,7 +32,7 @@ import {
 } from '../../../../shared/interfaces/internal-drawing-representation.interface';
 import {DrawingActions} from '../../../../state/map/actions/drawing.actions';
 import {silentArcgisToGeoJSON} from '../../../../shared/utils/esri-transformer-wrapper.utils';
-import {DrawingLayerNotInitialized, NonEditableLayerType} from '../errors/esri.errors';
+import {DrawingLayerNotInitialized, EditFeatureInitializationFailed, NonEditableLayerType} from '../errors/esri.errors';
 import {DataDownloadSelectionTool} from '../../../../shared/types/data-download-selection-tool.type';
 import {DataDownloadOrderActions} from '../../../../state/map/actions/data-download-order.actions';
 import {DataDownloadSelection} from '../../../../shared/interfaces/data-download-selection.interface';
@@ -52,6 +52,7 @@ import {SupportedEsriTool} from './strategies/supported-esri-tool.type';
 import {AbstractEsriDrawableToolStrategy} from './strategies/abstract-esri-drawable-tool.strategy';
 import {StyleRepresentationToEsriSymbolUtils} from '../utils/style-representation-to-esri-symbol.utils';
 import {DrawingMode} from './types/drawing-mode.type';
+import {TypeUtils} from '../utils/type.utils';
 
 export const HANDLE_GROUP_KEY = 'EsriToolService';
 
@@ -98,13 +99,17 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
   }
 
   public editDrawing(graphic: Graphic) {
+    if (!TypeUtils.hasNonNullish(graphic, 'layer')) {
+      throw new EditFeatureInitializationFailed('Zeichnung ist keinem Layer zugewiesen.');
+    }
+
     const drawingId = graphic.getAttribute(AbstractEsriDrawableToolStrategy.identifierFieldName);
     if (!drawingId) {
       return;
     }
     this.setToolStrategyForEditingFeature(graphic);
     // Open the panel only for drawings, not measurements or elevation profile, as their style is not currently editable
-    if (graphic.layer.id.includes(UserDrawingLayer.Drawings)) {
+    if (String(graphic.layer.id).includes(UserDrawingLayer.Drawings)) {
       this.store.dispatch(DrawingActions.selectDrawing({drawingId}));
     }
     this.toolStrategy.edit(graphic);
@@ -319,6 +324,14 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
   }
 
   private setToolStrategyForEditingFeature(graphic: Graphic) {
+    if (!TypeUtils.hasNonNullish(graphic, 'geometry')) {
+      throw new EditFeatureInitializationFailed('Keine Geometrie zum Bearbeiten');
+    }
+
+    if (!TypeUtils.hasNonNullish(graphic, 'layer')) {
+      throw new EditFeatureInitializationFailed('Zeichnung ist keinem Layer zugewiesen.');
+    }
+
     const tool: SupportedEsriTool = (graphic.getAttribute('__tool') as SupportedEsriTool) ?? graphic.geometry.type;
     let drawingType: DrawingTool;
     let measurementType: MeasurementTool;
@@ -345,11 +358,12 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
         break;
     }
 
-    if (graphic.layer.id.includes(UserDrawingLayer.Drawings)) {
+    const layerId = String(graphic.layer.id);
+    if (layerId.includes(UserDrawingLayer.Drawings)) {
       this.setDrawingStrategy(drawingType, graphic.layer as GraphicsLayer);
-    } else if (graphic.layer.id.includes(UserDrawingLayer.Measurements)) {
+    } else if (layerId.includes(UserDrawingLayer.Measurements)) {
       this.setMeasurementStrategy(measurementType, graphic.layer as GraphicsLayer);
-    } else if (graphic.layer.id.includes(InternalDrawingLayer.ElevationProfile)) {
+    } else if (layerId.includes(InternalDrawingLayer.ElevationProfile)) {
       this.setMeasurementStrategy('measure-elevation-profile', graphic.layer as GraphicsLayer);
     } else {
       throw new NonEditableLayerType();
@@ -404,7 +418,8 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
         break;
       case 'measure-elevation-profile':
         this.toolStrategy = new EsriElevationProfileMeasurementStrategy(layer, this.esriMapViewService.mapView, lineStyle, (geometry) => {
-          this.store.dispatch(ElevationProfileActions.loadProfile({geometry: silentArcgisToGeoJSON(geometry.geometry)}));
+          //eslint-disable-next-line
+          this.store.dispatch(ElevationProfileActions.loadProfile({geometry: silentArcgisToGeoJSON(geometry.geometry as unknown as any)})); // todo: check how to fix :)
           this.endDrawing();
         });
         break;

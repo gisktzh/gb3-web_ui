@@ -3,8 +3,7 @@ import esriConfig from '@arcgis/core/config';
 import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {Store} from '@ngrx/store';
-import {BehaviorSubject, first, pairwise, skip, Subscription, tap, withLatestFrom} from 'rxjs';
-import {filter, map} from 'rxjs';
+import {BehaviorSubject, filter, first, map, pairwise, skip, Subscription, tap, withLatestFrom} from 'rxjs';
 import {AuthService} from '../../../auth/auth.service';
 import {InternalDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {GeometryWithSrs, PointWithSrs, PolygonWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
@@ -66,6 +65,9 @@ import * as intl from '@arcgis/core/intl';
 import {TimeService} from '../../../shared/interfaces/time-service.interface';
 import {TIME_SERVICE} from '../../../app.module';
 import {TimeSliderService} from '../time-slider.service';
+import {TypeUtils} from './utils/type.utils';
+import {ZoomExtentMissing} from './errors/esri.errors';
+import {SymbolUnion} from '@arcgis/core/unionTypes';
 import GraphicHit = __esri.GraphicHit;
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
@@ -373,7 +375,11 @@ export class EsriMapService implements MapService, OnDestroy {
      */
     const previousIndex = this.getNumberOfNonDrawingLayers() - 1 - previousPosition;
     const currentIndex = this.getNumberOfNonDrawingLayers() - 1 - currentPosition;
-    this.mapView.map.layers.reorder(this.mapView.map.layers.getItemAt(previousIndex), currentIndex);
+
+    const layer = this.mapView.map.layers.getItemAt(previousIndex);
+    if (layer) {
+      this.mapView.map.layers.reorder(layer, currentIndex);
+    }
   }
 
   public reorderSublayer(mapItem: ActiveMapItem, previousPosition: number, currentPosition: number) {
@@ -387,7 +393,11 @@ export class EsriMapService implements MapService, OnDestroy {
        */
       const previousIndex = esriLayer.sublayers.length - 1 - previousPosition;
       const currentIndex = esriLayer.sublayers.length - 1 - currentPosition;
-      esriLayer.sublayers.reorder(esriLayer.sublayers.getItemAt(previousIndex), currentIndex);
+
+      const layer = esriLayer.sublayers.getItemAt(previousIndex);
+      if (layer) {
+        esriLayer.sublayers.reorder(layer, currentIndex);
+      }
     }
   }
 
@@ -411,12 +421,16 @@ export class EsriMapService implements MapService, OnDestroy {
       ) as never;
     }
 
-    return this.mapView.goTo(
-      {
-        center: esriGeometry.extent.clone().expand(expandFactor),
-      },
-      {duration},
-    ) as never;
+    if (TypeUtils.hasNonNullish(esriGeometry, 'extent')) {
+      return this.mapView.goTo(
+        {
+          center: esriGeometry.extent.clone().expand(expandFactor),
+        },
+        {duration},
+      ) as never;
+    }
+
+    throw new ZoomExtentMissing();
   }
 
   public addGeometryToInternalDrawingLayer(geometry: GeometryWithSrs, drawingLayer: InternalDrawingLayer, id?: string) {
@@ -525,7 +539,7 @@ export class EsriMapService implements MapService, OnDestroy {
 
   private addEsriGeometryToDrawingLayer(
     esriGeometry: __esri.Geometry,
-    esriSymbolization: __esri.Symbol,
+    esriSymbolization: SymbolUnion,
     internalDrawingLayer: InternalDrawingLayer,
     id?: string,
   ) {
@@ -862,7 +876,6 @@ export class EsriMapService implements MapService, OnDestroy {
     esriReactiveUtils
       .whenOnce(() => this.mapView.ready && this.transformationService.projectionLoaded)
       .then(() => {
-        /* eslint-disable @typescript-eslint/no-non-null-assertion */ // at this point, we know the values are ready
         const {effectiveMaxScale, effectiveMinScale, effectiveMaxZoom, effectiveMinZoom} = this.mapView.constraints;
 
         this.effectiveMaxZoom = effectiveMaxZoom!;
@@ -958,9 +971,11 @@ export class EsriMapService implements MapService, OnDestroy {
   }
 
   private switchBasemap(basemapId: string) {
-    this.mapView.map.basemap.baseLayers.map((baseLayer) => {
-      baseLayer.visible = basemapId === baseLayer.id;
-    });
+    if (this.mapView.map.basemap) {
+      this.mapView.map.basemap.baseLayers.map((baseLayer) => {
+        baseLayer.visible = basemapId === baseLayer.id;
+      });
+    }
   }
 
   private getWmsOverrideInterceptor(accessToken?: string): __esri.RequestInterceptor {

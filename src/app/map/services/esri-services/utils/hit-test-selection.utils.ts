@@ -2,42 +2,47 @@ import Graphic from '@arcgis/core/Graphic';
 import Polygon from '@arcgis/core/geometry/Polygon';
 import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
 import {UnsupportedGeometryType} from '../errors/esri.errors';
+import {TypeUtils} from './type.utils';
 import GraphicHit = __esri.GraphicHit;
 
 type HitWithArea = {hit: Graphic; area: number};
 
 export class HitTestSelectionUtils {
   public static selectFeatureFromHitTestResult(hits: GraphicHit[]): Graphic | undefined {
-    if (hits.length === 0) {
+    if (hits.length === 0 || hits.every((hit) => TypeUtils.isNullish(hit.graphic.geometry))) {
       return undefined;
     }
-    const pointHit = hits.find((hit) => hit.graphic.geometry.type === 'point');
-    if (pointHit) {
-      return pointHit.graphic;
+
+    const graphics = hits.map((hit) => hit.graphic).filter((geometry) => TypeUtils.hasNonNullish(geometry, 'geometry'));
+    const pointGraphic = graphics.find((graphic) => graphic.geometry.type === 'point');
+    if (pointGraphic) {
+      return pointGraphic;
     }
-    const lineHit = hits.find((hit) => hit.graphic.geometry.type === 'polyline');
-    if (lineHit) {
-      return lineHit.graphic;
+
+    const lineGraphic = graphics.find((graphic) => graphic.geometry.type === 'polyline');
+    if (lineGraphic) {
+      return lineGraphic;
     }
-    const polygonHits = hits.filter((hit) => hit.graphic.geometry.type === 'polygon');
-    if (polygonHits.length > 0) {
-      return this.selectSmallestPolygonFromHitTestResult(polygonHits);
+
+    const polygonGraphics = graphics.filter((graphic) => graphic.geometry.type === 'polygon');
+    if (polygonGraphics.length > 0) {
+      return this.selectSmallestPolygonFromHitTestResult(polygonGraphics);
     }
-    throw new UnsupportedGeometryType(hits[0].graphic.geometry.type);
+    throw new UnsupportedGeometryType(hits[0].graphic.geometry!.type);
   }
 
-  public static selectSmallestPolygonFromHitTestResult(polygonHits: GraphicHit[]): Graphic {
+  public static selectSmallestPolygonFromHitTestResult(polygonHits: Graphic[]): Graphic {
     const hitSelection = polygonHits.reduce(
       (hitWithSmallestArea: HitWithArea, currentHit) => {
-        const area = geometryEngine.planarArea(currentHit.graphic.geometry as Polygon);
+        const area = geometryEngine.planarArea(currentHit.geometry as Polygon);
         if (area < hitWithSmallestArea.area) {
-          return {hit: currentHit.graphic, area};
+          return {hit: currentHit, area};
         }
         return hitWithSmallestArea;
       },
       {
-        hit: polygonHits[0].graphic,
-        area: geometryEngine.planarArea(polygonHits[0].graphic.geometry as Polygon),
+        hit: polygonHits[0],
+        area: geometryEngine.planarArea(polygonHits[0].geometry as Polygon),
       },
     );
     return hitSelection.hit;
