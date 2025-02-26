@@ -1,16 +1,16 @@
-import Symbol from '@arcgis/core/symbols/Symbol';
 import {Gb3StyleRepresentation} from '../../../../shared/interfaces/internal-drawing-representation.interface';
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
 import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import {UnsupportedSymbolizationType} from '../errors/esri.errors';
+import {SymbolUnion} from '@arcgis/core/unionTypes';
 
 const CENTER_TOP_LABEL_ALIGNMENT = 'ct';
 const TEXT_LABEL = '[text]';
 
 export class EsriSymbolToStyleRepresentationUtils {
-  public static convert(symbol: Symbol): Gb3StyleRepresentation {
+  public static convert(symbol: SymbolUnion): Gb3StyleRepresentation {
     switch (symbol.type) {
       case 'simple-marker': {
         const castSymbol = symbol as SimpleMarkerSymbol;
@@ -60,7 +60,6 @@ export class EsriSymbolToStyleRepresentationUtils {
       }
       case 'picture-marker':
       case 'picture-fill':
-      case 'shield-label-symbol':
       case 'point-3d':
       case 'line-3d':
       case 'polygon-3d':

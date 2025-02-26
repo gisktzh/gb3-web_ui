@@ -10,12 +10,13 @@ import {
   PolygonWithSrs,
 } from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {UnsupportedGeometryType} from './errors/esri.errors';
+import {GeometryUnion} from '@arcgis/core/unionTypes';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GeoJSONMapperService {
-  public fromGeoJSONToEsri<T extends GeometryWithSrs>(geometry: T): __esri.GeometryUnion {
+  public fromGeoJSONToEsri<T extends GeometryWithSrs>(geometry: T): GeometryUnion {
     switch (geometry.type) {
       case 'Point':
         return this.geoJSONPointToEsriPoint(geometry);
