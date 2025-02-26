@@ -26,8 +26,7 @@ export class EsriGraphicToInternalDrawingRepresentationUtils {
       throw new SymbolizationMissing();
     }
 
-    //eslint-disable-next-line
-    const geoJsonFeature = silentArcgisToGeoJSON(graphic.geometry as unknown as any);
+    const geoJsonFeature = silentArcgisToGeoJSON(graphic.geometry);
 
     if (geoJsonFeature.type === 'MultiLineString' || geoJsonFeature.type === 'GeometryCollection') {
       throw new UnsupportedGeometryType(geoJsonFeature.type);

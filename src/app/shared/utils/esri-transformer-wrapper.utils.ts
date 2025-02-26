@@ -1,5 +1,6 @@
 import {arcgisToGeoJSON} from '@terraformer/arcgis';
 import {GeometryObject} from 'geojson';
+import {GeometryUnion} from '@arcgis/core/unionTypes';
 
 const WARNING_TO_IGNORE_STARTS_WITH = 'Object converted in non-standard crs';
 
@@ -17,7 +18,7 @@ const WARNING_TO_IGNORE_STARTS_WITH = 'Object converted in non-standard crs';
  *  Yes, it's ugly, and yes, it might technically have sideeffects, yet the only window where they *could* happen is in the event of a
  *  finalized drawing, so the risk is minimal.
  */
-export const silentArcgisToGeoJSON: typeof arcgisToGeoJSON = (arcgis, idAttribute) => {
+export const silentArcgisToGeoJSON = (arcgis: GeometryUnion, idAttribute?: string) => {
   let transformedGeometry: GeometryObject;
   const originalConsoleWarn: (...data: unknown[]) => void = console.warn;
 
@@ -27,7 +28,21 @@ export const silentArcgisToGeoJSON: typeof arcgisToGeoJSON = (arcgis, idAttribut
         originalConsoleWarn(...data);
       }
     };
-    transformedGeometry = arcgisToGeoJSON(arcgis, idAttribute);
+
+    /**
+     * Put away your pitchforks, this is (yet another) workaround for a limitation in the @terraformer/arcgis package. After the 4.32 SDK
+     * update, we should use "GeometryUnion" instead of "Geometry" as a type. There are _slight_ differences regarding the WKID handling
+     * (i.e. they are now nullish instead of just number|undefined). Until now, this was no issue.
+     *
+     * However, after some debugging, the @terraformer/arcgis _actually_ uses the wrong types: They import the Geometry type from the
+     * arcgis-rest-js package, whose Geometry _coincidentally_ matched the old Geometry type from the arcgis package_. However, the new
+     * GeometryUnion package has issues in that the WKID of the spatialReference can now be "NULL" instead of just "undefined". This fix
+     * adjusts the type _in case we should have null_, and then safely casts it to the correct type.
+     */
+    if (arcgis.spatialReference.wkid !== null) {
+      arcgis.spatialReference.wkid = undefined;
+    }
+    transformedGeometry = arcgisToGeoJSON(arcgis as GeometryUnion & {spatialReference: {wkid: number | undefined}}, idAttribute);
   } finally {
     console.warn = originalConsoleWarn;
   }
