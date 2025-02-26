@@ -110,8 +110,9 @@ describe('HitTestSelectionUtils', () => {
         },
       },
     ] as unknown as GraphicHit[];
+    const graphics = hits.map((hit) => hit.graphic);
 
-    const actual = HitTestSelectionUtils.selectSmallestPolygonFromHitTestResult(hits);
+    const actual = HitTestSelectionUtils.selectSmallestPolygonFromHitTestResult(graphics);
     expect(actual).toBe(hits[1].graphic);
   });
   it('should return the first hit if no point, line or polygon hit', () => {
