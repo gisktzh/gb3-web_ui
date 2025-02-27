@@ -9,8 +9,6 @@
 .search-window {
   @include mixins.map-element-box-shadow;
   width: map-layout-variables.$search-window-width;
-  background-color: ktzh-variables.$zh-background-color;
-  pointer-events: all;
   overflow: hidden;
   height: search-bar-variables.$search-bar-height;
 }
