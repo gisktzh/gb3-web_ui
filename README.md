@@ -48,6 +48,11 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
+> [!WARNING]
+> Starting with `@arcgis/core` 4.32, memory demands have increased significantly due to more types, which requires more work for checking types.
+> As such, karma may run into memory overflows. If this happens, you can increase the memory limit for the node process by setting the `NODE_OPTIONS`
+> environment variable to `--max_old_space_size=80192` (or any other value that suits your needs).
+
 ### Running end-to-end tests
 
 Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a
