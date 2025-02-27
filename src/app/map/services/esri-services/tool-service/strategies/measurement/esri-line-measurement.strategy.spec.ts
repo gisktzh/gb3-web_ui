@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import MapView from '@arcgis/core/views/MapView';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {UserDrawingLayer} from '../../../../../../shared/enums/drawing-layer.enum';
@@ -108,11 +109,11 @@ describe('EsriLineMeasurementStrategy', () => {
       strategy.start();
       strategy.svm.emit('create', {state: 'complete', graphic: graphic});
 
-      const addedGraphic = layer.graphics.getItemAt(0);
+      const addedGraphic = layer.graphics.getItemAt(0)!;
       const numberOfVertices = location.paths[0].length;
-      expect(addedGraphic.geometry.type).toEqual('point');
-      expect((addedGraphic.geometry as Point).x).toEqual(location.getPoint(0, numberOfVertices - 1).x);
-      expect((addedGraphic.geometry as Point).y).toEqual(location.getPoint(0, numberOfVertices - 1).y);
+      expect(addedGraphic.geometry?.type).toEqual('point');
+      expect((addedGraphic.geometry as Point).x).toEqual(location.getPoint(0, numberOfVertices - 1)!.x);
+      expect((addedGraphic.geometry as Point).y).toEqual(location.getPoint(0, numberOfVertices - 1)!.y);
     });
 
     it('applies the defined styling to the created label', () => {
@@ -134,7 +135,7 @@ describe('EsriLineMeasurementStrategy', () => {
       strategy.svm.complete();
       strategy.svm.emit('create', {state: 'complete', graphic: graphic});
 
-      const addedGraphic = layer.graphics.getItemAt(0);
+      const addedGraphic = layer.graphics.getItemAt(0)!;
       expect((addedGraphic.symbol as TextSymbol).haloColor).toEqual(textSymbol.haloColor);
       expect((addedGraphic.symbol as TextSymbol).xoffset).toEqual(textSymbol.xoffset);
       expect((addedGraphic.symbol as TextSymbol).color).toEqual(textSymbol.color);
@@ -180,7 +181,7 @@ describe('EsriLineMeasurementStrategy', () => {
       strategy.svm.complete();
       strategy.svm.emit('create', {state: 'complete', graphic: graphic});
 
-      const addedGraphic = layer.graphics.getItemAt(0);
+      const addedGraphic = layer.graphics.getItemAt(0)!;
       expect((addedGraphic.symbol as TextSymbol).text).toEqual(`${lengthOfLine} m`);
     });
 
@@ -206,7 +207,7 @@ describe('EsriLineMeasurementStrategy', () => {
       strategy.svm.emit('create', {state: 'complete', graphic: graphic});
 
       const expected = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)).toFixed(2);
-      const addedGraphic = layer.graphics.getItemAt(0);
+      const addedGraphic = layer.graphics.getItemAt(0)!;
       expect((addedGraphic.symbol as TextSymbol).text).toEqual(`${expected} m`);
     });
 
@@ -228,7 +229,7 @@ describe('EsriLineMeasurementStrategy', () => {
       strategy.svm.complete();
       strategy.svm.emit('create', {state: 'complete', graphic: graphic});
 
-      const addedGraphic = layer.graphics.getItemAt(0);
+      const addedGraphic = layer.graphics.getItemAt(0)!;
       const expextedLength = Math.round(lengthOfLine / 1000);
       expect((addedGraphic.symbol as TextSymbol).text).toEqual(`${expextedLength} km`);
     });

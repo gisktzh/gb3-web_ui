@@ -8,6 +8,7 @@ import {MapConstants} from '../../../../shared/constants/map.constants';
 import {EsriGraphicToInternalDrawingRepresentationUtils} from './esri-graphic-to-internal-drawing-representation.utils';
 import {UnsupportedGeometryType} from '../errors/esri.errors';
 import Polyline from '@arcgis/core/geometry/Polyline';
+import LineSymbol from '@arcgis/core/symbols/LineSymbol';
 import SimpleFillSymbolProperties = __esri.SimpleFillSymbolProperties;
 
 describe('EsriGraphicToInternalDrawingRepresentationUtils', () => {
@@ -78,6 +79,7 @@ describe('EsriGraphicToInternalDrawingRepresentationUtils', () => {
   it('throws an error if the geometry type is not supported', () => {
     const graphic = new Graphic({
       geometry: new Polyline(),
+      symbol: new LineSymbol(),
     });
     expect(() => EsriGraphicToInternalDrawingRepresentationUtils.convert(graphic, undefined, 2056, UserDrawingLayer.Drawings)).toThrow(
       new UnsupportedGeometryType('MultiLineString'),
