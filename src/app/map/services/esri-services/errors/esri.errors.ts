@@ -68,3 +68,7 @@ export class EditFeatureInitializationFailed extends RecoverableError {
 export class ZoomExtentMissing extends RecoverableError {
   public override message = 'Konnte nicht zum Objekt zoomen, da dessen Ausdehnung nicht ermittelt werden konnte.';
 }
+
+export class SRSMissing extends RecoverableError {
+  public override message = 'Das Koordinatensystem fehlt.';
+}

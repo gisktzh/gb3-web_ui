@@ -31,7 +31,6 @@ import {
   Gb3StyleRepresentation,
 } from '../../../../shared/interfaces/internal-drawing-representation.interface';
 import {DrawingActions} from '../../../../state/map/actions/drawing.actions';
-import {silentArcgisToGeoJSON} from '../../../../shared/utils/esri-transformer-wrapper.utils';
 import {DrawingLayerNotInitialized, EditFeatureInitializationFailed, NonEditableLayerType} from '../errors/esri.errors';
 import {DataDownloadSelectionTool} from '../../../../shared/types/data-download-selection-tool.type';
 import {DataDownloadOrderActions} from '../../../../state/map/actions/data-download-order.actions';
@@ -53,6 +52,7 @@ import {AbstractEsriDrawableToolStrategy} from './strategies/abstract-esri-drawa
 import {StyleRepresentationToEsriSymbolUtils} from '../utils/style-representation-to-esri-symbol.utils';
 import {DrawingMode} from './types/drawing-mode.type';
 import {hasNonNullishProperty} from '../type-guards/esri-nullish.type-guard';
+import {silentArcgisToGeoJSON} from '../utils/esri-transformer-wrapper.utils';
 
 export const HANDLE_GROUP_KEY = 'EsriToolService';
 
@@ -418,8 +418,7 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
         break;
       case 'measure-elevation-profile':
         this.toolStrategy = new EsriElevationProfileMeasurementStrategy(layer, this.esriMapViewService.mapView, lineStyle, (geometry) => {
-          //eslint-disable-next-line
-          this.store.dispatch(ElevationProfileActions.loadProfile({geometry: silentArcgisToGeoJSON(geometry.geometry as unknown as any)})); // todo: check how to fix :)
+          this.store.dispatch(ElevationProfileActions.loadProfile({geometry: silentArcgisToGeoJSON(geometry.geometry!)}));
           this.endDrawing();
         });
         break;
