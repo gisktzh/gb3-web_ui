@@ -1,8 +1,8 @@
 import {InternalDrawingLayer, UserDrawingLayer} from '../enums/drawing-layer.enum';
-import {LayerSymbolizations, SymbolizationStyle} from '../interfaces/symbolization.interface';
+import {DefaultSymbolization, LayerSymbolizations} from '../interfaces/symbolization.interface';
 import {defaultFillColor, defaultLineColor, defaultLineWidth, defaultOutline} from './drawing.config';
 
-const defaultSymbolization: SymbolizationStyle = {
+export const defaultSymbolization: DefaultSymbolization = {
   text: {
     color: {
       r: 0,
