@@ -4,7 +4,7 @@
       height: 100%;
       .mat-horizontal-content-container {
         padding: 24px 0;
-        .mat-horizontal-stepper-content:not(.mat-horizontal-stepper-content-inactive) {
+        .mat-horizontal-stepper-content-current {
           height: 100%;
         }
       }
