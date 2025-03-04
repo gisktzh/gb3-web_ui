@@ -13,7 +13,7 @@ export class HitTestSelectionUtils {
       return undefined;
     }
 
-    const graphics = hits.map((hit) => hit.graphic).filter((geometry) => hasNonNullishProperty(geometry, 'geometry'));
+    const graphics = hits.map((hit) => hit.graphic).filter((graphic) => hasNonNullishProperty(graphic, 'geometry'));
     const pointGraphic = graphics.find((graphic) => graphic.geometry.type === 'point');
     if (pointGraphic) {
       return pointGraphic;
@@ -31,8 +31,8 @@ export class HitTestSelectionUtils {
     throw new UnsupportedGeometryType(hits[0].graphic.geometry!.type);
   }
 
-  public static selectSmallestPolygonFromHitTestResult(polygonHits: Graphic[]): Graphic {
-    const hitSelection = polygonHits.reduce(
+  public static selectSmallestPolygonFromHitTestResult(polygonGraphics: Graphic[]): Graphic {
+    const hitSelection = polygonGraphics.reduce(
       (hitWithSmallestArea: HitWithArea, currentHit) => {
         const area = geometryEngine.planarArea(currentHit.geometry as Polygon);
         if (area < hitWithSmallestArea.area) {
@@ -41,8 +41,8 @@ export class HitTestSelectionUtils {
         return hitWithSmallestArea;
       },
       {
-        hit: polygonHits[0],
-        area: geometryEngine.planarArea(polygonHits[0].geometry as Polygon),
+        hit: polygonGraphics[0],
+        area: geometryEngine.planarArea(polygonGraphics[0].geometry as Polygon),
       },
     );
     return hitSelection.hit;

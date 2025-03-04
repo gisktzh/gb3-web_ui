@@ -32,7 +32,7 @@ export class EsriLineMeasurementStrategy extends AbstractEsriMeasurementStrategy
     const lastVertex = this.getLabelPosition(geometry);
 
     if (!lastVertex) {
-      throw new LabelPositionCalculationFailed('Linie hat keinen Punkt');
+      throw new LabelPositionCalculationFailed('Liniengeometrie ist ungültig, da kein Knotenpunkt gefunden werden konnte.');
     }
 
     return {location: lastVertex, symbolization: this.labelSymbolization};
