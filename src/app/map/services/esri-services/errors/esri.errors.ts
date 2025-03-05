@@ -8,6 +8,14 @@ export class UnsupportedGeometryType extends FatalError {
   }
 }
 
+export class GeometryMissing extends FatalError {
+  public override message = `Objekt hat keine Geometrie`;
+}
+
+export class SymbolizationMissing extends FatalError {
+  public override message = `Objekt hat keine Symbolisierung`;
+}
+
 export class UnsupportedSymbolizationType extends RecoverableError {
   public override message = `Nicht unterstützter Symbolisierungstyp (${this.symbolizationType})`;
 
@@ -39,4 +47,28 @@ export class LayerCouldNotBeLoaded extends RecoverableError {
 
 export class NonEditableLayerType extends SilentError {
   public override message = 'Dieser Layer kann nicht bearbeitet werden.';
+}
+
+export class LabelPositionCalculationFailed extends SilentError {
+  public override message = `Konnte Label nicht positionieren. Grund: ${this.reason}`;
+
+  constructor(private readonly reason: string) {
+    super();
+  }
+}
+
+export class EditFeatureInitializationFailed extends RecoverableError {
+  public override message = `Fehler beim Initialisieren des Editierens von Features. Grund: ${this.reason}`;
+
+  constructor(private readonly reason: string) {
+    super();
+  }
+}
+
+export class ZoomExtentMissing extends RecoverableError {
+  public override message = 'Konnte nicht zum Objekt zoomen, da dessen Ausdehnung nicht ermittelt werden konnte.';
+}
+
+export class SRSMissing extends RecoverableError {
+  public override message = 'Das Koordinatensystem fehlt.';
 }

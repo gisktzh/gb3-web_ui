@@ -25,9 +25,9 @@ function compareMapItemToEsriLayer(expectedMapItem: Gb2WmsActiveMapItem, actualE
   expectedMapItem.settings.layers.forEach((expectedLayer) => {
     const actualEsriSublayer = actualEsriWmsLayer.sublayers.find((sl) => sl.id === expectedLayer.id);
     expect(actualEsriSublayer).toBeDefined();
-    expect(actualEsriSublayer.name).toBe(expectedLayer.layer);
-    expect(actualEsriSublayer.title).toBe(expectedLayer.title);
-    expect(actualEsriSublayer.visible).toBe(expectedLayer.visible);
+    expect(actualEsriSublayer!.name).toBe(expectedLayer.layer);
+    expect(actualEsriSublayer!.title).toBe(expectedLayer.title);
+    expect(actualEsriSublayer!.visible).toBe(expectedLayer.visible);
   });
 }
 
@@ -128,9 +128,9 @@ describe('EsriMapService', () => {
 
     expect(mapMock.layers.length).toBe(getExpectedNumberOfLayersWithInternalLayers(3));
     // index <> position; position 0 should be the highest index for Esri.
-    compareMapItemToEsriLayer(mapItem1, mapMock.layers.getItemAt(2));
-    compareMapItemToEsriLayer(mapItem2, mapMock.layers.getItemAt(1));
-    compareMapItemToEsriLayer(mapItem3, mapMock.layers.getItemAt(0));
+    compareMapItemToEsriLayer(mapItem1, mapMock.layers.getItemAt(2)!);
+    compareMapItemToEsriLayer(mapItem2, mapMock.layers.getItemAt(1)!);
+    compareMapItemToEsriLayer(mapItem3, mapMock.layers.getItemAt(0)!);
 
     service.removeAllMapItems();
     service.addGb2WmsLayer(mapItem1, 0);
@@ -139,14 +139,14 @@ describe('EsriMapService', () => {
 
     expect(mapMock.layers.length).toBe(getExpectedNumberOfLayersWithInternalLayers(3));
     // index <> position; position 0 should be the highest index for Esri.
-    expect(mapMock.layers.getItemAt(0).id).toBe(mapItem1.id);
-    expect(mapMock.layers.getItemAt(1).id).toBe(mapItem2.id);
-    expect(mapMock.layers.getItemAt(2).id).toBe(mapItem3.id);
+    expect(mapMock.layers.getItemAt(0)!.id).toBe(mapItem1.id);
+    expect(mapMock.layers.getItemAt(1)!.id).toBe(mapItem2.id);
+    expect(mapMock.layers.getItemAt(2)!.id).toBe(mapItem3.id);
     internalLayers.forEach((fixedLayer, idx) => {
       // assert that fixed layers are not changed
       // note: internal layers are at the end of all layers
       const internalLayerIndex = mapMock.layers.length - internalLayers.length + idx;
-      expect(mapMock.layers.getItemAt(internalLayerIndex).id).toBe(fixedLayer.id);
+      expect(mapMock.layers.getItemAt(internalLayerIndex)!.id).toBe(fixedLayer.id);
     });
   });
 
@@ -211,22 +211,22 @@ describe('EsriMapService', () => {
     // order: mapItem2, mapItem1, mapItem3 (no change)
 
     // index <> position; position 0 should be the highest index for Esri.
-    expect(mapMock.layers.getItemAt(0).id).toBe(mapItem3.id);
-    expect(mapMock.layers.getItemAt(1).id).toBe(mapItem2.id);
-    expect(mapMock.layers.getItemAt(2).id).toBe(mapItem1.id);
+    expect(mapMock.layers.getItemAt(0)!.id).toBe(mapItem3.id);
+    expect(mapMock.layers.getItemAt(1)!.id).toBe(mapItem2.id);
+    expect(mapMock.layers.getItemAt(2)!.id).toBe(mapItem1.id);
 
     service.reorderMapItem(0, 1);
     // order: mapItem2, mapItem1, mapItem3
 
     // index <> position; position 0 should be the highest index for Esri.
-    expect(mapMock.layers.getItemAt(0).id).toBe(mapItem3.id);
-    expect(mapMock.layers.getItemAt(1).id).toBe(mapItem1.id);
-    expect(mapMock.layers.getItemAt(2).id).toBe(mapItem2.id);
+    expect(mapMock.layers.getItemAt(0)!.id).toBe(mapItem3.id);
+    expect(mapMock.layers.getItemAt(1)!.id).toBe(mapItem1.id);
+    expect(mapMock.layers.getItemAt(2)!.id).toBe(mapItem2.id);
     internalLayers.forEach((fixedLayer, idx) => {
       // assert that fixed layers are not changed
       // note: internal layers are at the end of all layers
       const internalLayerIndex = mapMock.layers.length - internalLayers.length + idx;
-      expect(mapMock.layers.getItemAt(internalLayerIndex).id).toBe(fixedLayer.id);
+      expect(mapMock.layers.getItemAt(internalLayerIndex)!.id).toBe(fixedLayer.id);
     });
   });
 
@@ -238,25 +238,25 @@ describe('EsriMapService', () => {
     // order: layer2, layer1, layer0
 
     // index <> position; position 0 should be the highest index for Esri.
-    expect(wmsLayer.sublayers.getItemAt(0).id).toBe(2);
-    expect(wmsLayer.sublayers.getItemAt(1).id).toBe(1);
-    expect(wmsLayer.sublayers.getItemAt(2).id).toBe(0);
+    expect(wmsLayer.sublayers.getItemAt(0)!.id).toBe(2);
+    expect(wmsLayer.sublayers.getItemAt(1)!.id).toBe(1);
+    expect(wmsLayer.sublayers.getItemAt(2)!.id).toBe(0);
 
     service.reorderSublayer(mapItem, 0, 0);
     // order: layer2, layer1, layer0
 
     // index <> position; position 0 should be the highest index for Esri.
-    expect(wmsLayer.sublayers.getItemAt(0).id).toBe(2);
-    expect(wmsLayer.sublayers.getItemAt(1).id).toBe(1);
-    expect(wmsLayer.sublayers.getItemAt(2).id).toBe(0);
+    expect(wmsLayer.sublayers.getItemAt(0)!.id).toBe(2);
+    expect(wmsLayer.sublayers.getItemAt(1)!.id).toBe(1);
+    expect(wmsLayer.sublayers.getItemAt(2)!.id).toBe(0);
 
     service.reorderSublayer(mapItem, 0, 1);
     // order: layer2, layer0, layer1
 
     // index <> position; position 0 should be the highest index for Esri.
-    expect(wmsLayer.sublayers.getItemAt(0).id).toBe(2);
-    expect(wmsLayer.sublayers.getItemAt(1).id).toBe(0);
-    expect(wmsLayer.sublayers.getItemAt(2).id).toBe(1);
+    expect(wmsLayer.sublayers.getItemAt(0)!.id).toBe(2);
+    expect(wmsLayer.sublayers.getItemAt(1)!.id).toBe(0);
+    expect(wmsLayer.sublayers.getItemAt(2)!.id).toBe(1);
   });
 
   describe('clearInternalDrawingLayer', () => {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/dot-notation, @typescript-eslint/no-explicit-any */
 import {TestBed} from '@angular/core/testing';
 import {EsriToolService} from './esri-tool.service';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
@@ -42,6 +43,7 @@ import {
 } from '../../../../shared/interfaces/internal-drawing-representation.interface';
 import {StyleRepresentationToEsriSymbolUtils} from '../utils/style-representation-to-esri-symbol.utils';
 import {NonEditableLayerType} from '../errors/esri.errors';
+import Layer from '@arcgis/core/layers/Layer';
 
 describe('EsriToolService', () => {
   let service: EsriToolService;
@@ -547,7 +549,7 @@ describe('EsriToolService', () => {
         },
         layer: {
           id: 'USER_DRAWING__drawings',
-        },
+        } as Layer,
         geometry: new Polygon({
           spatialReference: {wkid: 2056},
           rings: [
@@ -576,7 +578,7 @@ describe('EsriToolService', () => {
       expect(storeSpy).toHaveBeenCalledOnceWith(expectedAction);
     });
     it('should call the correct edit method on the strategy and not dispatch an action for measurements', () => {
-      graphicMock.layer.id = 'USER_DRAWING__measurements';
+      (graphicMock.layer!.id as any) = 'USER_DRAWING__measurements';
       const storeSpy = spyOn(store, 'dispatch').and.callThrough();
       const editSpy = spyOn(EsriPointMeasurementStrategy.prototype, 'edit').and.stub();
       service.editDrawing(graphicMock);
@@ -603,7 +605,7 @@ describe('EsriToolService', () => {
         },
         layer: {
           id: 'USER_DRAWING__drawings',
-        },
+        } as Layer,
         geometry: new Polygon({
           spatialReference: {wkid: 2056},
           rings: [
@@ -666,7 +668,7 @@ describe('EsriToolService', () => {
         },
         layer: {
           id: 'USER_DRAWING__drawings',
-        },
+        } as Layer,
         geometry: new Polygon({
           spatialReference: {wkid: 2056},
           rings: [
@@ -703,34 +705,34 @@ describe('EsriToolService', () => {
     });
 
     it('should set the correct strategy for a point measurement', () => {
-      mockGraphic.layer.id = 'USER_DRAWING__measurements';
+      (mockGraphic.layer!.id as any) = 'USER_DRAWING__measurements';
       const setMeasurementStrategySpy = spyOn<any>(service, 'setMeasurementStrategy').and.stub();
       service['setToolStrategyForEditingFeature'](mockGraphic);
       expect(setMeasurementStrategySpy).toHaveBeenCalledWith('measure-point', mockGraphic.layer);
     });
     it('should set the correct strategy for a polygon measurement', () => {
-      mockGraphic.layer.id = 'USER_DRAWING__measurements';
+      (mockGraphic.layer!.id as any) = 'USER_DRAWING__measurements';
       mockGraphic.attributes[MapConstants.TOOL_IDENTIFIER] = 'polygon';
       const setMeasurementStrategySpy = spyOn<any>(service, 'setMeasurementStrategy').and.stub();
       service['setToolStrategyForEditingFeature'](mockGraphic);
       expect(setMeasurementStrategySpy).toHaveBeenCalledWith('measure-area', mockGraphic.layer);
     });
     it('should set the correct strategy for a polyline measurement', () => {
-      mockGraphic.layer.id = 'USER_DRAWING__measurements';
+      (mockGraphic.layer!.id as any) = 'USER_DRAWING__measurements';
       mockGraphic.attributes[MapConstants.TOOL_IDENTIFIER] = 'polyline';
       const setMeasurementStrategySpy = spyOn<any>(service, 'setMeasurementStrategy').and.stub();
       service['setToolStrategyForEditingFeature'](mockGraphic);
       expect(setMeasurementStrategySpy).toHaveBeenCalledWith('measure-line', mockGraphic.layer);
     });
     it('should set the correct strategy for a elevation profile', () => {
-      mockGraphic.layer.id = 'INTERNAL_DRAWING__elevation_profile';
+      (mockGraphic.layer!.id as any) = 'INTERNAL_DRAWING__elevation_profile';
       mockGraphic.attributes[MapConstants.TOOL_IDENTIFIER] = 'polyline';
       const setMeasurementStrategySpy = spyOn<any>(service, 'setMeasurementStrategy').and.stub();
       service['setToolStrategyForEditingFeature'](mockGraphic);
       expect(setMeasurementStrategySpy).toHaveBeenCalledWith('measure-elevation-profile', mockGraphic.layer);
     });
     it('should throw an error for nonEditableLayers', () => {
-      mockGraphic.layer.id = 'INTERNAL_DRAWING__selection';
+      (mockGraphic.layer!.id as any) = 'INTERNAL_DRAWING__selection';
       mockGraphic.attributes[MapConstants.TOOL_IDENTIFIER] = 'polygon';
 
       expect(() => service['setToolStrategyForEditingFeature'](mockGraphic)).toThrow(new NonEditableLayerType());
