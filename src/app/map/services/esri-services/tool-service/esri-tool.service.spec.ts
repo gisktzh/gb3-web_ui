@@ -684,7 +684,7 @@ describe('EsriToolService', () => {
           color: new Color(Color.fromHex('#abcdef')),
           outline: {width: 42, color: new Color('#080085')},
         }),
-      }) as unknown as Graphic;
+      });
     });
     it('should set the correct strategy for a point drawing', () => {
       const setDrawingStrategySpy = spyOn<any>(service, 'setDrawingStrategy').and.stub();

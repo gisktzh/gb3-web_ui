@@ -2,6 +2,7 @@ import {arcgisToGeoJSON} from '@terraformer/arcgis';
 import {GeometryObject} from 'geojson';
 import {GeometryUnion} from '@arcgis/core/unionTypes';
 import {SRSMissing} from '../errors/esri.errors';
+import {isNullish} from '../type-guards/esri-nullish.type-guard';
 
 const WARNING_TO_IGNORE_STARTS_WITH = 'Object converted in non-standard crs';
 
@@ -48,7 +49,7 @@ export const silentArcgisToGeoJSON = (arcgis: GeometryUnion, idAttribute?: strin
      * And, finally, _yes_, the typecast below is necessary because typescript cannot infer that due to our error, wkid will actually
      * always be set ¯\_(ツ)_/¯
      */
-    if (arcgis.spatialReference.wkid === null || arcgis.spatialReference.wkid === undefined) {
+    if (isNullish(arcgis.spatialReference.wkid)) {
       throw new SRSMissing();
     }
 

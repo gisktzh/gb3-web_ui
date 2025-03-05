@@ -971,11 +971,9 @@ export class EsriMapService implements MapService, OnDestroy {
   }
 
   private switchBasemap(basemapId: string) {
-    if (this.mapView.map.basemap) {
-      this.mapView.map.basemap.baseLayers.map((baseLayer) => {
-        baseLayer.visible = basemapId === baseLayer.id;
-      });
-    }
+    this.mapView.map.basemap?.baseLayers.forEach((baseLayer) => {
+      baseLayer.visible = basemapId === baseLayer.id;
+    });
   }
 
   private getWmsOverrideInterceptor(accessToken?: string): __esri.RequestInterceptor {

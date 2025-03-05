@@ -418,6 +418,8 @@ export class EsriToolService implements ToolService, OnDestroy, DrawingCallbackH
         break;
       case 'measure-elevation-profile':
         this.toolStrategy = new EsriElevationProfileMeasurementStrategy(layer, this.esriMapViewService.mapView, lineStyle, (geometry) => {
+          // geometry is always defined here, as this is only called when the drawing is completed within the strategy. The assertion had
+          // to be added after updating @arcgis/core to 4.32 which added this possibility, which did not (and cannot) happen actually.
           this.store.dispatch(ElevationProfileActions.loadProfile({geometry: silentArcgisToGeoJSON(geometry.geometry!)}));
           this.endDrawing();
         });

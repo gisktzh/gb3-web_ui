@@ -58,7 +58,7 @@ export class LabelPositionCalculationFailed extends SilentError {
 }
 
 export class EditFeatureInitializationFailed extends RecoverableError {
-  public override message = 'Fehler beim Initialisieren des Editierens von Features. Grund: ${this.reason}';
+  public override message = `Fehler beim Initialisieren des Editierens von Features. Grund: ${this.reason}`;
 
   constructor(private readonly reason: string) {
     super();

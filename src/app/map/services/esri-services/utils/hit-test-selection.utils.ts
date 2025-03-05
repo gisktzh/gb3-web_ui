@@ -28,7 +28,7 @@ export class HitTestSelectionUtils {
     if (polygonGraphics.length > 0) {
       return this.selectSmallestPolygonFromHitTestResult(polygonGraphics);
     }
-    throw new UnsupportedGeometryType(hits[0].graphic.geometry!.type);
+    throw new UnsupportedGeometryType(graphics[0].geometry.type);
   }
 
   public static selectSmallestPolygonFromHitTestResult(polygonGraphics: Graphic[]): Graphic {
