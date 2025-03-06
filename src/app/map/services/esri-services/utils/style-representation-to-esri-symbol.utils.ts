@@ -4,9 +4,10 @@ import {EsriColor, EsriSimpleFillSymbol, EsriSimpleLineSymbol, EsriSimpleMarkerS
 import Color from '@arcgis/core/Color';
 import {ColorUtils} from '../../../../shared/utils/color.utils';
 import {SymbolizationColor} from '../../../../shared/interfaces/symbolization.interface';
+import {SymbolUnion} from '@arcgis/core/unionTypes';
 
 export class StyleRepresentationToEsriSymbolUtils {
-  public static convert(style: Gb3StyleRepresentation, labelText?: string): __esri.Symbol {
+  public static convert(style: Gb3StyleRepresentation, labelText?: string): SymbolUnion {
     switch (style.type) {
       case 'text': {
         return new TextSymbol({

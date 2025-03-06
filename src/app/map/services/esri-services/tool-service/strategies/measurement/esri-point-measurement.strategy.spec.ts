@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {EsriPointMeasurementStrategy} from './esri-point-measurement.strategy';
 import MapView from '@arcgis/core/views/MapView';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
@@ -88,8 +89,8 @@ describe('EsriPointMeasurementStrategy', () => {
       strategy.start();
       strategy.svm.emit('create', {state: 'complete', graphic: graphic});
 
-      const addedGraphic = layer.graphics.getItemAt(0);
-      expect(addedGraphic.geometry.type).toEqual('point');
+      const addedGraphic = layer.graphics.getItemAt(0)!;
+      expect(addedGraphic.geometry?.type).toEqual('point');
       expect((addedGraphic.geometry as Point).x).toEqual(location.x);
       expect((addedGraphic.geometry as Point).y).toEqual(location.y);
     });
@@ -103,7 +104,7 @@ describe('EsriPointMeasurementStrategy', () => {
       strategy.svm.complete();
       strategy.svm.emit('create', {state: 'complete', graphic: graphic});
 
-      const addedGraphic = layer.graphics.getItemAt(0);
+      const addedGraphic = layer.graphics.getItemAt(0)!;
       expect((addedGraphic.symbol as TextSymbol).haloColor).toEqual(textSymbol.haloColor);
       expect((addedGraphic.symbol as TextSymbol).xoffset).toEqual(textSymbol.xoffset);
       expect((addedGraphic.symbol as TextSymbol).color).toEqual(textSymbol.color);
@@ -118,7 +119,7 @@ describe('EsriPointMeasurementStrategy', () => {
       strategy.svm.complete();
       strategy.svm.emit('create', {state: 'complete', graphic: graphic});
 
-      const addedGraphic = layer.graphics.getItemAt(0);
+      const addedGraphic = layer.graphics.getItemAt(0)!;
       expect((addedGraphic.symbol as TextSymbol).text).toEqual(`${location.x}/${location.y}`);
     });
     it('calls completeEditing on completion for editing drawings', () => {

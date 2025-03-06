@@ -1,16 +1,16 @@
 import {Injectable} from '@angular/core';
 import {MapServiceType} from '../../types/map-service.type';
-import {from, Observable, throwError} from 'rxjs';
+import {catchError, filter, from, map, Observable, throwError} from 'rxjs';
 import {ExternalServiceActiveMapItem} from '../../models/external-service.model';
 import {EsriError, EsriKMLLayer, EsriWMSLayer} from './esri.module';
-import {catchError, map} from 'rxjs';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 import {MapLoaderService} from '../../interfaces/map-loader.service';
 import {ExternalKmlLayer, ExternalWmsLayer} from '../../../shared/interfaces/external-layer.interface';
 import {ExternalWmsActiveMapItem} from '../../models/implementations/external-wms.model';
 import {ExternalKmlActiveMapItem} from '../../models/implementations/external-kml.model';
 import {LayerCouldNotBeLoaded} from './errors/esri.errors';
-import {ExternalServiceHasNoLayers} from '../../../shared/errors/map-import.errors';
+import {ExternalServiceHasNoLayers, ExternalServiceHasNoUrl} from '../../../shared/errors/map-import.errors';
+import {hasNonNullishProperty, isNullish} from './type-guards/esri-nullish.type-guard';
 
 @Injectable({
   providedIn: 'root',
@@ -53,7 +53,7 @@ export class EsriMapLoaderService implements MapLoaderService {
               type: 'wms',
               id: wmsSubLayer.id,
               name: wmsSubLayer.name,
-              title: wmsSubLayer.title,
+              title: wmsSubLayer.title ?? '',
               visible: wmsSubLayer.visible,
             }),
           )
@@ -61,7 +61,12 @@ export class EsriMapLoaderService implements MapLoaderService {
         if (subLayers.length === 0) {
           throw new ExternalServiceHasNoLayers();
         }
-        return ActiveMapItemFactory.createExternalWmsMapItem(wmsLayer.url, wmsLayer.title, subLayers, wmsLayer.imageFormat);
+        return ActiveMapItemFactory.createExternalWmsMapItem(
+          wmsLayer.url,
+          wmsLayer.title ?? '',
+          subLayers,
+          wmsLayer.imageFormat ?? undefined,
+        );
       }),
     );
   }
@@ -75,16 +80,27 @@ export class EsriMapLoaderService implements MapLoaderService {
     }
 
     return this.loadService(layer).pipe(
+      filter((kmlLayer) => hasNonNullishProperty(kmlLayer, 'sublayers')),
       map((kmlLayer) => {
         const subLayers: ExternalKmlLayer[] = kmlLayer.sublayers
           .map(
-            (kmlSubLayer): ExternalKmlLayer => ({type: 'kml', id: kmlSubLayer.id, title: kmlSubLayer.title, visible: kmlSubLayer.visible}),
+            (kmlSubLayer): ExternalKmlLayer => ({
+              type: 'kml',
+              id: kmlSubLayer.id,
+              title: kmlSubLayer.title ?? '',
+              visible: kmlSubLayer.visible,
+            }),
           )
           .toArray();
         if (subLayers.length === 0) {
           throw new ExternalServiceHasNoLayers();
         }
-        return ActiveMapItemFactory.createExternalKmlMapItem(kmlLayer.url, kmlLayer.title, subLayers);
+
+        if (isNullish(kmlLayer.url)) {
+          throw new ExternalServiceHasNoUrl();
+        }
+
+        return ActiveMapItemFactory.createExternalKmlMapItem(kmlLayer.url, kmlLayer.title ?? '', subLayers);
       }),
     );
   }

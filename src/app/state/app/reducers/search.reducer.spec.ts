@@ -82,6 +82,7 @@ describe('search Reducer', () => {
 
   describe('an unknown action', () => {
     it('should return the previous state', () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Allow "any" in test file
       const action = {} as any;
       const result = reducer(initialState, action);
 
@@ -200,9 +201,9 @@ describe('search Reducer', () => {
       const state = reducer(existingState, action);
 
       expect(state.filterGroups).toEqual(filterGroups);
-      expect(state.searchApiLoadingState).toBe(existingState.searchApiLoadingState);
-      expect(state.searchApiResultMatches).toEqual(existingState.searchApiResultMatches);
-      expect(state.term).toBe(existingState.term);
+      expect(state.searchApiLoadingState).toBe(initialState.searchApiLoadingState);
+      expect(state.searchApiResultMatches).toEqual(initialState.searchApiResultMatches);
+      expect(state.term).toBe(initialState.term);
     });
   });
 

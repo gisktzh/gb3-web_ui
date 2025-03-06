@@ -7,7 +7,7 @@
   </div>
   <div class="data-download-dialog__content" *ngIf="order">
     <div>
-      <search
+      <search-input
         class="data-download-dialog__content__search"
         placeholderText="Nach Geodaten filtern"
         (changeSearchTermEvent)="setFilterTerm($event)"
@@ -15,7 +15,7 @@
         (openFilterEvent)="openFilterWindow()"
         [disabled]="savingState === 'loading'"
         [isAnyFilterActive]="activeDataDownloadFiltersPerCategory.length > 0"
-      ></search>
+      ></search-input>
     </div>
 
     <div class="data-download-dialog__content__products">

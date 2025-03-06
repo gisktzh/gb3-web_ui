@@ -1,4 +1,10 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'mixins/helpers.mixin' as mixins;
+
+// used to style the anchor tags returned from the FormatContentPipe
+:host ::ng-deep .link-highlight {
+  @include mixins.external-link-decoration;
+}
 
 .faq {
   padding-bottom: 48px;

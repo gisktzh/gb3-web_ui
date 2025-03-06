@@ -181,7 +181,7 @@ describe('EsriSymbolizationService', () => {
 
       const expected = mockSymbolizations[testLayer].text;
       expect(result.text).toEqual(label);
-      expect(result.color.toRgba()).toEqual([expected.color.r, expected.color.g, expected.color.b, expected.color.a]);
+      expect(result.color?.toRgba()).toEqual([expected.color.r, expected.color.g, expected.color.b, expected.color.a]);
       expect(result.haloSize).toEqual(expected.outline.width);
     });
 
@@ -194,7 +194,7 @@ describe('EsriSymbolizationService', () => {
       const expected = mockSymbolizations[testLayer].point as SimplePointSymbolization;
       expect(result.style).toEqual('circle');
       expect(result.color.toRgba()).toEqual([expected.color.r, expected.color.g, expected.color.b, expected.color.a]);
-      expect(result.outline.color.toRgba()).toEqual([
+      expect(result.outline.color?.toRgba()).toEqual([
         expected.outline.color.r,
         expected.outline.color.g,
         expected.outline.color.b,
@@ -230,7 +230,7 @@ describe('EsriSymbolizationService', () => {
       const expected = mockSymbolizations[testLayer].line;
       expect(result.style).toEqual('solid');
       expect(result.width).toEqual(expected.width);
-      expect(result.color.toRgba()).toEqual([expected.color.r, expected.color.g, expected.color.b, expected.color.a]);
+      expect(result.color?.toRgba()).toEqual([expected.color.r, expected.color.g, expected.color.b, expected.color.a]);
     });
   });
 
@@ -244,13 +244,13 @@ describe('EsriSymbolizationService', () => {
       const expected = mockSymbolizations[testLayer].polygon;
       expect(result.style).toEqual('solid');
       expect(result.color.toRgba()).toEqual([expected.fill.color.r, expected.fill.color.g, expected.fill.color.b, expected.fill.color.a]);
-      expect(result.outline.color.toRgba()).toEqual([
+      expect(result.outline?.color?.toRgba()).toEqual([
         expected.outline.color.r,
         expected.outline.color.g,
         expected.outline.color.b,
         expected.outline.color.a,
       ]);
-      expect(result.outline.width).toEqual(expected.outline.width);
+      expect(result.outline?.width).toEqual(expected.outline.width);
     });
   });
 });

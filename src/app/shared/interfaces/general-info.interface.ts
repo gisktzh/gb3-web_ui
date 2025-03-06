@@ -20,10 +20,10 @@ interface LocationInformation {
 interface Parcel {
   oerebExtract: {
     /** PDF URL */
-    pdfUrl: string;
+    pdfUrl: string | null;
   };
   ownershipInformation: {
-    url: string;
+    url: string | null;
   };
 }
 

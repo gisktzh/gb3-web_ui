@@ -234,7 +234,7 @@ export class Gb3MetadataService extends Gb3ApiService {
       uuid: service.uuid,
       gisZHNr: service.gdsernummer,
       name: service.name,
-      url: service.url.href,
+      url: service.url ? service.url.href : null,
       version: service.version,
       access: service.zugang,
       contact: {

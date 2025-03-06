@@ -9,6 +9,7 @@ import MapView from '@arcgis/core/views/MapView';
 import {DrawingCallbackHandler} from '../../interfaces/drawing-callback-handler.interface';
 import Point from '@arcgis/core/geometry/Point';
 import {SupportedEsriPolygonTool} from '../supported-esri-tool.type';
+import {LabelPositionCalculationFailed} from '../../../errors/esri.errors';
 
 const M2_TO_KM2_CONVERSION_THRESHOLD = 100_000;
 
@@ -34,10 +35,16 @@ export class EsriAreaMeasurementStrategy extends AbstractEsriMeasurementStrategy
   protected override createLabelConfigurationForGeometry(geometry: Polygon): LabelConfiguration {
     this.labelSymbolization.text = this.getRoundedPolygonAreaString(geometry);
 
-    return {location: this.getLabelPosition(geometry), symbolization: this.labelSymbolization};
+    const labelPosition = this.getLabelPosition(geometry);
+
+    if (!labelPosition) {
+      throw new LabelPositionCalculationFailed('Kein Zentroid vorhanden.');
+    }
+
+    return {location: labelPosition, symbolization: this.labelSymbolization};
   }
 
-  private getLabelPosition(geometry: Polygon): Point {
+  private getLabelPosition(geometry: Polygon): Point | nullish {
     return geometry.centroid;
   }
 

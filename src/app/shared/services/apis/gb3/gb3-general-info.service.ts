@@ -1,9 +1,8 @@
 import {Injectable} from '@angular/core';
 import {Gb3ApiService} from './gb3-api.service';
 import {GeneralInfoListData} from '../../../models/gb3-api-generated.interfaces';
-import {Observable} from 'rxjs';
+import {map, Observable} from 'rxjs';
 import {GeneralInfoResponse} from '../../../interfaces/general-info.interface';
-import {map} from 'rxjs';
 import {Gb3QueryCoordinatesToPointConverterUtils} from '../../../utils/gb3-query-coordinates-to-point-converter.utils';
 
 @Injectable({
@@ -38,10 +37,10 @@ export class Gb3GeneralInfoService extends Gb3ApiService {
       parcel: generalInfo.parcel
         ? {
             oerebExtract: {
-              pdfUrl: generalInfo.parcel.oereb_extract.href,
+              pdfUrl: generalInfo.parcel.oereb_extract ? generalInfo.parcel.oereb_extract.href : null,
             },
             ownershipInformation: {
-              url: generalInfo.parcel.owner.href,
+              url: generalInfo.parcel.owner ? generalInfo.parcel.owner.href : null,
             },
           }
         : undefined,

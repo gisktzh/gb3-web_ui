@@ -7,52 +7,41 @@
 @use 'variables/search-bar-variables' as search-bar-variables;
 
 .search-window {
-  .search-window__searchbar {
-    @include mixins.map-element-box-shadow;
-    width: map-layout-variables.$search-window-width;
-    background-color: ktzh-variables.$zh-background-color;
-    pointer-events: all;
-    overflow: hidden;
-    height: search-bar-variables.$search-bar-height;
+  @include mixins.map-element-box-shadow;
+  width: map-layout-variables.$search-window-width;
+  overflow: hidden;
+  height: search-bar-variables.$search-bar-height;
+}
+
+@media (max-width: calc(#{map-layout-variables.$map-overlay-width} + #{map-layout-variables.$element-margin} + #{map-layout-variables.$legend-button-width} + #{map-layout-variables.$element-margin} + #{map-layout-variables.$search-window-width})) {
+  .search-window {
+    width: calc(
+      100vw -
+        (
+          #{map-layout-variables.$map-overlay-width} + #{map-layout-variables.$element-margin} +
+            #{map-layout-variables.$legend-button-width} + #{map-layout-variables.$element-margin}
+        )
+    );
   }
+}
 
-  @media (max-width: calc(#{map-layout-variables.$map-overlay-width} + #{map-layout-variables.$element-margin} + #{map-layout-variables.$legend-button-width} + #{map-layout-variables.$element-margin} + #{map-layout-variables.$search-window-width})) {
-    .search-window__searchbar {
-      width: calc(
-        100vw -
-          (
-            #{map-layout-variables.$map-overlay-width} + #{map-layout-variables.$element-margin} + #{map-layout-variables.$legend-button-width} +
-              #{map-layout-variables.$element-margin}
-          )
-      );
-    }
-    .search-window__searchbar--mobile {
-      width: auto;
-      height: search-bar-variables.$search-bar-wrapper-height-compact;
+.search-window__results-container {
+  position: absolute;
+  top: search-bar-variables.$search-bar-height;
+  bottom: 0;
+  width: map-layout-variables.$search-results-width;
+  z-index: z-index-variables.$search-window-results;
+}
 
-      &__box {
-        height: 100%;
-      }
-    }
-  }
-
+@media (max-width: calc(#{map-layout-variables.$map-overlay-width} + #{map-layout-variables.$element-margin} + #{map-layout-variables.$legend-button-width} + #{map-layout-variables.$element-margin} + #{map-layout-variables.$search-window-width})) {
   .search-window__results-container {
-    position: absolute;
-    top: search-bar-variables.$search-bar-height;
-    bottom: 0;
-    width: map-layout-variables.$search-results-width;
-    z-index: z-index-variables.$search-window-results;
-  }
-
-  @media (max-width: calc(#{map-layout-variables.$map-overlay-width} + #{map-layout-variables.$element-margin} + #{map-layout-variables.$legend-button-width} + #{map-layout-variables.$element-margin} + #{map-layout-variables.$search-window-width})) {
-    .search-window__results-container {
-      width: calc(
-        100vw -
-          (
-            #{map-layout-variables.$map-overlay-width} + #{map-layout-variables.$element-margin} + #{map-layout-variables.$legend-button-width} +
-              #{map-layout-variables.$element-margin}
-          ) - (#{map-layout-variables.$search-window-width} - #{map-layout-variables.$search-results-width})
-      );
-    }
+    width: calc(
+      100vw -
+        (
+          #{map-layout-variables.$map-overlay-width} + #{map-layout-variables.$element-margin} +
+            #{map-layout-variables.$legend-button-width} + #{map-layout-variables.$element-margin}
+        ) -
+        (#{map-layout-variables.$search-window-width} - #{map-layout-variables.$search-results-width})
+    );
   }
 }

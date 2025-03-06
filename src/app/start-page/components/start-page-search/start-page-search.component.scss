@@ -1,5 +1,6 @@
 @use 'mixins/helpers.mixin' as mixins;
 @use 'variables/ktzh-design-variables' as ktzh-variables;
+@use 'variables/search-bar-variables' as search-bar-variables;
 
 .start-page-search {
   height: 100%;
@@ -7,28 +8,9 @@
   flex-direction: column;
   align-items: center;
 
-  .start-page-search__search {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    .start-page-search__search__bar {
-      @include mixins.map-element-box-shadow;
-      width: ktzh-variables.$zh-layout-max-content-width;
-      height: 106px;
-      background-color: ktzh-variables.$zh-background-color;
-    }
-
-    @media (max-width: calc(ktzh-variables.$zh-layout-max-content-width + 48px)) {
-      .start-page-search__search__bar {
-        width: calc(100vw - 62px);
-
-        &--mobile {
-          width: calc(100vw - 24px);
-          height: 60px;
-        }
-      }
-    }
+  .start-page-search__search-bar {
+    width: ktzh-variables.$zh-layout-max-content-width;
+    height: search-bar-variables.$search-bar-wrapper-height;
   }
 
   .start-page-search__results {
@@ -39,6 +21,19 @@
 
     &--mobile {
       padding-top: 12px;
+    }
+  }
+}
+
+@media (max-width: calc(#{ktzh-variables.$zh-layout-max-content-width} + 48px)) {
+  .start-page-search {
+    .start-page-search__search-bar {
+      width: calc(100vw - 62px);
+
+      &--mobile {
+        width: calc(100vw - 24px);
+        height: 60px;
+      }
     }
   }
 }

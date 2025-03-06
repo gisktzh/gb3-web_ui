@@ -10,7 +10,7 @@
       (focus)="focusEvent.emit()"
       [disabled]="disabled"
     />
-    <ng-container *ngIf="showFilterButton && (mode === 'compact' || mode === 'mobile')">
+    @if (showFilterButton && (mode === 'compact' || mode === 'mobile')) {
       <button
         typedTourAnchor="map.search.filter"
         mat-icon-button
@@ -23,20 +23,20 @@
         <mat-icon svgIcon="ktzh_filter"></mat-icon>
       </button>
       <mat-divider [vertical]="true" class="search__bar__divider"></mat-divider>
-    </ng-container>
+    }
 
-    <button
-      *ngIf="clearButtonLabel; else noClearLabel"
-      mat-button
-      (click)="clearInput()"
-      class="search__bar__close-button"
-      [disabled]="(!alwaysEnableClearButton && searchInput.value.length === 0) || disabled"
-      aria-label="Sucheingabe löschen"
-    >
-      {{ clearButtonLabel }}
-      <mat-icon>close</mat-icon>
-    </button>
-    <ng-template #noClearLabel>
+    @if (clearButtonLabel) {
+      <button
+        mat-button
+        (click)="clearInput()"
+        class="search__bar__close-button"
+        [disabled]="(!alwaysEnableClearButton && searchInput.value.length === 0) || disabled"
+        aria-label="Sucheingabe löschen"
+      >
+        {{ clearButtonLabel }}
+        <mat-icon>close</mat-icon>
+      </button>
+    } @else {
       <button
         mat-icon-button
         (click)="clearInput()"
@@ -44,21 +44,23 @@
         [disabled]="(!alwaysEnableClearButton && searchInput.value.length === 0) || disabled"
         aria-label="Sucheingabe löschen"
       >
-        <mat-icon *ngIf="screenMode === 'mobile'; else close">cancel</mat-icon>
-        <ng-template #close>
+        @if (screenMode === 'mobile') {
+          <mat-icon>cancel</mat-icon>
+        } @else {
           <mat-icon>close</mat-icon>
-        </ng-template>
+        }
       </button>
-    </ng-template>
+    }
   </div>
-  <button
-    class="search__filter-button"
-    mat-button
-    *ngIf="showFilterButton && mode === 'normal'"
-    (click)="openFilter()"
-    [ngClass]="{'search__filter-button--active': isAnyFilterActive}"
-    [disabled]="disabled"
-  >
-    Filter
-  </button>
+  @if (showFilterButton && mode === 'normal') {
+    <button
+      class="search__filter-button"
+      mat-button
+      (click)="openFilter()"
+      [ngClass]="{'search__filter-button--active': isAnyFilterActive}"
+      [disabled]="disabled"
+    >
+      Filter
+    </button>
+  }
 </div>

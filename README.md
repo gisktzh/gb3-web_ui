@@ -48,6 +48,11 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
+> [!WARNING]
+> Starting with `@arcgis/core` 4.32, memory demands have increased significantly due to more types, which requires more work for checking types.
+> As such, karma may run into memory overflows. If this happens, you can increase the memory limit for the node process by setting the `NODE_OPTIONS`
+> environment variable to `--max_old_space_size=80192` (or any other value that suits your needs).
+
 ### Running end-to-end tests
 
 Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a
@@ -157,6 +162,16 @@ Whenever possible, a Jira ticket should be referenced in both branchname and com
 
 Our githooks check for both the branch name and the commit message, but they will only output a warning if they don't
 match. This is because there are times when you _might_ want to deviate from these rules.
+ES Lint is enabled in the precommit hook. This means that every commit will be checked for linting errors. If there are any, the commit will be rejected.
+Either fix the error (unused variable or import, etc.) or disable the rule for the specific line or file (`any` in `.spec.ts` files).
+In case of the latter, consider adding a comment explaining why the rule was disabled. Example for such a case:
+
+```typescript
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Allow "any" in test file
+const action = {} as any;
+```
+
+The rules are defined in the `.eslintrc.config.mjs` file.
 
 ## Code documentation
 

@@ -209,7 +209,7 @@ describe('Gb3MetadataService', () => {
 
       const expected: ServiceMetadata = {
         version: mockServiceDetailResponse.service.version,
-        url: mockServiceDetailResponse.service.url.href,
+        url: mockServiceDetailResponse.service.url!.href,
         imageUrl: mockServiceDetailResponse.service.image_url,
         uuid: mockServiceDetailResponse.service.uuid,
         gisZHNr: mockServiceDetailResponse.service.gdsernummer,
@@ -230,6 +230,18 @@ describe('Gb3MetadataService', () => {
 
       service.loadServiceDetail(testId).subscribe((result) => {
         expect(result).toEqual(expected);
+        done();
+      });
+    });
+
+    it('handles missing url correctly', (done: DoneFn) => {
+      const testId = 'my-test-id';
+      const response = structuredClone(mockServiceDetailResponse);
+      response.service.url = null;
+      spyOn(httpClient, 'get').and.returnValue(of(response));
+
+      service.loadServiceDetail(testId).subscribe((result) => {
+        expect(result.url).toBeNull();
         done();
       });
     });

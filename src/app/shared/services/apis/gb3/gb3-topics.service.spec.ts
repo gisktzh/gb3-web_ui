@@ -557,6 +557,11 @@ describe('Gb3TopicsService', () => {
                         type: 'image',
                       },
                       {
+                        label: 'This image is actually null :)',
+                        value: null,
+                        type: 'image',
+                      },
+                      {
                         label: 'EGRIS_EGRID',
                         value: 'CH327810999162',
                         type: 'text',
@@ -743,6 +748,12 @@ describe('Gb3TopicsService', () => {
                         {
                           label: 'Nummer',
                           value: {url: {href: 'https://www.example.com'}, src: {href: 'https://www.example.com'}, alt: 'Text'},
+                          type: 'image',
+                        },
+
+                        {
+                          label: 'This image is actually null :)',
+                          value: null,
                           type: 'image',
                         },
                         {

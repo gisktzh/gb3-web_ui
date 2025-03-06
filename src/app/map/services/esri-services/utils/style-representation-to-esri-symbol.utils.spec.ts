@@ -32,8 +32,8 @@ describe('StyleRepresentationToEsriSymbolUtils', () => {
     expect((actual as TextSymbol).font.size).toEqual(12);
     expect((actual as TextSymbol).haloSize).toEqual(23);
     expect((actual as TextSymbol).yoffset).toEqual(22);
-    expect((actual as TextSymbol).haloColor.toHex()).toEqual('#ff7b0f');
-    expect((actual as TextSymbol).color.toHex()).toEqual('#001696');
+    expect((actual as TextSymbol).haloColor?.toHex()).toEqual('#ff7b0f');
+    expect((actual as TextSymbol).color?.toHex()).toEqual('#001696');
   });
 
   it('returns a SimpleMarkerSymbol for a Gb3PointStyle', () => {
@@ -53,7 +53,7 @@ describe('StyleRepresentationToEsriSymbolUtils', () => {
     expect((actual as SimpleMarkerSymbol).color.toHex()).toEqual('#001696');
     expect((actual as SimpleMarkerSymbol).color.a).toEqual(0.3);
     expect((actual as SimpleMarkerSymbol).size).toEqual(12);
-    expect((actual as SimpleMarkerSymbol).outline.color.toHex()).toEqual('#ff7b0f');
+    expect((actual as SimpleMarkerSymbol).outline?.color?.toHex()).toEqual('#ff7b0f');
   });
 
   it('returns a SimpleLineSymbol for a Gb3LineStringStyle', () => {
@@ -67,8 +67,8 @@ describe('StyleRepresentationToEsriSymbolUtils', () => {
     const actual = StyleRepresentationToEsriSymbolUtils.convert(mockStyle);
 
     expect(actual).toBeInstanceOf(SimpleLineSymbol);
-    expect((actual as SimpleLineSymbol).color.toHex()).toEqual('#ff7b0f');
-    expect((actual as SimpleLineSymbol).color.a).toEqual(0.2);
+    expect((actual as SimpleLineSymbol).color?.toHex()).toEqual('#ff7b0f');
+    expect((actual as SimpleLineSymbol).color?.a).toEqual(0.2);
     expect((actual as SimpleLineSymbol).width).toEqual(12);
   });
 
@@ -87,6 +87,6 @@ describe('StyleRepresentationToEsriSymbolUtils', () => {
     expect(actual).toBeInstanceOf(SimpleFillSymbol);
     expect((actual as SimpleFillSymbol).color.toHex()).toEqual('#001696');
     expect((actual as SimpleFillSymbol).color.a).toEqual(0.3);
-    expect((actual as SimpleFillSymbol).outline.color.toHex()).toEqual('#ff7b0f');
+    expect((actual as SimpleFillSymbol).outline?.color?.toHex()).toEqual('#ff7b0f');
   });
 });

@@ -45,6 +45,45 @@
   }
 }
 
+@mixin link-decoration(
+  $decoration-color: ktzh-variables.$zh-active-blue,
+  $text-color: ktzh-variables.$zh-black60,
+  $hover-color: ktzh-variables.$zh-black100,
+  $hover-opacity: 1
+) {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: $decoration-color;
+  color: $text-color;
+  width: max-content;
+  height: max-content;
+
+  &:hover {
+    color: $hover-color;
+    opacity: $hover-opacity;
+    text-decoration-color: $hover-color;
+  }
+
+  &:focus {
+    outline: 2px solid $decoration-color;
+    border-radius: 1px;
+    text-decoration: none;
+  }
+}
+
+@mixin external-link-decoration(
+  $decoration-color: ktzh-variables.$zh-active-blue,
+  $text-color: ktzh-variables.$zh-black60,
+  $hover-color: ktzh-variables.$zh-black100,
+  $hover-opacity: 1
+) {
+  @include link-decoration($decoration-color, $text-color, $hover-color, $hover-opacity);
+  &::after {
+    content: '\2197';
+    vertical-align: middle;
+  }
+}
+
 /** Positions the element (e.g. loading bar) at the bottom of the parent element and uses the whole given width */
 @mixin position-element-at-bottom-with-full-width {
   position: absolute;

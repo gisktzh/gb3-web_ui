@@ -39,3 +39,6 @@ jobs:
         run: |
           npm ci
           npm run test-ci
+        env:
+          # note: this is required with @arcgis/core >=4.32 due to increased memoery usage for type checking
+          NODE_OPTIONS: '--max-old-space-size=8192'

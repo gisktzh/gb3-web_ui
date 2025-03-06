@@ -12,7 +12,7 @@ describe('FormatContentPipe', () => {
 
       const result = pipe.transform(textItem);
 
-      const expected = `Lorem ipsum <a href="${protocol}://www.example.com" target="_blank">www.example.com</a> Test 123`;
+      const expected = `Lorem ipsum <a href="${protocol}://www.example.com" target="_blank" class="link-highlight">www.example.com</a> Test 123`;
       expect(result).toEqual(expected);
     });
   });
@@ -22,7 +22,7 @@ describe('FormatContentPipe', () => {
 
     const result = pipe.transform(textItem);
 
-    const expected = `Lorem ipsum <a href="https://www.example.com/subfolder/" target="_blank">www.example.com/subfolder</a> Test 123`;
+    const expected = `Lorem ipsum <a href="https://www.example.com/subfolder/" target="_blank" class="link-highlight">www.example.com/subfolder</a> Test 123`;
     expect(result).toEqual(expected);
   });
 

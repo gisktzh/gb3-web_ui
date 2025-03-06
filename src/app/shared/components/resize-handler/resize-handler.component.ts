@@ -21,6 +21,10 @@ const MAX_DIMENSION_PERCENTAGE = 0.85;
   standalone: false,
 })
 export class ResizeHandlerComponent {
+  @Input() public minWidth = MIN_DIMENSIONS_WIDTH__PX;
+  @Input() public minHeight = MIN_DIMENSIONS_HEIGHT__PX;
+  @Input() public maxWidth?: number;
+  @Input() public maxHeight?: number;
   @Input() public location!: ResizeHandlerLocation;
   @Input() public usePrimaryColor: boolean = false;
   @Output() public readonly resizeEvent = new EventEmitter<StyleExpression>();
@@ -32,22 +36,22 @@ export class ResizeHandlerComponent {
   }
 
   public validate(event: ResizeEvent): boolean {
-    const maxResizeWidth = window.innerWidth * MAX_DIMENSION_PERCENTAGE;
-    const maxResizeHeight = window.innerHeight * MAX_DIMENSION_PERCENTAGE;
+    const maxResizeWidth = this.maxWidth ?? window.innerWidth * MAX_DIMENSION_PERCENTAGE;
+    const maxResizeHeight = this.maxHeight ?? window.innerHeight * MAX_DIMENSION_PERCENTAGE;
     switch (this.location) {
       case 'left':
       case 'right':
         return !!(
           event.rectangle.width &&
           event.rectangle.height &&
-          event.rectangle.width > MIN_DIMENSIONS_WIDTH__PX &&
+          event.rectangle.width > this.minWidth &&
           event.rectangle.width < maxResizeWidth
         );
       case 'top':
         return !!(
           event.rectangle.width &&
           event.rectangle.height &&
-          event.rectangle.height > MIN_DIMENSIONS_HEIGHT__PX &&
+          event.rectangle.height > this.minHeight &&
           event.rectangle.height < maxResizeHeight
         );
     }

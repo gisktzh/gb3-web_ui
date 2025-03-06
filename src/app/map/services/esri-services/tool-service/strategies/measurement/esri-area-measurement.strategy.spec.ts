@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import MapView from '@arcgis/core/views/MapView';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {UserDrawingLayer} from '../../../../../../shared/enums/drawing-layer.enum';
@@ -149,10 +150,10 @@ describe('EsriAreaMeasurementStrategy', () => {
       strategy.svm.emit('create', {state: 'complete', graphic: graphic});
 
       const addedGraphic = layer.graphics.getItemAt(0);
-      const expectedLocation = location.centroid;
-      expect(addedGraphic.geometry.type).toEqual('point');
-      expect((addedGraphic.geometry as Point).x).toEqual(expectedLocation.x);
-      expect((addedGraphic.geometry as Point).y).toEqual(expectedLocation.y);
+      const expectedLocation = location.centroid!;
+      expect(addedGraphic?.geometry?.type).toEqual('point');
+      expect((addedGraphic?.geometry as Point).x).toEqual(expectedLocation.x);
+      expect((addedGraphic?.geometry as Point).y).toEqual(expectedLocation.y);
     });
 
     it('applies the defined styling to the created label', () => {
@@ -183,9 +184,9 @@ describe('EsriAreaMeasurementStrategy', () => {
       strategy.svm.emit('create', {state: 'complete', graphic: graphic});
 
       const addedGraphic = layer.graphics.getItemAt(0);
-      expect((addedGraphic.symbol as TextSymbol).haloColor).toEqual(textSymbol.haloColor);
-      expect((addedGraphic.symbol as TextSymbol).xoffset).toEqual(textSymbol.xoffset);
-      expect((addedGraphic.symbol as TextSymbol).color).toEqual(textSymbol.color);
+      expect((addedGraphic?.symbol as TextSymbol).haloColor).toEqual(textSymbol.haloColor);
+      expect((addedGraphic?.symbol as TextSymbol).xoffset).toEqual(textSymbol.xoffset);
+      expect((addedGraphic?.symbol as TextSymbol).color).toEqual(textSymbol.color);
     });
     it('calls completeEditing on completion for editing drawings', () => {
       const strategy = new EsriAreaMeasurementStrategyWrapper(
@@ -247,7 +248,7 @@ describe('EsriAreaMeasurementStrategy', () => {
 
       const addedGraphic = layer.graphics.getItemAt(0);
       const expectedArea = Math.pow(sideLength, 2);
-      expect((addedGraphic.symbol as TextSymbol).text).toEqual(`${expectedArea} m²`);
+      expect((addedGraphic?.symbol as TextSymbol).text).toEqual(`${expectedArea} m²`);
     });
 
     it('rounds the area to 2 decimals', () => {
@@ -279,7 +280,7 @@ describe('EsriAreaMeasurementStrategy', () => {
 
       const expected = (sideLength * sideLength).toFixed(2);
       const addedGraphic = layer.graphics.getItemAt(0);
-      expect((addedGraphic.symbol as TextSymbol).text).toEqual(`${expected} m²`);
+      expect((addedGraphic?.symbol as TextSymbol).text).toEqual(`${expected} m²`);
     });
 
     it('rounds the area to km² after 100000 square metres', () => {
@@ -311,7 +312,7 @@ describe('EsriAreaMeasurementStrategy', () => {
 
       const addedGraphic = layer.graphics.getItemAt(0);
       const expextedLength = Math.round((sideLength * sideLength) / 1_000_000);
-      expect((addedGraphic.symbol as TextSymbol).text).toEqual(`${expextedLength} km²`);
+      expect((addedGraphic?.symbol as TextSymbol).text).toEqual(`${expextedLength} km²`);
     });
   });
 

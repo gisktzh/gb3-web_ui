@@ -12,12 +12,12 @@ export interface AbstractFeatureInfoResultFeatureField {
 }
 
 export interface FeatureInfoResultFeatureImageField extends AbstractFeatureInfoResultFeatureField {
-  value: Image;
+  value: Image | null;
   type: 'image';
 }
 
 export interface FeatureInfoResultFeatureLinkField extends AbstractFeatureInfoResultFeatureField {
-  value: LinkObject;
+  value: LinkObject | null;
   type: 'link';
 }
 

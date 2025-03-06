@@ -79,6 +79,13 @@ export interface SymbolizationStyle {
 }
 
 /**
+ * DefaultSymbolization only defines a default for the SimplePointSymbolization, as it cannot know which type of Picture is the default.
+ */
+export interface DefaultSymbolization extends SymbolizationStyle {
+  point: SimplePointSymbolization;
+}
+
+/**
  * Represents a collection of symbolizations for all DrawingLayers that exist. By using the enum as key, it enforces that each
  * DrawingLayer has a symbolization associated with it or else the compiler raises an error.
  */
