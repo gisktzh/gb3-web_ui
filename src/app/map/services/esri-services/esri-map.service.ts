@@ -874,7 +874,7 @@ export class EsriMapService implements MapService, OnDestroy {
     );
 
     esriReactiveUtils
-      .whenOnce(() => this.mapView.ready && this.transformationService.projectionLoaded)
+      .whenOnce(() => this.mapView.ready && this.transformationService.projectionOperatorLoaded)
       .then(() => {
         const {effectiveMaxScale, effectiveMinScale, effectiveMaxZoom, effectiveMinZoom} = this.mapView.constraints;
 
