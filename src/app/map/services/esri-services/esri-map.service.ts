@@ -1,6 +1,6 @@
 import {Inject, Injectable, OnDestroy} from '@angular/core';
 import esriConfig from '@arcgis/core/config';
-import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
+import * as affineTransformOperator from '@arcgis/core/geometry/operators/affineTransformOperator.js';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {Store} from '@ngrx/store';
 import {BehaviorSubject, filter, first, map, pairwise, skip, Subscription, tap, withLatestFrom} from 'rxjs';
@@ -68,6 +68,7 @@ import {TimeSliderService} from '../time-slider.service';
 import {ZoomExtentMissing} from './errors/esri.errors';
 import {SymbolUnion} from '@arcgis/core/unionTypes';
 import {hasNonNullishProperty} from './type-guards/esri-nullish.type-guard';
+import Transformation from '@arcgis/core/geometry/operators/support/Transformation';
 import GraphicHit = __esri.GraphicHit;
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
@@ -569,8 +570,11 @@ export class EsriMapService implements MapService, OnDestroy {
       InternalDrawingLayer.PrintPreview,
     );
     const esriGeometry = this.geoJSONMapperService.fromGeoJSONToEsri(printPreviewArea);
-    // negate the rotation as the geometry engine rotates counter-clockwise by default
-    const rotatedEsriGeometry = geometryEngine.rotate(esriGeometry, -rotation);
+
+    // create a transformation object and apply the negative rotation since esri rotates counter-clockwise
+    const transformation = new Transformation();
+    transformation.rotate(-rotation, center.x, center.y);
+    const rotatedEsriGeometry = affineTransformOperator.execute(esriGeometry, transformation);
 
     this.clearInternalDrawingLayer(InternalDrawingLayer.PrintPreview);
     this.addEsriGeometryToDrawingLayer(rotatedEsriGeometry, symbolization, InternalDrawingLayer.PrintPreview);
