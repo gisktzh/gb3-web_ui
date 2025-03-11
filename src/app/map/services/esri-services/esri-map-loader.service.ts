@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core';
 import {MapServiceType} from '../../types/map-service.type';
 import {catchError, filter, from, map, Observable, throwError} from 'rxjs';
 import {ExternalServiceActiveMapItem} from '../../models/external-service.model';
-import {EsriError, EsriKMLLayer, EsriWMSLayer} from './esri.module';
 import {ActiveMapItemFactory} from '../../../shared/factories/active-map-item.factory';
 import {MapLoaderService} from '../../interfaces/map-loader.service';
 import {ExternalKmlLayer, ExternalWmsLayer} from '../../../shared/interfaces/external-layer.interface';
@@ -11,6 +10,9 @@ import {ExternalKmlActiveMapItem} from '../../models/implementations/external-km
 import {LayerCouldNotBeLoaded} from './errors/esri.errors';
 import {ExternalServiceHasNoLayers, ExternalServiceHasNoUrl} from '../../../shared/errors/map-import.errors';
 import {hasNonNullishProperty, isNullish} from './type-guards/esri-nullish.type-guard';
+import KMLLayer from '@arcgis/core/layers/KMLLayer';
+import EsriError from '@arcgis/core/core/Error';
+import WMSLayer from '@arcgis/core/layers/WMSLayer';
 
 @Injectable({
   providedIn: 'root',
@@ -40,7 +42,7 @@ export class EsriMapLoaderService implements MapLoaderService {
   private loadExternalWmsService(url: string): Observable<ExternalWmsActiveMapItem> {
     let layer;
     try {
-      layer = new EsriWMSLayer({url});
+      layer = new WMSLayer({url});
     } catch (error: unknown) {
       return throwError(() => new LayerCouldNotBeLoaded());
     }
@@ -74,7 +76,7 @@ export class EsriMapLoaderService implements MapLoaderService {
   private loadExternalKmlService(url: string): Observable<ExternalKmlActiveMapItem> {
     let layer;
     try {
-      layer = new EsriKMLLayer({url});
+      layer = new KMLLayer({url});
     } catch (error: unknown) {
       return throwError(() => new LayerCouldNotBeLoaded());
     }
