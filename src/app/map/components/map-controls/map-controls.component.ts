@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
@@ -14,9 +14,7 @@ import {MapService} from '../../interfaces/map.service';
   styleUrls: ['./map-controls.component.scss'],
   standalone: false,
 })
-export class MapControlsComponent implements OnInit, OnDestroy, AfterViewInit {
-  @ViewChild('scaleBarContainer', {static: true}) private scaleBarContainerRef!: ElementRef;
-
+export class MapControlsComponent implements OnInit, OnDestroy {
   public screenMode: ScreenMode = 'regular';
   public mapUiState?: MapUiState;
 
@@ -35,10 +33,6 @@ export class MapControlsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
-  }
-
-  public ngAfterViewInit() {
-    this.mapService.assignScaleBarElement(this.scaleBarContainerRef.nativeElement);
   }
 
   private initSubscriptions() {

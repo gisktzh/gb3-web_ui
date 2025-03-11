@@ -7,6 +7,7 @@ import {AddToMapVisitor} from './add-to-map.visitor';
 import {Gb2WmsActiveMapItem} from '../models/implementations/gb2-wms.model';
 import {ToolService} from './tool.service';
 import {WmsFilterValue} from '../../shared/interfaces/topic.interface';
+import {ViewContainerRef} from '@angular/core';
 
 export interface MapService extends AddToMapVisitor {
   /**
@@ -15,10 +16,10 @@ export interface MapService extends AddToMapVisitor {
   init(): void;
 
   /** Assigns the map to an element on the HTML */
-  assignMapElement(container: HTMLDivElement): void;
+  assignMapElement(container: ViewContainerRef): void;
 
   /** Assigns the scale bar to an element on the HTML */
-  assignScaleBarElement(container: HTMLDivElement): void;
+  assignScaleBarElement(container: ViewContainerRef): void;
 
   /** Sets the scale of the whole map */
   setScale(scale: number): void;

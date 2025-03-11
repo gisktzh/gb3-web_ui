@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, Inject, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, Inject, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {FeatureHighlightingService} from '../../services/feature-highlighting.service';
 import {MapService} from '../../interfaces/map.service';
 import {MAP_SERVICE} from '../../../app.module';
@@ -11,7 +11,7 @@ import {MAP_SERVICE} from '../../../app.module';
   standalone: false,
 })
 export class MapContainerComponent implements OnInit, AfterViewInit {
-  @ViewChild('mainMap', {static: true}) mainMapRef!: ElementRef;
+  @ViewChild('mainMap', {read: ViewContainerRef, static: true}) private mainMapRef!: ViewContainerRef;
 
   constructor(
     @Inject(MAP_SERVICE) private readonly mapService: MapService,
@@ -19,11 +19,10 @@ export class MapContainerComponent implements OnInit, AfterViewInit {
   ) {}
 
   public ngOnInit() {
-    this.mapService.init();
     this.featureHighlightingService.init();
   }
 
   public ngAfterViewInit() {
-    this.mapService.assignMapElement(this.mainMapRef.nativeElement);
+    this.mapService.assignMapElement(this.mainMapRef);
   }
 }

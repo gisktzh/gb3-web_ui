@@ -1,4 +1,4 @@
-import {Inject, Injectable, OnDestroy} from '@angular/core';
+import {ComponentRef, Inject, Injectable, OnDestroy, ViewContainerRef} from '@angular/core';
 import esriConfig from '@arcgis/core/config';
 import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
@@ -44,7 +44,6 @@ import {
   EsriMapView,
   EsriPoint,
   esriReactiveUtils,
-  EsriScaleBar,
   EsriSpatialReference,
   EsriTileInfo,
   EsriWMSLayer,
@@ -68,6 +67,9 @@ import {TimeSliderService} from '../time-slider.service';
 import {ZoomExtentMissing} from './errors/esri.errors';
 import {SymbolUnion} from '@arcgis/core/unionTypes';
 import {hasNonNullishProperty} from './type-guards/esri-nullish.type-guard';
+import {ArcgisScaleBarWrapperComponent} from './components/arcgis-scale-bar-wrapper/arcgis-scale-bar-wrapper.component';
+import {ArcgisMapWrapperComponent} from './components/arcgis-map-wrapper/arcgis-map-wrapper.component';
+import {ArcgisMap} from '@arcgis/map-components/dist/components/arcgis-map';
 import GraphicHit = __esri.GraphicHit;
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
@@ -85,7 +87,6 @@ enum EsriMouseButtonType {
   providedIn: 'root',
 })
 export class EsriMapService implements MapService, OnDestroy {
-  private scaleBar?: __esri.ScaleBar;
   private effectiveMaxZoom = 23;
   private effectiveMinZoom = 0;
   private effectiveMinScale = 0;
@@ -98,6 +99,7 @@ export class EsriMapService implements MapService, OnDestroy {
   private readonly rotation$ = this.store.select(selectRotation);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
   private readonly wmsImageFormatMimeType = this.configService.gb2Config.wmsFormatMimeType;
+  private mapRef: ComponentRef<ArcgisMapWrapperComponent> | undefined;
 
   constructor(
     private readonly store: Store,
@@ -179,6 +181,7 @@ export class EsriMapService implements MapService, OnDestroy {
   }
 
   public init(): void {
+    const a = document.querySelector('#arcgismap');
     this.store
       .select(selectMapConfigState)
       .pipe(
@@ -188,8 +191,10 @@ export class EsriMapService implements MapService, OnDestroy {
           const {x, y} = config.center;
           const {minScale, maxScale} = config.scaleSettings;
           const {scale, srsId, activeBasemapId} = config;
-          const mapInstance = this.createMap(activeBasemapId);
-          this.setMapView(mapInstance, scale, x, y, srsId, minScale, maxScale);
+          // lets go crazyyyyyyyyyyy
+          const b = a as ArcgisMap;
+          b.map = this.createMap(activeBasemapId);
+          this.setMapView(b.map, scale, x, y, srsId, minScale, maxScale);
           this.attachMapViewListeners();
           this.addBasemapSubscription();
           this.rotationReset();
@@ -303,15 +308,16 @@ export class EsriMapService implements MapService, OnDestroy {
     });
   }
 
-  public assignMapElement(container: HTMLDivElement) {
-    this.mapView.container = container;
+  public assignMapElement(container: ViewContainerRef) {
+    const containerRef = container.createComponent(ArcgisMapWrapperComponent);
+    this.mapRef = containerRef;
+    this.init();
   }
 
-  public assignScaleBarElement(container: HTMLDivElement) {
-    if (this.scaleBar) {
-      this.scaleBar.destroy();
-    }
-    this.scaleBar = new EsriScaleBar({view: this.mapView, container: container, unit: 'metric'});
+  public assignScaleBarElement(container: ViewContainerRef) {
+    const scaleBarRef = container.createComponent(ArcgisScaleBarWrapperComponent);
+    scaleBarRef.setInput('scaleBarRef', this.mapView.map);
+    scaleBarRef.changeDetectorRef.detectChanges();
   }
 
   public setOpacity(opacity: number, mapItem: ActiveMapItem): void {
