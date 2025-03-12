@@ -1,5 +1,4 @@
 import {Injectable} from '@angular/core';
-import {EsriColor, EsriPictureMarkerSymbol, EsriSimpleFillSymbol, EsriSimpleLineSymbol, EsriSimpleMarkerSymbol} from './esri.module';
 import {ConfigService} from '../../../shared/services/config.service';
 import {DrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {GeometryWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
@@ -14,6 +13,8 @@ import {Store} from '@ngrx/store';
 import {selectDrawingStyleState} from '../../../state/map/reducers/drawing-style.reducer';
 import {tap} from 'rxjs';
 import {MarkerSymbol2DUnion, SymbolUnion} from '@arcgis/core/unionTypes';
+import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
+import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol';
 
 @Injectable({
   providedIn: 'root',
@@ -84,7 +85,7 @@ export class EsriSymbolizationService {
     const pointSymbology = this.layerSymbolizations[drawingLayer].point;
     switch (pointSymbology.type) {
       case 'simple':
-        return new EsriSimpleMarkerSymbol({
+        return new SimpleMarkerSymbol({
           color: this.createEsriColor(this.getCustomizedStyleSettingOrDefault(isCustomizable, 'fillColor', pointSymbology.color)),
           size: pointSymbology.size,
           outline: {
@@ -93,7 +94,7 @@ export class EsriSymbolizationService {
           },
         });
       case 'picture':
-        return new EsriPictureMarkerSymbol({
+        return new PictureMarkerSymbol({
           url: pointSymbology.url,
           width: pointSymbology.width,
           height: pointSymbology.height,
@@ -106,7 +107,7 @@ export class EsriSymbolizationService {
 
   public createLineSymbolization(drawingLayer: DrawingLayer, isCustomizable: boolean): SimpleLineSymbol {
     const lineSymbology = this.layerSymbolizations[drawingLayer].line;
-    return new EsriSimpleLineSymbol({
+    return new SimpleLineSymbol({
       color: this.createEsriColor(this.getCustomizedStyleSettingOrDefault(isCustomizable, 'lineColor', lineSymbology.color)),
       width: this.getCustomizedStyleSettingOrDefault(isCustomizable, 'lineWidth', lineSymbology.width),
     });
@@ -114,7 +115,7 @@ export class EsriSymbolizationService {
 
   public createPolygonSymbolization(drawingLayer: DrawingLayer, isCustomizable: boolean): SimpleFillSymbol {
     const polygonSymbology = this.layerSymbolizations[drawingLayer].polygon;
-    return new EsriSimpleFillSymbol({
+    return new SimpleFillSymbol({
       color: this.createEsriColor(this.getCustomizedStyleSettingOrDefault(isCustomizable, 'fillColor', polygonSymbology.fill.color)),
       outline: {
         width: this.getCustomizedStyleSettingOrDefault(isCustomizable, 'lineWidth', polygonSymbology.outline.width),
@@ -132,6 +133,6 @@ export class EsriSymbolizationService {
   }
 
   private createEsriColor(color: SymbolizationColor): Color {
-    return new EsriColor(color);
+    return new Color(color);
   }
 }

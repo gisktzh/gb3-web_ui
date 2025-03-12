@@ -1,4 +1,4 @@
-import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
+import * as areaOperator from '@arcgis/core/geometry/operators/areaOperator.js';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import {NumberUtils} from '../../../../../../shared/utils/number.utils';
 import {AbstractEsriMeasurementStrategy, LabelConfiguration} from '../abstract-esri-measurement.strategy';
@@ -56,7 +56,7 @@ export class EsriAreaMeasurementStrategy extends AbstractEsriMeasurementStrategy
    */
   private getRoundedPolygonAreaString(polygon: Polygon): string {
     let unit = 'm²';
-    let area = Math.abs(geometryEngine.planarArea(polygon, 'square-meters'));
+    let area = Math.abs(areaOperator.execute(polygon, {unit: 'square-meters'}));
 
     if (area > M2_TO_KM2_CONVERSION_THRESHOLD) {
       area = area / 1_000_000;

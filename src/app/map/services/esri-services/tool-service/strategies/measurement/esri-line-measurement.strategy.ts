@@ -1,4 +1,4 @@
-import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
+import * as lengthOperator from '@arcgis/core/geometry/operators/lengthOperator.js';
 import Polyline from '@arcgis/core/geometry/Polyline';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import {NumberUtils} from '../../../../../../shared/utils/number.utils';
@@ -44,7 +44,7 @@ export class EsriLineMeasurementStrategy extends AbstractEsriMeasurementStrategy
 
   private getRoundedPolylineLengthString(polyline: Polyline): string {
     let unit = 'm';
-    let length = geometryEngine.planarLength(polyline, 'meters');
+    let length = lengthOperator.execute(polyline, {unit: 'meters'});
 
     if (length > M_TO_KM_CONVERSION_THRESHOLD) {
       length = length / 1000;

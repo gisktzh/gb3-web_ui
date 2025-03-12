@@ -3,15 +3,15 @@ import {EsriMapLoaderService} from './esri-map-loader.service';
 import {ExternalWmsActiveMapItem} from '../../models/implementations/external-wms.model';
 import {EsriMapService} from './esri-map.service';
 import {MAP_SERVICE} from '../../../app.module';
-import {EMPTY, of} from 'rxjs';
+import {catchError, EMPTY, of} from 'rxjs';
 import Collection from '@arcgis/core/core/Collection';
 import {ExternalKmlLayer, ExternalWmsLayer} from '../../../shared/interfaces/external-layer.interface';
 import {UuidUtils} from '../../../shared/utils/uuid.utils';
 import {ExternalKmlActiveMapItem} from '../../models/implementations/external-kml.model';
 import {LayerCouldNotBeLoaded} from './errors/esri.errors';
-import {EsriError, EsriWMSLayer} from './esri.module';
-import {catchError} from 'rxjs';
 import {ExternalServiceHasNoLayers} from '../../../shared/errors/map-import.errors';
+import EsriError from '@arcgis/core/core/Error';
+import WMSLayer from '@arcgis/core/layers/WMSLayer';
 
 describe('EsriMapLoaderService', () => {
   let service: EsriMapLoaderService;
@@ -32,7 +32,7 @@ describe('EsriMapLoaderService', () => {
     it('throws a `LayerCouldNotBeLoaded` error if something goes wrong during loading', (done: DoneFn) => {
       const originalMessage = 'oh no! anyway...';
       const originalError = new EsriError('error name', originalMessage);
-      const layer: __esri.Layer = new EsriWMSLayer();
+      const layer: __esri.Layer = new WMSLayer();
       spyOn(layer, 'load').and.rejectWith(originalError);
 
       const expectedError = new LayerCouldNotBeLoaded(originalMessage);
