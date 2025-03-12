@@ -34,11 +34,6 @@
       align-items: flex-end;
       gap: 12px;
 
-      .map-controls__inputs__bottom__scale-bar-containerold {
-        border-radius: ktzh-variables.$zh-border-radius;
-        font-family: ktzh-variables.$zh-font-family;
-      }
-
       .map-controls__inputs__bottom__data-inputs {
         @include mixins.map-element-box-shadow;
         display: block;

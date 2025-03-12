@@ -979,7 +979,6 @@ export class EsriMapService implements MapService, OnDestroy {
    * Calculates the reference distance in meters for the scale bar. What we do is that we calculate the distance between two pixel
    * coordinates which have the same y coordinate (half of the screen heigt) and as x use 0 and the reference width. This way, we get a
    * distance which is known, which can be used by the scale bar to calculate its width.
-   * @private
    */
   private calculateReferenceDistanceInMeters(): number {
     const screenHeight = this.mapView.height / 2;
