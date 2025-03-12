@@ -17,6 +17,7 @@ export interface MapConfigState {
   initialMapPadding: InitialMapPadding;
   initialMapPaddingMobile: InitialMapPadding;
   initialBoundingBox: BoundingBox;
+  referenceDistanceInMeters: number | undefined;
 }
 
 export interface InitialMapPadding {

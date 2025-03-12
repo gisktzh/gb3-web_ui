@@ -23,6 +23,7 @@ export const initialState: MapConfigState = {
   initialMapPadding: defaultMapConfig.initialMapPadding,
   initialMapPaddingMobile: defaultMapConfig.initialMapPaddingMobile,
   initialBoundingBox: defaultMapConfig.initialBoundingBox,
+  referenceDistanceInMeters: defaultMapConfig.referenceDistanceInMeters,
 };
 
 export const mapConfigFeature = createFeature({
@@ -98,6 +99,9 @@ export const mapConfigFeature = createFeature({
     on(MapConfigActions.setRotation, (state, {rotation}): MapConfigState => {
       return {...state, rotation: rotation};
     }),
+    on(MapConfigActions.setReferenceDistance, (state, {referenceDistanceInMeters}): MapConfigState => {
+      return {...state, referenceDistanceInMeters};
+    }),
   ),
 });
 
@@ -114,4 +118,5 @@ export const {
   selectIsMaxZoomedOut,
   selectActiveBasemapId,
   selectRotation,
+  selectReferenceDistanceInMeters,
 } = mapConfigFeature;

@@ -15,6 +15,7 @@ export const MapConfigActions = createActionGroup({
       initialMaps: string[];
     }>(),
     'Set Map Extent': props<Coordinate & {scale: number}>(),
+    'Set Reference Distance': props<{referenceDistanceInMeters: number}>(),
     'Set Map Center And Draw Highlight': props<{center: PointWithSrs}>(),
     'Set Ready': props<{calculatedMinScale: number; calculatedMaxScale: number}>(),
     'Set Scale': props<{scale: number}>(),

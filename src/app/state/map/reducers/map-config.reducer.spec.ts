@@ -1,7 +1,7 @@
 import {MapConstants} from '../../../shared/constants/map.constants';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {MapConfigState} from '../states/map-config.state';
-import {initialState as defaultMapConfigState, initialState, reducer} from './map-config.reducer';
+import {initialState as defaultMapConfigState, reducer} from './map-config.reducer';
 
 describe('MapConfig Reducer', () => {
   describe('setMapExtent', () => {
@@ -77,6 +77,15 @@ describe('MapConfig Reducer', () => {
       const state = reducer(initialState, actionFloored);
 
       expect(state.rotation).toEqual(expectedRotation);
+    });
+  });
+  describe('setReferenceDistance', () => {
+    it('sets the reference distance to the incoming value', () => {
+      const expectedReferenceDistance = 42;
+      const action = MapConfigActions.setReferenceDistance({referenceDistanceInMeters: expectedReferenceDistance});
+      const state = reducer(initialState, action);
+
+      expect(state.referenceDistanceInMeters).toEqual(expectedReferenceDistance);
     });
   });
 });

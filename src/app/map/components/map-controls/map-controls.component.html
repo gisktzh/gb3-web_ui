@@ -6,10 +6,11 @@
     ></basemap-selector>
     <div class="map-controls__inputs__bottom">
       <div
-        class="map-controls__inputs__bottom__scale-bar-container"
+        class="map-controls__inputs__bottom__scale-bar-containerold"
         #scaleBarContainer
         [ngClass]="{'map-controls__map-element--hidden': mapUiState?.hideUiElements}"
       ></div>
+      <scale-bar [ngClass]="{'map-controls__map-element--hidden': mapUiState?.hideUiElements}"></scale-bar>
       <coordinate-scale-inputs
         class="map-controls__inputs__bottom__data-inputs"
         [ngClass]="{'map-controls__map-element--hidden': mapUiState?.hideUiElements}"

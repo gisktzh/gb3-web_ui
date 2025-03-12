@@ -1,0 +1,20 @@
+@use 'variables/ktzh-design-variables' as ktzh-variables;
+
+.scale-bar {
+  border: 2px solid black;
+  border-top: none;
+  height: 20px;
+  box-sizing: border-box;
+  background-color: rgba(255,255,255, 0.5);
+
+  &--hidden {
+    display: none;
+  }
+
+  .scale-bar__label {
+    padding-left: 4px;
+    font-family: ktzh-variables.$zh-font-family;
+    font-size: small;
+    position: relative;
+  }
+}
