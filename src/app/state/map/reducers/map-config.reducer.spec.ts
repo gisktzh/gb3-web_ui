@@ -74,7 +74,7 @@ describe('MapConfig Reducer', () => {
     it('sets the map rotation to the incoming value', () => {
       const expectedRotation = 42;
       const actionFloored = MapConfigActions.setRotation({rotation: expectedRotation});
-      const state = reducer(initialState, actionFloored);
+      const state = reducer(defaultMapConfigState, actionFloored);
 
       expect(state.rotation).toEqual(expectedRotation);
     });
@@ -83,7 +83,7 @@ describe('MapConfig Reducer', () => {
     it('sets the reference distance to the incoming value', () => {
       const expectedReferenceDistance = 42;
       const action = MapConfigActions.setReferenceDistance({referenceDistanceInMeters: expectedReferenceDistance});
-      const state = reducer(initialState, action);
+      const state = reducer(defaultMapConfigState, action);
 
       expect(state.referenceDistanceInMeters).toEqual(expectedReferenceDistance);
     });
