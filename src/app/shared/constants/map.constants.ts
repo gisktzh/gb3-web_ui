@@ -17,6 +17,7 @@ export class MapConstants {
   public static readonly BELONGS_TO_IDENTIFIER = '__belongsTo';
   public static readonly TOOL_IDENTIFIER = '__tool';
   public static readonly TEXT_DRAWING_MAX_LENGTH = 50;
+  public static readonly MAX_SCALE_BAR_WIDTH_PX = 150;
 
   /**
    * Query params that are removed upon loading the initial map configuration.

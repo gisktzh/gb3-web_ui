@@ -104,6 +104,7 @@ import {GenericUnorderedListComponent} from '../shared/components/lists/generic-
 import {SearchResultIdentifierDirective} from '../shared/directives/search-result-identifier.directive';
 import {SearchBarComponent} from '../shared/components/search/search-bar/search-bar.component';
 import {SearchInputComponent} from '../shared/components/search/search-input.component';
+import {ScaleBarComponent} from './components/map-controls/scale-bar/scale-bar.component';
 
 @NgModule({
   providers: [provideCharts(withDefaultRegisterables())],
@@ -217,6 +218,7 @@ import {SearchInputComponent} from '../shared/components/search/search-input.com
     SearchResultIdentifierDirective,
     SearchBarComponent,
     SearchInputComponent,
+    ScaleBarComponent,
   ],
   exports: [
     LegendOverlayComponent,

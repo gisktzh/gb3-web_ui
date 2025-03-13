@@ -22,6 +22,7 @@ describe('selectFavouriteBaseConfig', () => {
       initialMapPaddingMobile: {left: 0, right: 0, top: 0, bottom: 0},
       initialMapPadding: {left: 0, right: 0, top: 0, bottom: 0},
       initialBoundingBox: {min: {x: 0, y: 0}, max: {x: 0, y: 0}},
+      referenceDistanceInMeters: undefined,
     };
   });
   it('returns the correct subset of the current map config', () => {

@@ -53,7 +53,6 @@ import {ZoomExtentMissing} from './errors/esri.errors';
 import {SymbolUnion} from '@arcgis/core/unionTypes';
 import {hasNonNullishProperty} from './type-guards/esri-nullish.type-guard';
 import Transformation from '@arcgis/core/geometry/operators/support/Transformation';
-import ScaleBar from '@arcgis/core/widgets/ScaleBar';
 import KMLLayer from '@arcgis/core/layers/KMLLayer';
 import Point from '@arcgis/core/geometry/Point';
 import SpatialReference from '@arcgis/core/geometry/SpatialReference';
@@ -66,6 +65,7 @@ import MapView from '@arcgis/core/views/MapView';
 import TileInfo from '@arcgis/core/layers/support/TileInfo';
 import EsriMap from '@arcgis/core/Map';
 import {EsriLoadStatus} from './types/esri-load-status.type';
+import * as distanceOperator from '@arcgis/core/geometry/operators/distanceOperator.js';
 import GraphicHit = __esri.GraphicHit;
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
@@ -83,7 +83,6 @@ enum EsriMouseButtonType {
   providedIn: 'root',
 })
 export class EsriMapService implements MapService, OnDestroy {
-  private scaleBar?: ScaleBar;
   private effectiveMaxZoom = 23;
   private effectiveMinZoom = 0;
   private effectiveMinScale = 0;
@@ -303,13 +302,6 @@ export class EsriMapService implements MapService, OnDestroy {
 
   public assignMapElement(container: HTMLDivElement) {
     this.mapView.container = container;
-  }
-
-  public assignScaleBarElement(container: HTMLDivElement) {
-    if (this.scaleBar) {
-      this.scaleBar.destroy();
-    }
-    this.scaleBar = new ScaleBar({view: this.mapView, container: container, unit: 'metric'});
   }
 
   public setOpacity(opacity: number, mapItem: ActiveMapItem): void {
@@ -836,10 +828,22 @@ export class EsriMapService implements MapService, OnDestroy {
     });
   }
 
+  private updateReferenceDistance() {
+    const referenceDistanceInMeters = this.calculateReferenceDistanceInMeters();
+    this.store.dispatch(MapConfigActions.setReferenceDistance({referenceDistanceInMeters}));
+  }
+
   private attachMapViewListeners() {
     reactiveUtils.when(
       () => this.mapView.stationary,
       () => this.updateMapConfig(),
+    );
+
+    // ensure that the reference distance is calculated after the map is ready, since the scale listener only fires after the first change
+    reactiveUtils.whenOnce(() => this.mapView.ready).then(() => this.updateReferenceDistance());
+    reactiveUtils.watch(
+      () => this.mapView.scale,
+      () => this.updateReferenceDistance(),
     );
 
     reactiveUtils.on(
@@ -969,6 +973,19 @@ export class EsriMapService implements MapService, OnDestroy {
     const {center, scale} = this.mapView;
     const {x, y} = this.transformationService.transform(center);
     this.store.dispatch(MapConfigActions.setMapExtent({x, y, scale}));
+  }
+
+  /**
+   * Calculates the reference distance in meters for the scale bar. What we do is that we calculate the distance between two pixel
+   * coordinates which have the same y coordinate (half of the screen height) and as x use 0 and the reference width. This way, we get a
+   * distance which is known, which can be used by the scale bar to calculate its width.
+   */
+  private calculateReferenceDistanceInMeters(): number {
+    const screenHeight = this.mapView.height / 2;
+    const pointA = this.mapView.toMap({x: 0, y: screenHeight});
+    const pointB = this.mapView.toMap({x: MapConstants.MAX_SCALE_BAR_WIDTH_PX, y: screenHeight});
+
+    return distanceOperator.execute(pointA, pointB, {unit: 'meters'});
   }
 
   private switchBasemap(basemapId: string) {
