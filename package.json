@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "start-local-gb2": "ng serve --configuration=development-local-gb2",
+    "start-local-gb2": "ng serve --configuration=development-local-gb2 --host 0.0.0.0 --port 4242 --poll 1000",
     "build-local": "ng build --configuration=development",
     "build-local-gb2": "ng build --configuration=development-local-gb2",
     "build-dev-ebp": "node ./update-version.js && ng build --configuration=production-dev-ebp",

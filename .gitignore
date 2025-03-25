@@ -105,3 +105,6 @@ baseline.json
 
 # local environment file
 environment.local.ts
+
+# local development certificate
+*.crt
