@@ -1,0 +1,12 @@
+{
+  "name": "gb3-frontend",
+  "dockerComposeFile": "../dev/docker-compose.dev.yml",
+  "service": "frontend",
+  "workspaceFolder": "/app",
+  "containerEnv": {},
+  "customizations": {
+    "vscode": {
+      "extensions": ["dbaeumer.vscode-eslint"]
+    }
+  }
+}

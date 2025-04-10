@@ -1,4 +1,4 @@
-FROM node:22.11-alpine AS gb3-dev
+FROM node:22.11-alpine
 
 # Provide overrides for APP_VERSION and APP_RELEASE as build-args and expose them as ENV variables for the update-version.js script
 ARG APP_VERSION
@@ -8,30 +8,37 @@ ENV APP_RELEASE=$APP_RELEASE
 ENV NODE_ENV=development
 ARG TARGET_ENVIRONMENT=local-gb2
 
-# Zeitzone & Zertifikate
+# setup timezone and add proxy certificate
 RUN ln -s /usr/share/zoneinfo/Europe/Zurich /etc/localtime && \
     mkdir -p /usr/local/share/ca-certificates/
 
-COPY  ./dev/certificates/zscaler-root-ca.crt /usr/local/share/ca-certificates/zscaler-root-ca.crt
+COPY --chown=node:node ./dev/certificates/zscaler-root-ca.crt /usr/local/share/ca-certificates/zscaler-root-ca.crt
 
 RUN apk --no-cache add --no-check-certificate ca-certificates git && \
     update-ca-certificates
 
+# Set the working directory
 WORKDIR /app
 
 # Copy the certificate to a temporary location and configure npm to use it
 RUN npm config set cafile /usr/local/share/ca-certificates/zscaler-root-ca.crt
 
 # Install project dependencies
-COPY ./package*.json ./
+COPY --chown=node:node ../package*.json ./
 RUN npm ci --ignore-scripts
 
 # Copy the rest of the application code
-COPY . .
+# Mapping of authorizations from WSL. Ubuntu user becomes node. 
+# Ownership of files that belong to root remain root.
+COPY --chown=node:node .. .
 
 # Expose the port the Angular development server runs on
 EXPOSE 4242
 
+# Set the user to the non-root user node
+USER node
+
 # Start the Angular development server
-CMD ["npm", "run", "start-local-gb2"]
+# Prepare imports husky
+CMD ["sh", "-c", "npm run start-local-gb2 && npm run prepare"]
 

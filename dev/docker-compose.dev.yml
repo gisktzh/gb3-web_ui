@@ -1,0 +1,11 @@
+name: gb3
+services:
+  frontend:
+    ports:
+      - 4242:4242
+    build:
+      context: ..
+      dockerfile: dev/Dockerfile.dev
+    volumes:
+      - ../:/app
+      - /app/node_modules

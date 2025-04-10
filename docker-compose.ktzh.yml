@@ -17,21 +17,9 @@ services:
       - nginx-logs:/var/log/nginx
     logging:
       options:
-        max-size: "50m"
-        max-file: "5"
-  
-  gb3-frontend-dev:
-    ports:
-      - 4242:4242
-    build:
-      context: .
-      dockerfile: ./dev/Dockerfile.dev
-    image: gb3-dev
-    container_name: gb3-dev
-    volumes:
-      - .:/app
-      - /app/node_modules
-    
+        max-size: '50m'
+        max-file: '5'
+
 volumes:
   nginx-logs:
     external: true
