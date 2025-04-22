@@ -58,7 +58,7 @@ $fixed-border: inset calc(-1 * $border-size) 0 0 0 ktzh-variables.$zh-black100;
 
       // override the upper left cell to be white (as per the design)
       &:first-child > .feature-info-content__table__row__column--header:first-child {
-        background-color: ktzh-variables.$zh-white;
+        background-color: transparent;
         z-index: z-index-variables.$feature-info-content-table-header;
       }
 

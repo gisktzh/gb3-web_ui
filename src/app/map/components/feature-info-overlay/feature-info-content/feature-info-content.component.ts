@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   Inject,
@@ -122,6 +123,7 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
     private readonly store: Store,
     private readonly configService: ConfigService,
     private readonly renderer: Renderer2,
+    private readonly changeDetectorRef: ChangeDetectorRef,
     @Inject(MAP_SERVICE) private readonly mapService: MapService,
   ) {
     this.staticFilesBaseUrl = this.configService.apiConfig.gb2StaticFiles.baseUrl;
@@ -136,22 +138,13 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
   }
 
   public ngOnDestroy() {
+    this.resizeObserver.disconnect();
     this.subscriptions.unsubscribe();
-    if (this.resizeObserver) {
-      this.resizeObserver.disconnect();
-    }
   }
 
   public ngAfterViewInit() {
     this.initPinnedFeatureIdHandler();
-    this.resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        this.maxTableHeaderWidth = entry.contentRect.width * 0.8;
-        this.resize({width: `${DEFAULT_TABLE_HEADER_WIDTH}px`});
-      }
-    });
-
-    this.resizeObserver.observe(this.container.nativeElement);
+    this.initResizeObserver();
   }
 
   public toggleHighlightForFeature(fid: number, highlightButton: MatRadioButton, hasGeometry: boolean) {
@@ -191,6 +184,32 @@ export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterView
    */
   public preserveKeyValueOrder(): number {
     return 0;
+  }
+
+  /**
+   * Initializes the ResizeObserver to listen for any changes to the content elements. This will fire when the outer container (which is
+   * resizable as well) is resized and we then need to calculate the new maximum width (since that is 80% of the full width). In cases where
+   * the outer container is resized to a smaller size, we reset the current width to the default width to ensure the elements are always
+   * visible and do not overflow (e.g. if you have a very large container and very broad table headers, resizing it to small will make the
+   * table unusable since the drag hanler is out of reach).
+   *
+   * We also need to run change detection to enforce rerender, since setting the width of the element does not trigger it - which is a bit
+   * ugly, but is a drawback of our current ResizeHandler implementation. Note that we do NOT trigger this if the size of the container is
+   * 0, which happens onDestroy and would lead to a flickering due to the change detection.
+   */
+  private initResizeObserver() {
+    this.resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const maxWidth = entry.contentRect.width * 0.8;
+        if (this.maxTableHeaderWidth > maxWidth && maxWidth > 0) {
+          this.resize({width: `${DEFAULT_TABLE_HEADER_WIDTH}px`});
+          this.changeDetectorRef.detectChanges();
+        }
+        this.maxTableHeaderWidth = maxWidth;
+      }
+    });
+
+    this.resizeObserver.observe(this.container.nativeElement);
   }
 
   /**
