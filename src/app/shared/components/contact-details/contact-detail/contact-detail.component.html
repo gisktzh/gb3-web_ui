@@ -7,12 +7,20 @@
       ></mat-icon>
     </span>
   </div>
-  <ng-container *ngIf="contactType === 'email'; then emailTemplate; else addressTemplate"></ng-container>
+  <ng-container
+    *ngIf="contactType === 'email'; then emailTemplate; else contactType === 'link' ? linkTemplate : addressTemplate"
+  ></ng-container>
 </div>
 
 <ng-template #emailTemplate>
   <div class="contact-detail__address">
     <a [title]="email" rel="noopener noreferrer" href="mailto:{{ email }}">{{ email }}</a>
+  </div>
+</ng-template>
+
+<ng-template #linkTemplate>
+  <div class="contact-detail__address">
+    <a title="{{ url }}" rel="noopener noreferrer" href="{{ url }}" target="_blank">{{ title }} </a>
   </div>
 </ng-template>
 

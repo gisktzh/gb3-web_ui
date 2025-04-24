@@ -8,11 +8,13 @@ import {Clipboard} from '@angular/cdk/clipboard';
   standalone: false,
 })
 export class ContactDetailComponent {
-  @Input() public contactType!: 'address' | 'email';
+  @Input() public contactType!: 'address' | 'email' | 'link';
   @Input() public street?: string;
   @Input() public place?: string;
   @Input() public email?: string;
   @Input() public coordinates?: string;
+  @Input() public url?: string;
+  @Input() public title?: string;
 
   constructor(private readonly clipboard: Clipboard) {}
 
