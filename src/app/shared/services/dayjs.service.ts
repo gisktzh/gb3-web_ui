@@ -43,7 +43,7 @@ export class DayjsService implements TimeService {
   }
 
   public calculateDifferenceBetweenDates(firstDate: Date, secondDate: Date): number {
-    return Math.abs(this.createDayjsObject(secondDate).diff(this.createDayjsObject(firstDate)));
+    return Math.abs(this.createDayjsObject(secondDate).startOf('day').diff(this.createDayjsObject(firstDate).startOf('day')));
   }
 
   public getISORangeInMilliseconds(range: string): number {
