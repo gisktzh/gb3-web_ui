@@ -1,4 +1,10 @@
-/* eslint-disable @typescript-eslint/dot-notation, @typescript-eslint/no-explicit-any */
+/*
+  eslint-disable
+  @typescript-eslint/dot-notation,
+  @typescript-eslint/no-explicit-any,
+  @typescript-eslint/no-unused-vars,
+  @typescript-eslint/no-empty-function
+ */
 import {TestBed} from '@angular/core/testing';
 import {EsriToolService} from './esri-tool.service';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';

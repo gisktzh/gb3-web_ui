@@ -1,5 +1,4 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {NgForOf, NgIf} from '@angular/common';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';

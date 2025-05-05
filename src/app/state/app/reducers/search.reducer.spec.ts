@@ -82,7 +82,6 @@ describe('search Reducer', () => {
 
   describe('an unknown action', () => {
     it('should return the previous state', () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Allow "any" in test file
       const action = {} as never;
       const result = reducer(initialState, action);
 

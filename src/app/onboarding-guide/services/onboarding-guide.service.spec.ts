@@ -54,7 +54,6 @@ describe('OnboardingGuideService', () => {
     it('sets the localStorage item when a tour starts', () => {
       service.start();
 
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const result = localStorage.getItem('onboardingGuidesViewed')!;
       const resultAsArray = JSON.parse(result);
 
@@ -66,7 +65,6 @@ describe('OnboardingGuideService', () => {
       localStorage.setItem('onboardingGuidesViewed', JSON.stringify(existingTours));
 
       service.start();
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const result = localStorage.getItem('onboardingGuidesViewed')!;
       const resultAsArray = JSON.parse(result);
 
@@ -79,7 +77,6 @@ describe('OnboardingGuideService', () => {
       localStorage.setItem('onboardingGuidesViewed', JSON.stringify(existingTours));
 
       service.start();
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const result = localStorage.getItem('onboardingGuidesViewed')!;
       const resultAsArray = JSON.parse(result);
 
@@ -93,7 +90,6 @@ describe('OnboardingGuideService', () => {
       localStorage.setItem('onboardingGuidesViewed', JSON.stringify(nonArrayContent));
 
       service.start();
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const result = localStorage.getItem('onboardingGuidesViewed')!;
       const resultAsArray = JSON.parse(result);
 
