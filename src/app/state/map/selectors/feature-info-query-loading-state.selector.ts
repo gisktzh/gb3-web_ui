@@ -12,6 +12,7 @@ import {LoadingState} from '../../../shared/types/loading-state.type';
  * * If either one of the queries is loaded, return loaded
  * * Else return undefined, which basically only happens as initial state
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- official Record type from ngrx
 export const selectFeatureInfoQueryLoadingState = createSelector<Record<string, any>, LoadingState, LoadingState, LoadingState>(
   selectFeatureInfoLoadingState,
   selectGeneralInfoLoadingState,

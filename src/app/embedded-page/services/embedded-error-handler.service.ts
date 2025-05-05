@@ -6,6 +6,7 @@ import {Gb3RuntimeError} from '../../shared/errors/abstract.errors';
   providedIn: 'root',
 })
 export class EmbeddedErrorHandlerService implements ErrorHandler {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- official handleError type from Angular
   public handleError(error: any) {
     // log errors to console for easier debugging in non-productive environments
     if (!environment.production) {

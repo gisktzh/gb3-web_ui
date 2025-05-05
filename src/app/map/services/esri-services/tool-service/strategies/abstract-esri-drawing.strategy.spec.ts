@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {AbstractEsriDrawingStrategy} from './abstract-esri-drawing.strategy';
 import Graphic from '@arcgis/core/Graphic';
 import {EsriPointDrawingStrategy} from './drawing/esri-point-drawing.strategy';
@@ -42,7 +43,7 @@ describe('AbstractEsriDrawingStrategy', () => {
         Object.getPrototypeOf(AbstractEsriDrawingStrategy.prototype),
         'checkIfGraphicExistsOnLayer',
       ).and.returnValue(false);
-      strategy['completeEditing'](graphic);
+      strategy['completeEditing'](graphic); // eslint-disable-line @typescript-eslint/dot-notation -- Private property access
       expect(checkGraphicSpy).toHaveBeenCalled();
       expect(handleCompleteSpy).toHaveBeenCalledWith(graphic, 'delete');
     });
@@ -53,7 +54,7 @@ describe('AbstractEsriDrawingStrategy', () => {
         Object.getPrototypeOf(AbstractEsriDrawingStrategy.prototype),
         'checkIfGraphicExistsOnLayer',
       ).and.returnValue(true);
-      strategy['completeEditing'](graphic);
+      strategy['completeEditing'](graphic); // eslint-disable-line @typescript-eslint/dot-notation -- Private property access
       expect(checkGraphicSpy).toHaveBeenCalled();
       expect(handleCompleteSpy).toHaveBeenCalledWith(graphic, 'edit', undefined);
     });
@@ -65,7 +66,7 @@ describe('AbstractEsriDrawingStrategy', () => {
         Object.getPrototypeOf(AbstractEsriDrawingStrategy.prototype),
         'checkIfGraphicExistsOnLayer',
       ).and.returnValue(true);
-      strategy['completeEditing'](graphic);
+      strategy['completeEditing'](graphic); // eslint-disable-line @typescript-eslint/dot-notation -- Private property access
       expect(checkGraphicSpy).toHaveBeenCalled();
       expect(handleCompleteSpy).toHaveBeenCalledWith(graphic, 'edit', 'test');
     });

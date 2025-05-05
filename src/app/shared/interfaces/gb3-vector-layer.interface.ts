@@ -34,7 +34,7 @@ export interface Gb3GeoJsonFeature {
 
 export interface Gb3VectorLayerStyle {
   /** Style definition based on OpenLayers 2 Symbolizer */
-  [key: string]: any;
+  [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any -- inherited from OpenLayers 2
 }
 
 export interface Gb3VectorLayer extends AbstractGb3Layer {

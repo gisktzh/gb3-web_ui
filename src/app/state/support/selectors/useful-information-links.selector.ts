@@ -8,9 +8,9 @@ export const selectUsefulInformationLinksWithDynamicUrls = createSelector(
   selectUsefulInformationLinks,
   selectDynamicInternalUrlsConfiguration,
   (usefulInformationLinks, dynamicInternalUrlsConfiguration): LinksGroup[] => {
-    return usefulInformationLinks.map((usefulInformationLinks) => ({
-      ...usefulInformationLinks,
-      links: usefulInformationLinks.links.map((link) =>
+    return usefulInformationLinks.map((usefulInformationLink) => ({
+      ...usefulInformationLink,
+      links: usefulInformationLink.links.map((link) =>
         DynamicBaseUrlUtils.convertRelativeLinkObjectToLinkObject(link, dynamicInternalUrlsConfiguration),
       ),
     }));

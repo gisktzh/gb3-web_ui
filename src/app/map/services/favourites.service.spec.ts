@@ -88,7 +88,6 @@ describe('FavouritesService', () => {
     let availableMaps: Map[];
 
     beforeEach(() => {
-      // eslint-disable-next-line @typescript-eslint/dot-notation
       availableMaps = [
         {
           id: 'FaBoFFFZH',
@@ -336,7 +335,7 @@ describe('FavouritesService', () => {
           ],
         },
       ];
-      service['availableMaps'] = availableMaps;
+      service['availableMaps'] = availableMaps; // eslint-disable-line @typescript-eslint/dot-notation -- Private property access
     });
 
     it('converts the given active map item configurations to active map items', () => {

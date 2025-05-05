@@ -1,3 +1,4 @@
+/* eslint-disable rxjs-angular-x/prefer-composition -- eslint does not pickup inherited properties*/
 import {AfterViewInit, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {filter, tap} from 'rxjs';
 import {Store} from '@ngrx/store';

@@ -8,7 +8,7 @@ import {FeatureFlagsService} from '../services/feature-flags.service';
 })
 export class FeatureFlagDirective {
   constructor(
-    private readonly templateRef: TemplateRef<any>,
+    private readonly templateRef: TemplateRef<never>,
     private readonly viewContainer: ViewContainerRef,
     private readonly featureFlagsService: FeatureFlagsService,
   ) {}

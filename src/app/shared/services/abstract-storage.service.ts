@@ -30,6 +30,7 @@ export abstract class AbstractStorageService<T extends LocalStorageKey | Session
    * However, this has the issue that e.g. "12" is valid and parsed as a date. Therefore, we check whether the parsed string's ISO string
    * representation is equal to the original string. If it is, we return the parsed date, otherwise the original string (see GB3-1597).
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- JSON.parse()'s reviver cannot know the type of the value
   private reviver(key: string, value: any): any {
     if (typeof value === 'string' && this.timeService.isDate(value)) {
       const parsed = this.timeService.createUTCDateFromString(value);

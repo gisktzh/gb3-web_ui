@@ -7,7 +7,7 @@ import {FeatureInfoQueryLocation, FeatureInfoResponse, FeatureInfoResult} from '
 describe('FeatureInfo Reducer', () => {
   describe('an unknown action', () => {
     it('should return the previous state', () => {
-      const action = {} as any;
+      const action = {} as never;
 
       const result = reducer(initialState, action);
 

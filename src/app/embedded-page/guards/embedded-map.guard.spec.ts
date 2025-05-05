@@ -2,14 +2,14 @@ import {TestBed} from '@angular/core/testing';
 import {ActivatedRouteSnapshot, CanDeactivateFn, RouterStateSnapshot} from '@angular/router';
 
 import {embeddedMapGuard} from './embedded-map.guard';
-import {Component} from '@angular/core';
+import {EmbeddedMapPageComponent} from '../embedded-map-page.component';
 
 describe('embeddedMapGuard', () => {
-  const executeGuard: CanDeactivateFn<any> = (...guardParameters) =>
+  const executeGuard: CanDeactivateFn<EmbeddedMapPageComponent> = (...guardParameters) =>
     TestBed.runInInjectionContext(() => embeddedMapGuard(...guardParameters));
   const dummyRoute = {} as ActivatedRouteSnapshot;
   const dummyState = {url: '/'} as RouterStateSnapshot;
-  const dummyComponent = {} as Component;
+  const dummyComponent = {} as EmbeddedMapPageComponent;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
