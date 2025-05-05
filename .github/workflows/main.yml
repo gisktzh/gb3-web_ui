@@ -21,7 +21,7 @@ permissions:
 jobs:
   node:
     name: Node
-    uses: ./.github/workflows/node-tests.yml
+    uses: ./.github/workflows/node-quality-checks.yml
     with:
       cache_key: node-coverage-report-${{ github.sha }}-${{ github.run_id }}
       runner_version: ${{ vars.RUNNER_VERSION }}
