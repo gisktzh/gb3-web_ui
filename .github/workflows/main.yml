@@ -19,14 +19,20 @@ permissions:
   id-token: write
 
 jobs:
-  node:
-    name: Node
+  quality-checks:
+    name: Quality Checks
     uses: ./.github/workflows/node-quality-checks.yml
     with:
       cache_key: node-coverage-report-${{ github.sha }}-${{ github.run_id }}
       runner_version: ${{ vars.RUNNER_VERSION }}
+  builds:
+    name: Test Builds
+    uses: ./.github/workflows/node-builds.yml
+    with:
+      runner_version: ${{ vars.RUNNER_VERSION }}
   docker:
     name: Docker Dry Run
+    needs: builds
     runs-on: ${{ vars.RUNNER_VERSION }}
     steps:
       - uses: actions/checkout@v4
@@ -35,7 +41,7 @@ jobs:
           image: gb3-frontend
   sonarcloud:
     name: SonarCloud
-    needs: node
+    needs: quality-checks
     runs-on: ${{ vars.RUNNER_VERSION }}
     steps:
       - uses: actions/checkout@v4
@@ -49,7 +55,8 @@ jobs:
     name: Deploy dev environment
     if: github.ref == 'refs/heads/develop'
     needs:
-      - node
+      - quality-checks
+      - builds
       - sonarcloud
       - docker
     uses: ./.github/workflows/node-deploy.yml

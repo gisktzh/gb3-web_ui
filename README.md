@@ -154,7 +154,7 @@ In case of the latter, consider adding a comment explaining why the rule was dis
 
 ```typescript
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Allow "any" in test file
-const action = {} as never;
+const someVariable = {} as any;
 ```
 
 The rules are defined in the `.eslintrc.config.mjs` file.

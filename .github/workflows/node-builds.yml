@@ -1,0 +1,46 @@
+name: Test Builds
+
+permissions:
+  contents: read
+
+on:
+  workflow_call:
+    inputs:
+      runner_version:
+        required: true
+        type: string
+        description: 'Runner version to use for the job'
+  workflow_dispatch:
+    inputs:
+      runner_version:
+        required: true
+        type: choice
+        description: 'Runner version to use for the job'
+        options:
+          - ubuntu-22.04
+          - ubuntu-latest
+jobs:
+  run-builds:
+    name: Test build for ${{ matrix.environment }}
+    runs-on: ${{ inputs.runner_version }}
+
+    strategy:
+      matrix:
+        environment: [production, staging, uat, local]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          cache: 'npm'
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          npm ci
+
+      - name: Build for ${{ matrix.environment }}
+        run: npm run build-${{ matrix.environment }}
