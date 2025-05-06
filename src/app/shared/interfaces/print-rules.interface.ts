@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention -- maps to the GB2 backend conventions */
 export enum DocumentFormat {
   A0,
   A1,

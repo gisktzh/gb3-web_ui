@@ -62,6 +62,7 @@ describe('EsriPointDrawingStrategy', () => {
     });
     it('calls completeEditing on completion for editing drawings', () => {
       const strategy = new EsriPointDrawingStrategyWrapper(layer, mapView, pointSymbol, () => callbackHandler.handle());
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- spy on private method of prototype
       const completeEditingSpy = spyOn<any>(AbstractEsriDrawingStrategy.prototype, 'completeEditing');
       const graphic = new Graphic({geometry: new Point({x: 1, y: 2})});
 

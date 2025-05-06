@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {News} from '../../../interfaces/news.interface';
-import {delay, map} from 'rxjs/operators';
+import {delay, map} from 'rxjs';
 import {Observable, of} from 'rxjs';
 import {KTZHNewsService} from './ktzhnews.service';
 import {ktzhNewsDataMock} from '../../../data/ktzh-news-data.mock';

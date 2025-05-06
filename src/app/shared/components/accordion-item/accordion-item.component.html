@@ -12,6 +12,8 @@
   <div class="accordion-item__content" [ngClass]="'accordion-item__content--' + variant">
     <div
       (click)="accordionItem.toggle()"
+      (keydown.space)="accordionItem.toggle()"
+      tabindex=""
       class="accordion-item__content__header"
       [ngClass]="{
         'accordion-item__content__header--opened': accordionItem.expanded,

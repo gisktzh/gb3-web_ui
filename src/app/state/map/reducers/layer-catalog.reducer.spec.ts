@@ -1,9 +1,9 @@
-import {reducer, initialState} from './layer-catalog.reducer';
+import {initialState, reducer} from './layer-catalog.reducer';
 
 describe('LayerCatalog Reducer', () => {
   describe('an unknown action', () => {
     it('should return the previous state', () => {
-      const action = {} as any;
+      const action = {} as never;
 
       const result = reducer(initialState, action);
 

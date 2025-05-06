@@ -95,22 +95,22 @@ export class AppComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.breakpointObserver
         .observe([
-          BreakpointsWidth.mobile,
-          BreakpointsWidth.smallTablet,
-          BreakpointsWidth.regular,
-          BreakpointsHeight.regular,
-          BreakpointsHeight.small,
+          BreakpointsWidth.Mobile,
+          BreakpointsWidth.SmallTablet,
+          BreakpointsWidth.Regular,
+          BreakpointsHeight.Regular,
+          BreakpointsHeight.Small,
         ])
         .pipe(
           tap(() => {
             let screenMode: ScreenMode = 'regular';
             let screenHeight: ScreenHeight = 'regular';
-            if (this.breakpointObserver.isMatched(BreakpointsWidth.mobile)) {
+            if (this.breakpointObserver.isMatched(BreakpointsWidth.Mobile)) {
               screenMode = 'mobile';
-            } else if (this.breakpointObserver.isMatched(BreakpointsWidth.smallTablet)) {
+            } else if (this.breakpointObserver.isMatched(BreakpointsWidth.SmallTablet)) {
               screenMode = 'smallTablet';
             }
-            if (this.breakpointObserver.isMatched(BreakpointsHeight.small)) {
+            if (this.breakpointObserver.isMatched(BreakpointsHeight.Small)) {
               screenHeight = 'small';
             }
             this.store.dispatch(AppLayoutActions.setScreenMode({screenMode, screenHeight}));

@@ -74,6 +74,7 @@ describe('EsriPolygonDrawingStrategy', () => {
     });
     it('calls completeEditing on completion for editing drawings', () => {
       const strategy = new EsriPolygonDrawingStrategyWrapper(layer, mapView, fillSymbol, () => callbackHandler.handle(), 'polygon');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- spy on private method of prototype
       const completeEditingSpy = spyOn<any>(AbstractEsriDrawingStrategy.prototype, 'completeEditing');
       const graphic = new Graphic({
         geometry: new Polygon({

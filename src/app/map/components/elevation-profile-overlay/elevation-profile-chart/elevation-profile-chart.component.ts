@@ -52,7 +52,7 @@ export class ElevationProfileChartComponent implements OnInit {
   }
 
   private setupHoverEvent() {
-    this.lineChartOptions.onHover = (event, elements, chart) => {
+    this.lineChartOptions.onHover = (event, elements, _) => {
       if (elements.length > 0) {
         this.drawElevationProfileLocation(elements[0].datasetIndex, elements[0].index);
       }

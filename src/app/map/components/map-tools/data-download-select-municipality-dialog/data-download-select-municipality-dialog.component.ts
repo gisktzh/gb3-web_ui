@@ -14,7 +14,7 @@ import {selectMunicipalities, selectMunicipalitiesLoadingState} from '../../../.
   standalone: false,
 })
 export class DataDownloadSelectMunicipalityDialogComponent implements OnInit, OnDestroy {
-  @ViewChild('municipalityInput') input?: ElementRef<HTMLInputElement>;
+  @ViewChild('municipalityInput') private input?: ElementRef<HTMLInputElement>;
   public readonly filteredMunicipalities = new BehaviorSubject<Municipality[]>([]);
   public municipalities: Municipality[] | undefined;
   public loadingState: LoadingState;

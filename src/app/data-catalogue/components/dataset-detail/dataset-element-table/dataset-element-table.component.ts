@@ -1,6 +1,5 @@
 import {Component, Input} from '@angular/core';
 import {LayerAttributes} from '../../../../shared/interfaces/layer-attributes.interface';
-import {NgForOf} from '@angular/common';
 import {FormatLineBreaksPipe} from '../../../../shared/pipes/format-line-breaks.pipe';
 import {TextOrPlaceholderPipe} from '../../../../shared/pipes/text-or-placeholder.pipe';
 

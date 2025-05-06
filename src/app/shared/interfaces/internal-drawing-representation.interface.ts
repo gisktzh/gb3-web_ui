@@ -21,17 +21,16 @@ export interface InternalDrawingType {
   type: 'point' | 'line' | 'polygon' | 'text';
 }
 
-export interface LineStyleConfiguration extends Pick<MapfishPrintStyleProperties, 'strokeColor' | 'strokeOpacity' | 'strokeWidth'> {}
+export type LineStyleConfiguration = Pick<MapfishPrintStyleProperties, 'strokeColor' | 'strokeOpacity' | 'strokeWidth'>;
 
 export interface AreaStyleConfiguration extends LineStyleConfiguration, Pick<MapfishPrintStyleProperties, 'fillColor' | 'fillOpacity'> {}
 
 export interface PointStyleConfiguration extends AreaStyleConfiguration, Pick<MapfishPrintStyleProperties, 'pointRadius'> {}
 
-export interface TextStyleConfiguration
-  extends Pick<
-    MapfishPrintStyleProperties,
-    'label' | 'fontSize' | 'fontColor' | 'fontFamily' | 'labelYOffset' | 'labelAlign' | 'haloColor' | 'haloRadius'
-  > {}
+export type TextStyleConfiguration = Pick<
+  MapfishPrintStyleProperties,
+  'label' | 'fontSize' | 'fontColor' | 'fontFamily' | 'labelYOffset' | 'labelAlign' | 'haloColor' | 'haloRadius'
+>;
 
 export interface Gb3LineStringStyle extends InternalDrawingType, LineStyleConfiguration {
   type: 'line';

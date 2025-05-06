@@ -13,7 +13,7 @@ export class EsriDefaultStrategy implements EsriToolStrategy {
     throw new EsriDefaultStrategyNotImplementedError();
   }
 
-  public edit(graphic: __esri.Graphic) {
+  public edit(_: __esri.Graphic) {
     throw new EsriDefaultStrategyNotImplementedError();
   }
 

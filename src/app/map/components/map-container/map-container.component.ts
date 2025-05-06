@@ -11,7 +11,7 @@ import {MAP_SERVICE} from '../../../app.module';
   standalone: false,
 })
 export class MapContainerComponent implements OnInit, AfterViewInit {
-  @ViewChild('mainMap', {static: true}) mainMapRef!: ElementRef;
+  @ViewChild('mainMap', {static: true}) private mainMapRef!: ElementRef;
 
   constructor(
     @Inject(MAP_SERVICE) private readonly mapService: MapService,

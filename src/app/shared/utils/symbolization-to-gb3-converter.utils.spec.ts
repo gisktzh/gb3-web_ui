@@ -2,6 +2,7 @@ import {Gb3StyledInternalDrawingRepresentation, Gb3StyleRepresentation} from '..
 import {UserDrawingLayer} from '../enums/drawing-layer.enum';
 import {SymbolizationToGb3ConverterUtils} from './symbolization-to-gb3-converter.utils';
 import {Gb3VectorLayer} from '../interfaces/gb3-vector-layer.interface';
+import {MapConstants} from '../constants/map.constants';
 
 describe('SymbolizationToGb3ConverterUtils', () => {
   describe('convertInternalToExternalRepresentation', () => {
@@ -12,14 +13,22 @@ describe('SymbolizationToGb3ConverterUtils', () => {
           geometry: {type: 'Point', srs: 2056, coordinates: []},
           source: UserDrawingLayer.Drawings,
           labelText: 'A',
-          properties: {__id: 'a', style: {} as Gb3StyleRepresentation, __tool: 'point'},
+          properties: {
+            [MapConstants.DRAWING_IDENTIFIER]: 'a',
+            style: {} as Gb3StyleRepresentation,
+            [MapConstants.TOOL_IDENTIFIER]: 'point',
+          },
         },
         {
           type: 'Feature',
           geometry: {type: 'Point', srs: 2056, coordinates: []},
           source: UserDrawingLayer.Drawings,
           labelText: 'B',
-          properties: {__id: 'b', style: {} as Gb3StyleRepresentation, __tool: 'point'},
+          properties: {
+            [MapConstants.DRAWING_IDENTIFIER]: 'b',
+            style: {} as Gb3StyleRepresentation,
+            [MapConstants.TOOL_IDENTIFIER]: 'point',
+          },
         },
       ];
 

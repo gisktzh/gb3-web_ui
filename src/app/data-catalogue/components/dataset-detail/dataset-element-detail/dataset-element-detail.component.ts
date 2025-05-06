@@ -1,6 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {DatasetLayer} from '../../../../shared/interfaces/dataset-layer.interface';
-import {NgForOf, NgIf} from '@angular/common';
 import {DataDisplayElement} from '../../../types/data-display-element.type';
 import {DataDisplayComponent} from '../../data-display/data-display.component';
 import {CdkAccordionModule} from '@angular/cdk/accordion';

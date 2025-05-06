@@ -1,8 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
-import {filter, of, switchMap, tap} from 'rxjs';
-import {catchError, map} from 'rxjs';
+import {catchError, filter, map, of, switchMap, tap} from 'rxjs';
 import {DataCatalogueActions} from '../actions/data-catalogue.actions';
 import {Gb3MetadataService} from '../../../shared/services/apis/gb3/gb3-metadata.service';
 import {Store} from '@ngrx/store';
@@ -34,6 +33,7 @@ export class DataCatalogueEffects {
         const uniqueValues: Map<Pick<DataCatalogueFilter, 'key' | 'label'>, Set<string>> = new Map();
 
         // We cast to any because not all items have all the properties from DataCatalogueFilterConfiguration. To remove the cast, we would need to refactor
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- see above
         (items as any[]).forEach((item) => {
           this.configService.filterConfigs.dataCatalogue.forEach((dataCatalogueFilter) => {
             if (dataCatalogueFilter.key in item) {

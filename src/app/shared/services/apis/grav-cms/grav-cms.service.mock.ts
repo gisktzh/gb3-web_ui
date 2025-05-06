@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {delay, map} from 'rxjs/operators';
+import {delay, map} from 'rxjs';
 import {Observable, of} from 'rxjs';
 import {GravCmsService} from './grav-cms.service';
 import {DiscoverMapsItem} from '../../../interfaces/discover-maps-item.interface';
