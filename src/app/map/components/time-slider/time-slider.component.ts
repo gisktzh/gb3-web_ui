@@ -156,29 +156,6 @@ export class TimeSliderComponent implements OnInit, OnChanges {
     return range ? this.timeService.isStringSingleTimeUnitRange(range) : false;
   }
 
-  /**
-   * Returns `true` the given date format contains only one unique unit (e.g. 'years') and the source is either of
-   * type `parameter` or if it's of type `layer` then there is a continuous strictly monotonously rising series of layer dates.
-   */
-  private isRangeContinuousWithinAllowedTimeUnits(timeSliderConfiguration: TimeSliderConfiguration): boolean {
-    let isRangeContinuousWithinAllowedTimeUnits = false;
-    const unit = this.extractUniqueDatePickerUnitFromDateFormat(timeSliderConfiguration.dateFormat);
-    if (unit) {
-      switch (timeSliderConfiguration.sourceType) {
-        case 'parameter':
-          isRangeContinuousWithinAllowedTimeUnits = true;
-          break;
-        case 'layer':
-          isRangeContinuousWithinAllowedTimeUnits = this.isLayerSourceContinuous(
-            <TimeSliderLayerSource>timeSliderConfiguration.source,
-            unit,
-          );
-          break;
-      }
-    }
-    return isRangeContinuousWithinAllowedTimeUnits;
-  }
-
   private extractUniqueDatePickerUnitFromDateFormat(dateFormat: string): DatePickerManipulationUnits | undefined {
     const unit = this.timeSliderService.extractUniqueUnitFromDateFormat(dateFormat);
     if (unit !== undefined && allowedDatePickerManipulationUnits.some((allowedUnit) => allowedUnit === unit)) {
