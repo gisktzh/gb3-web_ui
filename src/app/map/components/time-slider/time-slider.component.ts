@@ -164,15 +164,6 @@ export class TimeSliderComponent implements OnInit, OnChanges {
     return undefined;
   }
 
-  private isLayerSourceContinuous(layerSource: TimeSliderLayerSource, unit: DatePickerManipulationUnits): boolean {
-    const dateAsAscendingSortedNumbers = layerSource.layers
-      .map((layer) => this.timeService.createPartialFromString(layer.date, unit))
-      .sort((a, b) => a - b);
-    // all date numbers must be part of a continuous and strictly monotonously rising series each with exactly
-    // one step between them: `date[0] = x` => `date[n] = x + n`
-    return !dateAsAscendingSortedNumbers.some((dateAsNumber, index) => dateAsNumber !== dateAsAscendingSortedNumbers[0] + index);
-  }
-
   private findPositionOfDate(date: Date): number | undefined {
     const index = this.availableDates.findIndex(
       (availableDate) => this.timeService.calculateDifferenceBetweenDates(availableDate, date) === 0,
