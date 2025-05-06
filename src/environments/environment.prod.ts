@@ -8,5 +8,4 @@ export const environment: EnvironmentConfig = {
   },
   appVersion: APPLICATION_VERSION,
   appRelease: APPLICATION_RELEASE,
-  stage: 'prod',
 };

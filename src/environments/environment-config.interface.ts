@@ -5,5 +5,5 @@ export interface EnvironmentConfig {
   };
   appVersion: string;
   appRelease: string;
-  stage: string;
+  stagePrefix?: string;
 }
