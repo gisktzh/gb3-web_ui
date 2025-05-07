@@ -32,7 +32,7 @@
           <mat-datepicker
             #minDatePicker
             [startView]="datePickerStartView"
-            [startAt]="availableDates[this.firstSliderPosition]"
+            [startAt]="availableDates[firstSliderPosition]"
             (yearSelected)="yearOrMonthSelected($event, minDatePicker, true, 'years')"
             (monthSelected)="yearOrMonthSelected($event, minDatePicker, true, 'months')"
           ></mat-datepicker>
@@ -58,7 +58,7 @@
           <mat-datepicker
             #maxDatePicker
             [startView]="datePickerStartView"
-            [startAt]="availableDates[this.secondSliderPosition || 0]"
+            [startAt]="availableDates[secondSliderPosition || 0]"
             (yearSelected)="yearOrMonthSelected($event, maxDatePicker, false, 'years')"
             (monthSelected)="yearOrMonthSelected($event, maxDatePicker, false, 'months')"
           ></mat-datepicker>
