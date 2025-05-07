@@ -10,6 +10,7 @@ valid_branch_regex='^(feature|hotfix|bugfix)/(gb3|ghub)-[0-9]+-[a-zA-Z0-9\-]+$'
 
 if ! echo "$local_branch_name" | grep -Eq "$valid_branch_regex"; then
     printf "\033[31m⚠️ Branchname does not adhere to naming convention %s! \033[0m\n" "$valid_branch_regex"
+    exit 1
 else
     echo "✅  Branchname!"
 fi

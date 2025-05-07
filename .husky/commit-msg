@@ -6,6 +6,7 @@ valid_commit_pattern='(GB3|GHUB)-[0-9][0-9]*: .*'
 
 if ! echo "$message" | grep -Eq "$valid_commit_pattern"; then
   printf "\033[31m⚠️ Commit message does not adhere to naming convention %s! \033[0m\n" "$valid_commit_pattern"
+  exit 1
 else
   echo "✅ Commit message!"
 fi

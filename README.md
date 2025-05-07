@@ -146,8 +146,8 @@ Whenever possible, a Jira ticket should be referenced in both branchname and com
   is a short summary of the feature/hotfix/bugfix.`
 - Commits: `[GB3|GHUB]-[xxx]: Your commit message`, , where `xxx` refers to a Jira ticket
 
-Our githooks check for both the branch name and the commit message, but they will only output a warning if they don't
-match. This is because there are times when you _might_ want to deviate from these rules.
+Our githooks check for both the branch name and the commit message. They will output a warning and reject the commmit if they don't
+match. In case you _might_ want to deviate from these rules having no Jira ticket, use answer-to-life Jira ticket `GHUB-42`.
 ES Lint is enabled in the precommit hook. This means that every commit will be checked for linting errors. If there are any, the commit will be rejected.
 Either fix the error (unused variable or import, etc.) or disable the rule for the specific line or file (`any` in `.spec.ts` files).
 In case of the latter, consider adding a comment explaining why the rule was disabled. Example for such a case:
