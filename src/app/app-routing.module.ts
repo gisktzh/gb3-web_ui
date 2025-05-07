@@ -8,10 +8,7 @@ import {environment} from '../environments/environment';
 
 const siteOperator = 'Geoportal Kanton Zürich';
 const createRouteTitle = (title?: string): string => {
-  let routeTitle = '';
-  if (title) {
-    routeTitle = `${title} `;
-  }
+  const routeTitle = title ? `${title} ` : '';
   if (environment.production || environment.stagePrefix === undefined) {
     return `${routeTitle}${siteOperator}`;
   }
