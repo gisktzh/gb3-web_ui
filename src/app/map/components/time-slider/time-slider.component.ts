@@ -34,8 +34,8 @@ export class TimeSliderComponent implements OnInit, OnChanges {
 
   public timeExtent!: TimeExtent;
 
-  public effectiveMinimumDateIndex!: number;
-  public effectiveMaximumDateIndex!: number;
+  public minimumDateIndex!: number;
+  public maximumDateIndex!: number;
 
   // the time slider shows a simple current value (e.g. `2001` instead of `2001-2002`) if it has a range of exactly one of a single time unit (year, month, ...)
   public hasSimpleCurrentValue: boolean = false;
@@ -52,15 +52,15 @@ export class TimeSliderComponent implements OnInit, OnChanges {
 
   public ngOnInit() {
     this.availableDates = this.timeSliderService.createStops(this.timeSliderConfiguration);
-    this.effectiveMinimumDateIndex = 0;
-    this.effectiveMaximumDateIndex = this.availableDates.length - 1;
+    this.minimumDateIndex = 0;
+    this.maximumDateIndex = this.availableDates.length - 1;
     this.timeExtent = {start: this.initialTimeExtent.start, end: this.initialTimeExtent.end};
     this.firstSliderPosition = this.findPositionOfDate(this.timeExtent.start) ?? 0;
     this.secondSliderPosition = this.timeSliderConfiguration.range ? undefined : this.findPositionOfDate(this.timeExtent.end);
     this.hasSimpleCurrentValue = this.isStringSingleTimeUnitRange(this.timeSliderConfiguration.range);
-
     // date picker
-    this.hasDatePicker = this.isRangeContinuousWithinAllowedTimeUnits(this.timeSliderConfiguration);
+    // enable the date picker its from sourceType parameter
+    this.hasDatePicker = this.timeSliderConfiguration.sourceType === 'parameter';
     if (this.hasDatePicker) {
       this.datePickerUnit = this.extractUniqueDatePickerUnitFromDateFormat(this.timeSliderConfiguration.dateFormat) ?? 'days';
       this.datePickerStartView = this.createDatePickerStartView(this.datePickerUnit);
@@ -94,8 +94,8 @@ export class TimeSliderComponent implements OnInit, OnChanges {
       this.timeSliderConfiguration,
       newTimeExtent,
       hasStartDateChanged,
-      this.availableDates[this.effectiveMinimumDateIndex],
-      this.availableDates[this.effectiveMaximumDateIndex],
+      this.availableDates[this.minimumDateIndex],
+      this.availableDates[this.maximumDateIndex],
     );
 
     // correct the thumb that was modified with the calculated time extent if necessary (e.g. enforcing a minimal range)
@@ -144,9 +144,9 @@ export class TimeSliderComponent implements OnInit, OnChanges {
     const position = this.findPositionOfDate(date);
     if (position !== undefined) {
       if (changedMinimumDate) {
-        this.effectiveMinimumDateIndex = position;
+        this.firstSliderPosition = position;
       } else {
-        this.effectiveMaximumDateIndex = position;
+        this.secondSliderPosition = position;
       }
       this.setValidTimeExtent(changedMinimumDate);
     }
@@ -156,44 +156,12 @@ export class TimeSliderComponent implements OnInit, OnChanges {
     return range ? this.timeService.isStringSingleTimeUnitRange(range) : false;
   }
 
-  /**
-   * Returns `true` the given date format contains only one unique unit (e.g. 'years') and the source is either of
-   * type `parameter` or if it's of type `layer` then there is a continuous strictly monotonously rising series of layer dates.
-   */
-  private isRangeContinuousWithinAllowedTimeUnits(timeSliderConfiguration: TimeSliderConfiguration): boolean {
-    let isRangeContinuousWithinAllowedTimeUnits = false;
-    const unit = this.extractUniqueDatePickerUnitFromDateFormat(timeSliderConfiguration.dateFormat);
-    if (unit) {
-      switch (timeSliderConfiguration.sourceType) {
-        case 'parameter':
-          isRangeContinuousWithinAllowedTimeUnits = true;
-          break;
-        case 'layer':
-          isRangeContinuousWithinAllowedTimeUnits = this.isLayerSourceContinuous(
-            <TimeSliderLayerSource>timeSliderConfiguration.source,
-            unit,
-          );
-          break;
-      }
-    }
-    return isRangeContinuousWithinAllowedTimeUnits;
-  }
-
   private extractUniqueDatePickerUnitFromDateFormat(dateFormat: string): DatePickerManipulationUnits | undefined {
     const unit = this.timeSliderService.extractUniqueUnitFromDateFormat(dateFormat);
     if (unit !== undefined && allowedDatePickerManipulationUnits.some((allowedUnit) => allowedUnit === unit)) {
       return unit as DatePickerManipulationUnits;
     }
     return undefined;
-  }
-
-  private isLayerSourceContinuous(layerSource: TimeSliderLayerSource, unit: DatePickerManipulationUnits): boolean {
-    const dateAsAscendingSortedNumbers = layerSource.layers
-      .map((layer) => this.timeService.createPartialFromString(layer.date, unit))
-      .sort((a, b) => a - b);
-    // all date numbers must be part of a continuous and strictly monotonously rising series each with exactly
-    // one step between them: `date[0] = x` => `date[n] = x + n`
-    return !dateAsAscendingSortedNumbers.some((dateAsNumber, index) => dateAsNumber !== dateAsAscendingSortedNumbers[0] + index);
   }
 
   private findPositionOfDate(date: Date): number | undefined {

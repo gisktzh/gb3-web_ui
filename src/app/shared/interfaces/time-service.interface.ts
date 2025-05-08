@@ -26,7 +26,7 @@ export interface TimeService {
    */
   getDateAsUTCString: (date: Date, format?: string) => string;
   /**
-   * Returns the difference between two dates in milliseconds.
+   * Returns the difference between two dates in full days. Everything smaller (hours, minutes, seconds) is ignored.
    */
   calculateDifferenceBetweenDates: (firstDate: Date, secondDate: Date) => number;
   /**
