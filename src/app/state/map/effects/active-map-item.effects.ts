@@ -2,8 +2,7 @@ import {Inject, Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
 import {Store} from '@ngrx/store';
-import {filter, tap} from 'rxjs';
-import {map} from 'rxjs';
+import {filter, map, tap} from 'rxjs';
 import {MAP_SERVICE} from '../../../app.module';
 import {MapService} from '../../../map/interfaces/map.service';
 import {Gb2WmsActiveMapItem} from '../../../map/models/implementations/gb2-wms.model';
@@ -113,6 +112,7 @@ export class ActiveMapItemEffects {
               case 'measure-line':
               case 'measure-point':
               case 'measure-area':
+              case 'measure-circle':
                 activeUserDrawingLayer = UserDrawingLayer.Measurements;
                 break;
               case 'draw-point':
@@ -129,6 +129,7 @@ export class ActiveMapItemEffects {
               case 'select-section':
               case 'select-canton':
               case 'select-municipality':
+              case 'select-federation':
               case 'measure-elevation-profile':
                 // these tools are used on an internal layer
                 return false;

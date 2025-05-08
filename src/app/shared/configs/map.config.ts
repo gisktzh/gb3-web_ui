@@ -26,4 +26,5 @@ export const defaultMapConfig: MapConfigState = {
   initialMapPadding: MapConstants.INITIAL_MAP_PADDING,
   initialMapPaddingMobile: MapConstants.INITIAL_MAP_PADDING_MOBILE,
   initialBoundingBox: MapConstants.KT_ZURICH_BOUNDING_BOX,
+  referenceDistanceInMeters: undefined,
 };

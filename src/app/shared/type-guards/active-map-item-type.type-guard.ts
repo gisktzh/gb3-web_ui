@@ -3,7 +3,7 @@ import {ActiveMapItem} from '../../map/models/active-map-item.model';
 /**
  * Generic constructor type which allows for classes as input parameters
  */
-type Constructor<T> = new (...args: any[]) => T;
+type Constructor<T> = new (...args: never[]) => T;
 
 /**
  * This typeguard can be used to check whether an ActiveMapItem is of a certain concrete implementation. It returns a

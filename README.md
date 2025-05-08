@@ -7,12 +7,11 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 > 1. [Node version](#node-version)
 > 2. [Development server](#development-server)
 > 3. [Docker](#docker)
-> 4. [Local Backend](#local-backend)
-> 5. [Naming conventions](#naming-conventions)
-> 6. [Code documentation](#code-documentation)
-> 7. [Git conventions](#git-conventions)
-> 8. [Release management](#release-management)
-> 9. [Contributors](#contributors)
+> 4. [Naming conventions](#naming-conventions)
+> 5. [Code documentation](#code-documentation)
+> 6. [Git conventions](#git-conventions)
+> 7. [Release management](#release-management)
+> 8. [Contributors](#contributors)
 
 ## Node version
 
@@ -133,19 +132,6 @@ docker run -p 80:8080 -v nginx-logs:/var/log/nginx  --name gb3-frontend gb3-fron
 - **latest** is the version tag for this image
 - **-v nginxlogs:/var/log/nginx** volume folder with log files for filebeat
 
-## Local Backend
-
-### Using local GB2 setup
-
-If you're using a local GB2 setup (e.g. via docker), you can use this backend by
-running `ng serve --configuration=development-local-gb2` (or `npm run start-local-gb2` shorthand). This assumes that
-
-- GB2 runs on localhost, port 3000, exposing **all** services from GB2 (wms, tokens, etc.)
-- GB2 is accessible from your host
-
-If using this, angular will proxy all requests to the GB2 via localhost, so you have to set all links to be relative (
-e.g. `/wms/asd` will become `http://localhost:4200/wms/asd`, and then proxied to `http://localhost:3000/wms/asd`).
-
 ## Naming conventions
 
 Generally, we are orientating ourselves at the default Typescript naming conventions.
@@ -156,19 +142,19 @@ WIP - add more naming conventions :)
 
 Whenever possible, a Jira ticket should be referenced in both branchname and commit message:
 
-- Branches: `[feature|hotfix]/gb3-[xxx]-[name-of-branch]`, where `xxx` refers to a Jira ticket and the `name-of-branch`
-  is a short summary of the feature/hotfix.`
-- Commits: `GB3-[xxx]: Your commit message`, , where `xxx` refers to a Jira ticket
+- Branches: `[feature|hotfix|bugfix]/[gb3|ghub]-[xxx]-[name-of-branch]`, where `xxx` refers to a Jira ticket and the `name-of-branch`
+  is a short summary of the feature/hotfix/bugfix.`
+- Commits: `[GB3|GHUB]-[xxx]: Your commit message`, , where `xxx` refers to a Jira ticket
 
-Our githooks check for both the branch name and the commit message, but they will only output a warning if they don't
-match. This is because there are times when you _might_ want to deviate from these rules.
+Our githooks check for both the branch name and the commit message. They will output a warning and reject the commmit if they don't
+match. In case you _might_ want to deviate from these rules having no Jira ticket, use answer-to-life Jira ticket `GHUB-42`.
 ES Lint is enabled in the precommit hook. This means that every commit will be checked for linting errors. If there are any, the commit will be rejected.
 Either fix the error (unused variable or import, etc.) or disable the rule for the specific line or file (`any` in `.spec.ts` files).
 In case of the latter, consider adding a comment explaining why the rule was disabled. Example for such a case:
 
 ```typescript
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Allow "any" in test file
-const action = {} as any;
+const someVariable = {} as any;
 ```
 
 The rules are defined in the `.eslintrc.config.mjs` file.

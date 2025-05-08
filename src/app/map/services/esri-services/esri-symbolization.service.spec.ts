@@ -146,7 +146,7 @@ describe('EsriSymbolizationService', () => {
   let service: EsriSymbolizationService;
 
   beforeEach(() => {
-    // simple mock by overriding a readonly property and then injecting it into the TestBed.
+    // eslint-disable-next-line @typescript-eslint/no-empty-function -- simple mock by overriding a readonly property and then injecting it
     let configService = new ConfigService(document, {dispatch: () => {}} as unknown as Store<object>);
     configService = Object.assign(configService, {layerSymbolizations: mockSymbolizations});
     TestBed.configureTestingModule({

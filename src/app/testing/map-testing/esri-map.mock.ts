@@ -1,10 +1,10 @@
-import {EsriCollection} from '../../map/services/esri-services/esri.module';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
-import Layer = __esri.Layer;
-import Map = __esri.Map;
+import Collection from '@arcgis/core/core/Collection';
+import EsriMap from '@arcgis/core/Map';
+import Layer from '@arcgis/core/layers/Layer';
 
-export class EsriMapMock implements Partial<Map> {
-  public readonly layers: __esri.Collection<Layer> = new EsriCollection();
+export class EsriMapMock implements Partial<EsriMap> {
+  public readonly layers: __esri.Collection<Layer> = new Collection();
 
   constructor(fixedLayers: GraphicsLayer[]) {
     fixedLayers.forEach((fixedLayer) => this.add(fixedLayer));

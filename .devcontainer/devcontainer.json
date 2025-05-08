@@ -1,0 +1,35 @@
+{
+  "name": "GB3 Frontend",
+  "dockerComposeFile": "../dev/docker-compose.dev.yml",
+  "service": "frontend",
+  "workspaceFolder": "/app",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "eamodio.gitlens",
+        "esbenp.prettier-vscode",
+        "angular.ng-template",
+        "streetsidesoftware.code-spell-checker",
+        "formulahendry.auto-close-tag",
+        "formulahendry.auto-rename-tag",
+        "vscode-icons-team.vscode-icons",
+        "ryu1kn.partial-diff",
+        "ezforo.copy-relative-path-and-line-numbers",
+        "mitchdenny.ecdc",
+        "wmaurer.change-case",
+        "nhoizey.gremlins",
+        "iliazeus.vscode-ansi",
+        "yassh.copy-with-line-numbers",
+        "christian-kohler.path-intellisense"
+      ],
+      "settings": {
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true,
+        "editor.formatOnSave": true,
+        "editor.stickyScroll.enabled": true,
+        "files.autoSave": "onFocusChange"
+      }
+    }
+  }
+}

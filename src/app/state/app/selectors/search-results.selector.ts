@@ -30,7 +30,7 @@ export const selectFilteredSearchApiResultMatches = createSelector(
       ? searchApiResultMatches // simply return all matches if no filter is active
       : searchApiResultMatches.filter((resultMatch) => {
           switch (resultMatch.indexType) {
-            case 'activeMapItems':
+            case 'activeMapItems': {
               // the filters for this index type are created dynamically depending on the current active map items
               // first: find the search index config based on the index name (side-note: the 'indexName' in the search result
               //        is actually its label)
@@ -48,7 +48,18 @@ export const selectFilteredSearchApiResultMatches = createSelector(
                     filter.isActive,
                 )
               );
-            default:
+            }
+            case 'addresses':
+            case 'places':
+            case 'gvz':
+            case 'egid':
+            case 'parcels':
+            case 'egrid':
+            case 'metadata-maps':
+            case 'metadata-products':
+            case 'metadata-datasets':
+            case 'metadata-services':
+            case 'unknown':
               return activeSearchFilterIndexes.has(resultMatch.indexType);
           }
         });

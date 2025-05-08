@@ -1,6 +1,6 @@
 import Graphic from '@arcgis/core/Graphic';
 import Polygon from '@arcgis/core/geometry/Polygon';
-import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
+import * as areaOperator from '@arcgis/core/geometry/operators/areaOperator.js';
 import {UnsupportedGeometryType} from '../errors/esri.errors';
 import {hasNonNullishProperty, isNullish} from '../type-guards/esri-nullish.type-guard';
 import GraphicHit = __esri.GraphicHit;
@@ -34,7 +34,7 @@ export class HitTestSelectionUtils {
   public static selectSmallestPolygonFromHitTestResult(polygonGraphics: Graphic[]): Graphic {
     const hitSelection = polygonGraphics.reduce(
       (hitWithSmallestArea: HitWithArea, currentHit) => {
-        const area = geometryEngine.planarArea(currentHit.geometry as Polygon);
+        const area = areaOperator.execute(currentHit.geometry as Polygon);
         if (area < hitWithSmallestArea.area) {
           return {hit: currentHit, area};
         }
@@ -42,7 +42,7 @@ export class HitTestSelectionUtils {
       },
       {
         hit: polygonGraphics[0],
-        area: geometryEngine.planarArea(polygonGraphics[0].geometry as Polygon),
+        area: areaOperator.execute(polygonGraphics[0].geometry as Polygon),
       },
     );
     return hitSelection.hit;

@@ -3,11 +3,12 @@ import {DrawingActions} from '../actions/drawing.actions';
 import {DrawingState} from '../states/drawing.state';
 import {Gb3StyledInternalDrawingRepresentation} from '../../../shared/interfaces/internal-drawing-representation.interface';
 import {UserDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
+import {MapConstants} from '../../../shared/constants/map.constants';
 
 describe('Drawing Reducer', () => {
   describe('an unknown action', () => {
     it('should return the previous state', () => {
-      const action = {} as any;
+      const action = {} as never;
 
       const result = reducer(defaultInitialState, action);
 
@@ -36,8 +37,8 @@ describe('Drawing Reducer', () => {
     it('selects a drawing based on its Id', () => {
       const currentState: DrawingState = {
         drawings: [
-          {properties: {__id: '1'}} as unknown as Gb3StyledInternalDrawingRepresentation,
-          {properties: {__id: '2'}} as unknown as Gb3StyledInternalDrawingRepresentation,
+          {properties: {[MapConstants.DRAWING_IDENTIFIER]: '1'}} as unknown as Gb3StyledInternalDrawingRepresentation,
+          {properties: {[MapConstants.DRAWING_IDENTIFIER]: '2'}} as unknown as Gb3StyledInternalDrawingRepresentation,
         ],
         selectedDrawing: undefined,
       };
@@ -53,8 +54,8 @@ describe('Drawing Reducer', () => {
     it('selects a drawing based on its Id', () => {
       const currentState: DrawingState = {
         drawings: [
-          {properties: {__id: '1'}} as unknown as Gb3StyledInternalDrawingRepresentation,
-          {properties: {__id: '2'}} as unknown as Gb3StyledInternalDrawingRepresentation,
+          {properties: {[MapConstants.DRAWING_IDENTIFIER]: '1'}} as unknown as Gb3StyledInternalDrawingRepresentation,
+          {properties: {[MapConstants.DRAWING_IDENTIFIER]: '2'}} as unknown as Gb3StyledInternalDrawingRepresentation,
         ],
         selectedDrawing: undefined,
       };
@@ -71,14 +72,14 @@ describe('Drawing Reducer', () => {
     it('adds a drawing to the end of the current drawings', () => {
       const currentState: DrawingState = {
         drawings: [
-          {properties: {__id: 1}} as unknown as Gb3StyledInternalDrawingRepresentation,
-          {properties: {__id: 2}} as unknown as Gb3StyledInternalDrawingRepresentation,
+          {properties: {[MapConstants.DRAWING_IDENTIFIER]: 1}} as unknown as Gb3StyledInternalDrawingRepresentation,
+          {properties: {[MapConstants.DRAWING_IDENTIFIER]: 2}} as unknown as Gb3StyledInternalDrawingRepresentation,
         ],
         selectedDrawing: undefined,
       };
 
       const newDrawing: Gb3StyledInternalDrawingRepresentation = {
-        properties: {__id: 3},
+        properties: {[MapConstants.DRAWING_IDENTIFIER]: 3},
       } as unknown as Gb3StyledInternalDrawingRepresentation;
       const action = DrawingActions.addDrawing({drawing: newDrawing});
 
@@ -90,14 +91,14 @@ describe('Drawing Reducer', () => {
     it('replaces a drawing if it already exists in the state', () => {
       const currentState: DrawingState = {
         drawings: [
-          {properties: {__id: 1}} as unknown as Gb3StyledInternalDrawingRepresentation,
-          {properties: {__id: 2}} as unknown as Gb3StyledInternalDrawingRepresentation,
+          {properties: {[MapConstants.DRAWING_IDENTIFIER]: 1}} as unknown as Gb3StyledInternalDrawingRepresentation,
+          {properties: {[MapConstants.DRAWING_IDENTIFIER]: 2}} as unknown as Gb3StyledInternalDrawingRepresentation,
         ],
         selectedDrawing: undefined,
       };
 
       const newDrawing: Gb3StyledInternalDrawingRepresentation = {
-        properties: {__id: 2},
+        properties: {[MapConstants.DRAWING_IDENTIFIER]: 2},
       } as unknown as Gb3StyledInternalDrawingRepresentation;
       const action = DrawingActions.addDrawing({drawing: newDrawing});
 
@@ -112,18 +113,20 @@ describe('Drawing Reducer', () => {
     it('adds drawings to the end of the current drawings', () => {
       const currentState: DrawingState = {
         drawings: [
-          {properties: {__id: 1}} as unknown as Gb3StyledInternalDrawingRepresentation,
-          {properties: {__id: 2, __belongsTo: 1}} as unknown as Gb3StyledInternalDrawingRepresentation,
+          {properties: {[MapConstants.DRAWING_IDENTIFIER]: 1}} as unknown as Gb3StyledInternalDrawingRepresentation,
+          {
+            properties: {[MapConstants.DRAWING_IDENTIFIER]: 2, [MapConstants.BELONGS_TO_IDENTIFIER]: 1},
+          } as unknown as Gb3StyledInternalDrawingRepresentation,
         ],
         selectedDrawing: undefined,
       };
 
       const newDrawings: Gb3StyledInternalDrawingRepresentation[] = [
         {
-          properties: {__id: 3},
+          properties: {[MapConstants.DRAWING_IDENTIFIER]: 3},
         },
         {
-          properties: {__id: 4, __belongsTo: 3},
+          properties: {[MapConstants.DRAWING_IDENTIFIER]: 4, [MapConstants.BELONGS_TO_IDENTIFIER]: 3},
         },
       ] as unknown as Gb3StyledInternalDrawingRepresentation[];
       const action = DrawingActions.addDrawings({drawings: newDrawings});
@@ -137,18 +140,20 @@ describe('Drawing Reducer', () => {
     it('replaces drawings if they already exist in the state', () => {
       const currentState: DrawingState = {
         drawings: [
-          {properties: {__id: 1}} as unknown as Gb3StyledInternalDrawingRepresentation,
-          {properties: {__id: 2, __belongsTo: 1}} as unknown as Gb3StyledInternalDrawingRepresentation,
+          {properties: {[MapConstants.DRAWING_IDENTIFIER]: 1}} as unknown as Gb3StyledInternalDrawingRepresentation,
+          {
+            properties: {[MapConstants.DRAWING_IDENTIFIER]: 2, [MapConstants.BELONGS_TO_IDENTIFIER]: 1},
+          } as unknown as Gb3StyledInternalDrawingRepresentation,
         ],
         selectedDrawing: undefined,
       };
 
       const newDrawings: Gb3StyledInternalDrawingRepresentation[] = [
         {
-          properties: {__id: 1},
+          properties: {[MapConstants.DRAWING_IDENTIFIER]: 1},
         },
         {
-          properties: {__id: 4, __belongsTo: 1},
+          properties: {[MapConstants.DRAWING_IDENTIFIER]: 4, [MapConstants.BELONGS_TO_IDENTIFIER]: 1},
         },
       ] as unknown as Gb3StyledInternalDrawingRepresentation[];
       const action = DrawingActions.addDrawings({drawings: newDrawings});

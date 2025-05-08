@@ -20,7 +20,11 @@ import rxjsAngularX from 'eslint-plugin-rxjs-angular-x';
 
 export default tseslint.config(
   {
-    ignores: ['projects/**/*', '**/*.mock.ts', '**/*.stub.ts'],
+    // global ignore, see https://eslint.org/docs/latest/use/configure/ignore#ignoring-files
+    ignores: ['.angular/**', 'coverage/**', 'dev/**', '.docker/**'],
+  },
+  {
+    ignores: ['**/*.mock.ts', '**/*.stub.ts'],
     files: ['src/**/*.ts'],
     extends: [
       eslint.configs.recommended,
@@ -48,6 +52,7 @@ export default tseslint.config(
         {
           argsIgnorePattern: '^_',
           varsIgnorePattern: '^_',
+          caughtErrors: 'none',
         },
       ],
 

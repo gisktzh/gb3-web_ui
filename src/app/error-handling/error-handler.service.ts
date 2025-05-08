@@ -20,6 +20,7 @@ export class ErrorHandlerService implements ErrorHandler {
     private zone: NgZone,
   ) {}
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- official handleError type from Angular
   public handleError(error: any) {
     // log errors to console for easier debugging in non-productive environments
     if (!environment.production) {

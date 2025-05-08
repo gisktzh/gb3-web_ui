@@ -17,9 +17,9 @@ services:
       - nginx-logs:/var/log/nginx
     logging:
       options:
-        max-size: "50m"
-        max-file: "5"
-    
+        max-size: '50m'
+        max-file: '5'
+
 volumes:
   nginx-logs:
     external: true

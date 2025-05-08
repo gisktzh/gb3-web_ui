@@ -1,10 +1,12 @@
 import {Gb3StyleRepresentation} from '../../../../shared/interfaces/internal-drawing-representation.interface';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
-import {EsriColor, EsriSimpleFillSymbol, EsriSimpleLineSymbol, EsriSimpleMarkerSymbol} from '../esri.module';
 import Color from '@arcgis/core/Color';
 import {ColorUtils} from '../../../../shared/utils/color.utils';
 import {SymbolizationColor} from '../../../../shared/interfaces/symbolization.interface';
 import {SymbolUnion} from '@arcgis/core/unionTypes';
+import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
+import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
+import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 
 export class StyleRepresentationToEsriSymbolUtils {
   public static convert(style: Gb3StyleRepresentation, labelText?: string): SymbolUnion {
@@ -22,7 +24,7 @@ export class StyleRepresentationToEsriSymbolUtils {
         });
       }
       case 'point': {
-        return new EsriSimpleMarkerSymbol({
+        return new SimpleMarkerSymbol({
           color: this.convertHexToEsriColor(style.fillColor, style.fillOpacity),
           size: style.pointRadius,
           outline: {
@@ -32,13 +34,13 @@ export class StyleRepresentationToEsriSymbolUtils {
         });
       }
       case 'line': {
-        return new EsriSimpleLineSymbol({
+        return new SimpleLineSymbol({
           color: this.convertHexToEsriColor(style.strokeColor, style.strokeOpacity),
           width: style.strokeWidth,
         });
       }
       case 'polygon': {
-        return new EsriSimpleFillSymbol({
+        return new SimpleFillSymbol({
           color: this.convertHexToEsriColor(style.fillColor, style.fillOpacity),
           outline: {
             color: this.convertHexToEsriColor(style.strokeColor, style.strokeOpacity),
@@ -54,6 +56,6 @@ export class StyleRepresentationToEsriSymbolUtils {
   }
 
   private static createEsriColor(color: SymbolizationColor): Color {
-    return new EsriColor(color);
+    return new Color(color);
   }
 }

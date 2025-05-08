@@ -27,7 +27,7 @@ export class AccordionItemComponent implements OnInit, OnDestroy {
 
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly subscriptions: Subscription = new Subscription();
-  @ViewChild('accordionItem') accordionItem!: CdkAccordionItem;
+  @ViewChild('accordionItem') private accordionItem!: CdkAccordionItem;
 
   constructor(private readonly store: Store) {}
 

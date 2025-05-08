@@ -72,6 +72,7 @@ describe('EsriElevationProfileMeasurementStrategy', () => {
     });
     it('calls completeEditing on completion for editing drawings', () => {
       const strategy = new EsriElevationProfileMeasurementStrategyWrapper(layer, mapView, lineSymbol, () => callbackHandler.handle());
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- spy on private method of prototype
       const completeEditingSpy = spyOn<any>(AbstractEsriDrawingStrategy.prototype, 'completeEditing');
       const graphic = new Graphic({
         geometry: new Polyline({

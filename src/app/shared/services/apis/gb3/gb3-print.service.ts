@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/naming-convention */
+/* eslint-disable @typescript-eslint/naming-convention -- mapping service to API */
 import {Inject, Injectable} from '@angular/core';
 import {Gb3ApiService} from './gb3-api.service';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs';
+import {map, Observable} from 'rxjs';
 import {
   DynamicStringParameters,
   PrintCreation,
@@ -59,7 +58,6 @@ export class Gb3PrintService extends Gb3ApiService {
   }
 
   public printLegend(items: PrintableOverlayItem[]): Observable<PrintCreationResponse> {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     return this.post<PrintLegendNew, PrintLegendCreateData>(this.createPrintLegendUrl(), {legend_topics: items}).pipe(
       map((response) => {
         return {reportUrl: response.report_url};
@@ -69,7 +67,6 @@ export class Gb3PrintService extends Gb3ApiService {
 
   public printFeatureInfo(items: PrintableOverlayItem[], x: number, y: number): Observable<PrintCreationResponse> {
     return this.post<PrintFeatureInfoNew, PrintFeatureInfoCreateData>(this.createFeatureInfoPrintUrl(), {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       query_topics: items,
       x,
       y,

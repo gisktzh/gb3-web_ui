@@ -14,16 +14,16 @@ export const authStatusFeature = createFeature({
   name: authStatusFeatureKey,
   reducer: createReducer(
     initialState,
-    on(AuthStatusActions.setInitialDataLoaded, (state) => {
+    on(AuthStatusActions.setInitialDataLoaded, (state): AuthStatusState => {
       return {...state, isAuthenticationInitialized: true};
     }),
-    on(AuthStatusActions.performLogin, (state) => {
+    on(AuthStatusActions.performLogin, (state): AuthStatusState => {
       return state;
     }),
-    on(AuthStatusActions.performLogin, (state) => {
+    on(AuthStatusActions.performLogin, (state): AuthStatusState => {
       return state;
     }),
-    on(AuthStatusActions.performLogout, (state) => {
+    on(AuthStatusActions.performLogout, (state): AuthStatusState => {
       return state;
     }),
     on(AuthStatusActions.setStatus, (state, {isAuthenticated, userName}): AuthStatusState => {

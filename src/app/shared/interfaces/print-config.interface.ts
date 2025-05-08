@@ -14,7 +14,7 @@ interface DefaultPrintSettings {
 export interface PrintConfig {
   pixelSizes: {
     [K in keyof typeof DocumentFormat]: {
-      [K in ReportOrientation]: {
+      [R in ReportOrientation]: {
         width: number;
         height: number;
       };

@@ -1,23 +1,9 @@
 import {TestBed} from '@angular/core/testing';
-import {FatalError, RecoverableError, SilentError} from '../../shared/errors/abstract.errors';
+import {SilentError} from '../../shared/errors/abstract.errors';
 import {environment} from '../../../environments/environment';
 import {EmbeddedErrorHandlerService} from './embedded-error-handler.service';
 
 class TestSilentError extends SilentError {}
-
-class TestRecoverableError extends RecoverableError {
-  constructor(message: string = '') {
-    super();
-    this.message = message;
-  }
-}
-
-class TestFatalError extends FatalError {
-  constructor(message: string = '') {
-    super();
-    this.message = message;
-  }
-}
 
 describe('EmbeddedErrorHandlerService', () => {
   let service: EmbeddedErrorHandlerService;

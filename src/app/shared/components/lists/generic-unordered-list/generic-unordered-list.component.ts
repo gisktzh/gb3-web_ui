@@ -7,8 +7,8 @@ import {NgClass, NgTemplateOutlet} from '@angular/common';
   templateUrl: './generic-unordered-list.component.html',
   styleUrl: './generic-unordered-list.component.scss',
 })
-export class GenericUnorderedListComponent {
-  @Input() public listData: any[] = [];
-  @Input() public itemTemplate: TemplateRef<any> | null = null;
+export class GenericUnorderedListComponent<T> {
+  @Input() public listData: T[] = [];
+  @Input() public itemTemplate: TemplateRef<unknown> | null = null;
   @Input() public hasGap: boolean = false;
 }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Graphic from '@arcgis/core/Graphic';
 import MapView from '@arcgis/core/views/MapView';
 import Map from '@arcgis/core/Map';
@@ -45,7 +46,7 @@ describe('AbstractEsriMeasurementStrategy', () => {
         Object.getPrototypeOf(AbstractEsriMeasurementStrategy.prototype),
         'checkIfGraphicExistsOnLayer',
       ).and.returnValue(false);
-      strategy['completeEditing'](graphic);
+      strategy['completeEditing'](graphic); // eslint-disable-line @typescript-eslint/dot-notation -- Private property access
       expect(checkGraphicSpy).toHaveBeenCalled();
       expect(handleCompleteSpy).toHaveBeenCalledWith(graphic, graphic, '', 'delete');
     });
@@ -61,7 +62,7 @@ describe('AbstractEsriMeasurementStrategy', () => {
         Object.getPrototypeOf(AbstractEsriMeasurementStrategy.prototype),
         'checkIfGraphicExistsOnLayer',
       ).and.returnValue(true);
-      strategy['completeEditing'](graphic);
+      strategy['completeEditing'](graphic); // eslint-disable-line @typescript-eslint/dot-notation -- Private property access
       expect(checkGraphicSpy).toHaveBeenCalled();
       expect(handleCompleteSpy).toHaveBeenCalledWith(belongsToGraphic, graphic, 'test', 'edit');
     });
@@ -78,7 +79,7 @@ describe('AbstractEsriMeasurementStrategy', () => {
         Object.getPrototypeOf(AbstractEsriMeasurementStrategy.prototype),
         'checkIfGraphicExistsOnLayer',
       ).and.returnValue(true);
-      strategy['completeEditing'](graphic);
+      strategy['completeEditing'](graphic); // eslint-disable-line @typescript-eslint/dot-notation -- Private property access
       expect(checkGraphicSpy).toHaveBeenCalled();
       expect(createLabelSpy).toHaveBeenCalled();
       expect(handleCompleteSpy).toHaveBeenCalledWith(graphic, labelGraphic, 'test', 'edit');
@@ -112,7 +113,7 @@ describe('AbstractEsriMeasurementStrategy', () => {
       const labelGraphic = new Graphic();
       labelGraphic.setAttribute(AbstractEsriDrawableToolStrategy.belongsToFieldName, '123');
       layer.add(labelGraphic);
-      strategy['removeLabelOnEdit'](graphic);
+      strategy['removeLabelOnEdit'](graphic); // eslint-disable-line @typescript-eslint/dot-notation -- Private property access
       expect(layer.graphics.length).toBe(0);
     });
   });

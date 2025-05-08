@@ -8,7 +8,12 @@
       [street]="'Stampfenbachstrasse 12'"
       class="contact-details__addresses__entry"
     ></contact-detail>
-    <contact-detail [contactType]="'email'" [email]="'gis@bd.zh.ch'" class="contact-details__addresses__entry"></contact-detail>
+    <contact-detail
+      [contactType]="'link'"
+      [url]="'https://jira-geo.zh.ch/servicedesk/customer/portal/16'"
+      [title]="'Hilfecenter Geoportal Kanton Zürich'"
+      class="contact-details__addresses__entry"
+    ></contact-detail>
   </div>
   <cdk-accordion>
     <accordion-item header="Für Medien">

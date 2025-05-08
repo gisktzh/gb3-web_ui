@@ -146,11 +146,11 @@ describe('ActiveMapItemEffects', () => {
 
         const expectedAction = ActiveMapItemActions.removeAllTemporaryActiveMapItems();
         actions$ = of(action);
-        effects.removeAllTemporaryMapItems$.subscribe((action) => {
+        effects.removeAllTemporaryMapItems$.subscribe((actualAction) => {
           expect(mapServiceSpy).toHaveBeenCalledTimes(2);
           expect(mapServiceSpy).toHaveBeenCalledWith(activeMapItem1.id);
           expect(mapServiceSpy).toHaveBeenCalledWith(activeMapItem2.id);
-          expect(action).toEqual(expectedAction);
+          expect(actualAction).toEqual(expectedAction);
           done();
         });
       });

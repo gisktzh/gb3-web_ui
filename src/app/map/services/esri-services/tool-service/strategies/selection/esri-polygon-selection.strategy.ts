@@ -38,7 +38,7 @@ export class EsriPolygonSelectionStrategy extends AbstractEsriDrawableToolStrate
     );
   }
 
-  public edit(graphic: Graphic) {
+  public edit(_: Graphic) {
     // currently, editing is not supported for selection strategies
   }
 

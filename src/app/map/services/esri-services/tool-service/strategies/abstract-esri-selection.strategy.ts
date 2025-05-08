@@ -38,7 +38,7 @@ export abstract class AbstractEsriSelectionStrategy<T extends DrawingCallbackHan
     this.layer.removeAll();
   }
 
-  public edit(graphic: Graphic) {
+  public edit(_: Graphic) {
     // currently, editing is not supported for selection strategies
   }
 

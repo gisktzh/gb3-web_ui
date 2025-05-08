@@ -1,8 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
-import {iif, of, switchMap} from 'rxjs';
-import {catchError, map} from 'rxjs';
+import {catchError, iif, map, of, switchMap} from 'rxjs';
 import {Gb3TopicsService} from '../../../shared/services/apis/gb3/gb3-topics.service';
 import {LayerCatalogActions} from '../actions/layer-catalog.actions';
 import {selectMaps} from '../selectors/maps.selector';
@@ -49,11 +48,11 @@ export class LayerCatalogEffects {
       // create an array of ActiveMapItems for each id in the initialMaps configuration that has a matching map in the layer catalog
       map(([_, availableMaps, {initialMaps}]) => {
         const initialMapItems = initialMaps.map((initialMap) => {
-          const availableMap = availableMaps.find((map) => map.id === initialMap);
-          if (!availableMap) {
+          const actualAvailableMap = availableMaps.find((availableMap) => availableMap.id === initialMap);
+          if (!actualAvailableMap) {
             throw new InitialMapIdsParameterInvalid(initialMap);
           }
-          return ActiveMapItemFactory.createGb2WmsMapItem(availableMap);
+          return ActiveMapItemFactory.createGb2WmsMapItem(actualAvailableMap);
         });
 
         return ActiveMapItemActions.addInitialMapItems({initialMapItems});

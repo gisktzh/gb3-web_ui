@@ -17,7 +17,7 @@ export const selectDataCatalogueItems = createSelector(
     }
 
     // We cast to any because not all items have all the properties from DataCatalogueFilterConfiguration. To remove the cast, we would need to refactor
-    return (items as any[])
+    return (items as any[]) // eslint-disable-line @typescript-eslint/no-explicit-any -- see above
       .filter((item) => {
         return activeFilters.every(
           // typecast is safe here because we *know* the property exists, even though we don't know the actual type

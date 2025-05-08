@@ -21,7 +21,7 @@ import {ResultGroupComponent} from './result-group/result-group.component';
 })
 export class ResultGroupsComponent implements OnInit, OnDestroy {
   @ViewChildren(ResultGroupComponent) public readonly resultGroupComponents!: QueryList<ResultGroupComponent>;
-  @Input() showMultiplePanels: boolean = true;
+  @Input() public showMultiplePanels: boolean = true;
   public searchTerms: string[] = [];
   public filteredAddressesAndPlacesMatches: GeometrySearchApiResultMatch[] = [];
   public filteredActiveMapMatches: GeometrySearchApiResultMatch[] = [];
@@ -75,6 +75,7 @@ export class ResultGroupsComponent implements OnInit, OnDestroy {
                   case 'metadata-products':
                   case 'metadata-datasets':
                   case 'metadata-services':
+                  case 'unknown':
                     // ignore
                     break;
                 }
