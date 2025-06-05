@@ -81,7 +81,7 @@ export const externalAppsData: ExternalApp[] = [
     description: 'Kartierung-, Visualisierungs- und Analysetool für Staatsstrassen des Kantons Zürich.',
   },
   {
-    appUrl: 'https://vdp.zh.ch/',
+    appUrl: 'https://vdp.zh.ch/spa/gis/verkehrsdaten-online',
     department: 'TBA',
     image: {
       url: 'https://maps.zh.ch/system/docs/Stromnetzgebiete/verkehr_thumbnail.webp',
