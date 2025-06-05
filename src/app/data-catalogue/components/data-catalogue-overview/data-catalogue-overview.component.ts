@@ -19,7 +19,7 @@ import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {OverviewSearchResultDisplayItem} from '../../../shared/interfaces/overview-search-resuilt-display.interface';
 
 const GEO_DATA_CATALOGUE_SUMMARY =
-  'Im Geodatenkatalog finden Sie Informationen zur Herkunft, Aktualität und Genauigkeit der Daten, Hinweise zur Nutzung und zum Datenbezug.';
+  'Im Geodatenkatalog finden Sie detaillierte Informationen zu allen verfügbaren Geodaten des Kantons Zürich: Woher sie stammen, wie aktuell und genau sie sind, wie Sie sie beziehen können und welche Nutzungsregeln gelten.';
 
 @Injectable()
 class DataCataloguePaginatorIntl implements MatPaginatorIntl {
