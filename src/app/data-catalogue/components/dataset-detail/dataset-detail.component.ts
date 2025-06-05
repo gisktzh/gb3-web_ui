@@ -117,7 +117,7 @@ export class DatasetDetailComponent extends AbstractBaseDetailComponent<DatasetM
   private extractDataProcurementElements(datasetMetadata: DatasetMetadata): DataDisplayElement[] {
     return [
       {title: 'Abgabeformat', value: datasetMetadata.outputFormat, type: 'textList'},
-      {title: 'Bezugsart', value: datasetMetadata.ogd ? 'OGD-Daten (kostenlos)' : 'NOGD-Daten (kostenpflichtig)', type: 'text'},
+      {title: 'Bezugsart', value: datasetMetadata.ogd ? 'OGD-Daten (kostenlos)' : 'NOGD-Daten', type: 'text'},
       {
         title: 'Link',
         value: {
