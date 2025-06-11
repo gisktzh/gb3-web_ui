@@ -5,7 +5,7 @@ export const externalAppsData: ExternalApp[] = [
     appUrl: 'https://lk.zh.ch',
     department: 'ARE',
     image: {
-      url: 'https://maps.zh.ch/system/docs/Stromnetzgebiete/leitungskataster_thumbnail.webp',
+      url: '/assets/images/apps/leitungskataster_thumbnail.webp',
       altText: '',
     },
     title: 'Leitungskataster',
@@ -21,7 +21,7 @@ export const externalAppsData: ExternalApp[] = [
     appUrl: 'https://hydroproweb.zh.ch/Karten/A1%20Pegel%20und%20Abfl%C3%BCsse/PegelAbfl.html',
     department: 'AWEL',
     image: {
-      url: 'https://maps.zh.ch/system/docs/Stromnetzgebiete/pegel_thumbnail.webp',
+      url: '/assets/images/apps/pegel_thumbnail.webp',
       altText: '',
     },
     title: 'Abflüsse und Wasserstände der Oberflächengewässer',
@@ -37,7 +37,7 @@ export const externalAppsData: ExternalApp[] = [
     appUrl: 'https://web.maps.zh.ch/potree',
     department: 'ARE',
     image: {
-      url: 'https://maps.zh.ch/system/docs/Stromnetzgebiete/potree_thumbnail.webp',
+      url: '/assets/images/apps/potree_thumbnail.webp',
       altText: '',
     },
     title: 'Potree LiDAR Viewer',
@@ -53,7 +53,7 @@ export const externalAppsData: ExternalApp[] = [
     appUrl: 'https://maps.zh.ch/potree',
     department: 'ARE',
     image: {
-      url: 'https://maps.zh.ch/system/docs/Stromnetzgebiete/potree_thumbnail.webp',
+      url: '/assets/images/apps/potree_thumbnail.webp',
       altText: '',
     },
     title: 'Potree LiDAR Viewer',
@@ -69,7 +69,7 @@ export const externalAppsData: ExternalApp[] = [
     appUrl: 'https://web.maps.zh.ch/apps/elm/tba/videoStrassenraumZH.html?easting=2678552.42&northing=1254281.63&map=true',
     department: 'TBA',
     image: {
-      url: 'https://maps.zh.ch/system/docs/Stromnetzgebiete/infra3d_thumbnail.webp',
+      url: '/assets/images/apps/infra3d_thumbnail.webp',
       altText: '',
     },
     title: '3D Strassenraum für Kantonsstrassen',
@@ -84,7 +84,7 @@ export const externalAppsData: ExternalApp[] = [
     appUrl: 'https://vdp.zh.ch/spa/gis/verkehrsdaten-online',
     department: 'TBA',
     image: {
-      url: 'https://maps.zh.ch/system/docs/Stromnetzgebiete/verkehr_thumbnail.webp',
+      url: '/assets/images/apps/verkehr_thumbnail.webp',
       altText: '',
     },
     title: 'Verkehr Online',
@@ -100,7 +100,7 @@ export const externalAppsData: ExternalApp[] = [
     appUrl: 'https://hydroproweb.zh.ch/Karten/A4%20Wassertemperaturen/Wassertemp.html',
     department: 'AWEL',
     image: {
-      url: 'https://maps.zh.ch/system/docs/Stromnetzgebiete/wassertemperatur_thumbnail.webp',
+      url: '/assets/images/apps/wassertemperatur_thumbnail.webp',
       altText: '',
     },
     title: 'Wassertemperaturen der Oberflächengewässer',
@@ -116,7 +116,7 @@ export const externalAppsData: ExternalApp[] = [
     appUrl: 'https://www.zh.ch/de/umwelt-tiere/boden/messnetz-bodenfeuchte.html',
     department: 'ALN',
     image: {
-      url: 'https://maps.zh.ch/system/docs/Stromnetzgebiete/bodenfeuchte_thumbnail.webp',
+      url: '/assets/images/apps/bodenfeuchte_thumbnail.webp',
       altText: '',
     },
     title: 'Bodenfeuchte-Messnetz',
@@ -132,7 +132,7 @@ export const externalAppsData: ExternalApp[] = [
     appUrl: 'https://openzh.shinyapps.io/Lokalklima/',
     department: 'STAT',
     image: {
-      url: 'https://maps.zh.ch/system/docs/Stromnetzgebiete/lokalklima_thumbnail.webp',
+      url: '/assets/images/apps/lokalklima_thumbnail.webp',
       altText: '',
     },
     title: 'Lokalklima-Messnetz',
@@ -148,7 +148,7 @@ export const externalAppsData: ExternalApp[] = [
     appUrl: 'https://szinggeler.github.io/geoTangle/geotangle.html',
     department: 'ARE',
     image: {
-      url: 'https://maps.zh.ch/system/docs/Stromnetzgebiete/opengeodatazh_thumbnail.webp',
+      url: '/assets/images/apps/opengeodatazh_thumbnail.webp',
       altText: 'Geodata ZH - Download',
     },
     title: 'Open Geodata - Download mit Warenkorb',
@@ -164,7 +164,7 @@ export const externalAppsData: ExternalApp[] = [
     appUrl: 'https://szinggeler.github.io/addrMatch/addrmatch.html',
     department: 'ARE',
     image: {
-      url: 'https://maps.zh.ch/system/docs/Stromnetzgebiete/georeferenzierungzh_thumbnail.webp',
+      url: '/assets/images/apps/georeferenzierungzh_thumbnail.webp',
       altText: '',
     },
     title: 'Geokodierung von CSV-Adresslisten ZH',
