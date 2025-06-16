@@ -5,7 +5,7 @@ export const externalAppsData: ExternalApp[] = [
     appUrl: 'https://lk.zh.ch',
     department: 'ARE',
     image: {
-      url: 'https://maps.zh.ch/system/docs/Stromnetzgebiete/leitungskataster_thumbnail.webp',
+      url: '/assets/images/apps/leitungskataster_thumbnail.webp',
       altText: '',
     },
     title: 'Leitungskataster',
@@ -21,7 +21,7 @@ export const externalAppsData: ExternalApp[] = [
     appUrl: 'https://hydroproweb.zh.ch/Karten/A1%20Pegel%20und%20Abfl%C3%BCsse/PegelAbfl.html',
     department: 'AWEL',
     image: {
-      url: 'https://maps.zh.ch/system/docs/Stromnetzgebiete/pegel_thumbnail.webp',
+      url: '/assets/images/apps/pegel_thumbnail.webp',
       altText: '',
     },
     title: 'Abflüsse und Wasserstände der Oberflächengewässer',
@@ -37,7 +37,7 @@ export const externalAppsData: ExternalApp[] = [
     appUrl: 'https://web.maps.zh.ch/potree',
     department: 'ARE',
     image: {
-      url: 'https://maps.zh.ch/system/docs/Stromnetzgebiete/potree_thumbnail.webp',
+      url: '/assets/images/apps/potree_thumbnail.webp',
       altText: '',
     },
     title: 'Potree LiDAR Viewer',
@@ -53,7 +53,7 @@ export const externalAppsData: ExternalApp[] = [
     appUrl: 'https://maps.zh.ch/potree',
     department: 'ARE',
     image: {
-      url: 'https://maps.zh.ch/system/docs/Stromnetzgebiete/potree_thumbnail.webp',
+      url: '/assets/images/apps/potree_thumbnail.webp',
       altText: '',
     },
     title: 'Potree LiDAR Viewer',
@@ -69,7 +69,7 @@ export const externalAppsData: ExternalApp[] = [
     appUrl: 'https://web.maps.zh.ch/apps/elm/tba/videoStrassenraumZH.html?easting=2678552.42&northing=1254281.63&map=true',
     department: 'TBA',
     image: {
-      url: 'https://maps.zh.ch/system/docs/Stromnetzgebiete/infra3d_thumbnail.webp',
+      url: '/assets/images/apps/infra3d_thumbnail.webp',
       altText: '',
     },
     title: '3D Strassenraum für Kantonsstrassen',
@@ -81,10 +81,10 @@ export const externalAppsData: ExternalApp[] = [
     description: 'Kartierung-, Visualisierungs- und Analysetool für Staatsstrassen des Kantons Zürich.',
   },
   {
-    appUrl: 'https://vdp.zh.ch/',
+    appUrl: 'https://vdp.zh.ch/spa/gis/verkehrsdaten-online',
     department: 'TBA',
     image: {
-      url: 'https://maps.zh.ch/system/docs/Stromnetzgebiete/verkehr_thumbnail.webp',
+      url: '/assets/images/apps/verkehr_thumbnail.webp',
       altText: '',
     },
     title: 'Verkehr Online',
@@ -100,7 +100,7 @@ export const externalAppsData: ExternalApp[] = [
     appUrl: 'https://hydroproweb.zh.ch/Karten/A4%20Wassertemperaturen/Wassertemp.html',
     department: 'AWEL',
     image: {
-      url: 'https://maps.zh.ch/system/docs/Stromnetzgebiete/wassertemperatur_thumbnail.webp',
+      url: '/assets/images/apps/wassertemperatur_thumbnail.webp',
       altText: '',
     },
     title: 'Wassertemperaturen der Oberflächengewässer',
@@ -116,7 +116,7 @@ export const externalAppsData: ExternalApp[] = [
     appUrl: 'https://www.zh.ch/de/umwelt-tiere/boden/messnetz-bodenfeuchte.html',
     department: 'ALN',
     image: {
-      url: 'https://maps.zh.ch/system/docs/Stromnetzgebiete/bodenfeuchte_thumbnail.webp',
+      url: '/assets/images/apps/bodenfeuchte_thumbnail.webp',
       altText: '',
     },
     title: 'Bodenfeuchte-Messnetz',
@@ -132,7 +132,7 @@ export const externalAppsData: ExternalApp[] = [
     appUrl: 'https://openzh.shinyapps.io/Lokalklima/',
     department: 'STAT',
     image: {
-      url: 'https://maps.zh.ch/system/docs/Stromnetzgebiete/lokalklima_thumbnail.webp',
+      url: '/assets/images/apps/lokalklima_thumbnail.webp',
       altText: '',
     },
     title: 'Lokalklima-Messnetz',
@@ -143,5 +143,36 @@ export const externalAppsData: ExternalApp[] = [
     visibility: 'both',
     description:
       'Seit 2019 betreibt das AWEL im Kanton Zürich ein Messnetz, um die klimatische Situation besser und aktueller zu beobachten. Mit der Messung von Lufttemperatur und -feuchte an etwa 50 Standorten lassen sich unterschiedliche Orte miteinander vergleichen, z.B. während einer Hitzeperiode. Ergänzt wird das Messnetz mit Stationen von «MeteoSchweiz».',
+  },
+  {
+    appUrl: 'https://szinggeler.github.io/geoTangle/geotangle.html',
+    department: 'ARE',
+    image: {
+      url: '/assets/images/apps/opengeodatazh_thumbnail.webp',
+      altText: 'Geodata ZH - Download',
+    },
+    title: 'Open Geodata - Download mit Warenkorb',
+    email: 'stephan.zinggeler@bd.zh.ch',
+    keywords: ['Geodaten', 'Download', 'Shop', 'Warenkorb', 'Datenbezug'],
+    topic: 'Bauten',
+    categories: ['WebMap', 'Visualisierung', 'Datenanalyse', 'Fachapplikationen'],
+    visibility: 'both',
+    description:
+      'Die Webapplikation erleichtert das Herunterladen von Geodaten aus dem Kanton Zürich. Sie nutzt dazu die Schnittstelle des OGD-Datenshop-Dienstes des Kantons ZH. Die Auswahl des gewünschten Bezugs-Perimeters erfolgt über eine selbst gezeichnete Geometrie in einem Kartenfenster oder die Auswahl von Gemeinden oder Parzellen aus einer Liste. Über eine Filterfunktion können die Geodaten gefunden und die gewünschten Datenformate zum Warenkorb hinzugefügt werden. Die Parameter von getätigten Bestellungen werden zur späteren Wiederverwendung gespeichert. Die Webapplikation wurde als installierbare Progressive Web App entwickelt.',
+  },
+  {
+    appUrl: 'https://szinggeler.github.io/addrMatch/addrmatch.html',
+    department: 'ARE',
+    image: {
+      url: '/assets/images/apps/georeferenzierungzh_thumbnail.webp',
+      altText: '',
+    },
+    title: 'Geokodierung von CSV-Adresslisten ZH',
+    email: 'stephan.zinggeler@bd.zh.ch',
+    keywords: ['Adressen', 'Adresslisten', 'Geokodierung', 'Georeferenzierung', 'Koordinaten', 'csv'],
+    topic: 'Bauten',
+    categories: ['Datenanalyse', 'Fachapplikationen'],
+    visibility: 'both',
+    description: 'Mit dieser Web-Applikation können CSV-Adresslisten mit Adressen aus dem Kt. Zürich geokodiert werden.',
   },
 ];
