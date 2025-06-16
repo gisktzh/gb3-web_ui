@@ -637,14 +637,14 @@ There are the following branches:
 
 ## Release management
 
-This process describes how to tag a release so the team at ARE can release the correct version of the application.
+This process describes how to tag a release so the team at ARE-GEO-GIS can release the correct version of the application. A more detailed internal version can be found [here](https://confluence-geo.zh.ch/spaces/GIZ/pages/193167588/GB3-Release+Workflow+Dokumentation).
 
-- Create a new PR from `develop` into `main` for all repos that have had changes since the last release.
+- Create a new PR called `Release` from `develop` into `main` for all repos that have had changes since the last release.
 - After merging, create a new tag for the release. This can be done by clicking on `Releases` on the overview page on GitHub and then clicking on `Draft a new release`.
-- Under `Choose a tag` create a new tag with the format `Release-XX` where `XX` is the release number. This number should be incremented by 1 from the last release.
+- Under `Choose a tag` create a new tag on publish with the format `Release-XX` where `XX` is the release number. This number should be incremented by 1 from the last release.
 - Set the target to `main`
-- Press `Generate release notes` to automatically generate the release notes based on the PRs that have been merged since the last release. CLean up if needed.
-- Click on `Publish release` to create the tag and publish the release notes.
+- Press `Generate release notes` to automatically generate the release notes based on the PRs that have been merged since the last release. Clean up if needed.
+- Click on `Publish release` to create the tag, set it as the latest release and publish the release notes.
 - In Teams, create a new announcement with the release notes and mention which tag is relevant for which repo.
 
 ## Contributors
