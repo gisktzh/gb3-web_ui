@@ -10,9 +10,9 @@ export const faqData: FaqCollection[] = [
         answer:
           'Das Geoportal des Kantons Zürich ist eine Webanwendung für die Suche und Darstellung von' +
           ' kantonalen Geodaten. Die zwei wesentlichen Bestandteile des Geoportals sind der GIS-Browser' +
-          ' und der Geodatenkatalog. Der GIS-Browser und der Geodatenkatalog. Der GIS-Browser stellt Daten' +
-          ' im Kartenformat grafisch dar. Im Geodatenkatalog zu finden mit den wichtigsten Metadaten aus dem' +
-          ' Geolion https://geolion.zh.ch/ (Hintergrundinformationen wie z.B. Herkunft, Aktualität, Hinweise zur Nutzung und zum Datenbezug).',
+          ' und der Geodatenkatalog. Der GIS-Browser stellt Daten im Kartenformat grafisch dar.' +
+          ' Im Geodatenkatalog finden Sie die wichtigsten Metadaten aus dem Geolion https://geolion.zh.ch/' +
+          ' (Hintergrundinformationen wie z.B. Herkunft, Aktualität, Hinweise zur Nutzung und zum Datenbezug).',
       },
       {
         uuid: 'a77846fb-8e4b-4411-92f5-ca919d03e7b5',
@@ -74,7 +74,7 @@ export const faqData: FaqCollection[] = [
           ' Nutzen Sie dafür den Stern in «Aktive Karten». Vorher müssen Sie ein Konto erstellen. Sie können Ihre Favoriten später mit einem Klick wieder aufrufen.' +
           ' Sie können Favoriten auch mit anderen Personen teilen. Dazu klicken Sie auf das Symbol «Teilen». Dann entsteht ein Link.' +
           ' Andere Personen können diesen Link öffnen und Ihre Favoriten im eigenen Konto speichern. Der geteilte Link lässt sich auch' +
-          ' ohne Konto verwenden, indem man ihn als Lesezeichen im Browser hinzufügt. Importiere Kartendienste können Sie nicht speichern.',
+          ' ohne Konto verwenden, indem man ihn als Lesezeichen im Browser hinzufügt. Importierte Kartendienste können Sie nicht speichern.',
       },
       {
         uuid: '23b2da02-25b5-4303-8ba2-cb65e11f1477',
@@ -148,7 +148,7 @@ export const faqData: FaqCollection[] = [
         uuid: '32e50e9a-0da9-4cf0-b1ec-35e3fd8dd641',
         question: 'Wie kann ich die Zoomstufe ändern?',
         answer:
-          'Auf dem Desktop können Sie die Zoomstufe ändern, indem Sie mit der Maus oder dem Trackpad scrollen ändern oder die Schaltflächen' +
+          'Auf dem Desktop können Sie die Zoomstufe ändern, indem Sie mit der Maus oder dem Trackpad scrollen oder die Schaltflächen' +
           ' «Vergrössern» und «Verkleinern» unten links auf der Karte verwenden. Auf dem mobilen Gerät können Sie das Kartenbild mit' +
           ' Fingerbewegungen anpassen, indem Sie zwei Finger auseinander- oder zusammenziehen.',
       },
@@ -267,7 +267,7 @@ export const faqData: FaqCollection[] = [
         question:
           'Was bedeutet die Fehlermeldung «400 Bad Request: Raster products can only be ordered using a PARCEL selection perimeter»?',
         answer:
-          'Das ausgewählte Gebiet ist zu gross. Verwenden Sie einen kleineren Ausschnitt, wenn Sie Rasterdaten bestellen, oder beziehen' +
+          'Das ausgewählte Gebiet ist zu gross. Verwenden Sie für Rasterdaten einen kleineren Ausschnitt. Oder beziehen' +
           ' Sie die Daten aus unserem Download-Index https://maps.zh.ch/download/ .',
       },
       {
