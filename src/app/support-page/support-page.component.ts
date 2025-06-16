@@ -7,7 +7,7 @@ import {LinksGroup} from '../shared/interfaces/links-group.interface';
 import {selectAdditionalInformationLinks} from '../state/support/reducers/support-content.reducer';
 
 const SUPPORT_PAGE_SUMMARY =
-  'Hier werden häufig gestellte Fragen und deren Antworten aufgelistet. Sie haben die Möglichkeit, eine Supportanfrage zu stellen und finden weitere hilfreiche Informationen.';
+  'Hier finden Sie Antworten auf häufig gestellte Fragen zu unseren Anwendungen und Services sowie weitere Informationen. Bei Bedarf können Sie eine Anfrage an unser Hilfecenter senden.';
 
 @Component({
   selector: 'support-page',
