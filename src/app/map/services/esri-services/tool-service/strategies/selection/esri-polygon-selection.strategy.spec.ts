@@ -9,6 +9,7 @@ import {EsriPolygonSelectionStrategy} from './esri-polygon-selection.strategy';
 import {DataDownloadSelection} from '../../../../../../shared/interfaces/data-download-selection.interface';
 import {TestBed} from '@angular/core/testing';
 import {provideMockStore} from '@ngrx/store/testing';
+import {MapViewWithMap} from '../../../types/esri-mapview-with-map.type';
 
 class EsriPolygonSelectionStrategyWrapper extends EsriPolygonSelectionStrategy {
   public get svm() {
@@ -28,7 +29,7 @@ describe('EsriPolygonSelectionStrategy', () => {
     },
   };
 
-  let mapView: MapView;
+  let mapView: MapViewWithMap;
   let layer: GraphicsLayer;
   let fillSymbol: SimpleFillSymbol;
 
@@ -37,7 +38,7 @@ describe('EsriPolygonSelectionStrategy', () => {
       imports: [],
       providers: [provideMockStore({})],
     });
-    mapView = new MapView({map: new Map()});
+    mapView = new MapView({map: new Map()}) as MapViewWithMap;
     layer = new GraphicsLayer({
       id: InternalDrawingLayer.Selection,
     });

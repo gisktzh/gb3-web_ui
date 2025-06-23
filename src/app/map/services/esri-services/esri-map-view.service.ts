@@ -1,17 +1,20 @@
 import {Injectable} from '@angular/core';
 import {MapViewNotInitialized} from './errors/esri.errors';
+import {MapViewWithMap} from './types/esri-mapview-with-map.type';
 
-@Injectable({
-  providedIn: 'root',
-})
+function isMapViewWithMap(view: __esri.MapView | undefined): view is MapViewWithMap {
+  return !!view && !!view.map;
+}
+
+@Injectable({providedIn: 'root'})
 export class EsriMapViewService {
   private _mapView: __esri.MapView | undefined;
 
   /**
    * @throws MapViewNotInitialized
    */
-  public get mapView(): __esri.MapView {
-    if (!this._mapView) {
+  public get mapView(): MapViewWithMap {
+    if (!isMapViewWithMap(this._mapView)) {
       throw new MapViewNotInitialized();
     }
 

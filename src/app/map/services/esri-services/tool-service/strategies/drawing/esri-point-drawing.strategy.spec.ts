@@ -7,6 +7,7 @@ import Graphic from '@arcgis/core/Graphic';
 import Point from '@arcgis/core/geometry/Point';
 import {EsriPointDrawingStrategy} from './esri-point-drawing.strategy';
 import {AbstractEsriDrawingStrategy} from '../abstract-esri-drawing.strategy';
+import {MapViewWithMap} from '../../../types/esri-mapview-with-map.type';
 
 class EsriPointDrawingStrategyWrapper extends EsriPointDrawingStrategy {
   public get svm() {
@@ -19,7 +20,7 @@ class EsriPointDrawingStrategyWrapper extends EsriPointDrawingStrategy {
  * As such, we do not test for the addition of the graphics which should be handled by the Esri framework any way.
  */
 describe('EsriPointDrawingStrategy', () => {
-  let mapView: MapView;
+  let mapView: MapViewWithMap;
   let layer: GraphicsLayer;
   let pointSymbol: SimpleMarkerSymbol;
   const callbackHandler = {
@@ -29,7 +30,7 @@ describe('EsriPointDrawingStrategy', () => {
   };
 
   beforeEach(() => {
-    mapView = new MapView({map: new Map()});
+    mapView = new MapView({map: new Map()}) as MapViewWithMap;
     layer = new GraphicsLayer({
       id: UserDrawingLayer.Measurements,
     });

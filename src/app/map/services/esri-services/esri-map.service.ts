@@ -67,6 +67,7 @@ import EsriMap from '@arcgis/core/Map';
 import {EsriLoadStatus} from './types/esri-load-status.type';
 import * as distanceOperator from '@arcgis/core/geometry/operators/distanceOperator.js';
 import GraphicHit = __esri.GraphicHit;
+import {MapViewWithMap} from './types/esri-mapview-with-map.type';
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
 
@@ -126,7 +127,7 @@ export class EsriMapService implements MapService, OnDestroy {
     this.initializeSubscriptions();
   }
 
-  private get mapView(): __esri.MapView {
+  private get mapView(): MapViewWithMap {
     return this.esriMapViewService.mapView;
   }
 
