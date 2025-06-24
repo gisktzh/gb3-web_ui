@@ -10,6 +10,7 @@ import {EsriLineMeasurementStrategy} from './esri-line-measurement.strategy';
 import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
 import Polyline from '@arcgis/core/geometry/Polyline';
 import {AbstractEsriMeasurementStrategy} from '../abstract-esri-measurement.strategy';
+import {MapViewWithMap} from '../../../types/esri-mapview-with-map.type';
 
 class EsriLineMeasurementStrategyWrapper extends EsriLineMeasurementStrategy {
   public get svm() {
@@ -23,7 +24,7 @@ class EsriLineMeasurementStrategyWrapper extends EsriLineMeasurementStrategy {
  * of 0 on the graphics layer, even though in reality, it should be 2 (when Esri properly adds the graphic).
  */
 describe('EsriLineMeasurementStrategy', () => {
-  let mapView: MapView;
+  let mapView: MapViewWithMap;
   let layer: GraphicsLayer;
   let lineSymbol: SimpleLineSymbol;
   let textSymbol: TextSymbol;
@@ -34,7 +35,7 @@ describe('EsriLineMeasurementStrategy', () => {
   };
 
   beforeEach(() => {
-    mapView = new MapView({map: new Map()});
+    mapView = new MapView({map: new Map()}) as MapViewWithMap;
     layer = new GraphicsLayer({
       id: UserDrawingLayer.Measurements,
     });

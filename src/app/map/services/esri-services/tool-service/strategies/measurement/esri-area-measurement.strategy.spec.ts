@@ -10,6 +10,7 @@ import {EsriAreaMeasurementStrategy} from './esri-area-measurement.strategy';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import Polygon from '@arcgis/core/geometry/Polygon';
 import {AbstractEsriMeasurementStrategy} from '../abstract-esri-measurement.strategy';
+import {MapViewWithMap} from '../../../types/esri-mapview-with-map.type';
 
 class EsriAreaMeasurementStrategyWrapper extends EsriAreaMeasurementStrategy {
   public get svm() {
@@ -23,7 +24,7 @@ class EsriAreaMeasurementStrategyWrapper extends EsriAreaMeasurementStrategy {
  * of 0 on the graphics layer, even though in reality, it should be 2 (when Esri properly adds the graphic).
  */
 describe('EsriAreaMeasurementStrategy', () => {
-  let mapView: MapView;
+  let mapView: MapViewWithMap;
   let layer: GraphicsLayer;
   let fillSymbol: SimpleFillSymbol;
   let textSymbol: TextSymbol;
@@ -34,7 +35,7 @@ describe('EsriAreaMeasurementStrategy', () => {
   };
 
   beforeEach(() => {
-    mapView = new MapView({map: new Map()});
+    mapView = new MapView({map: new Map()}) as MapViewWithMap;
     layer = new GraphicsLayer({
       id: UserDrawingLayer.Measurements,
     });

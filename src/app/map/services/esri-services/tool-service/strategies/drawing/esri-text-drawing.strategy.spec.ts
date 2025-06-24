@@ -12,6 +12,7 @@ import {of} from 'rxjs';
 import {TextDrawingToolInputComponent} from '../../../../../components/text-drawing-tool-input/text-drawing-tool-input.component';
 import Point from '@arcgis/core/geometry/Point';
 import {AbstractEsriDrawingStrategy} from '../abstract-esri-drawing.strategy';
+import {MapViewWithMap} from '../../../types/esri-mapview-with-map.type';
 
 class EsriTextDrawingStrategyWrapper extends EsriTextDrawingStrategy {
   public get svm() {
@@ -24,7 +25,7 @@ class EsriTextDrawingStrategyWrapper extends EsriTextDrawingStrategy {
  * As such, we do not test for the addition of the graphics which should be handled by the Esri framework any way.
  */
 describe('EsriTextDrawingStrategy', () => {
-  let mapView: MapView;
+  let mapView: MapViewWithMap;
   let layer: GraphicsLayer;
   let textSymbol: TextSymbol;
   const callbackHandler = {
@@ -41,7 +42,7 @@ describe('EsriTextDrawingStrategy', () => {
     });
     dialog = TestBed.inject(MatDialog);
 
-    mapView = new MapView({map: new Map()});
+    mapView = new MapView({map: new Map()}) as MapViewWithMap;
     layer = new GraphicsLayer({
       id: UserDrawingLayer.Measurements,
     });

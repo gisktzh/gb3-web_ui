@@ -17,7 +17,7 @@ describe('EsriGraphicToInternalDrawingRepresentationUtils', () => {
     const strokeColorHex = '#080085';
     const strokeWidth = 42;
     const properties: SimpleFillSymbolProperties = {
-      color: new Color(Color.fromHex(fillColorHex)),
+      color: new Color(Color.fromHex(fillColorHex)!),
       outline: {width: strokeWidth, color: new Color(strokeColorHex)},
     };
     const id = 'testid';

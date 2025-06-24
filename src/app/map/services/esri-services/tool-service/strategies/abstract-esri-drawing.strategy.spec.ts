@@ -8,6 +8,7 @@ import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {UserDrawingLayer} from '../../../../../shared/enums/drawing-layer.enum';
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
 import TextSymbol from '@arcgis/core/symbols/TextSymbol';
+import {MapViewWithMap} from '../../types/esri-mapview-with-map.type';
 
 class EsriPointDrawingStrategyWrapper extends EsriPointDrawingStrategy {
   public get svm() {
@@ -17,7 +18,7 @@ class EsriPointDrawingStrategyWrapper extends EsriPointDrawingStrategy {
 
 describe('AbstractEsriDrawingStrategy', () => {
   describe('completeEditing', () => {
-    let mapView: MapView;
+    let mapView: MapViewWithMap;
     let layer: GraphicsLayer;
     let pointSymbol: SimpleMarkerSymbol;
     let strategy: EsriPointDrawingStrategyWrapper;
@@ -28,7 +29,7 @@ describe('AbstractEsriDrawingStrategy', () => {
     };
 
     beforeEach(() => {
-      mapView = new MapView({map: new Map()});
+      mapView = new MapView({map: new Map()}) as MapViewWithMap;
       layer = new GraphicsLayer({
         id: UserDrawingLayer.Measurements,
       });

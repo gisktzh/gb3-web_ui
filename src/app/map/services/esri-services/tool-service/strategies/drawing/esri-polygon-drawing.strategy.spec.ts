@@ -7,6 +7,7 @@ import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 import Polygon from '@arcgis/core/geometry/Polygon';
 import {EsriPolygonDrawingStrategy} from './esri-polygon-drawing.strategy';
 import {AbstractEsriDrawingStrategy} from '../abstract-esri-drawing.strategy';
+import {MapViewWithMap} from '../../../types/esri-mapview-with-map.type';
 
 class EsriPolygonDrawingStrategyWrapper extends EsriPolygonDrawingStrategy {
   public get svm() {
@@ -20,7 +21,7 @@ class EsriPolygonDrawingStrategyWrapper extends EsriPolygonDrawingStrategy {
  * of 0 on the graphics layer, even though in reality, it should be 2 (when Esri properly adds the graphic).
  */
 describe('EsriPolygonDrawingStrategy', () => {
-  let mapView: MapView;
+  let mapView: MapViewWithMap;
   let layer: GraphicsLayer;
   let fillSymbol: SimpleFillSymbol;
   const callbackHandler = {
@@ -30,7 +31,7 @@ describe('EsriPolygonDrawingStrategy', () => {
   };
 
   beforeEach(() => {
-    mapView = new MapView({map: new Map()});
+    mapView = new MapView({map: new Map()}) as MapViewWithMap;
     layer = new GraphicsLayer({
       id: UserDrawingLayer.Measurements,
     });

@@ -320,7 +320,7 @@ describe('EsriToolService', () => {
         ],
       }),
       symbol: new SimpleFillSymbol({
-        color: new Color(Color.fromHex('#abcdef')),
+        color: new Color(Color.fromHex('#abcdef')!),
         outline: {width: 42, color: new Color('#080085')},
       }),
     });
@@ -400,7 +400,7 @@ describe('EsriToolService', () => {
           ],
         }),
         symbol: new SimpleFillSymbol({
-          color: new Color(Color.fromHex('#abcdef')),
+          color: new Color(Color.fromHex('#abcdef')!),
           outline: {width: 42, color: new Color('#080085')},
         }),
       });
@@ -447,7 +447,7 @@ describe('EsriToolService', () => {
           ],
         }),
         symbol: new SimpleFillSymbol({
-          color: new Color(Color.fromHex('#abcdef')),
+          color: new Color(Color.fromHex('#abcdef')!),
           outline: {width: 42, color: new Color('#080085')},
         }),
       });
@@ -494,7 +494,7 @@ describe('EsriToolService', () => {
           ],
         }),
         symbol: new SimpleFillSymbol({
-          color: new Color(Color.fromHex('#abcdef')),
+          color: new Color(Color.fromHex('#abcdef')!),
           outline: {width: 42, color: new Color('#080085')},
         }),
       });
@@ -568,7 +568,7 @@ describe('EsriToolService', () => {
           ],
         }),
         symbol: new SimpleFillSymbol({
-          color: new Color(Color.fromHex('#abcdef')),
+          color: new Color(Color.fromHex('#abcdef')!),
           outline: {width: 42, color: new Color('#080085')},
         }),
       });
@@ -624,7 +624,7 @@ describe('EsriToolService', () => {
           ],
         }),
         symbol: new SimpleFillSymbol({
-          color: new Color(Color.fromHex('#abcdef')),
+          color: new Color(Color.fromHex('#abcdef')!),
           outline: {width: 42, color: new Color('#080085')},
         }),
       });
@@ -687,7 +687,7 @@ describe('EsriToolService', () => {
           ],
         }),
         symbol: new SimpleFillSymbol({
-          color: new Color(Color.fromHex('#abcdef')),
+          color: new Color(Color.fromHex('#abcdef')!),
           outline: {width: 42, color: new Color('#080085')},
         }),
       });
