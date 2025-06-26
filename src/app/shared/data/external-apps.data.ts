@@ -175,4 +175,20 @@ export const externalAppsData: ExternalApp[] = [
     visibility: 'both',
     description: 'Mit dieser Web-Applikation können CSV-Adresslisten mit Adressen aus dem Kt. Zürich geokodiert werden.',
   },
+  {
+    appUrl: 'https://kuula.co/share/collection/7bCSM?logo=-1&info=0&fs=1&vr=0&zoom=1&initload=0&thumbs=1&margin=30&alpha=0.60&inst=de',
+    department: 'AWEL',
+    image: {
+      url: '/assets/images/apps/fliessgewaesser360zh_thumbnail.webp',
+      altText: '',
+    },
+    title: 'Bilder kantonale Fliessgewässer 360°',
+    email: 'dominik.koehler@bd.zh.ch',
+    keywords: ['360', 'Bilder', 'River View', 'Glatt', 'Dübendorf', 'Opfikon', 'Fil Bleu'],
+    topic: 'Wasser',
+    categories: ['Fachapplikationen'],
+    visibility: 'intranet',
+    description:
+      'App stellt in Analogie zu Google Street View 360° Bilder aus Gewässeroptik zur Verfügung. Die Bilder zeigen die Uferböschungen und Uferwege in hoher Auflösung. Aktuell liegen Bilder zur Glatt zwischen Dübendorf und Opfikon vor. Künftig werden Bilder entlang weiterer Gewässer integriert.',
+  },
 ];
