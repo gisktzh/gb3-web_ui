@@ -9,6 +9,7 @@ import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import {EsriPointMeasurementStrategy} from './measurement/esri-point-measurement.strategy';
 import {AbstractEsriMeasurementStrategy} from './abstract-esri-measurement.strategy';
 import {AbstractEsriDrawableToolStrategy} from './abstract-esri-drawable-tool.strategy';
+import {MapViewWithMap} from '../../types/esri-mapview-with-map.type';
 
 class EsriPointMeasurementStrategyWrapper extends EsriPointMeasurementStrategy {
   public get svm() {
@@ -18,7 +19,7 @@ class EsriPointMeasurementStrategyWrapper extends EsriPointMeasurementStrategy {
 
 describe('AbstractEsriMeasurementStrategy', () => {
   describe('completeEditing', () => {
-    let mapView: MapView;
+    let mapView: MapViewWithMap;
     let layer: GraphicsLayer;
     let pointSymbol: SimpleMarkerSymbol;
     let strategy: EsriPointMeasurementStrategy;
@@ -30,7 +31,7 @@ describe('AbstractEsriMeasurementStrategy', () => {
     };
 
     beforeEach(() => {
-      mapView = new MapView({map: new Map()});
+      mapView = new MapView({map: new Map()}) as MapViewWithMap;
       layer = new GraphicsLayer({
         id: UserDrawingLayer.Measurements,
       });
@@ -86,7 +87,7 @@ describe('AbstractEsriMeasurementStrategy', () => {
     });
   });
   describe('removeLabelOnEdit', () => {
-    let mapView: MapView;
+    let mapView: MapViewWithMap;
     let layer: GraphicsLayer;
     let pointSymbol: SimpleMarkerSymbol;
     let strategy: EsriPointMeasurementStrategy;
@@ -98,7 +99,7 @@ describe('AbstractEsriMeasurementStrategy', () => {
     };
 
     beforeEach(() => {
-      mapView = new MapView({map: new Map()});
+      mapView = new MapView({map: new Map()}) as MapViewWithMap;
       layer = new GraphicsLayer({
         id: UserDrawingLayer.Measurements,
       });

@@ -67,7 +67,7 @@ describe('InternalDrawingRepresentationToEsriGraphicUtils', () => {
         ],
       }),
       symbol: new SimpleFillSymbol({
-        color: new Color(Color.fromHex(fillColorHex)),
+        color: new Color(Color.fromHex(fillColorHex)!),
         outline: {width: strokeWidth, color: new Color(strokeColorHex)},
       }),
       attributes: {
@@ -125,7 +125,7 @@ describe('InternalDrawingRepresentationToEsriGraphicUtils', () => {
         ],
       }),
       symbol: new SimpleLineSymbol({
-        color: new Color(Color.fromHex(strokeColorHex)),
+        color: new Color(Color.fromHex(strokeColorHex)!),
         width: strokeWidth,
       }),
       attributes: {

@@ -8,7 +8,7 @@ import {selectScreenMode} from '../state/app/reducers/app-layout.reducer';
 import {selectAdditionalInformationLinks} from '../state/support/reducers/support-content.reducer';
 
 const START_PAGE_SUMMARY =
-  'Das Geoportal bietet Ihnen einen zentralen Zugang zu den Geodaten des Kantons Zürich. Auf dieser Informationsplattform können Sie die Daten über verschiedene Auskunftssysteme sichten oder beziehen.';
+  'Willkommen auf dem Geoportal, dem zentralen Einstiegspunkt zu den Geoinformationen des Kantons Zürich. Über verschiedene Auskunftssysteme und Anwendungen können Sie Geodaten finden, anschauen, herunterladen oder bestellen.';
 
 @Component({
   selector: 'start-page',

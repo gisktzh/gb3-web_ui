@@ -7,6 +7,7 @@ import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
 import Polyline from '@arcgis/core/geometry/Polyline';
 import {EsriLineDrawingStrategy} from './esri-line-drawing.strategy';
 import {AbstractEsriDrawingStrategy} from '../abstract-esri-drawing.strategy';
+import {MapViewWithMap} from '../../../types/esri-mapview-with-map.type';
 
 class EsriLineDrawingStrategyWrapper extends EsriLineDrawingStrategy {
   public get svm() {
@@ -19,7 +20,7 @@ class EsriLineDrawingStrategyWrapper extends EsriLineDrawingStrategy {
  * As such, we do not test for the addition of the graphics which should be handled by the Esri framework any way.
  */
 describe('EsriLineDrawingStrategy', () => {
-  let mapView: MapView;
+  let mapView: MapViewWithMap;
   let layer: GraphicsLayer;
   let lineSymbol: SimpleLineSymbol;
   const callbackHandler = {
@@ -29,7 +30,7 @@ describe('EsriLineDrawingStrategy', () => {
   };
 
   beforeEach(() => {
-    mapView = new MapView({map: new Map()});
+    mapView = new MapView({map: new Map()}) as MapViewWithMap;
     layer = new GraphicsLayer({
       id: UserDrawingLayer.Measurements,
     });

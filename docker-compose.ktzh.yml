@@ -14,13 +14,10 @@ services:
     image: gitlab.ktzh.ch:5050/gis/gb3-web_ui/gb3-frontend:latest
     container_name: gb3-frontend
     volumes:
-      - nginx-logs:/var/log/nginx
+      - type: bind
+        source: /var/log/nginx
+        target: /var/log/nginx
     logging:
       options:
         max-size: '50m'
         max-file: '5'
-
-volumes:
-  nginx-logs:
-    external: true
-    name: nginx-logs

@@ -7,6 +7,7 @@ import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
 import Polyline from '@arcgis/core/geometry/Polyline';
 import {EsriElevationProfileMeasurementStrategy} from './esri-elevation-profile-measurement.strategy';
 import {AbstractEsriDrawingStrategy} from '../abstract-esri-drawing.strategy';
+import {MapViewWithMap} from '../../../types/esri-mapview-with-map.type';
 
 class EsriElevationProfileMeasurementStrategyWrapper extends EsriElevationProfileMeasurementStrategy {
   public get svm() {
@@ -19,7 +20,7 @@ class EsriElevationProfileMeasurementStrategyWrapper extends EsriElevationProfil
  * As such, we do not test for the addition of the graphics which should be handled by the Esri framework any way.
  */
 describe('EsriElevationProfileMeasurementStrategy', () => {
-  let mapView: MapView;
+  let mapView: MapViewWithMap;
   let layer: GraphicsLayer;
   let lineSymbol: SimpleLineSymbol;
   const callbackHandler = {
@@ -29,7 +30,7 @@ describe('EsriElevationProfileMeasurementStrategy', () => {
   };
 
   beforeEach(() => {
-    mapView = new MapView({map: new Map()});
+    mapView = new MapView({map: new Map()}) as MapViewWithMap;
     layer = new GraphicsLayer({
       id: InternalDrawingLayer.ElevationProfile,
     });

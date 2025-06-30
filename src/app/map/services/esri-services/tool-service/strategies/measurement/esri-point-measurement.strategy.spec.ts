@@ -9,6 +9,7 @@ import Map from '@arcgis/core/Map';
 import Graphic from '@arcgis/core/Graphic';
 import Point from '@arcgis/core/geometry/Point';
 import {AbstractEsriMeasurementStrategy} from '../abstract-esri-measurement.strategy';
+import {MapViewWithMap} from '../../../types/esri-mapview-with-map.type';
 
 class EsriPointMeasurementStrategyWrapper extends EsriPointMeasurementStrategy {
   public get svm() {
@@ -22,7 +23,7 @@ class EsriPointMeasurementStrategyWrapper extends EsriPointMeasurementStrategy {
  * of 0 on the graphics layer, even though in reality, it should be 2 (when Esri properly adds the graphic).
  */
 describe('EsriPointMeasurementStrategy', () => {
-  let mapView: MapView;
+  let mapView: MapViewWithMap;
   let layer: GraphicsLayer;
   let pointSymbol: SimpleMarkerSymbol;
   let textSymbol: TextSymbol;
@@ -33,7 +34,7 @@ describe('EsriPointMeasurementStrategy', () => {
   };
 
   beforeEach(() => {
-    mapView = new MapView({map: new Map()});
+    mapView = new MapView({map: new Map()}) as MapViewWithMap;
     layer = new GraphicsLayer({
       id: UserDrawingLayer.Measurements,
     });

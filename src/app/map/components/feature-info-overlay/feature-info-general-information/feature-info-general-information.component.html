@@ -7,8 +7,8 @@
       ></mat-icon>
       <div class="general-information__header__title">
         <span>
-          <b>Koordinaten:</b> {{ generalInfoData.locationInformation.queryPosition.coordinates[0] | number: '1.0-10' }} /
-          {{ generalInfoData.locationInformation.queryPosition.coordinates[1] | number: '1.0-10' }}
+          <b>Koordinaten:</b> {{ generalInfoData.locationInformation.queryPosition.coordinates[0] }} /
+          {{ generalInfoData.locationInformation.queryPosition.coordinates[1] }}
         </span>
         <span>
           <b>DTM:</b> {{ generalInfoData.locationInformation.heightDtm | number: '1.0-2' }} m / <b>DOM:</b>
@@ -20,7 +20,7 @@
   <div class="general-information__additional-content">
     <generic-list [listData]="generalInfoData.alternativeSpatialReferences" [itemTemplate]="aCrs"></generic-list>
     <ng-template #aCrs let-aCrs>
-      <b>{{ aCrs.name }}:</b> {{ aCrs.coordinates[0] | number: '1.0-10' }} / {{ aCrs.coordinates[1] | number: '1.0-10' }}
+      <b>{{ aCrs.name }}:</b> {{ aCrs.coordinates[0] }} / {{ aCrs.coordinates[1] }}
     </ng-template>
     <b>Weitere Kartendienste:</b>
     <generic-list [listData]="generalInfoData.externalMaps" [itemTemplate]="externalMaps"></generic-list>
