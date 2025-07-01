@@ -87,7 +87,7 @@ describe('GeoJsonMapperService', () => {
       const esriPolyline = service.fromGeoJSONToEsri(minimalMultiLineString);
 
       expect(esriPolyline).toBeInstanceOf(EsriPolyline);
-      expect((esriPolyline as EsriPolyline).paths).toEqual([minimalMultiLineString.coordinates.flat()]);
+      expect((esriPolyline as EsriPolyline).paths).toEqual(minimalMultiLineString.coordinates);
       expect((esriPolyline as EsriPolyline).spatialReference.wkid).toEqual(defaultSrs);
     });
   });
