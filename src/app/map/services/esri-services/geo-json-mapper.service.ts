@@ -62,8 +62,6 @@ export class GeoJSONMapperService {
   }
 
   private geoJSONMultiLineStringToEsriPolyline(multiLineString: MultiLineStringWithSrs): __esri.Polyline {
-    // Esri does not deal with MultiLineString, all linestrings are treated one and the same. A MultiLineString just
-    // extracts all linestring coordinates as flat array and returns a Polyline
-    return new Polyline({paths: [multiLineString.coordinates.flat()], spatialReference: {wkid: multiLineString.srs}});
+    return new Polyline({paths: multiLineString.coordinates, spatialReference: {wkid: multiLineString.srs}});
   }
 }
