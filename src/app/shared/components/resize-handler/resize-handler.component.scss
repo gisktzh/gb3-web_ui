@@ -1,5 +1,6 @@
 @use 'variables/ktzh-design-variables' as ktzh-variables;
 @use 'functions/helper.function' as functions;
+@use 'variables/z-index-variables' as z-index-variables;
 
 $handle-width: 5px;
 $handle-height: 25px;
@@ -80,4 +81,5 @@ $handle-no-hover: $handle-indicator-width double ktzh-variables.$zh-disabled-for
  */
 .resize-active {
   background-color: rgba(ktzh-variables.$zh-black40, 0.1);
+  z-index: z-index-variables.$resize-active;
 }
