@@ -1,25 +1,27 @@
-<div *ngIf="!layer.isHidden" class="map-data-item-map-layer">
-  <span class="map-data-item-map-layer__connection-line map-data-item-map-layer__connection-line-top"></span>
-  @if (isMapHovered) {
-    <mat-checkbox class="map-data-item-map-layer__visibility-checkbox" [checked]="layer.visible"></mat-checkbox>
-  } @else {
-    <button class="map-data-item-map-layer__add-button" (click)="addItemLayer()" mat-icon-button>
-      <mat-icon>add</mat-icon>
-    </button>
-  }
-  <!--
-  The title is shown in grey if
-  a) The layer is not visible in the current scale and either the map or the layer are hovered, or
-  b) the layer is not initially visible and the map is hovered
- -->
-  <p
-    [innerHTML]="layer.title | highlightSearchQuery: this.filterString"
-    class="map-data-item-map-layer__title"
-    [ngClass]="{
-      'map-data-item-map-layer__title--inactive':
-        (!visibleAtCurrentScale && (isMapHovered || isLayerHovered)) || (!layer.visible && isMapHovered),
-    }"
-    matTooltip="{{ layer | layerTooltip }}"
-  ></p>
-  <span class="map-data-item-map-layer__connection-line map-data-item-map-layer__connection-line-bottom"></span>
-</div>
+@if (!layer.isHidden) {
+  <div class="map-data-item-map-layer">
+    <span class="map-data-item-map-layer__connection-line map-data-item-map-layer__connection-line-top"></span>
+    @if (isMapHovered) {
+      <mat-checkbox class="map-data-item-map-layer__visibility-checkbox" [checked]="layer.visible"></mat-checkbox>
+    } @else {
+      <button class="map-data-item-map-layer__add-button" (click)="addItemLayer()" mat-icon-button>
+        <mat-icon>add</mat-icon>
+      </button>
+    }
+    <!--
+    The title is shown in grey if
+    a) The layer is not visible in the current scale and either the map or the layer are hovered, or
+    b) the layer is not initially visible and the map is hovered
+    -->
+    <p
+      [innerHTML]="layer.title | highlightSearchQuery: this.filterString"
+      class="map-data-item-map-layer__title"
+      [ngClass]="{
+        'map-data-item-map-layer__title--inactive':
+          (!visibleAtCurrentScale && (isMapHovered || isLayerHovered)) || (!layer.visible && isMapHovered),
+      }"
+      matTooltip="{{ layer | layerTooltip }}"
+    ></p>
+    <span class="map-data-item-map-layer__connection-line map-data-item-map-layer__connection-line-bottom"></span>
+  </div>
+}

@@ -1,12 +1,12 @@
-<mat-progress-bar *ngIf="loadingState === 'loading'" class="loading-and-process-bar" mode="query"></mat-progress-bar>
-<mat-progress-bar
-  *ngIf="loadingState === 'error'"
-  class="loading-and-process-bar"
-  color="warn"
-  mode="determinate"
-  value="100"
-></mat-progress-bar>
-<ng-container *ngIf="loadingState === undefined || loadingState === 'loaded'">
+@if (loadingState === 'loading') {
+  <mat-progress-bar class="loading-and-process-bar" mode="query"></mat-progress-bar>
+}
+@if (loadingState === 'error') {
+  <mat-progress-bar class="loading-and-process-bar" color="warn" mode="determinate" value="100"></mat-progress-bar>
+}
+@if (loadingState === undefined || loadingState === 'loaded') {
   <!-- Only show the view state if the loading state is either undefined or 'completed' -->
-  <mat-progress-bar *ngIf="viewProcessState === 'updating'" class="loading-and-process-bar" mode="buffer"></mat-progress-bar>
-</ng-container>
+  @if (viewProcessState === 'updating') {
+    <mat-progress-bar class="loading-and-process-bar" mode="buffer"></mat-progress-bar>
+  }
+}

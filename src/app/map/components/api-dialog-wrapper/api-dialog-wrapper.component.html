@@ -1,13 +1,17 @@
 <div class="api-dialog-wrapper">
   <div class="api-dialog-wrapper__header">
     <h1 mat-dialog-title class="api-dialog-wrapper__header__title">{{ title }}</h1>
-    <button (click)="close()" mat-icon-button class="api-dialog-wrapper__header__button" *ngIf="showCloseButton" aria-label="Schliessen">
-      <mat-icon>close</mat-icon>
-    </button>
+    @if (showCloseButton) {
+      <button (click)="close()" mat-icon-button class="api-dialog-wrapper__header__button" aria-label="Schliessen">
+        <mat-icon>close</mat-icon>
+      </button>
+    }
   </div>
   <div class="api-dialog-wrapper__content" mat-dialog-content>
     <ng-content select="[content]"></ng-content>
-    <span *ngIf="errorText && savingState === 'error'" class="mat-caption api-dialog-wrapper__content__error">{{ errorText }}</span>
+    @if (errorText && savingState === 'error') {
+      <span class="mat-caption api-dialog-wrapper__content__error">{{ errorText }}</span>
+    }
   </div>
   <div mat-dialog-actions>
     <ng-content select="[actions]"></ng-content>

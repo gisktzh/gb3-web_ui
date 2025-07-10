@@ -6,25 +6,26 @@
         scope="col"
         [ngStyle]="{'min-width': tableHeaderWidth}"
       ></th>
-      <th
-        (mouseenter)="onFeatureHoverStart(tableHeader.fid)"
-        (mouseleave)="onFeatureHoverEnd(tableHeader.fid)"
-        (click)="toggleHighlightForFeature(tableHeader.fid, highlightButton, tableHeader.hasGeometry)"
-        *ngFor="let tableHeader of tableHeaders"
-        [featureId]="tableHeader.fid"
-        [layerId]="layer.layer"
-        [topicId]="topicId"
-        class="feature-info-content__table__row__column feature-info-content__table__row__column--header"
-        scope="col"
-        tableColumnIdentifier
-      >
-        <div class="feature-info-content__table__row__column__wrapper">
-          {{ tableHeader.displayValue.split(' ')[1] }}
-          <mat-radio-button [disabled]="!tableHeader.hasGeometry" #highlightButton labelPosition="before"> Markieren: </mat-radio-button>
-        </div>
-      </th>
+      @for (tableHeader of tableHeaders; track tableHeader) {
+        <th
+          (mouseenter)="onFeatureHoverStart(tableHeader.fid)"
+          (mouseleave)="onFeatureHoverEnd(tableHeader.fid)"
+          (click)="toggleHighlightForFeature(tableHeader.fid, highlightButton, tableHeader.hasGeometry)"
+          [featureId]="tableHeader.fid"
+          [layerId]="layer.layer"
+          [topicId]="topicId"
+          class="feature-info-content__table__row__column feature-info-content__table__row__column--header"
+          scope="col"
+          tableColumnIdentifier
+        >
+          <div class="feature-info-content__table__row__column__wrapper">
+            {{ tableHeader.displayValue.split(' ')[1] }}
+            <mat-radio-button [disabled]="!tableHeader.hasGeometry" #highlightButton labelPosition="before"> Markieren: </mat-radio-button>
+          </div>
+        </th>
+      }
     </tr>
-    <ng-container *ngFor="let tableRow of tableRows | keyvalue: preserveKeyValueOrder">
+    @for (tableRow of tableRows | keyvalue: preserveKeyValueOrder; track tableRow) {
       <tr class="feature-info-content__table__row">
         <th
           class="feature-info-content__table__row__column feature-info-content__table__row__column--header"
@@ -35,46 +36,47 @@
             tableRow.key
           }}</span>
         </th>
-        <td
-          (mouseenter)="onFeatureHoverStart(cellValue.fid)"
-          (mouseleave)="onFeatureHoverEnd(cellValue.fid)"
-          *ngFor="let cellValue of tableRow.value"
-          [featureId]="cellValue.fid"
-          [layerId]="layer.layer"
-          [topicId]="topicId"
-          class="feature-info-content__table__row__column"
-          tableColumnIdentifier
-        >
-          @switch (cellValue.cellType) {
-            @case ('url') {
-              <a
-                class="feature-info-content__table__row__column__link"
-                [href]="cellValue.url"
-                target="_blank"
-                rel="noopener noreferrer"
-                [title]="cellValue.displayValue"
-              >
+        @for (cellValue of tableRow.value; track cellValue) {
+          <td
+            (mouseenter)="onFeatureHoverStart(cellValue.fid)"
+            (mouseleave)="onFeatureHoverEnd(cellValue.fid)"
+            [featureId]="cellValue.fid"
+            [layerId]="layer.layer"
+            [topicId]="topicId"
+            class="feature-info-content__table__row__column"
+            tableColumnIdentifier
+          >
+            @switch (cellValue.cellType) {
+              @case ('url') {
+                <a
+                  class="feature-info-content__table__row__column__link"
+                  [href]="cellValue.url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  [title]="cellValue.displayValue"
+                >
+                  {{ cellValue.displayValue }}
+                </a>
+              }
+              @case ('image') {
+                <a [href]="cellValue.url" target="_blank" rel="noopener noreferrer" [title]="cellValue.displayValue">
+                  <img
+                    class="feature-info-content__table__row__column__image"
+                    ngSrc="{{ cellValue.src }}"
+                    [alt]="cellValue.alt"
+                    width="200"
+                    height="200"
+                  />
+                </a>
+              }
+              @case ('text') {
                 {{ cellValue.displayValue }}
-              </a>
+              }
             }
-            @case ('image') {
-              <a [href]="cellValue.url" target="_blank" rel="noopener noreferrer" [title]="cellValue.displayValue">
-                <img
-                  class="feature-info-content__table__row__column__image"
-                  ngSrc="{{ cellValue.src }}"
-                  [alt]="cellValue.alt"
-                  width="200"
-                  height="200"
-                />
-              </a>
-            }
-            @case ('text') {
-              {{ cellValue.displayValue }}
-            }
-          }
-        </td>
+          </td>
+        }
       </tr>
-    </ng-container>
+    }
   </table>
   <resize-handler
     [minWidth]="minTableHeaderWidth"

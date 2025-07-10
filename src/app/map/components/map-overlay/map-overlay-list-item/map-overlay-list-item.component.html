@@ -17,17 +17,18 @@
       <p class="list-item__header__content__title" [matTooltip]="overlayTitle" showTooltipIfTruncated>
         {{ overlayTitle }}
       </p>
-      <a
-        (click)="$event.stopPropagation()"
-        *ngIf="metaDataLink && showInteractiveElements"
-        class="list-item__header__content__info-link"
-        [routerLink]="metaDataLink"
-        title="Metadaten anzeigen"
-      >
-        <span class="list-item__header__content__info-link__icon">
-          <mat-icon svgIcon="ktzh_info"></mat-icon>
-        </span>
-      </a>
+      @if (metaDataLink && showInteractiveElements) {
+        <a
+          (click)="$event.stopPropagation()"
+          class="list-item__header__content__info-link"
+          [routerLink]="metaDataLink"
+          title="Metadaten anzeigen"
+        >
+          <span class="list-item__header__content__info-link__icon">
+            <mat-icon svgIcon="ktzh_info"></mat-icon>
+          </span>
+        </a>
+      }
     </div>
   </mat-expansion-panel-header>
   <ng-template matExpansionPanelContent>

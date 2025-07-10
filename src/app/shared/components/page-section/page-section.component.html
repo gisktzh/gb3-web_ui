@@ -8,7 +8,7 @@
   [attr.aria-label]="sectionTitle"
 >
   <div class="page-section__content-container">
-    <ng-container *ngIf="sectionTitle">
+    @if (sectionTitle) {
       <span
         class="page-section__content-container__title-line"
         [ngClass]="{'page-section__content-container__title-line--mobile': screenMode === 'mobile'}"
@@ -20,18 +20,19 @@
         <h2 class="ktzh-h2-big">
           {{ this.sectionTitle }}
         </h2>
-        <a
-          *ngIf="this.titleLink"
-          [href]="this.titleLink.url"
-          [title]="this.titleLink.displayTitle"
-          rel="noopener noreferrer"
-          class="page-section__content-container__title-wrapper__link"
-          target="_blank"
-        >
-          {{ this.titleLink.displayTitle }}
-        </a>
+        @if (this.titleLink) {
+          <a
+            [href]="this.titleLink.url"
+            [title]="this.titleLink.displayTitle"
+            rel="noopener noreferrer"
+            class="page-section__content-container__title-wrapper__link"
+            target="_blank"
+          >
+            {{ this.titleLink.displayTitle }}
+          </a>
+        }
       </div>
-    </ng-container>
+    }
     <div class="page-section__content-container__content">
       <ng-content></ng-content>
     </div>

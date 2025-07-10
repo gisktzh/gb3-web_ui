@@ -8,13 +8,14 @@
     <mat-icon [fontIcon]="activeMapItemExpansionPanel.expanded ? 'arrow_drop_down' : 'arrow_right'"></mat-icon>
   </button>
   <div class="active-map-item-header__image-container">
-    <img
-      *ngIf="!activeMapItem.isSingleLayer && activeMapItem.mapImageUrl"
-      class="active-map-item-header__image-container__image"
-      [ngClass]="{'active-map-item-header__image-container__image--inactive': !activeMapItem.visible}"
-      [alt]="activeMapItem.title"
-      [src]="activeMapItem.mapImageUrl"
-    />
+    @if (!activeMapItem.isSingleLayer && activeMapItem.mapImageUrl) {
+      <img
+        class="active-map-item-header__image-container__image"
+        [ngClass]="{'active-map-item-header__image-container__image--inactive': !activeMapItem.visible}"
+        [alt]="activeMapItem.title"
+        [src]="activeMapItem.mapImageUrl"
+      />
+    }
     <mat-checkbox
       class="active-map-item-header__image-container__checkbox"
       [checked]="activeMapItem.visible"
@@ -44,7 +45,7 @@
         'active-map-item-header__title-container__options--mobile': screenMode === 'mobile',
       }"
     >
-      <ng-container *ngIf="activeMapItem.geometadataUuid">
+      @if (activeMapItem.geometadataUuid) {
         <a
           class="active-map-item-header__button"
           [routerLink]="['/', mainPageEnum.Data, dataCataloguePageEnum.Maps, activeMapItem.geometadataUuid]"
@@ -58,7 +59,7 @@
           [ngClass]="{'active-map-item-header__divider--inverted': activeMapItemExpansionPanel.expanded}"
           [vertical]="true"
         ></mat-divider>
-      </ng-container>
+      }
       <button class="active-map-item-header__button" (click)="removeActiveMapItem(activeMapItem)" mat-icon-button data-test-id="delete">
         <mat-icon>delete</mat-icon>
       </button>

@@ -4,6 +4,7 @@ import tseslint from 'typescript-eslint';
 import prettierRecommended from 'eslint-plugin-prettier/recommended';
 import ngrx from '@ngrx/eslint-plugin/v9';
 import angular from 'angular-eslint';
+import angularTemplate from '@angular-eslint/eslint-plugin-template';
 
 /**
  * TODO: The following imports should be revisited once the following issues are resolved:
@@ -156,6 +157,8 @@ export default tseslint.config(
     ignores: ['src/**/index.html'],
     extends: [...angular.configs.templateRecommended, ...angular.configs.templateAccessibility, prettierRecommended],
     rules: {
+      '@angular-eslint/template/prefer-control-flow': ['error'],
+
       '@angular-eslint/template/eqeqeq': [
         'error',
         {

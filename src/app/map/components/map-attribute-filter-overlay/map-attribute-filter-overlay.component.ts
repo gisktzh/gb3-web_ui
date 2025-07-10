@@ -4,14 +4,14 @@ import {Store} from '@ngrx/store';
 import {selectIsAttributeFilterOverlayVisible} from '../../../state/map/reducers/map-ui.reducer';
 import {MapAttributeFilterComponent} from '../map-attribute-filter/map-attribute-filter.component';
 import {MapOverlayComponent} from '../map-overlay/map-overlay.component';
-import {CommonModule} from '@angular/common';
+
 import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
 import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
 import {selectMapAttributeFiltersItem} from '../../../state/map/selectors/map-attribute-filters-item.selector';
 
 @Component({
   selector: 'map-attribute-filter-overlay',
-  imports: [MapAttributeFilterComponent, MapOverlayComponent, CommonModule],
+  imports: [MapAttributeFilterComponent, MapOverlayComponent],
   templateUrl: './map-attribute-filter-overlay.component.html',
   styleUrl: './map-attribute-filter-overlay.component.scss',
 })

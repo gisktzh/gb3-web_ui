@@ -1,23 +1,27 @@
-<ng-container *ngIf="mapAttributeFiltersItem">
+@if (mapAttributeFiltersItem) {
   <mat-card appearance="raised" class="attribute-filter no-box-shadow" [ngClass]="{'attribute-filter--mobile': screenMode === 'mobile'}">
     <div class="attribute-filter__content" [ngClass]="{'attribute-filter__content--mobile': screenMode === 'mobile'}">
-      <mat-card class="no-box-shadow" *ngFor="let filterConfiguration of mapAttributeFiltersItem.settings.filterConfigurations">
-        <mat-card-header>
-          <mat-card-title>{{ filterConfiguration.name }}</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <p class="attribute-filter__content__text" *ngIf="filterConfiguration.description">{{ filterConfiguration.description }}</p>
-        </mat-card-content>
-        <ng-container *ngFor="let filterValue of filterConfiguration.filterValues">
-          <mat-checkbox
-            class="attribute-filter__content__checkbox"
-            [ngClass]="{'attribute-filter__content__checkbox--unchecked': filterValue.isActive}"
-            [checked]="!filterValue.isActive"
-            (change)="updateFilter(filterConfiguration.parameter, filterValue.name, $event.checked)"
-            >{{ filterValue.name }}
-          </mat-checkbox>
-        </ng-container>
-      </mat-card>
+      @for (filterConfiguration of mapAttributeFiltersItem.settings.filterConfigurations; track filterConfiguration) {
+        <mat-card class="no-box-shadow">
+          <mat-card-header>
+            <mat-card-title>{{ filterConfiguration.name }}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            @if (filterConfiguration.description) {
+              <p class="attribute-filter__content__text">{{ filterConfiguration.description }}</p>
+            }
+          </mat-card-content>
+          @for (filterValue of filterConfiguration.filterValues; track filterValue) {
+            <mat-checkbox
+              class="attribute-filter__content__checkbox"
+              [ngClass]="{'attribute-filter__content__checkbox--unchecked': filterValue.isActive}"
+              [checked]="!filterValue.isActive"
+              (change)="updateFilter(filterConfiguration.parameter, filterValue.name, $event.checked)"
+              >{{ filterValue.name }}
+            </mat-checkbox>
+          }
+        </mat-card>
+      }
     </div>
   </mat-card>
-</ng-container>
+}

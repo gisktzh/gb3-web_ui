@@ -1,29 +1,31 @@
 <div class="map-management-mobile-header">
-  <div class="map-management-mobile-header__buttons" *ngIf="filterString === undefined">
-    <button
-      [ngClass]="{'map-management-mobile-header__buttons__button--selected': activeTab === 'activeMaps'}"
-      class="map-management-mobile-header__buttons__button"
-      mat-flat-button
-      (click)="changeTabs('activeMaps')"
-    >
-      <div class="map-management-mobile-header__buttons__button__inner">
-        <span> Aktive Karten </span>
-        <span
-          class="map-management-mobile-header__badge"
-          [ngClass]="{'map-management-mobile-header__badge--hidden': activeMapItems.length === 0}"
-          [matBadge]="activeMapItems.length"
-        ></span>
-      </div>
-    </button>
-    <button
-      [ngClass]="{'map-management-mobile-header__buttons__button--selected': activeTab === 'mapsCatalogue'}"
-      class="map-management-mobile-header__buttons__button"
-      mat-flat-button
-      (click)="changeTabs('mapsCatalogue')"
-    >
-      Kartenkatalog
-    </button>
-  </div>
+  @if (filterString === undefined) {
+    <div class="map-management-mobile-header__buttons">
+      <button
+        [ngClass]="{'map-management-mobile-header__buttons__button--selected': activeTab === 'activeMaps'}"
+        class="map-management-mobile-header__buttons__button"
+        mat-flat-button
+        (click)="changeTabs('activeMaps')"
+      >
+        <div class="map-management-mobile-header__buttons__button__inner">
+          <span> Aktive Karten </span>
+          <span
+            class="map-management-mobile-header__badge"
+            [ngClass]="{'map-management-mobile-header__badge--hidden': activeMapItems.length === 0}"
+            [matBadge]="activeMapItems.length"
+          ></span>
+        </div>
+      </button>
+      <button
+        [ngClass]="{'map-management-mobile-header__buttons__button--selected': activeTab === 'mapsCatalogue'}"
+        class="map-management-mobile-header__buttons__button"
+        mat-flat-button
+        (click)="changeTabs('mapsCatalogue')"
+      >
+        Kartenkatalog
+      </button>
+    </div>
+  }
   <div class="map-management-mobile-header__tools">
     <search-input
       class="map-management-mobile-header__tools__filter"
@@ -46,7 +48,9 @@
         [disabled]="numberOfNotices === 0"
         mat-icon-button
       >
-        <notification-indicator *ngIf="numberOfUnreadNotices > 0"></notification-indicator>
+        @if (numberOfUnreadNotices > 0) {
+          <notification-indicator></notification-indicator>
+        }
         <mat-icon svgIcon="ktzh_notification"></mat-icon>
       </button>
       <mat-divider class="map-management-mobile-header__tools__buttons__divider" [vertical]="true"></mat-divider>

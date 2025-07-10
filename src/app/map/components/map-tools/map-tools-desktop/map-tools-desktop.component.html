@@ -77,9 +77,17 @@
       <mat-icon svgIcon="ktzh_map_management"></mat-icon>
     </button>
   </div>
-  <div class="map-tools-desktop__list" *ngIf="toolMenuVisibility !== undefined">
-    <measurement-tools *ngIf="toolMenuVisibility === 'measurement'"></measurement-tools>
-    <drawing-tools *ngIf="toolMenuVisibility === 'drawing'"></drawing-tools>
-    <data-download-selection-tools *ngIf="toolMenuVisibility === 'data-download'"></data-download-selection-tools>
-  </div>
+  @if (toolMenuVisibility !== undefined) {
+    <div class="map-tools-desktop__list">
+      @if (toolMenuVisibility === 'measurement') {
+        <measurement-tools></measurement-tools>
+      }
+      @if (toolMenuVisibility === 'drawing') {
+        <drawing-tools></drawing-tools>
+      }
+      @if (toolMenuVisibility === 'data-download') {
+        <data-download-selection-tools></data-download-selection-tools>
+      }
+    </div>
+  }
 </div>

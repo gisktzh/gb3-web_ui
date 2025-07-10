@@ -4,9 +4,9 @@
     loadingText="Lade häufig verwendete Karten und Daten..."
     loadingCompletedText="Fehler beim Laden der häufig verwendeten Karten und Daten."
   ></content-loading-state>
-  <p *ngIf="frequentlyUsedItems.length === 0 && loadingState === 'loaded'" class="mat-caption">
-    Aktuell gibt es keine häufig verwendete Karten oder Daten.
-  </p>
+  @if (frequentlyUsedItems.length === 0 && loadingState === 'loaded') {
+    <p class="mat-caption">Aktuell gibt es keine häufig verwendete Karten oder Daten.</p>
+  }
   <generic-list [listData]="frequentlyUsedItems" [itemTemplate]="frequentlyUsedItem"></generic-list>
   <ng-template #frequentlyUsedItem let-frequentlyUsedItem>
     <div
@@ -18,12 +18,13 @@
         class="frequently-used-items__item__image-container"
         [ngClass]="{'frequently-used-items__item__image-container--mobile': screenMode === 'mobile'}"
       >
-        <img
-          *ngIf="frequentlyUsedItem.image !== undefined"
-          [src]="frequentlyUsedItem.image.url"
-          [alt]="frequentlyUsedItem.image.altText ?? ''"
-          class="frequently-used-items__item__image-container__image"
-        />
+        @if (frequentlyUsedItem.image !== undefined) {
+          <img
+            [src]="frequentlyUsedItem.image.url"
+            [alt]="frequentlyUsedItem.image.altText ?? ''"
+            class="frequently-used-items__item__image-container__image"
+          />
+        }
       </div>
       <div
         class="frequently-used-items__item__text-container"
@@ -31,16 +32,17 @@
       >
         <h3 class="ktzh-h3-small-big">{{ frequentlyUsedItem.title }}</h3>
         <p class="frequently-used-items__item__text-container__text">{{ frequentlyUsedItem.description }}</p>
-        <a
-          *ngIf="frequentlyUsedItem.url !== undefined"
-          [href]="frequentlyUsedItem.url"
-          class="frequently-used-items__item__text-container__link"
-          target="_self"
-          rel="noopener noreferrer"
-          title="Link öffnen"
-        >
-          Link öffnen
-        </a>
+        @if (frequentlyUsedItem.url !== undefined) {
+          <a
+            [href]="frequentlyUsedItem.url"
+            class="frequently-used-items__item__text-container__link"
+            target="_self"
+            rel="noopener noreferrer"
+            title="Link öffnen"
+          >
+            Link öffnen
+          </a>
+        }
       </div>
     </div>
     <mat-divider></mat-divider>

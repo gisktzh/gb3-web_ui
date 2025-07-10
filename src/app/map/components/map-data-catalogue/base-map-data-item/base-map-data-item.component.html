@@ -77,7 +77,7 @@
   </mat-expansion-panel-header>
   <!-- Expansion panel content -->
   <ng-template matExpansionPanelContent>
-    <ng-container *ngFor="let layer of layers">
+    @for (layer of layers; track layer) {
       <map-data-item-map-layer
         [filterString]="filterString"
         [layer]="layer"
@@ -89,6 +89,6 @@
         [delayDurationInMs]="this.hoverDelay"
         (mouseleave)="hoverEnd(layer)"
       ></map-data-item-map-layer>
-    </ng-container>
+    }
   </ng-template>
 </mat-expansion-panel>

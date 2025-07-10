@@ -1,25 +1,29 @@
 <api-dialog-wrapper title="Daten beziehen" [savingState]="loadingState" (closeEvent)="cancel()">
   <ng-container content>
     <div class="data-download-select-municipality-dialog">
-      <mat-form-field class="data-download-select-municipality-dialog__content" appearance="fill" *ngIf="municipalities">
-        <mat-label>Gemeinde</mat-label>
-        <input
-          #municipalityInput
-          type="text"
-          placeholder="Bitte auswählen"
-          aria-label="Gemeinde"
-          matInput
-          [formControl]="municipalityFormControl"
-          [matAutocomplete]="municipalityAutocomplete"
-          (input)="updateFilteredMunicipalities()"
-          (focus)="updateFilteredMunicipalities()"
-        />
-        <mat-autocomplete requireSelection #municipalityAutocomplete="matAutocomplete" [displayWith]="getMunicipalityName">
-          <mat-option *ngFor="let municipality of filteredMunicipalities | async" [value]="municipality">
-            {{ municipality.name }}
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
+      @if (municipalities) {
+        <mat-form-field class="data-download-select-municipality-dialog__content" appearance="fill">
+          <mat-label>Gemeinde</mat-label>
+          <input
+            #municipalityInput
+            type="text"
+            placeholder="Bitte auswählen"
+            aria-label="Gemeinde"
+            matInput
+            [formControl]="municipalityFormControl"
+            [matAutocomplete]="municipalityAutocomplete"
+            (input)="updateFilteredMunicipalities()"
+            (focus)="updateFilteredMunicipalities()"
+          />
+          <mat-autocomplete requireSelection #municipalityAutocomplete="matAutocomplete" [displayWith]="getMunicipalityName">
+            @for (municipality of filteredMunicipalities | async; track municipality) {
+              <mat-option [value]="municipality">
+                {{ municipality.name }}
+              </mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+      }
     </div>
   </ng-container>
   <ng-container actions>

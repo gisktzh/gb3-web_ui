@@ -4,9 +4,11 @@
       <mat-form-field appearance="outline" hideRequiredMarker class="drawing-download-dialog__form-field">
         <mat-label>Typ</mat-label>
         <mat-select [formControl]="exportFormatControl">
-          <mat-option *ngFor="let exportFormat of availableExportFormats" [value]="exportFormat">
-            {{ exportFormat | uppercase }}
-          </mat-option>
+          @for (exportFormat of availableExportFormats; track exportFormat) {
+            <mat-option [value]="exportFormat">
+              {{ exportFormat | uppercase }}
+            </mat-option>
+          }
         </mat-select>
       </mat-form-field>
     </form>

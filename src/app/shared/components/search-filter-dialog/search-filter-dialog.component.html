@@ -1,23 +1,22 @@
 <h1 mat-dialog-title>Filter</h1>
 <div mat-dialog-content class="search-filter-dialog-content">
   <cdk-accordion>
-    <accordion-item
-      *ngFor="let filterGroup of nonEmptyFilterGroups; trackBy: trackByFilterGroupLabel"
-      [header]="filterGroup.label"
-      variant="dark"
-    >
-      <div class="search-filter-dialog-content__wrapper">
-        <mat-checkbox
-          class="search-filter-dialog-content__wrapper__checkbox"
-          (change)="toggleFilter(filterGroup.label, filter.label, !filter.isActive)"
-          *ngFor="let filter of filterGroup.filters; trackBy: trackByFilterLabel"
-          [checked]="filter.isActive"
-          (keydown.space)="$event.stopPropagation()"
-        >
-          {{ filter.label }}
-        </mat-checkbox>
-      </div>
-    </accordion-item>
+    @for (filterGroup of nonEmptyFilterGroups; track trackByFilterGroupLabel($index, filterGroup)) {
+      <accordion-item [header]="filterGroup.label" variant="dark">
+        <div class="search-filter-dialog-content__wrapper">
+          @for (filter of filterGroup.filters; track trackByFilterLabel($index, filter)) {
+            <mat-checkbox
+              class="search-filter-dialog-content__wrapper__checkbox"
+              (change)="toggleFilter(filterGroup.label, filter.label, !filter.isActive)"
+              [checked]="filter.isActive"
+              (keydown.space)="$event.stopPropagation()"
+            >
+              {{ filter.label }}
+            </mat-checkbox>
+          }
+        </div>
+      </accordion-item>
+    }
   </cdk-accordion>
 </div>
 <div mat-dialog-actions>

@@ -18,10 +18,8 @@
     [resizeEdges]="{right: this.location === 'left', left: this.location === 'right', top: this.location === 'top'}"
     mwlResizeHandle
   >
-    <div
-      *ngIf="location === 'top'"
-      class="resize-handle--top-indicator"
-      [ngClass]="{'resize-handle--top-indicator--primary': usePrimaryColor}"
-    ></div>
+    @if (location === 'top') {
+      <div class="resize-handle--top-indicator" [ngClass]="{'resize-handle--top-indicator--primary': usePrimaryColor}"></div>
+    }
   </div>
 </div>

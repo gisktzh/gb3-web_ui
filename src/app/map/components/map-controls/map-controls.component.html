@@ -14,6 +14,8 @@
   </div>
   <div class="map-controls__buttons">
     <zoom-controls class="map-controls__buttons__group" [showLocateMeButton]="true"></zoom-controls>
-    <ui-toggle *ngIf="screenMode !== 'mobile'" class="map-controls__buttons__group"></ui-toggle>
+    @if (screenMode !== 'mobile') {
+      <ui-toggle class="map-controls__buttons__group"></ui-toggle>
+    }
   </div>
 </div>

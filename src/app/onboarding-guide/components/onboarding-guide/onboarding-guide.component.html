@@ -1,7 +1,9 @@
 <tour-step-template>
   <ng-template let-step="step">
     <mat-card (click)="$event.stopPropagation()" class="onboarding-guide">
-      <img *ngIf="step.image" [src]="step.image" alt="step.title" mat-card-image />
+      @if (step.image) {
+        <img [src]="step.image" alt="step.title" mat-card-image />
+      }
       <mat-card-header>
         <div class="header-group">
           <mat-card-title>
@@ -13,22 +15,25 @@
       <mat-card-content [innerHTML]="step.content" class="mat-body"></mat-card-content>
 
       <mat-card-actions align="end">
-        <button (click)="this.tourService.end()" *ngIf="!this.hasPreviousStep; else backButton" class="prev" mat-button>
-          Überspringen
-        </button>
-        <ng-template #backButton>
+        @if (!this.hasPreviousStep) {
+          <button (click)="this.tourService.end()" class="prev" mat-button>Überspringen</button>
+        } @else {
           <button (click)="this.tourService.prev()" class="prev" mat-button>
             <mat-icon>chevron_left</mat-icon>
             {{ step.prevBtnTitle }}
           </button>
-        </ng-template>
-        <button (click)="this.tourService.next()" *ngIf="this.hasNextStep && !step.nextOnAnchorClick" class="next" mat-button>
-          {{ step.nextBtnTitle }}
-          <mat-icon iconPositionEnd>chevron_right</mat-icon>
-        </button>
-        <button (click)="this.tourService.end()" *ngIf="!this.hasNextStep" mat-button>
-          {{ step.endBtnTitle }}
-        </button>
+        }
+        @if (this.hasNextStep && !step.nextOnAnchorClick) {
+          <button (click)="this.tourService.next()" class="next" mat-button>
+            {{ step.nextBtnTitle }}
+            <mat-icon iconPositionEnd>chevron_right</mat-icon>
+          </button>
+        }
+        @if (!this.hasNextStep) {
+          <button (click)="this.tourService.end()" mat-button>
+            {{ step.endBtnTitle }}
+          </button>
+        }
       </mat-card-actions>
       <mat-card-footer>
         <mat-progress-bar [value]="this.progress"></mat-progress-bar>

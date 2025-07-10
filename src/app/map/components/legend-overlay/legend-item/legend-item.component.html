@@ -1,32 +1,31 @@
 <map-overlay-list-item [metaDataLink]="showInteractiveElements ? legendItem.metaDataLink : undefined" [overlayTitle]="legendItem.title">
-  <div *ngFor="let layer of legendItem.layers" class="legend-item">
-    <map-overlay-list-item
-      *ngIf="!legendItem.isSingleLayer; else legendContent"
-      [forceExpanded]="true"
-      [metaDataLink]="layer.metaDataLink"
-      [overlayTitle]="layer.title"
-      [hasBackgroundColor]="false"
-      [showInteractiveElements]="showInteractiveElements"
-    >
-      <mat-icon class="legend-item-icon" header-icon>layers</mat-icon>
-      <ng-container *ngTemplateOutlet="legendContent"></ng-container>
-    </map-overlay-list-item>
-    <ng-template #legendContent>
-      <legend-content [layer]="layer"></legend-content>
-    </ng-template>
-  </div>
+  @for (layer of legendItem.layers; track layer) {
+    <div class="legend-item">
+      @if (!legendItem.isSingleLayer) {
+        <map-overlay-list-item
+          [forceExpanded]="true"
+          [metaDataLink]="layer.metaDataLink"
+          [overlayTitle]="layer.title"
+          [hasBackgroundColor]="false"
+          [showInteractiveElements]="showInteractiveElements"
+        >
+          <mat-icon class="legend-item-icon" header-icon>layers</mat-icon>
+          <ng-container *ngTemplateOutlet="legendContent"></ng-container>
+        </map-overlay-list-item>
+      } @else {
+        <legend-content [layer]="layer"></legend-content>
+      }
+      <ng-template #legendContent>
+        <legend-content [layer]="layer"></legend-content>
+      </ng-template>
+    </div>
+  }
 
   <ng-container header-icon>
-    <img
-      *ngIf="!legendItem.isSingleLayer && legendItem.icon; else defaultIcon"
-      class="legend-item-icon"
-      ngSrc="{{ legendItem.icon }}"
-      [alt]="legendItem.title"
-      width="24"
-      height="24"
-    />
-    <ng-template #defaultIcon>
+    @if (!legendItem.isSingleLayer && legendItem.icon) {
+      <img class="legend-item-icon" ngSrc="{{ legendItem.icon }}" [alt]="legendItem.title" width="24" height="24" />
+    } @else {
       <mat-icon class="legend-item-icon">layers</mat-icon>
-    </ng-template>
+    }
   </ng-container>
 </map-overlay-list-item>

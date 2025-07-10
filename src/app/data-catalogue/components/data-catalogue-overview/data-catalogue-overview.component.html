@@ -18,7 +18,7 @@
   <div class="data-catalogue-overview">
     <div class="data-catalogue-overview__content">
       <loading-and-process-bar [loadingState]="loadingState"></loading-and-process-bar>
-      <ng-container *ngIf="loadingState === 'loaded'">
+      @if (loadingState === 'loaded') {
         <div
           class="data-catalogue-overview__content__active-filters"
           [ngClass]="{'data-catalogue-overview__content__active-filters--mobile': screenMode === 'mobile'}"
@@ -27,12 +27,14 @@
             {{ dataCatalogueItems.data.length }} {{ dataCatalogueItems.data.length === 1 ? 'Resultat' : 'Resultate' }}
           </span>
           <div>
-            <mat-chip-row *ngFor="let activeFilter of activeFilters" (removed)="toggleFilter(activeFilter)">
-              {{ activeFilter.value }}
-              <button matChipRemove>
-                <mat-icon>cancel</mat-icon>
-              </button>
-            </mat-chip-row>
+            @for (activeFilter of activeFilters; track activeFilter) {
+              <mat-chip-row (removed)="toggleFilter(activeFilter)">
+                {{ activeFilter.value }}
+                <button matChipRemove>
+                  <mat-icon>cancel</mat-icon>
+                </button>
+              </mat-chip-row>
+            }
           </div>
         </div>
         <cdk-table [dataSource]="dataCatalogueItems">
@@ -45,8 +47,10 @@
           <cdk-row *cdkRowDef="let row; columns: ['data']"></cdk-row>
         </cdk-table>
         <mat-paginator [pageSize]="10" hidePageSize showFirstLastButtons></mat-paginator>
-      </ng-container>
-      <b *ngIf="loadingState === 'error'">Fehler beim Laden der Metadatenübersicht.</b>
+      }
+      @if (loadingState === 'error') {
+        <b>Fehler beim Laden der Metadatenübersicht.</b>
+      }
     </div>
   </div>
 </page-section>
