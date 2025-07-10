@@ -21,12 +21,29 @@ import {selectDevMode} from './state/app/reducers/app.reducer';
 import {SkipLink} from './shared/types/skip-link.type';
 import {SkipLinkConstants} from './shared/constants/skip-link.constants';
 import {SkipLinkTemplateVariable} from './shared/enums/skip-link-template-variable.enum';
+import {SkipLinkComponent} from './shared/components/skip-link/skip-link.component';
+import {NavbarMobileComponent} from './shared/components/navbar-mobile/navbar-mobile.component';
+import {NavbarComponent} from './shared/components/navbar/navbar.component';
+import {DevModeBannerComponent} from './shared/components/dev-mode-banner/dev-mode-banner.component';
+import {NgClass} from '@angular/common';
+import {RouterOutlet} from '@angular/router';
+import {MainFooterComponent} from './shared/components/footer/main-footer.component';
+import {ScrollbarWidthCalculationComponent} from './shared/components/scrollbar-width-calculation/scrollbar-width-calculation.component';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  standalone: false,
+  imports: [
+    SkipLinkComponent,
+    NavbarMobileComponent,
+    NavbarComponent,
+    DevModeBannerComponent,
+    NgClass,
+    RouterOutlet,
+    MainFooterComponent,
+    ScrollbarWidthCalculationComponent,
+  ],
 })
 export class AppComponent implements OnInit, OnDestroy {
   private readonly documentService = inject(DocumentService);

@@ -6,12 +6,16 @@ import {selectUrlState} from 'src/app/state/app/reducers/url.reducer';
 import {PanelClass} from '../../enums/panel-class.enum';
 import {NavbarMobileDialogComponent} from './navbar-mobile-dialog/navbar-mobile-dialog.component';
 import {selectDevMode} from '../../../state/app/reducers/app.reducer';
+import {MatToolbar} from '@angular/material/toolbar';
+import {MatButton, MatIconButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
+import {NgClass} from '@angular/common';
 
 @Component({
   selector: 'navbar-mobile',
   templateUrl: './navbar-mobile.component.html',
   styleUrls: ['./navbar-mobile.component.scss'],
-  standalone: false,
+  imports: [MatToolbar, MatButton, MatIcon, NgClass, MatIconButton],
 })
 export class NavbarMobileComponent implements OnInit, OnDestroy {
   private readonly dialog = inject(MatDialog);

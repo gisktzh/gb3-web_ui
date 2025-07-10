@@ -17,6 +17,15 @@ import {ConfigService} from '../../../shared/services/config.service';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {OverviewSearchResultDisplayItem} from '../../../shared/interfaces/overview-search-resuilt-display.interface';
+import {PageSectionComponent} from '../../../shared/components/page-section/page-section.component';
+import {HeroHeaderComponent} from '../../../shared/components/hero-header/hero-header.component';
+import {NgClass} from '@angular/common';
+import {SearchInputComponent} from '../../../shared/components/search/search-input.component';
+import {LoadingAndProcessBarComponent} from '../../../shared/components/loading-and-process-bar/loading-and-process-bar.component';
+import {MatChipRow, MatChipRemove} from '@angular/material/chips';
+import {MatIcon} from '@angular/material/icon';
+import {CdkTable, CdkColumnDef, CdkCellDef, CdkCell, CdkRowDef, CdkRow} from '@angular/cdk/table';
+import {OverviewSearchResultItemComponent} from '../../../shared/components/data-catalogue-overview-item/overview-search-result-item.component';
 
 const GEO_DATA_CATALOGUE_SUMMARY =
   'Im Geodatenkatalog finden Sie detaillierte Informationen zu allen verfügbaren Geodaten des Kantons Zürich: Woher sie stammen, wie aktuell und genau sie sind, wie Sie sie beziehen können und welche Nutzungsregeln gelten.';
@@ -48,7 +57,24 @@ class DataCataloguePaginatorIntl implements MatPaginatorIntl {
   templateUrl: './data-catalogue-overview.component.html',
   styleUrls: ['./data-catalogue-overview.component.scss'],
   providers: [{provide: MatPaginatorIntl, useClass: DataCataloguePaginatorIntl}],
-  standalone: false,
+  imports: [
+    PageSectionComponent,
+    HeroHeaderComponent,
+    NgClass,
+    SearchInputComponent,
+    LoadingAndProcessBarComponent,
+    MatChipRow,
+    MatChipRemove,
+    MatIcon,
+    CdkTable,
+    CdkColumnDef,
+    CdkCellDef,
+    CdkCell,
+    OverviewSearchResultItemComponent,
+    CdkRowDef,
+    CdkRow,
+    MatPaginator,
+  ],
 })
 export class DataCatalogueOverviewComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly store = inject(Store);

@@ -10,6 +10,16 @@ import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
 import {selectItems} from 'src/app/state/map/selectors/active-map-items.selector';
 import {selectFilterString} from 'src/app/state/map/reducers/layer-catalog.reducer';
 import {Gb2WmsActiveMapItem} from '../../models/implementations/gb2-wms.model';
+import {MatButton, MatIconButton} from '@angular/material/button';
+import {NgClass} from '@angular/common';
+import {MatBadge} from '@angular/material/badge';
+import {SearchInputComponent} from '../../../shared/components/search/search-input.component';
+import {NotificationIndicatorComponent} from '../notification-indicator/notification-indicator.component';
+import {MatIcon} from '@angular/material/icon';
+import {MatDivider} from '@angular/material/divider';
+import {MatTooltip} from '@angular/material/tooltip';
+import {ActiveMapItemsComponent} from '../active-map-items/active-map-items.component';
+import {MapDataCatalogueComponent} from '../map-data-catalogue/map-data-catalogue.component';
 
 type TabType = 'activeMaps' | 'mapsCatalogue';
 
@@ -23,7 +33,19 @@ const FAVOURITE_HELPER_MESSAGES = {
   selector: 'map-management-mobile',
   templateUrl: './map-management-mobile.component.html',
   styleUrls: ['./map-management-mobile.component.scss'],
-  standalone: false,
+  imports: [
+    MatButton,
+    NgClass,
+    MatBadge,
+    SearchInputComponent,
+    MatIconButton,
+    NotificationIndicatorComponent,
+    MatIcon,
+    MatDivider,
+    MatTooltip,
+    ActiveMapItemsComponent,
+    MapDataCatalogueComponent,
+  ],
 })
 export class MapManagementMobileComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);

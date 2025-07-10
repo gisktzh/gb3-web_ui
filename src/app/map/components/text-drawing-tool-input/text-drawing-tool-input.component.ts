@@ -1,7 +1,10 @@
 import {Component, OnInit, inject} from '@angular/core';
-import {FormControl, ValidatorFn, Validators} from '@angular/forms';
-import {MatDialogRef} from '@angular/material/dialog';
+import {FormControl, ValidatorFn, Validators, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatDialogRef, MatDialogClose} from '@angular/material/dialog';
 import {MapConstants} from '../../../shared/constants/map.constants';
+import {ApiDialogWrapperComponent} from '../api-dialog-wrapper/api-dialog-wrapper.component';
+import {MatFormField, MatLabel, MatInput, MatError} from '@angular/material/input';
+import {MatButton} from '@angular/material/button';
 
 const TEXT_DRAWING_CONSTRAINTS: ValidatorFn[] = [
   Validators.minLength(1),
@@ -14,7 +17,17 @@ const TEXT_DRAWING_CONSTRAINTS: ValidatorFn[] = [
   selector: 'text-drawing-tool-input',
   templateUrl: './text-drawing-tool-input.component.html',
   styleUrls: ['./text-drawing-tool-input.component.scss'],
-  standalone: false,
+  imports: [
+    ApiDialogWrapperComponent,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    FormsModule,
+    ReactiveFormsModule,
+    MatError,
+    MatButton,
+    MatDialogClose,
+  ],
 })
 export class TextDrawingToolInputComponent implements OnInit {
   private readonly dialogRef = inject<MatDialogRef<TextDrawingToolInputComponent>>(MatDialogRef);

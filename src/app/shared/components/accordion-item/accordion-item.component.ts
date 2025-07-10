@@ -4,6 +4,8 @@ import {Subscription, tap} from 'rxjs';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {ScreenMode} from '../../types/screen-size.type';
 import {CdkAccordionItem} from '@angular/cdk/accordion';
+import {NgClass} from '@angular/common';
+import {MatIcon} from '@angular/material/icon';
 
 /**
  * Implements the KTZH accordion style; to be used with a cdk-accordion element.
@@ -12,7 +14,7 @@ import {CdkAccordionItem} from '@angular/cdk/accordion';
   selector: 'accordion-item',
   templateUrl: './accordion-item.component.html',
   styleUrls: ['./accordion-item.component.scss'],
-  standalone: false,
+  imports: [CdkAccordionItem, NgClass, MatIcon],
 })
 export class AccordionItemComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);

@@ -5,12 +5,17 @@ import {Subscription, filter, map, tap} from 'rxjs';
 import {MainPage} from 'src/app/shared/enums/main-page.enum';
 import {LoadingState} from 'src/app/shared/types/loading-state.type';
 import {selectId, selectSavingState} from 'src/app/state/map/reducers/share-link.reducer';
+import {MatIconButton} from '@angular/material/button';
+import {MatSuffix} from '@angular/material/input';
+import {CdkCopyToClipboard} from '@angular/cdk/clipboard';
+import {MatIcon} from '@angular/material/icon';
+import {LoadingAndProcessBarComponent} from '../../../shared/components/loading-and-process-bar/loading-and-process-bar.component';
 
 @Component({
   selector: 'share-link-mobile',
   templateUrl: './share-link-mobile.component.html',
   styleUrls: ['./share-link-mobile.component.scss'],
-  standalone: false,
+  imports: [MatIconButton, MatSuffix, CdkCopyToClipboard, MatIcon, LoadingAndProcessBarComponent],
 })
 export class ShareLinkMobileComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);

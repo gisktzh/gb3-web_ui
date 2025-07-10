@@ -2,13 +2,19 @@ import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angula
 import {Gb3TextStyle, TextStyleConfiguration} from '../../../../../shared/interfaces/internal-drawing-representation.interface';
 import {MapConstants} from '../../../../../shared/constants/map.constants';
 import {debounceTime, Subject, Subscription, tap} from 'rxjs';
+import {MatFormField, MatLabel, MatInput} from '@angular/material/input';
+import {FormsModule} from '@angular/forms';
+import {MatDivider} from '@angular/material/divider';
+import {SliderEditComponent} from '../slider-edit/slider-edit.component';
+import {ColorPickerEditComponent} from '../color-picker-edit/color-picker-edit.component';
+import {DecimalPipe} from '@angular/common';
 
 const COLOR_INPUT_DEBOUNCE_IN_MS = 10;
 @Component({
   selector: 'text-edit',
   templateUrl: './text-edit.component.html',
   styleUrl: './text-edit.component.scss',
-  standalone: false,
+  imports: [MatFormField, MatLabel, MatInput, FormsModule, MatDivider, SliderEditComponent, ColorPickerEditComponent, DecimalPipe],
 })
 export class TextEditComponent implements OnInit, OnDestroy {
   @Input() public textStyle!: Gb3TextStyle;

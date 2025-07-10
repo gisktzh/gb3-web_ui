@@ -1,7 +1,11 @@
 import {Component, OnDestroy, OnInit, inject} from '@angular/core';
-import {MAT_SNACK_BAR_DATA, MatSnackBarRef} from '@angular/material/snack-bar';
+import {MAT_SNACK_BAR_DATA, MatSnackBarRef, MatSnackBarLabel, MatSnackBarActions} from '@angular/material/snack-bar';
 import {ErrorNotificationInterface} from '../../interfaces/error-notification.interface';
 import {BehaviorSubject, concatMap, interval, Observable, Subscription, tap} from 'rxjs';
+import {MatIconButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
+import {MatProgressBar} from '@angular/material/progress-bar';
+import {AsyncPipe} from '@angular/common';
 
 const TICK_LENGTH_IN_MS = 100;
 
@@ -9,7 +13,7 @@ const TICK_LENGTH_IN_MS = 100;
   selector: 'error-notification',
   templateUrl: './error-notification.component.html',
   styleUrls: ['./error-notification.component.scss'],
-  standalone: false,
+  imports: [MatSnackBarLabel, MatSnackBarActions, MatIconButton, MatIcon, MatProgressBar, AsyncPipe],
 })
 export class ErrorNotificationComponent implements OnInit, OnDestroy {
   private readonly snackBarRef = inject<MatSnackBarRef<ErrorNotificationComponent>>(MatSnackBarRef);

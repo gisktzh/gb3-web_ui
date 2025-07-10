@@ -9,7 +9,6 @@ import {MAP_SERVICE} from '../../../app.tokens';
   templateUrl: './map-container.component.html',
   styleUrls: ['./map-container.component.scss'],
   providers: [FeatureHighlightingService],
-  standalone: false,
 })
 export class MapContainerComponent implements OnInit, AfterViewInit {
   private readonly mapService = inject<MapService>(MAP_SERVICE);

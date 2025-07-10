@@ -8,12 +8,31 @@ import {ConfigService} from 'src/app/shared/services/config.service';
 import {HasSavingState} from '../../../shared/interfaces/has-saving-state.interface';
 import {LoadingState} from '../../../shared/types/loading-state.type';
 import {selectId, selectSavingState} from '../../../state/map/reducers/share-link.reducer';
+import {ApiDialogWrapperComponent} from '../api-dialog-wrapper/api-dialog-wrapper.component';
+import {MatFormField, MatLabel, MatInput, MatSuffix} from '@angular/material/input';
+import {MatIconButton, MatButton} from '@angular/material/button';
+import {CdkCopyToClipboard} from '@angular/cdk/clipboard';
+import {MatIcon} from '@angular/material/icon';
+import {FeatureFlagDirective} from '../../../shared/directives/feature-flag.directive';
+import {MapOverlayListItemComponent} from '../map-overlay/map-overlay-list-item/map-overlay-list-item.component';
 
 @Component({
   selector: 'share-link-dialog',
   templateUrl: './share-link-dialog.component.html',
   styleUrls: ['./share-link-dialog.component.scss'],
-  standalone: false,
+  imports: [
+    ApiDialogWrapperComponent,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatIconButton,
+    MatSuffix,
+    CdkCopyToClipboard,
+    MatIcon,
+    FeatureFlagDirective,
+    MapOverlayListItemComponent,
+    MatButton,
+  ],
 })
 export class ShareLinkDialogComponent implements OnInit, OnDestroy, HasSavingState {
   private readonly dialogRef = inject<MatDialogRef<ShareLinkDialogComponent>>(MatDialogRef);

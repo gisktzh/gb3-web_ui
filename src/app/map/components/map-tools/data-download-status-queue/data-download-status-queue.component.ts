@@ -5,12 +5,32 @@ import {LayerCatalogActions} from '../../../../state/map/actions/layer-catalog.a
 import {OrderStatusJob} from '../../../../shared/interfaces/geoshop-order-status.interface';
 import {selectIncompleteOrderStatusJobs} from '../../../../state/map/selectors/incomplete-order-status-jobs.selector';
 import {DataDownloadOrderStatusJobActions} from '../../../../state/map/actions/data-download-order-status-job.actions';
+import {MatCard, MatCardHeader} from '@angular/material/card';
+import {NgClass} from '@angular/common';
+import {MatIconButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
+import {MatTooltip} from '@angular/material/tooltip';
+import {ShowTooltipIfTruncatedDirective} from '../../../../shared/directives/show-tooltip-if-truncated.directive';
+import {MatProgressSpinner} from '@angular/material/progress-spinner';
+import {DataDownloadOrderStatusPipe} from '../../../pipes/data-download-order-status.pipe';
+import {DataDownloadOrderDownloadUrlPipe} from '../../../pipes/data-download-order-download-url.pipe';
 
 @Component({
   selector: 'data-download-status-queue',
   templateUrl: './data-download-status-queue.component.html',
   styleUrls: ['./data-download-status-queue.component.scss'],
-  standalone: false,
+  imports: [
+    MatCard,
+    MatCardHeader,
+    NgClass,
+    MatIconButton,
+    MatIcon,
+    MatTooltip,
+    ShowTooltipIfTruncatedDirective,
+    MatProgressSpinner,
+    DataDownloadOrderStatusPipe,
+    DataDownloadOrderDownloadUrlPipe,
+  ],
 })
 export class DataDownloadStatusQueueComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);

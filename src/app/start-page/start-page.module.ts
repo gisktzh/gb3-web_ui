@@ -22,19 +22,6 @@ import {LinkGridListItemComponent} from '../shared/components/lists/link-grid-li
 import {SearchBarComponent} from '../shared/components/search/search-bar/search-bar.component';
 
 @NgModule({
-  declarations: [
-    StartPageComponent,
-    TwitterFeedComponent,
-    NewsFeedComponent,
-    DiscoverMapsComponent,
-    ContentLoadingStateComponent,
-    GisBrowserTeaserComponent,
-    FrequentlyUsedItemsComponent,
-    StartPageSearchComponent,
-    SearchResultGroupComponent,
-    SearchResultEntryMapComponent,
-    SearchResultGroupsComponent,
-  ],
   imports: [
     CommonModule,
     SharedModule,
@@ -47,6 +34,17 @@ import {SearchBarComponent} from '../shared/components/search/search-bar/search-
     LinkGridListComponent,
     LinkGridListItemComponent,
     SearchBarComponent,
+    StartPageComponent,
+    TwitterFeedComponent,
+    NewsFeedComponent,
+    DiscoverMapsComponent,
+    ContentLoadingStateComponent,
+    GisBrowserTeaserComponent,
+    FrequentlyUsedItemsComponent,
+    StartPageSearchComponent,
+    SearchResultGroupComponent,
+    SearchResultEntryMapComponent,
+    SearchResultGroupsComponent,
   ],
 })
 export class StartPageModule {}

@@ -24,6 +24,10 @@ import {GeometryWithSrs} from '../../../../shared/interfaces/geojson-types-with-
 import {MapService} from '../../../interfaces/map.service';
 import {StyleExpression} from '../../../../shared/types/style-expression.type';
 import {MAP_SERVICE} from '../../../../app.tokens';
+import {NgStyle, NgOptimizedImage, KeyValuePipe} from '@angular/common';
+import {MatTooltip} from '@angular/material/tooltip';
+import {ShowTooltipIfTruncatedDirective} from '../../../../shared/directives/show-tooltip-if-truncated.directive';
+import {ResizeHandlerComponent} from '../../../../shared/components/resize-handler/resize-handler.component';
 
 type CellType = 'text' | 'url' | 'image';
 
@@ -95,7 +99,16 @@ const MIN_TABLE_HEADER_WIDTH = 80;
   selector: 'feature-info-content',
   templateUrl: './feature-info-content.component.html',
   styleUrls: ['./feature-info-content.component.scss'],
-  standalone: false,
+  imports: [
+    NgStyle,
+    TableColumnIdentifierDirective,
+    MatRadioButton,
+    MatTooltip,
+    ShowTooltipIfTruncatedDirective,
+    NgOptimizedImage,
+    ResizeHandlerComponent,
+    KeyValuePipe,
+  ],
 })
 export class FeatureInfoContentComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly store = inject(Store);

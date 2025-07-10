@@ -5,12 +5,31 @@ import {MapConfigState} from '../../../../state/map/states/map-config.state';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {selectMapConfigState} from '../../../../state/map/reducers/map-config.reducer';
+import {MatRipple} from '@angular/material/core';
+import {MatTooltip} from '@angular/material/tooltip';
+import {NgTemplateOutlet, NgOptimizedImage, NgClass} from '@angular/common';
+import {RouterLink} from '@angular/router';
+import {ShowTooltipIfTruncatedDirective} from '../../../../shared/directives/show-tooltip-if-truncated.directive';
+import {MatIcon} from '@angular/material/icon';
+import {MatDivider} from '@angular/material/divider';
+import {AppendMapConfigurationToUrlPipe} from '../../../../shared/pipes/append-map-configuration-to-url.pipe';
 
 @Component({
   selector: 'search-result-entry-map',
   templateUrl: './search-result-entry-map.component.html',
   styleUrls: ['./search-result-entry-map.component.scss'],
-  standalone: false,
+  imports: [
+    MatRipple,
+    MatTooltip,
+    NgTemplateOutlet,
+    RouterLink,
+    NgOptimizedImage,
+    ShowTooltipIfTruncatedDirective,
+    MatIcon,
+    NgClass,
+    MatDivider,
+    AppendMapConfigurationToUrlPipe,
+  ],
 })
 export class SearchResultEntryMapComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);

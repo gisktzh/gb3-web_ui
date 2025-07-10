@@ -20,12 +20,38 @@ import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {MapCouldNotBeFound} from '../../../shared/errors/map.errors';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
+import {MatCard, MatCardHeader} from '@angular/material/card';
+import {TypedTourAnchorDirective} from '../../../shared/directives/typed-tour-anchor.directive';
+import {NgClass} from '@angular/common';
+import {MatIconButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
+import {SearchInputComponent} from '../../../shared/components/search/search-input.component';
+import {LoadingAndProcessBarComponent} from '../../../shared/components/loading-and-process-bar/loading-and-process-bar.component';
+import {MatAccordion} from '@angular/material/expansion';
+import {ExpandableListItemComponent} from '../../../shared/components/expandable-list-item/expandable-list-item.component';
+import {MapDataItemFavouriteComponent} from './base-map-data-item/map-data-item-favourite.component';
+import {MapDataItemMapComponent} from './base-map-data-item/map-data-item-map.component';
+import {MatDivider} from '@angular/material/divider';
 
 @Component({
   selector: 'map-data-catalogue',
   templateUrl: './map-data-catalogue.component.html',
   styleUrls: ['./map-data-catalogue.component.scss'],
-  standalone: false,
+  imports: [
+    MatCard,
+    TypedTourAnchorDirective,
+    NgClass,
+    MatCardHeader,
+    MatIconButton,
+    MatIcon,
+    SearchInputComponent,
+    LoadingAndProcessBarComponent,
+    MatAccordion,
+    ExpandableListItemComponent,
+    MapDataItemFavouriteComponent,
+    MapDataItemMapComponent,
+    MatDivider,
+  ],
 })
 export class MapDataCatalogueComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);

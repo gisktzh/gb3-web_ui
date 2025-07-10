@@ -10,12 +10,13 @@ import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {ResultGroupsComponent} from './result-groups/result-groups.component';
 import {ResultGroupComponent} from './result-groups/result-group/result-group.component';
 import {BaseSearchContainerComponent} from '../../../shared/components/search/base-search-container/base-search-container.component';
+import {SearchBarComponent} from '../../../shared/components/search/search-bar/search-bar.component';
 
 @Component({
   selector: 'search-window',
   templateUrl: './search-window.component.html',
   styleUrls: ['./search-window.component.scss'],
-  standalone: false,
+  imports: [SearchBarComponent, ResultGroupsComponent],
 })
 export class SearchWindowComponent extends BaseSearchContainerComponent implements OnInit, OnDestroy, AfterViewInit {
   protected override store = inject(Store);

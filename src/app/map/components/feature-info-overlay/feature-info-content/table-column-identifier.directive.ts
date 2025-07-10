@@ -1,9 +1,6 @@
 import {Directive, ElementRef, Input, inject} from '@angular/core';
 
-@Directive({
-  selector: '[tableColumnIdentifier]',
-  standalone: false,
-})
+@Directive({selector: '[tableColumnIdentifier]'})
 export class TableColumnIdentifierDirective {
   public readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
 

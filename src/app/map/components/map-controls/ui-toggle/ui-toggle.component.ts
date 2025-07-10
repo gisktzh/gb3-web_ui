@@ -3,12 +3,15 @@ import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
 import {selectHideToggleUiElementsButton, selectHideUiElements} from 'src/app/state/map/reducers/map-ui.reducer';
+import {MatIconButton} from '@angular/material/button';
+import {MatTooltip} from '@angular/material/tooltip';
+import {MatSlideToggle} from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'ui-toggle',
   templateUrl: './ui-toggle.component.html',
   styleUrls: ['./ui-toggle.component.scss'],
-  standalone: false,
+  imports: [MatIconButton, MatTooltip, MatSlideToggle],
 })
 export class UiToggleComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);

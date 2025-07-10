@@ -8,12 +8,21 @@ import {DataCataloguePage} from '../../../../shared/enums/data-catalogue-page.en
 import {MainPage} from '../../../../shared/enums/main-page.enum';
 import {ActiveMapItemActions} from '../../../../state/map/actions/active-map-item.actions';
 import {ActiveMapItem} from '../../../models/active-map-item.model';
+import {MatIconButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
+import {NgClass} from '@angular/common';
+import {MatCheckbox} from '@angular/material/checkbox';
+import {LoadingAndProcessBarComponent} from '../../../../shared/components/loading-and-process-bar/loading-and-process-bar.component';
+import {MatTooltip} from '@angular/material/tooltip';
+import {RouterLink} from '@angular/router';
+import {MatDivider} from '@angular/material/divider';
+import {CdkDragHandle} from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'active-map-item-header',
   templateUrl: './active-map-item-header.component.html',
   styleUrls: ['./active-map-item-header.component.scss'],
-  standalone: false,
+  imports: [MatIconButton, MatIcon, NgClass, MatCheckbox, LoadingAndProcessBarComponent, MatTooltip, RouterLink, MatDivider, CdkDragHandle],
 })
 export class ActiveMapItemHeaderComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);

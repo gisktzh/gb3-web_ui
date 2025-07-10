@@ -6,10 +6,7 @@ import {selectActiveTool} from '../../../../state/map/reducers/tool.reducer';
 import {Store} from '@ngrx/store';
 import {MatDialog} from '@angular/material/dialog';
 
-@Component({
-  template: '',
-  standalone: false,
-})
+@Component({template: ''})
 export class AbstractToolsComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);
   protected readonly dialogService = inject(MatDialog);

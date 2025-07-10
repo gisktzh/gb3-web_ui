@@ -7,7 +7,13 @@ import {UsageRulesComponent} from './components/usage-rules/usage-rules.componen
 import {TermsOfUseRoutingModule} from './terms-of-use-routing.module';
 
 @NgModule({
-  declarations: [TermsOfUsePageComponent, UsageRulesComponent, TermsOfUseGeodataAndMapsComponent],
-  imports: [CommonModule, TermsOfUseRoutingModule, SharedModule],
+  imports: [
+    CommonModule,
+    TermsOfUseRoutingModule,
+    SharedModule,
+    TermsOfUsePageComponent,
+    UsageRulesComponent,
+    TermsOfUseGeodataAndMapsComponent,
+  ],
 })
 export class TermsOfUseModule {}

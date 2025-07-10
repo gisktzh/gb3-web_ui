@@ -6,7 +6,6 @@ import {PrivacyRoutingModule} from './privacy-routing.module';
 import {PrivacyContentComponent} from './components/privacy-content/privacy-content.component';
 
 @NgModule({
-  declarations: [PrivacyPageComponent, PrivacyContentComponent],
-  imports: [CommonModule, PrivacyRoutingModule, SharedModule],
+  imports: [CommonModule, PrivacyRoutingModule, SharedModule, PrivacyPageComponent, PrivacyContentComponent],
 })
 export class PrivacyModule {}

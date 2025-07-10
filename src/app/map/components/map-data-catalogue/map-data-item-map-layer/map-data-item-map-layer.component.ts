@@ -3,12 +3,19 @@ import {MapLayer} from '../../../../shared/interfaces/topic.interface';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {selectScale} from '../../../../state/map/reducers/map-config.reducer';
+import {MatCheckbox} from '@angular/material/checkbox';
+import {MatIconButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
+import {NgClass} from '@angular/common';
+import {MatTooltip} from '@angular/material/tooltip';
+import {HighlightSearchQueryPipe} from '../../../../shared/pipes/highlight-search-query.pipe';
+import {LayerTooltipPipe} from '../../../../shared/pipes/layer-tooltip.pipe';
 
 @Component({
   selector: 'map-data-item-map-layer',
   templateUrl: './map-data-item-map-layer.component.html',
   styleUrls: ['./map-data-item-map-layer.component.scss'],
-  standalone: false,
+  imports: [MatCheckbox, MatIconButton, MatIcon, NgClass, MatTooltip, HighlightSearchQueryPipe, LayerTooltipPipe],
 })
 export class MapDataItemMapLayerComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);

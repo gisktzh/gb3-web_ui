@@ -1,11 +1,14 @@
 import {Component, Input} from '@angular/core';
 import {LoadingState} from '../../types/loading-state.type';
+import {MatExpansionPanel, MatExpansionPanelHeader} from '@angular/material/expansion';
+import {NgClass} from '@angular/common';
+import {ExpandableListItemHeaderComponent} from './expandable-list-item-header/expandable-list-item-header.component';
 
 @Component({
   selector: 'expandable-list-item',
   templateUrl: './expandable-list-item.component.html',
   styleUrls: ['./expandable-list-item.component.scss'],
-  standalone: false,
+  imports: [MatExpansionPanel, NgClass, MatExpansionPanelHeader, ExpandableListItemHeaderComponent],
 })
 export class ExpandableListItemComponent {
   @Input() public expanded: boolean = false;

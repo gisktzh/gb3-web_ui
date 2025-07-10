@@ -3,12 +3,14 @@ import {selectIsDrawingEditOverlayVisible} from '../../../state/map/reducers/map
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {DrawingActions} from '../../../state/map/actions/drawing.actions';
+import {MapOverlayComponent} from '../map-overlay/map-overlay.component';
+import {DrawingEditComponent} from './drawing-edit/drawing-edit.component';
 
 @Component({
   selector: 'drawing-edit-overlay',
   templateUrl: './drawing-edit-overlay.component.html',
   styleUrl: './drawing-edit-overlay.component.scss',
-  standalone: false,
+  imports: [MapOverlayComponent, DrawingEditComponent],
 })
 export class DrawingEditOverlayComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);

@@ -5,12 +5,15 @@ import {ImportActions} from '../../../../state/map/actions/import.actions';
 import {selectLoadingState} from '../../../../state/map/reducers/import.reducer';
 import {Subscription, tap} from 'rxjs';
 import {LoadingState} from '../../../../shared/types/loading-state.type';
+import {ApiDialogWrapperComponent} from '../../api-dialog-wrapper/api-dialog-wrapper.component';
+import {DropZoneComponent} from '../../../../shared/components/drop-zone/drop-zone.component';
+import {MatButton} from '@angular/material/button';
 
 @Component({
   selector: 'drawings-import-dialog',
   templateUrl: './drawings-import-dialog.component.html',
   styleUrl: './drawings-import-dialog.component.scss',
-  standalone: false,
+  imports: [ApiDialogWrapperComponent, DropZoneComponent, MatButton],
 })
 export class DrawingsImportDialogComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);

@@ -4,7 +4,6 @@ import {SharedModule} from '../shared/shared.module';
 import {ShareLinkRoutingModule} from './share-link-routing.module';
 
 @NgModule({
-  declarations: [ShareLinkRedirectComponent],
-  imports: [SharedModule, ShareLinkRoutingModule],
+  imports: [SharedModule, ShareLinkRoutingModule, ShareLinkRedirectComponent],
 })
 export class ShareLinkModule {}

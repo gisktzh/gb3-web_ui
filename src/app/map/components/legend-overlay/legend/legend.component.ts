@@ -5,12 +5,14 @@ import {LegendDisplay} from 'src/app/shared/interfaces/legend.interface';
 import {LoadingState} from 'src/app/shared/types/loading-state.type';
 import {selectLoadingState} from 'src/app/state/map/reducers/legend.reducer';
 import {selectLegendItemsForDisplay} from 'src/app/state/map/selectors/legend-result-display.selector';
+import {LoadingAndProcessBarComponent} from '../../../../shared/components/loading-and-process-bar/loading-and-process-bar.component';
+import {LegendItemComponent} from '../legend-item/legend-item.component';
 
 @Component({
   selector: 'legend',
   templateUrl: './legend.component.html',
   styleUrls: ['./legend.component.scss'],
-  standalone: false,
+  imports: [LoadingAndProcessBarComponent, LegendItemComponent],
 })
 export class LegendComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);

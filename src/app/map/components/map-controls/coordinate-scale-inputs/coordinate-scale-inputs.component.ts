@@ -7,6 +7,10 @@ import {ConfigService} from '../../../../shared/services/config.service';
 import {CoordinateParserService} from '../../../services/coordinate-parser.service';
 import {NumberUtils} from '../../../../shared/utils/number.utils';
 import {Coordinate} from '../../../../shared/interfaces/coordinate.interface';
+import {TypedTourAnchorDirective} from '../../../../shared/directives/typed-tour-anchor.directive';
+import {DataInputComponent} from '../data-input/data-input.component';
+import {FormsModule} from '@angular/forms';
+import {MapRotationButtonComponent} from '../map-rotation-button/map-rotation-button.component';
 
 /**
  * Note that for scale and mapCenter, we have two properties - one mimicks the state and one mimicks the input. The input value is used in
@@ -22,7 +26,7 @@ import {Coordinate} from '../../../../shared/interfaces/coordinate.interface';
   selector: 'coordinate-scale-inputs',
   templateUrl: './coordinate-scale-inputs.component.html',
   styleUrls: ['./coordinate-scale-inputs.component.scss'],
-  standalone: false,
+  imports: [TypedTourAnchorDirective, DataInputComponent, FormsModule, MapRotationButtonComponent],
 })
 export class CoordinateScaleInputsComponent implements OnInit, OnDestroy {
   private readonly coordinateParserService = inject(CoordinateParserService);

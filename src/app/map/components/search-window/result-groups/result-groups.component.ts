@@ -12,12 +12,15 @@ import {
   selectFilteredSearchApiResultMatches,
 } from '../../../../state/app/selectors/search-results.selector';
 import {ResultGroupComponent} from './result-group/result-group.component';
+import {LoadingAndProcessBarComponent} from '../../../../shared/components/loading-and-process-bar/loading-and-process-bar.component';
+import {MatAccordion} from '@angular/material/expansion';
+import {NgClass} from '@angular/common';
 
 @Component({
   selector: 'result-groups',
   templateUrl: './result-groups.component.html',
   styleUrls: ['./result-groups.component.scss'],
-  standalone: false,
+  imports: [LoadingAndProcessBarComponent, MatAccordion, NgClass, ResultGroupComponent],
 })
 export class ResultGroupsComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);

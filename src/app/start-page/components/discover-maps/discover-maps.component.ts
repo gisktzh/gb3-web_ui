@@ -9,6 +9,9 @@ import {MainPage} from '../../../shared/enums/main-page.enum';
 
 import {DiscoverMapsCouldNotBeLoaded} from '../../../shared/errors/start-page.errors';
 import {GRAV_CMS_SERVICE} from '../../../app.tokens';
+import {ContentLoadingStateComponent} from '../content-loading-state/content-loading-state.component';
+import {LinkGridListComponent} from '../../../shared/components/lists/link-grid-list/link-grid-list.component';
+import {LinkGridListItemComponent} from '../../../shared/components/lists/link-grid-list/link-grid-list-item/link-grid-list-item.component';
 
 const NUMBER_OF_ENTRIES = 2;
 
@@ -16,7 +19,7 @@ const NUMBER_OF_ENTRIES = 2;
   selector: 'discover-maps',
   templateUrl: './discover-maps.component.html',
   styleUrls: ['./discover-maps.component.scss'],
-  standalone: false,
+  imports: [ContentLoadingStateComponent, LinkGridListComponent, LinkGridListItemComponent],
 })
 export class DiscoverMapsComponent implements OnInit, HasLoadingState, OnDestroy {
   private readonly gravCmsService = inject<GravCmsService>(GRAV_CMS_SERVICE);

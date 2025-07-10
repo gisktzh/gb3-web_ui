@@ -10,7 +10,16 @@ import {SupportPageNavigationComponent} from './components/support-page-navigati
 import {GenericUnorderedListComponent} from '../shared/components/lists/generic-unordered-list/generic-unordered-list.component';
 
 @NgModule({
-  declarations: [SupportPageComponent, FaqComponent, ContactComponent, UsefulInformationComponent, SupportPageNavigationComponent],
-  imports: [CommonModule, SharedModule, SupportPageRoutingModule, GenericUnorderedListComponent],
+  imports: [
+    CommonModule,
+    SharedModule,
+    SupportPageRoutingModule,
+    GenericUnorderedListComponent,
+    SupportPageComponent,
+    FaqComponent,
+    ContactComponent,
+    UsefulInformationComponent,
+    SupportPageNavigationComponent,
+  ],
 })
 export class SupportPageModule {}

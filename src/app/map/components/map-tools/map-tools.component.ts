@@ -6,13 +6,15 @@ import {toolTipFactoryMapToolsAndControls} from 'src/app/shared/factories/toolti
 import {ConfigService} from 'src/app/shared/services/config.service';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
+import {MapToolsDesktopComponent} from './map-tools-desktop/map-tools-desktop.component';
+import {MapToolsMobileComponent} from './map-tools-mobile/map-tools-mobile.component';
 
 @Component({
   selector: 'map-tools',
   templateUrl: './map-tools.component.html',
   styleUrls: ['./map-tools.component.scss'],
   providers: [{provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useFactory: toolTipFactoryMapToolsAndControls, deps: [ConfigService]}],
-  standalone: false,
+  imports: [MapToolsDesktopComponent, MapToolsMobileComponent],
 })
 export class MapToolsComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);

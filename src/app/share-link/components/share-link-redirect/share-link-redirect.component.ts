@@ -7,12 +7,13 @@ import {ShareLinkActions} from '../../../state/map/actions/share-link.actions';
 import {selectApplicationInitializationLoadingState, selectLoadingState} from '../../../state/map/reducers/share-link.reducer';
 import {ShareLinkParameterInvalid} from '../../../shared/errors/share-link.errors';
 import {RouteParamConstants} from '../../../shared/constants/route-param.constants';
+import {WaitingPageComponent} from '../../../shared/components/waiting-page/waiting-page.component';
 
 @Component({
   selector: 'share-link-redirect',
   templateUrl: './share-link-redirect.component.html',
   styleUrls: ['./share-link-redirect.component.scss'],
-  standalone: false,
+  imports: [WaitingPageComponent],
 })
 export class ShareLinkRedirectComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);

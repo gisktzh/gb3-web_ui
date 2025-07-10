@@ -20,7 +20,6 @@ type DetailMetadata = ProductMetadata | MapMetadata | ServiceMetadata | DatasetM
 
 @Component({
   template: '',
-  standalone: false,
 })
 export abstract class AbstractBaseDetailComponent<T extends DetailMetadata> implements OnInit, OnDestroy {
   public abstract baseMetadataInformation?: BaseMetadataInformation;

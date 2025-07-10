@@ -2,10 +2,7 @@ import {Directive, OnDestroy, OnInit, DOCUMENT, inject} from '@angular/core';
 import {CdkDrag} from '@angular/cdk/drag-drop';
 import {Subscription, tap} from 'rxjs';
 
-@Directive({
-  selector: '[dragCursor]',
-  standalone: false,
-})
+@Directive({selector: '[dragCursor]'})
 export class DragCursorDirective implements OnInit, OnDestroy {
   private readonly document = inject<Document>(DOCUMENT);
   private readonly cdkDrag = inject(CdkDrag);

@@ -2,10 +2,18 @@ import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges
 import {TimeExtent} from '../../interfaces/time-extent.interface';
 import {TimeSliderConfiguration, TimeSliderLayerSource} from '../../../shared/interfaces/topic.interface';
 import {TimeSliderService} from '../../services/time-slider.service';
-import {MatDatepicker} from '@angular/material/datepicker';
+import {MatDatepicker, MatDatepickerInput} from '@angular/material/datepicker';
 import {TimeService} from '../../../shared/interfaces/time-service.interface';
 import {DateUnit} from '../../../shared/types/date-unit.type';
 import {TIME_SERVICE} from '../../../app.tokens';
+import {SliderWrapperComponent} from '../../../shared/components/slider-wrapper/slider-wrapper.component';
+import {MatSlider, MatSliderThumb, MatSliderRangeThumb} from '@angular/material/slider';
+import {FormsModule} from '@angular/forms';
+import {MatFormField, MatInput} from '@angular/material/input';
+import {MatButton} from '@angular/material/button';
+import {NgClass} from '@angular/common';
+import {TimeExtentToStringPipe} from '../../pipes/time-extent-to-string.pipe';
+import {DateToStringPipe} from '../../pipes/date-to-string.pipe';
 
 // There is an array (`allowedDatePickerManipulationUnits`) and a new union type (`DatePickerManipulationUnits`) for two reasons:
 // To be able to extract a union type subset of `ManipulateType` AND to have an array used to check if a given value is in said union type.
@@ -18,7 +26,21 @@ type DatePickerStartView = 'month' | 'year' | 'multi-year';
   selector: 'time-slider',
   templateUrl: './time-slider.component.html',
   styleUrls: ['./time-slider.component.scss'],
-  standalone: false,
+  imports: [
+    SliderWrapperComponent,
+    MatSlider,
+    MatSliderThumb,
+    FormsModule,
+    MatSliderRangeThumb,
+    MatFormField,
+    MatInput,
+    MatDatepickerInput,
+    MatDatepicker,
+    MatButton,
+    NgClass,
+    TimeExtentToStringPipe,
+    DateToStringPipe,
+  ],
 })
 export class TimeSliderComponent implements OnInit, OnChanges {
   private readonly timeSliderService = inject(TimeSliderService);

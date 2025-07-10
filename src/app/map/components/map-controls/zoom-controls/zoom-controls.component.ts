@@ -1,5 +1,5 @@
 import {Component, Input, OnDestroy, OnInit, inject} from '@angular/core';
-import {MAT_TOOLTIP_DEFAULT_OPTIONS} from '@angular/material/tooltip';
+import {MAT_TOOLTIP_DEFAULT_OPTIONS, MatTooltip} from '@angular/material/tooltip';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {toolTipFactoryMapToolsAndControls} from 'src/app/shared/factories/tooltip-map-tools-and-controls.factory';
@@ -14,6 +14,11 @@ import {selectIsMaxZoomedIn, selectIsMaxZoomedOut} from '../../../../state/map/r
 import {selectMapUiState} from '../../../../state/map/reducers/map-ui.reducer';
 import {GeolocationState} from '../../../../state/map/states/geolocation.state';
 import {MapUiState} from '../../../../state/map/states/map-ui.state';
+import {MatIconButton} from '@angular/material/button';
+import {NgClass} from '@angular/common';
+import {MatIcon} from '@angular/material/icon';
+import {LoadingAndProcessBarComponent} from '../../../../shared/components/loading-and-process-bar/loading-and-process-bar.component';
+import {MatDivider} from '@angular/material/divider';
 
 const TOOLTIP_TEXT = {
   locateMe: 'Deinen Standort anzeigen',
@@ -26,7 +31,7 @@ const TOOLTIP_TEXT = {
   templateUrl: './zoom-controls.component.html',
   styleUrls: ['./zoom-controls.component.scss'],
   providers: [{provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useFactory: toolTipFactoryMapToolsAndControls, deps: [ConfigService]}],
-  standalone: false,
+  imports: [MatIconButton, MatTooltip, NgClass, MatIcon, LoadingAndProcessBarComponent, MatDivider],
 })
 export class ZoomControlsComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);

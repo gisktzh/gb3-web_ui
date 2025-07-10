@@ -7,12 +7,27 @@ import {MapUiActions} from '../../../state/map/actions/map-ui.actions';
 import {selectData, selectLoadingState} from '../../../state/map/reducers/elevation-profile.reducer';
 import {ElevationProfileData} from '../../../shared/interfaces/elevation-profile.interface';
 import {SwisstopoApiService} from '../../../shared/services/apis/swisstopo/swisstopo-api.service';
+import {MapOverlayComponent} from '../map-overlay/map-overlay.component';
+import {LoadingAndProcessBarComponent} from '../../../shared/components/loading-and-process-bar/loading-and-process-bar.component';
+import {ElevationProfileChartComponent} from './elevation-profile-chart/elevation-profile-chart.component';
+import {ElevationProfileStatisticsComponent} from './elevation-profile-statistics/elevation-profile-statistics.component';
+import {MatButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
+import {MatDivider} from '@angular/material/divider';
 
 @Component({
   selector: 'elevation-profile-overlay',
   templateUrl: './elevation-profile-overlay.component.html',
   styleUrls: ['./elevation-profile-overlay.component.scss'],
-  standalone: false,
+  imports: [
+    MapOverlayComponent,
+    LoadingAndProcessBarComponent,
+    ElevationProfileChartComponent,
+    ElevationProfileStatisticsComponent,
+    MatButton,
+    MatIcon,
+    MatDivider,
+  ],
 })
 export class ElevationProfileOverlayComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);

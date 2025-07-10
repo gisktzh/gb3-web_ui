@@ -1,10 +1,12 @@
 import {Component, Input} from '@angular/core';
+import {MatTooltip} from '@angular/material/tooltip';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
   selector: 'slider-wrapper',
   templateUrl: './slider-wrapper.component.html',
   styleUrls: ['./slider-wrapper.component.scss'],
-  standalone: false,
+  imports: [MatTooltip, MatIcon],
 })
 export class SliderWrapperComponent<T> {
   /** The title of the slider wrapper */

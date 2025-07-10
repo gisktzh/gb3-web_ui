@@ -8,6 +8,9 @@ import {News} from '../../../shared/interfaces/news.interface';
 
 import {NewsCouldNotBeLoaded} from '../../../shared/errors/start-page.errors';
 import {NEWS_SERVICE} from '../../../app.tokens';
+import {ContentLoadingStateComponent} from '../content-loading-state/content-loading-state.component';
+import {LinkGridListComponent} from '../../../shared/components/lists/link-grid-list/link-grid-list.component';
+import {LinkGridListItemComponent} from '../../../shared/components/lists/link-grid-list/link-grid-list-item/link-grid-list-item.component';
 
 const NUMBER_OF_NEWS = 3;
 
@@ -15,7 +18,7 @@ const NUMBER_OF_NEWS = 3;
   selector: 'news-feed',
   templateUrl: './news-feed.component.html',
   styleUrls: ['./news-feed.component.scss'],
-  standalone: false,
+  imports: [ContentLoadingStateComponent, LinkGridListComponent, LinkGridListItemComponent],
 })
 export class NewsFeedComponent implements OnInit, HasLoadingState, OnDestroy {
   private readonly newsService = inject<NewsService>(NEWS_SERVICE);

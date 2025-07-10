@@ -6,6 +6,17 @@ import {MetadataLink} from '../../interfaces/metadata-link.interface';
 import {AbstractBaseDetailComponent} from '../abstract-base-detail/abstract-base-detail.component';
 import {DataExtractionUtils} from '../../utils/data-extraction.utils';
 import {DatasetLayer} from '../../../shared/interfaces/dataset-layer.interface';
+import {LoadingAndProcessBarComponent} from '../../../shared/components/loading-and-process-bar/loading-and-process-bar.component';
+import {DataCatalogueDetailPageComponent} from '../data-catalogue-detail-page/data-catalogue-detail-page.component';
+import {DataCatalogueDetailPageSectionComponent} from '../data-catalogue-detail-page-section/data-catalogue-detail-page-section.component';
+import {DataDisplaySectionComponent} from '../data-display-section/data-display-section.component';
+import {DataDisplayComponent} from '../data-display/data-display.component';
+import {DatasetElementDetailComponent} from './dataset-element-detail/dataset-element-detail.component';
+import {GenericUnorderedListComponent} from '../../../shared/components/lists/generic-unordered-list/generic-unordered-list.component';
+import {DescriptiveHighlightedLinkComponent} from '../../../shared/components/descriptive-highlighted-link/descriptive-highlighted-link.component';
+import {RouterLink} from '@angular/router';
+import {MatButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
 
 /**
  We do not get a description in the case of the dataset...
@@ -20,7 +31,19 @@ interface MetadataLinkWithTopicId extends MetadataLinkWithoutDescription {
   selector: 'dataset-detail',
   templateUrl: './dataset-detail.component.html',
   styleUrls: ['./dataset-detail.component.scss'],
-  standalone: false,
+  imports: [
+    LoadingAndProcessBarComponent,
+    DataCatalogueDetailPageComponent,
+    DataCatalogueDetailPageSectionComponent,
+    DataDisplaySectionComponent,
+    DataDisplayComponent,
+    DatasetElementDetailComponent,
+    GenericUnorderedListComponent,
+    DescriptiveHighlightedLinkComponent,
+    RouterLink,
+    MatButton,
+    MatIcon,
+  ],
 })
 export class DatasetDetailComponent extends AbstractBaseDetailComponent<DatasetMetadata> {
   public baseMetadataInformation?: BaseMetadataInformation;

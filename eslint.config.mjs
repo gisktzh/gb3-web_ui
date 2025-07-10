@@ -4,7 +4,6 @@ import tseslint from 'typescript-eslint';
 import prettierRecommended from 'eslint-plugin-prettier/recommended';
 import ngrx from '@ngrx/eslint-plugin/v9';
 import angular from 'angular-eslint';
-import angularTemplate from '@angular-eslint/eslint-plugin-template';
 
 /**
  * TODO: The following imports should be revisited once the following issues are resolved:
@@ -148,7 +147,6 @@ export default tseslint.config(
           allow: ['warn', 'error'],
         },
       ],
-      '@angular-eslint/prefer-standalone': 'warn',
     },
   },
   {

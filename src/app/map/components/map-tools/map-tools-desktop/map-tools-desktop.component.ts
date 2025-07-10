@@ -5,6 +5,15 @@ import {ToolMenuVisibility} from '../../../../shared/types/tool-menu-visibility.
 import {MapUiActions} from '../../../../state/map/actions/map-ui.actions';
 import {selectToolMenuVisibility} from '../../../../state/map/reducers/map-ui.reducer';
 import {selectReady} from '../../../../state/map/reducers/map-config.reducer';
+import {TypedTourAnchorDirective} from '../../../../shared/directives/typed-tour-anchor.directive';
+import {MatIconButton} from '@angular/material/button';
+import {NgClass} from '@angular/common';
+import {MatTooltip} from '@angular/material/tooltip';
+import {MatIcon} from '@angular/material/icon';
+import {MatDivider} from '@angular/material/divider';
+import {MeasurementToolsComponent} from '../measurement-tools/measurement-tools.component';
+import {DrawingToolsComponent} from '../drawing-tools/drawing-tools.component';
+import {DataDownloadSelectionToolsComponent} from '../data-download-selection-tools/data-download-selection-tools.component';
 
 const TOOLTIP_TEXT = {
   measurement: 'Messen',
@@ -19,7 +28,17 @@ const TOOLTIP_TEXT = {
   selector: 'map-tools-desktop',
   templateUrl: './map-tools-desktop.component.html',
   styleUrls: ['./map-tools-desktop.component.scss'],
-  standalone: false,
+  imports: [
+    TypedTourAnchorDirective,
+    MatIconButton,
+    NgClass,
+    MatTooltip,
+    MatIcon,
+    MatDivider,
+    MeasurementToolsComponent,
+    DrawingToolsComponent,
+    DataDownloadSelectionToolsComponent,
+  ],
 })
 export class MapToolsDesktopComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);

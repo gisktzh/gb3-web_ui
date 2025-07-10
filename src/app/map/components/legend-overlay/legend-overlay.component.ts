@@ -11,12 +11,14 @@ import {OverlayPrintActions} from '../../../state/map/actions/overlay-print-acti
 import {selectLegendPrintState} from '../../../state/map/reducers/overlay-print.reducer';
 import {selectLegendItemsForDisplay} from '../../../state/map/selectors/legend-result-display.selector';
 import {LegendDisplay} from '../../../shared/interfaces/legend.interface';
+import {MapOverlayComponent} from '../map-overlay/map-overlay.component';
+import {LegendComponent} from './legend/legend.component';
 
 @Component({
   selector: 'legend-overlay',
   templateUrl: './legend-overlay.component.html',
   styleUrls: ['./legend-overlay.component.scss'],
-  standalone: false,
+  imports: [MapOverlayComponent, LegendComponent],
 })
 export class LegendOverlayComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);

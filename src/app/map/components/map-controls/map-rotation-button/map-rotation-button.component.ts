@@ -4,12 +4,17 @@ import {Subscription, tap} from 'rxjs';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
 import {MapConfigActions} from 'src/app/state/map/actions/map-config.actions';
+import {NgClass} from '@angular/common';
+import {MatIconButton} from '@angular/material/button';
+import {MatTooltip} from '@angular/material/tooltip';
+import {MatIcon} from '@angular/material/icon';
+import {MapRotationPipe} from '../../../pipes/map-rotation.pipe';
 
 @Component({
   selector: 'map-rotation-button',
   templateUrl: './map-rotation-button.component.html',
   styleUrls: ['./map-rotation-button.component.scss'],
-  standalone: false,
+  imports: [NgClass, MatIconButton, MatTooltip, MatIcon, MapRotationPipe],
 })
 export class MapRotationButtonComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);

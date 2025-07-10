@@ -10,12 +10,14 @@ import {FavouriteListActions} from '../../../state/map/actions/favourite-list.ac
 import {LoadingState} from '../../../shared/types/loading-state.type';
 
 import {FavouriteCouldNotBeRemoved} from '../../../shared/errors/favourite.errors';
+import {ApiDialogWrapperComponent} from '../api-dialog-wrapper/api-dialog-wrapper.component';
+import {MatButton} from '@angular/material/button';
 
 @Component({
   selector: 'app-favourite-deletion-dialog',
   templateUrl: './favourite-deletion-dialog.component.html',
   styleUrls: ['./favourite-deletion-dialog.component.scss'],
-  standalone: false,
+  imports: [ApiDialogWrapperComponent, MatButton],
 })
 export class FavouriteDeletionDialogComponent implements HasSavingState, OnDestroy {
   private readonly dialogRef = inject<MatDialogRef<FavouriteDeletionDialogComponent, boolean>>(MatDialogRef);

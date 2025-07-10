@@ -6,7 +6,6 @@ import {ConfigService} from '../../../../shared/services/config.service';
   selector: 'legend-content',
   templateUrl: './legend-content.component.html',
   styleUrls: ['./legend-content.component.scss'],
-  standalone: false,
 })
 export class LegendContentComponent {
   private readonly configService = inject(ConfigService);

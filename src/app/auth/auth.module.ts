@@ -11,8 +11,7 @@ import {LoginRedirectComponent} from './components/login-redirect/login-redirect
 import {AuthNotificationDialogComponent} from './notifications/auth-notification-dialog/auth-notification-dialog.component';
 
 @NgModule({
-  declarations: [AuthNotificationDialogComponent, LoginRedirectComponent],
-  imports: [OAuthModule.forRoot(), SharedModule, AuthRoutingModule],
+  imports: [OAuthModule.forRoot(), SharedModule, AuthRoutingModule, AuthNotificationDialogComponent, LoginRedirectComponent],
   providers: [
     {provide: AuthConfig, useFactory: authConfigFactory, deps: [ConfigService]},
     {provide: OAuthModuleConfig, useFactory: oAuthConfigFactory, deps: [ConfigService]},

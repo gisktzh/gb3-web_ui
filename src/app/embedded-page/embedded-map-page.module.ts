@@ -6,7 +6,6 @@ import {MapModule} from '../map/map.module';
 import {EmbeddedMapPageRoutingModule} from './embedded-map-page-routing.module';
 
 @NgModule({
-  declarations: [EmbeddedMapPageComponent],
-  imports: [CommonModule, SharedModule, EmbeddedMapPageRoutingModule, MapModule],
+  imports: [CommonModule, SharedModule, EmbeddedMapPageRoutingModule, MapModule, EmbeddedMapPageComponent],
 })
 export class EmbeddedMapPageModule {}

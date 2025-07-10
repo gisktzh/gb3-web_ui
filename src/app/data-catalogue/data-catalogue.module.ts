@@ -21,18 +21,6 @@ import {GenericUnorderedListComponent} from '../shared/components/lists/generic-
 import {SearchInputComponent} from '../shared/components/search/search-input.component';
 
 @NgModule({
-  declarations: [
-    DataCataloguePageComponent,
-    DataCatalogueOverviewComponent,
-    ServiceDetailComponent,
-    DatasetDetailComponent,
-    MapDetailComponent,
-    ProductDetailComponent,
-    DataDisplaySectionComponent,
-    DataCatalogueDetailPageComponent,
-    DataCatalogueDetailPageSectionComponent,
-    DataCatalogueFilterDialogComponent,
-  ],
   imports: [
     CommonModule,
     DataCatalogueRoutingModule,
@@ -45,6 +33,16 @@ import {SearchInputComponent} from '../shared/components/search/search-input.com
     FormatLineBreaksPipe,
     GenericUnorderedListComponent,
     SearchInputComponent,
+    DataCataloguePageComponent,
+    DataCatalogueOverviewComponent,
+    ServiceDetailComponent,
+    DatasetDetailComponent,
+    MapDetailComponent,
+    ProductDetailComponent,
+    DataDisplaySectionComponent,
+    DataCatalogueDetailPageComponent,
+    DataCatalogueDetailPageSectionComponent,
+    DataCatalogueFilterDialogComponent,
   ],
   exports: [],
 })

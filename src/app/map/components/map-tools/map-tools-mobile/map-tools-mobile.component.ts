@@ -6,12 +6,17 @@ import {selectQueryLegends} from 'src/app/state/map/selectors/query-legends.sele
 import {GeolocationState} from 'src/app/state/map/states/geolocation.state';
 import {MapUiActions} from '../../../../state/map/actions/map-ui.actions';
 import {initialState as initialGeolocationState, selectGeolocationState} from '../../../../state/map/reducers/geolocation.reducer';
+import {MatIconButton} from '@angular/material/button';
+import {MatTooltip} from '@angular/material/tooltip';
+import {MatIcon} from '@angular/material/icon';
+import {MatDivider} from '@angular/material/divider';
+import {LoadingAndProcessBarComponent} from '../../../../shared/components/loading-and-process-bar/loading-and-process-bar.component';
 
 @Component({
   selector: 'map-tools-mobile',
   templateUrl: './map-tools-mobile.component.html',
   styleUrls: ['./map-tools-mobile.component.scss'],
-  standalone: false,
+  imports: [MatIconButton, MatTooltip, MatIcon, MatDivider, LoadingAndProcessBarComponent],
 })
 export class MapToolsMobileComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);

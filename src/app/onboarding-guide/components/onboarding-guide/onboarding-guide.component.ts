@@ -1,15 +1,31 @@
 import {Component, OnDestroy, inject} from '@angular/core';
-import {TourService} from 'ngx-ui-tour-md-menu';
+import {TourService, TourStepTemplateComponent} from 'ngx-ui-tour-md-menu';
 import {Subscription, tap} from 'rxjs';
 import {ScreenMode} from '../../../shared/types/screen-size.type';
 import {Store} from '@ngrx/store';
 import {selectScreenMode} from '../../../state/app/reducers/app-layout.reducer';
+import {MatCard, MatCardImage, MatCardHeader, MatCardTitle, MatCardContent, MatCardActions, MatCardFooter} from '@angular/material/card';
+import {MatButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
+import {MatProgressBar} from '@angular/material/progress-bar';
 
 @Component({
   selector: 'onboarding-guide',
   templateUrl: './onboarding-guide.component.html',
   styleUrls: ['./onboarding-guide.component.scss'],
-  standalone: false,
+  imports: [
+    TourStepTemplateComponent,
+    MatCard,
+    MatCardImage,
+    MatCardHeader,
+    MatCardTitle,
+    MatCardContent,
+    MatCardActions,
+    MatButton,
+    MatIcon,
+    MatCardFooter,
+    MatProgressBar,
+  ],
 })
 export class OnboardingGuideComponent implements OnDestroy {
   protected readonly tourService = inject(TourService);

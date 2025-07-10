@@ -5,12 +5,18 @@ import {ActiveMapItemActions} from '../../../../../state/map/actions/active-map-
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {selectScale} from '../../../../../state/map/reducers/map-config.reducer';
+import {MatIcon} from '@angular/material/icon';
+import {CdkDragHandle} from '@angular/cdk/drag-drop';
+import {MatCheckbox} from '@angular/material/checkbox';
+import {MatTooltip} from '@angular/material/tooltip';
+import {NgClass} from '@angular/common';
+import {LayerTooltipPipe} from '../../../../../shared/pipes/layer-tooltip.pipe';
 
 @Component({
   selector: 'active-map-item-layer',
   templateUrl: './active-map-item-layer.component.html',
   styleUrls: ['./active-map-item-layer.component.scss'],
-  standalone: false,
+  imports: [MatIcon, CdkDragHandle, MatCheckbox, MatTooltip, NgClass, LayerTooltipPipe],
 })
 export class ActiveMapItemLayerComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);

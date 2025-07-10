@@ -7,12 +7,16 @@ import {
   Gb3StyleRepresentation,
 } from '../../../../shared/interfaces/internal-drawing-representation.interface';
 import {DrawingActions} from '../../../../state/map/actions/drawing.actions';
+import {PointEditComponent} from './point-edit/point-edit.component';
+import {LineEditComponent} from './line-edit/line-edit.component';
+import {PolygonEditComponent} from './polygon-edit/polygon-edit.component';
+import {TextEditComponent} from './text-edit/text-edit.component';
 
 @Component({
   selector: 'drawing-edit',
   templateUrl: './drawing-edit.component.html',
   styleUrl: './drawing-edit.component.scss',
-  standalone: false,
+  imports: [PointEditComponent, LineEditComponent, PolygonEditComponent, TextEditComponent],
 })
 export class DrawingEditComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);

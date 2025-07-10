@@ -7,7 +7,6 @@ import {RouterModule} from '@angular/router';
 import {ErrorNotificationComponent} from './components/error-notification/error-notification.component';
 
 @NgModule({
-  declarations: [NotFoundErrorPageComponent, FatalErrorPageComponent, ErrorNotificationComponent],
-  imports: [CommonModule, SharedModule, RouterModule],
+  imports: [CommonModule, SharedModule, RouterModule, NotFoundErrorPageComponent, FatalErrorPageComponent, ErrorNotificationComponent],
 })
 export class ErrorHandlingModule {}

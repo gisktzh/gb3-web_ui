@@ -17,12 +17,16 @@ import {
   selectFilteredUsefulLinks,
 } from '../../../state/app/selectors/search-results.selector';
 import {BaseSearchContainerComponent} from '../../../shared/components/search/base-search-container/base-search-container.component';
+import {SearchBarComponent} from '../../../shared/components/search/search-bar/search-bar.component';
+import {NgClass} from '@angular/common';
+import {MatChipRow, MatChipRemove} from '@angular/material/chips';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
   selector: 'start-page-search',
   templateUrl: './start-page-search.component.html',
   styleUrls: ['./start-page-search.component.scss'],
-  standalone: false,
+  imports: [SearchBarComponent, NgClass, MatChipRow, MatChipRemove, MatIcon, SearchResultGroupsComponent],
 })
 export class StartPageSearchComponent extends BaseSearchContainerComponent implements OnInit, OnDestroy, AfterViewInit {
   protected override store = inject(Store);

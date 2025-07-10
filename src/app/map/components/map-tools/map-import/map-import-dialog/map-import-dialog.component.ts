@@ -7,12 +7,26 @@ import {LoadingState} from '../../../../../shared/types/loading-state.type';
 import {selectIsAnyLayerSelected} from '../../../../../state/map/selectors/map-import-layer-selection.selector';
 import {MapImportActions} from '../../../../../state/map/actions/map-import.actions';
 import {selectLoadingState} from '../../../../../state/map/reducers/external-map-item.reducer';
+import {ApiDialogWrapperComponent} from '../../../api-dialog-wrapper/api-dialog-wrapper.component';
+import {MatStepper, MatStep} from '@angular/material/stepper';
+import {MapImportServiceAndUrlComponent} from '../map-import-service-and-url/map-import-service-and-url.component';
+import {MapImportLayerListComponent} from '../map-import-layer-list/map-import-layer-list.component';
+import {MapImportDisplayNameComponent} from '../map-import-display-name/map-import-display-name.component';
+import {MatButton} from '@angular/material/button';
 
 @Component({
   selector: 'map-import-dialog',
   templateUrl: './map-import-dialog.component.html',
   styleUrl: './map-import-dialog.component.scss',
-  standalone: false,
+  imports: [
+    ApiDialogWrapperComponent,
+    MatStepper,
+    MatStep,
+    MapImportServiceAndUrlComponent,
+    MapImportLayerListComponent,
+    MapImportDisplayNameComponent,
+    MatButton,
+  ],
 })
 export class MapImportDialogComponent implements OnInit, OnDestroy {
   private readonly dialogRef = inject<MatDialogRef<MapImportDialogComponent>>(MatDialogRef);

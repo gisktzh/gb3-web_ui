@@ -3,6 +3,12 @@ import {AbstractToolsComponent} from '../abstract-tools/abstract-tools.component
 import {DrawingSettingsDialogComponent} from '../drawing-settings-dialog/drawing-settings-dialog.component';
 import {PanelClass} from '../../../../shared/enums/panel-class.enum';
 import {DrawingsImportDialogComponent} from '../drawings-import-dialog/drawings-import-dialog.component';
+import {MatIconButton} from '@angular/material/button';
+import {MatTooltip} from '@angular/material/tooltip';
+import {MatIcon} from '@angular/material/icon';
+import {MatDivider} from '@angular/material/divider';
+import {NgClass} from '@angular/common';
+import {DrawingDownloadButtonComponent} from '../drawing-download-button/drawing-download-button.component';
 
 const DRAWING_SETTINGS_DIALOG_MAX_WIDTH = 420;
 const DRAWING_UPLOAD_DIALOG_MAX_WIDTH = 750;
@@ -20,7 +26,7 @@ const TOOLTIP_TEXT = {
   selector: 'drawing-tools',
   templateUrl: './drawing-tools.component.html',
   styleUrls: ['./drawing-tools.component.scss'],
-  standalone: false,
+  imports: [MatIconButton, MatTooltip, MatIcon, MatDivider, NgClass, DrawingDownloadButtonComponent],
 })
 export class DrawingToolsComponent extends AbstractToolsComponent {
   public tooltipText = TOOLTIP_TEXT;

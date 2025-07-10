@@ -7,12 +7,18 @@ import {selectMapUiState} from '../../../state/map/reducers/map-ui.reducer';
 import {MapUiState} from '../../../state/map/states/map-ui.state';
 import {MapService} from '../../interfaces/map.service';
 import {MAP_SERVICE} from '../../../app.tokens';
+import {BasemapSelectorComponent} from './basemap-selector/basemap-selector.component';
+import {NgClass} from '@angular/common';
+import {ScaleBarComponent} from './scale-bar/scale-bar.component';
+import {CoordinateScaleInputsComponent} from './coordinate-scale-inputs/coordinate-scale-inputs.component';
+import {ZoomControlsComponent} from './zoom-controls/zoom-controls.component';
+import {UiToggleComponent} from './ui-toggle/ui-toggle.component';
 
 @Component({
   selector: 'map-controls',
   templateUrl: './map-controls.component.html',
   styleUrls: ['./map-controls.component.scss'],
-  standalone: false,
+  imports: [BasemapSelectorComponent, NgClass, ScaleBarComponent, CoordinateScaleInputsComponent, ZoomControlsComponent, UiToggleComponent],
 })
 export class MapControlsComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);

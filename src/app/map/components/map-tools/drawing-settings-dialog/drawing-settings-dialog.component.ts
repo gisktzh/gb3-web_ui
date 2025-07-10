@@ -6,12 +6,16 @@ import {MatDialogRef} from '@angular/material/dialog';
 import {selectDrawingStyleState} from '../../../../state/map/reducers/drawing-style.reducer';
 import {first, Subscription, tap} from 'rxjs';
 import {ConfigService} from '../../../../shared/services/config.service';
+import {ApiDialogWrapperComponent} from '../../api-dialog-wrapper/api-dialog-wrapper.component';
+import {SliderEditComponent} from '../../drawing-edit-overlay/drawing-edit/slider-edit/slider-edit.component';
+import {ColorPickerEditComponent} from '../../drawing-edit-overlay/drawing-edit/color-picker-edit/color-picker-edit.component';
+import {MatButton} from '@angular/material/button';
 
 @Component({
   selector: 'drawing-settings-dialog',
   templateUrl: './drawing-settings-dialog.component.html',
   styleUrls: ['./drawing-settings-dialog.component.scss'],
-  standalone: false,
+  imports: [ApiDialogWrapperComponent, SliderEditComponent, ColorPickerEditComponent, MatButton],
 })
 export class DrawingSettingsDialogComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);

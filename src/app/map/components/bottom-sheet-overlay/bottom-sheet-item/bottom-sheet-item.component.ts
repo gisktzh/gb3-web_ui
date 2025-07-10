@@ -7,12 +7,18 @@ import {StyleExpression} from 'src/app/shared/types/style-expression.type';
 import {MapUiActions} from 'src/app/state/map/actions/map-ui.actions';
 import {selectFilterString} from 'src/app/state/map/reducers/layer-catalog.reducer';
 import {selectMapAttributeFiltersItem} from 'src/app/state/map/selectors/map-attribute-filters-item.selector';
+import {MatCard, MatCardHeader, MatCardContent} from '@angular/material/card';
+import {NgClass} from '@angular/common';
+import {MatIconButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
+import {ɵɵCdkScrollable} from '@angular/cdk/drag-drop';
+import {ResizeHandlerComponent} from '../../../../shared/components/resize-handler/resize-handler.component';
 
 @Component({
   selector: 'bottom-sheet-item',
   templateUrl: './bottom-sheet-item.component.html',
   styleUrls: ['./bottom-sheet-item.component.scss'],
-  standalone: false,
+  imports: [MatCard, NgClass, MatCardHeader, MatIconButton, MatIcon, MatCardContent, ɵɵCdkScrollable, ResizeHandlerComponent],
 })
 export class BottomSheetItemComponent implements OnInit, OnDestroy {
   private readonly store = inject(Store);
