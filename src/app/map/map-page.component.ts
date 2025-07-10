@@ -1,5 +1,5 @@
-import {AfterViewInit, Component, OnDestroy, OnInit, inject} from '@angular/core';
-import {OnboardingGuideService} from '../onboarding-guide/services/onboarding-guide.service';
+import {AfterViewInit, Component, inject, OnDestroy, OnInit} from '@angular/core';
+import {ONBOARDING_STEPS, OnboardingGuideService} from '../onboarding-guide/services/onboarding-guide.service';
 import {Store} from '@ngrx/store';
 import {delayWhen, interval, Subscription, tap} from 'rxjs';
 import {selectMapUiState} from '../state/map/reducers/map-ui.reducer';
@@ -15,7 +15,7 @@ import {InitialMapExtentService} from './services/initial-map-extent.service';
 import {MapConfigState} from '../state/map/states/map-config.state';
 import {MapConfigActions} from '../state/map/actions/map-config.actions';
 import {DisableOverscrollBehaviourComponent} from './components/disable-overscroll-behaviour/disable-overscroll-behaviour.component';
-import {MatDrawerContainer, MatDrawer} from '@angular/material/sidenav';
+import {MatDrawer, MatDrawerContainer} from '@angular/material/sidenav';
 import {NgClass} from '@angular/common';
 import {PrintDialogComponent} from './components/map-tools/print-dialog/print-dialog.component';
 import {DataDownloadDialogComponent} from './components/map-tools/data-download-dialog/data-download-dialog.component';
@@ -38,11 +38,18 @@ import {BottomSheetOverlayComponent} from './components/bottom-sheet-overlay/bot
 import {MapContainerComponent} from './components/map-container/map-container.component';
 import {OnboardingGuideComponent} from '../onboarding-guide/components/onboarding-guide/onboarding-guide.component';
 import {CenterAnchorComponent} from '../onboarding-guide/components/center-anchor/center-anchor.component';
+import {mapOnboardingGuideConfig} from '../onboarding-guide/data/map-onboarding-guide.config';
+import {provideCharts, withDefaultRegisterables} from 'ng2-charts';
 
 @Component({
   selector: 'map-page',
   templateUrl: './map-page.component.html',
   styleUrls: ['./map-page.component.scss'],
+  providers: [
+    OnboardingGuideService,
+    {provide: ONBOARDING_STEPS, useValue: mapOnboardingGuideConfig},
+    provideCharts(withDefaultRegisterables()),
+  ],
   imports: [
     DisableOverscrollBehaviourComponent,
     MatDrawerContainer,

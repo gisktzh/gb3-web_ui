@@ -1,9 +1,8 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
+import {Routes} from '@angular/router';
 import {ShareLinkRedirectComponent} from './components/share-link-redirect/share-link-redirect.component';
 import {RouteParamConstants} from '../shared/constants/route-param.constants';
 
-const routes: Routes = [
+export const SHARE_LINK_ROUTES: Routes = [
   {
     path: '',
     children: [
@@ -19,10 +18,3 @@ const routes: Routes = [
     ],
   },
 ];
-
-@NgModule({
-  declarations: [],
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
-})
-export class ShareLinkRoutingModule {}

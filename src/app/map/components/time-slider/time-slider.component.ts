@@ -1,13 +1,13 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, inject} from '@angular/core';
+import {Component, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {TimeExtent} from '../../interfaces/time-extent.interface';
-import {TimeSliderConfiguration, TimeSliderLayerSource} from '../../../shared/interfaces/topic.interface';
+import {TimeSliderConfiguration} from '../../../shared/interfaces/topic.interface';
 import {TimeSliderService} from '../../services/time-slider.service';
 import {MatDatepicker, MatDatepickerInput} from '@angular/material/datepicker';
 import {TimeService} from '../../../shared/interfaces/time-service.interface';
 import {DateUnit} from '../../../shared/types/date-unit.type';
 import {TIME_SERVICE} from '../../../app.tokens';
 import {SliderWrapperComponent} from '../../../shared/components/slider-wrapper/slider-wrapper.component';
-import {MatSlider, MatSliderThumb, MatSliderRangeThumb} from '@angular/material/slider';
+import {MatSlider, MatSliderRangeThumb, MatSliderThumb} from '@angular/material/slider';
 import {FormsModule} from '@angular/forms';
 import {MatFormField, MatInput} from '@angular/material/input';
 import {MatButton} from '@angular/material/button';

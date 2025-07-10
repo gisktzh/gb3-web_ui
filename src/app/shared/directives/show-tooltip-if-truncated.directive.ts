@@ -6,8 +6,8 @@ import {MatTooltip} from '@angular/material/tooltip';
 
 @Directive({selector: '[matTooltip][showTooltipIfTruncated]'})
 export class ShowTooltipIfTruncatedDirective {
-  private matTooltip = inject(MatTooltip);
-  private elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly matTooltip = inject(MatTooltip);
+  private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
 
   @HostListener('mouseenter', ['$event'])
   public setTooltipState(): void {

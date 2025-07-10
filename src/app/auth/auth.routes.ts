@@ -1,10 +1,8 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
-import {SharedModule} from '../shared/shared.module';
+import {Routes} from '@angular/router';
 import {LoginRedirectComponent} from './components/login-redirect/login-redirect.component';
 import {AUTH_REDIRECT_PATH} from './auth.config';
 
-const routes: Routes = [
+export const AUTH_ROUTES: Routes = [
   {
     path: '',
     children: [
@@ -20,10 +18,3 @@ const routes: Routes = [
     ],
   },
 ];
-
-@NgModule({
-  declarations: [],
-  imports: [RouterModule.forChild(routes), SharedModule],
-  exports: [RouterModule],
-})
-export class AuthRoutingModule {}

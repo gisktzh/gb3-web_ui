@@ -1,19 +1,13 @@
-import {Injectable, inject} from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {Gb3ApiService} from './gb3-api.service';
 import {ShareLinkItem} from '../../../interfaces/share-link.interface';
-import {map} from 'rxjs';
-import {Observable} from 'rxjs';
+import {map, Observable} from 'rxjs';
 import {SharedFavorite, SharedFavoriteNew} from '../../../models/gb3-api-generated.interfaces';
 import {ApiGeojsonGeometryToGb3ConverterUtils} from '../../../utils/api-geojson-geometry-to-gb3-converter.utils';
 import {ShareLinkPropertyCouldNotBeValidated} from '../../../errors/share-link.errors';
-import {ConfigService} from '../../config.service';
-import {HttpClient} from '@angular/common/http';
 import {BasemapConfigService} from '../../../../map/services/basemap-config.service';
 import {FavouritesService} from '../../../../map/services/favourites.service';
 import {MapRestoreItem} from '../../../interfaces/map-restore-item.interface';
-import {TimeService} from '../../../interfaces/time-service.interface';
-
-import {TIME_SERVICE} from '../../../../app.tokens';
 
 @Injectable({
   providedIn: 'root',

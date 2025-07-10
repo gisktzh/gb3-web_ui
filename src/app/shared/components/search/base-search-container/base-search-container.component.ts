@@ -1,4 +1,4 @@
-import {AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, ViewChild, inject} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {SearchResultIdentifierDirective} from '../../../directives/search-result-identifier.directive';
 import {selectTerm} from '../../../../state/app/reducers/search.reducer';
 import {Observable, Subscription, tap} from 'rxjs';

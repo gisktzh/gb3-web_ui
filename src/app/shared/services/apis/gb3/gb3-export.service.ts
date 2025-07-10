@@ -1,13 +1,9 @@
 import {Gb3ApiService} from './gb3-api.service';
-import {Injectable, inject} from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {Gb3VectorLayer} from '../../../interfaces/gb3-vector-layer.interface';
-import {HttpClient} from '@angular/common/http';
-import {ConfigService} from '../../config.service';
 import {map} from 'rxjs';
 import {ExportFormat} from '../../../enums/export-format.enum';
 import {FileDownloadService} from '../../file-download-service';
-import {TimeService} from 'src/app/shared/interfaces/time-service.interface';
-import {TIME_SERVICE} from '../../../../app.tokens';
 
 @Injectable({
   providedIn: 'root',

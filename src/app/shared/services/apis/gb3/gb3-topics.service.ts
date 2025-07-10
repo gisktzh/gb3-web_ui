@@ -1,4 +1,4 @@
-import {Injectable, inject} from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {forkJoin, map, Observable} from 'rxjs';
 import {DataCataloguePage} from '../../../enums/data-catalogue-page.enum';
 import {MainPage} from '../../../enums/main-page.enum';
@@ -31,11 +31,7 @@ import {InvalidTimeSliderConfiguration} from '../../../errors/map.errors';
 import {QueryTopic} from '../../../interfaces/query-topic.interface';
 import {ApiGeojsonGeometryToGb3ConverterUtils} from '../../../utils/api-geojson-geometry-to-gb3-converter.utils';
 import {GeometryWithSrs} from '../../../interfaces/geojson-types-with-srs.interface';
-import {HttpClient} from '@angular/common/http';
-import {ConfigService} from '../../config.service';
-import {TimeService} from '../../../interfaces/time-service.interface';
 import {TimeSliderService} from '../../../../map/services/time-slider.service';
-import {TIME_SERVICE} from '../../../../app.tokens';
 
 const INACTIVE_STRING_FILTER_VALUE = '';
 const INACTIVE_NUMBER_FILTER_VALUE = -1;
