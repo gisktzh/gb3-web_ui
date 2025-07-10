@@ -2,7 +2,6 @@ import {TestBed} from '@angular/core/testing';
 import {EsriMapLoaderService} from './esri-map-loader.service';
 import {ExternalWmsActiveMapItem} from '../../models/implementations/external-wms.model';
 import {EsriMapService} from './esri-map.service';
-import {MAP_SERVICE} from '../../../app.module';
 import {catchError, EMPTY, of} from 'rxjs';
 import Collection from '@arcgis/core/core/Collection';
 import {ExternalKmlLayer, ExternalWmsLayer} from '../../../shared/interfaces/external-layer.interface';
@@ -12,6 +11,7 @@ import {LayerCouldNotBeLoaded} from './errors/esri.errors';
 import {ExternalServiceHasNoLayers} from '../../../shared/errors/map-import.errors';
 import EsriError from '@arcgis/core/core/Error';
 import WMSLayer from '@arcgis/core/layers/WMSLayer';
+import {MAP_SERVICE} from '../../../app.tokens';
 
 describe('EsriMapLoaderService', () => {
   let service: EsriMapLoaderService;

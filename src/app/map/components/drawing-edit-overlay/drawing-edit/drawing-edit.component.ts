@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {filter, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {selectSelectedDrawing} from '../../../../state/map/reducers/drawing.reducer';
@@ -15,13 +15,13 @@ import {DrawingActions} from '../../../../state/map/actions/drawing.actions';
   standalone: false,
 })
 export class DrawingEditComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   public selectedFeature?: Gb3StyledInternalDrawingRepresentation;
   public style?: Gb3StyleRepresentation;
 
   private readonly selectedFeature$ = this.store.select(selectSelectedDrawing);
   private readonly subscriptions = new Subscription();
-
-  constructor(private readonly store: Store) {}
 
   public ngOnInit(): void {
     this.initSubscriptions();

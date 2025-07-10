@@ -1,4 +1,4 @@
-import {Injectable, OnDestroy} from '@angular/core';
+import {Injectable, OnDestroy, inject} from '@angular/core';
 import {BehaviorSubject, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {MainPage} from '../enums/main-page.enum';
@@ -11,6 +11,8 @@ import {selectMainPage} from '../../state/app/reducers/url.reducer';
   providedIn: 'root',
 })
 export class PageNotificationService implements OnDestroy {
+  private readonly store = inject(Store);
+
   public readonly currentPageNotifications$ = new BehaviorSubject<PageNotification[]>([]);
 
   private mainPage: MainPage | undefined;
@@ -20,7 +22,7 @@ export class PageNotificationService implements OnDestroy {
   private readonly pageNotifications$ = this.store.select(selectAllUnreadPageNotifications);
   private readonly subscriptions: Subscription = new Subscription();
 
-  constructor(private readonly store: Store) {
+  constructor() {
     this.store.dispatch(PageNotificationActions.loadPageNotifications());
     this.initSubscriptions();
   }

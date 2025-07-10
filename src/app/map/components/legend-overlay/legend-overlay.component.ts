@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
@@ -19,6 +19,8 @@ import {LegendDisplay} from '../../../shared/interfaces/legend.interface';
   standalone: false,
 })
 export class LegendOverlayComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   /** A value indicating whether interactive elements (like buttons) should be shown. [Default: true] */
   @Input() public showInteractiveElements: boolean = true;
 
@@ -34,8 +36,6 @@ export class LegendOverlayComponent implements OnInit, OnDestroy {
   private readonly printLoadingState$ = this.store.select(selectLegendPrintState);
   private readonly legendItems$ = this.store.select(selectLegendItemsForDisplay);
   private readonly subscriptions = new Subscription();
-
-  constructor(private readonly store: Store) {}
 
   public ngOnInit() {
     this.initSubscriptions();

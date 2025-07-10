@@ -1,4 +1,4 @@
-import {Inject, Injectable, DOCUMENT} from '@angular/core';
+import {Injectable, DOCUMENT, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
 import {GeolocationActions} from '../../state/map/actions/geolocation.actions';
@@ -11,12 +11,12 @@ const GEOLOCATION_TIMEOUT_IN_MS = 5000;
   providedIn: 'root',
 })
 export class GeolocationService {
+  private readonly document = inject<Document>(DOCUMENT);
+  private readonly store = inject(Store);
+
   private readonly navigator?: Navigator;
 
-  constructor(
-    @Inject(DOCUMENT) private readonly document: Document,
-    private readonly store: Store,
-  ) {
+  constructor() {
     if (this.document.defaultView) {
       this.navigator = this.document.defaultView.navigator;
     } else {

@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {ActiveMapItem} from 'src/app/map/models/active-map-item.model';
@@ -26,6 +26,8 @@ const FAVOURITE_HELPER_MESSAGES = {
   standalone: false,
 })
 export class MapManagementMobileComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   public activeMapItems: ActiveMapItem[] = [];
   public numberOfNotices: number = 0;
   public numberOfUnreadNotices: number = 0;
@@ -39,7 +41,7 @@ export class MapManagementMobileComponent implements OnInit, OnDestroy {
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
   private readonly filterString$ = this.store.select(selectFilterString);
 
-  constructor(private readonly store: Store) {
+  constructor() {
     this.store.dispatch(LayerCatalogActions.loadLayerCatalog());
   }
 

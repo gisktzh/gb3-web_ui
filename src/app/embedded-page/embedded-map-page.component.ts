@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {MapUiActions} from '../state/map/actions/map-ui.actions';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
@@ -18,6 +18,9 @@ import {MainPage} from '../shared/enums/main-page.enum';
   standalone: false,
 })
 export class EmbeddedMapPageComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+  private readonly route = inject(ActivatedRoute);
+
   public numberOfQueryLegends: number = 0;
   public id: string | null = null;
   public initializeApplicationLoadingState: LoadingState;
@@ -28,10 +31,7 @@ export class EmbeddedMapPageComponent implements OnInit, OnDestroy {
   private readonly queryLegends$ = this.store.select(selectQueryLegends);
   private readonly initializeApplicationLoadingState$ = this.store.select(selectApplicationInitializationLoadingState);
 
-  constructor(
-    private readonly store: Store,
-    private readonly route: ActivatedRoute,
-  ) {
+  constructor() {
     // compare the window location with its parent location to detect if the page is run within an iframe or not
     this.isEmbedded = window.location !== window.parent.location;
   }

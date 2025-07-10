@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, OnDestroy, OnInit, Output, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
@@ -15,6 +15,9 @@ import {BasemapConfigService} from '../../../../services/basemap-config.service'
   standalone: false,
 })
 export class BasemapSelectionListComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+  private readonly basemapConfigService = inject(BasemapConfigService);
+
   @Output() public readonly basemapChangedEvent = new EventEmitter();
 
   public activeBasemap?: Basemap;
@@ -25,10 +28,7 @@ export class BasemapSelectionListComponent implements OnInit, OnDestroy {
   private readonly activeBasemapId$ = this.store.select(selectActiveBasemapId);
   private readonly screenMode$ = this.store.select(selectScreenMode);
 
-  constructor(
-    private readonly store: Store,
-    private readonly basemapConfigService: BasemapConfigService,
-  ) {
+  constructor() {
     this.availableBasemaps = this.basemapConfigService.availableBasemaps;
   }
 

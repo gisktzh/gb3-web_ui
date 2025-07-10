@@ -1,4 +1,4 @@
-import {Inject, Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
 import {filter, of, switchMap, tap} from 'rxjs';
@@ -6,7 +6,6 @@ import {catchError, map} from 'rxjs';
 import {ElevationProfileActions} from '../actions/elevation-profile.actions';
 import {SwisstopoApiService} from '../../../shared/services/apis/swisstopo/swisstopo-api.service';
 import {ElevationProfileCouldNotBeLoaded} from '../../../shared/errors/elevation-profile.errors';
-import {MAP_SERVICE} from '../../../app.module';
 import {MapService} from '../../../map/interfaces/map.service';
 import {InternalDrawingLayer} from '../../../shared/enums/drawing-layer.enum';
 import {ToolActions} from '../actions/tool.actions';
@@ -14,9 +13,16 @@ import {MapUiActions} from '../actions/map-ui.actions';
 import {selectData} from '../reducers/elevation-profile.reducer';
 import {Store} from '@ngrx/store';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
+import {MAP_SERVICE} from '../../../app.tokens';
 
 @Injectable()
 export class ElevationProfileEffects {
+  private readonly actions$ = inject(Actions);
+  private readonly swisstopoApiService = inject(SwisstopoApiService);
+  private readonly store = inject(Store);
+  private readonly mapService = inject<MapService>(MAP_SERVICE);
+  private readonly mapDrawingService = inject(MapDrawingService);
+
   public resetProfileDrawing$ = createEffect(
     () => {
       return this.actions$.pipe(
@@ -103,12 +109,4 @@ export class ElevationProfileEffects {
     },
     {dispatch: false},
   );
-
-  constructor(
-    private readonly actions$: Actions,
-    private readonly swisstopoApiService: SwisstopoApiService,
-    private readonly store: Store,
-    @Inject(MAP_SERVICE) private readonly mapService: MapService,
-    private readonly mapDrawingService: MapDrawingService,
-  ) {}
 }

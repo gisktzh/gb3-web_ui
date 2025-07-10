@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {selectIsDrawingEditOverlayVisible} from '../../../state/map/reducers/map-ui.reducer';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
@@ -11,12 +11,12 @@ import {DrawingActions} from '../../../state/map/actions/drawing.actions';
   standalone: false,
 })
 export class DrawingEditOverlayComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   public isVisible: boolean = false;
 
   private readonly isDrawingEditOverlayVisible$ = this.store.select(selectIsDrawingEditOverlayVisible);
   private readonly subscriptions = new Subscription();
-
-  constructor(private readonly store: Store) {}
 
   public ngOnInit(): void {
     this.initSubscriptions();

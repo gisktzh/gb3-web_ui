@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild, inject} from '@angular/core';
 import {SharedModule} from '../../../shared.module';
 import {SearchState} from '../../../../state/app/states/search.state';
 import {initialState, selectSearchState} from '../../../../state/app/reducers/search.reducer';
@@ -24,6 +24,10 @@ import {MapUiActions} from '../../../../state/map/actions/map-ui.actions';
   styleUrl: './search-bar.component.scss',
 })
 export class SearchBarComponent implements OnInit, OnDestroy {
+  private readonly configService = inject(ConfigService);
+  private readonly dialogService = inject(MatDialog);
+  private readonly store = inject(Store);
+
   @Input() public mode: SearchMode = 'normal';
   @Input() public placeholderText: string = 'Suche nach Karten, Kartendaten, Geodaten und Geodiensten';
   @Input() public searchConfig = this.configService.searchConfig.mapPage;
@@ -40,11 +44,6 @@ export class SearchBarComponent implements OnInit, OnDestroy {
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly isAnySearchFilterActive$ = this.store.select(selectIsAnySearchFilterActiveSelector);
   private readonly subscriptions: Subscription = new Subscription();
-  constructor(
-    private readonly configService: ConfigService,
-    private readonly dialogService: MatDialog,
-    private readonly store: Store,
-  ) {}
 
   public ngOnInit() {
     this.store.dispatch(SearchActions.setFilterGroups({filterGroups: this.searchConfig.filterGroups}));

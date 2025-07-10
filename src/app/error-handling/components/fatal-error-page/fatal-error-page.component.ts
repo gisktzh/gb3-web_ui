@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Subscription, tap} from 'rxjs';
 
@@ -9,11 +9,11 @@ import {Subscription, tap} from 'rxjs';
   standalone: false,
 })
 export class FatalErrorPageComponent implements OnInit, OnDestroy {
+  private readonly route = inject(ActivatedRoute);
+
   public errorMessage: string | null = null;
 
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(private readonly route: ActivatedRoute) {}
 
   public ngOnInit() {
     this.subscriptions.add(

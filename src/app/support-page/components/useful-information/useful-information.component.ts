@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {LinksGroup} from '../../../shared/interfaces/links-group.interface';
@@ -11,11 +11,11 @@ import {selectUsefulInformationLinksWithDynamicUrls} from '../../../state/suppor
   standalone: false,
 })
 export class UsefulInformationComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   public usefulInformationLinksGroups: LinksGroup[] = [];
   private readonly usefulInformationLinksGroups$ = this.store.select(selectUsefulInformationLinksWithDynamicUrls);
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(private readonly store: Store) {}
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();

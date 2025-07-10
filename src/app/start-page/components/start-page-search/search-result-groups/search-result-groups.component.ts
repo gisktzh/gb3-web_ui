@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {Component, OnDestroy, OnInit, QueryList, ViewChildren, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {LoadingState} from 'src/app/shared/types/loading-state.type';
@@ -24,6 +24,8 @@ import {SearchResultIdentifierDirective} from '../../../../shared/directives/sea
   standalone: false,
 })
 export class SearchResultGroupsComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   @ViewChildren(SearchResultIdentifierDirective)
   public readonly overviewSearchResultItemComponents!: QueryList<SearchResultIdentifierDirective>;
 
@@ -46,8 +48,6 @@ export class SearchResultGroupsComponent implements OnInit, OnDestroy {
   private readonly filteredMaps$ = this.store.select(selectFilteredLayerCatalogMaps);
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(private readonly store: Store) {}
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();

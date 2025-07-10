@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {LoadingState} from '../../../shared/types/loading-state.type';
 import {selectIsElevationProfileOverlayVisible} from '../../../state/map/reducers/map-ui.reducer';
 import {Subscription, tap} from 'rxjs';
@@ -15,6 +15,9 @@ import {SwisstopoApiService} from '../../../shared/services/apis/swisstopo/swiss
   standalone: false,
 })
 export class ElevationProfileOverlayComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+  private readonly swisstopoApiService = inject(SwisstopoApiService);
+
   public isVisible: boolean = false;
   public elevationProfileData?: ElevationProfileData;
   public loadingState: LoadingState;
@@ -24,11 +27,6 @@ export class ElevationProfileOverlayComponent implements OnInit, OnDestroy {
   private readonly loadingState$ = this.store.select(selectLoadingState);
   private readonly elevationProfileData$ = this.store.select(selectData);
   private readonly subscriptions = new Subscription();
-
-  constructor(
-    private readonly store: Store,
-    private readonly swisstopoApiService: SwisstopoApiService,
-  ) {}
 
   public ngOnInit(): void {
     this.initSubscriptions();

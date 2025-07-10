@@ -1,6 +1,6 @@
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
-import {Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {AppLayoutActions} from '../actions/app-layout.actions';
 import {LayerCatalogActions} from '../../map/actions/layer-catalog.actions';
 import {distinctUntilChanged, filter, map} from 'rxjs';
@@ -11,6 +11,9 @@ import {Store} from '@ngrx/store';
 
 @Injectable()
 export class AppLayoutEffects {
+  private readonly actions$ = inject(Actions);
+  private readonly store = inject(Store);
+
   public manageScreenModeChange$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(AppLayoutActions.setScreenMode),
@@ -38,9 +41,4 @@ export class AppLayoutEffects {
       map(() => ToolActions.cancelTool()),
     );
   });
-
-  constructor(
-    private readonly actions$: Actions,
-    private readonly store: Store,
-  ) {}
 }

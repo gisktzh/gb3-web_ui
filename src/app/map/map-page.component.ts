@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {OnboardingGuideService} from '../onboarding-guide/services/onboarding-guide.service';
 import {Store} from '@ngrx/store';
 import {delayWhen, interval, Subscription, tap} from 'rxjs';
@@ -22,6 +22,10 @@ import {MapConfigActions} from '../state/map/actions/map-config.actions';
   standalone: false,
 })
 export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
+  private readonly onboardingGuideService = inject(OnboardingGuideService);
+  private readonly initialMapExtentService = inject(InitialMapExtentService);
+  private readonly store = inject(Store);
+
   public numberOfQueryLegends: number = 0;
   public isMapDataCatalogueMinimized: boolean = false;
   public mapUiState?: MapUiState;
@@ -38,12 +42,6 @@ export class MapPageComponent implements AfterViewInit, OnInit, OnDestroy {
   private readonly devMode$ = this.store.select(selectDevMode);
   private readonly mapConfigState$ = this.store.select(selectMapConfigState);
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(
-    private readonly onboardingGuideService: OnboardingGuideService,
-    private readonly initialMapExtentService: InitialMapExtentService,
-    private readonly store: Store,
-  ) {}
 
   public ngOnInit() {
     this.initSubscriptions();

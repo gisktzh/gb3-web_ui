@@ -4,7 +4,6 @@ import {EMPTY, Observable, of, throwError} from 'rxjs';
 import {Action} from '@ngrx/store';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
-import {MAP_SERVICE} from '../../../app.module';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
 import {SearchEffects} from './search.effects';
 import {SearchActions} from '../actions/search.actions';
@@ -25,6 +24,7 @@ import {
 } from '../../../shared/errors/search.errors';
 import {catchError} from 'rxjs';
 import {selectIsAuthenticated} from '../../auth/reducers/auth-status.reducer';
+import {MAP_SERVICE} from '../../../app.tokens';
 
 describe('SearchEffects', () => {
   let actions$: Observable<Action>;

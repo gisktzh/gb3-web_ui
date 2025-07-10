@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {Observable, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {selectCenter, selectRotation, selectScale} from '../../../../state/map/reducers/map-config.reducer';
@@ -25,6 +25,10 @@ import {Coordinate} from '../../../../shared/interfaces/coordinate.interface';
   standalone: false,
 })
 export class CoordinateScaleInputsComponent implements OnInit, OnDestroy {
+  private readonly coordinateParserService = inject(CoordinateParserService);
+  private readonly store = inject(Store);
+  private readonly configService = inject(ConfigService);
+
   public scale: number = 0;
   public scaleInput: string = '';
   public mapCenter: string = '';
@@ -38,12 +42,6 @@ export class CoordinateScaleInputsComponent implements OnInit, OnDestroy {
   private readonly rotation$ = this.store.select(selectRotation);
   private readonly scaleState$: Observable<number> = this.store.select(selectScale);
   private readonly centerState$: Observable<Coordinate> = this.store.select(selectCenter);
-
-  constructor(
-    private readonly coordinateParserService: CoordinateParserService,
-    private readonly store: Store,
-    private readonly configService: ConfigService,
-  ) {}
 
   public setScale(event: Event) {
     const input = (event.target as HTMLInputElement).value;

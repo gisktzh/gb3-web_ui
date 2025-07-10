@@ -1,21 +1,18 @@
 import {HttpClient} from '@angular/common/http';
-import {Inject, Injectable} from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {ConfigService} from '../config.service';
 import {TimeService} from '../../interfaces/time-service.interface';
-import {TIME_SERVICE} from '../../../app.module';
+import {TIME_SERVICE} from '../../../app.tokens';
 
 @Injectable({
   providedIn: 'root',
 })
 export abstract class BaseApiService {
   protected abstract apiBaseUrl: string;
-
-  constructor(
-    private readonly http: HttpClient,
-    protected readonly configService: ConfigService,
-    @Inject(TIME_SERVICE) protected readonly timeService: TimeService,
-  ) {}
+  protected readonly timeService: TimeService = inject(TIME_SERVICE);
+  protected readonly configService: ConfigService = inject(ConfigService);
+  private readonly http: HttpClient = inject(HttpClient);
 
   protected get<T>(url: string): Observable<T> {
     return this.http.get<T>(url);

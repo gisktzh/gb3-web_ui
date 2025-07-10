@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {MatDialogRef} from '@angular/material/dialog';
 import {ExportActions} from '../../../../state/map/actions/export.actions';
@@ -15,6 +15,9 @@ import {LoadingState} from '../../../../shared/types/loading-state.type';
   standalone: false,
 })
 export class DrawingDownloadDialogComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+  private readonly dialogRef = inject<MatDialogRef<DrawingDownloadDialogComponent>>(MatDialogRef);
+
   public availableExportFormats = Object.values(ExportFormat);
   public exportFormat = ExportFormat.Geojson;
   public exportFormatControl = new FormControl('geojson', Validators.required);
@@ -22,11 +25,6 @@ export class DrawingDownloadDialogComponent implements OnInit, OnDestroy {
 
   private readonly loadingState$ = this.store.select(selectExportLoadingState);
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(
-    private readonly store: Store,
-    private readonly dialogRef: MatDialogRef<DrawingDownloadDialogComponent>,
-  ) {}
 
   public ngOnInit() {
     this.initSubscriptions();

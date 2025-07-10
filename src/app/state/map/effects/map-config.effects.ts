@@ -1,10 +1,9 @@
-import {Inject, Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
 import {tap} from 'rxjs';
 import {MapConfigActions} from '../actions/map-config.actions';
 import {MapService} from '../../../map/interfaces/map.service';
-import {MAP_SERVICE} from '../../../app.module';
 import {selectMapConfigParams} from '../selectors/map-config-params.selector';
 import {map} from 'rxjs';
 import {UrlActions} from '../../app/actions/url.actions';
@@ -12,9 +11,16 @@ import {Store} from '@ngrx/store';
 import {SearchActions} from '../../app/actions/search.actions';
 import {InitialMapExtentService} from '../../../map/services/initial-map-extent.service';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
+import {MAP_SERVICE} from '../../../app.tokens';
 
 @Injectable()
 export class MapConfigEffects {
+  private readonly actions$ = inject(Actions);
+  private readonly mapService = inject<MapService>(MAP_SERVICE);
+  private readonly store = inject(Store);
+  private readonly initialMapExtentService = inject(InitialMapExtentService);
+  private readonly mapDrawingService = inject(MapDrawingService);
+
   public setScaleOnMap$ = createEffect(
     () => {
       return this.actions$.pipe(
@@ -91,12 +97,4 @@ export class MapConfigEffects {
       }),
     );
   });
-
-  constructor(
-    private readonly actions$: Actions,
-    @Inject(MAP_SERVICE) private readonly mapService: MapService,
-    private readonly store: Store,
-    private readonly initialMapExtentService: InitialMapExtentService,
-    private readonly mapDrawingService: MapDrawingService,
-  ) {}
 }

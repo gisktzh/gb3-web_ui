@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {MatDialogRef} from '@angular/material/dialog';
 import {FormControl, ValidatorFn, Validators} from '@angular/forms';
 import {FavouritesService} from '../../services/favourites.service';
@@ -20,15 +20,13 @@ const FAVOURITE_NAME_CONSTRAINTS: ValidatorFn[] = [Validators.minLength(1), Vali
   standalone: false,
 })
 export class FavouriteCreationDialogComponent implements OnInit, OnDestroy, HasSavingState {
+  private readonly dialogRef = inject<MatDialogRef<FavouriteCreationDialogComponent>>(MatDialogRef);
+  private readonly favouritesService = inject(FavouritesService);
+  private readonly store = inject(Store);
+
   public nameFormControl!: FormControl<string | null>;
   public savingState: LoadingState;
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(
-    private readonly dialogRef: MatDialogRef<FavouriteCreationDialogComponent>,
-    private readonly favouritesService: FavouritesService,
-    private readonly store: Store,
-  ) {}
 
   public get name() {
     return this.nameFormControl.value;

@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Component, OnInit, OnDestroy, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {GeolocationActions} from 'src/app/state/map/actions/geolocation.actions';
@@ -14,14 +14,14 @@ import {initialState as initialGeolocationState, selectGeolocationState} from '.
   standalone: false,
 })
 export class MapToolsMobileComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   public numberOfQueryLegends: number = 0;
   public geolocationState: GeolocationState = initialGeolocationState;
 
   private readonly queryLegends$ = this.store.select(selectQueryLegends);
   private readonly geolocationState$ = this.store.select(selectGeolocationState);
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(private readonly store: Store) {}
 
   public ngOnInit() {
     this.initSubscriptions();

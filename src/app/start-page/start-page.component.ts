@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Observable, Subscription, tap} from 'rxjs';
 import {TitleLink} from '../shared/components/page-section/page-section.component';
@@ -17,6 +17,8 @@ const START_PAGE_SUMMARY =
   standalone: false,
 })
 export class StartPageComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   public heroText = START_PAGE_SUMMARY;
   public readonly externalNewsFeedLink: TitleLink = {
     url: 'https://www.zh.ch/de/news-uebersicht.html?organisation=organisationen%253Akanton-zuerich%252Fbaudirektion%252Famt-fuer-raumentwicklung&topic=themen%253Aplanen-bauen%252Fgeoinformation',
@@ -28,8 +30,6 @@ export class StartPageComponent implements OnInit, OnDestroy {
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly additionalInformationLinksGroups$: Observable<LinksGroup[]> = this.store.select(selectAdditionalInformationLinks);
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(private readonly store: Store) {}
 
   public ngOnInit() {
     this.initSubscriptions();

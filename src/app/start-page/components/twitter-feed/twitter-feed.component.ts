@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, inject} from '@angular/core';
 import {ScriptInjectorService} from '../../../shared/services/script-injector.service';
 import {Subscription, tap} from 'rxjs';
 import {catchError} from 'rxjs';
@@ -17,11 +17,11 @@ const TWITTER_MAX_TWEETS = 4;
   standalone: false,
 })
 export class TwitterFeedComponent implements AfterViewInit, OnDestroy, HasLoadingState {
+  private readonly scriptInjectorService = inject(ScriptInjectorService);
+
   public loadingState: LoadingState = 'loading';
   @ViewChild('twitterFeed') private readonly twitterFeedContainer!: ElementRef;
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(private readonly scriptInjectorService: ScriptInjectorService) {}
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();

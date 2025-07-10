@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention -- mapping service to API */
-import {Inject, Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {Gb3ApiService} from './gb3-api.service';
 import {map, Observable} from 'rxjs';
 import {
@@ -27,26 +27,19 @@ import {Gb3StyledInternalDrawingRepresentation} from '../../../interfaces/intern
 import {PrintData} from '../../../../map/interfaces/print-data.interface';
 import {Gb2WmsSettings} from '../../../../map/models/implementations/gb2-wms.model';
 import {DrawingLayerSettings} from '../../../../map/models/implementations/drawing.model';
-import {TIME_SERVICE} from '../../../../app.module';
 import {TimeService} from '../../../interfaces/time-service.interface';
 import {Gb3TopicsService} from './gb3-topics.service';
 import {TimeSliderParameterSource} from '../../../interfaces/topic.interface';
+import {TIME_SERVICE} from '../../../../app.tokens';
 
 @Injectable({
   providedIn: 'root',
 })
 export class Gb3PrintService extends Gb3ApiService {
-  protected readonly endpoint = 'print';
+  private readonly basemapConfigService = inject(BasemapConfigService);
+  private readonly gb3TopicsService = inject(Gb3TopicsService);
 
-  constructor(
-    @Inject(HttpClient) http: HttpClient,
-    @Inject(ConfigService) configService: ConfigService,
-    @Inject(TIME_SERVICE) timeService: TimeService,
-    private readonly basemapConfigService: BasemapConfigService,
-    private readonly gb3TopicsService: Gb3TopicsService,
-  ) {
-    super(http, configService, timeService);
-  }
+  protected readonly endpoint = 'print';
 
   public createPrintJob(printCreation: PrintCreation): Observable<PrintCreationResponse> {
     const createCreatePayload: PrintNew = this.mapPrintCreationToCreateCreatePayload(printCreation);

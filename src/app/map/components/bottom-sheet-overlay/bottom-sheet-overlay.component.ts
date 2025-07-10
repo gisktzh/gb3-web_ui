@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {BottomSheetContent} from 'src/app/shared/types/bottom-sheet-content.type';
@@ -11,13 +11,13 @@ import {selectBottomSheetContent} from 'src/app/state/map/reducers/map-ui.reduce
   standalone: false,
 })
 export class BottomSheetOverlayComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   @Input() public showInteractiveElements: boolean = true;
   public bottomSheetContent: BottomSheetContent = 'none';
 
   private readonly bottomSheetContent$ = this.store.select(selectBottomSheetContent);
   private readonly subscriptions = new Subscription();
-
-  constructor(private readonly store: Store) {}
 
   public ngOnInit(): void {
     this.initSubscriptions();

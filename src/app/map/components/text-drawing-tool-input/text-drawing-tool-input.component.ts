@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, inject} from '@angular/core';
 import {FormControl, ValidatorFn, Validators} from '@angular/forms';
 import {MatDialogRef} from '@angular/material/dialog';
 import {MapConstants} from '../../../shared/constants/map.constants';
@@ -17,10 +17,10 @@ const TEXT_DRAWING_CONSTRAINTS: ValidatorFn[] = [
   standalone: false,
 })
 export class TextDrawingToolInputComponent implements OnInit {
+  private readonly dialogRef = inject<MatDialogRef<TextDrawingToolInputComponent>>(MatDialogRef);
+
   public textFormControl!: FormControl<string | null>;
   public readonly maxLength: number = MapConstants.TEXT_DRAWING_MAX_LENGTH;
-
-  constructor(private readonly dialogRef: MatDialogRef<TextDrawingToolInputComponent>) {}
 
   public ngOnInit() {
     this.textFormControl = new FormControl('', TEXT_DRAWING_CONSTRAINTS);

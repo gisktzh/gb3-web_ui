@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {MatDialogRef} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
@@ -13,6 +13,9 @@ import {AuthStatusActions} from '../../../../state/auth/actions/auth-status.acti
   standalone: false,
 })
 export class NavbarMobileDialogComponent implements OnInit, OnDestroy {
+  private readonly dialogRef = inject<MatDialogRef<NavbarMobileDialogComponent>>(MatDialogRef);
+  private readonly store = inject(Store);
+
   protected readonly mainPageEnum = MainPage;
   public isAuthenticated: boolean = false;
   public userName?: string;
@@ -20,11 +23,6 @@ export class NavbarMobileDialogComponent implements OnInit, OnDestroy {
   private readonly subscriptions = new Subscription();
   private readonly userName$ = this.store.select(selectUserName);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
-
-  constructor(
-    private readonly dialogRef: MatDialogRef<NavbarMobileDialogComponent>,
-    private readonly store: Store,
-  ) {}
 
   public ngOnInit() {
     this.initSubscriptions();

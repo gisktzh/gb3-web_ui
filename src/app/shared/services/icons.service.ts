@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {MatIconRegistry} from '@angular/material/icon';
 import {DomSanitizer} from '@angular/platform-browser';
 import {iconsConfig} from '../configs/icons.config';
@@ -7,10 +7,8 @@ import {iconsConfig} from '../configs/icons.config';
   providedIn: 'root',
 })
 export class IconsService {
-  constructor(
-    private readonly matIconRegistry: MatIconRegistry,
-    private readonly domSanitizer: DomSanitizer,
-  ) {}
+  private readonly matIconRegistry = inject(MatIconRegistry);
+  private readonly domSanitizer = inject(DomSanitizer);
 
   public initIcons() {
     iconsConfig.forEach((config) => {

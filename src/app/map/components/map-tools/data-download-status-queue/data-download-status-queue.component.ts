@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {LayerCatalogActions} from '../../../../state/map/actions/layer-catalog.actions';
@@ -13,13 +13,15 @@ import {DataDownloadOrderStatusJobActions} from '../../../../state/map/actions/d
   standalone: false,
 })
 export class DataDownloadStatusQueueComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   public isMinimized = false;
   public statusJobs: OrderStatusJob[] = [];
 
   private readonly statusJobs$ = this.store.select(selectIncompleteOrderStatusJobs);
   private readonly subscriptions = new Subscription();
 
-  constructor(private readonly store: Store) {
+  constructor() {
     this.store.dispatch(LayerCatalogActions.loadLayerCatalog());
   }
 

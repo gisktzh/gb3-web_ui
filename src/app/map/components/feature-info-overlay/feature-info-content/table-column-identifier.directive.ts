@@ -1,15 +1,15 @@
-import {Directive, ElementRef, Input} from '@angular/core';
+import {Directive, ElementRef, Input, inject} from '@angular/core';
 
 @Directive({
   selector: '[tableColumnIdentifier]',
   standalone: false,
 })
 export class TableColumnIdentifierDirective {
+  public readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+
   @Input() public topicId!: string;
   @Input() public layerId!: string;
   @Input() public featureId!: number;
-
-  constructor(public readonly host: ElementRef<HTMLElement>) {}
 
   public get uniqueIdentifier() {
     return TableColumnIdentifierDirective.createUniqueColumnIdentifier(this.topicId, this.layerId, this.featureId);

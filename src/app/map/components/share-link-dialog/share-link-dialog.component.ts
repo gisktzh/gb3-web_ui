@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {MatDialogRef} from '@angular/material/dialog';
 import {Router} from '@angular/router';
 import {Store} from '@ngrx/store';
@@ -16,6 +16,11 @@ import {selectId, selectSavingState} from '../../../state/map/reducers/share-lin
   standalone: false,
 })
 export class ShareLinkDialogComponent implements OnInit, OnDestroy, HasSavingState {
+  private readonly dialogRef = inject<MatDialogRef<ShareLinkDialogComponent>>(MatDialogRef);
+  private readonly store = inject(Store);
+  private readonly router = inject(Router);
+  private readonly configService = inject(ConfigService);
+
   public savingState: LoadingState = undefined;
   public shareLinkUrl?: string;
   public iframeCode?: string;
@@ -23,13 +28,6 @@ export class ShareLinkDialogComponent implements OnInit, OnDestroy, HasSavingSta
   private readonly subscriptions: Subscription = new Subscription();
   private readonly savingState$ = this.store.select(selectSavingState);
   private readonly shareLinkId$ = this.store.select(selectId);
-
-  constructor(
-    private readonly dialogRef: MatDialogRef<ShareLinkDialogComponent>,
-    private readonly store: Store,
-    private readonly router: Router,
-    private readonly configService: ConfigService,
-  ) {}
 
   public ngOnInit() {
     this.initSubscriptions();

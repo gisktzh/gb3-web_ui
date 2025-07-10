@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild, inject} from '@angular/core';
 import {LoadingState} from '../../../../shared/types/loading-state.type';
 import {BehaviorSubject, Subscription, tap} from 'rxjs';
 import {MatDialogRef} from '@angular/material/dialog';
@@ -14,6 +14,9 @@ import {selectMunicipalities, selectMunicipalitiesLoadingState} from '../../../.
   standalone: false,
 })
 export class DataDownloadSelectMunicipalityDialogComponent implements OnInit, OnDestroy {
+  private readonly dialogRef = inject<MatDialogRef<DataDownloadSelectMunicipalityDialogComponent, Municipality | undefined>>(MatDialogRef);
+  private readonly store = inject(Store);
+
   @ViewChild('municipalityInput') private input?: ElementRef<HTMLInputElement>;
   public readonly filteredMunicipalities = new BehaviorSubject<Municipality[]>([]);
   public municipalities: Municipality[] | undefined;
@@ -23,11 +26,6 @@ export class DataDownloadSelectMunicipalityDialogComponent implements OnInit, On
   private readonly subscriptions: Subscription = new Subscription();
   private readonly municipalities$ = this.store.select(selectMunicipalities);
   private readonly loadingState$ = this.store.select(selectMunicipalitiesLoadingState);
-
-  constructor(
-    private readonly dialogRef: MatDialogRef<DataDownloadSelectMunicipalityDialogComponent, Municipality | undefined>,
-    private readonly store: Store,
-  ) {}
 
   public ngOnInit() {
     this.initSubscriptions();

@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {MatDialogRef} from '@angular/material/dialog';
 import {ImportActions} from '../../../../state/map/actions/import.actions';
@@ -13,15 +13,13 @@ import {LoadingState} from '../../../../shared/types/loading-state.type';
   standalone: false,
 })
 export class DrawingsImportDialogComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+  private readonly dialogRef = inject<MatDialogRef<DrawingsImportDialogComponent>>(MatDialogRef);
+
   public loadingState: LoadingState = undefined;
 
   private readonly subscriptions: Subscription = new Subscription();
   private readonly loadingState$ = this.store.select(selectLoadingState);
-
-  constructor(
-    private readonly store: Store,
-    private readonly dialogRef: MatDialogRef<DrawingsImportDialogComponent>,
-  ) {}
 
   public ngOnInit() {
     this.initSubscriptions();

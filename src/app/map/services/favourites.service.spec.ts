@@ -22,8 +22,8 @@ import {SymbolizationToGb3ConverterUtils} from '../../shared/utils/symbolization
 import {Map} from '../../shared/interfaces/topic.interface';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {TimeService} from '../../shared/interfaces/time-service.interface';
-import {TIME_SERVICE} from '../../app.module';
 import {TimeSliderService} from './time-slider.service';
+import {TIME_SERVICE} from '../../app.tokens';
 
 describe('FavouritesService', () => {
   let service: FavouritesService;

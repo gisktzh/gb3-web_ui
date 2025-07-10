@@ -1,17 +1,18 @@
 import {TimeExtentToStringPipe} from './time-extent-to-string.pipe';
 import {TimeExtent} from '../interfaces/time-extent.interface';
 import {TestBed} from '@angular/core/testing';
-import {TIME_SERVICE} from '../../app.module';
-import {TimeService} from '../../shared/interfaces/time-service.interface';
+import {TIME_SERVICE} from '../../app.tokens';
+import {timeServiceFactory} from '../../shared/factories/time-service.factory';
 
 describe('TimeExtentToStringPipe', () => {
   let pipe: TimeExtentToStringPipe;
-  let timeService: TimeService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    timeService = TestBed.inject(TIME_SERVICE);
-    pipe = new TimeExtentToStringPipe(timeService);
+    TestBed.configureTestingModule({
+      providers: [TimeExtentToStringPipe, {provide: TIME_SERVICE, useValue: timeServiceFactory()}],
+    });
+
+    pipe = TestBed.inject(TimeExtentToStringPipe);
   });
   it('creates an instance', () => {
     expect(pipe).toBeTruthy();

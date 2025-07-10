@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {MapUiActions} from '../../../../state/map/actions/map-ui.actions';
 import {Subscription, tap} from 'rxjs';
@@ -27,6 +27,9 @@ import {selectActiveDataDownloadFiltersPerCategory} from '../../../../state/map/
   standalone: false,
 })
 export class DataDownloadDialogComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+  private readonly dialogService = inject(MatDialog);
+
   public order?: Order;
   public savingState: LoadingState;
   public relevantProducts: Product[] = [];
@@ -43,11 +46,6 @@ export class DataDownloadDialogComponent implements OnInit, OnDestroy {
   private readonly productsLoadingState$ = this.store.select(selectProductsLoadingState);
   private readonly activeDataDownloadFiltersPerCategory$ = this.store.select(selectActiveDataDownloadFiltersPerCategory);
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(
-    private readonly store: Store,
-    private readonly dialogService: MatDialog,
-  ) {}
 
   public ngOnInit() {
     this.initSubscriptions();

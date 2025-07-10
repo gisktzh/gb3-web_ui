@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {MAT_TOOLTIP_DEFAULT_OPTIONS} from '@angular/material/tooltip';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
@@ -15,13 +15,13 @@ import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
   standalone: false,
 })
 export class MapToolsComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   public screenMode: ScreenMode = 'regular';
 
   private readonly screenMode$ = this.store.select(selectScreenMode);
 
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(private readonly store: Store) {}
 
   public ngOnInit() {
     this.initSubscriptions();

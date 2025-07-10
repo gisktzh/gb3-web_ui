@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {MatDialogRef} from '@angular/material/dialog';
 import {Observable, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
@@ -13,14 +13,12 @@ import {DataDownloadProductActions} from '../../../../state/map/actions/data-dow
   standalone: false,
 })
 export class DataDownloadFilterDialogComponent implements OnInit, OnDestroy {
+  private readonly dialogRef = inject<MatDialogRef<DataDownloadFilterDialogComponent>>(MatDialogRef);
+  private readonly store = inject(Store);
+
   public dataDownloadFilters: DataDownloadFilter[] = [];
   private readonly dataDownloadFilters$: Observable<DataDownloadFilter[]> = this.store.select(selectFilters);
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(
-    private readonly dialogRef: MatDialogRef<DataDownloadFilterDialogComponent>,
-    private readonly store: Store,
-  ) {}
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();

@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, inject} from '@angular/core';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {AuthStatusActions} from '../../../state/auth/actions/auth-status.actions';
@@ -17,6 +17,9 @@ import {MatDialog} from '@angular/material/dialog';
   standalone: false,
 })
 export class NavbarComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+  private readonly dialog = inject(MatDialog);
+
   @Input() public isSimplifiedPage: boolean = false;
 
   public isAuthenticated: boolean = false;
@@ -31,11 +34,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
   private readonly scrollbarWidth$ = this.store.select(selectScrollbarWidth);
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
-
-  constructor(
-    private readonly store: Store,
-    private readonly dialog: MatDialog,
-  ) {}
 
   public ngOnInit() {
     this.initSubscriptions();

@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {LegendDisplay} from 'src/app/shared/interfaces/legend.interface';
@@ -13,6 +13,8 @@ import {selectLegendItemsForDisplay} from 'src/app/state/map/selectors/legend-re
   standalone: false,
 })
 export class LegendComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   @Input() public showInteractiveElements: boolean = true;
 
   public legendItems: LegendDisplay[] = [];
@@ -21,8 +23,6 @@ export class LegendComponent implements OnInit, OnDestroy {
   private readonly loadingState$ = this.store.select(selectLoadingState);
   private readonly legendItems$ = this.store.select(selectLegendItemsForDisplay);
   private readonly subscriptions = new Subscription();
-
-  constructor(private readonly store: Store) {}
 
   public ngOnInit() {
     this.initSubscriptions();

@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
@@ -11,6 +11,8 @@ import {ScreenMode} from '../../types/screen-size.type';
   standalone: false,
 })
 export class HeroHeaderComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   @Input() public heroTitle: string = '';
   @Input() public heroText: string = '';
   @Input() public heroSubText?: string;
@@ -18,8 +20,6 @@ export class HeroHeaderComponent implements OnInit, OnDestroy {
 
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly subscriptions = new Subscription();
-
-  constructor(private readonly store: Store) {}
 
   public ngOnInit(): void {
     this.initSubscriptions();

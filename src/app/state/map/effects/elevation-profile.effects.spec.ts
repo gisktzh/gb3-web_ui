@@ -5,7 +5,6 @@ import {Action} from '@ngrx/store';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {ElevationProfileEffects} from './elevation-profile.effects';
 import {ToolActions} from '../actions/tool.actions';
-import {MAP_SERVICE} from '../../../app.module';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
 import {MapService} from '../../../map/interfaces/map.service';
 import {ElevationProfileActions} from '../actions/elevation-profile.actions';
@@ -21,6 +20,7 @@ import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
 import {PointWithSrs} from '../../../shared/interfaces/geojson-types-with-srs.interface';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {MAP_SERVICE} from '../../../app.tokens';
 
 describe('ElevationProfileEffects', () => {
   let actions$: Observable<Action>;

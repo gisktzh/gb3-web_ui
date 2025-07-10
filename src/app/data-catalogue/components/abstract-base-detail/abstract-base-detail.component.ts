@@ -1,6 +1,6 @@
-import {Component, ErrorHandler, OnDestroy, OnInit} from '@angular/core';
+import {Component, ErrorHandler, inject, OnDestroy, OnInit} from '@angular/core';
 import {LoadingState} from '../../../shared/types/loading-state.type';
-import {Observable, of, Subscription, switchMap, tap} from 'rxjs';
+import {catchError, Observable, of, Subscription, switchMap, tap} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Gb3MetadataService} from '../../../shared/services/apis/gb3/gb3-metadata.service';
 import {ConfigService} from '../../../shared/services/config.service';
@@ -8,7 +8,6 @@ import {DataDisplayElement} from '../../types/data-display-element.type';
 import {MainPage} from '../../../shared/enums/main-page.enum';
 import {DataCataloguePage} from '../../../shared/enums/data-catalogue-page.enum';
 import {DatasetMetadata, MapMetadata, ProductMetadata, ServiceMetadata} from '../../../shared/interfaces/gb3-metadata.interface';
-import {catchError} from 'rxjs';
 import {BaseMetadataInformation} from '../../interfaces/base-metadata-information.interface';
 import {RouteParamConstants} from '../../../shared/constants/route-param.constants';
 import {HttpErrorResponse} from '@angular/common/http';
@@ -29,20 +28,18 @@ export abstract class AbstractBaseDetailComponent<T extends DetailMetadata> impl
   public loadingState: LoadingState = 'loading';
   public readonly apiBaseUrl: string;
   public screenMode: ScreenMode = 'regular';
-
+  protected readonly gb3MetadataService: Gb3MetadataService = inject(Gb3MetadataService);
   protected readonly mainPageEnum = MainPage;
   protected readonly dataCataloguePageEnum = DataCataloguePage;
-  protected readonly screenMode$ = this.store.select(selectScreenMode);
   protected readonly subscriptions: Subscription = new Subscription();
+  private readonly route: ActivatedRoute = inject(ActivatedRoute);
+  private readonly configService: ConfigService = inject(ConfigService);
+  private readonly router: Router = inject(Router);
+  private readonly errorHandler: ErrorHandler = inject(ErrorHandler);
+  private readonly store: Store = inject(Store);
+  protected readonly screenMode$ = this.store.select(selectScreenMode);
 
-  protected constructor(
-    private readonly route: ActivatedRoute,
-    protected readonly gb3MetadataService: Gb3MetadataService,
-    private readonly configService: ConfigService,
-    private readonly router: Router,
-    private readonly errorHandler: ErrorHandler,
-    private readonly store: Store,
-  ) {
+  constructor() {
     this.apiBaseUrl = this.configService.apiConfig.gb2StaticFiles.baseUrl;
   }
 

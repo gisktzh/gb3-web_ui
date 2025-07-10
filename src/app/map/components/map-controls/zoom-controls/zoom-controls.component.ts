@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, inject} from '@angular/core';
 import {MAT_TOOLTIP_DEFAULT_OPTIONS} from '@angular/material/tooltip';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
@@ -29,6 +29,8 @@ const TOOLTIP_TEXT = {
   standalone: false,
 })
 export class ZoomControlsComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   @Input() public showLocateMeButton!: boolean;
 
   public tooltipText = TOOLTIP_TEXT;
@@ -46,8 +48,6 @@ export class ZoomControlsComponent implements OnInit, OnDestroy {
   private readonly geolocationState$ = this.store.select(selectGeolocationState);
   private readonly mapUiState$ = this.store.select(selectMapUiState);
   private readonly screenHeight$ = this.store.select(selectScreenHeight);
-
-  constructor(private readonly store: Store) {}
 
   public ngOnInit() {
     this.initSubscriptions();

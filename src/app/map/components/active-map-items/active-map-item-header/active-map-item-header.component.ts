@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, inject} from '@angular/core';
 import {MatExpansionPanel} from '@angular/material/expansion';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
@@ -16,6 +16,8 @@ import {ActiveMapItem} from '../../../models/active-map-item.model';
   standalone: false,
 })
 export class ActiveMapItemHeaderComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   @Input() public activeMapItem!: ActiveMapItem;
   @Input() public activeMapItemExpansionPanel!: MatExpansionPanel;
   @Input() public isDragAndDropDisabled: boolean = false;
@@ -26,8 +28,6 @@ export class ActiveMapItemHeaderComponent implements OnInit, OnDestroy {
 
   protected readonly mainPageEnum = MainPage;
   protected readonly dataCataloguePageEnum = DataCataloguePage;
-
-  constructor(private readonly store: Store) {}
 
   public ngOnInit(): void {
     this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());

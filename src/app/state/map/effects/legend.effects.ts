@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
 import {of, switchMap, tap} from 'rxjs';
@@ -12,6 +12,10 @@ import {LegendCouldNotBeLoaded} from '../../../shared/errors/map.errors';
 
 @Injectable()
 export class LegendEffects {
+  private readonly actions$ = inject(Actions);
+  private readonly topicsService = inject(Gb3TopicsService);
+  private readonly store = inject(Store);
+
   public requestLegend$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(LegendActions.loadLegend),
@@ -38,10 +42,4 @@ export class LegendEffects {
     },
     {dispatch: false},
   );
-
-  constructor(
-    private readonly actions$: Actions,
-    private readonly topicsService: Gb3TopicsService,
-    private readonly store: Store,
-  ) {}
 }

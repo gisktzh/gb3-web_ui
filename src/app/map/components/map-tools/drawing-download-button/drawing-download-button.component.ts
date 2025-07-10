@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {MatIcon} from '@angular/material/icon';
 import {selectDrawings} from '../../../../state/map/reducers/drawing.reducer';
@@ -16,14 +16,12 @@ import {MatDialog} from '@angular/material/dialog';
   styleUrl: './drawing-download-button.component.scss',
 })
 export class DrawingDownloadButtonComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+  private readonly dialogService = inject(MatDialog);
+
   public hasDrawings: boolean = false;
   private readonly drawings$ = this.store.select(selectDrawings);
   protected readonly subscriptions: Subscription = new Subscription();
-
-  constructor(
-    private readonly store: Store,
-    private readonly dialogService: MatDialog,
-  ) {}
 
   public ngOnInit() {
     this.initSubscriptions();

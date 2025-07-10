@@ -1,4 +1,4 @@
-import {Inject, Injectable, OnDestroy} from '@angular/core';
+import {Injectable, OnDestroy, inject} from '@angular/core';
 import esriConfig from '@arcgis/core/config';
 import * as affineTransformOperator from '@arcgis/core/geometry/operators/affineTransformOperator.js';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
@@ -47,7 +47,6 @@ import {MapConstants} from '../../../shared/constants/map.constants';
 import {HitTestSelectionUtils} from './utils/hit-test-selection.utils';
 import * as intl from '@arcgis/core/intl';
 import {TimeService} from '../../../shared/interfaces/time-service.interface';
-import {TIME_SERVICE} from '../../../app.module';
 import {TimeSliderService} from '../time-slider.service';
 import {ZoomExtentMissing} from './errors/esri.errors';
 import {SymbolUnion} from '@arcgis/core/unionTypes';
@@ -68,6 +67,7 @@ import {EsriLoadStatus} from './types/esri-load-status.type';
 import * as distanceOperator from '@arcgis/core/geometry/operators/distanceOperator.js';
 import GraphicHit = __esri.GraphicHit;
 import {MapViewWithMap} from './types/esri-mapview-with-map.type';
+import {TIME_SERVICE} from '../../../app.tokens';
 
 const DEFAULT_POINT_ZOOM_EXTENT_SCALE = 750;
 
@@ -84,6 +84,20 @@ enum EsriMouseButtonType {
   providedIn: 'root',
 })
 export class EsriMapService implements MapService, OnDestroy {
+  private readonly store = inject(Store);
+  private readonly transformationService = inject(TransformationService);
+  private readonly geoJSONMapperService = inject(GeoJSONMapperService);
+  private readonly basemapConfigService = inject(BasemapConfigService);
+  private readonly configService = inject(ConfigService);
+  private readonly authService = inject(AuthService);
+  private readonly esriSymbolizationService = inject(EsriSymbolizationService);
+  private readonly esriMapViewService = inject(EsriMapViewService);
+  private readonly esriToolService = inject(EsriToolService);
+  private readonly gb3TopicsService = inject(Gb3TopicsService);
+  private readonly initialMapExtentService = inject(InitialMapExtentService);
+  private readonly timeSliderService = inject(TimeSliderService);
+  private readonly timeService = inject<TimeService>(TIME_SERVICE);
+
   private effectiveMaxZoom = 23;
   private effectiveMinZoom = 0;
   private effectiveMinScale = 0;
@@ -97,21 +111,7 @@ export class EsriMapService implements MapService, OnDestroy {
   private readonly isAuthenticated$ = this.store.select(selectIsAuthenticated);
   private readonly wmsImageFormatMimeType = this.configService.gb2Config.wmsFormatMimeType;
 
-  constructor(
-    private readonly store: Store,
-    private readonly transformationService: TransformationService,
-    private readonly geoJSONMapperService: GeoJSONMapperService,
-    private readonly basemapConfigService: BasemapConfigService,
-    private readonly configService: ConfigService,
-    private readonly authService: AuthService,
-    private readonly esriSymbolizationService: EsriSymbolizationService,
-    private readonly esriMapViewService: EsriMapViewService,
-    private readonly esriToolService: EsriToolService,
-    private readonly gb3TopicsService: Gb3TopicsService,
-    private readonly initialMapExtentService: InitialMapExtentService,
-    private readonly timeSliderService: TimeSliderService,
-    @Inject(TIME_SERVICE) private readonly timeService: TimeService,
-  ) {
+  constructor() {
     /**
      * Because the GetCapabalities response often sends a non-secure http://wms.zh.ch response, Esri Javascript API fails on https
      * environments to attach the token above if the urls is set to http://wms.zh.ch; because it automatically upgrades insecure links to

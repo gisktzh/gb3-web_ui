@@ -149,7 +149,6 @@ export default tseslint.config(
         },
       ],
       '@angular-eslint/prefer-standalone': 'warn',
-      '@angular-eslint/prefer-inject': 'warn',
     },
   },
   {
@@ -158,7 +157,6 @@ export default tseslint.config(
     extends: [...angular.configs.templateRecommended, ...angular.configs.templateAccessibility, prettierRecommended],
     rules: {
       '@angular-eslint/template/prefer-control-flow': ['error'],
-
       '@angular-eslint/template/eqeqeq': [
         'error',
         {

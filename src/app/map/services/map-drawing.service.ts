@@ -1,5 +1,4 @@
-import {Inject, Injectable, OnDestroy} from '@angular/core';
-import {MAP_SERVICE} from '../../app.module';
+import {Injectable, OnDestroy, inject} from '@angular/core';
 import {MapService} from '../interfaces/map.service';
 import {GeometryWithSrs, PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
 import {InternalDrawingLayer} from '../../shared/enums/drawing-layer.enum';
@@ -8,6 +7,7 @@ import {selectCurrentGpsLocation} from '../../state/map/reducers/geolocation.red
 import {Store} from '@ngrx/store';
 import {ConfigService} from '../../shared/services/config.service';
 import {selectReady} from '../../state/map/reducers/map-config.reducer';
+import {MAP_SERVICE} from '../../app.tokens';
 
 export const ELEVATION_PROFILE_LOCATION_IDENTIFIER = 'elevation_profile_location';
 
@@ -15,15 +15,15 @@ export const ELEVATION_PROFILE_LOCATION_IDENTIFIER = 'elevation_profile_location
   providedIn: 'root',
 })
 export class MapDrawingService implements OnDestroy {
+  private readonly mapService = inject<MapService>(MAP_SERVICE);
+  private readonly store = inject(Store);
+  private readonly configService = inject(ConfigService);
+
   private readonly isMapReady$ = this.store.select(selectReady);
   private readonly currentGpsLocation$ = this.store.select(selectCurrentGpsLocation);
   private readonly subscriptions: Subscription = new Subscription();
 
-  constructor(
-    @Inject(MAP_SERVICE) private readonly mapService: MapService,
-    private readonly store: Store,
-    private readonly configService: ConfigService,
-  ) {
+  constructor() {
     this.initSubscriptions();
   }
 

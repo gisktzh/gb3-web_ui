@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
 import {filter, map} from 'rxjs';
@@ -14,6 +14,9 @@ import {ExternalKmlLayer, ExternalWmsLayer} from '../../../shared/interfaces/ext
 
 @Injectable()
 export class MapImportEffects {
+  private readonly actions$ = inject(Actions);
+  private readonly store = inject(Store);
+
   public clearMapImportStateAfterAddingExternalMapItem$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ActiveMapItemActions.addActiveMapItem),
@@ -73,9 +76,4 @@ export class MapImportEffects {
       }),
     );
   });
-
-  constructor(
-    private readonly actions$: Actions,
-    private readonly store: Store,
-  ) {}
 }

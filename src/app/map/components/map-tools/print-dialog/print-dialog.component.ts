@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild, inject} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {LoadingState} from '../../../../shared/types/loading-state.type';
 import {Store} from '@ngrx/store';
@@ -45,6 +45,10 @@ interface PrintForm {
   standalone: false,
 })
 export class PrintDialogComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+  private readonly configService = inject(ConfigService);
+  private readonly printService = inject(Gb3PrintService);
+
   @ViewChild('stepper') private readonly stepper!: MatStepper;
 
   public readonly formGroup: FormGroup<PrintForm> = new FormGroup({
@@ -76,12 +80,6 @@ export class PrintDialogComponent implements OnInit, OnDestroy {
   private drawings: Gb3StyledInternalDrawingRepresentation[] = [];
   private readonly isFormInitialized: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(
-    private readonly store: Store,
-    private readonly configService: ConfigService,
-    private readonly printService: Gb3PrintService,
-  ) {}
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();

@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {selectLoadingState as selectFavouritesLoadingState} from '../../../state/map/reducers/favourite-list.reducer';
 import {selectFilterString, selectLoadingState as selectCatalogueLoadingState} from '../../../state/map/reducers/layer-catalog.reducer';
@@ -28,6 +28,9 @@ import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
   standalone: false,
 })
 export class MapDataCatalogueComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+  private readonly favouritesService = inject(FavouritesService);
+
   @Output() public readonly changeIsMinimizedEvent = new EventEmitter<boolean>();
 
   public topics: Topic[] = [];
@@ -51,10 +54,7 @@ export class MapDataCatalogueComponent implements OnInit, OnDestroy {
   private readonly subscriptions = new Subscription();
   @ViewChild('filterInput') private readonly input!: ElementRef;
 
-  constructor(
-    private readonly store: Store,
-    private readonly favouritesService: FavouritesService,
-  ) {
+  constructor() {
     this.store.dispatch(LayerCatalogActions.loadLayerCatalog());
   }
 

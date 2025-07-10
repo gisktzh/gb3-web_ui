@@ -1,4 +1,4 @@
-import {Component, Inject, OnDestroy} from '@angular/core';
+import {Component, OnDestroy, inject} from '@angular/core';
 import {HasSavingState} from '../../../shared/interfaces/has-saving-state.interface';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {Subscription, tap} from 'rxjs';
@@ -18,16 +18,20 @@ import {FavouriteCouldNotBeRemoved} from '../../../shared/errors/favourite.error
   standalone: false,
 })
 export class FavouriteDeletionDialogComponent implements HasSavingState, OnDestroy {
+  private readonly dialogRef = inject<MatDialogRef<FavouriteDeletionDialogComponent, boolean>>(MatDialogRef);
+  private readonly favouritesService = inject(FavouritesService);
+  private readonly data = inject<{
+    favourite: Favourite;
+  }>(MAT_DIALOG_DATA);
+  private readonly store = inject(Store);
+
   public savingState: LoadingState;
   public favourite: Favourite;
   private readonly subscriptions: Subscription = new Subscription();
 
-  constructor(
-    private readonly dialogRef: MatDialogRef<FavouriteDeletionDialogComponent, boolean>,
-    private readonly favouritesService: FavouritesService,
-    @Inject(MAT_DIALOG_DATA) private readonly data: {favourite: Favourite},
-    private readonly store: Store,
-  ) {
+  constructor() {
+    const data = this.data;
+
     this.favourite = data.favourite;
   }
 

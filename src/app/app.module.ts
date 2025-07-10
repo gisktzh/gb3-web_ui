@@ -1,7 +1,7 @@
 import {registerLocaleData} from '@angular/common';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import localeDeCH from '@angular/common/locales/de-CH';
-import {ErrorHandler, InjectionToken, LOCALE_ID, NgModule} from '@angular/core';
+import {ErrorHandler, LOCALE_ID, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {Router} from '@angular/router';
@@ -13,12 +13,10 @@ import {AuthModule} from './auth/auth.module';
 import {EmbeddedErrorHandlerService} from './embedded-page/services/embedded-error-handler.service';
 import {ErrorHandlerService} from './error-handling/error-handler.service';
 import {ErrorHandlingModule} from './error-handling/error-handling.module';
-import {MapService} from './map/interfaces/map.service';
 import {EsriMapService} from './map/services/esri-services/esri-map.service';
 import {errorHandlerServiceFactory} from './shared/factories/error-handler-service.factory';
 import {gravCmsFactory} from './shared/factories/grav-cms.factory';
 import {newsFactory} from './shared/factories/news.factory';
-import {NewsService} from './shared/interfaces/news-service.interface';
 import {GravCmsService} from './shared/services/apis/grav-cms/grav-cms.service';
 import {GravCmsServiceMock} from './shared/services/apis/grav-cms/grav-cms.service.mock';
 import {KTZHNewsService} from './shared/services/apis/ktzh/ktzhnews.service';
@@ -29,21 +27,14 @@ import {effects, metaReducers, reducers} from './state';
 import {StoreRouterConnectingModule} from '@ngrx/router-store';
 import {effectErrorHandler} from './state/app/effects/effects-error-handler.effects';
 import {EsriMapLoaderService} from './map/services/esri-services/esri-map-loader.service';
-import {MapLoaderService} from './map/interfaces/map-loader.service';
 import {DevModeBannerComponent} from './shared/components/dev-mode-banner/dev-mode-banner.component';
 import {SkipLinkComponent} from './shared/components/skip-link/skip-link.component';
-import {TimeService} from './shared/interfaces/time-service.interface';
 import {timeServiceFactory} from './shared/factories/time-service.factory';
+import {GRAV_CMS_SERVICE, MAP_LOADER_SERVICE, MAP_SERVICE, NEWS_SERVICE, TIME_SERVICE} from './app.tokens';
 
 // necessary for the locale 'de-CH' to work
 // see https://stackoverflow.com/questions/46419026/missing-locale-data-for-the-locale-xxx-with-angular
 registerLocaleData(localeDeCH);
-
-export const MAP_SERVICE = new InjectionToken<MapService>('MapService');
-export const MAP_LOADER_SERVICE = new InjectionToken<MapLoaderService>('MapLoaderService');
-export const NEWS_SERVICE = new InjectionToken<NewsService>('NewsService');
-export const GRAV_CMS_SERVICE = new InjectionToken<GravCmsService>('GravCmsService');
-export const TIME_SERVICE = new InjectionToken<TimeService>('TimeService');
 
 @NgModule({
   declarations: [AppComponent],

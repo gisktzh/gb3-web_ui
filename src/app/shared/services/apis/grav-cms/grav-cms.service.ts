@@ -1,4 +1,4 @@
-import {Inject, Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {BaseApiService} from '../abstract-api.service';
 import {Observable} from 'rxjs';
 import {DiscoverMapsItem} from '../../../interfaces/discover-maps-item.interface';
@@ -10,7 +10,8 @@ import {FrequentlyUsedItem} from '../../../interfaces/frequently-used-item.inter
 import {HttpClient} from '@angular/common/http';
 import {ConfigService} from '../../config.service';
 import {TimeService} from '../../../interfaces/time-service.interface';
-import {TIME_SERVICE} from '../../../../app.module';
+
+import {TIME_SERVICE} from '../../../../app.tokens';
 
 const DATE_FORMAT = 'DD.MM.YYYY';
 
@@ -23,9 +24,6 @@ export class GravCmsService extends BaseApiService {
   private readonly pageInfosEndpoint: string = 'pageinfos.json';
   private readonly frequentlyUsedItemsEndpoint: string = 'frequentlyused.json';
 
-  constructor(httpClient: HttpClient, configService: ConfigService, @Inject(TIME_SERVICE) timeService: TimeService) {
-    super(httpClient, configService, timeService);
-  }
   public loadDiscoverMapsData(): Observable<DiscoverMapsItem[]> {
     const requestUrl = this.createFullEndpointUrl(this.discoverMapsEndpoint);
     return this.get<DiscoverMapsRoot>(requestUrl).pipe(map((response) => this.transformDiscoverMapsData(response)));

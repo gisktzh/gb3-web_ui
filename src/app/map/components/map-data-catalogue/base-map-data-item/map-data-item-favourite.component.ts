@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject} from '@angular/core';
 import {BaseMapDataItemComponent} from './base-map-data-item.component';
 import {LoadingState} from '../../../../shared/types/loading-state.type';
 import {Store} from '@ngrx/store';
@@ -16,6 +16,8 @@ const FAVOURITE_ERROR_TOOLTIP =
   standalone: false,
 })
 export class MapDataItemFavouriteComponent extends BaseMapDataItemComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   @Input() public override loadingState: LoadingState;
   @Input() public override invalid?: boolean;
 
@@ -27,10 +29,6 @@ export class MapDataItemFavouriteComponent extends BaseMapDataItemComponent impl
   public override isAddItemDisabled: boolean = false;
   private readonly subscriptions: Subscription = new Subscription();
   private readonly activeTool$ = this.store.select(selectActiveTool);
-
-  constructor(private readonly store: Store) {
-    super();
-  }
 
   public ngOnInit() {
     this.subscriptions.add(this.activeTool$.pipe(tap((activeTool) => (this.isAddItemDisabled = !!activeTool))).subscribe());

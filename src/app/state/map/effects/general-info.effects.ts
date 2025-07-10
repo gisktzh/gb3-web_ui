@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {of, switchMap, tap} from 'rxjs';
 import {catchError, map} from 'rxjs';
@@ -11,6 +11,10 @@ import {GeneralInfoCouldNotBeLoaded} from '../../../shared/errors/map.errors';
 
 @Injectable()
 export class GeneralInfoEffects {
+  private readonly actions$ = inject(Actions);
+  private readonly topicsService = inject(Gb3TopicsService);
+  private readonly generalInfoService = inject(Gb3GeneralInfoService);
+
   public clearData$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MapConfigActions.clearFeatureInfoContent),
@@ -50,10 +54,4 @@ export class GeneralInfoEffects {
     },
     {dispatch: false},
   );
-
-  constructor(
-    private readonly actions$: Actions,
-    private readonly topicsService: Gb3TopicsService,
-    private readonly generalInfoService: Gb3GeneralInfoService,
-  ) {}
 }

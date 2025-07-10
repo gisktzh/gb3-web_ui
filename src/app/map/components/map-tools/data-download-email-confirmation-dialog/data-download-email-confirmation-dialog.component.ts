@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {MatDialogRef} from '@angular/material/dialog';
 
 @Component({
@@ -8,7 +8,7 @@ import {MatDialogRef} from '@angular/material/dialog';
   standalone: false,
 })
 export class DataDownloadEmailConfirmationDialogComponent {
-  constructor(private readonly dialogRef: MatDialogRef<DataDownloadEmailConfirmationDialogComponent>) {}
+  private readonly dialogRef = inject<MatDialogRef<DataDownloadEmailConfirmationDialogComponent>>(MatDialogRef);
 
   public close() {
     this.dialogRef.close();

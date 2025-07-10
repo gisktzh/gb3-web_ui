@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
@@ -16,6 +16,8 @@ export interface TitleLink {
   standalone: false,
 })
 export class PageSectionComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   @Input() public background?: 'primary' | 'accent';
   @Input() public sectionTitle?: string;
   @Input() public titleLink?: TitleLink;
@@ -25,8 +27,6 @@ export class PageSectionComponent implements OnInit, OnDestroy {
 
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(private readonly store: Store) {}
 
   public ngOnInit() {
     this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());

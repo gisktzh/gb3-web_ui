@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {selectFeatureInfoQueryLoadingState} from 'src/app/state/map/selectors/feature-info-query-loading-state.selector';
@@ -15,6 +15,8 @@ import {selectFeatureInfosForDisplay} from '../../../../state/map/selectors/feat
   standalone: false,
 })
 export class FeatureInfoComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   @Input() public showInteractiveElements: boolean = true;
 
   public loadingState: LoadingState = undefined;
@@ -25,8 +27,6 @@ export class FeatureInfoComponent implements OnInit, OnDestroy {
   private readonly featureInfoData$ = this.store.select(selectFeatureInfosForDisplay);
   private readonly generalInfoData$ = this.store.select(selectData);
   private readonly subscriptions = new Subscription();
-
-  constructor(private readonly store: Store) {}
 
   public ngOnInit(): void {
     this.initSubscriptions();

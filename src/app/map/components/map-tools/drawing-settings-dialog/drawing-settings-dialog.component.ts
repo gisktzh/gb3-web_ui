@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {ColorUtils} from '../../../../shared/utils/color.utils';
 import {DrawingStyleActions} from '../../../../state/map/actions/drawing-style.actions';
 import {Store} from '@ngrx/store';
@@ -14,17 +14,15 @@ import {ConfigService} from '../../../../shared/services/config.service';
   standalone: false,
 })
 export class DrawingSettingsDialogComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+  private readonly dialogRef = inject<MatDialogRef<DrawingSettingsDialogComponent>>(MatDialogRef);
+  private readonly configService = inject(ConfigService);
+
   public fillColor = ColorUtils.convertSymbolizationColorToHex(this.configService.drawingConfig.defaultFillColor).hexColor;
   public lineColor = ColorUtils.convertSymbolizationColorToHex(this.configService.drawingConfig.defaultLineColor).hexColor;
   public lineWidth = this.configService.drawingConfig.defaultLineWidth;
   private readonly drawingStyleState$ = this.store.select(selectDrawingStyleState);
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(
-    private readonly store: Store,
-    private readonly dialogRef: MatDialogRef<DrawingSettingsDialogComponent>,
-    private readonly configService: ConfigService,
-  ) {}
 
   public ngOnInit() {
     this.initSubscriptions();

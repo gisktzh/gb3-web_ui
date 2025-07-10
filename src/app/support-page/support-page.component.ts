@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {ScreenMode} from '../shared/types/screen-size.type';
@@ -16,6 +16,8 @@ const SUPPORT_PAGE_SUMMARY =
   standalone: false,
 })
 export class SupportPageComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   public heroText = SUPPORT_PAGE_SUMMARY;
   public screenMode: ScreenMode = 'regular';
   public additionalInformationLinksGroups: LinksGroup[] = [];
@@ -23,8 +25,6 @@ export class SupportPageComponent implements OnInit, OnDestroy {
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly additionalInformationLinksGroups$ = this.store.select(selectAdditionalInformationLinks);
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(private readonly store: Store) {}
 
   public ngOnInit(): void {
     this.subscriptions.add(this.screenMode$.pipe(tap((screenMode) => (this.screenMode = screenMode))).subscribe());

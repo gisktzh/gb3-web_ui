@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild, inject} from '@angular/core';
 import {Product, ProductFormat} from '../../../../shared/interfaces/gb3-geoshop-product.interface';
 import {FormControl} from '@angular/forms';
 import {Store} from '@ngrx/store';
@@ -14,6 +14,8 @@ import {BehaviorSubject, Subscription, tap} from 'rxjs';
   standalone: false,
 })
 export class ProductComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   @Input() public product!: Product;
   @Input() public order!: Order;
   public isProductSelected: boolean = false;
@@ -22,8 +24,6 @@ export class ProductComponent implements OnInit, OnDestroy {
   protected readonly disabled$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   @ViewChild('formatsSelect') private matSelectRef?: MatSelect;
   private readonly subscription = new Subscription();
-
-  constructor(private readonly store: Store) {}
 
   @Input()
   public set disabled(value: boolean) {

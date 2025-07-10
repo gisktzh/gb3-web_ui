@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {AuthNotificationDialogComponent} from './auth-notification-dialog/auth-notification-dialog.component';
 import {tap} from 'rxjs';
@@ -31,7 +31,7 @@ const programmaticLogoutDialogContent: DialogContent = {
   providedIn: 'root',
 })
 export class AuthNotificationService {
-  constructor(private readonly matDialogService: MatDialog) {}
+  private readonly matDialogService = inject(MatDialog);
 
   public showImpendingLogoutDialog() {
     this.openDialog(impendingLogoutDialogContent);

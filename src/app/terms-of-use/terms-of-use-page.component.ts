@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
@@ -14,13 +14,13 @@ const TERMS_OF_USE_SUMMARY =
   standalone: false,
 })
 export class TermsOfUsePageComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   public heroText = TERMS_OF_USE_SUMMARY;
   public screenMode: ScreenMode = 'regular';
 
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(private readonly store: Store) {}
 
   public ngOnInit() {
     this.initSubscriptions();

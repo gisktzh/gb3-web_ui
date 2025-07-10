@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {Basemap} from '../../../../shared/interfaces/basemap.interface';
@@ -13,6 +13,10 @@ import {BasemapConfigService} from '../../../services/basemap-config.service';
   standalone: false,
 })
 export class BasemapSelectorComponent implements OnInit, OnDestroy, AfterViewInit {
+  private readonly store = inject(Store);
+  private readonly basemapConfigService = inject(BasemapConfigService);
+  private readonly documentService = inject(DocumentService);
+
   @ViewChild('basemapSelector', {read: ElementRef, static: false}) private basemapSelectorRef!: ElementRef;
   @ViewChild('basemapSelectorButton', {read: ElementRef}) private basemapSelectorButtonRef!: ElementRef;
 
@@ -22,11 +26,7 @@ export class BasemapSelectorComponent implements OnInit, OnDestroy, AfterViewIni
   private readonly subscriptions: Subscription = new Subscription();
   private readonly activeBasemapId$ = this.store.select(selectActiveBasemapId);
 
-  constructor(
-    private readonly store: Store,
-    private readonly basemapConfigService: BasemapConfigService,
-    private readonly documentService: DocumentService,
-  ) {
+  constructor() {
     this.availableBasemaps = this.basemapConfigService.availableBasemaps;
   }
 

@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {selectFilterGroups} from '../../../state/app/reducers/search.reducer';
@@ -15,17 +15,15 @@ import {ScreenMode} from '../../types/screen-size.type';
   standalone: false,
 })
 export class SearchFilterDialogComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+  private readonly dialogRef = inject<MatDialogRef<SearchFilterDialogComponent>>(MatDialogRef);
+
   public nonEmptyFilterGroups: SearchFilterGroup[] = [];
   public screenMode: ScreenMode = 'regular';
 
   private readonly filterGroups$ = this.store.select(selectFilterGroups);
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(
-    private readonly store: Store,
-    private readonly dialogRef: MatDialogRef<SearchFilterDialogComponent>,
-  ) {}
 
   public ngOnInit() {
     this.initSubscriptions();

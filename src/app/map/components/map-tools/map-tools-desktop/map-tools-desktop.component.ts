@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {ToolMenuVisibility} from '../../../../shared/types/tool-menu-visibility.type';
@@ -22,6 +22,8 @@ const TOOLTIP_TEXT = {
   standalone: false,
 })
 export class MapToolsDesktopComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   public toolMenuVisibility: ToolMenuVisibility | undefined = undefined;
   public isMapReady: boolean = true;
 
@@ -30,8 +32,6 @@ export class MapToolsDesktopComponent implements OnInit, OnDestroy {
   private readonly toolMenuVisibility$ = this.store.select(selectToolMenuVisibility);
   private readonly isMapReady$ = this.store.select(selectReady);
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(private readonly store: Store) {}
 
   public ngOnInit() {
     this.initSubscriptions();

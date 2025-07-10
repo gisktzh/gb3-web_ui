@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, QueryList, ViewChildren, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
@@ -20,6 +20,8 @@ import {ResultGroupComponent} from './result-group/result-group.component';
   standalone: false,
 })
 export class ResultGroupsComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   @ViewChildren(ResultGroupComponent) public readonly resultGroupComponents!: QueryList<ResultGroupComponent>;
   @Input() public showMultiplePanels: boolean = true;
   public searchTerms: string[] = [];
@@ -37,8 +39,6 @@ export class ResultGroupsComponent implements OnInit, OnDestroy {
   private readonly searchApiLoadingState$ = this.store.select(selectSearchApiLoadingState);
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(private readonly store: Store) {}
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();

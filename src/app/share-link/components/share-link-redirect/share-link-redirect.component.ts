@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {MainPage} from '../../../shared/enums/main-page.enum';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Store} from '@ngrx/store';
@@ -15,6 +15,10 @@ import {RouteParamConstants} from '../../../shared/constants/route-param.constan
   standalone: false,
 })
 export class ShareLinkRedirectComponent implements OnInit, OnDestroy {
+  private readonly route = inject(ActivatedRoute);
+  private readonly store = inject(Store);
+  private readonly router = inject(Router);
+
   public id: string | null = null;
 
   protected readonly mainPageEnum = MainPage;
@@ -22,12 +26,6 @@ export class ShareLinkRedirectComponent implements OnInit, OnDestroy {
   private readonly subscriptions: Subscription = new Subscription();
   private readonly applicationInitializationLoadingState$ = this.store.select(selectApplicationInitializationLoadingState);
   private readonly shareLinkLoadingState$ = this.store.select(selectLoadingState);
-
-  constructor(
-    private readonly route: ActivatedRoute,
-    private readonly store: Store,
-    private readonly router: Router,
-  ) {}
 
   public ngOnInit() {
     this.initSubscriptions();

@@ -1,4 +1,4 @@
-import {Injectable, Renderer2, RendererFactory2} from '@angular/core';
+import {Injectable, Renderer2, RendererFactory2, inject} from '@angular/core';
 import {BehaviorSubject, combineLatest, filter, Observable, tap} from 'rxjs';
 import {map} from 'rxjs';
 import {LoadingState} from '../types/loading-state.type';
@@ -20,6 +20,9 @@ interface InjectedExternalScript extends InjectableExternalScript {
   providedIn: 'root',
 })
 export class ScriptInjectorService {
+  private readonly rendererFactory = inject(RendererFactory2);
+  private readonly configService = inject(ConfigService);
+
   private readonly loadedScripts: InjectedExternalScript[] = [];
   private readonly renderer: Renderer2;
   private readonly twitterFeedInjectableScript: InjectableExternalScript = {
@@ -28,10 +31,7 @@ export class ScriptInjectorService {
     src: this.configService.apiConfig.twitterWidget.baseUrl,
   };
 
-  constructor(
-    private readonly rendererFactory: RendererFactory2,
-    private readonly configService: ConfigService,
-  ) {
+  constructor() {
     this.renderer = this.rendererFactory.createRenderer(null, null);
   }
 

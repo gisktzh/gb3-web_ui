@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {MapLayer} from '../../../../shared/interfaces/topic.interface';
@@ -13,6 +13,8 @@ import {BaseMapDataItemComponent} from './base-map-data-item.component';
   standalone: false,
 })
 export class MapDataItemMapComponent extends BaseMapDataItemComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   @Input() public override layers: MapLayer[] = [];
   @Input() public override imageUrl!: string;
   @Input() public override gb2Url: string | null = null;
@@ -23,10 +25,6 @@ export class MapDataItemMapComponent extends BaseMapDataItemComponent implements
 
   private readonly mapConfigState$ = this.store.select(selectMapConfigState);
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(private readonly store: Store) {
-    super();
-  }
 
   public ngOnInit() {
     // only add subscription if the item is a gb2-only item

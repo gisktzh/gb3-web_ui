@@ -1,4 +1,4 @@
-import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {MAT_SNACK_BAR_DATA, MatSnackBarRef} from '@angular/material/snack-bar';
 import {ErrorNotificationInterface} from '../../interfaces/error-notification.interface';
 import {BehaviorSubject, concatMap, interval, Observable, Subscription, tap} from 'rxjs';
@@ -12,13 +12,11 @@ const TICK_LENGTH_IN_MS = 100;
   standalone: false,
 })
 export class ErrorNotificationComponent implements OnInit, OnDestroy {
+  private readonly snackBarRef = inject<MatSnackBarRef<ErrorNotificationComponent>>(MatSnackBarRef);
+  protected readonly data = inject<ErrorNotificationInterface>(MAT_SNACK_BAR_DATA);
+
   public progressbarValue$ = new BehaviorSubject<number>(100);
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(
-    private readonly snackBarRef: MatSnackBarRef<ErrorNotificationComponent>,
-    @Inject(MAT_SNACK_BAR_DATA) public readonly data: ErrorNotificationInterface,
-  ) {}
 
   public ngOnInit() {
     this.subscriptions.add(

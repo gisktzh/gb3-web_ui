@@ -1,4 +1,4 @@
-import {Inject, Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {Gb3ApiService} from './gb3-api.service';
 import {ShareLinkItem} from '../../../interfaces/share-link.interface';
 import {map} from 'rxjs';
@@ -12,23 +12,17 @@ import {BasemapConfigService} from '../../../../map/services/basemap-config.serv
 import {FavouritesService} from '../../../../map/services/favourites.service';
 import {MapRestoreItem} from '../../../interfaces/map-restore-item.interface';
 import {TimeService} from '../../../interfaces/time-service.interface';
-import {TIME_SERVICE} from '../../../../app.module';
+
+import {TIME_SERVICE} from '../../../../app.tokens';
 
 @Injectable({
   providedIn: 'root',
 })
 export class Gb3ShareLinkService extends Gb3ApiService {
-  protected readonly endpoint = 'favorites';
+  private readonly basemapConfigService = inject(BasemapConfigService);
+  private readonly favouritesService = inject(FavouritesService);
 
-  constructor(
-    @Inject(HttpClient) http: HttpClient,
-    @Inject(ConfigService) configService: ConfigService,
-    @Inject(TIME_SERVICE) timeService: TimeService,
-    private readonly basemapConfigService: BasemapConfigService,
-    private readonly favouritesService: FavouritesService,
-  ) {
-    super(http, configService, timeService);
-  }
+  protected readonly endpoint = 'favorites';
 
   public loadShareLink(shareLinkId: string): Observable<ShareLinkItem> {
     const sharedFavorite = this.get<SharedFavorite>(this.createLoadUrl(shareLinkId));

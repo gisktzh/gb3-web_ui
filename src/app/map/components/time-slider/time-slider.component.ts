@@ -1,11 +1,11 @@
-import {Component, EventEmitter, Inject, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, inject} from '@angular/core';
 import {TimeExtent} from '../../interfaces/time-extent.interface';
 import {TimeSliderConfiguration, TimeSliderLayerSource} from '../../../shared/interfaces/topic.interface';
 import {TimeSliderService} from '../../services/time-slider.service';
 import {MatDatepicker} from '@angular/material/datepicker';
-import {TIME_SERVICE} from '../../../app.module';
 import {TimeService} from '../../../shared/interfaces/time-service.interface';
 import {DateUnit} from '../../../shared/types/date-unit.type';
+import {TIME_SERVICE} from '../../../app.tokens';
 
 // There is an array (`allowedDatePickerManipulationUnits`) and a new union type (`DatePickerManipulationUnits`) for two reasons:
 // To be able to extract a union type subset of `ManipulateType` AND to have an array used to check if a given value is in said union type.
@@ -21,6 +21,9 @@ type DatePickerStartView = 'month' | 'year' | 'multi-year';
   standalone: false,
 })
 export class TimeSliderComponent implements OnInit, OnChanges {
+  private readonly timeSliderService = inject(TimeSliderService);
+  private readonly timeService = inject<TimeService>(TIME_SERVICE);
+
   @Output() public readonly changeTimeExtentEvent = new EventEmitter<TimeExtent>();
 
   @Input() public initialTimeExtent!: TimeExtent;
@@ -44,11 +47,6 @@ export class TimeSliderComponent implements OnInit, OnChanges {
   public hasDatePicker: boolean = false;
   public datePickerStartView: DatePickerStartView = 'month';
   private datePickerUnit: DatePickerManipulationUnits = 'days';
-
-  constructor(
-    private readonly timeSliderService: TimeSliderService,
-    @Inject(TIME_SERVICE) private readonly timeService: TimeService,
-  ) {}
 
   public ngOnInit() {
     this.availableDates = this.timeSliderService.createStops(this.timeSliderConfiguration);

@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, QueryList, ViewChildren, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
@@ -21,6 +21,8 @@ import {SearchResultIdentifierDirective} from '../../../../../shared/directives/
   standalone: false,
 })
 export class ResultGroupComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   @ViewChildren(SearchResultIdentifierDirective) public readonly searchResultElements!: QueryList<SearchResultIdentifierDirective>;
   @Input() public searchResults: GeometrySearchApiResultMatch[] = [];
   @Input() public filteredMaps: Map[] = [];
@@ -37,8 +39,6 @@ export class ResultGroupComponent implements OnInit, OnDestroy {
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly mapConfigState$ = this.store.select(selectMapConfigState);
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(private readonly store: Store) {}
 
   public ngOnInit() {
     this.initSubscriptions();

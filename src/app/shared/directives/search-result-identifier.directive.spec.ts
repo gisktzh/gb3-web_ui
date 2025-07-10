@@ -1,13 +1,21 @@
 import {SearchResultIdentifierDirective} from './search-result-identifier.directive';
+import {TestBed} from '@angular/core/testing';
 import {ElementRef} from '@angular/core';
 
 describe('SearchResultIdentifierDirective', () => {
-  let host: ElementRef<HTMLElement>;
   let directive: SearchResultIdentifierDirective;
 
   beforeEach(() => {
-    host = new ElementRef(document.createElement('div'));
-    directive = new SearchResultIdentifierDirective(host);
+    TestBed.configureTestingModule({
+      providers: [
+        SearchResultIdentifierDirective,
+        {
+          provide: ElementRef,
+          useValue: new ElementRef(document.createElement('div')),
+        },
+      ],
+    });
+    directive = TestBed.inject(SearchResultIdentifierDirective);
   });
 
   it('should create an instance', () => {

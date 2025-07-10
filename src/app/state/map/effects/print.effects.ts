@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {of, switchMap, tap} from 'rxjs';
 import {catchError, map} from 'rxjs';
@@ -12,6 +12,11 @@ import {FileDownloadService} from '../../../shared/services/file-download-servic
 
 @Injectable()
 export class PrintEffects {
+  private readonly actions$ = inject(Actions);
+  private readonly printService = inject(Gb3PrintService);
+  private readonly mapDrawingService = inject(MapDrawingService);
+  private readonly fileDownloadService = inject(FileDownloadService);
+
   public requestPrintCreation$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(PrintActions.requestPrintCreation),
@@ -85,11 +90,4 @@ export class PrintEffects {
   private extractFileNameFromUrl(url: string): void {
     this.fileDownloadService.downloadFileFromUrl(url, url.split('/').pop());
   }
-
-  constructor(
-    private readonly actions$: Actions,
-    private readonly printService: Gb3PrintService,
-    private readonly mapDrawingService: MapDrawingService,
-    private readonly fileDownloadService: FileDownloadService,
-  ) {}
 }

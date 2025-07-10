@@ -1,16 +1,19 @@
-import {Inject, Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {switchMap} from 'rxjs';
 import {catchError, map} from 'rxjs';
 import {GravCmsService} from '../../../shared/services/apis/grav-cms/grav-cms.service';
 import {PageNotificationActions} from '../actions/page-notification.actions';
 import {PageNotification} from '../../../shared/interfaces/page-notification.interface';
-import {GRAV_CMS_SERVICE} from '../../../app.module';
 
 import {PageNotificationsCouldNotBeLoaded} from '../../../shared/errors/app.errors';
+import {GRAV_CMS_SERVICE} from '../../../app.tokens';
 
 @Injectable()
 export class PageNotificationEffects {
+  private readonly actions$ = inject(Actions);
+  private readonly gravCmsService = inject<GravCmsService>(GRAV_CMS_SERVICE);
+
   public dispatchLoadPageNotifications$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(PageNotificationActions.loadPageNotifications),
@@ -30,9 +33,4 @@ export class PageNotificationEffects {
       ),
     );
   });
-
-  constructor(
-    private readonly actions$: Actions,
-    @Inject(GRAV_CMS_SERVICE) private readonly gravCmsService: GravCmsService,
-  ) {}
 }

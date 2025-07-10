@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {selectIsAttributeFilterOverlayVisible} from '../../../state/map/reducers/map-ui.reducer';
@@ -16,14 +16,14 @@ import {selectMapAttributeFiltersItem} from '../../../state/map/selectors/map-at
   styleUrl: './map-attribute-filter-overlay.component.scss',
 })
 export class MapAttributeFilterOverlayComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   public isVisible = false;
   public mapAttributeFiltersItem: Gb2WmsActiveMapItem | undefined;
 
   private readonly attributeFilterVisibility$ = this.store.select(selectIsAttributeFilterOverlayVisible);
   private readonly mapAttributeFiltersItem$ = this.store.select(selectMapAttributeFiltersItem);
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(private readonly store: Store) {}
 
   public ngOnInit() {
     this.initSubscriptions();

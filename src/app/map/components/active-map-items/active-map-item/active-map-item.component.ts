@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
@@ -14,6 +14,8 @@ type TabType = 'layers' | 'settings';
   standalone: false,
 })
 export class ActiveMapItemComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   @Input() public activeMapItem!: ActiveMapItem;
   @Input() public isFirstActiveMapItem: boolean = false;
   @Input() public isLastActiveMapItem: boolean = false;
@@ -23,7 +25,6 @@ export class ActiveMapItemComponent implements OnInit, OnDestroy {
 
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly subscriptions = new Subscription();
-  constructor(private readonly store: Store) {}
 
   public activeTab: TabType = 'layers';
 

@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, inject} from '@angular/core';
 import {MainPage} from '../../../shared/enums/main-page.enum';
 import {BaseMetadataInformation} from '../../interfaces/base-metadata-information.interface';
 import {ScreenMode} from '../../../shared/types/screen-size.type';
@@ -13,6 +13,8 @@ import {Subscription, tap} from 'rxjs';
   standalone: false,
 })
 export class DataCatalogueDetailPageComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   @Input() public baseMetadataInformation!: BaseMetadataInformation;
   public screenMode: ScreenMode = 'regular';
 
@@ -20,8 +22,6 @@ export class DataCatalogueDetailPageComponent implements OnInit, OnDestroy {
   private readonly subscriptions: Subscription = new Subscription();
 
   protected readonly mainPageEnum = MainPage;
-
-  constructor(private readonly store: Store) {}
 
   ngOnInit() {
     this.initSubscriptions();

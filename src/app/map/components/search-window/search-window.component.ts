@@ -1,5 +1,5 @@
 /* eslint-disable rxjs-angular-x/prefer-composition -- eslint does not pickup inherited properties*/
-import {AfterViewInit, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, inject} from '@angular/core';
 import {filter, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {ConfigService} from '../../../shared/services/config.service';
@@ -18,6 +18,11 @@ import {BaseSearchContainerComponent} from '../../../shared/components/search/ba
   standalone: false,
 })
 export class SearchWindowComponent extends BaseSearchContainerComponent implements OnInit, OnDestroy, AfterViewInit {
+  protected override store = inject(Store);
+  protected override cdr = inject(ChangeDetectorRef);
+
+  private readonly configService = inject(ConfigService);
+
   @ViewChild(ResultGroupsComponent) private readonly resultGroupsComponent!: ResultGroupsComponent;
 
   public screenMode: ScreenMode = 'regular';
@@ -25,13 +30,6 @@ export class SearchWindowComponent extends BaseSearchContainerComponent implemen
 
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly selectedSearchResult$ = this.store.select(selectSelectedSearchResult);
-  constructor(
-    private readonly configService: ConfigService,
-    @Inject(Store) store: Store,
-    @Inject(ChangeDetectorRef) cdr: ChangeDetectorRef,
-  ) {
-    super(store, cdr);
-  }
 
   public override ngOnInit() {
     super.ngOnInit();

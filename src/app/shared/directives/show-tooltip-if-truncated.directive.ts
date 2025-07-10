@@ -1,4 +1,4 @@
-import {Directive, ElementRef, HostListener} from '@angular/core';
+import {Directive, ElementRef, HostListener, inject} from '@angular/core';
 import {MatTooltip} from '@angular/material/tooltip';
 
 // Checks if text is truncated
@@ -9,10 +9,8 @@ import {MatTooltip} from '@angular/material/tooltip';
   standalone: false,
 })
 export class ShowTooltipIfTruncatedDirective {
-  constructor(
-    private matTooltip: MatTooltip,
-    private elementRef: ElementRef<HTMLElement>,
-  ) {}
+  private matTooltip = inject(MatTooltip);
+  private elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
 
   @HostListener('mouseenter', ['$event'])
   public setTooltipState(): void {

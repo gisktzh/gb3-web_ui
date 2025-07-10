@@ -1,5 +1,5 @@
 import {CdkDrag, CdkDragDrop} from '@angular/cdk/drag-drop';
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
@@ -33,6 +33,9 @@ const TOOLTIP_TEXT = {
   standalone: false,
 })
 export class ActiveMapItemsComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+  private readonly onboardingGuideService = inject(OnboardingGuideService);
+
   public tooltipText = TOOLTIP_TEXT;
   public isAuthenticated: boolean = false;
   public activeMapItems: ActiveMapItem[] = [];
@@ -49,11 +52,6 @@ export class ActiveMapItemsComponent implements OnInit, OnDestroy {
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly activeTool$ = this.store.select(selectActiveTool);
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(
-    private readonly store: Store,
-    private readonly onboardingGuideService: OnboardingGuideService,
-  ) {}
 
   public ngOnInit() {
     this.initSubscriptions();

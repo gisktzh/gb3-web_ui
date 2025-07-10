@@ -5,7 +5,6 @@ import {Action} from '@ngrx/store';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {ToolEffects} from './tool.effects';
-import {MAP_SERVICE} from '../../../app.module';
 import {MapServiceStub} from '../../../testing/map-testing/map.service.stub';
 import {ToolActions} from '../actions/tool.actions';
 import {ToolService} from '../../../map/interfaces/tool.service';
@@ -13,6 +12,7 @@ import {MeasurementTool} from '../../../shared/types/measurement-tool.type';
 import {DrawingTool} from '../../../shared/types/drawing-tool.type';
 import {DataDownloadSelectionTool} from '../../../shared/types/data-download-selection-tool.type';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {MAP_SERVICE} from '../../../app.tokens';
 
 describe('ToolEffects', () => {
   let actions$: Observable<Action>;

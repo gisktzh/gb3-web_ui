@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {FormBuilder, FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MapServiceType} from '../../../../types/map-service.type';
 import {Store} from '@ngrx/store';
@@ -23,6 +23,9 @@ interface ServiceFormGroup {
   styleUrl: './map-import-service-and-url.component.scss',
 })
 export class MapImportServiceAndUrlComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+  private formBuilder = inject(FormBuilder);
+
   public readonly serviceFormGroup = this.formBuilder.group<ServiceFormGroup>({
     serviceType: this.formBuilder.control(null, [Validators.required]),
     url: this.formBuilder.control({value: null, disabled: true}, [Validators.required]),
@@ -33,11 +36,6 @@ export class MapImportServiceAndUrlComponent implements OnInit, OnDestroy {
   private readonly serviceType$ = this.store.select(selectServiceType);
   private readonly url$ = this.store.select(selectUrl);
   private readonly subscriptions = new Subscription();
-
-  constructor(
-    private readonly store: Store,
-    private formBuilder: FormBuilder,
-  ) {}
 
   public ngOnInit(): void {
     this.initSubscriptions();

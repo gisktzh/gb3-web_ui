@@ -1,5 +1,5 @@
 /* eslint-disable rxjs-angular-x/prefer-composition -- eslint does not pickup inherited properties*/
-import {AfterViewInit, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, QueryList, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, QueryList, ViewChild, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {combineLatestWith, filter, switchMap, tap} from 'rxjs';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
@@ -25,6 +25,10 @@ import {BaseSearchContainerComponent} from '../../../shared/components/search/ba
   standalone: false,
 })
 export class StartPageSearchComponent extends BaseSearchContainerComponent implements OnInit, OnDestroy, AfterViewInit {
+  protected override store = inject(Store);
+  protected override cdr = inject(ChangeDetectorRef);
+  private readonly configService = inject(ConfigService);
+
   @ViewChild(SearchResultGroupsComponent) private readonly searchResultGroupsComponent?: SearchResultGroupsComponent;
 
   public searchTerms: string[] = [];
@@ -35,14 +39,6 @@ export class StartPageSearchComponent extends BaseSearchContainerComponent imple
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly searchTerm$ = this.store.select(selectTerm);
   private readonly activeSearchFilterValues$ = this.store.select(selectActiveSearchFilterValues);
-
-  constructor(
-    private readonly configService: ConfigService,
-    @Inject(Store) store: Store,
-    @Inject(ChangeDetectorRef) cdr: ChangeDetectorRef,
-  ) {
-    super(store, cdr);
-  }
 
   public override ngOnInit() {
     super.ngOnInit();

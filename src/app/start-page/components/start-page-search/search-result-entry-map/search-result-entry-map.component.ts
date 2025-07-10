@@ -1,4 +1,4 @@
-import {Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild, inject} from '@angular/core';
 import {Map} from '../../../../shared/interfaces/topic.interface';
 import {MainPage} from '../../../../shared/enums/main-page.enum';
 import {MapConfigState} from '../../../../state/map/states/map-config.state';
@@ -13,6 +13,8 @@ import {selectMapConfigState} from '../../../../state/map/reducers/map-config.re
   standalone: false,
 })
 export class SearchResultEntryMapComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   @Input() public map!: Map;
   @ViewChild('externalLink') public readonly externalLink?: ElementRef;
   @ViewChild('internalLink') public readonly internalLink?: ElementRef;
@@ -23,8 +25,6 @@ export class SearchResultEntryMapComponent implements OnInit, OnDestroy {
   private readonly subscriptions: Subscription = new Subscription();
   public readonly toolTip: string =
     'Diese Karte ist noch nicht im neuen GIS-Browser verfügbar. Öffnen Sie die Karte im alten GIS-Browser mit diesem Link.';
-
-  constructor(private readonly store: Store) {}
 
   public ngOnInit() {
     this.subscriptions.add(this.mapConfigState$.pipe(tap((mapConfigState) => (this.mapConfigState = mapConfigState))).subscribe());

@@ -1,4 +1,4 @@
-import {Component, OnDestroy} from '@angular/core';
+import {Component, OnDestroy, inject} from '@angular/core';
 import {TourService} from 'ngx-ui-tour-md-menu';
 import {Subscription, tap} from 'rxjs';
 import {ScreenMode} from '../../../shared/types/screen-size.type';
@@ -12,6 +12,9 @@ import {selectScreenMode} from '../../../state/app/reducers/app-layout.reducer';
   standalone: false,
 })
 export class OnboardingGuideComponent implements OnDestroy {
+  protected readonly tourService = inject(TourService);
+  private readonly store = inject(Store);
+
   public screenMode: ScreenMode = 'regular';
   public progress: number = 0;
   public hasNextStep: boolean = false;
@@ -21,10 +24,7 @@ export class OnboardingGuideComponent implements OnDestroy {
   private readonly numberOfSteps: number = this.tourService.steps.length;
   private readonly subscriptions: Subscription = new Subscription();
 
-  constructor(
-    public readonly tourService: TourService,
-    private readonly store: Store,
-  ) {
+  constructor() {
     this.initSubscriptions();
   }
 

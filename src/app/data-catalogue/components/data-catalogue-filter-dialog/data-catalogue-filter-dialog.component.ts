@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {MatDialogRef} from '@angular/material/dialog';
 import {DataCatalogueFilter} from '../../../shared/interfaces/data-catalogue-filter.interface';
 import {Observable, Subscription, tap} from 'rxjs';
@@ -14,14 +14,12 @@ import {DataCatalogueFilterKey} from '../../../shared/types/data-catalogue-filte
   standalone: false,
 })
 export class DataCatalogueFilterDialogComponent implements OnInit, OnDestroy {
+  private readonly dialogRef = inject<MatDialogRef<DataCatalogueFilterDialogComponent>>(MatDialogRef);
+  private readonly store = inject(Store);
+
   public dataCatalogueFilters: DataCatalogueFilter[] = [];
   private readonly dataCatalogueFilters$: Observable<DataCatalogueFilter[]> = this.store.select(selectFilters);
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(
-    private readonly dialogRef: MatDialogRef<DataCatalogueFilterDialogComponent>,
-    private readonly store: Store,
-  ) {}
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();

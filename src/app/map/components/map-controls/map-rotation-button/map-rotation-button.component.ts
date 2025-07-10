@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {ScreenMode} from 'src/app/shared/types/screen-size.type';
@@ -12,13 +12,13 @@ import {MapConfigActions} from 'src/app/state/map/actions/map-config.actions';
   standalone: false,
 })
 export class MapRotationButtonComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   @Input() public rotation: number = 0;
   public screenMode: ScreenMode = 'regular';
 
   private readonly subscriptions: Subscription = new Subscription();
   private readonly screenMode$ = this.store.select(selectScreenMode);
-
-  constructor(private readonly store: Store) {}
 
   public ngOnInit() {
     this.initSubscriptions();

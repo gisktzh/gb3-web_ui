@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Injectable, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, Injectable, OnDestroy, OnInit, ViewChild, inject} from '@angular/core';
 import {filter, Observable, Subject, Subscription, tap} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {DataCatalogueActions} from '../../../state/data-catalogue/actions/data-catalogue.actions';
@@ -51,6 +51,10 @@ class DataCataloguePaginatorIntl implements MatPaginatorIntl {
   standalone: false,
 })
 export class DataCatalogueOverviewComponent implements OnInit, OnDestroy, AfterViewInit {
+  private readonly store = inject(Store);
+  private readonly dialogService = inject(MatDialog);
+  private readonly configService = inject(ConfigService);
+
   public loadingState: LoadingState;
   public dataCatalogueItems: MatTableDataSource<OverviewSearchResultDisplayItem> = new MatTableDataSource<OverviewSearchResultDisplayItem>(
     [],
@@ -67,11 +71,7 @@ export class DataCatalogueOverviewComponent implements OnInit, OnDestroy, AfterV
   private readonly subscriptions: Subscription = new Subscription();
   @ViewChild(MatPaginator) private paginator!: MatPaginator;
 
-  constructor(
-    private readonly store: Store,
-    private readonly dialogService: MatDialog,
-    private readonly configService: ConfigService,
-  ) {
+  constructor() {
     this.store.dispatch(DataCatalogueActions.loadCatalogue());
   }
 

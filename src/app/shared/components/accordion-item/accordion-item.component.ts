@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
 import {selectScreenMode} from 'src/app/state/app/reducers/app-layout.reducer';
@@ -15,6 +15,8 @@ import {CdkAccordionItem} from '@angular/cdk/accordion';
   standalone: false,
 })
 export class AccordionItemComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+
   /**
    * Defines the color of the borders and the text:
    * * Light = white borders, white font
@@ -28,8 +30,6 @@ export class AccordionItemComponent implements OnInit, OnDestroy {
   private readonly screenMode$ = this.store.select(selectScreenMode);
   private readonly subscriptions: Subscription = new Subscription();
   @ViewChild('accordionItem') private accordionItem!: CdkAccordionItem;
-
-  constructor(private readonly store: Store) {}
 
   public ngOnInit() {
     // generate identifier without custom characters and stuff for aria identification

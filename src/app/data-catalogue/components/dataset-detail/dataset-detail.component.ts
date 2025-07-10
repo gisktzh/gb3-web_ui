@@ -1,15 +1,11 @@
-import {Component, ErrorHandler, Inject} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Gb3MetadataService} from '../../../shared/services/apis/gb3/gb3-metadata.service';
+import {Component} from '@angular/core';
 import {DatasetMetadata} from '../../../shared/interfaces/gb3-metadata.interface';
-import {ConfigService} from '../../../shared/services/config.service';
 import {DataDisplayElement} from '../../types/data-display-element.type';
 import {BaseMetadataInformation} from '../../interfaces/base-metadata-information.interface';
 import {MetadataLink} from '../../interfaces/metadata-link.interface';
 import {AbstractBaseDetailComponent} from '../abstract-base-detail/abstract-base-detail.component';
 import {DataExtractionUtils} from '../../utils/data-extraction.utils';
 import {DatasetLayer} from '../../../shared/interfaces/dataset-layer.interface';
-import {Store} from '@ngrx/store';
 
 /**
  We do not get a description in the case of the dataset...
@@ -48,17 +44,6 @@ export class DatasetDetailComponent extends AbstractBaseDetailComponent<DatasetM
     services: [],
     products: [],
   };
-
-  constructor(
-    @Inject(ActivatedRoute) route: ActivatedRoute,
-    @Inject(Gb3MetadataService) gb3MetadataService: Gb3MetadataService,
-    @Inject(ConfigService) configService: ConfigService,
-    @Inject(Router) router: Router,
-    @Inject(ErrorHandler) errorHandler: ErrorHandler,
-    @Inject(Store) store: Store,
-  ) {
-    super(route, gb3MetadataService, configService, router, errorHandler, store);
-  }
 
   protected loadMetadata(id: string) {
     return this.gb3MetadataService.loadDatasetDetail(id);

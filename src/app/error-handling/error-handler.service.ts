@@ -1,4 +1,4 @@
-import {ErrorHandler, Injectable, NgZone} from '@angular/core';
+import {ErrorHandler, Injectable, NgZone, inject} from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {PanelClass} from '../shared/enums/panel-class.enum';
 import {Router} from '@angular/router';
@@ -14,11 +14,9 @@ const NOTIFICATION_DURATION_IN_MS = 10_000;
   providedIn: 'root',
 })
 export class ErrorHandlerService implements ErrorHandler {
-  constructor(
-    private snackBar: MatSnackBar,
-    private readonly router: Router,
-    private zone: NgZone,
-  ) {}
+  private snackBar = inject(MatSnackBar);
+  private readonly router = inject(Router);
+  private zone = inject(NgZone);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- official handleError type from Angular
   public handleError(error: any) {

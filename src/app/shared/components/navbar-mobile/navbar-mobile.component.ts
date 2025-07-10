@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
@@ -14,17 +14,15 @@ import {selectDevMode} from '../../../state/app/reducers/app.reducer';
   standalone: false,
 })
 export class NavbarMobileComponent implements OnInit, OnDestroy {
+  private readonly dialog = inject(MatDialog);
+  private readonly store = inject(Store);
+
   public isSimplifiedPage: boolean = false;
   public isDevModeActive: boolean = false;
 
   private readonly urlState$ = this.store.select(selectUrlState);
   private readonly devMode$ = this.store.select(selectDevMode);
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(
-    public dialog: MatDialog,
-    private readonly store: Store,
-  ) {}
 
   public ngOnInit() {
     this.initSubscriptions();

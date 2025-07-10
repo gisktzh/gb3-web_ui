@@ -1,4 +1,4 @@
-import {Inject, Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
 import {combineLatestWith, first, take, tap} from 'rxjs';
@@ -16,13 +16,20 @@ import {DrawingActions} from '../../map/actions/drawing.actions';
 import {selectItems} from '../../map/selectors/active-map-items.selector';
 import {selectDrawings} from '../../map/reducers/drawing.reducer';
 import {DrawingActiveMapItem} from '../../../map/models/implementations/drawing.model';
-import {MAP_SERVICE} from '../../../app.module';
 import {MapService} from '../../../map/interfaces/map.service';
 import {isActiveMapItemOfType} from '../../../shared/type-guards/active-map-item-type.type-guard';
 import {defaultActiveMapItemConfiguration} from '../../../shared/interfaces/active-map-item-configuration.interface';
+import {MAP_SERVICE} from '../../../app.tokens';
 
 @Injectable()
 export class AuthStatusEffects {
+  private readonly actions$ = inject(Actions);
+  private readonly authService = inject(AuthService);
+  private readonly store = inject(Store);
+  private readonly sessionStorageService = inject(SessionStorageService);
+  private readonly shareLinkService = inject(Gb3ShareLinkService);
+  private readonly mapService = inject<MapService>(MAP_SERVICE);
+
   public login$ = createEffect(
     () => {
       return this.actions$.pipe(
@@ -124,13 +131,4 @@ export class AuthStatusEffects {
     },
     {dispatch: false},
   );
-
-  constructor(
-    private readonly actions$: Actions,
-    private readonly authService: AuthService,
-    private readonly store: Store,
-    private readonly sessionStorageService: SessionStorageService,
-    private readonly shareLinkService: Gb3ShareLinkService,
-    @Inject(MAP_SERVICE) private readonly mapService: MapService,
-  ) {}
 }

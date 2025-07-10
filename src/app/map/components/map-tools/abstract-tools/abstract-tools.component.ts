@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {ToolActions} from '../../../../state/map/actions/tool.actions';
 import {Subscription, tap} from 'rxjs';
 import {ToolType} from '../../../../shared/types/tool.type';
@@ -11,14 +11,12 @@ import {MatDialog} from '@angular/material/dialog';
   standalone: false,
 })
 export class AbstractToolsComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+  protected readonly dialogService = inject(MatDialog);
+
   public activeTool: ToolType | undefined = undefined;
   private readonly activeTool$ = this.store.select(selectActiveTool);
   private readonly subscriptions: Subscription = new Subscription();
-
-  constructor(
-    private readonly store: Store,
-    protected readonly dialogService: MatDialog,
-  ) {}
 
   public ngOnInit() {
     this.initSubscriptions();

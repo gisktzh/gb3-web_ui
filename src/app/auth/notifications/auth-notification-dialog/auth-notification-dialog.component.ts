@@ -1,4 +1,4 @@
-import {Component, Inject} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {DialogContent} from '../auth-notification.service';
 
@@ -9,5 +9,5 @@ import {DialogContent} from '../auth-notification.service';
   standalone: false,
 })
 export class AuthNotificationDialogComponent {
-  constructor(@Inject(MAT_DIALOG_DATA) public readonly data: DialogContent) {}
+  protected readonly data = inject<DialogContent>(MAT_DIALOG_DATA);
 }

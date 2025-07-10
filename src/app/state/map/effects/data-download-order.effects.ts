@@ -1,10 +1,9 @@
-import {Inject, Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {concatLatestFrom} from '@ngrx/operators';
 import {catchError, map} from 'rxjs';
 import {DataDownloadOrderActions} from '../actions/data-download-order.actions';
 import {MapUiActions} from '../actions/map-ui.actions';
-import {MAP_SERVICE} from '../../../app.module';
 import {MapService} from '../../../map/interfaces/map.service';
 import {filter, of, switchMap, tap} from 'rxjs';
 import {MapDrawingService} from '../../../map/services/map-drawing.service';
@@ -20,9 +19,17 @@ import {selectProducts} from '../reducers/data-download-product.reducer';
 import {HttpErrorResponse} from '@angular/common/http';
 import {Order} from '../../../shared/interfaces/geoshop-order.interface';
 import {DataDownloadOrderStatusJobActions} from '../actions/data-download-order-status-job.actions';
+import {MAP_SERVICE} from '../../../app.tokens';
 
 @Injectable()
 export class DataDownloadOrderEffects {
+  private readonly actions$ = inject(Actions);
+  private readonly mapDrawingService = inject(MapDrawingService);
+  private readonly mapService = inject<MapService>(MAP_SERVICE);
+  private readonly configService = inject(ConfigService);
+  private readonly store = inject(Store);
+  private readonly geoshopApiService = inject(GeoshopApiService);
+
   public createOrderFromSelection$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(DataDownloadOrderActions.setSelection),
@@ -185,13 +192,4 @@ export class DataDownloadOrderEffects {
       }),
     );
   });
-
-  constructor(
-    private readonly actions$: Actions,
-    private readonly mapDrawingService: MapDrawingService,
-    @Inject(MAP_SERVICE) private readonly mapService: MapService,
-    private readonly configService: ConfigService,
-    private readonly store: Store,
-    private readonly geoshopApiService: GeoshopApiService,
-  ) {}
 }

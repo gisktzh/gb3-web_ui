@@ -1,4 +1,4 @@
-import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {MAT_SNACK_BAR_DATA} from '@angular/material/snack-bar';
 import {PageNotification, PageNotificationSeverity} from '../../interfaces/page-notification.interface';
 import {Store} from '@ngrx/store';
@@ -14,16 +14,18 @@ import {ScreenMode} from '../../types/screen-size.type';
   standalone: false,
 })
 export class PageNotificationComponent implements OnInit, OnDestroy {
+  public readonly data = inject<PageNotification>(MAT_SNACK_BAR_DATA);
+  private readonly store = inject(Store);
+
   public readonly icon: string;
   public screenMode: ScreenMode = 'regular';
 
   private readonly subscriptions: Subscription = new Subscription();
   private readonly screenMode$ = this.store.select(selectScreenMode);
 
-  constructor(
-    @Inject(MAT_SNACK_BAR_DATA) public data: PageNotification,
-    private readonly store: Store,
-  ) {
+  constructor() {
+    const data = this.data;
+
     this.icon = this.transformSeverityToMatIconFont(data.severity);
   }
 

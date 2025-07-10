@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {MatDialogRef} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
 import {Subscription, tap} from 'rxjs';
@@ -15,6 +15,9 @@ import {selectLoadingState} from '../../../../../state/map/reducers/external-map
   standalone: false,
 })
 export class MapImportDialogComponent implements OnInit, OnDestroy {
+  private readonly dialogRef = inject<MatDialogRef<MapImportDialogComponent>>(MatDialogRef);
+  private readonly store = inject(Store);
+
   public externalServiceLoadingState: LoadingState;
   public isAnyLayerSelected = false;
   public title: string | undefined = undefined;
@@ -23,11 +26,6 @@ export class MapImportDialogComponent implements OnInit, OnDestroy {
   private readonly isAnyLayerSelected$ = this.store.select(selectIsAnyLayerSelected);
   private readonly title$ = this.store.select(selectTitle);
   private readonly subscriptions = new Subscription();
-
-  constructor(
-    private readonly dialogRef: MatDialogRef<MapImportDialogComponent>,
-    private readonly store: Store,
-  ) {}
 
   public ngOnInit(): void {
     this.initSubscriptions();

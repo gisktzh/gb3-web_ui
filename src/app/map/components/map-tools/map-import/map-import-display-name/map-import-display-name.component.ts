@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidatorFn, Validators} from '@angular/forms';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
@@ -21,17 +21,15 @@ const NAME_CONSTRAINTS: ValidatorFn[] = [Validators.minLength(1), Validators.req
   styleUrl: './map-import-display-name.component.scss',
 })
 export class MapImportDisplayNameComponent implements OnInit, OnDestroy {
+  private readonly store = inject(Store);
+  private readonly formBuilder = inject(FormBuilder);
+
   public readonly displayNameFormGroup: FormGroup<DisplayNameFormGroup> = this.formBuilder.group<DisplayNameFormGroup>({
     name: this.formBuilder.control(null, NAME_CONSTRAINTS),
   });
 
   private readonly title$ = this.store.select(selectTitle);
   private readonly subscriptions = new Subscription();
-
-  constructor(
-    private readonly store: Store,
-    private readonly formBuilder: FormBuilder,
-  ) {}
 
   public ngOnInit(): void {
     this.initSubscriptions();
