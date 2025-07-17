@@ -167,7 +167,7 @@ export class FavouritesService implements OnDestroy {
     ignoreErrors: boolean,
   ): ActiveMapItem | undefined {
     let activeMapItem: ActiveMapItem | undefined = undefined;
-    const subLayer = existingMap.layers.find((layer) => layer.id === configuration.layers[0].id);
+    const subLayer = existingMap.layers.find((layer) => layer.layer === configuration.layers[0].layer);
 
     const filterConfigurations: FilterConfiguration[] | undefined = existingMap.filterConfigurations
       ? this.synchronizeFilterConfigurationsAndAttributeFilters(
@@ -206,7 +206,7 @@ export class FavouritesService implements OnDestroy {
   private createMultiLayerMapItem(existingMap: Map, configuration: ActiveMapItemConfiguration, ignoreErrors: boolean): ActiveMapItem {
     const adjustedMap = produce(existingMap, (draft) => {
       draft.layers.forEach((layer) => {
-        const sublayerConfiguration = configuration.layers.find((favLayer) => favLayer.id === layer.id);
+        const sublayerConfiguration = configuration.layers.find((favLayer) => favLayer.layer === layer.layer);
 
         // hide sublayer if it is a newly added layer to not interfere with favourite composition
         layer.visible = sublayerConfiguration ? sublayerConfiguration.visible : false;
