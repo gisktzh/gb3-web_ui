@@ -68,7 +68,7 @@
     "immer": "^10.0.1",
     "material-icons": "^1.13.12",
     "ng2-charts": "^8.0.0",
-    "ngx-ui-tour-md-menu": "^14.0.1",
+    "ngx-ui-tour-md-menu": "^15.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "uuid": "^11.0.0",
