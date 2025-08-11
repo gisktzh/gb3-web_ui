@@ -1,8 +1,7 @@
 import {TestBed} from '@angular/core/testing';
 import {ConfigService} from './config.service';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
-import {DOCUMENT} from '@angular/common';
-import {InjectionToken, Provider} from '@angular/core';
+import {InjectionToken, Provider, DOCUMENT} from '@angular/core';
 import {HostNameResolutionMismatch} from '../errors/app.errors';
 import {defaultRuntimeConfig} from '../configs/runtime.testing.config';
 import {defaultFeatureFlags} from '../configs/feature-flags.config';

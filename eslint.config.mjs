@@ -148,6 +148,7 @@ export default tseslint.config(
         },
       ],
       '@angular-eslint/prefer-standalone': 'warn',
+      '@angular-eslint/prefer-inject': 'warn',
     },
   },
   {

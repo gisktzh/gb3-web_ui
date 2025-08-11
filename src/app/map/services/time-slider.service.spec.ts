@@ -168,6 +168,7 @@ describe('TimeSliderService', () => {
       beforeEach(() => {
         minimumDate = timeService.createDateFromString('2000-01', dateFormat);
         maximumDate = timeService.createDateFromString('2001-03', dateFormat);
+        minimumDateString = timeService.getDateAsFormattedString(minimumDate, dateFormat);
         maximumDateString = timeService.getDateAsFormattedString(maximumDate, dateFormat);
         timeSliderConfig = {
           name: 'mockTimeSlider',

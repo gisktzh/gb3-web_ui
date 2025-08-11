@@ -13,13 +13,18 @@
     "sourceMap": true,
     "declaration": false,
     "experimentalDecorators": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2022",
     "module": "es2020",
     "lib": ["es2020", "dom"],
     "useDefineForClassFields": false,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "paths": {
+      // used for compatibility reasons in ng-charts only -> https://github.com/valor-software/ng2-charts/issues/1991
+      // use ChartJsDeepPartial in MapModule if required
+      "chart.js/dist/types/utils": ["node_modules/chart.js/dist/types/utils.d.ts"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

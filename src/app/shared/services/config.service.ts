@@ -1,5 +1,4 @@
-import {DOCUMENT} from '@angular/common';
-import {Inject, Injectable} from '@angular/core';
+import {Inject, Injectable, DOCUMENT} from '@angular/core';
 import {defaultBasemap, defaultBasemaps} from '../configs/base-map.config';
 import {dataCatalogueFilterConfig, dataDownloadFilterConfig} from '../configs/filter.config';
 import {mapAnimationConfig} from '../configs/map-animation.config';
