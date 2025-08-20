@@ -1,11 +1,10 @@
-import {ChartDataset, ChartOptions} from 'chart.js';
+import {ChartDataset, ChartOptions, ChartTypeRegistry, ScaleOptionsByType} from 'chart.js';
 import {
   ElevationProfileDataPoint,
   ElevationProfileDataPointXAxis,
   ElevationProfileDataPointYAxis,
 } from '../../../../../shared/interfaces/elevation-profile.interface';
-import {ChartTypeRegistry, ScaleOptionsByType} from 'chart.js/dist/types';
-import {DeepPartial} from 'chart.js/dist/types/utils';
+import {ChartJsDeepPartial} from '../types/chartjs.type';
 
 export interface ElevationProfileChartJsDataset extends ChartDataset<'line', ElevationProfileDataPoint[]> {
   parsing: {
@@ -21,7 +20,7 @@ export interface ElevationProfileChartJsDataset extends ChartDataset<'line', Ele
  */
 export interface ElevationProfileChartJsOptions extends ChartOptions<'line'> {
   scales: {
-    x: DeepPartial<ScaleOptionsByType<ChartTypeRegistry['line']['scales']>>;
-    y: DeepPartial<ScaleOptionsByType<ChartTypeRegistry['line']['scales']>>;
+    x: ChartJsDeepPartial<ScaleOptionsByType<ChartTypeRegistry['line']['scales']>>;
+    y: ChartJsDeepPartial<ScaleOptionsByType<ChartTypeRegistry['line']['scales']>>;
   };
 }

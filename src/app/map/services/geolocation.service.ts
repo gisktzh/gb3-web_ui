@@ -1,5 +1,4 @@
-import {Inject, Injectable} from '@angular/core';
-import {DOCUMENT} from '@angular/common';
+import {Inject, Injectable, DOCUMENT} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {PointWithSrs} from '../../shared/interfaces/geojson-types-with-srs.interface';
 import {GeolocationActions} from '../../state/map/actions/geolocation.actions';

@@ -1,7 +1,6 @@
-import {Directive, Inject, OnDestroy, OnInit} from '@angular/core';
+import {Directive, Inject, OnDestroy, OnInit, DOCUMENT} from '@angular/core';
 import {CdkDrag} from '@angular/cdk/drag-drop';
 import {Subscription, tap} from 'rxjs';
-import {DOCUMENT} from '@angular/common';
 
 @Directive({
   selector: '[dragCursor]',

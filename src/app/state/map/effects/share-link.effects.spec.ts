@@ -61,6 +61,7 @@ describe('ShareLinkEffects', () => {
   beforeEach(() => {
     actions$ = new Observable<Action>();
     favouriteServiceMock = jasmine.createSpyObj<FavouritesService>(['getActiveMapItemsForFavourite', 'getDrawingsForFavourite']);
+    authServiceMock = jasmine.createSpyObj<AuthService>(['login']);
 
     TestBed.configureTestingModule({
       imports: [],
