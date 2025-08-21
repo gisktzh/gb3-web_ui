@@ -58,7 +58,7 @@
     "@uppy/core": "^4.0.0",
     "@uppy/drop-target": "^3.0.0",
     "@uppy/file-input": "^4.0.0",
-    "angular-oauth2-oidc": "^19.0.0",
+    "angular-oauth2-oidc": "^20.0.0",
     "angular-resizable-element": "^7.0.2",
     "chart.js": "^4.5.0",
     "dayjs": "^1.11.7",
