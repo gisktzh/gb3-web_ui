@@ -59,7 +59,7 @@
     "@uppy/drop-target": "^3.0.0",
     "@uppy/file-input": "^4.0.0",
     "angular-oauth2-oidc": "^20.0.0",
-    "angular-resizable-element": "^7.0.2",
+    "angular-resizable-element": "^8.0.0",
     "chart.js": "^4.5.0",
     "dayjs": "^1.11.7",
     "file-saver": "^2.0.5",
